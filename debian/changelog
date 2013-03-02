@@ -1,0 +1,92 @@
+dunelegacy (0.96.3) unstable; urgency=low
+  * Full-featured map editor with support of Dune2-compatible maps as well as the extended map format
+  * Integration of OpenSuperDune (a replacement to the original SuperDune)
+  * Unit/Structure stats and the techtree is read from a config file
+  * Used scaler (Nearest Neighbor or Scale2x) is configurable (default = Scale2x)
+  * Game completely localizable (except helping menu)
+  * Harvesters now have a return command
+  * Trying to place a structure on a tile which is already occupied by (your own) units orders them to move away
+  * Add support for multiple different AI implementations
+  * Improved AI: Base is now built up faster and more compact
+  * New single and multiplayer maps
+  * Determine username automatically upon first start up
+  * Pressing an assigned number twice centers the screen on the selected units
+  * Destroyed units might spawn a soldier (Probability depends on the type of unit)
+  * Quad, Trike and Infantry units have a bumpy moving style when moving over rocks, mountains and thick spice
+  * Idling units randomly turn around
+  * Bullets now have an explosion animation when hitting
+  * Spice blooms have now their own animation
+  * Full Harvesters move 40% slower than empty ones
+  * Units are defined badly damaged (smoke, only one weapon) if < 50% max. health (instead of 30%)
+  * Sardaukar Troopers and Fremen Troopers are no unit types on its own anymore (just normal Troopers)
+  * Deviation chance is now house specific
+  * Starport prices are now normal distributed (instead of uniform)
+  * Limiting number of palaces to one is now optional (default = off)
+  * As in Dune II killed sandworms no longer respawn; old behavior is now an option (default = off)
+  * New game option: Sandworms drop spice when killed (default = off)
+  * Changes to game speed: Globally configurable; saved to and loaded from savegame; configurable before start of a multiplayer game
+  * Update enet to version 1.3.6
+  * Code was refactored in order to have a more consistent style
+  * Bugfix: Sand damage was using the wrong graphics
+  * Bugfix: Make it possible to order any type of unit from the starport if specified in the CHOAM section
+  * Bugfix: Build with SDL 1.2.14 on Mac OS X for Lion compatibility
+  * Bugfix: Allow special units to be delivered by reinforcements
+  * Bugfix: Correct order of houses is Harkonnen, Atreides, Ordos, Fremen, Sardaukar, Mercenary as in the color palette
+  * Bugfix: Minimap was not updated correctly when playing with fog-of-war enabled
+  * Bugfix: Stopping a unit that was awaiting pickup could "freeze" the carryall
+  * Bugfix: It was possible to exceed the spice storage limit (it's still possible to circumvent the limit but it's more complex)
+  * Bugfix: Harvester returns after the last tile of spice on the map is cleared
+  * Bugfix: Playing xmi music on Windows was broken
+  * Bugfix: Various fixes to the correct handling of music and sfx volume changes
+
+ -- Richard Schaller <richard.schallerATgmx.de>  Wed, 27 Feb 2013 00:00:00 +0100
+
+dunelegacy (0.96.2) unstable; urgency=low
+
+  * Add LAN multiplayer mode
+  * Internet multiplayer mode with metaserver (Beta!)
+  * Use scale2x for scaling
+  * Make game scalable ingame (Zoomlevel x1, Zoomlevel x2 and Zoomlevel x3)
+  * Add mentat help
+  * Scroll build list with mouse wheel
+  * Loading maps is more fault tolerant and shows only warnings in most cases
+  * Loading maps now checks for non-standard features (see Section "Features" in the Dune II Format Specification)
+  * Confirm window for game restart and game exit
+  * Added 13 maps by Rippsblack
+  * New options "Structures Degrade On Concrete", "Start with Explored Map" and "Instant Build"
+  * Earthquake ("Window shaking") on large explosions (e.g. death hand explosion)
+  * French translation (incomplete and only a machine translation)
+  * Bugfix: Loading SCENH008.INI of Dune II V1.0 failed
+  * Bugfix: Dune Legacy.log was not used on Windows
+  * Bugfix: Support non-ascii characters in paths and filenames on Windows
+  * Bugfix: Infantry units could not trigger spice blooms
+  * Bugfix: When playing as the Sardaukar, the announcer still says "Harkonnen", e.g. "Harkonnen harvester deployed"
+  * Bugfix: Sardaukar Reinforcements did not work
+  * Refactoring: Drop Visual Studio 6.0 support completely and start using C++0x features
+
+ -- Richard Schaller <richard.schallerATgmx.de>  Fri, 22 Jul 2011 00:00:00 +0100
+
+dunelegacy (0.96.1) unstable; urgency=low
+
+  * Custom maps implemented (see Dune II Format Specification for details of the map format)
+  * AI fixed (but still dumb)
+  * Play with AI in one team
+  * Fremen, Sardaukar and Mercenary playable (but needs better testing)
+  * Only one palace per house possible
+  * Colors of ingame GUI elements customized for each house
+  * New option screen
+  * I18N support (only English and German atm)
+  * Savegames are sorted by date
+  * Wall-Bug fixed: Walls not drawn correctly after loading a game
+  * Linux: Save configuration files to $XDG_CONFIG_HOME/dunelegacy if set; otherwise ~/.config/dunelegacy is used
+  * Mac OS X: Save configuration files to ~/Library/Application Support/Dune Legacy instead of ~/.config/dunelegacy
+  * Calculate md5sum of all PAK-Files at startup and write them to the log file (should ease debugging)
+  * Various smaller bugfixes
+
+ -- Richard Schaller <richard.schallerATgmx.de>  Tue, 30 Nov 2010 00:00:00 +0100
+
+dunelegacy (0.96.0) unstable; urgency=low
+
+  * Initial release
+
+ -- Richard Schaller <richard.schallerATgmx.de>  Tue, 29 Dec 2009 00:00:00 +0100

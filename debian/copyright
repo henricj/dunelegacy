@@ -1,0 +1,25 @@
+This package was debianized by Richard Schaller <richard.schallerATgmx.de> on
+Tue, 29 Dec 2009 00:00:00 +0100.
+
+It was downloaded from http://sourceforge.net/projects/dunelegacy
+
+Upstream Authors:
+
+    Richard Schaller (richard.schallerATgmx.de)
+
+Copyright:
+
+    Copyright (C) 2009 Dune Legacy Team
+
+License:
+
+    licensed under the GPL version 2 or later
+
+The Debian packaging is:
+
+    Copyright (C) 2009 Dune Legacy Team
+
+and is licensed under the GPL version 2, 
+see `/usr/share/common-licenses/GPL-2'.
+
+

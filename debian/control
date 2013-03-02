@@ -1,0 +1,17 @@
+Source: dunelegacy
+Section: games
+Priority: optional
+Maintainer: Richard Schaller <richard.schaller@gmx.de>
+Build-Depends: debhelper (>= 7), libsdl1.2-dev, libsdl-mixer1.2-dev
+Standards-Version: 3.8.3
+Installed-Size: 4096
+Homepage: http://sourceforge.net/projects/dunelegacy
+
+Package: dunelegacy
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: A Dune II clone
+ This clone of Dune II needs the original Dune II graphics, sounds and scenario data (PAK-files in the Dune II installation directory). Dune Legacy tries to be as similar as possible to the original gameplay but to integrate user interface features most modern realtime-strategy games have, e.g. selecting multiple units.
+ .
+ Lead one of three interplanetary houses, Atreides, Harkonnen or Ordos, in an attempt to harvest the largest amount of spice from the sand dunes. Exchange your spice stockpiles for credits through refinement and build an army capable of thwarting attempts of the other houses to stop your harvesting!
+

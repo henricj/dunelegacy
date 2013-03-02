@@ -1,0 +1,2545 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-02-17 01:13+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: include/GUI/ObjectInterfaces/BuilderInterface.h:46
+#: include/GUI/ObjectInterfaces/BuilderInterface.h:52
+msgid "Upgrade"
+msgstr ""
+
+#: include/GUI/ObjectInterfaces/BuilderInterface.h:49
+msgid "Upgrade this structure (Hotkey: U)"
+msgstr ""
+
+#: include/GUI/ObjectInterfaces/DefaultStructureInterface.h:47
+msgid "Repair this structure (Hotkey: R)"
+msgstr ""
+
+#: include/GUI/ObjectInterfaces/MultiUnitInterface.h:68
+#: include/GUI/ObjectInterfaces/UnitInterface.h:55
+msgid "Move to a position (Hotkey: M)"
+msgstr ""
+
+#: include/GUI/ObjectInterfaces/MultiUnitInterface.h:76
+#: include/GUI/ObjectInterfaces/UnitInterface.h:63
+msgid "Attack a unit, structure or position (Hotkey: A)"
+msgstr ""
+
+#: include/GUI/ObjectInterfaces/MultiUnitInterface.h:84
+#: include/GUI/ObjectInterfaces/UnitInterface.h:71
+msgid "Capture a building (Hotkey: C)"
+msgstr ""
+
+#: include/GUI/ObjectInterfaces/MultiUnitInterface.h:94
+#: include/GUI/ObjectInterfaces/UnitInterface.h:82
+msgid "Return harvester to refinery (Hotkey: R)"
+msgstr ""
+
+#: include/GUI/ObjectInterfaces/MultiUnitInterface.h:101
+#: include/GUI/ObjectInterfaces/UnitInterface.h:90
+msgid "Build a new construction yard"
+msgstr ""
+
+#: include/GUI/ObjectInterfaces/MultiUnitInterface.h:108
+#: include/GUI/ObjectInterfaces/UnitInterface.h:98
+msgid "Self-destruct this unit"
+msgstr ""
+
+#: include/GUI/ObjectInterfaces/MultiUnitInterface.h:116
+#: include/GUI/ObjectInterfaces/UnitInterface.h:107
+msgid "Guard"
+msgstr ""
+
+#: include/GUI/ObjectInterfaces/MultiUnitInterface.h:118
+#: include/GUI/ObjectInterfaces/UnitInterface.h:109
+msgid "Unit will not move from location"
+msgstr ""
+
+#: include/GUI/ObjectInterfaces/MultiUnitInterface.h:125
+#: include/GUI/ObjectInterfaces/UnitInterface.h:116
+msgid "Area Guard"
+msgstr ""
+
+#: include/GUI/ObjectInterfaces/MultiUnitInterface.h:127
+#: include/GUI/ObjectInterfaces/UnitInterface.h:118
+msgid "Unit will engage any unit within guard range"
+msgstr ""
+
+#: include/GUI/ObjectInterfaces/MultiUnitInterface.h:134
+#: include/GUI/ObjectInterfaces/UnitInterface.h:125
+msgid "Stop"
+msgstr ""
+
+#: include/GUI/ObjectInterfaces/MultiUnitInterface.h:136
+#: include/GUI/ObjectInterfaces/UnitInterface.h:127
+msgid "Unit will not move, nor attack"
+msgstr ""
+
+#: include/GUI/ObjectInterfaces/MultiUnitInterface.h:143
+#: include/GUI/ObjectInterfaces/UnitInterface.h:134
+msgid "Ambush"
+msgstr ""
+
+#: include/GUI/ObjectInterfaces/MultiUnitInterface.h:145
+#: include/GUI/ObjectInterfaces/UnitInterface.h:136
+msgid "Unit will not move until enemy unit spotted"
+msgstr ""
+
+#: include/GUI/ObjectInterfaces/MultiUnitInterface.h:152
+#: include/GUI/ObjectInterfaces/UnitInterface.h:143
+msgid "Hunt"
+msgstr ""
+
+#: include/GUI/ObjectInterfaces/MultiUnitInterface.h:154
+#: include/GUI/ObjectInterfaces/UnitInterface.h:145
+msgid "Unit will immediately start to engage an enemy unit"
+msgstr ""
+
+#: include/GUI/ObjectInterfaces/PalaceInterface.h:49
+msgid "READY"
+msgstr ""
+
+#: include/GUI/ObjectInterfaces/RefineryAndSiloInterface.h:69
+msgid "Capacity"
+msgstr ""
+
+#: include/GUI/ObjectInterfaces/RefineryAndSiloInterface.h:70
+msgid "Stored"
+msgstr ""
+
+#: include/GUI/ObjectInterfaces/WindTrapInterface.h:69
+msgid "Required"
+msgstr ""
+
+#: include/GUI/ObjectInterfaces/WindTrapInterface.h:70
+msgid "Produced"
+msgstr ""
+
+#: src/Choam.cpp:114
+msgid "New Starport prices"
+msgstr ""
+
+#: src/CutScenes/Finale.cpp:122 src/CutScenes/Intro.cpp:137
+#: src/CutScenes/Meanwhile.cpp:51 src/FileClasses/GFXManager.cpp:89
+#: src/FileClasses/GFXManager.cpp:90 src/FileClasses/GFXManager.cpp:94
+#: src/FileClasses/GFXManager.cpp:98 src/FileClasses/GFXManager.cpp:99
+#: src/FileClasses/GFXManager.cpp:106 src/FileClasses/GFXManager.cpp:107
+#: src/FileClasses/GFXManager.cpp:666 src/FileClasses/GFXManager.cpp:667
+#: src/FileClasses/PictureFactory.cpp:202
+#: src/FileClasses/PictureFactory.cpp:203 src/FileClasses/TextManager.cpp:51
+#: src/FileClasses/TextManager.cpp:52 src/FileClasses/TextManager.cpp:53
+#: src/FileClasses/TextManager.cpp:54 src/FileClasses/TextManager.cpp:58
+#: src/FileClasses/TextManager.cpp:59 src/FileClasses/TextManager.cpp:60
+#: src/main.cpp:501 src/Menu/MapChoice.cpp:429
+msgid "LanguageFileExtension"
+msgstr ""
+
+#: src/FileClasses/FileManager.cpp:108
+msgid "LanguagePakFiles"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:78
+msgid "@TEXTH.ENG|0#Description of House Harkonnen"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:79
+msgid "@TEXTH.ENG|4#Description of Harkonnen mission 1"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:80
+msgid "@TEXTH.ENG|8#Description of Harkonnen mission 2"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:81
+msgid "@TEXTH.ENG|12#Description of Harkonnen mission 3"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:82
+msgid "@TEXTH.ENG|16#Description of Harkonnen mission 4"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:83
+msgid "@TEXTH.ENG|20#Description of Harkonnen mission 5"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:84
+msgid "@TEXTH.ENG|24#Description of Harkonnen mission 6"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:85
+msgid "@TEXTH.ENG|28#Description of Harkonnen mission 7"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:86
+msgid "@TEXTH.ENG|32#Description of Harkonnen mission 8"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:87
+msgid "@TEXTH.ENG|36#Description of Harkonnen mission 9"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:94
+msgid "@TEXTH.ENG|5#Winning text of Harkonnen mission 1"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:95
+msgid "@TEXTH.ENG|9#Winning text of Harkonnen mission 2"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:96
+msgid "@TEXTH.ENG|13#Winning text of Harkonnen mission 3"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:97
+msgid "@TEXTH.ENG|17#Winning text of Harkonnen mission 4"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:98
+msgid "@TEXTH.ENG|21#Winning text of Harkonnen mission 5"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:99
+msgid "@TEXTH.ENG|25#Winning text of Harkonnen mission 6"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:100
+msgid "@TEXTH.ENG|29#Winning text of Harkonnen mission 7"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:101
+msgid "@TEXTH.ENG|33#Winning text of Harkonnen mission 8"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:102
+msgid "@TEXTH.ENG|37#Winning text of Harkonnen mission 9"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:109
+msgid "@TEXTH.ENG|6#Losing text of Harkonnen mission 1"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:110
+msgid "@TEXTH.ENG|10#Losing text of Harkonnen mission 2"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:111
+msgid "@TEXTH.ENG|14#Losing text of Harkonnen mission 3"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:112
+msgid "@TEXTH.ENG|18#Losing text of Harkonnen mission 4"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:113
+msgid "@TEXTH.ENG|22#Losing text of Harkonnen mission 5"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:114
+msgid "@TEXTH.ENG|26#Losing text of Harkonnen mission 6"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:115
+msgid "@TEXTH.ENG|30#Losing text of Harkonnen mission 7"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:116
+msgid "@TEXTH.ENG|34#Losing text of Harkonnen mission 8"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:117
+msgid "@TEXTH.ENG|38#Losing text of Harkonnen mission 9"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:124
+msgid "@TEXTH.ENG|7#Advice text for Harkonnen mission 1"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:125
+msgid "@TEXTH.ENG|11#Advice text for Harkonnen mission 2"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:126
+msgid "@TEXTH.ENG|15#Advice text for Harkonnen mission 3"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:127
+msgid "@TEXTH.ENG|19#Advice text for Harkonnen mission 4"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:128
+msgid "@TEXTH.ENG|23#Advice text for Harkonnen mission 5"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:129
+msgid "@TEXTH.ENG|27#Advice text for Harkonnen mission 6"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:130
+msgid "@TEXTH.ENG|31#Advice text for Harkonnen mission 7"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:131
+msgid "@TEXTH.ENG|35#Advice text for Harkonnen mission 8"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:132
+msgid "@TEXTH.ENG|39#Advice text for Harkonnen mission 9"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:147
+msgid "@TEXTA.ENG|0#Description of House Atreides"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:148
+msgid "@TEXTA.ENG|4#Description of Atreides mission 1"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:149
+msgid "@TEXTA.ENG|8#Description of Atreides mission 2"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:150
+msgid "@TEXTA.ENG|12#Description of Atreides mission 3"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:151
+msgid "@TEXTA.ENG|16#Description of Atreides mission 4"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:152
+msgid "@TEXTA.ENG|20#Description of Atreides mission 5"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:153
+msgid "@TEXTA.ENG|24#Description of Atreides mission 6"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:154
+msgid "@TEXTA.ENG|28#Description of Atreides mission 7"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:155
+msgid "@TEXTA.ENG|32#Description of Atreides mission 8"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:156
+msgid "@TEXTA.ENG|36#Description of Atreides mission 9"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:163
+msgid "@TEXTA.ENG|5#Winning text of Atreides mission 1"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:164
+msgid "@TEXTA.ENG|9#Winning text of Atreides mission 2"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:165
+msgid "@TEXTA.ENG|13#Winning text of Atreides mission 3"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:166
+msgid "@TEXTA.ENG|17#Winning text of Atreides mission 4"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:167
+msgid "@TEXTA.ENG|21#Winning text of Atreides mission 5"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:168
+msgid "@TEXTA.ENG|25#Winning text of Atreides mission 6"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:169
+msgid "@TEXTA.ENG|29#Winning text of Atreides mission 7"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:170
+msgid "@TEXTA.ENG|33#Winning text of Atreides mission 8"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:171
+msgid "@TEXTA.ENG|37#Winning text of Atreides mission 9"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:178
+msgid "@TEXTA.ENG|6#Losing text of Atreides mission 1"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:179
+msgid "@TEXTA.ENG|10#Losing text of Atreides mission 2"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:180
+msgid "@TEXTA.ENG|14#Losing text of Atreides mission 3"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:181
+msgid "@TEXTA.ENG|18#Losing text of Atreides mission 4"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:182
+msgid "@TEXTA.ENG|22#Losing text of Atreides mission 5"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:183
+msgid "@TEXTA.ENG|26#Losing text of Atreides mission 6"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:184
+msgid "@TEXTA.ENG|30#Losing text of Atreides mission 7"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:185
+msgid "@TEXTA.ENG|34#Losing text of Atreides mission 8"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:186
+msgid "@TEXTA.ENG|38#Losing text of Atreides mission 9"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:193
+msgid "@TEXTA.ENG|7#Advice text for Atreides mission 1"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:194
+msgid "@TEXTA.ENG|11#Advice text for Atreides mission 2"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:195
+msgid "@TEXTA.ENG|15#Advice text for Atreides mission 3"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:196
+msgid "@TEXTA.ENG|19#Advice text for Atreides mission 4"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:197
+msgid "@TEXTA.ENG|23#Advice text for Atreides mission 5"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:198
+msgid "@TEXTA.ENG|27#Advice text for Atreides mission 6"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:199
+msgid "@TEXTA.ENG|31#Advice text for Atreides mission 7"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:200
+msgid "@TEXTA.ENG|35#Advice text for Atreides mission 8"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:201
+msgid "@TEXTA.ENG|39#Advice text for Atreides mission 9"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:216
+msgid "@TEXTO.ENG|0#Description of House Ordos"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:217
+msgid "@TEXTO.ENG|4#Description of Ordos mission 1"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:218
+msgid "@TEXTO.ENG|8#Description of Ordos mission 2"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:219
+msgid "@TEXTO.ENG|12#Description of Ordos mission 3"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:220
+msgid "@TEXTO.ENG|16#Description of Ordos mission 4"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:221
+msgid "@TEXTO.ENG|20#Description of Ordos mission 5"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:222
+msgid "@TEXTO.ENG|24#Description of Ordos mission 6"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:223
+msgid "@TEXTO.ENG|28#Description of Ordos mission 7"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:224
+msgid "@TEXTO.ENG|32#Description of Ordos mission 8"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:225
+msgid "@TEXTO.ENG|36#Description of Ordos mission 9"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:232
+msgid "@TEXTO.ENG|5#Winning text of Ordos mission 1"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:233
+msgid "@TEXTO.ENG|9#Winning text of Ordos mission 2"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:234
+msgid "@TEXTO.ENG|13#Winning text of Ordos mission 3"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:235
+msgid "@TEXTO.ENG|17#Winning text of Ordos mission 4"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:236
+msgid "@TEXTO.ENG|21#Winning text of Ordos mission 5"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:237
+msgid "@TEXTO.ENG|25#Winning text of Ordos mission 6"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:238
+msgid "@TEXTO.ENG|29#Winning text of Ordos mission 7"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:239
+msgid "@TEXTO.ENG|33#Winning text of Ordos mission 8"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:240
+msgid "@TEXTO.ENG|37#Winning text of Ordos mission 9"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:247
+msgid "@TEXTO.ENG|6#Losing text of Ordos mission 1"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:248
+msgid "@TEXTO.ENG|10#Losing text of Ordos mission 2"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:249
+msgid "@TEXTO.ENG|14#Losing text of Ordos mission 3"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:250
+msgid "@TEXTO.ENG|18#Losing text of Ordos mission 4"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:251
+msgid "@TEXTO.ENG|22#Losing text of Ordos mission 5"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:252
+msgid "@TEXTO.ENG|26#Losing text of Ordos mission 6"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:253
+msgid "@TEXTO.ENG|30#Losing text of Ordos mission 7"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:254
+msgid "@TEXTO.ENG|34#Losing text of Ordos mission 8"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:255
+msgid "@TEXTO.ENG|38#Losing text of Ordos mission 9"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:262
+msgid "@TEXTO.ENG|7#Advice text for Ordos mission 1"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:263
+msgid "@TEXTO.ENG|11#Advice text for Ordos mission 2"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:264
+msgid "@TEXTO.ENG|15#Advice text for Ordos mission 3"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:265
+msgid "@TEXTO.ENG|19#Advice text for Ordos mission 4"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:266
+msgid "@TEXTO.ENG|23#Advice text for Ordos mission 5"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:267
+msgid "@TEXTO.ENG|27#Advice text for Ordos mission 6"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:268
+msgid "@TEXTO.ENG|31#Advice text for Ordos mission 7"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:269
+msgid "@TEXTO.ENG|35#Advice text for Ordos mission 8"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:270
+msgid "@TEXTO.ENG|39#Advice text for Ordos mission 9"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:285
+msgid ""
+"House Fremen\n"
+"Arrakis, the home planet of House Fremen, is one giant sand desert. "
+"Perfectly adapted to the warm, dry climate, the Fremen have huge advantage "
+"in defending their planet."
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:286
+msgid ""
+"@TEXTA.ENG|4|Atreides->Fremen|Ordos->Sardaukar|Harkonnen-"
+">Mercenary#Description of Fremen mission 1"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:287
+msgid ""
+"@TEXTA.ENG|8|Atreides->Fremen|Ordos->Sardaukar|Harkonnen-"
+">Mercenary#Description of Fremen mission 2"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:288
+msgid ""
+"@TEXTA.ENG|12|Atreides->Fremen|Ordos->Sardaukar|Harkonnen-"
+">Mercenary#Description of Fremen mission 3"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:289
+msgid ""
+"@TEXTA.ENG|16|Atreides->Fremen|Ordos->Sardaukar|Harkonnen-"
+">Mercenary#Description of Fremen mission 4"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:290
+msgid ""
+"@TEXTA.ENG|20|Atreides->Fremen|Ordos->Sardaukar|Harkonnen-"
+">Mercenary#Description of Fremen mission 5"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:291
+msgid ""
+"@TEXTA.ENG|24|Atreides->Fremen|Ordos->Sardaukar|Harkonnen-"
+">Mercenary#Description of Fremen mission 6"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:292
+msgid ""
+"@TEXTA.ENG|28|Atreides->Fremen|Ordos->Sardaukar|Harkonnen-"
+">Mercenary#Description of Fremen mission 7"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:293
+msgid ""
+"@TEXTA.ENG|32|Atreides->Fremen|Ordos->Sardaukar|Harkonnen-"
+">Mercenary#Description of Fremen mission 8"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:294
+msgid ""
+"@TEXTA.ENG|36|Atreides->Fremen|Ordos->Sardaukar|Harkonnen->Mercenary|"
+"remaining Ordos and Harkonnen troops->remaining Ordos, Mercenary and "
+"Harkonnen troops#Description of Fremen mission 9"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:301
+msgid ""
+"@TEXTA.ENG|5|Atreides->Fremen|Ordos->Sardaukar|Harkonnen->Mercenary#Winning "
+"text of Fremen mission 1"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:302
+msgid ""
+"@TEXTA.ENG|9|Atreides->Fremen|Ordos->Sardaukar|Harkonnen->Mercenary#Winning "
+"text of Fremen mission 2"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:303
+msgid ""
+"@TEXTA.ENG|13|Atreides->Fremen|Ordos->Sardaukar|Harkonnen->Mercenary#Winning "
+"text of Fremen mission 3"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:304
+msgid ""
+"@TEXTA.ENG|17|Atreides->Fremen|Ordos->Sardaukar|Harkonnen->Mercenary#Winning "
+"text of Fremen mission 4"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:305
+msgid ""
+"@TEXTA.ENG|21|Atreides->Fremen|Ordos->Sardaukar|Harkonnen->Mercenary#Winning "
+"text of Fremen mission 5"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:306
+msgid ""
+"@TEXTA.ENG|25|Atreides->Fremen|Ordos->Sardaukar|Harkonnen->Mercenary#Winning "
+"text of Fremen mission 6"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:307
+msgid ""
+"@TEXTA.ENG|29|Atreides->Fremen|Ordos->Sardaukar|Harkonnen->Mercenary#Winning "
+"text of Fremen mission 7"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:308
+msgid ""
+"@TEXTA.ENG|33|Atreides->Fremen|Ordos->Sardaukar|Harkonnen->Mercenary#Winning "
+"text of Fremen mission 8"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:309
+msgid ""
+"@TEXTA.ENG|37|Atreides->Fremen|Ordos->Sardaukar|Harkonnen->Mercenary#Winning "
+"text of Fremen mission 9"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:316
+msgid ""
+"@TEXTA.ENG|6|Atreides->Fremen|Ordos->Sardaukar|Harkonnen->Mercenary#Losing "
+"text of Fremen mission 1"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:317
+msgid ""
+"@TEXTA.ENG|10|Atreides->Fremen|Ordos->Sardaukar|Harkonnen->Mercenary#Losing "
+"text of Fremen mission 2"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:318
+msgid ""
+"@TEXTA.ENG|14|Atreides->Fremen|Ordos->Sardaukar|Harkonnen->Mercenary#Losing "
+"text of Fremen mission 3"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:319
+msgid ""
+"@TEXTA.ENG|18|Atreides->Fremen|Ordos->Sardaukar|Harkonnen->Mercenary#Losing "
+"text of Fremen mission 4"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:320
+msgid ""
+"@TEXTA.ENG|22|Atreides->Fremen|Ordos->Sardaukar|Harkonnen->Mercenary#Losing "
+"text of Fremen mission 5"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:321
+msgid ""
+"@TEXTA.ENG|26|Atreides->Fremen|Ordos->Sardaukar|Harkonnen->Mercenary#Losing "
+"text of Fremen mission 6"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:322
+msgid ""
+"@TEXTA.ENG|30|Atreides->Fremen|Ordos->Sardaukar|Harkonnen->Mercenary#Losing "
+"text of Fremen mission 7"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:323
+msgid ""
+"@TEXTA.ENG|34|Atreides->Fremen|Ordos->Sardaukar|Harkonnen->Mercenary#Losing "
+"text of Fremen mission 8"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:324
+msgid ""
+"@TEXTA.ENG|38|Atreides->Fremen|Ordos->Sardaukar|Harkonnen->Mercenary#Losing "
+"text of Fremen mission 9"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:331
+msgid ""
+"@TEXTA.ENG|7|Atreides->Fremen|Ordos->Sardaukar|Harkonnen->Mercenary#Advice "
+"text for Fremen mission 1"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:332
+msgid ""
+"@TEXTA.ENG|11|Atreides->Fremen|Ordos->Sardaukar|Harkonnen->Mercenary#Advice "
+"text for Fremen mission 2"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:333
+msgid ""
+"@TEXTA.ENG|15|Atreides->Fremen|Ordos->Sardaukar|Harkonnen->Mercenary#Advice "
+"text for Fremen mission 3"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:334
+msgid ""
+"@TEXTA.ENG|19|Atreides->Fremen|Ordos->Sardaukar|Harkonnen->Mercenary#Advice "
+"text for Fremen mission 4"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:335
+msgid ""
+"@TEXTA.ENG|23|Atreides->Fremen|Ordos->Sardaukar|Harkonnen->Mercenary#Advice "
+"text for Fremen mission 5"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:336
+msgid ""
+"@TEXTA.ENG|27|Atreides->Fremen|Ordos->Sardaukar|Harkonnen->Mercenary#Advice "
+"text for Fremen mission 6"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:337
+msgid ""
+"@TEXTA.ENG|31|Atreides->Fremen|Ordos->Sardaukar|Harkonnen->Mercenary#Advice "
+"text for Fremen mission 7"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:338
+msgid ""
+"@TEXTA.ENG|35|Atreides->Fremen|Ordos->Sardaukar|Harkonnen->Mercenary#Advice "
+"text for Fremen mission 8"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:339
+msgid ""
+"@TEXTA.ENG|39|Atreides->Fremen|Ordos->Sardaukar|Harkonnen->Mercenary#Advice "
+"text for Fremen mission 9"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:354
+msgid ""
+"House Sardaukar\n"
+"Originating from an forgotten planet, House Sardaukar has moved from planet "
+"to planet since then. Conquering foreign planets has specialized their "
+"combat skills which got them a reputation of being cruel."
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:355
+msgid ""
+"@TEXTH.ENG|4|Atreides->Mercenary|Ordos->Fremen|Harkonnen-"
+">Sardaukar#Description of Sardaukar mission 1"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:356
+msgid ""
+"@TEXTH.ENG|8|Atreides->Mercenary|Ordos->Fremen|Harkonnen-"
+">Sardaukar#Description of Sardaukar mission 2"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:357
+msgid ""
+"@TEXTH.ENG|12|Atreides->Mercenary|Ordos->Fremen|Harkonnen-"
+">Sardaukar#Description of Sardaukar mission 3"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:358
+msgid ""
+"@TEXTH.ENG|16|Atreides->Mercenary|Ordos->Fremen|Harkonnen-"
+">Sardaukar#Description of Sardaukar mission 4"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:359
+msgid ""
+"@TEXTH.ENG|20|Atreides->Mercenary|Ordos->Fremen|Harkonnen->Sardaukar|the "
+"Emperor was->the Atreides were#Description of Sardaukar mission 5"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:360
+msgid ""
+"@TEXTH.ENG|24|Atreides->Mercenary|Ordos->Fremen|Harkonnen-"
+">Sardaukar#Description of Sardaukar mission 6"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:361
+msgid ""
+"@TEXTH.ENG|28|Atreides->Mercenary|Ordos->Fremen|Harkonnen-"
+">Sardaukar#Description of Sardaukar mission 7"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:362
+msgid ""
+"@TEXTH.ENG|32|Atreides->Mercenary|Ordos->Fremen|Harkonnen-"
+">Sardaukar#Description of Sardaukar mission 8"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:363
+msgid ""
+"@TEXTH.ENG|36|Atreides->Mercenary|Ordos->Fremen|Harkonnen->Sardaukar|the "
+"Emperor's->their leader's#Description of Sardaukar mission 9"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:370
+msgid ""
+"@TEXTH.ENG|5|Atreides->Mercenary|Ordos->Fremen|Harkonnen->Sardaukar#Winning "
+"text of Sardaukar mission 1"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:371
+msgid ""
+"@TEXTH.ENG|9|Atreides->Mercenary|Ordos->Fremen|Harkonnen->Sardaukar#Winning "
+"text of Sardaukar mission 2"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:372
+msgid ""
+"@TEXTH.ENG|13|Atreides->Mercenary|Ordos->Fremen|Harkonnen->Sardaukar#Winning "
+"text of Sardaukar mission 3"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:373
+msgid ""
+"@TEXTH.ENG|17|Atreides->Mercenary|Ordos->Fremen|Harkonnen->Sardaukar#Winning "
+"text of Sardaukar mission 4"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:374
+msgid ""
+"@TEXTH.ENG|21|Atreides->Mercenary|Ordos->Fremen|Harkonnen->Sardaukar#Winning "
+"text of Sardaukar mission 5"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:375
+msgid ""
+"@TEXTH.ENG|25|Atreides->Mercenary|Ordos->Fremen|Harkonnen->Sardaukar#Winning "
+"text of Sardaukar mission 6"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:376
+msgid ""
+"@TEXTH.ENG|29|Atreides->Mercenary|Ordos->Fremen|Harkonnen->Sardaukar#Winning "
+"text of Sardaukar mission 7"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:377
+msgid ""
+"@TEXTH.ENG|33|Atreides->Mercenary|Ordos->Fremen|Harkonnen->Sardaukar#Winning "
+"text of Sardaukar mission 8"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:378
+msgid ""
+"@TEXTH.ENG|37|Atreides->Mercenary|Ordos->Fremen|Harkonnen->Sardaukar|the "
+"Emperor->the leader#Winning text of Sardaukar mission 9"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:385
+msgid ""
+"@TEXTH.ENG|6|Atreides->Mercenary|Ordos->Fremen|Harkonnen->Sardaukar#Losing "
+"text of Sardaukar mission 1"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:386
+msgid ""
+"@TEXTH.ENG|10|Atreides->Mercenary|Ordos->Fremen|Harkonnen->Sardaukar#Losing "
+"text of Sardaukar mission 2"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:387
+msgid ""
+"@TEXTH.ENG|14|Atreides->Mercenary|Ordos->Fremen|Harkonnen->Sardaukar#Losing "
+"text of Sardaukar mission 3"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:388
+msgid ""
+"@TEXTH.ENG|18|Atreides->Mercenary|Ordos->Fremen|Harkonnen->Sardaukar#Losing "
+"text of Sardaukar mission 4"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:389
+msgid ""
+"@TEXTH.ENG|22|Atreides->Mercenary|Ordos->Fremen|Harkonnen->Sardaukar#Losing "
+"text of Sardaukar mission 5"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:390
+msgid ""
+"@TEXTH.ENG|26|Atreides->Mercenary|Ordos->Fremen|Harkonnen->Sardaukar#Losing "
+"text of Sardaukar mission 6"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:391
+msgid ""
+"@TEXTH.ENG|30|Atreides->Mercenary|Ordos->Fremen|Harkonnen->Sardaukar#Losing "
+"text of Sardaukar mission 7"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:392
+msgid ""
+"@TEXTH.ENG|34|Atreides->Mercenary|Ordos->Fremen|Harkonnen->Sardaukar#Losing "
+"text of Sardaukar mission 8"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:393
+msgid ""
+"@TEXTH.ENG|38|Atreides->Mercenary|Ordos->Fremen|Harkonnen->Sardaukar#Losing "
+"text of Sardaukar mission 9"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:400
+msgid ""
+"@TEXTH.ENG|7|Atreides->Mercenary|Ordos->Fremen|Harkonnen->Sardaukar#Advice "
+"text for Sardaukar mission 1"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:401
+msgid ""
+"@TEXTH.ENG|11|Atreides->Mercenary|Ordos->Fremen|Harkonnen->Sardaukar#Advice "
+"text for Sardaukar mission 2"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:402
+msgid ""
+"@TEXTH.ENG|15|Atreides->Mercenary|Ordos->Fremen|Harkonnen->Sardaukar#Advice "
+"text for Sardaukar mission 3"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:403
+msgid ""
+"@TEXTH.ENG|19|Atreides->Mercenary|Ordos->Fremen|Harkonnen->Sardaukar#Advice "
+"text for Sardaukar mission 4"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:404
+msgid ""
+"@TEXTH.ENG|23|Atreides->Mercenary|Ordos->Fremen|Harkonnen->Sardaukar#Advice "
+"text for Sardaukar mission 5"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:405
+msgid ""
+"@TEXTH.ENG|27|Atreides->Mercenary|Ordos->Fremen|Harkonnen->Sardaukar#Advice "
+"text for Sardaukar mission 6"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:406
+msgid ""
+"@TEXTH.ENG|31|Atreides->Mercenary|Ordos->Fremen|Harkonnen->Sardaukar#Advice "
+"text for Sardaukar mission 7"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:407
+msgid ""
+"@TEXTH.ENG|35|Atreides->Mercenary|Ordos->Fremen|Harkonnen->Sardaukar#Advice "
+"text for Sardaukar mission 8"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:408
+msgid ""
+"@TEXTH.ENG|39|Atreides->Mercenary|Ordos->Fremen|Harkonnen->Sardaukar#Advice "
+"text for Sardaukar mission 9"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:424
+msgid ""
+"House Mercenary\n"
+"The home planet of the Mercenary consists of huge oceans and large deserts. "
+"House Mercenary is one of the oldest and most influencial intergalactical "
+"trading organization. To strengthen their power they don't hesitate to use "
+"military force."
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:425
+msgid ""
+"@TEXTO.ENG|4|Atreides->Sardaukar|Ordos->Mercenary|Harkonnen-"
+">Fremen#Description of Mercenary mission 1"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:426
+msgid ""
+"@TEXTO.ENG|8|Atreides->Sardaukar|Ordos->Mercenary|Harkonnen-"
+">Fremen#Description of Mercenary mission 2"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:427
+msgid ""
+"@TEXTO.ENG|12|Atreides->Sardaukar|Ordos->Mercenary|Harkonnen-"
+">Fremen#Description of Mercenary mission 3"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:428
+msgid ""
+"@TEXTO.ENG|16|Atreides->Sardaukar|Ordos->Mercenary|Harkonnen-"
+">Fremen#Description of Mercenary mission 4"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:429
+msgid ""
+"@TEXTO.ENG|20|Atreides->Sardaukar|Ordos->Mercenary|Harkonnen-"
+">Fremen#Description of Mercenary mission 5"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:430
+msgid ""
+"@TEXTO.ENG|24|Atreides->Sardaukar|Ordos->Mercenary|Harkonnen-"
+">Fremen#Description of Mercenary mission 6"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:431
+msgid ""
+"@TEXTO.ENG|28|Atreides->Sardaukar|Ordos->Mercenary|Harkonnen-"
+">Fremen#Description of Mercenary mission 7"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:432
+msgid ""
+"@TEXTO.ENG|32|Atreides->Sardaukar|Ordos->Mercenary|Harkonnen-"
+">Fremen#Description of Mercenary mission 8"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:433
+msgid ""
+"@TEXTO.ENG|36|Atreides->Sardaukar|Ordos->Mercenary|Harkonnen-"
+">Fremen#Description of Mercenary mission 9"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:440
+msgid ""
+"@TEXTO.ENG|5|Atreides->Sardaukar|Ordos->Mercenary|Harkonnen->Fremen#Winning "
+"text of Mercenary mission 1"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:441
+msgid ""
+"@TEXTO.ENG|9|Atreides->Sardaukar|Ordos->Mercenary|Harkonnen->Fremen#Winning "
+"text of Mercenary mission 2"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:442
+msgid ""
+"@TEXTO.ENG|13|Atreides->Sardaukar|Ordos->Mercenary|Harkonnen->Fremen#Winning "
+"text of Mercenary mission 3"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:443
+msgid ""
+"@TEXTO.ENG|17|Atreides->Sardaukar|Ordos->Mercenary|Harkonnen->Fremen#Winning "
+"text of Mercenary mission 4"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:444
+msgid ""
+"@TEXTO.ENG|21|Atreides->Sardaukar|Ordos->Mercenary|Harkonnen->Fremen#Winning "
+"text of Mercenary mission 5"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:445
+msgid ""
+"@TEXTO.ENG|25|Atreides->Sardaukar|Ordos->Mercenary|Harkonnen->Fremen#Winning "
+"text of Mercenary mission 6"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:446
+msgid ""
+"@TEXTO.ENG|29|Atreides->Sardaukar|Ordos->Mercenary|Harkonnen->Fremen#Winning "
+"text of Mercenary mission 7"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:447
+msgid ""
+"@TEXTO.ENG|33|Atreides->Sardaukar|Ordos->Mercenary|Harkonnen->Fremen#Winning "
+"text of Mercenary mission 8"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:448
+msgid ""
+"@TEXTO.ENG|37|Atreides->Sardaukar|Ordos->Mercenary|Harkonnen->Fremen#Winning "
+"text of Mercenary mission 9"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:455
+msgid ""
+"@TEXTO.ENG|6|Atreides->Sardaukar|Ordos->Mercenary|Harkonnen->Fremen#Losing "
+"text of Mercenary mission 1"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:456
+msgid ""
+"@TEXTO.ENG|10|Atreides->Sardaukar|Ordos->Mercenary|Harkonnen->Fremen#Losing "
+"text of Mercenary mission 2"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:457
+msgid ""
+"@TEXTO.ENG|14|Atreides->Sardaukar|Ordos->Mercenary|Harkonnen->Fremen#Losing "
+"text of Mercenary mission 3"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:458
+msgid ""
+"@TEXTO.ENG|18|Atreides->Sardaukar|Ordos->Mercenary|Harkonnen->Fremen#Losing "
+"text of Mercenary mission 4"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:459
+msgid ""
+"@TEXTO.ENG|22|Atreides->Sardaukar|Ordos->Mercenary|Harkonnen->Fremen#Losing "
+"text of Mercenary mission 5"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:460
+msgid ""
+"@TEXTO.ENG|26|Atreides->Sardaukar|Ordos->Mercenary|Harkonnen->Fremen#Losing "
+"text of Mercenary mission 6"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:461
+msgid ""
+"@TEXTO.ENG|30|Atreides->Sardaukar|Ordos->Mercenary|Harkonnen->Fremen#Losing "
+"text of Mercenary mission 7"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:462
+msgid ""
+"@TEXTO.ENG|34|Atreides->Sardaukar|Ordos->Mercenary|Harkonnen->Fremen#Losing "
+"text of Mercenary mission 8"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:463
+msgid ""
+"@TEXTO.ENG|38|Atreides->Sardaukar|Ordos->Mercenary|Harkonnen->Fremen#Losing "
+"text of Mercenary mission 9"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:470
+msgid ""
+"@TEXTO.ENG|7|Atreides->Sardaukar|Ordos->Mercenary|Harkonnen->Fremen#Advice "
+"text for Mercenary mission 1"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:471
+msgid ""
+"@TEXTO.ENG|11|Atreides->Sardaukar|Ordos->Mercenary|Harkonnen->Fremen#Advice "
+"text for Mercenary mission 2"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:472
+msgid ""
+"@TEXTO.ENG|15|Atreides->Sardaukar|Ordos->Mercenary|Harkonnen->Fremen#Advice "
+"text for Mercenary mission 3"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:473
+msgid ""
+"@TEXTO.ENG|19|Atreides->Sardaukar|Ordos->Mercenary|Harkonnen->Fremen#Advice "
+"text for Mercenary mission 4"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:474
+msgid ""
+"@TEXTO.ENG|23|Atreides->Sardaukar|Ordos->Mercenary|Harkonnen->Fremen#Advice "
+"text for Mercenary mission 5"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:475
+msgid ""
+"@TEXTO.ENG|27|Atreides->Sardaukar|Ordos->Mercenary|Harkonnen->Fremen#Advice "
+"text for Mercenary mission 6"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:476
+msgid ""
+"@TEXTO.ENG|31|Atreides->Sardaukar|Ordos->Mercenary|Harkonnen->Fremen#Advice "
+"text for Mercenary mission 7"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:477
+msgid ""
+"@TEXTO.ENG|35|Atreides->Sardaukar|Ordos->Mercenary|Harkonnen->Fremen#Advice "
+"text for Mercenary mission 8"
+msgstr ""
+
+#: src/FileClasses/TextManager.cpp:478
+msgid ""
+"@TEXTO.ENG|39|Atreides->Sardaukar|Ordos->Mercenary|Harkonnen->Fremen#Advice "
+"text for Mercenary mission 9"
+msgstr ""
+
+#: src/Game.cpp:670
+msgid "You Have Completed Your Mission."
+msgstr ""
+
+#: src/Game.cpp:672
+msgid "You Have Failed Your Mission."
+msgstr ""
+
+#: src/Game.cpp:894
+msgid "@DUNE.ENG|226#Harvester"
+msgstr ""
+
+#: src/Game.cpp:899
+msgid "@DUNE.ENG|124#full and awaiting pickup"
+msgstr ""
+
+#: src/Game.cpp:901
+msgid "@DUNE.ENG|123#full and returning"
+msgstr ""
+
+#: src/Game.cpp:903
+msgid "@DUNE.ENG|122#full and harvesting"
+msgstr ""
+
+#: src/Game.cpp:905
+msgid "@DUNE.ENG|121#full"
+msgstr ""
+
+#: src/Game.cpp:910
+msgid "@DUNE.ENG|128#empty and awaiting pickup"
+msgstr ""
+
+#: src/Game.cpp:912
+msgid "@DUNE.ENG|127#empty and returning"
+msgstr ""
+
+#: src/Game.cpp:914
+msgid "@DUNE.ENG|126#empty and harvesting"
+msgstr ""
+
+#: src/Game.cpp:916
+msgid "@DUNE.ENG|125#empty"
+msgstr ""
+
+#: src/Game.cpp:2108 src/Game.cpp:2118 src/GUI/dune/GameOptionsWindow.cpp:107
+msgid "Game speed"
+msgstr ""
+
+#: src/Game.cpp:2248
+msgid "Screenshot saved"
+msgstr ""
+
+#: src/Game.cpp:2296
+msgid "Game resumed!"
+msgstr ""
+
+#: src/Game.cpp:2299
+msgid "Game paused!"
+msgstr ""
+
+#: src/Game.cpp:2331 src/Game.cpp:2352
+msgid "@DUNE.ENG|135#Cannot place slab here."
+msgstr ""
+
+#: src/Game.cpp:2365
+#, c-format
+msgid "@DUNE.ENG|134#Cannot place %%s here."
+msgstr ""
+
+#: src/GUI/dune/BuilderList.cpp:68
+msgid "Order"
+msgstr ""
+
+#: src/GUI/dune/BuilderList.cpp:283
+msgid "SOLD OUT"
+msgstr ""
+
+#: src/GUI/dune/BuilderList.cpp:305
+msgid ""
+"ALREADY\n"
+"BUILT"
+msgstr ""
+
+#: src/GUI/dune/BuilderList.cpp:330
+msgid "PLACE IT"
+msgstr ""
+
+#: src/GUI/dune/BuilderList.cpp:338
+msgid "ON HOLD"
+msgstr ""
+
+#: src/GUI/dune/GameOptionsWindow.cpp:34
+msgid "Game Options"
+msgstr ""
+
+#: src/GUI/dune/GameOptionsWindow.cpp:43
+msgid "Concrete Required"
+msgstr ""
+
+#: src/GUI/dune/GameOptionsWindow.cpp:45
+#, no-c-format
+msgid ""
+"If checked building on bare rock will result in 50% structure health penalty."
+msgstr ""
+
+#: src/GUI/dune/GameOptionsWindow.cpp:50
+msgid "Structures Degrade On Concrete"
+msgstr ""
+
+#: src/GUI/dune/GameOptionsWindow.cpp:51
+msgid ""
+"If checked structures will degrade on power shortage even if built on "
+"concrete."
+msgstr ""
+
+#: src/GUI/dune/GameOptionsWindow.cpp:56
+msgid "Fog of War"
+msgstr ""
+
+#: src/GUI/dune/GameOptionsWindow.cpp:57
+msgid ""
+"If checked explored terrain will become foggy when no unit or structure is "
+"next to it."
+msgstr ""
+
+#: src/GUI/dune/GameOptionsWindow.cpp:62
+msgid "Start with Explored Map"
+msgstr ""
+
+#: src/GUI/dune/GameOptionsWindow.cpp:63
+msgid "If checked the complete map is unhidden at the beginning of the game."
+msgstr ""
+
+#: src/GUI/dune/GameOptionsWindow.cpp:68
+msgid "Instant Build"
+msgstr ""
+
+#: src/GUI/dune/GameOptionsWindow.cpp:69
+msgid "If checked the building of structures and units does not take any time."
+msgstr ""
+
+#: src/GUI/dune/GameOptionsWindow.cpp:74
+msgid "Only One Palace per House"
+msgstr ""
+
+#: src/GUI/dune/GameOptionsWindow.cpp:75
+msgid "If checked only one palace can be build per house."
+msgstr ""
+
+#: src/GUI/dune/GameOptionsWindow.cpp:80
+msgid "Rocket-Turrets Need Power"
+msgstr ""
+
+#: src/GUI/dune/GameOptionsWindow.cpp:81
+msgid "If checked rocket turrets are dysfunctional on power shortage."
+msgstr ""
+
+#: src/GUI/dune/GameOptionsWindow.cpp:86
+msgid "Killed Sandworms Respawn"
+msgstr ""
+
+#: src/GUI/dune/GameOptionsWindow.cpp:87
+msgid "If checked killed sandworms respawn after some time."
+msgstr ""
+
+#: src/GUI/dune/GameOptionsWindow.cpp:92
+msgid "Killed Sandworms Drop Spice"
+msgstr ""
+
+#: src/GUI/dune/GameOptionsWindow.cpp:93
+msgid "If checked killed sandworms drop some spice."
+msgstr ""
+
+#: src/GUI/dune/GameOptionsWindow.cpp:126
+#: src/GUI/dune/InGameSettingsMenu.cpp:101 src/MapEditor/ChoamWindow.cpp:134
+#: src/MapEditor/MapSettingsWindow.cpp:283
+#: src/MapEditor/PlayerSettingsWindow.cpp:191
+#: src/MapEditor/ReinforcementsWindow.cpp:192
+#: src/MapEditor/TeamsWindow.cpp:185 src/Menu/CustomGameStatsMenu.cpp:180
+msgid "OK"
+msgstr ""
+
+#: src/GUI/dune/InGameMenu.cpp:56
+msgid "Resume Game"
+msgstr ""
+
+#: src/GUI/dune/InGameMenu.cpp:63 src/GUI/dune/InGameMenu.cpp:198
+msgid "Save Game"
+msgstr ""
+
+#: src/GUI/dune/InGameMenu.cpp:70 src/GUI/dune/InGameMenu.cpp:206
+#: src/Menu/CustomGameMenu.cpp:231 src/Menu/SinglePlayerMenu.cpp:156
+msgid "Load Game"
+msgstr ""
+
+#: src/GUI/dune/InGameMenu.cpp:79
+msgid "Game Settings"
+msgstr ""
+
+#: src/GUI/dune/InGameMenu.cpp:88
+msgid "Restart Game"
+msgstr ""
+
+#: src/GUI/dune/InGameMenu.cpp:97
+msgid "Quit to Menu"
+msgstr ""
+
+#: src/GUI/dune/InGameMenu.cpp:166 src/GUI/dune/InGameMenu.cpp:223
+msgid "Do you really want to quit this game?"
+msgstr ""
+
+#: src/GUI/dune/InGameMenu.cpp:211
+msgid "Do you really want to restart this game?"
+msgstr ""
+
+#: src/GUI/dune/InGameMenu.cpp:212 src/GUI/dune/InGameMenu.cpp:224
+#: src/GUI/dune/LoadSaveWindow.cpp:164 src/MapEditor/LoadMapWindow.cpp:159
+#: src/MapEditor/MapEditorInterface.cpp:872
+msgid "No"
+msgstr ""
+
+#: src/GUI/dune/InGameMenu.cpp:213 src/GUI/dune/InGameMenu.cpp:225
+#: src/GUI/dune/LoadSaveWindow.cpp:165 src/MapEditor/LoadMapWindow.cpp:160
+#: src/MapEditor/MapEditorInterface.cpp:872
+msgid "Yes"
+msgstr ""
+
+#: src/GUI/dune/InGameSettingsMenu.cpp:106 src/GUI/dune/LoadSaveWindow.cpp:101
+#: src/MapEditor/ChoamWindow.cpp:122 src/MapEditor/LoadMapWindow.cpp:122
+#: src/MapEditor/MapSettingsWindow.cpp:271 src/MapEditor/NewMapWindow.cpp:207
+#: src/MapEditor/PlayerSettingsWindow.cpp:175
+#: src/MapEditor/ReinforcementsWindow.cpp:180
+#: src/MapEditor/TeamsWindow.cpp:173
+msgid "Cancel"
+msgstr ""
+
+#: src/GUI/dune/LoadSaveWindow.cpp:93
+msgid "Save"
+msgstr ""
+
+#: src/GUI/dune/LoadSaveWindow.cpp:163 src/MapEditor/LoadMapWindow.cpp:158
+#, c-format
+msgid "Do you really want to delete '%s' ?"
+msgstr ""
+
+#: src/GUI/dune/LoadSaveWindow.cpp:230
+msgid ""
+"Invalid file name! File names must not contain \\ or / and must not be empty!"
+msgstr ""
+
+#: src/GUI/dune/WaitingForOtherPlayers.cpp:44
+#: src/MapEditor/ReinforcementsWindow.cpp:101 src/MapEditor/TeamsWindow.cpp:92
+msgid "Remove"
+msgstr ""
+
+#: src/GUI/dune/WaitingForOtherPlayers.cpp:67
+msgid "Waiting for other players... "
+msgstr ""
+
+#: src/House.cpp:294
+msgid ""
+"@DUNE.ENG|145#As insufficient spice storage is available, spice is lost."
+msgstr ""
+
+#: src/House.cpp:449
+#, c-format
+msgid "House '%s' has been defeated."
+msgstr ""
+
+#: src/MapEditor/ChoamWindow.cpp:61 src/MapEditor/MapEditorInterface.cpp:152
+msgid "Choam"
+msgstr ""
+
+#: src/MapEditor/ChoamWindow.cpp:70
+msgid ""
+"These units are available at the starport. The given amount of these units "
+"is available at the start of the game and every 30s one unit is added."
+msgstr ""
+
+#: src/MapEditor/LoadMapWindow.cpp:60 src/MapEditor/MapEditorInterface.cpp:110
+#: src/MapEditor/NewMapWindow.cpp:215
+msgid "Load Map"
+msgstr ""
+
+#: src/MapEditor/LoadMapWindow.cpp:72 src/Menu/CustomGameMenu.cpp:76
+msgid "SP User Maps"
+msgstr ""
+
+#: src/MapEditor/LoadMapWindow.cpp:78 src/Menu/CustomGameMenu.cpp:86
+msgid "MP User Maps"
+msgstr ""
+
+#: src/MapEditor/LoadMapWindow.cpp:97 src/Menu/CustomGameMenu.cpp:116
+#: src/Menu/CustomGamePlayers.cpp:86
+msgid "Choose map"
+msgstr ""
+
+#: src/MapEditor/LoadMapWindow.cpp:104 src/Menu/CustomGameMenu.cpp:123
+#: src/Menu/CustomGamePlayers.cpp:140
+msgid "Size"
+msgstr ""
+
+#: src/MapEditor/LoadMapWindow.cpp:107 src/Menu/CustomGameMenu.cpp:125
+#: src/Menu/CustomGamePlayers.cpp:142
+msgid "Players"
+msgstr ""
+
+#: src/MapEditor/LoadMapWindow.cpp:110 src/Menu/CustomGameMenu.cpp:127
+#: src/Menu/CustomGamePlayers.cpp:144
+msgid "Author"
+msgstr ""
+
+#: src/MapEditor/LoadMapWindow.cpp:113 src/Menu/CustomGameMenu.cpp:129
+#: src/Menu/CustomGamePlayers.cpp:146
+msgid "License"
+msgstr ""
+
+#: src/MapEditor/LoadMapWindow.cpp:134 src/Menu/CustomGameMenu.cpp:147
+msgid "Load"
+msgstr ""
+
+#: src/MapEditor/LoadMapWindow.cpp:255 src/Menu/CustomGameMenu.cpp:277
+msgid "No map available"
+msgstr ""
+
+#: src/MapEditor/MapEditor.cpp:132 src/MapEditor/MapEditorInterface.cpp:103
+#: src/MapEditor/NewMapWindow.cpp:58
+msgid "New Map"
+msgstr ""
+
+#: src/MapEditor/MapEditorInterface.cpp:96
+msgid "Leave Mapeditor"
+msgstr ""
+
+#: src/MapEditor/MapEditorInterface.cpp:117
+#: src/MapEditor/MapEditorInterface.cpp:912
+msgid "Save Map"
+msgstr ""
+
+#: src/MapEditor/MapEditorInterface.cpp:124
+msgid "Undo"
+msgstr ""
+
+#: src/MapEditor/MapEditorInterface.cpp:131
+msgid "Redo"
+msgstr ""
+
+#: src/MapEditor/MapEditorInterface.cpp:138
+#: src/MapEditor/PlayerSettingsWindow.cpp:54
+msgid "Player Settings"
+msgstr ""
+
+#: src/MapEditor/MapEditorInterface.cpp:145
+#: src/MapEditor/MapSettingsWindow.cpp:58
+msgid "Map Settings"
+msgstr ""
+
+#: src/MapEditor/MapEditorInterface.cpp:159
+#: src/MapEditor/ReinforcementsWindow.cpp:56
+msgid "Reinforcements"
+msgstr ""
+
+#: src/MapEditor/MapEditorInterface.cpp:166 src/MapEditor/TeamsWindow.cpp:54
+msgid "Teams"
+msgstr ""
+
+#: src/MapEditor/MapEditorInterface.cpp:175
+#: src/MapEditor/MapEditorInterface.cpp:184
+#: src/MapEditor/MapEditorInterface.cpp:193
+#: src/MapEditor/MapEditorInterface.cpp:202
+#: src/MapEditor/MapEditorInterface.cpp:211 src/MapEditor/NewMapWindow.cpp:162
+msgid "Mirror mode"
+msgstr ""
+
+#: src/MapEditor/MapEditorInterface.cpp:175 src/MapEditor/NewMapWindow.cpp:165
+msgid "Off"
+msgstr ""
+
+#: src/MapEditor/MapEditorInterface.cpp:184 src/MapEditor/NewMapWindow.cpp:166
+msgid "Horizontal"
+msgstr ""
+
+#: src/MapEditor/MapEditorInterface.cpp:193 src/MapEditor/NewMapWindow.cpp:167
+msgid "Vertical"
+msgstr ""
+
+#: src/MapEditor/MapEditorInterface.cpp:202 src/MapEditor/NewMapWindow.cpp:168
+msgid "Horizontal and vertical"
+msgstr ""
+
+#: src/MapEditor/MapEditorInterface.cpp:211 src/MapEditor/NewMapWindow.cpp:169
+msgid "Inverse"
+msgstr ""
+
+#: src/MapEditor/MapEditorInterface.cpp:352
+msgid "Set starting screen"
+msgstr ""
+
+#: src/MapEditor/MapEditorInterface.cpp:681
+msgid "Health"
+msgstr ""
+
+#: src/MapEditor/MapEditorInterface.cpp:694
+msgid "Attack mode"
+msgstr ""
+
+#: src/MapEditor/MapEditorInterface.cpp:711
+msgid "Rotate left"
+msgstr ""
+
+#: src/MapEditor/MapEditorInterface.cpp:718
+msgid "Rotate right"
+msgstr ""
+
+#: src/MapEditor/MapEditorInterface.cpp:749
+#: src/MapEditor/ReinforcementsWindow.cpp:111
+#: src/MapEditor/TeamsWindow.cpp:102 src/Menu/CustomGamePlayers.cpp:258
+#: src/Menu/CustomGamePlayers.cpp:315
+msgid "Player"
+msgstr ""
+
+#: src/MapEditor/MapEditorInterface.cpp:872
+msgid "Do you really want to quit and lose unsaved changes to this map?"
+msgstr ""
+
+#: src/MapEditor/MapEditorInterface.cpp:888 src/Menu/CustomGameMenu.cpp:71
+msgid "SP Maps"
+msgstr ""
+
+#: src/MapEditor/MapEditorInterface.cpp:892 src/Menu/CustomGameMenu.cpp:81
+msgid "MP Maps"
+msgstr ""
+
+#: src/MapEditor/MapSettingsWindow.cpp:68
+msgid "Picture on winning"
+msgstr ""
+
+#: src/MapEditor/MapSettingsWindow.cpp:94
+msgid "Picture on losing"
+msgstr ""
+
+#: src/MapEditor/MapSettingsWindow.cpp:120
+msgid "Picture for briefing"
+msgstr ""
+
+#: src/MapEditor/MapSettingsWindow.cpp:152
+msgid "Conditions for finishing the game"
+msgstr ""
+
+#: src/MapEditor/MapSettingsWindow.cpp:157
+#: src/MapEditor/MapSettingsWindow.cpp:196
+msgid "Timeout reached"
+msgstr ""
+
+#: src/MapEditor/MapSettingsWindow.cpp:169
+#: src/MapEditor/MapSettingsWindow.cpp:203
+msgid "Spice quota reached"
+msgstr ""
+
+#: src/MapEditor/MapSettingsWindow.cpp:176
+msgid "Player has no units/structures left"
+msgstr ""
+
+#: src/MapEditor/MapSettingsWindow.cpp:183
+#: src/MapEditor/MapSettingsWindow.cpp:217
+msgid "Others have no units/structures left"
+msgstr ""
+
+#: src/MapEditor/MapSettingsWindow.cpp:191
+msgid "Conditions for winning the game (in case it is finished)"
+msgstr ""
+
+#: src/MapEditor/MapSettingsWindow.cpp:210
+msgid "Player has units/structures left"
+msgstr ""
+
+#: src/MapEditor/MapSettingsWindow.cpp:225
+msgid "Tech Level"
+msgstr ""
+
+#: src/MapEditor/MapSettingsWindow.cpp:231
+msgid "Level 1:  Concrete, Windtrap, Refinery"
+msgstr ""
+
+#: src/MapEditor/MapSettingsWindow.cpp:232
+msgid ""
+"Level 2:  Radar, Barracks/Light Factory/WOR, Silo, Soldier/Trooper, Trike"
+msgstr ""
+
+#: src/MapEditor/MapSettingsWindow.cpp:233
+msgid "Level 3:  Light Factory, Quad"
+msgstr ""
+
+#: src/MapEditor/MapSettingsWindow.cpp:234
+msgid "Level 4:  2x2 Concrete, Wall, Heavy Factory, Tank, Harvester, MCV"
+msgstr ""
+
+#: src/MapEditor/MapSettingsWindow.cpp:235
+msgid "Level 5:  Gun Turret, Hightech Factory, Rapair Yard, Launcher, Carryall"
+msgstr ""
+
+#: src/MapEditor/MapSettingsWindow.cpp:236
+msgid "Level 6:  Starport, Rocket Turret, Siege Tank"
+msgstr ""
+
+#: src/MapEditor/MapSettingsWindow.cpp:237
+msgid "Level 7:  House IX, Sonic Tank/Deviator/Devastator, Ornithopter"
+msgstr ""
+
+#: src/MapEditor/MapSettingsWindow.cpp:238
+msgid "Level 8:  Palace, Fremen, Saboteur"
+msgstr ""
+
+#: src/MapEditor/MapSettingsWindow.cpp:245 src/MapEditor/NewMapWindow.cpp:181
+msgid "Author:"
+msgstr ""
+
+#: src/MapEditor/MapSettingsWindow.cpp:256 src/MapEditor/NewMapWindow.cpp:192
+msgid "License:"
+msgstr ""
+
+#: src/MapEditor/NewMapWindow.cpp:70
+msgid "Empty Map"
+msgstr ""
+
+#: src/MapEditor/NewMapWindow.cpp:74
+msgid "Random Map"
+msgstr ""
+
+#: src/MapEditor/NewMapWindow.cpp:78
+msgid "Dune2-compatible  Map"
+msgstr ""
+
+#: src/MapEditor/NewMapWindow.cpp:90
+msgid "Map Width:"
+msgstr ""
+
+#: src/MapEditor/NewMapWindow.cpp:98
+msgid "Map Height:"
+msgstr ""
+
+#: src/MapEditor/NewMapWindow.cpp:108
+msgid "Map Scale:"
+msgstr ""
+
+#: src/MapEditor/NewMapWindow.cpp:111
+msgid "Tiny (21x21)"
+msgstr ""
+
+#: src/MapEditor/NewMapWindow.cpp:112
+msgid "Small (32x32)"
+msgstr ""
+
+#: src/MapEditor/NewMapWindow.cpp:113
+msgid "Normal (62x62)"
+msgstr ""
+
+#: src/MapEditor/NewMapWindow.cpp:120
+msgid "Random Seed:"
+msgstr ""
+
+#: src/MapEditor/NewMapWindow.cpp:133
+msgid "Rock:"
+msgstr ""
+
+#: src/MapEditor/NewMapWindow.cpp:146
+msgid "Spice:"
+msgstr ""
+
+#: src/MapEditor/NewMapWindow.cpp:223
+msgid "Create"
+msgstr ""
+
+#: src/MapEditor/PlayerSettingsWindow.cpp:72
+#: src/MapEditor/ReinforcementsWindow.cpp:355
+#: src/MapEditor/TeamsWindow.cpp:373 src/Menu/CustomGamePlayers.cpp:205
+#: src/Menu/CustomGameStatsMenu.cpp:105
+msgid "House"
+msgstr ""
+
+#: src/MapEditor/PlayerSettingsWindow.cpp:75
+#, c-format
+msgid "Player %d:"
+msgstr ""
+
+#: src/MapEditor/PlayerSettingsWindow.cpp:80
+msgid "any"
+msgstr ""
+
+#: src/MapEditor/PlayerSettingsWindow.cpp:98
+msgid "Credits"
+msgstr ""
+
+#: src/MapEditor/PlayerSettingsWindow.cpp:110
+#: src/Menu/CustomGamePlayers.cpp:237 src/Menu/CustomGamePlayers.cpp:244
+msgid "Team"
+msgstr ""
+
+#: src/MapEditor/PlayerSettingsWindow.cpp:143
+msgid "Quota"
+msgstr ""
+
+#: src/MapEditor/PlayerSettingsWindow.cpp:152
+msgid "Max Units"
+msgstr ""
+
+#: src/MapEditor/PlayerSettingsWindow.cpp:183
+#: src/MapEditor/PlayerSettingsWindow.cpp:208
+#: src/MapEditor/PlayerSettingsWindow.cpp:227
+msgid "Advanced..."
+msgstr ""
+
+#: src/MapEditor/PlayerSettingsWindow.cpp:209
+msgid "Basic..."
+msgstr ""
+
+#: src/MapEditor/ReinforcementsWindow.cpp:65
+msgid ""
+"Reinforcements are brought by a carryall. Multiple reinforcements at the "
+"same time are combined."
+msgstr ""
+
+#: src/MapEditor/ReinforcementsWindow.cpp:81 src/MapEditor/TeamsWindow.cpp:72
+msgid "Move up"
+msgstr ""
+
+#: src/MapEditor/ReinforcementsWindow.cpp:87 src/MapEditor/TeamsWindow.cpp:78
+msgid "Move down"
+msgstr ""
+
+#: src/MapEditor/ReinforcementsWindow.cpp:95 src/MapEditor/TeamsWindow.cpp:86
+msgid "Add"
+msgstr ""
+
+#: src/MapEditor/ReinforcementsWindow.cpp:120
+#: src/MapEditor/ReinforcementsWindow.cpp:354
+#: src/MapEditor/TeamsWindow.cpp:112 src/MapEditor/TeamsWindow.cpp:372
+#, c-format
+msgid "Player %d"
+msgstr ""
+
+#: src/MapEditor/ReinforcementsWindow.cpp:127
+msgid "Unit"
+msgstr ""
+
+#: src/MapEditor/ReinforcementsWindow.cpp:145
+msgid "Drop Location"
+msgstr ""
+
+#: src/MapEditor/ReinforcementsWindow.cpp:161
+msgid "Time"
+msgstr ""
+
+#: src/MapEditor/ReinforcementsWindow.cpp:170
+msgid "Repeat"
+msgstr ""
+
+#: src/MapEditor/ReinforcementsWindow.cpp:263
+#: src/MapEditor/TeamsWindow.cpp:256
+msgid "Dune2-compatible maps support only up to 16 entries!"
+msgstr ""
+
+#: src/MapEditor/TeamsWindow.cpp:119
+msgid "Team Behavior"
+msgstr ""
+
+#: src/MapEditor/TeamsWindow.cpp:137
+msgid "Team Type"
+msgstr ""
+
+#: src/MapEditor/TeamsWindow.cpp:142
+msgid "Foot (Infantry, Troopers)"
+msgstr ""
+
+#: src/MapEditor/TeamsWindow.cpp:143
+msgid "Wheeled (Trike, Raider, Quad)"
+msgstr ""
+
+#: src/MapEditor/TeamsWindow.cpp:144
+msgid "Tracked (Tank, Launcher, Siege Tank,...)"
+msgstr ""
+
+#: src/MapEditor/TeamsWindow.cpp:145
+msgid "Winged (Carryall, Ornithopter, Frigate)"
+msgstr ""
+
+#: src/MapEditor/TeamsWindow.cpp:146
+msgid "Slither (Sandworm)"
+msgstr ""
+
+#: src/MapEditor/TeamsWindow.cpp:147
+msgid "Harvester (Harvester)"
+msgstr ""
+
+#: src/MapEditor/TeamsWindow.cpp:151
+msgid "Units"
+msgstr ""
+
+#: src/MapEditor/TeamsWindow.cpp:159
+msgid "to"
+msgstr ""
+
+#: src/Menu/CampaignStatsMenu.cpp:58
+#, c-format
+msgid "@DUNE.ENG|21#Score: %d"
+msgstr ""
+
+#: src/Menu/CampaignStatsMenu.cpp:62 src/Menu/CustomGameStatsMenu.cpp:172
+#, c-format
+msgid "@DUNE.ENG|22#Time: %d:%02d"
+msgstr ""
+
+#: src/Menu/CampaignStatsMenu.cpp:67
+msgid "@DUNE.ENG|23#You have attained the rank"
+msgstr ""
+
+#: src/Menu/CampaignStatsMenu.cpp:76
+msgid "@DUNE.ENG|26#Spice harvested by"
+msgstr ""
+
+#: src/Menu/CampaignStatsMenu.cpp:81
+msgid "@DUNE.ENG|24#Units destroyed by"
+msgstr ""
+
+#: src/Menu/CampaignStatsMenu.cpp:86
+msgid "@DUNE.ENG|25#Buildings destroyed by"
+msgstr ""
+
+#: src/Menu/CampaignStatsMenu.cpp:93 src/Menu/CampaignStatsMenu.cpp:131
+#: src/Menu/CampaignStatsMenu.cpp:169
+msgid "@DUNE.ENG|329#You:"
+msgstr ""
+
+#: src/Menu/CampaignStatsMenu.cpp:111 src/Menu/CampaignStatsMenu.cpp:149
+#: src/Menu/CampaignStatsMenu.cpp:187
+msgid "@DUNE.ENG|330#Enemy:"
+msgstr ""
+
+#: src/Menu/CampaignStatsMenu.cpp:487
+msgid "@DUNE.ENG|282#Emperor"
+msgstr ""
+
+#: src/Menu/CampaignStatsMenu.cpp:488
+msgid "@DUNE.ENG|281#Ruler of Arrakis"
+msgstr ""
+
+#: src/Menu/CampaignStatsMenu.cpp:489
+msgid "@DUNE.ENG|280#Chief Warlord"
+msgstr ""
+
+#: src/Menu/CampaignStatsMenu.cpp:490
+msgid "@DUNE.ENG|279#Warlord"
+msgstr ""
+
+#: src/Menu/CampaignStatsMenu.cpp:491
+msgid "@DUNE.ENG|278#Base Commander"
+msgstr ""
+
+#: src/Menu/CampaignStatsMenu.cpp:492
+msgid "@DUNE.ENG|277#Outpost Commander"
+msgstr ""
+
+#: src/Menu/CampaignStatsMenu.cpp:493
+msgid "@DUNE.ENG|276#Squad Leader"
+msgstr ""
+
+#: src/Menu/CampaignStatsMenu.cpp:494
+msgid "@DUNE.ENG|275#Dune Trooper"
+msgstr ""
+
+#: src/Menu/CampaignStatsMenu.cpp:495
+msgid "@DUNE.ENG|274#Sand Warrior"
+msgstr ""
+
+#: src/Menu/CampaignStatsMenu.cpp:496
+msgid "@DUNE.ENG|273#Desert Mongoose"
+msgstr ""
+
+#: src/Menu/CampaignStatsMenu.cpp:497
+msgid "@DUNE.ENG|272#Sand Snake"
+msgstr ""
+
+#: src/Menu/CampaignStatsMenu.cpp:498
+msgid "@DUNE.ENG|271#Sand Flea"
+msgstr ""
+
+#: src/Menu/CustomGameMenu.cpp:57
+msgid "LAN Game"
+msgstr ""
+
+#: src/Menu/CustomGameMenu.cpp:57
+msgid "Internet Game"
+msgstr ""
+
+#: src/Menu/CustomGameMenu.cpp:57
+msgid "Custom Game"
+msgstr ""
+
+#: src/Menu/CustomGameMenu.cpp:100
+msgid "Multiple players per house"
+msgstr ""
+
+#: src/Menu/CustomGameMenu.cpp:103
+msgid "Game Options..."
+msgstr ""
+
+#: src/Menu/CustomGameMenu.cpp:140 src/Menu/CustomGamePlayers.cpp:157
+#: src/Menu/MultiPlayerMenu.cpp:100 src/Menu/OptionsMenu.cpp:225
+#: src/Menu/SinglePlayerSkirmishMenu.cpp:69
+msgid "Back"
+msgstr ""
+
+#: src/Menu/CustomGameMenu.cpp:156 src/Menu/CustomGamePlayers.cpp:185
+msgid "Next"
+msgstr ""
+
+#: src/Menu/CustomGamePlayers.cpp:267 src/Menu/CustomGamePlayers.cpp:302
+#: src/Menu/CustomGamePlayers.cpp:324 src/Menu/CustomGamePlayers.cpp:357
+#: src/Menu/CustomGamePlayers.cpp:1109 src/Menu/CustomGamePlayers.cpp:1175
+msgid "closed"
+msgstr ""
+
+#: src/Menu/CustomGamePlayers.cpp:276 src/Menu/CustomGamePlayers.cpp:300
+#: src/Menu/CustomGamePlayers.cpp:333 src/Menu/CustomGamePlayers.cpp:355
+#: src/Menu/CustomGamePlayers.cpp:1105 src/Menu/CustomGamePlayers.cpp:1172
+msgid "open"
+msgstr ""
+
+#: src/Menu/CustomGamePlayers.cpp:682
+msgid ""
+"At least 2 houses must be controlled\n"
+"by a human player or an AI player!"
+msgstr ""
+
+#: src/Menu/CustomGamePlayers.cpp:685
+msgid "There must be at least two different teams!"
+msgstr ""
+
+#: src/Menu/CustomGamePlayers.cpp:1285 src/Menu/CustomGamePlayers.cpp:1297
+msgid "Random"
+msgstr ""
+
+#: src/Menu/CustomGameStatsMenu.cpp:65
+msgid "Built Object"
+msgstr ""
+
+#: src/Menu/CustomGameStatsMenu.cpp:70
+msgid "Destroyed"
+msgstr ""
+
+#: src/Menu/CustomGameStatsMenu.cpp:74
+msgid "Harvested Spice"
+msgstr ""
+
+#: src/Menu/MainMenu.cpp:68
+msgid "SINGLE PLAYER"
+msgstr ""
+
+#: src/Menu/MainMenu.cpp:75
+msgid "MULTIPLAYER"
+msgstr ""
+
+#: src/Menu/MainMenu.cpp:82
+msgid "MAP EDITOR"
+msgstr ""
+
+#: src/Menu/MainMenu.cpp:88
+msgid "OPTIONS"
+msgstr ""
+
+#: src/Menu/MainMenu.cpp:94
+msgid "ABOUT"
+msgstr ""
+
+#: src/Menu/MainMenu.cpp:100
+msgid "QUIT"
+msgstr ""
+
+#: src/Menu/MapChoice.cpp:68
+msgid "@DUNE.ENG|283#Three Houses have come to Dune..."
+msgstr ""
+
+#: src/Menu/MapChoice.cpp:69
+msgid "@DUNE.ENG|284#...to take control of the land..."
+msgstr ""
+
+#: src/Menu/MapChoice.cpp:70
+msgid "@DUNE.ENG|285#...that has become divided."
+msgstr ""
+
+#: src/Menu/MapChoice.cpp:205
+msgid "@DUNE.ENG|286#Select next region"
+msgstr ""
+
+#: src/Menu/MultiPlayerMenu.cpp:43
+msgid "Connect"
+msgstr ""
+
+#: src/Menu/MultiPlayerMenu.cpp:57
+msgid "Create LAN Game"
+msgstr ""
+
+#: src/Menu/MultiPlayerMenu.cpp:63
+msgid "Create Internet Game"
+msgstr ""
+
+#: src/Menu/MultiPlayerMenu.cpp:74
+msgid "LAN Games"
+msgstr ""
+
+#: src/Menu/MultiPlayerMenu.cpp:79
+msgid "Internet Games"
+msgstr ""
+
+#: src/Menu/MultiPlayerMenu.cpp:106
+msgid "Join"
+msgstr ""
+
+#: src/Menu/MultiPlayerMenu.cpp:165 src/Menu/MultiPlayerMenu.cpp:188
+msgid "Connecting..."
+msgstr ""
+
+#: src/Menu/MultiPlayerMenu.cpp:384
+msgid "The game host quit the game!"
+msgstr ""
+
+#: src/Menu/MultiPlayerMenu.cpp:388
+msgid "The server timed out!"
+msgstr ""
+
+#: src/Menu/MultiPlayerMenu.cpp:392
+msgid "A player with the same name as yours already exists!"
+msgstr ""
+
+#: src/Menu/MultiPlayerMenu.cpp:396
+msgid "There is no free player slot in this game left!"
+msgstr ""
+
+#: src/Menu/MultiPlayerMenu.cpp:400
+msgid "The connection to the game host was lost!"
+msgstr ""
+
+#: src/Menu/OptionsMenu.cpp:70
+msgid "Player Name"
+msgstr ""
+
+#: src/Menu/OptionsMenu.cpp:83
+msgid "Default Game Options"
+msgstr ""
+
+#: src/Menu/OptionsMenu.cpp:84
+msgid "Change..."
+msgstr ""
+
+#: src/Menu/OptionsMenu.cpp:97
+msgid "Language"
+msgstr ""
+
+#: src/Menu/OptionsMenu.cpp:116
+msgid "Campaign AI"
+msgstr ""
+
+#: src/Menu/OptionsMenu.cpp:124
+msgid "Play Intro"
+msgstr ""
+
+#: src/Menu/OptionsMenu.cpp:135
+msgid "Video Resolution"
+msgstr ""
+
+#: src/Menu/OptionsMenu.cpp:172
+msgid "Full Screen"
+msgstr ""
+
+#: src/Menu/OptionsMenu.cpp:176
+msgid "Double Buffering"
+msgstr ""
+
+#: src/Menu/OptionsMenu.cpp:187
+msgid "Play SFX"
+msgstr ""
+
+#: src/Menu/OptionsMenu.cpp:191
+msgid "Play Music"
+msgstr ""
+
+#: src/Menu/OptionsMenu.cpp:202
+msgid "Port"
+msgstr ""
+
+#: src/Menu/OptionsMenu.cpp:214
+msgid "MetaServer"
+msgstr ""
+
+#: src/Menu/OptionsMenu.cpp:231
+msgid "Accept"
+msgstr ""
+
+#: src/Menu/OptionsMenu.cpp:285
+msgid "Please enter a Player Name."
+msgstr ""
+
+#: src/Menu/OptionsMenu.cpp:291
+#, c-format
+msgid ""
+"Server Port must be between 1 and 65535!\n"
+"Default Server Port is %d!"
+msgstr ""
+
+#: src/Menu/OptionsMenu.cpp:297
+msgid "Please enter a MetaServer."
+msgstr ""
+
+#: src/Menu/SinglePlayerMenu.cpp:73
+msgid "CAMPAIGN"
+msgstr ""
+
+#: src/Menu/SinglePlayerMenu.cpp:80
+msgid "CUSTOM GAME"
+msgstr ""
+
+#: src/Menu/SinglePlayerMenu.cpp:86
+msgid "SKIRMISH"
+msgstr ""
+
+#: src/Menu/SinglePlayerMenu.cpp:92
+msgid "LOAD GAME"
+msgstr ""
+
+#: src/Menu/SinglePlayerMenu.cpp:98
+msgid "LOAD REPLAY"
+msgstr ""
+
+#: src/Menu/SinglePlayerMenu.cpp:104
+msgid "BACK"
+msgstr ""
+
+#: src/Menu/SinglePlayerMenu.cpp:163
+msgid "Load Replay"
+msgstr ""
+
+#: src/Menu/SinglePlayerSkirmishMenu.cpp:62
+msgid "Start"
+msgstr ""
+
+#: src/sand.cpp:355
+msgid "@DUNE.ENG|253#Barracks"
+msgstr ""
+
+#: src/sand.cpp:356
+msgid "@DUNE.ENG|249#Construction Yard"
+msgstr ""
+
+#: src/sand.cpp:357
+msgid "@DUNE.ENG|263#Gun Turret"
+msgstr ""
+
+#: src/sand.cpp:358
+msgid "@DUNE.ENG|241#Heacy Factory"
+msgstr ""
+
+#: src/sand.cpp:359
+msgid "@DUNE.ENG|243#Hightech Factory"
+msgstr ""
+
+#: src/sand.cpp:360
+msgid "@DUNE.ENG|245#House IX"
+msgstr ""
+
+#: src/sand.cpp:361
+msgid "@DUNE.ENG|239#Light Factory"
+msgstr ""
+
+#: src/sand.cpp:362
+msgid "@DUNE.ENG|237#Palace"
+msgstr ""
+
+#: src/sand.cpp:363
+msgid "@DUNE.ENG|269#Radar"
+msgstr ""
+
+#: src/sand.cpp:364
+msgid "@DUNE.ENG|256#Refinery"
+msgstr ""
+
+#: src/sand.cpp:365
+msgid "@DUNE.ENG|259#Repair Yard"
+msgstr ""
+
+#: src/sand.cpp:366
+msgid "@DUNE.ENG|265#Rocket Turret"
+msgstr ""
+
+#: src/sand.cpp:367
+msgid "@DUNE.ENG|267#Silo"
+msgstr ""
+
+#: src/sand.cpp:368
+msgid "@DUNE.ENG|233#Slab"
+msgstr ""
+
+#: src/sand.cpp:369
+msgid "@DUNE.ENG|235#Slab (2x2)"
+msgstr ""
+
+#: src/sand.cpp:370
+msgid "@DUNE.ENG|255#Starport"
+msgstr ""
+
+#: src/sand.cpp:371
+msgid "@DUNE.ENG|261#Wall"
+msgstr ""
+
+#: src/sand.cpp:372
+msgid "@DUNE.ENG|251#Windtrap"
+msgstr ""
+
+#: src/sand.cpp:373
+msgid "@DUNE.ENG|247#WOR"
+msgstr ""
+
+#: src/sand.cpp:375
+msgid "@DUNE.ENG|195#Carryall"
+msgstr ""
+
+#: src/sand.cpp:376
+msgid "@DUNE.ENG|217#Devastator"
+msgstr ""
+
+#: src/sand.cpp:377
+msgid "@DUNE.ENG|211#Deviator"
+msgstr ""
+
+#: src/sand.cpp:378
+msgid "Frigate"
+msgstr ""
+
+#: src/sand.cpp:379
+msgid "@DUNE.ENG|227#Harvester"
+msgstr ""
+
+#: src/sand.cpp:380
+msgid "@DUNE.ENG|209#Launcher"
+msgstr ""
+
+#: src/sand.cpp:381
+msgid "@DUNE.ENG|229#MCV"
+msgstr ""
+
+#: src/sand.cpp:382
+msgid "@DUNE.ENG|197#Ornithopter"
+msgstr ""
+
+#: src/sand.cpp:383
+msgid "@DUNE.ENG|225#Quad"
+msgstr ""
+
+#: src/sand.cpp:384
+msgid "@DUNE.ENG|223#Raider Trike"
+msgstr ""
+
+#: src/sand.cpp:385
+msgid "@DUNE.ENG|215#Siege Tank"
+msgstr ""
+
+#: src/sand.cpp:386
+msgid "@DUNE.ENG|219#Sonic Tank"
+msgstr ""
+
+#: src/sand.cpp:387
+msgid "@DUNE.ENG|213#Tank"
+msgstr ""
+
+#: src/sand.cpp:388
+msgid "@DUNE.ENG|221#Trike"
+msgstr ""
+
+#: src/sand.cpp:389
+msgid "@DUNE.ENG|207#Saboteur"
+msgstr ""
+
+#: src/sand.cpp:390
+msgid "@DUNE.ENG|231#Sandworm"
+msgstr ""
+
+#: src/sand.cpp:391
+msgid "@DUNE.ENG|203#Soldier"
+msgstr ""
+
+#: src/sand.cpp:392
+msgid "@DUNE.ENG|205#Trooper"
+msgstr ""
+
+#: src/sand.cpp:393
+msgid "Sonic/Devast./Devia."
+msgstr ""
+
+#: src/sand.cpp:394
+msgid "@DUNE.ENG|199#Infantry"
+msgstr ""
+
+#: src/sand.cpp:395
+msgid "@DUNE.ENG|201#Troopers"
+msgstr ""
+
+#: src/sand.cpp:539
+msgid "top edge"
+msgstr ""
+
+#: src/sand.cpp:540
+msgid "right edge"
+msgstr ""
+
+#: src/sand.cpp:541
+msgid "bottom edge"
+msgstr ""
+
+#: src/sand.cpp:542
+msgid "left edge"
+msgstr ""
+
+#: src/sand.cpp:543
+msgid "random"
+msgstr ""
+
+#: src/sand.cpp:544
+msgid "middle"
+msgstr ""
+
+#: src/sand.cpp:545
+msgid "enemy base"
+msgstr ""
+
+#: src/sand.cpp:546
+msgid "home base"
+msgstr ""
+
+#: src/structures/BuilderBase.cpp:227 src/structures/StarPort.cpp:117
+msgid "Not enough money"
+msgstr ""
+
+#: src/structures/BuilderBase.cpp:320
+msgid "@DUNE.ENG|51#Construction is complete"
+msgstr ""
+
+#: src/structures/Palace.cpp:154
+msgid "@DUNE.ENG|81#Missile is approaching"
+msgstr ""
+
+#: src/structures/Palace.cpp:168
+msgid "Palace is ready"
+msgstr ""
+
+#: src/structures/Palace.cpp:243
+msgid "Unable to spawn Fremen"
+msgstr ""
+
+#: src/structures/Palace.cpp:258
+msgid "@DUNE.ENG|79#Saboteur is approaching"
+msgstr ""
+
+#: src/structures/StarPort.cpp:108
+msgid "This unit is sold out"
+msgstr ""
+
+#: src/structures/StarPort.cpp:271
+msgid "@DUNE.ENG|80#Frigate has arrived"
+msgstr ""
+
+#: src/units/MCV.cpp:89
+msgid "You cannot deploy here."
+msgstr ""

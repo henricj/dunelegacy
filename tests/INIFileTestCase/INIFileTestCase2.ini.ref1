@@ -1,0 +1,9 @@
+#Comment
+anonymousKey = SomeNewValue
+[General]
+StringKey = "Some New Value"#comment
+IntKey = 0#comment
+BoolKey = false#comment
+DoubleKey = 1.0#comment
+
+[EmptySection]

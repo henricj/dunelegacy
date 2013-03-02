@@ -1,0 +1,159 @@
+
+Dune Legacy: Developer Guide
+----------------------------
+
+This text is intended for new developers that want to contribute to Dune Legacy. It tries to describe the basic design concepts of Dune Legacy.
+
+
+Introduction
+-------------------
+
+Dune Legacy consists of different parts. The 3 main parts are as follows:
+
+Data Management:
+These classes are responsible for loading the different media formats (pictures, sounds-effects, music, video). Everything that needs to be loaded from files is loaded through these classes. GFXManager, SFXManager and TextManager manage all the different media. They provide all these media to the other parts of dune legacy.
+Files: /FileClasses/*
+
+Menu:
+The menu is shown at the start of the game and let the user specify what scenario/map he wants to play. Every menu screen is basically a endless loop of drawing the screen and processing the input. If you click on a button to open a new menu screen the event handler calls the endless loop of this new menu. Thus the event handler code for the main menu is just stopped when a sub menu is opened and you will get back there if the submenu quits.
+Files: /Menu/* , GUI/*
+
+In-Game:
+When a game is started the main loop in GameClass is started. This loop consists of 3 main tasks: First the screen is draws, then the input is processed and finally the game logic performed. These 3 aspects are separated strictly. The first two are not time critical. But the game logic must be performed with strict timing. Otherwise the game would have different speed on different computers. Another issue is very important with the third aspect: It has to be deterministic to ensure a network game is in sync.
+Every Unit/Structure is implemented in it's own class. These classes are derived from ObjectClass. All objects have an unique ObjectID and every linking to a unit/structure should use these ObjectID instead of a pointer. Through the class ObjectTree it is possible to map an ObjectID to a pointer to that object. But it is important to not save this pointer somewhere for reuse later. It might happen that the unit/structure is destroyed and the memory for this object gets deleted. Thus the pointer gets invalid. Before deleting an object the ObjectTree is informed and thus can later inform you that the ObjectID is no longer valid.
+Files: /* , /units/* , /structures/* , ( /GUI/* )
+
+
+
+Chapter 1: Data Management
+--------------------------
+To ease development all data is loaded once when Dune Legacy is started. This causes a memory usage of Dune Legacy of about 50MB.
+
+FileManager
+The FileManager is responsible for making data files accessible to other parts of the game. It looks for files in the following order
+- Dune Legacy data directory
+- data directory inside the Dune Legacy configuration directory
+- all loaded PAK files
+
+Lookup is done case insensitive. FileManager is only used for data files. Configuration files, save game, replays, custom maps, etc. are loaded directly.
+
+
+GFXManager
+GFXManager loads all the graphics and animations (except the cut scene videos). Some of the graphics are composed out of the original Dune II graphics. Composition is done by PictureFactory-Class.
+
+
+SFXManager
+SFXManager is responsible for loading the voice (language dependent) and sound effects. There are different voices for each house in the English version of Dune II. French and German voices do not differ between houses. Sound Effects are only partially language dependant (e.g. unit feedback like "reporting").
+
+
+FontManager
+FontManager loads the 3 used picture fonts (accessible as FONT_STD10,	FONT_STD12 and FONT_STD24). The fonts contain all characters needed by ISO 8859-15.
+
+
+TextManager
+All texts are loaded by TextManager. Most texts are read from the Dune II files containing them. These include the unit/structure names, the reached rank after each mission (see getDuneText() ) and the briefing texts (see getBriefingText() ). Also the encyclopedia shown by the mentat are provided by TextManager (see getAllMentatEntries() ). For texts which are needed by Dune Legacy but can not be found in Dune II a Gettext like approach is used. We us a simple hash map which maps English text to a translated one (see getLocalized() ). All text is encoded in ISO 8859-15.
+
+
+Memory Usage
+The downside of loading all data at startup is the higher memory usage. The following table summarizes what data needs how much RAM (measured with Dune Legacy 0.96.2 on Linux x86-64).
+
+Main Program						2 MB
+Fonts								0,5 MB
+GFXManager - Object Pictures		6 MB
+GFXManager - Small Detail Pictures	0,5 MB
+GFXManager - Animations				22 MB
+GFXManager - GUI					8 MB
+SFXManager - Voice (English)		10 MB
+SFXManager - Sound Effects			3 MB
+
+Total								52 MB
+
+
+
+Chapter 2: Menu
+---------------
+The following menus are used in Dune Legacy
+
+Class						Description
+MainMenu					The main menu shown at the start of the game
+SinglePlayerMenu			The menu shown when selecting the single player option on main menu
+HouseChoiceMenu				Screen shown when starting a new campaign
+HouseChoiceInfoMenu			Bene Gesserit giving you some info about a chosen house
+CustomGameMenu				Menu for starting a new custom game and selecting a map
+CustomGamePlayers			Menu for setting up all players for a custom game
+SinglePlayerSkirmishMenu	Menu for starting a skirmish game and selecting which house and mission to play
+MultiPlayerMenu				The menu shown when selecting the multiplayer option on main menu
+OptionsMenu					The menu shown when selecting the options entry on main menu
+AboutMenu					Showing the about game screen (about entry on main menu)
+BriefingMenu				Shown before and after a mission
+GameStatsMenu				Shown after a mission showing some statistics and your rank
+MapChoice					The map of Dune where you choose your next mission
+MentatHelp					When you press the Mentat button ingame
+
+
+
+Chapter 3: Input Handling and Game Logic
+----------------------------------------
+
+As pointed out in the introduction input handling and game logic are strictly isolated aspects. These two parts can only communicate through so-called "Commands". Consider for example a right-click on the map to order a unit to move somewhere. The input handling will finally ending with calling handleActionClick() of the unit that should be moved. This method will add a Command to the CommandManager. The CommandManager saves this Command and schedules it to be performed later. In the simplest case it is scheduled to be performed in the next game cycle. But consider a network with low latency. Then the command will be scheduled for e.g. 10 game cycles later. These 10 cycles are needed to send the Command to all other computers.
+The CommandManager will be called every game cycle and performs all commands that are scheduled for this cycle. Reconsider our example from above. The command that was added by handleActionClick() gets now fetched from the command queue for this cycle and gets executed. It calls doMove() from this unit and the unit finally starts moving to the new destination.
+To sum it up: The input handling is only allowed to call methods that do not change the game state or that add Commands. These later methods have a name that starts with "handle" and end with "Click". The game logic may call any method but there are some methods that have a special name. They start with "do". These methods actual issue some things that a player can do with a unit/structure. These methods are called by the AI and when executing a command.
+
+
+
+Chapter 4: Coordinate systems
+-----------------------------
+
+There are mainly 4 coordinate systems to deal with: Map, World, zoomed World and Screen Coordinate System.
+
+Map-Coordinate System:
+The map consists of a number of tiles. The original dune 2 used mostly 64x64 maps. Each tile has a 2-dimensional coordinate. Both coordinate values are between 0 and 63. A coordinate in this form is called map coordinate in dune legacy.
+
+World-Coordinate System:
+Each tile is 64*64 pixels wide. This value is defined by TILESIZE. The world coordinate system describes every pixel on the map not only every tile as the map coordinate system does. Thus conversion between Map and World coordinate system is simply a multiplication or division by TILESIZE. (If converting Map to World you will get the world coordinate of the top left corner of the tile)
+
+Zoomed World-Coordinate System:
+As we support zooming we need another coordinate system. The zoomed World-Coordinate System is depending on the zoom level currently set. We have 4 zoom levels (but level 3 is unused):
+
+Zoom level	Tile size on screen		Comment
+0			16x16					Same as in Dune II
+1			32x32
+2			48x48
+3			64x64					Unused by Dune Legacy
+
+Screen-Coordinate System:
+If the user clicks somewhere on the game board you have to first check if the click is really on the game area itself or on the gamebar. And then you have to convert these values to world or map coordinates.
+
+Conversion between the different coordinate systems
+The ScreenBorder-Class supports convenient methods for conversion. Coordinates given in zoomed world coordinates or in screen coordinates are only valid within one game cycle because the user may change the viewport or zoom level.
+
+
+
+Chapter 5: Adding additional game options
+-----------------------------------------
+
+Dune Legacy supports different game rules named game options. To add an additional rule you must modify the following parts:
+
+Add the new option to SettingsClass::GameOptionsClass in DataTypes.h. Don't forget to add it also to the constructor initialization list and to operator==().
+
+Add the new option to the default generated configuration file. It is located in main.cpp in function createDefaultConfigFile(). The default option of the new rule should be as in the original Dune II.
+
+Read the new config value into the new option in SettingsClass::GameOptionsClass. This is done in main.cpp in function main().
+
+Add the new option to GameOptionsWindow: Add a new widget (e.g. a chechbox) to the class in GameOptionsWindow.h. Then set it up in GameOptionsWindow::GameOptionsWindow() by adding it to the window and setting its name and tooltip. You might need to adjust the window size. If possible localize all added strings. Afterwards modify GameOptionsWindow::onOK() to read the new value from the widget into SettingsClass::GameOptionsClass.
+
+Change OptionsMenu::saveConfiguration() in OptionsMenu.cpp to write out the new option.
+
+Finally add the reading and writing logic to GameInitSettings (the loading constructor and the save method).
+
+Now you may start using the option and add the appropriate code pieces. You can access the option by using currentGame->getGameInitSettings().getGameOptions().nameOfOption.
+
+
+
+Chapter 6: AI Players
+---------------------
+
+AI Players are implemented as child-classes of the class Player (players/Player.h). They shall replace/imitate a human opponent. Therefore they shall have the same controlling mechanisms as a human player does and they also shall not directly interact with the game logic (compare chapter 3). On the other side the AI has to gather information about the current game state (e.g. position of units) to make "intelligent" decisions. To enforce this separation in the code the AI gets only access to constant objects of the game world. Thus the AI is only allowed to call methods qualified as const. (Note: There might be ways to circumvent this constness but an AI player shall not use them). The only way the AI player may influence the game is by calling the do methods of the class Player. Accessing global variables (e.g. currentGame) is not allowed but getter methods are available in the class Player.
+
+To add a new AI player it is necessary to register it in players/PlayerFactory.cpp with a unique id (a string used for internal purposes), a name shown in the gui and two functions for creating and loading ai players of this type.
+

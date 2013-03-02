@@ -1,0 +1,53 @@
+# Comment
+
+Key1 = a
+Key2 = b
+Key3 = c
+Key4 = d
+Key5 = e
+
+[Section1]
+Key1 = a
+Key2 = b
+Key3 = c
+Key4 = d
+Key5 = e
+
+[Section2]
+Key1 = a
+Key2 = b
+Key3 = c
+Key4 = d
+Key5 = e
+
+[Section3]
+Key1 = a
+Key2 = b
+Key3 = c
+Key4 = d
+Key5 = e
+
+[Section4]
+Key1 = a
+Key2 = b
+Key3 = c
+Key4 = d
+Key5 = e
+
+[Section5]
+Key1 = a
+Key2 = b
+Key3 = c
+Key4 = d
+Key5 = e
+
+[Section6]
+[Section7]
+       #comment = value
+#comment=value
+;[this is a fake section]
+ a b c=	 xyz abc#comment
+tricky string = "comment #fake comment"#real comment
+this line contains an syntax error, which shall be ignored if there are more than 100 characters on this line
+
+

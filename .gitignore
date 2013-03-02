@@ -1,0 +1,11 @@
+configure
+Makefile.in
+depcomp
+autom4te.cache
+bin/
+missing
+aclocal.m4
+install-sh
+dunelegacy
+clean
+valgrind.supp
