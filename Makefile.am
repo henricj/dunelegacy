@@ -38,6 +38,7 @@ EXTRA_DIST = include \
              nsis-background1.bmp \
              nsis-background2.bmp \
              clean.sh \
+             scanbuild.sh \
              updatelocale.sh \
              resource.rc
 
