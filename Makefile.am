@@ -21,6 +21,7 @@ EXTRA_DIST = include \
              Doxyfile \
              ToDo.txt \
              SoftwareDesign.txt \
+             buildclangdebug.sh \
              buildlocal.sh \
              builddebug.sh \
              buildcrosswin32.sh \
