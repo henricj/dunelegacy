@@ -122,7 +122,7 @@ void InGameSettingsMenu::init() {
 	volumeBar.setProgress((100.0*volume)/MIX_MAX_VOLUME);
 
     scrollSpeed = screenborder->getScrollSpeed();
-	scrollSpeedBar.setProgress((scrollSpeed-2.0)*5.0);
+	scrollSpeedBar.setProgress((scrollSpeed-2.0)*2.0);
 }
 
 bool InGameSettingsMenu::handleKeyPress(SDL_KeyboardEvent& key) {
@@ -199,15 +199,15 @@ void InGameSettingsMenu::onVolumeMinus() {
 }
 
 void InGameSettingsMenu::onScrollSpeedPlus() {
-    if(scrollSpeed < 21) {
+    if(scrollSpeed < 51) {
         scrollSpeed += 2;
-        scrollSpeedBar.setProgress((scrollSpeed-2)*5.0);
+        scrollSpeedBar.setProgress((scrollSpeed-2)*2.0);
     }
 }
 
 void InGameSettingsMenu::onScrollSpeedMinus() {
     if(scrollSpeed > 3) {
         scrollSpeed -= 2;
-        scrollSpeedBar.setProgress((scrollSpeed-2)*5.0);
+        scrollSpeedBar.setProgress((scrollSpeed-2)*2.0);
     }
 }
