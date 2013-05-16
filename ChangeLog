@@ -1,3 +1,6 @@
+version 0.96.4
+	* Bugfix (Bug 3610246): Mentat help used wrong houses (Thanks to kuffar for reporting that bug)
+
 version 0.96.3
 	* Full-featured map editor with support of Dune2-compatible maps as well as the extended map format
 	* Integration of OpenSuperDune (a replacement to the original SuperDune)
