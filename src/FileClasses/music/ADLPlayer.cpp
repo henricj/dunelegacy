@@ -196,6 +196,7 @@ void ADLPlayer::changeMusic(MUSICTYPE musicType)
             printf("Unable to load %s!\n",filename.c_str());
 	    } else {
             pSoundAdlibPC = new SoundAdlibPC(rwop);
+            pSoundAdlibPC->setVolume(musicVolume);
 
             SDL_RWclose(rwop);
 
@@ -243,5 +244,7 @@ void ADLPlayer::toggleSound()
 
 void ADLPlayer::setMusicVolume(int newVolume) {
     MusicPlayer::setMusicVolume(newVolume);
-    pSoundAdlibPC->setVolume(newVolume);
+    if(musicOn) {
+        pSoundAdlibPC->setVolume(newVolume);
+    }
 }
