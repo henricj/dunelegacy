@@ -271,7 +271,6 @@ void InfantryBase::checkPos() {
                         pNewStructure->setSelected(true);
                         currentGame->getSelectedList().insert(pNewStructure->getObjectID());
                         currentGame->selectionChanged();
-                        currentGame->getGameInterface().updateObjectInterface();
                     }
 
                     if(isSelectedByOtherPlayer == true) {

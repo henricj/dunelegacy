@@ -539,10 +539,6 @@ void Map::selectObjects(int houseID, int x1, int y1, int x2, int y2, int realX, 
 	} else if (lastSelectedObject != NULL) {
 		lastSelectedObject->playSelectSound();	//we only want one unit responding
 	}
-
-/*
-	if ((selectedList->getNumElements() == 1) && lastSelectedObject && lastSelectedObject->isAStructure() && ((StructureBase*)lastSelectedObject)->isABuilder())
-		((BuilderBase*)lastSelectedObject)->checkBuildList();*/
 }
 
 

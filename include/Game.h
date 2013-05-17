@@ -288,7 +288,12 @@ public:
 	/**
         Marks that the selection changed (and must be retransmitted to other players in multiplayer games)
 	*/
-	inline void selectionChanged() { bSelectionChanged = true; };
+	inline void selectionChanged() {
+        bSelectionChanged = true;
+        if(pInterface) {
+            pInterface->updateObjectInterface();
+        }
+    };
 
 
 	void onReceiveSelectionList(std::string name, std::set<Uint32> newSelectionList, int groupListIndex);
@@ -465,6 +470,13 @@ private:
         \return true if action click is possible
     */
     bool handleSelectedObjectsActionClick(int xPos, int yPos);
+
+
+    /**
+        Selects the next structure of any of the types specified in itemIDs. If none of this type is currently selected the first one is selected.
+        \param  itemIDs  the ids of the structures to select
+    */
+    void selectNextStructureOfType(const std::set<Uint32>& itemIDs);
 
 public:
     enum {

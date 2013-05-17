@@ -922,8 +922,6 @@ void Game::doInput()
                                 }
                             }
                         }
-
-                        pInterface->updateObjectInterface();
                     }
 
                     selectionMode = false;
@@ -2039,7 +2037,6 @@ void Game::handleKeyInput(SDL_KeyboardEvent& keyboardEvent) {
                 currentGame->selectionChanged();
                 currentCursorMode = CursorMode_Normal;
             }
-            pInterface->updateObjectInterface();
         } break;
 
         case SDLK_1:
@@ -2091,8 +2088,6 @@ void Game::handleKeyInput(SDL_KeyboardEvent& keyboardEvent) {
                     selectedList.insert(object->getObjectID());
                     currentGame->selectionChanged();
                 }
-
-                pInterface->updateObjectInterface();
 
                 if(bEverythingWasSelected && (groupList.empty() == false)) {
                     // we center around the newly selected units/structures
@@ -2214,6 +2209,25 @@ void Game::handleKeyInput(SDL_KeyboardEvent& keyboardEvent) {
                     }
                 }
             }
+        } break;
+
+        case SDLK_h: {
+            // select next construction yard
+            std::set<Uint32> itemIDs;
+            itemIDs.insert(Structure_ConstructionYard);
+            selectNextStructureOfType(itemIDs);
+        } break;
+
+        case SDLK_f: {
+            // select next factory
+            std::set<Uint32> itemIDs;
+            itemIDs.insert(Structure_Barracks);
+            itemIDs.insert(Structure_WOR);
+            itemIDs.insert(Structure_LightFactory);
+            itemIDs.insert(Structure_HeavyFactory);
+            itemIDs.insert(Structure_HighTechFactory);
+            itemIDs.insert(Structure_StarPort);
+            selectNextStructureOfType(itemIDs);
         } break;
 
         case SDLK_p: {
@@ -2504,5 +2518,56 @@ bool Game::handleSelectedObjectsActionClick(int xPos, int yPos) {
         return true;
     } else {
         return false;
+    }
+}
+
+void Game::selectNextStructureOfType(const std::set<Uint32>& itemIDs) {
+    bool bSelectNext = true;
+
+    if(selectedList.size() == 1) {
+        ObjectBase* pObject = getObjectManager().getObject(*selectedList.begin());
+        if((pObject != NULL) && (itemIDs.count(pObject->getItemID()) == 1)) {
+            bSelectNext = false;
+        }
+    }
+
+    StructureBase* pStructure2Select = NULL;
+
+    for(RobustList<StructureBase*>::const_iterator iter = structureList.begin(); iter != structureList.end(); ++iter) {
+        StructureBase* pStructure = *iter;
+
+        if(bSelectNext) {
+            if( (itemIDs.count(pStructure->getItemID()) == 1) && (pStructure->getOwner() == pLocalHouse) ) {
+                pStructure2Select = pStructure;
+                break;
+            }
+        } else {
+            if(selectedList.size() == 1 && pStructure->isSelected()) {
+                bSelectNext = true;
+            }
+        }
+    }
+
+    if(pStructure2Select == NULL) {
+        // start over at the beginning
+        for(RobustList<StructureBase*>::const_iterator iter = structureList.begin(); iter != structureList.end(); ++iter) {
+            StructureBase* pStructure = *iter;
+            if( (itemIDs.count(pStructure->getItemID()) == 1) && (pStructure->getOwner() == pLocalHouse) && !pStructure->isSelected() ) {
+                pStructure2Select = pStructure;
+                break;
+            }
+        }
+    }
+
+    if(pStructure2Select != NULL) {
+        unselectAll(selectedList);
+        selectedList.clear();
+
+        pStructure2Select->setSelected(true);
+        selectedList.insert(pStructure2Select->getObjectID());
+        currentGame->selectionChanged();
+
+        // we center around the newly selected construction yard
+        screenborder->setNewScreenCenter(pStructure2Select->getLocation()*TILESIZE);
     }
 }

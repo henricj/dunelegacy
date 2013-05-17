@@ -1,4 +1,5 @@
 version 0.96.4
+	* New key bindings: Cycle through construction yards with 'H' and factories with 'F'
 	* Bugfix (Bug 3610246): Mentat help used wrong houses (Thanks to kuffar for reporting that bug)
 
 version 0.96.3
