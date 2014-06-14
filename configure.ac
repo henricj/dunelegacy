@@ -17,11 +17,11 @@ fi
 AC_SUBST(dunelegacydatadir)
 
 dnl Some flags for gcc
-CXXFLAGS="-O3 -pipe -pedantic -Wall -Wextra -Wno-unused-parameter -DNDEBUG"
+CXXFLAGS="-O3 -pipe -pedantic -Wall -Wextra -Wno-unused-parameter -Wno-narrowing -DNDEBUG"
 dnl Additional flags: -Wconversion -Wno-sign-conversion
 
 dnl Some flags for clang
-dnl CXXFLAGS="-O3 -pipe -pedantic -Weverything -Wno-sign-conversion -Wno-conversion -Wno-shadow -Wno-missing-noreturn -Wno-padded -Wno-packed -Wno-weak-vtables -Wno-c++11-narrowing -Wno-cast-align -Wno-unreachable-code -Wno-missing-prototypes -Wno-float-equal -Wno-global-constructors -Wno-exit-time-destructors -Wno-format-nonliteral -Wno-unused-macros -Wextra -Wno-unused-parameter"
+dnl CXXFLAGS="-O3 -pipe -pedantic -Weverything -Wno-sign-conversion -Wno-conversion -Wno-shadow -Wno-missing-noreturn -Wno-padded -Wno-packed -Wno-weak-vtables -Wno-c++11-narrowing -Wno-cast-align -Wno-unreachable-code -Wno-missing-prototypes -Wno-float-equal -Wno-global-constructors -Wno-exit-time-destructors -Wno-format-nonliteral -Wno-unused-macros -Wextra -Wno-unused-parameter -Wno-narrowing"
 
 
 dnl test for -ffp-contract=off (gcc >= 4.6) and use -mno-fused-madd instead
