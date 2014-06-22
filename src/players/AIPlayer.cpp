@@ -112,7 +112,7 @@ void AIPlayer::onDecrementStructures(int itemID, const Coord& location) {
 void AIPlayer::onDamage(const ObjectBase* pObject, int damage, Uint32 damagerID) {
     const ObjectBase* pDamager = getObject(damagerID);
 
-    if(pDamager == NULL || pDamager->getOwner() == getHouse()) {
+    if(pDamager == NULL || pDamager->getOwner()->getTeam() == getHouse()->getTeam()) {
         return;
     }
 
