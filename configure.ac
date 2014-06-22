@@ -2,7 +2,7 @@ AC_INIT(dunelegacy, 0.96.3, http://dunelegacy.sourceforge.net)
 
 AC_CANONICAL_SYSTEM
 
-AM_INIT_AUTOMAKE
+AM_INIT_AUTOMAKE([subdir-objects])
 
 AC_CONFIG_MACRO_DIR([m4])
 
