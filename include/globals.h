@@ -93,7 +93,7 @@ EXTERN bool debug;                                      ///< is set for debuggin
 
 
 // constants
-static const int lookDist[11] = { 10, 10, 9 , 9, 9, 8, 8, 7, 6, 4, 1 };    ///< lookup table for the circular viewing area
+static const int lookDist[21] = { 10, 10, 9, 9, 9, 8, 8, 7, 6, 4, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };    ///< lookup table for the circular viewing area
 static const int houseColor[NUM_HOUSES] = { COLOR_HARKONNEN, COLOR_ATREIDES, COLOR_ORDOS, COLOR_FREMEN, COLOR_SARDAUKAR, COLOR_MERCENARY };    ///< the base colors for the different houses
 static const char houseChar[] = { 'H', 'A', 'O', 'F', 'S', 'M' };   ///< character for each house
 
