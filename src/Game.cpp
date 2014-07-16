@@ -446,6 +446,9 @@ void Game::drawScreen()
 //////////////////////////////draw unexplored/shade
 
 	if(debug == false) {
+        SDL_Surface** hiddenFogSurf = pGFXManager->getObjPic(ObjPic_Terrain_HiddenFog);
+        SDL_LockSurface(hiddenFogSurf[currentZoomlevel]);
+
 	    int zoomedTileSize = world2zoomedWorld(TILESIZE);
 		for(int x = screenborder->getTopLeftTile().x - 1; x <= screenborder->getBottomRightTile().x + 1; x++) {
 			for (int y = screenborder->getTopLeftTile().y - 1; y <= screenborder->getBottomRightTile().y + 1; y++) {
@@ -481,20 +484,17 @@ void Game::drawScreen()
                                 SDL_Rect mini = {0, 0, 1, 1};
                                 SDL_Rect drawLoc = {drawLocation.x, drawLocation.y, 0, 0};
 
-                                SDL_Surface** hiddenSurf = pGFXManager->getObjPic(ObjPic_Terrain_Hidden);
                                 SDL_Surface* fogSurf = pGFXManager->getTransparent40Surface();
 
-                                SDL_LockSurface(hiddenSurf[currentZoomlevel]);
                                 for(int i=0;i<zoomedTileSize; i++) {
                                     for(int j=0;j<zoomedTileSize; j++) {
-                                        if(getPixel(hiddenSurf[currentZoomlevel],source.x+i,source.y+j) == 12) {
+                                        if(getPixel(hiddenFogSurf[currentZoomlevel],source.x+i,source.y+j) == 12) {
                                             drawLoc.x = drawLocation.x + i;
                                             drawLoc.y = drawLocation.y + j;
                                             SDL_BlitSurface(fogSurf,&mini,screen,&drawLoc);
                                         }
                                     }
                                 }
-                                SDL_UnlockSurface(hiddenSurf[currentZoomlevel]);
                             }
 						}
 					} else {
@@ -516,6 +516,7 @@ void Game::drawScreen()
 				}
 			}
 		}
+		SDL_UnlockSurface(hiddenFogSurf[currentZoomlevel]);
 	}
 
 /////////////draw placement position
