@@ -1,0 +1,2575 @@
+# Spanish translation for dunelegacy package.
+# Copyright (C) 2014 THE dunelegacy'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the dunelegacy package.
+# Félix Medrano <xukosky at yahoo.es>, 2014.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: dunelegacy 0.96.3\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-02-17 01:13+0100\n"
+"PO-Revision-Date: 2014-08-29 01:13+0100\n"
+"Last-Translator: Félix Medrano <xukosky at yahoo.es>\n"
+"Language-Team: Spanish <>\n"
+"Language: es\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: include/GUI/ObjectInterfaces/BuilderInterface.h:46
+#: include/GUI/ObjectInterfaces/BuilderInterface.h:52
+msgid "Upgrade"
+msgstr "Mejorar"
+
+#: include/GUI/ObjectInterfaces/BuilderInterface.h:49
+msgid "Upgrade this structure (Hotkey: U)"
+msgstr "Mejorar esta estructura (Atajo: U)"
+
+#: include/GUI/ObjectInterfaces/DefaultStructureInterface.h:47
+msgid "Repair this structure (Hotkey: R)"
+msgstr "Reparar esta estructura (Atajo: R)"
+
+#: include/GUI/ObjectInterfaces/MultiUnitInterface.h:68
+#: include/GUI/ObjectInterfaces/UnitInterface.h:55
+msgid "Move to a position (Hotkey: M)"
+msgstr "Mover a una posición (Atajo: M)"
+
+#: include/GUI/ObjectInterfaces/MultiUnitInterface.h:76
+#: include/GUI/ObjectInterfaces/UnitInterface.h:63
+msgid "Attack a unit, structure or position (Hotkey: A)"
+msgstr "Atacar una unidad, estructura o posición (Atajo: A)"
+
+#: include/GUI/ObjectInterfaces/MultiUnitInterface.h:84
+#: include/GUI/ObjectInterfaces/UnitInterface.h:71
+msgid "Capture a building (Hotkey: C)"
+msgstr "Capturar un edificio (Atajo: C)"
+
+#: include/GUI/ObjectInterfaces/MultiUnitInterface.h:94
+#: include/GUI/ObjectInterfaces/UnitInterface.h:82
+msgid "Return harvester to refinery (Hotkey: R)"
+msgstr "Devolver el recolector a la refinería (Atajo: R)"
+
+#: include/GUI/ObjectInterfaces/MultiUnitInterface.h:101
+#: include/GUI/ObjectInterfaces/UnitInterface.h:90
+msgid "Build a new construction yard"
+msgstr "Construir una nueva planta de construcción"
+
+#: include/GUI/ObjectInterfaces/MultiUnitInterface.h:108
+#: include/GUI/ObjectInterfaces/UnitInterface.h:98
+msgid "Self-destruct this unit"
+msgstr "Autodestruir esta unidad"
+
+#: include/GUI/ObjectInterfaces/MultiUnitInterface.h:116
+#: include/GUI/ObjectInterfaces/UnitInterface.h:107
+msgid "Guard"
+msgstr "Proteger"
+
+#: include/GUI/ObjectInterfaces/MultiUnitInterface.h:118
+#: include/GUI/ObjectInterfaces/UnitInterface.h:109
+msgid "Unit will not move from location"
+msgstr "La unidad no se moverá de la posición"
+
+#: include/GUI/ObjectInterfaces/MultiUnitInterface.h:125
+#: include/GUI/ObjectInterfaces/UnitInterface.h:116
+msgid "Area Guard"
+msgstr "Proteger área"
+
+#: include/GUI/ObjectInterfaces/MultiUnitInterface.h:127
+#: include/GUI/ObjectInterfaces/UnitInterface.h:118
+msgid "Unit will engage any unit within guard range"
+msgstr "La unidad atacará a los enemigos en la zona"
+
+#: include/GUI/ObjectInterfaces/MultiUnitInterface.h:134
+#: include/GUI/ObjectInterfaces/UnitInterface.h:125
+msgid "Stop"
+msgstr "Detener"
+
+#: include/GUI/ObjectInterfaces/MultiUnitInterface.h:136
+#: include/GUI/ObjectInterfaces/UnitInterface.h:127
+msgid "Unit will not move, nor attack"
+msgstr "La unidad no se moverá, ni atacará"
+
+#: include/GUI/ObjectInterfaces/MultiUnitInterface.h:143
+#: include/GUI/ObjectInterfaces/UnitInterface.h:134
+msgid "Ambush"
+msgstr "Emboscar"
+
+#: include/GUI/ObjectInterfaces/MultiUnitInterface.h:145
+#: include/GUI/ObjectInterfaces/UnitInterface.h:136
+msgid "Unit will not move until enemy unit spotted"
+msgstr "La unidad no se moverá hasta detectar a un enemigo"
+
+#: include/GUI/ObjectInterfaces/MultiUnitInterface.h:152
+#: include/GUI/ObjectInterfaces/UnitInterface.h:143
+msgid "Hunt"
+msgstr "Perseguir"
+
+#: include/GUI/ObjectInterfaces/MultiUnitInterface.h:154
+#: include/GUI/ObjectInterfaces/UnitInterface.h:145
+msgid "Unit will immediately start to engage an enemy unit"
+msgstr "La unidad atacará a los enemigos de forma inmediata"
+
+#: include/GUI/ObjectInterfaces/PalaceInterface.h:49
+msgid "READY"
+msgstr "LISTO"
+
+#: include/GUI/ObjectInterfaces/RefineryAndSiloInterface.h:69
+msgid "Capacity"
+msgstr "Capacidad"
+
+#: include/GUI/ObjectInterfaces/RefineryAndSiloInterface.h:70
+msgid "Stored"
+msgstr "Almacenado"
+
+#: include/GUI/ObjectInterfaces/WindTrapInterface.h:69
+msgid "Required"
+msgstr "Necesario"
+
+#: include/GUI/ObjectInterfaces/WindTrapInterface.h:70
+msgid "Produced"
+msgstr "Producido"
+
+#: src/Choam.cpp:114
+msgid "New Starport prices"
+msgstr "Hay nuevos precios en el Espaciopuerto"
+
+#: src/CutScenes/Finale.cpp:122 src/CutScenes/Intro.cpp:137
+#: src/CutScenes/Meanwhile.cpp:51 src/FileClasses/GFXManager.cpp:89
+#: src/FileClasses/GFXManager.cpp:90 src/FileClasses/GFXManager.cpp:94
+#: src/FileClasses/GFXManager.cpp:98 src/FileClasses/GFXManager.cpp:99
+#: src/FileClasses/GFXManager.cpp:106 src/FileClasses/GFXManager.cpp:107
+#: src/FileClasses/GFXManager.cpp:666 src/FileClasses/GFXManager.cpp:667
+#: src/FileClasses/PictureFactory.cpp:202
+#: src/FileClasses/PictureFactory.cpp:203 src/FileClasses/TextManager.cpp:51
+#: src/FileClasses/TextManager.cpp:52 src/FileClasses/TextManager.cpp:53
+#: src/FileClasses/TextManager.cpp:54 src/FileClasses/TextManager.cpp:58
+#: src/FileClasses/TextManager.cpp:59 src/FileClasses/TextManager.cpp:60
+#: src/main.cpp:501 src/Menu/MapChoice.cpp:429
+msgid "LanguageFileExtension"
+msgstr "ENG"
+
+#: src/FileClasses/FileManager.cpp:108
+msgid "LanguagePakFiles"
+msgstr "ENGLISH.PAK,HARK.PAK,ATRE.PAK,ORDOS.PAK"
+
+#: src/FileClasses/TextManager.cpp:78
+msgid "@TEXTH.ENG|0#Description of House Harkonnen"
+msgstr "Casa Harkonnen|Desde el oscuro mundo de Giedi Prime la salvage Casa Harkonnen se ha extendido por el universo. Una gente cruel, los Harkonnen son implacables tanto con amigos como con enemigos en su persecución fanática de poder."
+
+#: src/FileClasses/TextManager.cpp:79
+msgid "@TEXTH.ENG|4#Description of Harkonnen mission 1"
+msgstr "Yo son el Mentat, Radnor. Con mi dirección, serás capaz de asistirnos en la conquista de este polvoriento, pequeño planeta. Para tu primera prueba esperamos que produzcas 1000 créditos, y ni un gránulo menos. Puedes conseguir créditos recolectando especia, y necesitarás construir una refinería para convertir la especia en créditos. Si alguno de nuestros estúpidos enemigos intenta atacar tu base tendrás el placer de ver las invencibles tropas Harkonnen en acción."
+
+#: src/FileClasses/TextManager.cpp:80
+msgid "@TEXTH.ENG|8#Description of Harkonnen mission 2"
+msgstr "La Casa Harkonnen te ofrece una generosa nueva oportunidad de servirnos. Ahora te permitiremos tomar el mando en un área más peligroso, y acumular 2700 créditos. Aunque los inútiles Atreides que puedes encontrar en esta región deberían ser siempre eliminados como cuestión de principios, la quota de especia es tu objetivo."
+
+#: src/FileClasses/TextManager.cpp:81
+msgid "@TEXTH.ENG|12#Description of Harkonnen mission 3"
+msgstr "Los despreciables Ordos están bien establecidos en esta región, y están recolectando la especia que debería pertenecer por derecho a la Casa Harkonnen. Destruye las instalaciones de los Ordos en este área y reivindica el control en nombre de la Casa Harkonnen."
+
+#: src/FileClasses/TextManager.cpp:82
+msgid "@TEXTH.ENG|16#Description of Harkonnen mission 4"
+msgstr "Una pequeña victoria no gana la guerra. Otra región tiene la desgracia de estar infectada por la plaga de la Casa Ordos, y ahora debes repetir tu éxito. Yo tengo muchas negociaciones políticas delicadas en mi mente, y no necesito tener que preocuparme por cabos sueltos."
+
+#: src/FileClasses/TextManager.cpp:83
+msgid "@TEXTH.ENG|20#Description of Harkonnen mission 5"
+msgstr "De modo que, el Emperador estaba ayudando a los Ordos en tu última misión. Sin embargo, la Casa Atreides se ha fortalecido por nuestra neglicencia, y se le debe dar una lección. Eliminarás a todos los Atreides de esta región."
+
+#: src/FileClasses/TextManager.cpp:84
+msgid "@TEXTH.ENG|24#Description of Harkonnen mission 6"
+msgstr "Vas a continuar en otra región sin suerte dominada por esos molestos Ordos, y espero que puedas derrotar a este particularmente problemático grupo de Ordos. Hemos establecido una buena reputación en este planeta. ¡No me avergüences ahora!"
+
+#: src/FileClasses/TextManager.cpp:85
+msgid "@TEXTH.ENG|28#Description of Harkonnen mission 7"
+msgstr "Informes de nueva actividad Atreides demandan que te envíe de vuelta a la vanguardia. De todos modos no pareces disfrutar del descanso y la relajación. Creo que preferirás machacar a los Atreides."
+
+#: src/FileClasses/TextManager.cpp:86
+msgid "@TEXTH.ENG|32#Description of Harkonnen mission 8"
+msgstr "He usado mi influencia para conseguir un Palacio para tí. Un comandante de tu categoría puede necesitar relajarse ocasionalmente, pero yo espero que nuestra generosidad traerá una eficiencia incluso mayor de tu parte. Hay fuerzas tanto Atreides como Ordos en esta región, ¡y todas ellas deben ser eliminadas!"
+
+#: src/FileClasses/TextManager.cpp:87
+msgid "@TEXTH.ENG|36#Description of Harkonnen mission 9"
+msgstr "¡Hemos sido engañados! Nuestras negociaciones de buena fé tan solo nos han traído a una recolecta traicionera. Todos han conspirado contra nosotros, ¡por lo que todos deben morir! Tus habilidades militares son la última esperanza que nos queda en este planeta. Destruye todas las fuerzas Atreides y Ordos que quedan, y conquista el palacio del Emperador. Nos ha tratado mal, ¡y no debe vivir otro día!"
+
+#: src/FileClasses/TextManager.cpp:94
+msgid "@TEXTH.ENG|5#Winning text of Harkonnen mission 1"
+msgstr "Me has complacido. Continúa sirviéndome bien, y comprobarás que eres recompensado."
+
+#: src/FileClasses/TextManager.cpp:95
+msgid "@TEXTH.ENG|9#Winning text of Harkonnen mission 2"
+msgstr "Me has complacido de nuevo. Me recuerdas a mí mismo en mi juventud. ¡De hecho podrías tener auténtica sangre Harkonnen circulando por tus venas!"
+
+#: src/FileClasses/TextManager.cpp:96
+msgid "@TEXTH.ENG|13#Winning text of Harkonnen mission 3"
+msgstr "Felicidades. Estás haciendo progresos. Varios de mis asociados han expresado opiniones pesimistas acerca de tus habilidades, y yo estoy contento de que les hayas demostrado estar equivocados. Veamos ahora si puedo seguir confiando en tí."
+
+#: src/FileClasses/TextManager.cpp:97
+msgid "@TEXTH.ENG|17#Winning text of Harkonnen mission 4"
+msgstr "Bien hecho. Los perros Ordos hacen ruidos graciosos cuando mueren, ¿verdad? Desde luego, ¿qué hay de bueno en nuestras vidas si no podemos disfrutar de los placeres simples?"
+
+#: src/FileClasses/TextManager.cpp:98
+msgid "@TEXTH.ENG|21#Winning text of Harkonnen mission 5"
+msgstr "En reconocimiento a tu actuación reciente, te voy a permitir ahora continuar el enfrentamiento con los Ordos. Al menos ellos presentarán una lucha digna de nuestra guardia."
+
+#: src/FileClasses/TextManager.cpp:99
+msgid "@TEXTH.ENG|25#Winning text of Harkonnen mission 6"
+msgstr "¡Los laureles de la victoria te sientan bien hijo mío! Podría incluso enviar a otros aspirantes a estudiar tus tácticas. Te presentaría mis disculpas por haber subestimado la fuerza de los Ordos en tu última campaña, pero ese ya no es un asunto que nos preocupe, ¿verdad?"
+
+#: src/FileClasses/TextManager.cpp:100
+msgid "@TEXTH.ENG|29#Winning text of Harkonnen mission 7"
+msgstr "Felicidades. ¡Es un placer ver como los débiles Atreides son tratados con tanta severidad!"
+
+#: src/FileClasses/TextManager.cpp:101
+msgid "@TEXTH.ENG|33#Winning text of Harkonnen mission 8"
+msgstr "Aunque serían justos los elogios, no tendrás ese lujo. ¡Servir a la Casa Harkonnen es suficiente recompensa! Si necesitas halagos, ¡Entonces muere por nuestra causa! ¡Hablaremos de tí con afecto por siempre!"
+
+#: src/FileClasses/TextManager.cpp:102
+msgid "@TEXTH.ENG|37#Winning text of Harkonnen mission 9"
+msgstr "Buenos días, su señoría, ¡y felicidades! Me has servido, quiero decir a la Casa Harkonnen, bien. ¡Nuestra Casa no olvidará a nuestro más noble guerrero! Voy a difundir ahora las noticias de nuestra más gloriosa victoria, y a entregar nuestras condiciones al Emperador."
+
+#: src/FileClasses/TextManager.cpp:109
+msgid "@TEXTH.ENG|6#Losing text of Harkonnen mission 1"
+msgstr "Estás ahora bajo mi desprecio. ¿Sábes lo que sucede a aquellos que le han fallado a la Casa Harkonnen?"
+
+#: src/FileClasses/TextManager.cpp:110
+msgid "@TEXTH.ENG|10#Losing text of Harkonnen mission 2"
+msgstr "No me puedo creer que fueses incapaz de acumular tu quota. Era una tarea simple que nos debería haber permitido examinar tus capacidades de liderazgo. Te recomiendo que no pongas más a prueba mi paciencia."
+
+#: src/FileClasses/TextManager.cpp:111
+msgid "@TEXTH.ENG|14#Losing text of Harkonnen mission 3"
+msgstr "¡Lo sabía! Varios de mis asociados han expresado confianza en tus habilidades, ¡pero yo sabía que eras demasiado débil para ser un comandante Harkonnen! ¡Guardias! ¡Eliminad a este apestado antes de que ensucie el planeta entero!"
+
+#: src/FileClasses/TextManager.cpp:112
+msgid "@TEXTH.ENG|18#Losing text of Harkonnen mission 4"
+msgstr "¿Es ésta la forma en que devuelves la fé que hemos puesto en tí? ¡Una pérdida tan grave solo ha podido ser deliberada! No eres apto para limpiar nuestras letrinas, ¡Mucho menos para comandar a nuestra gloriosa guardia!"
+
+#: src/FileClasses/TextManager.cpp:113
+msgid "@TEXTH.ENG|22#Losing text of Harkonnen mission 5"
+msgstr "¿Quizás añoras a tu madre? Estoy preocupado por tí y no te puedo dejar progresar hasta que hayas demostrado tu valía contra los Atreides."
+
+#: src/FileClasses/TextManager.cpp:114
+msgid "@TEXTH.ENG|26#Losing text of Harkonnen mission 6"
+msgstr "¿Es esto una broma de mal gusto? ¿Como has podido sufrir tal derrota? ¡Tendría que cortarte el cuello para tranquilizarme! ¿Acaso has planeado tu derrota como venganza por alguna idea equivocada?"
+
+#: src/FileClasses/TextManager.cpp:115
+msgid "@TEXTH.ENG|30#Losing text of Harkonnen mission 7"
+msgstr "Tu fracaso me provoca una vergüenza sin fin. No sucederá de nuevo. ¡Guardias!"
+
+#: src/FileClasses/TextManager.cpp:116
+msgid "@TEXTH.ENG|34#Losing text of Harkonnen mission 8"
+msgstr "¡Guardias! ¿Cómo ha llegado este enclenque hasta aquí? Es un perdedor, y no se le debe permitir que corrompa a otros en nuestra casa. Si esto sucede de nuevo, ¡Diseccionaré personalmente a varios de vosotros!"
+
+#: src/FileClasses/TextManager.cpp:117
+msgid "@TEXTH.ENG|38#Losing text of Harkonnen mission 9"
+msgstr "Tus defectos deben de ser heredados. La colosal estupidez que has demostrado no es algo que se pueda aprender."
+
+#: src/FileClasses/TextManager.cpp:124
+msgid "@TEXTH.ENG|7#Advice text for Harkonnen mission 1"
+msgstr "En primer lugar construye un grupo de dos por dos bloques de cemento. Después construye una trampa de viento y colócala sobre el hormigón. Haz lo mismo con la refinería para que puedas alcanzar la cuota de 1000 créditos."
+
+#: src/FileClasses/TextManager.cpp:125
+msgid "@TEXTH.ENG|11#Advice text for Harkonnen mission 2"
+msgstr "Si ya tienes una trampa de viento entonces construye una Casa de WOR para empezar a producir guardias. Yo lo haría así para dotar de una mayor defensa a tu operación de recolección."
+
+#: src/FileClasses/TextManager.cpp:126
+msgid "@TEXTH.ENG|15#Advice text for Harkonnen mission 3"
+msgstr "Necesitas construir una Fábrica Ligera para producir las armas necesarias para completar tu misión."
+
+#: src/FileClasses/TextManager.cpp:127
+msgid "@TEXTH.ENG|19#Advice text for Harkonnen mission 4"
+msgstr "Añadir tanques a tus fuerzas es esencial para obtener la victoria en esta región."
+
+#: src/FileClasses/TextManager.cpp:128
+msgid "@TEXTH.ENG|23#Advice text for Harkonnen mission 5"
+msgstr "La producción de Alas de Acarreo hará mucho más rápidas tus operaciones de recolección."
+
+#: src/FileClasses/TextManager.cpp:129
+msgid "@TEXTH.ENG|27#Advice text for Harkonnen mission 6"
+msgstr "Te recomiendo producir y colocar Torres de Cohetes en posiciones defensivas estratégicas alrededor de tu instalación."
+
+#: src/FileClasses/TextManager.cpp:130
+msgid "@TEXTH.ENG|31#Advice text for Harkonnen mission 7"
+msgstr "El Devastador es un poderoso aliado contra las fuerzas enemigas."
+
+#: src/FileClasses/TextManager.cpp:131
+msgid "@TEXTH.ENG|35#Advice text for Harkonnen mission 8"
+msgstr "Utiliza la opción especial de tu Palacio tanto como sea posible, ya que no tiene coste alguno y se recarga con el tiempo."
+
+#: src/FileClasses/TextManager.cpp:132
+msgid "@TEXTH.ENG|39#Advice text for Harkonnen mission 9"
+msgstr "Ten cuidado con los ataques sorpresa, defiende bien tus instalaciones."
+
+#: src/FileClasses/TextManager.cpp:147
+msgid "@TEXTA.ENG|0#Description of House Atreides"
+msgstr "Casa Atreides|Caladan, planeta hogar de los Atreides, tiene un clima tranquilo, cálido y las tierras son exuberantes y verdes. Las ricas tierras y el clima templado permite una extensa variedad de actividades agrícolas. En siglos recientes el desarrollo industrial y tecnológico ha añadido prosperidad a las gentes de Caladan."
+
+#: src/FileClasses/TextManager.cpp:148
+msgid "@TEXTA.ENG|4#Description of Atreides mission 1"
+msgstr "Saludos, yo soy su Mentat Cyril. Juntos purgaremos este planeta del hedor de las otras Casas. El Alto Mando desea que produzca 1000 créditos. Puede conseguir créditos construyendo una refinería y recolectando especia."
+
+#: src/FileClasses/TextManager.cpp:149
+msgid "@TEXTA.ENG|8#Description of Atreides mission 2"
+msgstr "Saludos, es un honor verle de nuevo. El Alto Mando quiere ahora que produzca 2700 créditos en una nueva zona de recolecta. Desafortunadamente, hemos confirmado la presencia de una base Ordos en esta región. ¡Buena suerte!"
+
+#: src/FileClasses/TextManager.cpp:150
+msgid "@TEXTA.ENG|12#Description of Atreides mission 3"
+msgstr "La batalla con las otras Casas se ha intensificado, y nos vemos obligados a luchar en algunas maniobras ofensivas escogidas. Los Harkonnen están siendo extremadamente problemáticos en su próxima región, y le debemos solicitar que elimine su presencia del área."
+
+#: src/FileClasses/TextManager.cpp:151
+msgid "@TEXTA.ENG|16#Description of Atreides mission 4"
+msgstr "Su demostración de habilidades militares nos obliga a asignarle ahora a otra campaña ofensiva contra la Casa Harkonnen. Han continuado atacando nuestros pacíficos recolectores, ¡y deben ser eliminados del área!"
+
+#: src/FileClasses/TextManager.cpp:152
+msgid "@TEXTA.ENG|20#Description of Atreides mission 5"
+msgstr "Bienvenido. Las reglas parecen haber cambiado. Como ha presenciado, ¡el Emperador en persona está apoyando los esfuerzos de nuestros competidores! Como parte de nuestra nueva estrategia, debemos pedirle que elimine las traicioneras fuerzas Ordos que controlan actualmente esta región."
+
+#: src/FileClasses/TextManager.cpp:153
+msgid "@TEXTA.ENG|24#Description of Atreides mission 6"
+msgstr "A medida que se intensifica la batalla por este planeta, todos los efuerzos son necesarios para asegurar nuestro éxito. De nuevo, le debemos llamar a filas para destruir a nuestros enemigos en un sector con problemas. La Casa Harkonnen debe recibir una lección. ¡Gracias, y buena suerte!"
+
+#: src/FileClasses/TextManager.cpp:154
+msgid "@TEXTA.ENG|28#Description of Atreides mission 7"
+msgstr "La batalla va bien, pero no hay tiempo para relajarse. Tenemos una necesidad urgente de que se sometan todas las fuerzas Ordos en esta región sin demora. Nuestras negociaciones en curso reciben un enorme apoyo por las correspondients victorias en el campo de batalla. Contamos con usted."
+
+#: src/FileClasses/TextManager.cpp:155
+msgid "@TEXTA.ENG|32#Description of Atreides mission 8"
+msgstr "Aunque se ha ganado un descanso bien merecido, me temo que la situación política requiere que le enviemos de nuevo al campo de batalla de forma inmediata. Tanto las fuerzas Ordos como Harkonnen se han asentado hasta niveles inaceptables en esta región, y ahora deben ser eliminadas completamente."
+
+#: src/FileClasses/TextManager.cpp:156
+msgid "@TEXTA.ENG|36#Description of Atreides mission 9"
+msgstr "Su siguiente tarea determinará el resultado de todos nuestros esfuerzos aquí en Dune. La victoria no llegará fácilmente. Además de destruir a todas las tropas Ordos y Harkonnen que quedan, también debe someter a las fuerzas del Emperador Frederick. Todos nuestros sueños y esperanzas cabalgan con usted, y le rogamos humildemente que consiga una victoria definitiva para nuestra noble Casa Atreides."
+
+#: src/FileClasses/TextManager.cpp:163
+msgid "@TEXTA.ENG|5#Winning text of Atreides mission 1"
+msgstr "¡Felicidades! Sabía que podría conseguir su objetivo con muy pocos problemas. Estoy ansioso por asistirle en futuras misiones."
+
+#: src/FileClasses/TextManager.cpp:164
+msgid "@TEXTA.ENG|9#Winning text of Atreides mission 2"
+msgstr "¡Bien hecho! Nuestro esfuerzo por mantener un juego limpio en este planeta se enfrenta tanto a los Ordos como a los Harkonnen. La especia que ha coleccionado será una gran ayuda en nuestros esfuerzos."
+
+#: src/FileClasses/TextManager.cpp:165
+msgid "@TEXTA.ENG|13#Winning text of Atreides mission 3"
+msgstr "¡Hurra! Aunque yo prefiero la defensa, una buena ofensiva contra un oponente que se lo merece como los Harkonnen es un placer de observar y una reafirmación de todo lo que es bueno y justo. ¡La Casa Atreides le agradece sus esfuerzos!"
+
+#: src/FileClasses/TextManager.cpp:166
+msgid "@TEXTA.ENG|17#Winning text of Atreides mission 4"
+msgstr "¡Bien hecho! Ninguna tarea parece demasiado difícil para usted. ¡Los Harkonnen se lo pensarán dos veces antes de volver a atacar a nuestros recolectores!"
+
+#: src/FileClasses/TextManager.cpp:167
+msgid "@TEXTA.ENG|21#Winning text of Atreides mission 5"
+msgstr "¡Felicidades de nuevo! Parece que sus talentos no tienen límite. Tengo que pensar que alguna fuerza divina motivó su decisión de servir en la Casa Atreides. ¡Nuestra ganancia fue sin duda una pérdida para los otros!"
+
+#: src/FileClasses/TextManager.cpp:168
+msgid "@TEXTA.ENG|25#Winning text of Atreides mission 6"
+msgstr "¡Hurra! Se han dado a la fuga, y es todo gracias a usted. ¡Sus éxitos han sido resaltables! ¿Está seguro de que no haberse graduado en una de las academias militares intergalácticas?"
+
+#: src/FileClasses/TextManager.cpp:169
+msgid "@TEXTA.ENG|29#Winning text of Atreides mission 7"
+msgstr "¡Excelente! Sus habilidades parecen mejorar con cada encargo, y sus hazañas otorgan una gran confianza a los que se encuentran en el frente. ¡Siga así!"
+
+#: src/FileClasses/TextManager.cpp:170
+msgid "@TEXTA.ENG|33#Winning text of Atreides mission 8"
+msgstr "¡Una victoria con autoridad! Francamente, no seríamos capaces de continuar en Dune sin su asesoramiento militar. Hemos llegado a confiar plenamente en usted señor, ¡y no nos podemos imaginar futuros éxitos sin usted!"
+
+#: src/FileClasses/TextManager.cpp:171
+msgid "@TEXTA.ENG|37#Winning text of Atreides mission 9"
+msgstr "Buenos días, su señoría, ¡y felicidades! Ha servido a la Casa Atreides bien. ¡Nunca olvidaremos a nuestro más noble guerrero! Voy a difundir ahora las noticias de nuestra más gloriosa victoria, y a entregar nuestras condiciones al Emperador."
+
+#: src/FileClasses/TextManager.cpp:178
+msgid "@TEXTA.ENG|6#Losing text of Atreides mission 1"
+msgstr "Esto es muy decepcionante. Habíamos puesto muchas esperanzas en usted. Debemos insistir en que lo intente de nuevo. No ha perdido nuestra confianza, y esperamos impacientes que complete con éxito su primera prueba."
+
+#: src/FileClasses/TextManager.cpp:179
+msgid "@TEXTA.ENG|10#Losing text of Atreides mission 2"
+msgstr "La pérdida de esta región ante los Ordos causará un gran daño a la Casa Atreides. Por favor haga un mayor esfuerzo la próxima vez. ¡La importancia de su misión no se puede tomar a la ligera!"
+
+#: src/FileClasses/TextManager.cpp:180
+msgid "@TEXTA.ENG|14#Losing text of Atreides mission 3"
+msgstr "Este es un mundo cruel, ¿verdad? No estoy seguro si estaba esperando intervención divina, ¡pero mientras observaba su derrota no podía dejar de pensar en lo injusta que era!"
+
+#: src/FileClasses/TextManager.cpp:181
+msgid "@TEXTA.ENG|18#Losing text of Atreides mission 4"
+msgstr "Aunque puedo entender los problemas a los que se enfrenta, confesaré que estoy decepcionado por su derrota. No estoy seguro de qué es lo que ha ido mal, ¡pero por favor no permita que suceda de nuevo!"
+
+#: src/FileClasses/TextManager.cpp:182
+msgid "@TEXTA.ENG|22#Losing text of Atreides mission 5"
+msgstr "Esta derrota que acaba de sufrir no quedará bien en mis informes. No estoy seguro de cuánto más nos podemos permitir apoyarle. Hay muchos otros reclamando ocupar su puesto, ¡así que le recomiendo que haga lo que sea necesario para vencer en sus próximos enfrentamientos!"
+
+#: src/FileClasses/TextManager.cpp:183
+msgid "@TEXTA.ENG|26#Losing text of Atreides mission 6"
+msgstr "Hay un momento para excusas, ¡pero no es éste! ¡No entiendo como ha podido ejecutar tan mal toda la campaña! No tiene ninguna otra opción que trabajar con mayor esmero en su próxima tarea."
+
+#: src/FileClasses/TextManager.cpp:184
+msgid "@TEXTA.ENG|30#Losing text of Atreides mission 7"
+msgstr "¡Dios mío, qué derrota tan horrible! Quizás le hemos cargado con demasiada responsabilidad. ¡Si falla en su próxima tarea nos tendremos que plantear seriamente enviarle a casa!"
+
+#: src/FileClasses/TextManager.cpp:185
+msgid "@TEXTA.ENG|34#Losing text of Atreides mission 8"
+msgstr "Una derrota nunca es bien recibida, ¡pero esta pérdida es especialmente devastadora! ¡Todos nuestros esfuerzos serán pronto inútiles a menos que pueda conseguir una victoria en su próxima campaña!"
+
+#: src/FileClasses/TextManager.cpp:186
+msgid "@TEXTA.ENG|38#Losing text of Atreides mission 9"
+msgstr "Sus defectos deben de ser heredados. La colosal estupidez que ha demostrado no es algo que se pueda aprender."
+
+#: src/FileClasses/TextManager.cpp:193
+msgid "@TEXTA.ENG|7#Advice text for Atreides mission 1"
+msgstr "En primer lugar construya un grupo de dos por dos bloques de cemento. Después construya una trampa de viento y colóquela sobre el hormigón. Haga lo mismo con la refinería para que pueda alcanzar la cuota de 1000 créditos."
+
+#: src/FileClasses/TextManager.cpp:194
+msgid "@TEXTA.ENG|11#Advice text for Atreides mission 2"
+msgstr "Si ya tiene una trampa de viento entonces construya una barraca para empezar a producir soldados. Yo lo haría así para dotar de una mayor defensa a su operación de recolección."
+
+#: src/FileClasses/TextManager.cpp:195
+msgid "@TEXTA.ENG|15#Advice text for Atreides mission 3"
+msgstr "Necesita construir una Fábrica Ligera para producir las armas necesarias para completar su misión."
+
+#: src/FileClasses/TextManager.cpp:196
+msgid "@TEXTA.ENG|19#Advice text for Atreides mission 4"
+msgstr "Añadir tanques a sus fuerzas es esencial para obtener la victoria en esta región."
+
+#: src/FileClasses/TextManager.cpp:197
+msgid "@TEXTA.ENG|23#Advice text for Atreides mission 5"
+msgstr "La producción de Alas de Acarreo hará mucho más rápidas sus operaciones de recolección."
+
+#: src/FileClasses/TextManager.cpp:198
+msgid "@TEXTA.ENG|27#Advice text for Atreides mission 6"
+msgstr "Le recomiendo producir y colocar Torres de Cohetes en posiciones defensivas estratégicas alrededor de su instalación."
+
+#: src/FileClasses/TextManager.cpp:199
+msgid "@TEXTA.ENG|31#Advice text for Atreides mission 7"
+msgstr "El Tanque Sónico es un poderoso aliado contra las tropas enemigas."
+
+#: src/FileClasses/TextManager.cpp:200
+msgid "@TEXTA.ENG|35#Advice text for Atreides mission 8"
+msgstr "Utilice la opción especial de su Palacio tanto como sea posible, ya que no tiene coste alguno y se recarga con el tiempo."
+
+#: src/FileClasses/TextManager.cpp:201
+msgid "@TEXTA.ENG|39#Advice text for Atreides mission 9"
+msgstr "Tega cuidado con los ataques sorpresa, defienda bien sus instalaciones."
+
+#: src/FileClasses/TextManager.cpp:216
+msgid "@TEXTO.ENG|0#Description of House Ordos"
+msgstr "Casa Ordos|El planeta hogar de los Ordos es un mundo frígido y cubierto de hielo. Suponemos que los Ordos importan su agricultura y los bienes tecnológicos de los sistemas estelares cercanos. Actuando como comerciantes e inversores, los Ordos no producen productos físicos por sí mismos y dependen de sus habilidades comerciales para sobrevivir."
+
+#: src/FileClasses/TextManager.cpp:217
+msgid "@TEXTO.ENG|4#Description of Ordos mission 1"
+msgstr "Bienvenido. Yo soy tu Mentat, y me puedes llamar Ammon. Para ser de alguna utilidad al Cártel, nos debes proporcionar créditos. Como prueba, te asignaremos una región, y te pediremos que consigas una cuota de producción de 1000 créditos. Construye una refinería y recolecta la especia en el área. Yo estoy muy ocupado, pero me puedes llamar si tienes más preguntas."
+
+#: src/FileClasses/TextManager.cpp:218
+msgid "@TEXTO.ENG|8#Description of Ordos mission 2"
+msgstr "Tu cuota es ahora de 2700 créditos, y esta acumulación de especia es tu principal objetivo. No esperamos que destruyas a las fuerzas Harkonnen en el área, sin embargo deberías considerar el tiempo que podrías ganar al apropiarte de sus silos."
+
+#: src/FileClasses/TextManager.cpp:219
+msgid "@TEXTO.ENG|12#Description of Ordos mission 3"
+msgstr "Encontramos las actividades de las tropas Atreides en esta región inconvenientes. Por favor elimina este obstáculo. No nos podemos permitir que el valor mítico del juego limpio impida nuestro progreso."
+
+#: src/FileClasses/TextManager.cpp:220
+msgid "@TEXTO.ENG|16#Description of Ordos mission 4"
+msgstr "Las fuerzas Atreides en este área deben ser eliminadas. Como siempre, apreciamos tu captura de cualquier silo enemigo u otras estructuras que pudieran ser ocupadas."
+
+#: src/FileClasses/TextManager.cpp:221
+msgid "@TEXTO.ENG|20#Description of Ordos mission 5"
+msgstr "Así que, nuestros espías revelan porqué los Sardaukar nos atacaron en tu última misión. Tendré que evaluar ésto. Aunque los comandantes Harkonnen son ridículamente estúpidos, su fuerza militar supone una amenaza en este área. Deben ser eliminados tan pronto como sea posible."
+
+#: src/FileClasses/TextManager.cpp:222
+msgid "@TEXTO.ENG|24#Description of Ordos mission 6"
+msgstr "Los Atreides se han vuelto demasiado comunicativos en este sector, y se quejan constantemente por sus derechos. Nostros los Ordos no tenemos tiempo para conversaciones sin sentido, y debemos pedirte que elimines esta distracción."
+
+#: src/FileClasses/TextManager.cpp:223
+msgid "@TEXTO.ENG|28#Description of Ordos mission 7"
+msgstr "Las fuerzas Harkonnen continúan frustrando nuestros esfuerzos en esta región, y deben ser eliminadas completamente. ¡Machaca a su querida guardia y volverán corriendo a casa con sus feas madres!"
+
+#: src/FileClasses/TextManager.cpp:224
+msgid "@TEXTO.ENG|32#Description of Ordos mission 8"
+msgstr "Fuerzas tanto Atreides como Harkonnen se oponen a que controlemos este área y por lo tanto deben ser destruidas. El tiempo para la cooperación y el compromiso ha pasado, ¡y todos los enemigos de la Casa Ordos deben ser eliminados!"
+
+#: src/FileClasses/TextManager.cpp:225
+msgid "@TEXTO.ENG|36#Description of Ordos mission 9"
+msgstr "El Emperador Frederick se ha unido a la lista de enemigos de los Ordos, y debe ser castigado. Destruye sus tropas y cualquier remanente Atreides y Harkonnen que aun se oponga a nosotros en este planeta. Lo hemos arriesgado todo en esta batalla final, y solamente toleraremos tu mejor esfuerzo."
+
+#: src/FileClasses/TextManager.cpp:232
+msgid "@TEXTO.ENG|5#Winning text of Ordos mission 1"
+msgstr "Muestras potencial. Si continúas demostrando buenas habilidades de gestión podríamos encontrar un puesto permanente para tí en nuestra organización."
+
+#: src/FileClasses/TextManager.cpp:233
+msgid "@TEXTO.ENG|9#Winning text of Ordos mission 2"
+msgstr "Felicidades. El Cártel está empezando a fijarse en tí. Creo que definitivamente tendrás un futuro con nosotros si puedes seguir en esta trayectoria."
+
+#: src/FileClasses/TextManager.cpp:234
+msgid "@TEXTO.ENG|13#Winning text of Ordos mission 3"
+msgstr "¡Excelente! Había rumores de que algún tipo de objección moral podría entorpecer tu efectividad. Me complace ver que has estado por encima de esas insignificantes sensibilidades."
+
+#: src/FileClasses/TextManager.cpp:235
+msgid "@TEXTO.ENG|17#Winning text of Ordos mission 4"
+msgstr "Una victoria con autoridad, ¡pero ten cuidado! Ahora tu reputación te precederá en los futuros combates, y podrías encontrate con que tus oponentes están mejor preparados para tus tácticas."
+
+#: src/FileClasses/TextManager.cpp:236
+msgid "@TEXTO.ENG|21#Winning text of Ordos mission 5"
+msgstr "Serían correctas las felicitaciones, pero esperamos estos resultados cuando tú estás al cargo. Tus continuos éxitos traen honor a tu familia, y a todos nosotros en la Casa Ordos."
+
+#: src/FileClasses/TextManager.cpp:237
+msgid "@TEXTO.ENG|25#Winning text of Ordos mission 6"
+msgstr "¡Bien hecho! Los éxitos en tus campañas militares han creado una atmósfera política apropiada para nuestras particulares habilidades negociadoras. ¡Sigue así!"
+
+#: src/FileClasses/TextManager.cpp:238
+msgid "@TEXTO.ENG|29#Winning text of Ordos mission 7"
+msgstr "¡Excelente! Has conseguido una gran victoria para la Casa Ordos. ¿No sabe mejor tu desayuno después de haber ocasionado una derrota tan humillante?"
+
+#: src/FileClasses/TextManager.cpp:239
+msgid "@TEXTO.ENG|33#Winning text of Ordos mission 8"
+msgstr "¡Acabo de recibir las maravillosas noticias de tu deslumbrante victoria! Estoy muy satisfecho, y estoy ansioso de contar a mis nietos que fui yo quien sirvió como Mentat a un comandante Ordos tan brillante."
+
+#: src/FileClasses/TextManager.cpp:240
+msgid "@TEXTO.ENG|37#Winning text of Ordos mission 9"
+msgstr "Buenos días, su señoría, ¡y felicidades! Has servido a la Casa Ordos bien. ¡Nunca olvidaremos a nuestro más noble guerrero! Voy a difundir ahora las noticias de nuestra más gloriosa victoria, y a entregar nuestras condiciones al Emperador."
+
+#: src/FileClasses/TextManager.cpp:247
+msgid "@TEXTO.ENG|6#Losing text of Ordos mission 1"
+msgstr "No puedo entender cómo has podido fallar en una tarea tan fácil. Debido a que vienes tan bien recomendado, podríamos pasar por alto este episodio si tienes éxito en tu próxima asignación."
+
+#: src/FileClasses/TextManager.cpp:248
+msgid "@TEXTO.ENG|10#Losing text of Ordos mission 2"
+msgstr "Aparentemente, estaba equivocado sobre tu potencial. Nos costará muchísmo recuperar esta región. Solamente un éxito completo en tu próxima asignación podría quizás resucitar tu carrera."
+
+#: src/FileClasses/TextManager.cpp:249
+msgid "@TEXTO.ENG|14#Losing text of Ordos mission 3"
+msgstr "¡Tu torpe gestión nos ha costado muchísimo! Esto no es un juego. No podemos simplemente empezar de nuevo cada vez que no puedes concentrarte en la tarea que tienes delante. ¡Te recomiendo que te deshagas de todos los intereses ajenos y te entregues completamente a tu próxima asignación!"
+
+#: src/FileClasses/TextManager.cpp:250
+msgid "@TEXTO.ENG|18#Losing text of Ordos mission 4"
+msgstr "¿Cómo has podido fracasar tan rápido? ¡Mi abuela podría ser un comandante más eficiente que tú! ¡Vuelve allí y muestra algo de iniciativa, o deja de malgastar mi tiempo!"
+
+#: src/FileClasses/TextManager.cpp:251
+msgid "@TEXTO.ENG|22#Losing text of Ordos mission 5"
+msgstr "¡Torpe insensato! ¿Esperabas que tus enemigos huyesen ante tu mera presencia? Recuerda: tu cerebro ganará la guerra, ¡no tus balas!"
+
+#: src/FileClasses/TextManager.cpp:252
+msgid "@TEXTO.ENG|26#Losing text of Ordos mission 6"
+msgstr "¿Les enseñas a tus tropas que disparen de forma aleatoria al aire? ¿Hay algún plan en tus estúpidas maniobras? ¡Te recomiendo que no le vuelvas a permitir a tu perro que gestione tus asignaciones!"
+
+#: src/FileClasses/TextManager.cpp:253
+msgid "@TEXTO.ENG|30#Losing text of Ordos mission 7"
+msgstr "¡Tu derrota no podría haber sido más inoportuna! ¿Qué posición y poder negociador podemos mantener mientras muestras tal ineptitud en el campo de batalla?"
+
+#: src/FileClasses/TextManager.cpp:254
+msgid "@TEXTO.ENG|34#Losing text of Ordos mission 8"
+msgstr "¡No vives en un vacío! ¡Tu ineptitud ha puesto en peligro todo aquello por lo que la casa Ordos ha trabajado para crear aquí en Arrakis! ¡Mejor que pienses en las consecuencias de tus acciones, y te redimas en lo posible tan rápido como puedas!"
+
+#: src/FileClasses/TextManager.cpp:255
+msgid "@TEXTO.ENG|38#Losing text of Ordos mission 9"
+msgstr "Tus defectos deben de ser heredados. La colosal estupidez que has demostrado no es algo que se pueda aprender."
+
+#: src/FileClasses/TextManager.cpp:262
+msgid "@TEXTO.ENG|7#Advice text for Ordos mission 1"
+msgstr "En primer lugar construye un grupo de dos por dos bloques de cemento. Después construye una trampa de viento y colócala sobre el hormigón. Haz lo mismo con la refinería para que puedas alcanzar la cuota de 1000 créditos."
+
+#: src/FileClasses/TextManager.cpp:263
+msgid "@TEXTO.ENG|11#Advice text for Ordos mission 2"
+msgstr "Si ya tienes una trampa de viento entonces construye una barraca para empezar a producir soldados. Yo lo haría así para dotar de una mayor defensa a tu operación de recolección."
+
+#: src/FileClasses/TextManager.cpp:264
+msgid "@TEXTO.ENG|15#Advice text for Ordos mission 3"
+msgstr "Necesitas construir una Fábrica Ligera para producir las armas necesarias para completar tu misión."
+
+#: src/FileClasses/TextManager.cpp:265
+msgid "@TEXTO.ENG|19#Advice text for Ordos mission 4"
+msgstr "Añadir tanques a tus fuerzas es esencial para obtener la victoria en esta región."
+
+#: src/FileClasses/TextManager.cpp:266
+msgid "@TEXTO.ENG|23#Advice text for Ordos mission 5"
+msgstr "La producción de Alas de Acarreo hará mucho más rápidas tus operaciones de recolección."
+
+#: src/FileClasses/TextManager.cpp:267
+msgid "@TEXTO.ENG|27#Advice text for Ordos mission 6"
+msgstr "Te recomiendo producir y colocar Torres de Cohetes en posiciones defensivas estratégicas alrededor de tu instalación."
+
+#: src/FileClasses/TextManager.cpp:268
+msgid "@TEXTO.ENG|31#Advice text for Ordos mission 7"
+msgstr "El Desviador es un poderoso aliado contra las fuerzas enemigas."
+
+#: src/FileClasses/TextManager.cpp:269
+msgid "@TEXTO.ENG|35#Advice text for Ordos mission 8"
+msgstr "Utiliza la opción especial de tu Palacio tanto como sea posible, ya que no tiene coste alguno y se recarga con el tiempo."
+
+#: src/FileClasses/TextManager.cpp:270
+msgid "@TEXTO.ENG|39#Advice text for Ordos mission 9"
+msgstr "Ten cuidado con los ataques sorpresa, defiende bien tus instalaciones."
+
+#: src/FileClasses/TextManager.cpp:285
+msgid ""
+"House Fremen\n"
+"Arrakis, the home planet of House Fremen, is one giant sand desert. "
+"Perfectly adapted to the warm, dry climate, the Fremen have huge advantage "
+"in defending their planet."
+msgstr ""
+"Casa Fremen\n"
+"Arrakis, el planeta hogar de la Casa Fremen, es un desierto gigante de arena. "
+"Perfectamente adaptados al clima cálido y seco, los Fremen tienen una gran "
+"ventaja al defender su planeta."
+
+#: src/FileClasses/TextManager.cpp:286
+msgid ""
+"@TEXTA.ENG|4|Atreides->Fremen|Ordos->Sardaukar|Harkonnen-"
+">Mercenary#Description of Fremen mission 1"
+msgstr "Saludos, yo soy su Mentat Cyril. Juntos purgaremos este planeta del hedor de las otras Casas. El Alto Mando desea que produzca 1000 créditos. Puede conseguir créditos construyendo una refinería y recolectando especia."
+
+#: src/FileClasses/TextManager.cpp:287
+msgid ""
+"@TEXTA.ENG|8|Atreides->Fremen|Ordos->Sardaukar|Harkonnen-"
+">Mercenary#Description of Fremen mission 2"
+msgstr "Saludos, es un honor verle de nuevo. El Alto Mando quiere ahora que produzca 2700 créditos en una nueva zona de recolecta. Desafortunadamente, hemos confirmado la presencia de una base Sardaukar en esta región. ¡Buena suerte!"
+
+#: src/FileClasses/TextManager.cpp:288
+msgid ""
+"@TEXTA.ENG|12|Atreides->Fremen|Ordos->Sardaukar|Harkonnen-"
+">Mercenary#Description of Fremen mission 3"
+msgstr "La batalla con las otras Casas se ha intensificado, y nos vemos obligados a luchar en algunas maniobras ofensivas escogidas. Los Mercenary están siendo extremadamente problemáticos en su próxima región, y le debemos solicitar que elimine su presencia del área."
+
+#: src/FileClasses/TextManager.cpp:289
+msgid ""
+"@TEXTA.ENG|16|Atreides->Fremen|Ordos->Sardaukar|Harkonnen-"
+">Mercenary#Description of Fremen mission 4"
+msgstr "Su demostración de habilidades militares nos obliga a asignarle ahora a otra campaña ofensiva contra la Casa Mercenary. Han continuado atacando nuestros pacíficos recolectores, ¡y deben ser eliminados del área!"
+
+#: src/FileClasses/TextManager.cpp:290
+msgid ""
+"@TEXTA.ENG|20|Atreides->Fremen|Ordos->Sardaukar|Harkonnen-"
+">Mercenary#Description of Fremen mission 5"
+msgstr "Bienvenido. Las reglas parecen haber cambiado. Como ha presenciado, ¡el Emperador en persona está apoyando los esfuerzos de nuestros competidores! Como parte de nuestra nueva estrategia, debemos pedirle que elimine las traicioneras fuerzas Ordos que controlan actualmente esta región."
+
+#: src/FileClasses/TextManager.cpp:291
+msgid ""
+"@TEXTA.ENG|24|Atreides->Fremen|Ordos->Sardaukar|Harkonnen-"
+">Mercenary#Description of Fremen mission 6"
+msgstr "A medida que se intensifica la batalla por este planeta, todos los efuerzos son necesarios para asegurar nuestro éxito. De nuevo, le debemos llamar a filas para destruir a nuestros enemigos en un sector con problemas. La Casa Mercenary debe recibir una lección. ¡Gracias, y buena suerte!"
+
+#: src/FileClasses/TextManager.cpp:292
+msgid ""
+"@TEXTA.ENG|28|Atreides->Fremen|Ordos->Sardaukar|Harkonnen-"
+">Mercenary#Description of Fremen mission 7"
+msgstr "La batalla va bien, pero no hay tiempo para relajarse. Tenemos una necesidad urgente de que se sometan todas las fuerzas Sardaukar en esta región sin demora. Nuestras negociaciones en curso reciben un enorme apoyo por las correspondients victorias en el campo de batalla. Contamos con usted."
+
+#: src/FileClasses/TextManager.cpp:293
+msgid ""
+"@TEXTA.ENG|32|Atreides->Fremen|Ordos->Sardaukar|Harkonnen-"
+">Mercenary#Description of Fremen mission 8"
+msgstr "Aunque se ha ganado un descanso bien merecido, me temo que la situación política requiere que le enviemos de nuevo al campo de batalla de forma inmediata. Tanto las fuerzas Sardaukar como Mercenary se han asentado hasta niveles inaceptables en esta región, y ahora deben ser eliminadas completamente."
+
+#: src/FileClasses/TextManager.cpp:294
+msgid ""
+"@TEXTA.ENG|36|Atreides->Fremen|Ordos->Sardaukar|Harkonnen->Mercenary|"
+"remaining Ordos and Harkonnen troops->remaining Ordos, Mercenary and "
+"Harkonnen troops#Description of Fremen mission 9"
+msgstr "Su siguiente tarea determinará el resultado de todos nuestros esfuerzos aquí en Dune. La victoria no llegará fácilmente. Además de destruir a todas las tropas Sardaukar y Mercenary que quedan, también debe someter a las fuerzas del Emperador Frederick. Todos nuestros sueños y esperanzas cabalgan con usted, y le rogamos humildemente que consiga una victoria definitiva para nuestra noble Casa Fremen."
+
+#: src/FileClasses/TextManager.cpp:301
+msgid ""
+"@TEXTA.ENG|5|Atreides->Fremen|Ordos->Sardaukar|Harkonnen->Mercenary#Winning "
+"text of Fremen mission 1"
+msgstr "¡Felicidades! Sabía que podría conseguir su objetivo con muy pocos problemas. Estoy ansioso por asistirle en futuras misiones."
+
+#: src/FileClasses/TextManager.cpp:302
+msgid ""
+"@TEXTA.ENG|9|Atreides->Fremen|Ordos->Sardaukar|Harkonnen->Mercenary#Winning "
+"text of Fremen mission 2"
+msgstr "¡Bien hecho! Nuestro esfuerzo por mantener un juego limpio en este planeta se enfrenta tanto a los Sardaukar como a los Mercenary. La especia que ha coleccionado será una gran ayuda en nuestros esfuerzos."
+
+#: src/FileClasses/TextManager.cpp:303
+msgid ""
+"@TEXTA.ENG|13|Atreides->Fremen|Ordos->Sardaukar|Harkonnen->Mercenary#Winning "
+"text of Fremen mission 3"
+msgstr "¡Hurra! Aunque yo prefiero la defensa, una buena ofensiva contra un oponente que se lo merece como los Mercenary es un placer de observar y una reafirmación de todo lo que es bueno y justo. ¡La Casa Fremen le agradece sus esfuerzos!"
+
+#: src/FileClasses/TextManager.cpp:304
+msgid ""
+"@TEXTA.ENG|17|Atreides->Fremen|Ordos->Sardaukar|Harkonnen->Mercenary#Winning "
+"text of Fremen mission 4"
+msgstr "¡Bien hecho! Ninguna tarea parece demasiado difícil para usted. ¡Los Mercenary se lo pensarán dos veces antes de volver a atacar a nuestros recolectores!"
+
+#: src/FileClasses/TextManager.cpp:305
+msgid ""
+"@TEXTA.ENG|21|Atreides->Fremen|Ordos->Sardaukar|Harkonnen->Mercenary#Winning "
+"text of Fremen mission 5"
+msgstr "¡Felicidades de nuevo! Parece que sus talentos no tienen límite. Tengo que pensar que alguna fuerza divina motivó su decisión de servir en la Casa Fremen. ¡Nuestra ganancia fue sin duda una pérdida para los otros!"
+
+#: src/FileClasses/TextManager.cpp:306
+msgid ""
+"@TEXTA.ENG|25|Atreides->Fremen|Ordos->Sardaukar|Harkonnen->Mercenary#Winning "
+"text of Fremen mission 6"
+msgstr "¡Hurra! Se han dado a la fuga, y es todo gracias a usted. ¡Sus éxitos han sido resaltables! ¿Está seguro de que no haberse graduado en una de las academias militares intergalácticas?"
+
+#: src/FileClasses/TextManager.cpp:307
+msgid ""
+"@TEXTA.ENG|29|Atreides->Fremen|Ordos->Sardaukar|Harkonnen->Mercenary#Winning "
+"text of Fremen mission 7"
+msgstr "¡Excelente! Sus habilidades parecen mejorar con cada encargo, y sus hazañas otorgan una gran confianza a los que se encuentran en el frente. ¡Siga así!"
+
+#: src/FileClasses/TextManager.cpp:308
+msgid ""
+"@TEXTA.ENG|33|Atreides->Fremen|Ordos->Sardaukar|Harkonnen->Mercenary#Winning "
+"text of Fremen mission 8"
+msgstr "¡Una victoria con autoridad! Francamente, no seríamos capaces de continuar en Dune sin su asesoramiento militar. Hemos llegado a confiar plenamente en usted señor, ¡y no nos podemos imaginar futuros éxitos sin usted!"
+
+#: src/FileClasses/TextManager.cpp:309
+msgid ""
+"@TEXTA.ENG|37|Atreides->Fremen|Ordos->Sardaukar|Harkonnen->Mercenary#Winning "
+"text of Fremen mission 9"
+msgstr "Buenos días, su señoría, ¡y felicidades! Ha servido a la Casa Fremen bien. ¡Nunca olvidaremos a nuestro más noble guerrero! Voy a difundir ahora las noticias de nuestra más gloriosa victoria, y a entregar nuestras condiciones al Emperador."
+
+#: src/FileClasses/TextManager.cpp:316
+msgid ""
+"@TEXTA.ENG|6|Atreides->Fremen|Ordos->Sardaukar|Harkonnen->Mercenary#Losing "
+"text of Fremen mission 1"
+msgstr "Esto es muy decepcionante. Habíamos puesto muchas esperanzas en usted. Debemos insistir en que lo intente de nuevo. No ha perdido nuestra confianza, y esperamos impacientes que complete con éxito su primera prueba."
+
+#: src/FileClasses/TextManager.cpp:317
+msgid ""
+"@TEXTA.ENG|10|Atreides->Fremen|Ordos->Sardaukar|Harkonnen->Mercenary#Losing "
+"text of Fremen mission 2"
+msgstr "La pérdida de esta región ante los Sardaukar causará un gran daño a la Casa Fremen. Por favor haga un mayor esfuerzo la próxima vez. ¡La importancia de su misión no se puede tomar a la ligera!"
+
+#: src/FileClasses/TextManager.cpp:318
+msgid ""
+"@TEXTA.ENG|14|Atreides->Fremen|Ordos->Sardaukar|Harkonnen->Mercenary#Losing "
+"text of Fremen mission 3"
+msgstr "Este es un mundo cruel, ¿verdad? No estoy seguro si estaba esperando intervención divina, ¡pero mientras observaba su derrota no podía dejar de pensar en lo injusta que era!"
+
+#: src/FileClasses/TextManager.cpp:319
+msgid ""
+"@TEXTA.ENG|18|Atreides->Fremen|Ordos->Sardaukar|Harkonnen->Mercenary#Losing "
+"text of Fremen mission 4"
+msgstr "Aunque puedo entender los problemas a los que se enfrenta, confesaré que estoy decepcionado por su derrota. No estoy seguro de qué es lo que ha ido mal, ¡pero por favor no permita que suceda de nuevo!"
+
+#: src/FileClasses/TextManager.cpp:320
+msgid ""
+"@TEXTA.ENG|22|Atreides->Fremen|Ordos->Sardaukar|Harkonnen->Mercenary#Losing "
+"text of Fremen mission 5"
+msgstr "Esta derrota que acaba de sufrir no quedará bien en mis informes. No estoy seguro de cuánto más nos podemos permitir apoyarle. Hay muchos otros reclamando ocupar su puesto, ¡así que le recomiendo que haga lo que sea necesario para vencer en sus próximos enfrentamientos!"
+
+#: src/FileClasses/TextManager.cpp:321
+msgid ""
+"@TEXTA.ENG|26|Atreides->Fremen|Ordos->Sardaukar|Harkonnen->Mercenary#Losing "
+"text of Fremen mission 6"
+msgstr "Hay un momento para excusas, ¡pero no es éste! ¡No entiendo como ha podido ejecutar tan mal toda la campaña! No tiene ninguna otra opción que trabajar con mayor esmero en su próxima tarea."
+
+#: src/FileClasses/TextManager.cpp:322
+msgid ""
+"@TEXTA.ENG|30|Atreides->Fremen|Ordos->Sardaukar|Harkonnen->Mercenary#Losing "
+"text of Fremen mission 7"
+msgstr "¡Dios mío, qué derrota tan horrible! Quizás le hemos cargado con demasiada responsabilidad. ¡Si falla en su próxima tarea nos tendremos que plantear seriamente enviarle a casa!"
+
+#: src/FileClasses/TextManager.cpp:323
+msgid ""
+"@TEXTA.ENG|34|Atreides->Fremen|Ordos->Sardaukar|Harkonnen->Mercenary#Losing "
+"text of Fremen mission 8"
+msgstr "Una derrota nunca es bien recibida, ¡pero esta pérdida es especialmente devastadora! ¡Todos nuestros esfuerzos serán pronto inútiles a menos que pueda conseguir una victoria en su próxima campaña!"
+
+#: src/FileClasses/TextManager.cpp:324
+msgid ""
+"@TEXTA.ENG|38|Atreides->Fremen|Ordos->Sardaukar|Harkonnen->Mercenary#Losing "
+"text of Fremen mission 9"
+msgstr "Sus defectos deben de ser heredados. La colosal estupidez que ha demostrado no es algo que se pueda aprender."
+
+#: src/FileClasses/TextManager.cpp:331
+msgid ""
+"@TEXTA.ENG|7|Atreides->Fremen|Ordos->Sardaukar|Harkonnen->Mercenary#Advice "
+"text for Fremen mission 1"
+msgstr "En primer lugar construya un grupo de dos por dos bloques de cemento. Después construya una trampa de viento y colóquela sobre el hormigón. Haga lo mismo con la refinería para que pueda alcanzar la cuota de 1000 créditos."
+
+#: src/FileClasses/TextManager.cpp:332
+msgid ""
+"@TEXTA.ENG|11|Atreides->Fremen|Ordos->Sardaukar|Harkonnen->Mercenary#Advice "
+"text for Fremen mission 2"
+msgstr "Si ya tiene una trampa de viento entonces construya una barraca para empezar a producir soldados. Yo lo haría así para dotar de una mayor defensa a su operación de recolección."
+
+#: src/FileClasses/TextManager.cpp:333
+msgid ""
+"@TEXTA.ENG|15|Atreides->Fremen|Ordos->Sardaukar|Harkonnen->Mercenary#Advice "
+"text for Fremen mission 3"
+msgstr "Necesita construir una Fábrica Ligera para producir las armas necesarias para completar su misión."
+
+#: src/FileClasses/TextManager.cpp:334
+msgid ""
+"@TEXTA.ENG|19|Atreides->Fremen|Ordos->Sardaukar|Harkonnen->Mercenary#Advice "
+"text for Fremen mission 4"
+msgstr "Añadir tanques a sus fuerzas es esencial para obtener la victoria en esta región."
+
+#: src/FileClasses/TextManager.cpp:335
+msgid ""
+"@TEXTA.ENG|23|Atreides->Fremen|Ordos->Sardaukar|Harkonnen->Mercenary#Advice "
+"text for Fremen mission 5"
+msgstr "La producción de Alas de Acarreo hará mucho más rápidas sus operaciones de recolección."
+
+#: src/FileClasses/TextManager.cpp:336
+msgid ""
+"@TEXTA.ENG|27|Atreides->Fremen|Ordos->Sardaukar|Harkonnen->Mercenary#Advice "
+"text for Fremen mission 6"
+msgstr "Le recomiendo producir y colocar Torres de Cohetes en posiciones defensivas estratégicas alrededor de su instalación."
+
+#: src/FileClasses/TextManager.cpp:337
+msgid ""
+"@TEXTA.ENG|31|Atreides->Fremen|Ordos->Sardaukar|Harkonnen->Mercenary#Advice "
+"text for Fremen mission 7"
+msgstr "El Tanque Sónico es un poderoso aliado contra las tropas enemigas."
+
+#: src/FileClasses/TextManager.cpp:338
+msgid ""
+"@TEXTA.ENG|35|Atreides->Fremen|Ordos->Sardaukar|Harkonnen->Mercenary#Advice "
+"text for Fremen mission 8"
+msgstr "Utilice la opción especial de su Palacio tanto como sea posible, ya que no tiene coste alguno y se recarga con el tiempo."
+
+#: src/FileClasses/TextManager.cpp:339
+msgid ""
+"@TEXTA.ENG|39|Atreides->Fremen|Ordos->Sardaukar|Harkonnen->Mercenary#Advice "
+"text for Fremen mission 9"
+msgstr "Tega cuidado con los ataques sorpresa, defienda bien sus instalaciones."
+
+#: src/FileClasses/TextManager.cpp:354
+msgid ""
+"House Sardaukar\n"
+"Originating from an forgotten planet, House Sardaukar has moved from planet "
+"to planet since then. Conquering foreign planets has specialized their "
+"combat skills which got them a reputation of being cruel."
+msgstr ""
+"Casa Sardaukar\n"
+"Con origen en un planeta olvidado, la Casa Sardaukar se ha movido de planeta "
+"en planeta desde entonces. Conquistando planetas desconocidos han especializado "
+"sus habilidades de combate obteniendo la reputación de crueles."
+
+#: src/FileClasses/TextManager.cpp:355
+msgid ""
+"@TEXTH.ENG|4|Atreides->Mercenary|Ordos->Fremen|Harkonnen-"
+">Sardaukar#Description of Sardaukar mission 1"
+msgstr "Yo son el Mentat, Radnor. Con mi dirección, serás capaz de asistirnos en la conquista de este polvoriento, pequeño planeta. Para tu primera prueba esperamos que produzcas 1000 créditos, y ni un gránulo menos. Puedes conseguir créditos recolectando especia, y necesitarás construir una refinería para convertir la especia en créditos. Si alguno de nuestros estúpidos enemigos intenta atacar tu base tendrás el placer de ver las invencibles tropas Sardaukar en acción."
+
+#: src/FileClasses/TextManager.cpp:356
+msgid ""
+"@TEXTH.ENG|8|Atreides->Mercenary|Ordos->Fremen|Harkonnen-"
+">Sardaukar#Description of Sardaukar mission 2"
+msgstr "La Casa Sardaukar te ofrece una generosa nueva oportunidad de servirnos. Ahora te permitiremos tomar el mando en un área más peligroso, y acumular 2700 créditos. Aunque los inútiles Mercenary que puedes encontrar en esta región deberían ser siempre eliminados como cuestión de principios, la quota de especia es tu objetivo."
+
+#: src/FileClasses/TextManager.cpp:357
+msgid ""
+"@TEXTH.ENG|12|Atreides->Mercenary|Ordos->Fremen|Harkonnen-"
+">Sardaukar#Description of Sardaukar mission 3"
+msgstr "Los despreciables Fremen están bien establecidos en esta región, y están recolectando la especia que debería pertenecer por derecho a la Casa Sardaukar. Destruye las instalaciones de los Fremen en este área y reivindica el control en nombre de la Casa Sarkdaukar."
+
+#: src/FileClasses/TextManager.cpp:358
+msgid ""
+"@TEXTH.ENG|16|Atreides->Mercenary|Ordos->Fremen|Harkonnen-"
+">Sardaukar#Description of Sardaukar mission 4"
+msgstr "Una pequeña victoria no gana la guerra. Otra región tiene la desgracia de estar infectada por la plaga de la Casa Fremen, y ahora debes repetir tu éxito. Yo tengo muchas negociaciones políticas delicadas en mi mente, y no necesito tener que preocuparme por cabos sueltos."
+
+#: src/FileClasses/TextManager.cpp:359
+msgid ""
+"@TEXTH.ENG|20|Atreides->Mercenary|Ordos->Fremen|Harkonnen->Sardaukar|the "
+"Emperor was->the Atreides were#Description of Sardaukar mission 5"
+msgstr "De modo que, el Emperador estaba ayudando a los Fremen en tu última misión. Sin embargo, la Casa Mercenary se ha fortalecido por nuestra neglicencia, y se le debe dar una lección. Eliminarás a todos los Mercenary de esta región."
+
+#: src/FileClasses/TextManager.cpp:360
+msgid ""
+"@TEXTH.ENG|24|Atreides->Mercenary|Ordos->Fremen|Harkonnen-"
+">Sardaukar#Description of Sardaukar mission 6"
+msgstr "Vas a continuar en otra región sin suerte dominada por esos molestos Fremen, y espero que puedas derrotar a este particularmente problemático grupo de Fremen. Hemos establecido una buena reputación en este planeta. ¡No me avergüences ahora!"
+
+#: src/FileClasses/TextManager.cpp:361
+msgid ""
+"@TEXTH.ENG|28|Atreides->Mercenary|Ordos->Fremen|Harkonnen-"
+">Sardaukar#Description of Sardaukar mission 7"
+msgstr "Informes de nueva actividad Mercenary demandan que te envíe de vuelta a la vanguardia. De todos modos no pareces disfrutar del descanso y la relajación. Creo que preferirás machacar a los Mercenary."
+
+#: src/FileClasses/TextManager.cpp:362
+msgid ""
+"@TEXTH.ENG|32|Atreides->Mercenary|Ordos->Fremen|Harkonnen-"
+">Sardaukar#Description of Sardaukar mission 8"
+msgstr "He usado mi influencia para conseguir un Palacio para tí. Un comandante de tu categoría puede necesitar relajarse ocasionalmente, pero yo espero que nuestra generosidad traerá una eficiencia incluso mayor de tu parte. Hay fuerzas tanto Mercenary como Fremen en esta región, ¡y todas ellas deben ser eliminadas!"
+
+#: src/FileClasses/TextManager.cpp:363
+msgid ""
+"@TEXTH.ENG|36|Atreides->Mercenary|Ordos->Fremen|Harkonnen->Sardaukar|the "
+"Emperor's->their leader's#Description of Sardaukar mission 9"
+msgstr "¡Hemos sido engañados! Nuestras negociaciones de buena fé tan solo nos han traído a una recolecta traicionera. Todos han conspirado contra nosotros, ¡por lo que todos deben morir! Tus habilidades militares son la última esperanza que nos queda en este planeta. Destruye todas las fuerzas Mercenary y Fremen que quedan, y conquista el palacio del Emperador. Nos ha tratado mal, ¡y no debe vivir otro día!"
+
+#: src/FileClasses/TextManager.cpp:370
+msgid ""
+"@TEXTH.ENG|5|Atreides->Mercenary|Ordos->Fremen|Harkonnen->Sardaukar#Winning "
+"text of Sardaukar mission 1"
+msgstr "Me has complacido. Continúa sirviéndome bien, y comprobarás que eres recompensado."
+
+#: src/FileClasses/TextManager.cpp:371
+msgid ""
+"@TEXTH.ENG|9|Atreides->Mercenary|Ordos->Fremen|Harkonnen->Sardaukar#Winning "
+"text of Sardaukar mission 2"
+msgstr "Me has complacido de nuevo. Me recuerdas a mí mismo en mi juventud. ¡De hecho podrías tener auténtica sangre Sardaukar circulando por tus venas!"
+
+#: src/FileClasses/TextManager.cpp:372
+msgid ""
+"@TEXTH.ENG|13|Atreides->Mercenary|Ordos->Fremen|Harkonnen->Sardaukar#Winning "
+"text of Sardaukar mission 3"
+msgstr "Felicidades. Estás haciendo progresos. Varios de mis asociados han expresado opiniones pesimistas acerca de tus habilidades, y yo estoy contento de que les hayas demostrado estar equivocados. Veamos ahora si puedo seguir confiando en tí."
+
+#: src/FileClasses/TextManager.cpp:373
+msgid ""
+"@TEXTH.ENG|17|Atreides->Mercenary|Ordos->Fremen|Harkonnen->Sardaukar#Winning "
+"text of Sardaukar mission 4"
+msgstr "Bien hecho. Los perros Fremen hacen ruidos graciosos cuando mueren, ¿verdad? Desde luego, ¿qué hay de bueno en nuestras vidas si no podemos disfrutar de los placeres simples?"
+
+#: src/FileClasses/TextManager.cpp:374
+msgid ""
+"@TEXTH.ENG|21|Atreides->Mercenary|Ordos->Fremen|Harkonnen->Sardaukar#Winning "
+"text of Sardaukar mission 5"
+msgstr "En reconocimiento a tu actuación reciente, te voy a permitir ahora continuar el enfrentamiento con los Fremen. Al menos ellos presentarán una lucha digna de nuestra guardia."
+
+#: src/FileClasses/TextManager.cpp:375
+msgid ""
+"@TEXTH.ENG|25|Atreides->Mercenary|Ordos->Fremen|Harkonnen->Sardaukar#Winning "
+"text of Sardaukar mission 6"
+msgstr "¡Los laureles de la victoria te sientan bien hijo mío! Podría incluso enviar a otros aspirantes a estudiar tus tácticas. Te presentaría mis disculpas por haber subestimado la fuerza de los Fremen en tu última campaña, pero ese ya no es un asunto que nos preocupe, ¿verdad?"
+
+#: src/FileClasses/TextManager.cpp:376
+msgid ""
+"@TEXTH.ENG|29|Atreides->Mercenary|Ordos->Fremen|Harkonnen->Sardaukar#Winning "
+"text of Sardaukar mission 7"
+msgstr "Felicidades. ¡Es un placer ver como los débiles Mercenary son tratados con tanta severidad!"
+
+#: src/FileClasses/TextManager.cpp:377
+msgid ""
+"@TEXTH.ENG|33|Atreides->Mercenary|Ordos->Fremen|Harkonnen->Sardaukar#Winning "
+"text of Sardaukar mission 8"
+msgstr "Aunque serían justos los elogios, no tendrás ese lujo. ¡Servir a la Casa Sardaukar es suficiente recompensa! Si necesitas halagos, ¡Entonces muere por nuestra causa! ¡Hablaremos de tí con afecto por siempre!"
+
+#: src/FileClasses/TextManager.cpp:378
+msgid ""
+"@TEXTH.ENG|37|Atreides->Mercenary|Ordos->Fremen|Harkonnen->Sardaukar|the "
+"Emperor->the leader#Winning text of Sardaukar mission 9"
+msgstr "Buenos días, su señoría, ¡y felicidades! Me has servido, quiero decir a la Casa Sardaukar, bien. ¡Nuestra Casa no olvidará a nuestro más noble guerrero! Voy a difundir ahora las noticias de nuestra más gloriosa victoria, y a entregar nuestras condiciones al Emperador."
+
+#: src/FileClasses/TextManager.cpp:385
+msgid ""
+"@TEXTH.ENG|6|Atreides->Mercenary|Ordos->Fremen|Harkonnen->Sardaukar#Losing "
+"text of Sardaukar mission 1"
+msgstr "Estás ahora bajo mi desprecio. ¿Sábes lo que sucede a aquellos que le han fallado a la Casa Sardaukar?"
+
+#: src/FileClasses/TextManager.cpp:386
+msgid ""
+"@TEXTH.ENG|10|Atreides->Mercenary|Ordos->Fremen|Harkonnen->Sardaukar#Losing "
+"text of Sardaukar mission 2"
+msgstr "No me puedo creer que fueses incapaz de acumular tu quota. Era una tarea simple que nos debería haber permitido examinar tus capacidades de liderazgo. Te recomiendo que no pongas más a prueba mi paciencia."
+
+#: src/FileClasses/TextManager.cpp:387
+msgid ""
+"@TEXTH.ENG|14|Atreides->Mercenary|Ordos->Fremen|Harkonnen->Sardaukar#Losing "
+"text of Sardaukar mission 3"
+msgstr "¡Lo sabía! Varios de mis asociados han expresado confianza en tus habilidades, ¡pero yo sabía que eras demasiado débil para ser un comandante Sardaukar! ¡Guardias! ¡Eliminad a este apestado antes de que ensucie el planeta entero!"
+
+#: src/FileClasses/TextManager.cpp:388
+msgid ""
+"@TEXTH.ENG|18|Atreides->Mercenary|Ordos->Fremen|Harkonnen->Sardaukar#Losing "
+"text of Sardaukar mission 4"
+msgstr "¿Es ésta la forma en que devuelves la fé que hemos puesto en tí? ¡Una pérdida tan grave solo ha podido ser deliberada! No eres apto para limpiar nuestras letrinas, ¡Mucho menos para comandar a nuestra gloriosa guardia!"
+
+#: src/FileClasses/TextManager.cpp:389
+msgid ""
+"@TEXTH.ENG|22|Atreides->Mercenary|Ordos->Fremen|Harkonnen->Sardaukar#Losing "
+"text of Sardaukar mission 5"
+msgstr "¿Quizás añoras a tu madre? Estoy preocupado por tí y no te puedo dejar progresar hasta que hayas demostrado tu valía contra los Mercenary."
+
+#: src/FileClasses/TextManager.cpp:390
+msgid ""
+"@TEXTH.ENG|26|Atreides->Mercenary|Ordos->Fremen|Harkonnen->Sardaukar#Losing "
+"text of Sardaukar mission 6"
+msgstr "¿Es esto una broma de mal gusto? ¿Como has podido sufrir tal derrota? ¡Tendría que cortarte el cuello para tranquilizarme! ¿Acaso has planeado tu derrota como venganza por alguna idea equivocada?"
+
+#: src/FileClasses/TextManager.cpp:391
+msgid ""
+"@TEXTH.ENG|30|Atreides->Mercenary|Ordos->Fremen|Harkonnen->Sardaukar#Losing "
+"text of Sardaukar mission 7"
+msgstr "Tu fracaso me provoca una vergüenza sin fin. No sucederá de nuevo. ¡Guardias!"
+
+#: src/FileClasses/TextManager.cpp:392
+msgid ""
+"@TEXTH.ENG|34|Atreides->Mercenary|Ordos->Fremen|Harkonnen->Sardaukar#Losing "
+"text of Sardaukar mission 8"
+msgstr "¡Guardias! ¿Cómo ha llegado este enclenque hasta aquí? Es un perdedor, y no se le debe permitir que corrompa a otros en nuestra casa. Si esto sucede de nuevo, ¡Diseccionaré personalmente a varios de vosotros!"
+
+#: src/FileClasses/TextManager.cpp:393
+msgid ""
+"@TEXTH.ENG|38|Atreides->Mercenary|Ordos->Fremen|Harkonnen->Sardaukar#Losing "
+"text of Sardaukar mission 9"
+msgstr "Tus defectos deben de ser heredados. La colosal estupidez que has demostrado no es algo que se pueda aprender."
+
+#: src/FileClasses/TextManager.cpp:400
+msgid ""
+"@TEXTH.ENG|7|Atreides->Mercenary|Ordos->Fremen|Harkonnen->Sardaukar#Advice "
+"text for Sardaukar mission 1"
+msgstr "En primer lugar construye un grupo de dos por dos bloques de cemento. Después construye una trampa de viento y colócala sobre el hormigón. Haz lo mismo con la refinería para que puedas alcanzar la cuota de 1000 créditos."
+
+#: src/FileClasses/TextManager.cpp:401
+msgid ""
+"@TEXTH.ENG|11|Atreides->Mercenary|Ordos->Fremen|Harkonnen->Sardaukar#Advice "
+"text for Sardaukar mission 2"
+msgstr "Si ya tienes una trampa de viento entonces construye una Casa de WOR para empezar a producir guardias. Yo lo haría así para dotar de una mayor defensa a tu operación de recolección."
+
+#: src/FileClasses/TextManager.cpp:402
+msgid ""
+"@TEXTH.ENG|15|Atreides->Mercenary|Ordos->Fremen|Harkonnen->Sardaukar#Advice "
+"text for Sardaukar mission 3"
+msgstr "Necesitas construir una Fábrica Ligera para producir las armas necesarias para completar tu misión."
+
+#: src/FileClasses/TextManager.cpp:403
+msgid ""
+"@TEXTH.ENG|19|Atreides->Mercenary|Ordos->Fremen|Harkonnen->Sardaukar#Advice "
+"text for Sardaukar mission 4"
+msgstr "Añadir tanques a tus fuerzas es esencial para obtener la victoria en esta región."
+
+#: src/FileClasses/TextManager.cpp:404
+msgid ""
+"@TEXTH.ENG|23|Atreides->Mercenary|Ordos->Fremen|Harkonnen->Sardaukar#Advice "
+"text for Sardaukar mission 5"
+msgstr "La producción de Alas de Acarreo hará mucho más rápidas tus operaciones de recolección."
+
+#: src/FileClasses/TextManager.cpp:405
+msgid ""
+"@TEXTH.ENG|27|Atreides->Mercenary|Ordos->Fremen|Harkonnen->Sardaukar#Advice "
+"text for Sardaukar mission 6"
+msgstr "Te recomiendo producir y colocar Torres de Cohetes en posiciones defensivas estratégicas alrededor de tu instalación."
+
+#: src/FileClasses/TextManager.cpp:406
+msgid ""
+"@TEXTH.ENG|31|Atreides->Mercenary|Ordos->Fremen|Harkonnen->Sardaukar#Advice "
+"text for Sardaukar mission 7"
+msgstr "El Devastador es un poderoso aliado contra las fuerzas enemigas."
+
+#: src/FileClasses/TextManager.cpp:407
+msgid ""
+"@TEXTH.ENG|35|Atreides->Mercenary|Ordos->Fremen|Harkonnen->Sardaukar#Advice "
+"text for Sardaukar mission 8"
+msgstr "Utiliza la opción especial de tu Palacio tanto como sea posible, ya que no tiene coste alguno y se recarga con el tiempo."
+
+#: src/FileClasses/TextManager.cpp:408
+msgid ""
+"@TEXTH.ENG|39|Atreides->Mercenary|Ordos->Fremen|Harkonnen->Sardaukar#Advice "
+"text for Sardaukar mission 9"
+msgstr "Ten cuidado con los ataques sorpresa, defiende bien tus instalaciones."
+
+#: src/FileClasses/TextManager.cpp:424
+msgid ""
+"House Mercenary\n"
+"The home planet of the Mercenary consists of huge oceans and large deserts. "
+"House Mercenary is one of the oldest and most influencial intergalactical "
+"trading organization. To strengthen their power they don't hesitate to use "
+"military force."
+msgstr ""
+"Casa Mercenary\n"
+"El planeta hogar de los Mercenary consiste en vastos océanos y grandes desiertos. "
+"La Casa Mercenary es una de las más antiguas e influyentes organizaciones "
+"comerciales intergalácticas. Para consolidar su poder no dudan en utilizar la "
+"fuerza militar."
+
+#: src/FileClasses/TextManager.cpp:425
+msgid ""
+"@TEXTO.ENG|4|Atreides->Sardaukar|Ordos->Mercenary|Harkonnen-"
+">Fremen#Description of Mercenary mission 1"
+msgstr "Bienvenido. Yo soy tu Mentat, y me puedes llamar Ammon. Para ser de alguna utilidad al Cártel, nos debes proporcionar créditos. Como prueba, te asignaremos una región, y te pediremos que consigas una cuota de producción de 1000 créditos. Construye una refinería y recolecta la especia en el área. Yo estoy muy ocupado, pero me puedes llamar si tienes más preguntas."
+
+#: src/FileClasses/TextManager.cpp:426
+msgid ""
+"@TEXTO.ENG|8|Atreides->Sardaukar|Ordos->Mercenary|Harkonnen-"
+">Fremen#Description of Mercenary mission 2"
+msgstr "Tu cuota es ahora de 2700 créditos, y esta acumulación de especia es tu principal objetivo. No esperamos que destruyas a las fuerzas Fremen en el área, sin embargo deberías considerar el tiempo que podrías ganar al apropiarte de sus silos."
+
+#: src/FileClasses/TextManager.cpp:427
+msgid ""
+"@TEXTO.ENG|12|Atreides->Sardaukar|Ordos->Mercenary|Harkonnen-"
+">Fremen#Description of Mercenary mission 3"
+msgstr "Encontramos las actividades de las tropas Sardaukar en esta región inconvenientes. Por favor elimina este obstáculo. No nos podemos permitir que el valor mítico del juego limpio impida nuestro progreso."
+
+#: src/FileClasses/TextManager.cpp:428
+msgid ""
+"@TEXTO.ENG|16|Atreides->Sardaukar|Ordos->Mercenary|Harkonnen-"
+">Fremen#Description of Mercenary mission 4"
+msgstr "Las fuerzas Sardaukar en este área deben ser eliminadas. Como siempre, apreciamos tu captura de cualquier silo enemigo u otras estructuras que pudieran ser ocupadas."
+
+#: src/FileClasses/TextManager.cpp:429
+msgid ""
+"@TEXTO.ENG|20|Atreides->Sardaukar|Ordos->Mercenary|Harkonnen-"
+">Fremen#Description of Mercenary mission 5"
+msgstr "Así que, nuestros espías revelan porqué las fuerzas Sardaukar nos atacaron en tu última misión. Tendré que evaluar ésto. Aunque los comandantes Fremen son ridículamente estúpidos, su fuerza militar supone una amenaza en este área. Deben ser eliminados tan pronto como sea posible."
+
+#: src/FileClasses/TextManager.cpp:430
+msgid ""
+"@TEXTO.ENG|24|Atreides->Sardaukar|Ordos->Mercenary|Harkonnen-"
+">Fremen#Description of Mercenary mission 6"
+msgstr "Los Sardaukar se han vuelto demasiado comunicativos en este sector, y se quejan constantemente por sus derechos. Nostros los Mercenary no tenemos tiempo para conversaciones sin sentido, y debemos pedirte que elimines esta distracción."
+
+#: src/FileClasses/TextManager.cpp:431
+msgid ""
+"@TEXTO.ENG|28|Atreides->Sardaukar|Ordos->Mercenary|Harkonnen-"
+">Fremen#Description of Mercenary mission 7"
+msgstr "Las fuerzas Fremen continúan frustrando nuestros esfuerzos en esta región, y deben ser eliminadas completamente. ¡Machaca a su querida guardia y volverán corriendo a casa con sus feas madres!"
+
+#: src/FileClasses/TextManager.cpp:432
+msgid ""
+"@TEXTO.ENG|32|Atreides->Sardaukar|Ordos->Mercenary|Harkonnen-"
+">Fremen#Description of Mercenary mission 8"
+msgstr "Fuerzas tanto Sardaukar como Fremen se oponen a que controlemos este área y por lo tanto deben ser destruidas. El tiempo para la cooperación y el compromiso ha pasado, ¡y todos los enemigos de la Casa Mercenary deben ser eliminados!"
+
+#: src/FileClasses/TextManager.cpp:433
+msgid ""
+"@TEXTO.ENG|36|Atreides->Sardaukar|Ordos->Mercenary|Harkonnen-"
+">Fremen#Description of Mercenary mission 9"
+msgstr "El Emperador Frederick se ha unido a la lista de enemigos de los Mercenary, y debe ser castigado. Destruye sus tropas y cualquier remanente Sardaukar y Fremen que aun se oponga a nosotros en este planeta. Lo hemos arriesgado todo en esta batalla final, y solamente toleraremos tu mejor esfuerzo."
+
+#: src/FileClasses/TextManager.cpp:440
+msgid ""
+"@TEXTO.ENG|5|Atreides->Sardaukar|Ordos->Mercenary|Harkonnen->Fremen#Winning "
+"text of Mercenary mission 1"
+msgstr "Muestras potencial. Si continúas demostrando buenas habilidades de gestión podríamos encontrar un puesto permanente para tí en nuestra organización."
+
+#: src/FileClasses/TextManager.cpp:441
+msgid ""
+"@TEXTO.ENG|9|Atreides->Sardaukar|Ordos->Mercenary|Harkonnen->Fremen#Winning "
+"text of Mercenary mission 2"
+msgstr "Felicidades. El Cártel está empezando a fijarse en tí. Creo que definitivamente tendrás un futuro con nosotros si puedes seguir en esta trayectoria."
+
+#: src/FileClasses/TextManager.cpp:442
+msgid ""
+"@TEXTO.ENG|13|Atreides->Sardaukar|Ordos->Mercenary|Harkonnen->Fremen#Winning "
+"text of Mercenary mission 3"
+msgstr "¡Excelente! Había rumores de que algún tipo de objección moral podría entorpecer tu efectividad. Me complace ver que has estado por encima de esas insignificantes sensibilidades."
+
+#: src/FileClasses/TextManager.cpp:443
+msgid ""
+"@TEXTO.ENG|17|Atreides->Sardaukar|Ordos->Mercenary|Harkonnen->Fremen#Winning "
+"text of Mercenary mission 4"
+msgstr "Una victoria con autoridad, ¡pero ten cuidado! Ahora tu reputación te precederá en los futuros combates, y podrías encontrate con que tus oponentes están mejor preparados para tus tácticas."
+
+#: src/FileClasses/TextManager.cpp:444
+msgid ""
+"@TEXTO.ENG|21|Atreides->Sardaukar|Ordos->Mercenary|Harkonnen->Fremen#Winning "
+"text of Mercenary mission 5"
+msgstr "Serían correctas las felicitaciones, pero esperamos estos resultados cuando tú estás al cargo. Tus continuos éxitos traen honor a tu familia, y a todos nosotros en la Casa Mercenary."
+
+#: src/FileClasses/TextManager.cpp:445
+msgid ""
+"@TEXTO.ENG|25|Atreides->Sardaukar|Ordos->Mercenary|Harkonnen->Fremen#Winning "
+"text of Mercenary mission 6"
+msgstr "¡Bien hecho! Los éxitos en tus campañas militares han creado una atmósfera política apropiada para nuestras particulares habilidades negociadoras. ¡Sigue así!"
+
+#: src/FileClasses/TextManager.cpp:446
+msgid ""
+"@TEXTO.ENG|29|Atreides->Sardaukar|Ordos->Mercenary|Harkonnen->Fremen#Winning "
+"text of Mercenary mission 7"
+msgstr "¡Excelente! Has conseguido una gran victoria para la Casa Mercenary. ¿No sabe mejor tu desayuno después de haber ocasionado una derrota tan humillante?"
+
+#: src/FileClasses/TextManager.cpp:447
+msgid ""
+"@TEXTO.ENG|33|Atreides->Sardaukar|Ordos->Mercenary|Harkonnen->Fremen#Winning "
+"text of Mercenary mission 8"
+msgstr "¡Acabo de recibir las maravillosas noticias de tu deslumbrante victoria! Estoy muy satisfecho, y estoy ansioso de contar a mis nietos que fui yo quien sirvió como Mentat a un comandante Mercenary tan brillante."
+
+#: src/FileClasses/TextManager.cpp:448
+msgid ""
+"@TEXTO.ENG|37|Atreides->Sardaukar|Ordos->Mercenary|Harkonnen->Fremen#Winning "
+"text of Mercenary mission 9"
+msgstr "Buenos días, su señoría, ¡y felicidades! Has servido a la Casa Mercenary bien. ¡Nunca olvidaremos a nuestro más noble guerrero! Voy a difundir ahora las noticias de nuestra más gloriosa victoria, y a entregar nuestras condiciones al Emperador."
+
+#: src/FileClasses/TextManager.cpp:455
+msgid ""
+"@TEXTO.ENG|6|Atreides->Sardaukar|Ordos->Mercenary|Harkonnen->Fremen#Losing "
+"text of Mercenary mission 1"
+msgstr "No puedo entender cómo has podido fallar en una tarea tan fácil. Debido a que vienes tan bien recomendado, podríamos pasar por alto este episodio si tienes éxito en tu próxima asignación."
+
+#: src/FileClasses/TextManager.cpp:456
+msgid ""
+"@TEXTO.ENG|10|Atreides->Sardaukar|Ordos->Mercenary|Harkonnen->Fremen#Losing "
+"text of Mercenary mission 2"
+msgstr "Aparentemente, estaba equivocado sobre tu potencial. Nos costará muchísmo recuperar esta región. Solamente un éxito completo en tu próxima asignación podría quizás resucitar tu carrera."
+
+#: src/FileClasses/TextManager.cpp:457
+msgid ""
+"@TEXTO.ENG|14|Atreides->Sardaukar|Ordos->Mercenary|Harkonnen->Fremen#Losing "
+"text of Mercenary mission 3"
+msgstr "¡Tu torpe gestión nos ha costado muchísimo! Esto no es un juego. No podemos simplemente empezar de nuevo cada vez que no puedes concentrarte en la tarea que tienes delante. ¡Te recomiendo que te deshagas de todos los intereses ajenos y te entregues completamente a tu próxima asignación!"
+
+#: src/FileClasses/TextManager.cpp:458
+msgid ""
+"@TEXTO.ENG|18|Atreides->Sardaukar|Ordos->Mercenary|Harkonnen->Fremen#Losing "
+"text of Mercenary mission 4"
+msgstr "¿Cómo has podido fracasar tan rápido? ¡Mi abuela podría ser un comandante más eficiente que tú! ¡Vuelve allí y muestra algo de iniciativa, o deja de malgastar mi tiempo!"
+
+#: src/FileClasses/TextManager.cpp:459
+msgid ""
+"@TEXTO.ENG|22|Atreides->Sardaukar|Ordos->Mercenary|Harkonnen->Fremen#Losing "
+"text of Mercenary mission 5"
+msgstr "¡Torpe insensato! ¿Esperabas que tus enemigos huyesen ante tu mera presencia? Recuerda: tu cerebro ganará la guerra, ¡no tus balas!"
+
+#: src/FileClasses/TextManager.cpp:460
+msgid ""
+"@TEXTO.ENG|26|Atreides->Sardaukar|Ordos->Mercenary|Harkonnen->Fremen#Losing "
+"text of Mercenary mission 6"
+msgstr "¿Les enseñas a tus tropas que disparen de forma aleatoria al aire? ¿Hay algún plan en tus estúpidas maniobras? ¡Te recomiendo que no le vuelvas a permitir a tu perro que gestione tus asignaciones!"
+
+#: src/FileClasses/TextManager.cpp:461
+msgid ""
+"@TEXTO.ENG|30|Atreides->Sardaukar|Ordos->Mercenary|Harkonnen->Fremen#Losing "
+"text of Mercenary mission 7"
+msgstr "¡Tu derrota no podría haber sido más inoportuna! ¿Qué posición y poder negociador podemos mantener mientras muestras tal ineptitud en el campo de batalla?"
+
+#: src/FileClasses/TextManager.cpp:462
+msgid ""
+"@TEXTO.ENG|34|Atreides->Sardaukar|Ordos->Mercenary|Harkonnen->Fremen#Losing "
+"text of Mercenary mission 8"
+msgstr "¡No vives en un vacío! ¡Tu ineptitud ha puesto en peligro todo aquello por lo que la casa Mercenary ha trabajado para crear aquí en Arrakis! ¡Mejor que pienses en las consecuencias de tus acciones, y te redimas en lo posible tan rápido como puedas!"
+
+#: src/FileClasses/TextManager.cpp:463
+msgid ""
+"@TEXTO.ENG|38|Atreides->Sardaukar|Ordos->Mercenary|Harkonnen->Fremen#Losing "
+"text of Mercenary mission 9"
+msgstr "Tus defectos deben de ser heredados. La colosal estupidez que has demostrado no es algo que se pueda aprender."
+
+#: src/FileClasses/TextManager.cpp:470
+msgid ""
+"@TEXTO.ENG|7|Atreides->Sardaukar|Ordos->Mercenary|Harkonnen->Fremen#Advice "
+"text for Mercenary mission 1"
+msgstr "En primer lugar construye un grupo de dos por dos bloques de cemento. Después construye una trampa de viento y colócala sobre el hormigón. Haz lo mismo con la refinería para que puedas alcanzar la cuota de 1000 créditos."
+
+#: src/FileClasses/TextManager.cpp:471
+msgid ""
+"@TEXTO.ENG|11|Atreides->Sardaukar|Ordos->Mercenary|Harkonnen->Fremen#Advice "
+"text for Mercenary mission 2"
+msgstr "Si ya tienes una trampa de viento entonces construye una barraca para empezar a producir soldados. Yo lo haría así para dotar de una mayor defensa a tu operación de recolección."
+
+#: src/FileClasses/TextManager.cpp:472
+msgid ""
+"@TEXTO.ENG|15|Atreides->Sardaukar|Ordos->Mercenary|Harkonnen->Fremen#Advice "
+"text for Mercenary mission 3"
+msgstr "Necesitas construir una Fábrica Ligera para producir las armas necesarias para completar tu misión."
+
+#: src/FileClasses/TextManager.cpp:473
+msgid ""
+"@TEXTO.ENG|19|Atreides->Sardaukar|Ordos->Mercenary|Harkonnen->Fremen#Advice "
+"text for Mercenary mission 4"
+msgstr "Añadir tanques a tus fuerzas es esencial para obtener la victoria en esta región."
+
+#: src/FileClasses/TextManager.cpp:474
+msgid ""
+"@TEXTO.ENG|23|Atreides->Sardaukar|Ordos->Mercenary|Harkonnen->Fremen#Advice "
+"text for Mercenary mission 5"
+msgstr "La producción de Alas de Acarreo hará mucho más rápidas tus operaciones de recolección."
+
+#: src/FileClasses/TextManager.cpp:475
+msgid ""
+"@TEXTO.ENG|27|Atreides->Sardaukar|Ordos->Mercenary|Harkonnen->Fremen#Advice "
+"text for Mercenary mission 6"
+msgstr "Te recomiendo producir y colocar Torres de Cohetes en posiciones defensivas estratégicas alrededor de tu instalación."
+
+#: src/FileClasses/TextManager.cpp:476
+msgid ""
+"@TEXTO.ENG|31|Atreides->Sardaukar|Ordos->Mercenary|Harkonnen->Fremen#Advice "
+"text for Mercenary mission 7"
+msgstr "El Desviador es un poderoso aliado contra las fuerzas enemigas."
+
+#: src/FileClasses/TextManager.cpp:477
+msgid ""
+"@TEXTO.ENG|35|Atreides->Sardaukar|Ordos->Mercenary|Harkonnen->Fremen#Advice "
+"text for Mercenary mission 8"
+msgstr "Utiliza la opción especial de tu Palacio tanto como sea posible, ya que no tiene coste alguno y se recarga con el tiempo."
+
+#: src/FileClasses/TextManager.cpp:478
+msgid ""
+"@TEXTO.ENG|39|Atreides->Sardaukar|Ordos->Mercenary|Harkonnen->Fremen#Advice "
+"text for Mercenary mission 9"
+msgstr "Ten cuidado con los ataques sorpresa, defiende bien tus instalaciones."
+
+#: src/Game.cpp:670
+msgid "You Have Completed Your Mission."
+msgstr "Has completado tu misión."
+
+#: src/Game.cpp:672
+msgid "You Have Failed Your Mission."
+msgstr "Has fracasado en tu misión."
+
+#: src/Game.cpp:894
+msgid "@DUNE.ENG|226#Harvester"
+msgstr "Recolector "
+
+#: src/Game.cpp:899
+msgid "@DUNE.ENG|124#full and awaiting pickup"
+msgstr "lleno y esperando transporte"
+
+#: src/Game.cpp:901
+msgid "@DUNE.ENG|123#full and returning"
+msgstr "lleno y de regreso"
+
+#: src/Game.cpp:903
+msgid "@DUNE.ENG|122#full and harvesting"
+msgstr "lleno y recolectando"
+
+#: src/Game.cpp:905
+msgid "@DUNE.ENG|121#full"
+msgstr "lleno"
+
+#: src/Game.cpp:910
+msgid "@DUNE.ENG|128#empty and awaiting pickup"
+msgstr "vacío y esperando transporte"
+
+#: src/Game.cpp:912
+msgid "@DUNE.ENG|127#empty and returning"
+msgstr "vacío y de regreso"
+
+#: src/Game.cpp:914
+msgid "@DUNE.ENG|126#empty and harvesting"
+msgstr "vacío y recolectando"
+
+#: src/Game.cpp:916
+msgid "@DUNE.ENG|125#empty"
+msgstr "vacío"
+
+#: src/Game.cpp:2108 src/Game.cpp:2118 src/GUI/dune/GameOptionsWindow.cpp:107
+msgid "Game speed"
+msgstr "Velocidad del juego"
+
+#: src/Game.cpp:2248
+msgid "Screenshot saved"
+msgstr "Captura de pantalla guardada"
+
+#: src/Game.cpp:2296
+msgid "Game resumed!"
+msgstr "¡Partida reanudada!"
+
+#: src/Game.cpp:2299
+msgid "Game paused!"
+msgstr "¡Partida en pausa!"
+
+#: src/Game.cpp:2331 src/Game.cpp:2352
+msgid "@DUNE.ENG|135#Cannot place slab here."
+msgstr "No se puede ubicar el bloque aquí."
+
+#: src/Game.cpp:2365
+#, c-format
+msgid "@DUNE.ENG|134#Cannot place %%s here."
+msgstr "No se puede ubicar %%s aquí."
+
+#: src/GUI/dune/BuilderList.cpp:68
+msgid "Order"
+msgstr "Órden"
+
+#: src/GUI/dune/BuilderList.cpp:283
+msgid "SOLD OUT"
+msgstr "AGOTADO"
+
+#: src/GUI/dune/BuilderList.cpp:305
+msgid ""
+"ALREADY\n"
+"BUILT"
+msgstr ""
+"YA\n"
+"CONSTRUIDO"
+
+#: src/GUI/dune/BuilderList.cpp:330
+msgid "PLACE IT"
+msgstr "UBICAR"
+
+#: src/GUI/dune/BuilderList.cpp:338
+msgid "ON HOLD"
+msgstr "EN ESPERA"
+
+#: src/GUI/dune/GameOptionsWindow.cpp:34
+msgid "Game Options"
+msgstr "Opciones de partida"
+
+#: src/GUI/dune/GameOptionsWindow.cpp:43
+msgid "Concrete Required"
+msgstr "Se necesita hormigón"
+
+#: src/GUI/dune/GameOptionsWindow.cpp:45
+#, no-c-format
+msgid ""
+"If checked building on bare rock will result in 50% structure health penalty."
+msgstr ""
+"Si está activado las estructuras sobre la roca tendrán una penalización del 50% de daño."
+
+#: src/GUI/dune/GameOptionsWindow.cpp:50
+msgid "Structures Degrade On Concrete"
+msgstr "Las estructuras sobre hormigón se degradan"
+
+#: src/GUI/dune/GameOptionsWindow.cpp:51
+msgid ""
+"If checked structures will degrade on power shortage even if built on "
+"concrete."
+msgstr ""
+"Si está activado las estructuras se degradarán cuando falte energía incluso "
+"si se construyen sobre hormigón."
+
+#: src/GUI/dune/GameOptionsWindow.cpp:56
+msgid "Fog of War"
+msgstr "Niebla de guerra"
+
+#: src/GUI/dune/GameOptionsWindow.cpp:57
+msgid ""
+"If checked explored terrain will become foggy when no unit or structure is "
+"next to it."
+msgstr ""
+"Si está activado el terreno explorado se nublará cuando no hay ninguna unidad "
+"o estructura cerca."
+
+#: src/GUI/dune/GameOptionsWindow.cpp:62
+msgid "Start with Explored Map"
+msgstr "Empezar con el mapa explorado"
+
+#: src/GUI/dune/GameOptionsWindow.cpp:63
+msgid "If checked the complete map is unhidden at the beginning of the game."
+msgstr "Si está activado se muestra el mapa completo desde el inicio de la partida."
+
+#: src/GUI/dune/GameOptionsWindow.cpp:68
+msgid "Instant Build"
+msgstr "Construcción instantánea"
+
+#: src/GUI/dune/GameOptionsWindow.cpp:69
+msgid "If checked the building of structures and units does not take any time."
+msgstr "Si está activado la construcción de estructuras y unidades no requiere tiempo."
+
+#: src/GUI/dune/GameOptionsWindow.cpp:74
+msgid "Only One Palace per House"
+msgstr "Solo un Palacio por casa"
+
+#: src/GUI/dune/GameOptionsWindow.cpp:75
+msgid "If checked only one palace can be build per house."
+msgstr "Si está activado cada casa puede construir un único palacio."
+
+#: src/GUI/dune/GameOptionsWindow.cpp:80
+msgid "Rocket-Turrets Need Power"
+msgstr "Las torres de cohetes necesitan energía"
+
+#: src/GUI/dune/GameOptionsWindow.cpp:81
+msgid "If checked rocket turrets are dysfunctional on power shortage."
+msgstr "Si está activado las torres de cohetes no funcionan si falta energía."
+
+#: src/GUI/dune/GameOptionsWindow.cpp:86
+msgid "Killed Sandworms Respawn"
+msgstr "Los gusanos de arena se regeneran"
+
+#: src/GUI/dune/GameOptionsWindow.cpp:87
+msgid "If checked killed sandworms respawn after some time."
+msgstr "Si está activado los gusanos de arena se regeneran pasado un tiempo desde su muerte"
+
+#: src/GUI/dune/GameOptionsWindow.cpp:92
+msgid "Killed Sandworms Drop Spice"
+msgstr "Los gusanos de arena muertos dejan caer especia"
+
+#: src/GUI/dune/GameOptionsWindow.cpp:93
+msgid "If checked killed sandworms drop some spice."
+msgstr "Si está activado los gusanos de arena dejan caer algo de especia cuando mueren."
+
+#: src/GUI/dune/GameOptionsWindow.cpp:126
+#: src/GUI/dune/InGameSettingsMenu.cpp:101 src/MapEditor/ChoamWindow.cpp:134
+#: src/MapEditor/MapSettingsWindow.cpp:283
+#: src/MapEditor/PlayerSettingsWindow.cpp:191
+#: src/MapEditor/ReinforcementsWindow.cpp:192
+#: src/MapEditor/TeamsWindow.cpp:185 src/Menu/CustomGameStatsMenu.cpp:180
+msgid "OK"
+msgstr "Vale"
+
+#: src/GUI/dune/InGameMenu.cpp:56
+msgid "Resume Game"
+msgstr "Continuar partida"
+
+#: src/GUI/dune/InGameMenu.cpp:63 src/GUI/dune/InGameMenu.cpp:198
+msgid "Save Game"
+msgstr "Guardar partida"
+
+#: src/GUI/dune/InGameMenu.cpp:70 src/GUI/dune/InGameMenu.cpp:206
+#: src/Menu/CustomGameMenu.cpp:231 src/Menu/SinglePlayerMenu.cpp:156
+msgid "Load Game"
+msgstr "Cargar partida"
+
+#: src/GUI/dune/InGameMenu.cpp:79
+msgid "Game Settings"
+msgstr "Ajustes de partida"
+
+#: src/GUI/dune/InGameMenu.cpp:88
+msgid "Restart Game"
+msgstr "Reiniciar partida"
+
+#: src/GUI/dune/InGameMenu.cpp:97
+msgid "Quit to Menu"
+msgstr "Salir al menú"
+
+#: src/GUI/dune/InGameMenu.cpp:166 src/GUI/dune/InGameMenu.cpp:223
+msgid "Do you really want to quit this game?"
+msgstr "¿Seguro que quiere salir de esta partida?"
+
+#: src/GUI/dune/InGameMenu.cpp:211
+msgid "Do you really want to restart this game?"
+msgstr "¿Seguro que quiere reiniciar esta partida?"
+
+#: src/GUI/dune/InGameMenu.cpp:212 src/GUI/dune/InGameMenu.cpp:224
+#: src/GUI/dune/LoadSaveWindow.cpp:164 src/MapEditor/LoadMapWindow.cpp:159
+#: src/MapEditor/MapEditorInterface.cpp:872
+msgid "No"
+msgstr "No"
+
+#: src/GUI/dune/InGameMenu.cpp:213 src/GUI/dune/InGameMenu.cpp:225
+#: src/GUI/dune/LoadSaveWindow.cpp:165 src/MapEditor/LoadMapWindow.cpp:160
+#: src/MapEditor/MapEditorInterface.cpp:872
+msgid "Yes"
+msgstr "Sí"
+
+#: src/GUI/dune/InGameSettingsMenu.cpp:106 src/GUI/dune/LoadSaveWindow.cpp:101
+#: src/MapEditor/ChoamWindow.cpp:122 src/MapEditor/LoadMapWindow.cpp:122
+#: src/MapEditor/MapSettingsWindow.cpp:271 src/MapEditor/NewMapWindow.cpp:207
+#: src/MapEditor/PlayerSettingsWindow.cpp:175
+#: src/MapEditor/ReinforcementsWindow.cpp:180
+#: src/MapEditor/TeamsWindow.cpp:173
+msgid "Cancel"
+msgstr "Cancelar"
+
+#: src/GUI/dune/LoadSaveWindow.cpp:93
+msgid "Save"
+msgstr "Guardar"
+
+#: src/GUI/dune/LoadSaveWindow.cpp:163 src/MapEditor/LoadMapWindow.cpp:158
+#, c-format
+msgid "Do you really want to delete '%s' ?"
+msgstr "¿Seguro que quiere borrar '%s' ?"
+
+#: src/GUI/dune/LoadSaveWindow.cpp:230
+msgid ""
+"Invalid file name! File names must not contain \\ or / and must not be empty!"
+msgstr ""
+"¡Nombre de archivo no válido! Los nombres no deben contener \\ o / y no deben estar vacíos."
+
+#: src/GUI/dune/WaitingForOtherPlayers.cpp:44
+#: src/MapEditor/ReinforcementsWindow.cpp:101 src/MapEditor/TeamsWindow.cpp:92
+msgid "Remove"
+msgstr "Quitar"
+
+#: src/GUI/dune/WaitingForOtherPlayers.cpp:67
+msgid "Waiting for other players... "
+msgstr "Esperando a otros jugadores..."
+
+#: src/House.cpp:294
+msgid ""
+"@DUNE.ENG|145#As insufficient spice storage is available, spice is lost."
+msgstr ""
+"Los silos están llenos, se ha perdido especia."
+
+#: src/House.cpp:449
+#, c-format
+msgid "House '%s' has been defeated."
+msgstr "La Casa '%s' ha sido derrotada"
+
+#: src/MapEditor/ChoamWindow.cpp:61 src/MapEditor/MapEditorInterface.cpp:152
+msgid "Choam"
+msgstr "Choam"
+
+#: src/MapEditor/ChoamWindow.cpp:70
+msgid ""
+"These units are available at the starport. The given amount of these units "
+"is available at the start of the game and every 30s one unit is added."
+msgstr ""
+"Estas unidades están disponibles en el espaciopuerto. El número de unidades "
+"está disponible al inicio de la partida y se añade otra unidad cada 30s."
+
+#: src/MapEditor/LoadMapWindow.cpp:60 src/MapEditor/MapEditorInterface.cpp:110
+#: src/MapEditor/NewMapWindow.cpp:215
+msgid "Load Map"
+msgstr "Cargar mapa"
+
+#: src/MapEditor/LoadMapWindow.cpp:72 src/Menu/CustomGameMenu.cpp:76
+msgid "SP User Maps"
+msgstr "Mapas de usuario 1J"
+
+#: src/MapEditor/LoadMapWindow.cpp:78 src/Menu/CustomGameMenu.cpp:86
+msgid "MP User Maps"
+msgstr "Mapas de usuario MJ"
+
+#: src/MapEditor/LoadMapWindow.cpp:97 src/Menu/CustomGameMenu.cpp:116
+#: src/Menu/CustomGamePlayers.cpp:86
+msgid "Choose map"
+msgstr "Elegir mapa"
+
+#: src/MapEditor/LoadMapWindow.cpp:104 src/Menu/CustomGameMenu.cpp:123
+#: src/Menu/CustomGamePlayers.cpp:140
+msgid "Size"
+msgstr "Tamaño"
+
+#: src/MapEditor/LoadMapWindow.cpp:107 src/Menu/CustomGameMenu.cpp:125
+#: src/Menu/CustomGamePlayers.cpp:142
+msgid "Players"
+msgstr "Jugador"
+
+#: src/MapEditor/LoadMapWindow.cpp:110 src/Menu/CustomGameMenu.cpp:127
+#: src/Menu/CustomGamePlayers.cpp:144
+msgid "Author"
+msgstr "Autor"
+
+#: src/MapEditor/LoadMapWindow.cpp:113 src/Menu/CustomGameMenu.cpp:129
+#: src/Menu/CustomGamePlayers.cpp:146
+msgid "License"
+msgstr "Licencia"
+
+#: src/MapEditor/LoadMapWindow.cpp:134 src/Menu/CustomGameMenu.cpp:147
+msgid "Load"
+msgstr "Cargar"
+
+#: src/MapEditor/LoadMapWindow.cpp:255 src/Menu/CustomGameMenu.cpp:277
+msgid "No map available"
+msgstr "Mapa no disponible"
+
+#: src/MapEditor/MapEditor.cpp:132 src/MapEditor/MapEditorInterface.cpp:103
+#: src/MapEditor/NewMapWindow.cpp:58
+msgid "New Map"
+msgstr "Nuevo mapa"
+
+#: src/MapEditor/MapEditorInterface.cpp:96
+msgid "Leave Mapeditor"
+msgstr "Salir del editor de mapas"
+
+#: src/MapEditor/MapEditorInterface.cpp:117
+#: src/MapEditor/MapEditorInterface.cpp:912
+msgid "Save Map"
+msgstr "Guardar mapa"
+
+#: src/MapEditor/MapEditorInterface.cpp:124
+msgid "Undo"
+msgstr "Deshacer"
+
+#: src/MapEditor/MapEditorInterface.cpp:131
+msgid "Redo"
+msgstr "Rehacer"
+
+#: src/MapEditor/MapEditorInterface.cpp:138
+#: src/MapEditor/PlayerSettingsWindow.cpp:54
+msgid "Player Settings"
+msgstr "Ajustes de jugador"
+
+#: src/MapEditor/MapEditorInterface.cpp:145
+#: src/MapEditor/MapSettingsWindow.cpp:58
+msgid "Map Settings"
+msgstr "Ajustes de mapa"
+
+#: src/MapEditor/MapEditorInterface.cpp:159
+#: src/MapEditor/ReinforcementsWindow.cpp:56
+msgid "Reinforcements"
+msgstr "Refuerzos"
+
+#: src/MapEditor/MapEditorInterface.cpp:166 src/MapEditor/TeamsWindow.cpp:54
+msgid "Teams"
+msgstr "Equipos"
+
+#: src/MapEditor/MapEditorInterface.cpp:175
+#: src/MapEditor/MapEditorInterface.cpp:184
+#: src/MapEditor/MapEditorInterface.cpp:193
+#: src/MapEditor/MapEditorInterface.cpp:202
+#: src/MapEditor/MapEditorInterface.cpp:211 src/MapEditor/NewMapWindow.cpp:162
+msgid "Mirror mode"
+msgstr "Modo espejo"
+
+#: src/MapEditor/MapEditorInterface.cpp:175 src/MapEditor/NewMapWindow.cpp:165
+msgid "Off"
+msgstr "Desactivado"
+
+#: src/MapEditor/MapEditorInterface.cpp:184 src/MapEditor/NewMapWindow.cpp:166
+msgid "Horizontal"
+msgstr "Horizontal"
+
+#: src/MapEditor/MapEditorInterface.cpp:193 src/MapEditor/NewMapWindow.cpp:167
+msgid "Vertical"
+msgstr "Vertical"
+
+#: src/MapEditor/MapEditorInterface.cpp:202 src/MapEditor/NewMapWindow.cpp:168
+msgid "Horizontal and vertical"
+msgstr "Horizontal y vertical"
+
+#: src/MapEditor/MapEditorInterface.cpp:211 src/MapEditor/NewMapWindow.cpp:169
+msgid "Inverse"
+msgstr "Invertido"
+
+#: src/MapEditor/MapEditorInterface.cpp:352
+msgid "Set starting screen"
+msgstr "Establecer pantalla de inicio"
+
+#: src/MapEditor/MapEditorInterface.cpp:681
+msgid "Health"
+msgstr "Salud"
+
+#: src/MapEditor/MapEditorInterface.cpp:694
+msgid "Attack mode"
+msgstr "Modo de ataque"
+
+#: src/MapEditor/MapEditorInterface.cpp:711
+msgid "Rotate left"
+msgstr "Rotar a la izquierda"
+
+#: src/MapEditor/MapEditorInterface.cpp:718
+msgid "Rotate right"
+msgstr "Rotar a la derecha"
+
+#: src/MapEditor/MapEditorInterface.cpp:749
+#: src/MapEditor/ReinforcementsWindow.cpp:111
+#: src/MapEditor/TeamsWindow.cpp:102 src/Menu/CustomGamePlayers.cpp:258
+#: src/Menu/CustomGamePlayers.cpp:315
+msgid "Player"
+msgstr "Jugador"
+
+#: src/MapEditor/MapEditorInterface.cpp:872
+msgid "Do you really want to quit and lose unsaved changes to this map?"
+msgstr "¿Seguro que quiere salir y perder los cambios sin guardar en este mapa?"
+
+#: src/MapEditor/MapEditorInterface.cpp:888 src/Menu/CustomGameMenu.cpp:71
+msgid "SP Maps"
+msgstr "Mapas 1J"
+
+#: src/MapEditor/MapEditorInterface.cpp:892 src/Menu/CustomGameMenu.cpp:81
+msgid "MP Maps"
+msgstr "Mapas MJ"
+
+#: src/MapEditor/MapSettingsWindow.cpp:68
+msgid "Picture on winning"
+msgstr "Imagen de victoria"
+
+#: src/MapEditor/MapSettingsWindow.cpp:94
+msgid "Picture on losing"
+msgstr "Imagen de derrota"
+
+#: src/MapEditor/MapSettingsWindow.cpp:120
+msgid "Picture for briefing"
+msgstr "Imagen para las instrucciones"
+
+#: src/MapEditor/MapSettingsWindow.cpp:152
+msgid "Conditions for finishing the game"
+msgstr "Condiciones para finalizar la partida"
+
+#: src/MapEditor/MapSettingsWindow.cpp:157
+#: src/MapEditor/MapSettingsWindow.cpp:196
+msgid "Timeout reached"
+msgstr "Límite de tiempo alcanzado"
+
+#: src/MapEditor/MapSettingsWindow.cpp:169
+#: src/MapEditor/MapSettingsWindow.cpp:203
+msgid "Spice quota reached"
+msgstr "Cuota de especia alcanzada"
+
+#: src/MapEditor/MapSettingsWindow.cpp:176
+msgid "Player has no units/structures left"
+msgstr "Al jugador no le quedan unidades/estructuras"
+
+#: src/MapEditor/MapSettingsWindow.cpp:183
+#: src/MapEditor/MapSettingsWindow.cpp:217
+msgid "Others have no units/structures left"
+msgstr "A otros no les quedan unidades/estructuras"
+
+#: src/MapEditor/MapSettingsWindow.cpp:191
+msgid "Conditions for winning the game (in case it is finished)"
+msgstr "Condiciones para ganar la partida (cuando ha finalizado)"
+
+#: src/MapEditor/MapSettingsWindow.cpp:210
+msgid "Player has units/structures left"
+msgstr "Al jugador le quedan unidades/estructuras"
+
+#: src/MapEditor/MapSettingsWindow.cpp:225
+msgid "Tech Level"
+msgstr "Nivel tecnológico"
+
+#: src/MapEditor/MapSettingsWindow.cpp:231
+msgid "Level 1:  Concrete, Windtrap, Refinery"
+msgstr "Nivel 1:  Hormigón, Trampa de Viento, Refinería"
+
+#: src/MapEditor/MapSettingsWindow.cpp:232
+msgid ""
+"Level 2:  Radar, Barracks/Light Factory/WOR, Silo, Soldier/Trooper, Trike"
+msgstr ""
+"Nivel 2:  Radar, Barracas/Fábrica Ligera/WOR, Silo, Soldado/Guardia, Trike"
+
+#: src/MapEditor/MapSettingsWindow.cpp:233
+msgid "Level 3:  Light Factory, Quad"
+msgstr "Nivel 3:  Fábrica Ligera, Quad"
+
+#: src/MapEditor/MapSettingsWindow.cpp:234
+msgid "Level 4:  2x2 Concrete, Wall, Heavy Factory, Tank, Harvester, MCV"
+msgstr "Nivel 4:  Hormigón 2x2, Muro, Fábrica Pesada, Tanque, Recolector, MCV"
+
+#: src/MapEditor/MapSettingsWindow.cpp:235
+msgid "Level 5:  Gun Turret, Hightech Factory, Rapair Yard, Launcher, Carryall"
+msgstr "Nivel 5:  Torre de Cañón, Fábrica Tecnológica, Planta de Reparación, Lanzamisiles, Ala de Acarreo"
+
+#: src/MapEditor/MapSettingsWindow.cpp:236
+msgid "Level 6:  Starport, Rocket Turret, Siege Tank"
+msgstr "Nivel 6:  Espaciopuerto, Torre de Cohetes, Tanque de Asedio"
+
+#: src/MapEditor/MapSettingsWindow.cpp:237
+msgid "Level 7:  House IX, Sonic Tank/Deviator/Devastator, Ornithopter"
+msgstr "Nivel 7:  Casa IX, Tanque Sónico/Desviador/Devastador, Ornitóptero"
+
+#: src/MapEditor/MapSettingsWindow.cpp:238
+msgid "Level 8:  Palace, Fremen, Saboteur"
+msgstr "Nivel 8:  Palacio, Fremen, Saboteador"
+
+#: src/MapEditor/MapSettingsWindow.cpp:245 src/MapEditor/NewMapWindow.cpp:181
+msgid "Author:"
+msgstr "Autor:"
+
+#: src/MapEditor/MapSettingsWindow.cpp:256 src/MapEditor/NewMapWindow.cpp:192
+msgid "License:"
+msgstr "Licencia:"
+
+#: src/MapEditor/NewMapWindow.cpp:70
+msgid "Empty Map"
+msgstr "Mapa vacío"
+
+#: src/MapEditor/NewMapWindow.cpp:74
+msgid "Random Map"
+msgstr "Mapa aleatorio"
+
+#: src/MapEditor/NewMapWindow.cpp:78
+msgid "Dune2-compatible  Map"
+msgstr "Compatible con Dune2"
+
+#: src/MapEditor/NewMapWindow.cpp:90
+msgid "Map Width:"
+msgstr "Anchura del mapa:"
+
+#: src/MapEditor/NewMapWindow.cpp:98
+msgid "Map Height:"
+msgstr "Altura del mapa:"
+
+#: src/MapEditor/NewMapWindow.cpp:108
+msgid "Map Scale:"
+msgstr "Escala del mapa:"
+
+#: src/MapEditor/NewMapWindow.cpp:111
+msgid "Tiny (21x21)"
+msgstr "Diminuto (21x21)"
+
+#: src/MapEditor/NewMapWindow.cpp:112
+msgid "Small (32x32)"
+msgstr "Pequeño (32x32)"
+
+#: src/MapEditor/NewMapWindow.cpp:113
+msgid "Normal (62x62)"
+msgstr "Normal (62x62)"
+
+#: src/MapEditor/NewMapWindow.cpp:120
+msgid "Random Seed:"
+msgstr "Semilla aleatória:"
+
+#: src/MapEditor/NewMapWindow.cpp:133
+msgid "Rock:"
+msgstr "Piedra:"
+
+#: src/MapEditor/NewMapWindow.cpp:146
+msgid "Spice:"
+msgstr "Especia:"
+
+#: src/MapEditor/NewMapWindow.cpp:223
+msgid "Create"
+msgstr "Crear"
+
+#: src/MapEditor/PlayerSettingsWindow.cpp:72
+#: src/MapEditor/ReinforcementsWindow.cpp:355
+#: src/MapEditor/TeamsWindow.cpp:373 src/Menu/CustomGamePlayers.cpp:205
+#: src/Menu/CustomGameStatsMenu.cpp:105
+msgid "House"
+msgstr "Casa"
+
+#: src/MapEditor/PlayerSettingsWindow.cpp:75
+#, c-format
+msgid "Player %d:"
+msgstr "Jugador %d:"
+
+#: src/MapEditor/PlayerSettingsWindow.cpp:80
+msgid "any"
+msgstr "cualq."
+
+#: src/MapEditor/PlayerSettingsWindow.cpp:98
+msgid "Credits"
+msgstr "Créditos"
+
+#: src/MapEditor/PlayerSettingsWindow.cpp:110
+#: src/Menu/CustomGamePlayers.cpp:237 src/Menu/CustomGamePlayers.cpp:244
+msgid "Team"
+msgstr "Equipo"
+
+#: src/MapEditor/PlayerSettingsWindow.cpp:143
+msgid "Quota"
+msgstr "Cuota"
+
+#: src/MapEditor/PlayerSettingsWindow.cpp:152
+msgid "Max Units"
+msgstr "Máximas unidades"
+
+#: src/MapEditor/PlayerSettingsWindow.cpp:183
+#: src/MapEditor/PlayerSettingsWindow.cpp:208
+#: src/MapEditor/PlayerSettingsWindow.cpp:227
+msgid "Advanced..."
+msgstr "Avanzado..."
+
+#: src/MapEditor/PlayerSettingsWindow.cpp:209
+msgid "Basic..."
+msgstr "Básico..."
+
+#: src/MapEditor/ReinforcementsWindow.cpp:65
+msgid ""
+"Reinforcements are brought by a carryall. Multiple reinforcements at the "
+"same time are combined."
+msgstr ""
+"Los refuerzos se envían en un ala de acarreo. Varios refuerzos al mismo tiempo "
+"son combinados."
+
+#: src/MapEditor/ReinforcementsWindow.cpp:81 src/MapEditor/TeamsWindow.cpp:72
+msgid "Move up"
+msgstr "Mover arriba"
+
+#: src/MapEditor/ReinforcementsWindow.cpp:87 src/MapEditor/TeamsWindow.cpp:78
+msgid "Move down"
+msgstr "Mover abajo"
+
+#: src/MapEditor/ReinforcementsWindow.cpp:95 src/MapEditor/TeamsWindow.cpp:86
+msgid "Add"
+msgstr "Añadir"
+
+#: src/MapEditor/ReinforcementsWindow.cpp:120
+#: src/MapEditor/ReinforcementsWindow.cpp:354
+#: src/MapEditor/TeamsWindow.cpp:112 src/MapEditor/TeamsWindow.cpp:372
+#, c-format
+msgid "Player %d"
+msgstr "Jugador %d"
+
+#: src/MapEditor/ReinforcementsWindow.cpp:127
+msgid "Unit"
+msgstr "Unidad"
+
+#: src/MapEditor/ReinforcementsWindow.cpp:145
+msgid "Drop Location"
+msgstr "Lugar de entrega"
+
+#: src/MapEditor/ReinforcementsWindow.cpp:161
+msgid "Time"
+msgstr "Tiempo"
+
+#: src/MapEditor/ReinforcementsWindow.cpp:170
+msgid "Repeat"
+msgstr "Repetir"
+
+#: src/MapEditor/ReinforcementsWindow.cpp:263
+#: src/MapEditor/TeamsWindow.cpp:256
+msgid "Dune2-compatible maps support only up to 16 entries!"
+msgstr "¡Los mapas compatibles con Dune2 solo soportan 16 entradas!"
+
+#: src/MapEditor/TeamsWindow.cpp:119
+msgid "Team Behavior"
+msgstr "Comportamiento de equipo"
+
+#: src/MapEditor/TeamsWindow.cpp:137
+msgid "Team Type"
+msgstr "Tipo de equipo"
+
+#: src/MapEditor/TeamsWindow.cpp:142
+msgid "Foot (Infantry, Troopers)"
+msgstr "A pie (Infantería, Guardia)"
+
+#: src/MapEditor/TeamsWindow.cpp:143
+msgid "Wheeled (Trike, Raider, Quad)"
+msgstr "Rodada (Trike, Invasor, Quad)"
+
+#: src/MapEditor/TeamsWindow.cpp:144
+msgid "Tracked (Tank, Launcher, Siege Tank,...)"
+msgstr "Oruga (Tanque, Lanzamisiles, Tanque de Asedio...)"
+
+#: src/MapEditor/TeamsWindow.cpp:145
+msgid "Winged (Carryall, Ornithopter, Frigate)"
+msgstr "Alada (Ala de Acarreo, Ornitóptero, Fragata)"
+
+#: src/MapEditor/TeamsWindow.cpp:146
+msgid "Slither (Sandworm)"
+msgstr "Deslizante (Gusano de Arena)"
+
+#: src/MapEditor/TeamsWindow.cpp:147
+msgid "Harvester (Harvester)"
+msgstr "Recolector (Recolector)"
+
+#: src/MapEditor/TeamsWindow.cpp:151
+msgid "Units"
+msgstr "Unidades"
+
+#: src/MapEditor/TeamsWindow.cpp:159
+msgid "to"
+msgstr "a"
+
+#: src/Menu/CampaignStatsMenu.cpp:58
+#, c-format
+msgid "@DUNE.ENG|21#Score: %d"
+msgstr "Puntuación %d"
+
+#: src/Menu/CampaignStatsMenu.cpp:62 src/Menu/CustomGameStatsMenu.cpp:172
+#, c-format
+msgid "@DUNE.ENG|22#Time: %d:%02d"
+msgstr "Tiempo: %d:%02d"
+
+#: src/Menu/CampaignStatsMenu.cpp:67
+msgid "@DUNE.ENG|23#You have attained the rank"
+msgstr "Ha obtenido el rango de"
+
+#: src/Menu/CampaignStatsMenu.cpp:76
+msgid "@DUNE.ENG|26#Spice harvested by"
+msgstr "Especia recolectada por"
+
+#: src/Menu/CampaignStatsMenu.cpp:81
+msgid "@DUNE.ENG|24#Units destroyed by"
+msgstr "Unidades destruidas por"
+
+#: src/Menu/CampaignStatsMenu.cpp:86
+msgid "@DUNE.ENG|25#Buildings destroyed by"
+msgstr "Edificios destruidos por"
+
+#: src/Menu/CampaignStatsMenu.cpp:93 src/Menu/CampaignStatsMenu.cpp:131
+#: src/Menu/CampaignStatsMenu.cpp:169
+msgid "@DUNE.ENG|329#You:"
+msgstr "Usted:"
+
+#: src/Menu/CampaignStatsMenu.cpp:111 src/Menu/CampaignStatsMenu.cpp:149
+#: src/Menu/CampaignStatsMenu.cpp:187
+msgid "@DUNE.ENG|330#Enemy:"
+msgstr "Enemigo:"
+
+#: src/Menu/CampaignStatsMenu.cpp:487
+msgid "@DUNE.ENG|282#Emperor"
+msgstr "Emperador"
+
+#: src/Menu/CampaignStatsMenu.cpp:488
+msgid "@DUNE.ENG|281#Ruler of Arrakis"
+msgstr "Gobernador de Arrakis"
+
+#: src/Menu/CampaignStatsMenu.cpp:489
+msgid "@DUNE.ENG|280#Chief Warlord"
+msgstr "Caudillo"
+
+#: src/Menu/CampaignStatsMenu.cpp:490
+msgid "@DUNE.ENG|279#Warlord"
+msgstr "Señor de la guerra"
+
+#: src/Menu/CampaignStatsMenu.cpp:491
+msgid "@DUNE.ENG|278#Base Commander"
+msgstr "Comandante de base"
+
+#: src/Menu/CampaignStatsMenu.cpp:492
+msgid "@DUNE.ENG|277#Outpost Commander"
+msgstr "Comandante de puesto"
+
+#: src/Menu/CampaignStatsMenu.cpp:493
+msgid "@DUNE.ENG|276#Squad Leader"
+msgstr "Lider de escuadrón"
+
+#: src/Menu/CampaignStatsMenu.cpp:494
+msgid "@DUNE.ENG|275#Dune Trooper"
+msgstr "Guardia de Dune"
+
+#: src/Menu/CampaignStatsMenu.cpp:495
+msgid "@DUNE.ENG|274#Sand Warrior"
+msgstr "Guerrero de la arena"
+
+#: src/Menu/CampaignStatsMenu.cpp:496
+msgid "@DUNE.ENG|273#Desert Mongoose"
+msgstr "Mangosta del desierto"
+
+#: src/Menu/CampaignStatsMenu.cpp:497
+msgid "@DUNE.ENG|272#Sand Snake"
+msgstr "Serpiente de arena"
+
+#: src/Menu/CampaignStatsMenu.cpp:498
+msgid "@DUNE.ENG|271#Sand Flea"
+msgstr "Pulga de arena"
+
+#: src/Menu/CustomGameMenu.cpp:57
+msgid "LAN Game"
+msgstr "Partida en LAN"
+
+#: src/Menu/CustomGameMenu.cpp:57
+msgid "Internet Game"
+msgstr "Partida en Internet"
+
+#: src/Menu/CustomGameMenu.cpp:57
+msgid "Custom Game"
+msgstr "Partida configurable"
+
+#: src/Menu/CustomGameMenu.cpp:100
+msgid "Multiple players per house"
+msgstr "Varios jugadores por cada casa"
+
+#: src/Menu/CustomGameMenu.cpp:103
+msgid "Game Options..."
+msgstr "Opciones de partida..."
+
+#: src/Menu/CustomGameMenu.cpp:140 src/Menu/CustomGamePlayers.cpp:157
+#: src/Menu/MultiPlayerMenu.cpp:100 src/Menu/OptionsMenu.cpp:225
+#: src/Menu/SinglePlayerSkirmishMenu.cpp:69
+msgid "Back"
+msgstr "Anterior"
+
+#: src/Menu/CustomGameMenu.cpp:156 src/Menu/CustomGamePlayers.cpp:185
+msgid "Next"
+msgstr "Siguiente"
+
+#: src/Menu/CustomGamePlayers.cpp:267 src/Menu/CustomGamePlayers.cpp:302
+#: src/Menu/CustomGamePlayers.cpp:324 src/Menu/CustomGamePlayers.cpp:357
+#: src/Menu/CustomGamePlayers.cpp:1109 src/Menu/CustomGamePlayers.cpp:1175
+msgid "closed"
+msgstr "cerrado"
+
+#: src/Menu/CustomGamePlayers.cpp:276 src/Menu/CustomGamePlayers.cpp:300
+#: src/Menu/CustomGamePlayers.cpp:333 src/Menu/CustomGamePlayers.cpp:355
+#: src/Menu/CustomGamePlayers.cpp:1105 src/Menu/CustomGamePlayers.cpp:1172
+msgid "open"
+msgstr "abierto"
+
+#: src/Menu/CustomGamePlayers.cpp:682
+msgid ""
+"At least 2 houses must be controlled\n"
+"by a human player or an AI player!"
+msgstr ""
+"¡Al menos 2 casas deben ser controladas\n"
+"por un jugador humano o por una IA!"
+
+#: src/Menu/CustomGamePlayers.cpp:685
+msgid "There must be at least two different teams!"
+msgstr "¡Debe haber al menos dos equipos diferentes!"
+
+#: src/Menu/CustomGamePlayers.cpp:1285 src/Menu/CustomGamePlayers.cpp:1297
+msgid "Random"
+msgstr "Aleatorio"
+
+#: src/Menu/CustomGameStatsMenu.cpp:65
+msgid "Built Object"
+msgstr "Obj. construidos"
+
+#: src/Menu/CustomGameStatsMenu.cpp:70
+msgid "Destroyed"
+msgstr "Destruidos"
+
+#: src/Menu/CustomGameStatsMenu.cpp:74
+msgid "Harvested Spice"
+msgstr "Especia recol."
+
+#: src/Menu/MainMenu.cpp:68
+msgid "SINGLE PLAYER"
+msgstr "UN SOLO JUGADOR"
+
+#: src/Menu/MainMenu.cpp:75
+msgid "MULTIPLAYER"
+msgstr "MULTIJUGADOR"
+
+#: src/Menu/MainMenu.cpp:82
+msgid "MAP EDITOR"
+msgstr "EDITOR DE MAPAS"
+
+#: src/Menu/MainMenu.cpp:88
+msgid "OPTIONS"
+msgstr "OPCIONES"
+
+#: src/Menu/MainMenu.cpp:94
+msgid "ABOUT"
+msgstr "ACERCA DE"
+
+#: src/Menu/MainMenu.cpp:100
+msgid "QUIT"
+msgstr "SALIR"
+
+#: src/Menu/MapChoice.cpp:68
+msgid "@DUNE.ENG|283#Three Houses have come to Dune..."
+msgstr "Tres cassas han llegado a Dune..."
+
+#: src/Menu/MapChoice.cpp:69
+msgid "@DUNE.ENG|284#...to take control of the land..."
+msgstr "...para tomar control sobre la tierra..."
+
+#: src/Menu/MapChoice.cpp:70
+msgid "@DUNE.ENG|285#...that has become divided."
+msgstr "..que ha sido dividida."
+
+#: src/Menu/MapChoice.cpp:205
+msgid "@DUNE.ENG|286#Select next region"
+msgstr "Seleccione la próxima región"
+
+#: src/Menu/MultiPlayerMenu.cpp:43
+msgid "Connect"
+msgstr "Conectar"
+
+#: src/Menu/MultiPlayerMenu.cpp:57
+msgid "Create LAN Game"
+msgstr "Crear partida en LAN"
+
+#: src/Menu/MultiPlayerMenu.cpp:63
+msgid "Create Internet Game"
+msgstr "Crear partida en Internet"
+
+#: src/Menu/MultiPlayerMenu.cpp:74
+msgid "LAN Games"
+msgstr "Partidas en LAN"
+
+#: src/Menu/MultiPlayerMenu.cpp:79
+msgid "Internet Games"
+msgstr "Partidas en Internet"
+
+#: src/Menu/MultiPlayerMenu.cpp:106
+msgid "Join"
+msgstr "Unirse"
+
+#: src/Menu/MultiPlayerMenu.cpp:165 src/Menu/MultiPlayerMenu.cpp:188
+msgid "Connecting..."
+msgstr "Conectando..."
+
+#: src/Menu/MultiPlayerMenu.cpp:384
+msgid "The game host quit the game!"
+msgstr "¡El anfitrión ha dejado la partida!"
+
+#: src/Menu/MultiPlayerMenu.cpp:388
+msgid "The server timed out!"
+msgstr "¡El servidor no responde!"
+
+#: src/Menu/MultiPlayerMenu.cpp:392
+msgid "A player with the same name as yours already exists!"
+msgstr "¡Ya existe un jugador con el mismo nombre que el tuyo!"
+
+#: src/Menu/MultiPlayerMenu.cpp:396
+msgid "There is no free player slot in this game left!"
+msgstr "¡No quedan espacios libres de jugador en esta partida!"
+
+#: src/Menu/MultiPlayerMenu.cpp:400
+msgid "The connection to the game host was lost!"
+msgstr "¡Se ha perdido la conexión con el servidor de la partida!"
+
+#: src/Menu/OptionsMenu.cpp:70
+msgid "Player Name"
+msgstr "Nombre de jugador"
+
+#: src/Menu/OptionsMenu.cpp:83
+msgid "Default Game Options"
+msgstr "Opciones de partida"
+
+#: src/Menu/OptionsMenu.cpp:84
+msgid "Change..."
+msgstr "Cambiar..."
+
+#: src/Menu/OptionsMenu.cpp:97
+msgid "Language"
+msgstr "Idioma"
+
+#: src/Menu/OptionsMenu.cpp:116
+msgid "Campaign AI"
+msgstr "Campaña IA"
+
+#: src/Menu/OptionsMenu.cpp:124
+msgid "Play Intro"
+msgstr "Introducción"
+
+#: src/Menu/OptionsMenu.cpp:135
+msgid "Video Resolution"
+msgstr "Resolución de vídeo"
+
+#: src/Menu/OptionsMenu.cpp:172
+msgid "Full Screen"
+msgstr "Pantalla completa"
+
+#: src/Menu/OptionsMenu.cpp:176
+msgid "Double Buffering"
+msgstr "Doble buffer"
+
+#: src/Menu/OptionsMenu.cpp:187
+msgid "Play SFX"
+msgstr "Reproducir SFX"
+
+#: src/Menu/OptionsMenu.cpp:191
+msgid "Play Music"
+msgstr "Reproducir música"
+
+#: src/Menu/OptionsMenu.cpp:202
+msgid "Port"
+msgstr "Puerto"
+
+#: src/Menu/OptionsMenu.cpp:214
+msgid "MetaServer"
+msgstr "Metaservidor"
+
+#: src/Menu/OptionsMenu.cpp:231
+msgid "Accept"
+msgstr "Aceptar"
+
+#: src/Menu/OptionsMenu.cpp:285
+msgid "Please enter a Player Name."
+msgstr "Introduzca un nombre de jugador."
+
+#: src/Menu/OptionsMenu.cpp:291
+#, c-format
+msgid ""
+"Server Port must be between 1 and 65535!\n"
+"Default Server Port is %d!"
+msgstr ""
+"¡El puerto de servidor debe estar entre 1 y 65535!\n"
+"El puerto predeterminado es %d"
+
+#: src/Menu/OptionsMenu.cpp:297
+msgid "Please enter a MetaServer."
+msgstr "Introduzca un Metaservidor."
+
+#: src/Menu/SinglePlayerMenu.cpp:73
+msgid "CAMPAIGN"
+msgstr "CAMPAÑA"
+
+#: src/Menu/SinglePlayerMenu.cpp:80
+msgid "CUSTOM GAME"
+msgstr "CONFIGURABLE"
+
+#: src/Menu/SinglePlayerMenu.cpp:86
+msgid "SKIRMISH"
+msgstr "ESCARAMUZA"
+
+#: src/Menu/SinglePlayerMenu.cpp:92
+msgid "LOAD GAME"
+msgstr "CARGAR PARTIDA"
+
+#: src/Menu/SinglePlayerMenu.cpp:98
+msgid "LOAD REPLAY"
+msgstr "CARGAR REPETICIÓN"
+
+#: src/Menu/SinglePlayerMenu.cpp:104
+msgid "BACK"
+msgstr "ATRÁS"
+
+#: src/Menu/SinglePlayerMenu.cpp:163
+msgid "Load Replay"
+msgstr "Cargar repetición"
+
+#: src/Menu/SinglePlayerSkirmishMenu.cpp:62
+msgid "Start"
+msgstr "Empezar"
+
+#: src/sand.cpp:355
+msgid "@DUNE.ENG|253#Barracks"
+msgstr "Barracas"
+
+#: src/sand.cpp:356
+msgid "@DUNE.ENG|249#Construction Yard"
+msgstr "Planta de Construcción"
+
+#: src/sand.cpp:357
+msgid "@DUNE.ENG|263#Gun Turret"
+msgstr "Torre de Cañón"
+
+#: src/sand.cpp:358
+msgid "@DUNE.ENG|241#Heacy Factory"
+msgstr "Fábrica Pesada"
+
+#: src/sand.cpp:359
+msgid "@DUNE.ENG|243#Hightech Factory"
+msgstr "Fábrica Tecnológica"
+
+#: src/sand.cpp:360
+msgid "@DUNE.ENG|245#House IX"
+msgstr "Casa IX"
+
+#: src/sand.cpp:361
+msgid "@DUNE.ENG|239#Light Factory"
+msgstr "Fábrica Ligera"
+
+#: src/sand.cpp:362
+msgid "@DUNE.ENG|237#Palace"
+msgstr "Palacio"
+
+#: src/sand.cpp:363
+msgid "@DUNE.ENG|269#Radar"
+msgstr "Radar"
+
+#: src/sand.cpp:364
+msgid "@DUNE.ENG|256#Refinery"
+msgstr "Refinería"
+
+#: src/sand.cpp:365
+msgid "@DUNE.ENG|259#Repair Yard"
+msgstr "Planta de Reparación"
+
+#: src/sand.cpp:366
+msgid "@DUNE.ENG|265#Rocket Turret"
+msgstr "Torre de Cohetes"
+
+#: src/sand.cpp:367
+msgid "@DUNE.ENG|267#Silo"
+msgstr "Silo"
+
+#: src/sand.cpp:368
+msgid "@DUNE.ENG|233#Slab"
+msgstr "Bloque"
+
+#: src/sand.cpp:369
+msgid "@DUNE.ENG|235#Slab (2x2)"
+msgstr "Bloque (2x2)"
+
+#: src/sand.cpp:370
+msgid "@DUNE.ENG|255#Starport"
+msgstr "Espaciopuerto"
+
+#: src/sand.cpp:371
+msgid "@DUNE.ENG|261#Wall"
+msgstr "Muro"
+
+#: src/sand.cpp:372
+msgid "@DUNE.ENG|251#Windtrap"
+msgstr "Trampa de Viento"
+
+#: src/sand.cpp:373
+msgid "@DUNE.ENG|247#WOR"
+msgstr "WOR"
+
+#: src/sand.cpp:375
+msgid "@DUNE.ENG|195#Carryall"
+msgstr "Ala de Acarreo"
+
+#: src/sand.cpp:376
+msgid "@DUNE.ENG|217#Devastator"
+msgstr "Devastador"
+
+#: src/sand.cpp:377
+msgid "@DUNE.ENG|211#Deviator"
+msgstr "Desviador"
+
+#: src/sand.cpp:378
+msgid "Frigate"
+msgstr "Fragata"
+
+#: src/sand.cpp:379
+msgid "@DUNE.ENG|227#Harvester"
+msgstr "Recolector"
+
+#: src/sand.cpp:380
+msgid "@DUNE.ENG|209#Launcher"
+msgstr "Lanzamisiles"
+
+#: src/sand.cpp:381
+msgid "@DUNE.ENG|229#MCV"
+msgstr "MCV"
+
+#: src/sand.cpp:382
+msgid "@DUNE.ENG|197#Ornithopter"
+msgstr "Ornitóptero"
+
+#: src/sand.cpp:383
+msgid "@DUNE.ENG|225#Quad"
+msgstr "Quad"
+
+#: src/sand.cpp:384
+msgid "@DUNE.ENG|223#Raider Trike"
+msgstr "Trike invasor"
+
+#: src/sand.cpp:385
+msgid "@DUNE.ENG|215#Siege Tank"
+msgstr "Tanque de Asedio"
+
+#: src/sand.cpp:386
+msgid "@DUNE.ENG|219#Sonic Tank"
+msgstr "Tanque Sónico"
+
+#: src/sand.cpp:387
+msgid "@DUNE.ENG|213#Tank"
+msgstr "Tanque"
+
+#: src/sand.cpp:388
+msgid "@DUNE.ENG|221#Trike"
+msgstr "Trike"
+
+#: src/sand.cpp:389
+msgid "@DUNE.ENG|207#Saboteur"
+msgstr "Saboteador"
+
+#: src/sand.cpp:390
+msgid "@DUNE.ENG|231#Sandworm"
+msgstr "Gusano de Arena"
+
+#: src/sand.cpp:391
+msgid "@DUNE.ENG|203#Soldier"
+msgstr "Soldado"
+
+#: src/sand.cpp:392
+msgid "@DUNE.ENG|205#Trooper"
+msgstr "Guardia"
+
+#: src/sand.cpp:393
+msgid "Sonic/Devast./Devia."
+msgstr "Sónico/Devast./Desvia."
+
+#: src/sand.cpp:394
+msgid "@DUNE.ENG|199#Infantry"
+msgstr "Infantería"
+
+#: src/sand.cpp:395
+msgid "@DUNE.ENG|201#Troopers"
+msgstr "Guardias"
+
+#: src/sand.cpp:539
+msgid "top edge"
+msgstr "borde superior"
+
+#: src/sand.cpp:540
+msgid "right edge"
+msgstr "borde derecho"
+
+#: src/sand.cpp:541
+msgid "bottom edge"
+msgstr "borde inferior"
+
+#: src/sand.cpp:542
+msgid "left edge"
+msgstr "borde izquierdo"
+
+#: src/sand.cpp:543
+msgid "random"
+msgstr "aleatorio"
+
+#: src/sand.cpp:544
+msgid "middle"
+msgstr "en medio"
+
+#: src/sand.cpp:545
+msgid "enemy base"
+msgstr "base enemiga"
+
+#: src/sand.cpp:546
+msgid "home base"
+msgstr "tu base"
+
+#: src/structures/BuilderBase.cpp:227 src/structures/StarPort.cpp:117
+msgid "Not enough money"
+msgstr "No hay suficiente dinero"
+
+#: src/structures/BuilderBase.cpp:320
+msgid "@DUNE.ENG|51#Construction is complete"
+msgstr "La construcción está completa"
+
+#: src/structures/Palace.cpp:154
+msgid "@DUNE.ENG|81#Missile is approaching"
+msgstr "Se aproxima un misil"
+
+#: src/structures/Palace.cpp:168
+msgid "Palace is ready"
+msgstr "El Palacio está preparado"
+
+#: src/structures/Palace.cpp:243
+msgid "Unable to spawn Fremen"
+msgstr "No se pueden generar Fremen"
+
+#: src/structures/Palace.cpp:258
+msgid "@DUNE.ENG|79#Saboteur is approaching"
+msgstr "Se aproxima un saboteador"
+
+#: src/structures/StarPort.cpp:108
+msgid "This unit is sold out"
+msgstr "Esta unidad está agotada"
+
+#: src/structures/StarPort.cpp:271
+msgid "@DUNE.ENG|80#Frigate has arrived"
+msgstr "La fragata ha llegado"
+
+#: src/units/MCV.cpp:89
+msgid "You cannot deploy here."
+msgstr "El MCV no se puede desplegar aquí."
