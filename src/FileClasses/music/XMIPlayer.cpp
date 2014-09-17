@@ -77,15 +77,16 @@ void XMIPlayer::changeMusic(MUSICTYPE musicType)
 
 		case MUSIC_PEACE: {
 
-            switch(getRandomInt(0, 7)) {
-                case 0:     filename = "DUNE2.XMI";     musicNum = 6;   break;
-                case 1:     filename = "DUNE3.XMI";     musicNum = 6;   break;
-                case 2:     filename = "DUNE4.XMI";     musicNum = 6;   break;
-                case 3:     filename = "DUNE5.XMI";     musicNum = 6;   break;
-                case 4:     filename = "DUNE6.XMI";     musicNum = 6;   break;
-                case 5:     filename = "DUNE9.XMI";     musicNum = 4;   break;
-                case 6:     filename = "DUNE9.XMI";     musicNum = 5;   break;
-                case 7:     filename = "DUNE18.XMI";    musicNum = 6;   break;
+            switch(getRandomInt(0, 8)) {
+                case 0:     filename = "DUNE1.XMI";     musicNum = 6;   break;
+                case 1:     filename = "DUNE2.XMI";     musicNum = 6;   break;
+                case 2:     filename = "DUNE3.XMI";     musicNum = 6;   break;
+                case 3:     filename = "DUNE4.XMI";     musicNum = 6;   break;
+                case 4:     filename = "DUNE5.XMI";     musicNum = 6;   break;
+                case 5:     filename = "DUNE6.XMI";     musicNum = 6;   break;
+                case 6:     filename = "DUNE9.XMI";     musicNum = 4;   break;
+                case 7:     filename = "DUNE9.XMI";     musicNum = 5;   break;
+                case 8:     filename = "DUNE18.XMI";    musicNum = 6;   break;
             }
 
 		} break;
@@ -136,10 +137,8 @@ void XMIPlayer::changeMusic(MUSICTYPE musicType)
 		} break;
 
         case MUSIC_GAMESTAT: {
-            switch(getRandomInt(0, 1)) {
-                case 0:     filename = "DUNE10.XMI";     musicNum = 7;   break;
-                case 1:     filename = "DUNE11.XMI";     musicNum = 7;   break;
-            }
+            filename = "DUNE20.XMI";
+            musicNum = 2;
 		} break;
 
         case MUSIC_MAPCHOICE: {
@@ -170,7 +169,7 @@ void XMIPlayer::changeMusic(MUSICTYPE musicType)
 		case MUSIC_RANDOM:
 		default: {
 
-            switch(getRandomInt(0, 13)) {
+            switch(getRandomInt(0, 14)) {
                 // attack
                 case 0:     filename = "DUNE10.XMI";    musicNum = 7;   break;
                 case 1:     filename = "DUNE11.XMI";    musicNum = 7;   break;
@@ -180,14 +179,15 @@ void XMIPlayer::changeMusic(MUSICTYPE musicType)
                 case 5:     filename = "DUNE15.XMI";    musicNum = 7;   break;
 
                 // peace
-                case 6:     filename = "DUNE2.XMI";     musicNum = 6;   break;
-                case 7:     filename = "DUNE3.XMI";     musicNum = 6;   break;
-                case 8:     filename = "DUNE4.XMI";     musicNum = 6;   break;
-                case 9:     filename = "DUNE5.XMI";     musicNum = 6;   break;
-                case 10:    filename = "DUNE6.XMI";     musicNum = 6;   break;
-                case 11:    filename = "DUNE9.XMI";     musicNum = 4;   break;
-                case 12:    filename = "DUNE9.XMI";     musicNum = 5;   break;
-                case 13:    filename = "DUNE18.XMI";    musicNum = 6;   break;
+                case 6:     filename = "DUNE1.XMI";     musicNum = 6;   break;
+                case 7:     filename = "DUNE2.XMI";     musicNum = 6;   break;
+                case 8:     filename = "DUNE3.XMI";     musicNum = 6;   break;
+                case 9:     filename = "DUNE4.XMI";     musicNum = 6;   break;
+                case 10:    filename = "DUNE5.XMI";     musicNum = 6;   break;
+                case 11:    filename = "DUNE6.XMI";     musicNum = 6;   break;
+                case 12:    filename = "DUNE9.XMI";     musicNum = 4;   break;
+                case 13:    filename = "DUNE9.XMI";     musicNum = 5;   break;
+                case 14:    filename = "DUNE18.XMI";    musicNum = 6;   break;
             }
 
 		} break;
