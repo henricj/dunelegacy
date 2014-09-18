@@ -47,7 +47,6 @@ void ADLPlayer::changeMusic(MUSICTYPE musicType)
     /* currently unused:
         DUNE0.ADL/4
         DUNE1.ADL/2 and DUNE10.ADL/2
-        DUNE20.ADL/2
     */
 
 

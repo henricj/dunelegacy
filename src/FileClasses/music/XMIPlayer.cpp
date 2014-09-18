@@ -57,7 +57,6 @@ void XMIPlayer::changeMusic(MUSICTYPE musicType)
     /* currently unused:
         DUNE0.XMI/4
         DUNE1.XMI/2 and DUNE10.XMI/2
-        DUNE20.XMI/2
     */
 
 
