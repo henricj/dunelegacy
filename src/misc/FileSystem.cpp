@@ -35,6 +35,11 @@
 #include <string.h>
 #endif
 
+// Used by FileManager::getResourcesBundlePath
+#if defined(DUNELEGACY_PLATFORM_OSX)
+    #include <CoreFoundation/CoreFoundation.h>
+#endif
+
 std::list<std::string> getFileNamesList(std::string directory, std::string extension, bool IgnoreCase, FileListOrder fileListOrder)
 {
     std::list<FileInfo> Files = getFileList(directory, extension, IgnoreCase, fileListOrder);
@@ -419,3 +424,27 @@ std::string getDirname(const std::string& filepath) {
 
     return filepath.substr(0, dirEndPos+1);
 }
+
+#if defined(DUNELEGACY_PLATFORM_OSX)
+std::string getResourcesBundlePath()
+{
+    char resources_path[PATH_MAX]; // file-system path
+    CFBundleRef bundle;            // bundle type reference
+
+    // Look for the top-level bundle's Resources path
+    bundle = CFBundleGetMainBundle();
+
+    CFURLRef resourcesURL = CFBundleCopyResourcesDirectoryURL(bundle);
+
+    if( ! CFURLGetFileSystemRepresentation(resourcesURL, true, (unsigned char*)resources_path, PATH_MAX) ) {
+        throw std::runtime_error("Could not find the app bundle's Resources directory path!");
+        CFRelease(resourcesURL);
+
+        return "\0";
+    }
+
+    CFRelease(resourcesURL);
+
+    return resources_path;
+}
+#endif // defined DUNELEGACY_PLATFORM_OSX
