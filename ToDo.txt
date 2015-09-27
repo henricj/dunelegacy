@@ -28,8 +28,16 @@ Bug:	Not all original terrain effects on unit speed are present right now, e.g. 
 
 Bug:	When a carryall is about to pick up an unit and the unit is just stopped before the carryall arrives the carryall just halts. 
 
+Bug:	Starting a replay with a different player name crashes
+
 Todo:
 -----
+
+Replay should contain INI of played map (or at least md5 of it)
+
+Reinforcements are delivered in reverse order (really?)
+
+If you lose in a campaign mission only the remaining regions are for selection, if you lose on all three regions you can again choose between all three
 
 Make command queues for units possible (e.g. waypoints during movement, hit and run, etc.)
 

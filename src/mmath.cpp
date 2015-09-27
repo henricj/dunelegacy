@@ -135,7 +135,8 @@ float blockDistance(const Coord& p1, const Coord& p2)
 // Move one square away from the enemy
 Coord retreatLocation(const Coord& p1, const Coord& p2)
 {
-	int j,k;
+	int j = 0;
+	int k = 0;
 
 	if(p1.x < p2.x){
         j = p1.x - 1;

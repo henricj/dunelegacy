@@ -161,6 +161,8 @@ dunelegacy_SOURCES =	AStarSearch.cpp\
 						players/PlayerFactory.cpp\
 						players/AIPlayer.cpp\
 						players/OldAIPlayer.cpp\
+						players/QuantBot.cpp\
+						players/SmartBot.cpp\
 						$(NULL)\
 						structures/StructureBase.cpp\
 						structures/BuilderBase.cpp\
