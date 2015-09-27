@@ -255,6 +255,44 @@ void Map::damage(Uint32 damagerID, House* damagerOwner, const Coord& realPos, Ui
 	}
 }
 
+/**
+    Check each tile which surrounds the building location to make sure there
+    is no building. We want to ensure we don't block units in and have
+    traffic lanes for our troops
+**/
+
+bool Map::isAStructureGap(int x, int y, int buildingSizeX, int buildingSizeY) const {
+
+	bool hasAGap = true;
+
+    // Spacing rues don't apply for rocket turrets
+    if(buildingSizeX == 1){
+        return hasAGap;
+    }
+
+    int xMin = x - 1;
+    int xMax = x + buildingSizeX + 1;
+    int yMin = y - 1;
+    int yMax = y + buildingSizeY + 1;
+
+	for(int i = xMin; i < xMax; i++) {
+		for(int j = yMin; j < yMax; j++) {
+            if(currentGameMap->tileExists(i,j)
+               && !((i == xMin || i == xMax) && (j == yMin || j == yMax))){ //Corners are ok as units can get through
+
+                const Tile* pTile = getTile(i,j);
+
+                if((pTile->hasAStructure() && !pTile->isConcrete())) { // I need some more conditions to make it ignore units
+
+                        hasAGap = false;
+                }
+            }
+        }
+    }
+
+	return hasAGap;
+}
+
 bool Map::okayToPlaceStructure(int x, int y, int buildingSizeX, int buildingSizeY, bool tilesRequired, const House* pHouse, bool bIgnoreUnits) const {
 	bool withinBuildRange = false;
 

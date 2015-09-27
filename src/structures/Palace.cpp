@@ -53,6 +53,8 @@ Palace::Palace(InputStream& stream) : StructureBase(stream) {
     Palace::init();
 
     specialWeaponTimer = stream.readSint32();
+
+
 }
 
 void Palace::init() {
@@ -68,8 +70,6 @@ void Palace::init() {
 	numImagesY = 1;
 	firstAnimFrame = 2;
 	lastAnimFrame = 3;
-
-	canAttackStuff = true;
 }
 
 Palace::~Palace() {
@@ -158,6 +158,7 @@ void Palace::doLaunchDeathhand(int x, int y) {
     }
 
     specialWeaponTimer = getMaxSpecialWeaponTimer();
+
 }
 
 void Palace::updateStructureSpecificStuff() {

@@ -446,9 +446,6 @@ void Game::drawScreen()
 //////////////////////////////draw unexplored/shade
 
 	if(debug == false) {
-        SDL_Surface** hiddenFogSurf = pGFXManager->getObjPic(ObjPic_Terrain_HiddenFog);
-        SDL_LockSurface(hiddenFogSurf[currentZoomlevel]);
-
 	    int zoomedTileSize = world2zoomedWorld(TILESIZE);
 		for(int x = screenborder->getTopLeftTile().x - 1; x <= screenborder->getBottomRightTile().x + 1; x++) {
 			for (int y = screenborder->getTopLeftTile().y - 1; y <= screenborder->getBottomRightTile().y + 1; y++) {
@@ -484,17 +481,20 @@ void Game::drawScreen()
                                 SDL_Rect mini = {0, 0, 1, 1};
                                 SDL_Rect drawLoc = {drawLocation.x, drawLocation.y, 0, 0};
 
+                                SDL_Surface** hiddenSurf = pGFXManager->getObjPic(ObjPic_Terrain_Hidden);
                                 SDL_Surface* fogSurf = pGFXManager->getTransparent40Surface();
 
+                                SDL_LockSurface(hiddenSurf[currentZoomlevel]);
                                 for(int i=0;i<zoomedTileSize; i++) {
                                     for(int j=0;j<zoomedTileSize; j++) {
-                                        if(getPixel(hiddenFogSurf[currentZoomlevel],source.x+i,source.y+j) == 12) {
+                                        if(getPixel(hiddenSurf[currentZoomlevel],source.x+i,source.y+j) == 12) {
                                             drawLoc.x = drawLocation.x + i;
                                             drawLoc.y = drawLocation.y + j;
                                             SDL_BlitSurface(fogSurf,&mini,screen,&drawLoc);
                                         }
                                     }
                                 }
+                                SDL_UnlockSurface(hiddenSurf[currentZoomlevel]);
                             }
 						}
 					} else {
@@ -516,7 +516,6 @@ void Game::drawScreen()
 				}
 			}
 		}
-		SDL_UnlockSurface(hiddenFogSurf[currentZoomlevel]);
 	}
 
 /////////////draw placement position
@@ -791,6 +790,14 @@ void Game::doInput()
 
                                 } break;
 
+                                case CursorMode_RequestCarryall: {
+
+                                    if(screenborder->isScreenCoordInsideMap(mouse->x, mouse->y) == true) {
+                                        handleSelectedObjectsRequestCarryallClick(screenborder->screen2MapX(mouse->x), screenborder->screen2MapY(mouse->y));
+                                    }
+
+                                } break;
+
                                 case CursorMode_Capture: {
 
                                     if(screenborder->isScreenCoordInsideMap(mouse->x, mouse->y) == true) {
@@ -896,7 +903,7 @@ void Game::doInput()
 
                                 int percent = lround(pHarvester->getAmountOfSpice() * 100.0f / (float) HARVESTERMAXSPICE);
                                 if(percent > 0) {
-                                    if(pHarvester->isAwaitingPickup()) {
+                                    if(pHarvester->isawaitingPickup()) {
                                         harvesterMessage += strprintf(_("@DUNE.ENG|124#full and awaiting pickup"), percent);
                                     } else if(pHarvester->isReturning()) {
                                         harvesterMessage += strprintf(_("@DUNE.ENG|123#full and returning"), percent);
@@ -907,7 +914,7 @@ void Game::doInput()
                                     }
 
                                 } else {
-                                    if(pHarvester->isAwaitingPickup()) {
+                                    if(pHarvester->isawaitingPickup()) {
                                         harvesterMessage += _("@DUNE.ENG|128#empty and awaiting pickup");
                                     } else if(pHarvester->isReturning()) {
                                         harvesterMessage += _("@DUNE.ENG|127#empty and returning");
@@ -1076,6 +1083,25 @@ void Game::drawCursor()
                     }
 
                 } break;
+
+
+                /**
+                    New Cursor mode for requesting a Carryall drop. Based off capture
+                **/
+
+                case CursorMode_RequestCarryall: {
+                    switch(currentZoomlevel) {
+                        case 0:     pCursor = pGFXManager->getUIGraphic(UI_CursorCapture_Zoomlevel0); break;
+                        case 1:     pCursor = pGFXManager->getUIGraphic(UI_CursorCapture_Zoomlevel1); break;
+                        case 2:
+                        default:    pCursor = pGFXManager->getUIGraphic(UI_CursorCapture_Zoomlevel2); break;
+                    }
+
+                    dest.x -= pCursor->w / 2;
+                    dest.y -= pCursor->h / 2;
+
+                } break;
+
 
                 default: {
                     throw std::runtime_error("Game::drawCursor(): Unknown cursor mode");
@@ -1928,6 +1954,11 @@ bool Game::onRadarClick(Coord worldPosition, bool bRightMouseButton, bool bDrag)
                     return false;
                 } break;
 
+                case CursorMode_RequestCarryall: {
+                    handleSelectedObjectsRequestCarryallClick(worldPosition.x / TILESIZE, worldPosition.y / TILESIZE);
+                    return false;
+                } break;
+
                 case CursorMode_Normal:
                 default: {
                     screenborder->setNewScreenCenter(worldPosition);
@@ -2463,6 +2494,43 @@ bool Game::handleSelectedObjectsMoveClick(int xPos, int yPos) {
     }
 }
 
+/**
+    New method for transporting units quickly using carryalls
+**/
+bool Game::handleSelectedObjectsRequestCarryallClick(int xPos, int yPos) {
+
+    UnitBase* responder = NULL;
+
+    /*
+        If manual carryall mode isn't enabled then turn this off...
+    */
+    if(!getGameInitSettings().getGameOptions().manualCarryallDrops)
+    {
+        currentCursorMode = CursorMode_Normal;
+        return false;
+    }
+
+
+    std::set<Uint32>::iterator iter;
+    for(iter = selectedList.begin(); iter != selectedList.end(); ++iter) {
+        ObjectBase *tempObject = objectManager.getObject(*iter);
+        if (tempObject->isAGroundUnit() && (tempObject->getOwner() == pLocalHouse) && tempObject->isRespondable()) {
+            responder = (UnitBase*) tempObject;
+            responder->handleRequestCarryallClick(xPos,yPos);
+        }
+    }
+
+    currentCursorMode = CursorMode_Normal;
+    if(responder) {
+        responder->playConfirmSound();
+        return true;
+    } else {
+        return false;
+    }
+}
+
+
+
 bool Game::handleSelectedObjectsCaptureClick(int xPos, int yPos) {
     Tile* pTile = currentGameMap->getTile(xPos, yPos);
 
@@ -2495,6 +2563,7 @@ bool Game::handleSelectedObjectsCaptureClick(int xPos, int yPos) {
 
     return false;
 }
+
 
 bool Game::handleSelectedObjectsActionClick(int xPos, int yPos) {
     //let unit handle right click on map or target

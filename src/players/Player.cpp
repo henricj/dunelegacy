@@ -28,6 +28,7 @@
 #include <structures/Palace.h>
 #include <structures/TurretBase.h>
 #include <units/UnitBase.h>
+#include <units/GroundUnit.h>
 #include <units/Devastator.h>
 #include <units/Harvester.h>
 #include <units/InfantryBase.h>
@@ -36,6 +37,7 @@
 #include <misc/Random.h>
 
 #include <globals.h>
+
 
 Player::Player(House* associatedHouse, std::string playername) : pHouse(associatedHouse), playerID(0), playername(playername) {
 }
@@ -270,3 +272,15 @@ bool Player::doDeploy(const MCV* pMCV) {
         return false;
     }
 }
+
+
+bool Player::doRequestCarryallDrop(const GroundUnit* pGroundUnit) {
+    if(pGroundUnit->getOwner() == getHouse()
+       ) {
+        return const_cast<GroundUnit*>(pGroundUnit)->requestCarryall();
+    } else {
+        fprintf(stderr,"Player %s tries request a carryall for a ground unit he doesn't own!\n", playername.c_str());
+        return false;
+    }
+}
+

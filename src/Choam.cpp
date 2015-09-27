@@ -50,7 +50,7 @@ int Choam::getPrice(Uint32 itemID) const {
 }
 
 bool Choam::isCheap(Uint32 itemID) const {
-    return (getPrice(itemID) < currentGame->objectData.data[itemID][house->getHouseID()].price);
+    return (getPrice(itemID) < currentGame->objectData.data[itemID][house->getHouseID()].price * 1.3); // A bit of logic to make starports better
 }
 
 int Choam::getNumAvailable(Uint32 itemID) const {

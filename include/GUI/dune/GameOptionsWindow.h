@@ -76,6 +76,7 @@ private:
 	Checkbox rocketTurretsNeedPowerCheckbox;        ///< If checked rocket turrets are dysfunctional on power shortage
 	Checkbox sandwormsRespawnCheckbox;              ///< If checked killed sandworms respawn after some time
 	Checkbox killedSandwormsDropSpiceCheckbox;      ///< If checked killed sandworms drop some spice
+	Checkbox manualCarryallDropsCheckbox;            ///< If checked player can request carryall to transport units
 	HBox            gameSpeedHBox;                  ///< The HBox containing the game speed selection
 	PictureButton	gameSpeedPlus;                  ///< The button for increasing the game speed
 	PictureButton	gameSpeedMinus;                 ///< The button for decreasing the game speed

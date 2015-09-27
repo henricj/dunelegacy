@@ -91,7 +91,7 @@ PictureFont::~PictureFont()
 
 
 
-void PictureFont::drawTextOnSurface(SDL_Surface* pSurface, std::string text, unsigned char baseColor) {
+void PictureFont::drawTextOnSurface(SDL_Surface* pSurface, std::string text, char baseColor) {
 	SDL_LockSurface(pSurface);
 
 	int curXPos = 0;

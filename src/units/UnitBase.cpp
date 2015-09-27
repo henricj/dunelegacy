@@ -204,6 +204,10 @@ void UnitBase::attack() {
             if(distance > 2*TILESIZE) {
                 currentBulletType = Bullet_SmallRocket;
             }
+		} else if(getItemID() == Unit_Launcher && bAirBullet){
+            // Launchers change weapon type when targeting flying units
+            currentBulletType = Bullet_TurretRocket;
+
 		}
 
 		if(primaryWeaponTimer == 0) {
@@ -286,6 +290,19 @@ void UnitBase::deploy(const Coord& newLocation) {
 		setRespondable(true);
 		setActive(true);
 		setVisible(VIS_ALL, true);
+		setForced(false);
+
+        /*
+            Stefan: Deployment logic to hopefully stop units freezing
+        */
+
+		if (getAttackMode() == CARRYALLREQUESTED || getAttackMode() == HUNT){
+            if(getItemID() == Unit_Harvester){
+                doSetAttackMode(HARVEST);
+            } else {
+                doSetAttackMode(GUARD);
+            }
+		}
 	}
 }
 
@@ -549,6 +566,9 @@ void UnitBase::move() {
 
 				if(forced && (location == destination) && !target) {
 					setForced(false);
+					if(getAttackMode() == CARRYALLREQUESTED){
+                        doSetAttackMode(GUARD);
+					}
 				}
 
 				moving = false;
@@ -739,6 +759,21 @@ void UnitBase::handleSetAttackModeClick(ATTACKMODE newAttackMode) {
 	currentGame->getCommandManager().addCommand(Command(pLocalPlayer->getPlayerID(), CMD_UNIT_SETMODE,objectID,(Uint32) newAttackMode));
 }
 
+/**
+    User action
+    Request a Carryall to drop at target location
+**/
+void UnitBase::handleRequestCarryallClick(int xPos, int yPos) {
+	if(respondable) {
+		if(currentGameMap->tileExists(xPos, yPos)) {
+			// move to pos
+            currentGame->getCommandManager().addCommand(Command(pLocalPlayer->getPlayerID(), CMD_UNIT_REQUESTCARRYALL,objectID,(Uint32) xPos, (Uint32) yPos));
+		}
+	}
+}
+
+
+
 void UnitBase::doMove2Pos(int xPos, int yPos, bool bForced) {
     if(attackMode == CAPTURE || attackMode == HUNT) {
         doSetAttackMode(GUARD);
@@ -875,11 +910,11 @@ bool UnitBase::isInGuardRange(const ObjectBase* pObject) const	{
 	int checkRange;
     switch(attackMode) {
         case GUARD: {
-            checkRange = getWeaponRange();
+            checkRange = 12;//getWeaponRange();
         } break;
 
         case AREAGUARD: {
-            checkRange = getAreaGuardRange();
+            checkRange = 12;//getViewRange();
         } break;
 
         case AMBUSH: {
@@ -888,6 +923,14 @@ bool UnitBase::isInGuardRange(const ObjectBase* pObject) const	{
 
         case HUNT: {
             return true;
+        } break;
+
+        case CARRYALLREQUESTED: {
+            return false;
+        } break;
+
+        case RETREAT: {
+            return false;
         } break;
 
         case STOP:
@@ -907,11 +950,11 @@ bool UnitBase::isInAttackRange(const ObjectBase* pObject) const {
 	int checkRange;
     switch(attackMode) {
         case GUARD: {
-            checkRange = getWeaponRange();
+            checkRange = 12;
         } break;
 
         case AREAGUARD: {
-            checkRange = getAreaGuardRange() + getWeaponRange() + 1;
+            checkRange = 12;
         } break;
 
         case AMBUSH: {
@@ -920,6 +963,14 @@ bool UnitBase::isInAttackRange(const ObjectBase* pObject) const {
 
         case HUNT: {
             return true;
+        } break;
+
+        case CARRYALLREQUESTED: {
+            return false;
+        } break;
+
+        case RETREAT: {
+            return false;
         } break;
 
         case STOP:
@@ -1096,7 +1147,30 @@ void UnitBase::setTarget(const ObjectBase* newTarget) {
 void UnitBase::targeting() {
     if(findTargetTimer == 0) {
 
-        if(attackMode != STOP) {
+
+
+
+        if(attackMode != STOP && attackMode != CARRYALLREQUESTED) {
+
+            /**
+                Stefan: lets add a bit of logic to make units recalibrate their nearest target
+                        if the target isn't in weapon range
+            **/
+
+            if(target && !attackPos && !forced &&(attackMode == GUARD || attackMode == AREAGUARD || attackMode == HUNT)){
+                if(!isInWeaponRange(target.getObjPointer())){
+                    const ObjectBase* pNewTarget = findTarget();
+
+                    if(pNewTarget != NULL) {
+
+                        doAttackObject(pNewTarget, false);
+
+                        findTargetTimer = 500;
+                    }
+                }
+            }
+
+
             if(!target && !attackPos && !moving && !justStoppedMoving && !forced) {
                 // we have no target, we have stopped moving and we weren't forced to do anything else
 
@@ -1117,11 +1191,11 @@ void UnitBase::targeting() {
                     }
                 } else if(attackMode == HUNT) {
                     setGuardPoint(location);
-                    doSetAttackMode(GUARD);
+                    doSetAttackMode(GUARD); // Stefan from GUARD
                 }
 
                 // reset target timer
-                findTargetTimer = 100;
+                findTargetTimer = 200;
             }
         }
 
@@ -1210,10 +1284,7 @@ bool UnitBase::update() {
         return false;
     }
 
-    if(active && (getHealthColor() != COLOR_LIGHTGREEN) && !goingToRepairYard && owner->hasRepairYard() && (owner->isAI() || owner->hasCarryalls())
-            && !isInfantry() && !isAFlyingUnit() && !forced && target.getObjPointer() == NULL) {
-        doRepair();
-    }
+
 
 
     if(recalculatePathTimer > 0) recalculatePathTimer--;

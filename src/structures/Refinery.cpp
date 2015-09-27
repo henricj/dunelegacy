@@ -175,7 +175,7 @@ void Refinery::updateStructureSpecificStuff() {
 
 
 			owner->addCredits(pHarvester->extractSpice(extractionSpeed), true);
-		} else if(pHarvester->isAwaitingPickup() == false) {
+		} else if(pHarvester->isawaitingPickup() == false) {
 		    // find carryall
 		    Carryall* pCarryall = NULL;
             if((pHarvester->getGuardPoint().isValid()) && getOwner()->hasCarryalls())	{

@@ -331,6 +331,8 @@ int BuilderBase::getUpgradeCost() const {
     return currentGame->objectData.data[itemID][originalHouseID].price / 2.0f;
 }
 
+
+
 bool BuilderBase::update() {
 	if(StructureBase::update() == false) {
         return false;
@@ -365,7 +367,8 @@ bool BuilderBase::update() {
                         && (newUnit->getItemID() != Unit_Carryall)
                         && (newUnit->getItemID() != Unit_Harvester)
                         && (newUnit->getItemID() != Unit_MCV)) {
-                        newUnit->doSetAttackMode(AREAGUARD);
+
+                        newUnit->doSetAttackMode(GUARD);
                     }
 
                     if(destination.isValid()) {

@@ -164,7 +164,7 @@ void Harvester::checkPos()
 					awaitingPickup = false;
 					if (((Refinery*)target.getObjPointer())->isFree())
 						setReturned();
-				} else if(!awaitingPickup && blockDistance(location, closestPoint) >= 5.0f) {
+				} else if(!awaitingPickup && owner->hasCarryalls()) {
 					requestCarryall();
 				}
 			} else if (!structureList.empty()) {
@@ -201,7 +201,7 @@ void Harvester::checkPos()
 					bestRefinery->startAnimate();
 				}
 			}
-		} else if (harvestingMode && !hasBookedCarrier() && (blockDistance(location, destination) > 10.0f)) {
+		} else if (harvestingMode && !hasBookedCarrier() && (blockDistance(location, destination) > 5.0f)) {
 			requestCarryall();
         } else if(respondable && !harvestingMode && attackMode != STOP) {
             if(spiceCheckCounter == 0) {

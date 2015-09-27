@@ -80,13 +80,25 @@ protected:
 
         actionHBox.addWidget(HSpacer::create(3));
 
+        requestCarryallButton.setSymbol(pGFXManager->getUIGraphic(UI_CursorCapture_Zoomlevel0), false);
+		requestCarryallButton.setTooltipText(_("Request Carryall drop to a position (Hotkey: C)"));
+		requestCarryallButton.setToggleButton(true);
+		requestCarryallButton.setOnClick(std::bind(&MultiUnitInterface::onRequestCarryall, this));
+		actionHBox.addWidget(&requestCarryallButton);
+
+        actionHBox.addWidget(HSpacer::create(3));
+
+        /* Use the capture button for requesting a carryall
+
         captureButton.setSymbol(pGFXManager->getUIGraphic(UI_CursorCapture_Zoomlevel0), false);
         captureButton.setTooltipText(_("Capture a building (Hotkey: C)"));
 		captureButton.setToggleButton(true);
 		captureButton.setOnClick(std::bind(&MultiUnitInterface::onCapture, this));
 		actionHBox.addWidget(&captureButton);
+        */
 
 		buttonVBox.addWidget(&actionHBox, 28);
+
 
 		buttonVBox.addWidget(VSpacer::create(3));
 
@@ -156,6 +168,15 @@ protected:
 		huntButton.setOnClick(std::bind(&MultiUnitInterface::onHunt, this));
 		buttonVBox.addWidget(&huntButton, 28);
 
+        buttonVBox.addWidget(VSpacer::create(6));
+
+		retreatButton.setText(_("Retreat"));
+        retreatButton.setTextColor(color+3);
+		retreatButton.setTooltipText(_("Unit will retreat back to base"));
+		retreatButton.setToggleButton(true);
+		retreatButton.setOnClick(std::bind(&MultiUnitInterface::onRetreat, this));
+		buttonVBox.addWidget(&retreatButton, 28);
+
 		buttonVBox.addWidget(VSpacer::create(6));
 		buttonVBox.addWidget(Spacer::create());
 		buttonVBox.addWidget(VSpacer::create(6));
@@ -176,6 +197,10 @@ protected:
 
     void onCapture() {
         currentGame->currentCursorMode = Game::CursorMode_Capture;
+	}
+
+    void onRequestCarryall() {
+        currentGame->currentCursorMode = Game::CursorMode_RequestCarryall;
 	}
 
 	void onReturn() {
@@ -229,6 +254,10 @@ protected:
 
     void onHunt() {
 		setAttackMode(HUNT);
+	}
+
+    void onRetreat(){
+        setAttackMode(RETREAT);
 	}
 
 	void setAttackMode(ATTACKMODE newAttackMode) {
@@ -348,12 +377,15 @@ protected:
     SymbolButton    returnButton;
     SymbolButton    deployButton;
     SymbolButton    destructButton;
+    SymbolButton    repairButton;
+    SymbolButton    requestCarryallButton;
 
     TextButton	    guardButton;
 	TextButton	    areaGuardButton;
 	TextButton      stopButton;
 	TextButton	    ambushButton;
 	TextButton      huntButton;
+    TextButton      retreatButton;
 };
 
 #endif //MULTIUNITINTERFACE_H

@@ -67,12 +67,21 @@ protected:
 
         actionHBox.addWidget(HSpacer::create(3));
 
+        requestCarryallButton.setSymbol(pGFXManager->getUIGraphic(UI_CursorCapture_Zoomlevel0), false);
+        requestCarryallButton.setTooltipText(_("Request Carryall drop to a position (Hotkey: C)"));
+        //requestCarryallButton.setVisible(getGameInitSettings().getGameOptions().manualCarryallDrops);
+		requestCarryallButton.setToggleButton(true);
+		requestCarryallButton.setOnClick(std::bind(&UnitInterface::onRequestCarryall, this));
+		actionHBox.addWidget(&requestCarryallButton);
+
+		/*
         captureButton.setSymbol(pGFXManager->getUIGraphic(UI_CursorCapture_Zoomlevel0), false);
         captureButton.setTooltipText(_("Capture a building (Hotkey: C)"));
         captureButton.setVisible((itemID == Unit_Soldier) || (itemID == Unit_Trooper));
 		captureButton.setToggleButton(true);
 		captureButton.setOnClick(std::bind(&UnitInterface::onCapture, this));
 		actionHBox.addWidget(&captureButton);
+		*/
 
 		buttonVBox.addWidget(&actionHBox, 28);
 
@@ -148,6 +157,17 @@ protected:
 		buttonVBox.addWidget(&huntButton, 28);
 
 		buttonVBox.addWidget(VSpacer::create(6));
+
+		retreatButton.setText(_("Retreat"));
+        retreatButton.setTextColor(color+3);
+		retreatButton.setTooltipText(_("Unit will retreat back to base"));
+		retreatButton.setToggleButton(true);
+		retreatButton.setOnClick(std::bind(&UnitInterface::onRetreat, this));
+		buttonVBox.addWidget(&retreatButton, 28);
+
+
+
+		buttonVBox.addWidget(VSpacer::create(6));
 		buttonVBox.addWidget(Spacer::create());
 		buttonVBox.addWidget(VSpacer::create(6));
 
@@ -167,6 +187,10 @@ protected:
 
     void onCapture() {
         currentGame->currentCursorMode = Game::CursorMode_Capture;
+	}
+
+    void onRequestCarryall() {
+        currentGame->currentCursorMode = Game::CursorMode_RequestCarryall;
 	}
 
 	void onReturn() {
@@ -213,6 +237,10 @@ protected:
 		setAttackMode(HUNT);
 	}
 
+	void onRetreat(){
+        setAttackMode(RETREAT);
+	}
+
 	void setAttackMode(ATTACKMODE newAttackMode) {
 		ObjectBase* pObject = currentGame->getObjectManager().getObject(objectID);
 		UnitBase* pUnit = dynamic_cast<UnitBase*>(pObject);
@@ -239,7 +267,8 @@ protected:
         moveButton.setToggleState(currentGame->currentCursorMode == Game::CursorMode_Move);
 		attackButton.setToggleState(currentGame->currentCursorMode == Game::CursorMode_Attack);
 		attackButton.setVisible(pObject->canAttack());
-		captureButton.setToggleState(currentGame->currentCursorMode == Game::CursorMode_Capture);
+		//captureButton.setToggleState(currentGame->currentCursorMode == Game::CursorMode_Capture);
+		requestCarryallButton.setToggleState(currentGame->currentCursorMode == Game::CursorMode_RequestCarryall);
 
 		UnitBase* pUnit = dynamic_cast<UnitBase*>(pObject);
 		if(pUnit != NULL) {
@@ -250,6 +279,8 @@ protected:
             stopButton.setToggleState( AttackMode == STOP );
             ambushButton.setToggleState( AttackMode == AMBUSH );
             huntButton.setToggleState( AttackMode == HUNT );
+            retreatButton.setToggleState( AttackMode == RETREAT );
+
 		}
 
 		return true;
@@ -266,12 +297,16 @@ protected:
     SymbolButton    returnButton;
     SymbolButton    deployButton;
     SymbolButton    destructButton;
+    SymbolButton    repairButton;
+    SymbolButton    requestCarryallButton;
 
     TextButton	    guardButton;
 	TextButton	    areaGuardButton;
 	TextButton      stopButton;
 	TextButton	    ambushButton;
 	TextButton      huntButton;
+	TextButton      retreatButton;
+
 };
 
 #endif //DEFAULTUNITINTERFACE_H

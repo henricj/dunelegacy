@@ -35,6 +35,9 @@ float distanceFrom(float x, float y, float to_x, float to_y);
 
 float blockDistance(const Coord& p1, const Coord& p2);
 
+// Retreat location for launcher
+Coord retreatLocation(const Coord& p1, const Coord& p2);
+
 int mirrorAngleHorizontal(int angle);
 int mirrorAngleVertical(int angle);
 

@@ -34,26 +34,12 @@
 #define _(msgid) getLocalized(msgid)
 
 TextManager::TextManager() {
-    std::string data_dir = DUNELEGACY_DATADIR; // default data path
-
-    #if defined(DUNELEGACY_PLATFORM_OSX)
-        data_dir = getResourcesBundlePath();
-
-        // If this path does not exist, the game is more than likely going to
-        // fail here, unless the end-user really knows what they are doing.
-        if( existsFile(data_dir) == false ) {
-            fprintf(stderr,"\n Cannot find Application Bundle's 'Resources' directory path: %s\n", data_dir.c_str() );
-            // throw std::runtime_error("Cannot open or read " + data_dir + "!");
-        }
-    #endif // defined DUNELEGACY_PLATFORM_OSX
-
-	std::list<std::string> languagesList = getFileNamesList(data_dir + "/locale", settings.general.language + ".po", true, FileListOrder_Name_Asc);
+	std::list<std::string> languagesList = getFileNamesList(DUNELEGACY_DATADIR "/locale", settings.general.language + ".po", true, FileListOrder_Name_Asc);
 
 	if(languagesList.empty()) {
-        std::string filepath = data_dir + "/locale/English.en.po";
-        localizedString = loadPOFile(SDL_RWFromFile(filepath.c_str(), "r"), true, "English.en.po");
+        localizedString = loadPOFile(SDL_RWFromFile(DUNELEGACY_DATADIR "/locale/English.en.po", "r"), true, "English.en.po");
 	} else {
-	    std::string filepath = data_dir + "/locale/" + languagesList.front();
+	    std::string filepath = std::string(DUNELEGACY_DATADIR "/locale/") + languagesList.front();
         localizedString = loadPOFile(SDL_RWFromFile(filepath.c_str(), "r"), true, languagesList.front());
 	}
 }

@@ -71,11 +71,20 @@ public:
 	*/
 	virtual void handleMoveClick(int xPos, int yPos);
 
+
 	/**
 		This method is called when an unit is ordered to be in a new attack mode
 		\param	newAttackMode   the new attack mode the unit is put in.
 	*/
 	virtual void handleSetAttackModeClick(ATTACKMODE newAttackMode);
+
+
+    /**
+		This method is called when an unit is ordered to request a carryall drop
+		\param	xPos	the x position on the map
+		\param	yPos	the y position on the map
+	*/
+	virtual void handleRequestCarryallClick(int xPos, int yPos);
 
 	/**
 		This method is called when an unit should move to (xPos,yPos)

@@ -40,13 +40,17 @@ public:
 
 	void bookCarrier(UnitBase* newCarrier);
 	virtual void checkPos();
+
+    void doRequestCarryallDrop(int x, int y);
 	bool requestCarryall();
 	void setPickedUp(UnitBase* newCarrier);
 
+
+
 	virtual void doRepair();
 
-	inline void setAwaitingPickup(bool status) { awaitingPickup = status; }
-	inline bool isAwaitingPickup() const { return awaitingPickup; }
+	inline void setawaitingPickup(bool status) { awaitingPickup = status; }
+	inline bool isawaitingPickup() const { return awaitingPickup; }
 	bool hasBookedCarrier() const;
 	const UnitBase* getCarrier() const;
 

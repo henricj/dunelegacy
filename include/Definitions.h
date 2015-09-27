@@ -84,7 +84,7 @@
 #define DEFAULT_STARTINGCREDITS 3000
 
 #define HUMANPLAYERCLASS        "HumanPlayer"
-#define DEFAULTAIPLAYERCLASS    "AIPlayerEasy"
+#define DEFAULTAIPLAYERCLASS    "qBotCampaignEasy"  //Stefan: updated to use my campaign AI
 
 #define COLOR_TRANSPARENT 0
 #define COLOR_BLACK 12

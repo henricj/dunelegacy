@@ -367,7 +367,7 @@ bool StructureBase::update() {
         } else {
             repairing = false;
         }
-    } else if(owner->isAI() && ((getHealth()/(float)getMaxHealth()) < 0.75f)) {
+    } else if(owner->isAI() && (getHealthColor() != COLOR_LIGHTGREEN)) {
         doRepair();
     }
 
@@ -460,9 +460,6 @@ void StructureBase::destroy() {
                     UnitBase* pNewUnit = owner->createUnit(Unit_Soldier);
                     pNewUnit->setHealth(pNewUnit->getMaxHealth()/2);
                     pNewUnit->deploy(location + Coord(i,j));
-                    if(getOwner()->isAI()) {
-                        pNewUnit->doSetAttackMode(HUNT);
-                    }
                 }
             }
         }

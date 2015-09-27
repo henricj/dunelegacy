@@ -128,6 +128,9 @@ typedef enum {
     SABOTAGE = 5,   ///< Only used by the map editor
     STOP = 6,
     CAPTURE = 7,    ///< Capture is only used for infantry units when ordered to capture a building
+    REPAIR = 8,             ///< Stefan: To be implemented for Player to use
+    CARRYALLREQUESTED = 9,   ///< Stefan: Implemented for Player to use
+    RETREAT = 10,           ///< Stefan: To be implemented for Player to use
     ATTACKMODE_MAX
 } ATTACKMODE;
 
@@ -190,7 +193,7 @@ public:
         GameOptionsClass()
          : gameSpeed(GAMESPEED_DEFAULT), concreteRequired(true), structuresDegradeOnConcrete(true), fogOfWar(false),
            startWithExploredMap(false), instantBuild(false), onlyOnePalace(false), rocketTurretsNeedPower(false),
-           sandwormsRespawn(false), killedSandwormsDropSpice(false) {
+           sandwormsRespawn(false), killedSandwormsDropSpice(false), manualCarryallDrops(false)  {
         }
 
 
@@ -204,7 +207,8 @@ public:
                     && (onlyOnePalace == goc.onlyOnePalace)
                     && (rocketTurretsNeedPower == goc.rocketTurretsNeedPower)
                     && (sandwormsRespawn == goc.sandwormsRespawn)
-                    && (killedSandwormsDropSpice == goc.killedSandwormsDropSpice);
+                    && (killedSandwormsDropSpice == goc.killedSandwormsDropSpice)
+                    && (manualCarryallDrops == goc.manualCarryallDrops);
         }
 
         bool operator!=(const GameOptionsClass& goc) const {
@@ -221,6 +225,7 @@ public:
 		bool        rocketTurretsNeedPower;
         bool        sandwormsRespawn;
 		bool        killedSandwormsDropSpice;
+		bool        manualCarryallDrops;
 	} gameOptions;
 };
 

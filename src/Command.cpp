@@ -23,6 +23,7 @@
 #include <House.h>
 
 #include <units/UnitBase.h>
+#include <units/GroundUnit.h>
 #include <units/Carryall.h>
 #include <units/Devastator.h>
 #include <units/MCV.h>
@@ -177,6 +178,21 @@ void Command::executeCommand() const {
                 return;
 			}
 			pInfantry->doCaptureStructure((int) parameter[1]);
+		} break;
+
+
+        /**
+            New command for requesting a carryall
+        **/
+		case CMD_UNIT_REQUESTCARRYALL: {
+			if(parameter.size() != 3) {
+				throw std::invalid_argument("Command::executeCommand(): CMD_UNIT_REQUESTCARRYALL needs 3 Parameters!");
+			}
+			GroundUnit* pGroundUnit = dynamic_cast<GroundUnit*>(currentGame->getObjectManager().getObject(parameter[0]));
+			if(pGroundUnit == NULL) {
+                return;
+			}
+            pGroundUnit->doRequestCarryallDrop((int) parameter[1], (int) parameter[2]);
 		} break;
 
 		case CMD_UNIT_SETMODE: {

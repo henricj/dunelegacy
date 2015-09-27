@@ -155,7 +155,7 @@ void createDefaultConfigFile(std::string configfilepath, std::string language) {
 								"# Minimum resolution is 640x480\n"
 								"Width = 640\n"
 								"Height = 480\n"
-								"Fullscreen = true\n"
+								"Fullscreen = false\n"
 								"Double Buffering = true\n"
 								"FrameLimit = true\t\t\t# Limit the frame rate to save energy\n"
 								"Preferred Zoom Level = 0\t\t# 0 = no zooming, 1 = 2x, 2 = 3x\n"
@@ -178,7 +178,7 @@ void createDefaultConfigFile(std::string configfilepath, std::string language) {
                                 "MetaServer = %s\n"
                                 "\n"
                                 "[AI]\n"
-                                "Campaign AI = AIPlayerEasy"
+                                "Campaign AI = qBotCampaignEasy"
                                 "\n"
                                 "[Game Options]\n"
                                 "Game Speed = 16\t\t\t\t# The default speed of the game: 32 = very slow, 8 = very fast, 16 = default\n"
@@ -190,7 +190,8 @@ void createDefaultConfigFile(std::string configfilepath, std::string language) {
 								"Only One Palace = false \t\t\t#If true, only one palace can be build per house\n"
 								"Rocket-Turrets Need Power = false \t\t\t#If true, rocket turrets are dysfunctional on power shortage\n"
                                 "Sandworms Respawn = false\t\t\t\t#If true, killed sandworms respawn after some time\n"
-								"Killed Sandworms Drop Spice = false \t\t\t#If true, killed sandworms drop some spice\n";
+								"Killed Sandworms Drop Spice = false \t\t\t#If true, killed sandworms drop some spice\n"
+								"Manual Carryall Drops = false \t\t\t#If true, player can request carryall to transport units\n";
 
     char playername[MAX_PLAYERNAMELENGHT+1] = "Player";
 
@@ -335,7 +336,10 @@ int main(int argc, char *argv[]) {
       exit(EXIT_FAILURE);
 	}
 
-	bool bShowDebug = false;
+    /**
+        I think is debugs??
+    **/
+	bool bShowDebug = true;
     for(int i=1; i < argc; i++) {
 	    //check for overiding params
 	    std::string parameter(argv[i]);
@@ -464,7 +468,7 @@ int main(int argc, char *argv[]) {
 		settings.general.playerName = myINIFile.getStringValue("General","Player Name","Player");
 		settings.video.width = myINIFile.getIntValue("Video","Width",640);
 		settings.video.height = myINIFile.getIntValue("Video","Height",480);
-		settings.video.fullscreen = myINIFile.getBoolValue("Video","Fullscreen",true);
+		settings.video.fullscreen = myINIFile.getBoolValue("Video","Fullscreen",false);
 		settings.video.doubleBuffering = myINIFile.getBoolValue("Video","Double Buffering",true);
 		settings.video.frameLimit = myINIFile.getBoolValue("Video","FrameLimit",true);
 		settings.video.preferredZoomLevel = myINIFile.getIntValue("Video","Preferred Zoom Level", 0);
@@ -492,6 +496,7 @@ int main(int argc, char *argv[]) {
         settings.gameOptions.rocketTurretsNeedPower = myINIFile.getBoolValue("Game Options","Rocket-Turrets Need Power",false);
         settings.gameOptions.sandwormsRespawn = myINIFile.getBoolValue("Game Options","Sandworms Respawn",false);
         settings.gameOptions.killedSandwormsDropSpice = myINIFile.getBoolValue("Game Options","Killed Sandworms Drop Spice",false);
+        settings.gameOptions.manualCarryallDrops = myINIFile.getBoolValue("Game Options","Manual Carryall Drops",false);
 
         fprintf(stdout, "loading texts....."); fflush(stdout);
         pTextManager = new TextManager();

@@ -313,18 +313,22 @@ void ObjectBase::unassignFromMap(const Coord& location) {
 	}
 }
 
+
 bool ObjectBase::canAttack(const ObjectBase* object) const {
+
 	if( canAttack()
         && (object != NULL)
 		&& (object->isAStructure()
 			|| !object->isAFlyingUnit())
 		&& ((object->getOwner()->getTeam() != owner->getTeam())
 			|| object->getItemID() == Unit_Sandworm)
-		&& object->isVisible(getOwner()->getTeam())) {
+		&& object->isVisible(getOwner()->getTeam()))
+    {
 		return true;
 	} else {
 		return false;
 	}
+	return false;
 }
 
 bool ObjectBase::isOnScreen() const {
@@ -411,10 +415,11 @@ const UnitBase* ObjectBase::findClosestTargetUnit() const {
 			Coord closestPoint = tempUnit->getClosestPoint(getLocation());
 			float unitDistance = blockDistance(getLocation(), closestPoint);
 
-			if(unitDistance < closestDistance) {
-                closestDistance = unitDistance;
-				closestUnit = tempUnit;
-            }
+                if(unitDistance < closestDistance) {
+                    closestDistance = unitDistance;
+                    closestUnit = tempUnit;
+                }
+
         }
 	}
 
@@ -485,12 +490,14 @@ const ObjectBase* ObjectBase::findTarget() const {
             checkRange = getWeaponRange();
         } break;
 
+
+        // I want to eventually phase this stuff out
         case AREAGUARD: {
-            checkRange = getAreaGuardRange();
+            checkRange = 15;//getAreaGuardRange();
         } break;
 
         case AMBUSH: {
-            checkRange = getViewRange();
+            checkRange = getWeaponRange();
         } break;
 
         case HUNT: {
@@ -525,7 +532,10 @@ const ObjectBase* ObjectBase::findTarget() const {
 			if(currentGameMap->getTile(xCheck,yCheck)->hasAnObject()) {
 				tempTarget = currentGameMap->getTile(xCheck,yCheck)->getObject();
 
-				if(((tempTarget->getItemID() != Structure_Wall) || (closestTarget == NULL)) && canAttack(tempTarget)) {
+				if((tempTarget->getItemID() != Structure_Wall
+                    || tempTarget->getItemID() != Unit_Carryall
+                    || closestTarget == NULL)
+                    && canAttack(tempTarget)) {
 					float targetDistance = blockDistance(location, tempTarget->getLocation());
 					if(targetDistance < closestDistance) {
 						closestTarget = tempTarget;
@@ -548,7 +558,7 @@ int ObjectBase::getViewRange() const {
 }
 
 int ObjectBase::getAreaGuardRange() const {
-    return 2*getWeaponRange();
+    return getWeaponRange();
 }
 
 int ObjectBase::getWeaponRange() const {
@@ -697,5 +707,6 @@ ObjectBase* ObjectBase::loadObject(InputStream& stream, int itemID, Uint32 objec
 bool ObjectBase::targetInWeaponRange() const {
     Coord coord = (target.getObjPointer())->getClosestPoint(location);
     float dist = blockDistance(location,coord);
+
     return ( dist <= currentGame->objectData.data[itemID][originalHouseID].weaponrange);
 }

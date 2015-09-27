@@ -47,6 +47,7 @@ void ADLPlayer::changeMusic(MUSICTYPE musicType)
     /* currently unused:
         DUNE0.ADL/4
         DUNE1.ADL/2 and DUNE10.ADL/2
+        DUNE20.ADL/2
     */
 
 
@@ -67,16 +68,15 @@ void ADLPlayer::changeMusic(MUSICTYPE musicType)
 
 		case MUSIC_PEACE: {
 
-            switch(getRandomInt(0, 8)) {
-                case 0:     filename = "DUNE1.ADL";     musicNum = 6;   break;
-                case 1:     filename = "DUNE2.ADL";     musicNum = 6;   break;
-                case 2:     filename = "DUNE3.ADL";     musicNum = 6;   break;
-                case 3:     filename = "DUNE4.ADL";     musicNum = 6;   break;
-                case 4:     filename = "DUNE5.ADL";     musicNum = 6;   break;
-                case 5:     filename = "DUNE6.ADL";     musicNum = 6;   break;
-                case 6:     filename = "DUNE9.ADL";     musicNum = 4;   break;
-                case 7:     filename = "DUNE9.ADL";     musicNum = 5;   break;
-                case 8:     filename = "DUNE18.ADL";    musicNum = 6;   break;
+            switch(getRandomInt(0, 7)) {
+                case 0:     filename = "DUNE2.ADL";     musicNum = 6;   break;
+                case 1:     filename = "DUNE3.ADL";     musicNum = 6;   break;
+                case 2:     filename = "DUNE4.ADL";     musicNum = 6;   break;
+                case 3:     filename = "DUNE5.ADL";     musicNum = 6;   break;
+                case 4:     filename = "DUNE6.ADL";     musicNum = 6;   break;
+                case 5:     filename = "DUNE9.ADL";     musicNum = 4;   break;
+                case 6:     filename = "DUNE9.ADL";     musicNum = 5;   break;
+                case 7:     filename = "DUNE18.ADL";    musicNum = 6;   break;
             }
 
 		} break;
@@ -127,8 +127,10 @@ void ADLPlayer::changeMusic(MUSICTYPE musicType)
 		} break;
 
         case MUSIC_GAMESTAT: {
-            filename = "DUNE20.ADL";
-            musicNum = 2;
+            switch(getRandomInt(0, 1)) {
+                case 0:     filename = "DUNE10.ADL";     musicNum = 7;   break;
+                case 1:     filename = "DUNE11.ADL";     musicNum = 7;   break;
+            }
 		} break;
 
         case MUSIC_MAPCHOICE: {
@@ -159,7 +161,7 @@ void ADLPlayer::changeMusic(MUSICTYPE musicType)
 		case MUSIC_RANDOM:
 		default: {
 
-            switch(getRandomInt(0, 14)) {
+            switch(getRandomInt(0, 13)) {
                 // attack
                 case 0:     filename = "DUNE10.ADL";    musicNum = 7;   break;
                 case 1:     filename = "DUNE11.ADL";    musicNum = 7;   break;
@@ -169,15 +171,14 @@ void ADLPlayer::changeMusic(MUSICTYPE musicType)
                 case 5:     filename = "DUNE15.ADL";    musicNum = 7;   break;
 
                 // peace
-                case 6:     filename = "DUNE1.ADL";     musicNum = 6;   break;
-                case 7:     filename = "DUNE2.ADL";     musicNum = 6;   break;
-                case 8:     filename = "DUNE3.ADL";     musicNum = 6;   break;
-                case 9:     filename = "DUNE4.ADL";     musicNum = 6;   break;
-                case 10:    filename = "DUNE5.ADL";     musicNum = 6;   break;
-                case 11:    filename = "DUNE6.ADL";     musicNum = 6;   break;
-                case 12:    filename = "DUNE9.ADL";     musicNum = 4;   break;
-                case 13:    filename = "DUNE9.ADL";     musicNum = 5;   break;
-                case 14:    filename = "DUNE18.ADL";    musicNum = 6;   break;
+                case 6:     filename = "DUNE2.ADL";     musicNum = 6;   break;
+                case 7:     filename = "DUNE3.ADL";     musicNum = 6;   break;
+                case 8:     filename = "DUNE4.ADL";     musicNum = 6;   break;
+                case 9:     filename = "DUNE5.ADL";     musicNum = 6;   break;
+                case 10:    filename = "DUNE6.ADL";     musicNum = 6;   break;
+                case 11:    filename = "DUNE9.ADL";     musicNum = 4;   break;
+                case 12:    filename = "DUNE9.ADL";     musicNum = 5;   break;
+                case 13:    filename = "DUNE18.ADL";    musicNum = 6;   break;
             }
 
 		} break;

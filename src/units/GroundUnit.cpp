@@ -84,6 +84,22 @@ void GroundUnit::checkPos() {
 		}
 	}
 
+    /*
+        Go to repair yard if low on health
+    */
+    if(active && (getHealthColor() != COLOR_LIGHTGREEN)
+            && !goingToRepairYard
+            && owner->hasRepairYard()
+            && !pickedUp
+            && owner->hasCarryalls()
+            && !isInfantry()
+            && !forced ) { // Stefan - Allow units with targets to be picked up for repairs
+
+        doRepair();
+
+    }
+
+
 	if(goingToRepairYard) {
 	    if(target.getObjPointer() == NULL) {
             goingToRepairYard = false;
@@ -91,7 +107,7 @@ void GroundUnit::checkPos() {
             bookedCarrier = NONE;
 
             clearPath();
-	    } else {
+	    } else{
             Coord closestPoint = target.getObjPointer()->getClosestPoint(location);
             if (!moving && !justStoppedMoving && (blockDistance(location, closestPoint) <= 1.5f)
                 && ((RepairYard*)target.getObjPointer())->isFree())
@@ -105,7 +121,27 @@ void GroundUnit::checkPos() {
             }
 	    }
 	}
+
+
+	/*
+        If we are awaiting a pickup try book a carryall if we have one
+	*/
+	if( attackMode == CARRYALLREQUESTED
+        && bookedCarrier == NONE){
+
+        if(getOwner()->hasCarryalls()){
+            requestCarryall();
+        } else{
+            if(getItemID() == Unit_Harvester){
+                doSetAttackMode(HARVEST);
+            } else{
+                doSetAttackMode(GUARD);
+            }
+        }
+
+	}
 }
+
 
 void GroundUnit::playConfirmSound() {
 	soundPlayer->playSound((Sound_enum) getRandomOf(2,Acknowledged,Affirmative));
@@ -115,9 +151,26 @@ void GroundUnit::playSelectSound() {
 	soundPlayer->playSound(Reporting);
 }
 
+/**
+    Request a Carryall to drop at target location
+**/
+
+void GroundUnit::doRequestCarryallDrop(int xPos, int yPos) {
+    if(getOwner()->hasCarryalls() && !awaitingPickup){
+        doMove2Pos(xPos, yPos, true);
+        requestCarryall();
+    }
+}
+
 bool GroundUnit::requestCarryall() {
-	if (getOwner()->hasCarryalls())	{
+	if (getOwner()->hasCarryalls() && !awaitingPickup)	{
 		Carryall* carryall = NULL;
+
+		/*
+            This allows a unit to keep requesting a carryall even if one isn't
+            available right now
+		*/
+		doSetAttackMode(CARRYALLREQUESTED);
 
         RobustList<UnitBase*>::const_iterator iter;
 	    for(iter = unitList.begin(); iter != unitList.end(); ++iter) {
@@ -136,6 +189,7 @@ bool GroundUnit::requestCarryall() {
 			}
 		}
 	}
+
 	return false;
 }
 
@@ -144,7 +198,9 @@ void GroundUnit::setPickedUp(UnitBase* newCarrier) {
 	awaitingPickup = false;
 	bookedCarrier = NONE;
 
-	clearPath();
+	clearPath(); // Stefan: I don't think this is right
+                 // but there is definitely something to it
+                 // <try removing this to keep tanks moving even when a carryall is coming>
 }
 
 void GroundUnit::bookCarrier(UnitBase* newCarrier) {
@@ -170,10 +226,15 @@ const UnitBase* GroundUnit::getCarrier() const {
 }
 
 void GroundUnit::navigate() {
+	// Lets keep units moving even if they are awaiting a pickup
+	// Could potentially make this distance based depending on how
+	// far away the booked carrier is
 	if(!awaitingPickup) {
 		UnitBase::navigate();
     }
 }
+
+
 
 void GroundUnit::doRepair() {
 	if(getHealth() < getMaxHealth()) {
@@ -200,9 +261,12 @@ void GroundUnit::doRepair() {
         }
 
         if(bestRepairYard) {
-            if(requestCarryall()) {
+            if((requestCarryall())) {
                 doMove2Object(bestRepairYard);
-            } else if(owner->isAI()) {
+            }
+
+            else if(owner->isAI()) {
+
                 doMove2Object(bestRepairYard);
             }
         }

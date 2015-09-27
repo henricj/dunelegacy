@@ -34,6 +34,7 @@ class StarPort;
 class ConstructionYard;
 class Palace;
 class TurretBase;
+class GroundUnit;
 class UnitBase;
 class Devastator;
 class Harvester;
@@ -42,6 +43,9 @@ class MCV;
 
 class Player {
 public:
+
+    Uint32 initialStructureCount[100] = { 0 };
+
     Player(House* associatedHouse, std::string playername);
     Player(InputStream& stream, House* associatedHouse);
     virtual ~Player();
@@ -234,6 +238,14 @@ protected:
        \return true, if deploying was successful, false otherwise.
 	*/
 	bool doDeploy(const MCV* pMCV);
+
+
+	/**
+        Request a carryall to take unit to location
+        This isn't in the original game but will make it fun
+	*/
+
+	bool doRequestCarryallDrop(const GroundUnit* pGroundUnit);
 
 
 private:

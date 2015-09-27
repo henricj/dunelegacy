@@ -26,6 +26,7 @@
 
 #include <units/Carryall.h>
 #include <units/GroundUnit.h>
+#include <units/Harvester.h>
 
 #include <GUI/ObjectInterfaces/RepairYardInterface.h>
 
@@ -97,9 +98,27 @@ void RepairYard::deployRepairUnit(Carryall* pCarryall) {
 	    pCarryall->setDestination(pRepairUnit->getGuardPoint());
 	} else {
         Coord deployPos = currentGameMap->findDeploySpot(pRepairUnit, location, destination, structureSize);
-        pRepairUnit->deploy(deployPos);
+
+        if(pRepairUnit->getItemID() != Unit_Harvester){
+            pRepairUnit->setForced(false);
+            pRepairUnit->setTarget(NULL);
+            //pRepairUnit->setDestination(NULL);
+            pRepairUnit->doSetAttackMode(GUARD);
+            pRepairUnit->deploy(deployPos);
+        }else{
+            // If we need additional harvester logic
+            pRepairUnit->doSetAttackMode(HARVEST);
+        }
+
+        /**
+            Need to fix at some point in a balanced way
+        **/
+        if(pRepairUnit->getAttackMode() == HUNT){
+            pRepairUnit->doSetAttackMode(GUARD);
+        }
         pRepairUnit->setTarget(NULL);
         pRepairUnit->setDestination(pRepairUnit->getLocation());
+
 	}
 
 	repairUnit.pointTo(NONE);
@@ -131,7 +150,12 @@ void RepairYard::updateStructureSpecificStuff() {
 			if (owner->takeCredits(UNIT_REPAIRCOST) > 0) {
 				pRepairUnit->addHealth();
 			}
-		} else if(((GroundUnit*)pRepairUnit)->isAwaitingPickup() == false) {
+
+			// Stop the last harvester getting stuck in the repair facility
+			else if (pRepairUnit->getItemID() == Unit_Harvester){
+                deployRepairUnit();
+			}
+		} else if(((GroundUnit*)pRepairUnit)->isawaitingPickup() == false) {
 		    // find carryall
 		    Carryall* pCarryall = NULL;
             if((pRepairUnit->getGuardPoint().isValid()) && getOwner()->hasCarryalls())	{
@@ -147,11 +171,14 @@ void RepairYard::updateStructureSpecificStuff() {
             }
 
             if(pCarryall != NULL) {
+                /*
                 pCarryall->setTarget(this);
                 pCarryall->clearPath();
                 ((GroundUnit*)pRepairUnit)->bookCarrier(pCarryall);
                 pRepairUnit->setTarget(NULL);
                 pRepairUnit->setDestination(pRepairUnit->getGuardPoint());
+                */
+                deployRepairUnit(pCarryall);
             } else {
                 deployRepairUnit();
             }

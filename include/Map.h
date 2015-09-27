@@ -48,6 +48,7 @@ public:
 
 	bool findSpice(Coord& destination, const Coord& origin) const;
 	bool okayToPlaceStructure(int x, int y, int buildingSizeX, int buildingSizeY, bool tilesRequired, const House* pHouse, bool bIgnoreUnits = false) const;
+	bool isAStructureGap(int x, int y, int buildingSizeX, int buildingSizeY) const; // Allows AI to check to see if a gap exists between the current structure
 	bool isWithinBuildRange(int x, int y, const House* pHouse) const;
 	int getPosAngle(const Coord& source, const Coord& pos) const;
 	Coord findClosestEdgePoint(const Coord& origin, const Coord& buildingSize) const;

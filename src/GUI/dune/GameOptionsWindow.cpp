@@ -24,7 +24,7 @@
 
 
 GameOptionsWindow::GameOptionsWindow(SettingsClass::GameOptionsClass& initialGameOptions)
- : Window(50,50,400,380) {
+ : Window(50,50,400, 450/*380 Stefan: Extended options panel size*/) {
 
     gameOptions = initialGameOptions;
 
@@ -95,6 +95,12 @@ GameOptionsWindow::GameOptionsWindow(SettingsClass::GameOptionsClass& initialGam
     vbox2.addWidget(&killedSandwormsDropSpiceCheckbox);
     vbox2.addWidget(VSpacer::create(4));
 
+    manualCarryallDropsCheckbox.setText(_("Manual Carryall Drops"));
+    manualCarryallDropsCheckbox.setTooltipText(_("If checked player can request carryall to transport units."));
+    manualCarryallDropsCheckbox.setChecked(gameOptions.manualCarryallDrops);
+    vbox2.addWidget(&manualCarryallDropsCheckbox);
+    vbox2.addWidget(VSpacer::create(4));
+
     SDL_Surface *surf,*surfPressed;
     surf = pGFXManager->getUIGraphic(UI_Minus);
 	surfPressed = pGFXManager->getUIGraphic(UI_Minus_Pressed);
@@ -151,6 +157,7 @@ void GameOptionsWindow::onOK() {
     gameOptions.rocketTurretsNeedPower = rocketTurretsNeedPowerCheckbox.isChecked();
     gameOptions.sandwormsRespawn = sandwormsRespawnCheckbox.isChecked();
     gameOptions.killedSandwormsDropSpice = killedSandwormsDropSpiceCheckbox.isChecked();
+    gameOptions.manualCarryallDrops = manualCarryallDropsCheckbox.isChecked();
 
     Window* pParentWindow = dynamic_cast<Window*>(getParent());
     if(pParentWindow != NULL) {

@@ -306,7 +306,13 @@ void Carryall::deployUnit(Uint32 unitID)
 		if(pUnit != NULL) {
 			pUnit->setAngle(drawnAngle);
 			Coord deployPos = currentGameMap->findDeploySpot(pUnit, location);
+			pUnit->setForced(false); // Stop units being forced if they are deployed
 			pUnit->deploy(deployPos);
+			if(pUnit->getItemID() != Unit_Harvester){
+                pUnit->doSetAttackMode(GUARD);
+			} else{
+                pUnit->doSetAttackMode(HARVEST);
+			}
 		}
 
 		if (pickedUpUnitList.empty())
@@ -368,7 +374,7 @@ void Carryall::engageTarget()
         return;
     }
 
-    if(target && target.getObjPointer()->isAGroundUnit() && !((GroundUnit*)target.getObjPointer())->isAwaitingPickup()) {
+    if(target && target.getObjPointer()->isAGroundUnit() && !((GroundUnit*)target.getObjPointer())->isawaitingPickup()) {
         // the target changed its state to not awaiting pickup anymore
         releaseTarget();
         return;
@@ -484,7 +490,7 @@ void Carryall::pickupTarget()
             clearPath();
 
 		} else {
-			pGroundUnitTarget->setAwaitingPickup(false);
+			pGroundUnitTarget->setawaitingPickup(false);
 			releaseTarget();
 		}
 	} else {
@@ -512,7 +518,7 @@ void Carryall::setTarget(const ObjectBase* newTarget) {
 	UnitBase::setTarget(newTarget);
 
 	if(target && targetFriendly && target.getObjPointer()->isAGroundUnit()) {
-		((GroundUnit*)target.getObjPointer())->setAwaitingPickup(true);
+		((GroundUnit*)target.getObjPointer())->setawaitingPickup(true);
 	}
 
 	booked = target;

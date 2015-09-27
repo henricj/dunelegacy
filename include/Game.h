@@ -463,6 +463,16 @@ private:
     */
     bool handleSelectedObjectsCaptureClick(int xPos, int yPos);
 
+
+    /**
+        Performs a request carryall click for the currently selected units.
+        \param  xPos    x-coordinate in map coordinates
+        \param  yPos    x-coordinate in map coordinates
+        \return true if carryall drop is possible
+    */
+    bool handleSelectedObjectsRequestCarryallClick(int xPos, int yPos);
+
+
     /**
         Performs an action click for the currently selected units/structures.
         \param  xPos    x-coordinate in map coordinates
@@ -484,6 +494,7 @@ public:
         CursorMode_Attack,
         CursorMode_Move,
         CursorMode_Capture,
+        CursorMode_RequestCarryall,
         CursorMode_Placing
     };
 

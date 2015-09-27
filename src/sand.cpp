@@ -624,6 +624,9 @@ std::string getTeamTypeNameByID(TeamType teamType) {
     \param  house   the house of the unit (choose the real owner);
 */
 float getDeviateWeakness(HOUSETYPE house) {
+    // Deviators are crap enough, remove the weakness nerf
+    return 1.00f;
+    /*
     switch(house) {
 	    case HOUSE_HARKONNEN:   return 0.78f;
         case HOUSE_ATREIDES:    return 0.30f;
@@ -632,7 +635,7 @@ float getDeviateWeakness(HOUSETYPE house) {
 	    case HOUSE_SARDAUKAR:   return 0.04f;
 	    case HOUSE_MERCENARY:   return 0.50f;
 	    default:                return 0.00f;
-    }
+    }*/
 }
 
 
