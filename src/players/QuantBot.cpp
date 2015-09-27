@@ -370,15 +370,20 @@ Coord QuantBot::findMcvPlaceLocation(const MCV* pMCV) {
 
 }
 
-
+/*
+    This method needs to be fixed
+    i) move from using a fixed size array to points
+    ii) fix the algorithm as it is still leaving gaps. this may require a complete rewrite.
+*/
 
 Coord QuantBot::findPlaceLocation(Uint32 itemID) {
 
     RobustList<const StructureBase*>::const_iterator iter;
 
-    int mapSizeX = getMap().getSizeX();
-    int mapSizeY = getMap().getSizeY();
-    int buildLocationScore[mapSizeX][mapSizeY] = {0};
+    // Will over allocate space for small maps so its not clean
+    // But should allow Richard to compile
+    int buildLocationScore[128][128] = {0};
+
     int bestLocationX, bestLocationY = -1;
     int bestLocationScore = - 1000;
     int newSizeX = getStructureSize(itemID).x;
