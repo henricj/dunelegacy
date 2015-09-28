@@ -111,7 +111,7 @@ QuantBot::QuantBot(House* associatedHouse, std::string playername, Uint32 diffic
     attackTimer = MILLI2CYCLES(10000);
 
     if(gameMode == CAMPAIGN){
-        MILLI2CYCLES(360000); //Wait for 6 minutes
+        attackTimer = MILLI2CYCLES(360000); //Wait for 6 minutes
     }
 
     initialCountComplete = false;
