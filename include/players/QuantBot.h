@@ -33,7 +33,7 @@ public:
         BRUTAL = 4,
         SKIRMISH = 5,
         CAMPAIGN = 6
-    };
+    } gameType;
 
 
 	void init();
@@ -64,7 +64,9 @@ private:
     Sint32  buildTimer;     ///< When to build the next structure/unit
     Sint32  attackTimer;     ///< When to build the next structure/unit
 
-
+    int initialItemCount[ItemID_LastID];
+    int itemCount[ItemID_LastID];
+    bool initialCountComplete;
 
 
     void scrambleUnitsAndDefend(const ObjectBase* pIntruder);
