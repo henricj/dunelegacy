@@ -18,6 +18,7 @@
 #ifndef PLAYER_H
 #define PLAYER_H
 
+#include <data.h>
 #include <DataTypes.h>
 #include <misc/InputStream.h>
 #include <misc/OutputStream.h>
@@ -44,7 +45,7 @@ class MCV;
 class Player {
 public:
 
-    Uint32 initialStructureCount[100] = { 0 };
+
 
     Player(House* associatedHouse, std::string playername);
     Player(InputStream& stream, House* associatedHouse);
@@ -74,6 +75,7 @@ public:
     void setPlayerclass(std::string playerclass) { this->playerclass = playerclass; };
 
 protected:
+
     Random& getRandomGen() const;
     const GameInitSettings& getGameInitSettings() const;
     Uint32 getGameCylceCount() const;
