@@ -489,19 +489,19 @@ Coord QuantBot::findPlaceLocation(Uint32 itemID) {
 
                                                     //There is a tile of building bordering this placement location
                                                     // Favour this
-                                                    buildLocationScore[placeLocationX][placeLocationY]+=5;
+                                                    buildLocationScore[placeLocationX][placeLocationY]+=10;
                                                 }
 
                                                 if(!getMap().getTile(i,j)->isRock()){
 
                                                     // square isn't rock, favour it
-                                                    buildLocationScore[placeLocationX][placeLocationY]+=10;
+                                                    buildLocationScore[placeLocationX][placeLocationY]+=5;
                                                 }
 
                                                 if(getMap().getTile(i,j)->hasAGroundObject()){
 
                                                     // try not to build next to units
-                                                    buildLocationScore[placeLocationX][placeLocationY]-=10;
+                                                    buildLocationScore[placeLocationX][placeLocationY]-=5;
                                                 }
 
 
@@ -514,7 +514,7 @@ Coord QuantBot::findPlaceLocation(Uint32 itemID) {
                                 }
 
                                 // Reduce score based off how far place location is from the centre of the base
-                                buildLocationScore[placeLocationX][placeLocationY] -= 5 *
+                                buildLocationScore[placeLocationX][placeLocationY] -= 10 *
                                 sqrt(abs(placeLocationX - baseCentre.x) * abs(placeLocationX - baseCentre.x)
                                     + abs(placeLocationY - baseCentre.y) * abs(placeLocationY - baseCentre.y));
 
@@ -543,7 +543,7 @@ Coord QuantBot::findPlaceLocation(Uint32 itemID) {
 
 
                                 //encourage structure alignment
-
+                                /*
                                 if(alignedX){
                                     buildLocationScore[placeLocationX][placeLocationY] += 1;
                                     if(newSizeX == existingSizeX){
@@ -556,22 +556,24 @@ Coord QuantBot::findPlaceLocation(Uint32 itemID) {
                                     if(newSizeY == existingSizeY){
                                         buildLocationScore[placeLocationX][placeLocationY] += existingSizeY  * 10;
                                     }
-                                }
+                                }*/
 
 
 
                                 // Give some points just for being there
 
+/*
                                 if(placeAbove && placeLeft
                                    || placeAbove && placeRight
                                    || placeBelow && placeLeft
                                    || placeBelow && placeRight){
                                     buildLocationScore[placeLocationX][placeLocationY] +=10;
                                 }
+                                */
 
 
                                 if(messy){
-                                    buildLocationScore[placeLocationX][placeLocationY] -= 10;
+                                    buildLocationScore[placeLocationX][placeLocationY] -= 20;
                                 }
 
 
@@ -1469,8 +1471,9 @@ void QuantBot::attack() {
                     - getHouse()->getNumItems(Unit_Deviator)
                     - getHouse()->getNumItems(Unit_Sandworm)
                     - getHouse()->getNumItems(Unit_MCV)
-       < 6)
-       || (gameMode == CAMPAIGN && militaryValue < militaryValueLimit * 0.65)){ // need to extend this to be used by skirmish ai as well
+       < 10)
+       || (gameMode == CAMPAIGN && militaryValue < militaryValueLimit * 0.30)// need to extend this to be used by skirmish ai as well
+        || (currentGame->techLevel > 4 && (!getHouse()->hasCarryalls() || getHouse()->getNumItems(Structure_RepairYard) == 0 ))){
         return;
     }
 
