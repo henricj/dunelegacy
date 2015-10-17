@@ -1,3 +1,12 @@
+dunelegacy (0.96.4alpha1) unstable; urgency=low
+  * New AI Smart Bot and Quant Bot
+  * New key bindings: Cycle through construction yards with 'H' and factories with 'F'
+  * Improve performance of Fog of War
+  * Bugfix (Bug 3610246): Mentat help used wrong houses (Thanks to kuffar for reporting that bug)
+  * Various smaller bugfixes
+
+ -- Richard Schaller <richard.schallerATgmx.de>  Tue, 29 Sep 2015 00:00:00 +0100
+
 dunelegacy (0.96.3) unstable; urgency=low
   * Full-featured map editor with support of Dune2-compatible maps as well as the extended map format
   * Integration of OpenSuperDune (a replacement to the original SuperDune)
