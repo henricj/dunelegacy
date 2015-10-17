@@ -371,6 +371,12 @@ bool BuilderBase::update() {
                         newUnit->doSetAttackMode(GUARD);
                     }
 
+                    else{
+                            // Don't want harvesters going to the rally point
+                            destination = location;
+
+                    }
+
                     if(destination.isValid()) {
                         newUnit->setGuardPoint(destination);
                         newUnit->setDestination(destination);

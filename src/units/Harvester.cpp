@@ -84,7 +84,7 @@ void Harvester::init()
 
 Harvester::~Harvester()
 {
-	;
+
 }
 
 void Harvester::save(OutputStream& stream) const
@@ -152,6 +152,10 @@ void Harvester::checkPos()
 
 	if(attackMode == STOP) {
         harvestingMode = false;
+
+        if(getOwner()->isAI()){
+            doSetAttackMode(HARVEST);
+        } /*The AI doesn't like STOP*/
 	}
 
 	if(active)	{
@@ -160,7 +164,7 @@ void Harvester::checkPos()
 				//find a refinery to return to
 				Coord closestPoint = target.getObjPointer()->getClosestPoint(location);
 
-				if(!moving && !justStoppedMoving && blockDistance(location, closestPoint) <= 1.5f)	{
+				if(!moving && !justStoppedMoving && blockDistance(location, closestPoint) <= 2.5f)	{
 					awaitingPickup = false;
 					if (((Refinery*)target.getObjPointer())->isFree())
 						setReturned();
@@ -223,6 +227,8 @@ void Harvester::deploy(const Coord& newLocation)
 {
 	if(currentGameMap->tileExists(newLocation)) {
 		UnitBase::deploy(newLocation);
+
+
 		if(spice == 0.0f) {
 			if((attackMode != STOP) && currentGameMap->findSpice(destination, guardPoint)) {
 				harvestingMode = true;

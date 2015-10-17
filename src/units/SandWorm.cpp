@@ -298,7 +298,7 @@ void Sandworm::setLocation(int xPos, int yPos) {
 	}
 }
 
-/**
+/*
     Put sandworm to sleep for a while
 */
 void Sandworm::sleep() {
@@ -315,6 +315,14 @@ void Sandworm::sleep() {
 }
 
 bool Sandworm::sleepOrDie() {
+
+    /*
+        Make sandworms always drop spice, even if they don't die
+    */
+    if(currentGame->getGameInitSettings().getGameOptions().killedSandwormsDropSpice) {
+            currentGameMap->createSpiceField(location, 4);
+    }
+
     if(currentGame->getGameInitSettings().getGameOptions().sandwormsRespawn) {
         sleep();
         return true;
@@ -327,9 +335,7 @@ bool Sandworm::sleepOrDie() {
 bool Sandworm::update() {
 	if(getHealth() <= getMaxHealth()/2) {
 
-        if(currentGame->getGameInitSettings().getGameOptions().killedSandwormsDropSpice) {
-            currentGameMap->createSpiceField(location, 2);
-		}
+
 
 		if(sleepOrDie() == false) {
             return false;

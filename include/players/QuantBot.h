@@ -67,20 +67,22 @@ private:
     int initialItemCount[ItemID_LastID];
     int itemCount[ItemID_LastID];
     bool initialCountComplete;
-
+    Coord squadCentreLocation;
+    Coord squadRallyLocation;
 
     void scrambleUnitsAndDefend(const ObjectBase* pIntruder);
 
 
     Coord findMcvPlaceLocation(const MCV* pMCV);
-
 	Coord findPlaceLocation(Uint32 itemID);
 	Coord findSquadCentre(int houseID);
 	Coord findBaseCentre(int houseID);
+	Coord findSquadRallyLocation();
 
 	std::list<Coord> placeLocations;    ///< Where to place structures
 
 	void checkAllUnits();
+	void retreatAllUnits();
 	void build();
 	void attack();
 

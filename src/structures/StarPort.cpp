@@ -302,9 +302,16 @@ void StarPort::updateStructureSpecificStuff() {
                             && (newUnit->getItemID() != Unit_Harvester)
                             && (newUnit->getItemID() != Unit_MCV)) {
                             newUnit->doSetAttackMode(GUARD);
+
+
+                        }
+                        else{
+                            // Don't want harvesters going to the rally point
+                            destination = location;
+
                         }
 
-                        if (destination.isValid()) {
+                        if (destination.isValid() && newUnit->getItemID()) {
                             newUnit->setGuardPoint(destination);
                             newUnit->setDestination(destination);
                             newUnit->setAngle(lround(8.0f/256.0f*destinationAngle(newUnit->getLocation(), newUnit->getDestination())));

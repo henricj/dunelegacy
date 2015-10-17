@@ -630,8 +630,7 @@ void SmartBot::build() {
                     case Structure_ConstructionYard: {
 
                         // For maps where concrete is required you want to be able to place 4 squares
-                        if(getGameInitSettings().getGameOptions().concreteRequired
-                           && pBuilder->getCurrentUpgradeLevel() == 0){
+                        if(getGameInitSettings().getGameOptions().concreteRequired){
                             doUpgrade(pBuilder);
                         }
 
