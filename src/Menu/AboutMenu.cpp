@@ -52,10 +52,10 @@ AboutMenu::AboutMenu() : MenuBase()
 							Point(surf->w,surf->h));
 
 
-	text.setText("Written by\n  Anthony Cole,\n    Richard Schaller\n      and many others\n");
+	text.setText("Written by\n  Anthony Cole,\n  Richard Schaller,\n  Stefan van der Wel\n    and many others\n");
 	text.setAlignment(Alignment_Left);
 	windowWidget.addWidget(&text,
-							Point((screen->w - 160)/2,screen->h/2 + 74),
+							Point((screen->w - 160)/2,screen->h/2 + 60 /*74*/),
 							Point(170,110));
 }
 
