@@ -251,6 +251,8 @@
 		<Unit filename="../../include/players/OldAIPlayer.h" />
 		<Unit filename="../../include/players/Player.h" />
 		<Unit filename="../../include/players/PlayerFactory.h" />
+		<Unit filename="../../include/players/QuantBot.h" />
+		<Unit filename="../../include/players/SmartBot.h" />
 		<Unit filename="../../include/sand.h" />
 		<Unit filename="../../include/structures/Barracks.h" />
 		<Unit filename="../../include/structures/BuilderBase.h" />
@@ -466,6 +468,8 @@
 		<Unit filename="../../src/players/OldAIPlayer.cpp" />
 		<Unit filename="../../src/players/Player.cpp" />
 		<Unit filename="../../src/players/PlayerFactory.cpp" />
+		<Unit filename="../../src/players/QuantBot.cpp" />
+		<Unit filename="../../src/players/SmartBot.cpp" />
 		<Unit filename="../../src/sand.cpp" />
 		<Unit filename="../../src/structures/Barracks.cpp" />
 		<Unit filename="../../src/structures/BuilderBase.cpp" />
