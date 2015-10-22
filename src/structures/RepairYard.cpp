@@ -104,12 +104,12 @@ void RepairYard::deployRepairUnit(Carryall* pCarryall) {
             pRepairUnit->setTarget(NULL);
             //pRepairUnit->setDestination(NULL);
             pRepairUnit->doSetAttackMode(GUARD);
-            pRepairUnit->deploy(deployPos);
+
         }else{
             // If we need additional harvester logic
             pRepairUnit->doSetAttackMode(HARVEST);
         }
-
+        pRepairUnit->deploy(deployPos);
         /**
             Need to fix at some point in a balanced way
         **/
@@ -152,6 +152,7 @@ void RepairYard::updateStructureSpecificStuff() {
 			}
 
 			// Stop the last harvester getting stuck in the repair facility
+
 			else if (pRepairUnit->getItemID() == Unit_Harvester){
                 deployRepairUnit();
 			}

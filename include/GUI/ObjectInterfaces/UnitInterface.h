@@ -67,12 +67,24 @@ protected:
 
         actionHBox.addWidget(HSpacer::create(3));
 
+        // Stefan: New Buttons for requesting carryalls and requesting a unit repair
+
         requestCarryallButton.setSymbol(pGFXManager->getUIGraphic(UI_CursorCapture_Zoomlevel0), false);
-        requestCarryallButton.setTooltipText(_("Request Carryall drop to a position (Hotkey: C)"));
+        requestCarryallButton.setTooltipText(_("Request Carryall drop to a position (Hotkey: D)"));
         //requestCarryallButton.setVisible(getGameInitSettings().getGameOptions().manualCarryallDrops);
 		requestCarryallButton.setToggleButton(true);
 		requestCarryallButton.setOnClick(std::bind(&UnitInterface::onRequestCarryall, this));
 		actionHBox.addWidget(&requestCarryallButton);
+
+        // Repair button
+        repairButton.setSymbol(pGFXManager->getUIGraphic(UI_Repair), false);
+        repairButton.setTooltipText(_("Repair this unit (Hotkey: R)"));
+		repairButton.setToggleButton(true);
+		repairButton.setVisible(false);
+		repairButton.setOnClick(std::bind(&UnitInterface::OnRepair, this));
+		actionHBox.addWidget(&repairButton);
+
+
 
 		/*
         captureButton.setSymbol(pGFXManager->getUIGraphic(UI_CursorCapture_Zoomlevel0), false);
@@ -83,12 +95,16 @@ protected:
 		actionHBox.addWidget(&captureButton);
 		*/
 
+
+
+
+
 		buttonVBox.addWidget(&actionHBox, 28);
 
 		buttonVBox.addWidget(VSpacer::create(3));
 
         returnButton.setSymbol(pGFXManager->getUIGraphic(UI_ReturnIcon), false);
-        returnButton.setTooltipText(_("Return harvester to refinery (Hotkey: R)"));
+        returnButton.setTooltipText(_("Return harvester to refinery (Hotkey: H)"));
         returnButton.setVisible( (itemID == Unit_Harvester) );
 		returnButton.setOnClick(std::bind(&UnitInterface::onReturn, this));
 		commandHBox.addWidget(&returnButton);
@@ -158,13 +174,14 @@ protected:
 
 		buttonVBox.addWidget(VSpacer::create(6));
 
+/*
 		retreatButton.setText(_("Retreat"));
         retreatButton.setTextColor(color+3);
 		retreatButton.setTooltipText(_("Unit will retreat back to base"));
 		retreatButton.setToggleButton(true);
 		retreatButton.setOnClick(std::bind(&UnitInterface::onRetreat, this));
 		buttonVBox.addWidget(&retreatButton, 28);
-
+*/
 
 
 		buttonVBox.addWidget(VSpacer::create(6));
@@ -191,6 +208,16 @@ protected:
 
     void onRequestCarryall() {
         currentGame->currentCursorMode = Game::CursorMode_RequestCarryall;
+	}
+
+
+    void OnRepair() {
+        ObjectBase* pObject = currentGame->getObjectManager().getObject(objectID);
+        GroundUnit* pGroundUnit = dynamic_cast<GroundUnit*>(pObject);
+        if(pGroundUnit != NULL){
+            pGroundUnit->doRepair();
+        }
+
 	}
 
 	void onReturn() {
@@ -264,11 +291,18 @@ protected:
 			return false;
 		}
 
+
+        repairButton.setVisible(pObject->getHealth() < pObject->getMaxHealth());
+
+
         moveButton.setToggleState(currentGame->currentCursorMode == Game::CursorMode_Move);
 		attackButton.setToggleState(currentGame->currentCursorMode == Game::CursorMode_Attack);
 		attackButton.setVisible(pObject->canAttack());
 		//captureButton.setToggleState(currentGame->currentCursorMode == Game::CursorMode_Capture);
 		requestCarryallButton.setToggleState(currentGame->currentCursorMode == Game::CursorMode_RequestCarryall);
+		requestCarryallButton.setVisible(currentGame->getGameInitSettings().getGameOptions().manualCarryallDrops
+                                            && pObject->getOwner()->getNumItems(Unit_Carryall) > 0);
+
 
 		UnitBase* pUnit = dynamic_cast<UnitBase*>(pObject);
 		if(pUnit != NULL) {

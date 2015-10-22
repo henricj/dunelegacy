@@ -265,7 +265,7 @@ void GroundUnit::doRepair() {
                 doMove2Object(bestRepairYard);
             }
 
-            else if(owner->isAI()) {
+            else /*if(owner->isAI())*/ {
 
                 doMove2Object(bestRepairYard);
             }

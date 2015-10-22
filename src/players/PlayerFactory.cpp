@@ -42,40 +42,25 @@ void PlayerFactory::registerAllPlayers() {
 
     playerDataList.push_back( PlayerData(  "qBotEasy",
                                             "qBotEasy",
-                                            std::bind(QuantBot::create, std::placeholders::_1, std::placeholders::_2, QuantBot::EASY, QuantBot::SKIRMISH),
+                                            std::bind(QuantBot::create, std::placeholders::_1, std::placeholders::_2, QuantBot::EASY),
                                             std::bind(QuantBot::load, std::placeholders::_1, std::placeholders::_2) ));
 
     playerDataList.push_back( PlayerData(  "qBotMedium",
                                             "qBotMedium",
-                                            std::bind(QuantBot::create, std::placeholders::_1, std::placeholders::_2, QuantBot::MEDIUM, QuantBot::SKIRMISH),
+                                            std::bind(QuantBot::create, std::placeholders::_1, std::placeholders::_2, QuantBot::MEDIUM),
                                             std::bind(QuantBot::load, std::placeholders::_1, std::placeholders::_2) ));
 
     playerDataList.push_back( PlayerData(  "qBotHard",
                                             "qBotHard",
-                                            std::bind(QuantBot::create, std::placeholders::_1, std::placeholders::_2, QuantBot::HARD, QuantBot::SKIRMISH),
+                                            std::bind(QuantBot::create, std::placeholders::_1, std::placeholders::_2, QuantBot::HARD),
                                             std::bind(QuantBot::load, std::placeholders::_1, std::placeholders::_2) ));
 
     playerDataList.push_back( PlayerData(  "qBotBrutal",
                                             "qBotBrutal",
-                                            std::bind(QuantBot::create, std::placeholders::_1, std::placeholders::_2, QuantBot::BRUTAL, QuantBot::SKIRMISH),
+                                            std::bind(QuantBot::create, std::placeholders::_1, std::placeholders::_2, QuantBot::BRUTAL),
                                             std::bind(QuantBot::load, std::placeholders::_1, std::placeholders::_2) ));
 
-    playerDataList.push_back( PlayerData(  "qBotCampaignEasy",
-                                            "CampEasyAI",
-                                            std::bind(QuantBot::create, std::placeholders::_1, std::placeholders::_2, QuantBot::EASY, QuantBot::CAMPAIGN),
-                                            std::bind(QuantBot::load, std::placeholders::_1, std::placeholders::_2) ));
-
-    playerDataList.push_back( PlayerData(  "qBotCampaignMedium",
-                                            "CampMediumAI",
-                                            std::bind(QuantBot::create, std::placeholders::_1, std::placeholders::_2, QuantBot::MEDIUM, QuantBot::CAMPAIGN),
-                                            std::bind(QuantBot::load, std::placeholders::_1, std::placeholders::_2) ));
-
-    playerDataList.push_back( PlayerData(  "qBotCampaignHard",
-                                            "CampHardAI",
-                                            std::bind(QuantBot::create, std::placeholders::_1, std::placeholders::_2, QuantBot::HARD, QuantBot::CAMPAIGN),
-                                            std::bind(QuantBot::load, std::placeholders::_1, std::placeholders::_2) ));
-
-        playerDataList.push_back( PlayerData(  "AIPlayerEasy",
+    playerDataList.push_back( PlayerData(  "AIPlayerEasy",
                                             "AI Player (easy)",
                                             std::bind(AIPlayer::create, std::placeholders::_1, std::placeholders::_2, AIPlayer::EASY),
                                             std::bind(AIPlayer::load, std::placeholders::_1, std::placeholders::_2) ));

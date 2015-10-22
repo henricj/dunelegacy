@@ -317,7 +317,7 @@ void Sandworm::sleep() {
 bool Sandworm::sleepOrDie() {
 
     /*
-        Make sandworms always drop spice, even if they don't die
+        Make sand worms always drop spice, even if they don't die
     */
     if(currentGame->getGameInitSettings().getGameOptions().killedSandwormsDropSpice) {
             currentGameMap->createSpiceField(location, 4);

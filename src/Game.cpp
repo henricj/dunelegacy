@@ -2243,7 +2243,7 @@ void Game::handleKeyInput(SDL_KeyboardEvent& keyboardEvent) {
             }
         } break;
 
-        case SDLK_h: {
+        case SDLK_g: {
             // select next construction yard
             std::set<Uint32> itemIDs;
             itemIDs.insert(Structure_ConstructionYard);
@@ -2296,7 +2296,7 @@ void Game::handleKeyInput(SDL_KeyboardEvent& keyboardEvent) {
             currentGame->addToNewsTicker(_("Screenshot saved") + ": '" + screenshotFilename + "'");
         } break;
 
-        case SDLK_r: {
+        case SDLK_h: {
             std::set<Uint32>::iterator iter;
             for(iter = selectedList.begin(); iter != selectedList.end(); ++iter) {
                 ObjectBase *tempObject = objectManager.getObject(*iter);
@@ -2306,6 +2306,33 @@ void Game::handleKeyInput(SDL_KeyboardEvent& keyboardEvent) {
                     ((Harvester*)tempObject)->handleReturnClick();
                 }
             }
+        } break;
+
+
+        case SDLK_r: {
+            std::set<Uint32>::iterator iter;
+            for(iter = selectedList.begin(); iter != selectedList.end(); ++iter) {
+                ObjectBase *tempObject = objectManager.getObject(*iter);
+                if(tempObject->isAStructure()) {
+                    ((StructureBase*)tempObject)->handleRepairClick();
+                } else if(tempObject->isAGroundUnit() && tempObject->getHealth() < tempObject->getMaxHealth()) {
+                    ((GroundUnit*)tempObject)->doRepair();
+                }
+            }
+        } break;
+
+
+        case SDLK_d: {
+            if(currentCursorMode != CursorMode_RequestCarryall){
+                std::set<Uint32>::iterator iter;
+                for(iter = selectedList.begin(); iter != selectedList.end(); ++iter) {
+                    ObjectBase *tempObject = objectManager.getObject(*iter);
+                    if(tempObject->isAGroundUnit() && tempObject->getOwner()->getNumItems(Unit_Carryall) > 0) {
+                        currentCursorMode = CursorMode_RequestCarryall;
+                    }
+                }
+            }
+
         } break;
 
         case SDLK_u: {

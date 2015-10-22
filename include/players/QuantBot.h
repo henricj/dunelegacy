@@ -26,15 +26,20 @@
 class QuantBot : public Player
 {
 public:
+
+
+
     typedef enum {
         EASY = 0,
-        MEDIUM = 2,
-        HARD = 3,
-        BRUTAL = 4,
-        SKIRMISH = 5,
-        CAMPAIGN = 6
-    } gameType;
+        MEDIUM = 1,
+        HARD = 2,
+        BRUTAL = 3
+    } enum_difficulty;
 
+    typedef enum {
+        CUSTOM = 4,
+        CAMPAIGN = 5
+    } enum_gameMode;
 
 	void init();
 	~QuantBot();
@@ -46,8 +51,8 @@ public:
     virtual void onDecrementStructures(int itemID, const Coord& location);
     virtual void onDamage(const ObjectBase* pObject, int damage, Uint32 damagerID);
 
-	static Player* create(House* associatedHouse, std::string playername, Uint32 difficulty, Uint32 gameMode) {
-        return new QuantBot(associatedHouse, playername, difficulty, gameMode);
+	static Player* create(House* associatedHouse, std::string playername, Uint32 difficulty) {
+        return new QuantBot(associatedHouse, playername, difficulty);
 	}
 
 	static Player* load(InputStream& stream, House* associatedHouse) {
@@ -55,19 +60,21 @@ public:
 	}
 
 private:
-	QuantBot(House* associatedHouse, std::string playername, Uint32 difficulty, Uint32 gameMode);
+	QuantBot(House* associatedHouse, std::string playername, Uint32 difficulty);
 	QuantBot(InputStream& stream, House* associatedHouse);
 
 
 	Uint32	difficulty;     ///< difficulty level
-	Uint32	gameMode;     ///< game mode (skirmish or campaign)
+	Uint32	gameMode;     ///< game mode (custom or campaign)
     Sint32  buildTimer;     ///< When to build the next structure/unit
     Sint32  attackTimer;     ///< When to build the next structure/unit
 
     int initialItemCount[ItemID_LastID];
     int itemCount[ItemID_LastID];
+    int militaryValueLimit;
     bool initialCountComplete;
-    Coord squadCentreLocation;
+    bool campaignAIAttackFlag;
+    Coord squadCenterLocation;
     Coord squadRallyLocation;
 
     void scrambleUnitsAndDefend(const ObjectBase* pIntruder);
@@ -75,7 +82,7 @@ private:
 
     Coord findMcvPlaceLocation(const MCV* pMCV);
 	Coord findPlaceLocation(Uint32 itemID);
-	Coord findSquadCentre(int houseID);
+	Coord findSquadCenter(int houseID);
 	Coord findBaseCentre(int houseID);
 	Coord findSquadRallyLocation();
 
