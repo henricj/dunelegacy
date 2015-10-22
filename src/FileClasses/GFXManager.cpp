@@ -413,6 +413,10 @@ GFXManager::GFXManager() {
     objPic[ObjPic_Terrain_Hidden][HOUSE_HARKONNEN][1] = Scaler::defaultDoubleTiledSurface(objPic[ObjPic_Terrain_Hidden][HOUSE_HARKONNEN][0], 16, 1, false);
     objPic[ObjPic_Terrain_Hidden][HOUSE_HARKONNEN][2] = Scaler::defaultTripleTiledSurface(objPic[ObjPic_Terrain_Hidden][HOUSE_HARKONNEN][0], 16, 1, false);
 
+    objPic[ObjPic_Terrain_HiddenFog][HOUSE_HARKONNEN][0] = icon->getPictureRow(108,123);
+    objPic[ObjPic_Terrain_HiddenFog][HOUSE_HARKONNEN][1] = Scaler::defaultDoubleTiledSurface(objPic[ObjPic_Terrain_HiddenFog][HOUSE_HARKONNEN][0], 16, 1, false);
+    objPic[ObjPic_Terrain_HiddenFog][HOUSE_HARKONNEN][2] = Scaler::defaultTripleTiledSurface(objPic[ObjPic_Terrain_HiddenFog][HOUSE_HARKONNEN][0], 16, 1, false);
+
 	objPic[ObjPic_Terrain_Tracks][HOUSE_HARKONNEN][0] = icon->getPictureRow(25,32);
     objPic[ObjPic_Terrain_Tracks][HOUSE_HARKONNEN][1] = Scaler::defaultDoubleTiledSurface(objPic[ObjPic_Terrain_Tracks][HOUSE_HARKONNEN][0], 8, 1, false);
     objPic[ObjPic_Terrain_Tracks][HOUSE_HARKONNEN][2] = Scaler::defaultTripleTiledSurface(objPic[ObjPic_Terrain_Tracks][HOUSE_HARKONNEN][0], 8, 1, false);

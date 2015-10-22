@@ -102,6 +102,7 @@ typedef enum {
 	ObjPic_RockDamage,
 	ObjPic_SandDamage,
 	ObjPic_Terrain_Hidden,
+	ObjPic_Terrain_HiddenFog,
 	ObjPic_Terrain_Tracks,
 	ObjPic_Star,
 	NUM_OBJPICS

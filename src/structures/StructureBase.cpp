@@ -367,7 +367,7 @@ bool StructureBase::update() {
         } else {
             repairing = false;
         }
-    } else if(owner->isAI() && (getHealthColor() != COLOR_LIGHTGREEN)) {
+    } else if(owner->isAI() && ((getHealth()/(float)getMaxHealth()) < 0.5f)) {
         doRepair();
     }
 

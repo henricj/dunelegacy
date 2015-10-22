@@ -301,7 +301,7 @@ void StarPort::updateStructureSpecificStuff() {
                             && (newUnit->getItemID() != Unit_Carryall)
                             && (newUnit->getItemID() != Unit_Harvester)
                             && (newUnit->getItemID() != Unit_MCV)) {
-                            newUnit->doSetAttackMode(GUARD);
+                            newUnit->doSetAttackMode(AREAGUARD);
 
 
                         }

@@ -910,11 +910,11 @@ bool UnitBase::isInGuardRange(const ObjectBase* pObject) const	{
 	int checkRange;
     switch(attackMode) {
         case GUARD: {
-            checkRange = 12;//getWeaponRange();
+            checkRange = getWeaponRange();
         } break;
 
         case AREAGUARD: {
-            checkRange = 12;//getViewRange();
+            checkRange = getAreaGuardRange();
         } break;
 
         case AMBUSH: {
@@ -950,11 +950,11 @@ bool UnitBase::isInAttackRange(const ObjectBase* pObject) const {
 	int checkRange;
     switch(attackMode) {
         case GUARD: {
-            checkRange = 12;
+            checkRange = getWeaponRange();
         } break;
 
         case AREAGUARD: {
-            checkRange = 12;
+            checkRange = getAreaGuardRange() + getWeaponRange() + 1;
         } break;
 
         case AMBUSH: {

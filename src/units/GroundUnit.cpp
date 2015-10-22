@@ -263,10 +263,7 @@ void GroundUnit::doRepair() {
         if(bestRepairYard) {
             if((requestCarryall())) {
                 doMove2Object(bestRepairYard);
-            }
-
-            else /*if(owner->isAI())*/ {
-
+            } else {
                 doMove2Object(bestRepairYard);
             }
         }

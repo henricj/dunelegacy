@@ -493,11 +493,11 @@ const ObjectBase* ObjectBase::findTarget() const {
 
         // I want to eventually phase this stuff out
         case AREAGUARD: {
-            checkRange = 15;//getAreaGuardRange();
+            checkRange = getAreaGuardRange();
         } break;
 
         case AMBUSH: {
-            checkRange = getWeaponRange();
+            checkRange = getViewRange();
         } break;
 
         case HUNT: {
@@ -558,7 +558,7 @@ int ObjectBase::getViewRange() const {
 }
 
 int ObjectBase::getAreaGuardRange() const {
-    return getWeaponRange();
+    return 2*getWeaponRange();
 }
 
 int ObjectBase::getWeaponRange() const {

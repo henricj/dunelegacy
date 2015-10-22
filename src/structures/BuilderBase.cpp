@@ -368,7 +368,7 @@ bool BuilderBase::update() {
                         && (newUnit->getItemID() != Unit_Harvester)
                         && (newUnit->getItemID() != Unit_MCV)) {
 
-                        newUnit->doSetAttackMode(GUARD);
+                        newUnit->doSetAttackMode(AREAGUARD);
                     }
 
                     else{

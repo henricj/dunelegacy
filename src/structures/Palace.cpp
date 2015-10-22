@@ -70,6 +70,8 @@ void Palace::init() {
 	numImagesY = 1;
 	firstAnimFrame = 2;
 	lastAnimFrame = 3;
+
+	canAttackStuff = true;
 }
 
 Palace::~Palace() {

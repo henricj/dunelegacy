@@ -336,10 +336,7 @@ int main(int argc, char *argv[]) {
       exit(EXIT_FAILURE);
 	}
 
-    /**
-        I think is debugs??
-    **/
-	bool bShowDebug = true;
+	bool bShowDebug = false;
     for(int i=1; i < argc; i++) {
 	    //check for overiding params
 	    std::string parameter(argv[i]);
