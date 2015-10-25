@@ -164,12 +164,13 @@ void Harvester::checkPos()
 				//find a refinery to return to
 				Coord closestPoint = target.getObjPointer()->getClosestPoint(location);
 
-				if(!moving && !justStoppedMoving && blockDistance(location, closestPoint) <= 2.5f)	{
+                // Fixed a carryall bug
+				if(!moving && !justStoppedMoving && blockDistance(location, closestPoint) <= 2.0f)	{
 					awaitingPickup = false;
 					if (((Refinery*)target.getObjPointer())->isFree())
 						setReturned();
-				} else if(!awaitingPickup && owner->hasCarryalls()) {
-					requestCarryall();
+				}else if(!awaitingPickup && owner->hasCarryalls() && ((Refinery*)target.getObjPointer())->isFree()){
+                    requestCarryall();
 				}
 			} else if (!structureList.empty()) {
 				int	leastNumBookings = 1000000; //huge amount so refinery couldn't possibly compete with any refinery num bookings
@@ -205,7 +206,7 @@ void Harvester::checkPos()
 					bestRefinery->startAnimate();
 				}
 			}
-		} else if (harvestingMode && !hasBookedCarrier() && (blockDistance(location, destination) > 5.0f)) {
+		} else if (harvestingMode && !hasBookedCarrier() && (blockDistance(location, destination) > 8.0f)) {
 			requestCarryall();
         } else if(respondable && !harvestingMode && attackMode != STOP) {
             if(spiceCheckCounter == 0) {

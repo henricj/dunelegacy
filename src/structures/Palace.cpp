@@ -171,15 +171,19 @@ void Palace::updateStructureSpecificStuff() {
 
 			if(getOwner() == pLocalHouse) {
 				currentGame->addToNewsTicker(_("Palace is ready"));
-			} else if(getOwner()->isAI()) {
+			} else if(getOwner()->isAI() && getOwner()) {
 
                 if((originalHouseID == HOUSE_HARKONNEN) || (originalHouseID == HOUSE_SARDAUKAR)) {
                     // Harkonnen and Sardaukar
+
+
+                    //old tergetting logic used by default AI
+                    /*
                     const StructureBase* closestStructure = findClosestTargetStructure();
                     if(closestStructure) {
                         Coord temp = closestStructure->getClosestPoint(getLocation());
                         doLaunchDeathhand(temp.x, temp.y);
-                    }
+                    }*/
                 } else {
                     // other houses
                     doSpecialWeapon();

@@ -24,7 +24,9 @@
 
 #include <players/PlayerFactory.h>
 #include <players/AIPlayer.h>
+#include <players/QuantBot.h>
 #include <players/HumanPlayer.h>
+
 
 #include <Game.h>
 #include <GameInterface.h>

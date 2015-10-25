@@ -386,7 +386,8 @@ protected:
         deployButton.setVisible(bShowDeploy);
         destructButton.setVisible(bShowDevastate);
         repairButton.setVisible(bShowRepair);
-        requestCarryallButton.setVisible(bShowRequestCarryall);
+        requestCarryallButton.setVisible(bShowRequestCarryall
+                                         && currentGame->getGameInitSettings().getGameOptions().manualCarryallDrops);
 
         guardButton.setToggleState( bGuard );
         areaGuardButton.setToggleState( bAreaGuard );
