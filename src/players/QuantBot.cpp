@@ -104,12 +104,29 @@ QuantBot::QuantBot(House* associatedHouse, std::string playername, Uint32 diffic
 
     if(gameMode == CAMPAIGN){
         // Wait at least 8 minutes if its a campaign game
-        attackTimer = MILLI2CYCLES(480000);
-    }
 
-    if(gameMode == CAMPAIGN && currentGame->techLevel == 8){
-        // Wait at least 8 minutes if its a campaign game
-        attackTimer = MILLI2CYCLES(720000);
+        switch(currentGame->techLevel){
+
+            case 6: {
+
+                attackTimer = MILLI2CYCLES(540000);
+            }break;
+
+            case 7: {
+
+                attackTimer = MILLI2CYCLES(600000);
+            }break;
+
+            case 8: {
+
+                attackTimer = MILLI2CYCLES(720000);
+            }break;
+
+            default: {
+                attackTimer = MILLI2CYCLES(480000);
+            }
+
+        }
     }
 
     campaignAIAttackFlag = false;
@@ -674,7 +691,7 @@ void QuantBot::build() {
 
                     }else{
                         hLimit = 2 * initialItemCount[Structure_Refinery];
-                        militaryValueLimit = initialMilitaryValue * 1.5;
+                        militaryValueLimit = initialMilitaryValue;
 
                     }
 
@@ -693,8 +710,8 @@ void QuantBot::build() {
                         militaryValueLimit = 5000;
                     }else{
 
-                        hLimit = 3 * initialItemCount[Structure_Refinery];
-                        militaryValueLimit = initialMilitaryValue * 2;
+                        hLimit = 2 * initialItemCount[Structure_Refinery];
+                        militaryValueLimit = initialMilitaryValue * 1.5;
                     }
 
 
@@ -1613,8 +1630,8 @@ void QuantBot::attack() {
 
 
 
-    // only attack if we have assault vehicles
-    if((militaryValue < militaryValueLimit * 0.33)){
+    // only attack if we have 35% of maximum military power on max sized map. Required military power scales down accordingly
+    if(militaryValue < militaryValueLimit * 0.35 * currentGameMap->getSizeX() * currentGameMap->getSizeY() / 16384){
 
         return;
     }
@@ -1914,22 +1931,6 @@ void QuantBot::checkAllUnits() {
                 case Unit_Sandworm:{
                 } break;
 
-                case Unit_Saboteur:{
-                    if(pUnit->getAttackMode() != HUNT){
-                        doSetAttackMode(pUnit, HUNT);
-                    }
-
-
-                    /*
-                    if(getHouse()->hasCarryalls()
-                       && pUnit->getDestination() != NULL
-                       && getGameInitSettings().getGameOptions().manualCarryallDrops){
-                        const Saboteur* pSaboteur = dynamic_cast<const Saboteur*>(pUnit);
-                        doRequestCarryallDrop(pSaboteur);
-                    }*/
-                } break;
-
-
 
                 default: {
 
@@ -1947,7 +1948,7 @@ void QuantBot::checkAllUnits() {
 
                         if(pUnit->getTarget() != NULL){
 
-                            if(blockDistance(pUnit->getLocation(), pUnit->getTarget()->getLocation()) < 6
+                            if(blockDistance(pUnit->getLocation(), pUnit->getTarget()->getLocation()) < 5
                                && pUnit->getTarget()->getItemID() != Unit_Ornithopter){
                                 doSetAttackMode(pUnit, AREAGUARD);
                                 doMove2Pos(pUnit, squadCenterLocation.x, squadCenterLocation.y, true );

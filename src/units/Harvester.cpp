@@ -28,6 +28,7 @@
 #include <ScreenBorder.h>
 
 #include <players/HumanPlayer.h>
+#include <players/QuantBot.h>
 
 #include <structures/Refinery.h>
 
@@ -210,6 +211,7 @@ void Harvester::checkPos()
 			requestCarryall();
         } else if(respondable && !harvestingMode && attackMode != STOP) {
             if(spiceCheckCounter == 0) {
+                // Find harvest location nearest to our base
                 if(currentGameMap->findSpice(destination, guardPoint)) {
                     harvestingMode = true;
                     guardPoint = destination;

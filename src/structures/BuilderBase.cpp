@@ -368,7 +368,7 @@ bool BuilderBase::update() {
                         && (newUnit->getItemID() != Unit_Harvester)
                         && (newUnit->getItemID() != Unit_MCV)) {
 
-                        newUnit->doSetAttackMode(AREAGUARD);
+                        //newUnit->doSetAttackMode(AREAGUARD);
                     }
 
                     else{
@@ -377,7 +377,7 @@ bool BuilderBase::update() {
 
                     }
 
-                    if(destination.isValid()) {
+                    if(destination.isValid() && newUnit->getItemID() != Unit_Harvester) {
                         newUnit->setGuardPoint(destination);
                         newUnit->setDestination(destination);
                         newUnit->setAngle(lround(8.0f/256.0f*destinationAngle(newUnit->getLocation(), newUnit->getDestination())));
