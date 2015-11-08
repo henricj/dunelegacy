@@ -33,7 +33,8 @@ public:
         EASY = 0,
         MEDIUM = 1,
         HARD = 2,
-        BRUTAL = 3
+        BRUTAL = 3,
+        DEFEND = 4
     } enum_difficulty;
 
     typedef enum {
@@ -49,6 +50,8 @@ public:
 
     virtual void onIncrementStructures(int itemID);
     virtual void onDecrementStructures(int itemID, const Coord& location);
+    virtual void onDecrementUnits(int itemID);
+    virtual void onIncrementUnitKills(int itemID);
     virtual void onDamage(const ObjectBase* pObject, int damage, Uint32 damagerID);
 
 	static Player* create(House* associatedHouse, std::string playername, Uint32 difficulty) {

@@ -159,9 +159,9 @@ void Map::damage(Uint32 damagerID, House* damagerOwner, const Coord& realPos, Ui
                         if(bulletID == Bullet_DRocket) {
                             if((pAirUnit->getItemID() != Unit_Carryall) && (pAirUnit->getItemID() != Unit_Sandworm) && (pAirUnit->getItemID() != Unit_Frigate)) {
                                 // try to deviate
-                                if(currentGame->randomGen.randFloat() < getDeviateWeakness((HOUSETYPE) pAirUnit->getOriginalHouseID())) {
+                                //if(currentGame->randomGen.randFloat() < getDeviateWeakness((HOUSETYPE) pAirUnit->getOriginalHouseID())) {
                                     pAirUnit->deviate(damagerOwner);
-                                }
+                                //}
                             }
                         } else {
                             int scaledDamage = lroundf(damage) >> (distance/4 + 1);
@@ -205,9 +205,9 @@ void Map::damage(Uint32 damagerID, House* damagerOwner, const Coord& realPos, Ui
                         if(bulletID == Bullet_DRocket) {
                             if((pUnit->getItemID() != Unit_Carryall) && (pUnit->getItemID() != Unit_Sandworm) && (pUnit->getItemID() != Unit_Frigate)) {
                                 // try to deviate
-                                if(currentGame->randomGen.randFloat() < getDeviateWeakness((HOUSETYPE) pUnit->getOriginalHouseID())) {
+                                //if(currentGame->randomGen.randFloat() < getDeviateWeakness((HOUSETYPE) pUnit->getOriginalHouseID())) {
                                     pUnit->deviate(damagerOwner);
-                                }
+                                //}
                             }
                         } else if(bulletID == Bullet_Sonic) {
                             pUnit->handleDamage(lroundf(damage), damagerID, damagerOwner);

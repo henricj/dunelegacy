@@ -34,11 +34,10 @@ void PlayerFactory::registerAllPlayers() {
 
 
 
-    playerDataList.push_back( PlayerData(  "SmartBot",
-                                            "SmartBot",
-                                            std::bind(SmartBot::create, std::placeholders::_1, std::placeholders::_2, SmartBot::NORMAL),
-                                            std::bind(SmartBot::load, std::placeholders::_1, std::placeholders::_2) ));
-
+    playerDataList.push_back( PlayerData(  "qBotDefendOnly",
+                                            "qBotDefendOnly",
+                                            std::bind(QuantBot::create, std::placeholders::_1, std::placeholders::_2, QuantBot::DEFEND),
+                                            std::bind(QuantBot::load, std::placeholders::_1, std::placeholders::_2) ));
 
     playerDataList.push_back( PlayerData(  "qBotEasy",
                                             "qBotEasy",
@@ -59,6 +58,11 @@ void PlayerFactory::registerAllPlayers() {
                                             "qBotBrutal",
                                             std::bind(QuantBot::create, std::placeholders::_1, std::placeholders::_2, QuantBot::BRUTAL),
                                             std::bind(QuantBot::load, std::placeholders::_1, std::placeholders::_2) ));
+
+    playerDataList.push_back( PlayerData(  "SmartBot",
+                                            "SmartBot",
+                                            std::bind(SmartBot::create, std::placeholders::_1, std::placeholders::_2, SmartBot::NORMAL),
+                                            std::bind(SmartBot::load, std::placeholders::_1, std::placeholders::_2) ));
 
     playerDataList.push_back( PlayerData(  "AIPlayerEasy",
                                             "AI Player (easy)",

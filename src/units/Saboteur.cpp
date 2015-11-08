@@ -94,24 +94,25 @@ bool Saboteur::update() {
 	if(active) {
 		if(!moving) {
 			//check to see if close enough to blow up target
-			if(target.getObjPointer() != NULL && target.getObjPointer()->isAStructure()
-				&& (getOwner()->getTeam() != target.getObjPointer()->getOwner()->getTeam()))
-			{
-				Coord	closestPoint;
-				closestPoint = target.getObjPointer()->getClosestPoint(location);
+			if(target.getObjPointer() != NULL){ //&& target.getObjPointer()->isAStructure()
+				if(getOwner()->getTeam() != target.getObjPointer()->getOwner()->getTeam())
+                {
+                    Coord	closestPoint;
+                    closestPoint = target.getObjPointer()->getClosestPoint(location);
 
 
-				if(blockDistance(location, closestPoint) <= 1.5f)	{
-					if(isVisible(getOwner()->getTeam())) {
-                        screenborder->shakeScreen(18);
-					}
+                    if(blockDistance(location, closestPoint) <= 1.5f)	{
+                        if(isVisible(getOwner()->getTeam())) {
+                            screenborder->shakeScreen(18);
+                        }
 
-				    ObjectBase* pObject = target.getObjPointer();
-				    destroy();
-                    pObject->setHealth(0.0f);
-					pObject->destroy();
-					return false;
-				}
+                        ObjectBase* pObject = target.getObjPointer();
+                        destroy();
+                        pObject->setHealth(0.0f);
+                        pObject->destroy();
+                        return false;
+                    }
+                }
 			}
 		}
 	}
@@ -128,12 +129,19 @@ void Saboteur::deploy(const Coord& newLocation) {
 
 
 bool Saboteur::canAttack(const ObjectBase* object) const {
-	if ((object != NULL) && object->isAStructure()
-		&& (object->getOwner()->getTeam() != owner->getTeam())
-		&& object->isVisible(getOwner()->getTeam()))
-		return true;
-	else
-		return false;
+	if(object != NULL){
+        if((object->isAStructure() || (object->isAGroundUnit() && !object->isInfantry() && object->getItemID() != Unit_Sandworm)) /* allow attack tanks*/
+            && (object->getOwner()->getTeam() != owner->getTeam())
+            && object->isVisible(getOwner()->getTeam())){
+
+            return true;
+        }
+
+	}
+
+    return false;
+
+
 }
 
 void Saboteur::destroy()

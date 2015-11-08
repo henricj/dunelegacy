@@ -27,7 +27,7 @@
 #include <algorithm>
 
 #define SCROLLBORDER 3
-#define SCROLLSPEED 6
+#define SCROLLSPEED 51
 
 /// This class manages everything that is related to the current view onto the map.
 class ScreenBorder

@@ -57,6 +57,9 @@ House::House(int newHouse, int newCredits, Uint8 team, int quota) : choam(this) 
 
     unitBuiltValue = 0;
     structureBuiltValue = 0;
+    militaryValue = 0;
+    killValue = 0;
+    lossValue = 0;
     numBuiltUnits = 0;
     numBuiltStructures = 0;
     destroyedValue = 0;
@@ -83,6 +86,9 @@ House::House(InputStream& stream) : choam(this) {
 
     unitBuiltValue = stream.readUint32();
     structureBuiltValue = stream.readUint32();
+    militaryValue = stream.readUint32();
+    killValue = stream.readUint32();
+    lossValue = stream.readUint32();
     numBuiltUnits = stream.readUint32();
     numBuiltStructures = stream.readUint32();
     destroyedValue = stream.readUint32();
@@ -116,6 +122,9 @@ void House::init() {
 	numStructures = 0;
 	for(int i=0;i<Num_ItemID;i++) {
         numItem[i] = 0;
+        numItemBuilt[i] = 0;
+        numItemKills[i] = 0;
+        numItemLosses[i] = 0;
 	}
 
 	capacity = 0;
@@ -141,6 +150,9 @@ void House::save(OutputStream& stream) const {
 
     stream.writeUint32(unitBuiltValue);
     stream.writeUint32(structureBuiltValue);
+    stream.writeUint32(militaryValue);
+    stream.writeUint32(killValue);
+    stream.writeUint32(lossValue);
     stream.writeUint32(numBuiltUnits);
     stream.writeUint32(numBuiltStructures);
     stream.writeUint32(destroyedValue);
@@ -323,13 +335,24 @@ void House::update() {
 void House::incrementUnits(int itemID) {
     numUnits++;
     numItem[itemID]++;
-}
 
+    if(itemID != Unit_Saboteur
+       && itemID != Unit_Frigate
+       && itemID != Unit_Carryall
+       && itemID != Unit_MCV
+       && itemID != Unit_Harvester
+       && itemID != Unit_Sandworm) {
+
+            militaryValue += currentGame->objectData.data[itemID][houseID].price;
+    }
+
+}
 
 
 
 void House::decrementUnits(int itemID) {
 	numUnits--;
+	numItemLosses[itemID]++;
 
 	if(itemID == Unit_Harvester) {
         decrementHarvesters();
@@ -337,8 +360,26 @@ void House::decrementUnits(int itemID) {
         numItem[itemID]--;
 	}
 
+    std::list<std::shared_ptr<Player> >::iterator iter;
+    for(iter = players.begin(); iter != players.end(); ++iter) {
+        (*iter)->onDecrementUnits(itemID);
+    }
+
+
+
+    if(itemID != Unit_Saboteur
+       && itemID != Unit_Frigate
+       && itemID != Unit_Carryall
+       && itemID != Unit_MCV
+       && itemID != Unit_Harvester
+       && itemID != Unit_Sandworm) {
+
+            lossValue += currentGame->objectData.data[itemID][houseID].price;
+    }
+
 	if (!isAlive())
 		lose();
+
 
 }
 
@@ -375,6 +416,7 @@ void House::incrementStructures(int itemID) {
 void House::decrementStructures(int itemID, const Coord& location) {
 	numStructures--;
     numItem[itemID]--;
+    numItemLosses[itemID]++;
 
 	// change power requirements
 	int currentItemPower = currentGame->objectData.data[itemID][houseID].power;
@@ -416,12 +458,14 @@ void House::noteDamageLocation(ObjectBase* pObject, int damage, Uint32 damagerID
 */
 void House::informWasBuilt(Uint32 itemID) {
     if(isStructure(itemID)) {
-        structureBuiltValue += std::max(currentGame->objectData.data[itemID][houseID].price/100, 1);
+        structureBuiltValue += currentGame->objectData.data[itemID][houseID].price; // Removed divide by 100
         numBuiltStructures++;
     } else {
-        unitBuiltValue += std::max(currentGame->objectData.data[itemID][houseID].price/100, 1);
+        unitBuiltValue += currentGame->objectData.data[itemID][houseID].price; // Removed divide by 100
         numBuiltUnits++;
     }
+
+    numItemBuilt[itemID]++;
 }
 
 
@@ -436,6 +480,26 @@ void House::informHasKilled(Uint32 itemID) {
         numDestroyedStructures++;
     } else {
         numDestroyedUnits++;
+
+        if(itemID != Unit_Saboteur
+           && itemID != Unit_Frigate
+           && itemID != Unit_Carryall
+           && itemID != Unit_MCV
+           && itemID != Unit_Harvester
+           && itemID != Unit_Sandworm) {
+
+                killValue += currentGame->objectData.data[itemID][houseID].price;
+
+        }
+
+    }
+
+    numItemKills[itemID]++;
+
+
+    std::list<std::shared_ptr<Player> >::iterator iter;
+    for(iter = players.begin(); iter != players.end(); ++iter) {
+        (*iter)->onIncrementUnitKills(itemID);
     }
 }
 

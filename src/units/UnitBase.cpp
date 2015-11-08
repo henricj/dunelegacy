@@ -656,8 +656,27 @@ void UnitBase::navigate() {
                                 setTarget(NULL);
                             }
 
-                            setDestination(location);	//can't get any closer, give up
-                            forced = false;
+                            /// This method will transport units if they get stuck inside a base
+                            /// This often happens after an AI get nuked and has a hole in their base
+                            if(getOwner()->hasCarryalls()
+                               && this->isAGroundUnit()
+                               && blockDistance(location, destination) >= 6.0
+                               && (currentGame->getGameInitSettings().getGameOptions().manualCarryallDrops
+                                   || getOwner()->isAI())){
+
+                                if((GroundUnit*)this != NULL){
+                                    ((GroundUnit*)this)->requestCarryall();
+                                }
+
+
+                            } else{
+
+                                setDestination(location);	//can't get any closer, give up
+                                forced = false;
+
+                            }
+
+
                         }
                     }
 

@@ -79,12 +79,18 @@ public:
 
 	inline int getBuiltValue() const { return unitBuiltValue + structureBuiltValue; }
 	inline int getUnitBuiltValue() const { return unitBuiltValue; }
+	inline int getMilitaryValue() const { return militaryValue; }
+	inline int getKillValue() const { return killValue; }
+	inline int getLossValue() const { return lossValue; }
 	inline int getStructureBuiltValue() const { return structureBuiltValue; }
 	inline int getNumBuiltUnits() const { return numBuiltUnits; }
 	inline int getNumBuiltStructures() const { return numBuiltStructures; }
 	inline int getDestroyedValue() const { return destroyedValue; }
 	inline int getNumDestroyedUnits() const { return numDestroyedUnits; }
 	inline int getNumDestroyedStructures() const { return numDestroyedStructures; }
+	inline int getNumBuiltItems(int itemID) const { return numItemBuilt[itemID]; }
+	inline int getNumKilledItems(int itemID) const { return numItemKills[itemID]; }
+	inline int getNumLostItems(int itemID) const { return numItemLosses[itemID]; }
 	inline float getHarvestedSpice() const { return harvestedSpice; }
 
 	inline int getQuota() const { return quota; };
@@ -149,6 +155,9 @@ protected:
     int numStructures;          ///< How many structures does this player have?
     int numUnits;               ///< How many units does this player have?
     int numItem[Num_ItemID];    ///< This array contains the number of structures/units of a certain type this player has
+    int numItemBuilt[Num_ItemID];  /// Number of items built by player
+    int numItemKills[Num_ItemID]; /// Number of items killed by player
+    int numItemLosses [Num_ItemID]; /// Number of items lost by player
 
     int capacity;           ///< Total spice capacity
     int producedPower;      ///< Power prodoced by this player
@@ -167,6 +176,9 @@ protected:
     // statistic
     int unitBuiltValue;
     int structureBuiltValue;
+    int militaryValue;
+    int killValue;
+    int lossValue;
     int numBuiltUnits;
     int numBuiltStructures;
     int destroyedValue;

@@ -57,6 +57,8 @@ public:
     virtual void onIncrementStructures(int itemID) { };
     virtual void onDecrementStructures(int itemID, const Coord& location) { };
 
+    virtual void onDecrementUnits(int itemID) { };
+    virtual void onIncrementUnitKills(int itemID) { };
     /**
         An object was hit by something or damaged somehow else.
         \param  pObject     the object that was damaged

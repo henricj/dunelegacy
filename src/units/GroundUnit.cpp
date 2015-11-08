@@ -92,6 +92,7 @@ void GroundUnit::checkPos() {
             && owner->hasRepairYard()
             && !pickedUp
             && owner->hasCarryalls()
+            && owner->getHouseID() == originalHouseID // stop deviated units from being repaired
             && !isInfantry()
             && !forced ) { // Stefan - Allow units with targets to be picked up for repairs
 
