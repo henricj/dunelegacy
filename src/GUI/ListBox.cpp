@@ -120,11 +120,11 @@ void ListBox::draw(SDL_Surface* screen, Point position) {
 	}
 
 	if(pBackground != NULL) {
-		SDL_Rect dest = { position.x, position.y, pBackground->w, pBackground->h };
+		SDL_Rect dest = { static_cast<Sint16>(position.x), static_cast<Sint16>(position.y), static_cast<Uint16>(pBackground->w), static_cast<Uint16>(pBackground->h) };
 		SDL_BlitSurface(pBackground,NULL,screen,&dest);
 	}
 
-	SDL_Rect dest = { position.x + 2, position.y + 1, pForeground->w, pForeground->h };
+	SDL_Rect dest = { static_cast<Sint16>(position.x + 2), static_cast<Sint16>(position.y + 1), static_cast<Uint16>(pForeground->w), static_cast<Uint16>(pForeground->h) };
 	SDL_BlitSurface(pForeground,NULL,screen,&dest);
 
 	Point ScrollBarPos = position;
@@ -214,9 +214,9 @@ void ListBox::updateList() {
 		SDL_Surface* pSurface = GUIStyle::getInstance().createListBoxEntry(getSize().x - 4, getEntry(i), bHighlightSelectedElement && (i==selectedElement), color);
 
 		SDL_Rect dest = {   0,
-                            (i-firstVisibleElement) * GUIStyle::getInstance().getListBoxEntryHeight(),
-                            pSurface->w,
-                            pSurface->h };
+                            static_cast<Sint16>((i-firstVisibleElement) * GUIStyle::getInstance().getListBoxEntryHeight()),
+                            static_cast<Uint16>(pSurface->w),
+                            static_cast<Uint16>(pSurface->h) };
 		SDL_BlitSurface(pSurface,NULL,pForeground,&dest);
 		SDL_FreeSurface(pSurface);
 	}

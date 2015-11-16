@@ -19,7 +19,6 @@
 
 #include <players/HumanPlayer.h>
 #include <players/AIPlayer.h>
-#include <players/OldAIPlayer.h>
 #include <players/SmartBot.h>
 #include <players/QuantBot.h>
 
@@ -34,8 +33,8 @@ void PlayerFactory::registerAllPlayers() {
 
 
 
-    playerDataList.push_back( PlayerData(  "qBotDefendOnly",
-                                            "qBotDefendOnly",
+    playerDataList.push_back( PlayerData(  "qBotVeryEasy",
+                                            "qBotVeryEasy",
                                             std::bind(QuantBot::create, std::placeholders::_1, std::placeholders::_2, QuantBot::DEFEND),
                                             std::bind(QuantBot::load, std::placeholders::_1, std::placeholders::_2) ));
 

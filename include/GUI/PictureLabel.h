@@ -87,7 +87,10 @@ public:
 			return;
 		}
 
-		SDL_Rect dest = { position.x, position.y, pSurface->w, pSurface->h };
+		SDL_Rect dest = {   static_cast<Sint16>(position.x),
+                            static_cast<Sint16>(position.y),
+                            static_cast<Uint16>(pSurface->w),
+                            static_cast<Uint16>(pSurface->h) };
 		SDL_BlitSurface(pSurface,NULL,screen,&dest);
 	}
 

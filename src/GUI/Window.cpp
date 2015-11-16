@@ -237,11 +237,11 @@ void Window::draw(SDL_Surface* screen, Point position) {
 
 			if(pBackground != NULL) {
 				// Draw background
-				SDL_Rect RectScreen = { getPosition().x + (getSize().x - pBackground->w)/2,
-                                        getPosition().y + (getSize().y - pBackground->h)/2,
-                                        pBackground->w,
-                                        pBackground->h };
-				SDL_Rect RectBackground = { 0, 0, pBackground->w, pBackground->h };
+				SDL_Rect RectScreen = { static_cast<Sint16>(getPosition().x + (getSize().x - pBackground->w)/2),
+                                        static_cast<Sint16>(getPosition().y + (getSize().y - pBackground->h)/2),
+                                        static_cast<Uint16>(pBackground->w),
+                                        static_cast<Uint16>(pBackground->h) };
+				SDL_Rect RectBackground = { 0, 0, static_cast<Uint16>(pBackground->w), static_cast<Uint16>(pBackground->h) };
 				SDL_BlitSurface(pBackground,&RectBackground,screen,&RectScreen);
 			}
 		}

@@ -43,10 +43,10 @@ void TextEvent::draw(SDL_Surface* pScreen, int currentFrameNumber)
         return;
     }
 
-    SDL_Rect dest = {   (pScreen->w - pSurface->w) / 2,
-                        bCenterVertical ? (pScreen->h - pSurface->h) / 2 : (pScreen->h/2 + 480/2 - 5*pFontManager->getTextHeight(FONT_STD24)/2),
-                        pSurface->w,
-                        pSurface->h };
+    SDL_Rect dest = {   static_cast<Sint16>((pScreen->w - pSurface->w) / 2),
+                        static_cast<Sint16>(bCenterVertical ? (pScreen->h - pSurface->h) / 2 : (pScreen->h/2 + 480/2 - 5*pFontManager->getTextHeight(FONT_STD24)/2)),
+                        static_cast<Uint16>(pSurface->w),
+                        static_cast<Uint16>(pSurface->h) };
     SDL_BlitSurface(pSurface,NULL,pScreen,&dest);
 }
 

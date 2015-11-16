@@ -267,8 +267,8 @@ void Tile::assignUndergroundUnit(Uint32 newObjectID) {
 }
 
 void Tile::blitGround(int xPos, int yPos) {
-	SDL_Rect	source = { getTerrainTile()*world2zoomedWorld(TILESIZE), 0, world2zoomedWorld(TILESIZE), world2zoomedWorld(TILESIZE) };
-	SDL_Rect    drawLocation = { xPos, yPos, world2zoomedWorld(TILESIZE), world2zoomedWorld(TILESIZE) };
+	SDL_Rect	source = { static_cast<Sint16>(getTerrainTile()*world2zoomedWorld(TILESIZE)), 0, static_cast<Uint16>(world2zoomedWorld(TILESIZE)), static_cast<Uint16>(world2zoomedWorld(TILESIZE)) };
+	SDL_Rect    drawLocation = { static_cast<Sint16>(xPos), static_cast<Sint16>(yPos), static_cast<Uint16>(world2zoomedWorld(TILESIZE)), static_cast<Uint16>(world2zoomedWorld(TILESIZE)) };
 
 	if((hasANonInfantryGroundObject() == false) || (getNonInfantryGroundObject()->isAStructure() == false)) {
 
@@ -279,7 +279,7 @@ void Tile::blitGround(int xPos, int yPos) {
 
 		if(destroyedStructureTile != DestroyedStructure_None) {
 		    SDL_Surface** pDestroyedStructureSurface = pGFXManager->getObjPic(ObjPic_DestroyedStructure);
-		    SDL_Rect source2 = { destroyedStructureTile*world2zoomedWorld(TILESIZE), 0, world2zoomedWorld(TILESIZE), world2zoomedWorld(TILESIZE) };
+		    SDL_Rect source2 = { static_cast<Sint16>(destroyedStructureTile*world2zoomedWorld(TILESIZE)), 0, static_cast<Uint16>(world2zoomedWorld(TILESIZE)), static_cast<Uint16>(world2zoomedWorld(TILESIZE)) };
             SDL_BlitSurface(pDestroyedStructureSurface[currentZoomlevel], &source2, screen, &drawLocation);
 		}
 
@@ -295,10 +295,10 @@ void Tile::blitGround(int xPos, int yPos) {
             // damage
 		    for(std::vector<DAMAGETYPE>::const_iterator iter = damage.begin(); iter != damage.end(); ++iter) {
                 source.x = iter->tile*world2zoomedWorld(TILESIZE);
-                SDL_Rect dest = {   screenborder->world2screenX(iter->realPos.x) - world2zoomedWorld(TILESIZE)/2,
-                                    screenborder->world2screenY(iter->realPos.y) - world2zoomedWorld(TILESIZE)/2,
-                                    world2zoomedWorld(TILESIZE),
-                                    world2zoomedWorld(TILESIZE) };
+                SDL_Rect dest = {   static_cast<Sint16>(screenborder->world2screenX(iter->realPos.x) - world2zoomedWorld(TILESIZE)/2),
+                                    static_cast<Sint16>(screenborder->world2screenY(iter->realPos.y) - world2zoomedWorld(TILESIZE)/2),
+                                    static_cast<Uint16>(world2zoomedWorld(TILESIZE)),
+                                    static_cast<Uint16>(world2zoomedWorld(TILESIZE)) };
 
                 if(iter->damageType == Terrain_RockDamage) {
                     SDL_BlitSurface(pGFXManager->getObjPic(ObjPic_RockDamage)[currentZoomlevel], &source, screen, &dest);
@@ -352,7 +352,7 @@ void Tile::blitUndergroundUnits(int xPos, int yPos) {
 void Tile::blitDeadUnits(int xPos, int yPos) {
 	if(!isFogged(pLocalHouse->getHouseID())) {
 	    for(std::vector<DEADUNITTYPE>::const_iterator iter = deadUnits.begin(); iter != deadUnits.end(); ++iter) {
-	        SDL_Rect source = { 0, 0, world2zoomedWorld(TILESIZE), world2zoomedWorld(TILESIZE)};
+	        SDL_Rect source = { 0, 0, static_cast<Uint16>(world2zoomedWorld(TILESIZE)), static_cast<Uint16>(world2zoomedWorld(TILESIZE))};
 	        SDL_Surface** pSurface = NULL;
 	        switch(iter->type) {
                 case DeadUnit_Infantry: {
@@ -394,10 +394,10 @@ void Tile::blitDeadUnits(int xPos, int yPos) {
 	        }
 
 	        if(pSurface != NULL) {
-                SDL_Rect dest = {   screenborder->world2screenX(iter->realPos.x) - world2zoomedWorld(TILESIZE)/2,
-                                    screenborder->world2screenY(iter->realPos.y) - world2zoomedWorld(TILESIZE)/2,
-                                    pSurface[currentZoomlevel]->w,
-                                    pSurface[currentZoomlevel]->h };
+                SDL_Rect dest = {   static_cast<Sint16>(screenborder->world2screenX(iter->realPos.x) - world2zoomedWorld(TILESIZE)/2),
+                                    static_cast<Sint16>(screenborder->world2screenY(iter->realPos.y) - world2zoomedWorld(TILESIZE)/2),
+                                    static_cast<Uint16>(pSurface[currentZoomlevel]->w),
+                                    static_cast<Uint16>(pSurface[currentZoomlevel]->h) };
                 SDL_BlitSurface(pSurface[currentZoomlevel], &source, screen, &dest);
 	        }
 	    }

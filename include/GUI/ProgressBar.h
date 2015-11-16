@@ -127,17 +127,17 @@ public:
 		}
 
 		if(pBackground != NULL) {
-            SDL_Rect dest = { position.x, position.y, pBackground->w, pBackground->h };
+            SDL_Rect dest = { static_cast<Sint16>(position.x), static_cast<Sint16>(position.y), static_cast<Uint16>(pBackground->w), static_cast<Uint16>(pBackground->h) };
             SDL_BlitSurface(pBackground,NULL,screen,&dest);
 		}
 
 		if(pForeground != NULL) {
 		    if(bDrawShadow) {
-		        SDL_Rect dest = { position.x + 2, position.y + 2, lround(percent*(pForeground->w/100.0)), pForeground->h };
+		        SDL_Rect dest = { static_cast<Sint16>(position.x + 2), static_cast<Sint16>(position.y + 2), static_cast<Uint16>(lround(percent*(pForeground->w/100.0))), static_cast<Uint16>(pForeground->h) };
                 SDL_FillRect(screen, &dest, 0);
 		    }
 
-		    SDL_Rect dest = { position.x, position.y, pForeground->w, pForeground->h };
+		    SDL_Rect dest = { static_cast<Sint16>(position.x), static_cast<Sint16>(position.y), static_cast<Uint16>(pForeground->w), static_cast<Uint16>(pForeground->h) };
 			SDL_BlitSurface(pForeground,NULL,screen,&dest);
 		}
 	}

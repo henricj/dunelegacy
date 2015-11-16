@@ -81,8 +81,8 @@ void Devastator::blitToScreen()
     int x1 = screenborder->world2screenX(realX);
     int y1 = screenborder->world2screenY(realY);
 
-    SDL_Rect source1 = { drawnAngle * imageW1, 0, imageW1, pUnitGraphic->h };
-    SDL_Rect dest1 = { x1 - imageW1/2, y1 - pUnitGraphic->h/2, imageW1, pUnitGraphic->h };
+    SDL_Rect source1 = { static_cast<Sint16>(drawnAngle * imageW1), 0, static_cast<Uint16>(imageW1), static_cast<Uint16>(pUnitGraphic->h) };
+    SDL_Rect dest1 = { static_cast<Sint16>(x1 - imageW1/2), static_cast<Sint16>(y1 - pUnitGraphic->h/2), static_cast<Uint16>(imageW1), static_cast<Uint16>(pUnitGraphic->h) };
 
     SDL_BlitSurface(pUnitGraphic, &source1, screen, &dest1);
 
@@ -102,8 +102,8 @@ void Devastator::blitToScreen()
     int x2 = screenborder->world2screenX(realX + devastatorTurretOffset[drawnAngle].x);
     int y2 = screenborder->world2screenY(realY + devastatorTurretOffset[drawnAngle].y);
 
-    SDL_Rect source2 = { drawnAngle * imageW2, 0, imageW2, pTurretGraphic->h };
-    SDL_Rect dest2 = { x2 - imageW2/2, y2 - pTurretGraphic->h/2, imageW2, pTurretGraphic->h };
+    SDL_Rect source2 = { static_cast<Sint16>(drawnAngle * imageW2), 0, static_cast<Uint16>(imageW2), static_cast<Uint16>(pTurretGraphic->h) };
+    SDL_Rect dest2 = { static_cast<Sint16>(x2 - imageW2/2), static_cast<Sint16>(y2 - pTurretGraphic->h/2), static_cast<Uint16>(imageW2), static_cast<Uint16>(pTurretGraphic->h) };
 
     SDL_BlitSurface(pTurretGraphic, &source2, screen, &dest2);
 

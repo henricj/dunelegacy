@@ -105,8 +105,8 @@ void Harvester::blitToScreen()
     int x = screenborder->world2screenX(realX);
     int y = screenborder->world2screenY(realY);
 
-    SDL_Rect source = { drawnAngle * imageW, drawnFrame * imageH, imageW, imageH };
-    SDL_Rect dest = { x - imageW/2, y - imageH/2, imageW, imageH };
+    SDL_Rect source = { static_cast<Sint16>(drawnAngle * imageW), static_cast<Sint16>(drawnFrame * imageH), static_cast<Uint16>(imageW), static_cast<Uint16>(imageH) };
+    SDL_Rect dest = { static_cast<Sint16>(x - imageW/2), static_cast<Sint16>(y - imageH/2), static_cast<Uint16>(imageW), static_cast<Uint16>(imageH) };
 
     SDL_BlitSurface(pUnitGraphic, &source, screen, &dest);
 
@@ -136,8 +136,8 @@ void Harvester::blitToScreen()
             frame -= LASTSANDFRAME;
         }
 
-        SDL_Rect sandSource = { drawnAngle* sandImageW, frame * sandImageH, sandImageW, sandImageH };
-        SDL_Rect sandDest = { sandX - sandImageW/2, sandY - sandImageH/2, sandImageW, sandImageH };
+        SDL_Rect sandSource = { static_cast<Sint16>(drawnAngle* sandImageW), static_cast<Sint16>(frame * sandImageH), static_cast<Uint16>(sandImageW), static_cast<Uint16>(sandImageH) };
+        SDL_Rect sandDest = { static_cast<Sint16>(sandX - sandImageW/2), static_cast<Sint16>(sandY - sandImageH/2), static_cast<Uint16>(sandImageW), static_cast<Uint16>(sandImageH) };
 
         SDL_BlitSurface(pSandGraphic, &sandSource, screen, &sandDest);
     }
@@ -310,10 +310,10 @@ void Harvester::drawSelectionBox()
         default:    selectionBox = pGFXManager->getUIGraphic(UI_SelectionBox_Zoomlevel2);   break;
     }
 
-    SDL_Rect dest = {   screenborder->world2screenX(realX) - selectionBox->w/2,
-                        screenborder->world2screenY(realY) - selectionBox->h/2,
-                        selectionBox->w,
-                        selectionBox->h };
+    SDL_Rect dest = {   static_cast<Sint16>(screenborder->world2screenX(realX) - selectionBox->w/2),
+                        static_cast<Sint16>(screenborder->world2screenY(realY) - selectionBox->h/2),
+                        static_cast<Uint16>(selectionBox->w),
+                        static_cast<Uint16>(selectionBox->h) };
 
 	SDL_BlitSurface(selectionBox, NULL, screen, &dest);
 

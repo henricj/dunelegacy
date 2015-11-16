@@ -188,10 +188,10 @@ bool BuilderList::handleKeyPress(SDL_KeyboardEvent& key) {
 }
 
 void BuilderList::draw(SDL_Surface* screen, Point position) {
-	SDL_Rect blackRectDest = {	position.x,
-                                position.y + ARROWBTN_HEIGHT + BUILDERBTN_SPACING,
-                                getSize().x,
-                                getRealHeight(getSize().y) - 2*(ARROWBTN_HEIGHT + BUILDERBTN_SPACING) - BUILDERBTN_SPACING - ORDERBTN_HEIGHT };
+	SDL_Rect blackRectDest = {	static_cast<Sint16>(position.x),
+                                static_cast<Sint16>(position.y + ARROWBTN_HEIGHT + BUILDERBTN_SPACING),
+                                static_cast<Uint16>(getSize().x),
+                                static_cast<Uint16>(getRealHeight(getSize().y) - 2*(ARROWBTN_HEIGHT + BUILDERBTN_SPACING) - BUILDERBTN_SPACING - ORDERBTN_HEIGHT) };
 	SDL_FillRect(screen, &blackRectDest, COLOR_BLACK);
 
     BuilderBase* pBuilder = dynamic_cast<BuilderBase*>(currentGame->getObjectManager().getObject(builderObjectID));
@@ -232,10 +232,10 @@ void BuilderList::draw(SDL_Surface* screen, Point position) {
 			if((i >= currentListPos) && (i < currentListPos+getNumButtons(getSize().y) )) {
 				SDL_Surface* pSurface = resolveItemPicture(iter->itemID);
 
-                SDL_Rect dest = {   position.x + getButtonPosition(i - currentListPos).x,
-                                    position.y + getButtonPosition(i - currentListPos).y,
-                                    (pSurface != NULL) ? pSurface->w : 0,
-                                    (pSurface != NULL) ? pSurface->h : 0 };
+                SDL_Rect dest = {   static_cast<Sint16>(position.x + getButtonPosition(i - currentListPos).x),
+                                    static_cast<Sint16>(position.y + getButtonPosition(i - currentListPos).y),
+                                    static_cast<Uint16>((pSurface != NULL) ? pSurface->w : 0),
+                                    static_cast<Uint16>((pSurface != NULL) ? pSurface->h : 0) };
 
                 if(pSurface != NULL) {
                     SDL_Rect tmpDest = dest;
@@ -244,12 +244,12 @@ void BuilderList::draw(SDL_Surface* screen, Point position) {
 
 				if(isStructure(iter->itemID)) {
                     SDL_Surface* pLattice = pGFXManager->getUIGraphic(UI_StructureSizeLattice);
-                    SDL_Rect destLattice = { dest.x + 2, dest.y + 2, pLattice->w, pLattice->h };
+                    SDL_Rect destLattice = { static_cast<Sint16>(dest.x + 2), static_cast<Sint16>(dest.y + 2), static_cast<Uint16>(pLattice->w), static_cast<Uint16>(pLattice->h) };
                     SDL_BlitSurface(pLattice, NULL, screen, &destLattice);
 
                     SDL_Surface* pConcrete = pGFXManager->getUIGraphic(UI_StructureSizeConcrete);
-                    SDL_Rect srcConcrete = { 0, 0, 1 + getStructureSize(iter->itemID).x*6, 1 + getStructureSize(iter->itemID).y*6 };
-                    SDL_Rect destConcrete = { dest.x + 2, dest.y + 2, srcConcrete.w, srcConcrete.h };
+                    SDL_Rect srcConcrete = { 0, 0, static_cast<Uint16>(1 + getStructureSize(iter->itemID).x*6), static_cast<Uint16>(1 + getStructureSize(iter->itemID).y*6) };
+                    SDL_Rect destConcrete = { static_cast<Sint16>(dest.x + 2), static_cast<Sint16>(dest.y + 2), srcConcrete.w, srcConcrete.h };
                     SDL_BlitSurface(pConcrete, &srcConcrete, screen, &destConcrete);
 				}
 
@@ -257,8 +257,8 @@ void BuilderList::draw(SDL_Surface* screen, Point position) {
 				char text[50];
 				sprintf(text, "%d", iter->price);
 				SDL_Surface* textSurface = pFontManager->createSurfaceWithText(text, COLOR_WHITE, FONT_STD10);
-				SDL_Rect drawLocation = {   dest.x + 2, dest.y + BUILDERBTN_HEIGHT - textSurface->h + 3,
-                                            textSurface->w, textSurface->h };
+				SDL_Rect drawLocation = {   static_cast<Sint16>(dest.x + 2), static_cast<Sint16>(dest.y + BUILDERBTN_HEIGHT - textSurface->h + 3),
+                                            static_cast<Uint16>(textSurface->w), static_cast<Uint16>(textSurface->h) };
 				SDL_BlitSurface(textSurface, NULL, screen, &drawLocation);
 				SDL_FreeSurface(textSurface);
 
@@ -281,10 +281,10 @@ void BuilderList::draw(SDL_Surface* screen, Point position) {
 
 					if(soldOut == true) {
 						SDL_Surface* textSurface = pFontManager->createSurfaceWithMultilineText(_("SOLD OUT"), COLOR_WHITE, FONT_STD10, true);
-						SDL_Rect drawLocation = {   dest.x + (BUILDERBTN_WIDTH - textSurface->w)/2,
-                                                    dest.y + (BUILDERBTN_HEIGHT - textSurface->h)/2,
-                                                    textSurface->w,
-                                                    textSurface->h };
+						SDL_Rect drawLocation = {   static_cast<Sint16>(dest.x + (BUILDERBTN_WIDTH - textSurface->w)/2),
+                                                    static_cast<Sint16>(dest.y + (BUILDERBTN_HEIGHT - textSurface->h)/2),
+                                                    static_cast<Uint16>(textSurface->w),
+                                                    static_cast<Uint16>(textSurface->h) };
 						SDL_BlitSurface(textSurface, NULL, screen, &drawLocation);
 						SDL_FreeSurface(textSurface);
 					}
@@ -303,10 +303,10 @@ void BuilderList::draw(SDL_Surface* screen, Point position) {
                     }
 
                     SDL_Surface* textSurface = pFontManager->createSurfaceWithMultilineText(_("ALREADY\nBUILT"), COLOR_WHITE, FONT_STD10, true);
-                    SDL_Rect drawLocation = {   dest.x + (BUILDERBTN_WIDTH - textSurface->w)/2,
-                                                dest.y + (BUILDERBTN_HEIGHT - textSurface->h)/2,
-                                                textSurface->w,
-                                                textSurface->h };
+                    SDL_Rect drawLocation = {   static_cast<Sint16>(dest.x + (BUILDERBTN_WIDTH - textSurface->w)/2),
+                                                static_cast<Sint16>(dest.y + (BUILDERBTN_HEIGHT - textSurface->h)/2),
+                                                static_cast<Uint16>(textSurface->w),
+                                                static_cast<Uint16>(textSurface->h) };
                     SDL_BlitSurface(textSurface, NULL, screen, &drawLocation);
                     SDL_FreeSurface(textSurface);
 				} else if(iter->itemID == pBuilder->getCurrentProducedItem()) {
@@ -328,18 +328,18 @@ void BuilderList::draw(SDL_Surface* screen, Point position) {
 
 					if(pBuilder->isWaitingToPlace() == true) {
 						SDL_Surface* textSurface = pFontManager->createSurfaceWithMultilineText(_("PLACE IT"), COLOR_WHITE, FONT_STD10, true);
-						SDL_Rect drawLocation = {   dest.x + (BUILDERBTN_WIDTH - textSurface->w)/2,
-                                                    dest.y + (BUILDERBTN_HEIGHT - textSurface->h)/2,
-                                                    textSurface->w,
-                                                    textSurface->h };
+						SDL_Rect drawLocation = {   static_cast<Sint16>(dest.x + (BUILDERBTN_WIDTH - textSurface->w)/2),
+                                                    static_cast<Sint16>(dest.y + (BUILDERBTN_HEIGHT - textSurface->h)/2),
+                                                    static_cast<Uint16>(textSurface->w),
+                                                    static_cast<Uint16>(textSurface->h) };
 						SDL_BlitSurface(textSurface, NULL, screen, &drawLocation);
 						SDL_FreeSurface(textSurface);
 					} else if(pBuilder->isOnHold() == true) {
 						SDL_Surface* textSurface = pFontManager->createSurfaceWithMultilineText(_("ON HOLD"), COLOR_WHITE, FONT_STD10, true);
-						SDL_Rect drawLocation = {   dest.x + (BUILDERBTN_WIDTH - textSurface->w)/2,
-                                                    dest.y + (BUILDERBTN_HEIGHT - textSurface->h)/2,
-                                                    textSurface->w,
-                                                    textSurface->h };
+						SDL_Rect drawLocation = {   static_cast<Sint16>(dest.x + (BUILDERBTN_WIDTH - textSurface->w)/2),
+                                                    static_cast<Sint16>(dest.y + (BUILDERBTN_HEIGHT - textSurface->h)/2),
+                                                    static_cast<Uint16>(textSurface->w),
+                                                    static_cast<Uint16>(textSurface->h) };
 						SDL_BlitSurface(textSurface, NULL, screen, &drawLocation);
 						SDL_FreeSurface(textSurface);
 					}
@@ -349,10 +349,10 @@ void BuilderList::draw(SDL_Surface* screen, Point position) {
 					// draw number of this in build list
 					sprintf(text, "%d", iter->num);
 					textSurface = pFontManager->createSurfaceWithText(text, COLOR_RED, FONT_STD10);
-                    SDL_Rect drawLocation = {   dest.x + BUILDERBTN_WIDTH - textSurface->w - 2,
-                                                dest.y + BUILDERBTN_HEIGHT - textSurface->h + 3,
-                                                textSurface->w,
-                                                textSurface->h };
+                    SDL_Rect drawLocation = {   static_cast<Sint16>(dest.x + BUILDERBTN_WIDTH - textSurface->w - 2),
+                                                static_cast<Sint16>(dest.y + BUILDERBTN_HEIGHT - textSurface->h + 3),
+                                                static_cast<Uint16>(textSurface->w),
+                                                static_cast<Uint16>(textSurface->h) };
 					SDL_BlitSurface(textSurface, NULL, screen, &drawLocation);
 					SDL_FreeSurface(textSurface);
 				}
@@ -361,11 +361,11 @@ void BuilderList::draw(SDL_Surface* screen, Point position) {
 	}
 
 	SDL_Surface* pBuilderListUpperCap = pGFXManager->getUIGraphic(UI_BuilderListUpperCap);
-	SDL_Rect builderListUpperCapDest = { blackRectDest.x - 3, blackRectDest.y - 13 + 4, pBuilderListUpperCap->w, pBuilderListUpperCap->h };
+	SDL_Rect builderListUpperCapDest = { static_cast<Sint16>(blackRectDest.x - 3), static_cast<Sint16>(blackRectDest.y - 13 + 4), static_cast<Uint16>(pBuilderListUpperCap->w), static_cast<Uint16>(pBuilderListUpperCap->h) };
     SDL_BlitSurface(pBuilderListUpperCap, NULL, screen, &builderListUpperCapDest);
 
 	SDL_Surface* pBuilderListLowerCap = pGFXManager->getUIGraphic(UI_BuilderListLowerCap);
-	SDL_Rect builderListLowerCapDest = { blackRectDest.x - 3, blackRectDest.y + blackRectDest.h - 3 - 4, pBuilderListLowerCap->w, pBuilderListLowerCap->h };
+	SDL_Rect builderListLowerCapDest = { static_cast<Sint16>(blackRectDest.x - 3), static_cast<Sint16>(blackRectDest.y + blackRectDest.h - 3 - 4), static_cast<Uint16>(pBuilderListLowerCap->w), static_cast<Uint16>(pBuilderListLowerCap->h) };
     SDL_BlitSurface(pBuilderListLowerCap, NULL, screen, &builderListLowerCapDest);
 
     drawVLine(screen,builderListUpperCapDest.x + builderListUpperCapDest.w - 8, builderListUpperCapDest.y + builderListUpperCapDest.h, builderListLowerCapDest.y, 227);
@@ -409,10 +409,10 @@ void BuilderList::drawOverlay(SDL_Surface* screen, Point position) {
 				tooltipText = text;
 			}
 
-			SDL_Rect dest = {   position.x + getButtonPosition(btn).x - pLastTooltip->w - 5,
-                                position.y + lastMousePos.y,
-								pLastTooltip->w,
-								pLastTooltip->h };
+			SDL_Rect dest = {   static_cast<Sint16>(position.x + getButtonPosition(btn).x - pLastTooltip->w - 5),
+                                static_cast<Sint16>(position.y + lastMousePos.y),
+								static_cast<Uint16>(pLastTooltip->w),
+								static_cast<Uint16>(pLastTooltip->h) };
 			SDL_BlitSurface(pLastTooltip, NULL, screen, &dest);
 		}
 

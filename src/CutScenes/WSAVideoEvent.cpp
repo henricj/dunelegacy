@@ -34,10 +34,10 @@ int WSAVideoEvent::draw(SDL_Surface* pScreen)
 {
     SDL_Surface* pSurface = Scaler::defaultDoubleSurface(pWsafile->getPicture(currentFrame), true);
 
-    SDL_Rect dest = {   (pScreen->w - pSurface->w) / 2,
-                        bCenterVertical ? (pScreen->h - pSurface->h) / 2 : 0,
-                        pSurface->w,
-                        pSurface->h };
+    SDL_Rect dest = {   static_cast<Sint16>((pScreen->w - pSurface->w) / 2),
+                        static_cast<Sint16>(bCenterVertical ? (pScreen->h - pSurface->h) / 2 : 0),
+                        static_cast<Uint16>(pSurface->w),
+                        static_cast<Uint16>(pSurface->h) };
 	SDL_BlitSurface(pSurface,NULL,pScreen,&dest);
 
 	SDL_FreeSurface(pSurface);

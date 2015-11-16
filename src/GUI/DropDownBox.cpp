@@ -238,7 +238,7 @@ void DropDownBox::draw(SDL_Surface* screen, Point position) {
 	}
 
 	if(pBackground != NULL) {
-		SDL_Rect dest = { position.x, position.y, pBackground->w, pBackground->h };
+		SDL_Rect dest = { static_cast<Sint16>(position.x), static_cast<Sint16>(position.y), static_cast<Uint16>(pBackground->w), static_cast<Uint16>(pBackground->h) };
 		SDL_BlitSurface(pBackground,NULL,screen,&dest);
 	}
 
@@ -248,10 +248,10 @@ void DropDownBox::draw(SDL_Surface* screen, Point position) {
 
 	if(pForeground != NULL && pActiveForeground != NULL) {
 		if(((bHover == true) && pOnClick) || isActive()) {
-		    SDL_Rect dest = { position.x + 2, position.y + 2, pActiveForeground->w, pActiveForeground->h };
+		    SDL_Rect dest = { static_cast<Sint16>(position.x + 2), static_cast<Sint16>(position.y + 2), static_cast<Uint16>(pActiveForeground->w), static_cast<Uint16>(pActiveForeground->h) };
             SDL_BlitSurface(pActiveForeground,NULL,screen,&dest);
 		} else {
-		    SDL_Rect dest = { position.x + 2, position.y + 2, pForeground->w, pForeground->h };
+		    SDL_Rect dest = { static_cast<Sint16>(position.x + 2), static_cast<Sint16>(position.y + 2), static_cast<Uint16>(pForeground->w), static_cast<Uint16>(pForeground->h) };
             SDL_BlitSurface(pForeground,NULL,screen,&dest);
 		}
 	}

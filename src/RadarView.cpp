@@ -62,7 +62,7 @@ int RadarView::getMapSizeY() const {
 
 void RadarView::draw(SDL_Surface* screen, Point position)
 {
-    SDL_Rect radarPosition = { position.x + RADARVIEW_BORDERTHICKNESS, position.y + RADARVIEW_BORDERTHICKNESS, RADARWIDTH, RADARHEIGHT};
+    SDL_Rect radarPosition = { static_cast<Sint16>(position.x + RADARVIEW_BORDERTHICKNESS), static_cast<Sint16>(position.y + RADARVIEW_BORDERTHICKNESS), RADARWIDTH, RADARHEIGHT};
 
     switch(currentRadarMode) {
         case Mode_RadarOff:
@@ -78,7 +78,7 @@ void RadarView::draw(SDL_Surface* screen, Point position)
 
             updateRadarSurface(mapSizeX, mapSizeY, scale, offsetX, offsetY);
 
-            SDL_Rect dest = { radarPosition.x, radarPosition.y, radarSurface->w, radarSurface->h };
+            SDL_Rect dest = { radarPosition.x, radarPosition.y, static_cast<Uint16>(radarSurface->w), static_cast<Uint16>(radarSurface->h) };
             SDL_BlitSurface(radarSurface, NULL, screen, &dest);
 
             SDL_Rect RadarRect;
@@ -120,8 +120,8 @@ void RadarView::draw(SDL_Surface* screen, Point position)
         case Mode_AnimationRadarOn: {
             int imageW = radarStaticAnimation->w / NUM_STATIC_FRAMES;
             int imageH = radarStaticAnimation->h;
-            SDL_Rect source = { animFrame*imageW, 0, imageW, imageH };
-            SDL_Rect dest = { radarPosition.x, radarPosition.y, imageW, imageH };
+            SDL_Rect source = { static_cast<Sint16>(animFrame*imageW), 0, static_cast<Uint16>(imageW), static_cast<Uint16>(imageH) };
+            SDL_Rect dest = { radarPosition.x, radarPosition.y, static_cast<Uint16>(imageW), static_cast<Uint16>(imageH) };
             SDL_BlitSurface(radarStaticAnimation, &source, screen, &dest);
         } break;
     }

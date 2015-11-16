@@ -277,10 +277,10 @@ void Bullet::blitToScreen()
         return;
 	}
 
-    SDL_Rect source = { (numFrames > 1) ? drawnAngle * imageW : 0, 0, imageW, imageH };
-	SDL_Rect dest = {   screenborder->world2screenX(realX) - imageW/2,
-                        screenborder->world2screenY(realY) - imageH/2,
-                        imageW, imageH };
+    SDL_Rect source = { static_cast<Sint16>((numFrames > 1) ? drawnAngle * imageW : 0), 0, static_cast<Uint16>(imageW), static_cast<Uint16>(imageH) };
+	SDL_Rect dest = {   static_cast<Sint16>(screenborder->world2screenX(realX) - imageW/2),
+                        static_cast<Sint16>(screenborder->world2screenY(realY) - imageH/2),
+                        static_cast<Uint16>(imageW), static_cast<Uint16>(imageH) };
 
     if(bulletID == Bullet_Sonic && !currentGame->isGamePaused()) {
         SDL_Surface** mask = pGFXManager->getObjPic(ObjPic_Bullet_Sonic,(owner == NULL) ? HOUSE_HARKONNEN : owner->getHouseID());

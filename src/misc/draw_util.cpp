@@ -267,7 +267,7 @@ SDL_Surface* getSubPicture(SDL_Surface* Pic, int left, int top,
 	SDL_SetColors(returnPic, Pic->format->palette->colors, 0, Pic->format->palette->ncolors);
 	SDL_SetColorKey(returnPic, Pic->flags & (SDL_SRCCOLORKEY | SDL_RLEACCEL), Pic->format->colorkey);
 
-	SDL_Rect srcRect = {left,top,width,height};
+	SDL_Rect srcRect = {static_cast<Sint16>(left),static_cast<Sint16>(top),static_cast<Uint16>(width),static_cast<Uint16>(height)};
 	SDL_BlitSurface(Pic,&srcRect,returnPic,NULL);
 
 	return returnPic;
@@ -299,7 +299,7 @@ SDL_Surface* combinePictures(SDL_Surface* basePicture, SDL_Surface* topPicture, 
         return NULL;
     }
 
-    SDL_Rect destRect = {x, y, topPicture->w, topPicture->h};
+    SDL_Rect destRect = {static_cast<Sint16>(x), static_cast<Sint16>(y), static_cast<Uint16>(topPicture->w), static_cast<Uint16>(topPicture->h)};
 	SDL_BlitSurface(topPicture, NULL, dest, &destRect);
 
 	if(bFreeBasePicture) SDL_FreeSurface(basePicture);

@@ -17,8 +17,8 @@
 		1334718412A30F5F00E06BB4 /* 2P - 32x32 - X-Factor.ini in Copy Multiplayer Maps */ = {isa = PBXBuildFile; fileRef = 13FF590612A2EEA500100C53 /* 2P - 32x32 - X-Factor.ini */; };
 		1334718512A30F6900E06BB4 /* 2P - 32x128 - Canyon.ini in Copy Singleplayer Maps */ = {isa = PBXBuildFile; fileRef = 13FF590812A2EEA500100C53 /* 2P - 32x128 - Canyon.ini */; };
 		1334718612A30F6E00E06BB4 /* 2P - 64x64 - North vs. South.ini in Copy Singleplayer Maps */ = {isa = PBXBuildFile; fileRef = 13FF590912A2EEA500100C53 /* 2P - 64x64 - North vs. South.ini */; };
-		1346AC9B149AEAE600CB278A /* SDL.framework in Copy Frameworks into .app bundle */ = {isa = PBXBuildFile; fileRef = 002F39F909D0881F00EBEB88 /* SDL.framework */; };
-		1346AC9C149AEAEB00CB278A /* SDL_mixer.framework in Copy Frameworks into .app bundle */ = {isa = PBXBuildFile; fileRef = 134D59BB0F12772100DE7859 /* SDL_mixer.framework */; };
+		1346AC9B149AEAE600CB278A /* SDL.framework in Copy Frameworks into .app bundle */ = {isa = PBXBuildFile; fileRef = 002F39F909D0881F00EBEB88 /* SDL.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		1346AC9C149AEAEB00CB278A /* SDL_mixer.framework in Copy Frameworks into .app bundle */ = {isa = PBXBuildFile; fileRef = 134D59BB0F12772100DE7859 /* SDL_mixer.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		1346ACA4149AEB6700CB278A /* SDL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 002F39F909D0881F00EBEB88 /* SDL.framework */; };
 		1346ACA5149AEB7300CB278A /* SDL_mixer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 134D59BB0F12772100DE7859 /* SDL_mixer.framework */; };
 		134D2FE90F38F178001B38EF /* LEGACY.PAK in Resources */ = {isa = PBXBuildFile; fileRef = 134D2FE80F38F178001B38EF /* LEGACY.PAK */; };
@@ -227,7 +227,6 @@
 		13E5648F169B531C00D282B9 /* RadioButtonManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 13E5648E169B531C00D282B9 /* RadioButtonManager.cpp */; };
 		13E56497169B537B00D282B9 /* INIMapEditorLoader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 13E56496169B537B00D282B9 /* INIMapEditorLoader.cpp */; };
 		13E5649D169B53B700D282B9 /* Scaler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 13E5649C169B53B700D282B9 /* Scaler.cpp */; };
-		13E564A0169B53DF00D282B9 /* OldAIPlayer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 13E5649E169B53DF00D282B9 /* OldAIPlayer.cpp */; };
 		13E564A1169B53DF00D282B9 /* PlayerFactory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 13E5649F169B53DF00D282B9 /* PlayerFactory.cpp */; };
 		13E564A9169B544900D282B9 /* RaiderTrike.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 13E564A8169B544900D282B9 /* RaiderTrike.cpp */; };
 		13E564CD169B557D00D282B9 /* 5P - 128x128 - All against Atreides.ini in Copy Singleplayer Maps */ = {isa = PBXBuildFile; fileRef = 13E564B8169B54C000D282B9 /* 5P - 128x128 - All against Atreides.ini */; };
@@ -236,6 +235,8 @@
 		13E564D1169B55BE00D282B9 /* OPENSD2.PAK in Resources */ = {isa = PBXBuildFile; fileRef = 13E564D0169B55BE00D282B9 /* OPENSD2.PAK */; };
 		13E929C010AF72BF00169991 /* Dune2-Versions.txt in Resources */ = {isa = PBXBuildFile; fileRef = 13E929BF10AF72BF00169991 /* Dune2-Versions.txt */; };
 		8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
+		E39FAED01BF8235500A2A8B4 /* QuantBot.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E39FAECE1BF8235500A2A8B4 /* QuantBot.cpp */; };
+		E39FAED11BF8235500A2A8B4 /* SmartBot.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E39FAECF1BF8235500A2A8B4 /* SmartBot.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -785,9 +786,7 @@
 		13E56498169B538A00D282B9 /* INIMapEditorLoader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = INIMapEditorLoader.h; sourceTree = "<group>"; };
 		13E5649A169B53A300D282B9 /* Scaler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Scaler.h; sourceTree = "<group>"; };
 		13E5649C169B53B700D282B9 /* Scaler.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Scaler.cpp; sourceTree = "<group>"; };
-		13E5649E169B53DF00D282B9 /* OldAIPlayer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = OldAIPlayer.cpp; sourceTree = "<group>"; };
 		13E5649F169B53DF00D282B9 /* PlayerFactory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PlayerFactory.cpp; sourceTree = "<group>"; };
-		13E564A2169B53F900D282B9 /* OldAIPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OldAIPlayer.h; sourceTree = "<group>"; };
 		13E564A3169B53F900D282B9 /* PlayerFactory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlayerFactory.h; sourceTree = "<group>"; };
 		13E564A6169B543200D282B9 /* RaiderTrike.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RaiderTrike.h; sourceTree = "<group>"; };
 		13E564A8169B544900D282B9 /* RaiderTrike.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RaiderTrike.cpp; sourceTree = "<group>"; };
@@ -803,6 +802,10 @@
 		29B97325FDCFA39411CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
 		32CA4F630368D1EE00C91783 /* Dune Legacy_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Dune Legacy_Prefix.pch"; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		E39FAECC1BF81CB200A2A8B4 /* QuantBot.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QuantBot.h; sourceTree = "<group>"; };
+		E39FAECD1BF81CB200A2A8B4 /* SmartBot.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SmartBot.h; sourceTree = "<group>"; };
+		E39FAECE1BF8235500A2A8B4 /* QuantBot.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = QuantBot.cpp; path = "../../../../../../Volumes/BOOTCAMP/dune-src/dunelegacy/src/players/QuantBot.cpp"; sourceTree = "<group>"; };
+		E39FAECF1BF8235500A2A8B4 /* SmartBot.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = SmartBot.cpp; path = "../../../../../../Volumes/BOOTCAMP/dune-src/dunelegacy/src/players/SmartBot.cpp"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1160,11 +1163,12 @@
 		1358FC2A13D3B71500FAD5B7 /* players */ = {
 			isa = PBXGroup;
 			children = (
+				E39FAECC1BF81CB200A2A8B4 /* QuantBot.h */,
+				E39FAECD1BF81CB200A2A8B4 /* SmartBot.h */,
 				1358FC2B13D3B71500FAD5B7 /* AIPlayer.h */,
 				1358FC2C13D3B71500FAD5B7 /* HumanPlayer.h */,
 				1358FC2D13D3B71500FAD5B7 /* Player.h */,
 				13E564A3169B53F900D282B9 /* PlayerFactory.h */,
-				13E564A2169B53F900D282B9 /* OldAIPlayer.h */,
 			);
 			path = players;
 			sourceTree = "<group>";
@@ -1479,11 +1483,12 @@
 		1358FDE313D3B72F00FAD5B7 /* players */ = {
 			isa = PBXGroup;
 			children = (
+				E39FAECE1BF8235500A2A8B4 /* QuantBot.cpp */,
+				E39FAECF1BF8235500A2A8B4 /* SmartBot.cpp */,
 				1358FDE413D3B72F00FAD5B7 /* AIPlayer.cpp */,
 				1358FDE513D3B72F00FAD5B7 /* HumanPlayer.cpp */,
 				1358FDE613D3B72F00FAD5B7 /* Player.cpp */,
 				13E5649F169B53DF00D282B9 /* PlayerFactory.cpp */,
-				13E5649E169B53DF00D282B9 /* OldAIPlayer.cpp */,
 			);
 			path = players;
 			sourceTree = "<group>";
@@ -1739,9 +1744,16 @@
 /* Begin PBXProject section */
 		29B97313FDCFA39411CA2CEA /* Project object */ = {
 			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0710;
+			};
 			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "Dune Legacy" */;
 			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
 			hasScannedForEncodings = 1;
+			knownRegions = (
+				en,
+			);
 			mainGroup = 29B97314FDCFA39411CA2CEA /* Dune Legacy */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -1826,6 +1838,7 @@
 				1358FE5513D3B72F00FAD5B7 /* SFXManager.cpp in Sources */,
 				1358FE5613D3B72F00FAD5B7 /* Shpfile.cpp in Sources */,
 				1358FE5713D3B72F00FAD5B7 /* TextManager.cpp in Sources */,
+				E39FAED11BF8235500A2A8B4 /* SmartBot.cpp in Sources */,
 				1358FE5813D3B72F00FAD5B7 /* Vocfile.cpp in Sources */,
 				1358FE5913D3B72F00FAD5B7 /* Wsafile.cpp in Sources */,
 				1358FE5A13D3B72F00FAD5B7 /* xmidi.cpp in Sources */,
@@ -1929,6 +1942,7 @@
 				1358FEBF13D3B72F00FAD5B7 /* Deviator.cpp in Sources */,
 				1358FEC113D3B72F00FAD5B7 /* Frigate.cpp in Sources */,
 				1358FEC213D3B72F00FAD5B7 /* GroundUnit.cpp in Sources */,
+				E39FAED01BF8235500A2A8B4 /* QuantBot.cpp in Sources */,
 				1358FEC313D3B72F00FAD5B7 /* Harvester.cpp in Sources */,
 				1358FEC413D3B72F00FAD5B7 /* InfantryBase.cpp in Sources */,
 				1358FEC513D3B72F00FAD5B7 /* Launcher.cpp in Sources */,
@@ -1963,7 +1977,6 @@
 				13E5648F169B531C00D282B9 /* RadioButtonManager.cpp in Sources */,
 				13E56497169B537B00D282B9 /* INIMapEditorLoader.cpp in Sources */,
 				13E5649D169B53B700D282B9 /* Scaler.cpp in Sources */,
-				13E564A0169B53DF00D282B9 /* OldAIPlayer.cpp in Sources */,
 				13E564A1169B53DF00D282B9 /* PlayerFactory.cpp in Sources */,
 				13E564A9169B544900D282B9 /* RaiderTrike.cpp in Sources */,
 			);
@@ -1975,13 +1988,30 @@
 		C01FCF4B08A954540054247B /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				COPY_PHASE_STRIP = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_USE_OPTIMIZATION_PROFILE = NO;
+				CLANG_X86_VECTOR_INSTRUCTIONS = default;
+				COMBINE_HIDPI_IMAGES = YES;
+				COPY_PHASE_STRIP = YES;
+				ENABLE_TESTABILITY = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_ENABLE_SSE3_EXTENSIONS = YES;
+				GCC_ENABLE_SSE41_EXTENSIONS = YES;
+				GCC_ENABLE_SSE42_EXTENSIONS = YES;
+				GCC_ENABLE_SUPPLEMENTAL_SSE3_INSTRUCTIONS = YES;
+				GCC_FEEDBACK_DIRECTED_OPTIMIZATION = GenerateProfile;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_MODEL_TUNING = G5;
-				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_OPTIMIZATION_LEVEL = 3;
+				GCC_VERSION = "";
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "$(HOME)/Applications";
+				ONLY_ACTIVE_ARCH = NO;
+				OTHER_CPLUSPLUSFLAGS = "";
+				PRODUCT_BUNDLE_IDENTIFIER = "Dune-Legacy-OSX-0.96.4b-build15";
 				PRODUCT_NAME = "Dune Legacy";
 				WRAPPER_EXTENSION = app;
 				ZERO_LINK = YES;
@@ -1991,11 +2021,29 @@
 		C01FCF4C08A954540054247B /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = i386;
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_USE_OPTIMIZATION_PROFILE = NO;
+				CLANG_X86_VECTOR_INSTRUCTIONS = default;
+				COMBINE_HIDPI_IMAGES = YES;
+				COPY_PHASE_STRIP = YES;
+				ENABLE_TESTABILITY = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_ENABLE_SSE3_EXTENSIONS = YES;
+				GCC_ENABLE_SSE41_EXTENSIONS = YES;
+				GCC_ENABLE_SSE42_EXTENSIONS = YES;
+				GCC_ENABLE_SUPPLEMENTAL_SSE3_INSTRUCTIONS = YES;
+				GCC_FEEDBACK_DIRECTED_OPTIMIZATION = GenerateProfile;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 3;
+				GCC_VERSION = "";
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "$(HOME)/Applications";
+				ONLY_ACTIVE_ARCH = NO;
+				OTHER_CPLUSPLUSFLAGS = "";
+				PRODUCT_BUNDLE_IDENTIFIER = "Dune-Legacy-OSX-0.96.4b-build15";
 				PRODUCT_NAME = "Dune Legacy";
 				WRAPPER_EXTENSION = app;
 			};
@@ -2006,6 +2054,7 @@
 			buildSettings = {
 				COPY_PHASE_STRIP = NO;
 				DEPLOYMENT_POSTPROCESSING = YES;
+				ENABLE_TESTABILITY = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(HOME)/Library/Frameworks",
 					/Library/Frameworks,
@@ -2038,6 +2087,7 @@
 					/Library/Frameworks/SDL_mixer.framework/Headers,
 					"$(HEADER_SEARCH_PATHS)",
 				);
+				ONLY_ACTIVE_ARCH = YES;
 				OTHER_CPLUSPLUSFLAGS = "-mno-fused-madd";
 				OTHER_LDFLAGS = (
 					"-dylib_file",
@@ -2046,7 +2096,7 @@
 					"@loader_path/Frameworks/smpeg.framework/Versions/A/smpeg:/Library/Frameworks/SDL_mixer.framework/Versions/A/Frameworks/smpeg.framework/Versions/A/smpeg",
 				);
 				PREBINDING = NO;
-				SDKROOT = macosx10.6;
+				SDKROOT = macosx;
 				STRIP_INSTALLED_PRODUCT = YES;
 			};
 			name = Debug;
@@ -2054,7 +2104,6 @@
 		C01FCF5008A954540054247B /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = i386;
 				COPY_PHASE_STRIP = NO;
 				DEPLOYMENT_POSTPROCESSING = YES;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -2099,7 +2148,7 @@
 					"@loader_path/Frameworks/smpeg.framework/Versions/A/smpeg:/Library/Frameworks/SDL_mixer.framework/Versions/A/Frameworks/smpeg.framework/Versions/A/smpeg",
 				);
 				PREBINDING = NO;
-				SDKROOT = macosx10.5;
+				SDKROOT = macosx;
 				STRIP_INSTALLED_PRODUCT = YES;
 			};
 			name = Release;

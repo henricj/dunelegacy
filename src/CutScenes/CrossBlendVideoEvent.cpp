@@ -26,7 +26,7 @@ CrossBlendVideoEvent::CrossBlendVideoEvent(SDL_Surface* pSourceSurface, SDL_Surf
     this->bCenterVertical = bCenterVertical;
     currentFrame = 0;
 
-    SDL_Rect dest = {	0,0, this->pSourceSurface->w, this->pSourceSurface->h};
+    SDL_Rect dest = {	0,0, static_cast<Uint16>(this->pSourceSurface->w), static_cast<Uint16>(this->pSourceSurface->h)};
     pBlendBlitter = new BlendBlitter(this->pDestSurface, this->pSourceSurface, dest, 30);
 }
 
@@ -46,10 +46,10 @@ int CrossBlendVideoEvent::draw(SDL_Surface* pScreen)
 		pBlendBlitter = NULL;
     }
 
-    SDL_Rect dest = {   (pScreen->w - pSourceSurface->w) / 2,
-                        bCenterVertical ? (pScreen->h - pSourceSurface->h) / 2 : 0,
-                        pSourceSurface->w,
-                        pSourceSurface->h };
+    SDL_Rect dest = {   static_cast<Sint16>((pScreen->w - pSourceSurface->w) / 2),
+                        static_cast<Sint16>(bCenterVertical ? (pScreen->h - pSourceSurface->h) / 2 : 0),
+                        static_cast<Uint16>(pSourceSurface->w),
+                        static_cast<Uint16>(pSourceSurface->h) };
     SDL_BlitSurface(pSourceSurface,NULL,pScreen,&dest);
 
     currentFrame++;

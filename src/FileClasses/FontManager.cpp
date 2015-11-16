@@ -119,10 +119,10 @@ SDL_Surface* FontManager::createSurfaceWithMultilineText(std::string text, unsig
     for(iter = textLines.begin(); iter != textLines.end(); ++iter, line++) {
         SDL_Surface* tmpSurface = createSurfaceWithText(*iter, color, fontNum);
 
-        SDL_Rect dest = {   (bCentered == false) ? 0 : (width - tmpSurface->w)/2,
-                            line*lineHeight,
-                            tmpSurface->w,
-                            tmpSurface->h };
+        SDL_Rect dest = {   static_cast<Sint16>((bCentered == false) ? 0 : (width - tmpSurface->w)/2),
+                            static_cast<Sint16>(line*lineHeight),
+                            static_cast<Uint16>(tmpSurface->w),
+                            static_cast<Uint16>(tmpSurface->h) };
         SDL_BlitSurface(tmpSurface,NULL,pic,&dest);
 
         SDL_FreeSurface(tmpSurface);

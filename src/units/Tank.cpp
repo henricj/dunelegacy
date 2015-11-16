@@ -64,16 +64,16 @@ void Tank::blitToScreen() {
     int x = screenborder->world2screenX(realX);
     int y = screenborder->world2screenY(realY);
 
-    SDL_Rect source1 = { drawnAngle * imageW1, 0, imageW1, pUnitGraphic->h };
-    SDL_Rect dest1 = { x - imageW1/2, y - pUnitGraphic->h/2, imageW1, pUnitGraphic->h };
+    SDL_Rect source1 = { static_cast<Sint16>(drawnAngle * imageW1), 0, static_cast<Uint16>(imageW1), static_cast<Uint16>(pUnitGraphic->h) };
+    SDL_Rect dest1 = { static_cast<Sint16>(x - imageW1/2), static_cast<Sint16>(y - pUnitGraphic->h/2), static_cast<Uint16>(imageW1), static_cast<Uint16>(pUnitGraphic->h) };
 
     SDL_BlitSurface(pUnitGraphic, &source1, screen, &dest1);
 
     SDL_Surface* pTurretGraphic = turretGraphic[currentZoomlevel];
     int imageW2 = pTurretGraphic->w/NUM_ANGLES;
 
-    SDL_Rect source2 = { drawnTurretAngle * imageW2, 0, imageW2, pTurretGraphic->h };
-    SDL_Rect dest2 = { x - imageW2/2, y - pTurretGraphic->h/2, imageW2, pTurretGraphic->h };
+    SDL_Rect source2 = { static_cast<Sint16>(drawnTurretAngle * imageW2), 0, static_cast<Uint16>(imageW2), static_cast<Uint16>(pTurretGraphic->h) };
+    SDL_Rect dest2 = { static_cast<Sint16>(x - imageW2/2), static_cast<Sint16>(y - pTurretGraphic->h/2), static_cast<Uint16>(imageW2), static_cast<Uint16>(pTurretGraphic->h) };
 
     SDL_BlitSurface(pTurretGraphic, &source2, screen, &dest2);
 

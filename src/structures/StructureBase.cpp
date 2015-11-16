@@ -132,8 +132,8 @@ void StructureBase::blitToScreen() {
     int imageW = graphic[currentZoomlevel]->w/numImagesX;
     int imageH = graphic[currentZoomlevel]->h/numImagesY;
 
-    SDL_Rect dest = { screenborder->world2screenX((int) lround(realX)), screenborder->world2screenY((int) lround(realY)), imageW, imageH };
-    SDL_Rect source = { imageW * (fogged ? lastVisibleFrame : curAnimFrame), 0, imageW, imageH };
+    SDL_Rect dest = { static_cast<Sint16>(screenborder->world2screenX((int) lround(realX))), static_cast<Sint16>(screenborder->world2screenY((int) lround(realY))), static_cast<Uint16>(imageW), static_cast<Uint16>(imageH) };
+    SDL_Rect source = { static_cast<Sint16>(imageW * (fogged ? lastVisibleFrame : curAnimFrame)), 0, static_cast<Uint16>(imageW), static_cast<Uint16>(imageH) };
 
     SDL_BlitSurface(graphic[currentZoomlevel], &source, screen, &dest);
 
@@ -142,13 +142,13 @@ void StructureBase::blitToScreen() {
         SDL_BlitSurface(fogSurf, &source, screen, &dest);
     } else {
         SDL_Surface** pSmokeSurface = pGFXManager->getObjPic(ObjPic_Smoke,getOwner()->getHouseID());
-        SDL_Rect smokeSource = { 0, 0, pSmokeSurface[currentZoomlevel]->w/3, pSmokeSurface[currentZoomlevel]->h};
+        SDL_Rect smokeSource = { 0, 0, static_cast<Uint16>(pSmokeSurface[currentZoomlevel]->w/3), static_cast<Uint16>(pSmokeSurface[currentZoomlevel]->h)};
         std::list<StructureSmoke>::const_iterator iter;
         for(iter = smoke.begin(); iter != smoke.end(); ++iter) {
-            SDL_Rect smokeDest = {  screenborder->world2screenX(iter->realPos.x) - smokeSource.w/2,
-                                    screenborder->world2screenY(iter->realPos.y) - smokeSource.h,
-                                    pSmokeSurface[currentZoomlevel]->w/3,
-                                    pSmokeSurface[currentZoomlevel]->h};
+            SDL_Rect smokeDest = {  static_cast<Sint16>(screenborder->world2screenX(iter->realPos.x) - smokeSource.w/2),
+                                    static_cast<Sint16>(screenborder->world2screenY(iter->realPos.y) - smokeSource.h),
+                                    static_cast<Uint16>(pSmokeSurface[currentZoomlevel]->w/3),
+                                    static_cast<Uint16>(pSmokeSurface[currentZoomlevel]->h)};
             Uint32 cycleDiff = currentGame->getGameCycleCount() - iter->startGameCycle;
 
             Uint32 smokeFrame = (cycleDiff/25) % 4;

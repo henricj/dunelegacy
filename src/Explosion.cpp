@@ -146,12 +146,12 @@ void Explosion::blitToScreen() const
     Uint16 height = graphic[currentZoomlevel]->h;
 
     if(screenborder->isInsideScreen(position, Coord(width, height))) {
-        SDL_Rect dest = {   screenborder->world2screenX(position.x) - width/2,
-                            screenborder->world2screenY(position.y) - height/2,
+        SDL_Rect dest = {   static_cast<Sint16>(screenborder->world2screenX(position.x) - width/2),
+                            static_cast<Sint16>(screenborder->world2screenY(position.y) - height/2),
                             width,
                             height };
 
-        SDL_Rect source = { width * currentFrame,
+        SDL_Rect source = { static_cast<Sint16>(width * currentFrame),
                             0,
                             width,
                             height };

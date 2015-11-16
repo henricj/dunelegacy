@@ -147,7 +147,7 @@ Game::Game() {
 
 	musicPlayer->changeMusic(MUSIC_PEACE);
 	//////////////////////////////////////////////////////////////////////////
-	SDL_Rect gameBoardRect = { 0, topBarPos.h, sideBarPos.x, screen->h - topBarPos.h };
+	SDL_Rect gameBoardRect = { 0, static_cast<Sint16>(topBarPos.h), static_cast<Uint16>(sideBarPos.x), static_cast<Uint16>(screen->h - topBarPos.h) };
 	screenborder = new ScreenBorder(gameBoardRect);
 }
 
@@ -462,9 +462,9 @@ void Game::drawScreen()
 						if(hideTile != 0) {
 						    SDL_Surface** hiddenSurf = pGFXManager->getObjPic(ObjPic_Terrain_Hidden);
 
-						    SDL_Rect source = { hideTile*zoomedTileSize, 0, zoomedTileSize, zoomedTileSize };
-						    SDL_Rect drawLocation = {   screenborder->world2screenX(x*TILESIZE), screenborder->world2screenY(y*TILESIZE),
-                                                        zoomedTileSize, zoomedTileSize };
+						    SDL_Rect source = { static_cast<Sint16>(hideTile*zoomedTileSize), 0, static_cast<Uint16>(zoomedTileSize), static_cast<Uint16>(zoomedTileSize) };
+						    SDL_Rect drawLocation = {   static_cast<Sint16>(screenborder->world2screenX(x*TILESIZE)), static_cast<Sint16>(screenborder->world2screenY(y*TILESIZE)),
+                                                        static_cast<Uint16>(zoomedTileSize), static_cast<Uint16>(zoomedTileSize) };
 							SDL_BlitSurface(hiddenSurf[currentZoomlevel], &source, screen, &drawLocation);
 						}
 
@@ -476,10 +476,10 @@ void Game::drawScreen()
                             }
 
                             if(fogTile != 0) {
-                                SDL_Rect source = { fogTile*zoomedTileSize, 0,
-                                                    zoomedTileSize, zoomedTileSize };
-                                SDL_Rect drawLocation = {   screenborder->world2screenX(x*TILESIZE), screenborder->world2screenY(y*TILESIZE),
-                                                            zoomedTileSize, zoomedTileSize };
+                                SDL_Rect source = { static_cast<Sint16>(fogTile*zoomedTileSize), 0,
+                                                    static_cast<Uint16>(zoomedTileSize), static_cast<Uint16>(zoomedTileSize) };
+                                SDL_Rect drawLocation = {   static_cast<Sint16>(screenborder->world2screenX(x*TILESIZE)), static_cast<Sint16>(screenborder->world2screenY(y*TILESIZE)),
+                                                            static_cast<Uint16>(zoomedTileSize), static_cast<Uint16>(zoomedTileSize) };
 
                                 SDL_Rect mini = {0, 0, 1, 1};
                                 SDL_Rect drawLoc = {drawLocation.x, drawLocation.y, 0, 0};
@@ -500,18 +500,18 @@ void Game::drawScreen()
 					} else {
 					    if(!debug) {
 					        SDL_Surface** hiddenSurf = pGFXManager->getObjPic(ObjPic_Terrain_Hidden);
-					        SDL_Rect source = { world2zoomedWorld(TILESIZE)*15, 0, zoomedTileSize, zoomedTileSize };
-					        SDL_Rect drawLocation = {   screenborder->world2screenX(x*TILESIZE), screenborder->world2screenY(y*TILESIZE),
-                                                        zoomedTileSize, zoomedTileSize };
+					        SDL_Rect source = { static_cast<Sint16>(world2zoomedWorld(TILESIZE)*15), 0, static_cast<Uint16>(zoomedTileSize), static_cast<Uint16>(zoomedTileSize) };
+					        SDL_Rect drawLocation = {   static_cast<Sint16>(screenborder->world2screenX(x*TILESIZE)), static_cast<Sint16>(screenborder->world2screenY(y*TILESIZE)),
+                                                        static_cast<Uint16>(zoomedTileSize), static_cast<Uint16>(zoomedTileSize) };
                             SDL_BlitSurface(hiddenSurf[currentZoomlevel], &source, screen, &drawLocation);
 					    }
 					}
 				} else {
                     // we are outside the map => draw complete hidden
                     SDL_Surface** hiddenSurf = pGFXManager->getObjPic(ObjPic_Terrain_Hidden);
-                    SDL_Rect source = { world2zoomedWorld(TILESIZE)*15, 0, zoomedTileSize, zoomedTileSize };
-                    SDL_Rect drawLocation = {   screenborder->world2screenX(x*TILESIZE), screenborder->world2screenY(y*TILESIZE),
-                                                zoomedTileSize, zoomedTileSize };
+                    SDL_Rect source = { static_cast<Sint16>(world2zoomedWorld(TILESIZE)*15), 0, static_cast<Uint16>(zoomedTileSize), static_cast<Uint16>(zoomedTileSize) };
+                    SDL_Rect drawLocation = {   static_cast<Sint16>(screenborder->world2screenX(x*TILESIZE)), static_cast<Sint16>(screenborder->world2screenY(y*TILESIZE)),
+                                                static_cast<Uint16>(zoomedTileSize), static_cast<Uint16>(zoomedTileSize) };
                     SDL_BlitSurface(hiddenSurf[currentZoomlevel], &source, screen, &drawLocation);
 				}
 			}
@@ -585,8 +585,8 @@ void Game::drawScreen()
                             image = validPlace;
                         }
 
-                        SDL_Rect drawLocation = {   screenborder->world2screenX(i*TILESIZE), screenborder->world2screenY(j*TILESIZE),
-                                                    image->w, image->h };
+                        SDL_Rect drawLocation = {   static_cast<Sint16>(screenborder->world2screenX(i*TILESIZE)), static_cast<Sint16>(screenborder->world2screenY(j*TILESIZE)),
+                                                    static_cast<Uint16>(image->w), static_cast<Uint16>(image->h) };
 
                         SDL_BlitSurface(image, NULL, screen, &drawLocation);
                     }
@@ -620,9 +620,9 @@ void Game::drawScreen()
 	if((indicatorFrame != NONE) && (screenborder->isInsideScreen(indicatorPosition, Coord(TILESIZE,TILESIZE)) == true)) {
 	    Uint16 width = pGFXManager->getUIGraphic(UI_Indicator)->w/3;
 	    Uint16 height = pGFXManager->getUIGraphic(UI_Indicator)->h;
-	    SDL_Rect source = { indicatorFrame * width, 0, width, height };
-	    SDL_Rect drawLocation = {   screenborder->world2screenX(indicatorPosition.x) - width/2,
-                                    screenborder->world2screenY(indicatorPosition.y) - height/2,
+	    SDL_Rect source = { static_cast<Sint16>(indicatorFrame * width), 0, width, height };
+	    SDL_Rect drawLocation = {   static_cast<Sint16>(screenborder->world2screenX(indicatorPosition.x) - width/2),
+                                    static_cast<Sint16>(screenborder->world2screenY(indicatorPosition.y) - height/2),
                                     width,
                                     height };
 		SDL_BlitSurface(pGFXManager->getUIGraphic(UI_Indicator), &source, screen, &drawLocation);
@@ -638,7 +638,7 @@ void Game::drawScreen()
 	// draw chat message currently typed
 	if(chatMode) {
         surface = pFontManager->createSurfaceWithText("Chat: " + typingChatMessage + (((SDL_GetTicks() / 150) % 2 == 0) ? "_" : ""), COLOR_WHITE, FONT_STD12);
-        SDL_Rect drawLocation = { 20, screen->h - 40, surface->w, surface->h };
+        SDL_Rect drawLocation = { 20, static_cast<Sint16>(screen->h - 40), static_cast<Uint16>(surface->w), static_cast<Uint16>(surface->h) };
         SDL_BlitSurface(surface, NULL, screen, &drawLocation);
         SDL_FreeSurface(surface);
 	}
@@ -648,7 +648,7 @@ void Game::drawScreen()
 		snprintf(temp,50,"fps: %.1f ", 1000.0f/averageFrameTime);
 
 		SDL_Surface* fpsSurface = pFontManager->createSurfaceWithText(temp, COLOR_WHITE, FONT_STD12);
-        SDL_Rect drawLocation = { sideBarPos.x - strlen(temp)*8, 60, fpsSurface->w, fpsSurface->h };
+        SDL_Rect drawLocation = { static_cast<Sint16>(sideBarPos.x - strlen(temp)*8), 60, static_cast<Uint16>(fpsSurface->w), static_cast<Uint16>(fpsSurface->h) };
 		SDL_BlitSurface(fpsSurface, NULL, screen, &drawLocation);
 		SDL_FreeSurface(fpsSurface);
 	}
@@ -659,7 +659,7 @@ void Game::drawScreen()
 		snprintf(temp,50," %.2d:%.2d:%.2d", seconds / 3600, (seconds % 3600)/60, (seconds % 60) );
 
 		SDL_Surface* timeSurface = pFontManager->createSurfaceWithText(temp, COLOR_WHITE, FONT_STD12);
-        SDL_Rect drawLocation = { 0, screen->h - timeSurface->h, timeSurface->w, timeSurface->h };
+        SDL_Rect drawLocation = { 0, static_cast<Sint16>(screen->h - timeSurface->h), static_cast<Uint16>(timeSurface->w), static_cast<Uint16>(timeSurface->h) };
 		SDL_BlitSurface(timeSurface, NULL, screen, &drawLocation);
 		SDL_FreeSurface(timeSurface);
 	}
@@ -674,7 +674,7 @@ void Game::drawScreen()
         }
 
 		surface = pFontManager->createSurfaceWithText(message.c_str(), COLOR_WHITE, FONT_STD24);
-        SDL_Rect drawLocation = { sideBarPos.x/2 - surface->w/2, topBarPos.h + (screen->h-topBarPos.h)/2 - surface->h/2, surface->w, surface->h };
+        SDL_Rect drawLocation = { static_cast<Sint16>(sideBarPos.x/2 - surface->w/2), static_cast<Sint16>(topBarPos.h + (screen->h-topBarPos.h)/2 - surface->h/2), static_cast<Uint16>(surface->w), static_cast<Uint16>(surface->h) };
 		SDL_BlitSurface(surface, NULL, screen, &drawLocation);
 		SDL_FreeSurface(surface);
 	}
@@ -986,7 +986,7 @@ void Game::drawCursor()
     }
 
 	SDL_Surface* pCursor = NULL;
-    SDL_Rect dest = { drawnMouseX, drawnMouseY, 0, 0};
+    SDL_Rect dest = { static_cast<Sint16>(drawnMouseX), static_cast<Sint16>(drawnMouseY), 0, 0};
 	if(scrollLeftMode || scrollRightMode || scrollUpMode || scrollDownMode) {
         if(scrollLeftMode && !scrollRightMode) {
 	        pCursor = pGFXManager->getUIGraphic(UI_CursorLeft);
@@ -1135,7 +1135,7 @@ void Game::doWindTrapPalatteAnimation() {
         // Setting the palette is expensive! Perform it only if we have a new color
         lastWindTrapColor = color;
 
-        SDL_Color windtrapColor = { color, color, color, 0};
+        SDL_Color windtrapColor = { static_cast<Uint8>(color), static_cast<Uint8>(color), static_cast<Uint8>(color), 0};
         SDL_SetPalette(screen, SDL_PHYSPAL, &windtrapColor, COLOR_WINDTRAP_COLORCYCLE, 1);
 	}
 }

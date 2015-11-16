@@ -1,12 +1,12 @@
 #ifndef MEMORY_INCLUDED
 #define MEMORY_INCLUDED
 
-#include <tr1/memory>
+#include <memory>
 
 namespace std {
-	using std::tr1::shared_ptr;
+	using std::shared_ptr;
 
-	using std::tr1::dynamic_pointer_cast;
+	using std::dynamic_pointer_cast;
 }
 
 #endif //MEMORY_INCLUDED

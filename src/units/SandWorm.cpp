@@ -201,10 +201,10 @@ void Sandworm::blitToScreen() {
     /////draw wormy shimmer segments
     for(int count = 0; count < SANDWORM_SEGMENTS; count++) {
         //draw all the shimmering images
-        SDL_Rect dest = {   screenborder->world2screenX(lastLocs[count*(SANDWORM_LENGTH/SANDWORM_SEGMENTS)].x) - width/2,
-                            screenborder->world2screenY(lastLocs[count*(SANDWORM_LENGTH/SANDWORM_SEGMENTS)].y) - height/2,
-                            width,
-                            height };
+        SDL_Rect dest = {   static_cast<Sint16>(screenborder->world2screenX(lastLocs[count*(SANDWORM_LENGTH/SANDWORM_SEGMENTS)].x) - width/2),
+                            static_cast<Sint16>(screenborder->world2screenY(lastLocs[count*(SANDWORM_LENGTH/SANDWORM_SEGMENTS)].y) - height/2),
+                            static_cast<Uint16>(width),
+                            static_cast<Uint16>(height) };
 
         SDL_BlitSurface(shimmerSurface[count][currentZoomlevel], NULL, screen, &dest);
     }
@@ -213,11 +213,11 @@ void Sandworm::blitToScreen() {
         int imageW = graphic[currentZoomlevel]->w/numImagesX;
         int imageH = graphic[currentZoomlevel]->h/numImagesY;
 
-        SDL_Rect dest = {   screenborder->world2screenX(realX) - imageW/2,
-                            screenborder->world2screenY(realY) - imageH/2,
-                            imageW,
-                            imageH };
-        SDL_Rect source = { 0, drawnFrame*imageH, imageW, imageH };
+        SDL_Rect dest = {   static_cast<Sint16>(screenborder->world2screenX(realX) - imageW/2),
+                            static_cast<Sint16>(screenborder->world2screenY(realY) - imageH/2),
+                            static_cast<Uint16>(imageW),
+                            static_cast<Uint16>(imageH) };
+        SDL_Rect source = { 0, static_cast<Sint16>(drawnFrame*imageH), static_cast<Uint16>(imageW), static_cast<Uint16>(imageH) };
         SDL_BlitSurface(graphic[currentZoomlevel], &source, screen, &dest);
     }
 }

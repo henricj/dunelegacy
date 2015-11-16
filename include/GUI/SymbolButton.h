@@ -98,26 +98,26 @@ public:
 
 
 		if(pSymbolSurface != NULL) {
-			SDL_Rect dest = {   (Unpressed->w / 2) - (pSymbolSurface->w / 2),
-                                (Unpressed->h / 2) - (pSymbolSurface->h / 2),
-                                pSymbolSurface->w,
-                                pSymbolSurface->h   };
+			SDL_Rect dest = {   static_cast<Sint16>((Unpressed->w / 2) - (pSymbolSurface->w / 2)),
+                                static_cast<Sint16>((Unpressed->h / 2) - (pSymbolSurface->h / 2)),
+                                static_cast<Uint16>(pSymbolSurface->w),
+                                static_cast<Uint16>(pSymbolSurface->h)   };
 			SDL_BlitSurface(pSymbolSurface, NULL, Unpressed, &dest);
 
-            SDL_Rect dest2 = {  (Unpressed->w / 2) - (pSymbolSurface->w / 2) + 1,
-                                (Unpressed->h / 2) - (pSymbolSurface->h / 2) + 1,
-                                pSymbolSurface->w,
-                                pSymbolSurface->h   };
+            SDL_Rect dest2 = {  static_cast<Sint16>((Unpressed->w / 2) - (pSymbolSurface->w / 2) + 1),
+                                static_cast<Sint16>((Unpressed->h / 2) - (pSymbolSurface->h / 2) + 1),
+                                static_cast<Uint16>(pSymbolSurface->w),
+                                static_cast<Uint16>(pSymbolSurface->h)   };
 			SDL_BlitSurface(pActiveSymbolSurface != NULL ? pActiveSymbolSurface : pSymbolSurface, NULL, Pressed, &dest2);
 		}
 
         if(pActiveSymbolSurface != NULL) {
             Active = GUIStyle::getInstance().createButtonSurface(width, height, "", false, true);
 
-			SDL_Rect dest = {   (Active->w / 2) - (pActiveSymbolSurface->w / 2),
-                                (Active->h / 2) - (pActiveSymbolSurface->h / 2),
-                                pActiveSymbolSurface->w,
-                                pActiveSymbolSurface->h };
+			SDL_Rect dest = {   static_cast<Sint16>((Active->w / 2) - (pActiveSymbolSurface->w / 2)),
+                                static_cast<Sint16>((Active->h / 2) - (pActiveSymbolSurface->h / 2)),
+                                static_cast<Uint16>(pActiveSymbolSurface->w),
+                                static_cast<Uint16>(pActiveSymbolSurface->h) };
 			SDL_BlitSurface(pActiveSymbolSurface, NULL, Active, &dest);
 		}
 

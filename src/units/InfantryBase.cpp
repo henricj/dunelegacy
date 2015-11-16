@@ -114,9 +114,9 @@ void InfantryBase::blitToScreen() {
     int imageW = graphic[currentZoomlevel]->w/numImagesX;
     int imageH = graphic[currentZoomlevel]->h/numImagesY;
 
-	SDL_Rect dest = {   screenborder->world2screenX(realX) - imageW/2,
-                        screenborder->world2screenY(realY) - imageH/2,
-                        imageW, imageH };
+	SDL_Rect dest = {   static_cast<Sint16>(screenborder->world2screenX(realX) - imageW/2),
+                        static_cast<Sint16>(screenborder->world2screenY(realY) - imageH/2),
+                        static_cast<Uint16>(imageW), static_cast<Uint16>(imageH) };
 
     int temp = drawnAngle;
     if(temp == UP) {
@@ -130,7 +130,7 @@ void InfantryBase::blitToScreen() {
         temp = 0;
     }
 
-    SDL_Rect source = { temp*imageW, (walkFrame/10 == 3) ? imageH : walkFrame/10*imageH, imageW, imageH };
+    SDL_Rect source = { static_cast<Sint16>(temp*imageW), static_cast<Sint16>((walkFrame/10 == 3) ? imageH : walkFrame/10*imageH), static_cast<Uint16>(imageW), static_cast<Uint16>(imageH) };
 
     SDL_BlitSurface(graphic[currentZoomlevel], &source, screen, &dest);
 }

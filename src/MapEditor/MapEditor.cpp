@@ -98,7 +98,7 @@ MapEditor::MapEditor() : pInterface(NULL) {
 	bottomBarPos.h = pBottomBarSurface->h;
 	bottomBarPos.x = bottomBarPos.y = 0;
 
-	SDL_Rect gameBoardRect = { 0, topBarPos.h, gameBarPos.x, screen->h - topBarPos.h - bottomBarPos.h };
+	SDL_Rect gameBoardRect = { 0, static_cast<Sint16>(topBarPos.h), static_cast<Uint16>(gameBarPos.x), static_cast<Uint16>(screen->h - topBarPos.h - bottomBarPos.h) };
     screenborder = new ScreenBorder(gameBoardRect);
 
 	setMap(MapData(128,128,Terrain_Sand), MapInfo());
@@ -1375,7 +1375,7 @@ void MapEditor::drawCursor() {
     }
 
 	SDL_Surface* pCursor = NULL;
-    SDL_Rect dest = { drawnMouseX, drawnMouseY, 0, 0};
+    SDL_Rect dest = { static_cast<Sint16>(drawnMouseX), static_cast<Sint16>(drawnMouseY), 0, 0};
 	if(scrollLeftMode || scrollRightMode || scrollUpMode || scrollDownMode) {
         if(scrollLeftMode && !scrollRightMode) {
 	        pCursor = pGFXManager->getUIGraphic(UI_CursorLeft);
@@ -1412,7 +1412,7 @@ void MapEditor::drawCursor() {
                 default:                    pMirrorIcon = pGFXManager->getUIGraphic(UI_MapEditor_MirrorNoneIcon);       break;
             }
 
-            SDL_Rect dest2 = { drawnMouseX + 5, drawnMouseY + 5, pMirrorIcon->w, pMirrorIcon->h};
+            SDL_Rect dest2 = { static_cast<Sint16>(drawnMouseX + 5), static_cast<Sint16>(drawnMouseY + 5), static_cast<Uint16>(pMirrorIcon->w), static_cast<Uint16>(pMirrorIcon->h)};
             SDL_BlitSurface(pMirrorIcon, NULL, screen, &dest2);
 	    }
 	}
@@ -1542,10 +1542,10 @@ void MapEditor::drawMap(SDL_Surface* pScreen, ScreenBorder* pScreenborder, bool 
             }
 
             //draw map[x][y]
-            SDL_Rect source = { tile*zoomedTilesize, 0,
-                                zoomedTilesize, zoomedTilesize };
-            SDL_Rect drawLocation = {   pScreenborder->world2screenX(x*TILESIZE), pScreenborder->world2screenY(y*TILESIZE),
-                                        zoomedTilesize, zoomedTilesize };
+            SDL_Rect source = { static_cast<Sint16>(tile*zoomedTilesize), 0,
+                                static_cast<Uint16>(zoomedTilesize), static_cast<Uint16>(zoomedTilesize) };
+            SDL_Rect drawLocation = {   static_cast<Sint16>(pScreenborder->world2screenX(x*TILESIZE)), static_cast<Sint16>(pScreenborder->world2screenY(y*TILESIZE)),
+                                        static_cast<Uint16>(zoomedTilesize), static_cast<Uint16>(zoomedTilesize) };
 			SDL_BlitSurface(TerrainSprite, &source, pScreen, &drawLocation);
 		}
 	}
@@ -1563,8 +1563,8 @@ void MapEditor::drawMap(SDL_Surface* pScreen, ScreenBorder* pScreenborder, bool 
             // Load Terrain Surface
             SDL_Surface* TerrainSprite = pGFXManager->getObjPic(ObjPic_Terrain)[currentZoomlevel];
 
-            SDL_Rect source = { Tile::TerrainTile_Slab * world2zoomedWorld(TILESIZE), 0, world2zoomedWorld(TILESIZE), world2zoomedWorld(TILESIZE)};
-            SDL_Rect dest = { pScreenborder->world2screenX(position.x*TILESIZE), pScreenborder->world2screenY(position.y*TILESIZE), world2zoomedWorld(TILESIZE), world2zoomedWorld(TILESIZE)};
+            SDL_Rect source = { static_cast<Sint16>(Tile::TerrainTile_Slab * world2zoomedWorld(TILESIZE)), 0, static_cast<Uint16>(world2zoomedWorld(TILESIZE)), static_cast<Uint16>(world2zoomedWorld(TILESIZE))};
+            SDL_Rect dest = { static_cast<Sint16>(pScreenborder->world2screenX(position.x*TILESIZE)), static_cast<Sint16>(pScreenborder->world2screenY(position.y*TILESIZE)), static_cast<Uint16>(world2zoomedWorld(TILESIZE)), static_cast<Uint16>(world2zoomedWorld(TILESIZE))};
 
             SDL_BlitSurface(TerrainSprite, &source, pScreen, &dest);
 
@@ -1575,8 +1575,8 @@ void MapEditor::drawMap(SDL_Surface* pScreen, ScreenBorder* pScreenborder, bool 
 
             for(int y = position.y; y < position.y+2; y++) {
                 for(int x = position.x; x < position.x+2; x++) {
-                    SDL_Rect source = { Tile::TerrainTile_Slab * world2zoomedWorld(TILESIZE), 0, world2zoomedWorld(TILESIZE), world2zoomedWorld(TILESIZE)};
-                    SDL_Rect dest = { pScreenborder->world2screenX(x*TILESIZE), pScreenborder->world2screenY(y*TILESIZE), world2zoomedWorld(TILESIZE), world2zoomedWorld(TILESIZE)};
+                    SDL_Rect source = { static_cast<Sint16>(Tile::TerrainTile_Slab * world2zoomedWorld(TILESIZE)), 0, static_cast<Uint16>(world2zoomedWorld(TILESIZE)), static_cast<Uint16>(world2zoomedWorld(TILESIZE))};
+                    SDL_Rect dest = { static_cast<Sint16>(pScreenborder->world2screenX(x*TILESIZE)), static_cast<Sint16>(pScreenborder->world2screenY(y*TILESIZE)), static_cast<Uint16>(world2zoomedWorld(TILESIZE)), static_cast<Uint16>(world2zoomedWorld(TILESIZE))};
 
                     SDL_BlitSurface(TerrainSprite, &source, pScreen, &dest);
                 }
@@ -1640,8 +1640,8 @@ void MapEditor::drawMap(SDL_Surface* pScreen, ScreenBorder* pScreenborder, bool 
             // Load Wall Surface
             SDL_Surface* WallSprite = pGFXManager->getObjPic(ObjPic_Wall)[currentZoomlevel];
 
-            SDL_Rect source = { maketile * world2zoomedWorld(TILESIZE), 0, world2zoomedWorld(TILESIZE), world2zoomedWorld(TILESIZE)};
-            SDL_Rect dest = { pScreenborder->world2screenX(position.x*TILESIZE), pScreenborder->world2screenY(position.y*TILESIZE), world2zoomedWorld(TILESIZE), world2zoomedWorld(TILESIZE)};
+            SDL_Rect source = { static_cast<Sint16>(maketile * world2zoomedWorld(TILESIZE)), 0, static_cast<Uint16>(world2zoomedWorld(TILESIZE)), static_cast<Uint16>(world2zoomedWorld(TILESIZE))};
+            SDL_Rect dest = { static_cast<Sint16>(pScreenborder->world2screenX(position.x*TILESIZE)), static_cast<Sint16>(pScreenborder->world2screenY(position.y*TILESIZE)), static_cast<Uint16>(world2zoomedWorld(TILESIZE)), static_cast<Uint16>(world2zoomedWorld(TILESIZE))};
 
             SDL_BlitSurface(WallSprite, &source, pScreen, &dest);
 
@@ -1674,8 +1674,8 @@ void MapEditor::drawMap(SDL_Surface* pScreen, ScreenBorder* pScreenborder, bool 
 
             Coord frameSize = world2zoomedWorld(getStructureSize(sIter->itemID)*TILESIZE);
 
-            SDL_Rect source = { frameSize.x*2, 0, frameSize.x, frameSize.y };
-            SDL_Rect dest = { pScreenborder->world2screenX(position.x*TILESIZE), pScreenborder->world2screenY(position.y*TILESIZE), frameSize.x, frameSize.y };
+            SDL_Rect source = { static_cast<Sint16>(frameSize.x*2), 0, static_cast<Uint16>(frameSize.x), static_cast<Uint16>(frameSize.y) };
+            SDL_Rect dest = { static_cast<Sint16>(pScreenborder->world2screenX(position.x*TILESIZE)), static_cast<Sint16>(pScreenborder->world2screenY(position.y*TILESIZE)), static_cast<Uint16>(frameSize.x), static_cast<Uint16>(frameSize.y) };
 
             SDL_BlitSurface(ObjectSprite, &source, pScreen, &dest);
 
@@ -1814,11 +1814,11 @@ void MapEditor::drawMap(SDL_Surface* pScreen, ScreenBorder* pScreenborder, bool 
 
         int frame = (uIter->itemID == Unit_Sandworm) ? 5 : 0;
 
-        SDL_Rect source = { frameSize.x * angle, frameSize.y * frame, frameSize.x, frameSize.y };
-        SDL_Rect drawLocation = {   pScreenborder->world2screenX((position.x*TILESIZE)+(TILESIZE/2)) - frameSize.x/2,
-                                    pScreenborder->world2screenY((position.y*TILESIZE)+(TILESIZE/2)) - frameSize.y/2,
-                                    frameSize.x,
-                                    frameSize.y };
+        SDL_Rect source = { static_cast<Sint16>(frameSize.x * angle), static_cast<Sint16>(frameSize.y * frame), static_cast<Uint16>(frameSize.x), static_cast<Uint16>(frameSize.y) };
+        SDL_Rect drawLocation = {   static_cast<Sint16>(pScreenborder->world2screenX((position.x*TILESIZE)+(TILESIZE/2)) - frameSize.x/2),
+                                    static_cast<Sint16>(pScreenborder->world2screenY((position.y*TILESIZE)+(TILESIZE/2)) - frameSize.y/2),
+                                    static_cast<Uint16>(frameSize.x),
+                                    static_cast<Uint16>(frameSize.y) };
 
         SDL_BlitSurface(pObjectSprite, &source, pScreen, &drawLocation);
 
@@ -1827,11 +1827,11 @@ void MapEditor::drawMap(SDL_Surface* pScreen, ScreenBorder* pScreenborder, bool 
 
             Coord frameSize2 = Coord(pGunSprite->w/NUM_ANGLES, pGunSprite->h);
 
-            SDL_Rect source2 = { frameSize2.x * uIter->angle, 0, frameSize2.x, frameSize2.y };
-            SDL_Rect drawLocation2 = {  pScreenborder->world2screenX((position.x*TILESIZE)+(TILESIZE/2)+gunOffset[uIter->angle].x) - frameSize2.x/2,
-                                        pScreenborder->world2screenY((position.y*TILESIZE)+(TILESIZE/2)+gunOffset[uIter->angle].y) - frameSize2.y/2,
-                                        frameSize2.x,
-                                        frameSize2.y };
+            SDL_Rect source2 = { static_cast<Sint16>(frameSize2.x * uIter->angle), 0, static_cast<Uint16>(frameSize2.x), static_cast<Uint16>(frameSize2.y) };
+            SDL_Rect drawLocation2 = {  static_cast<Sint16>(pScreenborder->world2screenX((position.x*TILESIZE)+(TILESIZE/2)+gunOffset[uIter->angle].x) - frameSize2.x/2),
+                                        static_cast<Sint16>(pScreenborder->world2screenY((position.y*TILESIZE)+(TILESIZE/2)+gunOffset[uIter->angle].y) - frameSize2.y/2),
+                                        static_cast<Uint16>(frameSize2.x),
+                                        static_cast<Uint16>(frameSize2.y) };
 
             SDL_BlitSurface(pGunSprite, &source2, pScreen, &drawLocation2);
         }
@@ -1839,10 +1839,10 @@ void MapEditor::drawMap(SDL_Surface* pScreen, ScreenBorder* pScreenborder, bool 
         if(uIter->itemID == Unit_RaiderTrike || uIter->itemID == Unit_Deviator || uIter->itemID == Unit_Special) {
             SDL_Surface* pStarSprite = pGFXManager->getObjPic(ObjPic_Star)[currentZoomlevel];
 
-            SDL_Rect drawLocation2 = {  pScreenborder->world2screenX((position.x*TILESIZE)+(TILESIZE/2)) - frameSize.x/2 + frameSize.x - pStarSprite->w,
-                                        pScreenborder->world2screenY((position.y*TILESIZE)+(TILESIZE/2)) - frameSize.y/2 + frameSize.y -  pStarSprite->h,
-                                        pStarSprite->w,
-                                        pStarSprite->h };
+            SDL_Rect drawLocation2 = {  static_cast<Sint16>(pScreenborder->world2screenX((position.x*TILESIZE)+(TILESIZE/2)) - frameSize.x/2 + frameSize.x - pStarSprite->w),
+                                        static_cast<Sint16>(pScreenborder->world2screenY((position.y*TILESIZE)+(TILESIZE/2)) - frameSize.y/2 + frameSize.y -  pStarSprite->h),
+                                        static_cast<Uint16>(pStarSprite->w),
+                                        static_cast<Uint16>(pStarSprite->h) };
 
             SDL_BlitSurface(pStarSprite, NULL, pScreen, &drawLocation2);
         }
@@ -1970,8 +1970,8 @@ void MapEditor::drawMap(SDL_Surface* pScreen, ScreenBorder* pScreenborder, bool 
                             }
                         }
 
-                        SDL_Rect drawLocation = {   pScreenborder->world2screenX(x*TILESIZE), pScreenborder->world2screenY(y*TILESIZE),
-                                                    zoomedTilesize, zoomedTilesize };
+                        SDL_Rect drawLocation = {   static_cast<Sint16>(pScreenborder->world2screenX(x*TILESIZE)), static_cast<Sint16>(pScreenborder->world2screenY(y*TILESIZE)),
+                                                    static_cast<Uint16>(zoomedTilesize), static_cast<Uint16>(zoomedTilesize) };
                         SDL_BlitSurface(image, NULL, pScreen, &drawLocation);
                     }
                 }
@@ -1990,16 +1990,16 @@ void MapEditor::drawMap(SDL_Surface* pScreen, ScreenBorder* pScreenborder, bool 
                         image = invalidPlace;
                     }
                 }
-                SDL_Rect drawLocation = {   pScreenborder->world2screenX(position.x*TILESIZE), pScreenborder->world2screenY(position.y*TILESIZE),
-                                            image->w, image->h };
+                SDL_Rect drawLocation = {   static_cast<Sint16>(pScreenborder->world2screenX(position.x*TILESIZE)), static_cast<Sint16>(pScreenborder->world2screenY(position.y*TILESIZE)),
+                                            static_cast<Uint16>(image->w), static_cast<Uint16>(image->h) };
                 SDL_BlitSurface(image, NULL, pScreen, &drawLocation);
             }
         } else if(currentEditorMode.mode == EditorMode::EditorMode_TacticalPos) {
             // draw tactical pos rectangle (the starting screen)
             if(mapInfo.tacticalPos.isValid()) {
 
-                SDL_Rect dest = {   pScreenborder->world2screenX(xPos*TILESIZE), pScreenborder->world2screenY(yPos*TILESIZE),
-                                    world2zoomedWorld(15*TILESIZE), world2zoomedWorld(10*TILESIZE) };
+                SDL_Rect dest = {   static_cast<Sint16>(pScreenborder->world2screenX(xPos*TILESIZE)), static_cast<Sint16>(pScreenborder->world2screenY(yPos*TILESIZE)),
+                                    static_cast<Uint16>(world2zoomedWorld(15*TILESIZE)), static_cast<Uint16>(world2zoomedWorld(10*TILESIZE)) };
                 drawRect(pScreen, dest.x, dest.y, dest.x+dest.w, dest.y+dest.h, COLOR_WHITE);
             }
         }
@@ -2022,10 +2022,10 @@ void MapEditor::drawMap(SDL_Surface* pScreen, ScreenBorder* pScreenborder, bool 
                     default:    selectionBox = pGFXManager->getUIGraphic(UI_SelectionBox_Zoomlevel2);   break;
                 }
 
-                SDL_Rect dest = {   pScreenborder->world2screenX((position.x*TILESIZE)+(TILESIZE/2)) - selectionBox->w/2,
-                                    pScreenborder->world2screenY((position.y*TILESIZE)+(TILESIZE/2)) - selectionBox->h/2,
-                                    selectionBox->w,
-                                    selectionBox->h };
+                SDL_Rect dest = {   static_cast<Sint16>(pScreenborder->world2screenX((position.x*TILESIZE)+(TILESIZE/2)) - selectionBox->w/2),
+                                    static_cast<Sint16>(pScreenborder->world2screenY((position.y*TILESIZE)+(TILESIZE/2)) - selectionBox->h/2),
+                                    static_cast<Uint16>(selectionBox->w),
+                                    static_cast<Uint16>(selectionBox->h) };
 
                 SDL_BlitSurface(selectionBox, NULL, pScreen, &dest);
             }
@@ -2046,10 +2046,10 @@ void MapEditor::drawMap(SDL_Surface* pScreen, ScreenBorder* pScreenborder, bool 
             default:    selectionBox = pGFXManager->getUIGraphic(UI_SelectionBox_Zoomlevel2);   break;
         }
 
-        SDL_Rect dest = {   pScreenborder->world2screenX((selectedMapItemCoord.x*TILESIZE)+(TILESIZE/2)) - selectionBox->w/2,
-                            pScreenborder->world2screenY((selectedMapItemCoord.y*TILESIZE)+(TILESIZE/2)) - selectionBox->h/2,
-                            selectionBox->w,
-                            selectionBox->h };
+        SDL_Rect dest = {   static_cast<Sint16>(pScreenborder->world2screenX((selectedMapItemCoord.x*TILESIZE)+(TILESIZE/2)) - selectionBox->w/2),
+                            static_cast<Sint16>(pScreenborder->world2screenY((selectedMapItemCoord.y*TILESIZE)+(TILESIZE/2)) - selectionBox->h/2),
+                            static_cast<Uint16>(selectionBox->w),
+                            static_cast<Uint16>(selectionBox->h) };
 
         SDL_BlitSurface(selectionBox, NULL, pScreen, &dest);
     }
@@ -2071,7 +2071,7 @@ void MapEditor::saveMapshot() {
     }
     palette.applyToSurface(pMapshotSurface);
 
-    SDL_Rect board = { 0,0,sizeX,sizeY };
+    SDL_Rect board = { 0,0,static_cast<Uint16>(sizeX),static_cast<Uint16>(sizeY) };
 
     ScreenBorder tmpScreenborder(board);
     tmpScreenborder.adjustScreenBorderToMapsize(map.getSizeX(), map.getSizeY());

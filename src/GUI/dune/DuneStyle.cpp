@@ -117,8 +117,8 @@ SDL_Surface* DuneStyle::createLabelSurface(Uint32 width, Uint32 height, std::lis
         SDL_Surface* textSurface2 = *surfIter;
         ++surfIter;
 
-		SDL_Rect textRect1 = { 0, textpos_y + 3, textSurface1->w, textSurface1->h };
-        SDL_Rect textRect2 = { 0, textpos_y + 2, textSurface2->w, textSurface2->h };
+		SDL_Rect textRect1 = { 0, static_cast<Sint16>(textpos_y + 3), static_cast<Uint16>(textSurface1->w), static_cast<Uint16>(textSurface1->h) };
+        SDL_Rect textRect2 = { 0, static_cast<Sint16>(textpos_y + 2), static_cast<Uint16>(textSurface2->w), static_cast<Uint16>(textSurface2->h) };
 		if(alignment & Alignment_Left) {
 			textRect1.x = 4;
             textRect2.x = 3;
@@ -197,14 +197,14 @@ SDL_Surface* DuneStyle::createCheckboxSurface(Uint32 width, Uint32 height, std::
 
 
 	SDL_Surface* textSurface1 = createSurfaceWithText(text.c_str(), textshadowcolor, FONT_STD12);
-	SDL_Rect textRect1 = {  10+2 + 17, ((surface->h - textSurface1->h) / 2)+3,
-                            textSurface1->w, textSurface1->h };
+	SDL_Rect textRect1 = {  10+2 + 17, static_cast<Sint16>(((surface->h - textSurface1->h) / 2)+3),
+                            static_cast<Uint16>(textSurface1->w), static_cast<Uint16>(textSurface1->h) };
 	SDL_BlitSurface(textSurface1,NULL,surface,&textRect1);
 	SDL_FreeSurface(textSurface1);
 
 	SDL_Surface* textSurface2 = createSurfaceWithText(text.c_str(), textcolor, FONT_STD12);
-	SDL_Rect textRect2 = {  10+1 + 17, ((surface->h - textSurface2->h) / 2)+2,
-                            textSurface2->w, textSurface2->h };
+	SDL_Rect textRect2 = {  10+1 + 17, static_cast<Sint16>(((surface->h - textSurface2->h) / 2)+2),
+                            static_cast<Uint16>(textSurface2->w), static_cast<Uint16>(textSurface2->h) };
 	SDL_BlitSurface(textSurface2,NULL,surface,&textRect2);
 	SDL_FreeSurface(textSurface2);
 
@@ -272,14 +272,14 @@ SDL_Surface* DuneStyle::createRadioButtonSurface(Uint32 width, Uint32 height, st
 
 
 	SDL_Surface* textSurface1 = createSurfaceWithText(text.c_str(), textshadowcolor, FONT_STD12);
-	SDL_Rect textRect1 = {  8+2 + 15, ((surface->h - textSurface1->h) / 2)+3,
-                            textSurface1->w, textSurface1->h };
+	SDL_Rect textRect1 = {  8+2 + 15, static_cast<Sint16>(((surface->h - textSurface1->h) / 2)+3),
+                            static_cast<Uint16>(textSurface1->w), static_cast<Uint16>(textSurface1->h) };
 	SDL_BlitSurface(textSurface1,NULL,surface,&textRect1);
 	SDL_FreeSurface(textSurface1);
 
 	SDL_Surface* textSurface2 = createSurfaceWithText(text.c_str(), textcolor, FONT_STD12);
-	SDL_Rect textRect2 = {  8+1 + 15, ((surface->h - textSurface2->h) / 2)+2,
-                            textSurface2->w, textSurface2->h };
+	SDL_Rect textRect2 = {  8+1 + 15, static_cast<Sint16>(((surface->h - textSurface2->h) / 2)+2),
+                            static_cast<Uint16>(textSurface2->w), static_cast<Uint16>(textSurface2->h) };
 	SDL_BlitSurface(textSurface2,NULL,surface,&textRect2);
 	SDL_FreeSurface(textSurface2);
 
@@ -383,18 +383,18 @@ SDL_Surface* DuneStyle::createButtonSurface(Uint32 width, Uint32 height, std::st
 	if(textshadowcolor == -1) textshadowcolor = 110;
 
 	SDL_Surface* textSurface1 = createSurfaceWithText(text.c_str(), textshadowcolor, fontsize);
-	SDL_Rect textRect1 = {  ((surface->w - textSurface1->w) / 2)+2+(pressed ? 1 : 0),
-                            ((surface->h - textSurface1->h) / 2)+3+(pressed ? 1 : 0),
-                            textSurface1->w,
-                            textSurface1->h };
+	SDL_Rect textRect1 = {  static_cast<Sint16>(((surface->w - textSurface1->w) / 2)+2+(pressed ? 1 : 0)),
+                            static_cast<Sint16>(((surface->h - textSurface1->h) / 2)+3+(pressed ? 1 : 0)),
+                            static_cast<Uint16>(textSurface1->w),
+                            static_cast<Uint16>(textSurface1->h) };
 	SDL_BlitSurface(textSurface1,NULL,surface,&textRect1);
 	SDL_FreeSurface(textSurface1);
 
 	SDL_Surface* textSurface2 = createSurfaceWithText(text.c_str(), (activated == true) ? (textcolor-2) : textcolor, fontsize);
-	SDL_Rect textRect2 = {  ((surface->w - textSurface2->w) / 2)+1+(pressed ? 1 : 0),
-                            ((surface->h - textSurface2->h) / 2)+2+(pressed ? 1 : 0),
-                            textSurface2->w,
-                            textSurface2->h };
+	SDL_Rect textRect2 = {  static_cast<Sint16>(((surface->w - textSurface2->w) / 2)+1+(pressed ? 1 : 0)),
+                            static_cast<Sint16>(((surface->h - textSurface2->h) / 2)+2+(pressed ? 1 : 0)),
+                            static_cast<Uint16>(textSurface2->w),
+                            static_cast<Uint16>(textSurface2->h) };
 	SDL_BlitSurface(textSurface2,NULL,surface,&textRect2);
 	SDL_FreeSurface(textSurface2);
 
@@ -436,8 +436,8 @@ SDL_Surface* DuneStyle::createTextBoxSurface(Uint32 width, Uint32 height, std::s
 	if(text.size() != 0) {
 		SDL_Surface* textSurface1 = createSurfaceWithText(text.c_str(), textshadowcolor, fontID);
 		SDL_Surface* textSurface2 = createSurfaceWithText(text.c_str(), textcolor, fontID);
-		SDL_Rect textRect1 = { 0, ((surface->h - textSurface1->h) / 2)+3, textSurface1->w, textSurface1->h };
-		SDL_Rect textRect2 = { 0, ((surface->h - textSurface2->h) / 2)+2, textSurface2->w, textSurface2->h };
+		SDL_Rect textRect1 = { 0, static_cast<Sint16>(((surface->h - textSurface1->h) / 2)+3), static_cast<Uint16>(textSurface1->w), static_cast<Uint16>(textSurface1->h) };
+		SDL_Rect textRect2 = { 0, static_cast<Sint16>(((surface->h - textSurface2->h) / 2)+2), static_cast<Uint16>(textSurface2->w), static_cast<Uint16>(textSurface2->h) };
 
         if(alignment & Alignment_Left) {
             textRect1.x = 6;
@@ -574,8 +574,8 @@ SDL_Surface* DuneStyle::createListBoxEntry(Uint32 width, std::string text, bool 
 
 	SDL_Surface* textSurface;
 	textSurface = createSurfaceWithText(text.c_str(), color, FONT_STD10);
-	SDL_Rect textRect = {   3, ((surface->h - textSurface->h) / 2) + 1,
-                            textSurface->w, textSurface->h };
+	SDL_Rect textRect = {   3, static_cast<Sint16>(((surface->h - textSurface->h) / 2) + 1),
+                            static_cast<Uint16>(textSurface->w), static_cast<Uint16>(textSurface->h) };
 	SDL_BlitSurface(textSurface,NULL,surface,&textRect);
 	SDL_FreeSurface(textSurface);
 
@@ -614,7 +614,7 @@ SDL_Surface* DuneStyle::createProgressBarOverlay(Uint32 width, Uint32 height, do
 	} else {
 	    unsigned int max_i = lround(percent*(width/100.0));
 
-		SDL_Rect dest = { 0 , 0 , max_i , height};
+		SDL_Rect dest = { 0 , 0 , static_cast<Uint16>(max_i) , static_cast<Uint16>(height)};
         SDL_FillRect(pSurface, &dest, color);
 	}
 
@@ -641,7 +641,7 @@ SDL_Surface* DuneStyle::createToolTip(std::string text) {
 	SDL_FillRect(surface, NULL, COLOR_BLACK);
 	drawRect(surface, 0, 0, helpTextSurface->w + 4 - 1, helpTextSurface->h + 2 - 1, COLOR_YELLOW);
 
-	SDL_Rect textRect = { 3, 3, helpTextSurface->w, helpTextSurface->h };
+	SDL_Rect textRect = { 3, 3, static_cast<Uint16>(helpTextSurface->w), static_cast<Uint16>(helpTextSurface->h) };
 	SDL_BlitSurface(helpTextSurface, NULL, surface, &textRect);
 
 	SDL_FreeSurface(helpTextSurface);

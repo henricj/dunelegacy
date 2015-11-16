@@ -53,7 +53,7 @@ protected:
 		palette.applyToSurface(pReady);
 		SDL_SetColorKey(pReady, SDL_SRCCOLORKEY | SDL_RLEACCEL, 0);
 
-		SDL_Rect dest = { (pReady->w - pText->w)/2,(pReady->h - pText->h)/2, pText->w, pText->h };
+		SDL_Rect dest = { static_cast<Sint16>((pReady->w - pText->w)/2),static_cast<Sint16>((pReady->h - pText->h)/2), static_cast<Uint16>(pText->w), static_cast<Uint16>(pText->h) };
 		SDL_BlitSurface(pText, NULL, pReady, &dest);
 
 		SDL_FreeSurface(pText);

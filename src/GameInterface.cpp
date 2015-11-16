@@ -96,12 +96,12 @@ void GameInterface::draw(SDL_Surface* screen, Point position) {
 
 	// draw Power Indicator and Spice indicator
 
-	SDL_Rect PowerIndicatorPos = {	screen->w - sideBar.getSize().x + 14, 146,
-									4, screen->h - 146 - 2 };
+	SDL_Rect PowerIndicatorPos = {	static_cast<Sint16>(screen->w - sideBar.getSize().x + 14), 146,
+									4, static_cast<Uint16>(screen->h - 146 - 2) };
 	SDL_FillRect(screen,&PowerIndicatorPos,0);
 
-	SDL_Rect SpiceIndicatorPos = {	screen->w - sideBar.getSize().x + 20, 146,
-									4, screen->h - 146 - 2 };
+	SDL_Rect SpiceIndicatorPos = {	static_cast<Sint16>(screen->w - sideBar.getSize().x + 20), 146,
+									4, static_cast<Uint16>(screen->h - 146 - 2) };
 	SDL_FillRect(screen,&SpiceIndicatorPos,0);
 
 	int xCount = 0, yCount = 0;
@@ -165,10 +165,10 @@ void GameInterface::draw(SDL_Surface* screen, Point position) {
 
 
 	for(int i=NumDigits-1; i>=0; i--) {
-	    SDL_Rect source = { (CreditsBuffer[i] - '0')*(surface->w/10), 0,
-                            surface->w/10, surface->h };
-        SDL_Rect dest = {   (screen->w - sideBar.getSize().x + 49) + (6 - NumDigits + i)*10, 135,
-                            surface->w/10, surface->h};
+	    SDL_Rect source = { static_cast<Sint16>((CreditsBuffer[i] - '0')*(surface->w/10)), 0,
+                            static_cast<Uint16>(surface->w/10), static_cast<Uint16>(surface->h) };
+        SDL_Rect dest = {   static_cast<Sint16>((screen->w - sideBar.getSize().x + 49) + (6 - NumDigits + i)*10), 135,
+                            static_cast<Uint16>(surface->w/10), static_cast<Uint16>(surface->h)};
 		SDL_BlitSurface(surface, &source, screen, &dest);
 	}
 }

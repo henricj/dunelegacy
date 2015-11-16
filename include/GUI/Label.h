@@ -263,10 +263,10 @@ public:
 			return;
 		}
 
-		SDL_Rect dest = {   position.x + (getSize().x - pSurface->w)/2,
-                            position.y + (getSize().y - pSurface->h)/2,
-                            pSurface->w,
-                            pSurface->h };
+		SDL_Rect dest = {   static_cast<Sint16>(position.x + (getSize().x - pSurface->w)/2),
+                            static_cast<Sint16>(position.y + (getSize().y - pSurface->h)/2),
+                            static_cast<Uint16>(pSurface->w),
+                            static_cast<Uint16>(pSurface->h) };
 		SDL_BlitSurface(pSurface, NULL, screen, &dest);
 	};
 

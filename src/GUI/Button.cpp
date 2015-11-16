@@ -169,7 +169,7 @@ void Button::draw(SDL_Surface* screen, Point position) {
 		return;
 	}
 
-	SDL_Rect dest = { position.x, position.y, surf->w, surf->h };
+	SDL_Rect dest = { static_cast<Sint16>(position.x), static_cast<Sint16>(position.y), static_cast<Uint16>(surf->w), static_cast<Uint16>(surf->h) };
 	SDL_BlitSurface(surf,NULL,screen,&dest);
 }
 
@@ -179,7 +179,7 @@ void Button::drawOverlay(SDL_Surface* screen, Point Pos) {
 			if((SDL_GetTicks() - tooltipLastMouseMotion) > 750) {
 				int x,y;
 				SDL_GetMouseState(&x,&y);
-				SDL_Rect dest = { x, y - tooltipSurface->h, tooltipSurface->w, tooltipSurface->h };
+				SDL_Rect dest = { static_cast<Sint16>(x), static_cast<Sint16>(y - tooltipSurface->h), static_cast<Uint16>(tooltipSurface->w), static_cast<Uint16>(tooltipSurface->h) };
 				if(dest.x + dest.w >= screen->w) {
 				    // do not draw tooltip outside screen
                     dest.x = screen->w - dest.w;

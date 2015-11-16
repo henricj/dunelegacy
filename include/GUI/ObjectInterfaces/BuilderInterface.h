@@ -96,7 +96,7 @@ protected:
                     int seconds = ((arrivalTimer*10)/(MILLI2CYCLES(30*1000))) + 1;
                     SDL_Surface* pText = pFontManager->createSurfaceWithText(stringify<int>(seconds), COLOR_WHITE, FONT_STD24);
 
-                    SDL_Rect dest = { (pSurface->w - pText->w)/2,(pSurface->h - pText->h)/2 + 5, pText->w, pText->h };
+                    SDL_Rect dest = { static_cast<Sint16>((pSurface->w - pText->w)/2),static_cast<Sint16>((pSurface->h - pText->h)/2 + 5), static_cast<Uint16>(pText->w), static_cast<Uint16>(pText->h) };
                     SDL_BlitSurface(pText, NULL, pSurface, &dest);
                     SDL_FreeSurface(pText);
                 }
