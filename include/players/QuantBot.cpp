@@ -1247,60 +1247,94 @@ void QuantBot::build() {
                                 }
 
                             }
-
+                            /// This entire section needs to be refactored to make it more generic
                             else if(money > 1200
                                     && militaryValue < militaryValueLimit) { // Limit enemy military units based on difficulty
 
-                                float launcherPercentage = 0.30;
+                                float launcherPercent = 0.30f;
+                                float specialPercent = 0.25f;
+                                float lightPercent = 0.20f;
+                                
+                                /*
                                 if(getHouse()->getHouseID() == HOUSE_ORDOS){
-                                    launcherPercentage =0.25; // Deviators are crap...
+                                    launcherPercent =0.25; // Deviators are crap...
                                 }else if(getHouse()->getHouseID() == HOUSE_HARKONNEN){
-                                    launcherPercentage = 0.75;
+                                    launcherPercent = 0.60;
                                 }else if(getHouse()->getHouseID() == HOUSE_MERCENARY){
-                                    launcherPercentage = 0.60; // Trying a new tactic
-                                }
+                                    launcherPercent = 0.60; // Trying a new tactic
+                                }*/
+                                
+                                /// Calculate current value of units
+                                int launcherValue = currentGame->objectData.data[Unit_Launcher][getHouse()->getHouseID()].price * itemCount[Unit_Launcher];
 
-                                int launcherValue = currentGame->objectData.data[Unit_Launcher][getHouse()->getHouseID()].price * itemCount[Unit_Launcher] +
-                                                    currentGame->objectData.data[Unit_Deviator][getHouse()->getHouseID()].price * itemCount[Unit_Deviator];
+                                int specialValue = currentGame->objectData.data[Unit_Devastator][getHouse()->getHouseID()].price * itemCount[Unit_Devastator] +
+                                    currentGame->objectData.data[Unit_Deviator][getHouse()->getHouseID()].price * itemCount[Unit_Deviator] +
+                                    currentGame->objectData.data[Unit_SonicTank][getHouse()->getHouseID()].price * itemCount[Unit_SonicTank];
+                                
+                                int lightValue = currentGame->objectData.data[Unit_Tank][getHouse()->getHouseID()].price * itemCount[Unit_Tank];
 
+                                
+                                /// Use current value and what percentage of military we want to determine
+                                /// whether to build an additional unit.
+                                if( pBuilder->isAvailableToBuild(Unit_Launcher)
+                                    && (militaryValue * launcherPercent > launcherValue)){
 
-
-                                if((pBuilder->isAvailableToBuild(Unit_Launcher) || pBuilder->isAvailableToBuild(Unit_Deviator))
-                                   &&(militaryValue * launcherPercentage > launcherValue
-                                      || (gameMode == CAMPAIGN && currentGame->techLevel == 8 && militaryValue * launcherPercentage > launcherValue) )){
-
-
-                                    if(pBuilder->isAvailableToBuild(Unit_Launcher)){
                                         doProduceItem(pBuilder, Unit_Launcher);
                                         itemCount[Unit_Launcher]++;
                                         money -= currentGame->objectData.data[Unit_Launcher][getHouse()->getHouseID()].price;
                                         militaryValue += currentGame->objectData.data[Unit_Launcher][getHouse()->getHouseID()].price;
-                                    } else if(pBuilder->isAvailableToBuild(Unit_Deviator)){
-                                        doProduceItem(pBuilder, Unit_Deviator);
-                                        itemCount[Unit_Deviator]++;
-                                        money -= currentGame->objectData.data[Unit_Deviator][getHouse()->getHouseID()].price;
-                                        militaryValue += currentGame->objectData.data[Unit_Deviator][getHouse()->getHouseID()].price;
-                                    }
+                                    
 
                                 }
 
-
-                                else if(pBuilder->isAvailableToBuild(Unit_SonicTank)
-                                        && (!pBuilder->isAvailableToBuild(Unit_SiegeTank))) {
-
-                                    doProduceItem(pBuilder, Unit_SonicTank);
-                                    itemCount[Unit_SonicTank]++;
-                                }
-
-                                else if(pBuilder->isAvailableToBuild(Unit_Devastator)
-
-                                       /* && (!pBuilder->isAvailableToBuild(Unit_SiegeTank)
-                                            || itemCount[Unit_SiegeTank] >= itemCount[Unit_Devastator] * 2)*/) {
-
+                                
+                                else if( pBuilder->isAvailableToBuild(Unit_Devastator)
+                                        && (militaryValue * specialPercent > specialValue)){
+                                    
                                     doProduceItem(pBuilder, Unit_Devastator);
                                     itemCount[Unit_Devastator]++;
+                                    money -= currentGame->objectData.data[Unit_Devastator][getHouse()->getHouseID()].price;
+                                    militaryValue += currentGame->objectData.data[Unit_Devastator][getHouse()->getHouseID()].price;
+                                    
+                                    
                                 }
 
+                                else if( pBuilder->isAvailableToBuild(Unit_Deviator)
+                                        && (militaryValue * specialPercent > specialValue)){
+                                    
+                                    doProduceItem(pBuilder, Unit_Deviator);
+                                    itemCount[Unit_Deviator]++;
+                                    money -= currentGame->objectData.data[Unit_Deviator][getHouse()->getHouseID()].price;
+                                    militaryValue += currentGame->objectData.data[Unit_Deviator][getHouse()->getHouseID()].price;
+                                    
+                                    
+                                }
+                                
+
+                                else if( pBuilder->isAvailableToBuild(Unit_SonicTank)
+                                   && (militaryValue * specialPercent > specialValue)){
+                                    
+                                    doProduceItem(pBuilder, Unit_SonicTank);
+                                    itemCount[Unit_SonicTank]++;
+                                    money -= currentGame->objectData.data[Unit_SonicTank][getHouse()->getHouseID()].price;
+                                    militaryValue += currentGame->objectData.data[Unit_SonicTank][getHouse()->getHouseID()].price;
+                            
+                            
+                                }
+
+                                
+                                else if( pBuilder->isAvailableToBuild(Unit_Tank)
+                                        && (militaryValue * lightPercent > lightValue)){
+                                    
+                                    doProduceItem(pBuilder, Unit_Tank);
+                                    itemCount[Unit_Tank]++;
+                                    money -= currentGame->objectData.data[Unit_Tank][getHouse()->getHouseID()].price;
+                                    militaryValue += currentGame->objectData.data[Unit_Tank][getHouse()->getHouseID()].price;
+                                    
+                                    
+                                }
+                                
+                                // Seige Tanks for all else
                                 else if(pBuilder->isAvailableToBuild(Unit_SiegeTank)) {
                                     doProduceItem(pBuilder, Unit_SiegeTank);
                                     itemCount[Unit_SiegeTank]++;
@@ -1308,12 +1342,7 @@ void QuantBot::build() {
                                     militaryValue += currentGame->objectData.data[Unit_SiegeTank][getHouse()->getHouseID()].price;
                                 }
 
-                                else if(pBuilder->isAvailableToBuild(Unit_Tank)) {
-                                    doProduceItem(pBuilder, Unit_Tank);
-                                    itemCount[Unit_Tank]++;
-                                    money -= currentGame->objectData.data[Unit_Tank][getHouse()->getHouseID()].price;
-                                    militaryValue += currentGame->objectData.data[Unit_Tank][getHouse()->getHouseID()].price;
-                                }
+
 
                             }
                         }
