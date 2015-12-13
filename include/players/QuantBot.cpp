@@ -296,7 +296,7 @@ void QuantBot::onDecrementUnits(int itemID) {
 void QuantBot::onIncrementUnitKills(int itemID) {
     if(itemID != Unit_Trooper && itemID != Unit_Infantry){
         attackTimer -= MILLI2CYCLES(currentGame->objectData.data[itemID][getHouse()->getHouseID()].price * 15);
-        //fprintf(stdout, "loss ");
+        //fprintf(stdout, "kill ");
     }
 
 }
@@ -461,7 +461,6 @@ void QuantBot::onDamage(const ObjectBase* pObject, int damage, Uint32 damagerID)
 }
 
 Coord QuantBot::findMcvPlaceLocation(const MCV* pMCV) {
-    int bestLocationX, bestLocationY = -1;
     int bestLocationScore = 1000;
     Coord bestLocation = Coord::Invalid();
 
@@ -1091,6 +1090,76 @@ void QuantBot::build() {
                 }
 
             }
+            
+            
+            /*  First attempt at making more generic
+             We this algorithm prioritises units with the lowest loss ratio
+             The idea is if a unit is less likely to die the AI should have
+             a higher ratio of that unit in its army
+             
+             At the moment it takes in special, light tanks and launchers
+             The default is siege tanks otherwise
+             */
+            
+            int launcherLosses = getHouse()->getNumLostItems(Unit_Launcher)
+            * currentGame->objectData.data[Unit_Devastator][getHouse()->getHouseID()].price;
+            
+            int specialLosses = getHouse()->getNumLostItems(Unit_SonicTank)
+            * currentGame->objectData.data[Unit_SonicTank][getHouse()->getHouseID()].price + getHouse()->getNumLostItems(Unit_Deviator)
+            * currentGame->objectData.data[Unit_Deviator][getHouse()->getHouseID()].price + getHouse()->getNumLostItems(Unit_Devastator)
+            * currentGame->objectData.data[Unit_Devastator][getHouse()->getHouseID()].price;
+            
+            int lightLosses = getHouse()->getNumLostItems(Unit_Tank)
+            * currentGame->objectData.data[Unit_Tank][getHouse()->getHouseID()].price;
+            
+            int siegeLosses = getHouse()->getNumLostItems(Unit_SiegeTank)
+            * currentGame->objectData.data[Unit_SiegeTank][getHouse()->getHouseID()].price;
+            
+            int ornithopterLosses = getHouse()->getNumLostItems(Unit_Ornithopter)
+            * currentGame->objectData.data[Unit_Ornithopter][getHouse()->getHouseID()].price;
+            
+            int totalLosses = launcherLosses + specialLosses + lightLosses + siegeLosses + ornithopterLosses;
+            
+            
+            /**
+             Effectively I'm solving a simultaneous equation
+             There's probably an easier way, but this works
+             **/
+            
+            
+            float launcherWeight = (((totalLosses - launcherLosses) + 1) / (launcherLosses+1));
+            float specialWeight = (((totalLosses - specialLosses) + 1) / (specialLosses+1));
+            float lightWeight = (((totalLosses - lightLosses) + 1) / (lightLosses+1));
+            float siegeWeight = (((totalLosses - siegeLosses) + 1) / (siegeLosses+1));
+            float ornithopterWeight = (((totalLosses - ornithopterLosses) + 1) / (ornithopterLosses+1));
+            
+            float totalWeight = launcherWeight + specialWeight + lightWeight + siegeWeight + ornithopterWeight;
+            
+            // Apply house specific logic
+            if(getHouse()->getHouseID() == HOUSE_HARKONNEN){
+                totalWeight -= ornithopterWeight;
+            }
+  
+            if(getHouse()->getHouseID() == HOUSE_ATREIDES){
+                totalWeight -= specialWeight;
+            }
+            
+            
+            if(getHouse()->getHouseID() == HOUSE_ORDOS){
+                totalWeight -= launcherWeight;
+            }
+            
+            /// Calculate ratios of launcher, special and light tanks. Remainder will be siege
+            float launcherPercent = launcherWeight / totalWeight;
+            float specialPercent = specialWeight / totalWeight;
+            float lightPercent = lightWeight / totalWeight;
+            float ornithopterPercent = ornithopterWeight / totalWeight;
+            
+            
+            
+            /**
+                    End of unit ratio optimisation algorithm ***
+             **/
 
 
             const BuilderBase* pBuilder = dynamic_cast<const BuilderBase*>(pStructure);
@@ -1170,12 +1239,48 @@ void QuantBot::build() {
 
 
                     case Structure_HighTechFactory: {
+                        
+                        int ornithopterValue = currentGame->objectData.data[Unit_Ornithopter][getHouse()->getHouseID()].price * itemCount[Unit_Ornithopter];
+                        
+                        
+                        
+                        
                         if(itemCount[Unit_Carryall] < (militaryValue + itemCount[Unit_Harvester] * 500) / 3000
                            && (pBuilder->getProductionQueueSize() < 1)
                            && money > 1000){
                             doProduceItem(pBuilder, Unit_Carryall);
                             itemCount[Unit_Carryall]++;
                         }
+                        else if((money > 500)
+                                && (pBuilder->isUpgrading() == false)
+                                && (pBuilder->getCurrentUpgradeLevel() < pBuilder->getMaxUpgradeLevel()))
+                        {
+                            if (pBuilder->getHealth() >= pBuilder->getMaxHealth()){
+                                doUpgrade(pBuilder);
+                            }else{
+                                doRepair(pBuilder);
+                            }
+                            
+                        }
+                        
+                        /// Use current value and what percentage of military we want to determine
+                        /// whether to build an additional unit.
+                        else if( pBuilder->isAvailableToBuild(Unit_Ornithopter)
+                                && (militaryValue * ornithopterPercent > ornithopterValue)
+                                && (pBuilder->getProductionQueueSize() < 1)
+                                && money > 1200){
+                            
+                            doProduceItem(pBuilder, Unit_Ornithopter);
+                            itemCount[Unit_Ornithopter]++;
+                            money -= currentGame->objectData.data[Unit_Ornithopter][getHouse()->getHouseID()].price;
+                            militaryValue += currentGame->objectData.data[Unit_Ornithopter][getHouse()->getHouseID()].price;
+                            
+                            
+                        }
+                        
+
+                        
+                        
                     } break;
 
 
@@ -1250,19 +1355,10 @@ void QuantBot::build() {
                             /// This entire section needs to be refactored to make it more generic
                             else if(money > 1200
                                     && militaryValue < militaryValueLimit) { // Limit enemy military units based on difficulty
-
-                                float launcherPercent = 0.30f;
-                                float specialPercent = 0.25f;
-                                float lightPercent = 0.20f;
                                 
-                                /*
-                                if(getHouse()->getHouseID() == HOUSE_ORDOS){
-                                    launcherPercent =0.25; // Deviators are crap...
-                                }else if(getHouse()->getHouseID() == HOUSE_HARKONNEN){
-                                    launcherPercent = 0.60;
-                                }else if(getHouse()->getHouseID() == HOUSE_MERCENARY){
-                                    launcherPercent = 0.60; // Trying a new tactic
-                                }*/
+   
+                                
+                                
                                 
                                 /// Calculate current value of units
                                 int launcherValue = currentGame->objectData.data[Unit_Launcher][getHouse()->getHouseID()].price * itemCount[Unit_Launcher];
@@ -1310,17 +1406,6 @@ void QuantBot::build() {
                                     
                                 }
                                 
-
-                                else if( pBuilder->isAvailableToBuild(Unit_SonicTank)
-                                   && (militaryValue * specialPercent > specialValue)){
-                                    
-                                    doProduceItem(pBuilder, Unit_SonicTank);
-                                    itemCount[Unit_SonicTank]++;
-                                    money -= currentGame->objectData.data[Unit_SonicTank][getHouse()->getHouseID()].price;
-                                    militaryValue += currentGame->objectData.data[Unit_SonicTank][getHouse()->getHouseID()].price;
-                            
-                            
-                                }
 
                                 
                                 else if( pBuilder->isAvailableToBuild(Unit_Tank)
@@ -1681,15 +1766,10 @@ void QuantBot::build() {
 
 
                                 /*
-                                    Deviators for Ordos
-                                    Let's trial devastators for Harkonan
+                                    Let's trial special units
                                 */
 
-                                else if(itemCount[Structure_IX] == 0
-                                        && militaryValue * 10 > militaryValueLimit
-                                        && (getHouse()->getHouseID() == HOUSE_ORDOS
-                                            || getHouse()->getHouseID() == HOUSE_HARKONNEN
-                                            || getHouse()->getHouseID() == HOUSE_ATREIDES)){
+                                else if(itemCount[Structure_IX] == 0){
                                     if(pBuilder->isAvailableToBuild(Structure_IX)){
                                         itemID = Structure_IX;
                                     }
