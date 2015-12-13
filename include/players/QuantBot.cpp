@@ -402,7 +402,7 @@ void QuantBot::onDamage(const ObjectBase* pObject, int damage, Uint32 damagerID)
 
 
         /**
-            Tanks run from other tanks and Ornithopters
+            All Tanks run from other tanks and Ornithopters when below 85% health
         **/
 
         else if ((pUnit->getItemID() == Unit_Tank || pUnit->getItemID() == Unit_SiegeTank)
@@ -421,11 +421,30 @@ void QuantBot::onDamage(const ObjectBase* pObject, int damage, Uint32 damagerID)
         }
 
         /**
-            If the unit is at 65% health or less and is not being forced to move anywhere
+         Tanks run from Siege Tanks
+        **/
+        
+        else if ((pUnit->getItemID() == Unit_Tank)
+                 && pDamager->getItemID() != Unit_SiegeTank
+                 && pDamager->getItemID() != Structure_GunTurret
+                 && pDamager->getItemID() != Structure_RocketTurret
+                 && pDamager->getItemID() != Unit_RaiderTrike
+                 && pDamager->getItemID() != Unit_Trike
+                 && pDamager->getItemID() != Unit_Quad
+                 && pDamager->getItemID() != Unit_SonicTank
+                 && pDamager->getItemID() != Unit_Deviator
+                 && !pDamager->isInfantry()){
+            
+            doSetAttackMode(pUnit, AREAGUARD);
+            doMove2Pos(pUnit, squadCenterLocation.x, squadCenterLocation.y, true);
+        }
+
+        /**
+            If the unit is at 60% health or less and is not being forced to move anywhere
             repair them, if they are eligible to be repaired
         **/
 
-        if((pUnit->getHealth() * 100) / pUnit->getMaxHealth() < 65
+        if((pUnit->getHealth() * 100) / pUnit->getMaxHealth() < 60
             && !pUnit->isInfantry()
             && pUnit->isVisible())
         {
@@ -681,8 +700,6 @@ void QuantBot::build() {
        if(getHouse()->getNumItems(i) > 0){
             itemCount[i] = getHouse()->getNumItems(i);
 
-
-
             if(!initialCountComplete){
                 initialItemCount[i] = getHouse()->getNumItems(i);
                 fprintf(stdout,"Initial: Item: %d  Count: %d\n", i, initialItemCount[i]);
@@ -894,7 +911,9 @@ void QuantBot::build() {
                 }
 
 
-            }else if(pStructure->getItemID() == Structure_RepairYard){
+            }
+            
+            else if(pStructure->getItemID() == Structure_RepairYard){
                 const RepairYard* pRepairYard= dynamic_cast<const RepairYard*>(pStructure);
                 if(!pRepairYard->isFree()){
                     activeRepairYardCount++;
@@ -1236,7 +1255,9 @@ void QuantBot::build() {
                                 if(getHouse()->getHouseID() == HOUSE_ORDOS){
                                     launcherPercentage =0.25; // Deviators are crap...
                                 }else if(getHouse()->getHouseID() == HOUSE_HARKONNEN){
-                                    launcherPercentage = 0.35;
+                                    launcherPercentage = 0.75;
+                                }else if(getHouse()->getHouseID() == HOUSE_MERCENARY){
+                                    launcherPercentage = 0.60; // Trying a new tactic
                                 }
 
                                 int launcherValue = currentGame->objectData.data[Unit_Launcher][getHouse()->getHouseID()].price * itemCount[Unit_Launcher] +
@@ -1273,8 +1294,8 @@ void QuantBot::build() {
 
                                 else if(pBuilder->isAvailableToBuild(Unit_Devastator)
 
-                                        && (!pBuilder->isAvailableToBuild(Unit_SiegeTank)
-                                            || itemCount[Unit_SiegeTank] >= itemCount[Unit_Devastator] * 2)) {
+                                       /* && (!pBuilder->isAvailableToBuild(Unit_SiegeTank)
+                                            || itemCount[Unit_SiegeTank] >= itemCount[Unit_Devastator] * 2)*/) {
 
                                     doProduceItem(pBuilder, Unit_Devastator);
                                     itemCount[Unit_Devastator]++;
@@ -1814,10 +1835,9 @@ void QuantBot::scrambleUnitsAndDefend(const ObjectBase* pIntruder) {
                     doSetAttackMode(pUnit, AREAGUARD);
 
                     if(pUnit->getItemID() == Unit_Launcher || pUnit->getItemID() == Unit_Deviator){
-                        doAttackObject(pUnit, pIntruder, true);
-                    } else {
                         //doAttackObject(pUnit, pIntruder, true);
-                        doMove2Pos(pUnit, pIntruder->getX(), pIntruder->getY(), false);
+                    } else {
+                        doAttackObject(pUnit, pIntruder, true);
                     }
 
 
@@ -1896,7 +1916,7 @@ void QuantBot::attack() {
 
     Coord squadCenterLocation = findSquadCenter(getHouse()->getHouseID());
 
-    const UnitBase* pLeaderUnit = NULL;
+
     RobustList<const UnitBase*>::const_iterator iter;
 
 
@@ -1911,6 +1931,7 @@ void QuantBot::attack() {
             && pUnit->getItemID() != Unit_MCV
             && pUnit->getItemID() != Unit_Carryall
             && (pUnit->getItemID() != Unit_Ornithopter || getHouse()->getNumItems(Unit_Ornithopter) > 20)
+            && pUnit->getItemID() != Unit_Deviator
             && pUnit->getHealthColor() == COLOR_LIGHTGREEN
             && (pUnit->getHealth() * 100) / pUnit->getMaxHealth() > 60
 
@@ -2022,7 +2043,6 @@ Coord QuantBot::findSquadCenter(int houseID){
     int totalX = 0;
     int totalY = 0;
 
-    float closestDistance = 100000000;
 
     RobustList<const UnitBase*>::const_iterator currentUnit;
 

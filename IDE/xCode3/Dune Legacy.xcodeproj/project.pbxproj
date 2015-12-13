@@ -235,8 +235,8 @@
 		13E564D1169B55BE00D282B9 /* OPENSD2.PAK in Resources */ = {isa = PBXBuildFile; fileRef = 13E564D0169B55BE00D282B9 /* OPENSD2.PAK */; };
 		13E929C010AF72BF00169991 /* Dune2-Versions.txt in Resources */ = {isa = PBXBuildFile; fileRef = 13E929BF10AF72BF00169991 /* Dune2-Versions.txt */; };
 		8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
-		E39FAED01BF8235500A2A8B4 /* QuantBot.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E39FAECE1BF8235500A2A8B4 /* QuantBot.cpp */; };
-		E39FAED11BF8235500A2A8B4 /* SmartBot.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E39FAECF1BF8235500A2A8B4 /* SmartBot.cpp */; };
+		E311BCC31BF9CF2B005C993B /* QuantBot.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E311BCC11BF9CF2B005C993B /* QuantBot.cpp */; };
+		E311BCC41BF9CF2B005C993B /* SmartBot.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E311BCC21BF9CF2B005C993B /* SmartBot.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -802,10 +802,10 @@
 		29B97325FDCFA39411CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
 		32CA4F630368D1EE00C91783 /* Dune Legacy_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Dune Legacy_Prefix.pch"; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
-		E39FAECC1BF81CB200A2A8B4 /* QuantBot.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QuantBot.h; sourceTree = "<group>"; };
-		E39FAECD1BF81CB200A2A8B4 /* SmartBot.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SmartBot.h; sourceTree = "<group>"; };
-		E39FAECE1BF8235500A2A8B4 /* QuantBot.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = QuantBot.cpp; path = "../../../../../../Volumes/BOOTCAMP/dune-src/dunelegacy/src/players/QuantBot.cpp"; sourceTree = "<group>"; };
-		E39FAECF1BF8235500A2A8B4 /* SmartBot.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = SmartBot.cpp; path = "../../../../../../Volumes/BOOTCAMP/dune-src/dunelegacy/src/players/SmartBot.cpp"; sourceTree = "<group>"; };
+		E311BCC11BF9CF2B005C993B /* QuantBot.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = QuantBot.cpp; path = ../../include/players/QuantBot.cpp; sourceTree = "<group>"; };
+		E311BCC21BF9CF2B005C993B /* SmartBot.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = SmartBot.cpp; path = ../../include/players/SmartBot.cpp; sourceTree = "<group>"; };
+		E311BCC51BF9CF8C005C993B /* QuantBot.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QuantBot.h; sourceTree = "<group>"; };
+		E311BCC61BF9CF8C005C993B /* SmartBot.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SmartBot.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1163,8 +1163,8 @@
 		1358FC2A13D3B71500FAD5B7 /* players */ = {
 			isa = PBXGroup;
 			children = (
-				E39FAECC1BF81CB200A2A8B4 /* QuantBot.h */,
-				E39FAECD1BF81CB200A2A8B4 /* SmartBot.h */,
+				E311BCC51BF9CF8C005C993B /* QuantBot.h */,
+				E311BCC61BF9CF8C005C993B /* SmartBot.h */,
 				1358FC2B13D3B71500FAD5B7 /* AIPlayer.h */,
 				1358FC2C13D3B71500FAD5B7 /* HumanPlayer.h */,
 				1358FC2D13D3B71500FAD5B7 /* Player.h */,
@@ -1483,8 +1483,8 @@
 		1358FDE313D3B72F00FAD5B7 /* players */ = {
 			isa = PBXGroup;
 			children = (
-				E39FAECE1BF8235500A2A8B4 /* QuantBot.cpp */,
-				E39FAECF1BF8235500A2A8B4 /* SmartBot.cpp */,
+				E311BCC11BF9CF2B005C993B /* QuantBot.cpp */,
+				E311BCC21BF9CF2B005C993B /* SmartBot.cpp */,
 				1358FDE413D3B72F00FAD5B7 /* AIPlayer.cpp */,
 				1358FDE513D3B72F00FAD5B7 /* HumanPlayer.cpp */,
 				1358FDE613D3B72F00FAD5B7 /* Player.cpp */,
@@ -1838,7 +1838,7 @@
 				1358FE5513D3B72F00FAD5B7 /* SFXManager.cpp in Sources */,
 				1358FE5613D3B72F00FAD5B7 /* Shpfile.cpp in Sources */,
 				1358FE5713D3B72F00FAD5B7 /* TextManager.cpp in Sources */,
-				E39FAED11BF8235500A2A8B4 /* SmartBot.cpp in Sources */,
+				E311BCC41BF9CF2B005C993B /* SmartBot.cpp in Sources */,
 				1358FE5813D3B72F00FAD5B7 /* Vocfile.cpp in Sources */,
 				1358FE5913D3B72F00FAD5B7 /* Wsafile.cpp in Sources */,
 				1358FE5A13D3B72F00FAD5B7 /* xmidi.cpp in Sources */,
@@ -1942,7 +1942,7 @@
 				1358FEBF13D3B72F00FAD5B7 /* Deviator.cpp in Sources */,
 				1358FEC113D3B72F00FAD5B7 /* Frigate.cpp in Sources */,
 				1358FEC213D3B72F00FAD5B7 /* GroundUnit.cpp in Sources */,
-				E39FAED01BF8235500A2A8B4 /* QuantBot.cpp in Sources */,
+				E311BCC31BF9CF2B005C993B /* QuantBot.cpp in Sources */,
 				1358FEC313D3B72F00FAD5B7 /* Harvester.cpp in Sources */,
 				1358FEC413D3B72F00FAD5B7 /* InfantryBase.cpp in Sources */,
 				1358FEC513D3B72F00FAD5B7 /* Launcher.cpp in Sources */,
@@ -1988,8 +1988,8 @@
 		C01FCF4B08A954540054247B /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				ARCHS = "$(ARCHS_STANDARD)";
+				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_USE_OPTIMIZATION_PROFILE = NO;
 				CLANG_X86_VECTOR_INSTRUCTIONS = default;
@@ -2009,6 +2009,7 @@
 				GCC_VERSION = "";
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "$(HOME)/Applications";
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_CPLUSPLUSFLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = "Dune-Legacy-OSX-0.96.4b-build15";
@@ -2021,8 +2022,8 @@
 		C01FCF4C08A954540054247B /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				ARCHS = "$(ARCHS_STANDARD)";
+				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_USE_OPTIMIZATION_PROFILE = NO;
 				CLANG_X86_VECTOR_INSTRUCTIONS = default;
@@ -2041,6 +2042,7 @@
 				GCC_VERSION = "";
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "$(HOME)/Applications";
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_CPLUSPLUSFLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = "Dune-Legacy-OSX-0.96.4b-build15";

@@ -27,7 +27,7 @@
 #define VERSIONSTRING   PACKAGE VERSION
 
 #ifndef DUNELEGACY_DATADIR
-    #define DUNELEGACY_DATADIR "."
+    #define DUNELEGACY_DATADIR "/Users/Shared/dune2"
 #endif
 
 #ifndef CONFIGFILENAME
