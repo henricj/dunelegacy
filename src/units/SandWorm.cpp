@@ -224,7 +224,7 @@ void Sandworm::blitToScreen() {
 
 void Sandworm::checkPos() {
 	if(moving && !justStoppedMoving) {
-		if((abs(lround(realX) - lastLocs[0].x) >= 4) || (abs(lround(realY) - lastLocs[0].y) >= 4)) {
+        if((std::abs(lround(realX) - lastLocs[0].x) >= 4) || (std::abs(lround(realY) - lastLocs[0].y) >= 4)) {
 			for(int i = (SANDWORM_LENGTH-1); i > 0 ; i--) {
 				lastLocs[i] = lastLocs[i-1];
 			}

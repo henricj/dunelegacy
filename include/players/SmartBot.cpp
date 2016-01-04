@@ -883,7 +883,7 @@ void SmartBot::attack() {
         return;
     }
     Coord destination;
-    const UnitBase* pLeaderUnit = NULL;
+
     RobustList<const UnitBase*>::const_iterator iter;
     for(iter = getUnitList().begin(); iter != getUnitList().end(); ++iter) {
         const UnitBase *pUnit = *iter;

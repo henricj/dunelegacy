@@ -151,11 +151,6 @@ void RepairYard::updateStructureSpecificStuff() {
 				pRepairUnit->addHealth();
 			}
 
-			// Stop the last harvester getting stuck in the repair facility
-
-			else if (pRepairUnit->getItemID() == Unit_Harvester){
-                deployRepairUnit();
-			}
 		} else if(((GroundUnit*)pRepairUnit)->isawaitingPickup() == false) {
 		    // find carryall
 		    Carryall* pCarryall = NULL;

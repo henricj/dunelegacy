@@ -71,6 +71,7 @@ private:
 	Uint32	gameMode;     ///< game mode (custom or campaign)
     Sint32  buildTimer;     ///< When to build the next structure/unit
     Sint32  attackTimer;     ///< When to build the next structure/unit
+    Sint32  retreatTimer;    ///< When you last retreated>
 
     int initialItemCount[ItemID_LastID];
     int itemCount[ItemID_LastID];
@@ -79,6 +80,7 @@ private:
     bool campaignAIAttackFlag;
     Coord squadCenterLocation;
     Coord squadRallyLocation;
+    Coord squadRetreatLocation;
 
     void scrambleUnitsAndDefend(const ObjectBase* pIntruder);
 

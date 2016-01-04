@@ -68,7 +68,7 @@
     == Units ==
     ii) units that get stuck in buildings should be transported to squadcenter =%80=
     vii) fix attack timer =%80=
-    viii) when attack timer axceeds a certain value then all hunting units are set to area guard
+    viii) when attack timer exceeds a certain value then all hunting units are set to area guard
 
     2) harvester return distance bug been introduced.= in progress ==
 
@@ -89,9 +89,17 @@
 
     x. Improve squad management
 
-    == Ornithopters ==
-    1. Add them with some logic
+    == New work ==
+    1. Add them with some logic =50%=
+    2. fix force ratio optimisation algorithm, 
+        need to make it based off kill / death ratio instead of just losses =50%=
+    3. create a retreate mechanism = 50% = still need to add retreat timer, say 1 retreat per minute, max
+        - fix rally point and ybut deploy logic
+ 
+ 
     2. Make carryalls and ornithopers easier to hit
+ 
+    ====> FIX WORM CRASH GAME BUG
 
 **/
 
@@ -108,16 +116,21 @@ QuantBot::QuantBot(House* associatedHouse, std::string playername, Uint32 diffic
 	buildTimer = getRandomGen().rand(0,3) * 50;
 
     attackTimer = MILLI2CYCLES(10000);
-
-    if(currentGame->gameType == GAMETYPE_CUSTOM){
-        gameMode = CUSTOM;
-    }else{
+    retreatTimer = MILLI2CYCLES(60000);
+    
+    
+    // Different AI logic for Campaign. Assumption is if player is loading they are playing a campaign game
+    if(currentGame->gameType == GAMETYPE_CAMPAIGN
+       || currentGame->gameType == GAMETYPE_LOAD_SAVEGAME
+       || currentGame->gameType == GAMETYPE_SKIRMISH){
         gameMode = CAMPAIGN;
+    }else{
+        gameMode = CUSTOM;
     }
 
 
     if(gameMode == CAMPAIGN){
-        // Wait at least 8 minutes if its a campaign game
+        // Wait a while if it is a campaign game
 
         switch(currentGame->techLevel){
 
@@ -263,8 +276,17 @@ void QuantBot::update() {
 
     if(attackTimer <= 0) {
         attack();
-	} else {
+	}
+
+    // If we have taken substantial losses then retreat
+    else if (attackTimer > MILLI2CYCLES(100000) && retreatTimer < 0) {
+        retreatAllUnits();
+
+    }
+    
+    else {
         attackTimer -= AIUPDATEINTERVAL;
+        retreatTimer -= AIUPDATEINTERVAL;
 	}
 
 
@@ -283,9 +305,8 @@ void QuantBot::onDecrementStructures(int itemID, const Coord& location) {
 
 /// When we take losses we should hold off from attacking for longer...
 void QuantBot::onDecrementUnits(int itemID) {
-    if(itemID != Unit_Trooper && itemID != Unit_Infantry
-       && attackTimer < MILLI2CYCLES(260000)){
-        attackTimer += MILLI2CYCLES(currentGame->objectData.data[itemID][getHouse()->getHouseID()].price * 15);
+    if(itemID != Unit_Trooper && itemID != Unit_Infantry){
+        attackTimer += MILLI2CYCLES(currentGame->objectData.data[itemID][getHouse()->getHouseID()].price * 20);
         //fprintf(stdout, "loss ");
     }
 
@@ -517,16 +538,6 @@ Coord QuantBot::findPlaceLocation(Uint32 itemID) {
     int newSizeX = getStructureSize(itemID).x;
     int newSizeY = getStructureSize(itemID).y;
     Coord bestLocation = Coord::Invalid();
-
-    Coord baseCentre = findBaseCentre(getHouse()->getHouseID());
-
-    bool newIsBuilder = (itemID == Structure_HeavyFactory
-                                   || itemID == Structure_Refinery
-                                   || itemID == Structure_RepairYard
-                                   || itemID == Structure_LightFactory
-                                   || itemID == Structure_WOR
-                                   || itemID == Structure_Barracks
-                                   || itemID == Structure_StarPort);
 
     for(iter = getStructureList().begin(); iter != getStructureList().end(); ++iter) {
         const StructureBase* pStructureExisting = *iter;
@@ -1123,8 +1134,8 @@ void QuantBot::build() {
             
             /**
              Effectively I'm solving a simultaneous equation
-             There's probably an easier way, but this works
-             **/
+             There's probably an easier way involving matrices but this works
+            **/
             
             
             float launcherWeight = (((totalLosses - launcherLosses) + 1) / (launcherLosses+1));
@@ -1149,10 +1160,10 @@ void QuantBot::build() {
                 totalWeight -= launcherWeight;
             }
             
-            /// Calculate ratios of launcher, special and light tanks. Remainder will be siege
+            /// Calculate ratios of launcher, special and light tanks. Remainder will be tank
             float launcherPercent = launcherWeight / totalWeight;
             float specialPercent = specialWeight / totalWeight;
-            float lightPercent = lightWeight / totalWeight;
+            float siegePercent = siegeWeight / totalWeight;
             float ornithopterPercent = ornithopterWeight / totalWeight;
             
             
@@ -1367,7 +1378,7 @@ void QuantBot::build() {
                                     currentGame->objectData.data[Unit_Deviator][getHouse()->getHouseID()].price * itemCount[Unit_Deviator] +
                                     currentGame->objectData.data[Unit_SonicTank][getHouse()->getHouseID()].price * itemCount[Unit_SonicTank];
                                 
-                                int lightValue = currentGame->objectData.data[Unit_Tank][getHouse()->getHouseID()].price * itemCount[Unit_Tank];
+                                int siegeValue = currentGame->objectData.data[Unit_SiegeTank][getHouse()->getHouseID()].price * itemCount[Unit_SiegeTank];
 
                                 
                                 /// Use current value and what percentage of military we want to determine
@@ -1408,23 +1419,23 @@ void QuantBot::build() {
                                 
 
                                 
-                                else if( pBuilder->isAvailableToBuild(Unit_Tank)
-                                        && (militaryValue * lightPercent > lightValue)){
+                                else if( pBuilder->isAvailableToBuild(Unit_SiegeTank)
+                                        && (militaryValue * siegePercent > siegeValue)){
                                     
-                                    doProduceItem(pBuilder, Unit_Tank);
-                                    itemCount[Unit_Tank]++;
+                                    doProduceItem(pBuilder, Unit_SiegeTank);
+                                    itemCount[Unit_SiegeTank]++;
                                     money -= currentGame->objectData.data[Unit_Tank][getHouse()->getHouseID()].price;
-                                    militaryValue += currentGame->objectData.data[Unit_Tank][getHouse()->getHouseID()].price;
+                                    militaryValue += currentGame->objectData.data[Unit_SiegeTank][getHouse()->getHouseID()].price;
                                     
                                     
                                 }
                                 
-                                // Seige Tanks for all else
-                                else if(pBuilder->isAvailableToBuild(Unit_SiegeTank)) {
-                                    doProduceItem(pBuilder, Unit_SiegeTank);
-                                    itemCount[Unit_SiegeTank]++;
-                                    money -= currentGame->objectData.data[Unit_SiegeTank][getHouse()->getHouseID()].price;
-                                    militaryValue += currentGame->objectData.data[Unit_SiegeTank][getHouse()->getHouseID()].price;
+                                // Tanks for all else
+                                else if(pBuilder->isAvailableToBuild(Unit_Tank)) {
+                                    doProduceItem(pBuilder, Unit_Tank);
+                                    itemCount[Unit_Tank]++;
+                                    money -= currentGame->objectData.data[Unit_Tank][getHouse()->getHouseID()].price;
+                                    militaryValue += currentGame->objectData.data[Unit_Tank][getHouse()->getHouseID()].price;
                                 }
 
 
@@ -1976,6 +1987,8 @@ void QuantBot::scrambleUnitsAndDefend(const ObjectBase* pIntruder) {
 void QuantBot::attack() {
 
     /// Logic to make Brutal AI attack more often
+    /// not using this atm
+    
     int tempLim = militaryValueLimit;
     if(tempLim > 60000){
         tempLim = 60000;
@@ -1983,15 +1996,15 @@ void QuantBot::attack() {
 
     float strength = ((float)militaryValue + 1) / ((float)tempLim) + 0.03;
 
-    float newAttack = 20000 / strength;
+    float newAttack = 15000 / strength;
 
 
 
-    if(newAttack > 300000){
-        newAttack = 300000;
+    if(newAttack > 100000){
+        newAttack = 100000;
     }
-
-    attackTimer = MILLI2CYCLES(newAttack);
+    // overwriting existing logic for the time being
+    attackTimer = MILLI2CYCLES(30000);
 
 
 
@@ -2209,10 +2222,38 @@ void QuantBot::retreatAllUnits() {
 
     // Set the new squad rally location
     squadRallyLocation = findSquadRallyLocation();
-
+    
+    
+    // set attck timer down a bit
+    retreatTimer = MILLI2CYCLES(60000);
+        
+    
+    float	closestDistance = INFINITY;
+    
+    RobustList<StructureBase*>::const_iterator iter;
+    for(iter = structureList.begin(); iter != structureList.end(); ++iter) {
+        StructureBase* tempStructure = *iter;
+        
+        // if it is our building, check to see if it is closer to the squad rally point then we are
+        if(tempStructure->getOwner()->getHouseID() == getHouse()->getHouseID()) {
+            Coord closestStructurePoint = tempStructure->getClosestPoint(squadRallyLocation);
+            float structureDistance = blockDistance(squadRallyLocation, closestStructurePoint);
+            
+            if(structureDistance < closestDistance)	{
+                closestDistance = structureDistance;
+                squadRetreatLocation = closestStructurePoint;
+            }
+        }
+    }
+    
+    if(getHouse()->getNumStructures() == 0){
+        squadRetreatLocation.x = -1;
+        squadRetreatLocation.y = -1;
+    }
+    
 
     // If no base exists yet, there is no retreat location
-    if(squadRallyLocation.x != -1){
+    if(squadRallyLocation.x != -1 && squadRetreatLocation.x != -1){
 
         RobustList<const UnitBase*>::const_iterator iter;
 
@@ -2323,15 +2364,13 @@ void QuantBot::checkAllUnits() {
                     if(pUnit->getOwner()->getHouseID() != pUnit->getOriginalHouseID()){
 
                         if(pUnit->getAttackMode() != AREAGUARD){
-                            doSetAttackMode(pUnit, GUARD);
+                            doSetAttackMode(pUnit, AREAGUARD);
                         }
 
                         // Run towards the center of the squad. once there, the deviated unit is free to attack
-                        if(blockDistance(pUnit->getLocation(), squadCenterLocation) > squadRadius - 2
+                        if(blockDistance(pUnit->getLocation(), squadCenterLocation) > squadRadius
                            && pUnit->getItemID() != Unit_Devastator){
                             doMove2Pos(pUnit, squadCenterLocation.x, squadCenterLocation.y , true);
-                        }else{
-                            doMove2Pos(pUnit, squadCenterLocation.x, squadCenterLocation.y , false);
                         }
 
 
@@ -2387,10 +2426,14 @@ void QuantBot::checkAllUnits() {
                         } else if (pUnit->getAttackMode() == RETREAT){
 
                            if(blockDistance(pUnit->getLocation(),
-                                         squadRallyLocation) > squadRadius){
+                                         squadRetreatLocation) > squadRadius + 2 && !pUnit->wasForced()){
 
-
-                                doMove2Pos(pUnit, squadRallyLocation.x, squadRallyLocation.y, true );
+                               
+                               if(pUnit->getHealth() < pUnit->getMaxHealth()){
+                                   doRepair(pUnit);
+                               }
+                               
+                               doMove2Pos(pUnit, squadRetreatLocation.x, squadRetreatLocation.y, true );
 
                             }
 
@@ -2433,4 +2476,6 @@ void QuantBot::checkAllUnits() {
         }
     }
 }
+
+
 
