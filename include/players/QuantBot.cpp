@@ -279,8 +279,14 @@ void QuantBot::update() {
 	}
 
     // If we have taken substantial losses then retreat
-    else if (attackTimer > MILLI2CYCLES(100000) && retreatTimer < 0) {
-        retreatAllUnits();
+    else if (attackTimer > MILLI2CYCLES(100000) ) {
+        
+        attackTimer = MILLI2CYCLES(90000);
+        
+        if(retreatTimer < 0){
+            retreatAllUnits();
+        }
+        
 
     }
     
@@ -306,7 +312,7 @@ void QuantBot::onDecrementStructures(int itemID, const Coord& location) {
 /// When we take losses we should hold off from attacking for longer...
 void QuantBot::onDecrementUnits(int itemID) {
     if(itemID != Unit_Trooper && itemID != Unit_Infantry){
-        attackTimer += MILLI2CYCLES(currentGame->objectData.data[itemID][getHouse()->getHouseID()].price * 20);
+        attackTimer += MILLI2CYCLES(currentGame->objectData.data[itemID][getHouse()->getHouseID()].price * 30 / difficulty );
         //fprintf(stdout, "loss ");
     }
 
@@ -2004,7 +2010,7 @@ void QuantBot::attack() {
         newAttack = 100000;
     }
     // overwriting existing logic for the time being
-    attackTimer = MILLI2CYCLES(30000);
+    attackTimer = MILLI2CYCLES(10000);
 
 
 
@@ -2052,7 +2058,7 @@ void QuantBot::attack() {
             && pUnit->getItemID() != Unit_Harvester
             && pUnit->getItemID() != Unit_MCV
             && pUnit->getItemID() != Unit_Carryall
-            && (pUnit->getItemID() != Unit_Ornithopter || getHouse()->getNumItems(Unit_Ornithopter) > 20)
+            && pUnit->getItemID() != Unit_Ornithopter
             && pUnit->getItemID() != Unit_Deviator
             && pUnit->getHealthColor() == COLOR_LIGHTGREEN
             && (pUnit->getHealth() * 100) / pUnit->getMaxHealth() > 60
@@ -2225,7 +2231,7 @@ void QuantBot::retreatAllUnits() {
     
     
     // set attck timer down a bit
-    retreatTimer = MILLI2CYCLES(60000);
+    retreatTimer = MILLI2CYCLES(90000);
         
     
     float	closestDistance = INFINITY;
