@@ -127,7 +127,7 @@ dunelegacy_SOURCES =	AStarSearch.cpp\
 						MapEditor/LoadMapWindow.cpp\
 						MapEditor/PlayerSettingsWindow.cpp\
 						MapEditor/ReinforcementsWindow.cpp\
-					        MapEditor/TeamsWindow.cpp\
+						MapEditor/TeamsWindow.cpp\
 						$(NULL)\
 						Menu/MenuBase.cpp\
 						Menu/MainMenu.cpp\
@@ -160,7 +160,6 @@ dunelegacy_SOURCES =	AStarSearch.cpp\
 						players/HumanPlayer.cpp\
 						players/PlayerFactory.cpp\
 						players/AIPlayer.cpp\
-						players/OldAIPlayer.cpp\
 						players/QuantBot.cpp\
 						players/SmartBot.cpp\
 						$(NULL)\
