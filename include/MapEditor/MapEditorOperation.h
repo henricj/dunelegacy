@@ -18,8 +18,6 @@
 #ifndef MAPEDITOROPERATION_H
 #define MAPEDITOROPERATION_H
 
-#include <misc/memory.h>
-
 #include <data.h>
 
 #include <DataTypes.h>
@@ -29,6 +27,7 @@
 #include <MapEditor/MapInfo.h>
 
 #include <vector>
+#include <memory>
 
 class MapEditor;
 

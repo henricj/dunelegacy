@@ -20,10 +20,10 @@
 
 #include "Widget.h"
 #include "GUIStyle.h"
-#include <misc/functional.h>
 #include <SDL.h>
 
 #include <string>
+#include <functional>
 
 /// A abstract base class for all buttons
 class Button : public Widget {

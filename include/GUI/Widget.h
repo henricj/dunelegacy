@@ -20,8 +20,7 @@
 
 #include <SDL.h>
 
-#include <misc/functional.h>
-
+#include <functional>
 #include <iostream>
 
 /// A point class for representing a point.

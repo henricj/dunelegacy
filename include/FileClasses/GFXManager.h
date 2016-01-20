@@ -25,7 +25,7 @@
 #include <DataTypes.h>
 
 #include <string>
-#include <misc/memory.h>
+#include <memory>
 
 #define NUM_MAPCHOICEPIECES	28
 #define NUM_MAPCHOICEARROWS	9

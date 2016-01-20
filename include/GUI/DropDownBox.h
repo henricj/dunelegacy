@@ -22,11 +22,11 @@
 #include "PictureButton.h"
 #include "ListBox.h"
 
-#include <misc/functional.h>
 
 #include <SDL.h>
 #include <vector>
 #include <string>
+#include <functional>
 
 /// A class for a dropdown box widget
 class DropDownBox : public Widget {

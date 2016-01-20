@@ -21,11 +21,10 @@
 #include "Widget.h"
 #include "ScrollBar.h"
 
-#include <misc/functional.h>
-
 #include <SDL.h>
 #include <vector>
 #include <string>
+#include <functional>
 
 class DropDownBox;
 

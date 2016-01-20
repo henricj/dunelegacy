@@ -27,7 +27,7 @@
 
 #include <players/Player.h>
 
-#include <misc/memory.h>
+#include <memory>
 
 // forward declarations
 class UnitBase;

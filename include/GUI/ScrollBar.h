@@ -22,7 +22,7 @@
 #include "PictureButton.h"
 #include "TextButton.h"
 
-#include <misc/functional.h>
+#include <functional>
 
 /// A class for a scroll bar
 class ScrollBar : public Widget {

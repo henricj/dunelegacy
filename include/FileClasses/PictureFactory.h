@@ -23,7 +23,7 @@
 
 #include <SDL.h>
 
-#include <misc/memory.h>
+#include <memory>
 
 class PictureFactory {
 public:

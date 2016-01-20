@@ -20,12 +20,12 @@
 
 #include <Network/GameServerInfo.h>
 
-#include <misc/functional.h>
 
 #include <enet/enet.h>
 #include <SDL.h>
 #include <string>
 #include <list>
+#include <functional>
 
 #define LANGAME_ANNOUNCER_PORT				    28746
 #define	LANGAME_ANNOUNCER_INTERVAL			    3000

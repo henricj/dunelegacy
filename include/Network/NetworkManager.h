@@ -26,12 +26,11 @@
 #include <Network/LANGameFinderAndAnnouncer.h>
 #include <Network/MetaServerClient.h>
 
-#include <misc/functional.h>
-
 #include <enet/enet.h>
 #include <SDL.h>
 #include <string>
 #include <list>
+#include <functional>
 #include <stdarg.h>
 
 #define NETWORKDISCONNECT_QUIT              1

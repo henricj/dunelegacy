@@ -27,7 +27,7 @@
 
 #include <string>
 #include <map>
-#include <misc/memory.h>
+#include <memory>
 
 
 class INIMapPreviewCreator : public INIMap {

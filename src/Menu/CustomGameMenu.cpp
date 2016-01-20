@@ -38,7 +38,7 @@
 
 #include <globals.h>
 
-#include <misc/memory.h>
+#include <memory>
 
 
 CustomGameMenu::CustomGameMenu(bool multiplayer, bool LANServer)

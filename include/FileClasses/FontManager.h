@@ -21,7 +21,7 @@
 #include <SDL.h>
 #include "Font.h"
 
-#include <misc/memory.h>
+#include <memory>
 #include <string>
 
 typedef enum {

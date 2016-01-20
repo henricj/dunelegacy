@@ -21,8 +21,8 @@
 #include <Network/MetaServerCommands.h>
 #include <Network/GameServerInfo.h>
 
-#include <misc/memory.h>
-#include <misc/functional.h>
+#include <memory>
+#include <functional>
 
 #include <enet/enet.h>
 #include <string>

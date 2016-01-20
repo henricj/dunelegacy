@@ -22,7 +22,7 @@
 #include <misc/InputStream.h>
 #include <misc/OutputStream.h>
 
-#include <misc/memory.h>
+#include <memory>
 #include <list>
 
 /**

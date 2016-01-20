@@ -31,8 +31,7 @@
 #include <misc/Scaler.h>
 
 #include <stdexcept>
-
-#include <misc/memory.h>
+#include <memory>
 
 using std::shared_ptr;
 

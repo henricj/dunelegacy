@@ -30,7 +30,7 @@
 #include <SDL.h>
 
 #include <string>
-#include <misc/memory.h>
+#include <memory>
 
 
 class INIMap {

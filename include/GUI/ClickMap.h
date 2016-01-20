@@ -20,7 +20,7 @@
 
 #include "Widget.h"
 
-#include <misc/functional.h>
+#include <functional>
 
 /// This widget reports the coordinate where the user clicked on
 class ClickMap : public Widget {

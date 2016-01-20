@@ -21,7 +21,7 @@
 
 #include <misc/Random.h>
 
-#include <misc/memory.h>
+#include <memory>
 
 
 #define ROCKFILLER 2		//how many times random generator will try to remove sand "holes" for rock from the map

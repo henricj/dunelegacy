@@ -20,7 +20,7 @@
 
 #include <players/Player.h>
 
-#include <misc/functional.h>
+#include <functional>
 
 class PlayerFactory {
 public:

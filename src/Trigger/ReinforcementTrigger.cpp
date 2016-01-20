@@ -27,8 +27,9 @@
 #include <units/UnitBase.h>
 #include <units/Carryall.h>
 
-#include <misc/memory.h>
 #include <misc/strictmath.h>
+
+#include <memory>
 #include <stdio.h>
 
 ReinforcementTrigger::ReinforcementTrigger(int houseID, Uint32 itemID, DropLocation location, bool bRepeat, Uint32 triggerCycleNumber) : Trigger(triggerCycleNumber)

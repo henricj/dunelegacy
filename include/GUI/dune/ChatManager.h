@@ -22,7 +22,7 @@
 
 #include <SDL.h>
 
-#include <misc/memory.h>
+#include <memory>
 #include <string>
 #include <list>
 

@@ -239,9 +239,7 @@
 		<Unit filename="../../include/misc/Scaler.h" />
 		<Unit filename="../../include/misc/draw_util.h" />
 		<Unit filename="../../include/misc/fnkdat.h" />
-		<Unit filename="../../include/misc/functional.h" />
 		<Unit filename="../../include/misc/md5.h" />
-		<Unit filename="../../include/misc/memory.h" />
 		<Unit filename="../../include/misc/sound_util.h" />
 		<Unit filename="../../include/misc/strictmath.h" />
 		<Unit filename="../../include/misc/string_util.h" />

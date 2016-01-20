@@ -22,9 +22,8 @@
 
 #include <DataTypes.h>
 
-#include <misc/functional.h>
-
 #include <SDL.h>
+#include <functional>
 
 
 #define NUM_STATIC_FRAMES 21
