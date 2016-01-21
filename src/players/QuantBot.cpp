@@ -1025,7 +1025,7 @@ void QuantBot::build() {
             }
 
             else if(  (pStructure->isRepairing() == false)
-                        && (pStructure->getHealth() < pStructure->getMaxHealth() *0.45)
+                        && (pStructure->getHealth() < pStructure->getMaxHealth() * FixPt(0,45))
                         && !getGameInitSettings().getGameOptions().concreteRequired
                         && money > 1000)
             {

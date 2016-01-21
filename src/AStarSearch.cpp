@@ -36,8 +36,8 @@ AStarSearch::AStarSearch(Map* pMap, UnitBase* pUnit, Coord start, Coord destinat
         throw std::bad_alloc();
     }
 
-    float heuristic = blockDistance(start, destination);
-    float smallestHeuristic = heuristic;
+    FixPoint heuristic = blockDistance(start, destination);
+    FixPoint smallestHeuristic = heuristic;
     bestCoord = Coord::Invalid();
 
     //if the unit is not directly next to its destination or it is and the destination is unblocked
@@ -67,13 +67,13 @@ AStarSearch::AStarSearch(Map* pMap, UnitBase* pUnit, Coord start, Coord destinat
                     Coord nextCoord = pMap->getMapPos(angle, currentCoord);
                     if(pUnit->canPass(nextCoord.x, nextCoord.y)) {
                         Tile& nextTile = *(pMap->getTile(nextCoord));
-                        float g = getMapData(currentCoord).g;
+                        FixPoint g = getMapData(currentCoord).g;
 
                         if((nextCoord.x != currentCoord.x) && (nextCoord.y != currentCoord.y)) {
                             //add diagonal movement cost
-                            g += DIAGONALCOST*(pUnit->isAFlyingUnit() ? 1.0f : pUnit->getTerrainDifficulty((TERRAINTYPE) nextTile.getType()));
+                            g += DIAGONALCOST*(pUnit->isAFlyingUnit() ? FixPoint(1) : pUnit->getTerrainDifficulty((TERRAINTYPE) nextTile.getType()));
                         } else {
-                            g += (pUnit->isAFlyingUnit() ? 1.0f : pUnit->getTerrainDifficulty((TERRAINTYPE) nextTile.getType()));
+                            g += (pUnit->isAFlyingUnit() ? FixPoint(1) : pUnit->getTerrainDifficulty((TERRAINTYPE) nextTile.getType()));
                         }
 
                         if(getMapData(currentCoord).parentCoord.isValid())	{

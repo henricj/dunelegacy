@@ -30,7 +30,7 @@ public:
 
     virtual ObjectInterface* getInterfaceContainer();
 
-    virtual void setHealth(float newHealth);
+    virtual void setHealth(FixPoint newHealth);
 
 protected:
 	int getProducedPower() const;

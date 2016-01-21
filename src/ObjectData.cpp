@@ -41,8 +41,8 @@ ObjectData::ObjectData()
             data[i][h].weapondamage = 0;
             data[i][h].weaponrange = 0;
             data[i][h].weaponreloadtime = 0;
-            data[i][h].maxspeed = 0.0f;
-            data[i][h].turnspeed = 0.0f;
+            data[i][h].maxspeed = 0;
+            data[i][h].turnspeed = 0;
             data[i][h].buildtime = 0;
             data[i][h].infspawnprop = 0;
             data[i][h].builder = ItemID_Invalid;

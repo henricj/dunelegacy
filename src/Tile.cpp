@@ -713,8 +713,8 @@ int Tile::getInfantryTeam() {
 }
 
 
-float Tile::harvestSpice() {
-	float oldSpice = spice;
+FixPoint Tile::harvestSpice() {
+	FixPoint oldSpice = spice;
 
 	if((spice - HARVESTSPEED) >= 0.0f) {
 		spice -= HARVESTSPEED;
@@ -734,8 +734,8 @@ float Tile::harvestSpice() {
 }
 
 
-void Tile::setSpice(float newSpice) {
-	if(newSpice <= 0.0f) {
+void Tile::setSpice(FixPoint newSpice) {
+	if(newSpice <= 0) {
 		type = Terrain_Sand;
 	} else if(newSpice >= RANDOMTHICKSPICEMIN) {
 		type = Terrain_ThickSpice;

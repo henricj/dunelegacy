@@ -52,17 +52,17 @@ protected:
 	void turnTurretRight();
 
     // constant for all tanks of the same type
-	float   turretTurnSpeed;        ///< How fast can we turn the turret
+	FixPoint turretTurnSpeed;        ///< How fast can we turn the turret
 
     // tank state
-    float   turretAngle;            ///< The angle of the turret
-	Sint8   drawnTurretAngle;       ///< The drawn angle of the turret
+    FixPoint turretAngle;            ///< The angle of the turret
+	Sint8    drawnTurretAngle;       ///< The drawn angle of the turret
 
-	ObjectPointer	closeTarget;	///< a enemy target that can be shot at while moving
+	ObjectPointer	closeTarget;	 ///< a enemy target that can be shot at while moving
 
     // drawing information
-	SDL_Surface**   turretGraphic;  ///< The turret graphic
-	int             gunGraphicID;   ///< The id of the turret graphic (needed if we want to reload the graphic)
+	SDL_Surface**   turretGraphic;   ///< The turret graphic
+	int             gunGraphicID;    ///< The id of the turret graphic (needed if we want to reload the graphic)
 };
 
 #endif // TANKBASE_H

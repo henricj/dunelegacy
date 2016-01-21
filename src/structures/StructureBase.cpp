@@ -175,8 +175,8 @@ void StructureBase::drawSelectionBox() {
     int imageH = graphic[currentZoomlevel]->h/numImagesY;
 
 	SDL_Rect dest;
-	dest.x = screenborder->world2screenX((int) realX);
-	dest.y = screenborder->world2screenY((int) realY);
+	dest.x = screenborder->world2screenX(realX);
+	dest.y = screenborder->world2screenY(realY);
 	dest.w = imageW;
 	dest.h = imageH;
 
@@ -221,8 +221,8 @@ void StructureBase::drawOtherPlayerSelectionBox() {
     int imageH = graphic[currentZoomlevel]->h/numImagesY;
 
 	SDL_Rect dest;
-	dest.x = screenborder->world2screenX((int) realX) + (currentZoomlevel+1);
-	dest.y = screenborder->world2screenY((int) realY) + (currentZoomlevel+1);
+	dest.x = screenborder->world2screenX(realX) + (currentZoomlevel+1);
+	dest.y = screenborder->world2screenY(realY) + (currentZoomlevel+1);
 	dest.w = imageW - 2*(currentZoomlevel+1);
 	dest.h = imageH - 2*(currentZoomlevel+1);
 

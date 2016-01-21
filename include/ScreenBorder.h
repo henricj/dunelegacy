@@ -22,6 +22,7 @@
 
 #include <misc/InputStream.h>
 #include <misc/OutputStream.h>
+#include <libfixmath/FixPoint.h>
 #include <mmath.h>
 
 #include <algorithm>
@@ -265,6 +266,16 @@ public:
 
     /**
         This method converts from world to screen coordinates.
+        \param x    the x position in world coordinates
+        \return the x-coordinate on the screen
+    */
+    inline int world2screenX(FixPoint x) const
+    {
+        return world2zoomedWorld(x.toFloat() - (float) topLeftCorner.x + (float) shakingOffset.x + (float) topLeftCornerOnScreen.x);
+    }
+
+    /**
+        This method converts from world to screen coordinates.
         \param y    the y position in world coordinates
         \return the y-coordinate on the screen
     */
@@ -281,6 +292,16 @@ public:
     inline int world2screenY(float y) const
     {
         return world2zoomedWorld(y - (float) topLeftCorner.y + (float) shakingOffset.y + (float) topLeftCornerOnScreen.y);
+    }
+
+    /**
+        This method converts from world to screen coordinates.
+        \param y    the y position in world coordinates
+        \return the y-coordinate on the screen
+    */
+    inline int world2screenY(FixPoint y) const
+    {
+        return world2zoomedWorld(y.toFloat() - (float) topLeftCorner.y + (float) shakingOffset.y + (float) topLeftCornerOnScreen.y);
     }
 
     /**

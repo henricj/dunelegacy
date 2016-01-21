@@ -409,8 +409,8 @@ void InfantryBase::move() {
             wantedReal.x = nextSpot.x*TILESIZE + TILESIZE/2 + tilePositionOffset[tilePosition].x;
             wantedReal.y = nextSpot.y*TILESIZE + TILESIZE/2 + tilePositionOffset[tilePosition].y;
 
-            if( (strictmath::abs((float)wantedReal.x - (realX-bumpyOffsetX)) <= strictmath::abs(xSpeed)/2 + epsilon)
-                && (strictmath::abs((float)wantedReal.y - (realY-bumpyOffsetY)) <= strictmath::abs(ySpeed)/2 + epsilon) ) {
+            if( (FixPoint::abs(wantedReal.x - (realX-bumpyOffsetX)) <= FixPoint::abs(xSpeed)/2 + epsilon)
+                && (FixPoint::abs(wantedReal.y - (realY-bumpyOffsetY)) <= FixPoint::abs(ySpeed)/2 + epsilon) ) {
                 realX = wantedReal.x;
                 realY = wantedReal.y;
                 bumpyOffsetX = 0.0f;

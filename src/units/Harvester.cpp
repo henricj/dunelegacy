@@ -51,7 +51,7 @@ Harvester::Harvester(House* newOwner) : TrackedUnit(newOwner)
 
     setHealth(getMaxHealth());
 
-    spice = 0.0f;
+    spice = 0;
     harvestingMode = false;
 	returningToRefinery = false;
 	spiceCheckCounter = 0;
@@ -250,7 +250,7 @@ void Harvester::destroy()
         int ypos = location.y;
 
         if(currentGameMap->tileExists(xpos,ypos)) {
-            float spiceSpreaded = 0.75f * spice;
+            FixPoint spiceSpreaded = spice * FixPt(0,75);
             int availableSandPos = 0;
 
             int circleRadius = lroundf(spice / 210);
@@ -259,7 +259,7 @@ void Harvester::destroy()
             for(int i = -circleRadius; i <= circleRadius; i++) {
                 for(int j = -circleRadius; j <= circleRadius; j++) {
                     if(currentGameMap->tileExists(xpos + i, ypos + j)
-                        && (distanceFrom(xpos, ypos, xpos + i, ypos + j) + 0.0005 <= circleRadius))
+                        && (distanceFrom(xpos, ypos, xpos + i, ypos + j) + FixPt(0,0005) <= circleRadius))
                     {
                         Tile *pTile = currentGameMap->getTile(xpos + i, ypos + j);
                         if((pTile != NULL) & ((pTile->isSand()) || (pTile->isSpice()) )) {
@@ -273,7 +273,7 @@ void Harvester::destroy()
             for(int i = -circleRadius; i <= circleRadius; i++) {
                 for(int j = -circleRadius; j <= circleRadius; j++) {
                     if(currentGameMap->tileExists(xpos + i, ypos + j)
-                        && (distanceFrom(xpos, ypos, xpos + i, ypos + j) + 0.0005  <= circleRadius))
+                        && (distanceFrom(xpos, ypos, xpos + i, ypos + j) + FixPt(0,0005)  <= circleRadius))
                     {
                         Tile *pTile = currentGameMap->getTile(xpos + i, ypos + j);
                         if((pTile != NULL) & ((pTile->isSand()) || (pTile->isSpice()) )) {
@@ -353,9 +353,9 @@ void Harvester::doReturn()
 	}
 }
 
-void Harvester::setAmountOfSpice(float newSpice)
+void Harvester::setAmountOfSpice(FixPoint newSpice)
 {
-	if((newSpice >= 0.0f) && (newSpice <= HARVESTERMAXSPICE)) {
+	if((newSpice >= 0) && (newSpice <= HARVESTERMAXSPICE)) {
 		spice = newSpice;
 	}
 }
@@ -458,14 +458,14 @@ bool Harvester::canAttack(const ObjectBase* object) const
 			&& object->isVisible(getOwner()->getTeam()));
 }
 
-float Harvester::extractSpice(float extractionSpeed)
+FixPoint Harvester::extractSpice(FixPoint extractionSpeed)
 {
-	float oldSpice = spice;
+	FixPoint oldSpice = spice;
 
-	if((spice - extractionSpeed) >= 0.0f) {
+	if((spice - extractionSpeed) >= 0) {
 		spice -= extractionSpeed;
 	} else {
-		spice = 0.0f;
+		spice = 0;
 	}
 
 	return (oldSpice - spice);

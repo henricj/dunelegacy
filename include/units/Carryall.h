@@ -38,7 +38,7 @@ public:
 	*/
 	bool update();
 
-    virtual float getMaxSpeed() const;
+    virtual FixPoint getMaxSpeed() const;
 
 	virtual void deploy(const Coord& newLocation);
 
@@ -79,19 +79,19 @@ protected:
     // unit state/properties
     std::list<Uint32>   pickedUpUnitList;   ///< What units does this carryall carry?
 
-    bool    booked;             ///< Is this carryall currently booked?
-    bool    idle;               ///< Is this carryall currently idle?
-	bool    firstRun;           ///< Is this carryall new?
-	bool    owned;              ///< Is this carryall owned or is it just here to drop something off
+    bool     booked;             ///< Is this carryall currently booked?
+    bool     idle;               ///< Is this carryall currently idle?
+	bool     firstRun;           ///< Is this carryall new?
+	bool     owned;              ///< Is this carryall owned or is it just here to drop something off
 
-	bool	aDropOfferer;       ///< This carryall just drops some units and vanishes afterwards
-	bool    droppedOffCargo;    ///< Is the cargo already dropped off?
+	bool	 aDropOfferer;       ///< This carryall just drops some units and vanishes afterwards
+	bool     droppedOffCargo;    ///< Is the cargo already dropped off?
 
-	float   currentMaxSpeed;    ///< The current maximum allowed speed
+	FixPoint currentMaxSpeed;    ///< The current maximum allowed speed
 
-	Uint8   curFlyPoint;        ///< The current flyPoint
-	Coord	flyPoints[8];       ///< Array of flight points
-	Coord	constYardPoint;     ///< The position of the construction yard to fly around
+	Uint8    curFlyPoint;        ///< The current flyPoint
+	Coord	 flyPoints[8];       ///< Array of flight points
+	Coord	 constYardPoint;     ///< The position of the construction yard to fly around
 };
 
 #endif // CARRYALL_H

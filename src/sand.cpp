@@ -623,19 +623,19 @@ std::string getTeamTypeNameByID(TeamType teamType) {
     This function returns the house-dependent weakness of a unit to get deviated
     \param  house   the house of the unit (choose the real owner);
 */
-float getDeviateWeakness(HOUSETYPE house) {
+FixPoint getDeviateWeakness(HOUSETYPE house) {
     // Deviators are crap enough, remove the weakness nerf
-    return 1.00f;
-    /*
+    //return 1;
+
     switch(house) {
-	    case HOUSE_HARKONNEN:   return 0.78f;
-        case HOUSE_ATREIDES:    return 0.30f;
-	    case HOUSE_ORDOS:       return 0.50f;
-	    case HOUSE_FREMEN:      return 0.08f;
-	    case HOUSE_SARDAUKAR:   return 0.04f;
-	    case HOUSE_MERCENARY:   return 0.50f;
-	    default:                return 0.00f;
-    }*/
+	    case HOUSE_HARKONNEN:   return FixPt(0,78);
+        case HOUSE_ATREIDES:    return FixPt(0,30);
+	    case HOUSE_ORDOS:       return FixPt(0,50);
+	    case HOUSE_FREMEN:      return FixPt(0,08);
+	    case HOUSE_SARDAUKAR:   return FixPt(0,04);
+	    case HOUSE_MERCENARY:   return FixPt(0,50);
+	    default:                return FixPt(0,00);
+    }
 }
 
 

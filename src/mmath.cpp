@@ -100,22 +100,22 @@ float destinationAngle(const Coord& p1, const Coord& p2)
 }
 
 
-float distanceFrom(const Coord& p1, const Coord& p2)
+FixPoint distanceFrom(const Coord& p1, const Coord& p2)
 {
-	float	first = (p1.x - p2.x);
-	float   second = (p1.y - p2.y);
+	FixPoint first = (p1.x - p2.x);
+	FixPoint second = (p1.y - p2.y);
 
-	float z = strictmath::sqrt(first*first + second*second);
+	FixPoint z = FixPoint::sqrt(first*first + second*second);
 
 	return z;
 }
 
-float distanceFrom(float x, float y, float to_x, float to_y)
+FixPoint distanceFrom(FixPoint x, FixPoint y, FixPoint to_x, FixPoint to_y)
 {
-	float	first = (x - to_x);
-    float   second = (y - to_y);
+	FixPoint first = (x - to_x);
+    FixPoint second = (y - to_y);
 
-    float z = strictmath::sqrt(first*first + second*second);
+    FixPoint z = FixPoint::sqrt(first*first + second*second);
 
 	return z;
 }

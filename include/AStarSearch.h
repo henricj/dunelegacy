@@ -19,6 +19,7 @@
 #define ASTARSEARCH_H
 
 #include <DataTypes.h>
+#include <libfixmath/FixPoint.h>
 
 #include <list>
 #include <vector>
@@ -55,13 +56,13 @@ public:
 
 private:
     struct TileData {
-        Coord   parentCoord;
-        size_t  openListIndex;
-        float   g;
-        float   h;
-        float   f;
-        bool    bInOpenList;
-        bool    bClosed;
+        Coord    parentCoord;
+        size_t   openListIndex;
+        FixPoint g;
+        FixPoint h;
+        FixPoint f;
+        bool     bInOpenList;
+        bool     bClosed;
     };
 
 
@@ -69,7 +70,7 @@ private:
 
     void trickleUp(size_t openListIndex) {
         Coord bottom = openList[openListIndex];
-        float newf = getMapData(bottom).f;
+        FixPoint newf = getMapData(bottom).f;
 
         size_t current = openListIndex;
         size_t parent = (openListIndex - 1)/2;
@@ -88,8 +89,8 @@ private:
         getMapData(openList[current]).openListIndex = current;
     };
 
-    void putOnOpenListIfBetter(const Coord& coord, const Coord& parentCoord, float g, float h) {
-        float f = g + h;
+    void putOnOpenListIfBetter(const Coord& coord, const Coord& parentCoord, FixPoint g, FixPoint h) {
+        FixPoint f = g + h;
 
         if(getMapData(coord).bInOpenList == false) {
             // not yet in openlist => add at the end of the open list
@@ -128,20 +129,18 @@ private:
 
         size_t current = 0;
         Coord top = openList[current];  // save root
-        float topf = getMapData(top).f;
+        FixPoint topf = getMapData(top).f;
         while(current < openList.size()/2) {
 
             size_t leftChild = 2*current+1;
             size_t rightChild = leftChild+1;
 
-
-
             // find smaller child
             size_t smallerChild;
-            float smallerChildf;
+            FixPoint smallerChildf;
             if(rightChild < openList.size()) {
-                float leftf = getMapData(openList[leftChild]).f;
-                float rightf = getMapData(openList[rightChild]).f;
+                FixPoint leftf = getMapData(openList[leftChild]).f;
+                FixPoint rightf = getMapData(openList[rightChild]).f;
 
                 if(leftf < rightf) {
                     smallerChild = leftChild;

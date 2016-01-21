@@ -203,11 +203,11 @@ public:
         \param  terrainType the type to consider
         \return Returns a speed factor. Higher values mean slower.
 	*/
-	virtual float getTerrainDifficulty(TERRAINTYPE terrainType) const { return 1.0f; }
+	virtual FixPoint getTerrainDifficulty(TERRAINTYPE terrainType) const { return 1; }
 
 	virtual int getCurrentAttackAngle() const;
 
-    virtual float getMaxSpeed() const;
+    virtual FixPoint getMaxSpeed() const;
 
 	inline void clearPath() {
         pathList.clear();
@@ -241,7 +241,7 @@ protected:
 	virtual void engageTarget();
 	virtual void move();
 
-    virtual void bumpyMovementOnRock(float fromDistanceX, float fromDistanceY, float toDistanceX, float toDistanceY);
+    virtual void bumpyMovementOnRock(FixPoint fromDistanceX, FixPoint fromDistanceY, FixPoint toDistanceX, FixPoint toDistanceY);
 
 	virtual void navigate();
 
@@ -265,47 +265,47 @@ protected:
     void drawSmoke(int x, int y);
 
 	// constant for all units of the same type
-    bool    tracked;                ///< Does this unit have tracks?
-	bool    turreted;               ///< Does this unit have a turret?
-    int     numWeapons;             ///< How many weapons do we have?
-    int     bulletType;             ///< Type of bullet to shot with
+    bool     tracked;                ///< Does this unit have tracks?
+	bool     turreted;               ///< Does this unit have a turret?
+    int      numWeapons;             ///< How many weapons do we have?
+    int      bulletType;             ///< Type of bullet to shot with
 
     // unit state/properties
-    Coord   guardPoint;             ///< The guard point where to return to after the micro-AI hunted some nearby enemy unit
-	Coord	attackPos;              ///< The position to attack
-    bool	goingToRepairYard;      ///< Are we currently going to a repair yard?
-	bool    pickedUp;               ///< Were we picked up by a carryall?
-    bool    bFollow;                ///< Do we currently follow some other unit (specified by target)?
+    Coord    guardPoint;             ///< The guard point where to return to after the micro-AI hunted some nearby enemy unit
+	Coord	 attackPos;              ///< The position to attack
+    bool	 goingToRepairYard;      ///< Are we currently going to a repair yard?
+	bool     pickedUp;               ///< Were we picked up by a carryall?
+    bool     bFollow;                ///< Do we currently follow some other unit (specified by target)?
 
 
-    bool    moving;                 ///< Are we currently moving?
-    bool    turning;                ///< Are we currently turning?
-    bool    justStoppedMoving;      ///< Do we have just stopped moving?
-    float	xSpeed;                 ///< Speed in x direction
-    float	ySpeed;                 ///< Speed in y direction
-    float   bumpyOffsetX;           ///< The bumpy offset in x direction which is already included in realX
-    float   bumpyOffsetY;           ///< The bumpy offset in y direction which is already included in realY
+    bool     moving;                 ///< Are we currently moving?
+    bool     turning;                ///< Are we currently turning?
+    bool     justStoppedMoving;      ///< Do we have just stopped moving?
+    FixPoint xSpeed;                 ///< Speed in x direction
+    FixPoint ySpeed;                 ///< Speed in y direction
+    FixPoint bumpyOffsetX;           ///< The bumpy offset in x direction which is already included in realX
+    FixPoint bumpyOffsetY;           ///< The bumpy offset in y direction which is already included in realY
 
-    float	targetDistance;         ///< Distance to the destination
-    Sint8   targetAngle;            ///< Angle to the destination
+    FixPoint targetDistance;         ///< Distance to the destination
+    Sint8    targetAngle;            ///< Angle to the destination
 
     // path finding
-    Uint8   noCloserPointCount;     ///< How often have we tried to dinf a path?
-    bool    nextSpotFound;          ///< Is the next spot to move to already found?
-    Sint8   nextSpotAngle;          ///< The angle to get to the next spot
-	Sint32  recalculatePathTimer;   ///< This timer is for recalculating the best path after x ticks
-    Coord	nextSpot;               ///< The next spot to move to
-    std::list<Coord>    pathList;   ///< The path to the destination found so far
+    Uint8    noCloserPointCount;     ///< How often have we tried to dinf a path?
+    bool     nextSpotFound;          ///< Is the next spot to move to already found?
+    Sint8    nextSpotAngle;          ///< The angle to get to the next spot
+	Sint32   recalculatePathTimer;   ///< This timer is for recalculating the best path after x ticks
+    Coord	 nextSpot;               ///< The next spot to move to
+    std::list<Coord> pathList;       ///< The path to the destination found so far
 
-    Sint32  findTargetTimer;        ///< When to look for the next target?
-	Sint32  primaryWeaponTimer;     ///< When can the primary weapon shot again?
-	Sint32  secondaryWeaponTimer;   ///< When can the secondary weapon shot again?
+    Sint32  findTargetTimer;         ///< When to look for the next target?
+	Sint32  primaryWeaponTimer;      ///< When can the primary weapon shot again?
+	Sint32  secondaryWeaponTimer;    ///< When can the secondary weapon shot again?
 
     // deviation
-	Sint32          deviationTimer; ///< When to revert back to the original owner?
+	Sint32          deviationTimer;  ///< When to revert back to the original owner?
 
     // drawing information
-	int drawnFrame;                 ///< Which row in the picture should be drawn
+	int drawnFrame;                  ///< Which row in the picture should be drawn
 };
 
 #endif //UNITBASE_H

@@ -87,10 +87,10 @@ void TurretBase::updateStructureSpecificStuff() {
 
                 if(angle > wantedAngle) {
                     angleRight = angle - wantedAngle;
-                    angleLeft = strictmath::abs(8.0f-angle)+wantedAngle;
+                    angleLeft = FixPoint::abs(8-angle)+wantedAngle;
                 }
                 else if(angle < wantedAngle) {
-                    angleRight = strictmath::abs(8.0f-wantedAngle) + angle;
+                    angleRight = FixPoint::abs(8-wantedAngle) + angle;
                     angleLeft = wantedAngle - angle;
                 }
 

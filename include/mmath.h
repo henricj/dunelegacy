@@ -21,6 +21,7 @@
 // forward declaration
 class Coord;
 
+#include <libfixmath/FixPoint.h>
 #include <cmath>
 
 float fixFloat(float number);
@@ -30,8 +31,8 @@ int getRandomOf(int numParam, ...);
 
 float destinationAngle(const Coord& p1, const Coord& p2);
 
-float distanceFrom(const Coord& p1, const Coord& p2);
-float distanceFrom(float x, float y, float to_x, float to_y);
+FixPoint distanceFrom(const Coord& p1, const Coord& p2);
+FixPoint distanceFrom(FixPoint x, FixPoint y, FixPoint to_x, FixPoint to_y);
 
 float blockDistance(const Coord& p1, const Coord& p2);
 

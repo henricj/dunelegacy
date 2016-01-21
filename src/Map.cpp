@@ -111,7 +111,7 @@ void Map::createSandRegions() {
 	}
 }
 
-void Map::damage(Uint32 damagerID, House* damagerOwner, const Coord& realPos, Uint32 bulletID, float damage, int damageRadius, bool air) {
+void Map::damage(Uint32 damagerID, House* damagerOwner, const Coord& realPos, Uint32 bulletID, FixPoint damage, int damageRadius, bool air) {
 	Coord location = Coord(realPos.x/TILESIZE, realPos.y/TILESIZE);
 
     std::set<Uint32>	affectedAirUnits;
@@ -136,7 +136,7 @@ void Map::damage(Uint32 damagerID, House* damagerOwner, const Coord& realPos, Ui
             ObjectBase* pObject = currentGame->getObjectManager().getObject(*iter);
             if((pObject->getItemID() != Unit_Sandworm) && (pObject->isAGroundUnit() || pObject->isInfantry()) && (pObject->getLocation() == location)) {
                 pObject->setVisible(VIS_ALL, false);
-                pObject->handleDamage( lroundf(damage), damagerID, damagerOwner);
+                pObject->handleDamage( damage.roundToInt(), damagerID, damagerOwner);
             }
         }
     } else {
@@ -164,7 +164,7 @@ void Map::damage(Uint32 damagerID, House* damagerOwner, const Coord& realPos, Ui
                                 //}
                             }
                         } else {
-                            int scaledDamage = lroundf(damage) >> (distance/4 + 1);
+                            int scaledDamage = damage.roundToInt() >> (distance/4 + 1);
                             pAirUnit->handleDamage(scaledDamage, damagerID, damagerOwner);
                         }
                     }
@@ -184,7 +184,7 @@ void Map::damage(Uint32 damagerID, House* damagerOwner, const Coord& realPos, Ui
                     Coord bottomRightCorner = topLeftCorner + pStructure->getStructureSize()*TILESIZE;
 
                     if(realPos.x >= topLeftCorner.x && realPos.y >= topLeftCorner.y && realPos.x < bottomRightCorner.x && realPos.y < bottomRightCorner.y) {
-                        pStructure->handleDamage(damage, damagerID, damagerOwner);
+                        pStructure->handleDamage(damage.roundToInt(), damagerID, damagerOwner);
 
                         if( (bulletID == Bullet_LargeRocket || bulletID == Bullet_Rocket || bulletID == Bullet_TurretRocket || bulletID == Bullet_SmallRocket)
                             && (pStructure->getHealth() < pStructure->getMaxHealth()/2)) {
@@ -210,9 +210,9 @@ void Map::damage(Uint32 damagerID, House* damagerOwner, const Coord& realPos, Ui
                                 //}
                             }
                         } else if(bulletID == Bullet_Sonic) {
-                            pUnit->handleDamage(lroundf(damage), damagerID, damagerOwner);
+                            pUnit->handleDamage(damage.roundToInt(), damagerID, damagerOwner);
                         } else {
-                            int scaledDamage = lroundf(damage) >> (distance/16 + 1);
+                            int scaledDamage = damage.roundToInt() >> (distance/16 + 1);
                             pUnit->handleDamage(scaledDamage, damagerID, damagerOwner);
                         }
                     }

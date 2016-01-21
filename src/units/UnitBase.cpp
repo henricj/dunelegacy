@@ -592,7 +592,7 @@ void UnitBase::move() {
 	checkPos();
 }
 
-void UnitBase::bumpyMovementOnRock(float fromDistanceX, float fromDistanceY, float toDistanceX, float toDistanceY) {
+void UnitBase::bumpyMovementOnRock(FixPoint fromDistanceX, FixPoint fromDistanceY, FixPoint toDistanceX, FixPoint toDistanceY) {
 
     if(hasBumpyMovementOnRock() && ((currentGameMap->getTile(location)->getType() == Terrain_Rock)
                                     || (currentGameMap->getTile(location)->getType() == Terrain_Mountain)
@@ -1115,12 +1115,12 @@ void UnitBase::setPickedUp(UnitBase* newCarrier) {
 	clearPath();
 }
 
-float UnitBase::getMaxSpeed() const {
+FixPoint UnitBase::getMaxSpeed() const {
     return currentGame->objectData.data[itemID][originalHouseID].maxspeed;
 }
 
 void UnitBase::setSpeeds() {
-	float speed = getMaxSpeed();
+	FixPoint speed = getMaxSpeed();
 
 	if(!isAFlyingUnit()) {
 		speed += speed*(1.0f - getTerrainDifficulty((TERRAINTYPE) currentGameMap->getTile(location)->getType()));
@@ -1240,9 +1240,9 @@ void UnitBase::turn() {
 
             if(angle > wantedAngle) {
                 angleRight = angle - wantedAngle;
-                angleLeft = strictmath::abs(8.0f-angle)+wantedAngle;
+                angleLeft = FixPoint::abs(8-angle)+wantedAngle;
             } else if (angle < wantedAngle) {
-                angleRight = strictmath::abs(8.0f-wantedAngle) + angle;
+                angleRight = FixPoint::abs(8-wantedAngle) + angle;
                 angleLeft = wantedAngle - angle;
             }
 

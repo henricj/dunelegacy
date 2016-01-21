@@ -22,6 +22,7 @@
 
 #include <Definitions.h>
 #include <DataTypes.h>
+#include <libfixmath/FixPoint.h>
 #include <mmath.h>
 
 #include <globals.h>
@@ -89,7 +90,7 @@ public:
 	void removeFromSelectionLists();
 
 	virtual void setDestination(int newX, int newY);
-	virtual void setHealth(float newHealth);
+	virtual void setHealth(FixPoint newHealth);
 
 	virtual void setLocation(int xPos, int yPos);
 
@@ -151,7 +152,7 @@ public:
 	inline int getX() const { return location.x; }
 	inline int getY() const { return location.y; }
 
-	inline float getHealth() const { return health; }
+	inline FixPoint getHealth() const { return health; }
 	int getMaxHealth() const;
 	inline Uint32 getObjectID() const { return objectID; }
 
@@ -162,8 +163,8 @@ public:
     int getWeaponReloadTime() const;
     int getInfSpawnProp() const;
 
-	inline float getRealX() const { return realX; }
-	inline float getRealY() const { return realY; }
+	inline FixPoint getRealX() const { return realX; }
+	inline FixPoint getRealY() const { return realY; }
 	inline const Coord& getLocation() const { return location; }
 	inline const Coord& getDestination() const { return destination; }
 	inline ObjectBase* getTarget() { return target.getObjPointer(); }
@@ -183,55 +184,55 @@ protected:
 	bool targetInWeaponRange() const;
 
 	// constant for all objects of the same type
-    Uint32  itemID;                 ///< The ItemID of this object.
-    int     radius;                 ///< The radius of this object
+    Uint32   itemID;                 ///< The ItemID of this object.
+    int      radius;                 ///< The radius of this object
 
-    bool    aStructure;             ///< Is this a structure?
-    bool    aBuilder;               ///< Is this a builder?
+    bool     aStructure;             ///< Is this a structure?
+    bool     aBuilder;               ///< Is this a builder?
 
-    bool    aUnit;                  ///< Is this a unit?
-	bool    aFlyingUnit;            ///< Is this a flying unit?
-	bool    aGroundUnit;            ///< Is this a ground unit?
-	bool    infantry;	            ///< Is this an infantry unit?
+    bool     aUnit;                  ///< Is this a unit?
+	bool     aFlyingUnit;            ///< Is this a flying unit?
+	bool     aGroundUnit;            ///< Is this a ground unit?
+	bool     infantry;	             ///< Is this an infantry unit?
 
-	bool    canAttackStuff;         ///< Can this unit/structure attack?
+	bool     canAttackStuff;         ///< Can this unit/structure attack?
 
     // object state/properties
-	Uint32  objectID;               ///< The unique object ID of this object
-    int		originalHouseID;        ///< for takeover/deviation, we still want to keep track of what the original house was
-	House   *owner;	                ///< The owner of this object
+	Uint32   objectID;               ///< The unique object ID of this object
+    int		 originalHouseID;        ///< for takeover/deviation, we still want to keep track of what the original house was
+	House    *owner;	             ///< The owner of this object
 
-    Coord   location;               ///< The current position of this object in tile coordinates
-    Coord   oldLocation;            ///< The previous position of this object in tile coordinates (used when moving from one tile to the next tile)
-    Coord   destination;            ///< The destination tile
-    float   realX;                  ///< The x-coordinate of this object in world coordinates
-    float   realY;                  ///< The y-coordinate of this object in world coordinates
+    Coord    location;               ///< The current position of this object in tile coordinates
+    Coord    oldLocation;            ///< The previous position of this object in tile coordinates (used when moving from one tile to the next tile)
+    Coord    destination;            ///< The destination tile
+    FixPoint realX;                  ///< The x-coordinate of this object in world coordinates
+    FixPoint realY;                  ///< The y-coordinate of this object in world coordinates
 
-    float   angle;                  ///< The current angle of this unit/structure
-    Sint8   drawnAngle;             ///< The angle this unit/structure is drawn with. (e.g. 0 to 7)
+    FixPoint angle;                  ///< The current angle of this unit/structure
+    Sint8    drawnAngle;             ///< The angle this unit/structure is drawn with. (e.g. 0 to 7)
 
-	bool	active;                 ///< Is this unit/structure active?
-	bool    respondable;            ///< Is this unit/structure respondable to commands?
-	bool    selected;               ///< Is this object currently selected?
-	bool    selectedByOtherPlayer;  ///< This is only used in multiplayer games where two players control one house
+	bool	 active;                 ///< Is this unit/structure active?
+	bool     respondable;            ///< Is this unit/structure respondable to commands?
+	bool     selected;               ///< Is this object currently selected?
+	bool     selectedByOtherPlayer;  ///< This is only used in multiplayer games where two players control one house
 
-    bool            forced;         ///< Is this unit/structure forced to do what it currently does or did the micro-AI decide to do that?
-    bool            targetFriendly; ///< Is the current target a friendly unit/structure to follow/move to instead to attack?
-	ObjectPointer   target;         ///< The target to attack or move to
-	ATTACKMODE      attackMode;     ///< The attack mode of this unit/structure
+    bool          forced;            ///< Is this unit/structure forced to do what it currently does or did the micro-AI decide to do that?
+    bool          targetFriendly;    ///< Is the current target a friendly unit/structure to follow/move to instead to attack?
+	ObjectPointer target;            ///< The target to attack or move to
+	ATTACKMODE    attackMode;        ///< The attack mode of this unit/structure
 
-    bool    visible[NUM_HOUSES];   ///< To which houses is this unit visible?
+    bool     visible[NUM_HOUSES];    ///< To which houses is this unit visible?
 
     // drawing information
-    bool	badlyDamaged;           ///< Is the health below 50%?
+    bool	 badlyDamaged;           ///< Is the health below 50%?
 
-    SDL_Surface** graphic;          ///< The graphic for this object
-	int         graphicID;          ///< The id of the graphic (needed if we want to reload the graphic, e.g. when a unit is deviated)
-	int         numImagesX;         ///< The number of images in x direction
-	int         numImagesY;         ///< The number of images in y direction
+    SDL_Surface** graphic;           ///< The graphic for this object
+	int         graphicID;           ///< The id of the graphic (needed if we want to reload the graphic, e.g. when a unit is deviated)
+	int         numImagesX;          ///< The number of images in x direction
+	int         numImagesY;          ///< The number of images in y direction
 
 private:
-    float  health;                 ///< The health of this object
+    FixPoint health;                 ///< The health of this object
 };
 
 

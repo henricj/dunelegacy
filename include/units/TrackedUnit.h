@@ -39,18 +39,18 @@ public:
         \param  terrainType the type to consider
         \return Returns a speed factor. Higher values mean slower.
 	*/
-	virtual float getTerrainDifficulty(TERRAINTYPE terrainType) const {
+	virtual FixPoint getTerrainDifficulty(TERRAINTYPE terrainType) const {
 	    switch(terrainType) {
-            case Terrain_Slab:          return 1.0f;
-            case Terrain_Sand:          return 1.5625f;
-            case Terrain_Rock:          return 1.375f;
-            case Terrain_Dunes:         return 1.375f;
-            case Terrain_Mountain:      return 1.0f;
-            case Terrain_Spice:         return 1.375f;
-            case Terrain_ThickSpice:    return 1.375f;
-            case Terrain_SpiceBloom:    return 1.5625f;
-            case Terrain_SpecialBloom:  return 1.5625f;
-            default:                    return 1.0f;
+            case Terrain_Slab:          return FixPt(1,0);
+            case Terrain_Sand:          return FixPt(1,5625);
+            case Terrain_Rock:          return FixPt(1,375);
+            case Terrain_Dunes:         return FixPt(1,375);
+            case Terrain_Mountain:      return FixPt(1,0);
+            case Terrain_Spice:         return FixPt(1,375);
+            case Terrain_ThickSpice:    return FixPt(1,375);
+            case Terrain_SpiceBloom:    return FixPt(1,5625);
+            case Terrain_SpecialBloom:  return FixPt(1,5625);
+            default:                    return FixPt(1,0);
 	    }
     }
 };

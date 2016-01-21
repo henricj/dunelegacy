@@ -196,10 +196,10 @@ void House::setProducedPower(int newPower) {
 }
 
 
-void House::addCredits(float newCredits, bool wasRefined) {
-	if(newCredits > 0.0f) {
+void House::addCredits(FixPoint newCredits, bool wasRefined) {
+	if(newCredits > 0) {
 	    if(wasRefined == true) {
-                harvestedSpice += newCredits;
+            harvestedSpice += newCredits;
 	    }
 
 		storedCredits += newCredits;
@@ -216,9 +216,9 @@ void House::addCredits(float newCredits, bool wasRefined) {
 
 
 
-void House::returnCredits(float newCredits) {
-	if(newCredits > 0.0f) {
-        float leftCapacity = capacity - storedCredits;
+void House::returnCredits(FixPoint newCredits) {
+	if(newCredits > 0) {
+        FixPoint leftCapacity = capacity - storedCredits;
         if(newCredits <= leftCapacity) {
             addCredits(newCredits, false);
         } else {
@@ -231,8 +231,8 @@ void House::returnCredits(float newCredits) {
 
 
 
-float House::takeCredits(float amount) {
-	float	taken = 0.0f;
+FixPoint House::takeCredits(FixPoint amount) {
+	FixPoint taken = 0;
 
 	if(getCredits() >= 1) {
 		if(storedCredits > amount) {
@@ -240,14 +240,14 @@ float House::takeCredits(float amount) {
 			storedCredits -= amount;
 		} else {
 			taken = storedCredits;
-			storedCredits = 0.0f;
+			storedCredits = 0;
 
 			if(startingCredits > (amount - taken)) {
 				startingCredits -= (amount - taken);
 				taken = amount;
 			} else {
 				taken += startingCredits;
-				startingCredits = 0.0f;
+				startingCredits = 0;
 			}
 		}
 	}

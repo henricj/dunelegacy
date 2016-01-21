@@ -171,12 +171,12 @@ public:
 	inline bool isAllowedToUpgrade() const { return (curUpgradeLev < getMaxUpgradeLevel()); };
 	inline int getCurrentUpgradeLevel() const { return curUpgradeLev; };
 	int getUpgradeCost() const;
-	inline float getUpgradeProgress() const { return upgradeProgress; };
+	inline FixPoint getUpgradeProgress() const { return upgradeProgress; };
 
 	inline Uint32 getCurrentProducedItem() const { return currentProducedItem; };
 	inline bool isOnHold() const { return bCurrentItemOnHold; };
 	bool isWaitingToPlace() const;
-	inline float getProductionProgress() const { return productionProgress; };
+	inline FixPoint getProductionProgress() const { return productionProgress; };
 	inline const std::list<BuildItem>& getBuildList() const { return buildList; };
 
 	virtual inline bool isAvailableToBuild(Uint32 itemID) const {
@@ -218,14 +218,14 @@ protected:
 	static const int itemOrder[];  ///< the order in which items are in the build list
 
     // structure state
-    bool    upgrading;              ///< Currently upgrading?
-	float  upgradeProgress;        ///< The current state of the upgrade progress (measured in money spent)
-	Uint8   curUpgradeLev;          ///< Current upgrade level
+    bool     upgrading;              ///< Currently upgrading?
+	FixPoint upgradeProgress;        ///< The current state of the upgrade progress (measured in money spent)
+	Uint8    curUpgradeLev;          ///< Current upgrade level
 
-	bool    bCurrentItemOnHold;      ///< Is the currently produced item on hold?
-	Uint32  currentProducedItem;    ///< The ItemID of the currently produced item
-	float   productionProgress;     ///< The current state of the production progress (measured in money spent)
-	Uint32  deployTimer;            ///< Timer for deploying a unit
+	bool     bCurrentItemOnHold;     ///< Is the currently produced item on hold?
+	Uint32   currentProducedItem;    ///< The ItemID of the currently produced item
+	FixPoint productionProgress;     ///< The current state of the production progress (measured in money spent)
+	Uint32   deployTimer;            ///< Timer for deploying a unit
 
 	std::list<ProductionQueueItem>  currentProductionQueue;     ///< This list is the production queue (It contains the item IDs of the units/structures to produce)
 	std::list<BuildItem>            buildList;                  ///< This list contains all the things that can be produced by this builder

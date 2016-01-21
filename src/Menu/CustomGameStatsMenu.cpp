@@ -91,7 +91,7 @@ CustomGameStatsMenu::CustomGameStatsMenu() : MenuBase()
         if(pHouse != NULL) {
             maxBuiltValue = std::max(maxBuiltValue, pHouse->getBuiltValue());
             maxDestroyedValue = std::max(maxDestroyedValue, pHouse->getDestroyedValue());
-            maxSpiceHarvested = std::max(maxSpiceHarvested, pHouse->getHarvestedSpice());
+            maxSpiceHarvested = std::max(maxSpiceHarvested, pHouse->getHarvestedSpice().toFloat());
         }
     }
 
@@ -145,7 +145,7 @@ CustomGameStatsMenu::CustomGameStatsMenu() : MenuBase()
             curHouseStat.value3.setTextColor(color + 3);
             curHouseStat.houseHBox.addWidget(&curHouseStat.value3, 50);
             curHouseStat.houseHBox.addWidget(HSpacer::create(2));
-            curHouseStat.progressBar3.setProgress( (maxSpiceHarvested == 0.0) ? 0.0 : (pHouse->getHarvestedSpice() * 100.0f / maxSpiceHarvested));
+            curHouseStat.progressBar3.setProgress( (maxSpiceHarvested == 0.0) ? 0.0 : (pHouse->getHarvestedSpice().toFloat() * 100.0f / maxSpiceHarvested));
             curHouseStat.progressBar3.setDrawShadow(true);
             curHouseStat.progressBar3.setColor(color + 1);
             curHouseStat.vBox3.addWidget(Spacer::create(), 0.5);

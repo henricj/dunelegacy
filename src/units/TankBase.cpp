@@ -191,9 +191,9 @@ void TankBase::turn() {
 		if(nextSpotAngle != INVALID) {
 			if(angle > nextSpotAngle) {
 				angleRight = angle - nextSpotAngle;
-				angleLeft = strictmath::abs(8.0f-angle) + nextSpotAngle;
+				angleLeft = FixPoint::abs(8-angle) + nextSpotAngle;
 			} else if (angle < nextSpotAngle) {
-				angleRight = strictmath::abs(8.0f-nextSpotAngle) + angle;
+				angleRight = FixPoint::abs(8-nextSpotAngle) + angle;
 				angleLeft = nextSpotAngle - angle;
 			}
 
@@ -208,9 +208,9 @@ void TankBase::turn() {
 	if(targetAngle != INVALID) {
 		if(turretAngle > targetAngle) {
 			angleRight = turretAngle - targetAngle;
-			angleLeft = strictmath::abs(8.0f-turretAngle) + targetAngle;
+			angleLeft = FixPoint::abs(8-turretAngle) + targetAngle;
 		} else if (turretAngle < targetAngle) {
-			angleRight = strictmath::abs(8.0f-targetAngle) + turretAngle;
+			angleRight = FixPoint::abs(8-targetAngle) + turretAngle;
 			angleLeft = targetAngle - turretAngle;
 		}
 

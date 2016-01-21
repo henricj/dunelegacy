@@ -47,7 +47,7 @@ public:
 	void doReturn();
 
 	void move();
-	void setAmountOfSpice(float newSpice);
+	void setAmountOfSpice(FixPoint newSpice);
 	void setReturned();
 
 	void setDestination(int newX, int newY);
@@ -57,9 +57,9 @@ public:
 
 	bool canAttack(const ObjectBase* object) const;
 
-	float extractSpice(float extractionSpeed);
+	FixPoint extractSpice(FixPoint extractionSpeed);
 
-	inline float getAmountOfSpice() const { return spice; }
+	inline FixPoint getAmountOfSpice() const { return spice; }
 	inline bool isReturning() const { return returningToRefinery; }
 	bool isHarvesting() const;
 
@@ -68,10 +68,10 @@ private:
     virtual void setSpeeds();
 
     // harvester state
-	bool	harvestingMode;         ///< currently harvesting
-    bool    returningToRefinery;    ///< currently on the way back to the refinery
-	float   spice;                  ///< loaded spice
-	Uint32  spiceCheckCounter;      ///< Check for available spice on map to harvest
+	bool	 harvestingMode;         ///< currently harvesting
+    bool     returningToRefinery;    ///< currently on the way back to the refinery
+	FixPoint spice;                  ///< loaded spice
+	Uint32   spiceCheckCounter;      ///< Check for available spice on map to harvest
 };
 
 #endif // HARVESTER_H

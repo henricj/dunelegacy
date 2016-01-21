@@ -266,8 +266,8 @@ void ObjectBase::setDestination(int newX, int newY) {
 	}
 }
 
-void ObjectBase::setHealth(float newHealth) {
-	if((newHealth >= 0.0f) && (newHealth <= getMaxHealth())) {
+void ObjectBase::setHealth(FixPoint newHealth) {
+	if((newHealth >= 0) && (newHealth <= getMaxHealth())) {
 		health = newHealth;
         badlyDamaged = (health/(float)getMaxHealth() < BADLYDAMAGEDRATIO);
 	}

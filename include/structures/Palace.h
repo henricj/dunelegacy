@@ -55,8 +55,8 @@ public:
 	*/
 	virtual bool canBeCaptured() const { return false; };
 
-	float getPercentComplete() const {
-        return specialWeaponTimer*100.0f/getMaxSpecialWeaponTimer();
+	int getPercentComplete() const {
+        return specialWeaponTimer*100/getMaxSpecialWeaponTimer();
     }
 
 	inline bool isSpecialWeaponReady() const { return (specialWeaponTimer == 0); }

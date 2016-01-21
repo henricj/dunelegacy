@@ -20,6 +20,7 @@
 
 #include <SDL.h>
 
+#include <libfixmath/FixPoint.h>
 #include <DataTypes.h>
 #include <string>
 
@@ -59,7 +60,7 @@ std::string     getTeamTypeNameByID(TeamType teamType);
 
 int             getColorByTerrainType(int terrainType);
 
-float           getDeviateWeakness(HOUSETYPE house);
+FixPoint        getDeviateWeakness(HOUSETYPE house);
 
 inline int missionNumberToLevelNumber(int missionNumber) {
     if(missionNumber != 22) {

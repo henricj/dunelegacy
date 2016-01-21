@@ -226,6 +226,7 @@
 		<Unit filename="../../include/enet/utility.h" />
 		<Unit filename="../../include/enet/win32.h" />
 		<Unit filename="../../include/globals.h" />
+		<Unit filename="../../include/libfixmath/FixPoint.h" />
 		<Unit filename="../../include/libfixmath/fix16.h" />
 		<Unit filename="../../include/libfixmath/fix16_trig_sin_lut.h" />
 		<Unit filename="../../include/libfixmath/fixmath.h" />

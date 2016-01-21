@@ -585,7 +585,7 @@ void INIMapLoader::loadUnits()
                 iHealth = 256;
             }
 
-            float percentHealth = std::min(((float) iHealth) / 256.0f, 1.0f);
+            FixPoint percentHealth = std::min(FixPoint(iHealth) / 256, FixPoint(1));
 
             ATTACKMODE attackmode = getAttackModeByName(mode);
             if(attackmode == ATTACKMODE_INVALID) {
@@ -599,7 +599,7 @@ void INIMapLoader::loadUnits()
                     logWarning(iter->getLineNumber(), "Invalid or occupied position for '" + UnitStr + "': '" + stringify(pos) + "'!");
                     continue;
                 } else {
-                    newUnit->setHealth(lround(newUnit->getMaxHealth() * percentHealth));
+                    newUnit->setHealth((newUnit->getMaxHealth() * percentHealth));
                     newUnit->doSetAttackMode(attackmode);
                     newUnit->setAngle(angle);
 
@@ -684,7 +684,7 @@ void INIMapLoader::loadStructures()
                 logWarning(iter->getLineNumber(), "Invalid health string: '" + health + "'!");
                 iHealth = 256;
             }
-			float percentHealth = std::min(((float) iHealth) / 256.0f, 1.0f);
+			FixPoint percentHealth = std::min(FixPoint(iHealth) / 256, FixPoint(1));
 
 			int itemID = getItemIDByName(BuildingStr);
 
@@ -699,7 +699,7 @@ void INIMapLoader::loadStructures()
 					logWarning(iter->getLineNumber(), "Invalid or occupied position for '" + BuildingStr + "': '" + PosStr + "'!");
                     continue;
 				} else {
-				    newStructure->setHealth(lround(newStructure->getMaxHealth() * percentHealth));
+				    newStructure->setHealth(newStructure->getMaxHealth() * percentHealth);
 				}
 			}
 		} else {

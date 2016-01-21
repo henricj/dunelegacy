@@ -88,7 +88,7 @@ Bullet::Bullet(Uint32 shooterID, Coord* newRealLocation, Coord* newRealDestinati
 	location.y = newRealLocation->y/TILESIZE;
 
 	angle = destinationAngle(*newRealLocation, *newRealDestination);
-	drawnAngle = (int)((float)numFrames*angle/256.0);
+	drawnAngle = (int) (numFrames*angle/256);
 
     xSpeed = speed * strictmath::cos(angle * conv2char);
 	ySpeed = speed * -strictmath::sin(angle * conv2char);
@@ -353,7 +353,7 @@ void Bullet::update()
 {
 	if(bulletID == Bullet_Rocket || bulletID == Bullet_DRocket) {
 
-        float angleToDestination = destinationAngle(Coord(realX, realY), destination);
+        float angleToDestination = destinationAngle(Coord(realX.roundToInt(), realY.roundToInt()), destination);
 
         float angleDiff = angleToDestination - angle;
         if(angleDiff > 128.0f) {
@@ -372,20 +372,20 @@ void Bullet::update()
 
         angle += angleDiff;
 
-        if(angle < 0.0f) {
-            angle += 256.0f;
-        } else if(angle >= 256.0f) {
-            angle -= 256.0f;
+        if(angle < 0) {
+            angle += 256;
+        } else if(angle >= 256) {
+            angle -= 256;
         }
 
         xSpeed = speed * strictmath::cos(angle * conv2char);
         ySpeed = speed * -strictmath::sin(angle * conv2char);
 
-        drawnAngle = (int)((float)numFrames*angle/256.0);
+        drawnAngle = (int) (numFrames*angle/256);
     }
 
 
-	float oldDistanceToDestination = distanceFrom(realX, realY, destination.x, destination.y);
+	FixPoint oldDistanceToDestination = distanceFrom(realX, realY, destination.x, destination.y);
 
 	realX += xSpeed;  //keep the bullet moving by its current speeds
 	realY += ySpeed;
@@ -398,7 +398,7 @@ void Bullet::update()
         delete this;
         return;
 	} else {
-        float newDistanceToDestination = distanceFrom(realX, realY, destination.x, destination.y);
+        FixPoint newDistanceToDestination = distanceFrom(realX, realY, destination.x, destination.y);
 
         if(detonationTimer > 0) {
             detonationTimer--;

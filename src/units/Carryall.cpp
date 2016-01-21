@@ -124,11 +124,11 @@ bool Carryall::update() {
         return false;
     }
 
-    float dist = distanceFrom(location.x*TILESIZE + TILESIZE/2, location.y*TILESIZE + TILESIZE/2,
+    FixPoint dist = distanceFrom(location.x*TILESIZE + TILESIZE/2, location.y*TILESIZE + TILESIZE/2,
                                 destination.x*TILESIZE + TILESIZE/2, destination.y*TILESIZE + TILESIZE/2);
 
-    if((target || hasCargo()) && dist < 256.0f) {
-        currentMaxSpeed = (((2.0f - currentGame->objectData.data[itemID][originalHouseID].maxspeed)/256.0f) * (256.0f - dist)) + currentGame->objectData.data[itemID][originalHouseID].maxspeed;
+    if((target || hasCargo()) && dist < 256) {
+        currentMaxSpeed = (((2 - currentGame->objectData.data[itemID][originalHouseID].maxspeed)/256) * (256 - dist)) + currentGame->objectData.data[itemID][originalHouseID].maxspeed;
         setSpeeds();
     } else {
         currentMaxSpeed = std::min(currentMaxSpeed + 0.2f, currentGame->objectData.data[itemID][originalHouseID].maxspeed);
@@ -151,7 +151,7 @@ bool Carryall::update() {
 	return true;
 }
 
-float Carryall::getMaxSpeed() const {
+FixPoint Carryall::getMaxSpeed() const {
     return currentMaxSpeed;
 }
 
@@ -347,7 +347,7 @@ void Carryall::destroy()
 	// place wreck
     if(isVisible() && currentGameMap->tileExists(location)) {
         Tile* pTile = currentGameMap->getTile(location);
-        pTile->assignDeadUnit(DeadUnit_Carrall, owner->getHouseID(), Coord((Sint32) realX, (Sint32) realY));
+        pTile->assignDeadUnit(DeadUnit_Carrall, owner->getHouseID(), Coord(realX.roundToInt(), realY.roundToInt()));
     }
 
 	AirUnit::destroy();

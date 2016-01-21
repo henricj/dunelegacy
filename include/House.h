@@ -91,7 +91,7 @@ public:
 	inline int getNumBuiltItems(int itemID) const { return numItemBuilt[itemID]; }
 	inline int getNumKilledItems(int itemID) const { return numItemKills[itemID]; }
 	inline int getNumLostItems(int itemID) const { return numItemLosses[itemID]; }
-	inline float getHarvestedSpice() const { return harvestedSpice; }
+	inline FixPoint getHarvestedSpice() const { return harvestedSpice; }
 
 	inline int getQuota() const { return quota; };
 
@@ -99,12 +99,12 @@ public:
 	inline const Choam& getChoam() const { return choam; };
 
 
-    inline float getStartingCredits() const { return startingCredits; }
-	inline float getStoredCredits() const { return storedCredits; }
-    inline int getCredits() const { return lround(storedCredits+startingCredits); }
-	void addCredits(float newCredits, bool wasRefined = false);
-    void returnCredits(float newCredits);
-	float takeCredits(float amount);
+    inline FixPoint getStartingCredits() const { return startingCredits; }
+	inline FixPoint getStoredCredits() const { return storedCredits; }
+    inline int getCredits() const { return (storedCredits+startingCredits).roundToInt(); }
+	void addCredits(FixPoint newCredits, bool wasRefined = false);
+    void returnCredits(FixPoint newCredits);
+	FixPoint takeCredits(FixPoint amount);
 
 	void printStat() const;
 
@@ -159,19 +159,19 @@ protected:
     int numItemKills[Num_ItemID]; /// Number of items killed by player
     int numItemLosses [Num_ItemID]; /// Number of items lost by player
 
-    int capacity;           ///< Total spice capacity
-    int producedPower;      ///< Power prodoced by this player
-    int powerRequirement;   ///< How much power does this player use?
+    int capacity;             ///< Total spice capacity
+    int producedPower;        ///< Power prodoced by this player
+    int powerRequirement;     ///< How much power does this player use?
 
-	float storedCredits;   ///< current number of credits that are stored in refineries/silos
-    float startingCredits; ///< number of starting credits this player still has
-    int oldCredits;         ///< amount of credits in the last game cycle (used for playing the credits tick sound)
+	FixPoint storedCredits;   ///< current number of credits that are stored in refineries/silos
+    FixPoint startingCredits; ///< number of starting credits this player still has
+    int oldCredits;           ///< amount of credits in the last game cycle (used for playing the credits tick sound)
 
-    int quota;              ///< number of credits to win
+    int quota;                ///< number of credits to win
 
-    Choam   choam;          ///< the things that are deliverable at the starport
+    Choam   choam;            ///< the things that are deliverable at the starport
 
-    int powerUsageTimer;    ///< every N ticks you have to pay for your power usage
+    int powerUsageTimer;      ///< every N ticks you have to pay for your power usage
 
     // statistic
     int unitBuiltValue;
@@ -184,7 +184,7 @@ protected:
     int destroyedValue;
     int numDestroyedUnits;
     int numDestroyedStructures;
-    float harvestedSpice;
+    FixPoint harvestedSpice;
 };
 
 #endif // HOUSE_H

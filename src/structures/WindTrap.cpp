@@ -60,7 +60,7 @@ ObjectInterface* WindTrap::getInterfaceContainer() {
 	}
 }
 
-void WindTrap::setHealth(float newHealth) {
+void WindTrap::setHealth(FixPoint newHealth) {
     int producedPowerBefore = getProducedPower();
     StructureBase::setHealth(newHealth);
     int producedPowerAfterwards = getProducedPower();

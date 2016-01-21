@@ -24,6 +24,7 @@
 
 #include <misc/InputStream.h>
 #include <misc/OutputStream.h>
+#include <libfixmath/FixPoint.h>
 
 #include <list>
 #include <vector>
@@ -346,8 +347,8 @@ public:
 	void setType(int newType);
 	void squash();
 	int getInfantryTeam();
-	float harvestSpice();
-	void setSpice(float newSpice);
+	FixPoint harvestSpice();
+	void setSpice(FixPoint newSpice);
 
 	/**
         Returns the center point of this tile
@@ -459,28 +460,28 @@ public:
 	inline int getSandRegion() const { return sandRegion; }
 	inline int getOwner() const { return owner; }
 	inline int getType() const {	return type; }
-	inline float getSpice() const { return spice; }
+	inline FixPoint getSpice() const { return spice; }
 
 	/**
         Returns how fast a unit can move over this tile.
         \return Returns a speed factor. Higher values mean slower.
 	*/
-	inline float getDifficulty() const {
+	inline FixPoint getDifficulty() const {
 	    switch(type) {
-            case Terrain_Slab:          return 0.7f;
-            case Terrain_Sand:          return 1.2f;
-            case Terrain_Rock:          return 1.0f;
-            case Terrain_Dunes:         return 1.5f;
-            case Terrain_Mountain:      return 1.5f;
-            case Terrain_Spice:         return 1.2f;
-            case Terrain_ThickSpice:    return 1.2f;
-            case Terrain_SpiceBloom:    return 1.2f;
-            case Terrain_SpecialBloom:  return 1.2f;
-            default:                    return 1.0f;
+            case Terrain_Slab:          return FixPt(0,7);
+            case Terrain_Sand:          return FixPt(1,2);
+            case Terrain_Rock:          return FixPt(1,0);
+            case Terrain_Dunes:         return FixPt(1,5);
+            case Terrain_Mountain:      return FixPt(1,5);
+            case Terrain_Spice:         return FixPt(1,2);
+            case Terrain_ThickSpice:    return FixPt(1,2);
+            case Terrain_SpiceBloom:    return FixPt(1,2);
+            case Terrain_SpecialBloom:  return FixPt(1,2);
+            default:                    return FixPt(1,0);
 	    }
     };
 
-	inline float getSpiceRemaining() { return fixFloat(spice); }
+	inline FixPoint getSpiceRemaining() { return fixFloat(spice); }
 
 	inline const Coord& getLocation() const { return location; }
 
@@ -510,14 +511,14 @@ public:
 
 private:
 
-	Uint32  	type;   ///< the type of the tile (Terrain_Sand, Terrain_Rock, ...)
+	Uint32  	type;           ///< the type of the tile (Terrain_Sand, Terrain_Rock, ...)
 
 	Uint32      fogColor;       ///< remember last color (radar)
 
 	Sint32      owner;          ///< house ID of the owner of this tile
 	Uint32      sandRegion;     ///< used by sandworms to check if can get to a unit
 
-	float       spice;          ///< how much spice on this particular tile is left
+	FixPoint    spice;          ///< how much spice on this particular tile is left
 
     Sint32                          destroyedStructureTile;     ///< the tile drawn for a destroyed structure
 	Sint16                          tracksCounter[NUM_ANGLES];  ///< Contains counters for the tracks on sand
