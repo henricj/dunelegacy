@@ -31,8 +31,6 @@
 #include <structures/ConstructionYard.h>
 #include <units/Harvester.h>
 
-#include <misc/strictmath.h>
-
 Carryall::Carryall(House* newOwner) : AirUnit(newOwner)
 {
     Carryall::init();
@@ -48,7 +46,7 @@ Carryall::Carryall(House* newOwner) : AirUnit(newOwner)
     droppedOffCargo = false;
     respondable = false;
 
-    currentMaxSpeed = 2.0f;
+    currentMaxSpeed = 2;
 
 	curFlyPoint = 0;
 	for(int i=0; i < 8; i++) {
@@ -131,7 +129,7 @@ bool Carryall::update() {
         currentMaxSpeed = (((2 - currentGame->objectData.data[itemID][originalHouseID].maxspeed)/256) * (256 - dist)) + currentGame->objectData.data[itemID][originalHouseID].maxspeed;
         setSpeeds();
     } else {
-        currentMaxSpeed = std::min(currentMaxSpeed + 0.2f, currentGame->objectData.data[itemID][originalHouseID].maxspeed);
+        currentMaxSpeed = std::min(currentMaxSpeed + FixPt(0,2), currentGame->objectData.data[itemID][originalHouseID].maxspeed);
         setSpeeds();
     }
 
@@ -197,9 +195,9 @@ void Carryall::checkPos()
                 // find next place to drop
                 for(int i=8;i<18;i++) {
                     int r = currentGame->randomGen.rand(3,i/2);
-                    float angle = 2.0f * strictmath::pi * currentGame->randomGen.randFloat();
+                    FixPoint angle = 2 * FixPt_PI * currentGame->randomGen.randFixPoint();
 
-                    Coord dropCoord = location + Coord( (int) (r*strictmath::sin(angle)), (int) (-r*strictmath::cos(angle)));
+                    Coord dropCoord = location + Coord( lround(r*FixPoint::sin(angle)), lround(-r*FixPoint::cos(angle)));
                     if(currentGameMap->tileExists(dropCoord) && currentGameMap->getTile(dropCoord)->hasAGroundObject() == false) {
                         setDestination(dropCoord);
                         break;
@@ -273,7 +271,7 @@ void Carryall::deployUnit(Uint32 unitID)
     }
 
 	if (found) {
-	    currentMaxSpeed = 0.0f;
+	    currentMaxSpeed = 0;
 	    setSpeeds();
 
 	    if (currentGameMap->getTile(location)->hasANonInfantryGroundObject()) {
@@ -398,7 +396,7 @@ void Carryall::engageTarget()
     Coord realLocation = Coord(lround(realX), lround(realY));
     Coord realDestination = targetLocation * TILESIZE + Coord(TILESIZE/2,TILESIZE/2);
 
-    targetAngle = lround((float)NUM_ANGLES*destinationAngle(location, destination)/256.0f);
+    targetAngle = lround(NUM_ANGLES*destinationAngle(location, destination)/256);
     if (targetAngle == 8) {
         targetAngle = 0;
     }

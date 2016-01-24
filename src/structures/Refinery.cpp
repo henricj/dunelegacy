@@ -163,7 +163,7 @@ void Refinery::updateStructureSpecificStuff() {
 	if(extractingSpice) {
 	    Harvester* pHarvester = (Harvester*) harvester.getObjPointer();
 
-		if(pHarvester->getAmountOfSpice() > 0.0f) {
+		if(pHarvester->getAmountOfSpice() > 0) {
 		    FixPoint extractionSpeed = MAXIMUMHARVESTEREXTRACTSPEED;
 
 		    int scale = (int) (5*getHealth()/getMaxHealth());

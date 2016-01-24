@@ -36,7 +36,7 @@ public:
 	FixPoint16(const FixPoint16& inValue)        { value = inValue.value;             }
 	FixPoint16(const int inValue)                { value = fix16_from_int(inValue); }
 	FixPoint16(const unsigned int inValue)       { value = fix16_from_int(static_cast<int>(inValue)); }
-	explicit FixPoint16(const float inValue)     { value = fix16_from_float(inValue); }
+//	explicit FixPoint16(const float inValue)     { value = fix16_from_float(inValue); }
 //	/*explicit*/ FixPoint16(const double inValue)  { value = fix16_from_dbl(inValue);   }
 	explicit FixPoint16(std::string inValue) {
         value = fix16_from_str(inValue.c_str());
@@ -68,79 +68,79 @@ public:
 	FixPoint16 & operator=(const FixPoint16 rhs)     { value = rhs.value;             return *this; }
 	FixPoint16 & operator=(const int rhs)            { value = fix16_from_int(rhs);   return *this; }
 	FixPoint16 & operator=(const unsigned int rhs)   { return operator=(static_cast<int>(rhs)); }
-	FixPoint16 & operator=(const float rhs)          { value = fix16_from_float(rhs); return *this; }
+//	FixPoint16 & operator=(const float rhs)          { value = fix16_from_float(rhs); return *this; }
 
 	FixPoint16 & operator+=(const FixPoint16 rhs)     { value += rhs.value;             return *this; }
 	FixPoint16 & operator+=(const int rhs)            { value += fix16_from_int(rhs);   return *this; }
 	FixPoint16 & operator+=(const unsigned int rhs)   { return operator+=(static_cast<int>(rhs)); }
-	FixPoint16 & operator+=(const float rhs)          { value += fix16_from_float(rhs); return *this; }
+//	FixPoint16 & operator+=(const float rhs)          { value += fix16_from_float(rhs); return *this; }
 
 	FixPoint16 & operator-=(const FixPoint16 rhs)     { value -= rhs.value; return *this; }
 	FixPoint16 & operator-=(const int rhs)            { value -= fix16_from_int(rhs); return *this; }
 	FixPoint16 & operator-=(const unsigned int rhs)   { return operator-=(static_cast<int>(rhs)); }
-	FixPoint16 & operator-=(const float rhs)          { value -= fix16_from_float(rhs); return *this; }
+//	FixPoint16 & operator-=(const float rhs)          { value -= fix16_from_float(rhs); return *this; }
 
 	FixPoint16 & operator*=(const FixPoint16 rhs)     { value = fix16_mul(value, rhs.value); return *this; }
 	FixPoint16 & operator*=(const int rhs)            { value *= rhs; return *this; }
 	FixPoint16 & operator*=(const unsigned int rhs)   { return operator*=(static_cast<int>(rhs)); }
-	FixPoint16 & operator*=(const float rhs)          { value = fix16_mul(value, fix16_from_float(rhs)); return *this; }
+//	FixPoint16 & operator*=(const float rhs)          { value = fix16_mul(value, fix16_from_float(rhs)); return *this; }
 
 	FixPoint16 & operator/=(const FixPoint16 rhs)     { value = fix16_div(value, rhs.value); return *this; }
 	FixPoint16 & operator/=(const int rhs)            { value /= rhs; return *this; }
 	FixPoint16 & operator/=(const unsigned int rhs)   { return operator/=(static_cast<int>(rhs)); }
-	FixPoint16 & operator/=(const float rhs)          { value = fix16_div(value, fix16_from_float(rhs)); return *this; }
+//	FixPoint16 & operator/=(const float rhs)          { value = fix16_div(value, fix16_from_float(rhs)); return *this; }
 
 	const FixPoint16 operator-() const { FixPoint16 ret = *this; ret.value = -ret.value; return ret; }
 
 	const FixPoint16 operator+(const FixPoint16 other) const   { FixPoint16 ret = *this; ret += other; return ret; }
 	const FixPoint16 operator+(const int other) const          { FixPoint16 ret = *this; ret += FixPoint16(other); return ret; }
 	const FixPoint16 operator+(const unsigned int other) const { return operator+(static_cast<int>(other)); }
-	const FixPoint16 operator+(const float other) const        { FixPoint16 ret = *this; ret += other; return ret; }
+//	const FixPoint16 operator+(const float other) const        { FixPoint16 ret = *this; ret += other; return ret; }
 
 	const FixPoint16 operator-(const FixPoint16 other) const   { FixPoint16 ret = *this; ret -= other; return ret; }
 	const FixPoint16 operator-(const int other) const          { FixPoint16 ret = *this; ret -= FixPoint16(other); return ret; }
 	const FixPoint16 operator-(const unsigned int other) const { return operator-(static_cast<int>(other)); }
-	const FixPoint16 operator-(const float other) const        { FixPoint16 ret = *this; ret -= other; return ret; }
+//	const FixPoint16 operator-(const float other) const        { FixPoint16 ret = *this; ret -= other; return ret; }
 
 	const FixPoint16 operator*(const FixPoint16 other) const   { FixPoint16 ret = *this; ret *= other; return ret; }
 	const FixPoint16 operator*(const int other) const          { FixPoint16 ret = *this; ret *= FixPoint16(other); return ret; }
 	const FixPoint16 operator*(const unsigned int other) const { return operator*(static_cast<int>(other)); }
-	const FixPoint16 operator*(const float other) const        { FixPoint16 ret = *this; ret *= other; return ret; }
+//	const FixPoint16 operator*(const float other) const        { FixPoint16 ret = *this; ret *= other; return ret; }
 
 	const FixPoint16 operator/(const FixPoint16 other) const   { FixPoint16 ret = *this; ret /= other; return ret; }
 	const FixPoint16 operator/(const int other) const          { FixPoint16 ret = *this; ret /= FixPoint16(other); return ret; }
 	const FixPoint16 operator/(const unsigned int other) const { return operator/(static_cast<int>(other)); }
-	const FixPoint16 operator/(const float other) const        { FixPoint16 ret = *this; ret /= other; return ret; }
+//	const FixPoint16 operator/(const float other) const        { FixPoint16 ret = *this; ret /= other; return ret; }
 
 	bool operator==(const FixPoint16 other) const   { return (value == other.value);              }
 	bool operator==(const int other) const          { return (value == fix16_from_int(other));    }
 	bool operator==(const unsigned int other) const { return operator==(static_cast<int>(other)); }
-	bool operator==(const float other) const        { return (value == fix16_from_float(other));  }
+//	bool operator==(const float other) const        { return (value == fix16_from_float(other));  }
 
 	bool operator!=(const FixPoint16 other) const   { return (value != other.value);              }
 	bool operator!=(const int other) const          { return (value != fix16_from_int(other));    }
 	bool operator!=(const unsigned int other) const { return operator!=(static_cast<int>(other)); }
-	bool operator!=(const float other) const        { return (value != fix16_from_float(other));  }
+//	bool operator!=(const float other) const        { return (value != fix16_from_float(other));  }
 
 	bool operator<=(const FixPoint16 other) const   { return (value <= other.value);              }
 	bool operator<=(const int other) const          { return (value <= fix16_from_int(other));    }
 	bool operator<=(const unsigned int other) const { return operator<=(static_cast<int>(other)); }
-	bool operator<=(const float other) const        { return (value <= fix16_from_float(other));  }
+//	bool operator<=(const float other) const        { return (value <= fix16_from_float(other));  }
 
 	bool operator>=(const FixPoint16 other) const   { return (value >= other.value);              }
 	bool operator>=(const int other) const          { return (value >= fix16_from_int(other));    }
 	bool operator>=(const unsigned int other) const { return operator>=(static_cast<int>(other)); }
-	bool operator>=(const float other) const        { return (value >= fix16_from_float(other));  }
+//	bool operator>=(const float other) const        { return (value >= fix16_from_float(other));  }
 
 	bool operator< (const FixPoint16 other) const   { return (value <  other.value);              }
 	bool operator< (const int other) const          { return (value <  fix16_from_int(other));    }
 	bool operator< (const unsigned int other) const { return operator<(static_cast<int>(other));  }
-	bool operator< (const float other) const        { return (value <  fix16_from_float(other));  }
+//	bool operator< (const float other) const        { return (value <  fix16_from_float(other));  }
 
 	bool operator> (const FixPoint16 other) const   { return (value >  other.value);              }
 	bool operator> (const int other) const          { return (value >  fix16_from_int(other));    }
 	bool operator> (const unsigned int other) const { return operator>(static_cast<int>(other));  }
-	bool operator> (const float other) const        { return (value >  fix16_from_float(other));  }
+//	bool operator> (const float other) const        { return (value >  fix16_from_float(other));  }
 
     FixPoint16& operator++() { *this = *this + 1; return *this; }
     FixPoint16& operator--() { *this = *this - 1; return *this; }
@@ -163,37 +163,37 @@ private:
 
 static inline const FixPoint16 operator+(int value, const FixPoint16 other) { return other+value; }
 static inline const FixPoint16 operator+(unsigned int value, const FixPoint16 other) { return other+value; }
-static inline const FixPoint16 operator+(float value, const FixPoint16 other) { return other+value; }
+//static inline const FixPoint16 operator+(float value, const FixPoint16 other) { return other+value; }
 static inline const FixPoint16 operator-(int value, const FixPoint16 other) { return FixPoint16(value) - other; }
 static inline const FixPoint16 operator-(unsigned int value, const FixPoint16 other) { return FixPoint16(value) - other; }
-static inline const FixPoint16 operator-(float value, const FixPoint16 other) { return FixPoint16(value) - other; }
+//static inline const FixPoint16 operator-(float value, const FixPoint16 other) { return FixPoint16(value) - other; }
 static inline const FixPoint16 operator*(int value, const FixPoint16 other) { return other*value; }
 static inline const FixPoint16 operator*(unsigned int value, const FixPoint16 other) { return other*value; }
-static inline const FixPoint16 operator*(float value, const FixPoint16 other) { return other*value; }
+//static inline const FixPoint16 operator*(float value, const FixPoint16 other) { return other*value; }
 static inline const FixPoint16 operator/(int value, const FixPoint16 other) { return FixPoint16(value) / other; }
 static inline const FixPoint16 operator/(unsigned int value, const FixPoint16 other) { return FixPoint16(value) / other; }
-static inline const FixPoint16 operator/(float value, const FixPoint16 other) { return FixPoint16(value) / other; }
+//static inline const FixPoint16 operator/(float value, const FixPoint16 other) { return FixPoint16(value) / other; }
 
 
 static inline bool operator==(int value, const FixPoint16 other) { return other.operator==(value); }
 static inline bool operator==(unsigned int value, const FixPoint16 other) { return other.operator==(value); }
-static inline bool operator==(float value, const FixPoint16 other) { return other.operator==(value); }
+//static inline bool operator==(float value, const FixPoint16 other) { return other.operator==(value); }
 static inline bool operator!=(int value, const FixPoint16 other) { return other.operator!=(value); }
 static inline bool operator!=(unsigned int value, const FixPoint16 other) { return other.operator!=(value); }
-static inline bool operator!=(float value, const FixPoint16 other) { return other.operator!=(value); }
+//static inline bool operator!=(float value, const FixPoint16 other) { return other.operator!=(value); }
 
 static inline bool operator<=(int value, const FixPoint16 other) { return other.operator>(value); }
 static inline bool operator<=(unsigned int value, const FixPoint16 other) { return other.operator>(value); }
-static inline bool operator<=(float value, const FixPoint16 other) { return other.operator>(value); }
+//static inline bool operator<=(float value, const FixPoint16 other) { return other.operator>(value); }
 static inline bool operator>=(int value, const FixPoint16 other) { return other.operator<(value); }
 static inline bool operator>=(unsigned int value, const FixPoint16 other) { return other.operator<(value); }
-static inline bool operator>=(float value, const FixPoint16 other) { return other.operator<(value); }
+//static inline bool operator>=(float value, const FixPoint16 other) { return other.operator<(value); }
 static inline bool operator<(int value, const FixPoint16 other) { return other.operator>=(value); }
 static inline bool operator<(unsigned int value, const FixPoint16 other) { return other.operator>=(value); }
-static inline bool operator<(float value, const FixPoint16 other) { return other.operator>=(value); }
+//static inline bool operator<(float value, const FixPoint16 other) { return other.operator>=(value); }
 static inline bool operator>(int value, const FixPoint16 other) { return other.operator<=(value); }
 static inline bool operator>(unsigned int value, const FixPoint16 other) { return other.operator<=(value); }
-static inline bool operator>(float value, const FixPoint16 other) { return other.operator<=(value); }
+//static inline bool operator>(float value, const FixPoint16 other) { return other.operator<=(value); }
 
 
 static inline int lround(FixPoint16 value) { return value.roundToInt(); }

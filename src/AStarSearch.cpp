@@ -80,7 +80,7 @@ AStarSearch::AStarSearch(Map* pMap, UnitBase* pUnit, Coord start, Coord destinat
                             //add cost of turning time
                             int posAngle = currentGameMap->getPosAngle(getMapData(currentCoord).parentCoord, currentCoord);
                             if (posAngle != angle)
-                                g += (1.0f/currentGame->objectData.data[pUnit->getItemID()][pUnit->getOriginalHouseID()].turnspeed * (float)std::min(abs(angle - posAngle), NUM_ANGLES - std::max(angle, posAngle) + std::min(angle, posAngle)))/((float)TILESIZE);
+                                g += (FixPt(1,0)/currentGame->objectData.data[pUnit->getItemID()][pUnit->getOriginalHouseID()].turnspeed * std::min(abs(angle - posAngle), NUM_ANGLES - std::max(angle, posAngle) + std::min(angle, posAngle)))/(FixPt(TILESIZE,0));
                         }
 
                         FixPoint h = blockDistance(nextCoord, destination);

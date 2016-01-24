@@ -191,7 +191,7 @@ fix32_t fix32_div(fix32_t a, fix32_t b)
 		if (product_lo < BD)
 			product_hi++;
 
-		remainder = (product_hi << (64-33)) | (product_lo >> 33);
+		remainder -= (product_hi << (64-33)) | (product_lo >> 33);
 	}
 
 	// If the divider is divisible by 2^n, take advantage of it.

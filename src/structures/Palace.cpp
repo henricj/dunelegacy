@@ -27,8 +27,6 @@
 #include <Bullet.h>
 #include <SoundPlayer.h>
 
-#include <misc/strictmath.h>
-
 #include <players/HumanPlayer.h>
 
 #include <units/InfantryBase.h>
@@ -142,10 +140,10 @@ void Palace::doLaunchDeathhand(int x, int y) {
         return;
     }
 
-    float randAngle = 2.0f * strictmath::pi * currentGame->randomGen.randFloat();
+    FixPoint randAngle = 2 * FixPt_PI * currentGame->randomGen.randFixPoint();
     int radius = currentGame->randomGen.rand(0,10*TILESIZE);
-    int deathOffX = strictmath::sin(randAngle) * radius;
-    int deathOffY = strictmath::cos(randAngle) * radius;
+    int deathOffX = lround(FixPoint::sin(randAngle) * radius);
+    int deathOffY = lround(FixPoint::cos(randAngle) * radius);
 
     Coord centerPoint = getCenterPoint();
     Coord dest( x * TILESIZE + TILESIZE/2 + deathOffX,

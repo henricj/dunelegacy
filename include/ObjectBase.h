@@ -125,7 +125,7 @@ public:
 	const ObjectBase* findClosestTarget() const;
 	virtual const ObjectBase* findTarget() const;
 
-	inline void addHealth() { if (health < getMaxHealth()) setHealth(health + 1.0f); }
+	inline void addHealth() { if (health < getMaxHealth()) setHealth(health + 1); }
 	inline void setActive(bool status) { active = status; }
 	inline void setForced(bool status) { forced = status; }
 	inline void setRespondable(bool status) { respondable = status; }

@@ -250,7 +250,6 @@
 		<Unit filename="../../include/misc/fnkdat.h" />
 		<Unit filename="../../include/misc/md5.h" />
 		<Unit filename="../../include/misc/sound_util.h" />
-		<Unit filename="../../include/misc/strictmath.h" />
 		<Unit filename="../../include/misc/string_util.h" />
 		<Unit filename="../../include/mmath.h" />
 		<Unit filename="../../include/players/AIPlayer.h" />
@@ -496,7 +495,6 @@
 		<Unit filename="../../src/misc/fnkdat.cpp" />
 		<Unit filename="../../src/misc/md5.cpp" />
 		<Unit filename="../../src/misc/sound_util.cpp" />
-		<Unit filename="../../src/misc/strictmath.cpp" />
 		<Unit filename="../../src/misc/string_util.cpp" />
 		<Unit filename="../../src/mmath.cpp" />
 		<Unit filename="../../src/players/AIPlayer.cpp" />

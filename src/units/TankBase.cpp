@@ -29,15 +29,13 @@
 
 #include <structures/StructureBase.h>
 
-#include <misc/strictmath.h>
-
 #define RANDOMTURRETTURNTIMER 8000    //less of this makes tank turrets randomly turn more
 
 TankBase::TankBase(House* newOwner) : TrackedUnit(newOwner) {
     TankBase::init();
 
     drawnTurretAngle = currentGame->randomGen.rand(0, 7);
-    turretAngle = (float) drawnTurretAngle;
+    turretAngle = drawnTurretAngle;
 }
 
 TankBase::TankBase(InputStream& stream) : TrackedUnit(stream) {
@@ -51,7 +49,7 @@ TankBase::TankBase(InputStream& stream) : TrackedUnit(stream) {
 
 void TankBase::init() {
 	turreted = true;
-	turretTurnSpeed = 0.0625f;
+	turretTurnSpeed = FixPt(0,0625);
 	gunGraphicID = -1;
 	turretGraphic = NULL;
 }
@@ -84,7 +82,7 @@ void TankBase::navigate() {
             targetAngle = INVALID;
 	    } else {
             // change the turret angle so it faces the direction we are moving in
-            targetAngle = lround(8.0f/256.0f*destinationAngle(location, destination));
+            targetAngle = lround(8*destinationAngle(location, destination)/256);
 
             if(targetAngle == 8) {
                 targetAngle = 0;
@@ -234,9 +232,9 @@ void TankBase::turnTurretLeft() {
 
 void TankBase::turnTurretRight() {
 	turretAngle -= turretTurnSpeed;
-	if(turretAngle <= -0.5f) {
+	if(turretAngle <= FixPt(-0,5)) {
 	    drawnTurretAngle = lround(turretAngle) + 8;
-		turretAngle += 8.0f;
+		turretAngle += 8;
 	} else {
 	    drawnTurretAngle = lround(turretAngle);
 	}

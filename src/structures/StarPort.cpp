@@ -314,7 +314,7 @@ void StarPort::updateStructureSpecificStuff() {
                         if (destination.isValid() && newUnit->getItemID()) {
                             newUnit->setGuardPoint(destination);
                             newUnit->setDestination(destination);
-                            newUnit->setAngle(lround(8.0f/256.0f*destinationAngle(newUnit->getLocation(), newUnit->getDestination())));
+                            newUnit->setAngle(lround(8*destinationAngle(newUnit->getLocation(), newUnit->getDestination())/256));
                         }
 
                         // inform owner of its new unit

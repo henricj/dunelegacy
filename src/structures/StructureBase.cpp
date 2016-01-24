@@ -109,7 +109,7 @@ void StructureBase::assignToMap(const Coord& pos) {
                     bFoundNonConcreteTile = true;
 
                     if((itemID != Structure_Wall) && (itemID != Structure_ConstructionYard)) {
-                        setHealth(getHealth() - (0.5f*(float)getMaxHealth()/((float)(structureSize.x*structureSize.y))));
+                        setHealth(getHealth() - FixPoint(getMaxHealth())/(2*structureSize.x*structureSize.y));
                     }
 				}
 				pTile->setType(Terrain_Rock);
@@ -212,7 +212,7 @@ void StructureBase::drawSelectionBox() {
 	}
 
     for(int i=1;i<=currentZoomlevel+1;i++) {
-        drawHLine(screen, dest.x, dest.y-i-1, dest.x + ((int)((getHealth()/(float)getMaxHealth())*(world2zoomedWorld(TILESIZE)*structureSize.x - 1))), getHealthColor());
+        drawHLine(screen, dest.x, dest.y-i-1, dest.x + ((int)((getHealth().toFloat()/(float)getMaxHealth())*(world2zoomedWorld(TILESIZE)*structureSize.x - 1))), getHealthColor());
     }
 }
 
@@ -335,14 +335,14 @@ bool StructureBase::update() {
             }
 
             if(getHealth() > getMaxHealth() / 2) {
-                setHealth( getHealth() - ((damageMultiplyer * (float)getMaxHealth())/100.0f));
+                setHealth( getHealth() - FixPoint(damageMultiplyer * getMaxHealth())/100);
             }
         }
     }
 
     updateStructureSpecificStuff();
 
-    if(getHealth() <= 0.0f) {
+    if(getHealth() <= 0) {
         destroy();
         return false;
     }

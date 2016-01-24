@@ -46,12 +46,12 @@ BuilderBase::BuilderBase(House* newOwner) : StructureBase(newOwner) {
     BuilderBase::init();
 
 	curUpgradeLev = 0;
-	upgradeProgress = 0.0f;
+	upgradeProgress = 0;
 	upgrading = false;
 
 	currentProducedItem = ItemID_Invalid;
 	bCurrentItemOnHold = false;
-	productionProgress = 0.0f;
+	productionProgress = 0;
 	deployTimer = 0;
 }
 
@@ -151,7 +151,7 @@ void BuilderBase::removeItem(std::list<BuildItem>& buildItemList, std::list<Buil
             // is this item currently produced?
             if(currentProducedItem == itemID) {
                 owner->returnCredits(productionProgress);
-                productionProgress = 0.0f;
+                productionProgress = 0;
                 currentProducedItem = ItemID_Invalid;
             }
 
@@ -216,9 +216,9 @@ void BuilderBase::updateProductionProgress() {
                 /* That was wrong. Build speed does not depend on power production
                 if (getOwner()->hasPower() || (((currentGame->gameType == GAMETYPE_CAMPAIGN) || (currentGame->gameType == GAMETYPE_SKIRMISH)) && getOwner()->isAI())) {
                     //if not enough power, production is halved
-                    ProductionProgress += owner->takeCredits(0.25f);
+                    ProductionProgress += owner->takeCredits(FixPt(0,25));
                 } else {
-                    ProductionProgress += owner->takeCredits(0.125f);
+                    ProductionProgress += owner->takeCredits(FixPt(0,125));
                 }*/
 
             }
@@ -253,7 +253,7 @@ void BuilderBase::produceNextAvailableItem() {
 		currentProducedItem = currentProductionQueue.front().itemID;
 	}
 
-	productionProgress = 0.0f;
+	productionProgress = 0;
 	bCurrentItemOnHold = false;
 }
 
@@ -328,7 +328,7 @@ void BuilderBase::unSetWaitingToPlace() {
 }
 
 int BuilderBase::getUpgradeCost() const {
-    return currentGame->objectData.data[itemID][originalHouseID].price / 2.0f;
+    return currentGame->objectData.data[itemID][originalHouseID].price / 2;
 }
 
 
@@ -380,7 +380,7 @@ bool BuilderBase::update() {
                     if(destination.isValid() && newUnit->getItemID() != Unit_Harvester) {
                         newUnit->setGuardPoint(destination);
                         newUnit->setDestination(destination);
-                        newUnit->setAngle(lround(8.0f/256.0f*destinationAngle(newUnit->getLocation(), newUnit->getDestination())));
+                        newUnit->setAngle(lround(8*destinationAngle(newUnit->getLocation(), newUnit->getDestination())/256));
                     }
 
                     // inform owner of its new unit
@@ -416,7 +416,7 @@ bool BuilderBase::update() {
 }
 
 void BuilderBase::removeBuiltItemFromProductionQueue() {
-    productionProgress = 0.0f;
+    productionProgress = 0;
 	std::list<BuildItem>::iterator iter;
 	for(iter = buildList.begin(); iter != buildList.end(); ++iter) {
 		if(iter->itemID == currentProducedItem) {
@@ -465,7 +465,7 @@ bool BuilderBase::doUpgrade() {
         return false;
     } else if(isAllowedToUpgrade() && (owner->getCredits() >= getUpgradeCost())) {
 		upgrading = true;
-		upgradeProgress = 0.0f;
+		upgradeProgress = 0;
 		return true;
 	} else {
         return false;

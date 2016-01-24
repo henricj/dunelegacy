@@ -255,10 +255,10 @@ void Sandworm::engageTarget() {
     UnitBase::engageTarget();
 
     if(target) {
-        float maxDistance;
+        FixPoint maxDistance;
 
         if(forced) {
-            maxDistance = std::numeric_limits<float>::max();
+            maxDistance = FixPt_MAX;
         } else {
             switch(attackMode) {
                 case GUARD:
@@ -268,7 +268,7 @@ void Sandworm::engageTarget() {
                 } break;
 
                 case HUNT: {
-                    maxDistance = std::numeric_limits<float>::max();
+                    maxDistance = FixPt_MAX;
                 } break;
 
                 case STOP:

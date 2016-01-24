@@ -74,17 +74,17 @@ ObjectBase::ObjectBase(House* newOwner) : originalHouseID(newOwner->getHouseID()
 
 	objectID = NONE;
 
-    health = 0.0f;
+    health = 0;
     badlyDamaged = false;
 
 	location = Coord::Invalid();
     oldLocation = Coord::Invalid();
 	destination = Coord::Invalid();
-	realX = 0.0f;
-	realY = 0.0f;
+	realX = 0;
+	realY = 0;
 
     drawnAngle = 0;
-	angle = (float) drawnAngle;
+	angle = drawnAngle;
 
 	active = false;
     respondable = true;
@@ -269,7 +269,7 @@ void ObjectBase::setDestination(int newX, int newY) {
 void ObjectBase::setHealth(FixPoint newHealth) {
 	if((newHealth >= 0) && (newHealth <= getMaxHealth())) {
 		health = newHealth;
-        badlyDamaged = (health/(float)getMaxHealth() < BADLYDAMAGEDRATIO);
+        badlyDamaged = (health/getMaxHealth() < BADLYDAMAGEDRATIO);
 	}
 }
 

@@ -902,7 +902,7 @@ void Game::doInput()
 
                                 std::string harvesterMessage = _("@DUNE.ENG|226#Harvester");
 
-                                int percent = lround(pHarvester->getAmountOfSpice() * 100.0f / (float) HARVESTERMAXSPICE);
+                                int percent = lround(100 * pHarvester->getAmountOfSpice() / HARVESTERMAXSPICE);
                                 if(percent > 0) {
                                     if(pHarvester->isawaitingPickup()) {
                                         harvesterMessage += strprintf(_("@DUNE.ENG|124#full and awaiting pickup"), percent);

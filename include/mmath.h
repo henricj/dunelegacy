@@ -24,8 +24,6 @@ class Coord;
 #include <libfixmath/FixPoint.h>
 #include <cmath>
 
-float fixFloat(float number);
-
 int getRandomInt(int min, int max);
 int getRandomOf(int numParam, ...);
 

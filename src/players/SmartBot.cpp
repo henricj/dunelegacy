@@ -175,7 +175,7 @@ void SmartBot::scrambleUnitsAndDefend(const ObjectBase* pIntruder) {
                         doMove2Pos(pUnit, pIntruder->getLocation().x, pIntruder->getLocation().y, false);
 
                         if(pUnit->isVisible()
-                            && blockDistance(pUnit->getLocation(), pUnit->getDestination()) >= 10.0f
+                            && blockDistance(pUnit->getLocation(), pUnit->getDestination()) >= 10
                             && pUnit->isAGroundUnit()
                             && pUnit->getHealthColor() == COLOR_LIGHTGREEN) {
 

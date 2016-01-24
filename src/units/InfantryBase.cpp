@@ -32,8 +32,6 @@
 #include <structures/RepairYard.h>
 #include <units/Harvester.h>
 
-#include <misc/strictmath.h>
-
 // the position on the tile
 Coord tilePositionOffset[5] = { Coord(0,0), Coord(-TILESIZE/4,-TILESIZE/4), Coord(TILESIZE/4,-TILESIZE/4), Coord(-TILESIZE/4,TILESIZE/4), Coord(TILESIZE/4,TILESIZE/4)};
 

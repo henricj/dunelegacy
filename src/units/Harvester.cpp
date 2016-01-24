@@ -43,7 +43,7 @@
 #define RANDOMHARVESTMOVE 500
 
 /* how much is the harvester movement slowed down when full  */
-#define MAXIMUMHARVESTERSLOWDOWN 0.4f
+#define MAXIMUMHARVESTERSLOWDOWN FixPt(0,4)
 
 Harvester::Harvester(House* newOwner) : TrackedUnit(newOwner)
 {
@@ -166,7 +166,7 @@ void Harvester::checkPos()
 				Coord closestPoint = target.getObjPointer()->getClosestPoint(location);
 
                 // Fixed a carryall bug
-				if(!moving && !justStoppedMoving && blockDistance(location, closestPoint) <= 2.0f)	{
+				if(!moving && !justStoppedMoving && blockDistance(location, closestPoint) <= 2)	{
 					awaitingPickup = false;
 					if (((Refinery*)target.getObjPointer())->isFree())
 						setReturned();
@@ -207,7 +207,7 @@ void Harvester::checkPos()
 					bestRefinery->startAnimate();
 				}
 			}
-		} else if (harvestingMode && !hasBookedCarrier() && (blockDistance(location, destination) > 8.0f)) {
+		} else if (harvestingMode && !hasBookedCarrier() && (blockDistance(location, destination) > 8)) {
 			requestCarryall();
         } else if(respondable && !harvestingMode && attackMode != STOP) {
             if(spiceCheckCounter == 0) {
@@ -232,7 +232,7 @@ void Harvester::deploy(const Coord& newLocation)
 		UnitBase::deploy(newLocation);
 
 
-		if(spice == 0.0f) {
+		if(spice == 0) {
 			if((attackMode != STOP) && currentGameMap->findSpice(destination, guardPoint)) {
 				harvestingMode = true;
 				guardPoint = destination;
@@ -321,7 +321,7 @@ void Harvester::drawSelectionBox()
         drawHLine(screen, dest.x+1, dest.y-i, dest.x+1 + ((int)((getHealth()/getMaxHealth())*(selectionBox->w-3))), getHealthColor());
 	}
 
-	if((getOwner() == pLocalHouse) && (spice > 0.0f)) {
+	if((getOwner() == pLocalHouse) && (spice > 0)) {
         for(int i=1;i<=currentZoomlevel+1;i++) {
             drawHLine(screen, dest.x+1, dest.y-i-(currentZoomlevel+1), dest.x+1 + ((int)(((spice.toFloat())/HARVESTERMAXSPICE)*(selectionBox->w-3))), COLOR_ORANGE);
         }

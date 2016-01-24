@@ -70,7 +70,6 @@ dunelegacy_SOURCES =	AStarSearch.cpp\
 						misc/md5.cpp\
 						misc/OFileStream.cpp\
 						misc/sound_util.cpp\
-						misc/strictmath.cpp\
 						misc/string_util.cpp\
 						misc/Scaler.cpp\
 						$(NULL)\

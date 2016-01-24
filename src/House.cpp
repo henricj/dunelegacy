@@ -49,7 +49,7 @@ House::House(int newHouse, int newCredits, Uint8 team, int quota) : choam(this) 
     houseID = ((newHouse >= 0) && (newHouse < NUM_HOUSES)) ? newHouse :  0;
     this->team = team;
 
-	storedCredits = 0.0f;
+	storedCredits = 0;
     startingCredits = newCredits;
     oldCredits = lround(storedCredits+startingCredits);
 
@@ -65,7 +65,7 @@ House::House(int newHouse, int newCredits, Uint8 team, int quota) : choam(this) 
     destroyedValue = 0;
     numDestroyedUnits = 0;
     numDestroyedStructures = 0;
-    harvestedSpice = 0.0f;
+    harvestedSpice = 0;
     producedPower = 0;
     powerUsageTimer = 0;
 }

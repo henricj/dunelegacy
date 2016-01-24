@@ -39,8 +39,6 @@
 #include <structures/RepairYard.h>
 #include <units/Harvester.h>
 
-#include <misc/strictmath.h>
-
 #define SMOKEDELAY 30
 #define UNITIDLETIMER (GAMESPEED_DEFAULT *  315)  // about every 5s
 
@@ -49,7 +47,7 @@ UnitBase::UnitBase(House* newOwner) : ObjectBase(newOwner) {
     UnitBase::init();
 
     drawnAngle = currentGame->randomGen.rand(0, 7);
-	angle = (float) drawnAngle;
+	angle = drawnAngle;
 
     goingToRepairYard = false;
     pickedUp = false;
@@ -60,12 +58,12 @@ UnitBase::UnitBase(House* newOwner) : ObjectBase(newOwner) {
     moving = false;
     turning = false;
     justStoppedMoving = false;
-    xSpeed = 0.0f;
-    ySpeed = 0.0f;
-    bumpyOffsetX = 0.0f;
-    bumpyOffsetY = 0.0f;
+    xSpeed = 0;
+    ySpeed = 0;
+    bumpyOffsetX = 0;
+    bumpyOffsetY = 0;
 
-    targetDistance = 0.0f;
+    targetDistance = 0;
 	targetAngle = INVALID;
 
 	noCloserPointCount = 0;
@@ -372,7 +370,7 @@ void UnitBase::drawSelectionBox() {
 	int x = screenborder->world2screenX(realX) - selectionBox->w/2;
 	int y = screenborder->world2screenY(realY) - selectionBox->h/2;
 	for(int i=1;i<=currentZoomlevel+1;i++) {
-        drawHLine(screen, x+1, y-i, x+1 + ((int)((getHealth()/(float)getMaxHealth())*(selectionBox->w-3))), getHealthColor());
+        drawHLine(screen, x+1, y-i, x+1 + ((int)((getHealth()/getMaxHealth())*(selectionBox->w-3))), getHealthColor());
 	}
 }
 
@@ -444,7 +442,7 @@ void UnitBase::engageTarget() {
 
         targetDistance = blockDistance(location, targetLocation);
 
-        Sint8 newTargetAngle = lround(8.0f/256.0f*destinationAngle(location, targetLocation));
+        Sint8 newTargetAngle = lround(8*destinationAngle(location, targetLocation)/256);
         if(newTargetAngle == 8) {
             newTargetAngle = 0;
         }
@@ -496,7 +494,7 @@ void UnitBase::engageTarget() {
 
         targetDistance = blockDistance(location, attackPos);
 
-        Sint8 newTargetAngle = lround(8.0f/256.0f*destinationAngle(location, attackPos));
+        Sint8 newTargetAngle = lround(8*destinationAngle(location, attackPos)/256);
         if(newTargetAngle == 8) {
             newTargetAngle = 0;
         }
@@ -1073,8 +1071,8 @@ void UnitBase::setLocation(int xPos, int yPos) {
 		ObjectBase::setLocation(xPos, yPos);
 		realX += TILESIZE/2;
 		realY += TILESIZE/2;
-		bumpyOffsetX = 0.0f;
-		bumpyOffsetY = 0.0f;
+		bumpyOffsetX = 0;
+		bumpyOffsetY = 0;
 	}
 
 	moving = false;
@@ -1123,7 +1121,7 @@ void UnitBase::setSpeeds() {
 	FixPoint speed = getMaxSpeed();
 
 	if(!isAFlyingUnit()) {
-		speed += speed*(1.0f - getTerrainDifficulty((TERRAINTYPE) currentGameMap->getTile(location)->getType()));
+		speed += speed*(1 - getTerrainDifficulty((TERRAINTYPE) currentGameMap->getTile(location)->getType()));
 		if(isBadlyDamaged()) {
             speed *= HEAVILYDAMAGEDSPEEDMULTIPLIER;
 		}
@@ -1298,7 +1296,7 @@ bool UnitBase::update() {
         }
     }
 
-    if(getHealth() <= 0.0f) {
+    if(getHealth() <= 0) {
         destroy();
         return false;
     }

@@ -47,7 +47,7 @@ Tile::Tile() {
 	owner = INVALID;
 	sandRegion = NONE;
 
-	spice = 0.0f;
+	spice = 0;
 
 	sprite = pGFXManager->getObjPic(ObjPic_Terrain);
 
@@ -716,17 +716,17 @@ int Tile::getInfantryTeam() {
 FixPoint Tile::harvestSpice() {
 	FixPoint oldSpice = spice;
 
-	if((spice - HARVESTSPEED) >= 0.0f) {
+	if((spice - HARVESTSPEED) >= 0) {
 		spice -= HARVESTSPEED;
 	} else {
-		spice = 0.0f;
+		spice = 0;
 	}
 
     if(oldSpice >= RANDOMTHICKSPICEMIN && spice < RANDOMTHICKSPICEMIN) {
         setType(Terrain_Spice);
     }
 
-    if(oldSpice > 0.0f && spice == 0.0f) {
+    if(oldSpice > 0 && spice == 0) {
         setType(Terrain_Sand);
     }
 

@@ -110,10 +110,10 @@ void GroundUnit::checkPos() {
             clearPath();
 	    } else{
             Coord closestPoint = target.getObjPointer()->getClosestPoint(location);
-            if (!moving && !justStoppedMoving && (blockDistance(location, closestPoint) <= 1.5f)
+            if (!moving && !justStoppedMoving && (blockDistance(location, closestPoint) <= FixPt(1,5))
                 && ((RepairYard*)target.getObjPointer())->isFree())
             {
-                if (getHealth()*100.0f/getMaxHealth() < 100.0f) {
+                if (getHealth() < getMaxHealth()) {
                     setGettingRepaired();
                 } else {
                     setTarget(NULL);

@@ -24,19 +24,7 @@
 #include <algorithm>
 #include <limits>
 
-#include <misc/strictmath.h>
-
 extern int currentZoomlevel;
-
-
-float fixFloat(float number)
-{
-	if(strictmath::abs(number - (float)((int)number)) < 0.00001f) {
-		number = (float)((int)number);
-	}
-
-	return number;
-}
 
 
 int getRandomInt(int min, int max)
@@ -127,7 +115,7 @@ FixPoint blockDistance(const Coord& p1, const Coord& p2)
 
 		minDis = std::min(xDis, yDis);
 
-	return (std::max(xDis, yDis) + minDis*(DIAGONALCOST - 1.0f));
+	return (std::max(xDis, yDis) + minDis*(DIAGONALCOST - 1));
 	//return (((float)minDis)*DIAGONALCOST + max(xDis, yDis) - minDis);
 }
 

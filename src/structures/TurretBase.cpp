@@ -26,13 +26,11 @@
 
 #include <players/HumanPlayer.h>
 
-#include <misc/strictmath.h>
-
 TurretBase::TurretBase(House* newOwner) : StructureBase(newOwner)
 {
     TurretBase::init();
 
-    angle = (float) currentGame->randomGen.rand(0, 7);
+    angle = currentGame->randomGen.rand(0, 7);
 	drawnAngle = lround(angle);
 
 	findTargetTimer = 0;
@@ -147,15 +145,15 @@ void TurretBase::doAttackObject(const ObjectBase* pObject) {
 
 void TurretBase::turnLeft() {
 	angle += currentGame->objectData.data[itemID][originalHouseID].turnspeed;
-	if (angle >= 7.5f)	//must keep drawnangle between 0 and 7
-		angle -= 8.0f;
+	if (angle >= FixPt(7,5))	//must keep drawnangle between 0 and 7
+		angle -= 8;
 	drawnAngle = lround(angle);
 	curAnimFrame = firstAnimFrame = lastAnimFrame = ((10-drawnAngle) % 8) + 2;
 }
 
 void TurretBase::turnRight() {
 	angle -= currentGame->objectData.data[itemID][originalHouseID].turnspeed;
-	if(angle < -0.5f) {
+	if(angle < FixPt(-0,5)) {
 	    //must keep angle between 0 and 7
 		angle += 8;
 	}

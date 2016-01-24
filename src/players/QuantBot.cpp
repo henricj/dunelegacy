@@ -1969,7 +1969,7 @@ void QuantBot::scrambleUnitsAndDefend(const ObjectBase* pIntruder) {
 
 
                     if(pUnit->isVisible()
-                        && blockDistance(pUnit->getLocation(), pUnit->getDestination()) >= 10.0f
+                        && blockDistance(pUnit->getLocation(), pUnit->getDestination()) >= 10
                         && pUnit->isAGroundUnit()
                         && pUnit->getHealthColor() == COLOR_LIGHTGREEN) {
 

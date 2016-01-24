@@ -28,7 +28,6 @@
 #include <Explosion.h>
 
 #include <misc/draw_util.h>
-#include <misc/strictmath.h>
 
 #include <algorithm>
 
@@ -138,7 +137,7 @@ void Bullet::init()
 	switch(bulletID) {
         case Bullet_DRocket: {
             damageRadius = TILESIZE/2;
-            speed = 20.0f;
+            speed = 20;
             detonationTimer = 19;
             numFrames = 16;
             graphic = pGFXManager->getObjPic(ObjPic_Bullet_MediumRocket, houseID);
@@ -146,7 +145,7 @@ void Bullet::init()
 
         case Bullet_LargeRocket: {
             damageRadius = TILESIZE;
-            speed = 20.0f;
+            speed = 20;
             detonationTimer = -1;
             numFrames = 16;
             graphic = pGFXManager->getObjPic(ObjPic_Bullet_LargeRocket, houseID);
@@ -154,7 +153,7 @@ void Bullet::init()
 
         case Bullet_Rocket: {
             damageRadius = TILESIZE/2;
-            speed = 17.5f;
+            speed = FixPt(17,5);
             detonationTimer = 22;
             numFrames = 16;
             graphic = pGFXManager->getObjPic(ObjPic_Bullet_MediumRocket, houseID);
@@ -162,7 +161,7 @@ void Bullet::init()
 
         case Bullet_TurretRocket: {
             damageRadius = TILESIZE/2;
-            speed = 20.0f;
+            speed = 20;
             detonationTimer = -1;
             numFrames = 16;
             graphic = pGFXManager->getObjPic(ObjPic_Bullet_MediumRocket, houseID);
@@ -171,7 +170,7 @@ void Bullet::init()
         case Bullet_ShellSmall: {
             damageRadius = TILESIZE/2;
             explodesAtGroundObjects = true;
-            speed = 20.0f;
+            speed = 20;
             detonationTimer = -1;
             numFrames = 1;
             graphic = pGFXManager->getObjPic(ObjPic_Bullet_Small, houseID);
@@ -180,7 +179,7 @@ void Bullet::init()
         case Bullet_ShellMedium: {
             damageRadius = TILESIZE/2;
             explodesAtGroundObjects = true;
-            speed = 20.0f;
+            speed = 20;
             detonationTimer = -1;
             numFrames = 1;
             graphic = pGFXManager->getObjPic(ObjPic_Bullet_Medium, houseID);
@@ -189,7 +188,7 @@ void Bullet::init()
         case Bullet_ShellLarge: {
             damageRadius = TILESIZE/2;
             explodesAtGroundObjects = true;
-            speed = 20.0f;
+            speed = 20;
             detonationTimer = -1;
             numFrames = 1;
             graphic = pGFXManager->getObjPic(ObjPic_Bullet_Large, houseID);
@@ -197,7 +196,7 @@ void Bullet::init()
 
         case Bullet_SmallRocket: {
             damageRadius = TILESIZE/2;
-            speed = 20.0f;
+            speed = 20;
             detonationTimer = 7;
             numFrames = 16;
             graphic = pGFXManager->getObjPic(ObjPic_Bullet_SmallRocket, houseID);
@@ -205,7 +204,7 @@ void Bullet::init()
 
         case Bullet_Sonic: {
             damageRadius = (TILESIZE*3)/4;
-            speed = 9.0f;
+            speed = 9;
             numFrames = 1;
             detonationTimer = 28;
             SDL_Surface** tmpSurfaceStack = pGFXManager->getObjPic(ObjPic_Bullet_Sonic, houseID);

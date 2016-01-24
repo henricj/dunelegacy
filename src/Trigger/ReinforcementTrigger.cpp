@@ -24,10 +24,10 @@
 
 #include <DataTypes.h>
 
+#include <libfixmath/FixPoint.h>
+
 #include <units/UnitBase.h>
 #include <units/Carryall.h>
-
-#include <misc/strictmath.h>
 
 #include <memory>
 #include <stdio.h>
@@ -216,9 +216,9 @@ void ReinforcementTrigger::trigger()
             // try 32 times
             for(int i=0;i<32;i++) {
                 int r = currentGame->randomGen.rand(0,7);
-                float angle = 2.0f*strictmath::pi*currentGame->randomGen.randFloat();
+                FixPoint angle = 2*FixPt_PI*currentGame->randomGen.randFixPoint();
 
-                dropCoord += Coord( (int) (r*strictmath::sin(angle)), (int) (-r*strictmath::cos(angle)));
+                dropCoord += Coord( lround(r*FixPoint::sin(angle)), lround(-r*FixPoint::cos(angle)));
 
                 if(currentGameMap->tileExists(dropCoord) && currentGameMap->getTile(dropCoord)->hasAGroundObject() == false) {
                     // found the an empty drop location => drop here
