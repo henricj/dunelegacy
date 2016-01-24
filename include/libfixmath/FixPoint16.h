@@ -23,10 +23,10 @@
 #include <string>
 
 // we need to use a macro here as leading zeros in m are important: FixPt(1, 5) != FixPt(1, 05)
-#define FixPt16(i,m) (FixPoint16::FromRaw(F16C(i,m)))
+#define FixPt16(i,m) (FixPoint16::FromRawValue(F16C(i,m)))
 
-#define FixPt16_PI (FixPoint16::FromRaw(fix16_pi))
-#define FixPt16_E (FixPoint16::FromRaw(fix16_e))
+#define FixPt16_PI (FixPoint16::FromRawValue(fix16_pi))
+#define FixPt16_E (FixPoint16::FromRawValue(fix16_e))
 
 class FixPoint16
 {
@@ -38,13 +38,13 @@ public:
 	/*explicit*/ FixPoint16(const float inValue)   { value = fix16_from_float(inValue); }
 //	/*explicit*/ FixPoint16(const double inValue)  { value = fix16_from_dbl(inValue);   }
 
-	static FixPoint16 FromRaw(const fix16_t value) {
+	static FixPoint16 FromRawValue(const fix16_t value) {
 		FixPoint16 x;
 		x.value = value;
 		return x;
 	}
 
-	fix16_t getRaw() const { return value; }
+	fix16_t getRawValue() const { return value; }
 
 	double toDouble() const { return fix16_to_dbl(value);   }
 	float toFloat() const   { return fix16_to_float(value); }
@@ -143,14 +143,14 @@ public:
     FixPoint16 operator++(int) { FixPoint16 old = *this; *this = *this + 1; return old; }
     FixPoint16 operator--(int) { FixPoint16 old = *this; *this = *this - 1; return old; }
 
-	static FixPoint16 sin(FixPoint16 inX) { return FromRaw(fix16_sin(inX.value)); }
-	static FixPoint16 cos(FixPoint16 inX) { return FromRaw(fix16_cos(inX.value)); }
-	static FixPoint16 tan(FixPoint16 inX) { return FromRaw(fix16_tan(inX.value)); }
-	static FixPoint16 asin(FixPoint16 inX) { return FromRaw(fix16_asin(inX.value)); }
-	static FixPoint16 acos(FixPoint16 inX) { return FromRaw(fix16_acos(inX.value)); }
-	static FixPoint16 atan(FixPoint16 inX) { return FromRaw(fix16_atan(inX.value)); }
-	static FixPoint16 atan2(FixPoint16 inX, FixPoint16 inY) { return FromRaw(fix16_atan2(inX.value, inY.value)); }
-	static FixPoint16 sqrt(FixPoint16 inX) { return FromRaw(fix16_sqrt(inX.value)); }
+	static FixPoint16 sin(FixPoint16 inX) { return FromRawValue(fix16_sin(inX.value)); }
+	static FixPoint16 cos(FixPoint16 inX) { return FromRawValue(fix16_cos(inX.value)); }
+	static FixPoint16 tan(FixPoint16 inX) { return FromRawValue(fix16_tan(inX.value)); }
+	static FixPoint16 asin(FixPoint16 inX) { return FromRawValue(fix16_asin(inX.value)); }
+	static FixPoint16 acos(FixPoint16 inX) { return FromRawValue(fix16_acos(inX.value)); }
+	static FixPoint16 atan(FixPoint16 inX) { return FromRawValue(fix16_atan(inX.value)); }
+	static FixPoint16 atan2(FixPoint16 inX, FixPoint16 inY) { return FromRawValue(fix16_atan2(inX.value, inY.value)); }
+	static FixPoint16 sqrt(FixPoint16 inX) { return FromRawValue(fix16_sqrt(inX.value)); }
 	static FixPoint16 abs(FixPoint16 inX) { return (inX < 0) ? -inX : inX; }
 
 private:

@@ -23,10 +23,10 @@
 #include <string>
 
 // we need to use a macro here as leading zeros in m are important: FixPt(1, 5) != FixPt(1, 05)
-#define FixPt32(i,m) (FixPoint32::FromRaw(F32C(i,m)))
+#define FixPt32(i,m) (FixPoint32::FromRawValue(F32C(i,m)))
 
-#define FixPt32_PI (FixPoint32::FromRaw(fix32_pi))
-#define FixPt32_E (FixPoint32::FromRaw(fix32_e))
+#define FixPt32_PI (FixPoint32::FromRawValue(fix32_pi))
+#define FixPt32_E (FixPoint32::FromRawValue(fix32_e))
 
 class FixPoint32
 {
@@ -38,13 +38,13 @@ public:
 	/*explicit*/ FixPoint32(const float inValue)   { value = fix32_from_float(inValue); }
 //	/*explicit*/ FixPoint32(const double inValue)  { value = fix32_from_dbl(inValue);   }
 
-	static FixPoint32 FromRaw(const fix32_t value) {
+	static FixPoint32 FromRawValue(const fix32_t value) {
 		FixPoint32 x;
 		x.value = value;
 		return x;
 	}
 
-	fix32_t getRaw() const { return value; }
+	fix32_t getRawValue() const { return value; }
 
 	double toDouble() const { return fix32_to_dbl(value);   }
 	float toFloat() const   { return fix32_to_float(value); }
@@ -143,14 +143,14 @@ public:
     FixPoint32 operator++(int) { FixPoint32 old = *this; *this = *this + 1; return old; }
     FixPoint32 operator--(int) { FixPoint32 old = *this; *this = *this - 1; return old; }
 
-	static FixPoint32 sin(FixPoint32 inX) { return FromRaw(fix32_sin(inX.value)); }
-	static FixPoint32 cos(FixPoint32 inX) { return FromRaw(fix32_cos(inX.value)); }
-	static FixPoint32 tan(FixPoint32 inX) { return FromRaw(fix32_tan(inX.value)); }
-	static FixPoint32 asin(FixPoint32 inX) { return FromRaw(fix32_asin(inX.value)); }
-	static FixPoint32 acos(FixPoint32 inX) { return FromRaw(fix32_acos(inX.value)); }
-	static FixPoint32 atan(FixPoint32 inX) { return FromRaw(fix32_atan(inX.value)); }
-	static FixPoint32 atan2(FixPoint32 inX, FixPoint32 inY) { return FromRaw(fix32_atan2(inX.value, inY.value)); }
-	static FixPoint32 sqrt(FixPoint32 inX) { return FromRaw(fix32_sqrt(inX.value)); }
+	static FixPoint32 sin(FixPoint32 inX) { return FromRawValue(fix32_sin(inX.value)); }
+	static FixPoint32 cos(FixPoint32 inX) { return FromRawValue(fix32_cos(inX.value)); }
+	static FixPoint32 tan(FixPoint32 inX) { return FromRawValue(fix32_tan(inX.value)); }
+	static FixPoint32 asin(FixPoint32 inX) { return FromRawValue(fix32_asin(inX.value)); }
+	static FixPoint32 acos(FixPoint32 inX) { return FromRawValue(fix32_acos(inX.value)); }
+	static FixPoint32 atan(FixPoint32 inX) { return FromRawValue(fix32_atan(inX.value)); }
+	static FixPoint32 atan2(FixPoint32 inX, FixPoint32 inY) { return FromRawValue(fix32_atan2(inX.value, inY.value)); }
+	static FixPoint32 sqrt(FixPoint32 inX) { return FromRawValue(fix32_sqrt(inX.value)); }
 	static FixPoint32 abs(FixPoint32 inX) { return (inX < 0) ? -inX : inX; }
 
 private:
