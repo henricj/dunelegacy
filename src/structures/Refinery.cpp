@@ -31,7 +31,7 @@
 #include <GUI/ObjectInterfaces/RefineryAndSiloInterface.h>
 
 /* how fast is spice extracted */
-#define MAXIMUMHARVESTEREXTRACTSPEED 0.625f
+#define MAXIMUMHARVESTEREXTRACTSPEED FixPt(0,625)
 
 Refinery::Refinery(House* newOwner) : StructureBase(newOwner) {
     Refinery::init();
@@ -164,7 +164,7 @@ void Refinery::updateStructureSpecificStuff() {
 	    Harvester* pHarvester = (Harvester*) harvester.getObjPointer();
 
 		if(pHarvester->getAmountOfSpice() > 0.0f) {
-		    float extractionSpeed = MAXIMUMHARVESTEREXTRACTSPEED;
+		    FixPoint extractionSpeed = MAXIMUMHARVESTEREXTRACTSPEED;
 
 		    int scale = (int) (5*getHealth()/getMaxHealth());
 		    if(scale == 0) {

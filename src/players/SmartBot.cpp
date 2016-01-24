@@ -239,7 +239,7 @@ Coord SmartBot::findPlaceLocation(Uint32 itemID) {
 	if (minY < 0) minY = 0;
 	if (maxY >= getMap().getSizeY()) maxY = getMap().getSizeY() - structureSizeY;
 
-    float bestrating = 0.0f;
+    FixPoint bestrating = 0;
 	Coord bestLocation = Coord::Invalid();
 	int count = 0;
 	do {
@@ -252,39 +252,39 @@ Coord SmartBot::findPlaceLocation(Uint32 itemID) {
 
 		if(getMap().okayToPlaceStructure(pos.x, pos.y, structureSizeX, structureSizeY, false, (itemID == Structure_ConstructionYard) ? NULL : getHouse())
             && getMap().isAStructureGap(pos.x, pos.y, structureSizeX, structureSizeY)) { // Code to make a path between buildings
-            float rating;
+            FixPoint rating;
 
 		    switch(itemID) {
                 case Structure_Slab1: {
-                    rating = 10000000.0f;
+                    rating = 10000000;
                 } break;
 
                 case Structure_Refinery: {
                     // place near spice
                     Coord spicePos;
                     if(getMap().findSpice(spicePos, pos)) {
-                        rating = 10000000.0f - blockDistance(pos, spicePos);
+                        rating = 10000000 - blockDistance(pos, spicePos);
                     } else {
-                        rating = 10000000.0f;
+                        rating = 10000000;
                     }
                 } break;
 
 
                 case Structure_ConstructionYard: {
-                    float nearestUnit = 10000000.0f;
+                    FixPoint nearestUnit = 10000000;
 
                     RobustList<const UnitBase*>::const_iterator iter;
                     for(iter = getUnitList().begin(); iter != getUnitList().end(); ++iter) {
                         const UnitBase* pUnit = *iter;
                         if(pUnit->getOwner() == getHouse()) {
-                            float tmp = blockDistance(pos, pUnit->getLocation());
+                            FixPoint tmp = blockDistance(pos, pUnit->getLocation());
                             if(tmp < nearestUnit) {
                                 nearestUnit = tmp;
                             }
                         }
                     }
 
-                    rating = 10000000.0f - nearestUnit;
+                    rating = 10000000 - nearestUnit;
                 } break;
 
                 case Structure_Barracks:
@@ -295,14 +295,14 @@ Coord SmartBot::findPlaceLocation(Uint32 itemID) {
                 case Structure_WOR: {
                     // place near sand
 
-                    float nearestSand = 10000000.0f;
+                    FixPoint nearestSand = 10000000;
 
                     for(int y = 0 ; y < currentGameMap->getSizeY(); y++) {
                         for(int x = 0; x < currentGameMap->getSizeX(); x++) {
                             int type = currentGameMap->getTile(x,y)->getType();
 
                             if(type != Terrain_Rock || type != Terrain_Slab || type != Terrain_Mountain) {
-                                float tmp = blockDistance(pos, Coord(x,y));
+                                FixPoint tmp = blockDistance(pos, Coord(x,y));
                                 if(tmp < nearestSand) {
                                     nearestSand = tmp;
                                 }
@@ -310,7 +310,7 @@ Coord SmartBot::findPlaceLocation(Uint32 itemID) {
                         }
                     }
 
-                    rating = 10000000.0f - nearestSand;
+                    rating = 10000000 - nearestSand;
                     rating *= (1+getNumAdjacentStructureTiles(pos, structureSizeX, structureSizeY));
                 } break;
 
@@ -318,14 +318,14 @@ Coord SmartBot::findPlaceLocation(Uint32 itemID) {
                 case Structure_GunTurret:
                 case Structure_RocketTurret: {
                     // place towards enemy
-                    float nearestEnemy = 10000000.0f;
+                    FixPoint nearestEnemy = 10000000;
 
                     RobustList<const StructureBase*>::const_iterator iter2;
                     for(iter2 = getStructureList().begin(); iter2 != getStructureList().end(); ++iter2) {
                         const StructureBase* pStructure = *iter2;
                         if(pStructure->getOwner()->getTeam() != getHouse()->getTeam()) {
 
-                            float tmp = blockDistance(pos, pStructure->getLocation());
+                            FixPoint tmp = blockDistance(pos, pStructure->getLocation());
                             if(tmp < nearestEnemy) {
                                 nearestEnemy = tmp;
                             }
@@ -333,7 +333,7 @@ Coord SmartBot::findPlaceLocation(Uint32 itemID) {
                         }
                     }
 
-                    rating = 10000000.0f - nearestEnemy;
+                    rating = 10000000 - nearestEnemy;
                 } break;
 
                 case Structure_HighTechFactory:
@@ -344,14 +344,14 @@ Coord SmartBot::findPlaceLocation(Uint32 itemID) {
                 case Structure_WindTrap:
                 default: {
                     // place at a save place
-                    float nearestEnemy = 10000000.0f;
+                    FixPoint nearestEnemy = 10000000;
 
                     RobustList<const StructureBase*>::const_iterator iter2;
                     for(iter2 = getStructureList().begin(); iter2 != getStructureList().end(); ++iter2) {
                         const StructureBase* pStructure = *iter2;
                         if(pStructure->getOwner()->getTeam() != getHouse()->getTeam()) {
 
-                            float tmp = blockDistance(pos, pStructure->getLocation());
+                            FixPoint tmp = blockDistance(pos, pStructure->getLocation());
                             if(tmp < nearestEnemy) {
                                 nearestEnemy = tmp;
                             }

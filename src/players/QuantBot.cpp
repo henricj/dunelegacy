@@ -511,7 +511,7 @@ Coord QuantBot::findMcvPlaceLocation(const MCV* pMCV) {
                                                 2,
                                                 false,
                                                 NULL)){
-                    int locationScore = blockDistance(pMCV->getLocation(), placeLocation);
+                    int locationScore = lround(blockDistance(pMCV->getLocation(), placeLocation));
                     if(locationScore < bestLocationScore){
                         bestLocationScore = locationScore;
                         bestLocation.x = placeLocationX;
@@ -676,9 +676,9 @@ Coord QuantBot::findPlaceLocation(Uint32 itemID) {
                                    Add building specific scores
                                 */
                                 if(existingIsBuilder || itemID == Structure_GunTurret || itemID == Structure_RocketTurret){
-                                    buildLocationScore[placeLocationX][placeLocationY] -= 0.5 * blockDistance(squadRallyLocation, Coord(placeLocationX,placeLocationY));
+                                    buildLocationScore[placeLocationX][placeLocationY] -= lround(blockDistance(squadRallyLocation, Coord(placeLocationX,placeLocationY))/2);
 
-                                    buildLocationScore[placeLocationX][placeLocationY] -= blockDistance(findBaseCentre(getHouse()->getHouseID()), Coord(placeLocationX,placeLocationY));
+                                    buildLocationScore[placeLocationX][placeLocationY] -= lround(blockDistance(findBaseCentre(getHouse()->getHouseID()), Coord(placeLocationX,placeLocationY)));
                                 }
 
                                 // Pick this location if it has the best score
@@ -2001,9 +2001,9 @@ void QuantBot::attack() {
         tempLim = 60000;
     }
 
-    float strength = ((float)militaryValue + 1) / ((float)tempLim) + 0.03;
+    FixPoint strength = (FixPoint(militaryValue) + 1) / (FixPoint(tempLim)) + FixPt(0,03);
 
-    float newAttack = 15000 / strength;
+    FixPoint newAttack = 15000 / strength;
 
 
 
@@ -2017,7 +2017,7 @@ void QuantBot::attack() {
 
 
     // only attack if we have 35% of maximum military power on max sized map. Required military power scales down accordingly
-    if(militaryValue < militaryValueLimit * 0.35 * currentGameMap->getSizeX() * currentGameMap->getSizeY() / 16384
+    if(militaryValue < militaryValueLimit * FixPt(0,35) * currentGameMap->getSizeX() * currentGameMap->getSizeY() / 16384
        && militaryValue < 20000){
 
         return;
@@ -2025,7 +2025,7 @@ void QuantBot::attack() {
 
     // In campaign mode don't attack if  the attack trigger isn't set
     // And don't attack with less than 40% of your limit
-    if((!campaignAIAttackFlag || militaryValue < militaryValueLimit * 0.80) && gameMode == CAMPAIGN){
+    if((!campaignAIAttackFlag || militaryValue < militaryValueLimit * FixPt(0,80)) && gameMode == CAMPAIGN){
 
         return;
     }
@@ -2040,7 +2040,7 @@ void QuantBot::attack() {
             difficulty,
             militaryValue,
             militaryValueLimit,
-            strength,
+            strength.toFloat(),
             attackTimer);
 
     Coord squadCenterLocation = findSquadCenter(getHouse()->getHouseID());
@@ -2069,12 +2069,12 @@ void QuantBot::attack() {
                 Only units within the squad should hunt, safety in numbers
 
             **/
-            && blockDistance(pUnit->getLocation(), squadCenterLocation) < sqrt(getHouse()->getNumUnits()
-                                                                                - getHouse()->getNumItems(Unit_Harvester)
-                                                                                - getHouse()->getNumItems(Unit_Carryall)
-                                                                                - getHouse()->getNumItems(Unit_Ornithopter)
-                                                                                - getHouse()->getNumItems(Unit_Sandworm)
-                                                                                - getHouse()->getNumItems(Unit_MCV)) + 6)
+            && blockDistance(pUnit->getLocation(), squadCenterLocation) < FixPoint::sqrt(getHouse()->getNumUnits()
+                                                                                         - getHouse()->getNumItems(Unit_Harvester)
+                                                                                         - getHouse()->getNumItems(Unit_Carryall)
+                                                                                         - getHouse()->getNumItems(Unit_Ornithopter)
+                                                                                         - getHouse()->getNumItems(Unit_Sandworm)
+                                                                                         - getHouse()->getNumItems(Unit_MCV)) + 6)
 
         {
 
@@ -2235,7 +2235,7 @@ void QuantBot::retreatAllUnits() {
     retreatTimer = MILLI2CYCLES(90000);
 
 
-    float	closestDistance = INFINITY;
+    FixPoint	closestDistance = FixPt_MAX;
 
     RobustList<StructureBase*>::const_iterator iter;
     for(iter = structureList.begin(); iter != structureList.end(); ++iter) {
@@ -2244,7 +2244,7 @@ void QuantBot::retreatAllUnits() {
         // if it is our building, check to see if it is closer to the squad rally point then we are
         if(tempStructure->getOwner()->getHouseID() == getHouse()->getHouseID()) {
             Coord closestStructurePoint = tempStructure->getClosestPoint(squadRallyLocation);
-            float structureDistance = blockDistance(squadRallyLocation, closestStructurePoint);
+            FixPoint structureDistance = blockDistance(squadRallyLocation, closestStructurePoint);
 
             if(structureDistance < closestDistance)	{
                 closestDistance = structureDistance;

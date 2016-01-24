@@ -84,7 +84,7 @@ void Tile::load(InputStream& stream) {
 	owner = stream.readSint32();
 	sandRegion = stream.readUint32();
 
-	spice = stream.readFloat();
+	spice = stream.readFixPoint();
 
 	bool bHasDamage, bHasDeadUnits, bHasAirUnits, bHasInfantry, bHasUndergroundUnits, bHasNonInfantryGroundObjects;
 	stream.readBools(&bHasDamage, &bHasDeadUnits, &bHasAirUnits, &bHasInfantry, &bHasUndergroundUnits, &bHasNonInfantryGroundObjects);
@@ -162,7 +162,7 @@ void Tile::save(OutputStream& stream) const {
 	stream.writeUint32(owner);
 	stream.writeUint32(sandRegion);
 
-	stream.writeFloat(spice);
+	stream.writeFixPoint(spice);
 
 	stream.writeBools(  !damage.empty(), !deadUnits.empty(), !assignedAirUnitList.empty(),
                         !assignedInfantryList.empty(), !assignedUndergroundUnitList.empty(), !assignedNonInfantryGroundObjectList.empty());
@@ -807,7 +807,7 @@ ObjectBase* Tile::getObjectAt(int x, int y) {
 	else if (hasANonInfantryGroundObject())
 		temp = getNonInfantryGroundObject();
 	else if (hasInfantry())	{
-		float closestDistance = INFINITY;
+		FixPoint closestDistance = FixPt_MAX;
 		Coord atPos, centerPoint;
 		InfantryBase* infantry;
 		atPos.x = x;

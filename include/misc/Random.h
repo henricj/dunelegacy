@@ -18,6 +18,8 @@
 #ifndef RANDOM_H
 #define RANDOM_H
 
+#include <libfixmath/FixPoint.h>
+
 #include <SDL.h>
 
 /// A class for generating random numbers (there are better algorithms but this one is quite fast)
@@ -124,6 +126,16 @@ public:
 	inline double randDouble() {
 		return ((double) rand()) / ((double) getMaxRandom());
 	}
+
+	/**
+		Returns an FixPoint value on the interval [0;1]
+		\return a random FixPoint on [0;1]
+	*/
+	inline FixPoint randFixPoint() {
+		return FixPoint(rand()) / getMaxRandom();
+	}
+
+
 
 	/**
 		Returns an boolean value

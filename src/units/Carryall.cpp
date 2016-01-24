@@ -68,7 +68,7 @@ Carryall::Carryall(InputStream& stream) : AirUnit(stream)
 
     stream.readBools(&booked, &idle, &firstRun, &owned, &aDropOfferer, &droppedOffCargo);
 
-	currentMaxSpeed = stream.readFloat();
+	currentMaxSpeed = stream.readFixPoint();
 
 	curFlyPoint = stream.readUint8();
 	for(int i=0; i < 8; i++) {
@@ -107,7 +107,7 @@ void Carryall::save(OutputStream& stream) const
 
     stream.writeBools(booked, idle, firstRun, owned, aDropOfferer, droppedOffCargo);
 
-	stream.writeFloat(currentMaxSpeed);
+	stream.writeFixPoint(currentMaxSpeed);
 
 	stream.writeUint8(curFlyPoint);
 	for(int i=0; i < 8; i++) {
@@ -167,7 +167,6 @@ void Carryall::checkPos()
 
 	if (active)	{
 		if (hasCargo() && (location == destination) && (distanceFrom(realX, realY, destination.x * TILESIZE + (TILESIZE/2), destination.y * TILESIZE + (TILESIZE/2)) < TILESIZE/8) ) {
-
 		    // drop up to 3 infantry units at once or one other unit
             int droppedUnits = 0;
             do {
@@ -447,7 +446,7 @@ void Carryall::giveCargo(UnitBase* newUnit)
 
 void Carryall::pickupTarget()
 {
-    currentMaxSpeed = 0.0f;
+    currentMaxSpeed = 0;
     setSpeeds();
 
     ObjectBase* pTarget = target.getObjPointer();
@@ -455,9 +454,9 @@ void Carryall::pickupTarget()
 	if(pTarget->isAGroundUnit()) {
         GroundUnit* pGroundUnitTarget = dynamic_cast<GroundUnit*>(pTarget);
 
-        if(pTarget->getHealth() <= 0.0f) {
+        if(pTarget->getHealth() <= 0) {
             // unit died just in the moment we tried to pick it up => carryall also crushes
-            setHealth(0.0f);
+            setHealth(0);
             return;
         }
 
@@ -535,7 +534,7 @@ void Carryall::targeting() {
 
 
 void Carryall::findConstYard() {
-    float	closestYardDistance = 1000000.0f;
+    FixPoint closestYardDistance = 1000000;
     ConstructionYard* bestYard = NULL;
 
     RobustList<StructureBase*>::const_iterator iter;
@@ -545,7 +544,7 @@ void Carryall::findConstYard() {
         if((tempStructure->getItemID() == Structure_ConstructionYard) && (tempStructure->getOwner() == owner)) {
             ConstructionYard* tempYard = ((ConstructionYard*) tempStructure);
             Coord closestPoint = tempYard->getClosestPoint(location);
-            float tempDistance = distanceFrom(location, closestPoint);
+            FixPoint tempDistance = distanceFrom(location, closestPoint);
 
             if(tempDistance < closestYardDistance) {
                 closestYardDistance = tempDistance;

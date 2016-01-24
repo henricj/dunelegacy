@@ -177,7 +177,7 @@ void InfantryBase::checkPos() {
 		walkFrame = 0;
 
 		if(currentGameMap->getTile(location)->isSpiceBloom()) {
-		    setHealth(0.0f);
+		    setHealth(0);
 			currentGameMap->getTile(location)->triggerSpiceBloom(getOwner());
 		} else if(currentGameMap->getTile(location)->isSpecialBloom()){
             currentGameMap->getTile(location)->triggerSpecialBloom(getOwner());
@@ -192,7 +192,7 @@ void InfantryBase::checkPos() {
 
             closestPoint = target.getObjPointer()->getClosestPoint(location);
 
-            if(blockDistance(location, closestPoint) <= 0.5f) {
+            if(blockDistance(location, closestPoint) <= FixPt(0,5)) {
                 StructureBase* pCapturedStructure = target.getStructurePointer();
                 if(pCapturedStructure->getHealthColor() == COLOR_RED) {
                     House* pOwner = pCapturedStructure->getOwner();
@@ -200,11 +200,11 @@ void InfantryBase::checkPos() {
                     int posX = pCapturedStructure->getX();
                     int posY = pCapturedStructure->getY();
                     int origHouse = pCapturedStructure->getOriginalHouseID();
-                    int oldHealth = pCapturedStructure->getHealth();
+                    int oldHealth = lround(pCapturedStructure->getHealth());
                     bool isSelected = pCapturedStructure->isSelected();
                     bool isSelectedByOtherPlayer = pCapturedStructure->isSelectedByOtherPlayer();
 
-                    float capturedSpice = 0.0f;
+                    FixPoint capturedSpice = 0;
 
                     UnitBase* pContainedUnit = NULL;
 
@@ -224,8 +224,8 @@ void InfantryBase::checkPos() {
                     }
 
                     Uint32 containedUnitID = NONE;
-                    float containedUnitHealth = 0.0f;
-                    float containedHarvesterSpice = 0.0f;
+                    FixPoint containedUnitHealth = 0;
+                    FixPoint containedHarvesterSpice = 0;
                     if(pContainedUnit != NULL) {
                         containedUnitID = pContainedUnit->getItemID();
                         containedUnitHealth = pContainedUnit->getHealth();
@@ -259,7 +259,7 @@ void InfantryBase::checkPos() {
 
 
                     // destroy captured structure ...
-                    pCapturedStructure->setHealth(0.0f);
+                    pCapturedStructure->setHealth(0);
                     delete pCapturedStructure;
 
                     // ... and create a new one
@@ -307,22 +307,22 @@ void InfantryBase::checkPos() {
                     owner->updateBuildLists();
 
                 } else {
-                    int damage = std::min(pCapturedStructure->getHealth()/2, getHealth()*2);
+                    int damage = lround(std::min(pCapturedStructure->getHealth()/2, getHealth()*2));
                     pCapturedStructure->handleDamage(damage, NONE, getOwner());
                 }
                 // destroy unit indirectly
                 setTarget(NULL);
-                setHealth(0.0f);
+                setHealth(0);
                 return;
             }
         } else if(target.getObjPointer() != NULL && target.getObjPointer()->isAStructure())	{
             Coord	closestPoint;
             closestPoint = target.getObjPointer()->getClosestPoint(location);
 
-            if(blockDistance(location, closestPoint) <= 0.5f) {
+            if(blockDistance(location, closestPoint) <= FixPt(0,5)) {
                 // destroy unit indirectly
                 setTarget(NULL);
-                setHealth(0.0f);
+                setHealth(0);
                 return;
             }
         }
@@ -373,21 +373,21 @@ void InfantryBase::move() {
 
 
         // check if unit is on the first half of the way
-        float fromDistanceX;
-        float fromDistanceY;
-		float toDistanceX;
-		float toDistanceY;
+        FixPoint fromDistanceX;
+        FixPoint fromDistanceY;
+		FixPoint toDistanceX;
+		FixPoint toDistanceY;
 
-        const float epsilon = 3.75f;
+        const FixPoint epsilon = FixPt(3,75);
 
 		if(location != nextSpot) {
-		    float abstractDistanceX = strictmath::abs(location.x*TILESIZE + TILESIZE/2 - (realX-bumpyOffsetX));
-		    float abstractDistanceY = strictmath::abs(location.y*TILESIZE + TILESIZE/2 - (realY-bumpyOffsetY));
+		    FixPoint abstractDistanceX = FixPoint::abs(location.x*TILESIZE + TILESIZE/2 - (realX-bumpyOffsetX));
+		    FixPoint abstractDistanceY = FixPoint::abs(location.y*TILESIZE + TILESIZE/2 - (realY-bumpyOffsetY));
 
-            fromDistanceX = strictmath::abs(location.x*TILESIZE + TILESIZE/2 + tilePositionOffset[oldTilePosition].x - (realX-bumpyOffsetX));
-		    fromDistanceY = strictmath::abs(location.y*TILESIZE + TILESIZE/2 + tilePositionOffset[oldTilePosition].y - (realY-bumpyOffsetY));
-		    toDistanceX = strictmath::abs(nextSpot.x*TILESIZE + TILESIZE/2 + tilePositionOffset[tilePosition].x - (realX-bumpyOffsetX));
-		    toDistanceY = strictmath::abs(nextSpot.y*TILESIZE + TILESIZE/2 + tilePositionOffset[tilePosition].y - (realY-bumpyOffsetY));
+            fromDistanceX = FixPoint::abs(location.x*TILESIZE + TILESIZE/2 + tilePositionOffset[oldTilePosition].x - (realX-bumpyOffsetX));
+		    fromDistanceY = FixPoint::abs(location.y*TILESIZE + TILESIZE/2 + tilePositionOffset[oldTilePosition].y - (realY-bumpyOffsetY));
+		    toDistanceX = FixPoint::abs(nextSpot.x*TILESIZE + TILESIZE/2 + tilePositionOffset[tilePosition].x - (realX-bumpyOffsetX));
+		    toDistanceY = FixPoint::abs(nextSpot.y*TILESIZE + TILESIZE/2 + tilePositionOffset[tilePosition].y - (realY-bumpyOffsetY));
 
 		    // check if unit is half way out of old tile
             if((abstractDistanceX >= TILESIZE/2 + epsilon) || (abstractDistanceY >= TILESIZE/2 + epsilon)) {
@@ -400,10 +400,10 @@ void InfantryBase::move() {
 		    }
 
 		} else {
-            fromDistanceX = strictmath::abs(oldLocation.x*TILESIZE + TILESIZE/2 + tilePositionOffset[oldTilePosition].x - (realX-bumpyOffsetX));
-		    fromDistanceY = strictmath::abs(oldLocation.y*TILESIZE + TILESIZE/2 + tilePositionOffset[oldTilePosition].y - (realY-bumpyOffsetY));
-		    toDistanceX = strictmath::abs(location.x*TILESIZE + TILESIZE/2 + tilePositionOffset[tilePosition].x - (realX-bumpyOffsetX));
-		    toDistanceY = strictmath::abs(location.y*TILESIZE + TILESIZE/2 + tilePositionOffset[tilePosition].y - (realY-bumpyOffsetY));
+            fromDistanceX = FixPoint::abs(oldLocation.x*TILESIZE + TILESIZE/2 + tilePositionOffset[oldTilePosition].x - (realX-bumpyOffsetX));
+		    fromDistanceY = FixPoint::abs(oldLocation.y*TILESIZE + TILESIZE/2 + tilePositionOffset[oldTilePosition].y - (realY-bumpyOffsetY));
+		    toDistanceX = FixPoint::abs(location.x*TILESIZE + TILESIZE/2 + tilePositionOffset[tilePosition].x - (realX-bumpyOffsetX));
+		    toDistanceY = FixPoint::abs(location.y*TILESIZE + TILESIZE/2 + tilePositionOffset[tilePosition].y - (realY-bumpyOffsetY));
 
             Coord	wantedReal;
             wantedReal.x = nextSpot.x*TILESIZE + TILESIZE/2 + tilePositionOffset[tilePosition].x;
@@ -413,8 +413,8 @@ void InfantryBase::move() {
                 && (FixPoint::abs(wantedReal.y - (realY-bumpyOffsetY)) <= FixPoint::abs(ySpeed)/2 + epsilon) ) {
                 realX = wantedReal.x;
                 realY = wantedReal.y;
-                bumpyOffsetX = 0.0f;
-                bumpyOffsetY = 0.0f;
+                bumpyOffsetX = 0;
+                bumpyOffsetY = 0;
 
                 if(forced && (location == destination) && !target) {
                     setForced(false);
@@ -481,7 +481,7 @@ void InfantryBase::setSpeeds() {
 		dx -= sx;
 		dy -= sy;
 
-		float scale = currentGame->objectData.data[itemID][originalHouseID].maxspeed/std::sqrt((float)(dx*dx + dy*dy));
+		FixPoint scale = currentGame->objectData.data[itemID][originalHouseID].maxspeed/FixPoint::sqrt((dx*dx + dy*dy));
 		xSpeed = dx*scale;
 		ySpeed = dy*scale;
 	}

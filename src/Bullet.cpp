@@ -64,34 +64,34 @@ Bullet::Bullet(Uint32 shooterID, Coord* newRealLocation, Coord* newRealDestinati
 			diffY = weaponrange*TILESIZE;
 		}
 
-		float square_root = strictmath::sqrt((float)(diffX*diffX + diffY*diffY));
-		float ratio = (weaponrange*TILESIZE)/square_root;
-		destination.x = newRealLocation->x + (int)(((float)diffX)*ratio);
-		destination.y = newRealLocation->y + (int)(((float)diffY)*ratio);
+		FixPoint square_root = FixPoint::sqrt(diffX*diffX + diffY*diffY);
+		FixPoint ratio = (weaponrange*TILESIZE)/square_root;
+		destination.x = newRealLocation->x + (int)(diffX*ratio);
+		destination.y = newRealLocation->y + (int)(diffY*ratio);
 	} else if(bulletID == Bullet_Rocket || bulletID == Bullet_DRocket) {
-	    float distance = distanceFrom(*newRealLocation, *newRealDestination);
+	    FixPoint distance = distanceFrom(*newRealLocation, *newRealDestination);
 
 
-        float randAngle = 2.0f * strictmath::pi * currentGame->randomGen.randFloat();
-        int radius = currentGame->randomGen.rand(0,TILESIZE/2 + (distance/TILESIZE));
+        FixPoint randAngle = 2 * FixPt_PI * currentGame->randomGen.randFixPoint();
+        int radius = currentGame->randomGen.rand(0,lround(TILESIZE/2 + (distance/TILESIZE)));
 
-        destination.x += strictmath::cos(randAngle) * radius;
-        destination.y -= strictmath::sin(randAngle) * radius;
+        destination.x += lround(FixPoint::cos(randAngle) * radius);
+        destination.y -= lround(FixPoint::sin(randAngle) * radius);
 
 	}
 
-	realX = (float)newRealLocation->x;
-	realY = (float)newRealLocation->y;
+	realX = newRealLocation->x;
+	realY = newRealLocation->y;
 	source.x = newRealLocation->x;
 	source.y = newRealLocation->y;
 	location.x = newRealLocation->x/TILESIZE;
 	location.y = newRealLocation->y/TILESIZE;
 
 	angle = destinationAngle(*newRealLocation, *newRealDestination);
-	drawnAngle = (int) (numFrames*angle/256);
+	drawnAngle = lround(numFrames*angle/256);
 
-    xSpeed = speed * strictmath::cos(angle * conv2char);
-	ySpeed = speed * -strictmath::sin(angle * conv2char);
+    xSpeed = speed * FixPoint::cos(angle * conv2char);
+	ySpeed = speed * -FixPoint::sin(angle * conv2char);
 }
 
 Bullet::Bullet(InputStream& stream)
@@ -115,14 +115,14 @@ Bullet::Bullet(InputStream& stream)
 	destination.y = stream.readSint32();
     location.x = stream.readSint32();
 	location.y = stream.readSint32();
-	realX = stream.readFloat();
-	realY = stream.readFloat();
+	realX = stream.readFixPoint();
+	realY = stream.readFixPoint();
 
-    xSpeed = stream.readFloat();
-	ySpeed = stream.readFloat();
+    xSpeed = stream.readFixPoint();
+	ySpeed = stream.readFixPoint();
 
 	drawnAngle = stream.readSint8();
-    angle = stream.readFloat();
+    angle = stream.readFixPoint();
 
 	Bullet::init();
 
@@ -255,14 +255,14 @@ void Bullet::save(OutputStream& stream) const
 	stream.writeSint32(destination.y);
     stream.writeSint32(location.x);
 	stream.writeSint32(location.y);
-	stream.writeFloat(realX);
-	stream.writeFloat(realY);
+	stream.writeFixPoint(realX);
+	stream.writeFixPoint(realY);
 
-    stream.writeFloat(xSpeed);
-	stream.writeFloat(ySpeed);
+    stream.writeFixPoint(xSpeed);
+	stream.writeFixPoint(ySpeed);
 
 	stream.writeSint8(drawnAngle);
-    stream.writeFloat(angle);
+    stream.writeFixPoint(angle);
 
     stream.writeSint8(detonationTimer);
 }
@@ -353,16 +353,16 @@ void Bullet::update()
 {
 	if(bulletID == Bullet_Rocket || bulletID == Bullet_DRocket) {
 
-        float angleToDestination = destinationAngle(Coord(realX.roundToInt(), realY.roundToInt()), destination);
+        FixPoint angleToDestination = destinationAngle(Coord(realX.roundToInt(), realY.roundToInt()), destination);
 
-        float angleDiff = angleToDestination - angle;
-        if(angleDiff > 128.0f) {
-            angleDiff -= 256.0f;
-        } else if(angleDiff < -128.0f) {
-            angleDiff += 256.0f;
+        FixPoint angleDiff = angleToDestination - angle;
+        if(angleDiff > 128) {
+            angleDiff -= 256;
+        } else if(angleDiff < -128) {
+            angleDiff += 256;
         }
 
-        static const float turnSpeed = 4.5f;
+        static const FixPoint turnSpeed = FixPt(4,5);
 
         if(angleDiff >= turnSpeed) {
             angleDiff = turnSpeed;
@@ -378,10 +378,10 @@ void Bullet::update()
             angle -= 256;
         }
 
-        xSpeed = speed * strictmath::cos(angle * conv2char);
-        ySpeed = speed * -strictmath::sin(angle * conv2char);
+        xSpeed = speed * FixPoint::cos(angle * conv2char);
+        ySpeed = speed * -FixPoint::sin(angle * conv2char);
 
-        drawnAngle = (int) (numFrames*angle/256);
+        drawnAngle = lround(numFrames*angle/256);
     }
 
 
@@ -411,24 +411,24 @@ void Bullet::update()
                 return;
             }
 
-            float weaponDamage = currentGame->objectData.data[Unit_SonicTank][(owner == NULL) ? HOUSE_ATREIDES : owner->getHouseID()].weapondamage;
+            FixPoint weaponDamage = currentGame->objectData.data[Unit_SonicTank][(owner == NULL) ? HOUSE_ATREIDES : owner->getHouseID()].weapondamage;
 
-	        float startDamage = (weaponDamage / 4.0f + 1.0f) / 3.0f;
-	        float endDamage = ((weaponDamage-9) / 4.0f + 1.0f) / 3.0f;
+	        FixPoint startDamage = (weaponDamage / 4 + 1) / 3;
+	        FixPoint endDamage = ((weaponDamage-9) / 4 + 1) / 3;
 
-		    float damageDecrease = - (startDamage-endDamage)/(30.0f * 2.0f * speed);
-		    float dist = distanceFrom(source.x, source.y, realX, realY);
+		    FixPoint damageDecrease = - (startDamage-endDamage)/(30 * 2 * speed);
+		    FixPoint dist = distanceFrom(source.x, source.y, realX, realY);
 
-		    float currentDamage = dist*damageDecrease + startDamage;
+		    FixPoint currentDamage = dist*damageDecrease + startDamage;
 
             Coord realPos = Coord(lround(realX), lround(realY));
-            currentGameMap->damage(shooterID, owner, realPos, bulletID, currentDamage/2.0f, damageRadius, false);
+            currentGameMap->damage(shooterID, owner, realPos, bulletID, currentDamage/2, damageRadius, false);
 
             realX += xSpeed;  //keep the bullet moving by its current speeds
             realY += ySpeed;
 
             realPos = Coord(lround(realX), lround(realY));
-            currentGameMap->damage(shooterID, owner, realPos, bulletID, currentDamage/2.0f, damageRadius, false);
+            currentGameMap->damage(shooterID, owner, realPos, bulletID, currentDamage/2, damageRadius, false);
 		} else if( explodesAtGroundObjects
                     && currentGameMap->tileExists(location)
                     && currentGameMap->getTile(location)->hasAGroundObject()

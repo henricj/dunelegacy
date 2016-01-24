@@ -43,7 +43,7 @@ TankBase::TankBase(House* newOwner) : TrackedUnit(newOwner) {
 TankBase::TankBase(InputStream& stream) : TrackedUnit(stream) {
     TankBase::init();
 
-	turretAngle = stream.readFloat();
+	turretAngle = stream.readFixPoint();
     drawnTurretAngle = stream.readSint8();
 
 	closeTarget.load(stream);
@@ -62,7 +62,7 @@ TankBase::~TankBase() {
 void TankBase::save(OutputStream& stream) const {
 	TrackedUnit::save(stream);
 
-	stream.writeFloat(turretAngle);
+	stream.writeFixPoint(turretAngle);
 	stream.writeSint8(drawnTurretAngle);
 
 	closeTarget.save(stream);
@@ -150,7 +150,7 @@ void TankBase::engageTarget() {
 
     if(closeTarget) {
         Coord targetLocation = closeTarget.getObjPointer()->getClosestPoint(location);
-        float closeTargetDistance = blockDistance(location, targetLocation);
+        FixPoint closeTargetDistance = blockDistance(location, targetLocation);
 
         if(closeTargetDistance > getWeaponRange()) {
             // we are too far away
@@ -158,7 +158,7 @@ void TankBase::engageTarget() {
             return;
         }
 
-        targetAngle = lround(8.0f/256.0f*destinationAngle(location, targetLocation));
+        targetAngle = lround(8*destinationAngle(location, targetLocation)/256);
         if(targetAngle == 8) {
             targetAngle = 0;
         }
@@ -184,8 +184,8 @@ void TankBase::targeting() {
 }
 
 void TankBase::turn() {
-	float	angleLeft = 0.0f;
-    float   angleRight = 0.0f;
+	FixPoint angleLeft = 0;
+    FixPoint angleRight = 0;
 
 	if(!moving && !justStoppedMoving) {
 		if(nextSpotAngle != INVALID) {
@@ -224,9 +224,9 @@ void TankBase::turn() {
 
 void TankBase::turnTurretLeft() {
 	turretAngle += turretTurnSpeed;
-	if(turretAngle >= 7.5f) {
+	if(turretAngle >= FixPt(7,5)) {
 	    drawnTurretAngle = lround(turretAngle) - 8;
-        turretAngle -= 8.0f;
+        turretAngle -= 8;
 	} else {
         drawnTurretAngle = lround(turretAngle);
 	}

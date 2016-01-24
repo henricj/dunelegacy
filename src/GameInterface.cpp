@@ -135,7 +135,7 @@ void GameInterface::draw(SDL_Surface* screen, Point position) {
 		if (pLocalHouse->getCapacity() == 0) {
 			yCount2 = 0;
 		} else {
-			yCount2 = lround((double)pLocalHouse->getStoredCredits()/(double)pLocalHouse->getCapacity()*(double)SpiceIndicatorPos.h);
+			yCount2 = lround((pLocalHouse->getStoredCredits()/pLocalHouse->getCapacity())*SpiceIndicatorPos.h);
 		}
 
 		if (yCount2 > SpiceIndicatorPos.h + 1) {

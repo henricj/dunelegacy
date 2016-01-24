@@ -30,8 +30,8 @@
 
 #define MAX_PLAYERNAMELENGHT    24
 
-#define DIAGONALSPEEDCONST 0.70710678118654752440084436210485f
-#define DIAGONALCOST 1.4142135623730950488016887242097f
+#define DIAGONALSPEEDCONST FixPt(0,707106781)
+#define DIAGONALCOST FixPt(1,414213562)
 
 
 #define GAMESPEED_MAX 32
@@ -56,7 +56,7 @@
 #define RANDOMSPICEMAX (111 + 37)
 #define RANDOMTHICKSPICEMIN (222 - 74)
 #define RANDOMTHICKSPICEMAX (222 + 74)
-#define conv2char 2.0f * 3.1415926535897932384626433832795f / 256
+#define conv2char ((2 * FixPt_PI) / 256)
 
 #define TILESIZE    64		        // size of tile pieces 16x16 in zoom level 0
 
@@ -71,15 +71,15 @@
 
 #define DEVIATIONTIME MILLI2CYCLES(120*1000)
 #define HARVESTERMAXSPICE 700
-#define HARVESTSPEED 0.1344f
-#define BADLYDAMAGEDRATIO 0.5f	                //if health/getMaxHealth() < this, damage will become bad - smoke and shit
-#define HEAVILYDAMAGEDRATIO 0.25f	            //if health/getMaxHealth() < this, damage will become heavy damage - red color
-#define HEAVILYDAMAGEDSPEEDMULTIPLIER 0.75f
+#define HARVESTSPEED FixPt(0,1344)
+#define BADLYDAMAGEDRATIO FixPt(0,5)	                //if health/getMaxHealth() < this, damage will become bad - smoke and shit
+#define HEAVILYDAMAGEDRATIO FixPt(0,25)	            //if health/getMaxHealth() < this, damage will become heavy damage - red color
+#define HEAVILYDAMAGEDSPEEDMULTIPLIER FixPt(0,75)
 #define NUMSELECTEDLISTS 9
 #define NUM_INFANTRY_PER_TILE 5		            //how many infantry can fit on a tile
 #define LASTSANDFRAME 2	                        //is number spice output frames - 1
 
-#define UNIT_REPAIRCOST 0.1f
+#define UNIT_REPAIRCOST FixPt(0,1)
 #define DEFAULT_GUARDRANGE 10			        //0 - 10, how far unit will search for enemy when guarding
 #define DEFAULT_STARTINGCREDITS 3000
 

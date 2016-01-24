@@ -109,7 +109,7 @@ protected:
 			upgradeButton.setEnabled(!pBuilder->isUpgrading());
 
 			if(pBuilder->isUpgrading()) {
-				upgradeProgressBar.setProgress((pBuilder->getUpgradeProgress() * 100)/pBuilder->getUpgradeCost());
+				upgradeProgressBar.setProgress( ((pBuilder->getUpgradeProgress() * 100)/pBuilder->getUpgradeCost()).toDouble() );
 			}
 
 			if(pBuilder->getHealth() >= pBuilder->getMaxHealth()) {

@@ -310,9 +310,9 @@ void BuilderList::draw(SDL_Surface* screen, Point position) {
                     SDL_BlitSurface(textSurface, NULL, screen, &drawLocation);
                     SDL_FreeSurface(textSurface);
 				} else if(iter->itemID == pBuilder->getCurrentProducedItem()) {
-					float progress = pBuilder->getProductionProgress();
-					float price = (float) iter->price;
-					int max_x = lround((progress/price)*(float)BUILDERBTN_WIDTH);
+					FixPoint progress = pBuilder->getProductionProgress();
+					FixPoint price = iter->price;
+					int max_x = lround((progress/price)*BUILDERBTN_WIDTH);
 
 					if(!SDL_MUSTLOCK(screen) || (SDL_LockSurface(screen) == 0)) {
 						for(int x = 0; x < max_x; x++) {

@@ -25,6 +25,7 @@
 // we need to use a macro here as leading zeros in m are important: FixPt(1, 5) != FixPt(1, 05)
 #define FixPt32(i,m) (FixPoint32::FromRawValue(F32C(i,m)))
 
+#define FixPt32_MAX (FixPoint32::FromRawValue(fix32_maximum))
 #define FixPt32_PI (FixPoint32::FromRawValue(fix32_pi))
 #define FixPt32_E (FixPoint32::FromRawValue(fix32_e))
 
@@ -35,8 +36,11 @@ public:
 	FixPoint32(const FixPoint32& inValue)        { value = inValue.value;             }
 	FixPoint32(const int inValue)                { value = fix32_from_int(inValue); }
 	FixPoint32(const unsigned int inValue)       { value = fix32_from_int(static_cast<int>(inValue)); }
-	/*explicit*/ FixPoint32(const float inValue)   { value = fix32_from_float(inValue); }
+	explicit FixPoint32(const float inValue)     { value = fix32_from_float(inValue); }
 //	/*explicit*/ FixPoint32(const double inValue)  { value = fix32_from_dbl(inValue);   }
+	explicit FixPoint32(std::string inValue) {
+        value = fix32_from_str(inValue.c_str());
+    }
 
 	static FixPoint32 FromRawValue(const fix32_t value) {
 		FixPoint32 x;
@@ -56,7 +60,7 @@ public:
 
 
 //    operator double()  const { return fix32_to_dbl(value);   }
-    operator float()   const { return fix32_to_float(value); }
+//    operator float()   const { return fix32_to_float(value); }
     explicit operator int() const { return fix32_to_int(value);   }
 
 	int roundToInt() const       { return fix32_to_int(value);   }
@@ -190,5 +194,8 @@ static inline bool operator<(float value, const FixPoint32 other) { return other
 static inline bool operator>(int value, const FixPoint32 other) { return other.operator<=(value); }
 static inline bool operator>(unsigned int value, const FixPoint32 other) { return other.operator<=(value); }
 static inline bool operator>(float value, const FixPoint32 other) { return other.operator<=(value); }
+
+
+static inline int lround(FixPoint32 value) { return value.roundToInt(); }
 
 #endif // FIXPOINT32_H

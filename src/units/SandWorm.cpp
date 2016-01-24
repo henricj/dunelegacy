@@ -433,7 +433,7 @@ const ObjectBase* Sandworm::findTarget() const {
 	const ObjectBase* closestTarget = NULL;
 
 	if(attackMode == HUNT) {
-	    float closestDistance = INFINITY;
+	    FixPoint closestDistance = FixPt_MAX;
 
         RobustList<UnitBase*>::const_iterator iter;
 	    for(iter = unitList.begin(); iter != unitList.end(); ++iter) {

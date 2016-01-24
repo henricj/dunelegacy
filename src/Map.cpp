@@ -153,7 +153,7 @@ void Map::damage(Uint32 damagerID, House* damagerOwner, const Coord& realPos, Ui
 
 
                     Coord centerPoint = pAirUnit->getCenterPoint();
-                    int distance = lroundf(distanceFrom(centerPoint, realPos));
+                    int distance = lround(distanceFrom(centerPoint, realPos));
 
                     if(distance <= damageRadius) {
                         if(bulletID == Bullet_DRocket) {
@@ -199,7 +199,7 @@ void Map::damage(Uint32 damagerID, House* damagerOwner, const Coord& realPos, Ui
                     UnitBase* pUnit = dynamic_cast<UnitBase*>(pObject);
 
                     Coord centerPoint = pUnit->getCenterPoint();
-                    int distance = lroundf(distanceFrom(centerPoint, realPos));
+                    int distance = lround(distanceFrom(centerPoint, realPos));
 
                     if(distance <= damageRadius) {
                         if(bulletID == Bullet_DRocket) {
@@ -384,7 +384,7 @@ Coord Map::getMapPos(int angle, const Coord& source) const {
 
 //building size is num squares
 Coord Map::findDeploySpot(UnitBase* pUnit, const Coord origin, const Coord gatherPoint, const Coord buildingSize) const {
-	float		closestDistance = INFINITY;
+	FixPoint	closestDistance = FixPt_MAX;
 	Coord       closestPoint;
 	Coord		size;
 

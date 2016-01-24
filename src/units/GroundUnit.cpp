@@ -76,7 +76,7 @@ void GroundUnit::checkPos() {
 		//findTargetTimer = 0;	//allow a scan for new targets now
 
 		if(currentGameMap->getTile(location)->isSpiceBloom()) {
-		    setHealth(0.0f);
+		    setHealth(0);
 		    setVisible(VIS_ALL, false);
 			currentGameMap->getTile(location)->triggerSpiceBloom(getOwner());
 		} else if(currentGameMap->getTile(location)->isSpecialBloom()){
@@ -241,7 +241,7 @@ void GroundUnit::doRepair() {
 	if(getHealth() < getMaxHealth()) {
 		//find a repair yard to return to
 
-		float	closestLeastBookedRepairYardDistance = 1000000.0f;
+		FixPoint closestLeastBookedRepairYardDistance = 1000000;
         RepairYard* bestRepairYard = NULL;
 
         RobustList<StructureBase*>::const_iterator iter;
@@ -252,7 +252,7 @@ void GroundUnit::doRepair() {
                 RepairYard* tempRepairYard = ((RepairYard*)tempStructure);
 
                 if(tempRepairYard->getNumBookings() == 0) {
-                    float tempDistance = distanceFrom(location, tempRepairYard->getClosestPoint(location));
+                    FixPoint tempDistance = distanceFrom(location, tempRepairYard->getClosestPoint(location));
 					if(tempDistance < closestLeastBookedRepairYardDistance) {
                         closestLeastBookedRepairYardDistance = tempDistance;
                         bestRepairYard = tempRepairYard;

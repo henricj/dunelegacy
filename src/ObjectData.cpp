@@ -74,8 +74,8 @@ void ObjectData::loadFromINIFile(std::string filename)
         structureDefaultData[h].weapondamage = loadIntValue(objectDataFile, "default structure", "WeaponDamage", houseChar[h]);
         structureDefaultData[h].weaponrange = loadIntValue(objectDataFile, "default structure", "WeaponRange", houseChar[h]);
         structureDefaultData[h].weaponreloadtime = loadIntValue(objectDataFile, "default structure", "WeaponReloadTime", houseChar[h]);
-        structureDefaultData[h].maxspeed = loadFloatValue(objectDataFile, "default structure", "MaxSpeed", houseChar[h]);
-        structureDefaultData[h].turnspeed = loadFloatValue(objectDataFile, "default structure", "TurnSpeed", houseChar[h]);
+        structureDefaultData[h].maxspeed = loadFixPointValue(objectDataFile, "default structure", "MaxSpeed", houseChar[h]);
+        structureDefaultData[h].turnspeed = loadFixPointValue(objectDataFile, "default structure", "TurnSpeed", houseChar[h]);
         structureDefaultData[h].buildtime = loadIntValue(objectDataFile, "default structure", "BuildTime", houseChar[h]);
         structureDefaultData[h].infspawnprop = loadIntValue(objectDataFile, "default structure", "InfSpawnProp", houseChar[h]);
         structureDefaultData[h].builder = loadItemID(objectDataFile, "default structure", "Builder", houseChar[h]);
@@ -95,8 +95,8 @@ void ObjectData::loadFromINIFile(std::string filename)
         unitDefaultData[h].weapondamage = loadIntValue(objectDataFile, "default unit", "WeaponDamage", houseChar[h]);
         unitDefaultData[h].weaponrange = loadIntValue(objectDataFile, "default unit", "WeaponRange", houseChar[h]);
         unitDefaultData[h].weaponreloadtime = loadIntValue(objectDataFile, "default unit", "WeaponReloadTime", houseChar[h]);
-        unitDefaultData[h].maxspeed = loadFloatValue(objectDataFile, "default unit", "MaxSpeed", houseChar[h]);
-        unitDefaultData[h].turnspeed = loadFloatValue(objectDataFile, "default unit", "TurnSpeed", houseChar[h]);
+        unitDefaultData[h].maxspeed = loadFixPointValue(objectDataFile, "default unit", "MaxSpeed", houseChar[h]);
+        unitDefaultData[h].turnspeed = loadFixPointValue(objectDataFile, "default unit", "TurnSpeed", houseChar[h]);
         unitDefaultData[h].buildtime = loadIntValue(objectDataFile, "default unit", "BuildTime", houseChar[h]);
         unitDefaultData[h].infspawnprop = loadIntValue(objectDataFile, "default unit", "InfSpawnProp", houseChar[h]);
         unitDefaultData[h].builder = loadItemID(objectDataFile, "default structure", "Builder", houseChar[h]);
@@ -143,8 +143,8 @@ void ObjectData::loadFromINIFile(std::string filename)
             data[itemID][h].weapondamage = loadIntValue(objectDataFile, sectionName, "WeaponDamage", houseChar[h], defaultData.weapondamage);
             data[itemID][h].weaponrange = loadIntValue(objectDataFile, sectionName, "WeaponRange", houseChar[h], defaultData.weaponrange);
             data[itemID][h].weaponreloadtime = loadIntValue(objectDataFile, sectionName, "WeaponReloadTime", houseChar[h], defaultData.weaponreloadtime);
-            data[itemID][h].maxspeed = loadFloatValue(objectDataFile, sectionName, "MaxSpeed", houseChar[h], defaultData.maxspeed);
-            data[itemID][h].turnspeed = loadFloatValue(objectDataFile, sectionName, "TurnSpeed", houseChar[h], defaultData.turnspeed);
+            data[itemID][h].maxspeed = loadFixPointValue(objectDataFile, sectionName, "MaxSpeed", houseChar[h], defaultData.maxspeed);
+            data[itemID][h].turnspeed = loadFixPointValue(objectDataFile, sectionName, "TurnSpeed", houseChar[h], defaultData.turnspeed);
             data[itemID][h].buildtime = loadIntValue(objectDataFile, sectionName, "BuildTime", houseChar[h], defaultData.buildtime);
             data[itemID][h].infspawnprop = loadIntValue(objectDataFile, sectionName, "InfSpawnProp", houseChar[h], defaultData.infspawnprop);
             data[itemID][h].builder = loadItemID(objectDataFile, sectionName, "Builder", houseChar[h], defaultData.builder);
@@ -167,8 +167,8 @@ void ObjectData::save(OutputStream& stream) const
             stream.writeSint32(data[i][h].weapondamage);
             stream.writeSint32(data[i][h].weaponrange);
             stream.writeSint32(data[i][h].weaponreloadtime);
-            stream.writeFloat(data[i][h].maxspeed);
-            stream.writeFloat(data[i][h].turnspeed);
+            stream.writeFixPoint(data[i][h].maxspeed);
+            stream.writeFixPoint(data[i][h].turnspeed);
             stream.writeSint32(data[i][h].buildtime);
             stream.writeSint32(data[i][h].infspawnprop);
             stream.writeSint32(data[i][h].builder);
@@ -191,8 +191,8 @@ void ObjectData::load(InputStream& stream)
             data[i][h].weapondamage = stream.readSint32();
             data[i][h].weaponrange = stream.readSint32();
             data[i][h].weaponreloadtime = stream.readSint32();
-            data[i][h].maxspeed = stream.readFloat();
-            data[i][h].turnspeed = stream.readFloat();
+            data[i][h].maxspeed = stream.readFixPoint();
+            data[i][h].turnspeed = stream.readFixPoint();
             data[i][h].buildtime = stream.readSint32();
             data[i][h].infspawnprop = stream.readSint32();
             data[i][h].builder = stream.readSint32();
@@ -212,12 +212,12 @@ int ObjectData::loadIntValue(const INIFile& objectDataFile, const std::string& s
     }
 }
 
-float ObjectData::loadFloatValue(const INIFile& objectDataFile, const std::string& section, const std::string& key, char houseChar, float defaultValue) {
+FixPoint ObjectData::loadFixPointValue(const INIFile& objectDataFile, const std::string& section, const std::string& key, char houseChar, FixPoint defaultValue) {
     std::string specializedKey = key + "(" + houseChar + ")";
     if(objectDataFile.hasKey(section, specializedKey)) {
-        return objectDataFile.getFloatValue(section, specializedKey, defaultValue);
+        return FixPoint(objectDataFile.getStringValue(section, specializedKey, defaultValue.toString()));
     } else {
-        return objectDataFile.getFloatValue(section, key, defaultValue);
+        return FixPoint(objectDataFile.getStringValue(section, key, defaultValue.toString()));
     }
 }
 

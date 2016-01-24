@@ -18,6 +18,7 @@
 #ifndef INPUTSTREAM_H
 #define INPUTSTREAM_H
 
+#include <libfixmath/FixPoint.h>
 
 #include <SDL.h>
 #include <string>
@@ -79,6 +80,14 @@ public:
 	Sint64 readSint64() {
 	    Uint64 tmp = readUint64();
         return *((Sint64*) &tmp);
+	}
+
+	/**
+        Reads in a FixPoint value.
+        \return the read value
+	*/
+	FixPoint readFixPoint() {
+        return FixPoint::FromRawValue(readSint64());
 	}
 
 	/**

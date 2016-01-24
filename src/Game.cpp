@@ -2020,7 +2020,7 @@ void Game::handleChatInput(SDL_KeyboardEvent& keyboardEvent) {
             } else if((bCheatsEnabled == true) && (md5string == "0xCEF1D26CE4B145DE985503CA35232ED8")) {
                 if (gameType != GAMETYPE_CUSTOM_MULTIPLAYER) {
                     pInterface->getChatManager().addInfoMessage("You got some credits");
-                    pLocalHouse->returnCredits(10000.0f);
+                    pLocalHouse->returnCredits(10000);
                 }
             } else {
                 if(pNetworkManager != NULL) {

@@ -41,9 +41,9 @@ AStarSearch::AStarSearch(Map* pMap, UnitBase* pUnit, Coord start, Coord destinat
     bestCoord = Coord::Invalid();
 
     //if the unit is not directly next to its destination or it is and the destination is unblocked
-	if ((heuristic > 1.5f) || (pUnit->canPass(destination.x, destination.y) == true)) {
+	if ((heuristic > FixPt(1,5)) || (pUnit->canPass(destination.x, destination.y) == true)) {
 
-        putOnOpenListIfBetter(start, Coord::Invalid(), 0.0f, heuristic);
+        putOnOpenListIfBetter(start, Coord::Invalid(), 0 , heuristic);
 
         std::vector<short> depthCheckCount(std::min(sizeX, sizeY));
 
@@ -83,7 +83,7 @@ AStarSearch::AStarSearch(Map* pMap, UnitBase* pUnit, Coord start, Coord destinat
                                 g += (1.0f/currentGame->objectData.data[pUnit->getItemID()][pUnit->getOriginalHouseID()].turnspeed * (float)std::min(abs(angle - posAngle), NUM_ANGLES - std::max(angle, posAngle) + std::min(angle, posAngle)))/((float)TILESIZE);
                         }
 
-                        float h = blockDistance(nextCoord, destination);
+                        FixPoint h = blockDistance(nextCoord, destination);
 
                         if(getMapData(nextCoord).bClosed == false) {
                             putOnOpenListIfBetter(nextCoord, currentCoord, g, h);

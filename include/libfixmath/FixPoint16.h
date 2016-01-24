@@ -25,6 +25,7 @@
 // we need to use a macro here as leading zeros in m are important: FixPt(1, 5) != FixPt(1, 05)
 #define FixPt16(i,m) (FixPoint16::FromRawValue(F16C(i,m)))
 
+#define FixPt16_MAX (FixPoint16::FromRawValue(fix16_maximum))
 #define FixPt16_PI (FixPoint16::FromRawValue(fix16_pi))
 #define FixPt16_E (FixPoint16::FromRawValue(fix16_e))
 
@@ -35,8 +36,11 @@ public:
 	FixPoint16(const FixPoint16& inValue)        { value = inValue.value;             }
 	FixPoint16(const int inValue)                { value = fix16_from_int(inValue); }
 	FixPoint16(const unsigned int inValue)       { value = fix16_from_int(static_cast<int>(inValue)); }
-	/*explicit*/ FixPoint16(const float inValue)   { value = fix16_from_float(inValue); }
+	explicit FixPoint16(const float inValue)     { value = fix16_from_float(inValue); }
 //	/*explicit*/ FixPoint16(const double inValue)  { value = fix16_from_dbl(inValue);   }
+	explicit FixPoint16(std::string inValue) {
+        value = fix16_from_str(inValue.c_str());
+    }
 
 	static FixPoint16 FromRawValue(const fix16_t value) {
 		FixPoint16 x;
@@ -190,5 +194,8 @@ static inline bool operator<(float value, const FixPoint16 other) { return other
 static inline bool operator>(int value, const FixPoint16 other) { return other.operator<=(value); }
 static inline bool operator>(unsigned int value, const FixPoint16 other) { return other.operator<=(value); }
 static inline bool operator>(float value, const FixPoint16 other) { return other.operator<=(value); }
+
+
+static inline int lround(FixPoint16 value) { return value.roundToInt(); }
 
 #endif // FIXPOINT16_H

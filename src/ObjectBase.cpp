@@ -105,7 +105,7 @@ ObjectBase::ObjectBase(InputStream& stream) {
 
     ObjectBase::init();
 
-    health = stream.readFloat();
+    health = stream.readFixPoint();
     badlyDamaged = stream.readBool();
 
 	location.x = stream.readSint32();
@@ -114,10 +114,10 @@ ObjectBase::ObjectBase(InputStream& stream) {
 	oldLocation.y = stream.readSint32();
 	destination.x = stream.readSint32();
 	destination.y = stream.readSint32();
-	realX = stream.readFloat();
-	realY = stream.readFloat();
+	realX = stream.readFixPoint();
+	realY = stream.readFixPoint();
 
-    angle = stream.readFloat();
+    angle = stream.readFixPoint();
     drawnAngle = stream.readSint8();
 
     active = stream.readBool();
@@ -167,7 +167,7 @@ void ObjectBase::save(OutputStream& stream) const {
 	stream.writeUint32(originalHouseID);
     stream.writeUint32(owner->getHouseID());
 
-    stream.writeFloat(health);
+    stream.writeFixPoint(health);
     stream.writeBool(badlyDamaged);
 
 	stream.writeSint32(location.x);
@@ -176,10 +176,10 @@ void ObjectBase::save(OutputStream& stream) const {
 	stream.writeSint32(oldLocation.y);
 	stream.writeSint32(destination.x);
 	stream.writeSint32(destination.y);
-	stream.writeFloat(realX);
-	stream.writeFloat(realY);
+	stream.writeFixPoint(realX);
+	stream.writeFixPoint(realY);
 
-    stream.writeFloat(angle);
+    stream.writeFixPoint(angle);
     stream.writeSint8(drawnAngle);
 
 	stream.writeBool(active);
@@ -218,12 +218,12 @@ int ObjectBase::getMaxHealth() const {
 
 void ObjectBase::handleDamage(int damage, Uint32 damagerID, House* damagerOwner) {
     if(damage >= 0) {
-        float newHealth = getHealth();
+        FixPoint newHealth = getHealth();
 
         newHealth -= damage;
 
-        if(newHealth <= 0.0f) {
-            setHealth(0.0f);
+        if(newHealth <= 0) {
+            setHealth(0);
 
             if(damagerOwner != NULL) {
                 damagerOwner->informHasKilled(itemID);
@@ -361,7 +361,7 @@ bool ObjectBase::isVisible() const {
 }
 
 int ObjectBase::getHealthColor() const {
-	float healthPercent = (float)health/(float)getMaxHealth();
+	FixPoint healthPercent = health/getMaxHealth();
 
 	if(healthPercent >= BADLYDAMAGEDRATIO) {
 		return COLOR_LIGHTGREEN;
@@ -379,7 +379,7 @@ Coord ObjectBase::getClosestPoint(const Coord& point) const {
 const StructureBase* ObjectBase::findClosestTargetStructure() const {
 
 	StructureBase	*closestStructure = NULL;
-	float			closestDistance = INFINITY;
+	FixPoint		closestDistance = FixPt_MAX;
 
     RobustList<StructureBase*>::const_iterator iter;
     for(iter = structureList.begin(); iter != structureList.end(); ++iter) {
@@ -387,10 +387,10 @@ const StructureBase* ObjectBase::findClosestTargetStructure() const {
 
         if(canAttack(tempStructure)) {
 			Coord closestPoint = tempStructure->getClosestPoint(getLocation());
-			float structureDistance = blockDistance(getLocation(), closestPoint);
+			FixPoint structureDistance = blockDistance(getLocation(), closestPoint);
 
 			if(tempStructure->getItemID() == Structure_Wall) {
-					structureDistance += 20000000.0f; //so that walls are targeted very last
+					structureDistance += 20000000; //so that walls are targeted very last
             }
 
             if(structureDistance < closestDistance)	{
@@ -405,7 +405,7 @@ const StructureBase* ObjectBase::findClosestTargetStructure() const {
 
 const UnitBase* ObjectBase::findClosestTargetUnit() const {
 	UnitBase	*closestUnit = NULL;
-	float		closestDistance = INFINITY;
+	FixPoint	closestDistance = FixPt_MAX;
 
     RobustList<UnitBase*>::const_iterator iter;
     for(iter = unitList.begin(); iter != unitList.end(); ++iter) {
@@ -413,7 +413,7 @@ const UnitBase* ObjectBase::findClosestTargetUnit() const {
 
 		if(canAttack(tempUnit)) {
 			Coord closestPoint = tempUnit->getClosestPoint(getLocation());
-			float unitDistance = blockDistance(getLocation(), closestPoint);
+			FixPoint unitDistance = blockDistance(getLocation(), closestPoint);
 
                 if(unitDistance < closestDistance) {
                     closestDistance = unitDistance;
@@ -429,7 +429,7 @@ const UnitBase* ObjectBase::findClosestTargetUnit() const {
 const ObjectBase* ObjectBase::findClosestTarget() const {
 
 	ObjectBase	*closestObject = NULL;
-	float			closestDistance = INFINITY;
+	FixPoint	closestDistance = FixPt_MAX;
 
     RobustList<StructureBase*>::const_iterator iter1;
     for(iter1 = structureList.begin(); iter1 != structureList.end(); ++iter1) {
@@ -437,10 +437,10 @@ const ObjectBase* ObjectBase::findClosestTarget() const {
 
         if(canAttack(tempStructure)) {
 			Coord closestPoint = tempStructure->getClosestPoint(getLocation());
-			float structureDistance = blockDistance(getLocation(), closestPoint);
+			FixPoint structureDistance = blockDistance(getLocation(), closestPoint);
 
 			if(tempStructure->getItemID() == Structure_Wall) {
-					structureDistance += 20000000.0f; //so that walls are targeted very last
+					structureDistance += 20000000; //so that walls are targeted very last
             }
 
             if(structureDistance < closestDistance)	{
@@ -456,7 +456,7 @@ const ObjectBase* ObjectBase::findClosestTarget() const {
 
 		if(canAttack(tempUnit)) {
 			Coord closestPoint = tempUnit->getClosestPoint(getLocation());
-			float unitDistance = blockDistance(getLocation(), closestPoint);
+			FixPoint unitDistance = blockDistance(getLocation(), closestPoint);
 
 			if(unitDistance < closestDistance) {
                 closestDistance = unitDistance;
@@ -476,7 +476,7 @@ const ObjectBase* ObjectBase::findTarget() const {
 	int	xPos = location.x;
 	int	yPos = location.y;
 
-	float closestDistance = INFINITY;
+	FixPoint closestDistance = FixPt_MAX;
 
 //searches for a target in an area like as shown below
 //                     *****
@@ -536,7 +536,7 @@ const ObjectBase* ObjectBase::findTarget() const {
                     || tempTarget->getItemID() != Unit_Carryall
                     || closestTarget == NULL)
                     && canAttack(tempTarget)) {
-					float targetDistance = blockDistance(location, tempTarget->getLocation());
+					FixPoint targetDistance = blockDistance(location, tempTarget->getLocation());
 					if(targetDistance < closestDistance) {
 						closestTarget = tempTarget;
 						closestDistance = targetDistance;
@@ -706,7 +706,7 @@ ObjectBase* ObjectBase::loadObject(InputStream& stream, int itemID, Uint32 objec
 
 bool ObjectBase::targetInWeaponRange() const {
     Coord coord = (target.getObjPointer())->getClosestPoint(location);
-    float dist = blockDistance(location,coord);
+    FixPoint dist = blockDistance(location,coord);
 
     return ( dist <= currentGame->objectData.data[itemID][originalHouseID].weaponrange);
 }

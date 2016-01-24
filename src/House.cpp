@@ -79,8 +79,8 @@ House::House(InputStream& stream) : choam(this) {
     houseID = stream.readUint8();
 	team = stream.readUint8();
 
-	storedCredits = stream.readFloat();
-	startingCredits = stream.readFloat();
+	storedCredits = stream.readFixPoint();
+	startingCredits = stream.readFixPoint();
     oldCredits = lround(storedCredits+startingCredits);
     quota = stream.readSint32();
 
@@ -94,7 +94,7 @@ House::House(InputStream& stream) : choam(this) {
     destroyedValue = stream.readUint32();
     numDestroyedUnits = stream.readUint32();
     numDestroyedStructures = stream.readUint32();
-    harvestedSpice = stream.readFloat();
+    harvestedSpice = stream.readFixPoint();
     producedPower = stream.readSint32();
     powerUsageTimer = stream.readSint32();
 
@@ -144,8 +144,8 @@ void House::save(OutputStream& stream) const {
 	stream.writeUint8(houseID);
 	stream.writeUint8(team);
 
-	stream.writeFloat(storedCredits);
-	stream.writeFloat(startingCredits);
+	stream.writeFixPoint(storedCredits);
+	stream.writeFixPoint(startingCredits);
 	stream.writeSint32(quota);
 
     stream.writeUint32(unitBuiltValue);
@@ -158,7 +158,7 @@ void House::save(OutputStream& stream) const {
     stream.writeUint32(destroyedValue);
     stream.writeUint32(numDestroyedUnits);
     stream.writeUint32(numDestroyedStructures);
-    stream.writeFloat(harvestedSpice);
+    stream.writeFixPoint(harvestedSpice);
     stream.writeSint32(producedPower);
     stream.writeSint32(powerUsageTimer);
 
@@ -306,8 +306,8 @@ void House::update() {
 
 	if(storedCredits > capacity) {
 		storedCredits--;
-		if(storedCredits < 0.0f) {
-		 storedCredits = 0.0f;
+		if(storedCredits < 0) {
+		 storedCredits = 0;
 		}
 
 		if(this == pLocalHouse) {
@@ -318,7 +318,7 @@ void House::update() {
 	powerUsageTimer--;
 	if(powerUsageTimer <= 0) {
 	    powerUsageTimer = MILLI2CYCLES(15*1000);
-        takeCredits(((float)getPowerRequirement()) / 32.0f);
+        takeCredits(FixPoint(getPowerRequirement()) / 32);
 	}
 
 	choam.update();
@@ -581,7 +581,7 @@ void House::freeHarvester(int xPos, int yPos) {
 
 		Carryall* carryall = (Carryall*)createUnit(Unit_Carryall);
 		Harvester* harvester = (Harvester*)createUnit(Unit_Harvester);
-		harvester->setAmountOfSpice(5.0f);
+		harvester->setAmountOfSpice(5);
 		carryall->setOwned(false);
 		carryall->giveCargo(harvester);
 		carryall->deploy(closestPos);
@@ -858,18 +858,18 @@ void House::decrementHarvesters() {
         if(numItem[Structure_Refinery]) {
             Coord	closestPos;
             Coord	pos = Coord(0,0);
-            float	closestDistance = INFINITY;
+            FixPoint	closestDistance = FixPt_MAX;
             StructureBase *closestRefinery = NULL;
 
             RobustList<StructureBase*>::const_iterator iter;
             for(iter = structureList.begin(); iter != structureList.end(); ++iter) {
                 StructureBase* tempStructure = *iter;
 
-                if((tempStructure->getItemID() == Structure_Refinery) && (tempStructure->getOwner() == this) && (tempStructure->getHealth() > 0.0f)) {
+                if((tempStructure->getItemID() == Structure_Refinery) && (tempStructure->getOwner() == this) && (tempStructure->getHealth() > 0)) {
                     pos = tempStructure->getLocation();
 
                     Coord closestPoint = tempStructure->getClosestPoint(pos);
-                    float refineryDistance = blockDistance(pos, closestPoint);
+                    FixPoint refineryDistance = blockDistance(pos, closestPoint);
                     if(!closestRefinery || (refineryDistance < closestDistance)) {
                             closestDistance = refineryDistance;
                             closestRefinery = tempStructure;

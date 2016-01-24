@@ -18,6 +18,7 @@
 #ifndef OUTPUTSTREAM_H
 #define OUTPUTSTREAM_H
 
+#include <libfixmath/FixPoint.h>
 
 #include <SDL.h>
 #include <string>
@@ -82,6 +83,14 @@ public:
 	void writeSint64(Sint64 x) {
         Uint64 tmp = *((Uint64*) &x);
         writeUint64(tmp);
+	}
+
+	/**
+        Writes out a FixPoint value.
+        \param x    the value to write out
+	*/
+	void writeFixPoint(FixPoint x) {
+        writeSint64(x.getRawValue());
 	}
 
 	/**

@@ -65,38 +65,38 @@ int getRandomOf(int numParam, ...) {
 
 
 
-float destinationAngle(const Coord& p1, const Coord& p2)
+FixPoint destinationAngle(const Coord& p1, const Coord& p2)
 {
-    float destAngle = 0.0f;
+    FixPoint destAngle = 0;
 
-    float diffX = p2.x - p1.x;
-    float diffY = p2.y - p1.y;
+    FixPoint diffX = p2.x - p1.x;
+    FixPoint diffY = p2.y - p1.y;
 
     if(diffX != 0) {
         if((diffX >= 0) && (diffY >= 0)) {
             //if x2 >= x1 && y2 >= y1
-            destAngle = 2.0f * strictmath::pi - strictmath::atan(strictmath::abs(diffY/diffX));
+            destAngle = 2 * FixPt_PI - FixPoint::atan(FixPoint::abs(diffY/diffX));
         } else if ((diffX < 0) && (diffY >= 0)) {
             //if x2 < x1 && y2 >= y1
-            destAngle = strictmath::atan(strictmath::abs(diffY/diffX)) + strictmath::pi;
+            destAngle = FixPoint::atan(FixPoint::abs(diffY/diffX)) + FixPt_PI;
         } else if ((diffX < 0) && (diffY < 0)) {
             //if x2 < x1 && y2 < y1
-            destAngle = strictmath::pi - strictmath::atan(strictmath::abs(diffY/diffX));
+            destAngle = FixPt_PI - FixPoint::atan(FixPoint::abs(diffY/diffX));
         } else if ((diffX >= 0) && (diffY < 0)) {
             //if x2 >= x1 && y2 < y1
-            destAngle = strictmath::atan(strictmath::abs(diffY/diffX));
+            destAngle = FixPoint::atan(FixPoint::abs(diffY/diffX));
         }
     } else if (diffY <= 0) {
-        destAngle = strictmath::pi/2.0f;
+        destAngle = FixPt_PI/2;
     } else {
-        destAngle = 3.0f*strictmath::pi/2.0f;
+        destAngle = 3*FixPt_PI/2;
     }
 
-    if(destAngle == 2.0f*strictmath::pi) {
-        destAngle = 0.0f;
+    if(destAngle == 2*FixPt_PI) {
+        destAngle = 0;
     }
 
-    return (destAngle*256.0f/(2.0f*strictmath::pi));
+    return (destAngle*256/(2*FixPt_PI));
 }
 
 
@@ -120,14 +120,14 @@ FixPoint distanceFrom(FixPoint x, FixPoint y, FixPoint to_x, FixPoint to_y)
 	return z;
 }
 
-float blockDistance(const Coord& p1, const Coord& p2)
+FixPoint blockDistance(const Coord& p1, const Coord& p2)
 {
 	int xDis = abs(p1.x - p2.x),
 		yDis = abs(p1.y - p2.y),
 
 		minDis = std::min(xDis, yDis);
 
-	return ((float)std::max(xDis, yDis) + (float)minDis*(DIAGONALCOST - 1.0f));
+	return (std::max(xDis, yDis) + minDis*(DIAGONALCOST - 1.0f));
 	//return (((float)minDis)*DIAGONALCOST + max(xDis, yDis) - minDis);
 }
 

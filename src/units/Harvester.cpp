@@ -65,7 +65,7 @@ Harvester::Harvester(InputStream& stream) : TrackedUnit(stream)
 
 	harvestingMode = stream.readBool();
 	returningToRefinery = stream.readBool();
-    spice = stream.readFloat();
+    spice = stream.readFixPoint();
     spiceCheckCounter = stream.readUint32();
 }
 
@@ -93,7 +93,7 @@ void Harvester::save(OutputStream& stream) const
 	TrackedUnit::save(stream);
 	stream.writeBool(harvestingMode);
 	stream.writeBool(returningToRefinery);
-    stream.writeFloat(spice);
+    stream.writeFixPoint(spice);
     stream.writeUint32(spiceCheckCounter);
 }
 
@@ -175,7 +175,7 @@ void Harvester::checkPos()
 				}
 			} else if (!structureList.empty()) {
 				int	leastNumBookings = 1000000; //huge amount so refinery couldn't possibly compete with any refinery num bookings
-				float	closestLeastBookedRefineryDistance = 1000000.0f;
+				FixPoint closestLeastBookedRefineryDistance = 1000000;
 				Refinery	*bestRefinery = NULL;
 
                 RobustList<StructureBase*>::const_iterator iter;
@@ -185,7 +185,7 @@ void Harvester::checkPos()
 					if((tempStructure->getItemID() == Structure_Refinery) && (tempStructure->getOwner() == owner)) {
 						Refinery* tempRefinery = static_cast<Refinery*>(tempStructure);
 						Coord closestPoint = tempRefinery->getClosestPoint(location);
-						float tempDistance = distanceFrom(location, closestPoint);
+						FixPoint tempDistance = distanceFrom(location, closestPoint);
 						int tempNumBookings = tempRefinery->getNumBookings();
 
 						if (tempNumBookings < leastNumBookings)	{
@@ -253,7 +253,7 @@ void Harvester::destroy()
             FixPoint spiceSpreaded = spice * FixPt(0,75);
             int availableSandPos = 0;
 
-            int circleRadius = lroundf(spice / 210);
+            int circleRadius = lround(spice / 210);
 
             /* how many regions have sand */
             for(int i = -circleRadius; i <= circleRadius; i++) {
@@ -318,12 +318,12 @@ void Harvester::drawSelectionBox()
 	SDL_BlitSurface(selectionBox, NULL, screen, &dest);
 
 	for(int i=1;i<=currentZoomlevel+1;i++) {
-        drawHLine(screen, dest.x+1, dest.y-i, dest.x+1 + ((int)((getHealth()/(float)getMaxHealth())*(selectionBox->w-3))), getHealthColor());
+        drawHLine(screen, dest.x+1, dest.y-i, dest.x+1 + ((int)((getHealth()/getMaxHealth())*(selectionBox->w-3))), getHealthColor());
 	}
 
 	if((getOwner() == pLocalHouse) && (spice > 0.0f)) {
         for(int i=1;i<=currentZoomlevel+1;i++) {
-            drawHLine(screen, dest.x+1, dest.y-i-(currentZoomlevel+1), dest.x+1 + ((int)((((float)spice)/HARVESTERMAXSPICE)*(selectionBox->w-3))), COLOR_ORANGE);
+            drawHLine(screen, dest.x+1, dest.y-i-(currentZoomlevel+1), dest.x+1 + ((int)(((spice.toFloat())/HARVESTERMAXSPICE)*(selectionBox->w-3))), COLOR_ORANGE);
         }
 	}
 }
@@ -473,13 +473,13 @@ FixPoint Harvester::extractSpice(FixPoint extractionSpeed)
 
 void Harvester::setSpeeds()
 {
-	float speed = getMaxSpeed();
+	FixPoint speed = getMaxSpeed();
 
 	if(isBadlyDamaged()) {
         speed *= HEAVILYDAMAGEDSPEEDMULTIPLIER;
 	}
 
-    float percentFull = spice/HARVESTERMAXSPICE;
+    FixPoint percentFull = spice/HARVESTERMAXSPICE;
 	speed = speed * (1 - MAXIMUMHARVESTERSLOWDOWN*percentFull);
 
 	switch(drawnAngle){

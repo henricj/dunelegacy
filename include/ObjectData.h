@@ -110,7 +110,7 @@ public:
 private:
 
     int loadIntValue(const INIFile& objectDataFile, const std::string& section, const std::string& key, char houseChar, int defaultValue = 0);
-    float loadFloatValue(const INIFile& objectDataFile, const std::string& section, const std::string& key, char houseChar, float defaultValue = 0.0f);
+    FixPoint loadFixPointValue(const INIFile& objectDataFile, const std::string& section, const std::string& key, char houseChar, FixPoint defaultValue = 0);
     std::string loadStringValue(const INIFile& objectDataFile, const std::string& section, const std::string& key, char houseChar, std::string defaultValue = "");
     int loadItemID(const INIFile& objectDataFile, const std::string& section, const std::string& key, char houseChar, int defaultValue = ItemID_Invalid);
     std::bitset<Structure_LastID> loadPrerequisiteStructuresSet(const INIFile& objectDataFile, const std::string& section, const std::string& key, char houseChar, std::bitset<Structure_LastID> defaultValue = std::bitset<Structure_LastID>());

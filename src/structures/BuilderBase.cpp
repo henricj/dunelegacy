@@ -59,12 +59,12 @@ BuilderBase::BuilderBase(InputStream& stream) : StructureBase(stream) {
     BuilderBase::init();
 
 	upgrading = stream.readBool();
-	upgradeProgress = stream.readFloat();
+	upgradeProgress = stream.readFixPoint();
     curUpgradeLev = stream.readUint8();
 
 	bCurrentItemOnHold = stream.readBool();
 	currentProducedItem = stream.readUint32();
-	productionProgress = stream.readFloat();
+	productionProgress = stream.readFixPoint();
 	deployTimer = stream.readUint32();
 
 	int numProductionQueueItem = stream.readUint32();
@@ -94,12 +94,12 @@ void BuilderBase::save(OutputStream& stream) const {
 	StructureBase::save(stream);
 
     stream.writeBool(upgrading);
-    stream.writeFloat(upgradeProgress);
+    stream.writeFixPoint(upgradeProgress);
 	stream.writeUint8(curUpgradeLev);
 
 	stream.writeBool(bCurrentItemOnHold);
 	stream.writeUint32(currentProducedItem);
-	stream.writeFloat(productionProgress);
+	stream.writeFixPoint(productionProgress);
 	stream.writeUint32(deployTimer);
 
 	stream.writeUint32(currentProductionQueue.size());
@@ -197,19 +197,19 @@ void BuilderBase::updateProductionProgress() {
 
         if((productionProgress < tmp->price) && (isOnHold() == false) && (owner->getCredits() > 0)) {
 
-            float oldProgress = productionProgress;
+            FixPoint oldProgress = productionProgress;
 
             if(currentGame->getGameInitSettings().getGameOptions().instantBuild == true) {
-                float totalBuildCosts = currentGame->objectData.data[currentProducedItem][originalHouseID].price;
-                float buildCosts = totalBuildCosts - productionProgress;
+                FixPoint totalBuildCosts = currentGame->objectData.data[currentProducedItem][originalHouseID].price;
+                FixPoint buildCosts = totalBuildCosts - productionProgress;
 
                 productionProgress += owner->takeCredits(buildCosts);
             } else {
 
-                float buildSpeed = getHealth() / (float) getMaxHealth();
-                float totalBuildCosts = currentGame->objectData.data[currentProducedItem][originalHouseID].price;
-                float totalBuildGameTicks = currentGame->objectData.data[currentProducedItem][originalHouseID].buildtime*15.0f;
-                float buildCosts = totalBuildCosts / totalBuildGameTicks;
+                FixPoint buildSpeed = getHealth() / getMaxHealth();
+                FixPoint totalBuildCosts = currentGame->objectData.data[currentProducedItem][originalHouseID].price;
+                FixPoint totalBuildGameTicks = currentGame->objectData.data[currentProducedItem][originalHouseID].buildtime*15;
+                FixPoint buildCosts = totalBuildCosts / totalBuildGameTicks;
 
                 productionProgress += owner->takeCredits(buildCosts*buildSpeed);
 
@@ -391,13 +391,13 @@ bool BuilderBase::update() {
 	}
 
 	if(upgrading == true) {
-	    float totalUpgradePrice = getUpgradeCost();
+	    FixPoint totalUpgradePrice = getUpgradeCost();
 
 	    if(currentGame->getGameInitSettings().getGameOptions().instantBuild == true) {
-	        float upgradePriceLeft = totalUpgradePrice - upgradeProgress;
+	        FixPoint upgradePriceLeft = totalUpgradePrice - upgradeProgress;
 	        upgradeProgress += owner->takeCredits(upgradePriceLeft);
 	    } else {
-            float totalUpgradeGameTicks = 30.0f * 100.0f / 5.0f;
+            FixPoint totalUpgradeGameTicks = 30 * 100 / 5;
             upgradeProgress += owner->takeCredits(totalUpgradePrice / totalUpgradeGameTicks);
 	    }
 
@@ -406,7 +406,7 @@ bool BuilderBase::update() {
 			curUpgradeLev++;
 			updateBuildList();
 
-			upgradeProgress = 0.0f;
+			upgradeProgress = 0;
 		}
 	} else {
 		updateProductionProgress();

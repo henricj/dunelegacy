@@ -92,12 +92,12 @@ UnitBase::UnitBase(InputStream& stream) : ObjectBase(stream) {
 	attackPos.y = stream.readSint32();
 
 	stream.readBools(&moving, &turning, &justStoppedMoving);
-	xSpeed = stream.readFloat();
-	ySpeed = stream.readFloat();
-	bumpyOffsetX = stream.readFloat();
-	bumpyOffsetY = stream.readFloat();
+	xSpeed = stream.readFixPoint();
+	ySpeed = stream.readFixPoint();
+	bumpyOffsetX = stream.readFixPoint();
+	bumpyOffsetY = stream.readFixPoint();
 
-	targetDistance = stream.readFloat();
+	targetDistance = stream.readFixPoint();
 	targetAngle = stream.readSint8();
 
 	noCloserPointCount = stream.readUint8();
@@ -152,12 +152,12 @@ void UnitBase::save(OutputStream& stream) const {
 	stream.writeSint32(attackPos.y);
 
 	stream.writeBools(moving, turning, justStoppedMoving);
-	stream.writeFloat(xSpeed);
-	stream.writeFloat(ySpeed);
-	stream.writeFloat(bumpyOffsetX);
-	stream.writeFloat(bumpyOffsetY);
+	stream.writeFixPoint(xSpeed);
+	stream.writeFixPoint(ySpeed);
+	stream.writeFixPoint(bumpyOffsetX);
+	stream.writeFixPoint(bumpyOffsetY);
 
-	stream.writeFloat(targetDistance);
+	stream.writeFixPoint(targetDistance);
 	stream.writeSint8(targetAngle);
 
 	stream.writeUint8(noCloserPointCount);
@@ -200,7 +200,7 @@ void UnitBase::attack() {
 		if(getItemID() == Unit_Trooper) {
 		    // Troopers change weapon type depending on distance
 
-            float distance = distanceFrom(centerPoint, targetCenterPoint);
+            FixPoint distance = distanceFrom(centerPoint, targetCenterPoint);
             if(distance > 2*TILESIZE) {
                 currentBulletType = Bullet_SmallRocket;
             }
@@ -531,17 +531,17 @@ void UnitBase::move() {
 		}
 
 		// check if vehicle is on the first half of the way
-		float fromDistanceX;
-		float fromDistanceY;
-		float toDistanceX;
-		float toDistanceY;
+		FixPoint fromDistanceX;
+		FixPoint fromDistanceY;
+		FixPoint toDistanceX;
+		FixPoint toDistanceY;
 		if(location != nextSpot) {
 		    // check if vehicle is half way out of old tile
 
-		    fromDistanceX = strictmath::abs(location.x*TILESIZE - (realX-bumpyOffsetX) + TILESIZE/2);
-		    fromDistanceY = strictmath::abs(location.y*TILESIZE - (realY-bumpyOffsetY) + TILESIZE/2);
-		    toDistanceX = strictmath::abs(nextSpot.x*TILESIZE - (realX-bumpyOffsetX) + TILESIZE/2);
-		    toDistanceY = strictmath::abs(nextSpot.y*TILESIZE - (realY-bumpyOffsetY) + TILESIZE/2);
+		    fromDistanceX = FixPoint::abs(location.x*TILESIZE - (realX-bumpyOffsetX) + TILESIZE/2);
+		    fromDistanceY = FixPoint::abs(location.y*TILESIZE - (realY-bumpyOffsetY) + TILESIZE/2);
+		    toDistanceX = FixPoint::abs(nextSpot.x*TILESIZE - (realX-bumpyOffsetX) + TILESIZE/2);
+		    toDistanceY = FixPoint::abs(nextSpot.y*TILESIZE - (realY-bumpyOffsetY) + TILESIZE/2);
 
             if((fromDistanceX >= TILESIZE/2) || (fromDistanceY >= TILESIZE/2)) {
                 // let something else go in
@@ -557,10 +557,10 @@ void UnitBase::move() {
 		} else {
 			// if vehicle is out of old tile
 
-			fromDistanceX = strictmath::abs(oldLocation.x*TILESIZE - (realX-bumpyOffsetX) + TILESIZE/2);
-		    fromDistanceY = strictmath::abs(oldLocation.y*TILESIZE - (realY-bumpyOffsetY) + TILESIZE/2);
-		    toDistanceX = strictmath::abs(location.x*TILESIZE - (realX-bumpyOffsetX) + TILESIZE/2);
-		    toDistanceY = strictmath::abs(location.y*TILESIZE - (realY-bumpyOffsetY) + TILESIZE/2);
+			fromDistanceX = FixPoint::abs(oldLocation.x*TILESIZE - (realX-bumpyOffsetX) + TILESIZE/2);
+		    fromDistanceY = FixPoint::abs(oldLocation.y*TILESIZE - (realY-bumpyOffsetY) + TILESIZE/2);
+		    toDistanceX = FixPoint::abs(location.x*TILESIZE - (realX-bumpyOffsetX) + TILESIZE/2);
+		    toDistanceY = FixPoint::abs(location.y*TILESIZE - (realY-bumpyOffsetY) + TILESIZE/2);
 
 			if ((fromDistanceX >= TILESIZE) || (fromDistanceY >= TILESIZE)) {
 
@@ -575,8 +575,8 @@ void UnitBase::move() {
 				justStoppedMoving = true;
 				realX = location.x * TILESIZE + TILESIZE/2;
                 realY = location.y * TILESIZE + TILESIZE/2;
-                bumpyOffsetX = 0.0f;
-                bumpyOffsetY = 0.0f;
+                bumpyOffsetX = 0;
+                bumpyOffsetY = 0;
 
                 oldLocation.invalidate();
 			}
@@ -599,37 +599,37 @@ void UnitBase::bumpyMovementOnRock(FixPoint fromDistanceX, FixPoint fromDistance
                                     || (currentGameMap->getTile(location)->getType() == Terrain_ThickSpice))) {
         // bumping effect
 
-        const float epsilon = 0.005f;
-        const float bumpyOffset = 2.5f;
-        const float absXSpeed = strictmath::abs(xSpeed);
-        const float absYSpeed = strictmath::abs(ySpeed);
+        const FixPoint epsilon = FixPt(0,005);
+        const FixPoint bumpyOffset = FixPt(2,5);
+        const FixPoint absXSpeed = FixPoint::abs(xSpeed);
+        const FixPoint absYSpeed = FixPoint::abs(ySpeed);
 
 
-        if((strictmath::abs(xSpeed) >= epsilon) && (strictmath::abs(fromDistanceX - absXSpeed) < absXSpeed/2)) { realY -= bumpyOffset; bumpyOffsetY -= bumpyOffset; }
-        if((strictmath::abs(ySpeed) >= epsilon) && (strictmath::abs(fromDistanceY - absYSpeed) < absYSpeed/2)) { realX += bumpyOffset; bumpyOffsetX += bumpyOffset; }
+        if((FixPoint::abs(xSpeed) >= epsilon) && (FixPoint::abs(fromDistanceX - absXSpeed) < absXSpeed/2)) { realY -= bumpyOffset; bumpyOffsetY -= bumpyOffset; }
+        if((FixPoint::abs(ySpeed) >= epsilon) && (FixPoint::abs(fromDistanceY - absYSpeed) < absYSpeed/2)) { realX += bumpyOffset; bumpyOffsetX += bumpyOffset; }
 
-        if((strictmath::abs(xSpeed) >= epsilon) && (strictmath::abs(fromDistanceX - 4*absXSpeed) < absXSpeed/2)) { realY += bumpyOffset; bumpyOffsetY += bumpyOffset; }
-        if((strictmath::abs(ySpeed) >= epsilon) && (strictmath::abs(fromDistanceY - 4*absYSpeed) < absYSpeed/2)) { realX -= bumpyOffset; bumpyOffsetX -= bumpyOffset; }
-
-
-        if((strictmath::abs(xSpeed) >= epsilon) && (strictmath::abs(fromDistanceX - 10*absXSpeed) < absXSpeed/2)) { realY -= bumpyOffset; bumpyOffsetY -= bumpyOffset; }
-        if((strictmath::abs(ySpeed) >= epsilon) && (strictmath::abs(fromDistanceY - 20*absYSpeed) < absYSpeed/2)) { realX += bumpyOffset; bumpyOffsetX += bumpyOffset; }
-
-        if((strictmath::abs(xSpeed) >= epsilon) && (strictmath::abs(fromDistanceX - 14*absXSpeed) < absXSpeed/2)) { realY += bumpyOffset; bumpyOffsetY += bumpyOffset; }
-        if((strictmath::abs(ySpeed) >= epsilon) && (strictmath::abs(fromDistanceY - 14*absYSpeed) < absYSpeed/2)) { realX -= bumpyOffset; bumpyOffsetX -= bumpyOffset; }
+        if((FixPoint::abs(xSpeed) >= epsilon) && (FixPoint::abs(fromDistanceX - 4*absXSpeed) < absXSpeed/2)) { realY += bumpyOffset; bumpyOffsetY += bumpyOffset; }
+        if((FixPoint::abs(ySpeed) >= epsilon) && (FixPoint::abs(fromDistanceY - 4*absYSpeed) < absYSpeed/2)) { realX -= bumpyOffset; bumpyOffsetX -= bumpyOffset; }
 
 
-        if((strictmath::abs(xSpeed) >= epsilon) && (strictmath::abs(toDistanceX - absXSpeed) < absXSpeed/2)) { realY -= bumpyOffset; bumpyOffsetY -= bumpyOffset; }
-        if((strictmath::abs(ySpeed) >= epsilon) && (strictmath::abs(toDistanceY - absYSpeed) < absYSpeed/2)) { realX += bumpyOffset; bumpyOffsetX += bumpyOffset; }
+        if((FixPoint::abs(xSpeed) >= epsilon) && (FixPoint::abs(fromDistanceX - 10*absXSpeed) < absXSpeed/2)) { realY -= bumpyOffset; bumpyOffsetY -= bumpyOffset; }
+        if((FixPoint::abs(ySpeed) >= epsilon) && (FixPoint::abs(fromDistanceY - 20*absYSpeed) < absYSpeed/2)) { realX += bumpyOffset; bumpyOffsetX += bumpyOffset; }
 
-        if((strictmath::abs(xSpeed) >= epsilon) && (strictmath::abs(toDistanceX - 4*absXSpeed) < absXSpeed/2)) { realY += bumpyOffset; bumpyOffsetY += bumpyOffset; }
-        if((strictmath::abs(ySpeed) >= epsilon) && (strictmath::abs(toDistanceY - 4*absYSpeed) < absYSpeed/2)) { realX -= bumpyOffset; bumpyOffsetX -= bumpyOffset; }
+        if((FixPoint::abs(xSpeed) >= epsilon) && (FixPoint::abs(fromDistanceX - 14*absXSpeed) < absXSpeed/2)) { realY += bumpyOffset; bumpyOffsetY += bumpyOffset; }
+        if((FixPoint::abs(ySpeed) >= epsilon) && (FixPoint::abs(fromDistanceY - 14*absYSpeed) < absYSpeed/2)) { realX -= bumpyOffset; bumpyOffsetX -= bumpyOffset; }
 
-        if((strictmath::abs(xSpeed) >= epsilon) && (strictmath::abs(toDistanceX - 10*absXSpeed) < absXSpeed/2)) { realY -= bumpyOffset; bumpyOffsetY -= bumpyOffset; }
-        if((strictmath::abs(ySpeed) >= epsilon) && (strictmath::abs(toDistanceY - 10*absYSpeed) < absYSpeed/2)) { realX += bumpyOffset; bumpyOffsetX += bumpyOffset; }
 
-        if((strictmath::abs(xSpeed) >= epsilon) && (strictmath::abs(toDistanceX - 14*absXSpeed) < absXSpeed/2)) { realY += bumpyOffset; bumpyOffsetY += bumpyOffset; }
-        if((strictmath::abs(ySpeed) >= epsilon) && (strictmath::abs(toDistanceY - 14*absYSpeed) < absYSpeed/2)) { realX -= bumpyOffset; bumpyOffsetX -= bumpyOffset; }
+        if((FixPoint::abs(xSpeed) >= epsilon) && (FixPoint::abs(toDistanceX - absXSpeed) < absXSpeed/2)) { realY -= bumpyOffset; bumpyOffsetY -= bumpyOffset; }
+        if((FixPoint::abs(ySpeed) >= epsilon) && (FixPoint::abs(toDistanceY - absYSpeed) < absYSpeed/2)) { realX += bumpyOffset; bumpyOffsetX += bumpyOffset; }
+
+        if((FixPoint::abs(xSpeed) >= epsilon) && (FixPoint::abs(toDistanceX - 4*absXSpeed) < absXSpeed/2)) { realY += bumpyOffset; bumpyOffsetY += bumpyOffset; }
+        if((FixPoint::abs(ySpeed) >= epsilon) && (FixPoint::abs(toDistanceY - 4*absYSpeed) < absYSpeed/2)) { realX -= bumpyOffset; bumpyOffsetX -= bumpyOffset; }
+
+        if((FixPoint::abs(xSpeed) >= epsilon) && (FixPoint::abs(toDistanceX - 10*absXSpeed) < absXSpeed/2)) { realY -= bumpyOffset; bumpyOffsetY -= bumpyOffset; }
+        if((FixPoint::abs(ySpeed) >= epsilon) && (FixPoint::abs(toDistanceY - 10*absYSpeed) < absYSpeed/2)) { realX += bumpyOffset; bumpyOffsetX += bumpyOffset; }
+
+        if((FixPoint::abs(xSpeed) >= epsilon) && (FixPoint::abs(toDistanceX - 14*absXSpeed) < absXSpeed/2)) { realY += bumpyOffset; bumpyOffsetY += bumpyOffset; }
+        if((FixPoint::abs(ySpeed) >= epsilon) && (FixPoint::abs(toDistanceY - 14*absYSpeed) < absYSpeed/2)) { realX -= bumpyOffset; bumpyOffsetX -= bumpyOffset; }
 
     }
 }
@@ -660,7 +660,7 @@ void UnitBase::navigate() {
                             /// This often happens after an AI get nuked and has a hole in their base
                             if(getOwner()->hasCarryalls()
                                && this->isAGroundUnit()
-                               && blockDistance(location, destination) >= 6.0
+                               && blockDistance(location, destination) >= 6
                                && (currentGame->getGameInitSettings().getGameOptions().manualCarryallDrops
                                    || getOwner()->isAI())){
 
@@ -1235,8 +1235,8 @@ void UnitBase::turn() {
         }
 
 		if(wantedAngle != INVALID) {
-            float	angleLeft = 0.0f;
-            float   angleRight = 0.0f;
+            FixPoint angleLeft = 0;
+            FixPoint angleRight = 0;
 
             if(angle > wantedAngle) {
                 angleRight = angle - wantedAngle;
@@ -1257,9 +1257,9 @@ void UnitBase::turn() {
 
 void UnitBase::turnLeft() {
 	angle += currentGame->objectData.data[itemID][originalHouseID].turnspeed;
-	if(angle >= 7.5f) {
+	if(angle >= FixPt(7,5)) {
 	    drawnAngle = lround(angle) - 8;
-        angle -= 8.0f;
+        angle -= 8;
 	} else {
         drawnAngle = lround(angle);
 	}
@@ -1267,9 +1267,9 @@ void UnitBase::turnLeft() {
 
 void UnitBase::turnRight() {
 	angle -= currentGame->objectData.data[itemID][originalHouseID].turnspeed;
-	if(angle <= -0.5f) {
+	if(angle <= FixPt(-0,5)) {
 	    drawnAngle = lround(angle) + 8;
-		angle += 8.0f;
+		angle += 8;
 	} else {
 	    drawnAngle = lround(angle);
 	}

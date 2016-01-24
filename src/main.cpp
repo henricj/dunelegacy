@@ -353,7 +353,7 @@ int main(int argc, char *argv[]) {
 		}
 	}
 
-	if(bShowDebug == true) {
+	if(bShowDebug == false) {
 	    // get utf8-encoded log file path
 	    std::string logfilePath = getLogFilepath();
 	    const char* pLogfilePath = logfilePath.c_str();

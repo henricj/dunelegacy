@@ -441,7 +441,7 @@ public:
 	inline bool hasInfantry() const { return !assignedInfantryList.empty(); }
     inline bool hasAnObject() { return (hasAGroundObject() || hasAnAirUnit() || hasAnUndergroundUnit()); }
 
-	inline bool hasSpice() const { return (fixFloat(spice) > 0.0f); }
+	inline bool hasSpice() const { return (spice > 0); }
 	inline bool infantryNotFull() const { return (assignedInfantryList.size() < NUM_INFANTRY_PER_TILE); }
 	inline bool isConcrete() const { return (type == Terrain_Slab); }
 	inline bool isExplored(int houseID) const {return explored[houseID];}
@@ -481,7 +481,7 @@ public:
 	    }
     };
 
-	inline FixPoint getSpiceRemaining() { return fixFloat(spice); }
+	inline FixPoint getSpiceRemaining() { return spice; }
 
 	inline const Coord& getLocation() const { return location; }
 

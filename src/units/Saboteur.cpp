@@ -101,14 +101,14 @@ bool Saboteur::update() {
                     closestPoint = target.getObjPointer()->getClosestPoint(location);
 
 
-                    if(blockDistance(location, closestPoint) <= 1.5f)	{
+                    if(blockDistance(location, closestPoint) <= FixPt(1,5))	{
                         if(isVisible(getOwner()->getTeam())) {
                             screenborder->shakeScreen(18);
                         }
 
                         ObjectBase* pObject = target.getObjPointer();
                         destroy();
-                        pObject->setHealth(0.0f);
+                        pObject->setHealth(0);
                         pObject->destroy();
                         return false;
                     }

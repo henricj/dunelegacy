@@ -442,13 +442,13 @@ void CampaignStatsMenu::calculateScore(int level)
             if(pHouse->isAI() == true) {
                 unitsDestroyedByAI += pHouse->getNumDestroyedUnits();
                 structuresDestroyedByAI += pHouse->getNumDestroyedStructures();
-                spiceHarvestedByAI += pHouse->getHarvestedSpice();
+                spiceHarvestedByAI += pHouse->getHarvestedSpice().toFloat();
 
                 totalScore -= pHouse->getDestroyedValue();
             } else {
                 unitsDestroyedByHuman += pHouse->getNumDestroyedUnits();
                 structuresDestroyedByHuman += pHouse->getNumDestroyedStructures();
-                spiceHarvestedByHuman += pHouse->getHarvestedSpice();
+                spiceHarvestedByHuman += pHouse->getHarvestedSpice().toFloat();
 
                 totalHumanCredits += pHouse->getCredits();
 
@@ -473,9 +473,9 @@ void CampaignStatsMenu::calculateScore(int level)
         if(pUnit->getItemID() == Unit_Harvester) {
             Harvester* pHarvester = (Harvester*) pUnit;
             if(pHarvester->getOwner()->isAI() == true) {
-                spiceHarvestedByAI += pHarvester->getAmountOfSpice();
+                spiceHarvestedByAI += pHarvester->getAmountOfSpice().toFloat();
             } else {
-                spiceHarvestedByHuman += pHarvester->getAmountOfSpice();
+                spiceHarvestedByHuman += pHarvester->getAmountOfSpice().toFloat();
             }
         }
     }

@@ -29,12 +29,12 @@ float fixFloat(float number);
 int getRandomInt(int min, int max);
 int getRandomOf(int numParam, ...);
 
-float destinationAngle(const Coord& p1, const Coord& p2);
+FixPoint destinationAngle(const Coord& p1, const Coord& p2);
 
 FixPoint distanceFrom(const Coord& p1, const Coord& p2);
 FixPoint distanceFrom(FixPoint x, FixPoint y, FixPoint to_x, FixPoint to_y);
 
-float blockDistance(const Coord& p1, const Coord& p2);
+FixPoint blockDistance(const Coord& p1, const Coord& p2);
 
 // Retreat location for launcher
 Coord retreatLocation(const Coord& p1, const Coord& p2);

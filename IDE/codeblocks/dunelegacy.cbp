@@ -227,8 +227,11 @@
 		<Unit filename="../../include/enet/win32.h" />
 		<Unit filename="../../include/globals.h" />
 		<Unit filename="../../include/libfixmath/FixPoint.h" />
+		<Unit filename="../../include/libfixmath/FixPoint16.h" />
+		<Unit filename="../../include/libfixmath/FixPoint32.h" />
 		<Unit filename="../../include/libfixmath/fix16.h" />
 		<Unit filename="../../include/libfixmath/fix16_trig_sin_lut.h" />
+		<Unit filename="../../include/libfixmath/fix32.h" />
 		<Unit filename="../../include/libfixmath/fixmath.h" />
 		<Unit filename="../../include/libfixmath/int64.h" />
 		<Unit filename="../../include/main.h" />
@@ -467,6 +470,21 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="../../src/libfixmath/fix16_trig.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/libfixmath/fix32.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/libfixmath/fix32_exp.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/libfixmath/fix32_sqrt.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/libfixmath/fix32_str.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/libfixmath/fix32_trig.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="../../src/main.cpp" />
