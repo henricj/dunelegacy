@@ -151,7 +151,7 @@ public:
 	static FixPoint16 asin(FixPoint16 inX) { return FromRawValue(fix16_asin(inX.value)); }
 	static FixPoint16 acos(FixPoint16 inX) { return FromRawValue(fix16_acos(inX.value)); }
 	static FixPoint16 atan(FixPoint16 inX) { return FromRawValue(fix16_atan(inX.value)); }
-	static FixPoint16 atan2(FixPoint16 inX, FixPoint16 inY) { return FromRawValue(fix16_atan2(inX.value, inY.value)); }
+	static FixPoint16 atan2(FixPoint16 inY, FixPoint16 inX) { return FromRawValue(fix16_atan2(inY.value, inX.value)); }
 	static FixPoint16 sqrt(FixPoint16 inX) { return FromRawValue(fix16_sqrt(inX.value)); }
 	static FixPoint16 abs(FixPoint16 inX) { return (inX < 0) ? -inX : inX; }
 

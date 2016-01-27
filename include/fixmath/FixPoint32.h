@@ -151,7 +151,7 @@ public:
 	static FixPoint32 asin(FixPoint32 inX) { return FromRawValue(fix32_asin(inX.value)); }
 	static FixPoint32 acos(FixPoint32 inX) { return FromRawValue(fix32_acos(inX.value)); }
 	static FixPoint32 atan(FixPoint32 inX) { return FromRawValue(fix32_atan(inX.value)); }
-	static FixPoint32 atan2(FixPoint32 inX, FixPoint32 inY) { return FromRawValue(fix32_atan2(inX.value, inY.value)); }
+	static FixPoint32 atan2(FixPoint32 inY, FixPoint32 inX) { return FromRawValue(fix32_atan2(inY.value, inX.value)); }
 	static FixPoint32 sqrt(FixPoint32 inX) { return FromRawValue(fix32_sqrt(inX.value)); }
 	static FixPoint32 abs(FixPoint32 inX) { return (inX < 0) ? -inX : inX; }
 
