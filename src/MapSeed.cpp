@@ -20,13 +20,8 @@
 #include <string.h>
 #include <stdlib.h>
 #include <SDL.h>
-#include <math.h>
 
 #include "MapSeed.h"
-
-#ifndef M_PI
-#define M_PI 3.14159265358979323846
-#endif
 
 // global seed value
 static Uint32 Seed;
@@ -82,28 +77,25 @@ const Sint16 TileTypes[] = {
 	316, 319, 320, 321, 312, 310, 311, 314, 315, 316, 319, 320, 321, 309, 310, 311
 };
 
-
-/**
-	Calculates the sinus like it is needed for the map creation algorithm
-	\param i	The argument of the sinus. One period is 256 long
-	\return An integer between -126 and +127
-*/
-Sint8 getSinus(int i) {
-	double tmp = ((sin( (((double)i)-0.0047)/128.0 * M_PI) + 1.0) * 127.001707289) - 127.001708285;
-	int x = (int) tmp;
-	return (x <= -126) ? -126 : x;
-}
-
-/**
-	Calculates the cosinus like it is needed for the map creation algorithm
-	\param i	The argument of the cosinus. One period is 256 long
-	\return An integer between -126 and +127
-*/
-Sint8 getCosinus(int i) {
-	double tmp = ((cos( (((double)i)-0.0047)/128.0 * M_PI) + 1.0) * 127.001707289) - 127.001708285;
-	int x = (int) tmp;
-	return (x <= -126) ? -126 : x;
-}
+// sinus[index] = 127 * sin(pi * index/128)
+static const Sint8 sinus[256] = {
+	0, 3, 6, 9, 12, 15, 18, 21, 24, 27, 30, 33, 36, 39, 42, 45,
+	48, 51, 54, 57, 59, 62, 65, 67, 70, 73, 75, 78, 80, 82, 85, 87,
+	89, 91, 94, 96, 98, 100, 101, 103, 105, 107, 108, 110, 111, 113, 114, 116,
+	117, 118, 119, 120, 121, 122, 123, 123, 124, 125, 125, 126, 126, 126, 126, 126,
+	127, 126, 126, 126, 126, 126, 125, 125, 124, 123, 123, 122, 121, 120, 119, 118,
+	117, 116, 114, 113, 112, 110, 108, 107, 105, 103, 102, 100, 98, 96, 94, 91,
+	89, 87, 85, 82, 80, 78, 75, 73, 70, 67, 65, 62, 59, 57, 54, 51,
+	48, 45, 42, 39, 36, 33, 30, 27, 24, 21, 18, 15, 12, 9, 6, 3,
+	0, -3, -6, -9, -12, -15, -18, -21, -24, -27, -30, -33, -36, -39, -42, -45,
+	-48, -51, -54, -57, -59, -62, -65, -67, -70, -73, -75, -78, -80, -82, -85, -87,
+	-89, -91, -94, -96, -98, -100, -102, -103, -105, -107, -108, -110, -111, -113, -114, -116,
+	-117, -118, -119, -120, -121, -122, -123, -123, -124, -125, -125, -126, -126, -126, -126, -126,
+	-126, -126, -126, -126, -126, -126, -125, -125, -124, -123, -123, -122, -121, -120, -119, -118,
+	-117, -116, -114, -113, -112, -110, -108, -107, -105, -103, -102, -100, -98, -96, -94, -91,
+	-89, -87, -85, -82, -80, -78, -75, -73, -70, -67, -65, -62, -59, -57, -54, -51,
+	-48, -45, -42, -39, -36, -33, -30, -27, -24, -21, -18, -15, -12, -9, -6, -3
+};
 
 /**
 	Converts a 2d coordinate to a 1d.
@@ -390,8 +382,8 @@ void createMapWithSeed(Uint32 Para_Seed,Uint16 *pResultMap)
 
 				randNum3 = SeedRand() & 0xFF;
 
-				point.x = point.x + (((getSinus(randNum3) * randNum2) >> 7) << 4);
-				point.y = point.y + ((((-1) * getCosinus(randNum3) * randNum2) >> 7) << 4);
+				point.x = point.x + (((sinus[randNum3] * randNum2) >> 7) << 4);
+				point.y = point.y + ((((-1) * sinus[(randNum3+64) % 256] * randNum2) >> 7) << 4);
 
 
 				if(/*(point.x < 0) || */(point.x > 0x4000) || /*(point.y < 0) ||*/ (point.y > 0x4000)) {

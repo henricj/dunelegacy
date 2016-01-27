@@ -471,7 +471,7 @@ void SmartBot::build() {
                             if((getHouse()->getNumItems(Unit_Harvester) < (getHouse()->getNumItems(Unit_SiegeTank)
                                                                           + getHouse()->getNumItems(Unit_Launcher)
                                                                           + getHouse()->getNumItems(Unit_Tank)
-                                                                          + getHouse()->getNumItems(Unit_Ornithopter))/2.5)
+                                                                          + getHouse()->getNumItems(Unit_Ornithopter))/FixPt(2,5))
                                     && (getHouse()->getNumItems(Unit_Harvester) < harvesterLimit )) {
                                     doProduceItem(pBuilder, Unit_Harvester);
                             }
@@ -496,7 +496,7 @@ void SmartBot::build() {
 
 
                                     if(pBuilder->isAvailableToBuild(Unit_Launcher)
-                                      &&((getHouse()->getNumItems(Unit_Tank) / 1.5)
+                                      &&((getHouse()->getNumItems(Unit_Tank) / FixPt(1,5))
                                          + getHouse()->getNumItems(Unit_SiegeTank)
                                          + getHouse()->getNumItems(Unit_Devastator)
                                          > getHouse()->getNumItems(Unit_Launcher) * 2)){

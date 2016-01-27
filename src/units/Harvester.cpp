@@ -323,7 +323,7 @@ void Harvester::drawSelectionBox()
 
 	if((getOwner() == pLocalHouse) && (spice > 0)) {
         for(int i=1;i<=currentZoomlevel+1;i++) {
-            drawHLine(screen, dest.x+1, dest.y-i-(currentZoomlevel+1), dest.x+1 + ((int)(((spice.toFloat())/HARVESTERMAXSPICE)*(selectionBox->w-3))), COLOR_ORANGE);
+            drawHLine(screen, dest.x+1, dest.y-i-(currentZoomlevel+1), dest.x+1 + (lround(((spice)/HARVESTERMAXSPICE)*(selectionBox->w-3))), COLOR_ORANGE);
         }
 	}
 }

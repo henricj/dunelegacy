@@ -805,7 +805,7 @@ void QuantBot::build() {
                     }else{
 
                         hLimit = 2 * initialItemCount[Structure_Refinery];
-                        militaryValueLimit = initialMilitaryValue * 1.5;
+                        militaryValueLimit = lround(initialMilitaryValue * FixPt(1,5));
                     }
 
 
@@ -830,7 +830,7 @@ void QuantBot::build() {
                 case DEFEND: {
 
                     hLimit = 2 * initialItemCount[Structure_Refinery];
-                    militaryValueLimit = initialMilitaryValue * 1.5;
+                    militaryValueLimit = lround(initialMilitaryValue * FixPt(1,5));
 
                     fprintf(stdout, "Defensive Campaign  ");
 
@@ -1192,7 +1192,7 @@ void QuantBot::build() {
                         if(!pBuilder->isUpgrading()
                            && gameMode == CAMPAIGN
                            && money > 1000
-                           && (itemCount[Structure_HeavyFactory == 0] || militaryValue < militaryValueLimit * 0.30)
+                           && (itemCount[Structure_HeavyFactory == 0] || militaryValue < militaryValueLimit * FixPt(0,30))
                            && pBuilder->getProductionQueueSize() < 1
                            && pBuilder->getBuildListSize() > 0
                            && militaryValue < militaryValueLimit){
@@ -1230,7 +1230,7 @@ void QuantBot::build() {
                         if(!pBuilder->isUpgrading()
                            && gameMode == CAMPAIGN
                            && money > 1000
-                           && (itemCount[Structure_HeavyFactory == 0] || militaryValue < militaryValueLimit * 0.30)
+                           && (itemCount[Structure_HeavyFactory == 0] || militaryValue < militaryValueLimit * FixPt(0,30))
                            && pBuilder->getProductionQueueSize() < 1
                            && pBuilder->getBuildListSize() > 0
                            && militaryValue < militaryValueLimit){
@@ -1243,7 +1243,7 @@ void QuantBot::build() {
                     case Structure_Barracks: {
                         if(!pBuilder->isUpgrading()
                            && gameMode == CAMPAIGN
-                           && (itemCount[Structure_HeavyFactory == 0] || militaryValue < militaryValueLimit * 0.30)
+                           && (itemCount[Structure_HeavyFactory == 0] || militaryValue < militaryValueLimit * FixPt(0,30))
                            && itemCount[Structure_WOR == 0]
                            && money > 1000
                            && pBuilder->getProductionQueueSize() < 1
@@ -1818,7 +1818,7 @@ void QuantBot::build() {
 
 
 
-                                else if(itemCount[Structure_Refinery] * 3.5 < itemCount[Unit_Harvester]) {
+                                else if(itemCount[Structure_Refinery] * FixPt(3,5) < itemCount[Unit_Harvester]) {
 
                                     itemID = Structure_Refinery;
 
@@ -1865,10 +1865,10 @@ void QuantBot::build() {
 
                                 /// Lets build turrets based on our military value limit, palaces and silo's
                                 else if(money > 1200
-                                          && rocketTurretValue < militaryValueLimit * 0.10
+                                          && rocketTurretValue < militaryValueLimit * FixPt(0,10)
                                                                 + itemCount[Structure_Palace] * 750
                                                                 + itemCount[Structure_Refinery] * 250
-                                          && rocketTurretValue < militaryValue * 0.25
+                                          && rocketTurretValue < militaryValue * FixPt(0,25)
                                                                 + itemCount[Structure_Palace] * 750
                                                                 + itemCount[Structure_Refinery] * 250
                                           && pBuilder->isAvailableToBuild(Structure_RocketTurret)){
@@ -2118,8 +2118,8 @@ Coord QuantBot::findSquadRallyLocation(){
     Coord baseCentreLocation = Coord::Invalid();
 
     if(enemyBuildingCount > 0 && buildingCount > 0){
-        baseCentreLocation.x = (totalX / buildingCount) * 0.75 + (enemyTotalX / enemyBuildingCount) * 0.25;
-        baseCentreLocation.y = (totalY / buildingCount) * 0.75 + (enemyTotalY / enemyBuildingCount) * 0.25;
+        baseCentreLocation.x = lround((totalX / buildingCount) * FixPt(0,75) + (enemyTotalX / enemyBuildingCount) * FixPt(0,25));
+        baseCentreLocation.y = lround((totalY / buildingCount) * FixPt(0,75) + (enemyTotalY / enemyBuildingCount) * FixPt(0,25));
 
     }
 
