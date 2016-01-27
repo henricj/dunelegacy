@@ -1,5 +1,5 @@
-#include <libfixmath/fix16.h>
-#include <libfixmath/int64.h>
+#include <fixmath/fix16.h>
+#include <fixmath/int64.h>
 
 
 /* Subtraction and addition with overflow detection.
@@ -17,7 +17,7 @@ fix16_t fix16_add(fix16_t a, fix16_t b)
 	// it causes sign of sum != sign of a.
 	if (!((_a ^ _b) & 0x80000000) && ((_a ^ sum) & 0x80000000))
 		return fix16_overflow;
-	
+
 	return sum;
 }
 
@@ -30,7 +30,7 @@ fix16_t fix16_sub(fix16_t a, fix16_t b)
 	// it causes sign of diff != sign of a.
 	if (((_a ^ _b) & 0x80000000) && ((_a ^ diff) & 0x80000000))
 		return fix16_overflow;
-	
+
 	return diff;
 }
 
@@ -43,7 +43,7 @@ fix16_t fix16_sadd(fix16_t a, fix16_t b)
 		return (a >= 0) ? fix16_maximum : fix16_minimum;
 
 	return result;
-}	
+}
 
 fix16_t fix16_ssub(fix16_t a, fix16_t b)
 {
@@ -63,24 +63,24 @@ fix16_t fix16_ssub(fix16_t a, fix16_t b)
  * bottom 16 bits are used for rounding, and upper 16 bits are used for overflow
  * detection.
  */
- 
+
 #if !defined(FIXMATH_NO_64BIT) && !defined(FIXMATH_OPTIMIZE_8BIT)
 fix16_t fix16_mul(fix16_t inArg0, fix16_t inArg1)
 {
 	int64_t product = (int64_t)inArg0 * inArg1;
-	
+
 	#ifndef FIXMATH_NO_OVERFLOW
 	// The upper 17 bits should all be the same (the sign).
 	uint32_t upper = (product >> 47);
 	#endif
-	
+
 	if (product < 0)
 	{
 		#ifndef FIXMATH_NO_OVERFLOW
 		if (~upper)
 				return fix16_overflow;
 		#endif
-		
+
 		#ifndef FIXMATH_NO_ROUNDING
 		// This adjustment is required in order to round -1/2 correctly
 		product--;
@@ -93,13 +93,13 @@ fix16_t fix16_mul(fix16_t inArg0, fix16_t inArg1)
 				return fix16_overflow;
 		#endif
 	}
-	
+
 	#ifdef FIXMATH_NO_ROUNDING
 	return product >> 16;
 	#else
 	fix16_t result = product >> 16;
 	result += (product & 0x8000) >> 15;
-	
+
 	return result;
 	#endif
 }
@@ -123,25 +123,25 @@ fix16_t fix16_mul(fix16_t inArg0, fix16_t inArg1)
 	//			 |----| 64 bit product
 	int32_t A = (inArg0 >> 16), C = (inArg1 >> 16);
 	uint32_t B = (inArg0 & 0xFFFF), D = (inArg1 & 0xFFFF);
-	
+
 	int32_t AC = A*C;
 	int32_t AD_CB = A*D + C*B;
 	uint32_t BD = B*D;
-	
+
 	int32_t product_hi = AC + (AD_CB >> 16);
-	
+
 	// Handle carry from lower 32 bits to upper part of result.
 	uint32_t ad_cb_temp = AD_CB << 16;
 	uint32_t product_lo = BD + ad_cb_temp;
 	if (product_lo < BD)
 		product_hi++;
-	
+
 #ifndef FIXMATH_NO_OVERFLOW
 	// The upper 17 bits should all be the same (the sign).
 	if (product_hi >> 31 != product_hi >> 15)
 		return fix16_overflow;
 #endif
-	
+
 #ifdef FIXMATH_NO_ROUNDING
 	return (product_hi << 16) | (product_lo >> 16);
 #else
@@ -154,7 +154,7 @@ fix16_t fix16_mul(fix16_t inArg0, fix16_t inArg1)
 	product_lo -= (uint32_t)product_hi >> 31;
 	if (product_lo > product_lo_tmp)
 		product_hi--;
-	
+
 	// Discard the lowest 16 bits. Note that this is not exactly the same
 	// as dividing by 0x10000. For example if product = -1, result will
 	// also be -1 and not 0. This is compensated by adding +1 to the result
@@ -175,77 +175,77 @@ fix16_t fix16_mul(fix16_t inArg0, fix16_t inArg1)
 {
 	uint32_t _a = (inArg0 >= 0) ? inArg0 : (-inArg0);
 	uint32_t _b = (inArg1 >= 0) ? inArg1 : (-inArg1);
-	
+
 	uint8_t va[4] = {_a, (_a >> 8), (_a >> 16), (_a >> 24)};
 	uint8_t vb[4] = {_b, (_b >> 8), (_b >> 16), (_b >> 24)};
-	
+
 	uint32_t low = 0;
 	uint32_t mid = 0;
-	
+
 	// Result column i depends on va[0..i] and vb[i..0]
 
 	#ifndef FIXMATH_NO_OVERFLOW
 	// i = 6
 	if (va[3] && vb[3]) return fix16_overflow;
 	#endif
-	
+
 	// i = 5
 	if (va[2] && vb[3]) mid += (uint16_t)va[2] * vb[3];
 	if (va[3] && vb[2]) mid += (uint16_t)va[3] * vb[2];
 	mid <<= 8;
-	
+
 	// i = 4
 	if (va[1] && vb[3]) mid += (uint16_t)va[1] * vb[3];
 	if (va[2] && vb[2]) mid += (uint16_t)va[2] * vb[2];
 	if (va[3] && vb[1]) mid += (uint16_t)va[3] * vb[1];
-	
+
 	#ifndef FIXMATH_NO_OVERFLOW
 	if (mid & 0xFF000000) return fix16_overflow;
 	#endif
 	mid <<= 8;
-	
+
 	// i = 3
 	if (va[0] && vb[3]) mid += (uint16_t)va[0] * vb[3];
 	if (va[1] && vb[2]) mid += (uint16_t)va[1] * vb[2];
 	if (va[2] && vb[1]) mid += (uint16_t)va[2] * vb[1];
 	if (va[3] && vb[0]) mid += (uint16_t)va[3] * vb[0];
-	
+
 	#ifndef FIXMATH_NO_OVERFLOW
 	if (mid & 0xFF000000) return fix16_overflow;
 	#endif
 	mid <<= 8;
-	
+
 	// i = 2
 	if (va[0] && vb[2]) mid += (uint16_t)va[0] * vb[2];
 	if (va[1] && vb[1]) mid += (uint16_t)va[1] * vb[1];
-	if (va[2] && vb[0]) mid += (uint16_t)va[2] * vb[0];		
-	
+	if (va[2] && vb[0]) mid += (uint16_t)va[2] * vb[0];
+
 	// i = 1
 	if (va[0] && vb[1]) low += (uint16_t)va[0] * vb[1];
 	if (va[1] && vb[0]) low += (uint16_t)va[1] * vb[0];
 	low <<= 8;
-	
+
 	// i = 0
 	if (va[0] && vb[0]) low += (uint16_t)va[0] * vb[0];
-	
+
 	#ifndef FIXMATH_NO_ROUNDING
 	low += 0x8000;
 	#endif
 	mid += (low >> 16);
-	
+
 	#ifndef FIXMATH_NO_OVERFLOW
 	if (mid & 0x80000000)
 		return fix16_overflow;
 	#endif
-	
+
 	fix16_t result = mid;
-	
+
 	/* Figure out the sign of result */
 	if ((inArg0 >= 0) != (inArg1 >= 0))
 	{
 		result = -result;
 	}
-	
+
 	return result;
 }
 #endif
@@ -255,7 +255,7 @@ fix16_t fix16_mul(fix16_t inArg0, fix16_t inArg1)
 fix16_t fix16_smul(fix16_t inArg0, fix16_t inArg1)
 {
 	fix16_t result = fix16_mul(inArg0, inArg1);
-	
+
 	if (result == fix16_overflow)
 	{
 		if ((inArg0 >= 0) == (inArg1 >= 0))
@@ -263,7 +263,7 @@ fix16_t fix16_smul(fix16_t inArg0, fix16_t inArg1)
 		else
 			return fix16_minimum;
 	}
-	
+
 	return result;
 }
 #endif
@@ -291,15 +291,15 @@ fix16_t fix16_div(fix16_t a, fix16_t b)
 {
 	// This uses a hardware 32/32 bit division multiple times, until we have
 	// computed all the bits in (a<<17)/b. Usually this takes 1-3 iterations.
-	
+
 	if (b == 0)
 			return fix16_minimum;
-	
+
 	uint32_t remainder = (a >= 0) ? a : (-a);
 	uint32_t divider = (b >= 0) ? b : (-b);
 	uint32_t quotient = 0;
 	int bit_pos = 17;
-	
+
 	// Kick-start the division a bit.
 	// This improves speed in the worst-case scenarios where N and D are large
 	// It gets a lower estimate for the result by N/(D >> 17 + 1).
@@ -309,14 +309,14 @@ fix16_t fix16_div(fix16_t a, fix16_t b)
 		quotient = remainder / shifted_div;
 		remainder -= ((uint64_t)quotient * divider) >> 17;
 	}
-	
+
 	// If the divider is divisible by 2^n, take advantage of it.
 	while (!(divider & 0xF) && bit_pos >= 4)
 	{
 		divider >>= 4;
 		bit_pos -= 4;
 	}
-	
+
 	while (remainder && bit_pos >= 0)
 	{
 		// Shift remainder as much as we can without overflowing
@@ -324,7 +324,7 @@ fix16_t fix16_div(fix16_t a, fix16_t b)
 		if (shift > bit_pos) shift = bit_pos;
 		remainder <<= shift;
 		bit_pos -= shift;
-		
+
 		uint32_t div = remainder / divider;
 		remainder = remainder % divider;
 		quotient += div << bit_pos;
@@ -333,18 +333,18 @@ fix16_t fix16_div(fix16_t a, fix16_t b)
 		if (div & ~(0xFFFFFFFF >> bit_pos))
 				return fix16_overflow;
 		#endif
-		
+
 		remainder <<= 1;
 		bit_pos--;
 	}
-	
+
 	#ifndef FIXMATH_NO_ROUNDING
 	// Quotient is always positive so rounding is easy
 	quotient++;
 	#endif
-	
+
 	fix16_t result = quotient >> 1;
-	
+
 	// Figure out the sign of the result
 	if ((a ^ b) & 0x80000000)
 	{
@@ -352,10 +352,10 @@ fix16_t fix16_div(fix16_t a, fix16_t b)
 		if (result == fix16_minimum)
 				return fix16_overflow;
 		#endif
-		
+
 		result = -result;
 	}
-	
+
 	return result;
 }
 #endif
@@ -371,28 +371,28 @@ fix16_t fix16_div(fix16_t a, fix16_t b)
 	// It appears to be faster to do the whole division manually than
 	// trying to compose a 64-bit divide out of 32-bit divisions on
 	// platforms without hardware divide.
-	
+
 	if (b == 0)
 		return fix16_minimum;
-	
+
 	uint32_t remainder = (a >= 0) ? a : (-a);
 	uint32_t divider = (b >= 0) ? b : (-b);
 
 	uint32_t quotient = 0;
 	uint32_t bit = 0x10000;
-	
+
 	/* The algorithm requires D >= R */
 	while (divider < remainder)
 	{
 		divider <<= 1;
 		bit <<= 1;
 	}
-	
+
 	#ifndef FIXMATH_NO_OVERFLOW
 	if (!bit)
 		return fix16_overflow;
 	#endif
-	
+
 	if (divider & 0x80000000)
 	{
 		// Perform one step manually to avoid overflows later.
@@ -405,7 +405,7 @@ fix16_t fix16_div(fix16_t a, fix16_t b)
 		divider >>= 1;
 		bit >>= 1;
 	}
-	
+
 	/* Main division loop */
 	while (bit && remainder)
 	{
@@ -414,20 +414,20 @@ fix16_t fix16_div(fix16_t a, fix16_t b)
 				quotient |= bit;
 				remainder -= divider;
 		}
-		
+
 		remainder <<= 1;
 		bit >>= 1;
-	}	 
-			
+	}
+
 	#ifndef FIXMATH_NO_ROUNDING
 	if (remainder >= divider)
 	{
 		quotient++;
 	}
 	#endif
-	
+
 	fix16_t result = quotient;
-	
+
 	/* Figure out the sign of result */
 	if ((a ^ b) & 0x80000000)
 	{
@@ -435,10 +435,10 @@ fix16_t fix16_div(fix16_t a, fix16_t b)
 		if (result == fix16_minimum)
 				return fix16_overflow;
 		#endif
-		
+
 		result = -result;
 	}
-	
+
 	return result;
 }
 #endif
@@ -448,7 +448,7 @@ fix16_t fix16_div(fix16_t a, fix16_t b)
 fix16_t fix16_sdiv(fix16_t inArg0, fix16_t inArg1)
 {
 	fix16_t result = fix16_div(inArg0, inArg1);
-	
+
 	if (result == fix16_overflow)
 	{
 		if ((inArg0 >= 0) == (inArg1 >= 0))
@@ -456,7 +456,7 @@ fix16_t fix16_sdiv(fix16_t inArg0, fix16_t inArg1)
 		else
 			return fix16_minimum;
 	}
-	
+
 	return result;
 }
 #endif
@@ -466,7 +466,7 @@ fix16_t fix16_mod(fix16_t x, fix16_t y)
 	#ifdef FIXMATH_OPTIMIZE_8BIT
 		/* The reason we do this, rather than use a modulo operator
 		 * is that if you don't have a hardware divider, this will result
-		 * in faster operations when the angles are close to the bounds. 
+		 * in faster operations when the angles are close to the bounds.
 		 */
 		while(x >=  y) x -= y;
 		while(x <= -y) x += y;

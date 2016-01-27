@@ -24,7 +24,7 @@
 
 #include <DataTypes.h>
 
-#include <libfixmath/FixPoint.h>
+#include <fixmath/FixPoint.h>
 
 #include <units/UnitBase.h>
 #include <units/Carryall.h>

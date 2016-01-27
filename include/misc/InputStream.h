@@ -18,7 +18,7 @@
 #ifndef INPUTSTREAM_H
 #define INPUTSTREAM_H
 
-#include <libfixmath/FixPoint.h>
+#include <fixmath/FixPoint.h>
 
 #include <SDL.h>
 #include <string>

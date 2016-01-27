@@ -225,15 +225,15 @@
 		<Unit filename="../../include/enet/unix.h" />
 		<Unit filename="../../include/enet/utility.h" />
 		<Unit filename="../../include/enet/win32.h" />
+		<Unit filename="../../include/fixmath/FixPoint.h" />
+		<Unit filename="../../include/fixmath/FixPoint16.h" />
+		<Unit filename="../../include/fixmath/FixPoint32.h" />
+		<Unit filename="../../include/fixmath/fix16.h" />
+		<Unit filename="../../include/fixmath/fix16_trig_sin_lut.h" />
+		<Unit filename="../../include/fixmath/fix32.h" />
+		<Unit filename="../../include/fixmath/fixmath.h" />
+		<Unit filename="../../include/fixmath/int64.h" />
 		<Unit filename="../../include/globals.h" />
-		<Unit filename="../../include/libfixmath/FixPoint.h" />
-		<Unit filename="../../include/libfixmath/FixPoint16.h" />
-		<Unit filename="../../include/libfixmath/FixPoint32.h" />
-		<Unit filename="../../include/libfixmath/fix16.h" />
-		<Unit filename="../../include/libfixmath/fix16_trig_sin_lut.h" />
-		<Unit filename="../../include/libfixmath/fix32.h" />
-		<Unit filename="../../include/libfixmath/fixmath.h" />
-		<Unit filename="../../include/libfixmath/int64.h" />
 		<Unit filename="../../include/main.h" />
 		<Unit filename="../../include/misc/BlendBlitter.h" />
 		<Unit filename="../../include/misc/FileSystem.h" />
@@ -455,37 +455,37 @@
 		<Unit filename="../../src/enet/win32.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="../../src/fixmath/fix16.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/fixmath/fix16_exp.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/fixmath/fix16_sqrt.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/fixmath/fix16_str.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/fixmath/fix16_trig.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/fixmath/fix32.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/fixmath/fix32_exp.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/fixmath/fix32_sqrt.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/fixmath/fix32_str.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../../src/fixmath/fix32_trig.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Unit filename="../../src/globals.cpp" />
-		<Unit filename="../../src/libfixmath/fix16.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="../../src/libfixmath/fix16_exp.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="../../src/libfixmath/fix16_sqrt.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="../../src/libfixmath/fix16_str.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="../../src/libfixmath/fix16_trig.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="../../src/libfixmath/fix32.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="../../src/libfixmath/fix32_exp.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="../../src/libfixmath/fix32_sqrt.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="../../src/libfixmath/fix32_str.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="../../src/libfixmath/fix32_trig.c">
-			<Option compilerVar="CC" />
-		</Unit>
 		<Unit filename="../../src/main.cpp" />
 		<Unit filename="../../src/misc/FileSystem.cpp" />
 		<Unit filename="../../src/misc/IFileStream.cpp" />

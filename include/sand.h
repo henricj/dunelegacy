@@ -20,7 +20,7 @@
 
 #include <SDL.h>
 
-#include <libfixmath/FixPoint.h>
+#include <fixmath/FixPoint.h>
 #include <DataTypes.h>
 #include <string>
 

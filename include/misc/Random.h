@@ -18,7 +18,7 @@
 #ifndef RANDOM_H
 #define RANDOM_H
 
-#include <libfixmath/FixPoint.h>
+#include <fixmath/FixPoint.h>
 
 #include <SDL.h>
 

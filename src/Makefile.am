@@ -52,16 +52,16 @@ dunelegacy_SOURCES =	AStarSearch.cpp\
 						enet/unix.c\
 						enet/win32.c\
 						$(NULL)\
-						libfixmath/fix16.c\
-						libfixmath/fix16_exp.c\
-						libfixmath/fix16_sqrt.c\
-						libfixmath/fix16_str.c\
-						libfixmath/fix16_trig.c\
-						libfixmath/fix32.c\
-						libfixmath/fix32_exp.c\
-						libfixmath/fix32_sqrt.c\
-						libfixmath/fix32_str.c\
-						libfixmath/fix32_trig.c\
+						fixmath/fix16.c\
+						fixmath/fix16_exp.c\
+						fixmath/fix16_sqrt.c\
+						fixmath/fix16_str.c\
+						fixmath/fix16_trig.c\
+						fixmath/fix32.c\
+						fixmath/fix32_exp.c\
+						fixmath/fix32_sqrt.c\
+						fixmath/fix32_str.c\
+						fixmath/fix32_trig.c\
 						$(NULL)\
 						misc/draw_util.cpp\
 						misc/FileSystem.cpp\

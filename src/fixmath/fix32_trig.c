@@ -1,5 +1,5 @@
 #include <limits.h>
-#include <libfixmath/fix32.h>
+#include <fixmath/fix32.h>
 
 #if !defined(FIXMATH_NO_CACHE)
 static fix32_t _fix32_sin_cache_index[4096]  = { 0 };
@@ -20,7 +20,7 @@ fix32_t fix32_sin_parabola(fix32_t inAngle)
 	/* Absolute function */
 	mask = (inAngle >> (sizeof(fix32_t)*CHAR_BIT-1));
 	abs_inAngle = (inAngle + mask) ^ mask;
-	
+
 	/* On 0->PI, sin looks like x² that is :
 	   - centered on PI/2,
 	   - equals 1 on PI/2,

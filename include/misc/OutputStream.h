@@ -18,7 +18,7 @@
 #ifndef OUTPUTSTREAM_H
 #define OUTPUTSTREAM_H
 
-#include <libfixmath/FixPoint.h>
+#include <fixmath/FixPoint.h>
 
 #include <SDL.h>
 #include <string>

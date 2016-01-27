@@ -22,7 +22,7 @@
 
 #include <Definitions.h>
 #include <DataTypes.h>
-#include <libfixmath/FixPoint.h>
+#include <fixmath/FixPoint.h>
 #include <mmath.h>
 
 #include <globals.h>

@@ -1,4 +1,4 @@
-#include <libfixmath/fix16.h>
+#include <fixmath/fix32.h>
 
 /* The square root algorithm is quite directly from
  * http://en.wikipedia.org/wiki/Methods_of_computing_square_roots#Binary_numeral_system_.28base_2.29
@@ -9,30 +9,30 @@
  * Not sure if someone relies on this behaviour, but not going
  * to break it for now. It doesn't slow the code much overall.
  */
-fix16_t fix16_sqrt(fix16_t inValue)
+fix32_t fix32_sqrt(fix32_t inValue)
 {
 	uint8_t  neg = (inValue < 0);
-	uint32_t num = (neg ? -inValue : inValue);
-	uint32_t result = 0;
-	uint32_t bit;
+	uint64_t num = (neg ? -inValue : inValue);
+	uint64_t result = 0;
+	uint64_t bit;
 	uint8_t  n;
-	
+
 	// Many numbers will be less than 15, so
 	// this gives a good balance between time spent
 	// in if vs. time spent in the while loop
 	// when searching for the starting value.
-	if (num & 0xFFF00000)
-		bit = (uint32_t)1 << 30;
+	if (num & 0xFFFFFFF000000000)
+		bit = (uint64_t)1 << 62;
 	else
-		bit = (uint32_t)1 << 18;
-	
+		bit = (uint64_t)1 << 34;
+
 	while (bit > num) bit >>= 2;
-	
+
 	// The main part is executed twice, in order to avoid
-	// using 64 bit values in computations.
+	// using 128 bit values in computations.
 	for (n = 0; n < 2; n++)
 	{
-		// First we get the top 24 bits of the answer.
+		// First we get the top 48 bits of the answer.
 		while (bit)
 		{
 			if (num >= result + bit)
@@ -46,29 +46,29 @@ fix16_t fix16_sqrt(fix16_t inValue)
 			}
 			bit >>= 2;
 		}
-		
+
 		if (n == 0)
 		{
-			// Then process it again to get the lowest 8 bits.
-			if (num > 65535)
+			// Then process it again to get the lowest 16 bits.
+			if (num > 4294967295UL)
 			{
 				// The remainder 'num' is too large to be shifted left
-				// by 16, so we have to add 1 to result manually and
+				// by 32, so we have to add 1 to result manually and
 				// adjust 'num' accordingly.
 				// num = a - (result + 0.5)^2
 				//	 = num + result^2 - (result + 0.5)^2
 				//	 = num - result - 0.5
 				num -= result;
-				num = (num << 16) - 0x8000;
-				result = (result << 16) + 0x8000;
+				num = (num << 32) - 0x80000000;
+				result = (result << 32) + 0x80000000;
 			}
 			else
 			{
-				num <<= 16;
-				result <<= 16;
+				num <<= 32;
+				result <<= 32;
 			}
-			
-			bit = 1 << 14;
+
+			bit = 1 << 30;
 		}
 	}
 
@@ -79,6 +79,6 @@ fix16_t fix16_sqrt(fix16_t inValue)
 		result++;
 	}
 #endif
-	
-	return (neg ? -(fix16_t)result : (fix16_t)result);
+
+	return (neg ? -(fix32_t)result : (fix32_t)result);
 }

@@ -22,7 +22,7 @@
 
 #include <misc/InputStream.h>
 #include <misc/OutputStream.h>
-#include <libfixmath/FixPoint.h>
+#include <fixmath/FixPoint.h>
 #include <mmath.h>
 
 #include <algorithm>

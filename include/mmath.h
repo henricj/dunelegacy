@@ -21,7 +21,7 @@
 // forward declaration
 class Coord;
 
-#include <libfixmath/FixPoint.h>
+#include <fixmath/FixPoint.h>
 #include <cmath>
 
 int getRandomInt(int min, int max);

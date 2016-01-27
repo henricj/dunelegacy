@@ -19,7 +19,7 @@
 #define ASTARSEARCH_H
 
 #include <DataTypes.h>
-#include <libfixmath/FixPoint.h>
+#include <fixmath/FixPoint.h>
 
 #include <list>
 #include <vector>
