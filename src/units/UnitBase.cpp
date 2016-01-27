@@ -370,7 +370,7 @@ void UnitBase::drawSelectionBox() {
 	int x = screenborder->world2screenX(realX) - selectionBox->w/2;
 	int y = screenborder->world2screenY(realY) - selectionBox->h/2;
 	for(int i=1;i<=currentZoomlevel+1;i++) {
-        drawHLine(screen, x+1, y-i, x+1 + ((int)((getHealth()/getMaxHealth())*(selectionBox->w-3))), getHealthColor());
+        drawHLine(screen, x+1, y-i, x+1 + (lround((getHealth()/getMaxHealth())*(selectionBox->w-3))), getHealthColor());
 	}
 }
 
@@ -442,10 +442,7 @@ void UnitBase::engageTarget() {
 
         targetDistance = blockDistance(location, targetLocation);
 
-        Sint8 newTargetAngle = lround(8*destinationAngle(location, targetLocation)/256);
-        if(newTargetAngle == 8) {
-            newTargetAngle = 0;
-        }
+        Sint8 newTargetAngle = lround(destinationAngle(location, targetLocation)*NUM_ANGLES/256) % NUM_ANGLES;
 
         if(bFollow) {
             // we are following someone
@@ -494,10 +491,7 @@ void UnitBase::engageTarget() {
 
         targetDistance = blockDistance(location, attackPos);
 
-        Sint8 newTargetAngle = lround(8*destinationAngle(location, attackPos)/256);
-        if(newTargetAngle == 8) {
-            newTargetAngle = 0;
-        }
+        Sint8 newTargetAngle = lround(destinationAngle(location, attackPos)*NUM_ANGLES/256) % NUM_ANGLES;
 
         if(targetDistance <= getWeaponRange()) {
             // we are in weapon range thus we can stop moving
@@ -1015,7 +1009,8 @@ bool UnitBase::isInWeaponRange(const ObjectBase* object) const {
 
 
 void UnitBase::setAngle(int newAngle) {
-	if(!moving && !justStoppedMoving && (newAngle >= 0) && (newAngle < NUM_ANGLES)) {
+	if(!moving && !justStoppedMoving) {
+        newAngle = newAngle % NUM_ANGLES;
 		angle = drawnAngle = newAngle;
 		clearPath();
 	}
@@ -1256,8 +1251,8 @@ void UnitBase::turn() {
 void UnitBase::turnLeft() {
 	angle += currentGame->objectData.data[itemID][originalHouseID].turnspeed;
 	if(angle >= FixPt(7,5)) {
-	    drawnAngle = lround(angle) - 8;
-        angle -= 8;
+	    drawnAngle = lround(angle) - NUM_ANGLES;
+        angle -= NUM_ANGLES;
 	} else {
         drawnAngle = lround(angle);
 	}
@@ -1266,8 +1261,8 @@ void UnitBase::turnLeft() {
 void UnitBase::turnRight() {
 	angle -= currentGame->objectData.data[itemID][originalHouseID].turnspeed;
 	if(angle <= FixPt(-0,5)) {
-	    drawnAngle = lround(angle) + 8;
-		angle += 8;
+	    drawnAngle = lround(angle) + NUM_ANGLES;
+		angle += NUM_ANGLES;
 	} else {
 	    drawnAngle = lround(angle);
 	}

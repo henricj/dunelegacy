@@ -72,11 +72,7 @@ void TurretBase::updateStructureSpecificStuff() {
 		} else if(targetInWeaponRange()) {
 			Coord closestPoint = target.getObjPointer()->getClosestPoint(location);
 			FixPoint destAngle = destinationAngle(location, closestPoint);
-			int wantedAngle = lround(8*destAngle/256);
-
-			if(wantedAngle == 8) {
-				wantedAngle = 0;
-			}
+			int wantedAngle = lround(destAngle*NUM_ANGLES/256) % NUM_ANGLES;
 
 			if(angle != wantedAngle) {
 				// turn
@@ -85,10 +81,10 @@ void TurretBase::updateStructureSpecificStuff() {
 
                 if(angle > wantedAngle) {
                     angleRight = angle - wantedAngle;
-                    angleLeft = FixPoint::abs(8-angle)+wantedAngle;
+                    angleLeft = FixPoint::abs(NUM_ANGLES-angle)+wantedAngle;
                 }
                 else if(angle < wantedAngle) {
-                    angleRight = FixPoint::abs(8-wantedAngle) + angle;
+                    angleRight = FixPoint::abs(NUM_ANGLES-wantedAngle) + angle;
                     angleLeft = wantedAngle - angle;
                 }
 

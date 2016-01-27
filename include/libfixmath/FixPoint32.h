@@ -28,6 +28,7 @@
 #define FixPt32_MAX (FixPoint32::FromRawValue(fix32_maximum))
 #define FixPt32_PI (FixPoint32::FromRawValue(fix32_pi))
 #define FixPt32_E (FixPoint32::FromRawValue(fix32_e))
+#define FixPt32_SQRT2 (FixPoint32::FromRawValue(0x000000016A09E668LL))
 
 class FixPoint32
 {
@@ -36,8 +37,7 @@ public:
 	FixPoint32(const FixPoint32& inValue)        { value = inValue.value;             }
 	FixPoint32(const int inValue)                { value = fix32_from_int(inValue); }
 	FixPoint32(const unsigned int inValue)       { value = fix32_from_int(static_cast<int>(inValue)); }
-//	explicit FixPoint32(const float inValue)     { value = fix32_from_float(inValue); }
-//	/*explicit*/ FixPoint32(const double inValue)  { value = fix32_from_dbl(inValue);   }
+
 	explicit FixPoint32(std::string inValue) {
         value = fix32_from_str(inValue.c_str());
     }
@@ -51,96 +51,94 @@ public:
 	fix32_t getRawValue() const { return value; }
 
 	double toDouble() const { return fix32_to_dbl(value);   }
+
 	float toFloat() const   { return fix32_to_float(value); }
+
 	std::string toString() const {
 		char buffer[32];
 		fix32_to_str(value, buffer, 10);
 		return std::string(buffer);
 	}
 
+	int lround() const { return fix32_to_int(value);   }
+	int floor() const { return (value >> 32); }
+	int ceil() const { return ((value + 0x00000000FFFFFFFFLL) >> 32); }
 
-//    operator double()  const { return fix32_to_dbl(value);   }
-//    operator float()   const { return fix32_to_float(value); }
-    explicit operator int() const { return fix32_to_int(value);   }
-
-	int roundToInt() const       { return fix32_to_int(value);   }
+	FixPoint32 & operator>>=(const int rhs)     { value >>= rhs; return *this; }
+	FixPoint32 & operator<<=(const int rhs)     { value <<= rhs; return *this; }
 
 	FixPoint32 & operator=(const FixPoint32 rhs)     { value = rhs.value;             return *this; }
 	FixPoint32 & operator=(const int rhs)            { value = fix32_from_int(rhs);   return *this; }
 	FixPoint32 & operator=(const unsigned int rhs)   { return operator=(static_cast<int>(rhs)); }
-//	FixPoint32 & operator=(const float rhs)          { value = fix32_from_float(rhs); return *this; }
 
 	FixPoint32 & operator+=(const FixPoint32 rhs)     { value += rhs.value;             return *this; }
 	FixPoint32 & operator+=(const int rhs)            { value += fix32_from_int(rhs);   return *this; }
 	FixPoint32 & operator+=(const unsigned int rhs)   { return operator+=(static_cast<int>(rhs)); }
-//	FixPoint32 & operator+=(const float rhs)          { value += fix32_from_float(rhs); return *this; }
 
 	FixPoint32 & operator-=(const FixPoint32 rhs)     { value -= rhs.value; return *this; }
 	FixPoint32 & operator-=(const int rhs)            { value -= fix32_from_int(rhs); return *this; }
 	FixPoint32 & operator-=(const unsigned int rhs)   { return operator-=(static_cast<int>(rhs)); }
-//	FixPoint32 & operator-=(const float rhs)          { value -= fix32_from_float(rhs); return *this; }
 
 	FixPoint32 & operator*=(const FixPoint32 rhs)     { value = fix32_mul(value, rhs.value); return *this; }
 	FixPoint32 & operator*=(const int rhs)            { value *= rhs; return *this; }
 	FixPoint32 & operator*=(const unsigned int rhs)   { return operator*=(static_cast<int>(rhs)); }
-//	FixPoint32 & operator*=(const float rhs)          { value = fix32_mul(value, fix32_from_float(rhs)); return *this; }
 
 	FixPoint32 & operator/=(const FixPoint32 rhs)     { value = fix32_div(value, rhs.value); return *this; }
 	FixPoint32 & operator/=(const int rhs)            { value /= rhs; return *this; }
 	FixPoint32 & operator/=(const unsigned int rhs)   { return operator/=(static_cast<int>(rhs)); }
-//	FixPoint32 & operator/=(const float rhs)          { value = fix32_div(value, fix32_from_float(rhs)); return *this; }
+
+	FixPoint32 & operator%=(const FixPoint32 rhs)     { value = fix32_mod(value, rhs.value); return *this; }
+	FixPoint32 & operator%=(const int rhs)            { value %= rhs; return *this; }
+	FixPoint32 & operator%=(const unsigned int rhs)   { return operator%=(static_cast<int>(rhs)); }
 
 	const FixPoint32 operator-() const { FixPoint32 ret = *this; ret.value = -ret.value; return ret; }
+
+	const FixPoint32 operator>>(const int other) const          { FixPoint32 ret = *this; ret >>= other; return ret; }
+	const FixPoint32 operator<<(const int other) const          { FixPoint32 ret = *this; ret <<= other; return ret; }
 
 	const FixPoint32 operator+(const FixPoint32 other) const   { FixPoint32 ret = *this; ret += other; return ret; }
 	const FixPoint32 operator+(const int other) const          { FixPoint32 ret = *this; ret += FixPoint32(other); return ret; }
 	const FixPoint32 operator+(const unsigned int other) const { return operator+(static_cast<int>(other)); }
-//	const FixPoint32 operator+(const float other) const        { FixPoint32 ret = *this; ret += other; return ret; }
 
 	const FixPoint32 operator-(const FixPoint32 other) const   { FixPoint32 ret = *this; ret -= other; return ret; }
 	const FixPoint32 operator-(const int other) const          { FixPoint32 ret = *this; ret -= FixPoint32(other); return ret; }
 	const FixPoint32 operator-(const unsigned int other) const { return operator-(static_cast<int>(other)); }
-//	const FixPoint32 operator-(const float other) const        { FixPoint32 ret = *this; ret -= other; return ret; }
 
 	const FixPoint32 operator*(const FixPoint32 other) const   { FixPoint32 ret = *this; ret *= other; return ret; }
 	const FixPoint32 operator*(const int other) const          { FixPoint32 ret = *this; ret *= FixPoint32(other); return ret; }
 	const FixPoint32 operator*(const unsigned int other) const { return operator*(static_cast<int>(other)); }
-//	const FixPoint32 operator*(const float other) const        { FixPoint32 ret = *this; ret *= other; return ret; }
 
 	const FixPoint32 operator/(const FixPoint32 other) const   { FixPoint32 ret = *this; ret /= other; return ret; }
 	const FixPoint32 operator/(const int other) const          { FixPoint32 ret = *this; ret /= FixPoint32(other); return ret; }
 	const FixPoint32 operator/(const unsigned int other) const { return operator/(static_cast<int>(other)); }
-//	const FixPoint32 operator/(const float other) const        { FixPoint32 ret = *this; ret /= other; return ret; }
+
+	const FixPoint32 operator%(const FixPoint32 other) const   { FixPoint32 ret = *this; ret %= other; return ret; }
+	const FixPoint32 operator%(const int other) const          { FixPoint32 ret = *this; ret %= FixPoint32(other); return ret; }
+	const FixPoint32 operator%(const unsigned int other) const { return operator%(static_cast<int>(other)); }
 
 	bool operator==(const FixPoint32 other) const   { return (value == other.value);              }
 	bool operator==(const int other) const          { return (value == fix32_from_int(other));    }
 	bool operator==(const unsigned int other) const { return operator==(static_cast<int>(other)); }
-//	bool operator==(const float other) const        { return (value == fix32_from_float(other));  }
 
 	bool operator!=(const FixPoint32 other) const   { return (value != other.value);              }
 	bool operator!=(const int other) const          { return (value != fix32_from_int(other));    }
 	bool operator!=(const unsigned int other) const { return operator!=(static_cast<int>(other)); }
-//	bool operator!=(const float other) const        { return (value != fix32_from_float(other));  }
 
 	bool operator<=(const FixPoint32 other) const   { return (value <= other.value);              }
 	bool operator<=(const int other) const          { return (value <= fix32_from_int(other));    }
 	bool operator<=(const unsigned int other) const { return operator<=(static_cast<int>(other)); }
-//	bool operator<=(const float other) const        { return (value <= fix32_from_float(other));  }
 
 	bool operator>=(const FixPoint32 other) const   { return (value >= other.value);              }
 	bool operator>=(const int other) const          { return (value >= fix32_from_int(other));    }
 	bool operator>=(const unsigned int other) const { return operator>=(static_cast<int>(other)); }
-//	bool operator>=(const float other) const        { return (value >= fix32_from_float(other));  }
 
 	bool operator< (const FixPoint32 other) const   { return (value <  other.value);              }
 	bool operator< (const int other) const          { return (value <  fix32_from_int(other));    }
 	bool operator< (const unsigned int other) const { return operator<(static_cast<int>(other));  }
-//	bool operator< (const float other) const        { return (value <  fix32_from_float(other));  }
 
 	bool operator> (const FixPoint32 other) const   { return (value >  other.value);              }
 	bool operator> (const int other) const          { return (value >  fix32_from_int(other));    }
 	bool operator> (const unsigned int other) const { return operator>(static_cast<int>(other));  }
-//	bool operator> (const float other) const        { return (value >  fix32_from_float(other));  }
 
     FixPoint32& operator++() { *this = *this + 1; return *this; }
     FixPoint32& operator--() { *this = *this - 1; return *this; }
@@ -163,39 +161,33 @@ private:
 
 static inline const FixPoint32 operator+(int value, const FixPoint32 other) { return other+value; }
 static inline const FixPoint32 operator+(unsigned int value, const FixPoint32 other) { return other+value; }
-//static inline const FixPoint32 operator+(float value, const FixPoint32 other) { return other+value; }
 static inline const FixPoint32 operator-(int value, const FixPoint32 other) { return FixPoint32(value) - other; }
 static inline const FixPoint32 operator-(unsigned int value, const FixPoint32 other) { return FixPoint32(value) - other; }
-//static inline const FixPoint32 operator-(float value, const FixPoint32 other) { return FixPoint32(value) - other; }
 static inline const FixPoint32 operator*(int value, const FixPoint32 other) { return other*value; }
 static inline const FixPoint32 operator*(unsigned int value, const FixPoint32 other) { return other*value; }
-//static inline const FixPoint32 operator*(float value, const FixPoint32 other) { return other*value; }
 static inline const FixPoint32 operator/(int value, const FixPoint32 other) { return FixPoint32(value) / other; }
 static inline const FixPoint32 operator/(unsigned int value, const FixPoint32 other) { return FixPoint32(value) / other; }
-//static inline const FixPoint32 operator/(float value, const FixPoint32 other) { return FixPoint32(value) / other; }
+static inline const FixPoint32 operator%(int value, const FixPoint32 other) { return FixPoint32(value) % other; }
+static inline const FixPoint32 operator%(unsigned int value, const FixPoint32 other) { return FixPoint32(value) % other; }
 
 
 static inline bool operator==(int value, const FixPoint32 other) { return other.operator==(value); }
 static inline bool operator==(unsigned int value, const FixPoint32 other) { return other.operator==(value); }
-//static inline bool operator==(float value, const FixPoint32 other) { return other.operator==(value); }
 static inline bool operator!=(int value, const FixPoint32 other) { return other.operator!=(value); }
 static inline bool operator!=(unsigned int value, const FixPoint32 other) { return other.operator!=(value); }
-//static inline bool operator!=(float value, const FixPoint32 other) { return other.operator!=(value); }
 
 static inline bool operator<=(int value, const FixPoint32 other) { return other.operator>(value); }
 static inline bool operator<=(unsigned int value, const FixPoint32 other) { return other.operator>(value); }
-//static inline bool operator<=(float value, const FixPoint32 other) { return other.operator>(value); }
 static inline bool operator>=(int value, const FixPoint32 other) { return other.operator<(value); }
 static inline bool operator>=(unsigned int value, const FixPoint32 other) { return other.operator<(value); }
-//static inline bool operator>=(float value, const FixPoint32 other) { return other.operator<(value); }
 static inline bool operator<(int value, const FixPoint32 other) { return other.operator>=(value); }
 static inline bool operator<(unsigned int value, const FixPoint32 other) { return other.operator>=(value); }
-//static inline bool operator<(float value, const FixPoint32 other) { return other.operator>=(value); }
 static inline bool operator>(int value, const FixPoint32 other) { return other.operator<=(value); }
 static inline bool operator>(unsigned int value, const FixPoint32 other) { return other.operator<=(value); }
-//static inline bool operator>(float value, const FixPoint32 other) { return other.operator<=(value); }
 
 
-static inline int lround(FixPoint32 value) { return value.roundToInt(); }
+static inline int lround(FixPoint32 value) { return value.lround(); }
+static inline int floor(FixPoint32 value) { return value.floor(); }
+static inline int ceil(FixPoint32 value) { return value.ceil(); }
 
 #endif // FIXPOINT32_H

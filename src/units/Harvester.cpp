@@ -318,7 +318,7 @@ void Harvester::drawSelectionBox()
 	SDL_BlitSurface(selectionBox, NULL, screen, &dest);
 
 	for(int i=1;i<=currentZoomlevel+1;i++) {
-        drawHLine(screen, dest.x+1, dest.y-i, dest.x+1 + ((int)((getHealth()/getMaxHealth())*(selectionBox->w-3))), getHealthColor());
+        drawHLine(screen, dest.x+1, dest.y-i, dest.x+1 + (lround((getHealth()/getMaxHealth())*(selectionBox->w-3))), getHealthColor());
 	}
 
 	if((getOwner() == pLocalHouse) && (spice > 0)) {
@@ -447,7 +447,7 @@ void Harvester::move()
 }
 
 bool Harvester::isHarvesting() const {
-    return harvestingMode && (blockDistance(location, destination) <= DIAGONALCOST) && currentGameMap->tileExists(location) && currentGameMap->getTile(location)->hasSpice();
+    return harvestingMode && (blockDistance(location, destination) <= FixPt_SQRT2) && currentGameMap->tileExists(location) && currentGameMap->getTile(location)->hasSpice();
 }
 
 bool Harvester::canAttack(const ObjectBase* object) const

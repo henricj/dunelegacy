@@ -1145,13 +1145,13 @@ void QuantBot::build() {
             **/
 
 
-            float launcherWeight = (((totalLosses - launcherLosses) + 1) / (launcherLosses+1));
-            float specialWeight = (((totalLosses - specialLosses) + 1) / (specialLosses+1));
-            float lightWeight = (((totalLosses - lightLosses) + 1) / (lightLosses+1));
-            float siegeWeight = (((totalLosses - siegeLosses) + 1) / (siegeLosses+1));
-            float ornithopterWeight = (((totalLosses - ornithopterLosses) + 1) / (ornithopterLosses+1));
+            FixPoint launcherWeight = FixPoint((totalLosses - launcherLosses) + 1) / (launcherLosses+1);
+            FixPoint specialWeight = FixPoint((totalLosses - specialLosses) + 1) / (specialLosses+1);
+            FixPoint lightWeight = FixPoint((totalLosses - lightLosses) + 1) / (lightLosses+1);
+            FixPoint siegeWeight = FixPoint((totalLosses - siegeLosses) + 1) / (siegeLosses+1);
+            FixPoint ornithopterWeight = FixPoint((totalLosses - ornithopterLosses) + 1) / (ornithopterLosses+1);
 
-            float totalWeight = launcherWeight + specialWeight + lightWeight + siegeWeight + ornithopterWeight;
+            FixPoint totalWeight = launcherWeight + specialWeight + lightWeight + siegeWeight + ornithopterWeight;
 
             // Apply house specific logic
             if(getHouse()->getHouseID() == HOUSE_HARKONNEN){
@@ -1168,10 +1168,10 @@ void QuantBot::build() {
             }
 
             /// Calculate ratios of launcher, special and light tanks. Remainder will be tank
-            float launcherPercent = launcherWeight / totalWeight;
-            float specialPercent = specialWeight / totalWeight;
-            float siegePercent = siegeWeight / totalWeight;
-            float ornithopterPercent = ornithopterWeight / totalWeight;
+            FixPoint launcherPercent = launcherWeight / totalWeight;
+            FixPoint specialPercent = specialWeight / totalWeight;
+            FixPoint siegePercent = siegeWeight / totalWeight;
+            FixPoint ornithopterPercent = ornithopterWeight / totalWeight;
 
 
 

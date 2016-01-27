@@ -399,10 +399,6 @@ int main(int argc, char *argv[]) {
 
 	fprintf(stdout, "Starting Dune Legacy " VERSION " ...\n"); fflush(stdout);
 
-	if(checkForExcessPrecision() == true) {
-        fprintf(stdout, "WARNING: Floating point operations are internally calculated with higher precision. Network game might get async. Are you using x87-FPU? Check your compile settings!\n"); fflush(stdout);
-	}
-
     // First check for missing files
     std::vector<std::string> missingFiles = FileManager::getMissingFiles();
 

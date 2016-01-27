@@ -65,8 +65,8 @@ Bullet::Bullet(Uint32 shooterID, Coord* newRealLocation, Coord* newRealDestinati
 
 		FixPoint square_root = FixPoint::sqrt(diffX*diffX + diffY*diffY);
 		FixPoint ratio = (weaponrange*TILESIZE)/square_root;
-		destination.x = newRealLocation->x + (int)(diffX*ratio);
-		destination.y = newRealLocation->y + (int)(diffY*ratio);
+		destination.x = newRealLocation->x + floor(diffX*ratio);
+		destination.y = newRealLocation->y + floor(diffY*ratio);
 	} else if(bulletID == Bullet_Rocket || bulletID == Bullet_DRocket) {
 	    FixPoint distance = distanceFrom(*newRealLocation, *newRealDestination);
 
@@ -352,7 +352,7 @@ void Bullet::update()
 {
 	if(bulletID == Bullet_Rocket || bulletID == Bullet_DRocket) {
 
-        FixPoint angleToDestination = destinationAngle(Coord(realX.roundToInt(), realY.roundToInt()), destination);
+        FixPoint angleToDestination = destinationAngle(Coord(lround(realX), lround(realY)), destination);
 
         FixPoint angleDiff = angleToDestination - angle;
         if(angleDiff > 128) {
@@ -388,8 +388,8 @@ void Bullet::update()
 
 	realX += xSpeed;  //keep the bullet moving by its current speeds
 	realY += ySpeed;
-	location.x = (int)(realX/TILESIZE);
-	location.y = (int)(realY/TILESIZE);
+	location.x = floor(realX/TILESIZE);
+	location.y = floor(realY/TILESIZE);
 
 	if((location.x < -5) || (location.x >= currentGameMap->getSizeX() + 5) || (location.y < -5) || (location.y >= currentGameMap->getSizeY() + 5)) {
         // it's off the map => delete it

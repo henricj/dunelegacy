@@ -101,7 +101,7 @@ public:
 
     inline FixPoint getStartingCredits() const { return startingCredits; }
 	inline FixPoint getStoredCredits() const { return storedCredits; }
-    inline int getCredits() const { return (storedCredits+startingCredits).roundToInt(); }
+    inline int getCredits() const { return lround(storedCredits+startingCredits); }
 	void addCredits(FixPoint newCredits, bool wasRefined = false);
     void returnCredits(FixPoint newCredits);
 	FixPoint takeCredits(FixPoint amount);

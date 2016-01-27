@@ -71,7 +71,7 @@ AStarSearch::AStarSearch(Map* pMap, UnitBase* pUnit, Coord start, Coord destinat
 
                         if((nextCoord.x != currentCoord.x) && (nextCoord.y != currentCoord.y)) {
                             //add diagonal movement cost
-                            g += DIAGONALCOST*(pUnit->isAFlyingUnit() ? FixPoint(1) : pUnit->getTerrainDifficulty((TERRAINTYPE) nextTile.getType()));
+                            g += FixPt_SQRT2*(pUnit->isAFlyingUnit() ? FixPoint(1) : pUnit->getTerrainDifficulty((TERRAINTYPE) nextTile.getType()));
                         } else {
                             g += (pUnit->isAFlyingUnit() ? FixPoint(1) : pUnit->getTerrainDifficulty((TERRAINTYPE) nextTile.getType()));
                         }

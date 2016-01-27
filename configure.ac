@@ -24,19 +24,6 @@ dnl Some flags for clang
 dnl CXXFLAGS="-O3 -pipe -pedantic -Weverything -Wno-sign-conversion -Wno-conversion -Wno-shadow -Wno-missing-noreturn -Wno-padded -Wno-packed -Wno-weak-vtables -Wno-c++11-narrowing -Wno-cast-align -Wno-unreachable-code -Wno-missing-prototypes -Wno-float-equal -Wno-global-constructors -Wno-exit-time-destructors -Wno-format-nonliteral -Wno-unused-macros -Wextra -Wno-unused-parameter -Wno-narrowing"
 
 
-dnl test for -ffp-contract=off (gcc >= 4.6) and use -mno-fused-madd instead
-oldCFLAGS="$CFLAGS"
-CFLAGS="-ffp-contract=off"
-AC_COMPILE_IFELSE([AC_LANG_PROGRAM([])],
-    [CXXFLAGS="$CXXFLAGS -ffp-contract=off"],
-    [CXXFLAGS="$CXXFLAGS -mno-fused-madd"]
-)
-CFLAGS="$oldCFLAGS"
-
-case "$target_cpu" in
-i*86) CXXFLAGS="$CXXFLAGS -mfpmath=sse -msse";;
-esac
-
 AC_ARG_ENABLE([debug],
             [AS_HELP_STRING([--enable-debug],
               [compile with debug information @<:@default=disabled@:>@])],

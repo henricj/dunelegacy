@@ -344,7 +344,7 @@ void Carryall::destroy()
 	// place wreck
     if(isVisible() && currentGameMap->tileExists(location)) {
         Tile* pTile = currentGameMap->getTile(location);
-        pTile->assignDeadUnit(DeadUnit_Carrall, owner->getHouseID(), Coord(realX.roundToInt(), realY.roundToInt()));
+        pTile->assignDeadUnit(DeadUnit_Carrall, owner->getHouseID(), Coord(lround(realX), lround(realY)));
     }
 
 	AirUnit::destroy();
@@ -396,10 +396,7 @@ void Carryall::engageTarget()
     Coord realLocation = Coord(lround(realX), lround(realY));
     Coord realDestination = targetLocation * TILESIZE + Coord(TILESIZE/2,TILESIZE/2);
 
-    targetAngle = lround(NUM_ANGLES*destinationAngle(location, destination)/256);
-    if (targetAngle == 8) {
-        targetAngle = 0;
-    }
+    targetAngle = lround(destinationAngle(location, destination)*NUM_ANGLES/256) % NUM_ANGLES;
 
     targetDistance = distanceFrom(realLocation, realDestination);
 

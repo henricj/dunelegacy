@@ -76,9 +76,4 @@ int zoomedWorld2world(int x);
 Coord zoomedWorld2world(const Coord& coord);
 
 
-/**
-    Check if floating point numbers are calculated internally with higher precision (like x87 does).
-    \return true, if it is, false otherwise
-*/
-bool checkForExcessPrecision();
 #endif //MMATH_H

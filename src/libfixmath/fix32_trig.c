@@ -20,7 +20,7 @@ fix32_t fix32_sin_parabola(fix32_t inAngle)
 	/* Absolute function */
 	mask = (inAngle >> (sizeof(fix32_t)*CHAR_BIT-1));
 	abs_inAngle = (inAngle + mask) ^ mask;
-
+	
 	/* On 0->PI, sin looks like x² that is :
 	   - centered on PI/2,
 	   - equals 1 on PI/2,
@@ -124,16 +124,17 @@ fix32_t fix32_atan2(fix32_t inY , fix32_t inX)
 	mask = (inY >> (sizeof(fix32_t)*CHAR_BIT-1));
 	abs_inY = (inY + mask) ^ mask;
 
+	// 3rd order Chebyshev polynomial approximation with weight a = 0.189514164974601 and b = 0.970562748477141
 	if (inX >= 0)
 	{
 		r = fix32_div( (inX - abs_inY), (inX + abs_inY));
 		r_3 = fix32_mul(fix32_mul(r, r),r);
-		angle = fix32_mul(0x0000000032400000LL , r_3) - fix32_mul(0x00000000FB500000,r) + fix32_PI_DIV_4;
+		angle = fix32_mul(0x0000000030840015LL , r_3) - fix32_mul(0x00000000F876CCE0LL,r) + fix32_PI_DIV_4;
 	} else {
 		r = fix32_div( (inX + abs_inY), (abs_inY - inX));
 		r_3 = fix32_mul(fix32_mul(r, r),r);
-		angle = fix32_mul(0x0000000032400000LL , r_3)
-			- fix32_mul(0x00000000FB500000,r)
+		angle = fix32_mul(0x0000000030840015LL , r_3)
+			- fix32_mul(0x00000000F876CCE0LL,r)
 			+ fix32_THREE_PI_DIV_4;
 	}
 	if (inY < 0)

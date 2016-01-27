@@ -30,8 +30,7 @@
 
 #define MAX_PLAYERNAMELENGHT    24
 
-#define DIAGONALSPEEDCONST FixPt(0,707106781)
-#define DIAGONALCOST FixPt(1,414213562)
+#define DIAGONALSPEEDCONST (FixPt_SQRT2 >> 1)           // = sqrt(2)/2 = 0.707106781
 
 
 #define GAMESPEED_MAX 32
@@ -56,7 +55,7 @@
 #define RANDOMSPICEMAX (111 + 37)
 #define RANDOMTHICKSPICEMIN (222 - 74)
 #define RANDOMTHICKSPICEMAX (222 + 74)
-#define conv2char ((2 * FixPt_PI) / 256)
+#define conv2char (FixPt_PI >> 7)   // = (2 * pi) / 256)
 
 #define TILESIZE    64		        // size of tile pieces 16x16 in zoom level 0
 
@@ -72,7 +71,7 @@
 #define DEVIATIONTIME MILLI2CYCLES(120*1000)
 #define HARVESTERMAXSPICE 700
 #define HARVESTSPEED FixPt(0,1344)
-#define BADLYDAMAGEDRATIO FixPt(0,5)	                //if health/getMaxHealth() < this, damage will become bad - smoke and shit
+#define BADLYDAMAGEDRATIO FixPt(0,5)	            //if health/getMaxHealth() < this, damage will become bad - smoke and shit
 #define HEAVILYDAMAGEDRATIO FixPt(0,25)	            //if health/getMaxHealth() < this, damage will become heavy damage - red color
 #define HEAVILYDAMAGEDSPEEDMULTIPLIER FixPt(0,75)
 #define NUMSELECTEDLISTS 9

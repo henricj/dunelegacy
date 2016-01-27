@@ -50,7 +50,7 @@ public:
 	void turnRight();
 	virtual void attack();
 
-	inline int getTurretAngle() const { return angle.roundToInt(); }
+	inline int getTurretAngle() const { return lround(angle); }
 
 protected:
     /**

@@ -115,8 +115,7 @@ FixPoint blockDistance(const Coord& p1, const Coord& p2)
 
 		minDis = std::min(xDis, yDis);
 
-	return (std::max(xDis, yDis) + minDis*(DIAGONALCOST - 1));
-	//return (((float)minDis)*DIAGONALCOST + max(xDis, yDis) - minDis);
+	return (std::max(xDis, yDis) + minDis*(FixPt_SQRT2 - 1));
 }
 
 
@@ -231,52 +230,3 @@ int zoomedWorld2world(int x) {
 Coord zoomedWorld2world(const Coord& coord) {
     return Coord(zoomedWorld2world(coord.x), zoomedWorld2world(coord.y));
 }
-
-
-//// floating point check begin
-
-/*
-	Check if floating point values in an register have an higher precision than those in memory (e.g. x87 fpu):
-
-		- load maximum floating point value into memory (y = max float)
-
-		- load this value to a register (reg = y)
-
-		- square it (reg2 = reg1*reg1)
-		 => shall be infinity if we have the same precision for memory as for registers, otherwise it is a normal number
-
-		- devide the result (still in register) by the largest floating point value (reg3 = reg2/reg1)
-		 => infinity divided by a "normal" value is still infinity but a "normal" value divided by another "normal" value is a "normal" value
-
-		- check if we have infinity
-		 => if yes, memory and registers have the same precision, otherwise registers have extended precision
-
-	As the test requires us to specify whether a variable is stored in memory or in a register, we need to make some extra work to ensure
-	that no clever compiler optimizes the complete test out.
-*/
-
-
-void getMaxFloat(volatile float& result) {
-	float x = std::numeric_limits<float>::max();
-	result = x;
-}
-
-// global array of function pointers
-void (*volatile pGetMaxFloat[2])(volatile float&) = { getMaxFloat, getMaxFloat };
-
-bool checkForExcessPrecision() {
-
-	// load maximum floating point value into memory
-	volatile float y = 0.0f;
-	pGetMaxFloat[rand() % 2](y);
-
-	// load this value to a register, square it and devide the result (still in register) by the largest floating point value
-	register float x = y;
-	x = (x*x)/x;
-
-	// check if we have infinity
-	//	=> if yes, memory and registers have the same precision, otherwise registers have extended precision
-	return !std::isinf(x);
-}
-
-//// floating point check end

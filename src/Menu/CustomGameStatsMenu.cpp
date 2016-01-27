@@ -139,7 +139,7 @@ CustomGameStatsMenu::CustomGameStatsMenu() : MenuBase()
 
             curHouseStat.houseHBox.addWidget(Spacer::create(), 30);
 
-            curHouseStat.value3.setText( stringify((int) pHouse->getHarvestedSpice()));
+            curHouseStat.value3.setText( stringify(lround(pHouse->getHarvestedSpice())));
             curHouseStat.value3.setTextFont(FONT_STD10);
             curHouseStat.value3.setAlignment(Alignment_Right);
             curHouseStat.value3.setTextColor(color + 3);

@@ -27,5 +27,6 @@ typedef FixPoint32 FixPoint;
 #define FixPt_MAX FixPt32_MAX
 #define FixPt_PI FixPt32_PI
 #define FixPt_E FixPt32_E
+#define FixPt_SQRT2 FixPt32_SQRT2
 
 #endif // FIXPOINT_H
