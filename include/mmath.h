@@ -27,7 +27,17 @@ class Coord;
 int getRandomInt(int min, int max);
 int getRandomOf(int numParam, ...);
 
-FixPoint destinationAngle(const Coord& p1, const Coord& p2);
+FixPoint destinationAngleRad(const Coord& p1, const Coord& p2);
+
+inline FixPoint RadToDeg256(FixPoint angleRad) { return (angleRad << 7)/FixPt_PI; } // angleRad*256/(2*FixPt_PI)
+
+inline FixPoint Deg256ToRad(FixPoint angle) { return (angle*FixPt_PI) >> 7; }   // angle*2*FixPt_PI/256;
+
+inline int angleToDrawnAngle(FixPoint angle) { return lround(angle >> 5) & 0x7; }   //  lround(angle*NUM_ANGLES/256) % NUM_ANGLES;
+
+inline int destinationDrawnAngle(const Coord& p1, const Coord& p2) {
+    return angleToDrawnAngle(RadToDeg256(destinationAngleRad(p1, p2)));
+}
 
 FixPoint distanceFrom(const Coord& p1, const Coord& p2);
 FixPoint distanceFrom(FixPoint x, FixPoint y, FixPoint to_x, FixPoint to_y);

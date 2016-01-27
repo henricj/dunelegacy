@@ -442,7 +442,7 @@ void UnitBase::engageTarget() {
 
         targetDistance = blockDistance(location, targetLocation);
 
-        Sint8 newTargetAngle = lround(destinationAngle(location, targetLocation)*NUM_ANGLES/256) % NUM_ANGLES;
+        Sint8 newTargetAngle = destinationDrawnAngle(location, targetLocation);
 
         if(bFollow) {
             // we are following someone
@@ -491,7 +491,7 @@ void UnitBase::engageTarget() {
 
         targetDistance = blockDistance(location, attackPos);
 
-        Sint8 newTargetAngle = lround(destinationAngle(location, attackPos)*NUM_ANGLES/256) % NUM_ANGLES;
+        Sint8 newTargetAngle = destinationDrawnAngle(location, attackPos);
 
         if(targetDistance <= getWeaponRange()) {
             // we are in weapon range thus we can stop moving

@@ -82,7 +82,7 @@ void TankBase::navigate() {
             targetAngle = INVALID;
 	    } else {
             // change the turret angle so it faces the direction we are moving in
-            targetAngle = lround(destinationAngle(location, destination)*NUM_ANGLES/256) % NUM_ANGLES;
+            targetAngle = destinationDrawnAngle(location, destination);
 	    }
 	}
 	TrackedUnit::navigate();
@@ -152,7 +152,7 @@ void TankBase::engageTarget() {
             return;
         }
 
-        targetAngle = lround(destinationAngle(location, targetLocation)*NUM_ANGLES/256) % NUM_ANGLES;
+        targetAngle = destinationDrawnAngle(location, targetLocation);
 
         if(drawnTurretAngle == targetAngle) {
             ObjectPointer temp = target;

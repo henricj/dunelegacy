@@ -50,41 +50,23 @@ int getRandomOf(int numParam, ...) {
 	return ret;
 }
 
-
-
-
-FixPoint destinationAngle(const Coord& p1, const Coord& p2)
+FixPoint destinationAngleRad(const Coord& p1, const Coord& p2)
 {
-    FixPoint destAngle = 0;
 
     FixPoint diffX = p2.x - p1.x;
-    FixPoint diffY = p2.y - p1.y;
+    FixPoint diffY = -(p2.y - p1.y);    // flip y
 
-    if(diffX != 0) {
-        if((diffX >= 0) && (diffY >= 0)) {
-            //if x2 >= x1 && y2 >= y1
-            destAngle = 2 * FixPt_PI - FixPoint::atan(FixPoint::abs(diffY/diffX));
-        } else if ((diffX < 0) && (diffY >= 0)) {
-            //if x2 < x1 && y2 >= y1
-            destAngle = FixPoint::atan(FixPoint::abs(diffY/diffX)) + FixPt_PI;
-        } else if ((diffX < 0) && (diffY < 0)) {
-            //if x2 < x1 && y2 < y1
-            destAngle = FixPt_PI - FixPoint::atan(FixPoint::abs(diffY/diffX));
-        } else if ((diffX >= 0) && (diffY < 0)) {
-            //if x2 >= x1 && y2 < y1
-            destAngle = FixPoint::atan(FixPoint::abs(diffY/diffX));
-        }
-    } else if (diffY <= 0) {
-        destAngle = FixPt_PI/2;
-    } else {
-        destAngle = 3*FixPt_PI/2;
+    if(diffX == 0 && diffY == 0) {
+        return FixPt_PI/2;
     }
 
-    if(destAngle == 2*FixPt_PI) {
-        destAngle = 0;
+    FixPoint destAngle = FixPoint::atan2(diffY, diffX);
+
+    if(destAngle < 0) {
+        destAngle += (FixPt_PI << 1);   // add 360°
     }
 
-    return (destAngle*256/(2*FixPt_PI));
+    return destAngle;
 }
 
 

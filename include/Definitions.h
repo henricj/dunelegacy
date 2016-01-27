@@ -55,7 +55,6 @@
 #define RANDOMSPICEMAX (111 + 37)
 #define RANDOMTHICKSPICEMIN (222 - 74)
 #define RANDOMTHICKSPICEMAX (222 + 74)
-#define conv2char (FixPt_PI >> 7)   // = (2 * pi) / 256)
 
 #define TILESIZE    64		        // size of tile pieces 16x16 in zoom level 0
 

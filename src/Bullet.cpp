@@ -86,11 +86,12 @@ Bullet::Bullet(Uint32 shooterID, Coord* newRealLocation, Coord* newRealDestinati
 	location.x = newRealLocation->x/TILESIZE;
 	location.y = newRealLocation->y/TILESIZE;
 
-	angle = destinationAngle(*newRealLocation, *newRealDestination);
-	drawnAngle = lround(numFrames*angle/256);
+    FixPoint angleRad =  destinationAngleRad(*newRealLocation, *newRealDestination);
+	angle = RadToDeg256(angleRad);
+	drawnAngle = lround(numFrames*angle/256) % numFrames;
 
-    xSpeed = speed * FixPoint::cos(angle * conv2char);
-	ySpeed = speed * -FixPoint::sin(angle * conv2char);
+    xSpeed = speed * FixPoint::cos(angleRad);
+	ySpeed = speed * -FixPoint::sin(angleRad);
 }
 
 Bullet::Bullet(InputStream& stream)
@@ -352,7 +353,8 @@ void Bullet::update()
 {
 	if(bulletID == Bullet_Rocket || bulletID == Bullet_DRocket) {
 
-        FixPoint angleToDestination = destinationAngle(Coord(lround(realX), lround(realY)), destination);
+        FixPoint angleToDestinationRad = destinationAngleRad(Coord(lround(realX), lround(realY)), destination);
+        FixPoint angleToDestination = RadToDeg256(angleToDestinationRad);
 
         FixPoint angleDiff = angleToDestination - angle;
         if(angleDiff > 128) {
@@ -377,10 +379,10 @@ void Bullet::update()
             angle -= 256;
         }
 
-        xSpeed = speed * FixPoint::cos(angle * conv2char);
-        ySpeed = speed * -FixPoint::sin(angle * conv2char);
+        xSpeed = speed * FixPoint::cos(Deg256ToRad(angle));
+        ySpeed = speed * -FixPoint::sin(Deg256ToRad(angle));
 
-        drawnAngle = lround(numFrames*angle/256);
+        drawnAngle = lround(numFrames*angle/256) % numFrames;
     }
 
 

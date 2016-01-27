@@ -396,7 +396,7 @@ void Carryall::engageTarget()
     Coord realLocation = Coord(lround(realX), lround(realY));
     Coord realDestination = targetLocation * TILESIZE + Coord(TILESIZE/2,TILESIZE/2);
 
-    targetAngle = lround(destinationAngle(location, destination)*NUM_ANGLES/256) % NUM_ANGLES;
+    targetAngle = destinationDrawnAngle(location, destination);
 
     targetDistance = distanceFrom(realLocation, realDestination);
 
