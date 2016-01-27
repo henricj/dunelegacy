@@ -75,7 +75,6 @@
 #define HEAVILYDAMAGEDSPEEDMULTIPLIER FixPt(0,75)
 #define NUMSELECTEDLISTS 9
 #define NUM_INFANTRY_PER_TILE 5		            //how many infantry can fit on a tile
-#define LASTSANDFRAME 2	                        //is number spice output frames - 1
 
 #define UNIT_REPAIRCOST FixPt(0,1)
 #define DEFAULT_GUARDRANGE 10			        //0 - 10, how far unit will search for enemy when guarding

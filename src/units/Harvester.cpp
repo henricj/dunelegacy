@@ -45,6 +45,9 @@
 /* how much is the harvester movement slowed down when full  */
 #define MAXIMUMHARVESTERSLOWDOWN FixPt(0,4)
 
+/* number spice output frames - 1 */
+#define LASTSANDFRAME 2
+
 Harvester::Harvester(House* newOwner) : TrackedUnit(newOwner)
 {
     Harvester::init();
