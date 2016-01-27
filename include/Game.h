@@ -470,7 +470,7 @@ private:
         \param  yPos    x-coordinate in map coordinates
         \return true if carryall drop is possible
     */
-    bool handleSelectedObjectsRequestCarryallClick(int xPos, int yPos);
+    bool handleSelectedObjectsRequestCarryallDropClick(int xPos, int yPos);
 
 
     /**
@@ -494,7 +494,7 @@ public:
         CursorMode_Attack,
         CursorMode_Move,
         CursorMode_Capture,
-        CursorMode_RequestCarryall,
+        CursorMode_CarryallDrop,
         CursorMode_Placing
     };
 

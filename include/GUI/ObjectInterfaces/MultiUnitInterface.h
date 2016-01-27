@@ -60,7 +60,7 @@ protected:
 		topBoxHBox.addWidget(Spacer::create());
 
 
-		mainHBox.addWidget(HSpacer::create(5));
+		mainHBox.addWidget(HSpacer::create(4));
 
 		buttonVBox.addWidget(VSpacer::create(6));
 
@@ -70,7 +70,7 @@ protected:
 		moveButton.setOnClick(std::bind(&MultiUnitInterface::onMove, this));
 		actionHBox.addWidget(&moveButton);
 
-		actionHBox.addWidget(HSpacer::create(3));
+		actionHBox.addWidget(HSpacer::create(2));
 
         attackButton.setSymbol(pGFXManager->getUIGraphic(UI_CursorAttack_Zoomlevel0), false);
 		attackButton.setTooltipText(_("Attack a unit, structure or position (Hotkey: A)"));
@@ -78,59 +78,53 @@ protected:
 		attackButton.setOnClick(std::bind(&MultiUnitInterface::onAttack, this));
 		actionHBox.addWidget(&attackButton);
 
-        actionHBox.addWidget(HSpacer::create(3));
+        actionHBox.addWidget(HSpacer::create(2));
 
-        requestCarryallButton.setSymbol(pGFXManager->getUIGraphic(UI_CursorCapture_Zoomlevel0), false);
-		requestCarryallButton.setTooltipText(_("Request Carryall drop to a position (Hotkey: D)"));
-		requestCarryallButton.setToggleButton(true);
-		requestCarryallButton.setOnClick(std::bind(&MultiUnitInterface::onRequestCarryall, this));
-		actionHBox.addWidget(&requestCarryallButton);
+        carryallDropButton.setSymbol(pGFXManager->getUIGraphic(UI_CursorCarryallDrop_Zoomlevel0), false);
+		carryallDropButton.setTooltipText(_("Request Carryall drop to a position (Hotkey: D)"));
+		carryallDropButton.setToggleButton(true);
+		carryallDropButton.setOnClick(std::bind(&MultiUnitInterface::onCarryallDrop, this));
+		actionHBox.addWidget(&carryallDropButton);
 
-        actionHBox.addWidget(HSpacer::create(3));
-
-        // Repair button
-        repairButton.setSymbol(pGFXManager->getUIGraphic(UI_Repair), false);
-        repairButton.setTooltipText(_("Repair this unit (Hotkey: R)"));
-		repairButton.setToggleButton(true);
-		repairButton.setVisible(false);
-		repairButton.setOnClick(std::bind(&MultiUnitInterface::OnRepair, this));
-		actionHBox.addWidget(&repairButton);
-
-
-        /* Use the capture button for requesting a carryall
+        actionHBox.addWidget(HSpacer::create(2));
 
         captureButton.setSymbol(pGFXManager->getUIGraphic(UI_CursorCapture_Zoomlevel0), false);
         captureButton.setTooltipText(_("Capture a building (Hotkey: C)"));
 		captureButton.setToggleButton(true);
 		captureButton.setOnClick(std::bind(&MultiUnitInterface::onCapture, this));
 		actionHBox.addWidget(&captureButton);
-        */
 
-		buttonVBox.addWidget(&actionHBox, 28);
+		buttonVBox.addWidget(&actionHBox, 26);
 
-
-		buttonVBox.addWidget(VSpacer::create(3));
+		buttonVBox.addWidget(VSpacer::create(2));
 
         returnButton.setSymbol(pGFXManager->getUIGraphic(UI_ReturnIcon), false);
         returnButton.setTooltipText(_("Return harvester to refinery (Hotkey: H)"));
 		returnButton.setOnClick(std::bind(&MultiUnitInterface::onReturn, this));
 		commandHBox.addWidget(&returnButton);
 
-		commandHBox.addWidget(HSpacer::create(3));
+		commandHBox.addWidget(HSpacer::create(2));
 
 		deployButton.setSymbol(pGFXManager->getUIGraphic(UI_DeployIcon), false);
 		deployButton.setTooltipText(_("Build a new construction yard"));
 		deployButton.setOnClick(std::bind(&MultiUnitInterface::onDeploy, this));
 		commandHBox.addWidget(&deployButton);
 
-        commandHBox.addWidget(HSpacer::create(3));
+        commandHBox.addWidget(HSpacer::create(2));
 
         destructButton.setSymbol(pGFXManager->getUIGraphic(UI_DestructIcon), false);
         destructButton.setTooltipText(_("Self-destruct this unit"));
 		destructButton.setOnClick(std::bind(&MultiUnitInterface::onDestruct, this));
 		commandHBox.addWidget(&destructButton);
 
-		buttonVBox.addWidget(&commandHBox, 28);
+        commandHBox.addWidget(HSpacer::create(2));
+
+        sendToRepairButton.setSymbol(pGFXManager->getUIGraphic(UI_SendToRepairIcon), false);
+        sendToRepairButton.setTooltipText(_("Repair this unit (Hotkey: R)"));
+		sendToRepairButton.setOnClick(std::bind(&MultiUnitInterface::OnSendToRepair, this));
+		commandHBox.addWidget(&sendToRepairButton);
+
+		buttonVBox.addWidget(&commandHBox, 26);
 
 		buttonVBox.addWidget(VSpacer::create(6));
 
@@ -139,7 +133,7 @@ protected:
 		guardButton.setTooltipText(_("Unit will not move from location"));
 		guardButton.setToggleButton(true);
 		guardButton.setOnClick(std::bind(&MultiUnitInterface::onGuard, this));
-		buttonVBox.addWidget(&guardButton, 28);
+		buttonVBox.addWidget(&guardButton, 26);
 
 		buttonVBox.addWidget(VSpacer::create(6));
 
@@ -148,7 +142,7 @@ protected:
 		areaGuardButton.setTooltipText(_("Unit will engage any unit within guard range"));
 		areaGuardButton.setToggleButton(true);
 		areaGuardButton.setOnClick(std::bind(&MultiUnitInterface::onAreaGuard, this));
-		buttonVBox.addWidget(&areaGuardButton, 28);
+		buttonVBox.addWidget(&areaGuardButton, 26);
 
 		buttonVBox.addWidget(VSpacer::create(6));
 
@@ -157,7 +151,7 @@ protected:
 		stopButton.setTooltipText(_("Unit will not move, nor attack"));
 		stopButton.setToggleButton(true);
 		stopButton.setOnClick(std::bind(&MultiUnitInterface::onStop, this));
-		buttonVBox.addWidget(&stopButton, 28);
+		buttonVBox.addWidget(&stopButton, 26);
 
 		buttonVBox.addWidget(VSpacer::create(6));
 
@@ -166,7 +160,7 @@ protected:
 		ambushButton.setTooltipText(_("Unit will not move until enemy unit spotted"));
 		ambushButton.setToggleButton(true);
 		ambushButton.setOnClick(std::bind(&MultiUnitInterface::onAmbush, this));
-		buttonVBox.addWidget(&ambushButton, 28);
+		buttonVBox.addWidget(&ambushButton, 26);
 
 		buttonVBox.addWidget(VSpacer::create(6));
 
@@ -175,17 +169,17 @@ protected:
 		huntButton.setTooltipText(_("Unit will immediately start to engage an enemy unit"));
 		huntButton.setToggleButton(true);
 		huntButton.setOnClick(std::bind(&MultiUnitInterface::onHunt, this));
-		buttonVBox.addWidget(&huntButton, 28);
+		buttonVBox.addWidget(&huntButton, 26);
 
         buttonVBox.addWidget(VSpacer::create(6));
-/*
+
 		retreatButton.setText(_("Retreat"));
         retreatButton.setTextColor(color+3);
 		retreatButton.setTooltipText(_("Unit will retreat back to base"));
 		retreatButton.setToggleButton(true);
 		retreatButton.setOnClick(std::bind(&MultiUnitInterface::onRetreat, this));
-		buttonVBox.addWidget(&retreatButton, 28);
-*/
+		buttonVBox.addWidget(&retreatButton, 26);
+
 		buttonVBox.addWidget(VSpacer::create(6));
 		buttonVBox.addWidget(Spacer::create());
 		buttonVBox.addWidget(VSpacer::create(6));
@@ -208,8 +202,8 @@ protected:
         currentGame->currentCursorMode = Game::CursorMode_Capture;
 	}
 
-    void onRequestCarryall() {
-        currentGame->currentCursorMode = Game::CursorMode_RequestCarryall;
+    void onCarryallDrop() {
+        currentGame->currentCursorMode = Game::CursorMode_CarryallDrop;
 	}
 
 	void onReturn() {
@@ -223,19 +217,16 @@ protected:
 		}
 	}
 
-    void OnRepair() {
+    void OnSendToRepair() {
         std::set<Uint32>::const_iterator iter;
 		for(iter = currentGame->getSelectedList().begin(); iter != currentGame->getSelectedList().end(); ++iter) {
             ObjectBase* pObject = currentGame->getObjectManager().getObject(*iter);
             GroundUnit* pGroundUnit = dynamic_cast<GroundUnit*>(pObject);
-            if(pGroundUnit != NULL){
-                if(pGroundUnit->getHealth() < pGroundUnit->getMaxHealth()){
-                    pGroundUnit->doRepair();
-                }
+            if((pGroundUnit != NULL) && (pGroundUnit->getHealth() < pGroundUnit->getMaxHealth())) {
+                pGroundUnit->handleSendToRepairClick();
             }
 		}
 	}
-
 
 	void onDeploy() {
         std::set<Uint32>::const_iterator iter;
@@ -322,6 +313,7 @@ protected:
 		bool bStop = true;
 		bool bAmbush = true;
 		bool bHunt = true;
+		bool bRetreat = true;
 
         bool bShowAttack = false;
         bool bShowCapture = false;
@@ -329,7 +321,7 @@ protected:
 		bool bShowDeploy = false;
 		bool bShowDevastate = false;
 		bool bShowRepair = false;
-		bool bShowRequestCarryall = false;
+		bool bShowCarryallDrop = false;
 
 		std::set<Uint32>::const_iterator iter;
 		for(iter = currentGame->getSelectedList().begin(); iter != currentGame->getSelectedList().end(); ++iter) {
@@ -342,13 +334,14 @@ protected:
                 bStop = bStop && (attackMode == STOP);
                 bAmbush = bAmbush && (attackMode == AMBUSH);
                 bHunt = bHunt && (attackMode == HUNT);
+                bRetreat = bRetreat && (attackMode == RETREAT);
 
                 if(pUnit->canAttack()) {
                     bShowAttack = true;
                 }
 
-                if(pUnit->getOwner()->getNumItems(Unit_Carryall) > 0){
-                    bShowRequestCarryall = true;
+                if(pUnit->getOwner()->hasCarryalls()){
+                    bShowCarryallDrop = true;
                 }
 
                 if(pUnit->getHealth() < pUnit->getMaxHealth()){
@@ -385,15 +378,15 @@ protected:
 		returnButton.setVisible(bShowReturn);
         deployButton.setVisible(bShowDeploy);
         destructButton.setVisible(bShowDevastate);
-        repairButton.setVisible(bShowRepair);
-        requestCarryallButton.setVisible(bShowRequestCarryall
-                                         && currentGame->getGameInitSettings().getGameOptions().manualCarryallDrops);
+        sendToRepairButton.setVisible(bShowRepair);
+        carryallDropButton.setVisible(bShowCarryallDrop && currentGame->getGameInitSettings().getGameOptions().manualCarryallDrops);
 
         guardButton.setToggleState( bGuard );
         areaGuardButton.setToggleState( bAreaGuard );
         stopButton.setToggleState( bStop );
         ambushButton.setToggleState( bAmbush );
         huntButton.setToggleState( bHunt );
+        retreatButton.setToggleState( bRetreat );
 
 		return true;
 	}
@@ -413,8 +406,8 @@ protected:
     SymbolButton    returnButton;
     SymbolButton    deployButton;
     SymbolButton    destructButton;
-    SymbolButton    repairButton;
-    SymbolButton    requestCarryallButton;
+    SymbolButton    sendToRepairButton;
+    SymbolButton    carryallDropButton;
 
     TextButton	    guardButton;
 	TextButton	    areaGuardButton;

@@ -128,9 +128,8 @@ typedef enum {
     SABOTAGE = 5,   ///< Only used by the map editor
     STOP = 6,
     CAPTURE = 7,    ///< Capture is only used for infantry units when ordered to capture a building
-    REPAIR = 8,             ///< Stefan: To be implemented for Player to use
-    CARRYALLREQUESTED = 9,   ///< Stefan: Implemented for Player to use
-    RETREAT = 10,           ///< Stefan: To be implemented for Player to use
+    CARRYALLREQUESTED = 8, ///< This allows a unit to keep requesting a carryall even if one isn't available right now
+    RETREAT = 9,           ///< Ignore other units
     ATTACKMODE_MAX
 } ATTACKMODE;
 

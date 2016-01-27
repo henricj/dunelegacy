@@ -84,7 +84,7 @@ public:
 		\param	xPos	the x position on the map
 		\param	yPos	the y position on the map
 	*/
-	virtual void handleRequestCarryallClick(int xPos, int yPos);
+	virtual void handleRequestCarryallDropClick(int xPos, int yPos);
 
 	/**
 		This method is called when an unit should move to (xPos,yPos)

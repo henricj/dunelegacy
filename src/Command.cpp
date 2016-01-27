@@ -180,19 +180,26 @@ void Command::executeCommand() const {
 			pInfantry->doCaptureStructure((int) parameter[1]);
 		} break;
 
-
-        /**
-            New command for requesting a carryall
-        **/
-		case CMD_UNIT_REQUESTCARRYALL: {
+		case CMD_UNIT_REQUESTCARRYALLDROP: {
 			if(parameter.size() != 3) {
-				throw std::invalid_argument("Command::executeCommand(): CMD_UNIT_REQUESTCARRYALL needs 3 Parameters!");
+				throw std::invalid_argument("Command::executeCommand(): CMD_UNIT_REQUESTCARRYALLDROP needs 3 Parameters!");
 			}
 			GroundUnit* pGroundUnit = dynamic_cast<GroundUnit*>(currentGame->getObjectManager().getObject(parameter[0]));
 			if(pGroundUnit == NULL) {
                 return;
 			}
             pGroundUnit->doRequestCarryallDrop((int) parameter[1], (int) parameter[2]);
+		} break;
+
+		case CMD_UNIT_SENDTOREPAIR: {
+			if(parameter.size() != 1) {
+				throw std::invalid_argument("Command::executeCommand(): CMD_UNIT_SENDTOREPAIR needs 1 Parameter!");
+			}
+			GroundUnit* pGroundUnit = dynamic_cast<GroundUnit*>(currentGame->getObjectManager().getObject(parameter[0]));
+			if(pGroundUnit == NULL) {
+                return;
+			}
+			pGroundUnit->doRepair();
 		} break;
 
 		case CMD_UNIT_SETMODE: {

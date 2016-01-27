@@ -290,12 +290,9 @@ void UnitBase::deploy(const Coord& newLocation) {
 		setVisible(VIS_ALL, true);
 		setForced(false);
 
-        /*
-            Stefan: Deployment logic to hopefully stop units freezing
-        */
-
-		if (getAttackMode() == CARRYALLREQUESTED || getAttackMode() == HUNT){
-            if(getItemID() == Unit_Harvester){
+        // Deployment logic to hopefully stop units freezing
+		if (getAttackMode() == CARRYALLREQUESTED || getAttackMode() == HUNT) {
+            if(getItemID() == Unit_Harvester) {
                 doSetAttackMode(HARVEST);
             } else {
                 doSetAttackMode(GUARD);
@@ -558,7 +555,7 @@ void UnitBase::move() {
 
 				if(forced && (location == destination) && !target) {
 					setForced(false);
-					if(getAttackMode() == CARRYALLREQUESTED){
+					if(getAttackMode() == CARRYALLREQUESTED) {
                         doSetAttackMode(GUARD);
 					}
 				}
@@ -774,11 +771,10 @@ void UnitBase::handleSetAttackModeClick(ATTACKMODE newAttackMode) {
     User action
     Request a Carryall to drop at target location
 **/
-void UnitBase::handleRequestCarryallClick(int xPos, int yPos) {
+void UnitBase::handleRequestCarryallDropClick(int xPos, int yPos) {
 	if(respondable) {
 		if(currentGameMap->tileExists(xPos, yPos)) {
-			// move to pos
-            currentGame->getCommandManager().addCommand(Command(pLocalPlayer->getPlayerID(), CMD_UNIT_REQUESTCARRYALL,objectID,(Uint32) xPos, (Uint32) yPos));
+            currentGame->getCommandManager().addCommand(Command(pLocalPlayer->getPlayerID(), CMD_UNIT_REQUESTCARRYALLDROP, objectID, (Uint32) xPos, (Uint32) yPos));
 		}
 	}
 }
@@ -1159,16 +1155,9 @@ void UnitBase::setTarget(const ObjectBase* newTarget) {
 void UnitBase::targeting() {
     if(findTargetTimer == 0) {
 
-
-
-
         if(attackMode != STOP && attackMode != CARRYALLREQUESTED) {
 
-            /**
-                Stefan: lets add a bit of logic to make units recalibrate their nearest target
-                        if the target isn't in weapon range
-            **/
-
+            // lets add a bit of logic to make units recalibrate their nearest target if the target isn't in weapon range
             if(target && !attackPos && !forced &&(attackMode == GUARD || attackMode == AREAGUARD || attackMode == HUNT)){
                 if(!isInWeaponRange(target.getObjPointer())){
                     const ObjectBase* pNewTarget = findTarget();
@@ -1203,7 +1192,7 @@ void UnitBase::targeting() {
                     }
                 } else if(attackMode == HUNT) {
                     setGuardPoint(location);
-                    doSetAttackMode(GUARD); // Stefan from GUARD
+                    doSetAttackMode(GUARD);
                 }
 
                 // reset target timer

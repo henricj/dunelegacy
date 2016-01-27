@@ -45,7 +45,10 @@ public:
 	bool requestCarryall();
 	void setPickedUp(UnitBase* newCarrier);
 
-
+	/**
+		This method is called when the user clicks on the repair button for this unit
+	*/
+	virtual void handleSendToRepairClick();
 
 	virtual void doRepair();
 

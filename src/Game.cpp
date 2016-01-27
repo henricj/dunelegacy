@@ -791,10 +791,10 @@ void Game::doInput()
 
                                 } break;
 
-                                case CursorMode_RequestCarryall: {
+                                case CursorMode_CarryallDrop: {
 
                                     if(screenborder->isScreenCoordInsideMap(mouse->x, mouse->y) == true) {
-                                        handleSelectedObjectsRequestCarryallClick(screenborder->screen2MapX(mouse->x), screenborder->screen2MapY(mouse->y));
+                                        handleSelectedObjectsRequestCarryallDropClick(screenborder->screen2MapX(mouse->x), screenborder->screen2MapY(mouse->y));
                                     }
 
                                 } break;
@@ -1085,21 +1085,16 @@ void Game::drawCursor()
 
                 } break;
 
-
-                /**
-                    New Cursor mode for requesting a Carryall drop. Based off capture
-                **/
-
-                case CursorMode_RequestCarryall: {
+                case CursorMode_CarryallDrop: {
                     switch(currentZoomlevel) {
-                        case 0:     pCursor = pGFXManager->getUIGraphic(UI_CursorCapture_Zoomlevel0); break;
-                        case 1:     pCursor = pGFXManager->getUIGraphic(UI_CursorCapture_Zoomlevel1); break;
+                        case 0:     pCursor = pGFXManager->getUIGraphic(UI_CursorCarryallDrop_Zoomlevel0); break;
+                        case 1:     pCursor = pGFXManager->getUIGraphic(UI_CursorCarryallDrop_Zoomlevel1); break;
                         case 2:
-                        default:    pCursor = pGFXManager->getUIGraphic(UI_CursorCapture_Zoomlevel2); break;
+                        default:    pCursor = pGFXManager->getUIGraphic(UI_CursorCarryallDrop_Zoomlevel2); break;
                     }
 
                     dest.x -= pCursor->w / 2;
-                    dest.y -= pCursor->h / 2;
+                    dest.y -= pCursor->h;
 
                 } break;
 
@@ -1955,8 +1950,8 @@ bool Game::onRadarClick(Coord worldPosition, bool bRightMouseButton, bool bDrag)
                     return false;
                 } break;
 
-                case CursorMode_RequestCarryall: {
-                    handleSelectedObjectsRequestCarryallClick(worldPosition.x / TILESIZE, worldPosition.y / TILESIZE);
+                case CursorMode_CarryallDrop: {
+                    handleSelectedObjectsRequestCarryallDropClick(worldPosition.x / TILESIZE, worldPosition.y / TILESIZE);
                     return false;
                 } break;
 
@@ -2324,12 +2319,12 @@ void Game::handleKeyInput(SDL_KeyboardEvent& keyboardEvent) {
 
 
         case SDLK_d: {
-            if(currentCursorMode != CursorMode_RequestCarryall){
+            if(currentCursorMode != CursorMode_CarryallDrop){
                 std::set<Uint32>::iterator iter;
                 for(iter = selectedList.begin(); iter != selectedList.end(); ++iter) {
                     ObjectBase *tempObject = objectManager.getObject(*iter);
-                    if(tempObject->isAGroundUnit() && tempObject->getOwner()->getNumItems(Unit_Carryall) > 0) {
-                        currentCursorMode = CursorMode_RequestCarryall;
+                    if(tempObject->isAGroundUnit() && tempObject->getOwner()->hasCarryalls()) {
+                        currentCursorMode = CursorMode_CarryallDrop;
                     }
                 }
             }
@@ -2525,15 +2520,14 @@ bool Game::handleSelectedObjectsMoveClick(int xPos, int yPos) {
 /**
     New method for transporting units quickly using carryalls
 **/
-bool Game::handleSelectedObjectsRequestCarryallClick(int xPos, int yPos) {
+bool Game::handleSelectedObjectsRequestCarryallDropClick(int xPos, int yPos) {
 
     UnitBase* responder = NULL;
 
     /*
         If manual carryall mode isn't enabled then turn this off...
     */
-    if(!getGameInitSettings().getGameOptions().manualCarryallDrops)
-    {
+    if(!getGameInitSettings().getGameOptions().manualCarryallDrops) {
         currentCursorMode = CursorMode_Normal;
         return false;
     }
@@ -2544,7 +2538,7 @@ bool Game::handleSelectedObjectsRequestCarryallClick(int xPos, int yPos) {
         ObjectBase *tempObject = objectManager.getObject(*iter);
         if (tempObject->isAGroundUnit() && (tempObject->getOwner() == pLocalHouse) && tempObject->isRespondable()) {
             responder = (UnitBase*) tempObject;
-            responder->handleRequestCarryallClick(xPos,yPos);
+            responder->handleRequestCarryallDropClick(xPos,yPos);
         }
     }
 

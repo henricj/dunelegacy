@@ -24,6 +24,8 @@
 #include <Map.h>
 #include <SoundPlayer.h>
 
+#include <players/HumanPlayer.h>
+
 #include <structures/RepairYard.h>
 #include <units/Carryall.h>
 
@@ -123,23 +125,17 @@ void GroundUnit::checkPos() {
 	    }
 	}
 
-
-	/*
-        If we are awaiting a pickup try book a carryall if we have one
-	*/
-	if( attackMode == CARRYALLREQUESTED
-        && bookedCarrier == NONE){
-
-        if(getOwner()->hasCarryalls()){
+	// If we are awaiting a pickup try book a carryall if we have one
+	if( attackMode == CARRYALLREQUESTED && bookedCarrier == NONE) {
+        if(getOwner()->hasCarryalls()) {
             requestCarryall();
-        } else{
-            if(getItemID() == Unit_Harvester){
+        } else {
+            if(getItemID() == Unit_Harvester) {
                 doSetAttackMode(HARVEST);
-            } else{
+            } else {
                 doSetAttackMode(GUARD);
             }
         }
-
 	}
 }
 
@@ -167,10 +163,7 @@ bool GroundUnit::requestCarryall() {
 	if (getOwner()->hasCarryalls() && !awaitingPickup)	{
 		Carryall* carryall = NULL;
 
-		/*
-            This allows a unit to keep requesting a carryall even if one isn't
-            available right now
-		*/
+		// This allows a unit to keep requesting a carryall even if one isn't available right now
 		doSetAttackMode(CARRYALLREQUESTED);
 
         RobustList<UnitBase*>::const_iterator iter;
@@ -235,7 +228,9 @@ void GroundUnit::navigate() {
     }
 }
 
-
+void GroundUnit::handleSendToRepairClick() {
+	currentGame->getCommandManager().addCommand(Command(pLocalPlayer->getPlayerID(), CMD_UNIT_SENDTOREPAIR,objectID));
+}
 
 void GroundUnit::doRepair() {
 	if(getHealth() < getMaxHealth()) {

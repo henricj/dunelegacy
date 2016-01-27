@@ -452,6 +452,7 @@ ATTACKMODE getAttackModeByName(std::string name) {
     else if(name == "sabotage")                     return SABOTAGE;
     else if(name == "stop")                         return STOP;
     else if(name == "capture")                      return CAPTURE;
+    else if(name == "retreat")                      return RETREAT;
     else                                            return ATTACKMODE_INVALID;
 }
 

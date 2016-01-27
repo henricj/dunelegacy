@@ -542,6 +542,13 @@ GFXManager::GFXManager() {
     uiGraphic[UI_CursorCapture_Zoomlevel2][HOUSE_HARKONNEN] = Scaler::defaultTripleTiledSurface(uiGraphic[UI_CursorCapture_Zoomlevel0][HOUSE_HARKONNEN], 1, 1, false);
 	SDL_SetColorKey(uiGraphic[UI_CursorCapture_Zoomlevel2][HOUSE_HARKONNEN], SDL_SRCCOLORKEY | SDL_RLEACCEL, 0);
 
+	uiGraphic[UI_CursorCarryallDrop_Zoomlevel0][HOUSE_HARKONNEN] = SDL_LoadBMP_RW(pFileManager->openFile("CarryallDrop.bmp"),true);
+	SDL_SetColorKey(uiGraphic[UI_CursorCarryallDrop_Zoomlevel0][HOUSE_HARKONNEN], SDL_SRCCOLORKEY | SDL_RLEACCEL, 0);
+    uiGraphic[UI_CursorCarryallDrop_Zoomlevel1][HOUSE_HARKONNEN] = Scaler::defaultDoubleTiledSurface(uiGraphic[UI_CursorCarryallDrop_Zoomlevel0][HOUSE_HARKONNEN], 1, 1, false);
+	SDL_SetColorKey(uiGraphic[UI_CursorCarryallDrop_Zoomlevel1][HOUSE_HARKONNEN], SDL_SRCCOLORKEY | SDL_RLEACCEL, 0);
+    uiGraphic[UI_CursorCarryallDrop_Zoomlevel2][HOUSE_HARKONNEN] = Scaler::defaultTripleTiledSurface(uiGraphic[UI_CursorCarryallDrop_Zoomlevel0][HOUSE_HARKONNEN], 1, 1, false);
+	SDL_SetColorKey(uiGraphic[UI_CursorCarryallDrop_Zoomlevel2][HOUSE_HARKONNEN], SDL_SRCCOLORKEY | SDL_RLEACCEL, 0);
+
 	uiGraphic[UI_ReturnIcon][HOUSE_HARKONNEN] = SDL_LoadBMP_RW(pFileManager->openFile("Return.bmp"),true);
 	SDL_SetColorKey(uiGraphic[UI_ReturnIcon][HOUSE_HARKONNEN], SDL_SRCCOLORKEY | SDL_RLEACCEL, 0);
 
@@ -550,6 +557,9 @@ GFXManager::GFXManager() {
 
 	uiGraphic[UI_DestructIcon][HOUSE_HARKONNEN] = SDL_LoadBMP_RW(pFileManager->openFile("Destruct.bmp"),true);
 	SDL_SetColorKey(uiGraphic[UI_DestructIcon][HOUSE_HARKONNEN], SDL_SRCCOLORKEY | SDL_RLEACCEL, 0);
+
+	uiGraphic[UI_SendToRepairIcon][HOUSE_HARKONNEN] = SDL_LoadBMP_RW(pFileManager->openFile("SendToRepair.bmp"),true);
+	SDL_SetColorKey(uiGraphic[UI_SendToRepairIcon][HOUSE_HARKONNEN], SDL_SRCCOLORKEY | SDL_RLEACCEL, 0);
 
 	uiGraphic[UI_CreditsDigits][HOUSE_HARKONNEN] = shapes->getPictureArray(10,1,2|TILE_NORMAL,3|TILE_NORMAL,4|TILE_NORMAL,5|TILE_NORMAL,6|TILE_NORMAL,
 																				7|TILE_NORMAL,8|TILE_NORMAL,9|TILE_NORMAL,10|TILE_NORMAL,11|TILE_NORMAL);
