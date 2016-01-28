@@ -37,7 +37,7 @@ static const ItemID_enum choamUnits[] = { Unit_Carryall,  Unit_Ornithopter,
                                            Unit_SonicTank, ItemID_Invalid
                                           };
 
-ChoamWindow::ChoamWindow(MapEditor* pMapEditor, int color) : Window(0,0,0,0), pMapEditor(pMapEditor), color(color) {
+ChoamWindow::ChoamWindow(MapEditor* pMapEditor, int uicolor) : Window(0,0,0,0), pMapEditor(pMapEditor), color(uicolor) {
 
     // set up window
 	SDL_Surface *surf;

@@ -40,7 +40,7 @@ class  MapSettingsWindow : public Window
 {
 public:
 
-    MapSettingsWindow(MapEditor* pMapEditor, int color = -1);
+    MapSettingsWindow(MapEditor* pMapEditor, int uicolor = -1);
 
 
 	/**

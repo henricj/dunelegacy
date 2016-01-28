@@ -41,7 +41,7 @@ class  PlayerSettingsWindow : public Window
 {
 public:
 
-    PlayerSettingsWindow(MapEditor* pMapEditor, int color = -1);
+    PlayerSettingsWindow(MapEditor* pMapEditor, int uicolor = -1);
 
 
 	/**

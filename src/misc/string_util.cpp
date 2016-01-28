@@ -140,8 +140,8 @@ std::string replaceAll(std::string str, const std::map<std::string, std::string>
 	return str;
 }
 
-std::string strprintf(const std::string& fmt, ...)
-{
+std::string strprintf(const std::string fmt, ...) {
+    // Note that fmt is not passed by reference as this is not allowed for the last parameter before ...
 	va_list arg_ptr;
 	va_start(arg_ptr, fmt);
 

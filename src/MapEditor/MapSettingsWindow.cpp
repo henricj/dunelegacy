@@ -31,8 +31,8 @@
 #include <FileClasses/GFXManager.h>
 #include <FileClasses/TextManager.h>
 
-MapSettingsWindow::MapSettingsWindow(MapEditor* pMapEditor, int color)
- : Window(0,0,0,0), pMapEditor(pMapEditor), color(color) {
+MapSettingsWindow::MapSettingsWindow(MapEditor* pMapEditor, int uicolor)
+ : Window(0,0,0,0), pMapEditor(pMapEditor), color(uicolor) {
 
     MapInfo& mapInfo = pMapEditor->getMapInfo();
 

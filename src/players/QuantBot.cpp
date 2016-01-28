@@ -537,7 +537,7 @@ Coord QuantBot::findPlaceLocation(Uint32 itemID) {
 
     // Will over allocate space for small maps so its not clean
     // But should allow Richard to compile
-    int buildLocationScore[128][128] = {0};
+    int buildLocationScore[128][128] = {{0}};
 
     int bestLocationX = -1;
     int bestLocationY = -1;

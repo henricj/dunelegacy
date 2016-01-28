@@ -32,7 +32,12 @@ std::vector<std::string> splitString(const std::string& parseString, const std::
 
 std::string replaceAll(std::string str, const std::map<std::string, std::string>& replacementMap);
 
-std::string strprintf(const std::string& fmt, ...);
+/**
+    sprintf-like function for std::string.
+    \param  fmt the format string
+    \return the formated string
+*/
+std::string strprintf(const std::string fmt, ...);
 
 template<typename T>
 inline std::string stringify(T x)

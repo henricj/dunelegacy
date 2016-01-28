@@ -30,7 +30,7 @@
 
 
 
-PlayerSettingsWindow::PlayerSettingsWindow(MapEditor* pMapEditor, int color) : Window(0,0,0,0), pMapEditor(pMapEditor), color(color) {
+PlayerSettingsWindow::PlayerSettingsWindow(MapEditor* pMapEditor, int uicolor) : Window(0,0,0,0), pMapEditor(pMapEditor), color(uicolor) {
 
     // set up window
 	SDL_Surface *surf;

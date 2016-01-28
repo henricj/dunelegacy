@@ -40,7 +40,7 @@ class  ChoamWindow : public Window
 {
 public:
 
-    ChoamWindow(MapEditor* pMapEditor, int color = -1);
+    ChoamWindow(MapEditor* pMapEditor, int uicolor = -1);
 
 
 	/**
