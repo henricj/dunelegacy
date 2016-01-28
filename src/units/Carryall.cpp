@@ -305,18 +305,16 @@ void Carryall::deployUnit(Uint32 unitID)
 			Coord deployPos = currentGameMap->findDeploySpot(pUnit, location);
 			pUnit->setForced(false); // Stop units being forced if they are deployed
 			pUnit->deploy(deployPos);
-			if(pUnit->getItemID() == Unit_Saboteur){
+			if(pUnit->getItemID() == Unit_Saboteur) {
                 pUnit->doSetAttackMode(HUNT);
-			}
-			else if(pUnit->getItemID() != Unit_Harvester){
+			} else if(pUnit->getItemID() != Unit_Harvester) {
                 pUnit->doSetAttackMode(AREAGUARD);
-			} else{
+			} else {
                 pUnit->doSetAttackMode(HARVEST);
 			}
 		}
 
-		if (pickedUpUnitList.empty())
-		{
+		if (pickedUpUnitList.empty()) {
 			if(!aDropOfferer) {
 				booked = false;
                 idle = true;

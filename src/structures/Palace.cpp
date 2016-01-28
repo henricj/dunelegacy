@@ -169,11 +169,10 @@ void Palace::updateStructureSpecificStuff() {
 
 			if(getOwner() == pLocalHouse) {
 				currentGame->addToNewsTicker(_("Palace is ready"));
-			} else if(getOwner()->isAI() && getOwner()) {
+			} else if(getOwner()->isAI()) {
 
                 if((originalHouseID == HOUSE_HARKONNEN) || (originalHouseID == HOUSE_SARDAUKAR)) {
                     // Harkonnen and Sardaukar
-
 
                     //old tergetting logic used by default AI
                     /*

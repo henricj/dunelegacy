@@ -656,16 +656,10 @@ void UnitBase::navigate() {
                                 if((GroundUnit*)this != NULL){
                                     ((GroundUnit*)this)->requestCarryall();
                                 }
-
-
                             } else{
-
                                 setDestination(location);	//can't get any closer, give up
                                 forced = false;
-
                             }
-
-
                         }
                     }
 

@@ -45,8 +45,6 @@ class MCV;
 class Player {
 public:
 
-
-
     Player(House* associatedHouse, std::string playername);
     Player(InputStream& stream, House* associatedHouse);
     virtual ~Player();

@@ -367,14 +367,10 @@ bool BuilderBase::update() {
                         && (newUnit->getItemID() != Unit_Carryall)
                         && (newUnit->getItemID() != Unit_Harvester)
                         && (newUnit->getItemID() != Unit_MCV)) {
-
                         //newUnit->doSetAttackMode(AREAGUARD);
-                    }
-
-                    else{
-                            // Don't want harvesters going to the rally point
-                            destination = location;
-
+                    } else {
+                        // Don't want harvesters going to the rally point
+                        destination = location;
                     }
 
                     if(destination.isValid() && newUnit->getItemID() != Unit_Harvester) {

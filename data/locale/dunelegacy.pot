@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-10-25 12:37+0100\n"
+"POT-Creation-Date: 2016-01-28 11:09+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -41,78 +41,93 @@ msgid "Attack a unit, structure or position (Hotkey: A)"
 msgstr ""
 
 #: include/GUI/ObjectInterfaces/MultiUnitInterface.h:84
-#: include/GUI/ObjectInterfaces/UnitInterface.h:73
+#: include/GUI/ObjectInterfaces/UnitInterface.h:71
 msgid "Request Carryall drop to a position (Hotkey: D)"
 msgstr ""
 
-#: include/GUI/ObjectInterfaces/MultiUnitInterface.h:93
-#: include/GUI/ObjectInterfaces/UnitInterface.h:81
-msgid "Repair this unit (Hotkey: R)"
+#: include/GUI/ObjectInterfaces/MultiUnitInterface.h:92
+#: include/GUI/ObjectInterfaces/UnitInterface.h:79
+msgid "Capture a building (Hotkey: C)"
 msgstr ""
 
-#: include/GUI/ObjectInterfaces/MultiUnitInterface.h:115
-#: include/GUI/ObjectInterfaces/UnitInterface.h:107
+#: include/GUI/ObjectInterfaces/MultiUnitInterface.h:102
+#: include/GUI/ObjectInterfaces/UnitInterface.h:90
 msgid "Return harvester to refinery (Hotkey: H)"
 msgstr ""
 
-#: include/GUI/ObjectInterfaces/MultiUnitInterface.h:122
-#: include/GUI/ObjectInterfaces/UnitInterface.h:115
+#: include/GUI/ObjectInterfaces/MultiUnitInterface.h:109
+#: include/GUI/ObjectInterfaces/UnitInterface.h:98
 msgid "Build a new construction yard"
 msgstr ""
 
-#: include/GUI/ObjectInterfaces/MultiUnitInterface.h:129
-#: include/GUI/ObjectInterfaces/UnitInterface.h:123
+#: include/GUI/ObjectInterfaces/MultiUnitInterface.h:116
+#: include/GUI/ObjectInterfaces/UnitInterface.h:106
 msgid "Self-destruct this unit"
 msgstr ""
 
-#: include/GUI/ObjectInterfaces/MultiUnitInterface.h:137
-#: include/GUI/ObjectInterfaces/UnitInterface.h:132
+#: include/GUI/ObjectInterfaces/MultiUnitInterface.h:123
+#: include/GUI/ObjectInterfaces/UnitInterface.h:114
+msgid "Repair this unit (Hotkey: R)"
+msgstr ""
+
+#: include/GUI/ObjectInterfaces/MultiUnitInterface.h:131
+#: include/GUI/ObjectInterfaces/UnitInterface.h:122
 msgid "Guard"
 msgstr ""
 
-#: include/GUI/ObjectInterfaces/MultiUnitInterface.h:139
-#: include/GUI/ObjectInterfaces/UnitInterface.h:134
+#: include/GUI/ObjectInterfaces/MultiUnitInterface.h:133
+#: include/GUI/ObjectInterfaces/UnitInterface.h:124
 msgid "Unit will not move from location"
 msgstr ""
 
-#: include/GUI/ObjectInterfaces/MultiUnitInterface.h:146
-#: include/GUI/ObjectInterfaces/UnitInterface.h:141
+#: include/GUI/ObjectInterfaces/MultiUnitInterface.h:140
+#: include/GUI/ObjectInterfaces/UnitInterface.h:131
 msgid "Area Guard"
 msgstr ""
 
-#: include/GUI/ObjectInterfaces/MultiUnitInterface.h:148
-#: include/GUI/ObjectInterfaces/UnitInterface.h:143
+#: include/GUI/ObjectInterfaces/MultiUnitInterface.h:142
+#: include/GUI/ObjectInterfaces/UnitInterface.h:133
 msgid "Unit will engage any unit within guard range"
 msgstr ""
 
-#: include/GUI/ObjectInterfaces/MultiUnitInterface.h:155
-#: include/GUI/ObjectInterfaces/UnitInterface.h:150
+#: include/GUI/ObjectInterfaces/MultiUnitInterface.h:149
+#: include/GUI/ObjectInterfaces/UnitInterface.h:140
 msgid "Stop"
 msgstr ""
 
-#: include/GUI/ObjectInterfaces/MultiUnitInterface.h:157
-#: include/GUI/ObjectInterfaces/UnitInterface.h:152
+#: include/GUI/ObjectInterfaces/MultiUnitInterface.h:151
+#: include/GUI/ObjectInterfaces/UnitInterface.h:142
 msgid "Unit will not move, nor attack"
 msgstr ""
 
-#: include/GUI/ObjectInterfaces/MultiUnitInterface.h:164
-#: include/GUI/ObjectInterfaces/UnitInterface.h:159
+#: include/GUI/ObjectInterfaces/MultiUnitInterface.h:158
+#: include/GUI/ObjectInterfaces/UnitInterface.h:149
 msgid "Ambush"
 msgstr ""
 
-#: include/GUI/ObjectInterfaces/MultiUnitInterface.h:166
-#: include/GUI/ObjectInterfaces/UnitInterface.h:161
+#: include/GUI/ObjectInterfaces/MultiUnitInterface.h:160
+#: include/GUI/ObjectInterfaces/UnitInterface.h:151
 msgid "Unit will not move until enemy unit spotted"
 msgstr ""
 
-#: include/GUI/ObjectInterfaces/MultiUnitInterface.h:173
-#: include/GUI/ObjectInterfaces/UnitInterface.h:168
+#: include/GUI/ObjectInterfaces/MultiUnitInterface.h:167
+#: include/GUI/ObjectInterfaces/UnitInterface.h:158
 msgid "Hunt"
 msgstr ""
 
-#: include/GUI/ObjectInterfaces/MultiUnitInterface.h:175
-#: include/GUI/ObjectInterfaces/UnitInterface.h:170
+#: include/GUI/ObjectInterfaces/MultiUnitInterface.h:169
+#: include/GUI/ObjectInterfaces/UnitInterface.h:160
 msgid "Unit will immediately start to engage an enemy unit"
+msgstr ""
+
+#: include/GUI/ObjectInterfaces/MultiUnitInterface.h:176
+#: include/GUI/ObjectInterfaces/UnitInterface.h:167
+msgid "Retreat"
+msgstr ""
+
+#: include/GUI/ObjectInterfaces/MultiUnitInterface.h:178
+#: include/GUI/ObjectInterfaces/UnitInterface.h:169
+msgid "Unit will retreat back to base"
 msgstr ""
 
 #: include/GUI/ObjectInterfaces/PalaceInterface.h:49
@@ -144,13 +159,13 @@ msgstr ""
 #: src/FileClasses/GFXManager.cpp:90 src/FileClasses/GFXManager.cpp:94
 #: src/FileClasses/GFXManager.cpp:98 src/FileClasses/GFXManager.cpp:99
 #: src/FileClasses/GFXManager.cpp:106 src/FileClasses/GFXManager.cpp:107
-#: src/FileClasses/GFXManager.cpp:670 src/FileClasses/GFXManager.cpp:671
-#: src/FileClasses/PictureFactory.cpp:202
-#: src/FileClasses/PictureFactory.cpp:203 src/FileClasses/TextManager.cpp:65
+#: src/FileClasses/GFXManager.cpp:680 src/FileClasses/GFXManager.cpp:681
+#: src/FileClasses/PictureFactory.cpp:201
+#: src/FileClasses/PictureFactory.cpp:202 src/FileClasses/TextManager.cpp:65
 #: src/FileClasses/TextManager.cpp:66 src/FileClasses/TextManager.cpp:67
 #: src/FileClasses/TextManager.cpp:68 src/FileClasses/TextManager.cpp:72
 #: src/FileClasses/TextManager.cpp:73 src/FileClasses/TextManager.cpp:74
-#: src/main.cpp:505 src/Menu/MapChoice.cpp:429
+#: src/main.cpp:501 src/Menu/MapChoice.cpp:429
 msgid "LanguageFileExtension"
 msgstr ""
 
@@ -1320,27 +1335,27 @@ msgstr ""
 msgid "@DUNE.ENG|125#empty"
 msgstr ""
 
-#: src/Game.cpp:2138 src/Game.cpp:2148 src/GUI/dune/GameOptionsWindow.cpp:113
+#: src/Game.cpp:2133 src/Game.cpp:2143 src/GUI/dune/GameOptionsWindow.cpp:113
 msgid "Game speed"
 msgstr ""
 
-#: src/Game.cpp:2297
+#: src/Game.cpp:2292
 msgid "Screenshot saved"
 msgstr ""
 
-#: src/Game.cpp:2372
+#: src/Game.cpp:2365
 msgid "Game resumed!"
 msgstr ""
 
-#: src/Game.cpp:2375
+#: src/Game.cpp:2368
 msgid "Game paused!"
 msgstr ""
 
-#: src/Game.cpp:2407 src/Game.cpp:2428
+#: src/Game.cpp:2400 src/Game.cpp:2421
 msgid "@DUNE.ENG|135#Cannot place slab here."
 msgstr ""
 
-#: src/Game.cpp:2441
+#: src/Game.cpp:2434
 #, c-format
 msgid "@DUNE.ENG|134#Cannot place %%s here."
 msgstr ""
@@ -1543,12 +1558,12 @@ msgstr ""
 msgid "Waiting for other players... "
 msgstr ""
 
-#: src/House.cpp:302
+#: src/House.cpp:314
 msgid ""
 "@DUNE.ENG|145#As insufficient spice storage is available, spice is lost."
 msgstr ""
 
-#: src/House.cpp:458
+#: src/House.cpp:522
 #, c-format
 msgid "House '%s' has been defeated."
 msgstr ""
@@ -2489,35 +2504,35 @@ msgstr ""
 msgid "@DUNE.ENG|201#Troopers"
 msgstr ""
 
-#: src/sand.cpp:539
+#: src/sand.cpp:540
 msgid "top edge"
 msgstr ""
 
-#: src/sand.cpp:540
+#: src/sand.cpp:541
 msgid "right edge"
 msgstr ""
 
-#: src/sand.cpp:541
+#: src/sand.cpp:542
 msgid "bottom edge"
 msgstr ""
 
-#: src/sand.cpp:542
+#: src/sand.cpp:543
 msgid "left edge"
 msgstr ""
 
-#: src/sand.cpp:543
+#: src/sand.cpp:544
 msgid "random"
 msgstr ""
 
-#: src/sand.cpp:544
+#: src/sand.cpp:545
 msgid "middle"
 msgstr ""
 
-#: src/sand.cpp:545
+#: src/sand.cpp:546
 msgid "enemy base"
 msgstr ""
 
-#: src/sand.cpp:546
+#: src/sand.cpp:547
 msgid "home base"
 msgstr ""
 
@@ -2529,19 +2544,19 @@ msgstr ""
 msgid "@DUNE.ENG|51#Construction is complete"
 msgstr ""
 
-#: src/structures/Palace.cpp:158
+#: src/structures/Palace.cpp:156
 msgid "@DUNE.ENG|81#Missile is approaching"
 msgstr ""
 
-#: src/structures/Palace.cpp:173
+#: src/structures/Palace.cpp:171
 msgid "Palace is ready"
 msgstr ""
 
-#: src/structures/Palace.cpp:252
+#: src/structures/Palace.cpp:249
 msgid "Unable to spawn Fremen"
 msgstr ""
 
-#: src/structures/Palace.cpp:267
+#: src/structures/Palace.cpp:264
 msgid "@DUNE.ENG|79#Saboteur is approaching"
 msgstr ""
 

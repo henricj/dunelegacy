@@ -336,14 +336,14 @@ int main(int argc, char *argv[]) {
       exit(EXIT_FAILURE);
 	}
 
-	bool bShowDebug = false;
+	bool bShowDebugLog = false;
     for(int i=1; i < argc; i++) {
 	    //check for overiding params
 	    std::string parameter(argv[i]);
 
 		if(parameter == "--showlog") {
 		    // special parameter which does not overwrite settings
-            bShowDebug = true;
+            bShowDebugLog = true;
 		} else if((parameter == "-f") || (parameter == "--fullscreen") || (parameter == "-w") || (parameter == "--window") || (parameter.find("--PlayerName=") == 0) || (parameter.find("--ServerPort=") == 0)) {
             // normal parameter for overwriting settings
             // handle later
@@ -353,7 +353,7 @@ int main(int argc, char *argv[]) {
 		}
 	}
 
-	if(bShowDebug == false) {
+	if(bShowDebugLog == false) {
 	    // get utf8-encoded log file path
 	    std::string logfilePath = getLogFilepath();
 	    const char* pLogfilePath = logfilePath.c_str();

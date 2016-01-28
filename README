@@ -79,7 +79,7 @@ General Keyboard Shortcuts:
  Key F12						-	Toggle display of FPS
  Key Up, Down, Left or Right	-	Move on the map
 
- Key H							-	Cycle through construction yards
+ Key G							-	Cycle through construction yards
  Key F							-	Cycle through factories/other builders
 
  Key F5							-	Skip 30 seconds (only in singleplayer)
@@ -95,7 +95,9 @@ General Keyboard Shortcuts:
 
  Key M							-	Order unit to move to some position
  Key A							-	Order selected units to attack some unit, structure or position
- Key R							-	Repair selected structure or return selected harvester
+ Key R							-	Repair selected structure or send selected units to repair yard
+ Key H							-	Return selected harvester
+ Key D							-	Request a carryall drop (only if this game option is enabled)
  Key U							-	Upgrade selected structure
  Key P							-	Place a structure (if a construction yard is selected)
 

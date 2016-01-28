@@ -107,13 +107,13 @@ CustomGameStatsMenu::CustomGameStatsMenu() : MenuBase()
             curHouseStat.houseHBox.addWidget(&curHouseStat.houseName, 130);
             curHouseStat.houseHBox.addWidget(Spacer::create(), 10);
 
-            curHouseStat.value1.setText( stringify(pHouse->getBuiltValue()/*100*/));
+            curHouseStat.value1.setText( stringify(pHouse->getBuiltValue()*100));
             curHouseStat.value1.setTextFont(FONT_STD10);
             curHouseStat.value1.setAlignment(Alignment_Right);
             curHouseStat.value1.setTextColor(color + 3);
             curHouseStat.houseHBox.addWidget(&curHouseStat.value1, 50);
             curHouseStat.houseHBox.addWidget(HSpacer::create(2));
-            curHouseStat.progressBar1.setProgress( (maxBuiltValue == 0) ? 0.0 : (pHouse->getBuiltValue() /* 100.0f*/ / maxBuiltValue));
+            curHouseStat.progressBar1.setProgress( (maxBuiltValue == 0) ? 0.0 : (pHouse->getBuiltValue() * 100.0f / maxBuiltValue));
             curHouseStat.progressBar1.setDrawShadow(true);
             curHouseStat.progressBar1.setColor(color + 1);
             curHouseStat.vBox1.addWidget(Spacer::create(), 0.5);

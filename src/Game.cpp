@@ -2296,9 +2296,7 @@ void Game::handleKeyInput(SDL_KeyboardEvent& keyboardEvent) {
             std::set<Uint32>::iterator iter;
             for(iter = selectedList.begin(); iter != selectedList.end(); ++iter) {
                 ObjectBase *tempObject = objectManager.getObject(*iter);
-                if(tempObject->isAStructure()) {
-                    ((StructureBase*)tempObject)->handleRepairClick();
-                } else if(tempObject->getItemID() == Unit_Harvester) {
+                if(tempObject->getItemID() == Unit_Harvester) {
                     ((Harvester*)tempObject)->handleReturnClick();
                 }
             }
@@ -2312,7 +2310,7 @@ void Game::handleKeyInput(SDL_KeyboardEvent& keyboardEvent) {
                 if(tempObject->isAStructure()) {
                     ((StructureBase*)tempObject)->handleRepairClick();
                 } else if(tempObject->isAGroundUnit() && tempObject->getHealth() < tempObject->getMaxHealth()) {
-                    ((GroundUnit*)tempObject)->doRepair();
+                    ((GroundUnit*)tempObject)->handleSendToRepairClick();
                 }
             }
         } break;

@@ -490,8 +490,6 @@ const ObjectBase* ObjectBase::findTarget() const {
             checkRange = getWeaponRange();
         } break;
 
-
-        // I want to eventually phase this stuff out
         case AREAGUARD: {
             checkRange = getAreaGuardRange();
         } break;
