@@ -18,8 +18,7 @@
 #ifndef SANDWORM_H
 #define SANDWORM_H
 
-#define SANDWORM_LENGTH 50
-#define SANDWORM_SEGMENTS 5	//how many shimmer things will be drawn per worm
+#define SANDWORM_SEGMENTS 4	//how many shimmer things will be drawn per worm
 
 #include <units/GroundUnit.h>
 
@@ -82,13 +81,13 @@ protected:
 
 private:
     // sandworm state
-	Sint32      kills;              ///< How many units does this sandworm alreay killed?
-    Sint32      attackFrameTimer;   ///< When to show the next attack frame
-    Sint32      sleepTimer;         ///< How long has this sandworm slept?
+	Sint32      kills;                  ///< How many units does this sandworm alreay killed?
+    Sint32      attackFrameTimer;       ///< When to show the next attack frame
+    Sint32      sleepTimer;             ///< How long has this sandworm slept?
 
     // drawing information
-	Coord lastLocs[SANDWORM_LENGTH];                                    ///< Last locations of the sandworm
-	SDL_Surface* shimmerSurface[SANDWORM_SEGMENTS][NUM_ZOOMLEVEL];      ///< Surfaces for doing the sandworm animation
+    Sint32 shimmerOffsetIndex;
+	Coord lastLocs[SANDWORM_SEGMENTS];    ///< Last locations of the sandworm
 };
 
 #endif // SANDWORM_H

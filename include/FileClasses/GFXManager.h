@@ -97,6 +97,7 @@ typedef enum {
 	ObjPic_DeadAirUnit,
 	ObjPic_Smoke,
 	ObjPic_SandwormShimmerMask,
+	ObjPic_SandwormShimmerTemp,
 	ObjPic_Terrain,
 	ObjPic_DestroyedStructure,
 	ObjPic_RockDamage,

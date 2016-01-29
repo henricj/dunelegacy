@@ -47,6 +47,11 @@ Sandworm::Sandworm(House* newOwner) : GroundUnit(newOwner) {
 	attackFrameTimer = 0;
 	sleepTimer = 0;
 	respondable = false;
+
+    for(int i = 0; i < SANDWORM_SEGMENTS; i++) {
+        lastLocs[i].invalidate();
+    }
+	shimmerOffsetIndex = -1;
 }
 
 Sandworm::Sandworm(InputStream& stream) : GroundUnit(stream) {
@@ -56,6 +61,11 @@ Sandworm::Sandworm(InputStream& stream) : GroundUnit(stream) {
 	kills = stream.readSint32();
 	attackFrameTimer = stream.readSint32();
 	sleepTimer = stream.readSint32();
+	shimmerOffsetIndex = stream.readSint32();
+	for(int i = 0; i < SANDWORM_SEGMENTS; i++) {
+        lastLocs[i].x = stream.readSint32();
+        lastLocs[i].y = stream.readSint32();
+	}
 }
 
 void Sandworm::init() {
@@ -71,21 +81,9 @@ void Sandworm::init() {
 	numImagesY = 9;
 
 	drawnFrame = INVALID;
-
-	for(int i = 0; i < SANDWORM_SEGMENTS; i++) {
-	    for(int z = 0; z < NUM_ZOOMLEVEL; z++) {
-            shimmerSurface[i][z] = copySurface(pGFXManager->getObjPic(ObjPic_SandwormShimmerMask,HOUSE_HARKONNEN)[z]);
-            SDL_FillRect(shimmerSurface[i][z], NULL, COLOR_TRANSPARENT);
-	    }
-	}
 }
 
 Sandworm::~Sandworm() {
-	for(int i = 0; i < SANDWORM_SEGMENTS; i++) {
-	    for(int z = 0; z < NUM_ZOOMLEVEL; z++) {
-            SDL_FreeSurface(shimmerSurface[i][z]);
-	    }
-	}
 }
 
 void Sandworm::save(OutputStream& stream) const {
@@ -94,6 +92,11 @@ void Sandworm::save(OutputStream& stream) const {
 	stream.writeSint32(kills);
 	stream.writeSint32(attackFrameTimer);
 	stream.writeSint32(sleepTimer);
+	stream.writeSint32(shimmerOffsetIndex);
+	for(int i = 0; i < SANDWORM_SEGMENTS; i++) {
+        stream.writeSint32(lastLocs[i].x);
+        stream.writeSint32(lastLocs[i].y);
+	}
 }
 
 void Sandworm::assignToMap(const Coord& pos) {
@@ -122,91 +125,45 @@ void Sandworm::deploy(const Coord& newLocation) {
 }
 
 void Sandworm::blitToScreen() {
-    int width = shimmerSurface[0][currentZoomlevel]->w;
-    int height = shimmerSurface[0][currentZoomlevel]->h;
+    static const int shimmerOffset[]  = { 1, 3, 2, 5, 4, 3, 2, 1 };
 
-    if(moving && !justStoppedMoving && !currentGame->isGamePaused() && !currentGame->isGameFinished()) {
+    if(shimmerOffsetIndex >= 0) {
         //create worms shimmer
-        if(shimmerSurface[0][currentZoomlevel]->format->BitsPerPixel == 8) {
 
-            SDL_Surface *mask = pGFXManager->getObjPic(ObjPic_SandwormShimmerMask,HOUSE_HARKONNEN)[currentZoomlevel];
-            if((!SDL_MUSTLOCK(screen) || (SDL_LockSurface(screen) >= 0))
-                && (!SDL_MUSTLOCK(mask) || (SDL_LockSurface(mask) >= 0)))
-            {
-                unsigned char	*maskPixels = (unsigned char*)mask->pixels,
-                                *screenPixels = (unsigned char*)screen->pixels,
-                                *surfacePixels;
-                int maxX = screenborder->getRight();
+        SDL_Surface *mask = pGFXManager->getObjPic(ObjPic_SandwormShimmerMask,HOUSE_HARKONNEN)[currentZoomlevel];
+        SDL_SetColorKey(mask, SDL_SRCCOLORKEY | SDL_RLEACCEL, 15);      // we want to have white not being drawn
 
-                Random randomGen(currentGame->getGameCycleCount());
+        int width = mask->w;
+        int height = mask->h;
 
-                for(int count = 0; count < SANDWORM_SEGMENTS; count++) {
-                    //for each segment of the worms length
-                    if((!SDL_MUSTLOCK(shimmerSurface[count][currentZoomlevel]) || (SDL_LockSurface(shimmerSurface[count][currentZoomlevel]) >= 0))) {
-                        surfacePixels = (unsigned char*)shimmerSurface[count][currentZoomlevel]->pixels;
+        SDL_Surface *shimmerSurfaceTemp = pGFXManager->getObjPic(ObjPic_SandwormShimmerTemp,HOUSE_HARKONNEN)[currentZoomlevel];
 
-                        int destX = screenborder->world2screenX(lastLocs[count*(SANDWORM_LENGTH/SANDWORM_SEGMENTS)].x) - width/2;
-                        int destY = screenborder->world2screenY(lastLocs[count*(SANDWORM_LENGTH/SANDWORM_SEGMENTS)].y) - height/2;
-
-                        for(int i = 0; i < width; i++) {
-                            for(int j = 0; j < height; j++) {
-                                int x,y;
-
-                                if(maskPixels[i + j*mask->pitch] == 0) {
-                                    //direct copy
-                                    x = i;
-                                    y = j;
-                                } else {
-                                    x = i + world2zoomedWorld(randomGen.rand(2,5)*4);
-                                    y = j;
-                                }
-
-                                if(destX + x < 0) {
-                                    destX = x = 0;
-                                } else if(destX + x >= maxX) {
-                                    destX = maxX - 1, x = 0;
-                                }
-
-                                if(destY + y < 0) {
-                                    destY = y = 0;
-                                } else if (destY + y >= screen->h) {
-                                    destY = screen->h - 1, y = 0;
-                                }
-
-                                if((destX + x >= 0) && (destX + x < screen->w) && (destY + y >= 0) && (destY + y < screen->h)) {
-                                    surfacePixels[i + j*shimmerSurface[count][currentZoomlevel]->pitch] = screenPixels[destX + x + (destY + y)*screen->pitch];
-                                } else {
-                                    surfacePixels[i + j*shimmerSurface[count][currentZoomlevel]->pitch] = 0;
-                                }
-                            }
-                        }
-
-                        if(SDL_MUSTLOCK(shimmerSurface[count][currentZoomlevel])) {
-                            SDL_UnlockSurface(shimmerSurface[count][currentZoomlevel]);
-                        }
-                    }
-                }
-
-                if(SDL_MUSTLOCK(mask)) {
-                    SDL_UnlockSurface(mask);
-                }
-
-                if(SDL_MUSTLOCK(screen)) {
-                    SDL_UnlockSurface(screen);
-                }
+        for(int i = 0; i < SANDWORM_SEGMENTS; i++) {
+            if(lastLocs[i].isInvalid()) {
+                continue;
             }
+
+            int destX = screenborder->world2screenX(lastLocs[i].x) - width/2;
+            int destY = screenborder->world2screenY(lastLocs[i].y) - height/2;
+
+            int srcX = destX + shimmerOffset[(shimmerOffsetIndex+i)%3]*2;
+            int srcY = destY;
+
+            SDL_Rect src =  {   static_cast<Sint16>(srcX),
+                                static_cast<Sint16>(srcY),
+                                static_cast<Uint16>(width),
+                                static_cast<Uint16>(height) };
+            SDL_BlitSurface(screen, &src, shimmerSurfaceTemp, NULL);
+
+            // use mask to make everything black that should not be considered further
+            SDL_BlitSurface(mask, NULL, shimmerSurfaceTemp, NULL);
+
+            SDL_Rect dest = {   static_cast<Sint16>(destX),
+                                static_cast<Sint16>(destY),
+                                static_cast<Uint16>(width),
+                                static_cast<Uint16>(height) };
+            SDL_BlitSurface(shimmerSurfaceTemp, NULL, screen, &dest);
         }
-    }
-
-    /////draw wormy shimmer segments
-    for(int count = 0; count < SANDWORM_SEGMENTS; count++) {
-        //draw all the shimmering images
-        SDL_Rect dest = {   static_cast<Sint16>(screenborder->world2screenX(lastLocs[count*(SANDWORM_LENGTH/SANDWORM_SEGMENTS)].x) - width/2),
-                            static_cast<Sint16>(screenborder->world2screenY(lastLocs[count*(SANDWORM_LENGTH/SANDWORM_SEGMENTS)].y) - height/2),
-                            static_cast<Uint16>(width),
-                            static_cast<Uint16>(height) };
-
-        SDL_BlitSurface(shimmerSurface[count][currentZoomlevel], NULL, screen, &dest);
     }
 
     if(drawnFrame != INVALID) {
@@ -223,6 +180,7 @@ void Sandworm::blitToScreen() {
 }
 
 void Sandworm::checkPos() {
+/*
 	if(moving && !justStoppedMoving) {
         if((std::abs(lround(realX) - lastLocs[0].x) >= 4) || (std::abs(lround(realY) - lastLocs[0].y) >= 4)) {
 			for(int i = (SANDWORM_LENGTH-1); i > 0 ; i--) {
@@ -233,6 +191,8 @@ void Sandworm::checkPos() {
 			lastLocs[0].y = lround(realY);
 		}
 	}
+*/
+
 
 	if(justStoppedMoving) {
 		realX = location.x*TILESIZE + TILESIZE/2;
@@ -290,11 +250,6 @@ void Sandworm::engageTarget() {
 void Sandworm::setLocation(int xPos, int yPos) {
 	if(currentGameMap->tileExists(xPos, yPos) || ((xPos == INVALID_POS) && (yPos == INVALID_POS))) {
 		UnitBase::setLocation(xPos, yPos);
-
-		for(int i = 0; i < SANDWORM_LENGTH; i++) {
-			lastLocs[i].x = lround(realX);
-			lastLocs[i].y = lround(realY);
-		}
 	}
 }
 
@@ -312,13 +267,15 @@ void Sandworm::sleep() {
 	kills = 0;
 	drawnFrame = INVALID;
 	attackFrameTimer = 0;
+	shimmerOffsetIndex = -1;
+    for(int i = 0; i < SANDWORM_SEGMENTS; i++) {
+        lastLocs[i].invalidate();
+    }
 }
 
 bool Sandworm::sleepOrDie() {
 
-    /*
-        Make sand worms always drop spice, even if they don't die
-    */
+    // Make sand worms always drop spice, even if they don't die
     if(currentGame->getGameInitSettings().getGameOptions().killedSandwormsDropSpice) {
             currentGameMap->createSpiceField(location, 4);
     }
@@ -334,15 +291,25 @@ bool Sandworm::sleepOrDie() {
 
 bool Sandworm::update() {
 	if(getHealth() <= getMaxHealth()/2) {
-
-
-
 		if(sleepOrDie() == false) {
             return false;
 		}
 	} else {
 		if(GroundUnit::update() == false) {
 		    return false;
+		}
+
+        if(isActive() && (moving || justStoppedMoving) && !currentGame->isGamePaused() && !currentGame->isGameFinished()) {
+            Coord realLocation = getLocation()*TILESIZE + Coord(TILESIZE/2, TILESIZE/2);
+            if(lastLocs[1] != realLocation) {
+                for(int i = (SANDWORM_SEGMENTS-1); i > 0 ; i--) {
+                    lastLocs[i] = lastLocs[i-1];
+                }
+                lastLocs[1] = realLocation;
+            }
+            lastLocs[0].x = lround(realX);
+            lastLocs[0].y = lround(realY);
+            shimmerOffsetIndex = ((currentGame->getGameCycleCount() + getObjectID()) % 48)/6;
 		}
 
         if(attackFrameTimer > 0) {

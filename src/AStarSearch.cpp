@@ -37,7 +37,7 @@ AStarSearch::AStarSearch(Map* pMap, UnitBase* pUnit, Coord start, Coord destinat
     }
 
     FixPoint heuristic = blockDistance(start, destination);
-    FixPoint smallestHeuristic = heuristic;
+    FixPoint smallestHeuristic = FixPt_MAX;
     bestCoord = Coord::Invalid();
 
     //if the unit is not directly next to its destination or it is and the destination is unblocked
@@ -54,12 +54,14 @@ AStarSearch::AStarSearch(Map* pMap, UnitBase* pUnit, Coord start, Coord destinat
             if (getMapData(currentCoord).h < smallestHeuristic) {
 				smallestHeuristic = getMapData(currentCoord).h;
 				bestCoord = currentCoord;
-
-				if(currentCoord == destination) {
-                    // destination found
-                    break;
-				}
 			}
+
+            if(currentCoord == destination) {
+                // destination found
+				smallestHeuristic = getMapData(currentCoord).h;
+				bestCoord = currentCoord;
+                break;
+            }
 
             if (numNodesChecked < MAX_NODES_CHECKED) {
                 //push a node for each direction we could go

@@ -393,6 +393,10 @@ GFXManager::GFXManager() {
     objPic[ObjPic_SandwormShimmerMask][HOUSE_HARKONNEN][1] = Scaler::defaultDoubleTiledSurface(objPic[ObjPic_SandwormShimmerMask][HOUSE_HARKONNEN][0], 1, 1, false);
     objPic[ObjPic_SandwormShimmerMask][HOUSE_HARKONNEN][2] = Scaler::defaultTripleTiledSurface(objPic[ObjPic_SandwormShimmerMask][HOUSE_HARKONNEN][0], 1, 1, false);
 
+	objPic[ObjPic_SandwormShimmerTemp][HOUSE_HARKONNEN][0] = units1->getPicture(10);
+    objPic[ObjPic_SandwormShimmerTemp][HOUSE_HARKONNEN][1] = Scaler::defaultDoubleTiledSurface(objPic[ObjPic_SandwormShimmerTemp][HOUSE_HARKONNEN][0], 1, 1, false);
+    objPic[ObjPic_SandwormShimmerTemp][HOUSE_HARKONNEN][2] = Scaler::defaultTripleTiledSurface(objPic[ObjPic_SandwormShimmerTemp][HOUSE_HARKONNEN][0], 1, 1, false);
+
 	objPic[ObjPic_Terrain][HOUSE_HARKONNEN][0] = icon->getPictureRow(124,209);
     objPic[ObjPic_Terrain][HOUSE_HARKONNEN][1] = Scaler::defaultDoubleTiledSurface(objPic[ObjPic_Terrain][HOUSE_HARKONNEN][0], 86, 1, false);
     objPic[ObjPic_Terrain][HOUSE_HARKONNEN][2] = Scaler::defaultTripleTiledSurface(objPic[ObjPic_Terrain][HOUSE_HARKONNEN][0], 86, 1, false);
