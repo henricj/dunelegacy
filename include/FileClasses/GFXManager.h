@@ -81,6 +81,7 @@ typedef enum {
 	ObjPic_Bullet_Medium,
 	ObjPic_Bullet_Large,
 	ObjPic_Bullet_Sonic,
+	ObjPic_Bullet_SonicTemp,
 	ObjPic_Hit_Gas,
 	ObjPic_Hit_ShellSmall,
     ObjPic_Hit_ShellMedium,

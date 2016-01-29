@@ -689,7 +689,7 @@ void UnitBase::navigate() {
                         }
                     }
                 }
-            } else if(!target) {
+            } else if(!target && attackPos.isInvalid()) {
                 if(((currentGame->getGameCycleCount() + getObjectID()*1337) % MILLI2CYCLES(UNITIDLETIMER)) == 0) {
                     idleAction();
                 }

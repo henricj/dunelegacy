@@ -205,14 +205,10 @@ void Bullet::init()
 
         case Bullet_Sonic: {
             damageRadius = (TILESIZE*3)/4;
-            speed = 9;
+            speed = 6;  // For Sonic bullets this is only half the actual speed; see Bullet::update()
             numFrames = 1;
-            detonationTimer = 28;
-            SDL_Surface** tmpSurfaceStack = pGFXManager->getObjPic(ObjPic_Bullet_Sonic, houseID);
-            graphic = new SDL_Surface*[NUM_ZOOMLEVEL];
-            for(int z = 0; z < NUM_ZOOMLEVEL; z++) {
-                graphic[z] =  copySurface(tmpSurfaceStack[z]);	//make a copy of the image
-            }
+            detonationTimer = 45;
+            graphic = pGFXManager->getObjPic(ObjPic_Bullet_Sonic, HOUSE_HARKONNEN);    // no color remapping
         } break;
 
         case Bullet_Sandworm: {
@@ -230,13 +226,6 @@ void Bullet::init()
 
 Bullet::~Bullet()
 {
-    if((bulletID == Bullet_Sonic) && (graphic != NULL)) {
-        for(int z = 0; z < NUM_ZOOMLEVEL; z++) {
-            SDL_FreeSurface(graphic[z]);
-        }
-        delete [] graphic;
-        graphic = NULL;
-    }
 }
 
 void Bullet::save(OutputStream& stream) const
@@ -277,75 +266,31 @@ void Bullet::blitToScreen()
         return;
 	}
 
-    SDL_Rect source = { static_cast<Sint16>((numFrames > 1) ? drawnAngle * imageW : 0), 0, static_cast<Uint16>(imageW), static_cast<Uint16>(imageH) };
-	SDL_Rect dest = {   static_cast<Sint16>(screenborder->world2screenX(realX) - imageW/2),
+    SDL_Rect dest = {   static_cast<Sint16>(screenborder->world2screenX(realX) - imageW/2),
                         static_cast<Sint16>(screenborder->world2screenY(realY) - imageH/2),
                         static_cast<Uint16>(imageW), static_cast<Uint16>(imageH) };
 
-    if(bulletID == Bullet_Sonic && !currentGame->isGamePaused()) {
-        SDL_Surface** mask = pGFXManager->getObjPic(ObjPic_Bullet_Sonic,(owner == NULL) ? HOUSE_HARKONNEN : owner->getHouseID());
+    if(bulletID == Bullet_Sonic) {
+        static const int shimmerOffset[]  = { 1, 3, 2, 5, 4, 3, 2, 1 };
 
-        if(mask[currentZoomlevel]->format->BitsPerPixel == 8) {
-            if ((!SDL_MUSTLOCK(screen) || (SDL_LockSurface(screen) == 0))
-                && (!SDL_MUSTLOCK(mask[currentZoomlevel]) || (SDL_LockSurface(mask[currentZoomlevel]) == 0))
-                && (!SDL_MUSTLOCK(graphic[currentZoomlevel]) || (SDL_LockSurface(graphic[currentZoomlevel]) == 0)))
-            {
-                unsigned char *maskPixels = (unsigned char*)mask[currentZoomlevel]->pixels;
-                unsigned char *screenPixels = (unsigned char*)screen->pixels;
-                unsigned char *surfacePixels = (unsigned char*)graphic[currentZoomlevel]->pixels;
-                int	maxX = world2zoomedWorld(screenborder->getRight());
-                int	maxY = world2zoomedWorld(screenborder->getBottom());
+        SDL_Surface *mask = graphic[currentZoomlevel];
+        SDL_SetColorKey(mask, SDL_SRCCOLORKEY | SDL_RLEACCEL, 15);      // we want to have white not being drawn
 
-                for(int i = 0; i < dest.w; i++) {
-                    for (int j = 0; j < dest.h; j++) {
-                        int x;
-                        int y;
+        SDL_Rect source = dest;
+        int shimmerOffsetIndex = ((currentGame->getGameCycleCount() + getBulletID()) % 24)/3;
+        source.x += shimmerOffset[shimmerOffsetIndex%8]*2;
 
-                        if(maskPixels[i + j*mask[currentZoomlevel]->pitch] == 0) {
-                            //not masked, direct copy
-                            x = i;
-                            y = j;
-                        } else {
-                            x = i + world2zoomedWorld(12);
-                            y = j;
-                        }
+        SDL_Surface *shimmerSurfaceTemp = pGFXManager->getObjPic(ObjPic_Bullet_SonicTemp,HOUSE_HARKONNEN)[currentZoomlevel];
+        SDL_BlitSurface(screen, &source, shimmerSurfaceTemp, NULL);
 
-                        dest.x = std::max(0,std::min( (int) dest.x, maxX-1));
-                        dest.y = std::max(0,std::min( (int) dest.y, maxY-1));
+        // use mask to make everything black that should not be considered further
+        SDL_BlitSurface(mask, NULL, shimmerSurfaceTemp, NULL);
 
-                        if(x < 0) {
-                            x = 0;
-                        } else if (dest.x + x >= maxX) {
-                            x = maxX - dest.x - 1;
-                        }
-
-                        if(y < 0) {
-                            y = 0;
-                        } else if (dest.y + y >= screen->h) {
-                            x = screen->h - dest.y - 1;
-                        }
-
-                        if((dest.x + x >= 0) && (dest.x + x < screen->w) && (dest.y + y >= 0) && (dest.y + y < screen->h)) {
-                            surfacePixels[i + j*graphic[currentZoomlevel]->pitch] = screenPixels[dest.x + x + (dest.y + y)*screen->pitch];
-                        } else {
-                            surfacePixels[i + j*graphic[currentZoomlevel]->pitch] = 0;
-                        }
-                    }
-                }
-
-                if (SDL_MUSTLOCK(graphic[currentZoomlevel]))
-                    SDL_UnlockSurface(graphic[currentZoomlevel]);
-
-                if (SDL_MUSTLOCK(mask[currentZoomlevel]))
-                    SDL_UnlockSurface(mask[currentZoomlevel]);
-
-                if (SDL_MUSTLOCK(screen))
-                    SDL_UnlockSurface(screen);
-            }
-        }
-    } //end of if sonic
-
-    SDL_BlitSurface(graphic[currentZoomlevel], &source, screen, &dest);
+        SDL_BlitSurface(shimmerSurfaceTemp, NULL, screen, &dest);
+    } else {
+        SDL_Rect source = { static_cast<Sint16>((numFrames > 1) ? drawnAngle * imageW : 0), 0, static_cast<Uint16>(imageW), static_cast<Uint16>(imageH) };
+        SDL_BlitSurface(graphic[currentZoomlevel], &source, screen, &dest);
+    }
 }
 
 
@@ -414,10 +359,10 @@ void Bullet::update()
 
             FixPoint weaponDamage = currentGame->objectData.data[Unit_SonicTank][(owner == NULL) ? HOUSE_ATREIDES : owner->getHouseID()].weapondamage;
 
-	        FixPoint startDamage = (weaponDamage / 4 + 1) / 3;
-	        FixPoint endDamage = ((weaponDamage-9) / 4 + 1) / 3;
+	        FixPoint startDamage = (weaponDamage / 4 + 1) / FixPt(4,5);
+	        FixPoint endDamage = ((weaponDamage-9) / 4 + 1) / FixPt(4,5);
 
-		    FixPoint damageDecrease = - (startDamage-endDamage)/(30 * 2 * speed);
+		    FixPoint damageDecrease = - (startDamage-endDamage)/(45 * 2 * speed);
 		    FixPoint dist = distanceFrom(source.x, source.y, realX, realY);
 
 		    FixPoint currentDamage = dist*damageDecrease + startDamage;

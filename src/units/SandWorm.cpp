@@ -146,7 +146,7 @@ void Sandworm::blitToScreen() {
             int destX = screenborder->world2screenX(lastLocs[i].x) - width/2;
             int destY = screenborder->world2screenY(lastLocs[i].y) - height/2;
 
-            int srcX = destX + shimmerOffset[(shimmerOffsetIndex+i)%3]*2;
+            int srcX = destX + shimmerOffset[(shimmerOffsetIndex+i)%8]*2;
             int srcY = destY;
 
             SDL_Rect src =  {   static_cast<Sint16>(srcX),
@@ -180,20 +180,6 @@ void Sandworm::blitToScreen() {
 }
 
 void Sandworm::checkPos() {
-/*
-	if(moving && !justStoppedMoving) {
-        if((std::abs(lround(realX) - lastLocs[0].x) >= 4) || (std::abs(lround(realY) - lastLocs[0].y) >= 4)) {
-			for(int i = (SANDWORM_LENGTH-1); i > 0 ; i--) {
-				lastLocs[i] = lastLocs[i-1];
-			}
-
-			lastLocs[0].x = lround(realX);
-			lastLocs[0].y = lround(realY);
-		}
-	}
-*/
-
-
 	if(justStoppedMoving) {
 		realX = location.x*TILESIZE + TILESIZE/2;
 		realY = location.y*TILESIZE + TILESIZE/2;
@@ -253,7 +239,7 @@ void Sandworm::setLocation(int xPos, int yPos) {
 	}
 }
 
-/*
+/**
     Put sandworm to sleep for a while
 */
 void Sandworm::sleep() {

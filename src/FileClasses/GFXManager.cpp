@@ -323,6 +323,10 @@ GFXManager::GFXManager() {
     objPic[ObjPic_Bullet_Sonic][HOUSE_HARKONNEN][1] = Scaler::defaultDoubleTiledSurface(objPic[ObjPic_Bullet_Sonic][HOUSE_HARKONNEN][0], 1, 1, false);
     objPic[ObjPic_Bullet_Sonic][HOUSE_HARKONNEN][2] = Scaler::defaultTripleTiledSurface(objPic[ObjPic_Bullet_Sonic][HOUSE_HARKONNEN][0], 1, 1, false);
 
+	objPic[ObjPic_Bullet_SonicTemp][HOUSE_HARKONNEN][0] = units1->getPicture(10);
+    objPic[ObjPic_Bullet_SonicTemp][HOUSE_HARKONNEN][1] = Scaler::defaultDoubleTiledSurface(objPic[ObjPic_Bullet_SonicTemp][HOUSE_HARKONNEN][0], 1, 1, false);
+    objPic[ObjPic_Bullet_SonicTemp][HOUSE_HARKONNEN][2] = Scaler::defaultTripleTiledSurface(objPic[ObjPic_Bullet_SonicTemp][HOUSE_HARKONNEN][0], 1, 1, false);
+
 	objPic[ObjPic_Hit_Gas][HOUSE_ORDOS][0] = units1->getPictureArray(5,1,57|TILE_NORMAL,58|TILE_NORMAL,59|TILE_NORMAL,60|TILE_NORMAL,61|TILE_NORMAL);
     objPic[ObjPic_Hit_Gas][HOUSE_ORDOS][1] = Scaler::defaultDoubleTiledSurface(objPic[ObjPic_Hit_Gas][HOUSE_ORDOS][0], 5, 1, false);
     objPic[ObjPic_Hit_Gas][HOUSE_ORDOS][2] = Scaler::defaultTripleTiledSurface(objPic[ObjPic_Hit_Gas][HOUSE_ORDOS][0], 5, 1, false);
