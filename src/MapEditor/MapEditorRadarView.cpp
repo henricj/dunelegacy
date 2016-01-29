@@ -32,12 +32,16 @@
 MapEditorRadarView::MapEditorRadarView(MapEditor* pMapEditor)
  : RadarViewBase(), pMapEditor(pMapEditor)
 {
+	radarSurface = SDL_CreateRGBSurface(SDL_HWSURFACE,RADARWIDTH,RADARHEIGHT,8,0,0,0,0);
+	palette.applyToSurface(radarSurface);
 }
 
 
 MapEditorRadarView::~MapEditorRadarView()
 {
-
+    if(radarSurface != NULL) {
+        SDL_FreeSurface(radarSurface);
+    }
 }
 
 int MapEditorRadarView::getMapSizeX() const {
@@ -60,8 +64,52 @@ void MapEditorRadarView::draw(SDL_Surface* screen, Point position)
 
     calculateScaleAndOffsets(map.getSizeX(), map.getSizeY(), scale, offsetX, offsetY);
 
-    // Lock the screen for direct access to the pixels
-    if(!SDL_MUSTLOCK(screen) || (SDL_LockSurface(screen) == 0)) {
+    updateRadarSurface(map, scale, offsetX, offsetY);
+
+    SDL_BlitSurface(radarSurface, NULL, screen, &radarPosition);
+
+    // draw viewport rect on radar
+    SDL_Rect radarRect;
+    radarRect.x = (screenborder->getLeft() * map.getSizeX()*scale) / (map.getSizeX()*TILESIZE) + offsetX;
+    radarRect.y = (screenborder->getTop() * map.getSizeY()*scale) / (map.getSizeY()*TILESIZE) + offsetY;
+    radarRect.w = ((screenborder->getRight() - screenborder->getLeft()) * map.getSizeX()*scale) / (map.getSizeX()*TILESIZE);
+    radarRect.h = ((screenborder->getBottom() - screenborder->getTop()) * map.getSizeY()*scale) / (map.getSizeY()*TILESIZE);
+
+    if(radarRect.x < offsetX) {
+        radarRect.w -= radarRect.x;
+        radarRect.x = offsetX;
+    }
+
+    if(radarRect.y < offsetY) {
+        radarRect.h -= radarRect.y;
+        radarRect.y = offsetY;
+    }
+
+    int offsetFromRightX = 128 - map.getSizeX()*scale - offsetX;
+    if(radarRect.x + radarRect.w > radarPosition.w - offsetFromRightX) {
+        radarRect.w  = radarPosition.w - offsetFromRightX - radarRect.x - 1;
+    }
+
+    int offsetFromBottomY = 128 - map.getSizeY()*scale - offsetY;
+    if(radarRect.y + radarRect.h > radarPosition.h - offsetFromBottomY) {
+        radarRect.h = radarPosition.h - offsetFromBottomY - radarRect.y - 1;
+    }
+
+    drawRect(   screen,
+                radarPosition.x + radarRect.x,
+                radarPosition.y + radarRect.y,
+                radarPosition.x + (radarRect.x + radarRect.w),
+                radarPosition.y + (radarRect.y + radarRect.h),
+                COLOR_WHITE);
+
+}
+
+void MapEditorRadarView::updateRadarSurface(const MapData& map, int scale, int offsetX, int offsetY) {
+
+    SDL_FillRect(radarSurface, NULL, COLOR_BLACK);
+
+    // Lock the surface for direct access to the pixels
+    if(!SDL_MUSTLOCK(radarSurface) || (SDL_LockSurface(radarSurface) == 0)) {
         for(int y = 0; y <  map.getSizeY(); y++) {
             for(int x = 0; x <  map.getSizeX(); x++) {
 
@@ -115,7 +163,7 @@ void MapEditorRadarView::draw(SDL_Surface* screen, Point position)
                 }
 
                 for(int j = 0; j < scale; j++) {
-                    Uint8* p = (Uint8 *) screen->pixels + (radarPosition.y + offsetY + scale*y + j) * screen->pitch + (radarPosition.x + offsetX + scale*x);
+                    Uint8* p = (Uint8 *) radarSurface->pixels + (offsetY + scale*y + j) * radarSurface->pitch + (offsetX + scale*x);
 
                     for(int i = 0; i < scale; i++, p++) {
                         // Do not use putPixel here to avoid overhead
@@ -134,9 +182,9 @@ void MapEditorRadarView::draw(SDL_Surface* screen, Point position)
 
                 for(int i = 0; i < scale; i++) {
                     for(int j = 0; j < scale; j++) {
-                        putPixel(   screen,
-                                    radarPosition.x + offsetX + scale*uIter->position.x + i,
-                                    radarPosition.y + offsetY + scale*uIter->position.y + j,
+                        putPixel(   radarSurface,
+                                    offsetX + scale*uIter->position.x + i,
+                                    offsetY + scale*uIter->position.y + j,
                                     houseColor[uIter->house]);
                     }
                 }
@@ -156,9 +204,9 @@ void MapEditorRadarView::draw(SDL_Surface* screen, Point position)
 
                         for(int i = 0; i < scale; i++) {
                             for(int j = 0; j < scale; j++) {
-                                putPixel(   screen,
-                                            radarPosition.x + offsetX + scale*(sIter->position.x+x) + i,
-                                            radarPosition.y + offsetY + scale*(sIter->position.y+y) + j,
+                                putPixel(   radarSurface,
+                                            offsetX + scale*(sIter->position.x+x) + i,
+                                            offsetY + scale*(sIter->position.y+y) + j,
                                             houseColor[sIter->house]);
                             }
                         }
@@ -167,45 +215,7 @@ void MapEditorRadarView::draw(SDL_Surface* screen, Point position)
             }
         }
 
-
-
-        if (SDL_MUSTLOCK(screen))
-            SDL_UnlockSurface(screen);
+        if (SDL_MUSTLOCK(radarSurface))
+            SDL_UnlockSurface(radarSurface);
     }
-
-
-
-    SDL_Rect RadarRect;
-    RadarRect.x = (screenborder->getLeft() * map.getSizeX()*scale) / (map.getSizeX()*TILESIZE) + offsetX;
-    RadarRect.y = (screenborder->getTop() * map.getSizeY()*scale) / (map.getSizeY()*TILESIZE) + offsetY;
-    RadarRect.w = ((screenborder->getRight() - screenborder->getLeft()) * map.getSizeX()*scale) / (map.getSizeX()*TILESIZE);
-    RadarRect.h = ((screenborder->getBottom() - screenborder->getTop()) * map.getSizeY()*scale) / (map.getSizeY()*TILESIZE);
-
-    if(RadarRect.x < offsetX) {
-        RadarRect.w -= RadarRect.x;
-        RadarRect.x = offsetX;
-    }
-
-    if(RadarRect.y < offsetY) {
-        RadarRect.h -= RadarRect.y;
-        RadarRect.y = offsetY;
-    }
-
-    int offsetFromRightX = 128 - map.getSizeX()*scale - offsetX;
-    if(RadarRect.x + RadarRect.w > radarPosition.w - offsetFromRightX) {
-        RadarRect.w  = radarPosition.w - offsetFromRightX - RadarRect.x - 1;
-    }
-
-    int offsetFromBottomY = 128 - map.getSizeY()*scale - offsetY;
-    if(RadarRect.y + RadarRect.h > radarPosition.h - offsetFromBottomY) {
-        RadarRect.h = radarPosition.h - offsetFromBottomY - RadarRect.y - 1;
-    }
-
-    drawRect(   screen,
-                radarPosition.x + RadarRect.x,
-                radarPosition.y + RadarRect.y,
-                radarPosition.x + (RadarRect.x + RadarRect.w),
-                radarPosition.y + (RadarRect.y + RadarRect.h),
-                COLOR_WHITE);
-
 }

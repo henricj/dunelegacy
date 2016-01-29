@@ -25,6 +25,7 @@
 #include <SDL.h>
 
 class MapEditor;
+class MapData;
 
 /// This class manages the mini map at the top right corner of the screen
 class MapEditorRadarView : public RadarViewBase
@@ -60,7 +61,11 @@ public:
 	virtual void draw(SDL_Surface* screen, Point position);
 
 private:
+    void updateRadarSurface(const MapData& map, int scale, int offsetX, int offsetY);
+
     MapEditor* pMapEditor;
+
+    SDL_Surface* radarSurface;
 };
 
 #endif // RADARVIEW_H

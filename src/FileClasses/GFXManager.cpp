@@ -742,7 +742,7 @@ GFXManager::GFXManager() {
         for(int y = 48; y < 48+240; y++) {
             for(int x = 16; x < 16 + 608; x++) {
                 if(getPixel(uiGraphic[UI_MapChoiceMap][HOUSE_HARKONNEN], x, y) == 0) {
-                    putPixel(uiGraphic[UI_MapChoiceMap][HOUSE_HARKONNEN], x, y, 12);
+                    putPixel(uiGraphic[UI_MapChoiceMap][HOUSE_HARKONNEN], x, y, COLOR_BLACK);
                 }
             }
         }

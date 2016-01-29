@@ -208,8 +208,8 @@ void RadarView::updateRadarSurface(int mapSizeX, int mapSizeY, int scale, int of
             }
         }
 
-        if(SDL_MUSTLOCK(screen)) {
-            SDL_UnlockSurface(screen);
+        if(SDL_MUSTLOCK(radarSurface)) {
+            SDL_UnlockSurface(radarSurface);
         }
     }
 }
