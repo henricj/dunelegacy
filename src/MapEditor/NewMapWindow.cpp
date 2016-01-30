@@ -53,7 +53,7 @@ NewMapWindow::NewMapWindow(int color) : Window(0,0,0,0), color(color), mapSeed(I
 	mainHBox.addWidget(&mainVBox);
 	mainHBox.addWidget(HSpacer::create(16));
 
-    titleLabel.setTextColor(110, COLOR_TRANSPARENT);
+    titleLabel.setTextColor(110, PALCOLOR_TRANSPARENT);
 	titleLabel.setAlignment((Alignment_Enum) (Alignment_HCenter | Alignment_VCenter));
 	titleLabel.setText(_("New Map"));
 	mainVBox.addWidget(&titleLabel);
@@ -353,7 +353,7 @@ SDL_Surface* NewMapWindow::createMinimapPicture(MapData& mapdata) {
     }
     palette.applyToSurface(pMinimap);
 
-    SDL_FillRect(pMinimap, NULL, COLOR_BLACK);
+    SDL_FillRect(pMinimap, NULL, PALCOLOR_BLACK);
 
     int scale = 1;
     int offsetX;

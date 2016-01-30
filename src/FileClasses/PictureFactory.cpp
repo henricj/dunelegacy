@@ -530,7 +530,7 @@ SDL_Surface* PictureFactory::createMainBackground() {
 	char versionString[100];
 	sprintf(versionString, "%s", VERSION);
 
-	SDL_Surface *VersionText = pFontManager->createSurfaceWithText(versionString, COLOR_BLACK, FONT_STD12);
+	SDL_Surface *VersionText = pFontManager->createSurfaceWithText(versionString, PALCOLOR_BLACK, FONT_STD12);
 
 	SDL_Rect dest4 = {	static_cast<Sint16>((Version->w - VersionText->w)/2), static_cast<Sint16>((Version->h - VersionText->h)/2 + 2),
 						static_cast<Uint16>(VersionText->w),static_cast<Uint16>(VersionText->h)};
@@ -642,7 +642,7 @@ SDL_Surface* PictureFactory::createHouseSelect(SDL_Surface* HouseChoice) {
 	SDL_Surface* Pic = copySurface(HouseChoice);
 
     SDL_Rect dest = { 0, 50, static_cast<Uint16>(Pic->w), static_cast<Uint16>(Pic->h-50) };
-	SDL_FillRect(Pic, &dest, COLOR_BLACK);
+	SDL_FillRect(Pic, &dest, PALCOLOR_BLACK);
 
 	drawFrame(Pic,SimpleFrame,NULL);
 
@@ -737,7 +737,7 @@ SDL_Surface* PictureFactory::createMapChoiceScreen(int House) {
 	SDL_Rect clearRect = {8,24,304,119};
 	SDL_FillRect(MapChoiceScreen,&clearRect,0);
 
-	MapChoiceScreen = Scaler::defaultDoubleSurface(mapSurfaceColorRange(MapChoiceScreen, COLOR_HARKONNEN, houseColor[House], true), true);
+	MapChoiceScreen = Scaler::defaultDoubleSurface(mapSurfaceColorRange(MapChoiceScreen, PALCOLOR_HARKONNEN, houseColor[House], true), true);
 	SDL_Surface* FullMapChoiceScreen = copySurface(background.get());
 
 	SDL_Rect dest = { static_cast<Sint16>(FullMapChoiceScreen->w/2 - MapChoiceScreen->w/2), static_cast<Sint16>(FullMapChoiceScreen->h/2 - MapChoiceScreen->h/2), static_cast<Uint16>(MapChoiceScreen->w), static_cast<Uint16>(MapChoiceScreen->h) };
@@ -791,9 +791,9 @@ SDL_Surface* PictureFactory::createBuilderListLowerCap() {
 }
 
 SDL_Surface* PictureFactory::createHeraldFre(SDL_Surface* heraldHark) {
-    SDL_Surface* pRedReplaced = mapSurfaceColorRange(heraldHark, COLOR_HARKONNEN, COLOR_FREMEN);
+    SDL_Surface* pRedReplaced = mapSurfaceColorRange(heraldHark, PALCOLOR_HARKONNEN, PALCOLOR_FREMEN);
 
-    SDL_Surface* pBlueReplaced = mapSurfaceColorRange(pRedReplaced, COLOR_ATREIDES, COLOR_FREMEN+1);
+    SDL_Surface* pBlueReplaced = mapSurfaceColorRange(pRedReplaced, PALCOLOR_ATREIDES, PALCOLOR_FREMEN+1);
     SDL_FreeSurface(pRedReplaced);
 
     replaceColor(pBlueReplaced, 170, 194);
@@ -818,11 +818,11 @@ SDL_Surface* PictureFactory::createHeraldFre(SDL_Surface* heraldHark) {
 }
 
 SDL_Surface* PictureFactory::createHeraldSard(SDL_Surface* heraldOrd, SDL_Surface* heraldAtre) {
-    SDL_Surface* pGreenReplaced = mapSurfaceColorRange(heraldOrd, COLOR_ORDOS, COLOR_SARDAUKAR-1);
+    SDL_Surface* pGreenReplaced = mapSurfaceColorRange(heraldOrd, PALCOLOR_ORDOS, PALCOLOR_SARDAUKAR-1);
 
     replaceColor(pGreenReplaced, 3, 209);
 
-    SDL_Surface* pTmp1 = mapSurfaceColorRange(heraldAtre, COLOR_ATREIDES, COLOR_SARDAUKAR);
+    SDL_Surface* pTmp1 = mapSurfaceColorRange(heraldAtre, PALCOLOR_ATREIDES, PALCOLOR_SARDAUKAR);
     SDL_Surface* pCurtain = getSubPicture(pTmp1, 7, 7, 69, 49);
     SDL_FreeSurface(pTmp1);
 
@@ -838,12 +838,12 @@ SDL_Surface* PictureFactory::createHeraldSard(SDL_Surface* heraldOrd, SDL_Surfac
 }
 
 SDL_Surface* PictureFactory::createHeraldMerc(SDL_Surface* heraldAtre, SDL_Surface* heraldOrd) {
-    SDL_Surface* pBlueReplaced = mapSurfaceColorRange(heraldAtre, COLOR_ATREIDES, COLOR_MERCENARY);
+    SDL_Surface* pBlueReplaced = mapSurfaceColorRange(heraldAtre, PALCOLOR_ATREIDES, PALCOLOR_MERCENARY);
 
-    SDL_Surface* pRedReplaced = mapSurfaceColorRange(pBlueReplaced, COLOR_HARKONNEN, COLOR_ATREIDES);
+    SDL_Surface* pRedReplaced = mapSurfaceColorRange(pBlueReplaced, PALCOLOR_HARKONNEN, PALCOLOR_ATREIDES);
     SDL_FreeSurface(pBlueReplaced);
 
-    SDL_Surface* pTmp1 = mapSurfaceColorRange(heraldOrd, COLOR_ORDOS, COLOR_MERCENARY);
+    SDL_Surface* pTmp1 = mapSurfaceColorRange(heraldOrd, PALCOLOR_ORDOS, PALCOLOR_MERCENARY);
     SDL_Surface* pCurtain = getSubPicture(pTmp1, 7, 7, 69, 49);
     SDL_FreeSurface(pTmp1);
 
@@ -878,7 +878,7 @@ Animation* PictureFactory::createFremenPlanet(SDL_Surface* heraldFre) {
     SDL_Rect dest = {12, 66, static_cast<Uint16>(heraldFre->w - 2), static_cast<Uint16>(heraldFre->h)};
     SDL_BlitSurface(heraldFre,&src,newFrame,&dest);
 
-    drawRect(newFrame, 0, 0, newFrame->w - 1, newFrame->h - 1, COLOR_WHITE);
+    drawRect(newFrame, 0, 0, newFrame->w - 1, newFrame->h - 1, PALCOLOR_WHITE);
 
     newAnimation->addFrame(newFrame);
 
@@ -982,7 +982,7 @@ Animation* PictureFactory::createMercenaryPlanet(Animation* atreidesPlanetAnimat
 }
 
 SDL_Surface* PictureFactory::mapMentatSurfaceToMercenary(SDL_Surface* ordosMentat) {
-    SDL_Surface* mappedSurface = mapSurfaceColorRange(ordosMentat, COLOR_ORDOS, COLOR_MERCENARY);
+    SDL_Surface* mappedSurface = mapSurfaceColorRange(ordosMentat, PALCOLOR_ORDOS, PALCOLOR_MERCENARY);
 
     Uint8 colorMap[256];
     for(int i = 0; i < 256; i++) {
@@ -1015,7 +1015,7 @@ Animation* PictureFactory::mapMentatAnimationToFremen(Animation* fremenAnimation
 }
 
 SDL_Surface* PictureFactory::mapMentatSurfaceToSardaukar(SDL_Surface* harkonnenMentat) {
-    SDL_Surface* mappedSurface = mapSurfaceColorRange(harkonnenMentat, COLOR_HARKONNEN, COLOR_SARDAUKAR);
+    SDL_Surface* mappedSurface = mapSurfaceColorRange(harkonnenMentat, PALCOLOR_HARKONNEN, PALCOLOR_SARDAUKAR);
 
     Uint8 colorMap[256];
     for(int i = 0; i < 256; i++) {
@@ -1072,7 +1072,7 @@ Animation* PictureFactory::mapMentatAnimationToMercenary(Animation* ordosAnimati
 }
 
 SDL_Surface* PictureFactory::mapMentatSurfaceToFremen(SDL_Surface* fremenMentat) {
-    SDL_Surface* mappedSurface = mapSurfaceColorRange(fremenMentat, COLOR_ATREIDES, COLOR_FREMEN);
+    SDL_Surface* mappedSurface = mapSurfaceColorRange(fremenMentat, PALCOLOR_ATREIDES, PALCOLOR_FREMEN);
 
     Uint8 colorMap[256];
     for(int i = 0; i < 256; i++) {

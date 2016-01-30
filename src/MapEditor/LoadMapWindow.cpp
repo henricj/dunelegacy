@@ -55,7 +55,7 @@ LoadMapWindow::LoadMapWindow(int color) : Window(0,0,0,0), color(color) {
 	mainHBox.addWidget(&mainVBox);
 	mainHBox.addWidget(HSpacer::create(16));
 
-    titleLabel.setTextColor(110, COLOR_TRANSPARENT);
+    titleLabel.setTextColor(110, PALCOLOR_TRANSPARENT);
 	titleLabel.setAlignment((Alignment_Enum) (Alignment_HCenter | Alignment_VCenter));
 	titleLabel.setText(_("Load Map"));
 	mainVBox.addWidget(&titleLabel);

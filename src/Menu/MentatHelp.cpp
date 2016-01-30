@@ -66,7 +66,7 @@ MentatHelp::MentatHelp(int newHouse, int techLevel, int mission) : MentatMenu(ne
     animation.setEnabled(false);
     itemDescriptionLabel.setTextFont(FONT_STD10);
     itemDescriptionLabel.setAlignment((Alignment_Enum) (Alignment_Left | Alignment_Top));
-    itemDescriptionLabel.setTextColor(COLOR_WHITE, COLOR_BLACK);
+    itemDescriptionLabel.setTextColor(PALCOLOR_WHITE, PALCOLOR_BLACK);
     windowWidget.addWidget(&itemDescriptionLabel,Point(256 + 4, 96 + 4),Point(368 - 8, 224 - 8));
     itemDescriptionLabel.setVisible(false);
 

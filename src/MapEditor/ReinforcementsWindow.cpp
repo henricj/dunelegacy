@@ -51,7 +51,7 @@ ReinforcementsWindow::ReinforcementsWindow(MapEditor* pMapEditor, int color)
 	mainHBox.addWidget(&mainVBox);
 	mainHBox.addWidget(HSpacer::create(16));
 
-    titleLabel.setTextColor(110, COLOR_TRANSPARENT);
+    titleLabel.setTextColor(110, PALCOLOR_TRANSPARENT);
 	titleLabel.setAlignment((Alignment_Enum) (Alignment_HCenter | Alignment_VCenter));
 	titleLabel.setText(_("Reinforcements"));
 	mainVBox.addWidget(&titleLabel);
@@ -76,28 +76,28 @@ ReinforcementsWindow::ReinforcementsWindow(MapEditor* pMapEditor, int color)
 
     hBox1.addWidget(HSpacer::create(3));
 
-    listEntryUpButton.setSymbol(mapSurfaceColorRange(pGFXManager->getUIGraphic(UI_MapEditor_ArrowUp), COLOR_HARKONNEN, color-3), true,
-                                mapSurfaceColorRange(pGFXManager->getUIGraphic(UI_MapEditor_ArrowUp), COLOR_HARKONNEN, color-6), true);
+    listEntryUpButton.setSymbol(mapSurfaceColorRange(pGFXManager->getUIGraphic(UI_MapEditor_ArrowUp), PALCOLOR_HARKONNEN, color-3), true,
+                                mapSurfaceColorRange(pGFXManager->getUIGraphic(UI_MapEditor_ArrowUp), PALCOLOR_HARKONNEN, color-6), true);
     listEntryUpButton.setTooltipText(_("Move up"));
     listEntryUpButton.setOnClick(std::bind(&ReinforcementsWindow::onUp, this));
     listControlVBox.addWidget(&listEntryUpButton, 25);
     listControlVBox.addWidget(VSpacer::create(3));
-    listEntryDownButton.setSymbol(mapSurfaceColorRange(pGFXManager->getUIGraphic(UI_MapEditor_ArrowDown), COLOR_HARKONNEN, color-3), true,
-                                  mapSurfaceColorRange(pGFXManager->getUIGraphic(UI_MapEditor_ArrowDown), COLOR_HARKONNEN, color-6), true);
+    listEntryDownButton.setSymbol(mapSurfaceColorRange(pGFXManager->getUIGraphic(UI_MapEditor_ArrowDown), PALCOLOR_HARKONNEN, color-3), true,
+                                  mapSurfaceColorRange(pGFXManager->getUIGraphic(UI_MapEditor_ArrowDown), PALCOLOR_HARKONNEN, color-6), true);
     listEntryDownButton.setTooltipText(_("Move down"));
     listEntryDownButton.setOnClick(std::bind(&ReinforcementsWindow::onDown, this));
     listControlVBox.addWidget(&listEntryDownButton, 25);
 
     listControlVBox.addWidget(Spacer::create(), 6.0);
 
-    addListEntryButton.setSymbol(mapSurfaceColorRange(pGFXManager->getUIGraphic(UI_MapEditor_Plus), COLOR_HARKONNEN, color-3), true,
-                                 mapSurfaceColorRange(pGFXManager->getUIGraphic(UI_MapEditor_Plus), COLOR_HARKONNEN, color-6), true);
+    addListEntryButton.setSymbol(mapSurfaceColorRange(pGFXManager->getUIGraphic(UI_MapEditor_Plus), PALCOLOR_HARKONNEN, color-3), true,
+                                 mapSurfaceColorRange(pGFXManager->getUIGraphic(UI_MapEditor_Plus), PALCOLOR_HARKONNEN, color-6), true);
     addListEntryButton.setTooltipText(_("Add"));
     addListEntryButton.setOnClick(std::bind(&ReinforcementsWindow::onAdd, this));
     listControlVBox.addWidget(&addListEntryButton, 25);
     listControlVBox.addWidget(VSpacer::create(3));
-    removeListEntryButton.setSymbol(mapSurfaceColorRange(pGFXManager->getUIGraphic(UI_MapEditor_Minus), COLOR_HARKONNEN, color-3), true,
-                                    mapSurfaceColorRange(pGFXManager->getUIGraphic(UI_MapEditor_Minus), COLOR_HARKONNEN, color-6), true);
+    removeListEntryButton.setSymbol(mapSurfaceColorRange(pGFXManager->getUIGraphic(UI_MapEditor_Minus), PALCOLOR_HARKONNEN, color-3), true,
+                                    mapSurfaceColorRange(pGFXManager->getUIGraphic(UI_MapEditor_Minus), PALCOLOR_HARKONNEN, color-6), true);
     removeListEntryButton.setTooltipText(_("Remove"));
     removeListEntryButton.setOnClick(std::bind(&ReinforcementsWindow::onRemove, this));
     listControlVBox.addWidget(&removeListEntryButton, 25);

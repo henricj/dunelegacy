@@ -475,18 +475,18 @@ std::string getAttackModeNameByMode(ATTACKMODE attackMode) {
 
 
 int getColorByTerrainType(int terrainType) {
-    int color = COLOR_BLACK;
+    int color = PALCOLOR_BLACK;
     switch (terrainType) {
-        case Terrain_Dunes:         color = COLOR_DESERTSAND;   break;
-        case Terrain_Mountain:      color = COLOR_MOUNTAIN;     break;
-        case Terrain_Rock:          color = COLOR_DARKGREY;     break;
-        case Terrain_Sand:          color = COLOR_DESERTSAND;   break;
-        case Terrain_Spice:         color = COLOR_SPICE;        break;
-        case Terrain_ThickSpice:    color = COLOR_THICKSPICE;   break;
-        case Terrain_SpiceBloom:    color = COLOR_RED;          break;
-        case Terrain_SpecialBloom:  color = COLOR_RED;          break;
-        case Terrain_Slab:          color = COLOR_DARKGREY;     break;
-        default:                   color = COLOR_DARKGREY;     break;
+        case Terrain_Dunes:         color = PALCOLOR_DESERTSAND;   break;
+        case Terrain_Mountain:      color = PALCOLOR_MOUNTAIN;     break;
+        case Terrain_Rock:          color = PALCOLOR_DARKGREY;     break;
+        case Terrain_Sand:          color = PALCOLOR_DESERTSAND;   break;
+        case Terrain_Spice:         color = PALCOLOR_SPICE;        break;
+        case Terrain_ThickSpice:    color = PALCOLOR_THICKSPICE;   break;
+        case Terrain_SpiceBloom:    color = PALCOLOR_RED;          break;
+        case Terrain_SpecialBloom:  color = PALCOLOR_RED;          break;
+        case Terrain_Slab:          color = PALCOLOR_DARKGREY;     break;
+        default:                   color = PALCOLOR_DARKGREY;     break;
     }
 
     return color;

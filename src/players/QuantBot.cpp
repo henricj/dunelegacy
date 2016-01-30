@@ -1971,7 +1971,7 @@ void QuantBot::scrambleUnitsAndDefend(const ObjectBase* pIntruder) {
                     if(pUnit->isVisible()
                         && blockDistance(pUnit->getLocation(), pUnit->getDestination()) >= 10
                         && pUnit->isAGroundUnit()
-                        && pUnit->getHealthColor() == COLOR_LIGHTGREEN) {
+                        && pUnit->getHealth() / pUnit->getMaxHealth() > BADLYDAMAGEDRATIO) {
 
                         const GroundUnit* pGroundUnit = dynamic_cast<const GroundUnit*>(pUnit);
 
@@ -2061,13 +2061,9 @@ void QuantBot::attack() {
             && pUnit->getItemID() != Unit_Carryall
             && pUnit->getItemID() != Unit_Ornithopter
             && pUnit->getItemID() != Unit_Deviator
-            && pUnit->getHealthColor() == COLOR_LIGHTGREEN
-            && (pUnit->getHealth() * 100) / pUnit->getMaxHealth() > 60
-
+            && pUnit->getHealth() / pUnit->getMaxHealth() > FixPt(0,6)
             /**
-
                 Only units within the squad should hunt, safety in numbers
-
             **/
             && blockDistance(pUnit->getLocation(), squadCenterLocation) < FixPoint::sqrt(getHouse()->getNumUnits()
                                                                                          - getHouse()->getNumItems(Unit_Harvester)

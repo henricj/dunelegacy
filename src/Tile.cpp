@@ -42,7 +42,7 @@ Tile::Tile() {
 		lastAccess[i] = 0;
 	}
 
-	fogColor = COLOR_BLACK;
+	fogColor = PALCOLOR_BLACK;
 
 	owner = INVALID;
 	sandRegion = NONE;
@@ -1001,16 +1001,16 @@ Uint32 Tile::getRadarColor(House* pHouse, bool radar) {
 			    int color;
 
 			    if(pObject->getItemID() == Unit_Sandworm) {
-					color = COLOR_WHITE;
+					color = PALCOLOR_WHITE;
 				} else {
                     switch(pObject->getOwner()->getHouseID()) {
-                        case HOUSE_HARKONNEN:   color = COLOR_HARKONNEN;  break;
-                        case HOUSE_ATREIDES:    color = COLOR_ATREIDES;   break;
-                        case HOUSE_ORDOS:       color = COLOR_ORDOS;      break;
-                        case HOUSE_FREMEN:      color = COLOR_FREMEN;     break;
-                        case HOUSE_SARDAUKAR:   color = COLOR_SARDAUKAR;  break;
-                        case HOUSE_MERCENARY:   color = COLOR_MERCENARY;  break;
-                        default:                color = COLOR_BLACK;      break;
+                        case HOUSE_HARKONNEN:   color = PALCOLOR_HARKONNEN;  break;
+                        case HOUSE_ATREIDES:    color = PALCOLOR_ATREIDES;   break;
+                        case HOUSE_ORDOS:       color = PALCOLOR_ORDOS;      break;
+                        case HOUSE_FREMEN:      color = PALCOLOR_FREMEN;     break;
+                        case HOUSE_SARDAUKAR:   color = PALCOLOR_SARDAUKAR;  break;
+                        case HOUSE_MERCENARY:   color = PALCOLOR_MERCENARY;  break;
+                        default:                color = PALCOLOR_BLACK;      break;
                     }
 				}
 
@@ -1022,7 +1022,7 @@ Uint32 Tile::getRadarColor(House* pHouse, bool radar) {
 
 				// units and structures of the enemy are not visible if no radar
 				if(!radar && !debug && (pObject->getOwner()->getTeam() != pHouse->getTeam())) {
-					return COLOR_BLACK;
+					return PALCOLOR_BLACK;
 				} else {
                     return color;
 				}
@@ -1030,14 +1030,14 @@ Uint32 Tile::getRadarColor(House* pHouse, bool radar) {
 			    fogColor = getColorByTerrainType(getType());
 
 				if(!radar && !debug) {
-					return COLOR_BLACK;
+					return PALCOLOR_BLACK;
 				} else {
                     return fogColor;
 				}
 			}
 		}
 	} else {
-		return COLOR_BLACK;
+		return PALCOLOR_BLACK;
 	}
 }
 

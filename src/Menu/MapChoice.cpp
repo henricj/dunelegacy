@@ -61,7 +61,7 @@ MapChoice::MapChoice(int newHouse, unsigned int LastMission) : MenuBase() {
         // create black rectangle
         mapSurface = copySurface(pGFXManager->getUIGraphic(UI_MapChoicePlanet));
         SDL_Rect dest = { 16, 48, 608, 240 };
-        SDL_FillRect(mapSurface, &dest, COLOR_BLACK);
+        SDL_FillRect(mapSurface, &dest, PALCOLOR_BLACK);
 
         mapChoiceState = MAPCHOICESTATE_FADEINPLANET;
 

@@ -604,7 +604,7 @@ SDL_Surface* DuneStyle::createProgressBarOverlay(Uint32 width, Uint32 height, do
 		if (!SDL_MUSTLOCK(pSurface) || (SDL_LockSurface(pSurface) == 0)) {
 			for (unsigned int i = 2; i < max_i + 2; i++) {
 				for (unsigned int j = (i % 2) + 2; j < height-2; j+=2) {
-					putPixel(pSurface, i, j, COLOR_BLACK);
+					putPixel(pSurface, i, j, PALCOLOR_BLACK);
 				}
 			}
 
@@ -627,7 +627,7 @@ SDL_Surface* DuneStyle::createToolTip(std::string text) {
 	SDL_Surface* surface;
 	SDL_Surface* helpTextSurface;
 
-	if((helpTextSurface = createSurfaceWithText(text.c_str(), COLOR_YELLOW, FONT_STD10)) == NULL) {
+	if((helpTextSurface = createSurfaceWithText(text.c_str(), PALCOLOR_YELLOW, FONT_STD10)) == NULL) {
 		return NULL;
 	}
 
@@ -638,8 +638,8 @@ SDL_Surface* DuneStyle::createToolTip(std::string text) {
 	}
 	palette.applyToSurface(surface);
 
-	SDL_FillRect(surface, NULL, COLOR_BLACK);
-	drawRect(surface, 0, 0, helpTextSurface->w + 4 - 1, helpTextSurface->h + 2 - 1, COLOR_YELLOW);
+	SDL_FillRect(surface, NULL, PALCOLOR_BLACK);
+	drawRect(surface, 0, 0, helpTextSurface->w + 4 - 1, helpTextSurface->h + 2 - 1, PALCOLOR_YELLOW);
 
 	SDL_Rect textRect = { 3, 3, static_cast<Uint16>(helpTextSurface->w), static_cast<Uint16>(helpTextSurface->h) };
 	SDL_BlitSurface(helpTextSurface, NULL, surface, &textRect);

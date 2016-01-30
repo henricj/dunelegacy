@@ -108,7 +108,7 @@ MapEditor::MapEditor() : pInterface(NULL) {
 
 	// setup windtrap color index
 	SDL_Color windtrapColor = { 192, 192, 192, 0};
-	SDL_SetPalette(screen, SDL_PHYSPAL, &windtrapColor, COLOR_WINDTRAP_COLORCYCLE, 1);
+	SDL_SetPalette(screen, SDL_PHYSPAL, &windtrapColor, PALCOLOR_WINDTRAP_COLORCYCLE, 1);
 
 	pInterface->onNew();
 }
@@ -1688,26 +1688,26 @@ void MapEditor::drawMap(SDL_Surface* pScreen, ScreenBorder* pScreenborder, bool 
             if(!SDL_MUSTLOCK(pScreen) || (SDL_LockSurface(pScreen) == 0)) {
                 // top left bit
                 for(int i=0;i<=currentZoomlevel;i++) {
-                    drawHLineNoLock(pScreen,selectionDest.x+i, selectionDest.y+i, selectionDest.x+(currentZoomlevel+1)*3, COLOR_WHITE);
-                    drawVLineNoLock(pScreen,selectionDest.x+i, selectionDest.y+i, selectionDest.y+(currentZoomlevel+1)*3, COLOR_WHITE);
+                    drawHLineNoLock(pScreen,selectionDest.x+i, selectionDest.y+i, selectionDest.x+(currentZoomlevel+1)*3, PALCOLOR_WHITE);
+                    drawVLineNoLock(pScreen,selectionDest.x+i, selectionDest.y+i, selectionDest.y+(currentZoomlevel+1)*3, PALCOLOR_WHITE);
                 }
 
                 // top right bit
                 for(int i=0;i<=currentZoomlevel;i++) {
-                    drawHLineNoLock(pScreen,selectionDest.x + selectionDest.w-1 - i, selectionDest.y+i, selectionDest.x + selectionDest.w-1 - (currentZoomlevel+1)*3, COLOR_WHITE);
-                    drawVLineNoLock(pScreen,selectionDest.x + selectionDest.w-1 - i, selectionDest.y+i, selectionDest.y+(currentZoomlevel+1)*3, COLOR_WHITE);
+                    drawHLineNoLock(pScreen,selectionDest.x + selectionDest.w-1 - i, selectionDest.y+i, selectionDest.x + selectionDest.w-1 - (currentZoomlevel+1)*3, PALCOLOR_WHITE);
+                    drawVLineNoLock(pScreen,selectionDest.x + selectionDest.w-1 - i, selectionDest.y+i, selectionDest.y+(currentZoomlevel+1)*3, PALCOLOR_WHITE);
                 }
 
                 // bottom left bit
                 for(int i=0;i<=currentZoomlevel;i++) {
-                    drawHLineNoLock(pScreen,selectionDest.x+i, selectionDest.y + selectionDest.h-1 - i, selectionDest.x+(currentZoomlevel+1)*3, COLOR_WHITE);
-                    drawVLineNoLock(pScreen,selectionDest.x+i, selectionDest.y + selectionDest.h-1 - i, selectionDest.y + selectionDest.h-1 - (currentZoomlevel+1)*3, COLOR_WHITE);
+                    drawHLineNoLock(pScreen,selectionDest.x+i, selectionDest.y + selectionDest.h-1 - i, selectionDest.x+(currentZoomlevel+1)*3, PALCOLOR_WHITE);
+                    drawVLineNoLock(pScreen,selectionDest.x+i, selectionDest.y + selectionDest.h-1 - i, selectionDest.y + selectionDest.h-1 - (currentZoomlevel+1)*3, PALCOLOR_WHITE);
                 }
 
                 // bottom right bit
                 for(int i=0;i<=currentZoomlevel;i++) {
-                    drawHLineNoLock(pScreen,selectionDest.x + selectionDest.w-1 - i, selectionDest.y + selectionDest.h-1 - i, selectionDest.x + selectionDest.w-1 - (currentZoomlevel+1)*3, COLOR_WHITE);
-                    drawVLineNoLock(pScreen,selectionDest.x + selectionDest.w-1 - i, selectionDest.y + selectionDest.h-1 - i, selectionDest.y + selectionDest.h-1 - (currentZoomlevel+1)*3, COLOR_WHITE);
+                    drawHLineNoLock(pScreen,selectionDest.x + selectionDest.w-1 - i, selectionDest.y + selectionDest.h-1 - i, selectionDest.x + selectionDest.w-1 - (currentZoomlevel+1)*3, PALCOLOR_WHITE);
+                    drawVLineNoLock(pScreen,selectionDest.x + selectionDest.w-1 - i, selectionDest.y + selectionDest.h-1 - i, selectionDest.y + selectionDest.h-1 - (currentZoomlevel+1)*3, PALCOLOR_WHITE);
                 }
 
                 if(SDL_MUSTLOCK(pScreen)) {
@@ -1858,7 +1858,7 @@ void MapEditor::drawMap(SDL_Surface* pScreen, ScreenBorder* pScreenborder, bool 
         dest.w = world2zoomedWorld(15*TILESIZE);
         dest.h = world2zoomedWorld(10*TILESIZE);
 
-        drawRect(pScreen, dest.x, dest.y, dest.x+dest.w, dest.y+dest.h, COLOR_DARKGREY);
+        drawRect(pScreen, dest.x, dest.y, dest.x+dest.w, dest.y+dest.h, PALCOLOR_DARKGREY);
 	}
 
     SDL_Surface* validPlace = NULL;
@@ -1915,26 +1915,26 @@ void MapEditor::drawMap(SDL_Surface* pScreen, ScreenBorder* pScreenborder, bool 
                 if(!SDL_MUSTLOCK(pScreen) || (SDL_LockSurface(pScreen) == 0)) {
                     // top left bit
                     for(int i=0;i<=currentZoomlevel;i++) {
-                        drawHLineNoLock(pScreen,dest.x+i, dest.y+i, dest.x+(currentZoomlevel+1)*3, COLOR_WHITE);
-                        drawVLineNoLock(pScreen,dest.x+i, dest.y+i, dest.y+(currentZoomlevel+1)*3, COLOR_WHITE);
+                        drawHLineNoLock(pScreen,dest.x+i, dest.y+i, dest.x+(currentZoomlevel+1)*3, PALCOLOR_WHITE);
+                        drawVLineNoLock(pScreen,dest.x+i, dest.y+i, dest.y+(currentZoomlevel+1)*3, PALCOLOR_WHITE);
                     }
 
                     // top right bit
                     for(int i=0;i<=currentZoomlevel;i++) {
-                        drawHLineNoLock(pScreen,dest.x + dest.w-1 - i, dest.y+i, dest.x + dest.w-1 - (currentZoomlevel+1)*3, COLOR_WHITE);
-                        drawVLineNoLock(pScreen,dest.x + dest.w-1 - i, dest.y+i, dest.y+(currentZoomlevel+1)*3, COLOR_WHITE);
+                        drawHLineNoLock(pScreen,dest.x + dest.w-1 - i, dest.y+i, dest.x + dest.w-1 - (currentZoomlevel+1)*3, PALCOLOR_WHITE);
+                        drawVLineNoLock(pScreen,dest.x + dest.w-1 - i, dest.y+i, dest.y+(currentZoomlevel+1)*3, PALCOLOR_WHITE);
                     }
 
                     // bottom left bit
                     for(int i=0;i<=currentZoomlevel;i++) {
-                        drawHLineNoLock(pScreen,dest.x+i, dest.y + dest.h-1 - i, dest.x+(currentZoomlevel+1)*3, COLOR_WHITE);
-                        drawVLineNoLock(pScreen,dest.x+i, dest.y + dest.h-1 - i, dest.y + dest.h-1 - (currentZoomlevel+1)*3, COLOR_WHITE);
+                        drawHLineNoLock(pScreen,dest.x+i, dest.y + dest.h-1 - i, dest.x+(currentZoomlevel+1)*3, PALCOLOR_WHITE);
+                        drawVLineNoLock(pScreen,dest.x+i, dest.y + dest.h-1 - i, dest.y + dest.h-1 - (currentZoomlevel+1)*3, PALCOLOR_WHITE);
                     }
 
                     // bottom right bit
                     for(int i=0;i<=currentZoomlevel;i++) {
-                        drawHLineNoLock(pScreen,dest.x + dest.w-1 - i, dest.y + dest.h-1 - i, dest.x + dest.w-1 - (currentZoomlevel+1)*3, COLOR_WHITE);
-                        drawVLineNoLock(pScreen,dest.x + dest.w-1 - i, dest.y + dest.h-1 - i, dest.y + dest.h-1 - (currentZoomlevel+1)*3, COLOR_WHITE);
+                        drawHLineNoLock(pScreen,dest.x + dest.w-1 - i, dest.y + dest.h-1 - i, dest.x + dest.w-1 - (currentZoomlevel+1)*3, PALCOLOR_WHITE);
+                        drawVLineNoLock(pScreen,dest.x + dest.w-1 - i, dest.y + dest.h-1 - i, dest.y + dest.h-1 - (currentZoomlevel+1)*3, PALCOLOR_WHITE);
                     }
 
                     if(SDL_MUSTLOCK(pScreen)) {
@@ -2000,7 +2000,7 @@ void MapEditor::drawMap(SDL_Surface* pScreen, ScreenBorder* pScreenborder, bool 
 
                 SDL_Rect dest = {   static_cast<Sint16>(pScreenborder->world2screenX(xPos*TILESIZE)), static_cast<Sint16>(pScreenborder->world2screenY(yPos*TILESIZE)),
                                     static_cast<Uint16>(world2zoomedWorld(15*TILESIZE)), static_cast<Uint16>(world2zoomedWorld(10*TILESIZE)) };
-                drawRect(pScreen, dest.x, dest.y, dest.x+dest.w, dest.y+dest.h, COLOR_WHITE);
+                drawRect(pScreen, dest.x, dest.y, dest.x+dest.w, dest.y+dest.h, PALCOLOR_WHITE);
             }
         }
     }
@@ -2079,7 +2079,7 @@ void MapEditor::saveMapshot() {
     drawMap(pMapshotSurface, &tmpScreenborder, true);
 
     // set windtrap color to grey
-    replaceColor(pMapshotSurface, COLOR_WINDTRAP_COLORCYCLE, COLOR_LIGHTGREY);
+    replaceColor(pMapshotSurface, PALCOLOR_WINDTRAP_COLORCYCLE, PALCOLOR_LIGHTGREY);
 
     SDL_SaveBMP(pMapshotSurface, mapshotFilename.c_str());
 

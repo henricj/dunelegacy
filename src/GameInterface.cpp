@@ -126,7 +126,7 @@ void GameInterface::draw(SDL_Surface* screen, Point position) {
 		for (yCount = 0; yCount < yCount2; yCount++) {
 			for (xCount = 1; xCount < PowerIndicatorPos.w - 1; xCount++) {
 				if(((yCount/2) % 3) != 0) {
-					putPixel(screen, xCount + PowerIndicatorPos.x, PowerIndicatorPos.y + PowerIndicatorPos.h - yCount, COLOR_GREEN);
+					putPixel(screen, xCount + PowerIndicatorPos.x, PowerIndicatorPos.y + PowerIndicatorPos.h - yCount, PALCOLOR_GREEN);
 				}
 			}
 		}
@@ -145,7 +145,7 @@ void GameInterface::draw(SDL_Surface* screen, Point position) {
 		for (yCount = 0; yCount < yCount2; yCount++) {
 			for (xCount = 1; xCount < SpiceIndicatorPos.w - 1; xCount++) {
 				if(((yCount/2) % 3) != 0) {
-					putPixel(screen, xCount + SpiceIndicatorPos.x, SpiceIndicatorPos.y + SpiceIndicatorPos.h - yCount, COLOR_ORANGE);
+					putPixel(screen, xCount + SpiceIndicatorPos.x, SpiceIndicatorPos.y + SpiceIndicatorPos.h - yCount, PALCOLOR_ORANGE);
 				}
 			}
 		}

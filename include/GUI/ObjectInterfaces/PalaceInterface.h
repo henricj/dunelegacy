@@ -46,7 +46,7 @@ protected:
 		weaponBox.addWidget(&weaponSelectButton,Point((SIDEBARWIDTH - 25 - pSurface->w)/2,5),
 									Point(pSurface->w, pSurface->h));
 
-		SDL_Surface* pText = pFontManager->createSurfaceWithText(_("READY"), COLOR_WHITE, FONT_STD10);
+		SDL_Surface* pText = pFontManager->createSurfaceWithText(_("READY"), PALCOLOR_WHITE, FONT_STD10);
 
 
 		SDL_Surface* pReady = SDL_CreateRGBSurface(SDL_HWSURFACE,pSurface->w,pSurface->h,8,0,0,0,0);

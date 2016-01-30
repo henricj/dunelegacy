@@ -141,7 +141,7 @@ Finale::Finale(int house)
 
             addVideoEvent(new WSAVideoEvent(pImperator));
             addVideoEvent(new HoldPictureVideoEvent(pImperator->getPicture(pImperator->getNumFrames()-1), 3, true));
-            addTextEvent(new TextEvent(pIntroText->getString(FinaleText_What_lies_What_are),2,100,false,true,false,COLOR_SARDAUKAR+1));
+            addTextEvent(new TextEvent(pIntroText->getString(FinaleText_What_lies_What_are),2,100,false,true,false,PALCOLOR_SARDAUKAR+1));
 
             startNewScene();
 
@@ -161,7 +161,7 @@ Finale::Finale(int house)
             addVideoEvent(new WSAVideoEvent(pPalace2));
             addVideoEvent(new HoldPictureVideoEvent(pPalace2->getPicture(pPalace2->getNumFrames()-1), 15, true));
             addVideoEvent(new FadeOutVideoEvent(pPalace2->getPicture(pPalace2->getNumFrames()-1), 20, true));
-            addTextEvent(new TextEvent(pIntroText->getString(FinaleText_NO_NO_NOOO),10,30,false,true,false,COLOR_SARDAUKAR+1));
+            addTextEvent(new TextEvent(pIntroText->getString(FinaleText_NO_NO_NOOO),10,30,false,true,false,PALCOLOR_SARDAUKAR+1));
             addTrigger(new CutSceneSoundTrigger(10,click));
             addTrigger(new CutSceneSoundTrigger(15,blaster));
             addTrigger(new CutSceneSoundTrigger(17,blowup));
@@ -184,7 +184,7 @@ Finale::Finale(int house)
 
             addVideoEvent(new WSAVideoEvent(pImperator));
             addVideoEvent(new HoldPictureVideoEvent(pImperator->getPicture(pImperator->getNumFrames()-1), 3, true));
-            addTextEvent(new TextEvent(pIntroText->getString(FinaleText_What_is_the_meaning),2,100,false,false,false,COLOR_SARDAUKAR+1));
+            addTextEvent(new TextEvent(pIntroText->getString(FinaleText_What_is_the_meaning),2,100,false,false,false,PALCOLOR_SARDAUKAR+1));
 
             startNewScene();
 
@@ -220,7 +220,7 @@ Finale::Finale(int house)
 
             addVideoEvent(new WSAVideoEvent(pImperator));
             addVideoEvent(new HoldPictureVideoEvent(pImperator->getPicture(pImperator->getNumFrames()-1), 3, true));
-            addTextEvent(new TextEvent(pIntroText->getString(FinaleText_What_games_What_are_you),2,100,false,true,false,COLOR_SARDAUKAR+1));
+            addTextEvent(new TextEvent(pIntroText->getString(FinaleText_What_games_What_are_you),2,100,false,true,false,PALCOLOR_SARDAUKAR+1));
 
             startNewScene();
 

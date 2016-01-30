@@ -238,9 +238,9 @@ Intro::Intro() : CutScene() {
     addVideoEvent(new WSAVideoEvent(pImperator));
     addVideoEvent(new HoldPictureVideoEvent(pImperator->getPicture(pImperator->getNumFrames()-1), 15, true));
     addVideoEvent(new FadeOutVideoEvent(pImperator->getPicture(pImperator->getNumFrames()-1), 20, true));
-    addTextEvent(new TextEvent(pIntroText->getString(IntroText_The_House_that_produces),0,52,true,true,false,COLOR_SARDAUKAR+1));
-    addTextEvent(new TextEvent(pIntroText->getString(IntroText_There_are_no_set_territories),68,30,true,true,false,COLOR_SARDAUKAR+1));
-    addTextEvent(new TextEvent(pIntroText->getString(IntroText_And_no_rules_of_engagement),99,30,true,true,false,COLOR_SARDAUKAR+1));
+    addTextEvent(new TextEvent(pIntroText->getString(IntroText_The_House_that_produces),0,52,true,true,false,PALCOLOR_SARDAUKAR+1));
+    addTextEvent(new TextEvent(pIntroText->getString(IntroText_There_are_no_set_territories),68,30,true,true,false,PALCOLOR_SARDAUKAR+1));
+    addTextEvent(new TextEvent(pIntroText->getString(IntroText_And_no_rules_of_engagement),99,30,true,true,false,PALCOLOR_SARDAUKAR+1));
     if(bEnableVoice) addTrigger(new CutSceneSoundTrigger(8,voice[Voice_The_House]));
     if(bEnableVoice) addTrigger(new CutSceneSoundTrigger(14,voice[Voice_that_produces]));
     if(bEnableVoice) addTrigger(new CutSceneSoundTrigger(20,voice[Voice_the_most_spice]));

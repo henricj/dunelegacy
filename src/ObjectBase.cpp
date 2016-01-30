@@ -364,11 +364,11 @@ int ObjectBase::getHealthColor() const {
 	FixPoint healthPercent = health/getMaxHealth();
 
 	if(healthPercent >= BADLYDAMAGEDRATIO) {
-		return COLOR_LIGHTGREEN;
+		return PALCOLOR_LIGHTGREEN;
 	} else if(healthPercent >= HEAVILYDAMAGEDRATIO) {
-		return COLOR_YELLOW;
+		return PALCOLOR_YELLOW;
 	} else {
-		return COLOR_RED;
+		return PALCOLOR_RED;
 	}
 }
 

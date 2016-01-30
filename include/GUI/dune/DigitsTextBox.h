@@ -203,14 +203,14 @@ private:
         SDL_Surface* surfPressed;
         SDL_Surface* surfActive;
 
-        surf = mapSurfaceColorRange(pGFXManager->getUIGraphic(UI_Plus), COLOR_HARKONNEN, color-2);
-        surfPressed =  mapSurfaceColorRange(pGFXManager->getUIGraphic(UI_Plus_Pressed), COLOR_HARKONNEN, color-2);
-        surfActive =  mapSurfaceColorRange(pGFXManager->getUIGraphic(UI_Plus), COLOR_HARKONNEN, color-4);
+        surf = mapSurfaceColorRange(pGFXManager->getUIGraphic(UI_Plus), PALCOLOR_HARKONNEN, color-2);
+        surfPressed =  mapSurfaceColorRange(pGFXManager->getUIGraphic(UI_Plus_Pressed), PALCOLOR_HARKONNEN, color-2);
+        surfActive =  mapSurfaceColorRange(pGFXManager->getUIGraphic(UI_Plus), PALCOLOR_HARKONNEN, color-4);
         plusButton.setSurfaces(surf,true,surfPressed,true,surfActive,true);
 
-        surf = mapSurfaceColorRange(pGFXManager->getUIGraphic(UI_Minus), COLOR_HARKONNEN, color-2);
-        surfPressed = mapSurfaceColorRange(pGFXManager->getUIGraphic(UI_Minus_Pressed), COLOR_HARKONNEN, color-2);
-        surfActive =  mapSurfaceColorRange(pGFXManager->getUIGraphic(UI_Minus), COLOR_HARKONNEN, color-4);
+        surf = mapSurfaceColorRange(pGFXManager->getUIGraphic(UI_Minus), PALCOLOR_HARKONNEN, color-2);
+        surfPressed = mapSurfaceColorRange(pGFXManager->getUIGraphic(UI_Minus_Pressed), PALCOLOR_HARKONNEN, color-2);
+        surfActive =  mapSurfaceColorRange(pGFXManager->getUIGraphic(UI_Minus), PALCOLOR_HARKONNEN, color-4);
         minusButton.setSurfaces(surf,true,surfPressed,true,surfActive,true);
     }
 

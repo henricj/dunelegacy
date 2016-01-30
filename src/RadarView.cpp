@@ -112,7 +112,7 @@ void RadarView::draw(SDL_Surface* screen, Point position)
                         radarPosition.y + RadarRect.y,
                         radarPosition.x + (RadarRect.x + RadarRect.w),
                         radarPosition.y + (RadarRect.y + RadarRect.h),
-                        COLOR_WHITE);
+                        PALCOLOR_WHITE);
 
         } break;
 

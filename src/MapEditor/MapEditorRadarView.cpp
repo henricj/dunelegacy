@@ -100,13 +100,13 @@ void MapEditorRadarView::draw(SDL_Surface* screen, Point position)
                 radarPosition.y + radarRect.y,
                 radarPosition.x + (radarRect.x + radarRect.w),
                 radarPosition.y + (radarRect.y + radarRect.h),
-                COLOR_WHITE);
+                PALCOLOR_WHITE);
 
 }
 
 void MapEditorRadarView::updateRadarSurface(const MapData& map, int scale, int offsetX, int offsetY) {
 
-    SDL_FillRect(radarSurface, NULL, COLOR_BLACK);
+    SDL_FillRect(radarSurface, NULL, PALCOLOR_BLACK);
 
     // Lock the surface for direct access to the pixels
     if(!SDL_MUSTLOCK(radarSurface) || (SDL_LockSurface(radarSurface) == 0)) {
@@ -116,16 +116,16 @@ void MapEditorRadarView::updateRadarSurface(const MapData& map, int scale, int o
                 Uint32 color;
 
 				switch(map(x,y)) {
-					case Terrain_Dunes:         color = COLOR_DESERTSAND;   break;
-					case Terrain_Mountain:      color = COLOR_MOUNTAIN;		break;
-					case Terrain_Rock:		    color = COLOR_DARKGREY;		break;
-					case Terrain_Sand:		    color = COLOR_DESERTSAND;	break;
-					case Terrain_Spice:		    color = COLOR_SPICE;		break;
-					case Terrain_ThickSpice:    color = COLOR_THICKSPICE;	break;
-					case Terrain_SpiceBloom:    color = COLOR_RED;          break;
-					case Terrain_SpecialBloom:	color = COLOR_RED;			break;
-                    case Terrain_Slab:			color = COLOR_DARKGREY;     break;
-                    default:                    color = COLOR_DARKGREY;     break;
+					case Terrain_Dunes:         color = PALCOLOR_DESERTSAND;   break;
+					case Terrain_Mountain:      color = PALCOLOR_MOUNTAIN;		break;
+					case Terrain_Rock:		    color = PALCOLOR_DARKGREY;		break;
+					case Terrain_Sand:		    color = PALCOLOR_DESERTSAND;	break;
+					case Terrain_Spice:		    color = PALCOLOR_SPICE;		break;
+					case Terrain_ThickSpice:    color = PALCOLOR_THICKSPICE;	break;
+					case Terrain_SpiceBloom:    color = PALCOLOR_RED;          break;
+					case Terrain_SpecialBloom:	color = PALCOLOR_RED;			break;
+                    case Terrain_Slab:			color = PALCOLOR_DARKGREY;     break;
+                    default:                    color = PALCOLOR_DARKGREY;     break;
 				};
 
 
@@ -134,10 +134,10 @@ void MapEditorRadarView::updateRadarSurface(const MapData& map, int scale, int o
 
                     for(size_t i = 0; i < spiceFields.size(); i++) {
                         if(spiceFields[i].x == x && spiceFields[i].y == y) {
-                            color = COLOR_THICKSPICE;
+                            color = PALCOLOR_THICKSPICE;
                             break;
                         } else if(distanceFrom(spiceFields[i], Coord(x,y)) <= 5) {
-                            color = COLOR_SPICE;
+                            color = PALCOLOR_SPICE;
                             break;
                         }
                     }
@@ -147,7 +147,7 @@ void MapEditorRadarView::updateRadarSurface(const MapData& map, int scale, int o
                 std::vector<Coord>& spiceBlooms = pMapEditor->getSpiceBlooms();
                 for(size_t i = 0; i < spiceBlooms.size(); i++) {
                     if(spiceBlooms[i].x == x && spiceBlooms[i].y == y) {
-                        color = COLOR_RED;
+                        color = PALCOLOR_RED;
                         break;
                     }
                 }
@@ -157,7 +157,7 @@ void MapEditorRadarView::updateRadarSurface(const MapData& map, int scale, int o
                 std::vector<Coord>& specialBlooms = pMapEditor->getSpecialBlooms();
                 for(size_t i = 0; i < specialBlooms.size(); i++) {
                     if(specialBlooms[i].x == x && specialBlooms[i].y == y) {
-                        color = COLOR_RED;
+                        color = PALCOLOR_RED;
                         break;
                     }
                 }

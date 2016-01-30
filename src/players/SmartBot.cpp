@@ -177,7 +177,7 @@ void SmartBot::scrambleUnitsAndDefend(const ObjectBase* pIntruder) {
                         if(pUnit->isVisible()
                             && blockDistance(pUnit->getLocation(), pUnit->getDestination()) >= 10
                             && pUnit->isAGroundUnit()
-                            && pUnit->getHealthColor() == COLOR_LIGHTGREEN) {
+                            && pUnit->getHealth() / pUnit->getMaxHealth() > BADLYDAMAGEDRATIO) {
 
                             const GroundUnit* pGroundUnit = dynamic_cast<const GroundUnit*>(pUnit);
 
