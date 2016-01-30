@@ -18,7 +18,7 @@
 #ifndef DEFINITIONS_H
 #define DEFINITIONS_H
 
-#define SCREEN_BPP			8
+#define SCREEN_BPP			32
 #define SCREEN_MIN_WIDTH	640
 #define SCREEN_MIN_HEIGHT	480
 

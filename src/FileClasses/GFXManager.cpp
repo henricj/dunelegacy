@@ -433,23 +433,6 @@ GFXManager::GFXManager() {
     objPic[ObjPic_Star][HOUSE_HARKONNEN][1] = SDL_LoadBMP_RW(pFileManager->openFile("Star7x7.bmp"),true);
     objPic[ObjPic_Star][HOUSE_HARKONNEN][2] = SDL_LoadBMP_RW(pFileManager->openFile("Star11x11.bmp"),true);
 
-    for(int i = 0; i < NUM_OBJPICS; i++) {
-		for(int j = 0; j < (int) NUM_HOUSES; j++) {
-		    for(int z=0; z < NUM_ZOOMLEVEL; z++) {
-                if(objPic[i][j][z] != NULL) {
-                    SDL_SetColorKey(objPic[i][j][z], SDL_SRCCOLORKEY | SDL_RLEACCEL, 0);
-                    SDL_Surface* tmp;
-                    tmp = objPic[i][j][z];
-                    if((objPic[i][j][z] = SDL_DisplayFormat(tmp)) == NULL) {
-                        fprintf(stderr,"GFXManager: SDL_DisplayFormat() failed!\n");
-                        exit(EXIT_FAILURE);
-                    }
-                    SDL_FreeSurface(tmp);
-                }
-		    }
-		}
-	}
-
 
 
 	// load small detail pics
@@ -502,17 +485,6 @@ GFXManager::GFXManager() {
 	smallDetailPic[Picture_WOR] = extractSmallDetailPic("WOR.WSA");
 	// unused: FARTR.WSA, FHARK.WSA, FORDOS.WSA
 
-	for(int i = 0; i < NUM_SMALLDETAILPICS; i++) {
-		if(smallDetailPic[i] != NULL) {
-			SDL_Surface* tmp;
-			tmp = smallDetailPic[i];
-			if((smallDetailPic[i] = SDL_DisplayFormat(tmp)) == NULL) {
-				fprintf(stderr,"GFXManager: SDL_DisplayFormat() failed!\n");
-				exit(EXIT_FAILURE);
-			}
-			SDL_FreeSurface(tmp);
-		}
-	}
 
 
 	// load UI graphics
@@ -880,19 +852,6 @@ GFXManager::GFXManager() {
     uiGraphic[UI_MapEditor_Pen5x5][HOUSE_HARKONNEN] = SDL_LoadBMP_RW(pFileManager->openFile("MapEditorPen5x5.bmp"),true);
 	SDL_SetColorKey(uiGraphic[UI_MapEditor_Pen5x5][HOUSE_HARKONNEN], SDL_SRCCOLORKEY | SDL_RLEACCEL, 0);
 
-	for(int i = 0; i < NUM_UIGRAPHICS; i++) {
-		for(int j = 0; j < (int) NUM_HOUSES; j++) {
-			if(uiGraphic[i][j] != NULL) {
-				SDL_Surface* tmp;
-				tmp = uiGraphic[i][j];
-				if((uiGraphic[i][j] = SDL_DisplayFormat(tmp)) == NULL) {
-					fprintf(stderr,"GFXManager: SDL_DisplayFormat() failed!\n");
-					exit(EXIT_FAILURE);
-				}
-				SDL_FreeSurface(tmp);
-			}
-		}
-	}
 
 
 	// load animations
@@ -966,6 +925,53 @@ GFXManager::GFXManager() {
 
 	pTransparent150Surface = SDL_CreateRGBSurface(SDL_HWSURFACE,128,128,32,0,0,0,0);
     SDL_SetAlpha(pTransparent150Surface, SDL_SRCALPHA, 150);
+
+
+
+    // Convert everything to display format
+
+    for(int i = 0; i < NUM_OBJPICS; i++) {
+		for(int j = 0; j < (int) NUM_HOUSES; j++) {
+		    for(int z=0; z < NUM_ZOOMLEVEL; z++) {
+                if(objPic[i][j][z] != NULL) {
+                    SDL_SetColorKey(objPic[i][j][z], SDL_SRCCOLORKEY | SDL_RLEACCEL, 0);
+                    SDL_Surface* tmp;
+                    tmp = objPic[i][j][z];
+                    if((objPic[i][j][z] = SDL_DisplayFormat(tmp)) == NULL) {
+                        fprintf(stderr,"GFXManager: SDL_DisplayFormat() failed!\n");
+                        exit(EXIT_FAILURE);
+                    }
+                    SDL_FreeSurface(tmp);
+                }
+		    }
+		}
+	}
+
+	for(int i = 0; i < NUM_SMALLDETAILPICS; i++) {
+		if(smallDetailPic[i] != NULL) {
+			SDL_Surface* tmp;
+			tmp = smallDetailPic[i];
+			if((smallDetailPic[i] = SDL_DisplayFormat(tmp)) == NULL) {
+				fprintf(stderr,"GFXManager: SDL_DisplayFormat() failed!\n");
+				exit(EXIT_FAILURE);
+			}
+			SDL_FreeSurface(tmp);
+		}
+	}
+
+    for(int i = 0; i < NUM_UIGRAPHICS; i++) {
+		for(int j = 0; j < (int) NUM_HOUSES; j++) {
+			if(uiGraphic[i][j] != NULL) {
+				SDL_Surface* tmp;
+				tmp = uiGraphic[i][j];
+				if((uiGraphic[i][j] = SDL_DisplayFormat(tmp)) == NULL) {
+					fprintf(stderr,"GFXManager: SDL_DisplayFormat() failed!\n");
+					exit(EXIT_FAILURE);
+				}
+				SDL_FreeSurface(tmp);
+			}
+		}
+	}
 }
 
 GFXManager::~GFXManager() {

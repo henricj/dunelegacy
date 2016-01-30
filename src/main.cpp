@@ -89,13 +89,13 @@ void setVideoMode()
 		videoFlags |= SDL_FULLSCREEN;
 	}
 
-    if(SDL_VideoModeOK(settings.video.width, settings.video.height, 8, videoFlags) == 0) {
+    if(SDL_VideoModeOK(settings.video.width, settings.video.height, SCREEN_BPP, videoFlags) == 0) {
         // should always work
         fprintf(stderr, "WARNING: Falling back to 640x480!\n");
         settings.video.width = 640;
         settings.video.height = 480;
 
-        if(SDL_VideoModeOK(settings.video.width, settings.video.height, 8, videoFlags) == 0) {
+        if(SDL_VideoModeOK(settings.video.width, settings.video.height, SCREEN_BPP, videoFlags) == 0) {
             // OK, now we switch double buffering, hw-surface and fullscreen off
             fprintf(stderr, "WARNING: Turning off double buffering, hw-surface and fullscreen!\n");
             settings.video.doubleBuffering = false;
@@ -533,7 +533,7 @@ int main(int argc, char *argv[]) {
 
 		if(bFirstGamestart == true && bFirstInit == true) {
             // detect 800x600 screen resolution
-            if(SDL_VideoModeOK(800, 600, 8, SDL_HWSURFACE | SDL_FULLSCREEN) > 0) {
+            if(SDL_VideoModeOK(800, 600, SCREEN_BPP, SDL_HWSURFACE | SDL_FULLSCREEN) > 0) {
                 settings.video.width = 800;
                 settings.video.height = 600;
                 settings.video.preferredZoomLevel = 1;
