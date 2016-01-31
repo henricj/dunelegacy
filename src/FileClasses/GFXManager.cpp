@@ -486,6 +486,8 @@ GFXManager::GFXManager() {
 	// unused: FARTR.WSA, FHARK.WSA, FORDOS.WSA
 
 
+    // pBackgroundSurface is separate as we never draw it but use it to construct other sprites
+	pBackgroundSurface = PicFactory->createBackground();
 
 	// load UI graphics
 	uiGraphic[UI_RadarAnimation][HOUSE_HARKONNEN] = Scaler::doubleSurfaceNN(radar->getAnimationAsPictureRow());
@@ -556,7 +558,6 @@ GFXManager::GFXManager() {
 	uiGraphic[UI_GreyPlace_Zoomlevel1][HOUSE_HARKONNEN] = PicFactory->createPlacingGrid(32, PALCOLOR_LIGHTGREY);
     uiGraphic[UI_GreyPlace_Zoomlevel2][HOUSE_HARKONNEN] = PicFactory->createPlacingGrid(48, PALCOLOR_LIGHTGREY);
 	uiGraphic[UI_MenuBackground][HOUSE_HARKONNEN] = PicFactory->createMainBackground();
-	uiGraphic[UI_Background][HOUSE_HARKONNEN] = PicFactory->createBackground();
 	uiGraphic[UI_GameStatsBackground][HOUSE_HARKONNEN] = PicFactory->createGameStatsBackground(HOUSE_HARKONNEN);
     uiGraphic[UI_GameStatsBackground][HOUSE_ATREIDES] = PicFactory->createGameStatsBackground(HOUSE_ATREIDES);
     uiGraphic[UI_GameStatsBackground][HOUSE_ORDOS] = PicFactory->createGameStatsBackground(HOUSE_ORDOS);
@@ -992,6 +993,10 @@ GFXManager::~GFXManager() {
 				smallDetailPic[i] = NULL;
 		}
 	}
+
+	if(pBackgroundSurface != NULL) {
+        SDL_FreeSurface(pBackgroundSurface);
+    }
 
 	for(int i = 0; i < NUM_UIGRAPHICS; i++) {
 		for(int j = 0; j < (int) NUM_HOUSES; j++) {

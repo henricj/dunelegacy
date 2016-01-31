@@ -653,7 +653,7 @@ SDL_Surface* DuneStyle::createToolTip(std::string text) {
 SDL_Surface* DuneStyle::createBackground(Uint32 width, Uint32 height) {
 	SDL_Surface* pSurface;
 	if(pGFXManager != NULL) {
-		pSurface = getSubPicture(pGFXManager->getUIGraphic(UI_Background), 0, 0, width, height);
+		pSurface = getSubPicture(pGFXManager->getBackgroundSurface(), 0, 0, width, height);
 		if(pSurface == NULL) {
 			return NULL;
 		}

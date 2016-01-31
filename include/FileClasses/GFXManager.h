@@ -203,7 +203,6 @@ typedef enum {
 	UI_GreyPlace_Zoomlevel1,
 	UI_GreyPlace_Zoomlevel2,
 	UI_MenuBackground,
-	UI_Background,
 	UI_GameStatsBackground,
 	UI_SelectionBox_Zoomlevel0,
     UI_SelectionBox_Zoomlevel1,
@@ -447,6 +446,7 @@ public:
 
 	SDL_Surface*    getTransparent40Surface() { return pTransparent40Surface; };
 	SDL_Surface*    getTransparent150Surface() { return pTransparent150Surface; };
+	SDL_Surface*    getBackgroundSurface() { return pBackgroundSurface; };
 
 	Animation*		getAnimation(unsigned int id);
 
@@ -467,6 +467,7 @@ private:
 
 	SDL_Surface*    pTransparent40Surface;
 	SDL_Surface*    pTransparent150Surface;
+	SDL_Surface*    pBackgroundSurface;
 };
 
 #endif // GFXMANAGER_H
