@@ -610,7 +610,7 @@ void Game::drawScreen()
                   screenborder->world2screenY(selectionRect.y),
                   finalMouseX,
                   mouse_y,
-                  PALCOLOR_WHITE);
+                  COLOR_WHITE);
 	}
 
 

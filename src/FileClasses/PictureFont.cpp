@@ -94,6 +94,8 @@ PictureFont::~PictureFont()
 void PictureFont::drawTextOnSurface(SDL_Surface* pSurface, std::string text, unsigned char baseColor) {
 	SDL_LockSurface(pSurface);
 
+	int bpp = pSurface->format->BytesPerPixel;
+
 	int curXPos = 0;
 	const unsigned char* pText = (unsigned char*) text.c_str();
 	while(*pText != '\0') {
@@ -104,7 +106,33 @@ void PictureFont::drawTextOnSurface(SDL_Surface* pSurface, std::string text, uns
 			for(int x = 0; x < character[index].width; x++) {
 				char color = character[index].data[y*character[index].width+x];
 				if(color != 0) {
-					*(((char*) pSurface->pixels) + y*pSurface->pitch + x + curXPos) = baseColor;
+                    Uint8 *pixel = (Uint8 *)pSurface->pixels + y * pSurface->pitch + (x+curXPos) * bpp;
+
+                    switch(bpp) {
+                        case 1:
+                            *pixel = baseColor;
+                            break;
+
+                        case 2:
+                            *(Uint16 *)pixel = baseColor;
+                            break;
+
+                        case 3:
+                            if(SDL_BYTEORDER == SDL_BIG_ENDIAN) {
+                                pixel[0] = (baseColor>> 16) & 0xff;
+                                pixel[1] = (baseColor>> 8) & 0xff;
+                                pixel[2] = baseColor& 0xff;
+                            } else {
+                                pixel[0] = baseColor& 0xff;
+                                pixel[1] = (baseColor>> 8) & 0xff;
+                                pixel[2] = (baseColor>> 16) & 0xff;
+                            }
+                            break;
+
+                        case 4:
+                            *(Uint32 *)pixel = baseColor;
+                            break;
+                    }
 				}
 
 			}

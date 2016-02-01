@@ -83,6 +83,7 @@
 #define HUMANPLAYERCLASS        "HumanPlayer"
 #define DEFAULTAIPLAYERCLASS    "qBotCampaignEasy"  //Stefan: updated to use my campaign AI
 
+// Palette color indices
 #define PALCOLOR_TRANSPARENT 0
 #define PALCOLOR_BLACK 12
 #define PALCOLOR_DARKGREY 13
@@ -111,5 +112,17 @@
 #define PALCOLOR_FREMEN 192
 #define PALCOLOR_SARDAUKAR 208
 #define PALCOLOR_MERCENARY 224
+
+// Colors
+#define RGB(r,g,b) (SDL_MapRGB(screen->format, r, g, b))
+
+#define COLOR_BLACK RGB(0,0,0)
+#define COLOR_WHITE RGB(255,255,255)
+#define COLOR_LIGHTBLUE RGB(85,255,255)
+#define COLOR_RED RGB(240,0,0)
+#define COLOR_YELLOW RGB(255,255,0)
+#define COLOR_LIGHTGREEN RGB(85,255,85)
+#define COLOR_GREEN RGB(0,170,0)
+#define COLOR_ORANGE RGB(255,68,0)
 
 #endif //DEFINITIONS_H

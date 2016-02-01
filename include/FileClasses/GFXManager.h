@@ -444,6 +444,9 @@ public:
 	SDL_Surface*	getMapChoicePiece(unsigned int num, int house);
 	SDL_Surface*	getMapChoiceArrow(unsigned int num);
 
+
+	SDL_Surface*	getUIGraphicSurface(unsigned int id, int house=HOUSE_HARKONNEN);
+	SDL_Surface*	getMapChoicePieceSurface(unsigned int num, int house);
 	SDL_Surface*    getTransparent40Surface() { return pTransparent40Surface; };
 	SDL_Surface*    getTransparent150Surface() { return pTransparent150Surface; };
 	SDL_Surface*    getBackgroundSurface() { return pBackgroundSurface; };
@@ -458,16 +461,23 @@ private:
 
 	SDL_Surface*	extractSmallDetailPic(std::string filename);
 
+    // 8-bit surfaces kept in main memory for processing as needed, e.g. color remapping
 	SDL_Surface*	objPic[NUM_OBJPICS][(int) NUM_HOUSES][NUM_ZOOMLEVEL];
-	SDL_Surface*	smallDetailPic[NUM_SMALLDETAILPICS];
 	SDL_Surface*	uiGraphic[NUM_UIGRAPHICS][(int) NUM_HOUSES];
 	SDL_Surface*	mapChoicePieces[NUM_MAPCHOICEPIECES][(int) NUM_HOUSES];
-	SDL_Surface*	mapChoiceArrows[NUM_MAPCHOICEARROWS];
 	Animation*		animation[NUM_ANIMATION];
 
 	SDL_Surface*    pTransparent40Surface;
 	SDL_Surface*    pTransparent150Surface;
 	SDL_Surface*    pBackgroundSurface;
+
+	// Textures
+	SDL_Surface*	objPicTex[NUM_OBJPICS][(int) NUM_HOUSES][NUM_ZOOMLEVEL];
+	SDL_Surface*	smallDetailPicTex[NUM_SMALLDETAILPICS];
+	SDL_Surface*	uiGraphicTex[NUM_UIGRAPHICS][(int) NUM_HOUSES];
+	SDL_Surface*	mapChoicePiecesTex[NUM_MAPCHOICEPIECES][(int) NUM_HOUSES];
+	SDL_Surface*	mapChoiceArrowTex[NUM_MAPCHOICEARROWS];
+
 };
 
 #endif // GFXMANAGER_H

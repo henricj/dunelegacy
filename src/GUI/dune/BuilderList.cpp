@@ -192,7 +192,7 @@ void BuilderList::draw(SDL_Surface* screen, Point position) {
                                 static_cast<Sint16>(position.y + ARROWBTN_HEIGHT + BUILDERBTN_SPACING),
                                 static_cast<Uint16>(getSize().x),
                                 static_cast<Uint16>(getRealHeight(getSize().y) - 2*(ARROWBTN_HEIGHT + BUILDERBTN_SPACING) - BUILDERBTN_SPACING - ORDERBTN_HEIGHT) };
-	SDL_FillRect(screen, &blackRectDest, PALCOLOR_BLACK);
+	SDL_FillRect(screen, &blackRectDest, COLOR_BLACK);
 
     BuilderBase* pBuilder = dynamic_cast<BuilderBase*>(currentGame->getObjectManager().getObject(builderObjectID));
 	if(pBuilder != NULL) {
@@ -269,7 +269,7 @@ void BuilderList::draw(SDL_Surface* screen, Point position) {
 						if(!SDL_MUSTLOCK(screen) || (SDL_LockSurface(screen) == 0)) {
 							for(int x = 0; x < BUILDERBTN_WIDTH; x++) {
 								for(int y = (x % 2); y < BUILDERBTN_HEIGHT; y+=2) {
-									putPixel(screen, x+dest.x, y+dest.y, PALCOLOR_BLACK);
+									putPixel(screen, x+dest.x, y+dest.y, COLOR_BLACK);
 								}
 							}
 
@@ -293,7 +293,7 @@ void BuilderList::draw(SDL_Surface* screen, Point position) {
                     if(!SDL_MUSTLOCK(screen) || (SDL_LockSurface(screen) == 0)) {
                         for(int x = 0; x < BUILDERBTN_WIDTH; x++) {
                             for(int y = (x % 2); y < BUILDERBTN_HEIGHT; y+=2) {
-                                putPixel(screen, x+dest.x, y+dest.y, PALCOLOR_BLACK);
+                                putPixel(screen, x+dest.x, y+dest.y, COLOR_BLACK);
                             }
                         }
 

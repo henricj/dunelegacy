@@ -36,37 +36,40 @@
 using std::shared_ptr;
 
 GFXManager::GFXManager() {
-	// init whole ObjPic array
+	// init whole objPic and objPicTex arrays
 	for(int i = 0; i < NUM_OBJPICS; i++) {
 		for(int j = 0; j < (int) NUM_HOUSES; j++) {
 		    for(int z=0; z < NUM_ZOOMLEVEL; z++) {
                 objPic[i][j][z] = NULL;
+                objPicTex[i][j][z] = NULL;
 		    }
 		}
 	}
 
-	// init whole SmallDetailPics array
+	// init whole smallDetailPicTex array
 	for(int i = 0; i < NUM_SMALLDETAILPICS; i++) {
-		smallDetailPic[i] = NULL;
+		smallDetailPicTex[i] = NULL;
 	}
 
 	// init whole UIGraphic array
 	for(int i = 0; i < NUM_UIGRAPHICS; i++) {
 		for(int j = 0; j < (int) NUM_HOUSES; j++) {
 			uiGraphic[i][j] = NULL;
+			uiGraphicTex[i][j] = NULL;
 		}
 	}
 
-	// init whole MapChoicePieces array
+	// init whole mapChoicePieces and mapChoicePiecesTex array
 	for(int i = 0; i < NUM_MAPCHOICEPIECES; i++) {
 		for(int j = 0; j < (int) NUM_HOUSES; j++) {
 			mapChoicePieces[i][j] = NULL;
+			mapChoicePiecesTex[i][j] = NULL;
 		}
 	}
 
-	// init whole MapChoiceArrows array
+	// init whole mapChoiceArrowTex array
 	for(int i = 0; i < NUM_MAPCHOICEARROWS; i++) {
-		mapChoiceArrows[i] = NULL;
+		mapChoiceArrowTex[i] = NULL;
 	}
 
 	// init whole Anim array
@@ -433,56 +436,65 @@ GFXManager::GFXManager() {
     objPic[ObjPic_Star][HOUSE_HARKONNEN][1] = SDL_LoadBMP_RW(pFileManager->openFile("Star7x7.bmp"),true);
     objPic[ObjPic_Star][HOUSE_HARKONNEN][2] = SDL_LoadBMP_RW(pFileManager->openFile("Star11x11.bmp"),true);
 
-
+    // apply color key
+    for(int i = 0; i < NUM_OBJPICS; i++) {
+		for(int j = 0; j < (int) NUM_HOUSES; j++) {
+		    for(int z=0; z < NUM_ZOOMLEVEL; z++) {
+                if(objPic[i][j][z] != NULL) {
+                    SDL_SetColorKey(objPic[i][j][z], SDL_SRCCOLORKEY | SDL_RLEACCEL, 0);
+                }
+		    }
+		}
+	}
 
 	// load small detail pics
-	smallDetailPic[Picture_Barracks] = extractSmallDetailPic("BARRAC.WSA");
-	smallDetailPic[Picture_ConstructionYard] = extractSmallDetailPic("CONSTRUC.WSA");
-	smallDetailPic[Picture_Carryall] = extractSmallDetailPic("CARRYALL.WSA");
-	smallDetailPic[Picture_Devastator] = extractSmallDetailPic("HARKTANK.WSA");
-	smallDetailPic[Picture_Deviator] = extractSmallDetailPic("ORDRTANK.WSA");
-	smallDetailPic[Picture_DeathHand] = extractSmallDetailPic("GOLD-BB.WSA");
-	smallDetailPic[Picture_Fremen] = extractSmallDetailPic("FREMEN.WSA");
+	smallDetailPicTex[Picture_Barracks] = extractSmallDetailPic("BARRAC.WSA");
+	smallDetailPicTex[Picture_ConstructionYard] = extractSmallDetailPic("CONSTRUC.WSA");
+	smallDetailPicTex[Picture_Carryall] = extractSmallDetailPic("CARRYALL.WSA");
+	smallDetailPicTex[Picture_Devastator] = extractSmallDetailPic("HARKTANK.WSA");
+	smallDetailPicTex[Picture_Deviator] = extractSmallDetailPic("ORDRTANK.WSA");
+	smallDetailPicTex[Picture_DeathHand] = extractSmallDetailPic("GOLD-BB.WSA");
+	smallDetailPicTex[Picture_Fremen] = extractSmallDetailPic("FREMEN.WSA");
 	if(pFileManager->exists("FRIGATE.WSA")) {
-        smallDetailPic[Picture_Frigate] = extractSmallDetailPic("FRIGATE.WSA");
+        smallDetailPicTex[Picture_Frigate] = extractSmallDetailPic("FRIGATE.WSA");
 	} else {
 	    // US-Version 1.07 does not contain FRIGATE.WSA
         // We replace it with the starport
-        smallDetailPic[Picture_Frigate] = extractSmallDetailPic("STARPORT.WSA");
+        smallDetailPicTex[Picture_Frigate] = extractSmallDetailPic("STARPORT.WSA");
 	}
-	smallDetailPic[Picture_GunTurret] = extractSmallDetailPic("TURRET.WSA");
-	smallDetailPic[Picture_Harvester] = extractSmallDetailPic("HARVEST.WSA");
-	smallDetailPic[Picture_HeavyFactory] = extractSmallDetailPic("HVYFTRY.WSA");
-	smallDetailPic[Picture_HighTechFactory] = extractSmallDetailPic("HITCFTRY.WSA");
-	smallDetailPic[Picture_Soldier] = extractSmallDetailPic("INFANTRY.WSA");
-	smallDetailPic[Picture_IX] = extractSmallDetailPic("IX.WSA");
-	smallDetailPic[Picture_Launcher] = extractSmallDetailPic("RTANK.WSA");
-	smallDetailPic[Picture_LightFactory] = extractSmallDetailPic("LITEFTRY.WSA");
-	smallDetailPic[Picture_MCV] = extractSmallDetailPic("MCV.WSA");
-	smallDetailPic[Picture_Ornithopter] = extractSmallDetailPic("ORNI.WSA");
-	smallDetailPic[Picture_Palace] = extractSmallDetailPic("PALACE.WSA");
-	smallDetailPic[Picture_Quad] = extractSmallDetailPic("QUAD.WSA");
-	smallDetailPic[Picture_Radar] = extractSmallDetailPic("HEADQRTS.WSA");
-	smallDetailPic[Picture_RaiderTrike] = extractSmallDetailPic("OTRIKE.WSA");
-	smallDetailPic[Picture_Refinery] = extractSmallDetailPic("REFINERY.WSA");
-	smallDetailPic[Picture_RepairYard] = extractSmallDetailPic("REPAIR.WSA");
-	smallDetailPic[Picture_RocketTurret] = extractSmallDetailPic("RTURRET.WSA");
-	smallDetailPic[Picture_Saboteur] = extractSmallDetailPic("SABOTURE.WSA");
-	smallDetailPic[Picture_Sandworm] = extractSmallDetailPic("WORM.WSA");
-	smallDetailPic[Picture_Sardaukar] = extractSmallDetailPic("SARDUKAR.WSA");
-	smallDetailPic[Picture_SiegeTank] = extractSmallDetailPic("HTANK.WSA");
-	smallDetailPic[Picture_Silo] = extractSmallDetailPic("STORAGE.WSA");
-	smallDetailPic[Picture_Slab1] = extractSmallDetailPic("SLAB.WSA");
-	smallDetailPic[Picture_Slab4] = extractSmallDetailPic("4SLAB.WSA");
-	smallDetailPic[Picture_SonicTank] = extractSmallDetailPic("STANK.WSA");
-    smallDetailPic[Picture_Special]	= NULL;
-	smallDetailPic[Picture_StarPort] = extractSmallDetailPic("STARPORT.WSA");
-	smallDetailPic[Picture_Tank] = extractSmallDetailPic("LTANK.WSA");
-	smallDetailPic[Picture_Trike] = extractSmallDetailPic("TRIKE.WSA");
-	smallDetailPic[Picture_Trooper] = extractSmallDetailPic("HYINFY.WSA");
-	smallDetailPic[Picture_Wall] = extractSmallDetailPic("WALL.WSA");
-	smallDetailPic[Picture_WindTrap] = extractSmallDetailPic("WINDTRAP.WSA");
-	smallDetailPic[Picture_WOR] = extractSmallDetailPic("WOR.WSA");
+	smallDetailPicTex[Picture_GunTurret] = extractSmallDetailPic("TURRET.WSA");
+	smallDetailPicTex[Picture_Harvester] = extractSmallDetailPic("HARVEST.WSA");
+	smallDetailPicTex[Picture_HeavyFactory] = extractSmallDetailPic("HVYFTRY.WSA");
+	smallDetailPicTex[Picture_HighTechFactory] = extractSmallDetailPic("HITCFTRY.WSA");
+	smallDetailPicTex[Picture_Soldier] = extractSmallDetailPic("INFANTRY.WSA");
+	smallDetailPicTex[Picture_IX] = extractSmallDetailPic("IX.WSA");
+	smallDetailPicTex[Picture_Launcher] = extractSmallDetailPic("RTANK.WSA");
+	smallDetailPicTex[Picture_LightFactory] = extractSmallDetailPic("LITEFTRY.WSA");
+	smallDetailPicTex[Picture_MCV] = extractSmallDetailPic("MCV.WSA");
+	smallDetailPicTex[Picture_Ornithopter] = extractSmallDetailPic("ORNI.WSA");
+	smallDetailPicTex[Picture_Palace] = extractSmallDetailPic("PALACE.WSA");
+	smallDetailPicTex[Picture_Quad] = extractSmallDetailPic("QUAD.WSA");
+	smallDetailPicTex[Picture_Radar] = extractSmallDetailPic("HEADQRTS.WSA");
+	smallDetailPicTex[Picture_RaiderTrike] = extractSmallDetailPic("OTRIKE.WSA");
+	smallDetailPicTex[Picture_Refinery] = extractSmallDetailPic("REFINERY.WSA");
+	smallDetailPicTex[Picture_RepairYard] = extractSmallDetailPic("REPAIR.WSA");
+	smallDetailPicTex[Picture_RocketTurret] = extractSmallDetailPic("RTURRET.WSA");
+	smallDetailPicTex[Picture_Saboteur] = extractSmallDetailPic("SABOTURE.WSA");
+	smallDetailPicTex[Picture_Sandworm] = extractSmallDetailPic("WORM.WSA");
+	smallDetailPicTex[Picture_Sardaukar] = extractSmallDetailPic("SARDUKAR.WSA");
+	smallDetailPicTex[Picture_SiegeTank] = extractSmallDetailPic("HTANK.WSA");
+	smallDetailPicTex[Picture_Silo] = extractSmallDetailPic("STORAGE.WSA");
+	smallDetailPicTex[Picture_Slab1] = extractSmallDetailPic("SLAB.WSA");
+	smallDetailPicTex[Picture_Slab4] = extractSmallDetailPic("4SLAB.WSA");
+	smallDetailPicTex[Picture_SonicTank] = extractSmallDetailPic("STANK.WSA");
+    smallDetailPicTex[Picture_Special]	= NULL;
+	smallDetailPicTex[Picture_StarPort] = extractSmallDetailPic("STARPORT.WSA");
+	smallDetailPicTex[Picture_Tank] = extractSmallDetailPic("LTANK.WSA");
+	smallDetailPicTex[Picture_Trike] = extractSmallDetailPic("TRIKE.WSA");
+	smallDetailPicTex[Picture_Trooper] = extractSmallDetailPic("HYINFY.WSA");
+	smallDetailPicTex[Picture_Wall] = extractSmallDetailPic("WALL.WSA");
+	smallDetailPicTex[Picture_WindTrap] = extractSmallDetailPic("WINDTRAP.WSA");
+	smallDetailPicTex[Picture_WOR] = extractSmallDetailPic("WOR.WSA");
 	// unused: FARTR.WSA, FHARK.WSA, FORDOS.WSA
 
 
@@ -910,12 +922,16 @@ GFXManager::GFXManager() {
 		SDL_SetColorKey(mapChoicePieces[i][HOUSE_HARKONNEN], SDL_SRCCOLORKEY | SDL_RLEACCEL, 0);
 	}
 
-
-
 	// load map choice arrows
 	for(int i = 0; i < NUM_MAPCHOICEARROWS; i++) {
-		mapChoiceArrows[i] = Scaler::defaultDoubleSurface(arrows->getPicture(i),true);
-		SDL_SetColorKey(mapChoiceArrows[i], SDL_SRCCOLORKEY | SDL_RLEACCEL, 0);
+		SDL_Surface* tmp = Scaler::defaultDoubleSurface(arrows->getPicture(i),true);
+		SDL_SetColorKey(tmp, SDL_SRCCOLORKEY | SDL_RLEACCEL, 0);
+
+		if((mapChoiceArrowTex[i] = SDL_DisplayFormat(tmp)) == NULL) {
+            fprintf(stderr,"GFXManager: SDL_DisplayFormat() failed!\n");
+            exit(EXIT_FAILURE);
+        }
+        SDL_FreeSurface(tmp);
 	}
 
 
@@ -931,45 +947,13 @@ GFXManager::GFXManager() {
 
     // Convert everything to display format
 
-    for(int i = 0; i < NUM_OBJPICS; i++) {
-		for(int j = 0; j < (int) NUM_HOUSES; j++) {
-		    for(int z=0; z < NUM_ZOOMLEVEL; z++) {
-                if(objPic[i][j][z] != NULL) {
-                    SDL_SetColorKey(objPic[i][j][z], SDL_SRCCOLORKEY | SDL_RLEACCEL, 0);
-                    SDL_Surface* tmp;
-                    tmp = objPic[i][j][z];
-                    if((objPic[i][j][z] = SDL_DisplayFormat(tmp)) == NULL) {
-                        fprintf(stderr,"GFXManager: SDL_DisplayFormat() failed!\n");
-                        exit(EXIT_FAILURE);
-                    }
-                    SDL_FreeSurface(tmp);
-                }
-		    }
-		}
-	}
-
-	for(int i = 0; i < NUM_SMALLDETAILPICS; i++) {
-		if(smallDetailPic[i] != NULL) {
-			SDL_Surface* tmp;
-			tmp = smallDetailPic[i];
-			if((smallDetailPic[i] = SDL_DisplayFormat(tmp)) == NULL) {
-				fprintf(stderr,"GFXManager: SDL_DisplayFormat() failed!\n");
-				exit(EXIT_FAILURE);
-			}
-			SDL_FreeSurface(tmp);
-		}
-	}
-
     for(int i = 0; i < NUM_UIGRAPHICS; i++) {
 		for(int j = 0; j < (int) NUM_HOUSES; j++) {
 			if(uiGraphic[i][j] != NULL) {
-				SDL_Surface* tmp;
-				tmp = uiGraphic[i][j];
-				if((uiGraphic[i][j] = SDL_DisplayFormat(tmp)) == NULL) {
+				if((uiGraphicTex[i][j] = SDL_DisplayFormat(uiGraphic[i][j])) == NULL) {
 					fprintf(stderr,"GFXManager: SDL_DisplayFormat() failed!\n");
 					exit(EXIT_FAILURE);
 				}
-				SDL_FreeSurface(tmp);
 			}
 		}
 	}
@@ -983,14 +967,18 @@ GFXManager::~GFXManager() {
                     SDL_FreeSurface(objPic[i][j][z]);
                     objPic[i][j][z] = NULL;
                 }
+                if(objPicTex[i][j][z] != NULL) {
+                    SDL_FreeSurface(objPicTex[i][j][z]);
+                    objPicTex[i][j][z] = NULL;
+                }
             }
 		}
 	}
 
 	for(int i = 0; i < NUM_SMALLDETAILPICS; i++) {
-		if(smallDetailPic[i] != NULL) {
-				SDL_FreeSurface(smallDetailPic[i]);
-				smallDetailPic[i] = NULL;
+		if(smallDetailPicTex[i] != NULL) {
+            SDL_FreeSurface(smallDetailPicTex[i]);
+            smallDetailPicTex[i] = NULL;
 		}
 	}
 
@@ -1001,8 +989,12 @@ GFXManager::~GFXManager() {
 	for(int i = 0; i < NUM_UIGRAPHICS; i++) {
 		for(int j = 0; j < (int) NUM_HOUSES; j++) {
 			if(uiGraphic[i][j] != NULL) {
-					SDL_FreeSurface(uiGraphic[i][j]);
-					uiGraphic[i][j] = NULL;
+                SDL_FreeSurface(uiGraphic[i][j]);
+                uiGraphic[i][j] = NULL;
+			}
+			if(uiGraphicTex[i][j] != NULL) {
+                SDL_FreeSurface(uiGraphicTex[i][j]);
+                uiGraphicTex[i][j] = NULL;
 			}
 		}
 	}
@@ -1010,23 +1002,27 @@ GFXManager::~GFXManager() {
 	for(int i = 0; i < NUM_MAPCHOICEPIECES; i++) {
 		for(int j = 0; j < (int) NUM_HOUSES; j++) {
 			if(mapChoicePieces[i][j] != NULL) {
-					SDL_FreeSurface(mapChoicePieces[i][j]);
-					mapChoicePieces[i][j] = NULL;
+                SDL_FreeSurface(mapChoicePieces[i][j]);
+                mapChoicePieces[i][j] = NULL;
+			}
+			if(mapChoicePiecesTex[i][j] != NULL) {
+                SDL_FreeSurface(mapChoicePiecesTex[i][j]);
+                mapChoicePiecesTex[i][j] = NULL;
 			}
 		}
 	}
 
 	for(int i = 0; i < NUM_MAPCHOICEARROWS; i++) {
-		if(mapChoiceArrows[i] != NULL) {
-				SDL_FreeSurface(mapChoiceArrows[i]);
-				mapChoiceArrows[i] = NULL;
+		if(mapChoiceArrowTex[i] != NULL) {
+            SDL_FreeSurface(mapChoiceArrowTex[i]);
+            mapChoiceArrowTex[i] = NULL;
 		}
 	}
 
 	for(int i = 0; i < NUM_ANIMATION; i++) {
 		if(animation[i] != NULL) {
-				delete animation[i];
-				animation[i] = NULL;
+            delete animation[i];
+            animation[i] = NULL;
 		}
 	}
 
@@ -1050,9 +1046,17 @@ SDL_Surface** GFXManager::getObjPic(unsigned int id, int house) {
 
             objPic[id][house][z] = mapSurfaceColorRange(objPic[id][HOUSE_HARKONNEN][z], PALCOLOR_HARKONNEN, houseColor[house]);
         }
+
+        if(objPicTex[id][house][z] == NULL) {
+            // now convert to display format
+            if((objPicTex[id][house][z] = SDL_DisplayFormatAlpha(objPic[id][house][z])) == NULL) {
+                fprintf(stderr,"GFXManager::getObjPic(): Converting to display format failed!\n");
+                exit(EXIT_FAILURE);
+            }
+        }
     }
 
-	return objPic[id][house];
+	return objPicTex[id][house];
 }
 
 
@@ -1060,20 +1064,20 @@ SDL_Surface* GFXManager::getSmallDetailPic(unsigned int id) {
 	if(id >= NUM_SMALLDETAILPICS) {
 		return NULL;
 	}
-	return smallDetailPic[id];
+	return smallDetailPicTex[id];
 }
 
 
-SDL_Surface* GFXManager::getUIGraphic(unsigned int id, int house) {
+SDL_Surface* GFXManager::getUIGraphicSurface(unsigned int id, int house) {
 	if(id >= NUM_UIGRAPHICS) {
-		fprintf(stderr,"GFXManager::getUIGraphic(): UI Graphic with id %d is not available!\n",id);
+		fprintf(stderr,"GFXManager::getUIGraphicSurface(): UI Graphic with id %d is not available!\n",id);
 		exit(EXIT_FAILURE);
 	}
 
 	if(uiGraphic[id][house] == NULL) {
 		// remap to this color
 		if(uiGraphic[id][HOUSE_HARKONNEN] == NULL) {
-			fprintf(stderr,"GFXManager::getUIGraphic(): UI Graphic with id %d is not loaded!\n",id);
+			fprintf(stderr,"GFXManager::getUIGraphicSurface(): UI Graphic with id %d is not loaded!\n",id);
 			exit(EXIT_FAILURE);
 		}
 
@@ -1083,16 +1087,33 @@ SDL_Surface* GFXManager::getUIGraphic(unsigned int id, int house) {
 	return uiGraphic[id][house];
 }
 
-SDL_Surface* GFXManager::getMapChoicePiece(unsigned int num, int house) {
+SDL_Surface* GFXManager::getUIGraphic(unsigned int id, int house) {
+	if(id >= NUM_UIGRAPHICS) {
+		fprintf(stderr,"GFXManager::getUIGraphic(): UI Graphic with id %d is not available!\n",id);
+		exit(EXIT_FAILURE);
+	}
+
+	if(uiGraphicTex[id][house] == NULL) {
+        uiGraphicTex[id][house] = SDL_DisplayFormatAlpha(getUIGraphicSurface(id, house));
+        if(uiGraphicTex[id][house] == NULL) {
+            fprintf(stderr,"GFXManager::getUIGraphic(): Converting to display format failed!\n");
+            exit(EXIT_FAILURE);
+        }
+	}
+
+	return uiGraphicTex[id][house];
+}
+
+SDL_Surface* GFXManager::getMapChoicePieceSurface(unsigned int num, int house) {
 	if(num >= NUM_MAPCHOICEPIECES) {
-		fprintf(stderr,"GFXManager::getMapChoicePiece(): Map Piece with number %d is not available!\n",num);
+		fprintf(stderr,"GFXManager::getMapChoicePieceSurface(): Map Piece with number %d is not available!\n",num);
 		exit(EXIT_FAILURE);
 	}
 
 	if(mapChoicePieces[num][house] == NULL) {
 		// remap to this color
 		if(mapChoicePieces[num][HOUSE_HARKONNEN] == NULL) {
-			fprintf(stderr,"GFXManager::getMapChoicePiece(): Map Piece with number %d is not loaded!\n",num);
+			fprintf(stderr,"GFXManager::getMapChoicePieceSurface(): Map Piece with number %d is not loaded!\n",num);
 			exit(EXIT_FAILURE);
 		}
 
@@ -1102,13 +1123,30 @@ SDL_Surface* GFXManager::getMapChoicePiece(unsigned int num, int house) {
 	return mapChoicePieces[num][house];
 }
 
+SDL_Surface* GFXManager::getMapChoicePiece(unsigned int num, int house) {
+	if(num >= NUM_MAPCHOICEPIECES) {
+		fprintf(stderr,"GFXManager::getMapChoicePiece(): Map Piece with number %d is not available!\n",num);
+		exit(EXIT_FAILURE);
+	}
+
+	if(mapChoicePiecesTex[num][house] == NULL) {
+		mapChoicePiecesTex[num][house] = SDL_DisplayFormatAlpha(getMapChoicePieceSurface(num, house));
+        if(mapChoicePiecesTex[num][house] == NULL) {
+            fprintf(stderr,"GFXManager::getMapChoicePiece(): Converting to display format failed!\n");
+            exit(EXIT_FAILURE);
+        }
+	}
+
+	return mapChoicePiecesTex[num][house];
+}
+
 SDL_Surface* GFXManager::getMapChoiceArrow(unsigned int num) {
 	if(num >= NUM_MAPCHOICEARROWS) {
 		fprintf(stderr,"GFXManager::getMapChoiceArrow(): Arrow number %d is not available!\n",num);
 		exit(EXIT_FAILURE);
 	}
 
-	return mapChoiceArrows[num];
+	return mapChoiceArrowTex[num];
 }
 
 Animation* GFXManager::getAnimation(unsigned int id) {
@@ -1260,34 +1298,41 @@ SDL_Surface* GFXManager::extractSmallDetailPic(std::string filename) {
 		exit(EXIT_FAILURE);
 	}
 
-	SDL_Surface* returnPic;
+	SDL_Surface* pSurface;
 
 	// create new picture surface
-	if((returnPic = SDL_CreateRGBSurface(SDL_HWSURFACE,91,55,8,0,0,0,0))== NULL) {
+	if((pSurface = SDL_CreateRGBSurface(SDL_HWSURFACE,91,55,8,0,0,0,0))== NULL) {
 		fprintf(stderr,"GFXManager::ExtractSmallDetailPic: Cannot create new Picture for %s!\n",filename.c_str());
 		exit(EXIT_FAILURE);
 	}
 
-	palette.applyToSurface(returnPic);
-	SDL_LockSurface(returnPic);
+	palette.applyToSurface(pSurface);
+	SDL_LockSurface(pSurface);
 	SDL_LockSurface(tmp);
 
 	//Now we can copy pixel by pixel
 	for(int y = 0; y < 55;y++) {
 		for(int x = 0; x < 91; x++) {
-			*( ((char*) (returnPic->pixels)) + y*returnPic->pitch + x)
+			*( ((char*) (pSurface->pixels)) + y*pSurface->pitch + x)
 				= *( ((char*) (tmp->pixels)) + ((y*2)+1)*tmp->pitch + (x*2)+1);
 		}
 	}
 
 	SDL_UnlockSurface(tmp);
-	SDL_UnlockSurface(returnPic);
+	SDL_UnlockSurface(pSurface);
 
 	SDL_FreeSurface(tmp);
 	delete myWsafile;
 	SDL_RWclose(myFile);
 
-	return returnPic;
+	SDL_Surface* pTexture = SDL_DisplayFormatAlpha(pSurface);
+    if(pTexture == NULL) {
+        fprintf(stderr,"GFXManager::extractSmallDetailPic() SDL_DisplayFormat() failed!\n");
+        exit(EXIT_FAILURE);
+	}
+	SDL_FreeSurface(pSurface);
+
+	return pTexture;
 }
 
 Animation* GFXManager::loadAnimationFromWsa(std::string filename) {

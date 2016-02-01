@@ -192,7 +192,7 @@ void InfantryBase::checkPos() {
 
             if(blockDistance(location, closestPoint) <= FixPt(0,5)) {
                 StructureBase* pCapturedStructure = target.getStructurePointer();
-                if(pCapturedStructure->getHealthColor() == PALCOLOR_RED) {
+                if(pCapturedStructure->getHealthColor() == COLOR_RED) {
                     House* pOwner = pCapturedStructure->getOwner();
                     int targetID = pCapturedStructure->getItemID();
                     int posX = pCapturedStructure->getX();

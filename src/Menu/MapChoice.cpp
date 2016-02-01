@@ -59,7 +59,7 @@ MapChoice::MapChoice(int newHouse, unsigned int LastMission) : MenuBase() {
 
     if(lastScenario == 1) {
         // create black rectangle
-        mapSurface = copySurface(pGFXManager->getUIGraphic(UI_MapChoicePlanet));
+        mapSurface = copySurface(pGFXManager->getUIGraphicSurface(UI_MapChoicePlanet));
         SDL_Rect dest = { 16, 48, 608, 240 };
         SDL_FillRect(mapSurface, &dest, PALCOLOR_BLACK);
 
@@ -187,7 +187,7 @@ void MapChoice::drawSpecificStuff() {
                 if((curHouse2Blit < NUM_HOUSES)&&(curRegion2Blit < group[lastScenario].newRegion[(curHouse2Blit + house) % NUM_HOUSES].size())) {
                     // there is still some region to blend in
                     int pieceNum = (group[lastScenario].newRegion[(curHouse2Blit + house) % NUM_HOUSES])[curRegion2Blit];
-                    SDL_Surface* PieceSurface = pGFXManager->getMapChoicePiece(pieceNum,(curHouse2Blit + house) % NUM_HOUSES);
+                    SDL_Surface* PieceSurface = pGFXManager->getMapChoicePieceSurface(pieceNum,(curHouse2Blit + house) % NUM_HOUSES);
                     SDL_Rect dest = {	static_cast<Sint16>(piecePosition[pieceNum].x),static_cast<Sint16>(piecePosition[pieceNum].y),
                                         static_cast<Uint16>(PieceSurface->w), static_cast<Uint16>(PieceSurface->h)};
                     curBlendBlitter = new BlendBlitter(PieceSurface,mapSurface,dest);
@@ -316,7 +316,7 @@ void MapChoice::createMapSurfaceWithPieces() {
 	}
 
 	// Load map surface
-	mapSurface = copySurface(pGFXManager->getUIGraphic(UI_MapChoiceMap));
+	mapSurface = copySurface(pGFXManager->getUIGraphicSurface(UI_MapChoiceMap));
 
 	for(unsigned int s = 1; s < lastScenario; s++) {
 		for(unsigned int h = 0; h < NUM_HOUSES; h++) {
