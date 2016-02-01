@@ -344,9 +344,9 @@ public:
 
     /**
 		Sets the color for this drop down box.
-		\param	color   the color (-1 = default color)
+		\param	color   the color (COLOR_DEFAULT = default color)
 	*/
-	virtual inline void setColor(int color) {
+	virtual inline void setColor(Uint32 color) {
 		this->color = color;
 		updateButtonSurface();
 		invalidateForeground();
@@ -442,7 +442,7 @@ private:
 
     int numVisibleEntries;                          ///< the number of entries visible when the list is opened (default=7)
 
-    int color;				                        ///< the color
+    Uint32 color;				                    ///< the color
     bool bHover;						            ///< true = currenlty mouse hover, false = currently no mouse hover
 };
 

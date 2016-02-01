@@ -36,7 +36,7 @@
 class DigitsTextBox : public HBox {
 
 public:
-    DigitsTextBox() : color(-1) {
+    DigitsTextBox() : color(COLOR_DEFAULT) {
         minValue = std::numeric_limits<int>::min();
         maxValue = std::numeric_limits<int>::max();
 
@@ -69,10 +69,10 @@ public:
 
     /**
        Sets the text color for this text box.
-       \param	textcolor	    the color of the text (-1 = default color)
-       \param	textshadowcolor	the color of the shadow of the text (-1 = default color)
+       \param	textcolor	    the color of the text (COLOR_DEFAULT = default color)
+       \param	textshadowcolor	the color of the shadow of the text (COLOR_DEFAULT = default color)
 	*/
-	virtual inline void setTextColor(int textcolor, int textshadowcolor = -1) {
+	virtual inline void setTextColor(Uint32 textcolor, Uint32 textshadowcolor = COLOR_DEFAULT) {
 	    color = textcolor;
 	    updateSurfaces();
 		textBox.setTextColor(textcolor, textshadowcolor);
@@ -227,7 +227,7 @@ private:
 
 	int             incrementValue;
 
-	int color;
+	Uint32 color;
 };
 
 

@@ -30,8 +30,8 @@ class RadioButton : public Button {
 public:
 	/// Default constructor
 	RadioButton() : Button() {
-        textcolor = -1;
-	    textshadowcolor = -1;
+        textcolor = COLOR_DEFAULT;
+	    textshadowcolor = COLOR_DEFAULT;
 
 		enableResizing(true,false);
 		setToggleButton(true);
@@ -91,10 +91,10 @@ public:
 
     /**
 		Sets the text color for this radio button.
-		\param	textcolor	    the color of the text (-1 = default color)
-        \param	textshadowcolor	the color of the shadow of the text (-1 = default color)
+		\param	textcolor	    the color of the text (COLOR_DEFAULT = default color)
+        \param	textshadowcolor	the color of the shadow of the text (COLOR_DEFAULT = default color)
 	*/
-	virtual inline void setTextColor(int textcolor, int textshadowcolor = -1) {
+	virtual inline void setTextColor(Uint32 textcolor, Uint32 textshadowcolor = COLOR_DEFAULT) {
 		this->textcolor = textcolor;
 		this->textshadowcolor = textshadowcolor;
 		resize(getSize().x, getSize().y);
@@ -201,8 +201,8 @@ public:
 	}
 
 private:
-    int textcolor;                          ///< Text color
-    int textshadowcolor;                    ///< Text shadow color
+    Uint32 textcolor;                       ///< Text color
+    Uint32 textshadowcolor;                 ///< Text shadow color
 	std::string text;		                ///< Text of this radio button
 	SDL_Surface* pCheckedActiveSurface;		///< Surface that is shown when the radio button is activated by keyboard or by mouse hover
 	bool bFreeCheckedActiveSurface;			///< Should pActiveSurface be freed if this button is destroyed?

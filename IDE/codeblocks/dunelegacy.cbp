@@ -39,6 +39,7 @@
 		<Unit filename="../../include/AStarSearch.h" />
 		<Unit filename="../../include/Bullet.h" />
 		<Unit filename="../../include/Choam.h" />
+		<Unit filename="../../include/Colors.h" />
 		<Unit filename="../../include/Command.h" />
 		<Unit filename="../../include/CommandManager.h" />
 		<Unit filename="../../include/ConcatIterator.h" />

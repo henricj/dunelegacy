@@ -41,11 +41,11 @@ public:
 	FontManager();
 	~FontManager();
 
-	void drawTextOnSurface(SDL_Surface* pSurface, std::string text, unsigned char color, unsigned int fontNum);
+	void drawTextOnSurface(SDL_Surface* pSurface, std::string text, Uint32 color, unsigned int fontNum);
 	int	getTextWidth(std::string text, unsigned int fontNum);
 	int getTextHeight(unsigned int fontNum);
-	SDL_Surface* createSurfaceWithText(std::string text, unsigned char color, unsigned int fontNum);
-	SDL_Surface* createSurfaceWithMultilineText(std::string text, unsigned char color, unsigned int fontNum, bool bCentered = false);
+	SDL_Surface* createSurfaceWithText(std::string text, Uint32 color, unsigned int fontNum);
+	SDL_Surface* createSurfaceWithMultilineText(std::string text, Uint32 color, unsigned int fontNum, bool bCentered = false);
 private:
 	std::shared_ptr<Font> fonts[NUM_FONTS];
 

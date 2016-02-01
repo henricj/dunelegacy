@@ -360,7 +360,7 @@ bool ObjectBase::isVisible() const {
     return false;
 }
 
-int ObjectBase::getHealthColor() const {
+Uint32 ObjectBase::getHealthColor() const {
 	FixPoint healthPercent = health/getMaxHealth();
 
 	if(healthPercent >= BADLYDAMAGEDRATIO) {

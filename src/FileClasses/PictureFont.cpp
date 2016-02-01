@@ -91,7 +91,7 @@ PictureFont::~PictureFont()
 
 
 
-void PictureFont::drawTextOnSurface(SDL_Surface* pSurface, std::string text, unsigned char baseColor) {
+void PictureFont::drawTextOnSurface(SDL_Surface* pSurface, std::string text, Uint32 baseColor) {
 	SDL_LockSurface(pSurface);
 
 	int bpp = pSurface->format->BytesPerPixel;

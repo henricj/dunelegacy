@@ -20,7 +20,7 @@
 
 extern FontManager* pFontManager;
 
-TextEvent::TextEvent(std::string text, int startFrame, int lengthInFrames, bool bFadeIn, bool bFadeOut, bool bCenterVertical, unsigned char color)
+TextEvent::TextEvent(std::string text, int startFrame, int lengthInFrames, bool bFadeIn, bool bFadeOut, bool bCenterVertical, Uint32 color)
 {
     this->text = text;
     this->startFrame = startFrame;

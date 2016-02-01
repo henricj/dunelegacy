@@ -30,8 +30,8 @@ class TextButton : public Button {
 public:
 	/// Default contructor
 	TextButton() : Button() {
-	    textcolor = -1;
-	    textshadowcolor = -1;
+	    textcolor = COLOR_DEFAULT;
+	    textshadowcolor = COLOR_DEFAULT;
 
 		enableResizing(true,true);
 	}
@@ -58,10 +58,10 @@ public:
 
     /**
 		Sets the text color for this button.
-		\param	textcolor	    the color of the text (-1 = default color)
-        \param	textshadowcolor	the color of the shadow of the text (-1 = default color)
+		\param	textcolor	    the color of the text (COLOR_DEFAULT = default color)
+        \param	textshadowcolor	the color of the shadow of the text (COLOR_DEFAULT = default color)
 	*/
-	virtual inline void setTextColor(int textcolor, int textshadowcolor = -1) {
+	virtual inline void setTextColor(Uint32 textcolor, Uint32 textshadowcolor = COLOR_DEFAULT) {
 		this->textcolor = textcolor;
 		this->textshadowcolor = textshadowcolor;
 		resize(getSize().x, getSize().y);
@@ -90,8 +90,8 @@ public:
 	}
 
 private:
-    int textcolor;
-    int textshadowcolor;
+    Uint32 textcolor;
+    Uint32 textshadowcolor;
 
 	std::string text;		///< Text of this button
 };

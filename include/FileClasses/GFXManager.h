@@ -447,9 +447,10 @@ public:
 
 	SDL_Surface*	getUIGraphicSurface(unsigned int id, int house=HOUSE_HARKONNEN);
 	SDL_Surface*	getMapChoicePieceSurface(unsigned int num, int house);
+
+	SDL_Surface*    getBackgroundSurface() { return pBackgroundSurface; };
 	SDL_Surface*    getTransparent40Surface() { return pTransparent40Surface; };
 	SDL_Surface*    getTransparent150Surface() { return pTransparent150Surface; };
-	SDL_Surface*    getBackgroundSurface() { return pBackgroundSurface; };
 
 	Animation*		getAnimation(unsigned int id);
 
@@ -467,9 +468,10 @@ private:
 	SDL_Surface*	mapChoicePieces[NUM_MAPCHOICEPIECES][(int) NUM_HOUSES];
 	Animation*		animation[NUM_ANIMATION];
 
+    // 32-bit surfaces
+	SDL_Surface*    pBackgroundSurface;
 	SDL_Surface*    pTransparent40Surface;
 	SDL_Surface*    pTransparent150Surface;
-	SDL_Surface*    pBackgroundSurface;
 
 	// Textures
 	SDL_Surface*	objPicTex[NUM_OBJPICS][(int) NUM_HOUSES][NUM_ZOOMLEVEL];

@@ -53,11 +53,11 @@ public:
 
 	/**
 		Sets the text color for this label.
-		\param	textcolor	    the color of the text (-1 = default color)
-        \param	textshadowcolor	the color of the shadow of the text (-1 = default color)
-        \param  backgroundcolor the color of the label background (0 = transparent)
+		\param	textcolor	    the color of the text (COLOR_DEFAULT = default color)
+        \param	textshadowcolor	the color of the shadow of the text (COLOR_DEFAULT = default color)
+        \param  backgroundcolor the color of the label background (COLOR_TRANSPARENT = transparent)
 	*/
-	virtual inline void setTextColor(int textcolor, int textshadowcolor = -1, int backgroundcolor = 0) {
+	virtual inline void setTextColor(Uint32 textcolor, Uint32 textshadowcolor = COLOR_DEFAULT, Uint32 backgroundcolor = COLOR_TRANSPARENT) {
 		this->textcolor = textcolor;
 		this->textshadowcolor = textshadowcolor;
 		this->backgroundcolor = backgroundcolor;
@@ -193,9 +193,9 @@ public:
 
 private:
     int fontID;                 ///< the ID of the font to use
-	int textcolor;				///< the text color
-	int textshadowcolor;        ///< the color of the shadow of the text
-	int backgroundcolor;        ///< the color of the label background
+	Uint32 textcolor;			///< the text color
+	Uint32 textshadowcolor;     ///< the color of the shadow of the text
+	Uint32 backgroundcolor;     ///< the color of the label background
 	std::string text;			///< the text of this label
 
 	Alignment_Enum alignment;	///< the alignment of this label

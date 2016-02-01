@@ -498,9 +498,6 @@ GFXManager::GFXManager() {
 	// unused: FARTR.WSA, FHARK.WSA, FORDOS.WSA
 
 
-    // pBackgroundSurface is separate as we never draw it but use it to construct other sprites
-	pBackgroundSurface = PicFactory->createBackground();
-
 	// load UI graphics
 	uiGraphic[UI_RadarAnimation][HOUSE_HARKONNEN] = Scaler::doubleSurfaceNN(radar->getAnimationAsPictureRow());
 
@@ -934,19 +931,22 @@ GFXManager::GFXManager() {
         SDL_FreeSurface(tmp);
 	}
 
-
+    // pBackgroundSurface is separate as we never draw it but use it to construct other sprites
+    SDL_Surface* tmp = PicFactory->createBackground();
+    if((pBackgroundSurface = SDL_DisplayFormat(tmp)) == NULL) {
+        fprintf(stderr,"GFXManager: SDL_DisplayFormat() failed!\n");
+        exit(EXIT_FAILURE);
+    }
+    SDL_FreeSurface(tmp);
 
 	// Create alpha blending surfaces (128x128 pixel)
-	pTransparent40Surface = SDL_CreateRGBSurface(SDL_HWSURFACE,128,128,32,0,0,0,0);
+	pTransparent40Surface = SDL_CreateRGBSurface(SDL_HWSURFACE, 128, 128, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK);
     SDL_SetAlpha(pTransparent40Surface, SDL_SRCALPHA, 40);
 
-	pTransparent150Surface = SDL_CreateRGBSurface(SDL_HWSURFACE,128,128,32,0,0,0,0);
+	pTransparent150Surface = SDL_CreateRGBSurface(SDL_HWSURFACE, 128, 128, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK);
     SDL_SetAlpha(pTransparent150Surface, SDL_SRCALPHA, 150);
 
-
-
-    // Convert everything to display format
-
+    // Convert uiGraphic to display format
     for(int i = 0; i < NUM_UIGRAPHICS; i++) {
 		for(int j = 0; j < (int) NUM_HOUSES; j++) {
 			if(uiGraphic[i][j] != NULL) {
@@ -981,10 +981,6 @@ GFXManager::~GFXManager() {
             smallDetailPicTex[i] = NULL;
 		}
 	}
-
-	if(pBackgroundSurface != NULL) {
-        SDL_FreeSurface(pBackgroundSurface);
-    }
 
 	for(int i = 0; i < NUM_UIGRAPHICS; i++) {
 		for(int j = 0; j < (int) NUM_HOUSES; j++) {
@@ -1026,6 +1022,7 @@ GFXManager::~GFXManager() {
 		}
 	}
 
+    SDL_FreeSurface(pBackgroundSurface);
 	SDL_FreeSurface(pTransparent40Surface);
 	SDL_FreeSurface(pTransparent150Surface);
 }
@@ -1301,7 +1298,7 @@ SDL_Surface* GFXManager::extractSmallDetailPic(std::string filename) {
 	SDL_Surface* pSurface;
 
 	// create new picture surface
-	if((pSurface = SDL_CreateRGBSurface(SDL_HWSURFACE,91,55,8,0,0,0,0))== NULL) {
+	if((pSurface = SDL_CreateRGBSurface(SDL_HWSURFACE, 91, 55, 8, 0, 0, 0, 0)) == NULL) {
 		fprintf(stderr,"GFXManager::ExtractSmallDetailPic: Cannot create new Picture for %s!\n",filename.c_str());
 		exit(EXIT_FAILURE);
 	}

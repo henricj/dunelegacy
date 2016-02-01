@@ -22,6 +22,7 @@
 #include <string>
 
 #include <Definitions.h>
+#include <Colors.h>
 
 #define TEXT_FADE_TIME 16
 
@@ -43,7 +44,7 @@ public:
 		\param	bCenterVertical	true = center the text vertically on the screen, false = draw the text near the bottom of the screen (default is false)
 		\param	color			the color of the text (default is PALCOLOR_HARKONNEN+1 which is a light red)
 	*/
-	TextEvent(std::string text, int startFrame, int lengthInFrames, bool bFadeIn = true, bool bFadeOut = true, bool bCenterVertical = false, unsigned char color = PALCOLOR_HARKONNEN+1);
+	TextEvent(std::string text, int startFrame, int lengthInFrames, bool bFadeIn = true, bool bFadeOut = true, bool bCenterVertical = false, Uint32 color = PALCOLOR_HARKONNEN+1);
 
 	/// destructor
 	~TextEvent();
@@ -69,7 +70,7 @@ private:
     bool bFadeIn;			///< true = fade in the text (see TEXT_FADE_TIME for the number of frames it takes), false = simply show the text
     bool bFadeOut;			///< true = fade out the text (see TEXT_FADE_TIME for the number of frames it takes), false = text simply disapears
     bool bCenterVertical;	///< true = center the text vertically on the screen, false = draw the text near the bottom of the screen
-    unsigned char color;	///< the color of the text
+    Uint32 color;	        ///< the color of the text
     SDL_Surface* pSurface;	///< a surface containing the rendered text
 };
 

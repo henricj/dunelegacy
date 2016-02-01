@@ -22,7 +22,7 @@ ListBox::ListBox() : Widget() {
 
 	pBackground = NULL;
 	pForeground = NULL;
-	color = -1;
+	color = COLOR_DEFAULT;
 	bAutohideScrollbar = true;
 	bHighlightSelectedElement = true;
 	firstVisibleElement = 0;

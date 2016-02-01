@@ -31,8 +31,8 @@ public:
 	/// default constructor
 	TextBox() : Widget() {
 	    fontID = FONT_STD12;
-        textcolor = -1;
-	    textshadowcolor = -1;
+        textcolor = COLOR_DEFAULT;
+	    textshadowcolor = COLOR_DEFAULT;
 	    maxTextLength = -1;
 		pSurfaceWithoutCarret = NULL;
 		pSurfaceWithCarret = NULL;
@@ -93,10 +93,10 @@ public:
 
     /**
 		Sets the text color for this text box.
-		\param	textcolor	    the color of the text (-1 = default color)
-        \param	textshadowcolor	the color of the shadow of the text (-1 = default color)
+		\param	textcolor	    the color of the text (COLOR_DEFAULT = default color)
+        \param	textshadowcolor	the color of the shadow of the text (COLOR_DEFAULT = default color)
 	*/
-	virtual inline void setTextColor(int textcolor, int textshadowcolor = -1) {
+	virtual inline void setTextColor(Uint32 textcolor, Uint32 textshadowcolor = COLOR_DEFAULT) {
 		this->textcolor = textcolor;
 		this->textshadowcolor = textshadowcolor;
 		resize(getSize().x, getSize().y);
@@ -288,8 +288,8 @@ protected:
 
 private:
     int fontID;                                 ///< the ID of the font to use
-    int textcolor;                              ///< Text color
-    int textshadowcolor;                        ///< Text shadow color
+    Uint32 textcolor;                           ///< Text color
+    Uint32 textshadowcolor;                     ///< Text shadow color
 	std::string text;			                ///< text in this text box
 	int maxTextLength;                          ///< the maximum length of the typed text
 

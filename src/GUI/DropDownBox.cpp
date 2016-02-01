@@ -24,7 +24,7 @@ DropDownBox::DropDownBox() : Widget() {
 
     numVisibleEntries = 7;
 
-	color = -1;
+	color = COLOR_DEFAULT;
 	bHover = false;
     updateButtonSurface();
 

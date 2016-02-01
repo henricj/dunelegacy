@@ -338,9 +338,9 @@ public:
 
     /**
 		Sets the color for this list box.
-		\param	color   the color (-1 = default color)
+		\param	color   the color (COLOR_DEFAULT = default color)
 	*/
-	virtual inline void setColor(int color) {
+	virtual inline void setColor(Uint32 color) {
 		this->color = color;
 		updateList();
 		scrollbar.setColor(color);
@@ -429,7 +429,7 @@ private:
 	std::function<void ()> pOnSingleClick;		    ///< this function is called when a list entry is single clicked
 	std::function<void ()> pOnDoubleClick;		    ///< this function is called when a list entry is double clicked
 
-    int color;				                        ///< the color
+    Uint32 color;				                    ///< the color
     bool bAutohideScrollbar;                        ///< hide the scrollbar if not needed (default = true)
     bool bHighlightSelectedElement;                 ///< highlight selected element (default = true);
 	int firstVisibleElement;                        ///< the index of the first shown element in the list

@@ -54,10 +54,10 @@ public:
 
     /**
 		Sets the text color for this message box.
-		\param	textcolor	    the color of the text (-1 = default color)
-        \param	textshadowcolor	the color of the shadow of the text (-1 = default color)
+		\param	textcolor	    the color of the text (COLOR_DEFAULT = default color)
+        \param	textshadowcolor	the color of the shadow of the text (COLOR_DEFAULT = default color)
 	*/
-	virtual inline void setTextColor(int textcolor, int textshadowcolor = -1) {
+	virtual inline void setTextColor(Uint32 textcolor, Uint32 textshadowcolor = COLOR_DEFAULT) {
 		textLabel.setTextColor(textcolor, textshadowcolor);
 		okbutton.setTextColor(textcolor, textshadowcolor);
 	}

@@ -27,7 +27,7 @@ public:
 	Font() { };
 	virtual ~Font() { };
 
-	virtual void drawTextOnSurface(SDL_Surface* pSurface, std::string text, unsigned char baseColor = 128) = 0;
+	virtual void drawTextOnSurface(SDL_Surface* pSurface, std::string text, Uint32 baseColor = 0xFFFFFFFF) = 0;
 
 	/// Returns the number of pixels a text needs
 	/**

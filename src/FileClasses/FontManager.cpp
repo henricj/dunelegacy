@@ -34,7 +34,7 @@ FontManager::FontManager() {
 FontManager::~FontManager() {
 }
 
-void FontManager::drawTextOnSurface(SDL_Surface* pSurface, std::string text, unsigned char color, unsigned int fontNum) {
+void FontManager::drawTextOnSurface(SDL_Surface* pSurface, std::string text, Uint32 color, unsigned int fontNum) {
 	if(fontNum >= NUM_FONTS) {
 		return;
 	}
@@ -58,7 +58,7 @@ int FontManager::getTextHeight(unsigned int fontNum) {
 	return fonts[fontNum]->getTextHeight();
 }
 
-SDL_Surface* FontManager::createSurfaceWithText(std::string text, unsigned char color, unsigned int fontNum) {
+SDL_Surface* FontManager::createSurfaceWithText(std::string text, Uint32 color, unsigned int fontNum) {
 	if(fontNum >= NUM_FONTS) {
 		return 0;
 	}
@@ -69,19 +69,18 @@ SDL_Surface* FontManager::createSurfaceWithText(std::string text, unsigned char 
     int height = fonts[fontNum]->getTextHeight();
 
     // create new picture surface
-    if((pic = SDL_CreateRGBSurface(SDL_SWSURFACE,width,height,8,0,0,0,0))== NULL) {
+    if((pic = SDL_CreateRGBSurface(SDL_SWSURFACE, width, height, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK)) == NULL) {
         return NULL;
     }
 
-    palette.applyToSurface(pic);
-    SDL_SetColorKey(pic, SDL_SRCCOLORKEY | SDL_RLEACCEL, 0);
+    SDL_FillRect(pic, NULL, 0x00000000);
 
     fonts[fontNum]->drawTextOnSurface(pic,text,color);
 
     return pic;
 }
 
-SDL_Surface* FontManager::createSurfaceWithMultilineText(std::string text, unsigned char color, unsigned int fontNum, bool bCentered) {
+SDL_Surface* FontManager::createSurfaceWithMultilineText(std::string text, Uint32 color, unsigned int fontNum, bool bCentered) {
 	if(fontNum >= NUM_FONTS) {
 		return 0;
 	}
@@ -106,13 +105,11 @@ SDL_Surface* FontManager::createSurfaceWithMultilineText(std::string text, unsig
     int height = lineHeight * textLines.size() + (lineHeight * (textLines.size()-1))/2;
 
     // create new picture surface
-    if((pic = SDL_CreateRGBSurface(SDL_SWSURFACE,width,height,8,0,0,0,0))== NULL) {
+    if((pic = SDL_CreateRGBSurface(SDL_SWSURFACE, width, height, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK)) == NULL) {
         return NULL;
     }
 
-    palette.applyToSurface(pic);
-    SDL_SetColorKey(pic, SDL_SRCCOLORKEY | SDL_RLEACCEL, 0);
-
+    SDL_FillRect(pic, NULL, 0x00000000);
 
     int line = 0;
     std::list<std::string>::iterator iter;

@@ -210,7 +210,11 @@ void mapColor(SDL_Surface *surface, Uint8 colorMap[256]) {
 
 SDL_Surface* copySurface(SDL_Surface* inSurface) {
 	//return SDL_DisplayFormat(inSurface);
-	return SDL_ConvertSurface(inSurface, inSurface->format, inSurface->flags);
+	SDL_Surface *surface;
+	if( (surface = SDL_ConvertSurface(inSurface, inSurface->format, inSurface->flags)) == NULL) {
+        throw std::invalid_argument(std::string("copySurface(): SDL_ConvertSurface() failed: ") + std::string(SDL_GetError()));
+	}
+	return surface;
 }
 
 
@@ -252,20 +256,19 @@ SDL_Surface* getSubPicture(SDL_Surface* Pic, int left, int top,
 	if(Pic == NULL) {
 	    throw std::invalid_argument("getSubPicture(): Pic == NULL!");
 	}
-/*
-	if(((int) (left+width) > Pic->w) || ((int) (top+height) > Pic->h)) {
-		throw std::invalid_argument("getSubPicture(): left+width > Pic->w || top+height > Pic->h!");
-	}
-*/
+
 	SDL_Surface *returnPic;
 
 	// create new picture surface
-	if((returnPic = SDL_CreateRGBSurface(SDL_HWSURFACE,width,height,8,0,0,0,0))== NULL) {
+	SDL_PixelFormat *fmt = Pic->format;
+	if((returnPic = SDL_CreateRGBSurface(SDL_HWSURFACE,width,height,fmt->BitsPerPixel,fmt->Rmask,fmt->Gmask, fmt->Bmask, fmt->Amask))== NULL) {
 		throw std::runtime_error("getSubPicture(): Cannot create new Picture!");
 	}
 
-	SDL_SetColors(returnPic, Pic->format->palette->colors, 0, Pic->format->palette->ncolors);
-	SDL_SetColorKey(returnPic, Pic->flags & (SDL_SRCCOLORKEY | SDL_RLEACCEL), Pic->format->colorkey);
+    if(fmt->BitsPerPixel == 8) {
+        SDL_SetColors(returnPic, Pic->format->palette->colors, 0, Pic->format->palette->ncolors);
+        SDL_SetColorKey(returnPic, Pic->flags & (SDL_SRCCOLORKEY | SDL_RLEACCEL), Pic->format->colorkey);
+	}
 
 	SDL_Rect srcRect = {static_cast<Sint16>(left),static_cast<Sint16>(top),static_cast<Uint16>(width),static_cast<Uint16>(height)};
 	SDL_BlitSurface(Pic,&srcRect,returnPic,NULL);

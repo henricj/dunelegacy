@@ -33,7 +33,7 @@
 class LoadSaveWindow : public Window
 {
 public:
-	LoadSaveWindow(bool bSave, std::string caption, std::vector<std::string> directories, std::vector<std::string> directoryTitles, std::string extension, int preselectedDirectoryIndex = 0, std::string preselectedFile = "", int color = -1);
+	LoadSaveWindow(bool bSave, std::string caption, std::vector<std::string> directories, std::vector<std::string> directoryTitles, std::string extension, int preselectedDirectoryIndex = 0, std::string preselectedFile = "", Uint32 color = COLOR_DEFAULT);
 	virtual ~LoadSaveWindow();
 
 	void updateEntries();
@@ -71,7 +71,7 @@ public:
 		\param  color       the color of the new dialog
 		\return	The new dialog box (will be automatically destroyed when it's closed)
 	*/
-	static LoadSaveWindow* create(bool bSave, std::string caption, std::string directory, std::string extension, std::string preselectedFile = "", int color = -1) {
+	static LoadSaveWindow* create(bool bSave, std::string caption, std::string directory, std::string extension, std::string preselectedFile = "", Uint32 color = COLOR_DEFAULT) {
 		std::vector<std::string> directories;
 		directories.push_back(directory);
         std::vector<std::string> directoryTitles;
@@ -96,7 +96,7 @@ public:
 		\param  color       the color of the new dialog
 		\return	The new dialog box (will be automatically destroyed when it's closed)
 	*/
-	static LoadSaveWindow* create(bool bSave, std::string caption, std::vector<std::string> directories, std::vector<std::string> directoryTitles, std::string extension, int preselectedDirectoryIndex = 0, std::string preselectedFile = "", int color = -1) {
+	static LoadSaveWindow* create(bool bSave, std::string caption, std::vector<std::string> directories, std::vector<std::string> directoryTitles, std::string extension, int preselectedDirectoryIndex = 0, std::string preselectedFile = "", Uint32 color = COLOR_DEFAULT) {
 		LoadSaveWindow* dlg = new LoadSaveWindow(bSave, caption, directories, directoryTitles, extension, preselectedDirectoryIndex, preselectedFile, color);
 		dlg->pAllocated = true;
 		return dlg;
@@ -132,7 +132,7 @@ private:
 	std::string extension;
 	int currentDirectoryIndex;
 	std::string preselectedFile;
-    int         color;
+    Uint32      color;
 };
 
 #endif //LOADSAVEWINDOW_H

@@ -46,12 +46,10 @@ protected:
 		weaponBox.addWidget(&weaponSelectButton,Point((SIDEBARWIDTH - 25 - pSurface->w)/2,5),
 									Point(pSurface->w, pSurface->h));
 
-		SDL_Surface* pText = pFontManager->createSurfaceWithText(_("READY"), PALCOLOR_WHITE, FONT_STD10);
+		SDL_Surface* pText = pFontManager->createSurfaceWithText(_("READY"), COLOR_WHITE, FONT_STD10);
 
-
-		SDL_Surface* pReady = SDL_CreateRGBSurface(SDL_HWSURFACE,pSurface->w,pSurface->h,8,0,0,0,0);
-		palette.applyToSurface(pReady);
-		SDL_SetColorKey(pReady, SDL_SRCCOLORKEY | SDL_RLEACCEL, 0);
+		SDL_Surface* pReady = SDL_CreateRGBSurface(SDL_HWSURFACE, pSurface->w, pSurface->h, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK);
+		SDL_FillRect(pReady, NULL, 0x00000000);
 
 		SDL_Rect dest = { static_cast<Sint16>((pReady->w - pText->w)/2),static_cast<Sint16>((pReady->h - pText->h)/2), static_cast<Uint16>(pText->w), static_cast<Uint16>(pText->h) };
 		SDL_BlitSurface(pText, NULL, pReady, &dest);

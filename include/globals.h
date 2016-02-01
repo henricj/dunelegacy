@@ -20,9 +20,11 @@
 
 #include <DataTypes.h>
 #include <Definitions.h>
+#include <Colors.h>
 #include <FileClasses/Palette.h>
 #include <data.h>
 #include <misc/RobustList.h>
+
 #include <SDL.h>
 
 #define _(msgid) pTextManager->getLocalized(msgid)

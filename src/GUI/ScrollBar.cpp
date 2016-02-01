@@ -19,7 +19,7 @@
 #include <cmath>
 
 ScrollBar::ScrollBar() : Widget() {
-    color = -1;
+    color = COLOR_DEFAULT;
 	minValue = 1;
 	maxValue = 1;
 	currentValue = 1;

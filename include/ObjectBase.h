@@ -110,7 +110,7 @@ public:
 	bool isOnScreen() const;
 	bool isVisible(int team) const;
 	bool isVisible() const;
-	int getHealthColor() const;
+	Uint32 getHealthColor() const;
 
     /**
         This method returns the closest coordinate of this object to objectLocation. If this is a building

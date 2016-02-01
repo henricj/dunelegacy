@@ -637,7 +637,7 @@ void Game::drawScreen()
 
 	// draw chat message currently typed
 	if(chatMode) {
-        surface = pFontManager->createSurfaceWithText("Chat: " + typingChatMessage + (((SDL_GetTicks() / 150) % 2 == 0) ? "_" : ""), PALCOLOR_WHITE, FONT_STD12);
+        surface = pFontManager->createSurfaceWithText("Chat: " + typingChatMessage + (((SDL_GetTicks() / 150) % 2 == 0) ? "_" : ""), COLOR_WHITE, FONT_STD12);
         SDL_Rect drawLocation = { 20, static_cast<Sint16>(screen->h - 40), static_cast<Uint16>(surface->w), static_cast<Uint16>(surface->h) };
         SDL_BlitSurface(surface, NULL, screen, &drawLocation);
         SDL_FreeSurface(surface);
@@ -647,7 +647,7 @@ void Game::drawScreen()
 		char	temp[50];
 		snprintf(temp,50,"fps: %.1f ", 1000.0f/averageFrameTime);
 
-		SDL_Surface* fpsSurface = pFontManager->createSurfaceWithText(temp, PALCOLOR_WHITE, FONT_STD12);
+		SDL_Surface* fpsSurface = pFontManager->createSurfaceWithText(temp, COLOR_WHITE, FONT_STD12);
         SDL_Rect drawLocation = { static_cast<Sint16>(sideBarPos.x - strlen(temp)*8), 60, static_cast<Uint16>(fpsSurface->w), static_cast<Uint16>(fpsSurface->h) };
 		SDL_BlitSurface(fpsSurface, NULL, screen, &drawLocation);
 		SDL_FreeSurface(fpsSurface);
@@ -658,7 +658,7 @@ void Game::drawScreen()
 		int     seconds = getGameTime() / 1000;
 		snprintf(temp,50," %.2d:%.2d:%.2d", seconds / 3600, (seconds % 3600)/60, (seconds % 60) );
 
-		SDL_Surface* timeSurface = pFontManager->createSurfaceWithText(temp, PALCOLOR_WHITE, FONT_STD12);
+		SDL_Surface* timeSurface = pFontManager->createSurfaceWithText(temp, COLOR_WHITE, FONT_STD12);
         SDL_Rect drawLocation = { 0, static_cast<Sint16>(screen->h - timeSurface->h), static_cast<Uint16>(timeSurface->w), static_cast<Uint16>(timeSurface->h) };
 		SDL_BlitSurface(timeSurface, NULL, screen, &drawLocation);
 		SDL_FreeSurface(timeSurface);
@@ -673,7 +673,7 @@ void Game::drawScreen()
             message = _("You Have Failed Your Mission.");
         }
 
-		surface = pFontManager->createSurfaceWithText(message.c_str(), PALCOLOR_WHITE, FONT_STD24);
+		surface = pFontManager->createSurfaceWithText(message.c_str(), COLOR_WHITE, FONT_STD24);
         SDL_Rect drawLocation = { static_cast<Sint16>(sideBarPos.x/2 - surface->w/2), static_cast<Sint16>(topBarPos.h + (screen->h-topBarPos.h)/2 - surface->h/2), static_cast<Uint16>(surface->w), static_cast<Uint16>(surface->h) };
 		SDL_BlitSurface(surface, NULL, screen, &drawLocation);
 		SDL_FreeSurface(surface);

@@ -33,7 +33,7 @@ public:
 	/// default constructor
 	ProgressBar() : Widget() {
 		percent = 0.0;
-		color = -1;
+		color = COLOR_DEFAULT;
 		bDrawShadow = false;
 		pBackground = NULL;
 		pForeground = NULL;
@@ -84,9 +84,9 @@ public:
 
 	/**
 		Sets the color of the progress bar overlay
-		\param	color	the new color (-1 = default)
+		\param	color	the new color (COLOR_DEFAULT = default)
 	*/
-	inline void setColor(int color = -1) {
+	inline void setColor(Uint32 color = COLOR_DEFAULT) {
 		this->color = color;
 		resizeAll();
 	}
@@ -148,7 +148,7 @@ protected:
 	SDL_Surface*	pForeground;
 
 	double percent;				///< Percent from 0.0 to 100.0
-	int color;					///< The color of the progress overlay
+	Uint32 color;			    ///< The color of the progress overlay
 	bool bDrawShadow;           ///< Draw shadow under the foreground surface
 };
 
@@ -157,8 +157,8 @@ public:
 	TextProgressBar() : ProgressBar() {
 		text = "";
 		bFreeBackground = true;
-        textcolor = -1;
-	    textshadowcolor = -1;
+        textcolor = COLOR_DEFAULT;
+	    textshadowcolor = COLOR_DEFAULT;
 	}
 
 	virtual ~TextProgressBar() { ; };
@@ -183,10 +183,10 @@ public:
 
     /**
 		Sets the text color for this progress bar.
-		\param	textcolor	    the color of the text (-1 = default color)
-        \param	textshadowcolor	the color of the shadow of the text (-1 = default color)
+		\param	textcolor	    the color of the text (COLOR_DEFAULT = default color)
+        \param	textshadowcolor	the color of the shadow of the text (COLOR_DEFAULT = default color)
 	*/
-	virtual inline void setTextColor(int textcolor, int textshadowcolor = -1) {
+	virtual inline void setTextColor(Uint32 textcolor, Uint32 textshadowcolor = COLOR_DEFAULT) {
 		this->textcolor = textcolor;
 		this->textshadowcolor = textshadowcolor;
 		resize(getSize().x, getSize().y);
@@ -232,8 +232,8 @@ public:
 protected:
 	std::string text;			///< Text of this progress bar
 
-    int textcolor;
-    int textshadowcolor;
+    Uint32 textcolor;
+    Uint32 textshadowcolor;
 };
 
 class PictureProgressBar: public ProgressBar {

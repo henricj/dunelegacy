@@ -21,9 +21,9 @@
 
 TextView::TextView() : Widget() {
     fontID = FONT_STD12;
-	textcolor = -1;
-	textshadowcolor = -1;
-	backgroundcolor = 0;
+	textcolor = COLOR_DEFAULT;
+	textshadowcolor = COLOR_DEFAULT;
+	backgroundcolor = COLOR_TRANSPARENT;
 	alignment = (Alignment_Enum) (Alignment_Left | Alignment_Top);
 	pForeground = NULL;
 	pBackground = NULL;

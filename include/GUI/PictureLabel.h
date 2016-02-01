@@ -96,7 +96,7 @@ public:
 
 
 private:
-	SDL_Surface* pSurface;		///< Surface that is shown
+	SDL_Surface* pSurface;	///< Surface that is shown
 	bool bFreeSurface;		///< Should pSurface be freed if this picture label is destroyed?
 };
 

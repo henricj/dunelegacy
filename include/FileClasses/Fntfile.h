@@ -44,7 +44,7 @@ public:
 
 	SDL_Surface* getCharacter(Uint32 indexOfFile);
 
-	void drawTextOnSurface(SDL_Surface* pSurface, std::string text, unsigned char baseColor = 128);
+	void drawTextOnSurface(SDL_Surface* pSurface, std::string text, Uint32 baseColor = 0xFFFFFFFF);
 
 	int	getTextWidth(std::string text) const;
 

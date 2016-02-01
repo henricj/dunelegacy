@@ -175,9 +175,9 @@ public:
 
     /**
 		Sets the color for this scrollbar.
-		\param	color   the color (-1 = default color)
+		\param	color   the color (COLOR_DEFAULT = default color)
 	*/
-	virtual inline void setColor(int color) {
+	virtual inline void setColor(Uint32 color) {
 		this->color = color;
 		updateArrowButtonSurface();
 	}
@@ -211,7 +211,7 @@ private:
 	bool bDragSlider;
 	int dragPositionFromSliderTop;
 
-    int color;				                ///< the color
+    Uint32 color;				            ///< the color
 };
 
 #endif // SCROLLBAR_H

@@ -137,7 +137,7 @@ SDL_Surface *Fntfile::getCharacter(Uint32 indexOfFile)
 
 
 
-void Fntfile::drawTextOnSurface(SDL_Surface* pSurface, std::string text, unsigned char baseColor) {
+void Fntfile::drawTextOnSurface(SDL_Surface* pSurface, std::string text, Uint32 baseColor) {
 	SDL_LockSurface(pSurface);
 
 	int curXPos = 0;

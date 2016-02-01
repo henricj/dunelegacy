@@ -101,9 +101,9 @@ void ChatManager::addChatMessage(std::string username, std::string message)
     timeinfo = localtime( &unixtime );
     strftime(timestring, 80, "(%H:%M:%S)", timeinfo);
 
-    std::shared_ptr<SDL_Surface> pTimeSurface = std::shared_ptr<SDL_Surface>( pFontManager->createSurfaceWithText( timestring, PALCOLOR_WHITE, FONT_STD10), SDL_FreeSurface);
-    std::shared_ptr<SDL_Surface> pUsernameSurface = std::shared_ptr<SDL_Surface>( pFontManager->createSurfaceWithText( username + ": ", PALCOLOR_WHITE, FONT_STD10), SDL_FreeSurface);
-    std::shared_ptr<SDL_Surface> pMessageSurface = std::shared_ptr<SDL_Surface>( pFontManager->createSurfaceWithText( message, PALCOLOR_WHITE, FONT_STD10), SDL_FreeSurface);
+    std::shared_ptr<SDL_Surface> pTimeSurface = std::shared_ptr<SDL_Surface>( pFontManager->createSurfaceWithText( timestring, COLOR_WHITE, FONT_STD10), SDL_FreeSurface);
+    std::shared_ptr<SDL_Surface> pUsernameSurface = std::shared_ptr<SDL_Surface>( pFontManager->createSurfaceWithText( username + ": ", COLOR_WHITE, FONT_STD10), SDL_FreeSurface);
+    std::shared_ptr<SDL_Surface> pMessageSurface = std::shared_ptr<SDL_Surface>( pFontManager->createSurfaceWithText( message, COLOR_WHITE, FONT_STD10), SDL_FreeSurface);
 
     chatMessages.push_back( ChatMessage(pTimeSurface, pUsernameSurface, pMessageSurface, SDL_GetTicks(), MSGTYPE_NORMAL) );
 
@@ -115,7 +115,7 @@ void ChatManager::addChatMessage(std::string username, std::string message)
 
 void ChatManager::addInfoMessage(std::string message)
 {
-    std::shared_ptr<SDL_Surface> pMessageSurface = std::shared_ptr<SDL_Surface>( pFontManager->createSurfaceWithText( "*  " + message, PALCOLOR_GREEN, FONT_STD10), SDL_FreeSurface);
+    std::shared_ptr<SDL_Surface> pMessageSurface = std::shared_ptr<SDL_Surface>( pFontManager->createSurfaceWithText( "*  " + message, COLOR_GREEN, FONT_STD10), SDL_FreeSurface);
 
     chatMessages.push_back( ChatMessage(pMessageSurface, SDL_GetTicks(), MSGTYPE_INFO) );
 

@@ -19,6 +19,7 @@
 #define GUISTYLE_H
 
 #include <FileClasses/FontManager.h>        // For Font IDs
+#include <Colors.h>
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -28,6 +29,8 @@
 #include <list>
 
 #include "Widget.h"
+
+#define COLOR_DEFAULT COLOR_INVALID
 
 typedef enum {
     Alignment_VCenter = 1,
@@ -80,12 +83,12 @@ public:
 		\param	TextLines	    a list of text lines for this label
         \param  fontID          the ID of the font to use
 		\param	alignment	    the alignment for this label
-		\param	textcolor	    the color of the text (-1 = default color for this style)
-		\param	textshadowcolor	the color of the shadow under the text (-1 = default color for this style)
+		\param	textcolor	    the color of the text (COLOR_DEFAULT = default color for this style)
+		\param	textshadowcolor	the color of the shadow under the text (COLOR_DEFAULT = default color for this style)
 		\param  backgroundcolor the background color (default is transparent)
 		\return	the new surface (has to be freed by the caller)
 	*/
-	virtual SDL_Surface* createLabelSurface(Uint32 width, Uint32 height, std::list<std::string> textLines, int fontID, Alignment_Enum alignment = Alignment_HCenter, int textcolor = -1, int textshadowcolor = -1, int backgroundcolor = 0) = 0;
+	virtual SDL_Surface* createLabelSurface(Uint32 width, Uint32 height, std::list<std::string> textLines, int fontID, Alignment_Enum alignment = Alignment_HCenter, Uint32 textcolor = COLOR_DEFAULT, Uint32 textshadowcolor = COLOR_DEFAULT, Uint32 backgroundcolor = COLOR_TRANSPARENT) = 0;
 
 
 
@@ -104,12 +107,12 @@ public:
 		\param	text		    the text for this checkbox
 		\param	checked         true, if the checkbox is checked, false otherwise
 		\param	activated	    true if the checkbox is activated (e.g. mouse hover)
-		\param	textcolor	    the color of the text (-1 = default color for this style)
-		\param	textshadowcolor	the color of the shadow under the text (-1 = default color for this style)
+		\param	textcolor	    the color of the text (COLOR_DEFAULT = default color for this style)
+		\param	textshadowcolor	the color of the shadow under the text (COLOR_DEFAULT = default color for this style)
 		\param  backgroundcolor the background color (default is transparent)
 		\return	the new surface (has to be freed by the caller)
 	*/
-	virtual SDL_Surface* createCheckboxSurface(Uint32 width, Uint32 height, std::string text, bool checked, bool activated, int textcolor = -1, int textshadowcolor = -1, int backgroundcolor = 0) = 0;
+	virtual SDL_Surface* createCheckboxSurface(Uint32 width, Uint32 height, std::string text, bool checked, bool activated, Uint32 textcolor = COLOR_DEFAULT, Uint32 textshadowcolor = COLOR_DEFAULT, Uint32 backgroundcolor = COLOR_TRANSPARENT) = 0;
 
 
 
@@ -127,12 +130,12 @@ public:
 		\param	text		    the text for this radio button
 		\param	checked         true, if the radio button is checked, false otherwise
 		\param	activated	    true if the radio button is activated (e.g. mouse hover)
-		\param	textcolor	    the color of the text (-1 = default color for this style)
-		\param	textshadowcolor	the color of the shadow under the text (-1 = default color for this style)
+		\param	textcolor	    the color of the text (COLOR_DEFAULT = default color for this style)
+		\param	textshadowcolor	the color of the shadow under the text (COLOR_DEFAULT = default color for this style)
 		\param  backgroundcolor the background color (default is transparent)
 		\return	the new surface (has to be freed by the caller)
 	*/
-	virtual SDL_Surface* createRadioButtonSurface(Uint32 width, Uint32 height, std::string text, bool checked, bool activated, int textcolor = -1, int textshadowcolor = -1, int backgroundcolor = 0) = 0;
+	virtual SDL_Surface* createRadioButtonSurface(Uint32 width, Uint32 height, std::string text, bool checked, bool activated, Uint32 textcolor = COLOR_DEFAULT, Uint32 textshadowcolor = COLOR_DEFAULT, Uint32 backgroundcolor = COLOR_TRANSPARENT) = 0;
 
 
 
@@ -141,10 +144,10 @@ public:
 		\param	size		the width and height of the drop down button
 		\param	pressed		true if the button should be pressed
 		\param	activated	true if the button is activated (e.g. mouse hover)
-		\param	color	    the color of the text (-1 = default color for this style)
+		\param	color	    the color of the text (COLOR_DEFAULT = default color for this style)
 		\return	the new surface (has to be freed by the caller)
 	*/
-	virtual SDL_Surface* createDropDownBoxButton(Uint32 size, bool pressed, bool activated, int color = -1) = 0;
+	virtual SDL_Surface* createDropDownBoxButton(Uint32 size, bool pressed, bool activated, Uint32 color = COLOR_DEFAULT) = 0;
 
 
 
@@ -162,11 +165,11 @@ public:
 		\param	text		    the text for this button
 		\param	pressed		    true if the button should be pressed
 		\param	activated	    true if the button is activated (e.g. mouse hover)
-		\param	textcolor	    the color of the text (-1 = default color for this style)
-		\param	textshadowcolor	the color of the shadow under the text (-1 = default color for this style)
+		\param	textcolor	    the color of the text (COLOR_DEFAULT = default color for this style)
+		\param	textshadowcolor	the color of the shadow under the text (COLOR_DEFAULT = default color for this style)
 		\return	the new surface (has to be freed by the caller)
 	*/
-	virtual SDL_Surface* createButtonSurface(Uint32 width, Uint32 height, std::string text, bool pressed, bool activated, int textcolor = -1, int textshadowcolor = -1) = 0;
+	virtual SDL_Surface* createButtonSurface(Uint32 width, Uint32 height, std::string text, bool pressed, bool activated, Uint32 textcolor = COLOR_DEFAULT, Uint32 textshadowcolor = COLOR_DEFAULT) = 0;
 
 
 
@@ -186,11 +189,11 @@ public:
 		\param	carret		    true if a carret should be shown
 		\param  fontID          the ID of the font to use
 		\param	alignment	    the alignment for this text box
-		\param	textcolor	    the color of the text (-1 = default color for this style)
-		\param	textshadowcolor	the color of the shadow under the text (-1 = default color for this style)
+		\param	textcolor	    the color of the text (COLOR_DEFAULT = default color for this style)
+		\param	textshadowcolor	the color of the shadow under the text (COLOR_DEFAULT = default color for this style)
 		\return	the new surface (has to be freed by the caller)
 	*/
-	virtual SDL_Surface* createTextBoxSurface(Uint32 width, Uint32 height, std::string text, bool carret, int fontID, Alignment_Enum alignment = Alignment_Left, int textcolor = -1, int textshadowcolor = -1) = 0;
+	virtual SDL_Surface* createTextBoxSurface(Uint32 width, Uint32 height, std::string text, bool carret, int fontID, Alignment_Enum alignment = Alignment_Left, Uint32 textcolor = COLOR_DEFAULT, Uint32 textshadowcolor = COLOR_DEFAULT) = 0;
 
 
 
@@ -206,10 +209,10 @@ public:
 		\param	down		true = downward arrow, false = upward arrow
 		\param	pressed		true if the button should be pressed
 		\param	activated	true if the button is activated (e.g. mouse hover)
-		\param	color	    the color of the text (-1 = default color for this style)
+		\param	color	    the color of the text (COLOR_DEFAULT = default color for this style)
 		\return	the new surface (has to be freed by the caller)
 	*/
-	virtual SDL_Surface* createScrollBarArrowButton(bool down, bool pressed, bool activated, int color = -1) = 0;
+	virtual SDL_Surface* createScrollBarArrowButton(bool down, bool pressed, bool activated, Uint32 color = COLOR_DEFAULT) = 0;
 
 
 
@@ -225,10 +228,10 @@ public:
 		\param	width		the width of the entry
 		\param	text		the text for this entry
 		\param	selected	true if a entry should be highlighted
-		\param	color	    the color of the text (-1 = default color for this style)
+		\param	color	    the color of the text (COLOR_DEFAULT = default color for this style)
 		\return	the new surface (has to be freed by the caller)
 	*/
-	virtual SDL_Surface* createListBoxEntry(Uint32 width, std::string text, bool selected, int color = -1) = 0;
+	virtual SDL_Surface* createListBoxEntry(Uint32 width, std::string text, bool selected, Uint32 color = COLOR_DEFAULT) = 0;
 
 
 
@@ -239,10 +242,10 @@ public:
 		\param	width		the width of the progress bar
 		\param	height		the height of the progress bar
 		\param	percent		a value between 0.0 and 100.0
-		\param	color		the color of the overlay
+		\param	color		the color of the overlay (COLOR_DEFAULT = default color for this style)
 		\return	the new surface (has to be freed by the caller)
 	*/
-	virtual SDL_Surface* createProgressBarOverlay(Uint32 width, Uint32 height, double percent, int color = -1) = 0;
+	virtual SDL_Surface* createProgressBarOverlay(Uint32 width, Uint32 height, double percent, Uint32 color = COLOR_DEFAULT) = 0;
 
 	/**
 		Creates a tool tip surface.

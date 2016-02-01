@@ -246,7 +246,7 @@ void printMissingFilesToScreen() {
     instruction += "\nYou may want to add GERMAN.PAK or FRENCH.PAK for playing in these languages.\n";
     instruction += "\n\nPress ESC to exit.";
 
-    SDL_Surface* pSurface = pFontManager->createSurfaceWithMultilineText(instruction, PALCOLOR_BLACK, FONT_STD12);
+    SDL_Surface* pSurface = pFontManager->createSurfaceWithMultilineText(instruction, COLOR_BLACK, FONT_STD12);
     SDL_Rect dest = { 30, 30, static_cast<Uint16>(pSurface->w), static_cast<Uint16>(pSurface->h) };
     SDL_BlitSurface(pSurface, NULL, screen, &dest);
     SDL_FreeSurface(pSurface);
