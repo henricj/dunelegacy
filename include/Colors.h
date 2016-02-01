@@ -88,4 +88,6 @@
 #define COLOR_GREEN RGB(0,170,0)
 #define COLOR_ORANGE RGB(255,68,0)
 
+#define COLOR_THICKSPICE RGB(182,125,12)
+
 #endif // COLORS_H

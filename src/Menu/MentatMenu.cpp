@@ -165,7 +165,7 @@ MentatMenu::MentatMenu(int newHouse)
         } break;
 	}
 
-	textLabel.setTextColor(PALCOLOR_WHITE, PALCOLOR_TRANSPARENT);
+	textLabel.setTextColor(COLOR_WHITE, COLOR_TRANSPARENT);
 	textLabel.setAlignment((Alignment_Enum) (Alignment_Left | Alignment_Top));
 	textLabel.setVisible(false);
 }

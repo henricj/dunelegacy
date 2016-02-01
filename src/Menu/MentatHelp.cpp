@@ -45,7 +45,7 @@ MentatHelp::MentatHelp(int newHouse, int techLevel, int mission) : MentatMenu(ne
 
 	setClearScreen(false);
 
-	backgroundLabel.setTextColor(-1, -1, 116);
+	backgroundLabel.setTextColor(COLOR_DEFAULT, COLOR_DEFAULT, COLOR_THICKSPICE);
 	windowWidget.addWidget(&backgroundLabel,Point(256,96),Point(368,224));
 
     std::vector<MentatTextFile::MentatEntry>::iterator iter;
@@ -66,7 +66,7 @@ MentatHelp::MentatHelp(int newHouse, int techLevel, int mission) : MentatMenu(ne
     animation.setEnabled(false);
     itemDescriptionLabel.setTextFont(FONT_STD10);
     itemDescriptionLabel.setAlignment((Alignment_Enum) (Alignment_Left | Alignment_Top));
-    itemDescriptionLabel.setTextColor(PALCOLOR_WHITE, PALCOLOR_BLACK);
+    itemDescriptionLabel.setTextColor(COLOR_WHITE, COLOR_BLACK);
     windowWidget.addWidget(&itemDescriptionLabel,Point(256 + 4, 96 + 4),Point(368 - 8, 224 - 8));
     itemDescriptionLabel.setVisible(false);
 

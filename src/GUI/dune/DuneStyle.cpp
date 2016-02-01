@@ -140,7 +140,6 @@ SDL_Surface* DuneStyle::createLabelSurface(Uint32 width, Uint32 height, std::lis
 		textpos_y += fontheight + spacing;
 	}
 
-	SDL_SetColorKey(surface, SDL_SRCCOLORKEY | SDL_RLEACCEL, 0);
 	return surface;
 }
 
@@ -207,7 +206,6 @@ SDL_Surface* DuneStyle::createCheckboxSurface(Uint32 width, Uint32 height, std::
 	SDL_BlitSurface(textSurface2,NULL,surface,&textRect2);
 	SDL_FreeSurface(textSurface2);
 
-	SDL_SetColorKey(surface, SDL_SRCCOLORKEY | SDL_RLEACCEL, 0);
 	return surface;
 }
 
@@ -281,7 +279,6 @@ SDL_Surface* DuneStyle::createRadioButtonSurface(Uint32 width, Uint32 height, st
 	SDL_BlitSurface(textSurface2,NULL,surface,&textRect2);
 	SDL_FreeSurface(textSurface2);
 
-	SDL_SetColorKey(surface, SDL_SRCCOLORKEY | SDL_RLEACCEL, 0);
 	return surface;
 }
 

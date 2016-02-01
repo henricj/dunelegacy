@@ -54,16 +54,16 @@ CampaignStatsMenu::CampaignStatsMenu(int level) : MenuBase()
 
 	setWindowWidget(&windowWidget);
 
-    scoreLabel.setTextColor(PALCOLOR_WHITE, PALCOLOR_BLACK);
+    scoreLabel.setTextColor(COLOR_WHITE, COLOR_BLACK);
     scoreLabel.setText(strprintf(_("@DUNE.ENG|21#Score: %d"), totalScore));
 	windowWidget.addWidget(&scoreLabel, (getSize()/2) + Point(-175, -173), scoreLabel.getSize());
 
-    timeLabel.setTextColor(PALCOLOR_WHITE, PALCOLOR_BLACK);
+    timeLabel.setTextColor(COLOR_WHITE, COLOR_BLACK);
     timeLabel.setText(strprintf(_("@DUNE.ENG|22#Time: %d:%02d"), totalTime/3600, (totalTime%3600)/60));
 	windowWidget.addWidget(&timeLabel, (getSize()/2) + Point(+180 - timeLabel.getSize().x, -173), timeLabel.getSize());
 
     yourRankLabel.setAlignment(Alignment_HCenter);
-    yourRankLabel.setTextColor(PALCOLOR_WHITE, PALCOLOR_BLACK);
+    yourRankLabel.setTextColor(COLOR_WHITE, COLOR_BLACK);
     yourRankLabel.setText(_("@DUNE.ENG|23#You have attained the rank"));
 	windowWidget.addWidget(&yourRankLabel, (getSize()/2) + Point(-yourRankLabel.getSize().x/2, -127), yourRankLabel.getSize());
 
@@ -71,29 +71,29 @@ CampaignStatsMenu::CampaignStatsMenu(int level) : MenuBase()
     rankLabel.setText(rank);
 	windowWidget.addWidget(&rankLabel, (getSize()/2) + Point(-rankLabel.getSize().x/2, -105), rankLabel.getSize());
 
-    spiceHarvestedByLabel.setTextColor(PALCOLOR_WHITE, PALCOLOR_BLACK, PALCOLOR_THICKSPICE);
+    spiceHarvestedByLabel.setTextColor(COLOR_WHITE, COLOR_BLACK, COLOR_THICKSPICE);
     spiceHarvestedByLabel.setAlignment(Alignment_HCenter);
     spiceHarvestedByLabel.setText(_("@DUNE.ENG|26#Spice harvested by"));
 	windowWidget.addWidget(&spiceHarvestedByLabel, (getSize()/2) + Point(-spiceHarvestedByLabel.getSize().x/2, -40), spiceHarvestedByLabel.getSize());
 
-    unitsDestroyedByLabel.setTextColor(PALCOLOR_WHITE, PALCOLOR_BLACK, PALCOLOR_THICKSPICE);
+    unitsDestroyedByLabel.setTextColor(COLOR_WHITE, COLOR_BLACK, COLOR_THICKSPICE);
     unitsDestroyedByLabel.setAlignment(Alignment_HCenter);
     unitsDestroyedByLabel.setText(_("@DUNE.ENG|24#Units destroyed by"));
 	windowWidget.addWidget(&unitsDestroyedByLabel, (getSize()/2) + Point(-unitsDestroyedByLabel.getSize().x/2, 34), unitsDestroyedByLabel.getSize());
 
-    buildingsDestroyedByLabel.setTextColor(PALCOLOR_WHITE, PALCOLOR_BLACK, PALCOLOR_THICKSPICE);
+    buildingsDestroyedByLabel.setTextColor(COLOR_WHITE, COLOR_BLACK, COLOR_THICKSPICE);
     buildingsDestroyedByLabel.setAlignment(Alignment_HCenter);
     buildingsDestroyedByLabel.setText(_("@DUNE.ENG|25#Buildings destroyed by"));
 	windowWidget.addWidget(&buildingsDestroyedByLabel, (getSize()/2) + Point(-buildingsDestroyedByLabel.getSize().x/2, 108), buildingsDestroyedByLabel.getSize());
 
     // spice statistics
 
-    you1Label.setTextColor(PALCOLOR_WHITE, PALCOLOR_BLACK);
+    you1Label.setTextColor(COLOR_WHITE, COLOR_BLACK);
     you1Label.setAlignment(Alignment_Right);
     you1Label.setText(_("@DUNE.ENG|329#You:"));
 	windowWidget.addWidget(&you1Label, (getSize()/2) + Point(-229 - you1Label.getSize().x, -23), you1Label.getSize());
 
-	spiceYouShadowProgressBar.setColor(PALCOLOR_BLACK);
+	spiceYouShadowProgressBar.setColor(COLOR_BLACK);
 	spiceYouShadowProgressBar.setProgress(0.0);
 	windowWidget.addWidget(&spiceYouShadowProgressBar, (getSize()/2) + Point(-228 + 2, -15 + 2), Point(440,12));
 
@@ -101,17 +101,17 @@ CampaignStatsMenu::CampaignStatsMenu(int level) : MenuBase()
 	spiceYouProgressBar.setProgress(0.0);
 	windowWidget.addWidget(&spiceYouProgressBar, (getSize()/2) + Point(-228, -15), Point(440,12));
 
-	spiceYouLabel.setTextColor(PALCOLOR_WHITE, PALCOLOR_BLACK);
+	spiceYouLabel.setTextColor(COLOR_WHITE, COLOR_BLACK);
 	spiceYouLabel.setAlignment(Alignment_HCenter);
 	spiceYouLabel.setVisible(false);
 	windowWidget.addWidget(&spiceYouLabel, (getSize()/2) + Point(222, -21), Point(66,21));
 
-    enemy1Label.setTextColor(PALCOLOR_WHITE, PALCOLOR_BLACK);
+    enemy1Label.setTextColor(COLOR_WHITE, COLOR_BLACK);
     enemy1Label.setAlignment(Alignment_Right);
     enemy1Label.setText(_("@DUNE.ENG|330#Enemy:"));
 	windowWidget.addWidget(&enemy1Label, (getSize()/2) + Point(-229 - enemy1Label.getSize().x, -5), enemy1Label.getSize());
 
-	spiceEnemyShadowProgressBar.setColor(PALCOLOR_BLACK);
+	spiceEnemyShadowProgressBar.setColor(COLOR_BLACK);
 	spiceEnemyShadowProgressBar.setProgress(0.0);
 	windowWidget.addWidget(&spiceEnemyShadowProgressBar, (getSize()/2) + Point(-228 + 2, 3 + 2), Point(440,12));
 
@@ -119,19 +119,19 @@ CampaignStatsMenu::CampaignStatsMenu(int level) : MenuBase()
 	spiceEnemyProgressBar.setProgress(0.0);
 	windowWidget.addWidget(&spiceEnemyProgressBar, (getSize()/2) + Point(-228, 3), Point(440,12));
 
-	spiceEnemyLabel.setTextColor(PALCOLOR_WHITE, PALCOLOR_BLACK);
+	spiceEnemyLabel.setTextColor(COLOR_WHITE, COLOR_BLACK);
 	spiceEnemyLabel.setAlignment(Alignment_HCenter);
 	spiceEnemyLabel.setVisible(false);
 	windowWidget.addWidget(&spiceEnemyLabel, (getSize()/2) + Point(222, -3), Point(66,21));
 
     // unit kill statistics
 
-    you2Label.setTextColor(PALCOLOR_WHITE, PALCOLOR_BLACK);
+    you2Label.setTextColor(COLOR_WHITE, COLOR_BLACK);
     you2Label.setAlignment(Alignment_Right);
     you2Label.setText(_("@DUNE.ENG|329#You:"));
 	windowWidget.addWidget(&you2Label, (getSize()/2) + Point(-229 - you2Label.getSize().x, 51), you2Label.getSize());
 
-	unitsYouShadowProgressBar.setColor(PALCOLOR_BLACK);
+	unitsYouShadowProgressBar.setColor(COLOR_BLACK);
 	unitsYouShadowProgressBar.setProgress(0.0);
 	windowWidget.addWidget(&unitsYouShadowProgressBar, (getSize()/2) + Point(-228 + 2, 59 + 2), Point(440,12));
 
@@ -139,17 +139,17 @@ CampaignStatsMenu::CampaignStatsMenu(int level) : MenuBase()
 	unitsYouProgressBar.setProgress(0.0);
 	windowWidget.addWidget(&unitsYouProgressBar, (getSize()/2) + Point(-228, 59), Point(440,12));
 
-	unitsYouLabel.setTextColor(PALCOLOR_WHITE, PALCOLOR_BLACK);
+	unitsYouLabel.setTextColor(COLOR_WHITE, COLOR_BLACK);
 	unitsYouLabel.setAlignment(Alignment_HCenter);
 	unitsYouLabel.setVisible(false);
 	windowWidget.addWidget(&unitsYouLabel, (getSize()/2) + Point(222, 53), Point(66,21));
 
-    enemy2Label.setTextColor(PALCOLOR_WHITE, PALCOLOR_BLACK);
+    enemy2Label.setTextColor(COLOR_WHITE, COLOR_BLACK);
     enemy2Label.setAlignment(Alignment_Right);
     enemy2Label.setText(_("@DUNE.ENG|330#Enemy:"));
 	windowWidget.addWidget(&enemy2Label, (getSize()/2) + Point(-229 - enemy2Label.getSize().x, 69), enemy2Label.getSize());
 
-	unitsEnemyShadowProgressBar.setColor(PALCOLOR_BLACK);
+	unitsEnemyShadowProgressBar.setColor(COLOR_BLACK);
 	unitsEnemyShadowProgressBar.setProgress(0.0);
 	windowWidget.addWidget(&unitsEnemyShadowProgressBar, (getSize()/2) + Point(-228 + 2, 77 + 2), Point(440,12));
 
@@ -157,19 +157,19 @@ CampaignStatsMenu::CampaignStatsMenu(int level) : MenuBase()
 	unitsEnemyProgressBar.setProgress(0.0);
 	windowWidget.addWidget(&unitsEnemyProgressBar, (getSize()/2) + Point(-228, 77), Point(440,12));
 
-	unitsEnemyLabel.setTextColor(PALCOLOR_WHITE, PALCOLOR_BLACK);
+	unitsEnemyLabel.setTextColor(COLOR_WHITE, COLOR_BLACK);
 	unitsEnemyLabel.setAlignment(Alignment_HCenter);
 	unitsEnemyLabel.setVisible(false);
 	windowWidget.addWidget(&unitsEnemyLabel, (getSize()/2) + Point(222, 71), Point(66,21));
 
     // buildings kill statistics
 
-    you3Label.setTextColor(PALCOLOR_WHITE, PALCOLOR_BLACK);
+    you3Label.setTextColor(COLOR_WHITE, COLOR_BLACK);
     you3Label.setAlignment(Alignment_Right);
     you3Label.setText(_("@DUNE.ENG|329#You:"));
 	windowWidget.addWidget(&you3Label, (getSize()/2) + Point(-229 - you3Label.getSize().x, 125), you3Label.getSize());
 
-	buildingsYouShadowProgressBar.setColor(PALCOLOR_BLACK);
+	buildingsYouShadowProgressBar.setColor(COLOR_BLACK);
 	buildingsYouShadowProgressBar.setProgress(0.0);
 	windowWidget.addWidget(&buildingsYouShadowProgressBar, (getSize()/2) + Point(-228 + 2, 133 + 2), Point(440,12));
 
@@ -177,17 +177,17 @@ CampaignStatsMenu::CampaignStatsMenu(int level) : MenuBase()
 	buildingsYouProgressBar.setProgress(0.0);
 	windowWidget.addWidget(&buildingsYouProgressBar, (getSize()/2) + Point(-228, 133), Point(440,12));
 
-	buildingsYouLabel.setTextColor(PALCOLOR_WHITE, PALCOLOR_BLACK);
+	buildingsYouLabel.setTextColor(COLOR_WHITE, COLOR_BLACK);
 	buildingsYouLabel.setAlignment(Alignment_HCenter);
 	buildingsYouLabel.setVisible(false);
 	windowWidget.addWidget(&buildingsYouLabel, (getSize()/2) + Point(222, 127), Point(66,21));
 
-    enemy3Label.setTextColor(PALCOLOR_WHITE, PALCOLOR_BLACK);
+    enemy3Label.setTextColor(COLOR_WHITE, COLOR_BLACK);
     enemy3Label.setAlignment(Alignment_Right);
     enemy3Label.setText(_("@DUNE.ENG|330#Enemy:"));
 	windowWidget.addWidget(&enemy3Label, (getSize()/2) + Point(-229 - enemy2Label.getSize().x, 143), enemy3Label.getSize());
 
-	buildingsEnemyShadowProgressBar.setColor(PALCOLOR_BLACK);
+	buildingsEnemyShadowProgressBar.setColor(COLOR_BLACK);
 	buildingsEnemyShadowProgressBar.setProgress(0.0);
 	windowWidget.addWidget(&buildingsEnemyShadowProgressBar, (getSize()/2) + Point(-228 + 2, 151 + 2), Point(440,12));
 
@@ -195,7 +195,7 @@ CampaignStatsMenu::CampaignStatsMenu(int level) : MenuBase()
 	buildingsEnemyProgressBar.setProgress(0.0);
 	windowWidget.addWidget(&buildingsEnemyProgressBar, (getSize()/2) + Point(-228, 151), Point(440,12));
 
-	buildingsEnemyLabel.setTextColor(PALCOLOR_WHITE, PALCOLOR_BLACK);
+	buildingsEnemyLabel.setTextColor(COLOR_WHITE, COLOR_BLACK);
 	buildingsEnemyLabel.setAlignment(Alignment_HCenter);
 	buildingsEnemyLabel.setVisible(false);
 	windowWidget.addWidget(&buildingsEnemyLabel, (getSize()/2) + Point(222, 145), Point(66,21));

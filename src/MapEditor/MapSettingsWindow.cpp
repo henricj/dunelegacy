@@ -53,7 +53,7 @@ MapSettingsWindow::MapSettingsWindow(MapEditor* pMapEditor, int uicolor)
 	mainHBox.addWidget(&mainVBox);
 	mainHBox.addWidget(HSpacer::create(16));
 
-    titleLabel.setTextColor(110, PALCOLOR_TRANSPARENT);
+    titleLabel.setTextColor(COLOR_LIGHTYELLOW, COLOR_TRANSPARENT);
 	titleLabel.setAlignment((Alignment_Enum) (Alignment_HCenter | Alignment_VCenter));
 	titleLabel.setText(_("Map Settings"));
 	mainVBox.addWidget(&titleLabel);

@@ -260,14 +260,16 @@ SDL_Surface* getSubPicture(SDL_Surface* Pic, int left, int top,
 	SDL_Surface *returnPic;
 
 	// create new picture surface
-	SDL_PixelFormat *fmt = Pic->format;
-	if((returnPic = SDL_CreateRGBSurface(SDL_HWSURFACE,width,height,fmt->BitsPerPixel,fmt->Rmask,fmt->Gmask, fmt->Bmask, fmt->Amask))== NULL) {
-		throw std::runtime_error("getSubPicture(): Cannot create new Picture!");
-	}
-
-    if(fmt->BitsPerPixel == 8) {
+    if(Pic->format->BitsPerPixel == 8) {
+        if((returnPic = SDL_CreateRGBSurface(SDL_HWSURFACE, width, height, 8, 0, 0, 0, 0))== NULL) {
+            throw std::runtime_error("getSubPicture(): Cannot create new Picture!");
+        }
         SDL_SetColors(returnPic, Pic->format->palette->colors, 0, Pic->format->palette->ncolors);
         SDL_SetColorKey(returnPic, Pic->flags & (SDL_SRCCOLORKEY | SDL_RLEACCEL), Pic->format->colorkey);
+	} else {
+        if((returnPic = SDL_CreateRGBSurface(SDL_HWSURFACE, width, height, 32, RMASK, GMASK, BMASK, AMASK))== NULL) {
+            throw std::runtime_error("getSubPicture(): Cannot create new Picture!");
+        }
 	}
 
 	SDL_Rect srcRect = {static_cast<Sint16>(left),static_cast<Sint16>(top),static_cast<Uint16>(width),static_cast<Uint16>(height)};

@@ -67,7 +67,7 @@ void MessageTicker::draw(SDL_Surface* screen, Point position) {
 			textLocation.y -= SLOWDOWN;
 		}
 
-		SDL_Surface *surface = pFontManager->createSurfaceWithText(messages.front(), PALCOLOR_BLACK, FONT_STD12);
+		SDL_Surface *surface = pFontManager->createSurfaceWithText(messages.front(), COLOR_BLACK, FONT_STD12);
 
 		SDL_Rect cut = { 0, 0, 0, 0 };
 

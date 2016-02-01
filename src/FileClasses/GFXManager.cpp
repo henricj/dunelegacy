@@ -950,7 +950,7 @@ GFXManager::GFXManager() {
     for(int i = 0; i < NUM_UIGRAPHICS; i++) {
 		for(int j = 0; j < (int) NUM_HOUSES; j++) {
 			if(uiGraphic[i][j] != NULL) {
-				if((uiGraphicTex[i][j] = SDL_DisplayFormat(uiGraphic[i][j])) == NULL) {
+				if((uiGraphicTex[i][j] = SDL_DisplayFormatAlpha(uiGraphic[i][j])) == NULL) {
 					fprintf(stderr,"GFXManager: SDL_DisplayFormat() failed!\n");
 					exit(EXIT_FAILURE);
 				}
