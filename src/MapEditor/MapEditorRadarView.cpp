@@ -32,8 +32,8 @@
 MapEditorRadarView::MapEditorRadarView(MapEditor* pMapEditor)
  : RadarViewBase(), pMapEditor(pMapEditor)
 {
-	radarSurface = SDL_CreateRGBSurface(SDL_HWSURFACE,RADARWIDTH,RADARHEIGHT,8,0,0,0,0);
-	palette.applyToSurface(radarSurface);
+	radarSurface = SDL_CreateRGBSurface(SDL_HWSURFACE, RADARWIDTH, RADARHEIGHT, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK);
+	SDL_FillRect(radarSurface, NULL, COLOR_BLACK);
 }
 
 
@@ -100,44 +100,30 @@ void MapEditorRadarView::draw(SDL_Surface* screen, Point position)
                 radarPosition.y + radarRect.y,
                 radarPosition.x + (radarRect.x + radarRect.w),
                 radarPosition.y + (radarRect.y + radarRect.h),
-                PALCOLOR_WHITE);
+                COLOR_WHITE);
 
 }
 
 void MapEditorRadarView::updateRadarSurface(const MapData& map, int scale, int offsetX, int offsetY) {
 
-    SDL_FillRect(radarSurface, NULL, PALCOLOR_BLACK);
+    SDL_FillRect(radarSurface, NULL, COLOR_BLACK);
 
     // Lock the surface for direct access to the pixels
     if(!SDL_MUSTLOCK(radarSurface) || (SDL_LockSurface(radarSurface) == 0)) {
         for(int y = 0; y <  map.getSizeY(); y++) {
             for(int x = 0; x <  map.getSizeX(); x++) {
 
-                Uint32 color;
-
-				switch(map(x,y)) {
-					case Terrain_Dunes:         color = PALCOLOR_DESERTSAND;   break;
-					case Terrain_Mountain:      color = PALCOLOR_MOUNTAIN;		break;
-					case Terrain_Rock:		    color = PALCOLOR_DARKGREY;		break;
-					case Terrain_Sand:		    color = PALCOLOR_DESERTSAND;	break;
-					case Terrain_Spice:		    color = PALCOLOR_SPICE;		break;
-					case Terrain_ThickSpice:    color = PALCOLOR_THICKSPICE;	break;
-					case Terrain_SpiceBloom:    color = PALCOLOR_RED;          break;
-					case Terrain_SpecialBloom:	color = PALCOLOR_RED;			break;
-                    case Terrain_Slab:			color = PALCOLOR_DARKGREY;     break;
-                    default:                    color = PALCOLOR_DARKGREY;     break;
-				};
-
+                Uint32 color = getColorByTerrainType(map(x,y));
 
                 if(map(x,y) == Terrain_Sand) {
                     std::vector<Coord>& spiceFields = pMapEditor->getSpiceFields();
 
                     for(size_t i = 0; i < spiceFields.size(); i++) {
                         if(spiceFields[i].x == x && spiceFields[i].y == y) {
-                            color = PALCOLOR_THICKSPICE;
+                            color = COLOR_THICKSPICE;
                             break;
                         } else if(distanceFrom(spiceFields[i], Coord(x,y)) <= 5) {
-                            color = PALCOLOR_SPICE;
+                            color = COLOR_SPICE;
                             break;
                         }
                     }
@@ -147,7 +133,7 @@ void MapEditorRadarView::updateRadarSurface(const MapData& map, int scale, int o
                 std::vector<Coord>& spiceBlooms = pMapEditor->getSpiceBlooms();
                 for(size_t i = 0; i < spiceBlooms.size(); i++) {
                     if(spiceBlooms[i].x == x && spiceBlooms[i].y == y) {
-                        color = PALCOLOR_RED;
+                        color = COLOR_BLOOM;
                         break;
                     }
                 }
@@ -157,13 +143,15 @@ void MapEditorRadarView::updateRadarSurface(const MapData& map, int scale, int o
                 std::vector<Coord>& specialBlooms = pMapEditor->getSpecialBlooms();
                 for(size_t i = 0; i < specialBlooms.size(); i++) {
                     if(specialBlooms[i].x == x && specialBlooms[i].y == y) {
-                        color = PALCOLOR_RED;
+                        color = COLOR_BLOOM;
                         break;
                     }
                 }
 
+                color = SDL_MapRGBA(radarSurface->format, (color & RMASK) >> RSHIFT, (color & GMASK) >> GSHIFT, (color & BMASK) >> BSHIFT, (color & AMASK) >> ASHIFT);
+
                 for(int j = 0; j < scale; j++) {
-                    Uint8* p = (Uint8 *) radarSurface->pixels + (offsetY + scale*y + j) * radarSurface->pitch + (offsetX + scale*x);
+                    Uint32* p = ((Uint32*) ((Uint8 *) radarSurface->pixels + (offsetY + scale*y + j) * radarSurface->pitch)) + (offsetX + scale*x);
 
                     for(int i = 0; i < scale; i++, p++) {
                         // Do not use putPixel here to avoid overhead
@@ -185,7 +173,7 @@ void MapEditorRadarView::updateRadarSurface(const MapData& map, int scale, int o
                         putPixel(   radarSurface,
                                     offsetX + scale*uIter->position.x + i,
                                     offsetY + scale*uIter->position.y + j,
-                                    houseColor[uIter->house]);
+                                    SDL2RGB(palette[houseColor[uIter->house]]));
                     }
                 }
             }
@@ -207,7 +195,7 @@ void MapEditorRadarView::updateRadarSurface(const MapData& map, int scale, int o
                                 putPixel(   radarSurface,
                                             offsetX + scale*(sIter->position.x+x) + i,
                                             offsetY + scale*(sIter->position.y+y) + j,
-                                            houseColor[sIter->house]);
+                                            SDL2RGB(palette[houseColor[sIter->house]]));
                             }
                         }
                     }

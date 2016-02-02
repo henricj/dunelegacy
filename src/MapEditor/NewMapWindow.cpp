@@ -350,12 +350,10 @@ void NewMapWindow::onMapPropertiesChanged() {
 SDL_Surface* NewMapWindow::createMinimapPicture(MapData& mapdata) {
     SDL_Surface* pMinimap;
     // create surface
-    if((pMinimap = SDL_CreateRGBSurface(SDL_HWSURFACE,128,128,8,0,0,0,0))== NULL) {
-        return NULL;
-    }
-    palette.applyToSurface(pMinimap);
-
-    SDL_FillRect(pMinimap, NULL, PALCOLOR_BLACK);
+	if((pMinimap = SDL_CreateRGBSurface(SDL_HWSURFACE, 128, 128, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK)) == NULL) {
+		return NULL;
+	}
+	SDL_FillRect(pMinimap, NULL, COLOR_BLACK);
 
     int scale = 1;
     int offsetX;
@@ -368,8 +366,7 @@ SDL_Surface* NewMapWindow::createMinimapPicture(MapData& mapdata) {
 
             TERRAINTYPE terrainType = mapdata(x,y);
 
-            int color = getColorByTerrainType(terrainType);
-
+            Uint32 color = getColorByTerrainType(terrainType);
 
             for(int i=0;i<scale;i++) {
                 for(int j=0;j<scale;j++) {

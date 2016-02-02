@@ -58,7 +58,7 @@ TeamType        getTeamTypeByName(std::string name);
 std::string     getTeamTypeNameByID(TeamType teamType);
 
 
-int             getColorByTerrainType(int terrainType);
+Uint32          getColorByTerrainType(int terrainType);
 
 FixPoint        getDeviateWeakness(HOUSETYPE house);
 

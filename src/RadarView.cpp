@@ -38,11 +38,10 @@ RadarView::RadarView()
 {
     radarStaticAnimation = pGFXManager->getUIGraphic(UI_RadarAnimation);
 
-    radarSurface = SDL_CreateRGBSurface(SDL_SWSURFACE, 128, 128,8,0,0,0,0);
-	if(radarSurface == NULL) {
-		throw std::runtime_error("RadarView::RadarView(): Cannot create new Picture!");
+	if((radarSurface = SDL_CreateRGBSurface(SDL_HWSURFACE, 128, 128, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK)) == NULL) {
+		throw std::runtime_error("RadarView::RadarView(): Cannot create new surface!");
 	}
-	palette.applyToSurface(radarSurface);
+	SDL_FillRect(radarSurface, NULL, COLOR_BLACK);
 }
 
 
@@ -112,7 +111,7 @@ void RadarView::draw(SDL_Surface* screen, Point position)
                         radarPosition.y + RadarRect.y,
                         radarPosition.x + (RadarRect.x + RadarRect.w),
                         radarPosition.y + (RadarRect.y + RadarRect.h),
-                        PALCOLOR_WHITE);
+                        COLOR_WHITE);
 
         } break;
 
@@ -196,9 +195,10 @@ void RadarView::updateRadarSurface(int mapSizeX, int mapSizeY, int scale, int of
 
                 /* Selecting the right color is handled in Tile::getRadarColor() */
                 Uint32 color = pTile->getRadarColor(pLocalHouse, pLocalHouse->hasRadarOn());
+                color = SDL_MapRGBA(radarSurface->format, (color & RMASK) >> RSHIFT, (color & GMASK) >> GSHIFT, (color & BMASK) >> BSHIFT, (color & AMASK) >> ASHIFT);
 
                 for(int j = 0; j < scale; j++) {
-                    Uint8* p = (Uint8 *) radarSurface->pixels + (offsetY + scale*y + j) * radarSurface->pitch + (offsetX + scale*x);
+                    Uint32* p = ((Uint32*) ((Uint8 *) radarSurface->pixels + (offsetY + scale*y + j) * radarSurface->pitch)) + (offsetX + scale*x);
 
                     for(int i = 0; i < scale; i++, p++) {
                         // Do not use putPixel here to avoid overhead

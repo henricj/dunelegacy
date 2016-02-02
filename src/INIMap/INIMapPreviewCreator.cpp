@@ -35,10 +35,10 @@ SDL_Surface* INIMapPreviewCreator::createMinimapImageOfMap() {
 
     SDL_Surface* pMinimap;
     // create surface
-	if((pMinimap = SDL_CreateRGBSurface(SDL_HWSURFACE,128,128,8,0,0,0,0))== NULL) {
+	if((pMinimap = SDL_CreateRGBSurface(SDL_HWSURFACE, 128, 128, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK)) == NULL) {
 		return NULL;
 	}
-	palette.applyToSurface(pMinimap);
+	SDL_FillRect(pMinimap, NULL, COLOR_BLACK);
 
     int version = inifile->getIntValue("BASIC", "Version", 1);
 
@@ -139,39 +139,39 @@ SDL_Surface* INIMapPreviewCreator::createMinimapImageOfMap() {
 
         for(int y = 0; y < sizeY; y++) {
             for(int x = 0; x < sizeX; x++) {
-                int color = PALCOLOR_BLACK;
+                Uint32 color = COLOR_BLACK;
                 unsigned char seedmaptype = SeedMap[(y+logicalOffsetY)*64+x+logicalOffsetX] >> 4;
                 switch(seedmaptype) {
 
                     case 0x7: {
                         // Normal sand
-                        color = PALCOLOR_DESERTSAND;
+                        color = COLOR_DESERTSAND;
                     } break;
 
                     case 0x2:
                     case 0x8: {
                         // Rock or building
-                        color = PALCOLOR_DARKGREY;
+                        color = COLOR_ROCK;
                     } break;
 
                     case 0x9: {
                         // Sand dunes
-                        color = PALCOLOR_DESERTSAND;
+                        color = COLOR_DESERTSAND;
                     } break;
 
                     case 0xa: {
                         // Mountain
-                        color = PALCOLOR_MOUNTAIN;
+                        color = COLOR_MOUNTAIN;
                     } break;
 
                     case 0xb: {
                         // Spice
-                        color = PALCOLOR_SPICE;
+                        color = COLOR_SPICE;
                     } break;
 
                     case 0xc: {
                         // Thick spice
-                        color = PALCOLOR_THICKSPICE;
+                        color = COLOR_THICKSPICE;
                     } break;
                 }
 
@@ -197,7 +197,7 @@ SDL_Surface* INIMapPreviewCreator::createMinimapImageOfMap() {
                     if(xpos >= 0 && xpos < sizeX && ypos >= 0 && ypos < sizeY) {
                         for(int i=0;i<scale;i++) {
                             for(int j=0;j<scale;j++) {
-                                putPixel(pMinimap, xpos*scale + i + offsetX, ypos*scale + j + offsetY, PALCOLOR_RED);
+                                putPixel(pMinimap, xpos*scale + i + offsetX, ypos*scale + j + offsetY, COLOR_BLOOM);
                             }
                         }
                     }
@@ -222,7 +222,7 @@ SDL_Surface* INIMapPreviewCreator::createMinimapImageOfMap() {
                     if(xpos >= 0 && xpos < sizeX && ypos >= 0 && ypos < sizeY) {
                         for(int i=0;i<scale;i++) {
                             for(int j=0;j<scale;j++) {
-                                putPixel(pMinimap, xpos*scale + i + offsetX, ypos*scale + j + offsetY, PALCOLOR_RED);
+                                putPixel(pMinimap, xpos*scale + i + offsetX, ypos*scale + j + offsetY, COLOR_BLOOM);
                             }
                         }
                     }
@@ -260,42 +260,42 @@ SDL_Surface* INIMapPreviewCreator::createMinimapImageOfMap() {
 
             std::string rowString = inifile->getStringValue("MAP",rowKey);
             for(int x=0;x<sizeX;x++) {
-                int color = PALCOLOR_BLACK;
+                Uint32 color = COLOR_BLACK;
                 switch(rowString.at(x)) {
                     case '-': {
                         // Normal sand
-                        color = PALCOLOR_DESERTSAND;
+                        color = COLOR_DESERTSAND;
                     } break;
 
                     case '^': {
                         // Sand dunes
-                        color = PALCOLOR_DESERTSAND;
+                        color = COLOR_DESERTSAND;
                     } break;
 
                     case '~': {
                         // Spice
-                        color = PALCOLOR_SPICE;
+                        color = COLOR_SPICE;
                     } break;
 
                     case '+': {
                         // Thick spice
-                        color = PALCOLOR_THICKSPICE;
+                        color = COLOR_THICKSPICE;
                     } break;
 
                     case '%': {
                         // Rock
-                        color = PALCOLOR_DARKGREY;
+                        color = COLOR_ROCK;
                     } break;
 
                     case '@': {
                         // Mountain
-                        color = PALCOLOR_MOUNTAIN;
+                        color = COLOR_MOUNTAIN;
                     } break;
 
                     case 'O':
                     case 'Q': {
                         // Spice Bloom and Special Bloom
-                        color = PALCOLOR_RED;
+                        color = COLOR_BLOOM;
                     } break;
 
                     default: {
@@ -333,16 +333,17 @@ SDL_Surface* INIMapPreviewCreator::createMinimapImageOfMap() {
 			splitString(tmp,2,&HouseStr,&BuildingStr);
 
 			int house = getHouseByName(HouseStr);
-			int color = PALCOLOR_WHITE;
+			Uint32 color = COLOR_WHITE;
 			if(house != HOUSE_INVALID) {
-				color = houseColor[house];
+				color = SDL2RGB(palette[houseColor[house]]);
 			} else {
                 convertToLower(HouseStr);
 			    if(HouseStr.length() == 7 && HouseStr.substr(0,6) == "player") {
 			        int playernum = HouseStr.at(6)-'0';
 
 			        if(playernum >= 1 && playernum <= 6) {
-			            color = 128 + playernum - 1;
+                        int val = 32*(playernum - 1) + 32;
+			            color = RGB(val, val, val);
 			        }
 			    } else {
 			        SDL_FreeSurface(pMinimap);
@@ -375,16 +376,17 @@ SDL_Surface* INIMapPreviewCreator::createMinimapImageOfMap() {
 			}
 
 			int house = getHouseByName(HouseStr);
-			int color = PALCOLOR_WHITE;
+			Uint32 color = COLOR_WHITE;
 			if(house != HOUSE_INVALID) {
-				color = houseColor[house];
+				color = SDL2RGB(palette[houseColor[house]]);
 			} else {
 			    convertToLower(HouseStr);
 			    if(HouseStr.length() == 7 && HouseStr.substr(0,6) == "player") {
 			        int playernum = HouseStr.at(6)-'0';
 
 			        if(playernum >= 1 && playernum <= 6) {
-			            color = 128 + playernum - 1;
+                        int val = 32*(playernum - 1) + 32;
+			            color = RGB(val, val, val);
 			        }
 			    } else {
 			        SDL_FreeSurface(pMinimap);

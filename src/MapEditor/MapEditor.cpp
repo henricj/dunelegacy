@@ -2065,11 +2065,11 @@ void MapEditor::saveMapshot() {
     int sizeY = world2zoomedWorld(map.getSizeY()*TILESIZE);
 
     SDL_Surface* pMapshotSurface = NULL;
-    if((pMapshotSurface = SDL_CreateRGBSurface(SDL_SWSURFACE,sizeX,sizeY,8,0,0,0,0)) == NULL) {
+    if((pMapshotSurface = SDL_CreateRGBSurface(SDL_SWSURFACE, sizeX, sizeY, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK)) == NULL) {
         fprintf(stderr,"MapEditor::SaveMapshot: Cannot create new surface!\n");
         exit(EXIT_FAILURE);
     }
-    palette.applyToSurface(pMapshotSurface);
+    SDL_FillRect(pMapshotSurface, NULL, COLOR_BLACK);
 
     SDL_Rect board = { 0,0,static_cast<Uint16>(sizeX),static_cast<Uint16>(sizeY) };
 
