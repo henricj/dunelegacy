@@ -34,7 +34,7 @@
 #include <FileClasses/GFXManager.h>
 #include <FileClasses/TextManager.h>
 
-NewMapWindow::NewMapWindow(int color) : Window(0,0,0,0), color(color), mapSeed(INVALID) {
+NewMapWindow::NewMapWindow(Uint32 color) : Window(0,0,0,0), color(color), mapSeed(INVALID) {
 
     	// set up window
 	SDL_Surface *surf;

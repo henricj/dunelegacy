@@ -34,7 +34,7 @@ class  LoadMapWindow : public Window
 {
 public:
 
-    LoadMapWindow(int color = -1);
+    LoadMapWindow(Uint32 color = COLOR_DEFAULT);
 
     const std::string& getLoadMapFilepath() const { return loadMapFilepath; };
     const std::string& getLoadMapname() const { return loadMapname; };
@@ -96,7 +96,7 @@ private:
 	TextButton	cancelButton;
 	TextButton	loadButton;
 
-	int         color;
+	Uint32      color;
 
     std::string loadMapFilepath;
     std::string loadMapname;

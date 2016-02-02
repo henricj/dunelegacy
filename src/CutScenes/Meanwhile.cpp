@@ -59,68 +59,69 @@ Meanwhile::Meanwhile(int house, bool firstMeanwhile) : CutScene() {
         textBaseIndex -= 2;
     }
 
+    int houseOfVisitor = (house+2)%3;
+	Uint32 color = SDL2RGB(palette[houseColor[house]+1]);
+	Uint32 sardaukarColor = SDL2RGB(palette[PALCOLOR_SARDAUKAR+1]);
+    Uint32 visitorColor = SDL2RGB(palette[houseColor[houseOfVisitor]+1]);
+
 	if(firstMeanwhile == true) {
         // Meanwhile after level 4
-        int houseOfVisitor = (house+2)%3;
-
         static const int meanwhileFrame[] = { 1, 2, 0};
 
         startNewScene();
 
         addVideoEvent(new HoldPictureVideoEvent(NULL, 45, true));
-        addTextEvent(new TextEvent(pDuneText->getString(textBaseIndex+MeanwhileText_At_the_Emperor_s_Palace),0,42,true,true,true,houseColor[house]+1));
+        addTextEvent(new TextEvent(pDuneText->getString(textBaseIndex+MeanwhileText_At_the_Emperor_s_Palace),0,42,true,true,true,color));
         addTrigger(new CutSceneMusicTrigger(0,MUSIC_MEANWHILE));
 
         startNewScene();
 
         addVideoEvent(new HoldPictureVideoEvent(pMeanwhile->getPicture(meanwhileFrame[house]), 75, true));
-        addTextEvent(new TextEvent(pDuneText->getString(textBaseIndex+MeanwhileText_You_of_all_people),0,45,true,true,false,PALCOLOR_SARDAUKAR+1));
-        addTextEvent(new TextEvent(pDuneText->getString(textBaseIndex+MeanwhileText_Yes_your_excellency_I),45,30,true,false,false,houseColor[houseOfVisitor]+1));
+        addTextEvent(new TextEvent(pDuneText->getString(textBaseIndex+MeanwhileText_You_of_all_people),0,45,true,true,false,sardaukarColor));
+        addTextEvent(new TextEvent(pDuneText->getString(textBaseIndex+MeanwhileText_Yes_your_excellency_I),45,30,true,false,false,visitorColor));
 
         startNewScene();
 
         addVideoEvent(new WSAVideoEvent(pImperator));
         addVideoEvent(new HoldPictureVideoEvent(pImperator->getPicture(pImperator->getNumFrames()-1), 3, true));
-        addTextEvent(new TextEvent(pDuneText->getString(textBaseIndex+MeanwhileText_You_let_the),3,100,false,false,false,PALCOLOR_SARDAUKAR+1));
+        addTextEvent(new TextEvent(pDuneText->getString(textBaseIndex+MeanwhileText_You_let_the),3,100,false,false,false,sardaukarColor));
 
         startNewScene();
         addVideoEvent(new HoldPictureVideoEvent(pMeanwhile->getPicture(meanwhileFrame[house]), 75, true));
         addVideoEvent(new FadeOutVideoEvent(pMeanwhile->getPicture(meanwhileFrame[house]), 20, true));
-        addTextEvent(new TextEvent(pDuneText->getString(textBaseIndex+MeanwhileText_I_did_not_let),0,35,true,false,false,houseColor[houseOfVisitor]+1));
-        addTextEvent(new TextEvent(pDuneText->getString(textBaseIndex+MeanwhileText_I_will_not_allow),37,38,false,true,false,PALCOLOR_SARDAUKAR+1));
+        addTextEvent(new TextEvent(pDuneText->getString(textBaseIndex+MeanwhileText_I_did_not_let),0,35,true,false,false,visitorColor));
+        addTextEvent(new TextEvent(pDuneText->getString(textBaseIndex+MeanwhileText_I_will_not_allow),37,38,false,true,false,sardaukarColor));
 
 	} else {
         // Meanwhile after level 8
-        int houseOfVisitor = (house+2)%3;
-
         static const int meanwhileFrame[] = { 3, 5, 4};
 
         startNewScene();
 
         addVideoEvent(new HoldPictureVideoEvent(NULL, 45, true));
-        addTextEvent(new TextEvent(pDuneText->getString(textBaseIndex+MeanwhileText_At_the_Emperor_s_Palace_on_Dune),0,42,true,true,true,houseColor[house]+1));
+        addTextEvent(new TextEvent(pDuneText->getString(textBaseIndex+MeanwhileText_At_the_Emperor_s_Palace_on_Dune),0,42,true,true,true,color));
         addTrigger(new CutSceneMusicTrigger(0,MUSIC_MEANWHILE));
 
         if(house == HOUSE_ATREIDES) {
             startNewScene();
 
             addVideoEvent(new HoldPictureVideoEvent(pMeanwhile->getPicture(meanwhileFrame[house]), 130, true));
-            addTextEvent(new TextEvent(pDuneText->getString(textBaseIndex+MeanwhileText_Fools),0,45,true,false,false,PALCOLOR_SARDAUKAR));
-            addTextEvent(new TextEvent(pDuneText->getString(textBaseIndex+MeanwhileText_And_still_you_fail),50,45,false,false,false,PALCOLOR_SARDAUKAR+1));
-            addTextEvent(new TextEvent(pDuneText->getString(textBaseIndex+MeanwhileText_But_excell),100,30,true,false,false,houseColor[houseOfVisitor]+1));
+            addTextEvent(new TextEvent(pDuneText->getString(textBaseIndex+MeanwhileText_Fools),0,45,true,false,false,sardaukarColor));
+            addTextEvent(new TextEvent(pDuneText->getString(textBaseIndex+MeanwhileText_And_still_you_fail),50,45,false,false,false,sardaukarColor));
+            addTextEvent(new TextEvent(pDuneText->getString(textBaseIndex+MeanwhileText_But_excell),100,30,true,false,false,visitorColor));
 
             startNewScene();
 
             addVideoEvent(new WSAVideoEvent(pImperator));
             addVideoEvent(new HoldPictureVideoEvent(pImperator->getPicture(pImperator->getNumFrames()-1), 3, true));
             addVideoEvent(new FadeOutVideoEvent(pImperator->getPicture(pImperator->getNumFrames()-1), 20, true));
-            addTextEvent(new TextEvent(pDuneText->getString(textBaseIndex+MeanwhileText_Enough_Together_we_must),3,42,false,true,false,PALCOLOR_SARDAUKAR+1));
+            addTextEvent(new TextEvent(pDuneText->getString(textBaseIndex+MeanwhileText_Enough_Together_we_must),3,42,false,true,false,sardaukarColor));
         } else {
             startNewScene();
 
             addVideoEvent(new HoldPictureVideoEvent(pMeanwhile->getPicture(meanwhileFrame[house]), 80, true));
-            addTextEvent(new TextEvent(pDuneText->getString(textBaseIndex+MeanwhileText_The_Ordos_were_not_supposed),0,45,true,true,false,PALCOLOR_SARDAUKAR+1));
-            addTextEvent(new TextEvent(pDuneText->getString(textBaseIndex+MeanwhileText_Your_highness),46,35,true,false,false,houseColor[houseOfVisitor]+1));
+            addTextEvent(new TextEvent(pDuneText->getString(textBaseIndex+MeanwhileText_The_Ordos_were_not_supposed),0,45,true,true,false,sardaukarColor));
+            addTextEvent(new TextEvent(pDuneText->getString(textBaseIndex+MeanwhileText_Your_highness),46,35,true,false,false,visitorColor));
 
             startNewScene();
 
@@ -128,8 +129,8 @@ Meanwhile::Meanwhile(int house, bool firstMeanwhile) : CutScene() {
             addVideoEvent(new WSAVideoEvent(pImperator));
             addVideoEvent(new FadeOutVideoEvent(pImperator->getPicture(pImperator->getNumFrames()-1), 20, true));
 
-            addTextEvent(new TextEvent(pDuneText->getString(textBaseIndex+MeanwhileText_No_more_explanations),3, (house == HOUSE_ORDOS) ? 21 : 11,false,false,false,PALCOLOR_SARDAUKAR+1));
-            addTextEvent(new TextEvent(pDuneText->getString(textBaseIndex+MeanwhileText_Only_together_will_we),(house == HOUSE_ORDOS) ? 28 : 18,(house == HOUSE_ORDOS) ? 39 : 49,false,true,false,PALCOLOR_SARDAUKAR+1));
+            addTextEvent(new TextEvent(pDuneText->getString(textBaseIndex+MeanwhileText_No_more_explanations),3, (house == HOUSE_ORDOS) ? 21 : 11,false,false,false,sardaukarColor));
+            addTextEvent(new TextEvent(pDuneText->getString(textBaseIndex+MeanwhileText_Only_together_will_we),(house == HOUSE_ORDOS) ? 28 : 18,(house == HOUSE_ORDOS) ? 39 : 49,false,true,false,sardaukarColor));
         }
 	}
 

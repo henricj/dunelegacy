@@ -968,7 +968,7 @@ void CustomGamePlayers::onChangeHousesDropDownBoxes(bool bInteractive, int house
 
         if(houseInfoNum == -1 || houseInfoNum == i) {
 
-            int color = ((house == HOUSE_INVALID) ? 234 : houseColor[house]) + 3;
+            Uint32 color = (house == HOUSE_INVALID) ? RGB(20,20,40) : SDL2RGB(palette[houseColor[house] + 3]);
             curHouseInfo.houseLabel.setTextColor(color);
             curHouseInfo.houseDropDown.setColor(color);
             curHouseInfo.teamDropDown.setColor(color);

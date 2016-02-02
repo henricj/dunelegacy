@@ -40,7 +40,7 @@ class  MapSettingsWindow : public Window
 {
 public:
 
-    MapSettingsWindow(MapEditor* pMapEditor, int uicolor = -1);
+    MapSettingsWindow(MapEditor* pMapEditor, Uint32 uicolor = COLOR_DEFAULT);
 
 
 	/**
@@ -51,7 +51,7 @@ public:
 		\param  color       the color that shall be used for buttons, etc.
 		\return	The new dialog box (will be automatically destroyed when it's closed)
 	*/
-	static MapSettingsWindow* create(MapEditor* pMapEditor, int color = -1) {
+	static MapSettingsWindow* create(MapEditor* pMapEditor, Uint32 color = COLOR_DEFAULT) {
 		MapSettingsWindow* dlg = new MapSettingsWindow(pMapEditor, color);
 		dlg->pAllocated = true;
 		return dlg;
@@ -123,7 +123,7 @@ private:
 
     MapEditor*      pMapEditor;
 
-	int             color;
+	Uint32          color;
 
 	std::vector<std::string>    availableWinPictures;
 	std::vector<std::string>    availableLosePictures;

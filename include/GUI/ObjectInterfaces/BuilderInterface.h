@@ -43,14 +43,16 @@ public:
 
 protected:
 	BuilderInterface(int objectID) : DefaultStructureInterface(objectID) {
+        Uint32 color = SDL2RGB(palette[houseColor[pLocalHouse->getHouseID()]+3]);
+
 		upgradeButton.setText(_("Upgrade"));
-		upgradeButton.setTextColor(houseColor[pLocalHouse->getHouseID()]+3);
+		upgradeButton.setTextColor(color);
 		upgradeButton.setVisible(false);
 		upgradeButton.setTooltipText(_("Upgrade this structure (Hotkey: U)"));
 		upgradeButton.setOnClick(std::bind(&BuilderInterface::onUpgrade, this));
 
 		upgradeProgressBar.setText(_("Upgrade"));
-		upgradeProgressBar.setTextColor(houseColor[pLocalHouse->getHouseID()]+3);
+		upgradeProgressBar.setTextColor(color);
 		upgradeProgressBar.setVisible(false);
 		topBox.addWidget(&upgradeButton,Point(18,2),Point(83,18));
 		topBox.addWidget(&upgradeProgressBar,Point(18,2),Point(83,18));

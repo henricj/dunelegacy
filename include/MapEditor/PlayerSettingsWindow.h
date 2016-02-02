@@ -41,7 +41,7 @@ class  PlayerSettingsWindow : public Window
 {
 public:
 
-    PlayerSettingsWindow(MapEditor* pMapEditor, int uicolor = -1);
+    PlayerSettingsWindow(MapEditor* pMapEditor, Uint32 uicolor = COLOR_DEFAULT);
 
 
 	/**
@@ -52,7 +52,7 @@ public:
 		\param  color       the color that shall be used for buttons, etc.
 		\return	The new dialog box (will be automatically destroyed when it's closed)
 	*/
-	static PlayerSettingsWindow* create(MapEditor* pMapEditor, int color = -1) {
+	static PlayerSettingsWindow* create(MapEditor* pMapEditor, Uint32 color = COLOR_DEFAULT) {
 		PlayerSettingsWindow* dlg = new PlayerSettingsWindow(pMapEditor, color);
 		dlg->pAllocated = true;
 		return dlg;
@@ -103,7 +103,7 @@ private:
 
     MapEditor*  pMapEditor;
 
-	int         color;
+	Uint32      color;
 };
 
 

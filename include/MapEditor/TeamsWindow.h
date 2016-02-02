@@ -41,7 +41,7 @@ class  TeamsWindow : public Window
 {
 public:
 
-    TeamsWindow(MapEditor* pMapEditor, int color = -1);
+    TeamsWindow(MapEditor* pMapEditor, Uint32 color = COLOR_DEFAULT);
 
 
 	/**
@@ -52,7 +52,7 @@ public:
 		\param  color       the color that shall be used for buttons, etc.
 		\return	The new dialog box (will be automatically destroyed when it's closed)
 	*/
-	static TeamsWindow* create(MapEditor* pMapEditor, int color = -1) {
+	static TeamsWindow* create(MapEditor* pMapEditor, Uint32 color = COLOR_DEFAULT) {
 		TeamsWindow* dlg = new TeamsWindow(pMapEditor, color);
 		dlg->pAllocated = true;
 		return dlg;
@@ -117,7 +117,7 @@ private:
 
     MapEditor*      pMapEditor;
 
-	int             color;
+	Uint32          color;
 
 	std::vector<TeamInfo>  teams;
 };

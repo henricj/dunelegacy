@@ -45,6 +45,8 @@
 #define RGBA(r,g,b,a) ( ((((unsigned int) r) & 0xFF) << RSHIFT) | ((((unsigned int) g) & 0xFF) << GSHIFT) | ((((unsigned int) b) & 0xFF) << BSHIFT) | ((((unsigned int) a) & 0xFF) << ASHIFT) )
 #define RGB(r,g,b) RGBA(r,g,b,255)
 
+#define SDL2RGB(sdl_color) RGB(sdl_color.r, sdl_color.g, sdl_color.b)
+
 // Palette color indices
 #define PALCOLOR_TRANSPARENT 0
 #define PALCOLOR_BLACK 12
@@ -80,6 +82,8 @@
 #define COLOR_TRANSPARENT RGBA(0,0,0,0)
 #define COLOR_BLACK RGB(0,0,0)
 #define COLOR_WHITE RGB(255,255,255)
+#define COLOR_DARKGREY RGB(85,85,85)
+#define COLOR_LIGHTGREY RGB(170,170,170)
 #define COLOR_LIGHTBLUE RGB(85,255,255)
 #define COLOR_RED RGB(240,0,0)
 #define COLOR_YELLOW RGB(255,255,0)

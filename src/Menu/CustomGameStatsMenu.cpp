@@ -43,7 +43,7 @@ CustomGameStatsMenu::CustomGameStatsMenu() : MenuBase()
 
 	setWindowWidget(&windowWidget);
 
-	int localHouseColor = houseColor[pLocalHouse->getHouseID()];
+	Uint32 localHouseColor = SDL2RGB(palette[houseColor[pLocalHouse->getHouseID()]]);
 
 	windowWidget.addWidget(&mainVBox, Point(24,23),	Point(screen->w - 48, screen->h - 32));
 
@@ -100,7 +100,7 @@ CustomGameStatsMenu::CustomGameStatsMenu() : MenuBase()
         House* pHouse = currentGame->getHouse(i);
 
         if(pHouse != NULL) {
-            int color = houseColor[i];
+            Uint32 color = SDL2RGB(palette[houseColor[i]]);
 
             curHouseStat.houseName.setText(_("House") + " " + getHouseNameByNumber((HOUSETYPE) i));
             curHouseStat.houseName.setTextColor(color + 3);

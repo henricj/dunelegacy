@@ -47,7 +47,7 @@ public:
 
 protected:
 	MultiUnitInterface() : ObjectInterface() {
-	    int color = houseColor[pLocalHouse->getHouseID()];
+	    Uint32 color = SDL2RGB(palette[houseColor[pLocalHouse->getHouseID()]]);
 
         addWidget(&topBox,Point(0,0),Point(SIDEBARWIDTH - 25,80));
 

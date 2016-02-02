@@ -42,7 +42,7 @@ class  ReinforcementsWindow : public Window
 {
 public:
 
-    ReinforcementsWindow(MapEditor* pMapEditor, int color = -1);
+    ReinforcementsWindow(MapEditor* pMapEditor, Uint32 color = COLOR_DEFAULT);
 
 
 	/**
@@ -114,7 +114,7 @@ private:
 
     MapEditor*      pMapEditor;
 
-	int             color;
+	Uint32          color;
 
 	std::vector<ReinforcementInfo>  reinforcements;
 };

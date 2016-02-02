@@ -40,7 +40,7 @@ class  ChoamWindow : public Window
 {
 public:
 
-    ChoamWindow(MapEditor* pMapEditor, int uicolor = -1);
+    ChoamWindow(MapEditor* pMapEditor, Uint32 uicolor = COLOR_DEFAULT);
 
 
 	/**
@@ -51,7 +51,7 @@ public:
 		\param  color       the color that shall be used for buttons, etc.
 		\return	The new dialog box (will be automatically destroyed when it's closed)
 	*/
-	static ChoamWindow* create(MapEditor* pMapEditor, int color = -1) {
+	static ChoamWindow* create(MapEditor* pMapEditor, Uint32 color = COLOR_DEFAULT) {
 		ChoamWindow* dlg = new ChoamWindow(pMapEditor, color);
 		dlg->pAllocated = true;
 		return dlg;
@@ -91,7 +91,7 @@ private:
 
     MapEditor*  pMapEditor;
 
-	int         color;
+	Uint32      color;
 };
 
 

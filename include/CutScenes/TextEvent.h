@@ -42,9 +42,9 @@ public:
 		\param	bFadeIn			true = fade in the text (see TEXT_FADE_TIME for the number of frames it takes), false = simply show the text (default is true)
 		\param	bFadeOut		true = fade out the text (see TEXT_FADE_TIME for the number of frames it takes), false = text simply disapears (default is true)
 		\param	bCenterVertical	true = center the text vertically on the screen, false = draw the text near the bottom of the screen (default is false)
-		\param	color			the color of the text (default is PALCOLOR_HARKONNEN+1 which is a light red)
+		\param	color			the color of the text (default is COLOR_WHITE)
 	*/
-	TextEvent(std::string text, int startFrame, int lengthInFrames, bool bFadeIn = true, bool bFadeOut = true, bool bCenterVertical = false, Uint32 color = PALCOLOR_HARKONNEN+1);
+	TextEvent(std::string text, int startFrame, int lengthInFrames, bool bFadeIn = true, bool bFadeOut = true, bool bCenterVertical = false, Uint32 color = COLOR_WHITE);
 
 	/// destructor
 	~TextEvent();

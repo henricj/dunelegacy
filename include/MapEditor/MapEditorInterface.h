@@ -275,6 +275,6 @@ private:
 	int                 currentTerrainType;
 	int                 currentTerrainPenSize;
 
-	int                 color;
+	Uint32              color;
 };
 #endif // MAPEDITORINTERFACE_H

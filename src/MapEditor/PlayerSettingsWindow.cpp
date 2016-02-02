@@ -30,7 +30,7 @@
 
 
 
-PlayerSettingsWindow::PlayerSettingsWindow(MapEditor* pMapEditor, int uicolor) : Window(0,0,0,0), pMapEditor(pMapEditor), color(uicolor) {
+PlayerSettingsWindow::PlayerSettingsWindow(MapEditor* pMapEditor, Uint32 uicolor) : Window(0,0,0,0), pMapEditor(pMapEditor), color(uicolor) {
 
     // set up window
 	SDL_Surface *surf;
@@ -62,7 +62,7 @@ PlayerSettingsWindow::PlayerSettingsWindow(MapEditor* pMapEditor, int uicolor) :
 
         MapEditor::Player& playerInfo = pMapEditor->getPlayers()[i];
 
-        int currentColor = houseColor[playerInfo.colorOfHouse] + 3;
+        Uint32 currentColor = SDL2RGB(palette[houseColor[playerInfo.colorOfHouse] + 3]);
 
         centralVBox.addWidget(VSpacer::create(15));
 

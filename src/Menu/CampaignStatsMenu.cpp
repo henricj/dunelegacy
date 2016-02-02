@@ -45,6 +45,9 @@ CampaignStatsMenu::CampaignStatsMenu(int level) : MenuBase()
 
     calculateScore(level);
 
+    Uint32 colorYou = SDL2RGB(palette[houseColor[pLocalHouse->getHouseID()] + 1]);
+    Uint32 colorEnemy = SDL2RGB(palette[PALCOLOR_SARDAUKAR + 1]);
+
 	// set up window
 	SDL_Surface *surf;
 	surf = pGFXManager->getUIGraphic(UI_GameStatsBackground);
@@ -97,7 +100,7 @@ CampaignStatsMenu::CampaignStatsMenu(int level) : MenuBase()
 	spiceYouShadowProgressBar.setProgress(0.0);
 	windowWidget.addWidget(&spiceYouShadowProgressBar, (getSize()/2) + Point(-228 + 2, -15 + 2), Point(440,12));
 
-	spiceYouProgressBar.setColor(houseColor[pLocalHouse->getHouseID()] + 1);
+	spiceYouProgressBar.setColor(colorYou);
 	spiceYouProgressBar.setProgress(0.0);
 	windowWidget.addWidget(&spiceYouProgressBar, (getSize()/2) + Point(-228, -15), Point(440,12));
 
@@ -115,7 +118,7 @@ CampaignStatsMenu::CampaignStatsMenu(int level) : MenuBase()
 	spiceEnemyShadowProgressBar.setProgress(0.0);
 	windowWidget.addWidget(&spiceEnemyShadowProgressBar, (getSize()/2) + Point(-228 + 2, 3 + 2), Point(440,12));
 
-	spiceEnemyProgressBar.setColor(PALCOLOR_SARDAUKAR + 1);
+	spiceEnemyProgressBar.setColor(colorEnemy);
 	spiceEnemyProgressBar.setProgress(0.0);
 	windowWidget.addWidget(&spiceEnemyProgressBar, (getSize()/2) + Point(-228, 3), Point(440,12));
 
@@ -135,7 +138,7 @@ CampaignStatsMenu::CampaignStatsMenu(int level) : MenuBase()
 	unitsYouShadowProgressBar.setProgress(0.0);
 	windowWidget.addWidget(&unitsYouShadowProgressBar, (getSize()/2) + Point(-228 + 2, 59 + 2), Point(440,12));
 
-	unitsYouProgressBar.setColor(houseColor[pLocalHouse->getHouseID()] + 1);
+	unitsYouProgressBar.setColor(colorYou);
 	unitsYouProgressBar.setProgress(0.0);
 	windowWidget.addWidget(&unitsYouProgressBar, (getSize()/2) + Point(-228, 59), Point(440,12));
 
@@ -153,7 +156,7 @@ CampaignStatsMenu::CampaignStatsMenu(int level) : MenuBase()
 	unitsEnemyShadowProgressBar.setProgress(0.0);
 	windowWidget.addWidget(&unitsEnemyShadowProgressBar, (getSize()/2) + Point(-228 + 2, 77 + 2), Point(440,12));
 
-	unitsEnemyProgressBar.setColor(PALCOLOR_SARDAUKAR + 1);
+	unitsEnemyProgressBar.setColor(colorEnemy);
 	unitsEnemyProgressBar.setProgress(0.0);
 	windowWidget.addWidget(&unitsEnemyProgressBar, (getSize()/2) + Point(-228, 77), Point(440,12));
 
@@ -173,7 +176,7 @@ CampaignStatsMenu::CampaignStatsMenu(int level) : MenuBase()
 	buildingsYouShadowProgressBar.setProgress(0.0);
 	windowWidget.addWidget(&buildingsYouShadowProgressBar, (getSize()/2) + Point(-228 + 2, 133 + 2), Point(440,12));
 
-	buildingsYouProgressBar.setColor(houseColor[pLocalHouse->getHouseID()] + 1);
+	buildingsYouProgressBar.setColor(colorYou);
 	buildingsYouProgressBar.setProgress(0.0);
 	windowWidget.addWidget(&buildingsYouProgressBar, (getSize()/2) + Point(-228, 133), Point(440,12));
 
@@ -191,7 +194,7 @@ CampaignStatsMenu::CampaignStatsMenu(int level) : MenuBase()
 	buildingsEnemyShadowProgressBar.setProgress(0.0);
 	windowWidget.addWidget(&buildingsEnemyShadowProgressBar, (getSize()/2) + Point(-228 + 2, 151 + 2), Point(440,12));
 
-	buildingsEnemyProgressBar.setColor(PALCOLOR_SARDAUKAR + 1);
+	buildingsEnemyProgressBar.setColor(colorEnemy);
 	buildingsEnemyProgressBar.setProgress(0.0);
 	windowWidget.addWidget(&buildingsEnemyProgressBar, (getSize()/2) + Point(-228, 151), Point(440,12));
 

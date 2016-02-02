@@ -41,7 +41,11 @@ Uint32 getPixel(SDL_Surface *surface, int x, int y) {
             return p[0] | p[1] << 8 | p[2] << 16;
 
     case 4:
-        return *(Uint32 *)p;
+        Uint32 value;
+        value = *(Uint32 *)p;
+        Uint8 r,g,b,a;
+        SDL_GetRGBA(value,surface->format,&r,&g,&b,&a);
+        return RGBA(r,g,b,a);
 
     default:
         throw std::runtime_error("getPixel(): Invalid bpp value!");
@@ -77,7 +81,7 @@ void putPixel(SDL_Surface *surface, int x, int y, Uint32 color) {
 			break;
 
 		case 4:
-			*(Uint32 *)p = color;
+			*(Uint32 *)p = SDL_MapRGBA(surface->format, (color & RMASK) >> RSHIFT, (color & GMASK) >> GSHIFT, (color & BMASK) >> BSHIFT, (color & AMASK) >> ASHIFT);
 			break;
 		}
 	}

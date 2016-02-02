@@ -170,14 +170,16 @@ Intro::Intro() : CutScene() {
         }
     }
 
+    Uint32 color = SDL2RGB(palette[PALCOLOR_HARKONNEN+1]);
+	Uint32 sardaukarColor = SDL2RGB(palette[PALCOLOR_SARDAUKAR+1]);
 
 	startNewScene();
 
     addVideoEvent(new WSAVideoEvent(pDuneText, false));
     addVideoEvent(new HoldPictureVideoEvent(pDuneText->getPicture(pDuneText->getNumFrames()-1), 30, true, false));
     addVideoEvent(new FadeOutVideoEvent(pDuneText->getPicture(pDuneText->getNumFrames()-1), 20, true, false));
-    addTextEvent(new TextEvent(pIntroText->getString(IntroText_The_Battle_for_Arrakis),48,40,true,true,true));
-    addTextEvent(new TextEvent("The remake is called Dune Legacy!",48,40,true));
+    addTextEvent(new TextEvent(pIntroText->getString(IntroText_The_Battle_for_Arrakis),48,40,true,true,true,color));
+    addTextEvent(new TextEvent("The remake is called Dune Legacy!",48,40,true,color));
     if(bEnableVoice) addTrigger(new CutSceneSoundTrigger(52,voice[Voice_The_building]));
     if(bEnableVoice) addTrigger(new CutSceneSoundTrigger(64,voice[Voice_of_a_Dynasty]));
 
@@ -187,7 +189,7 @@ Intro::Intro() : CutScene() {
     addVideoEvent(new WSAVideoEvent(pPlanet));
     addVideoEvent(new HoldPictureVideoEvent(pPlanet->getPicture(pPlanet->getNumFrames()-1), 20, true));
     addVideoEvent(new FadeOutVideoEvent(pPlanet->getPicture(pPlanet->getNumFrames()-1), 20, true));
-    addTextEvent(new TextEvent(pIntroText->getString(IntroText_The_planet_Arrakis),20,60,true,true,false));
+    addTextEvent(new TextEvent(pIntroText->getString(IntroText_The_planet_Arrakis),20,60,true,true,false,color));
     addTrigger(new CutSceneMusicTrigger(25,MUSIC_INTRO));
     if(bEnableVoice) addTrigger(new CutSceneSoundTrigger(25,voice[Voice_The_Planet_Arrakis]));
     if(bEnableVoice) addTrigger(new CutSceneSoundTrigger(38,voice[Voice_Known_As_Dune]));
@@ -197,8 +199,8 @@ Intro::Intro() : CutScene() {
     addVideoEvent(new FadeInVideoEvent(pSandstorm->getPicture(0), 20, true));
     addVideoEvent(new WSAVideoEvent(pSandstorm));
     addVideoEvent(new HoldPictureVideoEvent(pSandstorm->getPicture(pSandstorm->getNumFrames()-1), 50, true));
-    addTextEvent(new TextEvent(pIntroText->getString(IntroText_Land_of_sand),20,40,true,true));
-    addTextEvent(new TextEvent(pIntroText->getString(IntroText_Home_of_the_Spice_Melange),61,45,true,true,false));
+    addTextEvent(new TextEvent(pIntroText->getString(IntroText_Land_of_sand),20,40,true,true,color));
+    addTextEvent(new TextEvent(pIntroText->getString(IntroText_Home_of_the_Spice_Melange),61,45,true,true,false,color));
     addTrigger(new CutSceneSoundTrigger(25,wind));
     if(bEnableVoice) addTrigger(new CutSceneSoundTrigger(15,voice[Voice_Land_of_sand]));
     if(bEnableVoice) addTrigger(new CutSceneSoundTrigger(70,voice[Voice_Home]));
@@ -211,8 +213,8 @@ Intro::Intro() : CutScene() {
     addVideoEvent(new WSAVideoEvent(pHarvesters));
     addVideoEvent(new HoldPictureVideoEvent(pHarvesters->getPicture(pHarvesters->getNumFrames()-1), 22, true));
     addVideoEvent(new FadeOutVideoEvent(pHarvesters->getPicture(pHarvesters->getNumFrames()-1), 20, true));
-    addTextEvent(new TextEvent(pIntroText->getString(IntroText_Spice_controls_the_Empire),25,40,true,true,false));
-    addTextEvent(new TextEvent(pIntroText->getString(IntroText_Whoever_controls_Dune),66,55,true,true,false));
+    addTextEvent(new TextEvent(pIntroText->getString(IntroText_Spice_controls_the_Empire),25,40,true,true,false,color));
+    addTextEvent(new TextEvent(pIntroText->getString(IntroText_Whoever_controls_Dune),66,55,true,true,false,color));
     addTrigger(new CutSceneSoundTrigger(45,carryallLanding));
     addTrigger(new CutSceneSoundTrigger(79,harvester));
     if(bEnableVoice) addTrigger(new CutSceneSoundTrigger(40,voice[Voice_The_spice]));
@@ -226,7 +228,7 @@ Intro::Intro() : CutScene() {
 
     addVideoEvent(new FadeInVideoEvent(pPalace->getPicture(0), 20, true));
     addVideoEvent(new HoldPictureVideoEvent(pPalace->getPicture(0), 50, true));
-    addTextEvent(new TextEvent(pIntroText->getString(IntroText_The_Emperor_has_proposed),20,48,true,true,false));
+    addTextEvent(new TextEvent(pIntroText->getString(IntroText_The_Emperor_has_proposed),20,48,true,true,false,color));
     if(bEnableVoice) addTrigger(new CutSceneSoundTrigger(22,voice[Voice_The_Emperor]));
     if(bEnableVoice) addTrigger(new CutSceneSoundTrigger(31,voice[Voice_has_proposed]));
     if(bEnableVoice) addTrigger(new CutSceneSoundTrigger(49,voice[Voice_to_each_of_the_houses]));
@@ -238,9 +240,9 @@ Intro::Intro() : CutScene() {
     addVideoEvent(new WSAVideoEvent(pImperator));
     addVideoEvent(new HoldPictureVideoEvent(pImperator->getPicture(pImperator->getNumFrames()-1), 15, true));
     addVideoEvent(new FadeOutVideoEvent(pImperator->getPicture(pImperator->getNumFrames()-1), 20, true));
-    addTextEvent(new TextEvent(pIntroText->getString(IntroText_The_House_that_produces),0,52,true,true,false,PALCOLOR_SARDAUKAR+1));
-    addTextEvent(new TextEvent(pIntroText->getString(IntroText_There_are_no_set_territories),68,30,true,true,false,PALCOLOR_SARDAUKAR+1));
-    addTextEvent(new TextEvent(pIntroText->getString(IntroText_And_no_rules_of_engagement),99,30,true,true,false,PALCOLOR_SARDAUKAR+1));
+    addTextEvent(new TextEvent(pIntroText->getString(IntroText_The_House_that_produces),0,52,true,true,false,sardaukarColor));
+    addTextEvent(new TextEvent(pIntroText->getString(IntroText_There_are_no_set_territories),68,30,true,true,false,sardaukarColor));
+    addTextEvent(new TextEvent(pIntroText->getString(IntroText_And_no_rules_of_engagement),99,30,true,true,false,sardaukarColor));
     if(bEnableVoice) addTrigger(new CutSceneSoundTrigger(8,voice[Voice_The_House]));
     if(bEnableVoice) addTrigger(new CutSceneSoundTrigger(14,voice[Voice_that_produces]));
     if(bEnableVoice) addTrigger(new CutSceneSoundTrigger(20,voice[Voice_the_most_spice]));
@@ -256,7 +258,7 @@ Intro::Intro() : CutScene() {
     addVideoEvent(new WSAVideoEvent(pStarport));
     addVideoEvent(new HoldPictureVideoEvent(pStarport->getPicture(pStarport->getNumFrames()-1), 20, true));
     addVideoEvent(new FadeOutVideoEvent(pStarport->getPicture(pStarport->getNumFrames()-1), 20, true));
-    addTextEvent(new TextEvent(pIntroText->getString(IntroText_Vast_armies_have_arrived),25,60,true,true,false));
+    addTextEvent(new TextEvent(pIntroText->getString(IntroText_Vast_armies_have_arrived),25,60,true,true,false,color));
     addTrigger(new CutSceneSoundTrigger(57,carryallLanding));
     if(bEnableVoice) addTrigger(new CutSceneSoundTrigger(30,voice[Voice_Vast_armies]));
     if(bEnableVoice) addTrigger(new CutSceneSoundTrigger(37,voice[Voice_have_arrived]));
@@ -264,7 +266,7 @@ Intro::Intro() : CutScene() {
     startNewScene();
 
     addVideoEvent(new HoldPictureVideoEvent(NULL, 80, true));
-    addTextEvent(new TextEvent(pIntroText->getString(IntroText_Now_three_houses_fight),0,80,true,false,true));
+    addTextEvent(new TextEvent(pIntroText->getString(IntroText_Now_three_houses_fight),0,80,true,false,true,color));
     if(bEnableVoice) addTrigger(new CutSceneSoundTrigger(10,voice[Voice_Now]));
     if(bEnableVoice) addTrigger(new CutSceneSoundTrigger(17,voice[Voice_three_Houses_fight]));
     if(bEnableVoice) addTrigger(new CutSceneSoundTrigger(34,voice[Voice_for_control]));
@@ -274,7 +276,7 @@ Intro::Intro() : CutScene() {
 
     addVideoEvent(new WSAVideoEvent(pAtreides));
     addVideoEvent(new HoldPictureVideoEvent(pAtreides->getPicture(pAtreides->getNumFrames()-1), 8, true));
-    addTextEvent(new TextEvent(pIntroText->getString(IntroText_The_noble_Atreides),25,58,true,true,false));
+    addTextEvent(new TextEvent(pIntroText->getString(IntroText_The_noble_Atreides),25,58,true,true,false,color));
     addTrigger(new CutSceneSoundTrigger(21,gunshot));
     addTrigger(new CutSceneSoundTrigger(31,glass));
     addTrigger(new CutSceneSoundTrigger(32,glass));
@@ -289,7 +291,7 @@ Intro::Intro() : CutScene() {
     startNewScene();
 
     addVideoEvent(new WSAVideoEvent(pOrdos));
-    addTextEvent(new TextEvent(pIntroText->getString(IntroText_The_insidious_Ordos),-2,47,true,true,false));
+    addTextEvent(new TextEvent(pIntroText->getString(IntroText_The_insidious_Ordos),-2,47,true,true,false,color));
     addTrigger(new CutSceneSoundTrigger(3,missle));
     addTrigger(new CutSceneSoundTrigger(8,missle));
     addTrigger(new CutSceneSoundTrigger(28,missle));
@@ -301,7 +303,7 @@ Intro::Intro() : CutScene() {
 
     addVideoEvent(new WSAVideoEvent(pHarkonnen));
     addVideoEvent(new FadeOutVideoEvent(pHarkonnen->getPicture(pHarkonnen->getNumFrames()-1), 15, true, true ,true));
-    addTextEvent(new TextEvent(pIntroText->getString(IntroText_And_the_evil_Harkonnen),-2,45,true,true,false));
+    addTextEvent(new TextEvent(pIntroText->getString(IntroText_And_the_evil_Harkonnen),-2,45,true,true,false,color));
     addTrigger(new CutSceneSoundTrigger(0,gunshot));
     addTrigger(new CutSceneSoundTrigger(5,blaster));
     addTrigger(new CutSceneSoundTrigger(7,blaster));
@@ -326,15 +328,15 @@ Intro::Intro() : CutScene() {
     addVideoEvent(new WSAVideoEvent(pDestroyedTank));
     addVideoEvent(new WSAVideoEvent(pDestroyedTank));
     addVideoEvent(new FadeOutVideoEvent(pDestroyedTank->getPicture(pDestroyedTank->getNumFrames()-1), 15, true));
-    addTextEvent(new TextEvent(pIntroText->getString(IntroText_Only_one_House_will_prevail),15,35,true,true,false));
+    addTextEvent(new TextEvent(pIntroText->getString(IntroText_Only_one_House_will_prevail),15,35,true,true,false,color));
     if(bEnableVoice) addTrigger(new CutSceneSoundTrigger(18,voice[Voice_Only_one_house]));
     if(bEnableVoice) addTrigger(new CutSceneSoundTrigger(27,voice[Voice_will_prevail]));
 
     startNewScene();
 
     addVideoEvent(new HoldPictureVideoEvent(NULL, 150, true));
-    addTextEvent(new TextEvent(pIntroText->getString(IntroText_Your_battle_for_Dune_begins),0,45,true,false,true));
-    addTextEvent(new TextEvent(pIntroText->getString(IntroText_NOW),47,45,false,true,true));
+    addTextEvent(new TextEvent(pIntroText->getString(IntroText_Your_battle_for_Dune_begins),0,45,true,false,true,color));
+    addTextEvent(new TextEvent(pIntroText->getString(IntroText_NOW),47,45,false,true,true,color));
     if(bEnableVoice) addTrigger(new CutSceneSoundTrigger(10,voice[Voice_Your]));
     if(bEnableVoice) addTrigger(new CutSceneSoundTrigger(16,voice[Voice_battle_for_Dune]));
     if(bEnableVoice) addTrigger(new CutSceneSoundTrigger(28,voice[Voice_begins]));

@@ -29,7 +29,7 @@
 #include <FileClasses/GFXManager.h>
 #include <FileClasses/TextManager.h>
 
-TeamsWindow::TeamsWindow(MapEditor* pMapEditor, int color)
+TeamsWindow::TeamsWindow(MapEditor* pMapEditor, Uint32 color)
  : Window(0,0,0,0), pMapEditor(pMapEditor), color(color), teams(pMapEditor->getTeams()) {
 
     // set up window

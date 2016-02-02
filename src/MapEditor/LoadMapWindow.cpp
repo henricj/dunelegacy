@@ -36,7 +36,7 @@
 #include <globals.h>
 
 
-LoadMapWindow::LoadMapWindow(int color) : Window(0,0,0,0), color(color) {
+LoadMapWindow::LoadMapWindow(Uint32 color) : Window(0,0,0,0), color(color) {
 
     // set up window
 	SDL_Surface *surf;

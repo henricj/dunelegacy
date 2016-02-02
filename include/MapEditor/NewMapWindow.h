@@ -36,7 +36,7 @@ class  NewMapWindow : public Window
 {
 public:
 
-    NewMapWindow(int color = -1);
+    NewMapWindow(Uint32 color = COLOR_DEFAULT);
 
 
 	/**
@@ -45,7 +45,7 @@ public:
 		add it as a child window of some other window. If the window gets closed it will be freed.
 		\return	The new dialog box (will be automatically destroyed when it's closed)
 	*/
-	static NewMapWindow* create(int color = -1) {
+	static NewMapWindow* create(Uint32 color = COLOR_DEFAULT) {
 		NewMapWindow* dlg = new NewMapWindow(color);
 		dlg->pAllocated = true;
 		return dlg;
@@ -135,7 +135,7 @@ private:
 	TextButton	loadButton;
 	TextButton	createButton;
 
-	int         color;
+	Uint32      color;
 
     int         mapSeed;
 	MapData     mapdata;

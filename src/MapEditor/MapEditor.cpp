@@ -1858,7 +1858,7 @@ void MapEditor::drawMap(SDL_Surface* pScreen, ScreenBorder* pScreenborder, bool 
         dest.w = world2zoomedWorld(15*TILESIZE);
         dest.h = world2zoomedWorld(10*TILESIZE);
 
-        drawRect(pScreen, dest.x, dest.y, dest.x+dest.w, dest.y+dest.h, PALCOLOR_DARKGREY);
+        drawRect(pScreen, dest.x, dest.y, dest.x+dest.w, dest.y+dest.h, COLOR_DARKGREY);
 	}
 
     SDL_Surface* validPlace = NULL;
@@ -1915,26 +1915,26 @@ void MapEditor::drawMap(SDL_Surface* pScreen, ScreenBorder* pScreenborder, bool 
                 if(!SDL_MUSTLOCK(pScreen) || (SDL_LockSurface(pScreen) == 0)) {
                     // top left bit
                     for(int i=0;i<=currentZoomlevel;i++) {
-                        drawHLineNoLock(pScreen,dest.x+i, dest.y+i, dest.x+(currentZoomlevel+1)*3, PALCOLOR_WHITE);
-                        drawVLineNoLock(pScreen,dest.x+i, dest.y+i, dest.y+(currentZoomlevel+1)*3, PALCOLOR_WHITE);
+                        drawHLineNoLock(pScreen,dest.x+i, dest.y+i, dest.x+(currentZoomlevel+1)*3, COLOR_WHITE);
+                        drawVLineNoLock(pScreen,dest.x+i, dest.y+i, dest.y+(currentZoomlevel+1)*3, COLOR_WHITE);
                     }
 
                     // top right bit
                     for(int i=0;i<=currentZoomlevel;i++) {
-                        drawHLineNoLock(pScreen,dest.x + dest.w-1 - i, dest.y+i, dest.x + dest.w-1 - (currentZoomlevel+1)*3, PALCOLOR_WHITE);
-                        drawVLineNoLock(pScreen,dest.x + dest.w-1 - i, dest.y+i, dest.y+(currentZoomlevel+1)*3, PALCOLOR_WHITE);
+                        drawHLineNoLock(pScreen,dest.x + dest.w-1 - i, dest.y+i, dest.x + dest.w-1 - (currentZoomlevel+1)*3, COLOR_WHITE);
+                        drawVLineNoLock(pScreen,dest.x + dest.w-1 - i, dest.y+i, dest.y+(currentZoomlevel+1)*3, COLOR_WHITE);
                     }
 
                     // bottom left bit
                     for(int i=0;i<=currentZoomlevel;i++) {
-                        drawHLineNoLock(pScreen,dest.x+i, dest.y + dest.h-1 - i, dest.x+(currentZoomlevel+1)*3, PALCOLOR_WHITE);
-                        drawVLineNoLock(pScreen,dest.x+i, dest.y + dest.h-1 - i, dest.y + dest.h-1 - (currentZoomlevel+1)*3, PALCOLOR_WHITE);
+                        drawHLineNoLock(pScreen,dest.x+i, dest.y + dest.h-1 - i, dest.x+(currentZoomlevel+1)*3, COLOR_WHITE);
+                        drawVLineNoLock(pScreen,dest.x+i, dest.y + dest.h-1 - i, dest.y + dest.h-1 - (currentZoomlevel+1)*3, COLOR_WHITE);
                     }
 
                     // bottom right bit
                     for(int i=0;i<=currentZoomlevel;i++) {
-                        drawHLineNoLock(pScreen,dest.x + dest.w-1 - i, dest.y + dest.h-1 - i, dest.x + dest.w-1 - (currentZoomlevel+1)*3, PALCOLOR_WHITE);
-                        drawVLineNoLock(pScreen,dest.x + dest.w-1 - i, dest.y + dest.h-1 - i, dest.y + dest.h-1 - (currentZoomlevel+1)*3, PALCOLOR_WHITE);
+                        drawHLineNoLock(pScreen,dest.x + dest.w-1 - i, dest.y + dest.h-1 - i, dest.x + dest.w-1 - (currentZoomlevel+1)*3, COLOR_WHITE);
+                        drawVLineNoLock(pScreen,dest.x + dest.w-1 - i, dest.y + dest.h-1 - i, dest.y + dest.h-1 - (currentZoomlevel+1)*3, COLOR_WHITE);
                     }
 
                     if(SDL_MUSTLOCK(pScreen)) {

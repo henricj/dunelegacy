@@ -1254,7 +1254,7 @@ void MapEditorInterface::changeHouseDropDown(HOUSETYPE newHouse) {
 }
 
 void MapEditorInterface::changeInterfaceColor(HOUSETYPE newHouse) {
-    color = houseColor[newHouse] + 3;
+    color = SDL2RGB(palette[houseColor[newHouse] + 3]);
 
 	terrainButton.setTextColor(color);
 	structuresButton.setTextColor(color);

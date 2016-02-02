@@ -24,12 +24,16 @@
 #include <FileClasses/GFXManager.h>
 #include <FileClasses/TextManager.h>
 
+#include <GUI/dune/DuneStyle.h>
+
 #include <misc/draw_util.h>
 
 #include <Game.h>
 
 MentatHelp::MentatHelp(int newHouse, int techLevel, int mission) : MentatMenu(newHouse), mission(mission) {
     mentatEntries = pTextManager->getAllMentatEntries(newHouse, techLevel);
+
+    Uint32 color = SDL2RGB(palette[houseColor[newHouse]+3]);
 
     if(mission == 0) {
         std::vector<MentatTextFile::MentatEntry>::iterator iter = mentatEntries.begin();
@@ -58,7 +62,7 @@ MentatHelp::MentatHelp(int newHouse, int techLevel, int mission) : MentatMenu(ne
     }
     mentatTopicsList.setHighlightSelectedElement(false);
 	mentatTopicsList.setOnSingleClick(std::bind(&MentatHelp::onListBoxClick, this));
-	mentatTopicsList.setColor(houseColor[newHouse]+3);
+	mentatTopicsList.setColor(color);
     windowWidget.addWidget(&mentatTopicsList,Point(256+7, 96+7),Point(368 - 14, 224 - 14));
 
     windowWidget.addWidget(&animation,Point(256,96),Point(368,224));
@@ -90,22 +94,22 @@ void MentatHelp::drawSpecificStuff()
     int y1 = getPosition().y;
     int y2 = getPosition().y + getSize().y - 1;
 
-	drawRect(screen, x1, y1, x2, y2, 229);
-	drawHLine(screen, x1 + 1, y1 + 1, x2 - 1, 108);
-	drawHLine(screen, x1 + 2, y1 + 2, x2 - 2, 108);
-	drawHLine(screen, x1 + 3, y1 + 3, x2 - 3, 108);
+	drawRect(screen, x1, y1, x2, y2, DuneStyle::buttonBorderColor);
+	drawHLine(screen, x1 + 1, y1 + 1, x2 - 1, DuneStyle::buttonEdgeTopLeftColor);
+	drawHLine(screen, x1 + 2, y1 + 2, x2 - 2, DuneStyle::buttonEdgeTopLeftColor);
+	drawHLine(screen, x1 + 3, y1 + 3, x2 - 3, DuneStyle::buttonEdgeTopLeftColor);
 
-	drawVLine(screen, x1 + 1, y1 + 1, y2 - 1, 108);
-	drawVLine(screen, x1 + 2, y1 + 2, y2 - 2, 108);
-	drawVLine(screen, x1 + 3, y1 + 3, y2 - 3, 108);
+	drawVLine(screen, x1 + 1, y1 + 1, y2 - 1, DuneStyle::buttonEdgeTopLeftColor);
+	drawVLine(screen, x1 + 2, y1 + 2, y2 - 2, DuneStyle::buttonEdgeTopLeftColor);
+	drawVLine(screen, x1 + 3, y1 + 3, y2 - 3, DuneStyle::buttonEdgeTopLeftColor);
 
-	drawHLine(screen, x1 + 1, y2 - 1, x2 - 1, 226);
-	drawHLine(screen, x1 + 2, y2 - 2, x2 - 2, 226);
-	drawHLine(screen, x1 + 3, y2 - 3, x2 - 3, 226);
+	drawHLine(screen, x1 + 1, y2 - 1, x2 - 1, DuneStyle::buttonEdgeBottomRightColor);
+	drawHLine(screen, x1 + 2, y2 - 2, x2 - 2, DuneStyle::buttonEdgeBottomRightColor);
+	drawHLine(screen, x1 + 3, y2 - 3, x2 - 3, DuneStyle::buttonEdgeBottomRightColor);
 
-	drawVLine(screen, x2 - 1, y1 + 1, y2 - 1, 226);
-	drawVLine(screen, x2 - 2, y1 + 2, y2 - 2, 226);
-	drawVLine(screen, x2 - 3, y1 + 3, y2 - 3, 226);
+	drawVLine(screen, x2 - 1, y1 + 1, y2 - 1, DuneStyle::buttonEdgeBottomRightColor);
+	drawVLine(screen, x2 - 2, y1 + 2, y2 - 2, DuneStyle::buttonEdgeBottomRightColor);
+	drawVLine(screen, x2 - 3, y1 + 3, y2 - 3, DuneStyle::buttonEdgeBottomRightColor);
 }
 
 bool MentatHelp::doInput(SDL_Event &event)

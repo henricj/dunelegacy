@@ -31,7 +31,7 @@
 #include <FileClasses/GFXManager.h>
 #include <FileClasses/TextManager.h>
 
-ReinforcementsWindow::ReinforcementsWindow(MapEditor* pMapEditor, int color)
+ReinforcementsWindow::ReinforcementsWindow(MapEditor* pMapEditor, Uint32 color)
  : Window(0,0,0,0), pMapEditor(pMapEditor), color(color), reinforcements(pMapEditor->getReinforcements()) {
 
     // set up window
