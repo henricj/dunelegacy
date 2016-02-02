@@ -617,8 +617,10 @@ GFXManager::GFXManager() {
 	uiGraphic[UI_Repair][HOUSE_HARKONNEN] = SDL_LoadBMP_RW(pFileManager->openFile("Button_Repair.bmp"),true);
 	uiGraphic[UI_Repair_Pressed][HOUSE_HARKONNEN] = SDL_LoadBMP_RW(pFileManager->openFile("Button_RepairPushed.bmp"),true);
 	uiGraphic[UI_Minus][HOUSE_HARKONNEN] = SDL_LoadBMP_RW(pFileManager->openFile("Button_Minus.bmp"),true);
+	uiGraphic[UI_Minus_Active][HOUSE_HARKONNEN] = mapSurfaceColorRange(uiGraphic[UI_Minus][HOUSE_HARKONNEN], PALCOLOR_HARKONNEN, PALCOLOR_HARKONNEN-2);
 	uiGraphic[UI_Minus_Pressed][HOUSE_HARKONNEN] = SDL_LoadBMP_RW(pFileManager->openFile("Button_MinusPushed.bmp"),true);
 	uiGraphic[UI_Plus][HOUSE_HARKONNEN] = SDL_LoadBMP_RW(pFileManager->openFile("Button_Plus.bmp"),true);
+	uiGraphic[UI_Plus_Active][HOUSE_HARKONNEN] = mapSurfaceColorRange(uiGraphic[UI_Plus][HOUSE_HARKONNEN], PALCOLOR_HARKONNEN, PALCOLOR_HARKONNEN-2);
 	uiGraphic[UI_Plus_Pressed][HOUSE_HARKONNEN] = SDL_LoadBMP_RW(pFileManager->openFile("Button_PlusPushed.bmp"),true);
 	uiGraphic[UI_MissionSelect][HOUSE_HARKONNEN] = SDL_LoadBMP_RW(pFileManager->openFile("Menu_MissionSelect.bmp"),true);
 	PicFactory->drawFrame(uiGraphic[UI_MissionSelect][HOUSE_HARKONNEN],PictureFactory::SimpleFrame,NULL);
@@ -778,12 +780,16 @@ GFXManager::GFXManager() {
 	SDL_SetColorKey(uiGraphic[UI_MapEditor_MirrorPointIcon][HOUSE_HARKONNEN], SDL_SRCCOLORKEY | SDL_RLEACCEL, 0);
     uiGraphic[UI_MapEditor_ArrowUp][HOUSE_HARKONNEN] = SDL_LoadBMP_RW(pFileManager->openFile("MapEditorArrowUp.bmp"),true);
 	SDL_SetColorKey(uiGraphic[UI_MapEditor_ArrowUp][HOUSE_HARKONNEN], SDL_SRCCOLORKEY | SDL_RLEACCEL, 0);
+	uiGraphic[UI_MapEditor_ArrowUp_Active][HOUSE_HARKONNEN] = mapSurfaceColorRange(uiGraphic[UI_MapEditor_ArrowUp][HOUSE_HARKONNEN], PALCOLOR_HARKONNEN, PALCOLOR_HARKONNEN-3);
     uiGraphic[UI_MapEditor_ArrowDown][HOUSE_HARKONNEN] = SDL_LoadBMP_RW(pFileManager->openFile("MapEditorArrowDown.bmp"),true);
 	SDL_SetColorKey(uiGraphic[UI_MapEditor_ArrowDown][HOUSE_HARKONNEN], SDL_SRCCOLORKEY | SDL_RLEACCEL, 0);
+	uiGraphic[UI_MapEditor_ArrowDown_Active][HOUSE_HARKONNEN] = mapSurfaceColorRange(uiGraphic[UI_MapEditor_ArrowDown][HOUSE_HARKONNEN], PALCOLOR_HARKONNEN, PALCOLOR_HARKONNEN-3);
     uiGraphic[UI_MapEditor_Plus][HOUSE_HARKONNEN] = SDL_LoadBMP_RW(pFileManager->openFile("MapEditorPlus.bmp"),true);
 	SDL_SetColorKey(uiGraphic[UI_MapEditor_Plus][HOUSE_HARKONNEN], SDL_SRCCOLORKEY | SDL_RLEACCEL, 0);
+	uiGraphic[UI_MapEditor_Plus_Active][HOUSE_HARKONNEN] = mapSurfaceColorRange(uiGraphic[UI_MapEditor_Plus][HOUSE_HARKONNEN], PALCOLOR_HARKONNEN, PALCOLOR_HARKONNEN-3);
     uiGraphic[UI_MapEditor_Minus][HOUSE_HARKONNEN] = SDL_LoadBMP_RW(pFileManager->openFile("MapEditorMinus.bmp"),true);
 	SDL_SetColorKey(uiGraphic[UI_MapEditor_Minus][HOUSE_HARKONNEN], SDL_SRCCOLORKEY | SDL_RLEACCEL, 0);
+	uiGraphic[UI_MapEditor_Minus_Active][HOUSE_HARKONNEN] = mapSurfaceColorRange(uiGraphic[UI_MapEditor_Minus][HOUSE_HARKONNEN], PALCOLOR_HARKONNEN, PALCOLOR_HARKONNEN-3);
     uiGraphic[UI_MapEditor_RotateLeftIcon][HOUSE_HARKONNEN] = SDL_LoadBMP_RW(pFileManager->openFile("MapEditorRotateLeft.bmp"),true);
 	SDL_SetColorKey(uiGraphic[UI_MapEditor_RotateLeftIcon][HOUSE_HARKONNEN], SDL_SRCCOLORKEY | SDL_RLEACCEL, 0);
     uiGraphic[UI_MapEditor_RotateLeftHighlightIcon][HOUSE_HARKONNEN] = mapSurfaceColorRange(uiGraphic[UI_MapEditor_RotateLeftIcon][HOUSE_HARKONNEN], PALCOLOR_HARKONNEN, PALCOLOR_HARKONNEN-3);

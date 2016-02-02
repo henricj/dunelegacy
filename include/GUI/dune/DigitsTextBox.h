@@ -36,7 +36,7 @@
 class DigitsTextBox : public HBox {
 
 public:
-    DigitsTextBox() : color(COLOR_DEFAULT) {
+    DigitsTextBox() : house(HOUSE_HARKONNEN) {
         minValue = std::numeric_limits<int>::min();
         maxValue = std::numeric_limits<int>::max();
 
@@ -69,11 +69,12 @@ public:
 
     /**
        Sets the text color for this text box.
+       \param   house           the house, used for the button colors
        \param	textcolor	    the color of the text (COLOR_DEFAULT = default color)
        \param	textshadowcolor	the color of the shadow of the text (COLOR_DEFAULT = default color)
 	*/
-	virtual inline void setTextColor(Uint32 textcolor, Uint32 textshadowcolor = COLOR_DEFAULT) {
-	    color = textcolor;
+	virtual inline void setColor(HOUSETYPE house, Uint32 textcolor, Uint32 textshadowcolor = COLOR_DEFAULT) {
+        this->house = house;
 	    updateSurfaces();
 		textBox.setTextColor(textcolor, textshadowcolor);
 	}
@@ -199,19 +200,13 @@ private:
 
 
     void updateSurfaces() {
-        SDL_Surface* surf;
-        SDL_Surface* surfPressed;
-        SDL_Surface* surfActive;
+        plusButton.setSurfaces( pGFXManager->getUIGraphic(UI_Plus, house), false,
+                                pGFXManager->getUIGraphic(UI_Plus_Pressed, house), false,
+                                pGFXManager->getUIGraphic(UI_Plus_Active, house), false);
 
-        surf = mapSurfaceColorRange(pGFXManager->getUIGraphic(UI_Plus), PALCOLOR_HARKONNEN, color-2);
-        surfPressed =  mapSurfaceColorRange(pGFXManager->getUIGraphic(UI_Plus_Pressed), PALCOLOR_HARKONNEN, color-2);
-        surfActive =  mapSurfaceColorRange(pGFXManager->getUIGraphic(UI_Plus), PALCOLOR_HARKONNEN, color-4);
-        plusButton.setSurfaces(surf,true,surfPressed,true,surfActive,true);
-
-        surf = mapSurfaceColorRange(pGFXManager->getUIGraphic(UI_Minus), PALCOLOR_HARKONNEN, color-2);
-        surfPressed = mapSurfaceColorRange(pGFXManager->getUIGraphic(UI_Minus_Pressed), PALCOLOR_HARKONNEN, color-2);
-        surfActive =  mapSurfaceColorRange(pGFXManager->getUIGraphic(UI_Minus), PALCOLOR_HARKONNEN, color-4);
-        minusButton.setSurfaces(surf,true,surfPressed,true,surfActive,true);
+        minusButton.setSurfaces(pGFXManager->getUIGraphic(UI_Minus, house), false,
+                                pGFXManager->getUIGraphic(UI_Minus_Pressed, house), false,
+                                pGFXManager->getUIGraphic(UI_Minus_Active, house), false);
     }
 
 
@@ -227,7 +222,8 @@ private:
 
 	int             incrementValue;
 
-	Uint32 color;
+    HOUSETYPE       house;
+	Uint32          color;
 };
 
 

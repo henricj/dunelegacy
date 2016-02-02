@@ -29,8 +29,10 @@
 #include <FileClasses/GFXManager.h>
 #include <FileClasses/TextManager.h>
 
-TeamsWindow::TeamsWindow(MapEditor* pMapEditor, Uint32 color)
- : Window(0,0,0,0), pMapEditor(pMapEditor), color(color), teams(pMapEditor->getTeams()) {
+TeamsWindow::TeamsWindow(MapEditor* pMapEditor, HOUSETYPE house)
+ : Window(0,0,0,0), pMapEditor(pMapEditor), house(house), teams(pMapEditor->getTeams()) {
+
+    color = SDL2RGB(palette[houseColor[house]+3]);
 
     // set up window
 	SDL_Surface *surf;
@@ -67,28 +69,28 @@ TeamsWindow::TeamsWindow(MapEditor* pMapEditor, Uint32 color)
 
     hBox1.addWidget(HSpacer::create(3));
 
-    listEntryUpButton.setSymbol(mapSurfaceColorRange(pGFXManager->getUIGraphic(UI_MapEditor_ArrowUp), PALCOLOR_HARKONNEN, color-3), true,
-                                mapSurfaceColorRange(pGFXManager->getUIGraphic(UI_MapEditor_ArrowUp), PALCOLOR_HARKONNEN, color-6), true);
+    listEntryUpButton.setSymbol(pGFXManager->getUIGraphic(UI_MapEditor_ArrowUp, house), false,
+                                pGFXManager->getUIGraphic(UI_MapEditor_ArrowUp_Active, house), false);
     listEntryUpButton.setTooltipText(_("Move up"));
     listEntryUpButton.setOnClick(std::bind(&TeamsWindow::onUp, this));
     listControlVBox.addWidget(&listEntryUpButton, 25);
     listControlVBox.addWidget(VSpacer::create(3));
-    listEntryDownButton.setSymbol(mapSurfaceColorRange(pGFXManager->getUIGraphic(UI_MapEditor_ArrowDown), PALCOLOR_HARKONNEN, color-3), true,
-                                  mapSurfaceColorRange(pGFXManager->getUIGraphic(UI_MapEditor_ArrowDown), PALCOLOR_HARKONNEN, color-6), true);
+    listEntryDownButton.setSymbol(pGFXManager->getUIGraphic(UI_MapEditor_ArrowDown, house), false,
+                                  pGFXManager->getUIGraphic(UI_MapEditor_ArrowDown_Active, house), false);
     listEntryDownButton.setTooltipText(_("Move down"));
     listEntryDownButton.setOnClick(std::bind(&TeamsWindow::onDown, this));
     listControlVBox.addWidget(&listEntryDownButton, 25);
 
     listControlVBox.addWidget(Spacer::create(), 6.0);
 
-    addListEntryButton.setSymbol(mapSurfaceColorRange(pGFXManager->getUIGraphic(UI_MapEditor_Plus), PALCOLOR_HARKONNEN, color-3), true,
-                                 mapSurfaceColorRange(pGFXManager->getUIGraphic(UI_MapEditor_Plus), PALCOLOR_HARKONNEN, color-6), true);
+    addListEntryButton.setSymbol(pGFXManager->getUIGraphic(UI_MapEditor_Plus, house), false,
+                                 pGFXManager->getUIGraphic(UI_MapEditor_Plus_Active, house), false);
     addListEntryButton.setTooltipText(_("Add"));
     addListEntryButton.setOnClick(std::bind(&TeamsWindow::onAdd, this));
     listControlVBox.addWidget(&addListEntryButton, 25);
     listControlVBox.addWidget(VSpacer::create(3));
-    removeListEntryButton.setSymbol(mapSurfaceColorRange(pGFXManager->getUIGraphic(UI_MapEditor_Minus), PALCOLOR_HARKONNEN, color-3), true,
-                                    mapSurfaceColorRange(pGFXManager->getUIGraphic(UI_MapEditor_Minus), PALCOLOR_HARKONNEN, color-6), true);
+    removeListEntryButton.setSymbol(pGFXManager->getUIGraphic(UI_MapEditor_Minus, house), false,
+                                    pGFXManager->getUIGraphic(UI_MapEditor_Minus_Active, house), false);
     removeListEntryButton.setTooltipText(_("Remove"));
     removeListEntryButton.setOnClick(std::bind(&TeamsWindow::onRemove, this));
     listControlVBox.addWidget(&removeListEntryButton, 25);
@@ -151,7 +153,7 @@ TeamsWindow::TeamsWindow(MapEditor* pMapEditor, Uint32 color)
     minUnitsLabel.setText(_("Units") + ":");
     minUnitsLabel.setTextColor(color);
     hBox3.addWidget(&minUnitsLabel);
-    minUnitsTextBox.setTextColor(color);
+    minUnitsTextBox.setColor(house, color);
     minUnitsTextBox.setMaximumTextLength(2);
     minUnitsTextBox.setMinMax(0,99);
     minUnitsTextBox.setOnValueChange(std::bind(&TeamsWindow::onMinUnitsChange, this, std::placeholders::_1));
@@ -159,7 +161,7 @@ TeamsWindow::TeamsWindow(MapEditor* pMapEditor, Uint32 color)
     maxUnitsLabel.setText(_("to"));
     maxUnitsLabel.setTextColor(color);
     hBox3.addWidget(&maxUnitsLabel, 30);
-    maxUnitsTextBox.setTextColor(color);
+    maxUnitsTextBox.setColor(house, color);
     maxUnitsTextBox.setMaximumTextLength(2);
     maxUnitsTextBox.setMinMax(0,99);
     maxUnitsTextBox.setOnValueChange(std::bind(&TeamsWindow::onMaxUnitsChange, this, std::placeholders::_1));

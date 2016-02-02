@@ -31,8 +31,10 @@
 #include <FileClasses/GFXManager.h>
 #include <FileClasses/TextManager.h>
 
-MapSettingsWindow::MapSettingsWindow(MapEditor* pMapEditor, Uint32 uicolor)
- : Window(0,0,0,0), pMapEditor(pMapEditor), color(uicolor) {
+MapSettingsWindow::MapSettingsWindow(MapEditor* pMapEditor, HOUSETYPE house)
+ : Window(0,0,0,0), pMapEditor(pMapEditor), house(house) {
+
+    color = SDL2RGB(palette[houseColor[house]+3]);
 
     MapInfo& mapInfo = pMapEditor->getMapInfo();
 
@@ -158,7 +160,7 @@ MapSettingsWindow::MapSettingsWindow(MapEditor* pMapEditor, Uint32 uicolor)
     winFlagsTimeoutCheckbox.setTextColor(color);
     winFlagsTimeoutCheckbox.setChecked(mapInfo.winFlags & WINLOSEFLAGS_TIMEOUT);
     winFlags1HBox.addWidget(&winFlagsTimeoutCheckbox, 0.0);
-    winFlagsTimeoutTextBox.setTextColor(color);
+    winFlagsTimeoutTextBox.setColor(house, color);
     winFlagsTimeoutTextBox.setMaximumTextLength(3);
     winFlagsTimeoutTextBox.setMinMax(0,999);
     winFlagsTimeoutTextBox.setValue(mapInfo.timeout);

@@ -275,6 +275,7 @@ private:
 	int                 currentTerrainType;
 	int                 currentTerrainPenSize;
 
+	HOUSETYPE           house;
 	Uint32              color;
 };
 #endif // MAPEDITORINTERFACE_H

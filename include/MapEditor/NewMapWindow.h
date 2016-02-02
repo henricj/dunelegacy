@@ -36,17 +36,18 @@ class  NewMapWindow : public Window
 {
 public:
 
-    NewMapWindow(Uint32 color = COLOR_DEFAULT);
+    NewMapWindow(HOUSETYPE house);
 
 
 	/**
 		This static method creates a dynamic new map window.
 		The idea behind this method is to simply create a new dialog on the fly and
 		add it as a child window of some other window. If the window gets closed it will be freed.
+		\param  house       the currently selected house; used for button colors, etc.
 		\return	The new dialog box (will be automatically destroyed when it's closed)
 	*/
-	static NewMapWindow* create(Uint32 color = COLOR_DEFAULT) {
-		NewMapWindow* dlg = new NewMapWindow(color);
+	static NewMapWindow* create(HOUSETYPE house) {
+		NewMapWindow* dlg = new NewMapWindow(house);
 		dlg->pAllocated = true;
 		return dlg;
 	}
@@ -135,6 +136,7 @@ private:
 	TextButton	loadButton;
 	TextButton	createButton;
 
+    HOUSETYPE   house;
 	Uint32      color;
 
     int         mapSeed;

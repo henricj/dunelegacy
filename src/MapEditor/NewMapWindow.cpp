@@ -34,9 +34,11 @@
 #include <FileClasses/GFXManager.h>
 #include <FileClasses/TextManager.h>
 
-NewMapWindow::NewMapWindow(Uint32 color) : Window(0,0,0,0), color(color), mapSeed(INVALID) {
+NewMapWindow::NewMapWindow(HOUSETYPE house) : Window(0,0,0,0), house(house), mapSeed(INVALID) {
 
-    	// set up window
+    color = SDL2RGB(palette[houseColor[house]+3]);
+
+    // set up window
 	SDL_Surface *surf;
 	surf = pGFXManager->getUIGraphic(UI_NewMapWindow);
 
@@ -123,7 +125,7 @@ NewMapWindow::NewMapWindow(Uint32 color) : Window(0,0,0,0), color(color), mapSee
     rngSeedTextBox.setMinMax(0, 32767);
     rngSeedTextBox.setMaximumTextLength(5);
     rngSeedTextBox.setValue(rand() % 32768);
-    rngSeedTextBox.setTextColor(color);
+    rngSeedTextBox.setColor(house, color);
     rngSeedTextBox.setOnValueChange(std::bind(&NewMapWindow::onMapPropertiesChanged,this));
     rngHBox.addWidget(&rngSeedTextBox,80);
 
@@ -136,7 +138,7 @@ NewMapWindow::NewMapWindow(Uint32 color) : Window(0,0,0,0), color(color), mapSee
     rockDigitsTextBox.setMinMax(0, 99);
     rockDigitsTextBox.setMaximumTextLength(3);
     rockDigitsTextBox.setValue(ROCKFIELDS);
-    rockDigitsTextBox.setTextColor(color);
+    rockDigitsTextBox.setColor(house, color);
     rockDigitsTextBox.setOnValueChange(std::bind(&NewMapWindow::onMapPropertiesChanged,this));
     rngHBox.addWidget(&rockDigitsTextBox,45);
 
@@ -149,7 +151,7 @@ NewMapWindow::NewMapWindow(Uint32 color) : Window(0,0,0,0), color(color), mapSee
     spiceDigitsTextBox.setMinMax(0, 99);
     spiceDigitsTextBox.setMaximumTextLength(3);
     spiceDigitsTextBox.setValue(SPICEFIELDS);
-    spiceDigitsTextBox.setTextColor(color);
+    spiceDigitsTextBox.setColor(house, color);
     spiceDigitsTextBox.setOnValueChange(std::bind(&NewMapWindow::onMapPropertiesChanged,this));
     rngHBox.addWidget(&spiceDigitsTextBox,45);
 

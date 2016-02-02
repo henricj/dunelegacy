@@ -37,7 +37,9 @@ static const ItemID_enum choamUnits[] = { Unit_Carryall,  Unit_Ornithopter,
                                            Unit_SonicTank, ItemID_Invalid
                                           };
 
-ChoamWindow::ChoamWindow(MapEditor* pMapEditor, Uint32 uicolor) : Window(0,0,0,0), pMapEditor(pMapEditor), color(uicolor) {
+ChoamWindow::ChoamWindow(MapEditor* pMapEditor, HOUSETYPE house) : Window(0,0,0,0), pMapEditor(pMapEditor), house(house) {
+
+    color = SDL2RGB(palette[houseColor[house]+3]);
 
     // set up window
 	SDL_Surface *surf;
@@ -87,7 +89,7 @@ ChoamWindow::ChoamWindow(MapEditor* pMapEditor, Uint32 uicolor) : Window(0,0,0,0
         choamRows[i].Checkbox_Unit1.setChecked(choam.count(unit1) > 0);
         choamRows[i].HBox_Unit.addWidget(&choamRows[i].Checkbox_Unit1, 180);
 
-        choamRows[i].TextBox_Unit1.setTextColor(color);
+        choamRows[i].TextBox_Unit1.setColor(house, color);
         choamRows[i].TextBox_Unit1.setMinMax(0,1000);
         choamRows[i].TextBox_Unit1.setValue((choam.count(unit1) > 0) ? choam[unit1] : 0);
         choamRows[i].TextBox_Unit1.setVisible(choam.count(unit1) > 0);
@@ -102,7 +104,7 @@ ChoamWindow::ChoamWindow(MapEditor* pMapEditor, Uint32 uicolor) : Window(0,0,0,0
             choamRows[i].Checkbox_Unit2.setChecked(choam.count(unit2) > 0);
             choamRows[i].HBox_Unit.addWidget(&choamRows[i].Checkbox_Unit2, 180);
 
-            choamRows[i].TextBox_Unit2.setTextColor(color);
+            choamRows[i].TextBox_Unit2.setColor(house, color);
             choamRows[i].TextBox_Unit2.setMinMax(0,1000);
             choamRows[i].TextBox_Unit2.setValue((choam.count(unit2) > 0) ? choam[unit2] : 0);
             choamRows[i].TextBox_Unit2.setVisible(choam.count(unit2) > 0);

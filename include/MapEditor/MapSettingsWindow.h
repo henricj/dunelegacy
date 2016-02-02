@@ -40,7 +40,7 @@ class  MapSettingsWindow : public Window
 {
 public:
 
-    MapSettingsWindow(MapEditor* pMapEditor, Uint32 uicolor = COLOR_DEFAULT);
+    MapSettingsWindow(MapEditor* pMapEditor, HOUSETYPE house);
 
 
 	/**
@@ -48,11 +48,11 @@ public:
 		The idea behind this method is to simply create a new dialog on the fly and
 		add it as a child window of some other window. If the window gets closed it will be freed.
 		\param  pMapEditor  pointer to the currently running map editor
-		\param  color       the color that shall be used for buttons, etc.
+		\param  house       the currently selected house; used for button colors, etc.
 		\return	The new dialog box (will be automatically destroyed when it's closed)
 	*/
-	static MapSettingsWindow* create(MapEditor* pMapEditor, Uint32 color = COLOR_DEFAULT) {
-		MapSettingsWindow* dlg = new MapSettingsWindow(pMapEditor, color);
+	static MapSettingsWindow* create(MapEditor* pMapEditor, HOUSETYPE house) {
+		MapSettingsWindow* dlg = new MapSettingsWindow(pMapEditor, house);
 		dlg->pAllocated = true;
 		return dlg;
 	}
@@ -123,6 +123,7 @@ private:
 
     MapEditor*      pMapEditor;
 
+    HOUSETYPE       house;
 	Uint32          color;
 
 	std::vector<std::string>    availableWinPictures;

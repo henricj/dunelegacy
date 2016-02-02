@@ -858,7 +858,7 @@ void MapEditorInterface::onChildWindowClose(Window* pChildWindow) {
 
 
 void MapEditorInterface::onNew() {
-    openWindow(NewMapWindow::create(color));
+    openWindow(NewMapWindow::create(house));
 }
 
 bool MapEditorInterface::onRadarClick(Coord worldPosition, bool bRightMouseButton, bool bDrag) {
@@ -918,23 +918,23 @@ void MapEditorInterface::onLoad() {
 }
 
 void MapEditorInterface::onPlayers() {
-    openWindow(PlayerSettingsWindow::create(pMapEditor,color));
+    openWindow(PlayerSettingsWindow::create(pMapEditor,house));
 }
 
 void MapEditorInterface::onMapSettings() {
-    openWindow(MapSettingsWindow::create(pMapEditor,color));
+    openWindow(MapSettingsWindow::create(pMapEditor,house));
 }
 
 void MapEditorInterface::onChoam() {
-    openWindow(ChoamWindow::create(pMapEditor,color));
+    openWindow(ChoamWindow::create(pMapEditor,house));
 }
 
 void MapEditorInterface::onReinforcements() {
-    openWindow(ReinforcementsWindow::create(pMapEditor,color));
+    openWindow(ReinforcementsWindow::create(pMapEditor,house));
 }
 
 void MapEditorInterface::onTeams() {
-    openWindow(TeamsWindow::create(pMapEditor,color));
+    openWindow(TeamsWindow::create(pMapEditor,house));
 }
 
 void MapEditorInterface::onUndo() {
@@ -1254,6 +1254,7 @@ void MapEditorInterface::changeHouseDropDown(HOUSETYPE newHouse) {
 }
 
 void MapEditorInterface::changeInterfaceColor(HOUSETYPE newHouse) {
+    house = newHouse;
     color = SDL2RGB(palette[houseColor[newHouse] + 3]);
 
 	terrainButton.setTextColor(color);

@@ -30,7 +30,9 @@
 
 
 
-PlayerSettingsWindow::PlayerSettingsWindow(MapEditor* pMapEditor, Uint32 uicolor) : Window(0,0,0,0), pMapEditor(pMapEditor), color(uicolor) {
+PlayerSettingsWindow::PlayerSettingsWindow(MapEditor* pMapEditor, HOUSETYPE house) : Window(0,0,0,0), pMapEditor(pMapEditor), house(house) {
+
+    color = SDL2RGB(palette[houseColor[house]+3]);
 
     // set up window
 	SDL_Surface *surf;
@@ -102,7 +104,7 @@ PlayerSettingsWindow::PlayerSettingsWindow(MapEditor* pMapEditor, Uint32 uicolor
         playerWidgets[i].creditsTextBox.setMinMax(0,100000);
         playerWidgets[i].creditsTextBox.setValue(playerInfo.credits);
         playerWidgets[i].creditsTextBox.setIncrementValue(100);
-        playerWidgets[i].creditsTextBox.setTextColor(currentColor);
+        playerWidgets[i].creditsTextBox.setColor(house, currentColor);
         playerWidgets[i].playerHBox.addWidget(&playerWidgets[i].creditsTextBox, 80);
 
         playerWidgets[i].playerHBox.addWidget(Spacer::create(), 5.0);
@@ -147,7 +149,7 @@ PlayerSettingsWindow::PlayerSettingsWindow(MapEditor* pMapEditor, Uint32 uicolor
         playerWidgets[i].maxUnitsTextBox.setMaximumTextLength(5);
         playerWidgets[i].spiceQuotaTextBox.setValue(playerInfo.quota);
         playerWidgets[i].spiceQuotaTextBox.setIncrementValue(100);
-        playerWidgets[i].spiceQuotaTextBox.setTextColor(currentColor);
+        playerWidgets[i].spiceQuotaTextBox.setColor(house, currentColor);
 
         playerWidgets[i].maxUnitsLabel.setText(_("Max Units") + ":");
         playerWidgets[i].maxUnitsLabel.setTextColor(currentColor);
@@ -155,7 +157,7 @@ PlayerSettingsWindow::PlayerSettingsWindow(MapEditor* pMapEditor, Uint32 uicolor
         playerWidgets[i].maxUnitsTextBox.setMinMax(0,999);
         playerWidgets[i].maxUnitsTextBox.setMaximumTextLength(3);
         playerWidgets[i].maxUnitsTextBox.setValue(playerInfo.maxunit);
-        playerWidgets[i].maxUnitsTextBox.setTextColor(currentColor);
+        playerWidgets[i].maxUnitsTextBox.setColor(house, currentColor);
 
 
         centralVBox.addWidget(&playerWidgets[i].playerHBox);
