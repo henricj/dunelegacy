@@ -132,8 +132,12 @@ void StructureBase::blitToScreen() {
     int imageW = graphic[currentZoomlevel]->w/numImagesX;
     int imageH = graphic[currentZoomlevel]->h/numImagesY;
 
+    int index = fogged ? lastVisibleFrame : curAnimFrame;
+    int indexX = index % numImagesX;
+    int indexY = index / numImagesX;
+
     SDL_Rect dest = { static_cast<Sint16>(screenborder->world2screenX((int) lround(realX))), static_cast<Sint16>(screenborder->world2screenY((int) lround(realY))), static_cast<Uint16>(imageW), static_cast<Uint16>(imageH) };
-    SDL_Rect source = { static_cast<Sint16>(imageW * (fogged ? lastVisibleFrame : curAnimFrame)), 0, static_cast<Uint16>(imageW), static_cast<Uint16>(imageH) };
+    SDL_Rect source = { static_cast<Sint16>(imageW * indexX), static_cast<Sint16>(imageH * indexY), static_cast<Uint16>(imageW), static_cast<Uint16>(imageH) };
 
     SDL_BlitSurface(graphic[currentZoomlevel], &source, screen, &dest);
 
@@ -305,7 +309,7 @@ void StructureBase::setDestination(int newX, int newY) {
 void StructureBase::setJustPlaced() {
 	justPlacedTimer = 6;
 	curAnimFrame = 0;
-	animationCounter = -ANIMATIONTIMER; // make first build animation double as long
+	animationCounter = -STRUCTURE_ANIMATIONTIMER; // make first build animation double as long
 }
 
 bool StructureBase::update() {
@@ -383,7 +387,7 @@ bool StructureBase::update() {
 
     // update animations
     animationCounter++;
-    if(animationCounter > ANIMATIONTIMER) {
+    if(animationCounter > STRUCTURE_ANIMATIONTIMER) {
         animationCounter = 0;
         curAnimFrame++;
         if((curAnimFrame < firstAnimFrame) || (curAnimFrame > lastAnimFrame)) {

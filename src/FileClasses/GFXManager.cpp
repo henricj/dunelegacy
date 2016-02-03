@@ -815,6 +815,8 @@ GFXManager::GFXManager() {
 	uiGraphic[UI_MapEditor_RocketTurret][HOUSE_HARKONNEN] = getSubPicture(objPic[ObjPic_RocketTurret][HOUSE_HARKONNEN][0],2*D2_TILESIZE,0,D2_TILESIZE,D2_TILESIZE);
 	uiGraphic[UI_MapEditor_ConstructionYard][HOUSE_HARKONNEN] = getSubPicture(objPic[ObjPic_ConstructionYard][HOUSE_HARKONNEN][0],2*2*D2_TILESIZE,0,2*D2_TILESIZE,2*D2_TILESIZE);
 	uiGraphic[UI_MapEditor_Windtrap][HOUSE_HARKONNEN] = getSubPicture(objPic[ObjPic_Windtrap][HOUSE_HARKONNEN][0],2*2*D2_TILESIZE,0,2*D2_TILESIZE,2*D2_TILESIZE);
+	SDL_Color windtrapColor = { 70, 70, 70, 255};
+    SDL_SetPalette(uiGraphic[UI_MapEditor_Windtrap][HOUSE_HARKONNEN], SDL_LOGPAL, &windtrapColor, PALCOLOR_WINDTRAP_COLORCYCLE, 1);
 	uiGraphic[UI_MapEditor_Radar][HOUSE_HARKONNEN] = getSubPicture(objPic[ObjPic_Radar][HOUSE_HARKONNEN][0],2*2*D2_TILESIZE,0,2*D2_TILESIZE,2*D2_TILESIZE);
 	uiGraphic[UI_MapEditor_Silo][HOUSE_HARKONNEN] = getSubPicture(objPic[ObjPic_Silo][HOUSE_HARKONNEN][0],2*2*D2_TILESIZE,0,2*D2_TILESIZE,2*D2_TILESIZE);
 	uiGraphic[UI_MapEditor_IX][HOUSE_HARKONNEN] = getSubPicture(objPic[ObjPic_IX][HOUSE_HARKONNEN][0],2*2*D2_TILESIZE,0,2*D2_TILESIZE,2*D2_TILESIZE);
@@ -1052,9 +1054,14 @@ SDL_Surface** GFXManager::getObjPic(unsigned int id, int house) {
 
         if(objPicTex[id][house][z] == NULL) {
             // now convert to display format
-            if((objPicTex[id][house][z] = SDL_DisplayFormatAlpha(objPic[id][house][z])) == NULL) {
-                fprintf(stderr,"GFXManager::getObjPic(): Converting to display format failed!\n");
-                exit(EXIT_FAILURE);
+            if(id == ObjPic_Windtrap) {
+                // Windtrap uses palette animation on PALCOLOR_WINDTRAP_COLORCYCLE; fake this
+                objPicTex[id][house][z] = generateWindtrapAnimationFrames(objPic[id][house][z]);
+            } else {
+                if((objPicTex[id][house][z] = SDL_DisplayFormatAlpha(objPic[id][house][z])) == NULL) {
+                    fprintf(stderr,"GFXManager::getObjPic(): Converting to display format failed!\n");
+                    exit(EXIT_FAILURE);
+                }
             }
         }
     }
@@ -1351,4 +1358,50 @@ Animation* GFXManager::loadAnimationFromWsa(std::string filename) {
 	delete wsafile;
 	SDL_RWclose(file);
 	return ret;
+}
+
+SDL_Surface* GFXManager::generateWindtrapAnimationFrames(SDL_Surface* windtrapPic) {
+    int windtrapColorQuantizizer = 255/((NUM_WINDTRAP_ANIMATIONS/2)-1);
+    int windtrapSize = windtrapPic->h;
+    int sizeX = NUM_WINDTRAP_ANIMATIONS_PER_ROW*windtrapSize;
+    int sizeY = ((2+NUM_WINDTRAP_ANIMATIONS+NUM_WINDTRAP_ANIMATIONS_PER_ROW-1)/NUM_WINDTRAP_ANIMATIONS_PER_ROW)*windtrapSize;
+    SDL_Surface* tmp = SDL_CreateRGBSurface(SDL_HWSURFACE, sizeX, sizeY, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK);
+
+    // copy building phase
+    SDL_Rect src = { 0, 0, 2*windtrapSize, windtrapSize};
+    SDL_Rect dest = src;
+    SDL_BlitSurface(windtrapPic, &src, tmp, &dest);
+
+    src.w = windtrapSize;
+    dest.x += dest.w;
+    dest.w = windtrapSize;
+
+    for(int i = 0; i < NUM_WINDTRAP_ANIMATIONS; i++) {
+        src.x = ((i/3) % 2 == 0) ? 2*windtrapSize : 3*windtrapSize;
+
+        int val = 0;
+        if(i < NUM_WINDTRAP_ANIMATIONS/2) {
+            val = i*windtrapColorQuantizizer;
+        } else {
+            val = (NUM_WINDTRAP_ANIMATIONS-i)*windtrapColorQuantizizer;
+        }
+        Uint8 colval = static_cast<Uint8>( (val >= 256) ? (511-val) : val );
+        SDL_Color windtrapColor = { colval, colval, colval, 255};
+        SDL_SetPalette(windtrapPic, SDL_LOGPAL, &windtrapColor, PALCOLOR_WINDTRAP_COLORCYCLE, 1);
+
+        SDL_BlitSurface(windtrapPic, &src, tmp, &dest);
+
+        dest.x += dest.w;
+        dest.y = dest.y + dest.h * (dest.x / sizeX);
+        dest.x = dest.x % sizeX;
+    }
+
+    SDL_Surface* returnPic;
+    if((returnPic = SDL_DisplayFormatAlpha(tmp)) == NULL) {
+        fprintf(stderr,"GFXManager::getObjPic(): Converting to display format failed!\n");
+        exit(EXIT_FAILURE);
+    }
+    SDL_FreeSurface(tmp);
+
+    return returnPic;
 }

@@ -160,11 +160,6 @@ public:
     */
 	void drawCursor();
 
-	/**
-        Do the palette animation for the windtrap.
-	*/
-	void doWindTrapPalatteAnimation();
-
     /**
         This method sets up the view. The start position is the center point of all owned units/structures
     */

@@ -43,10 +43,10 @@ void WindTrap::init() {
 
 	graphicID = ObjPic_Windtrap;
 	graphic = pGFXManager->getObjPic(graphicID,getOwner()->getHouseID());
-	numImagesX = 4;
-	numImagesY = 1;
+	numImagesX = NUM_WINDTRAP_ANIMATIONS_PER_ROW;
+	numImagesY = (2+NUM_WINDTRAP_ANIMATIONS+NUM_WINDTRAP_ANIMATIONS_PER_ROW-1)/NUM_WINDTRAP_ANIMATIONS_PER_ROW;
 	firstAnimFrame = 2;
-	lastAnimFrame = 3;
+	lastAnimFrame = 2+NUM_WINDTRAP_ANIMATIONS-1;
 }
 
 WindTrap::~WindTrap() {
@@ -58,6 +58,14 @@ ObjectInterface* WindTrap::getInterfaceContainer() {
 	} else {
 		return DefaultObjectInterface::create(objectID);
 	}
+}
+
+bool WindTrap::update() {
+    bool bResult = StructureBase::update();
+
+    curAnimFrame = 2 + ((currentGame->getGameCycleCount()/8) % NUM_WINDTRAP_ANIMATIONS);
+
+    return bResult;
 }
 
 void WindTrap::setHealth(FixPoint newHealth) {

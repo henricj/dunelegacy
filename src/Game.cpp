@@ -1114,27 +1114,6 @@ void Game::drawCursor()
 	}
 }
 
-void Game::doWindTrapPalatteAnimation() {
-    static int lastWindTrapColor = -1;
-
-	// Update the windtrap palette animation
-	int color = (int) (gameCycleCount % 512);
-	if(color >= 256) {
-        color = 511 - color;
-	}
-
-	// quantize to lower number of different colors
-	color = (color / 8) * 8;
-
-	if(color != lastWindTrapColor) {
-        // Setting the palette is expensive! Perform it only if we have a new color
-        lastWindTrapColor = color;
-
-        SDL_Color windtrapColor = { static_cast<Uint8>(color), static_cast<Uint8>(color), static_cast<Uint8>(color), 0};
-        SDL_SetPalette(screen, SDL_PHYSPAL, &windtrapColor, PALCOLOR_WINDTRAP_COLORCYCLE, 1);
-	}
-}
-
 void Game::setupView()
 {
 	int i = 0;
@@ -1251,7 +1230,6 @@ void Game::runMainLoop() {
 
 	//main game loop
     do {
-        doWindTrapPalatteAnimation();
         drawScreen();
 
         SDL_Flip(screen);

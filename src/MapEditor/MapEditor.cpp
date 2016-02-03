@@ -106,10 +106,6 @@ MapEditor::MapEditor() : pInterface(NULL) {
 
 	pInterface = new MapEditorInterface(this);
 
-	// setup windtrap color index
-	SDL_Color windtrapColor = { 192, 192, 192, 0};
-	SDL_SetPalette(screen, SDL_PHYSPAL, &windtrapColor, PALCOLOR_WINDTRAP_COLORCYCLE, 1);
-
 	pInterface->onNew();
 }
 
@@ -1674,7 +1670,7 @@ void MapEditor::drawMap(SDL_Surface* pScreen, ScreenBorder* pScreenborder, bool 
 
             Coord frameSize = world2zoomedWorld(getStructureSize(sIter->itemID)*TILESIZE);
 
-            SDL_Rect source = { static_cast<Sint16>(frameSize.x*2), 0, static_cast<Uint16>(frameSize.x), static_cast<Uint16>(frameSize.y) };
+            SDL_Rect source = { static_cast<Sint16>(frameSize.x*(sIter->itemID == Structure_WindTrap ? 9 : 2)), 0, static_cast<Uint16>(frameSize.x), static_cast<Uint16>(frameSize.y) };
             SDL_Rect dest = { static_cast<Sint16>(pScreenborder->world2screenX(position.x*TILESIZE)), static_cast<Sint16>(pScreenborder->world2screenY(position.y*TILESIZE)), static_cast<Uint16>(frameSize.x), static_cast<Uint16>(frameSize.y) };
 
             SDL_BlitSurface(ObjectSprite, &source, pScreen, &dest);
@@ -2077,9 +2073,6 @@ void MapEditor::saveMapshot() {
     tmpScreenborder.adjustScreenBorderToMapsize(map.getSizeX(), map.getSizeY());
 
     drawMap(pMapshotSurface, &tmpScreenborder, true);
-
-    // set windtrap color to grey
-    replaceColor(pMapshotSurface, PALCOLOR_WINDTRAP_COLORCYCLE, PALCOLOR_LIGHTGREY);
 
     SDL_SaveBMP(pMapshotSurface, mapshotFilename.c_str());
 

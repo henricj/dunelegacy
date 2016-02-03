@@ -29,6 +29,8 @@
 
 #define NUM_MAPCHOICEPIECES	28
 #define NUM_MAPCHOICEARROWS	9
+#define NUM_WINDTRAP_ANIMATIONS (2*STRUCTURE_ANIMATIONTIMER)
+#define NUM_WINDTRAP_ANIMATIONS_PER_ROW 10
 
 // ObjPics
 typedef enum {
@@ -461,7 +463,8 @@ public:
 	Animation*		getAnimation(unsigned int id);
 
 private:
-	Animation* loadAnimationFromWsa(std::string filename);
+	Animation*      loadAnimationFromWsa(std::string filename);
+	SDL_Surface*    generateWindtrapAnimationFrames(SDL_Surface* windtrapPic);
 
     std::shared_ptr<Shpfile>  loadShpfile(std::string filename);
     std::shared_ptr<Wsafile>  loadWsafile(std::string filename);

@@ -30,6 +30,12 @@ public:
 
     virtual ObjectInterface* getInterfaceContainer();
 
+    /**
+        Updates this object.
+        \return true if this object still exists, false if it was destroyed
+	*/
+	virtual bool update();
+
     virtual void setHealth(FixPoint newHealth);
 
 protected:

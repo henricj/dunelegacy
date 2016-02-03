@@ -18,9 +18,6 @@
 #ifndef STRUCTUREBASE_H
 #define STRUCTUREBASE_H
 
-#define ANIMATIONTIMER 25
-#define ANIMMOVETIMER 50
-
 #include <ObjectBase.h>
 
 #include <list>
