@@ -32,7 +32,7 @@
 
 InGameSettingsMenu::InGameSettingsMenu() : Window(0,0,0,0) {
     int houseID = pLocalHouse->getHouseID();
-	Uint32 color = SDL2RGB(palette[houseColor[houseID]]);
+	Uint32 color = SDL2RGB(palette[houseToPaletteIndex[houseID]]);
 
 	// set up window
 	SDL_Surface *surf,*surfPressed;

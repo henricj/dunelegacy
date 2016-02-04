@@ -45,7 +45,7 @@ CampaignStatsMenu::CampaignStatsMenu(int level) : MenuBase()
 
     calculateScore(level);
 
-    Uint32 colorYou = SDL2RGB(palette[houseColor[pLocalHouse->getHouseID()] + 1]);
+    Uint32 colorYou = SDL2RGB(palette[houseToPaletteIndex[pLocalHouse->getHouseID()] + 1]);
     Uint32 colorEnemy = SDL2RGB(palette[PALCOLOR_SARDAUKAR + 1]);
 
 	// set up window

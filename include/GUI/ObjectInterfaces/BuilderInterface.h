@@ -43,7 +43,7 @@ public:
 
 protected:
 	BuilderInterface(int objectID) : DefaultStructureInterface(objectID) {
-        Uint32 color = SDL2RGB(palette[houseColor[pLocalHouse->getHouseID()]+3]);
+        Uint32 color = SDL2RGB(palette[houseToPaletteIndex[pLocalHouse->getHouseID()]+3]);
 
 		upgradeButton.setText(_("Upgrade"));
 		upgradeButton.setTextColor(color);

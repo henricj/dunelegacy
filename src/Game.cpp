@@ -1414,7 +1414,7 @@ void Game::onOptions()
         // don't show menu
         quitGame();
     } else {
-        Uint32 color = SDL2RGB(palette[houseColor[pLocalHouse->getHouseID()] + 3]);
+        Uint32 color = SDL2RGB(palette[houseToPaletteIndex[pLocalHouse->getHouseID()] + 3]);
         pInGameMenu = new InGameMenu((gameType == GAMETYPE_CUSTOM_MULTIPLAYER), color);
         bMenu = true;
         pauseGame();

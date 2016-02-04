@@ -40,7 +40,7 @@ public:
 
 protected:
 	WindTrapInterface(int objectID) : DefaultStructureInterface(objectID) {
-        Uint32 color = SDL2RGB(palette[houseColor[pLocalHouse->getHouseID()]]);
+        Uint32 color = SDL2RGB(palette[houseToPaletteIndex[pLocalHouse->getHouseID()]]);
 
 		mainHBox.addWidget(&textVBox);
 

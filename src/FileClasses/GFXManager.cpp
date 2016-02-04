@@ -1031,7 +1031,7 @@ SDL_Surface** GFXManager::getObjPic(unsigned int id, int house) {
                 exit(EXIT_FAILURE);
             }
 
-            objPic[id][house][z] = mapSurfaceColorRange(objPic[id][HOUSE_HARKONNEN][z], PALCOLOR_HARKONNEN, houseColor[house]);
+            objPic[id][house][z] = mapSurfaceColorRange(objPic[id][HOUSE_HARKONNEN][z], PALCOLOR_HARKONNEN, houseToPaletteIndex[house]);
         }
 
         if(objPicTex[id][house][z] == NULL) {
@@ -1073,7 +1073,7 @@ SDL_Surface* GFXManager::getUIGraphicSurface(unsigned int id, int house) {
 			exit(EXIT_FAILURE);
 		}
 
-		uiGraphic[id][house] = mapSurfaceColorRange(uiGraphic[id][HOUSE_HARKONNEN], PALCOLOR_HARKONNEN, houseColor[house]);
+		uiGraphic[id][house] = mapSurfaceColorRange(uiGraphic[id][HOUSE_HARKONNEN], PALCOLOR_HARKONNEN, houseToPaletteIndex[house]);
 	}
 
 	return uiGraphic[id][house];
@@ -1115,7 +1115,7 @@ SDL_Surface* GFXManager::getMapChoicePieceSurface(unsigned int num, int house) {
 			exit(EXIT_FAILURE);
 		}
 
-		mapChoicePieces[num][house] = mapSurfaceColorRange(mapChoicePieces[num][HOUSE_HARKONNEN], PALCOLOR_HARKONNEN, houseColor[house]);
+		mapChoicePieces[num][house] = mapSurfaceColorRange(mapChoicePieces[num][HOUSE_HARKONNEN], PALCOLOR_HARKONNEN, houseToPaletteIndex[house]);
 	}
 
 	return mapChoicePieces[num][house];
@@ -1390,7 +1390,7 @@ SDL_Surface* GFXManager::generateMapChoiceArrrowFrames(SDL_Surface* arrowPic, in
 
     for(int i = 0; i < 4; i++) {
         for(int k = 0; k < 4; k++) {
-            SDL_SetPalette(arrowPic, SDL_LOGPAL, &palette[houseColor[house]+((i+k)%4)], 251+k, 1);
+            SDL_SetPalette(arrowPic, SDL_LOGPAL, &palette[houseToPaletteIndex[house]+((i+k)%4)], 251+k, 1);
         }
 
         SDL_BlitSurface(arrowPic, NULL, returnPic, &dest);

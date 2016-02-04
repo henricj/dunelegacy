@@ -45,7 +45,7 @@ public:
 
 protected:
 	UnitInterface(int objectID) : DefaultObjectInterface(objectID) {
-        Uint32 color = SDL2RGB(palette[houseColor[pLocalHouse->getHouseID()]]);
+        Uint32 color = SDL2RGB(palette[houseToPaletteIndex[pLocalHouse->getHouseID()]]);
 
 		mainHBox.addWidget(HSpacer::create(4));
 

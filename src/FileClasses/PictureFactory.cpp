@@ -737,7 +737,7 @@ SDL_Surface* PictureFactory::createMapChoiceScreen(int House) {
 	SDL_Rect clearRect = {8,24,304,119};
 	SDL_FillRect(MapChoiceScreen,&clearRect,PALCOLOR_TRANSPARENT);
 
-	MapChoiceScreen = Scaler::defaultDoubleSurface(mapSurfaceColorRange(MapChoiceScreen, PALCOLOR_HARKONNEN, houseColor[House], true), true);
+	MapChoiceScreen = Scaler::defaultDoubleSurface(mapSurfaceColorRange(MapChoiceScreen, PALCOLOR_HARKONNEN, houseToPaletteIndex[House], true), true);
 	SDL_Surface* FullMapChoiceScreen = copySurface(background.get());
 
 	SDL_Rect dest = { static_cast<Sint16>(FullMapChoiceScreen->w/2 - MapChoiceScreen->w/2), static_cast<Sint16>(FullMapChoiceScreen->h/2 - MapChoiceScreen->h/2), static_cast<Uint16>(MapChoiceScreen->w), static_cast<Uint16>(MapChoiceScreen->h) };

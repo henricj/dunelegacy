@@ -108,7 +108,7 @@ Finale::Finale(int house)
 		fprintf(stderr,"Finale::Finale(): Cannot open MAPPLAN.CPS!\n");
 		exit(EXIT_FAILURE);
 	}
-	SDL_Surface* pPlanetDuneInHouseColorSurface = mapSurfaceColorRange(pTempSurface, houseColor[HOUSE_HARKONNEN], houseColor[house]);
+	SDL_Surface* pPlanetDuneInHouseColorSurface = mapSurfaceColorRange(pTempSurface, houseToPaletteIndex[HOUSE_HARKONNEN], houseToPaletteIndex[house]);
 	SDL_FreeSurface(pTempSurface);
 
     if(house == HOUSE_HARKONNEN || house == HOUSE_ATREIDES || house == HOUSE_ORDOS) {
@@ -123,7 +123,7 @@ Finale::Finale(int house)
 	IndexedTextFile* pIntroText = new IndexedTextFile(intro_lng);
 	SDL_RWclose(intro_lng);
 
-	Uint32 color = SDL2RGB(palette[houseColor[house]+1]);
+	Uint32 color = SDL2RGB(palette[houseToPaletteIndex[house]+1]);
 	Uint32 sardaukarColor = SDL2RGB(palette[PALCOLOR_SARDAUKAR+1]);
 
 	switch(house) {

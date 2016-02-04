@@ -32,7 +32,7 @@
 TeamsWindow::TeamsWindow(MapEditor* pMapEditor, HOUSETYPE house)
  : Window(0,0,0,0), pMapEditor(pMapEditor), house(house), teams(pMapEditor->getTeams()) {
 
-    color = SDL2RGB(palette[houseColor[house]+3]);
+    color = SDL2RGB(palette[houseToPaletteIndex[house]+3]);
 
     // set up window
 	SDL_Surface *surf;

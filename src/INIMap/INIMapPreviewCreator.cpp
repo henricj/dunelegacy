@@ -335,7 +335,7 @@ SDL_Surface* INIMapPreviewCreator::createMinimapImageOfMap() {
 			int house = getHouseByName(HouseStr);
 			Uint32 color = COLOR_WHITE;
 			if(house != HOUSE_INVALID) {
-				color = SDL2RGB(palette[houseColor[house]]);
+				color = SDL2RGB(palette[houseToPaletteIndex[house]]);
 			} else {
                 convertToLower(HouseStr);
 			    if(HouseStr.length() == 7 && HouseStr.substr(0,6) == "player") {
@@ -378,7 +378,7 @@ SDL_Surface* INIMapPreviewCreator::createMinimapImageOfMap() {
 			int house = getHouseByName(HouseStr);
 			Uint32 color = COLOR_WHITE;
 			if(house != HOUSE_INVALID) {
-				color = SDL2RGB(palette[houseColor[house]]);
+				color = SDL2RGB(palette[houseToPaletteIndex[house]]);
 			} else {
 			    convertToLower(HouseStr);
 			    if(HouseStr.length() == 7 && HouseStr.substr(0,6) == "player") {
