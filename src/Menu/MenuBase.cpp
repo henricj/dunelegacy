@@ -84,7 +84,7 @@ int MenuBase::showMenu() {
 
 void MenuBase::draw(SDL_Surface* screen) {
 	if(bClearScreen == true) {
-		SDL_FillRect(screen, NULL, 0);
+		SDL_FillRect(screen, NULL, COLOR_BLACK);
 	}
 
 	Window::draw(screen);

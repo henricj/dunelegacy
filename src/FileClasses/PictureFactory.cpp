@@ -211,7 +211,7 @@ PictureFactory::PictureFactory() {
 		throw std::runtime_error("PictureFactory::PictureFactory: Cannot create new Picture!");
 	}
 	palette.applyToSurface(builderListUpperCap.get());
-	SDL_FillRect(builderListUpperCap.get(), NULL, 0);
+	SDL_FillRect(builderListUpperCap.get(), NULL, PALCOLOR_TRANSPARENT);
 
 	shared_ptr<SDL_Surface> builderListUpperCapLeft = shared_ptr<SDL_Surface>( getSubPicture(ChoamPic.get(),64,3,42,18), SDL_FreeSurface);
 	SDL_Rect dest5 = {  0, 0, 42, 18 };
@@ -234,7 +234,7 @@ PictureFactory::PictureFactory() {
 		throw std::runtime_error("PictureFactory::PictureFactory: Cannot create new Picture!");
 	}
 	palette.applyToSurface(builderListLowerCap.get());
-	SDL_FillRect(builderListLowerCap.get(), NULL, 0);
+	SDL_FillRect(builderListLowerCap.get(), NULL, PALCOLOR_TRANSPARENT);
 
 	shared_ptr<SDL_Surface> builderListLowerCapLeft = shared_ptr<SDL_Surface>( getSubPicture(ChoamPic.get(),64,149,44,17), SDL_FreeSurface);
 	SDL_Rect dest8 = {  0, 0, 44, 17 };
@@ -259,7 +259,7 @@ SDL_Surface* PictureFactory::createTopBar() {
 	SDL_Surface* topBar;
 	topBar = getSubPicture(background.get() ,0,0,settings.video.width-SIDEBARWIDTH,32+12);
 	SDL_Rect dest1 = {0,31,static_cast<Uint16>(topBar->w),12};
-	SDL_FillRect(topBar,&dest1,0);
+	SDL_FillRect(topBar,&dest1,PALCOLOR_TRANSPARENT);
 
 	SDL_Rect dest2 = {0,32,static_cast<Uint16>(decorationBorder.hborder.get()->w),static_cast<Uint16>(decorationBorder.hborder.get()->h)};
 	for(dest2.x = 0; dest2.x < topBar->w; dest2.x+=decorationBorder.hborder.get()->w) {
@@ -281,7 +281,7 @@ SDL_Surface* PictureFactory::createSideBar(bool bEditor) {
 	SDL_Surface* sideBar;
 	sideBar = getSubPicture(background.get(),0,0,SIDEBARWIDTH,settings.video.height);
 	SDL_Rect dest1 = {0,0,13,static_cast<Uint16>(sideBar->h)};
-	SDL_FillRect(sideBar,&dest1,0);
+	SDL_FillRect(sideBar,&dest1,PALCOLOR_TRANSPARENT);
 
 
 	SDL_Rect dest2 = {0,0,static_cast<Uint16>(decorationBorder.vborder.get()->w),static_cast<Uint16>(decorationBorder.vborder.get()->h)};
@@ -305,7 +305,7 @@ SDL_Surface* PictureFactory::createSideBar(bool bEditor) {
 	drawHLine(sideBar,0,44+decorationBorder.vspacer.get()->h,decorationBorder.vspacer.get()->w-1,96);
 
 	SDL_Rect dest6 = {13,0,static_cast<Uint16>(sideBar->w-1),132};
-	SDL_FillRect(sideBar,&dest6,0);
+	SDL_FillRect(sideBar,&dest6,PALCOLOR_TRANSPARENT);
 	drawRect(sideBar,13,1,sideBar->w-2,130,115);
 
 	SDL_Rect dest7 = {0,static_cast<Sint16>(132-decorationBorder.vspacer.get()->h-1),static_cast<Uint16>(decorationBorder.vspacer.get()->w),static_cast<Uint16>(decorationBorder.vspacer.get()->h)};
@@ -360,7 +360,7 @@ SDL_Surface* PictureFactory::createBottomBar() {
 	SDL_Surface* BottomBar;
 	BottomBar = getSubPicture(background.get() ,0,0,settings.video.width-SIDEBARWIDTH,32+12);
 	SDL_Rect dest1 = {0,0,static_cast<Uint16>(BottomBar->w),13};
-	SDL_FillRect(BottomBar,&dest1,0);
+	SDL_FillRect(BottomBar,&dest1,PALCOLOR_TRANSPARENT);
 
 	SDL_Rect dest2 = {0,0,static_cast<Uint16>(decorationBorder.hborder.get()->w),static_cast<Uint16>(decorationBorder.hborder.get()->h)};
 	for(dest2.x = 0; dest2.x < BottomBar->w; dest2.x+=decorationBorder.hborder.get()->w) {
@@ -586,7 +586,7 @@ SDL_Surface* PictureFactory::createMenu(int x,int y) {
 
 	SDL_Rect dest1 = {0,0,static_cast<Uint16>(Pic->w),27};
 
-    SDL_FillRect(Pic,&dest1,133);
+    SDL_FillRect(Pic,&dest1,PALCOLOR_GREY);
 
 	drawFrame(Pic,SimpleFrame,&dest1);
 
@@ -735,7 +735,7 @@ SDL_Surface* PictureFactory::createMapChoiceScreen(int House) {
 
 	// clear everything in the middle
 	SDL_Rect clearRect = {8,24,304,119};
-	SDL_FillRect(MapChoiceScreen,&clearRect,0);
+	SDL_FillRect(MapChoiceScreen,&clearRect,PALCOLOR_TRANSPARENT);
 
 	MapChoiceScreen = Scaler::defaultDoubleSurface(mapSurfaceColorRange(MapChoiceScreen, PALCOLOR_HARKONNEN, houseColor[House], true), true);
 	SDL_Surface* FullMapChoiceScreen = copySurface(background.get());

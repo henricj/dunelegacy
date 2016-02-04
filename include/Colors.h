@@ -44,6 +44,7 @@
 
 #define RGBA(r,g,b,a) ( ((((unsigned int) r) & 0xFF) << RSHIFT) | ((((unsigned int) g) & 0xFF) << GSHIFT) | ((((unsigned int) b) & 0xFF) << BSHIFT) | ((((unsigned int) a) & 0xFF) << ASHIFT) )
 #define RGB(r,g,b) RGBA(r,g,b,255)
+#define MapRGBA(fmt, color) SDL_MapRGBA(fmt, (color & RMASK) >> RSHIFT, (color & GMASK) >> GSHIFT, (color & BMASK) >> BSHIFT, (color & AMASK) >> ASHIFT)
 
 #define SDL2RGB(sdl_color) RGB(sdl_color.r, sdl_color.g, sdl_color.b)
 
@@ -62,8 +63,8 @@
 #define PALCOLOR_LIGHTRED 8
 #define PALCOLOR_WHITE 15
 #define PALCOLOR_ORANGE 83
+#define PALCOLOR_GREY 133
 #define PALCOLOR_WINDTRAP_COLORCYCLE 223
-#define PALCOLOR_COLORCYCLE 255
 
 #define PALCOLOR_DESERTSAND 105
 #define PALCOLOR_SPICE 111

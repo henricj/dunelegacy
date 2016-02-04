@@ -77,17 +77,10 @@ HouseChoiceInfoMenu::HouseChoiceInfoMenu(int newHouse) : MentatMenu(HOUSE_INVALI
 	yesButton.setVisible(false);
 	yesButton.setOnClick(std::bind(&HouseChoiceInfoMenu::onYes, this));
 	windowWidget.addWidget(&yesButton,Point(480,340),Point(surf->w,surf->h));
-
-	// change palette
-	Palette benePalette = LoadPalette_RW(pFileManager->openFile("BENE.PAL"), true);
-    benePalette.applyToSurface(screen);
 }
 
 HouseChoiceInfoMenu::~HouseChoiceInfoMenu() {
-    SDL_FillRect(screen, NULL, 0);
-
-    // Change palette back to normal
-    palette.applyToSurface(screen);
+    SDL_FillRect(screen, NULL, COLOR_BLACK);
 }
 
 void HouseChoiceInfoMenu::onMentatTextFinished() {

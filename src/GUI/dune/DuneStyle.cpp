@@ -21,13 +21,11 @@
 
 #include <FileClasses/GFXManager.h>
 #include <FileClasses/FontManager.h>
-#include <FileClasses/Palette.h>
 
 #include <iostream>
 #include <cmath>
 #include <algorithm>
 
-extern Palette      palette;
 extern GFXManager*  pGFXManager;
 extern FontManager* pFontManager;
 

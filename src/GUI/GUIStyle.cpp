@@ -16,9 +16,6 @@
  */
 
 #include <GUI/GUIStyle.h>
-#include <FileClasses/Palette.h>
-
-extern Palette palette;
 
 GUIStyle* GUIStyle::currentGUIStyle = NULL;
 
@@ -33,14 +30,12 @@ GUIStyle::~GUIStyle() {
 SDL_Surface* GUIStyle::createEmptySurface(Uint32 width, Uint32 height, bool transparent)  {
 	SDL_Surface* pSurface;
 
-	if((pSurface = SDL_CreateRGBSurface(SDL_HWSURFACE,width,height,8,0,0,0,0))== NULL) {
+	if((pSurface = SDL_CreateRGBSurface(SDL_HWSURFACE, width, height, 32, RMASK, GMASK, BMASK, AMASK)) == NULL) {
 		return NULL;
 	}
+	SDL_FillRect(pSurface,NULL, COLOR_TRANSPARENT);
+    SDL_SetAlpha(pSurface, 0, 0);
+    SDL_SetColorKey(pSurface, SDL_SRCCOLORKEY, COLOR_TRANSPARENT);
 
-    palette.applyToSurface(pSurface);
-
-	if(transparent == true) {
-		SDL_SetColorKey(pSurface, SDL_SRCCOLORKEY | SDL_RLEACCEL, 0);
-	}
 	return pSurface;
 }

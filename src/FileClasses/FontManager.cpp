@@ -73,9 +73,9 @@ SDL_Surface* FontManager::createSurfaceWithText(std::string text, Uint32 color, 
         return NULL;
     }
 
-    SDL_FillRect(pic, NULL, COLOR_TRANSPARENT);
-    SDL_SetAlpha(pic, 0, 0);
-    SDL_SetColorKey(pic, SDL_SRCCOLORKEY, COLOR_TRANSPARENT);
+    SDL_FillRect(pic, NULL, COLOR_INVALID);
+    SDL_SetAlpha(pic, SDL_RLEACCEL, 0);
+    SDL_SetColorKey(pic, SDL_RLEACCEL | SDL_SRCCOLORKEY, COLOR_INVALID);
 
     fonts[fontNum]->drawTextOnSurface(pic,text,color);
 
@@ -107,11 +107,13 @@ SDL_Surface* FontManager::createSurfaceWithMultilineText(std::string text, Uint3
     int height = lineHeight * textLines.size() + (lineHeight * (textLines.size()-1))/2;
 
     // create new picture surface
-    if((pic = SDL_CreateRGBSurface(SDL_SWSURFACE | SDL_SRCALPHA, width, height, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK)) == NULL) {
+    if((pic = SDL_CreateRGBSurface(SDL_SWSURFACE, width, height, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK)) == NULL) {
         return NULL;
     }
 
-    SDL_FillRect(pic, NULL, COLOR_TRANSPARENT);
+    SDL_FillRect(pic, NULL, COLOR_INVALID);
+    SDL_SetAlpha(pic, SDL_RLEACCEL, 0);
+    SDL_SetColorKey(pic, SDL_RLEACCEL | SDL_SRCCOLORKEY, COLOR_INVALID);
 
     int line = 0;
     std::list<std::string>::iterator iter;

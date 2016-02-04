@@ -318,7 +318,7 @@ void Game::processObjects()
 void Game::drawScreen()
 {
 	/* clear whole screen */
-	SDL_FillRect(screen, NULL, 0);
+	SDL_FillRect(screen, NULL, COLOR_BLACK);
 
     Coord TopLeftTile = screenborder->getTopLeftTile();
     Coord BottomRightTile = screenborder->getBottomRightTile();

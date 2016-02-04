@@ -195,7 +195,7 @@ void RadarView::updateRadarSurface(int mapSizeX, int mapSizeY, int scale, int of
 
                 /* Selecting the right color is handled in Tile::getRadarColor() */
                 Uint32 color = pTile->getRadarColor(pLocalHouse, pLocalHouse->hasRadarOn());
-                color = SDL_MapRGBA(radarSurface->format, (color & RMASK) >> RSHIFT, (color & GMASK) >> GSHIFT, (color & BMASK) >> BSHIFT, (color & AMASK) >> ASHIFT);
+                color = MapRGBA(radarSurface->format, color);
 
                 for(int j = 0; j < scale; j++) {
                     Uint32* p = ((Uint32*) ((Uint8 *) radarSurface->pixels + (offsetY + scale*y + j) * radarSurface->pitch)) + (offsetX + scale*x);

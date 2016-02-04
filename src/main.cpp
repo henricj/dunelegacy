@@ -79,7 +79,7 @@ void printUsage() {
 
 void setVideoMode()
 {
-	int videoFlags = SDL_HWPALETTE;
+	int videoFlags = 0;
 
 	if(settings.video.doubleBuffering) {
 		videoFlags |= SDL_HWSURFACE | SDL_DOUBLEBUF;
@@ -100,13 +100,12 @@ void setVideoMode()
             fprintf(stderr, "WARNING: Turning off double buffering, hw-surface and fullscreen!\n");
             settings.video.doubleBuffering = false;
             settings.video.fullscreen = false;
-            videoFlags = SDL_HWPALETTE;
+            videoFlags = 0;
         }
     }
 
 	screen = SDL_SetVideoMode(settings.video.width, settings.video.height, SCREEN_BPP, videoFlags);
 	if(screen) {
-	    palette.applyToSurface(screen);
 		SDL_ShowCursor(SDL_DISABLE);
     } else {
 		fprintf(stderr, "ERROR: Couldn't set video mode: %s\n", SDL_GetError());
@@ -225,7 +224,7 @@ void createDefaultConfigFile(std::string configfilepath, std::string language) {
 void printMissingFilesToScreen() {
 	SDL_ShowCursor(SDL_ENABLE);
 
-	SDL_FillRect(screen, NULL, 115);
+	SDL_FillRect(screen, NULL, MapRGBA(screen->format, DuneStyle::buttonBackgroundColor));
 
     std::string instruction = "Dune Legacy uses the data files from original Dune II. The following files are missing:\n";
 
@@ -574,15 +573,6 @@ int main(int argc, char *argv[]) {
 
         if(pFileManager->exists("IBM.PAL") == true) {
             palette = LoadPalette_RW(pFileManager->openFile("IBM.PAL"), true);
-        } else {
-            // create dummy palette for showing missing files info
-            palette = Palette(256);
-            palette[115].r = 202;
-            palette[115].g = 141;
-            palette[115].b = 16;
-            palette[255].r = 255;
-            palette[255].g = 255;
-            palette[255].b = 255;
         }
 
 		screen = NULL;

@@ -98,11 +98,11 @@ void GameInterface::draw(SDL_Surface* screen, Point position) {
 
 	SDL_Rect PowerIndicatorPos = {	static_cast<Sint16>(screen->w - sideBar.getSize().x + 14), 146,
 									4, static_cast<Uint16>(screen->h - 146 - 2) };
-	SDL_FillRect(screen,&PowerIndicatorPos,0);
+	SDL_FillRect(screen, &PowerIndicatorPos, COLOR_BLACK);
 
 	SDL_Rect SpiceIndicatorPos = {	static_cast<Sint16>(screen->w - sideBar.getSize().x + 20), 146,
 									4, static_cast<Uint16>(screen->h - 146 - 2) };
-	SDL_FillRect(screen,&SpiceIndicatorPos,0);
+	SDL_FillRect(screen, &SpiceIndicatorPos, COLOR_BLACK);
 
 	int xCount = 0, yCount = 0;
 	int	yCount2 = 0;

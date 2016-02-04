@@ -81,7 +81,7 @@ void putPixel(SDL_Surface *surface, int x, int y, Uint32 color) {
 			break;
 
 		case 4:
-			*(Uint32 *)p = SDL_MapRGBA(surface->format, (color & RMASK) >> RSHIFT, (color & GMASK) >> GSHIFT, (color & BMASK) >> BSHIFT, (color & AMASK) >> ASHIFT);
+			*(Uint32 *)p = MapRGBA(surface->format, color);
 			break;
 		}
 	}

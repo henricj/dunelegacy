@@ -976,7 +976,7 @@ void MapEditor::performTerrainChange(int x, int y, TERRAINTYPE terrainType) {
 
 void MapEditor::drawScreen() {
 	// clear whole screen
-	SDL_FillRect(screen,NULL,0);
+	SDL_FillRect(screen, NULL, COLOR_BLACK);
 
 	//the actuall map
 	drawMap(screen, screenborder, false);

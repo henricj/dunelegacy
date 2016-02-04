@@ -134,7 +134,7 @@ public:
 		if(pForeground != NULL) {
 		    if(bDrawShadow) {
 		        SDL_Rect dest = { static_cast<Sint16>(position.x + 2), static_cast<Sint16>(position.y + 2), static_cast<Uint16>(lround(percent*(pForeground->w/100.0))), static_cast<Uint16>(pForeground->h) };
-                SDL_FillRect(screen, &dest, 0);
+                SDL_FillRect(screen, &dest, COLOR_BLACK);
 		    }
 
 		    SDL_Rect dest = { static_cast<Sint16>(position.x), static_cast<Sint16>(position.y), static_cast<Uint16>(pForeground->w), static_cast<Uint16>(pForeground->h) };
