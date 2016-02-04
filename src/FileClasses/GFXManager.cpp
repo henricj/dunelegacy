@@ -1361,7 +1361,7 @@ Animation* GFXManager::loadAnimationFromWsa(std::string filename) {
 }
 
 SDL_Surface* GFXManager::generateWindtrapAnimationFrames(SDL_Surface* windtrapPic) {
-    int windtrapColorQuantizizer = 255/((NUM_WINDTRAP_ANIMATIONS/2)-1);
+    int windtrapColorQuantizizer = 255/((NUM_WINDTRAP_ANIMATIONS/2)-2);
     int windtrapSize = windtrapPic->h;
     int sizeX = NUM_WINDTRAP_ANIMATIONS_PER_ROW*windtrapSize;
     int sizeY = ((2+NUM_WINDTRAP_ANIMATIONS+NUM_WINDTRAP_ANIMATIONS_PER_ROW-1)/NUM_WINDTRAP_ANIMATIONS_PER_ROW)*windtrapSize;
@@ -1379,14 +1379,18 @@ SDL_Surface* GFXManager::generateWindtrapAnimationFrames(SDL_Surface* windtrapPi
     for(int i = 0; i < NUM_WINDTRAP_ANIMATIONS; i++) {
         src.x = ((i/3) % 2 == 0) ? 2*windtrapSize : 3*windtrapSize;
 
-        int val = 0;
+        SDL_Color windtrapColor;
         if(i < NUM_WINDTRAP_ANIMATIONS/2) {
-            val = i*windtrapColorQuantizizer;
+            int val = i*windtrapColorQuantizizer;
+            windtrapColor.r = static_cast<Uint8>(std::min(80, val));
+            windtrapColor.g = static_cast<Uint8>(std::min(80, val));
+            windtrapColor.b = static_cast<Uint8>(std::min(255, val));
         } else {
-            val = (NUM_WINDTRAP_ANIMATIONS-i)*windtrapColorQuantizizer;
+            int val = (i-NUM_WINDTRAP_ANIMATIONS/2)*windtrapColorQuantizizer;
+            windtrapColor.r = static_cast<Uint8>(std::max(0, 80-val));
+            windtrapColor.g = static_cast<Uint8>(std::max(0, 80-val));
+            windtrapColor.b = static_cast<Uint8>(std::max(0, 255-val));
         }
-        Uint8 colval = static_cast<Uint8>( (val >= 256) ? (511-val) : val );
-        SDL_Color windtrapColor = { colval, colval, colval, 255};
         SDL_SetPalette(windtrapPic, SDL_LOGPAL, &windtrapColor, PALCOLOR_WINDTRAP_COLORCYCLE, 1);
 
         SDL_BlitSurface(windtrapPic, &src, tmp, &dest);

@@ -51,7 +51,7 @@
 #define MAX_YSIZE 256
 
 #define BUILDRANGE 2
-#define STRUCTURE_ANIMATIONTIMER 25
+#define STRUCTURE_ANIMATIONTIMER 31
 
 #define RANDOMSPICEMIN (111 - 37)	     //how much spice on each spice tile
 #define RANDOMSPICEMAX (111 + 37)
