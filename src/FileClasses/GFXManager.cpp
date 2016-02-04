@@ -67,11 +67,6 @@ GFXManager::GFXManager() {
 		}
 	}
 
-	// init whole mapChoiceArrowTex array
-	for(int i = 0; i < NUM_MAPCHOICEARROWS; i++) {
-		mapChoiceArrowTex[i] = NULL;
-	}
-
 	// init whole Anim array
 	for(int i = 0; i < NUM_ANIMATION; i++) {
 		animation[i] = NULL;
@@ -737,6 +732,24 @@ GFXManager::GFXManager() {
 	}
 
 	uiGraphic[UI_MapChoiceClickMap][HOUSE_HARKONNEN] = Scaler::doubleSurfaceNN(LoadCPS_RW(pFileManager->openFile("RGNCLK.CPS"),true));
+    uiGraphic[UI_MapChoiceArrow_None][HOUSE_HARKONNEN] = Scaler::defaultDoubleSurface(arrows->getPicture(0),true);
+    SDL_SetColorKey(uiGraphic[UI_MapChoiceArrow_None][HOUSE_HARKONNEN], SDL_SRCCOLORKEY | SDL_RLEACCEL, 0);
+    uiGraphic[UI_MapChoiceArrow_LeftUp][HOUSE_HARKONNEN] = Scaler::defaultDoubleSurface(arrows->getPicture(1),true);
+    SDL_SetColorKey(uiGraphic[UI_MapChoiceArrow_LeftUp][HOUSE_HARKONNEN], SDL_SRCCOLORKEY | SDL_RLEACCEL, 0);
+    uiGraphic[UI_MapChoiceArrow_Up][HOUSE_HARKONNEN] = Scaler::defaultDoubleSurface(arrows->getPicture(2),true);
+    SDL_SetColorKey(uiGraphic[UI_MapChoiceArrow_Up][HOUSE_HARKONNEN], SDL_SRCCOLORKEY | SDL_RLEACCEL, 0);
+    uiGraphic[UI_MapChoiceArrow_RightUp][HOUSE_HARKONNEN] = Scaler::defaultDoubleSurface(arrows->getPicture(3),true);
+    SDL_SetColorKey(uiGraphic[UI_MapChoiceArrow_RightUp][HOUSE_HARKONNEN], SDL_SRCCOLORKEY | SDL_RLEACCEL, 0);
+    uiGraphic[UI_MapChoiceArrow_Right][HOUSE_HARKONNEN] = Scaler::defaultDoubleSurface(arrows->getPicture(4),true);
+    SDL_SetColorKey(uiGraphic[UI_MapChoiceArrow_Right][HOUSE_HARKONNEN], SDL_SRCCOLORKEY | SDL_RLEACCEL, 0);
+    uiGraphic[UI_MapChoiceArrow_RightDown][HOUSE_HARKONNEN] = Scaler::defaultDoubleSurface(arrows->getPicture(5),true);
+    SDL_SetColorKey(uiGraphic[UI_MapChoiceArrow_RightDown][HOUSE_HARKONNEN], SDL_SRCCOLORKEY | SDL_RLEACCEL, 0);
+    uiGraphic[UI_MapChoiceArrow_Down][HOUSE_HARKONNEN] = Scaler::defaultDoubleSurface(arrows->getPicture(6),true);
+    SDL_SetColorKey(uiGraphic[UI_MapChoiceArrow_Down][HOUSE_HARKONNEN], SDL_SRCCOLORKEY | SDL_RLEACCEL, 0);
+    uiGraphic[UI_MapChoiceArrow_LeftDown][HOUSE_HARKONNEN] = Scaler::defaultDoubleSurface(arrows->getPicture(7),true);
+    SDL_SetColorKey(uiGraphic[UI_MapChoiceArrow_LeftDown][HOUSE_HARKONNEN], SDL_SRCCOLORKEY | SDL_RLEACCEL, 0);
+    uiGraphic[UI_MapChoiceArrow_Left][HOUSE_HARKONNEN] = Scaler::defaultDoubleSurface(arrows->getPicture(8),true);
+    SDL_SetColorKey(uiGraphic[UI_MapChoiceArrow_Left][HOUSE_HARKONNEN], SDL_SRCCOLORKEY | SDL_RLEACCEL, 0);
 
 	uiGraphic[UI_StructureSizeLattice][HOUSE_HARKONNEN] = SDL_LoadBMP_RW(pFileManager->openFile("StructureSizeLattice.bmp"),true);
 	SDL_SetColorKey(uiGraphic[UI_StructureSizeLattice][HOUSE_HARKONNEN], SDL_SRCCOLORKEY | SDL_RLEACCEL, 0);
@@ -927,18 +940,6 @@ GFXManager::GFXManager() {
 		SDL_SetColorKey(mapChoicePieces[i][HOUSE_HARKONNEN], SDL_SRCCOLORKEY | SDL_RLEACCEL, 0);
 	}
 
-	// load map choice arrows
-	for(int i = 0; i < NUM_MAPCHOICEARROWS; i++) {
-		SDL_Surface* tmp = Scaler::defaultDoubleSurface(arrows->getPicture(i),true);
-		SDL_SetColorKey(tmp, SDL_SRCCOLORKEY | SDL_RLEACCEL, 0);
-
-		if((mapChoiceArrowTex[i] = SDL_DisplayFormat(tmp)) == NULL) {
-            fprintf(stderr,"GFXManager: SDL_DisplayFormat() failed!\n");
-            exit(EXIT_FAILURE);
-        }
-        SDL_FreeSurface(tmp);
-	}
-
     // pBackgroundSurface is separate as we never draw it but use it to construct other sprites
     SDL_Surface* tmp = PicFactory->createBackground();
     if((pBackgroundSurface = SDL_DisplayFormat(tmp)) == NULL) {
@@ -953,18 +954,6 @@ GFXManager::GFXManager() {
 
 	pTransparent150Surface = SDL_CreateRGBSurface(SDL_HWSURFACE, 128, 128, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK);
     SDL_SetAlpha(pTransparent150Surface, SDL_SRCALPHA, 150);
-
-    // Convert uiGraphic to display format
-    for(int i = 0; i < NUM_UIGRAPHICS; i++) {
-		for(int j = 0; j < (int) NUM_HOUSES; j++) {
-			if(uiGraphic[i][j] != NULL) {
-				if((uiGraphicTex[i][j] = SDL_DisplayFormatAlpha(uiGraphic[i][j])) == NULL) {
-					fprintf(stderr,"GFXManager: SDL_DisplayFormat() failed!\n");
-					exit(EXIT_FAILURE);
-				}
-			}
-		}
-	}
 }
 
 GFXManager::~GFXManager() {
@@ -1013,13 +1002,6 @@ GFXManager::~GFXManager() {
                 SDL_FreeSurface(mapChoicePiecesTex[i][j]);
                 mapChoicePiecesTex[i][j] = NULL;
 			}
-		}
-	}
-
-	for(int i = 0; i < NUM_MAPCHOICEARROWS; i++) {
-		if(mapChoiceArrowTex[i] != NULL) {
-            SDL_FreeSurface(mapChoiceArrowTex[i]);
-            mapChoiceArrowTex[i] = NULL;
 		}
 	}
 
@@ -1104,10 +1086,16 @@ SDL_Surface* GFXManager::getUIGraphic(unsigned int id, int house) {
 	}
 
 	if(uiGraphicTex[id][house] == NULL) {
-        uiGraphicTex[id][house] = SDL_DisplayFormatAlpha(getUIGraphicSurface(id, house));
-        if(uiGraphicTex[id][house] == NULL) {
-            fprintf(stderr,"GFXManager::getUIGraphic(): Converting to display format failed!\n");
-            exit(EXIT_FAILURE);
+        SDL_Surface* pSurface = getUIGraphicSurface(id, house);
+
+        if(id >= UI_MapChoiceArrow_None && id <= UI_MapChoiceArrow_Left) {
+            uiGraphicTex[id][house] = generateMapChoiceArrrowFrames(pSurface, house);
+        } else {
+            uiGraphicTex[id][house] = SDL_DisplayFormatAlpha(pSurface);
+            if(uiGraphicTex[id][house] == NULL) {
+                fprintf(stderr,"GFXManager::getUIGraphic(): Converting to display format failed!\n");
+                exit(EXIT_FAILURE);
+            }
         }
 	}
 
@@ -1148,15 +1136,6 @@ SDL_Surface* GFXManager::getMapChoicePiece(unsigned int num, int house) {
 	}
 
 	return mapChoicePiecesTex[num][house];
-}
-
-SDL_Surface* GFXManager::getMapChoiceArrow(unsigned int num) {
-	if(num >= NUM_MAPCHOICEARROWS) {
-		fprintf(stderr,"GFXManager::getMapChoiceArrow(): Arrow number %d is not available!\n",num);
-		exit(EXIT_FAILURE);
-	}
-
-	return mapChoiceArrowTex[num];
 }
 
 Animation* GFXManager::getAnimation(unsigned int id) {
@@ -1337,7 +1316,7 @@ SDL_Surface* GFXManager::extractSmallDetailPic(std::string filename) {
 
 	SDL_Surface* pTexture = SDL_DisplayFormatAlpha(pSurface);
     if(pTexture == NULL) {
-        fprintf(stderr,"GFXManager::extractSmallDetailPic() SDL_DisplayFormat() failed!\n");
+        fprintf(stderr,"GFXManager::extractSmallDetailPic() SDL_DisplayFormatAlpha() failed!\n");
         exit(EXIT_FAILURE);
 	}
 	SDL_FreeSurface(pSurface);
@@ -1365,12 +1344,12 @@ SDL_Surface* GFXManager::generateWindtrapAnimationFrames(SDL_Surface* windtrapPi
     int windtrapSize = windtrapPic->h;
     int sizeX = NUM_WINDTRAP_ANIMATIONS_PER_ROW*windtrapSize;
     int sizeY = ((2+NUM_WINDTRAP_ANIMATIONS+NUM_WINDTRAP_ANIMATIONS_PER_ROW-1)/NUM_WINDTRAP_ANIMATIONS_PER_ROW)*windtrapSize;
-    SDL_Surface* tmp = SDL_CreateRGBSurface(SDL_HWSURFACE, sizeX, sizeY, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK);
+    SDL_Surface* returnPic = SDL_CreateRGBSurface(SDL_HWSURFACE, sizeX, sizeY, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK);
 
     // copy building phase
     SDL_Rect src = { 0, 0, 2*windtrapSize, windtrapSize};
     SDL_Rect dest = src;
-    SDL_BlitSurface(windtrapPic, &src, tmp, &dest);
+    SDL_BlitSurface(windtrapPic, &src, returnPic, &dest);
 
     src.w = windtrapSize;
     dest.x += dest.w;
@@ -1393,19 +1372,30 @@ SDL_Surface* GFXManager::generateWindtrapAnimationFrames(SDL_Surface* windtrapPi
         }
         SDL_SetPalette(windtrapPic, SDL_LOGPAL, &windtrapColor, PALCOLOR_WINDTRAP_COLORCYCLE, 1);
 
-        SDL_BlitSurface(windtrapPic, &src, tmp, &dest);
+        SDL_BlitSurface(windtrapPic, &src, returnPic, &dest);
 
         dest.x += dest.w;
         dest.y = dest.y + dest.h * (dest.x / sizeX);
         dest.x = dest.x % sizeX;
     }
 
-    SDL_Surface* returnPic;
-    if((returnPic = SDL_DisplayFormatAlpha(tmp)) == NULL) {
-        fprintf(stderr,"GFXManager::getObjPic(): Converting to display format failed!\n");
-        exit(EXIT_FAILURE);
+    return returnPic;
+}
+
+
+SDL_Surface* GFXManager::generateMapChoiceArrrowFrames(SDL_Surface* arrowPic, int house) {
+    SDL_Surface* returnPic = SDL_CreateRGBSurface(SDL_HWSURFACE, arrowPic->w*4, arrowPic->h, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK);
+
+    SDL_Rect dest = {0, 0, arrowPic->w, arrowPic->h};
+
+    for(int i = 0; i < 4; i++) {
+        for(int k = 0; k < 4; k++) {
+            SDL_SetPalette(arrowPic, SDL_LOGPAL, &palette[houseColor[house]+((i+k)%4)], 251+k, 1);
+        }
+
+        SDL_BlitSurface(arrowPic, NULL, returnPic, &dest);
+        dest.x += dest.w;
     }
-    SDL_FreeSurface(tmp);
 
     return returnPic;
 }

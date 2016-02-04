@@ -28,7 +28,6 @@
 #include <memory>
 
 #define NUM_MAPCHOICEPIECES	28
-#define NUM_MAPCHOICEARROWS	9
 #define NUM_WINDTRAP_ANIMATIONS (2*STRUCTURE_ANIMATIONTIMER+4)
 #define NUM_WINDTRAP_ANIMATIONS_PER_ROW 10
 
@@ -275,6 +274,15 @@ typedef enum {
 	UI_MapChoiceMapOnly,
 	UI_MapChoiceMap,
 	UI_MapChoiceClickMap,
+	UI_MapChoiceArrow_None,
+	UI_MapChoiceArrow_LeftUp,
+	UI_MapChoiceArrow_Up,
+	UI_MapChoiceArrow_RightUp,
+	UI_MapChoiceArrow_Right,
+	UI_MapChoiceArrow_RightDown,
+	UI_MapChoiceArrow_Down,
+	UI_MapChoiceArrow_LeftDown,
+	UI_MapChoiceArrow_Left,
 	UI_StructureSizeLattice,
 	UI_StructureSizeConcrete,
 	UI_MapEditor_SideBar,
@@ -465,6 +473,7 @@ public:
 private:
 	Animation*      loadAnimationFromWsa(std::string filename);
 	SDL_Surface*    generateWindtrapAnimationFrames(SDL_Surface* windtrapPic);
+	SDL_Surface*    generateMapChoiceArrrowFrames(SDL_Surface* arrowPic, int house=HOUSE_HARKONNEN);
 
     std::shared_ptr<Shpfile>  loadShpfile(std::string filename);
     std::shared_ptr<Wsafile>  loadWsafile(std::string filename);
@@ -487,8 +496,6 @@ private:
 	SDL_Surface*	smallDetailPicTex[NUM_SMALLDETAILPICS];
 	SDL_Surface*	uiGraphicTex[NUM_UIGRAPHICS][(int) NUM_HOUSES];
 	SDL_Surface*	mapChoicePiecesTex[NUM_MAPCHOICEPIECES][(int) NUM_HOUSES];
-	SDL_Surface*	mapChoiceArrowTex[NUM_MAPCHOICEARROWS];
-
 };
 
 #endif // GFXMANAGER_H

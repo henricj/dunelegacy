@@ -97,7 +97,7 @@ void MapChoice::drawSpecificStuff() {
 
         case MAPCHOICESTATE_FADEINPLANET: {
             if(curBlendBlitter == NULL) {
-                SDL_Surface* pSurface = pGFXManager->getUIGraphic(UI_MapChoicePlanet);
+                SDL_Surface* pSurface = pGFXManager->getUIGraphicSurface(UI_MapChoicePlanet);
                 SDL_Rect dest = { 0, 0, static_cast<Uint16>(pSurface->w), static_cast<Uint16>(pSurface->h)};
                 curBlendBlitter = new BlendBlitter(pSurface,mapSurface,dest);
             }
@@ -126,7 +126,7 @@ void MapChoice::drawSpecificStuff() {
 
         case MAPCHOICESTATE_BLENDPLANET: {
             if(curBlendBlitter == NULL) {
-                SDL_Surface* pSurface = pGFXManager->getUIGraphic(UI_MapChoiceMapOnly);
+                SDL_Surface* pSurface = pGFXManager->getUIGraphicSurface(UI_MapChoiceMapOnly);
                 SDL_Rect dest = { 0, 0, static_cast<Uint16>(pSurface->w), static_cast<Uint16>(pSurface->h)};
                 curBlendBlitter = new BlendBlitter(pSurface,mapSurface,dest);
             }
@@ -155,7 +155,7 @@ void MapChoice::drawSpecificStuff() {
 
         case MAPCHOICESTATE_BLENDMAP: {
             if(curBlendBlitter == NULL) {
-                SDL_Surface* pSurface = pGFXManager->getUIGraphic(UI_MapChoiceMap);
+                SDL_Surface* pSurface = pGFXManager->getUIGraphicSurface(UI_MapChoiceMap);
                 SDL_Rect dest = { 0, 0, static_cast<Uint16>(pSurface->w), static_cast<Uint16>(pSurface->h)};
                 curBlendBlitter = new BlendBlitter(pSurface,mapSurface,dest);
             }
@@ -228,12 +228,15 @@ void MapChoice::drawSpecificStuff() {
                     continue;
                 }
 
-                SDL_Surface* arrow = pGFXManager->getMapChoiceArrow(group[lastScenario].attackRegion[i].arrowNum);
+                int arrowNum = std::max(0, std::min(8, group[lastScenario].attackRegion[i].arrowNum));
+                SDL_Surface* arrow = pGFXManager->getUIGraphic(UI_MapChoiceArrow_None + arrowNum, house);
+                int arrowFrame = (SDL_GetTicks() / 128) % 4;
+                SDL_Rect src = { arrowFrame* arrow->w/4, 0, arrow->w/4, arrow->h};
                 SDL_Rect dest = {	static_cast<Sint16>(group[lastScenario].attackRegion[i].arrowPosition.x + centerAreaRect.x),
                                     static_cast<Sint16>(group[lastScenario].attackRegion[i].arrowPosition.y + centerAreaRect.y),
                                     static_cast<Uint16>(arrow->w),static_cast<Uint16>(arrow->h)};
 
-                SDL_BlitSurface(arrow,NULL,screen,&dest);
+                SDL_BlitSurface(arrow,&src,screen,&dest);
             }
         } break;
 
@@ -245,6 +248,22 @@ void MapChoice::drawSpecificStuff() {
                                     static_cast<Sint16>(piecePosition[selectedRegion].y + centerAreaRect.y),
                                     static_cast<Uint16>(pieceSurface->w), static_cast<Uint16>(pieceSurface->h)};
                 SDL_BlitSurface(pieceSurface,NULL,screen,&dest);
+            }
+
+            for(int i = 0; i < 4; i++) {
+                if(group[lastScenario].attackRegion[i].regionNum != selectedRegion) {
+                    continue;
+                }
+
+                int arrowNum = std::max(0, std::min(8, group[lastScenario].attackRegion[i].arrowNum));
+                SDL_Surface* arrow = pGFXManager->getUIGraphic(UI_MapChoiceArrow_None + arrowNum, house);
+                int arrowFrame = (SDL_GetTicks() / 128) % 4;
+                SDL_Rect src = { arrowFrame* arrow->w/4, 0, arrow->w/4, arrow->h};
+                SDL_Rect dest = {	static_cast<Sint16>(group[lastScenario].attackRegion[i].arrowPosition.x + centerAreaRect.x),
+                                    static_cast<Sint16>(group[lastScenario].attackRegion[i].arrowPosition.y + centerAreaRect.y),
+                                    static_cast<Uint16>(arrow->w),static_cast<Uint16>(arrow->h)};
+
+                SDL_BlitSurface(arrow,&src,screen,&dest);
             }
 
             if((SDL_GetTicks() - selectionTime) > 2000) {
@@ -281,7 +300,7 @@ bool MapChoice::doInput(SDL_Event &event) {
             int y = event.button.y-centerAreaRect.y;
 
             if((x > 0) && (x < centerAreaRect.w) && (y > 0) && (y < centerAreaRect.h)) {
-                SDL_Surface* clickmap = pGFXManager->getUIGraphic(UI_MapChoiceClickMap);
+                SDL_Surface* clickmap = pGFXManager->getUIGraphicSurface(UI_MapChoiceClickMap);
 
                 if(SDL_LockSurface(clickmap) != 0) {
                     fprintf(stderr,"MapChoice::doInput(): Cannot lock image!\n");
@@ -322,10 +341,10 @@ void MapChoice::createMapSurfaceWithPieces() {
 		for(unsigned int h = 0; h < NUM_HOUSES; h++) {
 			for(unsigned int p = 0; p < group[s].newRegion[h].size(); p++) {
 				int pieceNum = (group[s].newRegion[h])[p];
-				SDL_Surface* PieceSurface = pGFXManager->getMapChoicePiece(pieceNum,h);
+				SDL_Surface* pieceSurface = pGFXManager->getMapChoicePieceSurface(pieceNum,h);
 				SDL_Rect dest = {	static_cast<Sint16>(piecePosition[pieceNum].x),static_cast<Sint16>(piecePosition[pieceNum].y),
-									static_cast<Uint16>(PieceSurface->w), static_cast<Uint16>(PieceSurface->h)};
-				SDL_BlitSurface(PieceSurface,NULL,mapSurface,&dest);
+									static_cast<Uint16>(pieceSurface->w), static_cast<Uint16>(pieceSurface->h)};
+				SDL_BlitSurface(pieceSurface,NULL,mapSurface,&dest);
 			}
 		}
 	}
