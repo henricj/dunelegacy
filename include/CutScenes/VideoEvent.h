@@ -39,13 +39,6 @@ public:
 	virtual int draw(SDL_Surface* pScreen);
 
     /**
-        This method is used for palette animations. It should only change the physical palette of pScreen.
-        It is called after draw().
-        \param  pScreen the surface to set the palette of
-    */
-	virtual void setupPalette(SDL_Surface* pScreen);
-
-    /**
         This method checks if this VideoEvent is already finished
         \return true, if there are no more frames to draw with this VideoEvent
     */

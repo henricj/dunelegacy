@@ -28,8 +28,7 @@
 
 /**
 	This class is used for showing text while playing a cutscene. It can show the video in the middle of the screen
-	or at the bottom of the screen. The text can be faded in and out. This is done with a palette animation with color
-	index 255.
+	or at the bottom of the screen. The text can be faded in and out.
 */
 class TextEvent {
 public:
@@ -37,14 +36,14 @@ public:
 	/**
 		Constructor
 		\param	text			the text to show
+		\param	color			the color of the text
 		\param	startFrame		the first frame relative to the current Scene start where the text should be shown
 		\param	lengthInFrames	the number of frames the text shall be shown (if fading in/out is selected, the neccessary time for fading is included here)
 		\param	bFadeIn			true = fade in the text (see TEXT_FADE_TIME for the number of frames it takes), false = simply show the text (default is true)
 		\param	bFadeOut		true = fade out the text (see TEXT_FADE_TIME for the number of frames it takes), false = text simply disapears (default is true)
 		\param	bCenterVertical	true = center the text vertically on the screen, false = draw the text near the bottom of the screen (default is false)
-		\param	color			the color of the text (default is COLOR_WHITE)
 	*/
-	TextEvent(std::string text, int startFrame, int lengthInFrames, bool bFadeIn = true, bool bFadeOut = true, bool bCenterVertical = false, Uint32 color = COLOR_WHITE);
+	TextEvent(std::string text, Uint32 color, int startFrame, int lengthInFrames, bool bFadeIn = true, bool bFadeOut = true, bool bCenterVertical = false);
 
 	/// destructor
 	~TextEvent();
@@ -55,13 +54,6 @@ public:
 		\param	currentFrameNumber	the current frame number relative to the current Scene start
 	*/
 	void draw(SDL_Surface* pScreen, int currentFrameNumber);
-
-	/**
-		This method does the palette animation for the fading of the text.
-		\param	pScreen				the surface to change the palette of
-		\param	currentFrameNumber	the current frame number relative to the current Scene start
-	*/
-	void setupPalette(SDL_Surface* pScreen, int currentFrameNumber);
 
 private:
     std::string text;		///< the text to show

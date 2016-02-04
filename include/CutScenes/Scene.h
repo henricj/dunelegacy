@@ -76,8 +76,7 @@ public:
 	}
 
     /**
-        This method draws the current frame. First the video and the text is drawn to pScreen. Afterwards the palette is setup
-        and as a last step the CutSceneTriggers are triggered.
+        This method draws the current frame. First the video and the text is drawn to pScreen. Afterwards CutSceneTriggers are triggered.
         \param  pScreen the surface to draw to
         \return the milliseconds until the next frame shall be drawn.
     */

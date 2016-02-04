@@ -76,7 +76,7 @@ int Scene::draw(SDL_Surface* pScreen)
     int nextFrameTime = 0;
 
     // 1.: Clear the whole screen
-    SDL_FillRect(pScreen, NULL, 0);
+    SDL_FillRect(pScreen, NULL, COLOR_BLACK);
 
     // 2.: Draw everything on the screen
     while(videoEvents.empty() == false) {
@@ -97,16 +97,7 @@ int Scene::draw(SDL_Surface* pScreen)
         (*iter)->draw(pScreen, currentFrameNumber);
     }
 
-    // 3.: Setup the palette
-    if(videoEvents.empty() == false) {
-        videoEvents.front()->setupPalette(pScreen);
-    }
-
-    for(iter = textEvents.begin(); iter != textEvents.end(); ++iter) {
-        (*iter)->setupPalette(pScreen, currentFrameNumber);
-    }
-
-    // 4.: Flip the screen
+    // 3.: Flip the screen
     SDL_Flip(pScreen);
 
 

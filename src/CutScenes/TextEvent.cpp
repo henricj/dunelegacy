@@ -20,7 +20,7 @@
 
 extern FontManager* pFontManager;
 
-TextEvent::TextEvent(std::string text, int startFrame, int lengthInFrames, bool bFadeIn, bool bFadeOut, bool bCenterVertical, Uint32 color)
+TextEvent::TextEvent(std::string text, Uint32 color, int startFrame, int lengthInFrames, bool bFadeIn, bool bFadeOut, bool bCenterVertical)
 {
     this->text = text;
     this->startFrame = startFrame;
@@ -29,7 +29,7 @@ TextEvent::TextEvent(std::string text, int startFrame, int lengthInFrames, bool 
     this->bFadeOut = bFadeOut;
     this->bCenterVertical = bCenterVertical;
     this->color = color;
-    pSurface = pFontManager->createSurfaceWithMultilineText(text, 255, FONT_STD24, true);
+    pSurface = pFontManager->createSurfaceWithMultilineText(text, color, FONT_STD24, true);
 }
 
 TextEvent::~TextEvent()
@@ -43,35 +43,19 @@ void TextEvent::draw(SDL_Surface* pScreen, int currentFrameNumber)
         return;
     }
 
+    int alpha = 0;
+    if((bFadeIn == false) && (currentFrameNumber == startFrame)) {
+        alpha = 255;
+    } else if(bFadeIn && (currentFrameNumber - startFrame <= TEXT_FADE_TIME)) {
+        alpha = ((currentFrameNumber - startFrame)*255)/TEXT_FADE_TIME;
+    } else if (bFadeOut && ((startFrame + lengthInFrames) - currentFrameNumber <= TEXT_FADE_TIME)) {
+        alpha = (((startFrame + lengthInFrames) - currentFrameNumber)*255)/TEXT_FADE_TIME;
+    }
+
     SDL_Rect dest = {   static_cast<Sint16>((pScreen->w - pSurface->w) / 2),
                         static_cast<Sint16>(bCenterVertical ? (pScreen->h - pSurface->h) / 2 : (pScreen->h/2 + 480/2 - 5*pFontManager->getTextHeight(FONT_STD24)/2)),
                         static_cast<Uint16>(pSurface->w),
                         static_cast<Uint16>(pSurface->h) };
+    SDL_SetAlpha(pSurface, SDL_RLEACCEL, alpha);
     SDL_BlitSurface(pSurface,NULL,pScreen,&dest);
-}
-
-void TextEvent::setupPalette(SDL_Surface* pScreen, int currentFrameNumber) {
-    if(currentFrameNumber < startFrame || currentFrameNumber > startFrame + lengthInFrames) {
-        return;
-    }
-
-    if((bFadeIn == false) && (currentFrameNumber == startFrame)) {
-        SDL_SetPalette(pScreen, SDL_PHYSPAL, &pScreen->format->palette->colors[color], pScreen->format->palette->ncolors-1,1);
-    } else if(bFadeIn && (currentFrameNumber - startFrame <= TEXT_FADE_TIME)) {
-        SDL_Color newColor = pScreen->format->palette->colors[color];
-
-        newColor.r = ((currentFrameNumber - startFrame)*newColor.r)/TEXT_FADE_TIME;
-        newColor.g = ((currentFrameNumber - startFrame)*newColor.g)/TEXT_FADE_TIME;
-        newColor.b = ((currentFrameNumber - startFrame)*newColor.b)/TEXT_FADE_TIME;
-
-        SDL_SetPalette(pScreen, SDL_PHYSPAL, &newColor, pScreen->format->palette->ncolors-1,1);
-    } else if (bFadeOut && ((startFrame + lengthInFrames) - currentFrameNumber <= TEXT_FADE_TIME)) {
-        SDL_Color newColor = pScreen->format->palette->colors[color];
-
-        newColor.r = (((startFrame + lengthInFrames) - currentFrameNumber)*newColor.r)/TEXT_FADE_TIME;
-        newColor.g = (((startFrame + lengthInFrames) - currentFrameNumber)*newColor.g)/TEXT_FADE_TIME;
-        newColor.b = (((startFrame + lengthInFrames) - currentFrameNumber)*newColor.b)/TEXT_FADE_TIME;
-
-        SDL_SetPalette(pScreen, SDL_PHYSPAL, &newColor, pScreen->format->palette->ncolors-1,1);
-    }
 }

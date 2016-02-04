@@ -28,17 +28,6 @@
 CutScene::CutScene()
 {
     quiting = false;
-
-    oldPalette = Palette(screen->format->palette);
-
-    palette = LoadPalette_RW(pFileManager->openFile("INTRO.PAL"), true);
-
-	// Set index 255 to black to avoid flickering
-	palette[palette.getNumColors()-1].r = 0;
-	palette[palette.getNumColors()-1].g = 0;
-	palette[palette.getNumColors()-1].b = 0;
-
-	palette.applyToSurface(screen);
 }
 
 CutScene::~CutScene()
@@ -52,9 +41,6 @@ CutScene::~CutScene()
         scenes.pop();
         delete pScene;
     }
-
-    oldPalette.applyToSurface(screen);
-    palette = oldPalette;
 }
 
 void CutScene::run()

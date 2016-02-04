@@ -26,22 +26,11 @@ FadeOutVideoEvent::FadeOutVideoEvent(SDL_Surface* pSurface, int numFrames2FadeOu
     this->bCenterVertical = bCenterVertical;
     this->bFadeWhite = bFadeWhite;
     currentFrame = 0;
-    pOldScreen = NULL;
 }
 
 FadeOutVideoEvent::~FadeOutVideoEvent()
 {
     SDL_FreeSurface(pSurface);
-
-    // restore old palette
-    if(((currentFrame < numFrames2FadeOut) || (bFadeWhite == false)) && pOldScreen != NULL) {
-
-        // Fixes some flickering
-        SDL_FillRect(pOldScreen, NULL, 0);
-        SDL_Flip(pOldScreen);
-
-        oldPalette.applyToSurface(pOldScreen, SDL_PHYSPAL);
-    }
 }
 
 int FadeOutVideoEvent::draw(SDL_Surface* pScreen)
@@ -50,40 +39,20 @@ int FadeOutVideoEvent::draw(SDL_Surface* pScreen)
                         static_cast<Sint16>(bCenterVertical ? (pScreen->h - pSurface->h) / 2 : 0),
                         static_cast<Uint16>(pSurface->w),
                         static_cast<Uint16>(pSurface->h) };
+    int alpha  = 0;
+    if(bFadeWhite == false) {
+        // fade to black
+        alpha = 255 - 255*currentFrame/numFrames2FadeOut;
+    } else {
+        // fade to white
+        alpha = 255*currentFrame/numFrames2FadeOut;
+    }
+    SDL_SetAlpha(pSurface, SDL_RLEACCEL, alpha);
     SDL_BlitSurface(pSurface,NULL,pScreen,&dest);
 
     currentFrame++;
 
     return 100;
-}
-
-void FadeOutVideoEvent::setupPalette(SDL_Surface* pScreen)
-{
-    if(pOldScreen == NULL) {
-        // backup old colors
-        oldPalette = Palette(pScreen->format->palette);
-        pOldScreen = pScreen;
-    }
-
-    Palette newPalette = oldPalette;
-
-    if(bFadeWhite == false) {
-        // fade to black (leave out index 0 and pPalette->ncolors-1)
-        for(int i=1; i < newPalette.getNumColors() - 1; i++) {
-            newPalette[i].r = newPalette[i].r - (newPalette[i].r*currentFrame)/numFrames2FadeOut;
-            newPalette[i].g = newPalette[i].g - (newPalette[i].g*currentFrame)/numFrames2FadeOut;
-            newPalette[i].b = newPalette[i].b - (newPalette[i].b*currentFrame)/numFrames2FadeOut;
-        }
-    } else {
-        // fade to white (leave out index 0 and pPalette->ncolors-1)
-        for(int i=1; i < newPalette.getNumColors() - 1; i++) {
-            newPalette[i].r = newPalette[i].r + ((255-newPalette[i].r)*currentFrame)/numFrames2FadeOut;
-            newPalette[i].g = newPalette[i].g + ((255-newPalette[i].g)*currentFrame)/numFrames2FadeOut;
-            newPalette[i].b = newPalette[i].b + ((255-newPalette[i].b)*currentFrame)/numFrames2FadeOut;
-        }
-    }
-
-    newPalette.applyToSurface(pScreen, SDL_PHYSPAL, 1, newPalette.getNumColors() - 2);
 }
 
 bool FadeOutVideoEvent::isFinished()

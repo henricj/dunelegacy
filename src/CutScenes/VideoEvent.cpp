@@ -30,10 +30,6 @@ int VideoEvent::draw(SDL_Surface* pScreen)
 	return 0;
 }
 
-void VideoEvent::setupPalette(SDL_Surface* pScreen)
-{
-}
-
 bool VideoEvent::isFinished()
 {
     return true;

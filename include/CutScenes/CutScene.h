@@ -93,8 +93,6 @@ protected:
 private:
     std::queue<Scene*> scenes;      ///< List of all scenes
     bool quiting;                   ///< Quit the cutscene?
-
-    Palette oldPalette;             ///< The saved palette before the cutscene started.
 };
 
 #endif // CUTSCENE_H

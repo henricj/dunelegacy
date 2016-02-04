@@ -19,7 +19,6 @@
 #define FADEOUTVIDEOEVENT_H
 
 #include <CutScenes/VideoEvent.h>
-#include <FileClasses/Palette.h>
 #include <SDL.h>
 
 /**
@@ -49,13 +48,6 @@ public:
 	virtual int draw(SDL_Surface* pScreen);
 
     /**
-        This method is used for palette animations. It should only change the physical palette of pScreen.
-        It is called after draw().
-        \param  pScreen the surface to set the palette of
-    */
-    virtual void setupPalette(SDL_Surface* pScreen);
-
-    /**
         This method checks if this VideoEvent is already finished
         \return true, if there are no more frames to draw with this VideoEvent
     */
@@ -65,8 +57,6 @@ private:
     int currentFrame;           ///< the current frame number relative to the start of this FadeOutVideoEvent
     int numFrames2FadeOut;      ///< the number of frames the fading should take
     SDL_Surface* pSurface;      ///< the picture to fade out
-    Palette oldPalette;         ///< the saved palette before the fading
-    SDL_Surface* pOldScreen;    ///< the screen surface the palette is saved from
     bool bFreeSurface;          ///< true = SDL_FreeSurface(pSurface) after fading out is done, false = pSurface is not freed
     bool bCenterVertical;       ///< true = center the surface vertically on the screen, false = blit the surface at the top of the screen
     bool bFadeWhite;            ///< true = fade to white, false = fade to black

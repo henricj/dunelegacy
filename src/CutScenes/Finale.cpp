@@ -136,27 +136,27 @@ Finale::Finale(int house)
             addVideoEvent(new HoldPictureVideoEvent(pPalace1->getPicture(0), 52, true));
             addVideoEvent(new WSAVideoEvent(pPalace1));
             addVideoEvent(new HoldPictureVideoEvent(pPalace1->getPicture(0), 23, true));
-            addTextEvent(new TextEvent(pIntroText->getString(FinaleText_You_are_indeed_not_entirely),22,47,false,true,false,color));
-            addTextEvent(new TextEvent(pIntroText->getString(FinaleText_You_have_lied_to_us),70,60,true,true,false,color));
+            addTextEvent(new TextEvent(pIntroText->getString(FinaleText_You_are_indeed_not_entirely),color,22,47,false,true,false));
+            addTextEvent(new TextEvent(pIntroText->getString(FinaleText_You_have_lied_to_us),color,70,60,true,true,false));
             addTrigger(new CutSceneMusicTrigger(0,MUSIC_FINALE_H));
 
             startNewScene();
 
             addVideoEvent(new WSAVideoEvent(pImperator));
             addVideoEvent(new HoldPictureVideoEvent(pImperator->getPicture(pImperator->getNumFrames()-1), 3, true));
-            addTextEvent(new TextEvent(pIntroText->getString(FinaleText_What_lies_What_are),2,100,false,true,false,sardaukarColor));
+            addTextEvent(new TextEvent(pIntroText->getString(FinaleText_What_lies_What_are),sardaukarColor,2,100,false,true,false));
 
             startNewScene();
 
             addVideoEvent(new HoldPictureVideoEvent(pPalace1->getPicture(0), 50, true));
-            addTextEvent(new TextEvent(pIntroText->getString(FinaleText_Your_lies_of_loyalty),0,50,true,true,false,color));
+            addTextEvent(new TextEvent(pIntroText->getString(FinaleText_Your_lies_of_loyalty),color,0,50,true,true,false));
 
             startNewScene();
 
             addVideoEvent(new HoldPictureVideoEvent(pImperatorShocked->getPicture(0), 45, true));
             addVideoEvent(new HoldPictureVideoEvent(pImperatorShocked->getPicture(1), 15, true));
-            addTextEvent(new TextEvent(pIntroText->getString(FinaleText_A_crime_for_which_you),2,38,true,false,false,color));
-            addTextEvent(new TextEvent(pIntroText->getString(FinaleText_with_your_life),42,100,false,false,false,color));
+            addTextEvent(new TextEvent(pIntroText->getString(FinaleText_A_crime_for_which_you),color,2,38,true,false,false));
+            addTextEvent(new TextEvent(pIntroText->getString(FinaleText_with_your_life),color,42,100,false,false,false));
 
             startNewScene();
 
@@ -164,7 +164,7 @@ Finale::Finale(int house)
             addVideoEvent(new WSAVideoEvent(pPalace2));
             addVideoEvent(new HoldPictureVideoEvent(pPalace2->getPicture(pPalace2->getNumFrames()-1), 15, true));
             addVideoEvent(new FadeOutVideoEvent(pPalace2->getPicture(pPalace2->getNumFrames()-1), 20, true));
-            addTextEvent(new TextEvent(pIntroText->getString(FinaleText_NO_NO_NOOO),10,30,false,true,false,sardaukarColor));
+            addTextEvent(new TextEvent(pIntroText->getString(FinaleText_NO_NO_NOOO),sardaukarColor,10,30,false,true,false));
             addTrigger(new CutSceneSoundTrigger(10,click));
             addTrigger(new CutSceneSoundTrigger(15,blaster));
             addTrigger(new CutSceneSoundTrigger(17,blowup));
@@ -180,26 +180,26 @@ Finale::Finale(int house)
 
             addVideoEvent(new FadeInVideoEvent(pPalace1->getPicture(0), 20, true));
             addVideoEvent(new HoldPictureVideoEvent(pPalace1->getPicture(0), 50, true));
-            addTextEvent(new TextEvent(pIntroText->getString(FinaleText_Greetings_Emperor),15,48,false,true,false,color));
+            addTextEvent(new TextEvent(pIntroText->getString(FinaleText_Greetings_Emperor),color,15,48,false,true,false));
             addTrigger(new CutSceneMusicTrigger(0,MUSIC_FINALE_A));
 
             startNewScene();
 
             addVideoEvent(new WSAVideoEvent(pImperator));
             addVideoEvent(new HoldPictureVideoEvent(pImperator->getPicture(pImperator->getNumFrames()-1), 3, true));
-            addTextEvent(new TextEvent(pIntroText->getString(FinaleText_What_is_the_meaning),2,100,false,false,false,sardaukarColor));
+            addTextEvent(new TextEvent(pIntroText->getString(FinaleText_What_is_the_meaning),sardaukarColor,2,100,false,false,false));
 
             startNewScene();
 
             addVideoEvent(new WSAVideoEvent(pPalace1));
             addVideoEvent(new HoldPictureVideoEvent(pPalace1->getPicture(pPalace1->getNumFrames()-1), 25, true));
-            addTextEvent(new TextEvent(pIntroText->getString(FinaleText_You_are_formally_charged),0,105,true,false,false,color));
+            addTextEvent(new TextEvent(pIntroText->getString(FinaleText_You_are_formally_charged),color,0,105,true,false,false));
 
             startNewScene();
 
             addVideoEvent(new HoldPictureVideoEvent(pImperatorShocked->getPicture(0), 34, true));
             addVideoEvent(new HoldPictureVideoEvent(pImperatorShocked->getPicture(1), 20, true));
-            addTextEvent(new TextEvent(pIntroText->getString(FinaleText_The_House_shall_determine),2,40,false,false,false,color));
+            addTextEvent(new TextEvent(pIntroText->getString(FinaleText_The_House_shall_determine),color,2,40,false,false,false));
 
             startNewScene();
 
@@ -207,7 +207,7 @@ Finale::Finale(int house)
             addVideoEvent(new WSAVideoEvent(pPalace2));
             addVideoEvent(new HoldPictureVideoEvent(pPalace2->getPicture(pPalace2->getNumFrames()-1), 30, true));
             addVideoEvent(new FadeOutVideoEvent(pPalace2->getPicture(pPalace2->getNumFrames()-1), 20, true));
-            addTextEvent(new TextEvent(pIntroText->getString(FinaleText_Until_then_you_shall_no),2,48,false,true,false,color));
+            addTextEvent(new TextEvent(pIntroText->getString(FinaleText_Until_then_you_shall_no),color,2,48,false,true,false));
 
         } break;
 
@@ -216,23 +216,23 @@ Finale::Finale(int house)
 
             addVideoEvent(new FadeInVideoEvent(pPalace1->getPicture(0), 20, true));
             addVideoEvent(new HoldPictureVideoEvent(pPalace1->getPicture(0), 50, true));
-            addTextEvent(new TextEvent(pIntroText->getString(FinaleText_You_are_aware_Emperor),22,46,false,true,false,color));
+            addTextEvent(new TextEvent(pIntroText->getString(FinaleText_You_are_aware_Emperor),color,22,46,false,true,false));
             addTrigger(new CutSceneMusicTrigger(0,MUSIC_FINALE_O));
 
             startNewScene();
 
             addVideoEvent(new WSAVideoEvent(pImperator));
             addVideoEvent(new HoldPictureVideoEvent(pImperator->getPicture(pImperator->getNumFrames()-1), 3, true));
-            addTextEvent(new TextEvent(pIntroText->getString(FinaleText_What_games_What_are_you),2,100,false,true,false,sardaukarColor));
+            addTextEvent(new TextEvent(pIntroText->getString(FinaleText_What_games_What_are_you),sardaukarColor,2,100,false,true,false));
 
             startNewScene();
 
             addVideoEvent(new HoldPictureVideoEvent(pPalace1->getPicture(0), 40, true));
             addVideoEvent(new WSAVideoEvent(pPalace1));
             addVideoEvent(new HoldPictureVideoEvent(pPalace1->getPicture(pPalace1->getNumFrames()-1), 65, true));
-            addTextEvent(new TextEvent(pIntroText->getString(FinaleText_I_am_referring_to_your_game),2,35,false,true,false,color));
-            addTextEvent(new TextEvent(pIntroText->getString(FinaleText_We_were_your_pawns_and_Dune),40,45,true,true,false,color));
-            addTextEvent(new TextEvent(pIntroText->getString(FinaleText_We_have_decided_to_take),88,105,true,false,false,color));
+            addTextEvent(new TextEvent(pIntroText->getString(FinaleText_I_am_referring_to_your_game),color,2,35,false,true,false));
+            addTextEvent(new TextEvent(pIntroText->getString(FinaleText_We_were_your_pawns_and_Dune),color,40,45,true,true,false));
+            addTextEvent(new TextEvent(pIntroText->getString(FinaleText_We_have_decided_to_take),color,88,105,true,false,false));
             addTrigger(new CutSceneSoundTrigger(42,lizard));
             addTrigger(new CutSceneSoundTrigger(62,lizard));
 
@@ -240,7 +240,7 @@ Finale::Finale(int house)
 
             addVideoEvent(new HoldPictureVideoEvent(pImperatorShocked->getPicture(0), 29, true));
             addVideoEvent(new HoldPictureVideoEvent(pImperatorShocked->getPicture(1), 20, true));
-            addTextEvent(new TextEvent(pIntroText->getString(FinaleText_You_are_to_be_our_pawn),2,47,false,true,false,color));
+            addTextEvent(new TextEvent(pIntroText->getString(FinaleText_You_are_to_be_our_pawn),color,2,47,false,true,false));
 
             startNewScene();
 
