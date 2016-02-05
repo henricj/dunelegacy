@@ -30,19 +30,8 @@ class Palette
         }
 
         Palette(int numPaletteEntries) : pSDLPalette(NULL) {
-            try {
-                pSDLPalette = new SDL_Palette;
-                pSDLPalette->ncolors = numPaletteEntries;
-                pSDLPalette->colors = NULL;
-                pSDLPalette->colors = new SDL_Color[pSDLPalette->ncolors];
-
-                memset(pSDLPalette->colors, 0, sizeof(SDL_Color) * pSDLPalette->ncolors);
-            } catch (...) {
-                if(pSDLPalette != NULL) {
-                    delete [] pSDLPalette->colors;
-                }
-                delete pSDLPalette;
-
+            pSDLPalette = SDL_AllocPalette(numPaletteEntries);
+            if (!pSDLPalette) {
                 throw;
             }
         }
@@ -90,23 +79,15 @@ class Palette
         }
 
         void setSDLPalette(const SDL_Palette* pSDLPalette) {
-            SDL_Palette* pNewSDLPalette = NULL;
-
-            try {
-                pNewSDLPalette = new SDL_Palette;
-                pNewSDLPalette->ncolors = pSDLPalette->ncolors;
-                pNewSDLPalette->colors = NULL;
-                pNewSDLPalette->colors = new SDL_Color[pNewSDLPalette->ncolors];
-
-                memcpy(pNewSDLPalette->colors, pSDLPalette->colors, pSDLPalette->ncolors * sizeof(SDL_Color));
-            } catch (...) {
-                if(pNewSDLPalette != NULL) {
-                    delete [] pNewSDLPalette->colors;
-                }
-                delete pNewSDLPalette;
-
+            if(!pSDLPalette) {
+                this->pSDLPalette = NULL;
+                return;
+            }
+            SDL_Palette* pNewSDLPalette = SDL_AllocPalette(pSDLPalette->ncolors);
+            if(!pNewSDLPalette) {
                 throw;
             }
+            memcpy(pNewSDLPalette->colors, pSDLPalette->colors, pSDLPalette->ncolors * sizeof(SDL_Color));
 
             deleteSDLPalette();
             this->pSDLPalette = pNewSDLPalette;
@@ -120,7 +101,7 @@ class Palette
             return pSDLPalette->ncolors;
         }
 
-        void applyToSurface(SDL_Surface* pSurface, int flags = SDL_LOGPAL | SDL_PHYSPAL, int firstColor = 0, int endColor = -1) const {
+        void applyToSurface(SDL_Surface* pSurface, int firstColor = 0, int endColor = -1) const {
             if(pSDLPalette == NULL) {
                 throw std::runtime_error("Palette::applyToSurface(): Palette not initialized yet!");
             }
@@ -129,17 +110,20 @@ class Palette
                 throw std::runtime_error("Palette::applyToSurface(): pSurface == NULL!");
             }
 
+            if(pSurface->format->palette == NULL) {
+                throw std::runtime_error("Palette::applyToSurface(): Cannot apply palette to surface without a palette!");
+            }
+
             int nColors = (endColor != -1) ? (endColor - firstColor + 1) : (pSDLPalette->ncolors - firstColor);
-            SDL_SetPalette(pSurface, flags, pSDLPalette->colors + firstColor, firstColor, nColors);
+            SDL_SetPaletteColors(pSurface->format->palette, pSDLPalette->colors + firstColor, firstColor, nColors);
         }
 
     private:
 
         void deleteSDLPalette() {
-            if(pSDLPalette != NULL)
-                delete [] pSDLPalette->colors;
-
-            delete pSDLPalette;
+            if (pSDLPalette != NULL) {
+                SDL_FreePalette(pSDLPalette);
+            }
             pSDLPalette = NULL;
         }
 

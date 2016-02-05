@@ -134,7 +134,7 @@ void Pakfile::addFile(SDL_RWops* rwop, std::string filename) {
 	}
 
 
-	int filelength = SDL_RWseek(rwop,0,SEEK_END);
+	size_t filelength = SDL_RWseek(rwop,0,SEEK_END);
 	SDL_RWseek(rwop,0,SEEK_SET);
 
 	char* extendedBuffer;
@@ -235,10 +235,10 @@ bool Pakfile::exists(std::string filename) const {
 }
 
 
-int Pakfile::ReadFile(SDL_RWops* pRWop, void *ptr, int size, int n) {
+size_t Pakfile::ReadFile(SDL_RWops* pRWop, void *ptr, size_t size, size_t n) {
 	if((pRWop == NULL) || (ptr == NULL) || (pRWop->hidden.unknown.data1 == NULL)
 		|| (pRWop->type != PAKFILE_RWOP_TYPE)) {
-			return -1;
+			return 0;
 	}
 
 	int bytes2read = size*n;
@@ -246,17 +246,17 @@ int Pakfile::ReadFile(SDL_RWops* pRWop, void *ptr, int size, int n) {
 	RWopData * pRWopData = (RWopData*) pRWop->hidden.unknown.data1;
 	Pakfile * pPakfile = pRWopData->curPakfile;
 	if(pPakfile == NULL) {
-		return -1;
+		return 0;
 	}
 
 	if(pRWopData->fileIndex >= pPakfile->fileEntries.size()) {
-		return -1;
+		return 0;
 	}
 
 	uint32_t readstartoffset = pPakfile->fileEntries[pRWopData->fileIndex].startOffset + pRWopData->fileOffset;
 
 	if(readstartoffset > pPakfile->fileEntries[pRWopData->fileIndex].endOffset) {
-		return -1;
+		return 0;
 	}
 
 	if(readstartoffset + bytes2read > pPakfile->fileEntries[pRWopData->fileIndex].endOffset) {
@@ -270,22 +270,22 @@ int Pakfile::ReadFile(SDL_RWops* pRWop, void *ptr, int size, int n) {
 	}
 
 	if(SDL_RWseek(pPakfile->fPakFile,readstartoffset,SEEK_SET) < 0) {
-		return -1;
+		return 0;
 	}
 
 	if(SDL_RWread(pPakfile->fPakFile,ptr,bytes2read,1) != 1) {
-		return -1;
+		return 0;
 	}
 
 	pRWopData->fileOffset += bytes2read;
 	return bytes2read/size;
 }
 
-int Pakfile::WriteFile(SDL_RWops *pRWop, const void *ptr, int size, int n) {
-	return -1;
+size_t Pakfile::WriteFile(SDL_RWops *pRWop, const void *ptr, size_t size, size_t n) {
+	return 0;
 }
 
-int Pakfile::SeekFile(SDL_RWops *pRWop, int offset, int whence) {
+Sint64 Pakfile::SeekFile(SDL_RWops *pRWop, Sint64 offset, int whence) {
 	if((pRWop == NULL) || (pRWop->hidden.unknown.data1 == NULL)
 		|| (pRWop->type != PAKFILE_RWOP_TYPE)) {
 		return -1;
@@ -301,7 +301,7 @@ int Pakfile::SeekFile(SDL_RWops *pRWop, int offset, int whence) {
 		return -1;
 	}
 
-	uint32_t newOffset;
+	Sint64 newOffset;
 
 	switch(whence) {
 		case SEEK_SET:

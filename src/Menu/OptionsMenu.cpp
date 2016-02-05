@@ -386,9 +386,10 @@ void OptionsMenu::saveConfiguration2File() {
 void OptionsMenu::determineAvailableScreenResolutions() {
     availScreenRes.clear();
 
-	SDL_Rect** pResolutions = SDL_ListModes(NULL , SDL_HWSURFACE | SDL_FULLSCREEN);
+//  TODO: Port this to SDL2
+//	SDL_Rect** pResolutions = SDL_ListModes(NULL , SDL_FULLSCREEN);
 
-	if(pResolutions == NULL || pResolutions == (SDL_Rect**) -1) {
+//	if(pResolutions == NULL || pResolutions == (SDL_Rect**) -1) {
 		// Not possible or not available
 		// try some standard resolutions
 
@@ -415,18 +416,18 @@ void OptionsMenu::determineAvailableScreenResolutions() {
 		availScreenRes.push_back( Coord(1680, 1050) );  // WSXGA+ (16:10)
 		availScreenRes.push_back( Coord(1920, 1080) );  // 1080p (16:9)
 		availScreenRes.push_back( Coord(1920, 1200) );  // WUXGA (16:10)
-	} else {
-	    // step backward through resolutions
-		for(int i=0; pResolutions[i] != NULL;  i++) {
-		    if(pResolutions[i]->w >= SCREEN_MIN_WIDTH && pResolutions[i]->h >= SCREEN_MIN_HEIGHT) {
-		        Coord newRes = Coord(pResolutions[i]->w,pResolutions[i]->h);
-		        if(std::find(availScreenRes.begin(), availScreenRes.end(), newRes) == availScreenRes.end()) {
-		            // not yet in the list
-		            availScreenRes.insert(availScreenRes.begin(), newRes);
-		        }
-		    }
-		}
-	}
+//	} else {
+//	    // step backward through resolutions
+//		for(int i=0; pResolutions[i] != NULL;  i++) {
+//		    if(pResolutions[i]->w >= SCREEN_MIN_WIDTH && pResolutions[i]->h >= SCREEN_MIN_HEIGHT) {
+//		        Coord newRes = Coord(pResolutions[i]->w,pResolutions[i]->h);
+//		        if(std::find(availScreenRes.begin(), availScreenRes.end(), newRes) == availScreenRes.end()) {
+//		            // not yet in the list
+//		            availScreenRes.insert(availScreenRes.begin(), newRes);
+//		        }
+//		    }
+//		}
+//	}
 
 	Coord currentRes(settings.video.width, settings.video.height);
 

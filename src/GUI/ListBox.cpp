@@ -214,9 +214,9 @@ void ListBox::updateList() {
 		SDL_Surface* pSurface = GUIStyle::getInstance().createListBoxEntry(getSize().x - 4, getEntry(i), bHighlightSelectedElement && (i==selectedElement), color);
 
 		SDL_Rect dest = {   0,
-                            static_cast<Sint16>((i-firstVisibleElement) * GUIStyle::getInstance().getListBoxEntryHeight()),
-                            static_cast<Uint16>(pSurface->w),
-                            static_cast<Uint16>(pSurface->h) };
+                            (i-firstVisibleElement) * (int) GUIStyle::getInstance().getListBoxEntryHeight(),
+                            pSurface->w,
+                            pSurface->h };
 		SDL_BlitSurface(pSurface,NULL,pForeground,&dest);
 		SDL_FreeSurface(pSurface);
 	}

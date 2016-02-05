@@ -95,7 +95,10 @@ void MenuBase::draw(SDL_Surface* screen) {
 
 	drawCursor();
 
-	SDL_Flip(screen);
+	SDL_RenderClear(renderer);
+	SDL_UpdateTexture(texture, NULL, screen->pixels, screen->pitch);
+	SDL_RenderCopy(renderer, texture, NULL, NULL);
+	SDL_RenderPresent(renderer);
 }
 
 void MenuBase::drawSpecificStuff() {
@@ -115,7 +118,7 @@ bool MenuBase::doInput(SDL_Event &event) {
 
 				case SDLK_RETURN: {
 					if(SDL_GetModState() & KMOD_ALT) {
-						SDL_WM_ToggleFullScreen(screen);
+						SDL_SetWindowFullscreen(window, (SDL_GetWindowFlags(window) ^ SDL_WINDOW_FULLSCREEN_DESKTOP));
 					}
                 } break;
 
@@ -127,7 +130,7 @@ bool MenuBase::doInput(SDL_Event &event) {
                     }
                 } // fall through
 
-				case SDLK_PRINT:
+				case SDLK_PRINTSCREEN:
 				case SDLK_SYSREQ: {
                     std::string screenshotFilename;
                     int i = 1;
@@ -141,7 +144,7 @@ bool MenuBase::doInput(SDL_Event &event) {
 
                 case SDLK_TAB: {
                     if(SDL_GetModState() & KMOD_ALT) {
-                        SDL_WM_IconifyWindow();
+                        SDL_MinimizeWindow(window);
                     }
                 } break;
 

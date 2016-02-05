@@ -40,7 +40,7 @@ Palette LoadPalette_RW(SDL_RWops* rwop, int freesrc)
 
 	Palette palette(filesize / 3);
 
-	char buf;
+	unsigned char buf;
 
     for (int i=0; i < palette.getNumColors(); i++)
     {
@@ -64,6 +64,7 @@ Palette LoadPalette_RW(SDL_RWops* rwop, int freesrc)
 			throw std::runtime_error("Palfile::Palfile(): SDL_RWread failed!");
 		}
         palette[i].b = (char) (((double) buf)*255.0/63.0);
+        palette[i].a = 0xFF;
     }
 
     if(freesrc) SDL_RWclose(rwop);

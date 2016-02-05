@@ -274,7 +274,7 @@ void Bullet::blitToScreen()
         static const int shimmerOffset[]  = { 1, 3, 2, 5, 4, 3, 2, 1 };
 
         SDL_Surface *mask = graphic[currentZoomlevel];
-        SDL_SetColorKey(mask, SDL_SRCCOLORKEY | SDL_RLEACCEL, 15);      // we want to have white not being drawn
+        SDL_SetColorKey(mask, SDL_TRUE, 15);      // we want to have white not being drawn
 
         SDL_Rect source = dest;
         int shimmerOffsetIndex = ((currentGame->getGameCycleCount() + getBulletID()) % 24)/3;

@@ -46,7 +46,7 @@ int FadeInVideoEvent::draw(SDL_Surface* pScreen)
         // fade from white
         SDL_FillRect(pSurface,&dest, COLOR_WHITE);
     }
-    SDL_SetAlpha(pSurface, SDL_RLEACCEL, alpha);
+    SDL_SetSurfaceAlphaMod(pSurface, alpha);
     SDL_BlitSurface(pSurface,NULL,pScreen,&dest);
 
     currentFrame++;

@@ -60,13 +60,20 @@ SDL_Surface* Scaler::doubleSurfaceNN(SDL_Surface* src, bool freeSrcSurface) {
 	SDL_Surface *returnPic;
 
 	// create new picture surface
-	if((returnPic = SDL_CreateRGBSurface(SDL_HWSURFACE,src->w * 2,src->h * 2,8,0,0,0,0))== NULL) {
+	if((returnPic = SDL_CreateRGBSurface(0,src->w * 2,src->h * 2,8,0,0,0,0))== NULL) {
 	    if(freeSrcSurface) SDL_FreeSurface(src);
 		return NULL;
 	}
 
-	SDL_SetColors(returnPic, src->format->palette->colors, 0, src->format->palette->ncolors);
-    SDL_SetColorKey(returnPic, src->flags & (SDL_SRCCOLORKEY | SDL_RLEACCEL), src->format->colorkey);
+    SDL_SetPaletteColors(returnPic->format->palette, src->format->palette->colors, 0, src->format->palette->ncolors);
+    Uint32 ckey;
+    bool has_ckey = !SDL_GetColorKey(src, &ckey);
+    if (has_ckey) {
+        SDL_SetColorKey(returnPic, SDL_TRUE, ckey);
+    }
+    if (src->flags & SDL_RLEACCEL) {
+        SDL_SetSurfaceRLE(returnPic, SDL_TRUE);
+    }
 
 	SDL_LockSurface(returnPic);
 	SDL_LockSurface(src);
@@ -118,13 +125,20 @@ SDL_Surface* Scaler::tripleSurfaceNN(SDL_Surface* src, bool freeSrcSurface) {
 	SDL_Surface *returnPic;
 
 	// create new picture surface
-	if((returnPic = SDL_CreateRGBSurface(SDL_HWSURFACE,src->w * 3,src->h * 3,8,0,0,0,0))== NULL) {
+	if((returnPic = SDL_CreateRGBSurface(0,src->w * 3,src->h * 3,8,0,0,0,0))== NULL) {
 	    if(freeSrcSurface) SDL_FreeSurface(src);
 		return NULL;
 	}
 
-	SDL_SetColors(returnPic, src->format->palette->colors, 0, src->format->palette->ncolors);
-    SDL_SetColorKey(returnPic, src->flags & (SDL_SRCCOLORKEY | SDL_RLEACCEL), src->format->colorkey);
+	SDL_SetPaletteColors(returnPic->format->palette, src->format->palette->colors, 0, src->format->palette->ncolors);
+    Uint32 ckey;
+    bool has_ckey = !SDL_GetColorKey(src, &ckey);
+    if (has_ckey) {
+        SDL_SetColorKey(returnPic, SDL_TRUE, ckey);
+    }
+    if (src->flags & SDL_RLEACCEL) {
+        SDL_SetSurfaceRLE(returnPic, SDL_TRUE);
+    }
 
 	SDL_LockSurface(returnPic);
 	SDL_LockSurface(src);
@@ -197,13 +211,20 @@ SDL_Surface* Scaler::doubleTiledSurfaceScale2x(SDL_Surface* src, int tilesX, int
 	int srcWidth = src->w;
 	int srcHeight = src->h;
 
-	SDL_Surface* dest = SDL_CreateRGBSurface(src->flags, srcWidth*2, srcHeight*2, 8, 0, 0, 0, 0);
+	SDL_Surface* dest = SDL_CreateRGBSurface(0, srcWidth*2, srcHeight*2, 8, 0, 0, 0, 0);
 	if(dest == NULL) {
         if(freeSrcSurface) SDL_FreeSurface(src);
 		return NULL;
 	}
-	SDL_SetColors(dest, src->format->palette->colors, 0, src->format->palette->ncolors);
-    SDL_SetColorKey(dest, src->flags & (SDL_SRCCOLORKEY | SDL_RLEACCEL), src->format->colorkey);
+    SDL_SetPaletteColors(dest->format->palette, src->format->palette->colors, 0, src->format->palette->ncolors);
+    Uint32 ckey;
+    bool has_ckey = !SDL_GetColorKey(src, &ckey);
+    if (has_ckey) {
+        SDL_SetColorKey(dest, SDL_TRUE, ckey);
+    }
+    if (src->flags & SDL_RLEACCEL) {
+        SDL_SetSurfaceRLE(dest, SDL_TRUE);
+    }
 
 	Uint8* srcPixels = (Uint8*) src->pixels;
 	Uint8* destPixels = (Uint8*) dest->pixels;
@@ -298,13 +319,20 @@ SDL_Surface* Scaler::tripleTiledSurfaceScale3x(SDL_Surface* src, int tilesX, int
 	int srcWidth = src->w;
 	int srcHeight = src->h;
 
-	SDL_Surface* dest = SDL_CreateRGBSurface(src->flags, srcWidth*3, srcHeight*3, 8, 0, 0, 0, 0);
+	SDL_Surface* dest = SDL_CreateRGBSurface(0, srcWidth*3, srcHeight*3, 8, 0, 0, 0, 0);
 	if(dest == NULL) {
 	    if(freeSrcSurface) SDL_FreeSurface(src);
 		return NULL;
 	}
-	SDL_SetColors(dest, src->format->palette->colors, 0, src->format->palette->ncolors);
-    SDL_SetColorKey(dest, src->flags & (SDL_SRCCOLORKEY | SDL_RLEACCEL), src->format->colorkey);
+
+	Uint32 ckey;
+    bool has_ckey = !SDL_GetColorKey(src, &ckey);
+    if (has_ckey) {
+        SDL_SetColorKey(dest, SDL_TRUE, ckey);
+    }
+    if (src->flags & SDL_RLEACCEL) {
+        SDL_SetSurfaceRLE(dest, SDL_TRUE);
+    }
 
 	Uint8* srcPixels = (Uint8*) src->pixels;
 	Uint8* destPixels = (Uint8*) dest->pixels;

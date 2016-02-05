@@ -38,7 +38,7 @@ public:
 	virtual unsigned int read2high() =0;
 	virtual unsigned int read4() =0;
 	virtual unsigned int read4high() =0;
-	virtual void read(char *, int) =0;
+	virtual void read(char *, size_t) =0;
 
 	virtual void write1(unsigned int) =0;
 	virtual void write2(unsigned int) =0;
@@ -108,7 +108,7 @@ public:
 		return (b0 + (b1<<8) + (b2<<16) + (b3<<24));
 	};
 
-	void read(char *b, int len) {
+	void read(char *b, size_t len) {
 		if(fread(b, 1, len, f) != (size_t) len) {
             fprintf(stderr,"databuf::read(): fread failed!\n");
             exit(EXIT_FAILURE);
@@ -224,7 +224,7 @@ public:
 		return (b0 + (b1<<8) + (b2<<16) + (b3<<24));
 	};
 
-	void read(char *b, int len) {
+	void read(char *b, size_t len) {
 		memcpy(b, buf_ptr, len);
 		buf_ptr += len;
 	};
@@ -339,7 +339,7 @@ public:
 		return (b0 + (b1<<8) + (b2<<16) + (b3<<24));
 	};
 
-	void read(char *b, int len) {
+	void read(char *b, size_t len) {
 		SDL_RWread(rwop,b,1,len);
 	};
 

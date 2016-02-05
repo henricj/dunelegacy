@@ -1,6 +1,8 @@
 AC_INIT(dunelegacy, 0.96.4alpha1, http://dunelegacy.sourceforge.net)
 
-AC_CANONICAL_SYSTEM
+AC_CANONICAL_BUILD
+
+AC_USE_SYSTEM_EXTENSIONS
 
 AM_INIT_AUTOMAKE([subdir-objects])
 
@@ -35,8 +37,8 @@ if test "$enable_debug" = "yes" ; then
 fi
 
 dnl Check for SDL library
-SDL_VERSION=1.2.0
-AM_PATH_SDL($SDL_VERSION, : , AC_MSG_ERROR([*** SDL version $SDL_VERSION not found!]))
+dnl Check for SDL_mixer library.
+PKG_CHECK_MODULES(SDL, sdl2 SDL2_mixer)
 CFLAGS="$CFLAGS $SDL_CFLAGS"
 CXXFLAGS="$CXXFLAGS $SDL_CFLAGS"
 LIBS="$LIBS $SDL_LIBS"
@@ -66,9 +68,10 @@ AC_CHECK_TYPE(socklen_t, [AC_DEFINE(HAS_SOCKLEN_T)], ,
 AC_EGREP_HEADER(MSG_MAXIOVLEN, /usr/include/sys/socket.h, AC_DEFINE(ENET_BUFFER_MAXIMUM, [MSG_MAXIOVLEN]))
 AC_EGREP_HEADER(MSG_MAXIOVLEN, socket.h, AC_DEFINE(ENET_BUFFER_MAXIMUM, [MSG_MAXIOVLEN]))
 
-if test "${host}" = "i686-w64-mingw32" ; then
+if test "${build}" = "i686-w64-mingw32" ; then
         LIBS="$LIBS -lws2_32 -lwinmm -static-libgcc -static-libstdc++ -Wl,-Bstatic -lstdc++ -lpthread -Wl,-Bdynamic resource.o"
 		dunelegacydatadir='.'
 fi
 
-AC_OUTPUT(Makefile src/Makefile tests/Makefile)
+AC_CONFIG_FILES(Makefile src/Makefile tests/Makefile)
+AC_OUTPUT

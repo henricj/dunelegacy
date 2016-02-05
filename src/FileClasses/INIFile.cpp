@@ -899,11 +899,11 @@ void INIFile::readfile(SDL_RWops * file) {
 
 		completeLine = "";
 		unsigned char tmp;
-		int readbytes;
+		size_t readbytes;
 
 		while(1) {
 			readbytes = SDL_RWread(file,&tmp,1,1);
-			if(readbytes <= 0) {
+			if(readbytes == 0) {
 				readfinished = true;
 				break;
 			} else if(tmp == '\n') {

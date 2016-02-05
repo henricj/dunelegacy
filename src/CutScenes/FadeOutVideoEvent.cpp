@@ -47,7 +47,7 @@ int FadeOutVideoEvent::draw(SDL_Surface* pScreen)
         // fade to white
         alpha = 255*currentFrame/numFrames2FadeOut;
     }
-    SDL_SetAlpha(pSurface, SDL_RLEACCEL, alpha);
+    SDL_SetSurfaceAlphaMod(pSurface, alpha);
     SDL_BlitSurface(pSurface,NULL,pScreen,&dest);
 
     currentFrame++;

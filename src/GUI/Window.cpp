@@ -131,16 +131,13 @@ void Window::handleInput(SDL_Event& event) {
 				case SDL_BUTTON_RIGHT: {
 					handleMouseRight(event.button.x,event.button.y,true);
 				} break;
-
-				case SDL_BUTTON_WHEELUP: {
-					handleMouseWheel(event.button.x,event.button.y,true);
-				} break;
-
-				case SDL_BUTTON_WHEELDOWN: {
-					handleMouseWheel(event.button.x,event.button.y,false);
-				} break;
-
 			}
+		} break;
+
+		case SDL_MOUSEWHEEL: {
+            if(event.wheel.y != 0) {
+				handleMouseWheel(event.wheel.x,event.wheel.y,(event.wheel.y > 0));
+            }
 		} break;
 
 		case SDL_MOUSEBUTTONUP: {

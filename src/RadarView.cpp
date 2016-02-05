@@ -38,7 +38,7 @@ RadarView::RadarView()
 {
     radarStaticAnimation = pGFXManager->getUIGraphic(UI_RadarAnimation);
 
-	if((radarSurface = SDL_CreateRGBSurface(SDL_HWSURFACE, 128, 128, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK)) == NULL) {
+	if((radarSurface = SDL_CreateRGBSurface(0, 128, 128, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK)) == NULL) {
 		throw std::runtime_error("RadarView::RadarView(): Cannot create new surface!");
 	}
 	SDL_FillRect(radarSurface, NULL, COLOR_BLACK);

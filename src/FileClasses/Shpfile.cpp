@@ -162,7 +162,7 @@ SDL_Surface *Shpfile::getPicture(Uint32 indexOfFile)
 	}
 
 	// create new picture surface
-	if((pic = SDL_CreateRGBSurface(SDL_HWSURFACE,sizeX,sizeY,8,0,0,0,0))== NULL) {
+	if((pic = SDL_CreateRGBSurface(0,sizeX,sizeY,8,0,0,0,0))== NULL) {
 		return NULL;
 	}
 
@@ -248,7 +248,7 @@ SDL_Surface* Shpfile::getPictureArray(unsigned int tilesX, unsigned int tilesY, 
 	}
 
 	// create new picture surface
-	if((pic = SDL_CreateRGBSurface(SDL_HWSURFACE,sizeX*tilesX,sizeY*tilesY,8,0,0,0,0)) == NULL) {
+	if((pic = SDL_CreateRGBSurface(0,sizeX*tilesX,sizeY*tilesY,8,0,0,0,0)) == NULL) {
 		fprintf(stderr,"Shpfile::getPictureArray(): Cannot create Surface.\n");
 		exit(EXIT_FAILURE);
 	}

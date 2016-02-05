@@ -54,7 +54,7 @@ PictureFactory::PictureFactory() {
     creditsBorder = shared_ptr<SDL_Surface>(getSubPicture(ScreenPic.get() ,257,2,63,13), SDL_FreeSurface);
 
 	// background
-	background = shared_ptr<SDL_Surface>( SDL_CreateRGBSurface(SDL_HWSURFACE,settings.video.width,settings.video.height,8,0,0,0,0), SDL_FreeSurface);
+	background = shared_ptr<SDL_Surface>( SDL_CreateRGBSurface(0,settings.video.width,settings.video.height,8,0,0,0,0), SDL_FreeSurface);
 	if(background.get() == NULL) {
 		throw std::runtime_error("PictureFactory::PictureFactory: Cannot create new Picture!");
 	}
@@ -167,12 +167,12 @@ PictureFactory::PictureFactory() {
 	frame[DecorationFrame2].vborder = shared_ptr<SDL_Surface>( getSubPicture(ChoamPic.get(),121,51,4,1), SDL_FreeSurface);
 
 	for(int i=0; i < NUM_DECORATIONFRAMES; i++) {
-		SDL_SetColorKey(frame[i].leftUpperCorner.get(), SDL_SRCCOLORKEY | SDL_RLEACCEL, 0);
-		SDL_SetColorKey(frame[i].leftLowerCorner.get(), SDL_SRCCOLORKEY | SDL_RLEACCEL, 0);
-		SDL_SetColorKey(frame[i].rightUpperCorner.get(), SDL_SRCCOLORKEY | SDL_RLEACCEL, 0);
-		SDL_SetColorKey(frame[i].rightLowerCorner.get(), SDL_SRCCOLORKEY | SDL_RLEACCEL, 0);
-		SDL_SetColorKey(frame[i].hborder.get(), SDL_SRCCOLORKEY | SDL_RLEACCEL, 0);
-		SDL_SetColorKey(frame[i].vborder.get(), SDL_SRCCOLORKEY | SDL_RLEACCEL, 0);
+		SDL_SetColorKey(frame[i].leftUpperCorner.get(), SDL_TRUE, 0);
+		SDL_SetColorKey(frame[i].leftLowerCorner.get(), SDL_TRUE, 0);
+		SDL_SetColorKey(frame[i].rightUpperCorner.get(), SDL_TRUE, 0);
+		SDL_SetColorKey(frame[i].rightLowerCorner.get(), SDL_TRUE, 0);
+		SDL_SetColorKey(frame[i].hborder.get(), SDL_TRUE, 0);
+		SDL_SetColorKey(frame[i].vborder.get(), SDL_TRUE, 0);
 	}
 
 	// House Logos
@@ -206,7 +206,7 @@ PictureFactory::PictureFactory() {
 
 
     // create builder list upper cap
-    builderListUpperCap = shared_ptr<SDL_Surface>( SDL_CreateRGBSurface(SDL_HWSURFACE, 112, 21, 8, 0, 0, 0, 0), SDL_FreeSurface);
+    builderListUpperCap = shared_ptr<SDL_Surface>( SDL_CreateRGBSurface(0, 112, 21, 8, 0, 0, 0, 0), SDL_FreeSurface);
 	if(builderListUpperCap.get() == NULL) {
 		throw std::runtime_error("PictureFactory::PictureFactory: Cannot create new Picture!");
 	}
@@ -226,10 +226,10 @@ PictureFactory::PictureFactory() {
 	SDL_BlitSurface(builderListUpperCapRight.get(), NULL, builderListUpperCap.get(), &dest7);
 
 	replaceColor(builderListUpperCap.get(), 30, 0);
-    SDL_SetColorKey(builderListUpperCap.get(), SDL_SRCCOLORKEY | SDL_RLEACCEL, 0);
+    SDL_SetColorKey(builderListUpperCap.get(), SDL_TRUE, 0);
 
     // create builder list lower cap
-    builderListLowerCap = shared_ptr<SDL_Surface>( SDL_CreateRGBSurface(SDL_HWSURFACE, 112, 17, 8, 0, 0, 0, 0), SDL_FreeSurface);
+    builderListLowerCap = shared_ptr<SDL_Surface>( SDL_CreateRGBSurface(0, 112, 17, 8, 0, 0, 0, 0), SDL_FreeSurface);
 	if(builderListLowerCap.get() == NULL) {
 		throw std::runtime_error("PictureFactory::PictureFactory: Cannot create new Picture!");
 	}
@@ -249,7 +249,7 @@ PictureFactory::PictureFactory() {
 	SDL_BlitSurface(builderListLowerCapRight.get(), NULL, builderListLowerCap.get(), &dest10);
 
 	replaceColor(builderListLowerCap.get(), 30, 0);
-    SDL_SetColorKey(builderListLowerCap.get(), SDL_SRCCOLORKEY | SDL_RLEACCEL, 0);
+    SDL_SetColorKey(builderListLowerCap.get(), SDL_TRUE, 0);
 }
 
 PictureFactory::~PictureFactory() {
@@ -380,7 +380,7 @@ SDL_Surface* PictureFactory::createBottomBar() {
 
 SDL_Surface* PictureFactory::createPlacingGrid(int size, int color) {
 	SDL_Surface* placingGrid;
-	if((placingGrid = SDL_CreateRGBSurface(SDL_HWSURFACE,size,size,8,0,0,0,0)) == NULL) {
+	if((placingGrid = SDL_CreateRGBSurface(0,size,size,8,0,0,0,0)) == NULL) {
 		fprintf(stderr,"PictureFactory::createPlacingGrid: Cannot create new Picture!\n");
 		exit(EXIT_FAILURE);
 	}
@@ -402,7 +402,7 @@ SDL_Surface* PictureFactory::createPlacingGrid(int size, int color) {
 			SDL_UnlockSurface(placingGrid);
 	}
 
-	SDL_SetColorKey(placingGrid, SDL_SRCCOLORKEY | SDL_RLEACCEL, 0);
+	SDL_SetColorKey(placingGrid, SDL_TRUE, 0);
 
 	return placingGrid;
 }
@@ -492,12 +492,12 @@ SDL_Surface* PictureFactory::createFrame(unsigned int DecorationType,int width, 
 	if(UseBackground) {
 		Pic = getSubPicture(background.get(),0,0,width,height);
 	} else {
-		if((Pic = SDL_CreateRGBSurface(SDL_HWSURFACE,width,height,8,0,0,0,0)) == NULL) {
+		if((Pic = SDL_CreateRGBSurface(0,width,height,8,0,0,0,0)) == NULL) {
 			fprintf(stderr,"PictureFactory::createFrame: Cannot create new Picture!\n");
 			exit(EXIT_FAILURE);
 		}
 		palette.applyToSurface(Pic);
-		SDL_SetColorKey(Pic, SDL_SRCCOLORKEY | SDL_RLEACCEL, 0);
+		SDL_SetColorKey(Pic, SDL_TRUE, 0);
 	}
 
 	drawFrame(Pic,DecorationType);
@@ -619,7 +619,7 @@ SDL_Surface* PictureFactory::createOptionsMenu() {
 		fprintf(stderr,"PictureFactory::createOptionsMenu(): Cannot load UI_OptionsMenu.bmp!\n");
 		exit(EXIT_FAILURE);
 	}
-	SDL_SetColorKey(tmp, SDL_SRCCOLORKEY | SDL_RLEACCEL, 0);
+	SDL_SetColorKey(tmp, SDL_TRUE, 0);
 
 	SDL_Surface* Pic = getSubPicture(background.get(),0,0,tmp->w,tmp->h);
 	SDL_BlitSurface(tmp,NULL,Pic,NULL);
@@ -748,13 +748,13 @@ SDL_Surface* PictureFactory::createMapChoiceScreen(int House) {
 
 SDL_Surface* PictureFactory::createMentatHouseChoiceQuestion(int House, Palette& benePalette) {
 	SDL_Surface* pSurface;
-	if((pSurface = SDL_CreateRGBSurface(SDL_HWSURFACE,416+208,48,8,0,0,0,0)) == NULL) {
+	if((pSurface = SDL_CreateRGBSurface(0,416+208,48,8,0,0,0,0)) == NULL) {
 		fprintf(stderr,"PictureFactory::createMentatHouseChoiceQuestion: Cannot create new Picture!\n");
 		exit(EXIT_FAILURE);
 	}
 
     benePalette.applyToSurface(pSurface);
-    SDL_SetColorKey(pSurface, SDL_SRCCOLORKEY | SDL_RLEACCEL, 0);
+    SDL_SetColorKey(pSurface, SDL_TRUE, 0);
 
 	SDL_Surface* pQuestionPart1 = getSubPicture(mentatHouseChoiceQuestionSurface.get(),0,0, 416, 48);
 
@@ -804,12 +804,12 @@ SDL_Surface* PictureFactory::createHeraldFre(SDL_Surface* heraldHark) {
     SDL_FreeSurface(pTmp1);
 
     SDL_Surface* pMask = SDL_LoadBMP_RW(pFileManager->openFile("HeraldFreMask.bmp"), true);
-    SDL_SetColorKey(pMask, SDL_SRCCOLORKEY | SDL_RLEACCEL, 0);
+    SDL_SetColorKey(pMask, SDL_TRUE, 0);
 
     SDL_BlitSurface(pMask, NULL, pBlueReplaced, NULL);
     SDL_FreeSurface(pMask);
 
-    SDL_SetColorKey(pBlueReplaced, SDL_SRCCOLORKEY | SDL_RLEACCEL, 223);
+    SDL_SetColorKey(pBlueReplaced, SDL_TRUE, 223);
 
     SDL_BlitSurface(pBlueReplaced, NULL, pSandworm, NULL);
     SDL_FreeSurface(pBlueReplaced);
@@ -829,7 +829,7 @@ SDL_Surface* PictureFactory::createHeraldSard(SDL_Surface* heraldOrd, SDL_Surfac
     SDL_Surface* pFrameAndCurtain = combinePictures(pGreenReplaced, pCurtain, 7, 7);
 
     SDL_Surface* pMask = SDL_LoadBMP_RW(pFileManager->openFile("HeraldSardMask.bmp"), true);
-    SDL_SetColorKey(pMask, SDL_SRCCOLORKEY | SDL_RLEACCEL, 0);
+    SDL_SetColorKey(pMask, SDL_TRUE, 0);
 
     SDL_BlitSurface(pMask, NULL, pFrameAndCurtain, NULL);
     SDL_FreeSurface(pMask);
@@ -854,12 +854,12 @@ SDL_Surface* PictureFactory::createHeraldMerc(SDL_Surface* heraldAtre, SDL_Surfa
     SDL_FreeSurface(pTmp2);
 
     SDL_Surface* pMask = SDL_LoadBMP_RW(pFileManager->openFile("HeraldMercMask.bmp"), true);
-    SDL_SetColorKey(pMask, SDL_SRCCOLORKEY | SDL_RLEACCEL, 0);
+    SDL_SetColorKey(pMask, SDL_TRUE, 0);
 
     SDL_BlitSurface(pMask, NULL, pFrameAndCurtain, NULL);
     SDL_FreeSurface(pMask);
 
-    SDL_SetColorKey(pFrameAndCurtain, SDL_SRCCOLORKEY | SDL_RLEACCEL, 223);
+    SDL_SetColorKey(pFrameAndCurtain, SDL_TRUE, 223);
 
     SDL_BlitSurface(pFrameAndCurtain, NULL, pSoldier, NULL);
     SDL_FreeSurface(pFrameAndCurtain);
@@ -888,7 +888,7 @@ Animation* PictureFactory::createFremenPlanet(SDL_Surface* heraldFre) {
 Animation* PictureFactory::createSardaukarPlanet(Animation* ordosPlanetAnimation, SDL_Surface* heraldSard) {
 
     SDL_Surface* maskSurface = Scaler::defaultDoubleSurface(SDL_LoadBMP_RW(pFileManager->openFile("PlanetMask.bmp"), true), true);
-    SDL_SetColorKey(maskSurface, SDL_SRCCOLORKEY | SDL_RLEACCEL, 0);
+    SDL_SetColorKey(maskSurface, SDL_TRUE, 0);
 
     Animation* newAnimation = new Animation();
 
@@ -921,7 +921,7 @@ Animation* PictureFactory::createSardaukarPlanet(Animation* ordosPlanetAnimation
         SDL_Surface* newFrameWithoutPlanet = copySurface(*iter);
 
         SDL_BlitSurface(maskSurface,NULL,newFrameWithoutPlanet,NULL);
-        SDL_SetColorKey(newFrameWithoutPlanet, SDL_SRCCOLORKEY | SDL_RLEACCEL, 223);
+        SDL_SetColorKey(newFrameWithoutPlanet, SDL_TRUE, 223);
         SDL_BlitSurface(newFrameWithoutPlanet,NULL,newFrame,NULL);
 
         SDL_FreeSurface(newFrameWithoutPlanet);

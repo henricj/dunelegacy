@@ -69,9 +69,9 @@ public:
 	void addFile(SDL_RWops* rwop, std::string filename);
 
 private:
-	static int ReadFile(SDL_RWops* pRWop, void *ptr, int size, int n);
-	static int WriteFile(SDL_RWops *pRWop, const void *ptr, int size, int n);
-	static int SeekFile(SDL_RWops *pRWop, int offset, int whence);
+	static size_t ReadFile(SDL_RWops* pRWop, void *ptr, size_t size, size_t n);
+	static size_t WriteFile(SDL_RWops *pRWop, const void *ptr, size_t size, size_t n);
+	static Sint64 SeekFile(SDL_RWops *pRWop, Sint64 offset, int whence);
 	static int CloseFile(SDL_RWops *pRWop);
 
 	void readIndex();

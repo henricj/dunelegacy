@@ -81,30 +81,45 @@ void setVideoMode()
 {
 	int videoFlags = 0;
 
-	if(settings.video.doubleBuffering) {
-		videoFlags |= SDL_HWSURFACE | SDL_DOUBLEBUF;
-	}
+	// TODO: Remove settings.video.doubleBuffering
+//	if(settings.video.doubleBuffering) {
+//		videoFlags |= SDL_HWSURFACE | SDL_DOUBLEBUF;
+//	}
 
 	if(settings.video.fullscreen) {
-		videoFlags |= SDL_FULLSCREEN;
+		videoFlags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
 	}
 
-    if(SDL_VideoModeOK(settings.video.width, settings.video.height, SCREEN_BPP, videoFlags) == 0) {
-        // should always work
-        fprintf(stderr, "WARNING: Falling back to 640x480!\n");
-        settings.video.width = 640;
-        settings.video.height = 480;
+	settings.video.width = 800;
+    settings.video.height = 600;
 
-        if(SDL_VideoModeOK(settings.video.width, settings.video.height, SCREEN_BPP, videoFlags) == 0) {
-            // OK, now we switch double buffering, hw-surface and fullscreen off
-            fprintf(stderr, "WARNING: Turning off double buffering, hw-surface and fullscreen!\n");
-            settings.video.doubleBuffering = false;
-            settings.video.fullscreen = false;
-            videoFlags = 0;
-        }
-    }
+//    if(SDL_VideoModeOK(settings.video.width, settings.video.height, SCREEN_BPP, videoFlags) == 0) {
+//        // should always work
+//        fprintf(stderr, "WARNING: Falling back to 640x480!\n");
+//        settings.video.width = 640;
+//        settings.video.height = 480;
+//
+//        if(SDL_VideoModeOK(settings.video.width, settings.video.height, SCREEN_BPP, videoFlags) == 0) {
+//            // OK, now we switch double buffering, hw-surface and fullscreen off
+//            fprintf(stderr, "WARNING: Turning off double buffering, hw-surface and fullscreen!\n");
+//            settings.video.doubleBuffering = false;
+//            settings.video.fullscreen = false;
+//            videoFlags = 0;
+//        }
+//    }
 
-	screen = SDL_SetVideoMode(settings.video.width, settings.video.height, SCREEN_BPP, videoFlags);
+    // TODO: Allow different resolutions
+//	screen = SDL_SetVideoMode(settings.video.width, settings.video.height, SCREEN_BPP, videoFlags);
+	window = SDL_CreateWindow("Dune Legacy",
+	                          SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
+	                          //settings.video.width, settings.video.height,
+	                          800, 600,
+	                          videoFlags);
+	renderer = SDL_CreateRenderer(window, -1, 0);
+	SDL_RenderSetLogicalSize(renderer, 800, 600);
+	texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_ARGB8888,
+	                            SDL_TEXTUREACCESS_STREAMING, 800, 600);
+	screen = SDL_CreateRGBSurface(0, 800, 600, 32, 0x00ff0000, 0x0000ff00, 0x000000ff, 0);
 	if(screen) {
 		SDL_ShowCursor(SDL_DISABLE);
     } else {
@@ -211,7 +226,7 @@ void createDefaultConfigFile(std::string configfilepath, std::string language) {
     // replace player name, language, server port and metaserver
     std::string strConfigfile = strprintf(configfile, playername, language.c_str(), DEFAULT_PORT, DEFAULT_METASERVER);
 
-	if(SDL_RWwrite(file, strConfigfile.c_str(), 1, strConfigfile.length()) < 0) {
+	if(SDL_RWwrite(file, strConfigfile.c_str(), 1, strConfigfile.length()) == 0) {
         fprintf(stderr,"Failed to write to config file: %s\n", SDL_GetError());
         exit(EXIT_FAILURE);
 	}
@@ -250,7 +265,11 @@ void printMissingFilesToScreen() {
     SDL_BlitSurface(pSurface, NULL, screen, &dest);
     SDL_FreeSurface(pSurface);
 
-	SDL_Flip(screen);
+	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+	SDL_RenderClear(renderer);
+	SDL_UpdateTexture(texture, NULL, screen->pixels, screen->pitch);
+	SDL_RenderCopy(renderer, texture, NULL, NULL);
+	SDL_RenderPresent(renderer);
 
 	SDL_Event	event;
 	bool quiting = false;
@@ -532,7 +551,7 @@ int main(int argc, char *argv[]) {
 
 		if(bFirstGamestart == true && bFirstInit == true) {
             // detect 800x600 screen resolution
-            if(SDL_VideoModeOK(800, 600, SCREEN_BPP, SDL_HWSURFACE | SDL_FULLSCREEN) > 0) {
+//TODO            if(SDL_VideoModeOK(800, 600, SCREEN_BPP, SDL_FULLSCREEN) > 0) {
                 settings.video.width = 800;
                 settings.video.height = 600;
                 settings.video.preferredZoomLevel = 1;
@@ -542,16 +561,10 @@ int main(int argc, char *argv[]) {
                 myINIFile.setIntValue("Video","Preferred Zoom Level",1);
 
                 myINIFile.saveChangesTo(getConfigFilepath());
-            }
+//            }
 		}
 
         Scaler::setDefaultScaler(Scaler::getScalerByName(settings.video.scaler));
-
-		SDL_EnableUNICODE(1);
-		SDL_EnableKeyRepeat(SDL_DEFAULT_REPEAT_DELAY, SDL_DEFAULT_REPEAT_INTERVAL);
-		char strenv[] = "SDL_VIDEO_CENTERED=center";
-        SDL_putenv(strenv);
-		SDL_WM_SetCaption("Dune Legacy", "Dune Legacy");
 
 		if(bFirstInit == true) {
 			fprintf(stdout, "initializing sound..... \t");fflush(stdout);

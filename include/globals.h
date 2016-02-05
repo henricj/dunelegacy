@@ -57,6 +57,9 @@ class Bullet;
 
 
 // SDL stuff
+EXTERN SDL_Window*          window;                     ///< the window
+EXTERN SDL_Renderer*        renderer;                   ///< the renderer
+EXTERN SDL_Texture*         texture;                    ///< the texture
 EXTERN SDL_Surface*         screen;                     ///< the screen
 EXTERN Palette              palette;                    ///< the palette for the screen
 EXTERN int                  drawnMouseX;                ///< the current mouse position (x coordinate)
@@ -74,18 +77,18 @@ EXTERN GFXManager*          pGFXManager;                ///< manager for loading
 EXTERN SFXManager*          pSFXManager;                ///< manager for loading and managing sounds
 EXTERN FontManager*         pFontManager;               ///< manager for loading and managing fonts
 EXTERN TextManager*         pTextManager;               ///< manager for loading and managing texts and providing localization
-EXTERN NetworkManager*		pNetworkManager;            ///< manager for all network events (NULL if not in multiplayer game)
+EXTERN NetworkManager*      pNetworkManager;            ///< manager for all network events (NULL if not in multiplayer game)
 
 // game stuff
 EXTERN Game*                currentGame;                ///< the current running game
 EXTERN ScreenBorder*        screenborder;               ///< the screen border for the current running game
 EXTERN Map*                 currentGameMap;             ///< the map for the current running game
-EXTERN House*		        pLocalHouse;                ///< the house of the human player that is playing the current running game on this computer
+EXTERN House*               pLocalHouse;                ///< the house of the human player that is playing the current running game on this computer
 EXTERN HumanPlayer*         pLocalPlayer;               ///< the player that is playing the current running game on this computer
 
-EXTERN RobustList<UnitBase*>       unitList;           ///< the list of all units
-EXTERN RobustList<StructureBase*>  structureList;      ///< the list of all structures
-EXTERN RobustList<Bullet*>     bulletList;         ///< the list of all bullets
+EXTERN RobustList<UnitBase*>       unitList;            ///< the list of all units
+EXTERN RobustList<StructureBase*>  structureList;       ///< the list of all structures
+EXTERN RobustList<Bullet*>         bulletList;          ///< the list of all bullets
 
 
 // misc

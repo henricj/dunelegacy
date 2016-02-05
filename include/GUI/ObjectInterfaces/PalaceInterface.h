@@ -48,7 +48,7 @@ protected:
 
 		SDL_Surface* pText = pFontManager->createSurfaceWithText(_("READY"), COLOR_WHITE, FONT_STD10);
 
-		SDL_Surface* pReady = SDL_CreateRGBSurface(SDL_HWSURFACE, pSurface->w, pSurface->h, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK);
+		SDL_Surface* pReady = SDL_CreateRGBSurface(0, pSurface->w, pSurface->h, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK);
 		SDL_FillRect(pReady, NULL, COLOR_TRANSPARENT);
 
 		SDL_Rect dest = { static_cast<Sint16>((pReady->w - pText->w)/2),static_cast<Sint16>((pReady->h - pText->h)/2), static_cast<Uint16>(pText->w), static_cast<Uint16>(pText->h) };

@@ -96,7 +96,7 @@ SDL_Surface *Fntfile::getCharacter(Uint32 indexOfFile)
 		return NULL;
 	}
 	// create new picture surface
-	if((pic = SDL_CreateRGBSurface(SDL_SWSURFACE,character[indexOfFile].width,characterHeight,8,0,0,0,0))== NULL) {
+	if((pic = SDL_CreateRGBSurface(0,character[indexOfFile].width,characterHeight,8,0,0,0,0))== NULL) {
 		return NULL;
 	}
 

@@ -120,7 +120,7 @@ SDL_Surface * Wsafile::getPicture(Uint32 frameNumber)
 	unsigned char * pImage = decodedFrames + (frameNumber * sizeX * sizeY);
 
 	// create new picture surface
-	if((pic = SDL_CreateRGBSurface(SDL_HWSURFACE,sizeX,sizeY,8,0,0,0,0))== NULL) {
+	if((pic = SDL_CreateRGBSurface(0,sizeX,sizeY,8,0,0,0,0))== NULL) {
 		return NULL;
 	}
 
@@ -146,7 +146,7 @@ SDL_Surface * Wsafile::getAnimationAsPictureRow() {
 	SDL_Surface * pic;
 
 	// create new picture surface
-	if((pic = SDL_CreateRGBSurface(SDL_HWSURFACE,sizeX*numFrames,sizeY,8,0,0,0,0))== NULL) {
+	if((pic = SDL_CreateRGBSurface(0,sizeX*numFrames,sizeY,8,0,0,0,0))== NULL) {
 		return NULL;
 	}
 

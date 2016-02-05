@@ -131,7 +131,7 @@ void Sandworm::blitToScreen() {
         //create worms shimmer
 
         SDL_Surface *mask = pGFXManager->getObjPic(ObjPic_SandwormShimmerMask,HOUSE_HARKONNEN)[currentZoomlevel];
-        SDL_SetColorKey(mask, SDL_SRCCOLORKEY | SDL_RLEACCEL, 15);      // we want to have white not being drawn
+        SDL_SetColorKey(mask, SDL_TRUE, 15);      // we want to have white not being drawn
 
         int width = mask->w;
         int height = mask->h;

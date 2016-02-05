@@ -79,7 +79,7 @@ SDL_Surface * LoadCPS_RW(SDL_RWops* RWop, int freesrc)
         }
 
         // create new picture surface
-        if((pic = SDL_CreateRGBSurface(SDL_HWSURFACE,SIZE_X,SIZE_Y,8,0,0,0,0))== NULL) {
+        if((pic = SDL_CreateRGBSurface(0,SIZE_X,SIZE_Y,8,0,0,0,0))== NULL) {
             throw std::runtime_error("LoadCPS_RW(): SDL_CreateRGBSurface has failed!");
         }
 

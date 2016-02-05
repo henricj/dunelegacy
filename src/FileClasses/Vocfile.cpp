@@ -134,7 +134,7 @@ static Uint8 *LoadVOC_RW(SDL_RWops* rwop, Uint32 &size, Uint32 &rate) {
 		return NULL;
 	}
 
-	int len;
+	size_t len;
 	Uint8 *ret_sound = NULL;
 	size = 0;
 

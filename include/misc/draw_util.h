@@ -46,7 +46,7 @@ SDL_Surface*    copySurface(SDL_Surface* inSurface);
 
 SDL_Surface*    scaleSurface(SDL_Surface *surf, double ratio, bool freeSrcSurface = true);
 
-SDL_Surface*	getSubPicture(SDL_Surface* Pic, int left, int top, unsigned int width, unsigned int height);
+SDL_Surface*	getSubPicture(SDL_Surface* Pic, int left, int top, int width, int height);
 
 SDL_Surface*    getSubFrame(SDL_Surface* Pic, int i, int j, int numX, int numY);
 

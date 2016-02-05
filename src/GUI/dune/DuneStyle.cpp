@@ -37,7 +37,7 @@ SDL_Surface* DuneStyle::createSurfaceWithText(const char* text, Uint32 color, un
 		// create dummy surface
 		SDL_Surface* surface;
 
-		if((surface = SDL_CreateRGBSurface(SDL_HWSURFACE, strlen(text)*10, 12, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK)) == NULL) {
+		if((surface = SDL_CreateRGBSurface(0, strlen(text)*10, 12, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK)) == NULL) {
 			return NULL;
 		}
 
@@ -72,7 +72,7 @@ SDL_Surface* DuneStyle::createLabelSurface(Uint32 width, Uint32 height, std::lis
 	SDL_Surface* surface;
 
 	// create surfaces
-    if((surface = SDL_CreateRGBSurface(SDL_HWSURFACE, width, height, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK)) == NULL) {
+    if((surface = SDL_CreateRGBSurface(0, width, height, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK)) == NULL) {
         return NULL;
     }
 
@@ -153,7 +153,7 @@ SDL_Surface* DuneStyle::createCheckboxSurface(Uint32 width, Uint32 height, std::
 	SDL_Surface* surface;
 
 	// create surfaces
-    if((surface = SDL_CreateRGBSurface(SDL_HWSURFACE, width, height, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK)) == NULL) {
+    if((surface = SDL_CreateRGBSurface(0, width, height, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK)) == NULL) {
         return NULL;
     }
 
@@ -219,7 +219,7 @@ SDL_Surface* DuneStyle::createRadioButtonSurface(Uint32 width, Uint32 height, st
 	SDL_Surface* surface;
 
 	// create surfaces
-    if((surface = SDL_CreateRGBSurface(SDL_HWSURFACE, width, height, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK)) == NULL) {
+    if((surface = SDL_CreateRGBSurface(0, width, height, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK)) == NULL) {
         return NULL;
     }
 
@@ -289,7 +289,7 @@ SDL_Surface* DuneStyle::createDropDownBoxButton(Uint32 size, bool pressed, bool 
 
 	// create surfaces
 	SDL_Surface* surface;
-    if((surface = SDL_CreateRGBSurface(SDL_HWSURFACE, size, size, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK)) == NULL) {
+    if((surface = SDL_CreateRGBSurface(0, size, size, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK)) == NULL) {
         return NULL;
     }
 
@@ -338,7 +338,7 @@ SDL_Surface* DuneStyle::createButtonSurface(Uint32 width, Uint32 height, std::st
 
 	// create surfaces
 	SDL_Surface* surface;
-    if((surface = SDL_CreateRGBSurface(SDL_HWSURFACE, width, height, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK)) == NULL) {
+    if((surface = SDL_CreateRGBSurface(0, width, height, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK)) == NULL) {
         return NULL;
     }
 
@@ -401,7 +401,7 @@ SDL_Surface* DuneStyle::createTextBoxSurface(Uint32 width, Uint32 height, std::s
 
 	// create surfaces
 	SDL_Surface* surface;
-    if((surface = SDL_CreateRGBSurface(SDL_HWSURFACE, width, height, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK)) == NULL) {
+    if((surface = SDL_CreateRGBSurface(0, width, height, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK)) == NULL) {
         return NULL;
     }
 
@@ -490,7 +490,7 @@ SDL_Surface* DuneStyle::createScrollBarArrowButton(bool down, bool pressed, bool
 
 	// create surfaces
 	SDL_Surface* surface;
-    if((surface = SDL_CreateRGBSurface(SDL_HWSURFACE, 17, 17, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK)) == NULL) {
+    if((surface = SDL_CreateRGBSurface(0, 17, 17, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK)) == NULL) {
         return NULL;
     }
 
@@ -548,7 +548,7 @@ SDL_Surface* DuneStyle::createListBoxEntry(Uint32 width, std::string text, bool 
 
 	// create surfaces
 	SDL_Surface* surface;
-    if((surface = SDL_CreateRGBSurface(SDL_HWSURFACE, width, getListBoxEntryHeight(), SCREEN_BPP, RMASK, GMASK, BMASK, AMASK)) == NULL) {
+    if((surface = SDL_CreateRGBSurface(0, width, getListBoxEntryHeight(), SCREEN_BPP, RMASK, GMASK, BMASK, AMASK)) == NULL) {
         return NULL;
     }
 
@@ -575,7 +575,7 @@ SDL_Surface* DuneStyle::createProgressBarOverlay(Uint32 width, Uint32 height, do
 
 	// create surfaces
 	SDL_Surface* pSurface;
-    if((pSurface = SDL_CreateRGBSurface(SDL_HWSURFACE, width, height, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK)) == NULL) {
+    if((pSurface = SDL_CreateRGBSurface(0, width, height, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK)) == NULL) {
         return NULL;
     }
 
@@ -584,11 +584,11 @@ SDL_Surface* DuneStyle::createProgressBarOverlay(Uint32 width, Uint32 height, do
 	if(color == COLOR_DEFAULT) {
 		// default color
 
-        unsigned int max_i = std::max( (int) lround(percent*(( ((int) width) - 4)/100.0)), 0);
+        int max_i = std::max( (int) lround(percent*(( ((int) width) - 4)/100.0)), 0);
 
 		if (!SDL_MUSTLOCK(pSurface) || (SDL_LockSurface(pSurface) == 0)) {
-			for (unsigned int i = 2; i < max_i + 2; i++) {
-				for (unsigned int j = (i % 2) + 2; j < height-2; j+=2) {
+			for (int i = 2; i < max_i + 2; i++) {
+				for (int j = (i % 2) + 2; j < height-2; j+=2) {
 					putPixel(pSurface, i, j, COLOR_BLACK);
 				}
 			}
@@ -597,9 +597,9 @@ SDL_Surface* DuneStyle::createProgressBarOverlay(Uint32 width, Uint32 height, do
 				SDL_UnlockSurface(pSurface);
 		}
 	} else {
-	    unsigned int max_i = lround(percent*(width/100.0));
+	    int max_i = lround(percent*(width/100.0));
 
-		SDL_Rect dest = { 0 , 0 , static_cast<Uint16>(max_i) , static_cast<Uint16>(height)};
+		SDL_Rect dest = { 0 , 0 , max_i , height};
         SDL_FillRect(pSurface, &dest, color);
 	}
 
@@ -617,7 +617,7 @@ SDL_Surface* DuneStyle::createToolTip(std::string text) {
 	}
 
 	// create surfaces
-    if((surface = SDL_CreateRGBSurface(SDL_HWSURFACE, helpTextSurface->w + 4, helpTextSurface->h + 2, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK)) == NULL) {
+    if((surface = SDL_CreateRGBSurface(0, helpTextSurface->w + 4, helpTextSurface->h + 2, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK)) == NULL) {
         return NULL;
     }
 
@@ -643,7 +643,7 @@ SDL_Surface* DuneStyle::createBackground(Uint32 width, Uint32 height) {
 		}
 	} else {
 		// data manager not yet loaded
-		if((pSurface = SDL_CreateRGBSurface(SDL_HWSURFACE, width, height, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK)) == NULL) {
+		if((pSurface = SDL_CreateRGBSurface(0, width, height, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK)) == NULL) {
 			return NULL;
 		}
 		SDL_FillRect(pSurface, NULL, buttonBackgroundColor);
@@ -667,7 +667,7 @@ SDL_Surface* DuneStyle::createWidgetBackground(Uint32 width, Uint32 height) {
 	SDL_Surface* surface;
 
 	// create surfaces
-    if((surface = SDL_CreateRGBSurface(SDL_HWSURFACE, width, height, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK)) == NULL) {
+    if((surface = SDL_CreateRGBSurface(0, width, height, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK)) == NULL) {
         return NULL;
     }
 

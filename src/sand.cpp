@@ -43,11 +43,9 @@
     the two global variables drawnMouseX and drawnMouseY.
 */
 void drawCursor() {
-    if(!(SDL_GetAppState() & SDL_APPMOUSEFOCUS)) {
+    if(!(SDL_GetWindowFlags(window) & SDL_WINDOW_MOUSE_FOCUS)) {
         return;
     }
-
-
 
 	SDL_Surface* surface = pGFXManager->getUIGraphic(cursorFrame);
 

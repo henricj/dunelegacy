@@ -17,6 +17,8 @@
 
 #include <CutScenes/Scene.h>
 
+#include <globals.h>
+
 #include <SDL.h>
 
 Scene::Scene()
@@ -98,8 +100,10 @@ int Scene::draw(SDL_Surface* pScreen)
     }
 
     // 3.: Flip the screen
-    SDL_Flip(pScreen);
-
+    SDL_RenderClear(renderer);
+    SDL_UpdateTexture(texture, NULL, pScreen->pixels, pScreen->pitch);
+    SDL_RenderCopy(renderer, texture, NULL, NULL);
+    SDL_RenderPresent(renderer);
 
     // 5.: Process Triggers
     while(triggerList.empty() == false) {

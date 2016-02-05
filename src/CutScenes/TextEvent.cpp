@@ -56,6 +56,6 @@ void TextEvent::draw(SDL_Surface* pScreen, int currentFrameNumber)
                         static_cast<Sint16>(bCenterVertical ? (pScreen->h - pSurface->h) / 2 : (pScreen->h/2 + 480/2 - 5*pFontManager->getTextHeight(FONT_STD24)/2)),
                         static_cast<Uint16>(pSurface->w),
                         static_cast<Uint16>(pSurface->h) };
-    SDL_SetAlpha(pSurface, SDL_RLEACCEL, alpha);
+    SDL_SetSurfaceAlphaMod(pSurface, alpha);
     SDL_BlitSurface(pSurface,NULL,pScreen,&dest);
 }

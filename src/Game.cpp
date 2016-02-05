@@ -524,6 +524,7 @@ void Game::drawScreen()
 	int mouse_x, mouse_y;
 
 	SDL_GetMouseState(&mouse_x, &mouse_y);
+    adjustMouseCoords(mouse_x, mouse_y);
 
 	if(currentCursorMode == CursorMode_Placing) {
 		//if user has selected to place a structure
@@ -599,15 +600,18 @@ void Game::drawScreen()
 	if(selectionMode) {
 
 		int finalMouseX = mouse_x;
+		int finalMouseY = mouse_y;
 		if(finalMouseX >= sideBarPos.x) {
 		    //this keeps the box on the map, and not over game bar
 			finalMouseX = sideBarPos.x-1;
 		}
 
         // draw the mouse selection rectangle
-		drawRect( screen,
-                  screenborder->world2screenX(selectionRect.x),
-                  screenborder->world2screenY(selectionRect.y),
+        int sel_rect_x = screenborder->screen2worldX(finalMouseX);
+        int sel_rect_y = screenborder->screen2worldY(finalMouseY);
+		drawRect(screen,
+                  screenborder->world2screenX(sel_rect_x),
+                  screenborder->world2screenY(sel_rect_y),
                   finalMouseX,
                   mouse_y,
                   COLOR_WHITE);
@@ -618,9 +622,9 @@ void Game::drawScreen()
 ///////////draw action indicator
 
 	if((indicatorFrame != NONE) && (screenborder->isInsideScreen(indicatorPosition, Coord(TILESIZE,TILESIZE)) == true)) {
-	    Uint16 width = pGFXManager->getUIGraphic(UI_Indicator)->w/3;
-	    Uint16 height = pGFXManager->getUIGraphic(UI_Indicator)->h;
-	    SDL_Rect source = { static_cast<Sint16>(indicatorFrame * width), 0, width, height };
+	    int width = pGFXManager->getUIGraphic(UI_Indicator)->w/3;
+	    int height = pGFXManager->getUIGraphic(UI_Indicator)->h;
+	    SDL_Rect source = { static_cast<int>(indicatorFrame * width), 0, width, height };
 	    SDL_Rect drawLocation = {   static_cast<Sint16>(screenborder->world2screenX(indicatorPosition.x) - width/2),
                                     static_cast<Sint16>(screenborder->world2screenY(indicatorPosition.y) - height/2),
                                     width,
@@ -648,7 +652,7 @@ void Game::drawScreen()
 		snprintf(temp,50,"fps: %.1f ", 1000.0f/averageFrameTime);
 
 		SDL_Surface* fpsSurface = pFontManager->createSurfaceWithText(temp, COLOR_WHITE, FONT_STD12);
-        SDL_Rect drawLocation = { static_cast<Sint16>(sideBarPos.x - strlen(temp)*8), 60, static_cast<Uint16>(fpsSurface->w), static_cast<Uint16>(fpsSurface->h) };
+        SDL_Rect drawLocation = { static_cast<int>(sideBarPos.x - strlen(temp)*8), 60, fpsSurface->w, fpsSurface->h };
 		SDL_BlitSurface(fpsSurface, NULL, screen, &drawLocation);
 		SDL_FreeSurface(fpsSurface);
 	}
@@ -742,6 +746,12 @@ void Game::doInput()
                     }
                 } break;
 
+                case SDL_MOUSEWHEEL: {
+                    if (event.wheel.y != 0) {
+                        pInterface->handleMouseWheel(event.wheel.x,event.wheel.y,(event.wheel.y > 0));
+                    }
+                } break;
+
                 case SDL_MOUSEBUTTONDOWN: {
                     SDL_MouseButtonEvent* mouse = &event.button;
 
@@ -752,14 +762,6 @@ void Game::doInput()
 
                         case SDL_BUTTON_RIGHT: {
                             pInterface->handleMouseRight(mouse->x, mouse->y, true);
-                        } break;
-
-                        case SDL_BUTTON_WHEELUP: {
-                            pInterface->handleMouseWheel(mouse->x, mouse->y,true);
-                        } break;
-
-                        case SDL_BUTTON_WHEELDOWN: {
-                            pInterface->handleMouseWheel(mouse->x, mouse->y,false);
                         } break;
                     }
 
@@ -947,13 +949,13 @@ void Game::doInput()
 		}
 	}
 
-	if((pInGameMenu == NULL) && (pInGameMentat == NULL) && (pWaitingForOtherPlayers == NULL) && (SDL_GetAppState() & SDL_APPMOUSEFOCUS)) {
+	if((pInGameMenu == NULL) && (pInGameMentat == NULL) && (pWaitingForOtherPlayers == NULL) && (SDL_GetWindowFlags(window) & SDL_WINDOW_MOUSE_FOCUS)) {
 
-	    Uint8 *keystate = SDL_GetKeyState(NULL);
-		scrollDownMode =  (drawnMouseY >= screen->h-1-SCROLLBORDER) || keystate[SDLK_DOWN];
-		scrollLeftMode = (drawnMouseX <= SCROLLBORDER) || keystate[SDLK_LEFT];
-		scrollRightMode = (drawnMouseX >= screen->w-1-SCROLLBORDER) || keystate[SDLK_RIGHT];
-        scrollUpMode = (drawnMouseY <= SCROLLBORDER) || keystate[SDLK_UP];
+	    const Uint8 *keystate = SDL_GetKeyboardState(NULL);
+		scrollDownMode =  (drawnMouseY >= screen->h-1-SCROLLBORDER) || keystate[SDL_SCANCODE_DOWN];
+		scrollLeftMode = (drawnMouseX <= SCROLLBORDER) || keystate[SDL_SCANCODE_LEFT];
+		scrollRightMode = (drawnMouseX >= screen->w-1-SCROLLBORDER) || keystate[SDL_SCANCODE_RIGHT];
+        scrollUpMode = (drawnMouseY <= SCROLLBORDER) || keystate[SDL_SCANCODE_UP];
 
         if(scrollLeftMode && scrollRightMode) {
             // do nothing
@@ -981,7 +983,7 @@ void Game::doInput()
 
 void Game::drawCursor()
 {
-    if(!(SDL_GetAppState() & SDL_APPMOUSEFOCUS)) {
+    if(!(SDL_GetWindowFlags(window) & SDL_WINDOW_MOUSE_FOCUS)) {
         return;
     }
 
@@ -1232,7 +1234,10 @@ void Game::runMainLoop() {
     do {
         drawScreen();
 
-        SDL_Flip(screen);
+        SDL_RenderClear(renderer);
+        SDL_UpdateTexture(texture, NULL, screen->pixels, screen->pitch);
+        SDL_RenderCopy(renderer, texture, NULL, NULL);
+        SDL_RenderPresent(renderer);
         frameEnd = SDL_GetTicks();
 
         if(frameEnd == frameStart) {
@@ -1946,7 +1951,7 @@ bool Game::onRadarClick(Coord worldPosition, bool bRightMouseButton, bool bDrag)
 
 
 bool Game::isOnRadarView(int mouseX, int mouseY) {
-    return pInterface->getRadarView().isOnRadar(drawnMouseX - (sideBarPos.x + SIDEBAR_COLUMN_WIDTH), drawnMouseY - sideBarPos.y);
+    return pInterface->getRadarView().isOnRadar(mouseX - (sideBarPos.x + SIDEBAR_COLUMN_WIDTH), mouseY - sideBarPos.y);
 }
 
 
@@ -2010,8 +2015,8 @@ void Game::handleChatInput(SDL_KeyboardEvent& keyboardEvent) {
             typingChatMessage.resize(typingChatMessage.length() - 1);
         }
     } else if(typingChatMessage.length() < 60)	{
-        if((keyboardEvent.keysym.unicode <= 0xFF) && (keyboardEvent.keysym.unicode > 0)) {
-            typingChatMessage += keyboardEvent.keysym.unicode;
+        if((keyboardEvent.keysym.sym <= 0xFF) && (keyboardEvent.keysym.sym > 0)) {
+            typingChatMessage += keyboardEvent.keysym.sym;
         } else {
             // TODO
         }
@@ -2258,7 +2263,7 @@ void Game::handleKeyInput(SDL_KeyboardEvent& keyboardEvent) {
 
         } // fall through
 
-        case SDLK_PRINT:
+        case SDLK_PRINTSCREEN:
         case SDLK_SYSREQ: {
             std::string screenshotFilename;
             int i = 1;
@@ -2324,7 +2329,7 @@ void Game::handleKeyInput(SDL_KeyboardEvent& keyboardEvent) {
 
         case SDLK_RETURN: {
             if(SDL_GetModState() & KMOD_ALT) {
-                SDL_WM_ToggleFullScreen(screen);
+                SDL_SetWindowFullscreen(window, (SDL_GetWindowFlags(window) ^ SDL_WINDOW_FULLSCREEN_DESKTOP));
             } else {
                 typingChatMessage = "";
                 chatMode = true;
@@ -2333,7 +2338,7 @@ void Game::handleKeyInput(SDL_KeyboardEvent& keyboardEvent) {
 
         case SDLK_TAB: {
             if(SDL_GetModState() & KMOD_ALT) {
-                SDL_WM_IconifyWindow();
+                SDL_MinimizeWindow(window);
             }
         } break;
 

@@ -70,7 +70,7 @@ void Animation::addFrame(SDL_Surface* newFrame, bool bDoublePic, bool bSetColorK
 	}
 
 	if(bSetColorKey == true) {
-		SDL_SetColorKey(newFrame, SDL_SRCCOLORKEY | SDL_RLEACCEL, 0);
+		SDL_SetColorKey(newFrame, SDL_TRUE, 0);
 	}
 
 	frames.push_back(newFrame);

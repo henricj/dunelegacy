@@ -254,8 +254,8 @@ public:
 			if(pOnReturn) {
 				pOnReturn();
 			}
-		} else if((key.keysym.unicode <= 0xFF) && (key.keysym.unicode != 0) && ((maxTextLength < 0) || ((int) text.length() < maxTextLength))) {
-		    char newChar = (char) key.keysym.unicode;
+		} else if((key.keysym.sym <= 0xFF) && (key.keysym.sym != 0) && ((maxTextLength < 0) || ((int) text.length() < maxTextLength))) {
+		    char newChar = (char) key.keysym.sym;
 
 		    if(allowedChars.empty() || allowedChars.find(newChar) != std::string::npos) {
                 text += newChar;
@@ -290,12 +290,12 @@ private:
     int fontID;                                 ///< the ID of the font to use
     Uint32 textcolor;                           ///< Text color
     Uint32 textshadowcolor;                     ///< Text shadow color
-	std::string text;			                ///< text in this text box
+	std::string text;                           ///< text in this text box
 	int maxTextLength;                          ///< the maximum length of the typed text
 
 	std::string allowedChars;                   ///< a set of allowed characters, empty string for everything allowed
 
-	Uint32 lastCarretTime;		                ///< Last time the carret changes from off to on or vise versa
+	Uint32 lastCarretTime;                      ///< Last time the carret changes from off to on or vise versa
 
 	std::function<void (bool)> pOnTextChange;	///< function that is called when the text of this text box changes
 	std::function<void ()> pOnReturn;		    ///< function that is called when return is pressed

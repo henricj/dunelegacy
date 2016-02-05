@@ -433,10 +433,10 @@ GFXManager::GFXManager() {
 
     // apply color key
     for(int i = 0; i < NUM_OBJPICS; i++) {
-		for(int j = 0; j < (int) NUM_HOUSES; j++) {
-		    for(int z=0; z < NUM_ZOOMLEVEL; z++) {
+        for(int j = 0; j < (int) NUM_HOUSES; j++) {
+            for(int z=0; z < NUM_ZOOMLEVEL; z++) {
                 if(objPic[i][j][z] != NULL) {
-                    SDL_SetColorKey(objPic[i][j][z], SDL_SRCCOLORKEY | SDL_RLEACCEL, 0);
+                    SDL_SetColorKey(objPic[i][j][z], SDL_TRUE, PALCOLOR_TRANSPARENT);
                 }
 		    }
 		}
@@ -497,61 +497,61 @@ GFXManager::GFXManager() {
 	uiGraphic[UI_RadarAnimation][HOUSE_HARKONNEN] = Scaler::doubleSurfaceNN(radar->getAnimationAsPictureRow());
 
 	uiGraphic[UI_CursorNormal][HOUSE_HARKONNEN] = mouse->getPicture(0);
-	SDL_SetColorKey(uiGraphic[UI_CursorNormal][HOUSE_HARKONNEN], SDL_SRCCOLORKEY | SDL_RLEACCEL, 0);
+	SDL_SetColorKey(uiGraphic[UI_CursorNormal][HOUSE_HARKONNEN], SDL_TRUE, 0);
     uiGraphic[UI_CursorUp][HOUSE_HARKONNEN] = mouse->getPicture(1);
-	SDL_SetColorKey(uiGraphic[UI_CursorUp][HOUSE_HARKONNEN], SDL_SRCCOLORKEY | SDL_RLEACCEL, 0);
+	SDL_SetColorKey(uiGraphic[UI_CursorUp][HOUSE_HARKONNEN], SDL_TRUE, 0);
     uiGraphic[UI_CursorRight][HOUSE_HARKONNEN] = mouse->getPicture(2);
-	SDL_SetColorKey(uiGraphic[UI_CursorRight][HOUSE_HARKONNEN], SDL_SRCCOLORKEY | SDL_RLEACCEL, 0);
+	SDL_SetColorKey(uiGraphic[UI_CursorRight][HOUSE_HARKONNEN], SDL_TRUE, 0);
     uiGraphic[UI_CursorDown][HOUSE_HARKONNEN] = mouse->getPicture(3);
-	SDL_SetColorKey(uiGraphic[UI_CursorDown][HOUSE_HARKONNEN], SDL_SRCCOLORKEY | SDL_RLEACCEL, 0);
+	SDL_SetColorKey(uiGraphic[UI_CursorDown][HOUSE_HARKONNEN], SDL_TRUE, 0);
     uiGraphic[UI_CursorLeft][HOUSE_HARKONNEN] = mouse->getPicture(4);
-	SDL_SetColorKey(uiGraphic[UI_CursorLeft][HOUSE_HARKONNEN], SDL_SRCCOLORKEY | SDL_RLEACCEL, 0);
+	SDL_SetColorKey(uiGraphic[UI_CursorLeft][HOUSE_HARKONNEN], SDL_TRUE, 0);
 
     uiGraphic[UI_CursorMove_Zoomlevel0][HOUSE_HARKONNEN] = mouse->getPicture(5);
-	SDL_SetColorKey(uiGraphic[UI_CursorMove_Zoomlevel0][HOUSE_HARKONNEN], SDL_SRCCOLORKEY | SDL_RLEACCEL, 0);
+	SDL_SetColorKey(uiGraphic[UI_CursorMove_Zoomlevel0][HOUSE_HARKONNEN], SDL_TRUE, 0);
     uiGraphic[UI_CursorMove_Zoomlevel1][HOUSE_HARKONNEN] = Scaler::defaultDoubleTiledSurface(uiGraphic[UI_CursorMove_Zoomlevel0][HOUSE_HARKONNEN], 1, 1, false);
-	SDL_SetColorKey(uiGraphic[UI_CursorMove_Zoomlevel1][HOUSE_HARKONNEN], SDL_SRCCOLORKEY | SDL_RLEACCEL, 0);
+	SDL_SetColorKey(uiGraphic[UI_CursorMove_Zoomlevel1][HOUSE_HARKONNEN], SDL_TRUE, 0);
     uiGraphic[UI_CursorMove_Zoomlevel2][HOUSE_HARKONNEN] = Scaler::defaultTripleTiledSurface(uiGraphic[UI_CursorMove_Zoomlevel0][HOUSE_HARKONNEN], 1, 1, false);
-	SDL_SetColorKey(uiGraphic[UI_CursorMove_Zoomlevel2][HOUSE_HARKONNEN], SDL_SRCCOLORKEY | SDL_RLEACCEL, 0);
+	SDL_SetColorKey(uiGraphic[UI_CursorMove_Zoomlevel2][HOUSE_HARKONNEN], SDL_TRUE, 0);
 
 	uiGraphic[UI_CursorAttack_Zoomlevel0][HOUSE_HARKONNEN] = mapSurfaceColorRange(uiGraphic[UI_CursorMove_Zoomlevel0][HOUSE_HARKONNEN], 232, PALCOLOR_HARKONNEN);
-	SDL_SetColorKey(uiGraphic[UI_CursorAttack_Zoomlevel0][HOUSE_HARKONNEN], SDL_SRCCOLORKEY | SDL_RLEACCEL, 0);
+	SDL_SetColorKey(uiGraphic[UI_CursorAttack_Zoomlevel0][HOUSE_HARKONNEN], SDL_TRUE, 0);
     uiGraphic[UI_CursorAttack_Zoomlevel1][HOUSE_HARKONNEN] = Scaler::defaultDoubleTiledSurface(uiGraphic[UI_CursorAttack_Zoomlevel0][HOUSE_HARKONNEN], 1, 1, false);
-	SDL_SetColorKey(uiGraphic[UI_CursorAttack_Zoomlevel1][HOUSE_HARKONNEN], SDL_SRCCOLORKEY | SDL_RLEACCEL, 0);
+	SDL_SetColorKey(uiGraphic[UI_CursorAttack_Zoomlevel1][HOUSE_HARKONNEN], SDL_TRUE, 0);
     uiGraphic[UI_CursorAttack_Zoomlevel2][HOUSE_HARKONNEN] = Scaler::defaultTripleTiledSurface(uiGraphic[UI_CursorAttack_Zoomlevel0][HOUSE_HARKONNEN], 1, 1, false);
-	SDL_SetColorKey(uiGraphic[UI_CursorAttack_Zoomlevel2][HOUSE_HARKONNEN], SDL_SRCCOLORKEY | SDL_RLEACCEL, 0);
+	SDL_SetColorKey(uiGraphic[UI_CursorAttack_Zoomlevel2][HOUSE_HARKONNEN], SDL_TRUE, 0);
 
 	uiGraphic[UI_CursorCapture_Zoomlevel0][HOUSE_HARKONNEN] = SDL_LoadBMP_RW(pFileManager->openFile("Capture.bmp"),true);
-	SDL_SetColorKey(uiGraphic[UI_CursorCapture_Zoomlevel0][HOUSE_HARKONNEN], SDL_SRCCOLORKEY | SDL_RLEACCEL, 0);
+	SDL_SetColorKey(uiGraphic[UI_CursorCapture_Zoomlevel0][HOUSE_HARKONNEN], SDL_TRUE, 0);
     uiGraphic[UI_CursorCapture_Zoomlevel1][HOUSE_HARKONNEN] = Scaler::defaultDoubleTiledSurface(uiGraphic[UI_CursorCapture_Zoomlevel0][HOUSE_HARKONNEN], 1, 1, false);
-	SDL_SetColorKey(uiGraphic[UI_CursorCapture_Zoomlevel1][HOUSE_HARKONNEN], SDL_SRCCOLORKEY | SDL_RLEACCEL, 0);
+	SDL_SetColorKey(uiGraphic[UI_CursorCapture_Zoomlevel1][HOUSE_HARKONNEN], SDL_TRUE, 0);
     uiGraphic[UI_CursorCapture_Zoomlevel2][HOUSE_HARKONNEN] = Scaler::defaultTripleTiledSurface(uiGraphic[UI_CursorCapture_Zoomlevel0][HOUSE_HARKONNEN], 1, 1, false);
-	SDL_SetColorKey(uiGraphic[UI_CursorCapture_Zoomlevel2][HOUSE_HARKONNEN], SDL_SRCCOLORKEY | SDL_RLEACCEL, 0);
+	SDL_SetColorKey(uiGraphic[UI_CursorCapture_Zoomlevel2][HOUSE_HARKONNEN], SDL_TRUE, 0);
 
 	uiGraphic[UI_CursorCarryallDrop_Zoomlevel0][HOUSE_HARKONNEN] = SDL_LoadBMP_RW(pFileManager->openFile("CarryallDrop.bmp"),true);
-	SDL_SetColorKey(uiGraphic[UI_CursorCarryallDrop_Zoomlevel0][HOUSE_HARKONNEN], SDL_SRCCOLORKEY | SDL_RLEACCEL, 0);
+	SDL_SetColorKey(uiGraphic[UI_CursorCarryallDrop_Zoomlevel0][HOUSE_HARKONNEN], SDL_TRUE, 0);
     uiGraphic[UI_CursorCarryallDrop_Zoomlevel1][HOUSE_HARKONNEN] = Scaler::defaultDoubleTiledSurface(uiGraphic[UI_CursorCarryallDrop_Zoomlevel0][HOUSE_HARKONNEN], 1, 1, false);
-	SDL_SetColorKey(uiGraphic[UI_CursorCarryallDrop_Zoomlevel1][HOUSE_HARKONNEN], SDL_SRCCOLORKEY | SDL_RLEACCEL, 0);
+	SDL_SetColorKey(uiGraphic[UI_CursorCarryallDrop_Zoomlevel1][HOUSE_HARKONNEN], SDL_TRUE, 0);
     uiGraphic[UI_CursorCarryallDrop_Zoomlevel2][HOUSE_HARKONNEN] = Scaler::defaultTripleTiledSurface(uiGraphic[UI_CursorCarryallDrop_Zoomlevel0][HOUSE_HARKONNEN], 1, 1, false);
-	SDL_SetColorKey(uiGraphic[UI_CursorCarryallDrop_Zoomlevel2][HOUSE_HARKONNEN], SDL_SRCCOLORKEY | SDL_RLEACCEL, 0);
+	SDL_SetColorKey(uiGraphic[UI_CursorCarryallDrop_Zoomlevel2][HOUSE_HARKONNEN], SDL_TRUE, 0);
 
 	uiGraphic[UI_ReturnIcon][HOUSE_HARKONNEN] = SDL_LoadBMP_RW(pFileManager->openFile("Return.bmp"),true);
-	SDL_SetColorKey(uiGraphic[UI_ReturnIcon][HOUSE_HARKONNEN], SDL_SRCCOLORKEY | SDL_RLEACCEL, 0);
+	SDL_SetColorKey(uiGraphic[UI_ReturnIcon][HOUSE_HARKONNEN], SDL_TRUE, 0);
 
 	uiGraphic[UI_DeployIcon][HOUSE_HARKONNEN] = SDL_LoadBMP_RW(pFileManager->openFile("Deploy.bmp"),true);
-	SDL_SetColorKey(uiGraphic[UI_DeployIcon][HOUSE_HARKONNEN], SDL_SRCCOLORKEY | SDL_RLEACCEL, 0);
+	SDL_SetColorKey(uiGraphic[UI_DeployIcon][HOUSE_HARKONNEN], SDL_TRUE, 0);
 
 	uiGraphic[UI_DestructIcon][HOUSE_HARKONNEN] = SDL_LoadBMP_RW(pFileManager->openFile("Destruct.bmp"),true);
-	SDL_SetColorKey(uiGraphic[UI_DestructIcon][HOUSE_HARKONNEN], SDL_SRCCOLORKEY | SDL_RLEACCEL, 0);
+	SDL_SetColorKey(uiGraphic[UI_DestructIcon][HOUSE_HARKONNEN], SDL_TRUE, 0);
 
 	uiGraphic[UI_SendToRepairIcon][HOUSE_HARKONNEN] = SDL_LoadBMP_RW(pFileManager->openFile("SendToRepair.bmp"),true);
-	SDL_SetColorKey(uiGraphic[UI_SendToRepairIcon][HOUSE_HARKONNEN], SDL_SRCCOLORKEY | SDL_RLEACCEL, 0);
+	SDL_SetColorKey(uiGraphic[UI_SendToRepairIcon][HOUSE_HARKONNEN], SDL_TRUE, 0);
 
 	uiGraphic[UI_CreditsDigits][HOUSE_HARKONNEN] = shapes->getPictureArray(10,1,2|TILE_NORMAL,3|TILE_NORMAL,4|TILE_NORMAL,5|TILE_NORMAL,6|TILE_NORMAL,
 																				7|TILE_NORMAL,8|TILE_NORMAL,9|TILE_NORMAL,10|TILE_NORMAL,11|TILE_NORMAL);
 	uiGraphic[UI_SideBar][HOUSE_HARKONNEN] = PicFactory->createSideBar(false);
 	uiGraphic[UI_Indicator][HOUSE_HARKONNEN] = units1->getPictureArray(3,1,8|TILE_NORMAL,9|TILE_NORMAL,10|TILE_NORMAL);
-	SDL_SetColorKey(uiGraphic[UI_Indicator][HOUSE_HARKONNEN], SDL_SRCCOLORKEY | SDL_RLEACCEL, 0);
+	SDL_SetColorKey(uiGraphic[UI_Indicator][HOUSE_HARKONNEN], SDL_TRUE, 0);
 	uiGraphic[UI_InvalidPlace_Zoomlevel0][HOUSE_HARKONNEN] = PicFactory->createPlacingGrid(16, PALCOLOR_LIGHTRED);
 	uiGraphic[UI_InvalidPlace_Zoomlevel1][HOUSE_HARKONNEN] = PicFactory->createPlacingGrid(32, PALCOLOR_LIGHTRED);
     uiGraphic[UI_InvalidPlace_Zoomlevel2][HOUSE_HARKONNEN] = PicFactory->createPlacingGrid(48, PALCOLOR_LIGHTRED);
@@ -569,17 +569,17 @@ GFXManager::GFXManager() {
     uiGraphic[UI_GameStatsBackground][HOUSE_SARDAUKAR] = PicFactory->createGameStatsBackground(HOUSE_SARDAUKAR);
     uiGraphic[UI_GameStatsBackground][HOUSE_MERCENARY] = PicFactory->createGameStatsBackground(HOUSE_MERCENARY);
 	uiGraphic[UI_SelectionBox_Zoomlevel0][HOUSE_HARKONNEN] = SDL_LoadBMP_RW(pFileManager->openFile("UI_SelectionBox.bmp"),true);
-	SDL_SetColorKey(uiGraphic[UI_SelectionBox_Zoomlevel0][HOUSE_HARKONNEN], SDL_SRCCOLORKEY | SDL_RLEACCEL, 0);
+	SDL_SetColorKey(uiGraphic[UI_SelectionBox_Zoomlevel0][HOUSE_HARKONNEN], SDL_TRUE, 0);
 	uiGraphic[UI_SelectionBox_Zoomlevel1][HOUSE_HARKONNEN] = Scaler::defaultDoubleTiledSurface(uiGraphic[UI_SelectionBox_Zoomlevel0][HOUSE_HARKONNEN], 1, 1, false);
-	SDL_SetColorKey(uiGraphic[UI_SelectionBox_Zoomlevel1][HOUSE_HARKONNEN], SDL_SRCCOLORKEY | SDL_RLEACCEL, 0);
+	SDL_SetColorKey(uiGraphic[UI_SelectionBox_Zoomlevel1][HOUSE_HARKONNEN], SDL_TRUE, 0);
 	uiGraphic[UI_SelectionBox_Zoomlevel2][HOUSE_HARKONNEN] = Scaler::defaultTripleTiledSurface(uiGraphic[UI_SelectionBox_Zoomlevel0][HOUSE_HARKONNEN], 1, 1, false);
-	SDL_SetColorKey(uiGraphic[UI_SelectionBox_Zoomlevel2][HOUSE_HARKONNEN], SDL_SRCCOLORKEY | SDL_RLEACCEL, 0);
+	SDL_SetColorKey(uiGraphic[UI_SelectionBox_Zoomlevel2][HOUSE_HARKONNEN], SDL_TRUE, 0);
 	uiGraphic[UI_OtherPlayerSelectionBox_Zoomlevel0][HOUSE_HARKONNEN] = SDL_LoadBMP_RW(pFileManager->openFile("UI_OtherPlayerSelectionBox.bmp"),true);
-	SDL_SetColorKey(uiGraphic[UI_OtherPlayerSelectionBox_Zoomlevel0][HOUSE_HARKONNEN], SDL_SRCCOLORKEY | SDL_RLEACCEL, 0);
+	SDL_SetColorKey(uiGraphic[UI_OtherPlayerSelectionBox_Zoomlevel0][HOUSE_HARKONNEN], SDL_TRUE, 0);
 	uiGraphic[UI_OtherPlayerSelectionBox_Zoomlevel1][HOUSE_HARKONNEN] = Scaler::defaultDoubleTiledSurface(uiGraphic[UI_OtherPlayerSelectionBox_Zoomlevel0][HOUSE_HARKONNEN], 1, 1, false);
-	SDL_SetColorKey(uiGraphic[UI_OtherPlayerSelectionBox_Zoomlevel1][HOUSE_HARKONNEN], SDL_SRCCOLORKEY | SDL_RLEACCEL, 0);
+	SDL_SetColorKey(uiGraphic[UI_OtherPlayerSelectionBox_Zoomlevel1][HOUSE_HARKONNEN], SDL_TRUE, 0);
 	uiGraphic[UI_OtherPlayerSelectionBox_Zoomlevel2][HOUSE_HARKONNEN] = Scaler::defaultTripleTiledSurface(uiGraphic[UI_OtherPlayerSelectionBox_Zoomlevel0][HOUSE_HARKONNEN], 1, 1, false);
-	SDL_SetColorKey(uiGraphic[UI_OtherPlayerSelectionBox_Zoomlevel2][HOUSE_HARKONNEN], SDL_SRCCOLORKEY | SDL_RLEACCEL, 0);
+	SDL_SetColorKey(uiGraphic[UI_OtherPlayerSelectionBox_Zoomlevel2][HOUSE_HARKONNEN], SDL_TRUE, 0);
 	uiGraphic[UI_TopBar][HOUSE_HARKONNEN] = PicFactory->createTopBar();
 	uiGraphic[UI_ButtonUp][HOUSE_HARKONNEN] = choam->getPicture(0);
 	uiGraphic[UI_ButtonUp_Pressed][HOUSE_HARKONNEN] = choam->getPicture(1);
@@ -588,9 +588,9 @@ GFXManager::GFXManager() {
 	uiGraphic[UI_BuilderListUpperCap][HOUSE_HARKONNEN] = PicFactory->createBuilderListUpperCap();
 	uiGraphic[UI_BuilderListLowerCap][HOUSE_HARKONNEN] = PicFactory->createBuilderListLowerCap();
 	uiGraphic[UI_CustomGamePlayersArrow][HOUSE_HARKONNEN] = SDL_LoadBMP_RW(pFileManager->openFile("CustomGamePlayers_Arrow.bmp"),true);
-	SDL_SetColorKey(uiGraphic[UI_CustomGamePlayersArrow][HOUSE_HARKONNEN], SDL_SRCCOLORKEY | SDL_RLEACCEL, 0);
+	SDL_SetColorKey(uiGraphic[UI_CustomGamePlayersArrow][HOUSE_HARKONNEN], SDL_TRUE, 0);
 	uiGraphic[UI_CustomGamePlayersArrowNeutral][HOUSE_HARKONNEN] = SDL_LoadBMP_RW(pFileManager->openFile("CustomGamePlayers_ArrowNeutral.bmp"),true);
-	SDL_SetColorKey(uiGraphic[UI_CustomGamePlayersArrowNeutral][HOUSE_HARKONNEN], SDL_SRCCOLORKEY | SDL_RLEACCEL, 0);
+	SDL_SetColorKey(uiGraphic[UI_CustomGamePlayersArrowNeutral][HOUSE_HARKONNEN], SDL_TRUE, 0);
 	uiGraphic[UI_MessageBox][HOUSE_HARKONNEN] = PicFactory->createMessageBoxBorder();
 
 	if(bttn.get() != NULL) {
@@ -606,9 +606,9 @@ GFXManager::GFXManager() {
 	}
 
 	uiGraphic[UI_Upgrade][HOUSE_HARKONNEN] = choam->getPicture(4);
-	SDL_SetColorKey(uiGraphic[UI_Upgrade][HOUSE_HARKONNEN], SDL_SRCCOLORKEY | SDL_RLEACCEL, 0);
+	SDL_SetColorKey(uiGraphic[UI_Upgrade][HOUSE_HARKONNEN], SDL_TRUE, 0);
 	uiGraphic[UI_Upgrade_Pressed][HOUSE_HARKONNEN] = choam->getPicture(5);
-	SDL_SetColorKey(uiGraphic[UI_Upgrade_Pressed][HOUSE_HARKONNEN], SDL_SRCCOLORKEY | SDL_RLEACCEL, 0);
+	SDL_SetColorKey(uiGraphic[UI_Upgrade_Pressed][HOUSE_HARKONNEN], SDL_TRUE, 0);
 	uiGraphic[UI_Repair][HOUSE_HARKONNEN] = SDL_LoadBMP_RW(pFileManager->openFile("Button_Repair.bmp"),true);
 	uiGraphic[UI_Repair_Pressed][HOUSE_HARKONNEN] = SDL_LoadBMP_RW(pFileManager->openFile("Button_RepairPushed.bmp"),true);
 	uiGraphic[UI_Minus][HOUSE_HARKONNEN] = SDL_LoadBMP_RW(pFileManager->openFile("Button_Minus.bmp"),true);
@@ -619,7 +619,7 @@ GFXManager::GFXManager() {
 	uiGraphic[UI_Plus_Pressed][HOUSE_HARKONNEN] = SDL_LoadBMP_RW(pFileManager->openFile("Button_PlusPushed.bmp"),true);
 	uiGraphic[UI_MissionSelect][HOUSE_HARKONNEN] = SDL_LoadBMP_RW(pFileManager->openFile("Menu_MissionSelect.bmp"),true);
 	PicFactory->drawFrame(uiGraphic[UI_MissionSelect][HOUSE_HARKONNEN],PictureFactory::SimpleFrame,NULL);
-	SDL_SetColorKey(uiGraphic[UI_MissionSelect][HOUSE_HARKONNEN], SDL_SRCCOLORKEY | SDL_RLEACCEL, 0);
+	SDL_SetColorKey(uiGraphic[UI_MissionSelect][HOUSE_HARKONNEN], SDL_TRUE, 0);
 	uiGraphic[UI_OptionsMenu][HOUSE_HARKONNEN] = PicFactory->createOptionsMenu();
 	uiGraphic[UI_LoadSaveWindow][HOUSE_HARKONNEN] = PicFactory->createMenu(280,228);
 	uiGraphic[UI_NewMapWindow][HOUSE_HARKONNEN] = PicFactory->createMenu(600,440);
@@ -710,11 +710,11 @@ GFXManager::GFXManager() {
 	uiGraphic[UI_MapChoiceScreen][HOUSE_SARDAUKAR] = PicFactory->createMapChoiceScreen(HOUSE_SARDAUKAR);
 	uiGraphic[UI_MapChoiceScreen][HOUSE_MERCENARY] = PicFactory->createMapChoiceScreen(HOUSE_MERCENARY);
 	uiGraphic[UI_MapChoicePlanet][HOUSE_HARKONNEN] = Scaler::doubleSurfaceNN(LoadCPS_RW(pFileManager->openFile("PLANET.CPS"),true));
-	SDL_SetColorKey(uiGraphic[UI_MapChoicePlanet][HOUSE_HARKONNEN], SDL_SRCCOLORKEY | SDL_RLEACCEL, 0);
+	SDL_SetColorKey(uiGraphic[UI_MapChoicePlanet][HOUSE_HARKONNEN], SDL_TRUE, 0);
 	uiGraphic[UI_MapChoiceMapOnly][HOUSE_HARKONNEN] = Scaler::doubleSurfaceNN(LoadCPS_RW(pFileManager->openFile("DUNEMAP.CPS"),true));
-	SDL_SetColorKey(uiGraphic[UI_MapChoiceMapOnly][HOUSE_HARKONNEN], SDL_SRCCOLORKEY | SDL_RLEACCEL, 0);
+	SDL_SetColorKey(uiGraphic[UI_MapChoiceMapOnly][HOUSE_HARKONNEN], SDL_TRUE, 0);
 	uiGraphic[UI_MapChoiceMap][HOUSE_HARKONNEN] = Scaler::doubleSurfaceNN(LoadCPS_RW(pFileManager->openFile("DUNERGN.CPS"),true));
-	SDL_SetColorKey(uiGraphic[UI_MapChoiceMap][HOUSE_HARKONNEN], SDL_SRCCOLORKEY | SDL_RLEACCEL, 0);
+	SDL_SetColorKey(uiGraphic[UI_MapChoiceMap][HOUSE_HARKONNEN], SDL_TRUE, 0);
 
 	// make black lines inside the map non-transparent
 	if(!SDL_MUSTLOCK(uiGraphic[UI_MapChoiceMap][HOUSE_HARKONNEN]) || (SDL_LockSurface(uiGraphic[UI_MapChoiceMap][HOUSE_HARKONNEN]) == 0)) {
@@ -733,84 +733,84 @@ GFXManager::GFXManager() {
 
 	uiGraphic[UI_MapChoiceClickMap][HOUSE_HARKONNEN] = Scaler::doubleSurfaceNN(LoadCPS_RW(pFileManager->openFile("RGNCLK.CPS"),true));
     uiGraphic[UI_MapChoiceArrow_None][HOUSE_HARKONNEN] = Scaler::defaultDoubleSurface(arrows->getPicture(0),true);
-    SDL_SetColorKey(uiGraphic[UI_MapChoiceArrow_None][HOUSE_HARKONNEN], SDL_SRCCOLORKEY | SDL_RLEACCEL, 0);
+    SDL_SetColorKey(uiGraphic[UI_MapChoiceArrow_None][HOUSE_HARKONNEN], SDL_TRUE, 0);
     uiGraphic[UI_MapChoiceArrow_LeftUp][HOUSE_HARKONNEN] = Scaler::defaultDoubleSurface(arrows->getPicture(1),true);
-    SDL_SetColorKey(uiGraphic[UI_MapChoiceArrow_LeftUp][HOUSE_HARKONNEN], SDL_SRCCOLORKEY | SDL_RLEACCEL, 0);
+    SDL_SetColorKey(uiGraphic[UI_MapChoiceArrow_LeftUp][HOUSE_HARKONNEN], SDL_TRUE, 0);
     uiGraphic[UI_MapChoiceArrow_Up][HOUSE_HARKONNEN] = Scaler::defaultDoubleSurface(arrows->getPicture(2),true);
-    SDL_SetColorKey(uiGraphic[UI_MapChoiceArrow_Up][HOUSE_HARKONNEN], SDL_SRCCOLORKEY | SDL_RLEACCEL, 0);
+    SDL_SetColorKey(uiGraphic[UI_MapChoiceArrow_Up][HOUSE_HARKONNEN], SDL_TRUE, 0);
     uiGraphic[UI_MapChoiceArrow_RightUp][HOUSE_HARKONNEN] = Scaler::defaultDoubleSurface(arrows->getPicture(3),true);
-    SDL_SetColorKey(uiGraphic[UI_MapChoiceArrow_RightUp][HOUSE_HARKONNEN], SDL_SRCCOLORKEY | SDL_RLEACCEL, 0);
+    SDL_SetColorKey(uiGraphic[UI_MapChoiceArrow_RightUp][HOUSE_HARKONNEN], SDL_TRUE, 0);
     uiGraphic[UI_MapChoiceArrow_Right][HOUSE_HARKONNEN] = Scaler::defaultDoubleSurface(arrows->getPicture(4),true);
-    SDL_SetColorKey(uiGraphic[UI_MapChoiceArrow_Right][HOUSE_HARKONNEN], SDL_SRCCOLORKEY | SDL_RLEACCEL, 0);
+    SDL_SetColorKey(uiGraphic[UI_MapChoiceArrow_Right][HOUSE_HARKONNEN], SDL_TRUE, 0);
     uiGraphic[UI_MapChoiceArrow_RightDown][HOUSE_HARKONNEN] = Scaler::defaultDoubleSurface(arrows->getPicture(5),true);
-    SDL_SetColorKey(uiGraphic[UI_MapChoiceArrow_RightDown][HOUSE_HARKONNEN], SDL_SRCCOLORKEY | SDL_RLEACCEL, 0);
+    SDL_SetColorKey(uiGraphic[UI_MapChoiceArrow_RightDown][HOUSE_HARKONNEN], SDL_TRUE, 0);
     uiGraphic[UI_MapChoiceArrow_Down][HOUSE_HARKONNEN] = Scaler::defaultDoubleSurface(arrows->getPicture(6),true);
-    SDL_SetColorKey(uiGraphic[UI_MapChoiceArrow_Down][HOUSE_HARKONNEN], SDL_SRCCOLORKEY | SDL_RLEACCEL, 0);
+    SDL_SetColorKey(uiGraphic[UI_MapChoiceArrow_Down][HOUSE_HARKONNEN], SDL_TRUE, 0);
     uiGraphic[UI_MapChoiceArrow_LeftDown][HOUSE_HARKONNEN] = Scaler::defaultDoubleSurface(arrows->getPicture(7),true);
-    SDL_SetColorKey(uiGraphic[UI_MapChoiceArrow_LeftDown][HOUSE_HARKONNEN], SDL_SRCCOLORKEY | SDL_RLEACCEL, 0);
+    SDL_SetColorKey(uiGraphic[UI_MapChoiceArrow_LeftDown][HOUSE_HARKONNEN], SDL_TRUE, 0);
     uiGraphic[UI_MapChoiceArrow_Left][HOUSE_HARKONNEN] = Scaler::defaultDoubleSurface(arrows->getPicture(8),true);
-    SDL_SetColorKey(uiGraphic[UI_MapChoiceArrow_Left][HOUSE_HARKONNEN], SDL_SRCCOLORKEY | SDL_RLEACCEL, 0);
+    SDL_SetColorKey(uiGraphic[UI_MapChoiceArrow_Left][HOUSE_HARKONNEN], SDL_TRUE, 0);
 
 	uiGraphic[UI_StructureSizeLattice][HOUSE_HARKONNEN] = SDL_LoadBMP_RW(pFileManager->openFile("StructureSizeLattice.bmp"),true);
-	SDL_SetColorKey(uiGraphic[UI_StructureSizeLattice][HOUSE_HARKONNEN], SDL_SRCCOLORKEY | SDL_RLEACCEL, 0);
+	SDL_SetColorKey(uiGraphic[UI_StructureSizeLattice][HOUSE_HARKONNEN], SDL_TRUE, 0);
 	uiGraphic[UI_StructureSizeConcrete][HOUSE_HARKONNEN] = SDL_LoadBMP_RW(pFileManager->openFile("StructureSizeConcrete.bmp"),true);
-	SDL_SetColorKey(uiGraphic[UI_StructureSizeConcrete][HOUSE_HARKONNEN], SDL_SRCCOLORKEY | SDL_RLEACCEL, 0);
+	SDL_SetColorKey(uiGraphic[UI_StructureSizeConcrete][HOUSE_HARKONNEN], SDL_TRUE, 0);
 
     uiGraphic[UI_MapEditor_SideBar][HOUSE_HARKONNEN] = PicFactory->createSideBar(true);
     uiGraphic[UI_MapEditor_BottomBar][HOUSE_HARKONNEN] = PicFactory->createBottomBar();
 
     uiGraphic[UI_MapEditor_ExitIcon][HOUSE_HARKONNEN] = SDL_LoadBMP_RW(pFileManager->openFile("MapEditorExitIcon.bmp"),true);
-	SDL_SetColorKey(uiGraphic[UI_MapEditor_ExitIcon][HOUSE_HARKONNEN], SDL_SRCCOLORKEY | SDL_RLEACCEL, 0);
+	SDL_SetColorKey(uiGraphic[UI_MapEditor_ExitIcon][HOUSE_HARKONNEN], SDL_TRUE, 0);
     uiGraphic[UI_MapEditor_NewIcon][HOUSE_HARKONNEN] = SDL_LoadBMP_RW(pFileManager->openFile("MapEditorNewIcon.bmp"),true);
-	SDL_SetColorKey(uiGraphic[UI_MapEditor_NewIcon][HOUSE_HARKONNEN], SDL_SRCCOLORKEY | SDL_RLEACCEL, 0);
+	SDL_SetColorKey(uiGraphic[UI_MapEditor_NewIcon][HOUSE_HARKONNEN], SDL_TRUE, 0);
     uiGraphic[UI_MapEditor_LoadIcon][HOUSE_HARKONNEN] = SDL_LoadBMP_RW(pFileManager->openFile("MapEditorLoadIcon.bmp"),true);
-	SDL_SetColorKey(uiGraphic[UI_MapEditor_LoadIcon][HOUSE_HARKONNEN], SDL_SRCCOLORKEY | SDL_RLEACCEL, 0);
+	SDL_SetColorKey(uiGraphic[UI_MapEditor_LoadIcon][HOUSE_HARKONNEN], SDL_TRUE, 0);
     uiGraphic[UI_MapEditor_SaveIcon][HOUSE_HARKONNEN] = SDL_LoadBMP_RW(pFileManager->openFile("MapEditorSaveIcon.bmp"),true);
-	SDL_SetColorKey(uiGraphic[UI_MapEditor_SaveIcon][HOUSE_HARKONNEN], SDL_SRCCOLORKEY | SDL_RLEACCEL, 0);
+	SDL_SetColorKey(uiGraphic[UI_MapEditor_SaveIcon][HOUSE_HARKONNEN], SDL_TRUE, 0);
     uiGraphic[UI_MapEditor_UndoIcon][HOUSE_HARKONNEN] = SDL_LoadBMP_RW(pFileManager->openFile("MapEditorUndoIcon.bmp"),true);
-	SDL_SetColorKey(uiGraphic[UI_MapEditor_UndoIcon][HOUSE_HARKONNEN], SDL_SRCCOLORKEY | SDL_RLEACCEL, 0);
+	SDL_SetColorKey(uiGraphic[UI_MapEditor_UndoIcon][HOUSE_HARKONNEN], SDL_TRUE, 0);
     uiGraphic[UI_MapEditor_RedoIcon][HOUSE_HARKONNEN] = SDL_LoadBMP_RW(pFileManager->openFile("MapEditorRedoIcon.bmp"),true);
-	SDL_SetColorKey(uiGraphic[UI_MapEditor_RedoIcon][HOUSE_HARKONNEN], SDL_SRCCOLORKEY | SDL_RLEACCEL, 0);
+	SDL_SetColorKey(uiGraphic[UI_MapEditor_RedoIcon][HOUSE_HARKONNEN], SDL_TRUE, 0);
     uiGraphic[UI_MapEditor_PlayerIcon][HOUSE_HARKONNEN] = SDL_LoadBMP_RW(pFileManager->openFile("MapEditorPlayerIcon.bmp"),true);
-	SDL_SetColorKey(uiGraphic[UI_MapEditor_PlayerIcon][HOUSE_HARKONNEN], SDL_SRCCOLORKEY | SDL_RLEACCEL, 0);
+	SDL_SetColorKey(uiGraphic[UI_MapEditor_PlayerIcon][HOUSE_HARKONNEN], SDL_TRUE, 0);
     uiGraphic[UI_MapEditor_MapSettingsIcon][HOUSE_HARKONNEN] = SDL_LoadBMP_RW(pFileManager->openFile("MapEditorMapSettingsIcon.bmp"),true);
-	SDL_SetColorKey(uiGraphic[UI_MapEditor_MapSettingsIcon][HOUSE_HARKONNEN], SDL_SRCCOLORKEY | SDL_RLEACCEL, 0);
+	SDL_SetColorKey(uiGraphic[UI_MapEditor_MapSettingsIcon][HOUSE_HARKONNEN], SDL_TRUE, 0);
     uiGraphic[UI_MapEditor_ChoamIcon][HOUSE_HARKONNEN] = scaleSurface(getSubFrame(objPic[ObjPic_Frigate][HOUSE_HARKONNEN][0],1,0,8,1), 0.5);
-	SDL_SetColorKey(uiGraphic[UI_MapEditor_ChoamIcon][HOUSE_HARKONNEN], SDL_SRCCOLORKEY | SDL_RLEACCEL, 0);
+	SDL_SetColorKey(uiGraphic[UI_MapEditor_ChoamIcon][HOUSE_HARKONNEN], SDL_TRUE, 0);
     uiGraphic[UI_MapEditor_ReinforcementsIcon][HOUSE_HARKONNEN] = scaleSurface(getSubFrame(objPic[ObjPic_Carryall][HOUSE_HARKONNEN][0],1,0,8,2), 0.66667);
-	SDL_SetColorKey(uiGraphic[UI_MapEditor_ReinforcementsIcon][HOUSE_HARKONNEN], SDL_SRCCOLORKEY | SDL_RLEACCEL, 0);
+	SDL_SetColorKey(uiGraphic[UI_MapEditor_ReinforcementsIcon][HOUSE_HARKONNEN], SDL_TRUE, 0);
     uiGraphic[UI_MapEditor_TeamsIcon][HOUSE_HARKONNEN] = getSubFrame(objPic[ObjPic_Troopers][HOUSE_HARKONNEN][0],0,0,4,4);
-	SDL_SetColorKey(uiGraphic[UI_MapEditor_TeamsIcon][HOUSE_HARKONNEN], SDL_SRCCOLORKEY | SDL_RLEACCEL, 0);
+	SDL_SetColorKey(uiGraphic[UI_MapEditor_TeamsIcon][HOUSE_HARKONNEN], SDL_TRUE, 0);
     uiGraphic[UI_MapEditor_MirrorNoneIcon][HOUSE_HARKONNEN] = SDL_LoadBMP_RW(pFileManager->openFile("MapEditorMirrorNone.bmp"),true);
-	SDL_SetColorKey(uiGraphic[UI_MapEditor_MirrorNoneIcon][HOUSE_HARKONNEN], SDL_SRCCOLORKEY | SDL_RLEACCEL, 0);
+	SDL_SetColorKey(uiGraphic[UI_MapEditor_MirrorNoneIcon][HOUSE_HARKONNEN], SDL_TRUE, 0);
     uiGraphic[UI_MapEditor_MirrorHorizontalIcon][HOUSE_HARKONNEN] = SDL_LoadBMP_RW(pFileManager->openFile("MapEditorMirrorHorizontal.bmp"),true);
-	SDL_SetColorKey(uiGraphic[UI_MapEditor_MirrorHorizontalIcon][HOUSE_HARKONNEN], SDL_SRCCOLORKEY | SDL_RLEACCEL, 0);
+	SDL_SetColorKey(uiGraphic[UI_MapEditor_MirrorHorizontalIcon][HOUSE_HARKONNEN], SDL_TRUE, 0);
     uiGraphic[UI_MapEditor_MirrorVerticalIcon][HOUSE_HARKONNEN] = SDL_LoadBMP_RW(pFileManager->openFile("MapEditorMirrorVertical.bmp"),true);
-	SDL_SetColorKey(uiGraphic[UI_MapEditor_MirrorVerticalIcon][HOUSE_HARKONNEN], SDL_SRCCOLORKEY | SDL_RLEACCEL, 0);
+	SDL_SetColorKey(uiGraphic[UI_MapEditor_MirrorVerticalIcon][HOUSE_HARKONNEN], SDL_TRUE, 0);
     uiGraphic[UI_MapEditor_MirrorBothIcon][HOUSE_HARKONNEN] = SDL_LoadBMP_RW(pFileManager->openFile("MapEditorMirrorBoth.bmp"),true);
-	SDL_SetColorKey(uiGraphic[UI_MapEditor_MirrorBothIcon][HOUSE_HARKONNEN], SDL_SRCCOLORKEY | SDL_RLEACCEL, 0);
+	SDL_SetColorKey(uiGraphic[UI_MapEditor_MirrorBothIcon][HOUSE_HARKONNEN], SDL_TRUE, 0);
     uiGraphic[UI_MapEditor_MirrorPointIcon][HOUSE_HARKONNEN] = SDL_LoadBMP_RW(pFileManager->openFile("MapEditorMirrorPoint.bmp"),true);
-	SDL_SetColorKey(uiGraphic[UI_MapEditor_MirrorPointIcon][HOUSE_HARKONNEN], SDL_SRCCOLORKEY | SDL_RLEACCEL, 0);
+	SDL_SetColorKey(uiGraphic[UI_MapEditor_MirrorPointIcon][HOUSE_HARKONNEN], SDL_TRUE, 0);
     uiGraphic[UI_MapEditor_ArrowUp][HOUSE_HARKONNEN] = SDL_LoadBMP_RW(pFileManager->openFile("MapEditorArrowUp.bmp"),true);
-	SDL_SetColorKey(uiGraphic[UI_MapEditor_ArrowUp][HOUSE_HARKONNEN], SDL_SRCCOLORKEY | SDL_RLEACCEL, 0);
+	SDL_SetColorKey(uiGraphic[UI_MapEditor_ArrowUp][HOUSE_HARKONNEN], SDL_TRUE, 0);
 	uiGraphic[UI_MapEditor_ArrowUp_Active][HOUSE_HARKONNEN] = mapSurfaceColorRange(uiGraphic[UI_MapEditor_ArrowUp][HOUSE_HARKONNEN], PALCOLOR_HARKONNEN, PALCOLOR_HARKONNEN-3);
     uiGraphic[UI_MapEditor_ArrowDown][HOUSE_HARKONNEN] = SDL_LoadBMP_RW(pFileManager->openFile("MapEditorArrowDown.bmp"),true);
-	SDL_SetColorKey(uiGraphic[UI_MapEditor_ArrowDown][HOUSE_HARKONNEN], SDL_SRCCOLORKEY | SDL_RLEACCEL, 0);
+	SDL_SetColorKey(uiGraphic[UI_MapEditor_ArrowDown][HOUSE_HARKONNEN], SDL_TRUE, 0);
 	uiGraphic[UI_MapEditor_ArrowDown_Active][HOUSE_HARKONNEN] = mapSurfaceColorRange(uiGraphic[UI_MapEditor_ArrowDown][HOUSE_HARKONNEN], PALCOLOR_HARKONNEN, PALCOLOR_HARKONNEN-3);
     uiGraphic[UI_MapEditor_Plus][HOUSE_HARKONNEN] = SDL_LoadBMP_RW(pFileManager->openFile("MapEditorPlus.bmp"),true);
-	SDL_SetColorKey(uiGraphic[UI_MapEditor_Plus][HOUSE_HARKONNEN], SDL_SRCCOLORKEY | SDL_RLEACCEL, 0);
+	SDL_SetColorKey(uiGraphic[UI_MapEditor_Plus][HOUSE_HARKONNEN], SDL_TRUE, 0);
 	uiGraphic[UI_MapEditor_Plus_Active][HOUSE_HARKONNEN] = mapSurfaceColorRange(uiGraphic[UI_MapEditor_Plus][HOUSE_HARKONNEN], PALCOLOR_HARKONNEN, PALCOLOR_HARKONNEN-3);
     uiGraphic[UI_MapEditor_Minus][HOUSE_HARKONNEN] = SDL_LoadBMP_RW(pFileManager->openFile("MapEditorMinus.bmp"),true);
-	SDL_SetColorKey(uiGraphic[UI_MapEditor_Minus][HOUSE_HARKONNEN], SDL_SRCCOLORKEY | SDL_RLEACCEL, 0);
+	SDL_SetColorKey(uiGraphic[UI_MapEditor_Minus][HOUSE_HARKONNEN], SDL_TRUE, 0);
 	uiGraphic[UI_MapEditor_Minus_Active][HOUSE_HARKONNEN] = mapSurfaceColorRange(uiGraphic[UI_MapEditor_Minus][HOUSE_HARKONNEN], PALCOLOR_HARKONNEN, PALCOLOR_HARKONNEN-3);
     uiGraphic[UI_MapEditor_RotateLeftIcon][HOUSE_HARKONNEN] = SDL_LoadBMP_RW(pFileManager->openFile("MapEditorRotateLeft.bmp"),true);
-	SDL_SetColorKey(uiGraphic[UI_MapEditor_RotateLeftIcon][HOUSE_HARKONNEN], SDL_SRCCOLORKEY | SDL_RLEACCEL, 0);
+	SDL_SetColorKey(uiGraphic[UI_MapEditor_RotateLeftIcon][HOUSE_HARKONNEN], SDL_TRUE, 0);
     uiGraphic[UI_MapEditor_RotateLeftHighlightIcon][HOUSE_HARKONNEN] = mapSurfaceColorRange(uiGraphic[UI_MapEditor_RotateLeftIcon][HOUSE_HARKONNEN], PALCOLOR_HARKONNEN, PALCOLOR_HARKONNEN-3);
-	SDL_SetColorKey(uiGraphic[UI_MapEditor_RotateLeftHighlightIcon][HOUSE_HARKONNEN], SDL_SRCCOLORKEY | SDL_RLEACCEL, 0);
+	SDL_SetColorKey(uiGraphic[UI_MapEditor_RotateLeftHighlightIcon][HOUSE_HARKONNEN], SDL_TRUE, 0);
     uiGraphic[UI_MapEditor_RotateRightIcon][HOUSE_HARKONNEN] = SDL_LoadBMP_RW(pFileManager->openFile("MapEditorRotateRight.bmp"),true);
-	SDL_SetColorKey(uiGraphic[UI_MapEditor_RotateRightIcon][HOUSE_HARKONNEN], SDL_SRCCOLORKEY | SDL_RLEACCEL, 0);
+	SDL_SetColorKey(uiGraphic[UI_MapEditor_RotateRightIcon][HOUSE_HARKONNEN], SDL_TRUE, 0);
 	uiGraphic[UI_MapEditor_RotateRightHighlightIcon][HOUSE_HARKONNEN] = mapSurfaceColorRange(uiGraphic[UI_MapEditor_RotateRightIcon][HOUSE_HARKONNEN], PALCOLOR_HARKONNEN, PALCOLOR_HARKONNEN-3);
-	SDL_SetColorKey(uiGraphic[UI_MapEditor_RotateRightHighlightIcon][HOUSE_HARKONNEN], SDL_SRCCOLORKEY | SDL_RLEACCEL, 0);
+	SDL_SetColorKey(uiGraphic[UI_MapEditor_RotateRightHighlightIcon][HOUSE_HARKONNEN], SDL_TRUE, 0);
 
 	uiGraphic[UI_MapEditor_Sand][HOUSE_HARKONNEN] = Scaler::defaultDoubleSurface(icon->getPicture(127),true);
 	uiGraphic[UI_MapEditor_Dunes][HOUSE_HARKONNEN] = Scaler::defaultDoubleSurface(icon->getPicture(159),true);
@@ -829,7 +829,7 @@ GFXManager::GFXManager() {
 	uiGraphic[UI_MapEditor_ConstructionYard][HOUSE_HARKONNEN] = getSubPicture(objPic[ObjPic_ConstructionYard][HOUSE_HARKONNEN][0],2*2*D2_TILESIZE,0,2*D2_TILESIZE,2*D2_TILESIZE);
 	uiGraphic[UI_MapEditor_Windtrap][HOUSE_HARKONNEN] = getSubPicture(objPic[ObjPic_Windtrap][HOUSE_HARKONNEN][0],2*2*D2_TILESIZE,0,2*D2_TILESIZE,2*D2_TILESIZE);
 	SDL_Color windtrapColor = { 70, 70, 70, 255};
-    SDL_SetPalette(uiGraphic[UI_MapEditor_Windtrap][HOUSE_HARKONNEN], SDL_LOGPAL, &windtrapColor, PALCOLOR_WINDTRAP_COLORCYCLE, 1);
+    SDL_SetPaletteColors(uiGraphic[UI_MapEditor_Windtrap][HOUSE_HARKONNEN]->format->palette, &windtrapColor, PALCOLOR_WINDTRAP_COLORCYCLE, 1);
 	uiGraphic[UI_MapEditor_Radar][HOUSE_HARKONNEN] = getSubPicture(objPic[ObjPic_Radar][HOUSE_HARKONNEN][0],2*2*D2_TILESIZE,0,2*D2_TILESIZE,2*D2_TILESIZE);
 	uiGraphic[UI_MapEditor_Silo][HOUSE_HARKONNEN] = getSubPicture(objPic[ObjPic_Silo][HOUSE_HARKONNEN][0],2*2*D2_TILESIZE,0,2*D2_TILESIZE,2*D2_TILESIZE);
 	uiGraphic[UI_MapEditor_IX][HOUSE_HARKONNEN] = getSubPicture(objPic[ObjPic_IX][HOUSE_HARKONNEN][0],2*2*D2_TILESIZE,0,2*D2_TILESIZE,2*D2_TILESIZE);
@@ -877,11 +877,11 @@ GFXManager::GFXManager() {
     uiGraphic[UI_MapEditor_Ornithopter][HOUSE_HARKONNEN] = getSubFrame(objPic[ObjPic_Ornithopter][HOUSE_HARKONNEN][0],0,0,8,3);
 
     uiGraphic[UI_MapEditor_Pen1x1][HOUSE_HARKONNEN] = SDL_LoadBMP_RW(pFileManager->openFile("MapEditorPen1x1.bmp"),true);
-	SDL_SetColorKey(uiGraphic[UI_MapEditor_Pen1x1][HOUSE_HARKONNEN], SDL_SRCCOLORKEY | SDL_RLEACCEL, 0);
+	SDL_SetColorKey(uiGraphic[UI_MapEditor_Pen1x1][HOUSE_HARKONNEN], SDL_TRUE, 0);
     uiGraphic[UI_MapEditor_Pen3x3][HOUSE_HARKONNEN] = SDL_LoadBMP_RW(pFileManager->openFile("MapEditorPen3x3.bmp"),true);
-	SDL_SetColorKey(uiGraphic[UI_MapEditor_Pen3x3][HOUSE_HARKONNEN], SDL_SRCCOLORKEY | SDL_RLEACCEL, 0);
+	SDL_SetColorKey(uiGraphic[UI_MapEditor_Pen3x3][HOUSE_HARKONNEN], SDL_TRUE, 0);
     uiGraphic[UI_MapEditor_Pen5x5][HOUSE_HARKONNEN] = SDL_LoadBMP_RW(pFileManager->openFile("MapEditorPen5x5.bmp"),true);
-	SDL_SetColorKey(uiGraphic[UI_MapEditor_Pen5x5][HOUSE_HARKONNEN], SDL_SRCCOLORKEY | SDL_RLEACCEL, 0);
+	SDL_SetColorKey(uiGraphic[UI_MapEditor_Pen5x5][HOUSE_HARKONNEN], SDL_TRUE, 0);
 
 
 
@@ -937,23 +937,23 @@ GFXManager::GFXManager() {
 	// load map choice pieces
 	for(int i = 0; i < NUM_MAPCHOICEPIECES; i++) {
 		mapChoicePieces[i][HOUSE_HARKONNEN] = Scaler::doubleSurfaceNN(pieces->getPicture(i));
-		SDL_SetColorKey(mapChoicePieces[i][HOUSE_HARKONNEN], SDL_SRCCOLORKEY | SDL_RLEACCEL, 0);
+		SDL_SetColorKey(mapChoicePieces[i][HOUSE_HARKONNEN], SDL_TRUE, 0);
 	}
 
     // pBackgroundSurface is separate as we never draw it but use it to construct other sprites
     SDL_Surface* tmp = PicFactory->createBackground();
-    if((pBackgroundSurface = SDL_DisplayFormat(tmp)) == NULL) {
-        fprintf(stderr,"GFXManager: SDL_DisplayFormat() failed!\n");
+    if((pBackgroundSurface = SDL_ConvertSurface(tmp, screen->format, 0)) == NULL) {
+        fprintf(stderr,"GFXManager: SDL_ConvertSurface() failed!\n");
         exit(EXIT_FAILURE);
     }
     SDL_FreeSurface(tmp);
 
 	// Create alpha blending surfaces (128x128 pixel)
-	pTransparent40Surface = SDL_CreateRGBSurface(SDL_HWSURFACE, 128, 128, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK);
-    SDL_SetAlpha(pTransparent40Surface, SDL_SRCALPHA, 40);
+	pTransparent40Surface = SDL_CreateRGBSurface(0, 128, 128, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK);
+    SDL_SetSurfaceAlphaMod(pTransparent40Surface, 40);
 
-	pTransparent150Surface = SDL_CreateRGBSurface(SDL_HWSURFACE, 128, 128, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK);
-    SDL_SetAlpha(pTransparent150Surface, SDL_SRCALPHA, 150);
+	pTransparent150Surface = SDL_CreateRGBSurface(0, 128, 128, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK);
+    SDL_SetSurfaceAlphaMod(pTransparent150Surface, 150);
 }
 
 GFXManager::~GFXManager() {
@@ -1040,7 +1040,7 @@ SDL_Surface** GFXManager::getObjPic(unsigned int id, int house) {
                 // Windtrap uses palette animation on PALCOLOR_WINDTRAP_COLORCYCLE; fake this
                 objPicTex[id][house][z] = generateWindtrapAnimationFrames(objPic[id][house][z]);
             } else {
-                if((objPicTex[id][house][z] = SDL_DisplayFormatAlpha(objPic[id][house][z])) == NULL) {
+                if((objPicTex[id][house][z] = SDL_ConvertSurface(objPic[id][house][z], screen->format, 0)) == NULL) {
                     fprintf(stderr,"GFXManager::getObjPic(): Converting to display format failed!\n");
                     exit(EXIT_FAILURE);
                 }
@@ -1091,7 +1091,7 @@ SDL_Surface* GFXManager::getUIGraphic(unsigned int id, int house) {
         if(id >= UI_MapChoiceArrow_None && id <= UI_MapChoiceArrow_Left) {
             uiGraphicTex[id][house] = generateMapChoiceArrrowFrames(pSurface, house);
         } else {
-            uiGraphicTex[id][house] = SDL_DisplayFormatAlpha(pSurface);
+            uiGraphicTex[id][house] = SDL_ConvertSurface(pSurface, screen->format, 0);
             if(uiGraphicTex[id][house] == NULL) {
                 fprintf(stderr,"GFXManager::getUIGraphic(): Converting to display format failed!\n");
                 exit(EXIT_FAILURE);
@@ -1128,7 +1128,7 @@ SDL_Surface* GFXManager::getMapChoicePiece(unsigned int num, int house) {
 	}
 
 	if(mapChoicePiecesTex[num][house] == NULL) {
-		mapChoicePiecesTex[num][house] = SDL_DisplayFormatAlpha(getMapChoicePieceSurface(num, house));
+		mapChoicePiecesTex[num][house] = SDL_ConvertSurface(getMapChoicePieceSurface(num, house), screen->format, 0);
         if(mapChoicePiecesTex[num][house] == NULL) {
             fprintf(stderr,"GFXManager::getMapChoicePiece(): Converting to display format failed!\n");
             exit(EXIT_FAILURE);
@@ -1290,7 +1290,7 @@ SDL_Surface* GFXManager::extractSmallDetailPic(std::string filename) {
 	SDL_Surface* pSurface;
 
 	// create new picture surface
-	if((pSurface = SDL_CreateRGBSurface(SDL_HWSURFACE, 91, 55, 8, 0, 0, 0, 0)) == NULL) {
+	if((pSurface = SDL_CreateRGBSurface(0, 91, 55, 8, 0, 0, 0, 0)) == NULL) {
 		fprintf(stderr,"GFXManager::ExtractSmallDetailPic: Cannot create new Picture for %s!\n",filename.c_str());
 		exit(EXIT_FAILURE);
 	}
@@ -1314,7 +1314,7 @@ SDL_Surface* GFXManager::extractSmallDetailPic(std::string filename) {
 	delete myWsafile;
 	SDL_RWclose(myFile);
 
-	SDL_Surface* pTexture = SDL_DisplayFormatAlpha(pSurface);
+	SDL_Surface* pTexture = SDL_ConvertSurface(pSurface, screen->format, 0);
     if(pTexture == NULL) {
         fprintf(stderr,"GFXManager::extractSmallDetailPic() SDL_DisplayFormatAlpha() failed!\n");
         exit(EXIT_FAILURE);
@@ -1344,7 +1344,7 @@ SDL_Surface* GFXManager::generateWindtrapAnimationFrames(SDL_Surface* windtrapPi
     int windtrapSize = windtrapPic->h;
     int sizeX = NUM_WINDTRAP_ANIMATIONS_PER_ROW*windtrapSize;
     int sizeY = ((2+NUM_WINDTRAP_ANIMATIONS+NUM_WINDTRAP_ANIMATIONS_PER_ROW-1)/NUM_WINDTRAP_ANIMATIONS_PER_ROW)*windtrapSize;
-    SDL_Surface* returnPic = SDL_CreateRGBSurface(SDL_HWSURFACE, sizeX, sizeY, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK);
+    SDL_Surface* returnPic = SDL_CreateRGBSurface(0, sizeX, sizeY, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK);
 
     // copy building phase
     SDL_Rect src = { 0, 0, 2*windtrapSize, windtrapSize};
@@ -1370,7 +1370,7 @@ SDL_Surface* GFXManager::generateWindtrapAnimationFrames(SDL_Surface* windtrapPi
             windtrapColor.g = static_cast<Uint8>(std::max(0, 80-val));
             windtrapColor.b = static_cast<Uint8>(std::max(0, 255-val));
         }
-        SDL_SetPalette(windtrapPic, SDL_LOGPAL, &windtrapColor, PALCOLOR_WINDTRAP_COLORCYCLE, 1);
+        SDL_SetPaletteColors(windtrapPic->format->palette, &windtrapColor, PALCOLOR_WINDTRAP_COLORCYCLE, 1);
 
         SDL_BlitSurface(windtrapPic, &src, returnPic, &dest);
 
@@ -1384,13 +1384,13 @@ SDL_Surface* GFXManager::generateWindtrapAnimationFrames(SDL_Surface* windtrapPi
 
 
 SDL_Surface* GFXManager::generateMapChoiceArrrowFrames(SDL_Surface* arrowPic, int house) {
-    SDL_Surface* returnPic = SDL_CreateRGBSurface(SDL_HWSURFACE, arrowPic->w*4, arrowPic->h, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK);
+    SDL_Surface* returnPic = SDL_CreateRGBSurface(0, arrowPic->w*4, arrowPic->h, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK);
 
     SDL_Rect dest = {0, 0, arrowPic->w, arrowPic->h};
 
     for(int i = 0; i < 4; i++) {
         for(int k = 0; k < 4; k++) {
-            SDL_SetPalette(arrowPic, SDL_LOGPAL, &palette[houseToPaletteIndex[house]+((i+k)%4)], 251+k, 1);
+            SDL_SetPaletteColors(arrowPic->format->palette, &palette[houseToPaletteIndex[house]+((i+k)%4)], 251+k, 1);
         }
 
         SDL_BlitSurface(arrowPic, NULL, returnPic, &dest);

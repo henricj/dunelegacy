@@ -229,7 +229,7 @@ SDL_Surface* Icnfile::getPicture(Uint32 indexOfFile) {
 	unsigned char * filestart = SSET + (indexOfFile * ((SIZE_X * SIZE_Y)/2));
 
 	// create new picture surface
-	if((pic = SDL_CreateRGBSurface(SDL_HWSURFACE,SIZE_X,SIZE_Y,8,0,0,0,0))== NULL) {
+	if((pic = SDL_CreateRGBSurface(0,SIZE_X,SIZE_Y,8,0,0,0,0))== NULL) {
 		return NULL;
 	}
 
@@ -349,7 +349,7 @@ SDL_Surface* Icnfile::getPictureArray(Uint32 mapfileIndex, int tilesX, int tiles
 	}
 
 	// create new picture surface
-	if((pic = SDL_CreateRGBSurface(SDL_HWSURFACE,SIZE_X*tilesX*tilesN,SIZE_Y*tilesY,8,0,0,0,0))== NULL) {
+	if((pic = SDL_CreateRGBSurface(0,SIZE_X*tilesX*tilesN,SIZE_Y*tilesY,8,0,0,0,0))== NULL) {
 		return NULL;
 	}
 
@@ -416,7 +416,7 @@ SDL_Surface* Icnfile::getPictureRow(Uint32 startIndex, Uint32 endIndex) {
 
 	Uint32 numTiles = endIndex - startIndex + 1;
 	// create new picture surface
-	if((pic = SDL_CreateRGBSurface(SDL_HWSURFACE,SIZE_X*numTiles,SIZE_Y,8,0,0,0,0))== NULL) {
+	if((pic = SDL_CreateRGBSurface(0,SIZE_X*numTiles,SIZE_Y,8,0,0,0,0))== NULL) {
 		return NULL;
 	}
 
@@ -469,7 +469,7 @@ SDL_Surface* Icnfile::getPictureRow2(unsigned int numTiles, ...) {
 	SDL_Surface * pic;
 
 	// create new picture surface
-	if((pic = SDL_CreateRGBSurface(SDL_HWSURFACE,SIZE_X*numTiles,SIZE_Y,8,0,0,0,0))== NULL) {
+	if((pic = SDL_CreateRGBSurface(0,SIZE_X*numTiles,SIZE_Y,8,0,0,0,0))== NULL) {
 		return NULL;
 	}
 

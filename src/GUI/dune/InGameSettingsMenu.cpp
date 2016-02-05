@@ -129,13 +129,13 @@ bool InGameSettingsMenu::handleKeyPress(SDL_KeyboardEvent& key) {
 	switch( key.keysym.sym ) {
 		case SDLK_RETURN:
             if(SDL_GetModState() & KMOD_ALT) {
-                SDL_WM_ToggleFullScreen(screen);
+                SDL_SetWindowFullscreen(window, (SDL_GetWindowFlags(window) ^ SDL_WINDOW_FULLSCREEN_DESKTOP));
             }
             break;
 
         case SDLK_TAB:
             if(SDL_GetModState() & KMOD_ALT) {
-                SDL_WM_IconifyWindow();
+                SDL_MinimizeWindow(window);
             }
             break;
 

@@ -5,6 +5,7 @@
 		<Option title="dunelegacy" />
 		<Option pch_mode="2" />
 		<Option compiler="gcc" />
+		<Option virtualFolders="src/structures/;" />
 		<Build>
 			<Target title="Release">
 				<Option output="../../data/dunelegacy" prefix_auto="1" extension_auto="1" />
@@ -25,7 +26,7 @@
 		<Compiler>
 			<Add option="-O3" />
 			<Add option="-Wall" />
-			<Add option="`sdl-config --cflags` -mfpmath=sse -msse" />
+			<Add option="`sdl2-config --cflags`" />
 			<Add directory="../../include" />
 		</Compiler>
 		<Linker>
@@ -539,7 +540,9 @@
 		<Unit filename="../../src/units/Quad.cpp" />
 		<Unit filename="../../src/units/RaiderTrike.cpp" />
 		<Unit filename="../../src/units/Saboteur.cpp" />
-		<Unit filename="../../src/units/SandWorm.cpp" />
+		<Unit filename="../../src/units/SandWorm.cpp">
+			<Option virtualFolder="src/structures/" />
+		</Unit>
 		<Unit filename="../../src/units/SiegeTank.cpp" />
 		<Unit filename="../../src/units/Soldier.cpp" />
 		<Unit filename="../../src/units/SonicTank.cpp" />

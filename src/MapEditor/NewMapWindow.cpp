@@ -350,7 +350,7 @@ void NewMapWindow::onMapPropertiesChanged() {
 SDL_Surface* NewMapWindow::createMinimapPicture(MapData& mapdata) {
     SDL_Surface* pMinimap;
     // create surface
-	if((pMinimap = SDL_CreateRGBSurface(SDL_HWSURFACE, 128, 128, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK)) == NULL) {
+	if((pMinimap = SDL_CreateRGBSurface(0, 128, 128, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK)) == NULL) {
 		return NULL;
 	}
 	SDL_FillRect(pMinimap, NULL, COLOR_BLACK);

@@ -54,7 +54,7 @@ MetaServerClient::MetaServerClient(std::string metaServerURL)
 		throw std::runtime_error("Unable to create mutex");
 	}
 
-	connectionThread = SDL_CreateThread(connectionThreadMain, (void*) this);
+	connectionThread = SDL_CreateThread(connectionThreadMain, NULL, (void*) this);
 	if(connectionThread == NULL) {
 		throw std::runtime_error("Unable to create thread");
 	}

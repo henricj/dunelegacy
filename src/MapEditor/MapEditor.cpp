@@ -987,7 +987,10 @@ void MapEditor::drawScreen() {
 	// Cursor
 	drawCursor();
 
-	SDL_Flip(screen);
+	SDL_RenderClear(renderer);
+	SDL_UpdateTexture(texture, NULL, screen->pixels, screen->pitch);
+	SDL_RenderCopy(renderer, texture, NULL, NULL);
+	SDL_RenderPresent(renderer);
 }
 
 void MapEditor::processInput() {
@@ -1012,13 +1015,13 @@ void MapEditor::processInput() {
 
                         case SDLK_RETURN: {
                             if(SDL_GetModState() & KMOD_ALT) {
-                                SDL_WM_ToggleFullScreen(screen);
+                                SDL_SetWindowFullscreen(window, (SDL_GetWindowFlags(window) ^ SDL_WINDOW_FULLSCREEN_DESKTOP));
                             }
                         } break;
 
                         case SDLK_TAB: {
                             if(SDL_GetModState() & KMOD_ALT) {
-                                SDL_WM_IconifyWindow();
+                                SDL_MinimizeWindow(window);
                             }
                         } break;
 
@@ -1049,7 +1052,7 @@ void MapEditor::processInput() {
                             }
                         } break;
 
-                        case SDLK_PRINT:
+                        case SDLK_PRINTSCREEN:
                         case SDLK_SYSREQ: {
                             saveMapshot();
                         } break;
@@ -1171,6 +1174,30 @@ void MapEditor::processInput() {
                     }
                 } break;
 
+                case SDL_MOUSEWHEEL: {
+                    if (event.wheel.y != 0) {
+                        int x, y;
+                        SDL_GetMouseState(&x, &y);
+                        if(screenborder->isScreenCoordInsideMap(x, y) == true) {
+                            //if mouse is not over side bar
+                            int xpos = screenborder->screen2MapX(x);
+                            int ypos = screenborder->screen2MapY(y);
+
+                            std::vector<Unit>::iterator uIter;
+                            for(uIter = units.begin(); uIter != units.end(); ++uIter) {
+                                Coord position = uIter->position;
+
+                                if((position.x == xpos) && (position.y == ypos)) {
+                                    pInterface->onUnitRotateLeft(uIter->id);
+                                    break;
+                                }
+                            }
+                        }
+
+                        pInterface->handleMouseWheel(event.wheel.x,event.wheel.y,(event.wheel.y > 0));
+                    }
+                } break;
+
                 case SDL_MOUSEBUTTONDOWN:
                 {
                     SDL_MouseButtonEvent* mouse = &event.button;
@@ -1204,45 +1231,6 @@ void MapEditor::processInput() {
                             }
                         } break;
 
-                        case SDL_BUTTON_WHEELUP: {
-                            if(screenborder->isScreenCoordInsideMap(mouse->x, mouse->y) == true) {
-                                //if mouse is not over side bar
-                                int xpos = screenborder->screen2MapX(mouse->x);
-                                int ypos = screenborder->screen2MapY(mouse->y);
-
-                                std::vector<Unit>::iterator uIter;
-                                for(uIter = units.begin(); uIter != units.end(); ++uIter) {
-                                    Coord position = uIter->position;
-
-                                    if((position.x == xpos) && (position.y == ypos)) {
-                                        pInterface->onUnitRotateLeft(uIter->id);
-                                        break;
-                                    }
-                                }
-                            }
-
-                            pInterface->handleMouseWheel(mouse->x, mouse->y,true);
-                        } break;
-
-                        case SDL_BUTTON_WHEELDOWN: {
-                            if(screenborder->isScreenCoordInsideMap(mouse->x, mouse->y) == true) {
-                                //if mouse is not over side bar
-                                int xpos = screenborder->screen2MapX(mouse->x);
-                                int ypos = screenborder->screen2MapY(mouse->y);
-
-                                std::vector<Unit>::iterator uIter;
-                                for(uIter = units.begin(); uIter != units.end(); ++uIter) {
-                                    Coord position = uIter->position;
-
-                                    if((position.x == xpos) && (position.y == ypos)) {
-                                        pInterface->onUnitRotateRight(uIter->id);
-                                        break;
-                                    }
-                                }
-                            }
-
-                            pInterface->handleMouseWheel(mouse->x, mouse->y,false);
-                        } break;
                     }
                 } break;
 
@@ -1334,12 +1322,12 @@ void MapEditor::processInput() {
 	    }
 	}
 
-    if((pInterface->hasChildWindow() == false) && (SDL_GetAppState() & SDL_APPMOUSEFOCUS)) {
-        Uint8 *keystate = SDL_GetKeyState(NULL);
-        scrollDownMode =  (drawnMouseY >= screen->h-1-SCROLLBORDER) || keystate[SDLK_DOWN];
-        scrollLeftMode = (drawnMouseX <= SCROLLBORDER) || keystate[SDLK_LEFT];
-        scrollRightMode = (drawnMouseX >= screen->w-1-SCROLLBORDER) || keystate[SDLK_RIGHT];
-        scrollUpMode = (drawnMouseY <= SCROLLBORDER) || keystate[SDLK_UP];
+    if((pInterface->hasChildWindow() == false) && (SDL_GetWindowFlags(window) & SDL_WINDOW_MOUSE_FOCUS)) {
+        const Uint8 *keystate = SDL_GetKeyboardState(NULL);
+        scrollDownMode =  (drawnMouseY >= screen->h-1-SCROLLBORDER) || keystate[SDL_SCANCODE_DOWN];
+        scrollLeftMode = (drawnMouseX <= SCROLLBORDER) || keystate[SDL_SCANCODE_LEFT];
+        scrollRightMode = (drawnMouseX >= screen->w-1-SCROLLBORDER) || keystate[SDL_SCANCODE_RIGHT];
+        scrollUpMode = (drawnMouseY <= SCROLLBORDER) || keystate[SDL_SCANCODE_UP];
 
         if(scrollLeftMode && scrollRightMode) {
             // do nothing
@@ -1366,7 +1354,7 @@ void MapEditor::processInput() {
 
 void MapEditor::drawCursor() {
 
-    if(!(SDL_GetAppState() & SDL_APPMOUSEFOCUS)) {
+    if(!(SDL_GetWindowFlags(window) & SDL_WINDOW_MOUSE_FOCUS)) {
         return;
     }
 
@@ -2061,7 +2049,7 @@ void MapEditor::saveMapshot() {
     int sizeY = world2zoomedWorld(map.getSizeY()*TILESIZE);
 
     SDL_Surface* pMapshotSurface = NULL;
-    if((pMapshotSurface = SDL_CreateRGBSurface(SDL_SWSURFACE, sizeX, sizeY, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK)) == NULL) {
+    if((pMapshotSurface = SDL_CreateRGBSurface(0, sizeX, sizeY, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK)) == NULL) {
         fprintf(stderr,"MapEditor::SaveMapshot: Cannot create new surface!\n");
         exit(EXIT_FAILURE);
     }

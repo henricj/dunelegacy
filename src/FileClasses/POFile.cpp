@@ -74,11 +74,11 @@ std::map<std::string, std::string> loadPOFile(SDL_RWops* rwop, bool freesrc, std
 
 		std::string completeLine;
 		unsigned char tmp;
-		int readbytes;
+		size_t readbytes;
 
 		while(1) {
 			readbytes = SDL_RWread(rwop,&tmp,1,1);
-			if(readbytes <= 0) {
+			if(readbytes == 0) {
 				bFinished = true;
 				break;
 			} else if(tmp == '\n') {
