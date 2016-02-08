@@ -30,6 +30,7 @@ TextEvent::TextEvent(std::string text, Uint32 color, int startFrame, int lengthI
     this->bCenterVertical = bCenterVertical;
     this->color = color;
     pSurface = pFontManager->createSurfaceWithMultilineText(text, color, FONT_STD24, true);
+    SDL_SetSurfaceBlendMode(pSurface, SDL_BLENDMODE_BLEND);
 }
 
 TextEvent::~TextEvent()
@@ -43,7 +44,7 @@ void TextEvent::draw(SDL_Surface* pScreen, int currentFrameNumber)
         return;
     }
 
-    int alpha = 0;
+    int alpha = 255;
     if((bFadeIn == false) && (currentFrameNumber == startFrame)) {
         alpha = 255;
     } else if(bFadeIn && (currentFrameNumber - startFrame <= TEXT_FADE_TIME)) {

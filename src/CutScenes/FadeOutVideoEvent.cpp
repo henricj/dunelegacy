@@ -17,10 +17,15 @@
 
 #include <CutScenes/FadeOutVideoEvent.h>
 #include <misc/Scaler.h>
+#include <Colors.h>
 
 FadeOutVideoEvent::FadeOutVideoEvent(SDL_Surface* pSurface, int numFrames2FadeOut, bool bFreeSurface, bool bCenterVertical, bool bFadeWhite) : VideoEvent()
 {
-    this->pSurface = Scaler::defaultDoubleSurface(pSurface, bFreeSurface);
+    SDL_Surface* tmp = Scaler::defaultDoubleSurface(pSurface, bFreeSurface);
+    this->pSurface = SDL_ConvertSurfaceFormat(tmp, SDL_PIXELFORMAT_ABGR8888, 0);
+    SDL_SetSurfaceBlendMode(this->pSurface, SDL_BLENDMODE_BLEND);
+    SDL_FreeSurface(tmp);
+
     this->numFrames2FadeOut = numFrames2FadeOut;
     this->bFreeSurface = bFreeSurface;
     this->bCenterVertical = bCenterVertical;
@@ -39,13 +44,10 @@ int FadeOutVideoEvent::draw(SDL_Surface* pScreen)
                         static_cast<Sint16>(bCenterVertical ? (pScreen->h - pSurface->h) / 2 : 0),
                         static_cast<Uint16>(pSurface->w),
                         static_cast<Uint16>(pSurface->h) };
-    int alpha  = 0;
-    if(bFadeWhite == false) {
-        // fade to black
-        alpha = 255 - 255*currentFrame/numFrames2FadeOut;
-    } else {
+    int alpha  = std::max(0, 255 - (255*currentFrame)/numFrames2FadeOut);
+    if(bFadeWhite) {
         // fade to white
-        alpha = 255*currentFrame/numFrames2FadeOut;
+        SDL_FillRect(pScreen, &dest, COLOR_WHITE);
     }
     SDL_SetSurfaceAlphaMod(pSurface, alpha);
     SDL_BlitSurface(pSurface,NULL,pScreen,&dest);

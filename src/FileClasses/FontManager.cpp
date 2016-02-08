@@ -73,6 +73,7 @@ SDL_Surface* FontManager::createSurfaceWithText(std::string text, Uint32 color, 
         return NULL;
     }
 
+    SDL_SetSurfaceBlendMode(pic, SDL_BLENDMODE_NONE);
     SDL_FillRect(pic, NULL, COLOR_INVALID);
     SDL_SetColorKey(pic, SDL_TRUE, COLOR_INVALID);
 
@@ -110,6 +111,7 @@ SDL_Surface* FontManager::createSurfaceWithMultilineText(std::string text, Uint3
         return NULL;
     }
 
+    SDL_SetSurfaceBlendMode(pic, SDL_BLENDMODE_NONE);
     SDL_FillRect(pic, NULL, COLOR_INVALID);
     SDL_SetColorKey(pic, SDL_TRUE, COLOR_INVALID);
 

@@ -21,7 +21,11 @@
 
 FadeInVideoEvent::FadeInVideoEvent(SDL_Surface* pSurface, int numFrames2FadeIn, bool bFreeSurface, bool bCenterVertical, bool bFadeWhite) : VideoEvent()
 {
-    this->pSurface = Scaler::defaultDoubleSurface(pSurface, bFreeSurface);
+    SDL_Surface* tmp = Scaler::defaultDoubleSurface(pSurface, bFreeSurface);
+    this->pSurface = SDL_ConvertSurfaceFormat(tmp, SDL_PIXELFORMAT_ABGR8888, 0);
+    SDL_SetSurfaceBlendMode(this->pSurface, SDL_BLENDMODE_BLEND);
+    SDL_FreeSurface(tmp);
+
     this->numFrames2FadeIn = numFrames2FadeIn;
     this->bFreeSurface = bFreeSurface;
     this->bCenterVertical = bCenterVertical;
@@ -41,10 +45,10 @@ int FadeInVideoEvent::draw(SDL_Surface* pScreen)
                         static_cast<Uint16>(pSurface->w),
                         static_cast<Uint16>(pSurface->h) };
 
-    int alpha  = 255*currentFrame/numFrames2FadeIn;
-    if(bFadeWhite == true) {
+    int alpha  = std::min(255, (255*currentFrame)/numFrames2FadeIn);
+    if(bFadeWhite) {
         // fade from white
-        SDL_FillRect(pSurface,&dest, COLOR_WHITE);
+        SDL_FillRect(pScreen, &dest, COLOR_WHITE);
     }
     SDL_SetSurfaceAlphaMod(pSurface, alpha);
     SDL_BlitSurface(pSurface,NULL,pScreen,&dest);
