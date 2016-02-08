@@ -257,6 +257,10 @@ public:
 		} else if((key.keysym.sym <= 0xFF) && (key.keysym.sym != 0) && ((maxTextLength < 0) || ((int) text.length() < maxTextLength))) {
 		    char newChar = (char) key.keysym.sym;
 
+		    if((key.keysym.mod & KMOD_LSHIFT) || (key.keysym.mod & KMOD_RSHIFT)) {
+                newChar = std::toupper(newChar);
+            }
+
 		    if(allowedChars.empty() || allowedChars.find(newChar) != std::string::npos) {
                 text += newChar;
 

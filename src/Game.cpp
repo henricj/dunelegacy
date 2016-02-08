@@ -2015,7 +2015,11 @@ void Game::handleChatInput(SDL_KeyboardEvent& keyboardEvent) {
         }
     } else if(typingChatMessage.length() < 60)	{
         if((keyboardEvent.keysym.sym <= 0xFF) && (keyboardEvent.keysym.sym > 0)) {
-            typingChatMessage += keyboardEvent.keysym.sym;
+            if((keyboardEvent.keysym.mod & KMOD_LSHIFT) || (keyboardEvent.keysym.mod & KMOD_RSHIFT)) {
+                typingChatMessage += std::toupper(keyboardEvent.keysym.sym);
+            } else {
+                typingChatMessage += keyboardEvent.keysym.sym;
+            }
         } else {
             // TODO
         }
