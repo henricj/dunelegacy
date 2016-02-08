@@ -90,36 +90,28 @@ void setVideoMode()
 		videoFlags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
 	}
 
-	settings.video.width = 800;
-    settings.video.height = 600;
+    SDL_DisplayMode targetDisplayMode = { 0, settings.video.width, settings.video.height, 0, NULL};
+    SDL_DisplayMode closestDisplayMode;
 
-//    if(SDL_VideoModeOK(settings.video.width, settings.video.height, SCREEN_BPP, videoFlags) == 0) {
-//        // should always work
-//        fprintf(stderr, "WARNING: Falling back to 640x480!\n");
-//        settings.video.width = 640;
-//        settings.video.height = 480;
-//
-//        if(SDL_VideoModeOK(settings.video.width, settings.video.height, SCREEN_BPP, videoFlags) == 0) {
-//            // OK, now we switch double buffering, hw-surface and fullscreen off
-//            fprintf(stderr, "WARNING: Turning off double buffering, hw-surface and fullscreen!\n");
-//            settings.video.doubleBuffering = false;
-//            settings.video.fullscreen = false;
-//            videoFlags = 0;
-//        }
-//    }
+    if(SDL_GetClosestDisplayMode(SCREEN_DISPLAYINDEX, &targetDisplayMode, &closestDisplayMode) == NULL) {
+        fprintf(stderr, "WARNING: Falling back to 640x480!\n");
+        settings.video.width = 640;
+        settings.video.height = 480;
+    } else {
+        settings.video.width = closestDisplayMode.w;
+        settings.video.height = closestDisplayMode.h;
+    }
 
-    // TODO: Allow different resolutions
-//	screen = SDL_SetVideoMode(settings.video.width, settings.video.height, SCREEN_BPP, videoFlags);
 	window = SDL_CreateWindow("Dune Legacy",
 	                          SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
 	                          //settings.video.width, settings.video.height,
-	                          800, 600,
+	                          settings.video.width, settings.video.height,
 	                          videoFlags);
 	renderer = SDL_CreateRenderer(window, -1, 0);
-	SDL_RenderSetLogicalSize(renderer, 800, 600);
-	texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_ARGB8888,
-	                            SDL_TEXTUREACCESS_STREAMING, 800, 600);
-	screen = SDL_CreateRGBSurface(0, 800, 600, 32, 0x00ff0000, 0x0000ff00, 0x000000ff, 0);
+	SDL_RenderSetLogicalSize(renderer, settings.video.width, settings.video.height);
+	texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_ABGR8888,
+	                            SDL_TEXTUREACCESS_STREAMING, settings.video.width, settings.video.height);
+	screen = SDL_CreateRGBSurface(0, settings.video.width, settings.video.height, SCREEN_BPP, RMASK, GMASK, BMASK, 0);
 	if(screen) {
 		SDL_ShowCursor(SDL_DISABLE);
     } else {
@@ -550,10 +542,13 @@ int main(int argc, char *argv[]) {
         }
 
 		if(bFirstGamestart == true && bFirstInit == true) {
-            // detect 800x600 screen resolution
-//TODO            if(SDL_VideoModeOK(800, 600, SCREEN_BPP, SDL_FULLSCREEN) > 0) {
-                settings.video.width = 800;
-                settings.video.height = 600;
+            // find screen resolution bigger or equal to 800x600 (otherwise use 640x480)
+            SDL_DisplayMode targetDisplayMode = { 0, 800, 600, 0, NULL};
+            SDL_DisplayMode closestDisplayMode;
+
+            if(SDL_GetClosestDisplayMode(SCREEN_DISPLAYINDEX, &targetDisplayMode, &closestDisplayMode) != NULL) {
+                settings.video.width = closestDisplayMode.w;
+                settings.video.height = closestDisplayMode.h;
                 settings.video.preferredZoomLevel = 1;
 
                 myINIFile.setIntValue("Video","Width",settings.video.width);
@@ -561,7 +556,7 @@ int main(int argc, char *argv[]) {
                 myINIFile.setIntValue("Video","Preferred Zoom Level",1);
 
                 myINIFile.saveChangesTo(getConfigFilepath());
-//            }
+            }
 		}
 
         Scaler::setDefaultScaler(Scaler::getScalerByName(settings.video.scaler));
@@ -588,7 +583,6 @@ int main(int argc, char *argv[]) {
             palette = LoadPalette_RW(pFileManager->openFile("IBM.PAL"), true);
         }
 
-		screen = NULL;
 		setVideoMode();
 
 
@@ -675,6 +669,12 @@ int main(int argc, char *argv[]) {
 
 		delete pFontManager;
 		delete pFileManager;
+
+        SDL_FreeSurface(screen);
+        SDL_DestroyTexture(texture);
+        SDL_DestroyRenderer(renderer);
+        SDL_DestroyWindow(window);
+
 		if(bExitGame == true) {
 			SDL_Quit();
 		}
