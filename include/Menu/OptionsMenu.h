@@ -85,7 +85,6 @@ private:
 	DropDownBox scalerDropDownBox;
 	HBox        videoHBox;
 	Checkbox	fullScreenCheckbox;
-	Checkbox	doubleBufferingCheckbox;
 
 	HBox        audioHBox;
 	Checkbox    playSFXCheckbox;

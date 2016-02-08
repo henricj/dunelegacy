@@ -292,7 +292,7 @@ SDL_Surface* getSubPicture(SDL_Surface* Pic, int left, int top, int width, int h
         }
 	}
 
-	SDL_Rect srcRect = {static_cast<Sint16>(left),static_cast<Sint16>(top),static_cast<Uint16>(width),static_cast<Uint16>(height)};
+	SDL_Rect srcRect = {left,top,width,height};
 	SDL_BlitSurface(Pic,&srcRect,returnPic,NULL);
 
 	return returnPic;

@@ -81,11 +81,6 @@ void setVideoMode()
 {
 	int videoFlags = 0;
 
-	// TODO: Remove settings.video.doubleBuffering
-//	if(settings.video.doubleBuffering) {
-//		videoFlags |= SDL_HWSURFACE | SDL_DOUBLEBUF;
-//	}
-
 	if(settings.video.fullscreen) {
 		videoFlags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
 	}
@@ -162,7 +157,6 @@ void createDefaultConfigFile(std::string configfilepath, std::string language) {
 								"Width = 640\n"
 								"Height = 480\n"
 								"Fullscreen = false\n"
-								"Double Buffering = true\n"
 								"FrameLimit = true\t\t\t# Limit the frame rate to save energy\n"
 								"Preferred Zoom Level = 0\t\t# 0 = no zooming, 1 = 2x, 2 = 3x\n"
 								"Scaler = Scale2x\t\t\t# Scaler to use: ScaleNN = nearest neighbour, Scale2x = smooth edges\n"
@@ -472,7 +466,6 @@ int main(int argc, char *argv[]) {
 		settings.video.width = myINIFile.getIntValue("Video","Width",640);
 		settings.video.height = myINIFile.getIntValue("Video","Height",480);
 		settings.video.fullscreen = myINIFile.getBoolValue("Video","Fullscreen",false);
-		settings.video.doubleBuffering = myINIFile.getBoolValue("Video","Double Buffering",true);
 		settings.video.frameLimit = myINIFile.getBoolValue("Video","FrameLimit",true);
 		settings.video.preferredZoomLevel = myINIFile.getIntValue("Video","Preferred Zoom Level", 0);
 		settings.video.scaler = myINIFile.getStringValue("Video","Scaler", "scale2x");

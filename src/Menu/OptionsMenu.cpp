@@ -173,10 +173,7 @@ OptionsMenu::OptionsMenu() : MenuBase()
     fullScreenCheckbox.setChecked(settings.video.fullscreen);
     fullScreenCheckbox.setOnClick(std::bind(&OptionsMenu::onChangeOption, this, true));
     videoHBox.addWidget(&fullScreenCheckbox, 240);
-    doubleBufferingCheckbox.setText(_("Double Buffering"));
-    doubleBufferingCheckbox.setChecked(settings.video.doubleBuffering);
-    doubleBufferingCheckbox.setOnClick(std::bind(&OptionsMenu::onChangeOption, this, true));
-    videoHBox.addWidget(&doubleBufferingCheckbox, 240);
+    videoHBox.addWidget(HSpacer::create(240));
     videoHBox.addWidget(Spacer::create(), 0.5);
 
     mainVBox.addWidget(&videoHBox, 0.01);
@@ -265,7 +262,6 @@ void OptionsMenu::onChangeOption(bool bInteractive) {
     }
     bChanged |= (settings.video.preferredZoomLevel != zoomlevelDropDownBox.getSelectedEntryIntData());
     bChanged |= (settings.video.fullscreen != fullScreenCheckbox.isChecked());
-    bChanged |= (settings.video.doubleBuffering != doubleBufferingCheckbox.isChecked());
     bChanged |= (settings.video.scaler != scalerDropDownBox.getSelectedEntry());
 
     bChanged |= (settings.audio.playSFX != playSFXCheckbox.isChecked());
@@ -314,7 +310,6 @@ void OptionsMenu::onOptionsOK() {
 	settings.video.preferredZoomLevel = selectedZoomlevel;
 	settings.video.scaler = scalerDropDownBox.getSelectedEntry();
 	settings.video.fullscreen = fullScreenCheckbox.isChecked();
-	settings.video.doubleBuffering = doubleBufferingCheckbox.isChecked();
 
 	settings.audio.playSFX = playSFXCheckbox.isChecked();
 	settings.audio.playMusic = playMusicCheckbox.isChecked();
@@ -353,7 +348,6 @@ void OptionsMenu::saveConfiguration2File() {
 	myINIFile.setIntValue("Video","Width",settings.video.width);
 	myINIFile.setIntValue("Video","Height",settings.video.height);
 	myINIFile.setBoolValue("Video","Fullscreen",settings.video.fullscreen);
-	myINIFile.setBoolValue("Video","Double Buffering",settings.video.doubleBuffering);
 	myINIFile.setIntValue("Video","Preferred Zoom Level",settings.video.preferredZoomLevel);
 	myINIFile.setStringValue("Video","Scaler",settings.video.scaler);
 

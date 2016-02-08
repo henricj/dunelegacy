@@ -158,7 +158,6 @@ public:
 
 	class VideoClass {
 	public:
-		bool	    doubleBuffering;
 		bool	    fullscreen;
 		int		    width;
 		int		    height;
