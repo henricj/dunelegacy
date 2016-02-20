@@ -266,17 +266,12 @@ void BuilderList::draw(SDL_Surface* screen, Point position) {
 				    bool soldOut = (pStarport->getOwner()->getChoam().getNumAvailable(iter->itemID) == 0);
 
 					if((pStarport->okToOrder() == false) || (soldOut == true)) {
-						if(!SDL_MUSTLOCK(screen) || (SDL_LockSurface(screen) == 0)) {
-							for(int x = 0; x < BUILDERBTN_WIDTH; x++) {
-								for(int y = (x % 2); y < BUILDERBTN_HEIGHT; y+=2) {
-									putPixel(screen, x+dest.x, y+dest.y, COLOR_BLACK);
-								}
-							}
+                        SDL_Rect progressBar = { dest.x, dest.y, BUILDERBTN_WIDTH, BUILDERBTN_HEIGHT };
+                        SDL_Surface* progressSurface = SDL_CreateRGBSurface(0, BUILDERBTN_WIDTH, BUILDERBTN_HEIGHT, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK);
 
-							if(SDL_MUSTLOCK(screen)) {
-								SDL_UnlockSurface(screen);
-							}
-						}
+                        SDL_FillRect(progressSurface, NULL, COLOR_HALF_TRANSPARENT);
+                        SDL_BlitSurface(progressSurface, NULL, screen, &progressBar);
+                        SDL_FreeSurface(progressSurface);
 					}
 
 					if(soldOut == true) {
@@ -290,17 +285,13 @@ void BuilderList::draw(SDL_Surface* screen, Point position) {
 					}
 
 				} else if(currentGame->getGameInitSettings().getGameOptions().onlyOnePalace && iter->itemID == Structure_Palace && pBuilder->getOwner()->getNumItems(Structure_Palace) > 0) {
-                    if(!SDL_MUSTLOCK(screen) || (SDL_LockSurface(screen) == 0)) {
-                        for(int x = 0; x < BUILDERBTN_WIDTH; x++) {
-                            for(int y = (x % 2); y < BUILDERBTN_HEIGHT; y+=2) {
-                                putPixel(screen, x+dest.x, y+dest.y, COLOR_BLACK);
-                            }
-                        }
 
-                        if(SDL_MUSTLOCK(screen)) {
-                            SDL_UnlockSurface(screen);
-                        }
-                    }
+                    SDL_Rect progressBar = { dest.x, dest.y, BUILDERBTN_WIDTH, BUILDERBTN_HEIGHT };
+                    SDL_Surface* progressSurface = SDL_CreateRGBSurface(0, BUILDERBTN_WIDTH, BUILDERBTN_HEIGHT, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK);
+
+                    SDL_FillRect(progressSurface, NULL, COLOR_HALF_TRANSPARENT);
+                    SDL_BlitSurface(progressSurface, NULL, screen, &progressBar);
+                    SDL_FreeSurface(progressSurface);
 
                     SDL_Surface* textSurface = pFontManager->createSurfaceWithMultilineText(_("ALREADY\nBUILT"), COLOR_WHITE, FONT_STD10, true);
                     SDL_Rect drawLocation = {   static_cast<Sint16>(dest.x + (BUILDERBTN_WIDTH - textSurface->w)/2),
@@ -314,17 +305,12 @@ void BuilderList::draw(SDL_Surface* screen, Point position) {
 					FixPoint price = iter->price;
 					int max_x = lround((progress/price)*BUILDERBTN_WIDTH);
 
-					if(!SDL_MUSTLOCK(screen) || (SDL_LockSurface(screen) == 0)) {
-						for(int x = 0; x < max_x; x++) {
-							for(int y = (x % 2); y < BUILDERBTN_HEIGHT; y+=2) {
-								putPixel(screen, x+dest.x, y+dest.y, COLOR_BLACK);
-							}
-						}
+                    SDL_Rect progressBar = { dest.x, dest.y, max_x, BUILDERBTN_HEIGHT };
+                    SDL_Surface* progressSurface = SDL_CreateRGBSurface(0, max_x, BUILDERBTN_HEIGHT, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK);
 
-						if(SDL_MUSTLOCK(screen)) {
-							SDL_UnlockSurface(screen);
-						}
-					}
+                    SDL_FillRect(progressSurface, NULL, COLOR_HALF_TRANSPARENT);
+                    SDL_BlitSurface(progressSurface, NULL, screen, &progressBar);
+                    SDL_FreeSurface(progressSurface);
 
 					if(pBuilder->isWaitingToPlace() == true) {
 						SDL_Surface* textSurface = pFontManager->createSurfaceWithMultilineText(_("PLACE IT"), COLOR_WHITE, FONT_STD10, true);

@@ -587,11 +587,9 @@ SDL_Surface* DuneStyle::createProgressBarOverlay(Uint32 width, Uint32 height, do
         int max_i = std::max( (int) lround(percent*(( ((int) width) - 4)/100.0)), 0);
 
 		if (!SDL_MUSTLOCK(pSurface) || (SDL_LockSurface(pSurface) == 0)) {
-			for (int i = 2; i < max_i + 2; i++) {
-				for (int j = (i % 2) + 2; j < height-2; j+=2) {
-					putPixel(pSurface, i, j, COLOR_BLACK);
-				}
-			}
+			SDL_Rect dest = { 2, 2, max_i, ((int)height)-4 };
+			SDL_FillRect(pSurface, &dest, COLOR_HALF_TRANSPARENT);
+
 
 			if (SDL_MUSTLOCK(pSurface))
 				SDL_UnlockSurface(pSurface);
@@ -599,7 +597,7 @@ SDL_Surface* DuneStyle::createProgressBarOverlay(Uint32 width, Uint32 height, do
 	} else {
 	    int max_i = lround(percent*(width/100.0));
 
-		SDL_Rect dest = { 0 , 0 , max_i , height};
+		SDL_Rect dest = { 0, 0, max_i, (int)height };
         SDL_FillRect(pSurface, &dest, color);
 	}
 
