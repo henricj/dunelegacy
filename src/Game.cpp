@@ -601,10 +601,13 @@ void Game::drawScreen()
 
 		int finalMouseX = mouse_x;
 		int finalMouseY = mouse_y;
-		adjustMouseCoords(finalMouseX, finalMouseY);
 		if(finalMouseX >= sideBarPos.x) {
 		    //this keeps the box on the map, and not over game bar
 			finalMouseX = sideBarPos.x-1;
+		}
+
+		if(finalMouseY < topBarPos.y+topBarPos.h) {
+			finalMouseY = topBarPos.x+topBarPos.h;
 		}
 
         // draw the mouse selection rectangle
@@ -877,6 +880,10 @@ void Game::doInput()
 
                         if(finalMouseX >= sideBarPos.x) {
                             finalMouseX = sideBarPos.x-1;
+                        }
+
+                        if(finalMouseY < topBarPos.y+topBarPos.h) {
+                            finalMouseY = topBarPos.x+topBarPos.h;
                         }
 
                         int rectFinishX = screenborder->screen2MapX(finalMouseX);
