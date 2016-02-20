@@ -43,13 +43,6 @@ CFLAGS="$CFLAGS $SDL_CFLAGS"
 CXXFLAGS="$CXXFLAGS $SDL_CFLAGS"
 LIBS="$LIBS $SDL_LIBS"
 
-dnl Check for SDL_mixer library.
-AC_CHECK_LIB(SDL_mixer, 
-       Mix_OpenAudio, 
-       LIBS="$LIBS -lSDL_mixer", 
-       AC_MSG_ERROR([*** SDL_mixer library not found!]) 
-)
-
 dnl enet defines
 AC_CHECK_FUNC(gethostbyaddr_r, [AC_DEFINE(HAS_GETHOSTBYADDR_R)])
 AC_CHECK_FUNC(gethostbyname_r, [AC_DEFINE(HAS_GETHOSTBYNAME_R)])

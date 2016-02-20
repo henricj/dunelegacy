@@ -324,7 +324,7 @@ SDL_Surface* Scaler::tripleTiledSurfaceScale3x(SDL_Surface* src, int tilesX, int
 	    if(freeSrcSurface) SDL_FreeSurface(src);
 		return NULL;
 	}
-
+    SDL_SetPaletteColors(dest->format->palette, src->format->palette->colors, 0, src->format->palette->ncolors);
 	Uint32 ckey;
     bool has_ckey = !SDL_GetColorKey(src, &ckey);
     if (has_ckey) {
