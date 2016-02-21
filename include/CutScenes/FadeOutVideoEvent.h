@@ -41,11 +41,10 @@ public:
 	virtual ~FadeOutVideoEvent();
 
     /**
-        This method draws the video effect. It is called before setupPalette() is called.
-        \param  pScreen the surface to draw to
+        This method draws the video effect.
         \return the milliseconds until the next frame shall be drawn.
     */
-	virtual int draw(SDL_Surface* pScreen);
+	virtual int draw();
 
     /**
         This method checks if this VideoEvent is already finished
@@ -56,8 +55,7 @@ public:
 private:
     int currentFrame;           ///< the current frame number relative to the start of this FadeOutVideoEvent
     int numFrames2FadeOut;      ///< the number of frames the fading should take
-    SDL_Surface* pSurface;      ///< the picture to fade out
-    bool bFreeSurface;          ///< true = SDL_FreeSurface(pSurface) after fading out is done, false = pSurface is not freed
+    SDL_Texture* pTexture;      ///< the picture to fade out
     bool bCenterVertical;       ///< true = center the surface vertically on the screen, false = blit the surface at the top of the screen
     bool bFadeWhite;            ///< true = fade to white, false = fade to black
 };

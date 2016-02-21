@@ -76,11 +76,10 @@ public:
 	}
 
     /**
-        This method draws the current frame. First the video and the text is drawn to pScreen. Afterwards CutSceneTriggers are triggered.
-        \param  pScreen the surface to draw to
+        This method draws the current frame. First the video and then the text is drawn. Afterwards CutSceneTriggers are triggered.
         \return the milliseconds until the next frame shall be drawn.
     */
-    int draw(SDL_Surface* pScreen);
+    int draw();
 
 private:
     int currentFrameNumber;                     ///< current frame number in this frame

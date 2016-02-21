@@ -17,35 +17,34 @@
 
 #include <CutScenes/HoldPictureVideoEvent.h>
 #include <misc/Scaler.h>
+#include <globals.h>
 
 HoldPictureVideoEvent::HoldPictureVideoEvent(SDL_Surface* pSurface, int numFrames2Hold, bool bFreeSurface, bool bCenterVertical) : VideoEvent()
 {
     if(pSurface == NULL) {
-        this->pSurface = NULL;
+        pTexture = NULL;
     } else {
-        this->pSurface = Scaler::defaultDoubleSurface(pSurface, bFreeSurface);
+        SDL_Surface *pTmp = Scaler::defaultDoubleSurface(pSurface, bFreeSurface);
+        pTexture = SDL_CreateTextureFromSurface(renderer, pTmp);
+        SDL_FreeSurface(pTmp);
     }
     this->numFrames2Hold = numFrames2Hold;
-    this->bFreeSurface = bFreeSurface;
     this->bCenterVertical = bCenterVertical;
     currentFrame = 0;
 }
 
 HoldPictureVideoEvent::~HoldPictureVideoEvent()
 {
-    if(pSurface != NULL) {
-        SDL_FreeSurface(pSurface);
+    if(pTexture != NULL) {
+        SDL_DestroyTexture(pTexture);
     }
 }
 
-int HoldPictureVideoEvent::draw(SDL_Surface* pScreen)
+int HoldPictureVideoEvent::draw()
 {
-    if(pSurface != NULL) {
-        SDL_Rect dest = {   static_cast<Sint16>((pScreen->w - pSurface->w) / 2),
-                            static_cast<Sint16>(bCenterVertical ? (pScreen->h - pSurface->h) / 2 : 0),
-                            static_cast<Uint16>(pSurface->w),
-                            static_cast<Uint16>(pSurface->h) };
-        SDL_BlitSurface(pSurface,NULL,pScreen,&dest);
+    if(pTexture != NULL) {
+        SDL_Rect dest = calcAlignedDrawingRect(pTexture, HAlign::Center, bCenterVertical ? VAlign::Center : VAlign::Top);
+        SDL_RenderCopy(renderer, pTexture, NULL, &dest);
     }
 
     currentFrame++;

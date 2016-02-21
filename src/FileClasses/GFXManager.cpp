@@ -941,12 +941,7 @@ GFXManager::GFXManager() {
 	}
 
     // pBackgroundSurface is separate as we never draw it but use it to construct other sprites
-    SDL_Surface* tmp = PicFactory->createBackground();
-    if((pBackgroundSurface = SDL_ConvertSurfaceFormat(tmp, SDL_PIXELFORMAT_ABGR8888, 0)) == NULL) {
-        fprintf(stderr,"GFXManager: SDL_ConvertSurfaceFormat() failed!\n");
-        exit(EXIT_FAILURE);
-    }
-    SDL_FreeSurface(tmp);
+    pBackgroundSurface = convertSurfaceToDisplayFormat(PicFactory->createBackground(), true);
 
 	// Create alpha blending surfaces (128x128 pixel)
 	pTransparent40Surface = SDL_CreateRGBSurface(0, 128, 128, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK);
@@ -1040,7 +1035,7 @@ SDL_Surface** GFXManager::getObjPic(unsigned int id, int house) {
                 // Windtrap uses palette animation on PALCOLOR_WINDTRAP_COLORCYCLE; fake this
                 objPicTex[id][house][z] = generateWindtrapAnimationFrames(objPic[id][house][z]);
             } else {
-                if((objPicTex[id][house][z] = SDL_ConvertSurfaceFormat(objPic[id][house][z], SDL_PIXELFORMAT_ABGR8888, 0)) == NULL) {
+                if((objPicTex[id][house][z] = SDL_ConvertSurfaceFormat(objPic[id][house][z], SCREEN_FORMAT, 0)) == NULL) {
                     fprintf(stderr,"GFXManager::getObjPic(): Converting to display format failed!\n");
                     exit(EXIT_FAILURE);
                 }
@@ -1091,7 +1086,7 @@ SDL_Surface* GFXManager::getUIGraphic(unsigned int id, int house) {
         if(id >= UI_MapChoiceArrow_None && id <= UI_MapChoiceArrow_Left) {
             uiGraphicTex[id][house] = generateMapChoiceArrrowFrames(pSurface, house);
         } else {
-            uiGraphicTex[id][house] = SDL_ConvertSurfaceFormat(pSurface, SDL_PIXELFORMAT_ABGR8888, 0);
+            uiGraphicTex[id][house] = SDL_ConvertSurfaceFormat(pSurface, SCREEN_FORMAT, 0);
             if(uiGraphicTex[id][house] == NULL) {
                 fprintf(stderr,"GFXManager::getUIGraphic(): Converting to display format failed!\n");
                 exit(EXIT_FAILURE);
@@ -1128,7 +1123,7 @@ SDL_Surface* GFXManager::getMapChoicePiece(unsigned int num, int house) {
 	}
 
 	if(mapChoicePiecesTex[num][house] == NULL) {
-		mapChoicePiecesTex[num][house] = SDL_ConvertSurfaceFormat(getMapChoicePieceSurface(num, house), SDL_PIXELFORMAT_ABGR8888, 0);
+		mapChoicePiecesTex[num][house] = SDL_ConvertSurfaceFormat(getMapChoicePieceSurface(num, house), SCREEN_FORMAT, 0);
         if(mapChoicePiecesTex[num][house] == NULL) {
             fprintf(stderr,"GFXManager::getMapChoicePiece(): Converting to display format failed!\n");
             exit(EXIT_FAILURE);
@@ -1314,12 +1309,7 @@ SDL_Surface* GFXManager::extractSmallDetailPic(std::string filename) {
 	delete myWsafile;
 	SDL_RWclose(myFile);
 
-	SDL_Surface* pTexture = SDL_ConvertSurfaceFormat(pSurface, SDL_PIXELFORMAT_ABGR8888, 0);
-    if(pTexture == NULL) {
-        fprintf(stderr,"GFXManager::extractSmallDetailPic() SDL_ConvertSurfaceFormat() failed!\n");
-        exit(EXIT_FAILURE);
-	}
-	SDL_FreeSurface(pSurface);
+	SDL_Surface* pTexture = convertSurfaceToDisplayFormat(pSurface, true);
 
 	return pTexture;
 }

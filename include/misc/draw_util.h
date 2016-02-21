@@ -44,6 +44,8 @@ void mapColor(SDL_Surface *surface, Uint8 colorMap[256]);
 
 SDL_Surface*    copySurface(SDL_Surface* inSurface);
 
+SDL_Surface*    convertSurfaceToDisplayFormat(SDL_Surface* inSurface, bool freeSrcSurface = true);
+
 SDL_Surface*    scaleSurface(SDL_Surface *surf, double ratio, bool freeSrcSurface = true);
 
 SDL_Surface*	getSubPicture(SDL_Surface* Pic, int left, int top, int width, int height);

@@ -24,6 +24,7 @@
 #include <FileClasses/Palette.h>
 #include <data.h>
 #include <misc/RobustList.h>
+#include <misc/DrawingRectHelper.h>
 
 #include <SDL.h>
 

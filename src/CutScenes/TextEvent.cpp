@@ -17,6 +17,7 @@
 
 #include <CutScenes/TextEvent.h>
 #include <FileClasses/FontManager.h>
+#include <globals.h>
 
 extern FontManager* pFontManager;
 
@@ -29,16 +30,19 @@ TextEvent::TextEvent(std::string text, Uint32 color, int startFrame, int lengthI
     this->bFadeOut = bFadeOut;
     this->bCenterVertical = bCenterVertical;
     this->color = color;
-    pSurface = pFontManager->createSurfaceWithMultilineText(text, color, FONT_STD24, true);
-    SDL_SetSurfaceBlendMode(pSurface, SDL_BLENDMODE_BLEND);
+    SDL_Surface *pSurface = pFontManager->createSurfaceWithMultilineText(text, color, FONT_STD24, true);
+    pTexture = SDL_CreateTextureFromSurface(renderer, pSurface);
+    SDL_FreeSurface(pSurface);
+
+    SDL_SetTextureBlendMode(pTexture, SDL_BLENDMODE_BLEND);
 }
 
 TextEvent::~TextEvent()
 {
-    SDL_FreeSurface(pSurface);
+    SDL_DestroyTexture(pTexture);
 }
 
-void TextEvent::draw(SDL_Surface* pScreen, int currentFrameNumber)
+void TextEvent::draw(int currentFrameNumber)
 {
     if(currentFrameNumber < startFrame || currentFrameNumber > startFrame + lengthInFrames) {
         return;
@@ -53,10 +57,11 @@ void TextEvent::draw(SDL_Surface* pScreen, int currentFrameNumber)
         alpha = (((startFrame + lengthInFrames) - currentFrameNumber)*255)/TEXT_FADE_TIME;
     }
 
-    SDL_Rect dest = {   static_cast<Sint16>((pScreen->w - pSurface->w) / 2),
-                        static_cast<Sint16>(bCenterVertical ? (pScreen->h - pSurface->h) / 2 : (pScreen->h/2 + 480/2 - 5*pFontManager->getTextHeight(FONT_STD24)/2)),
-                        static_cast<Uint16>(pSurface->w),
-                        static_cast<Uint16>(pSurface->h) };
-    SDL_SetSurfaceAlphaMod(pSurface, alpha);
-    SDL_BlitSurface(pSurface,NULL,pScreen,&dest);
+    SDL_Rect dest = calcAlignedDrawingRect(pTexture, HAlign::Center, VAlign::Center);
+    if(bCenterVertical == false) {
+        dest.y = getRendererSize().h/2 + 480/2 - 5*pFontManager->getTextHeight(FONT_STD24)/2;
+    }
+
+    SDL_SetTextureAlphaMod(pTexture, alpha);
+    SDL_RenderCopy(renderer, pTexture, NULL, &dest);
 }

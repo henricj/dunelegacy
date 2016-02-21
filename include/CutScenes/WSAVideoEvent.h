@@ -26,23 +26,22 @@
 */
 class WSAVideoEvent : public VideoEvent {
 public:
-	
+
 	/**
         Constructor
         \param  pWsafile            The video to play
         \param  bCenterVertical     true = center the video vertically on the screen, false = blit the video frames at the top of the screen (default is true)
     */
 	WSAVideoEvent(Wsafile* pWsafile, bool bCenterVertical = true);
-	
+
 	/// destructor
 	virtual ~WSAVideoEvent();
 
     /**
-        This method draws the video effect. It is called before setupPalette() is called.
-        \param  pScreen the surface to draw to
+        This method draws the video effect.
         \return the milliseconds until the next frame shall be drawn.
     */
-	virtual int draw(SDL_Surface* pScreen);
+	virtual int draw();
 
     /**
         This method checks if this VideoEvent is already finished
@@ -50,9 +49,10 @@ public:
     */
 	virtual bool isFinished();
 private:
-    int currentFrame;		///< the current frame number relative to the start of this WSAVideoEvent
-    Wsafile* pWsafile;		///< the video to play
-    bool bCenterVertical;	///< true = center the video vertically on the screen, false = blit the video frames at the top of the screen
+    int currentFrame;		        ///< the current frame number relative to the start of this WSAVideoEvent
+    Wsafile* pWsafile;		        ///< the video to play
+    SDL_Texture* pStreamingTexture; ///< the texture used for rendering from
+    bool bCenterVertical;	        ///< true = center the video vertically on the screen, false = blit the video frames at the top of the screen
 };
 
 #endif // WSAVIDEOEVENT_H

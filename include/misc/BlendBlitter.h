@@ -2,6 +2,7 @@
 #define BLENDBLITTER_H
 
 #include <SDL.h>
+#include <misc/draw_util.h>
 #include <mmath.h>
 
 // Step by step one more pixel of the source image is blitted to the destination image
@@ -70,7 +71,9 @@ public:
             int x = (cur % src->w);
             int y = (cur / src->w);
 
-            if( ((Uint8*)src->pixels)[y * src->pitch + x] != 0) {
+            Uint32 color = getPixel(src, x, y);
+
+            if(color != 0) {
 
                 if(	(destRect.x + x < dest->w) && (destRect.x + x >= 0) &&
                     (destRect.x + x <= destRect.x + destRect.w) &&
@@ -78,10 +81,7 @@ public:
                     (destRect.y + y <= destRect.y + destRect.h) ) {
 
                     // is inside destRect and the destination surface
-                    Uint8* pSrcPixel = &((Uint8*)src->pixels)[y * src->pitch + x];
-                    Uint8* pDestPixel = &((Uint8*)dest->pixels)[(destRect.y + y) * dest->pitch + (destRect.x + x)];
-
-                    *pDestPixel = *pSrcPixel;
+                    putPixel(dest, destRect.x + x, destRect.y + y, color);
                 }
             }
         }

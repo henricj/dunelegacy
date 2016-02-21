@@ -32,11 +32,10 @@ public:
 	virtual ~VideoEvent();
 
     /**
-        This method draws the video effect. It is called before setupPalette() is called.
-        \param  pScreen the surface to draw to
+        This method draws the video effect.
         \return the milliseconds until the next frame shall be drawn.
     */
-	virtual int draw(SDL_Surface* pScreen);
+	virtual int draw();
 
     /**
         This method checks if this VideoEvent is already finished

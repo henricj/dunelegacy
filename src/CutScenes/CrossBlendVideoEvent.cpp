@@ -17,14 +17,16 @@
 
 #include <CutScenes/CrossBlendVideoEvent.h>
 #include <misc/Scaler.h>
+#include <globals.h>
 
 CrossBlendVideoEvent::CrossBlendVideoEvent(SDL_Surface* pSourceSurface, SDL_Surface* pDestSurface, bool bFreeSurfaces, bool bCenterVertical) : VideoEvent()
 {
-    this->pSourceSurface = Scaler::defaultDoubleTiledSurface(pSourceSurface, 1, 1, bFreeSurfaces);
-    this->pDestSurface = Scaler::defaultDoubleTiledSurface(pDestSurface, 1, 1, bFreeSurfaces);
-    this->bFreeSurfaces = bFreeSurfaces;
+    this->pSourceSurface = convertSurfaceToDisplayFormat(Scaler::defaultDoubleTiledSurface(pSourceSurface, 1, 1, bFreeSurfaces), true);
+    this->pDestSurface = convertSurfaceToDisplayFormat(Scaler::defaultDoubleTiledSurface(pDestSurface, 1, 1, bFreeSurfaces), true);
     this->bCenterVertical = bCenterVertical;
     currentFrame = 0;
+
+    pStreamingTexture = SDL_CreateTexture(renderer, SCREEN_FORMAT, SDL_TEXTUREACCESS_STREAMING, this->pSourceSurface->w, this->pSourceSurface->h);
 
     SDL_Rect dest = {	0,0, static_cast<Uint16>(this->pSourceSurface->w), static_cast<Uint16>(this->pSourceSurface->h)};
     pBlendBlitter = new BlendBlitter(this->pDestSurface, this->pSourceSurface, dest, 30);
@@ -35,22 +37,24 @@ CrossBlendVideoEvent::~CrossBlendVideoEvent()
     SDL_FreeSurface(pSourceSurface);
     SDL_FreeSurface(pDestSurface);
 
+    SDL_DestroyTexture(pStreamingTexture);
+
     delete pBlendBlitter;
     pBlendBlitter = NULL;
 }
 
-int CrossBlendVideoEvent::draw(SDL_Surface* pScreen)
+int CrossBlendVideoEvent::draw()
 {
 	if(pBlendBlitter->nextStep() == 0) {
 		delete pBlendBlitter;
 		pBlendBlitter = NULL;
     }
 
-    SDL_Rect dest = {   static_cast<Sint16>((pScreen->w - pSourceSurface->w) / 2),
-                        static_cast<Sint16>(bCenterVertical ? (pScreen->h - pSourceSurface->h) / 2 : 0),
-                        static_cast<Uint16>(pSourceSurface->w),
-                        static_cast<Uint16>(pSourceSurface->h) };
-    SDL_BlitSurface(pSourceSurface,NULL,pScreen,&dest);
+    SDL_UpdateTexture(pStreamingTexture, NULL, pSourceSurface->pixels, pSourceSurface->pitch);
+
+    SDL_Rect dest = calcAlignedDrawingRect(pStreamingTexture, HAlign::Center, bCenterVertical ? VAlign::Center : VAlign::Top);
+
+    SDL_RenderCopy(renderer, pStreamingTexture, NULL, &dest);
 
     currentFrame++;
 

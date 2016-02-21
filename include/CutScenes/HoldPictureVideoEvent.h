@@ -40,23 +40,21 @@ public:
 	virtual ~HoldPictureVideoEvent();
 
     /**
-        This method draws the video effect. It is called before setupPalette() is called.
-        \param  pScreen the surface to draw to
+        This method draws the video effect.
         \return the milliseconds until the next frame shall be drawn.
     */
-	virtual int draw(SDL_Surface* pScreen);
+	virtual int draw();
 
     /**
         This method checks if this VideoEvent is already finished
         \return true, if there are no more frames to draw with this VideoEvent
     */
 	virtual bool isFinished();
-	
+
 private:
     int currentFrame;		///< the current frame number relative to the start of this HoldPictureVideoEvent
     int numFrames2Hold;		///< the number of frames the picture should be shown
-    SDL_Surface* pSurface;	///< the picture to show
-    bool bFreeSurface;		///< true = SDL_FreeSurface(pSurface) after this VideoEvent in is done, false = pSurface is not freed
+    SDL_Texture* pTexture;	///< the picture to show
     bool bCenterVertical;	///< true = center the surface vertically on the screen, false = blit the surface at the top of the screen
 };
 

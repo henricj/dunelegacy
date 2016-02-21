@@ -48,6 +48,18 @@ public:
 	*/
 	inline int getNumFrames() const { return (int) numFrames; };
 
+	/**
+        Get the width of this video
+        \return the width in pixels
+	*/
+	inline Uint16 getWidth() const { return sizeX; };
+
+	/**
+        Get the height of this video
+        \return the height in pixels
+	*/
+	inline Uint16 getHeight() const { return sizeY; };
+
 	/// Returns whether the animation is looped or not.
 	/**
 		This method returns whether this animation is looped or not.

@@ -25,7 +25,7 @@ VideoEvent::~VideoEvent()
 {
 }
 
-int VideoEvent::draw(SDL_Surface* pScreen)
+int VideoEvent::draw()
 {
 	return 0;
 }

@@ -49,11 +49,10 @@ public:
 	~TextEvent();
 
 	/**
-		This method draws the text to pScreen.
-		\param	pScreen				the surface to draw to
+		This method draws the text.
 		\param	currentFrameNumber	the current frame number relative to the current Scene start
 	*/
-	void draw(SDL_Surface* pScreen, int currentFrameNumber);
+	void draw(int currentFrameNumber);
 
 private:
     std::string text;		///< the text to show
@@ -63,7 +62,7 @@ private:
     bool bFadeOut;			///< true = fade out the text (see TEXT_FADE_TIME for the number of frames it takes), false = text simply disapears
     bool bCenterVertical;	///< true = center the text vertically on the screen, false = draw the text near the bottom of the screen
     Uint32 color;	        ///< the color of the text
-    SDL_Surface* pSurface;	///< a surface containing the rendered text
+    SDL_Texture* pTexture;	///< a texture containing the rendered text
 };
 
 #endif // TEXTEVENT_H

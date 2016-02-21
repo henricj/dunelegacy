@@ -17,17 +17,20 @@
 
 #include <CutScenes/FadeOutVideoEvent.h>
 #include <misc/Scaler.h>
+#include <misc/draw_util.h>
+#include <Definitions.h>
 #include <Colors.h>
+#include <globals.h>
 
 FadeOutVideoEvent::FadeOutVideoEvent(SDL_Surface* pSurface, int numFrames2FadeOut, bool bFreeSurface, bool bCenterVertical, bool bFadeWhite) : VideoEvent()
 {
-    SDL_Surface* tmp = Scaler::defaultDoubleSurface(pSurface, bFreeSurface);
-    this->pSurface = SDL_ConvertSurfaceFormat(tmp, SDL_PIXELFORMAT_ABGR8888, 0);
-    SDL_SetSurfaceBlendMode(this->pSurface, SDL_BLENDMODE_BLEND);
-    SDL_FreeSurface(tmp);
+    SDL_Surface *pTmp = convertSurfaceToDisplayFormat(Scaler::defaultDoubleSurface(pSurface, bFreeSurface), true);
+    pTexture = SDL_CreateTextureFromSurface(renderer, pTmp);
+    SDL_FreeSurface(pTmp);
+
+    SDL_SetTextureBlendMode(pTexture, SDL_BLENDMODE_BLEND);
 
     this->numFrames2FadeOut = numFrames2FadeOut;
-    this->bFreeSurface = bFreeSurface;
     this->bCenterVertical = bCenterVertical;
     this->bFadeWhite = bFadeWhite;
     currentFrame = 0;
@@ -35,22 +38,21 @@ FadeOutVideoEvent::FadeOutVideoEvent(SDL_Surface* pSurface, int numFrames2FadeOu
 
 FadeOutVideoEvent::~FadeOutVideoEvent()
 {
-    SDL_FreeSurface(pSurface);
+    SDL_DestroyTexture(pTexture);
 }
 
-int FadeOutVideoEvent::draw(SDL_Surface* pScreen)
+int FadeOutVideoEvent::draw()
 {
-    SDL_Rect dest = {   static_cast<Sint16>((pScreen->w - pSurface->w) / 2),
-                        static_cast<Sint16>(bCenterVertical ? (pScreen->h - pSurface->h) / 2 : 0),
-                        static_cast<Uint16>(pSurface->w),
-                        static_cast<Uint16>(pSurface->h) };
+    SDL_Rect dest = calcAlignedDrawingRect(pTexture, HAlign::Center, bCenterVertical ? VAlign::Center : VAlign::Top);
+
     int alpha  = std::max(0, 255 - (255*currentFrame)/numFrames2FadeOut);
     if(bFadeWhite) {
         // fade to white
-        SDL_FillRect(pScreen, &dest, COLOR_WHITE);
+        SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+        SDL_RenderFillRect(renderer, &dest);
     }
-    SDL_SetSurfaceAlphaMod(pSurface, alpha);
-    SDL_BlitSurface(pSurface,NULL,pScreen,&dest);
+    SDL_SetTextureAlphaMod(pTexture, alpha);
+    SDL_RenderCopy(renderer, pTexture, NULL, &dest);
 
     currentFrame++;
 

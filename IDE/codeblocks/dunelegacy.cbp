@@ -237,6 +237,7 @@
 		<Unit filename="../../include/globals.h" />
 		<Unit filename="../../include/main.h" />
 		<Unit filename="../../include/misc/BlendBlitter.h" />
+		<Unit filename="../../include/misc/DrawingRectHelper.h" />
 		<Unit filename="../../include/misc/FileSystem.h" />
 		<Unit filename="../../include/misc/IFileStream.h" />
 		<Unit filename="../../include/misc/IMemoryStream.h" />

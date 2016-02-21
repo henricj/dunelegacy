@@ -33,10 +33,8 @@ CutScene::CutScene()
 CutScene::~CutScene()
 {
     // Fixes some flickering
-    SDL_FillRect(screen, NULL, 0);
+    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
     SDL_RenderClear(renderer);
-    SDL_UpdateTexture(texture, NULL, screen->pixels, screen->pitch);
-    SDL_RenderCopy(renderer, texture, NULL, NULL);
     SDL_RenderPresent(renderer);
 
     while(scenes.empty() == false) {
@@ -64,10 +62,8 @@ void CutScene::run()
                 case (SDL_KEYDOWN):	// Look for a keypress
                 {
                     // Fixes some flickering
-                    SDL_FillRect(screen, NULL, COLOR_BLACK);
+                    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
                     SDL_RenderClear(renderer);
-                    SDL_UpdateTexture(texture, NULL, screen->pixels, screen->pitch);
-                    SDL_RenderCopy(renderer, texture, NULL, NULL);
                     SDL_RenderPresent(renderer);
                     quiting = true;
                 }
@@ -125,7 +121,7 @@ int CutScene::draw()
             scenes.pop();
             continue;
         } else {
-            nextFrameTime = pScene->draw(screen);
+            nextFrameTime = pScene->draw();
             break;
         }
     }

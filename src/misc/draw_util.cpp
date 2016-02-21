@@ -225,6 +225,18 @@ SDL_Surface* copySurface(SDL_Surface* inSurface) {
 }
 
 
+SDL_Surface* convertSurfaceToDisplayFormat(SDL_Surface* inSurface, bool freeSrcSurface) {
+    SDL_Surface* pSurface;
+    if( (pSurface = SDL_ConvertSurfaceFormat(inSurface, SCREEN_FORMAT, 0)) == NULL) {
+        throw std::invalid_argument(std::string("convertSurfaceToDisplayFormat(): SDL_ConvertSurfaceFormat() failed: ") + std::string(SDL_GetError()));
+	}
+    if(freeSrcSurface) {
+        SDL_FreeSurface(inSurface);
+    }
+    return pSurface;
+}
+
+
 SDL_Surface* scaleSurface(SDL_Surface *surf, double ratio, bool freeSrcSurface) {
 	SDL_Surface *scaled = SDL_CreateRGBSurface(0, (int) (surf->w * ratio),(int) (surf->h * ratio),8,0,0,0,0);
     if(scaled == NULL) {

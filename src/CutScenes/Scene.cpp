@@ -73,12 +73,13 @@ void Scene::addTrigger(CutSceneTrigger* newTrigger)
     triggerList.insert(iter, newTrigger);
 }
 
-int Scene::draw(SDL_Surface* pScreen)
+int Scene::draw()
 {
     int nextFrameTime = 0;
 
     // 1.: Clear the whole screen
-    SDL_FillRect(pScreen, NULL, COLOR_BLACK);
+    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+    SDL_RenderClear(renderer);
 
     // 2.: Draw everything on the screen
     while(videoEvents.empty() == false) {
@@ -89,23 +90,20 @@ int Scene::draw(SDL_Surface* pScreen)
             videoEvents.pop();
             continue;
         } else {
-            nextFrameTime = pVideoEvent->draw(pScreen);
+            nextFrameTime = pVideoEvent->draw();
             break;
         }
     }
 
     std::list<TextEvent*>::iterator iter;
     for(iter = textEvents.begin(); iter != textEvents.end(); ++iter) {
-        (*iter)->draw(pScreen, currentFrameNumber);
+        (*iter)->draw(currentFrameNumber);
     }
 
-    // 3.: Flip the screen
-    SDL_RenderClear(renderer);
-    SDL_UpdateTexture(texture, NULL, pScreen->pixels, pScreen->pitch);
-    SDL_RenderCopy(renderer, texture, NULL, NULL);
+    // 3.: Render everything
     SDL_RenderPresent(renderer);
 
-    // 5.: Process Triggers
+    // 4.: Process Triggers
     while(triggerList.empty() == false) {
         CutSceneTrigger* pTrigger = triggerList.front();
 
