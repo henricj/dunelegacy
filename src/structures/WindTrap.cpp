@@ -63,7 +63,9 @@ ObjectInterface* WindTrap::getInterfaceContainer() {
 bool WindTrap::update() {
     bool bResult = StructureBase::update();
 
-    curAnimFrame = 2 + ((currentGame->getGameCycleCount()/8) % NUM_WINDTRAP_ANIMATIONS);
+    if(justPlacedTimer <= 0 || curAnimFrame != 0) {
+        curAnimFrame = 2 + ((currentGame->getGameCycleCount()/8) % NUM_WINDTRAP_ANIMATIONS);
+    }
 
     return bResult;
 }

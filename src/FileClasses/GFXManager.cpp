@@ -1335,6 +1335,7 @@ SDL_Surface* GFXManager::generateWindtrapAnimationFrames(SDL_Surface* windtrapPi
     int sizeX = NUM_WINDTRAP_ANIMATIONS_PER_ROW*windtrapSize;
     int sizeY = ((2+NUM_WINDTRAP_ANIMATIONS+NUM_WINDTRAP_ANIMATIONS_PER_ROW-1)/NUM_WINDTRAP_ANIMATIONS_PER_ROW)*windtrapSize;
     SDL_Surface* returnPic = SDL_CreateRGBSurface(0, sizeX, sizeY, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK);
+    SDL_SetSurfaceBlendMode(returnPic, SDL_BLENDMODE_NONE);
 
     // copy building phase
     SDL_Rect src = { 0, 0, 2*windtrapSize, windtrapSize};

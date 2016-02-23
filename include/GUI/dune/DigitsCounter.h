@@ -59,7 +59,7 @@ public:
 	virtual inline void draw(SDL_Surface* screen, Point position) {
 		SDL_Surface* surface = pGFXManager->getUIGraphic(UI_MissionSelect);
 
-		SDL_Rect dest = { static_cast<Sint16>(position.x), static_cast<Sint16>(position.y), static_cast<Uint16>(surface->w), static_cast<Uint16>(surface->h) } ;
+		SDL_Rect dest = calcDrawingRect(surface, position.x, position.y);
 		SDL_BlitSurface(surface, NULL, screen, &dest);
 
 		SDL_Surface* digitsSurface = pGFXManager->getUIGraphic(UI_CreditsDigits);
@@ -69,9 +69,9 @@ public:
 		int digits = strlen(creditsBuffer);
 
 		for(int i=digits-1; i>=0; i--) {
-            SDL_Rect source = { static_cast<Sint16>((creditsBuffer[i] - '0')*(digitsSurface->w/10)), 0, static_cast<Uint16>(digitsSurface->w/10), static_cast<Uint16>(digitsSurface->h) };
-            SDL_Rect dest2 = { static_cast<Sint16>(position.x + 40 + (6 - digits + i)*10), static_cast<Sint16>(position.y + 16), static_cast<Uint16>(digitsSurface->w/10), static_cast<Uint16>(digitsSurface->h) } ;
-			SDL_BlitSurface(digitsSurface, &source, screen, &dest2);
+            SDL_Rect source = calcSpriteSourceRect(digitsSurface, creditsBuffer[i] - '0', 10);
+            SDL_Rect dest2 = calcSpriteDrawingRect(digitsSurface, position.x + 40 + (6 - digits + i)*10, position.y + 16, 10);
+ 			SDL_BlitSurface(digitsSurface, &source, screen, &dest2);
 		}
 
 	};

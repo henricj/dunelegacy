@@ -45,7 +45,7 @@ public:
 
 protected:
 	UnitInterface(int objectID) : DefaultObjectInterface(objectID) {
-        Uint32 color = SDL2RGB(palette[houseToPaletteIndex[pLocalHouse->getHouseID()]]);
+        Uint32 color = SDL2RGB(palette[houseToPaletteIndex[pLocalHouse->getHouseID()]+3]);
 
 		mainHBox.addWidget(HSpacer::create(4));
 
@@ -120,7 +120,7 @@ protected:
 		buttonVBox.addWidget(VSpacer::create(6));
 
         guardButton.setText(_("Guard"));
-        guardButton.setTextColor(color+3);
+        guardButton.setTextColor(color);
 		guardButton.setTooltipText(_("Unit will not move from location"));
 		guardButton.setToggleButton(true);
 		guardButton.setOnClick(std::bind(&UnitInterface::onGuard, this));
@@ -129,7 +129,7 @@ protected:
 		buttonVBox.addWidget(VSpacer::create(6));
 
 		areaGuardButton.setText(_("Area Guard"));
-        areaGuardButton.setTextColor(color+3);
+        areaGuardButton.setTextColor(color);
 		areaGuardButton.setTooltipText(_("Unit will engage any unit within guard range"));
 		areaGuardButton.setToggleButton(true);
 		areaGuardButton.setOnClick(std::bind(&UnitInterface::onAreaGuard, this));
@@ -138,7 +138,7 @@ protected:
 		buttonVBox.addWidget(VSpacer::create(6));
 
 		stopButton.setText(_("Stop"));
-        stopButton.setTextColor(color+3);
+        stopButton.setTextColor(color);
 		stopButton.setTooltipText(_("Unit will not move, nor attack"));
 		stopButton.setToggleButton(true);
 		stopButton.setOnClick(std::bind(&UnitInterface::onStop, this));
@@ -147,7 +147,7 @@ protected:
 		buttonVBox.addWidget(VSpacer::create(6));
 
         ambushButton.setText(_("Ambush"));
-        ambushButton.setTextColor(color+3);
+        ambushButton.setTextColor(color);
 		ambushButton.setTooltipText(_("Unit will not move until enemy unit spotted"));
 		ambushButton.setToggleButton(true);
 		ambushButton.setOnClick(std::bind(&UnitInterface::onAmbush, this));
@@ -156,7 +156,7 @@ protected:
 		buttonVBox.addWidget(VSpacer::create(6));
 
         huntButton.setText(_("Hunt"));
-        huntButton.setTextColor(color+3);
+        huntButton.setTextColor(color);
 		huntButton.setTooltipText(_("Unit will immediately start to engage an enemy unit"));
 		huntButton.setToggleButton(true);
 		huntButton.setOnClick(std::bind(&UnitInterface::onHunt, this));
@@ -165,7 +165,7 @@ protected:
 		buttonVBox.addWidget(VSpacer::create(6));
 
 		retreatButton.setText(_("Retreat"));
-        retreatButton.setTextColor(color+3);
+        retreatButton.setTextColor(color);
 		retreatButton.setTooltipText(_("Unit will retreat back to base"));
 		retreatButton.setToggleButton(true);
 		retreatButton.setOnClick(std::bind(&UnitInterface::onRetreat, this));

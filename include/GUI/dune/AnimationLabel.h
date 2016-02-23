@@ -62,7 +62,7 @@ public:
 		SDL_Surface* surface = pAnim->getFrame();
 
 		if(isVisible()) {
-            SDL_Rect dest = { static_cast<Sint16>(position.x), static_cast<Sint16>(position.y), static_cast<Uint16>(surface->w), static_cast<Uint16>(surface->h) };
+            SDL_Rect dest = calcDrawingRect(surface, position.x, position.y);
 			SDL_BlitSurface(surface, NULL, screen, &dest);
 		}
 	};

@@ -73,6 +73,15 @@ public:
 	}
 
 	/**
+		This method adds a new widget to this container.
+		\param newWidget	Widget to add
+		\param rect		    Position and size of the new Widget
+	*/
+	virtual void addWidget(Widget* newWidget, const SDL_Rect& rect) {
+        addWidget(newWidget, Point(rect.x, rect.y), Point(rect.w, rect.h));
+	}
+
+	/**
 		Returns the minimum size of this container. The container should not
 		resized to a size smaller than this. If the container is not resizeable
 		in a direction this method returns the size in that direction.

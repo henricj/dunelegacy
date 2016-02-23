@@ -169,7 +169,7 @@ void Button::draw(SDL_Surface* screen, Point position) {
 		return;
 	}
 
-	SDL_Rect dest = { static_cast<Sint16>(position.x), static_cast<Sint16>(position.y), static_cast<Uint16>(surf->w), static_cast<Uint16>(surf->h) };
+	SDL_Rect dest = calcDrawingRect(surf, position.x, position.y);
 	SDL_BlitSurface(surf,NULL,screen,&dest);
 }
 
@@ -185,18 +185,19 @@ void Button::drawOverlay(SDL_Surface* screen, Point Pos) {
 				SDL_RenderGetViewport(renderer, &vp);
 				x = (x*vp.w)/win_w-vp.x;
 				y = (y*vp.h)/win_h-vp.y;
-				SDL_Rect dest = { static_cast<Sint16>(x), static_cast<Sint16>(y - tooltipSurface->h), static_cast<Uint16>(tooltipSurface->w), static_cast<Uint16>(tooltipSurface->h) };
-				if(dest.x + dest.w >= screen->w) {
+				SDL_Rect renderRect = getRendererSize();
+				SDL_Rect dest = calcDrawingRect(tooltipSurface, x, y, HAlign::Left, VAlign::Bottom);
+				if(dest.x + dest.w >= renderRect.w) {
 				    // do not draw tooltip outside screen
-                    dest.x = screen->w - dest.w;
+                    dest.x = renderRect.w - dest.w;
 				}
 
 				if(dest.y < 0) {
 				    // do not draw tooltip outside screen
                     dest.y = 0;
-				} else if(dest.y + dest.h >= screen->h) {
+				} else if(dest.y + dest.h >= renderRect.h) {
 				    // do not draw tooltip outside screen
-                    dest.y = screen->h - dest.h;
+                    dest.y = renderRect.h - dest.h;
 				}
 
 				SDL_BlitSurface(tooltipSurface,NULL,screen,&dest);

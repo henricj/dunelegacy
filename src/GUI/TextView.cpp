@@ -69,21 +69,21 @@ void TextView::draw(SDL_Surface* screen, Point position) {
 	}
 
 	if(pBackground != NULL) {
-		SDL_Rect dest = { static_cast<Sint16>(position.x), static_cast<Sint16>(position.y), static_cast<Uint16>(pBackground->w), static_cast<Uint16>(pBackground->h) };
+		SDL_Rect dest = calcDrawingRect(pBackground, position.x, position.y);
 		SDL_BlitSurface(pBackground,NULL,screen,&dest);
 	}
 
 	int lineHeight = GUIStyle::getInstance().getTextHeight(fontID) + 2;
 
 	SDL_Rect src = {    0,
-                        static_cast<Sint16>(scrollbar.getCurrentValue() * lineHeight),
-                        static_cast<Uint16>(pForeground->w),
-                        static_cast<Uint16>(getSize().y - 2) };
+                        scrollbar.getCurrentValue() * lineHeight,
+                        getWidth(pForeground),
+                        getSize().y - 2 };
 
-	SDL_Rect dest = {   static_cast<Sint16>(position.x + 2),
-                        static_cast<Sint16>(position.y + 1),
-                        static_cast<Uint16>(pForeground->w),
-                        static_cast<Uint16>(pForeground->h) };
+	SDL_Rect dest = {   position.x + 2,
+                        position.y + 1,
+                        getWidth(pForeground),
+                        getSize().y - 2 };
 	SDL_BlitSurface(pForeground,&src,screen,&dest);
 
 	Point scrollBarPos = position;

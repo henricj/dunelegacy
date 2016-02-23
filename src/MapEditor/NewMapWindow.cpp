@@ -338,7 +338,7 @@ void NewMapWindow::onMapPropertiesChanged() {
 
     if(pMinimap != NULL) {
 
-        SDL_Rect dest = { 1, 1, static_cast<Uint16>(pMinimap->w), static_cast<Uint16>(pMinimap->h)};
+        SDL_Rect dest = calcDrawingRect(pMinimap, 1, 1);
         SDL_BlitSurface(pMinimap, NULL, pMapSurface, &dest);
         SDL_FreeSurface(pMinimap);
 

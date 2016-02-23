@@ -98,7 +98,7 @@ void MapChoice::drawSpecificStuff() {
         case MAPCHOICESTATE_FADEINPLANET: {
             if(curBlendBlitter == NULL) {
                 SDL_Surface* pSurface = pGFXManager->getUIGraphicSurface(UI_MapChoicePlanet);
-                SDL_Rect dest = { 0, 0, static_cast<Uint16>(pSurface->w), static_cast<Uint16>(pSurface->h)};
+                SDL_Rect dest = { 0, 0, getWidth(pSurface), getHeight(pSurface) };
                 curBlendBlitter = new BlendBlitter(pSurface,mapSurface,dest);
             }
 
@@ -127,7 +127,7 @@ void MapChoice::drawSpecificStuff() {
         case MAPCHOICESTATE_BLENDPLANET: {
             if(curBlendBlitter == NULL) {
                 SDL_Surface* pSurface = pGFXManager->getUIGraphicSurface(UI_MapChoiceMapOnly);
-                SDL_Rect dest = { 0, 0, static_cast<Uint16>(pSurface->w), static_cast<Uint16>(pSurface->h)};
+                SDL_Rect dest = { 0, 0, getWidth(pSurface), getHeight(pSurface) };
                 curBlendBlitter = new BlendBlitter(pSurface,mapSurface,dest);
             }
 
@@ -156,7 +156,7 @@ void MapChoice::drawSpecificStuff() {
         case MAPCHOICESTATE_BLENDMAP: {
             if(curBlendBlitter == NULL) {
                 SDL_Surface* pSurface = pGFXManager->getUIGraphicSurface(UI_MapChoiceMap);
-                SDL_Rect dest = { 0, 0, static_cast<Uint16>(pSurface->w), static_cast<Uint16>(pSurface->h)};
+                SDL_Rect dest = { 0, 0, getWidth(pSurface), getHeight(pSurface) };
                 curBlendBlitter = new BlendBlitter(pSurface,mapSurface,dest);
             }
 
@@ -188,8 +188,7 @@ void MapChoice::drawSpecificStuff() {
                     // there is still some region to blend in
                     int pieceNum = (group[lastScenario].newRegion[(curHouse2Blit + house) % NUM_HOUSES])[curRegion2Blit];
                     SDL_Surface* PieceSurface = pGFXManager->getMapChoicePieceSurface(pieceNum,(curHouse2Blit + house) % NUM_HOUSES);
-                    SDL_Rect dest = {	static_cast<Sint16>(piecePosition[pieceNum].x),static_cast<Sint16>(piecePosition[pieceNum].y),
-                                        static_cast<Uint16>(PieceSurface->w), static_cast<Uint16>(PieceSurface->h)};
+                    SDL_Rect dest = calcDrawingRect(PieceSurface, piecePosition[pieceNum].x, piecePosition[pieceNum].y);
                     curBlendBlitter = new BlendBlitter(PieceSurface,mapSurface,dest);
                     curRegion2Blit++;
 
@@ -231,10 +230,11 @@ void MapChoice::drawSpecificStuff() {
                 int arrowNum = std::max(0, std::min(8, group[lastScenario].attackRegion[i].arrowNum));
                 SDL_Surface* arrow = pGFXManager->getUIGraphic(UI_MapChoiceArrow_None + arrowNum, house);
                 int arrowFrame = (SDL_GetTicks() / 128) % 4;
-                SDL_Rect src = { arrowFrame* arrow->w/4, 0, arrow->w/4, arrow->h};
-                SDL_Rect dest = {	static_cast<Sint16>(group[lastScenario].attackRegion[i].arrowPosition.x + centerAreaRect.x),
-                                    static_cast<Sint16>(group[lastScenario].attackRegion[i].arrowPosition.y + centerAreaRect.y),
-                                    static_cast<Uint16>(arrow->w),static_cast<Uint16>(arrow->h)};
+                SDL_Rect src = calcSpriteSourceRect(arrow, arrowFrame, 4);
+                SDL_Rect dest = calcSpriteDrawingRect(  arrow,
+                                                        group[lastScenario].attackRegion[i].arrowPosition.x + centerAreaRect.x,
+                                                        group[lastScenario].attackRegion[i].arrowPosition.y + centerAreaRect.y,
+                                                        4, 1);
 
                 SDL_BlitSurface(arrow,&src,screen,&dest);
             }
@@ -244,9 +244,7 @@ void MapChoice::drawSpecificStuff() {
         {
             if(((SDL_GetTicks() - selectionTime) % 900) < 450) {
                 SDL_Surface* pieceSurface = pGFXManager->getMapChoicePiece(selectedRegion,house);
-                SDL_Rect dest = {	static_cast<Sint16>(piecePosition[selectedRegion].x + centerAreaRect.x),
-                                    static_cast<Sint16>(piecePosition[selectedRegion].y + centerAreaRect.y),
-                                    static_cast<Uint16>(pieceSurface->w), static_cast<Uint16>(pieceSurface->h)};
+                SDL_Rect dest = calcDrawingRect(pieceSurface, piecePosition[selectedRegion].x + centerAreaRect.x, piecePosition[selectedRegion].y + centerAreaRect.y);
                 SDL_BlitSurface(pieceSurface,NULL,screen,&dest);
             }
 
@@ -258,10 +256,11 @@ void MapChoice::drawSpecificStuff() {
                 int arrowNum = std::max(0, std::min(8, group[lastScenario].attackRegion[i].arrowNum));
                 SDL_Surface* arrow = pGFXManager->getUIGraphic(UI_MapChoiceArrow_None + arrowNum, house);
                 int arrowFrame = (SDL_GetTicks() / 128) % 4;
-                SDL_Rect src = { arrowFrame* arrow->w/4, 0, arrow->w/4, arrow->h};
-                SDL_Rect dest = {	static_cast<Sint16>(group[lastScenario].attackRegion[i].arrowPosition.x + centerAreaRect.x),
-                                    static_cast<Sint16>(group[lastScenario].attackRegion[i].arrowPosition.y + centerAreaRect.y),
-                                    static_cast<Uint16>(arrow->w),static_cast<Uint16>(arrow->h)};
+                SDL_Rect src = calcSpriteSourceRect(arrow, arrowFrame, 4);
+                SDL_Rect dest = calcSpriteDrawingRect(  arrow,
+                                                        group[lastScenario].attackRegion[i].arrowPosition.x + centerAreaRect.x,
+                                                        group[lastScenario].attackRegion[i].arrowPosition.y + centerAreaRect.y,
+                                                        4, 1);
 
                 SDL_BlitSurface(arrow,&src,screen,&dest);
             }
@@ -342,8 +341,7 @@ void MapChoice::createMapSurfaceWithPieces() {
 			for(unsigned int p = 0; p < group[s].newRegion[h].size(); p++) {
 				int pieceNum = (group[s].newRegion[h])[p];
 				SDL_Surface* pieceSurface = pGFXManager->getMapChoicePieceSurface(pieceNum,h);
-				SDL_Rect dest = {	static_cast<Sint16>(piecePosition[pieceNum].x),static_cast<Sint16>(piecePosition[pieceNum].y),
-									static_cast<Uint16>(pieceSurface->w), static_cast<Uint16>(pieceSurface->h)};
+				SDL_Rect dest = calcDrawingRect(pieceSurface, piecePosition[pieceNum].x, piecePosition[pieceNum].y);
 				SDL_BlitSurface(pieceSurface,NULL,mapSurface,&dest);
 			}
 		}

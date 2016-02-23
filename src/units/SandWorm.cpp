@@ -133,8 +133,8 @@ void Sandworm::blitToScreen() {
         SDL_Surface *mask = pGFXManager->getObjPic(ObjPic_SandwormShimmerMask,HOUSE_HARKONNEN)[currentZoomlevel];
         SDL_SetColorKey(mask, SDL_TRUE, 15);      // we want to have white not being drawn
 
-        int width = mask->w;
-        int height = mask->h;
+        int width = getWidth(mask);
+        int height = getHeight(mask);
 
         SDL_Surface *shimmerSurfaceTemp = pGFXManager->getObjPic(ObjPic_SandwormShimmerTemp,HOUSE_HARKONNEN)[currentZoomlevel];
 
@@ -149,32 +149,24 @@ void Sandworm::blitToScreen() {
             int srcX = destX + shimmerOffset[(shimmerOffsetIndex+i)%8]*2;
             int srcY = destY;
 
-            SDL_Rect src =  {   static_cast<Sint16>(srcX),
-                                static_cast<Sint16>(srcY),
-                                static_cast<Uint16>(width),
-                                static_cast<Uint16>(height) };
+            SDL_Rect src =  { srcX, srcY, width, height };
             SDL_BlitSurface(screen, &src, shimmerSurfaceTemp, NULL);
 
             // use mask to make everything black that should not be considered further
             SDL_BlitSurface(mask, NULL, shimmerSurfaceTemp, NULL);
 
-            SDL_Rect dest = {   static_cast<Sint16>(destX),
-                                static_cast<Sint16>(destY),
-                                static_cast<Uint16>(width),
-                                static_cast<Uint16>(height) };
+            SDL_Rect dest = { destX, destY, width, height };
             SDL_BlitSurface(shimmerSurfaceTemp, NULL, screen, &dest);
         }
     }
 
     if(drawnFrame != INVALID) {
-        int imageW = graphic[currentZoomlevel]->w/numImagesX;
-        int imageH = graphic[currentZoomlevel]->h/numImagesY;
-
-        SDL_Rect dest = {   static_cast<Sint16>(screenborder->world2screenX(realX) - imageW/2),
-                            static_cast<Sint16>(screenborder->world2screenY(realY) - imageH/2),
-                            static_cast<Uint16>(imageW),
-                            static_cast<Uint16>(imageH) };
-        SDL_Rect source = { 0, static_cast<Sint16>(drawnFrame*imageH), static_cast<Uint16>(imageW), static_cast<Uint16>(imageH) };
+        SDL_Rect dest = calcSpriteDrawingRect(  graphic[currentZoomlevel],
+                                                screenborder->world2screenX(realX),
+                                                screenborder->world2screenY(realY),
+                                                numImagesX, numImagesY,
+                                                HAlign::Center, VAlign::Center);
+        SDL_Rect source = calcSpriteSourceRect(graphic[currentZoomlevel], 0, numImagesX, drawnFrame, numImagesY);
         SDL_BlitSurface(graphic[currentZoomlevel], &source, screen, &dest);
     }
 }

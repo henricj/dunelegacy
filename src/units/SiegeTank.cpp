@@ -57,13 +57,12 @@ SiegeTank::~SiegeTank() {
 }
 
 void SiegeTank::blitToScreen() {
-    SDL_Surface* pUnitGraphic = graphic[currentZoomlevel];
-    int imageW1 = pUnitGraphic->w/numImagesX;
     int x1 = screenborder->world2screenX(realX);
     int y1 = screenborder->world2screenY(realY);
 
-    SDL_Rect source1 = { static_cast<Sint16>(drawnAngle * imageW1), 0, static_cast<Uint16>(imageW1), static_cast<Uint16>(pUnitGraphic->h) };
-    SDL_Rect dest1 = { static_cast<Sint16>(x1 - imageW1/2), static_cast<Sint16>(y1 - pUnitGraphic->h/2), static_cast<Uint16>(imageW1), static_cast<Uint16>(pUnitGraphic->h) };
+    SDL_Surface* pUnitGraphic = graphic[currentZoomlevel];
+    SDL_Rect source1 = calcSpriteSourceRect(pUnitGraphic, drawnAngle, numImagesX);
+    SDL_Rect dest1 = calcSpriteDrawingRect( pUnitGraphic, x1, y1, numImagesX, 1, HAlign::Center, VAlign::Center);
 
     SDL_BlitSurface(pUnitGraphic, &source1, screen, &dest1);
 
@@ -78,12 +77,11 @@ void SiegeTank::blitToScreen() {
                                             };
 
     SDL_Surface* pTurretGraphic = turretGraphic[currentZoomlevel];
-    int imageW2 = pTurretGraphic->w/NUM_ANGLES;
-    int x2 = screenborder->world2screenX(realX + siegeTankTurretOffset[drawnTurretAngle].x);
-    int y2 = screenborder->world2screenY(realY + siegeTankTurretOffset[drawnTurretAngle].y);
-
-    SDL_Rect source2 = { static_cast<Sint16>(drawnTurretAngle * imageW2), 0, static_cast<Uint16>(imageW2), static_cast<Uint16>(pTurretGraphic->h) };
-    SDL_Rect dest2 = { static_cast<Sint16>(x2 - imageW2/2), static_cast<Sint16>(y2 - pTurretGraphic->h/2), static_cast<Uint16>(imageW2), static_cast<Uint16>(pTurretGraphic->h) };
+    SDL_Rect source2 = calcSpriteSourceRect(pTurretGraphic, drawnTurretAngle, NUM_ANGLES);
+    SDL_Rect dest2 = calcSpriteDrawingRect( pTurretGraphic,
+                                            screenborder->world2screenX(realX + siegeTankTurretOffset[drawnTurretAngle].x),
+                                            screenborder->world2screenY(realY + siegeTankTurretOffset[drawnTurretAngle].y),
+                                            NUM_ANGLES, 1, HAlign::Center, VAlign::Center);
 
     SDL_BlitSurface(pTurretGraphic, &source2, screen, &dest2);
 

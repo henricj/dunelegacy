@@ -184,16 +184,13 @@ PictureFactory::PictureFactory() {
 	shared_ptr<SDL_Surface> FamePic2 = shared_ptr<SDL_Surface>( Scaler::defaultDoubleSurface(FamePic.get(), false), SDL_FreeSurface);
 	shared_ptr<SDL_Surface> pSurface = shared_ptr<SDL_Surface>( getSubPicture(FamePic2.get(),16,160,610,74), SDL_FreeSurface);
 
-	SDL_Rect dest2 = {  16, 234, static_cast<Uint16>(pSurface.get()->w), static_cast<Uint16>(pSurface.get()->h) };
+	SDL_Rect dest2 = calcDrawingRect(pSurface.get(), 16, 234);
 	SDL_BlitSurface(pSurface.get(), NULL, FamePic2.get(), &dest2);
 
-	SDL_Rect dest3 = {  16, 234 + 74, static_cast<Uint16>(pSurface.get()->w), static_cast<Uint16>(pSurface.get()->h) };
+	SDL_Rect dest3 = calcDrawingRect(pSurface.get(), 16, 234 + 74);
 	SDL_BlitSurface(pSurface.get() , NULL, FamePic2.get(), &dest3);
 
-    SDL_Rect dest4 = {  static_cast<Sint16>((gameStatsBackground.get()->w - FamePic2.get()->w)/2),
-                        static_cast<Sint16>((gameStatsBackground.get()->h - FamePic2.get()->h)/2),
-                        static_cast<Uint16>(FamePic2.get()->w),
-                        static_cast<Uint16>(FamePic2.get()->h) };
+    SDL_Rect dest4 = calcAlignedDrawingRect(FamePic2.get(), gameStatsBackground.get());
 	SDL_BlitSurface(FamePic2.get(), NULL, gameStatsBackground.get() , &dest4);
 
 	messageBoxBorder = shared_ptr<SDL_Surface>(getSubPicture(ScreenPic.get(),0,17,320,22), SDL_FreeSurface);
@@ -258,10 +255,10 @@ PictureFactory::~PictureFactory() {
 SDL_Surface* PictureFactory::createTopBar() {
 	SDL_Surface* topBar;
 	topBar = getSubPicture(background.get() ,0,0,settings.video.width-SIDEBARWIDTH,32+12);
-	SDL_Rect dest1 = {0,31,static_cast<Uint16>(topBar->w),12};
+	SDL_Rect dest1 = {0,31,getWidth(topBar),12};
 	SDL_FillRect(topBar,&dest1,PALCOLOR_TRANSPARENT);
 
-	SDL_Rect dest2 = {0,32,static_cast<Uint16>(decorationBorder.hborder.get()->w),static_cast<Uint16>(decorationBorder.hborder.get()->h)};
+	SDL_Rect dest2 = calcDrawingRect(decorationBorder.hborder.get(),0,32);
 	for(dest2.x = 0; dest2.x < topBar->w; dest2.x+=decorationBorder.hborder.get()->w) {
 	    SDL_Rect tmpDest = dest2;
 		SDL_BlitSurface(decorationBorder.hborder.get(),NULL,topBar,&tmpDest);
@@ -269,7 +266,7 @@ SDL_Surface* PictureFactory::createTopBar() {
 
 	drawVLine(topBar,topBar->w-7,32,topBar->h-1,96);
 
-	SDL_Rect dest3 = {static_cast<Sint16>(topBar->w - 6),static_cast<Sint16>(topBar->h-12),12,5};
+	SDL_Rect dest3 = {getWidth(topBar) - 6, getHeight(topBar)-12, 12, 5};
 	SDL_BlitSurface(decorationBorder.hspacer.get(),NULL,topBar,&dest3);
 
 	drawVLine(topBar,topBar->w-1,0,topBar->h-1,0);
@@ -280,76 +277,76 @@ SDL_Surface* PictureFactory::createTopBar() {
 SDL_Surface* PictureFactory::createSideBar(bool bEditor) {
 	SDL_Surface* sideBar;
 	sideBar = getSubPicture(background.get(),0,0,SIDEBARWIDTH,settings.video.height);
-	SDL_Rect dest1 = {0,0,13,static_cast<Uint16>(sideBar->h)};
+	SDL_Rect dest1 = {0,0,13,getHeight(sideBar)};
 	SDL_FillRect(sideBar,&dest1,PALCOLOR_TRANSPARENT);
 
 
-	SDL_Rect dest2 = {0,0,static_cast<Uint16>(decorationBorder.vborder.get()->w),static_cast<Uint16>(decorationBorder.vborder.get()->h)};
+	SDL_Rect dest2 = calcDrawingRect(decorationBorder.vborder.get(),0,0);
 	for(dest2.y = 0; dest2.y < sideBar->h; dest2.y+=decorationBorder.vborder.get()->h) {
 	    SDL_Rect tmpDest = dest2;
 		SDL_BlitSurface(decorationBorder.vborder.get(),NULL,sideBar,&tmpDest);
 	}
 
-	SDL_Rect dest3 = {0,static_cast<Sint16>(32-decorationBorder.vspacer.get()->h-1),static_cast<Uint16>(decorationBorder.vspacer.get()->w),static_cast<Uint16>(decorationBorder.vspacer.get()->h)};
+	SDL_Rect dest3 = calcDrawingRect(decorationBorder.vspacer.get(),0,30,HAlign::Left,VAlign::Bottom);
 	SDL_BlitSurface(decorationBorder.vspacer.get(),NULL,sideBar,&dest3);
 
 	drawHLine(sideBar,0,32-decorationBorder.vspacer.get()->h-2,decorationBorder.vspacer.get()->w-1,96);
 	drawHLine(sideBar,0,31,decorationBorder.vspacer.get()->w-1,0);
 
-	SDL_Rect dest4 = {0,32,static_cast<Uint16>(decorationBorder.ball.get()->w),static_cast<Uint16>(decorationBorder.ball.get()->h)};
+	SDL_Rect dest4 = calcDrawingRect(decorationBorder.ball.get(),0,32);
 	SDL_BlitSurface(decorationBorder.ball.get(),NULL,sideBar,&dest4);
 
 	drawHLine(sideBar,0,43,decorationBorder.vspacer.get()->w-1,0);
-	SDL_Rect dest5 = {0,44,static_cast<Uint16>(decorationBorder.vspacer.get()->w),static_cast<Uint16>(decorationBorder.vspacer.get()->h)};
+	SDL_Rect dest5 = calcDrawingRect(decorationBorder.vspacer.get(),0,44);
 	SDL_BlitSurface(decorationBorder.vspacer.get(),NULL,sideBar,&dest5);
 	drawHLine(sideBar,0,44+decorationBorder.vspacer.get()->h,decorationBorder.vspacer.get()->w-1,96);
 
-	SDL_Rect dest6 = {13,0,static_cast<Uint16>(sideBar->w-1),132};
+	SDL_Rect dest6 = {13,0,getWidth(sideBar)-1,132};
 	SDL_FillRect(sideBar,&dest6,PALCOLOR_TRANSPARENT);
 	drawRect(sideBar,13,1,sideBar->w-2,130,115);
 
-	SDL_Rect dest7 = {0,static_cast<Sint16>(132-decorationBorder.vspacer.get()->h-1),static_cast<Uint16>(decorationBorder.vspacer.get()->w),static_cast<Uint16>(decorationBorder.vspacer.get()->h)};
+	SDL_Rect dest7 = calcDrawingRect(decorationBorder.vspacer.get(),0,130,HAlign::Left,VAlign::Bottom);
 	SDL_BlitSurface(decorationBorder.vspacer.get(),NULL,sideBar,&dest7);
 
 	drawHLine(sideBar,0,132-decorationBorder.vspacer.get()->h-2,decorationBorder.vspacer.get()->w-1,96);
 	drawHLine(sideBar,0,131,decorationBorder.vspacer.get()->w-1,0);
 
-	SDL_Rect dest8 = {0,132,static_cast<Uint16>(decorationBorder.ball.get()->w),static_cast<Uint16>(decorationBorder.ball.get()->h)};
+	SDL_Rect dest8 = calcDrawingRect(decorationBorder.ball.get(),0,132);
 	SDL_BlitSurface(decorationBorder.ball.get(),NULL,sideBar,&dest8);
 
 	drawHLine(sideBar,0,143,decorationBorder.vspacer.get()->w-1,0);
-	SDL_Rect dest9 = {0,144,static_cast<Uint16>(decorationBorder.vspacer.get()->w),static_cast<Uint16>(decorationBorder.vspacer.get()->h)};
+	SDL_Rect dest9 = calcDrawingRect(decorationBorder.vspacer.get(),0,144);
 	SDL_BlitSurface(decorationBorder.vspacer.get(),NULL,sideBar,&dest9);
 	drawHLine(sideBar,0,144+decorationBorder.vspacer.get()->h,decorationBorder.vspacer.get()->w-1,96);
 
-	SDL_Rect dest10 = {13,132,static_cast<Uint16>(decorationBorder.hspacer.get()->w),static_cast<Uint16>(decorationBorder.hspacer.get()->h)};
+	SDL_Rect dest10 = calcDrawingRect(decorationBorder.hspacer.get(),13,132);
 	SDL_BlitSurface(decorationBorder.hspacer.get(),NULL,sideBar,&dest10);
 
 	drawVLine(sideBar,18,132,132+decorationBorder.hspacer.get()->h-1,96);
 	drawHLine(sideBar,13,132+decorationBorder.hspacer.get()->h,sideBar->w-1,0);
 
-	SDL_Rect dest11 = {0,132,static_cast<Uint16>(decorationBorder.hborder.get()->w),static_cast<Uint16>(decorationBorder.hborder.get()->h)};
+	SDL_Rect dest11 = calcDrawingRect(decorationBorder.hborder.get(),0,132);
 	for(dest11.x = 19; dest11.x < sideBar->w; dest11.x+=decorationBorder.hborder.get()->w) {
 	    SDL_Rect tmpDest = dest11;
 		SDL_BlitSurface(decorationBorder.hborder.get(),NULL,sideBar,&tmpDest);
 	}
 
     if(bEditor) {
-        SDL_Rect dest12 = {0,static_cast<Sint16>(sideBar->h - 32 - 12 - decorationBorder.vspacer.get()->h-1),static_cast<Uint16>(decorationBorder.vspacer.get()->w),static_cast<Uint16>(decorationBorder.vspacer.get()->h)};
+        SDL_Rect dest12 = calcDrawingRect(decorationBorder.vspacer.get(),0,getHeight(sideBar) - 32 - 14,HAlign::Left,VAlign::Bottom);
         SDL_BlitSurface(decorationBorder.vspacer.get(),NULL,sideBar,&dest12);
 
         drawHLine(sideBar,0,sideBar->h - 32 - 12 - decorationBorder.vspacer.get()->h-2,decorationBorder.vspacer.get()->w-1,96);
         drawHLine(sideBar,0,sideBar->h - 32 - 12 - 1,decorationBorder.vspacer.get()->w-1,0);
 
-        SDL_Rect dest13 = {0,static_cast<Sint16>(sideBar->h - 32 - 12),static_cast<Uint16>(decorationBorder.ball.get()->w),static_cast<Uint16>(decorationBorder.ball.get()->h)};
+        SDL_Rect dest13 = calcDrawingRect(decorationBorder.ball.get(),0,getHeight(sideBar) - 32 - 12);
         SDL_BlitSurface(decorationBorder.ball.get(),NULL,sideBar,&dest13);
 
         drawHLine(sideBar,0,sideBar->h - 32 - 1,decorationBorder.vspacer.get()->w-1,0);
-        SDL_Rect dest14 = {0,static_cast<Sint16>(sideBar->h - 32),static_cast<Uint16>(decorationBorder.vspacer.get()->w),static_cast<Uint16>(decorationBorder.vspacer.get()->h)};
+        SDL_Rect dest14 = calcDrawingRect(decorationBorder.vspacer.get(),0,getHeight(sideBar) - 32);
         SDL_BlitSurface(decorationBorder.vspacer.get(),NULL,sideBar,&dest14);
         drawHLine(sideBar,0,sideBar->h - 32 + decorationBorder.vspacer.get()->h,decorationBorder.vspacer.get()->w-1,96);
     } else {
-        SDL_Rect dest15 = {46,132,static_cast<Uint16>(creditsBorder.get()->w),static_cast<Uint16>(creditsBorder.get()->h)};
+        SDL_Rect dest15 = calcDrawingRect(creditsBorder.get(),46,132);
         SDL_BlitSurface(creditsBorder.get(),NULL,sideBar,&dest15);
     }
 
@@ -359,10 +356,10 @@ SDL_Surface* PictureFactory::createSideBar(bool bEditor) {
 SDL_Surface* PictureFactory::createBottomBar() {
 	SDL_Surface* BottomBar;
 	BottomBar = getSubPicture(background.get() ,0,0,settings.video.width-SIDEBARWIDTH,32+12);
-	SDL_Rect dest1 = {0,0,static_cast<Uint16>(BottomBar->w),13};
+	SDL_Rect dest1 = {0,0,getWidth(BottomBar),13};
 	SDL_FillRect(BottomBar,&dest1,PALCOLOR_TRANSPARENT);
 
-	SDL_Rect dest2 = {0,0,static_cast<Uint16>(decorationBorder.hborder.get()->w),static_cast<Uint16>(decorationBorder.hborder.get()->h)};
+	SDL_Rect dest2 = calcDrawingRect(decorationBorder.hborder.get(), 0, 0);
 	for(dest2.x = 0; dest2.x < BottomBar->w; dest2.x+=decorationBorder.hborder.get()->w) {
 	    SDL_Rect tmpDest = dest2;
 		SDL_BlitSurface(decorationBorder.hborder.get(),NULL,BottomBar,&tmpDest);
@@ -370,7 +367,7 @@ SDL_Surface* PictureFactory::createBottomBar() {
 
 	drawVLine(BottomBar,BottomBar->w-7,0,11,96);
 
-	SDL_Rect dest3 = {static_cast<Sint16>(BottomBar->w - 6),0,12,5};
+	SDL_Rect dest3 = {getWidth(BottomBar) - 6,0,12,5};
 	SDL_BlitSurface(decorationBorder.hspacer.get(),NULL,BottomBar,&dest3);
 
 	drawVLine(BottomBar,BottomBar->w-1,0,BottomBar->h-1,0);
@@ -425,32 +422,20 @@ void PictureFactory::drawFrame(SDL_Surface* Pic, unsigned int DecorationType, SD
 	}
 
 	//corners
-	SDL_Rect dest1 = {	dest->x,
-						dest->y,
-						static_cast<Uint16>(frame[DecorationType].leftUpperCorner.get()->w),
-						static_cast<Uint16>(frame[DecorationType].leftUpperCorner.get()->h)};
+	SDL_Rect dest1 = calcDrawingRect(frame[DecorationType].leftUpperCorner.get(), dest->x, dest->y);
 	SDL_BlitSurface(frame[DecorationType].leftUpperCorner.get(),NULL,Pic,&dest1);
 
-	SDL_Rect dest2 = {	static_cast<Sint16>(dest->w - frame[DecorationType].rightUpperCorner.get()->w),
-						dest->y,
-						static_cast<Uint16>(frame[DecorationType].rightUpperCorner.get()->w),
-						static_cast<Uint16>(frame[DecorationType].rightUpperCorner.get()->h)};
+	SDL_Rect dest2 = calcDrawingRect(frame[DecorationType].rightUpperCorner.get(), dest->w-1, dest->y, HAlign::Right, VAlign::Top);
 	SDL_BlitSurface(frame[DecorationType].rightUpperCorner.get(),NULL,Pic,&dest2);
 
-	SDL_Rect dest3 = {	dest->x,
-						static_cast<Sint16>(dest->h - frame[DecorationType].leftLowerCorner.get()->h),
-						static_cast<Uint16>(frame[DecorationType].leftLowerCorner.get()->w),
-						static_cast<Uint16>(frame[DecorationType].leftLowerCorner.get()->h)};
+    SDL_Rect dest3 = calcDrawingRect(frame[DecorationType].leftLowerCorner.get(), dest->x, dest->h-1, HAlign::Left, VAlign::Bottom);
 	SDL_BlitSurface(frame[DecorationType].leftLowerCorner.get(),NULL,Pic,&dest3);
 
-	SDL_Rect dest4 = {	static_cast<Sint16>(dest->w - frame[DecorationType].rightLowerCorner.get()->w),
-						static_cast<Sint16>(dest->h - frame[DecorationType].rightLowerCorner.get()->h),
-						static_cast<Uint16>(frame[DecorationType].rightLowerCorner.get()->w),
-						static_cast<Uint16>(frame[DecorationType].rightLowerCorner.get()->h)};
+    SDL_Rect dest4 = calcDrawingRect(frame[DecorationType].rightLowerCorner.get(), dest->w-1, dest->h-1, HAlign::Right, VAlign::Bottom);
 	SDL_BlitSurface(frame[DecorationType].rightLowerCorner.get(),NULL,Pic,&dest4);
 
 	//hborders
-	SDL_Rect dest5 = { dest->x,dest->y,static_cast<Uint16>(frame[DecorationType].hborder.get()->w),static_cast<Uint16>(frame[DecorationType].hborder.get()->h)};
+	SDL_Rect dest5 = calcDrawingRect(frame[DecorationType].hborder.get(), dest->x, dest->y);
 	for(dest5.x = frame[DecorationType].leftUpperCorner.get()->w + dest->x;
 		dest5.x <= dest->w - frame[DecorationType].rightUpperCorner.get()->w - 1;
 		dest5.x += frame[DecorationType].hborder.get()->w) {
@@ -458,8 +443,7 @@ void PictureFactory::drawFrame(SDL_Surface* Pic, unsigned int DecorationType, SD
 		SDL_BlitSurface(frame[DecorationType].hborder.get(),NULL,Pic,&tmpDest);
 	}
 
-	SDL_Rect dest6 = { 	dest->x,static_cast<Sint16>(dest->h - frame[DecorationType].hborder->h),
-						static_cast<Uint16>(frame[DecorationType].hborder.get()->w), static_cast<Uint16>(frame[DecorationType].hborder.get()->h)};
+    SDL_Rect dest6 = calcDrawingRect(frame[DecorationType].hborder.get(), dest->x, dest->h-1, HAlign::Left, VAlign::Bottom);
 	for(dest6.x = frame[DecorationType].leftLowerCorner.get()->w + dest->x;
 		dest6.x <= dest->w - frame[DecorationType].rightLowerCorner.get()->w - 1;
 		dest6.x += frame[DecorationType].hborder.get()->w) {
@@ -468,7 +452,7 @@ void PictureFactory::drawFrame(SDL_Surface* Pic, unsigned int DecorationType, SD
 	}
 
 	//vborders
-	SDL_Rect dest7 = { dest->x,dest->y,static_cast<Uint16>(frame[DecorationType].vborder.get()->w),static_cast<Uint16>(frame[DecorationType].vborder.get()->h)};
+    SDL_Rect dest7 = calcDrawingRect(frame[DecorationType].vborder.get(), dest->x, dest->y);
 	for(dest7.y = frame[DecorationType].leftUpperCorner.get()->h + dest->y;
 		dest7.y <= dest->h - frame[DecorationType].leftLowerCorner.get()->h - 1;
 		dest7.y += frame[DecorationType].vborder.get()->h) {
@@ -476,8 +460,7 @@ void PictureFactory::drawFrame(SDL_Surface* Pic, unsigned int DecorationType, SD
 		SDL_BlitSurface(frame[DecorationType].vborder.get(),NULL,Pic,&tmpDest);
 	}
 
-	SDL_Rect dest8 = { 	static_cast<Sint16>(dest->w - frame[DecorationType].vborder.get()->w),dest->y,
-						static_cast<Uint16>(frame[DecorationType].vborder.get()->w),static_cast<Uint16>(frame[DecorationType].vborder.get()->h)};
+    SDL_Rect dest8 = calcDrawingRect(frame[DecorationType].vborder.get(), dest->w-1, dest->y, HAlign::Right, VAlign::Top);
 	for(dest8.y = frame[DecorationType].rightUpperCorner.get()->h + dest->y;
 		dest8.y <= dest->h - frame[DecorationType].rightLowerCorner.get()->h - 1;
 		dest8.y += frame[DecorationType].vborder.get()->h) {
@@ -513,16 +496,16 @@ SDL_Surface* PictureFactory::createMainBackground() {
 	SDL_Surface* Pic;
 	Pic = copySurface(background.get());
 
-	SDL_Rect dest0 = { 3,3,static_cast<Uint16>(Pic->w-3),static_cast<Uint16>(Pic->h-3)};
+	SDL_Rect dest0 = { 3,3,getWidth(Pic)-3, getHeight(Pic)-3};
 	drawFrame(Pic,DecorationFrame2,&dest0);
 
-	SDL_Rect dest1 = {11,11,static_cast<Uint16>(harkonnenLogo.get()->w),static_cast<Uint16>(harkonnenLogo.get()->h)};
+	SDL_Rect dest1 = calcDrawingRect(harkonnenLogo.get(),11,11);
 	SDL_BlitSurface(harkonnenLogo.get(),NULL,Pic,&dest1);
 
-	SDL_Rect dest2 = {static_cast<Sint16>(Pic->w - 11 - atreidesLogo.get()->w),11,static_cast<Uint16>(atreidesLogo.get()->w),static_cast<Uint16>(atreidesLogo.get()->h)};
+	SDL_Rect dest2 = calcDrawingRect(atreidesLogo.get(),getWidth(Pic)-11,11,HAlign::Right,VAlign::Top);
 	SDL_BlitSurface(atreidesLogo.get(),NULL,Pic,&dest2);
 
-	SDL_Rect dest3 = {11,static_cast<Sint16>(Pic->h - 11 - ordosLogo.get()->h),static_cast<Uint16>(ordosLogo->w),static_cast<Uint16>(ordosLogo.get()->h)};
+	SDL_Rect dest3 = calcDrawingRect(ordosLogo.get(),11,getHeight(Pic)-11,HAlign::Left,VAlign::Bottom);
 	SDL_BlitSurface(ordosLogo.get(),NULL,Pic,&dest3);
 
 	SDL_Surface* Version = getSubPicture(background.get(),0,0,75,32);
@@ -532,15 +515,14 @@ SDL_Surface* PictureFactory::createMainBackground() {
 
 	SDL_Surface *VersionText = pFontManager->createSurfaceWithText(versionString, PALCOLOR_BLACK, FONT_STD12);
 
-	SDL_Rect dest4 = {	static_cast<Sint16>((Version->w - VersionText->w)/2), static_cast<Sint16>((Version->h - VersionText->h)/2 + 2),
-						static_cast<Uint16>(VersionText->w),static_cast<Uint16>(VersionText->h)};
+	SDL_Rect dest4 = calcDrawingRect(VersionText, getWidth(Version)/2, getHeight(Version)/2 + 2, HAlign::Center, VAlign::Center);
 	SDL_BlitSurface(VersionText,NULL,Version,&dest4);
 
 	SDL_FreeSurface(VersionText);
 
 	drawFrame(Version,SimpleFrame);
 
-	SDL_Rect dest5 = {static_cast<Sint16>(Pic->w - 11 - Version->w),static_cast<Sint16>(Pic->h - 11 - Version->h),static_cast<Uint16>(Version->w),static_cast<Uint16>(Version->h)};
+	SDL_Rect dest5 = calcDrawingRect(Version, getWidth(Pic) - 11, getHeight(Pic) - 11, HAlign::Right, VAlign::Bottom);
 	SDL_BlitSurface(Version,NULL,Pic,&dest5);
 
 	SDL_FreeSurface(Version);
@@ -571,9 +553,9 @@ SDL_Surface* PictureFactory::createGameStatsBackground(int House) {
 
     pLogo = Scaler::defaultDoubleSurface(pLogo,true);
 
-    SDL_Rect dest1 = { static_cast<Sint16>(gameStatsBackground.get()->w/2 - 320), static_cast<Sint16>(gameStatsBackground.get()->h/2 - 200 + 16), static_cast<Uint16>(pLogo->w), static_cast<Uint16>(pLogo->h) };
+    SDL_Rect dest1 = calcDrawingRect(pLogo, getWidth(gameStatsBackground.get())/2 - 320 + 2, getHeight(gameStatsBackground.get())/2 - 200 + 16);
     SDL_BlitSurface(pLogo, NULL, pSurface, &dest1);
-    SDL_Rect dest2 = { static_cast<Sint16>(gameStatsBackground.get()->w/2 + 320 - pLogo->w), static_cast<Sint16>(gameStatsBackground.get()->h/2 - 200 + 16), static_cast<Uint16>(pLogo->w), static_cast<Uint16>(pLogo->h) };
+    SDL_Rect dest2 = calcDrawingRect(pLogo, getWidth(gameStatsBackground.get())/2 + 320 - 3, getHeight(gameStatsBackground.get())/2 - 200 + 16, HAlign::Right, VAlign::Top);
     SDL_BlitSurface(pLogo, NULL, pSurface, &dest2);
 
     SDL_FreeSurface(pLogo);
@@ -584,13 +566,13 @@ SDL_Surface* PictureFactory::createGameStatsBackground(int House) {
 SDL_Surface* PictureFactory::createMenu(int x,int y) {
 	SDL_Surface* Pic = getSubPicture(background.get(), 0,0,x,y);
 
-	SDL_Rect dest1 = {0,0,static_cast<Uint16>(Pic->w),27};
+	SDL_Rect dest1 = {0,0,getWidth(Pic),27};
 
     SDL_FillRect(Pic,&dest1,PALCOLOR_GREY);
 
 	drawFrame(Pic,SimpleFrame,&dest1);
 
-	SDL_Rect dest2 = {0,static_cast<Sint16>(dest1.h),static_cast<Uint16>(Pic->w),static_cast<Uint16>(Pic->h)};
+	SDL_Rect dest2 = calcDrawingRect(Pic,0,dest1.h);
 	drawFrame(Pic,DecorationFrame1,&dest2);
 
 	return Pic;
@@ -602,12 +584,12 @@ SDL_Surface* PictureFactory::createMenu(SDL_Surface* CaptionPic,int y) {
 
 	SDL_Surface* Pic = getSubPicture(background.get(), 0,0,CaptionPic->w,y);
 
-	SDL_Rect dest1 = {0,0,static_cast<Uint16>(CaptionPic->w),static_cast<Uint16>(CaptionPic->h)};
+	SDL_Rect dest1 = calcDrawingRect(CaptionPic,0,0);
 	SDL_BlitSurface(CaptionPic, NULL,Pic,&dest1);
 
 	drawFrame(Pic,SimpleFrame,&dest1);
 
-	SDL_Rect dest2 = {0,static_cast<Sint16>(dest1.h),static_cast<Uint16>(Pic->w),static_cast<Uint16>(Pic->h)};
+	SDL_Rect dest2 = calcDrawingRect(Pic,0,dest1.h);
 	drawFrame(Pic,DecorationFrame1,&dest2);
 
 	return Pic;
@@ -624,10 +606,10 @@ SDL_Surface* PictureFactory::createOptionsMenu() {
 	SDL_Surface* Pic = getSubPicture(background.get(),0,0,tmp->w,tmp->h);
 	SDL_BlitSurface(tmp,NULL,Pic,NULL);
 
-	SDL_Rect dest1 = {0,0,static_cast<Uint16>(Pic->w),27};
+	SDL_Rect dest1 = {0,0,getWidth(Pic),27};
 	drawFrame(Pic,SimpleFrame,&dest1);
 
-	SDL_Rect dest2 = {0,static_cast<Sint16>(dest1.h),static_cast<Uint16>(Pic->w),static_cast<Uint16>(Pic->h)};
+	SDL_Rect dest2 = calcDrawingRect(Pic,0,dest1.h);
 	drawFrame(Pic,DecorationFrame1,&dest2);
 
 	SDL_FreeSurface(tmp);
@@ -641,7 +623,7 @@ SDL_Surface* PictureFactory::createMessageBoxBorder() {
 SDL_Surface* PictureFactory::createHouseSelect(SDL_Surface* HouseChoice) {
 	SDL_Surface* Pic = copySurface(HouseChoice);
 
-    SDL_Rect dest = { 0, 50, static_cast<Uint16>(Pic->w), static_cast<Uint16>(Pic->h-50) };
+    SDL_Rect dest = { 0, 50, getWidth(Pic), getHeight(Pic)-50 };
 	SDL_FillRect(Pic, &dest, PALCOLOR_BLACK);
 
 	drawFrame(Pic,SimpleFrame,NULL);
@@ -651,7 +633,7 @@ SDL_Surface* PictureFactory::createHouseSelect(SDL_Surface* HouseChoice) {
 
 
 SDL_Surface* PictureFactory::createGreyHouseChoice(SDL_Surface* HouseChoice) {
-	unsigned char index2greyindex[] = {
+	static const unsigned char index2greyindex[] = {
 		0, 0, 0, 13, 233, 127, 0, 131, 0, 0, 0, 0, 0, 13, 14, 15,
 		15, 127, 127, 14, 14, 14, 14, 130, 24, 131, 131, 13, 13, 29, 30, 31,
 		0, 128, 128, 14, 14, 14, 14, 130, 130, 24, 24, 14, 13, 13, 0, 29,
@@ -692,8 +674,8 @@ SDL_Surface* PictureFactory::createMapChoiceScreen(int House) {
 		exit(EXIT_FAILURE);
 	}
 
-	SDL_Rect LeftLogo = {2,145,static_cast<Uint16>(harkonnenLogo.get()->w),static_cast<Uint16>(harkonnenLogo.get()->h)};
-	SDL_Rect RightLogo = {266,145,static_cast<Uint16>(harkonnenLogo.get()->w),static_cast<Uint16>(harkonnenLogo.get()->h)};
+	SDL_Rect LeftLogo = calcDrawingRect(harkonnenLogo.get(),2,145);
+	SDL_Rect RightLogo = calcDrawingRect(harkonnenLogo.get(),266,145);
 
 	switch(House) {
 		case HOUSE_HARKONNEN:
@@ -740,7 +722,7 @@ SDL_Surface* PictureFactory::createMapChoiceScreen(int House) {
 	MapChoiceScreen = Scaler::defaultDoubleSurface(mapSurfaceColorRange(MapChoiceScreen, PALCOLOR_HARKONNEN, houseToPaletteIndex[House], true), true);
 	SDL_Surface* FullMapChoiceScreen = copySurface(background.get());
 
-	SDL_Rect dest = { static_cast<Sint16>(FullMapChoiceScreen->w/2 - MapChoiceScreen->w/2), static_cast<Sint16>(FullMapChoiceScreen->h/2 - MapChoiceScreen->h/2), static_cast<Uint16>(MapChoiceScreen->w), static_cast<Uint16>(MapChoiceScreen->h) };
+	SDL_Rect dest = calcAlignedDrawingRect(MapChoiceScreen, FullMapChoiceScreen);
 	SDL_BlitSurface(MapChoiceScreen,NULL,FullMapChoiceScreen,&dest);
 	SDL_FreeSurface(MapChoiceScreen);
 	return FullMapChoiceScreen;
@@ -770,10 +752,12 @@ SDL_Surface* PictureFactory::createMentatHouseChoiceQuestion(int House, Palette&
         default:    break;
     }
 
-	SDL_Rect dest1 = {0, 0, static_cast<Uint16>(pQuestionPart1->w),static_cast<Uint16>(pQuestionPart1->h)};
+    SDL_SetColorKey(pQuestionPart2, SDL_TRUE, 0);
+
+	SDL_Rect dest1 = calcDrawingRect(pQuestionPart1, 0, 0);
     SDL_BlitSurface(pQuestionPart1,NULL,pSurface,&dest1);
 
-	SDL_Rect dest2 = {static_cast<Sint16>(pQuestionPart1->w), 0, static_cast<Uint16>(pQuestionPart2->w),static_cast<Uint16>(pQuestionPart2->h)};
+	SDL_Rect dest2 = calcDrawingRect(pQuestionPart2, getWidth(pQuestionPart1), 0);
     SDL_BlitSurface(pQuestionPart2,NULL,pSurface,&dest2);
 
     SDL_FreeSurface(pQuestionPart1);
@@ -874,8 +858,8 @@ Animation* PictureFactory::createFremenPlanet(SDL_Surface* heraldFre) {
     SDL_Surface* newFrame = getSubPicture(pTmp, -68, -34, 368, 224);
     SDL_FreeSurface(pTmp);
 
-    SDL_Rect src =  {0, 0, static_cast<Uint16>(heraldFre->w - 2), 126};
-    SDL_Rect dest = {12, 66, static_cast<Uint16>(heraldFre->w - 2), static_cast<Uint16>(heraldFre->h)};
+    SDL_Rect src =  {0, 0, getWidth(heraldFre) - 2, 126};
+    SDL_Rect dest = {12, 66, getWidth(heraldFre) - 2, getHeight(heraldFre)};
     SDL_BlitSurface(heraldFre,&src,newFrame,&dest);
 
     drawRect(newFrame, 0, 0, newFrame->w - 1, newFrame->h - 1, PALCOLOR_WHITE);
@@ -926,8 +910,8 @@ Animation* PictureFactory::createSardaukarPlanet(Animation* ordosPlanetAnimation
 
         SDL_FreeSurface(newFrameWithoutPlanet);
 
-        SDL_Rect src =  {0, 0, static_cast<Uint16>(heraldSard->w), 126};
-        SDL_Rect dest = {12, 66, static_cast<Uint16>(heraldSard->w), static_cast<Uint16>(heraldSard->h)};
+        SDL_Rect src =  {0, 0, getWidth(heraldSard), 126};
+        SDL_Rect dest = calcDrawingRect(heraldSard, 12, 66);
         SDL_BlitSurface(heraldSard,&src,newFrame,&dest);
 
         newAnimation->addFrame(newFrame);
@@ -971,8 +955,8 @@ Animation* PictureFactory::createMercenaryPlanet(Animation* atreidesPlanetAnimat
 
         mapColor(newFrame, colorMap);
 
-        SDL_Rect src =  {0, 0, static_cast<Uint16>(heraldMerc->w), 126};
-        SDL_Rect dest = {12, 66, static_cast<Uint16>(heraldMerc->w), static_cast<Uint16>(heraldMerc->h)};
+        SDL_Rect src =  {0, 0, getWidth(heraldMerc), 126};
+        SDL_Rect dest = calcDrawingRect(heraldMerc, 12, 66);
         SDL_BlitSurface(heraldMerc,&src,newFrame,&dest);
 
         newAnimation->addFrame(newFrame);

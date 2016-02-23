@@ -55,9 +55,9 @@ void ChatManager::draw(SDL_Surface* screen, Point position)
         }
     }
 
-    SDL_Rect timedest = { static_cast<Sint16>(position.x), static_cast<Sint16>(position.y), 0, 0};
-    SDL_Rect usernamedest = { static_cast<Sint16>(position.x + 70), static_cast<Sint16>(position.y), 0, 0};
-    SDL_Rect messagedest = { static_cast<Sint16>(position.x + 70 + maxUsernameSizeY), static_cast<Sint16>(position.y), 0, 0};
+    SDL_Rect timedest = { position.x, position.y, 0, 0};
+    SDL_Rect usernamedest = { position.x + 70, position.y, 0, 0};
+    SDL_Rect messagedest = { position.x + 70 + maxUsernameSizeY, position.y, 0, 0};
     for(iter = chatMessages.begin(); iter != chatMessages.end(); ++iter) {
 
         if(iter->messageType == MSGTYPE_NORMAL) {
@@ -80,7 +80,7 @@ void ChatManager::draw(SDL_Surface* screen, Point position)
 
         } else {
             // MSGTYPE_INFO
-            SDL_Rect infodest = { static_cast<Sint16>(position.x + 70 - 20), messagedest.y, static_cast<Uint16>(iter->pMessageSurface->w), static_cast<Uint16>(iter->pMessageSurface->h) };
+            SDL_Rect infodest = calcDrawingRect(iter->pMessageSurface.get(), position.x + 70 - 20, messagedest.y);
             SDL_BlitSurface(iter->pMessageSurface.get(), NULL, screen, &infodest);
 
             messagedest.h = iter->pMessageSurface->h;

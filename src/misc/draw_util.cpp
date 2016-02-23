@@ -336,7 +336,7 @@ SDL_Surface* combinePictures(SDL_Surface* basePicture, SDL_Surface* topPicture, 
         return NULL;
     }
 
-    SDL_Rect destRect = {static_cast<Sint16>(x), static_cast<Sint16>(y), static_cast<Uint16>(topPicture->w), static_cast<Uint16>(topPicture->h)};
+    SDL_Rect destRect = calcDrawingRect(topPicture, x, y);
 	SDL_BlitSurface(topPicture, NULL, dest, &destRect);
 
 	if(bFreeBasePicture) SDL_FreeSurface(basePicture);

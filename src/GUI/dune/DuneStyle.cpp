@@ -115,8 +115,8 @@ SDL_Surface* DuneStyle::createLabelSurface(Uint32 width, Uint32 height, std::lis
         SDL_Surface* textSurface2 = *surfIter;
         ++surfIter;
 
-		SDL_Rect textRect1 = { 0, static_cast<Sint16>(textpos_y + 3), static_cast<Uint16>(textSurface1->w), static_cast<Uint16>(textSurface1->h) };
-        SDL_Rect textRect2 = { 0, static_cast<Sint16>(textpos_y + 2), static_cast<Uint16>(textSurface2->w), static_cast<Uint16>(textSurface2->h) };
+		SDL_Rect textRect1 = calcDrawingRect(textSurface1, 0, textpos_y + 3);
+        SDL_Rect textRect2 = calcDrawingRect(textSurface2, 0, textpos_y + 2);
 		if(alignment & Alignment_Left) {
 			textRect1.x = 4;
             textRect2.x = 3;
@@ -193,14 +193,12 @@ SDL_Surface* DuneStyle::createCheckboxSurface(Uint32 width, Uint32 height, std::
 
 
 	SDL_Surface* textSurface1 = createSurfaceWithText(text.c_str(), textshadowcolor, FONT_STD12);
-	SDL_Rect textRect1 = {  10+2 + 17, static_cast<Sint16>(((surface->h - textSurface1->h) / 2)+3),
-                            static_cast<Uint16>(textSurface1->w), static_cast<Uint16>(textSurface1->h) };
+	SDL_Rect textRect1 = calcDrawingRect(textSurface1,  10+2 + 17, surface->h/2 + 3, HAlign::Left, VAlign::Center);
 	SDL_BlitSurface(textSurface1,NULL,surface,&textRect1);
 	SDL_FreeSurface(textSurface1);
 
 	SDL_Surface* textSurface2 = createSurfaceWithText(text.c_str(), textcolor, FONT_STD12);
-	SDL_Rect textRect2 = {  10+1 + 17, static_cast<Sint16>(((surface->h - textSurface2->h) / 2)+2),
-                            static_cast<Uint16>(textSurface2->w), static_cast<Uint16>(textSurface2->h) };
+	SDL_Rect textRect2 = calcDrawingRect(textSurface2,  10+1 + 17, surface->h/2 + 2, HAlign::Left, VAlign::Center);
 	SDL_BlitSurface(textSurface2,NULL,surface,&textRect2);
 	SDL_FreeSurface(textSurface2);
 
@@ -266,14 +264,12 @@ SDL_Surface* DuneStyle::createRadioButtonSurface(Uint32 width, Uint32 height, st
 
 
 	SDL_Surface* textSurface1 = createSurfaceWithText(text.c_str(), textshadowcolor, FONT_STD12);
-	SDL_Rect textRect1 = {  8+2 + 15, static_cast<Sint16>(((surface->h - textSurface1->h) / 2)+3),
-                            static_cast<Uint16>(textSurface1->w), static_cast<Uint16>(textSurface1->h) };
+	SDL_Rect textRect1 = calcDrawingRect(textSurface1, 8+2 + 15, surface->h/2 + 3, HAlign::Left, VAlign::Center);
 	SDL_BlitSurface(textSurface1,NULL,surface,&textRect1);
 	SDL_FreeSurface(textSurface1);
 
 	SDL_Surface* textSurface2 = createSurfaceWithText(text.c_str(), textcolor, FONT_STD12);
-	SDL_Rect textRect2 = {  8+1 + 15, static_cast<Sint16>(((surface->h - textSurface2->h) / 2)+2),
-                            static_cast<Uint16>(textSurface2->w), static_cast<Uint16>(textSurface2->h) };
+	SDL_Rect textRect2 = calcDrawingRect(textSurface2, 8+1 + 15, surface->h/2 + 2, HAlign::Left, VAlign::Center);
 	SDL_BlitSurface(textSurface2,NULL,surface,&textRect2);
 	SDL_FreeSurface(textSurface2);
 
@@ -372,18 +368,12 @@ SDL_Surface* DuneStyle::createButtonSurface(Uint32 width, Uint32 height, std::st
 	if(textshadowcolor == COLOR_DEFAULT) textshadowcolor = defaultShadowColor;
 
 	SDL_Surface* textSurface1 = createSurfaceWithText(text.c_str(), textshadowcolor, fontsize);
-	SDL_Rect textRect1 = {  static_cast<Sint16>(((surface->w - textSurface1->w) / 2)+2+(pressed ? 1 : 0)),
-                            static_cast<Sint16>(((surface->h - textSurface1->h) / 2)+3+(pressed ? 1 : 0)),
-                            static_cast<Uint16>(textSurface1->w),
-                            static_cast<Uint16>(textSurface1->h) };
+	SDL_Rect textRect1 = calcDrawingRect(textSurface1, surface->w/2 + 2 + (pressed ? 1 : 0), surface->h/2 + 3 + (pressed ? 1 : 0), HAlign::Center, VAlign::Center);
 	SDL_BlitSurface(textSurface1,NULL,surface,&textRect1);
 	SDL_FreeSurface(textSurface1);
 
 	SDL_Surface* textSurface2 = createSurfaceWithText(text.c_str(), (activated == true) ? brightenUp(textcolor) : textcolor, fontsize);
-	SDL_Rect textRect2 = {  static_cast<Sint16>(((surface->w - textSurface2->w) / 2)+1+(pressed ? 1 : 0)),
-                            static_cast<Sint16>(((surface->h - textSurface2->h) / 2)+2+(pressed ? 1 : 0)),
-                            static_cast<Uint16>(textSurface2->w),
-                            static_cast<Uint16>(textSurface2->h) };
+	SDL_Rect textRect2 = calcDrawingRect(textSurface2, surface->w/2 + 1 + (pressed ? 1 : 0), surface->h/2 + 2 + (pressed ? 1 : 0), HAlign::Center, VAlign::Center);
 	SDL_BlitSurface(textSurface2,NULL,surface,&textRect2);
 	SDL_FreeSurface(textSurface2);
 
@@ -424,8 +414,8 @@ SDL_Surface* DuneStyle::createTextBoxSurface(Uint32 width, Uint32 height, std::s
 	if(text.size() != 0) {
 		SDL_Surface* textSurface1 = createSurfaceWithText(text.c_str(), textshadowcolor, fontID);
 		SDL_Surface* textSurface2 = createSurfaceWithText(text.c_str(), textcolor, fontID);
-		SDL_Rect textRect1 = { 0, static_cast<Sint16>(((surface->h - textSurface1->h) / 2)+3), static_cast<Uint16>(textSurface1->w), static_cast<Uint16>(textSurface1->h) };
-		SDL_Rect textRect2 = { 0, static_cast<Sint16>(((surface->h - textSurface2->h) / 2)+2), static_cast<Uint16>(textSurface2->w), static_cast<Uint16>(textSurface2->h) };
+		SDL_Rect textRect1 = calcDrawingRect(textSurface1, 0, surface->h/2 + 3, HAlign::Left, VAlign::Center);
+		SDL_Rect textRect2 = calcDrawingRect(textSurface2, 0, surface->h/2 + 2, HAlign::Left, VAlign::Center);
 
         if(alignment & Alignment_Left) {
             textRect1.x = 6;
@@ -560,8 +550,7 @@ SDL_Surface* DuneStyle::createListBoxEntry(Uint32 width, std::string text, bool 
 
 	SDL_Surface* textSurface;
 	textSurface = createSurfaceWithText(text.c_str(), color, FONT_STD10);
-	SDL_Rect textRect = {   3, static_cast<Sint16>(((surface->h - textSurface->h) / 2) + 1),
-                            static_cast<Uint16>(textSurface->w), static_cast<Uint16>(textSurface->h) };
+	SDL_Rect textRect = calcDrawingRect(textSurface, 3, surface->h/2 + 1, HAlign::Left, VAlign::Center);
 	SDL_BlitSurface(textSurface,NULL,surface,&textRect);
 	SDL_FreeSurface(textSurface);
 
@@ -623,7 +612,7 @@ SDL_Surface* DuneStyle::createToolTip(std::string text) {
 
 	drawRect(surface, 0, 0, helpTextSurface->w + 4 - 1, helpTextSurface->h + 2 - 1, COLOR_YELLOW);
 
-	SDL_Rect textRect = { 3, 3, static_cast<Uint16>(helpTextSurface->w), static_cast<Uint16>(helpTextSurface->h) };
+	SDL_Rect textRect = calcDrawingRect(helpTextSurface, 3, 3);
 	SDL_BlitSurface(helpTextSurface, NULL, surface, &textRect);
 
 	SDL_FreeSurface(helpTextSurface);

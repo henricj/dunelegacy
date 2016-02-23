@@ -84,14 +84,14 @@ void AirUnit::checkPos()
 
 void AirUnit::blitToScreen()
 {
-    int imageW = graphic[currentZoomlevel]->w/numImagesX;
-    int imageH = graphic[currentZoomlevel]->h/numImagesY;
+    int imageW = getWidth(graphic[currentZoomlevel])/numImagesX;
+    int imageH = getHeight(graphic[currentZoomlevel])/numImagesY;
 
     if(screenborder->isInsideScreen(Coord(lround(realX + 4), lround(realY + 12)),Coord(imageW, imageH)) == true) {
 		// Not out of screen
 
-        SDL_Rect dest = { static_cast<Sint16>(screenborder->world2screenX(realX + 4) - imageW/2 + 1), static_cast<Sint16>(screenborder->world2screenY(realY + 12) - imageH/2), static_cast<Uint16>(imageW), static_cast<Uint16>(imageH) };
-        SDL_Rect source = { static_cast<Sint16>(drawnAngle*imageW), static_cast<Sint16>(drawnFrame*imageH), static_cast<Uint16>(imageW), static_cast<Uint16>(imageH) };
+        SDL_Rect dest = { screenborder->world2screenX(realX + 4) - imageW/2 + 1, screenborder->world2screenY(realY + 12) - imageH/2, imageW, imageH };
+        SDL_Rect source = { drawnAngle*imageW, drawnFrame*imageH, imageW, imageH };
 
         if(shadowGraphic != NULL) {
             SDL_Rect mini = {0, 0, 1, 1};
@@ -101,7 +101,7 @@ void AirUnit::blitToScreen()
             for(int i=0;i<imageW; i++) {
                 for(int j=0;j<imageH; j++) {
                     if(getPixel(shadowGraphic[currentZoomlevel],source.x+i,source.y+j) == 12) {
-                        SDL_Rect drawLoc = {static_cast<Sint16>(dest.x + i), static_cast<Sint16>(dest.y + j), 1, 1};
+                        SDL_Rect drawLoc = {dest.x + i, dest.y + j, 1, 1};
                         SDL_BlitSurface(transparentSurf,&mini,screen,&drawLoc);
                     };
                 }

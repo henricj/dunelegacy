@@ -28,7 +28,7 @@ CrossBlendVideoEvent::CrossBlendVideoEvent(SDL_Surface* pSourceSurface, SDL_Surf
 
     pStreamingTexture = SDL_CreateTexture(renderer, SCREEN_FORMAT, SDL_TEXTUREACCESS_STREAMING, this->pSourceSurface->w, this->pSourceSurface->h);
 
-    SDL_Rect dest = {	0,0, static_cast<Uint16>(this->pSourceSurface->w), static_cast<Uint16>(this->pSourceSurface->h)};
+    SDL_Rect dest = {	0,0, getWidth(this->pSourceSurface), getHeight(this->pSourceSurface)};
     pBlendBlitter = new BlendBlitter(this->pDestSurface, this->pSourceSurface, dest, 30);
 }
 

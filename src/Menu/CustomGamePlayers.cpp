@@ -844,7 +844,7 @@ void CustomGamePlayers::extractMapInfo(std::shared_ptr<INIFile>& pMap)
         INIMapPreviewCreator mapPreviewCreator(pMap);
 
         SDL_Surface* pMinimap = mapPreviewCreator.createMinimapImageOfMap();
-        SDL_Rect dest = { 1, 1, static_cast<Uint16>(pMinimap->w), static_cast<Uint16>(pMinimap->h)};
+        SDL_Rect dest = calcDrawingRect(pMinimap, 1, 1);
         SDL_BlitSurface(pMinimap, NULL, pMapSurface, &dest);
         SDL_FreeSurface(pMinimap);
     } catch(...) {

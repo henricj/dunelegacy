@@ -102,14 +102,12 @@ void Harvester::save(OutputStream& stream) const
 
 void Harvester::blitToScreen()
 {
-    SDL_Surface* pUnitGraphic = graphic[currentZoomlevel];
-    int imageW = pUnitGraphic->w/numImagesX;
-    int imageH = pUnitGraphic->h/numImagesY;
     int x = screenborder->world2screenX(realX);
     int y = screenborder->world2screenY(realY);
 
-    SDL_Rect source = { static_cast<Sint16>(drawnAngle * imageW), static_cast<Sint16>(drawnFrame * imageH), static_cast<Uint16>(imageW), static_cast<Uint16>(imageH) };
-    SDL_Rect dest = { static_cast<Sint16>(x - imageW/2), static_cast<Sint16>(y - imageH/2), static_cast<Uint16>(imageW), static_cast<Uint16>(imageH) };
+    SDL_Surface* pUnitGraphic = graphic[currentZoomlevel];
+    SDL_Rect source = calcSpriteSourceRect(pUnitGraphic, drawnAngle, numImagesX);
+    SDL_Rect dest = calcSpriteDrawingRect( pUnitGraphic, x, y, numImagesX, 1, HAlign::Center, VAlign::Center);
 
     SDL_BlitSurface(pUnitGraphic, &source, screen, &dest);
 
@@ -127,20 +125,19 @@ void Harvester::blitToScreen()
 
 
         SDL_Surface** sand = pGFXManager->getObjPic(ObjPic_Harvester_Sand,getOwner()->getHouseID());
-
         SDL_Surface* pSandGraphic = sand[currentZoomlevel];
-        int sandImageW = pSandGraphic->w/8;
-        int sandImageH = pSandGraphic->h/3;
-        int sandX = screenborder->world2screenX(realX + harvesterSandOffset[drawnAngle].x);
-        int sandY = screenborder->world2screenY(realY + harvesterSandOffset[drawnAngle].y);
 
         int frame = ((currentGame->getGameCycleCount() + (getObjectID() * 10)) / HARVESTERDELAY) % (2*LASTSANDFRAME);
         if(frame > LASTSANDFRAME) {
             frame -= LASTSANDFRAME;
         }
 
-        SDL_Rect sandSource = { static_cast<Sint16>(drawnAngle* sandImageW), static_cast<Sint16>(frame * sandImageH), static_cast<Uint16>(sandImageW), static_cast<Uint16>(sandImageH) };
-        SDL_Rect sandDest = { static_cast<Sint16>(sandX - sandImageW/2), static_cast<Sint16>(sandY - sandImageH/2), static_cast<Uint16>(sandImageW), static_cast<Uint16>(sandImageH) };
+        SDL_Rect sandSource = calcSpriteSourceRect(pSandGraphic, drawnAngle, NUM_ANGLES, frame, LASTSANDFRAME+1);
+        SDL_Rect sandDest = calcSpriteDrawingRect(  pSandGraphic,
+                                                    screenborder->world2screenX(realX + harvesterSandOffset[drawnAngle].x),
+                                                    screenborder->world2screenY(realY + harvesterSandOffset[drawnAngle].y),
+                                                    NUM_ANGLES, LASTSANDFRAME+1,
+                                                    HAlign::Center, VAlign::Center);
 
         SDL_BlitSurface(pSandGraphic, &sandSource, screen, &sandDest);
     }
@@ -313,20 +310,16 @@ void Harvester::drawSelectionBox()
         default:    selectionBox = pGFXManager->getUIGraphic(UI_SelectionBox_Zoomlevel2);   break;
     }
 
-    SDL_Rect dest = {   static_cast<Sint16>(screenborder->world2screenX(realX) - selectionBox->w/2),
-                        static_cast<Sint16>(screenborder->world2screenY(realY) - selectionBox->h/2),
-                        static_cast<Uint16>(selectionBox->w),
-                        static_cast<Uint16>(selectionBox->h) };
-
+    SDL_Rect dest = calcDrawingRect(selectionBox, screenborder->world2screenX(realX), screenborder->world2screenY(realY), HAlign::Center, VAlign::Center);
 	SDL_BlitSurface(selectionBox, NULL, screen, &dest);
 
 	for(int i=1;i<=currentZoomlevel+1;i++) {
-        drawHLine(screen, dest.x+1, dest.y-i, dest.x+1 + (lround((getHealth()/getMaxHealth())*(selectionBox->w-3))), getHealthColor());
+        drawHLine(screen, dest.x+1, dest.y-i, dest.x+1 + (lround((getHealth()/getMaxHealth())*(getWidth(selectionBox)-3))), getHealthColor());
 	}
 
 	if((getOwner() == pLocalHouse) && (spice > 0)) {
         for(int i=1;i<=currentZoomlevel+1;i++) {
-            drawHLine(screen, dest.x+1, dest.y-i-(currentZoomlevel+1), dest.x+1 + (lround(((spice)/HARVESTERMAXSPICE)*(selectionBox->w-3))), COLOR_ORANGE);
+            drawHLine(screen, dest.x+1, dest.y-i-(currentZoomlevel+1), dest.x+1 + (lround(((spice)/HARVESTERMAXSPICE)*(getWidth(selectionBox)-3))), COLOR_ORANGE);
         }
 	}
 }

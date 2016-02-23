@@ -259,16 +259,14 @@ void Bullet::save(OutputStream& stream) const
 
 void Bullet::blitToScreen()
 {
-    int imageW = graphic[currentZoomlevel]->w/numFrames;
-    int imageH = graphic[currentZoomlevel]->h;
+    int imageW = getWidth(graphic[currentZoomlevel])/numFrames;
+    int imageH = getHeight(graphic[currentZoomlevel]);
 
 	if(screenborder->isInsideScreen( Coord(lround(realX), lround(realY)), Coord(imageW, imageH)) == false) {
         return;
 	}
 
-    SDL_Rect dest = {   static_cast<Sint16>(screenborder->world2screenX(realX) - imageW/2),
-                        static_cast<Sint16>(screenborder->world2screenY(realY) - imageH/2),
-                        static_cast<Uint16>(imageW), static_cast<Uint16>(imageH) };
+    SDL_Rect dest = calcSpriteDrawingRect(graphic[currentZoomlevel], screenborder->world2screenX(realX), screenborder->world2screenY(realY), numFrames, 1, HAlign::Center, VAlign::Center);
 
     if(bulletID == Bullet_Sonic) {
         static const int shimmerOffset[]  = { 1, 3, 2, 5, 4, 3, 2, 1 };
@@ -288,7 +286,7 @@ void Bullet::blitToScreen()
 
         SDL_BlitSurface(shimmerSurfaceTemp, NULL, screen, &dest);
     } else {
-        SDL_Rect source = { static_cast<Sint16>((numFrames > 1) ? drawnAngle * imageW : 0), 0, static_cast<Uint16>(imageW), static_cast<Uint16>(imageH) };
+        SDL_Rect source = calcSpriteSourceRect(graphic[currentZoomlevel], (numFrames > 1) ? drawnAngle: 0, numFrames);
         SDL_BlitSurface(graphic[currentZoomlevel], &source, screen, &dest);
     }
 }

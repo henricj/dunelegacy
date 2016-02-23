@@ -18,6 +18,8 @@
 #ifndef WIDGET_H
 #define WIDGET_H
 
+#include <misc/DrawingRectHelper.h>
+
 #include <SDL.h>
 
 #include <functional>

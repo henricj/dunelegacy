@@ -129,15 +129,15 @@ void StructureBase::assignToMap(const Coord& pos) {
 }
 
 void StructureBase::blitToScreen() {
-    int imageW = graphic[currentZoomlevel]->w/numImagesX;
-    int imageH = graphic[currentZoomlevel]->h/numImagesY;
-
     int index = fogged ? lastVisibleFrame : curAnimFrame;
     int indexX = index % numImagesX;
     int indexY = index / numImagesX;
 
-    SDL_Rect dest = { static_cast<Sint16>(screenborder->world2screenX((int) lround(realX))), static_cast<Sint16>(screenborder->world2screenY((int) lround(realY))), static_cast<Uint16>(imageW), static_cast<Uint16>(imageH) };
-    SDL_Rect source = { static_cast<Sint16>(imageW * indexX), static_cast<Sint16>(imageH * indexY), static_cast<Uint16>(imageW), static_cast<Uint16>(imageH) };
+    SDL_Rect dest = calcSpriteDrawingRect(  graphic[currentZoomlevel],
+                                            screenborder->world2screenX(lround(realX)),
+                                            screenborder->world2screenY(lround(realY)),
+                                            numImagesX, numImagesY);
+    SDL_Rect source = calcSpriteSourceRect(graphic[currentZoomlevel],indexX,numImagesX,indexY,numImagesY);
 
     SDL_BlitSurface(graphic[currentZoomlevel], &source, screen, &dest);
 
@@ -146,13 +146,13 @@ void StructureBase::blitToScreen() {
         SDL_BlitSurface(fogSurf, &source, screen, &dest);
     } else {
         SDL_Surface** pSmokeSurface = pGFXManager->getObjPic(ObjPic_Smoke,getOwner()->getHouseID());
-        SDL_Rect smokeSource = { 0, 0, static_cast<Uint16>(pSmokeSurface[currentZoomlevel]->w/3), static_cast<Uint16>(pSmokeSurface[currentZoomlevel]->h)};
+        SDL_Rect smokeSource = calcSpriteSourceRect(pSmokeSurface[currentZoomlevel], 0, 3);
         std::list<StructureSmoke>::const_iterator iter;
         for(iter = smoke.begin(); iter != smoke.end(); ++iter) {
-            SDL_Rect smokeDest = {  static_cast<Sint16>(screenborder->world2screenX(iter->realPos.x) - smokeSource.w/2),
-                                    static_cast<Sint16>(screenborder->world2screenY(iter->realPos.y) - smokeSource.h),
-                                    static_cast<Uint16>(pSmokeSurface[currentZoomlevel]->w/3),
-                                    static_cast<Uint16>(pSmokeSurface[currentZoomlevel]->h)};
+            SDL_Rect smokeDest = calcSpriteDrawingRect( pSmokeSurface[currentZoomlevel],
+                                                        screenborder->world2screenX(iter->realPos.x),
+                                                        screenborder->world2screenY(iter->realPos.y),
+                                                        3, 1, HAlign::Center, VAlign::Bottom);
             Uint32 cycleDiff = currentGame->getGameCycleCount() - iter->startGameCycle;
 
             Uint32 smokeFrame = (cycleDiff/25) % 4;
@@ -175,14 +175,11 @@ ObjectInterface* StructureBase::getInterfaceContainer() {
 }
 
 void StructureBase::drawSelectionBox() {
-    int imageW = graphic[currentZoomlevel]->w/numImagesX;
-    int imageH = graphic[currentZoomlevel]->h/numImagesY;
-
 	SDL_Rect dest;
 	dest.x = screenborder->world2screenX(realX);
 	dest.y = screenborder->world2screenY(realY);
-	dest.w = imageW;
-	dest.h = imageH;
+	dest.w = getWidth(graphic[currentZoomlevel])/numImagesX;
+	dest.h = getHeight(graphic[currentZoomlevel])/numImagesY;
 
 	//now draw the selection box thing, with parts at all corners of structure
 	if(!SDL_MUSTLOCK(screen) || (SDL_LockSurface(screen) == 0)) {
@@ -221,14 +218,11 @@ void StructureBase::drawSelectionBox() {
 }
 
 void StructureBase::drawOtherPlayerSelectionBox() {
-    int imageW = graphic[currentZoomlevel]->w/numImagesX;
-    int imageH = graphic[currentZoomlevel]->h/numImagesY;
-
 	SDL_Rect dest;
 	dest.x = screenborder->world2screenX(realX) + (currentZoomlevel+1);
 	dest.y = screenborder->world2screenY(realY) + (currentZoomlevel+1);
-	dest.w = imageW - 2*(currentZoomlevel+1);
-	dest.h = imageH - 2*(currentZoomlevel+1);
+	dest.w = getWidth(graphic[currentZoomlevel])/numImagesX - 2*(currentZoomlevel+1);
+	dest.h = getHeight(graphic[currentZoomlevel])/numImagesY - 2*(currentZoomlevel+1);
 
 	//now draw the selection box thing, with parts at all corners of structure
 	if(!SDL_MUSTLOCK(screen) || (SDL_LockSurface(screen) == 0)) {

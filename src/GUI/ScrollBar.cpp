@@ -111,7 +111,7 @@ void ScrollBar::draw(SDL_Surface* screen, Point position) {
 	}
 
 	if(pBackground != NULL) {
-		SDL_Rect dest = { static_cast<Sint16>(position.x), static_cast<Sint16>(position.y), static_cast<Uint16>(pBackground->w), static_cast<Uint16>(pBackground->h) };
+		SDL_Rect dest = calcDrawingRect(pBackground, position.x, position.y);
 		SDL_BlitSurface(pBackground,NULL,screen,&dest);
 	}
 

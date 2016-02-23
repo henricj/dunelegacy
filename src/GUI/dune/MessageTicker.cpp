@@ -61,7 +61,7 @@ void MessageTicker::draw(SDL_Surface* screen, Point position) {
 		};
 
 		//draw text
-		SDL_Rect textLocation = { static_cast<Sint16>(position.x + 21), static_cast<Sint16>(position.y + 15), 0, 0 };
+		SDL_Rect textLocation = { position.x + 21, position.y + 15, 0, 0 };
 
 		if(timer>0) {
 			textLocation.y -= SLOWDOWN;

@@ -49,7 +49,7 @@ void drawCursor() {
 
 	SDL_Surface* surface = pGFXManager->getUIGraphic(cursorFrame);
 
-    SDL_Rect dest = { static_cast<Sint16>(drawnMouseX), static_cast<Sint16>(drawnMouseY), static_cast<Uint16>(surface->w), static_cast<Uint16>(surface->h) };
+    SDL_Rect dest = calcDrawingRect(surface, drawnMouseX, drawnMouseY);
 
 	//reposition image so pointing on right spot
 

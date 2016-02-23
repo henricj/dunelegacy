@@ -109,12 +109,11 @@ void InfantryBase::assignToMap(const Coord& pos) {
 }
 
 void InfantryBase::blitToScreen() {
-    int imageW = graphic[currentZoomlevel]->w/numImagesX;
-    int imageH = graphic[currentZoomlevel]->h/numImagesY;
-
-	SDL_Rect dest = {   static_cast<Sint16>(screenborder->world2screenX(realX) - imageW/2),
-                        static_cast<Sint16>(screenborder->world2screenY(realY) - imageH/2),
-                        static_cast<Uint16>(imageW), static_cast<Uint16>(imageH) };
+	SDL_Rect dest = calcSpriteDrawingRect(  graphic[currentZoomlevel],
+                                            screenborder->world2screenX(realX),
+                                            screenborder->world2screenY(realY),
+                                            numImagesX, numImagesY,
+                                            HAlign::Center, VAlign::Center);
 
     int temp = drawnAngle;
     if(temp == UP) {
@@ -128,7 +127,7 @@ void InfantryBase::blitToScreen() {
         temp = 0;
     }
 
-    SDL_Rect source = { static_cast<Sint16>(temp*imageW), static_cast<Sint16>((walkFrame/10 == 3) ? imageH : walkFrame/10*imageH), static_cast<Uint16>(imageW), static_cast<Uint16>(imageH) };
+    SDL_Rect source = calcSpriteSourceRect(graphic[currentZoomlevel], temp, numImagesX, (walkFrame/10 == 3) ? 1 : walkFrame/10, numImagesY);
 
     SDL_BlitSurface(graphic[currentZoomlevel], &source, screen, &dest);
 }

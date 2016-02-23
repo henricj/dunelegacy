@@ -118,7 +118,7 @@ public:
             return;
         }
 
-        SDL_Rect dest = { static_cast<Sint16>(position.x), static_cast<Sint16>(position.y), static_cast<Uint16>(surf->w), static_cast<Uint16>(surf->h) };
+        SDL_Rect dest = calcDrawingRect(surf, position.x, position.y);
         SDL_BlitSurface(surf,NULL,screen,&dest);
     }
 

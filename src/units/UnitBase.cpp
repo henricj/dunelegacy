@@ -247,15 +247,12 @@ void UnitBase::attack() {
 }
 
 void UnitBase::blitToScreen() {
-
-    SDL_Surface* pUnitGraphic = graphic[currentZoomlevel];
-    int imageW = pUnitGraphic->w/numImagesX;
-    int imageH = pUnitGraphic->h/numImagesY;
     int x = screenborder->world2screenX(realX);
     int y = screenborder->world2screenY(realY);
 
-    SDL_Rect source = { static_cast<Sint16>(drawnAngle * imageW), static_cast<Sint16>(drawnFrame * imageH), static_cast<Uint16>(imageW), static_cast<Uint16>(imageH) };
-    SDL_Rect dest = { static_cast<Sint16>(x - imageW/2), static_cast<Sint16>(y - imageH/2), static_cast<Uint16>(imageW), static_cast<Uint16>(imageH) };
+    SDL_Surface* pUnitGraphic = graphic[currentZoomlevel];
+    SDL_Rect source = calcSpriteSourceRect(pUnitGraphic, drawnAngle, numImagesX, drawnFrame, numImagesY);
+    SDL_Rect dest = calcSpriteDrawingRect( pUnitGraphic, x, y, numImagesX, numImagesY, HAlign::Center, VAlign::Center);
 
     SDL_BlitSurface(pUnitGraphic, &source, screen, &dest);
 
@@ -358,16 +355,13 @@ void UnitBase::drawSelectionBox() {
         default:    selectionBox = pGFXManager->getUIGraphic(UI_SelectionBox_Zoomlevel2);   break;
     }
 
-    SDL_Rect dest = {   static_cast<Sint16>(screenborder->world2screenX(realX) - selectionBox->w/2),
-                        static_cast<Sint16>(screenborder->world2screenY(realY) - selectionBox->h/2),
-                        static_cast<Uint16>(selectionBox->w),
-                        static_cast<Uint16>(selectionBox->h) };
+    SDL_Rect dest = calcDrawingRect(selectionBox, screenborder->world2screenX(realX), screenborder->world2screenY(realY), HAlign::Center, VAlign::Center);
 	SDL_BlitSurface(selectionBox, NULL, screen, &dest);
 
-	int x = screenborder->world2screenX(realX) - selectionBox->w/2;
-	int y = screenborder->world2screenY(realY) - selectionBox->h/2;
+	int x = screenborder->world2screenX(realX) - getWidth(selectionBox)/2;
+	int y = screenborder->world2screenY(realY) - getHeight(selectionBox)/2;
 	for(int i=1;i<=currentZoomlevel+1;i++) {
-        drawHLine(screen, x+1, y-i, x+1 + (lround((getHealth()/getMaxHealth())*(selectionBox->w-3))), getHealthColor());
+        drawHLine(screen, x+1, y-i, x+1 + (lround((getHealth()/getMaxHealth())*(getWidth(selectionBox)-3))), getHealthColor());
 	}
 }
 
@@ -381,10 +375,7 @@ void UnitBase::drawOtherPlayerSelectionBox() {
         default:    selectionBox = pGFXManager->getUIGraphic(UI_OtherPlayerSelectionBox_Zoomlevel2);   break;
     }
 
-    SDL_Rect dest = {   static_cast<Sint16>(screenborder->world2screenX(realX) - selectionBox->w/2),
-                        static_cast<Sint16>(screenborder->world2screenY(realY) - selectionBox->h/2),
-                        static_cast<Uint16>(selectionBox->w),
-                        static_cast<Uint16>(selectionBox->h) };
+    SDL_Rect dest = calcDrawingRect(selectionBox, screenborder->world2screenX(realX), screenborder->world2screenY(realY), HAlign::Center, VAlign::Center);
 	SDL_BlitSurface(selectionBox, NULL, screen, &dest);
 }
 
@@ -1333,15 +1324,8 @@ void UnitBase::drawSmoke(int x, int y) {
 
 	SDL_Surface** smoke = pGFXManager->getObjPic(ObjPic_Smoke,getOwner()->getHouseID());
 
-	int imageW = smoke[currentZoomlevel]->w/3;
-
-    SDL_Rect dest = {   static_cast<Sint16>(x - imageW/2),
-                        static_cast<Sint16>(y - smoke[currentZoomlevel]->h),
-                        static_cast<Uint16>(imageW),
-                        static_cast<Uint16>(smoke[currentZoomlevel]->h) };
-
-    SDL_Rect source = { static_cast<Sint16>(imageW * frame), 0,
-                        static_cast<Uint16>(imageW), static_cast<Uint16>(smoke[currentZoomlevel]->h) };
+	SDL_Rect dest = calcSpriteDrawingRect(smoke[currentZoomlevel], x, y, 3, 1, HAlign::Center, VAlign::Bottom);
+	SDL_Rect source = calcSpriteSourceRect(smoke[currentZoomlevel], frame, 3);
 
 	SDL_BlitSurface(smoke[currentZoomlevel], &source, screen, &dest);
 }

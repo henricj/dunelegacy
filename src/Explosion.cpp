@@ -142,19 +142,16 @@ void Explosion::save(OutputStream& stream) const
 
 void Explosion::blitToScreen() const
 {
-    Uint16 width = graphic[currentZoomlevel]->w/numFrames;
-    Uint16 height = graphic[currentZoomlevel]->h;
+    Uint16 width = getWidth(graphic[currentZoomlevel])/numFrames;
+    Uint16 height = getHeight(graphic[currentZoomlevel]);
 
     if(screenborder->isInsideScreen(position, Coord(width, height))) {
-        SDL_Rect dest = {   static_cast<Sint16>(screenborder->world2screenX(position.x) - width/2),
-                            static_cast<Sint16>(screenborder->world2screenY(position.y) - height/2),
-                            width,
-                            height };
-
-        SDL_Rect source = { static_cast<Sint16>(width * currentFrame),
-                            0,
-                            width,
-                            height };
+        SDL_Rect dest = calcSpriteDrawingRect(  graphic[currentZoomlevel],
+                                                screenborder->world2screenX(position.x),
+                                                screenborder->world2screenY(position.y),
+                                                numFrames, 1,
+                                                HAlign::Center, VAlign::Center);
+        SDL_Rect source = calcSpriteSourceRect(graphic[currentZoomlevel], currentFrame, numFrames);
         SDL_BlitSurface(graphic[currentZoomlevel], &source, screen, &dest);
     }
 }

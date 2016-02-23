@@ -333,7 +333,7 @@ bool ObjectBase::canAttack(const ObjectBase* object) const {
 
 bool ObjectBase::isOnScreen() const {
     Coord position = Coord(lround(getRealX()), lround(getRealY()));
-    Coord size = Coord(graphic[currentZoomlevel]->w/numImagesX, graphic[currentZoomlevel]->h/numImagesY);
+    Coord size = Coord(getWidth(graphic[currentZoomlevel])/numImagesX, getHeight(graphic[currentZoomlevel])/numImagesY);
 
 	if(screenborder->isInsideScreen(position,size) == true){
 		return true;

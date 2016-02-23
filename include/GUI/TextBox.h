@@ -188,7 +188,7 @@ public:
 			return;
 		}
 
-		SDL_Rect dest = { static_cast<Sint16>(position.x), static_cast<Sint16>(position.y), static_cast<Uint16>(pSurfaceWithoutCarret->w), static_cast<Uint16>(pSurfaceWithoutCarret->h) };
+		SDL_Rect dest = calcDrawingRect(pSurfaceWithoutCarret, position.x, position.y);
 
 		if(isActive()) {
 			if((SDL_GetTicks() - lastCarretTime) < 500) {

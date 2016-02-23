@@ -75,7 +75,7 @@ void NewsTicker::draw(SDL_Surface* screen, Point position) {
 			return;
 	}
 
-	SDL_Rect dest = { static_cast<Sint16>(position.x), static_cast<Sint16>(position.y), static_cast<Uint16>(pBackground->w), static_cast<Uint16>(pBackground->h) };
+	SDL_Rect dest = calcDrawingRect(pBackground, position.x, position.y);
 	SDL_BlitSurface(pBackground,NULL,screen,&dest);
 
 	// draw message
@@ -93,7 +93,7 @@ void NewsTicker::draw(SDL_Surface* screen, Point position) {
 		};
 
 		//draw text
-		SDL_Rect textLocation = { static_cast<Sint16>(position.x + 10), static_cast<Sint16>(position.y + 5), 0, 0 };
+		SDL_Rect textLocation = { position.x + 10, position.y + 5, 0, 0 };
 		if(timer>0) {
 			textLocation.y -= SLOWDOWN;
 		}
