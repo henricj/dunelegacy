@@ -629,8 +629,8 @@ void Game::drawScreen()
 
 
 ///////////draw game bar
-	pInterface->draw(screen, Point(0,0));
-	pInterface->drawOverlay(screen, Point(0,0));
+	pInterface->draw(Point(0,0));
+	pInterface->drawOverlay(Point(0,0));
 
 	// draw chat message currently typed
 	if(chatMode) {
@@ -678,13 +678,13 @@ void Game::drawScreen()
 	}
 
 	if(pWaitingForOtherPlayers != NULL) {
-        pWaitingForOtherPlayers->draw(screen);
+        pWaitingForOtherPlayers->draw();
 	}
 
 	if(pInGameMenu != NULL) {
-		pInGameMenu->draw(screen);
+		pInGameMenu->draw();
 	} else if(pInGameMentat != NULL) {
-		pInGameMentat->draw(screen);
+		pInGameMentat->draw();
 	}
 
 	drawCursor();

@@ -86,8 +86,8 @@ GameInterface::~GameInterface() {
 	removeOldContainer();
 }
 
-void GameInterface::draw(SDL_Surface* screen, Point position) {
-	Window::draw(screen,position);
+void GameInterface::draw(Point position) {
+	Window::draw(position);
 
 	// draw Power Indicator and Spice indicator
 

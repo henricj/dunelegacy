@@ -62,7 +62,7 @@ int RadarView::getMapSizeY() const {
 }
 
 
-void RadarView::draw(SDL_Surface* screen, Point position)
+void RadarView::draw(Point position)
 {
     SDL_Rect radarPosition = { position.x + RADARVIEW_BORDERTHICKNESS, position.y + RADARVIEW_BORDERTHICKNESS, RADARWIDTH, RADARHEIGHT};
 

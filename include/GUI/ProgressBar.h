@@ -128,10 +128,9 @@ public:
 
 	/**
 		Draws this progress bar to screen
-		\param	screen	Surface to draw on
 		\param	position	Position to draw the progress bar to
 	*/
-	virtual void draw(SDL_Surface* screen, Point position) {
+	virtual void draw(Point position) {
 		if(isVisible() == false) {
 			return;
 		}

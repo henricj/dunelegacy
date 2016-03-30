@@ -189,7 +189,7 @@ bool BuilderList::handleKeyPress(SDL_KeyboardEvent& key) {
 	return StaticContainer::handleKeyPress(key);
 }
 
-void BuilderList::draw(SDL_Surface* screen, Point position) {
+void BuilderList::draw(Point position) {
 	SDL_Rect blackRectDest = {	position.x, position.y + ARROWBTN_HEIGHT + BUILDERBTN_SPACING,
                                 getSize().x, getRealHeight(getSize().y) - 2*(ARROWBTN_HEIGHT + BUILDERBTN_SPACING) - BUILDERBTN_SPACING - ORDERBTN_HEIGHT };
     renderFillRect(renderer, &blackRectDest, COLOR_BLACK);
@@ -317,10 +317,10 @@ void BuilderList::draw(SDL_Surface* screen, Point position) {
 
     renderDrawVLine(renderer, builderListUpperCapDest.x + builderListUpperCapDest.w - 8, builderListUpperCapDest.y + builderListUpperCapDest.h, builderListLowerCapDest.y, RGB(125,80,0));
 
-	StaticContainer::draw(screen,position);
+	StaticContainer::draw(position);
 }
 
-void BuilderList::drawOverlay(SDL_Surface* screen, Point position) {
+void BuilderList::drawOverlay(Point position) {
 	if((SDL_GetTicks() - lastMouseMovement) > 800) {
 		// Draw tooltip
 

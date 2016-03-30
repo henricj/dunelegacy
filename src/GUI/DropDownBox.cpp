@@ -232,7 +232,7 @@ bool DropDownBox::handleKeyPress(SDL_KeyboardEvent& key) {
 
 }
 
-void DropDownBox::draw(SDL_Surface* screen, Point position) {
+void DropDownBox::draw(Point position) {
 	if(isVisible() == false) {
 		return;
 	}
@@ -256,13 +256,13 @@ void DropDownBox::draw(SDL_Surface* screen, Point position) {
 		}
 	}
 
-	openListBoxButton.draw(screen, position + Point(getSize().x - openListBoxButton.getSize().x - 1, 1));
+	openListBoxButton.draw(position + Point(getSize().x - openListBoxButton.getSize().x - 1, 1));
 }
 
-void DropDownBox::drawOverlay(SDL_Surface* screen, Point position) {
+void DropDownBox::drawOverlay(Point position) {
 	if(bShowListBox) {
         bListBoxAbove = (position.y + listBox.getSize().y > getRendererHeight());
-		listBox.draw(screen, position + Point(0,bListBoxAbove ? -listBox.getSize().y : getSize().y));
+		listBox.draw(position + Point(0,bListBoxAbove ? -listBox.getSize().y : getSize().y));
 	}
 }
 

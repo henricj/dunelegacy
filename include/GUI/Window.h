@@ -155,31 +155,27 @@ public:
 
 	/**
 		Draws this window to screen. This method should be called every frame.
-		\param	screen	Surface to draw on
 	*/
-	virtual void draw(SDL_Surface* screen) { draw(screen,Point(0,0)); };
+	virtual void draw() { draw(Point(0,0)); };
 
 	/**
 		Draws this window to screen. This method should be called every frame.
-		\param	screen	Surface to draw on
 		\param	position	Position to draw the window to. The position of the window is added to this.
 	*/
-	virtual void draw(SDL_Surface* screen, Point position);
+	virtual void draw(Point position);
 
 	/**
 		This method draws the parts of this window that must be drawn after all the other
 		widgets are drawn (e.g. tooltips). This method is called after draw().
-		\param	screen	Surface to draw on
 	*/
-	virtual void drawOverlay(SDL_Surface* screen) { drawOverlay(screen,Point(0,0)); };
+	virtual void drawOverlay() { drawOverlay(Point(0,0)); };
 
 	/**
 		This method draws the parts of this window that must be drawn after all the other
 		widgets are drawn (e.g. tooltips). This method is called after draw().
-		\param	screen	Surface to draw on
 		\param	Position	Position to draw the window to. The position of the window is added to this.
 	*/
-	virtual void drawOverlay(SDL_Surface* screen, Point position);
+	virtual void drawOverlay(Point position);
 
 	/**
 		That the current window widget. This is typically a container that hold all the widgets in this window.

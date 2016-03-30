@@ -228,8 +228,8 @@ void MentatMenu::drawSpecificStuff() {
 		} break;
 	}
 
-	shoulderAnim.draw(screen,shoulderPos);
-	textLabel.draw(screen,Point(10,5) + getPosition());
+	shoulderAnim.draw(shoulderPos);
+	textLabel.draw(Point(10,5) + getPosition());
 }
 
 int MentatMenu::getMissionSpecificAnim(int missionnumber) const {

@@ -256,10 +256,9 @@ public:
 
 	/**
 		Draws this label to screen.
-		\param	screen	Surface to draw on
 		\param	position	Position to draw the label to
 	*/
-	virtual void draw(SDL_Surface* screen, Point position) {
+	virtual void draw(Point position) {
 		if((isEnabled() == false) || (isVisible() == false) || (pTexture == NULL)) {
 			return;
 		}

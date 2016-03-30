@@ -105,7 +105,7 @@ bool ScrollBar::handleKeyPress(SDL_KeyboardEvent& key) {
 	return true;
 }
 
-void ScrollBar::draw(SDL_Surface* screen, Point position) {
+void ScrollBar::draw(Point position) {
 	if(isVisible() == false) {
 		return;
 	}
@@ -115,11 +115,11 @@ void ScrollBar::draw(SDL_Surface* screen, Point position) {
 		SDL_RenderCopy(renderer, pBackground, NULL, &dest);
 	}
 
-	arrow1.draw(screen,position);
+	arrow1.draw(position);
 	Point p = position;
 	p.y = p.y + getSize().y - arrow2.getSize().y;
-	arrow2.draw(screen,p);
-	sliderButton.draw(screen,position+sliderPosition);
+	arrow2.draw(p);
+	sliderButton.draw(position+sliderPosition);
 }
 
 void ScrollBar::resize(Uint32 width, Uint32 height) {

@@ -114,7 +114,7 @@ bool ListBox::handleKeyPress(SDL_KeyboardEvent& key) {
 	return true;
 }
 
-void ListBox::draw(SDL_Surface* screen, Point position) {
+void ListBox::draw(Point position) {
 	if(isVisible() == false) {
 		return;
 	}
@@ -131,7 +131,7 @@ void ListBox::draw(SDL_Surface* screen, Point position) {
 	ScrollBarPos.x += getSize().x - scrollbar.getSize().x;
 
     if(isScrollbarVisible()) {
-        scrollbar.draw(screen,ScrollBarPos);
+        scrollbar.draw(ScrollBarPos);
     }
 }
 

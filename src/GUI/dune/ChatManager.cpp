@@ -37,7 +37,7 @@ ChatManager::~ChatManager()
 
 }
 
-void ChatManager::draw(SDL_Surface* screen, Point position)
+void ChatManager::draw(Point position)
 {
     // delete all old messages
     Uint32 currentTime = SDL_GetTicks();

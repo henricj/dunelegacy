@@ -42,10 +42,9 @@ public:
 
 	/**
 		Draws this window to screen. This method should be called every frame.
-		\param	screen	Surface to draw on
 		\param	position	Position to draw the window to. The position of the window is added to this.
 	*/
-	virtual void draw(SDL_Surface* screen, Point position);
+	virtual void draw(Point position);
 
     /**
         Checks whether the newticker currently shows a message

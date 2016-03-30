@@ -77,7 +77,6 @@ HouseChoiceInfoMenu::HouseChoiceInfoMenu(int newHouse) : MentatMenu(HOUSE_INVALI
 }
 
 HouseChoiceInfoMenu::~HouseChoiceInfoMenu() {
-    SDL_FillRect(screen, NULL, COLOR_BLACK);
 }
 
 void HouseChoiceInfoMenu::onMentatTextFinished() {

@@ -51,10 +51,9 @@ public:
 
 	/**
 		Draws this widget to screen. This method is called before drawOverlay().
-		\param	screen	Surface to draw on
 		\param	position	Position to draw the widget to
 	*/
-	virtual inline void draw(SDL_Surface* screen, Point position) {
+	virtual inline void draw(Point position) {
 		if(pAnim == NULL) {
 			return;
 		}

@@ -86,10 +86,9 @@ public:
 
 	/**
 		Draws this button to screen. This method is called before drawOverlay().
-		\param	screen	Surface to draw on
 		\param	position	Position to draw the button to
 	*/
-	void draw(SDL_Surface* screen, Point position) {
+	void draw(Point position) {
 		if(isVisible() == false) {
 			return;
 		}

@@ -41,7 +41,7 @@ void MessageTicker::addMessage(const std::string& msg)
 	messageTextures.push(std::shared_ptr<SDL_Texture>(pFontManager->createTextureWithText(msg, COLOR_BLACK, FONT_STD12), SDL_DestroyTexture));
 }
 
-void MessageTicker::draw(SDL_Surface* screen, Point position) {
+void MessageTicker::draw(Point position) {
 	if(isVisible() == false) {
 		return;
 	}

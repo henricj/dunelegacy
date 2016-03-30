@@ -310,10 +310,9 @@ public:
 
 	/**
 		Draws this container and it's children to screen. This method is called before drawOverlay().
-		\param	screen	Surface to draw on
 		\param	position	Position to draw the container to
 	*/
-	virtual void draw(SDL_Surface* screen, Point position) {
+	virtual void draw(Point position) {
 		if(isVisible() == false) {
 			return;
 		}
@@ -322,17 +321,16 @@ public:
 		for(iter = containedWidgets.begin(); iter != containedWidgets.end(); ++iter) {
 			Widget* curWidget = iter->pWidget;
 			Point pos = getPosition(*iter);
-			curWidget->draw(screen,position+pos);
+			curWidget->draw(position+pos);
 		}
 	}
 
 	/**
 		This method draws the parts of this container that must be drawn after all the other
 		widgets are drawn (e.g. tooltips). This method is called after draw().
-		\param	screen	Surface to draw on
 		\param	position	Position to draw the container to
 	*/
-	virtual void drawOverlay(SDL_Surface* screen, Point position) {
+	virtual void drawOverlay(Point position) {
 		if(isVisible() == false) {
 			return;
 		}
@@ -341,7 +339,7 @@ public:
 		for(iter = containedWidgets.begin(); iter != containedWidgets.end(); ++iter) {
 			Widget* curWidget = iter->pWidget;
 			Point pos = getPosition(*iter);
-			curWidget->drawOverlay(screen,position+pos);
+			curWidget->drawOverlay(position+pos);
 		}
 	}
 

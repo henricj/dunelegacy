@@ -39,7 +39,7 @@ public:
 
 	virtual void drawSpecificStuff();
 
-	virtual void draw(SDL_Surface* screen);
+	virtual void draw();
 	virtual bool doInput(SDL_Event &event);
 
 	void setClearScreen(bool bClearScreen) {

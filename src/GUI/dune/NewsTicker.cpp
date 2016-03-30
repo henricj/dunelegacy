@@ -69,7 +69,7 @@ void NewsTicker::addUrgentMessage(const std::string& msg)
 	messages.push(msg);
 }
 
-void NewsTicker::draw(SDL_Surface* screen, Point position) {
+void NewsTicker::draw(Point position) {
 	if(isVisible() == false) {
 		return;
 	}

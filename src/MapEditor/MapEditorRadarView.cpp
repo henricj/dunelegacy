@@ -55,7 +55,7 @@ int MapEditorRadarView::getMapSizeY() const {
     return pMapEditor->getMap().getSizeY();
 }
 
-void MapEditorRadarView::draw(SDL_Surface* screen, Point position)
+void MapEditorRadarView::draw(Point position)
 {
     SDL_Rect radarPosition = { position.x + RADARVIEW_BORDERTHICKNESS, position.y + RADARVIEW_BORDERTHICKNESS, RADARWIDTH, RADARHEIGHT};
 

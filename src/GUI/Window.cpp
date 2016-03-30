@@ -224,7 +224,7 @@ bool Window::handleKeyPress(SDL_KeyboardEvent& key) {
 	}
 }
 
-void Window::draw(SDL_Surface* screen, Point position) {
+void Window::draw(Point position) {
 	if(isVisible()) {
 		if(bTransparentBackground == false) {
 
@@ -240,20 +240,20 @@ void Window::draw(SDL_Surface* screen, Point position) {
 		}
 
 		if(pWindowWidget != NULL) {
-			pWindowWidget->draw(screen, Point(position.x+getPosition().x,position.y+getPosition().y));
+			pWindowWidget->draw(Point(position.x+getPosition().x,position.y+getPosition().y));
 		}
 	}
 
 	if(pChildWindow != NULL) {
-		pChildWindow->draw(screen);
+		pChildWindow->draw();
 	}
 }
 
-void Window::drawOverlay(SDL_Surface* screen, Point position) {
+void Window::drawOverlay(Point position) {
 	if(pChildWindow != NULL) {
-		pChildWindow->drawOverlay(screen);
+		pChildWindow->drawOverlay();
 	} else if(isVisible() && (pWindowWidget != NULL)) {
-		pWindowWidget->drawOverlay(screen, Point(position.x+getPosition().x,position.y+getPosition().y));
+		pWindowWidget->drawOverlay(Point(position.x+getPosition().x,position.y+getPosition().y));
 	}
 }
 

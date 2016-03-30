@@ -53,10 +53,9 @@ public:
 
 	/**
 		Draws this widget to screen. This method is called before drawOverlay().
-		\param	screen	Surface to draw on
 		\param	position	Position to draw the widget to
 	*/
-	virtual inline void draw(SDL_Surface* screen, Point position) {
+	virtual inline void draw(Point position) {
 		SDL_Texture* tex = pGFXManager->getUIGraphic(UI_MissionSelect);
 
 		SDL_Rect dest = calcDrawingRect(tex, position.x, position.y);

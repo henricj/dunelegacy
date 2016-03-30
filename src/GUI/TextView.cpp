@@ -63,7 +63,7 @@ bool TextView::handleKeyPress(SDL_KeyboardEvent& key) {
 	return true;
 }
 
-void TextView::draw(SDL_Surface* screen, Point position) {
+void TextView::draw(Point position) {
 	if(isVisible() == false) {
 		return;
 	}
@@ -90,7 +90,7 @@ void TextView::draw(SDL_Surface* screen, Point position) {
 	scrollBarPos.x += getSize().x - scrollbar.getSize().x;
 
     if(!bAutohideScrollbar || (scrollbar.getRangeMin() != scrollbar.getRangeMax())) {
-        scrollbar.draw(screen,scrollBarPos);
+        scrollbar.draw(scrollBarPos);
     }
 }
 

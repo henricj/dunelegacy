@@ -62,7 +62,7 @@ int MenuBase::showMenu() {
             return retVal;
 	    }
 
-		draw(screen);
+		draw();
 
 		while(SDL_PollEvent(&event)) {
 		    //check the events
@@ -82,17 +82,17 @@ int MenuBase::showMenu() {
 	return retVal;
 }
 
-void MenuBase::draw(SDL_Surface* screen) {
+void MenuBase::draw() {
 	if(bClearScreen == true) {
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
         SDL_RenderClear(renderer);
 	}
 
-	Window::draw(screen);
+	Window::draw();
 
 	drawSpecificStuff();
 
-	Window::drawOverlay(screen);
+	Window::drawOverlay();
 
 	drawCursor();
 

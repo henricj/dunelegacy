@@ -181,10 +181,9 @@ public:
 
 	/**
 		Draws this text box to screen.
-		\param	screen	Surface to draw on
 		\param	Position	Position to draw the text box to
 	*/
-	virtual void draw(SDL_Surface* screen, Point position) {
+	virtual void draw(Point position) {
 		if((isVisible() == false) || (pTextureWithoutCarret == NULL) || (pTextureWithCarret == NULL)) {
 			return;
 		}

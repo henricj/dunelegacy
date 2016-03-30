@@ -99,18 +99,16 @@ public:
 
 	/**
 		Draws this scroll bar to screen. This method is called before drawOverlay().
-		\param	screen	Surface to draw on
 		\param	position	Position to draw the scroll bar to
 	*/
-	virtual void draw(SDL_Surface* screen, Point position);
+	virtual void draw(Point position);
 
 	/**
 		This method draws the parts of this widget that must be drawn after all the other
 		widgets are drawn (e.g. tooltips). This method is called after draw().
-		\param	screen	Surface to draw on
 		\param	position	Position to draw the widget to
 	*/
-	virtual void drawOverlay(SDL_Surface* screen, Point position);
+	virtual void drawOverlay(Point position);
 
 	/**
 		This method resized the scroll bar to width and height. This method should only

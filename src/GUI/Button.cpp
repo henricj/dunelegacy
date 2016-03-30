@@ -129,7 +129,7 @@ bool Button::handleKeyPress(SDL_KeyboardEvent& key) {
 	return true;
 }
 
-void Button::draw(SDL_Surface* screen, Point position) {
+void Button::draw(Point position) {
 	if(isVisible() == false) {
 		return;
 	}
@@ -173,7 +173,7 @@ void Button::draw(SDL_Surface* screen, Point position) {
 	SDL_RenderCopy(renderer, tex, NULL, &dest);
 }
 
-void Button::drawOverlay(SDL_Surface* screen, Point Pos) {
+void Button::drawOverlay(Point Pos) {
 	if(isVisible() && isEnabled() && (bHover == true)) {
 		if(tooltipTexture != NULL) {
 			if((SDL_GetTicks() - tooltipLastMouseMotion) > 750) {

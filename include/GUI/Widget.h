@@ -364,18 +364,16 @@ public:
 
 	/**
 		Draws this widget to screen. This method is called before drawOverlay().
-		\param	screen	Surface to draw on
 		\param	Position	Position to draw the widget to
 	*/
-	virtual inline void draw(SDL_Surface* screen, Point position) { ; };
+	virtual inline void draw(Point position) { ; };
 
 	/**
 		This method draws the parts of this widget that must be drawn after all the other
 		widgets are drawn (e.g. tooltips). This method is called after draw().
-		\param	screen	Surface to draw on
 		\param	Position	Position to draw the widget to
 	*/
-	virtual inline void drawOverlay(SDL_Surface* screen, Point position) { ; };
+	virtual inline void drawOverlay(Point position) { ; };
 
 
 	/**

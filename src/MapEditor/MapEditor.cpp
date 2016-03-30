@@ -965,10 +965,10 @@ void MapEditor::drawScreen() {
     SDL_RenderClear(renderer);
 
 	//the actuall map
-	drawMap(screen, screenborder, false);
+	drawMap(screenborder, false);
 
-    pInterface->draw(screen, Point(0,0));
-	pInterface->drawOverlay(screen, Point(0,0));
+    pInterface->draw(Point(0,0));
+	pInterface->drawOverlay(Point(0,0));
 
 	// Cursor
 	drawCursor();
@@ -1410,7 +1410,7 @@ TERRAINTYPE MapEditor::getTerrain(int x, int y) {
     return terrainType;
 }
 
-void MapEditor::drawMap(SDL_Surface* pScreen, ScreenBorder* pScreenborder, bool bCompleteMap) {
+void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) {
     int zoomedTilesize = world2zoomedWorld(TILESIZE);
 
     Coord TopLeftTile = pScreenborder->getTopLeftTile();
@@ -1647,34 +1647,29 @@ void MapEditor::drawMap(SDL_Surface* pScreen, ScreenBorder* pScreenborder, bool 
 	    // draw selection frame
         if(!bCompleteMap && (std::find(selectedStructures.begin(), selectedStructures.end(), sIter->id) != selectedStructures.end()) ) {
             //now draw the selection box thing, with parts at all corners of structure
-            if(!SDL_MUSTLOCK(pScreen) || (SDL_LockSurface(pScreen) == 0)) {
-                // top left bit
-                for(int i=0;i<=currentZoomlevel;i++) {
-                    renderDrawHLine(renderer, selectionDest.x+i, selectionDest.y+i, selectionDest.x+(currentZoomlevel+1)*3, COLOR_WHITE);
-                    renderDrawVLine(renderer, selectionDest.x+i, selectionDest.y+i, selectionDest.y+(currentZoomlevel+1)*3, COLOR_WHITE);
-                }
 
-                // top right bit
-                for(int i=0;i<=currentZoomlevel;i++) {
-                    renderDrawHLine(renderer, selectionDest.x + selectionDest.w-1 - i, selectionDest.y+i, selectionDest.x + selectionDest.w-1 - (currentZoomlevel+1)*3, COLOR_WHITE);
-                    renderDrawVLine(renderer, selectionDest.x + selectionDest.w-1 - i, selectionDest.y+i, selectionDest.y+(currentZoomlevel+1)*3, COLOR_WHITE);
-                }
+            // top left bit
+            for(int i=0;i<=currentZoomlevel;i++) {
+                renderDrawHLine(renderer, selectionDest.x+i, selectionDest.y+i, selectionDest.x+(currentZoomlevel+1)*3, COLOR_WHITE);
+                renderDrawVLine(renderer, selectionDest.x+i, selectionDest.y+i, selectionDest.y+(currentZoomlevel+1)*3, COLOR_WHITE);
+            }
 
-                // bottom left bit
-                for(int i=0;i<=currentZoomlevel;i++) {
-                    renderDrawHLine(renderer, selectionDest.x+i, selectionDest.y + selectionDest.h-1 - i, selectionDest.x+(currentZoomlevel+1)*3, COLOR_WHITE);
-                    renderDrawVLine(renderer, selectionDest.x+i, selectionDest.y + selectionDest.h-1 - i, selectionDest.y + selectionDest.h-1 - (currentZoomlevel+1)*3, COLOR_WHITE);
-                }
+            // top right bit
+            for(int i=0;i<=currentZoomlevel;i++) {
+                renderDrawHLine(renderer, selectionDest.x + selectionDest.w-1 - i, selectionDest.y+i, selectionDest.x + selectionDest.w-1 - (currentZoomlevel+1)*3, COLOR_WHITE);
+                renderDrawVLine(renderer, selectionDest.x + selectionDest.w-1 - i, selectionDest.y+i, selectionDest.y+(currentZoomlevel+1)*3, COLOR_WHITE);
+            }
 
-                // bottom right bit
-                for(int i=0;i<=currentZoomlevel;i++) {
-                    renderDrawHLine(renderer, selectionDest.x + selectionDest.w-1 - i, selectionDest.y + selectionDest.h-1 - i, selectionDest.x + selectionDest.w-1 - (currentZoomlevel+1)*3, COLOR_WHITE);
-                    renderDrawVLine(renderer, selectionDest.x + selectionDest.w-1 - i, selectionDest.y + selectionDest.h-1 - i, selectionDest.y + selectionDest.h-1 - (currentZoomlevel+1)*3, COLOR_WHITE);
-                }
+            // bottom left bit
+            for(int i=0;i<=currentZoomlevel;i++) {
+                renderDrawHLine(renderer, selectionDest.x+i, selectionDest.y + selectionDest.h-1 - i, selectionDest.x+(currentZoomlevel+1)*3, COLOR_WHITE);
+                renderDrawVLine(renderer, selectionDest.x+i, selectionDest.y + selectionDest.h-1 - i, selectionDest.y + selectionDest.h-1 - (currentZoomlevel+1)*3, COLOR_WHITE);
+            }
 
-                if(SDL_MUSTLOCK(pScreen)) {
-                    SDL_UnlockSurface(pScreen);
-                }
+            // bottom right bit
+            for(int i=0;i<=currentZoomlevel;i++) {
+                renderDrawHLine(renderer, selectionDest.x + selectionDest.w-1 - i, selectionDest.y + selectionDest.h-1 - i, selectionDest.x + selectionDest.w-1 - (currentZoomlevel+1)*3, COLOR_WHITE);
+                renderDrawVLine(renderer, selectionDest.x + selectionDest.w-1 - i, selectionDest.y + selectionDest.h-1 - i, selectionDest.y + selectionDest.h-1 - (currentZoomlevel+1)*3, COLOR_WHITE);
             }
         }
 
@@ -1871,35 +1866,29 @@ void MapEditor::drawMap(SDL_Surface* pScreen, ScreenBorder* pScreenborder, bool 
                 dest.w = world2zoomedWorld(currentEditorMode.pensize*TILESIZE);
                 dest.h = world2zoomedWorld(currentEditorMode.pensize*TILESIZE);
 
-                //now draw the box with parts at all corners
-                if(!SDL_MUSTLOCK(pScreen) || (SDL_LockSurface(pScreen) == 0)) {
-                    // top left bit
-                    for(int i=0;i<=currentZoomlevel;i++) {
-                        renderDrawHLine(renderer, dest.x+i, dest.y+i, dest.x+(currentZoomlevel+1)*3, COLOR_WHITE);
-                        renderDrawVLine(renderer, dest.x+i, dest.y+i, dest.y+(currentZoomlevel+1)*3, COLOR_WHITE);
-                    }
+                // now draw the box with parts at all corners
+                // top left bit
+                for(int i=0;i<=currentZoomlevel;i++) {
+                    renderDrawHLine(renderer, dest.x+i, dest.y+i, dest.x+(currentZoomlevel+1)*3, COLOR_WHITE);
+                    renderDrawVLine(renderer, dest.x+i, dest.y+i, dest.y+(currentZoomlevel+1)*3, COLOR_WHITE);
+                }
 
-                    // top right bit
-                    for(int i=0;i<=currentZoomlevel;i++) {
-                        renderDrawHLine(renderer, dest.x + dest.w-1 - i, dest.y+i, dest.x + dest.w-1 - (currentZoomlevel+1)*3, COLOR_WHITE);
-                        renderDrawVLine(renderer, dest.x + dest.w-1 - i, dest.y+i, dest.y+(currentZoomlevel+1)*3, COLOR_WHITE);
-                    }
+                // top right bit
+                for(int i=0;i<=currentZoomlevel;i++) {
+                    renderDrawHLine(renderer, dest.x + dest.w-1 - i, dest.y+i, dest.x + dest.w-1 - (currentZoomlevel+1)*3, COLOR_WHITE);
+                    renderDrawVLine(renderer, dest.x + dest.w-1 - i, dest.y+i, dest.y+(currentZoomlevel+1)*3, COLOR_WHITE);
+                }
 
-                    // bottom left bit
-                    for(int i=0;i<=currentZoomlevel;i++) {
-                        renderDrawHLine(renderer, dest.x+i, dest.y + dest.h-1 - i, dest.x+(currentZoomlevel+1)*3, COLOR_WHITE);
-                        renderDrawVLine(renderer, dest.x+i, dest.y + dest.h-1 - i, dest.y + dest.h-1 - (currentZoomlevel+1)*3, COLOR_WHITE);
-                    }
+                // bottom left bit
+                for(int i=0;i<=currentZoomlevel;i++) {
+                    renderDrawHLine(renderer, dest.x+i, dest.y + dest.h-1 - i, dest.x+(currentZoomlevel+1)*3, COLOR_WHITE);
+                    renderDrawVLine(renderer, dest.x+i, dest.y + dest.h-1 - i, dest.y + dest.h-1 - (currentZoomlevel+1)*3, COLOR_WHITE);
+                }
 
-                    // bottom right bit
-                    for(int i=0;i<=currentZoomlevel;i++) {
-                        renderDrawHLine(renderer, dest.x + dest.w-1 - i, dest.y + dest.h-1 - i, dest.x + dest.w-1 - (currentZoomlevel+1)*3, COLOR_WHITE);
-                        renderDrawVLine(renderer, dest.x + dest.w-1 - i, dest.y + dest.h-1 - i, dest.y + dest.h-1 - (currentZoomlevel+1)*3, COLOR_WHITE);
-                    }
-
-                    if(SDL_MUSTLOCK(pScreen)) {
-                        SDL_UnlockSurface(pScreen);
-                    }
+                // bottom right bit
+                for(int i=0;i<=currentZoomlevel;i++) {
+                    renderDrawHLine(renderer, dest.x + dest.w-1 - i, dest.y + dest.h-1 - i, dest.x + dest.w-1 - (currentZoomlevel+1)*3, COLOR_WHITE);
+                    renderDrawVLine(renderer, dest.x + dest.w-1 - i, dest.y + dest.h-1 - i, dest.y + dest.h-1 - (currentZoomlevel+1)*3, COLOR_WHITE);
                 }
             }
 
@@ -2016,6 +2005,7 @@ void MapEditor::drawMap(SDL_Surface* pScreen, ScreenBorder* pScreenborder, bool 
 }
 
 void MapEditor::saveMapshot() {
+    // TODO: Fix this for 2D accelerated rendering
     int oldCurrentZoomlevel = currentZoomlevel;
     currentZoomlevel = 0;
 
@@ -2036,7 +2026,7 @@ void MapEditor::saveMapshot() {
     ScreenBorder tmpScreenborder(board);
     tmpScreenborder.adjustScreenBorderToMapsize(map.getSizeX(), map.getSizeY());
 
-    drawMap(pMapshotSurface, &tmpScreenborder, true);
+    drawMap(&tmpScreenborder, true);
 
     SDL_SaveBMP(pMapshotSurface, mapshotFilename.c_str());
 

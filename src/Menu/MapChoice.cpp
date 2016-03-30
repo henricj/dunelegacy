@@ -293,7 +293,7 @@ void MapChoice::drawSpecificStuff() {
 
 	}
 
-	msgticker.draw(screen, Point(centerAreaRect.x + 110, centerAreaRect.y + 320));
+	msgticker.draw(Point(centerAreaRect.x + 110, centerAreaRect.y + 320));
 }
 
 bool MapChoice::doInput(SDL_Event &event) {

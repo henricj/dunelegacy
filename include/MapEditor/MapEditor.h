@@ -285,7 +285,7 @@ private:
 	void drawScreen();
 	void processInput();
 	void drawCursor();
-	void drawMap(SDL_Surface* pScreen, ScreenBorder* pScreenborder, bool bCompleteMap);
+	void drawMap(ScreenBorder* pScreenborder, bool bCompleteMap);
 	TERRAINTYPE getTerrain(int x, int y);
 	void saveMapshot();
 

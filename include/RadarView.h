@@ -54,10 +54,9 @@ public:
 
 	/**
 		Draws the radar to screen. This method is called before drawOverlay().
-		\param	screen	Surface to draw on
 		\param	Position	Position to draw the radar to
 	*/
-	virtual void draw(SDL_Surface* screen, Point position);
+	virtual void draw(Point position);
 
 
 	/**
