@@ -139,13 +139,13 @@ void StructureBase::blitToScreen() {
                                             numImagesX, numImagesY);
     SDL_Rect source = calcSpriteSourceRect(graphic[currentZoomlevel],indexX,numImagesX,indexY,numImagesY);
 
-    SDL_BlitSurface(graphic[currentZoomlevel], &source, screen, &dest);
+    SDL_RenderCopy(renderer, graphic[currentZoomlevel], &source, &dest);
 
     if(fogged) {
         SDL_Surface* fogSurf = pGFXManager->getTransparent40Surface();
         SDL_BlitSurface(fogSurf, &source, screen, &dest);
     } else {
-        SDL_Surface** pSmokeSurface = pGFXManager->getObjPic(ObjPic_Smoke,getOwner()->getHouseID());
+        SDL_Texture** pSmokeSurface = pGFXManager->getObjPic(ObjPic_Smoke,getOwner()->getHouseID());
         SDL_Rect smokeSource = calcSpriteSourceRect(pSmokeSurface[currentZoomlevel], 0, 3);
         std::list<StructureSmoke>::const_iterator iter;
         for(iter = smoke.begin(); iter != smoke.end(); ++iter) {
@@ -161,7 +161,7 @@ void StructureBase::blitToScreen() {
             }
 
             smokeSource.x = smokeFrame * smokeSource.w;
-            SDL_BlitSurface(pSmokeSurface[currentZoomlevel], &smokeSource, screen, &smokeDest);
+            SDL_RenderCopy(renderer, pSmokeSurface[currentZoomlevel], &smokeSource, &smokeDest);
         }
     }
 }
@@ -185,26 +185,26 @@ void StructureBase::drawSelectionBox() {
 	if(!SDL_MUSTLOCK(screen) || (SDL_LockSurface(screen) == 0)) {
         // top left bit
         for(int i=0;i<=currentZoomlevel;i++) {
-            drawHLineNoLock(screen,dest.x+i, dest.y+i, dest.x+(currentZoomlevel+1)*3, COLOR_WHITE);
-            drawVLineNoLock(screen,dest.x+i, dest.y+i, dest.y+(currentZoomlevel+1)*3, COLOR_WHITE);
+            renderDrawHLine(renderer, dest.x+i, dest.y+i, dest.x+(currentZoomlevel+1)*3, COLOR_WHITE);
+            renderDrawVLine(renderer, dest.x+i, dest.y+i, dest.y+(currentZoomlevel+1)*3, COLOR_WHITE);
         }
 
         // top right bit
         for(int i=0;i<=currentZoomlevel;i++) {
-            drawHLineNoLock(screen,dest.x + dest.w-1 - i, dest.y+i, dest.x + dest.w-1 - (currentZoomlevel+1)*3, COLOR_WHITE);
-            drawVLineNoLock(screen,dest.x + dest.w-1 - i, dest.y+i, dest.y+(currentZoomlevel+1)*3, COLOR_WHITE);
+            renderDrawHLine(renderer, dest.x + dest.w-1 - i, dest.y+i, dest.x + dest.w-1 - (currentZoomlevel+1)*3, COLOR_WHITE);
+            renderDrawVLine(renderer, dest.x + dest.w-1 - i, dest.y+i, dest.y+(currentZoomlevel+1)*3, COLOR_WHITE);
         }
 
         // bottom left bit
         for(int i=0;i<=currentZoomlevel;i++) {
-            drawHLineNoLock(screen,dest.x+i, dest.y + dest.h-1 - i, dest.x+(currentZoomlevel+1)*3, COLOR_WHITE);
-            drawVLineNoLock(screen,dest.x+i, dest.y + dest.h-1 - i, dest.y + dest.h-1 - (currentZoomlevel+1)*3, COLOR_WHITE);
+            renderDrawHLine(renderer, dest.x+i, dest.y + dest.h-1 - i, dest.x+(currentZoomlevel+1)*3, COLOR_WHITE);
+            renderDrawVLine(renderer, dest.x+i, dest.y + dest.h-1 - i, dest.y + dest.h-1 - (currentZoomlevel+1)*3, COLOR_WHITE);
         }
 
         // bottom right bit
         for(int i=0;i<=currentZoomlevel;i++) {
-            drawHLineNoLock(screen,dest.x + dest.w-1 - i, dest.y + dest.h-1 - i, dest.x + dest.w-1 - (currentZoomlevel+1)*3, COLOR_WHITE);
-            drawVLineNoLock(screen,dest.x + dest.w-1 - i, dest.y + dest.h-1 - i, dest.y + dest.h-1 - (currentZoomlevel+1)*3, COLOR_WHITE);
+            renderDrawHLine(renderer, dest.x + dest.w-1 - i, dest.y + dest.h-1 - i, dest.x + dest.w-1 - (currentZoomlevel+1)*3, COLOR_WHITE);
+            renderDrawVLine(renderer, dest.x + dest.w-1 - i, dest.y + dest.h-1 - i, dest.y + dest.h-1 - (currentZoomlevel+1)*3, COLOR_WHITE);
         }
 
 		if(SDL_MUSTLOCK(screen)) {
@@ -213,7 +213,7 @@ void StructureBase::drawSelectionBox() {
 	}
 
     for(int i=1;i<=currentZoomlevel+1;i++) {
-        drawHLine(screen, dest.x, dest.y-i-1, dest.x + (lround((getHealth()/getMaxHealth())*(world2zoomedWorld(TILESIZE)*structureSize.x - 1))), getHealthColor());
+        renderDrawHLine(renderer, dest.x, dest.y-i-1, dest.x + (lround((getHealth()/getMaxHealth())*(world2zoomedWorld(TILESIZE)*structureSize.x - 1))), getHealthColor());
     }
 }
 
@@ -228,26 +228,26 @@ void StructureBase::drawOtherPlayerSelectionBox() {
 	if(!SDL_MUSTLOCK(screen) || (SDL_LockSurface(screen) == 0)) {
         // top left bit
         for(int i=0;i<=currentZoomlevel;i++) {
-            drawHLineNoLock(screen,dest.x+i, dest.y+i, dest.x+(currentZoomlevel+1)*2, COLOR_LIGHTBLUE);
-            drawVLineNoLock(screen,dest.x+i, dest.y+i, dest.y+(currentZoomlevel+1)*2, COLOR_LIGHTBLUE);
+            renderDrawHLine(renderer, dest.x+i, dest.y+i, dest.x+(currentZoomlevel+1)*2, COLOR_LIGHTBLUE);
+            renderDrawVLine(renderer, dest.x+i, dest.y+i, dest.y+(currentZoomlevel+1)*2, COLOR_LIGHTBLUE);
         }
 
         // top right bit
         for(int i=0;i<=currentZoomlevel;i++) {
-            drawHLineNoLock(screen,dest.x + dest.w-1 - i, dest.y+i, dest.x + dest.w-1 - (currentZoomlevel+1)*2, COLOR_LIGHTBLUE);
-            drawVLineNoLock(screen,dest.x + dest.w-1 - i, dest.y+i, dest.y+(currentZoomlevel+1)*2, COLOR_LIGHTBLUE);
+            renderDrawHLine(renderer, dest.x + dest.w-1 - i, dest.y+i, dest.x + dest.w-1 - (currentZoomlevel+1)*2, COLOR_LIGHTBLUE);
+            renderDrawVLine(renderer, dest.x + dest.w-1 - i, dest.y+i, dest.y+(currentZoomlevel+1)*2, COLOR_LIGHTBLUE);
         }
 
         // bottom left bit
         for(int i=0;i<=currentZoomlevel;i++) {
-            drawHLineNoLock(screen,dest.x+i, dest.y + dest.h-1 - i, dest.x+(currentZoomlevel+1)*2, COLOR_LIGHTBLUE);
-            drawVLineNoLock(screen,dest.x+i, dest.y + dest.h-1 - i, dest.y + dest.h-1 - (currentZoomlevel+1)*2, COLOR_LIGHTBLUE);
+            renderDrawHLine(renderer, dest.x+i, dest.y + dest.h-1 - i, dest.x+(currentZoomlevel+1)*2, COLOR_LIGHTBLUE);
+            renderDrawVLine(renderer, dest.x+i, dest.y + dest.h-1 - i, dest.y + dest.h-1 - (currentZoomlevel+1)*2, COLOR_LIGHTBLUE);
         }
 
         // bottom right bit
         for(int i=0;i<=currentZoomlevel;i++) {
-            drawHLineNoLock(screen,dest.x + dest.w-1 - i, dest.y + dest.h-1 - i, dest.x + dest.w-1 - (currentZoomlevel+1)*2, COLOR_LIGHTBLUE);
-            drawVLineNoLock(screen,dest.x + dest.w-1 - i, dest.y + dest.h-1 - i, dest.y + dest.h-1 - (currentZoomlevel+1)*2, COLOR_LIGHTBLUE);
+            renderDrawHLine(renderer, dest.x + dest.w-1 - i, dest.y + dest.h-1 - i, dest.x + dest.w-1 - (currentZoomlevel+1)*2, COLOR_LIGHTBLUE);
+            renderDrawVLine(renderer, dest.x + dest.w-1 - i, dest.y + dest.h-1 - i, dest.y + dest.h-1 - (currentZoomlevel+1)*2, COLOR_LIGHTBLUE);
         }
 
 		if(SDL_MUSTLOCK(screen)) {

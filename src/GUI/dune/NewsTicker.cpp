@@ -30,12 +30,16 @@ NewsTicker::NewsTicker() : Widget() {
 
  	timer = -MESSAGETIME/2;
 	pBackground = pGFXManager->getUIGraphic(UI_MessageBox);
+	pCurrentMessageTexture = NULL;
 
-	resize(pBackground->w,pBackground->h);
+	resize(getTextureSize(pBackground));
 }
 
 NewsTicker::~NewsTicker() {
-
+    if(pCurrentMessageTexture != NULL) {
+        SDL_DestroyTexture(pCurrentMessageTexture);
+        pCurrentMessageTexture = NULL;
+    }
 }
 
 void NewsTicker::addMessage(const std::string& msg)
@@ -72,11 +76,11 @@ void NewsTicker::draw(SDL_Surface* screen, Point position) {
 
 	//draw background
 	if(pBackground == NULL) {
-			return;
+        return;
 	}
 
 	SDL_Rect dest = calcDrawingRect(pBackground, position.x, position.y);
-	SDL_BlitSurface(pBackground,NULL,screen,&dest);
+	SDL_RenderCopy(renderer, pBackground, NULL, &dest);
 
 	// draw message
 	if(!messages.empty()) {
@@ -98,15 +102,25 @@ void NewsTicker::draw(SDL_Surface* screen, Point position) {
 			textLocation.y -= SLOWDOWN;
 		}
 
-		SDL_Surface *surface = pFontManager->createSurfaceWithText(messages.front(), COLOR_BLACK, FONT_STD10);
-		SDL_Rect cut = { 0, 0, 0, 0 };
-		if(timer>0) {
-			cut.y = 3*SLOWDOWN;
+		if(currentMessage != messages.front()) {
+            if(pCurrentMessageTexture != NULL) {
+                SDL_DestroyTexture(pCurrentMessageTexture);
+                pCurrentMessageTexture = NULL;
+            }
+            currentMessage = messages.front();
+            pCurrentMessageTexture = pFontManager->createTextureWithText(currentMessage, COLOR_BLACK, FONT_STD10);
 		}
 
-		cut.h = surface->h - cut.y;
-		cut.w = surface->w;
-		SDL_BlitSurface(surface, &cut, screen, &textLocation);
-		SDL_FreeSurface(surface);
+		if(pCurrentMessageTexture != NULL) {
+
+            SDL_Rect cut = { 0, 0, 0, 0 };
+            if(timer>0) {
+                cut.y = 3*SLOWDOWN;
+            }
+
+            textLocation.w = cut.w = getWidth(pCurrentMessageTexture);
+            textLocation.h = cut.h = getHeight(pCurrentMessageTexture) - cut.y;
+            SDL_RenderCopy(renderer, pCurrentMessageTexture, &cut, &textLocation);
+        }
 	};
 }

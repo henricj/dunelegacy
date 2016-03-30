@@ -129,7 +129,7 @@ void InfantryBase::blitToScreen() {
 
     SDL_Rect source = calcSpriteSourceRect(graphic[currentZoomlevel], temp, numImagesX, (walkFrame/10 == 3) ? 1 : walkFrame/10, numImagesY);
 
-    SDL_BlitSurface(graphic[currentZoomlevel], &source, screen, &dest);
+    SDL_RenderCopy(renderer, graphic[currentZoomlevel], &source, &dest);
 }
 
 bool InfantryBase::canPass(int xPos, int yPos) const {

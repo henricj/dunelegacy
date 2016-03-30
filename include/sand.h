@@ -64,7 +64,7 @@ Coord	        getStructureSize(int itemID);
 
 Uint32          getItemIDByName(std::string name);
 std::string     getItemNameByID(Uint32 itemID);
-SDL_Surface*    resolveItemPicture(int itemID, HOUSETYPE house = HOUSE_HARKONNEN);
+SDL_Texture*    resolveItemPicture(int itemID, HOUSETYPE house = HOUSE_HARKONNEN);
 
 HOUSETYPE       getHouseByName(std::string name);
 std::string     getHouseNameByNumber(HOUSETYPE house);

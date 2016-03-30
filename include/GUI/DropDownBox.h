@@ -296,7 +296,7 @@ public:
 	void removeEntry(int index) {
 		listBox.removeEntry(index);
 		if((pForeground != NULL) && (listBox.getSelectedIndex() < 0)) {
-			SDL_FreeSurface(pForeground);
+			SDL_DestroyTexture(pForeground);
             pForeground = NULL;
 		}
 		resizeListBox();
@@ -308,7 +308,7 @@ public:
 	void clearAllEntries() {
 		listBox.clearAllEntries();
 		if(pForeground != NULL) {
-			SDL_FreeSurface(pForeground);
+			SDL_DestroyTexture(pForeground);
             pForeground = NULL;
 		}
 		resizeListBox();
@@ -430,9 +430,9 @@ private:
 	bool bAutocloseListBoxOnSelectionChange;	    ///< This is a small hack to allow the list box to be open while selection with up/down keys
 	bool bOnClickEnabled;                           ///< Is the onClick event enabled for this widget?
 
-	SDL_Surface* pBackground;
-	SDL_Surface* pForeground;
-	SDL_Surface* pActiveForeground;                 ///< Ís shown while the mouse cursor is over this drop down box
+	SDL_Texture* pBackground;
+	SDL_Texture* pForeground;
+	SDL_Texture* pActiveForeground;                 ///< Ís shown while the mouse cursor is over this drop down box
 
 	PictureButton openListBoxButton;
 	ListBox listBox;

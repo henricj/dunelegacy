@@ -17,15 +17,13 @@
 
 MultiPlayerMenu::MultiPlayerMenu() : MenuBase() {
 	// set up window
-	SDL_Surface *surf;
-	surf = pGFXManager->getUIGraphic(UI_MenuBackground);
-
-	setBackground(surf,false);
-	resize(surf->w,surf->h);
+    SDL_Texture *pBackground = pGFXManager->getUIGraphic(UI_MenuBackground);
+	setBackground(pBackground, false);
+	resize(getTextureSize(pBackground));
 
 	setWindowWidget(&windowWidget);
 
-	windowWidget.addWidget(&mainVBox, Point(24,23),	Point(screen->w - 48, screen->h - 46));
+	windowWidget.addWidget(&mainVBox, Point(24,23),	Point(getRendererWidth() - 48, getRendererHeight() - 46));
 
     captionLabel.setText("Multiplayer Game");
     captionLabel.setAlignment(Alignment_HCenter);

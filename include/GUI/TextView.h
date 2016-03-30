@@ -200,8 +200,8 @@ private:
 
 	Alignment_Enum alignment;	///< the alignment of this label
 
-	SDL_Surface* pBackground;
-	SDL_Surface* pForeground;
+	SDL_Texture* pBackground;
+	SDL_Texture* pForeground;
 	ScrollBar scrollbar;
 
     bool bAutohideScrollbar;    ///< hide the scrollbar if not needed (default = true)

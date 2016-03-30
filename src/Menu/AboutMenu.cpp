@@ -24,38 +24,36 @@
 AboutMenu::AboutMenu() : MenuBase()
 {
 	// set up window
-	SDL_Surface *surf;
-	surf = pGFXManager->getUIGraphic(UI_MenuBackground);
-
-	setBackground(surf,false);
-	resize(surf->w,surf->h);
+    SDL_Texture *pBackground = pGFXManager->getUIGraphic(UI_MenuBackground);
+	setBackground(pBackground, false);
+	resize(getTextureSize(pBackground));
 
 	setWindowWidget(&windowWidget);
 
 	// set up pictures in the background
-	surf = pGFXManager->getUIGraphic(UI_PlanetBackground);
-	planetPicture.setSurface(surf,false);
-	windowWidget.addWidget(&planetPicture,
-							Point((screen->w - surf->w)/2,screen->h/2 - surf->h + 10),
-							Point(surf->w,surf->h));
+	SDL_Texture* pPlanetBackground = pGFXManager->getUIGraphic(UI_PlanetBackground);
+	planetPicture.setTexture(pPlanetBackground, false);
+	SDL_Rect dest1 = calcAlignedDrawingRect(pPlanetBackground);
+	dest1.y = dest1.y - getHeight(pPlanetBackground)/2 + 10;
+	windowWidget.addWidget(&planetPicture, dest1);
 
-	surf = pGFXManager->getUIGraphic(UI_DuneLegacy);
-	duneLegacy.setSurface(surf,false);
-	windowWidget.addWidget(&duneLegacy,
-							Point((screen->w - surf->w)/2, screen->h/2 + 28),
-							Point(surf->w,surf->h));
+	SDL_Texture* pDuneLegacy = pGFXManager->getUIGraphic(UI_DuneLegacy);
+	duneLegacy.setTexture(pDuneLegacy, false);
+	SDL_Rect dest2 = calcAlignedDrawingRect(pDuneLegacy);
+	dest2.y = dest2.y + getHeight(pDuneLegacy)/2 + 28;
+	windowWidget.addWidget(&duneLegacy, dest2);
 
-	surf = pGFXManager->getUIGraphic(UI_MenuButtonBorder);
-	buttonBorder.setSurface(surf,false);
-	windowWidget.addWidget(&buttonBorder,
-							Point((screen->w - surf->w)/2, screen->h/2 + 59),
-							Point(surf->w,surf->h));
+	SDL_Texture* pMenuButtonBorder = pGFXManager->getUIGraphic(UI_MenuButtonBorder);
+	buttonBorder.setTexture(pMenuButtonBorder, false);
+	SDL_Rect dest3 = calcAlignedDrawingRect(pMenuButtonBorder);
+	dest3.y = dest3.y + getHeight(pMenuButtonBorder)/2 + 59;
+	windowWidget.addWidget(&buttonBorder, dest3);
 
 
 	text.setText("Written by\n  Anthony Cole,\n  Richard Schaller,\n  Stefan van der Wel\n    and many others\n");
 	text.setAlignment(Alignment_Left);
 	windowWidget.addWidget(&text,
-							Point((screen->w - 160)/2,screen->h/2 + 60 /*74*/),
+							Point((getRendererWidth() - 160)/2,getRendererHeight()/2 + 60 /*74*/),
 							Point(170,110));
 }
 

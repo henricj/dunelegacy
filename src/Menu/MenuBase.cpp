@@ -84,7 +84,8 @@ int MenuBase::showMenu() {
 
 void MenuBase::draw(SDL_Surface* screen) {
 	if(bClearScreen == true) {
-		SDL_FillRect(screen, NULL, COLOR_BLACK);
+        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+        SDL_RenderClear(renderer);
 	}
 
 	Window::draw(screen);
@@ -95,9 +96,6 @@ void MenuBase::draw(SDL_Surface* screen) {
 
 	drawCursor();
 
-	SDL_RenderClear(renderer);
-	SDL_UpdateTexture(texture, NULL, screen->pixels, screen->pitch);
-	SDL_RenderCopy(renderer, texture, NULL, NULL);
 	SDL_RenderPresent(renderer);
 }
 

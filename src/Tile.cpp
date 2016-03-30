@@ -274,13 +274,13 @@ void Tile::blitGround(int xPos, int yPos) {
 
 		//draw terrain
 		if(destroyedStructureTile == DestroyedStructure_None || destroyedStructureTile == DestroyedStructure_Wall) {
-            SDL_BlitSurface(sprite[currentZoomlevel], &source, screen, &drawLocation);
+            SDL_RenderCopy(renderer, sprite[currentZoomlevel], &source, &drawLocation);
 		}
 
 		if(destroyedStructureTile != DestroyedStructure_None) {
-		    SDL_Surface** pDestroyedStructureSurface = pGFXManager->getObjPic(ObjPic_DestroyedStructure);
+		    SDL_Texture** pDestroyedStructureSurface = pGFXManager->getObjPic(ObjPic_DestroyedStructure);
 		    SDL_Rect source2 = { destroyedStructureTile*world2zoomedWorld(TILESIZE), 0, world2zoomedWorld(TILESIZE), world2zoomedWorld(TILESIZE) };
-            SDL_BlitSurface(pDestroyedStructureSurface[currentZoomlevel], &source2, screen, &drawLocation);
+            SDL_RenderCopy(renderer, pDestroyedStructureSurface[currentZoomlevel], &source2, &drawLocation);
 		}
 
 		if(!isFogged(pLocalHouse->getHouseID())) {
@@ -288,7 +288,7 @@ void Tile::blitGround(int xPos, int yPos) {
 		    for(int i=0;i<NUM_ANGLES;i++) {
                 if(tracksCounter[i] > 0) {
                     source.x = ((10-i)%8)*world2zoomedWorld(TILESIZE);
-                    SDL_BlitSurface(pGFXManager->getObjPic(ObjPic_Terrain_Tracks)[currentZoomlevel], &source, screen, &drawLocation);
+                    SDL_RenderCopy(renderer, pGFXManager->getObjPic(ObjPic_Terrain_Tracks)[currentZoomlevel], &source, &drawLocation);
                 }
 		    }
 
@@ -301,9 +301,9 @@ void Tile::blitGround(int xPos, int yPos) {
                                     world2zoomedWorld(TILESIZE) };
 
                 if(iter->damageType == Terrain_RockDamage) {
-                    SDL_BlitSurface(pGFXManager->getObjPic(ObjPic_RockDamage)[currentZoomlevel], &source, screen, &dest);
+                    SDL_RenderCopy(renderer, pGFXManager->getObjPic(ObjPic_RockDamage)[currentZoomlevel], &source, &dest);
                 } else {
-                    SDL_BlitSurface(pGFXManager->getObjPic(ObjPic_SandDamage)[currentZoomlevel], &source, screen, &drawLocation);
+                    SDL_RenderCopy(renderer, pGFXManager->getObjPic(ObjPic_SandDamage)[currentZoomlevel], &source, &drawLocation);
                 }
 		    }
 		}
@@ -353,25 +353,25 @@ void Tile::blitDeadUnits(int xPos, int yPos) {
 	if(!isFogged(pLocalHouse->getHouseID())) {
 	    for(std::vector<DEADUNITTYPE>::const_iterator iter = deadUnits.begin(); iter != deadUnits.end(); ++iter) {
 	        SDL_Rect source = { 0, 0, world2zoomedWorld(TILESIZE), world2zoomedWorld(TILESIZE) };
-	        SDL_Surface** pSurface = NULL;
+	        SDL_Texture** pTexture = NULL;
 	        switch(iter->type) {
                 case DeadUnit_Infantry: {
-                    pSurface = pGFXManager->getObjPic(ObjPic_DeadInfantry, iter->house);
+                    pTexture = pGFXManager->getObjPic(ObjPic_DeadInfantry, iter->house);
                     source.x = (iter->timer < 1000 && iter->onSand) ? world2zoomedWorld(TILESIZE) : 0;
                 } break;
 
                 case DeadUnit_Infantry_Squashed1: {
-                    pSurface = pGFXManager->getObjPic(ObjPic_DeadInfantry, iter->house);
+                    pTexture = pGFXManager->getObjPic(ObjPic_DeadInfantry, iter->house);
                     source.x = 4 * world2zoomedWorld(TILESIZE);
                 } break;
 
                 case DeadUnit_Infantry_Squashed2: {
-                    pSurface = pGFXManager->getObjPic(ObjPic_DeadInfantry, iter->house);
+                    pTexture = pGFXManager->getObjPic(ObjPic_DeadInfantry, iter->house);
                     source.x = 5 * world2zoomedWorld(TILESIZE);
                 } break;
 
                 case DeadUnit_Carrall: {
-                    pSurface = pGFXManager->getObjPic(ObjPic_DeadAirUnit, iter->house);
+                    pTexture = pGFXManager->getObjPic(ObjPic_DeadAirUnit, iter->house);
                     if(iter->onSand) {
                         source.x = (iter->timer < 1000) ? 5*world2zoomedWorld(TILESIZE) : 4*world2zoomedWorld(TILESIZE);
                     } else {
@@ -380,7 +380,7 @@ void Tile::blitDeadUnits(int xPos, int yPos) {
                 } break;
 
                 case DeadUnit_Ornithopter: {
-                    pSurface = pGFXManager->getObjPic(ObjPic_DeadAirUnit, iter->house);
+                    pTexture = pGFXManager->getObjPic(ObjPic_DeadAirUnit, iter->house);
                     if(iter->onSand) {
                         source.x = (iter->timer < 1000) ? 2*world2zoomedWorld(TILESIZE) : world2zoomedWorld(TILESIZE);
                     } else {
@@ -389,15 +389,16 @@ void Tile::blitDeadUnits(int xPos, int yPos) {
                 } break;
 
                 default: {
-                    pSurface = NULL;
+                    pTexture = NULL;
                 } break;
 	        }
 
-	        if(pSurface != NULL) {
-                SDL_Rect dest = calcDrawingRect(pSurface[currentZoomlevel],
-                                                screenborder->world2screenX(iter->realPos.x) - world2zoomedWorld(TILESIZE)/2,
-                                                screenborder->world2screenY(iter->realPos.y) - world2zoomedWorld(TILESIZE)/2);
-                SDL_BlitSurface(pSurface[currentZoomlevel], &source, screen, &dest);
+	        if(pTexture != NULL) {
+                SDL_Rect dest = {   screenborder->world2screenX(iter->realPos.x) - world2zoomedWorld(TILESIZE)/2,
+                                    screenborder->world2screenY(iter->realPos.y) - world2zoomedWorld(TILESIZE)/2,
+                                    world2zoomedWorld(TILESIZE),
+                                    world2zoomedWorld(TILESIZE) };
+                SDL_RenderCopy(renderer, pTexture[currentZoomlevel], &source, &dest);
 	        }
 	    }
 	}

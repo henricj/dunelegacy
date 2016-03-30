@@ -960,7 +960,7 @@ GFXManager::~GFXManager() {
                     objPic[i][j][z] = NULL;
                 }
                 if(objPicTex[i][j][z] != NULL) {
-                    SDL_FreeSurface(objPicTex[i][j][z]);
+                    SDL_DestroyTexture(objPicTex[i][j][z]);
                     objPicTex[i][j][z] = NULL;
                 }
             }
@@ -969,7 +969,7 @@ GFXManager::~GFXManager() {
 
 	for(int i = 0; i < NUM_SMALLDETAILPICS; i++) {
 		if(smallDetailPicTex[i] != NULL) {
-            SDL_FreeSurface(smallDetailPicTex[i]);
+            SDL_DestroyTexture(smallDetailPicTex[i]);
             smallDetailPicTex[i] = NULL;
 		}
 	}
@@ -981,7 +981,7 @@ GFXManager::~GFXManager() {
                 uiGraphic[i][j] = NULL;
 			}
 			if(uiGraphicTex[i][j] != NULL) {
-                SDL_FreeSurface(uiGraphicTex[i][j]);
+                SDL_DestroyTexture(uiGraphicTex[i][j]);
                 uiGraphicTex[i][j] = NULL;
 			}
 		}
@@ -994,7 +994,7 @@ GFXManager::~GFXManager() {
                 mapChoicePieces[i][j] = NULL;
 			}
 			if(mapChoicePiecesTex[i][j] != NULL) {
-                SDL_FreeSurface(mapChoicePiecesTex[i][j]);
+                SDL_DestroyTexture(mapChoicePiecesTex[i][j]);
                 mapChoicePiecesTex[i][j] = NULL;
 			}
 		}
@@ -1012,7 +1012,7 @@ GFXManager::~GFXManager() {
 	SDL_FreeSurface(pTransparent150Surface);
 }
 
-SDL_Surface** GFXManager::getObjPic(unsigned int id, int house) {
+SDL_Texture** GFXManager::getObjPic(unsigned int id, int house) {
 	if(id >= NUM_OBJPICS) {
 		fprintf(stderr,"GFXManager::getObjPic(): Unit Picture with id %d is not available!\n",id);
 		exit(EXIT_FAILURE);
@@ -1033,12 +1033,9 @@ SDL_Surface** GFXManager::getObjPic(unsigned int id, int house) {
             // now convert to display format
             if(id == ObjPic_Windtrap) {
                 // Windtrap uses palette animation on PALCOLOR_WINDTRAP_COLORCYCLE; fake this
-                objPicTex[id][house][z] = generateWindtrapAnimationFrames(objPic[id][house][z]);
+                objPicTex[id][house][z] = convertSurfaceToTexture(generateWindtrapAnimationFrames(objPic[id][house][z]), true);
             } else {
-                if((objPicTex[id][house][z] = SDL_ConvertSurfaceFormat(objPic[id][house][z], SCREEN_FORMAT, 0)) == NULL) {
-                    fprintf(stderr,"GFXManager::getObjPic(): Converting to display format failed!\n");
-                    exit(EXIT_FAILURE);
-                }
+                objPicTex[id][house][z] = convertSurfaceToTexture(objPic[id][house][z], false);
             }
         }
     }
@@ -1047,7 +1044,7 @@ SDL_Surface** GFXManager::getObjPic(unsigned int id, int house) {
 }
 
 
-SDL_Surface* GFXManager::getSmallDetailPic(unsigned int id) {
+SDL_Texture* GFXManager::getSmallDetailPic(unsigned int id) {
 	if(id >= NUM_SMALLDETAILPICS) {
 		return NULL;
 	}
@@ -1074,7 +1071,7 @@ SDL_Surface* GFXManager::getUIGraphicSurface(unsigned int id, int house) {
 	return uiGraphic[id][house];
 }
 
-SDL_Surface* GFXManager::getUIGraphic(unsigned int id, int house) {
+SDL_Texture* GFXManager::getUIGraphic(unsigned int id, int house) {
 	if(id >= NUM_UIGRAPHICS) {
 		fprintf(stderr,"GFXManager::getUIGraphic(): UI Graphic with id %d is not available!\n",id);
 		exit(EXIT_FAILURE);
@@ -1084,13 +1081,9 @@ SDL_Surface* GFXManager::getUIGraphic(unsigned int id, int house) {
         SDL_Surface* pSurface = getUIGraphicSurface(id, house);
 
         if(id >= UI_MapChoiceArrow_None && id <= UI_MapChoiceArrow_Left) {
-            uiGraphicTex[id][house] = generateMapChoiceArrrowFrames(pSurface, house);
+            uiGraphicTex[id][house] = convertSurfaceToTexture(generateMapChoiceArrowFrames(pSurface, house), true);
         } else {
-            uiGraphicTex[id][house] = SDL_ConvertSurfaceFormat(pSurface, SCREEN_FORMAT, 0);
-            if(uiGraphicTex[id][house] == NULL) {
-                fprintf(stderr,"GFXManager::getUIGraphic(): Converting to display format failed!\n");
-                exit(EXIT_FAILURE);
-            }
+            uiGraphicTex[id][house] = convertSurfaceToTexture(pSurface, false);
         }
 	}
 
@@ -1116,18 +1109,14 @@ SDL_Surface* GFXManager::getMapChoicePieceSurface(unsigned int num, int house) {
 	return mapChoicePieces[num][house];
 }
 
-SDL_Surface* GFXManager::getMapChoicePiece(unsigned int num, int house) {
+SDL_Texture* GFXManager::getMapChoicePiece(unsigned int num, int house) {
 	if(num >= NUM_MAPCHOICEPIECES) {
 		fprintf(stderr,"GFXManager::getMapChoicePiece(): Map Piece with number %d is not available!\n",num);
 		exit(EXIT_FAILURE);
 	}
 
 	if(mapChoicePiecesTex[num][house] == NULL) {
-		mapChoicePiecesTex[num][house] = SDL_ConvertSurfaceFormat(getMapChoicePieceSurface(num, house), SCREEN_FORMAT, 0);
-        if(mapChoicePiecesTex[num][house] == NULL) {
-            fprintf(stderr,"GFXManager::getMapChoicePiece(): Converting to display format failed!\n");
-            exit(EXIT_FAILURE);
-        }
+		mapChoicePiecesTex[num][house] = convertSurfaceToTexture(getMapChoicePieceSurface(num, house), false);
 	}
 
 	return mapChoicePiecesTex[num][house];
@@ -1262,10 +1251,10 @@ shared_ptr<Wsafile> GFXManager::loadWsafile(std::string filename) {
 	}
 }
 
-SDL_Surface* GFXManager::extractSmallDetailPic(std::string filename) {
+SDL_Texture* GFXManager::extractSmallDetailPic(std::string filename) {
 	SDL_RWops* myFile;
 	if((myFile = pFileManager->openFile(filename.c_str())) == NULL) {
-		fprintf(stderr,"GFXManager::ExtractSmallDetailPic: Cannot open %s!\n",filename.c_str());
+		fprintf(stderr,"GFXManager::extractSmallDetailPic(): Cannot open %s!\n",filename.c_str());
 		exit(EXIT_FAILURE);
 	}
 
@@ -1273,12 +1262,12 @@ SDL_Surface* GFXManager::extractSmallDetailPic(std::string filename) {
 
 	SDL_Surface* tmp;
 	if((tmp = myWsafile->getPicture(0)) == NULL) {
-		fprintf(stderr,"GFXManager::ExtractSmallDetailPic: Cannot decode first frame in file %s!\n",filename.c_str());
+		fprintf(stderr,"GFXManager::extractSmallDetailPic(): Cannot decode first frame in file %s!\n",filename.c_str());
 		exit(EXIT_FAILURE);
 	}
 
 	if((tmp->w != 184) || (tmp->h != 112)) {
-		fprintf(stderr,"GFXManager::ExtractSmallDetailPic: Picture %s is not 184x112!\n",filename.c_str());
+		fprintf(stderr,"GFXManager::extractSmallDetailPic(): Picture %s is not 184x112!\n",filename.c_str());
 		exit(EXIT_FAILURE);
 	}
 
@@ -1286,7 +1275,7 @@ SDL_Surface* GFXManager::extractSmallDetailPic(std::string filename) {
 
 	// create new picture surface
 	if((pSurface = SDL_CreateRGBSurface(0, 91, 55, 8, 0, 0, 0, 0)) == NULL) {
-		fprintf(stderr,"GFXManager::ExtractSmallDetailPic: Cannot create new Picture for %s!\n",filename.c_str());
+		fprintf(stderr,"GFXManager::extractSmallDetailPic(): Cannot create new Picture for %s!\n",filename.c_str());
 		exit(EXIT_FAILURE);
 	}
 
@@ -1309,9 +1298,7 @@ SDL_Surface* GFXManager::extractSmallDetailPic(std::string filename) {
 	delete myWsafile;
 	SDL_RWclose(myFile);
 
-	SDL_Surface* pTexture = convertSurfaceToDisplayFormat(pSurface, true);
-
-	return pTexture;
+	return convertSurfaceToTexture(pSurface, true);
 }
 
 Animation* GFXManager::loadAnimationFromWsa(std::string filename) {
@@ -1374,7 +1361,7 @@ SDL_Surface* GFXManager::generateWindtrapAnimationFrames(SDL_Surface* windtrapPi
 }
 
 
-SDL_Surface* GFXManager::generateMapChoiceArrrowFrames(SDL_Surface* arrowPic, int house) {
+SDL_Surface* GFXManager::generateMapChoiceArrowFrames(SDL_Surface* arrowPic, int house) {
     SDL_Surface* returnPic = SDL_CreateRGBSurface(0, arrowPic->w*4, arrowPic->h, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK);
 
     SDL_Rect dest = {0, 0, arrowPic->w, arrowPic->h};

@@ -76,6 +76,15 @@ public:
 	virtual void draw(SDL_Surface* screen, Point position);
 
 	/**
+		This method resized the scroll bar. This method should only
+		called if the new size is a valid size for this scroll bar (See getMinumumSize).
+		\param	size	the new size of this scroll bar
+	*/
+	inline virtual void resize(Point newSize) {
+        resize(newSize.x, newSize.y);
+	}
+
+	/**
 		This method resized the scroll bar to width and height. This method should only
 		called if the new size is a valid size for this scroll bar (See getMinumumSize).
 		\param	width	the new width of this scroll bar
@@ -195,7 +204,7 @@ private:
 		setCurrentValue(currentValue+1);
 	}
 
-	SDL_Surface* pBackground;
+	SDL_Texture* pBackground;
 	PictureButton arrow1;
 	PictureButton arrow2;
 	TextButton sliderButton;

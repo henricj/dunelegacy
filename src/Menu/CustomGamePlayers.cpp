@@ -50,15 +50,13 @@ CustomGamePlayers::CustomGamePlayers(const GameInitSettings& newGameInitSettings
  : MenuBase(), gameInitSettings(newGameInitSettings), bServer(server), bLANServer(LANServer), startGameTime(0), brainEqHumanSlot(-1) {
 
 	// set up window
-	SDL_Surface *surf;
-	surf = pGFXManager->getUIGraphic(UI_MenuBackground);
-
-	setBackground(surf,false);
-	resize(surf->w,surf->h);
+    SDL_Texture *pBackground = pGFXManager->getUIGraphic(UI_MenuBackground);
+	setBackground(pBackground, false);
+	resize(getTextureSize(pBackground));
 
 	setWindowWidget(&windowWidget);
 
-	windowWidget.addWidget(&mainVBox, Point(24,23),	Point(screen->w - 48, screen->h - 32));
+	windowWidget.addWidget(&mainVBox, Point(24,23),	Point(getRendererWidth() - 48, getRendererHeight() - 32));
 
     captionLabel.setText(getBasename(gameInitSettings.getFilename(), true));
     captionLabel.setAlignment(Alignment_HCenter);
@@ -164,7 +162,7 @@ CustomGamePlayers::CustomGamePlayers(const GameInitSettings& newGameInitSettings
 
     chatTextView.setTextFont(FONT_STD10);
 	chatVBox.addWidget(&chatTextView, 0.77);
-	if(screen->h <= 600) {
+	if(getRendererHeight() <= 600) {
         chatTextBox.setTextFont(FONT_STD10);
 	}
 	chatTextBox.setOnReturn(std::bind(&CustomGamePlayers::onSendChatMessage, this));
@@ -253,7 +251,7 @@ CustomGamePlayers::CustomGamePlayers(const GameInitSettings& newGameInitSettings
         curHouseInfo.houseInfoVBox.addWidget(&curHouseInfo.houseHBox);
 
         // add 1. player
-        curHouseInfo.player1ArrowLabel.setSurface(pGFXManager->getUIGraphic(UI_CustomGamePlayersArrowNeutral), false);
+        curHouseInfo.player1ArrowLabel.setTexture(pGFXManager->getUIGraphic(UI_CustomGamePlayersArrowNeutral), false);
         curHouseInfo.playerHBox.addWidget(&curHouseInfo.player1ArrowLabel);
         curHouseInfo.player1Label.setText(_("Player") + (gameInitSettings.isMultiplePlayersPerHouse() ? " 1" : ""));
         curHouseInfo.player1Label.setTextFont(FONT_STD10);
@@ -978,9 +976,9 @@ void CustomGamePlayers::onChangeHousesDropDownBoxes(bool bInteractive, int house
             curHouseInfo.player2DropDown.setColor(color);
 
             if(house == HOUSE_INVALID) {
-                curHouseInfo.player1ArrowLabel.setSurface(pGFXManager->getUIGraphic(UI_CustomGamePlayersArrowNeutral), false);
+                curHouseInfo.player1ArrowLabel.setTexture(pGFXManager->getUIGraphic(UI_CustomGamePlayersArrowNeutral), false);
             } else {
-                curHouseInfo.player1ArrowLabel.setSurface(pGFXManager->getUIGraphic(UI_CustomGamePlayersArrow, house), false);
+                curHouseInfo.player1ArrowLabel.setTexture(pGFXManager->getUIGraphic(UI_CustomGamePlayersArrow, house), false);
             }
         }
 

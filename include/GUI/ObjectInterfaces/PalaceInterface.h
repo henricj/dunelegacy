@@ -39,23 +39,21 @@ protected:
 	PalaceInterface(int objectID) : DefaultStructureInterface(objectID) {
 		mainHBox.addWidget(&weaponBox);
 
-		SDL_Surface* pSurface = pGFXManager->getSmallDetailPic(Picture_DeathHand);
-		weaponBox.addWidget(&weaponProgressBar,Point((SIDEBARWIDTH - 25 - pSurface->w)/2,5),
-									Point(pSurface->w, pSurface->h));
+		SDL_Texture* pTexture = pGFXManager->getSmallDetailPic(Picture_DeathHand);
+		weaponBox.addWidget(&weaponProgressBar, Point((SIDEBARWIDTH - 25 - getWidth(pTexture))/2,5), getTextureSize(pTexture));
 
-		weaponBox.addWidget(&weaponSelectButton,Point((SIDEBARWIDTH - 25 - pSurface->w)/2,5),
-									Point(pSurface->w, pSurface->h));
+		weaponBox.addWidget(&weaponSelectButton, Point((SIDEBARWIDTH - 25 - getWidth(pTexture))/2,5), getTextureSize(pTexture));
 
 		SDL_Surface* pText = pFontManager->createSurfaceWithText(_("READY"), COLOR_WHITE, FONT_STD10);
 
-		SDL_Surface* pReady = SDL_CreateRGBSurface(0, pSurface->w, pSurface->h, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK);
+		SDL_Surface* pReady = SDL_CreateRGBSurface(0, getWidth(pTexture), getHeight(pTexture), SCREEN_BPP, RMASK, GMASK, BMASK, AMASK);
 		SDL_FillRect(pReady, NULL, COLOR_TRANSPARENT);
 
         SDL_Rect dest = calcAlignedDrawingRect(pText, pReady);
         SDL_BlitSurface(pText, NULL, pReady, &dest);
 
 		SDL_FreeSurface(pText);
-		weaponSelectButton.setSurfaces(pReady,true);
+		weaponSelectButton.setTextures(convertSurfaceToTexture(pReady, true),true);
 		weaponSelectButton.setVisible(false);
 
 		weaponSelectButton.setOnClick(std::bind(&PalaceInterface::onSpecial, this));
@@ -98,7 +96,7 @@ protected:
                 } break;
 			}
 
-			weaponProgressBar.setSurface(pGFXManager->getSmallDetailPic(picID),false);
+			weaponProgressBar.setTexture(pGFXManager->getSmallDetailPic(picID),false);
 			weaponProgressBar.setProgress(pPalace->getPercentComplete());
 
 			weaponSelectButton.setVisible(pPalace->isSpecialWeaponReady());

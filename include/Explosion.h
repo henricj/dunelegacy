@@ -44,7 +44,7 @@ private:
     Uint32 explosionID;
     Coord position;
     int house;
-    SDL_Surface** graphic;
+    SDL_Texture** graphic;
     int numFrames;
     int currentFrame;
     int frameTimer;

@@ -84,6 +84,26 @@ public:
 	Sint32 y;
 };
 
+/**
+    Return the dimensions of the given surface
+    \param  pSurface    the surface to measure
+    \return the size of pSurface
+*/
+inline Point getSurfaceSize(SDL_Surface* pSurface) {
+    return Point(pSurface->w, pSurface->h);
+}
+
+/**
+    Return the dimensions of the given texture
+    \param  pTexture    the texture to measure
+    \return the size of pTexture
+*/
+inline Point getTextureSize(SDL_Texture* pTexture) {
+    Point p;
+    SDL_QueryTexture(pTexture, NULL, NULL, &p.x, &p.y);
+    return p;
+}
+
 // forward declarations
 class Window;
 template<class WidgetData> class Container;
@@ -217,6 +237,16 @@ public:
 		\return	true = resizeable in Y direction, false = not resizeable in Y direction
 	*/
 	inline bool resizingYAllowed() const { return resizeY; };
+
+	/**
+		This method resized the widget. This method should only be
+		called if the new size is a valid size for this widget (See resizingXAllowed,
+		resizingYAllowed, getMinumumSize).
+		\param	newSize	the new size of this widget
+	*/
+	virtual inline void resize(Point newSize) {
+		resize(newSize.x, newSize.y);
+	};
 
 	/**
 		This method resized the widget to width and height. This method should only be

@@ -89,31 +89,31 @@ public:
 		\param	height	the new height of this button
 	*/
 	virtual void resize(Uint32 width, Uint32 height) {
-		SDL_Surface *Unpressed = NULL;
-		SDL_Surface *Pressed = NULL;
-		SDL_Surface *Active = NULL;
+		SDL_Surface *pUnpressed = NULL;
+		SDL_Surface *pPressed = NULL;
+		SDL_Surface *pActive = NULL;
 
-		Unpressed = GUIStyle::getInstance().createButtonSurface(width, height, "", false, true);
-		Pressed = GUIStyle::getInstance().createButtonSurface(width, height, "", true, true);
+		pUnpressed = GUIStyle::getInstance().createButtonSurface(width, height, "", false, true);
+		pPressed = GUIStyle::getInstance().createButtonSurface(width, height, "", true, true);
 
 
 		if(pSymbolSurface != NULL) {
-            SDL_Rect dest = calcAlignedDrawingRect(pSymbolSurface, Unpressed);
-			SDL_BlitSurface(pSymbolSurface, NULL, Unpressed, &dest);
+            SDL_Rect dest = calcAlignedDrawingRect(pSymbolSurface, pUnpressed);
+			SDL_BlitSurface(pSymbolSurface, NULL, pUnpressed, &dest);
 
             dest.x++;
             dest.y++;
-			SDL_BlitSurface(pActiveSymbolSurface != NULL ? pActiveSymbolSurface : pSymbolSurface, NULL, Pressed, &dest);
+			SDL_BlitSurface(pActiveSymbolSurface != NULL ? pActiveSymbolSurface : pSymbolSurface, NULL, pPressed, &dest);
 		}
 
         if(pActiveSymbolSurface != NULL) {
-            Active = GUIStyle::getInstance().createButtonSurface(width, height, "", false, true);
+            pActive = GUIStyle::getInstance().createButtonSurface(width, height, "", false, true);
 
-            SDL_Rect dest = calcAlignedDrawingRect(pActiveSymbolSurface, Active);
-			SDL_BlitSurface(pActiveSymbolSurface, NULL, Active, &dest);
+            SDL_Rect dest = calcAlignedDrawingRect(pActiveSymbolSurface, pActive);
+			SDL_BlitSurface(pActiveSymbolSurface, NULL, pActive, &dest);
 		}
 
-		Button::setSurfaces(Unpressed,true,Pressed,true,Active,true);
+		Button::setSurfaces(pUnpressed,true,pPressed,true,pActive,true);
 
 		Widget::resize(width,height);
 	}

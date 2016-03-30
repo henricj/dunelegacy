@@ -18,6 +18,7 @@
 #include <FileClasses/Animation.h>
 
 #include <misc/Scaler.h>
+#include <misc/draw_util.h>
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -34,13 +35,16 @@ Animation::~Animation() {
         SDL_FreeSurface(frames.back());
         frames.pop_back();
     }
+
+    while(frameTextures.empty() == false) {
+        if(frameTextures.back() != NULL) {
+            SDL_DestroyTexture(frameTextures.back());
+        }
+        frameTextures.pop_back();
+    }
 }
 
-SDL_Surface* Animation::getFrame() {
-    if(frames.empty()) {
-		return NULL;
-	}
-
+unsigned int Animation::getCurrentFrameNumber() {
 	if((SDL_GetTicks() - curFrameStartTime) > frameDurationTime) {
 		curFrameStartTime = SDL_GetTicks();
 
@@ -61,7 +65,33 @@ SDL_Surface* Animation::getFrame() {
             }
 		}
 	}
-	return frames[curFrame];
+	return curFrame;
+}
+
+SDL_Surface* Animation::getFrame() {
+    if(frames.empty()) {
+		return NULL;
+	}
+
+	return frames[getCurrentFrameNumber()];
+}
+
+SDL_Texture* Animation::getFrameTexture() {
+    if(frames.empty()) {
+		return NULL;
+	}
+
+	unsigned int index = getCurrentFrameNumber();
+
+	if(frameTextures.size() <= index) {
+        frameTextures.resize(frames.size(), NULL);
+	}
+
+	if(frameTextures[index] == NULL) {
+        frameTextures[index] = convertSurfaceToTexture(frames[index], false);
+	}
+
+	return frameTextures[index];
 }
 
 void Animation::addFrame(SDL_Surface* newFrame, bool bDoublePic, bool bSetColorKey) {

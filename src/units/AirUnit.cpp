@@ -89,7 +89,8 @@ void AirUnit::blitToScreen()
 
     if(screenborder->isInsideScreen(Coord(lround(realX + 4), lround(realY + 12)),Coord(imageW, imageH)) == true) {
 		// Not out of screen
-
+        // TODO: Render shadow via texture
+		/*
         SDL_Rect dest = { screenborder->world2screenX(realX + 4) - imageW/2 + 1, screenborder->world2screenY(realY + 12) - imageH/2, imageW, imageH };
         SDL_Rect source = { drawnAngle*imageW, drawnFrame*imageH, imageW, imageH };
 
@@ -108,6 +109,7 @@ void AirUnit::blitToScreen()
             }
             SDL_UnlockSurface(shadowGraphic[currentZoomlevel]);
         }
+        */
 	}
 
 	UnitBase::blitToScreen();

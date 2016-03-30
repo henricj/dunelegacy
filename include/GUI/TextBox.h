@@ -19,6 +19,7 @@
 #define TEXTBOX_H
 
 #include "Widget.h"
+#include <misc/draw_util.h>
 #include <string>
 #include <SDL.h>
 
@@ -34,8 +35,8 @@ public:
         textcolor = COLOR_DEFAULT;
 	    textshadowcolor = COLOR_DEFAULT;
 	    maxTextLength = -1;
-		pSurfaceWithoutCarret = NULL;
-		pSurfaceWithCarret = NULL;
+		pTextureWithoutCarret = NULL;
+		pTextureWithCarret = NULL;
 		lastCarretTime = SDL_GetTicks();
 		enableResizing(true,false);
 		resize(getMinimumSize().x,getMinimumSize().y);
@@ -43,14 +44,14 @@ public:
 
 	/// destructor
 	virtual ~TextBox() {
-		if(pSurfaceWithoutCarret != NULL) {
-			SDL_FreeSurface(pSurfaceWithoutCarret);
-			pSurfaceWithoutCarret = NULL;
+		if(pTextureWithoutCarret != NULL) {
+			SDL_DestroyTexture(pTextureWithoutCarret);
+			pTextureWithoutCarret = NULL;
 		}
 
-		if(pSurfaceWithCarret != NULL) {
-			SDL_FreeSurface(pSurfaceWithCarret);
-			pSurfaceWithCarret = NULL;
+		if(pTextureWithCarret != NULL) {
+			SDL_DestroyTexture(pTextureWithCarret);
+			pTextureWithCarret = NULL;
 		}
 	}
 
@@ -164,18 +165,18 @@ public:
 		if this text box is resized or the text changes.
 	*/
 	virtual void updateSurfaces() {
-		if(pSurfaceWithoutCarret != NULL) {
-			SDL_FreeSurface(pSurfaceWithoutCarret);
-			pSurfaceWithoutCarret = NULL;
+		if(pTextureWithoutCarret != NULL) {
+			SDL_DestroyTexture(pTextureWithoutCarret);
+			pTextureWithoutCarret = NULL;
 		}
 
-		if(pSurfaceWithCarret != NULL) {
-			SDL_FreeSurface(pSurfaceWithCarret);
-			pSurfaceWithCarret = NULL;
+		if(pTextureWithCarret != NULL) {
+			SDL_DestroyTexture(pTextureWithCarret);
+			pTextureWithCarret = NULL;
 		}
 
-		pSurfaceWithoutCarret = GUIStyle::getInstance().createTextBoxSurface(getSize().x, getSize().y, text, false, fontID,  Alignment_Left, textcolor, textshadowcolor);
-		pSurfaceWithCarret = GUIStyle::getInstance().createTextBoxSurface(getSize().x, getSize().y, text, true, fontID, Alignment_Left, textcolor, textshadowcolor);
+		pTextureWithoutCarret = convertSurfaceToTexture(GUIStyle::getInstance().createTextBoxSurface(getSize().x, getSize().y, text, false, fontID,  Alignment_Left, textcolor, textshadowcolor), true);
+		pTextureWithCarret = convertSurfaceToTexture(GUIStyle::getInstance().createTextBoxSurface(getSize().x, getSize().y, text, true, fontID, Alignment_Left, textcolor, textshadowcolor), true);
 	}
 
 	/**
@@ -184,24 +185,24 @@ public:
 		\param	Position	Position to draw the text box to
 	*/
 	virtual void draw(SDL_Surface* screen, Point position) {
-		if((isVisible() == false) || (pSurfaceWithoutCarret == NULL) || (pSurfaceWithCarret == NULL)) {
+		if((isVisible() == false) || (pTextureWithoutCarret == NULL) || (pTextureWithCarret == NULL)) {
 			return;
 		}
 
-		SDL_Rect dest = calcDrawingRect(pSurfaceWithoutCarret, position.x, position.y);
+		SDL_Rect dest = calcDrawingRect(pTextureWithoutCarret, position.x, position.y);
 
 		if(isActive()) {
 			if((SDL_GetTicks() - lastCarretTime) < 500) {
-				SDL_BlitSurface(pSurfaceWithCarret,NULL,screen,&dest);
+				SDL_RenderCopy(renderer, pTextureWithCarret, NULL, &dest);
 			} else {
-				SDL_BlitSurface(pSurfaceWithoutCarret,NULL,screen,&dest);
+				SDL_RenderCopy(renderer, pTextureWithoutCarret, NULL, &dest);
 			}
 
 			if(SDL_GetTicks() - lastCarretTime >= 1000) {
 				lastCarretTime = SDL_GetTicks();
 			}
 		} else {
-			SDL_BlitSurface(pSurfaceWithoutCarret,NULL,screen,&dest);
+			SDL_RenderCopy(renderer, pTextureWithoutCarret, NULL, &dest);
 		}
 	}
 
@@ -304,8 +305,8 @@ private:
 	std::function<void (bool)> pOnTextChange;	///< function that is called when the text of this text box changes
 	std::function<void ()> pOnReturn;		    ///< function that is called when return is pressed
 
-	SDL_Surface* pSurfaceWithoutCarret;		    ///< Surface with carret off
-	SDL_Surface* pSurfaceWithCarret;		    ///< Surface with carret on
+	SDL_Texture* pTextureWithoutCarret;		    ///< Texture with carret off
+	SDL_Texture* pTextureWithCarret;		    ///< Texture with carret on
 };
 
 #endif // TEXTBOX_H

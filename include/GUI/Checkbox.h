@@ -33,16 +33,16 @@ public:
 
 		enableResizing(true,false);
 		setToggleButton(true);
-        pCheckedActiveSurface = NULL;
-        bFreeCheckedActiveSurface = false;
+        pCheckedActiveTexture = NULL;
+        bFreeCheckedActiveTexture = false;
 	}
 
 	/// destructor
 	virtual ~Checkbox() {
-        if((bFreeCheckedActiveSurface == true) && (pCheckedActiveSurface != NULL)) {
-            SDL_FreeSurface(pCheckedActiveSurface);
-            pCheckedActiveSurface = NULL;
-            bFreeCheckedActiveSurface = false;
+        if((bFreeCheckedActiveTexture == true) && (pCheckedActiveTexture != NULL)) {
+            SDL_DestroyTexture(pCheckedActiveTexture);
+            pCheckedActiveTexture = NULL;
+            bFreeCheckedActiveTexture = false;
         }
 	}
 
@@ -99,27 +99,27 @@ public:
             return;
         }
 
-        SDL_Surface* surf;
+        SDL_Texture* tex;
         if(isChecked()) {
-            if((isActive() || bHover) && pCheckedActiveSurface != NULL) {
-                surf = pCheckedActiveSurface;
+            if((isActive() || bHover) && pCheckedActiveTexture != NULL) {
+                tex = pCheckedActiveTexture;
             } else {
-                surf = pPressedSurface;
+                tex = pPressedTexture;
             }
         } else {
-            if((isActive() || bHover) && pActiveSurface != NULL) {
-                surf = pActiveSurface;
+            if((isActive() || bHover) && pActiveTexture != NULL) {
+                tex = pActiveTexture;
             } else {
-                surf = pUnpressedSurface;
+                tex = pUnpressedTexture;
             }
         }
 
-        if(surf == NULL) {
+        if(tex == NULL) {
             return;
         }
 
-        SDL_Rect dest = calcDrawingRect(surf, position.x, position.y);
-        SDL_BlitSurface(surf,NULL,screen,&dest);
+        SDL_Rect dest = calcDrawingRect(tex, position.x, position.y);
+        SDL_RenderCopy(renderer, tex, NULL, &dest);
     }
 
 	/**
@@ -133,14 +133,14 @@ public:
                     GUIStyle::getInstance().createCheckboxSurface(width, height, text, true, false, textcolor, textshadowcolor),true,
                     GUIStyle::getInstance().createCheckboxSurface(width, height, text, false, true, textcolor, textshadowcolor),true);
 
-        if((bFreeCheckedActiveSurface == true) && (pCheckedActiveSurface != NULL)) {
-            SDL_FreeSurface(pCheckedActiveSurface);
-            pCheckedActiveSurface = NULL;
-            bFreeCheckedActiveSurface = false;
+        if((bFreeCheckedActiveTexture == true) && (pCheckedActiveTexture != NULL)) {
+            SDL_DestroyTexture(pCheckedActiveTexture);
+            pCheckedActiveTexture = NULL;
+            bFreeCheckedActiveTexture = false;
         }
 
-        pCheckedActiveSurface = GUIStyle::getInstance().createCheckboxSurface(width, height, text, true, true, textcolor, textshadowcolor);
-        bFreeCheckedActiveSurface = true;
+        pCheckedActiveTexture = convertSurfaceToTexture(GUIStyle::getInstance().createCheckboxSurface(width, height, text, true, true, textcolor, textshadowcolor), true);
+        bFreeCheckedActiveTexture = true;
 
 		Widget::resize(width,height);
 	}
@@ -158,8 +158,8 @@ private:
     Uint32 textcolor;                       ///< Text color
     Uint32 textshadowcolor;                 ///< Text shadow color
 	std::string text;		                ///< Text of this checkbox
-	SDL_Surface* pCheckedActiveSurface;		///< Surface that is shown when the checkbox is activated by keyboard or by mouse hover
-	bool bFreeCheckedActiveSurface;			///< Should pActiveSurface be freed if this button is destroyed?
+	SDL_Texture* pCheckedActiveTexture;		///< Texture that is shown when the checkbox is activated by keyboard or by mouse hover
+	bool bFreeCheckedActiveTexture;			///< Should pActiveTexture be freed if this button is destroyed?
 };
 
 #endif // CHECKBOX_H

@@ -79,26 +79,11 @@ MapEditor::MapEditor() : pInterface(NULL) {
 
 	currentZoomlevel = settings.video.preferredZoomLevel;
 
-	// Load SideBar
-	SDL_Surface* pGameBarSurface = pGFXManager->getUIGraphic(UI_MapEditor_SideBar);
-	gameBarPos.w = pGameBarSurface->w;
-	gameBarPos.h = pGameBarSurface->h;
-	gameBarPos.x = screen->w - gameBarPos.w;
-	gameBarPos.y = 0;
+    sideBarPos = calcAlignedDrawingRect(pGFXManager->getUIGraphic(UI_SideBar), HAlign::Right, VAlign::Top);
+    topBarPos = calcAlignedDrawingRect(pGFXManager->getUIGraphic(UI_TopBar), HAlign::Left, VAlign::Top);
+    bottomBarPos = calcAlignedDrawingRect(pGFXManager->getUIGraphic(UI_MapEditor_BottomBar), HAlign::Left, VAlign::Bottom);
 
-	// Load TopBar
-	SDL_Surface* pTopBarSurface =  pGFXManager->getUIGraphic(UI_TopBar);
-	topBarPos.w = pTopBarSurface->w;
-	topBarPos.h = pTopBarSurface->h;
-	topBarPos.x = topBarPos.y = 0;
-
-	// Load BottomBar
-	SDL_Surface* pBottomBarSurface =  pGFXManager->getUIGraphic(UI_MapEditor_BottomBar);
-	bottomBarPos.w = pBottomBarSurface->w;
-	bottomBarPos.h = pBottomBarSurface->h;
-	bottomBarPos.x = bottomBarPos.y = 0;
-
-	SDL_Rect gameBoardRect = { 0, topBarPos.h, gameBarPos.x, getRendererSize().h - topBarPos.h - bottomBarPos.h };
+	SDL_Rect gameBoardRect = { 0, topBarPos.h, sideBarPos.x, getRendererHeight() - topBarPos.h - bottomBarPos.h };
     screenborder = new ScreenBorder(gameBoardRect);
 
 	setMap(MapData(128,128,Terrain_Sand), MapInfo());
@@ -976,7 +961,8 @@ void MapEditor::performTerrainChange(int x, int y, TERRAINTYPE terrainType) {
 
 void MapEditor::drawScreen() {
 	// clear whole screen
-	SDL_FillRect(screen, NULL, COLOR_BLACK);
+	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+    SDL_RenderClear(renderer);
 
 	//the actuall map
 	drawMap(screen, screenborder, false);
@@ -987,9 +973,6 @@ void MapEditor::drawScreen() {
 	// Cursor
 	drawCursor();
 
-	SDL_RenderClear(renderer);
-	SDL_UpdateTexture(texture, NULL, screen->pixels, screen->pitch);
-	SDL_RenderCopy(renderer, texture, NULL, NULL);
 	SDL_RenderPresent(renderer);
 }
 
@@ -1324,9 +1307,9 @@ void MapEditor::processInput() {
 
     if((pInterface->hasChildWindow() == false) && (SDL_GetWindowFlags(window) & SDL_WINDOW_MOUSE_FOCUS)) {
         const Uint8 *keystate = SDL_GetKeyboardState(NULL);
-        scrollDownMode =  (drawnMouseY >= screen->h-1-SCROLLBORDER) || keystate[SDL_SCANCODE_DOWN];
+        scrollDownMode =  (drawnMouseY >= getRendererHeight()-1-SCROLLBORDER) || keystate[SDL_SCANCODE_DOWN];
         scrollLeftMode = (drawnMouseX <= SCROLLBORDER) || keystate[SDL_SCANCODE_LEFT];
-        scrollRightMode = (drawnMouseX >= screen->w-1-SCROLLBORDER) || keystate[SDL_SCANCODE_RIGHT];
+        scrollRightMode = (drawnMouseX >= getRendererWidth()-1-SCROLLBORDER) || keystate[SDL_SCANCODE_RIGHT];
         scrollUpMode = (drawnMouseY <= SCROLLBORDER) || keystate[SDL_SCANCODE_UP];
 
         if(scrollLeftMode && scrollRightMode) {
@@ -1358,36 +1341,36 @@ void MapEditor::drawCursor() {
         return;
     }
 
-	SDL_Surface* pCursor = NULL;
-    SDL_Rect dest = { drawnMouseX, drawnMouseY, 0, 0};
+	SDL_Texture* pCursor = NULL;
+    SDL_Rect dest = { 0, 0, 0, 0};
 	if(scrollLeftMode || scrollRightMode || scrollUpMode || scrollDownMode) {
         if(scrollLeftMode && !scrollRightMode) {
 	        pCursor = pGFXManager->getUIGraphic(UI_CursorLeft);
-	        dest.y -= 5;
+	        dest = calcDrawingRect(pCursor, drawnMouseX, drawnMouseY-5, HAlign::Left, VAlign::Top);
 	    } else if(scrollRightMode && !scrollLeftMode) {
             pCursor = pGFXManager->getUIGraphic(UI_CursorRight);
-	        dest.x -= pCursor->w / 2;
-	        dest.y -= 5;
+	        dest = calcDrawingRect(pCursor, drawnMouseX, drawnMouseY-5, HAlign::Center, VAlign::Top);
 	    }
 
         if(pCursor == NULL) {
             if(scrollUpMode && !scrollDownMode) {
                 pCursor = pGFXManager->getUIGraphic(UI_CursorUp);
-                dest.x -= 5;
+                dest = calcDrawingRect(pCursor, drawnMouseX-5, drawnMouseY, HAlign::Left, VAlign::Top);
             } else if(scrollDownMode && !scrollUpMode) {
                 pCursor = pGFXManager->getUIGraphic(UI_CursorDown);
-                dest.x -= 5;
-                dest.y -= pCursor->h / 2;
+                dest = calcDrawingRect(pCursor, drawnMouseX-5, drawnMouseY, HAlign::Left, VAlign::Center);
             } else {
                 pCursor = pGFXManager->getUIGraphic(UI_CursorNormal);
+                dest = calcDrawingRect(pCursor, drawnMouseX, drawnMouseY, HAlign::Left, VAlign::Top);
             }
         }
 	} else {
 	    pCursor = pGFXManager->getUIGraphic(UI_CursorNormal);
+        dest = calcDrawingRect(pCursor, drawnMouseX, drawnMouseY, HAlign::Left, VAlign::Top);
 
-	    if((drawnMouseX < gameBarPos.x) && (drawnMouseY > topBarPos.h) && (currentMirrorMode != MirrorModeNone) && (pInterface->hasChildWindow() == false)) {
+	    if((drawnMouseX < sideBarPos.x) && (drawnMouseY > topBarPos.h) && (currentMirrorMode != MirrorModeNone) && (pInterface->hasChildWindow() == false)) {
 
-            SDL_Surface* pMirrorIcon = NULL;
+            SDL_Texture* pMirrorIcon = NULL;
             switch(currentMirrorMode) {
                 case MirrorModeHorizontal:  pMirrorIcon = pGFXManager->getUIGraphic(UI_MapEditor_MirrorHorizontalIcon);  break;
                 case MirrorModeVertical:    pMirrorIcon = pGFXManager->getUIGraphic(UI_MapEditor_MirrorVerticalIcon);    break;
@@ -1397,16 +1380,11 @@ void MapEditor::drawCursor() {
             }
 
             SDL_Rect dest2 = calcDrawingRect(pMirrorIcon, drawnMouseX + 5, drawnMouseY + 5);
-            SDL_BlitSurface(pMirrorIcon, NULL, screen, &dest2);
+            SDL_RenderCopy(renderer, pMirrorIcon, NULL, &dest2);
 	    }
 	}
 
-    dest.w = pCursor->w;
-    dest.h = pCursor->h;
-
-	if(SDL_BlitSurface(pCursor, NULL, screen, &dest) != 0) {
-        fprintf(stderr,"MapEditor::drawCursor(): %s\n", SDL_GetError());
-	}
+	SDL_RenderCopy(renderer, pCursor, NULL, &dest);
 }
 
 TERRAINTYPE MapEditor::getTerrain(int x, int y) {
@@ -1445,7 +1423,7 @@ void MapEditor::drawMap(SDL_Surface* pScreen, ScreenBorder* pScreenborder, bool 
     BottomRightTile.y = std::min(map.getSizeY()-1, BottomRightTile.y + 1);
 
     // Load Terrain Surface
-	SDL_Surface* TerrainSprite = pGFXManager->getObjPic(ObjPic_Terrain)[currentZoomlevel];
+	SDL_Texture* TerrainSprite = pGFXManager->getObjPic(ObjPic_Terrain)[currentZoomlevel];
 
     /* draw ground */
 	for(int y = TopLeftTile.y; y <= BottomRightTile.y; y++) {
@@ -1530,7 +1508,7 @@ void MapEditor::drawMap(SDL_Surface* pScreen, ScreenBorder* pScreenborder, bool 
                                 zoomedTilesize, zoomedTilesize };
             SDL_Rect drawLocation = {   pScreenborder->world2screenX(x*TILESIZE), pScreenborder->world2screenY(y*TILESIZE),
                                         zoomedTilesize, zoomedTilesize };
-			SDL_BlitSurface(TerrainSprite, &source, pScreen, &drawLocation);
+			SDL_RenderCopy(renderer, TerrainSprite, &source, &drawLocation);
 		}
 	}
 
@@ -1544,25 +1522,25 @@ void MapEditor::drawMap(SDL_Surface* pScreen, ScreenBorder* pScreenborder, bool 
 
         SDL_Rect selectionDest;
 	    if(sIter->itemID == Structure_Slab1) {
-            // Load Terrain Surface
-            SDL_Surface* TerrainSprite = pGFXManager->getObjPic(ObjPic_Terrain)[currentZoomlevel];
+            // Load Terrain sprite
+            SDL_Texture* TerrainSprite = pGFXManager->getObjPic(ObjPic_Terrain)[currentZoomlevel];
 
             SDL_Rect source = { Tile::TerrainTile_Slab * zoomedTilesize, 0, zoomedTilesize, zoomedTilesize };
             SDL_Rect dest = { pScreenborder->world2screenX(position.x*TILESIZE), pScreenborder->world2screenY(position.y*TILESIZE), zoomedTilesize, zoomedTilesize };
 
-            SDL_BlitSurface(TerrainSprite, &source, pScreen, &dest);
+            SDL_RenderCopy(renderer, TerrainSprite, &source, &dest);
 
             selectionDest = dest;
 	    } else if(sIter->itemID == Structure_Slab4) {
             // Load Terrain Surface
-            SDL_Surface* TerrainSprite = pGFXManager->getObjPic(ObjPic_Terrain)[currentZoomlevel];
+            SDL_Texture* TerrainSprite = pGFXManager->getObjPic(ObjPic_Terrain)[currentZoomlevel];
 
             for(int y = position.y; y < position.y+2; y++) {
                 for(int x = position.x; x < position.x+2; x++) {
                     SDL_Rect source = { Tile::TerrainTile_Slab * zoomedTilesize, 0, zoomedTilesize, zoomedTilesize };
                     SDL_Rect dest = { pScreenborder->world2screenX(x*TILESIZE), pScreenborder->world2screenY(y*TILESIZE), zoomedTilesize, zoomedTilesize };
 
-                    SDL_BlitSurface(TerrainSprite, &source, pScreen, &dest);
+                    SDL_RenderCopy(renderer, TerrainSprite, &source, &dest);
                 }
             }
 
@@ -1621,13 +1599,13 @@ void MapEditor::drawMap(SDL_Surface* pScreen, ScreenBorder* pScreenborder, bool 
                 maketile = Wall::Wall_Standalone; //missing left and right
             }
 
-            // Load Wall Surface
-            SDL_Surface* WallSprite = pGFXManager->getObjPic(ObjPic_Wall)[currentZoomlevel];
+            // Load Wall texture
+            SDL_Texture* WallSprite = pGFXManager->getObjPic(ObjPic_Wall)[currentZoomlevel];
 
             SDL_Rect source = { maketile * zoomedTilesize, 0, zoomedTilesize, zoomedTilesize };
             SDL_Rect dest = { pScreenborder->world2screenX(position.x*TILESIZE), pScreenborder->world2screenY(position.y*TILESIZE), zoomedTilesize, zoomedTilesize };
 
-            SDL_BlitSurface(WallSprite, &source, pScreen, &dest);
+            SDL_RenderCopy(renderer, WallSprite, &source, &dest);
 
             selectionDest = dest;
 	    } else {
@@ -1654,14 +1632,14 @@ void MapEditor::drawMap(SDL_Surface* pScreen, ScreenBorder* pScreenborder, bool 
                 default:                            objectPic = 0;                          break;
             }
 
-            SDL_Surface* ObjectSprite = pGFXManager->getObjPic(objectPic, sIter->house)[currentZoomlevel];
+            SDL_Texture* ObjectSprite = pGFXManager->getObjPic(objectPic, sIter->house)[currentZoomlevel];
 
             Coord frameSize = world2zoomedWorld(getStructureSize(sIter->itemID)*TILESIZE);
 
             SDL_Rect source = { frameSize.x*(sIter->itemID == Structure_WindTrap ? 9 : 2), 0, frameSize.x, frameSize.y };
             SDL_Rect dest = { pScreenborder->world2screenX(position.x*TILESIZE), pScreenborder->world2screenY(position.y*TILESIZE), frameSize.x, frameSize.y };
 
-            SDL_BlitSurface(ObjectSprite, &source, pScreen, &dest);
+            SDL_RenderCopy(renderer, ObjectSprite, &source, &dest);
 
             selectionDest = dest;
 	    }
@@ -1672,26 +1650,26 @@ void MapEditor::drawMap(SDL_Surface* pScreen, ScreenBorder* pScreenborder, bool 
             if(!SDL_MUSTLOCK(pScreen) || (SDL_LockSurface(pScreen) == 0)) {
                 // top left bit
                 for(int i=0;i<=currentZoomlevel;i++) {
-                    drawHLineNoLock(pScreen,selectionDest.x+i, selectionDest.y+i, selectionDest.x+(currentZoomlevel+1)*3, COLOR_WHITE);
-                    drawVLineNoLock(pScreen,selectionDest.x+i, selectionDest.y+i, selectionDest.y+(currentZoomlevel+1)*3, COLOR_WHITE);
+                    renderDrawHLine(renderer, selectionDest.x+i, selectionDest.y+i, selectionDest.x+(currentZoomlevel+1)*3, COLOR_WHITE);
+                    renderDrawVLine(renderer, selectionDest.x+i, selectionDest.y+i, selectionDest.y+(currentZoomlevel+1)*3, COLOR_WHITE);
                 }
 
                 // top right bit
                 for(int i=0;i<=currentZoomlevel;i++) {
-                    drawHLineNoLock(pScreen,selectionDest.x + selectionDest.w-1 - i, selectionDest.y+i, selectionDest.x + selectionDest.w-1 - (currentZoomlevel+1)*3, COLOR_WHITE);
-                    drawVLineNoLock(pScreen,selectionDest.x + selectionDest.w-1 - i, selectionDest.y+i, selectionDest.y+(currentZoomlevel+1)*3, COLOR_WHITE);
+                    renderDrawHLine(renderer, selectionDest.x + selectionDest.w-1 - i, selectionDest.y+i, selectionDest.x + selectionDest.w-1 - (currentZoomlevel+1)*3, COLOR_WHITE);
+                    renderDrawVLine(renderer, selectionDest.x + selectionDest.w-1 - i, selectionDest.y+i, selectionDest.y+(currentZoomlevel+1)*3, COLOR_WHITE);
                 }
 
                 // bottom left bit
                 for(int i=0;i<=currentZoomlevel;i++) {
-                    drawHLineNoLock(pScreen,selectionDest.x+i, selectionDest.y + selectionDest.h-1 - i, selectionDest.x+(currentZoomlevel+1)*3, COLOR_WHITE);
-                    drawVLineNoLock(pScreen,selectionDest.x+i, selectionDest.y + selectionDest.h-1 - i, selectionDest.y + selectionDest.h-1 - (currentZoomlevel+1)*3, COLOR_WHITE);
+                    renderDrawHLine(renderer, selectionDest.x+i, selectionDest.y + selectionDest.h-1 - i, selectionDest.x+(currentZoomlevel+1)*3, COLOR_WHITE);
+                    renderDrawVLine(renderer, selectionDest.x+i, selectionDest.y + selectionDest.h-1 - i, selectionDest.y + selectionDest.h-1 - (currentZoomlevel+1)*3, COLOR_WHITE);
                 }
 
                 // bottom right bit
                 for(int i=0;i<=currentZoomlevel;i++) {
-                    drawHLineNoLock(pScreen,selectionDest.x + selectionDest.w-1 - i, selectionDest.y + selectionDest.h-1 - i, selectionDest.x + selectionDest.w-1 - (currentZoomlevel+1)*3, COLOR_WHITE);
-                    drawVLineNoLock(pScreen,selectionDest.x + selectionDest.w-1 - i, selectionDest.y + selectionDest.h-1 - i, selectionDest.y + selectionDest.h-1 - (currentZoomlevel+1)*3, COLOR_WHITE);
+                    renderDrawHLine(renderer, selectionDest.x + selectionDest.w-1 - i, selectionDest.y + selectionDest.h-1 - i, selectionDest.x + selectionDest.w-1 - (currentZoomlevel+1)*3, COLOR_WHITE);
+                    renderDrawVLine(renderer, selectionDest.x + selectionDest.w-1 - i, selectionDest.y + selectionDest.h-1 - i, selectionDest.y + selectionDest.h-1 - (currentZoomlevel+1)*3, COLOR_WHITE);
                 }
 
                 if(SDL_MUSTLOCK(pScreen)) {
@@ -1790,45 +1768,43 @@ void MapEditor::drawMap(SDL_Surface* pScreen, ScreenBorder* pScreenborder, bool 
             case Unit_Troopers:         objectPicBase = ObjPic_Troopers;         framesX = 4;    framesY = 4;                                                   break;
         }
 
-        SDL_Surface* pObjectSprite = pGFXManager->getObjPic(objectPicBase, uIter->house)[currentZoomlevel];
-
-        Coord frameSize = Coord(pObjectSprite->w/framesX, pObjectSprite->h/framesY);
+        SDL_Texture* pObjectSprite = pGFXManager->getObjPic(objectPicBase, uIter->house)[currentZoomlevel];
 
         int angle = uIter->angle / (NUM_ANGLES/framesX);
 
         int frame = (uIter->itemID == Unit_Sandworm) ? 5 : 0;
 
-        SDL_Rect source = { frameSize.x * angle, frameSize.y * frame, frameSize.x, frameSize.y };
-        SDL_Rect drawLocation = {   pScreenborder->world2screenX((position.x*TILESIZE)+(TILESIZE/2)) - frameSize.x/2,
-                                    pScreenborder->world2screenY((position.y*TILESIZE)+(TILESIZE/2)) - frameSize.y/2,
-                                    frameSize.x,
-                                    frameSize.y };
+        SDL_Rect source = calcSpriteSourceRect(pObjectSprite, angle, framesX, frame, framesY);
+        int frameSizeX = source.w;
+        int frameSizeY = source.h;
+        SDL_Rect drawLocation = calcSpriteDrawingRect(  pObjectSprite,
+                                                        pScreenborder->world2screenX((position.x*TILESIZE)+(TILESIZE/2)),
+                                                        pScreenborder->world2screenY((position.y*TILESIZE)+(TILESIZE/2)),
+                                                        framesX, framesY, HAlign::Center, VAlign::Center);
 
-        SDL_BlitSurface(pObjectSprite, &source, pScreen, &drawLocation);
+        SDL_RenderCopy(renderer, pObjectSprite, &source, &drawLocation);
 
         if(objectPicGun >= 0) {
-            SDL_Surface* pGunSprite = pGFXManager->getObjPic(objectPicGun, uIter->house)[currentZoomlevel];
+            SDL_Texture* pGunSprite = pGFXManager->getObjPic(objectPicGun, uIter->house)[currentZoomlevel];
 
-            Coord frameSize2 = Coord(pGunSprite->w/NUM_ANGLES, pGunSprite->h);
+            SDL_Rect source2 = calcSpriteSourceRect(pGunSprite, uIter->angle, NUM_ANGLES);
+            SDL_Rect drawLocation2 = calcSpriteDrawingRect( pGunSprite,
+                                                            pScreenborder->world2screenX((position.x*TILESIZE)+(TILESIZE/2)+gunOffset[uIter->angle].x),
+                                                            pScreenborder->world2screenY((position.y*TILESIZE)+(TILESIZE/2)+gunOffset[uIter->angle].y),
+                                                            NUM_ANGLES, 1, HAlign::Center, VAlign::Center);
 
-            SDL_Rect source2 = { frameSize2.x * uIter->angle, 0, frameSize2.x, frameSize2.y };
-            SDL_Rect drawLocation2 = {  pScreenborder->world2screenX((position.x*TILESIZE)+(TILESIZE/2)+gunOffset[uIter->angle].x) - frameSize2.x/2,
-                                        pScreenborder->world2screenY((position.y*TILESIZE)+(TILESIZE/2)+gunOffset[uIter->angle].y) - frameSize2.y/2,
-                                        frameSize2.x,
-                                        frameSize2.y };
-
-            SDL_BlitSurface(pGunSprite, &source2, pScreen, &drawLocation2);
+            SDL_RenderCopy(renderer, pGunSprite, &source2, &drawLocation2);
         }
 
         if(uIter->itemID == Unit_RaiderTrike || uIter->itemID == Unit_Deviator || uIter->itemID == Unit_Special) {
-            SDL_Surface* pStarSprite = pGFXManager->getObjPic(ObjPic_Star)[currentZoomlevel];
+            SDL_Texture* pStarSprite = pGFXManager->getObjPic(ObjPic_Star)[currentZoomlevel];
 
             SDL_Rect drawLocation2 = calcDrawingRect(   pStarSprite,
-                                                        pScreenborder->world2screenX((position.x*TILESIZE)+(TILESIZE/2)) + frameSize.x/2 - 1,
-                                                        pScreenborder->world2screenY((position.y*TILESIZE)+(TILESIZE/2)) + frameSize.y/2 - 1,
+                                                        pScreenborder->world2screenX((position.x*TILESIZE)+(TILESIZE/2)) + frameSizeX/2 - 1,
+                                                        pScreenborder->world2screenY((position.y*TILESIZE)+(TILESIZE/2)) + frameSizeY/2 - 1,
                                                         HAlign::Right, VAlign::Bottom);
 
-            SDL_BlitSurface(pStarSprite, NULL, pScreen, &drawLocation2);
+            SDL_RenderCopy(renderer, pStarSprite, NULL, &drawLocation2);
         }
 
 	}
@@ -1842,12 +1818,12 @@ void MapEditor::drawMap(SDL_Surface* pScreen, ScreenBorder* pScreenborder, bool 
         dest.w = world2zoomedWorld(15*TILESIZE);
         dest.h = world2zoomedWorld(10*TILESIZE);
 
-        drawRect(pScreen, dest.x, dest.y, dest.x+dest.w, dest.y+dest.h, COLOR_DARKGREY);
+        renderDrawRect(renderer, &dest, COLOR_DARKGREY);
 	}
 
-    SDL_Surface* validPlace = NULL;
-    SDL_Surface* invalidPlace = NULL;
-    SDL_Surface* greyPlace = NULL;
+    SDL_Texture* validPlace = NULL;
+    SDL_Texture* invalidPlace = NULL;
+    SDL_Texture* greyPlace = NULL;
 
     switch(currentZoomlevel) {
         case 0: {
@@ -1899,26 +1875,26 @@ void MapEditor::drawMap(SDL_Surface* pScreen, ScreenBorder* pScreenborder, bool 
                 if(!SDL_MUSTLOCK(pScreen) || (SDL_LockSurface(pScreen) == 0)) {
                     // top left bit
                     for(int i=0;i<=currentZoomlevel;i++) {
-                        drawHLineNoLock(pScreen,dest.x+i, dest.y+i, dest.x+(currentZoomlevel+1)*3, COLOR_WHITE);
-                        drawVLineNoLock(pScreen,dest.x+i, dest.y+i, dest.y+(currentZoomlevel+1)*3, COLOR_WHITE);
+                        renderDrawHLine(renderer, dest.x+i, dest.y+i, dest.x+(currentZoomlevel+1)*3, COLOR_WHITE);
+                        renderDrawVLine(renderer, dest.x+i, dest.y+i, dest.y+(currentZoomlevel+1)*3, COLOR_WHITE);
                     }
 
                     // top right bit
                     for(int i=0;i<=currentZoomlevel;i++) {
-                        drawHLineNoLock(pScreen,dest.x + dest.w-1 - i, dest.y+i, dest.x + dest.w-1 - (currentZoomlevel+1)*3, COLOR_WHITE);
-                        drawVLineNoLock(pScreen,dest.x + dest.w-1 - i, dest.y+i, dest.y+(currentZoomlevel+1)*3, COLOR_WHITE);
+                        renderDrawHLine(renderer, dest.x + dest.w-1 - i, dest.y+i, dest.x + dest.w-1 - (currentZoomlevel+1)*3, COLOR_WHITE);
+                        renderDrawVLine(renderer, dest.x + dest.w-1 - i, dest.y+i, dest.y+(currentZoomlevel+1)*3, COLOR_WHITE);
                     }
 
                     // bottom left bit
                     for(int i=0;i<=currentZoomlevel;i++) {
-                        drawHLineNoLock(pScreen,dest.x+i, dest.y + dest.h-1 - i, dest.x+(currentZoomlevel+1)*3, COLOR_WHITE);
-                        drawVLineNoLock(pScreen,dest.x+i, dest.y + dest.h-1 - i, dest.y + dest.h-1 - (currentZoomlevel+1)*3, COLOR_WHITE);
+                        renderDrawHLine(renderer, dest.x+i, dest.y + dest.h-1 - i, dest.x+(currentZoomlevel+1)*3, COLOR_WHITE);
+                        renderDrawVLine(renderer, dest.x+i, dest.y + dest.h-1 - i, dest.y + dest.h-1 - (currentZoomlevel+1)*3, COLOR_WHITE);
                     }
 
                     // bottom right bit
                     for(int i=0;i<=currentZoomlevel;i++) {
-                        drawHLineNoLock(pScreen,dest.x + dest.w-1 - i, dest.y + dest.h-1 - i, dest.x + dest.w-1 - (currentZoomlevel+1)*3, COLOR_WHITE);
-                        drawVLineNoLock(pScreen,dest.x + dest.w-1 - i, dest.y + dest.h-1 - i, dest.y + dest.h-1 - (currentZoomlevel+1)*3, COLOR_WHITE);
+                        renderDrawHLine(renderer, dest.x + dest.w-1 - i, dest.y + dest.h-1 - i, dest.x + dest.w-1 - (currentZoomlevel+1)*3, COLOR_WHITE);
+                        renderDrawVLine(renderer, dest.x + dest.w-1 - i, dest.y + dest.h-1 - i, dest.y + dest.h-1 - (currentZoomlevel+1)*3, COLOR_WHITE);
                     }
 
                     if(SDL_MUSTLOCK(pScreen)) {
@@ -1936,7 +1912,7 @@ void MapEditor::drawMap(SDL_Surface* pScreen, ScreenBorder* pScreenborder, bool 
 
                 for(int x = position.x; x < (position.x + structureSize.x); x++) {
                     for(int y = position.y; y < (position.y + structureSize.y); y++) {
-                        SDL_Surface* image = validPlace;
+                        SDL_Texture* image = validPlace;
 
                         // check if mirroring of the original (!) position is possible
                         if(mapMirror->mirroringPossible( Coord(xPos, yPos), structureSize) == false) {
@@ -1956,7 +1932,7 @@ void MapEditor::drawMap(SDL_Surface* pScreen, ScreenBorder* pScreenborder, bool 
 
                         SDL_Rect drawLocation = {   pScreenborder->world2screenX(x*TILESIZE), pScreenborder->world2screenY(y*TILESIZE),
                                                     zoomedTilesize, zoomedTilesize };
-                        SDL_BlitSurface(image, NULL, pScreen, &drawLocation);
+                        SDL_RenderCopy(renderer, image, NULL, &drawLocation);
                     }
                 }
             }
@@ -1965,7 +1941,7 @@ void MapEditor::drawMap(SDL_Surface* pScreen, ScreenBorder* pScreenborder, bool 
 
                 Coord position = mapMirror->getCoord( Coord(xPos, yPos), m);
 
-                SDL_Surface* image = validPlace;
+                SDL_Texture* image = validPlace;
                 // check all mirrored places
                 for(int k=0;k<mapMirror->getSize();k++) {
                     Coord pos = mapMirror->getCoord( position, k);
@@ -1975,7 +1951,7 @@ void MapEditor::drawMap(SDL_Surface* pScreen, ScreenBorder* pScreenborder, bool 
                     }
                 }
                 SDL_Rect drawLocation = calcDrawingRect(image, pScreenborder->world2screenX(position.x*TILESIZE), pScreenborder->world2screenY(position.y*TILESIZE));
-                SDL_BlitSurface(image, NULL, pScreen, &drawLocation);
+                SDL_RenderCopy(renderer, image, NULL, &drawLocation);
             }
         } else if(currentEditorMode.mode == EditorMode::EditorMode_TacticalPos) {
             // draw tactical pos rectangle (the starting screen)
@@ -1983,7 +1959,7 @@ void MapEditor::drawMap(SDL_Surface* pScreen, ScreenBorder* pScreenborder, bool 
 
                 SDL_Rect dest = {   pScreenborder->world2screenX(xPos*TILESIZE), pScreenborder->world2screenY(yPos*TILESIZE),
                                     world2zoomedWorld(15*TILESIZE), world2zoomedWorld(10*TILESIZE) };
-                drawRect(pScreen, dest.x, dest.y, dest.x+dest.w, dest.y+dest.h, COLOR_WHITE);
+                renderDrawRect(renderer, &dest, COLOR_WHITE);
             }
         }
     }
@@ -1996,7 +1972,7 @@ void MapEditor::drawMap(SDL_Surface* pScreen, ScreenBorder* pScreenborder, bool 
             if(std::find(selectedUnits.begin(), selectedUnits.end(), uIter->id) != selectedUnits.end()) {
                 Coord position = uIter->position;
 
-                SDL_Surface* selectionBox = NULL;
+                SDL_Texture* selectionBox = NULL;
 
                 switch(currentZoomlevel) {
                     case 0:     selectionBox = pGFXManager->getUIGraphic(UI_SelectionBox_Zoomlevel0);   break;
@@ -2010,7 +1986,7 @@ void MapEditor::drawMap(SDL_Surface* pScreen, ScreenBorder* pScreenborder, bool 
                                                 pScreenborder->world2screenY((position.y*TILESIZE)+(TILESIZE/2)),
                                                 HAlign::Center, VAlign::Center);
 
-                SDL_BlitSurface(selectionBox, NULL, pScreen, &dest);
+                SDL_RenderCopy(renderer, selectionBox, NULL, &dest);
             }
         }
     }
@@ -2020,7 +1996,8 @@ void MapEditor::drawMap(SDL_Surface* pScreen, ScreenBorder* pScreenborder, bool 
         && ( (std::find(spiceBlooms.begin(), spiceBlooms.end(), selectedMapItemCoord) != spiceBlooms.end())
             || (std::find(specialBlooms.begin(), specialBlooms.end(), selectedMapItemCoord) != specialBlooms.end())
             || (std::find(spiceFields.begin(), spiceFields.end(), selectedMapItemCoord) != spiceFields.end()) )) {
-        SDL_Surface* selectionBox = NULL;
+
+        SDL_Texture* selectionBox = NULL;
 
         switch(currentZoomlevel) {
             case 0:     selectionBox = pGFXManager->getUIGraphic(UI_SelectionBox_Zoomlevel0);   break;
@@ -2034,7 +2011,7 @@ void MapEditor::drawMap(SDL_Surface* pScreen, ScreenBorder* pScreenborder, bool 
                                         pScreenborder->world2screenY((selectedMapItemCoord.y*TILESIZE)+(TILESIZE/2)),
                                         HAlign::Center, VAlign::Center);
 
-        SDL_BlitSurface(selectionBox, NULL, pScreen, &dest);
+        SDL_RenderCopy(renderer, selectionBox, NULL, &dest);
     }
 }
 

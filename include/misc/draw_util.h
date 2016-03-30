@@ -18,6 +18,7 @@
 #ifndef DRAW_UTIL_H
 #define DRAW_UTIL_H
 
+#include <Colors.h>
 #include <SDL.h>
 
 /**
@@ -39,12 +40,54 @@ void drawVLine(SDL_Surface *surface, int x, int y1, int y2, Uint32 color);
 
 void drawRect(SDL_Surface *surface, int x1, int y1, int x2, int y2, Uint32 color);
 
+inline void setRenderDrawColor(SDL_Renderer* renderer, Uint32 color) {
+    if(((color & AMASK) >> ASHIFT) != 255) {
+        SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
+    }
+    SDL_SetRenderDrawColor(renderer, (color & RMASK) >> RSHIFT, (color & GMASK) >> GSHIFT, (color & BMASK) >> BSHIFT, (color & AMASK) >> ASHIFT);
+}
+
+inline void renderDrawLine(SDL_Renderer* renderer, int x1, int y1, int x2, int y2, Uint32 color) {
+    setRenderDrawColor(renderer, color);
+    SDL_RenderDrawLine(renderer, x1, y1, x2, y2);
+}
+
+inline void renderDrawHLine(SDL_Renderer* renderer, int x1, int y, int x2, Uint32 color) {
+    renderDrawLine(renderer, x1, y, x2, y, color);
+}
+
+inline void renderDrawVLine(SDL_Renderer* renderer, int x, int y1, int y2, Uint32 color) {
+    renderDrawLine(renderer, x, y1, x, y2, color);
+}
+
+inline void renderDrawRect(SDL_Renderer* renderer, SDL_Rect* rect, Uint32 color) {
+    setRenderDrawColor(renderer, color);
+    SDL_RenderDrawRect(renderer, rect);
+}
+
+inline void renderDrawRect(SDL_Renderer* renderer, int x1, int y1, int x2, int y2, Uint32 color) {
+    SDL_Rect rect = { x1, y1, x2-x1+1, y2-y1+1 };
+    renderDrawRect(renderer, &rect, color);
+}
+
+inline void renderFillRect(SDL_Renderer* renderer, SDL_Rect* rect, Uint32 color) {
+    setRenderDrawColor(renderer, color);
+    SDL_RenderFillRect(renderer, rect);
+}
+
+inline void renderFillRect(SDL_Renderer* renderer, int x1, int y1, int x2, int y2, Uint32 color) {
+    SDL_Rect rect = { x1, y1, x2-x1+1, y2-y1+1 };
+    renderFillRect(renderer, &rect, color);
+}
+
 void replaceColor(SDL_Surface *surface, Uint32 oldColor, Uint32 newColor);
 void mapColor(SDL_Surface *surface, Uint8 colorMap[256]);
 
 SDL_Surface*    copySurface(SDL_Surface* inSurface);
 
 SDL_Surface*    convertSurfaceToDisplayFormat(SDL_Surface* inSurface, bool freeSrcSurface = true);
+
+SDL_Texture*    convertSurfaceToTexture(SDL_Surface* inSurface, bool freeSrcSurface = true);
 
 SDL_Surface*    scaleSurface(SDL_Surface *surf, double ratio, bool freeSrcSurface = true);
 

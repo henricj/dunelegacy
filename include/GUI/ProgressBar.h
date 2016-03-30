@@ -19,6 +19,7 @@
 #define PROGRESSBAR_H
 
 #include "Widget.h"
+#include <misc/draw_util.h>
 
 #include <string>
 #include <SDL.h>
@@ -44,11 +45,11 @@ public:
 	/// destructor
 	virtual ~ProgressBar() {
 		if((bFreeBackground == true) && (pBackground != NULL)) {
-			SDL_FreeSurface(pBackground);
+			SDL_DestroyTexture(pBackground);
 		}
 
 		if(pForeground != NULL) {
-			SDL_FreeSurface(pForeground);
+			SDL_DestroyTexture(pForeground);
 		}
 	}
 
@@ -66,11 +67,11 @@ public:
 			}
 
 			if(pForeground != NULL) {
-				SDL_FreeSurface(pForeground);
+				SDL_DestroyTexture(pForeground);
 				pForeground = NULL;
 			}
 
-			pForeground = GUIStyle::getInstance().createProgressBarOverlay(getSize().x, getSize().y, percent, color);
+			pForeground = convertSurfaceToTexture(GUIStyle::getInstance().createProgressBarOverlay(getSize().x, getSize().y, percent, color), true);
 		}
 	}
 
@@ -100,6 +101,15 @@ public:
 	}
 
 	/**
+		This method resized the progress bar. This method should only
+		called if the new size is a valid size for this progress bar (See getMinumumSize).
+		\param	newSize	the new size of this progress bar
+	*/
+	virtual void resize(Point newSize) {
+		resize(newSize.x,newSize.y);
+	}
+
+	/**
 		This method resized the progress bar to width and height. This method should only
 		called if the new size is a valid size for this progress bar (See getMinumumSize).
 		\param	width	the new width of this progress bar
@@ -109,11 +119,11 @@ public:
 		Widget::resize(width,height);
 
         if(pForeground != NULL) {
-            SDL_FreeSurface(pForeground);
+            SDL_DestroyTexture(pForeground);
             pForeground = NULL;
         }
 
-        pForeground = GUIStyle::getInstance().createProgressBarOverlay(getSize().x, getSize().y, percent, color);
+        pForeground = convertSurfaceToTexture(GUIStyle::getInstance().createProgressBarOverlay(getSize().x, getSize().y, percent, color), true);
 	}
 
 	/**
@@ -128,24 +138,24 @@ public:
 
 		if(pBackground != NULL) {
             SDL_Rect dest = calcDrawingRect(pBackground, position.x, position.y);
-            SDL_BlitSurface(pBackground,NULL,screen,&dest);
+            SDL_RenderCopy(renderer, pBackground, NULL, &dest);
 		}
 
 		if(pForeground != NULL) {
             SDL_Rect dest = calcDrawingRect(pForeground, position.x, position.y);
 		    if(bDrawShadow) {
-		        SDL_Rect dest2 = { position.x + 2, position.y + 2, lround(percent*(dest.w/100.0)), dest.h };
-                SDL_FillRect(screen, &dest2, COLOR_BLACK);
+		        SDL_Rect dest2 = { position.x + 2, position.y + 2, (int) lround(percent*(dest.w/100.0)), dest.h };
+		        renderFillRect(renderer, &dest2, COLOR_BLACK);
 		    }
 
-			SDL_BlitSurface(pForeground,NULL,screen,&dest);
+			SDL_RenderCopy(renderer, pForeground, NULL, &dest);
 		}
 	}
 
 protected:
-	SDL_Surface*	pBackground;
+	SDL_Texture*	pBackground;
 	bool			bFreeBackground;
-	SDL_Surface*	pForeground;
+	SDL_Texture*	pForeground;
 
 	double percent;				///< Percent from 0.0 to 100.0
 	Uint32 color;			    ///< The color of the progress overlay
@@ -193,6 +203,15 @@ public:
 	}
 
 	/**
+		This method resized the progress bar. This method should only
+		called if the new size is a valid size for this progress bar (See getMinumumSize).
+		\param	newSize	the new size of this progress bar
+	*/
+	virtual void resize(Point newSize) {
+		resize(newSize.x,newSize.y);
+	}
+
+	/**
 		This method resized the progress bar to width and height. This method should only
 		called if the new size is a valid size for this progress bar (See getMinumumSize).
 		\param	width	the new width of this progress bar
@@ -202,18 +221,17 @@ public:
 		Widget::resize(width,height);
 
 		if(pBackground != NULL) {
-			SDL_FreeSurface(pBackground);
+			SDL_DestroyTexture(pBackground);
 			pBackground = NULL;
 		}
 
 		if(pForeground != NULL) {
-			SDL_FreeSurface(pForeground);
+			SDL_DestroyTexture(pForeground);
 			pForeground = NULL;
 		}
 
-		pBackground = GUIStyle::getInstance().createButtonSurface(width, height, text, true, false, textcolor, textshadowcolor);
-		pForeground = GUIStyle::getInstance().createProgressBarOverlay(width, height, percent, color);
-
+		pBackground = convertSurfaceToTexture(GUIStyle::getInstance().createButtonSurface(width, height, text, true, false, textcolor, textshadowcolor), true);
+		pForeground = convertSurfaceToTexture(GUIStyle::getInstance().createProgressBarOverlay(width, height, percent, color), true);
 	}
 
 	/**
@@ -244,21 +262,34 @@ public:
 
 	virtual ~PictureProgressBar() { ; }
 
-	void setSurface(SDL_Surface* pBackground, bool bFreeBackground) {
+    void setSurface(SDL_Surface* pBackground, bool bFreeBackground) {
+        setTexture(convertSurfaceToTexture(pBackground, bFreeBackground), true);
+    }
+
+	void setTexture(SDL_Texture* pBackground, bool bFreeBackground) {
 		if((this->bFreeBackground == true) && (this->pBackground != NULL)) {
-			SDL_FreeSurface(this->pBackground);
+			SDL_DestroyTexture(this->pBackground);
 		}
 
 		this->pBackground = pBackground;
 		this->bFreeBackground = bFreeBackground;
 
 		if(this->pBackground != NULL) {
-			resize(this->pBackground->w,this->pBackground->h);
+			resize(getTextureSize(pBackground));
 		} else {
 			resize(4,4);
 		}
 
 		resizeAll();
+	}
+
+	/**
+		This method resized the progress bar. This method should only
+		called if the new size is a valid size for this progress bar (See getMinumumSize).
+		\param	newSize	the new size of this progress bar
+	*/
+	virtual void resize(Point newSize) {
+		resize(newSize.x,newSize.y);
 	}
 
 	/**
@@ -280,7 +311,7 @@ public:
 		if(pBackground == NULL) {
 			return Point(4,4);
 		} else {
-			return Point(pBackground->w,pBackground->h);
+			return getTextureSize(pBackground);
 		}
 	}
 };

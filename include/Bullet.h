@@ -79,7 +79,7 @@ private:
 	bool	 airAttack;                  ///< Is this an air attack?
 
 	// drawing information
-	SDL_Surface** graphic;               ///< The graphic of the bullet
+	SDL_Texture** graphic;               ///< The graphic of the bullet
 	int           numFrames;             ///< Number of frames of the bullet
 };
 

@@ -57,21 +57,21 @@ public:
 		\param	position	Position to draw the widget to
 	*/
 	virtual inline void draw(SDL_Surface* screen, Point position) {
-		SDL_Surface* surface = pGFXManager->getUIGraphic(UI_MissionSelect);
+		SDL_Texture* tex = pGFXManager->getUIGraphic(UI_MissionSelect);
 
-		SDL_Rect dest = calcDrawingRect(surface, position.x, position.y);
-		SDL_BlitSurface(surface, NULL, screen, &dest);
+		SDL_Rect dest = calcDrawingRect(tex, position.x, position.y);
+		SDL_RenderCopy(renderer, tex, NULL, &dest);
 
-		SDL_Surface* digitsSurface = pGFXManager->getUIGraphic(UI_CreditsDigits);
+		SDL_Texture* digitsTex = pGFXManager->getUIGraphic(UI_CreditsDigits);
 
 		char creditsBuffer[3];
 		sprintf(creditsBuffer, "%d", count);
 		int digits = strlen(creditsBuffer);
 
 		for(int i=digits-1; i>=0; i--) {
-            SDL_Rect source = calcSpriteSourceRect(digitsSurface, creditsBuffer[i] - '0', 10);
-            SDL_Rect dest2 = calcSpriteDrawingRect(digitsSurface, position.x + 40 + (6 - digits + i)*10, position.y + 16, 10);
- 			SDL_BlitSurface(digitsSurface, &source, screen, &dest2);
+            SDL_Rect source = calcSpriteSourceRect(digitsTex, creditsBuffer[i] - '0', 10);
+            SDL_Rect dest2 = calcSpriteDrawingRect(digitsTex, position.x + 40 + (6 - digits + i)*10, position.y + 16, 10);
+ 			SDL_RenderCopy(renderer, digitsTex, &source, &dest2);
 		}
 
 	};
@@ -82,9 +82,9 @@ public:
 		\return the minimum size of this digits counter
 	*/
 	virtual Point getMinimumSize() const {
-		SDL_Surface* surface = pGFXManager->getUIGraphic(UI_MissionSelect);
-		if(surface != NULL) {
-			return Point((Sint32) surface->w, (Sint32) surface->h);
+		SDL_Texture* tex = pGFXManager->getUIGraphic(UI_MissionSelect);
+		if(tex != NULL) {
+			return getTextureSize(tex);
 		} else {
 			return Point(0,0);
 		}

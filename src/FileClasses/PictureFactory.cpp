@@ -652,24 +652,24 @@ SDL_Surface* PictureFactory::createGreyHouseChoice(SDL_Surface* HouseChoice) {
 		0, 0, 0, 0, 13, 0, 30, 30, 183, 250, 250, 0, 0, 0, 0, 0 };
 
 
-	SDL_Surface* Pic = copySurface(HouseChoice);
+	SDL_Surface* pic = copySurface(HouseChoice);
 
-	for(int y = 0; y < Pic->h; y++) {
-		for(int x = 0; x < Pic->w; x++) {
-			unsigned char inputIndex = *( ((unsigned char*) (Pic->pixels)) + y*Pic->pitch + x);
+	for(int y = 0; y < pic->h; y++) {
+		for(int x = 0; x < pic->w; x++) {
+			unsigned char inputIndex = *( ((unsigned char*) (pic->pixels)) + y*pic->pitch + x);
 			unsigned char outputIndex = index2greyindex[inputIndex];
-			*( ((unsigned char*) (Pic->pixels)) + y*Pic->pitch + x) = outputIndex;
+			*( ((unsigned char*) (pic->pixels)) + y*pic->pitch + x) = outputIndex;
 		}
 	}
 
-	return Pic;
+	return pic;
 }
 
 
 SDL_Surface* PictureFactory::createMapChoiceScreen(int House) {
-	SDL_Surface* MapChoiceScreen;
+	SDL_Surface* pMapChoiceScreen;
 
-	if((MapChoiceScreen = LoadCPS_RW(pFileManager->openFile("MAPMACH.CPS"),true)) == NULL) {
+	if((pMapChoiceScreen = LoadCPS_RW(pFileManager->openFile("MAPMACH.CPS"),true)) == NULL) {
 		fprintf(stderr,"PictureFactory::createMapChoiceScreen(): Cannot read MAPMACH.CPS!\n");
 		exit(EXIT_FAILURE);
 	}
@@ -680,20 +680,20 @@ SDL_Surface* PictureFactory::createMapChoiceScreen(int House) {
 	switch(House) {
 		case HOUSE_HARKONNEN:
 		case HOUSE_SARDAUKAR: {
-			SDL_BlitSurface(harkonnenLogo.get(),NULL,MapChoiceScreen,&LeftLogo);
-			SDL_BlitSurface(harkonnenLogo.get(),NULL,MapChoiceScreen,&RightLogo);
+			SDL_BlitSurface(harkonnenLogo.get(),NULL,pMapChoiceScreen,&LeftLogo);
+			SDL_BlitSurface(harkonnenLogo.get(),NULL,pMapChoiceScreen,&RightLogo);
 		} break;
 
 		case HOUSE_ATREIDES:
 		case HOUSE_FREMEN: {
-			SDL_BlitSurface(atreidesLogo.get(),NULL,MapChoiceScreen,&LeftLogo);
-			SDL_BlitSurface(atreidesLogo.get(),NULL,MapChoiceScreen,&RightLogo);
+			SDL_BlitSurface(atreidesLogo.get(),NULL,pMapChoiceScreen,&LeftLogo);
+			SDL_BlitSurface(atreidesLogo.get(),NULL,pMapChoiceScreen,&RightLogo);
 		} break;
 
 		case HOUSE_ORDOS:
 		case HOUSE_MERCENARY: {
-			SDL_BlitSurface(ordosLogo.get(),NULL,MapChoiceScreen,&LeftLogo);
-			SDL_BlitSurface(ordosLogo.get(),NULL,MapChoiceScreen,&RightLogo);
+			SDL_BlitSurface(ordosLogo.get(),NULL,pMapChoiceScreen,&LeftLogo);
+			SDL_BlitSurface(ordosLogo.get(),NULL,pMapChoiceScreen,&RightLogo);
 		} break;
 
         default: {
@@ -702,14 +702,14 @@ SDL_Surface* PictureFactory::createMapChoiceScreen(int House) {
 	}
 
     if(settings.general.language == "de") {
-        SDL_Surface* tmp = getSubPicture(MapChoiceScreen,8,120, 303, 23);
+        SDL_Surface* tmp = getSubPicture(pMapChoiceScreen,8,120, 303, 23);
         SDL_Rect dest = {8,0,303,23};
-        SDL_BlitSurface(tmp,NULL,MapChoiceScreen,&dest);
+        SDL_BlitSurface(tmp,NULL,pMapChoiceScreen,&dest);
         SDL_FreeSurface(tmp);
     } else if(settings.general.language == "fr") {
-        SDL_Surface* tmp = getSubPicture(MapChoiceScreen,8,96, 303, 23);
+        SDL_Surface* tmp = getSubPicture(pMapChoiceScreen,8,96, 303, 23);
         SDL_Rect dest = {8,0,303,23};
-        SDL_BlitSurface(tmp,NULL,MapChoiceScreen,&dest);
+        SDL_BlitSurface(tmp,NULL,pMapChoiceScreen,&dest);
         SDL_FreeSurface(tmp);
     } else {
 		; // Nothing to do (use English)
@@ -717,15 +717,15 @@ SDL_Surface* PictureFactory::createMapChoiceScreen(int House) {
 
 	// clear everything in the middle
 	SDL_Rect clearRect = {8,24,304,119};
-	SDL_FillRect(MapChoiceScreen,&clearRect,PALCOLOR_TRANSPARENT);
+	SDL_FillRect(pMapChoiceScreen,&clearRect,PALCOLOR_TRANSPARENT);
 
-	MapChoiceScreen = Scaler::defaultDoubleSurface(mapSurfaceColorRange(MapChoiceScreen, PALCOLOR_HARKONNEN, houseToPaletteIndex[House], true), true);
-	SDL_Surface* FullMapChoiceScreen = copySurface(background.get());
+	pMapChoiceScreen = Scaler::defaultDoubleSurface(mapSurfaceColorRange(pMapChoiceScreen, PALCOLOR_HARKONNEN, houseToPaletteIndex[House], true), true);
+	SDL_Surface* pFullMapChoiceScreen = copySurface(background.get());
 
-	SDL_Rect dest = calcAlignedDrawingRect(MapChoiceScreen, FullMapChoiceScreen);
-	SDL_BlitSurface(MapChoiceScreen,NULL,FullMapChoiceScreen,&dest);
-	SDL_FreeSurface(MapChoiceScreen);
-	return FullMapChoiceScreen;
+	SDL_Rect dest = calcAlignedDrawingRect(pMapChoiceScreen, pFullMapChoiceScreen);
+	SDL_BlitSurface(pMapChoiceScreen,NULL,pFullMapChoiceScreen,&dest);
+	SDL_FreeSurface(pMapChoiceScreen);
+	return pFullMapChoiceScreen;
 }
 
 SDL_Surface* PictureFactory::createMentatHouseChoiceQuestion(int House, Palette& benePalette) {

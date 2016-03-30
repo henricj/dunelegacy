@@ -21,6 +21,7 @@
 #include <GUI/Widget.h>
 
 #include <string>
+#include <memory>
 #include <queue>
 
 #include <SDL.h>
@@ -49,7 +50,7 @@ public:
 	}
 
 private:
-    std::queue<std::string> messages;
+    std::queue<std::shared_ptr<SDL_Texture>> messageTextures;
 	int timer;
 };
 

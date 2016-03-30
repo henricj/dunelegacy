@@ -34,6 +34,8 @@ MapEditorRadarView::MapEditorRadarView(MapEditor* pMapEditor)
 {
 	radarSurface = SDL_CreateRGBSurface(0, RADARWIDTH, RADARHEIGHT, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK);
 	SDL_FillRect(radarSurface, NULL, COLOR_BLACK);
+
+	radarTexture = SDL_CreateTexture(renderer, SCREEN_FORMAT, SDL_TEXTUREACCESS_STREAMING, RADARWIDTH, RADARHEIGHT);
 }
 
 
@@ -42,6 +44,7 @@ MapEditorRadarView::~MapEditorRadarView()
     if(radarSurface != NULL) {
         SDL_FreeSurface(radarSurface);
     }
+    SDL_DestroyTexture(radarTexture);
 }
 
 int MapEditorRadarView::getMapSizeX() const {
@@ -66,7 +69,9 @@ void MapEditorRadarView::draw(SDL_Surface* screen, Point position)
 
     updateRadarSurface(map, scale, offsetX, offsetY);
 
-    SDL_BlitSurface(radarSurface, NULL, screen, &radarPosition);
+    SDL_UpdateTexture(radarTexture, NULL, radarSurface->pixels, radarSurface->pitch);
+
+    SDL_RenderCopy(renderer, radarTexture, NULL, &radarPosition);
 
     // draw viewport rect on radar
     SDL_Rect radarRect;
@@ -95,12 +100,12 @@ void MapEditorRadarView::draw(SDL_Surface* screen, Point position)
         radarRect.h = radarPosition.h - offsetFromBottomY - radarRect.y - 1;
     }
 
-    drawRect(   screen,
-                radarPosition.x + radarRect.x,
-                radarPosition.y + radarRect.y,
-                radarPosition.x + (radarRect.x + radarRect.w),
-                radarPosition.y + (radarRect.y + radarRect.h),
-                COLOR_WHITE);
+    renderDrawRect( renderer,
+                    radarPosition.x + radarRect.x,
+                    radarPosition.y + radarRect.y,
+                    radarPosition.x + (radarRect.x + radarRect.w),
+                    radarPosition.y + (radarRect.y + radarRect.h),
+                    COLOR_WHITE);
 
 }
 

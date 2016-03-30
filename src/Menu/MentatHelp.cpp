@@ -74,12 +74,12 @@ MentatHelp::MentatHelp(int newHouse, int techLevel, int mission) : MentatMenu(ne
     windowWidget.addWidget(&itemDescriptionLabel,Point(256 + 4, 96 + 4),Point(368 - 8, 224 - 8));
     itemDescriptionLabel.setVisible(false);
 
-	SDL_Surface* surf = pGFXManager->getUIGraphic(UI_MentatExit);
-	SDL_Surface* surfPressed = pGFXManager->getUIGraphic(UI_MentatExit_Pressed);
-	exitButton.setSurfaces(surf,false,surfPressed,false);
+	SDL_Texture* pMentatExit = pGFXManager->getUIGraphic(UI_MentatExit);
+	SDL_Texture* pMentatExitPressed = pGFXManager->getUIGraphic(UI_MentatExit_Pressed);
+	exitButton.setTextures(pMentatExit, false, pMentatExitPressed, false);
 
 	exitButton.setOnClick(std::bind(&MentatHelp::onExit, this));
-	windowWidget.addWidget(&exitButton,Point(370,340),Point(surf->w,surf->h));
+	windowWidget.addWidget(&exitButton,Point(370,340), getTextureSize(pMentatExit));
 }
 
 MentatHelp::~MentatHelp() {
@@ -94,22 +94,22 @@ void MentatHelp::drawSpecificStuff()
     int y1 = getPosition().y;
     int y2 = getPosition().y + getSize().y - 1;
 
-	drawRect(screen, x1, y1, x2, y2, DuneStyle::buttonBorderColor);
-	drawHLine(screen, x1 + 1, y1 + 1, x2 - 1, DuneStyle::buttonEdgeTopLeftColor);
-	drawHLine(screen, x1 + 2, y1 + 2, x2 - 2, DuneStyle::buttonEdgeTopLeftColor);
-	drawHLine(screen, x1 + 3, y1 + 3, x2 - 3, DuneStyle::buttonEdgeTopLeftColor);
+	renderDrawRect(renderer, x1, y1, x2, y2, DuneStyle::buttonBorderColor);
+	renderDrawHLine(renderer, x1 + 1, y1 + 1, x2 - 1, DuneStyle::buttonEdgeTopLeftColor);
+	renderDrawHLine(renderer, x1 + 2, y1 + 2, x2 - 2, DuneStyle::buttonEdgeTopLeftColor);
+	renderDrawHLine(renderer, x1 + 3, y1 + 3, x2 - 3, DuneStyle::buttonEdgeTopLeftColor);
 
-	drawVLine(screen, x1 + 1, y1 + 1, y2 - 1, DuneStyle::buttonEdgeTopLeftColor);
-	drawVLine(screen, x1 + 2, y1 + 2, y2 - 2, DuneStyle::buttonEdgeTopLeftColor);
-	drawVLine(screen, x1 + 3, y1 + 3, y2 - 3, DuneStyle::buttonEdgeTopLeftColor);
+	renderDrawVLine(renderer, x1 + 1, y1 + 1, y2 - 1, DuneStyle::buttonEdgeTopLeftColor);
+	renderDrawVLine(renderer, x1 + 2, y1 + 2, y2 - 2, DuneStyle::buttonEdgeTopLeftColor);
+	renderDrawVLine(renderer, x1 + 3, y1 + 3, y2 - 3, DuneStyle::buttonEdgeTopLeftColor);
 
-	drawHLine(screen, x1 + 1, y2 - 1, x2 - 1, DuneStyle::buttonEdgeBottomRightColor);
-	drawHLine(screen, x1 + 2, y2 - 2, x2 - 2, DuneStyle::buttonEdgeBottomRightColor);
-	drawHLine(screen, x1 + 3, y2 - 3, x2 - 3, DuneStyle::buttonEdgeBottomRightColor);
+	renderDrawHLine(renderer, x1 + 1, y2 - 1, x2 - 1, DuneStyle::buttonEdgeBottomRightColor);
+	renderDrawHLine(renderer, x1 + 2, y2 - 2, x2 - 2, DuneStyle::buttonEdgeBottomRightColor);
+	renderDrawHLine(renderer, x1 + 3, y2 - 3, x2 - 3, DuneStyle::buttonEdgeBottomRightColor);
 
-	drawVLine(screen, x2 - 1, y1 + 1, y2 - 1, DuneStyle::buttonEdgeBottomRightColor);
-	drawVLine(screen, x2 - 2, y1 + 2, y2 - 2, DuneStyle::buttonEdgeBottomRightColor);
-	drawVLine(screen, x2 - 3, y1 + 3, y2 - 3, DuneStyle::buttonEdgeBottomRightColor);
+	renderDrawVLine(renderer, x2 - 1, y1 + 1, y2 - 1, DuneStyle::buttonEdgeBottomRightColor);
+	renderDrawVLine(renderer, x2 - 2, y1 + 2, y2 - 2, DuneStyle::buttonEdgeBottomRightColor);
+	renderDrawVLine(renderer, x2 - 3, y1 + 3, y2 - 3, DuneStyle::buttonEdgeBottomRightColor);
 }
 
 bool MentatHelp::doInput(SDL_Event &event)

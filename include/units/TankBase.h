@@ -61,7 +61,7 @@ protected:
 	ObjectPointer	closeTarget;	 ///< a enemy target that can be shot at while moving
 
     // drawing information
-	SDL_Surface**   turretGraphic;   ///< The turret graphic
+	SDL_Texture**   turretGraphic;   ///< The turret graphic
 	int             gunGraphicID;    ///< The id of the turret graphic (needed if we want to reload the graphic)
 };
 

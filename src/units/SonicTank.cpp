@@ -61,11 +61,11 @@ void SonicTank::blitToScreen() {
     int x1 = screenborder->world2screenX(realX);
     int y1 = screenborder->world2screenY(realY);
 
-    SDL_Surface* pUnitGraphic = graphic[currentZoomlevel];
+    SDL_Texture* pUnitGraphic = graphic[currentZoomlevel];
     SDL_Rect source1 = calcSpriteSourceRect(pUnitGraphic, drawnAngle, numImagesX);
     SDL_Rect dest1 = calcSpriteDrawingRect( pUnitGraphic, x1, y1, numImagesX, 1, HAlign::Center, VAlign::Center);
 
-    SDL_BlitSurface(pUnitGraphic, &source1, screen, &dest1);
+    SDL_RenderCopy(renderer, pUnitGraphic, &source1, &dest1);
 
     const Coord sonicTankTurretOffset[] =   {   Coord(0, -8),
                                                 Coord(0, -8),
@@ -77,14 +77,14 @@ void SonicTank::blitToScreen() {
                                                 Coord(0, -8)
                                             };
 
-    SDL_Surface* pTurretGraphic = turretGraphic[currentZoomlevel];
+    SDL_Texture* pTurretGraphic = turretGraphic[currentZoomlevel];
     SDL_Rect source2 = calcSpriteSourceRect(pTurretGraphic, drawnAngle, numImagesX);
     SDL_Rect dest2 = calcSpriteDrawingRect( pTurretGraphic,
                                             screenborder->world2screenX(realX + sonicTankTurretOffset[drawnAngle].x),
                                             screenborder->world2screenY(realY + sonicTankTurretOffset[drawnAngle].y),
                                             numImagesX, 1, HAlign::Center, VAlign::Center);
 
-    SDL_BlitSurface(pTurretGraphic, &source2, screen, &dest2);
+    SDL_RenderCopy(renderer, pTurretGraphic, &source2, &dest2);
 
     if(isBadlyDamaged()) {
         drawSmoke(x1, y1);

@@ -59,7 +59,7 @@ void TextEvent::draw(int currentFrameNumber)
 
     SDL_Rect dest = calcAlignedDrawingRect(pTexture, HAlign::Center, VAlign::Center);
     if(bCenterVertical == false) {
-        dest.y = getRendererSize().h/2 + 480/2 - 5*pFontManager->getTextHeight(FONT_STD24)/2;
+        dest.y = getRendererHeight()/2 + 480/2 - 5*pFontManager->getTextHeight(FONT_STD24)/2;
     }
 
     SDL_SetTextureAlphaMod(pTexture, alpha);

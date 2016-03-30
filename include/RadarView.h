@@ -99,7 +99,8 @@ private:
 	int animCounter;                        ///< this counter is for counting the ticks one animation frame is shown
 
     SDL_Surface* radarSurface;              ///< contains the image to be drawn when the radar is active
-	SDL_Surface* radarStaticAnimation;      ///< holds the animation graphic for radar static
+    SDL_Texture* radarTexture;              ///< streaming texture to be used when the radar is active
+	SDL_Texture* radarStaticAnimation;      ///< holds the animation graphic for radar static
 
 };
 

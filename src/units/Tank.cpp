@@ -62,17 +62,17 @@ void Tank::blitToScreen() {
     int x = screenborder->world2screenX(realX);
     int y = screenborder->world2screenY(realY);
 
-    SDL_Surface* pUnitGraphic = graphic[currentZoomlevel];
+    SDL_Texture* pUnitGraphic = graphic[currentZoomlevel];
     SDL_Rect source1 = calcSpriteSourceRect(pUnitGraphic, drawnAngle, numImagesX);
     SDL_Rect dest1 = calcSpriteDrawingRect( pUnitGraphic, x, y, numImagesX, 1, HAlign::Center, VAlign::Center);
 
-    SDL_BlitSurface(pUnitGraphic, &source1, screen, &dest1);
+    SDL_RenderCopy(renderer, pUnitGraphic, &source1, &dest1);
 
-    SDL_Surface* pTurretGraphic = turretGraphic[currentZoomlevel];
+    SDL_Texture* pTurretGraphic = turretGraphic[currentZoomlevel];
     SDL_Rect source2 = calcSpriteSourceRect(pTurretGraphic, drawnTurretAngle, NUM_ANGLES);
     SDL_Rect dest2 = calcSpriteDrawingRect( pTurretGraphic, x, y, NUM_ANGLES, 1, HAlign::Center, VAlign::Center);
 
-    SDL_BlitSurface(pTurretGraphic, &source2, screen, &dest2);
+    SDL_RenderCopy(renderer, pTurretGraphic, &source2, &dest2);
 
     if(isBadlyDamaged()) {
         drawSmoke(x, y);

@@ -59,11 +59,11 @@ public:
 			return;
 		}
 
-		SDL_Surface* surface = pAnim->getFrame();
+		SDL_Texture* tex = pAnim->getFrameTexture();
 
 		if(isVisible()) {
-            SDL_Rect dest = calcDrawingRect(surface, position.x, position.y);
-			SDL_BlitSurface(surface, NULL, screen, &dest);
+            SDL_Rect dest = calcDrawingRect(tex, position.x, position.y);
+			SDL_RenderCopy(renderer, tex, NULL, &dest);
 		}
 	};
 

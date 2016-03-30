@@ -453,13 +453,11 @@ public:
 	GFXManager();
 	~GFXManager();
 
-	SDL_Surface**	getObjPic(unsigned int id, int house=HOUSE_HARKONNEN);
+	SDL_Texture**	getObjPic(unsigned int id, int house=HOUSE_HARKONNEN);
 
-	SDL_Surface*	getSmallDetailPic(unsigned int id);
-	SDL_Surface*	getUIGraphic(unsigned int id, int house=HOUSE_HARKONNEN);
-	SDL_Surface*	getMapChoicePiece(unsigned int num, int house);
-	SDL_Surface*	getMapChoiceArrow(unsigned int num);
-
+	SDL_Texture*	getSmallDetailPic(unsigned int id);
+	SDL_Texture*	getUIGraphic(unsigned int id, int house=HOUSE_HARKONNEN);
+	SDL_Texture*	getMapChoicePiece(unsigned int num, int house);
 
 	SDL_Surface*	getUIGraphicSurface(unsigned int id, int house=HOUSE_HARKONNEN);
 	SDL_Surface*	getMapChoicePieceSurface(unsigned int num, int house);
@@ -473,12 +471,12 @@ public:
 private:
 	Animation*      loadAnimationFromWsa(std::string filename);
 	SDL_Surface*    generateWindtrapAnimationFrames(SDL_Surface* windtrapPic);
-	SDL_Surface*    generateMapChoiceArrrowFrames(SDL_Surface* arrowPic, int house=HOUSE_HARKONNEN);
+	SDL_Surface*    generateMapChoiceArrowFrames(SDL_Surface* arrowPic, int house=HOUSE_HARKONNEN);
 
     std::shared_ptr<Shpfile>  loadShpfile(std::string filename);
     std::shared_ptr<Wsafile>  loadWsafile(std::string filename);
 
-	SDL_Surface*	extractSmallDetailPic(std::string filename);
+	SDL_Texture*	extractSmallDetailPic(std::string filename);
 
     // 8-bit surfaces kept in main memory for processing as needed, e.g. color remapping
 	SDL_Surface*	objPic[NUM_OBJPICS][(int) NUM_HOUSES][NUM_ZOOMLEVEL];
@@ -492,10 +490,10 @@ private:
 	SDL_Surface*    pTransparent150Surface;
 
 	// Textures
-	SDL_Surface*	objPicTex[NUM_OBJPICS][(int) NUM_HOUSES][NUM_ZOOMLEVEL];
-	SDL_Surface*	smallDetailPicTex[NUM_SMALLDETAILPICS];
-	SDL_Surface*	uiGraphicTex[NUM_UIGRAPHICS][(int) NUM_HOUSES];
-	SDL_Surface*	mapChoicePiecesTex[NUM_MAPCHOICEPIECES][(int) NUM_HOUSES];
+	SDL_Texture*	objPicTex[NUM_OBJPICS][(int) NUM_HOUSES][NUM_ZOOMLEVEL];
+	SDL_Texture*	smallDetailPicTex[NUM_SMALLDETAILPICS];
+	SDL_Texture*	uiGraphicTex[NUM_UIGRAPHICS][(int) NUM_HOUSES];
+	SDL_Texture*	mapChoicePiecesTex[NUM_MAPCHOICEPIECES][(int) NUM_HOUSES];
 };
 
 #endif // GFXMANAGER_H

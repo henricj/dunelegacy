@@ -250,11 +250,11 @@ void UnitBase::blitToScreen() {
     int x = screenborder->world2screenX(realX);
     int y = screenborder->world2screenY(realY);
 
-    SDL_Surface* pUnitGraphic = graphic[currentZoomlevel];
+    SDL_Texture* pUnitGraphic = graphic[currentZoomlevel];
     SDL_Rect source = calcSpriteSourceRect(pUnitGraphic, drawnAngle, numImagesX, drawnFrame, numImagesY);
     SDL_Rect dest = calcSpriteDrawingRect( pUnitGraphic, x, y, numImagesX, numImagesY, HAlign::Center, VAlign::Center);
 
-    SDL_BlitSurface(pUnitGraphic, &source, screen, &dest);
+    SDL_RenderCopy(renderer, pUnitGraphic, &source, &dest);
 
     if(isBadlyDamaged()) {
         drawSmoke(x, y);
@@ -346,7 +346,7 @@ void UnitBase::deviate(House* newOwner) {
 
 void UnitBase::drawSelectionBox() {
 
-    SDL_Surface* selectionBox = NULL;
+    SDL_Texture* selectionBox = NULL;
 
     switch(currentZoomlevel) {
         case 0:     selectionBox = pGFXManager->getUIGraphic(UI_SelectionBox_Zoomlevel0);   break;
@@ -356,17 +356,17 @@ void UnitBase::drawSelectionBox() {
     }
 
     SDL_Rect dest = calcDrawingRect(selectionBox, screenborder->world2screenX(realX), screenborder->world2screenY(realY), HAlign::Center, VAlign::Center);
-	SDL_BlitSurface(selectionBox, NULL, screen, &dest);
+	SDL_RenderCopy(renderer, selectionBox, NULL, &dest);
 
 	int x = screenborder->world2screenX(realX) - getWidth(selectionBox)/2;
 	int y = screenborder->world2screenY(realY) - getHeight(selectionBox)/2;
 	for(int i=1;i<=currentZoomlevel+1;i++) {
-        drawHLine(screen, x+1, y-i, x+1 + (lround((getHealth()/getMaxHealth())*(getWidth(selectionBox)-3))), getHealthColor());
+        renderDrawHLine(renderer, x+1, y-i, x+1 + (lround((getHealth()/getMaxHealth())*(getWidth(selectionBox)-3))), getHealthColor());
 	}
 }
 
 void UnitBase::drawOtherPlayerSelectionBox() {
-    SDL_Surface* selectionBox = NULL;
+    SDL_Texture* selectionBox = NULL;
 
     switch(currentZoomlevel) {
         case 0:     selectionBox = pGFXManager->getUIGraphic(UI_OtherPlayerSelectionBox_Zoomlevel0);   break;
@@ -376,7 +376,7 @@ void UnitBase::drawOtherPlayerSelectionBox() {
     }
 
     SDL_Rect dest = calcDrawingRect(selectionBox, screenborder->world2screenX(realX), screenborder->world2screenY(realY), HAlign::Center, VAlign::Center);
-	SDL_BlitSurface(selectionBox, NULL, screen, &dest);
+	SDL_RenderCopy(renderer, selectionBox, NULL, &dest);
 }
 
 
@@ -1322,12 +1322,12 @@ void UnitBase::drawSmoke(int x, int y) {
         frame = 1;
 	}
 
-	SDL_Surface** smoke = pGFXManager->getObjPic(ObjPic_Smoke,getOwner()->getHouseID());
+	SDL_Texture** smoke = pGFXManager->getObjPic(ObjPic_Smoke,getOwner()->getHouseID());
 
 	SDL_Rect dest = calcSpriteDrawingRect(smoke[currentZoomlevel], x, y, 3, 1, HAlign::Center, VAlign::Bottom);
 	SDL_Rect source = calcSpriteSourceRect(smoke[currentZoomlevel], frame, 3);
 
-	SDL_BlitSurface(smoke[currentZoomlevel], &source, screen, &dest);
+	SDL_RenderCopy(renderer, smoke[currentZoomlevel], &source, &dest);
 }
 
 void UnitBase::playAttackSound() {

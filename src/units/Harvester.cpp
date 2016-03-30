@@ -105,11 +105,11 @@ void Harvester::blitToScreen()
     int x = screenborder->world2screenX(realX);
     int y = screenborder->world2screenY(realY);
 
-    SDL_Surface* pUnitGraphic = graphic[currentZoomlevel];
+    SDL_Texture* pUnitGraphic = graphic[currentZoomlevel];
     SDL_Rect source = calcSpriteSourceRect(pUnitGraphic, drawnAngle, numImagesX);
     SDL_Rect dest = calcSpriteDrawingRect( pUnitGraphic, x, y, numImagesX, 1, HAlign::Center, VAlign::Center);
 
-    SDL_BlitSurface(pUnitGraphic, &source, screen, &dest);
+    SDL_RenderCopy(renderer, pUnitGraphic, &source, &dest);
 
     if(isHarvesting() == true) {
 
@@ -124,8 +124,8 @@ void Harvester::blitToScreen()
                                             };
 
 
-        SDL_Surface** sand = pGFXManager->getObjPic(ObjPic_Harvester_Sand,getOwner()->getHouseID());
-        SDL_Surface* pSandGraphic = sand[currentZoomlevel];
+        SDL_Texture** sand = pGFXManager->getObjPic(ObjPic_Harvester_Sand,getOwner()->getHouseID());
+        SDL_Texture* pSandGraphic = sand[currentZoomlevel];
 
         int frame = ((currentGame->getGameCycleCount() + (getObjectID() * 10)) / HARVESTERDELAY) % (2*LASTSANDFRAME);
         if(frame > LASTSANDFRAME) {
@@ -139,7 +139,7 @@ void Harvester::blitToScreen()
                                                     NUM_ANGLES, LASTSANDFRAME+1,
                                                     HAlign::Center, VAlign::Center);
 
-        SDL_BlitSurface(pSandGraphic, &sandSource, screen, &sandDest);
+        SDL_RenderCopy(renderer, pSandGraphic, &sandSource, &sandDest);
     }
 
     if(isBadlyDamaged()) {
@@ -301,7 +301,7 @@ void Harvester::destroy()
 
 void Harvester::drawSelectionBox()
 {
-    SDL_Surface* selectionBox = NULL;
+    SDL_Texture* selectionBox = NULL;
 
     switch(currentZoomlevel) {
         case 0:     selectionBox = pGFXManager->getUIGraphic(UI_SelectionBox_Zoomlevel0);   break;
@@ -311,15 +311,15 @@ void Harvester::drawSelectionBox()
     }
 
     SDL_Rect dest = calcDrawingRect(selectionBox, screenborder->world2screenX(realX), screenborder->world2screenY(realY), HAlign::Center, VAlign::Center);
-	SDL_BlitSurface(selectionBox, NULL, screen, &dest);
+	SDL_RenderCopy(renderer, selectionBox, NULL, &dest);
 
 	for(int i=1;i<=currentZoomlevel+1;i++) {
-        drawHLine(screen, dest.x+1, dest.y-i, dest.x+1 + (lround((getHealth()/getMaxHealth())*(getWidth(selectionBox)-3))), getHealthColor());
+        renderDrawHLine(renderer, dest.x+1, dest.y-i, dest.x+1 + (lround((getHealth()/getMaxHealth())*(getWidth(selectionBox)-3))), getHealthColor());
 	}
 
 	if((getOwner() == pLocalHouse) && (spice > 0)) {
         for(int i=1;i<=currentZoomlevel+1;i++) {
-            drawHLine(screen, dest.x+1, dest.y-i-(currentZoomlevel+1), dest.x+1 + (lround(((spice)/HARVESTERMAXSPICE)*(getWidth(selectionBox)-3))), COLOR_ORANGE);
+            renderDrawHLine(renderer, dest.x+1, dest.y-i-(currentZoomlevel+1), dest.x+1 + (lround(((spice)/HARVESTERMAXSPICE)*(getWidth(selectionBox)-3))), COLOR_ORANGE);
         }
 	}
 }

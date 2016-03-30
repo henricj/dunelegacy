@@ -520,6 +520,8 @@ private:
 
 	FixPoint    spice;          ///< how much spice on this particular tile is left
 
+	SDL_Texture** sprite;       ///< the graphic to draw
+
     Sint32                          destroyedStructureTile;     ///< the tile drawn for a destroyed structure
 	Sint16                          tracksCounter[NUM_ANGLES];  ///< Contains counters for the tracks on sand
 	std::vector<DAMAGETYPE>         damage;                     ///< damage positions
@@ -529,9 +531,6 @@ private:
 	std::list<Uint32>	assignedInfantryList;                   ///< all infantry units on this tile
 	std::list<Uint32>	assignedUndergroundUnitList;            ///< all underground units on this tile
 	std::list<Uint32>	assignedNonInfantryGroundObjectList;    ///< all structures/vehicles on this tile
-
-	SDL_Surface**       sprite;    ///< the graphic to draw
-
 
 	Uint32      lastAccess[NUM_HOUSES];    ///< contains for every house when this tile was seen last by this house
 	bool        explored[NUM_HOUSES];      ///< contains for every house if this tile is explored

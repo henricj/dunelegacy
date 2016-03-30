@@ -200,11 +200,11 @@ private:
 
 
     void updateSurfaces() {
-        plusButton.setSurfaces( pGFXManager->getUIGraphic(UI_Plus, house), false,
+        plusButton.setTextures( pGFXManager->getUIGraphic(UI_Plus, house), false,
                                 pGFXManager->getUIGraphic(UI_Plus_Pressed, house), false,
                                 pGFXManager->getUIGraphic(UI_Plus_Active, house), false);
 
-        minusButton.setSurfaces(pGFXManager->getUIGraphic(UI_Minus, house), false,
+        minusButton.setTextures(pGFXManager->getUIGraphic(UI_Minus, house), false,
                                 pGFXManager->getUIGraphic(UI_Minus_Pressed, house), false,
                                 pGFXManager->getUIGraphic(UI_Minus_Active, house), false);
     }

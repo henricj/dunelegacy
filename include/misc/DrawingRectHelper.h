@@ -151,8 +151,8 @@ inline SDL_Rect calcSpriteDrawingRect(SDL_Texture* pTexture, int x, int y, int n
     SDL_Rect rect = { x, y, 0, 0 };
     SDL_QueryTexture(pTexture, NULL, NULL, &rect.w, &rect.h);
 
-    rect.w /= numRows;
-    rect.h /= numCols;
+    rect.w /= numCols;
+    rect.h /= numRows;
 
     switch(halign) {
         case HAlign::Left:      /*nothing*/         break;
@@ -211,10 +211,26 @@ inline SDL_Rect getRendererSize() {
 }
 
 /**
+    Returns the width of the rendering target.
+    \return the width of the rendering target
+*/
+inline int getRendererWidth() {
+    return getRendererSize().w;
+}
+
+/**
+    Returns the height of the rendering target.
+    \return the height of the rendering target
+*/
+inline int getRendererHeight() {
+    return getRendererSize().h;
+}
+
+/**
     Calculates the drawing rectangle for drawing pSurface at the edge or in the center of rect.
     The parameters halign and valign determine at which edge pSurface is drawn, e.g. HAlign::Left and VAlign::Top draws pSurface in the
     top left corner.
-    \param  pSurface    the texture to calculate the rect for
+    \param  pSurface    the surface to calculate the rect for
     \param  rect        the rect to center around
     \param  halign      the horizontal alignment of pSurface (default is HAlign::Center)
     \param  valign      the vertical alignment of pSurface (default is VAlign::Center)
@@ -256,7 +272,7 @@ inline SDL_Rect calcAlignedDrawingRect(SDL_Surface* pSurface, HAlign halign = HA
     Calculates the drawing rectangle for drawing pSurface at the edge or in the center of pBaseSurface.
     The parameters halign and valign determine at which edge pSurface is drawn, e.g. HAlign::Left and VAlign::Top draws pSurface in the
     top left corner.
-    \param  pSurface        the texture to calculate the rect for
+    \param  pSurface        the surface to calculate the rect for
     \param  pBaseSurface    the rect to center around
     \param  halign          the horizontal alignment of pSurface (default is HAlign::Center)
     \param  valign          the vertical alignment of pSurface (default is VAlign::Center)

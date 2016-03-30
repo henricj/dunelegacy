@@ -118,17 +118,8 @@ Game::Game() {
 
 	gamespeed = GAMESPEED_DEFAULT;
 
-	SDL_Surface* pSideBarSurface = pGFXManager->getUIGraphic(UI_SideBar);
-	sideBarPos.w = pSideBarSurface->w;
-	sideBarPos.h = pSideBarSurface->h;
-	sideBarPos.x = screen->w - sideBarPos.w;
-	sideBarPos.y = 0;
-
-	SDL_Surface* pTopBarSurface = pGFXManager->getUIGraphic(UI_TopBar);
-	topBarPos.w = pTopBarSurface->w;
-	topBarPos.h = pTopBarSurface->h;
-	topBarPos.x = 0;
-	topBarPos.y = 0;
+	sideBarPos = calcAlignedDrawingRect(pGFXManager->getUIGraphic(UI_SideBar), HAlign::Right, VAlign::Top);
+    topBarPos = calcAlignedDrawingRect(pGFXManager->getUIGraphic(UI_TopBar), HAlign::Left, VAlign::Top);
 
     gameState = START;
 
@@ -147,7 +138,7 @@ Game::Game() {
 
 	musicPlayer->changeMusic(MUSIC_PEACE);
 	//////////////////////////////////////////////////////////////////////////
-	SDL_Rect gameBoardRect = { 0, topBarPos.h, sideBarPos.x, getRendererSize().h - topBarPos.h };
+	SDL_Rect gameBoardRect = { 0, topBarPos.h, sideBarPos.x, getRendererHeight() - topBarPos.h };
 	screenborder = new ScreenBorder(gameBoardRect);
 }
 
@@ -317,9 +308,6 @@ void Game::processObjects()
 
 void Game::drawScreen()
 {
-	/* clear whole screen */
-	SDL_FillRect(screen, NULL, COLOR_BLACK);
-
     Coord TopLeftTile = screenborder->getTopLeftTile();
     Coord BottomRightTile = screenborder->getBottomRightTile();
 
@@ -446,8 +434,11 @@ void Game::drawScreen()
 //////////////////////////////draw unexplored/shade
 
 	if(debug == false) {
+        // TODO: Convert fog to rendering code
+        /*
         SDL_Surface** hiddenFogSurf = pGFXManager->getObjPic(ObjPic_Terrain_HiddenFog);
         SDL_LockSurface(hiddenFogSurf[currentZoomlevel]);
+        */
 
 	    int zoomedTileSize = world2zoomedWorld(TILESIZE);
 		for(int x = screenborder->getTopLeftTile().x - 1; x <= screenborder->getBottomRightTile().x + 1; x++) {
@@ -460,12 +451,12 @@ void Game::drawScreen()
 					    int hideTile = pTile->getHideTile(pLocalHouse->getHouseID());
 
 						if(hideTile != 0) {
-						    SDL_Surface** hiddenSurf = pGFXManager->getObjPic(ObjPic_Terrain_Hidden);
+						    SDL_Texture** hiddenTex = pGFXManager->getObjPic(ObjPic_Terrain_Hidden);
 
 						    SDL_Rect source = { hideTile*zoomedTileSize, 0, zoomedTileSize, zoomedTileSize };
 						    SDL_Rect drawLocation = {   screenborder->world2screenX(x*TILESIZE), screenborder->world2screenY(y*TILESIZE),
                                                         zoomedTileSize, zoomedTileSize };
-							SDL_BlitSurface(hiddenSurf[currentZoomlevel], &source, screen, &drawLocation);
+							SDL_RenderCopy(renderer, hiddenTex[currentZoomlevel], &source, &drawLocation);
 						}
 
 						if(gameInitSettings.getGameOptions().fogOfWar == true) {
@@ -486,6 +477,8 @@ void Game::drawScreen()
 
                                 SDL_Surface* fogSurf = pGFXManager->getTransparent40Surface();
 
+                                // TODO: Convert fog to rendering code
+                                /*
                                 for(int i=0;i<zoomedTileSize; i++) {
                                     for(int j=0;j<zoomedTileSize; j++) {
                                         if(getPixel(hiddenFogSurf[currentZoomlevel],source.x+i,source.y+j) == 12) {
@@ -495,28 +488,30 @@ void Game::drawScreen()
                                         }
                                     }
                                 }
+                                */
                             }
 						}
 					} else {
 					    if(!debug) {
-					        SDL_Surface** hiddenSurf = pGFXManager->getObjPic(ObjPic_Terrain_Hidden);
+					        SDL_Texture** hiddenTex = pGFXManager->getObjPic(ObjPic_Terrain_Hidden);
 					        SDL_Rect source = { zoomedTileSize*15, 0, zoomedTileSize, zoomedTileSize };
 					        SDL_Rect drawLocation = {   screenborder->world2screenX(x*TILESIZE), screenborder->world2screenY(y*TILESIZE),
                                                         zoomedTileSize, zoomedTileSize };
-                            SDL_BlitSurface(hiddenSurf[currentZoomlevel], &source, screen, &drawLocation);
+                            SDL_RenderCopy(renderer, hiddenTex[currentZoomlevel], &source, &drawLocation);
 					    }
 					}
 				} else {
                     // we are outside the map => draw complete hidden
-                    SDL_Surface** hiddenSurf = pGFXManager->getObjPic(ObjPic_Terrain_Hidden);
+                    SDL_Texture** hiddenTex = pGFXManager->getObjPic(ObjPic_Terrain_Hidden);
                     SDL_Rect source = { zoomedTileSize*15, 0, zoomedTileSize, zoomedTileSize };
                     SDL_Rect drawLocation = {   screenborder->world2screenX(x*TILESIZE), screenborder->world2screenY(y*TILESIZE),
                                                 zoomedTileSize, zoomedTileSize };
-                    SDL_BlitSurface(hiddenSurf[currentZoomlevel], &source, screen, &drawLocation);
+                    SDL_RenderCopy(renderer, hiddenTex[currentZoomlevel], &source, &drawLocation);
 				}
 			}
 		}
-		SDL_UnlockSurface(hiddenFogSurf[currentZoomlevel]);
+		// TODO: Convert fog to rendering code
+		//SDL_UnlockSurface(hiddenFogSurf[currentZoomlevel]);
 	}
 
 /////////////draw placement position
@@ -552,8 +547,8 @@ void Game::drawScreen()
                     }
                 }
 
-                SDL_Surface* validPlace = NULL;
-                SDL_Surface* invalidPlace = NULL;
+                SDL_Texture* validPlace = NULL;
+                SDL_Texture* invalidPlace = NULL;
 
                 switch(currentZoomlevel) {
                     case 0: {
@@ -576,7 +571,7 @@ void Game::drawScreen()
 
                 for(int i = xPos; i < (xPos + structuresize.x); i++) {
                     for(int j = yPos; j < (yPos + structuresize.y); j++) {
-                        SDL_Surface* image;
+                        SDL_Texture* image;
 
                         if(!withinRange || !currentGameMap->tileExists(i,j) || !currentGameMap->getTile(i,j)->isRock()
                             || currentGameMap->getTile(i,j)->isMountain() || currentGameMap->getTile(i,j)->hasAGroundObject()
@@ -587,7 +582,7 @@ void Game::drawScreen()
                         }
 
                         SDL_Rect drawLocation = calcDrawingRect(image, screenborder->world2screenX(i*TILESIZE), screenborder->world2screenY(j*TILESIZE));
-                        SDL_BlitSurface(image, NULL, screen, &drawLocation);
+                        SDL_RenderCopy(renderer, image, NULL, &drawLocation);
                     }
                 }
             }
@@ -609,12 +604,12 @@ void Game::drawScreen()
 		}
 
         // draw the mouse selection rectangle
-		drawRect(screen,
-                 screenborder->world2screenX(selectionRect.x),
-                 screenborder->world2screenY(selectionRect.y),
-                 finalMouseX,
-                 finalMouseY,
-                 COLOR_WHITE);
+		renderDrawRect( renderer,
+                        screenborder->world2screenX(selectionRect.x),
+                        screenborder->world2screenY(selectionRect.y),
+                        finalMouseX,
+                        finalMouseY,
+                        COLOR_WHITE);
 	}
 
 
@@ -622,14 +617,14 @@ void Game::drawScreen()
 ///////////draw action indicator
 
 	if((indicatorFrame != NONE) && (screenborder->isInsideScreen(indicatorPosition, Coord(TILESIZE,TILESIZE)) == true)) {
-	    int width = pGFXManager->getUIGraphic(UI_Indicator)->w/3;
-	    int height = pGFXManager->getUIGraphic(UI_Indicator)->h;
-	    SDL_Rect source = { indicatorFrame * width, 0, width, height };
-	    SDL_Rect drawLocation = {   screenborder->world2screenX(indicatorPosition.x) - width/2,
-                                    screenborder->world2screenY(indicatorPosition.y) - height/2,
-                                    width,
-                                    height };
-		SDL_BlitSurface(pGFXManager->getUIGraphic(UI_Indicator), &source, screen, &drawLocation);
+        SDL_Texture* pUIIndicator = pGFXManager->getUIGraphic(UI_Indicator);
+        SDL_Rect source = calcSpriteSourceRect(pUIIndicator, indicatorFrame, 3);
+        SDL_Rect drawLocation = calcSpriteDrawingRect(  pUIIndicator,
+                                                        screenborder->world2screenX(indicatorPosition.x),
+                                                        screenborder->world2screenY(indicatorPosition.y),
+                                                        3, 1,
+                                                        HAlign::Center, VAlign::Center);
+		SDL_RenderCopy(renderer, pUIIndicator, &source, &drawLocation);
 	}
 
 
@@ -637,24 +632,22 @@ void Game::drawScreen()
 	pInterface->draw(screen, Point(0,0));
 	pInterface->drawOverlay(screen, Point(0,0));
 
-	SDL_Surface* surface;
-
 	// draw chat message currently typed
 	if(chatMode) {
-        surface = pFontManager->createSurfaceWithText("Chat: " + typingChatMessage + (((SDL_GetTicks() / 150) % 2 == 0) ? "_" : ""), COLOR_WHITE, FONT_STD12);
-        SDL_Rect drawLocation = calcDrawingRect(surface, 20, getRendererSize().h - 40);
-        SDL_BlitSurface(surface, NULL, screen, &drawLocation);
-        SDL_FreeSurface(surface);
+        SDL_Texture* pChatTexture = pFontManager->createTextureWithText("Chat: " + typingChatMessage + (((SDL_GetTicks() / 150) % 2 == 0) ? "_" : ""), COLOR_WHITE, FONT_STD12);
+        SDL_Rect drawLocation = calcDrawingRect(pChatTexture, 20, getRendererHeight() - 40);
+        SDL_RenderCopy(renderer, pChatTexture, NULL, &drawLocation);
+        SDL_DestroyTexture(pChatTexture);
 	}
 
 	if(bShowFPS) {
 		char	temp[50];
 		snprintf(temp,50,"fps: %.1f ", 1000.0f/averageFrameTime);
 
-		SDL_Surface* fpsSurface = pFontManager->createSurfaceWithText(temp, COLOR_WHITE, FONT_STD12);
-        SDL_Rect drawLocation = calcDrawingRect(fpsSurface,sideBarPos.x - strlen(temp)*8, 60);
-		SDL_BlitSurface(fpsSurface, NULL, screen, &drawLocation);
-		SDL_FreeSurface(fpsSurface);
+		SDL_Texture* pFPSTexture = pFontManager->createTextureWithText(temp, COLOR_WHITE, FONT_STD12);
+        SDL_Rect drawLocation = calcDrawingRect(pFPSTexture,sideBarPos.x - strlen(temp)*8, 60);
+		SDL_RenderCopy(renderer, pFPSTexture, NULL, &drawLocation);
+		SDL_DestroyTexture(pFPSTexture);
 	}
 
 	if(bShowTime) {
@@ -662,11 +655,11 @@ void Game::drawScreen()
 		int     seconds = getGameTime() / 1000;
 		snprintf(temp,50," %.2d:%.2d:%.2d", seconds / 3600, (seconds % 3600)/60, (seconds % 60) );
 
-		SDL_Surface* timeSurface = pFontManager->createSurfaceWithText(temp, COLOR_WHITE, FONT_STD12);
-        SDL_Rect drawLocation = calcAlignedDrawingRect(timeSurface, HAlign::Left, VAlign::Bottom);
+		SDL_Texture* pTimeTexture = pFontManager->createTextureWithText(temp, COLOR_WHITE, FONT_STD12);
+        SDL_Rect drawLocation = calcAlignedDrawingRect(pTimeTexture, HAlign::Left, VAlign::Bottom);
         drawLocation.y++;
-		SDL_BlitSurface(timeSurface, NULL, screen, &drawLocation);
-		SDL_FreeSurface(timeSurface);
+		SDL_RenderCopy(renderer, pTimeTexture, NULL, &drawLocation);
+		SDL_DestroyTexture(pTimeTexture);
 	}
 
 	if(finished) {
@@ -678,10 +671,10 @@ void Game::drawScreen()
             message = _("You Have Failed Your Mission.");
         }
 
-		surface = pFontManager->createSurfaceWithText(message.c_str(), COLOR_WHITE, FONT_STD24);
-        SDL_Rect drawLocation = calcDrawingRect(surface, sideBarPos.x/2, topBarPos.h + (getRendererSize().h-topBarPos.h)/2, HAlign::Center, VAlign::Center);
-		SDL_BlitSurface(surface, NULL, screen, &drawLocation);
-		SDL_FreeSurface(surface);
+		SDL_Texture* pFinishMessageTexture = pFontManager->createTextureWithText(message.c_str(), COLOR_WHITE, FONT_STD24);
+        SDL_Rect drawLocation = calcDrawingRect(pFinishMessageTexture, sideBarPos.x/2, topBarPos.h + (getRendererHeight()-topBarPos.h)/2, HAlign::Center, VAlign::Center);
+		SDL_RenderCopy(renderer, pFinishMessageTexture, NULL, &drawLocation);
+		SDL_DestroyTexture(pFinishMessageTexture);
 	}
 
 	if(pWaitingForOtherPlayers != NULL) {
@@ -957,9 +950,9 @@ void Game::doInput()
 	if((pInGameMenu == NULL) && (pInGameMentat == NULL) && (pWaitingForOtherPlayers == NULL) && (SDL_GetWindowFlags(window) & SDL_WINDOW_MOUSE_FOCUS)) {
 
 	    const Uint8 *keystate = SDL_GetKeyboardState(NULL);
-		scrollDownMode =  (drawnMouseY >= screen->h-1-SCROLLBORDER) || keystate[SDL_SCANCODE_DOWN];
+		scrollDownMode =  (drawnMouseY >= getRendererHeight()-1-SCROLLBORDER) || keystate[SDL_SCANCODE_DOWN];
 		scrollLeftMode = (drawnMouseX <= SCROLLBORDER) || keystate[SDL_SCANCODE_LEFT];
-		scrollRightMode = (drawnMouseX >= screen->w-1-SCROLLBORDER) || keystate[SDL_SCANCODE_RIGHT];
+		scrollRightMode = (drawnMouseX >= getRendererWidth()-1-SCROLLBORDER) || keystate[SDL_SCANCODE_RIGHT];
         scrollUpMode = (drawnMouseY <= SCROLLBORDER) || keystate[SDL_SCANCODE_UP];
 
         if(scrollLeftMode && scrollRightMode) {
@@ -992,40 +985,41 @@ void Game::drawCursor()
         return;
     }
 
-	SDL_Surface* pCursor = NULL;
-    SDL_Rect dest = { drawnMouseX, drawnMouseY, 0, 0};
+	SDL_Texture* pCursor = NULL;
+    SDL_Rect dest = { 0, 0, 0, 0};
 	if(scrollLeftMode || scrollRightMode || scrollUpMode || scrollDownMode) {
         if(scrollLeftMode && !scrollRightMode) {
 	        pCursor = pGFXManager->getUIGraphic(UI_CursorLeft);
-	        dest.y -= 5;
+	        dest = calcDrawingRect(pCursor, drawnMouseX, drawnMouseY-5, HAlign::Left, VAlign::Top);
 	    } else if(scrollRightMode && !scrollLeftMode) {
             pCursor = pGFXManager->getUIGraphic(UI_CursorRight);
-	        dest.x -= pCursor->w / 2;
-	        dest.y -= 5;
+	        dest = calcDrawingRect(pCursor, drawnMouseX, drawnMouseY-5, HAlign::Center, VAlign::Top);
 	    }
 
         if(pCursor == NULL) {
             if(scrollUpMode && !scrollDownMode) {
                 pCursor = pGFXManager->getUIGraphic(UI_CursorUp);
-                dest.x -= 5;
+                dest = calcDrawingRect(pCursor, drawnMouseX-5, drawnMouseY, HAlign::Left, VAlign::Top);
             } else if(scrollDownMode && !scrollUpMode) {
                 pCursor = pGFXManager->getUIGraphic(UI_CursorDown);
-                dest.x -= 5;
-                dest.y -= pCursor->h / 2;
+                dest = calcDrawingRect(pCursor, drawnMouseX-5, drawnMouseY, HAlign::Left, VAlign::Center);
             } else {
                 pCursor = pGFXManager->getUIGraphic(UI_CursorNormal);
+                dest = calcDrawingRect(pCursor, drawnMouseX, drawnMouseY, HAlign::Left, VAlign::Top);
             }
         }
 	} else {
 	    if( (pInGameMenu != NULL) || (pInGameMentat != NULL) || (pWaitingForOtherPlayers != NULL) || (((drawnMouseX >= sideBarPos.x) || (drawnMouseY < topBarPos.h)) && (isOnRadarView(drawnMouseX, drawnMouseY) == false))) {
             // Menu mode or Mentat Menu or Waiting for other players or outside of game screen but not inside minimap
             pCursor = pGFXManager->getUIGraphic(UI_CursorNormal);
+            dest = calcDrawingRect(pCursor, drawnMouseX, drawnMouseY, HAlign::Left, VAlign::Top);
 	    } else {
 
             switch(currentCursorMode) {
                 case CursorMode_Normal:
                 case CursorMode_Placing: {
                     pCursor = pGFXManager->getUIGraphic(UI_CursorNormal);
+                    dest = calcDrawingRect(pCursor, drawnMouseX, drawnMouseY, HAlign::Left, VAlign::Top);
                 } break;
 
                 case CursorMode_Move: {
@@ -1036,8 +1030,7 @@ void Game::drawCursor()
                         default:    pCursor = pGFXManager->getUIGraphic(UI_CursorMove_Zoomlevel2); break;
                     }
 
-                    dest.x -= pCursor->w / 2;
-                    dest.y -= pCursor->h / 2;
+                    dest = calcDrawingRect(pCursor, drawnMouseX, drawnMouseY, HAlign::Center, VAlign::Center);
                 } break;
 
                 case CursorMode_Attack: {
@@ -1048,8 +1041,7 @@ void Game::drawCursor()
                         default:    pCursor = pGFXManager->getUIGraphic(UI_CursorAttack_Zoomlevel2); break;
                     }
 
-                    dest.x -= pCursor->w / 2;
-                    dest.y -= pCursor->h / 2;
+                    dest = calcDrawingRect(pCursor, drawnMouseX, drawnMouseY, HAlign::Center, VAlign::Center);
                 } break;
 
                 case CursorMode_Capture: {
@@ -1060,8 +1052,7 @@ void Game::drawCursor()
                         default:    pCursor = pGFXManager->getUIGraphic(UI_CursorCapture_Zoomlevel2); break;
                     }
 
-                    dest.x -= pCursor->w / 2;
-                    dest.y -= pCursor->h;
+                    dest = calcDrawingRect(pCursor, drawnMouseX, drawnMouseY, HAlign::Center, VAlign::Bottom);
 
                     int xPos = INVALID_POS;
                     int yPos = INVALID_POS;
@@ -1100,9 +1091,7 @@ void Game::drawCursor()
                         default:    pCursor = pGFXManager->getUIGraphic(UI_CursorCarryallDrop_Zoomlevel2); break;
                     }
 
-                    dest.x -= pCursor->w / 2;
-                    dest.y -= pCursor->h;
-
+                    dest = calcDrawingRect(pCursor, drawnMouseX, drawnMouseY, HAlign::Center, VAlign::Bottom);
                 } break;
 
 
@@ -1113,12 +1102,7 @@ void Game::drawCursor()
 	    }
 	}
 
-    dest.w = pCursor->w;
-    dest.h = pCursor->h;
-
-	if(SDL_BlitSurface(pCursor, NULL, screen, &dest) != 0) {
-        fprintf(stderr,"Game::drawCursor(): %s\n", SDL_GetError());
-	}
+	SDL_RenderCopy(renderer, pCursor, NULL, &dest);
 }
 
 void Game::setupView()
@@ -1237,12 +1221,14 @@ void Game::runMainLoop() {
 
 	//main game loop
     do {
+        // clear whole screen
+        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+        SDL_RenderClear(renderer);
+
         drawScreen();
 
-        SDL_RenderClear(renderer);
-        SDL_UpdateTexture(texture, NULL, screen->pixels, screen->pitch);
-        SDL_RenderCopy(renderer, texture, NULL, NULL);
         SDL_RenderPresent(renderer);
+
         frameEnd = SDL_GetTicks();
 
         if(frameEnd == frameStart) {

@@ -44,15 +44,13 @@
 CustomGameMenu::CustomGameMenu(bool multiplayer, bool LANServer)
  : MenuBase(), bMultiplayer(multiplayer), bLANServer(LANServer), currentGameOptions(settings.gameOptions) {
 	// set up window
-	SDL_Surface *surf;
-	surf = pGFXManager->getUIGraphic(UI_MenuBackground);
-
-	setBackground(surf,false);
-	resize(surf->w,surf->h);
+    SDL_Texture *pBackground = pGFXManager->getUIGraphic(UI_MenuBackground);
+	setBackground(pBackground, false);
+	resize(getTextureSize(pBackground));
 
 	setWindowWidget(&windowWidget);
 
-	windowWidget.addWidget(&mainVBox, Point(24,23),	Point(screen->w - 48, screen->h - 32));
+	windowWidget.addWidget(&mainVBox, Point(24,23),	Point(getRendererWidth() - 48, getRendererHeight() - 32));
 
     captionLabel.setText(bMultiplayer ? (bLANServer ? _("LAN Game") : _("Internet Game")) : _("Custom Game"));
     captionLabel.setAlignment(Alignment_HCenter);

@@ -421,8 +421,8 @@ private:
 	};
 
 	std::vector<ListEntry> entries;
-	SDL_Surface* pBackground;
-	SDL_Surface* pForeground;
+	SDL_Texture* pBackground;
+	SDL_Texture* pForeground;
 	ScrollBar scrollbar;
 
 	std::function<void (bool)> pOnSelectionChange;  ///< this function is called when the selection changes

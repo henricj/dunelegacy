@@ -37,54 +37,49 @@ GameInterface::GameInterface() : Window(0,0,0,0) {
 
 	setTransparentBackground(true);
 
-	setCurrentPosition(0,0,screen->w,screen->h);
+	setCurrentPosition(0,0,getRendererWidth(),getRendererHeight());
 
 	setWindowWidget(&windowWidget);
 
-	SDL_Surface* surf, *surfPressed;
-
 	// top bar
-	surf = pGFXManager->getUIGraphic(UI_TopBar, pLocalHouse->getHouseID());
-	topBar.setSurface(surf,false);
-	windowWidget.addWidget(&topBar,Point(0,0),Point(surf->w,surf->h - 12));
+	SDL_Texture* pTopBarTex = pGFXManager->getUIGraphic(UI_TopBar, pLocalHouse->getHouseID());
+	topBar.setTexture(pTopBarTex,false);
+	windowWidget.addWidget(&topBar,Point(0,0),Point(getWidth(pTopBarTex),getHeight(pTopBarTex) - 12));
 
 	// side bar
-	surf = pGFXManager->getUIGraphic(UI_SideBar, pLocalHouse->getHouseID());
-	sideBar.setSurface(surf,false);
-	windowWidget.addWidget(&sideBar,Point(screen->w - surf->w,0),Point(surf->w,surf->h));
+	SDL_Texture* pSideBarTex = pGFXManager->getUIGraphic(UI_SideBar, pLocalHouse->getHouseID());
+	sideBar.setTexture(pSideBarTex,false);
+	SDL_Rect dest = calcAlignedDrawingRect(pSideBarTex, HAlign::Right, VAlign::Top);
+	windowWidget.addWidget(&sideBar, dest);
 
 	// add buttons
 	windowWidget.addWidget(&topBarHBox,Point(5,5),
-							Point(screen->w - sideBar.getSize().x, topBar.getSize().y - 10));
+							Point(getRendererWidth() - sideBar.getSize().x, topBar.getSize().y - 10));
 
 	topBarHBox.addWidget(&newsticker);
 
 	topBarHBox.addWidget(Spacer::create());
 
-	surf = pGFXManager->getUIGraphic(UI_Options, pLocalHouse->getHouseID());
-	surfPressed = pGFXManager->getUIGraphic(UI_Options_Pressed, pLocalHouse->getHouseID());
-
-	optionsButton.setSurfaces(surf, false, surfPressed, false);
+	optionsButton.setTextures(  pGFXManager->getUIGraphic(UI_Options, pLocalHouse->getHouseID()), false,
+                                pGFXManager->getUIGraphic(UI_Options_Pressed, pLocalHouse->getHouseID()), false);
 	optionsButton.setOnClick(std::bind(&Game::onOptions, currentGame));
 	topBarHBox.addWidget(&optionsButton);
 
 	topBarHBox.addWidget(Spacer::create());
 
-	surf = pGFXManager->getUIGraphic(UI_Mentat, pLocalHouse->getHouseID());
-	surfPressed = pGFXManager->getUIGraphic(UI_Mentat_Pressed, pLocalHouse->getHouseID());
-
-	mentatButton.setSurfaces(surf, false, surfPressed, false);
+	mentatButton.setTextures(   pGFXManager->getUIGraphic(UI_Mentat, pLocalHouse->getHouseID()), false,
+                                pGFXManager->getUIGraphic(UI_Mentat_Pressed, pLocalHouse->getHouseID()), false);
 	mentatButton.setOnClick(std::bind(&Game::onMentat, currentGame));
 	topBarHBox.addWidget(&mentatButton);
 
 	topBarHBox.addWidget(Spacer::create());
 
 	// add radar
-	windowWidget.addWidget(&radarView,Point(screen->w-sideBar.getSize().x+SIDEBAR_COLUMN_WIDTH, 0),radarView.getMinimumSize());
+	windowWidget.addWidget(&radarView,Point(getRendererWidth()-sideBar.getSize().x+SIDEBAR_COLUMN_WIDTH, 0),radarView.getMinimumSize());
 	radarView.setOnRadarClick(std::bind(&Game::onRadarClick, currentGame, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
 
 	// add chat manager
-	windowWidget.addWidget(&chatManager, Point(20, 60), Point(screen->w - sideBar.getSize().x, 360));
+	windowWidget.addWidget(&chatManager, Point(20, 60), Point(getRendererWidth() - sideBar.getSize().x, 360));
 }
 
 GameInterface::~GameInterface() {
@@ -96,78 +91,70 @@ void GameInterface::draw(SDL_Surface* screen, Point position) {
 
 	// draw Power Indicator and Spice indicator
 
-	SDL_Rect PowerIndicatorPos = {	screen->w - sideBar.getSize().x + 14, 146,
-									4, screen->h - 146 - 2 };
-	SDL_FillRect(screen, &PowerIndicatorPos, COLOR_BLACK);
+	SDL_Rect powerIndicatorPos = {	getRendererWidth() - sideBar.getSize().x + 14, 146, 4, getRendererHeight() - 146 - 2 };
+    renderFillRect(renderer, &powerIndicatorPos, COLOR_BLACK);
 
-	SDL_Rect SpiceIndicatorPos = {	screen->w - sideBar.getSize().x + 20, 146,
-									4, screen->h - 146 - 2 };
-	SDL_FillRect(screen, &SpiceIndicatorPos, COLOR_BLACK);
+	SDL_Rect spiceIndicatorPos = {	getRendererWidth() - sideBar.getSize().x + 20, 146, 4, getRendererHeight() - 146 - 2 };
+	renderFillRect(renderer, &spiceIndicatorPos, COLOR_BLACK);
 
 	int xCount = 0, yCount = 0;
 	int	yCount2 = 0;
 
-	if (!SDL_MUSTLOCK(screen) || (SDL_LockSurface(screen) == 0)) {
-		//draw power level indicator
-		if (pLocalHouse->getPowerRequirement() == 0)	{
-			if (pLocalHouse->getProducedPower() > 0) {
-				yCount2 = PowerIndicatorPos.h + 1;
-			} else {
-				yCount2 = PowerIndicatorPos.h/2;
-			}
-		} else {
-			yCount2 = lround((double)pLocalHouse->getProducedPower()/(double)pLocalHouse->getPowerRequirement()*(double)(PowerIndicatorPos.h/2));
-		}
+    //draw power level indicator
+    if (pLocalHouse->getPowerRequirement() == 0)	{
+        if (pLocalHouse->getProducedPower() > 0) {
+            yCount2 = powerIndicatorPos.h + 1;
+        } else {
+            yCount2 = powerIndicatorPos.h/2;
+        }
+    } else {
+        yCount2 = lround((double)pLocalHouse->getProducedPower()/(double)pLocalHouse->getPowerRequirement()*(double)(powerIndicatorPos.h/2));
+    }
 
-		if (yCount2 > PowerIndicatorPos.h + 1) {
-			yCount2 = PowerIndicatorPos.h + 1;
-		}
+    if (yCount2 > powerIndicatorPos.h + 1) {
+        yCount2 = powerIndicatorPos.h + 1;
+    }
 
-		for (yCount = 0; yCount < yCount2; yCount++) {
-			for (xCount = 1; xCount < PowerIndicatorPos.w - 1; xCount++) {
-				if(((yCount/2) % 3) != 0) {
-					putPixel(screen, xCount + PowerIndicatorPos.x, PowerIndicatorPos.y + PowerIndicatorPos.h - yCount, COLOR_GREEN);
-				}
-			}
-		}
+    setRenderDrawColor(renderer, COLOR_GREEN);
+    for (yCount = 0; yCount < yCount2; yCount++) {
+        for (xCount = 1; xCount < powerIndicatorPos.w - 1; xCount++) {
+            if(((yCount/2) % 3) != 0) {
+                SDL_RenderDrawPoint(renderer, xCount + powerIndicatorPos.x, powerIndicatorPos.y + powerIndicatorPos.h - yCount);
+            }
+        }
+    }
 
-		//draw spice level indicator
-		if (pLocalHouse->getCapacity() == 0) {
-			yCount2 = 0;
-		} else {
-			yCount2 = lround((pLocalHouse->getStoredCredits()/pLocalHouse->getCapacity())*SpiceIndicatorPos.h);
-		}
+    //draw spice level indicator
+    if (pLocalHouse->getCapacity() == 0) {
+        yCount2 = 0;
+    } else {
+        yCount2 = lround((pLocalHouse->getStoredCredits()/pLocalHouse->getCapacity())*spiceIndicatorPos.h);
+    }
 
-		if (yCount2 > SpiceIndicatorPos.h + 1) {
-			yCount2 = SpiceIndicatorPos.h + 1;
-		}
+    if (yCount2 > spiceIndicatorPos.h + 1) {
+        yCount2 = spiceIndicatorPos.h + 1;
+    }
 
-		for (yCount = 0; yCount < yCount2; yCount++) {
-			for (xCount = 1; xCount < SpiceIndicatorPos.w - 1; xCount++) {
-				if(((yCount/2) % 3) != 0) {
-					putPixel(screen, xCount + SpiceIndicatorPos.x, SpiceIndicatorPos.y + SpiceIndicatorPos.h - yCount, COLOR_ORANGE);
-				}
-			}
-		}
-
-		if (SDL_MUSTLOCK(screen)) {
-				SDL_UnlockSurface(screen);
-		}
-	}
+    setRenderDrawColor(renderer, COLOR_ORANGE);
+    for (yCount = 0; yCount < yCount2; yCount++) {
+        for (xCount = 1; xCount < spiceIndicatorPos.w - 1; xCount++) {
+            if(((yCount/2) % 3) != 0) {
+                SDL_RenderDrawPoint(renderer, xCount + spiceIndicatorPos.x, spiceIndicatorPos.y + spiceIndicatorPos.h - yCount);
+            }
+        }
+    }
 
 	//draw credits
 	char CreditsBuffer[10];
 	int credits = pLocalHouse->getCredits();
 	sprintf(CreditsBuffer, "%d", (credits < 0) ? 0 : credits);
 	int NumDigits = strlen(CreditsBuffer);
-	SDL_Surface* surface = pGFXManager->getUIGraphic(UI_CreditsDigits);
-
-
+	SDL_Texture* digitsTex = pGFXManager->getUIGraphic(UI_CreditsDigits);
 
 	for(int i=NumDigits-1; i>=0; i--) {
-        SDL_Rect source = calcSpriteSourceRect(surface, CreditsBuffer[i] - '0', 10);
-        SDL_Rect dest = calcSpriteDrawingRect(surface,getRendererSize().w - sideBar.getSize().x + 49 + (6 - NumDigits + i)*10,135,10);
-		SDL_BlitSurface(surface, &source, screen, &dest);
+        SDL_Rect source = calcSpriteSourceRect(digitsTex, CreditsBuffer[i] - '0', 10);
+        SDL_Rect dest = calcSpriteDrawingRect(digitsTex, getRendererWidth() - sideBar.getSize().x + 49 + (6 - NumDigits + i)*10, 135, 10);
+		SDL_RenderCopy(renderer, digitsTex, &source, &dest);
 	}
 }
 
@@ -185,8 +172,8 @@ void GameInterface::updateObjectInterface() {
 				objectID = newObjectID;
 
 				windowWidget.addWidget(pObjectContainer,
-										Point(screen->w - sideBar.getSize().x + 24, 146),
-										Point(sideBar.getSize().x - 25,screen->h - 148));
+										Point(getRendererWidth() - sideBar.getSize().x + 24, 146),
+										Point(sideBar.getSize().x - 25,getRendererHeight() - 148));
 
 			}
 
@@ -207,8 +194,8 @@ void GameInterface::updateObjectInterface() {
             pObjectContainer = MultiUnitInterface::create();
 
             windowWidget.addWidget(pObjectContainer,
-                                    Point(screen->w - sideBar.getSize().x + 24, 146),
-                                    Point(sideBar.getSize().x - 25,screen->h - 148));
+                                    Point(getRendererWidth() - sideBar.getSize().x + 24, 146),
+                                    Point(sideBar.getSize().x - 25,getRendererHeight() - 148));
 	    } else {
 	        if(pObjectContainer->update() == false) {
 				removeOldContainer();

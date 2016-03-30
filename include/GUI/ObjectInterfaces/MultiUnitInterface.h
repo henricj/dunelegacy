@@ -51,7 +51,7 @@ protected:
 
         addWidget(&topBox,Point(0,0),Point(SIDEBARWIDTH - 25,80));
 
-		addWidget(&mainHBox,Point(0,80),Point(SIDEBARWIDTH - 25,screen->h - 80 - 148));
+		addWidget(&mainHBox,Point(0,80),Point(SIDEBARWIDTH - 25,getRendererHeight() - 80 - 148));
 
 		topBox.addWidget(&topBoxHBox,Point(0,22),Point(SIDEBARWIDTH - 25,58));
 
@@ -64,7 +64,7 @@ protected:
 
 		buttonVBox.addWidget(VSpacer::create(6));
 
-		moveButton.setSymbol(pGFXManager->getUIGraphic(UI_CursorMove_Zoomlevel0), false);
+		moveButton.setSymbol(pGFXManager->getUIGraphicSurface(UI_CursorMove_Zoomlevel0), false);
 		moveButton.setTooltipText(_("Move to a position (Hotkey: M)"));
 		moveButton.setToggleButton(true);
 		moveButton.setOnClick(std::bind(&MultiUnitInterface::onMove, this));
@@ -72,7 +72,7 @@ protected:
 
 		actionHBox.addWidget(HSpacer::create(2));
 
-        attackButton.setSymbol(pGFXManager->getUIGraphic(UI_CursorAttack_Zoomlevel0), false);
+        attackButton.setSymbol(pGFXManager->getUIGraphicSurface(UI_CursorAttack_Zoomlevel0), false);
 		attackButton.setTooltipText(_("Attack a unit, structure or position (Hotkey: A)"));
 		attackButton.setToggleButton(true);
 		attackButton.setOnClick(std::bind(&MultiUnitInterface::onAttack, this));
@@ -80,7 +80,7 @@ protected:
 
         actionHBox.addWidget(HSpacer::create(2));
 
-        carryallDropButton.setSymbol(pGFXManager->getUIGraphic(UI_CursorCarryallDrop_Zoomlevel0), false);
+        carryallDropButton.setSymbol(pGFXManager->getUIGraphicSurface(UI_CursorCarryallDrop_Zoomlevel0), false);
 		carryallDropButton.setTooltipText(_("Request Carryall drop to a position (Hotkey: D)"));
 		carryallDropButton.setToggleButton(true);
 		carryallDropButton.setOnClick(std::bind(&MultiUnitInterface::onCarryallDrop, this));
@@ -88,7 +88,7 @@ protected:
 
         actionHBox.addWidget(HSpacer::create(2));
 
-        captureButton.setSymbol(pGFXManager->getUIGraphic(UI_CursorCapture_Zoomlevel0), false);
+        captureButton.setSymbol(pGFXManager->getUIGraphicSurface(UI_CursorCapture_Zoomlevel0), false);
         captureButton.setTooltipText(_("Capture a building (Hotkey: C)"));
 		captureButton.setToggleButton(true);
 		captureButton.setOnClick(std::bind(&MultiUnitInterface::onCapture, this));
@@ -98,28 +98,28 @@ protected:
 
 		buttonVBox.addWidget(VSpacer::create(2));
 
-        returnButton.setSymbol(pGFXManager->getUIGraphic(UI_ReturnIcon), false);
+        returnButton.setSymbol(pGFXManager->getUIGraphicSurface(UI_ReturnIcon), false);
         returnButton.setTooltipText(_("Return harvester to refinery (Hotkey: H)"));
 		returnButton.setOnClick(std::bind(&MultiUnitInterface::onReturn, this));
 		commandHBox.addWidget(&returnButton);
 
 		commandHBox.addWidget(HSpacer::create(2));
 
-		deployButton.setSymbol(pGFXManager->getUIGraphic(UI_DeployIcon), false);
+		deployButton.setSymbol(pGFXManager->getUIGraphicSurface(UI_DeployIcon), false);
 		deployButton.setTooltipText(_("Build a new construction yard"));
 		deployButton.setOnClick(std::bind(&MultiUnitInterface::onDeploy, this));
 		commandHBox.addWidget(&deployButton);
 
         commandHBox.addWidget(HSpacer::create(2));
 
-        destructButton.setSymbol(pGFXManager->getUIGraphic(UI_DestructIcon), false);
+        destructButton.setSymbol(pGFXManager->getUIGraphicSurface(UI_DestructIcon), false);
         destructButton.setTooltipText(_("Self-destruct this unit"));
 		destructButton.setOnClick(std::bind(&MultiUnitInterface::onDestruct, this));
 		commandHBox.addWidget(&destructButton);
 
         commandHBox.addWidget(HSpacer::create(2));
 
-        sendToRepairButton.setSymbol(pGFXManager->getUIGraphic(UI_SendToRepairIcon), false);
+        sendToRepairButton.setSymbol(pGFXManager->getUIGraphicSurface(UI_SendToRepairIcon), false);
         sendToRepairButton.setTooltipText(_("Repair this unit (Hotkey: R)"));
 		sendToRepairButton.setOnClick(std::bind(&MultiUnitInterface::OnSendToRepair, this));
 		commandHBox.addWidget(&sendToRepairButton);

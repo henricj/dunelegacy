@@ -42,7 +42,7 @@ public:
 	bool canPass(int xPos, int yPos) const;
 
 protected:
-    SDL_Surface**   shadowGraphic;           ///< The graphic for the shadow of this air unit
+    SDL_Texture**   shadowGraphic;           ///< The graphic for the shadow of this air unit
 };
 
 #endif // AIRUNIT_H

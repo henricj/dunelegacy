@@ -36,19 +36,16 @@ MentatMenu::MentatMenu(int newHouse)
 	house = newHouse;
 
 	// set up window
-	SDL_Surface *surf;
+	SDL_Texture *pBackground;
 	if(house == HOUSE_INVALID) {
-        surf = pGFXManager->getUIGraphic(UI_MentatBackgroundBene);
+        pBackground = pGFXManager->getUIGraphic(UI_MentatBackgroundBene);
 	} else {
-        surf = pGFXManager->getUIGraphic(UI_MentatBackground,house);
+        pBackground = pGFXManager->getUIGraphic(UI_MentatBackground,house);
 	}
 
-	setBackground(surf,false);
+	setBackground(pBackground, false);
 
-	int xpos = std::max(0,(screen->w - surf->w)/2);
-	int ypos = std::max(0,(screen->h - surf->h)/2);
-
-	setCurrentPosition(xpos,ypos,surf->w,surf->h);
+	setCurrentPosition(calcAlignedDrawingRect(pBackground, HAlign::Center, VAlign::Center));
 
 	setWindowWidget(&windowWidget);
 
@@ -56,11 +53,11 @@ MentatMenu::MentatMenu(int newHouse)
 		case HOUSE_HARKONNEN: {
 			anim = pGFXManager->getAnimation(Anim_HarkonnenEyes);
 			eyesAnim.setAnimation(anim);
-			windowWidget.addWidget(&eyesAnim,Point(64,176),Point(anim->getFrame()->w,anim->getFrame()->h));
+			windowWidget.addWidget(&eyesAnim,Point(64,176),eyesAnim.getMinimumSize());
 
 			anim = pGFXManager->getAnimation(Anim_HarkonnenMouth);
 			mouthAnim.setAnimation(anim);
-			windowWidget.addWidget(&mouthAnim,Point(64,208),Point(anim->getFrame()->w,anim->getFrame()->h));
+			windowWidget.addWidget(&mouthAnim,Point(64,208),mouthAnim.getMinimumSize());
 
 			anim = pGFXManager->getAnimation(Anim_HarkonnenShoulder);
 			shoulderAnim.setAnimation(anim);
@@ -70,15 +67,15 @@ MentatMenu::MentatMenu(int newHouse)
 		case HOUSE_ATREIDES: {
 			anim = pGFXManager->getAnimation(Anim_AtreidesEyes);
 			eyesAnim.setAnimation(anim);
-			windowWidget.addWidget(&eyesAnim,Point(80,160),Point(anim->getFrame()->w,anim->getFrame()->h));
+			windowWidget.addWidget(&eyesAnim,Point(80,160),eyesAnim.getMinimumSize());
 
 			anim = pGFXManager->getAnimation(Anim_AtreidesMouth);
 			mouthAnim.setAnimation(anim);
-			windowWidget.addWidget(&mouthAnim,Point(80,192),Point(anim->getFrame()->w,anim->getFrame()->h));
+			windowWidget.addWidget(&mouthAnim,Point(80,192),mouthAnim.getMinimumSize());
 
 			anim = pGFXManager->getAnimation(Anim_AtreidesBook);
 			specialAnim.setAnimation(anim);
-			windowWidget.addWidget(&specialAnim,Point(145,305),Point(anim->getFrame()->w,anim->getFrame()->h));
+			windowWidget.addWidget(&specialAnim,Point(145,305),specialAnim.getMinimumSize());
 
 			anim = pGFXManager->getAnimation(Anim_AtreidesShoulder);
 			shoulderAnim.setAnimation(anim);
@@ -88,15 +85,15 @@ MentatMenu::MentatMenu(int newHouse)
 		case HOUSE_ORDOS: {
 			anim = pGFXManager->getAnimation(Anim_OrdosEyes);
 			eyesAnim.setAnimation(anim);
-			windowWidget.addWidget(&eyesAnim,Point(32,160),Point(anim->getFrame()->w,anim->getFrame()->h));
+			windowWidget.addWidget(&eyesAnim,Point(32,160),eyesAnim.getMinimumSize());
 
 			anim = pGFXManager->getAnimation(Anim_OrdosMouth);
 			mouthAnim.setAnimation(anim);
-			windowWidget.addWidget(&mouthAnim,Point(32,192),Point(anim->getFrame()->w,anim->getFrame()->h));
+			windowWidget.addWidget(&mouthAnim,Point(32,192),mouthAnim.getMinimumSize());
 
 			anim = pGFXManager->getAnimation(Anim_OrdosRing);
 			specialAnim.setAnimation(anim);
-			windowWidget.addWidget(&specialAnim,Point(178,289),Point(anim->getFrame()->w,anim->getFrame()->h));
+			windowWidget.addWidget(&specialAnim,Point(178,289),specialAnim.getMinimumSize());
 
 			anim = pGFXManager->getAnimation(Anim_OrdosShoulder);
 			shoulderAnim.setAnimation(anim);
@@ -106,15 +103,15 @@ MentatMenu::MentatMenu(int newHouse)
 		case HOUSE_FREMEN: {
 			anim = pGFXManager->getAnimation(Anim_FremenEyes);
 			eyesAnim.setAnimation(anim);
-			windowWidget.addWidget(&eyesAnim,Point(80,160),Point(anim->getFrame()->w,anim->getFrame()->h));
+			windowWidget.addWidget(&eyesAnim,Point(80,160),eyesAnim.getMinimumSize());
 
 			anim = pGFXManager->getAnimation(Anim_FremenMouth);
 			mouthAnim.setAnimation(anim);
-			windowWidget.addWidget(&mouthAnim,Point(80,192),Point(anim->getFrame()->w,anim->getFrame()->h));
+			windowWidget.addWidget(&mouthAnim,Point(80,192),mouthAnim.getMinimumSize());
 
 			anim = pGFXManager->getAnimation(Anim_FremenBook);
 			specialAnim.setAnimation(anim);
-			windowWidget.addWidget(&specialAnim,Point(145,305),Point(anim->getFrame()->w,anim->getFrame()->h));
+			windowWidget.addWidget(&specialAnim,Point(145,305),specialAnim.getMinimumSize());
 
 			anim = pGFXManager->getAnimation(Anim_FremenShoulder);
 			shoulderAnim.setAnimation(anim);
@@ -124,11 +121,11 @@ MentatMenu::MentatMenu(int newHouse)
 		case HOUSE_SARDAUKAR: {
 			anim = pGFXManager->getAnimation(Anim_SardaukarEyes);
 			eyesAnim.setAnimation(anim);
-			windowWidget.addWidget(&eyesAnim,Point(64,176),Point(anim->getFrame()->w,anim->getFrame()->h));
+			windowWidget.addWidget(&eyesAnim,Point(64,176),eyesAnim.getMinimumSize());
 
 			anim = pGFXManager->getAnimation(Anim_SardaukarMouth);
 			mouthAnim.setAnimation(anim);
-			windowWidget.addWidget(&mouthAnim,Point(64,208),Point(anim->getFrame()->w,anim->getFrame()->h));
+			windowWidget.addWidget(&mouthAnim,Point(64,208),mouthAnim.getMinimumSize());
 
 			anim = pGFXManager->getAnimation(Anim_SardaukarShoulder);
 			shoulderAnim.setAnimation(anim);
@@ -138,15 +135,15 @@ MentatMenu::MentatMenu(int newHouse)
 		case HOUSE_MERCENARY: {
 			anim = pGFXManager->getAnimation(Anim_MercenaryEyes);
 			eyesAnim.setAnimation(anim);
-			windowWidget.addWidget(&eyesAnim,Point(32,160),Point(anim->getFrame()->w,anim->getFrame()->h));
+			windowWidget.addWidget(&eyesAnim,Point(32,160),eyesAnim.getMinimumSize());
 
 			anim = pGFXManager->getAnimation(Anim_MercenaryMouth);
 			mouthAnim.setAnimation(anim);
-			windowWidget.addWidget(&mouthAnim,Point(32,192),Point(anim->getFrame()->w,anim->getFrame()->h));
+			windowWidget.addWidget(&mouthAnim,Point(32,192),mouthAnim.getMinimumSize());
 
 			anim = pGFXManager->getAnimation(Anim_MercenaryRing);
 			specialAnim.setAnimation(anim);
-			windowWidget.addWidget(&specialAnim,Point(178,289),Point(anim->getFrame()->w,anim->getFrame()->h));
+			windowWidget.addWidget(&specialAnim,Point(178,289),specialAnim.getMinimumSize());
 
 			anim = pGFXManager->getAnimation(Anim_MercenaryShoulder);
 			shoulderAnim.setAnimation(anim);
@@ -157,11 +154,11 @@ MentatMenu::MentatMenu(int newHouse)
             // bene gese
 			anim = pGFXManager->getAnimation(Anim_BeneEyes);
 			eyesAnim.setAnimation(anim);
-			windowWidget.addWidget(&eyesAnim,Point(128,160),Point(anim->getFrame()->w,anim->getFrame()->h));
+			windowWidget.addWidget(&eyesAnim,Point(128,160),eyesAnim.getMinimumSize());
 
 			anim = pGFXManager->getAnimation(Anim_BeneMouth);
 			mouthAnim.setAnimation(anim);
-			windowWidget.addWidget(&mouthAnim,Point(112,192),Point(anim->getFrame()->w,anim->getFrame()->h));
+			windowWidget.addWidget(&mouthAnim,Point(112,192),mouthAnim.getMinimumSize());
         } break;
 	}
 

@@ -51,7 +51,7 @@ private:
 	Sint32      devastateTimer;     ///< When will this devastator devastate
 
     // drawing information
-	SDL_Surface**	turretGraphic;  ///< The graphic of the turret
+	SDL_Texture**	turretGraphic;  ///< The graphic of the turret
 	int             gunGraphicID;   ///< The id of the turret graphic (needed if we want to reload the graphic)
 };
 

@@ -46,15 +46,15 @@ DropDownBox::DropDownBox() : Widget() {
 
 DropDownBox::~DropDownBox() {
 	if(pBackground != NULL) {
-		SDL_FreeSurface(pBackground);
+		SDL_DestroyTexture(pBackground);
 	}
 
 	if(pForeground != NULL) {
-		SDL_FreeSurface(pForeground);
+		SDL_DestroyTexture(pForeground);
 	}
 
 	if(pActiveForeground != NULL) {
-		SDL_FreeSurface(pActiveForeground);
+		SDL_DestroyTexture(pActiveForeground);
 	}
 }
 
@@ -239,7 +239,7 @@ void DropDownBox::draw(SDL_Surface* screen, Point position) {
 
 	if(pBackground != NULL) {
 		SDL_Rect dest = calcDrawingRect(pBackground, position.x, position.y);
-		SDL_BlitSurface(pBackground,NULL,screen,&dest);
+		SDL_RenderCopy(renderer, pBackground, NULL, &dest);
 	}
 
 	if((pForeground == NULL) || (pActiveForeground == NULL)) {
@@ -249,10 +249,10 @@ void DropDownBox::draw(SDL_Surface* screen, Point position) {
 	if(pForeground != NULL && pActiveForeground != NULL) {
 		if(((bHover == true) && pOnClick) || isActive()) {
 		    SDL_Rect dest = calcDrawingRect(pActiveForeground, position.x + 2, position.y + 2);
-            SDL_BlitSurface(pActiveForeground,NULL,screen,&dest);
+            SDL_RenderCopy(renderer, pActiveForeground, NULL, &dest);
 		} else {
 		    SDL_Rect dest = calcDrawingRect(pForeground, position.x + 2, position.y + 2);
-            SDL_BlitSurface(pForeground,NULL,screen,&dest);
+            SDL_RenderCopy(renderer, pForeground, NULL, &dest);
 		}
 	}
 
@@ -261,7 +261,7 @@ void DropDownBox::draw(SDL_Surface* screen, Point position) {
 
 void DropDownBox::drawOverlay(SDL_Surface* screen, Point position) {
 	if(bShowListBox) {
-        bListBoxAbove = (position.y + listBox.getSize().y > screen->h);
+        bListBoxAbove = (position.y + listBox.getSize().y > getRendererHeight());
 		listBox.draw(screen, position + Point(0,bListBoxAbove ? -listBox.getSize().y : getSize().y));
 	}
 }
@@ -270,10 +270,10 @@ void DropDownBox::resize(Uint32 width, Uint32 height) {
 	Widget::resize(width,height);
 
 	if(pBackground != NULL) {
-		SDL_FreeSurface(pBackground);
+		SDL_DestroyTexture(pBackground);
 	}
 
-	pBackground = GUIStyle::getInstance().createWidgetBackground(width, height);
+	pBackground = convertSurfaceToTexture(GUIStyle::getInstance().createWidgetBackground(width, height), true);
 
 	invalidateForeground();
 
@@ -315,29 +315,29 @@ void DropDownBox::updateButtonSurface() {
 
 void DropDownBox::invalidateForeground() {
     if(pForeground != NULL) {
-		SDL_FreeSurface(pForeground);
+		SDL_DestroyTexture(pForeground);
 		pForeground = NULL;
 	}
 
     if(pActiveForeground != NULL) {
-		SDL_FreeSurface(pActiveForeground);
+		SDL_DestroyTexture(pActiveForeground);
 		pActiveForeground = NULL;
 	}
 }
 
 void DropDownBox::updateForeground() {
     if(pForeground != NULL) {
-		SDL_FreeSurface(pForeground);
+		SDL_DestroyTexture(pForeground);
 		pForeground = NULL;
 	}
 
     if(pActiveForeground != NULL) {
-		SDL_FreeSurface(pActiveForeground);
+		SDL_DestroyTexture(pActiveForeground);
 		pActiveForeground = NULL;
 	}
 
     if(listBox.getSelectedIndex() >= 0) {
-		pForeground = GUIStyle::getInstance().createListBoxEntry(getSize().x - 17, listBox.getEntry(listBox.getSelectedIndex()), false, color);
-		pActiveForeground = GUIStyle::getInstance().createListBoxEntry(getSize().x - 17, listBox.getEntry(listBox.getSelectedIndex()), true, color);
+		pForeground = convertSurfaceToTexture(GUIStyle::getInstance().createListBoxEntry(getSize().x - 17, listBox.getEntry(listBox.getSelectedIndex()), false, color), true);
+		pActiveForeground = convertSurfaceToTexture(GUIStyle::getInstance().createListBoxEntry(getSize().x - 17, listBox.getEntry(listBox.getSelectedIndex()), true, color), true);
 	}
 }

@@ -101,10 +101,7 @@ GameOptionsWindow::GameOptionsWindow(SettingsClass::GameOptionsClass& initialGam
     vbox2.addWidget(&manualCarryallDropsCheckbox);
     vbox2.addWidget(VSpacer::create(4));
 
-    SDL_Surface *surf,*surfPressed;
-    surf = pGFXManager->getUIGraphic(UI_Minus);
-	surfPressed = pGFXManager->getUIGraphic(UI_Minus_Pressed);
-    gameSpeedMinus.setSurfaces(surf,false,surfPressed,false);
+    gameSpeedMinus.setTextures(pGFXManager->getUIGraphic(UI_Minus), false, pGFXManager->getUIGraphic(UI_Minus_Pressed), false);
 	gameSpeedMinus.setOnClick(std::bind(&GameOptionsWindow::onGameSpeedMinus, this));
 	gameSpeedHBox.addWidget(HSpacer::create(2));
     gameSpeedHBox.addWidget(&gameSpeedMinus);
@@ -114,9 +111,7 @@ GameOptionsWindow::GameOptionsWindow(SettingsClass::GameOptionsClass& initialGam
     gameSpeedHBox.addWidget(&gameSpeedBar);
     currentGameSpeed = gameOptions.gameSpeed;
     updateGameSpeedBar();
-    surf = pGFXManager->getUIGraphic(UI_Plus);
-	surfPressed = pGFXManager->getUIGraphic(UI_Plus_Pressed);
-    gameSpeedPlus.setSurfaces(surf,false,surfPressed,false);
+    gameSpeedPlus.setTextures(pGFXManager->getUIGraphic(UI_Plus), false, pGFXManager->getUIGraphic(UI_Plus_Pressed), false);
 	gameSpeedPlus.setOnClick(std::bind(&GameOptionsWindow::onGameSpeedPlus, this));
 	gameSpeedHBox.addWidget(HSpacer::create(2));
     gameSpeedHBox.addWidget(&gameSpeedPlus);
@@ -136,8 +131,8 @@ GameOptionsWindow::GameOptionsWindow(SettingsClass::GameOptionsClass& initialGam
     hbox.addWidget(Spacer::create());
     captionlabel.setAlignment(Alignment_HCenter);
 
-    int xpos = std::max(0,(screen->w - getSize().x)/2);
-	int ypos = std::max(0,(screen->h - getSize().y)/2);
+    int xpos = std::max(0,(getRendererWidth() - getSize().x)/2);
+	int ypos = std::max(0,(getRendererHeight() - getSize().y)/2);
 
 	setCurrentPosition(xpos,ypos,getSize().x,getSize().y);
 }

@@ -54,14 +54,14 @@ protected:
 
 		addWidget(&topBox,Point(0,0),Point(SIDEBARWIDTH - 25,80));
 
-		addWidget(&mainHBox,Point(0,80),Point(SIDEBARWIDTH - 25,screen->h - 80 - 148));
+		addWidget(&mainHBox,Point(0,80),Point(SIDEBARWIDTH - 25,getRendererHeight() - 80 - 148));
 
 		topBox.addWidget(&topBoxHBox,Point(0,22),Point(SIDEBARWIDTH - 25,58));
 
 		topBoxHBox.addWidget(Spacer::create());
 		topBoxHBox.addWidget(&objPicture);
 
-		objPicture.setSurface(resolveItemPicture(itemID, (HOUSETYPE) pObject->getOriginalHouseID()),false);
+		objPicture.setTexture(resolveItemPicture(itemID, (HOUSETYPE) pObject->getOriginalHouseID()),false);
 
 		topBoxHBox.addWidget(Spacer::create());
 	};

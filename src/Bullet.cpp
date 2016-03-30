@@ -269,6 +269,8 @@ void Bullet::blitToScreen()
     SDL_Rect dest = calcSpriteDrawingRect(graphic[currentZoomlevel], screenborder->world2screenX(realX), screenborder->world2screenY(realY), numFrames, 1, HAlign::Center, VAlign::Center);
 
     if(bulletID == Bullet_Sonic) {
+    //TODO: Update to SDL_Texture
+    /*
         static const int shimmerOffset[]  = { 1, 3, 2, 5, 4, 3, 2, 1 };
 
         SDL_Surface *mask = graphic[currentZoomlevel];
@@ -285,9 +287,10 @@ void Bullet::blitToScreen()
         SDL_BlitSurface(mask, NULL, shimmerSurfaceTemp, NULL);
 
         SDL_BlitSurface(shimmerSurfaceTemp, NULL, screen, &dest);
+    */
     } else {
         SDL_Rect source = calcSpriteSourceRect(graphic[currentZoomlevel], (numFrames > 1) ? drawnAngle: 0, numFrames);
-        SDL_BlitSurface(graphic[currentZoomlevel], &source, screen, &dest);
+        SDL_RenderCopy(renderer, graphic[currentZoomlevel], &source, &dest);
     }
 }
 

@@ -57,13 +57,36 @@ public:
 	}
 
 	/**
+		This method is used for setting the different textures for this button.
+		\param	pUnpressedTexture		This texture is normally shown
+		\param	bFreeUnpressedTexture	Should pUnpressedTexture be freed if this button is destroyed?
+		\param	pPressedTexture			This texture is shown when the button is pressed
+		\param	bFreePressedTexture		Should pPressedTexture be freed if this button is destroyed?
+		\param	pActiveTexture			This texture is shown when the button is activated by keyboard or by mouse hover
+		\param	bFreeActiveTexture		Should pActiveTexture be freed if this button is destroyed?
+	*/
+	virtual void setTextures(	SDL_Texture* pUnpressedTexture,bool bFreeUnpressedTexture,
+								SDL_Texture* pPressedTexture = NULL,bool bFreePressedTexture = false,
+								SDL_Texture* pActiveTexture = NULL,bool bFreeActiveTexture = false) {
+		Button::setTextures(pUnpressedTexture,bFreeUnpressedTexture,
+							pPressedTexture,bFreePressedTexture,
+							pActiveTexture,bFreeActiveTexture);
+
+		if(pUnpressedTexture != NULL) {
+			resize(getTextureSize(pUnpressedTexture));
+		} else {
+			resize(0,0);
+		}
+	}
+
+	/**
 		Returns the minimum size of this button. The button should not
 		be resized to a size smaller than this.
 		\return the minimum size of this button
 	*/
 	virtual Point getMinimumSize() const {
-		if(pUnpressedSurface != NULL) {
-			return Point((Sint32) pUnpressedSurface->w, (Sint32) pUnpressedSurface->h);
+		if(pUnpressedTexture != NULL) {
+			return getTextureSize(pUnpressedTexture);
 		} else {
 			return Point(0,0);
 		}

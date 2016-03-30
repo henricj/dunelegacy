@@ -20,6 +20,7 @@
 
 #include "Widget.h"
 #include "GUIStyle.h"
+#include "misc/draw_util.h"
 #include <SDL.h>
 
 #include <string>
@@ -60,13 +61,13 @@ public:
 	inline void setTooltipText(std::string text) {
 		tooltipText = text;
 
-		if(tooltipSurface != NULL) {
-			SDL_FreeSurface(tooltipSurface);
-			tooltipSurface = NULL;
+		if(tooltipTexture != NULL) {
+			SDL_DestroyTexture(tooltipTexture);
+			tooltipTexture = NULL;
 		}
 
 		if(tooltipText != "") {
-			tooltipSurface = GUIStyle::getInstance().createToolTip(tooltipText);
+			tooltipTexture = convertSurfaceToTexture(GUIStyle::getInstance().createToolTip(tooltipText), true);
 		}
 	}
 
@@ -174,20 +175,33 @@ protected:
 								SDL_Surface* pPressedSurface,bool bFreePressedSurface,
 								SDL_Surface* pActiveSurface = NULL,bool bFreeActiveSurface = false);
 
-	SDL_Surface* pUnpressedSurface;		///< Surface that is normally shown
-	SDL_Surface* pPressedSurface;		///< Surface that is shown when the button is pressed
-	SDL_Surface* pActiveSurface;		///< Surface that is shown when the button is activated by keyboard or by mouse hover
-	bool bFreeUnpressedSurface;			///< Should pUnpressedSurface be freed if this button is destroyed?
-	bool bFreePressedSurface;			///< Should pPressedSurface be freed if this button is destroyed?
-	bool bFreeActiveSurface;			///< Should pActiveSurface be freed if this button is destroyed?
+	/**
+		This method is used for setting the different textures for this button.
+		\param	pUnpressedTexture		This texture is normally shown
+		\param	bFreeUnpressedTexture	Should pUnpressedTexture be freed if this button is destroyed?
+		\param	pPressedTexture			This texture is shown when the button is pressed
+		\param	bFreePressedTexture		Should pPressedTexture be freed if this button is destroyed?
+		\param	pActiveTexture			This texture is shown when the button is activated by keyboard or by mouse hover
+		\param	bFreeActiveTexture		Should pActiveTexture be freed if this button is destroyed?
+	*/
+	virtual void setTextures(	SDL_Texture* pUnpressedTexture,bool bFreeUnpressedTexture,
+								SDL_Texture* pPressedTexture,bool bFreePressedTexture,
+								SDL_Texture* pActiveTexture = NULL,bool bFreeActiveTexture = false);
+
+	SDL_Texture* pUnpressedTexture;		///< Texture that is normally shown
+	SDL_Texture* pPressedTexture;		///< Texture that is shown when the button is pressed
+	SDL_Texture* pActiveTexture;		///< Texture that is shown when the button is activated by keyboard or by mouse hover
+	bool bFreeUnpressedTexture;			///< Should pUnpressedTexture be freed if this button is destroyed?
+	bool bFreePressedTexture;			///< Should pPressedTexture be freed if this button is destroyed?
+	bool bFreeActiveTexture;			///< Should pActiveTexture be freed if this button is destroyed?
 
 	/**
-		This method frees all surfaces that should be freed by this button
+		This method frees all textures that should be freed by this button
 	*/
-	void freeSurfaces();
+	void freeTextures();
 
 	std::string tooltipText;			///< the tooltip text
-	SDL_Surface* tooltipSurface;		///< the tooltip surface
+	SDL_Texture* tooltipTexture;		///< the tooltip texture
 	Uint32 tooltipLastMouseMotion;		///< the last time the mouse was moved
 
 	std::function<void ()> pOnClick;	///< function that is called when this button is clicked

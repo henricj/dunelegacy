@@ -35,17 +35,15 @@
 CustomGameStatsMenu::CustomGameStatsMenu() : MenuBase()
 {
 	// set up window
-	SDL_Surface *surf;
-	surf = pGFXManager->getUIGraphic(UI_MenuBackground);
-
-	setBackground(surf,false);
-	resize(surf->w,surf->h);
+    SDL_Texture *pBackground = pGFXManager->getUIGraphic(UI_MenuBackground);
+	setBackground(pBackground, false);
+	resize(getTextureSize(pBackground));
 
 	setWindowWidget(&windowWidget);
 
 	Uint32 localHouseColor = SDL2RGB(palette[houseToPaletteIndex[pLocalHouse->getHouseID()]]);
 
-	windowWidget.addWidget(&mainVBox, Point(24,23),	Point(screen->w - 48, screen->h - 32));
+	windowWidget.addWidget(&mainVBox, Point(24,23),	Point(getRendererWidth() - 48, getRendererHeight() - 32));
 
     captionLabel.setText(getBasename(currentGame->getGameInitSettings().getFilename(), true));
     captionLabel.setTextColor(localHouseColor + 3);

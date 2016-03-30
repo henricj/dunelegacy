@@ -91,6 +91,9 @@ protected:
 		if(pBuilder != NULL) {
 		    StarPort* pStarport = dynamic_cast<StarPort*>(pBuilder);
 		    if(pStarport != NULL) {
+                // TODO: Use textures for the starport
+                objPicture.setTexture(resolveItemPicture(pStarport->getItemID()), false);
+                /*
 		        int arrivalTimer = pStarport->getArrivalTimer();
 		        SDL_Surface* pSurface = copySurface(resolveItemPicture(pStarport->getItemID()));
 
@@ -105,6 +108,7 @@ protected:
                 }
 
                 objPicture.setSurface(pSurface, true);
+                */
 		    }
 
 			upgradeProgressBar.setVisible(pBuilder->isUpgrading());

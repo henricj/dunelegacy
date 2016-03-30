@@ -42,12 +42,15 @@ RadarView::RadarView()
 		throw std::runtime_error("RadarView::RadarView(): Cannot create new surface!");
 	}
 	SDL_FillRect(radarSurface, NULL, COLOR_BLACK);
+
+	radarTexture = SDL_CreateTexture(renderer, SCREEN_FORMAT, SDL_TEXTUREACCESS_STREAMING, 128, 128);
 }
 
 
 RadarView::~RadarView()
 {
     SDL_FreeSurface(radarSurface);
+    SDL_DestroyTexture(radarTexture);
 }
 
 int RadarView::getMapSizeX() const {
@@ -77,41 +80,43 @@ void RadarView::draw(SDL_Surface* screen, Point position)
 
             updateRadarSurface(mapSizeX, mapSizeY, scale, offsetX, offsetY);
 
-            SDL_Rect dest = calcDrawingRect(radarSurface, radarPosition.x, radarPosition.y);
-            SDL_BlitSurface(radarSurface, NULL, screen, &dest);
+            SDL_UpdateTexture(radarTexture, NULL, radarSurface->pixels, radarSurface->pitch);
 
-            SDL_Rect RadarRect;
-            RadarRect.x = (screenborder->getLeft() * mapSizeX*scale) / (mapSizeX*TILESIZE) + offsetX;
-            RadarRect.y = (screenborder->getTop() * mapSizeY*scale) / (mapSizeY*TILESIZE) + offsetY;
-            RadarRect.w = ((screenborder->getRight() - screenborder->getLeft()) * mapSizeX*scale) / (mapSizeX*TILESIZE);
-            RadarRect.h = ((screenborder->getBottom() - screenborder->getTop()) * mapSizeY*scale) / (mapSizeY*TILESIZE);
+            SDL_Rect dest = calcDrawingRect(radarTexture, radarPosition.x, radarPosition.y);
+            SDL_RenderCopy(renderer, radarTexture, NULL, &dest);
 
-            if(RadarRect.x < offsetX) {
-                RadarRect.w -= RadarRect.x;
-                RadarRect.x = offsetX;
+            SDL_Rect radarRect;
+            radarRect.x = (screenborder->getLeft() * mapSizeX*scale) / (mapSizeX*TILESIZE) + offsetX;
+            radarRect.y = (screenborder->getTop() * mapSizeY*scale) / (mapSizeY*TILESIZE) + offsetY;
+            radarRect.w = ((screenborder->getRight() - screenborder->getLeft()) * mapSizeX*scale) / (mapSizeX*TILESIZE);
+            radarRect.h = ((screenborder->getBottom() - screenborder->getTop()) * mapSizeY*scale) / (mapSizeY*TILESIZE);
+
+            if(radarRect.x < offsetX) {
+                radarRect.w -= radarRect.x;
+                radarRect.x = offsetX;
             }
 
-            if(RadarRect.y < offsetY) {
-                RadarRect.h -= RadarRect.y;
-                RadarRect.y = offsetY;
+            if(radarRect.y < offsetY) {
+                radarRect.h -= radarRect.y;
+                radarRect.y = offsetY;
             }
 
             int offsetFromRightX = 128 - mapSizeX*scale - offsetX;
-            if(RadarRect.x + RadarRect.w > radarPosition.w - offsetFromRightX) {
-                RadarRect.w  = radarPosition.w - offsetFromRightX - RadarRect.x - 1;
+            if(radarRect.x + radarRect.w > radarPosition.w - offsetFromRightX) {
+                radarRect.w  = radarPosition.w - offsetFromRightX - radarRect.x - 1;
             }
 
             int offsetFromBottomY = 128 - mapSizeY*scale - offsetY;
-            if(RadarRect.y + RadarRect.h > radarPosition.h - offsetFromBottomY) {
-                RadarRect.h = radarPosition.h - offsetFromBottomY - RadarRect.y - 1;
+            if(radarRect.y + radarRect.h > radarPosition.h - offsetFromBottomY) {
+                radarRect.h = radarPosition.h - offsetFromBottomY - radarRect.y - 1;
             }
 
-            drawRect(   screen,
-                        radarPosition.x + RadarRect.x,
-                        radarPosition.y + RadarRect.y,
-                        radarPosition.x + (RadarRect.x + RadarRect.w),
-                        radarPosition.y + (RadarRect.y + RadarRect.h),
-                        COLOR_WHITE);
+            renderDrawRect( renderer,
+                            radarPosition.x + radarRect.x,
+                            radarPosition.y + radarRect.y,
+                            radarPosition.x + (radarRect.x + radarRect.w),
+                            radarPosition.y + (radarRect.y + radarRect.h),
+                            COLOR_WHITE);
 
         } break;
 
@@ -119,7 +124,7 @@ void RadarView::draw(SDL_Surface* screen, Point position)
         case Mode_AnimationRadarOn: {
             SDL_Rect source = calcSpriteSourceRect(radarStaticAnimation, animFrame, NUM_STATIC_FRAMES);
             SDL_Rect dest = calcSpriteDrawingRect(radarStaticAnimation, radarPosition.x, radarPosition.y, NUM_STATIC_FRAMES);
-            SDL_BlitSurface(radarStaticAnimation, &source, screen, &dest);
+            SDL_RenderCopy(renderer, radarStaticAnimation, &source, &dest);
         } break;
     }
 }

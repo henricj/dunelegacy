@@ -37,18 +37,16 @@ public:
 
 protected:
 	DefaultStructureInterface(int objectID) : DefaultObjectInterface(objectID) {
-		SDL_Surface* surf, *surfPressed;
+		SDL_Texture* pUIRepair = pGFXManager->getUIGraphic(UI_Repair);
+		SDL_Texture* pUIRepairPressed = pGFXManager->getUIGraphic(UI_Repair_Pressed);
 
-		surf = pGFXManager->getUIGraphic(UI_Repair);
-		surfPressed = pGFXManager->getUIGraphic(UI_Repair_Pressed);
-
-		repairButton.setSurfaces(surf, false, surfPressed,false);
+		repairButton.setTextures(pUIRepair, false, pUIRepairPressed,false);
 		repairButton.setToggleButton(true);
 		repairButton.setVisible(false);
 		repairButton.setTooltipText(_("Repair this structure (Hotkey: R)"));
 		repairButton.setOnClick(std::bind(&DefaultStructureInterface::OnRepair, this));
 
-		topBox.addWidget(&repairButton,Point(2,2),Point(surf->w,surf->h));
+		topBox.addWidget(&repairButton, Point(2,2), getTextureSize(pUIRepair));
 	}
 
 	void OnRepair() {

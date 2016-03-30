@@ -49,11 +49,9 @@ CampaignStatsMenu::CampaignStatsMenu(int level) : MenuBase()
     Uint32 colorEnemy = SDL2RGB(palette[PALCOLOR_SARDAUKAR + 1]);
 
 	// set up window
-	SDL_Surface *surf;
-	surf = pGFXManager->getUIGraphic(UI_GameStatsBackground);
-
-	setBackground(surf,false);
-	resize(surf->w,surf->h);
+    SDL_Texture *pBackground = pGFXManager->getUIGraphic(UI_GameStatsBackground);
+	setBackground(pBackground, false);
+    resize(getTextureSize(pBackground));
 
 	setWindowWidget(&windowWidget);
 

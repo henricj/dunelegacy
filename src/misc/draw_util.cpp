@@ -218,9 +218,11 @@ SDL_Surface* copySurface(SDL_Surface* inSurface) {
 	if( (surface = SDL_ConvertSurface(inSurface, inSurface->format, inSurface->flags)) == NULL) {
         throw std::invalid_argument(std::string("copySurface(): SDL_ConvertSurface() failed: ") + std::string(SDL_GetError()));
 	}
-	if (surface->format->BytesPerPixel == 1) {
-        SDL_SetSurfaceBlendMode(surface, SDL_BLENDMODE_NONE);
-    }
+
+	SDL_BlendMode mode;
+	SDL_GetSurfaceBlendMode(inSurface, &mode);
+    SDL_SetSurfaceBlendMode(surface, mode);
+
 	return surface;
 }
 
@@ -228,12 +230,41 @@ SDL_Surface* copySurface(SDL_Surface* inSurface) {
 SDL_Surface* convertSurfaceToDisplayFormat(SDL_Surface* inSurface, bool freeSrcSurface) {
     SDL_Surface* pSurface;
     if( (pSurface = SDL_ConvertSurfaceFormat(inSurface, SCREEN_FORMAT, 0)) == NULL) {
+        if(freeSrcSurface) {
+            SDL_FreeSurface(inSurface);
+        }
         throw std::invalid_argument(std::string("convertSurfaceToDisplayFormat(): SDL_ConvertSurfaceFormat() failed: ") + std::string(SDL_GetError()));
 	}
     if(freeSrcSurface) {
         SDL_FreeSurface(inSurface);
     }
     return pSurface;
+}
+
+
+SDL_Texture* convertSurfaceToTexture(SDL_Surface* inSurface, bool freeSrcSurface) {
+    if(inSurface == NULL) {
+        return NULL;
+    }
+
+    if(inSurface->w <= 0 || inSurface->h <= 0) {
+        if(freeSrcSurface) {
+            SDL_FreeSurface(inSurface);
+        }
+        return NULL;
+    }
+
+    SDL_Texture* pTexture;
+    if( (pTexture = SDL_CreateTextureFromSurface(renderer, inSurface)) == NULL) {
+        if(freeSrcSurface) {
+            SDL_FreeSurface(inSurface);
+        }
+        throw std::invalid_argument(std::string("convertSurfaceToTexture(): SDL_CreateTextureFromSurface() failed: ") + std::string(SDL_GetError()));
+	}
+    if(freeSrcSurface) {
+        SDL_FreeSurface(inSurface);
+    }
+    return pTexture;
 }
 
 
@@ -277,25 +308,25 @@ SDL_Surface* scaleSurface(SDL_Surface *surf, double ratio, bool freeSrcSurface) 
 }
 
 
-SDL_Surface* getSubPicture(SDL_Surface* Pic, int left, int top, int width, int height) {
-	if(Pic == NULL) {
-	    throw std::invalid_argument("getSubPicture(): Pic == NULL!");
+SDL_Surface* getSubPicture(SDL_Surface* pic, int left, int top, int width, int height) {
+	if(pic == NULL) {
+	    throw std::invalid_argument("getSubPicture(): pic == NULL!");
 	}
 
 	SDL_Surface *returnPic;
 
 	// create new picture surface
-    if(Pic->format->BitsPerPixel == 8) {
+    if(pic->format->BitsPerPixel == 8) {
         if((returnPic = SDL_CreateRGBSurface(0, width, height, 8, 0, 0, 0, 0))== NULL) {
             throw std::runtime_error("getSubPicture(): Cannot create new Picture!");
         }
-        SDL_SetPaletteColors(returnPic->format->palette, Pic->format->palette->colors, 0, Pic->format->palette->ncolors);
+        SDL_SetPaletteColors(returnPic->format->palette, pic->format->palette->colors, 0, pic->format->palette->ncolors);
         Uint32 ckey;
-        bool has_ckey = !SDL_GetColorKey(Pic, &ckey);
+        bool has_ckey = !SDL_GetColorKey(pic, &ckey);
         if (has_ckey) {
             SDL_SetColorKey(returnPic, SDL_TRUE, ckey);
         }
-        if (Pic->flags & SDL_RLEACCEL) {
+        if (pic->flags & SDL_RLEACCEL) {
             SDL_SetSurfaceRLE(returnPic, SDL_TRUE);
         }
 	} else {
@@ -305,20 +336,20 @@ SDL_Surface* getSubPicture(SDL_Surface* Pic, int left, int top, int width, int h
 	}
 
 	SDL_Rect srcRect = {left,top,width,height};
-	SDL_BlitSurface(Pic,&srcRect,returnPic,NULL);
+	SDL_BlitSurface(pic,&srcRect,returnPic,NULL);
 
 	return returnPic;
 }
 
-SDL_Surface* getSubFrame(SDL_Surface* Pic, int i, int j, int numX, int numY) {
-	if(Pic == NULL) {
-	    throw std::invalid_argument("getSubFrame(): Pic == NULL!");
+SDL_Surface* getSubFrame(SDL_Surface* pic, int i, int j, int numX, int numY) {
+	if(pic == NULL) {
+	    throw std::invalid_argument("getSubFrame(): pic == NULL!");
 	}
 
-	int frameWidth = Pic->w/numX;
-	int frameHeight = Pic->h/numY;
+	int frameWidth = pic->w/numX;
+	int frameHeight = pic->h/numY;
 
-	return getSubPicture(Pic, frameWidth*i, frameHeight*j, frameWidth, frameHeight);
+	return getSubPicture(pic, frameWidth*i, frameHeight*j, frameWidth, frameHeight);
 }
 
 SDL_Surface* combinePictures(SDL_Surface* basePicture, SDL_Surface* topPicture, int x, int y, bool bFreeBasePicture, bool bFreeTopPicture) {

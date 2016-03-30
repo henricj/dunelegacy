@@ -17,6 +17,7 @@
 
 #include <GUI/Window.h>
 #include <GUI/GUIStyle.h>
+#include <misc/draw_util.h>
 
 Window::Window(Uint32 x, Uint32 y, Uint32 w, Uint32 h) : Widget() {
     closeChildWindowCounter = 0;
@@ -44,7 +45,7 @@ Window::~Window() {
 	}
 
 	if(((bSelfGeneratedBackground == true) || (bFreeBackground == true)) && (pBackground != NULL)) {
-		SDL_FreeSurface(pBackground);
+		SDL_DestroyTexture(pBackground);
 		pBackground = NULL;
 	}
 }
@@ -228,14 +229,13 @@ void Window::draw(SDL_Surface* screen, Point position) {
 		if(bTransparentBackground == false) {
 
 			if((bSelfGeneratedBackground == true) && (pBackground == NULL)) {
-				pBackground = GUIStyle::getInstance().createBackground(getSize().x,getSize().y);
-
+				pBackground = convertSurfaceToTexture(GUIStyle::getInstance().createBackground(getSize().x,getSize().y), true);
 			}
 
 			if(pBackground != NULL) {
 				// Draw background
 				SDL_Rect dest = calcDrawingRect(pBackground, getPosition().x + getSize().x/2, getPosition().y + getSize().y/2, HAlign::Center, VAlign::Center);
-				SDL_BlitSurface(pBackground,NULL,screen,&dest);
+				SDL_RenderCopy(renderer, pBackground, NULL, &dest);
 			}
 		}
 
@@ -265,7 +265,7 @@ void Window::resize(Uint32 width, Uint32 height) {
 
 	if(bSelfGeneratedBackground == true) {
 		if(pBackground != NULL) {
-			SDL_FreeSurface(pBackground);
+			SDL_DestroyTexture(pBackground);
 			pBackground = NULL;
 		}
 
@@ -274,8 +274,16 @@ void Window::resize(Uint32 width, Uint32 height) {
 }
 
 void Window::setBackground(SDL_Surface* pBackground, bool bFreeBackground) {
+	if(pBackground == NULL) {
+        setBackground((SDL_Texture*) NULL);
+	} else {
+        setBackground(convertSurfaceToTexture(pBackground, bFreeBackground), true);
+	}
+}
+
+void Window::setBackground(SDL_Texture* pBackground, bool bFreeBackground) {
 	if(((bSelfGeneratedBackground == true) || (this->bFreeBackground == true)) && (this->pBackground != NULL)) {
-		SDL_FreeSurface(this->pBackground);
+		SDL_DestroyTexture(this->pBackground);
 		this->pBackground = NULL;
 	}
 

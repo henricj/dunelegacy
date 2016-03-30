@@ -293,7 +293,7 @@ private:
 	MapEditorInterface*             pInterface;	    ///< This is the whole interface (top bar and side bar)
 
 
-	SDL_Rect		                gameBarPos;
+	SDL_Rect		                sideBarPos;
 	SDL_Rect		                topBarPos;
 	SDL_Rect		                bottomBarPos;
 
@@ -336,7 +336,7 @@ private:
     std::vector<Coord>              specialBlooms;  ///< only for classic maps
     std::vector<Coord>              spiceFields;    ///< only for classic maps
 
-    std::map<int,int>              choam;
+    std::map<int,int>               choam;
 
     std::vector<ReinforcementInfo>  reinforcements;
 

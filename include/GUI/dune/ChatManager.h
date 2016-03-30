@@ -62,18 +62,18 @@ private:
 
     struct ChatMessage {
 
-        ChatMessage(std::shared_ptr<SDL_Surface> _pMessageSurface, Uint32 _messageTime, MessageType _messageType)
-         : pMessageSurface(_pMessageSurface), messageTime(_messageTime), messageType(_messageType) {
+        ChatMessage(std::shared_ptr<SDL_Texture> _pMessageTexture, Uint32 _messageTime, MessageType _messageType)
+         : pMessageTexture(_pMessageTexture), messageTime(_messageTime), messageType(_messageType) {
         }
 
-        ChatMessage(std::shared_ptr<SDL_Surface> _pTimeSurface, std::shared_ptr<SDL_Surface> _pUsernameSurface,
-                    std::shared_ptr<SDL_Surface> _pMessageSurface, Uint32 _messageTime, MessageType _messageType)
-         : pTimeSurface(_pTimeSurface), pUsernameSurface(_pUsernameSurface), pMessageSurface(_pMessageSurface), messageTime(_messageTime), messageType(_messageType) {
+        ChatMessage(std::shared_ptr<SDL_Texture> _pTimeTexture, std::shared_ptr<SDL_Texture> _pUsernameTexture,
+                    std::shared_ptr<SDL_Texture> _pMessageTexture, Uint32 _messageTime, MessageType _messageType)
+         : pTimeTexture(_pTimeTexture), pUsernameTexture(_pUsernameTexture), pMessageTexture(_pMessageTexture), messageTime(_messageTime), messageType(_messageType) {
         }
 
-        std::shared_ptr<SDL_Surface>    pTimeSurface;
-        std::shared_ptr<SDL_Surface>    pUsernameSurface;
-        std::shared_ptr<SDL_Surface>    pMessageSurface;
+        std::shared_ptr<SDL_Texture>    pTimeTexture;
+        std::shared_ptr<SDL_Texture>    pUsernameTexture;
+        std::shared_ptr<SDL_Texture>    pMessageTexture;
 
         Uint32      messageTime;
         MessageType messageType;

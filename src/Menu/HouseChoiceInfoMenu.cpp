@@ -45,11 +45,11 @@ HouseChoiceInfoMenu::HouseChoiceInfoMenu(int newHouse) : MentatMenu(HOUSE_INVALI
 	}
 
 	planetAnimation.setAnimation(anim);
-	windowWidget.addWidget(&planetAnimation, Point(256,96), Point(anim->getFrame()->w, anim->getFrame()->h));
+	windowWidget.addWidget(&planetAnimation, Point(256,96), planetAnimation.getMinimumSize());
 
-	SDL_Surface* pQuestionSurface = pGFXManager->getUIGraphic(UI_MentatHouseChoiceInfoQuestion, newHouse);
-	questionLabel.setSurface(pQuestionSurface, false);
-	windowWidget.addWidget(&questionLabel, Point(0,0), Point(pQuestionSurface->w, pQuestionSurface->h));
+	SDL_Texture* pQuestionTexture = pGFXManager->getUIGraphic(UI_MentatHouseChoiceInfoQuestion, newHouse);
+	questionLabel.setTexture(pQuestionTexture, false);
+	windowWidget.addWidget(&questionLabel, Point(0,0), getTextureSize(pQuestionTexture));
 	questionLabel.setVisible(false);
 
 	// init textbox but skip first line (this line contains "House ???")
@@ -57,26 +57,23 @@ HouseChoiceInfoMenu::HouseChoiceInfoMenu(int newHouse) : MentatMenu(HOUSE_INVALI
 	int linebreak = desc.find("\n",0) + 1;
 	setText(desc.substr(linebreak,desc.length()-linebreak));
 
-	SDL_Surface* surf;
-	SDL_Surface* surfPressed;
+	SDL_Texture* pMentatNo = pGFXManager->getUIGraphic(UI_MentatNo);
+	SDL_Texture* pMentatNoPressed = pGFXManager->getUIGraphic(UI_MentatNo_Pressed);
 
-	surf = pGFXManager->getUIGraphic(UI_MentatNo);
-	surfPressed = pGFXManager->getUIGraphic(UI_MentatNo_Pressed);
-
-	noButton.setSurfaces(surf,false,surfPressed,false);
+	noButton.setTextures(pMentatNo, false, pMentatNoPressed, false);
 	noButton.setEnabled(false);
 	noButton.setVisible(false);
 	noButton.setOnClick(std::bind(&HouseChoiceInfoMenu::onNo, this));
-	windowWidget.addWidget(&noButton,Point(370,340),Point(surf->w,surf->h));
+	windowWidget.addWidget(&noButton,Point(370,340), getTextureSize(pMentatNo));
 
-	surf = pGFXManager->getUIGraphic(UI_MentatYes);
-	surfPressed = pGFXManager->getUIGraphic(UI_MentatYes_Pressed);
+	SDL_Texture* pMentatYes = pGFXManager->getUIGraphic(UI_MentatYes);
+	SDL_Texture* pMentatYesPressed = pGFXManager->getUIGraphic(UI_MentatYes_Pressed);
 
-	yesButton.setSurfaces(surf,false,surfPressed,false);
+	yesButton.setTextures(pMentatYes, false, pMentatYesPressed, false);
 	yesButton.setEnabled(false);
 	yesButton.setVisible(false);
 	yesButton.setOnClick(std::bind(&HouseChoiceInfoMenu::onYes, this));
-	windowWidget.addWidget(&yesButton,Point(480,340),Point(surf->w,surf->h));
+	windowWidget.addWidget(&yesButton,Point(480,340), getTextureSize(pMentatYes));
 }
 
 HouseChoiceInfoMenu::~HouseChoiceInfoMenu() {

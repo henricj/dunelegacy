@@ -59,7 +59,7 @@ protected:
 
 			if(pUnit != NULL) {
 				repairUnitProgressBar.setVisible(true);
-				repairUnitProgressBar.setSurface(resolveItemPicture(pUnit->getItemID()),false);
+				repairUnitProgressBar.setTexture(resolveItemPicture(pUnit->getItemID()),false);
 				repairUnitProgressBar.setProgress( ((pUnit->getHealth()*100)/pUnit->getMaxHealth()).toDouble());
 			} else {
 				repairUnitProgressBar.setVisible(false);

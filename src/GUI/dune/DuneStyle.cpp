@@ -608,7 +608,7 @@ SDL_Surface* DuneStyle::createToolTip(std::string text) {
         return NULL;
     }
 
-	SDL_FillRect(surface, NULL, COLOR_BLACK);
+	SDL_FillRect(surface, NULL, COLOR_HALF_TRANSPARENT);
 
 	drawRect(surface, 0, 0, helpTextSurface->w + 4 - 1, helpTextSurface->h + 2 - 1, COLOR_YELLOW);
 

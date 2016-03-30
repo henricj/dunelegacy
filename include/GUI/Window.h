@@ -96,6 +96,14 @@ public:
 	virtual void setCurrentPosition(Uint32 x, Uint32 y, Uint32 w, Uint32 h);
 
 	/**
+		Sets the current window position and size.
+		\param	rect	position of this window
+	*/
+	virtual void setCurrentPosition(const SDL_Rect& rect) {
+        setCurrentPosition(rect.x, rect.y, rect.w, rect.h);
+	}
+
+	/**
 		Handles the input recieved from SDL. Everytime a sdl event occures this method should
 		be called.
 		\param	event	SDL_Event that occures.
@@ -193,6 +201,14 @@ public:
 	*/
 	virtual inline Widget* getWindowWidget() { return pWindowWidget; };
 
+    /**
+		This method resized the window.
+		\param	newSize	the new size of this widget
+	*/
+	virtual inline void resize(Point newSize) {
+		resize(newSize.x, newSize.y);
+	};
+
 	/**
 		This method resized the window to width and height.
 		\param	width	the new width of this widget
@@ -218,6 +234,13 @@ public:
 	virtual void setBackground(SDL_Surface* pBackground, bool bFreeBackground = true);
 
 	/**
+		Set the background of this window.
+		\param	pBackground	the new background of this window. NULL=default background
+		\param	bFreeBackground	should this background be automatically be freed
+	*/
+	virtual void setBackground(SDL_Texture* pBackground, bool bFreeBackground = true);
+
+	/**
 		This method sets a transparent background for this window.
 		\param bTransparent	true = the background is transparent, false = the background is not transparent
 	*/
@@ -236,7 +259,7 @@ protected:
 	bool bTransparentBackground;	            ///< true = no background is drawn
 	bool bSelfGeneratedBackground;	            ///< true = background is created by this window, false = created by someone else
 	bool bFreeBackground;			            ///< true = background should be automatically be freed
-	SDL_Surface* pBackground;		            ///< background surface
+	SDL_Texture* pBackground;		            ///< background texture
 };
 
 #endif //WINDOW_H

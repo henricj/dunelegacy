@@ -35,64 +35,47 @@ InGameSettingsMenu::InGameSettingsMenu() : Window(0,0,0,0) {
 	Uint32 color = SDL2RGB(palette[houseToPaletteIndex[houseID]]);
 
 	// set up window
-	SDL_Surface *surf,*surfPressed;
-	surf = pGFXManager->getUIGraphic(UI_OptionsMenu, houseID);
+    SDL_Texture *pBackground = pGFXManager->getUIGraphic(UI_OptionsMenu, houseID);
+	setBackground(pBackground, false);
 
-	setBackground(surf,false);
-
-	int xpos = std::max(0,(screen->w - surf->w)/2);
-	int ypos = std::max(0,(screen->h - surf->h)/2);
-
-	setCurrentPosition(xpos,ypos,surf->w,surf->h);
+	setCurrentPosition(calcAlignedDrawingRect(pBackground, HAlign::Center, VAlign::Center));
 
 	setWindowWidget(&windowWidget);
 
 	// Game speed
-    surf = pGFXManager->getUIGraphic(UI_Minus, houseID);
-	surfPressed = pGFXManager->getUIGraphic(UI_Minus_Pressed, houseID);
-    gameSpeedMinus.setSurfaces(surf,false,surfPressed,false);
+    gameSpeedMinus.setTextures(pGFXManager->getUIGraphic(UI_Minus, houseID), false, pGFXManager->getUIGraphic(UI_Minus_Pressed, houseID), false);
 	gameSpeedMinus.setOnClick(std::bind(&InGameSettingsMenu::onGameSpeedMinus, this));
 	windowWidget.addWidget(&gameSpeedMinus, Point(5,52), gameSpeedMinus.getSize());
 
     gameSpeedBar.setColor(color + 2);
 	windowWidget.addWidget(&gameSpeedBar, Point(23,56), Point(146,6));
 
-	surf = pGFXManager->getUIGraphic(UI_Plus, houseID);
-	surfPressed = pGFXManager->getUIGraphic(UI_Plus_Pressed, houseID);
-	gameSpeedPlus.setSurfaces(surf,false,surfPressed,false);
+	gameSpeedPlus.setTextures(pGFXManager->getUIGraphic(UI_Plus, houseID), false, pGFXManager->getUIGraphic(UI_Plus_Pressed, houseID), false);
 	gameSpeedPlus.setOnClick(std::bind(&InGameSettingsMenu::onGameSpeedPlus, this));
 	windowWidget.addWidget(&gameSpeedPlus, Point(172,52), gameSpeedPlus.getSize());
 
 	// Volume
-	surf = pGFXManager->getUIGraphic(UI_Minus, houseID);
-	surfPressed = pGFXManager->getUIGraphic(UI_Minus_Pressed, houseID);
-	volumeMinus.setSurfaces(surf,false,surfPressed,false);
+	volumeMinus.setTextures(pGFXManager->getUIGraphic(UI_Minus, houseID), false, pGFXManager->getUIGraphic(UI_Minus_Pressed, houseID), false);
 	volumeMinus.setOnClick(std::bind(&InGameSettingsMenu::onVolumeMinus, this));
 	windowWidget.addWidget(&volumeMinus, Point(5,83), volumeMinus.getSize());
 
 	volumeBar.setColor(color + 2);
 	windowWidget.addWidget(&volumeBar, Point(23,87), Point(146,6));
 
-	surf = pGFXManager->getUIGraphic(UI_Plus, houseID);
-	surfPressed = pGFXManager->getUIGraphic(UI_Plus_Pressed, houseID);
-	volumePlus.setSurfaces(surf,false,surfPressed,false);
+	volumePlus.setTextures(pGFXManager->getUIGraphic(UI_Plus, houseID), false, pGFXManager->getUIGraphic(UI_Plus_Pressed, houseID), false);
 	volumePlus.setOnClick(std::bind(&InGameSettingsMenu::onVolumePlus, this));
 	windowWidget.addWidget(&volumePlus, Point(172,83), volumePlus.getSize());
 
 
 	// Scroll speed
-	surf = pGFXManager->getUIGraphic(UI_Minus, houseID);
-	surfPressed = pGFXManager->getUIGraphic(UI_Minus_Pressed, houseID);
-	scrollSpeedMinus.setSurfaces(surf,false,surfPressed,false);
+	scrollSpeedMinus.setTextures(pGFXManager->getUIGraphic(UI_Minus, houseID), false, pGFXManager->getUIGraphic(UI_Minus_Pressed, houseID), false);
 	scrollSpeedMinus.setOnClick(std::bind(&InGameSettingsMenu::onScrollSpeedMinus, this));
 	windowWidget.addWidget(&scrollSpeedMinus, Point(5,114), scrollSpeedMinus.getSize());
 
 	scrollSpeedBar.setColor(color + 2);
 	windowWidget.addWidget(&scrollSpeedBar, Point(23,118), Point(146,6));
 
-	surf = pGFXManager->getUIGraphic(UI_Plus, houseID);
-	surfPressed = pGFXManager->getUIGraphic(UI_Plus_Pressed, houseID);
-	scrollSpeedPlus.setSurfaces(surf,false,surfPressed,false);
+	scrollSpeedPlus.setTextures(pGFXManager->getUIGraphic(UI_Plus, houseID), false, pGFXManager->getUIGraphic(UI_Plus_Pressed, houseID), false);
 	scrollSpeedPlus.setOnClick(std::bind(&InGameSettingsMenu::onScrollSpeedPlus, this));
 	windowWidget.addWidget(&scrollSpeedPlus, Point(172,114), scrollSpeedPlus.getSize());
 

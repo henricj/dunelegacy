@@ -71,8 +71,8 @@ public:
 	*/
 	virtual void resize(Uint32 width, Uint32 height) {
 		Window::resize(width,height);
-		position.x = (screen->w - getSize().x)/2;
-		position.y = (screen->h - getSize().y)/2;
+		position.x = (getRendererWidth() - getSize().x)/2;
+		position.y = (getRendererHeight() - getSize().y)/2;
 	}
 
 	/**

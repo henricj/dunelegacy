@@ -35,15 +35,10 @@ LoadSaveWindow::LoadSaveWindow(bool bSave, std::string caption, std::vector<std:
  : Window(0,0,0,0), bSaveWindow(bSave), directories(directories), directoryTitles(directoryTitles), extension(extension), currentDirectoryIndex(preselectedDirectoryIndex), preselectedFile(preselectedFile), color(color) {
 
 	// set up window
-	SDL_Surface *surf;
-	surf = pGFXManager->getUIGraphic(UI_LoadSaveWindow);
+    SDL_Texture *pBackground = pGFXManager->getUIGraphic(UI_LoadSaveWindow);
+	setBackground(pBackground, false);
 
-	setBackground(surf,false);
-
-	int xpos = std::max(0,(screen->w - surf->w)/2);
-	int ypos = std::max(0,(screen->h - surf->h)/2);
-
-	setCurrentPosition(xpos,ypos,surf->w,surf->h);
+	setCurrentPosition(calcAlignedDrawingRect(pBackground, HAlign::Center, VAlign::Center));
 
 	setWindowWidget(&mainHBox);
 

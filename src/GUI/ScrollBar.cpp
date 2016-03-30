@@ -35,12 +35,12 @@ ScrollBar::ScrollBar() : Widget() {
 
 	pBackground = NULL;
 
-	resize(getMinimumSize().x,getMinimumSize().y);
+	resize(getMinimumSize());
 }
 
 ScrollBar::~ScrollBar() {
 	if(pBackground != NULL) {
-		SDL_FreeSurface(pBackground);
+		SDL_DestroyTexture(pBackground);
 	}
 }
 
@@ -112,7 +112,7 @@ void ScrollBar::draw(SDL_Surface* screen, Point position) {
 
 	if(pBackground != NULL) {
 		SDL_Rect dest = calcDrawingRect(pBackground, position.x, position.y);
-		SDL_BlitSurface(pBackground,NULL,screen,&dest);
+		SDL_RenderCopy(renderer, pBackground, NULL, &dest);
 	}
 
 	arrow1.draw(screen,position);
@@ -126,10 +126,10 @@ void ScrollBar::resize(Uint32 width, Uint32 height) {
 	Widget::resize(width,height);
 
 	if(pBackground != NULL) {
-		SDL_FreeSurface(pBackground);
+		SDL_DestroyTexture(pBackground);
 	}
 
-	pBackground = GUIStyle::getInstance().createWidgetBackground(width, height);
+	pBackground = convertSurfaceToTexture(GUIStyle::getInstance().createWidgetBackground(width, height), true);
 
 	updateSliderButton();
 }

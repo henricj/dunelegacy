@@ -47,9 +47,9 @@ void drawCursor() {
         return;
     }
 
-	SDL_Surface* surface = pGFXManager->getUIGraphic(cursorFrame);
+	SDL_Texture* tex = pGFXManager->getUIGraphic(cursorFrame);
 
-    SDL_Rect dest = calcDrawingRect(surface, drawnMouseX, drawnMouseY);
+    SDL_Rect dest = calcDrawingRect(tex, drawnMouseX, drawnMouseY);
 
 	//reposition image so pointing on right spot
 
@@ -64,9 +64,7 @@ void drawCursor() {
 		dest.y -= dest.h/2;
 	}
 
-	if(SDL_BlitSurface(surface, NULL, screen, &dest) != 0) {
-        fprintf(stderr,"drawCursor(): %s\n", SDL_GetError());
-	}
+	SDL_RenderCopy(renderer, tex, NULL, &dest);
 }
 
 /**
@@ -74,7 +72,7 @@ void drawCursor() {
     \param itemID   the id of the item to resolve (e.g. Unit_Quad)
     \return the surface corresponding. This surface should not be freed or modified. NULL on error.
 */
-SDL_Surface* resolveItemPicture(int itemID, HOUSETYPE house) {
+SDL_Texture* resolveItemPicture(int itemID, HOUSETYPE house) {
 	int newPicID;
 
 	switch(itemID) {
@@ -117,18 +115,18 @@ SDL_Surface* resolveItemPicture(int itemID, HOUSETYPE house) {
 		case Unit_Soldier:			        newPicID = Picture_Soldier;	        	break;
 		case Unit_Trooper: {
 		    switch(house) {
-		        case HOUSE_SARDAUKAR:      newPicID = Picture_Sardaukar;           break;
-		        case HOUSE_FREMEN:         newPicID = Picture_Fremen;              break;
-                default:                   newPicID = Picture_Trooper;             break;
+		        case HOUSE_SARDAUKAR:       newPicID = Picture_Sardaukar;           break;
+		        case HOUSE_FREMEN:          newPicID = Picture_Fremen;              break;
+                default:                    newPicID = Picture_Trooper;             break;
 		    }
         } break;
-		case Unit_Special:                  newPicID = Picture_Special;            break;
+		case Unit_Special:                  newPicID = Picture_Special;             break;
 		case Unit_Infantry:                 newPicID = Picture_Soldier;             break;
 		case Unit_Troopers: {
 		    switch(house) {
-		        case HOUSE_SARDAUKAR:      newPicID = Picture_Sardaukar;           break;
-		        case HOUSE_FREMEN:         newPicID = Picture_Fremen;              break;
-                default:                   newPicID = Picture_Trooper;             break;
+		        case HOUSE_SARDAUKAR:       newPicID = Picture_Sardaukar;           break;
+		        case HOUSE_FREMEN:          newPicID = Picture_Fremen;              break;
+                default:                    newPicID = Picture_Trooper;             break;
 		    }
         } break;
 

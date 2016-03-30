@@ -31,24 +31,21 @@ BriefingMenu::BriefingMenu(int newHouse,int mission,int type) : MentatMenu(newHo
 
 	Animation* anim = NULL;
 
-	SDL_Surface* surf;
-	SDL_Surface* surfPressed;
-
-	surf = pGFXManager->getUIGraphic(UI_MentatProcced);
-	surfPressed = pGFXManager->getUIGraphic(UI_MentatProcced_Pressed);
-	proccedButton.setSurfaces(surf,false,surfPressed,false);
+	SDL_Texture* pMentatProcceed = pGFXManager->getUIGraphic(UI_MentatProcced);
+	SDL_Texture* pMentatProcceedPressed = pGFXManager->getUIGraphic(UI_MentatProcced_Pressed);
+	proccedButton.setTextures(pMentatProcceed, false, pMentatProcceedPressed, false);
 	proccedButton.setEnabled(false);
 	proccedButton.setVisible(false);
 	proccedButton.setOnClick(std::bind(&BriefingMenu::onProcced, this));
-	windowWidget.addWidget(&proccedButton,Point(500,340),Point(surf->w,surf->h));
+	windowWidget.addWidget(&proccedButton, Point(500,340), getTextureSize(pMentatProcceed));
 
-	surf = pGFXManager->getUIGraphic(UI_MentatRepeat);
-	surfPressed = pGFXManager->getUIGraphic(UI_MentatRepeat_Pressed);
-	repeatButton.setSurfaces(surf,false,surfPressed,false);
+	SDL_Texture* pMentatRepeat = pGFXManager->getUIGraphic(UI_MentatRepeat);
+	SDL_Texture* pMentatRepeatPressed = pGFXManager->getUIGraphic(UI_MentatRepeat_Pressed);
+	repeatButton.setTextures(pMentatRepeat, false, pMentatRepeatPressed, false);
 	repeatButton.setEnabled(false);
 	repeatButton.setVisible(false);
 	repeatButton.setOnClick(std::bind(&BriefingMenu::onRepeat, this));
-	windowWidget.addWidget(&repeatButton,Point(350,340),Point(surf->w,surf->h));
+	windowWidget.addWidget(&repeatButton,Point(350,340), getTextureSize(pMentatRepeat));
 
 	int missionnumber;
 	if(mission != 22) {
@@ -74,7 +71,7 @@ BriefingMenu::BriefingMenu(int newHouse,int mission,int type) : MentatMenu(newHo
 	}
 	setText(text);
 	animation.setAnimation(anim);
-	windowWidget.addWidget(&animation,Point(256,96),Point(anim->getFrame()->w,anim->getFrame()->h));
+	windowWidget.addWidget(&animation,Point(256,96),animation.getMinimumSize());
 }
 
 BriefingMenu::~BriefingMenu() {

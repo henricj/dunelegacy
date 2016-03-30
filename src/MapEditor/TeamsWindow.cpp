@@ -35,15 +35,10 @@ TeamsWindow::TeamsWindow(MapEditor* pMapEditor, HOUSETYPE house)
     color = SDL2RGB(palette[houseToPaletteIndex[house]+3]);
 
     // set up window
-	SDL_Surface *surf;
-	surf = pGFXManager->getUIGraphic(UI_NewMapWindow);
+    SDL_Texture *pBackground = pGFXManager->getUIGraphic(UI_NewMapWindow);
+	setBackground(pBackground, false);
 
-	setBackground(surf,false);
-
-	int xpos = std::max(0,(screen->w - surf->w)/2);
-	int ypos = std::max(0,(screen->h - surf->h)/2);
-
-	setCurrentPosition(xpos,ypos,surf->w,surf->h);
+	setCurrentPosition(calcAlignedDrawingRect(pBackground, HAlign::Center, VAlign::Center));
 
 	setWindowWidget(&mainHBox);
 
@@ -69,28 +64,28 @@ TeamsWindow::TeamsWindow(MapEditor* pMapEditor, HOUSETYPE house)
 
     hBox1.addWidget(HSpacer::create(3));
 
-    listEntryUpButton.setSymbol(pGFXManager->getUIGraphic(UI_MapEditor_ArrowUp, house), false,
-                                pGFXManager->getUIGraphic(UI_MapEditor_ArrowUp_Active, house), false);
+    listEntryUpButton.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_ArrowUp, house), false,
+                                pGFXManager->getUIGraphicSurface(UI_MapEditor_ArrowUp_Active, house), false);
     listEntryUpButton.setTooltipText(_("Move up"));
     listEntryUpButton.setOnClick(std::bind(&TeamsWindow::onUp, this));
     listControlVBox.addWidget(&listEntryUpButton, 25);
     listControlVBox.addWidget(VSpacer::create(3));
-    listEntryDownButton.setSymbol(pGFXManager->getUIGraphic(UI_MapEditor_ArrowDown, house), false,
-                                  pGFXManager->getUIGraphic(UI_MapEditor_ArrowDown_Active, house), false);
+    listEntryDownButton.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_ArrowDown, house), false,
+                                  pGFXManager->getUIGraphicSurface(UI_MapEditor_ArrowDown_Active, house), false);
     listEntryDownButton.setTooltipText(_("Move down"));
     listEntryDownButton.setOnClick(std::bind(&TeamsWindow::onDown, this));
     listControlVBox.addWidget(&listEntryDownButton, 25);
 
     listControlVBox.addWidget(Spacer::create(), 6.0);
 
-    addListEntryButton.setSymbol(pGFXManager->getUIGraphic(UI_MapEditor_Plus, house), false,
-                                 pGFXManager->getUIGraphic(UI_MapEditor_Plus_Active, house), false);
+    addListEntryButton.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_Plus, house), false,
+                                 pGFXManager->getUIGraphicSurface(UI_MapEditor_Plus_Active, house), false);
     addListEntryButton.setTooltipText(_("Add"));
     addListEntryButton.setOnClick(std::bind(&TeamsWindow::onAdd, this));
     listControlVBox.addWidget(&addListEntryButton, 25);
     listControlVBox.addWidget(VSpacer::create(3));
-    removeListEntryButton.setSymbol(pGFXManager->getUIGraphic(UI_MapEditor_Minus, house), false,
-                                    pGFXManager->getUIGraphic(UI_MapEditor_Minus_Active, house), false);
+    removeListEntryButton.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_Minus, house), false,
+                                    pGFXManager->getUIGraphicSurface(UI_MapEditor_Minus_Active, house), false);
     removeListEntryButton.setTooltipText(_("Remove"));
     removeListEntryButton.setOnClick(std::bind(&TeamsWindow::onRemove, this));
     listControlVBox.addWidget(&removeListEntryButton, 25);

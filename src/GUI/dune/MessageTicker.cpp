@@ -38,7 +38,7 @@ MessageTicker::~MessageTicker() {
 
 void MessageTicker::addMessage(const std::string& msg)
 {
-	messages.push(msg);
+	messageTextures.push(std::shared_ptr<SDL_Texture>(pFontManager->createTextureWithText(msg, COLOR_BLACK, FONT_STD12), SDL_DestroyTexture));
 }
 
 void MessageTicker::draw(SDL_Surface* screen, Point position) {
@@ -47,14 +47,14 @@ void MessageTicker::draw(SDL_Surface* screen, Point position) {
 	}
 
 	// draw message
-	if(!messages.empty()) {
+	if(!messageTextures.empty()) {
 		if(timer++ == (MESSAGETIME/3)) {
 			timer = -MESSAGETIME/2;
 			// delete first message
-			messages.pop();
+			messageTextures.pop();
 
 			// if no more messages leave
-			if(messages.empty()) {
+			if(messageTextures.empty()) {
 				timer = -MESSAGETIME/2;
 				return;
 			};
@@ -67,7 +67,7 @@ void MessageTicker::draw(SDL_Surface* screen, Point position) {
 			textLocation.y -= SLOWDOWN;
 		}
 
-		SDL_Surface *surface = pFontManager->createSurfaceWithText(messages.front(), COLOR_BLACK, FONT_STD12);
+		SDL_Texture *tex = messageTextures.front().get();
 
 		SDL_Rect cut = { 0, 0, 0, 0 };
 
@@ -75,9 +75,8 @@ void MessageTicker::draw(SDL_Surface* screen, Point position) {
 			cut.y = 3*SLOWDOWN;
 		}
 
-		cut.h = surface->h - cut.y;
-		cut.w = surface->w;
-		SDL_BlitSurface(surface, &cut, screen, &textLocation);
-		SDL_FreeSurface(surface);
+		textLocation.w = cut.w = getWidth(tex);
+		textLocation.h = cut.h = getHeight(tex) - cut.y;
+		SDL_RenderCopy(renderer, tex, &cut, &textLocation);
 	};
 }

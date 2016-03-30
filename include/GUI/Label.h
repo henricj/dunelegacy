@@ -20,6 +20,7 @@
 
 #include "Widget.h"
 #include "GUIStyle.h"
+#include <misc/draw_util.h>
 #include <SDL.h>
 #include <string>
 #include <list>
@@ -34,15 +35,15 @@ public:
 		textshadowcolor = COLOR_DEFAULT;
 		backgroundcolor = 0;
 		alignment = (Alignment_Enum) (Alignment_Left | Alignment_VCenter);
-		pSurface = NULL;
+		pTexture = NULL;
 		enableResizing(true,true);
 	}
 
 	/// destructor
 	virtual ~Label() {
-		if(pSurface != NULL) {
-			SDL_FreeSurface(pSurface);
-			pSurface = NULL;
+		if(pTexture != NULL) {
+			SDL_DestroyTexture(pTexture);
+			pTexture = NULL;
 		}
 	}
 
@@ -116,9 +117,9 @@ public:
 		\param	height	the new height of this label
 	*/
 	virtual void resize(Uint32 width, Uint32 height) {
-		if(pSurface != NULL) {
-			SDL_FreeSurface(pSurface);
-			pSurface = NULL;
+		if(pTexture != NULL) {
+			SDL_DestroyTexture(pTexture);
+			pTexture = NULL;
 		}
 
 		//split text into single lines at every '\n'
@@ -218,7 +219,7 @@ public:
 		}
 
 
-		pSurface = GUIStyle::getInstance().createLabelSurface(width,height,textLines,fontID,alignment,textcolor,textshadowcolor,backgroundcolor);
+		pTexture = convertSurfaceToTexture(GUIStyle::getInstance().createLabelSurface(width,height,textLines,fontID,alignment,textcolor,textshadowcolor,backgroundcolor), true);
 		Widget::resize(width,height);
 	}
 
@@ -259,12 +260,12 @@ public:
 		\param	position	Position to draw the label to
 	*/
 	virtual void draw(SDL_Surface* screen, Point position) {
-		if((isEnabled() == false) || (isVisible() == false) || (pSurface == NULL)) {
+		if((isEnabled() == false) || (isVisible() == false) || (pTexture == NULL)) {
 			return;
 		}
 
-        SDL_Rect dest = calcDrawingRect(pSurface, position.x + getSize().x/2, position.y + getSize().y/2, HAlign::Center, VAlign::Center);
-		SDL_BlitSurface(pSurface, NULL, screen, &dest);
+        SDL_Rect dest = calcDrawingRect(pTexture, position.x + getSize().x/2, position.y + getSize().y/2, HAlign::Center, VAlign::Center);
+		SDL_RenderCopy(renderer, pTexture, NULL, &dest);
 	};
 
 	/**
@@ -291,7 +292,7 @@ private:
 	Uint32 textshadowcolor;     ///< the color of the shadow of the text
 	Uint32 backgroundcolor;     ///< the color of the label background
 	std::string text;			///< the text of this label
-	SDL_Surface* pSurface;		///< the surface of this label
+	SDL_Texture* pTexture;		///< the texture of this label
 	Alignment_Enum alignment;	///< the alignment of this label
 };
 

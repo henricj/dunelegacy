@@ -18,6 +18,7 @@
 #include <GUI/dune/ChatManager.h>
 
 #include <FileClasses/FontManager.h>
+#include <misc/draw_util.h>
 #include <globals.h>
 
 #include <ctime>
@@ -50,8 +51,8 @@ void ChatManager::draw(SDL_Surface* screen, Point position)
     std::list<ChatMessage>::iterator iter;
     for(iter = chatMessages.begin(); iter != chatMessages.end(); ++iter) {
         if(iter->messageType == MSGTYPE_NORMAL) {
-            maxUsernameSizeY = std::max(maxUsernameSizeY, iter->pUsernameSurface->w);
-            maxTimeSizeY = std::max(maxTimeSizeY, iter->pTimeSurface->w);
+            maxUsernameSizeY = std::max(maxUsernameSizeY, getWidth(iter->pUsernameTexture.get()));
+            maxTimeSizeY = std::max(maxTimeSizeY, getWidth(iter->pTimeTexture.get()));
         }
     }
 
@@ -61,29 +62,29 @@ void ChatManager::draw(SDL_Surface* screen, Point position)
     for(iter = chatMessages.begin(); iter != chatMessages.end(); ++iter) {
 
         if(iter->messageType == MSGTYPE_NORMAL) {
-            timedest.w = iter->pTimeSurface->w;
-            timedest.h = iter->pTimeSurface->h;
+            timedest.w = getWidth(iter->pTimeTexture.get());
+            timedest.h = getHeight(iter->pTimeTexture.get());
             SDL_Rect tmpDest1 = timedest;
-            SDL_BlitSurface(iter->pTimeSurface.get(), NULL, screen, &tmpDest1);
+            SDL_RenderCopy(renderer, iter->pTimeTexture.get(), NULL, &tmpDest1);
 
-            usernamedest.w = iter->pUsernameSurface->w;
-            usernamedest.h = iter->pUsernameSurface->h;
-            usernamedest.x = position.x + 70 + maxUsernameSizeY - iter->pUsernameSurface->w;
+            usernamedest.w = getWidth(iter->pUsernameTexture.get());
+            usernamedest.h = getHeight(iter->pUsernameTexture.get());
+            usernamedest.x = position.x + 70 + maxUsernameSizeY - getWidth(iter->pUsernameTexture.get());
             SDL_Rect tmpDest2 = usernamedest;
-            SDL_BlitSurface(iter->pUsernameSurface.get(), NULL, screen, &tmpDest2);
+            SDL_RenderCopy(renderer, iter->pUsernameTexture.get(), NULL, &tmpDest2);
 
-            messagedest.w = iter->pMessageSurface->w;
-            messagedest.h = iter->pMessageSurface->h;
+            messagedest.w = getWidth(iter->pMessageTexture.get());
+            messagedest.h = getHeight(iter->pMessageTexture.get());
             SDL_Rect tmpDest3 = messagedest;
-            SDL_BlitSurface(iter->pMessageSurface.get(), NULL, screen, &tmpDest3);
+            SDL_RenderCopy(renderer, iter->pMessageTexture.get(), NULL, &tmpDest3);
 
 
         } else {
             // MSGTYPE_INFO
-            SDL_Rect infodest = calcDrawingRect(iter->pMessageSurface.get(), position.x + 70 - 20, messagedest.y);
-            SDL_BlitSurface(iter->pMessageSurface.get(), NULL, screen, &infodest);
+            SDL_Rect infodest = calcDrawingRect(iter->pMessageTexture.get(), position.x + 70 - 20, messagedest.y);
+            SDL_RenderCopy(renderer, iter->pMessageTexture.get(), NULL, &infodest);
 
-            messagedest.h = iter->pMessageSurface->h;
+            messagedest.h = getHeight(iter->pMessageTexture.get());
         }
 
         timedest.y += messagedest.h;
@@ -101,11 +102,11 @@ void ChatManager::addChatMessage(std::string username, std::string message)
     timeinfo = localtime( &unixtime );
     strftime(timestring, 80, "(%H:%M:%S)", timeinfo);
 
-    std::shared_ptr<SDL_Surface> pTimeSurface = std::shared_ptr<SDL_Surface>( pFontManager->createSurfaceWithText( timestring, COLOR_WHITE, FONT_STD10), SDL_FreeSurface);
-    std::shared_ptr<SDL_Surface> pUsernameSurface = std::shared_ptr<SDL_Surface>( pFontManager->createSurfaceWithText( username + ": ", COLOR_WHITE, FONT_STD10), SDL_FreeSurface);
-    std::shared_ptr<SDL_Surface> pMessageSurface = std::shared_ptr<SDL_Surface>( pFontManager->createSurfaceWithText( message, COLOR_WHITE, FONT_STD10), SDL_FreeSurface);
+    std::shared_ptr<SDL_Texture> pTimeTexture = std::shared_ptr<SDL_Texture>( pFontManager->createTextureWithText( timestring, COLOR_WHITE, FONT_STD10), SDL_DestroyTexture);
+    std::shared_ptr<SDL_Texture> pUsernameTexture = std::shared_ptr<SDL_Texture>( pFontManager->createTextureWithText( username + ": ", COLOR_WHITE, FONT_STD10), SDL_DestroyTexture);
+    std::shared_ptr<SDL_Texture> pMessageTexture = std::shared_ptr<SDL_Texture>( pFontManager->createTextureWithText( message, COLOR_WHITE, FONT_STD10), SDL_DestroyTexture);
 
-    chatMessages.push_back( ChatMessage(pTimeSurface, pUsernameSurface, pMessageSurface, SDL_GetTicks(), MSGTYPE_NORMAL) );
+    chatMessages.push_back( ChatMessage(pTimeTexture, pUsernameTexture, pMessageTexture, SDL_GetTicks(), MSGTYPE_NORMAL) );
 
     // delete old messages if there are too many messages on the screen
     while(chatMessages.size() > MAX_NUMBEROFMESSAGES) {
@@ -115,9 +116,9 @@ void ChatManager::addChatMessage(std::string username, std::string message)
 
 void ChatManager::addInfoMessage(std::string message)
 {
-    std::shared_ptr<SDL_Surface> pMessageSurface = std::shared_ptr<SDL_Surface>( pFontManager->createSurfaceWithText( "*  " + message, COLOR_GREEN, FONT_STD10), SDL_FreeSurface);
+    std::shared_ptr<SDL_Texture> pMessageTexture = std::shared_ptr<SDL_Texture>( pFontManager->createTextureWithText( "*  " + message, COLOR_GREEN, FONT_STD10), SDL_DestroyTexture);
 
-    chatMessages.push_back( ChatMessage(pMessageSurface, SDL_GetTicks(), MSGTYPE_INFO) );
+    chatMessages.push_back( ChatMessage(pMessageTexture, SDL_GetTicks(), MSGTYPE_INFO) );
 
     // delete old messages if there are too many messages on the screen
     while(chatMessages.size() > MAX_NUMBEROFMESSAGES) {

@@ -8,8 +8,9 @@
 // Step by step one more pixel of the source image is blitted to the destination image
 class BlendBlitter {
 public:
-    BlendBlitter(SDL_Surface* SrcPic, SDL_Surface* DestPic, SDL_Rect DestPicRect, int numSteps = 50) {
+    BlendBlitter(SDL_Surface* SrcPic, bool bFreeSrc, SDL_Surface* DestPic, SDL_Rect DestPicRect, int numSteps = 50) {
         src = SrcPic;
+        this->bFreeSrc = bFreeSrc;
         dest = DestPic;
         destRect = DestPicRect;
         this->numSteps = numSteps;
@@ -34,6 +35,9 @@ public:
     }
 
     ~BlendBlitter() {
+        if(bFreeSrc) {
+            SDL_FreeSurface(src);
+        }
     }
 
     Uint64 getNextValue() {
@@ -94,6 +98,7 @@ public:
 
 private:
     SDL_Surface* src;
+    bool bFreeSrc;
     SDL_Surface* dest;
     SDL_Rect	destRect;
     int numSteps;

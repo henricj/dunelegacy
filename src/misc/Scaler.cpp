@@ -60,7 +60,7 @@ SDL_Surface* Scaler::doubleSurfaceNN(SDL_Surface* src, bool freeSrcSurface) {
 	SDL_Surface *returnPic;
 
 	// create new picture surface
-	if((returnPic = SDL_CreateRGBSurface(0,src->w * 2,src->h * 2,8,0,0,0,0))== NULL) {
+	if((returnPic = SDL_CreateRGBSurface(0,src->w * 2,src->h * 2,8,0,0,0,0)) == NULL) {
 	    if(freeSrcSurface) SDL_FreeSurface(src);
 		return NULL;
 	}
@@ -125,7 +125,7 @@ SDL_Surface* Scaler::tripleSurfaceNN(SDL_Surface* src, bool freeSrcSurface) {
 	SDL_Surface *returnPic;
 
 	// create new picture surface
-	if((returnPic = SDL_CreateRGBSurface(0,src->w * 3,src->h * 3,8,0,0,0,0))== NULL) {
+	if((returnPic = SDL_CreateRGBSurface(0,src->w * 3,src->h * 3,8,0,0,0,0)) == NULL) {
 	    if(freeSrcSurface) SDL_FreeSurface(src);
 		return NULL;
 	}

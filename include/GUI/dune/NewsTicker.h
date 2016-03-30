@@ -48,15 +48,17 @@ public:
 	*/
 	virtual Point getMinimumSize() const {
 		if(pBackground != NULL) {
-			return Point((Sint32) pBackground->w, (Sint32) pBackground->h);
+			return getTextureSize(pBackground);
 		} else {
 			return Point(0,0);
 		}
 	}
 
 private:
-	SDL_Surface* pBackground;
+	SDL_Texture* pBackground;
 	std::queue<std::string> messages;
+	std::string currentMessage;
+	SDL_Texture* pCurrentMessageTexture;
 	int timer;
 };
 

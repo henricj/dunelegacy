@@ -146,8 +146,13 @@ private:
 	int mouseLeftButton;
 	int mouseRightButton;
 
-	SDL_Surface*	pLastTooltip;
-	std::string	tooltipText;
+	SDL_Texture*    pSoldOutTextTexture;
+	SDL_Texture*    pAlreadyBuiltTextTexture;
+	SDL_Texture*    pPlaceItTextTexture;
+	SDL_Texture*    pOnHoldTextTexture;
+
+	SDL_Texture*	pLastTooltip;
+	std::string     tooltipText;
 	Uint32			lastMouseMovement;
 	Point			lastMousePos;
 };

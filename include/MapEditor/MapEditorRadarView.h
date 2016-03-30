@@ -66,6 +66,7 @@ private:
     MapEditor* pMapEditor;
 
     SDL_Surface* radarSurface;
+    SDL_Texture* radarTexture;
 };
 
 #endif // RADARVIEW_H

@@ -129,7 +129,8 @@ void Sandworm::blitToScreen() {
 
     if(shimmerOffsetIndex >= 0) {
         //create worms shimmer
-
+        // TODO: Render sandworm shimmer
+        /*
         SDL_Surface *mask = pGFXManager->getObjPic(ObjPic_SandwormShimmerMask,HOUSE_HARKONNEN)[currentZoomlevel];
         SDL_SetColorKey(mask, SDL_TRUE, 15);      // we want to have white not being drawn
 
@@ -158,6 +159,7 @@ void Sandworm::blitToScreen() {
             SDL_Rect dest = { destX, destY, width, height };
             SDL_BlitSurface(shimmerSurfaceTemp, NULL, screen, &dest);
         }
+        */
     }
 
     if(drawnFrame != INVALID) {
@@ -167,7 +169,7 @@ void Sandworm::blitToScreen() {
                                                 numImagesX, numImagesY,
                                                 HAlign::Center, VAlign::Center);
         SDL_Rect source = calcSpriteSourceRect(graphic[currentZoomlevel], 0, numImagesX, drawnFrame, numImagesY);
-        SDL_BlitSurface(graphic[currentZoomlevel], &source, screen, &dest);
+        SDL_RenderCopy(renderer, graphic[currentZoomlevel], &source, &dest);
     }
 }
 

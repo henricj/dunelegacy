@@ -72,6 +72,7 @@ private:
 	int house;
 	unsigned int lastScenario;
 	SDL_Surface* mapSurface;
+	SDL_Texture* mapTexture;
 	Coord piecePosition[28];
 	BlendBlitter* curBlendBlitter;
 	unsigned int curHouse2Blit;

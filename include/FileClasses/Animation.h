@@ -29,7 +29,11 @@ public:
 	Animation();
 	~Animation();
 
+	unsigned int getCurrentFrameNumber();
+
 	SDL_Surface* getFrame();
+
+	SDL_Texture* getFrameTexture();
 
 	const std::vector<SDL_Surface*>& getFrames() { return frames; };
 
@@ -76,6 +80,7 @@ private:
     int loopsLeft;
 	unsigned int curFrame;
 	std::vector<SDL_Surface*> frames;
+	std::vector<SDL_Texture*> frameTextures;
 };
 
 #endif // ANIMATION_H

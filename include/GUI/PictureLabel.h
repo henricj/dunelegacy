@@ -19,6 +19,8 @@
 #define PICTURELABEL_H
 
 #include "Widget.h"
+#include <misc/draw_util.h>
+
 #include <SDL.h>
 
 /// A class for showning a static picture
@@ -27,15 +29,15 @@ public:
 
 	/// default constructor
 	PictureLabel() : Widget() {
-		pSurface = NULL;
-		bFreeSurface = false;
+		pTexture = NULL;
+		bFreeTexture = false;
 	}
 
 	/// destructor
 	virtual ~PictureLabel() {
-		if((bFreeSurface == true) && (pSurface != NULL)) {
-			SDL_FreeSurface(pSurface);
-			pSurface = NULL;
+		if((bFreeTexture == true) && (pTexture != NULL)) {
+			SDL_DestroyTexture(pTexture);
+			pTexture = NULL;
 		}
 	}
 
@@ -44,17 +46,26 @@ public:
 		\param	pSurface	This surface is shown
 		\param	bFreeSurface	Should pSurface be freed if this picture label is destroyed?
 	*/
-	virtual void setSurface(SDL_Surface* pSurface,bool bFreeSurface) {
-		if((this->bFreeSurface == true) && (this->pSurface != NULL)) {
-			SDL_FreeSurface(this->pSurface);
-			this->pSurface = NULL;
+	virtual void setSurface(SDL_Surface* pSurface, bool bFreeSurface) {
+        setTexture(convertSurfaceToTexture(pSurface, bFreeSurface), true);
+	}
+
+	/**
+		This method sets the texture for this picture label.
+		\param	pTexture	    This texture is shown
+		\param	bFreeTexture	Should pTexture be freed if this picture label is destroyed?
+	*/
+	virtual void setTexture(SDL_Texture* pTexture, bool bFreeTexture) {
+		if((this->bFreeTexture == true) && (this->pTexture != NULL)) {
+			SDL_DestroyTexture(this->pTexture);
+			this->pTexture = NULL;
 		}
 
-		this->pSurface = pSurface;
-		this->bFreeSurface = bFreeSurface;
+		this->pTexture = pTexture;
+		this->bFreeTexture = bFreeTexture;
 
-		if(this->pSurface != NULL) {
-			resize(this->pSurface->w,this->pSurface->h);
+		if(this->pTexture != NULL) {
+			resize(getTextureSize(this->pTexture));
 		} else {
 			resize(0,0);
 		}
@@ -66,8 +77,8 @@ public:
 		\return the minimum size of this picture label
 	*/
 	virtual Point getMinimumSize() const {
-		if(pSurface != NULL) {
-			return Point((Sint32) pSurface->w, (Sint32) pSurface->h);
+		if(pTexture != NULL) {
+			return getTextureSize(pTexture);
 		} else {
 			return Point(0,0);
 		}
@@ -83,18 +94,18 @@ public:
 			return;
 		}
 
-		if(pSurface == NULL) {
+		if(pTexture == NULL) {
 			return;
 		}
 
-		SDL_Rect dest = calcDrawingRect(pSurface, position.x, position.y);
-		SDL_BlitSurface(pSurface,NULL,screen,&dest);
+		SDL_Rect dest = calcDrawingRect(pTexture, position.x, position.y);
+		SDL_RenderCopy(renderer, pTexture, NULL, &dest);
 	}
 
 
 private:
-	SDL_Surface* pSurface;	///< Surface that is shown
-	bool bFreeSurface;		///< Should pSurface be freed if this picture label is destroyed?
+	SDL_Texture* pTexture;	///< The texture that is shown
+	bool bFreeTexture;		///< Should pTexture be freed if this picture label is destroyed?
 };
 
 #endif // PICTURELABEL_H

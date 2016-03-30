@@ -39,15 +39,10 @@
 LoadMapWindow::LoadMapWindow(Uint32 color) : Window(0,0,0,0), color(color) {
 
     // set up window
-	SDL_Surface *surf;
-	surf = pGFXManager->getUIGraphic(UI_NewMapWindow);
+    SDL_Texture *pBackground = pGFXManager->getUIGraphic(UI_NewMapWindow);
+	setBackground(pBackground, false);
 
-	setBackground(surf,false);
-
-	int xpos = std::max(0,(screen->w - surf->w)/2);
-	int ypos = std::max(0,(screen->h - surf->h)/2);
-
-	setCurrentPosition(xpos,ypos,surf->w,surf->h);
+	setCurrentPosition(calcAlignedDrawingRect(pBackground, HAlign::Center, VAlign::Center));
 
 	setWindowWidget(&mainHBox);
 

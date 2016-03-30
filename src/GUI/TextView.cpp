@@ -35,11 +35,11 @@ TextView::TextView() : Widget() {
 
 TextView::~TextView() {
 	if(pBackground != NULL) {
-		SDL_FreeSurface(pBackground);
+		SDL_DestroyTexture(pBackground);
 	}
 
 	if(pForeground != NULL) {
-		SDL_FreeSurface(pForeground);
+		SDL_DestroyTexture(pForeground);
 	}
 }
 
@@ -70,7 +70,7 @@ void TextView::draw(SDL_Surface* screen, Point position) {
 
 	if(pBackground != NULL) {
 		SDL_Rect dest = calcDrawingRect(pBackground, position.x, position.y);
-		SDL_BlitSurface(pBackground,NULL,screen,&dest);
+		SDL_RenderCopy(renderer, pBackground, NULL, &dest);
 	}
 
 	int lineHeight = GUIStyle::getInstance().getTextHeight(fontID) + 2;
@@ -84,7 +84,7 @@ void TextView::draw(SDL_Surface* screen, Point position) {
                         position.y + 1,
                         getWidth(pForeground),
                         getSize().y - 2 };
-	SDL_BlitSurface(pForeground,&src,screen,&dest);
+	SDL_RenderCopy(renderer, pForeground, &src, &dest);
 
 	Point scrollBarPos = position;
 	scrollBarPos.x += getSize().x - scrollbar.getSize().x;
@@ -96,15 +96,15 @@ void TextView::draw(SDL_Surface* screen, Point position) {
 
 void TextView::resize(Uint32 width, Uint32 height) {
 	if(pForeground != NULL) {
-		SDL_FreeSurface(pForeground);
+		SDL_DestroyTexture(pForeground);
 		pForeground = NULL;
 	}
 
 	if(pBackground != NULL) {
-		SDL_FreeSurface(pBackground);
+		SDL_DestroyTexture(pBackground);
 	}
 
-	pBackground = GUIStyle::getInstance().createWidgetBackground(width, height);
+	pBackground = convertSurfaceToTexture(GUIStyle::getInstance().createWidgetBackground(width, height), true);
 
 	scrollbar.resize(scrollbar.getMinimumSize().x,height);
 
@@ -201,7 +201,7 @@ void TextView::resize(Uint32 width, Uint32 height) {
 
 	int lineHeight = GUIStyle::getInstance().getTextHeight(fontID) + 2;
 	int labelHeight = lineHeight * textLines.size() + 2;
-	pForeground = GUIStyle::getInstance().createLabelSurface(width-4,labelHeight,textLines,fontID,alignment,textcolor,textshadowcolor,backgroundcolor);
+	pForeground = convertSurfaceToTexture(GUIStyle::getInstance().createLabelSurface(width-4,labelHeight,textLines,fontID,alignment,textcolor,textshadowcolor,backgroundcolor), true);
 
 	int numVisibleLines = height/lineHeight;
 	scrollbar.setRange(0,std::max(0, ((int) textLines.size()) - numVisibleLines));
@@ -209,5 +209,3 @@ void TextView::resize(Uint32 width, Uint32 height) {
 
 	Widget::resize(width,height);
 }
-
-
