@@ -703,14 +703,18 @@ SDL_Surface* PictureFactory::createMapChoiceScreen(int House) {
 
     if(settings.general.language == "de") {
         SDL_Surface* tmp = getSubPicture(pMapChoiceScreen,8,120, 303, 23);
-        SDL_Rect dest = {8,0,303,23};
-        SDL_BlitSurface(tmp,NULL,pMapChoiceScreen,&dest);
+        SDL_Surface* tmp2 = copySurface(tmp);       // Workaround: SDL2 leaks memory when blitting from A to B and afterwards from B to A
         SDL_FreeSurface(tmp);
+        SDL_Rect dest = {8,0,303,23};
+        SDL_BlitSurface(tmp2,NULL,pMapChoiceScreen,&dest);
+        SDL_FreeSurface(tmp2);
     } else if(settings.general.language == "fr") {
         SDL_Surface* tmp = getSubPicture(pMapChoiceScreen,8,96, 303, 23);
-        SDL_Rect dest = {8,0,303,23};
-        SDL_BlitSurface(tmp,NULL,pMapChoiceScreen,&dest);
+        SDL_Surface* tmp2 = copySurface(tmp);       // Workaround: SDL2 leaks memory when blitting from A to B and afterwards from B to A
         SDL_FreeSurface(tmp);
+        SDL_Rect dest = {8,0,303,23};
+        SDL_BlitSurface(tmp2,NULL,pMapChoiceScreen,&dest);
+        SDL_FreeSurface(tmp2);
     } else {
 		; // Nothing to do (use English)
 	}
