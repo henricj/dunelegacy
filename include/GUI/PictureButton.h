@@ -50,7 +50,7 @@ public:
 							pActiveSurface,bFreeActiveSurface);
 
 		if(pUnpressedSurface != NULL) {
-			resize(pUnpressedSurface->w,pUnpressedSurface->h);
+			resize(getTextureSize(pUnpressedTexture));
 		} else {
 			resize(0,0);
 		}

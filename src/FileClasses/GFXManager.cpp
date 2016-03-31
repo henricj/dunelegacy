@@ -1342,11 +1342,13 @@ SDL_Surface* GFXManager::generateWindtrapAnimationFrames(SDL_Surface* windtrapPi
             windtrapColor.r = static_cast<Uint8>(std::min(80, val));
             windtrapColor.g = static_cast<Uint8>(std::min(80, val));
             windtrapColor.b = static_cast<Uint8>(std::min(255, val));
+            windtrapColor.a = 255;
         } else {
             int val = (i-NUM_WINDTRAP_ANIMATIONS/2)*windtrapColorQuantizizer;
             windtrapColor.r = static_cast<Uint8>(std::max(0, 80-val));
             windtrapColor.g = static_cast<Uint8>(std::max(0, 80-val));
             windtrapColor.b = static_cast<Uint8>(std::max(0, 255-val));
+            windtrapColor.a = 255;
         }
         SDL_SetPaletteColors(windtrapPic->format->palette, &windtrapColor, PALCOLOR_WINDTRAP_COLORCYCLE, 1);
 

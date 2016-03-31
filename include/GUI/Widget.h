@@ -100,7 +100,9 @@ inline Point getSurfaceSize(SDL_Surface* pSurface) {
 */
 inline Point getTextureSize(SDL_Texture* pTexture) {
     Point p;
-    SDL_QueryTexture(pTexture, NULL, NULL, &p.x, &p.y);
+    if(pTexture != NULL) {
+        SDL_QueryTexture(pTexture, NULL, NULL, &p.x, &p.y);
+    }
     return p;
 }
 
