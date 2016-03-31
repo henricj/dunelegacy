@@ -105,6 +105,7 @@ void setVideoMode()
 	renderer = SDL_CreateRenderer(window, -1, 0);
 	SDL_RenderSetLogicalSize(renderer, settings.video.width, settings.video.height);
 	texture = SDL_CreateTexture(renderer, SCREEN_FORMAT, SDL_TEXTUREACCESS_STREAMING, settings.video.width, settings.video.height);
+	/*
 	screen = SDL_CreateRGBSurface(0, settings.video.width, settings.video.height, SCREEN_BPP, RMASK, GMASK, BMASK, 0);
 	if(screen) {
 		SDL_ShowCursor(SDL_DISABLE);
@@ -112,6 +113,8 @@ void setVideoMode()
 		fprintf(stderr, "ERROR: Couldn't set video mode: %s\n", SDL_GetError());
 		exit(EXIT_FAILURE);
     }
+    */
+    SDL_ShowCursor(SDL_DISABLE);
 }
 
 std::string getConfigFilepath()
@@ -661,7 +664,6 @@ int main(int argc, char *argv[]) {
 		delete pFontManager;
 		delete pFileManager;
 
-        SDL_FreeSurface(screen);
         SDL_DestroyTexture(texture);
         SDL_DestroyRenderer(renderer);
         SDL_DestroyWindow(window);

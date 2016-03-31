@@ -61,7 +61,6 @@ class Bullet;
 EXTERN SDL_Window*          window;                     ///< the window
 EXTERN SDL_Renderer*        renderer;                   ///< the renderer
 EXTERN SDL_Texture*         texture;                    ///< the texture
-EXTERN SDL_Surface*         screen;                     ///< the screen
 EXTERN Palette              palette;                    ///< the palette for the screen
 EXTERN int                  drawnMouseX;                ///< the current mouse position (x coordinate)
 EXTERN int                  drawnMouseY;                ///< the current mouse position (y coordinate)

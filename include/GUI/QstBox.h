@@ -31,11 +31,11 @@
 
 #include <iostream>
 
-extern SDL_Surface* screen;
 
 #define	QSTBOX_BUTTON_INVALID	(-1)
 #define	QSTBOX_BUTTON1			(1)
 #define	QSTBOX_BUTTON2			(2)
+
 
 /// A simple class for a question box
 class QstBox : public Window {

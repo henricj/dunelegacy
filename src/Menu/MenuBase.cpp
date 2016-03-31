@@ -130,6 +130,8 @@ bool MenuBase::doInput(SDL_Event &event) {
 
 				case SDLK_PRINTSCREEN:
 				case SDLK_SYSREQ: {
+                    // TODO: Read screenshot from rendering target
+                    /*
                     std::string screenshotFilename;
                     int i = 1;
                     do {
@@ -138,6 +140,7 @@ bool MenuBase::doInput(SDL_Event &event) {
                     } while(existsFile(screenshotFilename) == true);
 
                     SDL_SaveBMP(screen, screenshotFilename.c_str());
+                    */
                 } break;
 
                 case SDLK_TAB: {

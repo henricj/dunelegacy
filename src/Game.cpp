@@ -2260,6 +2260,8 @@ void Game::handleKeyInput(SDL_KeyboardEvent& keyboardEvent) {
 
         case SDLK_PRINTSCREEN:
         case SDLK_SYSREQ: {
+            // TODO: Take screenshot from rendering target
+            /*
             std::string screenshotFilename;
             int i = 1;
             do {
@@ -2269,6 +2271,7 @@ void Game::handleKeyInput(SDL_KeyboardEvent& keyboardEvent) {
 
             SDL_SaveBMP(screen, screenshotFilename.c_str());
             currentGame->addToNewsTicker(_("Screenshot saved") + ": '" + screenshotFilename + "'");
+            */
         } break;
 
         case SDLK_h: {

@@ -142,8 +142,11 @@ void StructureBase::blitToScreen() {
     SDL_RenderCopy(renderer, graphic[currentZoomlevel], &source, &dest);
 
     if(fogged) {
+        // TODO: Fix fog of war
+        /*
         SDL_Surface* fogSurf = pGFXManager->getTransparent40Surface();
         SDL_BlitSurface(fogSurf, &source, screen, &dest);
+        */
     } else {
         SDL_Texture** pSmokeSurface = pGFXManager->getObjPic(ObjPic_Smoke,getOwner()->getHouseID());
         SDL_Rect smokeSource = calcSpriteSourceRect(pSmokeSurface[currentZoomlevel], 0, 3);
@@ -182,36 +185,32 @@ void StructureBase::drawSelectionBox() {
 	dest.h = getHeight(graphic[currentZoomlevel])/numImagesY;
 
 	//now draw the selection box thing, with parts at all corners of structure
-	if(!SDL_MUSTLOCK(screen) || (SDL_LockSurface(screen) == 0)) {
-        // top left bit
-        for(int i=0;i<=currentZoomlevel;i++) {
-            renderDrawHLine(renderer, dest.x+i, dest.y+i, dest.x+(currentZoomlevel+1)*3, COLOR_WHITE);
-            renderDrawVLine(renderer, dest.x+i, dest.y+i, dest.y+(currentZoomlevel+1)*3, COLOR_WHITE);
-        }
 
-        // top right bit
-        for(int i=0;i<=currentZoomlevel;i++) {
-            renderDrawHLine(renderer, dest.x + dest.w-1 - i, dest.y+i, dest.x + dest.w-1 - (currentZoomlevel+1)*3, COLOR_WHITE);
-            renderDrawVLine(renderer, dest.x + dest.w-1 - i, dest.y+i, dest.y+(currentZoomlevel+1)*3, COLOR_WHITE);
-        }
+    // top left bit
+    for(int i=0;i<=currentZoomlevel;i++) {
+        renderDrawHLine(renderer, dest.x+i, dest.y+i, dest.x+(currentZoomlevel+1)*3, COLOR_WHITE);
+        renderDrawVLine(renderer, dest.x+i, dest.y+i, dest.y+(currentZoomlevel+1)*3, COLOR_WHITE);
+    }
 
-        // bottom left bit
-        for(int i=0;i<=currentZoomlevel;i++) {
-            renderDrawHLine(renderer, dest.x+i, dest.y + dest.h-1 - i, dest.x+(currentZoomlevel+1)*3, COLOR_WHITE);
-            renderDrawVLine(renderer, dest.x+i, dest.y + dest.h-1 - i, dest.y + dest.h-1 - (currentZoomlevel+1)*3, COLOR_WHITE);
-        }
+    // top right bit
+    for(int i=0;i<=currentZoomlevel;i++) {
+        renderDrawHLine(renderer, dest.x + dest.w-1 - i, dest.y+i, dest.x + dest.w-1 - (currentZoomlevel+1)*3, COLOR_WHITE);
+        renderDrawVLine(renderer, dest.x + dest.w-1 - i, dest.y+i, dest.y+(currentZoomlevel+1)*3, COLOR_WHITE);
+    }
 
-        // bottom right bit
-        for(int i=0;i<=currentZoomlevel;i++) {
-            renderDrawHLine(renderer, dest.x + dest.w-1 - i, dest.y + dest.h-1 - i, dest.x + dest.w-1 - (currentZoomlevel+1)*3, COLOR_WHITE);
-            renderDrawVLine(renderer, dest.x + dest.w-1 - i, dest.y + dest.h-1 - i, dest.y + dest.h-1 - (currentZoomlevel+1)*3, COLOR_WHITE);
-        }
+    // bottom left bit
+    for(int i=0;i<=currentZoomlevel;i++) {
+        renderDrawHLine(renderer, dest.x+i, dest.y + dest.h-1 - i, dest.x+(currentZoomlevel+1)*3, COLOR_WHITE);
+        renderDrawVLine(renderer, dest.x+i, dest.y + dest.h-1 - i, dest.y + dest.h-1 - (currentZoomlevel+1)*3, COLOR_WHITE);
+    }
 
-		if(SDL_MUSTLOCK(screen)) {
-			SDL_UnlockSurface(screen);
-		}
-	}
+    // bottom right bit
+    for(int i=0;i<=currentZoomlevel;i++) {
+        renderDrawHLine(renderer, dest.x + dest.w-1 - i, dest.y + dest.h-1 - i, dest.x + dest.w-1 - (currentZoomlevel+1)*3, COLOR_WHITE);
+        renderDrawVLine(renderer, dest.x + dest.w-1 - i, dest.y + dest.h-1 - i, dest.y + dest.h-1 - (currentZoomlevel+1)*3, COLOR_WHITE);
+    }
 
+    // health bar
     for(int i=1;i<=currentZoomlevel+1;i++) {
         renderDrawHLine(renderer, dest.x, dest.y-i-1, dest.x + (lround((getHealth()/getMaxHealth())*(world2zoomedWorld(TILESIZE)*structureSize.x - 1))), getHealthColor());
     }
@@ -225,36 +224,30 @@ void StructureBase::drawOtherPlayerSelectionBox() {
 	dest.h = getHeight(graphic[currentZoomlevel])/numImagesY - 2*(currentZoomlevel+1);
 
 	//now draw the selection box thing, with parts at all corners of structure
-	if(!SDL_MUSTLOCK(screen) || (SDL_LockSurface(screen) == 0)) {
-        // top left bit
-        for(int i=0;i<=currentZoomlevel;i++) {
-            renderDrawHLine(renderer, dest.x+i, dest.y+i, dest.x+(currentZoomlevel+1)*2, COLOR_LIGHTBLUE);
-            renderDrawVLine(renderer, dest.x+i, dest.y+i, dest.y+(currentZoomlevel+1)*2, COLOR_LIGHTBLUE);
-        }
 
-        // top right bit
-        for(int i=0;i<=currentZoomlevel;i++) {
-            renderDrawHLine(renderer, dest.x + dest.w-1 - i, dest.y+i, dest.x + dest.w-1 - (currentZoomlevel+1)*2, COLOR_LIGHTBLUE);
-            renderDrawVLine(renderer, dest.x + dest.w-1 - i, dest.y+i, dest.y+(currentZoomlevel+1)*2, COLOR_LIGHTBLUE);
-        }
+    // top left bit
+    for(int i=0;i<=currentZoomlevel;i++) {
+        renderDrawHLine(renderer, dest.x+i, dest.y+i, dest.x+(currentZoomlevel+1)*2, COLOR_LIGHTBLUE);
+        renderDrawVLine(renderer, dest.x+i, dest.y+i, dest.y+(currentZoomlevel+1)*2, COLOR_LIGHTBLUE);
+    }
 
-        // bottom left bit
-        for(int i=0;i<=currentZoomlevel;i++) {
-            renderDrawHLine(renderer, dest.x+i, dest.y + dest.h-1 - i, dest.x+(currentZoomlevel+1)*2, COLOR_LIGHTBLUE);
-            renderDrawVLine(renderer, dest.x+i, dest.y + dest.h-1 - i, dest.y + dest.h-1 - (currentZoomlevel+1)*2, COLOR_LIGHTBLUE);
-        }
+    // top right bit
+    for(int i=0;i<=currentZoomlevel;i++) {
+        renderDrawHLine(renderer, dest.x + dest.w-1 - i, dest.y+i, dest.x + dest.w-1 - (currentZoomlevel+1)*2, COLOR_LIGHTBLUE);
+        renderDrawVLine(renderer, dest.x + dest.w-1 - i, dest.y+i, dest.y+(currentZoomlevel+1)*2, COLOR_LIGHTBLUE);
+    }
 
-        // bottom right bit
-        for(int i=0;i<=currentZoomlevel;i++) {
-            renderDrawHLine(renderer, dest.x + dest.w-1 - i, dest.y + dest.h-1 - i, dest.x + dest.w-1 - (currentZoomlevel+1)*2, COLOR_LIGHTBLUE);
-            renderDrawVLine(renderer, dest.x + dest.w-1 - i, dest.y + dest.h-1 - i, dest.y + dest.h-1 - (currentZoomlevel+1)*2, COLOR_LIGHTBLUE);
-        }
+    // bottom left bit
+    for(int i=0;i<=currentZoomlevel;i++) {
+        renderDrawHLine(renderer, dest.x+i, dest.y + dest.h-1 - i, dest.x+(currentZoomlevel+1)*2, COLOR_LIGHTBLUE);
+        renderDrawVLine(renderer, dest.x+i, dest.y + dest.h-1 - i, dest.y + dest.h-1 - (currentZoomlevel+1)*2, COLOR_LIGHTBLUE);
+    }
 
-		if(SDL_MUSTLOCK(screen)) {
-			SDL_UnlockSurface(screen);
-		}
-	}
-
+    // bottom right bit
+    for(int i=0;i<=currentZoomlevel;i++) {
+        renderDrawHLine(renderer, dest.x + dest.w-1 - i, dest.y + dest.h-1 - i, dest.x + dest.w-1 - (currentZoomlevel+1)*2, COLOR_LIGHTBLUE);
+        renderDrawVLine(renderer, dest.x + dest.w-1 - i, dest.y + dest.h-1 - i, dest.y + dest.h-1 - (currentZoomlevel+1)*2, COLOR_LIGHTBLUE);
+    }
 }
 
 /**

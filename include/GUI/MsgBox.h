@@ -31,7 +31,6 @@
 
 #include <iostream>
 
-extern SDL_Surface* screen;
 
 /// A simple class for a message box
 class MsgBox : public Window {
