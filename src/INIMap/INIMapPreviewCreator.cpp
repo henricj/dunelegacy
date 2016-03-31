@@ -27,18 +27,22 @@ INIMapPreviewCreator::~INIMapPreviewCreator() {
 
 /**
     This method is used to create a mini map of a map file before the map is being played (e.g. in the map selection menu).
-    The surface is always 128x128 pixels and the map is scaled appropriately.
-    \return the minimap (128x128)
+    The surface is 128x128 pixels plus 2*borderWidth and the map is scaled appropriately.
+    \param  borderWidth the width of the border
+    \param  borderColor the color of the border
+    \return the minimap of size (128+2*borderWidth)x(128+2*borderWidth)
 */
-SDL_Surface* INIMapPreviewCreator::createMinimapImageOfMap() {
+SDL_Surface* INIMapPreviewCreator::createMinimapImageOfMap(int borderWidth, Uint32 borderColor) {
     checkFeatures();
 
     SDL_Surface* pMinimap;
     // create surface
-	if((pMinimap = SDL_CreateRGBSurface(0, 128, 128, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK)) == NULL) {
+	if((pMinimap = SDL_CreateRGBSurface(0, 128+2*borderWidth, 128+2*borderWidth, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK)) == NULL) {
 		return NULL;
 	}
-	SDL_FillRect(pMinimap, NULL, COLOR_BLACK);
+	SDL_FillRect(pMinimap, NULL, borderColor);
+	SDL_Rect dest = { borderWidth, borderWidth, pMinimap->w - 2*borderWidth, pMinimap->h - 2*borderWidth};
+	SDL_FillRect(pMinimap, &dest, COLOR_BLACK);
 
     int version = inifile->getIntValue("BASIC", "Version", 1);
 
@@ -101,6 +105,8 @@ SDL_Surface* INIMapPreviewCreator::createMinimapImageOfMap() {
 	    logicalSizeX = 64;
 	    logicalSizeY = 64;
 
+        offsetX += borderWidth;
+        offsetY += borderWidth;
 
         Uint16 SeedMap[64*64];
         createMapWithSeed(SeedNum,SeedMap);
@@ -249,6 +255,9 @@ SDL_Surface* INIMapPreviewCreator::createMinimapImageOfMap() {
         logicalSizeY = sizeY;
 
         RadarView::calculateScaleAndOffsets(sizeX, sizeY, scale, offsetX, offsetY);
+
+        offsetX += borderWidth;
+        offsetY += borderWidth;
 
         for(int y=0;y<sizeY;y++) {
             std::string rowKey = strprintf("%.3d", y);

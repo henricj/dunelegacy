@@ -26,6 +26,7 @@
 #include <GUI/Spacer.h>
 #include <GUI/GUIStyle.h>
 #include <GUI/MsgBox.h>
+#include <GUI/dune/DuneStyle.h>
 
 #include <players/PlayerFactory.h>
 
@@ -836,21 +837,14 @@ void CustomGamePlayers::extractMapInfo(std::shared_ptr<INIFile>& pMap)
 
     mapPropertySize.setText(stringify(sizeX) + " x " + stringify(sizeY));
 
-    SDL_Surface* pMapSurface = GUIStyle::getInstance().createButtonSurface(130,130,"", true, false);
-
+    SDL_Surface* pMapSurface = NULL;
     try {
         INIMapPreviewCreator mapPreviewCreator(pMap);
-
-        SDL_Surface* pMinimap = mapPreviewCreator.createMinimapImageOfMap();
-        SDL_Rect dest = calcDrawingRect(pMinimap, 1, 1);
-        SDL_BlitSurface(pMinimap, NULL, pMapSurface, &dest);
-        SDL_FreeSurface(pMinimap);
+        pMapSurface = mapPreviewCreator.createMinimapImageOfMap(1, DuneStyle::buttonBorderColor);
     } catch(...) {
-        SDL_FreeSurface(pMapSurface);
-        pMapSurface = GUIStyle::getInstance().createButtonSurface(130,130,"Error", true, false);
+        pMapSurface = GUIStyle::getInstance().createButtonSurface(130, 130, "Error", true, false);
         nextButton.setEnabled(false);
     }
-
     minimap.setSurface(pMapSurface, true);
 
 

@@ -224,8 +224,6 @@ void createDefaultConfigFile(std::string configfilepath, std::string language) {
 void printMissingFilesToScreen() {
 	SDL_ShowCursor(SDL_ENABLE);
 
-	SDL_FillRect(screen, NULL, MapRGBA(screen->format, DuneStyle::buttonBackgroundColor));
-
     std::string instruction = "Dune Legacy uses the data files from original Dune II. The following files are missing:\n";
 
     std::vector<std::string> MissingFiles = FileManager::getMissingFiles();
@@ -245,21 +243,20 @@ void printMissingFilesToScreen() {
     instruction += "\nYou may want to add GERMAN.PAK or FRENCH.PAK for playing in these languages.\n";
     instruction += "\n\nPress ESC to exit.";
 
-    SDL_Surface* pSurface = pFontManager->createSurfaceWithMultilineText(instruction, COLOR_BLACK, FONT_STD12);
-    SDL_Rect dest = calcDrawingRect(pSurface, 30, 30);
-    SDL_BlitSurface(pSurface, NULL, screen, &dest);
-    SDL_FreeSurface(pSurface);
-
-	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-	SDL_RenderClear(renderer);
-	SDL_UpdateTexture(texture, NULL, screen->pixels, screen->pitch);
-	SDL_RenderCopy(renderer, texture, NULL, NULL);
-	SDL_RenderPresent(renderer);
+    SDL_Texture* pTextTexture = pFontManager->createTextureWithMultilineText(instruction, COLOR_BLACK, FONT_STD12);
 
 	SDL_Event	event;
 	bool quiting = false;
 	while(!quiting)	{
 	    SDL_Delay(20);
+
+	    setRenderDrawColor(renderer, DuneStyle::buttonBackgroundColor);
+        SDL_RenderClear(renderer);
+
+        SDL_Rect dest = calcDrawingRect(pTextTexture, 30, 30);
+        SDL_RenderCopy(renderer, pTextTexture, NULL, &dest);
+
+        SDL_RenderPresent(renderer);
 
 		while(SDL_PollEvent(&event)) {
 		    //check the events
@@ -287,6 +284,8 @@ void printMissingFilesToScreen() {
             }
 		}
 	}
+
+    SDL_DestroyTexture(pTextTexture);
 }
 
 std::string getUserLanguage() {

@@ -25,6 +25,7 @@
 
 #include <GUI/TextButton.h>
 #include <GUI/ProgressBar.h>
+#include <GUI/Label.h>
 #include <GUI/dune/BuilderList.h>
 
 #include <misc/draw_util.h>
@@ -65,6 +66,14 @@ protected:
 		mainHBox.addWidget(pBuilderList);
 
 		mainHBox.addWidget(Spacer::create());
+
+		StarPort* pStarport = dynamic_cast<StarPort*>(pBuilder);
+		if(pStarport != NULL) {
+            starportTimerLabel.setTextFont(FONT_STD24);
+            starportTimerLabel.setTextColor(COLOR_WHITE, COLOR_TRANSPARENT);
+            starportTimerLabel.setAlignment((Alignment_Enum) (Alignment_HCenter | Alignment_VCenter));
+            topBox.addWidget(&starportTimerLabel, topBox.getWidgetPosition(&topBoxHBox) + topBoxHBox.getWidgetPosition(&objPicture) + Point(0, 4), objPicture.getSize());
+        }
 	}
 
 
@@ -91,24 +100,18 @@ protected:
 		if(pBuilder != NULL) {
 		    StarPort* pStarport = dynamic_cast<StarPort*>(pBuilder);
 		    if(pStarport != NULL) {
-                // TODO: Use textures for the starport
-                objPicture.setTexture(resolveItemPicture(pStarport->getItemID()), false);
-                /*
-		        int arrivalTimer = pStarport->getArrivalTimer();
-		        SDL_Surface* pSurface = copySurface(resolveItemPicture(pStarport->getItemID()));
-
+                int arrivalTimer = pStarport->getArrivalTimer();
+                std::string text;
                 if(arrivalTimer > 0) {
                     int seconds = ((arrivalTimer*10)/(MILLI2CYCLES(30*1000))) + 1;
-                    SDL_Surface* pText = pFontManager->createSurfaceWithText(stringify<int>(seconds), COLOR_WHITE, FONT_STD24);
-
-                    SDL_Rect dest = calcAlignedDrawingRect(pText, pSurface);
-                    dest.y += 5;
-                    SDL_BlitSurface(pText, NULL, pSurface, &dest);
-                    SDL_FreeSurface(pText);
+                    text = stringify<int>(seconds);
+                } else {
+                    text = "";
                 }
 
-                objPicture.setSurface(pSurface, true);
-                */
+                if(text != starportTimerLabel.getText()) {
+                    starportTimerLabel.setText(text);
+                }
 		    }
 
 			upgradeProgressBar.setVisible(pBuilder->isUpgrading());
@@ -140,6 +143,7 @@ protected:
 
 	TextButton		upgradeButton;
 	TextProgressBar	upgradeProgressBar;
+	Label           starportTimerLabel;
 	BuilderList*	pBuilderList;
 };
 

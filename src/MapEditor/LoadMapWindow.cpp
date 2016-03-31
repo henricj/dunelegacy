@@ -24,6 +24,7 @@
 #include <GUI/Spacer.h>
 #include <GUI/GUIStyle.h>
 #include <GUI/QstBox.h>
+#include <GUI/dune/DuneStyle.h>
 
 #include <config.h>
 #include <misc/fnkdat.h>
@@ -266,14 +267,14 @@ void LoadMapWindow::onMapListSelectionChange(bool bInteractive)
     std::string mapFilename = currentMapDirectory + mapList.getSelectedEntry() + ".ini";
     getCaseInsensitiveFilename(mapFilename);
 
-    std::shared_ptr<INIFile> map(new INIFile(mapFilename));
+    std::shared_ptr<INIFile> pMap(new INIFile(mapFilename));
 
     int sizeX = 0;
     int sizeY = 0;
 
-    if(map->hasKey("MAP","Seed")) {
+    if(pMap->hasKey("MAP","Seed")) {
         // old map format with seed value
-        int mapscale = map->getIntValue("BASIC", "MapScale", -1);
+        int mapscale = pMap->getIntValue("BASIC", "MapScale", -1);
 
         switch(mapscale) {
             case 0: {
@@ -298,54 +299,47 @@ void LoadMapWindow::onMapListSelectionChange(bool bInteractive)
         }
     } else {
         // new map format with saved map
-        sizeX = map->getIntValue("MAP","SizeX", 0);
-        sizeY = map->getIntValue("MAP","SizeY", 0);
+        sizeX = pMap->getIntValue("MAP","SizeX", 0);
+        sizeY = pMap->getIntValue("MAP","SizeY", 0);
     }
 
     mapPropertySize.setText(stringify(sizeX) + " x " + stringify(sizeY));
 
-    SDL_Surface* pMapSurface = GUIStyle::getInstance().createButtonSurface(130,130,"", true, false);
-
+    SDL_Surface* pMapSurface = NULL;
     try {
-        INIMapPreviewCreator mapPreviewCreator(map);
-
-        SDL_Surface* pMinimap = mapPreviewCreator.createMinimapImageOfMap();
-        SDL_Rect dest = calcDrawingRect(pMinimap, 1, 1);
-        SDL_BlitSurface(pMinimap, NULL, pMapSurface, &dest);
-        SDL_FreeSurface(pMinimap);
+        INIMapPreviewCreator mapPreviewCreator(pMap);
+        pMapSurface = mapPreviewCreator.createMinimapImageOfMap(1, DuneStyle::buttonBorderColor);
     } catch(...) {
-        SDL_FreeSurface(pMapSurface);
-        pMapSurface = GUIStyle::getInstance().createButtonSurface(130,130,"Error", true, false);
+        pMapSurface = GUIStyle::getInstance().createButtonSurface(130, 130, "Error", true, false);
         loadButton.setEnabled(false);
     }
-
     minimap.setSurface(pMapSurface, true);
 
     int numPlayers = 0;
-    if(map->hasSection("Atreides")) numPlayers++;
-    if(map->hasSection("Ordos")) numPlayers++;
-    if(map->hasSection("Harkonnen")) numPlayers++;
-    if(map->hasSection("Fremen")) numPlayers++;
-    if(map->hasSection("Mercenary")) numPlayers++;
-    if(map->hasSection("Sardaukar")) numPlayers++;
-    if(map->hasSection("Player1")) numPlayers++;
-    if(map->hasSection("Player2")) numPlayers++;
-    if(map->hasSection("Player3")) numPlayers++;
-    if(map->hasSection("Player4")) numPlayers++;
-    if(map->hasSection("Player5")) numPlayers++;
-    if(map->hasSection("Player6")) numPlayers++;
+    if(pMap->hasSection("Atreides")) numPlayers++;
+    if(pMap->hasSection("Ordos")) numPlayers++;
+    if(pMap->hasSection("Harkonnen")) numPlayers++;
+    if(pMap->hasSection("Fremen")) numPlayers++;
+    if(pMap->hasSection("Mercenary")) numPlayers++;
+    if(pMap->hasSection("Sardaukar")) numPlayers++;
+    if(pMap->hasSection("Player1")) numPlayers++;
+    if(pMap->hasSection("Player2")) numPlayers++;
+    if(pMap->hasSection("Player3")) numPlayers++;
+    if(pMap->hasSection("Player4")) numPlayers++;
+    if(pMap->hasSection("Player5")) numPlayers++;
+    if(pMap->hasSection("Player6")) numPlayers++;
 
     mapPropertyPlayers.setText(stringify(numPlayers));
 
 
 
-    std::string authors = map->getStringValue("BASIC","Author", "-");
+    std::string authors = pMap->getStringValue("BASIC","Author", "-");
     if(authors.size() > 11) {
         authors = authors.substr(0,9) + "...";
     }
     mapPropertyAuthors.setText(authors);
 
 
-    mapPropertyLicense.setText(map->getStringValue("BASIC","License", "-"));
+    mapPropertyLicense.setText(pMap->getStringValue("BASIC","License", "-"));
 
 }

@@ -354,6 +354,20 @@ public:
 	}
 
 	/**
+		Returns the position of widget relative to the top left corner of this container
+		\param widgetData	the widget data to get the position from.
+		\return The position of the left upper corner of widget or (-1,-1) if widget cannot be found in this container
+	*/
+	virtual Point getWidgetPosition(const Widget* widget) {
+        WidgetData* widgetData = getWidgetDataFromWidget(widget);
+        if(widgetData == NULL) {
+            return Point(-1,-1);
+        } else {
+            return getPosition(*widgetData);
+        }
+	}
+
+	/**
 		Sets this container and its children active. The parent widgets are also activated and the
 		currently widget is set to inactive.
 	*/
@@ -510,7 +524,7 @@ protected:
 		\param	pWidget	the widget to look for
 		\return	a pointer to the WidgetData, NULL if not found
 	*/
-	WidgetData* getWidgetDataFromWidget(Widget* pWidget) {
+	WidgetData* getWidgetDataFromWidget(const Widget* pWidget) {
 		typename WidgetList::iterator iter = containedWidgets.begin();
 		while(iter != containedWidgets.end()) {
 			if(iter->pWidget == pWidget) {

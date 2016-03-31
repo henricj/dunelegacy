@@ -19,6 +19,7 @@
 #include <MapEditor/LoadMapWindow.h>
 
 #include <GUI/Spacer.h>
+#include <GUI/dune/DuneStyle.h>
 
 #include <globals.h>
 
@@ -325,36 +326,27 @@ void NewMapWindow::onMapPropertiesChanged() {
         mapdata = createMapWithSeed(seed, scale);
     }
 
-
-
-    SDL_Surface* pMapSurface = GUIStyle::getInstance().createButtonSurface(130,130,"", true, false);
-
-    SDL_Surface* pMinimap = createMinimapPicture(mapdata);
-
-    if(pMinimap != NULL) {
-
-        SDL_Rect dest = calcDrawingRect(pMinimap, 1, 1);
-        SDL_BlitSurface(pMinimap, NULL, pMapSurface, &dest);
-        SDL_FreeSurface(pMinimap);
-
-    }
-
-    minimap.setSurface(pMapSurface, true);
+    minimap.setSurface(createMinimapPicture(mapdata, 1, DuneStyle::buttonBorderColor), true);
 }
 
-SDL_Surface* NewMapWindow::createMinimapPicture(MapData& mapdata) {
+SDL_Surface* NewMapWindow::createMinimapPicture(MapData& mapdata, int borderWidth, Uint32 borderColor) {
     SDL_Surface* pMinimap;
     // create surface
-	if((pMinimap = SDL_CreateRGBSurface(0, 128, 128, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK)) == NULL) {
+	if((pMinimap = SDL_CreateRGBSurface(0, 128+2*borderWidth, 128+2*borderWidth, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK)) == NULL) {
 		return NULL;
 	}
-	SDL_FillRect(pMinimap, NULL, COLOR_BLACK);
+	SDL_FillRect(pMinimap, NULL, borderColor);
+	SDL_Rect dest = { borderWidth, borderWidth, pMinimap->w - 2*borderWidth, pMinimap->h - 2*borderWidth};
+	SDL_FillRect(pMinimap, &dest, COLOR_BLACK);
 
     int scale = 1;
     int offsetX;
     int offsetY;
 
     RadarViewBase::calculateScaleAndOffsets(mapdata.getSizeX(), mapdata.getSizeY(), scale, offsetX, offsetY);
+
+    offsetX += borderWidth;
+    offsetY += borderWidth;
 
     for(int y = 0; y < mapdata.getSizeY(); y++) {
         for(int x = 0; x < mapdata.getSizeX(); x++) {

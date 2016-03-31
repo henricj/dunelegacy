@@ -73,7 +73,7 @@ public:
 private:
     void onMapPropertiesChanged();
 
-    static SDL_Surface* createMinimapPicture(MapData& mapdata);
+    static SDL_Surface* createMinimapPicture(MapData& mapdata, int borderWidth, Uint32 borderColor);
 
 	void onCancel();
 	void onLoad();
