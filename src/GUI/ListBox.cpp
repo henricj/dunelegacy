@@ -34,13 +34,7 @@ ListBox::ListBox() : Widget() {
 }
 
 ListBox::~ListBox() {
-	if(pBackground != NULL) {
-		SDL_DestroyTexture(pBackground);
-	}
-
-	if(pForeground != NULL) {
-		SDL_DestroyTexture(pForeground);
-	}
+    invalidateTextures();
 }
 
 void ListBox::handleMouseMovement(Sint32 x, Sint32 y, bool insideOverlay) {
@@ -119,6 +113,8 @@ void ListBox::draw(Point position) {
 		return;
 	}
 
+	updateTextures();
+
 	if(pBackground != NULL) {
 		SDL_Rect dest = calcDrawingRect(pBackground, position.x, position.y);
 		SDL_RenderCopy(renderer, pBackground, NULL, &dest);
@@ -137,12 +133,6 @@ void ListBox::draw(Point position) {
 
 void ListBox::resize(Uint32 width, Uint32 height) {
 	Widget::resize(width,height);
-
-	if(pBackground != NULL) {
-		SDL_DestroyTexture(pBackground);
-	}
-
-	pBackground = convertSurfaceToTexture(GUIStyle::getInstance().createWidgetBackground(width, height), true);
 
 	scrollbar.resize(scrollbar.getMinimumSize().x,height);
 
@@ -193,10 +183,7 @@ void ListBox::setSelectedItem(int index, bool bInteractive) {
 }
 
 void ListBox::updateList() {
-	if(pForeground != NULL) {
-		SDL_DestroyTexture(pForeground);
-		pForeground = NULL;
-	}
+	invalidateTextures();
 
 	// create surfaces
 	int surfaceHeight = getSize().y - 2;
@@ -204,21 +191,7 @@ void ListBox::updateList() {
         surfaceHeight = 0;
 	}
 
-	SDL_Surface* pForegroundSurface = GUIStyle::getInstance().createEmptySurface(getSize().x - 4, surfaceHeight,true);
-
 	int numVisibleElements = surfaceHeight / GUIStyle::getInstance().getListBoxEntryHeight();
-	for(int i = firstVisibleElement; i < firstVisibleElement + numVisibleElements; i++) {
-		if(i >= getNumEntries()) {
-			break;
-		}
-
-		SDL_Surface* pSurface = GUIStyle::getInstance().createListBoxEntry(getSize().x - 4, getEntry(i), bHighlightSelectedElement && (i==selectedElement), color);
-
-		SDL_Rect dest = calcDrawingRect(pSurface, 0, (i-firstVisibleElement) * (int) GUIStyle::getInstance().getListBoxEntryHeight());
-		SDL_BlitSurface(pSurface,NULL,pForegroundSurface,&dest);
-		SDL_FreeSurface(pSurface);
-	}
-	pForeground = convertSurfaceToTexture(pForegroundSurface, true);
 
 	scrollbar.setRange(0,std::max(0,getNumEntries() - numVisibleElements));
 	scrollbar.setBigStepSize(std::max(1, numVisibleElements-1));

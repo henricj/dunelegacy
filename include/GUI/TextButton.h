@@ -64,20 +64,27 @@ public:
 	virtual inline void setTextColor(Uint32 textcolor, Uint32 textshadowcolor = COLOR_DEFAULT) {
 		this->textcolor = textcolor;
 		this->textshadowcolor = textshadowcolor;
-		resize(getSize().x, getSize().y);
+		invalidateTextures();
+	}
+
+    /**
+		This method resizes the button. This method should only
+		called if the new size is a valid size for this button (See getMinumumSize).
+		\param	newSize	the new size of this progress bar
+	*/
+	virtual void resize(Point newSize) {
+		resize(newSize.x,newSize.y);
 	}
 
 	/**
-		This method resized the button to width and height. This method should only
+		This method resizes the button to width and height. This method should only
 		called if the new size is a valid size for this button (See getMinumumSize).
 		\param	width	the new width of this button
 		\param	height	the new height of this button
 	*/
 	virtual void resize(Uint32 width, Uint32 height) {
-		setSurfaces(GUIStyle::getInstance().createButtonSurface(width, height, text, false, false, textcolor, textshadowcolor),true,
-					GUIStyle::getInstance().createButtonSurface(width, height, text, true, true, textcolor, textshadowcolor),true,
-					GUIStyle::getInstance().createButtonSurface(width, height, text, false, true, textcolor, textshadowcolor),true);
-		Widget::resize(width,height);
+        invalidateTextures();
+		Button::resize(width,height);
 	}
 
 	/**
@@ -87,6 +94,24 @@ public:
 	*/
 	virtual Point getMinimumSize() const {
 		return GUIStyle::getInstance().getMinimumButtonSize(text);
+	}
+
+protected:
+	/**
+        This method is called whenever the textures of this widget are needed, e.g. before drawing. This method
+        should be overwritten by subclasses if they like to defer texture creation as long as possible.
+        This method should first check whether a renewal of the textures is necessary.
+	*/
+	virtual void updateTextures() {
+        Button::updateTextures();
+
+        if(pUnpressedTexture == NULL) {
+            invalidateTextures();
+
+            setSurfaces(    GUIStyle::getInstance().createButtonSurface(getSize().x, getSize().y, text, false, false, textcolor, textshadowcolor),true,
+                            GUIStyle::getInstance().createButtonSurface(getSize().x, getSize().y, text, true, true, textcolor, textshadowcolor),true,
+                            GUIStyle::getInstance().createButtonSurface(getSize().x, getSize().y, text, false, true, textcolor, textshadowcolor),true);
+        }
 	}
 
 private:

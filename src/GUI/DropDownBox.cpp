@@ -45,17 +45,8 @@ DropDownBox::DropDownBox() : Widget() {
 }
 
 DropDownBox::~DropDownBox() {
-	if(pBackground != NULL) {
-		SDL_DestroyTexture(pBackground);
-	}
-
-	if(pForeground != NULL) {
-		SDL_DestroyTexture(pForeground);
-	}
-
-	if(pActiveForeground != NULL) {
-		SDL_DestroyTexture(pActiveForeground);
-	}
+    invalidateForeground();
+    invalidateBackground();
 }
 
 void DropDownBox::handleMouseMovement(Sint32 x, Sint32 y, bool insideOverlay) {
@@ -237,14 +228,14 @@ void DropDownBox::draw(Point position) {
 		return;
 	}
 
+	updateBackground();
+
 	if(pBackground != NULL) {
 		SDL_Rect dest = calcDrawingRect(pBackground, position.x, position.y);
 		SDL_RenderCopy(renderer, pBackground, NULL, &dest);
 	}
 
-	if((pForeground == NULL) || (pActiveForeground == NULL)) {
-        updateForeground();
-	}
+	updateForeground();
 
 	if(pForeground != NULL && pActiveForeground != NULL) {
 		if(((bHover == true) && pOnClick) || isActive()) {
@@ -269,13 +260,8 @@ void DropDownBox::drawOverlay(Point position) {
 void DropDownBox::resize(Uint32 width, Uint32 height) {
 	Widget::resize(width,height);
 
-	if(pBackground != NULL) {
-		SDL_DestroyTexture(pBackground);
-	}
-
-	pBackground = convertSurfaceToTexture(GUIStyle::getInstance().createWidgetBackground(width, height), true);
-
 	invalidateForeground();
+	invalidateBackground();
 
     resizeListBox();
 }
@@ -326,18 +312,23 @@ void DropDownBox::invalidateForeground() {
 }
 
 void DropDownBox::updateForeground() {
-    if(pForeground != NULL) {
-		SDL_DestroyTexture(pForeground);
-		pForeground = NULL;
+    if(pForeground == NULL && pActiveForeground == NULL) {
+        if(listBox.getSelectedIndex() >= 0) {
+            pForeground = convertSurfaceToTexture(GUIStyle::getInstance().createListBoxEntry(getSize().x - 17, listBox.getEntry(listBox.getSelectedIndex()), false, color), true);
+            pActiveForeground = convertSurfaceToTexture(GUIStyle::getInstance().createListBoxEntry(getSize().x - 17, listBox.getEntry(listBox.getSelectedIndex()), true, color), true);
+        }
 	}
+}
 
-    if(pActiveForeground != NULL) {
-		SDL_DestroyTexture(pActiveForeground);
-		pActiveForeground = NULL;
-	}
+void DropDownBox::invalidateBackground() {
+    if(pBackground != NULL) {
+        SDL_DestroyTexture(pBackground);
+        pBackground = NULL;
+    }
+}
 
-    if(listBox.getSelectedIndex() >= 0) {
-		pForeground = convertSurfaceToTexture(GUIStyle::getInstance().createListBoxEntry(getSize().x - 17, listBox.getEntry(listBox.getSelectedIndex()), false, color), true);
-		pActiveForeground = convertSurfaceToTexture(GUIStyle::getInstance().createListBoxEntry(getSize().x - 17, listBox.getEntry(listBox.getSelectedIndex()), true, color), true);
-	}
+void DropDownBox::updateBackground() {
+    if(pBackground == NULL) {
+        pBackground = convertSurfaceToTexture(GUIStyle::getInstance().createWidgetBackground(getSize().x, getSize().y), true);
+    }
 }

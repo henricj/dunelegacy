@@ -39,9 +39,7 @@ ScrollBar::ScrollBar() : Widget() {
 }
 
 ScrollBar::~ScrollBar() {
-	if(pBackground != NULL) {
-		SDL_DestroyTexture(pBackground);
-	}
+    invalidateTextures();
 }
 
 void ScrollBar::handleMouseMovement(Sint32 x, Sint32 y, bool insideOverlay) {
@@ -110,6 +108,8 @@ void ScrollBar::draw(Point position) {
 		return;
 	}
 
+	updateTextures();
+
 	if(pBackground != NULL) {
 		SDL_Rect dest = calcDrawingRect(pBackground, position.x, position.y);
 		SDL_RenderCopy(renderer, pBackground, NULL, &dest);
@@ -125,11 +125,7 @@ void ScrollBar::draw(Point position) {
 void ScrollBar::resize(Uint32 width, Uint32 height) {
 	Widget::resize(width,height);
 
-	if(pBackground != NULL) {
-		SDL_DestroyTexture(pBackground);
-	}
-
-	pBackground = convertSurfaceToTexture(GUIStyle::getInstance().createWidgetBackground(width, height), true);
+	invalidateTextures();
 
 	updateSliderButton();
 }

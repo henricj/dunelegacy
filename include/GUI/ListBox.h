@@ -79,9 +79,17 @@ public:
 	*/
 	virtual void draw(Point position);
 
+    /**
+		This method resizes the list box. This method should only
+		called if the new size is a valid size for this list box (See getMinumumSize).
+		\param	newSize	the new size of this progress bar
+	*/
+	virtual void resize(Point newSize) {
+		resize(newSize.x,newSize.y);
+	}
 	/**
-		This method resized the scroll bar to width and height. This method should only
-		called if the new size is a valid size for this scroll bar (See getMinumumSize).
+		This method resizes the list box to width and height. This method should only
+		called if the new size is a valid size for this list box (See getMinumumSize).
 		\param	width	the new width of this scroll bar
 		\param	height	the new height of this scroll bar
 	*/
@@ -391,6 +399,58 @@ protected:
 	*/
 	void setSelectedItem(int index, bool bInteractive);
 
+protected:
+	/**
+        This method is called whenever the textures of this widget are needed, e.g. before drawing. This method
+        should be overwritten by subclasses if they like to defer texture creation as long as possible.
+        This method should first check whether a renewal of the textures is necessary.
+	*/
+	virtual void updateTextures() {
+        Widget::updateTextures();
+
+        if(pBackground == NULL) {
+            pBackground = convertSurfaceToTexture(GUIStyle::getInstance().createWidgetBackground(getSize().x, getSize().y), true);
+        }
+
+        if(pForeground == NULL) {
+            // create surfaces
+            int surfaceHeight = getSize().y - 2;
+            if(surfaceHeight < 0) {
+                surfaceHeight = 0;
+            }
+
+            SDL_Surface* pForegroundSurface = GUIStyle::getInstance().createEmptySurface(getSize().x - 4, surfaceHeight,true);
+
+            int numVisibleElements = surfaceHeight / GUIStyle::getInstance().getListBoxEntryHeight();
+            for(int i = firstVisibleElement; i < firstVisibleElement + numVisibleElements; i++) {
+                if(i >= getNumEntries()) {
+                    break;
+                }
+
+                SDL_Surface* pSurface = GUIStyle::getInstance().createListBoxEntry(getSize().x - 4, getEntry(i), bHighlightSelectedElement && (i==selectedElement), color);
+
+                SDL_Rect dest = calcDrawingRect(pSurface, 0, (i-firstVisibleElement) * (int) GUIStyle::getInstance().getListBoxEntryHeight());
+                SDL_BlitSurface(pSurface,NULL,pForegroundSurface,&dest);
+                SDL_FreeSurface(pSurface);
+            }
+            pForeground = convertSurfaceToTexture(pForegroundSurface, true);
+        }
+	}
+
+	/**
+		This method frees all textures that are used by this list box
+	*/
+	virtual void invalidateTextures() {
+        if(pBackground != NULL) {
+            SDL_DestroyTexture(pBackground);
+            pBackground = NULL;
+        }
+
+        if(pForeground != NULL) {
+            SDL_DestroyTexture(pForeground);
+            pForeground = NULL;
+        }
+	}
 
 private:
 	void updateList();

@@ -48,9 +48,7 @@ public:
 			SDL_DestroyTexture(pBackground);
 		}
 
-		if(pForeground != NULL) {
-			SDL_DestroyTexture(pForeground);
-		}
+		invalidateTextures();
 	}
 
 	/**
@@ -66,12 +64,7 @@ public:
 				percent = 100.0;
 			}
 
-			if(pForeground != NULL) {
-				SDL_DestroyTexture(pForeground);
-				pForeground = NULL;
-			}
-
-			pForeground = convertSurfaceToTexture(GUIStyle::getInstance().createProgressBarOverlay(getSize().x, getSize().y, percent, color), true);
+			invalidateTextures();
 		}
 	}
 
@@ -89,7 +82,7 @@ public:
 	*/
 	inline void setColor(Uint32 color = COLOR_DEFAULT) {
 		this->color = color;
-		resizeAll();
+		invalidateTextures();
 	}
 
 	/**
@@ -110,7 +103,7 @@ public:
 	}
 
 	/**
-		This method resized the progress bar to width and height. This method should only
+		This method resizes the progress bar to width and height. This method should only
 		called if the new size is a valid size for this progress bar (See getMinumumSize).
 		\param	width	the new width of this progress bar
 		\param	height	the new height of this progress bar
@@ -118,12 +111,7 @@ public:
 	virtual void resize(Uint32 width, Uint32 height) {
 		Widget::resize(width,height);
 
-        if(pForeground != NULL) {
-            SDL_DestroyTexture(pForeground);
-            pForeground = NULL;
-        }
-
-        pForeground = convertSurfaceToTexture(GUIStyle::getInstance().createProgressBarOverlay(getSize().x, getSize().y, percent, color), true);
+        invalidateTextures();
 	}
 
 	/**
@@ -134,6 +122,8 @@ public:
 		if(isVisible() == false) {
 			return;
 		}
+
+		updateTextures();
 
 		if(pBackground != NULL) {
             SDL_Rect dest = calcDrawingRect(pBackground, position.x, position.y);
@@ -152,6 +142,27 @@ public:
 	}
 
 protected:
+	/**
+        This method is called whenever the textures of this widget are needed, e.g. before drawing. This method
+        should be overwritten by subclasses if they like to defer texture creation as long as possible.
+        This method should first check whether a renewal of the textures is necessary.
+	*/
+	virtual void updateTextures() {
+        if(pForeground == NULL) {
+            pForeground = convertSurfaceToTexture(GUIStyle::getInstance().createProgressBarOverlay(getSize().x, getSize().y, percent, color), true);
+        }
+	}
+
+	/**
+		This method frees all textures that are used by this progress bar
+	*/
+	virtual void invalidateTextures() {
+        if(pForeground != NULL) {
+            SDL_DestroyTexture(pForeground);
+            pForeground = NULL;
+        }
+	}
+
 	SDL_Texture*	pBackground;
 	bool			bFreeBackground;
 	SDL_Texture*	pForeground;
@@ -198,39 +209,7 @@ public:
 	virtual inline void setTextColor(Uint32 textcolor, Uint32 textshadowcolor = COLOR_DEFAULT) {
 		this->textcolor = textcolor;
 		this->textshadowcolor = textshadowcolor;
-		resize(getSize().x, getSize().y);
-	}
-
-	/**
-		This method resized the progress bar. This method should only
-		called if the new size is a valid size for this progress bar (See getMinumumSize).
-		\param	newSize	the new size of this progress bar
-	*/
-	virtual void resize(Point newSize) {
-		resize(newSize.x,newSize.y);
-	}
-
-	/**
-		This method resized the progress bar to width and height. This method should only
-		called if the new size is a valid size for this progress bar (See getMinumumSize).
-		\param	width	the new width of this progress bar
-		\param	height	the new height of this progress bar
-	*/
-	virtual void resize(Uint32 width, Uint32 height) {
-		Widget::resize(width,height);
-
-		if(pBackground != NULL) {
-			SDL_DestroyTexture(pBackground);
-			pBackground = NULL;
-		}
-
-		if(pForeground != NULL) {
-			SDL_DestroyTexture(pForeground);
-			pForeground = NULL;
-		}
-
-		pBackground = convertSurfaceToTexture(GUIStyle::getInstance().createButtonSurface(width, height, text, true, false, textcolor, textshadowcolor), true);
-		pForeground = convertSurfaceToTexture(GUIStyle::getInstance().createProgressBarOverlay(width, height, percent, color), true);
+		invalidateTextures();
 	}
 
 	/**
@@ -247,6 +226,31 @@ public:
 	}
 
 protected:
+	/**
+        This method is called whenever the textures of this widget are needed, e.g. before drawing. This method
+        should be overwritten by subclasses if they like to defer texture creation as long as possible.
+        This method should first check whether a renewal of the textures is necessary.
+	*/
+	virtual void updateTextures() {
+        ProgressBar::updateTextures();
+
+        if(pBackground == NULL) {
+            pBackground = convertSurfaceToTexture(GUIStyle::getInstance().createButtonSurface(getSize().x, getSize().y, text, true, false, textcolor, textshadowcolor), true);
+        }
+	}
+
+	/**
+		This method frees all textures that are used by this progress bar
+	*/
+	virtual void invalidateTextures() {
+        ProgressBar::invalidateTextures();
+
+        if(pBackground != NULL) {
+            SDL_DestroyTexture(pBackground);
+            pBackground = NULL;
+        }
+	}
+
 	std::string text;			///< Text of this progress bar
 
     Uint32 textcolor;

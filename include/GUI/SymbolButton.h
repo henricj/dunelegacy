@@ -82,6 +82,15 @@ public:
 		resizeAll();
 	}
 
+    /**
+		This method resizes the button. This method should only
+		called if the new size is a valid size for this button (See getMinumumSize).
+		\param	newSize	the new size of this progress bar
+	*/
+	virtual void resize(Point newSize) {
+		resize(newSize.x,newSize.y);
+	}
+
 	/**
 		This method resized the button to width and height. This method should only
 		called if the new size is a valid size for this button (See getMinumumSize).
@@ -89,32 +98,7 @@ public:
 		\param	height	the new height of this button
 	*/
 	virtual void resize(Uint32 width, Uint32 height) {
-		SDL_Surface *pUnpressed = NULL;
-		SDL_Surface *pPressed = NULL;
-		SDL_Surface *pActive = NULL;
-
-		pUnpressed = GUIStyle::getInstance().createButtonSurface(width, height, "", false, true);
-		pPressed = GUIStyle::getInstance().createButtonSurface(width, height, "", true, true);
-
-
-		if(pSymbolSurface != NULL) {
-            SDL_Rect dest = calcAlignedDrawingRect(pSymbolSurface, pUnpressed);
-			SDL_BlitSurface(pSymbolSurface, NULL, pUnpressed, &dest);
-
-            dest.x++;
-            dest.y++;
-			SDL_BlitSurface(pActiveSymbolSurface != NULL ? pActiveSymbolSurface : pSymbolSurface, NULL, pPressed, &dest);
-		}
-
-        if(pActiveSymbolSurface != NULL) {
-            pActive = GUIStyle::getInstance().createButtonSurface(width, height, "", false, true);
-
-            SDL_Rect dest = calcAlignedDrawingRect(pActiveSymbolSurface, pActive);
-			SDL_BlitSurface(pActiveSymbolSurface, NULL, pActive, &dest);
-		}
-
-		Button::setSurfaces(pUnpressed,true,pPressed,true,pActive,true);
-
+        invalidateTextures();
 		Widget::resize(width,height);
 	}
 
@@ -129,6 +113,46 @@ public:
 		} else {
 			return Point(0,0);
 		}
+	}
+
+protected:
+	/**
+        This method is called whenever the textures of this widget are needed, e.g. before drawing. This method
+        should be overwritten by subclasses if they like to defer texture creation as long as possible.
+        This method should first check whether a renewal of the textures is necessary.
+	*/
+	virtual void updateTextures() {
+        Button::updateTextures();
+
+        if(pUnpressedTexture == NULL) {
+            invalidateTextures();
+
+            SDL_Surface *pUnpressed = NULL;
+            SDL_Surface *pPressed = NULL;
+            SDL_Surface *pActive = NULL;
+
+            pUnpressed = GUIStyle::getInstance().createButtonSurface(getSize().x, getSize().y, "", false, true);
+            pPressed = GUIStyle::getInstance().createButtonSurface(getSize().x, getSize().y, "", true, true);
+
+
+            if(pSymbolSurface != NULL) {
+                SDL_Rect dest = calcAlignedDrawingRect(pSymbolSurface, pUnpressed);
+                SDL_BlitSurface(pSymbolSurface, NULL, pUnpressed, &dest);
+
+                dest.x++;
+                dest.y++;
+                SDL_BlitSurface(pActiveSymbolSurface != NULL ? pActiveSymbolSurface : pSymbolSurface, NULL, pPressed, &dest);
+            }
+
+            if(pActiveSymbolSurface != NULL) {
+                pActive = GUIStyle::getInstance().createButtonSurface(getSize().x, getSize().y, "", false, true);
+
+                SDL_Rect dest = calcAlignedDrawingRect(pActiveSymbolSurface, pActive);
+                SDL_BlitSurface(pActiveSymbolSurface, NULL, pActive, &dest);
+            }
+
+            Button::setSurfaces(pUnpressed,true,pPressed,true,pActive,true);
+        }
 	}
 
 private:

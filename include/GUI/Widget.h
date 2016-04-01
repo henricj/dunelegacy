@@ -134,6 +134,7 @@ public:
 		Removes this widget from its parent.
 	*/
 	virtual ~Widget() {
+        pAllocated = false;
 		if(parent != NULL) {
 			parent->removeChildWidget(this);
 		}
@@ -241,7 +242,7 @@ public:
 	inline bool resizingYAllowed() const { return resizeY; };
 
 	/**
-		This method resized the widget. This method should only be
+		This method resizes the widget. This method should only be
 		called if the new size is a valid size for this widget (See resizingXAllowed,
 		resizingYAllowed, getMinumumSize).
 		\param	newSize	the new size of this widget
@@ -251,7 +252,7 @@ public:
 	};
 
 	/**
-		This method resized the widget to width and height. This method should only be
+		This method resizes the widget to width and height. This method should only be
 		called if the new size is a valid size for this widget (See resizingXAllowed,
 		resizingYAllowed, getMinumumSize).
 		\param	width	the new width of this widget
@@ -393,6 +394,7 @@ public:
 	*/
 	virtual void destroy() {
 		if(pAllocated == true) {
+            pAllocated = false;
 			delete this;
 		} else {
 			if(parent != NULL) {
@@ -455,6 +457,20 @@ protected:
 		\param	childWidget	the widget to activate/deactivate
 	*/
 	virtual void setActiveChildWidget(bool active, Widget* childWidget) {
+	}
+
+	/**
+        This method is called whenever the textures of this widget are needed, e.g. before drawing. This method
+        should be overwritten by subclasses if they like to defer texture creation as long as possible.
+        This method should first check whether a renewal of the textures is necessary.
+	*/
+	virtual void updateTextures() {
+	}
+
+    /**
+		This method frees all textures that are used by this widget
+	*/
+	virtual void invalidateTextures() {
 	}
 
     /// If this widget is created via a named constructor (static create method) then bAllocated is true

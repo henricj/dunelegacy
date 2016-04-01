@@ -44,15 +44,7 @@ public:
 
 	/// destructor
 	virtual ~TextBox() {
-		if(pTextureWithoutCarret != NULL) {
-			SDL_DestroyTexture(pTextureWithoutCarret);
-			pTextureWithoutCarret = NULL;
-		}
-
-		if(pTextureWithCarret != NULL) {
-			SDL_DestroyTexture(pTextureWithCarret);
-			pTextureWithCarret = NULL;
-		}
+        invalidateTextures();
 	}
 
 	/**
@@ -100,7 +92,7 @@ public:
 	virtual inline void setTextColor(Uint32 textcolor, Uint32 textshadowcolor = COLOR_DEFAULT) {
 		this->textcolor = textcolor;
 		this->textshadowcolor = textshadowcolor;
-		resize(getSize().x, getSize().y);
+		invalidateTextures();
 	}
 
 	/**
@@ -148,8 +140,17 @@ public:
 		return GUIStyle::getInstance().getMinimumTextBoxSize(fontID);
 	}
 
+    /**
+		This method resizes the text box. This method should only
+		called if the new size is a valid size for this text box (See getMinumumSize).
+		\param	newSize	the new size of this progress bar
+	*/
+	virtual void resize(Point newSize) {
+		resize(newSize.x,newSize.y);
+	}
+
 	/**
-		This method resized the text box to width and height. This method should only be
+		This method resizes the text box to width and height. This method should only be
 		called if the new size is a valid size for this text box (See resizingXAllowed,
 		resizingYAllowed, getMinumumSize).
 		\param	width	the new width of this text box
@@ -157,26 +158,20 @@ public:
 	*/
 	virtual void resize(Uint32 width, Uint32 height) {
 		Widget::resize(width,height);
-		updateSurfaces();
+		invalidateTextures();
 	}
 
 	/**
 		This method updates all surfaces for this text box. This method will be called
 		if this text box is resized or the text changes.
 	*/
-	virtual void updateSurfaces() {
-		if(pTextureWithoutCarret != NULL) {
-			SDL_DestroyTexture(pTextureWithoutCarret);
-			pTextureWithoutCarret = NULL;
-		}
+	virtual void updateTextures() {
+        if(pTextureWithoutCarret == NULL || pTextureWithCarret == NULL) {
+            invalidateTextures();
 
-		if(pTextureWithCarret != NULL) {
-			SDL_DestroyTexture(pTextureWithCarret);
-			pTextureWithCarret = NULL;
-		}
-
-		pTextureWithoutCarret = convertSurfaceToTexture(GUIStyle::getInstance().createTextBoxSurface(getSize().x, getSize().y, text, false, fontID,  Alignment_Left, textcolor, textshadowcolor), true);
-		pTextureWithCarret = convertSurfaceToTexture(GUIStyle::getInstance().createTextBoxSurface(getSize().x, getSize().y, text, true, fontID, Alignment_Left, textcolor, textshadowcolor), true);
+            pTextureWithoutCarret = convertSurfaceToTexture(GUIStyle::getInstance().createTextBoxSurface(getSize().x, getSize().y, text, false, fontID,  Alignment_Left, textcolor, textshadowcolor), true);
+            pTextureWithCarret = convertSurfaceToTexture(GUIStyle::getInstance().createTextBoxSurface(getSize().x, getSize().y, text, true, fontID, Alignment_Left, textcolor, textshadowcolor), true);
+        }
 	}
 
 	/**
@@ -184,8 +179,14 @@ public:
 		\param	Position	Position to draw the text box to
 	*/
 	virtual void draw(Point position) {
-		if((isVisible() == false) || (pTextureWithoutCarret == NULL) || (pTextureWithCarret == NULL)) {
+		if(isVisible() == false) {
 			return;
+		}
+
+		updateTextures();
+
+		if((pTextureWithoutCarret == NULL) || (pTextureWithCarret == NULL)) {
+            return;
 		}
 
 		SDL_Rect dest = calcDrawingRect(pTextureWithoutCarret, position.x, position.y);
@@ -270,7 +271,7 @@ public:
 		    }
 		}
 
-		updateSurfaces();
+		invalidateTextures();
 
 		return true;
 	}
@@ -284,9 +285,24 @@ protected:
 	virtual void setText(std::string text, bool bInteractive) {
 	    bool bChanged = (text != this->text);
 		this->text = text;
-		updateSurfaces();
+		invalidateTextures();
 		if(bChanged && pOnTextChange) {
             pOnTextChange(bInteractive);
+		}
+	}
+
+	/**
+		This method frees all textures that are used by this text box
+	*/
+	virtual void invalidateTextures() {
+		if(pTextureWithoutCarret != NULL) {
+			SDL_DestroyTexture(pTextureWithoutCarret);
+			pTextureWithoutCarret = NULL;
+		}
+
+		if(pTextureWithCarret != NULL) {
+			SDL_DestroyTexture(pTextureWithCarret);
+			pTextureWithCarret = NULL;
 		}
 	}
 

@@ -39,11 +39,7 @@ public:
 
 	/// destructor
 	virtual ~Checkbox() {
-        if((bFreeCheckedActiveTexture == true) && (pCheckedActiveTexture != NULL)) {
-            SDL_DestroyTexture(pCheckedActiveTexture);
-            pCheckedActiveTexture = NULL;
-            bFreeCheckedActiveTexture = false;
-        }
+        invalidateTextures();
 	}
 
 	/**
@@ -70,7 +66,7 @@ public:
 	virtual inline void setTextColor(Uint32 textcolor, Uint32 textshadowcolor = COLOR_DEFAULT) {
 		this->textcolor = textcolor;
 		this->textshadowcolor = textshadowcolor;
-		resize(getSize().x, getSize().y);
+		invalidateTextures();
 	}
 
 	/**
@@ -98,6 +94,8 @@ public:
             return;
         }
 
+        updateTextures();
+
         SDL_Texture* tex;
         if(isChecked()) {
             if((isActive() || bHover) && pCheckedActiveTexture != NULL) {
@@ -121,26 +119,23 @@ public:
         SDL_RenderCopy(renderer, tex, NULL, &dest);
     }
 
+    /**
+		This method resizes the checkbox. This method should only
+		called if the new size is a valid size for this progress bar (See getMinumumSize).
+		\param	newSize	the new size of this progress bar
+	*/
+	virtual void resize(Point newSize) {
+		resize(newSize.x,newSize.y);
+	}
+
 	/**
-		This method resized the checkbox to width and height. This method should only
+		This method resizes the checkbox to width and height. This method should only
 		called if the new size is a valid size for this checkbox (See getMinimumSize).
 		\param	width	the new width of this checkbox
 		\param	height	the new height of this checkbox
 	*/
 	virtual void resize(Uint32 width, Uint32 height) {
-		setSurfaces(GUIStyle::getInstance().createCheckboxSurface(width, height, text, false, false, textcolor, textshadowcolor),true,
-                    GUIStyle::getInstance().createCheckboxSurface(width, height, text, true, false, textcolor, textshadowcolor),true,
-                    GUIStyle::getInstance().createCheckboxSurface(width, height, text, false, true, textcolor, textshadowcolor),true);
-
-        if((bFreeCheckedActiveTexture == true) && (pCheckedActiveTexture != NULL)) {
-            SDL_DestroyTexture(pCheckedActiveTexture);
-            pCheckedActiveTexture = NULL;
-            bFreeCheckedActiveTexture = false;
-        }
-
-        pCheckedActiveTexture = convertSurfaceToTexture(GUIStyle::getInstance().createCheckboxSurface(width, height, text, true, true, textcolor, textshadowcolor), true);
-        bFreeCheckedActiveTexture = true;
-
+        invalidateTextures();
 		Widget::resize(width,height);
 	}
 
@@ -151,6 +146,40 @@ public:
 	*/
 	virtual Point getMinimumSize() const {
 		return GUIStyle::getInstance().getMinimumCheckboxSize(text);
+	}
+
+protected:
+	/**
+        This method is called whenever the textures of this widget are needed, e.g. before drawing. This method
+        should be overwritten by subclasses if they like to defer texture creation as long as possible.
+        This method should first check whether a renewal of the textures is necessary.
+	*/
+	virtual void updateTextures() {
+        Button::updateTextures();
+
+        if(pUnpressedTexture == NULL) {
+            invalidateTextures();
+
+            setSurfaces(GUIStyle::getInstance().createCheckboxSurface(getSize().x, getSize().y, text, false, false, textcolor, textshadowcolor),true,
+                        GUIStyle::getInstance().createCheckboxSurface(getSize().x, getSize().y, text, true, false, textcolor, textshadowcolor),true,
+                        GUIStyle::getInstance().createCheckboxSurface(getSize().x, getSize().y, text, false, true, textcolor, textshadowcolor),true);
+
+            pCheckedActiveTexture = convertSurfaceToTexture(GUIStyle::getInstance().createCheckboxSurface(getSize().x, getSize().y, text, true, true, textcolor, textshadowcolor), true);
+            bFreeCheckedActiveTexture = true;
+        }
+	}
+
+	/**
+		This method frees all textures that are used by this checkbox
+	*/
+	virtual void invalidateTextures() {
+        Button::invalidateTextures();
+
+        if((bFreeCheckedActiveTexture == true) && (pCheckedActiveTexture != NULL)) {
+            SDL_DestroyTexture(pCheckedActiveTexture);
+            bFreeCheckedActiveTexture = false;
+        }
+        pCheckedActiveTexture = NULL;
 	}
 
 private:

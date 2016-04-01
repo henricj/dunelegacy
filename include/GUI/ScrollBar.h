@@ -75,7 +75,7 @@ public:
 	virtual void draw(Point position);
 
 	/**
-		This method resized the scroll bar. This method should only
+		This method resizes the scroll bar. This method should only
 		called if the new size is a valid size for this scroll bar (See getMinumumSize).
 		\param	size	the new size of this scroll bar
 	*/
@@ -84,7 +84,7 @@ public:
 	}
 
 	/**
-		This method resized the scroll bar to width and height. This method should only
+		This method resizes the scroll bar to width and height. This method should only
 		called if the new size is a valid size for this scroll bar (See getMinumumSize).
 		\param	width	the new width of this scroll bar
 		\param	height	the new height of this scroll bar
@@ -190,6 +190,29 @@ public:
 		updateArrowButtonSurface();
 	}
 
+protected:
+	/**
+        This method is called whenever the textures of this widget are needed, e.g. before drawing. This method
+        should be overwritten by subclasses if they like to defer texture creation as long as possible.
+        This method should first check whether a renewal of the textures is necessary.
+	*/
+	virtual void updateTextures() {
+        Widget::updateTextures();
+
+        if(pBackground == NULL) {
+            pBackground = convertSurfaceToTexture(GUIStyle::getInstance().createWidgetBackground(getSize().x, getSize().y), true);
+        }
+	}
+
+	/**
+		This method frees all textures that are used by this scrollbar
+	*/
+	virtual void invalidateTextures() {
+        if(pBackground != NULL) {
+            SDL_DestroyTexture(pBackground);
+            pBackground = NULL;
+        }
+	}
 private:
 	void updateSliderButton();
 

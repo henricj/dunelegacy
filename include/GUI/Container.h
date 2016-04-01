@@ -56,10 +56,11 @@ public:
 			if(iter->pWidget == pChildWidget) {
 			    setActiveChildWidget(false, pChildWidget);
 				containedWidgets.erase(iter);
+                pChildWidget->setParent(NULL);
+                pChildWidget->destroy();
 				break;
 			}
 		}
-		pChildWidget->setParent(NULL);
 		resizeAll();
 	}
 
@@ -343,8 +344,17 @@ public:
 		}
 	}
 
+    /**
+		This method resizes the container. This method should only
+		called if the new size is a valid size for this container (See getMinumumSize).
+		\param	newSize	the new size of this progress bar
+	*/
+	virtual void resize(Point newSize) {
+		resize(newSize.x,newSize.y);
+	}
+
 	/**
-		This method resized the container to width and height. This method should only be
+		This method resizes the container to width and height. This method should only be
 		called if the new size is a valid size for this container (See getMinumumSize).
 		\param	width	the new width of this container
 		\param	height	the new height of this container

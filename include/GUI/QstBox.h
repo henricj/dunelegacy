@@ -67,8 +67,17 @@ public:
 		button2.setTextColor(textcolor, textshadowcolor);
 	}
 
+    /**
+		This method resizes the question box. This method should only
+		called if the new size is a valid size for this question box (See getMinumumSize).
+		\param	newSize	the new size of this progress bar
+	*/
+	virtual void resize(Point newSize) {
+		resize(newSize.x,newSize.y);
+	}
+
 	/**
-		This method resized the question box to width and height. This method should only be
+		This method resizes the question box to width and height. This method should only be
 		called if the new size is a valid size for this question box (See resizingXAllowed,
 		resizingYAllowed, getMinumumSize).
 		\param	width	the new width of this question box

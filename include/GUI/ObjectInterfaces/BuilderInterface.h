@@ -101,16 +101,11 @@ protected:
 		    StarPort* pStarport = dynamic_cast<StarPort*>(pBuilder);
 		    if(pStarport != NULL) {
                 int arrivalTimer = pStarport->getArrivalTimer();
-                std::string text;
                 if(arrivalTimer > 0) {
                     int seconds = ((arrivalTimer*10)/(MILLI2CYCLES(30*1000))) + 1;
-                    text = stringify<int>(seconds);
+                    starportTimerLabel.setText(stringify<int>(seconds));
                 } else {
-                    text = "";
-                }
-
-                if(text != starportTimerLabel.getText()) {
-                    starportTimerLabel.setText(text);
+                    starportTimerLabel.setText("");
                 }
 		    }
 

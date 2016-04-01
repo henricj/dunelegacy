@@ -61,7 +61,7 @@ public:
 		this->textcolor = textcolor;
 		this->textshadowcolor = textshadowcolor;
 		this->backgroundcolor = backgroundcolor;
-		resize(getSize().x, getSize().y);
+		invalidateTextures();
 	}
 
 	/**
@@ -70,7 +70,7 @@ public:
 	*/
 	virtual inline void setAlignment(Alignment_Enum alignment) {
 		this->alignment = alignment;
-		resize(getSize().x, getSize().y);
+		invalidateTextures();
 	}
 
 	/**
@@ -137,9 +137,18 @@ public:
 	*/
 	virtual void draw(Point position);
 
+    /**
+		This method resizes the text view. This method should only
+		called if the new size is a valid size for this text view (See getMinumumSize).
+		\param	newSize	the new size of this progress bar
+	*/
+	virtual void resize(Point newSize) {
+		resize(newSize.x,newSize.y);
+	}
+
 	/**
-		This method resized the scroll bar to width and height. This method should only
-		called if the new size is a valid size for this scroll bar (See getMinumumSize).
+		This method resizes the text view to width and height. This method should only
+		called if the new size is a valid size for this text view (See getMinumumSize).
 		\param	width	the new width of this scroll bar
 		\param	height	the new height of this scroll bar
 	*/
@@ -190,7 +199,32 @@ public:
 		scrollbar.setCurrentValue(scrollbar.getRangeMax());
 	}
 
+protected:
+	/**
+        This method is called whenever the textures of this widget are needed, e.g. before drawing. This method
+        should be overwritten by subclasses if they like to defer texture creation as long as possible.
+        This method should first check whether a renewal of the textures is necessary.
+	*/
+	virtual void updateTextures();
+
+	/**
+		This method frees all textures that are used by this text view
+	*/
+	virtual void invalidateTextures() {
+		if(pBackground != NULL) {
+			SDL_DestroyTexture(pBackground);
+			pBackground = NULL;
+		}
+
+        if(pForeground != NULL) {
+			SDL_DestroyTexture(pForeground);
+			pForeground = NULL;
+		}
+	}
+
 private:
+    std::list<std::string> calcTextLines();
+
     int fontID;                 ///< the ID of the font to use
 	Uint32 textcolor;			///< the text color
 	Uint32 textshadowcolor;     ///< the color of the shadow of the text

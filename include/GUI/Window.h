@@ -198,7 +198,7 @@ public:
 	virtual inline Widget* getWindowWidget() { return pWindowWidget; };
 
     /**
-		This method resized the window.
+		This method resizes the window.
 		\param	newSize	the new size of this widget
 	*/
 	virtual inline void resize(Point newSize) {
@@ -206,7 +206,7 @@ public:
 	};
 
 	/**
-		This method resized the window to width and height.
+		This method resizes the window to width and height.
 		\param	width	the new width of this widget
 		\param	height	the new height of this widget
 	*/

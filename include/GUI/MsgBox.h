@@ -61,8 +61,17 @@ public:
 		okbutton.setTextColor(textcolor, textshadowcolor);
 	}
 
+    /**
+		This method resizes the message box. This method should only
+		called if the new size is a valid size for this message box (See getMinumumSize).
+		\param	newSize	the new size of this progress bar
+	*/
+	virtual void resize(Point newSize) {
+		resize(newSize.x,newSize.y);
+	}
+
 	/**
-		This method resized the message box to width and height. This method should only be
+		This method resizes the message box to width and height. This method should only be
 		called if the new size is a valid size for this message box (See resizingXAllowed,
 		resizingYAllowed, getMinumumSize).
 		\param	width	the new width of this message box

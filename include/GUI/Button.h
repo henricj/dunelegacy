@@ -194,9 +194,9 @@ protected:
 	bool bFreeActiveTexture;			///< Should pActiveTexture be freed if this button is destroyed?
 
 	/**
-		This method frees all textures that should be freed by this button
+		This method frees all textures that are used by this button
 	*/
-	void freeTextures();
+	virtual void invalidateTextures();
 
 	std::string tooltipText;			///< the tooltip text
 	SDL_Texture* tooltipTexture;		///< the tooltip texture

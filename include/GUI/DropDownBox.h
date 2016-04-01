@@ -111,8 +111,17 @@ public:
 	virtual void drawOverlay(Point position);
 
 	/**
-		This method resized the scroll bar to width and height. This method should only
-		called if the new size is a valid size for this scroll bar (See getMinumumSize).
+		This method resizes the dropdownbox. This method should only
+		called if the new size is a valid size for this dropdownbox (See getMinumumSize).
+		\param	newSize	the new size of this progress bar
+	*/
+	virtual void resize(Point newSize) {
+		resize(newSize.x,newSize.y);
+	}
+
+	/**
+		This method resizes the dropdownbox to width and height. This method should only
+		called if the new size is a valid size for this dropdownbox (See getMinumumSize).
 		\param	width	the new width of this scroll bar
 		\param	height	the new height of this scroll bar
 	*/
@@ -199,6 +208,7 @@ public:
 	*/
 	void setEntry(unsigned int index, std::string text) {
 		listBox.setEntry(index, text);
+		invalidateForeground();
 		resizeListBox();
 	}
 
@@ -293,9 +303,8 @@ public:
 	*/
 	void removeEntry(int index) {
 		listBox.removeEntry(index);
-		if((pForeground != NULL) && (listBox.getSelectedIndex() < 0)) {
-			SDL_DestroyTexture(pForeground);
-            pForeground = NULL;
+		if(listBox.getSelectedIndex() < 0) {
+			invalidateForeground();
 		}
 		resizeListBox();
 	}
@@ -305,10 +314,7 @@ public:
 	*/
 	void clearAllEntries() {
 		listBox.clearAllEntries();
-		if(pForeground != NULL) {
-			SDL_DestroyTexture(pForeground);
-            pForeground = NULL;
-		}
+		invalidateForeground();
 		resizeListBox();
 	}
 
@@ -418,6 +424,10 @@ private:
     void invalidateForeground();
 
 	void updateForeground();
+
+    void invalidateBackground();
+
+	void updateBackground();
 
 	void onOpenListBoxButton() {
 		bShowListBox = !bShowListBox;

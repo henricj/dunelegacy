@@ -39,7 +39,7 @@ Button::Button() : Widget() {
 }
 
 Button::~Button() {
-	freeTextures();
+	invalidateTextures();
 
 	if(tooltipTexture != NULL) {
 		SDL_DestroyTexture(tooltipTexture);
@@ -134,6 +134,8 @@ void Button::draw(Point position) {
 		return;
 	}
 
+	updateTextures();
+
 	SDL_Texture* tex;
 	if(bToggleState == true) {
 		if(pPressedTexture != NULL) {
@@ -218,7 +220,7 @@ void Button::setSurfaces(	SDL_Surface* pUnpressedSurface,bool bFreeUnpressedSurf
 void Button::setTextures(	SDL_Texture* pUnpressedTexture, bool bFreeUnpressedTexture,
 							SDL_Texture* pPressedTexture, bool bFreePressedTexture,
 							SDL_Texture* pActiveTexture, bool bFreeActiveTexture) {
-	freeTextures();
+	invalidateTextures();
 	this->pUnpressedTexture = pUnpressedTexture;
 	this->bFreeUnpressedTexture = bFreeUnpressedTexture;
 	this->pPressedTexture = pPressedTexture;
@@ -227,7 +229,7 @@ void Button::setTextures(	SDL_Texture* pUnpressedTexture, bool bFreeUnpressedTex
 	this->bFreeActiveTexture = bFreeActiveTexture;
 }
 
-void Button::freeTextures() {
+void Button::invalidateTextures() {
 	if((bFreeUnpressedTexture == true) && (pUnpressedTexture != NULL)) {
 		SDL_DestroyTexture(pUnpressedTexture);
 		pUnpressedTexture = NULL;

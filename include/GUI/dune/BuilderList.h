@@ -91,9 +91,18 @@ public:
 	*/
 	virtual void drawOverlay(Point position);
 
+    /**
+		This method resizes the builder list. This method should only
+		called if the new size is a valid size for this builder list (See getMinumumSize).
+		\param	newSize	the new size of this progress bar
+	*/
+	virtual void resize(Point newSize) {
+		resize(newSize.x,newSize.y);
+	}
+
 	/**
-		This method resized the widget to width and height. This method should only be
-		called if the new size is a valid size for this widget (See resizingXAllowed,
+		This method resizes the builder list to width and height. This method should only be
+		called if the new size is a valid size for this builder list (See resizingXAllowed,
 		resizingYAllowed, getMinumumSize).
 		\param	width	the new width of this widget
 		\param	height	the new height of this widget
