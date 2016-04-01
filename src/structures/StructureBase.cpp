@@ -141,13 +141,7 @@ void StructureBase::blitToScreen() {
 
     SDL_RenderCopy(renderer, graphic[currentZoomlevel], &source, &dest);
 
-    if(fogged) {
-        // TODO: Fix fog of war
-        /*
-        SDL_Surface* fogSurf = pGFXManager->getTransparent40Surface();
-        SDL_BlitSurface(fogSurf, &source, screen, &dest);
-        */
-    } else {
+    if(!fogged) {
         SDL_Texture** pSmokeSurface = pGFXManager->getObjPic(ObjPic_Smoke,getOwner()->getHouseID());
         SDL_Rect smokeSource = calcSpriteSourceRect(pSmokeSurface[currentZoomlevel], 0, 3);
         std::list<StructureSmoke>::const_iterator iter;

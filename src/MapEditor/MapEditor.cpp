@@ -2005,7 +2005,6 @@ void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) {
 }
 
 void MapEditor::saveMapshot() {
-    // TODO: Fix this for 2D accelerated rendering
     int oldCurrentZoomlevel = currentZoomlevel;
     currentZoomlevel = 0;
 
@@ -2014,22 +2013,46 @@ void MapEditor::saveMapshot() {
     int sizeX = world2zoomedWorld(map.getSizeX()*TILESIZE);
     int sizeY = world2zoomedWorld(map.getSizeY()*TILESIZE);
 
-    SDL_Surface* pMapshotSurface = NULL;
-    if((pMapshotSurface = SDL_CreateRGBSurface(0, sizeX, sizeY, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK)) == NULL) {
-        fprintf(stderr,"MapEditor::SaveMapshot: Cannot create new surface!\n");
-        exit(EXIT_FAILURE);
-    }
-    SDL_FillRect(pMapshotSurface, NULL, COLOR_BLACK);
-
-    SDL_Rect board = { 0,0,sizeX,sizeY };
+    SDL_Rect board = { 0, 0, sizeX, sizeY };
 
     ScreenBorder tmpScreenborder(board);
     tmpScreenborder.adjustScreenBorderToMapsize(map.getSizeX(), map.getSizeY());
 
+    SDL_Texture* renderTarget = SDL_CreateTexture(renderer, SCREEN_FORMAT, SDL_TEXTUREACCESS_TARGET, sizeX, sizeY);
+    if(renderTarget == NULL) {
+        fprintf(stderr,"SDL_CreateTexture() failed: %s\n", SDL_GetError());
+        currentZoomlevel = oldCurrentZoomlevel;
+        return;
+	}
+
+	SDL_Texture* oldRenderTarget = SDL_GetRenderTarget(renderer);
+	if(SDL_SetRenderTarget(renderer, renderTarget) != 0) {
+        fprintf(stderr,"SDL_SetRenderTarget() failed: %s\n", SDL_GetError());
+        SDL_SetRenderTarget(renderer, oldRenderTarget);
+        SDL_DestroyTexture(renderTarget);
+        currentZoomlevel = oldCurrentZoomlevel;
+        return;
+	}
+
+	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+	SDL_RenderClear(renderer);
+
     drawMap(&tmpScreenborder, true);
 
-    SDL_SaveBMP(pMapshotSurface, mapshotFilename.c_str());
+    SDL_Surface* pMapshotSurface = renderReadSurface(renderer);
 
+    // Fix bug in SDL2 OpenGL Backend
+    SDL_RendererInfo rendererInfo;
+    SDL_GetRendererInfo(renderer, &rendererInfo);
+    if(strcmp(rendererInfo.name, "opengl") == 0) {
+        pMapshotSurface = flipHSurface(pMapshotSurface, true);
+    }
+
+    SDL_SaveBMP(pMapshotSurface, mapshotFilename.c_str());
     SDL_FreeSurface(pMapshotSurface);
+
+    SDL_SetRenderTarget(renderer, oldRenderTarget);
+    SDL_DestroyTexture(renderTarget);
+
     currentZoomlevel = oldCurrentZoomlevel;
 }

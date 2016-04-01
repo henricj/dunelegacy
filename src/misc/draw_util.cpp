@@ -177,14 +177,26 @@ void drawRect(SDL_Surface *surface, int x1, int y1, int x2, int y2, Uint32 color
 	}
 }
 
+SDL_Surface* renderReadSurface(SDL_Renderer* renderer) {
+    SDL_Rect rendererSize = getRendererSize();
+    SDL_Surface* pScreen = SDL_CreateRGBSurface(0, rendererSize.w, rendererSize.h, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK);
+    if((pScreen == NULL) || (SDL_RenderReadPixels(renderer, NULL, SCREEN_FORMAT, pScreen->pixels, pScreen->pitch) != 0)) {
+        fprintf(stderr,"renderReadSurface() failed: %s\n", SDL_GetError());
+        SDL_FreeSurface(pScreen);
+        return NULL;
+	}
+    return pScreen;
+}
+
 void replaceColor(SDL_Surface *surface, Uint32 oldColor, Uint32 newColor) {
 	if(!SDL_MUSTLOCK(surface) || (SDL_LockSurface(surface) == 0)) {
         for(int y = 0; y < surface->h; y++) {
             Uint8 *p = (Uint8 *)surface->pixels + (y * surface->pitch);
 
             for(int x = 0; x < surface->w; x++, ++p) {
-                if(*p == oldColor) {
-                    *p = newColor;
+                Uint32 color = getPixel(surface, x, y);
+                if(color == oldColor) {
+                    putPixel(surface, x, y, newColor);
                 }
             }
         }
@@ -470,21 +482,25 @@ SDL_Surface* flipHSurface(SDL_Surface* inputPic, bool bFreeInputPic) {
 
 	SDL_Surface *returnPic;
 
-	// create new picture surface
-	if((returnPic = SDL_CreateRGBSurface(0,inputPic->w,inputPic->h,8,0,0,0,0))== NULL) {
-	    if(bFreeInputPic) SDL_FreeSurface(inputPic);
-		throw std::runtime_error("flipHSurface(): Cannot create new Picture!");
-	}
-
-	SDL_SetPaletteColors(returnPic->format->palette, inputPic->format->palette->colors, 0, inputPic->format->palette->ncolors);
-	Uint32 ckey;
-	bool has_ckey = !SDL_GetColorKey(inputPic, &ckey);
-	if (has_ckey) {
-	    SDL_SetColorKey(returnPic, SDL_TRUE, ckey);
-    }
-	if (inputPic->flags & SDL_RLEACCEL) {
+    // create new picture surface
+    if(inputPic->format->BitsPerPixel == 8) {
+        if((returnPic = SDL_CreateRGBSurface(0, inputPic->w, inputPic->h, 8, 0, 0, 0, 0))== NULL) {
+            throw std::runtime_error("flipHSurface(): Cannot create new Picture!");
+        }
+        SDL_SetPaletteColors(returnPic->format->palette, inputPic->format->palette->colors, 0, inputPic->format->palette->ncolors);
+        Uint32 ckey;
+        bool has_ckey = !SDL_GetColorKey(inputPic, &ckey);
+        if (has_ckey) {
+            SDL_SetColorKey(returnPic, SDL_TRUE, ckey);
+        }
+        if (inputPic->flags & SDL_RLEACCEL) {
             SDL_SetSurfaceRLE(returnPic, SDL_TRUE);
-    }
+        }
+	} else {
+        if((returnPic = SDL_CreateRGBSurface(0, inputPic->w, inputPic->h, 32, RMASK, GMASK, BMASK, AMASK))== NULL) {
+            throw std::runtime_error("flipHSurface(): Cannot create new Picture!");
+        }
+	}
 
 	SDL_LockSurface(returnPic);
 	SDL_LockSurface(inputPic);
@@ -492,8 +508,7 @@ SDL_Surface* flipHSurface(SDL_Surface* inputPic, bool bFreeInputPic) {
 	//Now we can copy pixel by pixel
 	for(int y = 0; y < inputPic->h;y++) {
 		for(int x = 0; x < inputPic->w; x++) {
-			char val = *( ((char*) (inputPic->pixels)) + y*inputPic->pitch + x);
-			*( ((char*) (returnPic->pixels)) + (returnPic->h - y - 1)*returnPic->pitch + x) = val;
+            putPixel(returnPic, x, inputPic->h - y - 1, getPixel(inputPic, x, y));
 		}
 	}
 
@@ -513,21 +528,25 @@ SDL_Surface* flipVSurface(SDL_Surface* inputPic, bool bFreeInputPic) {
 
 	SDL_Surface *returnPic;
 
-	// create new picture surface
-	if((returnPic = SDL_CreateRGBSurface(0,inputPic->w,inputPic->h,8,0,0,0,0))== NULL) {
-	    if(bFreeInputPic) SDL_FreeSurface(inputPic);
-		throw std::runtime_error("flipVSurface(): Cannot create new Picture!");
-	}
-
-	SDL_SetPaletteColors(returnPic->format->palette, inputPic->format->palette->colors, 0, inputPic->format->palette->ncolors);
-	Uint32 ckey;
-	bool has_ckey = !SDL_GetColorKey(inputPic, &ckey);
-	if (has_ckey) {
-	    SDL_SetColorKey(returnPic, SDL_TRUE, ckey);
-    }
-	if (inputPic->flags & SDL_RLEACCEL) {
+    // create new picture surface
+    if(inputPic->format->BitsPerPixel == 8) {
+        if((returnPic = SDL_CreateRGBSurface(0, inputPic->w, inputPic->h, 8, 0, 0, 0, 0))== NULL) {
+            throw std::runtime_error("flipVSurface(): Cannot create new Picture!");
+        }
+        SDL_SetPaletteColors(returnPic->format->palette, inputPic->format->palette->colors, 0, inputPic->format->palette->ncolors);
+        Uint32 ckey;
+        bool has_ckey = !SDL_GetColorKey(inputPic, &ckey);
+        if (has_ckey) {
+            SDL_SetColorKey(returnPic, SDL_TRUE, ckey);
+        }
+        if (inputPic->flags & SDL_RLEACCEL) {
             SDL_SetSurfaceRLE(returnPic, SDL_TRUE);
-    }
+        }
+	} else {
+        if((returnPic = SDL_CreateRGBSurface(0, inputPic->w, inputPic->h, 32, RMASK, GMASK, BMASK, AMASK))== NULL) {
+            throw std::runtime_error("flipVSurface(): Cannot create new Picture!");
+        }
+	}
 
 	SDL_LockSurface(returnPic);
 	SDL_LockSurface(inputPic);
@@ -535,8 +554,7 @@ SDL_Surface* flipVSurface(SDL_Surface* inputPic, bool bFreeInputPic) {
 	//Now we can copy pixel by pixel
 	for(int y = 0; y < inputPic->h;y++) {
 		for(int x = 0; x < inputPic->w; x++) {
-			char val = *( ((char*) (inputPic->pixels)) + y*inputPic->pitch + x);
-			*( ((char*) (returnPic->pixels)) + y*returnPic->pitch + (inputPic->w - x - 1)) = val;
+            putPixel(returnPic, inputPic->w - x - 1, y, getPixel(inputPic, x, y));
 		}
 	}
 
@@ -572,8 +590,8 @@ SDL_Surface* createShadowSurface(SDL_Surface* source) {
 	for(int i = 0; i < retPic->w; i++) {
 		for(int j = 0; j < retPic->h; j++) {
 			Uint8* pixel = &((Uint8*)retPic->pixels)[j * retPic->pitch + i];
-			if(*pixel != 0) {
-                *pixel = 12;
+			if(*pixel != PALCOLOR_TRANSPARENT) {
+                *pixel = PALCOLOR_BLACK;
 			}
 		}
 	}

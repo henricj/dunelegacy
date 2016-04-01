@@ -102,18 +102,10 @@ void setVideoMode()
 	                          //settings.video.width, settings.video.height,
 	                          settings.video.width, settings.video.height,
 	                          videoFlags);
-	renderer = SDL_CreateRenderer(window, -1, 0);
+	renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_TARGETTEXTURE);
 	SDL_RenderSetLogicalSize(renderer, settings.video.width, settings.video.height);
-	texture = SDL_CreateTexture(renderer, SCREEN_FORMAT, SDL_TEXTUREACCESS_STREAMING, settings.video.width, settings.video.height);
-	/*
-	screen = SDL_CreateRGBSurface(0, settings.video.width, settings.video.height, SCREEN_BPP, RMASK, GMASK, BMASK, 0);
-	if(screen) {
-		SDL_ShowCursor(SDL_DISABLE);
-    } else {
-		fprintf(stderr, "ERROR: Couldn't set video mode: %s\n", SDL_GetError());
-		exit(EXIT_FAILURE);
-    }
-    */
+	screenTexture = SDL_CreateTexture(renderer, SCREEN_FORMAT, SDL_TEXTUREACCESS_TARGET, settings.video.width, settings.video.height);
+
     SDL_ShowCursor(SDL_DISABLE);
 }
 
@@ -577,7 +569,12 @@ int main(int argc, char *argv[]) {
             palette = LoadPalette_RW(pFileManager->openFile("IBM.PAL"), true);
         }
 
+        fprintf(stdout, "SDL rendering backend...");fflush(stdout);
 		setVideoMode();
+		SDL_RendererInfo rendererInfo;
+		SDL_GetRendererInfo(renderer, &rendererInfo);
+		fprintf(stdout, "\t%s\n", rendererInfo.name); fflush(stdout);
+		fprintf(stdout, "Maximum texture size...\t\t%dx%d\n", rendererInfo.max_texture_width, rendererInfo.max_texture_height); fflush(stdout);
 
 
 		fprintf(stdout, "loading fonts...");fflush(stdout);
@@ -664,7 +661,7 @@ int main(int argc, char *argv[]) {
 		delete pFontManager;
 		delete pFileManager;
 
-        SDL_DestroyTexture(texture);
+        SDL_DestroyTexture(screenTexture);
         SDL_DestroyRenderer(renderer);
         SDL_DestroyWindow(window);
 

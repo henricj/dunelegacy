@@ -318,6 +318,7 @@ GFXManager::GFXManager() {
     objPic[ObjPic_Bullet_Large][HOUSE_HARKONNEN][2] = Scaler::defaultTripleTiledSurface(objPic[ObjPic_Bullet_Large][HOUSE_HARKONNEN][0], 1, 1, false);
 
 	objPic[ObjPic_Bullet_Sonic][HOUSE_HARKONNEN][0] = units1->getPicture(10);
+	replaceColor(objPic[ObjPic_Bullet_Sonic][HOUSE_HARKONNEN][0], PALCOLOR_WHITE, PALCOLOR_BLACK);
     objPic[ObjPic_Bullet_Sonic][HOUSE_HARKONNEN][1] = Scaler::defaultDoubleTiledSurface(objPic[ObjPic_Bullet_Sonic][HOUSE_HARKONNEN][0], 1, 1, false);
     objPic[ObjPic_Bullet_Sonic][HOUSE_HARKONNEN][2] = Scaler::defaultTripleTiledSurface(objPic[ObjPic_Bullet_Sonic][HOUSE_HARKONNEN][0], 1, 1, false);
 
@@ -392,6 +393,7 @@ GFXManager::GFXManager() {
     objPic[ObjPic_Smoke][HOUSE_HARKONNEN][2] = Scaler::defaultTripleTiledSurface(objPic[ObjPic_Smoke][HOUSE_HARKONNEN][0], 3, 1, false);
 
 	objPic[ObjPic_SandwormShimmerMask][HOUSE_HARKONNEN][0] = units1->getPicture(10);
+	replaceColor(objPic[ObjPic_SandwormShimmerMask][HOUSE_HARKONNEN][0], PALCOLOR_WHITE, PALCOLOR_BLACK);
     objPic[ObjPic_SandwormShimmerMask][HOUSE_HARKONNEN][1] = Scaler::defaultDoubleTiledSurface(objPic[ObjPic_SandwormShimmerMask][HOUSE_HARKONNEN][0], 1, 1, false);
     objPic[ObjPic_SandwormShimmerMask][HOUSE_HARKONNEN][2] = Scaler::defaultTripleTiledSurface(objPic[ObjPic_SandwormShimmerMask][HOUSE_HARKONNEN][0], 1, 1, false);
 
@@ -942,13 +944,6 @@ GFXManager::GFXManager() {
 
     // pBackgroundSurface is separate as we never draw it but use it to construct other sprites
     pBackgroundSurface = convertSurfaceToDisplayFormat(PicFactory->createBackground(), true);
-
-	// Create alpha blending surfaces (128x128 pixel)
-	pTransparent40Surface = SDL_CreateRGBSurface(0, 128, 128, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK);
-    SDL_SetSurfaceAlphaMod(pTransparent40Surface, 40);
-
-	pTransparent150Surface = SDL_CreateRGBSurface(0, 128, 128, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK);
-    SDL_SetSurfaceAlphaMod(pTransparent150Surface, 150);
 }
 
 GFXManager::~GFXManager() {
@@ -1008,8 +1003,6 @@ GFXManager::~GFXManager() {
 	}
 
     SDL_FreeSurface(pBackgroundSurface);
-	SDL_FreeSurface(pTransparent40Surface);
-	SDL_FreeSurface(pTransparent150Surface);
 }
 
 SDL_Texture** GFXManager::getObjPic(unsigned int id, int house) {
@@ -1034,6 +1027,26 @@ SDL_Texture** GFXManager::getObjPic(unsigned int id, int house) {
             if(id == ObjPic_Windtrap) {
                 // Windtrap uses palette animation on PALCOLOR_WINDTRAP_COLORCYCLE; fake this
                 objPicTex[id][house][z] = convertSurfaceToTexture(generateWindtrapAnimationFrames(objPic[id][house][z]), true);
+            } else if(id == ObjPic_Terrain_HiddenFog) {
+                SDL_Surface* pHiddenFog = convertSurfaceToDisplayFormat(objPic[id][house][z], false);
+                replaceColor(pHiddenFog, COLOR_BLACK, COLOR_FOG_TRANSPARENT);
+                objPicTex[id][house][z] = convertSurfaceToTexture(pHiddenFog, true);
+            } else if(id == ObjPic_CarryallShadow) {
+                SDL_Surface* pShadow = convertSurfaceToDisplayFormat(objPic[id][house][z], false);
+                replaceColor(pShadow, COLOR_BLACK, COLOR_SHADOW_TRANSPARENT);
+                objPicTex[id][house][z] = convertSurfaceToTexture(pShadow, true);
+            } else if(id == ObjPic_FrigateShadow) {
+                SDL_Surface* pShadow = convertSurfaceToDisplayFormat(objPic[id][house][z], false);
+                replaceColor(pShadow, COLOR_BLACK, COLOR_SHADOW_TRANSPARENT);
+                objPicTex[id][house][z] = convertSurfaceToTexture(pShadow, true);
+            } else if(id == ObjPic_OrnithopterShadow) {
+                SDL_Surface* pShadow = convertSurfaceToDisplayFormat(objPic[id][house][z], false);
+                replaceColor(pShadow, COLOR_BLACK, COLOR_SHADOW_TRANSPARENT);
+                objPicTex[id][house][z] = convertSurfaceToTexture(pShadow, true);
+            } else if(id == ObjPic_Bullet_SonicTemp) {
+                objPicTex[id][house][z] = SDL_CreateTexture(renderer, SCREEN_FORMAT, SDL_TEXTUREACCESS_TARGET, objPic[id][house][z]->w, objPic[id][house][z]->h);
+            } else if(id == ObjPic_SandwormShimmerTemp) {
+                objPicTex[id][house][z] = SDL_CreateTexture(renderer, SCREEN_FORMAT, SDL_TEXTUREACCESS_TARGET, objPic[id][house][z]->w, objPic[id][house][z]->h);
             } else {
                 objPicTex[id][house][z] = convertSurfaceToTexture(objPic[id][house][z], false);
             }

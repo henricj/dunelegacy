@@ -80,6 +80,8 @@ inline void renderFillRect(SDL_Renderer* renderer, int x1, int y1, int x2, int y
     renderFillRect(renderer, &rect, color);
 }
 
+SDL_Surface* renderReadSurface(SDL_Renderer* renderer);
+
 void replaceColor(SDL_Surface *surface, Uint32 oldColor, Uint32 newColor);
 void mapColor(SDL_Surface *surface, Uint8 colorMap[256]);
 

@@ -146,7 +146,7 @@ protected:
 	bool    repairing;          ///< currently repairing?
     int     degradeTimer;       ///< after which time of insufficient power should we degrade this building again
 
-    // TODO: fogging is currently broken
+    // TODO: fogging is currently broken (fogged and lastVisibleFrame differ in multiplayer between players; hidden building disappear when being destroyed)
 	bool        fogged;             ///< Currently fogged?
 	int         lastVisibleFrame;   ///< store picture drawn before fogged
 

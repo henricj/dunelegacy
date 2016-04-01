@@ -269,25 +269,36 @@ void Bullet::blitToScreen()
     SDL_Rect dest = calcSpriteDrawingRect(graphic[currentZoomlevel], screenborder->world2screenX(realX), screenborder->world2screenY(realY), numFrames, 1, HAlign::Center, VAlign::Center);
 
     if(bulletID == Bullet_Sonic) {
-    //TODO: Update to SDL_Texture
-    /*
         static const int shimmerOffset[]  = { 1, 3, 2, 5, 4, 3, 2, 1 };
 
-        SDL_Surface *mask = graphic[currentZoomlevel];
-        SDL_SetColorKey(mask, SDL_TRUE, 15);      // we want to have white not being drawn
+        SDL_Texture* shimmerTex = pGFXManager->getObjPic(ObjPic_Bullet_SonicTemp,HOUSE_HARKONNEN)[currentZoomlevel];
+        SDL_Texture* shimmerMaskTex = pGFXManager->getObjPic(ObjPic_Bullet_Sonic,HOUSE_HARKONNEN)[currentZoomlevel];
 
+        // switch to texture 'shimmerTex' for rendering
+        SDL_Texture* oldRenderTarget = SDL_GetRenderTarget(renderer);
+        SDL_SetRenderTarget(renderer, shimmerTex);
+
+        // copy complete mask
+        // contains solid black (0,0,0,255) for pixels to take from screen
+        // and transparent (0,0,0,0) for pixels that should not be copied over
+        SDL_SetTextureBlendMode(shimmerMaskTex, SDL_BLENDMODE_NONE);
+        SDL_RenderCopy(renderer, shimmerMaskTex, NULL, NULL);
+        SDL_SetTextureBlendMode(shimmerMaskTex, SDL_BLENDMODE_BLEND);
+
+        // now copy r,g,b colors from screen but don't change alpha values in mask
+        SDL_SetTextureBlendMode(screenTexture, SDL_BLENDMODE_ADD);
         SDL_Rect source = dest;
         int shimmerOffsetIndex = ((currentGame->getGameCycleCount() + getBulletID()) % 24)/3;
         source.x += shimmerOffset[shimmerOffsetIndex%8]*2;
+        SDL_RenderCopy(renderer, screenTexture, &source, NULL);
+        SDL_SetTextureBlendMode(screenTexture, SDL_BLENDMODE_NONE);
 
-        SDL_Surface *shimmerSurfaceTemp = pGFXManager->getObjPic(ObjPic_Bullet_SonicTemp,HOUSE_HARKONNEN)[currentZoomlevel];
-        SDL_BlitSurface(screen, &source, shimmerSurfaceTemp, NULL);
+        // switch back to old rendering target (from texture 'shimmerTex')
+        SDL_SetRenderTarget(renderer, oldRenderTarget);
 
-        // use mask to make everything black that should not be considered further
-        SDL_BlitSurface(mask, NULL, shimmerSurfaceTemp, NULL);
-
-        SDL_BlitSurface(shimmerSurfaceTemp, NULL, screen, &dest);
-    */
+        // now blend shimmerTex to screen (= make use of alpha values in mask)
+        SDL_SetTextureBlendMode(shimmerTex, SDL_BLENDMODE_BLEND);
+        SDL_RenderCopy(renderer, shimmerTex, NULL, &dest);
     } else {
         SDL_Rect source = calcSpriteSourceRect(graphic[currentZoomlevel], (numFrames > 1) ? drawnAngle: 0, numFrames);
         SDL_RenderCopy(renderer, graphic[currentZoomlevel], &source, &dest);

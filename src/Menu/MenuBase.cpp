@@ -21,6 +21,7 @@
 
 #include <misc/string_util.h>
 #include <misc/FileSystem.h>
+#include <misc/draw_util.h>
 
 #include <globals.h>
 
@@ -83,6 +84,8 @@ int MenuBase::showMenu() {
 }
 
 void MenuBase::draw() {
+    SDL_SetRenderTarget(renderer, screenTexture);
+
 	if(bClearScreen == true) {
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
         SDL_RenderClear(renderer);
@@ -96,6 +99,10 @@ void MenuBase::draw() {
 
 	drawCursor();
 
+	SDL_RenderPresent(renderer);
+
+    SDL_SetRenderTarget(renderer, NULL);
+    SDL_RenderCopy(renderer, screenTexture, NULL, NULL);
 	SDL_RenderPresent(renderer);
 }
 
@@ -130,8 +137,7 @@ bool MenuBase::doInput(SDL_Event &event) {
 
 				case SDLK_PRINTSCREEN:
 				case SDLK_SYSREQ: {
-                    // TODO: Read screenshot from rendering target
-                    /*
+
                     std::string screenshotFilename;
                     int i = 1;
                     do {
@@ -139,8 +145,9 @@ bool MenuBase::doInput(SDL_Event &event) {
                         i++;
                     } while(existsFile(screenshotFilename) == true);
 
-                    SDL_SaveBMP(screen, screenshotFilename.c_str());
-                    */
+                    SDL_Surface* pCurrentScreen = renderReadSurface(renderer);
+                    SDL_SaveBMP(pCurrentScreen, screenshotFilename.c_str());
+                    SDL_FreeSurface(pCurrentScreen);
                 } break;
 
                 case SDLK_TAB: {

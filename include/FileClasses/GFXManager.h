@@ -463,8 +463,6 @@ public:
 	SDL_Surface*	getMapChoicePieceSurface(unsigned int num, int house);
 
 	SDL_Surface*    getBackgroundSurface() { return pBackgroundSurface; };
-	SDL_Surface*    getTransparent40Surface() { return pTransparent40Surface; };
-	SDL_Surface*    getTransparent150Surface() { return pTransparent150Surface; };
 
 	Animation*		getAnimation(unsigned int id);
 
@@ -486,8 +484,6 @@ private:
 
     // 32-bit surfaces
 	SDL_Surface*    pBackgroundSurface;
-	SDL_Surface*    pTransparent40Surface;
-	SDL_Surface*    pTransparent150Surface;
 
 	// Textures
 	SDL_Texture*	objPicTex[NUM_OBJPICS][(int) NUM_HOUSES][NUM_ZOOMLEVEL];

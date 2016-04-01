@@ -434,12 +434,6 @@ void Game::drawScreen()
 //////////////////////////////draw unexplored/shade
 
 	if(debug == false) {
-        // TODO: Convert fog to rendering code
-        /*
-        SDL_Surface** hiddenFogSurf = pGFXManager->getObjPic(ObjPic_Terrain_HiddenFog);
-        SDL_LockSurface(hiddenFogSurf[currentZoomlevel]);
-        */
-
 	    int zoomedTileSize = world2zoomedWorld(TILESIZE);
 		for(int x = screenborder->getTopLeftTile().x - 1; x <= screenborder->getBottomRightTile().x + 1; x++) {
 			for (int y = screenborder->getTopLeftTile().y - 1; y <= screenborder->getBottomRightTile().y + 1; y++) {
@@ -467,28 +461,14 @@ void Game::drawScreen()
                             }
 
                             if(fogTile != 0) {
+                                SDL_Texture** hiddenFogTex = pGFXManager->getObjPic(ObjPic_Terrain_HiddenFog);
+
                                 SDL_Rect source = { fogTile*zoomedTileSize, 0,
                                                     zoomedTileSize, zoomedTileSize };
                                 SDL_Rect drawLocation = {   screenborder->world2screenX(x*TILESIZE), screenborder->world2screenY(y*TILESIZE),
                                                             zoomedTileSize, zoomedTileSize };
 
-                                SDL_Rect mini = {0, 0, 1, 1};
-                                SDL_Rect drawLoc = {drawLocation.x, drawLocation.y, 0, 0};
-
-                                SDL_Surface* fogSurf = pGFXManager->getTransparent40Surface();
-
-                                // TODO: Convert fog to rendering code
-                                /*
-                                for(int i=0;i<zoomedTileSize; i++) {
-                                    for(int j=0;j<zoomedTileSize; j++) {
-                                        if(getPixel(hiddenFogSurf[currentZoomlevel],source.x+i,source.y+j) == 12) {
-                                            drawLoc.x = drawLocation.x + i;
-                                            drawLoc.y = drawLocation.y + j;
-                                            SDL_BlitSurface(fogSurf,&mini,screen,&drawLoc);
-                                        }
-                                    }
-                                }
-                                */
+                                SDL_RenderCopy(renderer, hiddenFogTex[currentZoomlevel], &source, &drawLocation);
                             }
 						}
 					} else {
@@ -510,8 +490,6 @@ void Game::drawScreen()
 				}
 			}
 		}
-		// TODO: Convert fog to rendering code
-		//SDL_UnlockSurface(hiddenFogSurf[currentZoomlevel]);
 	}
 
 /////////////draw placement position
@@ -1221,12 +1199,18 @@ void Game::runMainLoop() {
 
 	//main game loop
     do {
+        SDL_SetRenderTarget(renderer, screenTexture);
+
         // clear whole screen
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
         SDL_RenderClear(renderer);
 
         drawScreen();
 
+        SDL_RenderPresent(renderer);
+
+        SDL_SetRenderTarget(renderer, NULL);
+        SDL_RenderCopy(renderer, screenTexture, NULL, NULL);
         SDL_RenderPresent(renderer);
 
         frameEnd = SDL_GetTicks();
@@ -2260,8 +2244,6 @@ void Game::handleKeyInput(SDL_KeyboardEvent& keyboardEvent) {
 
         case SDLK_PRINTSCREEN:
         case SDLK_SYSREQ: {
-            // TODO: Take screenshot from rendering target
-            /*
             std::string screenshotFilename;
             int i = 1;
             do {
@@ -2269,9 +2251,10 @@ void Game::handleKeyInput(SDL_KeyboardEvent& keyboardEvent) {
                 i++;
             } while(existsFile(screenshotFilename) == true);
 
-            SDL_SaveBMP(screen, screenshotFilename.c_str());
+            SDL_Surface* pCurrentScreen = renderReadSurface(renderer);
+            SDL_SaveBMP(pCurrentScreen, screenshotFilename.c_str());
             currentGame->addToNewsTicker(_("Screenshot saved") + ": '" + screenshotFilename + "'");
-            */
+            SDL_FreeSurface(pCurrentScreen);
         } break;
 
         case SDLK_h: {

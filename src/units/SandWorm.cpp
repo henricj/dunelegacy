@@ -128,38 +128,44 @@ void Sandworm::blitToScreen() {
     static const int shimmerOffset[]  = { 1, 3, 2, 5, 4, 3, 2, 1 };
 
     if(shimmerOffsetIndex >= 0) {
-        //create worms shimmer
-        // TODO: Render sandworm shimmer
-        /*
-        SDL_Surface *mask = pGFXManager->getObjPic(ObjPic_SandwormShimmerMask,HOUSE_HARKONNEN)[currentZoomlevel];
-        SDL_SetColorKey(mask, SDL_TRUE, 15);      // we want to have white not being drawn
+        // render sandworm's shimmer
 
-        int width = getWidth(mask);
-        int height = getHeight(mask);
-
-        SDL_Surface *shimmerSurfaceTemp = pGFXManager->getObjPic(ObjPic_SandwormShimmerTemp,HOUSE_HARKONNEN)[currentZoomlevel];
+        SDL_Texture* shimmerTex = pGFXManager->getObjPic(ObjPic_SandwormShimmerTemp,HOUSE_HARKONNEN)[currentZoomlevel];
+        SDL_Texture* shimmerMaskTex = pGFXManager->getObjPic(ObjPic_SandwormShimmerMask,HOUSE_HARKONNEN)[currentZoomlevel];
 
         for(int i = 0; i < SANDWORM_SEGMENTS; i++) {
             if(lastLocs[i].isInvalid()) {
                 continue;
             }
 
-            int destX = screenborder->world2screenX(lastLocs[i].x) - width/2;
-            int destY = screenborder->world2screenY(lastLocs[i].y) - height/2;
+            SDL_Rect dest = calcDrawingRect(shimmerMaskTex, screenborder->world2screenX(lastLocs[i].x), screenborder->world2screenY(lastLocs[i].y), HAlign::Center, VAlign::Center);
 
-            int srcX = destX + shimmerOffset[(shimmerOffsetIndex+i)%8]*2;
-            int srcY = destY;
+            // switch to texture 'shimmerTex' for rendering
+            SDL_Texture* oldRenderTarget = SDL_GetRenderTarget(renderer);
+            SDL_SetRenderTarget(renderer, shimmerTex);
 
-            SDL_Rect src =  { srcX, srcY, width, height };
-            SDL_BlitSurface(screen, &src, shimmerSurfaceTemp, NULL);
+            // copy complete mask
+            // contains solid black (0,0,0,255) for pixels to take from screen
+            // and transparent (0,0,0,0) for pixels that should not be copied over
+            SDL_SetTextureBlendMode(shimmerMaskTex, SDL_BLENDMODE_NONE);
+            SDL_RenderCopy(renderer, shimmerMaskTex, NULL, NULL);
+            SDL_SetTextureBlendMode(shimmerMaskTex, SDL_BLENDMODE_BLEND);
 
-            // use mask to make everything black that should not be considered further
-            SDL_BlitSurface(mask, NULL, shimmerSurfaceTemp, NULL);
+            // now copy r,g,b colors from screen but don't change alpha values in mask
+            SDL_SetTextureBlendMode(screenTexture, SDL_BLENDMODE_ADD);
+            SDL_Rect source = dest;
+            source.x += shimmerOffset[(shimmerOffsetIndex+i)%8]*2;
+            SDL_RenderCopy(renderer, screenTexture, &source, NULL);
+            SDL_SetTextureBlendMode(screenTexture, SDL_BLENDMODE_NONE);
 
-            SDL_Rect dest = { destX, destY, width, height };
-            SDL_BlitSurface(shimmerSurfaceTemp, NULL, screen, &dest);
+            // switch back to old rendering target (from texture 'shimmerTex')
+            SDL_SetRenderTarget(renderer, oldRenderTarget);
+
+            // now blend shimmerTex to screen (= make use of alpha values in mask)
+            SDL_SetTextureBlendMode(shimmerTex, SDL_BLENDMODE_BLEND);
+            SDL_RenderCopy(renderer, shimmerTex, NULL, &dest);
+
         }
-        */
     }
 
     if(drawnFrame != INVALID) {

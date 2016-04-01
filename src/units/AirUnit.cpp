@@ -84,33 +84,15 @@ void AirUnit::checkPos()
 
 void AirUnit::blitToScreen()
 {
-    int imageW = getWidth(graphic[currentZoomlevel])/numImagesX;
-    int imageH = getHeight(graphic[currentZoomlevel])/numImagesY;
+    if(shadowGraphic != NULL) {
+        int x = screenborder->world2screenX(realX + 4);
+        int y = screenborder->world2screenY(realY + 12);
 
-    if(screenborder->isInsideScreen(Coord(lround(realX + 4), lround(realY + 12)),Coord(imageW, imageH)) == true) {
-		// Not out of screen
-        // TODO: Render shadow via texture
-		/*
-        SDL_Rect dest = { screenborder->world2screenX(realX + 4) - imageW/2 + 1, screenborder->world2screenY(realY + 12) - imageH/2, imageW, imageH };
-        SDL_Rect source = { drawnAngle*imageW, drawnFrame*imageH, imageW, imageH };
+        SDL_Rect source = calcSpriteSourceRect(shadowGraphic[currentZoomlevel], drawnAngle, numImagesX, drawnFrame, numImagesY);
+        SDL_Rect dest = calcSpriteDrawingRect(shadowGraphic[currentZoomlevel], x, y, numImagesX, numImagesY, HAlign::Center, VAlign::Center);
 
-        if(shadowGraphic != NULL) {
-            SDL_Rect mini = {0, 0, 1, 1};
-            SDL_Surface* transparentSurf = pGFXManager->getTransparent150Surface();
-
-            SDL_LockSurface(shadowGraphic[currentZoomlevel]);
-            for(int i=0;i<imageW; i++) {
-                for(int j=0;j<imageH; j++) {
-                    if(getPixel(shadowGraphic[currentZoomlevel],source.x+i,source.y+j) == 12) {
-                        SDL_Rect drawLoc = {dest.x + i, dest.y + j, 1, 1};
-                        SDL_BlitSurface(transparentSurf,&mini,screen,&drawLoc);
-                    };
-                }
-            }
-            SDL_UnlockSurface(shadowGraphic[currentZoomlevel]);
-        }
-        */
-	}
+        SDL_RenderCopy(renderer, shadowGraphic[currentZoomlevel], &source, &dest);
+    }
 
 	UnitBase::blitToScreen();
 }
