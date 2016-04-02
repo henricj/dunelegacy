@@ -99,10 +99,10 @@ SDL_Surface* DuneStyle::createLabelSurface(Uint32 width, Uint32 height, std::lis
 
 	if(alignment & Alignment_VCenter) {
 		int textheight = fontheight * textLines.size() + spacing * (textLines.size() - 1);
-		textpos_y = (height - textheight) / 2;
+		textpos_y = (((int) height) - textheight) / 2;
 	} else if(alignment & Alignment_Bottom) {
 		int textheight = fontheight * textLines.size() + spacing * (textLines.size() - 1);
-		textpos_y = height - textheight - spacing;
+		textpos_y = ((int) height) - textheight - spacing;
 	} else {
 		// Alignment_Top
 		textpos_y = spacing;
