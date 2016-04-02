@@ -137,7 +137,9 @@ void Window::handleInput(SDL_Event& event) {
 
 		case SDL_MOUSEWHEEL: {
             if(event.wheel.y != 0) {
-				handleMouseWheel(event.wheel.x,event.wheel.y,(event.wheel.y > 0));
+                int x, y;
+                SDL_GetMouseState(&x,&y);
+				handleMouseWheel(x,y,(event.wheel.y > 0));
             }
 		} break;
 

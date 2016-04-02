@@ -1177,7 +1177,7 @@ void MapEditor::processInput() {
                             }
                         }
 
-                        pInterface->handleMouseWheel(event.wheel.x,event.wheel.y,(event.wheel.y > 0));
+                        pInterface->handleMouseWheel(x,y,(event.wheel.y > 0));
                     }
                 } break;
 

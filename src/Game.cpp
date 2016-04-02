@@ -720,7 +720,9 @@ void Game::doInput()
 
                 case SDL_MOUSEWHEEL: {
                     if (event.wheel.y != 0) {
-                        pInterface->handleMouseWheel(event.wheel.x,event.wheel.y,(event.wheel.y > 0));
+                        int x, y;
+                        SDL_GetMouseState(&x,&y);
+                        pInterface->handleMouseWheel(x,y,(event.wheel.y > 0));
                     }
                 } break;
 
