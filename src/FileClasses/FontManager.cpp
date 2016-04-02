@@ -62,7 +62,7 @@ int FontManager::getTextHeight(unsigned int fontNum) {
 
 SDL_Surface* FontManager::createSurfaceWithText(std::string text, Uint32 color, unsigned int fontNum) {
 	if(fontNum >= NUM_FONTS) {
-		return 0;
+		return NULL;
 	}
 
     SDL_Surface* pic;

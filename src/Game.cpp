@@ -710,11 +710,20 @@ void Game::doInput()
 			/* Look for a keypress */
 			switch (event.type) {
 
-                case (SDL_KEYDOWN): {
+                case SDL_KEYDOWN: {
                     if(chatMode) {
                         handleChatInput(event.key);
                     } else {
                         handleKeyInput(event.key);
+                    }
+                } break;
+
+                case SDL_TEXTINPUT: {
+                    if(chatMode) {
+                        std::string newText = convertUTF8ToISO8859_1(event.text.text);
+                        if(typingChatMessage.length() + newText.length() <= 60) {
+                            typingChatMessage += newText;
+                        }
                     }
                 } break;
 
@@ -1990,16 +1999,6 @@ void Game::handleChatInput(SDL_KeyboardEvent& keyboardEvent) {
     } else if(keyboardEvent.keysym.sym == SDLK_BACKSPACE) {
         if(typingChatMessage.length() > 0) {
             typingChatMessage.resize(typingChatMessage.length() - 1);
-        }
-    } else if(typingChatMessage.length() < 60)	{
-        if((keyboardEvent.keysym.sym <= 0xFF) && (keyboardEvent.keysym.sym > 0)) {
-            if((keyboardEvent.keysym.mod & KMOD_LSHIFT) || (keyboardEvent.keysym.mod & KMOD_RSHIFT)) {
-                typingChatMessage += std::toupper(keyboardEvent.keysym.sym);
-            } else {
-                typingChatMessage += keyboardEvent.keysym.sym;
-            }
-        } else {
-            // TODO
         }
     }
 }

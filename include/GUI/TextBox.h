@@ -20,6 +20,7 @@
 
 #include "Widget.h"
 #include <misc/draw_util.h>
+#include <misc/string_util.h>
 #include <string>
 #include <SDL.h>
 
@@ -255,26 +256,42 @@ public:
 			if(pOnReturn) {
 				pOnReturn();
 			}
-		} else if((key.keysym.sym <= 0xFF) && (key.keysym.sym != 0) && ((maxTextLength < 0) || ((int) text.length() < maxTextLength))) {
-		    char newChar = (char) key.keysym.sym;
-
-		    if((key.keysym.mod & KMOD_LSHIFT) || (key.keysym.mod & KMOD_RSHIFT)) {
-                newChar = std::toupper(newChar);
-            }
-
-		    if(allowedChars.empty() || allowedChars.find(newChar) != std::string::npos) {
-                text += newChar;
-
-                if(pOnTextChange) {
-                    pOnTextChange(true);
-                }
-		    }
 		}
 
 		invalidateTextures();
 
 		return true;
 	}
+
+
+	/**
+		Handles a text input event.
+		\param	textInput the text input that was performed.
+		\return	true = text input was processed by the widget, false = text input was not processed by the widget
+	*/
+	virtual inline bool handleTextInput(SDL_TextInputEvent& textInput) {
+        if((isVisible() == false) || (isEnabled() == false) || (isActive() == false)) {
+			return true;
+		}
+
+		std::string newText = convertUTF8ToISO8859_1(textInput.text);
+
+		bool bChanged = false;
+        std::string::const_iterator iter;
+		for(iter = newText.begin(); iter != newText.end(); ++iter) {
+            char c = *iter;
+            if(((maxTextLength < 0) || ((int) text.length() < maxTextLength)) && (allowedChars.empty() || allowedChars.find(c) != std::string::npos)) {
+                text += c;
+                bChanged = true;
+            }
+		}
+
+		if(bChanged && pOnTextChange) {
+            pOnTextChange(true);
+        }
+
+        return true;
+    }
 
 protected:
 	/**

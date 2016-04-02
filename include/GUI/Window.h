@@ -153,6 +153,13 @@ public:
 	*/
 	virtual bool handleKeyPress(SDL_KeyboardEvent& key);
 
+    /**
+		Handles a text input event.
+		\param	textInput the text input that was performed.
+		\return	true = text input was processed by the window, false = text input was not processed by the window
+	*/
+	virtual bool handleTextInput(SDL_TextInputEvent& textInput);
+
 	/**
 		Draws this window to screen. This method should be called every frame.
 	*/

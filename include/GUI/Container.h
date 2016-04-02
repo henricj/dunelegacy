@@ -196,6 +196,22 @@ public:
 	}
 
 	/**
+		Handles a text input event.
+		\param	textInput the text input that was performed.
+		\return	true = text input was processed by the container, false = text input was not processed by the container
+	*/
+	virtual inline bool handleTextInput(SDL_TextInputEvent& textInput) {
+		if((isEnabled() == false) || (isVisible() == false) || (isActive() == false)) {
+			return false;
+		}
+
+		if(pActiveChildWidget != NULL) {
+			return pActiveChildWidget->handleTextInput(textInput);
+		}
+		return false;
+	}
+
+	/**
 		Handles mouse movement in overlays.
 		\param	x x-coordinate (relative to the left top corner of the container)
 		\param	y y-coordinate (relative to the left top corner of the container)
@@ -305,6 +321,22 @@ public:
 
 		if(pActiveChildWidget != NULL) {
 			return pActiveChildWidget->handleKeyPressOverlay(key);
+		}
+		return false;
+	}
+
+	/**
+		Handles a text input event in overlays.
+		\param	textInput the text input that was performed.
+		\return	true = text input was processed by the container, false = text input was not processed by the container
+	*/
+	virtual inline bool handleTextInputOverlay(SDL_TextInputEvent& textInput) {
+		if((isEnabled() == false) || (isVisible() == false) || (isActive() == false)) {
+			return false;
+		}
+
+		if(pActiveChildWidget != NULL) {
+			return pActiveChildWidget->handleTextInputOverlay(textInput);
 		}
 		return false;
 	}

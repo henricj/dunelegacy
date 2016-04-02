@@ -119,6 +119,10 @@ void Window::handleInput(SDL_Event& event) {
 			handleKeyPress(event.key);
 		} break;
 
+		case SDL_TEXTINPUT: {
+            handleTextInput(event.text);
+		} break;
+
 		case SDL_MOUSEMOTION: {
 			handleMouseMovement(event.motion.x,event.motion.y);
 		} break;
@@ -221,6 +225,18 @@ bool Window::handleKeyPress(SDL_KeyboardEvent& key) {
 
 	if(isEnabled() && (pWindowWidget != NULL)) {
 		return pWindowWidget->handleKeyPressOverlay(key) || pWindowWidget->handleKeyPress(key);
+	} else {
+		return false;
+	}
+}
+
+bool Window::handleTextInput(SDL_TextInputEvent& textInput) {
+	if(pChildWindow != NULL) {
+		return pChildWindow->handleTextInput(textInput);
+	}
+
+	if(isEnabled() && (pWindowWidget != NULL)) {
+		return pWindowWidget->handleTextInputOverlay(textInput) || pWindowWidget->handleTextInput(textInput);
 	} else {
 		return false;
 	}

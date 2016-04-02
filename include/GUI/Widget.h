@@ -323,6 +323,13 @@ public:
 	}
 
 	/**
+		Handles a text input event.
+		\param	textInput the text input that was performed.
+		\return	true = text input was processed by the widget, false = text input was not processed by the widget
+	*/
+	virtual inline bool handleTextInput(SDL_TextInputEvent& textInput) { return false; }
+
+	/**
 		Handles mouse movement in overlays.
 		\param	x x-coordinate (relative to the left top corner of the widget)
 		\param	y y-coordinate (relative to the left top corner of the widget)
@@ -363,6 +370,13 @@ public:
 		\return	true = key stroke was processed by the widget, false = key stroke was not processed by the widget
 	*/
 	virtual inline bool handleKeyPressOverlay(SDL_KeyboardEvent& key) {	return false; }
+
+	/**
+		Handles a text input event in overlays.
+		\param	textInput the text input that was performed.
+		\return	true = text input was processed by the widget, false = text input was not processed by the widget
+	*/
+	virtual inline bool handleTextInputOverlay(SDL_TextInputEvent& textInput) { return false; }
 
 
 	/**

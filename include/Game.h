@@ -415,7 +415,7 @@ private:
     bool isOnRadarView(int mouseX, int mouseY);
 
     /**
-        Handles the press of one key for chatting
+        Handles the press of one key while chatting
         \param  key the key pressed
     */
     void handleChatInput(SDL_KeyboardEvent& keyboardEvent);

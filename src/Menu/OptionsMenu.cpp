@@ -195,7 +195,8 @@ OptionsMenu::OptionsMenu() : MenuBase()
 
 	networkPortHBox.addWidget(Spacer::create(), 0.5);
     networkPortHBox.addWidget(Label::create(_("Port")), 190);
-	portTextBox.setMaximumTextLength(30);
+	portTextBox.setMaximumTextLength(5);
+	portTextBox.setAllowedChars("0123456789");
 	portTextBox.setOnTextChange(std::bind(&OptionsMenu::onChangeOption, this, std::placeholders::_1));
 	networkPortHBox.addWidget(&portTextBox, 100);
 	portTextBox.setText(stringify<int>(settings.network.serverPort));
