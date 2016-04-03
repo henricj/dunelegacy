@@ -315,7 +315,7 @@ void BuilderList::draw(Point position) {
 	SDL_Rect builderListLowerCapDest = calcDrawingRect(pBuilderListLowerCap, blackRectDest.x - 3, blackRectDest.y + blackRectDest.h - 3 - 4);
     SDL_RenderCopy(renderer, pBuilderListLowerCap, NULL, &builderListLowerCapDest);
 
-    renderDrawVLine(renderer, builderListUpperCapDest.x + builderListUpperCapDest.w - 8, builderListUpperCapDest.y + builderListUpperCapDest.h, builderListLowerCapDest.y, RGB(125,80,0));
+    renderDrawVLine(renderer, builderListUpperCapDest.x + builderListUpperCapDest.w - 8, builderListUpperCapDest.y + builderListUpperCapDest.h, builderListLowerCapDest.y, COLOR_RGB(125,80,0));
 
 	StaticContainer::draw(position);
 }

@@ -19,6 +19,7 @@
 
 #include <SDL_endian.h>
 #include <stdlib.h>
+#include <stdio.h>
 #include <string.h>
 
 #include <SDL.h>

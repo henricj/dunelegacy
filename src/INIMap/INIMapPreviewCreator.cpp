@@ -352,7 +352,7 @@ SDL_Surface* INIMapPreviewCreator::createMinimapImageOfMap(int borderWidth, Uint
 
 			        if(playernum >= 1 && playernum <= 6) {
                         int val = 32*(playernum - 1) + 32;
-			            color = RGB(val, val, val);
+			            color = COLOR_RGB(val, val, val);
 			        }
 			    } else {
 			        SDL_FreeSurface(pMinimap);
@@ -395,7 +395,7 @@ SDL_Surface* INIMapPreviewCreator::createMinimapImageOfMap(int borderWidth, Uint
 
 			        if(playernum >= 1 && playernum <= 6) {
                         int val = 32*(playernum - 1) + 32;
-			            color = RGB(val, val, val);
+			            color = COLOR_RGB(val, val, val);
 			        }
 			    } else {
 			        SDL_FreeSurface(pMinimap);

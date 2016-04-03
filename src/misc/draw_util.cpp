@@ -45,7 +45,7 @@ Uint32 getPixel(SDL_Surface *surface, int x, int y) {
         value = *(Uint32 *)p;
         Uint8 r,g,b,a;
         SDL_GetRGBA(value,surface->format,&r,&g,&b,&a);
-        return RGBA(r,g,b,a);
+        return COLOR_RGBA(r,g,b,a);
 
     default:
         throw std::runtime_error("getPixel(): Invalid bpp value!");

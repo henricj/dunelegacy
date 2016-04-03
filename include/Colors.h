@@ -42,11 +42,11 @@
     #define ASHIFT 24
 #endif
 
-#define RGBA(r,g,b,a) ( ((((unsigned int) r) & 0xFF) << RSHIFT) | ((((unsigned int) g) & 0xFF) << GSHIFT) | ((((unsigned int) b) & 0xFF) << BSHIFT) | ((((unsigned int) a) & 0xFF) << ASHIFT) )
-#define RGB(r,g,b) RGBA(r,g,b,255)
+#define COLOR_RGBA(r,g,b,a) ( ((((unsigned int) r) & 0xFF) << RSHIFT) | ((((unsigned int) g) & 0xFF) << GSHIFT) | ((((unsigned int) b) & 0xFF) << BSHIFT) | ((((unsigned int) a) & 0xFF) << ASHIFT) )
+#define COLOR_RGB(r,g,b) COLOR_RGBA(r,g,b,255)
 #define MapRGBA(fmt, color) SDL_MapRGBA(fmt, (color & RMASK) >> RSHIFT, (color & GMASK) >> GSHIFT, (color & BMASK) >> BSHIFT, (color & AMASK) >> ASHIFT)
 
-#define SDL2RGB(sdl_color) RGB(sdl_color.r, sdl_color.g, sdl_color.b)
+#define SDL2RGB(sdl_color) COLOR_RGB(sdl_color.r, sdl_color.g, sdl_color.b)
 
 // Palette color indices
 #define PALCOLOR_TRANSPARENT 0
@@ -79,28 +79,28 @@
 #define PALCOLOR_MERCENARY 224
 
 // Colors
-#define COLOR_INVALID RGBA(0xDE, 0xAD, 0xBE, 0xEF)
-#define COLOR_TRANSPARENT RGBA(0,0,0,0)
-#define COLOR_HALF_TRANSPARENT RGBA(0,0,0,128)
-#define COLOR_FOG_TRANSPARENT RGBA(0,0,0,96)
-#define COLOR_SHADOW_TRANSPARENT RGBA(0,0,0,128)
-#define COLOR_BLACK RGB(0,0,0)
-#define COLOR_WHITE RGB(255,255,255)
-#define COLOR_DARKGREY RGB(85,85,85)
-#define COLOR_LIGHTGREY RGB(170,170,170)
-#define COLOR_LIGHTBLUE RGB(85,255,255)
-#define COLOR_RED RGB(240,0,0)
-#define COLOR_YELLOW RGB(255,255,0)
-#define COLOR_LIGHTYELLOW RGB(255,182,44)
-#define COLOR_LIGHTGREEN RGB(85,255,85)
-#define COLOR_GREEN RGB(0,170,0)
-#define COLOR_ORANGE RGB(255,68,0)
+#define COLOR_INVALID COLOR_RGBA(0xDE, 0xAD, 0xBE, 0xEF)
+#define COLOR_TRANSPARENT COLOR_RGBA(0,0,0,0)
+#define COLOR_HALF_TRANSPARENT COLOR_RGBA(0,0,0,128)
+#define COLOR_FOG_TRANSPARENT COLOR_RGBA(0,0,0,96)
+#define COLOR_SHADOW_TRANSPARENT COLOR_RGBA(0,0,0,128)
+#define COLOR_BLACK COLOR_RGB(0,0,0)
+#define COLOR_WHITE COLOR_RGB(255,255,255)
+#define COLOR_DARKGREY COLOR_RGB(85,85,85)
+#define COLOR_LIGHTGREY COLOR_RGB(170,170,170)
+#define COLOR_LIGHTBLUE COLOR_RGB(85,255,255)
+#define COLOR_RED COLOR_RGB(240,0,0)
+#define COLOR_YELLOW COLOR_RGB(255,255,0)
+#define COLOR_LIGHTYELLOW COLOR_RGB(255,182,44)
+#define COLOR_LIGHTGREEN COLOR_RGB(85,255,85)
+#define COLOR_GREEN COLOR_RGB(0,170,0)
+#define COLOR_ORANGE COLOR_RGB(255,68,0)
 
-#define COLOR_DESERTSAND RGB(255,210,125)
-#define COLOR_SPICE RGB(242,174,36)
-#define COLOR_THICKSPICE RGB(182,125,12)
+#define COLOR_DESERTSAND COLOR_RGB(255,210,125)
+#define COLOR_SPICE COLOR_RGB(242,174,36)
+#define COLOR_THICKSPICE COLOR_RGB(182,125,12)
 #define COLOR_ROCK COLOR_DARKGREY
-#define COLOR_MOUNTAIN RGB(105,80,4)
+#define COLOR_MOUNTAIN COLOR_RGB(105,80,4)
 #define COLOR_BLOOM COLOR_RED
 
 #endif // COLORS_H

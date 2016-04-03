@@ -253,14 +253,14 @@ public:
 	virtual unsigned int getTextWidth(const char* text, unsigned int FontNum);
 
 public:
-	static const Uint32 defaultForegroundColor = RGB(125,0,0);
+	static const Uint32 defaultForegroundColor = COLOR_RGB(125,0,0);
 	static const Uint32 defaultShadowColor = COLOR_LIGHTYELLOW;
 
-	static const Uint32 buttonBackgroundColor = RGB(202,141,16);
-	static const Uint32 pressedButtonBackgroundColor = RGB(182,125,12);
-	static const Uint32 buttonBorderColor = RGB(60,36,0);
-	static const Uint32 buttonEdgeBottomRightColor = RGB(153,105,0);
-	static const Uint32 buttonEdgeTopLeftColor = RGB(255,190,76);
+	static const Uint32 buttonBackgroundColor = COLOR_RGB(202,141,16);
+	static const Uint32 pressedButtonBackgroundColor = COLOR_RGB(182,125,12);
+	static const Uint32 buttonBorderColor = COLOR_RGB(60,36,0);
+	static const Uint32 buttonEdgeBottomRightColor = COLOR_RGB(153,105,0);
+	static const Uint32 buttonEdgeTopLeftColor = COLOR_RGB(255,190,76);
 
 private:
 
@@ -283,7 +283,7 @@ private:
         g = std::min(255U, (g*3)/2);
         b = std::min(255U, (b*3)/2);
 
-        return RGBA(r,g,b,a);
+        return COLOR_RGBA(r,g,b,a);
 	}
 };
 

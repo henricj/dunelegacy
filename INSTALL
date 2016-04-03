@@ -110,12 +110,12 @@ Copy them in the data directory. To create a installer you need NSIS. Compile du
 
 
 Cross-compiling Windows Version on Linux:
-To compile the Windows version on Linux you need to setup the mingw cross-compiler. On Debian/Ubuntu install the packages gcc-mingw32 and nsis.
+To compile the Windows version on Linux you need to setup the mingw cross-compiler. On Debian/Ubuntu install the packages g++-mingw-w64 and nsis.
 You need SDL and SDL-mixer development files for Windows (This is not the same as the development files for Linux):
-http://www.libsdl.org/release/SDL-devel-1.2.15-mingw32.tar.gz
-http://www.libsdl.org/projects/SDL_mixer/release/SDL_mixer-devel-1.2.12-VC.zip
+http://libsdl.org/release/SDL2-devel-2.0.4-mingw.tar.gz
+https://www.libsdl.org/projects/SDL_mixer/release/SDL2_mixer-devel-2.0.1-mingw.tar.gz
 
-Put the headers under /usr/i686-mingw32msvc/include and the lib files under /usr/i686-mingw32msvc/lib.
+Put a copy of the headers under /usr/i686-w64-mingw32/include and /usr/x86_64-w64-mingw32/include ; the lib files under /usr/i686-w64-mingw32/lib and /usr/x86_64-w64-mingw32/lib.
 
 To cross-compile and create a Windows installer for Dune Legacy run the following command:
 

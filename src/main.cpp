@@ -353,7 +353,7 @@ int main(int argc, char *argv[]) {
 	if(bShowDebugLog == false) {
 	    // get utf8-encoded log file path
 	    std::string logfilePath = getLogFilepath();
-	    const char* pLogfilePath = logfilePath.c_str();
+	    char* pLogfilePath = (char*) logfilePath.c_str();
 
 	    #if defined (_WIN32)
 
@@ -373,25 +373,37 @@ int main(int argc, char *argv[]) {
 
         pLogfilePath = szLogPath;
 
-	    #endif
+        // we first need to open two separate log files (.err and .out)
+        char szErrPath[MAX_PATH];
+        strcpy(szErrPath, pLogfilePath);
+        strcpy(szErrPath + strlen(szErrPath) - 3, "err");
+        freopen(szErrPath, "w", stderr);
+        setbuf(stderr, NULL);   // No buffering
+        char szOutPath[MAX_PATH];
+        strcpy(szOutPath, pLogfilePath);
+        strcpy(szOutPath + strlen(szOutPath) - 3, "out");
+        freopen(szOutPath, "w", stdout);
+        setvbuf(stdout, NULL, _IOLBF, BUFSIZ);	// buffering line-wise
+
+        #endif
 
         int d = open(pLogfilePath, O_WRONLY | O_CREAT | O_TRUNC, 0644);
         if(d < 0) {
             fprintf(stderr, "Opening logfile '%s' failed\n", pLogfilePath);
             exit(EXIT_FAILURE);
         }
-
-        // Hint: fileno(stdout) != STDOUT_FILENO on Win32 (see SDL_win32_main.c)
+        // Hint: fileno(stdout) != STDOUT_FILENO on Win32
         if(dup2(d, fileno(stdout)) < 0) {
             fprintf(stderr, "Redirecting stdout failed\n");
             exit(EXIT_FAILURE);
         }
 
-        // Hint: fileno(stderr) != STDERR_FILENO on Win32 (see SDL_win32_main.c)
+        // Hint: fileno(stderr) != STDERR_FILENO on Win32
         if(dup2(d, fileno(stderr)) < 0) {
             fprintf(stderr, "Redirecting stderr failed\n");
             exit(EXIT_FAILURE);
         }
+
 	}
 
 	fprintf(stdout, "Starting Dune Legacy " VERSION " ...\n"); fflush(stdout);

@@ -38,10 +38,19 @@ fi
 
 dnl Check for SDL library
 dnl Check for SDL_mixer library.
-PKG_CHECK_MODULES(SDL, sdl2 SDL2_mixer)
+SDL_VERSION=2.0.0
+AM_PATH_SDL2($SDL_VERSION, : , AC_MSG_ERROR([*** SDL2 version $SDL_VERSION not found!]))
+dnl PKG_CHECK_MODULES(SDL, sdl2 SDL2_mixer)
 CFLAGS="$CFLAGS $SDL_CFLAGS"
 CXXFLAGS="$CXXFLAGS $SDL_CFLAGS"
 LIBS="$LIBS $SDL_LIBS"
+
+dnl Check for SDL_mixer library.
+AC_CHECK_LIB(SDL2_mixer, 
+       Mix_OpenAudio, 
+       LIBS="$LIBS -lSDL2_mixer", 
+       AC_MSG_ERROR([*** SDL2_mixer library not found!]) 
+)
 
 dnl enet defines
 AC_CHECK_FUNC(gethostbyaddr_r, [AC_DEFINE(HAS_GETHOSTBYADDR_R)])
@@ -61,7 +70,14 @@ AC_CHECK_TYPE(socklen_t, [AC_DEFINE(HAS_SOCKLEN_T)], ,
 AC_EGREP_HEADER(MSG_MAXIOVLEN, /usr/include/sys/socket.h, AC_DEFINE(ENET_BUFFER_MAXIMUM, [MSG_MAXIOVLEN]))
 AC_EGREP_HEADER(MSG_MAXIOVLEN, socket.h, AC_DEFINE(ENET_BUFFER_MAXIMUM, [MSG_MAXIOVLEN]))
 
-if test "${build}" = "i686-w64-mingw32" ; then
+if test "${host}" = "i686-w64-mingw32" ; then
+		CFLAGS="$CFLAGS -D_WIN32 -DWIN32"
+		CXXFLAGS="$CXXFLAGS -D_WIN32 -DWIN32"
+        LIBS="$LIBS -lws2_32 -lwinmm -static-libgcc -static-libstdc++ -Wl,-Bstatic -lstdc++ -lpthread -Wl,-Bdynamic resource.o"
+		dunelegacydatadir='.'
+elif test "${host}" = "x86_64-w64-mingw32" ; then
+		CFLAGS="$CFLAGS -D_WIN32 -DWIN32 -D_WIN64 -DWIN64"
+		CXXFLAGS="$CXXFLAGS -D_WIN32 -DWIN32 -D_WIN64 -DWIN64"
         LIBS="$LIBS -lws2_32 -lwinmm -static-libgcc -static-libstdc++ -Wl,-Bstatic -lstdc++ -lpthread -Wl,-Bdynamic resource.o"
 		dunelegacydatadir='.'
 fi
