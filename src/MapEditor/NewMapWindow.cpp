@@ -234,7 +234,7 @@ void NewMapWindow::onCancel() {
     mapdata = MapData(0,0);
 
 	Window* pParentWindow = dynamic_cast<Window*>(getParent());
-	if(pParentWindow != NULL) {
+	if(pParentWindow != nullptr) {
 		pParentWindow->closeChildWindow();
 	}
 }
@@ -245,21 +245,21 @@ void NewMapWindow::onLoad() {
 
 void NewMapWindow::onCreate() {
 	Window* pParentWindow = dynamic_cast<Window*>(getParent());
-	if(pParentWindow != NULL) {
+	if(pParentWindow != nullptr) {
 		pParentWindow->closeChildWindow();
 	}
 }
 
 void NewMapWindow::onChildWindowClose(Window* pChildWindow) {
     LoadMapWindow* pLoadMapWindow = dynamic_cast<LoadMapWindow*>(pChildWindow);
-	if(pLoadMapWindow != NULL) {
+	if(pLoadMapWindow != nullptr) {
 	    loadMapFilepath = pLoadMapWindow->getLoadMapFilepath();
 	    loadMapname = pLoadMapWindow->getLoadMapname();
 	    loadMapSingleplayer = pLoadMapWindow->isLoadMapSingleplayer();
 
 	    if(loadMapFilepath != "") {
             Window* pParentWindow = dynamic_cast<Window*>(getParent());
-            if(pParentWindow != NULL) {
+            if(pParentWindow != nullptr) {
                 pParentWindow->closeChildWindow();
             }
 	    }
@@ -332,10 +332,10 @@ void NewMapWindow::onMapPropertiesChanged() {
 SDL_Surface* NewMapWindow::createMinimapPicture(MapData& mapdata, int borderWidth, Uint32 borderColor) {
     SDL_Surface* pMinimap;
     // create surface
-	if((pMinimap = SDL_CreateRGBSurface(0, 128+2*borderWidth, 128+2*borderWidth, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK)) == NULL) {
-		return NULL;
+	if((pMinimap = SDL_CreateRGBSurface(0, 128+2*borderWidth, 128+2*borderWidth, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK)) == nullptr) {
+		return nullptr;
 	}
-	SDL_FillRect(pMinimap, NULL, borderColor);
+	SDL_FillRect(pMinimap, nullptr, borderColor);
 	SDL_Rect dest = { borderWidth, borderWidth, pMinimap->w - 2*borderWidth, pMinimap->h - 2*borderWidth};
 	SDL_FillRect(pMinimap, &dest, COLOR_BLACK);
 

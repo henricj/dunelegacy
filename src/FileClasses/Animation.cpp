@@ -37,7 +37,7 @@ Animation::~Animation() {
     }
 
     while(frameTextures.empty() == false) {
-        if(frameTextures.back() != NULL) {
+        if(frameTextures.back() != nullptr) {
             SDL_DestroyTexture(frameTextures.back());
         }
         frameTextures.pop_back();
@@ -70,7 +70,7 @@ unsigned int Animation::getCurrentFrameNumber() {
 
 SDL_Surface* Animation::getFrame() {
     if(frames.empty()) {
-		return NULL;
+		return nullptr;
 	}
 
 	return frames[getCurrentFrameNumber()];
@@ -78,16 +78,16 @@ SDL_Surface* Animation::getFrame() {
 
 SDL_Texture* Animation::getFrameTexture() {
     if(frames.empty()) {
-		return NULL;
+		return nullptr;
 	}
 
 	unsigned int index = getCurrentFrameNumber();
 
 	if(frameTextures.size() <= index) {
-        frameTextures.resize(frames.size(), NULL);
+        frameTextures.resize(frames.size(), nullptr);
 	}
 
-	if(frameTextures[index] == NULL) {
+	if(frameTextures[index] == nullptr) {
         frameTextures[index] = convertSurfaceToTexture(frames[index], false);
 	}
 

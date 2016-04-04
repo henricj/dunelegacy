@@ -104,7 +104,7 @@ House::House(InputStream& stream) : choam(this) {
 	for(Uint32 i = 0; i < numPlayers; i++) {
         std::string playerclass = stream.readString();
         const PlayerFactory::PlayerData* pPlayerData = PlayerFactory::getByPlayerClass(playerclass);
-        if(pPlayerData == NULL) {
+        if(pPlayerData == nullptr) {
             fprintf(stderr, "Cannot load player \"%s\"", playerclass.c_str());
         } else {
             addPlayer(std::shared_ptr<Player>(pPlayerData->load(stream,this)));
@@ -176,7 +176,7 @@ void House::save(OutputStream& stream) const {
 
 
 void House::addPlayer(std::shared_ptr<Player> newPlayer) {
-    if(dynamic_cast<HumanPlayer*>(newPlayer.get()) != NULL && players.empty()) {
+    if(dynamic_cast<HumanPlayer*>(newPlayer.get()) != nullptr && players.empty()) {
         ai = false;
     } else {
         ai = true;
@@ -528,7 +528,7 @@ void House::lose(bool bSilent) {
 
 		for(int i=0; i < NUM_HOUSES; i++) {
             House* pHouse = currentGame->getHouse(i);
-			if(pHouse != NULL && pHouse->isAlive() && pHouse->getTeam() == pLocalHouse->getTeam()) {
+			if(pHouse != nullptr && pHouse->isAlive() && pHouse->getTeam() == pLocalHouse->getTeam()) {
 				finished = false;
             }
 		}
@@ -550,7 +550,7 @@ void House::lose(bool bSilent) {
 
 		for(int i=0; i < NUM_HOUSES; i++) {
             House* pHouse = currentGame->getHouse(i);
-			if(pHouse != NULL && pHouse->isAlive() && pHouse->getTeam() != 0 && pHouse->getTeam() != pLocalHouse->getTeam()) {
+			if(pHouse != nullptr && pHouse->isAlive() && pHouse->getTeam() != 0 && pHouse->getTeam() != pLocalHouse->getTeam()) {
 				finished = false;
             }
 		}
@@ -607,19 +607,19 @@ void House::freeHarvester(int xPos, int yPos) {
 
 StructureBase* House::placeStructure(Uint32 builderID, int itemID, int xPos, int yPos, bool bForcePlacing) {
 	if(!currentGameMap->tileExists(xPos,yPos)) {
-		return NULL;
+		return nullptr;
 	}
 
-	BuilderBase* pBuilder = (builderID == NONE) ? NULL : dynamic_cast<BuilderBase*>(currentGame->getObjectManager().getObject(builderID));
+	BuilderBase* pBuilder = (builderID == NONE) ? nullptr : dynamic_cast<BuilderBase*>(currentGame->getObjectManager().getObject(builderID));
 
-	if(currentGame->getGameInitSettings().getGameOptions().onlyOnePalace && pBuilder != NULL && itemID == Structure_Palace && getNumItems(Structure_Palace) > 0) {
+	if(currentGame->getGameInitSettings().getGameOptions().onlyOnePalace && pBuilder != nullptr && itemID == Structure_Palace && getNumItems(Structure_Palace) > 0) {
         if(this == pLocalHouse && pBuilder->isSelected()) {
             currentGame->currentCursorMode = Game::CursorMode_Normal;
         }
-        return NULL;
+        return nullptr;
 	}
 
-	StructureBase* tempStructure = NULL;
+	StructureBase* tempStructure = nullptr;
 
 	switch (itemID) {
 		case (Structure_Slab1): {
@@ -629,7 +629,7 @@ StructureBase* House::placeStructure(Uint32 builderID, int itemID, int xPos, int
 			currentGameMap->viewMap(getTeam(), xPos, yPos, currentGame->objectData.data[Structure_Slab1][houseID].viewrange);
 	//		currentGameMap->getTile(xPos, yPos)->clearTerrain();
 
-			if(pBuilder != NULL) {
+			if(pBuilder != nullptr) {
 				pBuilder->unSetWaitingToPlace();
 
 				if(this == pLocalHouse && pBuilder->isSelected()) {
@@ -657,7 +657,7 @@ StructureBase* House::placeStructure(Uint32 builderID, int itemID, int xPos, int
 				}
 			}
 
-			if(pBuilder != NULL) {
+			if(pBuilder != nullptr) {
 				pBuilder->unSetWaitingToPlace();
 
 				if(this == pLocalHouse && pBuilder->isSelected()) {
@@ -669,7 +669,7 @@ StructureBase* House::placeStructure(Uint32 builderID, int itemID, int xPos, int
 
 		default: {
 			tempStructure = (StructureBase*) ObjectBase::createObject(itemID,this);
-			if(tempStructure == NULL) {
+			if(tempStructure == nullptr) {
 				fprintf(stderr,"House::placeStructure(): Cannot create Object with itemID %d\n",itemID);
 				fflush(stderr);
 				exit(EXIT_FAILURE);
@@ -681,7 +681,7 @@ StructureBase* House::placeStructure(Uint32 builderID, int itemID, int xPos, int
                     for(int j=0;j<tempStructure->getStructureSizeY();j++) {
                         if((currentGameMap->tileExists(xPos+i, yPos+j) == false) || (currentGameMap->getTile(xPos+i, yPos+j)->hasAGroundObject() == true)) {
                             delete tempStructure;
-                            return NULL;
+                            return nullptr;
                         }
                     }
                 }
@@ -707,7 +707,7 @@ StructureBase* House::placeStructure(Uint32 builderID, int itemID, int xPos, int
 			}
 
 			// if this structure was built by a construction yard this construction yard must be informed
-			if(pBuilder != NULL) {
+			if(pBuilder != nullptr) {
                 pBuilder->unSetWaitingToPlace();
 
                 if(itemID == Structure_Palace) {
@@ -747,11 +747,11 @@ StructureBase* House::placeStructure(Uint32 builderID, int itemID, int xPos, int
 
 
 UnitBase* House::createUnit(int itemID) {
-	UnitBase* newUnit = NULL;
+	UnitBase* newUnit = nullptr;
 
 	newUnit = (UnitBase*) ObjectBase::createObject(itemID,this);
 
-	if(newUnit == NULL) {
+	if(newUnit == nullptr) {
 		fprintf(stderr,"House::createUnit(): Cannot create Object with itemID %d\n",itemID);
 		fflush(stderr);
 		exit(EXIT_FAILURE);
@@ -764,19 +764,19 @@ UnitBase* House::createUnit(int itemID) {
 
 
 UnitBase* House::placeUnit(int itemID, int xPos, int yPos) {
-	UnitBase* newUnit = NULL;
+	UnitBase* newUnit = nullptr;
 	if(currentGameMap->tileExists(xPos, yPos) == true) {
 	    Tile* pTile = currentGameMap->getTile(xPos,yPos);
 
 	    if(itemID == Unit_Saboteur || itemID == Unit_Soldier || itemID == Unit_Trooper) {
             if((pTile->hasANonInfantryGroundObject() == true) || (pTile->infantryNotFull() == false)) {
                 // infantry units can not placed on non-infantry units or structures (or the tile is already full of infantry units)
-                return NULL;
+                return nullptr;
             }
 	    } else {
 	        if(pTile->hasAGroundObject() == true) {
                 // non-infantry units can not placed on a tile where already some other unit or structure is placed on
-                return NULL;
+                return nullptr;
 	        }
 	    }
 
@@ -790,7 +790,7 @@ UnitBase* House::placeUnit(int itemID, int xPos, int yPos) {
 		} else {
 			newUnit->setVisible(VIS_ALL, false);
 			newUnit->destroy();
-			newUnit = NULL;
+			newUnit = nullptr;
 		}
 	}
 
@@ -859,7 +859,7 @@ void House::decrementHarvesters() {
             Coord	closestPos;
             Coord	pos = Coord(0,0);
             FixPoint	closestDistance = FixPt_MAX;
-            StructureBase *closestRefinery = NULL;
+            StructureBase *closestRefinery = nullptr;
 
             RobustList<StructureBase*>::const_iterator iter;
             for(iter = structureList.begin(); iter != structureList.end(); ++iter) {

@@ -80,7 +80,7 @@ public:
 		} else {
 			fprintf(stderr,"getTile(): tile (%d, %d) does not exist\n",xPos,yPos);
 			fflush(stderr);
-			return NULL;
+			return nullptr;
 		}
 	}
 
@@ -94,7 +94,7 @@ public:
 		} else {
 			fprintf(stderr,"getTile(): tile (%d, %d) does not exist\n",xPos,yPos);
 			fflush(stderr);
-			return NULL;
+			return nullptr;
 		}
 	}
 

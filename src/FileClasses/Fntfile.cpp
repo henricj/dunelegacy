@@ -35,8 +35,8 @@ Fntfile::Fntfile(SDL_RWops* RWop)
 {
 	unsigned char* pFiledata;
 	Uint32 FntFilesize;
-	if(RWop == NULL) {
-		fprintf(stderr, "Fntfile: RWop == NULL!\n");
+	if(RWop == nullptr) {
+		fprintf(stderr, "Fntfile: RWop == nullptr!\n");
 		exit(EXIT_FAILURE);
 	}
 
@@ -51,7 +51,7 @@ Fntfile::Fntfile(SDL_RWops* RWop)
 		exit(EXIT_FAILURE);
 	}
 
-	if( (pFiledata = (unsigned char*) malloc(FntFilesize)) == NULL) {
+	if( (pFiledata = (unsigned char*) malloc(FntFilesize)) == nullptr) {
 		fprintf(stderr,"Fntfile: Allocating memory failed!\n");
 		exit(EXIT_FAILURE);
 	}
@@ -72,9 +72,9 @@ Fntfile::Fntfile(SDL_RWops* RWop)
 */
 Fntfile::~Fntfile()
 {
-	if(character != NULL) {
+	if(character != nullptr) {
 		for(Uint32 i = 0; i < numCharacters; i++) {
-			if(character[i].data != NULL) {
+			if(character[i].data != nullptr) {
 				free(character[i].data);
 			}
 		}
@@ -91,14 +91,14 @@ Fntfile::~Fntfile()
 */
 SDL_Surface *Fntfile::getCharacter(Uint32 indexOfFile)
 {
-	SDL_Surface *pic = NULL;
+	SDL_Surface *pic = nullptr;
 
 	if(indexOfFile >= numCharacters) {
-		return NULL;
+		return nullptr;
 	}
 	// create new picture surface
-	if((pic = SDL_CreateRGBSurface(0,character[indexOfFile].width,characterHeight,8,0,0,0,0))== NULL) {
-		return NULL;
+	if((pic = SDL_CreateRGBSurface(0,character[indexOfFile].width,characterHeight,8,0,0,0,0))== nullptr) {
+		return nullptr;
 	}
 
     palette.applyToSurface(pic);
@@ -246,7 +246,7 @@ void Fntfile::readfile(unsigned char* pFiledata, Uint16 filesize) {
 		exit(EXIT_FAILURE);
 	}
 
-	if((character = (FntfileCharacter*) calloc(sizeof(FntfileCharacter) * numCharacters,1)) == NULL) {
+	if((character = (FntfileCharacter*) calloc(sizeof(FntfileCharacter) * numCharacters,1)) == nullptr) {
 		fprintf(stderr,"Fntfile::readfile(): Cannot allocate memory!\n");
 		exit(EXIT_FAILURE);
 	}
@@ -254,7 +254,7 @@ void Fntfile::readfile(unsigned char* pFiledata, Uint16 filesize) {
 	for(Uint32 i = 0; i < numCharacters; i++) {
 		character[i].width = widths[i];
 
-		if((character[i].data = (unsigned char*) calloc(character[i].width*characterHeight,1)) == NULL) {
+		if((character[i].data = (unsigned char*) calloc(character[i].width*characterHeight,1)) == nullptr) {
 			fprintf(stderr,"Fntfile::readfile(): Cannot allocate memory!\n");
 			exit(EXIT_FAILURE);
 		}

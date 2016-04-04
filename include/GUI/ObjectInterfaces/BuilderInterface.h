@@ -68,7 +68,7 @@ protected:
 		mainHBox.addWidget(Spacer::create());
 
 		StarPort* pStarport = dynamic_cast<StarPort*>(pBuilder);
-		if(pStarport != NULL) {
+		if(pStarport != nullptr) {
             starportTimerLabel.setTextFont(FONT_STD24);
             starportTimerLabel.setTextColor(COLOR_WHITE, COLOR_TRANSPARENT);
             starportTimerLabel.setAlignment((Alignment_Enum) (Alignment_HCenter | Alignment_VCenter));
@@ -80,7 +80,7 @@ protected:
 	void onUpgrade() {
 		ObjectBase* pObject = currentGame->getObjectManager().getObject(objectID);
 		BuilderBase* pBuilder = dynamic_cast<BuilderBase*>(pObject);
-		if(pBuilder != NULL && !pBuilder->isUpgrading()) {
+		if(pBuilder != nullptr && !pBuilder->isUpgrading()) {
 			pBuilder->handleUpgradeClick();
 		}
 	}
@@ -92,14 +92,14 @@ protected:
 	*/
 	virtual bool update() {
 		ObjectBase* pObject = currentGame->getObjectManager().getObject(objectID);
-		if(pObject == NULL) {
+		if(pObject == nullptr) {
 			return false;
 		}
 
 		BuilderBase* pBuilder = dynamic_cast<BuilderBase*>(pObject);
-		if(pBuilder != NULL) {
+		if(pBuilder != nullptr) {
 		    StarPort* pStarport = dynamic_cast<StarPort*>(pBuilder);
-		    if(pStarport != NULL) {
+		    if(pStarport != nullptr) {
                 int arrivalTimer = pStarport->getArrivalTimer();
                 if(arrivalTimer > 0) {
                     int seconds = ((arrivalTimer*10)/(MILLI2CYCLES(30*1000))) + 1;

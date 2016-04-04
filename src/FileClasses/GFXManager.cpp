@@ -40,36 +40,36 @@ GFXManager::GFXManager() {
 	for(int i = 0; i < NUM_OBJPICS; i++) {
 		for(int j = 0; j < (int) NUM_HOUSES; j++) {
 		    for(int z=0; z < NUM_ZOOMLEVEL; z++) {
-                objPic[i][j][z] = NULL;
-                objPicTex[i][j][z] = NULL;
+                objPic[i][j][z] = nullptr;
+                objPicTex[i][j][z] = nullptr;
 		    }
 		}
 	}
 
 	// init whole smallDetailPicTex array
 	for(int i = 0; i < NUM_SMALLDETAILPICS; i++) {
-		smallDetailPicTex[i] = NULL;
+		smallDetailPicTex[i] = nullptr;
 	}
 
 	// init whole UIGraphic array
 	for(int i = 0; i < NUM_UIGRAPHICS; i++) {
 		for(int j = 0; j < (int) NUM_HOUSES; j++) {
-			uiGraphic[i][j] = NULL;
-			uiGraphicTex[i][j] = NULL;
+			uiGraphic[i][j] = nullptr;
+			uiGraphicTex[i][j] = nullptr;
 		}
 	}
 
 	// init whole mapChoicePieces and mapChoicePiecesTex array
 	for(int i = 0; i < NUM_MAPCHOICEPIECES; i++) {
 		for(int j = 0; j < (int) NUM_HOUSES; j++) {
-			mapChoicePieces[i][j] = NULL;
-			mapChoicePiecesTex[i][j] = NULL;
+			mapChoicePieces[i][j] = nullptr;
+			mapChoicePiecesTex[i][j] = nullptr;
 		}
 	}
 
 	// init whole Anim array
 	for(int i = 0; i < NUM_ANIMATION; i++) {
-		animation[i] = NULL;
+		animation[i] = nullptr;
 	}
 
 	// open all shp files
@@ -97,7 +97,7 @@ GFXManager::GFXManager() {
         bttn = loadShpfile("BTTN." + _("LanguageFileExtension"));
     } else {
         // The US-Version has the buttons in SHAPES.SHP
-        // => bttn == NULL
+        // => bttn == nullptr
     }
 
 	shared_ptr<Shpfile> mentat;
@@ -437,7 +437,7 @@ GFXManager::GFXManager() {
     for(int i = 0; i < NUM_OBJPICS; i++) {
         for(int j = 0; j < (int) NUM_HOUSES; j++) {
             for(int z=0; z < NUM_ZOOMLEVEL; z++) {
-                if(objPic[i][j][z] != NULL) {
+                if(objPic[i][j][z] != nullptr) {
                     SDL_SetColorKey(objPic[i][j][z], SDL_TRUE, PALCOLOR_TRANSPARENT);
                 }
 		    }
@@ -484,7 +484,7 @@ GFXManager::GFXManager() {
 	smallDetailPicTex[Picture_Slab1] = extractSmallDetailPic("SLAB.WSA");
 	smallDetailPicTex[Picture_Slab4] = extractSmallDetailPic("4SLAB.WSA");
 	smallDetailPicTex[Picture_SonicTank] = extractSmallDetailPic("STANK.WSA");
-    smallDetailPicTex[Picture_Special]	= NULL;
+    smallDetailPicTex[Picture_Special]	= nullptr;
 	smallDetailPicTex[Picture_StarPort] = extractSmallDetailPic("STARPORT.WSA");
 	smallDetailPicTex[Picture_Tank] = extractSmallDetailPic("LTANK.WSA");
 	smallDetailPicTex[Picture_Trike] = extractSmallDetailPic("TRIKE.WSA");
@@ -595,7 +595,7 @@ GFXManager::GFXManager() {
 	SDL_SetColorKey(uiGraphic[UI_CustomGamePlayersArrowNeutral][HOUSE_HARKONNEN], SDL_TRUE, 0);
 	uiGraphic[UI_MessageBox][HOUSE_HARKONNEN] = PicFactory->createMessageBoxBorder();
 
-	if(bttn.get() != NULL) {
+	if(bttn.get() != nullptr) {
         uiGraphic[UI_Mentat][HOUSE_HARKONNEN] = bttn->getPicture(0);
         uiGraphic[UI_Mentat_Pressed][HOUSE_HARKONNEN] = bttn->getPicture(1);
         uiGraphic[UI_Options][HOUSE_HARKONNEN] = bttn->getPicture(2);
@@ -620,7 +620,7 @@ GFXManager::GFXManager() {
 	uiGraphic[UI_Plus_Active][HOUSE_HARKONNEN] = mapSurfaceColorRange(uiGraphic[UI_Plus][HOUSE_HARKONNEN], PALCOLOR_HARKONNEN, PALCOLOR_HARKONNEN-2);
 	uiGraphic[UI_Plus_Pressed][HOUSE_HARKONNEN] = SDL_LoadBMP_RW(pFileManager->openFile("Button_PlusPushed.bmp"),true);
 	uiGraphic[UI_MissionSelect][HOUSE_HARKONNEN] = SDL_LoadBMP_RW(pFileManager->openFile("Menu_MissionSelect.bmp"),true);
-	PicFactory->drawFrame(uiGraphic[UI_MissionSelect][HOUSE_HARKONNEN],PictureFactory::SimpleFrame,NULL);
+	PicFactory->drawFrame(uiGraphic[UI_MissionSelect][HOUSE_HARKONNEN],PictureFactory::SimpleFrame,nullptr);
 	SDL_SetColorKey(uiGraphic[UI_MissionSelect][HOUSE_HARKONNEN], SDL_TRUE, 0);
 	uiGraphic[UI_OptionsMenu][HOUSE_HARKONNEN] = PicFactory->createOptionsMenu();
 	uiGraphic[UI_LoadSaveWindow][HOUSE_HARKONNEN] = PicFactory->createMenu(280,228);
@@ -643,7 +643,7 @@ GFXManager::GFXManager() {
 	uiGraphic[UI_MentatBackground][HOUSE_MERCENARY] = PictureFactory::mapMentatSurfaceToMercenary(uiGraphic[UI_MentatBackground][HOUSE_ORDOS]);
 
 	uiGraphic[UI_MentatBackgroundBene][HOUSE_HARKONNEN] = Scaler::defaultDoubleSurface(LoadCPS_RW(pFileManager->openFile("MENTATM.CPS"),true),true);
-	if(uiGraphic[UI_MentatBackgroundBene][HOUSE_HARKONNEN] != NULL) {
+	if(uiGraphic[UI_MentatBackgroundBene][HOUSE_HARKONNEN] != nullptr) {
 	    benePalette.applyToSurface(uiGraphic[UI_MentatBackgroundBene][HOUSE_HARKONNEN]);
 	}
 
@@ -925,12 +925,12 @@ GFXManager::GFXManager() {
 	animation[Anim_MercenaryRing] = PictureFactory::mapMentatAnimationToMercenary(animation[Anim_OrdosRing]);
 
 	animation[Anim_BeneEyes] = menshpm->getAnimation(0,4,true,true);
-	if(animation[Anim_BeneEyes] != NULL) {
+	if(animation[Anim_BeneEyes] != nullptr) {
 	    animation[Anim_BeneEyes]->setPalette(benePalette);
         animation[Anim_BeneEyes]->setFrameRate(0.5);
 	}
 	animation[Anim_BeneMouth] = menshpm->getAnimation(5,9,true,true,true);
-	if(animation[Anim_BeneMouth] != NULL) {
+	if(animation[Anim_BeneMouth] != nullptr) {
 	    animation[Anim_BeneMouth]->setPalette(benePalette);
         animation[Anim_BeneMouth]->setFrameRate(5.0);
 	}
@@ -950,55 +950,55 @@ GFXManager::~GFXManager() {
 	for(int i = 0; i < NUM_OBJPICS; i++) {
 		for(int j = 0; j < (int) NUM_HOUSES; j++) {
             for(int z = 0; z < NUM_ZOOMLEVEL; z++) {
-                if(objPic[i][j][z] != NULL) {
+                if(objPic[i][j][z] != nullptr) {
                     SDL_FreeSurface(objPic[i][j][z]);
-                    objPic[i][j][z] = NULL;
+                    objPic[i][j][z] = nullptr;
                 }
-                if(objPicTex[i][j][z] != NULL) {
+                if(objPicTex[i][j][z] != nullptr) {
                     SDL_DestroyTexture(objPicTex[i][j][z]);
-                    objPicTex[i][j][z] = NULL;
+                    objPicTex[i][j][z] = nullptr;
                 }
             }
 		}
 	}
 
 	for(int i = 0; i < NUM_SMALLDETAILPICS; i++) {
-		if(smallDetailPicTex[i] != NULL) {
+		if(smallDetailPicTex[i] != nullptr) {
             SDL_DestroyTexture(smallDetailPicTex[i]);
-            smallDetailPicTex[i] = NULL;
+            smallDetailPicTex[i] = nullptr;
 		}
 	}
 
 	for(int i = 0; i < NUM_UIGRAPHICS; i++) {
 		for(int j = 0; j < (int) NUM_HOUSES; j++) {
-			if(uiGraphic[i][j] != NULL) {
+			if(uiGraphic[i][j] != nullptr) {
                 SDL_FreeSurface(uiGraphic[i][j]);
-                uiGraphic[i][j] = NULL;
+                uiGraphic[i][j] = nullptr;
 			}
-			if(uiGraphicTex[i][j] != NULL) {
+			if(uiGraphicTex[i][j] != nullptr) {
                 SDL_DestroyTexture(uiGraphicTex[i][j]);
-                uiGraphicTex[i][j] = NULL;
+                uiGraphicTex[i][j] = nullptr;
 			}
 		}
 	}
 
 	for(int i = 0; i < NUM_MAPCHOICEPIECES; i++) {
 		for(int j = 0; j < (int) NUM_HOUSES; j++) {
-			if(mapChoicePieces[i][j] != NULL) {
+			if(mapChoicePieces[i][j] != nullptr) {
                 SDL_FreeSurface(mapChoicePieces[i][j]);
-                mapChoicePieces[i][j] = NULL;
+                mapChoicePieces[i][j] = nullptr;
 			}
-			if(mapChoicePiecesTex[i][j] != NULL) {
+			if(mapChoicePiecesTex[i][j] != nullptr) {
                 SDL_DestroyTexture(mapChoicePiecesTex[i][j]);
-                mapChoicePiecesTex[i][j] = NULL;
+                mapChoicePiecesTex[i][j] = nullptr;
 			}
 		}
 	}
 
 	for(int i = 0; i < NUM_ANIMATION; i++) {
-		if(animation[i] != NULL) {
+		if(animation[i] != nullptr) {
             delete animation[i];
-            animation[i] = NULL;
+            animation[i] = nullptr;
 		}
 	}
 
@@ -1012,9 +1012,9 @@ SDL_Texture** GFXManager::getObjPic(unsigned int id, int house) {
 	}
 
     for(int z = 0; z < NUM_ZOOMLEVEL; z++) {
-        if(objPic[id][house][z] == NULL) {
+        if(objPic[id][house][z] == nullptr) {
             // remap to this color
-            if(objPic[id][HOUSE_HARKONNEN][z] == NULL) {
+            if(objPic[id][HOUSE_HARKONNEN][z] == nullptr) {
                 fprintf(stderr,"GFXManager::getObjPic(): Unit Picture with id %d is not loaded!\n",id);
                 exit(EXIT_FAILURE);
             }
@@ -1022,7 +1022,7 @@ SDL_Texture** GFXManager::getObjPic(unsigned int id, int house) {
             objPic[id][house][z] = mapSurfaceColorRange(objPic[id][HOUSE_HARKONNEN][z], PALCOLOR_HARKONNEN, houseToPaletteIndex[house]);
         }
 
-        if(objPicTex[id][house][z] == NULL) {
+        if(objPicTex[id][house][z] == nullptr) {
             // now convert to display format
             if(id == ObjPic_Windtrap) {
                 // Windtrap uses palette animation on PALCOLOR_WINDTRAP_COLORCYCLE; fake this
@@ -1059,7 +1059,7 @@ SDL_Texture** GFXManager::getObjPic(unsigned int id, int house) {
 
 SDL_Texture* GFXManager::getSmallDetailPic(unsigned int id) {
 	if(id >= NUM_SMALLDETAILPICS) {
-		return NULL;
+		return nullptr;
 	}
 	return smallDetailPicTex[id];
 }
@@ -1071,9 +1071,9 @@ SDL_Surface* GFXManager::getUIGraphicSurface(unsigned int id, int house) {
 		exit(EXIT_FAILURE);
 	}
 
-	if(uiGraphic[id][house] == NULL) {
+	if(uiGraphic[id][house] == nullptr) {
 		// remap to this color
-		if(uiGraphic[id][HOUSE_HARKONNEN] == NULL) {
+		if(uiGraphic[id][HOUSE_HARKONNEN] == nullptr) {
 			fprintf(stderr,"GFXManager::getUIGraphicSurface(): UI Graphic with id %d is not loaded!\n",id);
 			exit(EXIT_FAILURE);
 		}
@@ -1090,7 +1090,7 @@ SDL_Texture* GFXManager::getUIGraphic(unsigned int id, int house) {
 		exit(EXIT_FAILURE);
 	}
 
-	if(uiGraphicTex[id][house] == NULL) {
+	if(uiGraphicTex[id][house] == nullptr) {
         SDL_Surface* pSurface = getUIGraphicSurface(id, house);
 
         if(id >= UI_MapChoiceArrow_None && id <= UI_MapChoiceArrow_Left) {
@@ -1109,9 +1109,9 @@ SDL_Surface* GFXManager::getMapChoicePieceSurface(unsigned int num, int house) {
 		exit(EXIT_FAILURE);
 	}
 
-	if(mapChoicePieces[num][house] == NULL) {
+	if(mapChoicePieces[num][house] == nullptr) {
 		// remap to this color
-		if(mapChoicePieces[num][HOUSE_HARKONNEN] == NULL) {
+		if(mapChoicePieces[num][HOUSE_HARKONNEN] == nullptr) {
 			fprintf(stderr,"GFXManager::getMapChoicePieceSurface(): Map Piece with number %d is not loaded!\n",num);
 			exit(EXIT_FAILURE);
 		}
@@ -1128,7 +1128,7 @@ SDL_Texture* GFXManager::getMapChoicePiece(unsigned int num, int house) {
 		exit(EXIT_FAILURE);
 	}
 
-	if(mapChoicePiecesTex[num][house] == NULL) {
+	if(mapChoicePiecesTex[num][house] == nullptr) {
 		mapChoicePiecesTex[num][house] = convertSurfaceToTexture(getMapChoicePieceSurface(num, house), false);
 	}
 
@@ -1141,7 +1141,7 @@ Animation* GFXManager::getAnimation(unsigned int id) {
 		exit(EXIT_FAILURE);
 	}
 
-	if(animation[id] == NULL) {
+	if(animation[id] == nullptr) {
         switch(id) {
             case Anim_HarkonnenPlanet: {
                 animation[Anim_HarkonnenPlanet] = loadAnimationFromWsa("FHARK.WSA");
@@ -1249,7 +1249,7 @@ shared_ptr<Shpfile> GFXManager::loadShpfile(std::string filename) {
 }
 
 shared_ptr<Wsafile> GFXManager::loadWsafile(std::string filename) {
-    SDL_RWops* file_wsa = NULL;
+    SDL_RWops* file_wsa = nullptr;
     std::shared_ptr<Wsafile> wsafile;
     try {
         file_wsa = pFileManager->openFile(filename);
@@ -1257,7 +1257,7 @@ shared_ptr<Wsafile> GFXManager::loadWsafile(std::string filename) {
         SDL_RWclose(file_wsa);
         return wsafile;
 	} catch (std::exception &e) {
-	    if(file_wsa != NULL) {
+	    if(file_wsa != nullptr) {
             SDL_RWclose(file_wsa);
 	    }
 	    throw std::runtime_error(std::string("Error in file \"" + filename + "\":") + e.what());
@@ -1266,7 +1266,7 @@ shared_ptr<Wsafile> GFXManager::loadWsafile(std::string filename) {
 
 SDL_Texture* GFXManager::extractSmallDetailPic(std::string filename) {
 	SDL_RWops* myFile;
-	if((myFile = pFileManager->openFile(filename.c_str())) == NULL) {
+	if((myFile = pFileManager->openFile(filename.c_str())) == nullptr) {
 		fprintf(stderr,"GFXManager::extractSmallDetailPic(): Cannot open %s!\n",filename.c_str());
 		exit(EXIT_FAILURE);
 	}
@@ -1274,7 +1274,7 @@ SDL_Texture* GFXManager::extractSmallDetailPic(std::string filename) {
 	Wsafile* myWsafile = new Wsafile(myFile);
 
 	SDL_Surface* tmp;
-	if((tmp = myWsafile->getPicture(0)) == NULL) {
+	if((tmp = myWsafile->getPicture(0)) == nullptr) {
 		fprintf(stderr,"GFXManager::extractSmallDetailPic(): Cannot decode first frame in file %s!\n",filename.c_str());
 		exit(EXIT_FAILURE);
 	}
@@ -1287,7 +1287,7 @@ SDL_Texture* GFXManager::extractSmallDetailPic(std::string filename) {
 	SDL_Surface* pSurface;
 
 	// create new picture surface
-	if((pSurface = SDL_CreateRGBSurface(0, 91, 55, 8, 0, 0, 0, 0)) == NULL) {
+	if((pSurface = SDL_CreateRGBSurface(0, 91, 55, 8, 0, 0, 0, 0)) == nullptr) {
 		fprintf(stderr,"GFXManager::extractSmallDetailPic(): Cannot create new Picture for %s!\n",filename.c_str());
 		exit(EXIT_FAILURE);
 	}
@@ -1316,7 +1316,7 @@ SDL_Texture* GFXManager::extractSmallDetailPic(std::string filename) {
 
 Animation* GFXManager::loadAnimationFromWsa(std::string filename) {
 	SDL_RWops* file;
-	if((file = pFileManager->openFile(filename)) == NULL) {
+	if((file = pFileManager->openFile(filename)) == nullptr) {
 		fprintf(stderr,"GFXManager::LoadAnimationFromWsa(): Cannot open %s!\n",filename.c_str());
 		exit(EXIT_FAILURE);
 	}
@@ -1386,7 +1386,7 @@ SDL_Surface* GFXManager::generateMapChoiceArrowFrames(SDL_Surface* arrowPic, int
             SDL_SetPaletteColors(arrowPic->format->palette, &palette[houseToPaletteIndex[house]+((i+k)%4)], 251+k, 1);
         }
 
-        SDL_BlitSurface(arrowPic, NULL, returnPic, &dest);
+        SDL_BlitSurface(arrowPic, nullptr, returnPic, &dest);
         dest.x += dest.w;
     }
 

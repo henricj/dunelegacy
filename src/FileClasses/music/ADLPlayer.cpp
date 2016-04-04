@@ -28,7 +28,7 @@ ADLPlayer::ADLPlayer() : MusicPlayer(settings.audio.playMusic) {
     musicVolume = MIX_MAX_VOLUME/2;
     Mix_VolumeMusic(musicVolume);
 
-    pSoundAdlibPC = NULL;
+    pSoundAdlibPC = nullptr;
 }
 
 ADLPlayer::~ADLPlayer() {
@@ -40,7 +40,7 @@ void ADLPlayer::changeMusic(MUSICTYPE musicType)
 	int musicNum = -1;
 	std::string filename = "";
 
-	if((currentMusicType == musicType) && (pSoundAdlibPC != NULL) && pSoundAdlibPC->isPlaying()) {
+	if((currentMusicType == musicType) && (pSoundAdlibPC != nullptr) && pSoundAdlibPC->isPlaying()) {
 		return;
 	}
 
@@ -187,11 +187,11 @@ void ADLPlayer::changeMusic(MUSICTYPE musicType)
 
 	if((musicOn == true) && (filename != "")) {
 
-        Mix_HookMusic(NULL, NULL);
+        Mix_HookMusic(nullptr, nullptr);
 	    delete pSoundAdlibPC;
 
 	    SDL_RWops* rwop = pFileManager->openFile(filename);
-	    if(rwop == NULL) {
+	    if(rwop == nullptr) {
             printf("Unable to load %s!\n",filename.c_str());
 	    } else {
             pSoundAdlibPC = new SoundAdlibPC(rwop);
@@ -222,10 +222,10 @@ void ADLPlayer::setMusic(bool value) {
 	if(musicOn) {
 		changeMusic(MUSIC_RANDOM);
 	} else {
-	    Mix_HookMusic(NULL, NULL);
+	    Mix_HookMusic(nullptr, nullptr);
 
 	    delete pSoundAdlibPC;
-	    pSoundAdlibPC = NULL;
+	    pSoundAdlibPC = nullptr;
 	}
 }
 

@@ -104,7 +104,7 @@ void GroundUnit::checkPos() {
 
 
 	if(goingToRepairYard) {
-	    if(target.getObjPointer() == NULL) {
+	    if(target.getObjPointer() == nullptr) {
             goingToRepairYard = false;
             awaitingPickup = false;
             bookedCarrier = NONE;
@@ -118,7 +118,7 @@ void GroundUnit::checkPos() {
                 if (getHealth() < getMaxHealth()) {
                     setGettingRepaired();
                 } else {
-                    setTarget(NULL);
+                    setTarget(nullptr);
                     setDestination(guardPoint);
                 }
             }
@@ -161,7 +161,7 @@ void GroundUnit::doRequestCarryallDrop(int xPos, int yPos) {
 
 bool GroundUnit::requestCarryall() {
 	if (getOwner()->hasCarryalls() && !awaitingPickup)	{
-		Carryall* carryall = NULL;
+		Carryall* carryall = nullptr;
 
 		// This allows a unit to keep requesting a carryall even if one isn't available right now
 		doSetAttackMode(CARRYALLREQUESTED);
@@ -198,7 +198,7 @@ void GroundUnit::setPickedUp(UnitBase* newCarrier) {
 }
 
 void GroundUnit::bookCarrier(UnitBase* newCarrier) {
-    if(newCarrier == NULL) {
+    if(newCarrier == nullptr) {
         bookedCarrier = NONE;
         awaitingPickup = false;
     } else {
@@ -211,7 +211,7 @@ bool GroundUnit::hasBookedCarrier() const {
     if(bookedCarrier == NONE) {
         return false;
     } else {
-        return (currentGame->getObjectManager().getObject(bookedCarrier) != NULL);
+        return (currentGame->getObjectManager().getObject(bookedCarrier) != nullptr);
     }
 }
 
@@ -237,7 +237,7 @@ void GroundUnit::doRepair() {
 		//find a repair yard to return to
 
 		FixPoint closestLeastBookedRepairYardDistance = 1000000;
-        RepairYard* bestRepairYard = NULL;
+        RepairYard* bestRepairYard = nullptr;
 
         RobustList<StructureBase*>::const_iterator iter;
         for(iter = structureList.begin(); iter != structureList.end(); ++iter) {

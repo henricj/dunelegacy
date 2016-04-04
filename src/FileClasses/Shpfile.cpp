@@ -35,8 +35,8 @@ extern Palette palette;
 */
 Shpfile::Shpfile(SDL_RWops* rwop, int freesrc)
 {
-	if(rwop == NULL) {
-	    throw std::invalid_argument("Shpfile::Shpfile(): rwop == NULL!");
+	if(rwop == nullptr) {
+	    throw std::invalid_argument("Shpfile::Shpfile(): rwop == nullptr!");
 	}
 
 	shpFilesize = SDL_RWseek(rwop,0,SEEK_END);
@@ -85,12 +85,12 @@ Shpfile::~Shpfile()
 */
 SDL_Surface *Shpfile::getPicture(Uint32 indexOfFile)
 {
-	SDL_Surface *pic = NULL;
-	unsigned char *DecodeDestination = NULL;
-	unsigned char *ImageOut = NULL;
+	SDL_Surface *pic = nullptr;
+	unsigned char *DecodeDestination = nullptr;
+	unsigned char *ImageOut = nullptr;
 
 	if(indexOfFile >= shpfileEntries.size()) {
-		return NULL;
+		return nullptr;
 	}
 
 	unsigned char * Fileheader = pFiledata + shpfileEntries[indexOfFile].startOffset;
@@ -103,17 +103,17 @@ SDL_Surface *Shpfile::getPicture(Uint32 indexOfFile)
 	/* size and also checksum */
 	Uint16 size = SDL_SwapLE16(*((Uint16*) (Fileheader + 8)));
 
-	if((ImageOut = (unsigned char*) calloc(1,sizeX*sizeY)) == NULL) {
-				return NULL;
+	if((ImageOut = (unsigned char*) calloc(1,sizeX*sizeY)) == nullptr) {
+				return nullptr;
 	}
 
 	switch(type) {
 
 		case 0:
 		{
-			if( (DecodeDestination = (unsigned char*) calloc(1,size)) == NULL) {
+			if( (DecodeDestination = (unsigned char*) calloc(1,size)) == nullptr) {
 				free(ImageOut);
-				return NULL;
+				return nullptr;
 			}
 
 			if(decode80(Fileheader + 10,DecodeDestination,size) == -1) {
@@ -127,9 +127,9 @@ SDL_Surface *Shpfile::getPicture(Uint32 indexOfFile)
 
 		case 1:
 		{
-			if( (DecodeDestination = (unsigned char*) calloc(1,size)) == NULL) {
+			if( (DecodeDestination = (unsigned char*) calloc(1,size)) == nullptr) {
 				free(ImageOut);
-				return NULL;
+				return nullptr;
 			}
 
 			if(decode80(Fileheader + 10 + 16,DecodeDestination,size) == -1) {
@@ -164,8 +164,8 @@ SDL_Surface *Shpfile::getPicture(Uint32 indexOfFile)
 	}
 
 	// create new picture surface
-	if((pic = SDL_CreateRGBSurface(0,sizeX,sizeY,8,0,0,0,0))== NULL) {
-		return NULL;
+	if((pic = SDL_CreateRGBSurface(0,sizeX,sizeY,8,0,0,0,0))== nullptr) {
+		return nullptr;
 	}
 
 	palette.applyToSurface(pic);
@@ -207,18 +207,18 @@ SDL_Surface *Shpfile::getPicture(Uint32 indexOfFile)
 	\return	picture in this shp-File containing all specified pictures
 */
 SDL_Surface* Shpfile::getPictureArray(unsigned int tilesX, unsigned int tilesY, ...) {
-	SDL_Surface *pic = NULL;
-	unsigned char *DecodeDestination = NULL;
-	unsigned char *ImageOut = NULL;
+	SDL_Surface *pic = nullptr;
+	unsigned char *DecodeDestination = nullptr;
+	unsigned char *ImageOut = nullptr;
 	Uint32 i,j;
 
 	Uint32* tiles;
 
 	if((tilesX == 0) || (tilesY == 0)) {
-		return NULL;
+		return nullptr;
 	}
 
-	if((tiles = (Uint32*) malloc(tilesX*tilesY*sizeof(Uint32))) == NULL) {
+	if((tiles = (Uint32*) malloc(tilesX*tilesY*sizeof(Uint32))) == nullptr) {
 		fprintf(stderr,"Shpfile::getPictureArray(): Cannot allocate memory!\n");
 		exit(EXIT_FAILURE);
 	}
@@ -231,7 +231,7 @@ SDL_Surface* Shpfile::getPictureArray(unsigned int tilesX, unsigned int tilesY, 
 		if(TILE_GETINDEX(tiles[i]) >= shpfileEntries.size()) {
 			free(tiles);
 			fprintf(stderr,"Shpfile::getPictureArray(): There exist only %d files in this *.shp.\n", (int) shpfileEntries.size());
-			return NULL;
+			return nullptr;
 		}
 	}
 
@@ -250,7 +250,7 @@ SDL_Surface* Shpfile::getPictureArray(unsigned int tilesX, unsigned int tilesY, 
 	}
 
 	// create new picture surface
-	if((pic = SDL_CreateRGBSurface(0,sizeX*tilesX,sizeY*tilesY,8,0,0,0,0)) == NULL) {
+	if((pic = SDL_CreateRGBSurface(0,sizeX*tilesX,sizeY*tilesY,8,0,0,0,0)) == nullptr) {
 		fprintf(stderr,"Shpfile::getPictureArray(): Cannot create Surface.\n");
 		exit(EXIT_FAILURE);
 	}
@@ -267,7 +267,7 @@ SDL_Surface* Shpfile::getPictureArray(unsigned int tilesX, unsigned int tilesY, 
 			/* size and also checksum */
 			Uint16 size = SDL_SwapLE16(*((Uint16*) (Fileheader + 8)));
 
-			if((ImageOut = (unsigned char*) calloc(1,sizeX*sizeY)) == NULL) {
+			if((ImageOut = (unsigned char*) calloc(1,sizeX*sizeY)) == nullptr) {
 				free(tiles);
 				fprintf(stderr,"Shpfile::getPictureArray(): Cannot allocate memory!\n");
 				exit(EXIT_FAILURE);
@@ -277,7 +277,7 @@ SDL_Surface* Shpfile::getPictureArray(unsigned int tilesX, unsigned int tilesY, 
 
 				case 0:
 				{
-					if( (DecodeDestination = (unsigned char*) calloc(1,size)) == NULL) {
+					if( (DecodeDestination = (unsigned char*) calloc(1,size)) == nullptr) {
 						free(ImageOut);
 						free(tiles);
 						fprintf(stderr,"Shpfile::getPictureArray(): Cannot allocate memory!\n");
@@ -295,7 +295,7 @@ SDL_Surface* Shpfile::getPictureArray(unsigned int tilesX, unsigned int tilesY, 
 
 				case 1:
 				{
-					if( (DecodeDestination = (unsigned char*) calloc(1,size)) == NULL) {
+					if( (DecodeDestination = (unsigned char*) calloc(1,size)) == nullptr) {
 						free(ImageOut);
 						free(tiles);
 						fprintf(stderr,"Shpfile::getPictureArray(): Cannot allocate memory!\n");
@@ -386,13 +386,13 @@ SDL_Surface* Shpfile::getPictureArray(unsigned int tilesX, unsigned int tilesY, 
 /**
 	This method returns a new animation object with all pictures from startindex to endindex
 	in it. The returned pointer should be freed with delete if no longer needed. If an error
-	occured, NULL is returned.
+	occured, nullptr is returned.
 	\param  startindex	index of the first picture
 	\param  endindex	index of the last picture
 	\param	bDoublePic	if true, the picture is scaled up by a factor of 2
 	\param	bSetColorKey	if true, black is set as transparency
 	\param  bLoopRewindBackwards if true, the animation is played forward and then backwards, if false, it is only played forward
-	\return	a new animation object or NULL on error
+	\return	a new animation object or nullptr on error
 */
 Animation* Shpfile::getAnimation(unsigned int startindex,unsigned int endindex, bool bDoublePic, bool bSetColorKey, bool bLoopRewindBackwards)
 {
@@ -401,18 +401,18 @@ Animation* Shpfile::getAnimation(unsigned int startindex,unsigned int endindex, 
 	Animation* animation = new Animation();
 
 	for(unsigned int i = startindex; i <= endindex; i++) {
-		if((tmp = getPicture(i)) == NULL) {
+		if((tmp = getPicture(i)) == nullptr) {
 			delete animation;
-			return NULL;
+			return nullptr;
 		}
 		animation->addFrame(tmp,bDoublePic,bSetColorKey);
 	}
 
 	if(bLoopRewindBackwards) {
         for(int i = (int) endindex - 1; i >= (int) startindex; i--) {
-            if((tmp = getPicture(i)) == NULL) {
+            if((tmp = getPicture(i)) == nullptr) {
                 delete animation;
-                return NULL;
+                return nullptr;
             }
             animation->addFrame(tmp,bDoublePic,bSetColorKey);
         }

@@ -44,7 +44,7 @@ public:
 protected:
 	DefaultObjectInterface(int objectID) : ObjectInterface() {
 		ObjectBase* pObject = currentGame->getObjectManager().getObject(objectID);
-		if(pObject == NULL) {
+		if(pObject == nullptr) {
 			fprintf(stderr,"DefaultObjectInterface::DefaultObjectInterface(): Cannot resolve ObjectID %d!\n",objectID);
 			exit(EXIT_FAILURE);
 		}
@@ -75,7 +75,7 @@ protected:
 	*/
 	virtual bool update() {
 		ObjectBase* pObject = currentGame->getObjectManager().getObject(objectID);
-		return (pObject != NULL);
+		return (pObject != nullptr);
 	}
 
 	int				objectID;

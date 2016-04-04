@@ -40,17 +40,17 @@ extern Palette palette;
 */
 Icnfile::Icnfile(SDL_RWops* icnRWop, SDL_RWops* mapRWop, int freesrc)
 {
-    pIcnFiledata = NULL;
+    pIcnFiledata = nullptr;
 
-	if(icnRWop == NULL) {
-	    if(freesrc && mapRWop != NULL) SDL_RWclose(mapRWop);
-		throw std::invalid_argument("Icnfile::Icnfile(): icnRWop == NULL!");
-	} else if(mapRWop == NULL) {
+	if(icnRWop == nullptr) {
+	    if(freesrc && mapRWop != nullptr) SDL_RWclose(mapRWop);
+		throw std::invalid_argument("Icnfile::Icnfile(): icnRWop == nullptr!");
+	} else if(mapRWop == nullptr) {
 	    if(freesrc) SDL_RWclose(icnRWop);
-		throw std::invalid_argument("Icnfile::Icnfile(): mapRWop == NULL!");
+		throw std::invalid_argument("Icnfile::Icnfile(): mapRWop == nullptr!");
 	}
 
-	uint8_t* pMapFiledata = NULL;
+	uint8_t* pMapFiledata = nullptr;
 
     try {
         int icnFilesize = SDL_RWseek(icnRWop,0,SEEK_END);
@@ -217,12 +217,12 @@ SDL_Surface* Icnfile::getPicture(Uint32 indexOfFile) {
 	SDL_Surface * pic;
 
 	if(indexOfFile >= numFiles) {
-		return NULL;
+		return nullptr;
 	}
 
 	// check if palette is in range
 	if(RTBL[indexOfFile] >= RPAL_Length / 16) {
-		return NULL;
+		return nullptr;
 	}
 
 	unsigned char* palettestart = RPAL + (16 * RTBL[indexOfFile]);
@@ -230,8 +230,8 @@ SDL_Surface* Icnfile::getPicture(Uint32 indexOfFile) {
 	unsigned char * filestart = SSET + (indexOfFile * ((SIZE_X * SIZE_Y)/2));
 
 	// create new picture surface
-	if((pic = SDL_CreateRGBSurface(0,SIZE_X,SIZE_Y,8,0,0,0,0))== NULL) {
-		return NULL;
+	if((pic = SDL_CreateRGBSurface(0,SIZE_X,SIZE_Y,8,0,0,0,0))== nullptr) {
+		return nullptr;
 	}
 
 	palette.applyToSurface(pic);
@@ -267,7 +267,7 @@ SDL_Surface* Icnfile::getPicture(Uint32 indexOfFile) {
 	 - If tilesX and tilesY is set to non-zero values then the result surface contains tilesX*tilesY tiles and this tilesN-times side by side.
 	 - If all there parameters are non-zero then the result surface is exactly in this arrangement.
 
-	tilesX*tilesY*tilesN must always the number of tiles in this tileset. Otherwise NULL is returned.<br><br>
+	tilesX*tilesY*tilesN must always the number of tiles in this tileset. Otherwise nullptr is returned.<br><br>
 	Example:
 	\code
 	Tileset = 10,11,12,13,14,15,16,17,18,19,20,21
@@ -289,7 +289,7 @@ SDL_Surface* Icnfile::getPictureArray(Uint32 mapfileIndex, int tilesX, int tiles
 	SDL_Surface * pic;
 
 	if(mapfileIndex >= tilesets.size()) {
-		return NULL;
+		return nullptr;
 	}
 
 	if((tilesX == 0) && (tilesY == 0) && (tilesN == 0)) {
@@ -324,7 +324,7 @@ SDL_Surface* Icnfile::getPictureArray(Uint32 mapfileIndex, int tilesX, int tiles
 
 	} else if( ((tilesX == 0) || (tilesY == 0)) && (tilesN == 0)) {
 		// not possible
-		return NULL;
+		return nullptr;
 	} else if((tilesX == 0) && (tilesY == 0) && (tilesN != 0)) {
 		if(tilesets[mapfileIndex].numTiles % tilesN == 0) {
 			// guest what is best
@@ -341,17 +341,17 @@ SDL_Surface* Icnfile::getPictureArray(Uint32 mapfileIndex, int tilesX, int tiles
 			}
 		} else {
 			// not possible
-			return NULL;
+			return nullptr;
 		}
 	} else {
 		if((unsigned int)tilesX*tilesY*tilesN != tilesets[mapfileIndex].numTiles) {
-			return NULL;
+			return nullptr;
 		}
 	}
 
 	// create new picture surface
-	if((pic = SDL_CreateRGBSurface(0,SIZE_X*tilesX*tilesN,SIZE_Y*tilesY,8,0,0,0,0))== NULL) {
-		return NULL;
+	if((pic = SDL_CreateRGBSurface(0,SIZE_X*tilesX*tilesN,SIZE_Y*tilesY,8,0,0,0,0))== nullptr) {
+		return nullptr;
 	}
 
 	palette.applyToSurface(pic);
@@ -367,7 +367,7 @@ SDL_Surface* Icnfile::getPictureArray(Uint32 mapfileIndex, int tilesX, int tiles
 				if(RTBL[IndexOfFile] >= RPAL_Length / 16) {
 					SDL_UnlockSurface(pic);
 					SDL_FreeSurface(pic);
-					return NULL;
+					return nullptr;
 				}
 
 				unsigned char* palettestart = RPAL + (16 * RTBL[IndexOfFile]);
@@ -406,19 +406,19 @@ SDL_Surface* Icnfile::getPictureArray(Uint32 mapfileIndex, int tilesX, int tiles
 	The returned SDL_Surface should be freed with SDL_FreeSurface() if no longer needed.
 	\param	startIndex		The first tile to use
 	\param	endIndex		The last tile to use
-	\return	the result surface with (endIndex-startIndex+1) tiles. NULL on errors.
+	\return	the result surface with (endIndex-startIndex+1) tiles. nullptr on errors.
 */
 SDL_Surface* Icnfile::getPictureRow(Uint32 startIndex, Uint32 endIndex) {
 	SDL_Surface * pic;
 
 	if((startIndex >= numFiles)||(endIndex >= numFiles)||(startIndex > endIndex)) {
-		return NULL;
+		return nullptr;
 	}
 
 	Uint32 numTiles = endIndex - startIndex + 1;
 	// create new picture surface
-	if((pic = SDL_CreateRGBSurface(0,SIZE_X*numTiles,SIZE_Y,8,0,0,0,0))== NULL) {
-		return NULL;
+	if((pic = SDL_CreateRGBSurface(0,SIZE_X*numTiles,SIZE_Y,8,0,0,0,0))== nullptr) {
+		return nullptr;
 	}
 
 	palette.applyToSurface(pic);
@@ -431,7 +431,7 @@ SDL_Surface* Icnfile::getPictureRow(Uint32 startIndex, Uint32 endIndex) {
 		if(RTBL[indexOfFile] >= RPAL_Length / 16) {
 			SDL_UnlockSurface(pic);
 			SDL_FreeSurface(pic);
-			return NULL;
+			return nullptr;
 		}
 
 		unsigned char* palettestart = RPAL + (16 * RTBL[indexOfFile]);
@@ -464,14 +464,14 @@ SDL_Surface* Icnfile::getPictureRow(Uint32 startIndex, Uint32 endIndex) {
 	tiles specified be the parameters
 	The returned SDL_Surface should be freed with SDL_FreeSurface() if no longer needed.
 	\param	numTiles    the number of tiles that should be extrated.
-	\return	the result surface with all specified tiles in a row. NULL on errors.
+	\return	the result surface with all specified tiles in a row. nullptr on errors.
 */
 SDL_Surface* Icnfile::getPictureRow2(unsigned int numTiles, ...) {
 	SDL_Surface * pic;
 
 	// create new picture surface
-	if((pic = SDL_CreateRGBSurface(0,SIZE_X*numTiles,SIZE_Y,8,0,0,0,0))== NULL) {
-		return NULL;
+	if((pic = SDL_CreateRGBSurface(0,SIZE_X*numTiles,SIZE_Y,8,0,0,0,0))== nullptr) {
+		return nullptr;
 	}
 
 	palette.applyToSurface(pic);
@@ -487,7 +487,7 @@ SDL_Surface* Icnfile::getPictureRow2(unsigned int numTiles, ...) {
             SDL_UnlockSurface(pic);
             SDL_FreeSurface(pic);
             va_end(arg_ptr);
-            return NULL;
+            return nullptr;
         }
 
 		// check if palette is in range
@@ -495,7 +495,7 @@ SDL_Surface* Icnfile::getPictureRow2(unsigned int numTiles, ...) {
 			SDL_UnlockSurface(pic);
 			SDL_FreeSurface(pic);
 			va_end(arg_ptr);
-			return NULL;
+			return nullptr;
 		}
 
 		unsigned char* palettestart = RPAL + (16 * RTBL[indexOfFile]);

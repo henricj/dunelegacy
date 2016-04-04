@@ -166,7 +166,7 @@ Intro::Intro() : CutScene() {
         }
     } else {
         for(int i=0;i<Voice_NUM_ENTRIES;i++) {
-            voice[i] = NULL;
+            voice[i] = nullptr;
         }
     }
 
@@ -265,7 +265,7 @@ Intro::Intro() : CutScene() {
 
     startNewScene();
 
-    addVideoEvent(new HoldPictureVideoEvent(NULL, 80, true));
+    addVideoEvent(new HoldPictureVideoEvent(nullptr, 80, true));
     addTextEvent(new TextEvent(pIntroText->getString(IntroText_Now_three_houses_fight),color,0,80,true,false,true));
     if(bEnableVoice) addTrigger(new CutSceneSoundTrigger(10,voice[Voice_Now]));
     if(bEnableVoice) addTrigger(new CutSceneSoundTrigger(17,voice[Voice_three_Houses_fight]));
@@ -334,7 +334,7 @@ Intro::Intro() : CutScene() {
 
     startNewScene();
 
-    addVideoEvent(new HoldPictureVideoEvent(NULL, 150, true));
+    addVideoEvent(new HoldPictureVideoEvent(nullptr, 150, true));
     addTextEvent(new TextEvent(pIntroText->getString(IntroText_Your_battle_for_Dune_begins),color,0,45,true,false,true));
     addTextEvent(new TextEvent(pIntroText->getString(IntroText_NOW),color,47,45,false,true,true));
     if(bEnableVoice) addTrigger(new CutSceneSoundTrigger(10,voice[Voice_Your]));

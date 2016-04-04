@@ -148,14 +148,14 @@ void Sandworm::blitToScreen() {
             // contains solid black (0,0,0,255) for pixels to take from screen
             // and transparent (0,0,0,0) for pixels that should not be copied over
             SDL_SetTextureBlendMode(shimmerMaskTex, SDL_BLENDMODE_NONE);
-            SDL_RenderCopy(renderer, shimmerMaskTex, NULL, NULL);
+            SDL_RenderCopy(renderer, shimmerMaskTex, nullptr, nullptr);
             SDL_SetTextureBlendMode(shimmerMaskTex, SDL_BLENDMODE_BLEND);
 
             // now copy r,g,b colors from screen but don't change alpha values in mask
             SDL_SetTextureBlendMode(screenTexture, SDL_BLENDMODE_ADD);
             SDL_Rect source = dest;
             source.x += shimmerOffset[(shimmerOffsetIndex+i)%8]*2;
-            SDL_RenderCopy(renderer, screenTexture, &source, NULL);
+            SDL_RenderCopy(renderer, screenTexture, &source, nullptr);
             SDL_SetTextureBlendMode(screenTexture, SDL_BLENDMODE_NONE);
 
             // switch back to old rendering target (from texture 'shimmerTex')
@@ -163,7 +163,7 @@ void Sandworm::blitToScreen() {
 
             // now blend shimmerTex to screen (= make use of alpha values in mask)
             SDL_SetTextureBlendMode(shimmerTex, SDL_BLENDMODE_BLEND);
-            SDL_RenderCopy(renderer, shimmerTex, NULL, &dest);
+            SDL_RenderCopy(renderer, shimmerTex, nullptr, &dest);
 
         }
     }
@@ -228,7 +228,7 @@ void Sandworm::engageTarget() {
         if(targetDistance > maxDistance) {
             // give up
             setDestination(guardPoint);
-            setTarget(NULL);
+            setTarget(nullptr);
         }
     }
 }
@@ -357,7 +357,7 @@ bool Sandworm::update() {
 }
 
 bool Sandworm::canAttack(const ObjectBase* object) const {
-	if((object != NULL)
+	if((object != nullptr)
 		&& object->isAGroundUnit()
 		&& (object->getItemID() != Unit_Sandworm)	//wont kill other sandworms
 		//&& object->isVisible(getOwner()->getTeam())
@@ -380,10 +380,10 @@ bool Sandworm::canPass(int xPos, int yPos) const {
 
 const ObjectBase* Sandworm::findTarget() const {
     if(isEating()) {
-        return NULL;
+        return nullptr;
     }
 
-	const ObjectBase* closestTarget = NULL;
+	const ObjectBase* closestTarget = nullptr;
 
 	if(attackMode == HUNT) {
 	    FixPoint closestDistance = FixPt_MAX;

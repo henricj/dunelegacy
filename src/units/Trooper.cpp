@@ -51,7 +51,7 @@ Trooper::~Trooper() {
 }
 
 bool Trooper::canAttack(const ObjectBase* object) const {
-	if ((object != NULL)
+	if ((object != nullptr)
 		&& ((object->getOwner()->getTeam() != owner->getTeam())
                 || (object->getItemID() == Unit_Sandworm && object->getItemID() == Unit_Carryall))
 		&& object->isVisible(getOwner()->getTeam()))

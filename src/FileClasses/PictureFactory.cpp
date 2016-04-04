@@ -37,17 +37,17 @@ using std::shared_ptr;
 
 PictureFactory::PictureFactory() {
     shared_ptr<SDL_Surface> ScreenPic = shared_ptr<SDL_Surface>( LoadCPS_RW(pFileManager->openFile("SCREEN.CPS"),true), SDL_FreeSurface);
-    if(ScreenPic.get() == NULL) {
+    if(ScreenPic.get() == nullptr) {
         throw std::runtime_error("PictureFactory::PictureFactory(): Cannot read SCREEN.CPS!");
     }
 
     shared_ptr<SDL_Surface> FamePic = shared_ptr<SDL_Surface>( LoadCPS_RW(pFileManager->openFile("FAME.CPS"),true), SDL_FreeSurface);
-    if(FamePic.get() == NULL) {
+    if(FamePic.get() == nullptr) {
         throw std::runtime_error("PictureFactory::PictureFactory(): Cannot read FAME.CPS!");
     }
 
     shared_ptr<SDL_Surface> ChoamPic = shared_ptr<SDL_Surface>( LoadCPS_RW(pFileManager->openFile("CHOAM.CPS"),true), SDL_FreeSurface);
-    if(ChoamPic.get() == NULL) {
+    if(ChoamPic.get() == nullptr) {
         throw std::runtime_error("PictureFactory::PictureFactory(): Cannot read CHOAM.CPS!");
     }
 
@@ -55,7 +55,7 @@ PictureFactory::PictureFactory() {
 
 	// background
 	background = shared_ptr<SDL_Surface>( SDL_CreateRGBSurface(0,settings.video.width,settings.video.height,8,0,0,0,0), SDL_FreeSurface);
-	if(background.get() == NULL) {
+	if(background.get() == nullptr) {
 		throw std::runtime_error("PictureFactory::PictureFactory: Cannot create new Picture!");
 	}
 	palette.applyToSurface(background.get());
@@ -72,16 +72,16 @@ PictureFactory::PictureFactory() {
 		for(dest.x = 0; dest.x < settings.video.width; dest.x+= 63) {
 			if((dest.x % (63*2) == 0) && (dest.y % (67*2) == 0)) {
 			    SDL_Rect tmpDest = dest;
-				SDL_BlitSurface(PatternNormal.get(), NULL, background.get(), &tmpDest);
+				SDL_BlitSurface(PatternNormal.get(), nullptr, background.get(), &tmpDest);
 			} else if((dest.x % (63*2) != 0) && (dest.y % (67*2) == 0)) {
 			    SDL_Rect tmpDest = dest;
-				SDL_BlitSurface(PatternHFlipped.get(), NULL, background.get(), &tmpDest);
+				SDL_BlitSurface(PatternHFlipped.get(), nullptr, background.get(), &tmpDest);
 			} else if((dest.x % (63*2) == 0) && (dest.y % (67*2) != 0)) {
 			    SDL_Rect tmpDest = dest;
-				SDL_BlitSurface(PatternVFlipped.get(), NULL, background.get(), &tmpDest);
+				SDL_BlitSurface(PatternVFlipped.get(), nullptr, background.get(), &tmpDest);
 			} else /*if((dest.x % (63*2) != 0) && (dest.y % (67*2) != 0))*/ {
 			    SDL_Rect tmpDest = dest;
-				SDL_BlitSurface(PatternHVFlipped.get(), NULL, background.get(), &tmpDest);
+				SDL_BlitSurface(PatternHVFlipped.get(), nullptr, background.get(), &tmpDest);
 			}
 		}
 	}
@@ -185,13 +185,13 @@ PictureFactory::PictureFactory() {
 	shared_ptr<SDL_Surface> pSurface = shared_ptr<SDL_Surface>( getSubPicture(FamePic2.get(),16,160,610,74), SDL_FreeSurface);
 
 	SDL_Rect dest2 = calcDrawingRect(pSurface.get(), 16, 234);
-	SDL_BlitSurface(pSurface.get(), NULL, FamePic2.get(), &dest2);
+	SDL_BlitSurface(pSurface.get(), nullptr, FamePic2.get(), &dest2);
 
 	SDL_Rect dest3 = calcDrawingRect(pSurface.get(), 16, 234 + 74);
-	SDL_BlitSurface(pSurface.get() , NULL, FamePic2.get(), &dest3);
+	SDL_BlitSurface(pSurface.get() , nullptr, FamePic2.get(), &dest3);
 
     SDL_Rect dest4 = calcAlignedDrawingRect(FamePic2.get(), gameStatsBackground.get());
-	SDL_BlitSurface(FamePic2.get(), NULL, gameStatsBackground.get() , &dest4);
+	SDL_BlitSurface(FamePic2.get(), nullptr, gameStatsBackground.get() , &dest4);
 
 	messageBoxBorder = shared_ptr<SDL_Surface>(getSubPicture(ScreenPic.get(),0,17,320,22), SDL_FreeSurface);
 
@@ -204,46 +204,46 @@ PictureFactory::PictureFactory() {
 
     // create builder list upper cap
     builderListUpperCap = shared_ptr<SDL_Surface>( SDL_CreateRGBSurface(0, 112, 21, 8, 0, 0, 0, 0), SDL_FreeSurface);
-	if(builderListUpperCap.get() == NULL) {
+	if(builderListUpperCap.get() == nullptr) {
 		throw std::runtime_error("PictureFactory::PictureFactory: Cannot create new Picture!");
 	}
 	palette.applyToSurface(builderListUpperCap.get());
-	SDL_FillRect(builderListUpperCap.get(), NULL, PALCOLOR_TRANSPARENT);
+	SDL_FillRect(builderListUpperCap.get(), nullptr, PALCOLOR_TRANSPARENT);
 
 	shared_ptr<SDL_Surface> builderListUpperCapLeft = shared_ptr<SDL_Surface>( getSubPicture(ChoamPic.get(),64,3,42,18), SDL_FreeSurface);
 	SDL_Rect dest5 = {  0, 0, 42, 18 };
-	SDL_BlitSurface(builderListUpperCapLeft.get(), NULL, builderListUpperCap.get(), &dest5);
+	SDL_BlitSurface(builderListUpperCapLeft.get(), nullptr, builderListUpperCap.get(), &dest5);
 
     shared_ptr<SDL_Surface> builderListUpperCapMiddle = shared_ptr<SDL_Surface>( getSubPicture(ChoamPic.get(),69,3,38,13), SDL_FreeSurface);
 	SDL_Rect dest6 = {  42, 0, 38, 13 };
-	SDL_BlitSurface(builderListUpperCapMiddle.get(), NULL, builderListUpperCap.get(), &dest6);
+	SDL_BlitSurface(builderListUpperCapMiddle.get(), nullptr, builderListUpperCap.get(), &dest6);
 
     shared_ptr<SDL_Surface> builderListUpperCapRight = shared_ptr<SDL_Surface>( getSubPicture(ChoamPic.get(),69,3,48,21), SDL_FreeSurface);
 	SDL_Rect dest7 = {  64, 0, 48, 21 };
-	SDL_BlitSurface(builderListUpperCapRight.get(), NULL, builderListUpperCap.get(), &dest7);
+	SDL_BlitSurface(builderListUpperCapRight.get(), nullptr, builderListUpperCap.get(), &dest7);
 
 	replaceColor(builderListUpperCap.get(), 30, 0);
     SDL_SetColorKey(builderListUpperCap.get(), SDL_TRUE, 0);
 
     // create builder list lower cap
     builderListLowerCap = shared_ptr<SDL_Surface>( SDL_CreateRGBSurface(0, 112, 17, 8, 0, 0, 0, 0), SDL_FreeSurface);
-	if(builderListLowerCap.get() == NULL) {
+	if(builderListLowerCap.get() == nullptr) {
 		throw std::runtime_error("PictureFactory::PictureFactory: Cannot create new Picture!");
 	}
 	palette.applyToSurface(builderListLowerCap.get());
-	SDL_FillRect(builderListLowerCap.get(), NULL, PALCOLOR_TRANSPARENT);
+	SDL_FillRect(builderListLowerCap.get(), nullptr, PALCOLOR_TRANSPARENT);
 
 	shared_ptr<SDL_Surface> builderListLowerCapLeft = shared_ptr<SDL_Surface>( getSubPicture(ChoamPic.get(),64,149,44,17), SDL_FreeSurface);
 	SDL_Rect dest8 = {  0, 0, 44, 17 };
-	SDL_BlitSurface(builderListLowerCapLeft.get(), NULL, builderListLowerCap.get(), &dest8);
+	SDL_BlitSurface(builderListLowerCapLeft.get(), nullptr, builderListLowerCap.get(), &dest8);
 
     shared_ptr<SDL_Surface> builderListLowerCapMiddle = shared_ptr<SDL_Surface>( getSubPicture(ChoamPic.get(),68,152,40,14), SDL_FreeSurface);
 	SDL_Rect dest9 = {  44, 3, 40, 14 };
-	SDL_BlitSurface(builderListLowerCapMiddle.get(), NULL, builderListLowerCap.get(), &dest9);
+	SDL_BlitSurface(builderListLowerCapMiddle.get(), nullptr, builderListLowerCap.get(), &dest9);
 
     shared_ptr<SDL_Surface> builderListLowerCapRight = shared_ptr<SDL_Surface>( getSubPicture(ChoamPic.get(),68,149,48,17), SDL_FreeSurface);
 	SDL_Rect dest10 = {  64, 0, 48, 17 };
-	SDL_BlitSurface(builderListLowerCapRight.get(), NULL, builderListLowerCap.get(), &dest10);
+	SDL_BlitSurface(builderListLowerCapRight.get(), nullptr, builderListLowerCap.get(), &dest10);
 
 	replaceColor(builderListLowerCap.get(), 30, 0);
     SDL_SetColorKey(builderListLowerCap.get(), SDL_TRUE, 0);
@@ -261,13 +261,13 @@ SDL_Surface* PictureFactory::createTopBar() {
 	SDL_Rect dest2 = calcDrawingRect(decorationBorder.hborder.get(),0,32);
 	for(dest2.x = 0; dest2.x < topBar->w; dest2.x+=decorationBorder.hborder.get()->w) {
 	    SDL_Rect tmpDest = dest2;
-		SDL_BlitSurface(decorationBorder.hborder.get(),NULL,topBar,&tmpDest);
+		SDL_BlitSurface(decorationBorder.hborder.get(),nullptr,topBar,&tmpDest);
 	}
 
 	drawVLine(topBar,topBar->w-7,32,topBar->h-1,96);
 
 	SDL_Rect dest3 = {getWidth(topBar) - 6, getHeight(topBar)-12, 12, 5};
-	SDL_BlitSurface(decorationBorder.hspacer.get(),NULL,topBar,&dest3);
+	SDL_BlitSurface(decorationBorder.hspacer.get(),nullptr,topBar,&dest3);
 
 	drawVLine(topBar,topBar->w-1,0,topBar->h-1,0);
 
@@ -284,21 +284,21 @@ SDL_Surface* PictureFactory::createSideBar(bool bEditor) {
 	SDL_Rect dest2 = calcDrawingRect(decorationBorder.vborder.get(),0,0);
 	for(dest2.y = 0; dest2.y < sideBar->h; dest2.y+=decorationBorder.vborder.get()->h) {
 	    SDL_Rect tmpDest = dest2;
-		SDL_BlitSurface(decorationBorder.vborder.get(),NULL,sideBar,&tmpDest);
+		SDL_BlitSurface(decorationBorder.vborder.get(),nullptr,sideBar,&tmpDest);
 	}
 
 	SDL_Rect dest3 = calcDrawingRect(decorationBorder.vspacer.get(),0,30,HAlign::Left,VAlign::Bottom);
-	SDL_BlitSurface(decorationBorder.vspacer.get(),NULL,sideBar,&dest3);
+	SDL_BlitSurface(decorationBorder.vspacer.get(),nullptr,sideBar,&dest3);
 
 	drawHLine(sideBar,0,32-decorationBorder.vspacer.get()->h-2,decorationBorder.vspacer.get()->w-1,96);
 	drawHLine(sideBar,0,31,decorationBorder.vspacer.get()->w-1,0);
 
 	SDL_Rect dest4 = calcDrawingRect(decorationBorder.ball.get(),0,32);
-	SDL_BlitSurface(decorationBorder.ball.get(),NULL,sideBar,&dest4);
+	SDL_BlitSurface(decorationBorder.ball.get(),nullptr,sideBar,&dest4);
 
 	drawHLine(sideBar,0,43,decorationBorder.vspacer.get()->w-1,0);
 	SDL_Rect dest5 = calcDrawingRect(decorationBorder.vspacer.get(),0,44);
-	SDL_BlitSurface(decorationBorder.vspacer.get(),NULL,sideBar,&dest5);
+	SDL_BlitSurface(decorationBorder.vspacer.get(),nullptr,sideBar,&dest5);
 	drawHLine(sideBar,0,44+decorationBorder.vspacer.get()->h,decorationBorder.vspacer.get()->w-1,96);
 
 	SDL_Rect dest6 = {13,0,getWidth(sideBar)-1,132};
@@ -306,21 +306,21 @@ SDL_Surface* PictureFactory::createSideBar(bool bEditor) {
 	drawRect(sideBar,13,1,sideBar->w-2,130,115);
 
 	SDL_Rect dest7 = calcDrawingRect(decorationBorder.vspacer.get(),0,130,HAlign::Left,VAlign::Bottom);
-	SDL_BlitSurface(decorationBorder.vspacer.get(),NULL,sideBar,&dest7);
+	SDL_BlitSurface(decorationBorder.vspacer.get(),nullptr,sideBar,&dest7);
 
 	drawHLine(sideBar,0,132-decorationBorder.vspacer.get()->h-2,decorationBorder.vspacer.get()->w-1,96);
 	drawHLine(sideBar,0,131,decorationBorder.vspacer.get()->w-1,0);
 
 	SDL_Rect dest8 = calcDrawingRect(decorationBorder.ball.get(),0,132);
-	SDL_BlitSurface(decorationBorder.ball.get(),NULL,sideBar,&dest8);
+	SDL_BlitSurface(decorationBorder.ball.get(),nullptr,sideBar,&dest8);
 
 	drawHLine(sideBar,0,143,decorationBorder.vspacer.get()->w-1,0);
 	SDL_Rect dest9 = calcDrawingRect(decorationBorder.vspacer.get(),0,144);
-	SDL_BlitSurface(decorationBorder.vspacer.get(),NULL,sideBar,&dest9);
+	SDL_BlitSurface(decorationBorder.vspacer.get(),nullptr,sideBar,&dest9);
 	drawHLine(sideBar,0,144+decorationBorder.vspacer.get()->h,decorationBorder.vspacer.get()->w-1,96);
 
 	SDL_Rect dest10 = calcDrawingRect(decorationBorder.hspacer.get(),13,132);
-	SDL_BlitSurface(decorationBorder.hspacer.get(),NULL,sideBar,&dest10);
+	SDL_BlitSurface(decorationBorder.hspacer.get(),nullptr,sideBar,&dest10);
 
 	drawVLine(sideBar,18,132,132+decorationBorder.hspacer.get()->h-1,96);
 	drawHLine(sideBar,13,132+decorationBorder.hspacer.get()->h,sideBar->w-1,0);
@@ -328,26 +328,26 @@ SDL_Surface* PictureFactory::createSideBar(bool bEditor) {
 	SDL_Rect dest11 = calcDrawingRect(decorationBorder.hborder.get(),0,132);
 	for(dest11.x = 19; dest11.x < sideBar->w; dest11.x+=decorationBorder.hborder.get()->w) {
 	    SDL_Rect tmpDest = dest11;
-		SDL_BlitSurface(decorationBorder.hborder.get(),NULL,sideBar,&tmpDest);
+		SDL_BlitSurface(decorationBorder.hborder.get(),nullptr,sideBar,&tmpDest);
 	}
 
     if(bEditor) {
         SDL_Rect dest12 = calcDrawingRect(decorationBorder.vspacer.get(),0,getHeight(sideBar) - 32 - 14,HAlign::Left,VAlign::Bottom);
-        SDL_BlitSurface(decorationBorder.vspacer.get(),NULL,sideBar,&dest12);
+        SDL_BlitSurface(decorationBorder.vspacer.get(),nullptr,sideBar,&dest12);
 
         drawHLine(sideBar,0,sideBar->h - 32 - 12 - decorationBorder.vspacer.get()->h-2,decorationBorder.vspacer.get()->w-1,96);
         drawHLine(sideBar,0,sideBar->h - 32 - 12 - 1,decorationBorder.vspacer.get()->w-1,0);
 
         SDL_Rect dest13 = calcDrawingRect(decorationBorder.ball.get(),0,getHeight(sideBar) - 32 - 12);
-        SDL_BlitSurface(decorationBorder.ball.get(),NULL,sideBar,&dest13);
+        SDL_BlitSurface(decorationBorder.ball.get(),nullptr,sideBar,&dest13);
 
         drawHLine(sideBar,0,sideBar->h - 32 - 1,decorationBorder.vspacer.get()->w-1,0);
         SDL_Rect dest14 = calcDrawingRect(decorationBorder.vspacer.get(),0,getHeight(sideBar) - 32);
-        SDL_BlitSurface(decorationBorder.vspacer.get(),NULL,sideBar,&dest14);
+        SDL_BlitSurface(decorationBorder.vspacer.get(),nullptr,sideBar,&dest14);
         drawHLine(sideBar,0,sideBar->h - 32 + decorationBorder.vspacer.get()->h,decorationBorder.vspacer.get()->w-1,96);
     } else {
         SDL_Rect dest15 = calcDrawingRect(creditsBorder.get(),46,132);
-        SDL_BlitSurface(creditsBorder.get(),NULL,sideBar,&dest15);
+        SDL_BlitSurface(creditsBorder.get(),nullptr,sideBar,&dest15);
     }
 
 	return sideBar;
@@ -362,13 +362,13 @@ SDL_Surface* PictureFactory::createBottomBar() {
 	SDL_Rect dest2 = calcDrawingRect(decorationBorder.hborder.get(), 0, 0);
 	for(dest2.x = 0; dest2.x < BottomBar->w; dest2.x+=decorationBorder.hborder.get()->w) {
 	    SDL_Rect tmpDest = dest2;
-		SDL_BlitSurface(decorationBorder.hborder.get(),NULL,BottomBar,&tmpDest);
+		SDL_BlitSurface(decorationBorder.hborder.get(),nullptr,BottomBar,&tmpDest);
 	}
 
 	drawVLine(BottomBar,BottomBar->w-7,0,11,96);
 
 	SDL_Rect dest3 = {getWidth(BottomBar) - 6,0,12,5};
-	SDL_BlitSurface(decorationBorder.hspacer.get(),NULL,BottomBar,&dest3);
+	SDL_BlitSurface(decorationBorder.hspacer.get(),nullptr,BottomBar,&dest3);
 
 	drawVLine(BottomBar,BottomBar->w-1,0,BottomBar->h-1,0);
 
@@ -377,7 +377,7 @@ SDL_Surface* PictureFactory::createBottomBar() {
 
 SDL_Surface* PictureFactory::createPlacingGrid(int size, int color) {
 	SDL_Surface* placingGrid;
-	if((placingGrid = SDL_CreateRGBSurface(0,size,size,8,0,0,0,0)) == NULL) {
+	if((placingGrid = SDL_CreateRGBSurface(0,size,size,8,0,0,0,0)) == nullptr) {
 		fprintf(stderr,"PictureFactory::createPlacingGrid: Cannot create new Picture!\n");
 		exit(EXIT_FAILURE);
 	}
@@ -406,14 +406,14 @@ SDL_Surface* PictureFactory::createPlacingGrid(int size, int color) {
 
 
 void PictureFactory::drawFrame(SDL_Surface* Pic, unsigned int DecorationType, SDL_Rect* dest) {
-	if(Pic == NULL)
+	if(Pic == nullptr)
 		return;
 
 	if(DecorationType >= NUM_DECORATIONFRAMES)
 		return;
 
 	SDL_Rect tmp;
-	if(dest == NULL) {
+	if(dest == nullptr) {
 		tmp.x = 0;
 		tmp.y = 0;
 		tmp.w = Pic->w;
@@ -423,16 +423,16 @@ void PictureFactory::drawFrame(SDL_Surface* Pic, unsigned int DecorationType, SD
 
 	//corners
 	SDL_Rect dest1 = calcDrawingRect(frame[DecorationType].leftUpperCorner.get(), dest->x, dest->y);
-	SDL_BlitSurface(frame[DecorationType].leftUpperCorner.get(),NULL,Pic,&dest1);
+	SDL_BlitSurface(frame[DecorationType].leftUpperCorner.get(),nullptr,Pic,&dest1);
 
 	SDL_Rect dest2 = calcDrawingRect(frame[DecorationType].rightUpperCorner.get(), dest->w-1, dest->y, HAlign::Right, VAlign::Top);
-	SDL_BlitSurface(frame[DecorationType].rightUpperCorner.get(),NULL,Pic,&dest2);
+	SDL_BlitSurface(frame[DecorationType].rightUpperCorner.get(),nullptr,Pic,&dest2);
 
     SDL_Rect dest3 = calcDrawingRect(frame[DecorationType].leftLowerCorner.get(), dest->x, dest->h-1, HAlign::Left, VAlign::Bottom);
-	SDL_BlitSurface(frame[DecorationType].leftLowerCorner.get(),NULL,Pic,&dest3);
+	SDL_BlitSurface(frame[DecorationType].leftLowerCorner.get(),nullptr,Pic,&dest3);
 
     SDL_Rect dest4 = calcDrawingRect(frame[DecorationType].rightLowerCorner.get(), dest->w-1, dest->h-1, HAlign::Right, VAlign::Bottom);
-	SDL_BlitSurface(frame[DecorationType].rightLowerCorner.get(),NULL,Pic,&dest4);
+	SDL_BlitSurface(frame[DecorationType].rightLowerCorner.get(),nullptr,Pic,&dest4);
 
 	//hborders
 	SDL_Rect dest5 = calcDrawingRect(frame[DecorationType].hborder.get(), dest->x, dest->y);
@@ -440,7 +440,7 @@ void PictureFactory::drawFrame(SDL_Surface* Pic, unsigned int DecorationType, SD
 		dest5.x <= dest->w - frame[DecorationType].rightUpperCorner.get()->w - 1;
 		dest5.x += frame[DecorationType].hborder.get()->w) {
         SDL_Rect tmpDest = dest5;
-		SDL_BlitSurface(frame[DecorationType].hborder.get(),NULL,Pic,&tmpDest);
+		SDL_BlitSurface(frame[DecorationType].hborder.get(),nullptr,Pic,&tmpDest);
 	}
 
     SDL_Rect dest6 = calcDrawingRect(frame[DecorationType].hborder.get(), dest->x, dest->h-1, HAlign::Left, VAlign::Bottom);
@@ -448,7 +448,7 @@ void PictureFactory::drawFrame(SDL_Surface* Pic, unsigned int DecorationType, SD
 		dest6.x <= dest->w - frame[DecorationType].rightLowerCorner.get()->w - 1;
 		dest6.x += frame[DecorationType].hborder.get()->w) {
         SDL_Rect tmpDest = dest6;
-		SDL_BlitSurface(frame[DecorationType].hborder.get(),NULL,Pic,&tmpDest);
+		SDL_BlitSurface(frame[DecorationType].hborder.get(),nullptr,Pic,&tmpDest);
 	}
 
 	//vborders
@@ -457,7 +457,7 @@ void PictureFactory::drawFrame(SDL_Surface* Pic, unsigned int DecorationType, SD
 		dest7.y <= dest->h - frame[DecorationType].leftLowerCorner.get()->h - 1;
 		dest7.y += frame[DecorationType].vborder.get()->h) {
         SDL_Rect tmpDest = dest7;
-		SDL_BlitSurface(frame[DecorationType].vborder.get(),NULL,Pic,&tmpDest);
+		SDL_BlitSurface(frame[DecorationType].vborder.get(),nullptr,Pic,&tmpDest);
 	}
 
     SDL_Rect dest8 = calcDrawingRect(frame[DecorationType].vborder.get(), dest->w-1, dest->y, HAlign::Right, VAlign::Top);
@@ -465,7 +465,7 @@ void PictureFactory::drawFrame(SDL_Surface* Pic, unsigned int DecorationType, SD
 		dest8.y <= dest->h - frame[DecorationType].rightLowerCorner.get()->h - 1;
 		dest8.y += frame[DecorationType].vborder.get()->h) {
         SDL_Rect tmpDest = dest8;
-		SDL_BlitSurface(frame[DecorationType].vborder.get(),NULL,Pic,&tmpDest);
+		SDL_BlitSurface(frame[DecorationType].vborder.get(),nullptr,Pic,&tmpDest);
 	}
 
 }
@@ -475,7 +475,7 @@ SDL_Surface* PictureFactory::createFrame(unsigned int DecorationType,int width, 
 	if(UseBackground) {
 		Pic = getSubPicture(background.get(),0,0,width,height);
 	} else {
-		if((Pic = SDL_CreateRGBSurface(0,width,height,8,0,0,0,0)) == NULL) {
+		if((Pic = SDL_CreateRGBSurface(0,width,height,8,0,0,0,0)) == nullptr) {
 			fprintf(stderr,"PictureFactory::createFrame: Cannot create new Picture!\n");
 			exit(EXIT_FAILURE);
 		}
@@ -500,13 +500,13 @@ SDL_Surface* PictureFactory::createMainBackground() {
 	drawFrame(Pic,DecorationFrame2,&dest0);
 
 	SDL_Rect dest1 = calcDrawingRect(harkonnenLogo.get(),11,11);
-	SDL_BlitSurface(harkonnenLogo.get(),NULL,Pic,&dest1);
+	SDL_BlitSurface(harkonnenLogo.get(),nullptr,Pic,&dest1);
 
 	SDL_Rect dest2 = calcDrawingRect(atreidesLogo.get(),getWidth(Pic)-11,11,HAlign::Right,VAlign::Top);
-	SDL_BlitSurface(atreidesLogo.get(),NULL,Pic,&dest2);
+	SDL_BlitSurface(atreidesLogo.get(),nullptr,Pic,&dest2);
 
 	SDL_Rect dest3 = calcDrawingRect(ordosLogo.get(),11,getHeight(Pic)-11,HAlign::Left,VAlign::Bottom);
-	SDL_BlitSurface(ordosLogo.get(),NULL,Pic,&dest3);
+	SDL_BlitSurface(ordosLogo.get(),nullptr,Pic,&dest3);
 
 	SDL_Surface* Version = getSubPicture(background.get(),0,0,75,32);
 
@@ -516,14 +516,14 @@ SDL_Surface* PictureFactory::createMainBackground() {
 	SDL_Surface *VersionText = pFontManager->createSurfaceWithText(versionString, PALCOLOR_BLACK, FONT_STD12);
 
 	SDL_Rect dest4 = calcDrawingRect(VersionText, getWidth(Version)/2, getHeight(Version)/2 + 2, HAlign::Center, VAlign::Center);
-	SDL_BlitSurface(VersionText,NULL,Version,&dest4);
+	SDL_BlitSurface(VersionText,nullptr,Version,&dest4);
 
 	SDL_FreeSurface(VersionText);
 
 	drawFrame(Version,SimpleFrame);
 
 	SDL_Rect dest5 = calcDrawingRect(Version, getWidth(Pic) - 11, getHeight(Pic) - 11, HAlign::Right, VAlign::Bottom);
-	SDL_BlitSurface(Version,NULL,Pic,&dest5);
+	SDL_BlitSurface(Version,nullptr,Pic,&dest5);
 
 	SDL_FreeSurface(Version);
 
@@ -533,7 +533,7 @@ SDL_Surface* PictureFactory::createMainBackground() {
 SDL_Surface* PictureFactory::createGameStatsBackground(int House) {
     SDL_Surface* pSurface = copySurface(gameStatsBackground.get());
 
-    SDL_Surface* pLogo = NULL;
+    SDL_Surface* pLogo = nullptr;
     switch(House) {
         case HOUSE_HARKONNEN:
         case HOUSE_SARDAUKAR: {
@@ -554,9 +554,9 @@ SDL_Surface* PictureFactory::createGameStatsBackground(int House) {
     pLogo = Scaler::defaultDoubleSurface(pLogo,true);
 
     SDL_Rect dest1 = calcDrawingRect(pLogo, getWidth(gameStatsBackground.get())/2 - 320 + 2, getHeight(gameStatsBackground.get())/2 - 200 + 16);
-    SDL_BlitSurface(pLogo, NULL, pSurface, &dest1);
+    SDL_BlitSurface(pLogo, nullptr, pSurface, &dest1);
     SDL_Rect dest2 = calcDrawingRect(pLogo, getWidth(gameStatsBackground.get())/2 + 320 - 3, getHeight(gameStatsBackground.get())/2 - 200 + 16, HAlign::Right, VAlign::Top);
-    SDL_BlitSurface(pLogo, NULL, pSurface, &dest2);
+    SDL_BlitSurface(pLogo, nullptr, pSurface, &dest2);
 
     SDL_FreeSurface(pLogo);
 
@@ -579,13 +579,13 @@ SDL_Surface* PictureFactory::createMenu(int x,int y) {
 }
 
 SDL_Surface* PictureFactory::createMenu(SDL_Surface* CaptionPic,int y) {
-	if(CaptionPic == NULL)
-		return NULL;
+	if(CaptionPic == nullptr)
+		return nullptr;
 
 	SDL_Surface* Pic = getSubPicture(background.get(), 0,0,CaptionPic->w,y);
 
 	SDL_Rect dest1 = calcDrawingRect(CaptionPic,0,0);
-	SDL_BlitSurface(CaptionPic, NULL,Pic,&dest1);
+	SDL_BlitSurface(CaptionPic, nullptr,Pic,&dest1);
 
 	drawFrame(Pic,SimpleFrame,&dest1);
 
@@ -597,14 +597,14 @@ SDL_Surface* PictureFactory::createMenu(SDL_Surface* CaptionPic,int y) {
 
 SDL_Surface* PictureFactory::createOptionsMenu() {
 	SDL_Surface* tmp;
-	if((tmp = SDL_LoadBMP_RW(pFileManager->openFile("UI_OptionsMenu.bmp"),true)) == NULL) {
+	if((tmp = SDL_LoadBMP_RW(pFileManager->openFile("UI_OptionsMenu.bmp"),true)) == nullptr) {
 		fprintf(stderr,"PictureFactory::createOptionsMenu(): Cannot load UI_OptionsMenu.bmp!\n");
 		exit(EXIT_FAILURE);
 	}
 	SDL_SetColorKey(tmp, SDL_TRUE, 0);
 
 	SDL_Surface* Pic = getSubPicture(background.get(),0,0,tmp->w,tmp->h);
-	SDL_BlitSurface(tmp,NULL,Pic,NULL);
+	SDL_BlitSurface(tmp,nullptr,Pic,nullptr);
 
 	SDL_Rect dest1 = {0,0,getWidth(Pic),27};
 	drawFrame(Pic,SimpleFrame,&dest1);
@@ -626,7 +626,7 @@ SDL_Surface* PictureFactory::createHouseSelect(SDL_Surface* HouseChoice) {
     SDL_Rect dest = { 0, 50, getWidth(Pic), getHeight(Pic)-50 };
 	SDL_FillRect(Pic, &dest, PALCOLOR_BLACK);
 
-	drawFrame(Pic,SimpleFrame,NULL);
+	drawFrame(Pic,SimpleFrame,nullptr);
 
 	return Pic;
 }
@@ -669,7 +669,7 @@ SDL_Surface* PictureFactory::createGreyHouseChoice(SDL_Surface* HouseChoice) {
 SDL_Surface* PictureFactory::createMapChoiceScreen(int House) {
 	SDL_Surface* pMapChoiceScreen;
 
-	if((pMapChoiceScreen = LoadCPS_RW(pFileManager->openFile("MAPMACH.CPS"),true)) == NULL) {
+	if((pMapChoiceScreen = LoadCPS_RW(pFileManager->openFile("MAPMACH.CPS"),true)) == nullptr) {
 		fprintf(stderr,"PictureFactory::createMapChoiceScreen(): Cannot read MAPMACH.CPS!\n");
 		exit(EXIT_FAILURE);
 	}
@@ -680,20 +680,20 @@ SDL_Surface* PictureFactory::createMapChoiceScreen(int House) {
 	switch(House) {
 		case HOUSE_HARKONNEN:
 		case HOUSE_SARDAUKAR: {
-			SDL_BlitSurface(harkonnenLogo.get(),NULL,pMapChoiceScreen,&LeftLogo);
-			SDL_BlitSurface(harkonnenLogo.get(),NULL,pMapChoiceScreen,&RightLogo);
+			SDL_BlitSurface(harkonnenLogo.get(),nullptr,pMapChoiceScreen,&LeftLogo);
+			SDL_BlitSurface(harkonnenLogo.get(),nullptr,pMapChoiceScreen,&RightLogo);
 		} break;
 
 		case HOUSE_ATREIDES:
 		case HOUSE_FREMEN: {
-			SDL_BlitSurface(atreidesLogo.get(),NULL,pMapChoiceScreen,&LeftLogo);
-			SDL_BlitSurface(atreidesLogo.get(),NULL,pMapChoiceScreen,&RightLogo);
+			SDL_BlitSurface(atreidesLogo.get(),nullptr,pMapChoiceScreen,&LeftLogo);
+			SDL_BlitSurface(atreidesLogo.get(),nullptr,pMapChoiceScreen,&RightLogo);
 		} break;
 
 		case HOUSE_ORDOS:
 		case HOUSE_MERCENARY: {
-			SDL_BlitSurface(ordosLogo.get(),NULL,pMapChoiceScreen,&LeftLogo);
-			SDL_BlitSurface(ordosLogo.get(),NULL,pMapChoiceScreen,&RightLogo);
+			SDL_BlitSurface(ordosLogo.get(),nullptr,pMapChoiceScreen,&LeftLogo);
+			SDL_BlitSurface(ordosLogo.get(),nullptr,pMapChoiceScreen,&RightLogo);
 		} break;
 
         default: {
@@ -706,14 +706,14 @@ SDL_Surface* PictureFactory::createMapChoiceScreen(int House) {
         SDL_Surface* tmp2 = copySurface(tmp);       // Workaround: SDL2 leaks memory when blitting from A to B and afterwards from B to A
         SDL_FreeSurface(tmp);
         SDL_Rect dest = {8,0,303,23};
-        SDL_BlitSurface(tmp2,NULL,pMapChoiceScreen,&dest);
+        SDL_BlitSurface(tmp2,nullptr,pMapChoiceScreen,&dest);
         SDL_FreeSurface(tmp2);
     } else if(settings.general.language == "fr") {
         SDL_Surface* tmp = getSubPicture(pMapChoiceScreen,8,96, 303, 23);
         SDL_Surface* tmp2 = copySurface(tmp);       // Workaround: SDL2 leaks memory when blitting from A to B and afterwards from B to A
         SDL_FreeSurface(tmp);
         SDL_Rect dest = {8,0,303,23};
-        SDL_BlitSurface(tmp2,NULL,pMapChoiceScreen,&dest);
+        SDL_BlitSurface(tmp2,nullptr,pMapChoiceScreen,&dest);
         SDL_FreeSurface(tmp2);
     } else {
 		; // Nothing to do (use English)
@@ -727,14 +727,14 @@ SDL_Surface* PictureFactory::createMapChoiceScreen(int House) {
 	SDL_Surface* pFullMapChoiceScreen = copySurface(background.get());
 
 	SDL_Rect dest = calcAlignedDrawingRect(pMapChoiceScreen, pFullMapChoiceScreen);
-	SDL_BlitSurface(pMapChoiceScreen,NULL,pFullMapChoiceScreen,&dest);
+	SDL_BlitSurface(pMapChoiceScreen,nullptr,pFullMapChoiceScreen,&dest);
 	SDL_FreeSurface(pMapChoiceScreen);
 	return pFullMapChoiceScreen;
 }
 
 SDL_Surface* PictureFactory::createMentatHouseChoiceQuestion(int House, Palette& benePalette) {
 	SDL_Surface* pSurface;
-	if((pSurface = SDL_CreateRGBSurface(0,416+208,48,8,0,0,0,0)) == NULL) {
+	if((pSurface = SDL_CreateRGBSurface(0,416+208,48,8,0,0,0,0)) == nullptr) {
 		fprintf(stderr,"PictureFactory::createMentatHouseChoiceQuestion: Cannot create new Picture!\n");
 		exit(EXIT_FAILURE);
 	}
@@ -744,7 +744,7 @@ SDL_Surface* PictureFactory::createMentatHouseChoiceQuestion(int House, Palette&
 
 	SDL_Surface* pQuestionPart1 = getSubPicture(mentatHouseChoiceQuestionSurface.get(),0,0, 416, 48);
 
-    SDL_Surface* pQuestionPart2 = NULL;
+    SDL_Surface* pQuestionPart2 = nullptr;
 
     switch(House) {
         case HOUSE_HARKONNEN:   pQuestionPart2 = getSubPicture(mentatHouseChoiceQuestionSurface.get(),0, 48, 208, 48);   break;
@@ -759,10 +759,10 @@ SDL_Surface* PictureFactory::createMentatHouseChoiceQuestion(int House, Palette&
     SDL_SetColorKey(pQuestionPart2, SDL_TRUE, 0);
 
 	SDL_Rect dest1 = calcDrawingRect(pQuestionPart1, 0, 0);
-    SDL_BlitSurface(pQuestionPart1,NULL,pSurface,&dest1);
+    SDL_BlitSurface(pQuestionPart1,nullptr,pSurface,&dest1);
 
 	SDL_Rect dest2 = calcDrawingRect(pQuestionPart2, getWidth(pQuestionPart1), 0);
-    SDL_BlitSurface(pQuestionPart2,NULL,pSurface,&dest2);
+    SDL_BlitSurface(pQuestionPart2,nullptr,pSurface,&dest2);
 
     SDL_FreeSurface(pQuestionPart1);
     SDL_FreeSurface(pQuestionPart2);
@@ -794,12 +794,12 @@ SDL_Surface* PictureFactory::createHeraldFre(SDL_Surface* heraldHark) {
     SDL_Surface* pMask = SDL_LoadBMP_RW(pFileManager->openFile("HeraldFreMask.bmp"), true);
     SDL_SetColorKey(pMask, SDL_TRUE, 0);
 
-    SDL_BlitSurface(pMask, NULL, pBlueReplaced, NULL);
+    SDL_BlitSurface(pMask, nullptr, pBlueReplaced, nullptr);
     SDL_FreeSurface(pMask);
 
     SDL_SetColorKey(pBlueReplaced, SDL_TRUE, 223);
 
-    SDL_BlitSurface(pBlueReplaced, NULL, pSandworm, NULL);
+    SDL_BlitSurface(pBlueReplaced, nullptr, pSandworm, nullptr);
     SDL_FreeSurface(pBlueReplaced);
 
     return pSandworm;
@@ -819,7 +819,7 @@ SDL_Surface* PictureFactory::createHeraldSard(SDL_Surface* heraldOrd, SDL_Surfac
     SDL_Surface* pMask = SDL_LoadBMP_RW(pFileManager->openFile("HeraldSardMask.bmp"), true);
     SDL_SetColorKey(pMask, SDL_TRUE, 0);
 
-    SDL_BlitSurface(pMask, NULL, pFrameAndCurtain, NULL);
+    SDL_BlitSurface(pMask, nullptr, pFrameAndCurtain, nullptr);
     SDL_FreeSurface(pMask);
 
     return pFrameAndCurtain;
@@ -844,12 +844,12 @@ SDL_Surface* PictureFactory::createHeraldMerc(SDL_Surface* heraldAtre, SDL_Surfa
     SDL_Surface* pMask = SDL_LoadBMP_RW(pFileManager->openFile("HeraldMercMask.bmp"), true);
     SDL_SetColorKey(pMask, SDL_TRUE, 0);
 
-    SDL_BlitSurface(pMask, NULL, pFrameAndCurtain, NULL);
+    SDL_BlitSurface(pMask, nullptr, pFrameAndCurtain, nullptr);
     SDL_FreeSurface(pMask);
 
     SDL_SetColorKey(pFrameAndCurtain, SDL_TRUE, 223);
 
-    SDL_BlitSurface(pFrameAndCurtain, NULL, pSoldier, NULL);
+    SDL_BlitSurface(pFrameAndCurtain, nullptr, pSoldier, nullptr);
     SDL_FreeSurface(pFrameAndCurtain);
 
     return pSoldier;
@@ -908,9 +908,9 @@ Animation* PictureFactory::createSardaukarPlanet(Animation* ordosPlanetAnimation
 
         SDL_Surface* newFrameWithoutPlanet = copySurface(*iter);
 
-        SDL_BlitSurface(maskSurface,NULL,newFrameWithoutPlanet,NULL);
+        SDL_BlitSurface(maskSurface,nullptr,newFrameWithoutPlanet,nullptr);
         SDL_SetColorKey(newFrameWithoutPlanet, SDL_TRUE, 223);
-        SDL_BlitSurface(newFrameWithoutPlanet,NULL,newFrame,NULL);
+        SDL_BlitSurface(newFrameWithoutPlanet,nullptr,newFrame,nullptr);
 
         SDL_FreeSurface(newFrameWithoutPlanet);
 

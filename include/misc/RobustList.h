@@ -44,8 +44,8 @@ public:
 		Default constructor. Does not register at the list.
 	*/
 	RobustListIterator<T>() {
-		current = NULL;
-		pList = NULL;
+		current = nullptr;
+		pList = nullptr;
 		AdvancingAllowed = true;
 	}
 
@@ -53,8 +53,8 @@ public:
 		Copy constructor.
 	*/
 	RobustListIterator<T>(const RobustListIterator<T>& x) {
-		current = NULL;
-		pList = NULL;
+		current = nullptr;
+		pList = nullptr;
 		AdvancingAllowed = true;
 		*this = x;
 	}
@@ -102,7 +102,7 @@ public:
 		\return A reference to this iterator
 	*/
 	RobustListIterator<T>& operator++() {
-		if(current->next != NULL) {
+		if(current->next != nullptr) {
 			if(AdvancingAllowed == true) {
 				current = current->next;
 			} else {
@@ -119,7 +119,7 @@ public:
 		If the flag is not set this method advances the iterator.
 	*/
 	void operator++(int) {
-		if(current->next != NULL) {
+		if(current->next != nullptr) {
 			if(AdvancingAllowed == true) {
 				current = current->next;
 			} else {
@@ -156,11 +156,11 @@ public:
 		\return	true if both iterators point to the same element, false otherwise
 	*/
 	bool operator==(const RobustListIterator<T>& x) const {
-		if((pList == NULL) && (x.pList == NULL)) {
+		if((pList == nullptr) && (x.pList == nullptr)) {
 			return true;
-		} else if((pList == NULL) && (x.current == x.pList->tail)) {
+		} else if((pList == nullptr) && (x.current == x.pList->tail)) {
 			return true;
-		} else if((x.pList == NULL) && (current == pList->tail)) {
+		} else if((x.pList == nullptr) && (current == pList->tail)) {
 			return true;
 		} else {
 			return (current == x.current);
@@ -211,7 +211,7 @@ private:
 		Registers this iterator at the list
 	*/
 	void registerAtList() {
-		if(pList != NULL) {
+		if(pList != nullptr) {
 			pList->RegisterIterator(this);
 		}
 	}
@@ -220,9 +220,9 @@ private:
 		Unregisters this iterator from the list
 	*/
 	void unregisterFromList() {
-		if(pList != NULL) {
+		if(pList != nullptr) {
 			pList->UnregisterIterator(this);
-			pList = NULL;
+			pList = nullptr;
 		}
 	}
 
@@ -245,8 +245,8 @@ public:
 		Default constructor. Does not register at the list.
 	*/
 	RobustListConstIterator<T>() {
-		current = NULL;
-		pList = NULL;
+		current = nullptr;
+		pList = nullptr;
 		AdvancingAllowed = true;
 	}
 
@@ -254,8 +254,8 @@ public:
 		Copy constructor.
 	*/
 	RobustListConstIterator<T>(const RobustListConstIterator<T>& x) {
-		current = NULL;
-		pList = NULL;
+		current = nullptr;
+		pList = nullptr;
 		AdvancingAllowed = true;
 		*this = x;
 	}
@@ -313,7 +313,7 @@ public:
 		\return A reference to this iterator
 	*/
 	RobustListConstIterator<T>& operator++() {
-		if(current->next != NULL) {
+		if(current->next != nullptr) {
 			if(AdvancingAllowed == true) {
 				current = current->next;
 			} else {
@@ -330,7 +330,7 @@ public:
 		If the flag is not set this method advances the iterator.
 	*/
 	void operator++(int) {
-		if(current->next != NULL) {
+		if(current->next != nullptr) {
 			if(AdvancingAllowed == true) {
 				current = current->next;
 			} else {
@@ -367,11 +367,11 @@ public:
 		\return	true if both iterators point to the same element, false otherwise
 	*/
 	bool operator==(const RobustListConstIterator<T>& x) const {
-		if((pList == NULL) && (x.pList == NULL)) {
+		if((pList == nullptr) && (x.pList == nullptr)) {
 			return true;
-		} else if((pList == NULL) && (x.current == x.pList->tail)) {
+		} else if((pList == nullptr) && (x.current == x.pList->tail)) {
 			return true;
-		} else if((x.pList == NULL) && (current == pList->tail)) {
+		} else if((x.pList == nullptr) && (current == pList->tail)) {
 			return true;
 		} else {
 			return (current == x.current);
@@ -422,7 +422,7 @@ private:
 		Registers this iterator at the list
 	*/
 	void registerAtList() {
-		if(pList != NULL) {
+		if(pList != nullptr) {
 			pList->RegisterConstIterator(this);
 		}
 	}
@@ -431,9 +431,9 @@ private:
 		Unregisters this iterator from the list
 	*/
 	void unregisterFromList() {
-		if(pList != NULL) {
+		if(pList != nullptr) {
 			pList->UnregisterConstIterator(this);
-			pList = NULL;
+			pList = nullptr;
 		}
 	}
 
@@ -462,11 +462,11 @@ public:
 		head = new RobustListNode<T>();
 		tail = new RobustListNode<T>();
 		head->next = tail;
-		head->prev = NULL;
-		tail->next = NULL;
+		head->prev = nullptr;
+		tail->next = nullptr;
 		tail->prev = head;
-		IteratorListHead = NULL;
-		ConstIteratorListHead = NULL;
+		IteratorListHead = nullptr;
+		ConstIteratorListHead = nullptr;
 	}
 
 	/**
@@ -477,11 +477,11 @@ public:
 		head = new RobustListNode<T>();
 		tail = new RobustListNode<T>();
 		head->next = tail;
-		head->prev = NULL;
-		tail->next = NULL;
+		head->prev = nullptr;
+		tail->next = nullptr;
 		tail->prev = head;
-		IteratorListHead = NULL;
-		ConstIteratorListHead = NULL;
+		IteratorListHead = nullptr;
+		ConstIteratorListHead = nullptr;
 		*this = x;
 	}
 
@@ -493,14 +493,14 @@ public:
 		delete head;
 		delete tail;
 
-		while(IteratorListHead != NULL) {
+		while(IteratorListHead != nullptr) {
 			IteratorListNode* tmp = IteratorListHead;
 			tmp->iter->unregisterFromList();
 			/*IteratorListHead = IteratorListHead->next;
 			delete tmp;*/
 		}
 
-		while(ConstIteratorListHead != NULL) {
+		while(ConstIteratorListHead != nullptr) {
 			ConstIteratorListNode* tmp = ConstIteratorListHead;
 			tmp->iter->unregisterFromList();
 			/*ConstIteratorListHead = ConstIteratorListHead->next;
@@ -784,10 +784,10 @@ private:
 	*/
 	void UnregisterIterator(RobustListIterator<T>* pIterator) const {
 		IteratorListNode* current = IteratorListHead;
-		IteratorListNode* old = NULL;
-		while(current != NULL) {
+		IteratorListNode* old = nullptr;
+		while(current != nullptr) {
 			if(current->iter == pIterator) {
-				if(old == NULL) {
+				if(old == nullptr) {
 					IteratorListHead = current->next;
 				} else {
 					old->next = current->next;
@@ -806,10 +806,10 @@ private:
 	*/
 	void UnregisterConstIterator(RobustListConstIterator<T>* pIterator) const {
 		ConstIteratorListNode* current = ConstIteratorListHead;
-		ConstIteratorListNode* old = NULL;
-		while(current != NULL) {
+		ConstIteratorListNode* old = nullptr;
+		while(current != nullptr) {
 			if(current->iter == pIterator) {
-				if(old == NULL) {
+				if(old == nullptr) {
 					ConstIteratorListHead = current->next;
 				} else {
 					old->next = current->next;
@@ -833,7 +833,7 @@ private:
 		}
 
 		IteratorListNode* current = IteratorListHead;
-		while(current != NULL) {
+		while(current != nullptr) {
 			if(current->iter->current == element) {
 				current->iter->current = current->iter->current->next;
 				current->iter->AdvancingAllowed = false;
@@ -842,7 +842,7 @@ private:
 		}
 
 		ConstIteratorListNode* constcurrent = ConstIteratorListHead;
-		while(constcurrent != NULL) {
+		while(constcurrent != nullptr) {
 			if(constcurrent->iter->current == element) {
 				constcurrent->iter->current = constcurrent->iter->current->next;
 				constcurrent->iter->AdvancingAllowed = false;

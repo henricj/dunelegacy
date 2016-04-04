@@ -90,10 +90,10 @@ void setVideoMode()
 		videoFlags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
 	}
 
-    SDL_DisplayMode targetDisplayMode = { 0, settings.video.width, settings.video.height, 0, NULL};
+    SDL_DisplayMode targetDisplayMode = { 0, settings.video.width, settings.video.height, 0, nullptr};
     SDL_DisplayMode closestDisplayMode;
 
-    if(SDL_GetClosestDisplayMode(SCREEN_DISPLAYINDEX, &targetDisplayMode, &closestDisplayMode) == NULL) {
+    if(SDL_GetClosestDisplayMode(SCREEN_DISPLAYINDEX, &targetDisplayMode, &closestDisplayMode) == nullptr) {
         fprintf(stderr, "WARNING: Falling back to 640x480!\n");
         settings.video.width = 640;
         settings.video.height = 480;
@@ -140,7 +140,7 @@ void createDefaultConfigFile(std::string configfilepath, std::string language) {
 
 
 	SDL_RWops* file = SDL_RWFromFile(configfilepath.c_str(), "w");
-	if(file == NULL) {
+	if(file == nullptr) {
         fprintf(stderr,"Failed to open config file: %s\n", SDL_GetError());
         exit(EXIT_FAILURE);
 	}
@@ -200,7 +200,7 @@ void createDefaultConfigFile(std::string configfilepath, std::string language) {
 #else
     struct passwd* pwent = getpwuid(getuid());
 
-    if(pwent != NULL) {
+    if(pwent != nullptr) {
         strncpy(playername, pwent->pw_name, MAX_PLAYERNAMELENGHT + 1);
         playername[MAX_PLAYERNAMELENGHT] = '\0';
     }
@@ -223,7 +223,7 @@ void createDefaultConfigFile(std::string configfilepath, std::string language) {
 
 void logOutputFunction(void *userdata, int category, SDL_LogPriority priority, const char *message) {
     static const char* priorityStrings[] = {
-        NULL,
+        nullptr,
         "VERBOSE",
         "DEBUG",
         "INFO",
@@ -268,7 +268,7 @@ void printMissingFilesToScreen() {
         SDL_RenderClear(renderer);
 
         SDL_Rect dest = calcDrawingRect(pTextTexture, 30, 30);
-        SDL_RenderCopy(renderer, pTextTexture, NULL, &dest);
+        SDL_RenderCopy(renderer, pTextTexture, nullptr, &dest);
 
         SDL_RenderPresent(renderer);
 
@@ -303,7 +303,7 @@ void printMissingFilesToScreen() {
 }
 
 std::string getUserLanguage() {
-    const char* pLang = NULL;
+    const char* pLang = nullptr;
 
     fprintf(stdout,"Detecting locale...\t\t"); fflush(stdout);
 
@@ -318,17 +318,17 @@ std::string getUserLanguage() {
 
 #elif defined (__APPLE__)
 	pLang = getMacLanguage();
-	if(pLang == NULL) {
+	if(pLang == nullptr) {
         return "";
 	}
 
 #else
     // should work on most unices
 	pLang = getenv("LC_ALL");
-    if(pLang == NULL) {
+    if(pLang == nullptr) {
 		// try LANG
 		pLang = getenv("LANG");
-        if(pLang == NULL) {
+        if(pLang == nullptr) {
 			return "";
 		}
     }
@@ -346,11 +346,11 @@ std::string getUserLanguage() {
 
 
 int main(int argc, char *argv[]) {
-    SDL_LogSetOutputFunction(logOutputFunction, NULL);
+    SDL_LogSetOutputFunction(logOutputFunction, nullptr);
     SDL_LogSetAllPriority(SDL_LOG_PRIORITY_WARN);
 
 	// init fnkdat
-	if(fnkdat(NULL, NULL, 0, FNKDAT_INIT) < 0) {
+	if(fnkdat(nullptr, nullptr, 0, FNKDAT_INIT) < 0) {
       perror("Could not initialize fnkdat");
       exit(EXIT_FAILURE);
 	}
@@ -388,7 +388,7 @@ int main(int argc, char *argv[]) {
             exit(EXIT_FAILURE);
         }
 
-        if(WideCharToMultiByte(CP_ACP, 0, szwLogPath, -1, szLogPath, MAX_PATH, NULL, NULL) == 0) {
+        if(WideCharToMultiByte(CP_ACP, 0, szwLogPath, -1, szLogPath, MAX_PATH, nullptr, nullptr) == 0) {
             fprintf(stderr, "Conversion of logfile path from utf-16 to ansi failed\n");
             exit(EXIT_FAILURE);
         }
@@ -400,12 +400,12 @@ int main(int argc, char *argv[]) {
         strcpy(szErrPath, pLogfilePath);
         strcpy(szErrPath + strlen(szErrPath) - 3, "err");
         freopen(szErrPath, "w", stderr);
-        setbuf(stderr, NULL);   // No buffering
+        setbuf(stderr, nullptr);   // No buffering
         char szOutPath[MAX_PATH];
         strcpy(szOutPath, pLogfilePath);
         strcpy(szOutPath + strlen(szOutPath) - 3, "out");
         freopen(szOutPath, "w", stdout);
-        setvbuf(stdout, NULL, _IOLBF, BUFSIZ);	// buffering line-wise
+        setvbuf(stdout, nullptr, _IOLBF, BUFSIZ);	// buffering line-wise
 
         #endif
 
@@ -473,7 +473,7 @@ int main(int argc, char *argv[]) {
     cursorFrame = UI_CursorNormal;
 
 	do {
-		int seed = time(NULL);
+		int seed = time(nullptr);
 		srand(seed);
 
         // check if configfile exists
@@ -568,10 +568,10 @@ int main(int argc, char *argv[]) {
 
 		if(bFirstGamestart == true && bFirstInit == true) {
             // find screen resolution bigger or equal to 800x600 (otherwise use 640x480)
-            SDL_DisplayMode targetDisplayMode = { 0, 800, 600, 0, NULL};
+            SDL_DisplayMode targetDisplayMode = { 0, 800, 600, 0, nullptr};
             SDL_DisplayMode closestDisplayMode;
 
-            if(SDL_GetClosestDisplayMode(SCREEN_DISPLAYINDEX, &targetDisplayMode, &closestDisplayMode) != NULL) {
+            if(SDL_GetClosestDisplayMode(SCREEN_DISPLAYINDEX, &targetDisplayMode, &closestDisplayMode) != nullptr) {
                 settings.video.width = closestDisplayMode.w;
                 settings.video.height = closestDisplayMode.h;
                 settings.video.preferredZoomLevel = 1;
@@ -711,7 +711,7 @@ int main(int argc, char *argv[]) {
 	} while(bExitGame == false);
 
 	// deinit fnkdat
-	if(fnkdat(NULL, NULL, 0, FNKDAT_UNINIT) < 0) {
+	if(fnkdat(nullptr, nullptr, 0, FNKDAT_UNINIT) < 0) {
 		perror("Could not uninitialize fnkdat");
 		exit(EXIT_FAILURE);
 	}

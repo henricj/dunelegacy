@@ -33,7 +33,7 @@ public:
 
 		enableResizing(true,false);
 		setToggleButton(true);
-        pCheckedActiveTexture = NULL;
+        pCheckedActiveTexture = nullptr;
         bFreeCheckedActiveTexture = false;
 	}
 
@@ -98,25 +98,25 @@ public:
 
         SDL_Texture* tex;
         if(isChecked()) {
-            if((isActive() || bHover) && pCheckedActiveTexture != NULL) {
+            if((isActive() || bHover) && pCheckedActiveTexture != nullptr) {
                 tex = pCheckedActiveTexture;
             } else {
                 tex = pPressedTexture;
             }
         } else {
-            if((isActive() || bHover) && pActiveTexture != NULL) {
+            if((isActive() || bHover) && pActiveTexture != nullptr) {
                 tex = pActiveTexture;
             } else {
                 tex = pUnpressedTexture;
             }
         }
 
-        if(tex == NULL) {
+        if(tex == nullptr) {
             return;
         }
 
         SDL_Rect dest = calcDrawingRect(tex, position.x, position.y);
-        SDL_RenderCopy(renderer, tex, NULL, &dest);
+        SDL_RenderCopy(renderer, tex, nullptr, &dest);
     }
 
     /**
@@ -157,7 +157,7 @@ protected:
 	virtual void updateTextures() {
         Button::updateTextures();
 
-        if(pUnpressedTexture == NULL) {
+        if(pUnpressedTexture == nullptr) {
             invalidateTextures();
 
             setSurfaces(GUIStyle::getInstance().createCheckboxSurface(getSize().x, getSize().y, text, false, false, textcolor, textshadowcolor),true,
@@ -175,11 +175,11 @@ protected:
 	virtual void invalidateTextures() {
         Button::invalidateTextures();
 
-        if((bFreeCheckedActiveTexture == true) && (pCheckedActiveTexture != NULL)) {
+        if((bFreeCheckedActiveTexture == true) && (pCheckedActiveTexture != nullptr)) {
             SDL_DestroyTexture(pCheckedActiveTexture);
             bFreeCheckedActiveTexture = false;
         }
-        pCheckedActiveTexture = NULL;
+        pCheckedActiveTexture = nullptr;
 	}
 
 private:

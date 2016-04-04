@@ -71,7 +71,7 @@ void WaitingForOtherPlayers::update() {
     std::list<std::string>::iterator iter;
     for(iter = peerList.begin(); iter != peerList.end(); ++iter) {
         HumanPlayer* pPlayer = dynamic_cast<HumanPlayer*>(currentGame->getPlayerByName(*iter));
-        if(pPlayer != NULL) {
+        if(pPlayer != nullptr) {
             if(pPlayer->nextExpectedCommandsCycle <= currentGame->getGameCycleCount()) {
                 text += "\n" + pPlayer->getPlayername();
             }

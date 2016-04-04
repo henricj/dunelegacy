@@ -155,7 +155,7 @@ void GameOptionsWindow::onOK() {
     gameOptions.manualCarryallDrops = manualCarryallDropsCheckbox.isChecked();
 
     Window* pParentWindow = dynamic_cast<Window*>(getParent());
-    if(pParentWindow != NULL) {
+    if(pParentWindow != nullptr) {
         pParentWindow->closeChildWindow();
     }
 }

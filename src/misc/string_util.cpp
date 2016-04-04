@@ -145,7 +145,7 @@ std::string strprintf(const std::string fmt, ...) {
 	va_list arg_ptr;
 	va_start(arg_ptr, fmt);
 
-	int length = vsnprintf(NULL, 0, fmt.c_str(), arg_ptr);
+	int length = vsnprintf(nullptr, 0, fmt.c_str(), arg_ptr);
 	if(length < 0) {
         throw std::runtime_error("strprintf(): vsnprintf() failed!");
 	}

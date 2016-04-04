@@ -293,7 +293,7 @@ void StarPort::updateStructureSpecificStuff() {
 
                 for(int i = 0; i < num2Place; i++) {
                     UnitBase* newUnit = getOwner()->createUnit(newUnitItemID);
-                    if (newUnit != NULL) {
+                    if (newUnit != nullptr) {
                         Coord spot = newUnit->isAFlyingUnit() ? location + Coord(1,1) : currentGameMap->findDeploySpot(newUnit, location, destination, structureSize);
                         newUnit->deploy(spot);
 

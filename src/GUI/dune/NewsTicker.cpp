@@ -30,15 +30,15 @@ NewsTicker::NewsTicker() : Widget() {
 
  	timer = -MESSAGETIME/2;
 	pBackground = pGFXManager->getUIGraphic(UI_MessageBox);
-	pCurrentMessageTexture = NULL;
+	pCurrentMessageTexture = nullptr;
 
 	resize(getTextureSize(pBackground));
 }
 
 NewsTicker::~NewsTicker() {
-    if(pCurrentMessageTexture != NULL) {
+    if(pCurrentMessageTexture != nullptr) {
         SDL_DestroyTexture(pCurrentMessageTexture);
-        pCurrentMessageTexture = NULL;
+        pCurrentMessageTexture = nullptr;
     }
 }
 
@@ -75,12 +75,12 @@ void NewsTicker::draw(Point position) {
 	}
 
 	//draw background
-	if(pBackground == NULL) {
+	if(pBackground == nullptr) {
         return;
 	}
 
 	SDL_Rect dest = calcDrawingRect(pBackground, position.x, position.y);
-	SDL_RenderCopy(renderer, pBackground, NULL, &dest);
+	SDL_RenderCopy(renderer, pBackground, nullptr, &dest);
 
 	// draw message
 	if(!messages.empty()) {
@@ -103,15 +103,15 @@ void NewsTicker::draw(Point position) {
 		}
 
 		if(currentMessage != messages.front()) {
-            if(pCurrentMessageTexture != NULL) {
+            if(pCurrentMessageTexture != nullptr) {
                 SDL_DestroyTexture(pCurrentMessageTexture);
-                pCurrentMessageTexture = NULL;
+                pCurrentMessageTexture = nullptr;
             }
             currentMessage = messages.front();
             pCurrentMessageTexture = pFontManager->createTextureWithText(currentMessage, COLOR_BLACK, FONT_STD10);
 		}
 
-		if(pCurrentMessageTexture != NULL) {
+		if(pCurrentMessageTexture != nullptr) {
 
             SDL_Rect cut = { 0, 0, 0, 0 };
             if(timer>0) {

@@ -183,7 +183,7 @@ bool BuilderBase::isWaitingToPlace() const {
 	}
 
 	const BuildItem* tmp = getBuildItem(currentProducedItem);
-	if(tmp == NULL) {
+	if(tmp == nullptr) {
 		return false;
 	} else {
 		return (productionProgress >= tmp->price);
@@ -359,7 +359,7 @@ bool BuilderBase::update() {
             for(int i = 0; i < num2Place; i++) {
                 UnitBase* newUnit = getOwner()->createUnit(finishedItemID);
 
-                if(newUnit != NULL) {
+                if(newUnit != nullptr) {
                     Coord spot = currentGameMap->findDeploySpot(newUnit, location, destination, structureSize);
                     newUnit->deploy(spot);
 

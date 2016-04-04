@@ -27,7 +27,7 @@
 
 IFileStream::IFileStream()
 {
-	fp = NULL;
+	fp = nullptr;
 }
 
 IFileStream::~IFileStream()
@@ -37,7 +37,7 @@ IFileStream::~IFileStream()
 
 bool IFileStream::open(const char* filename)
 {
-	if(fp != NULL) {
+	if(fp != nullptr) {
 		fclose(fp);
 	}
 
@@ -53,7 +53,7 @@ bool IFileStream::open(const char* filename)
         return false;
     }
 
-    if(WideCharToMultiByte(CP_ACP, 0, szwPath, -1, szPath, MAX_PATH, NULL, NULL) == 0) {
+    if(WideCharToMultiByte(CP_ACP, 0, szwPath, -1, szPath, MAX_PATH, nullptr, nullptr) == 0) {
         return false;
     }
 
@@ -61,7 +61,7 @@ bool IFileStream::open(const char* filename)
 
     #endif
 
-	if( (fp = fopen(pFilename,"rb")) == NULL) {
+	if( (fp = fopen(pFilename,"rb")) == nullptr) {
 		return false;
 	} else {
 		return true;
@@ -75,9 +75,9 @@ bool IFileStream::open(std::string filename)
 
 void IFileStream::close()
 {
-	if(fp != NULL) {
+	if(fp != nullptr) {
 		fclose(fp);
-		fp = NULL;
+		fp = nullptr;
 	}
 }
 

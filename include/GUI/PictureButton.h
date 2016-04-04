@@ -43,13 +43,13 @@ public:
 		\param	bFreeActiveSurface		Should pActiveSurface be freed if this button is destroyed?
 	*/
 	virtual void setSurfaces(	SDL_Surface* pUnpressedSurface,bool bFreeUnpressedSurface,
-								SDL_Surface* pPressedSurface = NULL,bool bFreePressedSurface = false,
-								SDL_Surface* pActiveSurface = NULL,bool bFreeActiveSurface = false) {
+								SDL_Surface* pPressedSurface = nullptr,bool bFreePressedSurface = false,
+								SDL_Surface* pActiveSurface = nullptr,bool bFreeActiveSurface = false) {
 		Button::setSurfaces(pUnpressedSurface,bFreeUnpressedSurface,
 							pPressedSurface,bFreePressedSurface,
 							pActiveSurface,bFreeActiveSurface);
 
-		if(pUnpressedSurface != NULL) {
+		if(pUnpressedSurface != nullptr) {
 			resize(getTextureSize(pUnpressedTexture));
 		} else {
 			resize(0,0);
@@ -66,13 +66,13 @@ public:
 		\param	bFreeActiveTexture		Should pActiveTexture be freed if this button is destroyed?
 	*/
 	virtual void setTextures(	SDL_Texture* pUnpressedTexture,bool bFreeUnpressedTexture,
-								SDL_Texture* pPressedTexture = NULL,bool bFreePressedTexture = false,
-								SDL_Texture* pActiveTexture = NULL,bool bFreeActiveTexture = false) {
+								SDL_Texture* pPressedTexture = nullptr,bool bFreePressedTexture = false,
+								SDL_Texture* pActiveTexture = nullptr,bool bFreeActiveTexture = false) {
 		Button::setTextures(pUnpressedTexture,bFreeUnpressedTexture,
 							pPressedTexture,bFreePressedTexture,
 							pActiveTexture,bFreeActiveTexture);
 
-		if(pUnpressedTexture != NULL) {
+		if(pUnpressedTexture != nullptr) {
 			resize(getTextureSize(pUnpressedTexture));
 		} else {
 			resize(0,0);
@@ -85,7 +85,7 @@ public:
 		\return the minimum size of this button
 	*/
 	virtual Point getMinimumSize() const {
-		if(pUnpressedTexture != NULL) {
+		if(pUnpressedTexture != nullptr) {
 			return getTextureSize(pUnpressedTexture);
 		} else {
 			return Point(0,0);

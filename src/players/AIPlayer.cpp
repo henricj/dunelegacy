@@ -112,7 +112,7 @@ void AIPlayer::onDecrementStructures(int itemID, const Coord& location) {
 void AIPlayer::onDamage(const ObjectBase* pObject, int damage, Uint32 damagerID) {
     const ObjectBase* pDamager = getObject(damagerID);
 
-    if(pDamager == NULL || pDamager->getOwner()->getTeam() == getHouse()->getTeam()) {
+    if(pDamager == nullptr || pDamager->getOwner()->getTeam() == getHouse()->getTeam()) {
         return;
     }
 
@@ -123,7 +123,7 @@ void AIPlayer::onDamage(const ObjectBase* pObject, int damage, Uint32 damagerID)
 	    //scramble some free units to defend
         scrambleUnitsAndDefend(pDamager);
 
-        if((pDamager != NULL) && pDamager->isInfantry()) {
+        if((pDamager != nullptr) && pDamager->isInfantry()) {
             const UnitBase* pUnit = dynamic_cast<const UnitBase*>(pObject);
             doAttackObject(pUnit, pDamager, false);
         }
@@ -209,7 +209,7 @@ Coord AIPlayer::findPlaceLocation(Uint32 itemID) {
 
 		count++;
 
-		if(getMap().okayToPlaceStructure(pos.x, pos.y, structureSizeX, structureSizeY, false, (itemID == Structure_ConstructionYard) ? NULL : getHouse())) {
+		if(getMap().okayToPlaceStructure(pos.x, pos.y, structureSizeX, structureSizeY, false, (itemID == Structure_ConstructionYard) ? nullptr : getHouse())) {
             FixPoint rating;
 
 		    switch(itemID) {
@@ -371,7 +371,7 @@ void AIPlayer::build() {
             }
 
             const BuilderBase* pBuilder = dynamic_cast<const BuilderBase*>(pStructure);
-            if(pBuilder != NULL) {
+            if(pBuilder != nullptr) {
 
                 if((getHouse()->getCredits() > 2000) && (pBuilder->getHealth() >= pBuilder->getMaxHealth()) && (pBuilder->isUpgrading() == false) && (pBuilder->getCurrentUpgradeLevel() < pBuilder->getMaxUpgradeLevel())) {
                     doUpgrade(pBuilder);
@@ -647,7 +647,7 @@ void AIPlayer::build() {
 
 void AIPlayer::attack() {
     Coord destination;
-    const UnitBase* pLeaderUnit = NULL;
+    const UnitBase* pLeaderUnit = nullptr;
     RobustList<const UnitBase*>::const_iterator iter;
     for(iter = getUnitList().begin(); iter != getUnitList().end(); ++iter) {
         const UnitBase *pUnit = *iter;
@@ -661,7 +661,7 @@ void AIPlayer::attack() {
             && (pUnit->getItemID() != Unit_Carryall)
             && (pUnit->getItemID() != Unit_Saboteur)) {
 
-            if(pLeaderUnit == NULL) {
+            if(pLeaderUnit == nullptr) {
                 pLeaderUnit = pUnit;
 
                 //default destination
@@ -701,7 +701,7 @@ void AIPlayer::checkAllUnits() {
 
                     if(pUnit2->getOwner() == getHouse() && pUnit2->getItemID() == Unit_Harvester) {
                         const Harvester* pHarvester = dynamic_cast<const Harvester*>(pUnit2);
-                        if( pHarvester != NULL
+                        if( pHarvester != nullptr
                             && getMap().tileExists(pHarvester->getLocation())
                             && !getMap().getTile(pHarvester->getLocation())->isRock()
                             && blockDistance(pUnit->getLocation(), pHarvester->getLocation()) <= 5) {
@@ -752,7 +752,7 @@ bool AIPlayer::isAllowedToArm() const {
     int maxTeamScore = 0;
     for(int i = 0; i < NUM_HOUSES; i++) {
         const House* pHouse = getHouse(i);
-        if(pHouse != NULL) {
+        if(pHouse != nullptr) {
             teamScore[pHouse->getTeam()] += pHouse->getUnitBuiltValue();
 
             if(pHouse->getTeam() != getHouse()->getTeam()) {

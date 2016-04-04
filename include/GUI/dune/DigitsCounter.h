@@ -59,7 +59,7 @@ public:
 		SDL_Texture* tex = pGFXManager->getUIGraphic(UI_MissionSelect);
 
 		SDL_Rect dest = calcDrawingRect(tex, position.x, position.y);
-		SDL_RenderCopy(renderer, tex, NULL, &dest);
+		SDL_RenderCopy(renderer, tex, nullptr, &dest);
 
 		SDL_Texture* digitsTex = pGFXManager->getUIGraphic(UI_CreditsDigits);
 
@@ -82,7 +82,7 @@ public:
 	*/
 	virtual Point getMinimumSize() const {
 		SDL_Texture* tex = pGFXManager->getUIGraphic(UI_MissionSelect);
-		if(tex != NULL) {
+		if(tex != nullptr) {
 			return getTextureSize(tex);
 		} else {
 			return Point(0,0);

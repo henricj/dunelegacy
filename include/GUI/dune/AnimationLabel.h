@@ -29,7 +29,7 @@ public:
 	/// default constructor
 	AnimationLabel() {
 		enableResizing(false,false);
-		pAnim = NULL;
+		pAnim = nullptr;
 	}
 
 	/// destructor
@@ -54,7 +54,7 @@ public:
 		\param	position	Position to draw the widget to
 	*/
 	virtual inline void draw(Point position) {
-		if(pAnim == NULL) {
+		if(pAnim == nullptr) {
 			return;
 		}
 
@@ -62,7 +62,7 @@ public:
 
 		if(isVisible()) {
             SDL_Rect dest = calcDrawingRect(tex, position.x, position.y);
-			SDL_RenderCopy(renderer, tex, NULL, &dest);
+			SDL_RenderCopy(renderer, tex, nullptr, &dest);
 		}
 	};
 
@@ -73,7 +73,7 @@ public:
 	*/
 	virtual Point getMinimumSize() const {
 		SDL_Surface* surface = pAnim->getFrame();
-		if(surface != NULL) {
+		if(surface != nullptr) {
 			return Point((Sint32) surface->w, (Sint32) surface->h);
 		} else {
 			return Point(0,0);

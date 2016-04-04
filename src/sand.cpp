@@ -64,13 +64,13 @@ void drawCursor() {
 		dest.y -= dest.h/2;
 	}
 
-	SDL_RenderCopy(renderer, tex, NULL, &dest);
+	SDL_RenderCopy(renderer, tex, nullptr, &dest);
 }
 
 /**
     This function resolves the picture corresponding to one item id.
     \param itemID   the id of the item to resolve (e.g. Unit_Quad)
-    \return the surface corresponding. This surface should not be freed or modified. NULL on error.
+    \return the surface corresponding. This surface should not be freed or modified. nullptr on error.
 */
 SDL_Texture* resolveItemPicture(int itemID, HOUSETYPE house) {
 	int newPicID;
@@ -758,7 +758,7 @@ void startSinglePlayerGame(const GameInitSettings& init)
 				case GAME_RETURN_TO_MENU:
 				default: {
 					delete currentGame;
-					currentGame = NULL;
+					currentGame = nullptr;
 
                     // Change music to menu music
                     musicPlayer->changeMusic(MUSIC_MENU);
@@ -803,5 +803,5 @@ void startMultiPlayerGame(const GameInitSettings& init)
     }
 
     delete currentGame;
-    currentGame = NULL;
+    currentGame = nullptr;
 }

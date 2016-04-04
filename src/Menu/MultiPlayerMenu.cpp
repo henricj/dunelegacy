@@ -123,7 +123,7 @@ MultiPlayerMenu::MultiPlayerMenu() : MenuBase() {
 MultiPlayerMenu::~MultiPlayerMenu() {
 	fprintf(stdout, "stopping network..."); fflush(stdout);
 	delete pNetworkManager;
-	pNetworkManager = NULL;
+	pNetworkManager = nullptr;
     fprintf(stdout, "\t\tfinished\n");
 }
 

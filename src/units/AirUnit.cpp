@@ -44,7 +44,7 @@ AirUnit::AirUnit(InputStream& stream) : UnitBase(stream)
 
 void AirUnit::init()
 {
-    shadowGraphic = NULL;
+    shadowGraphic = nullptr;
     aFlyingUnit = true;
 }
 
@@ -84,7 +84,7 @@ void AirUnit::checkPos()
 
 void AirUnit::blitToScreen()
 {
-    if(shadowGraphic != NULL) {
+    if(shadowGraphic != nullptr) {
         int x = screenborder->world2screenX(realX + 4);
         int y = screenborder->world2screenY(realY + 12);
 

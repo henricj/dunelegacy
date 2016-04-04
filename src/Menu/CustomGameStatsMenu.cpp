@@ -86,7 +86,7 @@ CustomGameStatsMenu::CustomGameStatsMenu() : MenuBase()
     for(int i=0;i<NUM_HOUSES;i++) {
         House* pHouse = currentGame->getHouse(i);
 
-        if(pHouse != NULL) {
+        if(pHouse != nullptr) {
             maxBuiltValue = std::max(maxBuiltValue, pHouse->getBuiltValue());
             maxDestroyedValue = std::max(maxDestroyedValue, pHouse->getDestroyedValue());
             maxSpiceHarvested = std::max(maxSpiceHarvested, pHouse->getHarvestedSpice().toFloat());
@@ -97,7 +97,7 @@ CustomGameStatsMenu::CustomGameStatsMenu() : MenuBase()
         HouseStat& curHouseStat = houseStat[i];
         House* pHouse = currentGame->getHouse(i);
 
-        if(pHouse != NULL) {
+        if(pHouse != nullptr) {
             Uint32 color = SDL2RGB(palette[houseToPaletteIndex[i]]);
 
             curHouseStat.houseName.setText(_("House") + " " + getHouseNameByNumber((HOUSETYPE) i));

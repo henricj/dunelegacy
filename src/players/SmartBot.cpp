@@ -125,7 +125,7 @@ void SmartBot::onDecrementStructures(int itemID, const Coord& location) {
 void SmartBot::onDamage(const ObjectBase* pObject, int damage, Uint32 damagerID) {
     const ObjectBase* pDamager = getObject(damagerID);
 
-    if(pDamager == NULL || pDamager->getOwner() == getHouse()) {
+    if(pDamager == nullptr || pDamager->getOwner() == getHouse()) {
         return;
     }
 
@@ -136,7 +136,7 @@ void SmartBot::onDamage(const ObjectBase* pObject, int damage, Uint32 damagerID)
 	    //scramble some free units to defend
         scrambleUnitsAndDefend(pDamager);
 
-        if((pDamager != NULL) && pDamager->isInfantry()) {
+        if((pDamager != nullptr) && pDamager->isInfantry()) {
             const UnitBase* pUnit = dynamic_cast<const UnitBase*>(pObject);
             doAttackObject(pUnit, pDamager, false);
         }
@@ -250,7 +250,7 @@ Coord SmartBot::findPlaceLocation(Uint32 itemID) {
 
 		count++;
 
-		if(getMap().okayToPlaceStructure(pos.x, pos.y, structureSizeX, structureSizeY, false, (itemID == Structure_ConstructionYard) ? NULL : getHouse())
+		if(getMap().okayToPlaceStructure(pos.x, pos.y, structureSizeX, structureSizeY, false, (itemID == Structure_ConstructionYard) ? nullptr : getHouse())
             && getMap().isAStructureGap(pos.x, pos.y, structureSizeX, structureSizeY)) { // Code to make a path between buildings
             FixPoint rating;
 
@@ -439,7 +439,7 @@ void SmartBot::build() {
             }
 
             const BuilderBase* pBuilder = dynamic_cast<const BuilderBase*>(pStructure);
-            if(pBuilder != NULL) {
+            if(pBuilder != nullptr) {
 
                 switch (pStructure->getItemID()) {
 
@@ -918,7 +918,7 @@ void SmartBot::checkAllUnits() {
 
                     if(pUnit2->getOwner() == getHouse() && pUnit2->getItemID() == Unit_Harvester) {
                         const Harvester* pHarvester = dynamic_cast<const Harvester*>(pUnit2);
-                        if( pHarvester != NULL
+                        if( pHarvester != nullptr
                             && getMap().tileExists(pHarvester->getLocation())
                             && !getMap().getTile(pHarvester->getLocation())->isRock()
                             && blockDistance(pUnit->getLocation(), pHarvester->getLocation()) <= 5) {

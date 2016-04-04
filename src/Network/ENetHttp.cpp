@@ -64,7 +64,7 @@ int getPortFromURL(const std::string& url) {
 	}
 
 	if(url.at(domainEnd) == ':') {
-		int port = strtol(&url[domainEnd+1], NULL, 10);
+		int port = strtol(&url[domainEnd+1], nullptr, 10);
 
 		if(port <= 0) {
 			return -1;
@@ -157,7 +157,7 @@ std::string loadFromHttp(const std::string& domain, const std::string& filepath,
 	sendBuffer.data = (void*) request.c_str();
 	sendBuffer.dataLength = request.size();
 
-	if(enet_socket_send(httpSocket, NULL, &sendBuffer, 1) < 0) {
+	if(enet_socket_send(httpSocket, nullptr, &sendBuffer, 1) < 0) {
 		throw std::runtime_error("Error while sending HTTP request to '" + domain + "'");
 	}
 
@@ -172,7 +172,7 @@ std::string loadFromHttp(const std::string& domain, const std::string& filepath,
 		receiveBuffer.data = resultBuffer;
 		receiveBuffer.dataLength = sizeof(resultBuffer);
 
-		int receiveLength = enet_socket_receive(httpSocket, NULL, &receiveBuffer, 1);
+		int receiveLength = enet_socket_receive(httpSocket, nullptr, &receiveBuffer, 1);
 
 		if(receiveLength < 0) {
 			throw std::runtime_error("Error while receiving from '" + domain + "'");

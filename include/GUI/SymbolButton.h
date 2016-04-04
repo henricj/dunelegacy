@@ -28,9 +28,9 @@ public:
 	/// Default contructor
 	SymbolButton() : Button() {
 		enableResizing(true,true);
-		pSymbolSurface = NULL;
+		pSymbolSurface = nullptr;
 		bFreeSymbolSurface = false;
-		pActiveSymbolSurface = NULL;
+		pActiveSymbolSurface = nullptr;
 		bFreeActiveSymbolSurface = false;
 	}
 
@@ -38,13 +38,13 @@ public:
 	virtual ~SymbolButton() {
 		if(bFreeSymbolSurface) {
 			SDL_FreeSurface(pSymbolSurface);
-			pSymbolSurface = NULL;
+			pSymbolSurface = nullptr;
 			bFreeSymbolSurface = false;
 		}
 
 		if(bFreeActiveSymbolSurface) {
 			SDL_FreeSurface(pActiveSymbolSurface);
-			pActiveSymbolSurface = NULL;
+			pActiveSymbolSurface = nullptr;
 			bFreeActiveSymbolSurface = false;
 		}
 	};
@@ -56,20 +56,20 @@ public:
 		\param	pActiveSymbolSurface		This is the symbol to show on mouse over
 		\param	bActiveFreeSymbolSurface	Should pActiveSymbolSurface be freed if this button is destroyed?
 	*/
-	virtual void setSymbol(SDL_Surface* pSymbolSurface,bool bFreeSymbolSurface, SDL_Surface* pActiveSymbolSurface = NULL, bool bFreeActiveSymbolSurface = false) {
-		if(pSymbolSurface == NULL) {
+	virtual void setSymbol(SDL_Surface* pSymbolSurface,bool bFreeSymbolSurface, SDL_Surface* pActiveSymbolSurface = nullptr, bool bFreeActiveSymbolSurface = false) {
+		if(pSymbolSurface == nullptr) {
 			return;
 		}
 
 		if(this->bFreeSymbolSurface) {
 			SDL_FreeSurface(this->pSymbolSurface);
-			this->pSymbolSurface = NULL;
+			this->pSymbolSurface = nullptr;
 			this->bFreeSymbolSurface = false;
 		}
 
 		if(this->bFreeActiveSymbolSurface) {
 			SDL_FreeSurface(this->pActiveSymbolSurface);
-			this->pActiveSymbolSurface = NULL;
+			this->pActiveSymbolSurface = nullptr;
 			this->bFreeActiveSymbolSurface = false;
 		}
 
@@ -108,7 +108,7 @@ public:
 		\return the minimum size of this button
 	*/
 	virtual Point getMinimumSize() const {
-		if(pSymbolSurface != NULL) {
+		if(pSymbolSurface != nullptr) {
 			return Point((Sint32) pSymbolSurface->w + 5, (Sint32) pSymbolSurface->h + 5);
 		} else {
 			return Point(0,0);
@@ -124,31 +124,31 @@ protected:
 	virtual void updateTextures() {
         Button::updateTextures();
 
-        if(pUnpressedTexture == NULL) {
+        if(pUnpressedTexture == nullptr) {
             invalidateTextures();
 
-            SDL_Surface *pUnpressed = NULL;
-            SDL_Surface *pPressed = NULL;
-            SDL_Surface *pActive = NULL;
+            SDL_Surface *pUnpressed = nullptr;
+            SDL_Surface *pPressed = nullptr;
+            SDL_Surface *pActive = nullptr;
 
             pUnpressed = GUIStyle::getInstance().createButtonSurface(getSize().x, getSize().y, "", false, true);
             pPressed = GUIStyle::getInstance().createButtonSurface(getSize().x, getSize().y, "", true, true);
 
 
-            if(pSymbolSurface != NULL) {
+            if(pSymbolSurface != nullptr) {
                 SDL_Rect dest = calcAlignedDrawingRect(pSymbolSurface, pUnpressed);
-                SDL_BlitSurface(pSymbolSurface, NULL, pUnpressed, &dest);
+                SDL_BlitSurface(pSymbolSurface, nullptr, pUnpressed, &dest);
 
                 dest.x++;
                 dest.y++;
-                SDL_BlitSurface(pActiveSymbolSurface != NULL ? pActiveSymbolSurface : pSymbolSurface, NULL, pPressed, &dest);
+                SDL_BlitSurface(pActiveSymbolSurface != nullptr ? pActiveSymbolSurface : pSymbolSurface, nullptr, pPressed, &dest);
             }
 
-            if(pActiveSymbolSurface != NULL) {
+            if(pActiveSymbolSurface != nullptr) {
                 pActive = GUIStyle::getInstance().createButtonSurface(getSize().x, getSize().y, "", false, true);
 
                 SDL_Rect dest = calcAlignedDrawingRect(pActiveSymbolSurface, pActive);
-                SDL_BlitSurface(pActiveSymbolSurface, NULL, pActive, &dest);
+                SDL_BlitSurface(pActiveSymbolSurface, nullptr, pActive, &dest);
             }
 
             Button::setSurfaces(pUnpressed,true,pPressed,true,pActive,true);

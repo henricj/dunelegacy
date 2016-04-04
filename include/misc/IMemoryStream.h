@@ -27,7 +27,7 @@ class IMemoryStream : public InputStream
 {
 public:
 	IMemoryStream()
-	 : currentPos(0), bufferSize(0), pBuffer(NULL) {
+	 : currentPos(0), bufferSize(0), pBuffer(nullptr) {
         ;
     }
 

@@ -238,7 +238,7 @@ int Tile::assignInfantry(Uint32 newObjectID, Sint8 currentPosition) {
 		std::list<Uint32>::const_iterator iter;
 		for(iter = assignedInfantryList.begin(); iter != assignedInfantryList.end() ;++iter) {
 			InfantryBase* infant = (InfantryBase*) currentGame->getObjectManager().getObject(*iter);
-			if(infant == NULL) {
+			if(infant == nullptr) {
 				continue;
 			}
 
@@ -353,7 +353,7 @@ void Tile::blitDeadUnits(int xPos, int yPos) {
 	if(!isFogged(pLocalHouse->getHouseID())) {
 	    for(std::vector<DEADUNITTYPE>::const_iterator iter = deadUnits.begin(); iter != deadUnits.end(); ++iter) {
 	        SDL_Rect source = { 0, 0, world2zoomedWorld(TILESIZE), world2zoomedWorld(TILESIZE) };
-	        SDL_Texture** pTexture = NULL;
+	        SDL_Texture** pTexture = nullptr;
 	        switch(iter->type) {
                 case DeadUnit_Infantry: {
                     pTexture = pGFXManager->getObjPic(ObjPic_DeadInfantry, iter->house);
@@ -389,11 +389,11 @@ void Tile::blitDeadUnits(int xPos, int yPos) {
                 } break;
 
                 default: {
-                    pTexture = NULL;
+                    pTexture = nullptr;
                 } break;
 	        }
 
-	        if(pTexture != NULL) {
+	        if(pTexture != nullptr) {
                 SDL_Rect dest = {   screenborder->world2screenX(iter->realPos.x) - world2zoomedWorld(TILESIZE)/2,
                                     screenborder->world2screenY(iter->realPos.y) - world2zoomedWorld(TILESIZE)/2,
                                     world2zoomedWorld(TILESIZE),
@@ -410,7 +410,7 @@ void Tile::blitInfantry(int xPos, int yPos) {
 		for(iter = assignedInfantryList.begin(); iter != assignedInfantryList.end() ;++iter) {
 			InfantryBase* current = (InfantryBase*) currentGame->getObjectManager().getObject(*iter);
 
-			if(current == NULL) {
+			if(current == nullptr) {
 				continue;
 			}
 
@@ -445,7 +445,7 @@ void Tile::blitAirUnits(int xPos, int yPos) {
 		for(iter = assignedAirUnitList.begin(); iter != assignedAirUnitList.end() ;++iter) {
 			AirUnit* airUnit = (AirUnit*) currentGame->getObjectManager().getObject(*iter);
 
-			if(airUnit == NULL) {
+			if(airUnit == nullptr) {
 				continue;
 			}
 
@@ -465,7 +465,7 @@ void Tile::blitSelectionRects(int xPos, int yPos) {
     if(hasAnUndergroundUnit() && !isFogged(pLocalHouse->getHouseID())) {
 	    UnitBase* current = getUndergroundUnit();
 
-        if(current != NULL) {
+        if(current != nullptr) {
             if(current->isVisible(pLocalHouse->getTeam()) && (location == current->getLocation())) {
                 if(current->isSelected()) {
                     current->drawSelectionBox();
@@ -485,7 +485,7 @@ void Tile::blitSelectionRects(int xPos, int yPos) {
 		for(iter = assignedInfantryList.begin(); iter != assignedInfantryList.end() ;++iter) {
 			InfantryBase* current = dynamic_cast<InfantryBase*>(currentGame->getObjectManager().getObject(*iter));
 
-			if(current == NULL) {
+			if(current == nullptr) {
 				continue;
 			}
 
@@ -507,7 +507,7 @@ void Tile::blitSelectionRects(int xPos, int yPos) {
 		for(iter = assignedNonInfantryGroundObjectList.begin(); iter != assignedNonInfantryGroundObjectList.end() ;++iter) {
             ObjectBase* current = currentGame->getObjectManager().getObject(*iter);
 
-            if(current == NULL) {
+            if(current == nullptr) {
 				continue;
 			}
 
@@ -529,7 +529,7 @@ void Tile::blitSelectionRects(int xPos, int yPos) {
 		for(iter = assignedAirUnitList.begin(); iter != assignedAirUnitList.end() ;++iter) {
 			AirUnit* airUnit = dynamic_cast<AirUnit*>(currentGame->getObjectManager().getObject(*iter));
 
-			if(airUnit == NULL) {
+			if(airUnit == nullptr) {
 				continue;
 			}
 
@@ -647,7 +647,7 @@ void Tile::setType(int newType) {
 					current = currentGame->getObjectManager().getObject(*iter);
 					++iter;
 
-					if(current == NULL)
+					if(current == nullptr)
 						continue;
 
 					unassignUndergroundUnit(current->getObjectID());
@@ -665,7 +665,7 @@ void Tile::setType(int newType) {
 						current = currentGame->getObjectManager().getObject(*iter);
 						++iter;
 
-						if(current == NULL)
+						if(current == nullptr)
 							continue;
 
 						unassignNonInfantryGroundObject(current->getObjectID());
@@ -696,7 +696,7 @@ void Tile::squash() {
 			current = (InfantryBase*) currentGame->getObjectManager().getObject(*iter);
 			++iter;
 
-			if(current == NULL)
+			if(current == nullptr)
 				continue;
 
 			current->squash();
@@ -756,7 +756,7 @@ ObjectBase* Tile::getGroundObject() {
 	else if (hasInfantry())
 		return getInfantry();
 	else
-		return NULL;
+		return nullptr;
 }
 
 InfantryBase* Tile::getInfantry() {
@@ -787,7 +787,7 @@ UnitBase* Tile::getUndergroundUnit() {
 
 
 ObjectBase* Tile::getObject() {
-	ObjectBase* temp = NULL;
+	ObjectBase* temp = nullptr;
 	if (hasAnAirUnit())
 		temp = getAirUnit();
 	else if (hasANonInfantryGroundObject())
@@ -801,7 +801,7 @@ ObjectBase* Tile::getObject() {
 
 
 ObjectBase* Tile::getObjectAt(int x, int y) {
-	ObjectBase* temp = NULL;
+	ObjectBase* temp = nullptr;
 	if (hasAnAirUnit())
 		temp = getAirUnit();
 	else if (hasANonInfantryGroundObject())
@@ -816,7 +816,7 @@ ObjectBase* Tile::getObjectAt(int x, int y) {
 		std::list<Uint32>::const_iterator iter;
 		for(iter = assignedInfantryList.begin(); iter != assignedInfantryList.end() ;++iter) {
 			infantry = (InfantryBase*) currentGame->getObjectManager().getObject(*iter);
-			if(infantry == NULL)
+			if(infantry == nullptr)
 				continue;
 
 			centerPoint = infantry->getCenterPoint();
@@ -847,7 +847,7 @@ ObjectBase* Tile::getObjectWithID(Uint32 objectID) {
 		++iterator;
 	}
 
-	return NULL;
+	return nullptr;
 }
 
 void Tile::triggerSpiceBloom(House* pTrigger) {
@@ -890,7 +890,7 @@ void Tile::triggerSpecialBloom(House* pTrigger) {
             case 1: {
                 // The house gets a Trike for free. It spawns beside the special bloom.
                 UnitBase* pNewUnit = pTrigger->createUnit(Unit_Trike);
-                if(pNewUnit != NULL) {
+                if(pNewUnit != nullptr) {
                     Coord spot = currentGameMap->findDeploySpot(pNewUnit, location);
                     pNewUnit->deploy(spot);
                 }
@@ -901,7 +901,7 @@ void Tile::triggerSpecialBloom(House* pTrigger) {
                 int numCandidates = 0;
                 for(int i=0;i<NUM_HOUSES;i++) {
                     House* pHouse = currentGame->getHouse(i);
-                    if(pHouse != NULL && pHouse->getTeam() != pTrigger->getTeam() && pHouse->getNumUnits() > 0) {
+                    if(pHouse != nullptr && pHouse->getTeam() != pTrigger->getTeam() && pHouse->getNumUnits() > 0) {
                         numCandidates++;
                     }
                 }
@@ -910,10 +910,10 @@ void Tile::triggerSpecialBloom(House* pTrigger) {
                     break;
                 }
 
-                House* pEnemyHouse = NULL;
+                House* pEnemyHouse = nullptr;
                 for(int i=0;i<NUM_HOUSES;i++) {
                     House* pHouse = currentGame->getHouse(i);
-                    if(pHouse != NULL && pHouse->getTeam() != pTrigger->getTeam() && pHouse->getNumUnits() > 0) {
+                    if(pHouse != nullptr && pHouse->getTeam() != pTrigger->getTeam() && pHouse->getNumUnits() > 0) {
                         numCandidates--;
                         if(numCandidates == 0) {
                             pEnemyHouse = pHouse;
@@ -923,7 +923,7 @@ void Tile::triggerSpecialBloom(House* pTrigger) {
                 }
 
                 UnitBase* pNewUnit = pEnemyHouse->createUnit(Unit_Trike);
-                if(pNewUnit != NULL) {
+                if(pNewUnit != nullptr) {
                     Coord spot = currentGameMap->findDeploySpot(pNewUnit, location);
                     pNewUnit->deploy(spot);
                 }
@@ -936,7 +936,7 @@ void Tile::triggerSpecialBloom(House* pTrigger) {
                 int numCandidates = 0;
                 for(int i=0;i<NUM_HOUSES;i++) {
                     House* pHouse = currentGame->getHouse(i);
-                    if(pHouse != NULL && pHouse->getTeam() != pTrigger->getTeam() && pHouse->getNumUnits() > 0) {
+                    if(pHouse != nullptr && pHouse->getTeam() != pTrigger->getTeam() && pHouse->getNumUnits() > 0) {
                         numCandidates++;
                     }
                 }
@@ -945,10 +945,10 @@ void Tile::triggerSpecialBloom(House* pTrigger) {
                     break;
                 }
 
-                House* pEnemyHouse = NULL;
+                House* pEnemyHouse = nullptr;
                 for(int i=0;i<NUM_HOUSES;i++) {
                     House* pHouse = currentGame->getHouse(i);
-                    if(pHouse != NULL && pHouse->getTeam() != pTrigger->getTeam() && pHouse->getNumUnits() > 0) {
+                    if(pHouse != nullptr && pHouse->getTeam() != pTrigger->getTeam() && pHouse->getNumUnits() > 0) {
                         numCandidates--;
                         if(numCandidates == 0) {
                             pEnemyHouse = pHouse;
@@ -959,7 +959,7 @@ void Tile::triggerSpecialBloom(House* pTrigger) {
 
                 for(int i=0;i<3;i++) {
                     UnitBase* pNewUnit = pEnemyHouse->createUnit(Unit_Soldier);
-                    if(pNewUnit != NULL) {
+                    if(pNewUnit != nullptr) {
                         Coord spot = currentGameMap->findDeploySpot(pNewUnit, location);
                         pNewUnit->deploy(spot);
                     }
@@ -975,7 +975,7 @@ bool Tile::hasAStructure() const {
     }
 
     ObjectBase* pObject = currentGame->getObjectManager().getObject(assignedNonInfantryGroundObjectList.front());
-    return ( (pObject != NULL) && pObject->isAStructure() );
+    return ( (pObject != nullptr) && pObject->isAStructure() );
 }
 
 bool Tile::isFogged(int houseID) {
@@ -997,7 +997,7 @@ Uint32 Tile::getRadarColor(House* pHouse, bool radar) {
 			return fogColor;
 		} else {
 			ObjectBase* pObject = getObject();
-			if(pObject != NULL) {
+			if(pObject != nullptr) {
 			    Uint32 color;
 
 			    if(pObject->getItemID() == Unit_Sandworm) {

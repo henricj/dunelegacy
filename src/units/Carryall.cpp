@@ -171,11 +171,11 @@ void Carryall::checkPos()
                 Uint32 unitID = pickedUpUnitList.front();
                 UnitBase* pUnit = (UnitBase*) (currentGame->getObjectManager().getObject(unitID));
 
-                if(pUnit == NULL) {
+                if(pUnit == nullptr) {
                     return;
                 }
 
-                if((pUnit != NULL) && (pUnit->isInfantry() == false) && (droppedUnits > 0)) {
+                if((pUnit != nullptr) && (pUnit->isInfantry() == false) && (droppedUnits > 0)) {
                     // we already dropped infantry and this is no infantry
                     // => do not drop this here
                     break;
@@ -184,7 +184,7 @@ void Carryall::checkPos()
                 deployUnit(unitID);
                 droppedUnits++;
 
-                if((pUnit != NULL) && (pUnit->isInfantry() == false)) {
+                if((pUnit != nullptr) && (pUnit->isInfantry() == false)) {
                     // we dropped a non infantry unit
                     // => do not drop another unit
                     break;
@@ -204,7 +204,7 @@ void Carryall::checkPos()
                     }
                 }
             } else {
-                setTarget(NULL);
+                setTarget(nullptr);
                 setDestination(guardPoint);
 
                 idle = true;
@@ -266,7 +266,7 @@ void Carryall::deployUnit(Uint32 unitID)
 
 	UnitBase* pUnit = (UnitBase*) (currentGame->getObjectManager().getObject(unitID));
 
-	if(pUnit == NULL) {
+	if(pUnit == nullptr) {
 		return;
     }
 
@@ -281,7 +281,7 @@ void Carryall::deployUnit(Uint32 unitID)
 					if (((RepairYard*)object)->isFree()) {
 						pUnit->setTarget(object);
 						pUnit->setGettingRepaired();
-						pUnit = NULL;
+						pUnit = nullptr;
 					} else {
 					    // carryall has booked this repair yard but now will not go there => unbook
 						((RepairYard*)object)->unBook();
@@ -293,14 +293,14 @@ void Carryall::deployUnit(Uint32 unitID)
 					if (((Refinery*)object)->isFree()) {
 						((Harvester*)pUnit)->setTarget(object);
 						((Harvester*)pUnit)->setReturned();
-						pUnit = NULL;
+						pUnit = nullptr;
 						goingToRepairYard = false;
 					}
 				}
 			}
 		}
 
-		if(pUnit != NULL) {
+		if(pUnit != nullptr) {
 			pUnit->setAngle(drawnAngle);
 			Coord deployPos = currentGameMap->findDeploySpot(pUnit, location);
 			pUnit->setForced(false); // Stop units being forced if they are deployed
@@ -333,7 +333,7 @@ void Carryall::destroy()
 	std::list<Uint32>::const_iterator iter;
 	for(iter = pickedUpUnitList.begin() ; iter != pickedUpUnitList.end(); ++iter) {
 		UnitBase* pUnit = (UnitBase*) (currentGame->getObjectManager().getObject(*iter));
-		if(pUnit != NULL) {
+		if(pUnit != nullptr) {
 			pUnit->destroy();
 		}
 	}
@@ -349,7 +349,7 @@ void Carryall::destroy()
 }
 
 void Carryall::releaseTarget() {
-    setTarget(NULL);
+    setTarget(nullptr);
 
     if(!hasCargo()) {
         booked = false;
@@ -360,7 +360,7 @@ void Carryall::releaseTarget() {
 
 void Carryall::engageTarget()
 {
-    if(target && (target.getObjPointer() == NULL)) {
+    if(target && (target.getObjPointer() == nullptr)) {
         // the target does not exist anymore
         releaseTarget();
         return;
@@ -409,7 +409,7 @@ void Carryall::engageTarget()
                     deployUnit(*(pickedUpUnitList.begin()) );
                 }
 
-                setTarget(NULL);
+                setTarget(nullptr);
                 setDestination(guardPoint);
             }
         } else {
@@ -422,7 +422,7 @@ void Carryall::engageTarget()
 
 void Carryall::giveCargo(UnitBase* newUnit)
 {
-	if(newUnit == NULL) {
+	if(newUnit == nullptr) {
 		return;
     }
 
@@ -461,7 +461,7 @@ void Carryall::pickupTarget()
 				pGroundUnitTarget->doRepair();
 			}
 
-			ObjectBase* newTarget = pGroundUnitTarget->hasATarget() ? pGroundUnitTarget->getTarget() : NULL;
+			ObjectBase* newTarget = pGroundUnitTarget->hasATarget() ? pGroundUnitTarget->getTarget() : nullptr;
 
 			pickedUpUnitList.push_back(target.getObjectID());
 			pGroundUnitTarget->setPickedUp(this);
@@ -502,12 +502,12 @@ void Carryall::pickupTarget()
 }
 
 void Carryall::setTarget(const ObjectBase* newTarget) {
-	if(target.getObjPointer() != NULL
+	if(target.getObjPointer() != nullptr
 		&& targetFriendly
 		&& target.getObjPointer()->isAGroundUnit()
 		&& (((GroundUnit*)target.getObjPointer())->getCarrier() == this))
 	{
-		((GroundUnit*)target.getObjPointer())->bookCarrier(NULL);
+		((GroundUnit*)target.getObjPointer())->bookCarrier(nullptr);
 	}
 
 	UnitBase::setTarget(newTarget);
@@ -528,7 +528,7 @@ void Carryall::targeting() {
 
 void Carryall::findConstYard() {
     FixPoint closestYardDistance = 1000000;
-    ConstructionYard* bestYard = NULL;
+    ConstructionYard* bestYard = nullptr;
 
     RobustList<StructureBase*>::const_iterator iter;
     for(iter = structureList.begin(); iter != structureList.end(); ++iter) {

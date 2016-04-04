@@ -25,22 +25,22 @@
 class Palette
 {
     public:
-        Palette() : pSDLPalette(NULL) {
+        Palette() : pSDLPalette(nullptr) {
 
         }
 
-        Palette(int numPaletteEntries) : pSDLPalette(NULL) {
+        Palette(int numPaletteEntries) : pSDLPalette(nullptr) {
             pSDLPalette = SDL_AllocPalette(numPaletteEntries);
             if (!pSDLPalette) {
                 throw;
             }
         }
 
-        Palette(const SDL_Palette* pSDLPalette) : pSDLPalette(NULL) {
+        Palette(const SDL_Palette* pSDLPalette) : pSDLPalette(nullptr) {
             setSDLPalette(pSDLPalette);
         }
 
-        Palette(const Palette& palette) : pSDLPalette(NULL) {
+        Palette(const Palette& palette) : pSDLPalette(nullptr) {
             *this = palette;
         }
 
@@ -59,7 +59,7 @@ class Palette
         }
 
         inline SDL_Color& operator[](const int i) {
-            if(pSDLPalette == NULL || i < 0 || i >= pSDLPalette->ncolors) {
+            if(pSDLPalette == nullptr || i < 0 || i >= pSDLPalette->ncolors) {
                 throw std::runtime_error("Palette::operator[]: Invalid index!");
             }
 
@@ -67,7 +67,7 @@ class Palette
         }
 
         inline const SDL_Color& operator[](const int i) const {
-            if(pSDLPalette == NULL || i < 0 || i >= pSDLPalette->ncolors) {
+            if(pSDLPalette == nullptr || i < 0 || i >= pSDLPalette->ncolors) {
                 throw std::runtime_error("Palette::operator[]: Invalid index!");
             }
 
@@ -80,7 +80,7 @@ class Palette
 
         void setSDLPalette(const SDL_Palette* pSDLPalette) {
             if(!pSDLPalette) {
-                this->pSDLPalette = NULL;
+                this->pSDLPalette = nullptr;
                 return;
             }
             SDL_Palette* pNewSDLPalette = SDL_AllocPalette(pSDLPalette->ncolors);
@@ -94,7 +94,7 @@ class Palette
         }
 
         inline int getNumColors() const {
-            if(pSDLPalette == NULL) {
+            if(pSDLPalette == nullptr) {
                 return 0;
             }
 
@@ -105,15 +105,15 @@ class Palette
             Uint32 colorKey = 0;
             bool hasColorKey = (SDL_GetColorKey(pSurface, &colorKey) == 0);
 
-            if(pSDLPalette == NULL) {
+            if(pSDLPalette == nullptr) {
                 throw std::runtime_error("Palette::applyToSurface(): Palette not initialized yet!");
             }
 
-            if(pSurface == NULL) {
-                throw std::runtime_error("Palette::applyToSurface(): pSurface == NULL!");
+            if(pSurface == nullptr) {
+                throw std::runtime_error("Palette::applyToSurface(): pSurface == nullptr!");
             }
 
-            if(pSurface->format->palette == NULL) {
+            if(pSurface->format->palette == nullptr) {
                 throw std::runtime_error("Palette::applyToSurface(): Cannot apply palette to surface without a palette!");
             }
 
@@ -128,10 +128,10 @@ class Palette
     private:
 
         void deleteSDLPalette() {
-            if (pSDLPalette != NULL) {
+            if (pSDLPalette != nullptr) {
                 SDL_FreePalette(pSDLPalette);
             }
-            pSDLPalette = NULL;
+            pSDLPalette = nullptr;
         }
 
         SDL_Palette* pSDLPalette;

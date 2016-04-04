@@ -35,7 +35,7 @@ public:
 		textshadowcolor = COLOR_DEFAULT;
 		backgroundcolor = 0;
 		alignment = (Alignment_Enum) (Alignment_Left | Alignment_VCenter);
-		pTexture = NULL;
+		pTexture = nullptr;
 		enableResizing(true,true);
 	}
 
@@ -171,12 +171,12 @@ public:
 
 		updateTextures();
 
-		if(pTexture == NULL) {
+		if(pTexture == nullptr) {
             return;
 		}
 
         SDL_Rect dest = calcDrawingRect(pTexture, position.x + getSize().x/2, position.y + getSize().y/2, HAlign::Center, VAlign::Center);
-		SDL_RenderCopy(renderer, pTexture, NULL, &dest);
+		SDL_RenderCopy(renderer, pTexture, nullptr, &dest);
 	};
 
 	/**
@@ -206,7 +206,7 @@ protected:
 	virtual void updateTextures() {
         Widget::updateTextures();
 
-        if(pTexture == NULL) {
+        if(pTexture == nullptr) {
 
             //split text into single lines at every '\n'
             size_t startpos = 0;
@@ -312,9 +312,9 @@ protected:
 		This method frees all textures that are used by this label
 	*/
 	virtual void invalidateTextures() {
-		if(pTexture != NULL) {
+		if(pTexture != nullptr) {
 			SDL_DestroyTexture(pTexture);
-			pTexture = NULL;
+			pTexture = nullptr;
 		}
 	}
 

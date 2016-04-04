@@ -334,7 +334,7 @@ void QuantBot::onDamage(const ObjectBase* pObject, int damage, Uint32 damagerID)
 
 
 
-    if(pDamager == NULL || pDamager->getOwner() == getHouse() || pObject->getItemID() == Unit_Sandworm) {
+    if(pDamager == nullptr || pDamager->getOwner() == getHouse() || pObject->getItemID() == Unit_Sandworm) {
         return;
     }
 
@@ -359,7 +359,7 @@ void QuantBot::onDamage(const ObjectBase* pObject, int damage, Uint32 damagerID)
 
         const GroundUnit* pUnit = dynamic_cast<const GroundUnit*>(pObject);
 
-        if(pUnit == NULL){
+        if(pUnit == nullptr){
             return;
         }
 
@@ -510,7 +510,7 @@ Coord QuantBot::findMcvPlaceLocation(const MCV* pMCV) {
                                                 2,
                                                 2,
                                                 false,
-                                                NULL)){
+                                                nullptr)){
                     int locationScore = lround(blockDistance(pMCV->getLocation(), placeLocation));
                     if(locationScore < bestLocationScore){
                         bestLocationScore = locationScore;
@@ -582,7 +582,7 @@ Coord QuantBot::findPlaceLocation(Uint32 itemID) {
                                                             newSizeX,
                                                             newSizeY,
                                                             false,
-                                                            (itemID == Structure_ConstructionYard) ? NULL : getHouse())){
+                                                            (itemID == Structure_ConstructionYard) ? nullptr : getHouse())){
 
                                 int placeLocationEndX = placeLocationX + newSizeX;
                                 int placeLocationEndY = placeLocationY + newSizeY;
@@ -1064,7 +1064,7 @@ void QuantBot::build() {
                 const Palace* pPalace = dynamic_cast<const Palace*>(pStructure);
 
 
-                if(pPalace != NULL){
+                if(pPalace != nullptr){
                     if(pPalace->isSpecialWeaponReady()){
 
                         if(getHouse()->getHouseID() != HOUSE_HARKONNEN
@@ -1080,7 +1080,7 @@ void QuantBot::build() {
 
                             for(int i = HOUSE_HARKONNEN; i <= HOUSE_MERCENARY; i++){
 
-                                if(getHouse(i) != NULL){
+                                if(getHouse(i) != nullptr){
                                     if(getHouse(i)->getTeam() != getHouse()->getTeam()
                                        && getHouse(i)->getNumStructures() > enemyHouseBuildingCount){
 
@@ -1181,7 +1181,7 @@ void QuantBot::build() {
 
 
             const BuilderBase* pBuilder = dynamic_cast<const BuilderBase*>(pStructure);
-            if(pBuilder != NULL) {
+            if(pBuilder != nullptr) {
 
                 switch (pStructure->getItemID()) {
 
@@ -2307,7 +2307,7 @@ void QuantBot::checkAllUnits() {
 
                     const MCV* pMCV = dynamic_cast<const MCV*>(pUnit);
 
-                    if(pMCV != NULL){
+                    if(pMCV != nullptr){
 
                         //fprintf(stdout,"MCV: forced: %d  moving: %d  canDeploy: %d\n",
                         //pMCV->wasForced(), pMCV->isMoving(), pMCV->canDeploy());
@@ -2335,7 +2335,7 @@ void QuantBot::checkAllUnits() {
                     const Harvester* pHarvester = dynamic_cast<const Harvester*>(pUnit);
                     if(getHouse()->getCredits() < 1000 && pHarvester->getAmountOfSpice() >= HARVESTERMAXSPICE/2
                        && getHouse()->getNumItems(Structure_HeavyFactory) == 0
-                       && pHarvester != NULL) {
+                       && pHarvester != nullptr) {
 
                         doReturn(pHarvester);
 
@@ -2380,7 +2380,7 @@ void QuantBot::checkAllUnits() {
                         // If its a devastator and its not ours, blow it up!!
                         if(pUnit->getItemID() == Unit_Devastator){
                             const Devastator* pDevastator = dynamic_cast<const Devastator*>(pUnit);
-                            if(pDevastator != NULL){
+                            if(pDevastator != nullptr){
                                 doSetAttackMode(pDevastator, HUNT);
                                 doStartDevastate(pDevastator);
                             }
@@ -2393,7 +2393,7 @@ void QuantBot::checkAllUnits() {
                     else if((pUnit->getItemID() == Unit_Launcher || pUnit->getItemID() == Unit_Deviator || pUnit->getItemID() == Unit_SonicTank)
                            && pUnit->hasATarget()){
 
-                        if(pUnit->getTarget() != NULL){
+                        if(pUnit->getTarget() != nullptr){
 
                             if(blockDistance(pUnit->getLocation(), pUnit->getTarget()->getLocation()) <= 5
                                && pUnit->getTarget()->getItemID() != Unit_Ornithopter){

@@ -103,7 +103,7 @@ void Launcher::destroy() {
 }
 
 bool Launcher::canAttack(const ObjectBase* object) const {
-	return ((object != NULL)
+	return ((object != nullptr)
 			&& ((object->getOwner()->getTeam() != owner->getTeam()) || object->getItemID() == Unit_Sandworm)
 			&& object->isVisible(getOwner()->getTeam())
             && object->getItemID() != Unit_Carryall); // Stop launchers attacking carryalls

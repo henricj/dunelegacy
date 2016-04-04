@@ -33,7 +33,7 @@ MapMirror* MapMirror::createMapMirror(MirrorMode mirrorMode, int mapsizeX, int m
         case MirrorModeVertical:    return new MapMirrorVertical(mapsizeX, mapsizeY);      break;
         case MirrorModeBoth:        return new MapMirrorBoth(mapsizeX, mapsizeY);          break;
         case MirrorModePoint:       return new MapMirrorPoint(mapsizeX, mapsizeY);         break;
-        default:                    return NULL;
+        default:                    return nullptr;
     }
 }
 

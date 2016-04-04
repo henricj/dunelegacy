@@ -55,12 +55,12 @@ public:
 
 	static void destroyGUIStyle() {
 		delete currentGUIStyle;
-		currentGUIStyle = NULL;
+		currentGUIStyle = nullptr;
 	}
 
 	static GUIStyle& getInstance() {
-		if(currentGUIStyle == NULL) {
-			fprintf(stderr,"GUIStyle::getInstance(): currentGUIStyle == NULL. Call setGUIStyle before using getInstance()!\n");
+		if(currentGUIStyle == nullptr) {
+			fprintf(stderr,"GUIStyle::getInstance(): currentGUIStyle == nullptr. Call setGUIStyle before using getInstance()!\n");
 		}
 		return *currentGUIStyle;
 	}

@@ -161,7 +161,7 @@ void Harvester::checkPos()
 
 	if(active)	{
 		if (returningToRefinery) {
-			if (target && (target.getObjPointer() != NULL) && (target.getObjPointer()->getItemID() == Structure_Refinery)) {
+			if (target && (target.getObjPointer() != nullptr) && (target.getObjPointer()->getItemID() == Structure_Refinery)) {
 				//find a refinery to return to
 				Coord closestPoint = target.getObjPointer()->getClosestPoint(location);
 
@@ -176,7 +176,7 @@ void Harvester::checkPos()
 			} else if (!structureList.empty()) {
 				int	leastNumBookings = 1000000; //huge amount so refinery couldn't possibly compete with any refinery num bookings
 				FixPoint closestLeastBookedRefineryDistance = 1000000;
-				Refinery	*bestRefinery = NULL;
+				Refinery	*bestRefinery = nullptr;
 
                 RobustList<StructureBase*>::const_iterator iter;
                 for(iter = structureList.begin(); iter != structureList.end(); ++iter) {
@@ -262,7 +262,7 @@ void Harvester::destroy()
                         && (distanceFrom(xpos, ypos, xpos + i, ypos + j) + FixPt(0,0005) <= circleRadius))
                     {
                         Tile *pTile = currentGameMap->getTile(xpos + i, ypos + j);
-                        if((pTile != NULL) & ((pTile->isSand()) || (pTile->isSpice()) )) {
+                        if((pTile != nullptr) & ((pTile->isSand()) || (pTile->isSpice()) )) {
                             availableSandPos++;
                         }
                     }
@@ -276,7 +276,7 @@ void Harvester::destroy()
                         && (distanceFrom(xpos, ypos, xpos + i, ypos + j) + FixPt(0,0005)  <= circleRadius))
                     {
                         Tile *pTile = currentGameMap->getTile(xpos + i, ypos + j);
-                        if((pTile != NULL) & ((pTile->isSand()) || (pTile->isSpice()) )) {
+                        if((pTile != nullptr) & ((pTile->isSand()) || (pTile->isSpice()) )) {
                             pTile->setSpice(pTile->getSpice() + spiceSpreaded / availableSandPos);
                         }
                     }
@@ -284,7 +284,7 @@ void Harvester::destroy()
             }
         }
 
-        setTarget(NULL);
+        setTarget(nullptr);
 
         Coord realPos(lround(realX), lround(realY));
         Uint32 explosionID = currentGame->randomGen.getRandOf(2,Explosion_Medium1, Explosion_Medium2);
@@ -301,7 +301,7 @@ void Harvester::destroy()
 
 void Harvester::drawSelectionBox()
 {
-    SDL_Texture* selectionBox = NULL;
+    SDL_Texture* selectionBox = nullptr;
 
     switch(currentZoomlevel) {
         case 0:     selectionBox = pGFXManager->getUIGraphic(UI_SelectionBox_Zoomlevel0);   break;
@@ -311,7 +311,7 @@ void Harvester::drawSelectionBox()
     }
 
     SDL_Rect dest = calcDrawingRect(selectionBox, screenborder->world2screenX(realX), screenborder->world2screenY(realY), HAlign::Center, VAlign::Center);
-	SDL_RenderCopy(renderer, selectionBox, NULL, &dest);
+	SDL_RenderCopy(renderer, selectionBox, nullptr, &dest);
 
 	for(int i=1;i<=currentZoomlevel+1;i++) {
         renderDrawHLine(renderer, dest.x+1, dest.y-i, dest.x+1 + (lround((getHealth()/getMaxHealth())*(getWidth(selectionBox)-3))), getHealthColor());
@@ -365,7 +365,7 @@ void Harvester::setDestination(int newX, int newY)
 
 void Harvester::setTarget(const ObjectBase* newTarget)
 {
-	if(returningToRefinery && target && (target.getObjPointer()!= NULL)
+	if(returningToRefinery && target && (target.getObjPointer()!= nullptr)
 		&& (target.getObjPointer()->getItemID() == Structure_Refinery))
 	{
 		((Refinery*)target.getObjPointer())->unBook();
@@ -374,7 +374,7 @@ void Harvester::setTarget(const ObjectBase* newTarget)
 
 	TrackedUnit::setTarget(newTarget);
 
-	if(target && (target.getObjPointer() != NULL)
+	if(target && (target.getObjPointer() != nullptr)
 		&& (target.getObjPointer()->getOwner() == getOwner())
 		&& (target.getObjPointer()->getItemID() == Structure_Refinery))
 	{
@@ -448,7 +448,7 @@ bool Harvester::isHarvesting() const {
 
 bool Harvester::canAttack(const ObjectBase* object) const
 {
-	return((object != NULL)
+	return((object != nullptr)
 			&& object->isInfantry()
 			&& (object->getOwner()->getTeam() != owner->getTeam())
 			&& object->isVisible(getOwner()->getTeam()));

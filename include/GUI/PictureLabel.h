@@ -29,15 +29,15 @@ public:
 
 	/// default constructor
 	PictureLabel() : Widget() {
-		pTexture = NULL;
+		pTexture = nullptr;
 		bFreeTexture = false;
 	}
 
 	/// destructor
 	virtual ~PictureLabel() {
-		if((bFreeTexture == true) && (pTexture != NULL)) {
+		if((bFreeTexture == true) && (pTexture != nullptr)) {
 			SDL_DestroyTexture(pTexture);
-			pTexture = NULL;
+			pTexture = nullptr;
 		}
 	}
 
@@ -56,15 +56,15 @@ public:
 		\param	bFreeTexture	Should pTexture be freed if this picture label is destroyed?
 	*/
 	virtual void setTexture(SDL_Texture* pTexture, bool bFreeTexture) {
-		if((this->bFreeTexture == true) && (this->pTexture != NULL)) {
+		if((this->bFreeTexture == true) && (this->pTexture != nullptr)) {
 			SDL_DestroyTexture(this->pTexture);
-			this->pTexture = NULL;
+			this->pTexture = nullptr;
 		}
 
 		this->pTexture = pTexture;
 		this->bFreeTexture = bFreeTexture;
 
-		if(this->pTexture != NULL) {
+		if(this->pTexture != nullptr) {
 			resize(getTextureSize(this->pTexture));
 		} else {
 			resize(0,0);
@@ -77,7 +77,7 @@ public:
 		\return the minimum size of this picture label
 	*/
 	virtual Point getMinimumSize() const {
-		if(pTexture != NULL) {
+		if(pTexture != nullptr) {
 			return getTextureSize(pTexture);
 		} else {
 			return Point(0,0);
@@ -93,12 +93,12 @@ public:
 			return;
 		}
 
-		if(pTexture == NULL) {
+		if(pTexture == nullptr) {
 			return;
 		}
 
 		SDL_Rect dest = calcDrawingRect(pTexture, position.x, position.y);
-		SDL_RenderCopy(renderer, pTexture, NULL, &dest);
+		SDL_RenderCopy(renderer, pTexture, nullptr, &dest);
 	}
 
 

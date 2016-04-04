@@ -143,12 +143,12 @@ void LoadSaveWindow::updateEntries() {
 }
 
 bool LoadSaveWindow::handleKeyPress(SDL_KeyboardEvent& key) {
-	if(pChildWindow != NULL) {
+	if(pChildWindow != nullptr) {
 		bool ret = pChildWindow->handleKeyPress(key);
 		return ret;
 	}
 
-	if(isEnabled() && (pWindowWidget != NULL)) {
+	if(isEnabled() && (pWindowWidget != nullptr)) {
 		if(key.keysym.sym == SDLK_RETURN) {
 			onOK();
 			return true;
@@ -177,7 +177,7 @@ bool LoadSaveWindow::handleKeyPress(SDL_KeyboardEvent& key) {
 
 void LoadSaveWindow::onChildWindowClose(Window* pChildWindow) {
     QstBox* pQstBox = dynamic_cast<QstBox*>(pChildWindow);
-    if(pQstBox != NULL) {
+    if(pQstBox != nullptr) {
         if(pQstBox->getPressedButtonID() == QSTBOX_BUTTON2) {
             int index = fileList.getSelectedIndex();
             if(index >= 0) {
@@ -207,7 +207,7 @@ void LoadSaveWindow::onOK() {
 			filename = directories[currentDirectoryIndex] + fileList.getEntry(index) + "." + extension;
 
 			Window* pParentWindow = dynamic_cast<Window*>(getParent());
-			if(pParentWindow != NULL) {
+			if(pParentWindow != nullptr) {
 				pParentWindow->closeChildWindow();
 			}
 		}
@@ -218,7 +218,7 @@ void LoadSaveWindow::onOK() {
 			filename = directories[currentDirectoryIndex] + saveName.getText() + "." + extension;
 
 			Window* pParentWindow = dynamic_cast<Window*>(getParent());
-			if(pParentWindow != NULL) {
+			if(pParentWindow != nullptr) {
 				pParentWindow->closeChildWindow();
 			}
 		} else {
@@ -229,7 +229,7 @@ void LoadSaveWindow::onOK() {
 
 void LoadSaveWindow::onCancel() {
 	Window* pParentWindow = dynamic_cast<Window*>(getParent());
-	if(pParentWindow != NULL) {
+	if(pParentWindow != nullptr) {
 		pParentWindow->closeChildWindow();
 	}
 }

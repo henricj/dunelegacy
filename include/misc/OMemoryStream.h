@@ -26,7 +26,7 @@ class OMemoryStream : public OutputStream
 {
 public:
 	OMemoryStream()
-	 : currentPos(0), bufferSize(0), pBuffer(NULL) {
+	 : currentPos(0), bufferSize(0), pBuffer(nullptr) {
         ;
     }
 
@@ -40,7 +40,7 @@ public:
         currentPos = 0;
         bufferSize = 4;
         pBuffer = (char*) malloc(4);
-        if(pBuffer == NULL) {
+        if(pBuffer == nullptr) {
             throw OMemoryStream::error("OMemoryStream::open(): malloc failed!");
         }
 	}
@@ -120,7 +120,7 @@ public:
         }
 
         char* pNewBuffer = (char*) realloc(pBuffer, newBufferSize);
-        if(pNewBuffer == NULL) {
+        if(pNewBuffer == nullptr) {
             throw OMemoryStream::error("OMemoryStream::ensureBufferSize(): realloc failed!");
         } else {
             pBuffer = pNewBuffer;

@@ -77,7 +77,7 @@ EXTERN GFXManager*          pGFXManager;                ///< manager for loading
 EXTERN SFXManager*          pSFXManager;                ///< manager for loading and managing sounds
 EXTERN FontManager*         pFontManager;               ///< manager for loading and managing fonts
 EXTERN TextManager*         pTextManager;               ///< manager for loading and managing texts and providing localization
-EXTERN NetworkManager*      pNetworkManager;            ///< manager for all network events (NULL if not in multiplayer game)
+EXTERN NetworkManager*      pNetworkManager;            ///< manager for all network events (nullptr if not in multiplayer game)
 
 // game stuff
 EXTERN Game*                currentGame;                ///< the current running game

@@ -39,8 +39,8 @@ Bullet::Bullet(Uint32 shooterID, Coord* newRealLocation, Coord* newRealDestinati
     this->shooterID = shooterID;
 
     ObjectBase* pShooter = currentGame->getObjectManager().getObject(shooterID);
-    if(pShooter == NULL) {
-        owner = NULL;
+    if(pShooter == nullptr) {
+        owner = nullptr;
     } else {
         owner = pShooter->getOwner();
     }
@@ -57,7 +57,7 @@ Bullet::Bullet(Uint32 shooterID, Coord* newRealLocation, Coord* newRealDestinati
 		int diffX = destination.x - newRealLocation->x;
         int diffY = destination.y - newRealLocation->y;
 
-		int weaponrange = currentGame->objectData.data[Unit_SonicTank][(owner == NULL) ? HOUSE_ATREIDES : owner->getHouseID()].weaponrange;
+		int weaponrange = currentGame->objectData.data[Unit_SonicTank][(owner == nullptr) ? HOUSE_ATREIDES : owner->getHouseID()].weaponrange;
 
 		if((diffX == 0) && (diffY == 0)) {
 			diffY = weaponrange*TILESIZE;
@@ -133,7 +133,7 @@ void Bullet::init()
 {
     explodesAtGroundObjects = false;
 
-	int houseID = (owner == NULL) ? HOUSE_HARKONNEN : owner->getHouseID();
+	int houseID = (owner == nullptr) ? HOUSE_HARKONNEN : owner->getHouseID();
 
 	switch(bulletID) {
         case Bullet_DRocket: {
@@ -213,12 +213,12 @@ void Bullet::init()
 
         case Bullet_Sandworm: {
             fprintf(stderr,"Bullet::init(): Unknown Bullet_Sandworm not allowed.\n");
-            graphic = NULL;
+            graphic = nullptr;
         } break;
 
         default: {
             fprintf(stderr,"Bullet::init(): Unknown Bullet type %d.\n",bulletID);
-            graphic = NULL;
+            graphic = nullptr;
         } break;
 	}
 }
@@ -282,7 +282,7 @@ void Bullet::blitToScreen()
         // contains solid black (0,0,0,255) for pixels to take from screen
         // and transparent (0,0,0,0) for pixels that should not be copied over
         SDL_SetTextureBlendMode(shimmerMaskTex, SDL_BLENDMODE_NONE);
-        SDL_RenderCopy(renderer, shimmerMaskTex, NULL, NULL);
+        SDL_RenderCopy(renderer, shimmerMaskTex, nullptr, nullptr);
         SDL_SetTextureBlendMode(shimmerMaskTex, SDL_BLENDMODE_BLEND);
 
         // now copy r,g,b colors from screen but don't change alpha values in mask
@@ -290,7 +290,7 @@ void Bullet::blitToScreen()
         SDL_Rect source = dest;
         int shimmerOffsetIndex = ((currentGame->getGameCycleCount() + getBulletID()) % 24)/3;
         source.x += shimmerOffset[shimmerOffsetIndex%8]*2;
-        SDL_RenderCopy(renderer, screenTexture, &source, NULL);
+        SDL_RenderCopy(renderer, screenTexture, &source, nullptr);
         SDL_SetTextureBlendMode(screenTexture, SDL_BLENDMODE_NONE);
 
         // switch back to old rendering target (from texture 'shimmerTex')
@@ -298,7 +298,7 @@ void Bullet::blitToScreen()
 
         // now blend shimmerTex to screen (= make use of alpha values in mask)
         SDL_SetTextureBlendMode(shimmerTex, SDL_BLENDMODE_BLEND);
-        SDL_RenderCopy(renderer, shimmerTex, NULL, &dest);
+        SDL_RenderCopy(renderer, shimmerTex, nullptr, &dest);
     } else {
         SDL_Rect source = calcSpriteSourceRect(graphic[currentZoomlevel], (numFrames > 1) ? drawnAngle: 0, numFrames);
         SDL_RenderCopy(renderer, graphic[currentZoomlevel], &source, &dest);
@@ -369,7 +369,7 @@ void Bullet::update()
                 return;
             }
 
-            FixPoint weaponDamage = currentGame->objectData.data[Unit_SonicTank][(owner == NULL) ? HOUSE_ATREIDES : owner->getHouseID()].weapondamage;
+            FixPoint weaponDamage = currentGame->objectData.data[Unit_SonicTank][(owner == nullptr) ? HOUSE_ATREIDES : owner->getHouseID()].weapondamage;
 
 	        FixPoint startDamage = (weaponDamage / 4 + 1) / FixPt(4,5);
 	        FixPoint endDamage = ((weaponDamage-9) / 4 + 1) / FixPt(4,5);
@@ -415,7 +415,7 @@ void Bullet::destroy()
 {
     Coord position = Coord(lround(realX), lround(realY));
 
-    int houseID = (owner == NULL) ? HOUSE_HARKONNEN : owner->getHouseID();
+    int houseID = (owner == nullptr) ? HOUSE_HARKONNEN : owner->getHouseID();
 
     switch(bulletID) {
         case Bullet_DRocket: {

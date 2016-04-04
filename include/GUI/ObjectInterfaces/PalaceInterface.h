@@ -47,10 +47,10 @@ protected:
 		SDL_Surface* pText = pFontManager->createSurfaceWithText(_("READY"), COLOR_WHITE, FONT_STD10);
 
 		SDL_Surface* pReady = SDL_CreateRGBSurface(0, getWidth(pTexture), getHeight(pTexture), SCREEN_BPP, RMASK, GMASK, BMASK, AMASK);
-		SDL_FillRect(pReady, NULL, COLOR_TRANSPARENT);
+		SDL_FillRect(pReady, nullptr, COLOR_TRANSPARENT);
 
         SDL_Rect dest = calcAlignedDrawingRect(pText, pReady);
-        SDL_BlitSurface(pText, NULL, pReady, &dest);
+        SDL_BlitSurface(pText, nullptr, pReady, &dest);
 
 		SDL_FreeSurface(pText);
 		weaponSelectButton.setTextures(convertSurfaceToTexture(pReady, true),true);
@@ -66,13 +66,13 @@ protected:
 	*/
 	virtual bool update() {
 		ObjectBase* pObject = currentGame->getObjectManager().getObject(objectID);
-		if(pObject == NULL) {
+		if(pObject == nullptr) {
 			return false;
 		}
 
 		Palace* pPalace = dynamic_cast<Palace*>(pObject);
 
-		if(pPalace != NULL) {
+		if(pPalace != nullptr) {
 			int picID;
 
 			switch(pPalace->getOwner()->getHouseID()) {
@@ -108,13 +108,13 @@ protected:
 private:
 	void onSpecial() {
 		ObjectBase* pObject = currentGame->getObjectManager().getObject(objectID);
-		if(pObject == NULL) {
+		if(pObject == nullptr) {
 			return;
 		}
 
 		Palace* pPalace = dynamic_cast<Palace*>(pObject);
 
-		if(pPalace != NULL) {
+		if(pPalace != nullptr) {
 		    if((pPalace->getOriginalHouseID() == HOUSE_HARKONNEN) || (pPalace->getOriginalHouseID() == HOUSE_SARDAUKAR)) {
                 currentGame->currentCursorMode = Game::CursorMode_Attack;
 		    } else {

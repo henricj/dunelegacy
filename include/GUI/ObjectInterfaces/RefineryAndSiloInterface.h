@@ -60,7 +60,7 @@ protected:
 	*/
 	virtual bool update() {
 		ObjectBase* pObject = currentGame->getObjectManager().getObject(objectID);
-		if(pObject == NULL) {
+		if(pObject == nullptr) {
 			return false;
 		}
 

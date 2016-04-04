@@ -197,7 +197,7 @@ void MentatMenu::update() {
         textLabel.resize(620,240);
     }
 
-    if(specialAnim.getAnimation() != NULL && specialAnim.getAnimation()->isFinished()) {
+    if(specialAnim.getAnimation() != nullptr && specialAnim.getAnimation()->isFinished()) {
         if(nextSpecialAnimation < SDL_GetTicks()) {
             specialAnim.getAnimation()->setNumLoops(1);
             nextSpecialAnimation = SDL_GetTicks() + getRandomInt(5000, 15000);

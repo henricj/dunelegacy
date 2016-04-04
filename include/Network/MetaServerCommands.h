@@ -55,7 +55,7 @@ public:
 	bool operator==(const MetaServerCommand& metaServerCommand) const {
 		const MetaServerAdd* pMetaServerAdd = dynamic_cast<const MetaServerAdd*>(&metaServerCommand);
 
-		if(pMetaServerAdd == NULL) {
+		if(pMetaServerAdd == nullptr) {
 			return false;
 		} else {
 
@@ -86,7 +86,7 @@ public:
 	bool operator==(const MetaServerCommand& metaServerCommand) const {
 		const MetaServerUpdate* pMetaServerUpdate = dynamic_cast<const MetaServerUpdate*>(&metaServerCommand);
 
-		if(pMetaServerUpdate == NULL) {
+		if(pMetaServerUpdate == nullptr) {
 			return false;
 		} else {
 
@@ -116,7 +116,7 @@ public:
 	bool operator==(const MetaServerCommand& metaServerCommand) const {
 		const MetaServerRemove* pMetaServerRemove = dynamic_cast<const MetaServerRemove*>(&metaServerCommand);
 
-		if(pMetaServerRemove == NULL) {
+		if(pMetaServerRemove == nullptr) {
 			return false;
 		} else {
 

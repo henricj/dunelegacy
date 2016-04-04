@@ -38,10 +38,10 @@ RadarView::RadarView()
 {
     radarStaticAnimation = pGFXManager->getUIGraphic(UI_RadarAnimation);
 
-	if((radarSurface = SDL_CreateRGBSurface(0, 128, 128, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK)) == NULL) {
+	if((radarSurface = SDL_CreateRGBSurface(0, 128, 128, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK)) == nullptr) {
 		throw std::runtime_error("RadarView::RadarView(): Cannot create new surface!");
 	}
-	SDL_FillRect(radarSurface, NULL, COLOR_BLACK);
+	SDL_FillRect(radarSurface, nullptr, COLOR_BLACK);
 
 	radarTexture = SDL_CreateTexture(renderer, SCREEN_FORMAT, SDL_TEXTUREACCESS_STREAMING, 128, 128);
 }
@@ -80,10 +80,10 @@ void RadarView::draw(Point position)
 
             updateRadarSurface(mapSizeX, mapSizeY, scale, offsetX, offsetY);
 
-            SDL_UpdateTexture(radarTexture, NULL, radarSurface->pixels, radarSurface->pitch);
+            SDL_UpdateTexture(radarTexture, nullptr, radarSurface->pixels, radarSurface->pitch);
 
             SDL_Rect dest = calcDrawingRect(radarTexture, radarPosition.x, radarPosition.y);
-            SDL_RenderCopy(renderer, radarTexture, NULL, &dest);
+            SDL_RenderCopy(renderer, radarTexture, nullptr, &dest);
 
             SDL_Rect radarRect;
             radarRect.x = (screenborder->getLeft() * mapSizeX*scale) / (mapSizeX*TILESIZE) + offsetX;

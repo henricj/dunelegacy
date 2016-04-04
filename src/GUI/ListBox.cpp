@@ -20,8 +20,8 @@
 ListBox::ListBox() : Widget() {
 	enableResizing(true,true);
 
-	pBackground = NULL;
-	pForeground = NULL;
+	pBackground = nullptr;
+	pForeground = nullptr;
 	color = COLOR_DEFAULT;
 	bAutohideScrollbar = true;
 	bHighlightSelectedElement = true;
@@ -115,13 +115,13 @@ void ListBox::draw(Point position) {
 
 	updateTextures();
 
-	if(pBackground != NULL) {
+	if(pBackground != nullptr) {
 		SDL_Rect dest = calcDrawingRect(pBackground, position.x, position.y);
-		SDL_RenderCopy(renderer, pBackground, NULL, &dest);
+		SDL_RenderCopy(renderer, pBackground, nullptr, &dest);
 	}
 
 	SDL_Rect dest = calcDrawingRect(pForeground, position.x + 2, position.y + 1);
-	SDL_RenderCopy(renderer, pForeground, NULL, &dest);
+	SDL_RenderCopy(renderer, pForeground, nullptr, &dest);
 
 	Point ScrollBarPos = position;
 	ScrollBarPos.x += getSize().x - scrollbar.getSize().x;

@@ -214,7 +214,7 @@ public:
             }
         }
 
-        return NULL;
+        return nullptr;
     }
 
     std::vector<int> getMirrorStructures(int unitID);
@@ -239,7 +239,7 @@ public:
             }
         }
 
-        return NULL;
+        return nullptr;
     }
 
 

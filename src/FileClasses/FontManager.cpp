@@ -62,7 +62,7 @@ int FontManager::getTextHeight(unsigned int fontNum) {
 
 SDL_Surface* FontManager::createSurfaceWithText(std::string text, Uint32 color, unsigned int fontNum) {
 	if(fontNum >= NUM_FONTS) {
-		return NULL;
+		return nullptr;
 	}
 
     SDL_Surface* pic;
@@ -71,12 +71,12 @@ SDL_Surface* FontManager::createSurfaceWithText(std::string text, Uint32 color, 
     int height = fonts[fontNum]->getTextHeight();
 
     // create new picture surface
-    if((pic = SDL_CreateRGBSurface(0, width, height, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK)) == NULL) {
-        return NULL;
+    if((pic = SDL_CreateRGBSurface(0, width, height, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK)) == nullptr) {
+        return nullptr;
     }
 
     SDL_SetSurfaceBlendMode(pic, SDL_BLENDMODE_NONE);
-    SDL_FillRect(pic, NULL, COLOR_INVALID);
+    SDL_FillRect(pic, nullptr, COLOR_INVALID);
     SDL_SetColorKey(pic, SDL_TRUE, COLOR_INVALID);
 
     fonts[fontNum]->drawTextOnSurface(pic,text,color);
@@ -113,12 +113,12 @@ SDL_Surface* FontManager::createSurfaceWithMultilineText(std::string text, Uint3
     int height = lineHeight * textLines.size() + (lineHeight * (textLines.size()-1))/2;
 
     // create new picture surface
-    if((pic = SDL_CreateRGBSurface(0, width, height, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK)) == NULL) {
-        return NULL;
+    if((pic = SDL_CreateRGBSurface(0, width, height, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK)) == nullptr) {
+        return nullptr;
     }
 
     SDL_SetSurfaceBlendMode(pic, SDL_BLENDMODE_NONE);
-    SDL_FillRect(pic, NULL, COLOR_INVALID);
+    SDL_FillRect(pic, nullptr, COLOR_INVALID);
     SDL_SetColorKey(pic, SDL_TRUE, COLOR_INVALID);
 
     int line = 0;
@@ -127,7 +127,7 @@ SDL_Surface* FontManager::createSurfaceWithMultilineText(std::string text, Uint3
         SDL_Surface* tmpSurface = createSurfaceWithText(*iter, color, fontNum);
 
         SDL_Rect dest = calcDrawingRect(tmpSurface, bCentered ? width/2 : 0, line*lineHeight, bCentered ? HAlign::Center : HAlign::Left, VAlign::Top);
-        SDL_BlitSurface(tmpSurface,NULL,pic,&dest);
+        SDL_BlitSurface(tmpSurface,nullptr,pic,&dest);
 
         SDL_FreeSurface(tmpSurface);
     }

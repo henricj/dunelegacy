@@ -105,7 +105,7 @@ protected:
 	virtual void updateTextures() {
         Button::updateTextures();
 
-        if(pUnpressedTexture == NULL) {
+        if(pUnpressedTexture == nullptr) {
             invalidateTextures();
 
             setSurfaces(    GUIStyle::getInstance().createButtonSurface(getSize().x, getSize().y, text, false, false, textcolor, textshadowcolor),true,

@@ -208,7 +208,7 @@ ReinforcementsWindow::ReinforcementsWindow(MapEditor* pMapEditor, HOUSETYPE hous
 
 void ReinforcementsWindow::onCancel() {
 	Window* pParentWindow = dynamic_cast<Window*>(getParent());
-	if(pParentWindow != NULL) {
+	if(pParentWindow != nullptr) {
 		pParentWindow->closeChildWindow();
 	}
 }
@@ -222,7 +222,7 @@ void ReinforcementsWindow::onOK() {
     pMapEditor->addUndoOperation(changeReinforcementsOperation.perform(pMapEditor));
 
 	Window* pParentWindow = dynamic_cast<Window*>(getParent());
-	if(pParentWindow != NULL) {
+	if(pParentWindow != nullptr) {
 		pParentWindow->closeChildWindow();
 	}
 }

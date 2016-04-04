@@ -270,7 +270,7 @@ void StructureBase::handleRepairClick() {
 }
 
 void StructureBase::doSetDeployPosition(int xPos, int yPos) {
-	setTarget(NULL);
+	setTarget(nullptr);
 	setDestination(xPos,yPos);
 	setForced(true);
 }
@@ -385,7 +385,7 @@ bool StructureBase::update() {
 }
 
 void StructureBase::destroy() {
-    int*    pDestroyedStructureTiles = NULL;
+    int*    pDestroyedStructureTiles = nullptr;
     int     DestroyedStructureTilesSizeY = 0;
     static int DestroyedStructureTilesWall[] = { DestroyedStructure_Wall };
     static int DestroyedStructureTiles1x1[] = { Destroyed1x1Structure };

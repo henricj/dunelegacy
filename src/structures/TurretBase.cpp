@@ -66,9 +66,9 @@ void TurretBase::save(OutputStream& stream) const {
 }
 
 void TurretBase::updateStructureSpecificStuff() {
-	if(target && (target.getObjPointer() != NULL)) {
+	if(target && (target.getObjPointer() != nullptr)) {
 		if(!canAttack(target.getObjPointer()) || !targetInWeaponRange()) {
-			setTarget(NULL);
+			setTarget(nullptr);
 		} else if(targetInWeaponRange()) {
 			Coord closestPoint = target.getObjPointer()->getClosestPoint(location);
 			int wantedAngle = destinationDrawnAngle(location, closestPoint);
@@ -99,7 +99,7 @@ void TurretBase::updateStructureSpecificStuff() {
 			}
 
 		} else {
-			setTarget(NULL);
+			setTarget(nullptr);
 		}
 	} else if((attackMode != STOP) && (findTargetTimer == 0)) {
 		setTarget(findTarget());
@@ -129,7 +129,7 @@ void TurretBase::doAttackObject(Uint32 targetObjectID) {
 }
 
 void TurretBase::doAttackObject(const ObjectBase* pObject) {
-	if(pObject == NULL) {
+	if(pObject == nullptr) {
 		return;
 	}
 
@@ -157,7 +157,7 @@ void TurretBase::turnRight() {
 }
 
 void TurretBase::attack() {
-	if((weaponTimer == 0) && (target.getObjPointer() != NULL)) {
+	if((weaponTimer == 0) && (target.getObjPointer() != nullptr)) {
 		Coord centerPoint = getCenterPoint();
 		Coord targetCenterPoint = target.getObjPointer()->getClosestCenterPoint(location);
 

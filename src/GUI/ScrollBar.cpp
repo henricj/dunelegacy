@@ -33,7 +33,7 @@ ScrollBar::ScrollBar() : Widget() {
 	arrow1.setOnClick(std::bind(&ScrollBar::onArrow1, this));
 	arrow2.setOnClick(std::bind(&ScrollBar::onArrow2, this));
 
-	pBackground = NULL;
+	pBackground = nullptr;
 
 	resize(getMinimumSize());
 }
@@ -110,9 +110,9 @@ void ScrollBar::draw(Point position) {
 
 	updateTextures();
 
-	if(pBackground != NULL) {
+	if(pBackground != nullptr) {
 		SDL_Rect dest = calcDrawingRect(pBackground, position.x, position.y);
-		SDL_RenderCopy(renderer, pBackground, NULL, &dest);
+		SDL_RenderCopy(renderer, pBackground, nullptr, &dest);
 	}
 
 	arrow1.draw(position);

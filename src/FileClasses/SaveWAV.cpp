@@ -18,7 +18,7 @@
 #include <FileClasses/SaveWAV.h>
 
 int SaveWAV(SDL_RWops* rwop, Mix_Chunk* chunk, int Frequency, Uint16 Format, int channels) {
-	if(rwop == NULL) {
+	if(rwop == nullptr) {
 		return -1;
 	}
 

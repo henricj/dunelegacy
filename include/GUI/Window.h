@@ -49,9 +49,9 @@ public:
 	*/
 	virtual void removeChildWidget(Widget* pChildWidget) {
 		if(pChildWidget == pWindowWidget) {
-			pWindowWidget = NULL;
+			pWindowWidget = nullptr;
 		} else if(pChildWidget == pChildWindow) {
-			pChildWindow = NULL;
+			pChildWindow = nullptr;
 		}
 	}
 
@@ -78,7 +78,7 @@ public:
         This method checks whether this window has a child window.
         \return true if child window present, false otherwise
 	*/
-	bool hasChildWindow() const { return (pChildWindow != NULL); };
+	bool hasChildWindow() const { return (pChildWindow != nullptr); };
 
 	/**
 		Get the current position of this window.
@@ -191,7 +191,7 @@ public:
 	*/
 	virtual inline void setWindowWidget(Widget* pWindowWidget) {
 		this->pWindowWidget = pWindowWidget;
-		if(this->pWindowWidget != NULL) {
+		if(this->pWindowWidget != nullptr) {
 			this->pWindowWidget->setParent(this);
 			this->pWindowWidget->resize(getSize().x,getSize().y);
 			this->pWindowWidget->setActive();
@@ -231,14 +231,14 @@ public:
 
 	/**
 		Set the background of this window.
-		\param	pBackground	the new background of this window. NULL=default background
+		\param	pBackground	the new background of this window. nullptr=default background
 		\param	bFreeBackground	should this background be automatically be freed
 	*/
 	virtual void setBackground(SDL_Surface* pBackground, bool bFreeBackground = true);
 
 	/**
 		Set the background of this window.
-		\param	pBackground	the new background of this window. NULL=default background
+		\param	pBackground	the new background of this window. nullptr=default background
 		\param	bFreeBackground	should this background be automatically be freed
 	*/
 	virtual void setBackground(SDL_Texture* pBackground, bool bFreeBackground = true);

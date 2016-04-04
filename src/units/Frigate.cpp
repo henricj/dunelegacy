@@ -63,7 +63,7 @@ void Frigate::init()
 
 Frigate::~Frigate()
 {
-    if(target.getObjPointer() != NULL && target.getObjPointer()->getItemID() == Structure_StarPort) {
+    if(target.getObjPointer() != nullptr && target.getObjPointer()->getItemID() == Structure_StarPort) {
         dynamic_cast<StarPort*>(target.getStructurePointer())->informFrigateDestroyed();
     }
 }
@@ -88,9 +88,9 @@ void Frigate::checkPos()
     if ((location == destination) && (distanceFrom(realX, realY, destination.x * TILESIZE + (TILESIZE/2), destination.y * TILESIZE + (TILESIZE/2)) < TILESIZE/8) ) {
         StarPort* pStarport = dynamic_cast<StarPort*>(target.getStructurePointer());
 
-        if(pStarport != NULL) {
+        if(pStarport != nullptr) {
             pStarport->startDeploying();
-            setTarget(NULL);
+            setTarget(nullptr);
             setDestination(guardPoint);
             droppedOffCargo = true;
             soundPlayer->playSoundAt(Sound_Drop, location);
@@ -105,7 +105,7 @@ bool Frigate::update() {
     }
 
     // check if target is destroyed
-    if((droppedOffCargo == false) && target.getStructurePointer() == NULL) {
+    if((droppedOffCargo == false) && target.getStructurePointer() == nullptr) {
         setDestination(guardPoint);
         droppedOffCargo = true;
     }

@@ -139,7 +139,7 @@ ChoamWindow::ChoamWindow(MapEditor* pMapEditor, HOUSETYPE house) : Window(0,0,0,
 
 void ChoamWindow::onCancel() {
 	Window* pParentWindow = dynamic_cast<Window*>(getParent());
-	if(pParentWindow != NULL) {
+	if(pParentWindow != nullptr) {
 		pParentWindow->closeChildWindow();
 	}
 }
@@ -180,7 +180,7 @@ void ChoamWindow::onOK() {
 
 
 	Window* pParentWindow = dynamic_cast<Window*>(getParent());
-	if(pParentWindow != NULL) {
+	if(pParentWindow != nullptr) {
 		pParentWindow->closeChildWindow();
 	}
 }

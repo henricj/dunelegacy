@@ -92,7 +92,7 @@ void InfantryBase::doCaptureStructure(Uint32 targetStructureID) {
 
 void InfantryBase::doCaptureStructure(const StructureBase* pStructure) {
 
-	if((pStructure == NULL) || (pStructure->canBeCaptured() == false) || (pStructure->getOwner()->getTeam() == getOwner()->getTeam())) {
+	if((pStructure == nullptr) || (pStructure->canBeCaptured() == false) || (pStructure->getOwner()->getTeam() == getOwner()->getTeam())) {
 	    // does not exist anymore, cannot be captured or is a friendly building
         return;
 	}
@@ -148,7 +148,7 @@ bool InfantryBase::canPass(int xPos, int yPos) const {
 		} else {
 			ObjectBase *object = pTile->getGroundObject();
 
-			if((object != NULL) && (object->getObjectID() == target.getObjectID())
+			if((object != nullptr) && (object->getObjectID() == target.getObjectID())
 				&& object->isAStructure()
 				&& (object->getOwner()->getTeam() != owner->getTeam())
 				&& object->isVisible(getOwner()->getTeam())) {
@@ -181,7 +181,7 @@ void InfantryBase::checkPos() {
 		}
 
         //check to see if close enough to blow up target
-        if(target.getObjPointer() != NULL
+        if(target.getObjPointer() != nullptr
             && target.getObjPointer()->isAStructure()
             && (getOwner()->getTeam() != target.getObjPointer()->getOwner()->getTeam()))
         {
@@ -203,7 +203,7 @@ void InfantryBase::checkPos() {
 
                     FixPoint capturedSpice = 0;
 
-                    UnitBase* pContainedUnit = NULL;
+                    UnitBase* pContainedUnit = nullptr;
 
                     if(pCapturedStructure->getItemID() == Structure_Silo) {
                         capturedSpice = currentGame->objectData.data[Structure_Silo][originalHouseID].capacity * (pOwner->getStoredCredits() / pOwner->getCapacity());
@@ -223,7 +223,7 @@ void InfantryBase::checkPos() {
                     Uint32 containedUnitID = NONE;
                     FixPoint containedUnitHealth = 0;
                     FixPoint containedHarvesterSpice = 0;
-                    if(pContainedUnit != NULL) {
+                    if(pContainedUnit != nullptr) {
                         containedUnitID = pContainedUnit->getItemID();
                         containedUnitHealth = pContainedUnit->getHealth();
                         if(containedUnitID == Unit_Harvester) {
@@ -231,7 +231,7 @@ void InfantryBase::checkPos() {
                         }
 
                         // will be destroyed by the captured structure
-                        pContainedUnit = NULL;
+                        pContainedUnit = nullptr;
                     }
 
                     // remove all other infantry units capturing this building
@@ -308,17 +308,17 @@ void InfantryBase::checkPos() {
                     pCapturedStructure->handleDamage(damage, NONE, getOwner());
                 }
                 // destroy unit indirectly
-                setTarget(NULL);
+                setTarget(nullptr);
                 setHealth(0);
                 return;
             }
-        } else if(target.getObjPointer() != NULL && target.getObjPointer()->isAStructure())	{
+        } else if(target.getObjPointer() != nullptr && target.getObjPointer()->isAStructure())	{
             Coord	closestPoint;
             closestPoint = target.getObjPointer()->getClosestPoint(location);
 
             if(blockDistance(location, closestPoint) <= FixPt(0,5)) {
                 // destroy unit indirectly
-                setTarget(NULL);
+                setTarget(nullptr);
                 setHealth(0);
                 return;
             }

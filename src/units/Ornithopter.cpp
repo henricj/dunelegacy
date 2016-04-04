@@ -63,7 +63,7 @@ void Ornithopter::checkPos() {
 }
 
 bool Ornithopter::canAttack(const ObjectBase* object) const {
-	if ((object != NULL)
+	if ((object != nullptr)
 		&& ((object->getOwner()->getTeam() != owner->getTeam()) || object->getItemID() == Unit_Sandworm)
 		&& object->isVisible(getOwner()->getTeam()))
 		return true;

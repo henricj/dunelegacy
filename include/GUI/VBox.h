@@ -22,7 +22,7 @@
 
 class VBox_WidgetData {
 public:
-	VBox_WidgetData() : pWidget(NULL), fixedHeight(0), weight(0.0) { };
+	VBox_WidgetData() : pWidget(nullptr), fixedHeight(0), weight(0.0) { };
 	VBox_WidgetData(Widget* _pWidget, Sint32 _fixedHeight) : pWidget(_pWidget), fixedHeight(_fixedHeight), weight(0.0) { };
 	VBox_WidgetData(Widget* _pWidget, double _weight) : pWidget(_pWidget), fixedHeight(-1), weight(_weight) { };
 
@@ -50,7 +50,7 @@ public:
 		\param fixedHeight	a fixed height for this widget (must be greater than the minimum size)
 	*/
 	virtual void addWidget(Widget* newWidget, Sint32 fixedHeight) {
-		if(newWidget != NULL) {
+		if(newWidget != nullptr) {
 			containedWidgets.push_back(VBox_WidgetData(newWidget, fixedHeight));
 			newWidget->setParent(this);
 			Widget::resizeAll();
@@ -63,7 +63,7 @@ public:
 		\param weight		The weight for this widget (default=1.0)
 	*/
 	virtual void addWidget(Widget* newWidget, double weight = 1.0) {
-		if(newWidget != NULL) {
+		if(newWidget != nullptr) {
 			containedWidgets.push_back(VBox_WidgetData(newWidget, weight));
 			newWidget->setParent(this);
 			Widget::resizeAll();

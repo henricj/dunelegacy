@@ -199,7 +199,7 @@ protected:
 	virtual void updateTextures() {
         Widget::updateTextures();
 
-        if(pBackground == NULL) {
+        if(pBackground == nullptr) {
             pBackground = convertSurfaceToTexture(GUIStyle::getInstance().createWidgetBackground(getSize().x, getSize().y), true);
         }
 	}
@@ -208,9 +208,9 @@ protected:
 		This method frees all textures that are used by this scrollbar
 	*/
 	virtual void invalidateTextures() {
-        if(pBackground != NULL) {
+        if(pBackground != nullptr) {
             SDL_DestroyTexture(pBackground);
-            pBackground = NULL;
+            pBackground = nullptr;
         }
 	}
 private:

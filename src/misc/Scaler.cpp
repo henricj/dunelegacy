@@ -53,16 +53,16 @@ void Scaler::setDefaultScaler(Scaler::ScalerType scaler) {
     \return	the scaled surface (caller must free it with SDL_FreeSurface when finished)
 */
 SDL_Surface* Scaler::doubleSurfaceNN(SDL_Surface* src, bool freeSrcSurface) {
-	if(src == NULL) {
-	    return NULL;
+	if(src == nullptr) {
+	    return nullptr;
 	}
 
 	SDL_Surface *returnPic;
 
 	// create new picture surface
-	if((returnPic = SDL_CreateRGBSurface(0,src->w * 2,src->h * 2,8,0,0,0,0)) == NULL) {
+	if((returnPic = SDL_CreateRGBSurface(0,src->w * 2,src->h * 2,8,0,0,0,0)) == nullptr) {
 	    if(freeSrcSurface) SDL_FreeSurface(src);
-		return NULL;
+		return nullptr;
 	}
 
     SDL_SetPaletteColors(returnPic->format->palette, src->format->palette->colors, 0, src->format->palette->ncolors);
@@ -118,16 +118,16 @@ SDL_Surface* Scaler::doubleTiledSurfaceNN(SDL_Surface* src, int tilesX, int tile
     \return	the scaled surface (caller must free it with SDL_FreeSurface when finished)
 */
 SDL_Surface* Scaler::tripleSurfaceNN(SDL_Surface* src, bool freeSrcSurface) {
-	if(src == NULL) {
-	    return NULL;
+	if(src == nullptr) {
+	    return nullptr;
 	}
 
 	SDL_Surface *returnPic;
 
 	// create new picture surface
-	if((returnPic = SDL_CreateRGBSurface(0,src->w * 3,src->h * 3,8,0,0,0,0)) == NULL) {
+	if((returnPic = SDL_CreateRGBSurface(0,src->w * 3,src->h * 3,8,0,0,0,0)) == nullptr) {
 	    if(freeSrcSurface) SDL_FreeSurface(src);
-		return NULL;
+		return nullptr;
 	}
 
 	SDL_SetPaletteColors(returnPic->format->palette, src->format->palette->colors, 0, src->format->palette->ncolors);
@@ -204,17 +204,17 @@ SDL_Surface* Scaler::doubleSurfaceScale2x(SDL_Surface* src, bool freeSrcSurface)
     \return	the scaled surface (caller must free it with SDL_FreeSurface when finished)
 */
 SDL_Surface* Scaler::doubleTiledSurfaceScale2x(SDL_Surface* src, int tilesX, int tilesY, bool freeSrcSurface) {
-	if(src == NULL) {
-		return NULL;
+	if(src == nullptr) {
+		return nullptr;
 	}
 
 	int srcWidth = src->w;
 	int srcHeight = src->h;
 
 	SDL_Surface* dest = SDL_CreateRGBSurface(0, srcWidth*2, srcHeight*2, 8, 0, 0, 0, 0);
-	if(dest == NULL) {
+	if(dest == nullptr) {
         if(freeSrcSurface) SDL_FreeSurface(src);
-		return NULL;
+		return nullptr;
 	}
     SDL_SetPaletteColors(dest->format->palette, src->format->palette->colors, 0, src->format->palette->ncolors);
     Uint32 ckey;
@@ -312,17 +312,17 @@ SDL_Surface* Scaler::tripleSurfaceScale3x(SDL_Surface* src, bool freeSrcSurface)
     \return	the scaled surface (caller must free it with SDL_FreeSurface when finished)
 */
 SDL_Surface* Scaler::tripleTiledSurfaceScale3x(SDL_Surface* src, int tilesX, int tilesY, bool freeSrcSurface) {
-	if(src == NULL) {
-		return NULL;
+	if(src == nullptr) {
+		return nullptr;
 	}
 
 	int srcWidth = src->w;
 	int srcHeight = src->h;
 
 	SDL_Surface* dest = SDL_CreateRGBSurface(0, srcWidth*3, srcHeight*3, 8, 0, 0, 0, 0);
-	if(dest == NULL) {
+	if(dest == nullptr) {
 	    if(freeSrcSurface) SDL_FreeSurface(src);
-		return NULL;
+		return nullptr;
 	}
     SDL_SetPaletteColors(dest->format->palette, src->format->palette->colors, 0, src->format->palette->ncolors);
 	Uint32 ckey;

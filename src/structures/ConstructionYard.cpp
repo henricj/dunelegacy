@@ -54,7 +54,7 @@ ConstructionYard::~ConstructionYard() {
 
 bool ConstructionYard::doPlaceStructure(int x, int y) {
     if(isWaitingToPlace()) {
-        return (getOwner()->placeStructure(getObjectID(), getCurrentProducedItem(), x, y) != NULL);
+        return (getOwner()->placeStructure(getObjectID(), getCurrentProducedItem(), x, y) != nullptr);
     } else {
         return false;
     }

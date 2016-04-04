@@ -211,14 +211,14 @@ protected:
 		This method frees all textures that are used by this text view
 	*/
 	virtual void invalidateTextures() {
-		if(pBackground != NULL) {
+		if(pBackground != nullptr) {
 			SDL_DestroyTexture(pBackground);
-			pBackground = NULL;
+			pBackground = nullptr;
 		}
 
-        if(pForeground != NULL) {
+        if(pForeground != nullptr) {
 			SDL_DestroyTexture(pForeground);
-			pForeground = NULL;
+			pForeground = nullptr;
 		}
 	}
 

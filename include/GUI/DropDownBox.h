@@ -266,7 +266,7 @@ public:
 
 	/**
 		Returns the data assigned to the selected entry.
-		\return	the data of the entry (NULL if non is selected)
+		\return	the data of the entry (nullptr if non is selected)
 	*/
 	void* getSelectedEntryPtrData() const {
 		return listBox.getSelectedEntryPtrData();

@@ -22,8 +22,8 @@
 
 Palette LoadPalette_RW(SDL_RWops* rwop, int freesrc)
 {
-    if(rwop == NULL) {
-        throw std::invalid_argument("Palfile::Palfile(): rwop == NULL!");
+    if(rwop == nullptr) {
+        throw std::invalid_argument("Palfile::Palfile(): rwop == nullptr!");
     }
 
 	int filesize;

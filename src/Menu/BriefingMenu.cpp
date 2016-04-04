@@ -29,7 +29,7 @@ BriefingMenu::BriefingMenu(int newHouse,int mission,int type) : MentatMenu(newHo
 	this->mission = mission;
     this->type = type;
 
-	Animation* anim = NULL;
+	Animation* anim = nullptr;
 
 	SDL_Texture* pMentatProcceed = pGFXManager->getUIGraphic(UI_MentatProcced);
 	SDL_Texture* pMentatProcceedPressed = pGFXManager->getUIGraphic(UI_MentatProcced_Pressed);

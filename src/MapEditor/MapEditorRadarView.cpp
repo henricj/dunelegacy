@@ -33,7 +33,7 @@ MapEditorRadarView::MapEditorRadarView(MapEditor* pMapEditor)
  : RadarViewBase(), pMapEditor(pMapEditor)
 {
 	radarSurface = SDL_CreateRGBSurface(0, RADARWIDTH, RADARHEIGHT, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK);
-	SDL_FillRect(radarSurface, NULL, COLOR_BLACK);
+	SDL_FillRect(radarSurface, nullptr, COLOR_BLACK);
 
 	radarTexture = SDL_CreateTexture(renderer, SCREEN_FORMAT, SDL_TEXTUREACCESS_STREAMING, RADARWIDTH, RADARHEIGHT);
 }
@@ -41,7 +41,7 @@ MapEditorRadarView::MapEditorRadarView(MapEditor* pMapEditor)
 
 MapEditorRadarView::~MapEditorRadarView()
 {
-    if(radarSurface != NULL) {
+    if(radarSurface != nullptr) {
         SDL_FreeSurface(radarSurface);
     }
     SDL_DestroyTexture(radarTexture);
@@ -69,9 +69,9 @@ void MapEditorRadarView::draw(Point position)
 
     updateRadarSurface(map, scale, offsetX, offsetY);
 
-    SDL_UpdateTexture(radarTexture, NULL, radarSurface->pixels, radarSurface->pitch);
+    SDL_UpdateTexture(radarTexture, nullptr, radarSurface->pixels, radarSurface->pitch);
 
-    SDL_RenderCopy(renderer, radarTexture, NULL, &radarPosition);
+    SDL_RenderCopy(renderer, radarTexture, nullptr, &radarPosition);
 
     // draw viewport rect on radar
     SDL_Rect radarRect;
@@ -111,7 +111,7 @@ void MapEditorRadarView::draw(Point position)
 
 void MapEditorRadarView::updateRadarSurface(const MapData& map, int scale, int offsetX, int offsetY) {
 
-    SDL_FillRect(radarSurface, NULL, COLOR_BLACK);
+    SDL_FillRect(radarSurface, nullptr, COLOR_BLACK);
 
     // Lock the surface for direct access to the pixels
     if(!SDL_MUSTLOCK(radarSurface) || (SDL_LockSurface(radarSurface) == 0)) {

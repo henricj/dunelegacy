@@ -37,10 +37,10 @@ SDL_Surface* INIMapPreviewCreator::createMinimapImageOfMap(int borderWidth, Uint
 
     SDL_Surface* pMinimap;
     // create surface
-	if((pMinimap = SDL_CreateRGBSurface(0, 128+2*borderWidth, 128+2*borderWidth, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK)) == NULL) {
-		return NULL;
+	if((pMinimap = SDL_CreateRGBSurface(0, 128+2*borderWidth, 128+2*borderWidth, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK)) == nullptr) {
+		return nullptr;
 	}
-	SDL_FillRect(pMinimap, NULL, borderColor);
+	SDL_FillRect(pMinimap, nullptr, borderColor);
 	SDL_Rect dest = { borderWidth, borderWidth, pMinimap->w - 2*borderWidth, pMinimap->h - 2*borderWidth};
 	SDL_FillRect(pMinimap, &dest, COLOR_BLACK);
 

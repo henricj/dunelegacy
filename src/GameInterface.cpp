@@ -32,7 +32,7 @@
 #include <SDL.h>
 
 GameInterface::GameInterface() : Window(0,0,0,0) {
-	pObjectContainer = NULL;
+	pObjectContainer = nullptr;
 	objectID = NONE;
 
 	setTransparentBackground(true);
@@ -168,7 +168,7 @@ void GameInterface::updateObjectInterface() {
 
 			pObjectContainer = pObject->getInterfaceContainer();
 
-			if(pObjectContainer != NULL) {
+			if(pObjectContainer != nullptr) {
 				objectID = newObjectID;
 
 				windowWidget.addWidget(pObjectContainer,
@@ -184,10 +184,10 @@ void GameInterface::updateObjectInterface() {
 		}
 	} else if(currentGame->getSelectedList().size() > 1) {
 
-	    if((pObjectContainer == NULL) || (objectID != NONE)) {
+	    if((pObjectContainer == nullptr) || (objectID != NONE)) {
 	        // either there was nothing selected before or exactly one unit
 
-            if(pObjectContainer != NULL) {
+            if(pObjectContainer != nullptr) {
                 removeOldContainer();
             }
 
@@ -207,9 +207,9 @@ void GameInterface::updateObjectInterface() {
 }
 
 void GameInterface::removeOldContainer() {
-	if(pObjectContainer != NULL) {
+	if(pObjectContainer != nullptr) {
 		delete pObjectContainer;
-		pObjectContainer = NULL;
+		pObjectContainer = nullptr;
 		objectID = NONE;
 	}
 }

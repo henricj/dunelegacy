@@ -105,7 +105,7 @@ std::vector<std::string> FileManager::getNeededFiles() {
     fileList.push_back("INTROVOC.PAK");
     fileList.push_back("SOUND.PAK");
 
-    std::string LanguagePakFiles = (pTextManager != NULL) ? _("LanguagePakFiles") : "";
+    std::string LanguagePakFiles = (pTextManager != nullptr) ? _("LanguagePakFiles") : "";
 
     if(LanguagePakFiles.empty()) {
         LanguagePakFiles = "ENGLISH.PAK,HARK.PAK,ATRE.PAK,ORDOS.PAK";
@@ -158,7 +158,7 @@ SDL_RWops* FileManager::openFile(std::string filename) {
 
         std::string externalFilename = *searchPathIter + "/" + filename;
         if(getCaseInsensitiveFilename(externalFilename) == true) {
-            if((ret = SDL_RWFromFile(externalFilename.c_str(), "rb")) != NULL) {
+            if((ret = SDL_RWFromFile(externalFilename.c_str(), "rb")) != nullptr) {
                 return ret;
             }
         }
@@ -168,7 +168,7 @@ SDL_RWops* FileManager::openFile(std::string filename) {
     std::vector<Pakfile*>::const_iterator iter;
     for(iter = pakFiles.begin(); iter != pakFiles.end(); ++iter) {
         ret = (*iter)->openFile(filename);
-		if(ret != NULL) {
+		if(ret != nullptr) {
 			return ret;
 		}
     }

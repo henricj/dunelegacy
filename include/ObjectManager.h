@@ -67,13 +67,13 @@ public:
     /**
 		This method searches for the object with ObjectID.
 		\param	ObjectID		ID of the object to search for
-		\return Pointer to this object (NULL if not found)
+		\return Pointer to this object (nullptr if not found)
 	*/
 	inline ObjectBase* getObject(Uint32 objectID) const {
 	    ObjectMap::const_iterator iter = objectMap.find(objectID);
 
 	    if(iter == objectMap.end()) {
-            return NULL;
+            return nullptr;
 	    } else {
             return iter->second;
 	    }

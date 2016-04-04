@@ -184,7 +184,7 @@ void UnitBase::attack() {
 		Coord centerPoint = getCenterPoint();
 		bool bAirBullet;
 
-		if(target.getObjPointer() != NULL) {
+		if(target.getObjPointer() != nullptr) {
 			targetCenterPoint = target.getObjPointer()->getClosestCenterPoint(location);
 			bAirBullet = target.getObjPointer()->isAFlyingUnit();
 		} else {
@@ -300,7 +300,7 @@ void UnitBase::deploy(const Coord& newLocation) {
 
 void UnitBase::destroy() {
 
-	setTarget(NULL);
+	setTarget(nullptr);
 	currentGameMap->removeObjectFromMap(getObjectID());	//no map point will reference now
 	currentGame->getObjectManager().removeObject(objectID);
 
@@ -332,7 +332,7 @@ void UnitBase::deviate(House* newOwner) {
         quitDeviation();
     } else {
         removeFromSelectionLists();
-        setTarget(NULL);
+        setTarget(nullptr);
         setGuardPoint(location);
         setDestination(location);
         clearPath();
@@ -346,7 +346,7 @@ void UnitBase::deviate(House* newOwner) {
 
 void UnitBase::drawSelectionBox() {
 
-    SDL_Texture* selectionBox = NULL;
+    SDL_Texture* selectionBox = nullptr;
 
     switch(currentZoomlevel) {
         case 0:     selectionBox = pGFXManager->getUIGraphic(UI_SelectionBox_Zoomlevel0);   break;
@@ -356,7 +356,7 @@ void UnitBase::drawSelectionBox() {
     }
 
     SDL_Rect dest = calcDrawingRect(selectionBox, screenborder->world2screenX(realX), screenborder->world2screenY(realY), HAlign::Center, VAlign::Center);
-	SDL_RenderCopy(renderer, selectionBox, NULL, &dest);
+	SDL_RenderCopy(renderer, selectionBox, nullptr, &dest);
 
 	int x = screenborder->world2screenX(realX) - getWidth(selectionBox)/2;
 	int y = screenborder->world2screenY(realY) - getHeight(selectionBox)/2;
@@ -366,7 +366,7 @@ void UnitBase::drawSelectionBox() {
 }
 
 void UnitBase::drawOtherPlayerSelectionBox() {
-    SDL_Texture* selectionBox = NULL;
+    SDL_Texture* selectionBox = nullptr;
 
     switch(currentZoomlevel) {
         case 0:     selectionBox = pGFXManager->getUIGraphic(UI_OtherPlayerSelectionBox_Zoomlevel0);   break;
@@ -376,7 +376,7 @@ void UnitBase::drawOtherPlayerSelectionBox() {
     }
 
     SDL_Rect dest = calcDrawingRect(selectionBox, screenborder->world2screenX(realX), screenborder->world2screenY(realY), HAlign::Center, VAlign::Center);
-	SDL_RenderCopy(renderer, selectionBox, NULL, &dest);
+	SDL_RenderCopy(renderer, selectionBox, nullptr, &dest);
 }
 
 
@@ -388,12 +388,12 @@ void UnitBase::releaseTarget() {
 
     findTargetTimer = 0;
     setForced(false);
-    setTarget(NULL);
+    setTarget(nullptr);
 }
 
 void UnitBase::engageTarget() {
 
-    if(target && (target.getObjPointer() == NULL)) {
+    if(target && (target.getObjPointer() == nullptr)) {
         // the target does not exist anymore
         releaseTarget();
         return;
@@ -629,11 +629,11 @@ void UnitBase::navigate() {
                         if(!SearchPathWithAStar() && (++noCloserPointCount >= 3)
                             && (location != oldLocation))
                         {	//try searching for a path a number of times then give up
-                            if (target.getObjPointer() != NULL && targetFriendly
+                            if (target.getObjPointer() != nullptr && targetFriendly
                                 && (target.getObjPointer()->getItemID() != Structure_RepairYard)
                                 && ((target.getObjPointer()->getItemID() != Structure_Refinery)
                                 || (getItemID() != Unit_Harvester))) {
-                                setTarget(NULL);
+                                setTarget(nullptr);
                             }
 
                             /// This method will transport units if they get stuck inside a base
@@ -644,7 +644,7 @@ void UnitBase::navigate() {
                                && (currentGame->getGameInitSettings().getGameOptions().manualCarryallDrops
                                    || getOwner()->isAI())){
 
-                                if((GroundUnit*)this != NULL){
+                                if((GroundUnit*)this != nullptr){
                                     ((GroundUnit*)this)->requestCarryall();
                                 }
                             } else {
@@ -776,7 +776,7 @@ void UnitBase::doMove2Pos(int xPos, int yPos, bool bForced) {
 		findTargetTimer = 0;
 	}
 
-	setTarget(NULL);
+	setTarget(nullptr);
 	setDestination(xPos,yPos);
 	setForced(bForced);
 	setGuardPoint(xPos,yPos);
@@ -808,7 +808,7 @@ void UnitBase::doMove2Object(const ObjectBase* pTargetObject) {
 void UnitBase::doMove2Object(Uint32 targetObjectID) {
 	ObjectBase* pObject = currentGame->getObjectManager().getObject(targetObjectID);
 
-    if(pObject == NULL) {
+    if(pObject == nullptr) {
         return;
     }
 
@@ -821,7 +821,7 @@ void UnitBase::doAttackPos(int xPos, int yPos, bool bForced) {
 	}
 
 	setDestination(xPos,yPos);
-	setTarget(NULL);
+	setTarget(nullptr);
 	setForced(bForced);
 	attackPos.x = xPos;
 	attackPos.y = yPos;
@@ -858,7 +858,7 @@ void UnitBase::doAttackObject(const ObjectBase* pTargetObject, bool bForced) {
 void UnitBase::doAttackObject(Uint32 TargetObjectID, bool bForced) {
 	ObjectBase* pObject = currentGame->getObjectManager().getObject(TargetObjectID);
 
-	if(pObject == NULL) {
+	if(pObject == nullptr) {
         return;
 	}
 
@@ -889,8 +889,8 @@ void UnitBase::handleDamage(int damage, Uint32 damagerID, House* damagerOwner) {
 
     if(attackMode == HUNT && !forced) {
         ObjectBase* pDamager = currentGame->getObjectManager().getObject(damagerID);
-        if(pDamager != NULL && canAttack(pDamager)) {
-            if(!target || target.getObjPointer() == NULL || !isInWeaponRange(target.getObjPointer())) {
+        if(pDamager != nullptr && canAttack(pDamager)) {
+            if(!target || target.getObjPointer() == nullptr || !isInWeaponRange(target.getObjPointer())) {
                 // no target or target not on weapon range => switch target
                 doAttackObject(pDamager, false);
             }
@@ -979,7 +979,7 @@ bool UnitBase::isInAttackRange(const ObjectBase* pObject) const {
 }
 
 bool UnitBase::isInWeaponRange(const ObjectBase* object) const {
-    if(object == NULL) {
+    if(object == nullptr) {
         return false;
     }
 
@@ -998,7 +998,7 @@ void UnitBase::setAngle(int newAngle) {
 }
 
 void UnitBase::setGettingRepaired() {
-	if(target.getObjPointer() != NULL && (target.getObjPointer()->getItemID() == Structure_RepairYard)) {
+	if(target.getObjPointer() != nullptr && (target.getObjPointer()->getItemID() == Structure_RepairYard)) {
 		if(selected) {
 			removeFromSelectionLists();
         }
@@ -1013,7 +1013,7 @@ void UnitBase::setGettingRepaired() {
 		goingToRepairYard = false;
 		badlyDamaged = false;
 
-		setTarget(NULL);
+		setTarget(nullptr);
 		//setLocation(NONE, NONE);
 		setDestination(location);
 		nextSpotAngle = DOWN;
@@ -1053,7 +1053,7 @@ void UnitBase::setLocation(int xPos, int yPos) {
 
 	moving = false;
 	pickedUp = false;
-	setTarget(NULL);
+	setTarget(nullptr);
 
 	clearPath();
 }
@@ -1071,7 +1071,7 @@ void UnitBase::setPickedUp(UnitBase* newCarrier) {
 
 	if(getItemID() == Unit_Harvester) {
 		Harvester* harvester = (Harvester*) this;
-		if(harvester->isReturning() && target && (target.getObjPointer()!= NULL) && (target.getObjPointer()->getItemID() == Structure_Refinery)) {
+		if(harvester->isReturning() && target && (target.getObjPointer()!= nullptr) && (target.getObjPointer()->getItemID() == Structure_Refinery)) {
 			((Refinery*)target.getObjPointer())->unBook();
 		}
 	}
@@ -1127,7 +1127,7 @@ void UnitBase::setTarget(const ObjectBase* newTarget) {
 
 	ObjectBase::setTarget(newTarget);
 
-	if(target.getObjPointer() != NULL
+	if(target.getObjPointer() != nullptr
 		&& (target.getObjPointer()->getOwner() == getOwner())
 		&& (target.getObjPointer()->getItemID() == Structure_RepairYard)
 		&& (itemID != Unit_Carryall) && (itemID != Unit_Frigate)
@@ -1147,7 +1147,7 @@ void UnitBase::targeting() {
                 if(!isInWeaponRange(target.getObjPointer())){
                     const ObjectBase* pNewTarget = findTarget();
 
-                    if(pNewTarget != NULL) {
+                    if(pNewTarget != nullptr) {
 
                         doAttackObject(pNewTarget, false);
 
@@ -1162,7 +1162,7 @@ void UnitBase::targeting() {
 
                 const ObjectBase* pNewTarget = findTarget();
 
-                if(pNewTarget != NULL && isInGuardRange(pNewTarget)) {
+                if(pNewTarget != nullptr && isInGuardRange(pNewTarget)) {
                     // we have found a new target => attack it
                     if(attackMode == AMBUSH) {
                         doSetAttackMode(HUNT);
@@ -1246,7 +1246,7 @@ void UnitBase::quitDeviation() {
     if(wasDeviated()) {
         // revert back to real owner
         removeFromSelectionLists();
-        setTarget(NULL);
+        setTarget(nullptr);
         setGuardPoint(location);
         setDestination(location);
         owner = currentGame->getHouse(originalHouseID);
@@ -1293,7 +1293,7 @@ bool UnitBase::canPass(int xPos, int yPos) const {
 bool UnitBase::SearchPathWithAStar() {
 	Coord destinationCoord;
 
-	if(target && target.getObjPointer() != NULL) {
+	if(target && target.getObjPointer() != nullptr) {
 	    if(itemID == Unit_Carryall && target.getObjPointer()->getItemID() == Structure_Refinery) {
             destinationCoord = target.getObjPointer()->getLocation() + Coord(2,0);
 	    } else if(itemID == Unit_Frigate && target.getObjPointer()->getItemID() == Structure_StarPort) {

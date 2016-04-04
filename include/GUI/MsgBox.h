@@ -89,7 +89,7 @@ public:
 	*/
 	virtual void resizeAll() {
 		// MsgBox should get bigger if content changes
-		if(pWindowWidget != NULL) {
+		if(pWindowWidget != nullptr) {
 			Point newSize = pWindowWidget->getMinimumSize();
 			newSize.x = std::max(newSize.x,120);
 			newSize.y = std::max(newSize.y,30);
@@ -153,7 +153,7 @@ private:
 	*/
 	virtual void onOK() {
 		Window* pParentWindow = dynamic_cast<Window*>(getParent());
-		if(pParentWindow != NULL) {
+		if(pParentWindow != nullptr) {
 			pParentWindow->closeChildWindow();
 		}
 	}

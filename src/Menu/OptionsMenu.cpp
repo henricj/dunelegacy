@@ -251,7 +251,7 @@ void OptionsMenu::onChangeOption(bool bInteractive) {
         bChanged |= (settings.general.language != languageFilename.substr(languageFilename.size()-5,2));
     }
     const PlayerFactory::PlayerData* pPlayerData = PlayerFactory::getByIndex(aiDropDownBox.getSelectedEntryIntData());
-    bChanged |= ((pPlayerData == NULL) || (settings.ai.campaignAI != pPlayerData->getPlayerClass()));
+    bChanged |= ((pPlayerData == nullptr) || (settings.ai.campaignAI != pPlayerData->getPlayerClass()));
     bChanged |= (settings.general.playIntro != introCheckbox.isChecked());
 
     int selectedResolution = resolutionDropDownBox.getSelectedEntryIntData();
@@ -300,7 +300,7 @@ void OptionsMenu::onOptionsOK() {
 	settings.general.playIntro = introCheckbox.isChecked();
 
     const PlayerFactory::PlayerData* pPlayerData = PlayerFactory::getByIndex(aiDropDownBox.getSelectedEntryIntData());
-	settings.ai.campaignAI = ((pPlayerData != NULL) ? pPlayerData->getPlayerClass() : DEFAULTAIPLAYERCLASS);
+	settings.ai.campaignAI = ((pPlayerData != nullptr) ? pPlayerData->getPlayerClass() : DEFAULTAIPLAYERCLASS);
 
     int selectedResolution = resolutionDropDownBox.getSelectedEntryIntData();
     settings.video.width = availScreenRes[selectedResolution].x;
@@ -432,7 +432,7 @@ void OptionsMenu::determineAvailableScreenResolutions() {
 
 void OptionsMenu::onChildWindowClose(Window* pChildWindow) {
     GameOptionsWindow* pGameOptionsWindow = dynamic_cast<GameOptionsWindow*>(pChildWindow);
-    if(pGameOptionsWindow != NULL) {
+    if(pGameOptionsWindow != nullptr) {
         currentGameOptions = pGameOptionsWindow->getGameOptions();
 
         onChangeOption(true);

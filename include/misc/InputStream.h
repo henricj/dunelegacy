@@ -102,17 +102,17 @@ public:
         \param  pVal8   the 8th boolean value
 
 	*/
-	void readBools(bool* pVal1 = NULL, bool* pVal2 = NULL, bool* pVal3 = NULL, bool* pVal4 = NULL, bool* pVal5 = NULL, bool* pVal6 = NULL, bool* pVal7 = NULL, bool* pVal8 = NULL) {
+	void readBools(bool* pVal1 = nullptr, bool* pVal2 = nullptr, bool* pVal3 = nullptr, bool* pVal4 = nullptr, bool* pVal5 = nullptr, bool* pVal6 = nullptr, bool* pVal7 = nullptr, bool* pVal8 = nullptr) {
         Uint8 val = readUint8();
 
-        if(pVal1 != NULL)   *pVal1 = ((val & 0x01) != 0);
-        if(pVal2 != NULL)   *pVal2 = ((val & 0x02) != 0);
-        if(pVal3 != NULL)   *pVal3 = ((val & 0x04) != 0);
-        if(pVal4 != NULL)   *pVal4 = ((val & 0x08) != 0);
-        if(pVal5 != NULL)   *pVal5 = ((val & 0x10) != 0);
-        if(pVal6 != NULL)   *pVal6 = ((val & 0x20) != 0);
-        if(pVal7 != NULL)   *pVal7 = ((val & 0x40) != 0);
-        if(pVal8 != NULL)   *pVal8 = ((val & 0x80) != 0);
+        if(pVal1 != nullptr)   *pVal1 = ((val & 0x01) != 0);
+        if(pVal2 != nullptr)   *pVal2 = ((val & 0x02) != 0);
+        if(pVal3 != nullptr)   *pVal3 = ((val & 0x04) != 0);
+        if(pVal4 != nullptr)   *pVal4 = ((val & 0x08) != 0);
+        if(pVal5 != nullptr)   *pVal5 = ((val & 0x10) != 0);
+        if(pVal6 != nullptr)   *pVal6 = ((val & 0x20) != 0);
+        if(pVal7 != nullptr)   *pVal7 = ((val & 0x40) != 0);
+        if(pVal8 != nullptr)   *pVal8 = ((val & 0x80) != 0);
 	}
 
 	/**

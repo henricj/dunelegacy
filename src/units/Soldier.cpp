@@ -51,7 +51,7 @@ Soldier::~Soldier() {
 }
 
 bool Soldier::canAttack(const ObjectBase* object) const {
-	if ((object != NULL)
+	if ((object != nullptr)
 		&& (object->isAStructure()
 			|| !object->isAFlyingUnit())
 		&& ((object->getOwner()->getTeam() != owner->getTeam())

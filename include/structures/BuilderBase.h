@@ -180,7 +180,7 @@ public:
 	inline const std::list<BuildItem>& getBuildList() const { return buildList; };
 
 	virtual inline bool isAvailableToBuild(Uint32 itemID) const {
-		return (getBuildItem(itemID) != NULL);
+		return (getBuildItem(itemID) != nullptr);
 	}
 
 protected:
@@ -199,7 +199,7 @@ protected:
 				return &(*iter);
 			}
 		}
-		return NULL;
+		return nullptr;
 	}
 
     const BuildItem* getBuildItem(Uint32 itemID) const {
@@ -209,7 +209,7 @@ protected:
 				return &(*iter);
 			}
 		}
-		return NULL;
+		return nullptr;
 	}
 
 	void produceNextAvailableItem();

@@ -70,7 +70,7 @@ Meanwhile::Meanwhile(int house, bool firstMeanwhile) : CutScene() {
 
         startNewScene();
 
-        addVideoEvent(new HoldPictureVideoEvent(NULL, 45, true));
+        addVideoEvent(new HoldPictureVideoEvent(nullptr, 45, true));
         addTextEvent(new TextEvent(pDuneText->getString(textBaseIndex+MeanwhileText_At_the_Emperor_s_Palace),color,0,42,true,true,true));
         addTrigger(new CutSceneMusicTrigger(0,MUSIC_MEANWHILE));
 
@@ -98,7 +98,7 @@ Meanwhile::Meanwhile(int house, bool firstMeanwhile) : CutScene() {
 
         startNewScene();
 
-        addVideoEvent(new HoldPictureVideoEvent(NULL, 45, true));
+        addVideoEvent(new HoldPictureVideoEvent(nullptr, 45, true));
         addTextEvent(new TextEvent(pDuneText->getString(textBaseIndex+MeanwhileText_At_the_Emperor_s_Palace_on_Dune),color,0,42,true,true,true));
         addTrigger(new CutSceneMusicTrigger(0,MUSIC_MEANWHILE));
 

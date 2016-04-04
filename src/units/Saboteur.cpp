@@ -94,7 +94,7 @@ bool Saboteur::update() {
 	if(active) {
 		if(!moving) {
 			//check to see if close enough to blow up target
-			if(target.getObjPointer() != NULL){ //&& target.getObjPointer()->isAStructure()
+			if(target.getObjPointer() != nullptr){ //&& target.getObjPointer()->isAStructure()
 				if(getOwner()->getTeam() != target.getObjPointer()->getOwner()->getTeam())
                 {
                     Coord	closestPoint;
@@ -129,7 +129,7 @@ void Saboteur::deploy(const Coord& newLocation) {
 
 
 bool Saboteur::canAttack(const ObjectBase* object) const {
-	if(object != NULL){
+	if(object != nullptr){
         if((object->isAStructure() || (object->isAGroundUnit() && !object->isInfantry() && object->getItemID() != Unit_Sandworm)) /* allow attack tanks*/
             && (object->getOwner()->getTeam() != owner->getTeam())
             && object->isVisible(getOwner()->getTeam())){

@@ -109,7 +109,7 @@ std::list<FileInfo> getFileList(std::string directory, std::string extension, bo
         return Files;
     }
 
-    if(WideCharToMultiByte(CP_ACP, 0, szwPath, -1, szPath, MAX_PATH, NULL, NULL) == 0) {
+    if(WideCharToMultiByte(CP_ACP, 0, szwPath, -1, szPath, MAX_PATH, nullptr, nullptr) == 0) {
         fprintf(stderr, "getFileList(): Conversion of search path from utf-16 to ansi failed\n");
         return Files;
     }
@@ -148,7 +148,7 @@ std::list<FileInfo> getFileList(std::string directory, std::string extension, bo
                     continue;
                 }
 
-                if(WideCharToMultiByte(CP_UTF8, 0, szwFilename, -1, szFilename, MAX_PATH, NULL, NULL) == 0) {
+                if(WideCharToMultiByte(CP_UTF8, 0, szwFilename, -1, szFilename, MAX_PATH, nullptr, nullptr) == 0) {
                     fprintf(stderr, "getFileList(): Conversion of search path from utf-16 to utf-8 failed\n");
                     continue;
                 }
@@ -165,12 +165,12 @@ std::list<FileInfo> getFileList(std::string directory, std::string extension, bo
 	DIR * dir = opendir(directory.c_str());
 	dirent *curEntry;
 
-	if(dir == NULL) {
+	if(dir == nullptr) {
 		return Files;
 	}
 
 	errno = 0;
-	while((curEntry = readdir(dir)) != NULL) {
+	while((curEntry = readdir(dir)) != nullptr) {
 			std::string filename = curEntry->d_name;
 
 			if(filename.length() < extension.length()+1) {
@@ -273,14 +273,14 @@ bool getCaseInsensitiveFilename(std::string& filepath) {
     }
 
     DIR* directory = opendir(path.c_str());
-    if(directory == NULL) {
+    if(directory == nullptr) {
         return false;
     }
 
     while(true) {
         errno = 0;
         dirent* directory_entry = readdir(directory);
-        if(directory_entry == NULL) {
+        if(directory_entry == nullptr) {
             if (errno != 0) {
                 closedir(directory);
                 return false;
@@ -328,7 +328,7 @@ bool existsFile(const std::string& path) {
 	// try opening the file
     SDL_RWops* RWopsFile = SDL_RWFromFile(path.c_str(),"r");
 
-    if(RWopsFile == NULL) {
+    if(RWopsFile == nullptr) {
         return false;
     }
 
@@ -340,7 +340,7 @@ bool existsFile(const std::string& path) {
 std::string readCompleteFile(std::string filename) {
     SDL_RWops* RWopsFile = SDL_RWFromFile(filename.c_str(),"r");
 
-    if(RWopsFile == NULL) {
+    if(RWopsFile == nullptr) {
         return "";
     }
 

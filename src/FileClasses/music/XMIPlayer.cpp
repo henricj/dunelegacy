@@ -33,13 +33,13 @@ XMIPlayer::XMIPlayer() : MusicPlayer(settings.audio.playMusic) {
     musicVolume = MIX_MAX_VOLUME/2;
     Mix_VolumeMusic(musicVolume);
 
-	music = NULL;
+	music = nullptr;
 }
 
 XMIPlayer::~XMIPlayer() {
-	if(music != NULL) {
+	if(music != nullptr) {
 		Mix_FreeMusic(music);
-		music = NULL;
+		music = nullptr;
 	}
 
 	remove(getTmpFileName().c_str());
@@ -196,7 +196,7 @@ void XMIPlayer::changeMusic(MUSICTYPE musicType)
 
 	if((musicOn == true) && (filename != "")) {
         SDL_RWops* inputrwop = pFileManager->openFile(filename);
-        if(inputrwop == NULL) {
+        if(inputrwop == nullptr) {
             std::cerr << "Cannot open file " << filename << "!" << std::endl;
             return;
         }
@@ -205,7 +205,7 @@ void XMIPlayer::changeMusic(MUSICTYPE musicType)
         std::string tmpFilename = getTmpFileName();
 
         SDL_RWops* outputrwop = SDL_RWFromFile(tmpFilename.c_str(),"wb");
-        if(outputrwop == NULL) {
+        if(outputrwop == nullptr) {
             std::cerr << "Cannot open file " << tmpFilename << "!" << std::endl;
             return;
         }
@@ -218,13 +218,13 @@ void XMIPlayer::changeMusic(MUSICTYPE musicType)
         output.close();
 
         Mix_HaltMusic();
-		if(music != NULL) {
+		if(music != nullptr) {
 			Mix_FreeMusic(music);
-			music = NULL;
+			music = nullptr;
 		}
 
 		music = Mix_LoadMUS(tmpFilename.c_str());
-		if(music != NULL) {
+		if(music != nullptr) {
 			printf("Now playing %s!\n", tmpFilename.c_str());
 			Mix_PlayMusic(music, -1);
 		} else {
@@ -247,7 +247,7 @@ void XMIPlayer::setMusic(bool value) {
 
 	if(musicOn) {
 		changeMusic(MUSIC_RANDOM);
-	} else if(music != NULL) {
+	} else if(music != nullptr) {
 		Mix_HaltMusic();
 	}
 }
@@ -260,10 +260,10 @@ void XMIPlayer::toggleSound()
 		changeMusic(MUSIC_PEACE);
 	} else {
 		musicOn = false;
-		if (music != NULL) {
+		if (music != nullptr) {
 			Mix_HaltMusic();
             Mix_FreeMusic(music);
-            music = NULL;
+            music = nullptr;
 		}
 	}
 }

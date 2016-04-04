@@ -73,7 +73,7 @@ void Wall::destroy() {
 	// fix wall to the north
 	if(currentGameMap->tileExists(location.x, location.y-1) == true) {
         ObjectBase* obj = currentGameMap->getTile(location.x, location.y-1)->getGroundObject();
-        if((obj != NULL) && (obj->getItemID() == Structure_Wall)) {
+        if((obj != nullptr) && (obj->getItemID() == Structure_Wall)) {
             ((Wall*) obj)->bWallDestroyedDown = true;
             ((Wall*) obj)->fixWall();
         }
@@ -82,7 +82,7 @@ void Wall::destroy() {
 	// fix wall to the south
 	if(currentGameMap->tileExists(location.x, location.y+1) == true) {
         ObjectBase* obj = currentGameMap->getTile(location.x, location.y+1)->getGroundObject();
-        if((obj != NULL) && (obj->getItemID() == Structure_Wall)) {
+        if((obj != nullptr) && (obj->getItemID() == Structure_Wall)) {
             ((Wall*) obj)->bWallDestroyedUp = true;
             ((Wall*) obj)->fixWall();
         }
@@ -91,7 +91,7 @@ void Wall::destroy() {
 	// fix wall to the west
 	if(currentGameMap->tileExists(location.x-1, location.y) == true) {
         ObjectBase* obj = currentGameMap->getTile(location.x-1, location.y)->getGroundObject();
-        if((obj != NULL) && (obj->getItemID() == Structure_Wall)) {
+        if((obj != nullptr) && (obj->getItemID() == Structure_Wall)) {
             ((Wall*) obj)->bWallDestroyedRight = true;
             ((Wall*) obj)->fixWall();
         }
@@ -100,7 +100,7 @@ void Wall::destroy() {
     // fix wall to the east
 	if(currentGameMap->tileExists(location.x+1, location.y) == true) {
         ObjectBase* obj = currentGameMap->getTile(location.x+1, location.y)->getGroundObject();
-        if((obj != NULL) && (obj->getItemID() == Structure_Wall)) {
+        if((obj != nullptr) && (obj->getItemID() == Structure_Wall)) {
             ((Wall*) obj)->bWallDestroyedLeft = true;
             ((Wall*) obj)->fixWall();
         }
@@ -124,7 +124,7 @@ void Wall::setLocation(int xPos, int yPos) {
 	// fix wall to the north
 	if(currentGameMap->tileExists(location.x, location.y-1) == true) {
         ObjectBase* obj = currentGameMap->getTile(location.x, location.y-1)->getGroundObject();
-        if((obj != NULL) && (obj->getItemID() == Structure_Wall)) {
+        if((obj != nullptr) && (obj->getItemID() == Structure_Wall)) {
             ((Wall*) obj)->bWallDestroyedDown = false;
             ((Wall*) obj)->fixWall();
         }
@@ -133,7 +133,7 @@ void Wall::setLocation(int xPos, int yPos) {
 	// fix wall to the south
 	if(currentGameMap->tileExists(location.x, location.y+1) == true) {
         ObjectBase* obj = currentGameMap->getTile(location.x, location.y+1)->getGroundObject();
-        if((obj != NULL) && (obj->getItemID() == Structure_Wall)) {
+        if((obj != nullptr) && (obj->getItemID() == Structure_Wall)) {
             ((Wall*) obj)->bWallDestroyedUp = false;
             ((Wall*) obj)->fixWall();
         }
@@ -142,7 +142,7 @@ void Wall::setLocation(int xPos, int yPos) {
 	// fix wall to the west
 	if(currentGameMap->tileExists(location.x-1, location.y) == true) {
         ObjectBase* obj = currentGameMap->getTile(location.x-1, location.y)->getGroundObject();
-        if((obj != NULL) && (obj->getItemID() == Structure_Wall)) {
+        if((obj != nullptr) && (obj->getItemID() == Structure_Wall)) {
             ((Wall*) obj)->bWallDestroyedRight = false;
             ((Wall*) obj)->fixWall();
         }
@@ -151,7 +151,7 @@ void Wall::setLocation(int xPos, int yPos) {
     // fix wall to the east
 	if(currentGameMap->tileExists(location.x+1, location.y) == true) {
         ObjectBase* obj = currentGameMap->getTile(location.x+1, location.y)->getGroundObject();
-        if((obj != NULL) && (obj->getItemID() == Structure_Wall)) {
+        if((obj != nullptr) && (obj->getItemID() == Structure_Wall)) {
             ((Wall*) obj)->bWallDestroyedLeft = false;
             ((Wall*) obj)->fixWall();
         }

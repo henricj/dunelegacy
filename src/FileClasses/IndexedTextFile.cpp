@@ -27,8 +27,8 @@
 
 IndexedTextFile::IndexedTextFile(SDL_RWops* rwop, bool bDecode) {
 
-	if(rwop == NULL) {
-	    throw std::invalid_argument("IndexedTextFile:IndexedTextFile(): rwop == NULL!");
+	if(rwop == nullptr) {
+	    throw std::invalid_argument("IndexedTextFile:IndexedTextFile(): rwop == nullptr!");
 	}
 
 	int indexedTextFilesize = SDL_RWseek(rwop,0,SEEK_END);
@@ -45,7 +45,7 @@ IndexedTextFile::IndexedTextFile(SDL_RWops* rwop, bool bDecode) {
 	}
 
 	unsigned char* pFiledata;
-	if( (pFiledata = (unsigned char*) malloc(indexedTextFilesize)) == NULL) {
+	if( (pFiledata = (unsigned char*) malloc(indexedTextFilesize)) == nullptr) {
         throw std::bad_alloc();
 	}
 

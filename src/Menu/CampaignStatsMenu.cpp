@@ -439,7 +439,7 @@ void CampaignStatsMenu::calculateScore(int level)
     float totalHumanCredits = 0.0f;
 	for(int i=0; i < NUM_HOUSES; i++) {
         House* pHouse = currentGame->getHouse(i);
-        if(pHouse != NULL) {
+        if(pHouse != nullptr) {
             if(pHouse->isAI() == true) {
                 unitsDestroyedByAI += pHouse->getNumDestroyedUnits();
                 structuresDestroyedByAI += pHouse->getNumDestroyedStructures();

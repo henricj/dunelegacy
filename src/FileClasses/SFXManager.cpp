@@ -39,7 +39,7 @@ SFXManager::SFXManager() {
 	}
 
 	for(int i = 0; i < NUM_SOUNDCHUNK; i++) {
-		if(soundChunk[i] == NULL) {
+		if(soundChunk[i] == nullptr) {
 			fprintf(stderr,"SFXManager::SFXManager: Not all sounds could be loaded\n");
 			exit(EXIT_FAILURE);
 		}
@@ -49,9 +49,9 @@ SFXManager::SFXManager() {
 SFXManager::~SFXManager() {
 	// unload voice
 	for(int i = 0; i < numLngVoice; i++) {
-		if(lngVoice[i] != NULL) {
+		if(lngVoice[i] != nullptr) {
 			Mix_FreeChunk(lngVoice[i]);
-			lngVoice[i] = NULL;
+			lngVoice[i] = nullptr;
 		}
 	}
 
@@ -59,9 +59,9 @@ SFXManager::~SFXManager() {
 
 	// unload sound
 	for(int i = 0; i < NUM_SOUNDCHUNK; i++) {
-		if(soundChunk[i] != NULL) {
+		if(soundChunk[i] != nullptr) {
 			Mix_FreeChunk(soundChunk[i]);
-			soundChunk[i] = NULL;
+			soundChunk[i] = nullptr;
 		}
 	}
 }
@@ -76,7 +76,7 @@ Mix_Chunk* SFXManager::getVoice(Voice_enum id, int house) {
 
 Mix_Chunk* SFXManager::getSound(Sound_enum id) {
 	if(id >= NUM_SOUNDCHUNK)
-		return NULL;
+		return nullptr;
 
 	return soundChunk[id];
 }
@@ -84,9 +84,9 @@ Mix_Chunk* SFXManager::getSound(Sound_enum id) {
 Mix_Chunk* SFXManager::loadMixFromADL(std::string adlFile, int index) {
 
     SDL_RWops* rwop = pFileManager->openFile(adlFile);
-    if(rwop == NULL) {
+    if(rwop == nullptr) {
         fprintf(stderr,"SFXManager::LoadMixFromADL:Unable to load %s!\n",adlFile.c_str());
-        return NULL;
+        return nullptr;
     }
 
     SoundAdlibPC *pSoundAdlibPC = new SoundAdlibPC(rwop, false);
@@ -100,18 +100,18 @@ Mix_Chunk* SFXManager::loadMixFromADL(std::string adlFile, int index) {
 void SFXManager::loadEnglishVoice() {
 	numLngVoice = NUM_VOICE*NUM_HOUSES;
 
-	if((lngVoice = (Mix_Chunk**) malloc(sizeof(Mix_Chunk*) * numLngVoice)) == NULL) {
+	if((lngVoice = (Mix_Chunk**) malloc(sizeof(Mix_Chunk*) * numLngVoice)) == nullptr) {
 		fprintf(stderr,"SFXManager::LoadVoice_English: Cannot allocate memory!\n");
 		exit(EXIT_FAILURE);
 	}
 
 	for(int i = 0; i < numLngVoice; i++) {
-		lngVoice[i] = NULL;
+		lngVoice[i] = nullptr;
 	}
 
 	// now we can load
 	for(int house = 0; house < NUM_HOUSES; house++) {
-		Mix_Chunk* HouseNameChunk = NULL;
+		Mix_Chunk* HouseNameChunk = nullptr;
 
 		std::string HouseString;
 		int VoiceNum = house;
@@ -213,7 +213,7 @@ void SFXManager::loadEnglishVoice() {
 	}
 
 	for(int i = 0; i < numLngVoice; i++) {
-		if(lngVoice[i] == NULL) {
+		if(lngVoice[i] == nullptr) {
 			fprintf(stderr,"SFXManager::LoadVoice_English: Not all voice sounds could be loaded\n");
 			exit(EXIT_FAILURE);
 		}
@@ -282,7 +282,7 @@ void SFXManager::loadEnglishVoice() {
 
 Mix_Chunk* SFXManager::getEnglishVoice(Voice_enum id, int house) {
 	if((int) id >= numLngVoice)
-		return NULL;
+		return nullptr;
 
 	return lngVoice[id*NUM_HOUSES + house];
 }
@@ -290,13 +290,13 @@ Mix_Chunk* SFXManager::getEnglishVoice(Voice_enum id, int house) {
 void SFXManager::loadNonEnglishVoice(std::string languagePrefix) {
 	numLngVoice = NUM_VOICE;
 
-	if((lngVoice = (Mix_Chunk**) malloc(sizeof(Mix_Chunk*) * NUM_VOICE)) == NULL) {
+	if((lngVoice = (Mix_Chunk**) malloc(sizeof(Mix_Chunk*) * NUM_VOICE)) == nullptr) {
 		fprintf(stderr,"SFXManager::LoadVoice_NonEnglish: Cannot allocate memory!\n");
 		exit(EXIT_FAILURE);
 	}
 
 	for(int i = 0; i < NUM_VOICE; i++) {
-		lngVoice[i] = NULL;
+		lngVoice[i] = nullptr;
 	}
 
 
@@ -345,7 +345,7 @@ void SFXManager::loadNonEnglishVoice(std::string languagePrefix) {
 	lngVoice[MissileApproaching] = getChunkFromFile(languagePrefix + "MISSILE.VOC");
 
 	for(int i = 0; i < numLngVoice; i++) {
-		if(lngVoice[i] == NULL) {
+		if(lngVoice[i] == nullptr) {
 			fprintf(stderr,"SFXManager::LoadVoice_NonEnglish: Not all voice sounds could be loaded\n");
 			exit(EXIT_FAILURE);
 		}
@@ -413,7 +413,7 @@ void SFXManager::loadNonEnglishVoice(std::string languagePrefix) {
 
 Mix_Chunk* SFXManager::getNonEnglishVoice(Voice_enum id, int house) {
 	if((int)id >= numLngVoice)
-		return NULL;
+		return nullptr;
 
 	return lngVoice[id];
 }

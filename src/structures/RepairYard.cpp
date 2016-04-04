@@ -92,17 +92,17 @@ void RepairYard::deployRepairUnit(Carryall* pCarryall) {
 	lastAnimFrame = 5;
 
     UnitBase* pRepairUnit = repairUnit.getUnitPointer();
-	if(pCarryall != NULL) {
+	if(pCarryall != nullptr) {
 	    pCarryall->giveCargo(pRepairUnit);
-	    pCarryall->setTarget(NULL);
+	    pCarryall->setTarget(nullptr);
 	    pCarryall->setDestination(pRepairUnit->getGuardPoint());
 	} else {
         Coord deployPos = currentGameMap->findDeploySpot(pRepairUnit, location, destination, structureSize);
 
         if(pRepairUnit->getItemID() != Unit_Harvester){
             pRepairUnit->setForced(false);
-            pRepairUnit->setTarget(NULL);
-            //pRepairUnit->setDestination(NULL);
+            pRepairUnit->setTarget(nullptr);
+            //pRepairUnit->setDestination(nullptr);
             pRepairUnit->doSetAttackMode(GUARD);
 
         }else{
@@ -116,7 +116,7 @@ void RepairYard::deployRepairUnit(Carryall* pCarryall) {
         if(pRepairUnit->getAttackMode() == HUNT){
             pRepairUnit->doSetAttackMode(GUARD);
         }
-        pRepairUnit->setTarget(NULL);
+        pRepairUnit->setTarget(nullptr);
         pRepairUnit->setDestination(pRepairUnit->getLocation());
 
 	}
@@ -153,7 +153,7 @@ void RepairYard::updateStructureSpecificStuff() {
 
 		} else if(((GroundUnit*)pRepairUnit)->isawaitingPickup() == false) {
 		    // find carryall
-		    Carryall* pCarryall = NULL;
+		    Carryall* pCarryall = nullptr;
             if((pRepairUnit->getGuardPoint().isValid()) && getOwner()->hasCarryalls())	{
                 RobustList<UnitBase*>::const_iterator iter;
                 for(iter = unitList.begin(); iter != unitList.end(); ++iter) {
@@ -166,12 +166,12 @@ void RepairYard::updateStructureSpecificStuff() {
                 }
             }
 
-            if(pCarryall != NULL) {
+            if(pCarryall != nullptr) {
                 /*
                 pCarryall->setTarget(this);
                 pCarryall->clearPath();
                 ((GroundUnit*)pRepairUnit)->bookCarrier(pCarryall);
-                pRepairUnit->setTarget(NULL);
+                pRepairUnit->setTarget(nullptr);
                 pRepairUnit->setDestination(pRepairUnit->getGuardPoint());
                 */
                 deployRepairUnit(pCarryall);

@@ -36,8 +36,8 @@ public:
         textcolor = COLOR_DEFAULT;
 	    textshadowcolor = COLOR_DEFAULT;
 	    maxTextLength = -1;
-		pTextureWithoutCarret = NULL;
-		pTextureWithCarret = NULL;
+		pTextureWithoutCarret = nullptr;
+		pTextureWithCarret = nullptr;
 		lastCarretTime = SDL_GetTicks();
 		enableResizing(true,false);
 		resize(getMinimumSize().x,getMinimumSize().y);
@@ -167,7 +167,7 @@ public:
 		if this text box is resized or the text changes.
 	*/
 	virtual void updateTextures() {
-        if(pTextureWithoutCarret == NULL || pTextureWithCarret == NULL) {
+        if(pTextureWithoutCarret == nullptr || pTextureWithCarret == nullptr) {
             invalidateTextures();
 
             pTextureWithoutCarret = convertSurfaceToTexture(GUIStyle::getInstance().createTextBoxSurface(getSize().x, getSize().y, text, false, fontID,  Alignment_Left, textcolor, textshadowcolor), true);
@@ -186,7 +186,7 @@ public:
 
 		updateTextures();
 
-		if((pTextureWithoutCarret == NULL) || (pTextureWithCarret == NULL)) {
+		if((pTextureWithoutCarret == nullptr) || (pTextureWithCarret == nullptr)) {
             return;
 		}
 
@@ -194,16 +194,16 @@ public:
 
 		if(isActive()) {
 			if((SDL_GetTicks() - lastCarretTime) < 500) {
-				SDL_RenderCopy(renderer, pTextureWithCarret, NULL, &dest);
+				SDL_RenderCopy(renderer, pTextureWithCarret, nullptr, &dest);
 			} else {
-				SDL_RenderCopy(renderer, pTextureWithoutCarret, NULL, &dest);
+				SDL_RenderCopy(renderer, pTextureWithoutCarret, nullptr, &dest);
 			}
 
 			if(SDL_GetTicks() - lastCarretTime >= 1000) {
 				lastCarretTime = SDL_GetTicks();
 			}
 		} else {
-			SDL_RenderCopy(renderer, pTextureWithoutCarret, NULL, &dest);
+			SDL_RenderCopy(renderer, pTextureWithoutCarret, nullptr, &dest);
 		}
 	}
 
@@ -312,14 +312,14 @@ protected:
 		This method frees all textures that are used by this text box
 	*/
 	virtual void invalidateTextures() {
-		if(pTextureWithoutCarret != NULL) {
+		if(pTextureWithoutCarret != nullptr) {
 			SDL_DestroyTexture(pTextureWithoutCarret);
-			pTextureWithoutCarret = NULL;
+			pTextureWithoutCarret = nullptr;
 		}
 
-		if(pTextureWithCarret != NULL) {
+		if(pTextureWithCarret != nullptr) {
 			SDL_DestroyTexture(pTextureWithCarret);
-			pTextureWithCarret = NULL;
+			pTextureWithCarret = nullptr;
 		}
 	}
 

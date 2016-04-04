@@ -52,7 +52,7 @@ int FadeOutVideoEvent::draw()
         SDL_RenderFillRect(renderer, &dest);
     }
     SDL_SetTextureAlphaMod(pTexture, alpha);
-    SDL_RenderCopy(renderer, pTexture, NULL, &dest);
+    SDL_RenderCopy(renderer, pTexture, nullptr, &dest);
 
     currentFrame++;
 

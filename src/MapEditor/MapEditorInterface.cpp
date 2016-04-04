@@ -793,7 +793,7 @@ void MapEditorInterface::onObjectSelected() {
 
     MapEditor::Structure* pStructure = pMapEditor->getSelectedStructure();
 
-    if(pStructure != NULL) {
+    if(pStructure != nullptr) {
         windowWidget.addWidget( &structureDetailsHBox,
                                 Point(0, getRendererHeight() - bottomBar.getSize().y + 14 + 3),
                                 Point(getRendererWidth() - sideBar.getSize().x, 24));
@@ -805,7 +805,7 @@ void MapEditorInterface::onObjectSelected() {
 
     MapEditor::Unit* pUnit = pMapEditor->getSelectedUnit();
 
-    if(pUnit != NULL) {
+    if(pUnit != nullptr) {
         windowWidget.addWidget( &unitDetailsHBox,
                                 Point(0, getRendererHeight() - bottomBar.getSize().y + 14 + 3),
                                 Point(getRendererWidth() - sideBar.getSize().x, 24));
@@ -819,7 +819,7 @@ void MapEditorInterface::onObjectSelected() {
 
 void MapEditorInterface::onChildWindowClose(Window* pChildWindow) {
     NewMapWindow* pNewMapWindow = dynamic_cast<NewMapWindow*>(pChildWindow);
-	if(pNewMapWindow != NULL) {
+	if(pNewMapWindow != nullptr) {
 	    std::string loadMapFilepath = pNewMapWindow->getLoadMapFilepath();
 
 	    if(loadMapFilepath != "") {
@@ -835,7 +835,7 @@ void MapEditorInterface::onChildWindowClose(Window* pChildWindow) {
 	}
 
     LoadMapWindow* pLoadMapWindow = dynamic_cast<LoadMapWindow*>(pChildWindow);
-	if(pLoadMapWindow != NULL) {
+	if(pLoadMapWindow != nullptr) {
 	    std::string loadMapFilepath = pLoadMapWindow->getLoadMapFilepath();
 
 	    if(loadMapFilepath != "") {
@@ -844,12 +844,12 @@ void MapEditorInterface::onChildWindowClose(Window* pChildWindow) {
 	}
 
 	LoadSaveWindow* pLoadSaveWindow = dynamic_cast<LoadSaveWindow*>(pChildWindow);
-	if(pLoadSaveWindow != NULL && pLoadSaveWindow->getFilename() != "") {
+	if(pLoadSaveWindow != nullptr && pLoadSaveWindow->getFilename() != "") {
         pMapEditor->saveMap(pLoadSaveWindow->getFilename());
     }
 
     QstBox* pQstBox = dynamic_cast<QstBox*>(pChildWindow);
-	if(pQstBox != NULL && pQstBox->getPressedButtonID() == QSTBOX_BUTTON2) {
+	if(pQstBox != nullptr && pQstBox->getPressedButtonID() == QSTBOX_BUTTON2) {
 	    pMapEditor->onQuit();
 	}
 }

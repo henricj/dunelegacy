@@ -82,7 +82,7 @@ void Refinery::init() {
 
 Refinery::~Refinery() {
     if(extractingSpice && harvester) {
-		if(harvester.getUnitPointer() != NULL)
+		if(harvester.getUnitPointer() != nullptr)
 			harvester.getUnitPointer()->destroy();
 		harvester.pointTo(NONE);
 	}
@@ -127,9 +127,9 @@ void Refinery::deployHarvester(Carryall* pCarryall) {
 	firstRun = false;
 
     Harvester* pHarvester = (Harvester*) harvester.getObjPointer();
-	if(pCarryall != NULL) {
+	if(pCarryall != nullptr) {
 	    pCarryall->giveCargo(pHarvester);
-	    pCarryall->setTarget(NULL);
+	    pCarryall->setTarget(nullptr);
 	    pCarryall->setDestination(pHarvester->getGuardPoint());
 	} else {
         Coord deployPos = currentGameMap->findDeploySpot(pHarvester, location, destination, structureSize);
@@ -177,7 +177,7 @@ void Refinery::updateStructureSpecificStuff() {
 			owner->addCredits(pHarvester->extractSpice(extractionSpeed), true);
 		} else if(pHarvester->isawaitingPickup() == false) {
 		    // find carryall
-		    Carryall* pCarryall = NULL;
+		    Carryall* pCarryall = nullptr;
             if((pHarvester->getGuardPoint().isValid()) && getOwner()->hasCarryalls())	{
                 RobustList<UnitBase*>::const_iterator iter;
                 for(iter = unitList.begin(); iter != unitList.end(); ++iter) {
@@ -190,11 +190,11 @@ void Refinery::updateStructureSpecificStuff() {
                 }
             }
 
-            if(pCarryall != NULL) {
+            if(pCarryall != nullptr) {
                 pCarryall->setTarget(this);
                 pCarryall->clearPath();
                 pHarvester->bookCarrier(pCarryall);
-                pHarvester->setTarget(NULL);
+                pHarvester->setTarget(nullptr);
                 pHarvester->setDestination(pHarvester->getGuardPoint());
             } else {
                 deployHarvester();

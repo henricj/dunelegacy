@@ -44,13 +44,13 @@ public:
     /**
         This method sets a stream where all commands are written when they are added to the command manager. This can be used for
         logging the complete game and enable a replay afterwards.
-        \param  pStream     pointer to a stream all new commands will be written to (the stream must be created with new). NULL for disabling. pStream is deleted with delete if this command manager is destroyed.
+        \param  pStream     pointer to a stream all new commands will be written to (the stream must be created with new). nullptr for disabling. pStream is deleted with delete if this command manager is destroyed.
     */
 	void setStream(OutputStream* pStream) { this->pStream = pStream; };
 
     /**
         Get the stream used for recording new commands (see setStream).
-        \return the set stream or NULL if none is set
+        \return the set stream or nullptr if none is set
     */
 	OutputStream* getStream() const { return pStream; };
 
@@ -117,7 +117,7 @@ public:
 
 private:
 	std::vector< std::vector<Command> > timeslot;   ///< a vector of vectors containing the scheduled commands. At index x is a list of all commands scheduled for game cycle x.
-	OutputStream* pStream;                          ///< a stream all added commands will be written to. May be NULL
+	OutputStream* pStream;                          ///< a stream all added commands will be written to. May be nullptr
 	bool bReadOnly;                                 ///< true = addCommand() is a NO-OP, false = addCommand() has normal behaviour
 	Uint32 networkCycleBuffer;                      ///< the number of frames a command is given in advance
 };

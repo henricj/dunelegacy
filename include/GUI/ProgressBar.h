@@ -36,15 +36,15 @@ public:
 		percent = 0.0;
 		color = COLOR_DEFAULT;
 		bDrawShadow = false;
-		pBackground = NULL;
-		pForeground = NULL;
+		pBackground = nullptr;
+		pForeground = nullptr;
 		bFreeBackground = true;
 		enableResizing(true,true);
 	}
 
 	/// destructor
 	virtual ~ProgressBar() {
-		if((bFreeBackground == true) && (pBackground != NULL)) {
+		if((bFreeBackground == true) && (pBackground != nullptr)) {
 			SDL_DestroyTexture(pBackground);
 		}
 
@@ -125,19 +125,19 @@ public:
 
 		updateTextures();
 
-		if(pBackground != NULL) {
+		if(pBackground != nullptr) {
             SDL_Rect dest = calcDrawingRect(pBackground, position.x, position.y);
-            SDL_RenderCopy(renderer, pBackground, NULL, &dest);
+            SDL_RenderCopy(renderer, pBackground, nullptr, &dest);
 		}
 
-		if(pForeground != NULL) {
+		if(pForeground != nullptr) {
             SDL_Rect dest = calcDrawingRect(pForeground, position.x, position.y);
 		    if(bDrawShadow) {
 		        SDL_Rect dest2 = { position.x + 2, position.y + 2, (int) lround(percent*(dest.w/100.0)), dest.h };
 		        renderFillRect(renderer, &dest2, COLOR_BLACK);
 		    }
 
-			SDL_RenderCopy(renderer, pForeground, NULL, &dest);
+			SDL_RenderCopy(renderer, pForeground, nullptr, &dest);
 		}
 	}
 
@@ -148,7 +148,7 @@ protected:
         This method should first check whether a renewal of the textures is necessary.
 	*/
 	virtual void updateTextures() {
-        if(pForeground == NULL) {
+        if(pForeground == nullptr) {
             pForeground = convertSurfaceToTexture(GUIStyle::getInstance().createProgressBarOverlay(getSize().x, getSize().y, percent, color), true);
         }
 	}
@@ -157,9 +157,9 @@ protected:
 		This method frees all textures that are used by this progress bar
 	*/
 	virtual void invalidateTextures() {
-        if(pForeground != NULL) {
+        if(pForeground != nullptr) {
             SDL_DestroyTexture(pForeground);
-            pForeground = NULL;
+            pForeground = nullptr;
         }
 	}
 
@@ -234,7 +234,7 @@ protected:
 	virtual void updateTextures() {
         ProgressBar::updateTextures();
 
-        if(pBackground == NULL) {
+        if(pBackground == nullptr) {
             pBackground = convertSurfaceToTexture(GUIStyle::getInstance().createButtonSurface(getSize().x, getSize().y, text, true, false, textcolor, textshadowcolor), true);
         }
 	}
@@ -245,9 +245,9 @@ protected:
 	virtual void invalidateTextures() {
         ProgressBar::invalidateTextures();
 
-        if(pBackground != NULL) {
+        if(pBackground != nullptr) {
             SDL_DestroyTexture(pBackground);
-            pBackground = NULL;
+            pBackground = nullptr;
         }
 	}
 
@@ -270,14 +270,14 @@ public:
     }
 
 	void setTexture(SDL_Texture* pBackground, bool bFreeBackground) {
-		if((this->bFreeBackground == true) && (this->pBackground != NULL)) {
+		if((this->bFreeBackground == true) && (this->pBackground != nullptr)) {
 			SDL_DestroyTexture(this->pBackground);
 		}
 
 		this->pBackground = pBackground;
 		this->bFreeBackground = bFreeBackground;
 
-		if(this->pBackground != NULL) {
+		if(this->pBackground != nullptr) {
 			resize(getTextureSize(pBackground));
 		} else {
 			resize(4,4);
@@ -311,7 +311,7 @@ public:
 		\return the minimum size of this progress bar
 	*/
 	virtual Point getMinimumSize() const {
-		if(pBackground == NULL) {
+		if(pBackground == nullptr) {
 			return Point(4,4);
 		} else {
 			return getTextureSize(pBackground);

@@ -23,7 +23,7 @@
 class StaticContainer_WidgetData {
 public:
 	StaticContainer_WidgetData() {
-		pWidget = NULL;
+		pWidget = nullptr;
 		position = Point(0,0);
 		size = Point(0,0);
 	}
@@ -64,7 +64,7 @@ public:
 		\param size			Size of the new widget
 	*/
 	virtual void addWidget(Widget* newWidget, Point position, Point size) {
-		if(newWidget != NULL) {
+		if(newWidget != nullptr) {
 			containedWidgets.push_back(StaticContainer_WidgetData(newWidget,position,size));
 			newWidget->resize(size.x, size.y);
 			newWidget->setParent(this);

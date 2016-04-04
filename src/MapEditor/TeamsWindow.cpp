@@ -201,7 +201,7 @@ TeamsWindow::TeamsWindow(MapEditor* pMapEditor, HOUSETYPE house)
 
 void TeamsWindow::onCancel() {
 	Window* pParentWindow = dynamic_cast<Window*>(getParent());
-	if(pParentWindow != NULL) {
+	if(pParentWindow != nullptr) {
 		pParentWindow->closeChildWindow();
 	}
 }
@@ -215,7 +215,7 @@ void TeamsWindow::onOK() {
     pMapEditor->addUndoOperation(changeTeamsOperation.perform(pMapEditor));
 
 	Window* pParentWindow = dynamic_cast<Window*>(getParent());
-	if(pParentWindow != NULL) {
+	if(pParentWindow != nullptr) {
 		pParentWindow->closeChildWindow();
 	}
 }

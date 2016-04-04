@@ -27,7 +27,7 @@
 
 OFileStream::OFileStream()
 {
-	fp = NULL;
+	fp = nullptr;
 }
 
 OFileStream::~OFileStream()
@@ -37,7 +37,7 @@ OFileStream::~OFileStream()
 
 bool OFileStream::open(const char* filename)
 {
-	if(fp != NULL) {
+	if(fp != nullptr) {
 		fclose(fp);
 	}
 
@@ -53,7 +53,7 @@ bool OFileStream::open(const char* filename)
         return false;
     }
 
-    if(WideCharToMultiByte(CP_ACP, 0, szwPath, -1, szPath, MAX_PATH, NULL, NULL) == 0) {
+    if(WideCharToMultiByte(CP_ACP, 0, szwPath, -1, szPath, MAX_PATH, nullptr, nullptr) == 0) {
         return false;
     }
 
@@ -61,7 +61,7 @@ bool OFileStream::open(const char* filename)
 
     #endif
 
-	if( (fp = fopen(pFilename,"wb")) == NULL) {
+	if( (fp = fopen(pFilename,"wb")) == nullptr) {
 		return false;
 	} else {
 		return true;
@@ -75,14 +75,14 @@ bool OFileStream::open(std::string filename)
 
 void OFileStream::close()
 {
-	if(fp != NULL) {
+	if(fp != nullptr) {
 		fclose(fp);
-		fp = NULL;
+		fp = nullptr;
 	}
 }
 
 void OFileStream::flush() {
-    if(fp != NULL) {
+    if(fp != nullptr) {
         fflush(fp);
     }
 }

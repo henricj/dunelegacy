@@ -33,12 +33,12 @@ public:
     }
 
 	ENetPacketIStream(const ENetPacketIStream& p)
-	 : currentPos(0), packet(NULL) {
+	 : currentPos(0), packet(nullptr) {
 		*this = p;
     }
 
 	~ENetPacketIStream() {
-        if(packet != NULL) {
+        if(packet != nullptr) {
             enet_packet_destroy(packet);
         }
 	}
@@ -46,11 +46,11 @@ public:
 	ENetPacketIStream& operator=(const ENetPacketIStream& p) {
 		if(this != &p) {
 			ENetPacket* packetCopy = enet_packet_create(p.packet->data,p.packet->dataLength,p.packet->flags);
-		    if(packetCopy == NULL) {
+		    if(packetCopy == nullptr) {
 		        throw InputStream::error("ENetPacketIStream::operator=(): enet_packet_create() failed!");
 		    }
 
-		    if(packet != NULL) {
+		    if(packet != nullptr) {
 		        enet_packet_destroy(packet);
 		    }
 

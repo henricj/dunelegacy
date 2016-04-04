@@ -25,11 +25,11 @@
 ObjectBase* ObjectPointer::getObjPointer() const
 {
 	if(objectID == NONE) {
-		return NULL;
+		return nullptr;
 	}
 
 	ObjectBase* ObjPointer = currentGame->getObjectManager().getObject(objectID);
-	if(ObjPointer == NULL) {
+	if(ObjPointer == nullptr) {
 		objectID = NONE;
 	}
 	return ObjPointer;
@@ -47,7 +47,7 @@ void ObjectPointer::load(InputStream& stream)
 
 void ObjectPointer::pointTo(const ObjectBase* newObject)
 {
-	if(newObject != NULL) {
+	if(newObject != nullptr) {
 		objectID = newObject->getObjectID();
 	} else {
 		objectID = NONE;

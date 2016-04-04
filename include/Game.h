@@ -309,7 +309,7 @@ public:
         \param  text    the text to add
     */
 	void addToNewsTicker(const std::string& text) {
-		if(pInterface != NULL) {
+		if(pInterface != nullptr) {
 			pInterface->addToNewsTicker(text);
 		}
 	}
@@ -319,7 +319,7 @@ public:
         \param  text    the text to add
     */
 	void addUrgentMessageToNewsTicker(const std::string& text) {
-		if(pInterface != NULL) {
+		if(pInterface != nullptr) {
 			pInterface->addUrgentMessageToNewsTicker(text);
 		}
 	}
@@ -370,28 +370,28 @@ public:
     /**
         Returns the first player with the given name.
         \param  playername  the name of the player
-        \return the player or NULL if none was found
+        \return the player or nullptr if none was found
     */
 	Player* getPlayerByName(const std::string& playername) const {
         std::multimap<std::string, Player*>::const_iterator iter = playerName2Player.find(playername);
         if(iter != playerName2Player.end()) {
             return iter->second;
         } else {
-            return NULL;
+            return nullptr;
         }
 	}
 
     /**
         Returns the player with the given id.
         \param  playerID  the name of the player
-        \return the player or NULL if none was found
+        \return the player or nullptr if none was found
     */
 	Player* getPlayerByID(Uint8 playerID) const {
         std::map<Uint8, Player*>::const_iterator iter = playerID2Player.find(playerID);
         if(iter != playerID2Player.end()) {
             return iter->second;
         } else {
-            return NULL;
+            return nullptr;
         }
 	}
 
@@ -577,7 +577,7 @@ private:
 	std::set<Uint32> selectedByOtherPlayerList;         ///< This is only used in multiplayer games where two players control one house
     RobustList<Explosion*> explosionList;               ///< A list containing all the explosions that must be drawn
 
-    std::vector<House*> house;                          ///< All the houses of this game, index by their houseID; has the size NUM_HOUSES; unused houses are NULL
+    std::vector<House*> house;                          ///< All the houses of this game, index by their houseID; has the size NUM_HOUSES; unused houses are nullptr
 
     std::multimap<std::string, Player*> playerName2Player;  ///< mapping player names to players (one entry per player)
     std::map<Uint8, Player*> playerID2Player;               ///< mapping player ids to players (one entry per player)

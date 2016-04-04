@@ -111,7 +111,7 @@ void SonicTank::handleDamage(int damage, Uint32 damagerID, House* damagerOwner) 
 }
 
 bool SonicTank::canAttack(const ObjectBase *object) const {
-	return ((object != NULL) && ObjectBase::canAttack(object) && (object->getItemID() != Unit_SonicTank));
+	return ((object != nullptr) && ObjectBase::canAttack(object) && (object->getItemID() != Unit_SonicTank));
 }
 
 void SonicTank::playAttackSound() {

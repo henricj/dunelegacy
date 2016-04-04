@@ -54,7 +54,7 @@ std::map<std::string, std::string> loadPOFile(SDL_RWops* rwop, bool freesrc, std
 
 	std::map<std::string, std::string> mapping;
 
-	if(rwop == NULL) {
+	if(rwop == nullptr) {
 	    fprintf(stderr, "%s: Cannot find this file!\n", filename.c_str());
         return mapping;
 	}

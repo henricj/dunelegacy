@@ -72,7 +72,7 @@ public:
         }
 
         if(index < 0 || index >= (int) playerDataList.size()) {
-            return NULL;
+            return nullptr;
         }
 
         return &playerDataList[index];
@@ -89,7 +89,7 @@ public:
             }
         }
 
-        return NULL;
+        return nullptr;
     }
 
     static int getIndexByPlayerClass(std::string playerclass) {

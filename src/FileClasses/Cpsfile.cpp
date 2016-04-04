@@ -33,13 +33,13 @@ extern Palette palette;
 
 SDL_Surface * LoadCPS_RW(SDL_RWops* RWop, int freesrc)
 {
-	if(RWop == NULL) {
-		return NULL;
+	if(RWop == nullptr) {
+		return nullptr;
 	}
 
-    uint8_t* pFiledata = NULL;
-    uint8_t* pImageOut = NULL;
-    SDL_Surface *pic = NULL;
+    uint8_t* pFiledata = nullptr;
+    uint8_t* pImageOut = nullptr;
+    SDL_Surface *pic = nullptr;
 
 	try {
         Uint32 CpsFilesize = SDL_RWseek(RWop,0,SEEK_END);
@@ -80,7 +80,7 @@ SDL_Surface * LoadCPS_RW(SDL_RWops* RWop, int freesrc)
         }
 
         // create new picture surface
-        if((pic = SDL_CreateRGBSurface(0,SIZE_X,SIZE_Y,8,0,0,0,0))== NULL) {
+        if((pic = SDL_CreateRGBSurface(0,SIZE_X,SIZE_Y,8,0,0,0,0))== nullptr) {
             throw std::runtime_error("LoadCPS_RW(): SDL_CreateRGBSurface has failed!");
         }
 
@@ -108,7 +108,7 @@ SDL_Surface * LoadCPS_RW(SDL_RWops* RWop, int freesrc)
 	    delete [] pFiledata;
 	    delete [] pImageOut;
 
-	    if(pic != NULL) {
+	    if(pic != nullptr) {
             SDL_FreeSurface(pic);
 	    }
 
@@ -116,6 +116,6 @@ SDL_Surface * LoadCPS_RW(SDL_RWops* RWop, int freesrc)
             SDL_RWclose(RWop);
         }
 
-        return NULL;
+        return nullptr;
 	}
 }

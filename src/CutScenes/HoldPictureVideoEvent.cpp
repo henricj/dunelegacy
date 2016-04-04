@@ -21,8 +21,8 @@
 
 HoldPictureVideoEvent::HoldPictureVideoEvent(SDL_Surface* pSurface, int numFrames2Hold, bool bFreeSurface, bool bCenterVertical) : VideoEvent()
 {
-    if(pSurface == NULL) {
-        pTexture = NULL;
+    if(pSurface == nullptr) {
+        pTexture = nullptr;
     } else {
         SDL_Surface *pTmp = Scaler::defaultDoubleSurface(pSurface, bFreeSurface);
         pTexture = SDL_CreateTextureFromSurface(renderer, pTmp);
@@ -35,16 +35,16 @@ HoldPictureVideoEvent::HoldPictureVideoEvent(SDL_Surface* pSurface, int numFrame
 
 HoldPictureVideoEvent::~HoldPictureVideoEvent()
 {
-    if(pTexture != NULL) {
+    if(pTexture != nullptr) {
         SDL_DestroyTexture(pTexture);
     }
 }
 
 int HoldPictureVideoEvent::draw()
 {
-    if(pTexture != NULL) {
+    if(pTexture != nullptr) {
         SDL_Rect dest = calcAlignedDrawingRect(pTexture, HAlign::Center, bCenterVertical ? VAlign::Center : VAlign::Top);
-        SDL_RenderCopy(renderer, pTexture, NULL, &dest);
+        SDL_RenderCopy(renderer, pTexture, nullptr, &dest);
     }
 
     currentFrame++;

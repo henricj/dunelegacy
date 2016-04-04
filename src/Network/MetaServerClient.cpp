@@ -45,17 +45,17 @@ MetaServerClient::MetaServerClient(std::string metaServerURL)
 	maxPlayers = 0;
 
 	availableMetaServerCommandsSemaphore = SDL_CreateSemaphore(0);
-	if(availableMetaServerCommandsSemaphore == NULL) {
+	if(availableMetaServerCommandsSemaphore == nullptr) {
 		throw std::runtime_error("Unable to create semaphore");
 	}
 
 	sharedDataMutex = SDL_CreateMutex();
-	if(sharedDataMutex == NULL) {
+	if(sharedDataMutex == nullptr) {
 		throw std::runtime_error("Unable to create mutex");
 	}
 
-	connectionThread = SDL_CreateThread(connectionThreadMain, NULL, (void*) this);
-	if(connectionThread == NULL) {
+	connectionThread = SDL_CreateThread(connectionThreadMain, nullptr, (void*) this);
+	if(connectionThread == nullptr) {
 		throw std::runtime_error("Unable to create thread");
 	}
 }
@@ -67,7 +67,7 @@ MetaServerClient::~MetaServerClient() {
 
 	enqueueMetaServerCommand(std::shared_ptr<MetaServerCommand>(new MetaServerExit()));
 
-	SDL_WaitThread(connectionThread, NULL);
+	SDL_WaitThread(connectionThread, nullptr);
 
 	SDL_DestroyMutex(sharedDataMutex);
 

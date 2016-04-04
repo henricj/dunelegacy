@@ -51,7 +51,7 @@ void TankBase::init() {
 	turreted = true;
 	turretTurnSpeed = FixPt(0,0625);
 	gunGraphicID = -1;
-	turretGraphic = NULL;
+	turretGraphic = nullptr;
 }
 
 TankBase::~TankBase() {
@@ -114,7 +114,7 @@ void TankBase::engageTarget() {
     TrackedUnit::engageTarget();
 
 
-    if(closeTarget && (closeTarget.getObjPointer() == NULL)) {
+    if(closeTarget && (closeTarget.getObjPointer() == nullptr)) {
         // the target does not exist anymore
         // => release target
         closeTarget.pointTo(NONE);

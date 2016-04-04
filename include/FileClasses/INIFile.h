@@ -67,7 +67,7 @@ public:
     protected:
         inline void shiftLineNumber(int shift) {
             INIFileLine* pCurrentLine = this;
-            while(pCurrentLine != NULL) {
+            while(pCurrentLine != nullptr) {
                 pCurrentLine->line += shift;
                 pCurrentLine = pCurrentLine->nextLine;
             }
@@ -119,7 +119,7 @@ public:
     class KeyIterator
     {
     public:
-        KeyIterator() : key(NULL) {
+        KeyIterator() : key(nullptr) {
         }
 
         KeyIterator(Key* pKey) : key(pKey) {
@@ -142,7 +142,7 @@ public:
         }
 
         void operator++() {
-            if(key != NULL) {
+            if(key != nullptr) {
                 key = key->nextKey;
             }
         }
@@ -188,7 +188,7 @@ public:
     class SectionIterator
     {
     public:
-        SectionIterator() : section(NULL) {
+        SectionIterator() : section(nullptr) {
         }
 
         SectionIterator(Section* pSection) : section(pSection) {
@@ -211,7 +211,7 @@ public:
         }
 
         void operator++() {
-            if(section != NULL) {
+            if(section != nullptr) {
                 section = section->nextSection;
             }
         }

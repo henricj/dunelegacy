@@ -38,7 +38,7 @@ public:
     virtual ObjectInterface* getInterfaceContainer();
 
 	void assignHarvester(Harvester* newHarvester);
-	void deployHarvester(Carryall* pCarryall = NULL);
+	void deployHarvester(Carryall* pCarryall = nullptr);
 	void startAnimate();
 	void stopAnimate();
 

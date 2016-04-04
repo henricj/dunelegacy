@@ -32,7 +32,7 @@ AStarSearch::AStarSearch(Map* pMap, UnitBase* pUnit, Coord start, Coord destinat
     sizeY = pMap->getSizeY();
 
     mapData = (TileData*) calloc(sizeX*sizeY, sizeof(TileData));
-    if(mapData == NULL) {
+    if(mapData == nullptr) {
         throw std::bad_alloc();
     }
 

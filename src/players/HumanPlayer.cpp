@@ -59,12 +59,12 @@ void HumanPlayer::setGroupList(int groupListIndex, const std::set<Uint32>& newGr
 
     std::set<Uint32>::const_iterator iter;
     for(iter = newGroupList.begin(); iter != newGroupList.end(); ++iter) {
-        if(currentGame->getObjectManager().getObject(*iter) != NULL) {
+        if(currentGame->getObjectManager().getObject(*iter) != nullptr) {
             selectedLists[groupListIndex].insert(*iter);
         }
     }
 
-    if((pNetworkManager != NULL) && (pLocalPlayer == this)) {
+    if((pNetworkManager != nullptr) && (pLocalPlayer == this)) {
         // the local player has changed his group assignment
         pNetworkManager->sendSelectedList(selectedLists[groupListIndex], groupListIndex);
     }

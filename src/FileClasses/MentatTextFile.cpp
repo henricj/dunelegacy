@@ -28,8 +28,8 @@
 MentatTextFile::MentatTextFile(SDL_RWops* rwop) {
 	unsigned char* pFiledata;
 
-	if(rwop == NULL) {
-	    throw std::invalid_argument("MentatTextFile:MentatTextFile(): rwop == NULL!");
+	if(rwop == nullptr) {
+	    throw std::invalid_argument("MentatTextFile:MentatTextFile(): rwop == nullptr!");
 	}
 
 	int mentatTextFilesize = SDL_RWseek(rwop,0,SEEK_END);
@@ -45,7 +45,7 @@ MentatTextFile::MentatTextFile(SDL_RWops* rwop) {
         throw std::runtime_error("MentatTextFile:MentatTextFile(): Seeking in this mentat textfile failed!");
 	}
 
-	if( (pFiledata = (unsigned char*) malloc(mentatTextFilesize)) == NULL) {
+	if( (pFiledata = (unsigned char*) malloc(mentatTextFilesize)) == nullptr) {
         throw std::bad_alloc();
 	}
 

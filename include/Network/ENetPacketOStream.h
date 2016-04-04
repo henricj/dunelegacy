@@ -29,19 +29,19 @@ class ENetPacketOStream : public OutputStream
 public:
 	ENetPacketOStream(enet_uint32 flags)
 	 : currentPos(0) {
-		packet = enet_packet_create(NULL,16,flags);
-        if(packet == NULL) {
+		packet = enet_packet_create(nullptr,16,flags);
+        if(packet == nullptr) {
             throw OutputStream::error("ENetPacketOStream: enet_packet_create() failed!");
         }
     }
 
 	ENetPacketOStream(const ENetPacketOStream& p)
-	 : currentPos(0), packet(NULL) {
+	 : currentPos(0), packet(nullptr) {
 		*this = p;
     }
 
 	~ENetPacketOStream() {
-        if(packet != NULL) {
+        if(packet != nullptr) {
             enet_packet_destroy(packet);
         }
 	}
@@ -49,11 +49,11 @@ public:
 	ENetPacketOStream& operator=(const ENetPacketOStream& p) {
 		if(this != &p) {
 			ENetPacket* packetCopy = enet_packet_create(p.packet->data,p.packet->dataLength,p.packet->flags);
-		    if(packetCopy == NULL) {
+		    if(packetCopy == nullptr) {
 		        throw InputStream::error("ENetPacketOStream::operator=(): enet_packet_create() failed!");
 		    }
 
-		    if(packet != NULL) {
+		    if(packet != nullptr) {
 		        enet_packet_destroy(packet);
 		    }
 
@@ -71,7 +71,7 @@ public:
 
 		ENetPacket* pPacket = packet;
 
-		packet = NULL;
+		packet = nullptr;
 
         return pPacket;
     }

@@ -59,7 +59,7 @@ private:
 };
 
 
-MapEditor::MapEditor() : pInterface(NULL) {
+MapEditor::MapEditor() : pInterface(nullptr) {
 	bQuitEditor = false;
 	scrollDownMode = false;
 	scrollLeftMode = false;
@@ -98,7 +98,7 @@ MapEditor::~MapEditor() {
     delete pInterface;
 
     delete screenborder;
-	screenborder = NULL;
+	screenborder = nullptr;
 }
 
 std::string MapEditor::generateMapname() const {
@@ -147,7 +147,7 @@ void MapEditor::setMap(const MapData& mapdata, const MapInfo& newMapInfo) {
 	selectedStructureID = INVALID;
 	selectedMapItemCoord.invalidate();
 
-    if(pInterface != NULL) {
+    if(pInterface != nullptr) {
         pInterface->deselectAll();
     }
 
@@ -201,7 +201,7 @@ void MapEditor::setMap(const MapData& mapdata, const MapInfo& newMapInfo) {
 	choam[Unit_Tank] = 6;
 	choam[Unit_Trike] = 5;
 
-    if(pInterface != NULL) {
+    if(pInterface != nullptr) {
         pInterface->onNewMap();
         pInterface->onHouseChanges();
     }
@@ -242,7 +242,7 @@ std::vector<int> MapEditor::getMirrorStructures(int structureID) {
 
     MapEditor::Structure* pStructure = getStructure(structureID);
 
-    if(pStructure == NULL) {
+    if(pStructure == nullptr) {
         return mirrorStructures;
     }
 
@@ -268,7 +268,7 @@ std::vector<int> MapEditor::getMirrorUnits(int unitID, bool bAddMissingAsInvalid
 
     MapEditor::Unit* pUnit = getUnit(unitID);
 
-    if(pUnit == NULL) {
+    if(pUnit == nullptr) {
         return mirrorUnits;
     }
 
@@ -293,7 +293,7 @@ std::vector<int> MapEditor::getMirrorUnits(int unitID, bool bAddMissingAsInvalid
 
 void MapEditor::setEditorMode(const EditorMode& newEditorMode) {
 
-    if(pInterface != NULL) {
+    if(pInterface != nullptr) {
         pInterface->deselectObject();
     }
 
@@ -345,7 +345,7 @@ void MapEditor::loadMap(const std::string& filepath) {
 	selectedUnitID = INVALID;
 	selectedStructureID = INVALID;
 
-    if(pInterface != NULL) {
+    if(pInterface != nullptr) {
         pInterface->deselectAll();
     }
 
@@ -383,7 +383,7 @@ void MapEditor::loadMap(const std::string& filepath) {
     delete pINIMapEditorLoader;
 
     // update interface
-    if(pInterface != NULL) {
+    if(pInterface != nullptr) {
         pInterface->onNewMap();
         pInterface->onHouseChanges();
     }
@@ -1306,7 +1306,7 @@ void MapEditor::processInput() {
 	}
 
     if((pInterface->hasChildWindow() == false) && (SDL_GetWindowFlags(window) & SDL_WINDOW_MOUSE_FOCUS)) {
-        const Uint8 *keystate = SDL_GetKeyboardState(NULL);
+        const Uint8 *keystate = SDL_GetKeyboardState(nullptr);
         scrollDownMode =  (drawnMouseY >= getRendererHeight()-1-SCROLLBORDER) || keystate[SDL_SCANCODE_DOWN];
         scrollLeftMode = (drawnMouseX <= SCROLLBORDER) || keystate[SDL_SCANCODE_LEFT];
         scrollRightMode = (drawnMouseX >= getRendererWidth()-1-SCROLLBORDER) || keystate[SDL_SCANCODE_RIGHT];
@@ -1341,7 +1341,7 @@ void MapEditor::drawCursor() {
         return;
     }
 
-	SDL_Texture* pCursor = NULL;
+	SDL_Texture* pCursor = nullptr;
     SDL_Rect dest = { 0, 0, 0, 0};
 	if(scrollLeftMode || scrollRightMode || scrollUpMode || scrollDownMode) {
         if(scrollLeftMode && !scrollRightMode) {
@@ -1352,7 +1352,7 @@ void MapEditor::drawCursor() {
 	        dest = calcDrawingRect(pCursor, drawnMouseX, drawnMouseY-5, HAlign::Center, VAlign::Top);
 	    }
 
-        if(pCursor == NULL) {
+        if(pCursor == nullptr) {
             if(scrollUpMode && !scrollDownMode) {
                 pCursor = pGFXManager->getUIGraphic(UI_CursorUp);
                 dest = calcDrawingRect(pCursor, drawnMouseX-5, drawnMouseY, HAlign::Left, VAlign::Top);
@@ -1370,7 +1370,7 @@ void MapEditor::drawCursor() {
 
 	    if((drawnMouseX < sideBarPos.x) && (drawnMouseY > topBarPos.h) && (currentMirrorMode != MirrorModeNone) && (pInterface->hasChildWindow() == false)) {
 
-            SDL_Texture* pMirrorIcon = NULL;
+            SDL_Texture* pMirrorIcon = nullptr;
             switch(currentMirrorMode) {
                 case MirrorModeHorizontal:  pMirrorIcon = pGFXManager->getUIGraphic(UI_MapEditor_MirrorHorizontalIcon);  break;
                 case MirrorModeVertical:    pMirrorIcon = pGFXManager->getUIGraphic(UI_MapEditor_MirrorVerticalIcon);    break;
@@ -1380,11 +1380,11 @@ void MapEditor::drawCursor() {
             }
 
             SDL_Rect dest2 = calcDrawingRect(pMirrorIcon, drawnMouseX + 5, drawnMouseY + 5);
-            SDL_RenderCopy(renderer, pMirrorIcon, NULL, &dest2);
+            SDL_RenderCopy(renderer, pMirrorIcon, nullptr, &dest2);
 	    }
 	}
 
-	SDL_RenderCopy(renderer, pCursor, NULL, &dest);
+	SDL_RenderCopy(renderer, pCursor, nullptr, &dest);
 }
 
 TERRAINTYPE MapEditor::getTerrain(int x, int y) {
@@ -1737,7 +1737,7 @@ void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) {
 	    int framesX = NUM_ANGLES;
 	    int framesY = 1;
 	    int objectPicGun = -1;
-	    const Coord* gunOffset = NULL;
+	    const Coord* gunOffset = nullptr;
 
         switch(uIter->itemID) {
             case Unit_Carryall:         objectPicBase = ObjPic_Carryall;        framesY = 2;                                                                    break;
@@ -1799,7 +1799,7 @@ void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) {
                                                         pScreenborder->world2screenY((position.y*TILESIZE)+(TILESIZE/2)) + frameSizeY/2 - 1,
                                                         HAlign::Right, VAlign::Bottom);
 
-            SDL_RenderCopy(renderer, pStarSprite, NULL, &drawLocation2);
+            SDL_RenderCopy(renderer, pStarSprite, nullptr, &drawLocation2);
         }
 
 	}
@@ -1816,9 +1816,9 @@ void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) {
         renderDrawRect(renderer, &dest, COLOR_DARKGREY);
 	}
 
-    SDL_Texture* validPlace = NULL;
-    SDL_Texture* invalidPlace = NULL;
-    SDL_Texture* greyPlace = NULL;
+    SDL_Texture* validPlace = nullptr;
+    SDL_Texture* invalidPlace = nullptr;
+    SDL_Texture* greyPlace = nullptr;
 
     switch(currentZoomlevel) {
         case 0: {
@@ -1921,7 +1921,7 @@ void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) {
 
                         SDL_Rect drawLocation = {   pScreenborder->world2screenX(x*TILESIZE), pScreenborder->world2screenY(y*TILESIZE),
                                                     zoomedTilesize, zoomedTilesize };
-                        SDL_RenderCopy(renderer, image, NULL, &drawLocation);
+                        SDL_RenderCopy(renderer, image, nullptr, &drawLocation);
                     }
                 }
             }
@@ -1940,7 +1940,7 @@ void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) {
                     }
                 }
                 SDL_Rect drawLocation = calcDrawingRect(image, pScreenborder->world2screenX(position.x*TILESIZE), pScreenborder->world2screenY(position.y*TILESIZE));
-                SDL_RenderCopy(renderer, image, NULL, &drawLocation);
+                SDL_RenderCopy(renderer, image, nullptr, &drawLocation);
             }
         } else if(currentEditorMode.mode == EditorMode::EditorMode_TacticalPos) {
             // draw tactical pos rectangle (the starting screen)
@@ -1961,7 +1961,7 @@ void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) {
             if(std::find(selectedUnits.begin(), selectedUnits.end(), uIter->id) != selectedUnits.end()) {
                 Coord position = uIter->position;
 
-                SDL_Texture* selectionBox = NULL;
+                SDL_Texture* selectionBox = nullptr;
 
                 switch(currentZoomlevel) {
                     case 0:     selectionBox = pGFXManager->getUIGraphic(UI_SelectionBox_Zoomlevel0);   break;
@@ -1975,7 +1975,7 @@ void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) {
                                                 pScreenborder->world2screenY((position.y*TILESIZE)+(TILESIZE/2)),
                                                 HAlign::Center, VAlign::Center);
 
-                SDL_RenderCopy(renderer, selectionBox, NULL, &dest);
+                SDL_RenderCopy(renderer, selectionBox, nullptr, &dest);
             }
         }
     }
@@ -1986,7 +1986,7 @@ void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) {
             || (std::find(specialBlooms.begin(), specialBlooms.end(), selectedMapItemCoord) != specialBlooms.end())
             || (std::find(spiceFields.begin(), spiceFields.end(), selectedMapItemCoord) != spiceFields.end()) )) {
 
-        SDL_Texture* selectionBox = NULL;
+        SDL_Texture* selectionBox = nullptr;
 
         switch(currentZoomlevel) {
             case 0:     selectionBox = pGFXManager->getUIGraphic(UI_SelectionBox_Zoomlevel0);   break;
@@ -2000,7 +2000,7 @@ void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) {
                                         pScreenborder->world2screenY((selectedMapItemCoord.y*TILESIZE)+(TILESIZE/2)),
                                         HAlign::Center, VAlign::Center);
 
-        SDL_RenderCopy(renderer, selectionBox, NULL, &dest);
+        SDL_RenderCopy(renderer, selectionBox, nullptr, &dest);
     }
 }
 
@@ -2019,7 +2019,7 @@ void MapEditor::saveMapshot() {
     tmpScreenborder.adjustScreenBorderToMapsize(map.getSizeX(), map.getSizeY());
 
     SDL_Texture* renderTarget = SDL_CreateTexture(renderer, SCREEN_FORMAT, SDL_TEXTUREACCESS_TARGET, sizeX, sizeY);
-    if(renderTarget == NULL) {
+    if(renderTarget == nullptr) {
         fprintf(stderr,"SDL_CreateTexture() failed: %s\n", SDL_GetError());
         currentZoomlevel = oldCurrentZoomlevel;
         return;

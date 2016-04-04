@@ -134,7 +134,7 @@ void InGameSettingsMenu::onCancel() {
 	musicPlayer->setMusicVolume(previousVolume);
 
 	Window* pParentWindow = dynamic_cast<Window*>(getParent());
-	if(pParentWindow != NULL) {
+	if(pParentWindow != nullptr) {
 		pParentWindow->closeChildWindow();
 	}
 }
@@ -144,7 +144,7 @@ void InGameSettingsMenu::onOK() {
     screenborder->setScrollSpeed(scrollSpeed);
 
 	Window* pParentWindow = dynamic_cast<Window*>(getParent());
-	if(pParentWindow != NULL) {
+	if(pParentWindow != nullptr) {
 		pParentWindow->closeChildWindow();
 	}
 }

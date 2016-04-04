@@ -20,14 +20,14 @@
 
 void Widget::setActive() {
 	active = true;
-	if(parent != NULL) {
+	if(parent != nullptr) {
 		parent->setActiveChildWidget(true,this);
 	}
 }
 
 void Widget::setInactive() {
 	active = false;
-	if(parent != NULL) {
+	if(parent != nullptr) {
 		parent->setActiveChildWidget(false,this);
 	}
 }

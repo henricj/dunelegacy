@@ -86,7 +86,7 @@ const RobustList<const UnitBase*>& Player::getUnitList() const {
 
 const House* Player::getHouse(int houseID) const {
     if(houseID < 0 || houseID >= NUM_HOUSES) {
-        return NULL;
+        return nullptr;
     }
     return currentGame->getHouse(houseID);
 }

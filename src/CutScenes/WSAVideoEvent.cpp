@@ -38,11 +38,11 @@ int WSAVideoEvent::draw()
 {
     SDL_Surface* pSurface = convertSurfaceToDisplayFormat(Scaler::defaultDoubleSurface(pWsafile->getPicture(currentFrame), true), true);
 
-    SDL_UpdateTexture(pStreamingTexture, NULL, pSurface->pixels, pSurface->pitch);
+    SDL_UpdateTexture(pStreamingTexture, nullptr, pSurface->pixels, pSurface->pitch);
 
     SDL_Rect dest = calcAlignedDrawingRect(pStreamingTexture, HAlign::Center, bCenterVertical ? VAlign::Center : VAlign::Top);
 
-	SDL_RenderCopy(renderer, pStreamingTexture, NULL, &dest);
+	SDL_RenderCopy(renderer, pStreamingTexture, nullptr, &dest);
 
 	SDL_FreeSurface(pSurface);
 

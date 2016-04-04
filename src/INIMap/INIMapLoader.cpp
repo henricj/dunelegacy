@@ -435,10 +435,10 @@ void INIMapLoader::loadHouses()
         GameInitSettings::HouseInfo::PlayerInfoList::const_iterator iter2;
         for(iter2 = iter->playerInfoList.begin(); iter2 != iter->playerInfoList.end(); ++iter2) {
             const PlayerFactory::PlayerData* pPlayerData = PlayerFactory::getByPlayerClass(iter2->playerClass);
-            if(pPlayerData == NULL) {
+            if(pPlayerData == nullptr) {
                 logWarning("Cannot load '" + iter2->playerClass + "', using default AI player!");
                 pPlayerData = PlayerFactory::getByPlayerClass(DEFAULTAIPLAYERCLASS);
-                if(pPlayerData == NULL) {
+                if(pPlayerData == nullptr) {
                     logWarning("Cannot load default AI player!");
                     continue;
                 }
@@ -483,7 +483,7 @@ void INIMapLoader::loadChoam()
         }
 
         for(int i=0;i<NUM_HOUSES;i++) {
-            if(pGame->house[i] != NULL) {
+            if(pGame->house[i] != nullptr) {
                 pGame->house[i]->getChoam().addItem(unitID, num);
             }
         }
@@ -595,7 +595,7 @@ void INIMapLoader::loadUnits()
 
             for(int i = 0; i < Num2Place; i++) {
                 UnitBase* newUnit = getOrCreateHouse(houseID)->placeUnit(itemID, getXPos(pos), getYPos(pos));
-                if(newUnit == NULL) {
+                if(newUnit == nullptr) {
                     logWarning(iter->getLineNumber(), "Invalid or occupied position for '" + UnitStr + "': '" + stringify(pos) + "'!");
                     continue;
                 } else {
@@ -604,7 +604,7 @@ void INIMapLoader::loadUnits()
                     newUnit->setAngle(angle);
 
                     TankBase* pTankBase = dynamic_cast<TankBase*>(newUnit);
-                    if(pTankBase != NULL) {
+                    if(pTankBase != nullptr) {
                         pTankBase->setTurretAngle(angle);
                     }
                 }
@@ -651,7 +651,7 @@ void INIMapLoader::loadStructures()
 			if(BuildingStr == "Concrete") {
 				getOrCreateHouse(houseID)->placeStructure(NONE, Structure_Slab1, getXPos(pos), getYPos(pos));
 			} else if(BuildingStr == "Wall") {
-				if(getOrCreateHouse(houseID)->placeStructure(NONE, Structure_Wall, getXPos(pos), getYPos(pos)) == NULL) {
+				if(getOrCreateHouse(houseID)->placeStructure(NONE, Structure_Wall, getXPos(pos), getYPos(pos)) == nullptr) {
 				    logWarning(iter->getLineNumber(), "Invalid or occupied position for '" + BuildingStr + "': '" + PosStr + "'!");
 				    continue;
 				}
@@ -695,7 +695,7 @@ void INIMapLoader::loadStructures()
 
 			if (itemID != 0) {
 				ObjectBase* newStructure = getOrCreateHouse(houseID)->placeStructure(NONE, itemID, getXPos(pos), getYPos(pos));
-				if(newStructure == NULL) {
+				if(newStructure == nullptr) {
 					logWarning(iter->getLineNumber(), "Invalid or occupied position for '" + BuildingStr + "': '" + PosStr + "'!");
                     continue;
 				} else {
@@ -782,7 +782,7 @@ void INIMapLoader::loadReinforcements()
 
                 ReinforcementTrigger* pReinforcementTrigger = dynamic_cast<ReinforcementTrigger*>(pTrigger);
 
-                if(pReinforcementTrigger != NULL
+                if(pReinforcementTrigger != nullptr
                     && pReinforcementTrigger->getCycleNumber() == dropCycle
                     && pReinforcementTrigger->getHouseID() == houseID
                     && pReinforcementTrigger->isRepeat() == bRepeat
@@ -832,7 +832,7 @@ void INIMapLoader::loadView()
 House* INIMapLoader::getOrCreateHouse(int houseID) {
     House* pNewHouse = pGame->house[houseID];
 
-    if(pNewHouse == NULL) {
+    if(pNewHouse == nullptr) {
         Uint8 team = 0;
         if(pGame->gameType == GAMETYPE_CAMPAIGN || pGame->gameType == GAMETYPE_SKIRMISH) {
             // in campaign all "other" units are in the same team as the AI
@@ -848,10 +848,10 @@ House* INIMapLoader::getOrCreateHouse(int houseID) {
                 GameInitSettings::HouseInfo::PlayerInfoList::const_iterator iter2;
                 for(iter2 = iter->playerInfoList.begin(); iter2 != iter->playerInfoList.end(); ++iter2) {
                     const PlayerFactory::PlayerData* pPlayerData = PlayerFactory::getByPlayerClass(iter2->playerClass);
-                    if(pPlayerData == NULL) {
+                    if(pPlayerData == nullptr) {
                         logWarning("Cannot load '" + iter2->playerClass + "', using default AI player!");
                         pPlayerData = PlayerFactory::getByPlayerClass(DEFAULTAIPLAYERCLASS);
-                        if(pPlayerData == NULL) {
+                        if(pPlayerData == nullptr) {
                             logWarning("Cannot load default AI player!");
                             continue;
                         }

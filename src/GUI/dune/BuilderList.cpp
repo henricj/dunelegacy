@@ -69,7 +69,7 @@ BuilderList::BuilderList(Uint32 builderObjectID) : StaticContainer() {
 	pPlaceItTextTexture = pFontManager->createTextureWithMultilineText(_("PLACE IT"), COLOR_WHITE, FONT_STD10, true);
 	pOnHoldTextTexture = pFontManager->createTextureWithMultilineText(_("ON HOLD"), COLOR_WHITE, FONT_STD10, true);
 
-	pLastTooltip = NULL;
+	pLastTooltip = nullptr;
 	tooltipText = "";
 	lastMouseMovement = (1u<<31);
 
@@ -82,9 +82,9 @@ BuilderList::~BuilderList() {
     SDL_DestroyTexture(pPlaceItTextTexture);
     SDL_DestroyTexture(pOnHoldTextTexture);
 
-	if(pLastTooltip != NULL) {
+	if(pLastTooltip != nullptr) {
 		SDL_DestroyTexture(pLastTooltip);
-		pLastTooltip = NULL;
+		pLastTooltip = nullptr;
 	}
 }
 
@@ -107,7 +107,7 @@ bool BuilderList::handleMouseLeft(Sint32 x, Sint32 y, bool pressed) {
     BuilderBase* pBuilder = dynamic_cast<BuilderBase*>(currentGame->getObjectManager().getObject(builderObjectID));
 
 	StarPort* pStarport = dynamic_cast<StarPort*>(pBuilder);
-	if((pStarport != NULL) && (pStarport->okToOrder() == false)) {
+	if((pStarport != nullptr) && (pStarport->okToOrder() == false)) {
 		return false;
 	}
 
@@ -146,7 +146,7 @@ bool BuilderList::handleMouseRight(Sint32 x, Sint32 y, bool pressed) {
     BuilderBase* pBuilder = dynamic_cast<BuilderBase*>(currentGame->getObjectManager().getObject(builderObjectID));
 
 	StarPort* pStarport = dynamic_cast<StarPort*>(pBuilder);
-	if((pStarport != NULL) && (pStarport->okToOrder() == false)) {
+	if((pStarport != nullptr) && (pStarport->okToOrder() == false)) {
 		return false;
 	}
 
@@ -195,10 +195,10 @@ void BuilderList::draw(Point position) {
     renderFillRect(renderer, &blackRectDest, COLOR_BLACK);
 
     BuilderBase* pBuilder = dynamic_cast<BuilderBase*>(currentGame->getObjectManager().getObject(builderObjectID));
-	if(pBuilder != NULL) {
+	if(pBuilder != nullptr) {
 		StarPort* pStarport = dynamic_cast<StarPort*>(pBuilder);
 
-		if(pStarport != NULL) {
+		if(pStarport != nullptr) {
 			orderButton.setVisible(true);
 			orderButton.setEnabled(pStarport->okToOrder());
 		} else {
@@ -234,15 +234,15 @@ void BuilderList::draw(Point position) {
 
                 SDL_Rect dest = calcDrawingRect(pTexture, position.x + getButtonPosition(i - currentListPos).x, position.y + getButtonPosition(i - currentListPos).y);
 
-                if(pTexture != NULL) {
+                if(pTexture != nullptr) {
                     SDL_Rect tmpDest = dest;
-                    SDL_RenderCopy(renderer, pTexture, NULL, &tmpDest);
+                    SDL_RenderCopy(renderer, pTexture, nullptr, &tmpDest);
                 }
 
 				if(isStructure(iter->itemID)) {
                     SDL_Texture* pLattice = pGFXManager->getUIGraphic(UI_StructureSizeLattice);
                     SDL_Rect destLattice = calcDrawingRect(pLattice, dest.x + 2, dest.y + 2);
-                    SDL_RenderCopy(renderer, pLattice, NULL, &destLattice);
+                    SDL_RenderCopy(renderer, pLattice, nullptr, &destLattice);
 
                     SDL_Texture* pConcrete = pGFXManager->getUIGraphic(UI_StructureSizeConcrete);
                     SDL_Rect srcConcrete = { 0, 0, 1 + getStructureSize(iter->itemID).x*6, 1 + getStructureSize(iter->itemID).y*6 };
@@ -255,10 +255,10 @@ void BuilderList::draw(Point position) {
 				sprintf(text, "%d", iter->price);
 				SDL_Texture* pPriceTexture = pFontManager->createTextureWithText(text, COLOR_WHITE, FONT_STD10);
 				SDL_Rect drawLocation = calcDrawingRect(pPriceTexture, dest.x + 2, dest.y + BUILDERBTN_HEIGHT - getHeight(pPriceTexture) + 3);
-				SDL_RenderCopy(renderer, pPriceTexture, NULL, &drawLocation);
+				SDL_RenderCopy(renderer, pPriceTexture, nullptr, &drawLocation);
 				SDL_DestroyTexture(pPriceTexture);
 
-				if(pStarport != NULL) {
+				if(pStarport != nullptr) {
 				    bool soldOut = (pStarport->getOwner()->getChoam().getNumAvailable(iter->itemID) == 0);
 
 					if((pStarport->okToOrder() == false) || (soldOut == true)) {
@@ -268,7 +268,7 @@ void BuilderList::draw(Point position) {
 
 					if(soldOut == true) {
 						SDL_Rect drawLocation = calcDrawingRect(pSoldOutTextTexture, dest.x + BUILDERBTN_WIDTH/2, dest.y + BUILDERBTN_HEIGHT/2, HAlign::Center, VAlign::Center);
-						SDL_RenderCopy(renderer, pSoldOutTextTexture, NULL, &drawLocation);
+						SDL_RenderCopy(renderer, pSoldOutTextTexture, nullptr, &drawLocation);
 					}
 
 				} else if(currentGame->getGameInitSettings().getGameOptions().onlyOnePalace && iter->itemID == Structure_Palace && pBuilder->getOwner()->getNumItems(Structure_Palace) > 0) {
@@ -277,7 +277,7 @@ void BuilderList::draw(Point position) {
                     renderFillRect(renderer, &progressBar, COLOR_HALF_TRANSPARENT);
 
                     SDL_Rect drawLocation = calcDrawingRect(pAlreadyBuiltTextTexture, dest.x + BUILDERBTN_WIDTH/2, dest.y + BUILDERBTN_HEIGHT/2, HAlign::Center, VAlign::Center);
-                    SDL_RenderCopy(renderer, pAlreadyBuiltTextTexture, NULL, &drawLocation);
+                    SDL_RenderCopy(renderer, pAlreadyBuiltTextTexture, nullptr, &drawLocation);
 				} else if(iter->itemID == pBuilder->getCurrentProducedItem()) {
 					FixPoint progress = pBuilder->getProductionProgress();
 					FixPoint price = iter->price;
@@ -288,10 +288,10 @@ void BuilderList::draw(Point position) {
 
 					if(pBuilder->isWaitingToPlace() == true) {
 						SDL_Rect drawLocation = calcDrawingRect(pPlaceItTextTexture, dest.x + BUILDERBTN_WIDTH/2, dest.y + BUILDERBTN_HEIGHT/2, HAlign::Center, VAlign::Center);
-						SDL_RenderCopy(renderer, pPlaceItTextTexture, NULL, &drawLocation);
+						SDL_RenderCopy(renderer, pPlaceItTextTexture, nullptr, &drawLocation);
 					} else if(pBuilder->isOnHold() == true) {
 						SDL_Rect drawLocation = calcDrawingRect(pOnHoldTextTexture, dest.x + BUILDERBTN_WIDTH/2, dest.y + BUILDERBTN_HEIGHT/2, HAlign::Center, VAlign::Center);
-						SDL_RenderCopy(renderer, pOnHoldTextTexture, NULL, &drawLocation);
+						SDL_RenderCopy(renderer, pOnHoldTextTexture, nullptr, &drawLocation);
 					}
 				}
 
@@ -300,7 +300,7 @@ void BuilderList::draw(Point position) {
 					sprintf(text, "%d", iter->num);
 					SDL_Texture* pNumberTexture = pFontManager->createTextureWithText(text, COLOR_RED, FONT_STD10);
                     SDL_Rect drawLocation = calcDrawingRect(pNumberTexture, dest.x + BUILDERBTN_WIDTH - 3, dest.y + BUILDERBTN_HEIGHT + 2, HAlign::Right, VAlign::Bottom);
-					SDL_RenderCopy(renderer, pNumberTexture, NULL, &drawLocation);
+					SDL_RenderCopy(renderer, pNumberTexture, nullptr, &drawLocation);
 					SDL_DestroyTexture(pNumberTexture);
 				}
 			}
@@ -309,11 +309,11 @@ void BuilderList::draw(Point position) {
 
 	SDL_Texture* pBuilderListUpperCap = pGFXManager->getUIGraphic(UI_BuilderListUpperCap);
 	SDL_Rect builderListUpperCapDest = calcDrawingRect(pBuilderListUpperCap, blackRectDest.x - 3, blackRectDest.y - 13 + 4);
-    SDL_RenderCopy(renderer, pBuilderListUpperCap, NULL, &builderListUpperCapDest);
+    SDL_RenderCopy(renderer, pBuilderListUpperCap, nullptr, &builderListUpperCapDest);
 
 	SDL_Texture* pBuilderListLowerCap = pGFXManager->getUIGraphic(UI_BuilderListLowerCap);
 	SDL_Rect builderListLowerCapDest = calcDrawingRect(pBuilderListLowerCap, blackRectDest.x - 3, blackRectDest.y + blackRectDest.h - 3 - 4);
-    SDL_RenderCopy(renderer, pBuilderListLowerCap, NULL, &builderListLowerCapDest);
+    SDL_RenderCopy(renderer, pBuilderListLowerCap, nullptr, &builderListLowerCapDest);
 
     renderDrawVLine(renderer, builderListUpperCapDest.x + builderListUpperCapDest.w - 8, builderListUpperCapDest.y + builderListUpperCapDest.h, builderListLowerCapDest.y, COLOR_RGB(125,80,0));
 
@@ -345,19 +345,19 @@ void BuilderList::drawOverlay(Point position) {
             }
 
 			if(text != tooltipText) {
-				if(pLastTooltip != NULL) {
+				if(pLastTooltip != nullptr) {
 					SDL_DestroyTexture(pLastTooltip);
-					pLastTooltip = NULL;
+					pLastTooltip = nullptr;
 				}
 			}
 
-			if(pLastTooltip == NULL) {
+			if(pLastTooltip == nullptr) {
 				pLastTooltip = convertSurfaceToTexture(GUIStyle::getInstance().createToolTip(text), true);
 				tooltipText = text;
 			}
 
 			SDL_Rect dest = calcDrawingRect(pLastTooltip, position.x + getButtonPosition(btn).x - 6, position.y + lastMousePos.y, HAlign::Right, VAlign::Center);
-			SDL_RenderCopy(renderer, pLastTooltip, NULL, &dest);
+			SDL_RenderCopy(renderer, pLastTooltip, nullptr, &dest);
 		}
 
 	}
@@ -379,7 +379,7 @@ void BuilderList::resize(Uint32 width, Uint32 height) {
 
 	// move list to show currently produced item
     BuilderBase* pBuilder = dynamic_cast<BuilderBase*>(currentGame->getObjectManager().getObject(builderObjectID));
-	if(pBuilder != NULL) {
+	if(pBuilder != nullptr) {
         int currentProducedItemPos = 0;
         for(std::list<BuildItem>::const_iterator iter = pBuilder->getBuildList().begin();
              iter != pBuilder->getBuildList().end();
@@ -426,7 +426,7 @@ void BuilderList::onOrder() {
     BuilderBase* pBuilder = dynamic_cast<BuilderBase*>(currentGame->getObjectManager().getObject(builderObjectID));
 
 	StarPort* pStarport = dynamic_cast<StarPort*>(pBuilder);
-	if(pStarport != NULL) {
+	if(pStarport != nullptr) {
 		pStarport->handlePlaceOrderClick();
 	}
 }
@@ -451,7 +451,7 @@ int BuilderList::getButton(int x, int y) {
 
     BuilderBase* pBuilder = dynamic_cast<BuilderBase*>(currentGame->getObjectManager().getObject(builderObjectID));
 
-	if(pBuilder != NULL) {
+	if(pBuilder != nullptr) {
 		int i = 0;
 		std::list<BuildItem>::const_iterator iter;
 		for(iter = pBuilder->getBuildList().begin(); iter != pBuilder->getBuildList().end(); ++iter, i++) {
@@ -475,7 +475,7 @@ int BuilderList::getItemIDFromIndex(int i) {
 
     BuilderBase* pBuilder = dynamic_cast<BuilderBase*>(currentGame->getObjectManager().getObject(builderObjectID));
 
-	if(pBuilder != NULL) {
+	if(pBuilder != nullptr) {
 		int j = 0;
 		std::list<BuildItem>::const_iterator iter;
 		for(iter = pBuilder->getBuildList().begin(); iter != pBuilder->getBuildList().end(); ++iter, j++) {

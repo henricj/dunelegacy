@@ -55,7 +55,7 @@ int MenuBase::showMenu() {
 
 	    update();
 
-	    if(pNetworkManager != NULL) {
+	    if(pNetworkManager != nullptr) {
             pNetworkManager->update();
 	    }
 
@@ -101,8 +101,8 @@ void MenuBase::draw() {
 
 	SDL_RenderPresent(renderer);
 
-    SDL_SetRenderTarget(renderer, NULL);
-    SDL_RenderCopy(renderer, screenTexture, NULL, NULL);
+    SDL_SetRenderTarget(renderer, nullptr);
+    SDL_RenderCopy(renderer, screenTexture, nullptr, nullptr);
 	SDL_RenderPresent(renderer);
 }
 
@@ -116,7 +116,7 @@ bool MenuBase::doInput(SDL_Event &event) {
 			switch(event.key.keysym.sym) {
 
 				case SDLK_ESCAPE: {
-					if((pChildWindow == NULL) && (bAllowQuiting == true)) {
+					if((pChildWindow == nullptr) && (bAllowQuiting == true)) {
 						quit();
 					}
                 } break;
@@ -169,7 +169,7 @@ bool MenuBase::doInput(SDL_Event &event) {
 		} break;
 
 		case SDL_QUIT: {
-			if((pChildWindow == NULL) && (bAllowQuiting == true)) {
+			if((pChildWindow == nullptr) && (bAllowQuiting == true)) {
 				quit();
 			}
         } break;

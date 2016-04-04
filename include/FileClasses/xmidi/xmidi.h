@@ -65,14 +65,14 @@ struct midi_event
 
 	midi_event	*next;
 
-	midi_event() : len(0), buffer(NULL), next(NULL)
+	midi_event() : len(0), buffer(nullptr), next(nullptr)
 	{
 	}
 
 	~midi_event()
 	{
 		delete [] buffer;
-		buffer = NULL;
+		buffer = nullptr;
 	}
 };
 
@@ -94,7 +94,7 @@ private:
 
 	midi_event		*list;
 	midi_event		*current;
-	
+
 	const static char	mt32asgm[128];
 	const static char	mt32asgs[256];
 	BOOL 			bank127[16];
@@ -115,7 +115,7 @@ public:
 
 	// Retrieve it to a data source
 	int retrieve (unsigned int track, DataSource *dest);
-	
+
 	// External Event list functions
 	int retrieve (unsigned int track, midi_event **dest, int &ppqn);
 	static void DeleteEventList (midi_event *mlist);
@@ -125,7 +125,7 @@ public:
 
 private:
 	XMIDI(); // No default constructor
-        
+
 	// List manipulation
 	void CreateNewEvent (int time);
 
@@ -145,7 +145,7 @@ private:
 
 	int ExtractTracksFromXmi (DataSource *source);
 	int ExtractTracksFromMid (DataSource *source);
-	
+
 	int ExtractTracks (DataSource *source);
 };
 

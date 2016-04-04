@@ -101,10 +101,10 @@ Game::Game() {
 	indicatorTime = 5;
 	indicatorTimer = 0;
 
-    pInterface = NULL;
-	pInGameMenu = NULL;
-	pInGameMentat = NULL;
-	pWaitingForOtherPlayers = NULL;
+    pInterface = nullptr;
+	pInGameMenu = nullptr;
+	pInGameMentat = nullptr;
+	pWaitingForOtherPlayers = nullptr;
 
 	startWaitingForOtherPlayersTime = 0;
 
@@ -147,7 +147,7 @@ Game::Game() {
     The destructor frees up all the used memory.
 */
 Game::~Game() {
-	if(pNetworkManager != NULL) {
+	if(pNetworkManager != nullptr) {
         pNetworkManager->setOnReceiveChatMessage(std::function<void (std::string, std::string)>());
         pNetworkManager->setOnReceiveCommandList(std::function<void (const std::string&, const CommandList&)>());
         pNetworkManager->setOnReceiveSelectionList(std::function<void (std::string, std::set<Uint32>, int)>());
@@ -155,13 +155,13 @@ Game::~Game() {
 	}
 
     delete pInGameMenu;
-    pInGameMenu = NULL;
+    pInGameMenu = nullptr;
 
     delete pInterface;
-    pInterface = NULL;
+    pInterface = nullptr;
 
     delete pWaitingForOtherPlayers;
-    pWaitingForOtherPlayers = NULL;
+    pWaitingForOtherPlayers = nullptr;
 
     for(RobustList<StructureBase*>::const_iterator iter = structureList.begin(); iter != structureList.end(); ++iter) {
         delete *iter;
@@ -185,13 +185,13 @@ Game::~Game() {
 
 	for(int i=0;i<NUM_HOUSES;i++) {
 		delete house[i];
-		house[i] = NULL;
+		house[i] = nullptr;
 	}
 
 	delete currentGameMap;
-	currentGameMap = NULL;
+	currentGameMap = nullptr;
 	delete screenborder;
-	screenborder = NULL;
+	screenborder = nullptr;
 }
 
 
@@ -510,7 +510,7 @@ void Game::drawScreen()
 
 			bool withinRange = false;
 
-			BuilderBase* builder = NULL;
+			BuilderBase* builder = nullptr;
 			if(selectedList.size() == 1) {
 			    builder = dynamic_cast<BuilderBase*>(objectManager.getObject(*selectedList.begin()));
 
@@ -525,8 +525,8 @@ void Game::drawScreen()
                     }
                 }
 
-                SDL_Texture* validPlace = NULL;
-                SDL_Texture* invalidPlace = NULL;
+                SDL_Texture* validPlace = nullptr;
+                SDL_Texture* invalidPlace = nullptr;
 
                 switch(currentZoomlevel) {
                     case 0: {
@@ -560,7 +560,7 @@ void Game::drawScreen()
                         }
 
                         SDL_Rect drawLocation = calcDrawingRect(image, screenborder->world2screenX(i*TILESIZE), screenborder->world2screenY(j*TILESIZE));
-                        SDL_RenderCopy(renderer, image, NULL, &drawLocation);
+                        SDL_RenderCopy(renderer, image, nullptr, &drawLocation);
                     }
                 }
             }
@@ -614,7 +614,7 @@ void Game::drawScreen()
 	if(chatMode) {
         SDL_Texture* pChatTexture = pFontManager->createTextureWithText("Chat: " + typingChatMessage + (((SDL_GetTicks() / 150) % 2 == 0) ? "_" : ""), COLOR_WHITE, FONT_STD12);
         SDL_Rect drawLocation = calcDrawingRect(pChatTexture, 20, getRendererHeight() - 40);
-        SDL_RenderCopy(renderer, pChatTexture, NULL, &drawLocation);
+        SDL_RenderCopy(renderer, pChatTexture, nullptr, &drawLocation);
         SDL_DestroyTexture(pChatTexture);
 	}
 
@@ -624,7 +624,7 @@ void Game::drawScreen()
 
 		SDL_Texture* pFPSTexture = pFontManager->createTextureWithText(temp, COLOR_WHITE, FONT_STD12);
         SDL_Rect drawLocation = calcDrawingRect(pFPSTexture,sideBarPos.x - strlen(temp)*8, 60);
-		SDL_RenderCopy(renderer, pFPSTexture, NULL, &drawLocation);
+		SDL_RenderCopy(renderer, pFPSTexture, nullptr, &drawLocation);
 		SDL_DestroyTexture(pFPSTexture);
 	}
 
@@ -636,7 +636,7 @@ void Game::drawScreen()
 		SDL_Texture* pTimeTexture = pFontManager->createTextureWithText(temp, COLOR_WHITE, FONT_STD12);
         SDL_Rect drawLocation = calcAlignedDrawingRect(pTimeTexture, HAlign::Left, VAlign::Bottom);
         drawLocation.y++;
-		SDL_RenderCopy(renderer, pTimeTexture, NULL, &drawLocation);
+		SDL_RenderCopy(renderer, pTimeTexture, nullptr, &drawLocation);
 		SDL_DestroyTexture(pTimeTexture);
 	}
 
@@ -651,17 +651,17 @@ void Game::drawScreen()
 
 		SDL_Texture* pFinishMessageTexture = pFontManager->createTextureWithText(message.c_str(), COLOR_WHITE, FONT_STD24);
         SDL_Rect drawLocation = calcDrawingRect(pFinishMessageTexture, sideBarPos.x/2, topBarPos.h + (getRendererHeight()-topBarPos.h)/2, HAlign::Center, VAlign::Center);
-		SDL_RenderCopy(renderer, pFinishMessageTexture, NULL, &drawLocation);
+		SDL_RenderCopy(renderer, pFinishMessageTexture, nullptr, &drawLocation);
 		SDL_DestroyTexture(pFinishMessageTexture);
 	}
 
-	if(pWaitingForOtherPlayers != NULL) {
+	if(pWaitingForOtherPlayers != nullptr) {
         pWaitingForOtherPlayers->draw();
 	}
 
-	if(pInGameMenu != NULL) {
+	if(pInGameMenu != nullptr) {
 		pInGameMenu->draw();
-	} else if(pInGameMentat != NULL) {
+	} else if(pInGameMentat != nullptr) {
 		pInGameMentat->draw();
 	}
 
@@ -682,28 +682,28 @@ void Game::doInput()
 			drawnMouseY = mouse->y;
 		}
 
-		if(pInGameMenu != NULL) {
+		if(pInGameMenu != nullptr) {
 			pInGameMenu->handleInput(event);
 
 			if(bMenu == false) {
                 delete pInGameMenu;
-                pInGameMenu = NULL;
+                pInGameMenu = nullptr;
 			}
 
-		} else if(pInGameMentat != NULL) {
+		} else if(pInGameMentat != nullptr) {
 			pInGameMentat->doInput(event);
 
 			if(bMenu == false) {
                 delete pInGameMentat;
-                pInGameMentat = NULL;
+                pInGameMentat = nullptr;
 			}
 
-		} else if(pWaitingForOtherPlayers != NULL) {
+		} else if(pWaitingForOtherPlayers != nullptr) {
 			pWaitingForOtherPlayers->handleInput(event);
 
 			if(bMenu == false) {
                 delete pWaitingForOtherPlayers;
-                pWaitingForOtherPlayers = NULL;
+                pWaitingForOtherPlayers = nullptr;
 			}
 
 		} else {
@@ -886,7 +886,7 @@ void Game::doInput()
 
                         if(selectedList.size() == 1) {
                             ObjectBase* pObject = objectManager.getObject( *selectedList.begin());
-                            if(pObject != NULL && pObject->getOwner() == pLocalHouse && pObject->getItemID() == Unit_Harvester) {
+                            if(pObject != nullptr && pObject->getOwner() == pLocalHouse && pObject->getItemID() == Unit_Harvester) {
                                 Harvester* pHarvester = (Harvester*) pObject;
 
                                 std::string harvesterMessage = _("@DUNE.ENG|226#Harvester");
@@ -936,9 +936,9 @@ void Game::doInput()
 		}
 	}
 
-	if((pInGameMenu == NULL) && (pInGameMentat == NULL) && (pWaitingForOtherPlayers == NULL) && (SDL_GetWindowFlags(window) & SDL_WINDOW_MOUSE_FOCUS)) {
+	if((pInGameMenu == nullptr) && (pInGameMentat == nullptr) && (pWaitingForOtherPlayers == nullptr) && (SDL_GetWindowFlags(window) & SDL_WINDOW_MOUSE_FOCUS)) {
 
-	    const Uint8 *keystate = SDL_GetKeyboardState(NULL);
+	    const Uint8 *keystate = SDL_GetKeyboardState(nullptr);
 		scrollDownMode =  (drawnMouseY >= getRendererHeight()-1-SCROLLBORDER) || keystate[SDL_SCANCODE_DOWN];
 		scrollLeftMode = (drawnMouseX <= SCROLLBORDER) || keystate[SDL_SCANCODE_LEFT];
 		scrollRightMode = (drawnMouseX >= getRendererWidth()-1-SCROLLBORDER) || keystate[SDL_SCANCODE_RIGHT];
@@ -974,7 +974,7 @@ void Game::drawCursor()
         return;
     }
 
-	SDL_Texture* pCursor = NULL;
+	SDL_Texture* pCursor = nullptr;
     SDL_Rect dest = { 0, 0, 0, 0};
 	if(scrollLeftMode || scrollRightMode || scrollUpMode || scrollDownMode) {
         if(scrollLeftMode && !scrollRightMode) {
@@ -985,7 +985,7 @@ void Game::drawCursor()
 	        dest = calcDrawingRect(pCursor, drawnMouseX, drawnMouseY-5, HAlign::Center, VAlign::Top);
 	    }
 
-        if(pCursor == NULL) {
+        if(pCursor == nullptr) {
             if(scrollUpMode && !scrollDownMode) {
                 pCursor = pGFXManager->getUIGraphic(UI_CursorUp);
                 dest = calcDrawingRect(pCursor, drawnMouseX-5, drawnMouseY, HAlign::Left, VAlign::Top);
@@ -998,7 +998,7 @@ void Game::drawCursor()
             }
         }
 	} else {
-	    if( (pInGameMenu != NULL) || (pInGameMentat != NULL) || (pWaitingForOtherPlayers != NULL) || (((drawnMouseX >= sideBarPos.x) || (drawnMouseY < topBarPos.h)) && (isOnRadarView(drawnMouseX, drawnMouseY) == false))) {
+	    if( (pInGameMenu != nullptr) || (pInGameMentat != nullptr) || (pWaitingForOtherPlayers != nullptr) || (((drawnMouseX >= sideBarPos.x) || (drawnMouseY < topBarPos.h)) && (isOnRadarView(drawnMouseX, drawnMouseY) == false))) {
             // Menu mode or Mentat Menu or Waiting for other players or outside of game screen but not inside minimap
             pCursor = pGFXManager->getUIGraphic(UI_CursorNormal);
             dest = calcDrawingRect(pCursor, drawnMouseX, drawnMouseY, HAlign::Left, VAlign::Top);
@@ -1064,7 +1064,7 @@ void Game::drawCursor()
 
                             StructureBase* pStructure = dynamic_cast<StructureBase*>(pTile->getGroundObject());
 
-                            if((pStructure != NULL) && (pStructure->canBeCaptured()) && (pStructure->getOwner()->getTeam() != pLocalHouse->getTeam())) {
+                            if((pStructure != nullptr) && (pStructure->canBeCaptured()) && (pStructure->getOwner()->getTeam() != pLocalHouse->getTeam())) {
                                 dest.y += ((getGameCycleCount() / 10) % 5);
                             }
                         }
@@ -1091,7 +1091,7 @@ void Game::drawCursor()
 	    }
 	}
 
-	SDL_RenderCopy(renderer, pCursor, NULL, &dest);
+	SDL_RenderCopy(renderer, pCursor, nullptr, &dest);
 }
 
 void Game::setupView()
@@ -1140,7 +1140,7 @@ void Game::runMainLoop() {
 	fflush(stdout);
 
     // add interface
-	if(pInterface == NULL) {
+	if(pInterface == nullptr) {
         pInterface = new GameInterface();
         if(gameState == LOADING) {
             // when loading a save game we set radar directly
@@ -1160,7 +1160,7 @@ void Game::runMainLoop() {
 
 	// Check if a player has lost
 	for(int j = 0; j < NUM_HOUSES; j++) {
-		if(house[j] != NULL) {
+		if(house[j] != nullptr) {
 			if(!house[j]->isAlive()) {
 				house[j]->lose(true);
 			}
@@ -1188,7 +1188,7 @@ void Game::runMainLoop() {
 		pStream->flush();
 	}
 
-	if(pNetworkManager != NULL) {
+	if(pNetworkManager != nullptr) {
         pNetworkManager->setOnReceiveChatMessage(std::bind(&ChatManager::addChatMessage, &(pInterface->getChatManager()), std::placeholders::_1, std::placeholders::_2));
         pNetworkManager->setOnReceiveCommandList(std::bind(&CommandManager::addCommandList, &cmdManager, std::placeholders::_1, std::placeholders::_2));
         pNetworkManager->setOnReceiveSelectionList(std::bind(&Game::onReceiveSelectionList, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
@@ -1220,8 +1220,8 @@ void Game::runMainLoop() {
 
         SDL_RenderPresent(renderer);
 
-        SDL_SetRenderTarget(renderer, NULL);
-        SDL_RenderCopy(renderer, screenTexture, NULL, NULL);
+        SDL_SetRenderTarget(renderer, nullptr);
+        SDL_RenderCopy(renderer, screenTexture, nullptr, nullptr);
         SDL_RenderPresent(renderer);
 
         frameEnd = SDL_GetTicks();
@@ -1257,7 +1257,7 @@ void Game::runMainLoop() {
 
             bool bWaitForNetwork = false;
 
-            if(pNetworkManager != NULL) {
+            if(pNetworkManager != nullptr) {
                 pNetworkManager->update();
 
                 // test if we need to wait for data to arrive
@@ -1265,7 +1265,7 @@ void Game::runMainLoop() {
                 std::list<std::string>::iterator iter;
                 for(iter = peerList.begin(); iter != peerList.end(); ++iter) {
                     HumanPlayer* pPlayer = dynamic_cast<HumanPlayer*>(getPlayerByName(*iter));
-                    if(pPlayer != NULL) {
+                    if(pPlayer != nullptr) {
                         if(pPlayer->nextExpectedCommandsCycle <= gameCycleCount) {
                             //fprintf(stderr, "Cycle %d: Waiting for player '%s' to send data for cycle %d...\n", GameCycleCount, pPlayer->getPlayername().c_str(), pPlayer->nextExpectedCommandsCycle);
                             bWaitForNetwork = true;
@@ -1281,7 +1281,7 @@ void Game::runMainLoop() {
                         if(SDL_GetTicks() - startWaitingForOtherPlayersTime > 1000) {
                             // we waited for more than one second
 
-                            if(pWaitingForOtherPlayers == NULL) {
+                            if(pWaitingForOtherPlayers == nullptr) {
                                 pWaitingForOtherPlayers = new WaitingForOtherPlayers();
                                 bMenu = true;
                             }
@@ -1292,14 +1292,14 @@ void Game::runMainLoop() {
                 } else {
                     startWaitingForOtherPlayersTime = 0;
                     delete pWaitingForOtherPlayers;
-                    pWaitingForOtherPlayers = NULL;
+                    pWaitingForOtherPlayers = nullptr;
                 }
             }
 
             doInput();
             pInterface->updateObjectInterface();
 
-            if(pNetworkManager != NULL) {
+            if(pNetworkManager != nullptr) {
                 if(bSelectionChanged) {
                     pNetworkManager->sendSelectedList(selectedList);
 
@@ -1307,11 +1307,11 @@ void Game::runMainLoop() {
                 }
             }
 
-            if(pInGameMentat != NULL) {
+            if(pInGameMentat != nullptr) {
                 pInGameMentat->update();
             }
 
-            if(pWaitingForOtherPlayers != NULL) {
+            if(pWaitingForOtherPlayers != nullptr) {
                 pWaitingForOtherPlayers->update();
             }
 
@@ -1329,7 +1329,7 @@ void Game::runMainLoop() {
 #endif
 
                 for (int i = 0; i < NUM_HOUSES; i++) {
-                    if (house[i] != NULL) {
+                    if (house[i] != nullptr) {
                         house[i]->update();
                     }
                 }
@@ -1380,7 +1380,7 @@ void Game::runMainLoop() {
         delete pStream;
 	}
 
-	if(pNetworkManager != NULL) {
+	if(pNetworkManager != nullptr) {
         pNetworkManager->disconnect();
 	}
 
@@ -1595,7 +1595,7 @@ bool Game::loadSaveGame(InputStream& stream) {
 
             // find the right house
             for(int i=0;i<NUM_HOUSES;i++) {
-                if((house[i] != NULL) && (house[i]->getHouseID() == iter->houseID)) {
+                if((house[i] != nullptr) && (house[i]->getHouseID() == iter->houseID)) {
                     // iterate over all players
 
                     const std::list<std::shared_ptr<Player> >& players = house[i]->getPlayerList();
@@ -1609,7 +1609,7 @@ bool Game::loadSaveGame(InputStream& stream) {
                             while(playerIter != players.end()) {
 
                                 std::shared_ptr<HumanPlayer> humanPlayer = std::dynamic_pointer_cast<HumanPlayer>(*playerIter);
-                                if(humanPlayer.get() != NULL) {
+                                if(humanPlayer.get() != nullptr) {
                                     // we have actually found a human player and now assign the first unused name to it
                                     std::string playername = playerInfoListIter->playerName;
                                     unregisterPlayer(humanPlayer.get());
@@ -1729,9 +1729,9 @@ bool Game::saveGame(std::string filename)
 
 	//write the house(s) info
 	for(int i=0; i<NUM_HOUSES; i++) {
-		fs.writeBool(house[i] != NULL);
+		fs.writeBool(house[i] != nullptr);
 
-		if(house[i] != NULL) {
+		if(house[i] != nullptr) {
 			house[i]->save(fs);
 		}
 	}
@@ -1784,7 +1784,7 @@ bool Game::saveGame(std::string filename)
 
 
 void Game::saveObject(OutputStream& stream, ObjectBase* obj) {
-	if(obj == NULL)
+	if(obj == nullptr)
 		return;
 
 	stream.writeUint32(obj->getItemID());
@@ -1799,8 +1799,8 @@ ObjectBase* Game::loadObject(InputStream& stream, Uint32 objectID)
 	itemID = stream.readUint32();
 
 	ObjectBase* newObject = ObjectBase::loadObject(stream, itemID, objectID);
-	if(newObject == NULL) {
-		fprintf(stderr,"Game::LoadObject(): ObjectBase::loadObject() returned NULL!\n");
+	if(newObject == nullptr) {
+		fprintf(stderr,"Game::LoadObject(): ObjectBase::loadObject() returned nullptr!\n");
 		exit(EXIT_FAILURE);
 	}
 
@@ -1831,7 +1831,7 @@ void Game::onReceiveSelectionList(std::string name, std::set<Uint32> newSelectio
 {
     HumanPlayer* pHumanPlayer = dynamic_cast<HumanPlayer*>(getPlayerByName(name));
 
-    if(pHumanPlayer == NULL) {
+    if(pHumanPlayer == nullptr) {
         return;
     }
 
@@ -1845,7 +1845,7 @@ void Game::onReceiveSelectionList(std::string name, std::set<Uint32> newSelectio
         std::set<Uint32>::iterator iter;
         for(iter = selectedByOtherPlayerList.begin(); iter != selectedByOtherPlayerList.end(); ++iter) {
             ObjectBase* pObject = objectManager.getObject(*iter);
-            if(pObject != NULL) {
+            if(pObject != nullptr) {
                 pObject->setSelectedByOtherPlayer(false);
             }
         }
@@ -1854,7 +1854,7 @@ void Game::onReceiveSelectionList(std::string name, std::set<Uint32> newSelectio
 
         for(iter = selectedByOtherPlayerList.begin(); iter != selectedByOtherPlayerList.end(); ++iter) {
             ObjectBase* pObject = objectManager.getObject(*iter);
-            if(pObject != NULL) {
+            if(pObject != nullptr) {
                 pObject->setSelectedByOtherPlayer(true);
             }
         }
@@ -1988,7 +1988,7 @@ void Game::handleChatInput(SDL_KeyboardEvent& keyboardEvent) {
                     pLocalHouse->returnCredits(10000);
                 }
             } else {
-                if(pNetworkManager != NULL) {
+                if(pNetworkManager != nullptr) {
                     pNetworkManager->sendChatMessage(typingChatMessage);
                 }
                 pInterface->getChatManager().addChatMessage(settings.general.playerName, typingChatMessage);
@@ -2229,7 +2229,7 @@ void Game::handleKeyInput(SDL_KeyboardEvent& keyboardEvent) {
                 // Place structure
                 if(selectedList.size() == 1) {
                     ConstructionYard* pConstructionYard = dynamic_cast<ConstructionYard*>(objectManager.getObject(*selectedList.begin()));
-                    if(pConstructionYard != NULL) {
+                    if(pConstructionYard != nullptr) {
                         if(currentCursorMode == CursorMode_Placing) {
                             currentCursorMode = CursorMode_Normal;
                         } else if(pConstructionYard->isWaitingToPlace()) {
@@ -2343,7 +2343,7 @@ void Game::handleKeyInput(SDL_KeyboardEvent& keyboardEvent) {
 
 
 bool Game::handlePlacementClick(int xPos, int yPos) {
-    BuilderBase* pBuilder = NULL;
+    BuilderBase* pBuilder = nullptr;
 
     if(selectedList.size() == 1) {
         pBuilder = dynamic_cast<BuilderBase*>(objectManager.getObject(*selectedList.begin()));
@@ -2417,7 +2417,7 @@ bool Game::handlePlacementClick(int xPos, int yPos) {
                             std::list<Uint32>::const_iterator iter;
                             for(iter = pTile->getInfantryList().begin(); iter != pTile->getInfantryList().end(); ++iter) {
                                 InfantryBase* pInfantry = dynamic_cast<InfantryBase*>(getObjectManager().getObject(*iter));
-                                if((pInfantry != NULL) && (pInfantry->getOwner() == pBuilder->getOwner())) {
+                                if((pInfantry != nullptr) && (pInfantry->getOwner() == pBuilder->getOwner())) {
                                     Coord newDestination = currentGameMap->findDeploySpot(pInfantry, Coord(xPos, yPos), pInfantry->getLocation(), structuresize);
                                     pInfantry->handleMoveClick(newDestination.x, newDestination.y);
                                 }
@@ -2434,7 +2434,7 @@ bool Game::handlePlacementClick(int xPos, int yPos) {
 
 
 bool Game::handleSelectedObjectsAttackClick(int xPos, int yPos) {
-    UnitBase* responder = NULL;
+    UnitBase* responder = nullptr;
 
     std::set<Uint32>::iterator iter;
     for(iter = selectedList.begin(); iter != selectedList.end(); ++iter) {
@@ -2461,7 +2461,7 @@ bool Game::handleSelectedObjectsAttackClick(int xPos, int yPos) {
 }
 
 bool Game::handleSelectedObjectsMoveClick(int xPos, int yPos) {
-    UnitBase* responder = NULL;
+    UnitBase* responder = nullptr;
 
     std::set<Uint32>::iterator iter;
     for(iter = selectedList.begin(); iter != selectedList.end(); ++iter) {
@@ -2486,7 +2486,7 @@ bool Game::handleSelectedObjectsMoveClick(int xPos, int yPos) {
 **/
 bool Game::handleSelectedObjectsRequestCarryallDropClick(int xPos, int yPos) {
 
-    UnitBase* responder = NULL;
+    UnitBase* responder = nullptr;
 
     /*
         If manual carryall mode isn't enabled then turn this off...
@@ -2520,14 +2520,14 @@ bool Game::handleSelectedObjectsRequestCarryallDropClick(int xPos, int yPos) {
 bool Game::handleSelectedObjectsCaptureClick(int xPos, int yPos) {
     Tile* pTile = currentGameMap->getTile(xPos, yPos);
 
-    if(pTile == NULL) {
+    if(pTile == nullptr) {
         return false;
     }
 
     StructureBase* pStructure = dynamic_cast<StructureBase*>(pTile->getGroundObject());
 
-    if((pStructure != NULL) && (pStructure->canBeCaptured()) && (pStructure->getOwner()->getTeam() != pLocalHouse->getTeam())) {
-        InfantryBase* responder = NULL;
+    if((pStructure != nullptr) && (pStructure->canBeCaptured()) && (pStructure->getOwner()->getTeam() != pLocalHouse->getTeam())) {
+        InfantryBase* responder = nullptr;
 
         std::set<Uint32>::iterator iter;
         for(iter = selectedList.begin(); iter != selectedList.end(); ++iter) {
@@ -2553,8 +2553,8 @@ bool Game::handleSelectedObjectsCaptureClick(int xPos, int yPos) {
 
 bool Game::handleSelectedObjectsActionClick(int xPos, int yPos) {
     //let unit handle right click on map or target
-    ObjectBase	*responder = NULL;
-    ObjectBase	*tempObject = NULL;
+    ObjectBase	*responder = nullptr;
+    ObjectBase	*tempObject = nullptr;
 
     std::set<Uint32>::iterator iter;
     for(iter = selectedList.begin(); iter != selectedList.end(); ++iter) {
@@ -2564,7 +2564,7 @@ bool Game::handleSelectedObjectsActionClick(int xPos, int yPos) {
             tempObject->handleActionClick(xPos, yPos);
 
             //if this object obey the command
-            if((responder == NULL) && tempObject->isRespondable())
+            if((responder == nullptr) && tempObject->isRespondable())
                 responder = tempObject;
         }
     }
@@ -2582,12 +2582,12 @@ void Game::selectNextStructureOfType(const std::set<Uint32>& itemIDs) {
 
     if(selectedList.size() == 1) {
         ObjectBase* pObject = getObjectManager().getObject(*selectedList.begin());
-        if((pObject != NULL) && (itemIDs.count(pObject->getItemID()) == 1)) {
+        if((pObject != nullptr) && (itemIDs.count(pObject->getItemID()) == 1)) {
             bSelectNext = false;
         }
     }
 
-    StructureBase* pStructure2Select = NULL;
+    StructureBase* pStructure2Select = nullptr;
 
     for(RobustList<StructureBase*>::const_iterator iter = structureList.begin(); iter != structureList.end(); ++iter) {
         StructureBase* pStructure = *iter;
@@ -2604,7 +2604,7 @@ void Game::selectNextStructureOfType(const std::set<Uint32>& itemIDs) {
         }
     }
 
-    if(pStructure2Select == NULL) {
+    if(pStructure2Select == nullptr) {
         // start over at the beginning
         for(RobustList<StructureBase*>::const_iterator iter = structureList.begin(); iter != structureList.end(); ++iter) {
             StructureBase* pStructure = *iter;
@@ -2615,7 +2615,7 @@ void Game::selectNextStructureOfType(const std::set<Uint32>& itemIDs) {
         }
     }
 
-    if(pStructure2Select != NULL) {
+    if(pStructure2Select != nullptr) {
         unselectAll(selectedList);
         selectedList.clear();
 

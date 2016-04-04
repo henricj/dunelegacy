@@ -52,7 +52,7 @@ protected:
 	void OnRepair() {
 		ObjectBase* pObject = currentGame->getObjectManager().getObject(objectID);
 		StructureBase* pStructure = dynamic_cast<StructureBase*>(pObject);
-		if(pStructure != NULL) {
+		if(pStructure != nullptr) {
 			pStructure->handleRepairClick();
 		}
 	}
@@ -64,12 +64,12 @@ protected:
 	*/
 	virtual bool update() {
 		ObjectBase* pObject = currentGame->getObjectManager().getObject(objectID);
-		if(pObject == NULL) {
+		if(pObject == nullptr) {
 			return false;
 		}
 
 		StructureBase* pStructure = dynamic_cast<StructureBase*>(pObject);
-		if(pStructure != NULL) {
+		if(pStructure != nullptr) {
 			if(pStructure->getHealth() >= pStructure->getMaxHealth()) {
 				repairButton.setVisible(false);
 			} else {

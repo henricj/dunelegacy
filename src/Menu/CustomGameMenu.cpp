@@ -168,7 +168,7 @@ CustomGameMenu::~CustomGameMenu()
 
 void CustomGameMenu::onChildWindowClose(Window* pChildWindow) {
 	LoadSaveWindow* pLoadSaveWindow = dynamic_cast<LoadSaveWindow*>(pChildWindow);
-	if(pLoadSaveWindow != NULL) {
+	if(pLoadSaveWindow != nullptr) {
 		std::string filename = pLoadSaveWindow->getFilename();
 
         if(filename != "") {
@@ -187,7 +187,7 @@ void CustomGameMenu::onChildWindowClose(Window* pChildWindow) {
 	}
 
     GameOptionsWindow* pGameOptionsWindow = dynamic_cast<GameOptionsWindow*>(pChildWindow);
-    if(pGameOptionsWindow != NULL) {
+    if(pGameOptionsWindow != nullptr) {
         currentGameOptions = pGameOptionsWindow->getGameOptions();
     }
 }
@@ -330,7 +330,7 @@ void CustomGameMenu::onMapListSelectionChange(bool bInteractive)
 
     mapPropertySize.setText(stringify(sizeX) + " x " + stringify(sizeY));
 
-    SDL_Surface* pMapSurface = NULL;
+    SDL_Surface* pMapSurface = nullptr;
     try {
         INIMapPreviewCreator mapPreviewCreator(pMap);
         pMapSurface = mapPreviewCreator.createMinimapImageOfMap(1, DuneStyle::buttonBorderColor);

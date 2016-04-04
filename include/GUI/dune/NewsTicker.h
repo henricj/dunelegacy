@@ -46,7 +46,7 @@ public:
 		\return the minimum size of this widget
 	*/
 	virtual Point getMinimumSize() const {
-		if(pBackground != NULL) {
+		if(pBackground != nullptr) {
 			return getTextureSize(pBackground);
 		} else {
 			return Point(0,0);

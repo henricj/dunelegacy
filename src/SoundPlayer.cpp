@@ -25,7 +25,7 @@
 #include <House.h>
 
 
-Mix_Chunk* curVoiceChunk = NULL;
+Mix_Chunk* curVoiceChunk = nullptr;
 int voiceChannel = 0;
 bool PlayingVoiceATM = false;
 
@@ -41,7 +41,7 @@ SoundPlayer::SoundPlayer() {
 	Mix_Volume(-1, MIX_MAX_VOLUME);
 
 	// init global variables
-	curVoiceChunk = NULL;
+	curVoiceChunk = nullptr;
 	PlayingVoiceATM = false;
 
 	voiceChannel = Mix_ReserveChannels(1);	//Reserve a channel for voice over
@@ -80,7 +80,7 @@ void SoundPlayer::playSound(Sound_enum soundID, int volume)
 	if(soundOn) {
 		Mix_Chunk* tmp;
 
-		if((tmp = pSFXManager->getSound(soundID)) == NULL) {
+		if((tmp = pSFXManager->getSound(soundID)) == nullptr) {
 			return;
 		}
 
@@ -95,7 +95,7 @@ void SoundPlayer::playVoice(Voice_enum id, int houseID) {
 	if(soundOn) {
 		Mix_Chunk* tmp;
 
-		if((tmp = pSFXManager->getVoice(id,houseID)) == NULL) {
+		if((tmp = pSFXManager->getVoice(id,houseID)) == nullptr) {
 			fprintf(stderr,"There is no voice with id %d!\n",id);
 			exit(EXIT_FAILURE);
 		}
@@ -120,7 +120,7 @@ void SoundPlayer::playSound(Sound_enum id) {
 	if(soundOn) {
 		Mix_Chunk* tmp;
 
-		if((tmp = pSFXManager->getSound(id)) == NULL) {
+		if((tmp = pSFXManager->getSound(id)) == nullptr) {
 			fprintf(stderr,"There is no sound with id %d!\n",id);
 			exit(EXIT_FAILURE);
 		}

@@ -30,9 +30,9 @@
 */
 PictureFont::PictureFont(SDL_Surface* pic, int freesrc)
 {
-	if(pic == NULL) {
+	if(pic == nullptr) {
 	    if(freesrc) SDL_FreeSurface(pic);
-        throw std::invalid_argument("PictureFont::PictureFont(): pic == NULL!");
+        throw std::invalid_argument("PictureFont::PictureFont(): pic == nullptr!");
 	}
 
 	SDL_LockSurface(pic);

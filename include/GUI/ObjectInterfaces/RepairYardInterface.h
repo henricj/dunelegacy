@@ -48,16 +48,16 @@ protected:
 	*/
 	virtual bool update() {
 		ObjectBase* pObject = currentGame->getObjectManager().getObject(objectID);
-		if(pObject == NULL) {
+		if(pObject == nullptr) {
 			return false;
 		}
 
 		RepairYard* pRepairYard = dynamic_cast<RepairYard*>(pObject);
 
-		if(pRepairYard != NULL) {
+		if(pRepairYard != nullptr) {
 			UnitBase* pUnit = pRepairYard->getRepairUnit();
 
-			if(pUnit != NULL) {
+			if(pUnit != nullptr) {
 				repairUnitProgressBar.setVisible(true);
 				repairUnitProgressBar.setTexture(resolveItemPicture(pUnit->getItemID()),false);
 				repairUnitProgressBar.setProgress( ((pUnit->getHealth()*100)/pUnit->getMaxHealth()).toDouble());

@@ -34,7 +34,7 @@ public:
 
 	/// default constructor
 	Container() : Widget() {
-		pActiveChildWidget = NULL;
+		pActiveChildWidget = nullptr;
 		enableResizing(true,true);
 	}
 
@@ -56,7 +56,7 @@ public:
 			if(iter->pWidget == pChildWidget) {
 			    setActiveChildWidget(false, pChildWidget);
 				containedWidgets.erase(iter);
-                pChildWidget->setParent(NULL);
+                pChildWidget->setParent(nullptr);
                 pChildWidget->destroy();
 				break;
 			}
@@ -165,7 +165,7 @@ public:
 			}
 		}
 
-		if((bProcessed == false) && (pActiveChildWidget != NULL)) {
+		if((bProcessed == false) && (pActiveChildWidget != nullptr)) {
 			Point pos = getPosition(*getWidgetDataFromWidget(pActiveChildWidget));
 			return pActiveChildWidget->handleMouseWheel(x - pos.x, y - pos.y, up);
 		}
@@ -183,7 +183,7 @@ public:
 			return false;
 		}
 
-		if(pActiveChildWidget != NULL) {
+		if(pActiveChildWidget != nullptr) {
 			return pActiveChildWidget->handleKeyPress(key);
 		} else {
 			if(key.keysym.sym == SDLK_TAB) {
@@ -205,7 +205,7 @@ public:
 			return false;
 		}
 
-		if(pActiveChildWidget != NULL) {
+		if(pActiveChildWidget != nullptr) {
 			return pActiveChildWidget->handleTextInput(textInput);
 		}
 		return false;
@@ -301,7 +301,7 @@ public:
             }
 		}
 
-		if((bProcessed == false) && (pActiveChildWidget != NULL)) {
+		if((bProcessed == false) && (pActiveChildWidget != nullptr)) {
 			Point pos = getPosition(*getWidgetDataFromWidget(pActiveChildWidget));
 			return pActiveChildWidget->handleMouseWheelOverlay(x - pos.x, y - pos.y, up);
 		}
@@ -319,7 +319,7 @@ public:
 			return false;
 		}
 
-		if(pActiveChildWidget != NULL) {
+		if(pActiveChildWidget != nullptr) {
 			return pActiveChildWidget->handleKeyPressOverlay(key);
 		}
 		return false;
@@ -335,7 +335,7 @@ public:
 			return false;
 		}
 
-		if(pActiveChildWidget != NULL) {
+		if(pActiveChildWidget != nullptr) {
 			return pActiveChildWidget->handleTextInputOverlay(textInput);
 		}
 		return false;
@@ -402,7 +402,7 @@ public:
 	*/
 	virtual Point getWidgetPosition(const Widget* widget) {
         WidgetData* widgetData = getWidgetDataFromWidget(widget);
-        if(widgetData == NULL) {
+        if(widgetData == nullptr) {
             return Point(-1,-1);
         } else {
             return getPosition(*widgetData);
@@ -414,7 +414,7 @@ public:
 		currently widget is set to inactive.
 	*/
 	virtual void setActive() {
-		if(pActiveChildWidget == NULL) {
+		if(pActiveChildWidget == nullptr) {
             activateFirstActivatableWidget();
 		}
 
@@ -425,9 +425,9 @@ public:
 		Sets this container and its children inactive. The next activatable widget is activated.
 	*/
 	virtual void setInactive() {
-		if(pActiveChildWidget != NULL) {
+		if(pActiveChildWidget != nullptr) {
 			pActiveChildWidget->setActive(false);
-			pActiveChildWidget = NULL;
+			pActiveChildWidget = nullptr;
 		}
 
 		Widget::setInactive();
@@ -466,10 +466,10 @@ protected:
 		\param	bActive	true = activate this widget, false = deactiviate this widget
 	*/
 	virtual void setActive(bool bActive) {
-		if(pActiveChildWidget != NULL) {
+		if(pActiveChildWidget != nullptr) {
 			pActiveChildWidget->setActive(bActive);
 			if(bActive == false) {
-                pActiveChildWidget = NULL;
+                pActiveChildWidget = nullptr;
 			}
 		}
 		Widget::setActive(bActive);
@@ -482,13 +482,13 @@ protected:
 		\param	childWidget	the widget to activate/deactivate
 	*/
 	virtual void setActiveChildWidget(bool active, Widget* childWidget) {
-		if(childWidget == NULL) {
+		if(childWidget == nullptr) {
 			return;
 		}
 
 		if(active == true) {
 			// deactivate current active widget
-			if((pActiveChildWidget != NULL) && (pActiveChildWidget != childWidget)) {
+			if((pActiveChildWidget != nullptr) && (pActiveChildWidget != childWidget)) {
 				pActiveChildWidget->setActive(false);
 				pActiveChildWidget = childWidget;
 			} else {
@@ -503,7 +503,7 @@ protected:
 			}
 
 			// deactivate current active widget
-			if(pActiveChildWidget != NULL) {
+			if(pActiveChildWidget != nullptr) {
 				pActiveChildWidget->setActive(false);
 			}
 
@@ -526,8 +526,8 @@ protected:
 			}
 
 			// we are at the end of the list
-			if((getParent() != NULL) && getParent()->isContainer()) {
-				pActiveChildWidget = NULL;
+			if((getParent() != nullptr) && getParent()->isContainer()) {
+				pActiveChildWidget = nullptr;
 				setInactive();
 			} else {
 				activateFirstActivatableWidget();
@@ -550,7 +550,7 @@ protected:
 			}
 			++iter;
 		}
-		pActiveChildWidget = NULL;
+		pActiveChildWidget = nullptr;
 	}
 
 	/**
@@ -564,7 +564,7 @@ protected:
 	/**
 		This method returns from a Widget* the corresponding WidgetData.
 		\param	pWidget	the widget to look for
-		\return	a pointer to the WidgetData, NULL if not found
+		\return	a pointer to the WidgetData, nullptr if not found
 	*/
 	WidgetData* getWidgetDataFromWidget(const Widget* pWidget) {
 		typename WidgetList::iterator iter = containedWidgets.begin();
@@ -575,7 +575,7 @@ protected:
 			++iter;
 		}
 
-		return NULL;
+		return nullptr;
 	}
 
 

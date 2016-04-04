@@ -28,7 +28,7 @@
 DirectoryPlayer::DirectoryPlayer() : MusicPlayer(settings.audio.playMusic) {
 	// determine path to config file
 	char tmp[FILENAME_MAX];
-	fnkdat(NULL, tmp, FILENAME_MAX, FNKDAT_USER | FNKDAT_CREAT);
+	fnkdat(nullptr, tmp, FILENAME_MAX, FNKDAT_USER | FNKDAT_CREAT);
 	std::string configfilepath(tmp);
 
 	static const char* musicDirectoryNames[MUSIC_NUM_MUSIC_TYPES] = { "/music/attack/",
@@ -57,13 +57,13 @@ DirectoryPlayer::DirectoryPlayer() : MusicPlayer(settings.audio.playMusic) {
 	musicVolume = MIX_MAX_VOLUME/2;
     Mix_VolumeMusic(musicVolume);
 
-	music = NULL;
+	music = nullptr;
 }
 
 DirectoryPlayer::~DirectoryPlayer() {
-	if(music != NULL) {
+	if(music != nullptr) {
 		Mix_FreeMusic(music);
-		music = NULL;
+		music = nullptr;
 	}
 }
 
@@ -103,13 +103,13 @@ void DirectoryPlayer::changeMusic(MUSICTYPE musicType)
 
 		Mix_HaltMusic();
 
-		if(music != NULL) {
+		if(music != nullptr) {
 			Mix_FreeMusic(music);
-			music = NULL;
+			music = nullptr;
 		}
 
 		music = Mix_LoadMUS(filename.c_str());
-		if(music != NULL) {
+		if(music != nullptr) {
 			printf("Now playing %s!\n",filename.c_str());
 			Mix_PlayMusic(music, -1);
 		} else {
@@ -131,7 +131,7 @@ void DirectoryPlayer::setMusic(bool value) {
 
 	if(musicOn) {
 		changeMusic(MUSIC_RANDOM);
-	} else if(music != NULL) {
+	} else if(music != nullptr) {
 		Mix_HaltMusic();
 	}
 }
@@ -144,10 +144,10 @@ void DirectoryPlayer::toggleSound()
 		changeMusic(MUSIC_PEACE);
 	} else {
 		musicOn = false;
-		if (music != NULL) {
+		if (music != nullptr) {
 			Mix_HaltMusic();
             Mix_FreeMusic(music);
-            music = NULL;
+            music = nullptr;
 		}
 	}
 }

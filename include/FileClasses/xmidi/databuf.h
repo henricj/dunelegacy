@@ -290,9 +290,9 @@ public:
 	};
 
 	virtual void close() {
-		if(freesrc && rwop != NULL) {
+		if(freesrc && rwop != nullptr) {
 			SDL_RWclose(rwop);
-			rwop = NULL;
+			rwop = nullptr;
 		}
 	};
 

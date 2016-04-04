@@ -40,21 +40,21 @@ CrossBlendVideoEvent::~CrossBlendVideoEvent()
     SDL_DestroyTexture(pStreamingTexture);
 
     delete pBlendBlitter;
-    pBlendBlitter = NULL;
+    pBlendBlitter = nullptr;
 }
 
 int CrossBlendVideoEvent::draw()
 {
 	if(pBlendBlitter->nextStep() == 0) {
 		delete pBlendBlitter;
-		pBlendBlitter = NULL;
+		pBlendBlitter = nullptr;
     }
 
-    SDL_UpdateTexture(pStreamingTexture, NULL, pSourceSurface->pixels, pSourceSurface->pitch);
+    SDL_UpdateTexture(pStreamingTexture, nullptr, pSourceSurface->pixels, pSourceSurface->pitch);
 
     SDL_Rect dest = calcAlignedDrawingRect(pStreamingTexture, HAlign::Center, bCenterVertical ? VAlign::Center : VAlign::Top);
 
-    SDL_RenderCopy(renderer, pStreamingTexture, NULL, &dest);
+    SDL_RenderCopy(renderer, pStreamingTexture, nullptr, &dest);
 
     currentFrame++;
 
@@ -63,5 +63,5 @@ int CrossBlendVideoEvent::draw()
 
 bool CrossBlendVideoEvent::isFinished()
 {
-    return (pBlendBlitter == NULL);
+    return (pBlendBlitter == nullptr);
 }

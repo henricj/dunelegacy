@@ -269,10 +269,10 @@ public:
 
 	/**
 		Returns the data assigned to the selected entry.
-		\return	the data of the entry (NULL if non is selected)
+		\return	the data of the entry (nullptr if non is selected)
 	*/
 	void* getSelectedEntryPtrData() const {
-		return ((selectedElement >= 0) ? getEntryPtrData(selectedElement) : NULL);
+		return ((selectedElement >= 0) ? getEntryPtrData(selectedElement) : nullptr);
 	}
 
 	/**
@@ -408,11 +408,11 @@ protected:
 	virtual void updateTextures() {
         Widget::updateTextures();
 
-        if(pBackground == NULL) {
+        if(pBackground == nullptr) {
             pBackground = convertSurfaceToTexture(GUIStyle::getInstance().createWidgetBackground(getSize().x, getSize().y), true);
         }
 
-        if(pForeground == NULL) {
+        if(pForeground == nullptr) {
             // create surfaces
             int surfaceHeight = getSize().y - 2;
             if(surfaceHeight < 0) {
@@ -430,7 +430,7 @@ protected:
                 SDL_Surface* pSurface = GUIStyle::getInstance().createListBoxEntry(getSize().x - 4, getEntry(i), bHighlightSelectedElement && (i==selectedElement), color);
 
                 SDL_Rect dest = calcDrawingRect(pSurface, 0, (i-firstVisibleElement) * (int) GUIStyle::getInstance().getListBoxEntryHeight());
-                SDL_BlitSurface(pSurface,NULL,pForegroundSurface,&dest);
+                SDL_BlitSurface(pSurface,nullptr,pForegroundSurface,&dest);
                 SDL_FreeSurface(pSurface);
             }
             pForeground = convertSurfaceToTexture(pForegroundSurface, true);
@@ -441,14 +441,14 @@ protected:
 		This method frees all textures that are used by this list box
 	*/
 	virtual void invalidateTextures() {
-        if(pBackground != NULL) {
+        if(pBackground != nullptr) {
             SDL_DestroyTexture(pBackground);
-            pBackground = NULL;
+            pBackground = nullptr;
         }
 
-        if(pForeground != NULL) {
+        if(pForeground != nullptr) {
             SDL_DestroyTexture(pForeground);
-            pForeground = NULL;
+            pForeground = nullptr;
         }
 	}
 

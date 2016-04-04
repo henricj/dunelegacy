@@ -88,7 +88,7 @@ public:
         std::list<ENetPeer*>::const_iterator iter;
         for(iter = peerList.begin(); iter != peerList.end(); ++iter) {
             PeerData* peerData = (PeerData*) (*iter)->data;
-            if(peerData != NULL) {
+            if(peerData != nullptr) {
                 peerNameList.push_back(peerData->name);
             }
         }

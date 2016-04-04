@@ -62,7 +62,7 @@ void RocketTurret::updateStructureSpecificStuff() {
 }
 
 bool RocketTurret::canAttack(const ObjectBase* object) const {
-	if((object != NULL)
+	if((object != nullptr)
 		&& ((object->getOwner()->getTeam() != owner->getTeam()) || object->getItemID() == Unit_Sandworm)
 		&& object->isVisible(getOwner()->getTeam())) {
 		return true;
@@ -72,7 +72,7 @@ bool RocketTurret::canAttack(const ObjectBase* object) const {
 }
 
 void RocketTurret::attack() {
-	if((weaponTimer == 0) && (target.getObjPointer() != NULL)) {
+	if((weaponTimer == 0) && (target.getObjPointer() != nullptr)) {
 		Coord centerPoint = getCenterPoint();
 		Coord targetCenterPoint = target.getObjPointer()->getClosestCenterPoint(location);
 

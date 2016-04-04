@@ -65,24 +65,24 @@ void ChatManager::draw(Point position)
             timedest.w = getWidth(iter->pTimeTexture.get());
             timedest.h = getHeight(iter->pTimeTexture.get());
             SDL_Rect tmpDest1 = timedest;
-            SDL_RenderCopy(renderer, iter->pTimeTexture.get(), NULL, &tmpDest1);
+            SDL_RenderCopy(renderer, iter->pTimeTexture.get(), nullptr, &tmpDest1);
 
             usernamedest.w = getWidth(iter->pUsernameTexture.get());
             usernamedest.h = getHeight(iter->pUsernameTexture.get());
             usernamedest.x = position.x + 70 + maxUsernameSizeY - getWidth(iter->pUsernameTexture.get());
             SDL_Rect tmpDest2 = usernamedest;
-            SDL_RenderCopy(renderer, iter->pUsernameTexture.get(), NULL, &tmpDest2);
+            SDL_RenderCopy(renderer, iter->pUsernameTexture.get(), nullptr, &tmpDest2);
 
             messagedest.w = getWidth(iter->pMessageTexture.get());
             messagedest.h = getHeight(iter->pMessageTexture.get());
             SDL_Rect tmpDest3 = messagedest;
-            SDL_RenderCopy(renderer, iter->pMessageTexture.get(), NULL, &tmpDest3);
+            SDL_RenderCopy(renderer, iter->pMessageTexture.get(), nullptr, &tmpDest3);
 
 
         } else {
             // MSGTYPE_INFO
             SDL_Rect infodest = calcDrawingRect(iter->pMessageTexture.get(), position.x + 70 - 20, messagedest.y);
-            SDL_RenderCopy(renderer, iter->pMessageTexture.get(), NULL, &infodest);
+            SDL_RenderCopy(renderer, iter->pMessageTexture.get(), nullptr, &infodest);
 
             messagedest.h = getHeight(iter->pMessageTexture.get());
         }
@@ -96,7 +96,7 @@ void ChatManager::draw(Point position)
 void ChatManager::addChatMessage(std::string username, std::string message)
 {
     char timestring[80];
-    time_t unixtime = time(NULL);
+    time_t unixtime = time(nullptr);
     struct tm* timeinfo;
 
     timeinfo = localtime( &unixtime );

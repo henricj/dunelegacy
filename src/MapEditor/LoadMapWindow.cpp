@@ -139,12 +139,12 @@ LoadMapWindow::LoadMapWindow(Uint32 color) : Window(0,0,0,0), color(color) {
 }
 
 bool LoadMapWindow::handleKeyPress(SDL_KeyboardEvent& key) {
-	if(pChildWindow != NULL) {
+	if(pChildWindow != nullptr) {
 		bool ret = pChildWindow->handleKeyPress(key);
 		return ret;
 	}
 
-	if(isEnabled() && (pWindowWidget != NULL)) {
+	if(isEnabled() && (pWindowWidget != nullptr)) {
 		if(key.keysym.sym == SDLK_RETURN) {
 			onLoad();
 			return true;
@@ -173,7 +173,7 @@ bool LoadMapWindow::handleKeyPress(SDL_KeyboardEvent& key) {
 
 void LoadMapWindow::onChildWindowClose(Window* pChildWindow) {
     QstBox* pQstBox = dynamic_cast<QstBox*>(pChildWindow);
-    if(pQstBox != NULL) {
+    if(pQstBox != nullptr) {
         if(pQstBox->getPressedButtonID() == QSTBOX_BUTTON2) {
             int index = mapList.getSelectedIndex();
             if(index >= 0) {
@@ -197,7 +197,7 @@ void LoadMapWindow::onChildWindowClose(Window* pChildWindow) {
 
 void LoadMapWindow::onCancel() {
 	Window* pParentWindow = dynamic_cast<Window*>(getParent());
-	if(pParentWindow != NULL) {
+	if(pParentWindow != nullptr) {
 		pParentWindow->closeChildWindow();
 	}
 }
@@ -213,7 +213,7 @@ void LoadMapWindow::onLoad() {
     getCaseInsensitiveFilename(loadMapFilepath);
 
 	Window* pParentWindow = dynamic_cast<Window*>(getParent());
-	if(pParentWindow != NULL) {
+	if(pParentWindow != nullptr) {
 		pParentWindow->closeChildWindow();
 	}
 }
@@ -305,7 +305,7 @@ void LoadMapWindow::onMapListSelectionChange(bool bInteractive)
 
     mapPropertySize.setText(stringify(sizeX) + " x " + stringify(sizeY));
 
-    SDL_Surface* pMapSurface = NULL;
+    SDL_Surface* pMapSurface = nullptr;
     try {
         INIMapPreviewCreator mapPreviewCreator(pMap);
         pMapSurface = mapPreviewCreator.createMinimapImageOfMap(1, DuneStyle::buttonBorderColor);

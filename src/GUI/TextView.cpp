@@ -25,8 +25,8 @@ TextView::TextView() : Widget() {
 	textshadowcolor = COLOR_DEFAULT;
 	backgroundcolor = COLOR_TRANSPARENT;
 	alignment = (Alignment_Enum) (Alignment_Left | Alignment_Top);
-	pForeground = NULL;
-	pBackground = NULL;
+	pForeground = nullptr;
+	pBackground = nullptr;
 	bAutohideScrollbar = true;
 	enableResizing(true,true);
 
@@ -64,12 +64,12 @@ void TextView::draw(Point position) {
 
 	updateTextures();
 
-	if(pBackground != NULL) {
+	if(pBackground != nullptr) {
 		SDL_Rect dest = calcDrawingRect(pBackground, position.x, position.y);
-		SDL_RenderCopy(renderer, pBackground, NULL, &dest);
+		SDL_RenderCopy(renderer, pBackground, nullptr, &dest);
 	}
 
-	if(pForeground != NULL) {
+	if(pForeground != nullptr) {
         int lineHeight = GUIStyle::getInstance().getTextHeight(fontID) + 2;
 
         SDL_Rect src = {    0,
@@ -109,11 +109,11 @@ void TextView::resize(Uint32 width, Uint32 height) {
 }
 
 void TextView::updateTextures() {
-    if(pBackground == NULL) {
+    if(pBackground == nullptr) {
         pBackground = convertSurfaceToTexture(GUIStyle::getInstance().createWidgetBackground(getSize().x, getSize().y), true);
     }
 
-    if(pForeground == NULL) {
+    if(pForeground == nullptr) {
         std::list<std::string> textLines = calcTextLines();
 
         int lineHeight = GUIStyle::getInstance().getTextHeight(fontID) + 2;

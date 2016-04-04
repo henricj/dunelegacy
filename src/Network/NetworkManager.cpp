@@ -30,7 +30,7 @@
 #include <algorithm>
 
 NetworkManager::NetworkManager(int port, std::string metaserver)
- : host(NULL), bIsServer(false), bLANServer(false), pGameInitSettings(NULL), numPlayers(0), maxPlayers(0), connectPeer(NULL), pLANGameFinderAndAnnouncer(NULL), pMetaServerClient(NULL)
+ : host(nullptr), bIsServer(false), bLANServer(false), pGameInitSettings(nullptr), numPlayers(0), maxPlayers(0), connectPeer(nullptr), pLANGameFinderAndAnnouncer(nullptr), pMetaServerClient(nullptr)
 {
 	if(enet_initialize() != 0) {
         throw std::runtime_error("NetworkManager: An error occurred while initializing ENet.");
@@ -41,7 +41,7 @@ NetworkManager::NetworkManager(int port, std::string metaserver)
 	address.port = port;
 
 	host = enet_host_create(&address, 32, 2, 0, 0);
-	if(host == NULL) {
+	if(host == nullptr) {
 		enet_deinitialize();
 		throw std::runtime_error("NetworkManager: An error occurred while trying to create a server host.");
 	}
@@ -77,11 +77,11 @@ NetworkManager::~NetworkManager() {
 
 void NetworkManager::startServer(bool bLANServer, std::string serverName, std::string playerName, GameInitSettings* pGameInitSettings, int numPlayers, int maxPlayers) {
     if(bLANServer == true) {
-        if(pLANGameFinderAndAnnouncer != NULL) {
+        if(pLANGameFinderAndAnnouncer != nullptr) {
             pLANGameFinderAndAnnouncer->startAnnounce(serverName, host->address.port, pGameInitSettings->getFilename(), numPlayers, maxPlayers);
         }
     } else {
-        if(pMetaServerClient != NULL) {
+        if(pMetaServerClient != nullptr) {
             pMetaServerClient->startAnnounce(serverName, host->address.port, pGameInitSettings->getFilename(), numPlayers, maxPlayers);
         }
     }
@@ -96,11 +96,11 @@ void NetworkManager::startServer(bool bLANServer, std::string serverName, std::s
 
 void NetworkManager::updateServer(int numPlayers) {
     if(bLANServer == true) {
-        if(pLANGameFinderAndAnnouncer != NULL) {
+        if(pLANGameFinderAndAnnouncer != nullptr) {
             pLANGameFinderAndAnnouncer->updateAnnounce(numPlayers);
         }
     } else {
-        if(pMetaServerClient != NULL) {
+        if(pMetaServerClient != nullptr) {
             pMetaServerClient->updateAnnounce(numPlayers);
         }
     }
@@ -110,18 +110,18 @@ void NetworkManager::updateServer(int numPlayers) {
 
 void NetworkManager::stopServer() {
     if(bLANServer == true) {
-        if(pLANGameFinderAndAnnouncer != NULL) {
+        if(pLANGameFinderAndAnnouncer != nullptr) {
             pLANGameFinderAndAnnouncer->stopAnnounce();
         }
     } else {
-        if(pMetaServerClient != NULL) {
+        if(pMetaServerClient != nullptr) {
             pMetaServerClient->stopAnnounce();
         }
     }
 
 	bIsServer = false;
 	bLANServer = false;
-	pGameInitSettings = NULL;
+	pGameInitSettings = nullptr;
 }
 
 void NetworkManager::connect(std::string hostname, int port, std::string playerName) {
@@ -139,7 +139,7 @@ void NetworkManager::connect(ENetAddress address, std::string playerName) {
     debugNetwork("Connecting to %s:%d\n", Address2String(address).c_str(), address.port);
 
 	connectPeer = enet_host_connect(host, &address, 2, 0);
-	if(connectPeer == NULL) {
+	if(connectPeer == nullptr) {
 		throw std::runtime_error("NetworkManager: No available peers for initiating a connection.");
 	}
 
@@ -161,11 +161,11 @@ void NetworkManager::disconnect() {
 
 void NetworkManager::update()
 {
-	if(pLANGameFinderAndAnnouncer != NULL) {
+	if(pLANGameFinderAndAnnouncer != nullptr) {
 		pLANGameFinderAndAnnouncer->update();
 	}
 
-	if(pMetaServerClient != NULL) {
+	if(pMetaServerClient != nullptr) {
 		pMetaServerClient->update();
 	}
 
@@ -273,7 +273,7 @@ void NetworkManager::update()
                     packetStream.writeString(playerName);
 
                     sendPacketToPeer(peer, packetStream);
-                } else if(connectPeer != NULL) {
+                } else if(connectPeer != nullptr) {
                     // Client
                     PeerData* peerData = (PeerData*) peer->data;
 
@@ -292,7 +292,7 @@ void NetworkManager::update()
                         PeerData* pConnectPeerData = (PeerData*) connectPeer->data;
 
                         if(pConnectPeerData->peerState == PeerData::PEER_STATE_WAITING_FOR_OTHER_PEERS_TO_CONNECT) {
-                            if(peerData == NULL) {
+                            if(peerData == nullptr) {
                                 peerData = new PeerData(peer, PeerData::PEER_STATE_CONNECTED);
                                 peer->data = peerData;
 
@@ -333,7 +333,7 @@ void NetworkManager::update()
 
                 int disconnectCause = event.data;
 
-                debugNetwork("NetworkManager: %s:%u (%s) disconnected (%d).\n", Address2String(peer->address).c_str(), peer->address.port, (peerData != NULL) ? peerData->name.c_str() : "unknown", disconnectCause);
+                debugNetwork("NetworkManager: %s:%u (%s) disconnected (%d).\n", Address2String(peer->address).c_str(), peer->address.port, (peerData != nullptr) ? peerData->name.c_str() : "unknown", disconnectCause);
 
                 if(std::find(awaitingConnectionList.begin(), awaitingConnectionList.end(), peer) != awaitingConnectionList.end()) {
                     if(peerData->peerState == PeerData::PEER_STATE_WAITING_FOR_OTHER_PEERS_TO_CONNECT) {
@@ -375,10 +375,10 @@ void NetworkManager::update()
 
                 // delete peer data
                 delete peerData;
-                peer->data = NULL;
+                peer->data = nullptr;
 
                 if(peer == connectPeer) {
-                    connectPeer = NULL;
+                    connectPeer = nullptr;
                 }
 
             } break;
@@ -407,7 +407,7 @@ void NetworkManager::handlePacket(ENetPeer* peer, ENetPacketIStream& packetStrea
                     debugNetwork("Connecting to %s:%d\n", Address2String(address).c_str(), address.port);
 
                     ENetPeer *newPeer = enet_host_connect(host, &address, 2, 0);
-                    if(newPeer == NULL) {
+                    if(newPeer == nullptr) {
                         debugNetwork("NetworkManager: No available peers for initiating a connection.");
                     } else {
                         PeerData* peerData = new PeerData(newPeer, PeerData::PEER_STATE_WAITING_FOR_OTHER_PEERS_TO_CONNECT);
@@ -635,7 +635,7 @@ void NetworkManager::handlePacket(ENetPeer* peer, ENetPacketIStream& packetStrea
 
 
 void NetworkManager::sendPacketToHost(ENetPacketOStream& packetStream, int channel) {
-	if(connectPeer == NULL) {
+	if(connectPeer == nullptr) {
 		fprintf(stderr,"NetworkManager: sendPacketToHost() called on server!\n");
 		return;
 	}

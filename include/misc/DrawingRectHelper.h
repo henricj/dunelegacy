@@ -59,7 +59,7 @@ inline int getHeight(SDL_Surface *pSurface) {
 */
 inline int getWidth(SDL_Texture *pTexture) {
     int w;
-    SDL_QueryTexture(pTexture, NULL, NULL, &w, NULL);
+    SDL_QueryTexture(pTexture, nullptr, nullptr, &w, nullptr);
     return w;
 }
 
@@ -70,7 +70,7 @@ inline int getWidth(SDL_Texture *pTexture) {
 */
 inline int getHeight(SDL_Texture *pTexture) {
     int h;
-    SDL_QueryTexture(pTexture, NULL, NULL, NULL, &h);
+    SDL_QueryTexture(pTexture, nullptr, nullptr, nullptr, &h);
     return h;
 }
 
@@ -100,7 +100,7 @@ inline SDL_Rect calcSpriteSourceRect(SDL_Surface *pSurface, int col, int numCols
 inline SDL_Rect calcSpriteSourceRect(SDL_Texture *pTexture, int col, int numCols, int row = 0, int numRows = 1) {
     int w;
     int h;
-    SDL_QueryTexture(pTexture, NULL, NULL, &w, &h);
+    SDL_QueryTexture(pTexture, nullptr, nullptr, &w, &h);
     SDL_Rect rect = { col * (w/numCols), row * (h/numRows), w/numCols, h/numRows };
     return rect;
 }
@@ -149,7 +149,7 @@ inline SDL_Rect calcSpriteDrawingRect(SDL_Surface* pSurface, int x, int y, int n
 */
 inline SDL_Rect calcSpriteDrawingRect(SDL_Texture* pTexture, int x, int y, int numCols, int numRows = 1, HAlign halign = HAlign::Left, VAlign valign = VAlign::Top) {
     SDL_Rect rect = { x, y, 0, 0 };
-    SDL_QueryTexture(pTexture, NULL, NULL, &rect.w, &rect.h);
+    SDL_QueryTexture(pTexture, nullptr, nullptr, &rect.w, &rect.h);
 
     rect.w /= numCols;
     rect.h /= numRows;

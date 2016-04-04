@@ -92,7 +92,7 @@ ObjectBase::ObjectBase(House* newOwner) : originalHouseID(newOwner->getHouseID()
 	selectedByOtherPlayer = false;
 
 	forced = false;
-    setTarget(NULL);
+    setTarget(nullptr);
 	targetFriendly = false;
 	attackMode = GUARD;
 
@@ -154,7 +154,7 @@ void ObjectBase::init() {
 	radius = TILESIZE/2;
 
 	graphicID = -1;
-    graphic = NULL;
+    graphic = nullptr;
     numImagesX = 0;
     numImagesY = 0;
 
@@ -225,7 +225,7 @@ void ObjectBase::handleDamage(int damage, Uint32 damagerID, House* damagerOwner)
         if(newHealth <= 0) {
             setHealth(0);
 
-            if(damagerOwner != NULL) {
+            if(damagerOwner != nullptr) {
                 damagerOwner->informHasKilled(itemID);
             }
         } else {
@@ -317,7 +317,7 @@ void ObjectBase::unassignFromMap(const Coord& location) {
 bool ObjectBase::canAttack(const ObjectBase* object) const {
 
 	if( canAttack()
-        && (object != NULL)
+        && (object != nullptr)
 		&& (object->isAStructure()
 			|| !object->isAFlyingUnit())
 		&& ((object->getOwner()->getTeam() != owner->getTeam())
@@ -378,7 +378,7 @@ Coord ObjectBase::getClosestPoint(const Coord& point) const {
 
 const StructureBase* ObjectBase::findClosestTargetStructure() const {
 
-	StructureBase	*closestStructure = NULL;
+	StructureBase	*closestStructure = nullptr;
 	FixPoint		closestDistance = FixPt_MAX;
 
     RobustList<StructureBase*>::const_iterator iter;
@@ -404,7 +404,7 @@ const StructureBase* ObjectBase::findClosestTargetStructure() const {
 }
 
 const UnitBase* ObjectBase::findClosestTargetUnit() const {
-	UnitBase	*closestUnit = NULL;
+	UnitBase	*closestUnit = nullptr;
 	FixPoint	closestDistance = FixPt_MAX;
 
     RobustList<UnitBase*>::const_iterator iter;
@@ -428,7 +428,7 @@ const UnitBase* ObjectBase::findClosestTargetUnit() const {
 
 const ObjectBase* ObjectBase::findClosestTarget() const {
 
-	ObjectBase	*closestObject = NULL;
+	ObjectBase	*closestObject = nullptr;
 	FixPoint	closestDistance = FixPt_MAX;
 
     RobustList<StructureBase*>::const_iterator iter1;
@@ -470,7 +470,7 @@ const ObjectBase* ObjectBase::findClosestTarget() const {
 
 const ObjectBase* ObjectBase::findTarget() const {
  	ObjectBase	*tempTarget,
-				*closestTarget = NULL;
+				*closestTarget = nullptr;
 
 	int	checkRange = 0;
 	int	xPos = location.x;
@@ -505,7 +505,7 @@ const ObjectBase* ObjectBase::findTarget() const {
 
         case STOP:
         default: {
-            return NULL;
+            return nullptr;
         } break;
     }
 
@@ -532,7 +532,7 @@ const ObjectBase* ObjectBase::findTarget() const {
 
 				if((tempTarget->getItemID() != Structure_Wall
                     || tempTarget->getItemID() != Unit_Carryall
-                    || closestTarget == NULL)
+                    || closestTarget == nullptr)
                     && canAttack(tempTarget)) {
 					FixPoint targetDistance = blockDistance(location, tempTarget->getLocation());
 					if(targetDistance < closestDistance) {
@@ -573,7 +573,7 @@ int ObjectBase::getInfSpawnProp() const {
 
 ObjectBase* ObjectBase::createObject(int itemID, House* Owner, Uint32 objectID) {
 
-	ObjectBase* newObject = NULL;
+	ObjectBase* newObject = nullptr;
 	switch(itemID) {
 		case Structure_Barracks:			newObject = new Barracks(Owner); break;
 		case Structure_ConstructionYard:	newObject = new ConstructionYard(Owner); break;
@@ -629,13 +629,13 @@ ObjectBase* ObjectBase::createObject(int itemID, House* Owner, Uint32 objectID) 
             }
 		} break;
 
-		default:							newObject = NULL;
+		default:							newObject = nullptr;
 											fprintf(stderr,"ObjectBase::createObject(): %d is no valid ItemID!\n",itemID);
 											break;
 	}
 
-	if(newObject == NULL) {
-		return NULL;
+	if(newObject == nullptr) {
+		return nullptr;
 	}
 
 	if(objectID == NONE) {
@@ -649,7 +649,7 @@ ObjectBase* ObjectBase::createObject(int itemID, House* Owner, Uint32 objectID) 
 }
 
 ObjectBase* ObjectBase::loadObject(InputStream& stream, int itemID, Uint32 objectID) {
-	ObjectBase* newObject = NULL;
+	ObjectBase* newObject = nullptr;
 	switch(itemID) {
 		case Structure_Barracks:			newObject = new Barracks(stream); break;
 		case Structure_ConstructionYard:	newObject = new ConstructionYard(stream); break;
@@ -688,13 +688,13 @@ ObjectBase* ObjectBase::loadObject(InputStream& stream, int itemID, Uint32 objec
 		case Unit_RaiderTrike:				newObject = new RaiderTrike(stream); break;
 		case Unit_Trooper:					newObject = new Trooper(stream); break;
 
-		default:							newObject = NULL;
+		default:							newObject = nullptr;
 											fprintf(stderr,"ObjectBase::loadObject(): %d is no valid ItemID!\n",itemID);
 											break;
 	}
 
-	if(newObject == NULL) {
-		return NULL;
+	if(newObject == nullptr) {
+		return nullptr;
 	}
 
 	newObject->setObjectID(objectID);

@@ -31,20 +31,20 @@ bool compareCommands(Command cmd1, Command cmd2) {
 }
 
 CommandManager::CommandManager() {
-	pStream = NULL;
+	pStream = nullptr;
 	bReadOnly = false;
 	networkCycleBuffer = 0;
 }
 
 CommandManager::~CommandManager() {
     delete pStream;
-    pStream = NULL;
+    pStream = nullptr;
 }
 
 void CommandManager::addCommand(Command cmd) {
 	Uint32 CycleNumber = currentGame->getGameCycleCount();
 
-	if(pNetworkManager != NULL) {
+	if(pNetworkManager != nullptr) {
         CycleNumber += networkCycleBuffer;
 	}
 	addCommand(cmd, CycleNumber);
@@ -74,7 +74,7 @@ void CommandManager::load(InputStream& stream) {
 }
 
 void CommandManager::update() {
-    if(pNetworkManager != NULL) {
+    if(pNetworkManager != nullptr) {
         CommandList commandList;
         for(Uint32 i = std::max((int) currentGame->getGameCycleCount() - MILLI2CYCLES(2500), 0); i < currentGame->getGameCycleCount() + networkCycleBuffer; i++) {
             std::vector<Command> commands;
@@ -97,7 +97,7 @@ void CommandManager::update() {
 
 void CommandManager::addCommandList(const std::string& playername, const CommandList& commandList) {
     HumanPlayer* pPlayer = dynamic_cast<HumanPlayer*>(currentGame->getPlayerByName(playername));
-    if(pPlayer == NULL) {
+    if(pPlayer == nullptr) {
         return;
     }
 
@@ -130,7 +130,7 @@ void CommandManager::addCommand(Command cmd, Uint32 CycleNumber) {
 		timeslot[CycleNumber].push_back(cmd);
 		std::stable_sort(timeslot[CycleNumber].begin(), timeslot[CycleNumber].end(), compareCommands);
 
-		if(pStream != NULL) {
+		if(pStream != nullptr) {
 			pStream->writeUint32(CycleNumber);
 			cmd.save(*pStream);
 		}

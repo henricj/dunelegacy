@@ -35,7 +35,7 @@
 #include <set>
 
 Map::Map(int xSize, int ySize)
- : sizeX(xSize), sizeY(ySize), tiles(NULL), lastSinglySelectedObject(NULL) {
+ : sizeX(xSize), sizeY(ySize), tiles(nullptr), lastSinglySelectedObject(nullptr) {
 
 	tiles = new Tile[sizeX*sizeY];
 
@@ -148,7 +148,7 @@ void Map::damage(Uint32 damagerID, House* damagerOwner, const Coord& realPos, Ui
                 for(iter = affectedAirUnits.begin(); iter != affectedAirUnits.end() ;++iter) {
                     AirUnit* pAirUnit = dynamic_cast<AirUnit*>(currentGame->getObjectManager().getObject(*iter));
 
-                    if(pAirUnit == NULL)
+                    if(pAirUnit == nullptr)
                         continue;
 
 
@@ -308,7 +308,7 @@ bool Map::okayToPlaceStructure(int x, int y, int buildingSizeX, int buildingSize
 				return false;
 			}
 
-			if((pHouse == NULL) || isWithinBuildRange(i, j, pHouse)) {
+			if((pHouse == nullptr) || isWithinBuildRange(i, j, pHouse)) {
 				withinBuildRange = true;
 			}
 		}
@@ -509,8 +509,8 @@ void Map::removeObjectFromMap(Uint32 objectID) {
 
 void Map::selectObjects(int houseID, int x1, int y1, int x2, int y2, int realX, int realY, bool objectARGMode) {
 
-	ObjectBase	*lastCheckedObject = NULL;
-	ObjectBase *lastSelectedObject = NULL;
+	ObjectBase	*lastCheckedObject = nullptr;
+	ObjectBase *lastSelectedObject = nullptr;
 
 	//if selection rectangle is checking only one tile and has shift selected we want to add/ remove that unit from the selected group of units
 	if(!objectARGMode) {
@@ -524,10 +524,10 @@ void Map::selectObjects(int houseID, int x1, int y1, int x2, int y2, int realX, 
         if(getTile(x1,y1)->isExplored(houseID) || debug) {
             lastCheckedObject = getTile(x1,y1)->getObjectAt(realX, realY);
         } else {
-		    lastCheckedObject = NULL;
+		    lastCheckedObject = nullptr;
 		}
 
-		if((lastCheckedObject != NULL) && (lastCheckedObject->getOwner()->getHouseID() == houseID)) {
+		if((lastCheckedObject != nullptr) && (lastCheckedObject->getOwner()->getHouseID() == houseID)) {
 			if((lastCheckedObject == lastSinglySelectedObject) && ( !lastCheckedObject->isAStructure())) {
                 for(int i = screenborder->getTopLeftTile().x; i <= screenborder->getBottomRightTile().x; i++) {
                     for(int j = screenborder->getTopLeftTile().y; j <= screenborder->getBottomRightTile().y; j++) {
@@ -536,7 +536,7 @@ void Map::selectObjects(int houseID, int x1, int y1, int x2, int y2, int realX, 
                         }
                     }
 				}
-				lastSinglySelectedObject = NULL;
+				lastSinglySelectedObject = nullptr;
 
 			} else if(!lastCheckedObject->isSelected())	{
 
@@ -554,11 +554,11 @@ void Map::selectObjects(int houseID, int x1, int y1, int x2, int y2, int realX, 
 			}
 
 		} else {
-			lastSinglySelectedObject = NULL;
+			lastSinglySelectedObject = nullptr;
 		}
 
 	} else {
-		lastSinglySelectedObject = NULL;
+		lastSinglySelectedObject = nullptr;
 		for(int i = std::min(x1, x2); i <= std::max(x1, x2); i++) {
             for(int j = std::min(y1, y2); j <= std::max(y1, y2); j++) {
                 if(tileExists(i,j) && getTile(i,j)->hasAnObject() && getTile(i,j)->isExplored(houseID) && !getTile(i,j)->isFogged(houseID)) {
@@ -569,12 +569,12 @@ void Map::selectObjects(int houseID, int x1, int y1, int x2, int y2, int realX, 
 	}
 
 	//select an enemy unit if none of your units found
-	if(currentGame->getSelectedList().empty() && (lastCheckedObject != NULL) && !lastCheckedObject->isSelected()) {
+	if(currentGame->getSelectedList().empty() && (lastCheckedObject != nullptr) && !lastCheckedObject->isSelected()) {
 		lastCheckedObject->setSelected(true);
 		lastSelectedObject = lastCheckedObject;
 		currentGame->getSelectedList().insert(lastCheckedObject->getObjectID());
 		currentGame->selectionChanged();
-	} else if (lastSelectedObject != NULL) {
+	} else if (lastSelectedObject != nullptr) {
 		lastSelectedObject->playSelectSound();	//we only want one unit responding
 	}
 }
@@ -664,7 +664,7 @@ void Map::viewMap(int playerTeam, const Coord& location, int maxViewRange) {
 			if(distanceFrom(location, check) <= maxViewRange) {
                 for(int i = 0; i < NUM_HOUSES; i++) {
                     House* pHouse = currentGame->getHouse(i);
-                    if((pHouse != NULL) && (pHouse->getTeam() == playerTeam)) {
+                    if((pHouse != nullptr) && (pHouse->getTeam() == playerTeam)) {
                         getTile(check)->setExplored(i,currentGame->getGameCycleCount());
                     }
                 }

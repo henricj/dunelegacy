@@ -61,9 +61,9 @@ public:
 	inline void setTooltipText(std::string text) {
 		tooltipText = text;
 
-		if(tooltipTexture != NULL) {
+		if(tooltipTexture != nullptr) {
 			SDL_DestroyTexture(tooltipTexture);
-			tooltipTexture = NULL;
+			tooltipTexture = nullptr;
 		}
 
 		if(tooltipText != "") {
@@ -171,7 +171,7 @@ protected:
 	*/
 	virtual void setSurfaces(	SDL_Surface* pUnpressedSurface,bool bFreeUnpressedSurface,
 								SDL_Surface* pPressedSurface,bool bFreePressedSurface,
-								SDL_Surface* pActiveSurface = NULL,bool bFreeActiveSurface = false);
+								SDL_Surface* pActiveSurface = nullptr,bool bFreeActiveSurface = false);
 
 	/**
 		This method is used for setting the different textures for this button.
@@ -184,7 +184,7 @@ protected:
 	*/
 	virtual void setTextures(	SDL_Texture* pUnpressedTexture,bool bFreeUnpressedTexture,
 								SDL_Texture* pPressedTexture,bool bFreePressedTexture,
-								SDL_Texture* pActiveTexture = NULL,bool bFreeActiveTexture = false);
+								SDL_Texture* pActiveTexture = nullptr,bool bFreeActiveTexture = false);
 
 	SDL_Texture* pUnpressedTexture;		///< Texture that is normally shown
 	SDL_Texture* pPressedTexture;		///< Texture that is shown when the button is pressed

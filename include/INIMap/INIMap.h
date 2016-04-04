@@ -46,14 +46,14 @@ public:
 
         if(gameType == GAMETYPE_CAMPAIGN || gameType == GAMETYPE_SKIRMISH) {
             // load from PAK-File
-            SDL_RWops* mapiniFile = NULL;
+            SDL_RWops* mapiniFile = nullptr;
             try {
 
                 mapiniFile = pFileManager->openFile(this->mapname);
                 inifile = std::shared_ptr<INIFile>(new INIFile(mapiniFile));
                 SDL_RWclose(mapiniFile);
             } catch (...) {
-                if(mapiniFile != NULL) {
+                if(mapiniFile != nullptr) {
                     SDL_RWclose(mapiniFile);
                 }
                 throw;

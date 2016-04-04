@@ -32,7 +32,7 @@ HouseChoiceInfoMenu::HouseChoiceInfoMenu(int newHouse) : MentatMenu(HOUSE_INVALI
 
 	house = newHouse;
 
-	Animation* anim = NULL;
+	Animation* anim = nullptr;
 
 	switch(house) {
 		case HOUSE_HARKONNEN:   anim = pGFXManager->getAnimation(Anim_HarkonnenPlanet); break;

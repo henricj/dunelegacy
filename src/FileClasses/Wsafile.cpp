@@ -114,15 +114,15 @@ Wsafile::~Wsafile()
 SDL_Surface * Wsafile::getPicture(Uint32 frameNumber)
 {
 	if(frameNumber >= numFrames) {
-		return NULL;
+		return nullptr;
 	}
 
 	SDL_Surface * pic;
 	unsigned char * pImage = decodedFrames + (frameNumber * sizeX * sizeY);
 
 	// create new picture surface
-	if((pic = SDL_CreateRGBSurface(0,sizeX,sizeY,8,0,0,0,0))== NULL) {
-		return NULL;
+	if((pic = SDL_CreateRGBSurface(0,sizeX,sizeY,8,0,0,0,0))== nullptr) {
+		return nullptr;
 	}
 
 	palette.applyToSurface(pic);
@@ -147,8 +147,8 @@ SDL_Surface * Wsafile::getAnimationAsPictureRow() {
 	SDL_Surface * pic;
 
 	// create new picture surface
-	if((pic = SDL_CreateRGBSurface(0,sizeX*numFrames,sizeY,8,0,0,0,0))== NULL) {
-		return NULL;
+	if((pic = SDL_CreateRGBSurface(0,sizeX*numFrames,sizeY,8,0,0,0,0))== nullptr) {
+		return nullptr;
 	}
 
 	palette.applyToSurface(pic);
@@ -171,12 +171,12 @@ SDL_Surface * Wsafile::getAnimationAsPictureRow() {
 /**
 	This method returns a new animation object with all pictures from startindex to endindex
 	in it. The returned pointer should be freed with delete if no longer needed. If an error
-	occured, NULL is returned.
+	occured, nullptr is returned.
 	\param	startindex	index of the first picture
 	\param	endindex	index of the last picture
 	\param	bDoublePic	if true, the picture is scaled up by a factor of 2
 	\param	bSetColorKey	if true, black is set as transparency
-	\return	a new animation object or NULL on error
+	\return	a new animation object or nullptr on error
 */
 Animation* Wsafile::getAnimation(unsigned int startindex, unsigned int endindex, bool bDoublePic, bool bSetColorKey)
 {
@@ -185,9 +185,9 @@ Animation* Wsafile::getAnimation(unsigned int startindex, unsigned int endindex,
 	Animation* tmpAnimation = new Animation();
 
 	for(unsigned int i = startindex; i <= endindex; i++) {
-		if((tmp = getPicture(i)) == NULL) {
+		if((tmp = getPicture(i)) == nullptr) {
 			delete tmpAnimation;
-			return NULL;
+			return nullptr;
 		}
 		tmpAnimation->addFrame(tmp,bDoublePic,bSetColorKey);
 	}
@@ -209,7 +209,7 @@ void Wsafile::decodeFrames(unsigned char* pFiledata, Uint32* index, int numberOf
 	unsigned char *dec80;
 
 	for(int i=0;i<numberOfFrames;i++) {
-		if( (dec80 = (unsigned char*) malloc(x*y*2)) == NULL) {
+		if( (dec80 = (unsigned char*) malloc(x*y*2)) == nullptr) {
 			fprintf(stderr, "Error: Unable to allocate memory for decoded WSA-Frames!\n");
 			exit(EXIT_FAILURE);
 		}
@@ -235,13 +235,13 @@ void Wsafile::decodeFrames(unsigned char* pFiledata, Uint32* index, int numberOf
 unsigned char* Wsafile::readfile(SDL_RWops* rwop, int* filesize) {
 	unsigned char* pFiledata;
 
-	if(filesize == NULL) {
-		fprintf(stderr, "Wsafile: filesize == NULL!\n");
+	if(filesize == nullptr) {
+		fprintf(stderr, "Wsafile: filesize == nullptr!\n");
 		exit(EXIT_FAILURE);
 	}
 
-	if(rwop == NULL) {
-		fprintf(stderr, "Wsafile: rwop == NULL!\n");
+	if(rwop == nullptr) {
+		fprintf(stderr, "Wsafile: rwop == nullptr!\n");
 		exit(EXIT_FAILURE);
 	}
 
@@ -261,7 +261,7 @@ unsigned char* Wsafile::readfile(SDL_RWops* rwop, int* filesize) {
 		exit(EXIT_FAILURE);
 	}
 
-	if( (pFiledata = (unsigned char*) malloc(wsaFilesize)) == NULL) {
+	if( (pFiledata = (unsigned char*) malloc(wsaFilesize)) == nullptr) {
 		fprintf(stderr,"Wsafile: Allocating memory failed!\n");
 		exit(EXIT_FAILURE);
 	}
@@ -303,22 +303,22 @@ void Wsafile::readdata(int numFiles, va_list args) {
 	Uint16* numberOfFrames;
 	bool* extended;
 
-	if((pFiledata = (unsigned char**) malloc(sizeof(unsigned char*) * numFiles)) == NULL) {
+	if((pFiledata = (unsigned char**) malloc(sizeof(unsigned char*) * numFiles)) == nullptr) {
 		fprintf(stderr, "Wsafile::readdata(): Unable to allocate memory!\n");
 		exit(EXIT_FAILURE);
 	}
 
-	if((index = (Uint32**) malloc(sizeof(Uint32*) * numFiles)) == NULL) {
+	if((index = (Uint32**) malloc(sizeof(Uint32*) * numFiles)) == nullptr) {
 		fprintf(stderr, "Wsafile::readdata(): Unable to allocate memory!\n");
 		exit(EXIT_FAILURE);
 	}
 
-	if((numberOfFrames = (Uint16*) malloc(sizeof(Uint16) * numFiles)) == NULL) {
+	if((numberOfFrames = (Uint16*) malloc(sizeof(Uint16) * numFiles)) == nullptr) {
 		fprintf(stderr, "Wsafile::readdata(): Unable to allocate memory!\n");
 		exit(EXIT_FAILURE);
 	}
 
-	if((extended = (bool*) malloc(sizeof(bool) * numFiles)) == NULL) {
+	if((extended = (bool*) malloc(sizeof(bool) * numFiles)) == nullptr) {
 		fprintf(stderr, "Wsafile::readdata(): Unable to allocate memory!\n");
 		exit(EXIT_FAILURE);
 	}
@@ -384,7 +384,7 @@ void Wsafile::readdata(int numFiles, va_list args) {
 	}
 
 
-	if( (decodedFrames = (unsigned char*) calloc(1,sizeX*sizeY*numFrames)) == NULL) {
+	if( (decodedFrames = (unsigned char*) calloc(1,sizeX*sizeY*numFrames)) == nullptr) {
 		fprintf(stderr, "Wsafile: Unable to allocate memory for decoded WSA-Frames!\n");
 		exit(EXIT_FAILURE);
 	}

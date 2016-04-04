@@ -34,7 +34,7 @@ public:
 	SDL_Surface* createSideBar(bool bEditor);
 	SDL_Surface* createBottomBar();
 	SDL_Surface* createPlacingGrid(int size, int color);
-	void drawFrame(SDL_Surface* Pic, unsigned int DecorationType, SDL_Rect* dest=NULL);
+	void drawFrame(SDL_Surface* Pic, unsigned int DecorationType, SDL_Rect* dest=nullptr);
 	SDL_Surface* createBackground();
 	SDL_Surface* createMainBackground();
 	SDL_Surface* createGameStatsBackground(int House);

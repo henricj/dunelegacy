@@ -41,8 +41,8 @@
 #include <string>
 
 Finale::Finale(int house)
- : CutScene(), pPalace1(NULL), pPalace2(NULL), pImperator(NULL), pImperatorShocked(NULL),
-   lizard(NULL),glass(NULL),click(NULL),blaster(NULL),blowup(NULL) {
+ : CutScene(), pPalace1(nullptr), pPalace2(nullptr), pImperator(nullptr), pImperatorShocked(nullptr),
+   lizard(nullptr),glass(nullptr),click(nullptr),blaster(nullptr),blowup(nullptr) {
 
     switch(house) {
         case HOUSE_HARKONNEN: {
@@ -98,13 +98,13 @@ Finale::Finale(int house)
     }
 
     SDL_Surface* pPlanetDuneNormalSurface;
-    if((pPlanetDuneNormalSurface = LoadCPS_RW(pFileManager->openFile("BIGPLAN.CPS"),true)) == NULL) {
+    if((pPlanetDuneNormalSurface = LoadCPS_RW(pFileManager->openFile("BIGPLAN.CPS"),true)) == nullptr) {
 		fprintf(stderr,"Finale::Finale(): Cannot open BIGPLAN.CPS!\n");
 		exit(EXIT_FAILURE);
 	}
 
 	SDL_Surface* pTempSurface;
-    if((pTempSurface = LoadCPS_RW(pFileManager->openFile("MAPPLAN.CPS"),true)) == NULL) {
+    if((pTempSurface = LoadCPS_RW(pFileManager->openFile("MAPPLAN.CPS"),true)) == nullptr) {
 		fprintf(stderr,"Finale::Finale(): Cannot open MAPPLAN.CPS!\n");
 		exit(EXIT_FAILURE);
 	}
@@ -260,7 +260,7 @@ Finale::Finale(int house)
     addVideoEvent(new CrossBlendVideoEvent(pPlanetDuneNormalSurface, pPlanetDuneInHouseColorSurface, false));
     addVideoEvent(new HoldPictureVideoEvent(pPlanetDuneInHouseColorSurface, 50, false));
     addVideoEvent(new FadeOutVideoEvent(pPlanetDuneInHouseColorSurface, 20, false));
-    addVideoEvent(new HoldPictureVideoEvent(NULL, 10, false));
+    addVideoEvent(new HoldPictureVideoEvent(nullptr, 10, false));
 
 	delete pIntroText;
 

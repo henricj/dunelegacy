@@ -74,7 +74,7 @@ bool MCV::doDeploy() {
 		// first place construction yard and then destroy MCV, otherwise a player with only MCV left will lose
 
 		// place construction yard (force placing to place on still existing MCV)
-		if(pOwner->placeStructure(NONE, Structure_ConstructionYard, newLocation.x, newLocation.y, true) != NULL) {
+		if(pOwner->placeStructure(NONE, Structure_ConstructionYard, newLocation.x, newLocation.y, true) != nullptr) {
             // we hide the MVC so we don't get a soldier on destroy
             setVisible(VIS_ALL, false);
 
@@ -93,7 +93,7 @@ bool MCV::doDeploy() {
 }
 
 bool MCV::canAttack(const ObjectBase* object) const {
-	return((object != NULL)
+	return((object != nullptr)
 			&& object->isInfantry()
 			&& (object->getOwner()->getTeam() != owner->getTeam())
 			&& object->isVisible(getOwner()->getTeam()));

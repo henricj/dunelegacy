@@ -279,7 +279,7 @@ CustomGamePlayers::CustomGamePlayers(const GameInitSettings& newGameInitSettings
                         const PlayerFactory::PlayerData* pPlayerData = PlayerFactory::getByPlayerClass(playerInfo.playerClass);
                         int index = PlayerFactory::getIndexByPlayerClass(playerInfo.playerClass);
 
-                        if(pPlayerData != NULL) {
+                        if(pPlayerData != nullptr) {
                             curHouseInfo.player1DropDown.addEntry(pPlayerData->getName(), -(index+2));
                             curHouseInfo.player1DropDown.setSelectedItem(0);
                             curHouseInfo.player1DropDown.setEnabled(false);
@@ -336,7 +336,7 @@ CustomGamePlayers::CustomGamePlayers(const GameInitSettings& newGameInitSettings
                         const PlayerFactory::PlayerData* pPlayerData = PlayerFactory::getByPlayerClass(playerInfo.playerClass);
                         int index = PlayerFactory::getIndexByPlayerClass(playerInfo.playerClass);
 
-                        if(pPlayerData != NULL) {
+                        if(pPlayerData != nullptr) {
                             curHouseInfo.player1DropDown.addEntry(pPlayerData->getName(), -(index+2));
                             curHouseInfo.player1DropDown.setSelectedItem(0);
                             curHouseInfo.player1DropDown.setEnabled(false);
@@ -396,7 +396,7 @@ CustomGamePlayers::CustomGamePlayers(const GameInitSettings& newGameInitSettings
         }
     }
 
-    if(pNetworkManager != NULL) {
+    if(pNetworkManager != nullptr) {
         if(bServer) {
             pNetworkManager->startServer(bLANServer, gameInitSettings.getServername(), settings.general.playerName, &gameInitSettings, 1, gameInitSettings.isMultiplePlayersPerHouse() ? numHouses*2 : numHouses);
         }
@@ -415,7 +415,7 @@ CustomGamePlayers::CustomGamePlayers(const GameInitSettings& newGameInitSettings
 
 CustomGamePlayers::~CustomGamePlayers()
 {
-    if(pNetworkManager != NULL) {
+    if(pNetworkManager != nullptr) {
         pNetworkManager->disconnect();
 
         pNetworkManager->setOnPeerDisconnected(std::function<void (std::string, bool, int)>());
@@ -530,7 +530,7 @@ void CustomGamePlayers::onReceiveChangeEventList(ChangeEventList changeEventList
         }
     }
 
-    if((pNetworkManager != NULL) && bServer) {
+    if((pNetworkManager != nullptr) && bServer) {
         ChangeEventList changeEventList2 = getChangeEventList();
 
         pNetworkManager->sendChangeEventList(changeEventList2);
@@ -687,7 +687,7 @@ void CustomGamePlayers::onNext()
 
         addAllPlayersToGameInitSettings();
 
-        if(pNetworkManager != NULL) {
+        if(pNetworkManager != nullptr) {
             unsigned int timeLeft = 5000;
             startGameTime = SDL_GetTicks() + timeLeft;
             pNetworkManager->sendStartGame(timeLeft);
@@ -749,7 +749,7 @@ bool CustomGamePlayers::addPlayerToHouseInfo(GameInitSettings::HouseInfo& newHou
         default: {
             // AI player
             const PlayerFactory::PlayerData* pPlayerData = PlayerFactory::getByIndex(player);
-            if(pPlayerData == NULL) {
+            if(pPlayerData == nullptr) {
                 return false;
             }
 
@@ -837,7 +837,7 @@ void CustomGamePlayers::extractMapInfo(std::shared_ptr<INIFile>& pMap)
 
     mapPropertySize.setText(stringify(sizeX) + " x " + stringify(sizeY));
 
-    SDL_Surface* pMapSurface = NULL;
+    SDL_Surface* pMapSurface = nullptr;
     try {
         INIMapPreviewCreator mapPreviewCreator(pMap);
         pMapSurface = mapPreviewCreator.createMinimapImageOfMap(1, DuneStyle::buttonBorderColor);
@@ -928,7 +928,7 @@ void CustomGamePlayers::extractMapInfo(std::shared_ptr<INIFile>& pMap)
 }
 
 void CustomGamePlayers::onChangeHousesDropDownBoxes(bool bInteractive, int houseInfoNum) {
-    if(bInteractive && houseInfoNum >= 0 && pNetworkManager != NULL) {
+    if(bInteractive && houseInfoNum >= 0 && pNetworkManager != nullptr) {
         int selectedHouseID = houseInfo[houseInfoNum].houseDropDown.getSelectedEntryIntData();
 
         ChangeEventList changeEventList;
@@ -1042,7 +1042,7 @@ void CustomGamePlayers::onChangeHousesDropDownBoxes(bool bInteractive, int house
 
 void CustomGamePlayers::onChangeTeamDropDownBoxes(bool bInteractive, int houseInfoNum) {
 
-    if(bInteractive && houseInfoNum >= 0 && pNetworkManager != NULL) {
+    if(bInteractive && houseInfoNum >= 0 && pNetworkManager != nullptr) {
         int selectedTeam = houseInfo[houseInfoNum].teamDropDown.getSelectedEntryIntData();
 
         ChangeEventList changeEventList;
@@ -1053,7 +1053,7 @@ void CustomGamePlayers::onChangeTeamDropDownBoxes(bool bInteractive, int houseIn
 }
 
 void CustomGamePlayers::onChangePlayerDropDownBoxes(bool bInteractive, int boxnum) {
-    if(bInteractive && boxnum >= 0 && pNetworkManager != NULL) {
+    if(bInteractive && boxnum >= 0 && pNetworkManager != nullptr) {
         DropDownBox& dropDownBox = (boxnum % 2 == 0) ? houseInfo[boxnum / 2].player1DropDown : houseInfo[boxnum / 2].player2DropDown;
 
         int selectedPlayer = dropDownBox.getSelectedEntryIntData();
@@ -1076,7 +1076,7 @@ void CustomGamePlayers::onClickPlayerDropDownBox(int boxnum) {
 
     setPlayer2Slot(settings.general.playerName, boxnum);
 
-    if(boxnum >= 0 && pNetworkManager != NULL) {
+    if(boxnum >= 0 && pNetworkManager != nullptr) {
         ChangeEventList changeEventList;
         changeEventList.changeEventList.push_back(ChangeEventList::ChangeEvent(boxnum, settings.general.playerName));
 
@@ -1262,7 +1262,7 @@ void CustomGamePlayers::checkPlayerBoxes() {
         }
     }
 
-    if(pNetworkManager != NULL) {
+    if(pNetworkManager != nullptr) {
         if(bServer) {
             pNetworkManager->updateServer(numPlayers);
         }

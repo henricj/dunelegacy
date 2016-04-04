@@ -200,7 +200,7 @@ protected:
     void OnSendToRepair() {
         ObjectBase* pObject = currentGame->getObjectManager().getObject(objectID);
         GroundUnit* pGroundUnit = dynamic_cast<GroundUnit*>(pObject);
-        if((pGroundUnit != NULL) && (pGroundUnit->getHealth() < pGroundUnit->getMaxHealth())) {
+        if((pGroundUnit != nullptr) && (pGroundUnit->getHealth() < pGroundUnit->getMaxHealth())) {
             pGroundUnit->handleSendToRepairClick();
         }
 	}
@@ -208,7 +208,7 @@ protected:
 	void onReturn() {
 		ObjectBase* pObject = currentGame->getObjectManager().getObject(objectID);
 		Harvester* pHarvester = dynamic_cast<Harvester*>(pObject);
-		if(pHarvester != NULL) {
+		if(pHarvester != nullptr) {
 			pHarvester->handleReturnClick();
 		}
 	}
@@ -216,7 +216,7 @@ protected:
 	void onDeploy() {
 		ObjectBase* pObject = currentGame->getObjectManager().getObject(objectID);
 		MCV* pMCV = dynamic_cast<MCV*>(pObject);
-		if(pMCV != NULL) {
+		if(pMCV != nullptr) {
 			pMCV->handleDeployClick();
 		}
 	}
@@ -224,7 +224,7 @@ protected:
 	void onDestruct() {
 		ObjectBase* pObject = currentGame->getObjectManager().getObject(objectID);
 		Devastator* pDevastator = dynamic_cast<Devastator*>(pObject);
-		if(pDevastator != NULL) {
+		if(pDevastator != nullptr) {
 			pDevastator->handleStartDevastateClick();
 		}
 	}
@@ -257,7 +257,7 @@ protected:
 		ObjectBase* pObject = currentGame->getObjectManager().getObject(objectID);
 		UnitBase* pUnit = dynamic_cast<UnitBase*>(pObject);
 
-		if(pUnit != NULL) {
+		if(pUnit != nullptr) {
 			pUnit->handleSetAttackModeClick(newAttackMode);
 			pUnit->playConfirmSound();
 
@@ -272,7 +272,7 @@ protected:
 	*/
 	virtual bool update() {
 	    ObjectBase* pObject = currentGame->getObjectManager().getObject(objectID);
-		if(pObject == NULL) {
+		if(pObject == nullptr) {
 			return false;
 		}
 
@@ -286,7 +286,7 @@ protected:
         sendToRepairButton.setVisible(pObject->getHealth() < pObject->getMaxHealth());
 
 		UnitBase* pUnit = dynamic_cast<UnitBase*>(pObject);
-		if(pUnit != NULL) {
+		if(pUnit != nullptr) {
 			ATTACKMODE AttackMode = pUnit->getAttackMode();
 
 			guardButton.setToggleState( AttackMode == GUARD );

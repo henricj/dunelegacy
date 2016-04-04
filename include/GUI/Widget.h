@@ -100,8 +100,8 @@ inline Point getSurfaceSize(SDL_Surface* pSurface) {
 */
 inline Point getTextureSize(SDL_Texture* pTexture) {
     Point p;
-    if(pTexture != NULL) {
-        SDL_QueryTexture(pTexture, NULL, NULL, &p.x, &p.y);
+    if(pTexture != nullptr) {
+        SDL_QueryTexture(pTexture, nullptr, nullptr, &p.x, &p.y);
     }
     return p;
 }
@@ -121,7 +121,7 @@ public:
 	/** The default constructor.
 	*/
 	Widget() {
-		parent = NULL;
+		parent = nullptr;
 		enabled = true;
 		visible = true;
 		active = false;
@@ -135,20 +135,20 @@ public:
 	*/
 	virtual ~Widget() {
         pAllocated = false;
-		if(parent != NULL) {
+		if(parent != nullptr) {
 			parent->removeChildWidget(this);
 		}
 	}
 
 	/**
 		Sets the parent of this widget.
-		\param pParent new parent (NULL is also possible)
+		\param pParent new parent (nullptr is also possible)
 	*/
 	inline void setParent(Widget* pParent) { parent = pParent; };
 
 	/**
 		Returns the parent of this widget
-		\return the parent of this widget or NULL if it has no parent.
+		\return the parent of this widget or nullptr if it has no parent.
 	*/
 	inline Widget* getParent() const { return parent; };
 
@@ -267,7 +267,7 @@ public:
 		This method resizes the widget and its parent (the surrounding container).
 	*/
 	virtual void resizeAll() {
-		if(parent != NULL) {
+		if(parent != nullptr) {
 			parent->resizeAll();
 		} else {
 			resize(	std::max(getMinimumSize().x,getSize().x),
@@ -411,7 +411,7 @@ public:
             pAllocated = false;
 			delete this;
 		} else {
-			if(parent != NULL) {
+			if(parent != nullptr) {
 				parent->removeChildWidget(this);
 			}
 		}

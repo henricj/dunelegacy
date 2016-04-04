@@ -28,7 +28,7 @@
 Explosion::Explosion()
  : explosionID(NONE), house(HOUSE_HARKONNEN)
 {
-    graphic = NULL;
+    graphic = nullptr;
     numFrames = 0;
     frameTimer = CYCLES_PER_FRAME;
     currentFrame = 0;

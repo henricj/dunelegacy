@@ -110,7 +110,7 @@ void Deviator::destroy() {
 
 bool Deviator::canAttack(const ObjectBase* object) const
 {
-	if ((object != NULL) &&	!object->isAStructure()
+	if ((object != nullptr) &&	!object->isAStructure()
 		&& ((object->getOwner()->getTeam() != owner->getTeam()) || object->getItemID() == Unit_Sandworm)
 		&& object->isVisible(getOwner()->getTeam()))
 		return true;
