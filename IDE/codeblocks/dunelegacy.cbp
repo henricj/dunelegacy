@@ -6,15 +6,32 @@
 		<Option pch_mode="2" />
 		<Option compiler="gcc" />
 		<Build>
-			<Target title="Release">
+			<Target title="Release-Win32">
 				<Option output="../../data/dunelegacy" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="../../data/" />
 				<Option object_output="obj/Release/" />
 				<Option type="0" />
 				<Option compiler="gcc" />
 				<Compiler>
-					<Add option="-O3" />
-					<Add option="-std=c++11" />
+					<Add option="-g" />
+				</Compiler>
+				<Linker>
+					<Add option="-static-libgcc" />
+					<Add library="libSDL2_mixer.dll.a" />
+					<Add library="libmingw32.a" />
+					<Add library="libSDL2main.a" />
+					<Add library="libSDL2.dll.a" />
+					<Add library="libws2_32.a" />
+					<Add library="libwinmm.a" />
+				</Linker>
+			</Target>
+			<Target title="Release-Linux">
+				<Option output="../../data/dunelegacy" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="../../data/" />
+				<Option object_output="obj/Release/" />
+				<Option type="0" />
+				<Option compiler="gcc" />
+				<Compiler>
 					<Add option="-g" />
 				</Compiler>
 				<Linker>
@@ -24,18 +41,13 @@
 		</Build>
 		<Compiler>
 			<Add option="-O3" />
+			<Add option="-pedantic" />
+			<Add option="-Wextra" />
 			<Add option="-Wall" />
-			<Add option="`sdl2-config --cflags`" />
+			<Add option="-std=c++11" />
+			<Add option="`sdl2-config --cflags` -Wno-unused-parameter -Wno-unknown-pragmas" />
 			<Add directory="../../include" />
 		</Compiler>
-		<Linker>
-			<Add library="libSDL2_mixer.dll.a" />
-			<Add library="libmingw32.a" />
-			<Add library="libSDL2main.a" />
-			<Add library="libSDL2.dll.a" />
-			<Add library="libws2_32.a" />
-			<Add library="libwinmm.a" />
-		</Linker>
 		<Unit filename="../../include/AStarSearch.h" />
 		<Unit filename="../../include/Bullet.h" />
 		<Unit filename="../../include/Choam.h" />
