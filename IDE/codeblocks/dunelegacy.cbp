@@ -15,11 +15,11 @@
 				<Compiler>
 					<Add option="-O3" />
 					<Add option="-std=c++11" />
+					<Add option="-g" />
 					<Add option="-D_WIN32" />
 					<Add option="-DWIN32" />
 				</Compiler>
 				<Linker>
-					<Add option="-s" />
 					<Add option="-static-libgcc" />
 				</Linker>
 			</Target>

@@ -1236,13 +1236,15 @@ bool INIFile::isNormalChar(unsigned char s) {
 }
 
 int INIFile::strncicmp(const char *s1, const char *s2, size_t n) {
-    while((s1 < s1 + n) && (*s1 != 0) && (toupper(*s1) == toupper(*s2))) {
-        ++s1;
-        ++s2;
+    const char* p1 = s1;
+    const char* p2 = s2;
+    while((p1 < s1 + n) && (*p1 != 0) && (toupper(*p1) == toupper(*p2))) {
+        ++p1;
+        ++p2;
     }
-    if(s1 + n == s2) {
+    if(s1 + n == p1) {
         return 0;
     } else {
-        return (toupper(*s1) - toupper(*s2));
+        return (toupper(*p1) - toupper(*p2));
     }
 }

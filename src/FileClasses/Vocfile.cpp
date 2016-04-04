@@ -43,7 +43,6 @@
 
 #define NUM_SAMPLES_OF_SILENCE	160
 
-
 /**
  * Take a sample rate parameter as it occurs in a VOC sound header, and
  * return the corresponding sample frequency.
@@ -70,7 +69,7 @@ Uint32 getSampleRateFromVOCRate(Uint8 vocSR) {
 
 /**
 	This method decodes a voc-file and returns a pointer the decoded data. This memory is
-	allocated with malloc() and should be freed with free(). The size of the decoded data is
+	allocated with SDL_malloc() and should be freed with SDL_free(). The size of the decoded data is
 	returned through the parameter size and the sampling rate of this voc-file is returned
 	through the parameter rate.
 	The kind of voc-files that this function can decode is very restricted. Only voc-files
@@ -79,7 +78,7 @@ Uint32 getSampleRateFromVOCRate(Uint8 vocSR) {
 	\param	rwop	An SDL_RWop that contains the voc-file
 	\param	size	The size of the decoded data in bytes
 	\param	rate	The sampling rate of the voc-file
-	\return	A pointer to a memory block that contains the data. (Free it with free() when no longer needed)
+	\return	A pointer to a memory block that contains the data. (Free it with SDL_free() when no longer needed)
 */
 static Uint8 *LoadVOC_RW(SDL_RWops* rwop, Uint32 &size, Uint32 &rate) {
 	Uint8 description[20];
@@ -181,16 +180,16 @@ static Uint8 *LoadVOC_RW(SDL_RWops* rwop, Uint32 &size, Uint32 &rate) {
 
 				if (packing == 0) {
 					if (size) {
-						Uint8* tmp = (Uint8 *)realloc(ret_sound, size + len);
+						Uint8* tmp = (Uint8 *)SDL_realloc(ret_sound, size + len);
 						if(tmp == NULL) {
 							perror("loadVOCFromStream");
-							free(ret_sound);
+							SDL_free(ret_sound);
 							return NULL;
 						} else {
 							ret_sound = tmp;
 						}
 					} else {
-						if((ret_sound = (Uint8 *)malloc(len)) == NULL) {
+						if((ret_sound = (Uint8 *)SDL_malloc(len)) == NULL) {
 							perror("loadVOCFromStream");
 							return NULL;
 						}
@@ -233,16 +232,16 @@ static Uint8 *LoadVOC_RW(SDL_RWops* rwop, Uint32 &size, Uint32 &rate) {
 				}
 
 				if (size) {
-					Uint8* tmp = (Uint8 *)realloc(ret_sound, size + length);
+					Uint8* tmp = (Uint8 *)SDL_realloc(ret_sound, size + length);
 					if(tmp == NULL) {
 						perror("loadVOCFromStream");
-						free(ret_sound);
+						SDL_free(ret_sound);
 						return NULL;
 					} else {
 						ret_sound = tmp;
 					}
 				} else {
-					if((ret_sound = (Uint8 *)malloc(length)) == NULL) {
+					if((ret_sound = (Uint8 *)SDL_malloc(length)) == NULL) {
 						perror("loadVOCFromStream");
 						return NULL;
 					}
@@ -332,8 +331,8 @@ Mix_Chunk* LoadVOC_RW(SDL_RWops* rwop, int freesrc) {
 
 	// Convert to floats
 	float* RawDataFloat;
-	if((RawDataFloat = (float*) malloc((RawData_Samples+2*NUM_SAMPLES_OF_SILENCE)*sizeof(float))) == NULL) {
-		free(RawDataUint8);
+	if((RawDataFloat = (float*) SDL_malloc((RawData_Samples+2*NUM_SAMPLES_OF_SILENCE)*sizeof(float))) == NULL) {
+		SDL_free(RawDataUint8);
 		if(freesrc) {
 			SDL_RWclose(rwop);
 		}
@@ -352,7 +351,7 @@ Mix_Chunk* LoadVOC_RW(SDL_RWops* rwop, int freesrc) {
 		RawDataFloat[i] = 0.0;
 	}
 
-	free(RawDataUint8);
+	SDL_free(RawDataUint8);
 
 	RawData_Samples += 2*NUM_SAMPLES_OF_SILENCE;
 
@@ -363,8 +362,8 @@ Mix_Chunk* LoadVOC_RW(SDL_RWops* rwop, int freesrc) {
 	int TargetFrequency, channels;
 	Uint16 TargetFormat;
 	if(Mix_QuerySpec(&TargetFrequency, &TargetFormat, &channels) == 0) {
-		free(RawDataUint8);
-		free(RawDataFloat);
+		SDL_free(RawDataUint8);
+		SDL_free(RawDataFloat);
 		if(freesrc) {
 			SDL_RWclose(rwop);
 		}
@@ -375,8 +374,8 @@ Mix_Chunk* LoadVOC_RW(SDL_RWops* rwop, int freesrc) {
 	float ConversionRatio = ((float) TargetFrequency) / ((float) RawData_Frequency);
 	Uint32 TargetDataFloat_Samples = (Uint32) ((float) RawData_Samples * ConversionRatio);
 	float* TargetDataFloat;
-	if((TargetDataFloat = (float*) malloc(TargetDataFloat_Samples*sizeof(float))) == NULL) {
-		free(RawDataFloat);
+	if((TargetDataFloat = (float*) SDL_malloc(TargetDataFloat_Samples*sizeof(float))) == NULL) {
+		SDL_free(RawDataFloat);
 		if(freesrc) {
 			SDL_RWclose(rwop);
 		}
@@ -390,7 +389,7 @@ Mix_Chunk* LoadVOC_RW(SDL_RWops* rwop, int freesrc) {
 	}
 
 	Uint32 TargetData_Samples = TargetDataFloat_Samples;
-	free(RawDataFloat);
+	SDL_free(RawDataFloat);
 
 
 	// Equalize if neccessary
@@ -414,8 +413,8 @@ Mix_Chunk* LoadVOC_RW(SDL_RWops* rwop, int freesrc) {
 	TargetData_Samples -= 2*ThreeQuaterSilenceLength;
 
 	Mix_Chunk* myChunk;
-	if((myChunk = (Mix_Chunk*) calloc(sizeof(Mix_Chunk),1)) == NULL) {
-		free(TargetDataFloat);
+	if((myChunk = (Mix_Chunk*) SDL_calloc(sizeof(Mix_Chunk),1)) == NULL) {
+		SDL_free(TargetDataFloat);
 		if(freesrc) {
 			SDL_RWclose(rwop);
 		}
@@ -430,9 +429,9 @@ Mix_Chunk* LoadVOC_RW(SDL_RWops* rwop, int freesrc) {
 		{
 			Uint8* TargetData;
 			int SizeOfTargetSample = sizeof(Uint8) * channels;
-			if((TargetData = (Uint8*) malloc(TargetData_Samples * SizeOfTargetSample)) == NULL) {
-				free(TargetDataFloat);
-				free(myChunk);
+			if((TargetData = (Uint8*) SDL_malloc(TargetData_Samples * SizeOfTargetSample)) == NULL) {
+				SDL_free(TargetDataFloat);
+				SDL_free(myChunk);
 				if(freesrc) {
 					SDL_RWclose(rwop);
 				}
@@ -447,7 +446,7 @@ Mix_Chunk* LoadVOC_RW(SDL_RWops* rwop, int freesrc) {
 
 			}
 
-			free(TargetDataFloat);
+			SDL_free(TargetDataFloat);
 
 			myChunk->abuf = (Uint8*) TargetData;
 			myChunk->alen = TargetData_Samples * SizeOfTargetSample;
@@ -458,9 +457,9 @@ Mix_Chunk* LoadVOC_RW(SDL_RWops* rwop, int freesrc) {
 		{
 			Sint8* TargetData;
 			int SizeOfTargetSample = sizeof(Sint8) * channels;
-			if((TargetData = (Sint8*) malloc(TargetData_Samples * SizeOfTargetSample)) == NULL) {
-				free(TargetDataFloat);
-				free(myChunk);
+			if((TargetData = (Sint8*) SDL_malloc(TargetData_Samples * SizeOfTargetSample)) == NULL) {
+				SDL_free(TargetDataFloat);
+				SDL_free(myChunk);
 				if(freesrc) {
 					SDL_RWclose(rwop);
 				}
@@ -475,7 +474,7 @@ Mix_Chunk* LoadVOC_RW(SDL_RWops* rwop, int freesrc) {
 
 			}
 
-			free(TargetDataFloat);
+			SDL_free(TargetDataFloat);
 
 			myChunk->abuf = (Uint8*) TargetData;
 			myChunk->alen = TargetData_Samples * SizeOfTargetSample;
@@ -486,9 +485,9 @@ Mix_Chunk* LoadVOC_RW(SDL_RWops* rwop, int freesrc) {
 		{
 			Uint16* TargetData;
 			int SizeOfTargetSample = sizeof(Uint16) * channels;
-			if((TargetData = (Uint16*) malloc(TargetData_Samples * SizeOfTargetSample)) == NULL) {
-				free(TargetDataFloat);
-				free(myChunk);
+			if((TargetData = (Uint16*) SDL_malloc(TargetData_Samples * SizeOfTargetSample)) == NULL) {
+				SDL_free(TargetDataFloat);
+				SDL_free(myChunk);
 				if(freesrc) {
 					SDL_RWclose(rwop);
 				}
@@ -503,7 +502,7 @@ Mix_Chunk* LoadVOC_RW(SDL_RWops* rwop, int freesrc) {
 
 			}
 
-			free(TargetDataFloat);
+			SDL_free(TargetDataFloat);
 
 			myChunk->abuf = (Uint8*) TargetData;
 			myChunk->alen = TargetData_Samples * SizeOfTargetSample;
@@ -514,9 +513,9 @@ Mix_Chunk* LoadVOC_RW(SDL_RWops* rwop, int freesrc) {
 		{
 			Sint16* TargetData;
 			int SizeOfTargetSample = sizeof(Sint16) * channels;
-			if((TargetData = (Sint16*) malloc(TargetData_Samples * SizeOfTargetSample)) == NULL) {
-				free(TargetDataFloat);
-				free(myChunk);
+			if((TargetData = (Sint16*) SDL_malloc(TargetData_Samples * SizeOfTargetSample)) == NULL) {
+				SDL_free(TargetDataFloat);
+				SDL_free(myChunk);
 				if(freesrc) {
 					SDL_RWclose(rwop);
 				}
@@ -531,7 +530,7 @@ Mix_Chunk* LoadVOC_RW(SDL_RWops* rwop, int freesrc) {
 
 			}
 
-			free(TargetDataFloat);
+			SDL_free(TargetDataFloat);
 
 			myChunk->abuf = (Uint8*) TargetData;
 			myChunk->alen = TargetData_Samples * SizeOfTargetSample;
@@ -542,9 +541,9 @@ Mix_Chunk* LoadVOC_RW(SDL_RWops* rwop, int freesrc) {
 		{
 			Uint16* TargetData;
 			int SizeOfTargetSample = sizeof(Uint16) * channels;
-			if((TargetData = (Uint16*) malloc(TargetData_Samples * SizeOfTargetSample)) == NULL) {
-				free(TargetDataFloat);
-				free(myChunk);
+			if((TargetData = (Uint16*) SDL_malloc(TargetData_Samples * SizeOfTargetSample)) == NULL) {
+				SDL_free(TargetDataFloat);
+				SDL_free(myChunk);
 				if(freesrc) {
 					SDL_RWclose(rwop);
 				}
@@ -559,7 +558,7 @@ Mix_Chunk* LoadVOC_RW(SDL_RWops* rwop, int freesrc) {
 
 			}
 
-			free(TargetDataFloat);
+			SDL_free(TargetDataFloat);
 
 			myChunk->abuf = (Uint8*) TargetData;
 			myChunk->alen = TargetData_Samples * SizeOfTargetSample;
@@ -570,9 +569,9 @@ Mix_Chunk* LoadVOC_RW(SDL_RWops* rwop, int freesrc) {
 		{
 			Sint16* TargetData;
 			int SizeOfTargetSample = sizeof(Sint16) * channels;
-			if((TargetData = (Sint16*) malloc(TargetData_Samples * SizeOfTargetSample)) == NULL) {
-				free(TargetDataFloat);
-				free(myChunk);
+			if((TargetData = (Sint16*) SDL_malloc(TargetData_Samples * SizeOfTargetSample)) == NULL) {
+				SDL_free(TargetDataFloat);
+				SDL_free(myChunk);
 				if(freesrc) {
 					SDL_RWclose(rwop);
 				}
@@ -587,7 +586,7 @@ Mix_Chunk* LoadVOC_RW(SDL_RWops* rwop, int freesrc) {
 
 			}
 
-			free(TargetDataFloat);
+			SDL_free(TargetDataFloat);
 
 			myChunk->abuf = (Uint8*) TargetData;
 			myChunk->alen = TargetData_Samples * SizeOfTargetSample;
@@ -596,8 +595,8 @@ Mix_Chunk* LoadVOC_RW(SDL_RWops* rwop, int freesrc) {
 
 		default:
 		{
-			free(TargetDataFloat);
-			free(myChunk);
+			SDL_free(TargetDataFloat);
+			SDL_free(myChunk);
 			if(freesrc) {
 				SDL_RWclose(rwop);
 			}

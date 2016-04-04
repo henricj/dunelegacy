@@ -13,7 +13,7 @@ extern FileManager* pFileManager;
 Mix_Chunk* concat2Chunks(Mix_Chunk* sound1, Mix_Chunk* sound2)
 {
 	Mix_Chunk* returnChunk;
-	if((returnChunk = (Mix_Chunk*) malloc(sizeof(Mix_Chunk))) == NULL) {
+	if((returnChunk = (Mix_Chunk*) SDL_malloc(sizeof(Mix_Chunk))) == NULL) {
 		return NULL;
 	}
 
@@ -21,8 +21,8 @@ Mix_Chunk* concat2Chunks(Mix_Chunk* sound1, Mix_Chunk* sound2)
 	returnChunk->volume = sound1->volume;
 	returnChunk->alen = sound1->alen + sound2->alen;
 
-	if((returnChunk->abuf = (Uint8 *)malloc(returnChunk->alen)) == NULL) {
-		free(returnChunk);
+	if((returnChunk->abuf = (Uint8 *)SDL_malloc(returnChunk->alen)) == NULL) {
+		SDL_free(returnChunk);
 		return NULL;
 	}
 
@@ -35,7 +35,7 @@ Mix_Chunk* concat2Chunks(Mix_Chunk* sound1, Mix_Chunk* sound2)
 Mix_Chunk* concat3Chunks(Mix_Chunk* sound1, Mix_Chunk* sound2, Mix_Chunk* sound3)
 {
 	Mix_Chunk* returnChunk;
-	if((returnChunk = (Mix_Chunk*) malloc(sizeof(Mix_Chunk))) == NULL) {
+	if((returnChunk = (Mix_Chunk*) SDL_malloc(sizeof(Mix_Chunk))) == NULL) {
 		return NULL;
 	}
 
@@ -43,8 +43,8 @@ Mix_Chunk* concat3Chunks(Mix_Chunk* sound1, Mix_Chunk* sound2, Mix_Chunk* sound3
 	returnChunk->volume = sound1->volume;
 	returnChunk->alen = sound1->alen + sound2->alen + sound3->alen;
 
-	if((returnChunk->abuf = (Uint8 *)malloc(returnChunk->alen)) == NULL) {
-		free(returnChunk);
+	if((returnChunk->abuf = (Uint8 *)SDL_malloc(returnChunk->alen)) == NULL) {
+		SDL_free(returnChunk);
 		return NULL;
 	}
 
@@ -58,7 +58,7 @@ Mix_Chunk* concat3Chunks(Mix_Chunk* sound1, Mix_Chunk* sound2, Mix_Chunk* sound3
 Mix_Chunk* concat4Chunks(Mix_Chunk* sound1, Mix_Chunk* sound2, Mix_Chunk* sound3, Mix_Chunk* sound4)
 {
 	Mix_Chunk* returnChunk;
-	if((returnChunk = (Mix_Chunk*) malloc(sizeof(Mix_Chunk))) == NULL) {
+	if((returnChunk = (Mix_Chunk*) SDL_malloc(sizeof(Mix_Chunk))) == NULL) {
 		return NULL;
 	}
 
@@ -66,8 +66,8 @@ Mix_Chunk* concat4Chunks(Mix_Chunk* sound1, Mix_Chunk* sound2, Mix_Chunk* sound3
 	returnChunk->volume = sound1->volume;
 	returnChunk->alen = sound1->alen + sound2->alen + sound3->alen + sound4->alen;
 
-	if((returnChunk->abuf = (Uint8 *)malloc(returnChunk->alen)) == NULL) {
-		free(returnChunk);
+	if((returnChunk->abuf = (Uint8 *)SDL_malloc(returnChunk->alen)) == NULL) {
+		SDL_free(returnChunk);
 		return NULL;
 	}
 
@@ -82,7 +82,7 @@ Mix_Chunk* concat4Chunks(Mix_Chunk* sound1, Mix_Chunk* sound2, Mix_Chunk* sound3
 Mix_Chunk* createEmptyChunk()
 {
 	Mix_Chunk* returnChunk;
-	if((returnChunk = (Mix_Chunk*) malloc(sizeof(Mix_Chunk))) == NULL) {
+	if((returnChunk = (Mix_Chunk*) SDL_malloc(sizeof(Mix_Chunk))) == NULL) {
 		return NULL;
 	}
 
@@ -97,7 +97,7 @@ Mix_Chunk* createEmptyChunk()
 Mix_Chunk* createSilenceChunk(int length)
 {
 	Mix_Chunk* returnChunk;
-	if((returnChunk = (Mix_Chunk*) malloc(sizeof(Mix_Chunk))) == NULL) {
+	if((returnChunk = (Mix_Chunk*) SDL_malloc(sizeof(Mix_Chunk))) == NULL) {
 		return NULL;
 	}
 
@@ -105,8 +105,8 @@ Mix_Chunk* createSilenceChunk(int length)
 	returnChunk->volume = MIX_MAX_VOLUME;
 	returnChunk->alen = length;
 
-	if((returnChunk->abuf = (Uint8 *)calloc(returnChunk->alen,1)) == NULL) {
-		free(returnChunk);
+	if((returnChunk->abuf = (Uint8 *)SDL_calloc(returnChunk->alen,1)) == NULL) {
+		SDL_free(returnChunk);
 		return NULL;
 	}
 

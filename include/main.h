@@ -19,6 +19,7 @@
 #define MAIN_H
 
 #include <string>
+#include <SDL.h>
 
 /**
 	This functions sets the video mode according to the settings
@@ -43,6 +44,11 @@ std::string getLogFilepath();
 	\param language the language to use as default (e.g. en, de, fr)
 */
 void createDefaultConfigFile(std::string configfilepath, std::string language);
+
+/**
+    This function is used by SDL to write out log messages
+*/
+void logOutputFunction(void *userdata, int category, SDL_LogPriority priority, const char *message);
 
 /**
     This function prints a list of missing pak-files on the screen.

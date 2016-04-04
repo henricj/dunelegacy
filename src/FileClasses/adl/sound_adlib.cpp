@@ -2572,7 +2572,7 @@ Mix_Chunk* SoundAdlibPC::getSubsong(int Num) {
 
 	do {
 		bufSize += 1024;
-		if((buf = (Uint8*) realloc(buf, bufSize)) == NULL) {
+		if((buf = (Uint8*) SDL_realloc(buf, bufSize)) == NULL) {
 			perror("SoundAdlibPC::getSubsong(): Cannot allocate memory!\n");
 			exit(EXIT_FAILURE);
 		}
@@ -2587,7 +2587,7 @@ Mix_Chunk* SoundAdlibPC::getSubsong(int Num) {
 	} while(isPlaying());
 
 	Mix_Chunk* myChunk;
-	if((myChunk = (Mix_Chunk*) calloc(sizeof(Mix_Chunk),1)) == NULL) {
+	if((myChunk = (Mix_Chunk*) SDL_calloc(sizeof(Mix_Chunk),1)) == NULL) {
 		return NULL;
 	}
 

@@ -221,6 +221,20 @@ void createDefaultConfigFile(std::string configfilepath, std::string language) {
 	fprintf(stdout,"finished\n"); fflush(stdout);
 }
 
+void logOutputFunction(void *userdata, int category, SDL_LogPriority priority, const char *message) {
+    static const char* priorityStrings[] = {
+        NULL,
+        "VERBOSE",
+        "DEBUG",
+        "INFO",
+        "WARN",
+        "ERROR",
+        "CRITICAL"
+    };
+    fprintf(stderr, "%s: %s\n", priorityStrings[priority], message);
+    fflush(stderr);
+}
+
 void printMissingFilesToScreen() {
 	SDL_ShowCursor(SDL_ENABLE);
 
@@ -332,6 +346,9 @@ std::string getUserLanguage() {
 
 
 int main(int argc, char *argv[]) {
+    SDL_LogSetOutputFunction(logOutputFunction, NULL);
+    SDL_LogSetAllPriority(SDL_LOG_PRIORITY_WARN);
+
 	// init fnkdat
 	if(fnkdat(NULL, NULL, 0, FNKDAT_INIT) < 0) {
       perror("Could not initialize fnkdat");
@@ -416,7 +433,7 @@ int main(int argc, char *argv[]) {
         #endif
 	}
 
-	fprintf(stdout, "Starting Dune Legacy " VERSION " ...\n"); fflush(stdout);
+	fprintf(stdout, "Starting Dune Legacy %s on %s...\n", VERSION, SDL_GetPlatform()); fflush(stdout);
 
     // First check for missing files
     std::vector<std::string> missingFiles = FileManager::getMissingFiles();
