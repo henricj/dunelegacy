@@ -36,6 +36,7 @@
 				</Compiler>
 				<Linker>
 					<Add option="-static-libgcc" />
+					<Add option="-lSDL2_mixer" />
 				</Linker>
 			</Target>
 		</Build>
@@ -48,6 +49,9 @@
 			<Add option="`sdl2-config --cflags` -Wno-unused-parameter -Wno-unknown-pragmas" />
 			<Add directory="../../include" />
 		</Compiler>
+		<Linker>
+			<Add option="`sdl2-config --libs`" />
+		</Linker>
 		<Unit filename="../../include/AStarSearch.h" />
 		<Unit filename="../../include/Bullet.h" />
 		<Unit filename="../../include/Choam.h" />
