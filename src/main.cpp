@@ -194,7 +194,7 @@ void createDefaultConfigFile(std::string configfilepath, std::string language) {
 
     char playername[MAX_PLAYERNAMELENGHT+1] = "Player";
 
-#if defined(_WIN32)
+#ifdef _WIN32
     DWORD playernameLength = MAX_PLAYERNAMELENGHT+1;
     GetUserName(playername, &playernameLength);
 #else
@@ -307,7 +307,7 @@ std::string getUserLanguage() {
 
     fprintf(stdout,"Detecting locale...\t\t"); fflush(stdout);
 
-#if defined (_WIN32)
+#ifdef _WIN32
     char ISO639_LanguageName[10];
     if(GetLocaleInfo(GetUserDefaultLCID(), LOCALE_SISO639LANGNAME, ISO639_LanguageName, sizeof(ISO639_LanguageName)) == 0) {
         return "";
@@ -377,7 +377,7 @@ int main(int argc, char *argv[]) {
 	    std::string logfilePath = getLogFilepath();
 	    char* pLogfilePath = (char*) logfilePath.c_str();
 
-	    #if defined (_WIN32)
+	    #ifdef _WIN32
 
         // on win32 we need an ansi-encoded filepath
         WCHAR szwLogPath[MAX_PATH];
@@ -426,7 +426,7 @@ int main(int argc, char *argv[]) {
             exit(EXIT_FAILURE);
         }
 
-        #if defined (_WIN32)
+        #ifdef _WIN32
         // delete temporal log files again
         remove(szErrPath);
         remove(szOutPath);

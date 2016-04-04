@@ -64,7 +64,7 @@ extern "C" {
 #endif
 
 
-#ifdef WIN32
+#ifdef _WIN32
 
 /*
  * Include UNICODE crap
@@ -84,7 +84,7 @@ int fnkdat(const _TCHAR* target, _TCHAR* buffer, int len, int flags);
 int fnkdat(const char* target, char* buffer, int len, int flags);
 
 
-#endif /* WIN32 */
+#endif /* _WIN32 */
 
 
 

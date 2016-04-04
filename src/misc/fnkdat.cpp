@@ -112,7 +112,7 @@
 /************************
  * WIN32 IMPLEMENTATION *
  ************************/
-#ifdef WIN32
+#ifdef _WIN32
 
 #define WIN32_LEAN_AND_MEAN
 #define STRICT
@@ -489,7 +489,7 @@ int fnkdat(const char* target, char* buffer, int len, int flags) {
    return 0;
 }
 
-#endif /* WIN32 */
+#endif /* _WIN32 */
 
 
 /********************

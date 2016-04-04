@@ -1,4 +1,4 @@
-AC_INIT(dunelegacy, 0.96.4alpha1, http://dunelegacy.sourceforge.net)
+AC_INIT(dunelegacy, 0.96.4a2, http://dunelegacy.sourceforge.net)
 
 AC_CANONICAL_BUILD
 
@@ -71,13 +71,9 @@ AC_EGREP_HEADER(MSG_MAXIOVLEN, /usr/include/sys/socket.h, AC_DEFINE(ENET_BUFFER_
 AC_EGREP_HEADER(MSG_MAXIOVLEN, socket.h, AC_DEFINE(ENET_BUFFER_MAXIMUM, [MSG_MAXIOVLEN]))
 
 if test "${host}" = "i686-w64-mingw32" ; then
-		CFLAGS="$CFLAGS -D_WIN32 -DWIN32"
-		CXXFLAGS="$CXXFLAGS -D_WIN32 -DWIN32"
         LIBS="$LIBS -lws2_32 -lwinmm -static-libgcc -static-libstdc++ -Wl,-Bstatic -lstdc++ -lpthread -Wl,-Bdynamic resource.o"
 		dunelegacydatadir='.'
 elif test "${host}" = "x86_64-w64-mingw32" ; then
-		CFLAGS="$CFLAGS -D_WIN32 -DWIN32 -D_WIN64 -DWIN64"
-		CXXFLAGS="$CXXFLAGS -D_WIN32 -DWIN32 -D_WIN64 -DWIN64"
         LIBS="$LIBS -lws2_32 -lwinmm -static-libgcc -static-libstdc++ -Wl,-Bstatic -lstdc++ -lpthread -Wl,-Bdynamic resource.o"
 		dunelegacydatadir='.'
 fi

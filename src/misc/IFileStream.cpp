@@ -43,7 +43,7 @@ bool IFileStream::open(const char* filename)
 
 	const char* pFilename = filename;
 
-    #if defined (_WIN32)
+    #ifdef _WIN32
 
     // on win32 we need an ansi-encoded filepath
     WCHAR szwPath[MAX_PATH];
