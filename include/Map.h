@@ -22,6 +22,8 @@
 #include <misc/InputStream.h>
 #include <misc/OutputStream.h>
 
+#include <stdio.h>
+
 class Map
 {
 public:

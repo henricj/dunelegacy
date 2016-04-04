@@ -21,6 +21,7 @@
 
 #include <SDL_endian.h>
 #include <stdlib.h>
+#include <stdio.h>
 #include <string.h>
 
 extern Palette palette;

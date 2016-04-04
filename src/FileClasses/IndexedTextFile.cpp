@@ -20,6 +20,7 @@
 #include <misc/string_util.h>
 
 #include <SDL_endian.h>
+#include <stdio.h>
 #include <string>
 #include <algorithm>
 #include <stdexcept>

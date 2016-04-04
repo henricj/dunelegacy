@@ -18,6 +18,7 @@
 #include <misc/IFileStream.h>
 
 #include <string.h>
+#include <stdio.h>
 #include <SDL_endian.h>
 
 #ifdef _WIN32

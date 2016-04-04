@@ -284,6 +284,8 @@ private:
 
 	static bool isWhitespace(unsigned char s);
 	static bool isNormalChar(unsigned char s);
+
+    static int strncicmp(const char *s1, const char *s2, size_t n);
 };
 
 #endif // INIFILE_H

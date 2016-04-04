@@ -207,7 +207,7 @@ bool INIFile::Section::hasKey(const std::string& key) const {
 INIFile::Key* INIFile::Section::getKey(const std::string& keyname) const {
     for(INIFile::KeyIterator iter = begin(); iter != end(); ++iter) {
         if(iter->keyStringLength == (int) keyname.size()) {
-				if(strncasecmp(keyname.c_str(), iter->completeLine.c_str()+iter->keyStringBegin, keyname.size()) == 0) {
+				if(strncicmp(keyname.c_str(), iter->completeLine.c_str()+iter->keyStringBegin, keyname.size()) == 0) {
 					return &(*iter);
 				}
 		}
@@ -414,7 +414,7 @@ const INIFile::Section* INIFile::getSection(const std::string& sectionname) cons
 
 	while(curSection != NULL) {
 		if(curSection->sectionStringLength == sectionnameSize) {
-				if(strncasecmp(sectionname.c_str(), curSection->completeLine.c_str()+curSection->sectionStringBegin, sectionnameSize) == 0) {
+				if(strncicmp(sectionname.c_str(), curSection->completeLine.c_str()+curSection->sectionStringBegin, sectionnameSize) == 0) {
 					return curSection;
 				}
 		}
@@ -1233,4 +1233,16 @@ bool INIFile::isNormalChar(unsigned char s) {
 	} else {
 		return false;
 	}
+}
+
+int INIFile::strncicmp(const char *s1, const char *s2, size_t n) {
+    while((s1 < s1 + n) && (*s1 != 0) && (toupper(*s1) == toupper(*s2))) {
+        ++s1;
+        ++s2;
+    }
+    if(s1 + n == s2) {
+        return 0;
+    } else {
+        return (toupper(*s1) - toupper(*s2));
+    }
 }

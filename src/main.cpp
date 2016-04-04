@@ -61,6 +61,11 @@
 
 #ifdef _WIN32
     #include <windows.h>
+    #include <stdio.h>
+    extern "C" {
+        int _fileno(FILE*);
+    }
+    #define fileno _fileno
 #else
     #include <sys/types.h>
     #include <pwd.h>
@@ -404,6 +409,11 @@ int main(int argc, char *argv[]) {
             exit(EXIT_FAILURE);
         }
 
+        #if defined (_WIN32)
+        // delete temporal log files again
+        remove(szErrPath);
+        remove(szOutPath);
+        #endif
 	}
 
 	fprintf(stdout, "Starting Dune Legacy " VERSION " ...\n"); fflush(stdout);

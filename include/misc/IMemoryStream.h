@@ -20,6 +20,7 @@
 
 #include "InputStream.h"
 #include <stdlib.h>
+#include <memory.h>
 #include <string>
 
 class IMemoryStream : public InputStream

@@ -5,6 +5,9 @@
 #include <misc/draw_util.h>
 #include <mmath.h>
 
+#include <stdio.h>
+#include <stdlib.h>
+
 // Step by step one more pixel of the source image is blitted to the destination image
 class BlendBlitter {
 public:

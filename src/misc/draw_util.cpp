@@ -19,6 +19,7 @@
 
 #include <globals.h>
 
+#include <stdio.h>
 #include <stdexcept>
 
 

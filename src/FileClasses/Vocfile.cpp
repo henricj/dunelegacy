@@ -24,6 +24,9 @@
 
 #include <string>
 #include <SDL_mixer.h>
+#include <stdlib.h>
+#include <memory.h>
+#include <stdio.h>
 #include <cmath>
 
 #define	VOC_CODE_TERM		0

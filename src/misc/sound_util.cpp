@@ -6,6 +6,7 @@
 
 #include <SDL_mixer.h>
 #include <stdlib.h>
+#include <memory.h>
 
 extern FileManager* pFileManager;
 

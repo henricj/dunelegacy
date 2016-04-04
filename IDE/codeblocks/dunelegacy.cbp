@@ -15,6 +15,8 @@
 				<Compiler>
 					<Add option="-O3" />
 					<Add option="-std=c++11" />
+					<Add option="-D_WIN32" />
+					<Add option="-DWIN32" />
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
@@ -29,12 +31,12 @@
 			<Add directory="../../include" />
 		</Compiler>
 		<Linker>
-			<Add library="SDL_mixer" />
-			<Add library="C:/Programme/CodeBlocks/MinGW/lib/libmingw32.a" />
-			<Add library="C:/Programme/CodeBlocks/MinGW/lib/libSDLmain.a" />
-			<Add library="C:/Programme/CodeBlocks/MinGW/lib/libSDL.dll.a" />
-			<Add library="C:/Programme/CodeBlocks/MinGW/lib/libws2_32.a" />
-			<Add library="C:/Programme/CodeBlocks/MinGW/lib/libwinmm.a" />
+			<Add library="libSDL2_mixer.dll.a" />
+			<Add library="libmingw32.a" />
+			<Add library="libSDL2main.a" />
+			<Add library="libSDL2.dll.a" />
+			<Add library="libws2_32.a" />
+			<Add library="libwinmm.a" />
 		</Linker>
 		<Unit filename="../../include/AStarSearch.h" />
 		<Unit filename="../../include/Bullet.h" />

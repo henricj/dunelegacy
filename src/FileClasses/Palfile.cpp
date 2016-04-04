@@ -17,6 +17,7 @@
 
 #include <FileClasses/Palfile.h>
 
+#include <stdio.h>
 #include <stdexcept>
 
 Palette LoadPalette_RW(SDL_RWops* rwop, int freesrc)
