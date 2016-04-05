@@ -483,6 +483,14 @@ private:
     */
     void selectNextStructureOfType(const std::set<Uint32>& itemIDs);
 
+    /**
+        Returns the game speed of this game: The number of ms per game cycle.
+        For singleplayer games this is a global setting (but can be adjusted in the in-game settings menu). For multiplayer games the game speed
+        can be set by the person creating the game.
+        \return the current game speed
+    */
+    int getGameSpeed() const;
+
 public:
     enum {
         CursorMode_Normal,
@@ -499,8 +507,6 @@ public:
 	int			techLevel;
 	int			winFlags;
 	int         loseFlags;
-
-	int		    gamespeed;
 
 	Random      randomGen;          ///< This is the random number generator for this game
 	ObjectData  objectData;         ///< This contains all the unit/structure data

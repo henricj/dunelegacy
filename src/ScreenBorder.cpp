@@ -61,7 +61,7 @@ void ScreenBorder::setNewScreenCenter(const Coord& newPosition) {
 
 bool ScreenBorder::scrollLeft() {
     if(topLeftCorner.x > 0) {
-        int scrollAmount = std::min(currentScrollSpeed, topLeftCorner.x);
+        int scrollAmount = std::min(settings.general.scrollSpeed, topLeftCorner.x);
         topLeftCorner.x -= scrollAmount;
         bottomRightCorner.x -= scrollAmount;
         return true;
@@ -72,7 +72,7 @@ bool ScreenBorder::scrollLeft() {
 
 bool ScreenBorder::scrollRight() {
     if(bottomRightCorner.x < mapSizeX*TILESIZE-1) {
-        int scrollAmount = std::min(currentScrollSpeed,mapSizeX*TILESIZE-1-bottomRightCorner.x);
+        int scrollAmount = std::min(settings.general.scrollSpeed,mapSizeX*TILESIZE-1-bottomRightCorner.x);
         topLeftCorner.x += scrollAmount;
         bottomRightCorner.x += scrollAmount;
         return true;
@@ -83,7 +83,7 @@ bool ScreenBorder::scrollRight() {
 
 bool ScreenBorder::scrollUp() {
     if(topLeftCorner.y > 0) {
-        int scrollAmount = std::min(currentScrollSpeed, topLeftCorner.y);
+        int scrollAmount = std::min(settings.general.scrollSpeed, topLeftCorner.y);
         topLeftCorner.y -= scrollAmount;
         bottomRightCorner.y -= scrollAmount;
         return true;
@@ -94,7 +94,7 @@ bool ScreenBorder::scrollUp() {
 
 bool ScreenBorder::scrollDown() {
     if(bottomRightCorner.y < mapSizeY*TILESIZE-1) {
-        int scrollAmount = std::min(currentScrollSpeed,mapSizeY*TILESIZE-1-bottomRightCorner.y);
+        int scrollAmount = std::min(settings.general.scrollSpeed,mapSizeY*TILESIZE-1-bottomRightCorner.y);
         topLeftCorner.y += scrollAmount;
         bottomRightCorner.y += scrollAmount;
         return true;

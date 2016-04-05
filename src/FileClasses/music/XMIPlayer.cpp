@@ -29,10 +29,7 @@
 #include <iostream>
 #include <cstdio>
 
-XMIPlayer::XMIPlayer() : MusicPlayer(settings.audio.playMusic) {
-    musicVolume = MIX_MAX_VOLUME/2;
-    Mix_VolumeMusic(musicVolume);
-
+XMIPlayer::XMIPlayer() : MusicPlayer(settings.audio.playMusic, settings.audio.musicVolume) {
 	music = nullptr;
 }
 

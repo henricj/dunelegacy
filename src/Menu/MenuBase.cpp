@@ -85,8 +85,6 @@ int MenuBase::showMenu() {
 }
 
 void MenuBase::draw() {
-    SDL_SetRenderTarget(renderer, screenTexture);
-
 	if(bClearScreen == true) {
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
         SDL_RenderClear(renderer);
@@ -100,10 +98,6 @@ void MenuBase::draw() {
 
 	drawCursor();
 
-	SDL_RenderPresent(renderer);
-
-    SDL_SetRenderTarget(renderer, nullptr);
-    SDL_RenderCopy(renderer, screenTexture, nullptr, nullptr);
 	SDL_RenderPresent(renderer);
 }
 

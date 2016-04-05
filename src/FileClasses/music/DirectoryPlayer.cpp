@@ -25,7 +25,7 @@
 
 #include <stdio.h>
 
-DirectoryPlayer::DirectoryPlayer() : MusicPlayer(settings.audio.playMusic) {
+DirectoryPlayer::DirectoryPlayer() : MusicPlayer(settings.audio.playMusic, settings.audio.musicVolume) {
 	// determine path to config file
 	char tmp[FILENAME_MAX];
 	fnkdat(nullptr, tmp, FILENAME_MAX, FNKDAT_USER | FNKDAT_CREAT);
@@ -53,9 +53,6 @@ DirectoryPlayer::DirectoryPlayer() : MusicPlayer(settings.audio.playMusic) {
     for(int i=0;i<MUSIC_NUM_MUSIC_TYPES;i++) {
         musicFileList[i] = getMusicFileNames(configfilepath + musicDirectoryNames[i]);
     }
-
-	musicVolume = MIX_MAX_VOLUME/2;
-    Mix_VolumeMusic(musicVolume);
 
 	music = nullptr;
 }

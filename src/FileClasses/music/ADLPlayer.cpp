@@ -24,10 +24,7 @@
 
 #include <mmath.h>
 
-ADLPlayer::ADLPlayer() : MusicPlayer(settings.audio.playMusic) {
-    musicVolume = MIX_MAX_VOLUME/2;
-    Mix_VolumeMusic(musicVolume);
-
+ADLPlayer::ADLPlayer() : MusicPlayer(settings.audio.playMusic, settings.audio.musicVolume) {
     pSoundAdlibPC = nullptr;
 }
 

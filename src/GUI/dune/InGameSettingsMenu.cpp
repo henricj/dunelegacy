@@ -23,6 +23,7 @@
 #include <FileClasses/TextManager.h>
 #include <FileClasses/music/MusicPlayer.h>
 #include <Game.h>
+#include <main.h>
 #include <House.h>
 #include <SoundPlayer.h>
 #include <ScreenBorder.h>
@@ -98,14 +99,14 @@ InGameSettingsMenu::~InGameSettingsMenu() {
 }
 
 void InGameSettingsMenu::init() {
-	newGamespeed = currentGame->gamespeed;
+	newGamespeed = settings.gameOptions.gameSpeed;
 	gameSpeedBar.setProgress(100.0 - ((newGamespeed-GAMESPEED_MIN)*100.0)/(GAMESPEED_MAX - GAMESPEED_MIN));
 
 	previousVolume = volume = soundPlayer->getSfxVolume();
 	volumeBar.setProgress((100.0*volume)/MIX_MAX_VOLUME);
 
-    scrollSpeed = screenborder->getScrollSpeed();
-	scrollSpeedBar.setProgress((scrollSpeed-2.0)*2.0);
+    scrollSpeed = settings.general.scrollSpeed;
+	scrollSpeedBar.setProgress(scrollSpeed);
 }
 
 bool InGameSettingsMenu::handleKeyPress(SDL_KeyboardEvent& key) {
@@ -140,8 +141,17 @@ void InGameSettingsMenu::onCancel() {
 }
 
 void InGameSettingsMenu::onOK() {
-	currentGame->gamespeed = newGamespeed;
-    screenborder->setScrollSpeed(scrollSpeed);
+    settings.general.scrollSpeed = scrollSpeed;
+    settings.audio.sfxVolume = soundPlayer->getSfxVolume();
+    settings.audio.musicVolume = musicPlayer->getMusicVolume();
+    settings.gameOptions.gameSpeed = newGamespeed;
+
+	INIFile myINIFile(getConfigFilepath());
+    myINIFile.setIntValue("General","Scroll Speed", settings.general.scrollSpeed);
+	myINIFile.setIntValue("Audio","Music Volume", settings.audio.musicVolume);
+	myINIFile.setIntValue("Audio","SFX Volume", settings.audio.sfxVolume);
+	myINIFile.setIntValue("Game Options","Game Speed", settings.gameOptions.gameSpeed);
+	myINIFile.saveChangesTo(getConfigFilepath());
 
 	Window* pParentWindow = dynamic_cast<Window*>(getParent());
 	if(pParentWindow != nullptr) {
@@ -182,15 +192,11 @@ void InGameSettingsMenu::onVolumeMinus() {
 }
 
 void InGameSettingsMenu::onScrollSpeedPlus() {
-    if(scrollSpeed < 51) {
-        scrollSpeed += 2;
-        scrollSpeedBar.setProgress((scrollSpeed-2)*2.0);
-    }
+    scrollSpeed = std::min(scrollSpeed+4, 100);
+    scrollSpeedBar.setProgress(scrollSpeed);
 }
 
 void InGameSettingsMenu::onScrollSpeedMinus() {
-    if(scrollSpeed > 3) {
-        scrollSpeed -= 2;
-        scrollSpeedBar.setProgress((scrollSpeed-2)*2.0);
-    }
+    scrollSpeed = std::max(scrollSpeed-4, 1);
+    scrollSpeedBar.setProgress(scrollSpeed);
 }

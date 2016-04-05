@@ -151,9 +151,10 @@ class SettingsClass
 public:
 	class GeneralClass {
 	public:
-		bool		      playIntro;
-		std::string     playerName;
-		std::string     language;
+		bool		    playIntro;          ///< Play the intro when starting the game?
+		std::string     playerName;         ///< The name of the player used for multiplayer games
+		std::string     language;           ///< Language code: "en" = English, "fr" = French, "de" = German
+		int             scrollSpeed;        ///< Scroll speed in pixels
 	} general;
 
 	class VideoClass {
@@ -169,7 +170,9 @@ public:
 	class AudioClass {
 	public:
         bool        playSFX;
+		int         sfxVolume;
         bool        playMusic;
+		int         musicVolume;
 		std::string musicType;
 		int         frequency;
 	} audio;

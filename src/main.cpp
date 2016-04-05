@@ -149,6 +149,7 @@ void createDefaultConfigFile(std::string configfilepath, std::string language) {
 								"Play Intro = false\t\t\t# Play the intro when starting the game?\n"
 								"Player Name = %s\t\t\t# The name of the player\n"
 								"Language = %s\t\t\t\t# en = English, fr = French, de = German\n"
+								"Scroll Speed = 50\t\t\t\t# Amount to scroll the map when the cursor is near the screen border\n"
 								"\n"
 								"[Video]\n"
 								"# You may decide to use half the resolution of your monitor, e.g. monitor has 1600x1200 => 800x600\n"
@@ -156,7 +157,7 @@ void createDefaultConfigFile(std::string configfilepath, std::string language) {
 								"Width = 640\n"
 								"Height = 480\n"
 								"Fullscreen = false\n"
-								"FrameLimit = true\t\t\t# Limit the frame rate to save energy\n"
+								"FrameLimit = true\t\t\t# Limit the frame rate to save energy?\n"
 								"Preferred Zoom Level = 0\t\t# 0 = no zooming, 1 = 2x, 2 = 3x\n"
 								"Scaler = Scale2x\t\t\t# Scaler to use: ScaleNN = nearest neighbour, Scale2x = smooth edges\n"
 								"\n"
@@ -169,7 +170,9 @@ void createDefaultConfigFile(std::string configfilepath, std::string language) {
 								"#\t\t  Put any mp3, ogg or mid file there and it will be played in the particular situation\n"
 								"Music Type = adl\n"
 								"Play Music = true\n"
+								"Music Volume = 64\t\t\t\t# Volume between 0 and 128\n"
 								"Play SFX = true\n"
+								"SFX Volume = 64\t\t\t\t# Volume between 0 and 128\n"
 								"Audio Frequency = 22050\n"
                                 "\n"
                                 "[Network]\n"
@@ -495,6 +498,8 @@ int main(int argc, char *argv[]) {
 
 		settings.general.playIntro = myINIFile.getBoolValue("General","Play Intro",false);
 		settings.general.playerName = myINIFile.getStringValue("General","Player Name","Player");
+		settings.general.language = myINIFile.getStringValue("General","Language","en");
+		settings.general.scrollSpeed = myINIFile.getIntValue("General","Scroll Speed",50);
 		settings.video.width = myINIFile.getIntValue("Video","Width",640);
 		settings.video.height = myINIFile.getIntValue("Video","Height",480);
 		settings.video.fullscreen = myINIFile.getBoolValue("Video","Fullscreen",false);
@@ -503,10 +508,10 @@ int main(int argc, char *argv[]) {
 		settings.video.scaler = myINIFile.getStringValue("Video","Scaler", "scale2x");
 		settings.audio.musicType = myINIFile.getStringValue("Audio","Music Type","adl");
 		settings.audio.playMusic = myINIFile.getBoolValue("Audio","Play Music", true);
+		settings.audio.musicVolume = myINIFile.getIntValue("Audio","Music Volume", 64);
 		settings.audio.playSFX = myINIFile.getBoolValue("Audio","Play SFX", true);
+		settings.audio.sfxVolume = myINIFile.getIntValue("Audio","SFX Volume", 64);
 		settings.audio.frequency = myINIFile.getIntValue("Audio","Audio Frequency", 22050);
-
-		settings.general.language = myINIFile.getStringValue("General","Language","en");
 
 		settings.network.serverPort = myINIFile.getIntValue("Network","ServerPort",DEFAULT_PORT);
 		settings.network.metaServer = myINIFile.getStringValue("Network","MetaServer",DEFAULT_METASERVER);

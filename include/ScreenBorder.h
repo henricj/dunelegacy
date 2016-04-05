@@ -24,11 +24,11 @@
 #include <misc/OutputStream.h>
 #include <fixmath/FixPoint.h>
 #include <mmath.h>
+#include <globals.h>
 
 #include <algorithm>
 
 #define SCROLLBORDER 3
-#define SCROLLSPEED 51
 
 /// This class manages everything that is related to the current view onto the map.
 class ScreenBorder
@@ -51,8 +51,6 @@ public:
         bottomRightCornerOnScreen.y = gameBoardRect.y + gameBoardRect.h;
 
         numShakingCycles = 0;
-
-        currentScrollSpeed = SCROLLSPEED;
     };
 
     /**
@@ -225,26 +223,6 @@ public:
     bool scrollDown();
 
     /**
-        Returns the current scroll speed in pixels. By calling scrollLeft/scrollRight/scrollUp/scrollDown
-        the screen in moved by this amount of pixels.
-        \return the scroll speed in pixels
-    */
-    int getScrollSpeed() const {
-        return currentScrollSpeed;
-    }
-
-
-    /**
-        Sets the scroll speed used when calling scrollLeft/scrollRight/scrollUp/scrollDown.
-        \param  scrollSpeed the scroll speed in pixels
-    */
-    void setScrollSpeed(int scrollSpeed) {
-        currentScrollSpeed = scrollSpeed;
-    }
-
-
-
-    /**
         This method converts from world to screen coordinates.
         \param x    the x position in world coordinates
         \return the x-coordinate on the screen
@@ -396,8 +374,6 @@ private:
     Coord bottomRightCornerOnScreen;///< the position of the bottom right corner in screen coordinates
 
     int numShakingCycles;           ///< the number of cycles the screen will shake
-
-    int currentScrollSpeed;         ///< the current scroll speed in pixels
 };
 
 #endif //SCREENBORDER

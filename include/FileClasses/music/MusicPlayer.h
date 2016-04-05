@@ -50,7 +50,10 @@ typedef enum {  MUSIC_ATTACK = 0,   /*!< Played when at least one of player's un
 class MusicPlayer
 {
 public:
-    MusicPlayer(bool bMusicOn) : musicOn(bMusicOn), musicVolume(MIX_MAX_VOLUME/2), thisMusicID(INVALID), currentMusicType(MUSIC_RANDOM) { };
+    MusicPlayer(bool bMusicOn, int newMusicVolume) : musicOn(bMusicOn), musicVolume(newMusicVolume), thisMusicID(INVALID), currentMusicType(MUSIC_RANDOM) {
+        Mix_VolumeMusic(musicVolume);
+    };
+
     virtual ~MusicPlayer() { };
 
 	/*!

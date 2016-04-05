@@ -19,6 +19,7 @@
 
 #include <globals.h>
 #include <config.h>
+#include <main.h>
 
 #include <FileClasses/FileManager.h>
 #include <FileClasses/GFXManager.h>
@@ -116,8 +117,6 @@ Game::Game() {
 	bulletList.clear();
 
     house.resize(NUM_HOUSES);
-
-	gamespeed = GAMESPEED_DEFAULT;
 
 	sideBarPos = calcAlignedDrawingRect(pGFXManager->getUIGraphic(UI_SideBar), HAlign::Right, VAlign::Top);
     topBarPos = calcAlignedDrawingRect(pGFXManager->getUIGraphic(UI_TopBar), HAlign::Left, VAlign::Top);
@@ -226,8 +225,6 @@ void Game::initGame(const GameInitSettings& newGameInitSettings) {
             if(gameInitSettings.getMission() != 0) {
                 techLevel = ((gameInitSettings.getMission() + 1)/3) + 1 ;
             }
-
-            gamespeed = gameInitSettings.getGameOptions().gameSpeed;
 
             INIMapLoader* pINIMapLoader = new INIMapLoader(this, gameInitSettings.getFilename(), gameInitSettings.getFiledata());
             delete pINIMapLoader;
@@ -1222,6 +1219,8 @@ void Game::runMainLoop() {
         SDL_RenderPresent(renderer);
 
         SDL_SetRenderTarget(renderer, nullptr);
+        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+        SDL_RenderClear(renderer);
         SDL_RenderCopy(renderer, screenTexture, nullptr, nullptr);
         SDL_RenderPresent(renderer);
 
@@ -1237,7 +1236,7 @@ void Game::runMainLoop() {
         numFrames++;
 
         if (bShowFPS) {
-            averageFrameTime = 0.999f * averageFrameTime + 0.001f * frameTime;
+            averageFrameTime = 0.99f * averageFrameTime + 0.01f * frameTime;
         }
 
         if(settings.video.frameLimit == true) {
@@ -1254,7 +1253,7 @@ void Game::runMainLoop() {
         }
 
 
-        while( (frameTime > gamespeed) || (!finished && (gameCycleCount < skipToGameCycle)) )	{
+        while( (frameTime > getGameSpeed()) || (!finished && (gameCycleCount < skipToGameCycle)) )	{
 
             bool bWaitForNetwork = false;
 
@@ -1355,7 +1354,7 @@ void Game::runMainLoop() {
             if(gameCycleCount <= skipToGameCycle) {
                 frameTime = 0;
             } else {
-                frameTime -= gamespeed;
+                frameTime -= getGameSpeed();
             }
         }
 
@@ -1482,7 +1481,7 @@ int Game::whatNext()
 				return GAME_DEBRIEFING_WIN;
 			} else {
                 // copy old init class to init class for next game
-                nextGameInitSettings = gameInitSettings;
+                setNextGameInitSettings(gameInitSettings);
 
 				return GAME_DEBRIEFING_LOST;
 			}
@@ -1574,7 +1573,6 @@ bool Game::loadSaveGame(InputStream& stream) {
 	// read some settings
 	gameType = (GAMETYPE) stream.readSint8();
 	techLevel = stream.readUint8();
-	gamespeed = stream.readUint32();
 	randomGen.setSeed(stream.readUint32());
 
     // read in the unit/structure data
@@ -1722,7 +1720,6 @@ bool Game::saveGame(std::string filename)
 	// write some settings
 	fs.writeSint8(gameType);
 	fs.writeUint8(techLevel);
-    fs.writeUint32(gamespeed);
 	fs.writeUint32(randomGen.getSeed());
 
     // write out the unit/structure data
@@ -2090,22 +2087,26 @@ void Game::handleKeyInput(SDL_KeyboardEvent& keyboardEvent) {
             currentCursorMode = CursorMode_Normal;
         } break;
 
+        case SDLK_KP_MINUS:
         case SDLK_MINUS: {
             if(gameType != GAMETYPE_CUSTOM_MULTIPLAYER) {
-                if(++gamespeed > GAMESPEED_MAX) {
-                    gamespeed = GAMESPEED_MAX;
-                }
-                currentGame->addToNewsTicker(strprintf(_("Game speed") + ": %d", gamespeed));
+                settings.gameOptions.gameSpeed = std::min(settings.gameOptions.gameSpeed+1,GAMESPEED_MAX);
+                INIFile myINIFile(getConfigFilepath());
+                myINIFile.setIntValue("Game Options","Game Speed", settings.gameOptions.gameSpeed);
+                myINIFile.saveChangesTo(getConfigFilepath());
+                currentGame->addToNewsTicker(strprintf(_("Game speed") + ": %d", settings.gameOptions.gameSpeed));
             }
         } break;
 
+        case SDLK_KP_PLUS:
+        case SDLK_PLUS:
         case SDLK_EQUALS: {
-            //PLUS
             if(gameType != GAMETYPE_CUSTOM_MULTIPLAYER) {
-                if(--gamespeed < GAMESPEED_MIN) {
-                    gamespeed = GAMESPEED_MIN;
-                }
-                currentGame->addToNewsTicker(strprintf(_("Game speed") + ": %d", gamespeed));
+                settings.gameOptions.gameSpeed = std::max(settings.gameOptions.gameSpeed-1,GAMESPEED_MIN);
+                INIFile myINIFile(getConfigFilepath());
+                myINIFile.setIntValue("Game Options","Game Speed", settings.gameOptions.gameSpeed);
+                myINIFile.saveChangesTo(getConfigFilepath());
+                currentGame->addToNewsTicker(strprintf(_("Game speed") + ": %d", settings.gameOptions.gameSpeed));
             }
         } break;
 
@@ -2626,5 +2627,13 @@ void Game::selectNextStructureOfType(const std::set<Uint32>& itemIDs) {
 
         // we center around the newly selected construction yard
         screenborder->setNewScreenCenter(pStructure2Select->getLocation()*TILESIZE);
+    }
+}
+
+int Game::getGameSpeed() const {
+    if(gameType == GAMETYPE_CUSTOM_MULTIPLAYER) {
+        return gameInitSettings.getGameOptions().gameSpeed;
+    } else {
+        return settings.gameOptions.gameSpeed;
     }
 }

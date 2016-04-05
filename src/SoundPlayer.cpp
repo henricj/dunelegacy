@@ -36,9 +36,9 @@ void VoiceChunkFinishedCallback(int channel) {
 }
 
 SoundPlayer::SoundPlayer() {
-	sfxVolume = MIX_MAX_VOLUME/2;
+	sfxVolume = settings.audio.sfxVolume;
 
-	Mix_Volume(-1, MIX_MAX_VOLUME);
+	Mix_Volume(-1, sfxVolume);
 
 	// init global variables
 	curVoiceChunk = nullptr;
@@ -86,7 +86,7 @@ void SoundPlayer::playSound(Sound_enum soundID, int volume)
 
 		int channel = Mix_PlayChannel(-1,tmp, 0);
 		if(channel != -1) {
-			Mix_Volume(channel, (volume*sfxVolume)/MIX_MAX_VOLUME);
+			Mix_Volume(channel, volume);
         }
 	}
 }

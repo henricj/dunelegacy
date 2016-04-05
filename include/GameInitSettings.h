@@ -172,6 +172,7 @@ public:
     inline bool isMultiplePlayersPerHouse() const { return multiplePlayersPerHouse; };
     inline void setMultiplePlayersPerHouse(bool multiplePlayersPerHouse) { this->multiplePlayersPerHouse = multiplePlayersPerHouse; };
 	inline const SettingsClass::GameOptionsClass& getGameOptions() const { return gameOptions; };
+	inline void setGameSpeed(int gameSpeed) { gameOptions.gameSpeed = gameSpeed; };
 
 	inline void addHouseInfo(const HouseInfo& newHouseInfo) { houseInfoList.push_back(newHouseInfo); };
 	inline void clearHouseInfo() { houseInfoList.clear(); };
