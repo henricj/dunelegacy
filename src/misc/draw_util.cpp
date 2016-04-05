@@ -186,6 +186,16 @@ SDL_Surface* renderReadSurface(SDL_Renderer* renderer) {
         SDL_FreeSurface(pScreen);
         return nullptr;
 	}
+
+    // Fix bug in SDL2 OpenGL Backend
+    SDL_RendererInfo rendererInfo;
+    SDL_GetRendererInfo(renderer, &rendererInfo);
+    if(strcmp(rendererInfo.name, "opengl") == 0) {
+        if(SDL_GetRenderTarget(renderer) != nullptr) {
+            pScreen = flipHSurface(pScreen, true);
+        }
+    }
+
     return pScreen;
 }
 

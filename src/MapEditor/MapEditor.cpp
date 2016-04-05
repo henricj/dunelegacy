@@ -23,6 +23,7 @@
 #include <FileClasses/GFXManager.h>
 #include <FileClasses/TextManager.h>
 #include <FileClasses/INIFile.h>
+#include <FileClasses/LoadSavePNG.h>
 
 #include <structures/Wall.h>
 
@@ -2008,7 +2009,7 @@ void MapEditor::saveMapshot() {
     int oldCurrentZoomlevel = currentZoomlevel;
     currentZoomlevel = 0;
 
-    std::string mapshotFilename = (lastSaveName.empty() ? generateMapname() : getBasename(lastSaveName, true)) + ".bmp";
+    std::string mapshotFilename = (lastSaveName.empty() ? generateMapname() : getBasename(lastSaveName, true)) + ".png";
 
     int sizeX = world2zoomedWorld(map.getSizeX()*TILESIZE);
     int sizeY = world2zoomedWorld(map.getSizeY()*TILESIZE);
@@ -2040,15 +2041,7 @@ void MapEditor::saveMapshot() {
     drawMap(&tmpScreenborder, true);
 
     SDL_Surface* pMapshotSurface = renderReadSurface(renderer);
-
-    // Fix bug in SDL2 OpenGL Backend
-    SDL_RendererInfo rendererInfo;
-    SDL_GetRendererInfo(renderer, &rendererInfo);
-    if(strcmp(rendererInfo.name, "opengl") == 0) {
-        pMapshotSurface = flipHSurface(pMapshotSurface, true);
-    }
-
-    SDL_SaveBMP(pMapshotSurface, mapshotFilename.c_str());
+    SavePNG(pMapshotSurface, mapshotFilename.c_str());
     SDL_FreeSurface(pMapshotSurface);
 
     SDL_SetRenderTarget(renderer, oldRenderTarget);

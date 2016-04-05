@@ -88,6 +88,7 @@
 		<Unit filename="../../include/FileClasses/INIFile.h" />
 		<Unit filename="../../include/FileClasses/Icnfile.h" />
 		<Unit filename="../../include/FileClasses/IndexedTextFile.h" />
+		<Unit filename="../../include/FileClasses/LoadSavePNG.h" />
 		<Unit filename="../../include/FileClasses/MentatTextFile.h" />
 		<Unit filename="../../include/FileClasses/POFile.h" />
 		<Unit filename="../../include/FileClasses/Pakfile.h" />
@@ -107,6 +108,7 @@
 		<Unit filename="../../include/FileClasses/adl/opl_inc.h" />
 		<Unit filename="../../include/FileClasses/adl/opl_mame.h" />
 		<Unit filename="../../include/FileClasses/adl/sound_adlib.h" />
+		<Unit filename="../../include/FileClasses/lodepng.h" />
 		<Unit filename="../../include/FileClasses/music/ADLPlayer.h" />
 		<Unit filename="../../include/FileClasses/music/DirectoryPlayer.h" />
 		<Unit filename="../../include/FileClasses/music/MusicPlayer.h" />
@@ -353,6 +355,7 @@
 		<Unit filename="../../src/FileClasses/INIFile.cpp" />
 		<Unit filename="../../src/FileClasses/Icnfile.cpp" />
 		<Unit filename="../../src/FileClasses/IndexedTextFile.cpp" />
+		<Unit filename="../../src/FileClasses/LoadSavePNG.cpp" />
 		<Unit filename="../../src/FileClasses/MentatTextFile.cpp" />
 		<Unit filename="../../src/FileClasses/POFile.cpp" />
 		<Unit filename="../../src/FileClasses/Pakfile.cpp" />
@@ -369,6 +372,7 @@
 		<Unit filename="../../src/FileClasses/adl/opl_dosbox.cpp" />
 		<Unit filename="../../src/FileClasses/adl/opl_mame.cpp" />
 		<Unit filename="../../src/FileClasses/adl/sound_adlib.cpp" />
+		<Unit filename="../../src/FileClasses/lodepng.cpp" />
 		<Unit filename="../../src/FileClasses/music/ADLPlayer.cpp" />
 		<Unit filename="../../src/FileClasses/music/DirectoryPlayer.cpp" />
 		<Unit filename="../../src/FileClasses/music/XMIPlayer.cpp" />

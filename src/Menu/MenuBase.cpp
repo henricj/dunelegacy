@@ -19,6 +19,7 @@
 
 #include <Network/NetworkManager.h>
 
+#include <FileClasses/LoadSavePNG.h>
 #include <misc/string_util.h>
 #include <misc/FileSystem.h>
 #include <misc/draw_util.h>
@@ -141,12 +142,12 @@ bool MenuBase::doInput(SDL_Event &event) {
                     std::string screenshotFilename;
                     int i = 1;
                     do {
-                        screenshotFilename = "Screenshot" + stringify(i) + ".bmp";
+                        screenshotFilename = "Screenshot" + stringify(i) + ".png";
                         i++;
                     } while(existsFile(screenshotFilename) == true);
 
                     SDL_Surface* pCurrentScreen = renderReadSurface(renderer);
-                    SDL_SaveBMP(pCurrentScreen, screenshotFilename.c_str());
+                    SavePNG(pCurrentScreen, screenshotFilename.c_str());
                     SDL_FreeSurface(pCurrentScreen);
                 } break;
 

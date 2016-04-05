@@ -105,6 +105,8 @@ dunelegacy_SOURCES =	AStarSearch.cpp\
 						FileClasses/Fntfile.cpp\
 						FileClasses/Cpsfile.cpp\
 						FileClasses/SaveWAV.cpp\
+						FileClasses/lodepng.cpp\
+						FileClasses/LoadSavePNG.cpp\
 						FileClasses/Shpfile.cpp\
 						FileClasses/Icnfile.cpp\
 						FileClasses/Vocfile.cpp\

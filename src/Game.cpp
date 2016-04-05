@@ -25,6 +25,7 @@
 #include <FileClasses/FontManager.h>
 #include <FileClasses/TextManager.h>
 #include <FileClasses/music/MusicPlayer.h>
+#include <FileClasses/LoadSavePNG.h>
 #include <SoundPlayer.h>
 #include <misc/IFileStream.h>
 #include <misc/OFileStream.h>
@@ -2248,12 +2249,12 @@ void Game::handleKeyInput(SDL_KeyboardEvent& keyboardEvent) {
             std::string screenshotFilename;
             int i = 1;
             do {
-                screenshotFilename = "Screenshot" + stringify(i) + ".bmp";
+                screenshotFilename = "Screenshot" + stringify(i) + ".png";
                 i++;
             } while(existsFile(screenshotFilename) == true);
 
             SDL_Surface* pCurrentScreen = renderReadSurface(renderer);
-            SDL_SaveBMP(pCurrentScreen, screenshotFilename.c_str());
+            SavePNG(pCurrentScreen, screenshotFilename.c_str());
             currentGame->addToNewsTicker(_("Screenshot saved") + ": '" + screenshotFilename + "'");
             SDL_FreeSurface(pCurrentScreen);
         } break;
