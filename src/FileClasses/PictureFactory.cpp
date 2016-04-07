@@ -24,6 +24,7 @@
 #include <FileClasses/FileManager.h>
 #include <FileClasses/TextManager.h>
 #include <FileClasses/FontManager.h>
+#include <FileClasses/LoadSavePNG.h>
 #include <FileClasses/Cpsfile.h>
 #include <FileClasses/Wsafile.h>
 
@@ -597,8 +598,8 @@ SDL_Surface* PictureFactory::createMenu(SDL_Surface* CaptionPic,int y) {
 
 SDL_Surface* PictureFactory::createOptionsMenu() {
 	SDL_Surface* tmp;
-	if((tmp = SDL_LoadBMP_RW(pFileManager->openFile("UI_OptionsMenu.bmp"),true)) == nullptr) {
-		fprintf(stderr,"PictureFactory::createOptionsMenu(): Cannot load UI_OptionsMenu.bmp!\n");
+	if((tmp = LoadPNG_RW(pFileManager->openFile("UI_OptionsMenu.png"),true)) == nullptr) {
+		fprintf(stderr,"PictureFactory::createOptionsMenu(): Cannot load UI_OptionsMenu.png!\n");
 		exit(EXIT_FAILURE);
 	}
 	SDL_SetColorKey(tmp, SDL_TRUE, 0);
@@ -750,9 +751,9 @@ SDL_Surface* PictureFactory::createMentatHouseChoiceQuestion(int House, Palette&
         case HOUSE_HARKONNEN:   pQuestionPart2 = getSubPicture(mentatHouseChoiceQuestionSurface.get(),0, 48, 208, 48);   break;
         case HOUSE_ATREIDES:    pQuestionPart2 = getSubPicture(mentatHouseChoiceQuestionSurface.get(),0, 96, 208, 48);   break;
         case HOUSE_ORDOS:       pQuestionPart2 = getSubPicture(mentatHouseChoiceQuestionSurface.get(),0, 144, 208, 48);  break;
-        case HOUSE_FREMEN:      pQuestionPart2 = Scaler::defaultDoubleSurface(SDL_LoadBMP_RW(pFileManager->openFile("Fremen.bmp"), true), true);      break;
-        case HOUSE_SARDAUKAR:   pQuestionPart2 = Scaler::defaultDoubleSurface(SDL_LoadBMP_RW(pFileManager->openFile("Sardaukar.bmp"), true), true);   break;
-        case HOUSE_MERCENARY:   pQuestionPart2 = Scaler::defaultDoubleSurface(SDL_LoadBMP_RW(pFileManager->openFile("Mercenary.bmp"), true), true);   break;
+        case HOUSE_FREMEN:      pQuestionPart2 = Scaler::defaultDoubleSurface(LoadPNG_RW(pFileManager->openFile("Fremen.png"), true), true);      break;
+        case HOUSE_SARDAUKAR:   pQuestionPart2 = Scaler::defaultDoubleSurface(LoadPNG_RW(pFileManager->openFile("Sardaukar.png"), true), true);   break;
+        case HOUSE_MERCENARY:   pQuestionPart2 = Scaler::defaultDoubleSurface(LoadPNG_RW(pFileManager->openFile("Mercenary.png"), true), true);   break;
         default:    break;
     }
 
@@ -791,7 +792,7 @@ SDL_Surface* PictureFactory::createHeraldFre(SDL_Surface* heraldHark) {
     SDL_Surface* pSandworm = getSubPicture(pTmp1, 40-18, 6-12, 83, 91);
     SDL_FreeSurface(pTmp1);
 
-    SDL_Surface* pMask = SDL_LoadBMP_RW(pFileManager->openFile("HeraldFreMask.bmp"), true);
+    SDL_Surface* pMask = LoadPNG_RW(pFileManager->openFile("HeraldFreMask.png"), true);
     SDL_SetColorKey(pMask, SDL_TRUE, 0);
 
     SDL_BlitSurface(pMask, nullptr, pBlueReplaced, nullptr);
@@ -816,7 +817,7 @@ SDL_Surface* PictureFactory::createHeraldSard(SDL_Surface* heraldOrd, SDL_Surfac
 
     SDL_Surface* pFrameAndCurtain = combinePictures(pGreenReplaced, pCurtain, 7, 7);
 
-    SDL_Surface* pMask = SDL_LoadBMP_RW(pFileManager->openFile("HeraldSardMask.bmp"), true);
+    SDL_Surface* pMask = LoadPNG_RW(pFileManager->openFile("HeraldSardMask.png"), true);
     SDL_SetColorKey(pMask, SDL_TRUE, 0);
 
     SDL_BlitSurface(pMask, nullptr, pFrameAndCurtain, nullptr);
@@ -841,7 +842,7 @@ SDL_Surface* PictureFactory::createHeraldMerc(SDL_Surface* heraldAtre, SDL_Surfa
     SDL_Surface* pSoldier = getSubPicture(pTmp2, 49, 17, 83, 91);
     SDL_FreeSurface(pTmp2);
 
-    SDL_Surface* pMask = SDL_LoadBMP_RW(pFileManager->openFile("HeraldMercMask.bmp"), true);
+    SDL_Surface* pMask = LoadPNG_RW(pFileManager->openFile("HeraldMercMask.png"), true);
     SDL_SetColorKey(pMask, SDL_TRUE, 0);
 
     SDL_BlitSurface(pMask, nullptr, pFrameAndCurtain, nullptr);
@@ -875,7 +876,7 @@ Animation* PictureFactory::createFremenPlanet(SDL_Surface* heraldFre) {
 
 Animation* PictureFactory::createSardaukarPlanet(Animation* ordosPlanetAnimation, SDL_Surface* heraldSard) {
 
-    SDL_Surface* maskSurface = Scaler::defaultDoubleSurface(SDL_LoadBMP_RW(pFileManager->openFile("PlanetMask.bmp"), true), true);
+    SDL_Surface* maskSurface = Scaler::defaultDoubleSurface(LoadPNG_RW(pFileManager->openFile("PlanetMask.png"), true), true);
     SDL_SetColorKey(maskSurface, SDL_TRUE, 0);
 
     Animation* newAnimation = new Animation();

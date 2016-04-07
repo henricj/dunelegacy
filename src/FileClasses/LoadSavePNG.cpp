@@ -20,6 +20,8 @@
 #include <misc/draw_util.h>
 #include <Colors.h>
 
+#include <globals.h>
+
 #include <stdexcept>
 
 SDL_Surface* LoadPNG_RW(SDL_RWops* RWop, int freesrc) {
@@ -32,6 +34,10 @@ SDL_Surface* LoadPNG_RW(SDL_RWops* RWop, int freesrc) {
     unsigned int width = 0;
     unsigned int height = 0;
     SDL_Surface *pic = nullptr;
+    unsigned int error = 0;
+
+    LodePNGState lodePNGState;
+    lodepng_state_init(&lodePNGState);
 
 	try {
         // read complete file into memory
@@ -50,35 +56,84 @@ SDL_Surface* LoadPNG_RW(SDL_RWops* RWop, int freesrc) {
             throw std::runtime_error("LoadPNG_RW(): Reading this *.png-File failed!");
         }
 
-        // decode to 32-bit RGBA raw image
-        unsigned int error = lodepng_decode32(&pImageOut, &width, &height, pFiledata, filesize);
+
+        error = lodepng_inspect(&width, &height, &lodePNGState, pFiledata, filesize);
         if(error != 0) {
-            throw std::runtime_error("LoadPNG_RW(): Decoding this *.png-File failed: " + std::string(lodepng_error_text(error)));
+            throw std::runtime_error("LoadPNG_RW(): Inspecting this *.png-File failed: " + std::string(lodepng_error_text(error)));
         }
 
+        if(lodePNGState.info_png.color.colortype == LCT_PALETTE && lodePNGState.info_png.color.bitdepth == 8) {
+            // read image into a palettized SDL_Surface
 
-        // create new picture surface
-        if((pic = SDL_CreateRGBSurface(0, width, height, 32, RMASK, GMASK, BMASK, AMASK)) == nullptr) {
-            throw std::runtime_error("LoadPNG_RW(): SDL_CreateRGBSurface has failed!");
-        }
+            // reset state
+            lodepng_state_cleanup(&lodePNGState);
+            lodepng_state_init(&lodePNGState);
 
-        SDL_LockSurface(pic);
+            lodePNGState.decoder.color_convert = 0;     // do not perform any conversion
 
-        // Now we can copy pixel by pixel
-        for(unsigned int y = 0; y < height; y++) {
-            unsigned char* in = pImageOut + y * 4*width;
-            unsigned char* out = ((unsigned char*) pic->pixels) + y * pic->pitch;
-            for(unsigned int x = 0; x < width; x++) {
-                *((Uint32*) out) = SDL_SwapLE32(*((Uint32*) in));
-                in += 4;
-                out += 4;
+            error = lodepng_decode(&pImageOut, &width, &height, &lodePNGState, pFiledata, filesize);
+            if(error != 0) {
+                throw std::runtime_error("LoadPNG_RW(): Decoding this palletized *.png-File failed: " + std::string(lodepng_error_text(error)));
             }
-        }
 
-        SDL_UnlockSurface(pic);
+            // create new picture surface
+            if((pic = SDL_CreateRGBSurface(0, width, height, 8, 0, 0, 0, 0)) == nullptr) {
+                throw std::runtime_error("LoadPNG_RW(): SDL_CreateRGBSurface has failed!");
+            }
+
+            SDL_Color* colors = (SDL_Color*) lodePNGState.info_png.color.palette;
+            SDL_SetPaletteColors(pic->format->palette, colors, 0, lodePNGState.info_png.color.palettesize);
+
+            SDL_LockSurface(pic);
+
+            // Now we can copy pixel by pixel
+            for(unsigned int y = 0; y < height; y++) {
+                unsigned char* in = pImageOut + y * width;
+                unsigned char* out = ((unsigned char*) pic->pixels) + y * pic->pitch;
+                for(unsigned int x = 0; x < width; x++) {
+                    *out = *in;
+                    ++in;
+                    ++out;
+                }
+            }
+
+            SDL_UnlockSurface(pic);
+
+
+        } else {
+            // decode to 32-bit RGBA raw image
+            error = lodepng_decode32(&pImageOut, &width, &height, pFiledata, filesize);
+            if(error != 0) {
+                throw std::runtime_error("LoadPNG_RW(): Decoding this *.png-File failed: " + std::string(lodepng_error_text(error)));
+            }
+
+
+            // create new picture surface
+            if((pic = SDL_CreateRGBSurface(0, width, height, 32, RMASK, GMASK, BMASK, AMASK)) == nullptr) {
+                throw std::runtime_error("LoadPNG_RW(): SDL_CreateRGBSurface has failed!");
+            }
+
+            SDL_LockSurface(pic);
+
+            // Now we can copy pixel by pixel
+            for(unsigned int y = 0; y < height; y++) {
+                unsigned char* in = pImageOut + y * 4*width;
+                unsigned char* out = ((unsigned char*) pic->pixels) + y * pic->pitch;
+                for(unsigned int x = 0; x < width; x++) {
+                    *((Uint32*) out) = SDL_SwapLE32(*((Uint32*) in));
+                    in += 4;
+                    out += 4;
+                }
+            }
+
+            SDL_UnlockSurface(pic);
+
+        }
 
 	    free(pFiledata);
 	    free(pImageOut);
+
+        lodepng_state_cleanup(&lodePNGState);
 
         if(freesrc) {
             SDL_RWclose(RWop);

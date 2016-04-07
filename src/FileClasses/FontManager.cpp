@@ -24,13 +24,14 @@
 #include <FileClasses/FileManager.h>
 #include <FileClasses/Fntfile.h>
 #include <FileClasses/PictureFont.h>
+#include <FileClasses/LoadSavePNG.h>
 
 #include <list>
 
 FontManager::FontManager() {
-	fonts[FONT_STD10] = std::shared_ptr<Font>(new PictureFont(SDL_LoadBMP_RW(pFileManager->openFile("Font10.bmp"),true), true));
-	fonts[FONT_STD12] = std::shared_ptr<Font>(new PictureFont(SDL_LoadBMP_RW(pFileManager->openFile("Font12.bmp"),true), true));
-	fonts[FONT_STD24] = std::shared_ptr<Font>(new PictureFont(SDL_LoadBMP_RW(pFileManager->openFile("Font24.bmp"),true), true));
+	fonts[FONT_STD10] = std::shared_ptr<Font>(new PictureFont(LoadPNG_RW(pFileManager->openFile("Font10.png"),true), true));
+	fonts[FONT_STD12] = std::shared_ptr<Font>(new PictureFont(LoadPNG_RW(pFileManager->openFile("Font12.png"),true), true));
+	fonts[FONT_STD24] = std::shared_ptr<Font>(new PictureFont(LoadPNG_RW(pFileManager->openFile("Font24.png"),true), true));
 }
 
 FontManager::~FontManager() {
