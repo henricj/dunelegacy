@@ -327,20 +327,23 @@ Intro::Intro() : CutScene() {
     addVideoEvent(new WSAVideoEvent(pDestroyedTank));
     addVideoEvent(new WSAVideoEvent(pDestroyedTank));
     addVideoEvent(new WSAVideoEvent(pDestroyedTank));
+    addVideoEvent(new WSAVideoEvent(pDestroyedTank));
+    addVideoEvent(new WSAVideoEvent(pDestroyedTank));
     addVideoEvent(new FadeOutVideoEvent(pDestroyedTank->getPicture(pDestroyedTank->getNumFrames()-1), 15, true));
-    addTextEvent(new TextEvent(pIntroText->getString(IntroText_Only_one_House_will_prevail),color,15,35,true,true,false));
-    if(bEnableVoice) addTrigger(new CutSceneSoundTrigger(18,voice[Voice_Only_one_house]));
-    if(bEnableVoice) addTrigger(new CutSceneSoundTrigger(27,voice[Voice_will_prevail]));
+    addTextEvent(new TextEvent(pIntroText->getString(IntroText_Only_one_House_will_prevail),color,18,35,true,true,false));
+    if(bEnableVoice) addTrigger(new CutSceneSoundTrigger(21,voice[Voice_Only_one_house]));
+    if(bEnableVoice) addTrigger(new CutSceneSoundTrigger(30,voice[Voice_will_prevail]));
 
     startNewScene();
 
-    addVideoEvent(new HoldPictureVideoEvent(nullptr, 150, true));
-    addTextEvent(new TextEvent(pIntroText->getString(IntroText_Your_battle_for_Dune_begins),color,0,45,true,false,true));
-    addTextEvent(new TextEvent(pIntroText->getString(IntroText_NOW),color,47,45,false,true,true));
-    if(bEnableVoice) addTrigger(new CutSceneSoundTrigger(10,voice[Voice_Your]));
-    if(bEnableVoice) addTrigger(new CutSceneSoundTrigger(16,voice[Voice_battle_for_Dune]));
-    if(bEnableVoice) addTrigger(new CutSceneSoundTrigger(28,voice[Voice_begins]));
-    if(bEnableVoice) addTrigger(new CutSceneSoundTrigger(47,voice[Voice_Now_Now]));
+    addVideoEvent(new HoldPictureVideoEvent(nullptr, 184, true));
+    addTextEvent(new TextEvent(pIntroText->getString(IntroText_Your_battle_for_Dune_begins),color,20,45,true,false,true));
+    addTextEvent(new TextEvent(pIntroText->getString(IntroText_NOW),color,68,83,false,true,true));
+//    addTextEvent(new TextEvent("",COLOR_BLACK,115,10,false,false,true));    // padding to give music time to complete
+    if(bEnableVoice) addTrigger(new CutSceneSoundTrigger(30,voice[Voice_Your]));
+    if(bEnableVoice) addTrigger(new CutSceneSoundTrigger(36,voice[Voice_battle_for_Dune]));
+    if(bEnableVoice) addTrigger(new CutSceneSoundTrigger(48,voice[Voice_begins]));
+    if(bEnableVoice) addTrigger(new CutSceneSoundTrigger(68,voice[Voice_Now_Now]));
 
     delete pIntroText;
 }

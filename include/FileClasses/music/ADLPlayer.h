@@ -39,15 +39,15 @@ public:
 	void changeMusic(MUSICTYPE musicType);
 
     /*!
-		sets current music to MUSIC_PEACE if there's no
-		other song being played
-	*/
-	void musicCheck();
-
-    /*!
         Toggle the music on and off
     */
 	void toggleSound();
+
+    /**
+        Returns whether music is currently being played
+        \return true = currently playing, false = not playing
+	*/
+	bool isMusicPlaying();
 
     /*!
 		turns music playing on or off

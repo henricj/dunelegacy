@@ -205,12 +205,18 @@ void ADLPlayer::changeMusic(MUSICTYPE musicType)
 	}
 }
 
-void ADLPlayer::musicCheck() {
-	if(musicOn) {
-		if(pSoundAdlibPC->isPlaying() == false) {
-			changeMusic(MUSIC_PEACE);
-		}
+void ADLPlayer::toggleSound() {
+	if(musicOn == false) {
+		musicOn = true;
+		currentMusicType = MUSIC_RANDOM;
+		changeMusic(MUSIC_PEACE);
+	} else {
+		setMusic(false);
 	}
+}
+
+bool ADLPlayer::isMusicPlaying() {
+	return (pSoundAdlibPC != nullptr) && pSoundAdlibPC->isPlaying();
 }
 
 void ADLPlayer::setMusic(bool value) {
@@ -223,18 +229,6 @@ void ADLPlayer::setMusic(bool value) {
 
 	    delete pSoundAdlibPC;
 	    pSoundAdlibPC = nullptr;
-	}
-}
-
-
-void ADLPlayer::toggleSound()
-{
-	if(musicOn == false) {
-		musicOn = true;
-		currentMusicType = MUSIC_RANDOM;
-		changeMusic(MUSIC_PEACE);
-	} else {
-		setMusic(false);
 	}
 }
 

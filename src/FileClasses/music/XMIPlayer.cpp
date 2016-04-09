@@ -231,27 +231,7 @@ void XMIPlayer::changeMusic(MUSICTYPE musicType)
 	}
 }
 
-void XMIPlayer::musicCheck() {
-	if(musicOn) {
-		if(!Mix_PlayingMusic()) {
-			changeMusic(MUSIC_PEACE);
-		}
-	}
-}
-
-void XMIPlayer::setMusic(bool value) {
-	musicOn = value;
-
-	if(musicOn) {
-		changeMusic(MUSIC_RANDOM);
-	} else if(music != nullptr) {
-		Mix_HaltMusic();
-	}
-}
-
-
-void XMIPlayer::toggleSound()
-{
+void XMIPlayer::toggleSound() {
 	if(musicOn == false) {
 		musicOn = true;
 		changeMusic(MUSIC_PEACE);
@@ -262,6 +242,20 @@ void XMIPlayer::toggleSound()
             Mix_FreeMusic(music);
             music = nullptr;
 		}
+	}
+}
+
+bool XMIPlayer::isMusicPlaying() {
+	return Mix_PlayingMusic();
+}
+
+void XMIPlayer::setMusic(bool value) {
+	musicOn = value;
+
+	if(musicOn) {
+		changeMusic(MUSIC_RANDOM);
+	} else if(music != nullptr) {
+		Mix_HaltMusic();
 	}
 }
 

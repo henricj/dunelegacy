@@ -115,27 +115,7 @@ void DirectoryPlayer::changeMusic(MUSICTYPE musicType)
 	}
 }
 
-void DirectoryPlayer::musicCheck() {
-	if(musicOn) {
-		if(!Mix_PlayingMusic()) {
-			changeMusic(MUSIC_PEACE);
-		}
-	}
-}
-
-void DirectoryPlayer::setMusic(bool value) {
-	musicOn = value;
-
-	if(musicOn) {
-		changeMusic(MUSIC_RANDOM);
-	} else if(music != nullptr) {
-		Mix_HaltMusic();
-	}
-}
-
-
-void DirectoryPlayer::toggleSound()
-{
+void DirectoryPlayer::toggleSound() {
 	if(musicOn == false) {
 		musicOn = true;
 		changeMusic(MUSIC_PEACE);
@@ -146,6 +126,20 @@ void DirectoryPlayer::toggleSound()
             Mix_FreeMusic(music);
             music = nullptr;
 		}
+	}
+}
+
+bool DirectoryPlayer::isMusicPlaying() {
+	return Mix_PlayingMusic();
+}
+
+void DirectoryPlayer::setMusic(bool value) {
+	musicOn = value;
+
+	if(musicOn) {
+		changeMusic(MUSIC_RANDOM);
+	} else if(music != nullptr) {
+		Mix_HaltMusic();
 	}
 }
 

@@ -24,6 +24,7 @@
  */
 
 #include <math.h> // for pow()
+#include <string.h> // for memset()
 #include <FileClasses/adl/surroundopl.h>
 //#include "debug.h"
 
@@ -35,6 +36,11 @@ CSurroundopl::CSurroundopl(Copl *a, Copl *b, bool use16bit)
 	currType = TYPE_OPL2;
 	this->lbuf = new short[this->bufsize];
 	this->rbuf = new short[this->bufsize];
+
+	memset(iFMReg, 0, sizeof(iFMReg));
+	memset(iTweakedFMReg, 0, sizeof(iTweakedFMReg));
+	memset(iCurrentTweakedBlock, 0, sizeof(iCurrentTweakedBlock));
+	memset(iCurrentFNum, 0, sizeof(iCurrentFNum));
 }
 
 CSurroundopl::~CSurroundopl()

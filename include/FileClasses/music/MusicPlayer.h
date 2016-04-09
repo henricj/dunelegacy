@@ -66,7 +66,13 @@ public:
 		sets current music to MUSIC_PEACE if there's no
 		other song being played
 	*/
-	virtual void musicCheck() = 0;
+	void musicCheck() {
+        if(musicOn) {
+            if(!isMusicPlaying()) {
+                changeMusic(MUSIC_PEACE);
+            }
+        }
+    }
 
     /*!
         Toggle the music on and off
@@ -79,12 +85,17 @@ public:
 	*/
 	virtual void setMusic(bool value) = 0;
 
+    /**
+        Returns whether music is currently being played
+        \return true = currently playing, false = not playing
+	*/
+	virtual bool isMusicPlaying() = 0;
+
 	/**
         Returns whether music is on or off
         \return true = on, false = off
 	*/
 	bool isMusicOn() const { return musicOn; }
-
 
     /**
         Gets the current music volume.

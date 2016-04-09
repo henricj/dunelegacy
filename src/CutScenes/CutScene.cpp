@@ -19,6 +19,7 @@
 
 #include <FileClasses/Palfile.h>
 #include <FileClasses/FileManager.h>
+#include <FileClasses/music/MusicPlayer.h>
 
 #include <globals.h>
 #include <sand.h>
@@ -126,7 +127,7 @@ int CutScene::draw()
         }
     }
 
-    if(scenes.empty() == true) {
+    if(scenes.empty() == true && !musicPlayer->isMusicPlaying()) {
         quit();
     }
 
