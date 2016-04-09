@@ -173,7 +173,7 @@ void createDefaultConfigFile(std::string configfilepath, std::string language) {
 								"Music Volume = 64\t\t\t\t# Volume between 0 and 128\n"
 								"Play SFX = true\n"
 								"SFX Volume = 64\t\t\t\t# Volume between 0 and 128\n"
-								"Audio Frequency = 22050\n"
+								"Audio Frequency = 44100\n"
                                 "\n"
                                 "[Network]\n"
                                 "ServerPort = %d\n"
@@ -511,7 +511,7 @@ int main(int argc, char *argv[]) {
 		settings.audio.musicVolume = myINIFile.getIntValue("Audio","Music Volume", 64);
 		settings.audio.playSFX = myINIFile.getBoolValue("Audio","Play SFX", true);
 		settings.audio.sfxVolume = myINIFile.getIntValue("Audio","SFX Volume", 64);
-		settings.audio.frequency = myINIFile.getIntValue("Audio","Audio Frequency", 22050);
+		settings.audio.frequency = myINIFile.getIntValue("Audio","Audio Frequency", 44100);
 
 		settings.network.serverPort = myINIFile.getIntValue("Network","ServerPort",DEFAULT_PORT);
 		settings.network.metaServer = myINIFile.getStringValue("Network","MetaServer",DEFAULT_METASERVER);

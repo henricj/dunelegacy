@@ -63,8 +63,8 @@ class AdlibDriver;
  */
 class SoundAdlibPC {
 public:
-	SoundAdlibPC(SDL_RWops* rwop, bool bMAME = true);
-	SoundAdlibPC(SDL_RWops* rwop, int freq, bool bMAME = true);
+	SoundAdlibPC(SDL_RWops* rwop);
+	SoundAdlibPC(SDL_RWops* rwop, int freq);
 	~SoundAdlibPC();
 
 	static void callback(void *, Uint8 *, int);
@@ -118,6 +118,7 @@ private:
 	Uint16 m_format;
 
 	bool bJustStartedPlaying;
+	bool bFinishedPlaying;
 
 	int volume;
 };

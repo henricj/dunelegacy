@@ -119,9 +119,10 @@ dunelegacy_SOURCES =	AStarSearch.cpp\
 						FileClasses/PictureFont.cpp\
 						FileClasses/POFile.cpp\
 						FileClasses/adl/sound_adlib.cpp\
-						FileClasses/adl/opl_dosbox.cpp\
-						FileClasses/adl/opl_mame.cpp\
 						FileClasses/adl/fmopl.cpp\
+						FileClasses/adl/surroundopl.cpp\
+						FileClasses/adl/woodyopl.cpp\
+						FileClasses/adl/ymf262.cpp\
 						FileClasses/xmidi/xmidi.cpp\
 						FileClasses/music/ADLPlayer.cpp\
 						FileClasses/music/DirectoryPlayer.cpp\

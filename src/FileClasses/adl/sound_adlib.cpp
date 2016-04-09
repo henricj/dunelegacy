@@ -54,7 +54,8 @@
 #include <SDL_endian.h>
 
 
-#include <FileClasses/adl/fmopl.h>
+#include <FileClasses/adl/wemuopl.h>
+#include <FileClasses/adl/surroundopl.h>
 
 // Basic Adlib Programming:
 // http://www.gamedev.net/reference/articles/article446.asp
@@ -103,7 +104,7 @@ static inline void debugC(int level, const char *str, ...)
 
 class AdlibDriver {
 public:
-	AdlibDriver(int rate, bool bMAME);
+	AdlibDriver(int rate);
 	~AdlibDriver();
 
 	int callback(int opcode, ...);
@@ -111,7 +112,6 @@ public:
 
 	// AudioStream API
 	int readBuffer(int16 *buffer, const int numSamples) {
-
 		int32 samplesLeft = numSamples;
 		memset(buffer, 0, sizeof(int16) * numSamples);
 		while (samplesLeft) {
@@ -128,8 +128,9 @@ public:
 			int32 render = std::min(samplesLeft, _samplesTillCallback);
 			samplesLeft -= render;
 			_samplesTillCallback -= render;
-			YM3812UpdateOne(_adlib, buffer, render);
-			buffer += render;
+			//YM3812UpdateOne(_adlib, buffer, render);
+            opl->update(buffer, render);
+			buffer += render*2;
 		}
 		return numSamples;
 	}
@@ -431,7 +432,7 @@ private:
 	uint8 _unkValue20;
 
 	int _flags;
-	FM_OPL *_adlib;
+	Copl *opl;
 	int _rate;
 
 	uint8 *_soundData;
@@ -466,7 +467,7 @@ private:
 	void unlock() {  }
 };
 
-AdlibDriver::AdlibDriver(int rate, bool bMAME) {
+AdlibDriver::AdlibDriver(int rate) {
 	setupOpcodeList();
 	setupParserOpcodeTable();
 
@@ -475,8 +476,10 @@ AdlibDriver::AdlibDriver(int rate, bool bMAME) {
 	_rate = rate;
 
 	_flags = 0;
-	_adlib = makeAdlibOPL(_rate, bMAME);
-	assert(_adlib);
+    Copl *a = new CWemuopl(rate, true, false);
+    Copl *b = new CWemuopl(rate, true, false);
+    opl = new CSurroundopl(a, b, true);
+    // CSurroundopl now owns a and b and will free upon destruction
 
 	memset(_channels, 0, sizeof(_channels));
 	_soundData = 0;
@@ -516,8 +519,7 @@ AdlibDriver::AdlibDriver(int rate, bool bMAME) {
 }
 
 AdlibDriver::~AdlibDriver() {
-	OPLDestroy(_adlib);
-	_adlib = 0;
+	delete opl;
 }
 
 int AdlibDriver::callback(int opcode, ...) {
@@ -897,7 +899,7 @@ void AdlibDriver::resetAdlibState() {
 // New calling style: writeOPL(0xAB, 0xCD)
 
 void AdlibDriver::writeOPL(uint8 reg, uint8 val) {
-	OPLWriteReg(_adlib, reg, val);
+    opl->write(reg, val);
 }
 
 void AdlibDriver::initChannel(Channel &channel) {
@@ -2268,12 +2270,12 @@ const uint8 AdlibDriver::_unkTables[][32] = {
 //#pragma mark -
 
 
-SoundAdlibPC::SoundAdlibPC(SDL_RWops* rwop, bool bMAME) : _driver(0), _trackEntries(), _soundDataPtr(0), volume(MIX_MAX_VOLUME/2) {
+SoundAdlibPC::SoundAdlibPC(SDL_RWops* rwop) : _driver(0), _trackEntries(), _soundDataPtr(0), volume(MIX_MAX_VOLUME/2) {
 	memset(_trackEntries, 0, sizeof(_trackEntries));
 
   	Mix_QuerySpec(&m_freq, &m_format, &m_channels);
 
-	_driver = new AdlibDriver(m_freq, bMAME);
+	_driver = new AdlibDriver(m_freq);
 	assert(_driver);
 
 	_sfxPlayingSound = -1;
@@ -2284,17 +2286,18 @@ SoundAdlibPC::SoundAdlibPC(SDL_RWops* rwop, bool bMAME) : _driver(0), _trackEntr
 
 	bJustStartedPlaying = false;
 
+	init();
 	internalLoadFile(rwop);
 }
 
-SoundAdlibPC::SoundAdlibPC(SDL_RWops* rwop, int freq, bool bMAME) : _driver(0), _trackEntries(), _soundDataPtr(0), volume(MIX_MAX_VOLUME/2) {
+SoundAdlibPC::SoundAdlibPC(SDL_RWops* rwop, int freq) : _driver(0), _trackEntries(), _soundDataPtr(0), volume(MIX_MAX_VOLUME/2) {
 	memset(_trackEntries, 0, sizeof(_trackEntries));
 
 	m_freq = freq;
 	m_format = AUDIO_S16LSB;
 	m_channels = 1;
 
-	_driver = new AdlibDriver(m_freq, bMAME);
+	_driver = new AdlibDriver(m_freq);
 	assert(_driver);
 
 	_sfxPlayingSound = -1;
@@ -2305,6 +2308,7 @@ SoundAdlibPC::SoundAdlibPC(SDL_RWops* rwop, int freq, bool bMAME) : _driver(0), 
 
 	bJustStartedPlaying = false;
 
+	init();
 	internalLoadFile(rwop);
 }
 
@@ -2359,14 +2363,18 @@ void SoundAdlibPC::haltTrack() {
 }
 
 bool SoundAdlibPC::isPlaying() {
-	return (bJustStartedPlaying == true) || (_driver->callback(7, int(0)) != 0);
+	bool bPlaying = false;
+	for(int i = 0; i < 10; i++) {
+		bPlaying |= _driver->callback(7, i);	// AdlibDriver::snd_isChannelPlaying
+	}
+
+	return (bJustStartedPlaying == true) || bPlaying;
 }
 
 void SoundAdlibPC::playSoundEffect(uint8 track) {
 	play(track);
 }
 
-#define CONV_VOLUME(x) (x*self->volume/MIX_MAX_VOLUME)
 
 void SoundAdlibPC::callback(void *userdata, Uint8 *audiobuf, int len)
 {
@@ -2374,86 +2382,7 @@ void SoundAdlibPC::callback(void *userdata, Uint8 *audiobuf, int len)
 
 	self->process();
 
-	int numSamples = len / (self->getsampsize());
-
-	int16* tmpBuf = (int16*) calloc(numSamples,sizeof(int16));
-	if(tmpBuf == NULL) {
-		warning("Not enough memory!");
-		return;
-	}
-
-	// write mono 16-bit signed samples (in system endianess)
-	self->_driver->readBuffer((int16*) tmpBuf, numSamples);
-
-	// now convert to target format
-	switch(self->m_format) {
-		case AUDIO_U8: {
-			Uint8* out = audiobuf;
-
-			for(int i=0;i<numSamples;i++) {
-				for(int j=0;j<self->m_channels;j++,out++) {
-					*out = ((CONV_VOLUME(tmpBuf[i])/2) >> 8) + 0x80;
-				}
-			}
-		} break;
-
-		case AUDIO_S8: {
-			Sint8* out = (Sint8*) audiobuf;
-
-			for(int i=0;i<numSamples;i++) {
-				for(int j=0;j<self->m_channels;j++,out++) {
-					*out = ((CONV_VOLUME(tmpBuf[i])/2) >> 8);
-				}
-			}
-		} break;
-
-		case AUDIO_U16LSB: {
-			Uint16* out = (Uint16*) audiobuf;
-
-			for(int i=0;i<numSamples;i++) {
-				for(int j=0;j<self->m_channels;j++,out++) {
-					*out = SDL_SwapLE16((CONV_VOLUME(tmpBuf[i])/2) + 0x8000);
-				}
-			}
-		} break;
-
-		case AUDIO_S16LSB: {
-			Sint16* out = (Sint16*) audiobuf;
-
-			for(int i=0;i<numSamples;i++) {
-				for(int j=0;j<self->m_channels;j++,out++) {
-					*out = SDL_SwapLE16(CONV_VOLUME(tmpBuf[i])/2);
-				}
-			}
-		} break;
-
-		case AUDIO_U16MSB: {
-			Uint16* out = (Uint16*) audiobuf;
-
-			for(int i=0;i<numSamples;i++) {
-				for(int j=0;j<self->m_channels;j++,out++) {
-					*out = SDL_SwapBE16((CONV_VOLUME(tmpBuf[i])/2) + 0x8000);
-				}
-			}
-		} break;
-
-		case AUDIO_S16MSB: {
-			Sint16* out = (Sint16*) audiobuf;
-
-			for(int i=0;i<numSamples;i++) {
-				for(int j=0;j<self->m_channels;j++,out++) {
-					*out = SDL_SwapBE16(CONV_VOLUME(tmpBuf[i])/2);
-				}
-			}
-		} break;
-
-		default: {
-			warning("Unsupported audio format");
-			return;
-		}
-	}
-
-	free(tmpBuf);
+	self->_driver->readBuffer((int16*) audiobuf, len / self->getsampsize());
 
 	self->bJustStartedPlaying = false;
 }
