@@ -41,7 +41,9 @@ DirectoryPlayer::DirectoryPlayer() : MusicPlayer(settings.audio.playMusic, setti
                                                                         "/music/winH/",
                                                                         "/music/winA/",
                                                                         "/music/winO/",
-                                                                        "/music/lose/",
+                                                                        "/music/loseH/",
+                                                                        "/music/loseA/",
+                                                                        "/music/loseO/",
                                                                         "/music/gamestats/",
                                                                         "/music/mapchoice/",
                                                                         "/music/meanwhile/",
@@ -51,10 +53,15 @@ DirectoryPlayer::DirectoryPlayer() : MusicPlayer(settings.audio.playMusic, setti
                                                                     };
 
     for(int i=0;i<MUSIC_NUM_MUSIC_TYPES;i++) {
+        char tmp[FILENAME_MAX];
+        const char* dirName =  musicDirectoryNames[i] + 1; // skip '/' at the beginning
+        fnkdat(dirName, tmp, FILENAME_MAX, FNKDAT_USER | FNKDAT_CREAT);
         musicFileList[i] = getMusicFileNames(configfilepath + musicDirectoryNames[i]);
     }
 
 	music = nullptr;
+
+    Mix_Init(MIX_INIT_FLUIDSYNTH | MIX_INIT_FLAC | MIX_INIT_MP3 | MIX_INIT_OGG);
 }
 
 DirectoryPlayer::~DirectoryPlayer() {
@@ -62,6 +69,8 @@ DirectoryPlayer::~DirectoryPlayer() {
 		Mix_FreeMusic(music);
 		music = nullptr;
 	}
+
+    Mix_Quit();
 }
 
 void DirectoryPlayer::changeMusic(MUSICTYPE musicType)
@@ -159,6 +168,11 @@ std::vector<std::string> DirectoryPlayer::getMusicFileNames(const std::string& d
 	}
 
 	tmp = getFileNamesList(dir,"wav",true);
+	for(iter = tmp.begin(); iter != tmp.end(); ++iter) {
+		files.push_back(dir + *iter);
+	}
+
+	tmp = getFileNamesList(dir,"flac",true);
 	for(iter = tmp.begin(); iter != tmp.end(); ++iter) {
 		files.push_back(dir + *iter);
 	}
