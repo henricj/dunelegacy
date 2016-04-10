@@ -174,7 +174,6 @@ public:
         bool        playMusic;
 		int         musicVolume;
 		std::string musicType;
-		int         frequency;
 	} audio;
 
 	class NetworkClass {

@@ -92,7 +92,7 @@ Mix_Chunk* SFXManager::loadMixFromADL(std::string adlFile, int index) {
         return nullptr;
     }
 
-    SoundAdlibPC *pSoundAdlibPC = new SoundAdlibPC(rwop, settings.audio.frequency);
+    SoundAdlibPC *pSoundAdlibPC = new SoundAdlibPC(rwop, AUDIO_FREQUENCY);
     Mix_Chunk* chunk = pSoundAdlibPC->getSubsong(index);
     delete pSoundAdlibPC;
     SDL_RWclose(rwop);

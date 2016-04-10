@@ -24,6 +24,8 @@
 #define SCREEN_MIN_HEIGHT	480
 #define SCREEN_DISPLAYINDEX 0
 
+#define AUDIO_FREQUENCY     44100
+
 #define DEFAULT_PORT		28747
 #define DEFAULT_METASERVER  "http://dunelegacy.sourceforge.net/metaserver/metaserver.php"
 
