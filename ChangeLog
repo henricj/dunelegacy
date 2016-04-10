@@ -3,7 +3,7 @@ version 0.96.4
 	* Port to SDL 2
 	* Use hardware acceleration for drawing
 	* Move to fix-point math for game logic as floating-point operations may differ between platforms and compilers
-	* ADL music playback replaced: Now combines ScummVM AdlibDriver with the relicensed OPL chip emulation code from MAME and some code from adplug
+	* ADL music playback replaced: Now combines ScummVM AdlibDriver with Woody OPL chip emulation code from adplug
 	* New key bindings: Cycle through construction yards with 'H' and factories with 'F'
 	* Improve performance of Fog of War
 	* Units can now be instructed to find the next repair yard on their own
