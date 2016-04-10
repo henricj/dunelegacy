@@ -81,7 +81,6 @@
 		<Unit filename="../../include/FileClasses/Cpsfile.h" />
 		<Unit filename="../../include/FileClasses/Decode.h" />
 		<Unit filename="../../include/FileClasses/FileManager.h" />
-		<Unit filename="../../include/FileClasses/Fntfile.h" />
 		<Unit filename="../../include/FileClasses/Font.h" />
 		<Unit filename="../../include/FileClasses/FontManager.h" />
 		<Unit filename="../../include/FileClasses/GFXManager.h" />
@@ -97,7 +96,6 @@
 		<Unit filename="../../include/FileClasses/PictureFactory.h" />
 		<Unit filename="../../include/FileClasses/PictureFont.h" />
 		<Unit filename="../../include/FileClasses/SFXManager.h" />
-		<Unit filename="../../include/FileClasses/SaveWAV.h" />
 		<Unit filename="../../include/FileClasses/Shpfile.h" />
 		<Unit filename="../../include/FileClasses/TextManager.h" />
 		<Unit filename="../../include/FileClasses/Vocfile.h" />
@@ -348,7 +346,6 @@
 		<Unit filename="../../src/FileClasses/Cpsfile.cpp" />
 		<Unit filename="../../src/FileClasses/Decode.cpp" />
 		<Unit filename="../../src/FileClasses/FileManager.cpp" />
-		<Unit filename="../../src/FileClasses/Fntfile.cpp" />
 		<Unit filename="../../src/FileClasses/FontManager.cpp" />
 		<Unit filename="../../src/FileClasses/GFXManager.cpp" />
 		<Unit filename="../../src/FileClasses/INIFile.cpp" />
@@ -362,7 +359,6 @@
 		<Unit filename="../../src/FileClasses/PictureFactory.cpp" />
 		<Unit filename="../../src/FileClasses/PictureFont.cpp" />
 		<Unit filename="../../src/FileClasses/SFXManager.cpp" />
-		<Unit filename="../../src/FileClasses/SaveWAV.cpp" />
 		<Unit filename="../../src/FileClasses/Shpfile.cpp" />
 		<Unit filename="../../src/FileClasses/TextManager.cpp" />
 		<Unit filename="../../src/FileClasses/Vocfile.cpp" />

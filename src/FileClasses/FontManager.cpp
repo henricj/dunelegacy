@@ -22,7 +22,6 @@
 #include <misc/draw_util.h>
 
 #include <FileClasses/FileManager.h>
-#include <FileClasses/Fntfile.h>
 #include <FileClasses/PictureFont.h>
 #include <FileClasses/LoadSavePNG.h>
 

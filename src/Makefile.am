@@ -102,9 +102,7 @@ dunelegacy_SOURCES =	AStarSearch.cpp\
 						FileClasses/TextManager.cpp\
 						FileClasses/Pakfile.cpp\
 						FileClasses/Decode.cpp\
-						FileClasses/Fntfile.cpp\
 						FileClasses/Cpsfile.cpp\
-						FileClasses/SaveWAV.cpp\
 						FileClasses/lodepng.cpp\
 						FileClasses/LoadSavePNG.cpp\
 						FileClasses/Shpfile.cpp\
