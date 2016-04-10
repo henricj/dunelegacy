@@ -299,7 +299,7 @@ void House::updateBuildLists() {
 void House::update() {
 	if (oldCredits != getCredits()) {
 		if((this == pLocalHouse) && (getCredits() > 0)) {
-			soundPlayer->playSound(CreditsTick);
+			soundPlayer->playSound(Sound_CreditsTick);
 		}
 		oldCredits = getCredits();
 	}

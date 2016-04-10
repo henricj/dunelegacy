@@ -176,7 +176,7 @@ void RadarView::update() {
 }
 
 void RadarView::switchRadarMode(bool bOn) {
-    soundPlayer->playSound(RadarNoise);
+    soundPlayer->playSound(Sound_RadarNoise);
 
     if(bOn == true) {
         soundPlayer->playVoice(RadarActivated,pLocalHouse->getHouseID());

@@ -2360,13 +2360,13 @@ bool Game::handlePlacementClick(int xPos, int yPos) {
             && (currentGameMap->getTile(xPos, yPos)->isConcrete() == false)) {
             getCommandManager().addCommand(Command(pLocalPlayer->getPlayerID(), CMD_PLACE_STRUCTURE,pBuilder->getObjectID(), xPos, yPos));
             //the user has tried to place and has been successful
-            soundPlayer->playSound(PlaceStructure);
+            soundPlayer->playSound(Sound_PlaceStructure);
             currentCursorMode = CursorMode_Normal;
             return true;
         } else {
             //the user has tried to place but clicked on impossible point
             currentGame->addToNewsTicker(_("@DUNE.ENG|135#Cannot place slab here."));
-            soundPlayer->playSound(InvalidAction);	//can't place noise
+            soundPlayer->playSound(Sound_InvalidAction);	//can't place noise
             return false;
         }
     } else if(placeItem == Structure_Slab4) {
@@ -2381,26 +2381,26 @@ bool Game::handlePlacementClick(int xPos, int yPos) {
 
             getCommandManager().addCommand(Command(pLocalPlayer->getPlayerID(), CMD_PLACE_STRUCTURE,pBuilder->getObjectID(), xPos, yPos));
             //the user has tried to place and has been successful
-            soundPlayer->playSound(PlaceStructure);
+            soundPlayer->playSound(Sound_PlaceStructure);
             currentCursorMode = CursorMode_Normal;
             return true;
         } else {
             //the user has tried to place but clicked on impossible point
             currentGame->addToNewsTicker(_("@DUNE.ENG|135#Cannot place slab here."));
-            soundPlayer->playSound(InvalidAction);	//can't place noise
+            soundPlayer->playSound(Sound_InvalidAction);	//can't place noise
             return false;
         }
     } else {
         if(currentGameMap->okayToPlaceStructure(xPos, yPos, structuresize.x, structuresize.y, false, pBuilder->getOwner())) {
             getCommandManager().addCommand(Command(pLocalPlayer->getPlayerID(), CMD_PLACE_STRUCTURE,pBuilder->getObjectID(), xPos, yPos));
             //the user has tried to place and has been successful
-            soundPlayer->playSound(PlaceStructure);
+            soundPlayer->playSound(Sound_PlaceStructure);
             currentCursorMode = CursorMode_Normal;
             return true;
         } else {
             //the user has tried to place but clicked on impossible point
             currentGame->addToNewsTicker(strprintf(_("@DUNE.ENG|134#Cannot place %%s here."), resolveItemName(placeItem).c_str()));
-            soundPlayer->playSound(InvalidAction);	//can't place noise
+            soundPlayer->playSound(Sound_InvalidAction);	//can't place noise
 
             // is this building area only blocked by units?
             if(currentGameMap->okayToPlaceStructure(xPos, yPos, structuresize.x, structuresize.y, false, pBuilder->getOwner(), true)) {

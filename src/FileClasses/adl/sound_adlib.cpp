@@ -2295,7 +2295,7 @@ SoundAdlibPC::SoundAdlibPC(SDL_RWops* rwop, int freq) : _driver(0), _trackEntrie
 
 	m_freq = freq;
 	m_format = AUDIO_S16LSB;
-	m_channels = 1;
+	m_channels = 2;
 
 	_driver = new AdlibDriver(m_freq);
 	assert(_driver);
@@ -2496,6 +2496,7 @@ void SoundAdlibPC::unk2() {
 Mix_Chunk* SoundAdlibPC::getSubsong(int Num) {
 	Uint8*	buf = NULL;
 	int		bufSize = 0;
+	bool	bSilent = true;
 
 	playTrack(Num);
 
@@ -2506,14 +2507,24 @@ Mix_Chunk* SoundAdlibPC::getSubsong(int Num) {
 			exit(EXIT_FAILURE);
 		}
 
+		memset(buf + bufSize - 1024, 0, 1024);
+
 		SoundAdlibPC::callback(this, buf + bufSize - 1024, 1024);
+
+		bSilent = true;
+		for(Uint8* p = buf + bufSize - 1024; p < buf + bufSize; p++) {
+			if(*p != 0) {
+				bSilent = false;
+				break;
+			}
+		}
 
 		if(bufSize > 1024*1024*16) {
 			fprintf(stderr,"SoundAdlibPC::getSubsong(): Decoding aborted after 16MB have been decoded.\n");
 			break;
 		}
 
-	} while(isPlaying());
+	} while(isPlaying() || !bSilent);
 
 	Mix_Chunk* myChunk;
 	if((myChunk = (Mix_Chunk*) SDL_calloc(sizeof(Mix_Chunk),1)) == NULL) {

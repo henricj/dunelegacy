@@ -117,18 +117,18 @@ bool BuilderList::handleMouseLeft(Sint32 x, Sint32 y, bool pressed) {
 		if(mouseLeftButton == getButton(x,y)) {
 			// button released
 			if((getItemIDFromIndex(mouseLeftButton) == (int) pBuilder->getCurrentProducedItem()) && (pBuilder->isWaitingToPlace() == true)) {
-				soundPlayer->playSound(ButtonClick);
+				soundPlayer->playSound(Sound_ButtonClick);
 				if(currentGame->currentCursorMode == Game::CursorMode_Placing) {
                     currentGame->currentCursorMode = Game::CursorMode_Normal;
 				} else {
 				    currentGame->currentCursorMode = Game::CursorMode_Placing;
 				}
 			} else if((getItemIDFromIndex(mouseLeftButton) == (int) pBuilder->getCurrentProducedItem()) && (pBuilder->isOnHold() == true)) {
-				soundPlayer->playSound(ButtonClick);
+				soundPlayer->playSound(Sound_ButtonClick);
                 pBuilder->handleSetOnHoldClick(false);
 			} else {
 			    if(getItemIDFromIndex(mouseLeftButton) != ItemID_Invalid) {
-                    soundPlayer->playSound(ButtonClick);
+                    soundPlayer->playSound(Sound_ButtonClick);
                     pBuilder->handleProduceItemClick(getItemIDFromIndex(mouseLeftButton), SDL_GetModState() & KMOD_SHIFT);
 			    }
 			}
@@ -156,11 +156,11 @@ bool BuilderList::handleMouseRight(Sint32 x, Sint32 y, bool pressed) {
 		if(mouseRightButton == getButton(x,y)) {
 			// button released
 			if((getItemIDFromIndex(mouseRightButton) == (int) pBuilder->getCurrentProducedItem()) && (pBuilder->isOnHold() == false)) {
-				soundPlayer->playSound(ButtonClick);
+				soundPlayer->playSound(Sound_ButtonClick);
 				pBuilder->handleSetOnHoldClick(true);
 			} else {
 			    if(getItemIDFromIndex(mouseRightButton) != ItemID_Invalid) {
-			        soundPlayer->playSound(ButtonClick);
+			        soundPlayer->playSound(Sound_ButtonClick);
                     pBuilder->handleCancelItemClick(getItemIDFromIndex(mouseRightButton), SDL_GetModState() & KMOD_SHIFT);
 			    }
 			}

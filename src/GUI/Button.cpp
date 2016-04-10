@@ -70,7 +70,7 @@ bool Button::handleMouseLeft(Sint32 x, Sint32 y, bool pressed) {
 		// button pressed
 		bPressed = true;
 		if(!bToggleButton) {
-			soundPlayer->playSound(ButtonClick);
+			soundPlayer->playSound(Sound_ButtonClick);
 		}
 	} else {
 		// button released
@@ -80,7 +80,7 @@ bool Button::handleMouseLeft(Sint32 x, Sint32 y, bool pressed) {
 				bool oldState = getToggleState();
 				setToggleState(!bToggleState);
 				if(getToggleState() != oldState) {
-					soundPlayer->playSound(ButtonClick);
+					soundPlayer->playSound(Sound_ButtonClick);
 				}
 			}
 
@@ -107,10 +107,10 @@ bool Button::handleKeyPress(SDL_KeyboardEvent& key) {
 			bool oldState = getToggleState();
 			setToggleState(!bToggleState);
 			if(getToggleState() != oldState) {
-				soundPlayer->playSound(ButtonClick);
+				soundPlayer->playSound(Sound_ButtonClick);
 			}
 		} else {
-			soundPlayer->playSound(ButtonClick);
+			soundPlayer->playSound(Sound_ButtonClick);
 		}
 
 		if(pOnClick) {
@@ -119,7 +119,7 @@ bool Button::handleKeyPress(SDL_KeyboardEvent& key) {
 	}
 
 	if((bToggleButton == false) && (SDL_GetModState() == KMOD_NONE) && (key.keysym.sym == SDLK_RETURN)) {
-		soundPlayer->playSound(ButtonClick);
+		soundPlayer->playSound(Sound_ButtonClick);
 
 		if(pOnClick) {
 			pOnClick();

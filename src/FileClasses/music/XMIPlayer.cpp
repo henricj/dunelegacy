@@ -127,9 +127,19 @@ void XMIPlayer::changeMusic(MUSICTYPE musicType)
 		    musicNum = 4;
 		} break;
 
-		case MUSIC_LOSE: {
+		case MUSIC_LOSE_H: {
 		    filename = "DUNE1.XMI";
 		    musicNum = 4;
+		} break;
+
+		case MUSIC_LOSE_A: {
+		    filename = "DUNE1.XMI";
+		    musicNum = 5;
+		} break;
+
+		case MUSIC_LOSE_O: {
+		    filename = "DUNE1.XMI";
+		    musicNum = 3;
 		} break;
 
         case MUSIC_GAMESTAT: {

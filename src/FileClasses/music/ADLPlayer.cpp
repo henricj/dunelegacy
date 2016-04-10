@@ -118,9 +118,19 @@ void ADLPlayer::changeMusic(MUSICTYPE musicType)
 		    musicNum = 4;
 		} break;
 
-		case MUSIC_LOSE: {
+		case MUSIC_LOSE_H: {
 		    filename = "DUNE1.ADL";
 		    musicNum = 4;
+		} break;
+
+		case MUSIC_LOSE_A: {
+		    filename = "DUNE1.ADL";
+		    musicNum = 5;
+		} break;
+
+		case MUSIC_LOSE_O: {
+		    filename = "DUNE1.ADL";
+		    musicNum = 3;
 		} break;
 
         case MUSIC_GAMESTAT: {

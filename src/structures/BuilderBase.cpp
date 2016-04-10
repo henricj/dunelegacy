@@ -438,7 +438,7 @@ void BuilderBase::handleProduceItemClick(Uint32 itemID, bool multipleMode) {
 		if(iter->itemID == itemID) {
             if(currentGame->getGameInitSettings().getGameOptions().onlyOnePalace && itemID == Structure_Palace && (iter->num > 0 || owner->getNumItems(Structure_Palace) > 0)) {
                 // only one palace allowed
-                soundPlayer->playSound(InvalidAction);
+                soundPlayer->playSound(Sound_InvalidAction);
                 return;
             }
 		}

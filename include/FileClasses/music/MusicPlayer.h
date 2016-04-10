@@ -35,7 +35,9 @@ typedef enum {  MUSIC_ATTACK = 0,   /*!< Played when at least one of player's un
                 MUSIC_WIN_H,        /*!< Harkonnen victory screen background music.. */
                 MUSIC_WIN_A,        /*!< Atreides victory screen background music.. */
                 MUSIC_WIN_O,        /*!< Ordos victory screen background music.. */
-                MUSIC_LOSE,         /*!< Failure screen background music. */
+                MUSIC_LOSE_H,       /*!< Harkonnen failure screen background music.. */
+                MUSIC_LOSE_A,       /*!< Atreides failure screen background music.. */
+                MUSIC_LOSE_O,       /*!< Ordos failure screen background music.. */
                 MUSIC_GAMESTAT,     /*!< Game statistics background music. */
                 MUSIC_MAPCHOICE,    /*!< The map choice background music. */
                 MUSIC_MEANWHILE,    /*!< Meanwhile cutscene background music. */

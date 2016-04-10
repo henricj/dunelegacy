@@ -21,12 +21,15 @@
 
 #include <FileClasses/FileManager.h>
 #include <FileClasses/Vocfile.h>
-#include <FileClasses/SaveWAV.h>
 
 #include <FileClasses/adl/sound_adlib.h>
 
 #include <misc/sound_util.h>
 
+// Not used:
+// - EXCANNON.VOC (same as EXSMALL.VOC)
+// - DROPEQ2P.VOC
+// - POPPA.VOC
 
 SFXManager::SFXManager() {
 	// load voice and language specific sounds
@@ -89,7 +92,7 @@ Mix_Chunk* SFXManager::loadMixFromADL(std::string adlFile, int index) {
         return nullptr;
     }
 
-    SoundAdlibPC *pSoundAdlibPC = new SoundAdlibPC(rwop, false);
+    SoundAdlibPC *pSoundAdlibPC = new SoundAdlibPC(rwop, settings.audio.frequency);
     Mix_Chunk* chunk = pSoundAdlibPC->getSubsong(index);
     delete pSoundAdlibPC;
     SDL_RWclose(rwop);
@@ -250,12 +253,12 @@ void SFXManager::loadEnglishVoice() {
 	soundChunk[HouseOrdos] = getChunkFromFile("MORDOS.VOC");
 
 	// Sfx
-	soundChunk[PlaceStructure] = getChunkFromFile("EXDUD.VOC");
-	soundChunk[ButtonClick] = getChunkFromFile("BUTTON.VOC");
-	soundChunk[InvalidAction] = Mix_LoadWAV_RW(pFileManager->openFile("CANNOT.WAV"),1); // LoadMixFromADL("DUNE9.ADL", 47);
-	soundChunk[CreditsTick] = Mix_LoadWAV_RW(pFileManager->openFile("CREDIT.WAV"),1);   // LoadMixFromADL("DUNE9.ADL", 38);
-	soundChunk[Tick] = Mix_LoadWAV_RW(pFileManager->openFile("TICK.WAV"),1);
-	soundChunk[RadarNoise] = getChunkFromFile("STATICP.VOC");
+	soundChunk[Sound_PlaceStructure] = getChunkFromFile("EXDUD.VOC");
+	soundChunk[Sound_ButtonClick] = getChunkFromFile("BUTTON.VOC");
+	soundChunk[Sound_InvalidAction] = loadMixFromADL("DUNE1.ADL", 47);
+	soundChunk[Sound_CreditsTick] = loadMixFromADL("DUNE1.ADL", 52);
+	soundChunk[Sound_Tick] = loadMixFromADL("DUNE1.ADL", 38);
+	soundChunk[Sound_RadarNoise] = getChunkFromFile("STATICP.VOC");
 	soundChunk[Sound_ExplosionGas] = getChunkFromFile("EXGAS.VOC");
 	soundChunk[Sound_ExplosionTiny] = getChunkFromFile("EXTINY.VOC");
 	soundChunk[Sound_ExplosionSmall] = getChunkFromFile("EXSMALL.VOC");
@@ -271,11 +274,11 @@ void SFXManager::loadEnglishVoice() {
 	soundChunk[Sound_Scream3] = getChunkFromFile("VSCREAM3.VOC");
 	soundChunk[Sound_Scream4] = getChunkFromFile("VSCREAM4.VOC");
 	soundChunk[Sound_Scream5] = getChunkFromFile("VSCREAM5.VOC");
-	soundChunk[Sound_Trumpet] = Mix_LoadWAV_RW(pFileManager->openFile("TRUMPET.WAV"),1);    // LoadMixFromADL("DUNE9.ADL", 30);
-	soundChunk[Sound_Drop] = Mix_LoadWAV_RW(pFileManager->openFile("DROP.WAV"),1);          // LoadMixFromADL("DUNE9.ADL", 24);
+	soundChunk[Sound_Trumpet] = loadMixFromADL("DUNE1.ADL", 30);
+	soundChunk[Sound_Drop] = loadMixFromADL("DUNE1.ADL", 24);
 	soundChunk[Sound_Squashed] = getChunkFromFile("SQUISH2.VOC");
 	soundChunk[Sound_MachineGun] = getChunkFromFile("GUNMULTI.VOC");
-	soundChunk[Sound_Sonic] = Mix_LoadWAV_RW(pFileManager->openFile("SONIC.WAV"),1);
+	soundChunk[Sound_Sonic] = loadMixFromADL("DUNE1.ADL", 43);
 	soundChunk[Sound_RocketSmall] = getChunkFromFile("MISLTINP.VOC");
 }
 
@@ -382,12 +385,12 @@ void SFXManager::loadNonEnglishVoice(std::string languagePrefix) {
 	soundChunk[HouseHarkonnen] = getChunkFromFile(languagePrefix + "HARK.VOC");
 
 	// Sfx
-	soundChunk[PlaceStructure] = getChunkFromFile("EXDUD.VOC");
-	soundChunk[ButtonClick] = getChunkFromFile("BUTTON.VOC");
-	soundChunk[InvalidAction] = Mix_LoadWAV_RW(pFileManager->openFile("CANNOT.WAV"),1); // LoadMixFromADL("DUNE9.ADL", 47);
-	soundChunk[CreditsTick] = Mix_LoadWAV_RW(pFileManager->openFile("CREDIT.WAV"),1);   // LoadMixFromADL("DUNE9.ADL", 38);
-	soundChunk[Tick] = Mix_LoadWAV_RW(pFileManager->openFile("TICK.WAV"),1);
-	soundChunk[RadarNoise] = getChunkFromFile("STATICP.VOC");
+	soundChunk[Sound_PlaceStructure] = getChunkFromFile("EXDUD.VOC");
+	soundChunk[Sound_ButtonClick] = getChunkFromFile("BUTTON.VOC");
+	soundChunk[Sound_InvalidAction] =  loadMixFromADL("DUNE1.ADL", 47);
+	soundChunk[Sound_CreditsTick] = loadMixFromADL("DUNE1.ADL", 52);
+	soundChunk[Sound_Tick] = loadMixFromADL("DUNE1.ADL", 38);
+	soundChunk[Sound_RadarNoise] = getChunkFromFile("STATICP.VOC");
 	soundChunk[Sound_ExplosionGas] = getChunkFromFile("EXGAS.VOC");
 	soundChunk[Sound_ExplosionTiny] = getChunkFromFile("EXTINY.VOC");
 	soundChunk[Sound_ExplosionSmall] = getChunkFromFile("EXSMALL.VOC");
@@ -403,11 +406,11 @@ void SFXManager::loadNonEnglishVoice(std::string languagePrefix) {
 	soundChunk[Sound_Scream3] = getChunkFromFile("VSCREAM3.VOC");
 	soundChunk[Sound_Scream4] = getChunkFromFile("VSCREAM4.VOC");
 	soundChunk[Sound_Scream5] = getChunkFromFile("VSCREAM5.VOC");
-	soundChunk[Sound_Trumpet] = Mix_LoadWAV_RW(pFileManager->openFile("TRUMPET.WAV"),1);    // LoadMixFromADL("DUNE9.ADL", 30);
-	soundChunk[Sound_Drop] = Mix_LoadWAV_RW(pFileManager->openFile("DROP.WAV"),1);          // LoadMixFromADL("DUNE9.ADL", 24);
+	soundChunk[Sound_Trumpet] = loadMixFromADL("DUNE1.ADL", 30);
+	soundChunk[Sound_Drop] = loadMixFromADL("DUNE1.ADL", 24);
 	soundChunk[Sound_Squashed] = getChunkFromFile("SQUISH2.VOC");
 	soundChunk[Sound_MachineGun] = getChunkFromFile("GUNMULTI.VOC");
-	soundChunk[Sound_Sonic] = Mix_LoadWAV_RW(pFileManager->openFile("SONIC.WAV"),1);
+	soundChunk[Sound_Sonic] = loadMixFromADL("DUNE1.ADL", 43);
 	soundChunk[Sound_RocketSmall] = getChunkFromFile("MISLTINP.VOC");
 }
 

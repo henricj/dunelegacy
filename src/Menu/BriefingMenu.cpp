@@ -109,7 +109,22 @@ int BriefingMenu::showMenu()
 
         case DEBRIEFING_LOST:
         {
-            musicPlayer->changeMusic(MUSIC_LOSE);
+            switch(house) {
+                case HOUSE_HARKONNEN:
+                case HOUSE_SARDAUKAR: {
+                    musicPlayer->changeMusic(MUSIC_LOSE_H);
+                } break;
+
+                case HOUSE_ATREIDES:
+                case HOUSE_FREMEN: {
+                    musicPlayer->changeMusic(MUSIC_LOSE_A);
+                } break;
+
+                case HOUSE_ORDOS:
+                case HOUSE_MERCENARY: {
+                    musicPlayer->changeMusic(MUSIC_LOSE_O);
+                } break;
+            }
         } break;
 
         case BRIEFING:

@@ -104,7 +104,7 @@ void StarPort::handleProduceItemClick(Uint32 itemID, bool multipleMode) {
     int numAvailable = choam.getNumAvailable(itemID);
 
     if(numAvailable <= 0) {
-        soundPlayer->playSound(InvalidAction);
+        soundPlayer->playSound(Sound_InvalidAction);
         currentGame->addToNewsTicker(_("This unit is sold out"));
         return;
     }
@@ -113,7 +113,7 @@ void StarPort::handleProduceItemClick(Uint32 itemID, bool multipleMode) {
 	for(iter = buildList.begin(); iter != buildList.end(); ++iter) {
 		if(iter->itemID == itemID) {
 		    if((owner->getCredits() < (int) iter->price)) {
-		        soundPlayer->playSound(InvalidAction);
+		        soundPlayer->playSound(Sound_InvalidAction);
                 currentGame->addToNewsTicker(_("Not enough money"));
                 return;
 		    }
