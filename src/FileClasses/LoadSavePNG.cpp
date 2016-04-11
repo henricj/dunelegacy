@@ -23,6 +23,7 @@
 #include <globals.h>
 
 #include <stdexcept>
+#include <stdio.h>
 
 SDL_Surface* LoadPNG_RW(SDL_RWops* RWop, int freesrc) {
     if(RWop == nullptr) {
