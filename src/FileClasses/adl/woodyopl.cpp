@@ -576,7 +576,9 @@ void adlib_timeout(Bitu val) {
 
 
 void OPLChipClass::adlib_write(Bitu idx, Bit8u val, Bitu second_set) {
-//	if (((adlibreg[0x105]&1)==0) && (idx!=5)) second_set = 0;
+//	if (((adlibreg[0x105]&1)==0) && (idx!=5))
+    second_set = 0;     // second_set is 0 anyways, but this fixes some warnings
+
 	idx += second_set;		// add 0x100 for second register set
 	Bit8u old_val = adlibreg[idx];
 	adlibreg[idx] = val;

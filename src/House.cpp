@@ -305,7 +305,7 @@ void House::update() {
 	}
 
 	if(storedCredits > capacity) {
-		storedCredits--;
+		--storedCredits;
 		if(storedCredits < 0) {
 		 storedCredits = 0;
 		}

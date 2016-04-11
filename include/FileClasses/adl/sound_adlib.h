@@ -118,7 +118,6 @@ private:
 	Uint16 m_format;
 
 	bool bJustStartedPlaying;
-	bool bFinishedPlaying;
 
 	int volume;
 };

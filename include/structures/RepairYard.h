@@ -39,8 +39,8 @@ public:
 
 	inline void book() { bookings++; }
 	inline void unBook() { bookings--; }
-	inline void assignUnit(ObjectPointer newUnit) { repairUnit = newUnit; repairing = true; }
-	inline bool isFree() const { return !repairing; }
+	inline void assignUnit(ObjectPointer newUnit) { repairUnit = newUnit; repairingAUnit = true; }
+	inline bool isFree() const { return !repairingAUnit; }
 	inline int getNumBookings() const { return bookings; }	//number of harvesters goings there
 	inline const UnitBase* getRepairUnit() const { return repairUnit.getUnitPointer(); }
 	inline UnitBase* getRepairUnit() { return repairUnit.getUnitPointer(); }
@@ -53,7 +53,7 @@ protected:
 	virtual void updateStructureSpecificStuff();
 
 private:
-	bool            repairing;      ///< Currently repairing?
+	bool            repairingAUnit; ///< Currently repairing?
 	ObjectPointer   repairUnit;     ///< The unit to repair
 	Uint32          bookings;       ///< Number of bookings for this repair yard
 };

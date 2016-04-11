@@ -35,13 +35,13 @@ RepairYard::RepairYard(House* newOwner) : StructureBase(newOwner) {
 
     setHealth(getMaxHealth());
     bookings = 0;
-	repairing = false;
+	repairingAUnit = false;
 }
 
 RepairYard::RepairYard(InputStream& stream) : StructureBase(stream) {
     RepairYard::init();
 
-	repairing = stream.readBool();
+	repairingAUnit = stream.readBool();
 	repairUnit.load(stream);
 	bookings = stream.readUint32();
 }
@@ -62,7 +62,7 @@ void RepairYard::init() {
 }
 
 RepairYard::~RepairYard() {
-    if(repairing) {
+    if(repairingAUnit) {
 		unBook();
 		repairUnit.getUnitPointer()->destroy();
 	}
@@ -71,7 +71,7 @@ RepairYard::~RepairYard() {
 void RepairYard::save(OutputStream& stream) const {
 	StructureBase::save(stream);
 
-	stream.writeBool(repairing);
+	stream.writeBool(repairingAUnit);
 	repairUnit.save(stream);
 	stream.writeUint32(bookings);
 }
@@ -87,7 +87,7 @@ ObjectInterface* RepairYard::getInterfaceContainer() {
 
 void RepairYard::deployRepairUnit(Carryall* pCarryall) {
 	unBook();
-	repairing = false;
+	repairingAUnit = false;
 	firstAnimFrame = 2;
 	lastAnimFrame = 5;
 
@@ -129,7 +129,7 @@ void RepairYard::deployRepairUnit(Carryall* pCarryall) {
 }
 
 void RepairYard::updateStructureSpecificStuff() {
-	if(repairing) {
+	if(repairingAUnit) {
 		if(curAnimFrame < 6) {
 			firstAnimFrame = 6;
 			lastAnimFrame = 9;
@@ -143,7 +143,7 @@ void RepairYard::updateStructureSpecificStuff() {
 		}
 	}
 
-	if(repairing == true) {
+	if(repairingAUnit == true) {
 	    UnitBase* pRepairUnit = repairUnit.getUnitPointer();
 
 		if (pRepairUnit->getHealth()*100/pRepairUnit->getMaxHealth() < 100) {
