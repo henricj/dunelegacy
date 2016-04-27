@@ -397,19 +397,19 @@ int main(int argc, char *argv[]) {
 
         pLogfilePath = szLogPath;
 
-        // we first need to open two separate log files (.err and .out)
-        char szErrPath[MAX_PATH];
-        strcpy(szErrPath, pLogfilePath);
-        strcpy(szErrPath + strlen(szErrPath) - 3, "err");
-        freopen(szErrPath, "w", stderr);
-        setbuf(stderr, nullptr);   // No buffering
-        char szOutPath[MAX_PATH];
-        strcpy(szOutPath, pLogfilePath);
-        strcpy(szOutPath + strlen(szOutPath) - 3, "out");
-        freopen(szOutPath, "w", stdout);
-        setvbuf(stdout, nullptr, _IOLBF, BUFSIZ);	// buffering line-wise
+        if(freopen(pLogfilePath, "w", stdout) == NULL) {
+            fprintf(stderr, "Reopening logfile '%s' as stdout failed\n", pLogfilePath);
+            exit(EXIT_FAILURE);
+        }
+        setbuf(stdout, nullptr);   // No buffering
 
-        #endif
+        if(dup2(fileno(stdout), fileno(stderr)) < 0) {
+            fprintf(stderr, "Redirecting stderr to stdout failed\n");
+            exit(EXIT_FAILURE);
+        }
+        setbuf(stderr, nullptr);   // No buffering
+
+        #else
 
         int d = open(pLogfilePath, O_WRONLY | O_CREAT | O_TRUNC, 0644);
         if(d < 0) {
@@ -428,10 +428,6 @@ int main(int argc, char *argv[]) {
             exit(EXIT_FAILURE);
         }
 
-        #ifdef _WIN32
-        // delete temporal log files again
-        remove(szErrPath);
-        remove(szOutPath);
         #endif
 	}
 
