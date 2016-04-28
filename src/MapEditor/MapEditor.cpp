@@ -306,7 +306,7 @@ void MapEditor::setEditorMode(const EditorMode& newEditorMode) {
 }
 
 void MapEditor::startOperation() {
-    if(undoOperationStack.empty() || (typeid(*undoOperationStack.top().get()) != typeid(MapEditorStartOperation))) {
+    if(undoOperationStack.empty() || !std::dynamic_pointer_cast<MapEditorStartOperation>( undoOperationStack.top() )) {
         addUndoOperation(std::shared_ptr<MapEditorOperation>(new MapEditorStartOperation()));
     }
 }
@@ -315,7 +315,7 @@ void MapEditor::undoLastOperation() {
     if(!undoOperationStack.empty()) {
         redoOperationStack.push(std::shared_ptr<MapEditorOperation>(new MapEditorStartOperation()));
 
-        while((!undoOperationStack.empty()) && (typeid(*undoOperationStack.top().get()) != typeid(MapEditorStartOperation))) {
+        while((!undoOperationStack.empty()) && !std::dynamic_pointer_cast<MapEditorStartOperation>( undoOperationStack.top() )) {
             redoOperationStack.push(undoOperationStack.top()->perform(this));
             undoOperationStack.pop();
         }
@@ -330,7 +330,7 @@ void MapEditor::redoLastOperation() {
     if(!redoOperationStack.empty()) {
         undoOperationStack.push(std::shared_ptr<MapEditorOperation>(new MapEditorStartOperation()));
 
-        while((!redoOperationStack.empty()) && (typeid(*redoOperationStack.top().get()) != typeid(MapEditorStartOperation))) {
+        while((!redoOperationStack.empty()) && !std::dynamic_pointer_cast<MapEditorStartOperation>( redoOperationStack.top() )) {
             undoOperationStack.push(redoOperationStack.top()->perform(this));
             redoOperationStack.pop();
         }

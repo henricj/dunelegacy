@@ -40,7 +40,7 @@ class  ChoamWindow : public Window
 {
 public:
 
-    ChoamWindow(MapEditor* pMapEditor, HOUSETYPE house);
+    ChoamWindow(MapEditor* pMapEditor, HOUSETYPE currentHouse);
 
 
 	/**

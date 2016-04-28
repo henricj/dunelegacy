@@ -299,9 +299,7 @@ Coord SmartBot::findPlaceLocation(Uint32 itemID) {
 
                     for(int y = 0 ; y < currentGameMap->getSizeY(); y++) {
                         for(int x = 0; x < currentGameMap->getSizeX(); x++) {
-                            int type = currentGameMap->getTile(x,y)->getType();
-
-                            if(type != Terrain_Rock || type != Terrain_Slab || type != Terrain_Mountain) {
+                            if(currentGameMap->getTile(x,y)->isRock() == false) {
                                 FixPoint tmp = blockDistance(pos, Coord(x,y));
                                 if(tmp < nearestSand) {
                                     nearestSand = tmp;

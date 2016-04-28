@@ -78,7 +78,7 @@
 void setVideoMode();
 void realign_buttons();
 
-void printUsage() {
+static void printUsage() {
     fprintf(stderr, "Usage:\n\tdunelegacy [--showlog] [--fullscreen|--window] [--PlayerName=X] [--ServerPort=X]\n");
 }
 

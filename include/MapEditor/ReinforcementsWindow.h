@@ -42,7 +42,7 @@ class  ReinforcementsWindow : public Window
 {
 public:
 
-    ReinforcementsWindow(MapEditor* pMapEditor, HOUSETYPE house);
+    ReinforcementsWindow(MapEditor* pMapEditor, HOUSETYPE currentHouse);
 
 
 	/**

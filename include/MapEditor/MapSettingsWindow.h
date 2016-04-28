@@ -40,7 +40,7 @@ class  MapSettingsWindow : public Window
 {
 public:
 
-    MapSettingsWindow(MapEditor* pMapEditor, HOUSETYPE house);
+    MapSettingsWindow(MapEditor* pMapEditor, HOUSETYPE currentHouse);
 
 
 	/**

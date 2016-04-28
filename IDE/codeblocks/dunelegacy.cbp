@@ -46,7 +46,7 @@
 			<Add option="-Wextra" />
 			<Add option="-Wall" />
 			<Add option="-std=c++11" />
-			<Add option="`sdl2-config --cflags` -Wno-unused-parameter -Wno-unknown-pragmas" />
+			<Add option="`sdl2-config --cflags` -Wno-unused-parameter -Wno-unknown-pragmas -Wlogical-op" />
 			<Add directory="../../include" />
 		</Compiler>
 		<Linker>

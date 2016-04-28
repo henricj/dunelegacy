@@ -30,7 +30,7 @@
 
 
 
-PlayerSettingsWindow::PlayerSettingsWindow(MapEditor* pMapEditor, HOUSETYPE house) : Window(0,0,0,0), pMapEditor(pMapEditor), house(house) {
+PlayerSettingsWindow::PlayerSettingsWindow(MapEditor* pMapEditor, HOUSETYPE currentHouse) : Window(0,0,0,0), pMapEditor(pMapEditor), house(currentHouse) {
 
     color = SDL2RGB(palette[houseToPaletteIndex[house]+3]);
 

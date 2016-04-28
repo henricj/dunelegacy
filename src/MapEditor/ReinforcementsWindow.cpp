@@ -31,8 +31,8 @@
 #include <FileClasses/GFXManager.h>
 #include <FileClasses/TextManager.h>
 
-ReinforcementsWindow::ReinforcementsWindow(MapEditor* pMapEditor, HOUSETYPE house)
- : Window(0,0,0,0), pMapEditor(pMapEditor), house(house), reinforcements(pMapEditor->getReinforcements()) {
+ReinforcementsWindow::ReinforcementsWindow(MapEditor* pMapEditor, HOUSETYPE currentHouse)
+ : Window(0,0,0,0), pMapEditor(pMapEditor), house(currentHouse), reinforcements(pMapEditor->getReinforcements()) {
 
     color = SDL2RGB(palette[houseToPaletteIndex[house]+3]);
 

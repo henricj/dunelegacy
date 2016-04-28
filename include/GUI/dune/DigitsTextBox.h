@@ -223,7 +223,6 @@ private:
 	int             incrementValue;
 
     HOUSETYPE       house;
-	Uint32          color;
 };
 
 

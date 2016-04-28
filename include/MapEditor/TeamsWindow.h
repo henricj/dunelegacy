@@ -41,7 +41,7 @@ class  TeamsWindow : public Window
 {
 public:
 
-    TeamsWindow(MapEditor* pMapEditor, HOUSETYPE house);
+    TeamsWindow(MapEditor* pMapEditor, HOUSETYPE currentHouse);
 
 
 	/**

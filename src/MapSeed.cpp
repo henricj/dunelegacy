@@ -103,7 +103,7 @@ static const Sint8 sinus[256] = {
 	\param Ycoord	The coordinate in y-direction
 	\return The 1-dimensional coordinate
 */
-Sint16 MapArray2DToMapArray1D(Sint16 Xcoord,Sint16 Ycoord) {
+static Sint16 MapArray2DToMapArray1D(Sint16 Xcoord,Sint16 Ycoord) {
 	return Xcoord | (Ycoord << 6);
 }
 
@@ -114,7 +114,7 @@ Sint16 MapArray2DToMapArray1D(Sint16 Xcoord,Sint16 Ycoord) {
 	\param Ycoord	The coordinate in y-direction
 	\return The 1-dimensional coordinate
 */
-Sint16 MapArray2DToMapArray1D_OOB(Sint16 Xcoord,Sint16 Ycoord) {
+static Sint16 MapArray2DToMapArray1D_OOB(Sint16 Xcoord,Sint16 Ycoord) {
 	return MapArray2DToMapArray1D(Xcoord & 0x3F,Ycoord);
 }
 
@@ -125,7 +125,7 @@ Sint16 MapArray2DToMapArray1D_OOB(Sint16 Xcoord,Sint16 Ycoord) {
 	\param	pMapArray	Pointer to the map that should be smoothed
 	\return none
 */
-void SmoothNeighbourhood(Sint16 index, Uint32* pMapArray) {
+static void SmoothNeighbourhood(Sint16 index, Uint32* pMapArray) {
 	Sint16 TileType;
 	Sint16 Xcoord;
 	Sint16 Ycoord;
@@ -167,7 +167,7 @@ void SmoothNeighbourhood(Sint16 index, Uint32* pMapArray) {
 	Creates new random value.
 	\return	The new random value
 */
-Uint16 SeedRand() {
+static Uint16 SeedRand() {
 	Uint8 a;
 	Uint8 carry;
 	Uint8 old_carry;

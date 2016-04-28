@@ -26,7 +26,7 @@
 
 #include <algorithm>
 
-bool compareCommands(Command cmd1, Command cmd2) {
+static bool compareCommands(Command cmd1, Command cmd2) {
     return (cmd1.getPlayerID() < cmd2.getPlayerID());
 }
 

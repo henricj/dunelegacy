@@ -41,7 +41,7 @@ class  PlayerSettingsWindow : public Window
 {
 public:
 
-    PlayerSettingsWindow(MapEditor* pMapEditor, HOUSETYPE house);
+    PlayerSettingsWindow(MapEditor* pMapEditor, HOUSETYPE currentHouse);
 
 
 	/**

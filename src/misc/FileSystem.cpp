@@ -54,8 +54,8 @@ std::list<std::string> getFileNamesList(std::string directory, std::string exten
     return FileNames;
 }
 
-bool cmp_Name_Asc(FileInfo& a, FileInfo& b) { return (a.name.compare(b.name) < 0); }
-bool cmp_Name_CaseInsensitive_Asc(FileInfo& a, FileInfo& b) {
+static bool cmp_Name_Asc(FileInfo& a, FileInfo& b) { return (a.name.compare(b.name) < 0); }
+static bool cmp_Name_CaseInsensitive_Asc(FileInfo& a, FileInfo& b) {
   unsigned int i=0;
   while((i < a.name.length()) && (i < b.name.length())) {
     if(tolower(a.name[i]) < tolower(b.name[i])) {
@@ -69,8 +69,8 @@ bool cmp_Name_CaseInsensitive_Asc(FileInfo& a, FileInfo& b) {
   return (a.name.length() < b.name.length());
 }
 
-bool cmp_Name_Dsc(FileInfo& a, FileInfo& b) { return (a.name.compare(b.name) > 0); }
-bool cmp_Name_CaseInsensitive_Dsc(FileInfo& a, FileInfo& b) {
+static bool cmp_Name_Dsc(FileInfo& a, FileInfo& b) { return (a.name.compare(b.name) > 0); }
+static bool cmp_Name_CaseInsensitive_Dsc(FileInfo& a, FileInfo& b) {
   unsigned int i=0;
   while((i < a.name.length()) && (i < b.name.length())) {
     if(tolower(a.name[i]) < tolower(b.name[i])) {
@@ -84,11 +84,11 @@ bool cmp_Name_CaseInsensitive_Dsc(FileInfo& a, FileInfo& b) {
   return (a.name.length() > b.name.length());
 }
 
-bool cmp_Size_Asc(FileInfo& a, FileInfo& b) { return a.size < b.size; }
-bool cmp_Size_Dsc(FileInfo& a, FileInfo& b) { return a.size > b.size; }
+static bool cmp_Size_Asc(FileInfo& a, FileInfo& b) { return a.size < b.size; }
+static bool cmp_Size_Dsc(FileInfo& a, FileInfo& b) { return a.size > b.size; }
 
-bool cmp_ModifyDate_Asc(FileInfo& a, FileInfo& b) { return a.modifydate < b.modifydate; }
-bool cmp_ModifyDate_Dsc(FileInfo& a, FileInfo& b) { return a.modifydate > b.modifydate; }
+static bool cmp_ModifyDate_Asc(FileInfo& a, FileInfo& b) { return a.modifydate < b.modifydate; }
+static bool cmp_ModifyDate_Dsc(FileInfo& a, FileInfo& b) { return a.modifydate > b.modifydate; }
 
 std::list<FileInfo> getFileList(std::string directory, std::string extension, bool bIgnoreCase, FileListOrder fileListOrder)
 {

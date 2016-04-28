@@ -29,8 +29,8 @@
 #include <FileClasses/GFXManager.h>
 #include <FileClasses/TextManager.h>
 
-TeamsWindow::TeamsWindow(MapEditor* pMapEditor, HOUSETYPE house)
- : Window(0,0,0,0), pMapEditor(pMapEditor), house(house), teams(pMapEditor->getTeams()) {
+TeamsWindow::TeamsWindow(MapEditor* pMapEditor, HOUSETYPE currentHouse)
+ : Window(0,0,0,0), pMapEditor(pMapEditor), house(currentHouse), teams(pMapEditor->getTeams()) {
 
     color = SDL2RGB(palette[houseToPaletteIndex[house]+3]);
 

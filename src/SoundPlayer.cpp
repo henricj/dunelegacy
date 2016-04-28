@@ -29,7 +29,7 @@ Mix_Chunk* curVoiceChunk = nullptr;
 int voiceChannel = 0;
 bool PlayingVoiceATM = false;
 
-void VoiceChunkFinishedCallback(int channel) {
+static void VoiceChunkFinishedCallback(int channel) {
 	if(channel == voiceChannel) {
 		PlayingVoiceATM = false;
 	}

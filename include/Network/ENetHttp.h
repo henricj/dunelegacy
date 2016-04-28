@@ -27,6 +27,8 @@ std::string getDomainFromURL(const std::string& url);
 
 std::string getFilePathFromURL(const std::string& url);
 
+int getPortFromURL(const std::string& url);
+
 std::string percentEncode(const std::string & s);
 
 std::string loadFromHttp(const std::string& url, const std::map<std::string, std::string>& parameters = std::map<std::string, std::string>());

@@ -476,8 +476,8 @@ AdlibDriver::AdlibDriver(int rate) {
 	_rate = rate;
 
 	_flags = 0;
-    Copl *a = new CWemuopl(rate, true, false);
-    Copl *b = new CWemuopl(rate, true, false);
+    Copl *a = new CWemuopl(rate, false);
+    Copl *b = new CWemuopl(rate, false);
     opl = new CSurroundopl(a, b, true);
     // CSurroundopl now owns a and b and will free upon destruction
 
