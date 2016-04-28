@@ -33,12 +33,12 @@
 
 class MentatMenu : public MenuBase {
 public:
-	MentatMenu(int newHouse);
-	virtual ~MentatMenu();
+    MentatMenu(int newHouse);
+    virtual ~MentatMenu();
 
-	virtual void drawSpecificStuff();
+    virtual void drawSpecificStuff();
 
-	virtual void update();
+    virtual void update();
 
     virtual bool doInput(SDL_Event &event) {
         if(event.type == SDL_MOUSEBUTTONDOWN) {
@@ -48,25 +48,25 @@ public:
         return MenuBase::doInput(event);
     }
 
-	void setText(std::string text) {
-	    mentatTexts = splitString(text, ". ", true);
+    void setText(std::string text) {
+        mentatTexts = splitString(text, ". ", true);
 
         mouthAnim.getAnimation()->setNumLoops(mentatTexts[0].empty() ? 0 : mentatTexts[0].length()/25 + 1);
-	    textLabel.setText(mentatTexts[0]);
+        textLabel.setText(mentatTexts[0]);
         textLabel.setVisible(true);
         textLabel.resize(620,240);
 
-	    currentMentatTextIndex = 0;
+        currentMentatTextIndex = 0;
         nextMentatTextSwitch = SDL_GetTicks() + mentatTexts[0].length() * 75 + 1000;
-	}
+    }
 
-	void showNextMentatText() {
+    void showNextMentatText() {
         nextMentatTextSwitch = 0;
-	}
+    }
 
-	virtual void onMentatTextFinished() { }
+    virtual void onMentatTextFinished() { }
 
-	int getMissionSpecificAnim(int missionnumber) const;
+    int getMissionSpecificAnim(int missionnumber) const;
 
 protected:
     Uint32  nextSpecialAnimation;
@@ -74,14 +74,14 @@ protected:
     std::vector<std::string> mentatTexts;
     int currentMentatTextIndex;
     Uint32 nextMentatTextSwitch;
-	int house;
+    int house;
 
-	StaticContainer	windowWidget;
-	AnimationLabel	eyesAnim;
-	AnimationLabel	mouthAnim;
-	AnimationLabel	specialAnim;
-	AnimationLabel	shoulderAnim;
-	Label			textLabel;
+    StaticContainer windowWidget;
+    AnimationLabel  eyesAnim;
+    AnimationLabel  mouthAnim;
+    AnimationLabel  specialAnim;
+    AnimationLabel  shoulderAnim;
+    Label           textLabel;
 
 };
 

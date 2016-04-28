@@ -41,7 +41,7 @@ AStarSearch::AStarSearch(Map* pMap, UnitBase* pUnit, Coord start, Coord destinat
     bestCoord = Coord::Invalid();
 
     //if the unit is not directly next to its destination or it is and the destination is unblocked
-	if ((heuristic > FixPt(1,5)) || (pUnit->canPass(destination.x, destination.y) == true)) {
+    if ((heuristic > FixPt(1,5)) || (pUnit->canPass(destination.x, destination.y) == true)) {
 
         putOnOpenListIfBetter(start, Coord::Invalid(), 0 , heuristic);
 
@@ -52,14 +52,14 @@ AStarSearch::AStarSearch(Map* pMap, UnitBase* pUnit, Coord start, Coord destinat
             Coord currentCoord = extractMin();
 
             if (getMapData(currentCoord).h < smallestHeuristic) {
-				smallestHeuristic = getMapData(currentCoord).h;
-				bestCoord = currentCoord;
-			}
+                smallestHeuristic = getMapData(currentCoord).h;
+                bestCoord = currentCoord;
+            }
 
             if(currentCoord == destination) {
                 // destination found
-				smallestHeuristic = getMapData(currentCoord).h;
-				bestCoord = currentCoord;
+                smallestHeuristic = getMapData(currentCoord).h;
+                bestCoord = currentCoord;
                 break;
             }
 
@@ -78,7 +78,7 @@ AStarSearch::AStarSearch(Map* pMap, UnitBase* pUnit, Coord start, Coord destinat
                             g += (pUnit->isAFlyingUnit() ? FixPoint(1) : pUnit->getTerrainDifficulty((TERRAINTYPE) nextTile.getType()));
                         }
 
-                        if(getMapData(currentCoord).parentCoord.isValid())	{
+                        if(getMapData(currentCoord).parentCoord.isValid())  {
                             //add cost of turning time
                             int posAngle = currentGameMap->getPosAngle(getMapData(currentCoord).parentCoord, currentCoord);
                             if (posAngle != angle)
@@ -97,9 +97,9 @@ AStarSearch::AStarSearch(Map* pMap, UnitBase* pUnit, Coord start, Coord destinat
 
             if (getMapData(currentCoord).bClosed == false) {
 
-				int depth = std::max(abs(currentCoord.x - destination.x), abs(currentCoord.y - destination.y));
+                int depth = std::max(abs(currentCoord.x - destination.x), abs(currentCoord.y - destination.y));
 
-				if(depth < std::min(sizeX,sizeY)) {
+                if(depth < std::min(sizeX,sizeY)) {
 
                     // calculate maximum number of tiles in a square shape
                     // you could look at without success around a destination x,y
@@ -142,14 +142,14 @@ AStarSearch::AStarSearch(Map* pMap, UnitBase* pUnit, Coord start, Coord destinat
                         // we have searched a whole square around destination, it can't be reached
                         break;
                     }
-				}
+                }
 
                 getMapData(currentCoord).bClosed = true;
                 numNodesChecked++;
             }
         }
 
-	}
+    }
 
 
 }

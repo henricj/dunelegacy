@@ -28,17 +28,17 @@
 
 //!  A class for reading and writing *.ini configuration files.
 /*!
-	This class can be used to read or write to a *.ini file. An ini-File has a very simple format.<br>
-	Example:<br>
-		<br>
-		; Comments start with ; or #<br>
-		; start of the first section with name ""<br>
-		key1 = value1<br>
-		key2 = value2<br>
-		; start of a section with name "Section1"<br>
-		[Section1]<br>
-		key3 = value3<br>
-		key4 = value4<br>
+    This class can be used to read or write to a *.ini file. An ini-File has a very simple format.<br>
+    Example:<br>
+        <br>
+        ; Comments start with ; or #<br>
+        ; start of the first section with name ""<br>
+        key1 = value1<br>
+        key2 = value2<br>
+        ; start of a section with name "Section1"<br>
+        [Section1]<br>
+        key3 = value3<br>
+        key4 = value4<br>
     <br>
     The section names and key names are treated case insensitive.
 */
@@ -48,10 +48,10 @@ public:
 
     //\cond
     class INIFileLine;
-	class Key;
-	class KeyIterator;
+    class Key;
+    class KeyIterator;
     class Section;
-	class SectionIterator;
+    class SectionIterator;
 
 
     class INIFileLine
@@ -62,7 +62,7 @@ public:
         inline int getLineNumber() const { return line; };
 
         friend class INIFile;
-		friend class INIFile::Section;
+        friend class INIFile::Section;
 
     protected:
         inline void shiftLineNumber(int shift) {
@@ -99,9 +99,9 @@ public:
         void setDoubleValue(double newValue);
 
         friend class INIFile;
-		friend class INIFile::KeyIterator;
-		friend class INIFile::Section;
-		friend class INIFile::SectionIterator;
+        friend class INIFile::KeyIterator;
+        friend class INIFile::Section;
+        friend class INIFile::SectionIterator;
 
     protected:
         static bool escapingValueNeeded(const std::string& value);
@@ -171,7 +171,7 @@ public:
         void setDoubleValue(const std::string& key, double newValue);
 
         friend class INIFile;
-		friend class INIFile::SectionIterator;
+        friend class INIFile::SectionIterator;
 
     protected:
         void insertKey(Key* newKey);
@@ -226,64 +226,64 @@ public:
 public:
 
     INIFile(bool bWhitespace, const std::string& firstLineComment);
-	INIFile(const std::string& filename, bool bWhitespace = true);
-	INIFile(SDL_RWops * RWopsFile, bool bWhitespace = true);
-	~INIFile();
+    INIFile(const std::string& filename, bool bWhitespace = true);
+    INIFile(SDL_RWops * RWopsFile, bool bWhitespace = true);
+    ~INIFile();
 
     bool hasSection(const std::string& section) const;
-	const Section* getSection(const std::string& sectionname) const;
-	bool removeSection(const std::string& sectionname);
-	bool clearSection(const std::string& sectionname, bool bBlankLineAtSectionEnd = true);
+    const Section* getSection(const std::string& sectionname) const;
+    bool removeSection(const std::string& sectionname);
+    bool clearSection(const std::string& sectionname, bool bBlankLineAtSectionEnd = true);
     bool hasKey(const std::string& section, const std::string& key) const;
     const Key* getKey(const std::string& sectionname, const std::string& keyname) const;
     bool removeKey(const std::string& section, const std::string& key);
 
-	std::string getStringValue(const std::string& section, const std::string& key, const std::string& defaultValue = "") const;
-	int getIntValue(const std::string& section, const std::string& key, int defaultValue = 0) const;
-	bool getBoolValue(const std::string& section, const std::string& key, bool defaultValue = false) const;
-	float getFloatValue(const std::string& section, const std::string& key, float defaultValue = 0.0f) const;
-	double getDoubleValue(const std::string& section, const std::string& key, double defaultValue = 0.0) const;
+    std::string getStringValue(const std::string& section, const std::string& key, const std::string& defaultValue = "") const;
+    int getIntValue(const std::string& section, const std::string& key, int defaultValue = 0) const;
+    bool getBoolValue(const std::string& section, const std::string& key, bool defaultValue = false) const;
+    float getFloatValue(const std::string& section, const std::string& key, float defaultValue = 0.0f) const;
+    double getDoubleValue(const std::string& section, const std::string& key, double defaultValue = 0.0) const;
 
-	void setStringValue(const std::string& section, const std::string& key, const std::string& value, bool bEscapeIfNeeded = true);
-	void setIntValue(const std::string& section, const std::string& key, int value);
-	void setBoolValue(const std::string& section, const std::string& key, bool value);
-	void setDoubleValue(const std::string& section, const std::string& key, double value);
+    void setStringValue(const std::string& section, const std::string& key, const std::string& value, bool bEscapeIfNeeded = true);
+    void setIntValue(const std::string& section, const std::string& key, int value);
+    void setBoolValue(const std::string& section, const std::string& key, bool value);
+    void setDoubleValue(const std::string& section, const std::string& key, double value);
 
-	SectionIterator begin() const;
-	SectionIterator end() const;
+    SectionIterator begin() const;
+    SectionIterator end() const;
 
-	KeyIterator begin(const std::string& section) const;
-	KeyIterator end(const std::string& section) const;
+    KeyIterator begin(const std::string& section) const;
+    KeyIterator end(const std::string& section) const;
 
-	bool saveChangesTo(const std::string& filename, bool bDOSLineEnding = false) const;
-	bool saveChangesTo(SDL_RWops * file, bool bDOSLineEnding = false) const;
+    bool saveChangesTo(const std::string& filename, bool bDOSLineEnding = false) const;
+    bool saveChangesTo(SDL_RWops * file, bool bDOSLineEnding = false) const;
 
 
 
 
 private:
-	INIFileLine* firstLine;
-	Section* sectionRoot;
-	bool bWhitespace;
+    INIFileLine* firstLine;
+    Section* sectionRoot;
+    bool bWhitespace;
 
-	void flush() const;
-	void readfile(SDL_RWops * file);
+    void flush() const;
+    void readfile(SDL_RWops * file);
 
-	void insertSection(Section* newSection);
+    void insertSection(Section* newSection);
 
-	Section* getSectionOrCreate(const std::string& sectionname);
+    Section* getSectionOrCreate(const std::string& sectionname);
 
-	static bool isValidSectionName(const std::string& sectionname);
+    static bool isValidSectionName(const std::string& sectionname);
     static bool isValidKeyName(const std::string& keyname);
 
-	static int getNextChar(const unsigned char* line, int startpos);
-	static int skipName(const unsigned char* line,int startpos);
-	static int skipValue(const unsigned char* line,int startpos);
-	static int skipKey(const unsigned char* line,int startpos);
-	static int getNextQuote(const unsigned char* line,int startpos);
+    static int getNextChar(const unsigned char* line, int startpos);
+    static int skipName(const unsigned char* line,int startpos);
+    static int skipValue(const unsigned char* line,int startpos);
+    static int skipKey(const unsigned char* line,int startpos);
+    static int getNextQuote(const unsigned char* line,int startpos);
 
-	static bool isWhitespace(unsigned char s);
-	static bool isNormalChar(unsigned char s);
+    static bool isWhitespace(unsigned char s);
+    static bool isNormalChar(unsigned char s);
 
     static int strncicmp(const char *s1, const char *s2, size_t n);
 };

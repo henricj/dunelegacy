@@ -27,21 +27,21 @@
 
 IFileStream::IFileStream()
 {
-	fp = nullptr;
+    fp = nullptr;
 }
 
 IFileStream::~IFileStream()
 {
-	close();
+    close();
 }
 
 bool IFileStream::open(const char* filename)
 {
-	if(fp != nullptr) {
-		fclose(fp);
-	}
+    if(fp != nullptr) {
+        fclose(fp);
+    }
 
-	const char* pFilename = filename;
+    const char* pFilename = filename;
 
     #ifdef _WIN32
 
@@ -61,31 +61,31 @@ bool IFileStream::open(const char* filename)
 
     #endif
 
-	if( (fp = fopen(pFilename,"rb")) == nullptr) {
-		return false;
-	} else {
-		return true;
-	}
+    if( (fp = fopen(pFilename,"rb")) == nullptr) {
+        return false;
+    } else {
+        return true;
+    }
 }
 
 bool IFileStream::open(std::string filename)
 {
-	return open(filename.c_str());
+    return open(filename.c_str());
 }
 
 void IFileStream::close()
 {
-	if(fp != nullptr) {
-		fclose(fp);
-		fp = nullptr;
-	}
+    if(fp != nullptr) {
+        fclose(fp);
+        fp = nullptr;
+    }
 }
 
 std::string IFileStream::readString()
 {
-	Uint32 length;
+    Uint32 length;
 
-	length = readUint32();
+    length = readUint32();
 
     if(length == 0) {
         return "";
@@ -108,68 +108,68 @@ std::string IFileStream::readString()
 
 Uint8 IFileStream::readUint8()
 {
-	Uint8 tmp;
-	if(fread(&tmp,sizeof(Uint8),1,fp) != 1) {
-		if(feof(fp) != 0) {
-			throw InputStream::eof("IFileStream::readUint8(): End-of-File reached!");
-		} else {
-			throw InputStream::error("IFileStream::readUint8(): An I/O-Error occurred!");
-		}
-	}
+    Uint8 tmp;
+    if(fread(&tmp,sizeof(Uint8),1,fp) != 1) {
+        if(feof(fp) != 0) {
+            throw InputStream::eof("IFileStream::readUint8(): End-of-File reached!");
+        } else {
+            throw InputStream::error("IFileStream::readUint8(): An I/O-Error occurred!");
+        }
+    }
 
-	return tmp;
+    return tmp;
 }
 
 Uint16 IFileStream::readUint16()
 {
-	Uint16 tmp;
-	if(fread(&tmp,sizeof(Uint16),1,fp) != 1) {
-		if(feof(fp) != 0) {
-			throw InputStream::eof("IFileStream::readUint16(): End-of-File reached!");
-		} else {
-			throw InputStream::error("IFileStream::readUint16(): An I/O-Error occurred!");
-		}
-	}
+    Uint16 tmp;
+    if(fread(&tmp,sizeof(Uint16),1,fp) != 1) {
+        if(feof(fp) != 0) {
+            throw InputStream::eof("IFileStream::readUint16(): End-of-File reached!");
+        } else {
+            throw InputStream::error("IFileStream::readUint16(): An I/O-Error occurred!");
+        }
+    }
 
-	return SDL_SwapLE16(tmp);
+    return SDL_SwapLE16(tmp);
 }
 
 Uint32 IFileStream::readUint32()
 {
-	Uint32 tmp;
-	if(fread(&tmp,sizeof(Uint32),1,fp) != 1) {
-		if(feof(fp) != 0) {
-			throw InputStream::eof("IFileStream::readUint32(): End-of-File reached!");
-		} else {
-			throw InputStream::error("IFileStream::readUint32(): An I/O-Error occurred!");
-		}
-	}
+    Uint32 tmp;
+    if(fread(&tmp,sizeof(Uint32),1,fp) != 1) {
+        if(feof(fp) != 0) {
+            throw InputStream::eof("IFileStream::readUint32(): End-of-File reached!");
+        } else {
+            throw InputStream::error("IFileStream::readUint32(): An I/O-Error occurred!");
+        }
+    }
 
-	return SDL_SwapLE32(tmp);
+    return SDL_SwapLE32(tmp);
 }
 
 Uint64 IFileStream::readUint64()
 {
-	Uint64 tmp;
-	if(fread(&tmp,sizeof(Uint64),1,fp) != 1) {
-		if(feof(fp) != 0) {
-			throw InputStream::eof("IFileStream::readUint64(): End-of-File reached!");
-		} else {
-			throw InputStream::error("IFileStream::readUint64(): An I/O-Error occurred!");
-		}
-	}
-	return SDL_SwapLE64(tmp);
+    Uint64 tmp;
+    if(fread(&tmp,sizeof(Uint64),1,fp) != 1) {
+        if(feof(fp) != 0) {
+            throw InputStream::eof("IFileStream::readUint64(): End-of-File reached!");
+        } else {
+            throw InputStream::error("IFileStream::readUint64(): An I/O-Error occurred!");
+        }
+    }
+    return SDL_SwapLE64(tmp);
 }
 
 bool IFileStream::readBool()
 {
-	return (readUint8() == 1 ? true : false);
+    return (readUint8() == 1 ? true : false);
 }
 
 float IFileStream::readFloat()
 {
-	Uint32 tmp = readUint32();
-	float tmp2;
-	memcpy(&tmp2,&tmp,sizeof(Uint32)); // workaround for a strange optimization in gcc 4.1
-	return tmp2;
+    Uint32 tmp = readUint32();
+    float tmp2;
+    memcpy(&tmp2,&tmp,sizeof(Uint32)); // workaround for a strange optimization in gcc 4.1
+    return tmp2;
 }

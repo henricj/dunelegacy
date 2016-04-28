@@ -41,51 +41,51 @@ TankBase::TankBase(House* newOwner) : TrackedUnit(newOwner) {
 TankBase::TankBase(InputStream& stream) : TrackedUnit(stream) {
     TankBase::init();
 
-	turretAngle = stream.readFixPoint();
+    turretAngle = stream.readFixPoint();
     drawnTurretAngle = stream.readSint8();
 
-	closeTarget.load(stream);
+    closeTarget.load(stream);
 }
 
 void TankBase::init() {
-	turreted = true;
-	turretTurnSpeed = FixPt(0,0625);
-	gunGraphicID = -1;
-	turretGraphic = nullptr;
+    turreted = true;
+    turretTurnSpeed = FixPt(0,0625);
+    gunGraphicID = -1;
+    turretGraphic = nullptr;
 }
 
 TankBase::~TankBase() {
 }
 
 void TankBase::save(OutputStream& stream) const {
-	TrackedUnit::save(stream);
+    TrackedUnit::save(stream);
 
-	stream.writeFixPoint(turretAngle);
-	stream.writeSint8(drawnTurretAngle);
+    stream.writeFixPoint(turretAngle);
+    stream.writeSint8(drawnTurretAngle);
 
-	closeTarget.save(stream);
+    closeTarget.save(stream);
 }
 
 void TankBase::setTurretAngle(int newAngle) {
-	if((newAngle >= 0) && (newAngle < NUM_ANGLES)) {
-		turretAngle = drawnTurretAngle = newAngle;
-	}
+    if((newAngle >= 0) && (newAngle < NUM_ANGLES)) {
+        turretAngle = drawnTurretAngle = newAngle;
+    }
 }
 
 int TankBase::getCurrentAttackAngle() const {
-	return drawnTurretAngle;
+    return drawnTurretAngle;
 }
 
 void TankBase::navigate() {
-	if(moving && !justStoppedMoving) {
-	    if(location == destination) {
+    if(moving && !justStoppedMoving) {
+        if(location == destination) {
             targetAngle = INVALID;
-	    } else {
+        } else {
             // change the turret angle so it faces the direction we are moving in
             targetAngle = destinationDrawnAngle(location, destination);
-	    }
-	}
-	TrackedUnit::navigate();
+        }
+    }
+    TrackedUnit::navigate();
 }
 
 void TankBase::idleAction() {
@@ -175,60 +175,60 @@ void TankBase::targeting() {
 }
 
 void TankBase::turn() {
-	FixPoint angleLeft = 0;
+    FixPoint angleLeft = 0;
     FixPoint angleRight = 0;
 
-	if(!moving && !justStoppedMoving) {
-		if(nextSpotAngle != INVALID) {
-			if(angle > nextSpotAngle) {
-				angleRight = angle - nextSpotAngle;
-				angleLeft = FixPoint::abs(8-angle) + nextSpotAngle;
-			} else if (angle < nextSpotAngle) {
-				angleRight = FixPoint::abs(8-nextSpotAngle) + angle;
-				angleLeft = nextSpotAngle - angle;
-			}
+    if(!moving && !justStoppedMoving) {
+        if(nextSpotAngle != INVALID) {
+            if(angle > nextSpotAngle) {
+                angleRight = angle - nextSpotAngle;
+                angleLeft = FixPoint::abs(8-angle) + nextSpotAngle;
+            } else if (angle < nextSpotAngle) {
+                angleRight = FixPoint::abs(8-nextSpotAngle) + angle;
+                angleLeft = nextSpotAngle - angle;
+            }
 
-			if(angleLeft <= angleRight) {
-				turnLeft();
-			} else {
-				turnRight();
-			}
-		}
-	}
+            if(angleLeft <= angleRight) {
+                turnLeft();
+            } else {
+                turnRight();
+            }
+        }
+    }
 
-	if(targetAngle != INVALID) {
-		if(turretAngle > targetAngle) {
-			angleRight = turretAngle - targetAngle;
-			angleLeft = FixPoint::abs(8-turretAngle) + targetAngle;
-		} else if (turretAngle < targetAngle) {
-			angleRight = FixPoint::abs(8-targetAngle) + turretAngle;
-			angleLeft = targetAngle - turretAngle;
-		}
+    if(targetAngle != INVALID) {
+        if(turretAngle > targetAngle) {
+            angleRight = turretAngle - targetAngle;
+            angleLeft = FixPoint::abs(8-turretAngle) + targetAngle;
+        } else if (turretAngle < targetAngle) {
+            angleRight = FixPoint::abs(8-targetAngle) + turretAngle;
+            angleLeft = targetAngle - turretAngle;
+        }
 
-		if(angleLeft <= angleRight) {
-			turnTurretLeft();
-		} else {
-			turnTurretRight();
-		}
-	}
+        if(angleLeft <= angleRight) {
+            turnTurretLeft();
+        } else {
+            turnTurretRight();
+        }
+    }
 }
 
 void TankBase::turnTurretLeft() {
-	turretAngle += turretTurnSpeed;
-	if(turretAngle >= FixPt(7,5)) {
-	    drawnTurretAngle = lround(turretAngle) - NUM_ANGLES;
+    turretAngle += turretTurnSpeed;
+    if(turretAngle >= FixPt(7,5)) {
+        drawnTurretAngle = lround(turretAngle) - NUM_ANGLES;
         turretAngle -= NUM_ANGLES;
-	} else {
+    } else {
         drawnTurretAngle = lround(turretAngle);
-	}
+    }
 }
 
 void TankBase::turnTurretRight() {
-	turretAngle -= turretTurnSpeed;
-	if(turretAngle <= FixPt(-0,5)) {
-	    drawnTurretAngle = lround(turretAngle) + NUM_ANGLES;
-		turretAngle += NUM_ANGLES;
-	} else {
-	    drawnTurretAngle = lround(turretAngle);
-	}
+    turretAngle -= turretTurnSpeed;
+    if(turretAngle <= FixPt(-0,5)) {
+        drawnTurretAngle = lround(turretAngle) + NUM_ANGLES;
+        turretAngle += NUM_ANGLES;
+    } else {
+        drawnTurretAngle = lround(turretAngle);
+    }
 }

@@ -29,25 +29,25 @@ extern int currentZoomlevel;
 
 int getRandomInt(int min, int max)
 {
-	max++;
-	return ((rand() % (max-min)) + min);
+    max++;
+    return ((rand() % (max-min)) + min);
 }
 
 
 int getRandomOf(int numParam, ...) {
-	int nthParam = getRandomInt(0,numParam-1);
+    int nthParam = getRandomInt(0,numParam-1);
 
-	va_list arg_ptr;
-	va_start(arg_ptr, numParam);
+    va_list arg_ptr;
+    va_start(arg_ptr, numParam);
 
-	int ret = va_arg(arg_ptr, int);
+    int ret = va_arg(arg_ptr, int);
 
-	for(int i = 1; i <= nthParam; i++) {
-		ret = va_arg(arg_ptr, int);
-	}
-	va_end(arg_ptr);
+    for(int i = 1; i <= nthParam; i++) {
+        ret = va_arg(arg_ptr, int);
+    }
+    va_end(arg_ptr);
 
-	return ret;
+    return ret;
 }
 
 FixPoint destinationAngleRad(const Coord& p1, const Coord& p2)
@@ -72,56 +72,56 @@ FixPoint destinationAngleRad(const Coord& p1, const Coord& p2)
 
 FixPoint distanceFrom(const Coord& p1, const Coord& p2)
 {
-	FixPoint first = (p1.x - p2.x);
-	FixPoint second = (p1.y - p2.y);
+    FixPoint first = (p1.x - p2.x);
+    FixPoint second = (p1.y - p2.y);
 
-	FixPoint z = FixPoint::sqrt(first*first + second*second);
+    FixPoint z = FixPoint::sqrt(first*first + second*second);
 
-	return z;
+    return z;
 }
 
 FixPoint distanceFrom(FixPoint x, FixPoint y, FixPoint to_x, FixPoint to_y)
 {
-	FixPoint first = (x - to_x);
+    FixPoint first = (x - to_x);
     FixPoint second = (y - to_y);
 
     FixPoint z = FixPoint::sqrt(first*first + second*second);
 
-	return z;
+    return z;
 }
 
 FixPoint blockDistance(const Coord& p1, const Coord& p2)
 {
-	int xDis = abs(p1.x - p2.x),
-		yDis = abs(p1.y - p2.y),
+    int xDis = abs(p1.x - p2.x),
+        yDis = abs(p1.y - p2.y),
 
-		minDis = std::min(xDis, yDis);
+        minDis = std::min(xDis, yDis);
 
-	return (std::max(xDis, yDis) + minDis*(FixPt_SQRT2 - 1));
+    return (std::max(xDis, yDis) + minDis*(FixPt_SQRT2 - 1));
 }
 
 
 // Move one square away from the enemy
 Coord retreatLocation(const Coord& p1, const Coord& p2)
 {
-	int j = 0;
-	int k = 0;
+    int j = 0;
+    int k = 0;
 
-	if(p1.x < p2.x) {
+    if(p1.x < p2.x) {
         j = p1.x - 1;
-	}
+    }
 
-	if(p1.x > p2.x) {
+    if(p1.x > p2.x) {
         j = p1.x + 1;
-	}
+    }
 
     if(p1.y < p2.y) {
         k = p1.y - 1;
-	}
+    }
 
     if(p1.y > p2.y) {
         k = p1.y + 1;
-	}
+    }
 
     return Coord(j,k);
 }

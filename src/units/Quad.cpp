@@ -40,21 +40,21 @@ void Quad::init() {
     itemID = Unit_Quad;
     owner->incrementUnits(itemID);
 
-	numWeapons = 2;
-	bulletType = Bullet_ShellSmall;
+    numWeapons = 2;
+    bulletType = Bullet_ShellSmall;
 
-	graphicID = ObjPic_Quad;
-	graphic = pGFXManager->getObjPic(graphicID,getOwner()->getHouseID());
+    graphicID = ObjPic_Quad;
+    graphic = pGFXManager->getObjPic(graphicID,getOwner()->getHouseID());
 
-	numImagesX = NUM_ANGLES;
-	numImagesY = 1;
+    numImagesX = NUM_ANGLES;
+    numImagesY = 1;
 }
 
 Quad::~Quad() {
 }
 
 void Quad::playAttackSound() {
-	soundPlayer->playSoundAt(Sound_MachineGun,location);
+    soundPlayer->playSoundAt(Sound_MachineGun,location);
 }
 
 void Quad::destroy() {

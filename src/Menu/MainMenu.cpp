@@ -32,71 +32,71 @@
 
 MainMenu::MainMenu() : MenuBase()
 {
-	// set up window
+    // set up window
     SDL_Texture *pBackground = pGFXManager->getUIGraphic(UI_MenuBackground);
-	setBackground(pBackground, false);
-	resize(getTextureSize(pBackground));
+    setBackground(pBackground, false);
+    resize(getTextureSize(pBackground));
 
-	setWindowWidget(&windowWidget);
+    setWindowWidget(&windowWidget);
 
-	// set up pictures in the background
-	// set up pictures in the background
-	SDL_Texture* pPlanetBackground = pGFXManager->getUIGraphic(UI_PlanetBackground);
-	planetPicture.setTexture(pPlanetBackground, false);
-	SDL_Rect dest1 = calcAlignedDrawingRect(pPlanetBackground);
-	dest1.y = dest1.y - getHeight(pPlanetBackground)/2 + 10;
-	windowWidget.addWidget(&planetPicture, dest1);
+    // set up pictures in the background
+    // set up pictures in the background
+    SDL_Texture* pPlanetBackground = pGFXManager->getUIGraphic(UI_PlanetBackground);
+    planetPicture.setTexture(pPlanetBackground, false);
+    SDL_Rect dest1 = calcAlignedDrawingRect(pPlanetBackground);
+    dest1.y = dest1.y - getHeight(pPlanetBackground)/2 + 10;
+    windowWidget.addWidget(&planetPicture, dest1);
 
-	SDL_Texture* pDuneLegacy = pGFXManager->getUIGraphic(UI_DuneLegacy);
-	duneLegacy.setTexture(pDuneLegacy, false);
-	SDL_Rect dest2 = calcAlignedDrawingRect(pDuneLegacy);
-	dest2.y = dest2.y + getHeight(pDuneLegacy)/2 + 28;
-	windowWidget.addWidget(&duneLegacy, dest2);
+    SDL_Texture* pDuneLegacy = pGFXManager->getUIGraphic(UI_DuneLegacy);
+    duneLegacy.setTexture(pDuneLegacy, false);
+    SDL_Rect dest2 = calcAlignedDrawingRect(pDuneLegacy);
+    dest2.y = dest2.y + getHeight(pDuneLegacy)/2 + 28;
+    windowWidget.addWidget(&duneLegacy, dest2);
 
-	SDL_Texture* pMenuButtonBorder = pGFXManager->getUIGraphic(UI_MenuButtonBorder);
-	buttonBorder.setTexture(pMenuButtonBorder, false);
-	SDL_Rect dest3 = calcAlignedDrawingRect(pMenuButtonBorder);
-	dest3.y = dest3.y + getHeight(pMenuButtonBorder)/2 + 59;
-	windowWidget.addWidget(&buttonBorder, dest3);
+    SDL_Texture* pMenuButtonBorder = pGFXManager->getUIGraphic(UI_MenuButtonBorder);
+    buttonBorder.setTexture(pMenuButtonBorder, false);
+    SDL_Rect dest3 = calcAlignedDrawingRect(pMenuButtonBorder);
+    dest3.y = dest3.y + getHeight(pMenuButtonBorder)/2 + 59;
+    windowWidget.addWidget(&buttonBorder, dest3);
 
-	// set up menu buttons
-	windowWidget.addWidget(&MenuButtons,Point((getRendererWidth() - 160)/2,getRendererHeight()/2 + 64),Point(160,111));
+    // set up menu buttons
+    windowWidget.addWidget(&MenuButtons,Point((getRendererWidth() - 160)/2,getRendererHeight()/2 + 64),Point(160,111));
 
-	singlePlayerButton.setText(_("SINGLE PLAYER"));
-	singlePlayerButton.setOnClick(std::bind(&MainMenu::onSinglePlayer, this));
-	MenuButtons.addWidget(&singlePlayerButton);
-	singlePlayerButton.setActive();
+    singlePlayerButton.setText(_("SINGLE PLAYER"));
+    singlePlayerButton.setOnClick(std::bind(&MainMenu::onSinglePlayer, this));
+    MenuButtons.addWidget(&singlePlayerButton);
+    singlePlayerButton.setActive();
 
-	MenuButtons.addWidget(VSpacer::create(3));
+    MenuButtons.addWidget(VSpacer::create(3));
 
-	multiPlayerButton.setText(_("MULTIPLAYER"));
-	multiPlayerButton.setOnClick(std::bind(&MainMenu::onMultiPlayer, this));
-	MenuButtons.addWidget(&multiPlayerButton);
+    multiPlayerButton.setText(_("MULTIPLAYER"));
+    multiPlayerButton.setOnClick(std::bind(&MainMenu::onMultiPlayer, this));
+    MenuButtons.addWidget(&multiPlayerButton);
 
-	MenuButtons.addWidget(VSpacer::create(3));
+    MenuButtons.addWidget(VSpacer::create(3));
 
 //    MenuButtons.addWidget(VSpacer::create(16));
-	mapEditorButton.setText(_("MAP EDITOR"));
-	mapEditorButton.setOnClick(std::bind(&MainMenu::onMapEditor, this));
-	MenuButtons.addWidget(&mapEditorButton);
+    mapEditorButton.setText(_("MAP EDITOR"));
+    mapEditorButton.setOnClick(std::bind(&MainMenu::onMapEditor, this));
+    MenuButtons.addWidget(&mapEditorButton);
 
-	MenuButtons.addWidget(VSpacer::create(3));
+    MenuButtons.addWidget(VSpacer::create(3));
 
-	optionsButton.setText(_("OPTIONS"));
-	optionsButton.setOnClick(std::bind(&MainMenu::onOptions, this));
-	MenuButtons.addWidget(&optionsButton);
+    optionsButton.setText(_("OPTIONS"));
+    optionsButton.setOnClick(std::bind(&MainMenu::onOptions, this));
+    MenuButtons.addWidget(&optionsButton);
 
-	MenuButtons.addWidget(VSpacer::create(3));
+    MenuButtons.addWidget(VSpacer::create(3));
 
-	aboutButton.setText(_("ABOUT"));
-	aboutButton.setOnClick(std::bind(&MainMenu::onAbout, this));
-	MenuButtons.addWidget(&aboutButton);
+    aboutButton.setText(_("ABOUT"));
+    aboutButton.setOnClick(std::bind(&MainMenu::onAbout, this));
+    MenuButtons.addWidget(&aboutButton);
 
-	MenuButtons.addWidget(VSpacer::create(3));
+    MenuButtons.addWidget(VSpacer::create(3));
 
-	quitButton.setText(_("QUIT"));
-	quitButton.setOnClick(std::bind(&MainMenu::onQuit, this));
-	MenuButtons.addWidget(&quitButton);
+    quitButton.setText(_("QUIT"));
+    quitButton.setOnClick(std::bind(&MainMenu::onQuit, this));
+    MenuButtons.addWidget(&quitButton);
 }
 
 MainMenu::~MainMenu() {
@@ -110,40 +110,40 @@ int MainMenu::showMenu()
 }
 
 void MainMenu::onSinglePlayer() {
-	SinglePlayerMenu* pSinglePlayerMenu = new SinglePlayerMenu();
-	pSinglePlayerMenu->showMenu();
-	delete pSinglePlayerMenu;
+    SinglePlayerMenu* pSinglePlayerMenu = new SinglePlayerMenu();
+    pSinglePlayerMenu->showMenu();
+    delete pSinglePlayerMenu;
 }
 
 void MainMenu::onMultiPlayer() {
-	MultiPlayerMenu* pMultiPlayerMenu = new MultiPlayerMenu();
-	pMultiPlayerMenu->showMenu();
-	delete pMultiPlayerMenu;
+    MultiPlayerMenu* pMultiPlayerMenu = new MultiPlayerMenu();
+    pMultiPlayerMenu->showMenu();
+    delete pMultiPlayerMenu;
 }
 
 void MainMenu::onMapEditor() {
-	MapEditor *pMapEditor = new MapEditor();
-	pMapEditor->RunEditor();
-	delete pMapEditor;
+    MapEditor *pMapEditor = new MapEditor();
+    pMapEditor->RunEditor();
+    delete pMapEditor;
 }
 
 
 void MainMenu::onOptions() {
-	OptionsMenu* pOptionsMenu = new OptionsMenu();
-	int ret = pOptionsMenu->showMenu();
-	delete pOptionsMenu;
+    OptionsMenu* pOptionsMenu = new OptionsMenu();
+    int ret = pOptionsMenu->showMenu();
+    delete pOptionsMenu;
 
-	if(ret == MENU_QUIT_REINITIALIZE) {
-		quit(MENU_QUIT_REINITIALIZE);
-	}
+    if(ret == MENU_QUIT_REINITIALIZE) {
+        quit(MENU_QUIT_REINITIALIZE);
+    }
 }
 
 void MainMenu::onAbout() {
-	AboutMenu* myAbout = new AboutMenu();
-	myAbout->showMenu();
-	delete myAbout;
+    AboutMenu* myAbout = new AboutMenu();
+    myAbout->showMenu();
+    delete myAbout;
 }
 
 void MainMenu::onQuit() {
-	quit();
+    quit();
 }

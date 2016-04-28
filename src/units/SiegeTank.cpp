@@ -41,16 +41,16 @@ void SiegeTank::init() {
     itemID = Unit_SiegeTank;
     owner->incrementUnits(itemID);
 
-	numWeapons = 2;
-	bulletType = Bullet_ShellLarge;
+    numWeapons = 2;
+    bulletType = Bullet_ShellLarge;
 
-	graphicID = ObjPic_Siegetank_Base;
-	graphic = pGFXManager->getObjPic(graphicID,getOwner()->getHouseID());
-	gunGraphicID = ObjPic_Siegetank_Gun;
-	turretGraphic = pGFXManager->getObjPic(gunGraphicID,getOwner()->getHouseID());
+    graphicID = ObjPic_Siegetank_Base;
+    graphic = pGFXManager->getObjPic(graphicID,getOwner()->getHouseID());
+    gunGraphicID = ObjPic_Siegetank_Gun;
+    turretGraphic = pGFXManager->getObjPic(gunGraphicID,getOwner()->getHouseID());
 
-	numImagesX = NUM_ANGLES;
-	numImagesY = 1;
+    numImagesX = NUM_ANGLES;
+    numImagesY = 1;
 }
 
 SiegeTank::~SiegeTank() {
@@ -106,6 +106,6 @@ void SiegeTank::destroy() {
 }
 
 void SiegeTank::playAttackSound() {
-	soundPlayer->playSoundAt(Sound_ExplosionSmall,location);
+    soundPlayer->playSoundAt(Sound_ExplosionSmall,location);
 }
 

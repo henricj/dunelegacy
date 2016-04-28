@@ -49,14 +49,14 @@ class House;
 class Explosion;
 
 
-#define END_WAIT_TIME				(6*1000)
+#define END_WAIT_TIME               (6*1000)
 
-#define GAME_NOTHING			-1
-#define	GAME_RETURN_TO_MENU		0
-#define GAME_NEXTMISSION		1
-#define	GAME_LOAD				2
-#define GAME_DEBRIEFING_WIN		3
-#define	GAME_DEBRIEFING_LOST	4
+#define GAME_NOTHING            -1
+#define GAME_RETURN_TO_MENU     0
+#define GAME_NEXTMISSION        1
+#define GAME_LOAD               2
+#define GAME_DEBRIEFING_WIN     3
+#define GAME_DEBRIEFING_LOST    4
 #define GAME_CUSTOM_GAME_STATS  5
 
 
@@ -67,152 +67,152 @@ public:
     /**
         Default constructor. Call initGame() or initReplay() afterwards.
     */
-	Game();
+    Game();
 
     /**
         Destructor
     */
-	~Game();
+    ~Game();
 
     /**
         Initializes a game with the specified settings
         \param  newGameInitSettings the game init settings to initialize the game
     */
-	void initGame(const GameInitSettings& newGameInitSettings);
+    void initGame(const GameInitSettings& newGameInitSettings);
 
-	/**
+    /**
         Initializes a replay from the specified filename
         \param  filename    the file containing the replay
-	*/
-	void initReplay(const std::string& filename);
+    */
+    void initReplay(const std::string& filename);
 
 
 
-	friend class INIMapLoader; // loading INI Maps is done with a INIMapLoader helper object
+    friend class INIMapLoader; // loading INI Maps is done with a INIMapLoader helper object
 
 
     /**
         This method processes all objects in the current game. It should be executed exactly once per game tick.
     */
-	void processObjects();
+    void processObjects();
 
     /**
         This method draws a complete frame.
     */
-	void drawScreen();
+    void drawScreen();
 
     /**
         This method proccesses all the user input.
     */
-	void doInput();
+    void doInput();
 
     /**
         Returns the current game cycle number.
         \return the current game cycle
     */
-	Uint32 getGameCycleCount() const { return gameCycleCount; };
+    Uint32 getGameCycleCount() const { return gameCycleCount; };
 
-	/**
+    /**
         Return the game time in milliseconds.
         \return the current game time in milliseconds
-	*/
-	Uint32 getGameTime() const { return gameCycleCount * GAMESPEED_DEFAULT; };
+    */
+    Uint32 getGameTime() const { return gameCycleCount * GAMESPEED_DEFAULT; };
 
     /**
         Get the command manager of this game
         \return the command manager
     */
-	CommandManager& getCommandManager() { return cmdManager; };
+    CommandManager& getCommandManager() { return cmdManager; };
 
     /**
         Get the trigger manager of this game
         \return the trigger manager
     */
-	TriggerManager& getTriggerManager() { return triggerManager; };
+    TriggerManager& getTriggerManager() { return triggerManager; };
 
-	/**
+    /**
         Get the explosion list.
         \return the explosion list
-	*/
-	RobustList<Explosion*>& getExplosionList() { return explosionList; };
+    */
+    RobustList<Explosion*>& getExplosionList() { return explosionList; };
 
-	/**
+    /**
         Returns the house with the id houseID
         \param  houseID the id of the house to return
         \return the house with id houseID
-	*/
-	House* getHouse(int houseID) {
+    */
+    House* getHouse(int houseID) {
         return house[houseID];
-	}
+    }
 
-	/**
+    /**
         The current game is finished and the local house has won
-	*/
-	void setGameWon();
+    */
+    void setGameWon();
 
-	/**
+    /**
         The current game is finished and the local house has lost
-	*/
-	void setGameLost();
+    */
+    void setGameLost();
 
     /**
         Draws the cursor.
     */
-	void drawCursor();
+    void drawCursor();
 
     /**
         This method sets up the view. The start position is the center point of all owned units/structures
     */
-	void setupView();
+    void setupView();
 
     /**
         This method loads a previously saved game.
         \param filename the name of the file to load from
         \return true on success, false on failure
     */
-	bool loadSaveGame(std::string filename);
+    bool loadSaveGame(std::string filename);
 
     /**
         This method loads a previously saved game.
         \param stream the stream to load from
         \return true on success, false on failure
     */
-	bool loadSaveGame(InputStream& stream);
+    bool loadSaveGame(InputStream& stream);
 
     /**
         This method saves the current running game.
         \param filename the name of the file to save to
         \return true on success, false on failure
     */
-	bool saveGame(std::string filename);
+    bool saveGame(std::string filename);
 
     /**
         This method starts the game. Will return when the game is finished or aborted.
     */
-	void runMainLoop();
+    void runMainLoop();
 
-	inline void quitGame() { bQuitGame = true;};
+    inline void quitGame() { bQuitGame = true;};
 
     /**
         This method pauses the current game.
     */
-	void pauseGame() {
+    void pauseGame() {
         if(gameType != GAMETYPE_CUSTOM_MULTIPLAYER) {
             bPause = true;
         }
-	}
+    }
 
     /**
         This method resumes the current paused game.
     */
-	void resumeGame();
+    void resumeGame();
 
     /**
         This method writes out an object to a stream.
         \param stream   the stream to write to
         \param obj      the object to be saved
     */
-	void saveObject(OutputStream& stream, ObjectBase* obj);
+    void saveObject(OutputStream& stream, ObjectBase* obj);
 
     /**
         This method loads an object from the stream.
@@ -220,12 +220,12 @@ public:
         \param ObjectID the object id that this unit/structure should get
         \return the read unit/structure
     */
-	ObjectBase* loadObject(InputStream& stream, Uint32 objectID);
+    ObjectBase* loadObject(InputStream& stream, Uint32 objectID);
 
-	inline ObjectManager& getObjectManager() { return objectManager; };
-	inline GameInterface& getGameInterface() { return *pInterface; };
+    inline ObjectManager& getObjectManager() { return objectManager; };
+    inline GameInterface& getGameInterface() { return *pInterface; };
 
-	const GameInitSettings& getGameInitSettings() const { return gameInitSettings; };
+    const GameInitSettings& getGameInitSettings() const { return gameInitSettings; };
     void setNextGameInitSettings(const GameInitSettings& nextGameInitSettings) { this->nextGameInitSettings = nextGameInitSettings; };
 
     /**
@@ -234,7 +234,7 @@ public:
         that was returned previously by getNextGameInitSettings().
         \return a GameInitSettings-Object that describes the next game.
     */
-	GameInitSettings getNextGameInitSettings();
+    GameInitSettings getNextGameInitSettings();
 
     /**
         This method should be called after startGame() has returned. whatNext() will tell the caller
@@ -242,48 +242,48 @@ public:
         Possible return values are:<br>
         GAME_RETURN_TO_MENU  - the game is finished and you should return to the main menu<br>
         GAME_NEXTMISSION     - the game is finished and you should load the next mission<br>
-        GAME_LOAD			 - from inside the game the user requests to load a savegame and you should do this now<br>
+        GAME_LOAD            - from inside the game the user requests to load a savegame and you should do this now<br>
         GAME_DEBRIEFING_WIN  - show debriefing (player has won) and call whatNext() again afterwards<br>
         GAME_DEBRIEFING_LOST - show debriefing (player has lost) and call whatNext() again afterwards<br>
         <br>
         \return one of GAME_RETURN_TO_MENU, GAME_NEXTMISSION, GAME_LOAD, GAME_DEBRIEFING_WIN, GAME_DEBRIEFING_LOST
     */
-	int whatNext();
+    int whatNext();
 
     /**
         This method is the callback method for the OPTIONS button at the top of the screen.
         It pauses the game and loads the in game menu.
     */
-	void onOptions();
+    void onOptions();
 
     /**
         This method is the callback method for the MENTAT button at the top of the screen.
         It pauses the game and loads the mentat help screen.
     */
-	void onMentat();
+    void onMentat();
 
     /**
         This method selects all units/structures in the list aList.
         \param aList the list containing all the units/structures to be selected
     */
-	void selectAll(std::set<Uint32>& aList);
+    void selectAll(std::set<Uint32>& aList);
 
     /**
         This method unselects all units/structures in the list aList.
         \param aList the list containing all the units/structures to be unselected
     */
-	void unselectAll(std::set<Uint32>& aList);
+    void unselectAll(std::set<Uint32>& aList);
 
     /**
         Returns a list of all currently selected objects.
         \return list of currently selected units/structures
     */
-	std::set<Uint32>& getSelectedList() { return selectedList; };
+    std::set<Uint32>& getSelectedList() { return selectedList; };
 
-	/**
+    /**
         Marks that the selection changed (and must be retransmitted to other players in multiplayer games)
-	*/
-	inline void selectionChanged() {
+    */
+    inline void selectionChanged() {
         bSelectionChanged = true;
         if(pInterface) {
             pInterface->updateObjectInterface();
@@ -291,56 +291,56 @@ public:
     };
 
 
-	void onReceiveSelectionList(std::string name, std::set<Uint32> newSelectionList, int groupListIndex);
+    void onReceiveSelectionList(std::string name, std::set<Uint32> newSelectionList, int groupListIndex);
 
     /**
         Returns a list of all currently by  the other player selected objects (Only in multiplayer with multiple players per house).
         \return list of currently selected units/structures by the other player
     */
-	std::set<Uint32>& getSelectedByOtherPlayerList() { return selectedByOtherPlayerList; };
+    std::set<Uint32>& getSelectedByOtherPlayerList() { return selectedByOtherPlayerList; };
 
     /**
-		Called when a peer disconnects the game.
-	*/
+        Called when a peer disconnects the game.
+    */
     void onPeerDisconnected(std::string name, bool bHost, int cause);
 
     /**
         Adds a new message to the news ticker.
         \param  text    the text to add
     */
-	void addToNewsTicker(const std::string& text) {
-		if(pInterface != nullptr) {
-			pInterface->addToNewsTicker(text);
-		}
-	}
+    void addToNewsTicker(const std::string& text) {
+        if(pInterface != nullptr) {
+            pInterface->addToNewsTicker(text);
+        }
+    }
 
     /**
         Adds an urgent message to the news ticker.
         \param  text    the text to add
     */
-	void addUrgentMessageToNewsTicker(const std::string& text) {
-		if(pInterface != nullptr) {
-			pInterface->addUrgentMessageToNewsTicker(text);
-		}
-	}
+    void addUrgentMessageToNewsTicker(const std::string& text) {
+        if(pInterface != nullptr) {
+            pInterface->addUrgentMessageToNewsTicker(text);
+        }
+    }
 
-	/**
+    /**
         This method returns wether the game is currently paused
         \return true, if paused, false otherwise
-	*/
-	bool isGamePaused() const { return bPause; };
+    */
+    bool isGamePaused() const { return bPause; };
 
-	/**
+    /**
         This method returns wether the game is finished
         \return true, if paused, false otherwise
-	*/
-	bool isGameFinished() const { return finished; };
+    */
+    bool isGameFinished() const { return finished; };
 
-	/**
+    /**
         Are cheats enabled?
         \return true = cheats enabled, false = cheats disabled
-	*/
-	bool areCheatsEnabled() const { return bCheatsEnabled; };
+    */
+    bool areCheatsEnabled() const { return bCheatsEnabled; };
 
     /**
         Register a new player in this game.
@@ -372,28 +372,28 @@ public:
         \param  playername  the name of the player
         \return the player or nullptr if none was found
     */
-	Player* getPlayerByName(const std::string& playername) const {
+    Player* getPlayerByName(const std::string& playername) const {
         std::multimap<std::string, Player*>::const_iterator iter = playerName2Player.find(playername);
         if(iter != playerName2Player.end()) {
             return iter->second;
         } else {
             return nullptr;
         }
-	}
+    }
 
     /**
         Returns the player with the given id.
         \param  playerID  the name of the player
         \return the player or nullptr if none was found
     */
-	Player* getPlayerByID(Uint8 playerID) const {
+    Player* getPlayerByID(Uint8 playerID) const {
         std::map<Uint8, Player*>::const_iterator iter = playerID2Player.find(playerID);
         if(iter != playerID2Player.end()) {
             return iter->second;
         } else {
             return nullptr;
         }
-	}
+    }
 
     /**
         This function is called when the user left clicks on the radar
@@ -503,84 +503,84 @@ public:
 
     int         currentCursorMode;
 
-	GAMETYPE	gameType;
-	int			techLevel;
-	int			winFlags;
-	int         loseFlags;
+    GAMETYPE    gameType;
+    int         techLevel;
+    int         winFlags;
+    int         loseFlags;
 
-	Random      randomGen;          ///< This is the random number generator for this game
-	ObjectData  objectData;         ///< This contains all the unit/structure data
+    Random      randomGen;          ///< This is the random number generator for this game
+    ObjectData  objectData;         ///< This contains all the unit/structure data
 
-	GAMESTATETYPE gameState;
+    GAMESTATETYPE gameState;
 
 private:
     bool        chatMode;           ///< chat mode on?
     std::string typingChatMessage;  ///< currently typed chat message
 
-	bool        scrollDownMode;     ///< currently scrolling the map down?
-	bool        scrollLeftMode;     ///< currently scrolling the map left?
-	bool        scrollRightMode;    ///< currently scrolling the map right?
-	bool        scrollUpMode;       ///< currently scrolling the map up?
+    bool        scrollDownMode;     ///< currently scrolling the map down?
+    bool        scrollLeftMode;     ///< currently scrolling the map left?
+    bool        scrollRightMode;    ///< currently scrolling the map right?
+    bool        scrollUpMode;       ///< currently scrolling the map up?
 
-	bool	    selectionMode;      ///< currently selection multiple units with a selection rectangle?
-	SDL_Rect    selectionRect;      ///< the drawn rectangle while selection multiple units
+    bool        selectionMode;      ///< currently selection multiple units with a selection rectangle?
+    SDL_Rect    selectionRect;      ///< the drawn rectangle while selection multiple units
 
-	int		    whatNextParam;
+    int         whatNextParam;
 
-	Uint32      indicatorFrame;
-	int         indicatorTime;
-	int         indicatorTimer;
-	Coord       indicatorPosition;
+    Uint32      indicatorFrame;
+    int         indicatorTime;
+    int         indicatorTimer;
+    Coord       indicatorPosition;
 
-	float       averageFrameTime;   ///< The weighted average of the frame time of all previous frames (smoothed fps = 1000.0f/averageFrameTime)
+    float       averageFrameTime;   ///< The weighted average of the frame time of all previous frames (smoothed fps = 1000.0f/averageFrameTime)
 
-	Uint32      gameCycleCount;
+    Uint32      gameCycleCount;
 
-	Uint32      skipToGameCycle;    ///< skip to this game cycle
+    Uint32      skipToGameCycle;    ///< skip to this game cycle
 
-	SDL_Rect	powerIndicatorPos;  ///< position of the power indicator in the right game bar
-	SDL_Rect	spiceIndicatorPos;  ///< position of the spice indicator in the right game bar
-	SDL_Rect	topBarPos;          ///< position of the top game bar
+    SDL_Rect    powerIndicatorPos;  ///< position of the power indicator in the right game bar
+    SDL_Rect    spiceIndicatorPos;  ///< position of the spice indicator in the right game bar
+    SDL_Rect    topBarPos;          ///< position of the top game bar
     SDL_Rect    sideBarPos;         ///< position of the right side bar
 
-	////////////////////
+    ////////////////////
 
-	GameInitSettings	                gameInitSettings;       ///< the init settings this game was started with
-	GameInitSettings	                nextGameInitSettings;   ///< the init settings the next game shall be started with (restarting the mission, loading a savegame)
+    GameInitSettings                    gameInitSettings;       ///< the init settings this game was started with
+    GameInitSettings                    nextGameInitSettings;   ///< the init settings the next game shall be started with (restarting the mission, loading a savegame)
     GameInitSettings::HouseInfoList     houseInfoListSetup;     ///< this saves with which houses and players the game was actually set up. It is a copy of gameInitSettings::houseInfoList but without random houses
 
 
-	ObjectManager       objectManager;          ///< This manages all the object and maps object ids to the actual objects
+    ObjectManager       objectManager;          ///< This manages all the object and maps object ids to the actual objects
 
-	CommandManager      cmdManager;			    ///< This is the manager for all the game commands (e.g. moving a unit)
+    CommandManager      cmdManager;             ///< This is the manager for all the game commands (e.g. moving a unit)
 
-	TriggerManager      triggerManager;         ///< This is the manager for all the triggers the scenario has (e.g. reinforcements)
+    TriggerManager      triggerManager;         ///< This is the manager for all the triggers the scenario has (e.g. reinforcements)
 
-	bool	bQuitGame;					///< Should the game be quited after this game tick
-	bool	bPause;						///< Is the game currently halted
-	bool    bMenu;                      ///< Is there currently a menu shown (options or mentat menu)
-	bool	bReplay;					///< Is this game actually a replay
+    bool    bQuitGame;                  ///< Should the game be quited after this game tick
+    bool    bPause;                     ///< Is the game currently halted
+    bool    bMenu;                      ///< Is there currently a menu shown (options or mentat menu)
+    bool    bReplay;                    ///< Is this game actually a replay
 
-	bool	bShowFPS;					///< Show the FPS
+    bool    bShowFPS;                   ///< Show the FPS
 
-	bool    bShowTime;                  ///< Show how long this game is running
+    bool    bShowTime;                  ///< Show how long this game is running
 
-	bool    bCheatsEnabled;             ///< Cheat codes are enabled?
+    bool    bCheatsEnabled;             ///< Cheat codes are enabled?
 
-    bool	finished;                   ///< Is the game finished (won or lost) and we are just waiting for the end message to be shown
-	bool	won;                        ///< If the game is finished, is it won or lost
-	Uint32  finishedLevelTime;          ///< The time in milliseconds when the level was finished (won or lost)
-	bool    finishedLevel;              ///< Set, when the game is really finished and the end message was shown
+    bool    finished;                   ///< Is the game finished (won or lost) and we are just waiting for the end message to be shown
+    bool    won;                        ///< If the game is finished, is it won or lost
+    Uint32  finishedLevelTime;          ///< The time in milliseconds when the level was finished (won or lost)
+    bool    finishedLevel;              ///< Set, when the game is really finished and the end message was shown
 
-	GameInterface*	        pInterface;			                ///< This is the whole interface (top bar and side bar)
-	InGameMenu*		        pInGameMenu;		                ///< This is the menu that is opened by the option button
-	MentatHelp*		        pInGameMentat;		                ///< This is the mentat dialog opened by the mentat button
-	WaitingForOtherPlayers* pWaitingForOtherPlayers;            ///< This is the dialog that pops up when we are waiting for other players during network hangs
-	Uint32                  startWaitingForOtherPlayersTime;    ///< The time in milliseconds when we started waiting for other players
+    GameInterface*          pInterface;                         ///< This is the whole interface (top bar and side bar)
+    InGameMenu*             pInGameMenu;                        ///< This is the menu that is opened by the option button
+    MentatHelp*             pInGameMentat;                      ///< This is the mentat dialog opened by the mentat button
+    WaitingForOtherPlayers* pWaitingForOtherPlayers;            ///< This is the dialog that pops up when we are waiting for other players during network hangs
+    Uint32                  startWaitingForOtherPlayersTime;    ///< The time in milliseconds when we started waiting for other players
 
-	bool    bSelectionChanged;                          ///< Has the selected list changed (and must be retransmitted to other plays in multiplayer games)
-	std::set<Uint32> selectedList;                      ///< A set of all selected units/structures
-	std::set<Uint32> selectedByOtherPlayerList;         ///< This is only used in multiplayer games where two players control one house
+    bool    bSelectionChanged;                          ///< Has the selected list changed (and must be retransmitted to other plays in multiplayer games)
+    std::set<Uint32> selectedList;                      ///< A set of all selected units/structures
+    std::set<Uint32> selectedByOtherPlayerList;         ///< This is only used in multiplayer games where two players control one house
     RobustList<Explosion*> explosionList;               ///< A list containing all the explosions that must be drawn
 
     std::vector<House*> house;                          ///< All the houses of this game, index by their houseID; has the size NUM_HOUSES; unused houses are nullptr

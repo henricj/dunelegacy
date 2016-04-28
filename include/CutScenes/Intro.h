@@ -32,10 +32,10 @@ class Intro : public CutScene
 public:
 
     /// Default constructor
-	Intro();
+    Intro();
 
-	/// destructor
-	virtual ~Intro();
+    /// destructor
+    virtual ~Intro();
 
 private:
 

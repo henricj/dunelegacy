@@ -34,16 +34,16 @@
 
 CustomGameStatsMenu::CustomGameStatsMenu() : MenuBase()
 {
-	// set up window
+    // set up window
     SDL_Texture *pBackground = pGFXManager->getUIGraphic(UI_MenuBackground);
-	setBackground(pBackground, false);
-	resize(getTextureSize(pBackground));
+    setBackground(pBackground, false);
+    resize(getTextureSize(pBackground));
 
-	setWindowWidget(&windowWidget);
+    setWindowWidget(&windowWidget);
 
-	Uint32 localHouseColor = SDL2RGB(palette[houseToPaletteIndex[pLocalHouse->getHouseID()]]);
+    Uint32 localHouseColor = SDL2RGB(palette[houseToPaletteIndex[pLocalHouse->getHouseID()]]);
 
-	windowWidget.addWidget(&mainVBox, Point(24,23),	Point(getRendererWidth() - 48, getRendererHeight() - 32));
+    windowWidget.addWidget(&mainVBox, Point(24,23), Point(getRendererWidth() - 48, getRendererHeight() - 32));
 
     captionLabel.setText(getBasename(currentGame->getGameInitSettings().getFilename(), true));
     captionLabel.setTextColor(localHouseColor + 3);
@@ -162,29 +162,29 @@ CustomGameStatsMenu::CustomGameStatsMenu() : MenuBase()
     mainVBox.addWidget(Spacer::create(), 0.05);
 
     mainVBox.addWidget(VSpacer::create(20));
-	mainVBox.addWidget(&buttonHBox, 24);
-	mainVBox.addWidget(VSpacer::create(14), 0.0);
+    mainVBox.addWidget(&buttonHBox, 24);
+    mainVBox.addWidget(VSpacer::create(14), 0.0);
 
     buttonHBox.addWidget(HSpacer::create(70));
     int totalTime = currentGame->getGameTime()/1000;
     timeLabel.setText(strprintf(_("@DUNE.ENG|22#Time: %d:%02d"), totalTime/3600, (totalTime%3600)/60));
     timeLabel.setTextColor(localHouseColor + 3);
-	buttonHBox.addWidget(&timeLabel, 0.2);
+    buttonHBox.addWidget(&timeLabel, 0.2);
 
-	buttonHBox.addWidget(Spacer::create(), 0.0625);
-	buttonHBox.addWidget(Spacer::create(), 0.475);
-	buttonHBox.addWidget(Spacer::create(), 0.0625);
+    buttonHBox.addWidget(Spacer::create(), 0.0625);
+    buttonHBox.addWidget(Spacer::create(), 0.475);
+    buttonHBox.addWidget(Spacer::create(), 0.0625);
 
     okButton.setText(_("OK"));
     okButton.setTextColor(localHouseColor + 3);
-	okButton.setOnClick(std::bind(&CustomGameStatsMenu::onOK, this));
-	buttonHBox.addWidget(&okButton, 0.2);
-	buttonHBox.addWidget(HSpacer::create(90));
+    okButton.setOnClick(std::bind(&CustomGameStatsMenu::onOK, this));
+    buttonHBox.addWidget(&okButton, 0.2);
+    buttonHBox.addWidget(HSpacer::create(90));
 }
 
 CustomGameStatsMenu::~CustomGameStatsMenu()
 {
-	;
+    ;
 }
 
 void CustomGameStatsMenu::onOK()

@@ -28,10 +28,10 @@
 
 #include <algorithm>
 
-#define MISSION_DESCRIPTION		0
-#define MISSION_WIN				1
-#define MISSION_LOSE			2
-#define MISSION_ADVICE			3
+#define MISSION_DESCRIPTION     0
+#define MISSION_WIN             1
+#define MISSION_LOSE            2
+#define MISSION_ADVICE          3
 
 
 class TextManager {
@@ -39,17 +39,17 @@ public:
     /**
         Default constructor
     */
-	TextManager();
+    TextManager();
 
-	/**
+    /**
         Destructor
-	*/
-	~TextManager();
+    */
+    ~TextManager();
 
-	/**
+    /**
         Load data from Dune II data files
-	*/
-	void loadData();
+    */
+    void loadData();
 
     /**
         This method returns a briefing text for the specified mission.
@@ -58,7 +58,7 @@ public:
         \param  house       the house to get the text from (only HOUSE_ATREIDES, HOUSE_ORDOS and HOUSE_HARKONNEN)
         \return the briefing text
     */
-	std::string	getBriefingText(unsigned int mission, unsigned int texttype, int house) const;
+    std::string getBriefingText(unsigned int mission, unsigned int texttype, int house) const;
 
     /**
         This method returns all mentat entries for a specific house and up to the specified tech level.
@@ -66,15 +66,15 @@ public:
         \param  techLevel   the tech level (1 to 8)
         \return a vector of mentat texts
     */
-	std::vector<MentatTextFile::MentatEntry> getAllMentatEntries(int house, unsigned int techLevel) const;
+    std::vector<MentatTextFile::MentatEntry> getAllMentatEntries(int house, unsigned int techLevel) const;
 
     /**
         This method returns a localized version of unlocalizedString
         \param  unlocalizedString   the string in english
         \return the localized version of unlocalizedString
     */
-	const std::string& getLocalized(const std::string& unlocalizedString) const {
-	    const std::string& localizedString = getLocalizedRaw(unlocalizedString);
+    const std::string& getLocalized(const std::string& unlocalizedString) const {
+        const std::string& localizedString = getLocalizedRaw(unlocalizedString);
 
         if(!localizedString.empty() && localizedString[0] == '@') {
             // post-process
@@ -82,7 +82,7 @@ public:
         } else {
             return localizedString;
         }
-	}
+    }
 
 
 
@@ -92,14 +92,14 @@ private:
         \param  unlocalizedString   the string in english
         \return the localized version of unlocalizedString
     */
-	const std::string& getLocalizedRaw(const std::string& unlocalizedString) const {
+    const std::string& getLocalizedRaw(const std::string& unlocalizedString) const {
         std::map<std::string, std::string>::const_iterator iter = localizedString.find(unlocalizedString);
         if((iter != localizedString.end()) && !iter->second.empty()) {
             return iter->second;
         } else {
             return unlocalizedString;
         }
-	}
+    }
 
     /**
         Post-process a string of the following form:
@@ -110,12 +110,12 @@ private:
         \param  unprocessedString   the original string containing the @ at the start
         \return the processed string with data read from FILENAME.EXT
     */
-	const std::string& postProcessString(const std::string& unprocessedString) const;
+    const std::string& postProcessString(const std::string& unprocessedString) const;
 
-	/**
+    /**
         Add a original Dune 2 text file
-	*/
-	void addOrigDuneText(const std::string& filename, bool bDecode = false);
+    */
+    void addOrigDuneText(const std::string& filename, bool bDecode = false);
 
 
     std::shared_ptr<MentatTextFile> mentatStrings[3];                       ///< The MENTAT?.<EXTENSION> mentat menu texts

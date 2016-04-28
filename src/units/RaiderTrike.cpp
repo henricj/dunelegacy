@@ -37,17 +37,17 @@ RaiderTrike::RaiderTrike(InputStream& stream) : GroundUnit(stream) {
 }
 
 void RaiderTrike::init() {
-	itemID = Unit_RaiderTrike;
-	owner->incrementUnits(itemID);
+    itemID = Unit_RaiderTrike;
+    owner->incrementUnits(itemID);
 
-	numWeapons = 2;
-	bulletType = Bullet_ShellSmall;
+    numWeapons = 2;
+    bulletType = Bullet_ShellSmall;
 
-	graphicID = ObjPic_Trike;
-	graphic = pGFXManager->getObjPic(graphicID,getOwner()->getHouseID());
+    graphicID = ObjPic_Trike;
+    graphic = pGFXManager->getObjPic(graphicID,getOwner()->getHouseID());
 
-	numImagesX = NUM_ANGLES;
-	numImagesY = 1;
+    numImagesX = NUM_ANGLES;
+    numImagesY = 1;
 }
 
 RaiderTrike::~RaiderTrike() {
@@ -66,5 +66,5 @@ void RaiderTrike::destroy() {
 }
 
 void RaiderTrike::playAttackSound() {
-	soundPlayer->playSoundAt(Sound_MachineGun,location);
+    soundPlayer->playSoundAt(Sound_MachineGun,location);
 }

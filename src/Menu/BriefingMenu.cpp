@@ -26,62 +26,62 @@
 #include <stdlib.h>
 
 BriefingMenu::BriefingMenu(int newHouse,int mission,int type) : MentatMenu(newHouse) {
-	this->mission = mission;
+    this->mission = mission;
     this->type = type;
 
-	Animation* anim = nullptr;
+    Animation* anim = nullptr;
 
-	SDL_Texture* pMentatProcceed = pGFXManager->getUIGraphic(UI_MentatProcced);
-	SDL_Texture* pMentatProcceedPressed = pGFXManager->getUIGraphic(UI_MentatProcced_Pressed);
-	proccedButton.setTextures(pMentatProcceed, false, pMentatProcceedPressed, false);
-	proccedButton.setEnabled(false);
-	proccedButton.setVisible(false);
-	proccedButton.setOnClick(std::bind(&BriefingMenu::onProcced, this));
-	windowWidget.addWidget(&proccedButton, Point(500,340), getTextureSize(pMentatProcceed));
+    SDL_Texture* pMentatProcceed = pGFXManager->getUIGraphic(UI_MentatProcced);
+    SDL_Texture* pMentatProcceedPressed = pGFXManager->getUIGraphic(UI_MentatProcced_Pressed);
+    proccedButton.setTextures(pMentatProcceed, false, pMentatProcceedPressed, false);
+    proccedButton.setEnabled(false);
+    proccedButton.setVisible(false);
+    proccedButton.setOnClick(std::bind(&BriefingMenu::onProcced, this));
+    windowWidget.addWidget(&proccedButton, Point(500,340), getTextureSize(pMentatProcceed));
 
-	SDL_Texture* pMentatRepeat = pGFXManager->getUIGraphic(UI_MentatRepeat);
-	SDL_Texture* pMentatRepeatPressed = pGFXManager->getUIGraphic(UI_MentatRepeat_Pressed);
-	repeatButton.setTextures(pMentatRepeat, false, pMentatRepeatPressed, false);
-	repeatButton.setEnabled(false);
-	repeatButton.setVisible(false);
-	repeatButton.setOnClick(std::bind(&BriefingMenu::onRepeat, this));
-	windowWidget.addWidget(&repeatButton,Point(350,340), getTextureSize(pMentatRepeat));
+    SDL_Texture* pMentatRepeat = pGFXManager->getUIGraphic(UI_MentatRepeat);
+    SDL_Texture* pMentatRepeatPressed = pGFXManager->getUIGraphic(UI_MentatRepeat_Pressed);
+    repeatButton.setTextures(pMentatRepeat, false, pMentatRepeatPressed, false);
+    repeatButton.setEnabled(false);
+    repeatButton.setVisible(false);
+    repeatButton.setOnClick(std::bind(&BriefingMenu::onRepeat, this));
+    windowWidget.addWidget(&repeatButton,Point(350,340), getTextureSize(pMentatRepeat));
 
-	int missionnumber;
-	if(mission != 22) {
-		missionnumber = ((mission+1)/3)+1;
-	} else {
-		missionnumber = 9;
-	}
+    int missionnumber;
+    if(mission != 22) {
+        missionnumber = ((mission+1)/3)+1;
+    } else {
+        missionnumber = 9;
+    }
 
-	switch(type) {
-		case DEBRIEFING_WIN: {
-			anim = pGFXManager->getAnimation((rand() % 2 == 0) ? Anim_Win1 : Anim_Win2);
-			text = pTextManager->getBriefingText(missionnumber,MISSION_WIN,house);
+    switch(type) {
+        case DEBRIEFING_WIN: {
+            anim = pGFXManager->getAnimation((rand() % 2 == 0) ? Anim_Win1 : Anim_Win2);
+            text = pTextManager->getBriefingText(missionnumber,MISSION_WIN,house);
         } break;
-		case DEBRIEFING_LOST: {
-			anim = pGFXManager->getAnimation((rand() % 2 == 0) ? Anim_Lose1 : Anim_Lose2);
-			text = pTextManager->getBriefingText(missionnumber,MISSION_LOSE,house);
+        case DEBRIEFING_LOST: {
+            anim = pGFXManager->getAnimation((rand() % 2 == 0) ? Anim_Lose1 : Anim_Lose2);
+            text = pTextManager->getBriefingText(missionnumber,MISSION_LOSE,house);
         } break;
-		default:
-		case BRIEFING: {
-		    anim = pGFXManager->getAnimation(getMissionSpecificAnim(missionnumber));
-			text = pTextManager->getBriefingText(missionnumber,MISSION_DESCRIPTION,house);
-		} break;
-	}
-	setText(text);
-	animation.setAnimation(anim);
-	windowWidget.addWidget(&animation,Point(256,96),animation.getMinimumSize());
+        default:
+        case BRIEFING: {
+            anim = pGFXManager->getAnimation(getMissionSpecificAnim(missionnumber));
+            text = pTextManager->getBriefingText(missionnumber,MISSION_DESCRIPTION,house);
+        } break;
+    }
+    setText(text);
+    animation.setAnimation(anim);
+    windowWidget.addWidget(&animation,Point(256,96),animation.getMinimumSize());
 }
 
 BriefingMenu::~BriefingMenu() {
 }
 
 void BriefingMenu::onMentatTextFinished() {
-	proccedButton.setEnabled(true);
-	proccedButton.setVisible(true);
-	repeatButton.setEnabled(true);
-	repeatButton.setVisible(true);
+    proccedButton.setEnabled(true);
+    proccedButton.setVisible(true);
+    repeatButton.setEnabled(true);
+    repeatButton.setVisible(true);
 }
 
 int BriefingMenu::showMenu()
@@ -154,12 +154,12 @@ int BriefingMenu::showMenu()
 void BriefingMenu::onRepeat() {
     setText(text);
 
-	proccedButton.setEnabled(false);
-	proccedButton.setVisible(false);
-	repeatButton.setEnabled(false);
-	repeatButton.setVisible(false);
+    proccedButton.setEnabled(false);
+    proccedButton.setVisible(false);
+    repeatButton.setEnabled(false);
+    repeatButton.setVisible(false);
 }
 
 void BriefingMenu::onProcced() {
-	quit();
+    quit();
 }

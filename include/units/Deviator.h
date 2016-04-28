@@ -23,21 +23,21 @@
 class Deviator : public TrackedUnit
 {
 public:
-	Deviator(House* newOwner);
+    Deviator(House* newOwner);
     Deviator(InputStream& stream);
-	void init();
-	virtual ~Deviator();
+    void init();
+    virtual ~Deviator();
 
-	void blitToScreen();
-	virtual void destroy();
-	virtual bool canAttack(const ObjectBase* object) const;
+    void blitToScreen();
+    virtual void destroy();
+    virtual bool canAttack(const ObjectBase* object) const;
 
-	void playAttackSound();
+    void playAttackSound();
 
 private:
     // drawing information
-	SDL_Texture**   turretGraphic;      ///< The turret graphic
-	int             gunGraphicID;       ///< The id of the turret graphic (needed if we want to reload the graphic)
+    SDL_Texture**   turretGraphic;      ///< The turret graphic
+    int             gunGraphicID;       ///< The id of the turret graphic (needed if we want to reload the graphic)
 };
 
 #endif //DEVIATOR_H

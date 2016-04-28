@@ -37,12 +37,12 @@ SDL_Surface* INIMapPreviewCreator::createMinimapImageOfMap(int borderWidth, Uint
 
     SDL_Surface* pMinimap;
     // create surface
-	if((pMinimap = SDL_CreateRGBSurface(0, 128+2*borderWidth, 128+2*borderWidth, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK)) == nullptr) {
-		return nullptr;
-	}
-	SDL_FillRect(pMinimap, nullptr, borderColor);
-	SDL_Rect dest = { borderWidth, borderWidth, pMinimap->w - 2*borderWidth, pMinimap->h - 2*borderWidth};
-	SDL_FillRect(pMinimap, &dest, COLOR_BLACK);
+    if((pMinimap = SDL_CreateRGBSurface(0, 128+2*borderWidth, 128+2*borderWidth, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK)) == nullptr) {
+        return nullptr;
+    }
+    SDL_FillRect(pMinimap, nullptr, borderColor);
+    SDL_Rect dest = { borderWidth, borderWidth, pMinimap->w - 2*borderWidth, pMinimap->h - 2*borderWidth};
+    SDL_FillRect(pMinimap, &dest, COLOR_BLACK);
 
     int version = inifile->getIntValue("BASIC", "Version", 1);
 
@@ -51,8 +51,8 @@ SDL_Surface* INIMapPreviewCreator::createMinimapImageOfMap(int borderWidth, Uint
     int scale = 1;
     int sizeX = 64;
     int sizeY = 64;
-	int logicalSizeX = 64;
-	int logicalSizeY = 64;
+    int logicalSizeX = 64;
+    int logicalSizeY = 64;
     int logicalOffsetX = 0;
     int logicalOffsetY = 0;
 
@@ -65,9 +65,9 @@ SDL_Surface* INIMapPreviewCreator::createMinimapImageOfMap(int borderWidth, Uint
             logError("Cannot read Seed in this map!");
         }
 
-	    int mapscale = inifile->getIntValue("BASIC","MapScale",0);
+        int mapscale = inifile->getIntValue("BASIC","MapScale",0);
 
-	    switch(mapscale) {
+        switch(mapscale) {
             case 0: {
                 scale = 2;
                 sizeX = 62;
@@ -100,10 +100,10 @@ SDL_Surface* INIMapPreviewCreator::createMinimapImageOfMap(int borderWidth, Uint
                 SDL_FreeSurface(pMinimap);
                 logError("Unknown MapScale!");
             } break;
-	    }
+        }
 
-	    logicalSizeX = 64;
-	    logicalSizeY = 64;
+        logicalSizeX = 64;
+        logicalSizeY = 64;
 
         offsetX += borderWidth;
         offsetY += borderWidth;
@@ -326,43 +326,43 @@ SDL_Surface* INIMapPreviewCreator::createMinimapImageOfMap(int borderWidth, Uint
     INIFile::KeyIterator iter;
 
     for(iter = inifile->begin("STRUCTURES"); iter != inifile->end("STRUCTURES"); ++iter) {
-		std::string tmpkey = iter->getKeyName();
-		std::string tmp = iter->getStringValue();
+        std::string tmpkey = iter->getKeyName();
+        std::string tmp = iter->getStringValue();
 
-		if(tmpkey.find("GEN") == 0) {
-			// Gen Object/Structure
+        if(tmpkey.find("GEN") == 0) {
+            // Gen Object/Structure
 
-			std::string PosStr = tmpkey.substr(3,tmpkey.size()-3);
-			int pos;
-			if(!parseString(PosStr, pos)) {
+            std::string PosStr = tmpkey.substr(3,tmpkey.size()-3);
+            int pos;
+            if(!parseString(PosStr, pos)) {
                 continue;
-			}
+            }
 
-			std::string HouseStr, BuildingStr;
-			splitString(tmp,2,&HouseStr,&BuildingStr);
+            std::string HouseStr, BuildingStr;
+            splitString(tmp,2,&HouseStr,&BuildingStr);
 
-			int house = getHouseByName(HouseStr);
-			Uint32 color = COLOR_WHITE;
-			if(house != HOUSE_INVALID) {
-				color = SDL2RGB(palette[houseToPaletteIndex[house]]);
-			} else {
+            int house = getHouseByName(HouseStr);
+            Uint32 color = COLOR_WHITE;
+            if(house != HOUSE_INVALID) {
+                color = SDL2RGB(palette[houseToPaletteIndex[house]]);
+            } else {
                 convertToLower(HouseStr);
-			    if(HouseStr.length() == 7 && HouseStr.substr(0,6) == "player") {
-			        int playernum = HouseStr.at(6)-'0';
+                if(HouseStr.length() == 7 && HouseStr.substr(0,6) == "player") {
+                    int playernum = HouseStr.at(6)-'0';
 
-			        if(playernum >= 1 && playernum <= 6) {
+                    if(playernum >= 1 && playernum <= 6) {
                         int val = 32*(playernum - 1) + 32;
-			            color = COLOR_RGB(val, val, val);
-			        }
-			    } else {
-			        SDL_FreeSurface(pMinimap);
+                        color = COLOR_RGB(val, val, val);
+                    }
+                } else {
+                    SDL_FreeSurface(pMinimap);
                     logError(iter->getLineNumber(), "Invalid house string: '" + HouseStr + "'!");
-			    }
-			}
+                }
+            }
 
-			if(BuildingStr == "Concrete") {
-				// nothing
-			} else if(BuildingStr == "Wall") {
+            if(BuildingStr == "Concrete") {
+                // nothing
+            } else if(BuildingStr == "Wall") {
                 int x = pos % logicalSizeX - logicalOffsetX;
                 int y = pos / logicalSizeX - logicalOffsetY;
 
@@ -373,41 +373,41 @@ SDL_Surface* INIMapPreviewCreator::createMinimapImageOfMap(int borderWidth, Uint
                         }
                     }
                 }
-			}
-		} else if(iter->getKeyName().find("ID") == 0) {
-			// other structure
-			std::string HouseStr, BuildingStr, health, PosStr;
-			splitString(tmp,6,&HouseStr,&BuildingStr,&health,&PosStr);
+            }
+        } else if(iter->getKeyName().find("ID") == 0) {
+            // other structure
+            std::string HouseStr, BuildingStr, health, PosStr;
+            splitString(tmp,6,&HouseStr,&BuildingStr,&health,&PosStr);
 
-			int pos;
-			if(!parseString(PosStr, pos)) {
+            int pos;
+            if(!parseString(PosStr, pos)) {
                 continue;
-			}
+            }
 
-			int house = getHouseByName(HouseStr);
-			Uint32 color = COLOR_WHITE;
-			if(house != HOUSE_INVALID) {
-				color = SDL2RGB(palette[houseToPaletteIndex[house]]);
-			} else {
-			    convertToLower(HouseStr);
-			    if(HouseStr.length() == 7 && HouseStr.substr(0,6) == "player") {
-			        int playernum = HouseStr.at(6)-'0';
+            int house = getHouseByName(HouseStr);
+            Uint32 color = COLOR_WHITE;
+            if(house != HOUSE_INVALID) {
+                color = SDL2RGB(palette[houseToPaletteIndex[house]]);
+            } else {
+                convertToLower(HouseStr);
+                if(HouseStr.length() == 7 && HouseStr.substr(0,6) == "player") {
+                    int playernum = HouseStr.at(6)-'0';
 
-			        if(playernum >= 1 && playernum <= 6) {
+                    if(playernum >= 1 && playernum <= 6) {
                         int val = 32*(playernum - 1) + 32;
-			            color = COLOR_RGB(val, val, val);
-			        }
-			    } else {
-			        SDL_FreeSurface(pMinimap);
+                        color = COLOR_RGB(val, val, val);
+                    }
+                } else {
+                    SDL_FreeSurface(pMinimap);
                     logError(iter->getLineNumber(), "Invalid house string: '" + HouseStr + "'!");
-			    }
-			}
+                }
+            }
 
-			Coord size = getStructureSize(getItemIDByName(BuildingStr));
+            Coord size = getStructureSize(getItemIDByName(BuildingStr));
 
             int posX = pos % logicalSizeX - logicalOffsetX;
             int posY = pos / logicalSizeX - logicalOffsetY;
-			for(int x = posX; x < posX + size.x; x++) {
+            for(int x = posX; x < posX + size.x; x++) {
                 for(int y = posY; y < posY + size.y; y++) {
                     if(x >= 0 && x < sizeX && y >= 0 && y < sizeY) {
                         for(int i=0;i<scale;i++) {
@@ -417,9 +417,9 @@ SDL_Surface* INIMapPreviewCreator::createMinimapImageOfMap(int borderWidth, Uint
                         }
                     }
                 }
-			}
-		}
-	}
+            }
+        }
+    }
 
     return pMinimap;
 }

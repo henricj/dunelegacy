@@ -47,8 +47,8 @@ Explosion::Explosion(InputStream& stream)
 {
     explosionID = stream.readUint32();
     position.x = stream.readSint16();
-	position.y = stream.readSint16();
-	house = stream.readUint32();
+    position.y = stream.readSint16();
+    house = stream.readUint32();
     frameTimer = stream.readSint32();
     currentFrame = stream.readSint32();
 
@@ -134,8 +134,8 @@ void Explosion::save(OutputStream& stream) const
 {
     stream.writeUint32(explosionID);
     stream.writeSint16(position.x);
-	stream.writeSint16(position.y);
-	stream.writeUint32(house);
+    stream.writeSint16(position.y);
+    stream.writeUint32(house);
     stream.writeSint32(frameTimer);
     stream.writeSint32(currentFrame);
 }

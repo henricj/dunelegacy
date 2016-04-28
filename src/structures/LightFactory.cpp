@@ -35,17 +35,17 @@ LightFactory::LightFactory(InputStream& stream) : BuilderBase(stream) {
 
 void LightFactory::init() {
     itemID = Structure_LightFactory;
-	owner->incrementStructures(itemID);
+    owner->incrementStructures(itemID);
 
-	structureSize.x = 2;
-	structureSize.y = 2;
+    structureSize.x = 2;
+    structureSize.y = 2;
 
-	graphicID = ObjPic_LightFactory;
-	graphic = pGFXManager->getObjPic(graphicID,getOwner()->getHouseID());
-	numImagesX = 6;
-	numImagesY = 1;
-	firstAnimFrame = 2;
-	lastAnimFrame = 3;
+    graphicID = ObjPic_LightFactory;
+    graphic = pGFXManager->getObjPic(graphicID,getOwner()->getHouseID());
+    numImagesX = 6;
+    numImagesY = 1;
+    firstAnimFrame = 2;
+    lastAnimFrame = 3;
 }
 
 LightFactory::~LightFactory() {
@@ -53,10 +53,10 @@ LightFactory::~LightFactory() {
 
 void LightFactory::updateStructureSpecificStuff() {
     if(deployTimer > 0) {
-	    firstAnimFrame = 4;
+        firstAnimFrame = 4;
         lastAnimFrame = 5;
-	} else {
+    } else {
         firstAnimFrame = 2;
         lastAnimFrame = 3;
-	}
+    }
 }

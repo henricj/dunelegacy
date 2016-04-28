@@ -23,90 +23,90 @@
 
 #include <string>
 
-#define NUM_MAPCHOICEPIECES	28
-#define NUM_MAPCHOICEARROWS	9
+#define NUM_MAPCHOICEPIECES 28
+#define NUM_MAPCHOICEARROWS 9
 
 // Voice
 typedef enum {
-	HarvesterDeployed,
-	ConstructionComplete,
-	VehicleRepaired,
-	FrigateHasArrived,
-	YourMissionIsComplete,
-	YouHaveFailedYourMission,
-	RadarActivated,
-	RadarDeactivated,
-	BloomLocated,
-	WarningWormSign,
-	BaseIsUnderAttack,  ///< unused
+    HarvesterDeployed,
+    ConstructionComplete,
+    VehicleRepaired,
+    FrigateHasArrived,
+    YourMissionIsComplete,
+    YouHaveFailedYourMission,
+    RadarActivated,
+    RadarDeactivated,
+    BloomLocated,
+    WarningWormSign,
+    BaseIsUnderAttack,  ///< unused
     SaboteurApproaching,
     MissileApproaching,
-	NUM_VOICE
+    NUM_VOICE
 } Voice_enum;
 
 // Sound
 typedef enum {
-	YesSir,
-	Reporting,
-	Acknowledged,
-	Affirmative,
-	MovingOut,
-	InfantryOut,
-	SomethingUnderTheSand,
-	HouseHarkonnen,
-	HouseAtreides,
-	HouseOrdos,
-	Sound_PlaceStructure,
-	Sound_ButtonClick,
-	Sound_InvalidAction,
-	Sound_CreditsTick,
-	Sound_Tick,
-	Sound_RadarNoise,
-	Sound_ExplosionGas,
-	Sound_ExplosionTiny,
-	Sound_ExplosionSmall,
-	Sound_ExplosionMedium,
-	Sound_ExplosionLarge,
-	Sound_ExplosionStructure,
-	Sound_WormAttack,
-	Sound_Gun,
-	Sound_Rocket,
-	Sound_Bloom,
-	Sound_Scream1,
-	Sound_Scream2,
-	Sound_Scream3,
-	Sound_Scream4,
-	Sound_Scream5,
-	Sound_Trumpet,
-	Sound_Drop,
-	Sound_Squashed,
-	Sound_MachineGun,
-	Sound_Sonic,
-	Sound_RocketSmall,
-	NUM_SOUNDCHUNK
+    YesSir,
+    Reporting,
+    Acknowledged,
+    Affirmative,
+    MovingOut,
+    InfantryOut,
+    SomethingUnderTheSand,
+    HouseHarkonnen,
+    HouseAtreides,
+    HouseOrdos,
+    Sound_PlaceStructure,
+    Sound_ButtonClick,
+    Sound_InvalidAction,
+    Sound_CreditsTick,
+    Sound_Tick,
+    Sound_RadarNoise,
+    Sound_ExplosionGas,
+    Sound_ExplosionTiny,
+    Sound_ExplosionSmall,
+    Sound_ExplosionMedium,
+    Sound_ExplosionLarge,
+    Sound_ExplosionStructure,
+    Sound_WormAttack,
+    Sound_Gun,
+    Sound_Rocket,
+    Sound_Bloom,
+    Sound_Scream1,
+    Sound_Scream2,
+    Sound_Scream3,
+    Sound_Scream4,
+    Sound_Scream5,
+    Sound_Trumpet,
+    Sound_Drop,
+    Sound_Squashed,
+    Sound_MachineGun,
+    Sound_Sonic,
+    Sound_RocketSmall,
+    NUM_SOUNDCHUNK
 } Sound_enum;
 
 
 class SFXManager {
 public:
-	SFXManager();
-	~SFXManager();
+    SFXManager();
+    ~SFXManager();
 
-	Mix_Chunk*		getVoice(Voice_enum id, int house);
-	Mix_Chunk*		getSound(Sound_enum id);
+    Mix_Chunk*      getVoice(Voice_enum id, int house);
+    Mix_Chunk*      getSound(Sound_enum id);
 
 private:
     Mix_Chunk*      loadMixFromADL(std::string adlFile, int index);
 
-	void			loadEnglishVoice();
-	Mix_Chunk* 		getEnglishVoice(Voice_enum id, int house);
+    void            loadEnglishVoice();
+    Mix_Chunk*      getEnglishVoice(Voice_enum id, int house);
 
-	void			loadNonEnglishVoice(std::string languagePrefix);
-	Mix_Chunk* 		getNonEnglishVoice(Voice_enum id, int house);
+    void            loadNonEnglishVoice(std::string languagePrefix);
+    Mix_Chunk*      getNonEnglishVoice(Voice_enum id, int house);
 
-	Mix_Chunk**		lngVoice;
-	int				numLngVoice;
-	Mix_Chunk*		soundChunk[NUM_SOUNDCHUNK];
+    Mix_Chunk**     lngVoice;
+    int             numLngVoice;
+    Mix_Chunk*      soundChunk[NUM_SOUNDCHUNK];
 };
 
 #endif // SFXMANAGER_H

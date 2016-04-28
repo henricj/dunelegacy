@@ -25,24 +25,24 @@
 class IFileStream : public InputStream
 {
 public:
-	IFileStream();
-	~IFileStream();
+    IFileStream();
+    ~IFileStream();
 
-	bool open(const char* filename);
-	bool open(std::string filename);
-	void close();
+    bool open(const char* filename);
+    bool open(std::string filename);
+    void close();
 
-	std::string readString();
+    std::string readString();
 
-	Uint8 readUint8();
-	Uint16 readUint16();
-	Uint32 readUint32();
-	Uint64 readUint64();
-	bool readBool();
-	float readFloat();
+    Uint8 readUint8();
+    Uint16 readUint16();
+    Uint32 readUint32();
+    Uint64 readUint64();
+    bool readBool();
+    float readFloat();
 
 private:
-	FILE* fp;
+    FILE* fp;
 };
 
 #endif // IFILESTREAM_H

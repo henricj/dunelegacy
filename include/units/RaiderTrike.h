@@ -23,16 +23,16 @@
 class RaiderTrike : public GroundUnit
 {
 public:
-	RaiderTrike(House* newOwner);
+    RaiderTrike(House* newOwner);
     RaiderTrike(InputStream& stream);
-	void init();
-	virtual ~RaiderTrike();
+    void init();
+    virtual ~RaiderTrike();
 
     virtual void destroy();
 
     virtual bool hasBumpyMovementOnRock() const { return true; }
 
-	void playAttackSound();
+    void playAttackSound();
 };
 
 #endif //RAIDERTRIKE_H

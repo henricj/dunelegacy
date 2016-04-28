@@ -23,16 +23,16 @@
 class Trike : public GroundUnit
 {
 public:
-	Trike(House* newOwner);
-	Trike(InputStream& stream);
-	void init();
-	virtual ~Trike();
+    Trike(House* newOwner);
+    Trike(InputStream& stream);
+    void init();
+    virtual ~Trike();
 
     virtual void destroy();
 
     virtual bool hasBumpyMovementOnRock() const { return true; }
 
-	void playAttackSound();
+    void playAttackSound();
 };
 
 #endif //TRIKE_H

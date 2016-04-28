@@ -30,96 +30,96 @@
 
 
 MenuBase::MenuBase() : Window(0,0,0,0) {
-	bAllowQuiting = true;
-	retVal = MENU_QUIT_DEFAULT;
-	bClearScreen = true;
-	quiting = false;
+    bAllowQuiting = true;
+    retVal = MENU_QUIT_DEFAULT;
+    bClearScreen = true;
+    quiting = false;
 }
 
 MenuBase::~MenuBase() {
 }
 
 void MenuBase::quit(int returnVal) {
-	retVal = returnVal;
-	quiting = true;
+    retVal = returnVal;
+    quiting = true;
 }
 
 int MenuBase::showMenu() {
-	SDL_Event	event;
-	// valgrind reports errors in SDL_PollEvent if event is not initialized
-	memset(&event, 0, sizeof(event));
+    SDL_Event   event;
+    // valgrind reports errors in SDL_PollEvent if event is not initialized
+    memset(&event, 0, sizeof(event));
 
-	quiting = false;
+    quiting = false;
 
-	while(!quiting) {
-	    int frameStart = SDL_GetTicks();
+    while(!quiting) {
+        int frameStart = SDL_GetTicks();
 
-	    update();
+        update();
 
-	    if(pNetworkManager != nullptr) {
+        if(pNetworkManager != nullptr) {
             pNetworkManager->update();
-	    }
+        }
 
-	    if(quiting) {
+        if(quiting) {
             return retVal;
-	    }
+        }
 
-		draw();
+        draw();
 
-		while(SDL_PollEvent(&event)) {
-		    //check the events
-			if(doInput(event) == false) {
-				break;
-			}
-		}
+        while(SDL_PollEvent(&event)) {
+            //check the events
+            if(doInput(event) == false) {
+                break;
+            }
+        }
 
-		int frameTime = SDL_GetTicks() - frameStart;
+        int frameTime = SDL_GetTicks() - frameStart;
         if(settings.video.frameLimit == true) {
             if(frameTime < 32) {
                 SDL_Delay(32 - frameTime);
             }
         }
-	}
+    }
 
-	return retVal;
+    return retVal;
 }
 
 void MenuBase::draw() {
-	if(bClearScreen == true) {
+    if(bClearScreen == true) {
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
         SDL_RenderClear(renderer);
-	}
+    }
 
-	Window::draw();
+    Window::draw();
 
-	drawSpecificStuff();
+    drawSpecificStuff();
 
-	Window::drawOverlay();
+    Window::drawOverlay();
 
-	drawCursor();
+    drawCursor();
 
-	SDL_RenderPresent(renderer);
+    SDL_RenderPresent(renderer);
 }
 
 void MenuBase::drawSpecificStuff() {
 }
 
 bool MenuBase::doInput(SDL_Event &event) {
-	switch (event.type) {
-		case (SDL_KEYDOWN): {
-			// Look for a keypress
-			switch(event.key.keysym.sym) {
+    switch (event.type) {
+        case (SDL_KEYDOWN): {
+            // Look for a keypress
+            switch(event.key.keysym.sym) {
 
-				case SDLK_ESCAPE: {
-					if((pChildWindow == nullptr) && (bAllowQuiting == true)) {
-						quit();
-					}
+                case SDLK_ESCAPE: {
+                    if((pChildWindow == nullptr) && (bAllowQuiting == true)) {
+                        quit();
+                    }
                 } break;
 
-				case SDLK_RETURN: {
-					if(SDL_GetModState() & KMOD_ALT) {
-						SDL_SetWindowFullscreen(window, (SDL_GetWindowFlags(window) ^ SDL_WINDOW_FULLSCREEN_DESKTOP));
-					}
+                case SDLK_RETURN: {
+                    if(SDL_GetModState() & KMOD_ALT) {
+                        SDL_SetWindowFullscreen(window, (SDL_GetWindowFlags(window) ^ SDL_WINDOW_FULLSCREEN_DESKTOP));
+                    }
                 } break;
 
                 case SDLK_p: {
@@ -130,8 +130,8 @@ bool MenuBase::doInput(SDL_Event &event) {
                     }
                 } // fall through
 
-				case SDLK_PRINTSCREEN:
-				case SDLK_SYSREQ: {
+                case SDLK_PRINTSCREEN:
+                case SDLK_SYSREQ: {
 
                     std::string screenshotFilename;
                     int i = 1;
@@ -151,29 +151,29 @@ bool MenuBase::doInput(SDL_Event &event) {
                     }
                 } break;
 
-				default: {
-				} break;
-			}
-		} break;
-
-		case SDL_MOUSEMOTION: {
-			SDL_MouseMotionEvent* mouse = &event.motion;
-
-			drawnMouseX = mouse->x;
-			drawnMouseY = mouse->y;
-		} break;
-
-		case SDL_QUIT: {
-			if((pChildWindow == nullptr) && (bAllowQuiting == true)) {
-				quit();
-			}
+                default: {
+                } break;
+            }
         } break;
 
-		default: {
+        case SDL_MOUSEMOTION: {
+            SDL_MouseMotionEvent* mouse = &event.motion;
+
+            drawnMouseX = mouse->x;
+            drawnMouseY = mouse->y;
         } break;
-	}
 
-	handleInput(event);
+        case SDL_QUIT: {
+            if((pChildWindow == nullptr) && (bAllowQuiting == true)) {
+                quit();
+            }
+        } break;
 
-	return !quiting;
+        default: {
+        } break;
+    }
+
+    handleInput(event);
+
+    return !quiting;
 }

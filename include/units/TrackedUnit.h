@@ -24,23 +24,23 @@ class TrackedUnit : public GroundUnit
 {
 public:
 
-	TrackedUnit(House* newOwner);
-	TrackedUnit(InputStream& stream);
-	void init();
-	virtual ~TrackedUnit();
+    TrackedUnit(House* newOwner);
+    TrackedUnit(InputStream& stream);
+    void init();
+    virtual ~TrackedUnit();
 
-	virtual void save(OutputStream& stream) const;
+    virtual void save(OutputStream& stream) const;
 
-	void checkPos();
-	bool canPass(int xPos, int yPos) const;
+    void checkPos();
+    bool canPass(int xPos, int yPos) const;
 
-	/**
+    /**
         Returns how fast a unit can move over the specified terrain type.
         \param  terrainType the type to consider
         \return Returns a speed factor. Higher values mean slower.
-	*/
-	virtual FixPoint getTerrainDifficulty(TERRAINTYPE terrainType) const {
-	    switch(terrainType) {
+    */
+    virtual FixPoint getTerrainDifficulty(TERRAINTYPE terrainType) const {
+        switch(terrainType) {
             case Terrain_Slab:          return FixPt(1,0);
             case Terrain_Sand:          return FixPt(1,5625);
             case Terrain_Rock:          return FixPt(1,375);
@@ -51,7 +51,7 @@ public:
             case Terrain_SpiceBloom:    return FixPt(1,5625);
             case Terrain_SpecialBloom:  return FixPt(1,5625);
             default:                    return FixPt(1,0);
-	    }
+        }
     }
 };
 

@@ -32,37 +32,37 @@ public:
     ADLPlayer();
     virtual ~ADLPlayer();
 
-	/*!
-		change type of current music
-		@param musicType type of music to be played
-	*/
-	void changeMusic(MUSICTYPE musicType);
+    /*!
+        change type of current music
+        @param musicType type of music to be played
+    */
+    void changeMusic(MUSICTYPE musicType);
 
     /*!
         Toggle the music on and off
     */
-	void toggleSound();
+    void toggleSound();
 
     /**
         Returns whether music is currently being played
         \return true = currently playing, false = not playing
-	*/
-	bool isMusicPlaying();
+    */
+    bool isMusicPlaying();
 
     /*!
-		turns music playing on or off
-		@param value when true the function turns music on
-	*/
-	void setMusic(bool value);
+        turns music playing on or off
+        @param value when true the function turns music on
+    */
+    void setMusic(bool value);
 
     /**
         Sets the volume of the music channel
         \param  newVolume   the new volume [0;MIX_MAX_VOLUME]
     */
-	virtual void setMusicVolume(int newVolume);
+    virtual void setMusicVolume(int newVolume);
 
 private:
-	SoundAdlibPC* pSoundAdlibPC;
+    SoundAdlibPC* pSoundAdlibPC;
 };
 
 #endif // ADLPLAYER_H

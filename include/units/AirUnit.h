@@ -23,23 +23,23 @@
 class AirUnit : public UnitBase
 {
 public:
-	AirUnit(House* newOwner);
-	AirUnit(InputStream& stream);
-	void init();
-	virtual ~AirUnit();
+    AirUnit(House* newOwner);
+    AirUnit(InputStream& stream);
+    void init();
+    virtual ~AirUnit();
 
-	virtual void save(OutputStream& stream) const;
+    virtual void save(OutputStream& stream) const;
 
-	void blitToScreen();
+    void blitToScreen();
 
-	void playConfirmSound() { ; };
-	void playSelectSound() { ; };
+    void playConfirmSound() { ; };
+    void playSelectSound() { ; };
 
-	virtual void destroy();
+    virtual void destroy();
 
-	void assignToMap(const Coord& pos);
-	virtual void checkPos();
-	bool canPass(int xPos, int yPos) const;
+    void assignToMap(const Coord& pos);
+    virtual void checkPos();
+    bool canPass(int xPos, int yPos) const;
 
 protected:
     SDL_Texture**   shadowGraphic;           ///< The graphic for the shadow of this air unit

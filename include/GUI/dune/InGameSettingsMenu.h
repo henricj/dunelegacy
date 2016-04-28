@@ -28,64 +28,64 @@
 class InGameSettingsMenu : public Window
 {
 public:
-	InGameSettingsMenu();
-	virtual ~InGameSettingsMenu();
+    InGameSettingsMenu();
+    virtual ~InGameSettingsMenu();
 
-	void init();
+    void init();
 
     /**
-		Handles a key stroke.
-		\param	key the key that was pressed or released.
-		\return	true = key stroke was processed by the window, false = key stroke was not processed by the window
-	*/
-	virtual bool handleKeyPress(SDL_KeyboardEvent& key);
+        Handles a key stroke.
+        \param  key the key that was pressed or released.
+        \return true = key stroke was processed by the window, false = key stroke was not processed by the window
+    */
+    virtual bool handleKeyPress(SDL_KeyboardEvent& key);
 
-	/**
-		This static method creates a dynamic settings menu object.
-		The idea behind this method is to simply create a new dialog on the fly and
-		add it as a child window of some other window. If the window gets closed it will be freed.
-		\return	The new dialog box (will be automatically destroyed when it's closed)
-	*/
-	static InGameSettingsMenu* create() {
-		InGameSettingsMenu* dlg = new InGameSettingsMenu();
-		dlg->pAllocated = true;
-		return dlg;
-	}
+    /**
+        This static method creates a dynamic settings menu object.
+        The idea behind this method is to simply create a new dialog on the fly and
+        add it as a child window of some other window. If the window gets closed it will be freed.
+        \return The new dialog box (will be automatically destroyed when it's closed)
+    */
+    static InGameSettingsMenu* create() {
+        InGameSettingsMenu* dlg = new InGameSettingsMenu();
+        dlg->pAllocated = true;
+        return dlg;
+    }
 
 private:
-	void onOK();
-	void onCancel();
+    void onOK();
+    void onCancel();
 
-	void onGameSpeedPlus();
-	void onGameSpeedMinus();
+    void onGameSpeedPlus();
+    void onGameSpeedMinus();
 
-	void onVolumePlus();
-	void onVolumeMinus();
+    void onVolumePlus();
+    void onVolumeMinus();
 
-	void onScrollSpeedPlus();
-	void onScrollSpeedMinus();
+    void onScrollSpeedPlus();
+    void onScrollSpeedMinus();
 
-	StaticContainer windowWidget;
+    StaticContainer windowWidget;
 
-	TextButton		cancelButton;
-	TextButton		okButton;
+    TextButton      cancelButton;
+    TextButton      okButton;
 
-	PictureButton	gameSpeedPlus;
-	PictureButton	gameSpeedMinus;
-	ProgressBar		gameSpeedBar;
+    PictureButton   gameSpeedPlus;
+    PictureButton   gameSpeedMinus;
+    ProgressBar     gameSpeedBar;
 
-	PictureButton	volumePlus;
-	PictureButton	volumeMinus;
-	ProgressBar		volumeBar;
+    PictureButton   volumePlus;
+    PictureButton   volumeMinus;
+    ProgressBar     volumeBar;
 
-	PictureButton	scrollSpeedPlus;
-	PictureButton	scrollSpeedMinus;
-	ProgressBar		scrollSpeedBar;
+    PictureButton   scrollSpeedPlus;
+    PictureButton   scrollSpeedMinus;
+    ProgressBar     scrollSpeedBar;
 
-	int		newGamespeed;
-	int     previousVolume;
-	int		volume;
-	int     scrollSpeed;
+    int     newGamespeed;
+    int     previousVolume;
+    int     volume;
+    int     scrollSpeed;
 
 };
 

@@ -23,19 +23,19 @@
 
 /// Constructor
 /**
-	The constructor reads from the surface all data and saves them internal. Immediately after the PictureFont-Object is
-	constructed pic can be freed. All data is saved in the class.
-	\param	pic	The picture which contains the font
-	\param  freesrc A non-zero value means it will automatically close/free the src for you.
+    The constructor reads from the surface all data and saves them internal. Immediately after the PictureFont-Object is
+    constructed pic can be freed. All data is saved in the class.
+    \param  pic The picture which contains the font
+    \param  freesrc A non-zero value means it will automatically close/free the src for you.
 */
 PictureFont::PictureFont(SDL_Surface* pic, int freesrc)
 {
-	if(pic == nullptr) {
-	    if(freesrc) SDL_FreeSurface(pic);
+    if(pic == nullptr) {
+        if(freesrc) SDL_FreeSurface(pic);
         throw std::invalid_argument("PictureFont::PictureFont(): pic == nullptr!");
-	}
+    }
 
-	SDL_LockSurface(pic);
+    SDL_LockSurface(pic);
 
     try {
         characterHeight = pic->h - 2;
@@ -82,7 +82,7 @@ PictureFont::PictureFont(SDL_Surface* pic, int freesrc)
 
 /// Destructor
 /**
-	Frees all memory.
+    Frees all memory.
 */
 PictureFont::~PictureFont()
 {
@@ -92,20 +92,20 @@ PictureFont::~PictureFont()
 
 
 void PictureFont::drawTextOnSurface(SDL_Surface* pSurface, std::string text, Uint32 baseColor) {
-	SDL_LockSurface(pSurface);
+    SDL_LockSurface(pSurface);
 
-	int bpp = pSurface->format->BytesPerPixel;
+    int bpp = pSurface->format->BytesPerPixel;
 
-	int curXPos = 0;
-	const unsigned char* pText = (unsigned char*) text.c_str();
-	while(*pText != '\0') {
-		int index = *pText;
+    int curXPos = 0;
+    const unsigned char* pText = (unsigned char*) text.c_str();
+    while(*pText != '\0') {
+        int index = *pText;
 
-		//Now we can copy pixel by pixel
-		for(int y = 0; y < characterHeight; y++) {
-			for(int x = 0; x < character[index].width; x++) {
-				char color = character[index].data[y*character[index].width+x];
-				if(color != 0) {
+        //Now we can copy pixel by pixel
+        for(int y = 0; y < characterHeight; y++) {
+            for(int x = 0; x < character[index].width; x++) {
+                char color = character[index].data[y*character[index].width+x];
+                if(color != 0) {
                     Uint8 *pixel = (Uint8 *)pSurface->pixels + y * pSurface->pitch + (x+curXPos) * bpp;
 
                     switch(bpp) {
@@ -133,33 +133,33 @@ void PictureFont::drawTextOnSurface(SDL_Surface* pSurface, std::string text, Uin
                             *(Uint32 *)pixel = baseColor;
                             break;
                     }
-				}
+                }
 
-			}
-		}
+            }
+        }
 
-		curXPos += character[index].width;
-		pText++;
-	}
+        curXPos += character[index].width;
+        pText++;
+    }
 
 
-	SDL_UnlockSurface(pSurface);
+    SDL_UnlockSurface(pSurface);
 }
 
 /// Returns the number of pixels a text needs
 /**
-		This methods returns the number of pixels this text would need if printed.
-		\param	text	The text to be checked for it's length in pixel
-		\return Number of pixels needed
+        This methods returns the number of pixels this text would need if printed.
+        \param  text    The text to be checked for it's length in pixel
+        \return Number of pixels needed
 */
-int	PictureFont::getTextWidth(std::string text) const {
-	int width = 0;
-	const unsigned char* pText = (unsigned char*) text.c_str();
-	while(*pText != '\0') {
-		width += character[*pText].width;
-		pText++;
-	}
+int PictureFont::getTextWidth(std::string text) const {
+    int width = 0;
+    const unsigned char* pText = (unsigned char*) text.c_str();
+    while(*pText != '\0') {
+        width += character[*pText].width;
+        pText++;
+    }
 
-	return width;
+    return width;
 }
 

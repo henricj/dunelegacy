@@ -110,18 +110,18 @@ protected:
     */
     bool doUpgrade(const BuilderBase* pBuilder);
 
-	/**
+    /**
         Start production of the specified item in pBuilder.
         \param  pBuilder        the structure to build in
         \param  itemID          the item to produce
-	*/
+    */
     void doProduceItem(const BuilderBase* pBuilder, Uint32 itemID);
 
-	/**
+    /**
         Cancel production of the specified item in pBuilder.
         \param  pBuilder        the structure to build in
         \param  itemID          the item to cancel
-	*/
+    */
     void doCancelItem(const BuilderBase* pBuilder, Uint32 itemID);
 
     /**
@@ -153,101 +153,101 @@ protected:
     */
     bool doPlaceStructure(const ConstructionYard* pConstYard, int x, int y);
 
-	/**
+    /**
         Activate the special palace weapon Fremen or Saboteur. For the Deathhand see doLaunchDeathhand.
         \param  pPalace the palace to activate the special weapon of
-	*/
-	void doSpecialWeapon(const Palace* pPalace);
+    */
+    void doSpecialWeapon(const Palace* pPalace);
 
-	/**
+    /**
         Launch the deathhand missile an target position x,y.
         \param  pPalace the palace to activate the special weapon of
         \param  xpos    x coordinate (in tile coordinates)
         \param  ypos    y coordinate (in tile coordinates)
-	*/
+    */
     void doLaunchDeathhand(const Palace* pPalace, int x, int y);
 
-	/**
-		Attacks with turret pTurret the object pObject.
-		\param  pTurret         the turret to attack with
-		\param  pTargetObject   the object to attack
-	*/
-	void doAttackObject(const TurretBase* pTurret, const ObjectBase* pTargetObject);
+    /**
+        Attacks with turret pTurret the object pObject.
+        \param  pTurret         the turret to attack with
+        \param  pTargetObject   the object to attack
+    */
+    void doAttackObject(const TurretBase* pTurret, const ObjectBase* pTargetObject);
 
 
-	/**
-		Moves the unit pUnit to x,y.
-		\param  pUnit   the unit to move
-		\param  x    the x position on the map
-		\param  y    the y position on the map
-		\param  bForced true, if the unit should ignore everything else
-	*/
-	void doMove2Pos(const UnitBase* pUnit, int x, int y, bool bForced);
+    /**
+        Moves the unit pUnit to x,y.
+        \param  pUnit   the unit to move
+        \param  x    the x position on the map
+        \param  y    the y position on the map
+        \param  bForced true, if the unit should ignore everything else
+    */
+    void doMove2Pos(const UnitBase* pUnit, int x, int y, bool bForced);
 
-	/**
-		Moves the unit pUnit to x,y.
-		\param  pUnit           the unit to move
-		\param  pTargetObject   the object to move to
-	*/
-	void doMove2Object(const UnitBase* pUnit, const ObjectBase* pTargetObject);
+    /**
+        Moves the unit pUnit to x,y.
+        \param  pUnit           the unit to move
+        \param  pTargetObject   the object to move to
+    */
+    void doMove2Object(const UnitBase* pUnit, const ObjectBase* pTargetObject);
 
-	/**
-		Orders the unit pUnit to attack position x,y.
-		\param  pUnit   the unit that shall attack
-		\param  x       the x position on the map
-		\param  y       the y position on the map
-		\param  bForced true, if the unit should ignore everything else
-	*/
-	void doAttackPos(const UnitBase* pUnit, int x, int y, bool bForced);
+    /**
+        Orders the unit pUnit to attack position x,y.
+        \param  pUnit   the unit that shall attack
+        \param  x       the x position on the map
+        \param  y       the y position on the map
+        \param  bForced true, if the unit should ignore everything else
+    */
+    void doAttackPos(const UnitBase* pUnit, int x, int y, bool bForced);
 
-	/**
-		Attacks with unit pUnit the object pObject.
-		\param  pUnit           the unit to attack with
-		\param  pTargetObject   the object to attack
-		\param  bForced         true, if the unit should ignore everything else
-	*/
-	void doAttackObject(const UnitBase* pUnit, const ObjectBase* pTargetObject, bool bForced);
+    /**
+        Attacks with unit pUnit the object pObject.
+        \param  pUnit           the unit to attack with
+        \param  pTargetObject   the object to attack
+        \param  bForced         true, if the unit should ignore everything else
+    */
+    void doAttackObject(const UnitBase* pUnit, const ObjectBase* pTargetObject, bool bForced);
 
-	/**
-		Change the attack mode of pUnit to attackMode.
-		\param  pUnit           the unit to change attack mode of
-		\param  attackMode      the new attack mode
-	*/
-	void doSetAttackMode(const UnitBase* pUnit, ATTACKMODE attackMode);
+    /**
+        Change the attack mode of pUnit to attackMode.
+        \param  pUnit           the unit to change attack mode of
+        \param  attackMode      the new attack mode
+    */
+    void doSetAttackMode(const UnitBase* pUnit, ATTACKMODE attackMode);
 
-	/**
-		Start the devastation sequence of a devastator
-		\param  pDevastator the devastator to devastate
-	*/
-	void doStartDevastate(const Devastator* pDevastator);
+    /**
+        Start the devastation sequence of a devastator
+        \param  pDevastator the devastator to devastate
+    */
+    void doStartDevastate(const Devastator* pDevastator);
 
-	/**
-		Orders pHarvester to return to a refinery
-		\param  pHarvester the harvester to return
-	*/
-	void doReturn(const Harvester* pHarvester);
+    /**
+        Orders pHarvester to return to a refinery
+        \param  pHarvester the harvester to return
+    */
+    void doReturn(const Harvester* pHarvester);
 
-	/**
-		The infantry unit pInfantry shall capture pTargetStructure
-		\param  pInfantry           the unit to capture with
-		\param  pTargetStructure    the object to attack
-	*/
-	void doCaptureStructure(const InfantryBase* pInfantry, const StructureBase* pTargetStructure);
+    /**
+        The infantry unit pInfantry shall capture pTargetStructure
+        \param  pInfantry           the unit to capture with
+        \param  pTargetStructure    the object to attack
+    */
+    void doCaptureStructure(const InfantryBase* pInfantry, const StructureBase* pTargetStructure);
 
-	/**
+    /**
        Deploy MCV pMCV. If deploying was successful this unit does not exist anymore.
        \param  pMCV the MCV to deploy
        \return true, if deploying was successful, false otherwise.
-	*/
-	bool doDeploy(const MCV* pMCV);
+    */
+    bool doDeploy(const MCV* pMCV);
 
 
-	/**
+    /**
         Request a carryall to take unit to location
         This isn't in the original game but will make it fun
-	*/
+    */
 
-	bool doRequestCarryallDrop(const GroundUnit* pGroundUnit);
+    bool doRequestCarryallDrop(const GroundUnit* pGroundUnit);
 
 
 private:

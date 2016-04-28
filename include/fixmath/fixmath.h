@@ -7,8 +7,8 @@ extern "C"
 #endif
 
 /*!
-	\file fixmath.h
-	\brief Functions to perform fast accurate fixed-point math operations.
+    \file fixmath.h
+    \brief Functions to perform fast accurate fixed-point math operations.
 */
 
 #include "int64.h"

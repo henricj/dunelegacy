@@ -30,30 +30,30 @@
 #include <sand.h>
 
 MapChoice::MapChoice(int newHouse, unsigned int LastMission) : MenuBase() {
-	disableQuiting(true);
-	selectedRegion = -1;
+    disableQuiting(true);
+    selectedRegion = -1;
 
     bFastBlending = false;
-	curHouse2Blit = 0;
-	curRegion2Blit = 0;
-	curBlendBlitter = nullptr;
-	lastScenario = (LastMission + 1)/3 + 1;
-	house = newHouse;
+    curHouse2Blit = 0;
+    curRegion2Blit = 0;
+    curBlendBlitter = nullptr;
+    lastScenario = (LastMission + 1)/3 + 1;
+    house = newHouse;
 
-	// set up window
+    // set up window
     SDL_Texture *pBackground = pGFXManager->getUIGraphic(UI_MapChoiceScreen, house);
-	setBackground(pBackground, false);
-	resize(getTextureSize(pBackground));
+    setBackground(pBackground, false);
+    resize(getTextureSize(pBackground));
 
-	centerAreaRect.x = getRendererWidth()/2 - 320;
-	centerAreaRect.y = getRendererHeight()/2 - 200;
-	centerAreaRect.w = 640;
-	centerAreaRect.h = 400;
+    centerAreaRect.x = getRendererWidth()/2 - 320;
+    centerAreaRect.y = getRendererHeight()/2 - 200;
+    centerAreaRect.w = 640;
+    centerAreaRect.h = 400;
 
-	msgticker.resize(640,30);
+    msgticker.resize(640,30);
 
-	// load all data from ini
-	loadINI();
+    // load all data from ini
+    loadINI();
 
     if(lastScenario == 1) {
         // create black rectangle
@@ -76,14 +76,14 @@ MapChoice::MapChoice(int newHouse, unsigned int LastMission) : MenuBase() {
 }
 
 MapChoice::~MapChoice() {
-	delete curBlendBlitter;
+    delete curBlendBlitter;
     curBlendBlitter = nullptr;
 
-	SDL_FreeSurface(mapSurface);
-	mapSurface = nullptr;
+    SDL_FreeSurface(mapSurface);
+    mapSurface = nullptr;
 
-	SDL_DestroyTexture(mapTexture);
-	mapTexture = nullptr;
+    SDL_DestroyTexture(mapTexture);
+    mapTexture = nullptr;
 }
 
 int MapChoice::showMenu()
@@ -95,9 +95,9 @@ int MapChoice::showMenu()
 
 void MapChoice::drawSpecificStuff() {
     SDL_UpdateTexture(mapTexture, nullptr, mapSurface->pixels, mapSurface->pitch);
-	SDL_RenderCopy(renderer, mapTexture, nullptr, &centerAreaRect);
+    SDL_RenderCopy(renderer, mapTexture, nullptr, &centerAreaRect);
 
-	switch(mapChoiceState) {
+    switch(mapChoiceState) {
 
         case MAPCHOICESTATE_FADEINPLANET: {
             if(curBlendBlitter == nullptr) {
@@ -182,7 +182,7 @@ void MapChoice::drawSpecificStuff() {
 
         case MAPCHOICESTATE_BLENDING: {
             if(curBlendBlitter == nullptr) {
-                while(	(curHouse2Blit < NUM_HOUSES) &&
+                while(  (curHouse2Blit < NUM_HOUSES) &&
                         (curRegion2Blit >= group[lastScenario].newRegion[(curHouse2Blit + house) % NUM_HOUSES].size())) {
                         curRegion2Blit = 0;
                         curHouse2Blit++;
@@ -291,14 +291,14 @@ void MapChoice::drawSpecificStuff() {
             }
         } break;
 
-	}
+    }
 
-	msgticker.draw(Point(centerAreaRect.x + 110, centerAreaRect.y + 320));
+    msgticker.draw(Point(centerAreaRect.x + 110, centerAreaRect.y + 320));
 }
 
 bool MapChoice::doInput(SDL_Event &event) {
     if((event.type == SDL_MOUSEBUTTONUP) && (event.button.button == SDL_BUTTON_LEFT)) {
-	    if(mapChoiceState == MAPCHOICESTATE_ARROWS) {
+        if(mapChoiceState == MAPCHOICESTATE_ARROWS) {
             int x = event.button.x-centerAreaRect.x;
             int y = event.button.y-centerAreaRect.y;
 
@@ -325,142 +325,142 @@ bool MapChoice::doInput(SDL_Event &event) {
                     }
                 }
             }
-		} else {
+        } else {
             bFastBlending = true;
-		}
-	}
-	return MenuBase::doInput(event);
+        }
+    }
+    return MenuBase::doInput(event);
 }
 
 void MapChoice::createMapSurfaceWithPieces() {
-	if(mapSurface != nullptr) {
+    if(mapSurface != nullptr) {
         SDL_FreeSurface(mapSurface);
-	}
-	if(mapTexture != nullptr) {
+    }
+    if(mapTexture != nullptr) {
         SDL_DestroyTexture(mapTexture);
-	}
+    }
 
-	// Load map surface
-	mapSurface = convertSurfaceToDisplayFormat(copySurface(pGFXManager->getUIGraphicSurface(UI_MapChoiceMap)), true);
-	mapTexture = SDL_CreateTexture(renderer, SCREEN_FORMAT, SDL_TEXTUREACCESS_STREAMING, mapSurface->w, mapSurface->h);
-	SDL_SetTextureBlendMode(mapTexture, SDL_BLENDMODE_BLEND);
+    // Load map surface
+    mapSurface = convertSurfaceToDisplayFormat(copySurface(pGFXManager->getUIGraphicSurface(UI_MapChoiceMap)), true);
+    mapTexture = SDL_CreateTexture(renderer, SCREEN_FORMAT, SDL_TEXTUREACCESS_STREAMING, mapSurface->w, mapSurface->h);
+    SDL_SetTextureBlendMode(mapTexture, SDL_BLENDMODE_BLEND);
 
-	for(unsigned int s = 1; s < lastScenario; s++) {
-		for(unsigned int h = 0; h < NUM_HOUSES; h++) {
-			for(unsigned int p = 0; p < group[s].newRegion[h].size(); p++) {
-				int pieceNum = (group[s].newRegion[h])[p];
-				SDL_Surface* pieceSurface = pGFXManager->getMapChoicePieceSurface(pieceNum,h);
-				SDL_Rect dest = calcDrawingRect(pieceSurface, piecePosition[pieceNum].x, piecePosition[pieceNum].y);
-				SDL_BlitSurface(pieceSurface,nullptr,mapSurface,&dest);
-			}
-		}
-	}
+    for(unsigned int s = 1; s < lastScenario; s++) {
+        for(unsigned int h = 0; h < NUM_HOUSES; h++) {
+            for(unsigned int p = 0; p < group[s].newRegion[h].size(); p++) {
+                int pieceNum = (group[s].newRegion[h])[p];
+                SDL_Surface* pieceSurface = pGFXManager->getMapChoicePieceSurface(pieceNum,h);
+                SDL_Rect dest = calcDrawingRect(pieceSurface, piecePosition[pieceNum].x, piecePosition[pieceNum].y);
+                SDL_BlitSurface(pieceSurface,nullptr,mapSurface,&dest);
+            }
+        }
+    }
 }
 
 void MapChoice::loadINI() {
-	std::string filename = strprintf("REGION%c.INI", houseChar[house]);
+    std::string filename = strprintf("REGION%c.INI", houseChar[house]);
 
-	SDL_RWops* file;
-	if((file = pFileManager->openFile(filename)) == nullptr) {
-		fprintf(stderr,"MapChoice::LoadINI(): Cannot open %s!\n",filename.c_str());
-		exit(EXIT_FAILURE);
-	}
+    SDL_RWops* file;
+    if((file = pFileManager->openFile(filename)) == nullptr) {
+        fprintf(stderr,"MapChoice::LoadINI(): Cannot open %s!\n",filename.c_str());
+        exit(EXIT_FAILURE);
+    }
 
-	INIFile RegionINI(file);
-	SDL_RWclose(file);
+    INIFile RegionINI(file);
+    SDL_RWclose(file);
 
 
-	piecePosition[0].x = 0;
-	piecePosition[0].y = 0;
+    piecePosition[0].x = 0;
+    piecePosition[0].y = 0;
 
-	// read [PIECES]
-	for(int i=1; i < 28; i++) {
-		char tmp[3];
-		sprintf(tmp,"%d",i);
-		std::string entry = RegionINI.getStringValue("PIECES",tmp);
+    // read [PIECES]
+    for(int i=1; i < 28; i++) {
+        char tmp[3];
+        sprintf(tmp,"%d",i);
+        std::string entry = RegionINI.getStringValue("PIECES",tmp);
 
-		std::string strXPos;
-		std::string strYPos;
+        std::string strXPos;
+        std::string strYPos;
 
-		if(splitString(entry,2,&strXPos,&strYPos) == false) {
-			fprintf(stderr,"MapChoice::LoadINI(): File %s is invalid!\n",filename.c_str());
-			exit(EXIT_FAILURE);
-		}
+        if(splitString(entry,2,&strXPos,&strYPos) == false) {
+            fprintf(stderr,"MapChoice::LoadINI(): File %s is invalid!\n",filename.c_str());
+            exit(EXIT_FAILURE);
+        }
 
-		piecePosition[i].x = atol(strXPos.c_str());
-		piecePosition[i].y = atol(strYPos.c_str());
-		piecePosition[i].x += 8;
-		piecePosition[i].y += 24;
-		piecePosition[i].x *= 2;
-		piecePosition[i].y *= 2;
-	}
+        piecePosition[i].x = atol(strXPos.c_str());
+        piecePosition[i].y = atol(strYPos.c_str());
+        piecePosition[i].x += 8;
+        piecePosition[i].y += 24;
+        piecePosition[i].x *= 2;
+        piecePosition[i].y *= 2;
+    }
 
-	for(int i=1; i<=8; i++) {
-		char strSection[8];
-		sprintf(strSection,"GROUP%d",i);
+    for(int i=1; i<=8; i++) {
+        char strSection[8];
+        sprintf(strSection,"GROUP%d",i);
 
-		// read new regions
-		for(int h = 0; h < NUM_HOUSES; h++) {
-			std::string key;
-			switch(h) {
-				case HOUSE_HARKONNEN:	key = "HAR"; break;
-				case HOUSE_ATREIDES:	key = "ATR"; break;
-				case HOUSE_ORDOS:		key = "ORD"; break;
-				case HOUSE_FREMEN:		key = "FRE"; break;
-				case HOUSE_SARDAUKAR:	key = "SAR"; break;
-				case HOUSE_MERCENARY:	key = "MER"; break;
-			}
+        // read new regions
+        for(int h = 0; h < NUM_HOUSES; h++) {
+            std::string key;
+            switch(h) {
+                case HOUSE_HARKONNEN:   key = "HAR"; break;
+                case HOUSE_ATREIDES:    key = "ATR"; break;
+                case HOUSE_ORDOS:       key = "ORD"; break;
+                case HOUSE_FREMEN:      key = "FRE"; break;
+                case HOUSE_SARDAUKAR:   key = "SAR"; break;
+                case HOUSE_MERCENARY:   key = "MER"; break;
+            }
 
-			std::string strValue = RegionINI.getStringValue(strSection,key);
-			if(strValue != "") {
-				std::vector<std::string> strRegions = splitString(strValue);
+            std::string strValue = RegionINI.getStringValue(strSection,key);
+            if(strValue != "") {
+                std::vector<std::string> strRegions = splitString(strValue);
 
-				for(unsigned int r = 0; r < strRegions.size(); r++) {
-					group[i].newRegion[h].push_back(atol(strRegions[r].c_str()));
-				}
-			}
-		}
+                for(unsigned int r = 0; r < strRegions.size(); r++) {
+                    group[i].newRegion[h].push_back(atol(strRegions[r].c_str()));
+                }
+            }
+        }
 
-		// read attackRegion (REG1, REG2, REG3)
-		for(int a = 0; a < 4; a++) {
-			char strKey[5];
-			sprintf(strKey,"REG%d",a+1);
+        // read attackRegion (REG1, REG2, REG3)
+        for(int a = 0; a < 4; a++) {
+            char strKey[5];
+            sprintf(strKey,"REG%d",a+1);
 
-			std::string tmp = RegionINI.getStringValue(strSection,strKey);
-			if(tmp == "") {
-				group[i].attackRegion[a].regionNum = 0;
-				group[i].attackRegion[a].arrowNum = 0;
-				group[i].attackRegion[a].arrowPosition.x = 0;
-				group[i].attackRegion[a].arrowPosition.y = 0;
-			} else {
-				std::vector<std::string> strAttackRegion = splitString(tmp);
+            std::string tmp = RegionINI.getStringValue(strSection,strKey);
+            if(tmp == "") {
+                group[i].attackRegion[a].regionNum = 0;
+                group[i].attackRegion[a].arrowNum = 0;
+                group[i].attackRegion[a].arrowPosition.x = 0;
+                group[i].attackRegion[a].arrowPosition.y = 0;
+            } else {
+                std::vector<std::string> strAttackRegion = splitString(tmp);
 
-				if(strAttackRegion.size() < 4) {
-					fprintf(stderr,"MapChoice::LoadINI(): %s:[%s]/%s has to have 4 numbers!\n",filename.c_str(),strSection,strKey);
-					exit(EXIT_FAILURE);
-				}
+                if(strAttackRegion.size() < 4) {
+                    fprintf(stderr,"MapChoice::LoadINI(): %s:[%s]/%s has to have 4 numbers!\n",filename.c_str(),strSection,strKey);
+                    exit(EXIT_FAILURE);
+                }
 
-				group[i].attackRegion[a].regionNum = atol(strAttackRegion[0].c_str());
-				group[i].attackRegion[a].arrowNum = atol(strAttackRegion[1].c_str());
-				group[i].attackRegion[a].arrowPosition.x = atol(strAttackRegion[2].c_str());
-				group[i].attackRegion[a].arrowPosition.y = atol(strAttackRegion[3].c_str());
-				group[i].attackRegion[a].arrowPosition.x *= 2;
-				group[i].attackRegion[a].arrowPosition.y *= 2;
-			}
-		}
+                group[i].attackRegion[a].regionNum = atol(strAttackRegion[0].c_str());
+                group[i].attackRegion[a].arrowNum = atol(strAttackRegion[1].c_str());
+                group[i].attackRegion[a].arrowPosition.x = atol(strAttackRegion[2].c_str());
+                group[i].attackRegion[a].arrowPosition.y = atol(strAttackRegion[3].c_str());
+                group[i].attackRegion[a].arrowPosition.x *= 2;
+                group[i].attackRegion[a].arrowPosition.y *= 2;
+            }
+        }
 
-		// read text
-		for(int j = 1; j < 28; j++) {
-			char key[10];
-			sprintf(key,"%sTXT%d",_("LanguageFileExtension").c_str(),j);
+        // read text
+        for(int j = 1; j < 28; j++) {
+            char key[10];
+            sprintf(key,"%sTXT%d",_("LanguageFileExtension").c_str(),j);
 
-			std::string str = convertCP850ToISO8859_1(RegionINI.getStringValue(strSection,key));
-			if(str != "") {
-				TGroup::TText tmp;
-				tmp.message = str;
-				tmp.region = j;
-				group[i].text.push_back(tmp);
-			} else {
+            std::string str = convertCP850ToISO8859_1(RegionINI.getStringValue(strSection,key));
+            if(str != "") {
+                TGroup::TText tmp;
+                tmp.message = str;
+                tmp.region = j;
+                group[i].text.push_back(tmp);
+            } else {
                 // try TXT? without leading language
                 sprintf(key,"TXT%d",j);
 
@@ -471,7 +471,7 @@ void MapChoice::loadINI() {
                     tmp.region = j;
                     group[i].text.push_back(tmp);
                 }
-			}
-		}
-	}
+            }
+        }
+    }
 }

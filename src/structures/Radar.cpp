@@ -34,17 +34,17 @@ Radar::Radar(InputStream& stream) : StructureBase(stream) {
 
 void Radar::init() {
     itemID = Structure_Radar;
-	owner->incrementStructures(itemID);
+    owner->incrementStructures(itemID);
 
-	structureSize.x = 2;
-	structureSize.y = 2;
+    structureSize.x = 2;
+    structureSize.y = 2;
 
-	graphicID = ObjPic_Radar;
-	graphic = pGFXManager->getObjPic(graphicID,getOwner()->getHouseID());
-	numImagesX = 6;
-	numImagesY = 1;
-	firstAnimFrame = 2;
-	lastAnimFrame = 5;
+    graphicID = ObjPic_Radar;
+    graphic = pGFXManager->getObjPic(graphicID,getOwner()->getHouseID());
+    numImagesX = 6;
+    numImagesY = 1;
+    firstAnimFrame = 2;
+    lastAnimFrame = 5;
 }
 
 Radar::~Radar() {
@@ -52,5 +52,5 @@ Radar::~Radar() {
 
 
 void Radar::destroy() {
-	StructureBase::destroy();
+    StructureBase::destroy();
 }

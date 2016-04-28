@@ -84,7 +84,7 @@ std::vector<std::string> FileManager::getSearchPath() {
 
     searchPath.push_back(DUNELEGACY_DATADIR);
     char tmp[FILENAME_MAX];
-	fnkdat("data", tmp, FILENAME_MAX, FNKDAT_USER | FNKDAT_CREAT);
+    fnkdat("data", tmp, FILENAME_MAX, FNKDAT_USER | FNKDAT_CREAT);
     searchPath.push_back(tmp);
 
     return searchPath;
@@ -149,7 +149,7 @@ std::vector<std::string> FileManager::getMissingFiles() {
 }
 
 SDL_RWops* FileManager::openFile(std::string filename) {
-	SDL_RWops* ret;
+    SDL_RWops* ret;
 
     // try loading external file
     std::vector<std::string> searchPath = getSearchPath();
@@ -168,9 +168,9 @@ SDL_RWops* FileManager::openFile(std::string filename) {
     std::vector<Pakfile*>::const_iterator iter;
     for(iter = pakFiles.begin(); iter != pakFiles.end(); ++iter) {
         ret = (*iter)->openFile(filename);
-		if(ret != nullptr) {
-			return ret;
-		}
+        if(ret != nullptr) {
+            return ret;
+        }
     }
 
     throw std::runtime_error("FileManager::OpenFile(): Cannot find " + filename + "!");
@@ -202,17 +202,17 @@ bool FileManager::exists(std::string filename) const {
 
 
 std::string FileManager::md5FromFilename(std::string filename) {
-	unsigned char md5sum[16];
+    unsigned char md5sum[16];
 
-	if(md5_file(filename.c_str(), md5sum) != 0) {
-		throw std::runtime_error("Cannot open or read " + filename + "!");
-	} else {
+    if(md5_file(filename.c_str(), md5sum) != 0) {
+        throw std::runtime_error("Cannot open or read " + filename + "!");
+    } else {
 
-		std::stringstream stream;
-		stream << std::setfill('0') << std::hex;
-		for(int i=0;i<16;i++) {
-			stream << std::setw(2) << (int) md5sum[i];
-		}
-		return stream.str();
-	}
+        std::stringstream stream;
+        stream << std::setfill('0') << std::hex;
+        for(int i=0;i<16;i++) {
+            stream << std::setw(2) << (int) md5sum[i];
+        }
+        return stream.str();
+    }
 }

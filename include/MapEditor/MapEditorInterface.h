@@ -16,7 +16,7 @@
  */
 
 #ifndef MAPEDITORINTERFACE_H
-#define	MAPEDITORINTERFACE_H
+#define MAPEDITORINTERFACE_H
 
 #include <MapEditor/MapEditorRadarView.h>
 
@@ -38,28 +38,28 @@ class MapEditor;
 /// This class represents the map editor interface.
 class MapEditorInterface : public Window {
 public:
-	/// default constructor
-	MapEditorInterface(MapEditor* pMapEditor);
+    /// default constructor
+    MapEditorInterface(MapEditor* pMapEditor);
 
-	/// destructor
-	virtual ~MapEditorInterface();
+    /// destructor
+    virtual ~MapEditorInterface();
 
-	void onHouseChanges();
+    void onHouseChanges();
 
     void onNewMap();
 
-	void deselectAll();
+    void deselectAll();
 
-	void deselectObject();
+    void deselectObject();
 
-	void onObjectSelected();
+    void onObjectSelected();
 
-	/**
-		This method is called, when the child window is about to be closed.
-		This child window will be closed after this method returns.
-		\param	pChildWindow	The child window that will be closed
-	*/
-	virtual void onChildWindowClose(Window* pChildWindow);
+    /**
+        This method is called, when the child window is about to be closed.
+        This child window will be closed after this method returns.
+        \param  pChildWindow    The child window that will be closed
+    */
+    virtual void onChildWindowClose(Window* pChildWindow);
 
     void onNew();
 
@@ -129,153 +129,153 @@ private:
     int                 currentEditUnitID;
 
 
-	StaticContainer 	windowWidget;
+    StaticContainer     windowWidget;
 
-	HBox				topBarHBox;
-	SymbolButton		exitButton;
-	SymbolButton		newButton;
-	SymbolButton        loadButton;
-	SymbolButton        saveButton;
-	SymbolButton		undoButton;
-	SymbolButton		redoButton;
-	SymbolButton        playersButton;
-	SymbolButton        mapSettingsButton;
-	SymbolButton        choamButton;
-	SymbolButton        reinforcementsButton;
-	SymbolButton        teamsButton;
-	SymbolButton        mirrorModeNoneButton;
-	SymbolButton        mirrorModeHorizontalButton;
-	SymbolButton        mirrorModeVerticalButton;
-	SymbolButton        mirrorModeBothButton;
-	SymbolButton        mirrorModePointButton;
-	PictureLabel		topBar;
+    HBox                topBarHBox;
+    SymbolButton        exitButton;
+    SymbolButton        newButton;
+    SymbolButton        loadButton;
+    SymbolButton        saveButton;
+    SymbolButton        undoButton;
+    SymbolButton        redoButton;
+    SymbolButton        playersButton;
+    SymbolButton        mapSettingsButton;
+    SymbolButton        choamButton;
+    SymbolButton        reinforcementsButton;
+    SymbolButton        teamsButton;
+    SymbolButton        mirrorModeNoneButton;
+    SymbolButton        mirrorModeHorizontalButton;
+    SymbolButton        mirrorModeVerticalButton;
+    SymbolButton        mirrorModeBothButton;
+    SymbolButton        mirrorModePointButton;
+    PictureLabel        topBar;
 
-	PictureLabel		sideBar;
+    PictureLabel        sideBar;
 
-    HBox    			editorModeChooserHBox;
-	TextButton			terrainButton;
-	TextButton			structuresButton;
-	TextButton			unitsButton;
+    HBox                editorModeChooserHBox;
+    TextButton          terrainButton;
+    TextButton          structuresButton;
+    TextButton          unitsButton;
 
     DropDownBox         houseDropDownBox;
 
-	VBox                editorModeTerrainVBox;
+    VBox                editorModeTerrainVBox;
 
-	VBox                editorModeTerrain_VBox;
+    VBox                editorModeTerrain_VBox;
 
-	HBox                editorModeTerrain_HBox1;
-	HBox                editorModeTerrain_HBox2;
-	HBox                editorModeTerrain_HBox3;
+    HBox                editorModeTerrain_HBox1;
+    HBox                editorModeTerrain_HBox2;
+    HBox                editorModeTerrain_HBox3;
 
-	SymbolButton        editorModeTerrain_Sand;
-	SymbolButton        editorModeTerrain_Dunes;
-	SymbolButton        editorModeTerrain_SpecialBloom;
-	SymbolButton        editorModeTerrain_Spice;
-	SymbolButton        editorModeTerrain_ThickSpice;
-	SymbolButton        editorModeTerrain_SpiceBloom;
-	SymbolButton        editorModeTerrain_Rock;
-	SymbolButton        editorModeTerrain_Mountain;
+    SymbolButton        editorModeTerrain_Sand;
+    SymbolButton        editorModeTerrain_Dunes;
+    SymbolButton        editorModeTerrain_SpecialBloom;
+    SymbolButton        editorModeTerrain_Spice;
+    SymbolButton        editorModeTerrain_ThickSpice;
+    SymbolButton        editorModeTerrain_SpiceBloom;
+    SymbolButton        editorModeTerrain_Rock;
+    SymbolButton        editorModeTerrain_Mountain;
 
-	HBox                editorModeTerrain_PenHBox;
+    HBox                editorModeTerrain_PenHBox;
 
-	SymbolButton        editorModeTerrain_Pen1x1;
-	SymbolButton        editorModeTerrain_Pen3x3;
+    SymbolButton        editorModeTerrain_Pen1x1;
+    SymbolButton        editorModeTerrain_Pen3x3;
     SymbolButton        editorModeTerrain_Pen5x5;
 
 
     VBox                editorModeClassicTerrain_MainVBox;
 
-	VBox                editorModeClassicTerrain_VBox;
+    VBox                editorModeClassicTerrain_VBox;
 
-	HBox                editorModeClassicTerrain_HBox1;
-	SymbolButton        editorModeClassicTerrain_SpiceBloom;
-	SymbolButton        editorModeClassicTerrain_SpecialBloom;
-	SymbolButton        editorModeClassicTerrain_SpiceField;
-	TextButton          editorModeClassicTerrain_SetTacticalPos;
+    HBox                editorModeClassicTerrain_HBox1;
+    SymbolButton        editorModeClassicTerrain_SpiceBloom;
+    SymbolButton        editorModeClassicTerrain_SpecialBloom;
+    SymbolButton        editorModeClassicTerrain_SpiceField;
+    TextButton          editorModeClassicTerrain_SetTacticalPos;
 
-	VBox                editorModeStructs_MainVBox;
+    VBox                editorModeStructs_MainVBox;
 
-	VBox                editorModeStructs_VBox;
+    VBox                editorModeStructs_VBox;
 
-	VBox                editorModeStructs_SmallStruct_VBox;
-	HBox                editorModeStructs_SmallStruct_HBox1;
-	SymbolButton        editorModeStructs_Slab1;
-	SymbolButton        editorModeStructs_Wall;
-	HBox                editorModeStructs_SmallStruct_HBox2;
-	SymbolButton        editorModeStructs_GunTurret;
-	SymbolButton        editorModeStructs_RocketTurret;
-	HBox                editorModeStructs_HBox1;
-	SymbolButton        editorModeStructs_ConstructionYard;
-	SymbolButton        editorModeStructs_Windtrap;
-	HBox                editorModeStructs_HBox2;
-	SymbolButton        editorModeStructs_Radar;
-	SymbolButton        editorModeStructs_Silo;
-	SymbolButton        editorModeStructs_IX;
-	HBox                editorModeStructs_HBox3;
-	SymbolButton        editorModeStructs_Barracks;
-	SymbolButton        editorModeStructs_WOR;
-	SymbolButton        editorModeStructs_LightFactory;
-	HBox                editorModeStructs_HBox4;
-	SymbolButton        editorModeStructs_Refinery;
-	SymbolButton        editorModeStructs_HighTechFactory;
-	HBox                editorModeStructs_HBox5;
-	SymbolButton        editorModeStructs_HeavyFactory;
-	SymbolButton        editorModeStructs_RepairYard;
-	HBox                editorModeStructs_HBox6;
-	SymbolButton        editorModeStructs_Starport;
-	SymbolButton        editorModeStructs_Palace;
+    VBox                editorModeStructs_SmallStruct_VBox;
+    HBox                editorModeStructs_SmallStruct_HBox1;
+    SymbolButton        editorModeStructs_Slab1;
+    SymbolButton        editorModeStructs_Wall;
+    HBox                editorModeStructs_SmallStruct_HBox2;
+    SymbolButton        editorModeStructs_GunTurret;
+    SymbolButton        editorModeStructs_RocketTurret;
+    HBox                editorModeStructs_HBox1;
+    SymbolButton        editorModeStructs_ConstructionYard;
+    SymbolButton        editorModeStructs_Windtrap;
+    HBox                editorModeStructs_HBox2;
+    SymbolButton        editorModeStructs_Radar;
+    SymbolButton        editorModeStructs_Silo;
+    SymbolButton        editorModeStructs_IX;
+    HBox                editorModeStructs_HBox3;
+    SymbolButton        editorModeStructs_Barracks;
+    SymbolButton        editorModeStructs_WOR;
+    SymbolButton        editorModeStructs_LightFactory;
+    HBox                editorModeStructs_HBox4;
+    SymbolButton        editorModeStructs_Refinery;
+    SymbolButton        editorModeStructs_HighTechFactory;
+    HBox                editorModeStructs_HBox5;
+    SymbolButton        editorModeStructs_HeavyFactory;
+    SymbolButton        editorModeStructs_RepairYard;
+    HBox                editorModeStructs_HBox6;
+    SymbolButton        editorModeStructs_Starport;
+    SymbolButton        editorModeStructs_Palace;
 
 
-	VBox                editorModeUnits_MainVBox;
+    VBox                editorModeUnits_MainVBox;
 
-	VBox                editorModeUnits_VBox;
+    VBox                editorModeUnits_VBox;
 
-	HBox                editorModeUnits_HBox1;
-	SymbolButton        editorModeUnits_Soldier;
-	SymbolButton        editorModeUnits_Trooper;
-	SymbolButton        editorModeUnits_Harvester;
-	HBox                editorModeUnits_HBox2;
-	SymbolButton        editorModeUnits_Infantry;
-	SymbolButton        editorModeUnits_Troopers;
-	SymbolButton        editorModeUnits_MCV;
-	HBox                editorModeUnits_HBox3;
-	SymbolButton        editorModeUnits_Trike;
-	SymbolButton        editorModeUnits_Raider;
-	SymbolButton        editorModeUnits_Quad;
-	HBox                editorModeUnits_HBox4;
-	SymbolButton        editorModeUnits_Tank;
-	SymbolButton        editorModeUnits_SiegeTank;
-	SymbolButton        editorModeUnits_Launcher;
-	HBox                editorModeUnits_HBox5;
-	SymbolButton        editorModeUnits_Devastator;
-	SymbolButton        editorModeUnits_SonicTank;
-	SymbolButton        editorModeUnits_Deviator;
-	HBox                editorModeUnits_HBox6;
-	SymbolButton        editorModeUnits_Saboteur;
-	SymbolButton        editorModeUnits_Sandworm;
-	SymbolButton        editorModeUnits_SpecialUnit;
-	HBox                editorModeUnits_HBox7;
-	SymbolButton        editorModeUnits_Carryall;
-	SymbolButton        editorModeUnits_Ornithopter;
+    HBox                editorModeUnits_HBox1;
+    SymbolButton        editorModeUnits_Soldier;
+    SymbolButton        editorModeUnits_Trooper;
+    SymbolButton        editorModeUnits_Harvester;
+    HBox                editorModeUnits_HBox2;
+    SymbolButton        editorModeUnits_Infantry;
+    SymbolButton        editorModeUnits_Troopers;
+    SymbolButton        editorModeUnits_MCV;
+    HBox                editorModeUnits_HBox3;
+    SymbolButton        editorModeUnits_Trike;
+    SymbolButton        editorModeUnits_Raider;
+    SymbolButton        editorModeUnits_Quad;
+    HBox                editorModeUnits_HBox4;
+    SymbolButton        editorModeUnits_Tank;
+    SymbolButton        editorModeUnits_SiegeTank;
+    SymbolButton        editorModeUnits_Launcher;
+    HBox                editorModeUnits_HBox5;
+    SymbolButton        editorModeUnits_Devastator;
+    SymbolButton        editorModeUnits_SonicTank;
+    SymbolButton        editorModeUnits_Deviator;
+    HBox                editorModeUnits_HBox6;
+    SymbolButton        editorModeUnits_Saboteur;
+    SymbolButton        editorModeUnits_Sandworm;
+    SymbolButton        editorModeUnits_SpecialUnit;
+    HBox                editorModeUnits_HBox7;
+    SymbolButton        editorModeUnits_Carryall;
+    SymbolButton        editorModeUnits_Ornithopter;
 
-	PictureLabel		bottomBar;
+    PictureLabel        bottomBar;
 
-	HBox                structureDetailsHBox;
-	Label               structureDetailsHealthLabel;
-	DropDownBox         structureDetailsHealthDropDownBox;
+    HBox                structureDetailsHBox;
+    Label               structureDetailsHealthLabel;
+    DropDownBox         structureDetailsHealthDropDownBox;
 
-	HBox                unitDetailsHBox;
-	Label               unitDetailsHealthLabel;
-	DropDownBox         unitDetailsHealthDropDownBox;
-	Label               unitDetailsAttackModeLabel;
-	DropDownBox         unitDetailsAttackModeDropDownBox;
-	SymbolButton        unitDetailsRotateLeftButton;
-	SymbolButton        unitDetailsRotateRightButton;
+    HBox                unitDetailsHBox;
+    Label               unitDetailsHealthLabel;
+    DropDownBox         unitDetailsHealthDropDownBox;
+    Label               unitDetailsAttackModeLabel;
+    DropDownBox         unitDetailsAttackModeDropDownBox;
+    SymbolButton        unitDetailsRotateLeftButton;
+    SymbolButton        unitDetailsRotateRightButton;
 
-	int                 currentTerrainType;
-	int                 currentTerrainPenSize;
+    int                 currentTerrainType;
+    int                 currentTerrainPenSize;
 
-	HOUSETYPE           house;
-	Uint32              color;
+    HOUSETYPE           house;
+    Uint32              color;
 };
 #endif // MAPEDITORINTERFACE_H

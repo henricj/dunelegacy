@@ -26,44 +26,44 @@ Palette LoadPalette_RW(SDL_RWops* rwop, int freesrc)
         throw std::invalid_argument("Palfile::Palfile(): rwop == nullptr!");
     }
 
-	int filesize;
-	if((filesize = SDL_RWseek(rwop,0,SEEK_END)) < 0) {
-	    if(freesrc) SDL_RWclose(rwop);
-		throw std::runtime_error("Palfile::Palfile(): SDL_RWseek failed!");
-	}
-
-	if(filesize % 3 != 0) {
+    int filesize;
+    if((filesize = SDL_RWseek(rwop,0,SEEK_END)) < 0) {
         if(freesrc) SDL_RWclose(rwop);
-		throw std::runtime_error("Palfile::Palfile(): Filesize must be multiple of 3!");
-	}
+        throw std::runtime_error("Palfile::Palfile(): SDL_RWseek failed!");
+    }
 
-	SDL_RWseek(rwop,0,SEEK_SET);
+    if(filesize % 3 != 0) {
+        if(freesrc) SDL_RWclose(rwop);
+        throw std::runtime_error("Palfile::Palfile(): Filesize must be multiple of 3!");
+    }
 
-	Palette palette(filesize / 3);
+    SDL_RWseek(rwop,0,SEEK_SET);
 
-	unsigned char buf;
+    Palette palette(filesize / 3);
+
+    unsigned char buf;
 
     for (int i=0; i < palette.getNumColors(); i++)
     {
-		if(SDL_RWread(rwop,&buf,1,1) != 1) {
+        if(SDL_RWread(rwop,&buf,1,1) != 1) {
             if(freesrc) SDL_RWclose(rwop);
 
-			throw std::runtime_error("Palfile::Palfile(): SDL_RWread failed!");
-		}
+            throw std::runtime_error("Palfile::Palfile(): SDL_RWread failed!");
+        }
         palette[i].r = (char) (((double) buf)*255.0/63.0);
 
-		if(SDL_RWread(rwop,&buf,1,1) != 1) {
+        if(SDL_RWread(rwop,&buf,1,1) != 1) {
             if(freesrc) SDL_RWclose(rwop);
 
-			throw std::runtime_error("Palfile::Palfile(): SDL_RWread failed!");
-		}
+            throw std::runtime_error("Palfile::Palfile(): SDL_RWread failed!");
+        }
         palette[i].g = (char) (((double) buf)*255.0/63.0);
 
-		if(SDL_RWread(rwop,&buf,1,1) != 1) {
+        if(SDL_RWread(rwop,&buf,1,1) != 1) {
             if(freesrc) SDL_RWclose(rwop);
 
-			throw std::runtime_error("Palfile::Palfile(): SDL_RWread failed!");
-		}
+            throw std::runtime_error("Palfile::Palfile(): SDL_RWread failed!");
+        }
         palette[i].b = (char) (((double) buf)*255.0/63.0);
         palette[i].a = 0xFF;
     }

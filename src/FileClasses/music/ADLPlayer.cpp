@@ -34,12 +34,12 @@ ADLPlayer::~ADLPlayer() {
 
 void ADLPlayer::changeMusic(MUSICTYPE musicType)
 {
-	int musicNum = -1;
-	std::string filename = "";
+    int musicNum = -1;
+    std::string filename = "";
 
-	if((currentMusicType == musicType) && (pSoundAdlibPC != nullptr) && pSoundAdlibPC->isPlaying()) {
-		return;
-	}
+    if((currentMusicType == musicType) && (pSoundAdlibPC != nullptr) && pSoundAdlibPC->isPlaying()) {
+        return;
+    }
 
     /* currently unused:
         DUNE0.ADL/4
@@ -47,9 +47,9 @@ void ADLPlayer::changeMusic(MUSICTYPE musicType)
     */
 
 
-	switch(musicType)
-	{
-		case MUSIC_ATTACK: {
+    switch(musicType)
+    {
+        case MUSIC_ATTACK: {
 
             switch(getRandomInt(0, 5)) {
                 case 0:     filename = "DUNE10.ADL";    musicNum = 7;   break;
@@ -60,9 +60,9 @@ void ADLPlayer::changeMusic(MUSICTYPE musicType)
                 case 5:     filename = "DUNE15.ADL";    musicNum = 7;   break;
             }
 
-		} break;
+        } break;
 
-		case MUSIC_PEACE: {
+        case MUSIC_PEACE: {
 
             switch(getRandomInt(0, 8)) {
                 case 0:     filename = "DUNE1.ADL";     musicNum = 6;   break;
@@ -76,95 +76,95 @@ void ADLPlayer::changeMusic(MUSICTYPE musicType)
                 case 8:     filename = "DUNE18.ADL";    musicNum = 6;   break;
             }
 
-		} break;
-
-		case MUSIC_INTRO: {
-		    filename = "DUNE0.ADL";
-		    musicNum = 2;
         } break;
 
-		case MUSIC_MENU: {
-		    filename = "DUNE7.ADL";
-		    musicNum = 6;
+        case MUSIC_INTRO: {
+            filename = "DUNE0.ADL";
+            musicNum = 2;
         } break;
 
-		case MUSIC_BRIEFING_H: {
-		    filename = "DUNE7.ADL";
-		    musicNum = 2;
+        case MUSIC_MENU: {
+            filename = "DUNE7.ADL";
+            musicNum = 6;
         } break;
 
-		case MUSIC_BRIEFING_A: {
-		    filename = "DUNE7.ADL";
-		    musicNum = 3;
+        case MUSIC_BRIEFING_H: {
+            filename = "DUNE7.ADL";
+            musicNum = 2;
         } break;
 
-		case MUSIC_BRIEFING_O: {
-		    filename = "DUNE7.ADL";
-		    musicNum = 4;
+        case MUSIC_BRIEFING_A: {
+            filename = "DUNE7.ADL";
+            musicNum = 3;
         } break;
 
-		case MUSIC_WIN_H: {
-		    filename = "DUNE8.ADL";
-		    musicNum = 3;
-		} break;
+        case MUSIC_BRIEFING_O: {
+            filename = "DUNE7.ADL";
+            musicNum = 4;
+        } break;
 
-		case MUSIC_WIN_A: {
-		    filename = "DUNE8.ADL";
-		    musicNum = 2;
-		} break;
+        case MUSIC_WIN_H: {
+            filename = "DUNE8.ADL";
+            musicNum = 3;
+        } break;
 
-		case MUSIC_WIN_O: {
-		    filename = "DUNE17.ADL";
-		    musicNum = 4;
-		} break;
+        case MUSIC_WIN_A: {
+            filename = "DUNE8.ADL";
+            musicNum = 2;
+        } break;
 
-		case MUSIC_LOSE_H: {
-		    filename = "DUNE1.ADL";
-		    musicNum = 4;
-		} break;
+        case MUSIC_WIN_O: {
+            filename = "DUNE17.ADL";
+            musicNum = 4;
+        } break;
 
-		case MUSIC_LOSE_A: {
-		    filename = "DUNE1.ADL";
-		    musicNum = 5;
-		} break;
+        case MUSIC_LOSE_H: {
+            filename = "DUNE1.ADL";
+            musicNum = 4;
+        } break;
 
-		case MUSIC_LOSE_O: {
-		    filename = "DUNE1.ADL";
-		    musicNum = 3;
-		} break;
+        case MUSIC_LOSE_A: {
+            filename = "DUNE1.ADL";
+            musicNum = 5;
+        } break;
+
+        case MUSIC_LOSE_O: {
+            filename = "DUNE1.ADL";
+            musicNum = 3;
+        } break;
 
         case MUSIC_GAMESTAT: {
             filename = "DUNE20.ADL";
             musicNum = 2;
-		} break;
+        } break;
 
         case MUSIC_MAPCHOICE: {
-		    filename = "DUNE16.ADL";
-		    musicNum = 7;
-		} break;
+            filename = "DUNE16.ADL";
+            musicNum = 7;
+        } break;
 
-		case MUSIC_MEANWHILE: {
-		    filename = "DUNE16.ADL";
-		    musicNum = 8;
-		} break;
+        case MUSIC_MEANWHILE: {
+            filename = "DUNE16.ADL";
+            musicNum = 8;
+        } break;
 
         case MUSIC_FINALE_H: {
-		    filename = "DUNE19.ADL";
-		    musicNum = 4;
-		} break;
+            filename = "DUNE19.ADL";
+            musicNum = 4;
+        } break;
 
         case MUSIC_FINALE_A: {
-		    filename = "DUNE19.ADL";
-		    musicNum = 2;
-		} break;
+            filename = "DUNE19.ADL";
+            musicNum = 2;
+        } break;
 
         case MUSIC_FINALE_O: {
-		    filename = "DUNE19.ADL";
-		    musicNum = 3;
-		} break;
+            filename = "DUNE19.ADL";
+            musicNum = 3;
+        } break;
 
-		case MUSIC_RANDOM:
-		default: {
+        case MUSIC_RANDOM:
+        default: {
 
             switch(getRandomInt(0, 14)) {
                 // attack
@@ -187,20 +187,20 @@ void ADLPlayer::changeMusic(MUSICTYPE musicType)
                 case 14:    filename = "DUNE18.ADL";    musicNum = 6;   break;
             }
 
-		} break;
-	}
+        } break;
+    }
 
-	currentMusicType = musicType;
+    currentMusicType = musicType;
 
-	if((musicOn == true) && (filename != "")) {
+    if((musicOn == true) && (filename != "")) {
 
         Mix_HookMusic(nullptr, nullptr);
-	    delete pSoundAdlibPC;
+        delete pSoundAdlibPC;
 
-	    SDL_RWops* rwop = pFileManager->openFile(filename);
-	    if(rwop == nullptr) {
+        SDL_RWops* rwop = pFileManager->openFile(filename);
+        if(rwop == nullptr) {
             printf("Unable to load %s!\n",filename.c_str());
-	    } else {
+        } else {
             pSoundAdlibPC = new SoundAdlibPC(rwop);
             pSoundAdlibPC->setVolume(musicVolume);
 
@@ -211,35 +211,35 @@ void ADLPlayer::changeMusic(MUSICTYPE musicType)
             Mix_HookMusic(pSoundAdlibPC->callback, pSoundAdlibPC);
 
             //printf("Now playing %s!\n",filename.c_str());
-	    }
-	}
+        }
+    }
 }
 
 void ADLPlayer::toggleSound() {
-	if(musicOn == false) {
-		musicOn = true;
-		currentMusicType = MUSIC_RANDOM;
-		changeMusic(MUSIC_PEACE);
-	} else {
-		setMusic(false);
-	}
+    if(musicOn == false) {
+        musicOn = true;
+        currentMusicType = MUSIC_RANDOM;
+        changeMusic(MUSIC_PEACE);
+    } else {
+        setMusic(false);
+    }
 }
 
 bool ADLPlayer::isMusicPlaying() {
-	return (pSoundAdlibPC != nullptr) && pSoundAdlibPC->isPlaying();
+    return (pSoundAdlibPC != nullptr) && pSoundAdlibPC->isPlaying();
 }
 
 void ADLPlayer::setMusic(bool value) {
-	musicOn = value;
+    musicOn = value;
 
-	if(musicOn) {
-		changeMusic(MUSIC_RANDOM);
-	} else {
-	    Mix_HookMusic(nullptr, nullptr);
+    if(musicOn) {
+        changeMusic(MUSIC_RANDOM);
+    } else {
+        Mix_HookMusic(nullptr, nullptr);
 
-	    delete pSoundAdlibPC;
-	    pSoundAdlibPC = nullptr;
-	}
+        delete pSoundAdlibPC;
+        pSoundAdlibPC = nullptr;
+    }
 }
 
 void ADLPlayer::setMusicVolume(int newVolume) {

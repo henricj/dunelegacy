@@ -27,84 +27,84 @@
 class PictureLabel : public Widget {
 public:
 
-	/// default constructor
-	PictureLabel() : Widget() {
-		pTexture = nullptr;
-		bFreeTexture = false;
-	}
+    /// default constructor
+    PictureLabel() : Widget() {
+        pTexture = nullptr;
+        bFreeTexture = false;
+    }
 
-	/// destructor
-	virtual ~PictureLabel() {
-		if((bFreeTexture == true) && (pTexture != nullptr)) {
-			SDL_DestroyTexture(pTexture);
-			pTexture = nullptr;
-		}
-	}
+    /// destructor
+    virtual ~PictureLabel() {
+        if((bFreeTexture == true) && (pTexture != nullptr)) {
+            SDL_DestroyTexture(pTexture);
+            pTexture = nullptr;
+        }
+    }
 
-	/**
-		This method sets the surface for this picture label.
-		\param	pSurface	This surface is shown
-		\param	bFreeSurface	Should pSurface be freed if this picture label is destroyed?
-	*/
-	virtual void setSurface(SDL_Surface* pSurface, bool bFreeSurface) {
+    /**
+        This method sets the surface for this picture label.
+        \param  pSurface    This surface is shown
+        \param  bFreeSurface    Should pSurface be freed if this picture label is destroyed?
+    */
+    virtual void setSurface(SDL_Surface* pSurface, bool bFreeSurface) {
         setTexture(convertSurfaceToTexture(pSurface, bFreeSurface), true);
-	}
+    }
 
-	/**
-		This method sets the texture for this picture label.
-		\param	pTexture	    This texture is shown
-		\param	bFreeTexture	Should pTexture be freed if this picture label is destroyed?
-	*/
-	virtual void setTexture(SDL_Texture* pTexture, bool bFreeTexture) {
-		if((this->bFreeTexture == true) && (this->pTexture != nullptr)) {
-			SDL_DestroyTexture(this->pTexture);
-			this->pTexture = nullptr;
-		}
+    /**
+        This method sets the texture for this picture label.
+        \param  pTexture        This texture is shown
+        \param  bFreeTexture    Should pTexture be freed if this picture label is destroyed?
+    */
+    virtual void setTexture(SDL_Texture* pTexture, bool bFreeTexture) {
+        if((this->bFreeTexture == true) && (this->pTexture != nullptr)) {
+            SDL_DestroyTexture(this->pTexture);
+            this->pTexture = nullptr;
+        }
 
-		this->pTexture = pTexture;
-		this->bFreeTexture = bFreeTexture;
+        this->pTexture = pTexture;
+        this->bFreeTexture = bFreeTexture;
 
-		if(this->pTexture != nullptr) {
-			resize(getTextureSize(this->pTexture));
-		} else {
-			resize(0,0);
-		}
-	}
+        if(this->pTexture != nullptr) {
+            resize(getTextureSize(this->pTexture));
+        } else {
+            resize(0,0);
+        }
+    }
 
-	/**
-		Returns the minimum size of this picture label. The picture label should not
-		be resized to a size smaller than this.
-		\return the minimum size of this picture label
-	*/
-	virtual Point getMinimumSize() const {
-		if(pTexture != nullptr) {
-			return getTextureSize(pTexture);
-		} else {
-			return Point(0,0);
-		}
-	}
+    /**
+        Returns the minimum size of this picture label. The picture label should not
+        be resized to a size smaller than this.
+        \return the minimum size of this picture label
+    */
+    virtual Point getMinimumSize() const {
+        if(pTexture != nullptr) {
+            return getTextureSize(pTexture);
+        } else {
+            return Point(0,0);
+        }
+    }
 
-	/**
-		Draws this button to screen. This method is called before drawOverlay().
-		\param	position	Position to draw the button to
-	*/
-	void draw(Point position) {
-		if(isVisible() == false) {
-			return;
-		}
+    /**
+        Draws this button to screen. This method is called before drawOverlay().
+        \param  position    Position to draw the button to
+    */
+    void draw(Point position) {
+        if(isVisible() == false) {
+            return;
+        }
 
-		if(pTexture == nullptr) {
-			return;
-		}
+        if(pTexture == nullptr) {
+            return;
+        }
 
-		SDL_Rect dest = calcDrawingRect(pTexture, position.x, position.y);
-		SDL_RenderCopy(renderer, pTexture, nullptr, &dest);
-	}
+        SDL_Rect dest = calcDrawingRect(pTexture, position.x, position.y);
+        SDL_RenderCopy(renderer, pTexture, nullptr, &dest);
+    }
 
 
 private:
-	SDL_Texture* pTexture;	///< The texture that is shown
-	bool bFreeTexture;		///< Should pTexture be freed if this picture label is destroyed?
+    SDL_Texture* pTexture;  ///< The texture that is shown
+    bool bFreeTexture;      ///< Should pTexture be freed if this picture label is destroyed?
 };
 
 #endif // PICTURELABEL_H

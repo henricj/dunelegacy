@@ -20,22 +20,22 @@
 
 ScrollBar::ScrollBar() : Widget() {
     color = COLOR_DEFAULT;
-	minValue = 1;
-	maxValue = 1;
-	currentValue = 1;
-	bigStepSize = 10;
-	bDragSlider = false;
+    minValue = 1;
+    maxValue = 1;
+    currentValue = 1;
+    bigStepSize = 10;
+    bDragSlider = false;
 
-	enableResizing(false,true);
+    enableResizing(false,true);
 
-	updateArrowButtonSurface();
+    updateArrowButtonSurface();
 
-	arrow1.setOnClick(std::bind(&ScrollBar::onArrow1, this));
-	arrow2.setOnClick(std::bind(&ScrollBar::onArrow2, this));
+    arrow1.setOnClick(std::bind(&ScrollBar::onArrow1, this));
+    arrow2.setOnClick(std::bind(&ScrollBar::onArrow2, this));
 
-	pBackground = nullptr;
+    pBackground = nullptr;
 
-	resize(getMinimumSize());
+    resize(getMinimumSize());
 }
 
 ScrollBar::~ScrollBar() {
@@ -43,127 +43,127 @@ ScrollBar::~ScrollBar() {
 }
 
 void ScrollBar::handleMouseMovement(Sint32 x, Sint32 y, bool insideOverlay) {
-	arrow1.handleMouseMovement(x,y,insideOverlay);
-	arrow2.handleMouseMovement(x,y - getSize().y + arrow2.getSize().y,insideOverlay);
+    arrow1.handleMouseMovement(x,y,insideOverlay);
+    arrow2.handleMouseMovement(x,y - getSize().y + arrow2.getSize().y,insideOverlay);
 
-	if(bDragSlider) {
-		int SliderAreaHeight = getSize().y - arrow1.getSize().y - arrow2.getSize().y;
-		int Range = (maxValue - minValue + 1);
+    if(bDragSlider) {
+        int SliderAreaHeight = getSize().y - arrow1.getSize().y - arrow2.getSize().y;
+        int Range = (maxValue - minValue + 1);
 
-		double OneTickHeight = ((double)(SliderAreaHeight - sliderButton.getSize().y)) / ((double) (Range-1));
+        double OneTickHeight = ((double)(SliderAreaHeight - sliderButton.getSize().y)) / ((double) (Range-1));
 
-		setCurrentValue((int) ((y - dragPositionFromSliderTop - arrow1.getSize().y) / OneTickHeight));
-	}
+        setCurrentValue((int) ((y - dragPositionFromSliderTop - arrow1.getSize().y) / OneTickHeight));
+    }
 }
 
 bool ScrollBar::handleMouseLeft(Sint32 x, Sint32 y, bool pressed) {
-	if(pressed == false) {
-		bDragSlider = false;
-	}
+    if(pressed == false) {
+        bDragSlider = false;
+    }
 
-	if(x >= 0 && x < getSize().x && y >= 0 && y < getSize().y) {
-		if(arrow1.handleMouseLeft(x, y, pressed) || arrow2.handleMouseLeft(x, y - getSize().y + arrow2.getSize().y, pressed)) {
-			// one of the arrow buttons clicked
-			return true;
-		} else {
-			if(pressed) {
-				if(y < sliderPosition.y) {
-					// between up arrow and slider
-					setCurrentValue(currentValue-bigStepSize);
-				} else if(y > sliderPosition.y + sliderButton.getSize().y) {
-					// between slider and down button
-					setCurrentValue(currentValue+bigStepSize);
-				} else {
-					// slider button
-					bDragSlider = true;
-					dragPositionFromSliderTop = y - sliderPosition.y;
-				}
-			}
-			return true;
-		}
-	} else {
-		return false;
-	}
+    if(x >= 0 && x < getSize().x && y >= 0 && y < getSize().y) {
+        if(arrow1.handleMouseLeft(x, y, pressed) || arrow2.handleMouseLeft(x, y - getSize().y + arrow2.getSize().y, pressed)) {
+            // one of the arrow buttons clicked
+            return true;
+        } else {
+            if(pressed) {
+                if(y < sliderPosition.y) {
+                    // between up arrow and slider
+                    setCurrentValue(currentValue-bigStepSize);
+                } else if(y > sliderPosition.y + sliderButton.getSize().y) {
+                    // between slider and down button
+                    setCurrentValue(currentValue+bigStepSize);
+                } else {
+                    // slider button
+                    bDragSlider = true;
+                    dragPositionFromSliderTop = y - sliderPosition.y;
+                }
+            }
+            return true;
+        }
+    } else {
+        return false;
+    }
 }
 
 bool ScrollBar::handleMouseWheel(Sint32 x, Sint32 y, bool up)  {
-	if((x >= 0) && (x < getSize().x) && (y >= 0) && (y < getSize().y)) {
-		if(up == true) {
-			setCurrentValue(currentValue-1);
-		} else {
-			setCurrentValue(currentValue+1);
-		}
-		return true;
-	} else {
-		return false;
-	}
+    if((x >= 0) && (x < getSize().x) && (y >= 0) && (y < getSize().y)) {
+        if(up == true) {
+            setCurrentValue(currentValue-1);
+        } else {
+            setCurrentValue(currentValue+1);
+        }
+        return true;
+    } else {
+        return false;
+    }
 }
 
 bool ScrollBar::handleKeyPress(SDL_KeyboardEvent& key) {
-	return true;
+    return true;
 }
 
 void ScrollBar::draw(Point position) {
-	if(isVisible() == false) {
-		return;
-	}
+    if(isVisible() == false) {
+        return;
+    }
 
-	updateTextures();
+    updateTextures();
 
-	if(pBackground != nullptr) {
-		SDL_Rect dest = calcDrawingRect(pBackground, position.x, position.y);
-		SDL_RenderCopy(renderer, pBackground, nullptr, &dest);
-	}
+    if(pBackground != nullptr) {
+        SDL_Rect dest = calcDrawingRect(pBackground, position.x, position.y);
+        SDL_RenderCopy(renderer, pBackground, nullptr, &dest);
+    }
 
-	arrow1.draw(position);
-	Point p = position;
-	p.y = p.y + getSize().y - arrow2.getSize().y;
-	arrow2.draw(p);
-	sliderButton.draw(position+sliderPosition);
+    arrow1.draw(position);
+    Point p = position;
+    p.y = p.y + getSize().y - arrow2.getSize().y;
+    arrow2.draw(p);
+    sliderButton.draw(position+sliderPosition);
 }
 
 void ScrollBar::resize(Uint32 width, Uint32 height) {
-	Widget::resize(width,height);
+    Widget::resize(width,height);
 
-	invalidateTextures();
+    invalidateTextures();
 
-	updateSliderButton();
+    updateSliderButton();
 }
 
 void ScrollBar::updateSliderButton() {
-	double Range = (double) (maxValue - minValue + 1);
-	int ArrowHeight = GUIStyle::getInstance().getMinimumScrollBarArrowButtonSize().y;
-	double SliderAreaHeight = (double) (getSize().y - 2*ArrowHeight);
+    double Range = (double) (maxValue - minValue + 1);
+    int ArrowHeight = GUIStyle::getInstance().getMinimumScrollBarArrowButtonSize().y;
+    double SliderAreaHeight = (double) (getSize().y - 2*ArrowHeight);
 
-	if(SliderAreaHeight < 0.0) {
+    if(SliderAreaHeight < 0.0) {
         SliderAreaHeight = GUIStyle::getInstance().getMinimumScrollBarArrowButtonSize().y;
-	}
+    }
 
-	double SliderButtonHeight;
-	double OneTickHeight;
+    double SliderButtonHeight;
+    double OneTickHeight;
 
-	if(Range <= 1) {
-		SliderButtonHeight = SliderAreaHeight;
-		OneTickHeight = 0;
-	} else {
-		SliderButtonHeight = (SliderAreaHeight*bigStepSize) / (Range+bigStepSize);
-		if(SliderButtonHeight <= 7) {
-			SliderButtonHeight = 7;
-		}
-		OneTickHeight = (SliderAreaHeight - SliderButtonHeight)/(Range-1);
-	}
+    if(Range <= 1) {
+        SliderButtonHeight = SliderAreaHeight;
+        OneTickHeight = 0;
+    } else {
+        SliderButtonHeight = (SliderAreaHeight*bigStepSize) / (Range+bigStepSize);
+        if(SliderButtonHeight <= 7) {
+            SliderButtonHeight = 7;
+        }
+        OneTickHeight = (SliderAreaHeight - SliderButtonHeight)/(Range-1);
+    }
 
-	sliderButton.resize(getSize().x, lround(SliderButtonHeight));
-	sliderPosition.x = 0;
-	sliderPosition.y = ArrowHeight +  lround((currentValue - minValue)*OneTickHeight);
+    sliderButton.resize(getSize().x, lround(SliderButtonHeight));
+    sliderPosition.x = 0;
+    sliderPosition.y = ArrowHeight +  lround((currentValue - minValue)*OneTickHeight);
 }
 
 void ScrollBar::updateArrowButtonSurface() {
-	arrow1.setSurfaces(	GUIStyle::getInstance().createScrollBarArrowButton(false,false,false,color), true,
+    arrow1.setSurfaces( GUIStyle::getInstance().createScrollBarArrowButton(false,false,false,color), true,
                         GUIStyle::getInstance().createScrollBarArrowButton(false,true,true,color), true,
                         GUIStyle::getInstance().createScrollBarArrowButton(false,false,true,color), true);
 
-    arrow2.setSurfaces(	GUIStyle::getInstance().createScrollBarArrowButton(true,false,false,color), true,
+    arrow2.setSurfaces( GUIStyle::getInstance().createScrollBarArrowButton(true,false,false,color), true,
                         GUIStyle::getInstance().createScrollBarArrowButton(true,true,true,color), true,
                         GUIStyle::getInstance().createScrollBarArrowButton(true,false,true,color), true);
 }

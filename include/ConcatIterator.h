@@ -23,73 +23,73 @@
 template <class T> class ConcatIterator {
 
 private:
-	typedef std::list<T> TList;
-	typedef TList* TListPointer;
-	typedef typename TList::iterator TList_Iter;
-	typedef std::list< TListPointer> TListOfList;
-	typedef typename TListOfList::iterator TListOfList_Iter;
+    typedef std::list<T> TList;
+    typedef TList* TListPointer;
+    typedef typename TList::iterator TList_Iter;
+    typedef std::list< TListPointer> TListOfList;
+    typedef typename TListOfList::iterator TListOfList_Iter;
 
 
-	TList_Iter listIter;
-	TListOfList_Iter listOfListIter;
-	TListOfList listOfList;
+    TList_Iter listIter;
+    TListOfList_Iter listOfListIter;
+    TListOfList listOfList;
 public:
-	ConcatIterator() { };
-	~ConcatIterator() { };
+    ConcatIterator() { };
+    ~ConcatIterator() { };
 
-	void addList(std::list<T>& _List) {
-		if(_List.empty()) {
-			// ignore this list
-			return;
-		}
+    void addList(std::list<T>& _List) {
+        if(_List.empty()) {
+            // ignore this list
+            return;
+        }
 
-		if(listOfList.empty()) {
-			listOfList.push_back(&_List);
-			listOfListIter = listOfList.begin();
-			listIter = (*listOfListIter)->begin();
-		} else {
-			listOfList.push_back(&_List);
-		}
-	}
+        if(listOfList.empty()) {
+            listOfList.push_back(&_List);
+            listOfListIter = listOfList.begin();
+            listIter = (*listOfListIter)->begin();
+        } else {
+            listOfList.push_back(&_List);
+        }
+    }
 
-	bool isIterationFinished() {
-		if(listOfList.empty()) {
-			return true;
-		}
+    bool isIterationFinished() {
+        if(listOfList.empty()) {
+            return true;
+        }
 
-		if(listOfListIter == listOfList.end()) {
-			return true;
-		}
+        if(listOfListIter == listOfList.end()) {
+            return true;
+        }
 
-		return false;
-	}
+        return false;
+    }
 
-	T operator* () {
-		if(isIterationFinished()) {
-			fprintf(stderr,"ConcatIterator::operator*(): Cannot dereference because iteration is finished.\n");
-			exit(EXIT_FAILURE);
-		}
+    T operator* () {
+        if(isIterationFinished()) {
+            fprintf(stderr,"ConcatIterator::operator*(): Cannot dereference because iteration is finished.\n");
+            exit(EXIT_FAILURE);
+        }
 
-		return *listIter;
-	}
+        return *listIter;
+    }
 
-	void operator++ () {
-		if(isIterationFinished()) {
-			fprintf(stderr,"ConcatIterator::operator++(): Cannot increment because iteration is finished.\n");
-			exit(EXIT_FAILURE);
-		}
+    void operator++ () {
+        if(isIterationFinished()) {
+            fprintf(stderr,"ConcatIterator::operator++(): Cannot increment because iteration is finished.\n");
+            exit(EXIT_FAILURE);
+        }
 
-		++listIter;
-		if(listIter == (*listOfListIter)->end()) {
-			// use next list
-			++listOfListIter;
-			if(listOfListIter == listOfList.end()) {
-				return;
-			}
+        ++listIter;
+        if(listIter == (*listOfListIter)->end()) {
+            // use next list
+            ++listOfListIter;
+            if(listOfListIter == listOfList.end()) {
+                return;
+            }
 
-			listIter = (*listOfListIter)->begin();
-		}
-	}
+            listIter = (*listOfListIter)->begin();
+        }
+    }
 };
 
 #endif // CONCATITERATOR_H

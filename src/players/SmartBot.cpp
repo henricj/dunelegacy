@@ -45,28 +45,28 @@ int harvesterLimit = 4;
 SmartBot::SmartBot(House* associatedHouse, std::string playername, Uint8 difficulty)
  : Player(associatedHouse, playername), difficulty(difficulty) {
 
-	buildTimer = getRandomGen().rand(0,3) * 50;
-	attackTimer = getRandomGen().rand(MILLI2CYCLES(6*60*1000), MILLI2CYCLES(11*60*1000));
-	harvesterLimit = (currentGameMap->getSizeX() * currentGameMap->getSizeY())/512;
+    buildTimer = getRandomGen().rand(0,3) * 50;
+    attackTimer = getRandomGen().rand(MILLI2CYCLES(6*60*1000), MILLI2CYCLES(11*60*1000));
+    harvesterLimit = (currentGameMap->getSizeX() * currentGameMap->getSizeY())/512;
 }
 
 SmartBot::SmartBot(InputStream& stream, House* associatedHouse) : Player(stream, associatedHouse) {
     SmartBot::init();
 
-	difficulty = stream.readUint8();
-	attackTimer = stream.readSint32();
-	buildTimer = stream.readSint32();
+    difficulty = stream.readUint8();
+    attackTimer = stream.readSint32();
+    buildTimer = stream.readSint32();
     AIStrategy = stream.readSint32();
     harvesterLimit = (currentGameMap->getSizeX() * currentGameMap->getSizeY())/512;
 
 
-	Uint32 NumPlaceLocations = stream.readUint32();
-	for(Uint32 i = 0; i < NumPlaceLocations; i++) {
+    Uint32 NumPlaceLocations = stream.readUint32();
+    for(Uint32 i = 0; i < NumPlaceLocations; i++) {
         Sint32 x = stream.readSint32();
         Sint32 y = stream.readSint32();
 
-		placeLocations.push_back(Coord(x,y));
-	}
+        placeLocations.push_back(Coord(x,y));
+    }
 }
 
 void SmartBot::init() {
@@ -80,17 +80,17 @@ SmartBot::~SmartBot() {
 void SmartBot::save(OutputStream& stream) const {
     Player::save(stream);
 
-	stream.writeUint8(difficulty);
-	stream.writeSint32(attackTimer);
+    stream.writeUint8(difficulty);
+    stream.writeSint32(attackTimer);
     stream.writeSint32(buildTimer);
     stream.writeSint32(AIStrategy);
 
-	stream.writeUint32(placeLocations.size());
-	std::list<Coord>::const_iterator iter;
-	for(iter = placeLocations.begin(); iter != placeLocations.end(); ++iter) {
-		stream.writeSint32(iter->x);
-		stream.writeSint32(iter->y);
-	}
+    stream.writeUint32(placeLocations.size());
+    std::list<Coord>::const_iterator iter;
+    for(iter = placeLocations.begin(); iter != placeLocations.end(); ++iter) {
+        stream.writeSint32(iter->x);
+        stream.writeSint32(iter->y);
+    }
 }
 
 
@@ -103,17 +103,17 @@ void SmartBot::update() {
 
     checkAllUnits();
 
-	if(buildTimer <= 0) {
+    if(buildTimer <= 0) {
         build();
-	} else {
+    } else {
         buildTimer -= AIUPDATEINTERVAL;
-	}
+    }
 
-	if(attackTimer <= 0) {
+    if(attackTimer <= 0) {
         attack();
-	} else {
+    } else {
         attackTimer -= AIUPDATEINTERVAL;
-	}
+    }
 }
 
 void SmartBot::onIncrementStructures(int itemID) {
@@ -130,17 +130,17 @@ void SmartBot::onDamage(const ObjectBase* pObject, int damage, Uint32 damagerID)
     }
 
     if(pObject->isAStructure()) {
-	    //scramble some free units to defend
+        //scramble some free units to defend
         scrambleUnitsAndDefend(pDamager);
     } else if(pObject->getItemID() == Unit_Harvester) {
-	    //scramble some free units to defend
+        //scramble some free units to defend
         scrambleUnitsAndDefend(pDamager);
 
         if((pDamager != nullptr) && pDamager->isInfantry()) {
             const UnitBase* pUnit = dynamic_cast<const UnitBase*>(pObject);
             doAttackObject(pUnit, pDamager, false);
         }
-	} else if(pObject->isAUnit() && pObject->canAttack(pDamager)) {
+    } else if(pObject->isAUnit() && pObject->canAttack(pDamager)) {
         const UnitBase* pUnit = dynamic_cast<const UnitBase*>(pObject);
 
         // if it is a rocket launcher and the distance is under 5 then run away!!
@@ -155,7 +155,7 @@ void SmartBot::onDamage(const ObjectBase* pObject, int damage, Uint32 damagerID)
         } else if(pUnit->getAttackMode() == AREAGUARD) {
             doAttackObject(pUnit, pDamager, false);
         }
-	}
+    }
 }
 
 void SmartBot::scrambleUnitsAndDefend(const ObjectBase* pIntruder) {
@@ -201,8 +201,8 @@ Coord SmartBot::findPlaceLocation(Uint32 itemID) {
     int structureSizeX = getStructureSize(itemID).x;
     int structureSizeY = getStructureSize(itemID).y;
 
-	int minX = getMap().getSizeX();
-	int maxX = -1;
+    int minX = getMap().getSizeX();
+    int maxX = -1;
     int minY = getMap().getSizeY();
     int maxY = -1;
 
@@ -227,34 +227,34 @@ Coord SmartBot::findPlaceLocation(Uint32 itemID) {
                     maxY = structure->getY();
             }
         }
-	}
+    }
 
     // make search rect a bit bigger to make it possible to build on places far off the main base and only connected through slab
-	minX -= structureSizeX + 5;
-	maxX += 5;
-	minY -= structureSizeY + 5;
-	maxY += 5;
-	if (minX < 0) minX = 0;
-	if (maxX >= getMap().getSizeX()) maxX = getMap().getSizeX() - structureSizeX;
-	if (minY < 0) minY = 0;
-	if (maxY >= getMap().getSizeY()) maxY = getMap().getSizeY() - structureSizeY;
+    minX -= structureSizeX + 5;
+    maxX += 5;
+    minY -= structureSizeY + 5;
+    maxY += 5;
+    if (minX < 0) minX = 0;
+    if (maxX >= getMap().getSizeX()) maxX = getMap().getSizeX() - structureSizeX;
+    if (minY < 0) minY = 0;
+    if (maxY >= getMap().getSizeY()) maxY = getMap().getSizeY() - structureSizeY;
 
     FixPoint bestrating = 0;
-	Coord bestLocation = Coord::Invalid();
-	int count = 0;
-	do {
-	    int x = getRandomGen().rand(minX, maxX);
+    Coord bestLocation = Coord::Invalid();
+    int count = 0;
+    do {
+        int x = getRandomGen().rand(minX, maxX);
         int y = getRandomGen().rand(minY, maxY);
 
-	    Coord pos = Coord(x, y);
+        Coord pos = Coord(x, y);
 
-		count++;
+        count++;
 
-		if(getMap().okayToPlaceStructure(pos.x, pos.y, structureSizeX, structureSizeY, false, (itemID == Structure_ConstructionYard) ? nullptr : getHouse())
+        if(getMap().okayToPlaceStructure(pos.x, pos.y, structureSizeX, structureSizeY, false, (itemID == Structure_ConstructionYard) ? nullptr : getHouse())
             && getMap().isAStructureGap(pos.x, pos.y, structureSizeX, structureSizeY)) { // Code to make a path between buildings
             FixPoint rating;
 
-		    switch(itemID) {
+            switch(itemID) {
                 case Structure_Slab1: {
                     rating = 10000000;
                 } break;
@@ -359,17 +359,17 @@ Coord SmartBot::findPlaceLocation(Uint32 itemID) {
                     rating = nearestEnemy;
                     rating *= (1+getNumAdjacentStructureTiles(pos, structureSizeX, structureSizeY));
                 } break;
-		    }
+            }
 
-		    if(rating > bestrating) {
+            if(rating > bestrating) {
                 bestLocation = pos;
                 bestrating = rating;
-		    }
-		}
+            }
+        }
 
-	} while(count <= ((itemID == Structure_ConstructionYard) ? 10000 : 100));
+    } while(count <= ((itemID == Structure_ConstructionYard) ? 10000 : 100));
 
-	return bestLocation;
+    return bestLocation;
 }
 
 int SmartBot::getNumAdjacentStructureTiles(Coord pos, int structureSizeX, int structureSizeY) {
@@ -530,7 +530,7 @@ void SmartBot::build() {
 
                    case Structure_StarPort: {
                         const StarPort* pStarPort = dynamic_cast<const StarPort*>(pBuilder);
-                        if(pStarPort->okToOrder())	{
+                        if(pStarPort->okToOrder())  {
                             const Choam& choam = getHouse()->getChoam();
 
                             // What's our spending money

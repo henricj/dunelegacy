@@ -38,28 +38,28 @@ public:
         Wall_Full           = 12
     } WALLTYPE;
 
-	Wall(House* newOwner);
-	Wall(InputStream& stream);
-	void init();
-	virtual ~Wall();
+    Wall(House* newOwner);
+    Wall(InputStream& stream);
+    void init();
+    virtual ~Wall();
 
     virtual void save(OutputStream& stream) const;
 
-	void destroy();
+    void destroy();
 
     /**
         Can this structure be captured by infantry units?
         \return true, if this structure can be captured, false otherwise
-	*/
-	virtual bool canBeCaptured() const { return false; };
+    */
+    virtual bool canBeCaptured() const { return false; };
 
     inline void setLocation(const Coord& location) { setLocation(location.x, location.y); }
-	virtual void setLocation(int xPos, int yPos);
+    virtual void setLocation(int xPos, int yPos);
 
 private:
-	inline void setWallTile(int newTile) {
-	    curAnimFrame = firstAnimFrame = lastAnimFrame = newTile;
-	}
+    inline void setWallTile(int newTile) {
+        curAnimFrame = firstAnimFrame = lastAnimFrame = newTile;
+    }
 
     void fixWall();
 

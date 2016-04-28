@@ -38,84 +38,84 @@ class HumanPlayer;
 class House
 {
 public:
-	House(int newHouse, int newCredits, Uint8 team = 0, int quota = 0);
-	House(InputStream& stream);
-	void init();
-	virtual ~House();
-	virtual void save(OutputStream& stream) const;
+    House(int newHouse, int newCredits, Uint8 team = 0, int quota = 0);
+    House(InputStream& stream);
+    void init();
+    virtual ~House();
+    virtual void save(OutputStream& stream) const;
 
-	void addPlayer(std::shared_ptr<Player> newPlayer);
+    void addPlayer(std::shared_ptr<Player> newPlayer);
 
-	inline int getHouseID() const { return houseID; }
-	inline int getTeam() const { return team; }
+    inline int getHouseID() const { return houseID; }
+    inline int getTeam() const { return team; }
 
     inline bool isAI() const { return ai; }
-	inline bool isAlive() const { return (team == 0) || !(((numStructures - numItem[Structure_Wall]) <= 0) && (((numUnits - numItem[Unit_Carryall] - numItem[Unit_Harvester] - numItem[Unit_Frigate] - numItem[Unit_Sandworm]) <= 0))); }
+    inline bool isAlive() const { return (team == 0) || !(((numStructures - numItem[Structure_Wall]) <= 0) && (((numUnits - numItem[Unit_Carryall] - numItem[Unit_Harvester] - numItem[Unit_Frigate] - numItem[Unit_Sandworm]) <= 0))); }
 
-	inline bool hasCarryalls() const { return (numItem[Unit_Carryall] > 0); }
-	inline bool hasBarracks() const { return (numItem[Structure_Barracks] > 0); }
-	inline bool hasIX() const { return (numItem[Structure_IX] > 0); }
-	inline bool hasLightFactory() const { return (numItem[Structure_LightFactory] > 0); }
-	inline bool hasHeavyFactory() const { return (numItem[Structure_HeavyFactory] > 0); }
-	inline bool hasRefinery() const { return (numItem[Structure_Refinery] > 0); }
-	inline bool hasRepairYard() const { return (numItem[Structure_RepairYard] > 0); }
-	inline bool hasStarPort() const { return (numItem[Structure_StarPort] > 0); }
-	inline bool hasWindTrap() const { return (numItem[Structure_WindTrap] > 0); }
-	inline bool hasSandworm() const { return (numItem[Unit_Sandworm] > 0); }
+    inline bool hasCarryalls() const { return (numItem[Unit_Carryall] > 0); }
+    inline bool hasBarracks() const { return (numItem[Structure_Barracks] > 0); }
+    inline bool hasIX() const { return (numItem[Structure_IX] > 0); }
+    inline bool hasLightFactory() const { return (numItem[Structure_LightFactory] > 0); }
+    inline bool hasHeavyFactory() const { return (numItem[Structure_HeavyFactory] > 0); }
+    inline bool hasRefinery() const { return (numItem[Structure_Refinery] > 0); }
+    inline bool hasRepairYard() const { return (numItem[Structure_RepairYard] > 0); }
+    inline bool hasStarPort() const { return (numItem[Structure_StarPort] > 0); }
+    inline bool hasWindTrap() const { return (numItem[Structure_WindTrap] > 0); }
+    inline bool hasSandworm() const { return (numItem[Unit_Sandworm] > 0); }
     inline bool hasRadar() const { return (numItem[Structure_Radar] > 0); }
 
     inline bool hasRadarOn() const { return (hasRadar() && hasPower()); }
-	inline bool hasPower() const { return (producedPower >= powerRequirement); }
+    inline bool hasPower() const { return (producedPower >= powerRequirement); }
 
-	inline int getNumStructures() const { return numStructures; };
-	inline int getNumUnits() const { return numUnits; };
-	inline int getNumItems(int itemID) const { return (isStructure(itemID) || isUnit(itemID)) ? numItem[itemID] : 0; };
+    inline int getNumStructures() const { return numStructures; };
+    inline int getNumUnits() const { return numUnits; };
+    inline int getNumItems(int itemID) const { return (isStructure(itemID) || isUnit(itemID)) ? numItem[itemID] : 0; };
 
-	inline int getCapacity() const { return capacity; }
+    inline int getCapacity() const { return capacity; }
 
-	inline int getProducedPower() const { return producedPower; }
+    inline int getProducedPower() const { return producedPower; }
     void setProducedPower(int newPower);
-	inline int getPowerRequirement() const { return powerRequirement; }
+    inline int getPowerRequirement() const { return powerRequirement; }
 
-	inline int getBuiltValue() const { return unitBuiltValue + structureBuiltValue; }
-	inline int getUnitBuiltValue() const { return unitBuiltValue; }
-	inline int getMilitaryValue() const { return militaryValue; }
-	inline int getKillValue() const { return killValue; }
-	inline int getLossValue() const { return lossValue; }
-	inline int getStructureBuiltValue() const { return structureBuiltValue; }
-	inline int getNumBuiltUnits() const { return numBuiltUnits; }
-	inline int getNumBuiltStructures() const { return numBuiltStructures; }
-	inline int getDestroyedValue() const { return destroyedValue; }
-	inline int getNumDestroyedUnits() const { return numDestroyedUnits; }
-	inline int getNumDestroyedStructures() const { return numDestroyedStructures; }
-	inline int getNumBuiltItems(int itemID) const { return numItemBuilt[itemID]; }
-	inline int getNumKilledItems(int itemID) const { return numItemKills[itemID]; }
-	inline int getNumLostItems(int itemID) const { return numItemLosses[itemID]; }
-	inline FixPoint getHarvestedSpice() const { return harvestedSpice; }
+    inline int getBuiltValue() const { return unitBuiltValue + structureBuiltValue; }
+    inline int getUnitBuiltValue() const { return unitBuiltValue; }
+    inline int getMilitaryValue() const { return militaryValue; }
+    inline int getKillValue() const { return killValue; }
+    inline int getLossValue() const { return lossValue; }
+    inline int getStructureBuiltValue() const { return structureBuiltValue; }
+    inline int getNumBuiltUnits() const { return numBuiltUnits; }
+    inline int getNumBuiltStructures() const { return numBuiltStructures; }
+    inline int getDestroyedValue() const { return destroyedValue; }
+    inline int getNumDestroyedUnits() const { return numDestroyedUnits; }
+    inline int getNumDestroyedStructures() const { return numDestroyedStructures; }
+    inline int getNumBuiltItems(int itemID) const { return numItemBuilt[itemID]; }
+    inline int getNumKilledItems(int itemID) const { return numItemKills[itemID]; }
+    inline int getNumLostItems(int itemID) const { return numItemLosses[itemID]; }
+    inline FixPoint getHarvestedSpice() const { return harvestedSpice; }
 
-	inline int getQuota() const { return quota; };
+    inline int getQuota() const { return quota; };
 
-	inline Choam& getChoam() { return choam; };
-	inline const Choam& getChoam() const { return choam; };
+    inline Choam& getChoam() { return choam; };
+    inline const Choam& getChoam() const { return choam; };
 
 
     inline FixPoint getStartingCredits() const { return startingCredits; }
-	inline FixPoint getStoredCredits() const { return storedCredits; }
+    inline FixPoint getStoredCredits() const { return storedCredits; }
     inline int getCredits() const { return lround(storedCredits+startingCredits); }
-	void addCredits(FixPoint newCredits, bool wasRefined = false);
+    void addCredits(FixPoint newCredits, bool wasRefined = false);
     void returnCredits(FixPoint newCredits);
-	FixPoint takeCredits(FixPoint amount);
+    FixPoint takeCredits(FixPoint amount);
 
-	void printStat() const;
+    void printStat() const;
 
-	void updateBuildLists();
+    void updateBuildLists();
 
     void update();
 
-	void incrementUnits(int itemID);
-	void decrementUnits(int itemID);
-	void incrementStructures(int itemID);
-	void decrementStructures(int itemID, const Coord& location);
+    void incrementUnits(int itemID);
+    void decrementUnits(int itemID);
+    void incrementStructures(int itemID);
+    void decrementStructures(int itemID, const Coord& location);
 
     /**
         An object was hit by something or damaged somehow else.
@@ -126,31 +126,31 @@ public:
     void noteDamageLocation(ObjectBase* pObject, int damage, Uint32 damagerID);
 
     void informWasBuilt(Uint32 itemID);
-	void informHasKilled(Uint32 itemID);
+    void informHasKilled(Uint32 itemID);
 
-	void lose(bool bSilent = false);
-	void win();
+    void lose(bool bSilent = false);
+    void win();
 
-	void freeHarvester(int xPos, int yPos);
-	StructureBase* placeStructure(Uint32 builderID, int itemID, int xPos, int yPos, bool bForcePlacing = false);
-	UnitBase* createUnit(int itemID);
-	UnitBase* placeUnit(int itemID, int xPos, int yPos);
+    void freeHarvester(int xPos, int yPos);
+    StructureBase* placeStructure(Uint32 builderID, int itemID, int xPos, int yPos, bool bForcePlacing = false);
+    UnitBase* createUnit(int itemID);
+    UnitBase* placeUnit(int itemID, int xPos, int yPos);
 
-	Coord getCenterOfMainBase() const;
+    Coord getCenterOfMainBase() const;
 
-	Coord getStrongestUnitPosition() const;
+    Coord getStrongestUnitPosition() const;
 
-	const std::list<std::shared_ptr<Player> >& getPlayerList() const { return players; };
+    const std::list<std::shared_ptr<Player> >& getPlayerList() const { return players; };
 
 protected:
-	void decrementHarvesters();
+    void decrementHarvesters();
 
-	std::list<std::shared_ptr<Player> > players;        ///< List of associated players that control this house
+    std::list<std::shared_ptr<Player> > players;        ///< List of associated players that control this house
 
-	bool    ai;             ///< Is this an ai player?
+    bool    ai;             ///< Is this an ai player?
 
-	Uint8   houseID;        ///< The house number
-	Uint8   team;           ///< The team number
+    Uint8   houseID;        ///< The house number
+    Uint8   team;           ///< The team number
 
     int numStructures;          ///< How many structures does this player have?
     int numUnits;               ///< How many units does this player have?
@@ -163,7 +163,7 @@ protected:
     int producedPower;        ///< Power prodoced by this player
     int powerRequirement;     ///< How much power does this player use?
 
-	FixPoint storedCredits;   ///< current number of credits that are stored in refineries/silos
+    FixPoint storedCredits;   ///< current number of credits that are stored in refineries/silos
     FixPoint startingCredits; ///< number of starting credits this player still has
     int oldCredits;           ///< amount of credits in the last game cycle (used for playing the credits tick sound)
 

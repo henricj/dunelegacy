@@ -44,35 +44,35 @@ public:
     PlayerSettingsWindow(MapEditor* pMapEditor, HOUSETYPE currentHouse);
 
 
-	/**
-		This static method creates a dynamic player settings window.
-		The idea behind this method is to simply create a new dialog on the fly and
-		add it as a child window of some other window. If the window gets closed it will be freed.
-		\param  pMapEditor  pointer to the currently running map editor
-		\param  house       the currently selected house; used for button colors, etc.
-		\return	The new dialog box (will be automatically destroyed when it's closed)
-	*/
-	static PlayerSettingsWindow* create(MapEditor* pMapEditor, HOUSETYPE house) {
-		PlayerSettingsWindow* dlg = new PlayerSettingsWindow(pMapEditor, house);
-		dlg->pAllocated = true;
-		return dlg;
-	}
+    /**
+        This static method creates a dynamic player settings window.
+        The idea behind this method is to simply create a new dialog on the fly and
+        add it as a child window of some other window. If the window gets closed it will be freed.
+        \param  pMapEditor  pointer to the currently running map editor
+        \param  house       the currently selected house; used for button colors, etc.
+        \return The new dialog box (will be automatically destroyed when it's closed)
+    */
+    static PlayerSettingsWindow* create(MapEditor* pMapEditor, HOUSETYPE house) {
+        PlayerSettingsWindow* dlg = new PlayerSettingsWindow(pMapEditor, house);
+        dlg->pAllocated = true;
+        return dlg;
+    }
 
 
 private:
 
-	void onCancel();
-	void onAdvancedBasicToggle();
-	void onOK();
+    void onCancel();
+    void onAdvancedBasicToggle();
+    void onOK();
 
-	void onPlayerCheckbox(int i);
+    void onPlayerCheckbox(int i);
 
 
-	HBox	mainHBox;
-	VBox	mainVBox;
-	VBox	centralVBox;
+    HBox    mainHBox;
+    VBox    mainVBox;
+    VBox    centralVBox;
 
-	struct PlayerWidgets {
+    struct PlayerWidgets {
 
         HBox                playerHBox;
 
@@ -89,22 +89,22 @@ private:
         DigitsTextBox       spiceQuotaTextBox;
         Label               maxUnitsLabel;
         DigitsTextBox       maxUnitsTextBox;
-	};
+    };
 
-	PlayerWidgets   playerWidgets[NUM_HOUSES];
+    PlayerWidgets   playerWidgets[NUM_HOUSES];
 
 
-	HBox	    buttonHBox;
+    HBox        buttonHBox;
 
-	Label		titleLabel;
-	TextButton	cancelButton;
-	TextButton	advancedBasicToggle;
-	TextButton	okButton;
+    Label       titleLabel;
+    TextButton  cancelButton;
+    TextButton  advancedBasicToggle;
+    TextButton  okButton;
 
     MapEditor*  pMapEditor;
 
     HOUSETYPE   house;
-	Uint32      color;
+    Uint32      color;
 };
 
 

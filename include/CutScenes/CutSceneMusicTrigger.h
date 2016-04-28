@@ -23,7 +23,7 @@
 extern MusicPlayer* musicPlayer;
 
 /**
-	This class is used for triggering a music change
+    This class is used for triggering a music change
 */
 class CutSceneMusicTrigger : public CutSceneTrigger {
 public:
@@ -38,15 +38,15 @@ public:
     }
 
     /// destructor
-	~CutSceneMusicTrigger() { };
+    ~CutSceneMusicTrigger() { };
 
     /**
-		Trigger this trigger. This method is only called if currentFrameNumber == getTriggerFrameNumber()
-		\param	currentFrameNumber	the current frame number relative to the beginning of the current scene
-	*/
-	void trigger(int currentFrameNumber) {
+        Trigger this trigger. This method is only called if currentFrameNumber == getTriggerFrameNumber()
+        \param  currentFrameNumber  the current frame number relative to the beginning of the current scene
+    */
+    void trigger(int currentFrameNumber) {
         musicPlayer->changeMusic(musicType);
-	}
+    }
 
 private:
     MUSICTYPE musicType;    ///< the type of the new music

@@ -26,12 +26,12 @@
 #include <stdio.h>
 
 DirectoryPlayer::DirectoryPlayer() : MusicPlayer(settings.audio.playMusic, settings.audio.musicVolume) {
-	// determine path to config file
-	char tmp[FILENAME_MAX];
-	fnkdat(nullptr, tmp, FILENAME_MAX, FNKDAT_USER | FNKDAT_CREAT);
-	std::string configfilepath(tmp);
+    // determine path to config file
+    char tmp[FILENAME_MAX];
+    fnkdat(nullptr, tmp, FILENAME_MAX, FNKDAT_USER | FNKDAT_CREAT);
+    std::string configfilepath(tmp);
 
-	static const char* musicDirectoryNames[MUSIC_NUM_MUSIC_TYPES] = { "/music/attack/",
+    static const char* musicDirectoryNames[MUSIC_NUM_MUSIC_TYPES] = { "/music/attack/",
                                                                         "/music/peace/",
                                                                         "/music/intro/",
                                                                         "/music/menu/",
@@ -59,35 +59,35 @@ DirectoryPlayer::DirectoryPlayer() : MusicPlayer(settings.audio.playMusic, setti
         musicFileList[i] = getMusicFileNames(configfilepath + musicDirectoryNames[i]);
     }
 
-	music = nullptr;
+    music = nullptr;
 
     Mix_Init(MIX_INIT_FLUIDSYNTH | MIX_INIT_FLAC | MIX_INIT_MP3 | MIX_INIT_OGG);
 }
 
 DirectoryPlayer::~DirectoryPlayer() {
-	if(music != nullptr) {
-		Mix_FreeMusic(music);
-		music = nullptr;
-	}
+    if(music != nullptr) {
+        Mix_FreeMusic(music);
+        music = nullptr;
+    }
 
     Mix_Quit();
 }
 
 void DirectoryPlayer::changeMusic(MUSICTYPE musicType)
 {
-	int musicNum = -1;
-	std::string filename = "";
+    int musicNum = -1;
+    std::string filename = "";
 
-	if(currentMusicType == musicType && Mix_PlayingMusic()) {
-		return;
-	}
+    if(currentMusicType == musicType && Mix_PlayingMusic()) {
+        return;
+    }
 
-	if(musicType >= 0 && musicType < MUSIC_NUM_MUSIC_TYPES && !musicFileList[musicType].empty()) {
+    if(musicType >= 0 && musicType < MUSIC_NUM_MUSIC_TYPES && !musicFileList[musicType].empty()) {
         musicNum = getRandomInt(0, musicFileList[musicType].size()-1);
         filename = musicFileList[musicType][musicNum];
         currentMusicType = musicType;
-	} else {
-	   // MUSIC_RANDOM
+    } else {
+       // MUSIC_RANDOM
         int maxnum = musicFileList[MUSIC_ATTACK].size() + musicFileList[MUSIC_PEACE].size();
 
         if(maxnum > 0) {
@@ -103,84 +103,84 @@ void DirectoryPlayer::changeMusic(MUSICTYPE musicType)
                 currentMusicType = MUSIC_PEACE;
             }
         }
-	}
+    }
 
-	if((musicOn == true) && (filename != "")) {
+    if((musicOn == true) && (filename != "")) {
 
-		Mix_HaltMusic();
+        Mix_HaltMusic();
 
-		if(music != nullptr) {
-			Mix_FreeMusic(music);
-			music = nullptr;
-		}
+        if(music != nullptr) {
+            Mix_FreeMusic(music);
+            music = nullptr;
+        }
 
-		music = Mix_LoadMUS(filename.c_str());
-		if(music != nullptr) {
-			printf("Now playing %s!\n",filename.c_str());
-			Mix_PlayMusic(music, -1);
-		} else {
-			printf("Unable to play %s: %s!\n",filename.c_str(), Mix_GetError());
-		}
-	}
+        music = Mix_LoadMUS(filename.c_str());
+        if(music != nullptr) {
+            printf("Now playing %s!\n",filename.c_str());
+            Mix_PlayMusic(music, -1);
+        } else {
+            printf("Unable to play %s: %s!\n",filename.c_str(), Mix_GetError());
+        }
+    }
 }
 
 void DirectoryPlayer::toggleSound() {
-	if(musicOn == false) {
-		musicOn = true;
-		changeMusic(MUSIC_PEACE);
-	} else {
-		musicOn = false;
-		if (music != nullptr) {
-			Mix_HaltMusic();
+    if(musicOn == false) {
+        musicOn = true;
+        changeMusic(MUSIC_PEACE);
+    } else {
+        musicOn = false;
+        if (music != nullptr) {
+            Mix_HaltMusic();
             Mix_FreeMusic(music);
             music = nullptr;
-		}
-	}
+        }
+    }
 }
 
 bool DirectoryPlayer::isMusicPlaying() {
-	return Mix_PlayingMusic();
+    return Mix_PlayingMusic();
 }
 
 void DirectoryPlayer::setMusic(bool value) {
-	musicOn = value;
+    musicOn = value;
 
-	if(musicOn) {
-		changeMusic(MUSIC_RANDOM);
-	} else if(music != nullptr) {
-		Mix_HaltMusic();
-	}
+    if(musicOn) {
+        changeMusic(MUSIC_RANDOM);
+    } else if(music != nullptr) {
+        Mix_HaltMusic();
+    }
 }
 
 std::vector<std::string> DirectoryPlayer::getMusicFileNames(const std::string& dir) {
-	std::vector<std::string> files;
-	std::list<std::string> tmp;
-	std::list<std::string>::const_iterator iter;
+    std::vector<std::string> files;
+    std::list<std::string> tmp;
+    std::list<std::string>::const_iterator iter;
 
-	tmp = getFileNamesList(dir,"mp3",true);
-	for(iter = tmp.begin(); iter != tmp.end(); ++iter) {
-		files.push_back(dir + *iter);
-	}
+    tmp = getFileNamesList(dir,"mp3",true);
+    for(iter = tmp.begin(); iter != tmp.end(); ++iter) {
+        files.push_back(dir + *iter);
+    }
 
-	tmp = getFileNamesList(dir,"ogg",true);
-	for(iter = tmp.begin(); iter != tmp.end(); ++iter) {
-		files.push_back(dir + *iter);
-	}
+    tmp = getFileNamesList(dir,"ogg",true);
+    for(iter = tmp.begin(); iter != tmp.end(); ++iter) {
+        files.push_back(dir + *iter);
+    }
 
-	tmp = getFileNamesList(dir,"wav",true);
-	for(iter = tmp.begin(); iter != tmp.end(); ++iter) {
-		files.push_back(dir + *iter);
-	}
+    tmp = getFileNamesList(dir,"wav",true);
+    for(iter = tmp.begin(); iter != tmp.end(); ++iter) {
+        files.push_back(dir + *iter);
+    }
 
-	tmp = getFileNamesList(dir,"flac",true);
-	for(iter = tmp.begin(); iter != tmp.end(); ++iter) {
-		files.push_back(dir + *iter);
-	}
+    tmp = getFileNamesList(dir,"flac",true);
+    for(iter = tmp.begin(); iter != tmp.end(); ++iter) {
+        files.push_back(dir + *iter);
+    }
 
-	tmp = getFileNamesList(dir,"mid",true);
-	for(iter = tmp.begin(); iter != tmp.end(); ++iter) {
-		files.push_back(dir + *iter);
-	}
+    tmp = getFileNamesList(dir,"mid",true);
+    for(iter = tmp.begin(); iter != tmp.end(); ++iter) {
+        files.push_back(dir + *iter);
+    }
 
-	return files;
+    return files;
 }

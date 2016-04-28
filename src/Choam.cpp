@@ -9,10 +9,10 @@
 #include <algorithm>
 
 // change starport prices every minute
-#define CHOAM_CHANGE_PRICETIME	(MILLI2CYCLES(60*1000))
+#define CHOAM_CHANGE_PRICETIME  (MILLI2CYCLES(60*1000))
 
 // change amount of available units every 30s
-#define CHOAM_CHANGE_AMOUNT 	(MILLI2CYCLES(30*1000))
+#define CHOAM_CHANGE_AMOUNT     (MILLI2CYCLES(30*1000))
 
 Choam::Choam(House* pHouse) : house(pHouse) {
 }
@@ -23,19 +23,19 @@ Choam::~Choam() {
 
 void Choam::save(OutputStream& stream) const {
     stream.writeUint32(availableItems.size());
-	std::vector<BuildItem>::const_iterator iter;
-	for(iter = availableItems.begin(); iter != availableItems.end(); ++iter) {
-		iter->save(stream);
-	}
+    std::vector<BuildItem>::const_iterator iter;
+    for(iter = availableItems.begin(); iter != availableItems.end(); ++iter) {
+        iter->save(stream);
+    }
 }
 
 void Choam::load(InputStream& stream) {
-	int num = stream.readUint32();
-	for(int i=0;i<num;i++) {
-		BuildItem tmp;
-		tmp.load(stream);
-		availableItems.push_back(tmp);
-	}
+    int num = stream.readUint32();
+    for(int i=0;i<num;i++) {
+        BuildItem tmp;
+        tmp.load(stream);
+        availableItems.push_back(tmp);
+    }
 }
 
 int Choam::getPrice(Uint32 itemID) const {

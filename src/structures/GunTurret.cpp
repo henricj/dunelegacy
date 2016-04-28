@@ -35,16 +35,16 @@ GunTurret::GunTurret(InputStream& stream) : TurretBase(stream) {
 
 void GunTurret::init() {
     itemID = Structure_GunTurret;
-	owner->incrementStructures(itemID);
+    owner->incrementStructures(itemID);
 
-	attackSound = Sound_Gun;
-	bulletType = Bullet_ShellMedium;
+    attackSound = Sound_Gun;
+    bulletType = Bullet_ShellMedium;
 
-	graphicID = ObjPic_GunTurret;
-	graphic = pGFXManager->getObjPic(ObjPic_GunTurret,getOwner()->getHouseID());
-	numImagesX = 10;
-	numImagesY = 1;
-	curAnimFrame = firstAnimFrame = lastAnimFrame = ((10-drawnAngle) % 8) + 2;
+    graphicID = ObjPic_GunTurret;
+    graphic = pGFXManager->getObjPic(ObjPic_GunTurret,getOwner()->getHouseID());
+    numImagesX = 10;
+    numImagesY = 1;
+    curAnimFrame = firstAnimFrame = lastAnimFrame = ((10-drawnAngle) % 8) + 2;
 }
 
 GunTurret::~GunTurret() {

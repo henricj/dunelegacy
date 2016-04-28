@@ -23,16 +23,16 @@
 class IX : public StructureBase
 {
 public:
-	IX(House* newOwner);
+    IX(House* newOwner);
     IX(InputStream& stream);
-	void init();
-	virtual ~IX();
+    void init();
+    virtual ~IX();
 
     /**
         Can this structure be captured by infantry units?
         \return true, if this structure can be captured, false otherwise
-	*/
-	virtual bool canBeCaptured() const { return false; };
+    */
+    virtual bool canBeCaptured() const { return false; };
 };
 
 #endif //IX_H

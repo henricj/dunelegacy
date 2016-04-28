@@ -16,29 +16,29 @@
  */
 
 #ifndef INVISIBLEBUTTON_H
-#define	INVISIBLEBUTTON_H
+#define INVISIBLEBUTTON_H
 
 #include "Button.h"
 
 /// A class for a invisible button that can be clicked
 class InvisibleButton : public Button {
 public:
-	/// Default contructor
-	InvisibleButton() : Button() {
-		enableResizing(true,true);
-	}
+    /// Default contructor
+    InvisibleButton() : Button() {
+        enableResizing(true,true);
+    }
 
-	/// destructor
-	virtual ~InvisibleButton() {
-	}
+    /// destructor
+    virtual ~InvisibleButton() {
+    }
 
-	/**
-		This method draws nothing to screen. This method is called before drawOverlay().
-		\param	position	Position to draw the button to
-	*/
-	virtual void draw(Point position) {
-		;
-	}
+    /**
+        This method draws nothing to screen. This method is called before drawOverlay().
+        \param  position    Position to draw the button to
+    */
+    virtual void draw(Point position) {
+        ;
+    }
 
 };
 

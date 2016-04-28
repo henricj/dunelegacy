@@ -34,7 +34,7 @@ GroundUnit::GroundUnit(House* newOwner) : UnitBase(newOwner) {
     GroundUnit::init();
 
     awaitingPickup = false;
-	bookedCarrier = NONE;
+    bookedCarrier = NONE;
 }
 
 GroundUnit::GroundUnit(InputStream& stream) : UnitBase(stream) {
@@ -53,17 +53,17 @@ GroundUnit::~GroundUnit() {
 }
 
 void GroundUnit::save(OutputStream& stream) const {
-	UnitBase::save(stream);
+    UnitBase::save(stream);
 
-	stream.writeBool(awaitingPickup);
-	stream.writeUint32(bookedCarrier);
+    stream.writeBool(awaitingPickup);
+    stream.writeUint32(bookedCarrier);
 }
 
 void GroundUnit::assignToMap(const Coord& pos) {
-	if (currentGameMap->tileExists(pos)) {
-		currentGameMap->getTile(pos)->assignNonInfantryGroundObject(getObjectID());
-		currentGameMap->viewMap(owner->getTeam(), location, getViewRange());
-	}
+    if (currentGameMap->tileExists(pos)) {
+        currentGameMap->getTile(pos)->assignNonInfantryGroundObject(getObjectID());
+        currentGameMap->viewMap(owner->getTeam(), location, getViewRange());
+    }
 }
 
 void GroundUnit::checkPos() {
@@ -71,20 +71,20 @@ void GroundUnit::checkPos() {
         currentGameMap->getTile(location.x,location.y)->setTrack(drawnAngle);
     }
 
-	if(justStoppedMoving)
-	{
-		realX = location.x*TILESIZE + TILESIZE/2;
-		realY = location.y*TILESIZE + TILESIZE/2;
-		//findTargetTimer = 0;	//allow a scan for new targets now
+    if(justStoppedMoving)
+    {
+        realX = location.x*TILESIZE + TILESIZE/2;
+        realY = location.y*TILESIZE + TILESIZE/2;
+        //findTargetTimer = 0;  //allow a scan for new targets now
 
-		if(currentGameMap->getTile(location)->isSpiceBloom()) {
-		    setHealth(0);
-		    setVisible(VIS_ALL, false);
-			currentGameMap->getTile(location)->triggerSpiceBloom(getOwner());
-		} else if(currentGameMap->getTile(location)->isSpecialBloom()){
+        if(currentGameMap->getTile(location)->isSpiceBloom()) {
+            setHealth(0);
+            setVisible(VIS_ALL, false);
+            currentGameMap->getTile(location)->triggerSpiceBloom(getOwner());
+        } else if(currentGameMap->getTile(location)->isSpecialBloom()){
             currentGameMap->getTile(location)->triggerSpecialBloom(getOwner());
-		}
-	}
+        }
+    }
 
     /*
         Go to repair yard if low on health
@@ -103,14 +103,14 @@ void GroundUnit::checkPos() {
     }
 
 
-	if(goingToRepairYard) {
-	    if(target.getObjPointer() == nullptr) {
+    if(goingToRepairYard) {
+        if(target.getObjPointer() == nullptr) {
             goingToRepairYard = false;
             awaitingPickup = false;
             bookedCarrier = NONE;
 
             clearPath();
-	    } else{
+        } else{
             Coord closestPoint = target.getObjPointer()->getClosestPoint(location);
             if (!moving && !justStoppedMoving && (blockDistance(location, closestPoint) <= FixPt(1,5))
                 && ((RepairYard*)target.getObjPointer())->isFree())
@@ -122,11 +122,11 @@ void GroundUnit::checkPos() {
                     setDestination(guardPoint);
                 }
             }
-	    }
-	}
+        }
+    }
 
-	// If we are awaiting a pickup try book a carryall if we have one
-	if( attackMode == CARRYALLREQUESTED && bookedCarrier == NONE) {
+    // If we are awaiting a pickup try book a carryall if we have one
+    if( attackMode == CARRYALLREQUESTED && bookedCarrier == NONE) {
         if(getOwner()->hasCarryalls()) {
             requestCarryall();
         } else {
@@ -136,16 +136,16 @@ void GroundUnit::checkPos() {
                 doSetAttackMode(GUARD);
             }
         }
-	}
+    }
 }
 
 
 void GroundUnit::playConfirmSound() {
-	soundPlayer->playSound((Sound_enum) getRandomOf(2,Acknowledged,Affirmative));
+    soundPlayer->playSound((Sound_enum) getRandomOf(2,Acknowledged,Affirmative));
 }
 
 void GroundUnit::playSelectSound() {
-	soundPlayer->playSound(Reporting);
+    soundPlayer->playSound(Reporting);
 }
 
 /**
@@ -160,39 +160,39 @@ void GroundUnit::doRequestCarryallDrop(int xPos, int yPos) {
 }
 
 bool GroundUnit::requestCarryall() {
-	if (getOwner()->hasCarryalls() && !awaitingPickup)	{
-		Carryall* carryall = nullptr;
+    if (getOwner()->hasCarryalls() && !awaitingPickup)  {
+        Carryall* carryall = nullptr;
 
-		// This allows a unit to keep requesting a carryall even if one isn't available right now
-		doSetAttackMode(CARRYALLREQUESTED);
+        // This allows a unit to keep requesting a carryall even if one isn't available right now
+        doSetAttackMode(CARRYALLREQUESTED);
 
         RobustList<UnitBase*>::const_iterator iter;
-	    for(iter = unitList.begin(); iter != unitList.end(); ++iter) {
-			UnitBase* unit = *iter;
-			if ((unit->getOwner() == owner) && (unit->getItemID() == Unit_Carryall)) {
-				if(!((Carryall*)unit)->isBooked()) {
-					carryall = (Carryall*)unit;
-					carryall->setTarget(this);
-					carryall->clearPath();
-					bookCarrier(carryall);
+        for(iter = unitList.begin(); iter != unitList.end(); ++iter) {
+            UnitBase* unit = *iter;
+            if ((unit->getOwner() == owner) && (unit->getItemID() == Unit_Carryall)) {
+                if(!((Carryall*)unit)->isBooked()) {
+                    carryall = (Carryall*)unit;
+                    carryall->setTarget(this);
+                    carryall->clearPath();
+                    bookCarrier(carryall);
 
-					//setDestination(&location);	//stop moving, and wait for carryall to arrive
+                    //setDestination(&location);    //stop moving, and wait for carryall to arrive
 
-					return true;
-				}
-			}
-		}
-	}
+                    return true;
+                }
+            }
+        }
+    }
 
-	return false;
+    return false;
 }
 
 void GroundUnit::setPickedUp(UnitBase* newCarrier) {
-	UnitBase::setPickedUp(newCarrier);
-	awaitingPickup = false;
-	bookedCarrier = NONE;
+    UnitBase::setPickedUp(newCarrier);
+    awaitingPickup = false;
+    bookedCarrier = NONE;
 
-	clearPath(); // Stefan: I don't think this is right
+    clearPath(); // Stefan: I don't think this is right
                  // but there is definitely something to it
                  // <try removing this to keep tanks moving even when a carryall is coming>
 }
@@ -220,35 +220,35 @@ const UnitBase* GroundUnit::getCarrier() const {
 }
 
 void GroundUnit::navigate() {
-	// Lets keep units moving even if they are awaiting a pickup
-	// Could potentially make this distance based depending on how
-	// far away the booked carrier is
-	if(!awaitingPickup) {
-		UnitBase::navigate();
+    // Lets keep units moving even if they are awaiting a pickup
+    // Could potentially make this distance based depending on how
+    // far away the booked carrier is
+    if(!awaitingPickup) {
+        UnitBase::navigate();
     }
 }
 
 void GroundUnit::handleSendToRepairClick() {
-	currentGame->getCommandManager().addCommand(Command(pLocalPlayer->getPlayerID(), CMD_UNIT_SENDTOREPAIR,objectID));
+    currentGame->getCommandManager().addCommand(Command(pLocalPlayer->getPlayerID(), CMD_UNIT_SENDTOREPAIR,objectID));
 }
 
 void GroundUnit::doRepair() {
-	if(getHealth() < getMaxHealth()) {
-		//find a repair yard to return to
+    if(getHealth() < getMaxHealth()) {
+        //find a repair yard to return to
 
-		FixPoint closestLeastBookedRepairYardDistance = 1000000;
+        FixPoint closestLeastBookedRepairYardDistance = 1000000;
         RepairYard* bestRepairYard = nullptr;
 
         RobustList<StructureBase*>::const_iterator iter;
         for(iter = structureList.begin(); iter != structureList.end(); ++iter) {
             StructureBase* tempStructure = *iter;
 
-			if ((tempStructure->getItemID() == Structure_RepairYard) && (tempStructure->getOwner() == owner)) {
+            if ((tempStructure->getItemID() == Structure_RepairYard) && (tempStructure->getOwner() == owner)) {
                 RepairYard* tempRepairYard = ((RepairYard*)tempStructure);
 
                 if(tempRepairYard->getNumBookings() == 0) {
                     FixPoint tempDistance = distanceFrom(location, tempRepairYard->getClosestPoint(location));
-					if(tempDistance < closestLeastBookedRepairYardDistance) {
+                    if(tempDistance < closestLeastBookedRepairYardDistance) {
                         closestLeastBookedRepairYardDistance = tempDistance;
                         bestRepairYard = tempRepairYard;
                     }
@@ -263,5 +263,5 @@ void GroundUnit::doRepair() {
                 doMove2Object(bestRepairYard);
             }
         }
-	}
+    }
 }

@@ -54,7 +54,7 @@ AirUnit::~AirUnit()
 
 void AirUnit::save(OutputStream& stream) const
 {
-	UnitBase::save(stream);
+    UnitBase::save(stream);
 }
 
 void AirUnit::destroy()
@@ -72,10 +72,10 @@ void AirUnit::destroy()
 
 void AirUnit::assignToMap(const Coord& pos)
 {
-	if(currentGameMap->tileExists(pos)) {
-		currentGameMap->getTile(pos)->assignAirUnit(getObjectID());
-//		currentGameMap->viewMap(owner->getTeam(), location, getViewRange());
-	}
+    if(currentGameMap->tileExists(pos)) {
+        currentGameMap->getTile(pos)->assignAirUnit(getObjectID());
+//      currentGameMap->viewMap(owner->getTeam(), location, getViewRange());
+    }
 }
 
 void AirUnit::checkPos()
@@ -94,10 +94,10 @@ void AirUnit::blitToScreen()
         SDL_RenderCopy(renderer, shadowGraphic[currentZoomlevel], &source, &dest);
     }
 
-	UnitBase::blitToScreen();
+    UnitBase::blitToScreen();
 }
 
 bool AirUnit::canPass(int xPos, int yPos) const
 {
-	return currentGameMap->tileExists(xPos, yPos);
+    return currentGameMap->tileExists(xPos, yPos);
 }

@@ -42,16 +42,16 @@ void SonicTank::init() {
     itemID = Unit_SonicTank;
     owner->incrementUnits(itemID);
 
-	numWeapons = 1;
-	bulletType = Bullet_Sonic;
+    numWeapons = 1;
+    bulletType = Bullet_Sonic;
 
-	graphicID = ObjPic_Tank_Base;
-	gunGraphicID = ObjPic_Sonictank_Gun;
-	graphic = pGFXManager->getObjPic(graphicID,getOwner()->getHouseID());
-	turretGraphic = pGFXManager->getObjPic(gunGraphicID,getOwner()->getHouseID());
+    graphicID = ObjPic_Tank_Base;
+    gunGraphicID = ObjPic_Sonictank_Gun;
+    graphic = pGFXManager->getObjPic(graphicID,getOwner()->getHouseID());
+    turretGraphic = pGFXManager->getObjPic(gunGraphicID,getOwner()->getHouseID());
 
-	numImagesX = NUM_ANGLES;
-	numImagesY = 1;
+    numImagesX = NUM_ANGLES;
+    numImagesY = 1;
 }
 
 SonicTank::~SonicTank() {
@@ -106,14 +106,14 @@ void SonicTank::destroy() {
 void SonicTank::handleDamage(int damage, Uint32 damagerID, House* damagerOwner) {
     ObjectBase* damager = currentGame->getObjectManager().getObject(damagerID);
 
-	if (!damager || (damager->getItemID() != Unit_SonicTank))
-		TrackedUnit::handleDamage(damage, damagerID, damagerOwner);
+    if (!damager || (damager->getItemID() != Unit_SonicTank))
+        TrackedUnit::handleDamage(damage, damagerID, damagerOwner);
 }
 
 bool SonicTank::canAttack(const ObjectBase *object) const {
-	return ((object != nullptr) && ObjectBase::canAttack(object) && (object->getItemID() != Unit_SonicTank));
+    return ((object != nullptr) && ObjectBase::canAttack(object) && (object->getItemID() != Unit_SonicTank));
 }
 
 void SonicTank::playAttackSound() {
-	soundPlayer->playSoundAt(Sound_Sonic,location);
+    soundPlayer->playSoundAt(Sound_Sonic,location);
 }

@@ -33,8 +33,8 @@ class MapEditor;
 
 class INIMapEditorLoader : public INIMap {
 public:
-	INIMapEditorLoader(MapEditor* pMapEditor, std::shared_ptr<INIFile>& pINIFile);
-	~INIMapEditorLoader();
+    INIMapEditorLoader(MapEditor* pMapEditor, std::shared_ptr<INIFile>& pINIFile);
+    ~INIMapEditorLoader();
 
 private:
     void load();

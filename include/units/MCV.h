@@ -23,29 +23,29 @@
 class MCV : public GroundUnit
 {
 public:
-	MCV(House* newOwner);
-	MCV(InputStream& stream);
-	void init();
-	virtual ~MCV();
+    MCV(House* newOwner);
+    MCV(InputStream& stream);
+    void init();
+    virtual ~MCV();
 
-	void handleDeployClick();
+    void handleDeployClick();
 
-	/**
+    /**
         Deploy this MCV. If deploying was successful this unit does not exist anymore.
         \return true, if deploying was successful, false otherwise.
-	*/
-	bool doDeploy();
+    */
+    bool doDeploy();
 
-	bool canAttack(const ObjectBase* object) const;
+    bool canAttack(const ObjectBase* object) const;
 
-	virtual void destroy();
+    virtual void destroy();
 
-	bool canDeploy() const {
+    bool canDeploy() const {
         return canDeploy(getLocation().x, getLocation().y);
-	}
+    }
 
 private:
-	bool canDeploy(int x, int y) const;
+    bool canDeploy(int x, int y) const;
 };
 
 #endif // MCV_H

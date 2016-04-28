@@ -50,14 +50,14 @@
 CustomGamePlayers::CustomGamePlayers(const GameInitSettings& newGameInitSettings, bool server, bool LANServer)
  : MenuBase(), gameInitSettings(newGameInitSettings), bServer(server), bLANServer(LANServer), startGameTime(0), brainEqHumanSlot(-1) {
 
-	// set up window
+    // set up window
     SDL_Texture *pBackground = pGFXManager->getUIGraphic(UI_MenuBackground);
-	setBackground(pBackground, false);
-	resize(getTextureSize(pBackground));
+    setBackground(pBackground, false);
+    resize(getTextureSize(pBackground));
 
-	setWindowWidget(&windowWidget);
+    setWindowWidget(&windowWidget);
 
-	windowWidget.addWidget(&mainVBox, Point(24,23),	Point(getRendererWidth() - 48, getRendererHeight() - 32));
+    windowWidget.addWidget(&mainVBox, Point(24,23), Point(getRendererWidth() - 48, getRendererHeight() - 32));
 
     captionLabel.setText(getBasename(gameInitSettings.getFilename(), true));
     captionLabel.setAlignment(Alignment_HCenter);
@@ -148,50 +148,50 @@ CustomGamePlayers::CustomGamePlayers(const GameInitSettings& newGameInitSettings
 
     mainVBox.addWidget(Spacer::create(), 0.04);
 
-	mainVBox.addWidget(&buttonHBox, 0.32);
+    mainVBox.addWidget(&buttonHBox, 0.32);
 
-	buttonHBox.addWidget(HSpacer::create(70));
+    buttonHBox.addWidget(HSpacer::create(70));
 
-	backButtonVBox.addWidget(Spacer::create());
-	backButton.setText(_("Back"));
-	backButton.setOnClick(std::bind(&CustomGamePlayers::onCancel, this));
-	backButtonVBox.addWidget(&backButton, 24);
-	backButtonVBox.addWidget(VSpacer::create(14));
-	buttonHBox.addWidget(&backButtonVBox, 0.1);
+    backButtonVBox.addWidget(Spacer::create());
+    backButton.setText(_("Back"));
+    backButton.setOnClick(std::bind(&CustomGamePlayers::onCancel, this));
+    backButtonVBox.addWidget(&backButton, 24);
+    backButtonVBox.addWidget(VSpacer::create(14));
+    buttonHBox.addWidget(&backButtonVBox, 0.1);
 
     buttonHBox.addWidget(Spacer::create(), 0.0625);
 
     chatTextView.setTextFont(FONT_STD10);
-	chatVBox.addWidget(&chatTextView, 0.77);
-	if(getRendererHeight() <= 600) {
+    chatVBox.addWidget(&chatTextView, 0.77);
+    if(getRendererHeight() <= 600) {
         chatTextBox.setTextFont(FONT_STD10);
-	}
-	chatTextBox.setOnReturn(std::bind(&CustomGamePlayers::onSendChatMessage, this));
-	chatVBox.addWidget(&chatTextBox, 0.2);
-	chatVBox.addWidget(Spacer::create(), 0.03);
-	buttonHBox.addWidget(&chatVBox, 0.675);
+    }
+    chatTextBox.setOnReturn(std::bind(&CustomGamePlayers::onSendChatMessage, this));
+    chatVBox.addWidget(&chatTextBox, 0.2);
+    chatVBox.addWidget(Spacer::create(), 0.03);
+    buttonHBox.addWidget(&chatVBox, 0.675);
 
-	if(gameInitSettings.getGameType() != GAMETYPE_CUSTOM_MULTIPLAYER && gameInitSettings.getGameType() != GAMETYPE_LOAD_MULTIPLAYER) {
+    if(gameInitSettings.getGameType() != GAMETYPE_CUSTOM_MULTIPLAYER && gameInitSettings.getGameType() != GAMETYPE_LOAD_MULTIPLAYER) {
         chatVBox.setVisible(false);
         chatVBox.setEnabled(false);
-	}
+    }
 
-	bool bLoadMultiplayer = (gameInitSettings.getGameType() == GAMETYPE_LOAD_MULTIPLAYER);
+    bool bLoadMultiplayer = (gameInitSettings.getGameType() == GAMETYPE_LOAD_MULTIPLAYER);
 
-	buttonHBox.addWidget(Spacer::create(), 0.0625);
+    buttonHBox.addWidget(Spacer::create(), 0.0625);
 
-	nextButtonVBox.addWidget(Spacer::create());
+    nextButtonVBox.addWidget(Spacer::create());
     nextButton.setText(_("Next"));
-	nextButton.setOnClick(std::bind(&CustomGamePlayers::onNext, this));
-	nextButtonVBox.addWidget(&nextButton, 24);
-	nextButtonVBox.addWidget(VSpacer::create(14));
-	if(bServer == false) {
+    nextButton.setOnClick(std::bind(&CustomGamePlayers::onNext, this));
+    nextButtonVBox.addWidget(&nextButton, 24);
+    nextButtonVBox.addWidget(VSpacer::create(14));
+    if(bServer == false) {
         nextButton.setEnabled(false);
         nextButton.setVisible(false);
-	}
-	buttonHBox.addWidget(&nextButtonVBox, 0.1);
+    }
+    buttonHBox.addWidget(&nextButtonVBox, 0.1);
 
-	buttonHBox.addWidget(HSpacer::create(90));
+    buttonHBox.addWidget(HSpacer::create(90));
 
     std::list<HOUSETYPE>  tmpBoundHousesOnMap = boundHousesOnMap;
 
@@ -380,7 +380,7 @@ CustomGamePlayers::CustomGamePlayers(const GameInitSettings& newGameInitSettings
 
     checkPlayerBoxes();
 
-	leftVBox.addWidget(Spacer::create(), 0.3);
+    leftVBox.addWidget(Spacer::create(), 0.3);
 
     // maybe there is a better fitting slot if we are loading a map in the old format with Brain=CPU and Brain=Human
     if(brainEqHumanSlot >= 0) {
@@ -638,7 +638,7 @@ ChangeEventList CustomGamePlayers::getChangeEventListForNewPlayer(std::string ne
 }
 
 void CustomGamePlayers::onReceiveChatMessage(std::string name, std::string message) {
-	addChatMessage(name, message);
+    addChatMessage(name, message);
 }
 
 void CustomGamePlayers::onNext()
@@ -770,9 +770,9 @@ void CustomGamePlayers::onCancel()
 
 void CustomGamePlayers::onSendChatMessage()
 {
-	std::string message = chatTextBox.getText();
-	addChatMessage(settings.general.playerName, message);
-	chatTextBox.setText("");
+    std::string message = chatTextBox.getText();
+    addChatMessage(settings.general.playerName, message);
+    chatTextBox.setText("");
 
     pNetworkManager->sendChatMessage(message);
 
@@ -784,8 +784,8 @@ void CustomGamePlayers::addInfoMessage(std::string message) {
         text += "\n";
     }
     text += "* " + message;
-	chatTextView.setText(text);
-	chatTextView.scrollToEnd();
+    chatTextView.setText(text);
+    chatTextView.scrollToEnd();
 }
 
 void CustomGamePlayers::addChatMessage(std::string name, std::string message)
@@ -795,8 +795,8 @@ void CustomGamePlayers::addChatMessage(std::string name, std::string message)
         text += "\n";
     }
     text += name + ": " + message;
-	chatTextView.setText(text);
-	chatTextView.scrollToEnd();
+    chatTextView.setText(text);
+    chatTextView.scrollToEnd();
 }
 
 void CustomGamePlayers::extractMapInfo(std::shared_ptr<INIFile>& pMap)

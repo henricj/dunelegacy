@@ -113,7 +113,7 @@ int initialMilitaryValue;
 QuantBot::QuantBot(House* associatedHouse, std::string playername, Uint32 difficulty)
 : Player(associatedHouse, playername), difficulty(difficulty) {
 
-	buildTimer = getRandomGen().rand(0,3) * 50;
+    buildTimer = getRandomGen().rand(0,3) * 50;
 
     attackTimer = MILLI2CYCLES(10000);
     retreatTimer = MILLI2CYCLES(60000);
@@ -167,9 +167,9 @@ QuantBot::QuantBot(House* associatedHouse, std::string playername, Uint32 diffic
 QuantBot::QuantBot(InputStream& stream, House* associatedHouse) : Player(stream, associatedHouse) {
     QuantBot::init();
 
-	difficulty = stream.readUint32();
-	gameMode = stream.readUint32();
-	buildTimer = stream.readSint32();
+    difficulty = stream.readUint32();
+    gameMode = stream.readUint32();
+    buildTimer = stream.readSint32();
     attackTimer = stream.readSint32();
     militaryValueLimit = stream.readSint32();
 
@@ -182,15 +182,15 @@ QuantBot::QuantBot(InputStream& stream, House* associatedHouse) : Player(stream,
         So that it keeps the count of buildings that should be on the map.
     **/
 
-	Uint32 NumPlaceLocations = stream.readUint32();
-	for(Uint32 i = 0; i < NumPlaceLocations; i++) {
+    Uint32 NumPlaceLocations = stream.readUint32();
+    for(Uint32 i = 0; i < NumPlaceLocations; i++) {
         Sint32 x = stream.readSint32();
         Sint32 y = stream.readSint32();
 
-		placeLocations.push_back(Coord(x,y));
-	}
+        placeLocations.push_back(Coord(x,y));
+    }
 
-	campaignAIAttackFlag = stream.readBool();
+    campaignAIAttackFlag = stream.readBool();
 }
 
 void QuantBot::init() {
@@ -211,7 +211,7 @@ QuantBot::~QuantBot() {
 void QuantBot::save(OutputStream& stream) const {
     Player::save(stream);
 
-	stream.writeUint32(difficulty);
+    stream.writeUint32(difficulty);
     stream.writeUint32(gameMode);
     stream.writeSint32(buildTimer);
     stream.writeSint32(attackTimer);
@@ -221,14 +221,14 @@ void QuantBot::save(OutputStream& stream) const {
         stream.writeUint32(initialItemCount[i]);
     }
 
-	stream.writeUint32(placeLocations.size());
-	std::list<Coord>::const_iterator iter;
-	for(iter = placeLocations.begin(); iter != placeLocations.end(); ++iter) {
-		stream.writeSint32(iter->x);
-		stream.writeSint32(iter->y);
-	}
+    stream.writeUint32(placeLocations.size());
+    std::list<Coord>::const_iterator iter;
+    for(iter = placeLocations.begin(); iter != placeLocations.end(); ++iter) {
+        stream.writeSint32(iter->x);
+        stream.writeSint32(iter->y);
+    }
 
-	stream.writeBool(campaignAIAttackFlag);
+    stream.writeBool(campaignAIAttackFlag);
 }
 
 
@@ -268,15 +268,15 @@ void QuantBot::update() {
 
     checkAllUnits();
 
-	if(buildTimer <= 0) {
+    if(buildTimer <= 0) {
         build();
-	} else {
+    } else {
         buildTimer -= AIUPDATEINTERVAL;
-	}
+    }
 
     if(attackTimer <= 0) {
         attack();
-	}
+    }
 
     // If we have taken substantial losses then retreat
     else if (attackTimer > MILLI2CYCLES(100000) ) {
@@ -293,7 +293,7 @@ void QuantBot::update() {
     else {
         attackTimer -= AIUPDATEINTERVAL;
         retreatTimer -= AIUPDATEINTERVAL;
-	}
+    }
 
 
 
@@ -706,7 +706,7 @@ Coord QuantBot::findPlaceLocation(Uint32 itemID) {
         bestLocation = Coord(bestLocationX, bestLocationY);
     }
 
-	return bestLocation;
+    return bestLocation;
 }
 
 
@@ -1454,7 +1454,7 @@ void QuantBot::build() {
 
                     case Structure_StarPort: {
                         const StarPort* pStarPort = dynamic_cast<const StarPort*>(pBuilder);
-                        if(pStarPort->okToOrder())	{
+                        if(pStarPort->okToOrder())  {
                             const Choam& choam = getHouse()->getChoam();
 
 
@@ -2231,7 +2231,7 @@ void QuantBot::retreatAllUnits() {
     retreatTimer = MILLI2CYCLES(90000);
 
 
-    FixPoint	closestDistance = FixPt_MAX;
+    FixPoint    closestDistance = FixPt_MAX;
 
     RobustList<StructureBase*>::const_iterator iter;
     for(iter = structureList.begin(); iter != structureList.end(); ++iter) {
@@ -2242,7 +2242,7 @@ void QuantBot::retreatAllUnits() {
             Coord closestStructurePoint = tempStructure->getClosestPoint(squadRallyLocation);
             FixPoint structureDistance = blockDistance(squadRallyLocation, closestStructurePoint);
 
-            if(structureDistance < closestDistance)	{
+            if(structureDistance < closestDistance) {
                 closestDistance = structureDistance;
                 squadRetreatLocation = closestStructurePoint;
             }

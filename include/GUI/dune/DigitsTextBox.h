@@ -70,14 +70,14 @@ public:
     /**
        Sets the text color for this text box.
        \param   house           the house, used for the button colors
-       \param	textcolor	    the color of the text (COLOR_DEFAULT = default color)
-       \param	textshadowcolor	the color of the shadow of the text (COLOR_DEFAULT = default color)
-	*/
-	virtual inline void setColor(HOUSETYPE house, Uint32 textcolor, Uint32 textshadowcolor = COLOR_DEFAULT) {
+       \param   textcolor       the color of the text (COLOR_DEFAULT = default color)
+       \param   textshadowcolor the color of the shadow of the text (COLOR_DEFAULT = default color)
+    */
+    virtual inline void setColor(HOUSETYPE house, Uint32 textcolor, Uint32 textshadowcolor = COLOR_DEFAULT) {
         this->house = house;
-	    updateSurfaces();
-		textBox.setTextColor(textcolor, textshadowcolor);
-	}
+        updateSurfaces();
+        textBox.setTextColor(textcolor, textshadowcolor);
+    }
 
     void setMinMax(int newMinValue, int newMaxValue) {
         minValue = newMinValue;
@@ -109,47 +109,47 @@ public:
         }
     }
 
-	/**
+    /**
         Sets the maximum length of the typed text
         \param  maxTextLength   the maximum length, -1 = unlimited
-	*/
-	virtual inline void setMaximumTextLength(int maxTextLength) {
+    */
+    virtual inline void setMaximumTextLength(int maxTextLength) {
         textBox.setMaximumTextLength(maxTextLength);
-	}
-
-	/**
-		Sets the function that should be called when the value of this digit text box changes.
-		\param	pOnValueChange	A function to call on value change
-	*/
-	inline void setOnValueChange(std::function<void (bool)> pOnValueChange) {
-		textBox.setOnTextChange(pOnValueChange);
-		this->pOnValueChange = pOnValueChange;
-	}
+    }
 
     /**
-		Handles mouse wheel scrolling.
-		\param	x x-coordinate (relative to the left top corner of the widget)
-		\param	y y-coordinate (relative to the left top corner of the widget)
-		\param	up	true = mouse wheel up, false = mouse wheel down
-		\return	true = the mouse wheel scrolling was processed by the widget, false = mouse wheel scrolling was not processed by the widget
-	*/
-	virtual inline bool handleMouseWheel(Sint32 x, Sint32 y, bool up) {
-	    if((isEnabled() == false) || (isVisible() == false)) {
-			return true;
-		}
+        Sets the function that should be called when the value of this digit text box changes.
+        \param  pOnValueChange  A function to call on value change
+    */
+    inline void setOnValueChange(std::function<void (bool)> pOnValueChange) {
+        textBox.setOnTextChange(pOnValueChange);
+        this->pOnValueChange = pOnValueChange;
+    }
 
-	    if(x >= 0 && x < getSize().x && y >= 0 && y < getSize().y) {
-	        if(up) {
+    /**
+        Handles mouse wheel scrolling.
+        \param  x x-coordinate (relative to the left top corner of the widget)
+        \param  y y-coordinate (relative to the left top corner of the widget)
+        \param  up  true = mouse wheel up, false = mouse wheel down
+        \return true = the mouse wheel scrolling was processed by the widget, false = mouse wheel scrolling was not processed by the widget
+    */
+    virtual inline bool handleMouseWheel(Sint32 x, Sint32 y, bool up) {
+        if((isEnabled() == false) || (isVisible() == false)) {
+            return true;
+        }
+
+        if(x >= 0 && x < getSize().x && y >= 0 && y < getSize().y) {
+            if(up) {
                 onDecrement();
-	        } else {
+            } else {
                 onIncrement();
-	        }
+            }
 
             return true;
-	    } else {
+        } else {
             return true;
-	    }
-	}
+        }
+    }
 
 protected:
     void setValue(int newValue, bool bInteractive) {
@@ -212,15 +212,15 @@ private:
 
     TextBox         textBox;
     VBox            buttonVBox;
-    PictureButton	plusButton;
-	PictureButton	minusButton;
+    PictureButton   plusButton;
+    PictureButton   minusButton;
 
-	std::function<void (bool)> pOnValueChange;
+    std::function<void (bool)> pOnValueChange;
 
-	int             minValue;
-	int             maxValue;
+    int             minValue;
+    int             maxValue;
 
-	int             incrementValue;
+    int             incrementValue;
 
     HOUSETYPE       house;
 };

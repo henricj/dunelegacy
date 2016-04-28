@@ -21,33 +21,33 @@
 
 Window::Window(Uint32 x, Uint32 y, Uint32 w, Uint32 h) : Widget() {
     closeChildWindowCounter = 0;
-	pChildWindow = nullptr;
-	pChildWindowAlreadyClosed = false;
-	pWindowWidget = nullptr;
+    pChildWindow = nullptr;
+    pChildWindowAlreadyClosed = false;
+    pWindowWidget = nullptr;
 
-	bTransparentBackground = false;
-	pBackground = nullptr;
-	bFreeBackground = false;
-	bSelfGeneratedBackground = true;
+    bTransparentBackground = false;
+    pBackground = nullptr;
+    bFreeBackground = false;
+    bSelfGeneratedBackground = true;
 
-	position = Point(x,y);
-	Widget::resize(w,h);
+    position = Point(x,y);
+    Widget::resize(w,h);
 }
 
 Window::~Window() {
-	if(pChildWindow != nullptr) {
-		closeChildWindow();
-		processChildWindowOpenCloses();
-	}
+    if(pChildWindow != nullptr) {
+        closeChildWindow();
+        processChildWindowOpenCloses();
+    }
 
-	if(pWindowWidget != nullptr) {
-		pWindowWidget->destroy();
-	}
+    if(pWindowWidget != nullptr) {
+        pWindowWidget->destroy();
+    }
 
-	if(((bSelfGeneratedBackground == true) || (bFreeBackground == true)) && (pBackground != nullptr)) {
-		SDL_DestroyTexture(pBackground);
-		pBackground = nullptr;
-	}
+    if(((bSelfGeneratedBackground == true) || (bFreeBackground == true)) && (pBackground != nullptr)) {
+        SDL_DestroyTexture(pBackground);
+        pBackground = nullptr;
+    }
 }
 
 void Window::openWindow(Window* pChildWindow) {
@@ -75,8 +75,8 @@ void Window::closeChildWindow() {
 }
 
 void Window::setCurrentPosition(Uint32 x, Uint32 y, Uint32 w, Uint32 h) {
-	position.x = x; position.y = y;
-	resize(w,h);
+    position.x = x; position.y = y;
+    resize(w,h);
 }
 
 bool Window::processChildWindowOpenCloses() {
@@ -103,219 +103,219 @@ bool Window::processChildWindowOpenCloses() {
 }
 
 void Window::handleInput(SDL_Event& event) {
-	if(pChildWindow != nullptr) {
-		pChildWindow->handleInput(event);
+    if(pChildWindow != nullptr) {
+        pChildWindow->handleInput(event);
 
         if(processChildWindowOpenCloses()) {
             // Small hack: simulate mouse movement to get rid of tooltips
             handleMouseMovement(0, 0);
         }
 
-		return;
-	}
+        return;
+    }
 
-	switch(event.type) {
-		case SDL_KEYDOWN: {
-			handleKeyPress(event.key);
-		} break;
+    switch(event.type) {
+        case SDL_KEYDOWN: {
+            handleKeyPress(event.key);
+        } break;
 
-		case SDL_TEXTINPUT: {
+        case SDL_TEXTINPUT: {
             handleTextInput(event.text);
-		} break;
+        } break;
 
-		case SDL_MOUSEMOTION: {
-			handleMouseMovement(event.motion.x,event.motion.y);
-		} break;
+        case SDL_MOUSEMOTION: {
+            handleMouseMovement(event.motion.x,event.motion.y);
+        } break;
 
-		case SDL_MOUSEBUTTONDOWN: {
-			switch(event.button.button) {
-				case SDL_BUTTON_LEFT: {
-					handleMouseLeft(event.button.x,event.button.y,true);
-				} break;
+        case SDL_MOUSEBUTTONDOWN: {
+            switch(event.button.button) {
+                case SDL_BUTTON_LEFT: {
+                    handleMouseLeft(event.button.x,event.button.y,true);
+                } break;
 
-				case SDL_BUTTON_RIGHT: {
-					handleMouseRight(event.button.x,event.button.y,true);
-				} break;
-			}
-		} break;
+                case SDL_BUTTON_RIGHT: {
+                    handleMouseRight(event.button.x,event.button.y,true);
+                } break;
+            }
+        } break;
 
-		case SDL_MOUSEWHEEL: {
+        case SDL_MOUSEWHEEL: {
             if(event.wheel.y != 0) {
                 int x, y;
                 SDL_GetMouseState(&x,&y);
-				handleMouseWheel(x,y,(event.wheel.y > 0));
+                handleMouseWheel(x,y,(event.wheel.y > 0));
             }
-		} break;
+        } break;
 
-		case SDL_MOUSEBUTTONUP: {
-			switch(event.button.button) {
-				case SDL_BUTTON_LEFT: {
-					handleMouseLeft(event.button.x,event.button.y,false);
-				} break;
+        case SDL_MOUSEBUTTONUP: {
+            switch(event.button.button) {
+                case SDL_BUTTON_LEFT: {
+                    handleMouseLeft(event.button.x,event.button.y,false);
+                } break;
 
-				case SDL_BUTTON_RIGHT: {
-					handleMouseRight(event.button.x,event.button.y,false);
-				} break;
+                case SDL_BUTTON_RIGHT: {
+                    handleMouseRight(event.button.x,event.button.y,false);
+                } break;
 
-			}
-		} break;
-	}
+            }
+        } break;
+    }
 }
 
 void Window::handleMouseMovement(Sint32 x, Sint32 y, bool insideOverlay) {
-	if(pChildWindow != nullptr) {
-		pChildWindow->handleMouseMovement(x, y);
-		return;
-	}
+    if(pChildWindow != nullptr) {
+        pChildWindow->handleMouseMovement(x, y);
+        return;
+    }
 
-	if(isEnabled() && (pWindowWidget != nullptr)) {
-	    bool insideOverlay = pWindowWidget->handleMouseMovementOverlay(x - getPosition().x, y - getPosition().y);
-		pWindowWidget->handleMouseMovement(x - getPosition().x, y - getPosition().y, insideOverlay);
-	}
+    if(isEnabled() && (pWindowWidget != nullptr)) {
+        bool insideOverlay = pWindowWidget->handleMouseMovementOverlay(x - getPosition().x, y - getPosition().y);
+        pWindowWidget->handleMouseMovement(x - getPosition().x, y - getPosition().y, insideOverlay);
+    }
 }
 
 bool Window::handleMouseLeft(Sint32 x, Sint32 y, bool pressed) {
-	if(pChildWindow != nullptr) {
-		return pChildWindow->handleMouseLeft(x, y, pressed);
-	}
+    if(pChildWindow != nullptr) {
+        return pChildWindow->handleMouseLeft(x, y, pressed);
+    }
 
-	if(isEnabled() && (pWindowWidget != nullptr)) {
-	    bool bProcessed = pWindowWidget->handleMouseLeftOverlay(x - getPosition().x, y - getPosition().y, pressed)
+    if(isEnabled() && (pWindowWidget != nullptr)) {
+        bool bProcessed = pWindowWidget->handleMouseLeftOverlay(x - getPosition().x, y - getPosition().y, pressed)
                             || pWindowWidget->handleMouseLeft(x - getPosition().x, y - getPosition().y, pressed);
         if(pressed && (bProcessed == false)) {
             pWindowWidget->setActive(false);
             pWindowWidget->setActive(true);
         }
         return bProcessed;
-	} else {
-		return false;
-	}
+    } else {
+        return false;
+    }
 }
 
 bool Window::handleMouseRight(Sint32 x, Sint32 y, bool pressed) {
-	if(pChildWindow != nullptr) {
-		return pChildWindow->handleMouseRight(x, y, pressed);
-	}
+    if(pChildWindow != nullptr) {
+        return pChildWindow->handleMouseRight(x, y, pressed);
+    }
 
-	if(isEnabled() && (pWindowWidget != nullptr)) {
-		return pWindowWidget->handleMouseRightOverlay(x - getPosition().x, y - getPosition().y, pressed)
-				|| pWindowWidget->handleMouseRight(x - getPosition().x, y - getPosition().y, pressed);
-	} else {
-		return false;
-	}
+    if(isEnabled() && (pWindowWidget != nullptr)) {
+        return pWindowWidget->handleMouseRightOverlay(x - getPosition().x, y - getPosition().y, pressed)
+                || pWindowWidget->handleMouseRight(x - getPosition().x, y - getPosition().y, pressed);
+    } else {
+        return false;
+    }
 }
 
 bool Window::handleMouseWheel(Sint32 x, Sint32 y, bool up)  {
-	if(pChildWindow != nullptr) {
-		return pChildWindow->handleMouseWheel(x, y, up);
-	}
+    if(pChildWindow != nullptr) {
+        return pChildWindow->handleMouseWheel(x, y, up);
+    }
 
-	if(isEnabled() && (pWindowWidget != nullptr)) {
-		return pWindowWidget->handleMouseWheelOverlay(x - getPosition().x, y - getPosition().y, up)
-				|| pWindowWidget->handleMouseWheel(x - getPosition().x, y - getPosition().y, up);
-	} else {
-		return false;
-	}
+    if(isEnabled() && (pWindowWidget != nullptr)) {
+        return pWindowWidget->handleMouseWheelOverlay(x - getPosition().x, y - getPosition().y, up)
+                || pWindowWidget->handleMouseWheel(x - getPosition().x, y - getPosition().y, up);
+    } else {
+        return false;
+    }
 }
 
 bool Window::handleKeyPress(SDL_KeyboardEvent& key) {
-	if(pChildWindow != nullptr) {
-		return pChildWindow->handleKeyPress(key);
-	}
+    if(pChildWindow != nullptr) {
+        return pChildWindow->handleKeyPress(key);
+    }
 
-	if(isEnabled() && (pWindowWidget != nullptr)) {
-		return pWindowWidget->handleKeyPressOverlay(key) || pWindowWidget->handleKeyPress(key);
-	} else {
-		return false;
-	}
+    if(isEnabled() && (pWindowWidget != nullptr)) {
+        return pWindowWidget->handleKeyPressOverlay(key) || pWindowWidget->handleKeyPress(key);
+    } else {
+        return false;
+    }
 }
 
 bool Window::handleTextInput(SDL_TextInputEvent& textInput) {
-	if(pChildWindow != nullptr) {
-		return pChildWindow->handleTextInput(textInput);
-	}
+    if(pChildWindow != nullptr) {
+        return pChildWindow->handleTextInput(textInput);
+    }
 
-	if(isEnabled() && (pWindowWidget != nullptr)) {
-		return pWindowWidget->handleTextInputOverlay(textInput) || pWindowWidget->handleTextInput(textInput);
-	} else {
-		return false;
-	}
+    if(isEnabled() && (pWindowWidget != nullptr)) {
+        return pWindowWidget->handleTextInputOverlay(textInput) || pWindowWidget->handleTextInput(textInput);
+    } else {
+        return false;
+    }
 }
 
 void Window::draw(Point position) {
-	if(isVisible()) {
-		if(bTransparentBackground == false) {
+    if(isVisible()) {
+        if(bTransparentBackground == false) {
 
-			if((bSelfGeneratedBackground == true) && (pBackground == nullptr)) {
-				pBackground = convertSurfaceToTexture(GUIStyle::getInstance().createBackground(getSize().x,getSize().y), true);
-			}
+            if((bSelfGeneratedBackground == true) && (pBackground == nullptr)) {
+                pBackground = convertSurfaceToTexture(GUIStyle::getInstance().createBackground(getSize().x,getSize().y), true);
+            }
 
-			if(pBackground != nullptr) {
-				// Draw background
-				SDL_Rect dest = calcDrawingRect(pBackground, getPosition().x + getSize().x/2, getPosition().y + getSize().y/2, HAlign::Center, VAlign::Center);
-				SDL_RenderCopy(renderer, pBackground, nullptr, &dest);
-			}
-		}
+            if(pBackground != nullptr) {
+                // Draw background
+                SDL_Rect dest = calcDrawingRect(pBackground, getPosition().x + getSize().x/2, getPosition().y + getSize().y/2, HAlign::Center, VAlign::Center);
+                SDL_RenderCopy(renderer, pBackground, nullptr, &dest);
+            }
+        }
 
-		if(pWindowWidget != nullptr) {
-			pWindowWidget->draw(Point(position.x+getPosition().x,position.y+getPosition().y));
-		}
-	}
+        if(pWindowWidget != nullptr) {
+            pWindowWidget->draw(Point(position.x+getPosition().x,position.y+getPosition().y));
+        }
+    }
 
-	if(pChildWindow != nullptr) {
-		pChildWindow->draw();
-	}
+    if(pChildWindow != nullptr) {
+        pChildWindow->draw();
+    }
 }
 
 void Window::drawOverlay(Point position) {
-	if(pChildWindow != nullptr) {
-		pChildWindow->drawOverlay();
-	} else if(isVisible() && (pWindowWidget != nullptr)) {
-		pWindowWidget->drawOverlay(Point(position.x+getPosition().x,position.y+getPosition().y));
-	}
+    if(pChildWindow != nullptr) {
+        pChildWindow->drawOverlay();
+    } else if(isVisible() && (pWindowWidget != nullptr)) {
+        pWindowWidget->drawOverlay(Point(position.x+getPosition().x,position.y+getPosition().y));
+    }
 }
 
 void Window::resize(Uint32 width, Uint32 height) {
-	Widget::resize(width,height);
-	if(pWindowWidget != nullptr) {
-		pWindowWidget->resize(width,height);
-	}
+    Widget::resize(width,height);
+    if(pWindowWidget != nullptr) {
+        pWindowWidget->resize(width,height);
+    }
 
-	if(bSelfGeneratedBackground == true) {
-		if(pBackground != nullptr) {
-			SDL_DestroyTexture(pBackground);
-			pBackground = nullptr;
-		}
+    if(bSelfGeneratedBackground == true) {
+        if(pBackground != nullptr) {
+            SDL_DestroyTexture(pBackground);
+            pBackground = nullptr;
+        }
 
-		// the new background is created when the window is drawn next time
-	}
+        // the new background is created when the window is drawn next time
+    }
 }
 
 void Window::setBackground(SDL_Surface* pBackground, bool bFreeBackground) {
-	if(pBackground == nullptr) {
+    if(pBackground == nullptr) {
         setBackground((SDL_Texture*) nullptr);
-	} else {
+    } else {
         setBackground(convertSurfaceToTexture(pBackground, bFreeBackground), true);
-	}
+    }
 }
 
 void Window::setBackground(SDL_Texture* pBackground, bool bFreeBackground) {
-	if(((bSelfGeneratedBackground == true) || (this->bFreeBackground == true)) && (this->pBackground != nullptr)) {
-		SDL_DestroyTexture(this->pBackground);
-		this->pBackground = nullptr;
-	}
+    if(((bSelfGeneratedBackground == true) || (this->bFreeBackground == true)) && (this->pBackground != nullptr)) {
+        SDL_DestroyTexture(this->pBackground);
+        this->pBackground = nullptr;
+    }
 
-	if(pBackground == nullptr) {
-		bSelfGeneratedBackground = true;
-		this->bFreeBackground = false;
-		this->pBackground = nullptr;
-	} else {
-		bSelfGeneratedBackground = false;
-		this->pBackground = pBackground;
-		this->bFreeBackground = bFreeBackground;
-	}
+    if(pBackground == nullptr) {
+        bSelfGeneratedBackground = true;
+        this->bFreeBackground = false;
+        this->pBackground = nullptr;
+    } else {
+        bSelfGeneratedBackground = false;
+        this->pBackground = pBackground;
+        this->bFreeBackground = bFreeBackground;
+    }
 }
 
 void Window::setTransparentBackground(bool bTransparent) {
-	bTransparentBackground = bTransparent;
+    bTransparentBackground = bTransparent;
 }

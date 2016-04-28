@@ -37,32 +37,32 @@ void Trooper::init() {
     itemID = Unit_Trooper;
     owner->incrementUnits(itemID);
 
-	numWeapons = 1;
-	bulletType = Bullet_ShellSmall;
+    numWeapons = 1;
+    bulletType = Bullet_ShellSmall;
 
-	graphicID = ObjPic_Trooper;
-	graphic = pGFXManager->getObjPic(graphicID,getOwner()->getHouseID());
+    graphicID = ObjPic_Trooper;
+    graphic = pGFXManager->getObjPic(graphicID,getOwner()->getHouseID());
 
-	numImagesX = 4;
-	numImagesY = 3;
+    numImagesX = 4;
+    numImagesY = 3;
 }
 
 Trooper::~Trooper() {
 }
 
 bool Trooper::canAttack(const ObjectBase* object) const {
-	if ((object != nullptr)
-		&& ((object->getOwner()->getTeam() != owner->getTeam())
+    if ((object != nullptr)
+        && ((object->getOwner()->getTeam() != owner->getTeam())
                 || (object->getItemID() == Unit_Sandworm && object->getItemID() == Unit_Carryall))
-		&& object->isVisible(getOwner()->getTeam()))
-	{
-		return true;
-	}
-	else
-		return false;
+        && object->isVisible(getOwner()->getTeam()))
+    {
+        return true;
+    }
+    else
+        return false;
 }
 
 
 void Trooper::playAttackSound() {
-	soundPlayer->playSoundAt(Sound_RocketSmall,location);
+    soundPlayer->playSoundAt(Sound_RocketSmall,location);
 }

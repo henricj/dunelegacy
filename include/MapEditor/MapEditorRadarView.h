@@ -31,14 +31,14 @@ class MapData;
 class MapEditorRadarView : public RadarViewBase
 {
 public:
-	/**
+    /**
         Constructor
-	*/
-	MapEditorRadarView(MapEditor* pMapEditor);
+    */
+    MapEditorRadarView(MapEditor* pMapEditor);
 
-	/**
+    /**
         Destructor
-	*/
+    */
     virtual ~MapEditorRadarView();
 
     /**
@@ -53,11 +53,11 @@ public:
     */
     virtual int getMapSizeY() const;
 
-	/**
-		Draws the radar to screen. This method is called before drawOverlay().
-		\param	Position	Position to draw the radar to
-	*/
-	virtual void draw(Point position);
+    /**
+        Draws the radar to screen. This method is called before drawOverlay().
+        \param  Position    Position to draw the radar to
+    */
+    virtual void draw(Point position);
 
 private:
     void updateRadarSurface(const MapData& map, int scale, int offsetX, int offsetY);

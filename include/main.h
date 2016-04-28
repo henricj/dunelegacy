@@ -22,26 +22,26 @@
 #include <SDL.h>
 
 /**
-	This functions sets the video mode according to the settings
+    This functions sets the video mode according to the settings
 */
 void setVideoMode();
 
 /**
-	This function returns the configfile path
-	\return the full path to the config file
+    This function returns the configfile path
+    \return the full path to the config file
 */
 std::string getConfigFilepath();
 
 /**
-	This function returns the logfile path
-	\return the full path to the logfile
+    This function returns the logfile path
+    \return the full path to the logfile
 */
 std::string getLogFilepath();
 
 /**
-	This function creates a new default config file.
-	\param configfilepath the path to the config file
-	\param language the language to use as default (e.g. en, de, fr)
+    This function creates a new default config file.
+    \param configfilepath the path to the config file
+    \param language the language to use as default (e.g. en, de, fr)
 */
 void createDefaultConfigFile(std::string configfilepath, std::string language);
 

@@ -27,40 +27,40 @@
 
 /// A class for loading a indexed textfile (e.g. INTRO.ENG).
 /**
-	This class can read indexed textfiles and return their content in decoded ANSI Code.
+    This class can read indexed textfiles and return their content in decoded ANSI Code.
 */
 class IndexedTextFile
 {
 public:
-	IndexedTextFile(SDL_RWops* rwop, bool bDecode = false);
-	~IndexedTextFile();
+    IndexedTextFile(SDL_RWops* rwop, bool bDecode = false);
+    ~IndexedTextFile();
 
 
     /// This method returns nth string in the text file.
-	/**
-	This method returns the nth text in this text file.
-	\param	n		the number of the string to return
-	\return	the nth text in the file.
-	*/
-	const std::string& getString(unsigned int n) const {
+    /**
+    This method returns the nth text in this text file.
+    \param  n       the number of the string to return
+    \return the nth text in the file.
+    */
+    const std::string& getString(unsigned int n) const {
         if(n >= indexedStrings.size()) {
             throw std::invalid_argument("IndexedTextFile:getString(): Invalid index!");
         }
 
         return indexedStrings[n];
-	}
+    }
 
 
-	/// This method returns the number of strings in this file
-	/**
-	\return the number of strings in this file
-	*/
-	unsigned int getNumStrings() const {
-		return 	indexedStrings.size();
-	}
+    /// This method returns the number of strings in this file
+    /**
+    \return the number of strings in this file
+    */
+    unsigned int getNumStrings() const {
+        return  indexedStrings.size();
+    }
 
 private:
-	std::vector<std::string> indexedStrings;
+    std::vector<std::string> indexedStrings;
 };
 
 #endif // INDEXEDTEXTFILE_H

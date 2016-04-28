@@ -27,7 +27,7 @@ VideoEvent::~VideoEvent()
 
 int VideoEvent::draw()
 {
-	return 0;
+    return 0;
 }
 
 bool VideoEvent::isFinished()

@@ -23,36 +23,36 @@
 class Devastator : public TrackedUnit
 {
 public:
-	Devastator(House* newOwner);
-	Devastator(InputStream& stream);
-	void init();
-	virtual ~Devastator();
+    Devastator(House* newOwner);
+    Devastator(InputStream& stream);
+    void init();
+    virtual ~Devastator();
 
-	void save(OutputStream& stream) const;
+    void save(OutputStream& stream) const;
 
-	void blitToScreen();
+    void blitToScreen();
 
-	void handleStartDevastateClick();
+    void handleStartDevastateClick();
 
-	void doStartDevastate();
+    void doStartDevastate();
 
-	virtual void destroy();
+    virtual void destroy();
 
     /**
         Updates this devastator.
         \return true if this object still exists, false if it was destroyed
-	*/
-	virtual bool update();
+    */
+    virtual bool update();
 
-	void playAttackSound();
+    void playAttackSound();
 
 private:
     // devastator state
-	Sint32      devastateTimer;     ///< When will this devastator devastate
+    Sint32      devastateTimer;     ///< When will this devastator devastate
 
     // drawing information
-	SDL_Texture**	turretGraphic;  ///< The graphic of the turret
-	int             gunGraphicID;   ///< The id of the turret graphic (needed if we want to reload the graphic)
+    SDL_Texture**   turretGraphic;  ///< The graphic of the turret
+    int             gunGraphicID;   ///< The id of the turret graphic (needed if we want to reload the graphic)
 };
 
 #endif // DEVASTATOR_H

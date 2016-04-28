@@ -23,23 +23,23 @@
 class Saboteur : public InfantryBase
 {
 public:
-	Saboteur(House* newOwner);
-	Saboteur(InputStream& stream);
-	void init();
-	virtual ~Saboteur();
+    Saboteur(House* newOwner);
+    Saboteur(InputStream& stream);
+    void init();
+    virtual ~Saboteur();
 
-	virtual void checkPos();
+    virtual void checkPos();
 
     /**
         Updates this saboteur.
         \return true if this object still exists, false if it was destroyed
-	*/
-	virtual bool update();
+    */
+    virtual bool update();
 
-	virtual void deploy(const Coord& newLocation);
-	bool canAttack(const ObjectBase* object) const;
+    virtual void deploy(const Coord& newLocation);
+    bool canAttack(const ObjectBase* object) const;
 
-	void destroy();
+    void destroy();
 };
 
 #endif // SABOTEUR_H

@@ -38,45 +38,45 @@ RocketTurret::RocketTurret(InputStream& stream) : TurretBase(stream) {
 }
 
 void RocketTurret::init() {
-	itemID = Structure_RocketTurret;
-	owner->incrementStructures(itemID);
+    itemID = Structure_RocketTurret;
+    owner->incrementStructures(itemID);
 
-	attackSound = Sound_Rocket;
-	bulletType = Bullet_TurretRocket;
+    attackSound = Sound_Rocket;
+    bulletType = Bullet_TurretRocket;
 
-	graphicID = ObjPic_RocketTurret;
-	graphic = pGFXManager->getObjPic(graphicID,getOwner()->getHouseID());
-	numImagesX = 10;
-	numImagesY = 1;
-	curAnimFrame = firstAnimFrame = lastAnimFrame = ((10-drawnAngle) % 8) + 2;
+    graphicID = ObjPic_RocketTurret;
+    graphic = pGFXManager->getObjPic(graphicID,getOwner()->getHouseID());
+    numImagesX = 10;
+    numImagesY = 1;
+    curAnimFrame = firstAnimFrame = lastAnimFrame = ((10-drawnAngle) % 8) + 2;
 }
 
 RocketTurret::~RocketTurret() {
 }
 
 void RocketTurret::updateStructureSpecificStuff() {
-	if( ( !currentGame->getGameInitSettings().getGameOptions().rocketTurretsNeedPower || getOwner()->hasPower() )
+    if( ( !currentGame->getGameInitSettings().getGameOptions().rocketTurretsNeedPower || getOwner()->hasPower() )
         || ( ((currentGame->gameType == GAMETYPE_CAMPAIGN) || (currentGame->gameType == GAMETYPE_SKIRMISH)) && getOwner()->isAI()) ) {
-		TurretBase::updateStructureSpecificStuff();
-	}
+        TurretBase::updateStructureSpecificStuff();
+    }
 }
 
 bool RocketTurret::canAttack(const ObjectBase* object) const {
-	if((object != nullptr)
-		&& ((object->getOwner()->getTeam() != owner->getTeam()) || object->getItemID() == Unit_Sandworm)
-		&& object->isVisible(getOwner()->getTeam())) {
-		return true;
-	} else {
-		return false;
-	}
+    if((object != nullptr)
+        && ((object->getOwner()->getTeam() != owner->getTeam()) || object->getItemID() == Unit_Sandworm)
+        && object->isVisible(getOwner()->getTeam())) {
+        return true;
+    } else {
+        return false;
+    }
 }
 
 void RocketTurret::attack() {
-	if((weaponTimer == 0) && (target.getObjPointer() != nullptr)) {
-		Coord centerPoint = getCenterPoint();
-		Coord targetCenterPoint = target.getObjPointer()->getClosestCenterPoint(location);
+    if((weaponTimer == 0) && (target.getObjPointer() != nullptr)) {
+        Coord centerPoint = getCenterPoint();
+        Coord targetCenterPoint = target.getObjPointer()->getClosestCenterPoint(location);
 
-		if(distanceFrom(centerPoint, targetCenterPoint) < 3 * TILESIZE) {
+        if(distanceFrom(centerPoint, targetCenterPoint) < 3 * TILESIZE) {
             // we are just shooting a bullet as a gun turret would do
             bulletList.push_back( new Bullet( objectID, &centerPoint, &targetCenterPoint, Bullet_ShellMedium,
                                                    currentGame->objectData.data[Structure_GunTurret][originalHouseID].weapondamage,
@@ -84,7 +84,7 @@ void RocketTurret::attack() {
 
             soundPlayer->playSoundAt(Sound_Gun, location);
             weaponTimer = currentGame->objectData.data[Structure_GunTurret][originalHouseID].weaponreloadtime;
-		} else {
+        } else {
             // we are in normal shooting mode
             bulletList.push_back( new Bullet( objectID, &centerPoint, &targetCenterPoint, bulletType,
                                                    currentGame->objectData.data[itemID][originalHouseID].weapondamage,
@@ -92,7 +92,7 @@ void RocketTurret::attack() {
 
             soundPlayer->playSoundAt(attackSound, location);
             weaponTimer = getWeaponReloadTime();
-		}
+        }
 
-	}
+    }
 }

@@ -24,16 +24,16 @@ class Soldier : public InfantryBase
 {
 
 public:
-	Soldier(House* newOwner);
-	Soldier(InputStream& stream);
-	void init();
-	virtual ~Soldier();
+    Soldier(House* newOwner);
+    Soldier(InputStream& stream);
+    void init();
+    virtual ~Soldier();
 
     bool canAttack(const ObjectBase* object) const;
 
     virtual bool hasBumpyMovementOnRock() const { return true; }
 
-	void playAttackSound();
+    void playAttackSound();
 };
 
 #endif // SOLDIER_H

@@ -33,18 +33,18 @@ IX::IX(InputStream& stream) : StructureBase(stream) {
 }
 
 void IX::init() {
-	itemID = Structure_IX;
-	owner->incrementStructures(itemID);
+    itemID = Structure_IX;
+    owner->incrementStructures(itemID);
 
-	structureSize.x = 2;
-	structureSize.y = 2;
+    structureSize.x = 2;
+    structureSize.y = 2;
 
-	graphicID = ObjPic_IX;
-	graphic = pGFXManager->getObjPic(graphicID,getOwner()->getHouseID());
-	numImagesX = 4;
-	numImagesY = 1;
-	firstAnimFrame = 2;
-	lastAnimFrame = 3;
+    graphicID = ObjPic_IX;
+    graphic = pGFXManager->getObjPic(graphicID,getOwner()->getHouseID());
+    numImagesX = 4;
+    numImagesY = 1;
+    firstAnimFrame = 2;
+    lastAnimFrame = 3;
 }
 
 IX::~IX() {

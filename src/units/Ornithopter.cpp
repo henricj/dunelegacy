@@ -36,56 +36,56 @@ Ornithopter::Ornithopter(InputStream& stream) : AirUnit(stream) {
 }
 
 void Ornithopter::init() {
-	itemID = Unit_Ornithopter;
-	owner->incrementUnits(itemID);
+    itemID = Unit_Ornithopter;
+    owner->incrementUnits(itemID);
 
-	graphicID = ObjPic_Ornithopter;
-	graphic = pGFXManager->getObjPic(graphicID,getOwner()->getHouseID());
+    graphicID = ObjPic_Ornithopter;
+    graphic = pGFXManager->getObjPic(graphicID,getOwner()->getHouseID());
     shadowGraphic = pGFXManager->getObjPic(ObjPic_OrnithopterShadow,getOwner()->getHouseID());
 
-	numImagesX = NUM_ANGLES;
-	numImagesY = 3;
+    numImagesX = NUM_ANGLES;
+    numImagesY = 3;
 
-	numWeapons = 1;
-	bulletType = Bullet_SmallRocket;
+    numWeapons = 1;
+    bulletType = Bullet_SmallRocket;
 }
 
 Ornithopter::~Ornithopter() {
 }
 
 void Ornithopter::checkPos() {
-	AirUnit::checkPos();
+    AirUnit::checkPos();
 
-	++drawnFrame;
-	if(drawnFrame >= 3) {
-		drawnFrame = 0;
-	}
+    ++drawnFrame;
+    if(drawnFrame >= 3) {
+        drawnFrame = 0;
+    }
 }
 
 bool Ornithopter::canAttack(const ObjectBase* object) const {
-	if ((object != nullptr)
-		&& ((object->getOwner()->getTeam() != owner->getTeam()) || object->getItemID() == Unit_Sandworm)
-		&& object->isVisible(getOwner()->getTeam()))
-		return true;
-	else
-		return false;
+    if ((object != nullptr)
+        && ((object->getOwner()->getTeam() != owner->getTeam()) || object->getItemID() == Unit_Sandworm)
+        && object->isVisible(getOwner()->getTeam()))
+        return true;
+    else
+        return false;
 }
 
 void Ornithopter::destroy() {
-	// place wreck
+    // place wreck
     if(currentGameMap->tileExists(location)) {
         Tile* pTile = currentGameMap->getTile(location);
         pTile->assignDeadUnit(DeadUnit_Ornithopter, owner->getHouseID(), Coord(lround(realX), lround(realY)));
     }
 
-	AirUnit::destroy();
+    AirUnit::destroy();
 }
 
 void Ornithopter::playAttackSound() {
-	soundPlayer->playSoundAt(Sound_Rocket,location);
+    soundPlayer->playSoundAt(Sound_Rocket,location);
 }
 
 bool Ornithopter::canPass(int xPos, int yPos) const {
-	return (currentGameMap->tileExists(xPos, yPos) && (!currentGameMap->getTile(xPos, yPos)->hasAnAirUnit()));
+    return (currentGameMap->tileExists(xPos, yPos) && (!currentGameMap->getTile(xPos, yPos)->hasAnAirUnit()));
 }
 

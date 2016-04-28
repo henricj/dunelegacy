@@ -25,26 +25,26 @@
 
 class HouseChoiceMenu : public MenuBase {
 public:
-	HouseChoiceMenu();
-	virtual ~HouseChoiceMenu();
+    HouseChoiceMenu();
+    virtual ~HouseChoiceMenu();
 
 private:
     void onHouseButton(int button);
     void updateHouseChoice();
 
-	void onHouseLeft();
-	void onHouseRight();
+    void onHouseLeft();
+    void onHouseRight();
 
-	StaticContainer	windowWidget;
+    StaticContainer windowWidget;
 
-	PictureLabel    selectYourHouseLabel;
+    PictureLabel    selectYourHouseLabel;
 
-	PictureButton   house1Button;
-	PictureButton   house2Button;
-	PictureButton   house3Button;
+    PictureButton   house1Button;
+    PictureButton   house2Button;
+    PictureButton   house3Button;
 
-	PictureButton   houseLeftButton;
-	PictureButton   houseRightButton;
+    PictureButton   houseLeftButton;
+    PictureButton   houseRightButton;
 
     int currentHouseChoiceScrollPos;
 };

@@ -36,21 +36,21 @@
 Meanwhile::Meanwhile(int house, bool firstMeanwhile) : CutScene() {
 
     if(house != HOUSE_HARKONNEN && house != HOUSE_ATREIDES && house != HOUSE_ORDOS) {
-		fprintf(stderr,"Meanwhile::Meanwhile(): Invalid house number: %d!\n", house);
-		exit(EXIT_FAILURE);
+        fprintf(stderr,"Meanwhile::Meanwhile(): Invalid house number: %d!\n", house);
+        exit(EXIT_FAILURE);
     }
 
     SDL_RWops* meanwhil_wsa = pFileManager->openFile("MEANWHIL.WSA");
     pMeanwhile = new Wsafile(meanwhil_wsa);
-	SDL_RWclose(meanwhil_wsa);
+    SDL_RWclose(meanwhil_wsa);
 
     SDL_RWops* efinala_wsa = pFileManager->openFile("EFINALA.WSA");
     pImperator = new Wsafile(efinala_wsa);
-	SDL_RWclose(efinala_wsa);
+    SDL_RWclose(efinala_wsa);
 
-	SDL_RWops* dune_lng = pFileManager->openFile("DUNE." + _("LanguageFileExtension"));
-	IndexedTextFile* pDuneText = new IndexedTextFile(dune_lng);
-	SDL_RWclose(dune_lng);
+    SDL_RWops* dune_lng = pFileManager->openFile("DUNE." + _("LanguageFileExtension"));
+    IndexedTextFile* pDuneText = new IndexedTextFile(dune_lng);
+    SDL_RWclose(dune_lng);
 
     int textBaseIndex = MeanwhileText_Base + ((house+2)%3) * MeanwhileText_NumTextsPerHouse;
 
@@ -60,11 +60,11 @@ Meanwhile::Meanwhile(int house, bool firstMeanwhile) : CutScene() {
     }
 
     int houseOfVisitor = (house+2)%3;
-	Uint32 color = SDL2RGB(palette[houseToPaletteIndex[house]+1]);
-	Uint32 sardaukarColor = SDL2RGB(palette[PALCOLOR_SARDAUKAR+1]);
+    Uint32 color = SDL2RGB(palette[houseToPaletteIndex[house]+1]);
+    Uint32 sardaukarColor = SDL2RGB(palette[PALCOLOR_SARDAUKAR+1]);
     Uint32 visitorColor = SDL2RGB(palette[houseToPaletteIndex[houseOfVisitor]+1]);
 
-	if(firstMeanwhile == true) {
+    if(firstMeanwhile == true) {
         // Meanwhile after level 4
         static const int meanwhileFrame[] = { 1, 2, 0};
 
@@ -92,7 +92,7 @@ Meanwhile::Meanwhile(int house, bool firstMeanwhile) : CutScene() {
         addTextEvent(new TextEvent(pDuneText->getString(textBaseIndex+MeanwhileText_I_did_not_let),visitorColor,0,35,true,false,false));
         addTextEvent(new TextEvent(pDuneText->getString(textBaseIndex+MeanwhileText_I_will_not_allow),sardaukarColor,37,38,false,true,false));
 
-	} else {
+    } else {
         // Meanwhile after level 8
         static const int meanwhileFrame[] = { 3, 5, 4};
 
@@ -132,9 +132,9 @@ Meanwhile::Meanwhile(int house, bool firstMeanwhile) : CutScene() {
             addTextEvent(new TextEvent(pDuneText->getString(textBaseIndex+MeanwhileText_No_more_explanations),sardaukarColor,3, (house == HOUSE_ORDOS) ? 21 : 11,false,false,false));
             addTextEvent(new TextEvent(pDuneText->getString(textBaseIndex+MeanwhileText_Only_together_will_we),sardaukarColor,(house == HOUSE_ORDOS) ? 28 : 18,(house == HOUSE_ORDOS) ? 39 : 49,false,true,false));
         }
-	}
+    }
 
-	delete pDuneText;
+    delete pDuneText;
 }
 
 Meanwhile::~Meanwhile() {

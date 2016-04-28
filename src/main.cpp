@@ -72,7 +72,7 @@
 #endif
 
 #ifdef __APPLE__
-	#include <MacFunctions.h>
+    #include <MacFunctions.h>
 #endif
 
 void setVideoMode();
@@ -84,11 +84,11 @@ static void printUsage() {
 
 void setVideoMode()
 {
-	int videoFlags = 0;
+    int videoFlags = 0;
 
-	if(settings.video.fullscreen) {
-		videoFlags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
-	}
+    if(settings.video.fullscreen) {
+        videoFlags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
+    }
 
     SDL_DisplayMode targetDisplayMode = { 0, settings.video.width, settings.video.height, 0, nullptr};
     SDL_DisplayMode closestDisplayMode;
@@ -102,77 +102,77 @@ void setVideoMode()
         settings.video.height = closestDisplayMode.h;
     }
 
-	window = SDL_CreateWindow("Dune Legacy",
-	                          SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
-	                          //settings.video.width, settings.video.height,
-	                          settings.video.width, settings.video.height,
-	                          videoFlags);
-	renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_TARGETTEXTURE);
-	SDL_RenderSetLogicalSize(renderer, settings.video.width, settings.video.height);
-	screenTexture = SDL_CreateTexture(renderer, SCREEN_FORMAT, SDL_TEXTUREACCESS_TARGET, settings.video.width, settings.video.height);
+    window = SDL_CreateWindow("Dune Legacy",
+                              SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
+                              //settings.video.width, settings.video.height,
+                              settings.video.width, settings.video.height,
+                              videoFlags);
+    renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_TARGETTEXTURE);
+    SDL_RenderSetLogicalSize(renderer, settings.video.width, settings.video.height);
+    screenTexture = SDL_CreateTexture(renderer, SCREEN_FORMAT, SDL_TEXTUREACCESS_TARGET, settings.video.width, settings.video.height);
 
     SDL_ShowCursor(SDL_DISABLE);
 }
 
 std::string getConfigFilepath()
 {
-	// determine path to config file
-	char tmp[FILENAME_MAX];
-	fnkdat(CONFIGFILENAME, tmp, FILENAME_MAX, FNKDAT_USER | FNKDAT_CREAT);
+    // determine path to config file
+    char tmp[FILENAME_MAX];
+    fnkdat(CONFIGFILENAME, tmp, FILENAME_MAX, FNKDAT_USER | FNKDAT_CREAT);
 
-	return std::string(tmp);
+    return std::string(tmp);
 }
 
 std::string getLogFilepath()
 {
-	// determine path to config file
-	char tmp[FILENAME_MAX];
-	if(fnkdat(LOGFILENAME, tmp, FILENAME_MAX, FNKDAT_USER | FNKDAT_CREAT) < 0) {
+    // determine path to config file
+    char tmp[FILENAME_MAX];
+    if(fnkdat(LOGFILENAME, tmp, FILENAME_MAX, FNKDAT_USER | FNKDAT_CREAT) < 0) {
         fprintf(stderr, "getLogFilepath(): fnkdat failed!\n");
         return "";
-	}
+    }
 
-	return std::string(tmp);
+    return std::string(tmp);
 }
 
 void createDefaultConfigFile(std::string configfilepath, std::string language) {
     fprintf(stdout,"Creating config file...\t\t"); fflush(stdout);
 
 
-	SDL_RWops* file = SDL_RWFromFile(configfilepath.c_str(), "w");
-	if(file == nullptr) {
+    SDL_RWops* file = SDL_RWFromFile(configfilepath.c_str(), "w");
+    if(file == nullptr) {
         fprintf(stderr,"Failed to open config file: %s\n", SDL_GetError());
         exit(EXIT_FAILURE);
-	}
+    }
 
-	const char configfile[] =	"[General]\n"
-								"Play Intro = false\t\t\t# Play the intro when starting the game?\n"
-								"Player Name = %s\t\t\t# The name of the player\n"
-								"Language = %s\t\t\t\t# en = English, fr = French, de = German\n"
-								"Scroll Speed = 50\t\t\t\t# Amount to scroll the map when the cursor is near the screen border\n"
-								"\n"
-								"[Video]\n"
-								"# You may decide to use half the resolution of your monitor, e.g. monitor has 1600x1200 => 800x600\n"
-								"# Minimum resolution is 640x480\n"
-								"Width = 640\n"
-								"Height = 480\n"
-								"Fullscreen = false\n"
-								"FrameLimit = true\t\t\t# Limit the frame rate to save energy?\n"
-								"Preferred Zoom Level = 0\t\t# 0 = no zooming, 1 = 2x, 2 = 3x\n"
-								"Scaler = Scale2x\t\t\t# Scaler to use: ScaleNN = nearest neighbour, Scale2x = smooth edges\n"
-								"\n"
-								"[Audio]\n"
-								"# There are three different possibilities to play music\n"
-								"#  adl\t\t- This option will use the Dune 2 music as used on e.g. SoundBlaster16 cards\n"
-								"#  xmi\t\t- This option plays the xmi files of Dune 2. Sounds more midi-like\n"
-								"#  directory\t- Plays music from the \"music\"-directory inside your configuration directory\n"
-								"#\t\t  The \"music\"-directory should contain 5 subdirectories named attack, intro, peace, win and lose\n"
-								"#\t\t  Put any mp3, ogg or mid file there and it will be played in the particular situation\n"
-								"Music Type = adl\n"
-								"Play Music = true\n"
-								"Music Volume = 64\t\t\t\t# Volume between 0 and 128\n"
-								"Play SFX = true\n"
-								"SFX Volume = 64\t\t\t\t# Volume between 0 and 128\n"
+    const char configfile[] =   "[General]\n"
+                                "Play Intro = false\t\t\t# Play the intro when starting the game?\n"
+                                "Player Name = %s\t\t\t# The name of the player\n"
+                                "Language = %s\t\t\t\t# en = English, fr = French, de = German\n"
+                                "Scroll Speed = 50\t\t\t\t# Amount to scroll the map when the cursor is near the screen border\n"
+                                "\n"
+                                "[Video]\n"
+                                "# You may decide to use half the resolution of your monitor, e.g. monitor has 1600x1200 => 800x600\n"
+                                "# Minimum resolution is 640x480\n"
+                                "Width = 640\n"
+                                "Height = 480\n"
+                                "Fullscreen = false\n"
+                                "FrameLimit = true\t\t\t# Limit the frame rate to save energy?\n"
+                                "Preferred Zoom Level = 0\t\t# 0 = no zooming, 1 = 2x, 2 = 3x\n"
+                                "Scaler = Scale2x\t\t\t# Scaler to use: ScaleNN = nearest neighbour, Scale2x = smooth edges\n"
+                                "\n"
+                                "[Audio]\n"
+                                "# There are three different possibilities to play music\n"
+                                "#  adl\t\t- This option will use the Dune 2 music as used on e.g. SoundBlaster16 cards\n"
+                                "#  xmi\t\t- This option plays the xmi files of Dune 2. Sounds more midi-like\n"
+                                "#  directory\t- Plays music from the \"music\"-directory inside your configuration directory\n"
+                                "#\t\t  The \"music\"-directory should contain 5 subdirectories named attack, intro, peace, win and lose\n"
+                                "#\t\t  Put any mp3, ogg or mid file there and it will be played in the particular situation\n"
+                                "Music Type = adl\n"
+                                "Play Music = true\n"
+                                "Music Volume = 64\t\t\t\t# Volume between 0 and 128\n"
+                                "Play SFX = true\n"
+                                "SFX Volume = 64\t\t\t\t# Volume between 0 and 128\n"
                                 "\n"
                                 "[Network]\n"
                                 "ServerPort = %d\n"
@@ -184,15 +184,15 @@ void createDefaultConfigFile(std::string configfilepath, std::string language) {
                                 "[Game Options]\n"
                                 "Game Speed = 16\t\t\t\t# The default speed of the game: 32 = very slow, 8 = very fast, 16 = default\n"
                                 "Concrete Required = true\t\t# If true building on bare rock will result in 50%% structure health penalty\n"
-								"Structures Degrade On Concrete = true\t# If true structures will degrade on power shortage even if built on concrete\n"
-								"Fog of War = false\t\t\t# If true explored terrain will become foggy when no unit or structure is next to it\n"
-								"Start with Explored Map = false\t\t# If true the complete map is unhidden at the beginning of the game\n"
-								"Instant Build = false\t\t\t#If true the building of structures and units does not take any time\n"
-								"Only One Palace = false \t\t\t#If true, only one palace can be build per house\n"
-								"Rocket-Turrets Need Power = false \t\t\t#If true, rocket turrets are dysfunctional on power shortage\n"
+                                "Structures Degrade On Concrete = true\t# If true structures will degrade on power shortage even if built on concrete\n"
+                                "Fog of War = false\t\t\t# If true explored terrain will become foggy when no unit or structure is next to it\n"
+                                "Start with Explored Map = false\t\t# If true the complete map is unhidden at the beginning of the game\n"
+                                "Instant Build = false\t\t\t#If true the building of structures and units does not take any time\n"
+                                "Only One Palace = false \t\t\t#If true, only one palace can be build per house\n"
+                                "Rocket-Turrets Need Power = false \t\t\t#If true, rocket turrets are dysfunctional on power shortage\n"
                                 "Sandworms Respawn = false\t\t\t\t#If true, killed sandworms respawn after some time\n"
-								"Killed Sandworms Drop Spice = false \t\t\t#If true, killed sandworms drop some spice\n"
-								"Manual Carryall Drops = false \t\t\t#If true, player can request carryall to transport units\n";
+                                "Killed Sandworms Drop Spice = false \t\t\t#If true, killed sandworms drop some spice\n"
+                                "Manual Carryall Drops = false \t\t\t#If true, player can request carryall to transport units\n";
 
     char playername[MAX_PLAYERNAMELENGHT+1] = "Player";
 
@@ -213,14 +213,14 @@ void createDefaultConfigFile(std::string configfilepath, std::string language) {
     // replace player name, language, server port and metaserver
     std::string strConfigfile = strprintf(configfile, playername, language.c_str(), DEFAULT_PORT, DEFAULT_METASERVER);
 
-	if(SDL_RWwrite(file, strConfigfile.c_str(), 1, strConfigfile.length()) == 0) {
+    if(SDL_RWwrite(file, strConfigfile.c_str(), 1, strConfigfile.length()) == 0) {
         fprintf(stderr,"Failed to write to config file: %s\n", SDL_GetError());
         exit(EXIT_FAILURE);
-	}
+    }
 
-	SDL_RWclose(file);
+    SDL_RWclose(file);
 
-	fprintf(stdout,"finished\n"); fflush(stdout);
+    fprintf(stdout,"finished\n"); fflush(stdout);
 }
 
 void logOutputFunction(void *userdata, int category, SDL_LogPriority priority, const char *message) {
@@ -238,7 +238,7 @@ void logOutputFunction(void *userdata, int category, SDL_LogPriority priority, c
 }
 
 void printMissingFilesToScreen() {
-	SDL_ShowCursor(SDL_ENABLE);
+    SDL_ShowCursor(SDL_ENABLE);
 
     std::string instruction = "Dune Legacy uses the data files from original Dune II. The following files are missing:\n";
 
@@ -261,12 +261,12 @@ void printMissingFilesToScreen() {
 
     SDL_Texture* pTextTexture = pFontManager->createTextureWithMultilineText(instruction, COLOR_BLACK, FONT_STD12);
 
-	SDL_Event	event;
-	bool quiting = false;
-	while(!quiting)	{
-	    SDL_Delay(20);
+    SDL_Event   event;
+    bool quiting = false;
+    while(!quiting) {
+        SDL_Delay(20);
 
-	    setRenderDrawColor(renderer, DuneStyle::buttonBackgroundColor);
+        setRenderDrawColor(renderer, DuneStyle::buttonBackgroundColor);
         SDL_RenderClear(renderer);
 
         SDL_Rect dest = calcDrawingRect(pTextTexture, 30, 30);
@@ -274,11 +274,11 @@ void printMissingFilesToScreen() {
 
         SDL_RenderPresent(renderer);
 
-		while(SDL_PollEvent(&event)) {
-		    //check the events
+        while(SDL_PollEvent(&event)) {
+            //check the events
             switch (event.type)
             {
-                case (SDL_KEYDOWN):	// Look for a keypress
+                case (SDL_KEYDOWN): // Look for a keypress
                 {
                     switch(event.key.keysym.sym) {
                         case SDLK_ESCAPE:
@@ -298,8 +298,8 @@ void printMissingFilesToScreen() {
                 default:
                     break;
             }
-		}
-	}
+        }
+    }
 
     SDL_DestroyTexture(pTextTexture);
 }
@@ -319,20 +319,20 @@ std::string getUserLanguage() {
     }
 
 #elif defined (__APPLE__)
-	pLang = getMacLanguage();
-	if(pLang == nullptr) {
+    pLang = getMacLanguage();
+    if(pLang == nullptr) {
         return "";
-	}
+    }
 
 #else
     // should work on most unices
-	pLang = getenv("LC_ALL");
+    pLang = getenv("LC_ALL");
     if(pLang == nullptr) {
-		// try LANG
-		pLang = getenv("LANG");
+        // try LANG
+        pLang = getenv("LANG");
         if(pLang == nullptr) {
-			return "";
-		}
+            return "";
+        }
     }
 #endif
 
@@ -351,35 +351,35 @@ int main(int argc, char *argv[]) {
     SDL_LogSetOutputFunction(logOutputFunction, nullptr);
     SDL_LogSetAllPriority(SDL_LOG_PRIORITY_WARN);
 
-	// init fnkdat
-	if(fnkdat(nullptr, nullptr, 0, FNKDAT_INIT) < 0) {
+    // init fnkdat
+    if(fnkdat(nullptr, nullptr, 0, FNKDAT_INIT) < 0) {
       perror("Could not initialize fnkdat");
       exit(EXIT_FAILURE);
-	}
+    }
 
-	bool bShowDebugLog = false;
+    bool bShowDebugLog = false;
     for(int i=1; i < argc; i++) {
-	    //check for overiding params
-	    std::string parameter(argv[i]);
+        //check for overiding params
+        std::string parameter(argv[i]);
 
-		if(parameter == "--showlog") {
-		    // special parameter which does not overwrite settings
+        if(parameter == "--showlog") {
+            // special parameter which does not overwrite settings
             bShowDebugLog = true;
-		} else if((parameter == "-f") || (parameter == "--fullscreen") || (parameter == "-w") || (parameter == "--window") || (parameter.find("--PlayerName=") == 0) || (parameter.find("--ServerPort=") == 0)) {
+        } else if((parameter == "-f") || (parameter == "--fullscreen") || (parameter == "-w") || (parameter == "--window") || (parameter.find("--PlayerName=") == 0) || (parameter.find("--ServerPort=") == 0)) {
             // normal parameter for overwriting settings
             // handle later
         } else {
             printUsage();
             exit(EXIT_FAILURE);
-		}
-	}
+        }
+    }
 
-	if(bShowDebugLog == false) {
-	    // get utf8-encoded log file path
-	    std::string logfilePath = getLogFilepath();
-	    char* pLogfilePath = (char*) logfilePath.c_str();
+    if(bShowDebugLog == false) {
+        // get utf8-encoded log file path
+        std::string logfilePath = getLogFilepath();
+        char* pLogfilePath = (char*) logfilePath.c_str();
 
-	    #ifdef _WIN32
+        #ifdef _WIN32
 
         // on win32 we need an ansi-encoded filepath
         WCHAR szwLogPath[MAX_PATH];
@@ -429,9 +429,9 @@ int main(int argc, char *argv[]) {
         }
 
         #endif
-	}
+    }
 
-	fprintf(stdout, "Starting Dune Legacy %s on %s...\n", VERSION, SDL_GetPlatform()); fflush(stdout);
+    fprintf(stdout, "Starting Dune Legacy %s on %s...\n", VERSION, SDL_GetPlatform()); fflush(stdout);
 
     // First check for missing files
     std::vector<std::string> missingFiles = FileManager::getMissingFiles();
@@ -463,16 +463,16 @@ int main(int argc, char *argv[]) {
         }
     }
 
-	bool bExitGame = false;
-	bool bFirstInit = true;
-	bool bFirstGamestart = false;
+    bool bExitGame = false;
+    bool bFirstInit = true;
+    bool bFirstGamestart = false;
 
     debug = false;
     cursorFrame = UI_CursorNormal;
 
-	do {
-		int seed = time(nullptr);
-		srand(seed);
+    do {
+        int seed = time(nullptr);
+        srand(seed);
 
         // check if configfile exists
         std::string configfilepath = getConfigFilepath();
@@ -489,33 +489,33 @@ int main(int argc, char *argv[]) {
             }
         }
 
-		INIFile myINIFile(configfilepath);
+        INIFile myINIFile(configfilepath);
 
-		settings.general.playIntro = myINIFile.getBoolValue("General","Play Intro",false);
-		settings.general.playerName = myINIFile.getStringValue("General","Player Name","Player");
-		settings.general.language = myINIFile.getStringValue("General","Language","en");
-		settings.general.scrollSpeed = myINIFile.getIntValue("General","Scroll Speed",50);
-		settings.video.width = myINIFile.getIntValue("Video","Width",640);
-		settings.video.height = myINIFile.getIntValue("Video","Height",480);
-		settings.video.fullscreen = myINIFile.getBoolValue("Video","Fullscreen",false);
-		settings.video.frameLimit = myINIFile.getBoolValue("Video","FrameLimit",true);
-		settings.video.preferredZoomLevel = myINIFile.getIntValue("Video","Preferred Zoom Level", 0);
-		settings.video.scaler = myINIFile.getStringValue("Video","Scaler", "scale2x");
-		settings.audio.musicType = myINIFile.getStringValue("Audio","Music Type","adl");
-		settings.audio.playMusic = myINIFile.getBoolValue("Audio","Play Music", true);
-		settings.audio.musicVolume = myINIFile.getIntValue("Audio","Music Volume", 64);
-		settings.audio.playSFX = myINIFile.getBoolValue("Audio","Play SFX", true);
-		settings.audio.sfxVolume = myINIFile.getIntValue("Audio","SFX Volume", 64);
+        settings.general.playIntro = myINIFile.getBoolValue("General","Play Intro",false);
+        settings.general.playerName = myINIFile.getStringValue("General","Player Name","Player");
+        settings.general.language = myINIFile.getStringValue("General","Language","en");
+        settings.general.scrollSpeed = myINIFile.getIntValue("General","Scroll Speed",50);
+        settings.video.width = myINIFile.getIntValue("Video","Width",640);
+        settings.video.height = myINIFile.getIntValue("Video","Height",480);
+        settings.video.fullscreen = myINIFile.getBoolValue("Video","Fullscreen",false);
+        settings.video.frameLimit = myINIFile.getBoolValue("Video","FrameLimit",true);
+        settings.video.preferredZoomLevel = myINIFile.getIntValue("Video","Preferred Zoom Level", 0);
+        settings.video.scaler = myINIFile.getStringValue("Video","Scaler", "scale2x");
+        settings.audio.musicType = myINIFile.getStringValue("Audio","Music Type","adl");
+        settings.audio.playMusic = myINIFile.getBoolValue("Audio","Play Music", true);
+        settings.audio.musicVolume = myINIFile.getIntValue("Audio","Music Volume", 64);
+        settings.audio.playSFX = myINIFile.getBoolValue("Audio","Play SFX", true);
+        settings.audio.sfxVolume = myINIFile.getIntValue("Audio","SFX Volume", 64);
 
-		settings.network.serverPort = myINIFile.getIntValue("Network","ServerPort",DEFAULT_PORT);
-		settings.network.metaServer = myINIFile.getStringValue("Network","MetaServer",DEFAULT_METASERVER);
-		settings.network.debugNetwork = myINIFile.getBoolValue("Network","Debug Network",false);
+        settings.network.serverPort = myINIFile.getIntValue("Network","ServerPort",DEFAULT_PORT);
+        settings.network.metaServer = myINIFile.getStringValue("Network","MetaServer",DEFAULT_METASERVER);
+        settings.network.debugNetwork = myINIFile.getBoolValue("Network","Debug Network",false);
 
-		settings.ai.campaignAI = myINIFile.getStringValue("AI","Campaign AI",DEFAULTAIPLAYERCLASS);
+        settings.ai.campaignAI = myINIFile.getStringValue("AI","Campaign AI",DEFAULTAIPLAYERCLASS);
 
         settings.gameOptions.gameSpeed = myINIFile.getIntValue("Game Options","Game Speed",GAMESPEED_DEFAULT);
         settings.gameOptions.concreteRequired = myINIFile.getBoolValue("Game Options","Concrete Required",true);
-		settings.gameOptions.structuresDegradeOnConcrete = myINIFile.getBoolValue("Game Options","Structures Degrade On Concrete",true);
+        settings.gameOptions.structuresDegradeOnConcrete = myINIFile.getBoolValue("Game Options","Structures Degrade On Concrete",true);
         settings.gameOptions.fogOfWar = myINIFile.getBoolValue("Game Options","Fog of War",false);
         settings.gameOptions.startWithExploredMap = myINIFile.getBoolValue("Game Options","Start with Explored Map",false);
         settings.gameOptions.instantBuild = myINIFile.getBoolValue("Game Options","Instant Build",false);
@@ -529,8 +529,8 @@ int main(int argc, char *argv[]) {
         pTextManager = new TextManager();
         fprintf(stdout, "\t\tfinished\n"); fflush(stdout);
 
-		if(FileManager::getMissingFiles().size() > 0) {
-		    // set back to english
+        if(FileManager::getMissingFiles().size() > 0) {
+            // set back to english
             std::vector<std::string> missingFiles = FileManager::getMissingFiles();
             fprintf(stderr,"The following files are missing for language \"%s\":\n",_("LanguageFileExtension").c_str());
             std::vector<std::string>::const_iterator iter;
@@ -539,22 +539,22 @@ int main(int argc, char *argv[]) {
             }
             fprintf(stderr,"Language is changed to English!\n");
             settings.general.language = "en";
-		}
+        }
 
-		for(int i=1; i < argc; i++) {
-		    //check for overiding params
+        for(int i=1; i < argc; i++) {
+            //check for overiding params
             std::string parameter(argv[i]);
 
-			if((parameter == "-f") || (parameter == "--fullscreen")) {
-				settings.video.fullscreen = true;
-			} else if((parameter == "-w") || (parameter == "--window")) {
-				settings.video.fullscreen = false;
-			} else if(parameter.find("--PlayerName=") == 0) {
+            if((parameter == "-f") || (parameter == "--fullscreen")) {
+                settings.video.fullscreen = true;
+            } else if((parameter == "-w") || (parameter == "--window")) {
+                settings.video.fullscreen = false;
+            } else if(parameter.find("--PlayerName=") == 0) {
                 settings.general.playerName = parameter.substr(strlen("--PlayerName="));
             } else if(parameter.find("--ServerPort=") == 0) {
                 settings.network.serverPort = atol(argv[i] + strlen("--ServerPort="));
             }
-		}
+        }
 
         if(bFirstInit == true) {
             fprintf(stdout, "initializing SDL..... \t\t"); fflush(stdout);
@@ -565,7 +565,7 @@ int main(int argc, char *argv[]) {
             fprintf(stdout, "finished\n"); fflush(stdout);
         }
 
-		if(bFirstGamestart == true && bFirstInit == true) {
+        if(bFirstGamestart == true && bFirstInit == true) {
             // find screen resolution bigger or equal to 800x600 (otherwise use 640x480)
             SDL_DisplayMode targetDisplayMode = { 0, 800, 600, 0, nullptr};
             SDL_DisplayMode closestDisplayMode;
@@ -581,20 +581,20 @@ int main(int argc, char *argv[]) {
 
                 myINIFile.saveChangesTo(getConfigFilepath());
             }
-		}
+        }
 
         Scaler::setDefaultScaler(Scaler::getScalerByName(settings.video.scaler));
 
-		if(bFirstInit == true) {
-			fprintf(stdout, "initializing sound..... \t");fflush(stdout);
-			if( Mix_OpenAudio(AUDIO_FREQUENCY, AUDIO_S16SYS, 2, 1024) < 0 ) {
-				SDL_Quit();
-				fprintf(stderr,"Warning: Couldn't set %d Hz 16-bit audio\n- Reason: %s\n",AUDIO_FREQUENCY,SDL_GetError());
-				exit(EXIT_FAILURE);
-			} else {
-				fprintf(stdout, "allocated %d channels.\n", Mix_AllocateChannels(6)); fflush(stdout);
-			}
-		}
+        if(bFirstInit == true) {
+            fprintf(stdout, "initializing sound..... \t");fflush(stdout);
+            if( Mix_OpenAudio(AUDIO_FREQUENCY, AUDIO_S16SYS, 2, 1024) < 0 ) {
+                SDL_Quit();
+                fprintf(stderr,"Warning: Couldn't set %d Hz 16-bit audio\n- Reason: %s\n",AUDIO_FREQUENCY,SDL_GetError());
+                exit(EXIT_FAILURE);
+            } else {
+                fprintf(stdout, "allocated %d channels.\n", Mix_AllocateChannels(6)); fflush(stdout);
+            }
+        }
 
         pFileManager = new FileManager( !missingFiles.empty() );
 
@@ -608,24 +608,24 @@ int main(int argc, char *argv[]) {
         }
 
         fprintf(stdout, "SDL rendering backend...");fflush(stdout);
-		setVideoMode();
-		SDL_RendererInfo rendererInfo;
-		SDL_GetRendererInfo(renderer, &rendererInfo);
-		fprintf(stdout, "\t%s\n", rendererInfo.name); fflush(stdout);
-		fprintf(stdout, "Maximum texture size...\t\t%dx%d\n", rendererInfo.max_texture_width, rendererInfo.max_texture_height); fflush(stdout);
+        setVideoMode();
+        SDL_RendererInfo rendererInfo;
+        SDL_GetRendererInfo(renderer, &rendererInfo);
+        fprintf(stdout, "\t%s\n", rendererInfo.name); fflush(stdout);
+        fprintf(stdout, "Maximum texture size...\t\t%dx%d\n", rendererInfo.max_texture_width, rendererInfo.max_texture_height); fflush(stdout);
 
 
-		fprintf(stdout, "loading fonts...");fflush(stdout);
-		pFontManager = new FontManager();
-		fprintf(stdout, "\t\tfinished\n"); fflush(stdout);
+        fprintf(stdout, "loading fonts...");fflush(stdout);
+        pFontManager = new FontManager();
+        fprintf(stdout, "\t\tfinished\n"); fflush(stdout);
 
-		if(!missingFiles.empty()) {
-		    // some files are missing
-		    bExitGame = true;
-		    printMissingFilesToScreen();
-		    fprintf(stdout, "Deinitialize....."); fflush(stdout);
-		} else {
-		    // everything is just fine and we can start the game
+        if(!missingFiles.empty()) {
+            // some files are missing
+            bExitGame = true;
+            printMissingFilesToScreen();
+            fprintf(stdout, "Deinitialize....."); fflush(stdout);
+        } else {
+            // everything is just fine and we can start the game
 
             fprintf(stdout, "loading graphics..."); fflush(stdout);
             pGFXManager = new GFXManager();
@@ -694,26 +694,26 @@ int main(int argc, char *argv[]) {
             delete pTextManager;
             delete pSFXManager;
             delete pGFXManager;
-		}
+        }
 
-		delete pFontManager;
-		delete pFileManager;
+        delete pFontManager;
+        delete pFileManager;
 
         SDL_DestroyTexture(screenTexture);
         SDL_DestroyRenderer(renderer);
         SDL_DestroyWindow(window);
 
-		if(bExitGame == true) {
-			SDL_Quit();
-		}
-		fprintf(stdout, "\t\tfinished\n"); fflush(stdout);
-	} while(bExitGame == false);
+        if(bExitGame == true) {
+            SDL_Quit();
+        }
+        fprintf(stdout, "\t\tfinished\n"); fflush(stdout);
+    } while(bExitGame == false);
 
-	// deinit fnkdat
-	if(fnkdat(nullptr, nullptr, 0, FNKDAT_UNINIT) < 0) {
-		perror("Could not uninitialize fnkdat");
-		exit(EXIT_FAILURE);
-	}
+    // deinit fnkdat
+    if(fnkdat(nullptr, nullptr, 0, FNKDAT_UNINIT) < 0) {
+        perror("Could not uninitialize fnkdat");
+        exit(EXIT_FAILURE);
+    }
 
-	return EXIT_SUCCESS;
+    return EXIT_SUCCESS;
 }

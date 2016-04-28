@@ -26,16 +26,16 @@
 
 /// A class for representing one part of a cutscene.
 /**
-	Every CutScene consists of multiple Scene objects. This makes debugging the timings easier because all timings are relative to the scene start.
+    Every CutScene consists of multiple Scene objects. This makes debugging the timings easier because all timings are relative to the scene start.
 */
 class Scene {
 public:
 
     /// Default constructor
-	Scene();
+    Scene();
 
-	/// Destructor
-	virtual ~Scene();
+    /// Destructor
+    virtual ~Scene();
 
     /**
         This method adds a new video event at the end of this scene.
@@ -43,7 +43,7 @@ public:
         Scene gets destroyed.
         \param newVideoEvent the new video event to be played at the end of this scene (must be created with new)
     */
-	void addVideoEvent(VideoEvent* newVideoEvent);
+    void addVideoEvent(VideoEvent* newVideoEvent);
 
     /**
         This method adds a new text event to this scene.
@@ -51,7 +51,7 @@ public:
         Scene gets destroyed.
         \param newTextEvent the new text event to be played in this scene (must be created with new)
     */
-	void addTextEvent(TextEvent* newTextEvent);
+    void addTextEvent(TextEvent* newTextEvent);
 
     /**
         This method adds a new trigger to this scene.
@@ -59,21 +59,21 @@ public:
         Scene gets destroyed.
         \param newTrigger the new trigger to be triggered in this scene (must be created with new)
     */
-	void addTrigger(CutSceneTrigger* newTrigger);
+    void addTrigger(CutSceneTrigger* newTrigger);
 
     /**
         This method checks if there is something to draw in the next frame
         \return true, if there are no more VideoEvents in the queue
     */
-	bool isFinished() {
-	    if(videoEvents.empty()) {
+    bool isFinished() {
+        if(videoEvents.empty()) {
             return true;
-	    } else if(videoEvents.size() == 1) {
+        } else if(videoEvents.size() == 1) {
             return videoEvents.front()->isFinished();
-	    } else {
+        } else {
             return false;
-	    }
-	}
+        }
+    }
 
     /**
         This method draws the current frame. First the video and then the text is drawn. Afterwards CutSceneTriggers are triggered.

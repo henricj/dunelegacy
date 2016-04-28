@@ -23,29 +23,29 @@
     Copies memory areas that may overlap byte by byte from small memory
     addresses to big memory addresses. Thus, already copied bytes can be
     copied again.
-    \param	dst	destination
-    \param	src	source
-    \param	cnt	length in bytes
+    \param  dst destination
+    \param  src source
+    \param  cnt length in bytes
 */
 void memcpy_overlap(unsigned char *dst, unsigned char *src, unsigned cnt);
 
 
-///	Decompresses format40 compressed images/data.
-/**	Decompresses format40 compressed images/data specified by image_in to image_out.
-    \param	image_in	format80 compressed data
-    \param	image_out	pointer to output uncompressed data
-    \return	written bytes to image_out
+/// Decompresses format40 compressed images/data.
+/** Decompresses format40 compressed images/data specified by image_in to image_out.
+    \param  image_in    format80 compressed data
+    \param  image_out   pointer to output uncompressed data
+    \return written bytes to image_out
  */
 int decode40(unsigned char *image_in, unsigned char *image_out);
 
 
-///	Decompresses format80 compressed images/data.
-/**	Decompresses format80 compressed images/data specified by image_in to image_out. The checksum is also calculated and
+/// Decompresses format80 compressed images/data.
+/** Decompresses format80 compressed images/data specified by image_in to image_out. The checksum is also calculated and
     compared with the parameter checksum.
-    \param	image_in	format80 compressed data
-    \param	image_out	pointer to output uncompressed data
-    \param	checksum	checksum for this file
-    \return	0 if checksum is correct<br> -1 if checksum is incorrect
+    \param  image_in    format80 compressed data
+    \param  image_out   pointer to output uncompressed data
+    \param  checksum    checksum for this file
+    \return 0 if checksum is correct<br> -1 if checksum is incorrect
  */
 int decode80(unsigned char *image_in, unsigned char *image_out,unsigned checksum);
 

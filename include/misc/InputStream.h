@@ -30,67 +30,67 @@
 class InputStream
 {
 public:
-	InputStream() { ; };
-	virtual ~InputStream() { ; };
+    InputStream() { ; };
+    virtual ~InputStream() { ; };
 
-	/**
-		readString reads in a strings from the stream.
+    /**
+        readString reads in a strings from the stream.
         \return the read string
-	*/
-	virtual std::string readString() = 0;
+    */
+    virtual std::string readString() = 0;
 
-	virtual Uint8 readUint8() = 0;
-	virtual Uint16 readUint16() = 0;
-	virtual Uint32 readUint32() = 0;
-	virtual Uint64 readUint64() = 0;
-	virtual bool readBool() = 0;
-	virtual float readFloat() = 0;
+    virtual Uint8 readUint8() = 0;
+    virtual Uint16 readUint16() = 0;
+    virtual Uint32 readUint32() = 0;
+    virtual Uint64 readUint64() = 0;
+    virtual bool readBool() = 0;
+    virtual float readFloat() = 0;
 
-	/**
+    /**
         Reads in a Sint8 value.
         \return the read value
-	*/
-	Sint8 readSint8() {
-	    Uint8 tmp = readUint8();
+    */
+    Sint8 readSint8() {
+        Uint8 tmp = readUint8();
         return *((Sint8*) &tmp);
-	}
+    }
 
-	/**
+    /**
         Reads in a Sint16 value.
         \return the read value
-	*/
-	Sint16 readSint16() {
-	    Uint16 tmp = readUint16();
+    */
+    Sint16 readSint16() {
+        Uint16 tmp = readUint16();
         return *((Sint16*) &tmp);
-	}
+    }
 
-	/**
+    /**
         Reads in a Sint32 value.
         \return the read value
-	*/
-	Sint32 readSint32() {
-	    Uint32 tmp = readUint32();
+    */
+    Sint32 readSint32() {
+        Uint32 tmp = readUint32();
         return *((Sint32*) &tmp);
-	}
+    }
 
-	/**
+    /**
         Reads in a Sint64 value.
         \return the read value
-	*/
-	Sint64 readSint64() {
-	    Uint64 tmp = readUint64();
+    */
+    Sint64 readSint64() {
+        Uint64 tmp = readUint64();
         return *((Sint64*) &tmp);
-	}
+    }
 
-	/**
+    /**
         Reads in a FixPoint value.
         \return the read value
-	*/
-	FixPoint readFixPoint() {
+    */
+    FixPoint readFixPoint() {
         return FixPoint::FromRawValue(readSint64());
-	}
+    }
 
-	/**
+    /**
         Reads in up to 8 boolean values from a single byte
         \param  pVal1   the 1st boolean value
         \param  pVal2   the 2nd boolean value
@@ -101,8 +101,8 @@ public:
         \param  pVal7   the 7th boolean value
         \param  pVal8   the 8th boolean value
 
-	*/
-	void readBools(bool* pVal1 = nullptr, bool* pVal2 = nullptr, bool* pVal3 = nullptr, bool* pVal4 = nullptr, bool* pVal5 = nullptr, bool* pVal6 = nullptr, bool* pVal7 = nullptr, bool* pVal8 = nullptr) {
+    */
+    void readBools(bool* pVal1 = nullptr, bool* pVal2 = nullptr, bool* pVal3 = nullptr, bool* pVal4 = nullptr, bool* pVal5 = nullptr, bool* pVal6 = nullptr, bool* pVal7 = nullptr, bool* pVal8 = nullptr) {
         Uint8 val = readUint8();
 
         if(pVal1 != nullptr)   *pVal1 = ((val & 0x01) != 0);
@@ -113,74 +113,74 @@ public:
         if(pVal6 != nullptr)   *pVal6 = ((val & 0x20) != 0);
         if(pVal7 != nullptr)   *pVal7 = ((val & 0x40) != 0);
         if(pVal8 != nullptr)   *pVal8 = ((val & 0x80) != 0);
-	}
-
-	/**
-		Reads a list of Uint32 written by writeUint32List().
-		\return	the read list
-	*/
-	std::list<Uint32> readUint32List() {
-		std::list<Uint32> List;
-		Uint32 size = readUint32();
-		for(unsigned int i=0; i < size; i++) {
-			List.push_back(readUint32());
-		}
-		return List;
-	}
-
-	/**
-		Reads a vector of Uint32 written by writeUint32Vector().
-		\return	the read vector
-	*/
-	std::vector<Uint32> readUint32Vector() {
-		std::vector<Uint32> vec;
-		Uint32 size = readUint32();
-		for(unsigned int i=0; i < size; i++) {
-			vec.push_back(readUint32());
-		}
-		return vec;
-	}
+    }
 
     /**
-		Reads a set of Uint32 written by writeUint32Set().
-		\return	the read set
-	*/
-	std::set<Uint32> readUint32Set() {
-		std::set<Uint32> retSet;
-		Uint32 size = readUint32();
-		for(unsigned int i=0; i < size; i++) {
-			retSet.insert(readUint32());
-		}
-		return retSet;
-	}
+        Reads a list of Uint32 written by writeUint32List().
+        \return the read list
+    */
+    std::list<Uint32> readUint32List() {
+        std::list<Uint32> List;
+        Uint32 size = readUint32();
+        for(unsigned int i=0; i < size; i++) {
+            List.push_back(readUint32());
+        }
+        return List;
+    }
 
-	class exception : public std::exception {
-	public:
-		exception() throw () { ; };
-		virtual ~exception() throw () { ; };
-	};
+    /**
+        Reads a vector of Uint32 written by writeUint32Vector().
+        \return the read vector
+    */
+    std::vector<Uint32> readUint32Vector() {
+        std::vector<Uint32> vec;
+        Uint32 size = readUint32();
+        for(unsigned int i=0; i < size; i++) {
+            vec.push_back(readUint32());
+        }
+        return vec;
+    }
 
-	class eof : public InputStream::exception {
-	public:
-		eof(const std::string& str) throw () { this->str = str; };
-		virtual ~eof() throw () { ; };
+    /**
+        Reads a set of Uint32 written by writeUint32Set().
+        \return the read set
+    */
+    std::set<Uint32> readUint32Set() {
+        std::set<Uint32> retSet;
+        Uint32 size = readUint32();
+        for(unsigned int i=0; i < size; i++) {
+            retSet.insert(readUint32());
+        }
+        return retSet;
+    }
 
-		virtual const char* what() const throw () { return str.c_str(); };
+    class exception : public std::exception {
+    public:
+        exception() throw () { ; };
+        virtual ~exception() throw () { ; };
+    };
 
-	private:
-		std::string str;
-	};
+    class eof : public InputStream::exception {
+    public:
+        eof(const std::string& str) throw () { this->str = str; };
+        virtual ~eof() throw () { ; };
 
-	class error : public InputStream::exception {
-	public:
-		error(const std::string& str) throw () { this->str = str; };
-		virtual ~error() throw () { ; };
+        virtual const char* what() const throw () { return str.c_str(); };
 
-		virtual const char* what() const throw () { return str.c_str(); };
+    private:
+        std::string str;
+    };
 
-	private:
-		std::string str;
-	};
+    class error : public InputStream::exception {
+    public:
+        error(const std::string& str) throw () { this->str = str; };
+        virtual ~error() throw () { ; };
+
+        virtual const char* what() const throw () { return str.c_str(); };
+
+    private:
+        std::string str;
+    };
 };
 
 #endif // INPUTSTREAM_H

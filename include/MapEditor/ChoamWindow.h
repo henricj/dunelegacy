@@ -43,34 +43,34 @@ public:
     ChoamWindow(MapEditor* pMapEditor, HOUSETYPE currentHouse);
 
 
-	/**
-		This static method creates a dynamic choam window.
-		The idea behind this method is to simply create a new dialog on the fly and
-		add it as a child window of some other window. If the window gets closed it will be freed.
-		\param  pMapEditor  pointer to the currently running map editor
-		\param  house       the currently selected house; used for button colors, etc.
-		\return	The new dialog box (will be automatically destroyed when it's closed)
-	*/
-	static ChoamWindow* create(MapEditor* pMapEditor, HOUSETYPE house) {
-		ChoamWindow* dlg = new ChoamWindow(pMapEditor, house);
-		dlg->pAllocated = true;
-		return dlg;
-	}
+    /**
+        This static method creates a dynamic choam window.
+        The idea behind this method is to simply create a new dialog on the fly and
+        add it as a child window of some other window. If the window gets closed it will be freed.
+        \param  pMapEditor  pointer to the currently running map editor
+        \param  house       the currently selected house; used for button colors, etc.
+        \return The new dialog box (will be automatically destroyed when it's closed)
+    */
+    static ChoamWindow* create(MapEditor* pMapEditor, HOUSETYPE house) {
+        ChoamWindow* dlg = new ChoamWindow(pMapEditor, house);
+        dlg->pAllocated = true;
+        return dlg;
+    }
 
 
 private:
 
-	void onCancel();
-	void onOK();
+    void onCancel();
+    void onOK();
 
-	void onUnitCheckbox(int itemID);
+    void onUnitCheckbox(int itemID);
 
 
-	HBox	mainHBox;
-	VBox	mainVBox;
-	VBox	centralVBox;
+    HBox    mainHBox;
+    VBox    mainVBox;
+    VBox    centralVBox;
 
-	Label   Label_Explanation;
+    Label   Label_Explanation;
 
 
     struct ChoamRow {
@@ -83,16 +83,16 @@ private:
 
     ChoamRow   choamRows[7];
 
-	HBox	    buttonHBox;
+    HBox        buttonHBox;
 
-	Label		titleLabel;
-	TextButton	cancelButton;
-	TextButton	okButton;
+    Label       titleLabel;
+    TextButton  cancelButton;
+    TextButton  okButton;
 
     MapEditor*  pMapEditor;
 
     HOUSETYPE   house;
-	Uint32      color;
+    Uint32      color;
 };
 
 

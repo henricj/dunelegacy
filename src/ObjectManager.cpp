@@ -42,8 +42,8 @@ void ObjectManager::load(InputStream& stream) {
 
         ObjectBase* pObject = currentGame->loadObject(stream,objectID);
         if(objectID != pObject->getObjectID()) {
-			fprintf(stderr,"ObjectManager::load(): The loaded object has a different ID than expected (%d!=%d)!\n",objectID,pObject->getObjectID());
-		}
+            fprintf(stderr,"ObjectManager::load(): The loaded object has a different ID than expected (%d!=%d)!\n",objectID,pObject->getObjectID());
+        }
 
         objectMap.insert( std::pair<Uint32,ObjectBase*>(objectID, pObject) );
     }

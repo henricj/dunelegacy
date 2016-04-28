@@ -86,57 +86,57 @@ Intro::Intro() : CutScene() {
 
     SDL_RWops* intro1_wsa = pFileManager->openFile("INTRO1.WSA");
     pDuneText = new Wsafile(intro1_wsa);
-	SDL_RWclose(intro1_wsa);
+    SDL_RWclose(intro1_wsa);
 
     SDL_RWops* intro2_wsa = pFileManager->openFile("INTRO2.WSA");
     pPlanet = new Wsafile(intro2_wsa);
-	SDL_RWclose(intro2_wsa);
+    SDL_RWclose(intro2_wsa);
 
     SDL_RWops* intro3_wsa = pFileManager->openFile("INTRO3.WSA");
     pSandstorm = new Wsafile(intro3_wsa);
-	SDL_RWclose(intro3_wsa);
+    SDL_RWclose(intro3_wsa);
 
     SDL_RWops* intro9_wsa = pFileManager->openFile("INTRO9.WSA");
     pHarvesters = new Wsafile(intro9_wsa);
-	SDL_RWclose(intro9_wsa);
+    SDL_RWclose(intro9_wsa);
 
     SDL_RWops* intro10_wsa = pFileManager->openFile("INTRO10.WSA");
     pPalace = new Wsafile(intro10_wsa);
-	SDL_RWclose(intro10_wsa);
+    SDL_RWclose(intro10_wsa);
 
     SDL_RWops* intro11_wsa = pFileManager->openFile("INTRO11.WSA");
     pImperator = new Wsafile(intro11_wsa);
-	SDL_RWclose(intro11_wsa);
+    SDL_RWclose(intro11_wsa);
 
     SDL_RWops* intro4_wsa = pFileManager->openFile("INTRO4.WSA");
     pStarport = new Wsafile(intro4_wsa);
-	SDL_RWclose(intro4_wsa);
+    SDL_RWclose(intro4_wsa);
 
     SDL_RWops* intro6_wsa = pFileManager->openFile("INTRO6.WSA");
     pAtreides = new Wsafile(intro6_wsa);
-	SDL_RWclose(intro6_wsa);
+    SDL_RWclose(intro6_wsa);
 
     SDL_RWops* intro7a_wsa = pFileManager->openFile("INTRO7A.WSA");
     SDL_RWops* intro7b_wsa = pFileManager->openFile("INTRO7B.WSA");
     pOrdos = new Wsafile(intro7a_wsa, intro7b_wsa);
-	SDL_RWclose(intro7a_wsa);
+    SDL_RWclose(intro7a_wsa);
     SDL_RWclose(intro7b_wsa);
 
     SDL_RWops* intro8a_wsa = pFileManager->openFile("INTRO8A.WSA");
     SDL_RWops* intro8b_wsa = pFileManager->openFile("INTRO8B.WSA");
     SDL_RWops* intro8c_wsa = pFileManager->openFile("INTRO8C.WSA");
     pHarkonnen = new Wsafile(intro8a_wsa, intro8b_wsa, intro8c_wsa);
-	SDL_RWclose(intro8a_wsa);
+    SDL_RWclose(intro8a_wsa);
     SDL_RWclose(intro8b_wsa);
     SDL_RWclose(intro8c_wsa);
 
     SDL_RWops* intro5_wsa = pFileManager->openFile("INTRO5.WSA");
     pDestroyedTank = new Wsafile(intro5_wsa);
-	SDL_RWclose(intro5_wsa);
+    SDL_RWclose(intro5_wsa);
 
-	SDL_RWops* intro_lng = pFileManager->openFile("INTRO." + _("LanguageFileExtension"));
-	IndexedTextFile* pIntroText = new IndexedTextFile(intro_lng);
-	SDL_RWclose(intro_lng);
+    SDL_RWops* intro_lng = pFileManager->openFile("INTRO." + _("LanguageFileExtension"));
+    IndexedTextFile* pIntroText = new IndexedTextFile(intro_lng);
+    SDL_RWclose(intro_lng);
 
 
     wind = getChunkFromFile("WIND2BP.VOC");
@@ -171,9 +171,9 @@ Intro::Intro() : CutScene() {
     }
 
     Uint32 color = SDL2RGB(palette[PALCOLOR_HARKONNEN+1]);
-	Uint32 sardaukarColor = SDL2RGB(palette[PALCOLOR_SARDAUKAR+1]);
+    Uint32 sardaukarColor = SDL2RGB(palette[PALCOLOR_SARDAUKAR+1]);
 
-	startNewScene();
+    startNewScene();
 
     addVideoEvent(new WSAVideoEvent(pDuneText, false));
     addVideoEvent(new HoldPictureVideoEvent(pDuneText->getPicture(pDuneText->getNumFrames()-1), 30, true, false));

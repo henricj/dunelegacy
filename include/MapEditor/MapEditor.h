@@ -136,12 +136,12 @@ public:
         ATTACKMODE      attackmode;
     };
 
-	MapEditor();
-	~MapEditor();
+    MapEditor();
+    ~MapEditor();
 
-	friend class INIMapEditorLoader; ///< loading INI Maps is done with a INIMapEditorLoader helper object
+    friend class INIMapEditorLoader; ///< loading INI Maps is done with a INIMapEditorLoader helper object
 
-	void RunEditor();
+    void RunEditor();
 
     void onQuit() {
         bQuitEditor = true;
@@ -282,31 +282,31 @@ private:
 
     void performTerrainChange(int x, int y, TERRAINTYPE terrainType);
 
-	void drawScreen();
-	void processInput();
-	void drawCursor();
-	void drawMap(ScreenBorder* pScreenborder, bool bCompleteMap);
-	TERRAINTYPE getTerrain(int x, int y);
-	void saveMapshot();
+    void drawScreen();
+    void processInput();
+    void drawCursor();
+    void drawMap(ScreenBorder* pScreenborder, bool bCompleteMap);
+    TERRAINTYPE getTerrain(int x, int y);
+    void saveMapshot();
 
 private:
-	MapEditorInterface*             pInterface;	    ///< This is the whole interface (top bar and side bar)
+    MapEditorInterface*             pInterface;     ///< This is the whole interface (top bar and side bar)
 
 
-	SDL_Rect		                sideBarPos;
-	SDL_Rect		                topBarPos;
-	SDL_Rect		                bottomBarPos;
+    SDL_Rect                        sideBarPos;
+    SDL_Rect                        topBarPos;
+    SDL_Rect                        bottomBarPos;
 
-	bool			                bQuitEditor;
+    bool                            bQuitEditor;
 
-	bool	                        scrollDownMode;     ///< currently scrolling the map down?
-	bool                            scrollLeftMode;     ///< currently scrolling the map left?
-	bool                            scrollRightMode;    ///< currently scrolling the map right?
-	bool                            scrollUpMode;       ///< currently scrolling the map up?
+    bool                            scrollDownMode;     ///< currently scrolling the map down?
+    bool                            scrollLeftMode;     ///< currently scrolling the map left?
+    bool                            scrollRightMode;    ///< currently scrolling the map right?
+    bool                            scrollUpMode;       ///< currently scrolling the map up?
 
-	bool			                shift;
+    bool                            shift;
 
-	bool                            bChangedSinceLastSave;
+    bool                            bChangedSinceLastSave;
 
     EditorMode                      currentEditorMode;
 
@@ -314,22 +314,22 @@ private:
     std::shared_ptr<MapMirror>      mapMirror;
 
     bool                            bLeftMousePressed;
-	int                             lastTerrainEditPosX;
-	int                             lastTerrainEditPosY;
+    int                             lastTerrainEditPosX;
+    int                             lastTerrainEditPosY;
 
-	int                             selectedUnitID;
-	int                             selectedStructureID;
-	Coord                           selectedMapItemCoord;   ///< only used for classic maps
+    int                             selectedUnitID;
+    int                             selectedStructureID;
+    Coord                           selectedMapItemCoord;   ///< only used for classic maps
 
 
 
     std::string                     lastSaveName;
     std::shared_ptr<INIFile>        loadedINIFile;
 
-	std::vector<Player>             players;
+    std::vector<Player>             players;
 
 
-	MapData     	                map;
+    MapData                         map;
     MapInfo                         mapInfo;
 
     std::vector<Coord>              spiceBlooms;    ///< only for classic maps
@@ -342,12 +342,12 @@ private:
 
     std::vector<TeamInfo>           teams;
 
-	std::vector<Unit>               units;
-	std::vector<Structure>          structures;
+    std::vector<Unit>               units;
+    std::vector<Structure>          structures;
 
 
-	std::stack<std::shared_ptr<MapEditorOperation> > undoOperationStack;
-	std::stack<std::shared_ptr<MapEditorOperation> > redoOperationStack;
+    std::stack<std::shared_ptr<MapEditorOperation> > undoOperationStack;
+    std::stack<std::shared_ptr<MapEditorOperation> > redoOperationStack;
 };
 
 #endif // MAPEDITOR_H

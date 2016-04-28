@@ -29,103 +29,103 @@
 
 class PalaceInterface : public DefaultStructureInterface {
 public:
-	static PalaceInterface* create(int objectID) {
-		PalaceInterface* tmp = new PalaceInterface(objectID);
-		tmp->pAllocated = true;
-		return tmp;
-	}
+    static PalaceInterface* create(int objectID) {
+        PalaceInterface* tmp = new PalaceInterface(objectID);
+        tmp->pAllocated = true;
+        return tmp;
+    }
 
 protected:
-	PalaceInterface(int objectID) : DefaultStructureInterface(objectID) {
-		mainHBox.addWidget(&weaponBox);
+    PalaceInterface(int objectID) : DefaultStructureInterface(objectID) {
+        mainHBox.addWidget(&weaponBox);
 
-		SDL_Texture* pTexture = pGFXManager->getSmallDetailPic(Picture_DeathHand);
-		weaponBox.addWidget(&weaponProgressBar, Point((SIDEBARWIDTH - 25 - getWidth(pTexture))/2,5), getTextureSize(pTexture));
+        SDL_Texture* pTexture = pGFXManager->getSmallDetailPic(Picture_DeathHand);
+        weaponBox.addWidget(&weaponProgressBar, Point((SIDEBARWIDTH - 25 - getWidth(pTexture))/2,5), getTextureSize(pTexture));
 
-		weaponBox.addWidget(&weaponSelectButton, Point((SIDEBARWIDTH - 25 - getWidth(pTexture))/2,5), getTextureSize(pTexture));
+        weaponBox.addWidget(&weaponSelectButton, Point((SIDEBARWIDTH - 25 - getWidth(pTexture))/2,5), getTextureSize(pTexture));
 
-		SDL_Surface* pText = pFontManager->createSurfaceWithText(_("READY"), COLOR_WHITE, FONT_STD10);
+        SDL_Surface* pText = pFontManager->createSurfaceWithText(_("READY"), COLOR_WHITE, FONT_STD10);
 
-		SDL_Surface* pReady = SDL_CreateRGBSurface(0, getWidth(pTexture), getHeight(pTexture), SCREEN_BPP, RMASK, GMASK, BMASK, AMASK);
-		SDL_FillRect(pReady, nullptr, COLOR_TRANSPARENT);
+        SDL_Surface* pReady = SDL_CreateRGBSurface(0, getWidth(pTexture), getHeight(pTexture), SCREEN_BPP, RMASK, GMASK, BMASK, AMASK);
+        SDL_FillRect(pReady, nullptr, COLOR_TRANSPARENT);
 
         SDL_Rect dest = calcAlignedDrawingRect(pText, pReady);
         SDL_BlitSurface(pText, nullptr, pReady, &dest);
 
-		SDL_FreeSurface(pText);
-		weaponSelectButton.setTextures(convertSurfaceToTexture(pReady, true),true);
-		weaponSelectButton.setVisible(false);
+        SDL_FreeSurface(pText);
+        weaponSelectButton.setTextures(convertSurfaceToTexture(pReady, true),true);
+        weaponSelectButton.setVisible(false);
 
-		weaponSelectButton.setOnClick(std::bind(&PalaceInterface::onSpecial, this));
-	}
+        weaponSelectButton.setOnClick(std::bind(&PalaceInterface::onSpecial, this));
+    }
 
-	/**
-		This method updates the object interface.
-		If the object doesn't exists anymore then update returns false.
-		\return true = everything ok, false = the object container should be removed
-	*/
-	virtual bool update() {
-		ObjectBase* pObject = currentGame->getObjectManager().getObject(objectID);
-		if(pObject == nullptr) {
-			return false;
-		}
+    /**
+        This method updates the object interface.
+        If the object doesn't exists anymore then update returns false.
+        \return true = everything ok, false = the object container should be removed
+    */
+    virtual bool update() {
+        ObjectBase* pObject = currentGame->getObjectManager().getObject(objectID);
+        if(pObject == nullptr) {
+            return false;
+        }
 
-		Palace* pPalace = dynamic_cast<Palace*>(pObject);
+        Palace* pPalace = dynamic_cast<Palace*>(pObject);
 
-		if(pPalace != nullptr) {
-			int picID;
+        if(pPalace != nullptr) {
+            int picID;
 
-			switch(pPalace->getOwner()->getHouseID()) {
-				case HOUSE_HARKONNEN:
-				case HOUSE_SARDAUKAR: {
-					picID = Picture_DeathHand;
+            switch(pPalace->getOwner()->getHouseID()) {
+                case HOUSE_HARKONNEN:
+                case HOUSE_SARDAUKAR: {
+                    picID = Picture_DeathHand;
                 } break;
 
-				case HOUSE_ATREIDES:
-				case HOUSE_FREMEN: {
-					picID = Picture_Fremen;
+                case HOUSE_ATREIDES:
+                case HOUSE_FREMEN: {
+                    picID = Picture_Fremen;
                 } break;
 
-				case HOUSE_ORDOS:
-				case HOUSE_MERCENARY: {
-					picID = Picture_Saboteur;
+                case HOUSE_ORDOS:
+                case HOUSE_MERCENARY: {
+                    picID = Picture_Saboteur;
                 } break;
 
-				default: {
-					picID = Picture_Fremen;
+                default: {
+                    picID = Picture_Fremen;
                 } break;
-			}
+            }
 
-			weaponProgressBar.setTexture(pGFXManager->getSmallDetailPic(picID),false);
-			weaponProgressBar.setProgress(pPalace->getPercentComplete());
+            weaponProgressBar.setTexture(pGFXManager->getSmallDetailPic(picID),false);
+            weaponProgressBar.setProgress(pPalace->getPercentComplete());
 
-			weaponSelectButton.setVisible(pPalace->isSpecialWeaponReady());
-		}
+            weaponSelectButton.setVisible(pPalace->isSpecialWeaponReady());
+        }
 
-		return DefaultStructureInterface::update();
-	}
+        return DefaultStructureInterface::update();
+    }
 
 private:
-	void onSpecial() {
-		ObjectBase* pObject = currentGame->getObjectManager().getObject(objectID);
-		if(pObject == nullptr) {
-			return;
-		}
+    void onSpecial() {
+        ObjectBase* pObject = currentGame->getObjectManager().getObject(objectID);
+        if(pObject == nullptr) {
+            return;
+        }
 
-		Palace* pPalace = dynamic_cast<Palace*>(pObject);
+        Palace* pPalace = dynamic_cast<Palace*>(pObject);
 
-		if(pPalace != nullptr) {
-		    if((pPalace->getOriginalHouseID() == HOUSE_HARKONNEN) || (pPalace->getOriginalHouseID() == HOUSE_SARDAUKAR)) {
+        if(pPalace != nullptr) {
+            if((pPalace->getOriginalHouseID() == HOUSE_HARKONNEN) || (pPalace->getOriginalHouseID() == HOUSE_SARDAUKAR)) {
                 currentGame->currentCursorMode = Game::CursorMode_Attack;
-		    } else {
+            } else {
                 pPalace->handleSpecialClick();
-		    }
-		}
-	};
+            }
+        }
+    };
 
-	StaticContainer		weaponBox;
-	PictureProgressBar	weaponProgressBar;
-	PictureButton		weaponSelectButton;
+    StaticContainer     weaponBox;
+    PictureProgressBar  weaponProgressBar;
+    PictureButton       weaponSelectButton;
 };
 
 #endif // PALACEINTERFACE_H

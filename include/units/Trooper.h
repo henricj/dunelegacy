@@ -23,16 +23,16 @@
 class Trooper : public InfantryBase
 {
 public:
-	Trooper(House* newOwner);
-	Trooper(InputStream& stream);
-	void init();
-	virtual ~Trooper();
+    Trooper(House* newOwner);
+    Trooper(InputStream& stream);
+    void init();
+    virtual ~Trooper();
 
-	bool canAttack(const ObjectBase* object) const;
+    bool canAttack(const ObjectBase* object) const;
 
-	virtual bool hasBumpyMovementOnRock() const { return true; }
+    virtual bool hasBumpyMovementOnRock() const { return true; }
 
-	void playAttackSound();
+    void playAttackSound();
 };
 
 #endif //TROOPER_H

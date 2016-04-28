@@ -33,10 +33,10 @@ public:
         Constructor
         \param  house           the house for which the video is shown
     */
-	Finale(int house);
+    Finale(int house);
 
-	/// destructor
-	virtual ~Finale();
+    /// destructor
+    virtual ~Finale();
 
 private:
 

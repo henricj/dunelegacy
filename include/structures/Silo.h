@@ -23,10 +23,10 @@
 class Silo : public StructureBase
 {
 public:
-	Silo(House* newOwner);
+    Silo(House* newOwner);
     Silo(InputStream& stream);
-	void init();
-	virtual ~Silo();
+    void init();
+    virtual ~Silo();
 
     virtual ObjectInterface* getInterfaceContainer();
 

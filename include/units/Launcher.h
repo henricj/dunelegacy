@@ -24,21 +24,21 @@ class Launcher : public TrackedUnit
 {
 
 public:
-	Launcher(House* newOwner);
-	Launcher(InputStream& stream);
-	void init();
-	virtual ~Launcher();
+    Launcher(House* newOwner);
+    Launcher(InputStream& stream);
+    void init();
+    virtual ~Launcher();
 
-	void blitToScreen();
-	virtual void destroy();
-	virtual bool canAttack(const ObjectBase* object) const;
+    void blitToScreen();
+    virtual void destroy();
+    virtual bool canAttack(const ObjectBase* object) const;
 
-	void playAttackSound();
+    void playAttackSound();
 
 private:
     // drawing information
-	SDL_Texture**   turretGraphic;      ///< The turret graphic
-	int             gunGraphicID;       ///< The id of the turret graphic (needed if we want to reload the graphic)
+    SDL_Texture**   turretGraphic;      ///< The turret graphic
+    int             gunGraphicID;       ///< The id of the turret graphic (needed if we want to reload the graphic)
 };
 
 #endif //LAUNCHER_H

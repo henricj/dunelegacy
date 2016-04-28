@@ -36,33 +36,33 @@
 class CustomGameMenu : public MenuBase
 {
 public:
-	CustomGameMenu(bool multiplayer, bool LANServer = true);
-	virtual ~CustomGameMenu();
+    CustomGameMenu(bool multiplayer, bool LANServer = true);
+    virtual ~CustomGameMenu();
 
-	/**
-		This method is called, when the child window is about to be closed.
-		This child window will be closed after this method returns.
-		\param	pChildWindow	The child window that will be closed
-	*/
-	virtual void onChildWindowClose(Window* pChildWindow);
+    /**
+        This method is called, when the child window is about to be closed.
+        This child window will be closed after this method returns.
+        \param  pChildWindow    The child window that will be closed
+    */
+    virtual void onChildWindowClose(Window* pChildWindow);
 
 private:
     void onNext();
-	void onCancel();
-	void onLoad();
-	void onGameOptions();
-	void onMapTypeChange(int buttonID);
-	void onMapListSelectionChange(bool bInteractive);
+    void onCancel();
+    void onLoad();
+    void onGameOptions();
+    void onMapTypeChange(int buttonID);
+    void onMapListSelectionChange(bool bInteractive);
 
     bool bMultiplayer;
     bool bLANServer;
 
-	std::string currentMapDirectory;
+    std::string currentMapDirectory;
 
-	SettingsClass::GameOptionsClass currentGameOptions;
+    SettingsClass::GameOptionsClass currentGameOptions;
 
     StaticContainer windowWidget;
-    VBox			mainVBox;
+    VBox            mainVBox;
 
     Label           captionLabel;
 
@@ -94,9 +94,9 @@ private:
 
     // bottom row of buttons
     HBox            buttonHBox;
-    TextButton		nextButton;
+    TextButton      nextButton;
     TextButton      loadButton;
-	TextButton		cancelButton;
+    TextButton      cancelButton;
 
 };
 

@@ -24,32 +24,32 @@
 
 ObjectBase* ObjectPointer::getObjPointer() const
 {
-	if(objectID == NONE) {
-		return nullptr;
-	}
+    if(objectID == NONE) {
+        return nullptr;
+    }
 
-	ObjectBase* ObjPointer = currentGame->getObjectManager().getObject(objectID);
-	if(ObjPointer == nullptr) {
-		objectID = NONE;
-	}
-	return ObjPointer;
+    ObjectBase* ObjPointer = currentGame->getObjectManager().getObject(objectID);
+    if(ObjPointer == nullptr) {
+        objectID = NONE;
+    }
+    return ObjPointer;
 }
 
 void ObjectPointer::save(OutputStream& stream) const
 {
-	stream.writeUint32(objectID);
+    stream.writeUint32(objectID);
 }
 
 void ObjectPointer::load(InputStream& stream)
 {
-	pointTo(stream.readUint32());
+    pointTo(stream.readUint32());
 }
 
 void ObjectPointer::pointTo(const ObjectBase* newObject)
 {
-	if(newObject != nullptr) {
-		objectID = newObject->getObjectID();
-	} else {
-		objectID = NONE;
-	}
+    if(newObject != nullptr) {
+        objectID = newObject->getObjectID();
+    } else {
+        objectID = NONE;
+    }
 }

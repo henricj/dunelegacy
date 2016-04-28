@@ -40,7 +40,7 @@ public:
 
     }
 
-	INIMap(GAMETYPE gameType, std::string mapname, std::string mapdata = "") {
+    INIMap(GAMETYPE gameType, std::string mapname, std::string mapdata = "") {
 
         this->mapname = mapname;
 
@@ -65,11 +65,11 @@ public:
         } else {
             inifile = std::shared_ptr<INIFile>(new INIFile(mapname));
         }
-	}
+    }
 
-	~INIMap() {
+    ~INIMap() {
 
-	}
+    }
 
 protected:
 

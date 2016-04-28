@@ -93,11 +93,11 @@
 /*
  * Used to make sure we don't append past the end of a buffer
  */
-#define FNKDAT_S(op)                            	\
-   if ((len = total - (int) _tcslen(buffer)) <= 0) {  	\
-      errno = ENOMEM;                           	\
-      return -1;                                	\
-   }                                            	\
+#define FNKDAT_S(op)                                \
+   if ((len = total - (int) _tcslen(buffer)) <= 0) {    \
+      errno = ENOMEM;                               \
+      return -1;                                    \
+   }                                                \
    op;
 
 
@@ -436,8 +436,8 @@ int fnkdat(const char* target, char* buffer, int len, int flags) {
    if (rawflags == FNKDAT_USER) {
 
 #ifdef __APPLE__
-	  getMacApplicationSupportFolder(buffer, len);
-	  FNKDAT_S(strncat(buffer, "/Dune Legacy", len));
+      getMacApplicationSupportFolder(buffer, len);
+      FNKDAT_S(strncat(buffer, "/Dune Legacy", len));
 #else
       {
          char* xdg_config = getenv("XDG_CONFIG_HOME");
@@ -454,7 +454,7 @@ int fnkdat(const char* target, char* buffer, int len, int flags) {
             FNKDAT_S(strncpy(buffer, xdg_config, len));
             FNKDAT_S(strncat(buffer, "/" PACKAGE, len));
          }
-	  }
+      }
 #endif
 
    } else if (rawflags == FNKDAT_CONF) {

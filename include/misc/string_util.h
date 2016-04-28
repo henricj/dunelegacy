@@ -109,9 +109,9 @@ std::string convertUTF8ToISO8859_1(const std::string& text);
 
 /// This function decodes a string to CP850 Code.
 /**
-	The parameter text is decoded to CP850 Code and returned
-	\param text	Text to decode
-	\return	The decoded text
+    The parameter text is decoded to CP850 Code and returned
+    \param text Text to decode
+    \return The decoded text
 */
 std::string decodeString(std::string text);
 

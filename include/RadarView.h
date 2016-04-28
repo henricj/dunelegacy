@@ -29,14 +29,14 @@
 class RadarView : public RadarViewBase
 {
 public:
-	/**
+    /**
         Constructor
-	*/
-	RadarView();
+    */
+    RadarView();
 
-	/**
+    /**
         Destructor
-	*/
+    */
     virtual ~RadarView();
 
     /**
@@ -52,24 +52,24 @@ public:
     virtual int getMapSizeY() const;
 
 
-	/**
-		Draws the radar to screen. This method is called before drawOverlay().
-		\param	Position	Position to draw the radar to
-	*/
-	virtual void draw(Point position);
+    /**
+        Draws the radar to screen. This method is called before drawOverlay().
+        \param  Position    Position to draw the radar to
+    */
+    virtual void draw(Point position);
 
 
-	/**
+    /**
         This method updates the radar. It should be called every game tick
-	*/
+    */
     void update();
 
 
     /**
         This method sets the radar mode directly. To show the static animation use switchRadarMode().
         \param bStatus  true = switches the radar on, false = switches the radar off
-	*/
-	void setRadarMode(bool bStatus) {
+    */
+    void setRadarMode(bool bStatus) {
         if(bStatus == true) {
             currentRadarMode = Mode_RadarOn;
             animFrame = 0;
@@ -84,22 +84,22 @@ public:
     /**
         This method switches the radar on or off
         \param bOn  true = switches the radar on, false = switches the radar off
-	*/
-	void switchRadarMode(bool bOn);
+    */
+    void switchRadarMode(bool bOn);
 
 private:
 
     void updateRadarSurface(int mapSizeX, int mapSizeY, int scale, int offsetX, int offsetY);
 
-	RadarViewMode currentRadarMode;         ///< the current mode of the radar
+    RadarViewMode currentRadarMode;         ///< the current mode of the radar
 
-	int animFrame;                          ///< the current animation frame
+    int animFrame;                          ///< the current animation frame
 
-	int animCounter;                        ///< this counter is for counting the ticks one animation frame is shown
+    int animCounter;                        ///< this counter is for counting the ticks one animation frame is shown
 
     SDL_Surface* radarSurface;              ///< contains the image to be drawn when the radar is active
     SDL_Texture* radarTexture;              ///< streaming texture to be used when the radar is active
-	SDL_Texture* radarStaticAnimation;      ///< holds the animation graphic for radar static
+    SDL_Texture* radarStaticAnimation;      ///< holds the animation graphic for radar static
 
 };
 

@@ -40,16 +40,16 @@ void Launcher::init() {
     itemID = Unit_Launcher;
     owner->incrementUnits(itemID);
 
-	graphicID = ObjPic_Tank_Base;
-	gunGraphicID = ObjPic_Launcher_Gun;
-	graphic = pGFXManager->getObjPic(graphicID,getOwner()->getHouseID());
-	turretGraphic = pGFXManager->getObjPic(gunGraphicID,getOwner()->getHouseID());
+    graphicID = ObjPic_Tank_Base;
+    gunGraphicID = ObjPic_Launcher_Gun;
+    graphic = pGFXManager->getObjPic(graphicID,getOwner()->getHouseID());
+    turretGraphic = pGFXManager->getObjPic(gunGraphicID,getOwner()->getHouseID());
 
-	numImagesX = NUM_ANGLES;
-	numImagesY = 1;
+    numImagesX = NUM_ANGLES;
+    numImagesY = 1;
 
-	numWeapons = 2;
-	bulletType = Bullet_Rocket;
+    numWeapons = 2;
+    bulletType = Bullet_Rocket;
 }
 
 Launcher::~Launcher() {
@@ -103,12 +103,12 @@ void Launcher::destroy() {
 }
 
 bool Launcher::canAttack(const ObjectBase* object) const {
-	return ((object != nullptr)
-			&& ((object->getOwner()->getTeam() != owner->getTeam()) || object->getItemID() == Unit_Sandworm)
-			&& object->isVisible(getOwner()->getTeam())
+    return ((object != nullptr)
+            && ((object->getOwner()->getTeam() != owner->getTeam()) || object->getItemID() == Unit_Sandworm)
+            && object->isVisible(getOwner()->getTeam())
             && object->getItemID() != Unit_Carryall); // Stop launchers attacking carryalls
 }
 
 void Launcher::playAttackSound() {
-	soundPlayer->playSoundAt(Sound_Rocket,location);
+    soundPlayer->playSoundAt(Sound_Rocket,location);
 }

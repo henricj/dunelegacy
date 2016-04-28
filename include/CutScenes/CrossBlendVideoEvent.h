@@ -24,7 +24,7 @@
 
 /**
     This VideoEvent blends between two pictures. The blending is done in 30 steps revealing more and more pixels
-	of the destination picture in every frame.
+    of the destination picture in every frame.
 */
 class CrossBlendVideoEvent : public VideoEvent {
 public:
@@ -32,34 +32,34 @@ public:
     /**
         Constructor
         \param  pSourceSurface      The picture to blend from
-        \param  pDestSurface		The picture to blend to
+        \param  pDestSurface        The picture to blend to
         \param  bFreeSurfaces       true = SDL_FreeSurface(pSourceSurface) and SDL_FreeSurface(pDestSurface) after blending in is done, false = pSourceSurface and pDestSurface are not freed
         \param  bCenterVertical     true = center the surfaces vertically on the screen, false = blit the surfaces at the top of the screen (default is true)
     */
-	CrossBlendVideoEvent(SDL_Surface* pSourceSurface, SDL_Surface* pDestSurface, bool bFreeSurfaces, bool bCenterVertical = true);
+    CrossBlendVideoEvent(SDL_Surface* pSourceSurface, SDL_Surface* pDestSurface, bool bFreeSurfaces, bool bCenterVertical = true);
 
-	/// destructor
-	virtual ~CrossBlendVideoEvent();
+    /// destructor
+    virtual ~CrossBlendVideoEvent();
 
     /**
         This method draws the video effect.
         \return the milliseconds until the next frame shall be drawn.
     */
-	virtual int draw();
+    virtual int draw();
 
     /**
         This method checks if this VideoEvent is already finished
         \return true, if there are no more frames to draw with this VideoEvent
     */
-	virtual bool isFinished();
+    virtual bool isFinished();
 
 private:
-    int currentFrame;				///< the current frame number relative to the start of this CrossBlendVideoEvent
-    BlendBlitter* pBlendBlitter;	///< the used blend blitter
-    SDL_Surface* pSourceSurface;	///< the picture to blend from
-    SDL_Surface* pDestSurface;		///< the picture to blend to
+    int currentFrame;               ///< the current frame number relative to the start of this CrossBlendVideoEvent
+    BlendBlitter* pBlendBlitter;    ///< the used blend blitter
+    SDL_Surface* pSourceSurface;    ///< the picture to blend from
+    SDL_Surface* pDestSurface;      ///< the picture to blend to
     SDL_Texture* pStreamingTexture; ///< the texture used for rendering from
-	bool bCenterVertical;			///< true = center the surfaces vertically on the screen, false = blit the surfaces at the top of the screen
+    bool bCenterVertical;           ///< true = center the surfaces vertically on the screen, false = blit the surfaces at the top of the screen
 };
 
 #endif // CROSSBLENDVIDEOEVENT_H

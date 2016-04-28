@@ -31,10 +31,10 @@ TurretBase::TurretBase(House* newOwner) : StructureBase(newOwner)
     TurretBase::init();
 
     angle = currentGame->randomGen.rand(0, 7);
-	drawnAngle = lround(angle);
+    drawnAngle = lround(angle);
 
-	findTargetTimer = 0;
-	weaponTimer = 0;
+    findTargetTimer = 0;
+    weaponTimer = 0;
 }
 
 TurretBase::TurretBase(InputStream& stream) : StructureBase(stream) {
@@ -46,35 +46,35 @@ TurretBase::TurretBase(InputStream& stream) : StructureBase(stream) {
 
 void TurretBase::init() {
     attackSound = Sound_Gun;
-	bulletType = Bullet_ShellMedium;
+    bulletType = Bullet_ShellMedium;
 
     structureSize.x = 1;
-	structureSize.y = 1;
+    structureSize.y = 1;
 
     canAttackStuff = true;
-	attackMode = AREAGUARD;
+    attackMode = AREAGUARD;
 }
 
 TurretBase::~TurretBase() {
 }
 
 void TurretBase::save(OutputStream& stream) const {
-	StructureBase::save(stream);
+    StructureBase::save(stream);
 
-	stream.writeSint32(findTargetTimer);
-	stream.writeSint32(weaponTimer);
+    stream.writeSint32(findTargetTimer);
+    stream.writeSint32(weaponTimer);
 }
 
 void TurretBase::updateStructureSpecificStuff() {
-	if(target && (target.getObjPointer() != nullptr)) {
-		if(!canAttack(target.getObjPointer()) || !targetInWeaponRange()) {
-			setTarget(nullptr);
-		} else if(targetInWeaponRange()) {
-			Coord closestPoint = target.getObjPointer()->getClosestPoint(location);
-			int wantedAngle = destinationDrawnAngle(location, closestPoint);
+    if(target && (target.getObjPointer() != nullptr)) {
+        if(!canAttack(target.getObjPointer()) || !targetInWeaponRange()) {
+            setTarget(nullptr);
+        } else if(targetInWeaponRange()) {
+            Coord closestPoint = target.getObjPointer()->getClosestPoint(location);
+            int wantedAngle = destinationDrawnAngle(location, closestPoint);
 
-			if(angle != wantedAngle) {
-				// turn
+            if(angle != wantedAngle) {
+                // turn
                 FixPoint  angleLeft = 0;
                 FixPoint  angleRight = 0;
 
@@ -92,80 +92,80 @@ void TurretBase::updateStructureSpecificStuff() {
                 } else {
                     turnRight();
                 }
-			}
+            }
 
-			if(drawnAngle == wantedAngle) {
-				attack();
-			}
+            if(drawnAngle == wantedAngle) {
+                attack();
+            }
 
-		} else {
-			setTarget(nullptr);
-		}
-	} else if((attackMode != STOP) && (findTargetTimer == 0)) {
-		setTarget(findTarget());
-		findTargetTimer = 100;
-	}
+        } else {
+            setTarget(nullptr);
+        }
+    } else if((attackMode != STOP) && (findTargetTimer == 0)) {
+        setTarget(findTarget());
+        findTargetTimer = 100;
+    }
 
-	if(findTargetTimer > 0) {
-		findTargetTimer--;
-	}
+    if(findTargetTimer > 0) {
+        findTargetTimer--;
+    }
 
-	if(weaponTimer > 0) {
-		weaponTimer--;
-	}
+    if(weaponTimer > 0) {
+        weaponTimer--;
+    }
 }
 
 void TurretBase::handleActionCommand(int xPos, int yPos) {
-	if(currentGameMap->tileExists(xPos, yPos)) {
-		ObjectBase* tempTarget = currentGameMap->getTile(xPos, yPos)->getObject();
-		currentGame->getCommandManager().addCommand(Command(pLocalPlayer->getPlayerID(), CMD_TURRET_ATTACKOBJECT,objectID,tempTarget->getObjectID()));
+    if(currentGameMap->tileExists(xPos, yPos)) {
+        ObjectBase* tempTarget = currentGameMap->getTile(xPos, yPos)->getObject();
+        currentGame->getCommandManager().addCommand(Command(pLocalPlayer->getPlayerID(), CMD_TURRET_ATTACKOBJECT,objectID,tempTarget->getObjectID()));
 
-	}
+    }
 }
 
 void TurretBase::doAttackObject(Uint32 targetObjectID) {
-	const ObjectBase* pObject = currentGame->getObjectManager().getObject(targetObjectID);
-	doAttackObject(pObject);
+    const ObjectBase* pObject = currentGame->getObjectManager().getObject(targetObjectID);
+    doAttackObject(pObject);
 }
 
 void TurretBase::doAttackObject(const ObjectBase* pObject) {
-	if(pObject == nullptr) {
-		return;
-	}
+    if(pObject == nullptr) {
+        return;
+    }
 
-	setDestination(INVALID_POS,INVALID_POS);
-	setTarget(pObject);
-	setForced(true);
+    setDestination(INVALID_POS,INVALID_POS);
+    setTarget(pObject);
+    setForced(true);
 }
 
 void TurretBase::turnLeft() {
-	angle += currentGame->objectData.data[itemID][originalHouseID].turnspeed;
-	if (angle >= FixPt(7,5))	//must keep drawnangle between 0 and 7
-		angle -= 8;
-	drawnAngle = lround(angle);
-	curAnimFrame = firstAnimFrame = lastAnimFrame = ((10-drawnAngle) % 8) + 2;
+    angle += currentGame->objectData.data[itemID][originalHouseID].turnspeed;
+    if (angle >= FixPt(7,5))    //must keep drawnangle between 0 and 7
+        angle -= 8;
+    drawnAngle = lround(angle);
+    curAnimFrame = firstAnimFrame = lastAnimFrame = ((10-drawnAngle) % 8) + 2;
 }
 
 void TurretBase::turnRight() {
-	angle -= currentGame->objectData.data[itemID][originalHouseID].turnspeed;
-	if(angle < FixPt(-0,5)) {
-	    //must keep angle between 0 and 7
-		angle += 8;
-	}
-	drawnAngle = lround(angle);
-	curAnimFrame = firstAnimFrame = lastAnimFrame = ((10-drawnAngle) % 8) + 2;
+    angle -= currentGame->objectData.data[itemID][originalHouseID].turnspeed;
+    if(angle < FixPt(-0,5)) {
+        //must keep angle between 0 and 7
+        angle += 8;
+    }
+    drawnAngle = lround(angle);
+    curAnimFrame = firstAnimFrame = lastAnimFrame = ((10-drawnAngle) % 8) + 2;
 }
 
 void TurretBase::attack() {
-	if((weaponTimer == 0) && (target.getObjPointer() != nullptr)) {
-		Coord centerPoint = getCenterPoint();
-		Coord targetCenterPoint = target.getObjPointer()->getClosestCenterPoint(location);
+    if((weaponTimer == 0) && (target.getObjPointer() != nullptr)) {
+        Coord centerPoint = getCenterPoint();
+        Coord targetCenterPoint = target.getObjPointer()->getClosestCenterPoint(location);
 
-		bulletList.push_back( new Bullet( objectID, &centerPoint, &targetCenterPoint,bulletType,
+        bulletList.push_back( new Bullet( objectID, &centerPoint, &targetCenterPoint,bulletType,
                                                currentGame->objectData.data[itemID][originalHouseID].weapondamage,
                                                target.getObjPointer()->isAFlyingUnit() ) );
 
-		soundPlayer->playSoundAt(attackSound, location);
-		weaponTimer = getWeaponReloadTime();
-	}
+        soundPlayer->playSoundAt(attackSound, location);
+        weaponTimer = getWeaponReloadTime();
+    }
 }

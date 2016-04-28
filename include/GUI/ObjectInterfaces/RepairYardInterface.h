@@ -28,49 +28,49 @@
 
 class RepairYardInterface : public DefaultStructureInterface {
 public:
-	static RepairYardInterface* create(int objectID) {
-		RepairYardInterface* tmp = new RepairYardInterface(objectID);
-		tmp->pAllocated = true;
-		return tmp;
-	}
+    static RepairYardInterface* create(int objectID) {
+        RepairYardInterface* tmp = new RepairYardInterface(objectID);
+        tmp->pAllocated = true;
+        return tmp;
+    }
 
 protected:
-	RepairYardInterface(int objectID) : DefaultStructureInterface(objectID) {
-		mainHBox.addWidget(Spacer::create());
-		mainHBox.addWidget(&repairUnitProgressBar);
-		mainHBox.addWidget(Spacer::create());
-	}
+    RepairYardInterface(int objectID) : DefaultStructureInterface(objectID) {
+        mainHBox.addWidget(Spacer::create());
+        mainHBox.addWidget(&repairUnitProgressBar);
+        mainHBox.addWidget(Spacer::create());
+    }
 
-	/**
-		This method updates the object interface.
-		If the object doesn't exists anymore then update returns false.
-		\return true = everything ok, false = the object container should be removed
-	*/
-	virtual bool update() {
-		ObjectBase* pObject = currentGame->getObjectManager().getObject(objectID);
-		if(pObject == nullptr) {
-			return false;
-		}
+    /**
+        This method updates the object interface.
+        If the object doesn't exists anymore then update returns false.
+        \return true = everything ok, false = the object container should be removed
+    */
+    virtual bool update() {
+        ObjectBase* pObject = currentGame->getObjectManager().getObject(objectID);
+        if(pObject == nullptr) {
+            return false;
+        }
 
-		RepairYard* pRepairYard = dynamic_cast<RepairYard*>(pObject);
+        RepairYard* pRepairYard = dynamic_cast<RepairYard*>(pObject);
 
-		if(pRepairYard != nullptr) {
-			UnitBase* pUnit = pRepairYard->getRepairUnit();
+        if(pRepairYard != nullptr) {
+            UnitBase* pUnit = pRepairYard->getRepairUnit();
 
-			if(pUnit != nullptr) {
-				repairUnitProgressBar.setVisible(true);
-				repairUnitProgressBar.setTexture(resolveItemPicture(pUnit->getItemID()),false);
-				repairUnitProgressBar.setProgress( ((pUnit->getHealth()*100)/pUnit->getMaxHealth()).toDouble());
-			} else {
-				repairUnitProgressBar.setVisible(false);
-			}
-		}
+            if(pUnit != nullptr) {
+                repairUnitProgressBar.setVisible(true);
+                repairUnitProgressBar.setTexture(resolveItemPicture(pUnit->getItemID()),false);
+                repairUnitProgressBar.setProgress( ((pUnit->getHealth()*100)/pUnit->getMaxHealth()).toDouble());
+            } else {
+                repairUnitProgressBar.setVisible(false);
+            }
+        }
 
-		return DefaultStructureInterface::update();
-	}
+        return DefaultStructureInterface::update();
+    }
 
 private:
-	PictureProgressBar	repairUnitProgressBar;
+    PictureProgressBar  repairUnitProgressBar;
 };
 
 #endif // REPAIRYARDINTERFACE_H

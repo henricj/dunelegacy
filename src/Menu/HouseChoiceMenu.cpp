@@ -30,44 +30,44 @@ HouseChoiceMenu::HouseChoiceMenu() : MenuBase()
 {
     currentHouseChoiceScrollPos = 0;
 
-	// set up window
-	int xpos = std::max(0,(getRendererWidth() - 640)/2);
-	int ypos = std::max(0,(getRendererHeight() - 400)/2);
+    // set up window
+    int xpos = std::max(0,(getRendererWidth() - 640)/2);
+    int ypos = std::max(0,(getRendererHeight() - 400)/2);
 
-	setCurrentPosition(xpos,ypos,640,400);
+    setCurrentPosition(xpos,ypos,640,400);
 
-	setTransparentBackground(true);
+    setTransparentBackground(true);
 
-	setWindowWidget(&windowWidget);
+    setWindowWidget(&windowWidget);
 
 
-	selectYourHouseLabel.setTexture(pGFXManager->getUIGraphic(UI_SelectYourHouseLarge), false);
-	windowWidget.addWidget(&selectYourHouseLabel, Point(0,0), Point(100, 640));
+    selectYourHouseLabel.setTexture(pGFXManager->getUIGraphic(UI_SelectYourHouseLarge), false);
+    windowWidget.addWidget(&selectYourHouseLabel, Point(0,0), Point(100, 640));
 
-	// set up buttons
-	house1Button.setOnClick(std::bind(&HouseChoiceMenu::onHouseButton, this, 0));
-	windowWidget.addWidget(&house1Button, Point(40,108),	Point(168,182));
+    // set up buttons
+    house1Button.setOnClick(std::bind(&HouseChoiceMenu::onHouseButton, this, 0));
+    windowWidget.addWidget(&house1Button, Point(40,108),    Point(168,182));
 
-	house2Button.setOnClick(std::bind(&HouseChoiceMenu::onHouseButton, this, 1));
-	windowWidget.addWidget(&house2Button, Point(235,108),	Point(168,182));
+    house2Button.setOnClick(std::bind(&HouseChoiceMenu::onHouseButton, this, 1));
+    windowWidget.addWidget(&house2Button, Point(235,108),   Point(168,182));
 
-	house3Button.setOnClick(std::bind(&HouseChoiceMenu::onHouseButton, this, 2));
-	windowWidget.addWidget(&house3Button, Point(430,108),	Point(168,182));
+    house3Button.setOnClick(std::bind(&HouseChoiceMenu::onHouseButton, this, 2));
+    windowWidget.addWidget(&house3Button, Point(430,108),   Point(168,182));
 
     SDL_Texture *pArrowLeft = pGFXManager->getUIGraphic(UI_Herald_ArrowLeftLarge);
     SDL_Texture *pArrowLeftHighlight = pGFXManager->getUIGraphic(UI_Herald_ArrowLeftHighlightLarge);
     houseLeftButton.setTextures(pArrowLeft, false, pArrowLeft, false, pArrowLeftHighlight, false);
-	houseLeftButton.setOnClick(std::bind(&HouseChoiceMenu::onHouseLeft, this));
-	houseLeftButton.setVisible(false);
-	windowWidget.addWidget(	&houseLeftButton, Point(320 - getWidth(pArrowLeft) - 85, 360), getTextureSize(pArrowLeft));
+    houseLeftButton.setOnClick(std::bind(&HouseChoiceMenu::onHouseLeft, this));
+    houseLeftButton.setVisible(false);
+    windowWidget.addWidget( &houseLeftButton, Point(320 - getWidth(pArrowLeft) - 85, 360), getTextureSize(pArrowLeft));
 
     SDL_Texture *pArrowRight = pGFXManager->getUIGraphic(UI_Herald_ArrowRightLarge);
     SDL_Texture *pArrowRightHighlight = pGFXManager->getUIGraphic(UI_Herald_ArrowRightHighlightLarge);
     houseRightButton.setTextures(pArrowRight, false, pArrowRight, false, pArrowRightHighlight, false);
-	houseRightButton.setOnClick(std::bind(&HouseChoiceMenu::onHouseRight, this));
-	windowWidget.addWidget(	&houseRightButton, Point(320 + 85, 360), getTextureSize(pArrowRight));
+    houseRightButton.setOnClick(std::bind(&HouseChoiceMenu::onHouseRight, this));
+    windowWidget.addWidget( &houseRightButton, Point(320 + 85, 360), getTextureSize(pArrowRight));
 
-	updateHouseChoice();
+    updateHouseChoice();
 }
 
 HouseChoiceMenu::~HouseChoiceMenu() {
@@ -84,25 +84,25 @@ void HouseChoiceMenu::onHouseButton(int button) {
 
     }
 
-	HouseChoiceInfoMenu* myHouseChoiceInfoMenu = new HouseChoiceInfoMenu(selectedHouse);
-	if(myHouseChoiceInfoMenu->showMenu() == MENU_QUIT_DEFAULT) {
-		quit(MENU_QUIT_DEFAULT);
-	} else {
-		quit(selectedHouse);
-	}
-	delete myHouseChoiceInfoMenu;
+    HouseChoiceInfoMenu* myHouseChoiceInfoMenu = new HouseChoiceInfoMenu(selectedHouse);
+    if(myHouseChoiceInfoMenu->showMenu() == MENU_QUIT_DEFAULT) {
+        quit(MENU_QUIT_DEFAULT);
+    } else {
+        quit(selectedHouse);
+    }
+    delete myHouseChoiceInfoMenu;
 }
 
 
 void HouseChoiceMenu::updateHouseChoice() {
     // House1 button
-	house1Button.setTextures(pGFXManager->getUIGraphic(UI_Herald_ColoredLarge, houseOrder[currentHouseChoiceScrollPos+0]),false);
+    house1Button.setTextures(pGFXManager->getUIGraphic(UI_Herald_ColoredLarge, houseOrder[currentHouseChoiceScrollPos+0]),false);
 
-	// House2 button
-	house2Button.setTextures(pGFXManager->getUIGraphic(UI_Herald_ColoredLarge, houseOrder[currentHouseChoiceScrollPos+1]),false);
+    // House2 button
+    house2Button.setTextures(pGFXManager->getUIGraphic(UI_Herald_ColoredLarge, houseOrder[currentHouseChoiceScrollPos+1]),false);
 
-	// House3 button
-	house3Button.setTextures(pGFXManager->getUIGraphic(UI_Herald_ColoredLarge, houseOrder[currentHouseChoiceScrollPos+2]),false);
+    // House3 button
+    house3Button.setTextures(pGFXManager->getUIGraphic(UI_Herald_ColoredLarge, houseOrder[currentHouseChoiceScrollPos+2]),false);
 }
 
 void HouseChoiceMenu::onHouseLeft()

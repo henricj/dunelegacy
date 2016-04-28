@@ -24,59 +24,59 @@ class InfantryBase : public GroundUnit
 {
 
 public:
-	InfantryBase(House* newOwner);
-	InfantryBase(InputStream& stream);
-	void init();
-	virtual ~InfantryBase();
+    InfantryBase(House* newOwner);
+    InfantryBase(InputStream& stream);
+    void init();
+    virtual ~InfantryBase();
 
-	void save(OutputStream& stream) const;
-
-    /**
-		This method is called when an unit is ordered to capture
-		\param	xPos	the x position on the map
-		\param	yPos	the y position on the map
-	*/
-	virtual void handleCaptureClick(int xPos, int yPos);
+    void save(OutputStream& stream) const;
 
     /**
-		This method is called when an unit should capture a structure
-		\param	targetStructureID	the ID of the structure to capture
-	*/
-	virtual void doCaptureStructure(Uint32 targetStructureID);
+        This method is called when an unit is ordered to capture
+        \param  xPos    the x position on the map
+        \param  yPos    the y position on the map
+    */
+    virtual void handleCaptureClick(int xPos, int yPos);
 
     /**
-		This method is called when an unit should capture a structure
-		\param	pStructure  the structure to capture
-	*/
-	virtual void doCaptureStructure(const StructureBase* pStructure);
+        This method is called when an unit should capture a structure
+        \param  targetStructureID   the ID of the structure to capture
+    */
+    virtual void doCaptureStructure(Uint32 targetStructureID);
 
-	void assignToMap(const Coord& pos);
-	void blitToScreen();
-	virtual void checkPos();
-	void destroy();
-	void move();
+    /**
+        This method is called when an unit should capture a structure
+        \param  pStructure  the structure to capture
+    */
+    virtual void doCaptureStructure(const StructureBase* pStructure);
+
+    void assignToMap(const Coord& pos);
+    void blitToScreen();
+    virtual void checkPos();
+    void destroy();
+    void move();
 
     inline void setLocation(const Coord& location) { setLocation(location.x, location.y); }
-	void setLocation(int xPos, int yPos);
+    void setLocation(int xPos, int yPos);
 
-	void squash();
+    void squash();
 
-	void playConfirmSound();
-	void playSelectSound();
+    void playConfirmSound();
+    void playSelectSound();
 
-	bool canPass(int xPos, int yPos) const;
+    bool canPass(int xPos, int yPos) const;
 
-	inline int getTilePosition() const { return tilePosition; }
+    inline int getTilePosition() const { return tilePosition; }
 
 protected:
-	void setSpeeds();
+    void setSpeeds();
 
     // infantry state
-	Sint8   tilePosition;       ///< The position in the current tile (0 to 4)
+    Sint8   tilePosition;       ///< The position in the current tile (0 to 4)
     Sint8   oldTilePosition;    ///< The previous tile position (0 to 4)
 
     // drawing information
-	int     walkFrame;          ///< What frame to draw
+    int     walkFrame;          ///< What frame to draw
 };
 
 #endif // INFANTRYBASE_H

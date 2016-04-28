@@ -26,49 +26,49 @@ class RadioButton;
 /// A class for managing a bunch of radio buttons
 class RadioButtonManager {
 public:
-	/// Default constructor
-	RadioButtonManager()  {
+    /// Default constructor
+    RadioButtonManager()  {
 
-	}
+    }
 
-	/// destructor
-	virtual ~RadioButtonManager() {
-		while(radioButtonList.empty() == false) {
-			unregisterRadioButton(*radioButtonList.begin());
-		}
-	}
+    /// destructor
+    virtual ~RadioButtonManager() {
+        while(radioButtonList.empty() == false) {
+            unregisterRadioButton(*radioButtonList.begin());
+        }
+    }
 
-	void registerRadioButton(RadioButton* pRadioButton);
+    void registerRadioButton(RadioButton* pRadioButton);
 
-	void registerRadioButtons(int numRadioButtons, ...) {
-		va_list valist;
-		va_start(valist,numRadioButtons);
+    void registerRadioButtons(int numRadioButtons, ...) {
+        va_list valist;
+        va_start(valist,numRadioButtons);
 
-		for(int i=0;i<numRadioButtons;i++) {
-			RadioButton* pRadioButton = va_arg(valist, RadioButton*);
-			registerRadioButton(pRadioButton);
-		}
-		va_end(valist);
-	}
+        for(int i=0;i<numRadioButtons;i++) {
+            RadioButton* pRadioButton = va_arg(valist, RadioButton*);
+            registerRadioButton(pRadioButton);
+        }
+        va_end(valist);
+    }
 
-	void unregisterRadioButton(RadioButton* pRadioButton);
+    void unregisterRadioButton(RadioButton* pRadioButton);
 
-	bool isRegistered(RadioButton* pRadioButton) const {
-		std::vector<RadioButton*>::const_iterator iter;
-		for(iter = radioButtonList.begin(); iter != radioButtonList.end(); ++iter) {
-			if(*iter == pRadioButton) {
-				return true;
-			}
-		}
+    bool isRegistered(RadioButton* pRadioButton) const {
+        std::vector<RadioButton*>::const_iterator iter;
+        for(iter = radioButtonList.begin(); iter != radioButtonList.end(); ++iter) {
+            if(*iter == pRadioButton) {
+                return true;
+            }
+        }
 
-		return false;
-	}
+        return false;
+    }
 
-	void setChecked(RadioButton* pRadioButton) const;
-	
+    void setChecked(RadioButton* pRadioButton) const;
+    
 
 private:
-	std::vector<RadioButton*>	radioButtonList;
+    std::vector<RadioButton*>   radioButtonList;
 };
 
 #endif // RADIOBUTTONMANAGER_H

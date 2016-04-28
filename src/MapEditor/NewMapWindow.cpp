@@ -41,20 +41,20 @@ NewMapWindow::NewMapWindow(HOUSETYPE currentHouse) : Window(0,0,0,0), house(curr
 
     // set up window
     SDL_Texture *pBackground = pGFXManager->getUIGraphic(UI_NewMapWindow);
-	setBackground(pBackground, false);
+    setBackground(pBackground, false);
 
-	setCurrentPosition(calcAlignedDrawingRect(pBackground, HAlign::Center, VAlign::Center));
+    setCurrentPosition(calcAlignedDrawingRect(pBackground, HAlign::Center, VAlign::Center));
 
-	setWindowWidget(&mainHBox);
+    setWindowWidget(&mainHBox);
 
-	mainHBox.addWidget(HSpacer::create(16));
-	mainHBox.addWidget(&mainVBox);
-	mainHBox.addWidget(HSpacer::create(16));
+    mainHBox.addWidget(HSpacer::create(16));
+    mainHBox.addWidget(&mainVBox);
+    mainHBox.addWidget(HSpacer::create(16));
 
     titleLabel.setTextColor(COLOR_LIGHTYELLOW, COLOR_TRANSPARENT);
-	titleLabel.setAlignment((Alignment_Enum) (Alignment_HCenter | Alignment_VCenter));
-	titleLabel.setText(_("New Map"));
-	mainVBox.addWidget(&titleLabel);
+    titleLabel.setAlignment((Alignment_Enum) (Alignment_HCenter | Alignment_VCenter));
+    titleLabel.setText(_("New Map"));
+    mainVBox.addWidget(&titleLabel);
 
     mainVBox.addWidget(VSpacer::create(8));
 
@@ -202,41 +202,41 @@ NewMapWindow::NewMapWindow(HOUSETYPE currentHouse) : Window(0,0,0,0), house(curr
 
     mainVBox.addWidget(&buttonHBox);
 
-	cancelButton.setText(_("Cancel"));
+    cancelButton.setText(_("Cancel"));
     cancelButton.setTextColor(color);
-	cancelButton.setOnClick(std::bind(&NewMapWindow::onCancel, this));
+    cancelButton.setOnClick(std::bind(&NewMapWindow::onCancel, this));
 
-	buttonHBox.addWidget(&cancelButton);
+    buttonHBox.addWidget(&cancelButton);
 
-	buttonHBox.addWidget(HSpacer::create(8));
+    buttonHBox.addWidget(HSpacer::create(8));
 
     loadButton.setText(_("Load Map") + "...");
-	loadButton.setTextColor(color);
-	loadButton.setOnClick(std::bind(&NewMapWindow::onLoad, this));
+    loadButton.setTextColor(color);
+    loadButton.setOnClick(std::bind(&NewMapWindow::onLoad, this));
 
-	buttonHBox.addWidget(&loadButton);
+    buttonHBox.addWidget(&loadButton);
 
-	buttonHBox.addWidget(HSpacer::create(8));
+    buttonHBox.addWidget(HSpacer::create(8));
 
     createButton.setText(_("Create"));
-	createButton.setTextColor(color);
-	createButton.setOnClick(std::bind(&NewMapWindow::onCreate, this));
+    createButton.setTextColor(color);
+    createButton.setOnClick(std::bind(&NewMapWindow::onCreate, this));
 
-	buttonHBox.addWidget(&createButton);
+    buttonHBox.addWidget(&createButton);
 
-	mainVBox.addWidget(VSpacer::create(10));
+    mainVBox.addWidget(VSpacer::create(10));
 
-	randomMapRadioButton.setChecked(true);
+    randomMapRadioButton.setChecked(true);
     onMapTypeChanged(1);
 }
 
 void NewMapWindow::onCancel() {
     mapdata = MapData(0,0);
 
-	Window* pParentWindow = dynamic_cast<Window*>(getParent());
-	if(pParentWindow != nullptr) {
-		pParentWindow->closeChildWindow();
-	}
+    Window* pParentWindow = dynamic_cast<Window*>(getParent());
+    if(pParentWindow != nullptr) {
+        pParentWindow->closeChildWindow();
+    }
 }
 
 void NewMapWindow::onLoad() {
@@ -244,44 +244,44 @@ void NewMapWindow::onLoad() {
 }
 
 void NewMapWindow::onCreate() {
-	Window* pParentWindow = dynamic_cast<Window*>(getParent());
-	if(pParentWindow != nullptr) {
-		pParentWindow->closeChildWindow();
-	}
+    Window* pParentWindow = dynamic_cast<Window*>(getParent());
+    if(pParentWindow != nullptr) {
+        pParentWindow->closeChildWindow();
+    }
 }
 
 void NewMapWindow::onChildWindowClose(Window* pChildWindow) {
     LoadMapWindow* pLoadMapWindow = dynamic_cast<LoadMapWindow*>(pChildWindow);
-	if(pLoadMapWindow != nullptr) {
-	    loadMapFilepath = pLoadMapWindow->getLoadMapFilepath();
-	    loadMapname = pLoadMapWindow->getLoadMapname();
-	    loadMapSingleplayer = pLoadMapWindow->isLoadMapSingleplayer();
+    if(pLoadMapWindow != nullptr) {
+        loadMapFilepath = pLoadMapWindow->getLoadMapFilepath();
+        loadMapname = pLoadMapWindow->getLoadMapname();
+        loadMapSingleplayer = pLoadMapWindow->isLoadMapSingleplayer();
 
-	    if(loadMapFilepath != "") {
+        if(loadMapFilepath != "") {
             Window* pParentWindow = dynamic_cast<Window*>(getParent());
             if(pParentWindow != nullptr) {
                 pParentWindow->closeChildWindow();
             }
-	    }
-	}
+        }
+    }
 }
 
 void NewMapWindow::onMapTypeChanged(int buttonID) {
 
     mapSizeHBox.removeAllChildWidgets();
 
-	if(buttonID == 2) {
-	    mapSizeHBox.addWidget(&mapScaleLabel);
-	    mapSizeHBox.addWidget(&mapScaleDropDownBox,120);
-	    mapSizeHBox.addWidget(Spacer::create(),5.0);
-	} else {
-	    mapSizeHBox.addWidget(&mapSizeXLabel);
-	    mapSizeHBox.addWidget(&mapSizeXDropDownBox, 50);
-	    mapSizeHBox.addWidget(HSpacer::create(30));
-	    mapSizeHBox.addWidget(&mapSizeYLabel);
-	    mapSizeHBox.addWidget(&mapSizeYDropDownBox, 50);
-	    mapSizeHBox.addWidget(Spacer::create(),5.0);
-	}
+    if(buttonID == 2) {
+        mapSizeHBox.addWidget(&mapScaleLabel);
+        mapSizeHBox.addWidget(&mapScaleDropDownBox,120);
+        mapSizeHBox.addWidget(Spacer::create(),5.0);
+    } else {
+        mapSizeHBox.addWidget(&mapSizeXLabel);
+        mapSizeHBox.addWidget(&mapSizeXDropDownBox, 50);
+        mapSizeHBox.addWidget(HSpacer::create(30));
+        mapSizeHBox.addWidget(&mapSizeYLabel);
+        mapSizeHBox.addWidget(&mapSizeYDropDownBox, 50);
+        mapSizeHBox.addWidget(Spacer::create(),5.0);
+    }
 
     rngSeedLabel.setVisible( (buttonID != 0) );
     rngSeedTextBox.setVisible( (buttonID != 0) );
@@ -332,12 +332,12 @@ void NewMapWindow::onMapPropertiesChanged() {
 SDL_Surface* NewMapWindow::createMinimapPicture(MapData& mapdata, int borderWidth, Uint32 borderColor) {
     SDL_Surface* pMinimap;
     // create surface
-	if((pMinimap = SDL_CreateRGBSurface(0, 128+2*borderWidth, 128+2*borderWidth, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK)) == nullptr) {
-		return nullptr;
-	}
-	SDL_FillRect(pMinimap, nullptr, borderColor);
-	SDL_Rect dest = { borderWidth, borderWidth, pMinimap->w - 2*borderWidth, pMinimap->h - 2*borderWidth};
-	SDL_FillRect(pMinimap, &dest, COLOR_BLACK);
+    if((pMinimap = SDL_CreateRGBSurface(0, 128+2*borderWidth, 128+2*borderWidth, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK)) == nullptr) {
+        return nullptr;
+    }
+    SDL_FillRect(pMinimap, nullptr, borderColor);
+    SDL_Rect dest = { borderWidth, borderWidth, pMinimap->w - 2*borderWidth, pMinimap->h - 2*borderWidth};
+    SDL_FillRect(pMinimap, &dest, COLOR_BLACK);
 
     int scale = 1;
     int offsetX;

@@ -25,16 +25,16 @@
 class OMemoryStream : public OutputStream
 {
 public:
-	OMemoryStream()
-	 : currentPos(0), bufferSize(0), pBuffer(nullptr) {
+    OMemoryStream()
+     : currentPos(0), bufferSize(0), pBuffer(nullptr) {
         ;
     }
 
-	~OMemoryStream() {
+    ~OMemoryStream() {
         free(pBuffer);
-	}
+    }
 
-	void open() {
+    void open() {
         free(pBuffer);
 
         currentPos = 0;
@@ -43,7 +43,7 @@ public:
         if(pBuffer == nullptr) {
             throw OMemoryStream::error("OMemoryStream::open(): malloc failed!");
         }
-	}
+    }
 
     const char* getData() const {
         return pBuffer;
@@ -53,12 +53,12 @@ public:
         return (bReadOnly == true) ? bufferSize : currentPos;
     }
 
-	void flush() {
+    void flush() {
         ;
-	}
+    }
 
-	void writeString(const std::string& str) {
-	    ensureBufferSize(currentPos + str.length() + sizeof(Uint32));
+    void writeString(const std::string& str) {
+        ensureBufferSize(currentPos + str.length() + sizeof(Uint32));
 
         writeUint32(str.length());
 
@@ -69,38 +69,38 @@ public:
     }
 
 
-	void writeUint8(Uint8 x) {
+    void writeUint8(Uint8 x) {
         ensureBufferSize(currentPos + sizeof(Uint8));
         *((Uint8*) (pBuffer + currentPos)) = x;
         currentPos += sizeof(Uint8);
-	}
+    }
 
-	void writeUint16(Uint16 x) {
+    void writeUint16(Uint16 x) {
         ensureBufferSize(currentPos + sizeof(Uint16));
         x = SDL_SwapLE16(x);
         *((Uint16*) (pBuffer + currentPos)) = x;
         currentPos += sizeof(Uint16);
-	}
+    }
 
-	void writeUint32(Uint32 x) {
+    void writeUint32(Uint32 x) {
         ensureBufferSize(currentPos + sizeof(Uint32));
         x = SDL_SwapLE32(x);
         *((Uint32*) (pBuffer + currentPos)) = x;
         currentPos += sizeof(Uint32);
-	}
+    }
 
-	void writeUint64(Uint64 x) {
+    void writeUint64(Uint64 x) {
         ensureBufferSize(currentPos + sizeof(Uint64));
         x = SDL_SwapLE64(x);
         *((Uint64*) (pBuffer + currentPos)) = x;
         currentPos += sizeof(Uint64);
-	}
+    }
 
-	void writeBool(bool x) {
+    void writeBool(bool x) {
         writeUint8(x == true ? 1 : 0);
-	}
+    }
 
-	void writeFloat(float x) {
+    void writeFloat(float x) {
         if(sizeof(float) != sizeof(Uint32)) {
             throw OMemoryStream::error("OMemoryStream::writeFloat(): sizeof(float) != sizeof(Uint32). Cannot save floats on such systems.");
         }
@@ -109,7 +109,7 @@ public:
         writeUint32(tmp);
     }
 
-	void ensureBufferSize(size_t minBufferSize) {
+    void ensureBufferSize(size_t minBufferSize) {
         if(minBufferSize < bufferSize) {
             return;
         }
@@ -126,12 +126,12 @@ public:
             pBuffer = pNewBuffer;
             bufferSize = newBufferSize;
         }
-	}
+    }
 
 private:
     size_t  currentPos;
     size_t  bufferSize;
-	char*   pBuffer;
+    char*   pBuffer;
 };
 
 #endif // OMEMORYSTREAM_H

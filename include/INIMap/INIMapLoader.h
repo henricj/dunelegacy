@@ -36,8 +36,8 @@ class House;
 
 class INIMapLoader : public INIMap {
 public:
-	INIMapLoader(Game* pGame, std::string mapname, std::string mapdata = "");
-	~INIMapLoader();
+    INIMapLoader(Game* pGame, std::string mapname, std::string mapdata = "");
+    ~INIMapLoader();
 
 private:
     void load();

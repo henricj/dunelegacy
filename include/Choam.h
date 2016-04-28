@@ -46,7 +46,7 @@ public:
 
 private:
     House*                  house;               ///< The house of this choam
-	std::vector<BuildItem>  availableItems;      ///< This list contains all the things that can be bought from a Starport
+    std::vector<BuildItem>  availableItems;      ///< This list contains all the things that can be bought from a Starport
 };
 
 #endif // CHOAM_H

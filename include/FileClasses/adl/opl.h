@@ -38,19 +38,19 @@ class Copl
     {
     }
 
-  virtual void write(int reg, int val) = 0;	// combined register select + data write
-  virtual void setchip(int n)			// select OPL chip
+  virtual void write(int reg, int val) = 0; // combined register select + data write
+  virtual void setchip(int n)           // select OPL chip
     {
       if(n < 2)
-	currChip = n;
+    currChip = n;
     }
 
-  virtual int getchip()				// returns current OPL chip
+  virtual int getchip()             // returns current OPL chip
     {
       return currChip;
     }
 
-  virtual void init(void) = 0;			// reinitialize OPL chip(s)
+  virtual void init(void) = 0;          // reinitialize OPL chip(s)
 
   // return this OPL chip's type
   ChipType gettype()
@@ -62,8 +62,8 @@ class Copl
   virtual void update(short *buf, int samples) {}
 
  protected:
-  int		currChip;		// currently selected OPL chip number
-  ChipType	currType;		// this OPL chip's type
+  int       currChip;       // currently selected OPL chip number
+  ChipType  currType;       // this OPL chip's type
 };
 
 #endif

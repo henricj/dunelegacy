@@ -37,9 +37,9 @@ Carryall::Carryall(House* newOwner) : AirUnit(newOwner)
 
     setHealth(getMaxHealth());
 
-	booked = false;
+    booked = false;
     idle = true;
-	firstRun = true;
+    firstRun = true;
     owned = true;
 
     aDropOfferer = false;
@@ -48,72 +48,72 @@ Carryall::Carryall(House* newOwner) : AirUnit(newOwner)
 
     currentMaxSpeed = 2;
 
-	curFlyPoint = 0;
-	for(int i=0; i < 8; i++) {
-		flyPoints[i].invalidate();
-	}
-	constYardPoint.invalidate();
+    curFlyPoint = 0;
+    for(int i=0; i < 8; i++) {
+        flyPoints[i].invalidate();
+    }
+    constYardPoint.invalidate();
 }
 
 Carryall::Carryall(InputStream& stream) : AirUnit(stream)
 {
     Carryall::init();
 
-	pickedUpUnitList = stream.readUint32List();
-	if(!pickedUpUnitList.empty()) {
-		drawnFrame = 1;
-	}
+    pickedUpUnitList = stream.readUint32List();
+    if(!pickedUpUnitList.empty()) {
+        drawnFrame = 1;
+    }
 
     stream.readBools(&booked, &idle, &firstRun, &owned, &aDropOfferer, &droppedOffCargo);
 
-	currentMaxSpeed = stream.readFixPoint();
+    currentMaxSpeed = stream.readFixPoint();
 
-	curFlyPoint = stream.readUint8();
-	for(int i=0; i < 8; i++) {
-		flyPoints[i].x = stream.readSint32();
-		flyPoints[i].y = stream.readSint32();
-	}
-	constYardPoint.x = stream.readSint32();
-	constYardPoint.y = stream.readSint32();
+    curFlyPoint = stream.readUint8();
+    for(int i=0; i < 8; i++) {
+        flyPoints[i].x = stream.readSint32();
+        flyPoints[i].y = stream.readSint32();
+    }
+    constYardPoint.x = stream.readSint32();
+    constYardPoint.y = stream.readSint32();
 }
 
 void Carryall::init()
 {
-	itemID = Unit_Carryall;
-	owner->incrementUnits(itemID);
+    itemID = Unit_Carryall;
+    owner->incrementUnits(itemID);
 
-	canAttackStuff = false;
+    canAttackStuff = false;
 
-	graphicID = ObjPic_Carryall;
-	graphic = pGFXManager->getObjPic(graphicID,getOwner()->getHouseID());
-	shadowGraphic = pGFXManager->getObjPic(ObjPic_CarryallShadow,getOwner()->getHouseID());
+    graphicID = ObjPic_Carryall;
+    graphic = pGFXManager->getObjPic(graphicID,getOwner()->getHouseID());
+    shadowGraphic = pGFXManager->getObjPic(ObjPic_CarryallShadow,getOwner()->getHouseID());
 
-	numImagesX = NUM_ANGLES;
-	numImagesY = 2;
+    numImagesX = NUM_ANGLES;
+    numImagesY = 2;
 }
 
 Carryall::~Carryall()
 {
-	;
+    ;
 }
 
 void Carryall::save(OutputStream& stream) const
 {
-	AirUnit::save(stream);
+    AirUnit::save(stream);
 
-	stream.writeUint32List(pickedUpUnitList);
+    stream.writeUint32List(pickedUpUnitList);
 
     stream.writeBools(booked, idle, firstRun, owned, aDropOfferer, droppedOffCargo);
 
-	stream.writeFixPoint(currentMaxSpeed);
+    stream.writeFixPoint(currentMaxSpeed);
 
-	stream.writeUint8(curFlyPoint);
-	for(int i=0; i < 8; i++) {
-		stream.writeSint32(flyPoints[i].x);
-		stream.writeSint32(flyPoints[i].y);
-	}
-	stream.writeSint32(constYardPoint.x);
-	stream.writeSint32(constYardPoint.y);
+    stream.writeUint8(curFlyPoint);
+    for(int i=0; i < 8; i++) {
+        stream.writeSint32(flyPoints[i].x);
+        stream.writeSint32(flyPoints[i].y);
+    }
+    stream.writeSint32(constYardPoint.x);
+    stream.writeSint32(constYardPoint.y);
 }
 
 bool Carryall::update() {
@@ -133,20 +133,20 @@ bool Carryall::update() {
         setSpeeds();
     }
 
-	// check if this carryall has to be removed because it has just brought something
-	// to the map (e.g. new harvester)
-	if (active)	{
-		if(aDropOfferer && droppedOffCargo && (hasCargo() == false)
+    // check if this carryall has to be removed because it has just brought something
+    // to the map (e.g. new harvester)
+    if (active) {
+        if(aDropOfferer && droppedOffCargo && (hasCargo() == false)
             && (    (location.x == 0) || (location.x == currentGameMap->getSizeX()-1)
                     || (location.y == 0) || (location.y == currentGameMap->getSizeY()-1))
-            && !moving)	{
+            && !moving) {
 
             setVisible(VIS_ALL, false);
             destroy();
             return false;
-		}
-	}
-	return true;
+        }
+    }
+    return true;
 }
 
 FixPoint Carryall::getMaxSpeed() const {
@@ -154,18 +154,18 @@ FixPoint Carryall::getMaxSpeed() const {
 }
 
 void Carryall::deploy(const Coord& newLocation) {
-	AirUnit::deploy(newLocation);
+    AirUnit::deploy(newLocation);
 
-	respondable = false;
+    respondable = false;
 }
 
 void Carryall::checkPos()
 {
-	AirUnit::checkPos();
+    AirUnit::checkPos();
 
-	if (active)	{
-		if (hasCargo() && (location == destination) && (distanceFrom(realX, realY, destination.x * TILESIZE + (TILESIZE/2), destination.y * TILESIZE + (TILESIZE/2)) < TILESIZE/8) ) {
-		    // drop up to 3 infantry units at once or one other unit
+    if (active) {
+        if (hasCargo() && (location == destination) && (distanceFrom(realX, realY, destination.x * TILESIZE + (TILESIZE/2), destination.y * TILESIZE + (TILESIZE/2)) < TILESIZE/8) ) {
+            // drop up to 3 infantry units at once or one other unit
             int droppedUnits = 0;
             do {
                 Uint32 unitID = pickedUpUnitList.front();
@@ -209,143 +209,143 @@ void Carryall::checkPos()
 
                 idle = true;
             }
-		} else if((isBooked() == false) && idle && !firstRun) {
-			//fly around const yard
-			Coord point = this->getClosestPoint(location);
+        } else if((isBooked() == false) && idle && !firstRun) {
+            //fly around const yard
+            Coord point = this->getClosestPoint(location);
 
-			if(point == guardPoint) {
-				//arrived at point, move to next
-				curFlyPoint++;
+            if(point == guardPoint) {
+                //arrived at point, move to next
+                curFlyPoint++;
 
-				if(curFlyPoint >= 8) {
-					curFlyPoint = 0;
-				}
+                if(curFlyPoint >= 8) {
+                    curFlyPoint = 0;
+                }
 
                 int looped = 0;
-				while(!(currentGameMap->tileExists(flyPoints[curFlyPoint].x, flyPoints[curFlyPoint].y)) && looped <= 2) {
-					curFlyPoint++;
+                while(!(currentGameMap->tileExists(flyPoints[curFlyPoint].x, flyPoints[curFlyPoint].y)) && looped <= 2) {
+                    curFlyPoint++;
 
-					if(curFlyPoint >= 8) {
-						curFlyPoint = 0;
-						looped++;
-					}
-				}
+                    if(curFlyPoint >= 8) {
+                        curFlyPoint = 0;
+                        looped++;
+                    }
+                }
 
-				setGuardPoint(flyPoints[curFlyPoint]);
-				setDestination(guardPoint);
-			}
-		} else if(firstRun && owned) {
-			findConstYard();
-			setGuardPoint(constYardPoint);
-			setDestination(guardPoint);
-			firstRun = false;
-		}
-	}
+                setGuardPoint(flyPoints[curFlyPoint]);
+                setDestination(guardPoint);
+            }
+        } else if(firstRun && owned) {
+            findConstYard();
+            setGuardPoint(constYardPoint);
+            setDestination(guardPoint);
+            firstRun = false;
+        }
+    }
 
 }
 
 void Carryall::deployUnit(Uint32 unitID)
 {
-	bool found = false;
+    bool found = false;
 
-	std::list<Uint32>::iterator iter;
-	for(iter = pickedUpUnitList.begin() ; iter != pickedUpUnitList.end(); ++iter) {
-		if(*iter == unitID) {
-			found = true;
-			break;
-		}
-	}
-
-	if(found == false) {
-        return;
-	}
-
-	pickedUpUnitList.remove(unitID);
-
-	soundPlayer->playSoundAt(Sound_Drop, location);
-
-	UnitBase* pUnit = (UnitBase*) (currentGame->getObjectManager().getObject(unitID));
-
-	if(pUnit == nullptr) {
-		return;
+    std::list<Uint32>::iterator iter;
+    for(iter = pickedUpUnitList.begin() ; iter != pickedUpUnitList.end(); ++iter) {
+        if(*iter == unitID) {
+            found = true;
+            break;
+        }
     }
 
-	if (found) {
-	    currentMaxSpeed = 0;
-	    setSpeeds();
+    if(found == false) {
+        return;
+    }
 
-	    if (currentGameMap->getTile(location)->hasANonInfantryGroundObject()) {
-			ObjectBase* object = currentGameMap->getTile(location)->getNonInfantryGroundObject();
-			if (object->getOwner() == getOwner()) {
-				if (object->getItemID() == Structure_RepairYard) {
-					if (((RepairYard*)object)->isFree()) {
-						pUnit->setTarget(object);
-						pUnit->setGettingRepaired();
-						pUnit = nullptr;
-					} else {
-					    // carryall has booked this repair yard but now will not go there => unbook
-						((RepairYard*)object)->unBook();
+    pickedUpUnitList.remove(unitID);
 
-						// unit is still going to repair yard but was unbooked from repair yard at pickup => book now
-						((RepairYard*)object)->book();
-					}
-				} else if ((object->getItemID() == Structure_Refinery) && (pUnit->getItemID() == Unit_Harvester)) {
-					if (((Refinery*)object)->isFree()) {
-						((Harvester*)pUnit)->setTarget(object);
-						((Harvester*)pUnit)->setReturned();
-						pUnit = nullptr;
-						goingToRepairYard = false;
-					}
-				}
-			}
-		}
+    soundPlayer->playSoundAt(Sound_Drop, location);
 
-		if(pUnit != nullptr) {
-			pUnit->setAngle(drawnAngle);
-			Coord deployPos = currentGameMap->findDeploySpot(pUnit, location);
-			pUnit->setForced(false); // Stop units being forced if they are deployed
-			pUnit->deploy(deployPos);
-			if(pUnit->getItemID() == Unit_Saboteur) {
+    UnitBase* pUnit = (UnitBase*) (currentGame->getObjectManager().getObject(unitID));
+
+    if(pUnit == nullptr) {
+        return;
+    }
+
+    if (found) {
+        currentMaxSpeed = 0;
+        setSpeeds();
+
+        if (currentGameMap->getTile(location)->hasANonInfantryGroundObject()) {
+            ObjectBase* object = currentGameMap->getTile(location)->getNonInfantryGroundObject();
+            if (object->getOwner() == getOwner()) {
+                if (object->getItemID() == Structure_RepairYard) {
+                    if (((RepairYard*)object)->isFree()) {
+                        pUnit->setTarget(object);
+                        pUnit->setGettingRepaired();
+                        pUnit = nullptr;
+                    } else {
+                        // carryall has booked this repair yard but now will not go there => unbook
+                        ((RepairYard*)object)->unBook();
+
+                        // unit is still going to repair yard but was unbooked from repair yard at pickup => book now
+                        ((RepairYard*)object)->book();
+                    }
+                } else if ((object->getItemID() == Structure_Refinery) && (pUnit->getItemID() == Unit_Harvester)) {
+                    if (((Refinery*)object)->isFree()) {
+                        ((Harvester*)pUnit)->setTarget(object);
+                        ((Harvester*)pUnit)->setReturned();
+                        pUnit = nullptr;
+                        goingToRepairYard = false;
+                    }
+                }
+            }
+        }
+
+        if(pUnit != nullptr) {
+            pUnit->setAngle(drawnAngle);
+            Coord deployPos = currentGameMap->findDeploySpot(pUnit, location);
+            pUnit->setForced(false); // Stop units being forced if they are deployed
+            pUnit->deploy(deployPos);
+            if(pUnit->getItemID() == Unit_Saboteur) {
                 pUnit->doSetAttackMode(HUNT);
-			} else if(pUnit->getItemID() != Unit_Harvester) {
+            } else if(pUnit->getItemID() != Unit_Harvester) {
                 pUnit->doSetAttackMode(AREAGUARD);
-			} else {
+            } else {
                 pUnit->doSetAttackMode(HARVEST);
-			}
-		}
+            }
+        }
 
-		if (pickedUpUnitList.empty()) {
-			if(!aDropOfferer) {
-				booked = false;
+        if (pickedUpUnitList.empty()) {
+            if(!aDropOfferer) {
+                booked = false;
                 idle = true;
-			}
-			droppedOffCargo = true;
-			drawnFrame = 0;
+            }
+            droppedOffCargo = true;
+            drawnFrame = 0;
 
-			clearPath();
-		}
-	}
+            clearPath();
+        }
+    }
 }
 
 void Carryall::destroy()
 {
     // destroy cargo
-	std::list<Uint32>::const_iterator iter;
-	for(iter = pickedUpUnitList.begin() ; iter != pickedUpUnitList.end(); ++iter) {
-		UnitBase* pUnit = (UnitBase*) (currentGame->getObjectManager().getObject(*iter));
-		if(pUnit != nullptr) {
-			pUnit->destroy();
-		}
-	}
-	pickedUpUnitList.clear();
+    std::list<Uint32>::const_iterator iter;
+    for(iter = pickedUpUnitList.begin() ; iter != pickedUpUnitList.end(); ++iter) {
+        UnitBase* pUnit = (UnitBase*) (currentGame->getObjectManager().getObject(*iter));
+        if(pUnit != nullptr) {
+            pUnit->destroy();
+        }
+    }
+    pickedUpUnitList.clear();
 
-	// place wreck
+    // place wreck
     if(isVisible() && currentGameMap->tileExists(location)) {
         Tile* pTile = currentGameMap->getTile(location);
         pTile->assignDeadUnit(DeadUnit_Carrall, owner->getHouseID(), Coord(lround(realX), lround(realY)));
     }
 
-	AirUnit::destroy();
+    AirUnit::destroy();
 }
 
 void Carryall::releaseTarget() {
@@ -422,19 +422,19 @@ void Carryall::engageTarget()
 
 void Carryall::giveCargo(UnitBase* newUnit)
 {
-	if(newUnit == nullptr) {
-		return;
+    if(newUnit == nullptr) {
+        return;
     }
 
-	booked = true;
-	pickedUpUnitList.push_back(newUnit->getObjectID());
+    booked = true;
+    pickedUpUnitList.push_back(newUnit->getObjectID());
 
-	newUnit->setPickedUp(this);
+    newUnit->setPickedUp(this);
 
-	if (getItemID() != Unit_Frigate)
-		drawnFrame = 1;
+    if (getItemID() != Unit_Frigate)
+        drawnFrame = 1;
 
-	droppedOffCargo = false;
+    droppedOffCargo = false;
 }
 
 void Carryall::pickupTarget()
@@ -444,7 +444,7 @@ void Carryall::pickupTarget()
 
     ObjectBase* pTarget = target.getObjPointer();
 
-	if(pTarget->isAGroundUnit()) {
+    if(pTarget->isAGroundUnit()) {
         GroundUnit* pGroundUnitTarget = dynamic_cast<GroundUnit*>(pTarget);
 
         if(pTarget->getHealth() <= 0) {
@@ -453,21 +453,21 @@ void Carryall::pickupTarget()
             return;
         }
 
-		if (  pTarget->hasATarget()
-			|| ( pGroundUnitTarget->getGuardPoint() != pTarget->getLocation())
-			|| pGroundUnitTarget->isBadlyDamaged())	{
+        if (  pTarget->hasATarget()
+            || ( pGroundUnitTarget->getGuardPoint() != pTarget->getLocation())
+            || pGroundUnitTarget->isBadlyDamaged()) {
 
-			if(pGroundUnitTarget->isBadlyDamaged() || (pTarget->hasATarget() == false && pTarget->getItemID() != Unit_Harvester))	{
-				pGroundUnitTarget->doRepair();
-			}
+            if(pGroundUnitTarget->isBadlyDamaged() || (pTarget->hasATarget() == false && pTarget->getItemID() != Unit_Harvester))   {
+                pGroundUnitTarget->doRepair();
+            }
 
-			ObjectBase* newTarget = pGroundUnitTarget->hasATarget() ? pGroundUnitTarget->getTarget() : nullptr;
+            ObjectBase* newTarget = pGroundUnitTarget->hasATarget() ? pGroundUnitTarget->getTarget() : nullptr;
 
-			pickedUpUnitList.push_back(target.getObjectID());
-			pGroundUnitTarget->setPickedUp(this);
+            pickedUpUnitList.push_back(target.getObjectID());
+            pGroundUnitTarget->setPickedUp(this);
 
-			drawnFrame = 1;
-			booked = true;
+            drawnFrame = 1;
+            booked = true;
 
             if(newTarget && ((newTarget->getItemID() == Structure_Refinery)
                               || (newTarget->getItemID() == Structure_RepairYard)))
@@ -484,11 +484,11 @@ void Carryall::pickupTarget()
 
             clearPath();
 
-		} else {
-			pGroundUnitTarget->setawaitingPickup(false);
-			releaseTarget();
-		}
-	} else {
+        } else {
+            pGroundUnitTarget->setawaitingPickup(false);
+            releaseTarget();
+        }
+    } else {
         // get unit from structure
         ObjectBase* pObject = target.getObjPointer();
         if(pObject->getItemID() == Structure_Refinery) {
@@ -498,31 +498,31 @@ void Carryall::pickupTarget()
             // get repaired unit
             ((RepairYard*) pObject)->deployRepairUnit(this);
         }
-	}
+    }
 }
 
 void Carryall::setTarget(const ObjectBase* newTarget) {
-	if(target.getObjPointer() != nullptr
-		&& targetFriendly
-		&& target.getObjPointer()->isAGroundUnit()
-		&& (((GroundUnit*)target.getObjPointer())->getCarrier() == this))
-	{
-		((GroundUnit*)target.getObjPointer())->bookCarrier(nullptr);
-	}
+    if(target.getObjPointer() != nullptr
+        && targetFriendly
+        && target.getObjPointer()->isAGroundUnit()
+        && (((GroundUnit*)target.getObjPointer())->getCarrier() == this))
+    {
+        ((GroundUnit*)target.getObjPointer())->bookCarrier(nullptr);
+    }
 
-	UnitBase::setTarget(newTarget);
+    UnitBase::setTarget(newTarget);
 
-	if(target && targetFriendly && target.getObjPointer()->isAGroundUnit()) {
-		((GroundUnit*)target.getObjPointer())->setawaitingPickup(true);
-	}
+    if(target && targetFriendly && target.getObjPointer()->isAGroundUnit()) {
+        ((GroundUnit*)target.getObjPointer())->setawaitingPickup(true);
+    }
 
-	booked = target;
+    booked = target;
 }
 
 void Carryall::targeting() {
-	if(target) {
-		engageTarget();
-	}
+    if(target) {
+        engageTarget();
+    }
 }
 
 

@@ -32,61 +32,61 @@ typedef std::map<Uint32,ObjectBase*> ObjectMap;
 /// This class holds all objects (structures and units) in the game.
 class ObjectManager{
 public:
-	/**
-		Default constructor
-	*/
+    /**
+        Default constructor
+    */
     ObjectManager() : nextFreeObjectID(1)
     {
     }
 
     /**
-		Default destructor
-	*/
+        Default destructor
+    */
     ~ObjectManager() { ; }
 
 
     /**
-		Saves all objects to a stream
-		\param	stream	Stream to save to
-	*/
-	void save(OutputStream& stream) const;
-
-	/**
-		Loads all objects from a stream
-		\param	stream	Stream to load from
-	*/
-	void load(InputStream& stream);
+        Saves all objects to a stream
+        \param  stream  Stream to save to
+    */
+    void save(OutputStream& stream) const;
 
     /**
-		This method adds one object. The ObjectID is choosen automatically.
-		\param	pObject	A pointer to the object.
-		\return ObjectID of the added object.
-	*/
+        Loads all objects from a stream
+        \param  stream  Stream to load from
+    */
+    void load(InputStream& stream);
+
+    /**
+        This method adds one object. The ObjectID is choosen automatically.
+        \param  pObject A pointer to the object.
+        \return ObjectID of the added object.
+    */
     Uint32 addObject(ObjectBase* pObject);
 
     /**
-		This method searches for the object with ObjectID.
-		\param	ObjectID		ID of the object to search for
-		\return Pointer to this object (nullptr if not found)
-	*/
-	inline ObjectBase* getObject(Uint32 objectID) const {
-	    ObjectMap::const_iterator iter = objectMap.find(objectID);
+        This method searches for the object with ObjectID.
+        \param  ObjectID        ID of the object to search for
+        \return Pointer to this object (nullptr if not found)
+    */
+    inline ObjectBase* getObject(Uint32 objectID) const {
+        ObjectMap::const_iterator iter = objectMap.find(objectID);
 
-	    if(iter == objectMap.end()) {
+        if(iter == objectMap.end()) {
             return nullptr;
-	    } else {
+        } else {
             return iter->second;
-	    }
-	}
+        }
+    }
 
-	/**
-		This method removes one object.
-		\param	ObjectID		ID of the object to remove
-		\return false if there was no object with this ObjectID, true if it could be removed
-	*/
-	bool removeObject(Uint32 objectID) {
-	    return (bool) objectMap.erase(objectID);
-	}
+    /**
+        This method removes one object.
+        \param  ObjectID        ID of the object to remove
+        \return false if there was no object with this ObjectID, true if it could be removed
+    */
+    bool removeObject(Uint32 objectID) {
+        return (bool) objectMap.erase(objectID);
+    }
 
 private:
     Uint32 nextFreeObjectID;

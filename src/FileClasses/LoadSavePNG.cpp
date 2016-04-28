@@ -27,8 +27,8 @@
 
 SDL_Surface* LoadPNG_RW(SDL_RWops* RWop, int freesrc) {
     if(RWop == nullptr) {
-		return nullptr;
-	}
+        return nullptr;
+    }
 
     unsigned char* pFiledata = nullptr;
     unsigned char* pImageOut = nullptr;
@@ -40,7 +40,7 @@ SDL_Surface* LoadPNG_RW(SDL_RWops* RWop, int freesrc) {
     LodePNGState lodePNGState;
     lodepng_state_init(&lodePNGState);
 
-	try {
+    try {
         // read complete file into memory
         size_t filesize = SDL_RWseek(RWop,0,SEEK_END);
         if(filesize <= 0) {
@@ -131,8 +131,8 @@ SDL_Surface* LoadPNG_RW(SDL_RWops* RWop, int freesrc) {
 
         }
 
-	    free(pFiledata);
-	    free(pImageOut);
+        free(pFiledata);
+        free(pImageOut);
 
         lodepng_state_cleanup(&lodePNGState);
 
@@ -141,22 +141,22 @@ SDL_Surface* LoadPNG_RW(SDL_RWops* RWop, int freesrc) {
         }
 
         return pic;
-	} catch (std::exception &e) {
-		fprintf(stderr, "%s\n", e.what());
+    } catch (std::exception &e) {
+        fprintf(stderr, "%s\n", e.what());
 
-	    free(pFiledata);
-	    free(pImageOut);
+        free(pFiledata);
+        free(pImageOut);
 
-	    if(pic != nullptr) {
+        if(pic != nullptr) {
             SDL_FreeSurface(pic);
-	    }
+        }
 
         if(freesrc) {
             SDL_RWclose(RWop);
         }
 
         return nullptr;
-	}
+    }
 }
 
 int SavePNG_RW(SDL_Surface* surface, SDL_RWops* RWop, int freedst) {
@@ -164,15 +164,15 @@ int SavePNG_RW(SDL_Surface* surface, SDL_RWops* RWop, int freedst) {
         if(freedst) {
             SDL_RWclose(RWop);
         }
-		return -1;
-	}
+        return -1;
+    }
 
-	unsigned int width = surface->w;
-	unsigned int height = surface->h;
+    unsigned int width = surface->w;
+    unsigned int height = surface->h;
 
-	unsigned char* pImage = (unsigned char*) malloc(width*height*4);
+    unsigned char* pImage = (unsigned char*) malloc(width*height*4);
 
-	SDL_LockSurface(surface);
+    SDL_LockSurface(surface);
 
     // Now we can copy pixel by pixel
     for(unsigned int y = 0; y < height; y++) {

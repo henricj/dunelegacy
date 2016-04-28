@@ -19,32 +19,32 @@
 #include <GUI/RadioButton.h>
 
 void RadioButtonManager::registerRadioButton(RadioButton* pRadioButton) {
-	if(isRegistered(pRadioButton) == false) {
-		radioButtonList.push_back(pRadioButton);
-	}
-	pRadioButton->registerRadioButtonManager(this);
+    if(isRegistered(pRadioButton) == false) {
+        radioButtonList.push_back(pRadioButton);
+    }
+    pRadioButton->registerRadioButtonManager(this);
 }
 
 void RadioButtonManager::unregisterRadioButton(RadioButton* pRadioButton) {
-	std::vector<RadioButton*>::iterator iter = radioButtonList.begin();
-	while(iter != radioButtonList.end()) {
-		if(*iter == pRadioButton) {
-			radioButtonList.erase(iter);
-			break;
-		}
-		++iter;
-	}
+    std::vector<RadioButton*>::iterator iter = radioButtonList.begin();
+    while(iter != radioButtonList.end()) {
+        if(*iter == pRadioButton) {
+            radioButtonList.erase(iter);
+            break;
+        }
+        ++iter;
+    }
 
-	pRadioButton->unregisterFromRadioButtonManager();
+    pRadioButton->unregisterFromRadioButtonManager();
 }
 
 void RadioButtonManager::setChecked(RadioButton* pRadioButton) const {
-	std::vector<RadioButton*>::const_iterator iter = radioButtonList.begin();
-	for(iter = radioButtonList.begin(); iter != radioButtonList.end(); ++iter) {
-		if(*iter == pRadioButton) {
-			(*iter)->Button::setToggleState(true);
-		} else {
-			(*iter)->Button::setToggleState(false);
-		}
-	}
+    std::vector<RadioButton*>::const_iterator iter = radioButtonList.begin();
+    for(iter = radioButtonList.begin(); iter != radioButtonList.end(); ++iter) {
+        if(*iter == pRadioButton) {
+            (*iter)->Button::setToggleState(true);
+        } else {
+            (*iter)->Button::setToggleState(false);
+        }
+    }
 }

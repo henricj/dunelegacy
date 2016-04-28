@@ -31,9 +31,9 @@ public:
         HARD = 2
     } enum_difficulty;
 
-	void init();
-	~SmartBot();
-	virtual void save(OutputStream& stream) const;
+    void init();
+    ~SmartBot();
+    virtual void save(OutputStream& stream) const;
 
     virtual void update();
 
@@ -41,43 +41,43 @@ public:
     virtual void onDecrementStructures(int itemID, const Coord& location);
     virtual void onDamage(const ObjectBase* pObject, int damage, Uint32 damagerID);
 
-	static Player* create(House* associatedHouse, std::string playername, Uint8 difficulty) {
+    static Player* create(House* associatedHouse, std::string playername, Uint8 difficulty) {
         return new SmartBot(associatedHouse, playername, difficulty);
-	}
+    }
 
-	static Player* load(InputStream& stream, House* associatedHouse) {
+    static Player* load(InputStream& stream, House* associatedHouse) {
         return new SmartBot(stream, associatedHouse);
-	}
+    }
 
 private:
-	SmartBot(House* associatedHouse, std::string playername, Uint8 difficulty);
-	SmartBot(InputStream& stream, House* associatedHouse);
+    SmartBot(House* associatedHouse, std::string playername, Uint8 difficulty);
+    SmartBot(InputStream& stream, House* associatedHouse);
 
     void scrambleUnitsAndDefend(const ObjectBase* pIntruder);
 
-	Coord findPlaceLocation(Uint32 itemID);
+    Coord findPlaceLocation(Uint32 itemID);
 
-	int getNumAdjacentStructureTiles(Coord pos, int structureSizeX, int structureSizeY);
+    int getNumAdjacentStructureTiles(Coord pos, int structureSizeX, int structureSizeY);
 
-	void checkAllUnits();
-	void build();
-	void attack();
+    void checkAllUnits();
+    void build();
+    void attack();
 
-	bool isAllowedToArm() const;
+    bool isAllowedToArm() const;
 
-	int getMaxHarvester() const;
+    int getMaxHarvester() const;
 
-	Uint8	difficulty;     ///< difficulty level
-	Sint32  attackTimer;    ///< When to attack?
+    Uint8   difficulty;     ///< difficulty level
+    Sint32  attackTimer;    ///< When to attack?
     Sint32  buildTimer;     ///< When to build the next structure/unit
     Sint32  AIStrategy;     ///< What assult strategy to use
 
-	std::list<Coord> placeLocations;    ///< Where to place structures
+    std::list<Coord> placeLocations;    ///< Where to place structures
 
-	bool focusEconomy();
-	bool focusMilitary();
-	bool focusFactory();
-	bool focusBase();
+    bool focusEconomy();
+    bool focusMilitary();
+    bool focusFactory();
+    bool focusBase();
 };
 
 #endif //SmartBot_H

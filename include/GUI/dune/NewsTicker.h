@@ -27,38 +27,38 @@
 
 class NewsTicker : public Widget {
 public:
-	NewsTicker();
-	virtual ~NewsTicker();
+    NewsTicker();
+    virtual ~NewsTicker();
 
     bool hasMessage() const { return !messages.empty(); };
-	void addMessage(const std::string& msg);
-	void addUrgentMessage(const std::string& msg);
+    void addMessage(const std::string& msg);
+    void addUrgentMessage(const std::string& msg);
 
-	/**
-		Draws this button to screen. This method is called before drawOverlay().
-		\param	position	Position to draw the button to
-	*/
-	void draw(Point position);
+    /**
+        Draws this button to screen. This method is called before drawOverlay().
+        \param  position    Position to draw the button to
+    */
+    void draw(Point position);
 
-	/**
-		Returns the minimum size of this widget. The widget should not
-		be resized to a size smaller than this.
-		\return the minimum size of this widget
-	*/
-	virtual Point getMinimumSize() const {
-		if(pBackground != nullptr) {
-			return getTextureSize(pBackground);
-		} else {
-			return Point(0,0);
-		}
-	}
+    /**
+        Returns the minimum size of this widget. The widget should not
+        be resized to a size smaller than this.
+        \return the minimum size of this widget
+    */
+    virtual Point getMinimumSize() const {
+        if(pBackground != nullptr) {
+            return getTextureSize(pBackground);
+        } else {
+            return Point(0,0);
+        }
+    }
 
 private:
-	SDL_Texture* pBackground;
-	std::queue<std::string> messages;
-	std::string currentMessage;
-	SDL_Texture* pCurrentMessageTexture;
-	int timer;
+    SDL_Texture* pBackground;
+    std::queue<std::string> messages;
+    std::string currentMessage;
+    SDL_Texture* pCurrentMessageTexture;
+    int timer;
 };
 
 #endif //NEWSTICKER_H

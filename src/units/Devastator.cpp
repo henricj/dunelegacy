@@ -43,7 +43,7 @@ Devastator::Devastator(InputStream& stream) : TrackedUnit(stream)
 {
     Devastator::init();
 
-	devastateTimer = stream.readSint32();
+    devastateTimer = stream.readSint32();
 }
 
 void Devastator::init()
@@ -51,16 +51,16 @@ void Devastator::init()
     itemID = Unit_Devastator;
     owner->incrementUnits(itemID);
 
-	numWeapons = 2;
-	bulletType = Bullet_ShellLarge;
+    numWeapons = 2;
+    bulletType = Bullet_ShellLarge;
 
-	graphicID = ObjPic_Devastator_Base;
-	graphic = pGFXManager->getObjPic(graphicID,getOwner()->getHouseID());
-	gunGraphicID = ObjPic_Devastator_Gun;
-	turretGraphic = pGFXManager->getObjPic(gunGraphicID,getOwner()->getHouseID());
+    graphicID = ObjPic_Devastator_Base;
+    graphic = pGFXManager->getObjPic(graphicID,getOwner()->getHouseID());
+    gunGraphicID = ObjPic_Devastator_Gun;
+    turretGraphic = pGFXManager->getObjPic(gunGraphicID,getOwner()->getHouseID());
 
-	numImagesX = NUM_ANGLES;
-	numImagesY = 1;
+    numImagesX = NUM_ANGLES;
+    numImagesY = 1;
 }
 
 
@@ -70,8 +70,8 @@ Devastator::~Devastator()
 
 void Devastator::save(OutputStream& stream) const
 {
-	TrackedUnit::save(stream);
-	stream.writeSint32(devastateTimer);
+    TrackedUnit::save(stream);
+    stream.writeSint32(devastateTimer);
 }
 
 void Devastator::blitToScreen()
@@ -111,13 +111,13 @@ void Devastator::blitToScreen()
 }
 
 void Devastator::handleStartDevastateClick() {
-	currentGame->getCommandManager().addCommand(Command(pLocalPlayer->getPlayerID(), CMD_DEVASTATOR_STARTDEVASTATE,objectID));
+    currentGame->getCommandManager().addCommand(Command(pLocalPlayer->getPlayerID(), CMD_DEVASTATOR_STARTDEVASTATE,objectID));
 }
 
 void Devastator::doStartDevastate()
 {
-	if (devastateTimer <= 0)
-		devastateTimer = 200;
+    if (devastateTimer <= 0)
+        devastateTimer = 200;
 }
 
 void Devastator::destroy()
@@ -145,17 +145,17 @@ void Devastator::destroy()
 
 bool Devastator::update()
 {
-	if (active) {
-		if ((devastateTimer > 0) && (--devastateTimer == 0)) {
-			destroy();
-			return false;
-		}
-	}
+    if (active) {
+        if ((devastateTimer > 0) && (--devastateTimer == 0)) {
+            destroy();
+            return false;
+        }
+    }
 
-	return UnitBase::update();
+    return UnitBase::update();
 }
 
 void Devastator::playAttackSound() {
-	soundPlayer->playSoundAt(Sound_ExplosionSmall,location);
+    soundPlayer->playSoundAt(Sound_ExplosionSmall,location);
 }
 

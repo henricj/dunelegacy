@@ -26,22 +26,22 @@
 class VideoEvent {
 public:
     /// default constructor
-	VideoEvent();
+    VideoEvent();
 
-	/// destructor
-	virtual ~VideoEvent();
+    /// destructor
+    virtual ~VideoEvent();
 
     /**
         This method draws the video effect.
         \return the milliseconds until the next frame shall be drawn.
     */
-	virtual int draw();
+    virtual int draw();
 
     /**
         This method checks if this VideoEvent is already finished
         \return true, if there are no more frames to draw with this VideoEvent
     */
-	virtual bool isFinished();
+    virtual bool isFinished();
 };
 
 #endif // VIDEOEVENT_H

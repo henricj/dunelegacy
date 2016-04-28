@@ -35,22 +35,22 @@ public:
         \param  bCenterVertical     true = center the surface vertically on the screen, false = blit the surface at the top of the screen (default is true)
         \param  bFadeWhite          true = fade to white, false = fade to black (default is false)
     */
-	FadeOutVideoEvent(SDL_Surface* pSurface, int numFrames2FadeOut, bool bFreeSurface, bool bCenterVertical = true, bool bFadeWhite = false);
+    FadeOutVideoEvent(SDL_Surface* pSurface, int numFrames2FadeOut, bool bFreeSurface, bool bCenterVertical = true, bool bFadeWhite = false);
 
     /// destructor
-	virtual ~FadeOutVideoEvent();
+    virtual ~FadeOutVideoEvent();
 
     /**
         This method draws the video effect.
         \return the milliseconds until the next frame shall be drawn.
     */
-	virtual int draw();
+    virtual int draw();
 
     /**
         This method checks if this VideoEvent is already finished
         \return true, if there are no more frames to draw with this VideoEvent
     */
-	virtual bool isFinished();
+    virtual bool isFinished();
 
 private:
     int currentFrame;           ///< the current frame number relative to the start of this FadeOutVideoEvent

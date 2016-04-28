@@ -51,9 +51,9 @@ enum deadUnitEnum {
 
 typedef struct
 {
-	Uint32 damageType;
-	int	tile;
-	Coord realPos;
+    Uint32 damageType;
+    int tile;
+    Coord realPos;
 } DAMAGETYPE;
 
 typedef struct
@@ -220,14 +220,14 @@ public:
     /**
         Default constructor. Creates a tile of type Terrain_Sand.
     */
-	Tile();
-	~Tile();
+    Tile();
+    ~Tile();
 
-	void load(InputStream& stream);
-	void save(OutputStream& stream) const;
+    void load(InputStream& stream);
+    void save(OutputStream& stream) const;
 
-	void assignAirUnit(Uint32 newObjectID);
-	void assignDeadUnit(Uint8 type, Uint8 house, const Coord& position) {
+    void assignAirUnit(Uint32 newObjectID);
+    void assignDeadUnit(Uint8 type, Uint8 house, const Coord& position) {
         DEADUNITTYPE newDeadUnit;
         newDeadUnit.type = type;
         newDeadUnit.house = house;
@@ -236,39 +236,39 @@ public:
         newDeadUnit.timer = 2000;
 
         deadUnits.push_back(newDeadUnit);
-	}
+    }
 
-	void assignNonInfantryGroundObject(Uint32 newObjectID);
-	int assignInfantry(Uint32 newObjectID, Sint8 currentPosition = INVALID_POS);
-	void assignUndergroundUnit(Uint32 newObjectID);
+    void assignNonInfantryGroundObject(Uint32 newObjectID);
+    int assignInfantry(Uint32 newObjectID, Sint8 currentPosition = INVALID_POS);
+    void assignUndergroundUnit(Uint32 newObjectID);
 
     /**
         This method draws the terrain of this tile
         \param xPos the x position of the left top corner of this tile on the screen
         \param yPos the y position of the left top corner of this tile on the screen
     */
-	void blitGround(int xPos, int yPos);
+    void blitGround(int xPos, int yPos);
 
     /**
         This method draws the structures.
         \param xPos the x position of the left top corner of this tile on the screen
         \param yPos the y position of the left top corner of this tile on the screen
     */
-	void blitStructures(int xPos, int yPos);
+    void blitStructures(int xPos, int yPos);
 
     /**
         This method draws the underground units of this tile.
         \param xPos the x position of the left top corner of this tile on the screen
         \param yPos the y position of the left top corner of this tile on the screen
     */
-	void blitUndergroundUnits(int xPos, int yPos);
+    void blitUndergroundUnits(int xPos, int yPos);
 
     /**
         This method draws the dead units of this tile.
         \param xPos the x position of the left top corner of this tile on the screen
         \param yPos the y position of the left top corner of this tile on the screen
     */
-	void blitDeadUnits(int xPos, int yPos);
+    void blitDeadUnits(int xPos, int yPos);
 
     /**
         This method draws the infantry units of this tile.
@@ -282,27 +282,27 @@ public:
         \param xPos the x position of the left top corner of this tile on the screen
         \param yPos the y position of the left top corner of this tile on the screen
     */
-	void blitNonInfantryGroundUnits(int xPos, int yPos);
+    void blitNonInfantryGroundUnits(int xPos, int yPos);
 
     /**
         This method draws the air units of this tile.
         \param xPos the x position of the left top corner of this tile on the screen
         \param yPos the y position of the left top corner of this tile on the screen
     */
-	void blitAirUnits(int xPos, int yPos);
+    void blitAirUnits(int xPos, int yPos);
 
     /**
         This method draws the infantry units of this tile.
         \param xPos the x position of the left top corner of this tile on the screen
         \param yPos the y position of the left top corner of this tile on the screen
     */
-	void blitSelectionRects(int xPos, int yPos);
+    void blitSelectionRects(int xPos, int yPos);
 
 
-	inline void update() {
+    inline void update() {
 
-	    // Performance tweak because this function is called alot (every game cycle for every tile)
-	    bool bHasTracks = false;
+        // Performance tweak because this function is called alot (every game cycle for every tile)
+        bool bHasTracks = false;
         for(int i=0;i<NUM_ANGLES;i++) {
             if(tracksCounter[i] != 0) {
                 bHasTracks = true;
@@ -328,146 +328,146 @@ public:
         }
     }
 
-	void clearTerrain();
+    void clearTerrain();
 
-	inline void setTrack(Uint8 direction) {
-	    if(type == Terrain_Sand || type == Terrain_Dunes
+    inline void setTrack(Uint8 direction) {
+        if(type == Terrain_Sand || type == Terrain_Dunes
             || type == Terrain_Spice || type == Terrain_ThickSpice) {
             tracksCounter[direction] = 5000;
-	    }
+        }
     }
 
-	void selectAllPlayersUnits(int houseID, ObjectBase** lastCheckedObject, ObjectBase** lastSelectedObject);
-	void selectAllPlayersUnitsOfType(int houseID, int itemID, ObjectBase** lastCheckedObject, ObjectBase** lastSelectedObject);
-	void unassignAirUnit(Uint32 objectID);
-	void unassignNonInfantryGroundObject(Uint32 objectID);
-	void unassignObject(Uint32 objectID);
-	void unassignInfantry(Uint32 objectID, int currentPosition);
-	void unassignUndergroundUnit(Uint32 objectID);
-	void setType(int newType);
-	void squash();
-	int getInfantryTeam();
-	FixPoint harvestSpice();
-	void setSpice(FixPoint newSpice);
+    void selectAllPlayersUnits(int houseID, ObjectBase** lastCheckedObject, ObjectBase** lastSelectedObject);
+    void selectAllPlayersUnitsOfType(int houseID, int itemID, ObjectBase** lastCheckedObject, ObjectBase** lastSelectedObject);
+    void unassignAirUnit(Uint32 objectID);
+    void unassignNonInfantryGroundObject(Uint32 objectID);
+    void unassignObject(Uint32 objectID);
+    void unassignInfantry(Uint32 objectID, int currentPosition);
+    void unassignUndergroundUnit(Uint32 objectID);
+    void setType(int newType);
+    void squash();
+    int getInfantryTeam();
+    FixPoint harvestSpice();
+    void setSpice(FixPoint newSpice);
 
-	/**
+    /**
         Returns the center point of this tile
         \return the center point in world coordinates
-	*/
-	Coord getCenterPoint() const {
-	    return Coord( location.x*TILESIZE + (TILESIZE/2), location.y*TILESIZE + (TILESIZE/2) );
-	}
+    */
+    Coord getCenterPoint() const {
+        return Coord( location.x*TILESIZE + (TILESIZE/2), location.y*TILESIZE + (TILESIZE/2) );
+    }
 
     /*!
-		returns a pointer to an air unit on this tile (if there's one)
-		@return AirUnit* pointer to air unit
-	*/
-	AirUnit* getAirUnit();
+        returns a pointer to an air unit on this tile (if there's one)
+        @return AirUnit* pointer to air unit
+    */
+    AirUnit* getAirUnit();
 
-	/*!
-		returns a pointer to a non infantry ground object on this tile (if there's one)
-		@return ObjectBase*  pointer to non infantry ground object
-	*/
-	ObjectBase* getNonInfantryGroundObject();
-	/*!
-		returns a pointer to an underground object on this tile (if there's one)
-		@return UnitBase*  pointer to underground object(sandworm?)
-	*/
-	UnitBase* getUndergroundUnit();
+    /*!
+        returns a pointer to a non infantry ground object on this tile (if there's one)
+        @return ObjectBase*  pointer to non infantry ground object
+    */
+    ObjectBase* getNonInfantryGroundObject();
+    /*!
+        returns a pointer to an underground object on this tile (if there's one)
+        @return UnitBase*  pointer to underground object(sandworm?)
+    */
+    UnitBase* getUndergroundUnit();
 
-	/*!
-		returns a pointer to an ground object on this tile (if there's one)
-		@return ObjectBase*  pointer to ground object
-	*/
-	ObjectBase* getGroundObject();
+    /*!
+        returns a pointer to an ground object on this tile (if there's one)
+        @return ObjectBase*  pointer to ground object
+    */
+    ObjectBase* getGroundObject();
 
-	/*!
-		returns a pointer to infantry object on this tile (if there's one)
-		@return InfantryBase*  pointer to infantry object
-	*/
-	InfantryBase* getInfantry();
-	ObjectBase* getObject();
-	ObjectBase* getObjectAt(int x, int y);
-	ObjectBase* getObjectWithID(Uint32 objectID);
+    /*!
+        returns a pointer to infantry object on this tile (if there's one)
+        @return InfantryBase*  pointer to infantry object
+    */
+    InfantryBase* getInfantry();
+    ObjectBase* getObject();
+    ObjectBase* getObjectAt(int x, int y);
+    ObjectBase* getObjectWithID(Uint32 objectID);
 
 
     const std::list<Uint32>& getAirUnitList() const {
         return assignedAirUnitList;
     }
 
-	const std::list<Uint32>& getInfantryList() const {
+    const std::list<Uint32>& getInfantryList() const {
         return assignedInfantryList;
     }
 
-	const std::list<Uint32>& getUndergroundUnitList() const {
+    const std::list<Uint32>& getUndergroundUnitList() const {
         return assignedUndergroundUnitList;
     }
 
-	const std::list<Uint32>& getNonInfantryGroundObjectList() const {
+    const std::list<Uint32>& getNonInfantryGroundObjectList() const {
         return assignedNonInfantryGroundObjectList;
     }
 
-	/**
+    /**
         This method is called when the spice bloom on this till shall be triggered. If this tile has no spice bloom nothing happens.
         \param  pTrigger    the house that triggered the bloom
-	*/
-	void triggerSpiceBloom(House* pTrigger);
+    */
+    void triggerSpiceBloom(House* pTrigger);
 
     /**
         This method is called when the spice bloom on this tile shall be triggered. If this tile has no spice bloom nothing happens.
         \param  pTrigger    the house that triggered the bloom
-	*/
-	void triggerSpecialBloom(House* pTrigger);
+    */
+    void triggerSpecialBloom(House* pTrigger);
 
-	/**
+    /**
         Sets this tile as explored for this house.
         \param  houseID the house this tile should be explored for
         \param  cycle   the cycle this happens (normally the current game cycle)
-	*/
-	inline void setExplored(int houseID, Uint32 cycle) {
+    */
+    inline void setExplored(int houseID, Uint32 cycle) {
         lastAccess[houseID] = cycle;
         explored[houseID] = true;
     }
 
-	inline void setOwner(int newOwner) { owner = newOwner; }
-	inline void setSandRegion(int newSandRegion) { sandRegion = newSandRegion; }
-	inline void setDestroyedStructureTile(int newDestroyedStructureTile) { destroyedStructureTile = newDestroyedStructureTile; };
+    inline void setOwner(int newOwner) { owner = newOwner; }
+    inline void setSandRegion(int newSandRegion) { sandRegion = newSandRegion; }
+    inline void setDestroyedStructureTile(int newDestroyedStructureTile) { destroyedStructureTile = newDestroyedStructureTile; };
 
-	inline bool hasAGroundObject() const { return (hasInfantry() || hasANonInfantryGroundObject()); }
-	inline bool hasAnAirUnit() const { return !assignedAirUnitList.empty(); }
-	inline bool hasAnUndergroundUnit() const { return !assignedUndergroundUnitList.empty(); }
-	inline bool hasANonInfantryGroundObject() const { return !assignedNonInfantryGroundObjectList.empty(); }
-	bool hasAStructure() const;
-	inline bool hasInfantry() const { return !assignedInfantryList.empty(); }
+    inline bool hasAGroundObject() const { return (hasInfantry() || hasANonInfantryGroundObject()); }
+    inline bool hasAnAirUnit() const { return !assignedAirUnitList.empty(); }
+    inline bool hasAnUndergroundUnit() const { return !assignedUndergroundUnitList.empty(); }
+    inline bool hasANonInfantryGroundObject() const { return !assignedNonInfantryGroundObjectList.empty(); }
+    bool hasAStructure() const;
+    inline bool hasInfantry() const { return !assignedInfantryList.empty(); }
     inline bool hasAnObject() { return (hasAGroundObject() || hasAnAirUnit() || hasAnUndergroundUnit()); }
 
-	inline bool hasSpice() const { return (spice > 0); }
-	inline bool infantryNotFull() const { return (assignedInfantryList.size() < NUM_INFANTRY_PER_TILE); }
-	inline bool isConcrete() const { return (type == Terrain_Slab); }
-	inline bool isExplored(int houseID) const {return explored[houseID];}
+    inline bool hasSpice() const { return (spice > 0); }
+    inline bool infantryNotFull() const { return (assignedInfantryList.size() < NUM_INFANTRY_PER_TILE); }
+    inline bool isConcrete() const { return (type == Terrain_Slab); }
+    inline bool isExplored(int houseID) const {return explored[houseID];}
 
-	bool isFogged(int houseID);
-	inline bool isMountain() const { return (type == Terrain_Mountain);}
-	inline bool isRock() const { return ((type == Terrain_Rock) || (type == Terrain_Slab) || (type == Terrain_Mountain));}
+    bool isFogged(int houseID);
+    inline bool isMountain() const { return (type == Terrain_Mountain);}
+    inline bool isRock() const { return ((type == Terrain_Rock) || (type == Terrain_Slab) || (type == Terrain_Mountain));}
 
-	inline bool isSand() const { return (type == Terrain_Sand); }
-	inline bool isDunes() const { return (type == Terrain_Dunes); }
-	inline bool isSpiceBloom() const { return (type == Terrain_SpiceBloom); }
-	inline bool isSpecialBloom() const { return (type == Terrain_SpecialBloom); }
-	inline bool isSpice() const { return ((type == Terrain_Spice) || (type == Terrain_ThickSpice)); }
-	inline bool isThickSpice() const { return (type == Terrain_ThickSpice); }
+    inline bool isSand() const { return (type == Terrain_Sand); }
+    inline bool isDunes() const { return (type == Terrain_Dunes); }
+    inline bool isSpiceBloom() const { return (type == Terrain_SpiceBloom); }
+    inline bool isSpecialBloom() const { return (type == Terrain_SpecialBloom); }
+    inline bool isSpice() const { return ((type == Terrain_Spice) || (type == Terrain_ThickSpice)); }
+    inline bool isThickSpice() const { return (type == Terrain_ThickSpice); }
 
-	inline int getSandRegion() const { return sandRegion; }
-	inline int getOwner() const { return owner; }
-	inline int getType() const {	return type; }
-	inline FixPoint getSpice() const { return spice; }
+    inline int getSandRegion() const { return sandRegion; }
+    inline int getOwner() const { return owner; }
+    inline int getType() const {    return type; }
+    inline FixPoint getSpice() const { return spice; }
 
-	/**
+    /**
         Returns how fast a unit can move over this tile.
         \return Returns a speed factor. Higher values mean slower.
-	*/
-	inline FixPoint getDifficulty() const {
-	    switch(type) {
+    */
+    inline FixPoint getDifficulty() const {
+        switch(type) {
             case Terrain_Slab:          return FixPt(0,7);
             case Terrain_Sand:          return FixPt(1,2);
             case Terrain_Rock:          return FixPt(1,0);
@@ -478,15 +478,15 @@ public:
             case Terrain_SpiceBloom:    return FixPt(1,2);
             case Terrain_SpecialBloom:  return FixPt(1,2);
             default:                    return FixPt(1,0);
-	    }
+        }
     };
 
-	inline FixPoint getSpiceRemaining() { return spice; }
+    inline FixPoint getSpiceRemaining() { return spice; }
 
-	inline const Coord& getLocation() const { return location; }
+    inline const Coord& getLocation() const { return location; }
 
-	Uint32 getRadarColor(House* pHouse, bool radar);
-	int getTerrainTile() const;
+    Uint32 getRadarColor(House* pHouse, bool radar);
+    int getTerrainTile() const;
     int getHideTile(int houseID) const;
     int getFogTile(int houseID) const;
     int getDestroyedStructureTile() const { return  destroyedStructureTile; };
@@ -507,33 +507,33 @@ public:
         }
     }
 
-	Coord	location;   ///< location of this tile in map coordinates
+    Coord   location;   ///< location of this tile in map coordinates
 
 private:
 
-	Uint32  	type;           ///< the type of the tile (Terrain_Sand, Terrain_Rock, ...)
+    Uint32      type;           ///< the type of the tile (Terrain_Sand, Terrain_Rock, ...)
 
-	Uint32      fogColor;       ///< remember last color (radar)
+    Uint32      fogColor;       ///< remember last color (radar)
 
-	Sint32      owner;          ///< house ID of the owner of this tile
-	Uint32      sandRegion;     ///< used by sandworms to check if can get to a unit
+    Sint32      owner;          ///< house ID of the owner of this tile
+    Uint32      sandRegion;     ///< used by sandworms to check if can get to a unit
 
-	FixPoint    spice;          ///< how much spice on this particular tile is left
+    FixPoint    spice;          ///< how much spice on this particular tile is left
 
-	SDL_Texture** sprite;       ///< the graphic to draw
+    SDL_Texture** sprite;       ///< the graphic to draw
 
     Sint32                          destroyedStructureTile;     ///< the tile drawn for a destroyed structure
-	Sint16                          tracksCounter[NUM_ANGLES];  ///< Contains counters for the tracks on sand
-	std::vector<DAMAGETYPE>         damage;                     ///< damage positions
-	std::vector<DEADUNITTYPE>       deadUnits;                  ///< dead units
+    Sint16                          tracksCounter[NUM_ANGLES];  ///< Contains counters for the tracks on sand
+    std::vector<DAMAGETYPE>         damage;                     ///< damage positions
+    std::vector<DEADUNITTYPE>       deadUnits;                  ///< dead units
 
-	std::list<Uint32>	assignedAirUnitList;                    ///< all the air units on this tile
-	std::list<Uint32>	assignedInfantryList;                   ///< all infantry units on this tile
-	std::list<Uint32>	assignedUndergroundUnitList;            ///< all underground units on this tile
-	std::list<Uint32>	assignedNonInfantryGroundObjectList;    ///< all structures/vehicles on this tile
+    std::list<Uint32>   assignedAirUnitList;                    ///< all the air units on this tile
+    std::list<Uint32>   assignedInfantryList;                   ///< all infantry units on this tile
+    std::list<Uint32>   assignedUndergroundUnitList;            ///< all underground units on this tile
+    std::list<Uint32>   assignedNonInfantryGroundObjectList;    ///< all structures/vehicles on this tile
 
-	Uint32      lastAccess[NUM_HOUSES];    ///< contains for every house when this tile was seen last by this house
-	bool        explored[NUM_HOUSES];      ///< contains for every house if this tile is explored
+    Uint32      lastAccess[NUM_HOUSES];    ///< contains for every house when this tile was seen last by this house
+    bool        explored[NUM_HOUSES];      ///< contains for every house if this tile is explored
 };
 
 

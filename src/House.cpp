@@ -49,7 +49,7 @@ House::House(int newHouse, int newCredits, Uint8 team, int quota) : choam(this) 
     houseID = ((newHouse >= 0) && (newHouse < NUM_HOUSES)) ? newHouse :  0;
     this->team = team;
 
-	storedCredits = 0;
+    storedCredits = 0;
     startingCredits = newCredits;
     oldCredits = lround(storedCredits+startingCredits);
 
@@ -77,10 +77,10 @@ House::House(InputStream& stream) : choam(this) {
     House::init();
 
     houseID = stream.readUint8();
-	team = stream.readUint8();
+    team = stream.readUint8();
 
-	storedCredits = stream.readFixPoint();
-	startingCredits = stream.readFixPoint();
+    storedCredits = stream.readFixPoint();
+    startingCredits = stream.readFixPoint();
     oldCredits = lround(storedCredits+startingCredits);
     quota = stream.readSint32();
 
@@ -100,8 +100,8 @@ House::House(InputStream& stream) : choam(this) {
 
     choam.load(stream);
 
-	Uint32 numPlayers = stream.readUint32();
-	for(Uint32 i = 0; i < numPlayers; i++) {
+    Uint32 numPlayers = stream.readUint32();
+    for(Uint32 i = 0; i < numPlayers; i++) {
         std::string playerclass = stream.readString();
         const PlayerFactory::PlayerData* pPlayerData = PlayerFactory::getByPlayerClass(playerclass);
         if(pPlayerData == nullptr) {
@@ -109,7 +109,7 @@ House::House(InputStream& stream) : choam(this) {
         } else {
             addPlayer(std::shared_ptr<Player>(pPlayerData->load(stream,this)));
         }
-	}
+    }
 }
 
 
@@ -119,16 +119,16 @@ void House::init() {
     ai = true;
 
     numUnits = 0;
-	numStructures = 0;
-	for(int i=0;i<Num_ItemID;i++) {
+    numStructures = 0;
+    for(int i=0;i<Num_ItemID;i++) {
         numItem[i] = 0;
         numItemBuilt[i] = 0;
         numItemKills[i] = 0;
         numItemLosses[i] = 0;
-	}
+    }
 
-	capacity = 0;
-	powerRequirement = 0;
+    capacity = 0;
+    powerRequirement = 0;
 }
 
 
@@ -141,12 +141,12 @@ House::~House() {
 
 
 void House::save(OutputStream& stream) const {
-	stream.writeUint8(houseID);
-	stream.writeUint8(team);
+    stream.writeUint8(houseID);
+    stream.writeUint8(team);
 
-	stream.writeFixPoint(storedCredits);
-	stream.writeFixPoint(startingCredits);
-	stream.writeSint32(quota);
+    stream.writeFixPoint(storedCredits);
+    stream.writeFixPoint(startingCredits);
+    stream.writeSint32(quota);
 
     stream.writeUint32(unitBuiltValue);
     stream.writeUint32(structureBuiltValue);
@@ -164,7 +164,7 @@ void House::save(OutputStream& stream) const {
 
     choam.save(stream);
 
-	stream.writeUint32(players.size());
+    stream.writeUint32(players.size());
     std::list<std::shared_ptr<Player> >::const_iterator iter;
     for(iter = players.begin(); iter != players.end(); ++iter) {
         stream.writeString((*iter)->getPlayerclass());
@@ -192,32 +192,32 @@ void House::addPlayer(std::shared_ptr<Player> newPlayer) {
 
 
 void House::setProducedPower(int newPower) {
-	producedPower = newPower;
+    producedPower = newPower;
 }
 
 
 void House::addCredits(FixPoint newCredits, bool wasRefined) {
-	if(newCredits > 0) {
-	    if(wasRefined == true) {
+    if(newCredits > 0) {
+        if(wasRefined == true) {
             harvestedSpice += newCredits;
-	    }
+        }
 
-		storedCredits += newCredits;
-		if(this == pLocalHouse)	{
-			if(((currentGame->winFlags & WINLOSEFLAGS_QUOTA) != 0) && (quota != 0))	{
-				if(storedCredits >= quota) {
-					win();
-				}
-			}
-		}
-	}
+        storedCredits += newCredits;
+        if(this == pLocalHouse) {
+            if(((currentGame->winFlags & WINLOSEFLAGS_QUOTA) != 0) && (quota != 0)) {
+                if(storedCredits >= quota) {
+                    win();
+                }
+            }
+        }
+    }
 }
 
 
 
 
 void House::returnCredits(FixPoint newCredits) {
-	if(newCredits > 0) {
+    if(newCredits > 0) {
         FixPoint leftCapacity = capacity - storedCredits;
         if(newCredits <= leftCapacity) {
             addCredits(newCredits, false);
@@ -225,59 +225,59 @@ void House::returnCredits(FixPoint newCredits) {
             addCredits(leftCapacity, false);
             startingCredits += (newCredits - leftCapacity);
         }
-	}
+    }
 }
 
 
 
 
 FixPoint House::takeCredits(FixPoint amount) {
-	FixPoint taken = 0;
+    FixPoint taken = 0;
 
-	if(getCredits() >= 1) {
-		if(storedCredits > amount) {
-			taken = amount;
-			storedCredits -= amount;
-		} else {
-			taken = storedCredits;
-			storedCredits = 0;
+    if(getCredits() >= 1) {
+        if(storedCredits > amount) {
+            taken = amount;
+            storedCredits -= amount;
+        } else {
+            taken = storedCredits;
+            storedCredits = 0;
 
-			if(startingCredits > (amount - taken)) {
-				startingCredits -= (amount - taken);
-				taken = amount;
-			} else {
-				taken += startingCredits;
-				startingCredits = 0;
-			}
-		}
-	}
+            if(startingCredits > (amount - taken)) {
+                startingCredits -= (amount - taken);
+                taken = amount;
+            } else {
+                taken += startingCredits;
+                startingCredits = 0;
+            }
+        }
+    }
 
-	return taken;	//the amount that was actually withdrawn
+    return taken;   //the amount that was actually withdrawn
 }
 
 
 
 
 void House::printStat() const {
-	fprintf(stderr,"House %s: (Number of Units: %d, Number of Structures: %d)\n",getHouseNameByNumber( (HOUSETYPE) getHouseID()).c_str(),numUnits,numStructures);
-	fprintf(stderr,"Barracks: %d\t\tWORs: %d\n", numItem[Structure_Barracks],numItem[Structure_WOR]);
-	fprintf(stderr,"Light Factories: %d\tHeavy Factories: %d\n",numItem[Structure_LightFactory],numItem[Structure_HeavyFactory]);
-	fprintf(stderr,"IXs: %d\t\t\tPalaces: %d\n",numItem[Structure_IX],numItem[Structure_Palace]);
-	fprintf(stderr,"Repair Yards: %d\t\tHigh-Tech Factories: %d\n",numItem[Structure_RepairYard],numItem[Structure_HighTechFactory]);
-	fprintf(stderr,"Refineries: %d\t\tStarports: %d\n",numItem[Structure_Refinery],numItem[Structure_StarPort]);
-	fprintf(stderr,"Walls: %d\t\tRocket Turrets: %d\n",numItem[Structure_Wall],numItem[Structure_RocketTurret]);
-	fprintf(stderr,"Gun Turrets: %d\t\tConstruction Yards: %d\n",numItem[Structure_GunTurret],numItem[Structure_ConstructionYard]);
-	fprintf(stderr,"Windtraps: %d\t\tRadars: %d\n",numItem[Structure_WindTrap],numItem[Structure_Radar]);
-	fprintf(stderr,"Silos: %d\n",numItem[Structure_Silo]);
-	fprintf(stderr,"Carryalls: %d\t\tFrigates: %d\n",numItem[Unit_Carryall],numItem[Unit_Frigate]);
-	fprintf(stderr,"Devastators: %d\t\tDeviators: %d\n",numItem[Unit_Devastator],numItem[Unit_Deviator]);
-	fprintf(stderr,"Soldiers: %d\t\tTrooper: %d\n",numItem[Unit_Soldier],numItem[Unit_Trooper]);
-	fprintf(stderr,"Saboteur: %d\t\tSandworms: %d\n",numItem[Unit_Saboteur],numItem[Unit_Sandworm]);
-	fprintf(stderr,"Quads: %d\t\tTrikes: %d\n",numItem[Unit_Quad],numItem[Unit_Trike]);
-	fprintf(stderr,"Raiders: %d\t\tTanks: %d\n",numItem[Unit_RaiderTrike],numItem[Unit_Tank]);
-	fprintf(stderr,"Siege Tanks : %d\t\tSonic Tanks: %d\n",numItem[Unit_SiegeTank],numItem[Unit_SonicTank]);
-	fprintf(stderr,"Harvesters: %d\t\tMCVs: %d\n",numItem[Unit_Harvester],numItem[Unit_MCV]);
-	fprintf(stderr,"Ornithopters: %d\t\tRocket Launchers: %d\n",numItem[Unit_Ornithopter],numItem[Unit_Launcher]);
+    fprintf(stderr,"House %s: (Number of Units: %d, Number of Structures: %d)\n",getHouseNameByNumber( (HOUSETYPE) getHouseID()).c_str(),numUnits,numStructures);
+    fprintf(stderr,"Barracks: %d\t\tWORs: %d\n", numItem[Structure_Barracks],numItem[Structure_WOR]);
+    fprintf(stderr,"Light Factories: %d\tHeavy Factories: %d\n",numItem[Structure_LightFactory],numItem[Structure_HeavyFactory]);
+    fprintf(stderr,"IXs: %d\t\t\tPalaces: %d\n",numItem[Structure_IX],numItem[Structure_Palace]);
+    fprintf(stderr,"Repair Yards: %d\t\tHigh-Tech Factories: %d\n",numItem[Structure_RepairYard],numItem[Structure_HighTechFactory]);
+    fprintf(stderr,"Refineries: %d\t\tStarports: %d\n",numItem[Structure_Refinery],numItem[Structure_StarPort]);
+    fprintf(stderr,"Walls: %d\t\tRocket Turrets: %d\n",numItem[Structure_Wall],numItem[Structure_RocketTurret]);
+    fprintf(stderr,"Gun Turrets: %d\t\tConstruction Yards: %d\n",numItem[Structure_GunTurret],numItem[Structure_ConstructionYard]);
+    fprintf(stderr,"Windtraps: %d\t\tRadars: %d\n",numItem[Structure_WindTrap],numItem[Structure_Radar]);
+    fprintf(stderr,"Silos: %d\n",numItem[Structure_Silo]);
+    fprintf(stderr,"Carryalls: %d\t\tFrigates: %d\n",numItem[Unit_Carryall],numItem[Unit_Frigate]);
+    fprintf(stderr,"Devastators: %d\t\tDeviators: %d\n",numItem[Unit_Devastator],numItem[Unit_Deviator]);
+    fprintf(stderr,"Soldiers: %d\t\tTrooper: %d\n",numItem[Unit_Soldier],numItem[Unit_Trooper]);
+    fprintf(stderr,"Saboteur: %d\t\tSandworms: %d\n",numItem[Unit_Saboteur],numItem[Unit_Sandworm]);
+    fprintf(stderr,"Quads: %d\t\tTrikes: %d\n",numItem[Unit_Quad],numItem[Unit_Trike]);
+    fprintf(stderr,"Raiders: %d\t\tTanks: %d\n",numItem[Unit_RaiderTrike],numItem[Unit_Tank]);
+    fprintf(stderr,"Siege Tanks : %d\t\tSonic Tanks: %d\n",numItem[Unit_SiegeTank],numItem[Unit_SonicTank]);
+    fprintf(stderr,"Harvesters: %d\t\tMCVs: %d\n",numItem[Unit_Harvester],numItem[Unit_MCV]);
+    fprintf(stderr,"Ornithopters: %d\t\tRocket Launchers: %d\n",numItem[Unit_Ornithopter],numItem[Unit_Launcher]);
 }
 
 
@@ -286,9 +286,9 @@ void House::printStat() const {
 void House::updateBuildLists() {
     RobustList<StructureBase*>::const_iterator iter;
     for(iter = structureList.begin(); iter != structureList.end(); ++iter) {
-		StructureBase* tempStructure = *iter;
+        StructureBase* tempStructure = *iter;
         if(tempStructure->isABuilder() && (tempStructure->getOwner() == this)) {
-			((BuilderBase*) tempStructure)->updateBuildList();
+            ((BuilderBase*) tempStructure)->updateBuildList();
         }
     }
 }
@@ -297,31 +297,31 @@ void House::updateBuildLists() {
 
 
 void House::update() {
-	if (oldCredits != getCredits()) {
-		if((this == pLocalHouse) && (getCredits() > 0)) {
-			soundPlayer->playSound(Sound_CreditsTick);
-		}
-		oldCredits = getCredits();
-	}
+    if (oldCredits != getCredits()) {
+        if((this == pLocalHouse) && (getCredits() > 0)) {
+            soundPlayer->playSound(Sound_CreditsTick);
+        }
+        oldCredits = getCredits();
+    }
 
-	if(storedCredits > capacity) {
-		--storedCredits;
-		if(storedCredits < 0) {
-		 storedCredits = 0;
-		}
+    if(storedCredits > capacity) {
+        --storedCredits;
+        if(storedCredits < 0) {
+         storedCredits = 0;
+        }
 
-		if(this == pLocalHouse) {
-			currentGame->addToNewsTicker(_("@DUNE.ENG|145#As insufficient spice storage is available, spice is lost."));
-		}
-	}
+        if(this == pLocalHouse) {
+            currentGame->addToNewsTicker(_("@DUNE.ENG|145#As insufficient spice storage is available, spice is lost."));
+        }
+    }
 
-	powerUsageTimer--;
-	if(powerUsageTimer <= 0) {
-	    powerUsageTimer = MILLI2CYCLES(15*1000);
+    powerUsageTimer--;
+    if(powerUsageTimer <= 0) {
+        powerUsageTimer = MILLI2CYCLES(15*1000);
         takeCredits(FixPoint(getPowerRequirement()) / 32);
-	}
+    }
 
-	choam.update();
+    choam.update();
 
     std::list<std::shared_ptr<Player> >::iterator iter;
     for(iter = players.begin(); iter != players.end(); ++iter) {
@@ -351,14 +351,14 @@ void House::incrementUnits(int itemID) {
 
 
 void House::decrementUnits(int itemID) {
-	numUnits--;
-	numItemLosses[itemID]++;
+    numUnits--;
+    numItemLosses[itemID]++;
 
-	if(itemID == Unit_Harvester) {
+    if(itemID == Unit_Harvester) {
         decrementHarvesters();
-	} else {
+    } else {
         numItem[itemID]--;
-	}
+    }
 
     std::list<std::shared_ptr<Player> >::iterator iter;
     for(iter = players.begin(); iter != players.end(); ++iter) {
@@ -377,8 +377,8 @@ void House::decrementUnits(int itemID) {
             lossValue += currentGame->objectData.data[itemID][houseID].price;
     }
 
-	if (!isAlive())
-		lose();
+    if (!isAlive())
+        lose();
 
 
 }
@@ -387,17 +387,17 @@ void House::decrementUnits(int itemID) {
 
 
 void House::incrementStructures(int itemID) {
-	numStructures++;
-	numItem[itemID]++;
+    numStructures++;
+    numItem[itemID]++;
 
     // change power requirements
-	int currentItemPower = currentGame->objectData.data[itemID][houseID].power;
-	if(currentItemPower >= 0) {
+    int currentItemPower = currentGame->objectData.data[itemID][houseID].power;
+    if(currentItemPower >= 0) {
         powerRequirement += currentItemPower;
-	}
+    }
 
-	// change spice capacity
-	capacity += currentGame->objectData.data[itemID][houseID].capacity;
+    // change spice capacity
+    capacity += currentGame->objectData.data[itemID][houseID].capacity;
 
     if(currentGame->gameState != LOADING) {
         // do not check selection lists if we are loading
@@ -414,26 +414,26 @@ void House::incrementStructures(int itemID) {
 
 
 void House::decrementStructures(int itemID, const Coord& location) {
-	numStructures--;
+    numStructures--;
     numItem[itemID]--;
     numItemLosses[itemID]++;
 
-	// change power requirements
-	int currentItemPower = currentGame->objectData.data[itemID][houseID].power;
-	if(currentItemPower >= 0) {
+    // change power requirements
+    int currentItemPower = currentGame->objectData.data[itemID][houseID].power;
+    if(currentItemPower >= 0) {
         powerRequirement -= currentItemPower;
-	}
+    }
 
     // change spice capacity
-	capacity -= currentGame->objectData.data[itemID][houseID].capacity;
+    capacity -= currentGame->objectData.data[itemID][houseID].capacity;
 
     if(currentGame->gameState != LOADING) {
         // do not check selection lists if we are loading
         updateBuildLists();
     }
 
-	if (!isAlive())
-		lose();
+    if (!isAlive())
+        lose();
 
     std::list<std::shared_ptr<Player> >::iterator iter;
     for(iter = players.begin(); iter != players.end(); ++iter) {
@@ -507,11 +507,11 @@ void House::informHasKilled(Uint32 itemID) {
 
 
 void House::win() {
-	if(getTeam() == pLocalHouse->getTeam()) {
-		currentGame->setGameWon();
-	} else {
-		currentGame->setGameLost();
-	}
+    if(getTeam() == pLocalHouse->getTeam()) {
+        currentGame->setGameWon();
+    } else {
+        currentGame->setGameLost();
+    }
 }
 
 
@@ -522,18 +522,18 @@ void House::lose(bool bSilent) {
         currentGame->addToNewsTicker(strprintf(_("House '%s' has been defeated."), getHouseNameByNumber( (HOUSETYPE) getHouseID()).c_str()));
     }
 
-	if((getTeam() == pLocalHouse->getTeam()) && ((currentGame->winFlags & WINLOSEFLAGS_HUMAN_HAS_BUILDINGS) != 0)) {
+    if((getTeam() == pLocalHouse->getTeam()) && ((currentGame->winFlags & WINLOSEFLAGS_HUMAN_HAS_BUILDINGS) != 0)) {
 
         bool finished = true;
 
-		for(int i=0; i < NUM_HOUSES; i++) {
+        for(int i=0; i < NUM_HOUSES; i++) {
             House* pHouse = currentGame->getHouse(i);
-			if(pHouse != nullptr && pHouse->isAlive() && pHouse->getTeam() == pLocalHouse->getTeam()) {
-				finished = false;
+            if(pHouse != nullptr && pHouse->isAlive() && pHouse->getTeam() == pLocalHouse->getTeam()) {
+                finished = false;
             }
-		}
+        }
 
-		if(finished) {
+        if(finished) {
             // pLocalHouse is destroyed and this is a game finish condition
             if((currentGame->loseFlags & WINLOSEFLAGS_HUMAN_HAS_BUILDINGS) != 0) {
                 // house has won
@@ -542,21 +542,21 @@ void House::lose(bool bSilent) {
                 // house has lost
                 currentGame->setGameLost();
             }
-	    }
+        }
 
-	} else if((currentGame->winFlags & WINLOSEFLAGS_AI_NO_BUILDINGS) != 0) {
-		//if the only players left are on the thisPlayers team, pLocalHouse has won
-		bool finished = true;
+    } else if((currentGame->winFlags & WINLOSEFLAGS_AI_NO_BUILDINGS) != 0) {
+        //if the only players left are on the thisPlayers team, pLocalHouse has won
+        bool finished = true;
 
-		for(int i=0; i < NUM_HOUSES; i++) {
+        for(int i=0; i < NUM_HOUSES; i++) {
             House* pHouse = currentGame->getHouse(i);
-			if(pHouse != nullptr && pHouse->isAlive() && pHouse->getTeam() != 0 && pHouse->getTeam() != pLocalHouse->getTeam()) {
-				finished = false;
+            if(pHouse != nullptr && pHouse->isAlive() && pHouse->getTeam() != 0 && pHouse->getTeam() != pLocalHouse->getTeam()) {
+                finished = false;
             }
-		}
+        }
 
-		if(finished) {
-		    // all AI players are destroyed and this is a game finish condition
+        if(finished) {
+            // all AI players are destroyed and this is a game finish condition
             if((currentGame->loseFlags & WINLOSEFLAGS_AI_NO_BUILDINGS) != 0) {
                 // house has won
                 currentGame->setGameWon();
@@ -564,116 +564,116 @@ void House::lose(bool bSilent) {
                 // house has lost
                 currentGame->setGameLost();
             }
-		}
-	}
+        }
+    }
 }
 
 
 
 
 void House::freeHarvester(int xPos, int yPos) {
-	if(currentGameMap->tileExists(xPos, yPos)
-		&& currentGameMap->getTile(xPos, yPos)->hasAGroundObject()
-		&& (currentGameMap->getTile(xPos, yPos)->getGroundObject()->getItemID() == Structure_Refinery))
-	{
-		Refinery* refinery = (Refinery*)currentGameMap->getTile(xPos, yPos)->getGroundObject();
-		Coord closestPos = currentGameMap->findClosestEdgePoint(refinery->getLocation() + Coord(2,0), Coord(1,1));
+    if(currentGameMap->tileExists(xPos, yPos)
+        && currentGameMap->getTile(xPos, yPos)->hasAGroundObject()
+        && (currentGameMap->getTile(xPos, yPos)->getGroundObject()->getItemID() == Structure_Refinery))
+    {
+        Refinery* refinery = (Refinery*)currentGameMap->getTile(xPos, yPos)->getGroundObject();
+        Coord closestPos = currentGameMap->findClosestEdgePoint(refinery->getLocation() + Coord(2,0), Coord(1,1));
 
-		Carryall* carryall = (Carryall*)createUnit(Unit_Carryall);
-		Harvester* harvester = (Harvester*)createUnit(Unit_Harvester);
-		harvester->setAmountOfSpice(5);
-		carryall->setOwned(false);
-		carryall->giveCargo(harvester);
-		carryall->deploy(closestPos);
-		carryall->setDropOfferer(true);
+        Carryall* carryall = (Carryall*)createUnit(Unit_Carryall);
+        Harvester* harvester = (Harvester*)createUnit(Unit_Harvester);
+        harvester->setAmountOfSpice(5);
+        carryall->setOwned(false);
+        carryall->giveCargo(harvester);
+        carryall->deploy(closestPos);
+        carryall->setDropOfferer(true);
 
-		if (closestPos.x == 0)
-			carryall->setAngle(RIGHT);
-		else if (closestPos.x == currentGameMap->getSizeX()-1)
-			carryall->setAngle(LEFT);
-		else if (closestPos.y == 0)
-			carryall->setAngle(DOWN);
-		else if (closestPos.y == currentGameMap->getSizeY()-1)
-			carryall->setAngle(UP);
+        if (closestPos.x == 0)
+            carryall->setAngle(RIGHT);
+        else if (closestPos.x == currentGameMap->getSizeX()-1)
+            carryall->setAngle(LEFT);
+        else if (closestPos.y == 0)
+            carryall->setAngle(DOWN);
+        else if (closestPos.y == currentGameMap->getSizeY()-1)
+            carryall->setAngle(UP);
 
-		harvester->setTarget(refinery);
-		harvester->setActive(false);
-		carryall->setTarget(refinery);
-	}
+        harvester->setTarget(refinery);
+        harvester->setActive(false);
+        carryall->setTarget(refinery);
+    }
 }
 
 
 
 
 StructureBase* House::placeStructure(Uint32 builderID, int itemID, int xPos, int yPos, bool bForcePlacing) {
-	if(!currentGameMap->tileExists(xPos,yPos)) {
-		return nullptr;
-	}
+    if(!currentGameMap->tileExists(xPos,yPos)) {
+        return nullptr;
+    }
 
-	BuilderBase* pBuilder = (builderID == NONE) ? nullptr : dynamic_cast<BuilderBase*>(currentGame->getObjectManager().getObject(builderID));
+    BuilderBase* pBuilder = (builderID == NONE) ? nullptr : dynamic_cast<BuilderBase*>(currentGame->getObjectManager().getObject(builderID));
 
-	if(currentGame->getGameInitSettings().getGameOptions().onlyOnePalace && pBuilder != nullptr && itemID == Structure_Palace && getNumItems(Structure_Palace) > 0) {
+    if(currentGame->getGameInitSettings().getGameOptions().onlyOnePalace && pBuilder != nullptr && itemID == Structure_Palace && getNumItems(Structure_Palace) > 0) {
         if(this == pLocalHouse && pBuilder->isSelected()) {
             currentGame->currentCursorMode = Game::CursorMode_Normal;
         }
         return nullptr;
-	}
+    }
 
-	StructureBase* tempStructure = nullptr;
+    StructureBase* tempStructure = nullptr;
 
-	switch (itemID) {
-		case (Structure_Slab1): {
-			// Slabs are no normal buildings
-			currentGameMap->getTile(xPos, yPos)->setType(Terrain_Slab);
-			currentGameMap->getTile(xPos, yPos)->setOwner(getHouseID());
-			currentGameMap->viewMap(getTeam(), xPos, yPos, currentGame->objectData.data[Structure_Slab1][houseID].viewrange);
-	//		currentGameMap->getTile(xPos, yPos)->clearTerrain();
+    switch (itemID) {
+        case (Structure_Slab1): {
+            // Slabs are no normal buildings
+            currentGameMap->getTile(xPos, yPos)->setType(Terrain_Slab);
+            currentGameMap->getTile(xPos, yPos)->setOwner(getHouseID());
+            currentGameMap->viewMap(getTeam(), xPos, yPos, currentGame->objectData.data[Structure_Slab1][houseID].viewrange);
+    //      currentGameMap->getTile(xPos, yPos)->clearTerrain();
 
-			if(pBuilder != nullptr) {
-				pBuilder->unSetWaitingToPlace();
+            if(pBuilder != nullptr) {
+                pBuilder->unSetWaitingToPlace();
 
-				if(this == pLocalHouse && pBuilder->isSelected()) {
-					currentGame->currentCursorMode = Game::CursorMode_Normal;
-				}
-			}
+                if(this == pLocalHouse && pBuilder->isSelected()) {
+                    currentGame->currentCursorMode = Game::CursorMode_Normal;
+                }
+            }
 
-		} break;
+        } break;
 
-		case (Structure_Slab4): {
-			// Slabs are no normal buildings
-			int i,j;
-			for(i = xPos; i < xPos + 2; i++) {
-				for(j = yPos; j < yPos + 2; j++) {
-					if (currentGameMap->tileExists(i, j)) {
-						Tile* pTile = currentGameMap->getTile(i, j);
+        case (Structure_Slab4): {
+            // Slabs are no normal buildings
+            int i,j;
+            for(i = xPos; i < xPos + 2; i++) {
+                for(j = yPos; j < yPos + 2; j++) {
+                    if (currentGameMap->tileExists(i, j)) {
+                        Tile* pTile = currentGameMap->getTile(i, j);
 
-						if (!pTile->hasAGroundObject() && pTile->isRock() && !pTile->isMountain()) {
-							pTile->setType(Terrain_Slab);
-							pTile->setOwner(getHouseID());
-							currentGameMap->viewMap(getTeam(), i, j, currentGame->objectData.data[Structure_Slab4][houseID].viewrange);
-							//pTile->clearTerrain();
-						}
-					}
-				}
-			}
+                        if (!pTile->hasAGroundObject() && pTile->isRock() && !pTile->isMountain()) {
+                            pTile->setType(Terrain_Slab);
+                            pTile->setOwner(getHouseID());
+                            currentGameMap->viewMap(getTeam(), i, j, currentGame->objectData.data[Structure_Slab4][houseID].viewrange);
+                            //pTile->clearTerrain();
+                        }
+                    }
+                }
+            }
 
-			if(pBuilder != nullptr) {
-				pBuilder->unSetWaitingToPlace();
+            if(pBuilder != nullptr) {
+                pBuilder->unSetWaitingToPlace();
 
-				if(this == pLocalHouse && pBuilder->isSelected()) {
-					currentGame->currentCursorMode = Game::CursorMode_Normal;
-				}
-			}
+                if(this == pLocalHouse && pBuilder->isSelected()) {
+                    currentGame->currentCursorMode = Game::CursorMode_Normal;
+                }
+            }
 
-		} break;
+        } break;
 
-		default: {
-			tempStructure = (StructureBase*) ObjectBase::createObject(itemID,this);
-			if(tempStructure == nullptr) {
-				fprintf(stderr,"House::placeStructure(): Cannot create Object with itemID %d\n",itemID);
-				fflush(stderr);
-				exit(EXIT_FAILURE);
-			}
+        default: {
+            tempStructure = (StructureBase*) ObjectBase::createObject(itemID,this);
+            if(tempStructure == nullptr) {
+                fprintf(stderr,"House::placeStructure(): Cannot create Object with itemID %d\n",itemID);
+                fflush(stderr);
+                exit(EXIT_FAILURE);
+            }
 
             if(bForcePlacing == false) {
                 // check if there is already something on this tile
@@ -687,27 +687,27 @@ StructureBase* House::placeStructure(Uint32 builderID, int itemID, int xPos, int
                 }
             }
 
-			for(int i=0;i<tempStructure->getStructureSizeX();i++) {
-				for(int j=0;j<tempStructure->getStructureSizeY();j++) {
-					if(currentGameMap->tileExists(xPos+i, yPos+j)) {
-						currentGameMap->getTile(xPos+i, yPos+j)->clearTerrain();
-					}
-				}
-			}
+            for(int i=0;i<tempStructure->getStructureSizeX();i++) {
+                for(int j=0;j<tempStructure->getStructureSizeY();j++) {
+                    if(currentGameMap->tileExists(xPos+i, yPos+j)) {
+                        currentGameMap->getTile(xPos+i, yPos+j)->clearTerrain();
+                    }
+                }
+            }
 
-			tempStructure->setLocation(xPos, yPos);
+            tempStructure->setLocation(xPos, yPos);
 
-			if ((builderID != NONE) && (itemID != Structure_Wall)) {
-				tempStructure->setJustPlaced();
-			}
+            if ((builderID != NONE) && (itemID != Structure_Wall)) {
+                tempStructure->setJustPlaced();
+            }
 
-			// at the beginning of the game the first refinery gets a harvester for free (brought by a carryall)
-			if((itemID == Structure_Refinery) && ( ((currentGame->gameState == START) && (numItem[Unit_Harvester] <= 0)) || (builderID != NONE)) ) {
-				freeHarvester(xPos, yPos);
-			}
+            // at the beginning of the game the first refinery gets a harvester for free (brought by a carryall)
+            if((itemID == Structure_Refinery) && ( ((currentGame->gameState == START) && (numItem[Unit_Harvester] <= 0)) || (builderID != NONE)) ) {
+                freeHarvester(xPos, yPos);
+            }
 
-			// if this structure was built by a construction yard this construction yard must be informed
-			if(pBuilder != nullptr) {
+            // if this structure was built by a construction yard this construction yard must be informed
+            if(pBuilder != nullptr) {
                 pBuilder->unSetWaitingToPlace();
 
                 if(itemID == Structure_Palace) {
@@ -730,71 +730,71 @@ StructureBase* House::placeStructure(Uint32 builderID, int itemID, int xPos, int
                 // only if we were constructed by construction yard
                 // => inform house of the building
                 pBuilder->getOwner()->informWasBuilt(itemID);
-			}
+            }
 
-			if(tempStructure->isABuilder()) {
+            if(tempStructure->isABuilder()) {
                 ((BuilderBase*) tempStructure)->updateBuildList();
-			}
+            }
 
 
-		} break;
-	}
+        } break;
+    }
 
-	return tempStructure;
+    return tempStructure;
 }
 
 
 
 
 UnitBase* House::createUnit(int itemID) {
-	UnitBase* newUnit = nullptr;
+    UnitBase* newUnit = nullptr;
 
-	newUnit = (UnitBase*) ObjectBase::createObject(itemID,this);
+    newUnit = (UnitBase*) ObjectBase::createObject(itemID,this);
 
-	if(newUnit == nullptr) {
-		fprintf(stderr,"House::createUnit(): Cannot create Object with itemID %d\n",itemID);
-		fflush(stderr);
-		exit(EXIT_FAILURE);
-	}
+    if(newUnit == nullptr) {
+        fprintf(stderr,"House::createUnit(): Cannot create Object with itemID %d\n",itemID);
+        fflush(stderr);
+        exit(EXIT_FAILURE);
+    }
 
-	return newUnit;
+    return newUnit;
 }
 
 
 
 
 UnitBase* House::placeUnit(int itemID, int xPos, int yPos) {
-	UnitBase* newUnit = nullptr;
-	if(currentGameMap->tileExists(xPos, yPos) == true) {
-	    Tile* pTile = currentGameMap->getTile(xPos,yPos);
+    UnitBase* newUnit = nullptr;
+    if(currentGameMap->tileExists(xPos, yPos) == true) {
+        Tile* pTile = currentGameMap->getTile(xPos,yPos);
 
-	    if(itemID == Unit_Saboteur || itemID == Unit_Soldier || itemID == Unit_Trooper) {
+        if(itemID == Unit_Saboteur || itemID == Unit_Soldier || itemID == Unit_Trooper) {
             if((pTile->hasANonInfantryGroundObject() == true) || (pTile->infantryNotFull() == false)) {
                 // infantry units can not placed on non-infantry units or structures (or the tile is already full of infantry units)
                 return nullptr;
             }
-	    } else {
-	        if(pTile->hasAGroundObject() == true) {
+        } else {
+            if(pTile->hasAGroundObject() == true) {
                 // non-infantry units can not placed on a tile where already some other unit or structure is placed on
                 return nullptr;
-	        }
-	    }
+            }
+        }
 
         newUnit = createUnit(itemID);
-	}
+    }
 
-	if (newUnit) {
-		Coord pos = Coord(xPos, yPos);
-		if (newUnit->canPass(xPos, yPos)) {
-			newUnit->deploy(pos);
-		} else {
-			newUnit->setVisible(VIS_ALL, false);
-			newUnit->destroy();
-			newUnit = nullptr;
-		}
-	}
+    if (newUnit) {
+        Coord pos = Coord(xPos, yPos);
+        if (newUnit->canPass(xPos, yPos)) {
+            newUnit->deploy(pos);
+        } else {
+            newUnit->setVisible(VIS_ALL, false);
+            newUnit->destroy();
+            newUnit = nullptr;
+        }
+    }
 
-	return newUnit;
+    return newUnit;
 }
 
 
@@ -856,9 +856,9 @@ void House::decrementHarvesters() {
         numItem[Unit_Harvester] = 0;
 
         if(numItem[Structure_Refinery]) {
-            Coord	closestPos;
-            Coord	pos = Coord(0,0);
-            FixPoint	closestDistance = FixPt_MAX;
+            Coord   closestPos;
+            Coord   pos = Coord(0,0);
+            FixPoint    closestDistance = FixPt_MAX;
             StructureBase *closestRefinery = nullptr;
 
             RobustList<StructureBase*>::const_iterator iter;

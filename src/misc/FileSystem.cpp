@@ -93,11 +93,11 @@ static bool cmp_ModifyDate_Dsc(FileInfo& a, FileInfo& b) { return a.modifydate >
 std::list<FileInfo> getFileList(std::string directory, std::string extension, bool bIgnoreCase, FileListOrder fileListOrder)
 {
 
-	std::list<FileInfo> Files;
+    std::list<FileInfo> Files;
 
-	if(bIgnoreCase == true) {
-		convertToLower(extension);
-	}
+    if(bIgnoreCase == true) {
+        convertToLower(extension);
+    }
 
 #ifdef _WIN32
     // on win32 we need an ansi-encoded filepath
@@ -114,31 +114,31 @@ std::list<FileInfo> getFileList(std::string directory, std::string extension, bo
         return Files;
     }
 
-	long hFile;
+    long hFile;
 
-	_finddata_t fdata;
+    _finddata_t fdata;
 
-	std::string searchString = std::string(szPath) + "/*";
+    std::string searchString = std::string(szPath) + "/*";
 
-	if ((hFile = (long)_findfirst(searchString.c_str(), &fdata)) != -1L) {
-		do {
-			std::string filename = fdata.name;
+    if ((hFile = (long)_findfirst(searchString.c_str(), &fdata)) != -1L) {
+        do {
+            std::string filename = fdata.name;
 
             if(filename.length() < extension.length()+1) {
                 continue;
-			}
-
-			if(filename[filename.length() - extension.length() - 1] != '.') {
-                continue;
-			}
-
-			std::string ext = filename.substr(filename.length() - extension.length());
-
-			if(bIgnoreCase == true) {
-				convertToLower(ext);
             }
 
-			if(ext == extension) {
+            if(filename[filename.length() - extension.length() - 1] != '.') {
+                continue;
+            }
+
+            std::string ext = filename.substr(filename.length() - extension.length());
+
+            if(bIgnoreCase == true) {
+                convertToLower(ext);
+            }
+
+            if(ext == extension) {
                 // on win32 we get an ansi-encoded filename
                 WCHAR szwFilename[MAX_PATH];
                 char szFilename[MAX_PATH];
@@ -153,56 +153,56 @@ std::list<FileInfo> getFileList(std::string directory, std::string extension, bo
                     continue;
                 }
 
-				Files.push_back(FileInfo(szFilename, fdata.size, fdata.time_write));
-			}
-		} while(_findnext(hFile, &fdata) == 0);
+                Files.push_back(FileInfo(szFilename, fdata.size, fdata.time_write));
+            }
+        } while(_findnext(hFile, &fdata) == 0);
 
-		_findclose(hFile);
-	}
+        _findclose(hFile);
+    }
 
 #else
 
-	DIR * dir = opendir(directory.c_str());
-	dirent *curEntry;
+    DIR * dir = opendir(directory.c_str());
+    dirent *curEntry;
 
-	if(dir == nullptr) {
-		return Files;
-	}
+    if(dir == nullptr) {
+        return Files;
+    }
 
-	errno = 0;
-	while((curEntry = readdir(dir)) != nullptr) {
-			std::string filename = curEntry->d_name;
+    errno = 0;
+    while((curEntry = readdir(dir)) != nullptr) {
+            std::string filename = curEntry->d_name;
 
-			if(filename.length() < extension.length()+1) {
+            if(filename.length() < extension.length()+1) {
                 continue;
-			}
+            }
 
-			if(filename[filename.length() - extension.length() - 1] != '.') {
+            if(filename[filename.length() - extension.length() - 1] != '.') {
                 continue;
-			}
+            }
 
-			std::string ext = filename.substr(filename.length() - extension.length());
+            std::string ext = filename.substr(filename.length() - extension.length());
 
-			if(bIgnoreCase == true) {
-				convertToLower(ext);
-			}
+            if(bIgnoreCase == true) {
+                convertToLower(ext);
+            }
 
-			if(ext == extension) {
-			    std::string fullpath = directory + "/" + filename;
-			    struct stat fdata;
-			    if(stat(fullpath.c_str(), &fdata) != 0) {
+            if(ext == extension) {
+                std::string fullpath = directory + "/" + filename;
+                struct stat fdata;
+                if(stat(fullpath.c_str(), &fdata) != 0) {
                     perror("stat()");
                     continue;
-			    }
-				Files.push_back(FileInfo(filename, fdata.st_size, fdata.st_mtime));
-			}
-	}
+                }
+                Files.push_back(FileInfo(filename, fdata.st_size, fdata.st_mtime));
+            }
+    }
 
-	if(errno != 0) {
-		perror("readdir()");
-	}
+    if(errno != 0) {
+        perror("readdir()");
+    }
 
-	closedir(dir);
+    closedir(dir);
 
 #endif
 
@@ -245,7 +245,7 @@ std::list<FileInfo> getFileList(std::string directory, std::string extension, bo
         } break;
     }
 
-	return Files;
+    return Files;
 
 }
 
@@ -325,7 +325,7 @@ bool getCaseInsensitiveFilename(std::string& filepath) {
 
 
 bool existsFile(const std::string& path) {
-	// try opening the file
+    // try opening the file
     SDL_RWops* RWopsFile = SDL_RWFromFile(path.c_str(),"r");
 
     if(RWopsFile == nullptr) {
@@ -344,28 +344,28 @@ std::string readCompleteFile(std::string filename) {
         return "";
     }
 
-	int filesize = SDL_RWseek(RWopsFile,0,SEEK_END);
-	if(filesize < 0) {
-		SDL_RWclose(RWopsFile);
-		return "";
-	}
+    int filesize = SDL_RWseek(RWopsFile,0,SEEK_END);
+    if(filesize < 0) {
+        SDL_RWclose(RWopsFile);
+        return "";
+    }
 
-	if(SDL_RWseek(RWopsFile,0,SEEK_SET) != 0) {
-		SDL_RWclose(RWopsFile);
-		return "";
-	}
+    if(SDL_RWseek(RWopsFile,0,SEEK_SET) != 0) {
+        SDL_RWclose(RWopsFile);
+        return "";
+    }
 
     char* filedata = new char[filesize];
 
-	if(SDL_RWread(RWopsFile, filedata, filesize, 1) != 1) {
-	    delete [] filedata;
-		SDL_RWclose(RWopsFile);
-		return "";
-	}
+    if(SDL_RWread(RWopsFile, filedata, filesize, 1) != 1) {
+        delete [] filedata;
+        SDL_RWclose(RWopsFile);
+        return "";
+    }
 
-	std::string retValue(filedata, filesize);
+    std::string retValue(filedata, filesize);
 
-	delete [] filedata;
+    delete [] filedata;
 
     SDL_RWclose(RWopsFile);
 

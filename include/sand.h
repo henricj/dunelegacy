@@ -60,7 +60,7 @@ std::string     resolveItemName(int itemID);
 
 int             getAnimByFilename(std::string filename);
 
-Coord	        getStructureSize(int itemID);
+Coord           getStructureSize(int itemID);
 
 Uint32          getItemIDByName(std::string name);
 std::string     getItemNameByID(Uint32 itemID);

@@ -22,63 +22,63 @@
 #include <algorithm>
 
 /**
-	Splits a string into several substrings. This strings are separated with ','.
+    Splits a string into several substrings. This strings are separated with ','.
         Example:<br>
         String first, second;<br>
         SplitString("abc,xyz",2,&first, &second);<br>
-	\param parseString  the string to parse
-	\param numStringPointers    the number of pointers to strings following after this parameter
-	\return true if successful, false otherwise.
+    \param parseString  the string to parse
+    \param numStringPointers    the number of pointers to strings following after this parameter
+    \return true if successful, false otherwise.
 */
 bool splitString(const std::string& parseString, unsigned int numStringPointers, ...) {
-	va_list arg_ptr;
-	va_start(arg_ptr, numStringPointers);
+    va_list arg_ptr;
+    va_start(arg_ptr, numStringPointers);
 
-	std::string** pStr;
+    std::string** pStr;
 
-	if(numStringPointers == 0)
-		return false;
+    if(numStringPointers == 0)
+        return false;
 
     pStr = new std::string*[numStringPointers];
 
-	for(unsigned int i = 0; i < numStringPointers; i++) {
-		pStr[i] = va_arg(arg_ptr, std::string* );
-	}
-	va_end(arg_ptr);
+    for(unsigned int i = 0; i < numStringPointers; i++) {
+        pStr[i] = va_arg(arg_ptr, std::string* );
+    }
+    va_end(arg_ptr);
 
-	int startpos = 0;
-	unsigned int index = 0;
+    int startpos = 0;
+    unsigned int index = 0;
 
-	for(unsigned int i = 0; i < parseString.size(); i++) {
-		if(parseString[i] == ',') {
-			*(pStr[index]) = parseString.substr(startpos,i-startpos);
-			startpos = i + 1;
-			index++;
-			if(index >= numStringPointers) {
-				delete [] pStr;
-				return false;
-			}
-		}
-	}
+    for(unsigned int i = 0; i < parseString.size(); i++) {
+        if(parseString[i] == ',') {
+            *(pStr[index]) = parseString.substr(startpos,i-startpos);
+            startpos = i + 1;
+            index++;
+            if(index >= numStringPointers) {
+                delete [] pStr;
+                return false;
+            }
+        }
+    }
 
-	*(pStr[index]) = parseString.substr(startpos,parseString.size()-startpos);
-	delete [] pStr;
-	return true;
+    *(pStr[index]) = parseString.substr(startpos,parseString.size()-startpos);
+    delete [] pStr;
+    return true;
 }
 
 /*
-	Splits a string into several substrings. This strings are separated with ',' by default.
+    Splits a string into several substrings. This strings are separated with ',' by default.
 */
 std::vector<std::string> splitString(const std::string& parseString, const std::string& delim, bool keepDelim) {
-	std::vector<std::string> retVector;
-	if(delim.empty()) {
+    std::vector<std::string> retVector;
+    if(delim.empty()) {
         retVector.push_back(parseString);
         return retVector;
-	}
+    }
 
-	std::string::const_iterator iter = parseString.begin();
+    std::string::const_iterator iter = parseString.begin();
 
-	while(true) {
+    while(true) {
         std::string::const_iterator foundPos = std::search(iter, parseString.end(), delim.begin(), delim.end());
         std::string part(iter, (foundPos == parseString.end()) ? foundPos : foundPos + (keepDelim ? delim.length() : 0));
         retVector.push_back(part);
@@ -88,85 +88,85 @@ std::vector<std::string> splitString(const std::string& parseString, const std::
         }
 
         iter = foundPos + delim.length();
-	}
+    }
 
-	return retVector;
+    return retVector;
 }
 
 /**
-	Replaces multiple strings at one. The mapping is specified by replacementMap
-	\param	str	the string to apply the replacement to
-	\param	replacementMap	a map of replacements
-	\return	the modified strings
+    Replaces multiple strings at one. The mapping is specified by replacementMap
+    \param  str the string to apply the replacement to
+    \param  replacementMap  a map of replacements
+    \return the modified strings
 */
 std::string replaceAll(std::string str, const std::map<std::string, std::string>& replacementMap) {
 
-	size_t currentPos = 0;
+    size_t currentPos = 0;
 
-	while(true) {
+    while(true) {
 
-		size_t bestNextPos = std::string::npos;
-		std::string bestNextKey;
-		std::string bestNextValue;
+        size_t bestNextPos = std::string::npos;
+        std::string bestNextKey;
+        std::string bestNextValue;
 
-		std::map<std::string, std::string>::const_iterator iter;
-		for(iter = replacementMap.begin(); iter != replacementMap.end(); ++iter) {
+        std::map<std::string, std::string>::const_iterator iter;
+        for(iter = replacementMap.begin(); iter != replacementMap.end(); ++iter) {
 
-			std::string nextKey = iter->first;
-			size_t nextPos = str.find(nextKey, currentPos);
+            std::string nextKey = iter->first;
+            size_t nextPos = str.find(nextKey, currentPos);
 
-			if((nextPos != std::string::npos)
-				&& ( (nextPos < bestNextPos)
-					 || ((nextPos == bestNextPos) && (nextKey.length() > bestNextKey.length())) ) ) {
+            if((nextPos != std::string::npos)
+                && ( (nextPos < bestNextPos)
+                     || ((nextPos == bestNextPos) && (nextKey.length() > bestNextKey.length())) ) ) {
 
-				// best match so far (either smaller position or same position but longer match)
-				bestNextPos = nextPos;
-				bestNextKey = nextKey;
-				bestNextValue = iter->second;
-			}
+                // best match so far (either smaller position or same position but longer match)
+                bestNextPos = nextPos;
+                bestNextKey = nextKey;
+                bestNextValue = iter->second;
+            }
 
-		}
+        }
 
-		if(bestNextPos == std::string::npos) {
-			break;
-		}
+        if(bestNextPos == std::string::npos) {
+            break;
+        }
 
-		str.replace(bestNextPos, bestNextKey.length(), bestNextValue);
+        str.replace(bestNextPos, bestNextKey.length(), bestNextValue);
 
-		currentPos = bestNextPos + bestNextValue.length();
-	}
+        currentPos = bestNextPos + bestNextValue.length();
+    }
 
 
-	return str;
+    return str;
 }
 
 std::string strprintf(const std::string fmt, ...) {
     // Note that fmt is not passed by reference as this is not allowed for the last parameter before ...
-	va_list arg_ptr;
-	va_start(arg_ptr, fmt);
+    va_list arg_ptr;
+    va_start(arg_ptr, fmt);
 
-	int length = vsnprintf(nullptr, 0, fmt.c_str(), arg_ptr);
-	if(length < 0) {
+    int length = vsnprintf(nullptr, 0, fmt.c_str(), arg_ptr);
+    if(length < 0) {
         throw std::runtime_error("strprintf(): vsnprintf() failed!");
-	}
+    }
 
-	char* tmpBuffer = new char[length+1];
+    char* tmpBuffer = new char[length+1];
 
-	va_end(arg_ptr);
+    va_end(arg_ptr);
 
     va_start(arg_ptr, fmt);
-	if(vsnprintf(tmpBuffer, length+1, fmt.c_str(), arg_ptr) < 0) {
-	    delete [] tmpBuffer;
+    if(vsnprintf(tmpBuffer, length+1, fmt.c_str(), arg_ptr) < 0) {
+        delete [] tmpBuffer;
         throw std::runtime_error("strprintf(): vsnprintf() failed!");
-	}
+    }
 
-	std::string formatedString(tmpBuffer);
+    std::string formatedString(tmpBuffer);
 
-	delete [] tmpBuffer;
+    delete [] tmpBuffer;
 
-	va_end(arg_ptr);
+    va_end(arg_ptr);
 
-	return formatedString;
+    return formatedString;
 }
 
 std::string convertCP850ToISO8859_1(const std::string& text)
@@ -240,58 +240,58 @@ std::string convertUTF8ToISO8859_1(const std::string& text)
 }
 
 std::string decodeString(std::string text) {
-	std::string out = "";
+    std::string out = "";
 
-	static const char decodeTable1[16] = { ' ','e','t','a','i','n','o','s','r','l','h','c','d','u','p','m' };
-	static const char decodeTable2[16][9] = {	{ 't','a','s','i','o',' ','w','b' },
-												{ ' ','r','n','s','d','a','l','m' },
-												{ 'h',' ','i','e','o','r','a','s' },
-												{ 'n','r','t','l','c',' ','s','y' },
-												{ 'n','s','t','c','l','o','e','r' },
-												{ ' ','d','t','g','e','s','i','o' },
-												{ 'n','r',' ','u','f','m','s','w' },
-												{ ' ','t','e','p','.','i','c','a' },
-												{ 'e',' ','o','i','a','d','u','r' },
-												{ ' ','l','a','e','i','y','o','d' },
-												{ 'e','i','a',' ','o','t','r','u' },
-												{ 'e','t','o','a','k','h','l','r' },
-												{ ' ','e','i','u',',','.','o','a' },
-												{ 'n','s','r','c','t','l','a','i' },
-												{ 'l','e','o','i','r','a','t','p' },
-												{ 'e','a','o','i','p',' ','b','m' } };
+    static const char decodeTable1[16] = { ' ','e','t','a','i','n','o','s','r','l','h','c','d','u','p','m' };
+    static const char decodeTable2[16][9] = {   { 't','a','s','i','o',' ','w','b' },
+                                                { ' ','r','n','s','d','a','l','m' },
+                                                { 'h',' ','i','e','o','r','a','s' },
+                                                { 'n','r','t','l','c',' ','s','y' },
+                                                { 'n','s','t','c','l','o','e','r' },
+                                                { ' ','d','t','g','e','s','i','o' },
+                                                { 'n','r',' ','u','f','m','s','w' },
+                                                { ' ','t','e','p','.','i','c','a' },
+                                                { 'e',' ','o','i','a','d','u','r' },
+                                                { ' ','l','a','e','i','y','o','d' },
+                                                { 'e','i','a',' ','o','t','r','u' },
+                                                { 'e','t','o','a','k','h','l','r' },
+                                                { ' ','e','i','u',',','.','o','a' },
+                                                { 'n','s','r','c','t','l','a','i' },
+                                                { 'l','e','o','i','r','a','t','p' },
+                                                { 'e','a','o','i','p',' ','b','m' } };
 
-	for(unsigned int i = 0; i < text.length(); i++) {
-		unsigned char databyte = text[i];
+    for(unsigned int i = 0; i < text.length(); i++) {
+        unsigned char databyte = text[i];
 
-		if(databyte & 0x80) {
-			unsigned char index1 = (databyte >> 3) & 0xF;
-			unsigned char index2 = databyte & 0x7;
+        if(databyte & 0x80) {
+            unsigned char index1 = (databyte >> 3) & 0xF;
+            unsigned char index2 = databyte & 0x7;
 
-			out += decodeTable1[index1];
-			out += decodeTable2[index1][index2];
-		} else {
-			if(databyte == 0x1B) {
-				// special character
-				// These characters are encoded as CP850 but from the actual CP850 code 0x7F is subtracted
+            out += decodeTable1[index1];
+            out += decodeTable2[index1][index2];
+        } else {
+            if(databyte == 0x1B) {
+                // special character
+                // These characters are encoded as CP850 but from the actual CP850 code 0x7F is subtracted
 
-				i++;
-				if(i == text.length()) {
-				    throw std::invalid_argument("decodeString(): Special character escape sequence at end of string!");
-				}
+                i++;
+                if(i == text.length()) {
+                    throw std::invalid_argument("decodeString(): Special character escape sequence at end of string!");
+                }
 
-				unsigned char special = text[i] + 0x7F;
+                unsigned char special = text[i] + 0x7F;
 
-				out += special;
-			} else if(databyte == '\r') {
-				out += '\n';
-			} else if(databyte == 0x0C) {
-				out += '\n';
-			} else if(databyte == 0x1F) {
-				out += '.';
-			} else {
-				out += databyte;
-			}
-		}
-	}
-	return out;
+                out += special;
+            } else if(databyte == '\r') {
+                out += '\n';
+            } else if(databyte == 0x0C) {
+                out += '\n';
+            } else if(databyte == 0x1F) {
+                out += '.';
+            } else {
+                out += databyte;
+            }
+        }
+    }
+    return out;
 }

@@ -49,18 +49,18 @@ void CutScene::run()
 {
     SDL_Event event;
 
-	while (!quiting)
-	{
-	    int frameStart = SDL_GetTicks();
+    while (!quiting)
+    {
+        int frameStart = SDL_GetTicks();
 
-		int nextFrameTime = draw();
+        int nextFrameTime = draw();
 
-		while(SDL_PollEvent(&event)) {
+        while(SDL_PollEvent(&event)) {
 
-		    //check the events
+            //check the events
             switch (event.type)
             {
-                case (SDL_KEYDOWN):	// Look for a keypress
+                case (SDL_KEYDOWN): // Look for a keypress
                 {
                     // Fixes some flickering
                     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
@@ -69,13 +69,13 @@ void CutScene::run()
                     quiting = true;
                 }
             }
-		}
+        }
 
-		int frameTime = SDL_GetTicks() - frameStart;
+        int frameTime = SDL_GetTicks() - frameStart;
         if(frameTime < nextFrameTime) {
             SDL_Delay(nextFrameTime - frameTime);
         }
-	}
+    }
 }
 
 void CutScene::startNewScene() {

@@ -26,72 +26,72 @@
 class Coord;
 
 /*!
-	Class that handles sounds and music.
+    Class that handles sounds and music.
 */
 class SoundPlayer
 {
 public:
-	//! @name Constructor & Destructor
-	//@{
-	SoundPlayer();
-	~SoundPlayer();
-	//@}
+    //! @name Constructor & Destructor
+    //@{
+    SoundPlayer();
+    ~SoundPlayer();
+    //@}
 
-	/*!
-		plays a certain sound at certain coordinates.
-		the volume of sound depends on the difference between
-		location of the sound and if location is explored.
-		@param soundID id of the sound to be played
-		@param location coordinates where the sound is to be played
-	*/
-	void playSoundAt(Sound_enum soundID, const Coord& location);
+    /*!
+        plays a certain sound at certain coordinates.
+        the volume of sound depends on the difference between
+        location of the sound and if location is explored.
+        @param soundID id of the sound to be played
+        @param location coordinates where the sound is to be played
+    */
+    void playSoundAt(Sound_enum soundID, const Coord& location);
 
     /*!
         Toggle the sound on and off
     */
-	void toggleSound() { soundOn = !soundOn; }
+    void toggleSound() { soundOn = !soundOn; }
 
     /*!
-		turns sound playing on or off
-		@param value when true the function turns sfx on
-	*/
-	void setSound(bool value) { soundOn = value; }
+        turns sound playing on or off
+        @param value when true the function turns sfx on
+    */
+    void setSound(bool value) { soundOn = value; }
 
-	void playVoice(Voice_enum id, int houseID);
+    void playVoice(Voice_enum id, int houseID);
 
-	void playSound(Mix_Chunk* sound);
+    void playSound(Mix_Chunk* sound);
 
-	void playSound(Sound_enum id);
+    void playSound(Sound_enum id);
 
     /**
         Gets the current sfx volume.
         \return the current volume
     */
-	inline int getSfxVolume() const { return sfxVolume; };
+    inline int getSfxVolume() const { return sfxVolume; };
 
     /**
         Sets the volume of all channels
         \param  newVolume   the new volume [0;MIX_MAX_VOLUME]
     */
-	void setSfxVolume(int newVolume) {
-		if(newVolume >= 0 && newVolume <= MIX_MAX_VOLUME) {
-			sfxVolume = newVolume;
-		}
-	}
+    void setSfxVolume(int newVolume) {
+        if(newVolume >= 0 && newVolume <= MIX_MAX_VOLUME) {
+            sfxVolume = newVolume;
+        }
+    }
 
 private:
-	/*!
-		the function plays a sound with a given volume
-		@param soundID id of a sound to be played
-		@param volume sound will be played with this volume
-	*/
-	void playSound(Sound_enum soundID, int volume);
+    /*!
+        the function plays a sound with a given volume
+        @param soundID id of a sound to be played
+        @param volume sound will be played with this volume
+    */
+    void playSound(Sound_enum soundID, int volume);
 
-	//! whether sound should be played
-	bool	soundOn;
+    //! whether sound should be played
+    bool    soundOn;
 
-	//! volume of sound effects
-	int	sfxVolume;
+    //! volume of sound effects
+    int sfxVolume;
 
 };
 

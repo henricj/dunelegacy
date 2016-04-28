@@ -23,12 +23,12 @@
 class RocketTurret : public TurretBase
 {
 public:
-	RocketTurret(House* newOwner);
-	RocketTurret(InputStream& stream);
-	void init();
-	virtual ~RocketTurret();
+    RocketTurret(House* newOwner);
+    RocketTurret(InputStream& stream);
+    void init();
+    virtual ~RocketTurret();
 
-	bool canAttack(const ObjectBase* object) const;
+    bool canAttack(const ObjectBase* object) const;
 
     virtual void attack();
 
@@ -37,7 +37,7 @@ protected:
         Used for updating things that are specific to that particular structure. Is called from
         StructureBase::update() before the check if this structure is still alive.
     */
-	virtual void updateStructureSpecificStuff();
+    virtual void updateStructureSpecificStuff();
 
 private:
 };

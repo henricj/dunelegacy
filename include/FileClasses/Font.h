@@ -24,25 +24,25 @@
 
 class Font {
 public:
-	Font() { };
-	virtual ~Font() { };
+    Font() { };
+    virtual ~Font() { };
 
-	virtual void drawTextOnSurface(SDL_Surface* pSurface, std::string text, Uint32 baseColor = 0xFFFFFFFF) = 0;
+    virtual void drawTextOnSurface(SDL_Surface* pSurface, std::string text, Uint32 baseColor = 0xFFFFFFFF) = 0;
 
-	/// Returns the number of pixels a text needs
-	/**
-		This methods returns the number of pixels this text would need if printed.
-		\param	text	The text to be checked for it's length in pixel
-		\return Number of pixels needed
-	*/
-	virtual int getTextWidth(std::string text) const = 0;
+    /// Returns the number of pixels a text needs
+    /**
+        This methods returns the number of pixels this text would need if printed.
+        \param  text    The text to be checked for it's length in pixel
+        \return Number of pixels needed
+    */
+    virtual int getTextWidth(std::string text) const = 0;
 
-	/// Returns the number of pixels this font needs in y-direction.
-	/**
-		This methods returns the height of this font.
-		\return Number of pixels needed
-	*/
-	virtual int getTextHeight() const = 0;
+    /// Returns the number of pixels this font needs in y-direction.
+    /**
+        This methods returns the height of this font.
+        \return Number of pixels needed
+    */
+    virtual int getTextHeight() const = 0;
 };
 
 #endif // FONT_H

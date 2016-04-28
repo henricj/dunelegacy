@@ -24,13 +24,13 @@ extern SDL_Renderer* renderer;
 
 enum class HAlign {
     Left,
-	Center,
+    Center,
     Right,
 };
 
 enum class VAlign {
     Top,
-	Center,
+    Center,
     Bottom,
 };
 

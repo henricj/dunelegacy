@@ -16,7 +16,7 @@
  */
 
 #ifndef GAMEINTERFACE_H
-#define	GAMEINTERFACE_H
+#define GAMEINTERFACE_H
 
 #include <GUI/Window.h>
 #include <GUI/HBox.h>
@@ -34,17 +34,17 @@ class ObjectInterface;
 /// This class represents the in-game interface.
 class GameInterface : public Window {
 public:
-	/// default constructor
-	GameInterface();
+    /// default constructor
+    GameInterface();
 
-	/// destructor
-	virtual ~GameInterface();
+    /// destructor
+    virtual ~GameInterface();
 
-	/**
-		Draws this window to screen. This method should be called every frame.
-		\param	position	Position to draw the window to. The position of the window is added to this.
-	*/
-	virtual void draw(Point position);
+    /**
+        Draws this window to screen. This method should be called every frame.
+        \param  position    Position to draw the window to. The position of the window is added to this.
+    */
+    virtual void draw(Point position);
 
     /**
         Checks whether the newticker currently shows a message
@@ -54,59 +54,59 @@ public:
         return newsticker.hasMessage();
     }
 
-	/**
-		This method adds a message to the news ticker
-		\param	text	the message to add
-	*/
-	virtual void addToNewsTicker(const std::string& text) {
-		newsticker.addMessage(text);
-	}
+    /**
+        This method adds a message to the news ticker
+        \param  text    the message to add
+    */
+    virtual void addToNewsTicker(const std::string& text) {
+        newsticker.addMessage(text);
+    }
 
-	/**
-		This method adds a urgent message to the news ticker
-		\param	text	the urgent message to add
-	*/
-	virtual void addUrgentMessageToNewsTicker(const std::string& text) {
-		newsticker.addUrgentMessage(text);
-	}
+    /**
+        This method adds a urgent message to the news ticker
+        \param  text    the urgent message to add
+    */
+    virtual void addUrgentMessageToNewsTicker(const std::string& text) {
+        newsticker.addUrgentMessage(text);
+    }
 
-	/**
+    /**
         Returns the radar view
         \return the radar view
-	*/
-	RadarView& getRadarView() { return radarView; };
+    */
+    RadarView& getRadarView() { return radarView; };
 
-	/**
+    /**
         Returns the chat manager
         \return the chat manager
-	*/
-	ChatManager& getChatManager() { return chatManager; };
+    */
+    ChatManager& getChatManager() { return chatManager; };
 
 
-	/**
-		This method updates the object interface
-	*/
-	virtual void updateObjectInterface();
+    /**
+        This method updates the object interface
+    */
+    virtual void updateObjectInterface();
 
 private:
-	void removeOldContainer();
+    void removeOldContainer();
 
 
-	ObjectInterface*	pObjectContainer;       ///< The container holding information about the currently selected unit/structure
-	Uint32				objectID;               ///< The id of the currently selected object
+    ObjectInterface*    pObjectContainer;       ///< The container holding information about the currently selected unit/structure
+    Uint32              objectID;               ///< The id of the currently selected object
 
-	StaticContainer 	windowWidget;           ///< The main widget of this interface
+    StaticContainer     windowWidget;           ///< The main widget of this interface
 
-	HBox				topBarHBox;            ///< The container for the top bar containing newsticker, options button and mentat button
-	NewsTicker			newsticker;             ///< The newsticker showing news on the game (e.g. new starport prices, harvester fill level, etc.)
-	PictureButton		optionsButton;         ///< Button for accessing the ingame menu
-	PictureButton		mentatButton;          ///< Button for accessing the mentat menu
-	PictureLabel		topBar;                 ///< The background of the top bar
+    HBox                topBarHBox;            ///< The container for the top bar containing newsticker, options button and mentat button
+    NewsTicker          newsticker;             ///< The newsticker showing news on the game (e.g. new starport prices, harvester fill level, etc.)
+    PictureButton       optionsButton;         ///< Button for accessing the ingame menu
+    PictureButton       mentatButton;          ///< Button for accessing the mentat menu
+    PictureLabel        topBar;                 ///< The background of the top bar
 
-	PictureLabel		sideBar;                ///< The background of the side bar
+    PictureLabel        sideBar;                ///< The background of the side bar
 
-	RadarView           radarView;              ///< This is the minimap/radar in the side bar
+    RadarView           radarView;              ///< This is the minimap/radar in the side bar
 
-	ChatManager         chatManager;            ///< Manages chat manages shown overlayed with the main map
+    ChatManager         chatManager;            ///< Manages chat manages shown overlayed with the main map
 };
 #endif // GAMEINTERFACE_H

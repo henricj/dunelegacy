@@ -44,14 +44,14 @@
 
 CustomGameMenu::CustomGameMenu(bool multiplayer, bool LANServer)
  : MenuBase(), bMultiplayer(multiplayer), bLANServer(LANServer), currentGameOptions(settings.gameOptions) {
-	// set up window
+    // set up window
     SDL_Texture *pBackground = pGFXManager->getUIGraphic(UI_MenuBackground);
-	setBackground(pBackground, false);
-	resize(getTextureSize(pBackground));
+    setBackground(pBackground, false);
+    resize(getTextureSize(pBackground));
 
-	setWindowWidget(&windowWidget);
+    setWindowWidget(&windowWidget);
 
-	windowWidget.addWidget(&mainVBox, Point(24,23),	Point(getRendererWidth() - 48, getRendererHeight() - 32));
+    windowWidget.addWidget(&mainVBox, Point(24,23), Point(getRendererWidth() - 48, getRendererHeight() - 32));
 
     captionLabel.setText(bMultiplayer ? (bLANServer ? _("LAN Game") : _("Internet Game")) : _("Custom Game"));
     captionLabel.setAlignment(Alignment_HCenter);
@@ -132,44 +132,44 @@ CustomGameMenu::CustomGameMenu(bool multiplayer, bool LANServer)
     mainVBox.addWidget(Spacer::create(), 0.05);
 
     mainVBox.addWidget(VSpacer::create(20));
-	mainVBox.addWidget(&buttonHBox, 24);
-	mainVBox.addWidget(VSpacer::create(14), 0.0);
+    mainVBox.addWidget(&buttonHBox, 24);
+    mainVBox.addWidget(VSpacer::create(14), 0.0);
 
     buttonHBox.addWidget(HSpacer::create(70));
     cancelButton.setText(_("Back"));
-	cancelButton.setOnClick(std::bind(&CustomGameMenu::onCancel, this));
-	buttonHBox.addWidget(&cancelButton, 0.1);
+    cancelButton.setOnClick(std::bind(&CustomGameMenu::onCancel, this));
+    buttonHBox.addWidget(&cancelButton, 0.1);
 
-	buttonHBox.addWidget(Spacer::create(), 0.0625);
+    buttonHBox.addWidget(Spacer::create(), 0.0625);
 
-	buttonHBox.addWidget(Spacer::create(), 0.25);
-	loadButton.setText(_("Load"));
-	loadButton.setVisible(bMultiplayer);
-	loadButton.setEnabled(bMultiplayer);
-	loadButton.setOnClick(std::bind(&CustomGameMenu::onLoad, this));
-	buttonHBox.addWidget(&loadButton, 0.175);
-	buttonHBox.addWidget(Spacer::create(), 0.25);
+    buttonHBox.addWidget(Spacer::create(), 0.25);
+    loadButton.setText(_("Load"));
+    loadButton.setVisible(bMultiplayer);
+    loadButton.setEnabled(bMultiplayer);
+    loadButton.setOnClick(std::bind(&CustomGameMenu::onLoad, this));
+    buttonHBox.addWidget(&loadButton, 0.175);
+    buttonHBox.addWidget(Spacer::create(), 0.25);
 
-	buttonHBox.addWidget(Spacer::create(), 0.0625);
+    buttonHBox.addWidget(Spacer::create(), 0.0625);
 
     nextButton.setText(_("Next"));
-	nextButton.setOnClick(std::bind(&CustomGameMenu::onNext, this));
-	buttonHBox.addWidget(&nextButton, 0.1);
-	buttonHBox.addWidget(HSpacer::create(90));
+    nextButton.setOnClick(std::bind(&CustomGameMenu::onNext, this));
+    buttonHBox.addWidget(&nextButton, 0.1);
+    buttonHBox.addWidget(HSpacer::create(90));
 
-	onMapTypeChange(0);
+    onMapTypeChange(0);
 }
 
 CustomGameMenu::~CustomGameMenu()
 {
-	;
+    ;
 }
 
 
 void CustomGameMenu::onChildWindowClose(Window* pChildWindow) {
-	LoadSaveWindow* pLoadSaveWindow = dynamic_cast<LoadSaveWindow*>(pChildWindow);
-	if(pLoadSaveWindow != nullptr) {
-		std::string filename = pLoadSaveWindow->getFilename();
+    LoadSaveWindow* pLoadSaveWindow = dynamic_cast<LoadSaveWindow*>(pChildWindow);
+    if(pLoadSaveWindow != nullptr) {
+        std::string filename = pLoadSaveWindow->getFilename();
 
         if(filename != "") {
             std::string savegamedata = readCompleteFile(filename);
@@ -184,7 +184,7 @@ void CustomGameMenu::onChildWindowClose(Window* pChildWindow) {
                 quit(ret);
             }
         }
-	}
+    }
 
     GameOptionsWindow* pGameOptionsWindow = dynamic_cast<GameOptionsWindow*>(pChildWindow);
     if(pGameOptionsWindow != nullptr) {
@@ -224,10 +224,10 @@ void CustomGameMenu::onCancel()
 
 void CustomGameMenu::onLoad()
 {
-	char tmp[FILENAME_MAX];
-	fnkdat("mpsave/", tmp, FILENAME_MAX, FNKDAT_USER | FNKDAT_CREAT);
-	std::string savepath(tmp);
-	openWindow(LoadSaveWindow::create(false, _("Load Game"), savepath, "dls"));
+    char tmp[FILENAME_MAX];
+    fnkdat("mpsave/", tmp, FILENAME_MAX, FNKDAT_USER | FNKDAT_CREAT);
+    std::string savepath(tmp);
+    openWindow(LoadSaveWindow::create(false, _("Load Game"), savepath, "dls"));
 }
 
 void CustomGameMenu::onGameOptions()

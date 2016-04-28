@@ -30,10 +30,10 @@
 class WaitingForOtherPlayers : public Window
 {
 public:
-	WaitingForOtherPlayers();
-	virtual ~WaitingForOtherPlayers();
+    WaitingForOtherPlayers();
+    virtual ~WaitingForOtherPlayers();
 
-	void onRemove();
+    void onRemove();
 
     void update();
 
@@ -41,19 +41,19 @@ public:
 
 private:
     /**
-		This method sets a new text for this window.
-		\param	Text The new text for this window
-	*/
-	inline void setText(std::string text) {
-		textLabel.setText(text);
-		resize(std::max(vbox.getMinimumSize().x,120),vbox.getMinimumSize().y);
-	}
+        This method sets a new text for this window.
+        \param  Text The new text for this window
+    */
+    inline void setText(std::string text) {
+        textLabel.setText(text);
+        resize(std::max(vbox.getMinimumSize().x,120),vbox.getMinimumSize().y);
+    }
 
-	VBox vbox;					///< vertical box
-	HBox hbox;					///< horizontal box
-	VBox vbox2;					///< inner vertical box;
-	Label textLabel;			///< label that contains the text
-	TextButton removeButton;	///< the remove button
+    VBox vbox;                  ///< vertical box
+    HBox hbox;                  ///< horizontal box
+    VBox vbox2;                 ///< inner vertical box;
+    Label textLabel;            ///< label that contains the text
+    TextButton removeButton;    ///< the remove button
 };
 
 

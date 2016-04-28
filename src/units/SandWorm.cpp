@@ -44,84 +44,84 @@ Sandworm::Sandworm(House* newOwner) : GroundUnit(newOwner) {
     setHealth(getMaxHealth());
 
     kills = 0;
-	attackFrameTimer = 0;
-	sleepTimer = 0;
-	respondable = false;
+    attackFrameTimer = 0;
+    sleepTimer = 0;
+    respondable = false;
 
     for(int i = 0; i < SANDWORM_SEGMENTS; i++) {
         lastLocs[i].invalidate();
     }
-	shimmerOffsetIndex = -1;
+    shimmerOffsetIndex = -1;
 }
 
 Sandworm::Sandworm(InputStream& stream) : GroundUnit(stream) {
 
     Sandworm::init();
 
-	kills = stream.readSint32();
-	attackFrameTimer = stream.readSint32();
-	sleepTimer = stream.readSint32();
-	shimmerOffsetIndex = stream.readSint32();
-	for(int i = 0; i < SANDWORM_SEGMENTS; i++) {
+    kills = stream.readSint32();
+    attackFrameTimer = stream.readSint32();
+    sleepTimer = stream.readSint32();
+    shimmerOffsetIndex = stream.readSint32();
+    for(int i = 0; i < SANDWORM_SEGMENTS; i++) {
         lastLocs[i].x = stream.readSint32();
         lastLocs[i].y = stream.readSint32();
-	}
+    }
 }
 
 void Sandworm::init() {
     itemID = Unit_Sandworm;
     owner->incrementUnits(itemID);
 
-	numWeapons = 0;
+    numWeapons = 0;
 
-	graphicID = ObjPic_Sandworm;
-	graphic = pGFXManager->getObjPic(graphicID,getOwner()->getHouseID());
+    graphicID = ObjPic_Sandworm;
+    graphic = pGFXManager->getObjPic(graphicID,getOwner()->getHouseID());
 
-	numImagesX = 1;
-	numImagesY = 9;
+    numImagesX = 1;
+    numImagesY = 9;
 
-	drawnFrame = INVALID;
+    drawnFrame = INVALID;
 }
 
 Sandworm::~Sandworm() {
 }
 
 void Sandworm::save(OutputStream& stream) const {
-	GroundUnit::save(stream);
+    GroundUnit::save(stream);
 
-	stream.writeSint32(kills);
-	stream.writeSint32(attackFrameTimer);
-	stream.writeSint32(sleepTimer);
-	stream.writeSint32(shimmerOffsetIndex);
-	for(int i = 0; i < SANDWORM_SEGMENTS; i++) {
+    stream.writeSint32(kills);
+    stream.writeSint32(attackFrameTimer);
+    stream.writeSint32(sleepTimer);
+    stream.writeSint32(shimmerOffsetIndex);
+    for(int i = 0; i < SANDWORM_SEGMENTS; i++) {
         stream.writeSint32(lastLocs[i].x);
         stream.writeSint32(lastLocs[i].y);
-	}
+    }
 }
 
 void Sandworm::assignToMap(const Coord& pos) {
-	if(currentGameMap->tileExists(pos)) {
-		currentGameMap->getTile(pos)->assignUndergroundUnit(getObjectID());
-		// do not unhide map cause this would give Fremen players an advantage
-		// currentGameMap->viewMap(owner->getTeam(), location, getViewRange());
-	}
+    if(currentGameMap->tileExists(pos)) {
+        currentGameMap->getTile(pos)->assignUndergroundUnit(getObjectID());
+        // do not unhide map cause this would give Fremen players an advantage
+        // currentGameMap->viewMap(owner->getTeam(), location, getViewRange());
+    }
 }
 
 void Sandworm::attack() {
-	if(primaryWeaponTimer == 0) {
-		if(target) {
-			soundPlayer->playSoundAt(Sound_WormAttack, location);
-			drawnFrame = 0;
-			attackFrameTimer = SANDWORM_ATTACKFRAMETIME;
-			primaryWeaponTimer = getWeaponReloadTime();
-		}
-	}
+    if(primaryWeaponTimer == 0) {
+        if(target) {
+            soundPlayer->playSoundAt(Sound_WormAttack, location);
+            drawnFrame = 0;
+            attackFrameTimer = SANDWORM_ATTACKFRAMETIME;
+            primaryWeaponTimer = getWeaponReloadTime();
+        }
+    }
 }
 
 void Sandworm::deploy(const Coord& newLocation) {
-	UnitBase::deploy(newLocation);
+    UnitBase::deploy(newLocation);
 
-	respondable = false;
+    respondable = false;
 }
 
 void Sandworm::blitToScreen() {
@@ -180,17 +180,17 @@ void Sandworm::blitToScreen() {
 }
 
 void Sandworm::checkPos() {
-	if(justStoppedMoving) {
-		realX = location.x*TILESIZE + TILESIZE/2;
-		realY = location.y*TILESIZE + TILESIZE/2;
+    if(justStoppedMoving) {
+        realX = location.x*TILESIZE + TILESIZE/2;
+        realY = location.y*TILESIZE + TILESIZE/2;
 
-		if(currentGameMap->tileExists(location)) {
-			Tile* pTile = currentGameMap->getTile(location);
-			if(pTile->hasInfantry() && (pTile->getInfantry()->getOwner() == pLocalHouse)) {
-				soundPlayer->playSound(SomethingUnderTheSand);
-			}
-		}
-	}
+        if(currentGameMap->tileExists(location)) {
+            Tile* pTile = currentGameMap->getTile(location);
+            if(pTile->hasInfantry() && (pTile->getInfantry()->getOwner() == pLocalHouse)) {
+                soundPlayer->playSound(SomethingUnderTheSand);
+            }
+        }
+    }
 }
 
 void Sandworm::engageTarget() {
@@ -234,26 +234,26 @@ void Sandworm::engageTarget() {
 }
 
 void Sandworm::setLocation(int xPos, int yPos) {
-	if(currentGameMap->tileExists(xPos, yPos) || ((xPos == INVALID_POS) && (yPos == INVALID_POS))) {
-		UnitBase::setLocation(xPos, yPos);
-	}
+    if(currentGameMap->tileExists(xPos, yPos) || ((xPos == INVALID_POS) && (yPos == INVALID_POS))) {
+        UnitBase::setLocation(xPos, yPos);
+    }
 }
 
 /**
     Put sandworm to sleep for a while
 */
 void Sandworm::sleep() {
-	sleepTimer = currentGame->randomGen.rand(MIN_SANDWORMSLEEPTIME, MAX_SANDWORMSLEEPTIME);
-	setActive(false);
-	setVisible(VIS_ALL, false);
-	setForced(false);
-	currentGameMap->removeObjectFromMap(getObjectID());	//no map point will reference now
-	setLocation(NONE, NONE);
-	setHealth(getMaxHealth());
-	kills = 0;
-	drawnFrame = INVALID;
-	attackFrameTimer = 0;
-	shimmerOffsetIndex = -1;
+    sleepTimer = currentGame->randomGen.rand(MIN_SANDWORMSLEEPTIME, MAX_SANDWORMSLEEPTIME);
+    setActive(false);
+    setVisible(VIS_ALL, false);
+    setForced(false);
+    currentGameMap->removeObjectFromMap(getObjectID()); //no map point will reference now
+    setLocation(NONE, NONE);
+    setHealth(getMaxHealth());
+    kills = 0;
+    drawnFrame = INVALID;
+    attackFrameTimer = 0;
+    shimmerOffsetIndex = -1;
     for(int i = 0; i < SANDWORM_SEGMENTS; i++) {
         lastLocs[i].invalidate();
     }
@@ -276,14 +276,14 @@ bool Sandworm::sleepOrDie() {
 }
 
 bool Sandworm::update() {
-	if(getHealth() <= getMaxHealth()/2) {
-		if(sleepOrDie() == false) {
+    if(getHealth() <= getMaxHealth()/2) {
+        if(sleepOrDie() == false) {
             return false;
-		}
-	} else {
-		if(GroundUnit::update() == false) {
-		    return false;
-		}
+        }
+    } else {
+        if(GroundUnit::update() == false) {
+            return false;
+        }
 
         if(isActive() && (moving || justStoppedMoving) && !currentGame->isGamePaused() && !currentGame->isGameFinished()) {
             Coord realLocation = getLocation()*TILESIZE + Coord(TILESIZE/2, TILESIZE/2);
@@ -296,7 +296,7 @@ bool Sandworm::update() {
             lastLocs[0].x = lround(realX);
             lastLocs[0].y = lround(realY);
             shimmerOffsetIndex = ((currentGame->getGameCycleCount() + getObjectID()) % 48)/6;
-		}
+        }
 
         if(attackFrameTimer > 0) {
             attackFrameTimer--;
@@ -315,7 +315,7 @@ bool Sandworm::update() {
                     attackFrameTimer = SANDWORM_ATTACKFRAMETIME;
                     if(drawnFrame == 1) {
                         // the close mouth bit of graphic is currently shown => eat unit
-                        bool wasAlive = ( target && target.getObjPointer()->isVisible(getOwner()->getTeam()));	//see if unit was alive before attack
+                        bool wasAlive = ( target && target.getObjPointer()->isVisible(getOwner()->getTeam()));  //see if unit was alive before attack
                         Coord realPos = Coord(lround(realX), lround(realY));
                         currentGameMap->damage(objectID, getOwner(), realPos, Bullet_Sandworm, 5000, NONE, false);
 
@@ -327,13 +327,13 @@ bool Sandworm::update() {
             }
         }
 
-		if(sleepTimer > 0) {
-		    sleepTimer--;
+        if(sleepTimer > 0) {
+            sleepTimer--;
 
-			if(sleepTimer == 0) {
-			    // awaken the worm!
+            if(sleepTimer == 0) {
+                // awaken the worm!
 
-			    for(int tries = 0 ; tries < 1000 ; tries++) {
+                for(int tries = 0 ; tries < 1000 ; tries++) {
                     int x = currentGame->randomGen.rand(0, currentGameMap->getSizeX() - 1);
                     int y = currentGame->randomGen.rand(0, currentGameMap->getSizeY() - 1);
 
@@ -341,7 +341,7 @@ bool Sandworm::update() {
                         deploy(currentGameMap->getTile(x, y)->getLocation());
                         break;
                     }
-			    }
+                }
 
                 if(isActive() == false) {
                     // no room for sandworm on map => take another nap
@@ -349,33 +349,33 @@ bool Sandworm::update() {
                         return false;
                     }
                 }
-			}
-		}
-	}
+            }
+        }
+    }
 
-	return true;
+    return true;
 }
 
 bool Sandworm::canAttack(const ObjectBase* object) const {
-	if((object != nullptr)
-		&& object->isAGroundUnit()
-		&& (object->getItemID() != Unit_Sandworm)	//wont kill other sandworms
-		//&& object->isVisible(getOwner()->getTeam())
-		//&& (object->getOwner()->getTeam() != owner->getTeam())
-		&& currentGameMap->tileExists(object->getLocation())
-		&& canPass(object->getLocation().x, object->getLocation().y)
-		&& (currentGameMap->getTile(object->getLocation())->getSandRegion() == currentGameMap->getTile(location)->getSandRegion())) {
-		return true;
-	} else {
-		return false;
-	}
+    if((object != nullptr)
+        && object->isAGroundUnit()
+        && (object->getItemID() != Unit_Sandworm)   //wont kill other sandworms
+        //&& object->isVisible(getOwner()->getTeam())
+        //&& (object->getOwner()->getTeam() != owner->getTeam())
+        && currentGameMap->tileExists(object->getLocation())
+        && canPass(object->getLocation().x, object->getLocation().y)
+        && (currentGameMap->getTile(object->getLocation())->getSandRegion() == currentGameMap->getTile(location)->getSandRegion())) {
+        return true;
+    } else {
+        return false;
+    }
 }
 
 bool Sandworm::canPass(int xPos, int yPos) const {
-	return (currentGameMap->tileExists(xPos, yPos)
-			&& !currentGameMap->getTile(xPos, yPos)->isRock()
-			&& (!currentGameMap->getTile(xPos, yPos)->hasAnUndergroundUnit()
-				|| (currentGameMap->getTile(xPos, yPos)->getUndergroundUnit() == this)));
+    return (currentGameMap->tileExists(xPos, yPos)
+            && !currentGameMap->getTile(xPos, yPos)->isRock()
+            && (!currentGameMap->getTile(xPos, yPos)->hasAnUndergroundUnit()
+                || (currentGameMap->getTile(xPos, yPos)->getUndergroundUnit() == this)));
 }
 
 const ObjectBase* Sandworm::findTarget() const {
@@ -383,25 +383,25 @@ const ObjectBase* Sandworm::findTarget() const {
         return nullptr;
     }
 
-	const ObjectBase* closestTarget = nullptr;
+    const ObjectBase* closestTarget = nullptr;
 
-	if(attackMode == HUNT) {
-	    FixPoint closestDistance = FixPt_MAX;
+    if(attackMode == HUNT) {
+        FixPoint closestDistance = FixPt_MAX;
 
         RobustList<UnitBase*>::const_iterator iter;
-	    for(iter = unitList.begin(); iter != unitList.end(); ++iter) {
-			UnitBase* tempUnit = *iter;
+        for(iter = unitList.begin(); iter != unitList.end(); ++iter) {
+            UnitBase* tempUnit = *iter;
             if (canAttack(tempUnit)
-				&& (blockDistance(location, tempUnit->getLocation()) < closestDistance)) {
+                && (blockDistance(location, tempUnit->getLocation()) < closestDistance)) {
                 closestTarget = tempUnit;
                 closestDistance = blockDistance(location, tempUnit->getLocation());
             }
-		}
-	} else {
-		closestTarget = ObjectBase::findTarget();
-	}
+        }
+    } else {
+        closestTarget = ObjectBase::findTarget();
+    }
 
-	return closestTarget;
+    return closestTarget;
 }
 
 int Sandworm::getCurrentAttackAngle() const {
@@ -410,5 +410,5 @@ int Sandworm::getCurrentAttackAngle() const {
 }
 
 void Sandworm::playAttackSound() {
-	soundPlayer->playSoundAt(Sound_WormAttack,location);
+    soundPlayer->playSoundAt(Sound_WormAttack,location);
 }

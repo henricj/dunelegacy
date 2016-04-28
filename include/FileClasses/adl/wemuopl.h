@@ -48,7 +48,7 @@ public:
   void write(int reg, int val)
     {
       if(currChip != 0)
-	return;
+    return;
 
       opl.index = reg;
       opl.adlib_write(opl.index, val, 0);
@@ -57,8 +57,8 @@ public:
   void init() {};
 
 private:
-  bool		stereo;
-  OPLChipClass	opl;
+  bool      stereo;
+  OPLChipClass  opl;
 };
 
 #endif

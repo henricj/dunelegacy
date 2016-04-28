@@ -47,10 +47,10 @@ MentatHelp::MentatHelp(int newHouse, int techLevel, int mission) : MentatMenu(ne
 
     }
 
-	setClearScreen(false);
+    setClearScreen(false);
 
-	backgroundLabel.setTextColor(COLOR_DEFAULT, COLOR_DEFAULT, COLOR_THICKSPICE);
-	windowWidget.addWidget(&backgroundLabel,Point(256,96),Point(368,224));
+    backgroundLabel.setTextColor(COLOR_DEFAULT, COLOR_DEFAULT, COLOR_THICKSPICE);
+    windowWidget.addWidget(&backgroundLabel,Point(256,96),Point(368,224));
 
     std::vector<MentatTextFile::MentatEntry>::iterator iter;
     for(iter = mentatEntries.begin(); iter != mentatEntries.end(); ++iter) {
@@ -61,8 +61,8 @@ MentatHelp::MentatHelp(int newHouse, int techLevel, int mission) : MentatMenu(ne
         }
     }
     mentatTopicsList.setHighlightSelectedElement(false);
-	mentatTopicsList.setOnSingleClick(std::bind(&MentatHelp::onListBoxClick, this));
-	mentatTopicsList.setColor(color);
+    mentatTopicsList.setOnSingleClick(std::bind(&MentatHelp::onListBoxClick, this));
+    mentatTopicsList.setColor(color);
     windowWidget.addWidget(&mentatTopicsList,Point(256+7, 96+7),Point(368 - 14, 224 - 14));
 
     windowWidget.addWidget(&animation,Point(256,96),Point(368,224));
@@ -74,12 +74,12 @@ MentatHelp::MentatHelp(int newHouse, int techLevel, int mission) : MentatMenu(ne
     windowWidget.addWidget(&itemDescriptionLabel,Point(256 + 4, 96 + 4),Point(368 - 8, 224 - 8));
     itemDescriptionLabel.setVisible(false);
 
-	SDL_Texture* pMentatExit = pGFXManager->getUIGraphic(UI_MentatExit);
-	SDL_Texture* pMentatExitPressed = pGFXManager->getUIGraphic(UI_MentatExit_Pressed);
-	exitButton.setTextures(pMentatExit, false, pMentatExitPressed, false);
+    SDL_Texture* pMentatExit = pGFXManager->getUIGraphic(UI_MentatExit);
+    SDL_Texture* pMentatExitPressed = pGFXManager->getUIGraphic(UI_MentatExit_Pressed);
+    exitButton.setTextures(pMentatExit, false, pMentatExitPressed, false);
 
-	exitButton.setOnClick(std::bind(&MentatHelp::onExit, this));
-	windowWidget.addWidget(&exitButton,Point(370,340), getTextureSize(pMentatExit));
+    exitButton.setOnClick(std::bind(&MentatHelp::onExit, this));
+    windowWidget.addWidget(&exitButton,Point(370,340), getTextureSize(pMentatExit));
 }
 
 MentatHelp::~MentatHelp() {
@@ -94,22 +94,22 @@ void MentatHelp::drawSpecificStuff()
     int y1 = getPosition().y;
     int y2 = getPosition().y + getSize().y - 1;
 
-	renderDrawRect(renderer, x1, y1, x2, y2, DuneStyle::buttonBorderColor);
-	renderDrawHLine(renderer, x1 + 1, y1 + 1, x2 - 1, DuneStyle::buttonEdgeTopLeftColor);
-	renderDrawHLine(renderer, x1 + 2, y1 + 2, x2 - 2, DuneStyle::buttonEdgeTopLeftColor);
-	renderDrawHLine(renderer, x1 + 3, y1 + 3, x2 - 3, DuneStyle::buttonEdgeTopLeftColor);
+    renderDrawRect(renderer, x1, y1, x2, y2, DuneStyle::buttonBorderColor);
+    renderDrawHLine(renderer, x1 + 1, y1 + 1, x2 - 1, DuneStyle::buttonEdgeTopLeftColor);
+    renderDrawHLine(renderer, x1 + 2, y1 + 2, x2 - 2, DuneStyle::buttonEdgeTopLeftColor);
+    renderDrawHLine(renderer, x1 + 3, y1 + 3, x2 - 3, DuneStyle::buttonEdgeTopLeftColor);
 
-	renderDrawVLine(renderer, x1 + 1, y1 + 1, y2 - 1, DuneStyle::buttonEdgeTopLeftColor);
-	renderDrawVLine(renderer, x1 + 2, y1 + 2, y2 - 2, DuneStyle::buttonEdgeTopLeftColor);
-	renderDrawVLine(renderer, x1 + 3, y1 + 3, y2 - 3, DuneStyle::buttonEdgeTopLeftColor);
+    renderDrawVLine(renderer, x1 + 1, y1 + 1, y2 - 1, DuneStyle::buttonEdgeTopLeftColor);
+    renderDrawVLine(renderer, x1 + 2, y1 + 2, y2 - 2, DuneStyle::buttonEdgeTopLeftColor);
+    renderDrawVLine(renderer, x1 + 3, y1 + 3, y2 - 3, DuneStyle::buttonEdgeTopLeftColor);
 
-	renderDrawHLine(renderer, x1 + 1, y2 - 1, x2 - 1, DuneStyle::buttonEdgeBottomRightColor);
-	renderDrawHLine(renderer, x1 + 2, y2 - 2, x2 - 2, DuneStyle::buttonEdgeBottomRightColor);
-	renderDrawHLine(renderer, x1 + 3, y2 - 3, x2 - 3, DuneStyle::buttonEdgeBottomRightColor);
+    renderDrawHLine(renderer, x1 + 1, y2 - 1, x2 - 1, DuneStyle::buttonEdgeBottomRightColor);
+    renderDrawHLine(renderer, x1 + 2, y2 - 2, x2 - 2, DuneStyle::buttonEdgeBottomRightColor);
+    renderDrawHLine(renderer, x1 + 3, y2 - 3, x2 - 3, DuneStyle::buttonEdgeBottomRightColor);
 
-	renderDrawVLine(renderer, x2 - 1, y1 + 1, y2 - 1, DuneStyle::buttonEdgeBottomRightColor);
-	renderDrawVLine(renderer, x2 - 2, y1 + 2, y2 - 2, DuneStyle::buttonEdgeBottomRightColor);
-	renderDrawVLine(renderer, x2 - 3, y1 + 3, y2 - 3, DuneStyle::buttonEdgeBottomRightColor);
+    renderDrawVLine(renderer, x2 - 1, y1 + 1, y2 - 1, DuneStyle::buttonEdgeBottomRightColor);
+    renderDrawVLine(renderer, x2 - 2, y1 + 2, y2 - 2, DuneStyle::buttonEdgeBottomRightColor);
+    renderDrawVLine(renderer, x2 - 3, y1 + 3, y2 - 3, DuneStyle::buttonEdgeBottomRightColor);
 }
 
 bool MentatHelp::doInput(SDL_Event &event)
@@ -161,14 +161,14 @@ void MentatHelp::onListBoxClick() {
     std::string text;
     std::string name;
 
-	int missionnumber = ((mission+1)/3)+1;
+    int missionnumber = ((mission+1)/3)+1;
 
     if(mentatEntry.filename == "0") {
         animID = getMissionSpecificAnim(missionnumber);
-		text = pTextManager->getBriefingText(missionnumber, MISSION_DESCRIPTION, house);
+        text = pTextManager->getBriefingText(missionnumber, MISSION_DESCRIPTION, house);
     } else if(mentatEntry.filename == "3") {
         animID = getMissionSpecificAnim(missionnumber);
-		text = pTextManager->getBriefingText(missionnumber, MISSION_ADVICE, house);
+        text = pTextManager->getBriefingText(missionnumber, MISSION_ADVICE, house);
     } else {
         animID = getAnimByFilename(mentatEntry.filename);
         text = mentatEntry.content;

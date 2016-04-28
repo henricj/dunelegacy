@@ -45,48 +45,48 @@ public:
     ReinforcementsWindow(MapEditor* pMapEditor, HOUSETYPE currentHouse);
 
 
-	/**
-		This static method creates a dynamic reinforcements window.
-		The idea behind this method is to simply create a new dialog on the fly and
-		add it as a child window of some other window. If the window gets closed it will be freed.
-		\param  pMapEditor  pointer to the currently running map editor
-		\param  house       the currently selected house; used for button colors, etc.
-		\return	The new dialog box (will be automatically destroyed when it's closed)
-	*/
-	static ReinforcementsWindow* create(MapEditor* pMapEditor, HOUSETYPE house) {
-		ReinforcementsWindow* dlg = new ReinforcementsWindow(pMapEditor, house);
-		dlg->pAllocated = true;
-		return dlg;
-	}
+    /**
+        This static method creates a dynamic reinforcements window.
+        The idea behind this method is to simply create a new dialog on the fly and
+        add it as a child window of some other window. If the window gets closed it will be freed.
+        \param  pMapEditor  pointer to the currently running map editor
+        \param  house       the currently selected house; used for button colors, etc.
+        \return The new dialog box (will be automatically destroyed when it's closed)
+    */
+    static ReinforcementsWindow* create(MapEditor* pMapEditor, HOUSETYPE house) {
+        ReinforcementsWindow* dlg = new ReinforcementsWindow(pMapEditor, house);
+        dlg->pAllocated = true;
+        return dlg;
+    }
 
 
 private:
 
-	void onCancel();
-	void onOK();
+    void onCancel();
+    void onOK();
 
-	void onUp();
+    void onUp();
     void onDown();
 
-	void onAdd();
+    void onAdd();
     void onRemove();
 
     void onEntryChange(bool bInteractive);
 
-	void onSelectionChange(bool bInteractive);
+    void onSelectionChange(bool bInteractive);
 
-	std::string getDescribingString(const ReinforcementInfo& reinforcementInfo);
+    std::string getDescribingString(const ReinforcementInfo& reinforcementInfo);
 
-	std::string getPlayerName(HOUSETYPE house);
+    std::string getPlayerName(HOUSETYPE house);
 
-	HBox	        mainHBox;
-	VBox	        mainVBox;
-	VBox	        centralVBox;
+    HBox            mainHBox;
+    VBox            mainVBox;
+    VBox            centralVBox;
 
-	Label           Label_Explanation;
+    Label           Label_Explanation;
 
-	HBox            hBox1;
-	ListBox         reinforcementsListBox;
+    HBox            hBox1;
+    ListBox         reinforcementsListBox;
     VBox            listControlVBox;
     SymbolButton    listEntryUpButton;
     SymbolButton    listEntryDownButton;
@@ -106,18 +106,18 @@ private:
     DigitsTextBox   timeTextBox;
     Checkbox        repeatCheckbox;
 
-	HBox	        buttonHBox;
+    HBox            buttonHBox;
 
-	Label		    titleLabel;
-	TextButton	    cancelButton;
-	TextButton	    okButton;
+    Label           titleLabel;
+    TextButton      cancelButton;
+    TextButton      okButton;
 
     MapEditor*      pMapEditor;
 
     HOUSETYPE       house;
-	Uint32          color;
+    Uint32          color;
 
-	std::vector<ReinforcementInfo>  reinforcements;
+    std::vector<ReinforcementInfo>  reinforcements;
 };
 
 

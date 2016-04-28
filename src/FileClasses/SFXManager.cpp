@@ -32,56 +32,56 @@
 // - POPPA.VOC
 
 SFXManager::SFXManager() {
-	// load voice and language specific sounds
-	if(settings.general.language == "de") {
+    // load voice and language specific sounds
+    if(settings.general.language == "de") {
         loadNonEnglishVoice("G");
-	} else if(settings.general.language == "fr") {
+    } else if(settings.general.language == "fr") {
         loadNonEnglishVoice("F");
-	} else {
+    } else {
         loadEnglishVoice();
-	}
+    }
 
-	for(int i = 0; i < NUM_SOUNDCHUNK; i++) {
-		if(soundChunk[i] == nullptr) {
-			fprintf(stderr,"SFXManager::SFXManager: Not all sounds could be loaded\n");
-			exit(EXIT_FAILURE);
-		}
-	}
+    for(int i = 0; i < NUM_SOUNDCHUNK; i++) {
+        if(soundChunk[i] == nullptr) {
+            fprintf(stderr,"SFXManager::SFXManager: Not all sounds could be loaded\n");
+            exit(EXIT_FAILURE);
+        }
+    }
 }
 
 SFXManager::~SFXManager() {
-	// unload voice
-	for(int i = 0; i < numLngVoice; i++) {
-		if(lngVoice[i] != nullptr) {
-			Mix_FreeChunk(lngVoice[i]);
-			lngVoice[i] = nullptr;
-		}
-	}
+    // unload voice
+    for(int i = 0; i < numLngVoice; i++) {
+        if(lngVoice[i] != nullptr) {
+            Mix_FreeChunk(lngVoice[i]);
+            lngVoice[i] = nullptr;
+        }
+    }
 
-	free(lngVoice);
+    free(lngVoice);
 
-	// unload sound
-	for(int i = 0; i < NUM_SOUNDCHUNK; i++) {
-		if(soundChunk[i] != nullptr) {
-			Mix_FreeChunk(soundChunk[i]);
-			soundChunk[i] = nullptr;
-		}
-	}
+    // unload sound
+    for(int i = 0; i < NUM_SOUNDCHUNK; i++) {
+        if(soundChunk[i] != nullptr) {
+            Mix_FreeChunk(soundChunk[i]);
+            soundChunk[i] = nullptr;
+        }
+    }
 }
 
 Mix_Chunk* SFXManager::getVoice(Voice_enum id, int house) {
     if(settings.general.language == "de" || settings.general.language == "fr") {
         return getNonEnglishVoice(id,house);
     } else {
-		return getEnglishVoice(id,house);
-	}
+        return getEnglishVoice(id,house);
+    }
 }
 
 Mix_Chunk* SFXManager::getSound(Sound_enum id) {
-	if(id >= NUM_SOUNDCHUNK)
-		return nullptr;
+    if(id >= NUM_SOUNDCHUNK)
+        return nullptr;
 
-	return soundChunk[id];
+    return soundChunk[id];
 }
 
 Mix_Chunk* SFXManager::loadMixFromADL(std::string adlFile, int index) {
@@ -101,96 +101,96 @@ Mix_Chunk* SFXManager::loadMixFromADL(std::string adlFile, int index) {
 }
 
 void SFXManager::loadEnglishVoice() {
-	numLngVoice = NUM_VOICE*NUM_HOUSES;
+    numLngVoice = NUM_VOICE*NUM_HOUSES;
 
-	if((lngVoice = (Mix_Chunk**) malloc(sizeof(Mix_Chunk*) * numLngVoice)) == nullptr) {
-		fprintf(stderr,"SFXManager::LoadVoice_English: Cannot allocate memory!\n");
-		exit(EXIT_FAILURE);
-	}
+    if((lngVoice = (Mix_Chunk**) malloc(sizeof(Mix_Chunk*) * numLngVoice)) == nullptr) {
+        fprintf(stderr,"SFXManager::LoadVoice_English: Cannot allocate memory!\n");
+        exit(EXIT_FAILURE);
+    }
 
-	for(int i = 0; i < numLngVoice; i++) {
-		lngVoice[i] = nullptr;
-	}
+    for(int i = 0; i < numLngVoice; i++) {
+        lngVoice[i] = nullptr;
+    }
 
-	// now we can load
-	for(int house = 0; house < NUM_HOUSES; house++) {
-		Mix_Chunk* HouseNameChunk = nullptr;
+    // now we can load
+    for(int house = 0; house < NUM_HOUSES; house++) {
+        Mix_Chunk* HouseNameChunk = nullptr;
 
-		std::string HouseString;
-		int VoiceNum = house;
-		switch(house) {
-		    case HOUSE_HARKONNEN:
-				HouseString = "H";
-				HouseNameChunk = getChunkFromFile(HouseString + "HARK.VOC");
-				break;
-			case HOUSE_ATREIDES:
-				HouseString = "A";
-				HouseNameChunk = getChunkFromFile(HouseString + "ATRE.VOC");
-				break;
-			case HOUSE_ORDOS:
-				HouseString = "O";
-				HouseNameChunk = getChunkFromFile(HouseString + "ORDOS.VOC");
-				break;
-			case HOUSE_FREMEN:
-				HouseString = "A";
-				HouseNameChunk = getChunkFromFile(HouseString + "FREMEN.VOC");
-				break;
-			case HOUSE_SARDAUKAR:
-				HouseString = "H";
-				HouseNameChunk = getChunkFromFile(HouseString + "SARD.VOC");
-				break;
-			case HOUSE_MERCENARY:
-				HouseString = "O";
-				HouseNameChunk = getChunkFromFile(HouseString + "MERC.VOC");
-				break;
-		}
+        std::string HouseString;
+        int VoiceNum = house;
+        switch(house) {
+            case HOUSE_HARKONNEN:
+                HouseString = "H";
+                HouseNameChunk = getChunkFromFile(HouseString + "HARK.VOC");
+                break;
+            case HOUSE_ATREIDES:
+                HouseString = "A";
+                HouseNameChunk = getChunkFromFile(HouseString + "ATRE.VOC");
+                break;
+            case HOUSE_ORDOS:
+                HouseString = "O";
+                HouseNameChunk = getChunkFromFile(HouseString + "ORDOS.VOC");
+                break;
+            case HOUSE_FREMEN:
+                HouseString = "A";
+                HouseNameChunk = getChunkFromFile(HouseString + "FREMEN.VOC");
+                break;
+            case HOUSE_SARDAUKAR:
+                HouseString = "H";
+                HouseNameChunk = getChunkFromFile(HouseString + "SARD.VOC");
+                break;
+            case HOUSE_MERCENARY:
+                HouseString = "O";
+                HouseNameChunk = getChunkFromFile(HouseString + "MERC.VOC");
+                break;
+        }
 
-		// "... Harvester deployed"
-		Mix_Chunk* Harvester = getChunkFromFile(HouseString + "HARVEST.VOC");
-		Mix_Chunk* Deployed = getChunkFromFile(HouseString + "DEPLOY.VOC");
-		lngVoice[HarvesterDeployed*NUM_HOUSES+VoiceNum] = concat3Chunks(HouseNameChunk, Harvester, Deployed);
-		Mix_FreeChunk(Harvester);
-		Mix_FreeChunk(Deployed);
+        // "... Harvester deployed"
+        Mix_Chunk* Harvester = getChunkFromFile(HouseString + "HARVEST.VOC");
+        Mix_Chunk* Deployed = getChunkFromFile(HouseString + "DEPLOY.VOC");
+        lngVoice[HarvesterDeployed*NUM_HOUSES+VoiceNum] = concat3Chunks(HouseNameChunk, Harvester, Deployed);
+        Mix_FreeChunk(Harvester);
+        Mix_FreeChunk(Deployed);
 
-		// "Contruction complete"
-		lngVoice[ConstructionComplete*NUM_HOUSES+VoiceNum] = getChunkFromFile(HouseString + "CONST.VOC");
+        // "Contruction complete"
+        lngVoice[ConstructionComplete*NUM_HOUSES+VoiceNum] = getChunkFromFile(HouseString + "CONST.VOC");
 
-		// "Vehicle repaired"
-		Mix_Chunk* Vehicle = getChunkFromFile(HouseString + "VEHICLE.VOC");
-		Mix_Chunk* Repaired = getChunkFromFile(HouseString + "REPAIR.VOC");
-		lngVoice[VehicleRepaired*NUM_HOUSES+VoiceNum] = concat2Chunks(Vehicle, Repaired);
-		Mix_FreeChunk(Vehicle);
-		Mix_FreeChunk(Repaired);
+        // "Vehicle repaired"
+        Mix_Chunk* Vehicle = getChunkFromFile(HouseString + "VEHICLE.VOC");
+        Mix_Chunk* Repaired = getChunkFromFile(HouseString + "REPAIR.VOC");
+        lngVoice[VehicleRepaired*NUM_HOUSES+VoiceNum] = concat2Chunks(Vehicle, Repaired);
+        Mix_FreeChunk(Vehicle);
+        Mix_FreeChunk(Repaired);
 
-		// "Frigate has arrived"
-		Mix_Chunk* FrigateChunk = getChunkFromFile(HouseString + "FRIGATE.VOC");
-		Mix_Chunk* HasArrivedChunk = getChunkFromFile(HouseString + "ARRIVE.VOC");
-		lngVoice[FrigateHasArrived*NUM_HOUSES+VoiceNum] = concat2Chunks(FrigateChunk, HasArrivedChunk);
-		Mix_FreeChunk(FrigateChunk);
-		Mix_FreeChunk(HasArrivedChunk);
+        // "Frigate has arrived"
+        Mix_Chunk* FrigateChunk = getChunkFromFile(HouseString + "FRIGATE.VOC");
+        Mix_Chunk* HasArrivedChunk = getChunkFromFile(HouseString + "ARRIVE.VOC");
+        lngVoice[FrigateHasArrived*NUM_HOUSES+VoiceNum] = concat2Chunks(FrigateChunk, HasArrivedChunk);
+        Mix_FreeChunk(FrigateChunk);
+        Mix_FreeChunk(HasArrivedChunk);
 
-		// "Your mission is complete"
-		lngVoice[YourMissionIsComplete*NUM_HOUSES+VoiceNum] = getChunkFromFile(HouseString + "WIN.VOC");
+        // "Your mission is complete"
+        lngVoice[YourMissionIsComplete*NUM_HOUSES+VoiceNum] = getChunkFromFile(HouseString + "WIN.VOC");
 
-		// "You have failed your mission"
-		lngVoice[YouHaveFailedYourMission*NUM_HOUSES+VoiceNum] = getChunkFromFile(HouseString + "LOSE.VOC");
+        // "You have failed your mission"
+        lngVoice[YouHaveFailedYourMission*NUM_HOUSES+VoiceNum] = getChunkFromFile(HouseString + "LOSE.VOC");
 
-		// "Radar activated"/"Radar deactivated"
-		Mix_Chunk* RadarChunk = getChunkFromFile(HouseString + "RADAR.VOC");
-		Mix_Chunk* RadarActivatedChunk = getChunkFromFile(HouseString + "ON.VOC");
-		Mix_Chunk* RadarDeactivatedChunk = getChunkFromFile(HouseString + "OFF.VOC");
-		lngVoice[RadarActivated*NUM_HOUSES+VoiceNum] = concat2Chunks(RadarChunk, RadarActivatedChunk);
-		lngVoice[RadarDeactivated*NUM_HOUSES+VoiceNum] = concat2Chunks(RadarChunk, RadarDeactivatedChunk);
-		Mix_FreeChunk(RadarChunk);
-		Mix_FreeChunk(RadarActivatedChunk);
-		Mix_FreeChunk(RadarDeactivatedChunk);
+        // "Radar activated"/"Radar deactivated"
+        Mix_Chunk* RadarChunk = getChunkFromFile(HouseString + "RADAR.VOC");
+        Mix_Chunk* RadarActivatedChunk = getChunkFromFile(HouseString + "ON.VOC");
+        Mix_Chunk* RadarDeactivatedChunk = getChunkFromFile(HouseString + "OFF.VOC");
+        lngVoice[RadarActivated*NUM_HOUSES+VoiceNum] = concat2Chunks(RadarChunk, RadarActivatedChunk);
+        lngVoice[RadarDeactivated*NUM_HOUSES+VoiceNum] = concat2Chunks(RadarChunk, RadarDeactivatedChunk);
+        Mix_FreeChunk(RadarChunk);
+        Mix_FreeChunk(RadarActivatedChunk);
+        Mix_FreeChunk(RadarDeactivatedChunk);
 
-		// "Bloom located"
-		Mix_Chunk* Bloom = getChunkFromFile(HouseString + "BLOOM.VOC");
-		Mix_Chunk* Located = getChunkFromFile(HouseString + "LOCATED.VOC");
-		lngVoice[BloomLocated*NUM_HOUSES+VoiceNum] = concat2Chunks(Bloom, Located);
-		Mix_FreeChunk(Bloom);
-		Mix_FreeChunk(Located);
+        // "Bloom located"
+        Mix_Chunk* Bloom = getChunkFromFile(HouseString + "BLOOM.VOC");
+        Mix_Chunk* Located = getChunkFromFile(HouseString + "LOCATED.VOC");
+        lngVoice[BloomLocated*NUM_HOUSES+VoiceNum] = concat2Chunks(Bloom, Located);
+        Mix_FreeChunk(Bloom);
+        Mix_FreeChunk(Located);
 
         // "Warning Wormsign"
         Mix_Chunk* WarningChunk = getChunkFromFile(HouseString + "WARNING.VOC");
@@ -200,7 +200,7 @@ void SFXManager::loadEnglishVoice() {
         Mix_FreeChunk(WormSignChunk);
 
         // "Our base is under attack"
-		lngVoice[BaseIsUnderAttack*NUM_HOUSES+VoiceNum] = getChunkFromFile(HouseString + "ATTACK.VOC");
+        lngVoice[BaseIsUnderAttack*NUM_HOUSES+VoiceNum] = getChunkFromFile(HouseString + "ATTACK.VOC");
 
         // "Saboteur approaching" and "Missile approaching"
         Mix_Chunk* SabotChunk = getChunkFromFile(HouseString + "SABOT.VOC");
@@ -212,211 +212,211 @@ void SFXManager::loadEnglishVoice() {
         Mix_FreeChunk(MissileChunk);
         Mix_FreeChunk(ApproachingChunk);
 
-		Mix_FreeChunk(HouseNameChunk);
-	}
+        Mix_FreeChunk(HouseNameChunk);
+    }
 
-	for(int i = 0; i < numLngVoice; i++) {
-		if(lngVoice[i] == nullptr) {
-			fprintf(stderr,"SFXManager::LoadVoice_English: Not all voice sounds could be loaded\n");
-			exit(EXIT_FAILURE);
-		}
-	}
+    for(int i = 0; i < numLngVoice; i++) {
+        if(lngVoice[i] == nullptr) {
+            fprintf(stderr,"SFXManager::LoadVoice_English: Not all voice sounds could be loaded\n");
+            exit(EXIT_FAILURE);
+        }
+    }
 
-	// "Yes Sir"
+    // "Yes Sir"
     soundChunk[YesSir] = getChunkFromFile("ZREPORT1.VOC", "REPORT1.VOC");
 
-	// "Reporting"
-	soundChunk[Reporting] = getChunkFromFile("ZREPORT2.VOC", "REPORT2.VOC");
+    // "Reporting"
+    soundChunk[Reporting] = getChunkFromFile("ZREPORT2.VOC", "REPORT2.VOC");
 
-	// "Acknowledged"
-	soundChunk[Acknowledged] = getChunkFromFile("ZREPORT3.VOC", "REPORT3.VOC");
+    // "Acknowledged"
+    soundChunk[Acknowledged] = getChunkFromFile("ZREPORT3.VOC", "REPORT3.VOC");
 
-	// "Affirmative"
-	soundChunk[Affirmative] = getChunkFromFile("ZAFFIRM.VOC", "AFFIRM.VOC");
+    // "Affirmative"
+    soundChunk[Affirmative] = getChunkFromFile("ZAFFIRM.VOC", "AFFIRM.VOC");
 
-	// "Moving out"
-	soundChunk[MovingOut] = getChunkFromFile("ZMOVEOUT.VOC", "MOVEOUT.VOC");
+    // "Moving out"
+    soundChunk[MovingOut] = getChunkFromFile("ZMOVEOUT.VOC", "MOVEOUT.VOC");
 
-	// "Infantry out"
-	soundChunk[InfantryOut] = getChunkFromFile("ZOVEROUT.VOC", "OVEROUT.VOC");
+    // "Infantry out"
+    soundChunk[InfantryOut] = getChunkFromFile("ZOVEROUT.VOC", "OVEROUT.VOC");
 
-	// "Somthing's under the sand"
-	soundChunk[SomethingUnderTheSand] = getChunkFromFile("SANDBUG.VOC");
+    // "Somthing's under the sand"
+    soundChunk[SomethingUnderTheSand] = getChunkFromFile("SANDBUG.VOC");
 
-	// "House Harkonnen"
-	soundChunk[HouseHarkonnen] = getChunkFromFile("MHARK.VOC");
+    // "House Harkonnen"
+    soundChunk[HouseHarkonnen] = getChunkFromFile("MHARK.VOC");
 
-	// "House Atreides"
-	soundChunk[HouseAtreides] = getChunkFromFile("MATRE.VOC");
+    // "House Atreides"
+    soundChunk[HouseAtreides] = getChunkFromFile("MATRE.VOC");
 
-	// "House Ordos"
-	soundChunk[HouseOrdos] = getChunkFromFile("MORDOS.VOC");
+    // "House Ordos"
+    soundChunk[HouseOrdos] = getChunkFromFile("MORDOS.VOC");
 
-	// Sfx
-	soundChunk[Sound_PlaceStructure] = getChunkFromFile("EXDUD.VOC");
-	soundChunk[Sound_ButtonClick] = getChunkFromFile("BUTTON.VOC");
-	soundChunk[Sound_InvalidAction] = loadMixFromADL("DUNE1.ADL", 47);
-	soundChunk[Sound_CreditsTick] = loadMixFromADL("DUNE1.ADL", 52);
-	soundChunk[Sound_Tick] = loadMixFromADL("DUNE1.ADL", 38);
-	soundChunk[Sound_RadarNoise] = getChunkFromFile("STATICP.VOC");
-	soundChunk[Sound_ExplosionGas] = getChunkFromFile("EXGAS.VOC");
-	soundChunk[Sound_ExplosionTiny] = getChunkFromFile("EXTINY.VOC");
-	soundChunk[Sound_ExplosionSmall] = getChunkFromFile("EXSMALL.VOC");
-	soundChunk[Sound_ExplosionMedium] = getChunkFromFile("EXMED.VOC");
-	soundChunk[Sound_ExplosionLarge] = getChunkFromFile("EXLARGE.VOC");
-	soundChunk[Sound_ExplosionStructure] = getChunkFromFile("CRUMBLE.VOC");
-	soundChunk[Sound_WormAttack] = getChunkFromFile("WORMET3P.VOC");
-	soundChunk[Sound_Gun] = getChunkFromFile("GUN.VOC");
-	soundChunk[Sound_Rocket] = getChunkFromFile("ROCKET.VOC");
-	soundChunk[Sound_Bloom] = getChunkFromFile("EXSAND.VOC");
-	soundChunk[Sound_Scream1] = getChunkFromFile("VSCREAM1.VOC");
-	soundChunk[Sound_Scream2] = getChunkFromFile("VSCREAM2.VOC");
-	soundChunk[Sound_Scream3] = getChunkFromFile("VSCREAM3.VOC");
-	soundChunk[Sound_Scream4] = getChunkFromFile("VSCREAM4.VOC");
-	soundChunk[Sound_Scream5] = getChunkFromFile("VSCREAM5.VOC");
-	soundChunk[Sound_Trumpet] = loadMixFromADL("DUNE1.ADL", 30);
-	soundChunk[Sound_Drop] = loadMixFromADL("DUNE1.ADL", 24);
-	soundChunk[Sound_Squashed] = getChunkFromFile("SQUISH2.VOC");
-	soundChunk[Sound_MachineGun] = getChunkFromFile("GUNMULTI.VOC");
-	soundChunk[Sound_Sonic] = loadMixFromADL("DUNE1.ADL", 43);
-	soundChunk[Sound_RocketSmall] = getChunkFromFile("MISLTINP.VOC");
+    // Sfx
+    soundChunk[Sound_PlaceStructure] = getChunkFromFile("EXDUD.VOC");
+    soundChunk[Sound_ButtonClick] = getChunkFromFile("BUTTON.VOC");
+    soundChunk[Sound_InvalidAction] = loadMixFromADL("DUNE1.ADL", 47);
+    soundChunk[Sound_CreditsTick] = loadMixFromADL("DUNE1.ADL", 52);
+    soundChunk[Sound_Tick] = loadMixFromADL("DUNE1.ADL", 38);
+    soundChunk[Sound_RadarNoise] = getChunkFromFile("STATICP.VOC");
+    soundChunk[Sound_ExplosionGas] = getChunkFromFile("EXGAS.VOC");
+    soundChunk[Sound_ExplosionTiny] = getChunkFromFile("EXTINY.VOC");
+    soundChunk[Sound_ExplosionSmall] = getChunkFromFile("EXSMALL.VOC");
+    soundChunk[Sound_ExplosionMedium] = getChunkFromFile("EXMED.VOC");
+    soundChunk[Sound_ExplosionLarge] = getChunkFromFile("EXLARGE.VOC");
+    soundChunk[Sound_ExplosionStructure] = getChunkFromFile("CRUMBLE.VOC");
+    soundChunk[Sound_WormAttack] = getChunkFromFile("WORMET3P.VOC");
+    soundChunk[Sound_Gun] = getChunkFromFile("GUN.VOC");
+    soundChunk[Sound_Rocket] = getChunkFromFile("ROCKET.VOC");
+    soundChunk[Sound_Bloom] = getChunkFromFile("EXSAND.VOC");
+    soundChunk[Sound_Scream1] = getChunkFromFile("VSCREAM1.VOC");
+    soundChunk[Sound_Scream2] = getChunkFromFile("VSCREAM2.VOC");
+    soundChunk[Sound_Scream3] = getChunkFromFile("VSCREAM3.VOC");
+    soundChunk[Sound_Scream4] = getChunkFromFile("VSCREAM4.VOC");
+    soundChunk[Sound_Scream5] = getChunkFromFile("VSCREAM5.VOC");
+    soundChunk[Sound_Trumpet] = loadMixFromADL("DUNE1.ADL", 30);
+    soundChunk[Sound_Drop] = loadMixFromADL("DUNE1.ADL", 24);
+    soundChunk[Sound_Squashed] = getChunkFromFile("SQUISH2.VOC");
+    soundChunk[Sound_MachineGun] = getChunkFromFile("GUNMULTI.VOC");
+    soundChunk[Sound_Sonic] = loadMixFromADL("DUNE1.ADL", 43);
+    soundChunk[Sound_RocketSmall] = getChunkFromFile("MISLTINP.VOC");
 }
 
 
 Mix_Chunk* SFXManager::getEnglishVoice(Voice_enum id, int house) {
-	if((int) id >= numLngVoice)
-		return nullptr;
+    if((int) id >= numLngVoice)
+        return nullptr;
 
-	return lngVoice[id*NUM_HOUSES + house];
+    return lngVoice[id*NUM_HOUSES + house];
 }
 
 void SFXManager::loadNonEnglishVoice(std::string languagePrefix) {
-	numLngVoice = NUM_VOICE;
+    numLngVoice = NUM_VOICE;
 
-	if((lngVoice = (Mix_Chunk**) malloc(sizeof(Mix_Chunk*) * NUM_VOICE)) == nullptr) {
-		fprintf(stderr,"SFXManager::LoadVoice_NonEnglish: Cannot allocate memory!\n");
-		exit(EXIT_FAILURE);
-	}
+    if((lngVoice = (Mix_Chunk**) malloc(sizeof(Mix_Chunk*) * NUM_VOICE)) == nullptr) {
+        fprintf(stderr,"SFXManager::LoadVoice_NonEnglish: Cannot allocate memory!\n");
+        exit(EXIT_FAILURE);
+    }
 
-	for(int i = 0; i < NUM_VOICE; i++) {
-		lngVoice[i] = nullptr;
-	}
+    for(int i = 0; i < NUM_VOICE; i++) {
+        lngVoice[i] = nullptr;
+    }
 
 
-	lngVoice[HarvesterDeployed] = getChunkFromFile(languagePrefix + "HARVEST.VOC");
+    lngVoice[HarvesterDeployed] = getChunkFromFile(languagePrefix + "HARVEST.VOC");
 
-	// "Contruction complete"
-	lngVoice[ConstructionComplete] = getChunkFromFile(languagePrefix + "CONST.VOC");
+    // "Contruction complete"
+    lngVoice[ConstructionComplete] = getChunkFromFile(languagePrefix + "CONST.VOC");
 
-	// "Vehicle repaired"
-	lngVoice[VehicleRepaired] = getChunkFromFile(languagePrefix + "REPAIR.VOC");
+    // "Vehicle repaired"
+    lngVoice[VehicleRepaired] = getChunkFromFile(languagePrefix + "REPAIR.VOC");
 
-	// "Frigate has arrived"
-	lngVoice[FrigateHasArrived] = getChunkFromFile(languagePrefix + "FRIGATE.VOC");
+    // "Frigate has arrived"
+    lngVoice[FrigateHasArrived] = getChunkFromFile(languagePrefix + "FRIGATE.VOC");
 
-	// "Your mission is complete" (No non-english voc available)
-	lngVoice[YourMissionIsComplete] = createEmptyChunk();
+    // "Your mission is complete" (No non-english voc available)
+    lngVoice[YourMissionIsComplete] = createEmptyChunk();
 
-	// "You have failed your mission" (No non-english voc available)
-	lngVoice[YouHaveFailedYourMission] = createEmptyChunk();
+    // "You have failed your mission" (No non-english voc available)
+    lngVoice[YouHaveFailedYourMission] = createEmptyChunk();
 
-	// "Radar activated"/"Radar deactivated"
-	lngVoice[RadarActivated] = getChunkFromFile(languagePrefix + "ON.VOC");
-	lngVoice[RadarDeactivated] = getChunkFromFile(languagePrefix + "OFF.VOC");
+    // "Radar activated"/"Radar deactivated"
+    lngVoice[RadarActivated] = getChunkFromFile(languagePrefix + "ON.VOC");
+    lngVoice[RadarDeactivated] = getChunkFromFile(languagePrefix + "OFF.VOC");
 
-	// "Bloom located"
-	lngVoice[BloomLocated] = getChunkFromFile(languagePrefix + "BLOOM.VOC");
+    // "Bloom located"
+    lngVoice[BloomLocated] = getChunkFromFile(languagePrefix + "BLOOM.VOC");
 
-	// "Warning Wormsign"
-	if(pFileManager->exists(languagePrefix + "WORMY.VOC")) {
+    // "Warning Wormsign"
+    if(pFileManager->exists(languagePrefix + "WORMY.VOC")) {
         Mix_Chunk* WarningChunk = getChunkFromFile(languagePrefix + "WARNING.VOC");
         Mix_Chunk* WormSignChunk = getChunkFromFile(languagePrefix + "WORMY.VOC");
         lngVoice[WarningWormSign] = concat2Chunks(WarningChunk, WormSignChunk);
         Mix_FreeChunk(WarningChunk);
         Mix_FreeChunk(WormSignChunk);
-	} else {
+    } else {
         lngVoice[WarningWormSign] = getChunkFromFile(languagePrefix + "WARNING.VOC");
-	}
+    }
 
     // "Our base is under attack"
-	lngVoice[BaseIsUnderAttack] = getChunkFromFile(languagePrefix + "ATTACK.VOC");
+    lngVoice[BaseIsUnderAttack] = getChunkFromFile(languagePrefix + "ATTACK.VOC");
 
     // "Saboteur approaching"
-	lngVoice[SaboteurApproaching] = getChunkFromFile(languagePrefix + "SABOT.VOC");
+    lngVoice[SaboteurApproaching] = getChunkFromFile(languagePrefix + "SABOT.VOC");
 
     // "Missile approaching"
-	lngVoice[MissileApproaching] = getChunkFromFile(languagePrefix + "MISSILE.VOC");
+    lngVoice[MissileApproaching] = getChunkFromFile(languagePrefix + "MISSILE.VOC");
 
-	for(int i = 0; i < numLngVoice; i++) {
-		if(lngVoice[i] == nullptr) {
-			fprintf(stderr,"SFXManager::LoadVoice_NonEnglish: Not all voice sounds could be loaded\n");
-			exit(EXIT_FAILURE);
-		}
-	}
+    for(int i = 0; i < numLngVoice; i++) {
+        if(lngVoice[i] == nullptr) {
+            fprintf(stderr,"SFXManager::LoadVoice_NonEnglish: Not all voice sounds could be loaded\n");
+            exit(EXIT_FAILURE);
+        }
+    }
 
-	// "Yes Sir"
-	soundChunk[YesSir] = getChunkFromFile(languagePrefix + "REPORT1.VOC");
+    // "Yes Sir"
+    soundChunk[YesSir] = getChunkFromFile(languagePrefix + "REPORT1.VOC");
 
-	// "Reporting"
-	soundChunk[Reporting] = getChunkFromFile(languagePrefix + "REPORT2.VOC");
+    // "Reporting"
+    soundChunk[Reporting] = getChunkFromFile(languagePrefix + "REPORT2.VOC");
 
-	// "Acknowledged"
-	soundChunk[Acknowledged] = getChunkFromFile(languagePrefix + "REPORT3.VOC");
+    // "Acknowledged"
+    soundChunk[Acknowledged] = getChunkFromFile(languagePrefix + "REPORT3.VOC");
 
-	// "Affirmative"
-	soundChunk[Affirmative] = getChunkFromFile(languagePrefix + "AFFIRM.VOC");
+    // "Affirmative"
+    soundChunk[Affirmative] = getChunkFromFile(languagePrefix + "AFFIRM.VOC");
 
-	// "Moving out"
-	soundChunk[MovingOut] = getChunkFromFile(languagePrefix + "MOVEOUT.VOC");
+    // "Moving out"
+    soundChunk[MovingOut] = getChunkFromFile(languagePrefix + "MOVEOUT.VOC");
 
-	// "Infantry out"
-	soundChunk[InfantryOut] = getChunkFromFile(languagePrefix + "OVEROUT.VOC");
+    // "Infantry out"
+    soundChunk[InfantryOut] = getChunkFromFile(languagePrefix + "OVEROUT.VOC");
 
-	// "Somthing's under the sand"
-	soundChunk[SomethingUnderTheSand] = getChunkFromFile("SANDBUG.VOC");
+    // "Somthing's under the sand"
+    soundChunk[SomethingUnderTheSand] = getChunkFromFile("SANDBUG.VOC");
 
-	// "House Atreides"
-	soundChunk[HouseAtreides] = getChunkFromFile(languagePrefix + "ATRE.VOC");
+    // "House Atreides"
+    soundChunk[HouseAtreides] = getChunkFromFile(languagePrefix + "ATRE.VOC");
 
-	// "House Ordos"
-	soundChunk[HouseOrdos] = getChunkFromFile(languagePrefix + "ORDOS.VOC");
+    // "House Ordos"
+    soundChunk[HouseOrdos] = getChunkFromFile(languagePrefix + "ORDOS.VOC");
 
-	// "House Harkonnen"
-	soundChunk[HouseHarkonnen] = getChunkFromFile(languagePrefix + "HARK.VOC");
+    // "House Harkonnen"
+    soundChunk[HouseHarkonnen] = getChunkFromFile(languagePrefix + "HARK.VOC");
 
-	// Sfx
-	soundChunk[Sound_PlaceStructure] = getChunkFromFile("EXDUD.VOC");
-	soundChunk[Sound_ButtonClick] = getChunkFromFile("BUTTON.VOC");
-	soundChunk[Sound_InvalidAction] =  loadMixFromADL("DUNE1.ADL", 47);
-	soundChunk[Sound_CreditsTick] = loadMixFromADL("DUNE1.ADL", 52);
-	soundChunk[Sound_Tick] = loadMixFromADL("DUNE1.ADL", 38);
-	soundChunk[Sound_RadarNoise] = getChunkFromFile("STATICP.VOC");
-	soundChunk[Sound_ExplosionGas] = getChunkFromFile("EXGAS.VOC");
-	soundChunk[Sound_ExplosionTiny] = getChunkFromFile("EXTINY.VOC");
-	soundChunk[Sound_ExplosionSmall] = getChunkFromFile("EXSMALL.VOC");
-	soundChunk[Sound_ExplosionMedium] = getChunkFromFile("EXMED.VOC");
-	soundChunk[Sound_ExplosionLarge] = getChunkFromFile("EXLARGE.VOC");
-	soundChunk[Sound_ExplosionStructure] = getChunkFromFile("CRUMBLE.VOC");
-	soundChunk[Sound_WormAttack] = getChunkFromFile("WORMET3P.VOC");
-	soundChunk[Sound_Gun] = getChunkFromFile("GUN.VOC");
-	soundChunk[Sound_Rocket] = getChunkFromFile("ROCKET.VOC");
-	soundChunk[Sound_Bloom] = getChunkFromFile("EXSAND.VOC");
-	soundChunk[Sound_Scream1] = getChunkFromFile("VSCREAM1.VOC");
-	soundChunk[Sound_Scream2] = getChunkFromFile("VSCREAM2.VOC");
-	soundChunk[Sound_Scream3] = getChunkFromFile("VSCREAM3.VOC");
-	soundChunk[Sound_Scream4] = getChunkFromFile("VSCREAM4.VOC");
-	soundChunk[Sound_Scream5] = getChunkFromFile("VSCREAM5.VOC");
-	soundChunk[Sound_Trumpet] = loadMixFromADL("DUNE1.ADL", 30);
-	soundChunk[Sound_Drop] = loadMixFromADL("DUNE1.ADL", 24);
-	soundChunk[Sound_Squashed] = getChunkFromFile("SQUISH2.VOC");
-	soundChunk[Sound_MachineGun] = getChunkFromFile("GUNMULTI.VOC");
-	soundChunk[Sound_Sonic] = loadMixFromADL("DUNE1.ADL", 43);
-	soundChunk[Sound_RocketSmall] = getChunkFromFile("MISLTINP.VOC");
+    // Sfx
+    soundChunk[Sound_PlaceStructure] = getChunkFromFile("EXDUD.VOC");
+    soundChunk[Sound_ButtonClick] = getChunkFromFile("BUTTON.VOC");
+    soundChunk[Sound_InvalidAction] =  loadMixFromADL("DUNE1.ADL", 47);
+    soundChunk[Sound_CreditsTick] = loadMixFromADL("DUNE1.ADL", 52);
+    soundChunk[Sound_Tick] = loadMixFromADL("DUNE1.ADL", 38);
+    soundChunk[Sound_RadarNoise] = getChunkFromFile("STATICP.VOC");
+    soundChunk[Sound_ExplosionGas] = getChunkFromFile("EXGAS.VOC");
+    soundChunk[Sound_ExplosionTiny] = getChunkFromFile("EXTINY.VOC");
+    soundChunk[Sound_ExplosionSmall] = getChunkFromFile("EXSMALL.VOC");
+    soundChunk[Sound_ExplosionMedium] = getChunkFromFile("EXMED.VOC");
+    soundChunk[Sound_ExplosionLarge] = getChunkFromFile("EXLARGE.VOC");
+    soundChunk[Sound_ExplosionStructure] = getChunkFromFile("CRUMBLE.VOC");
+    soundChunk[Sound_WormAttack] = getChunkFromFile("WORMET3P.VOC");
+    soundChunk[Sound_Gun] = getChunkFromFile("GUN.VOC");
+    soundChunk[Sound_Rocket] = getChunkFromFile("ROCKET.VOC");
+    soundChunk[Sound_Bloom] = getChunkFromFile("EXSAND.VOC");
+    soundChunk[Sound_Scream1] = getChunkFromFile("VSCREAM1.VOC");
+    soundChunk[Sound_Scream2] = getChunkFromFile("VSCREAM2.VOC");
+    soundChunk[Sound_Scream3] = getChunkFromFile("VSCREAM3.VOC");
+    soundChunk[Sound_Scream4] = getChunkFromFile("VSCREAM4.VOC");
+    soundChunk[Sound_Scream5] = getChunkFromFile("VSCREAM5.VOC");
+    soundChunk[Sound_Trumpet] = loadMixFromADL("DUNE1.ADL", 30);
+    soundChunk[Sound_Drop] = loadMixFromADL("DUNE1.ADL", 24);
+    soundChunk[Sound_Squashed] = getChunkFromFile("SQUISH2.VOC");
+    soundChunk[Sound_MachineGun] = getChunkFromFile("GUNMULTI.VOC");
+    soundChunk[Sound_Sonic] = loadMixFromADL("DUNE1.ADL", 43);
+    soundChunk[Sound_RocketSmall] = getChunkFromFile("MISLTINP.VOC");
 }
 
 Mix_Chunk* SFXManager::getNonEnglishVoice(Voice_enum id, int house) {
-	if((int)id >= numLngVoice)
-		return nullptr;
+    if((int)id >= numLngVoice)
+        return nullptr;
 
-	return lngVoice[id];
+    return lngVoice[id];
 }

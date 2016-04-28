@@ -35,18 +35,18 @@ ConstructionYard::ConstructionYard(InputStream& stream) : BuilderBase(stream) {
 
 void ConstructionYard::init() {
     itemID = Structure_ConstructionYard;
-	owner->incrementStructures(itemID);
+    owner->incrementStructures(itemID);
 
-	structureSize.x = 2;
-	structureSize.y = 2;
+    structureSize.x = 2;
+    structureSize.y = 2;
 
-	graphicID = ObjPic_ConstructionYard;
-	graphic = pGFXManager->getObjPic(graphicID,getOwner()->getHouseID());
-	numImagesX = 4;
-	numImagesY = 1;
+    graphicID = ObjPic_ConstructionYard;
+    graphic = pGFXManager->getObjPic(graphicID,getOwner()->getHouseID());
+    numImagesX = 4;
+    numImagesY = 1;
 
-	firstAnimFrame = 2;
-	lastAnimFrame = 3;
+    firstAnimFrame = 2;
+    lastAnimFrame = 3;
 }
 
 ConstructionYard::~ConstructionYard() {

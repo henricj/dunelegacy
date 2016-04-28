@@ -23,16 +23,16 @@
 class Barracks : public BuilderBase
 {
 public:
-	Barracks(House* newOwner);
+    Barracks(House* newOwner);
     Barracks(InputStream& stream);
-	void init();
+    void init();
     virtual ~Barracks();
 
     /**
         Can this structure be captured by infantry units?
         \return true, if this structure can be captured, false otherwise
-	*/
-	virtual bool canBeCaptured() const { return false; };
+    */
+    virtual bool canBeCaptured() const { return false; };
 
 private:
 

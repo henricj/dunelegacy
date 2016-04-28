@@ -23,24 +23,24 @@
 class Frigate : public AirUnit
 {
 public:
-	Frigate(House* newOwner);
-	Frigate(InputStream& stream);
-	void init();
-	virtual ~Frigate();
+    Frigate(House* newOwner);
+    Frigate(InputStream& stream);
+    void init();
+    virtual ~Frigate();
 
-	void save(OutputStream& stream) const;
+    void save(OutputStream& stream) const;
 
-	void checkPos();
+    void checkPos();
 
-	bool canPass(int xPos, int yPos) const;
+    bool canPass(int xPos, int yPos) const;
 
     /**
         Updates this frigate.
         \return true if this object still exists, false if it was destroyed
-	*/
-	bool update();
+    */
+    bool update();
 
-	virtual void deploy(const Coord& newLocation);
+    virtual void deploy(const Coord& newLocation);
 
 private:
     bool    droppedOffCargo;    ///< Is the cargo already dropped off?

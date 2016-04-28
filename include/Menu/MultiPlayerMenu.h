@@ -28,59 +28,59 @@
 
 class MultiPlayerMenu : public MenuBase {
 public:
-	MultiPlayerMenu();
-	~MultiPlayerMenu();
+    MultiPlayerMenu();
+    ~MultiPlayerMenu();
 
-	/**
-		This method is called, when the child window is about to be closed.
-		This child window will be closed after this method returns.
-		\param	pChildWindow	The child window that will be closed
-	*/
-	virtual void onChildWindowClose(Window* pChildWindow);
+    /**
+        This method is called, when the child window is about to be closed.
+        This child window will be closed after this method returns.
+        \param  pChildWindow    The child window that will be closed
+    */
+    virtual void onChildWindowClose(Window* pChildWindow);
 
 private:
     void showDisconnectMessageBox(int cause);
 
-	void onCreateLANGame();
-	void onCreateInternetGame();
-	void onConnect();
-	void onJoin();
-	void onQuit();
+    void onCreateLANGame();
+    void onCreateInternetGame();
+    void onConnect();
+    void onJoin();
+    void onQuit();
 
     void onPeerDisconnected(std::string playername, bool bHost, int cause);
 
-	void onGameTypeChange(int buttonID);
-	void onGameListSelectionChange(bool bInteractive);
+    void onGameTypeChange(int buttonID);
+    void onGameListSelectionChange(bool bInteractive);
 
-	void onNewLANServer(GameServerInfo gameServerInfo);
-	void onUpdateLANServer(GameServerInfo gameServerInfo);
-	void onRemoveLANServer(GameServerInfo gameServerInfo);
+    void onNewLANServer(GameServerInfo gameServerInfo);
+    void onUpdateLANServer(GameServerInfo gameServerInfo);
+    void onRemoveLANServer(GameServerInfo gameServerInfo);
 
-	void onGameServerInfoList(std::list<GameServerInfo>& gameServerInfoList);
-	void onMetaServerError(int errorcause, std::string errorMessage);
+    void onGameServerInfoList(std::list<GameServerInfo>& gameServerInfoList);
+    void onMetaServerError(int errorcause, std::string errorMessage);
 
 
-	void onReceiveGameInfo(GameInitSettings gameInitSettings, ChangeEventList changeEventList);
+    void onReceiveGameInfo(GameInitSettings gameInitSettings, ChangeEventList changeEventList);
 
-	std::list<GameServerInfo> LANGameList;
-	std::list<GameServerInfo> InternetGameList;
+    std::list<GameServerInfo> LANGameList;
+    std::list<GameServerInfo> InternetGameList;
 
-	StaticContainer windowWidget;
+    StaticContainer windowWidget;
 
-	VBox			mainVBox;
-	HBox			mainHBox;
+    VBox            mainVBox;
+    HBox            mainHBox;
 
     Label           captionLabel;
 
-	HBox			connectHBox;
-	TextBox			connectHostTextBox;
-	TextBox			connectPortTextBox;
-	TextButton		connectButton;
+    HBox            connectHBox;
+    TextBox         connectHostTextBox;
+    TextBox         connectPortTextBox;
+    TextButton      connectButton;
 
     // left VBox with create game buttons
     VBox            leftVBox;
-    TextButton		createLANGameButton;
-	TextButton		createInternetGameButton;
+    TextButton      createLANGameButton;
+    TextButton      createInternetGameButton;
 
     // right VBox with game list
     VBox            rightVBox;
@@ -91,8 +91,8 @@ private:
 
     // bottom row of buttons
     HBox            buttonHBox;
-    TextButton		joinButton;
-	TextButton		backButton;
+    TextButton      joinButton;
+    TextButton      backButton;
 };
 
 #endif // MULTIPLAYERMENU_H

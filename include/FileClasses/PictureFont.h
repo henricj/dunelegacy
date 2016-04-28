@@ -25,36 +25,36 @@
 
 /// A class for loading a font from a surface.
 /**
-	This class can read a font from a surface.
+    This class can read a font from a surface.
 */
 class PictureFont : public Font
 {
 private:
-	// Internal structure used for storing the character data
-	struct FontCharacter
-	{
-		int	width;
-		std::vector<char> data;
-	};
+    // Internal structure used for storing the character data
+    struct FontCharacter
+    {
+        int width;
+        std::vector<char> data;
+    };
 
 public:
-	PictureFont(SDL_Surface* pic, int freesrc);
-	virtual ~PictureFont();
+    PictureFont(SDL_Surface* pic, int freesrc);
+    virtual ~PictureFont();
 
-	void drawTextOnSurface(SDL_Surface* pSurface, std::string text, Uint32 baseColor = 0xFFFFFFFF);
+    void drawTextOnSurface(SDL_Surface* pSurface, std::string text, Uint32 baseColor = 0xFFFFFFFF);
 
-	int	getTextWidth(std::string text) const;
+    int getTextWidth(std::string text) const;
 
-	/// Returns the number of pixels this font needs in y-direction.
-	/**
-		This methods returns the height of this font.
-		\return Number of pixels needed
-	*/
-	inline int getTextHeight() const { return characterHeight; };
+    /// Returns the number of pixels this font needs in y-direction.
+    /**
+        This methods returns the height of this font.
+        \return Number of pixels needed
+    */
+    inline int getTextHeight() const { return characterHeight; };
 
 private:
-	FontCharacter character[256];
-	Uint8 characterHeight;
+    FontCharacter character[256];
+    Uint8 characterHeight;
 };
 
 #endif //PICTUREFONT_H

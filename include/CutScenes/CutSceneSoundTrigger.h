@@ -25,7 +25,7 @@
 extern SoundPlayer* soundPlayer;
 
 /**
-	This class is used for triggering sound effects and voices
+    This class is used for triggering sound effects and voices
 */
 class CutSceneSoundTrigger : public CutSceneTrigger {
 public:
@@ -40,15 +40,15 @@ public:
     }
 
     /// destructor
-	~CutSceneSoundTrigger() { };
+    ~CutSceneSoundTrigger() { };
 
     /**
-		Trigger this trigger. This method is only called if currentFrameNumber == getTriggerFrameNumber()
-		\param	currentFrameNumber	the current frame number relative to the beginning of the current scene
-	*/
-	void trigger(int currentFrameNumber) {
+        Trigger this trigger. This method is only called if currentFrameNumber == getTriggerFrameNumber()
+        \param  currentFrameNumber  the current frame number relative to the beginning of the current scene
+    */
+    void trigger(int currentFrameNumber) {
         soundPlayer->playSound(sound);
-	}
+    }
 
 private:
     Mix_Chunk* sound;   ///< the sound to play

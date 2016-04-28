@@ -35,28 +35,28 @@ Silo::Silo(InputStream& stream) : StructureBase(stream) {
 }
 
 void Silo::init() {
-	itemID = Structure_Silo;
-	owner->incrementStructures(itemID);
+    itemID = Structure_Silo;
+    owner->incrementStructures(itemID);
 
-	structureSize.x = 2;
-	structureSize.y = 2;
+    structureSize.x = 2;
+    structureSize.y = 2;
 
-	graphicID = ObjPic_Silo;
-	graphic = pGFXManager->getObjPic(graphicID,getOwner()->getHouseID());
-	numImagesX = 4;
-	numImagesY = 1;
-	firstAnimFrame = 2;
-	lastAnimFrame = 3;
+    graphicID = ObjPic_Silo;
+    graphic = pGFXManager->getObjPic(graphicID,getOwner()->getHouseID());
+    numImagesX = 4;
+    numImagesY = 1;
+    firstAnimFrame = 2;
+    lastAnimFrame = 3;
 }
 
 Silo::~Silo() {
 }
 
 ObjectInterface* Silo::getInterfaceContainer() {
-	if((pLocalHouse == owner) || (debug == true)) {
-		return RefineryAndSiloInterface::create(objectID);
-	} else {
-		return DefaultObjectInterface::create(objectID);
-	}
+    if((pLocalHouse == owner) || (debug == true)) {
+        return RefineryAndSiloInterface::create(objectID);
+    } else {
+        return DefaultObjectInterface::create(objectID);
+    }
 }
 

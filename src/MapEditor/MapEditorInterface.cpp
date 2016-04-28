@@ -59,162 +59,162 @@ MapEditorInterface::MapEditorInterface(MapEditor* pMapEditor)
     currentEditUnitID = INVALID;
 
 
-	setTransparentBackground(true);
+    setTransparentBackground(true);
 
-	setCurrentPosition(0,0,getRendererWidth(),getRendererHeight());
+    setCurrentPosition(0,0,getRendererWidth(),getRendererHeight());
 
-	setWindowWidget(&windowWidget);
+    setWindowWidget(&windowWidget);
 
-	// top bar
-	SDL_Texture* pTopBarTexture = pGFXManager->getUIGraphic(UI_TopBar, HOUSE_HARKONNEN);
-	topBar.setTexture(pTopBarTexture, false);
-	windowWidget.addWidget(&topBar, calcAlignedDrawingRect(pTopBarTexture, HAlign::Left, VAlign::Top));
+    // top bar
+    SDL_Texture* pTopBarTexture = pGFXManager->getUIGraphic(UI_TopBar, HOUSE_HARKONNEN);
+    topBar.setTexture(pTopBarTexture, false);
+    windowWidget.addWidget(&topBar, calcAlignedDrawingRect(pTopBarTexture, HAlign::Left, VAlign::Top));
 
-	// side bar
-	SDL_Texture* pSideBarTexture = pGFXManager->getUIGraphic(UI_MapEditor_SideBar, HOUSE_HARKONNEN);
-	sideBar.setTexture(pSideBarTexture, false);
-	windowWidget.addWidget(&sideBar, calcAlignedDrawingRect(pSideBarTexture, HAlign::Right, VAlign::Top));
+    // side bar
+    SDL_Texture* pSideBarTexture = pGFXManager->getUIGraphic(UI_MapEditor_SideBar, HOUSE_HARKONNEN);
+    sideBar.setTexture(pSideBarTexture, false);
+    windowWidget.addWidget(&sideBar, calcAlignedDrawingRect(pSideBarTexture, HAlign::Right, VAlign::Top));
 
-	// bottom bar
-	SDL_Texture* pBottomBarTexture = pGFXManager->getUIGraphic(UI_MapEditor_BottomBar, HOUSE_HARKONNEN);
-	bottomBar.setTexture(pBottomBarTexture, false);
-	windowWidget.addWidget(&bottomBar, calcAlignedDrawingRect(pBottomBarTexture, HAlign::Left, VAlign::Bottom));
+    // bottom bar
+    SDL_Texture* pBottomBarTexture = pGFXManager->getUIGraphic(UI_MapEditor_BottomBar, HOUSE_HARKONNEN);
+    bottomBar.setTexture(pBottomBarTexture, false);
+    windowWidget.addWidget(&bottomBar, calcAlignedDrawingRect(pBottomBarTexture, HAlign::Left, VAlign::Bottom));
 
 
-	// add radar
-	windowWidget.addWidget(&radarView,Point(getRendererWidth()-SIDEBARWIDTH+SIDEBAR_COLUMN_WIDTH, 0),radarView.getMinimumSize());
+    // add radar
+    windowWidget.addWidget(&radarView,Point(getRendererWidth()-SIDEBARWIDTH+SIDEBAR_COLUMN_WIDTH, 0),radarView.getMinimumSize());
     radarView.setOnRadarClick(std::bind(&MapEditorInterface::onRadarClick, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
 
-	// add buttons
-	windowWidget.addWidget(&topBarHBox,Point(0,3),	Point(getRendererWidth() - sideBar.getSize().x, 24));
+    // add buttons
+    windowWidget.addWidget(&topBarHBox,Point(0,3),  Point(getRendererWidth() - sideBar.getSize().x, 24));
 
-	topBarHBox.addWidget(HSpacer::create(3));
+    topBarHBox.addWidget(HSpacer::create(3));
 
     exitButton.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_ExitIcon), false);
     exitButton.setTooltipText(_("Leave Mapeditor"));
-	exitButton.setOnClick(std::bind(&MapEditorInterface::onQuit, this));
-	topBarHBox.addWidget(&exitButton,24);
+    exitButton.setOnClick(std::bind(&MapEditorInterface::onQuit, this));
+    topBarHBox.addWidget(&exitButton,24);
 
-	topBarHBox.addWidget(HSpacer::create(10));
+    topBarHBox.addWidget(HSpacer::create(10));
 
     newButton.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_NewIcon), false);
     newButton.setTooltipText(_("New Map"));
-	newButton.setOnClick(std::bind(&MapEditorInterface::onNew, this));
-	topBarHBox.addWidget(&newButton,24);
+    newButton.setOnClick(std::bind(&MapEditorInterface::onNew, this));
+    topBarHBox.addWidget(&newButton,24);
 
-	topBarHBox.addWidget(HSpacer::create(1));
+    topBarHBox.addWidget(HSpacer::create(1));
 
     loadButton.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_LoadIcon), false);
     loadButton.setTooltipText(_("Load Map"));
-	loadButton.setOnClick(std::bind(&MapEditorInterface::onLoad, this));
-	topBarHBox.addWidget(&loadButton,24);
+    loadButton.setOnClick(std::bind(&MapEditorInterface::onLoad, this));
+    topBarHBox.addWidget(&loadButton,24);
 
-	topBarHBox.addWidget(HSpacer::create(1));
+    topBarHBox.addWidget(HSpacer::create(1));
 
     saveButton.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_SaveIcon), false);
     saveButton.setTooltipText(_("Save Map"));
-	saveButton.setOnClick(std::bind(&MapEditorInterface::onSave, this));
-	topBarHBox.addWidget(&saveButton,24);
+    saveButton.setOnClick(std::bind(&MapEditorInterface::onSave, this));
+    topBarHBox.addWidget(&saveButton,24);
 
-	topBarHBox.addWidget(HSpacer::create(10));
+    topBarHBox.addWidget(HSpacer::create(10));
 
     undoButton.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_UndoIcon), false);
     undoButton.setTooltipText(_("Undo"));
-	undoButton.setOnClick(std::bind(&MapEditorInterface::onUndo, this));
-	topBarHBox.addWidget(&undoButton,24);
+    undoButton.setOnClick(std::bind(&MapEditorInterface::onUndo, this));
+    topBarHBox.addWidget(&undoButton,24);
 
-	topBarHBox.addWidget(HSpacer::create(1));
+    topBarHBox.addWidget(HSpacer::create(1));
 
     redoButton.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_RedoIcon), false);
     redoButton.setTooltipText(_("Redo"));
-	redoButton.setOnClick(std::bind(&MapEditorInterface::onRedo, this));
-	topBarHBox.addWidget(&redoButton,24);
+    redoButton.setOnClick(std::bind(&MapEditorInterface::onRedo, this));
+    topBarHBox.addWidget(&redoButton,24);
 
-	topBarHBox.addWidget(HSpacer::create(10));
+    topBarHBox.addWidget(HSpacer::create(10));
 
     playersButton.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_PlayerIcon), false);
     playersButton.setTooltipText(_("Player Settings"));
-	playersButton.setOnClick(std::bind(&MapEditorInterface::onPlayers, this));
-	topBarHBox.addWidget(&playersButton,24);
+    playersButton.setOnClick(std::bind(&MapEditorInterface::onPlayers, this));
+    topBarHBox.addWidget(&playersButton,24);
 
-	topBarHBox.addWidget(HSpacer::create(1));
+    topBarHBox.addWidget(HSpacer::create(1));
 
     mapSettingsButton.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_MapSettingsIcon), false);
     mapSettingsButton.setTooltipText(_("Map Settings"));
-	mapSettingsButton.setOnClick(std::bind(&MapEditorInterface::onMapSettings, this));
-	topBarHBox.addWidget(&mapSettingsButton,24);
+    mapSettingsButton.setOnClick(std::bind(&MapEditorInterface::onMapSettings, this));
+    topBarHBox.addWidget(&mapSettingsButton,24);
 
-	topBarHBox.addWidget(HSpacer::create(10));
+    topBarHBox.addWidget(HSpacer::create(10));
 
     choamButton.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_ChoamIcon), false);
     choamButton.setTooltipText(_("Choam"));
-	choamButton.setOnClick(std::bind(&MapEditorInterface::onChoam, this));
-	topBarHBox.addWidget(&choamButton,24);
+    choamButton.setOnClick(std::bind(&MapEditorInterface::onChoam, this));
+    topBarHBox.addWidget(&choamButton,24);
 
-	topBarHBox.addWidget(HSpacer::create(1));
+    topBarHBox.addWidget(HSpacer::create(1));
 
     reinforcementsButton.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_ReinforcementsIcon), false);
     reinforcementsButton.setTooltipText(_("Reinforcements"));
-	reinforcementsButton.setOnClick(std::bind(&MapEditorInterface::onReinforcements, this));
-	topBarHBox.addWidget(&reinforcementsButton,24);
+    reinforcementsButton.setOnClick(std::bind(&MapEditorInterface::onReinforcements, this));
+    topBarHBox.addWidget(&reinforcementsButton,24);
 
-	topBarHBox.addWidget(HSpacer::create(1));
+    topBarHBox.addWidget(HSpacer::create(1));
 
     teamsButton.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_TeamsIcon), false);
     teamsButton.setTooltipText(_("Teams"));
-	teamsButton.setOnClick(std::bind(&MapEditorInterface::onTeams, this));
-	teamsButton.setVisible( (pMapEditor->getMapVersion() < 2) );
-	topBarHBox.addWidget(&teamsButton,24);
+    teamsButton.setOnClick(std::bind(&MapEditorInterface::onTeams, this));
+    teamsButton.setVisible( (pMapEditor->getMapVersion() < 2) );
+    topBarHBox.addWidget(&teamsButton,24);
 
-	topBarHBox.addWidget(HSpacer::create(10));
+    topBarHBox.addWidget(HSpacer::create(10));
 
     mirrorModeNoneButton.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_MirrorNoneIcon), false);
     mirrorModeNoneButton.setToggleButton(true);
     mirrorModeNoneButton.setTooltipText(_("Mirror mode") + ": " + _("Off"));
-	mirrorModeNoneButton.setOnClick(std::bind(&MapEditorInterface::onMirrorModeButton, this, MirrorModeNone));
-	mirrorModeNoneButton.setVisible( (pMapEditor->getMapVersion() >= 2) );
-	topBarHBox.addWidget(&mirrorModeNoneButton,24);
+    mirrorModeNoneButton.setOnClick(std::bind(&MapEditorInterface::onMirrorModeButton, this, MirrorModeNone));
+    mirrorModeNoneButton.setVisible( (pMapEditor->getMapVersion() >= 2) );
+    topBarHBox.addWidget(&mirrorModeNoneButton,24);
 
-	topBarHBox.addWidget(HSpacer::create(1));
+    topBarHBox.addWidget(HSpacer::create(1));
 
     mirrorModeHorizontalButton.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_MirrorHorizontalIcon), false);
     mirrorModeHorizontalButton.setToggleButton(true);
     mirrorModeHorizontalButton.setTooltipText(_("Mirror mode") + ": " + _("Horizontal"));
-	mirrorModeHorizontalButton.setOnClick(std::bind(&MapEditorInterface::onMirrorModeButton, this, MirrorModeHorizontal));
-	mirrorModeHorizontalButton.setVisible( (pMapEditor->getMapVersion() >= 2) );
-	topBarHBox.addWidget(&mirrorModeHorizontalButton,24);
+    mirrorModeHorizontalButton.setOnClick(std::bind(&MapEditorInterface::onMirrorModeButton, this, MirrorModeHorizontal));
+    mirrorModeHorizontalButton.setVisible( (pMapEditor->getMapVersion() >= 2) );
+    topBarHBox.addWidget(&mirrorModeHorizontalButton,24);
 
-	topBarHBox.addWidget(HSpacer::create(1));
+    topBarHBox.addWidget(HSpacer::create(1));
 
     mirrorModeVerticalButton.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_MirrorVerticalIcon), false);
     mirrorModeVerticalButton.setToggleButton(true);
     mirrorModeVerticalButton.setTooltipText(_("Mirror mode") + ": " + _("Vertical"));
-	mirrorModeVerticalButton.setOnClick(std::bind(&MapEditorInterface::onMirrorModeButton, this, MirrorModeVertical));
-	mirrorModeVerticalButton.setVisible( (pMapEditor->getMapVersion() >= 2) );
-	topBarHBox.addWidget(&mirrorModeVerticalButton,24);
+    mirrorModeVerticalButton.setOnClick(std::bind(&MapEditorInterface::onMirrorModeButton, this, MirrorModeVertical));
+    mirrorModeVerticalButton.setVisible( (pMapEditor->getMapVersion() >= 2) );
+    topBarHBox.addWidget(&mirrorModeVerticalButton,24);
 
-	topBarHBox.addWidget(HSpacer::create(1));
+    topBarHBox.addWidget(HSpacer::create(1));
 
     mirrorModeBothButton.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_MirrorBothIcon), false);
     mirrorModeBothButton.setToggleButton(true);
     mirrorModeBothButton.setTooltipText(_("Mirror mode") + ": " + _("Horizontal and vertical"));
-	mirrorModeBothButton.setOnClick(std::bind(&MapEditorInterface::onMirrorModeButton, this, MirrorModeBoth));
-	mirrorModeBothButton.setVisible( (pMapEditor->getMapVersion() >= 2) );
-	topBarHBox.addWidget(&mirrorModeBothButton,24);
+    mirrorModeBothButton.setOnClick(std::bind(&MapEditorInterface::onMirrorModeButton, this, MirrorModeBoth));
+    mirrorModeBothButton.setVisible( (pMapEditor->getMapVersion() >= 2) );
+    topBarHBox.addWidget(&mirrorModeBothButton,24);
 
-	topBarHBox.addWidget(HSpacer::create(1));
+    topBarHBox.addWidget(HSpacer::create(1));
 
     mirrorModePointButton.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_MirrorPointIcon), false);
     mirrorModePointButton.setToggleButton(true);
     mirrorModePointButton.setTooltipText(_("Mirror mode") + ": " + _("Inverse"));
-	mirrorModePointButton.setOnClick(std::bind(&MapEditorInterface::onMirrorModeButton, this, MirrorModePoint));
-	mirrorModePointButton.setVisible( (pMapEditor->getMapVersion() >= 2) );
-	topBarHBox.addWidget(&mirrorModePointButton,24);
+    mirrorModePointButton.setOnClick(std::bind(&MapEditorInterface::onMirrorModeButton, this, MirrorModePoint));
+    mirrorModePointButton.setVisible( (pMapEditor->getMapVersion() >= 2) );
+    topBarHBox.addWidget(&mirrorModePointButton,24);
 
 
-	topBarHBox.addWidget(Spacer::create(),0.5);
+    topBarHBox.addWidget(Spacer::create(),0.5);
 
-	// add editor mode buttons
+    // add editor mode buttons
     windowWidget.addWidget( &editorModeChooserHBox,
                             Point(getRendererWidth() - sideBar.getSize().x + 14, 148),
                             Point(sideBar.getSize().x - 15,30));
@@ -765,10 +765,10 @@ void MapEditorInterface::onNewMap() {
 
     teamsButton.setVisible( (pMapEditor->getMapVersion() < 2) );
     mirrorModeNoneButton.setVisible( (pMapEditor->getMapVersion() >= 2) );
-	mirrorModeHorizontalButton.setVisible( (pMapEditor->getMapVersion() >= 2) );
-	mirrorModeVerticalButton.setVisible( (pMapEditor->getMapVersion() >= 2) );
-	mirrorModeBothButton.setVisible( (pMapEditor->getMapVersion() >= 2) );
-	mirrorModePointButton.setVisible( (pMapEditor->getMapVersion() >= 2) );
+    mirrorModeHorizontalButton.setVisible( (pMapEditor->getMapVersion() >= 2) );
+    mirrorModeVerticalButton.setVisible( (pMapEditor->getMapVersion() >= 2) );
+    mirrorModeBothButton.setVisible( (pMapEditor->getMapVersion() >= 2) );
+    mirrorModePointButton.setVisible( (pMapEditor->getMapVersion() >= 2) );
     editorModeUnits_SpecialUnit.setVisible( (pMapEditor->getMapVersion() >= 2) );
 }
 
@@ -819,39 +819,39 @@ void MapEditorInterface::onObjectSelected() {
 
 void MapEditorInterface::onChildWindowClose(Window* pChildWindow) {
     NewMapWindow* pNewMapWindow = dynamic_cast<NewMapWindow*>(pChildWindow);
-	if(pNewMapWindow != nullptr) {
-	    std::string loadMapFilepath = pNewMapWindow->getLoadMapFilepath();
+    if(pNewMapWindow != nullptr) {
+        std::string loadMapFilepath = pNewMapWindow->getLoadMapFilepath();
 
-	    if(loadMapFilepath != "") {
+        if(loadMapFilepath != "") {
             pMapEditor->loadMap(loadMapFilepath);
-	    } else {
+        } else {
             const MapData& mapdata = pNewMapWindow->getMapData();
 
             if(mapdata.getSizeX() > 0) {
                 pMapEditor->setMap(mapdata, MapInfo(pNewMapWindow->getMapSeed(), pNewMapWindow->getAuthor(), pNewMapWindow->getLicense()));
                 onPlayers();
             }
-	    }
-	}
+        }
+    }
 
     LoadMapWindow* pLoadMapWindow = dynamic_cast<LoadMapWindow*>(pChildWindow);
-	if(pLoadMapWindow != nullptr) {
-	    std::string loadMapFilepath = pLoadMapWindow->getLoadMapFilepath();
+    if(pLoadMapWindow != nullptr) {
+        std::string loadMapFilepath = pLoadMapWindow->getLoadMapFilepath();
 
-	    if(loadMapFilepath != "") {
+        if(loadMapFilepath != "") {
             pMapEditor->loadMap(loadMapFilepath);
-	    }
-	}
+        }
+    }
 
-	LoadSaveWindow* pLoadSaveWindow = dynamic_cast<LoadSaveWindow*>(pChildWindow);
-	if(pLoadSaveWindow != nullptr && pLoadSaveWindow->getFilename() != "") {
+    LoadSaveWindow* pLoadSaveWindow = dynamic_cast<LoadSaveWindow*>(pChildWindow);
+    if(pLoadSaveWindow != nullptr && pLoadSaveWindow->getFilename() != "") {
         pMapEditor->saveMap(pLoadSaveWindow->getFilename());
     }
 
     QstBox* pQstBox = dynamic_cast<QstBox*>(pChildWindow);
-	if(pQstBox != nullptr && pQstBox->getPressedButtonID() == QSTBOX_BUTTON2) {
-	    pMapEditor->onQuit();
-	}
+    if(pQstBox != nullptr && pQstBox->getPressedButtonID() == QSTBOX_BUTTON2) {
+        pMapEditor->onQuit();
+    }
 }
 
 
@@ -1015,21 +1015,21 @@ void MapEditorInterface::onTerrainButton(int terrainType) {
     currentTerrainType = terrainType;
 
     editorModeTerrain_Sand.setToggleState( (terrainType == Terrain_Sand) );
-	editorModeTerrain_Dunes.setToggleState( (terrainType == Terrain_Dunes) );
-	editorModeTerrain_SpecialBloom.setToggleState( (terrainType == Terrain_SpecialBloom) );
-	editorModeTerrain_Spice.setToggleState( (terrainType == Terrain_Spice) );
-	editorModeTerrain_ThickSpice.setToggleState( (terrainType == Terrain_ThickSpice) );
-	editorModeTerrain_SpiceBloom.setToggleState( (terrainType == Terrain_SpiceBloom) );
-	editorModeTerrain_Rock.setToggleState( (terrainType == Terrain_Rock) );
-	editorModeTerrain_Mountain.setToggleState( (terrainType == Terrain_Mountain) );
+    editorModeTerrain_Dunes.setToggleState( (terrainType == Terrain_Dunes) );
+    editorModeTerrain_SpecialBloom.setToggleState( (terrainType == Terrain_SpecialBloom) );
+    editorModeTerrain_Spice.setToggleState( (terrainType == Terrain_Spice) );
+    editorModeTerrain_ThickSpice.setToggleState( (terrainType == Terrain_ThickSpice) );
+    editorModeTerrain_SpiceBloom.setToggleState( (terrainType == Terrain_SpiceBloom) );
+    editorModeTerrain_Rock.setToggleState( (terrainType == Terrain_Rock) );
+    editorModeTerrain_Mountain.setToggleState( (terrainType == Terrain_Mountain) );
 
-	editorModeClassicTerrain_SpiceBloom.setToggleState( (terrainType == Terrain_SpiceBloom) );
-	editorModeClassicTerrain_SpecialBloom.setToggleState( (terrainType == Terrain_SpecialBloom) );
-	editorModeClassicTerrain_SpiceField.setToggleState( (terrainType == Terrain_Spice) );
+    editorModeClassicTerrain_SpiceBloom.setToggleState( (terrainType == Terrain_SpiceBloom) );
+    editorModeClassicTerrain_SpecialBloom.setToggleState( (terrainType == Terrain_SpecialBloom) );
+    editorModeClassicTerrain_SpiceField.setToggleState( (terrainType == Terrain_Spice) );
 
-	if(currentTerrainType >= 0) {
+    if(currentTerrainType >= 0) {
         pMapEditor->setEditorMode(MapEditor::EditorMode((TERRAINTYPE) currentTerrainType, currentTerrainPenSize));
-	}
+    }
 }
 
 void MapEditorInterface::onTerrainPenButton(int pensize) {
@@ -1039,9 +1039,9 @@ void MapEditorInterface::onTerrainPenButton(int pensize) {
     editorModeTerrain_Pen3x3.setToggleState( (pensize == 3) );
     editorModeTerrain_Pen5x5.setToggleState( (pensize == 5) );
 
-	if(currentTerrainType >= 0) {
+    if(currentTerrainType >= 0) {
         pMapEditor->setEditorMode(MapEditor::EditorMode((TERRAINTYPE) currentTerrainType, currentTerrainPenSize));
-	}
+    }
 }
 
 void MapEditorInterface::onSetTacticalPosition() {
@@ -1255,22 +1255,22 @@ void MapEditorInterface::changeInterfaceColor(HOUSETYPE newHouse) {
     house = newHouse;
     color = SDL2RGB(palette[houseToPaletteIndex[newHouse] + 3]);
 
-	terrainButton.setTextColor(color);
-	structuresButton.setTextColor(color);
-	unitsButton.setTextColor(color);
+    terrainButton.setTextColor(color);
+    structuresButton.setTextColor(color);
+    unitsButton.setTextColor(color);
 
-	houseDropDownBox.setColor(color);
+    houseDropDownBox.setColor(color);
 
     // top bar
-	SDL_Texture* pTopBarTexture = pGFXManager->getUIGraphic(UI_TopBar, newHouse);
-	topBar.setTexture(pTopBarTexture, false);
-	// side bar
-	SDL_Texture* pSideBarTexture = pGFXManager->getUIGraphic(UI_MapEditor_SideBar, newHouse);
-	sideBar.setTexture(pSideBarTexture, false);
+    SDL_Texture* pTopBarTexture = pGFXManager->getUIGraphic(UI_TopBar, newHouse);
+    topBar.setTexture(pTopBarTexture, false);
+    // side bar
+    SDL_Texture* pSideBarTexture = pGFXManager->getUIGraphic(UI_MapEditor_SideBar, newHouse);
+    sideBar.setTexture(pSideBarTexture, false);
 
-	// bottom bar
-	SDL_Texture* pBottomBarTexture = pGFXManager->getUIGraphic(UI_MapEditor_BottomBar, newHouse);
-	bottomBar.setTexture(pBottomBarTexture, false);
+    // bottom bar
+    SDL_Texture* pBottomBarTexture = pGFXManager->getUIGraphic(UI_MapEditor_BottomBar, newHouse);
+    bottomBar.setTexture(pBottomBarTexture, false);
 
     editorModeTerrain_Sand.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_Sand, newHouse), false);
     editorModeTerrain_Dunes.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_Dunes, newHouse), false);
@@ -1349,9 +1349,9 @@ void MapEditorInterface::changeInterfaceColor(HOUSETYPE newHouse) {
 void MapEditorInterface::onMirrorModeButton(int mode) {
     pMapEditor->setMirrorMode( (MirrorMode) mode);
 
-	mirrorModeNoneButton.setToggleState( (mode == MirrorModeNone) );
-	mirrorModeHorizontalButton.setToggleState( (mode == MirrorModeHorizontal) );
-	mirrorModeVerticalButton.setToggleState( (mode == MirrorModeVertical) );
-	mirrorModeBothButton.setToggleState( (mode == MirrorModeBoth) );
-	mirrorModePointButton.setToggleState( (mode == MirrorModePoint) );
+    mirrorModeNoneButton.setToggleState( (mode == MirrorModeNone) );
+    mirrorModeHorizontalButton.setToggleState( (mode == MirrorModeHorizontal) );
+    mirrorModeVerticalButton.setToggleState( (mode == MirrorModeVertical) );
+    mirrorModeBothButton.setToggleState( (mode == MirrorModeBoth) );
+    mirrorModePointButton.setToggleState( (mode == MirrorModePoint) );
 }

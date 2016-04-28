@@ -22,30 +22,30 @@
 #include <GUI/PictureButton.h>
 #include <GUI/dune/AnimationLabel.h>
 
-#define BRIEFING		0
-#define DEBRIEFING_WIN	1
-#define DEBRIEFING_LOST	2
+#define BRIEFING        0
+#define DEBRIEFING_WIN  1
+#define DEBRIEFING_LOST 2
 
 class BriefingMenu : public MentatMenu
 {
 public:
-	BriefingMenu(int newHouse,int mission, int type);
-	virtual ~BriefingMenu();
+    BriefingMenu(int newHouse,int mission, int type);
+    virtual ~BriefingMenu();
 
-	virtual void onMentatTextFinished();
+    virtual void onMentatTextFinished();
 
-	virtual int showMenu();
+    virtual int showMenu();
 
 private:
     std::string text;
 
-	void onRepeat();
-	void onProcced();
-	int mission;
-	int type;
-	PictureButton	repeatButton;
-	PictureButton	proccedButton;
-	AnimationLabel	animation;
+    void onRepeat();
+    void onProcced();
+    int mission;
+    int type;
+    PictureButton   repeatButton;
+    PictureButton   proccedButton;
+    AnimationLabel  animation;
 };
 
 #endif //BRIEFINGMENU_H

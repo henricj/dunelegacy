@@ -19,36 +19,36 @@
 #define CUTSCENETRIGGER_H
 
 /**
-	This class is the base class for triggers that are triggered at a certain frame.
+    This class is the base class for triggers that are triggered at a certain frame.
 */
 class CutSceneTrigger {
 public:
 
-	/**
-		Constructor
-		\param	frameNumber	the frame number relative to the start of the current scene where this trigger should be triggered.
-	*/
+    /**
+        Constructor
+        \param  frameNumber the frame number relative to the start of the current scene where this trigger should be triggered.
+    */
     CutSceneTrigger(int frameNumber);
 
-	/// destructor
+    /// destructor
     virtual ~CutSceneTrigger();
 
-	/**
-		This method returns the frame number where this trigger shall be triggered.
-		\return	the frame number where this trigger shall be triggered
-	*/
+    /**
+        This method returns the frame number where this trigger shall be triggered.
+        \return the frame number where this trigger shall be triggered
+    */
     inline int getTriggerFrameNumber() const {
         return frameNumber;
     }
 
-	/**
-		Trigger this trigger. This method is only called if currentFrameNumber == getTriggerFrameNumber()
-		\param	currentFrameNumber	the current frame number relative to the beginning of the current scene
-	*/
-	virtual void trigger(int currentFrameNumber) = 0;
+    /**
+        Trigger this trigger. This method is only called if currentFrameNumber == getTriggerFrameNumber()
+        \param  currentFrameNumber  the current frame number relative to the beginning of the current scene
+    */
+    virtual void trigger(int currentFrameNumber) = 0;
 
 private:
-    int frameNumber;	///< The frame number where this trigger shall be triggered.
+    int frameNumber;    ///< The frame number where this trigger shall be triggered.
 };
 
 #endif // CUTSCENETRIGGER_H

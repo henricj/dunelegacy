@@ -40,14 +40,14 @@ void Trike::init() {
     itemID = Unit_Trike;
     owner->incrementUnits(itemID);
 
-	numWeapons = 2;
-	bulletType = Bullet_ShellSmall;
+    numWeapons = 2;
+    bulletType = Bullet_ShellSmall;
 
-	graphicID = ObjPic_Trike;
-	graphic = pGFXManager->getObjPic(graphicID,getOwner()->getHouseID());
+    graphicID = ObjPic_Trike;
+    graphic = pGFXManager->getObjPic(graphicID,getOwner()->getHouseID());
 
-	numImagesX = NUM_ANGLES;
-	numImagesY = 1;
+    numImagesX = NUM_ANGLES;
+    numImagesY = 1;
 }
 
 Trike::~Trike() {
@@ -66,5 +66,5 @@ void Trike::destroy() {
 }
 
 void Trike::playAttackSound() {
-	soundPlayer->playSoundAt(Sound_MachineGun,location);
+    soundPlayer->playSoundAt(Sound_MachineGun,location);
 }

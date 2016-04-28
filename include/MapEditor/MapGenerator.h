@@ -21,7 +21,7 @@
 #include <MapEditor/MapData.h>
 #include <MapEditor/MapMirror.h>
 
-#define ROCKFIELDS 5		//how many fields it will randomly generate
+#define ROCKFIELDS 5        //how many fields it will randomly generate
 #define SPICEFIELDS 7
 #define DUNEFIELDS 3
 

@@ -34,52 +34,52 @@ HeavyFactory::HeavyFactory(InputStream& stream) : BuilderBase(stream) {
 }
 
 void HeavyFactory::init() {
-   	itemID = Structure_HeavyFactory;
-	owner->incrementStructures(itemID);
+    itemID = Structure_HeavyFactory;
+    owner->incrementStructures(itemID);
 
-	structureSize.x = 3;
-	structureSize.y = 2;
+    structureSize.x = 3;
+    structureSize.y = 2;
 
-	graphicID = ObjPic_HeavyFactory;
-	graphic = pGFXManager->getObjPic(graphicID,getOwner()->getHouseID());
-	numImagesX = 8;
-	numImagesY = 1;
-	firstAnimFrame = 2;
-	lastAnimFrame = 3;
+    graphicID = ObjPic_HeavyFactory;
+    graphic = pGFXManager->getObjPic(graphicID,getOwner()->getHouseID());
+    numImagesX = 8;
+    numImagesY = 1;
+    firstAnimFrame = 2;
+    lastAnimFrame = 3;
 }
 
 HeavyFactory::~HeavyFactory() {
 }
 
 void HeavyFactory::doBuildRandom() {
-	if(isAllowedToUpgrade() && (getUpgradeCost() <= owner->getCredits())) {
+    if(isAllowedToUpgrade() && (getUpgradeCost() <= owner->getCredits())) {
         doUpgrade();
         return;
-	}
+    }
 
-	int item2Produce = ItemID_Invalid;
+    int item2Produce = ItemID_Invalid;
 
-	do {
-		int randNum = currentGame->randomGen.rand(0, getBuildListSize()-1);
-		int i = 0;
-		std::list<BuildItem>::iterator iter;
-		for(iter = buildList.begin(); iter != buildList.end(); ++iter) {
-			if(i == randNum) {
-				item2Produce = iter->itemID;
-				break;
-			}
-		}
-	} while((item2Produce == Unit_Harvester) || (item2Produce == Unit_MCV));
+    do {
+        int randNum = currentGame->randomGen.rand(0, getBuildListSize()-1);
+        int i = 0;
+        std::list<BuildItem>::iterator iter;
+        for(iter = buildList.begin(); iter != buildList.end(); ++iter) {
+            if(i == randNum) {
+                item2Produce = iter->itemID;
+                break;
+            }
+        }
+    } while((item2Produce == Unit_Harvester) || (item2Produce == Unit_MCV));
 
-	doProduceItem(item2Produce);
+    doProduceItem(item2Produce);
 }
 
 void HeavyFactory::updateStructureSpecificStuff() {
-	if(deployTimer > 0) {
-	    firstAnimFrame = 4;
+    if(deployTimer > 0) {
+        firstAnimFrame = 4;
         lastAnimFrame = 5;
-	} else {
+    } else {
         firstAnimFrame = 2;
         lastAnimFrame = 3;
-	}
+    }
 }

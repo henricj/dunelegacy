@@ -30,68 +30,68 @@ class DigitsCounter : public Widget
 {
 public:
 
-	/// default constructor
-	DigitsCounter() {
-		enableResizing(false,false);
-		count = 0;
-	}
+    /// default constructor
+    DigitsCounter() {
+        enableResizing(false,false);
+        count = 0;
+    }
 
-	/// destructor
-	virtual ~DigitsCounter() { ; };
+    /// destructor
+    virtual ~DigitsCounter() { ; };
 
-	/**
-		Get the current count of this digits counter
-		\return	the number that this digits counter currently shows
-	*/
-	inline unsigned int getCount() { return count; }
+    /**
+        Get the current count of this digits counter
+        \return the number that this digits counter currently shows
+    */
+    inline unsigned int getCount() { return count; }
 
-	/**
-		Set the count of this digits counter
-		\param	newCount	the new number to show
-	*/
-	inline void setCount(unsigned int newCount) { count = newCount; }
+    /**
+        Set the count of this digits counter
+        \param  newCount    the new number to show
+    */
+    inline void setCount(unsigned int newCount) { count = newCount; }
 
-	/**
-		Draws this widget to screen. This method is called before drawOverlay().
-		\param	position	Position to draw the widget to
-	*/
-	virtual inline void draw(Point position) {
-		SDL_Texture* tex = pGFXManager->getUIGraphic(UI_MissionSelect);
+    /**
+        Draws this widget to screen. This method is called before drawOverlay().
+        \param  position    Position to draw the widget to
+    */
+    virtual inline void draw(Point position) {
+        SDL_Texture* tex = pGFXManager->getUIGraphic(UI_MissionSelect);
 
-		SDL_Rect dest = calcDrawingRect(tex, position.x, position.y);
-		SDL_RenderCopy(renderer, tex, nullptr, &dest);
+        SDL_Rect dest = calcDrawingRect(tex, position.x, position.y);
+        SDL_RenderCopy(renderer, tex, nullptr, &dest);
 
-		SDL_Texture* digitsTex = pGFXManager->getUIGraphic(UI_CreditsDigits);
+        SDL_Texture* digitsTex = pGFXManager->getUIGraphic(UI_CreditsDigits);
 
-		char creditsBuffer[3];
-		sprintf(creditsBuffer, "%d", count);
-		int digits = strlen(creditsBuffer);
+        char creditsBuffer[3];
+        sprintf(creditsBuffer, "%d", count);
+        int digits = strlen(creditsBuffer);
 
-		for(int i=digits-1; i>=0; i--) {
+        for(int i=digits-1; i>=0; i--) {
             SDL_Rect source = calcSpriteSourceRect(digitsTex, creditsBuffer[i] - '0', 10);
             SDL_Rect dest2 = calcSpriteDrawingRect(digitsTex, position.x + 40 + (6 - digits + i)*10, position.y + 16, 10);
- 			SDL_RenderCopy(renderer, digitsTex, &source, &dest2);
-		}
+            SDL_RenderCopy(renderer, digitsTex, &source, &dest2);
+        }
 
-	};
+    };
 
-	/**
-		Returns the minimum size of this digits counter. The widget should not
-		be resized to a size smaller than this.
-		\return the minimum size of this digits counter
-	*/
-	virtual Point getMinimumSize() const {
-		SDL_Texture* tex = pGFXManager->getUIGraphic(UI_MissionSelect);
-		if(tex != nullptr) {
-			return getTextureSize(tex);
-		} else {
-			return Point(0,0);
-		}
-	}
+    /**
+        Returns the minimum size of this digits counter. The widget should not
+        be resized to a size smaller than this.
+        \return the minimum size of this digits counter
+    */
+    virtual Point getMinimumSize() const {
+        SDL_Texture* tex = pGFXManager->getUIGraphic(UI_MissionSelect);
+        if(tex != nullptr) {
+            return getTextureSize(tex);
+        } else {
+            return Point(0,0);
+        }
+    }
 
 private:
 
-	unsigned int count;
+    unsigned int count;
 };
 
 #endif // DIGITSCOUNTER_H

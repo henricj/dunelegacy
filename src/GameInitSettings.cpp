@@ -29,7 +29,7 @@
 
 GameInitSettings::GameInitSettings()
  : gameType(GAMETYPE_INVALID), houseID(HOUSE_INVALID), mission(0), multiplePlayersPerHouse(false) {
-	randomSeed = rand();
+    randomSeed = rand();
 }
 
 GameInitSettings::GameInitSettings(HOUSETYPE newHouseID, const SettingsClass::GameOptionsClass& gameOptions)
@@ -74,95 +74,95 @@ GameInitSettings::GameInitSettings(std::string savegame, std::string filedata, s
 }
 
 GameInitSettings::GameInitSettings(InputStream& stream) {
-	gameType = (GAMETYPE) stream.readSint8();
-	houseID = (HOUSETYPE) stream.readSint8();
+    gameType = (GAMETYPE) stream.readSint8();
+    houseID = (HOUSETYPE) stream.readSint8();
 
-	filename = stream.readString();
-	filedata = stream.readString();
+    filename = stream.readString();
+    filedata = stream.readString();
 
-	mission = stream.readUint8();
-	randomSeed = stream.readUint32();
+    mission = stream.readUint8();
+    randomSeed = stream.readUint32();
 
     multiplePlayersPerHouse = stream.readBool();
     gameOptions.gameSpeed = stream.readUint32();
-	gameOptions.concreteRequired = stream.readBool();
-	gameOptions.structuresDegradeOnConcrete = stream.readBool();
-	gameOptions.fogOfWar = stream.readBool();
-	gameOptions.startWithExploredMap = stream.readBool();
-	gameOptions.instantBuild = stream.readBool();
-	gameOptions.onlyOnePalace = stream.readBool();
-	gameOptions.rocketTurretsNeedPower = stream.readBool();
-	gameOptions.sandwormsRespawn = stream.readBool();
-	gameOptions.killedSandwormsDropSpice = stream.readBool();
-	gameOptions.manualCarryallDrops = stream.readBool();
+    gameOptions.concreteRequired = stream.readBool();
+    gameOptions.structuresDegradeOnConcrete = stream.readBool();
+    gameOptions.fogOfWar = stream.readBool();
+    gameOptions.startWithExploredMap = stream.readBool();
+    gameOptions.instantBuild = stream.readBool();
+    gameOptions.onlyOnePalace = stream.readBool();
+    gameOptions.rocketTurretsNeedPower = stream.readBool();
+    gameOptions.sandwormsRespawn = stream.readBool();
+    gameOptions.killedSandwormsDropSpice = stream.readBool();
+    gameOptions.manualCarryallDrops = stream.readBool();
 
 
-	Uint32 numHouseInfo = stream.readUint32();
-	for(Uint32 i=0;i<numHouseInfo;i++) {
+    Uint32 numHouseInfo = stream.readUint32();
+    for(Uint32 i=0;i<numHouseInfo;i++) {
         houseInfoList.push_back(HouseInfo(stream));
-	}
+    }
 }
 
 GameInitSettings::~GameInitSettings() {
 }
 
 void GameInitSettings::save(OutputStream& stream) const {
-	stream.writeSint8(gameType);
-	stream.writeSint8(houseID);
+    stream.writeSint8(gameType);
+    stream.writeSint8(houseID);
 
-	stream.writeString(filename);
-	stream.writeString(filedata);
+    stream.writeString(filename);
+    stream.writeString(filedata);
 
-	stream.writeUint8(mission);
-	stream.writeUint32(randomSeed);
+    stream.writeUint8(mission);
+    stream.writeUint32(randomSeed);
 
     stream.writeBool(multiplePlayersPerHouse);
     stream.writeUint32(gameOptions.gameSpeed);
     stream.writeBool(gameOptions.concreteRequired);
     stream.writeBool(gameOptions.structuresDegradeOnConcrete);
-	stream.writeBool(gameOptions.fogOfWar);
-	stream.writeBool(gameOptions.startWithExploredMap);
-	stream.writeBool(gameOptions.instantBuild);
-	stream.writeBool(gameOptions.onlyOnePalace);
-	stream.writeBool(gameOptions.rocketTurretsNeedPower);
-	stream.writeBool(gameOptions.sandwormsRespawn);
-	stream.writeBool(gameOptions.killedSandwormsDropSpice);
-	stream.writeBool(gameOptions.manualCarryallDrops);
+    stream.writeBool(gameOptions.fogOfWar);
+    stream.writeBool(gameOptions.startWithExploredMap);
+    stream.writeBool(gameOptions.instantBuild);
+    stream.writeBool(gameOptions.onlyOnePalace);
+    stream.writeBool(gameOptions.rocketTurretsNeedPower);
+    stream.writeBool(gameOptions.sandwormsRespawn);
+    stream.writeBool(gameOptions.killedSandwormsDropSpice);
+    stream.writeBool(gameOptions.manualCarryallDrops);
 
-	stream.writeUint32(houseInfoList.size());
-	HouseInfoList::const_iterator iter;
-	for(iter = houseInfoList.begin(); iter != houseInfoList.end(); ++iter) {
+    stream.writeUint32(houseInfoList.size());
+    HouseInfoList::const_iterator iter;
+    for(iter = houseInfoList.begin(); iter != houseInfoList.end(); ++iter) {
         iter->save(stream);
-	}
+    }
 }
 
 
 
 std::string GameInitSettings::getScenarioFilename(HOUSETYPE newHouse, int mission) {
-	std::string name = "SCEN?0??.INI";
+    std::string name = "SCEN?0??.INI";
 
-	if( (mission < 0) || (mission > 22)) {
-	    throw std::invalid_argument("GameInitSettings::getScenarioFilename(): There is no mission number " + stringify(mission) + ".");
-	}
+    if( (mission < 0) || (mission > 22)) {
+        throw std::invalid_argument("GameInitSettings::getScenarioFilename(): There is no mission number " + stringify(mission) + ".");
+    }
 
-	name[4] = houseChar[newHouse];
+    name[4] = houseChar[newHouse];
 
-	name[6] = '0' + (mission / 10);
-	name[7] = '0' + (mission % 10);
+    name[6] = '0' + (mission / 10);
+    name[7] = '0' + (mission % 10);
 
-	return name;
+    return name;
 }
 
 void GameInitSettings::checkSaveGame(std::string savegame) {
     IFileStream fs;
 
-	if(fs.open(savegame) == false) {
-		throw std::runtime_error("Cannot open savegame. Make sure you have read access to this savegame!");
-	}
+    if(fs.open(savegame) == false) {
+        throw std::runtime_error("Cannot open savegame. Make sure you have read access to this savegame!");
+    }
 
     checkSaveGame(fs);
 
-	fs.close();
+    fs.close();
 }
 
 
@@ -170,13 +170,13 @@ void GameInitSettings::checkSaveGame(InputStream& stream) {
     Uint32 magicNum;
     Uint32 savegameVersion;
     std::string duneVersion;
-	try {
+    try {
         magicNum = stream.readUint32();
         savegameVersion = stream.readUint32();
         duneVersion = stream.readString();
-	} catch (std::exception&) {
-	    throw std::runtime_error("Cannot load this savegame,\n because it seems to be truncated!");
-	}
+    } catch (std::exception&) {
+        throw std::runtime_error("Cannot load this savegame,\n because it seems to be truncated!");
+    }
 
     if(magicNum != SAVEMAGIC) {
         throw std::runtime_error("Cannot load this savegame,\n because it has a wrong magic number!");

@@ -26,62 +26,62 @@ class AnimationLabel : public Widget
 {
 public:
 
-	/// default constructor
-	AnimationLabel() {
-		enableResizing(false,false);
-		pAnim = nullptr;
-	}
+    /// default constructor
+    AnimationLabel() {
+        enableResizing(false,false);
+        pAnim = nullptr;
+    }
 
-	/// destructor
-	virtual ~AnimationLabel() { ; };
+    /// destructor
+    virtual ~AnimationLabel() { ; };
 
-	/**
-		Set the current animation that should be shown in this widget.
-		\param newAnimation	the new animation to show
-	*/
-	void setAnimation(Animation *newAnimation) {
-		pAnim = newAnimation;
-	};
+    /**
+        Set the current animation that should be shown in this widget.
+        \param newAnimation the new animation to show
+    */
+    void setAnimation(Animation *newAnimation) {
+        pAnim = newAnimation;
+    };
 
-	/**
+    /**
         This method returns the stored animation.
         \return the stored animation
-	*/
-	Animation* getAnimation() const { return pAnim; };
+    */
+    Animation* getAnimation() const { return pAnim; };
 
-	/**
-		Draws this widget to screen. This method is called before drawOverlay().
-		\param	position	Position to draw the widget to
-	*/
-	virtual inline void draw(Point position) {
-		if(pAnim == nullptr) {
-			return;
-		}
+    /**
+        Draws this widget to screen. This method is called before drawOverlay().
+        \param  position    Position to draw the widget to
+    */
+    virtual inline void draw(Point position) {
+        if(pAnim == nullptr) {
+            return;
+        }
 
-		SDL_Texture* tex = pAnim->getFrameTexture();
+        SDL_Texture* tex = pAnim->getFrameTexture();
 
-		if(isVisible()) {
+        if(isVisible()) {
             SDL_Rect dest = calcDrawingRect(tex, position.x, position.y);
-			SDL_RenderCopy(renderer, tex, nullptr, &dest);
-		}
-	};
+            SDL_RenderCopy(renderer, tex, nullptr, &dest);
+        }
+    };
 
-	/**
-		Returns the minimum size of this animation label. The widget should not
-		be resized to a size smaller than this.
-		\return the minimum size of this animation label
-	*/
-	virtual Point getMinimumSize() const {
-		SDL_Surface* surface = pAnim->getFrame();
-		if(surface != nullptr) {
-			return Point((Sint32) surface->w, (Sint32) surface->h);
-		} else {
-			return Point(0,0);
-		}
-	}
+    /**
+        Returns the minimum size of this animation label. The widget should not
+        be resized to a size smaller than this.
+        \return the minimum size of this animation label
+    */
+    virtual Point getMinimumSize() const {
+        SDL_Surface* surface = pAnim->getFrame();
+        if(surface != nullptr) {
+            return Point((Sint32) surface->w, (Sint32) surface->h);
+        } else {
+            return Point(0,0);
+        }
+    }
 
 private:
-	Animation* pAnim;
+    Animation* pAnim;
 };
 
 #endif //ANIMATIONLABEL_H

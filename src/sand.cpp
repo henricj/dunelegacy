@@ -47,24 +47,24 @@ void drawCursor() {
         return;
     }
 
-	SDL_Texture* tex = pGFXManager->getUIGraphic(cursorFrame);
+    SDL_Texture* tex = pGFXManager->getUIGraphic(cursorFrame);
 
     SDL_Rect dest = calcDrawingRect(tex, drawnMouseX, drawnMouseY);
 
-	//reposition image so pointing on right spot
+    //reposition image so pointing on right spot
 
-	if (cursorFrame == UI_CursorRight) {
-		dest.x -= dest.w/2;
-	} else if (cursorFrame == UI_CursorDown) {
-		dest.y -= dest.h/2;
-	}
+    if (cursorFrame == UI_CursorRight) {
+        dest.x -= dest.w/2;
+    } else if (cursorFrame == UI_CursorDown) {
+        dest.y -= dest.h/2;
+    }
 
-	if ((cursorFrame == UI_CursorAttack_Zoomlevel0) || (cursorFrame == UI_CursorMove_Zoomlevel0)) {
-		dest.x -= dest.w/2;
-		dest.y -= dest.h/2;
-	}
+    if ((cursorFrame == UI_CursorAttack_Zoomlevel0) || (cursorFrame == UI_CursorMove_Zoomlevel0)) {
+        dest.x -= dest.w/2;
+        dest.y -= dest.h/2;
+    }
 
-	SDL_RenderCopy(renderer, tex, nullptr, &dest);
+    SDL_RenderCopy(renderer, tex, nullptr, &dest);
 }
 
 /**
@@ -73,64 +73,64 @@ void drawCursor() {
     \return the surface corresponding. This surface should not be freed or modified. nullptr on error.
 */
 SDL_Texture* resolveItemPicture(int itemID, HOUSETYPE house) {
-	int newPicID;
+    int newPicID;
 
-	switch(itemID) {
-        case Structure_Barracks:            newPicID = Picture_Barracks;		    break;
-		case Structure_ConstructionYard:    newPicID = Picture_ConstructionYard;	break;
-		case Structure_GunTurret:			newPicID = Picture_GunTurret;		    break;
-		case Structure_HeavyFactory:		newPicID = Picture_HeavyFactory;		break;
-		case Structure_HighTechFactory:		newPicID = Picture_HighTechFactory;		break;
-		case Structure_IX:			        newPicID = Picture_IX;		            break;
-		case Structure_LightFactory:		newPicID = Picture_LightFactory;		break;
-		case Structure_Palace:			    newPicID = Picture_Palace;		        break;
-		case Structure_Radar:			    newPicID = Picture_Radar;		        break;
-		case Structure_Refinery:			newPicID = Picture_Refinery;	       	break;
-		case Structure_RepairYard:			newPicID = Picture_RepairYard;		    break;
-		case Structure_RocketTurret:		newPicID = Picture_RocketTurret;		break;
-		case Structure_Silo:			    newPicID = Picture_Silo;		        break;
-		case Structure_Slab1:			    newPicID = Picture_Slab1;               break;
-		case Structure_Slab4:			    newPicID = Picture_Slab4;		        break;
-		case Structure_StarPort:			newPicID = Picture_StarPort;	    	break;
-		case Structure_Wall:			    newPicID = Picture_Wall;	        	break;
-		case Structure_WindTrap:		   	newPicID = Picture_WindTrap;	    	break;
-		case Structure_WOR:			        newPicID = Picture_WOR;		            break;
+    switch(itemID) {
+        case Structure_Barracks:            newPicID = Picture_Barracks;            break;
+        case Structure_ConstructionYard:    newPicID = Picture_ConstructionYard;    break;
+        case Structure_GunTurret:           newPicID = Picture_GunTurret;           break;
+        case Structure_HeavyFactory:        newPicID = Picture_HeavyFactory;        break;
+        case Structure_HighTechFactory:     newPicID = Picture_HighTechFactory;     break;
+        case Structure_IX:                  newPicID = Picture_IX;                  break;
+        case Structure_LightFactory:        newPicID = Picture_LightFactory;        break;
+        case Structure_Palace:              newPicID = Picture_Palace;              break;
+        case Structure_Radar:               newPicID = Picture_Radar;               break;
+        case Structure_Refinery:            newPicID = Picture_Refinery;            break;
+        case Structure_RepairYard:          newPicID = Picture_RepairYard;          break;
+        case Structure_RocketTurret:        newPicID = Picture_RocketTurret;        break;
+        case Structure_Silo:                newPicID = Picture_Silo;                break;
+        case Structure_Slab1:               newPicID = Picture_Slab1;               break;
+        case Structure_Slab4:               newPicID = Picture_Slab4;               break;
+        case Structure_StarPort:            newPicID = Picture_StarPort;            break;
+        case Structure_Wall:                newPicID = Picture_Wall;                break;
+        case Structure_WindTrap:            newPicID = Picture_WindTrap;            break;
+        case Structure_WOR:                 newPicID = Picture_WOR;                 break;
 
-		case Unit_Carryall:			        newPicID = Picture_Carryall;		    break;
-		case Unit_Devastator:		       	newPicID = Picture_Devastator;		    break;
-		case Unit_Deviator:			        newPicID = Picture_Deviator;	    	break;
-		case Unit_Frigate:			        newPicID = Picture_Frigate;	            break;
-		case Unit_Harvester:		    	newPicID = Picture_Harvester;		    break;
-		case Unit_Launcher:			        newPicID = Picture_Launcher;	    	break;
-		case Unit_MCV:			            newPicID = Picture_MCV;		            break;
-		case Unit_Ornithopter:			    newPicID = Picture_Ornithopter;		    break;
-		case Unit_Quad:		            	newPicID = Picture_Quad;		        break;
-		case Unit_RaiderTrike:			    newPicID = Picture_RaiderTrike;		    break;
-		case Unit_SiegeTank:		    	newPicID = Picture_SiegeTank;	    	break;
-		case Unit_SonicTank:		    	newPicID = Picture_SonicTank;	    	break;
-		case Unit_Tank:			            newPicID = Picture_Tank;		        break;
-		case Unit_Trike:		        	newPicID = Picture_Trike;		        break;
-		case Unit_Saboteur:			        newPicID = Picture_Saboteur;	    	break;
-		case Unit_Sandworm:			        newPicID = Picture_Sandworm;           	break;
-		case Unit_Soldier:			        newPicID = Picture_Soldier;	        	break;
-		case Unit_Trooper: {
-		    switch(house) {
-		        case HOUSE_SARDAUKAR:       newPicID = Picture_Sardaukar;           break;
-		        case HOUSE_FREMEN:          newPicID = Picture_Fremen;              break;
+        case Unit_Carryall:                 newPicID = Picture_Carryall;            break;
+        case Unit_Devastator:               newPicID = Picture_Devastator;          break;
+        case Unit_Deviator:                 newPicID = Picture_Deviator;            break;
+        case Unit_Frigate:                  newPicID = Picture_Frigate;             break;
+        case Unit_Harvester:                newPicID = Picture_Harvester;           break;
+        case Unit_Launcher:                 newPicID = Picture_Launcher;            break;
+        case Unit_MCV:                      newPicID = Picture_MCV;                 break;
+        case Unit_Ornithopter:              newPicID = Picture_Ornithopter;         break;
+        case Unit_Quad:                     newPicID = Picture_Quad;                break;
+        case Unit_RaiderTrike:              newPicID = Picture_RaiderTrike;         break;
+        case Unit_SiegeTank:                newPicID = Picture_SiegeTank;           break;
+        case Unit_SonicTank:                newPicID = Picture_SonicTank;           break;
+        case Unit_Tank:                     newPicID = Picture_Tank;                break;
+        case Unit_Trike:                    newPicID = Picture_Trike;               break;
+        case Unit_Saboteur:                 newPicID = Picture_Saboteur;            break;
+        case Unit_Sandworm:                 newPicID = Picture_Sandworm;            break;
+        case Unit_Soldier:                  newPicID = Picture_Soldier;             break;
+        case Unit_Trooper: {
+            switch(house) {
+                case HOUSE_SARDAUKAR:       newPicID = Picture_Sardaukar;           break;
+                case HOUSE_FREMEN:          newPicID = Picture_Fremen;              break;
                 default:                    newPicID = Picture_Trooper;             break;
-		    }
+            }
         } break;
-		case Unit_Special:                  newPicID = Picture_Special;             break;
-		case Unit_Infantry:                 newPicID = Picture_Soldier;             break;
-		case Unit_Troopers: {
-		    switch(house) {
-		        case HOUSE_SARDAUKAR:       newPicID = Picture_Sardaukar;           break;
-		        case HOUSE_FREMEN:          newPicID = Picture_Fremen;              break;
+        case Unit_Special:                  newPicID = Picture_Special;             break;
+        case Unit_Infantry:                 newPicID = Picture_Soldier;             break;
+        case Unit_Troopers: {
+            switch(house) {
+                case HOUSE_SARDAUKAR:       newPicID = Picture_Sardaukar;           break;
+                case HOUSE_FREMEN:          newPicID = Picture_Fremen;              break;
                 default:                    newPicID = Picture_Trooper;             break;
-		    }
+            }
         } break;
 
-		default:
+        default:
             throw std::invalid_argument("resolveItemPicture(): Invalid item ID " + stringify(itemID) + "!");
         break;
     }
@@ -204,30 +204,30 @@ int getAnimByFilename(std::string filename) {
 */
 Coord getStructureSize(int itemID) {
 
-	switch(itemID) {
-		case Structure_Barracks:			return Coord(2,2); break;
-		case Structure_ConstructionYard:	return Coord(2,2); break;
-		case Structure_GunTurret: 			return Coord(1,1); break;
-		case Structure_HeavyFactory: 		return Coord(3,2); break;
-		case Structure_HighTechFactory:		return Coord(3,2); break;
-		case Structure_IX:					return Coord(2,2); break;
-		case Structure_LightFactory:		return Coord(2,2); break;
-		case Structure_Palace:				return Coord(3,3); break;
-		case Structure_Radar:				return Coord(2,2); break;
-		case Structure_Refinery:			return Coord(3,2); break;
-		case Structure_RepairYard:			return Coord(3,2); break;
-		case Structure_RocketTurret:		return Coord(1,1); break;
-		case Structure_Silo:				return Coord(2,2); break;
-		case Structure_StarPort:			return Coord(3,3); break;
-		case Structure_Slab1:				return Coord(1,1); break;
-		case Structure_Slab4:				return Coord(2,2); break;
-		case Structure_Wall:				return Coord(1,1); break;
-		case Structure_WindTrap:			return Coord(2,2); break;
-		case Structure_WOR:					return Coord(2,2); break;
-		default:							return Coord(0,0); break;
-	}
+    switch(itemID) {
+        case Structure_Barracks:            return Coord(2,2); break;
+        case Structure_ConstructionYard:    return Coord(2,2); break;
+        case Structure_GunTurret:           return Coord(1,1); break;
+        case Structure_HeavyFactory:        return Coord(3,2); break;
+        case Structure_HighTechFactory:     return Coord(3,2); break;
+        case Structure_IX:                  return Coord(2,2); break;
+        case Structure_LightFactory:        return Coord(2,2); break;
+        case Structure_Palace:              return Coord(3,3); break;
+        case Structure_Radar:               return Coord(2,2); break;
+        case Structure_Refinery:            return Coord(3,2); break;
+        case Structure_RepairYard:          return Coord(3,2); break;
+        case Structure_RocketTurret:        return Coord(1,1); break;
+        case Structure_Silo:                return Coord(2,2); break;
+        case Structure_StarPort:            return Coord(3,3); break;
+        case Structure_Slab1:               return Coord(1,1); break;
+        case Structure_Slab4:               return Coord(2,2); break;
+        case Structure_Wall:                return Coord(1,1); break;
+        case Structure_WindTrap:            return Coord(2,2); break;
+        case Structure_WOR:                 return Coord(2,2); break;
+        default:                            return Coord(0,0); break;
+    }
 
-	return Coord(0,0);
+    return Coord(0,0);
 }
 
 /**
@@ -244,44 +244,44 @@ Uint32  getItemIDByName(std::string name) {
     else if((name == "r-turret") || (name == "rocket-turret"))          return Structure_RocketTurret;
     else if((name == "turret") || (name == "gun-turret"))               return Structure_GunTurret;
     else if((name == "heavy fctry") || (name == "heavy factory"))       return Structure_HeavyFactory;
-	else if((name == "hi-tech") || (name == "hightech factory"))        return Structure_HighTechFactory;
-	else if((name == "ix") || (name == "house ix"))                     return Structure_IX;
+    else if((name == "hi-tech") || (name == "hightech factory"))        return Structure_HighTechFactory;
+    else if((name == "ix") || (name == "house ix"))                     return Structure_IX;
     else if((name == "light fctry") || (name == "light factory"))       return Structure_LightFactory;
-	else if(name == "palace")                                           return Structure_Palace;
+    else if(name == "palace")                                           return Structure_Palace;
     else if((name == "outpost") || (name == "radar"))                   return Structure_Radar;
-	else if(name == "refinery")                                         return Structure_Refinery;
+    else if(name == "refinery")                                         return Structure_Refinery;
     else if((name == "repair") || (name == "repair yard"))              return Structure_RepairYard;
-	else if((name == "spice silo") || (name == "silo"))                 return Structure_Silo;
-	else if((name == "concrete") || (name == "slab1"))                  return Structure_Slab1;
-	else if(name == "slab4")                                            return Structure_Slab4;
+    else if((name == "spice silo") || (name == "silo"))                 return Structure_Silo;
+    else if((name == "concrete") || (name == "slab1"))                  return Structure_Slab1;
+    else if(name == "slab4")                                            return Structure_Slab4;
     else if((name == "star port") || (name == "starport"))              return Structure_StarPort;
     else if(name == "wall")                                             return Structure_Wall;
     else if(name == "windtrap")                                         return Structure_WindTrap;
     else if(name == "wor")                                              return Structure_WOR;
     else if((name == "carryall") || (name == "carry-all"))              return Unit_Carryall;
-	else if((name == "devastator") || (name == "devistator"))           return Unit_Devastator;
+    else if((name == "devastator") || (name == "devistator"))           return Unit_Devastator;
     else if(name == "deviator")                                         return Unit_Deviator;
     else if(name == "frigate")                                          return Unit_Frigate;
-	else if(name == "harvester")                                        return Unit_Harvester;
-	else if(name == "soldier")                                          return Unit_Soldier;
-	else if(name == "launcher")                                         return Unit_Launcher;
-	else if(name == "mcv")                                              return Unit_MCV;
-	else if((name == "thopters") || (name == "'thopters")
+    else if(name == "harvester")                                        return Unit_Harvester;
+    else if(name == "soldier")                                          return Unit_Soldier;
+    else if(name == "launcher")                                         return Unit_Launcher;
+    else if(name == "mcv")                                              return Unit_MCV;
+    else if((name == "thopters") || (name == "'thopters")
             || (name == "thopter") || (name == "'thopter")
             || (name == "ornithopter"))                                 return Unit_Ornithopter;
-	else if(name == "quad")                                             return Unit_Quad;
-	else if(name == "saboteur")                                         return Unit_Saboteur;
+    else if(name == "quad")                                             return Unit_Quad;
+    else if(name == "saboteur")                                         return Unit_Saboteur;
     else if(name == "sandworm")                                         return Unit_Sandworm;
     else if(name == "siege tank")                                       return Unit_SiegeTank;
-	else if((name == "sonic tank") || (name == "sonictank"))            return Unit_SonicTank;
-	else if(name == "tank")                                             return Unit_Tank;
+    else if((name == "sonic tank") || (name == "sonictank"))            return Unit_SonicTank;
+    else if(name == "tank")                                             return Unit_Tank;
     else if(name == "trike")                                            return Unit_Trike;
     else if((name == "raider trike") || (name == "raider"))             return Unit_RaiderTrike;
-	else if(name == "trooper")                                          return Unit_Trooper;
-	else if(name == "special")                                          return Unit_Special;
-	else if(name == "infantry")                                         return Unit_Infantry;
-	else if(name == "troopers")                                         return Unit_Troopers;
-	else                                                                return ItemID_Invalid;
+    else if(name == "trooper")                                          return Unit_Trooper;
+    else if(name == "special")                                          return Unit_Special;
+    else if(name == "infantry")                                         return Unit_Infantry;
+    else if(name == "troopers")                                         return Unit_Troopers;
+    else                                                                return ItemID_Invalid;
 }
 
 
@@ -291,50 +291,50 @@ Uint32  getItemIDByName(std::string name) {
     \return the name of the item (e.g. "Sandworm").
 */
 std::string getItemNameByID(Uint32 itemID) {
-	switch(itemID) {
-		case Structure_Barracks:            return "Barracks";		    break;
-		case Structure_ConstructionYard:    return "Const Yard";	    break;
-		case Structure_GunTurret:			return "Turret";		    break;
-		case Structure_HeavyFactory:		return "Heavy Fctry";		break;
-		case Structure_HighTechFactory:		return "Hi-Tech";	        break;
-		case Structure_IX:			        return "IX";		        break;
-		case Structure_LightFactory:		return "Light Fctry";		break;
-		case Structure_Palace:			    return "Palace";		    break;
-		case Structure_Radar:			    return "Outpost";		    break;
-		case Structure_Refinery:			return "Refinery";	       	break;
-		case Structure_RepairYard:			return "Repair";		    break;
-		case Structure_RocketTurret:		return "R-Turret";		    break;
-		case Structure_Silo:			    return "Spice Silo";		break;
-		case Structure_Slab1:			    return "Concrete";         break;
-		case Structure_Slab4:			    return "Slab4";		    break;
-		case Structure_StarPort:			return "Starport";	    	break;
-		case Structure_Wall:			    return "Wall";	        	break;
-		case Structure_WindTrap:		   	return "Windtrap";	    	break;
-		case Structure_WOR:			        return "WOR";		        break;
+    switch(itemID) {
+        case Structure_Barracks:            return "Barracks";          break;
+        case Structure_ConstructionYard:    return "Const Yard";        break;
+        case Structure_GunTurret:           return "Turret";            break;
+        case Structure_HeavyFactory:        return "Heavy Fctry";       break;
+        case Structure_HighTechFactory:     return "Hi-Tech";           break;
+        case Structure_IX:                  return "IX";                break;
+        case Structure_LightFactory:        return "Light Fctry";       break;
+        case Structure_Palace:              return "Palace";            break;
+        case Structure_Radar:               return "Outpost";           break;
+        case Structure_Refinery:            return "Refinery";          break;
+        case Structure_RepairYard:          return "Repair";            break;
+        case Structure_RocketTurret:        return "R-Turret";          break;
+        case Structure_Silo:                return "Spice Silo";        break;
+        case Structure_Slab1:               return "Concrete";         break;
+        case Structure_Slab4:               return "Slab4";         break;
+        case Structure_StarPort:            return "Starport";          break;
+        case Structure_Wall:                return "Wall";              break;
+        case Structure_WindTrap:            return "Windtrap";          break;
+        case Structure_WOR:                 return "WOR";               break;
 
-		case Unit_Carryall:			        return "Carryall";		    break;
-		case Unit_Devastator:		       	return "Devastator";		break;
-		case Unit_Deviator:			        return "Deviator";	    	break;
-		case Unit_Frigate:			        return "Frigate";          break;
-		case Unit_Harvester:		    	return "Harvester";	    break;
-		case Unit_Launcher:			        return "Launcher";	    	break;
-		case Unit_MCV:			            return "MCV";		        break;
-		case Unit_Ornithopter:			    return "'Thopter";		    break;
-		case Unit_Quad:		            	return "Quad";		        break;
-		case Unit_RaiderTrike:			    return "Raider Trike";		break;
-		case Unit_SiegeTank:		    	return "Siege Tank";	    break;
-		case Unit_SonicTank:		    	return "Sonic Tank";	    break;
-		case Unit_Tank:			            return "Tank";		        break;
-		case Unit_Trike:		        	return "Trike";		    break;
-		case Unit_Saboteur:			        return "Saboteur";	    	break;
-		case Unit_Sandworm:                 return "Sandworm";		    break;
-		case Unit_Soldier:			        return "Soldier";	        break;
-		case Unit_Trooper:			        return "Trooper";		    break;
-		case Unit_Special:			        return "Special";		    break;
-		case Unit_Infantry:			        return "Infantry";		    break;
-		case Unit_Troopers:			        return "Troopers";		    break;
+        case Unit_Carryall:                 return "Carryall";          break;
+        case Unit_Devastator:               return "Devastator";        break;
+        case Unit_Deviator:                 return "Deviator";          break;
+        case Unit_Frigate:                  return "Frigate";          break;
+        case Unit_Harvester:                return "Harvester";     break;
+        case Unit_Launcher:                 return "Launcher";          break;
+        case Unit_MCV:                      return "MCV";               break;
+        case Unit_Ornithopter:              return "'Thopter";          break;
+        case Unit_Quad:                     return "Quad";              break;
+        case Unit_RaiderTrike:              return "Raider Trike";      break;
+        case Unit_SiegeTank:                return "Siege Tank";        break;
+        case Unit_SonicTank:                return "Sonic Tank";        break;
+        case Unit_Tank:                     return "Tank";              break;
+        case Unit_Trike:                    return "Trike";         break;
+        case Unit_Saboteur:                 return "Saboteur";          break;
+        case Unit_Sandworm:                 return "Sandworm";          break;
+        case Unit_Soldier:                  return "Soldier";           break;
+        case Unit_Trooper:                  return "Trooper";           break;
+        case Unit_Special:                  return "Special";           break;
+        case Unit_Infantry:                 return "Infantry";          break;
+        case Unit_Troopers:                 return "Troopers";          break;
 
-		default:
+        default:
             throw std::invalid_argument("getItemNameByID(): Invalid item ID!");
         break;
     }
@@ -347,50 +347,50 @@ std::string getItemNameByID(Uint32 itemID) {
     \return the string corresponding.
 */
 std::string resolveItemName(int itemID) {
-	switch(itemID) {
-		case Structure_Barracks:            return _("@DUNE.ENG|253#Barracks");            break;
-		case Structure_ConstructionYard:    return _("@DUNE.ENG|249#Construction Yard");   break;
-		case Structure_GunTurret:           return _("@DUNE.ENG|263#Gun Turret");          break;
-		case Structure_HeavyFactory:        return _("@DUNE.ENG|241#Heacy Factory");       break;
-		case Structure_HighTechFactory:     return _("@DUNE.ENG|243#Hightech Factory");    break;
-		case Structure_IX:                  return _("@DUNE.ENG|245#House IX");            break;
-		case Structure_LightFactory:        return _("@DUNE.ENG|239#Light Factory");       break;
-		case Structure_Palace:              return _("@DUNE.ENG|237#Palace");              break;
-		case Structure_Radar:               return _("@DUNE.ENG|269#Radar");               break;
-		case Structure_Refinery:            return _("@DUNE.ENG|256#Refinery");            break;
-		case Structure_RepairYard:          return _("@DUNE.ENG|259#Repair Yard");         break;
-		case Structure_RocketTurret:        return _("@DUNE.ENG|265#Rocket Turret");       break;
-		case Structure_Silo:                return _("@DUNE.ENG|267#Silo");                break;
-		case Structure_Slab1:               return _("@DUNE.ENG|233#Slab");                break;
-		case Structure_Slab4:               return _("@DUNE.ENG|235#Slab (2x2)");          break;
-		case Structure_StarPort:            return _("@DUNE.ENG|255#Starport");            break;
-		case Structure_Wall:                return _("@DUNE.ENG|261#Wall");                break;
-		case Structure_WindTrap:            return _("@DUNE.ENG|251#Windtrap");            break;
-		case Structure_WOR:                 return _("@DUNE.ENG|247#WOR");                 break;
+    switch(itemID) {
+        case Structure_Barracks:            return _("@DUNE.ENG|253#Barracks");            break;
+        case Structure_ConstructionYard:    return _("@DUNE.ENG|249#Construction Yard");   break;
+        case Structure_GunTurret:           return _("@DUNE.ENG|263#Gun Turret");          break;
+        case Structure_HeavyFactory:        return _("@DUNE.ENG|241#Heacy Factory");       break;
+        case Structure_HighTechFactory:     return _("@DUNE.ENG|243#Hightech Factory");    break;
+        case Structure_IX:                  return _("@DUNE.ENG|245#House IX");            break;
+        case Structure_LightFactory:        return _("@DUNE.ENG|239#Light Factory");       break;
+        case Structure_Palace:              return _("@DUNE.ENG|237#Palace");              break;
+        case Structure_Radar:               return _("@DUNE.ENG|269#Radar");               break;
+        case Structure_Refinery:            return _("@DUNE.ENG|256#Refinery");            break;
+        case Structure_RepairYard:          return _("@DUNE.ENG|259#Repair Yard");         break;
+        case Structure_RocketTurret:        return _("@DUNE.ENG|265#Rocket Turret");       break;
+        case Structure_Silo:                return _("@DUNE.ENG|267#Silo");                break;
+        case Structure_Slab1:               return _("@DUNE.ENG|233#Slab");                break;
+        case Structure_Slab4:               return _("@DUNE.ENG|235#Slab (2x2)");          break;
+        case Structure_StarPort:            return _("@DUNE.ENG|255#Starport");            break;
+        case Structure_Wall:                return _("@DUNE.ENG|261#Wall");                break;
+        case Structure_WindTrap:            return _("@DUNE.ENG|251#Windtrap");            break;
+        case Structure_WOR:                 return _("@DUNE.ENG|247#WOR");                 break;
 
-		case Unit_Carryall:                 return _("@DUNE.ENG|195#Carryall");            break;
-		case Unit_Devastator:               return _("@DUNE.ENG|217#Devastator");          break;
-		case Unit_Deviator:                 return _("@DUNE.ENG|211#Deviator");            break;
-		case Unit_Frigate:                  return _("Frigate");                           break;
-		case Unit_Harvester:                return _("@DUNE.ENG|227#Harvester");           break;
-		case Unit_Launcher:                 return _("@DUNE.ENG|209#Launcher");            break;
-		case Unit_MCV:                      return _("@DUNE.ENG|229#MCV");                 break;
-		case Unit_Ornithopter:              return _("@DUNE.ENG|197#Ornithopter");         break;
-		case Unit_Quad:                     return _("@DUNE.ENG|225#Quad");                break;
-		case Unit_RaiderTrike:              return _("@DUNE.ENG|223#Raider Trike");        break;
-		case Unit_SiegeTank:                return _("@DUNE.ENG|215#Siege Tank");          break;
-		case Unit_SonicTank:                return _("@DUNE.ENG|219#Sonic Tank");          break;
-		case Unit_Tank:                     return _("@DUNE.ENG|213#Tank");                break;
-		case Unit_Trike:                    return _("@DUNE.ENG|221#Trike");               break;
-		case Unit_Saboteur:                 return _("@DUNE.ENG|207#Saboteur");            break;
-		case Unit_Sandworm:                 return _("@DUNE.ENG|231#Sandworm");            break;
-		case Unit_Soldier:                  return _("@DUNE.ENG|203#Soldier");             break;
-		case Unit_Trooper:                  return _("@DUNE.ENG|205#Trooper");             break;
-		case Unit_Special:                  return _("Sonic/Devast./Devia.");              break;
-		case Unit_Infantry:                 return _("@DUNE.ENG|199#Infantry");            break;
-		case Unit_Troopers:                 return _("@DUNE.ENG|201#Troopers");            break;
+        case Unit_Carryall:                 return _("@DUNE.ENG|195#Carryall");            break;
+        case Unit_Devastator:               return _("@DUNE.ENG|217#Devastator");          break;
+        case Unit_Deviator:                 return _("@DUNE.ENG|211#Deviator");            break;
+        case Unit_Frigate:                  return _("Frigate");                           break;
+        case Unit_Harvester:                return _("@DUNE.ENG|227#Harvester");           break;
+        case Unit_Launcher:                 return _("@DUNE.ENG|209#Launcher");            break;
+        case Unit_MCV:                      return _("@DUNE.ENG|229#MCV");                 break;
+        case Unit_Ornithopter:              return _("@DUNE.ENG|197#Ornithopter");         break;
+        case Unit_Quad:                     return _("@DUNE.ENG|225#Quad");                break;
+        case Unit_RaiderTrike:              return _("@DUNE.ENG|223#Raider Trike");        break;
+        case Unit_SiegeTank:                return _("@DUNE.ENG|215#Siege Tank");          break;
+        case Unit_SonicTank:                return _("@DUNE.ENG|219#Sonic Tank");          break;
+        case Unit_Tank:                     return _("@DUNE.ENG|213#Tank");                break;
+        case Unit_Trike:                    return _("@DUNE.ENG|221#Trike");               break;
+        case Unit_Saboteur:                 return _("@DUNE.ENG|207#Saboteur");            break;
+        case Unit_Sandworm:                 return _("@DUNE.ENG|231#Sandworm");            break;
+        case Unit_Soldier:                  return _("@DUNE.ENG|203#Soldier");             break;
+        case Unit_Trooper:                  return _("@DUNE.ENG|205#Trooper");             break;
+        case Unit_Special:                  return _("Sonic/Devast./Devia.");              break;
+        case Unit_Infantry:                 return _("@DUNE.ENG|199#Infantry");            break;
+        case Unit_Troopers:                 return _("@DUNE.ENG|201#Troopers");            break;
 
-		default:
+        default:
             throw std::invalid_argument("resolveItemName(): Invalid item ID!");
         break;
     }
@@ -410,8 +410,8 @@ HOUSETYPE getHouseByName(std::string name) {
     else if(name == "atreides")     return HOUSE_ATREIDES;
     else if(name == "ordos")        return HOUSE_ORDOS;
     else if(name == "fremen")       return HOUSE_FREMEN;
-	else if(name == "sardaukar")    return HOUSE_SARDAUKAR;
-	else if(name == "mercenary")    return HOUSE_MERCENARY;
+    else if(name == "sardaukar")    return HOUSE_SARDAUKAR;
+    else if(name == "mercenary")    return HOUSE_MERCENARY;
     else                            return HOUSE_INVALID;
 }
 
@@ -443,7 +443,7 @@ ATTACKMODE getAttackModeByName(std::string name) {
     if(name == "guard")                             return GUARD;
     else if(name == "area guard")                   return AREAGUARD;
     else if(name == "ambush")                       return AMBUSH;
-	else if((name == "hunt") || (name == "attack")) return HUNT;
+    else if((name == "hunt") || (name == "attack")) return HUNT;
     else if(name == "harvest")                      return HARVEST;
     else if(name == "sabotage")                     return SABOTAGE;
     else if(name == "stop")                         return STOP;
@@ -625,21 +625,21 @@ FixPoint getDeviateWeakness(HOUSETYPE house) {
     //return 1;
 
     switch(house) {
-	    case HOUSE_HARKONNEN:   return FixPt(0,78);
+        case HOUSE_HARKONNEN:   return FixPt(0,78);
         case HOUSE_ATREIDES:    return FixPt(0,30);
-	    case HOUSE_ORDOS:       return FixPt(0,50);
-	    case HOUSE_FREMEN:      return FixPt(0,08);
-	    case HOUSE_SARDAUKAR:   return FixPt(0,04);
-	    case HOUSE_MERCENARY:   return FixPt(0,50);
-	    default:                return FixPt(0,00);
+        case HOUSE_ORDOS:       return FixPt(0,50);
+        case HOUSE_FREMEN:      return FixPt(0,08);
+        case HOUSE_SARDAUKAR:   return FixPt(0,04);
+        case HOUSE_MERCENARY:   return FixPt(0,50);
+        default:                return FixPt(0,00);
     }
 }
 
 
 
 /**
-	Starts a game replay
-	\param	filename	the filename of the replay file
+    Starts a game replay
+    \param  filename    the filename of the replay file
 */
 void startReplay(std::string filename) {
     printf("Initing Replay:\n");
@@ -659,51 +659,51 @@ void startReplay(std::string filename) {
 
 
 /**
-	Starts a new game. If this game is quit it might start another game. This other game is also started from
-	this function. This is done until there is no more game to be started.
-	\param init	contains all the information to start the game
+    Starts a new game. If this game is quit it might start another game. This other game is also started from
+    this function. This is done until there is no more game to be started.
+    \param init contains all the information to start the game
 */
 void startSinglePlayerGame(const GameInitSettings& init)
 {
     GameInitSettings currentGameInitInfo = init;
 
-	while(1) {
+    while(1) {
 
         printf("Initing Game:\n");
-		currentGame = new Game();
-		currentGame->initGame(currentGameInitInfo);
+        currentGame = new Game();
+        currentGame->initGame(currentGameInitInfo);
 
-		printf("Initialization finished!\n");
-		fflush(stdout);
+        printf("Initialization finished!\n");
+        fflush(stdout);
 
-		// get init settings from game as it might have changed (through loading the game)
-		currentGameInitInfo = currentGame->getGameInitSettings();
+        // get init settings from game as it might have changed (through loading the game)
+        currentGameInitInfo = currentGame->getGameInitSettings();
 
-		currentGame->runMainLoop();
+        currentGame->runMainLoop();
 
-		bool bGetNext = true;
-		while(bGetNext) {
-			switch(currentGame->whatNext()) {
-				case GAME_DEBRIEFING_WIN: {
-					fprintf(stdout,"Debriefing...");
-					fflush(stdout);
-					BriefingMenu* pBriefing = new BriefingMenu(currentGameInitInfo.getHouseID(), currentGameInitInfo.getMission(), DEBRIEFING_WIN);
-					pBriefing->showMenu();
-					delete pBriefing;
-					fprintf(stdout,"\t\t\tfinished\n");
-					fflush(stdout);
+        bool bGetNext = true;
+        while(bGetNext) {
+            switch(currentGame->whatNext()) {
+                case GAME_DEBRIEFING_WIN: {
+                    fprintf(stdout,"Debriefing...");
+                    fflush(stdout);
+                    BriefingMenu* pBriefing = new BriefingMenu(currentGameInitInfo.getHouseID(), currentGameInitInfo.getMission(), DEBRIEFING_WIN);
+                    pBriefing->showMenu();
+                    delete pBriefing;
+                    fprintf(stdout,"\t\t\tfinished\n");
+                    fflush(stdout);
 
-					fprintf(stdout,"Game statistics...");
-					fflush(stdout);
+                    fprintf(stdout,"Game statistics...");
+                    fflush(stdout);
                     CampaignStatsMenu* pCampaignStats = new CampaignStatsMenu(missionNumberToLevelNumber(currentGameInitInfo.getMission()));
-					pCampaignStats->showMenu();
-					delete pCampaignStats;
-					fprintf(stdout,"\t\tfinished\n");
-					fflush(stdout);
+                    pCampaignStats->showMenu();
+                    delete pCampaignStats;
+                    fprintf(stdout,"\t\tfinished\n");
+                    fflush(stdout);
 
-					int houseID = currentGameInitInfo.getHouseID();
+                    int houseID = currentGameInitInfo.getHouseID();
 
-					if(currentGameInitInfo.getGameType() == GAMETYPE_CAMPAIGN) {
+                    if(currentGameInitInfo.getGameType() == GAMETYPE_CAMPAIGN) {
                         int level = missionNumberToLevelNumber(currentGameInitInfo.getMission());
 
                         if(level == 4 && (houseID == HOUSE_HARKONNEN || houseID == HOUSE_ATREIDES || houseID == HOUSE_ORDOS)) {
@@ -725,56 +725,56 @@ void startSinglePlayerGame(const GameInitSettings& init)
                             delete pFinale;
                             fprintf(stdout, "\t\tfinished\n"); fflush(stdout);
                         }
-					}
-				} break;
+                    }
+                } break;
 
-				case GAME_DEBRIEFING_LOST: {
-					fprintf(stdout,"Debriefing...");
-					fflush(stdout);
-					BriefingMenu* pBriefing = new BriefingMenu(currentGameInitInfo.getHouseID(), currentGameInitInfo.getMission(), DEBRIEFING_LOST);
-					pBriefing->showMenu();
-					delete pBriefing;
-					fprintf(stdout,"\t\t\tfinished\n");
-					fflush(stdout);
-				} break;
+                case GAME_DEBRIEFING_LOST: {
+                    fprintf(stdout,"Debriefing...");
+                    fflush(stdout);
+                    BriefingMenu* pBriefing = new BriefingMenu(currentGameInitInfo.getHouseID(), currentGameInitInfo.getMission(), DEBRIEFING_LOST);
+                    pBriefing->showMenu();
+                    delete pBriefing;
+                    fprintf(stdout,"\t\t\tfinished\n");
+                    fflush(stdout);
+                } break;
 
-				case GAME_CUSTOM_GAME_STATS: {
-					fprintf(stdout,"Game statistics...");
-					fflush(stdout);
+                case GAME_CUSTOM_GAME_STATS: {
+                    fprintf(stdout,"Game statistics...");
+                    fflush(stdout);
                     CustomGameStatsMenu* pCustomGameStats = new CustomGameStatsMenu();
-					pCustomGameStats->showMenu();
-					delete pCustomGameStats;
-					fprintf(stdout,"\t\tfinished\n");
-					fflush(stdout);
-				} break;
+                    pCustomGameStats->showMenu();
+                    delete pCustomGameStats;
+                    fprintf(stdout,"\t\tfinished\n");
+                    fflush(stdout);
+                } break;
 
-				case GAME_LOAD:
-				case GAME_NEXTMISSION: {
-					currentGameInitInfo = currentGame->getNextGameInitSettings();
-					delete currentGame;
-					bGetNext = false;
-				} break;
+                case GAME_LOAD:
+                case GAME_NEXTMISSION: {
+                    currentGameInitInfo = currentGame->getNextGameInitSettings();
+                    delete currentGame;
+                    bGetNext = false;
+                } break;
 
-				case GAME_RETURN_TO_MENU:
-				default: {
-					delete currentGame;
-					currentGame = nullptr;
+                case GAME_RETURN_TO_MENU:
+                default: {
+                    delete currentGame;
+                    currentGame = nullptr;
 
                     // Change music to menu music
                     musicPlayer->changeMusic(MUSIC_MENU);
 
-					return;
-				} break;
-			}
-		}
+                    return;
+                } break;
+            }
+        }
 
 
-	}
+    }
 }
 
 /**
-	Starts a new multiplayer game.
-	\param init	contains all the information to start the game
+    Starts a new multiplayer game.
+    \param init contains all the information to start the game
 */
 void startMultiPlayerGame(const GameInitSettings& init)
 {

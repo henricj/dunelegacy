@@ -27,7 +27,7 @@
 
 /// A class for loading all the PAK-Files.
 /**
-	This class manages all the PAK-Files and provides access to the contained files through SDL_RWops.
+    This class manages all the PAK-Files and provides access to the contained files through SDL_RWops.
 */
 class FileManager {
 public:
@@ -35,20 +35,20 @@ public:
         Constructor.
         \param saveMode if true, every loading error is ignored
     */
-	FileManager(bool saveMode = false);
-	~FileManager();
+    FileManager(bool saveMode = false);
+    ~FileManager();
 
     static std::vector<std::string> getSearchPath();
-	static std::vector<std::string> getNeededFiles();
-	static std::vector<std::string> getMissingFiles();
+    static std::vector<std::string> getNeededFiles();
+    static std::vector<std::string> getMissingFiles();
 
-	SDL_RWops* openFile(std::string filename);
+    SDL_RWops* openFile(std::string filename);
 
-	bool exists(std::string filename) const;
+    bool exists(std::string filename) const;
 private:
     std::string md5FromFilename(std::string filename);
 
-	std::vector<Pakfile*> pakFiles;
+    std::vector<Pakfile*> pakFiles;
 };
 
 #endif // FILEMANAGER_H

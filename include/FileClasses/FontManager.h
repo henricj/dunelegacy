@@ -25,31 +25,31 @@
 #include <string>
 
 typedef enum {
-	FONT_STD10,
-	FONT_STD12,
-	FONT_STD24,
-	NUM_FONTS
+    FONT_STD10,
+    FONT_STD12,
+    FONT_STD24,
+    NUM_FONTS
 } Fonts_enum;
 
 /// A class for managing fonts.
 /**
-	This class manages all fonts used in Dune Legacy and provides methods for rendering texts with a specific font.
+    This class manages all fonts used in Dune Legacy and provides methods for rendering texts with a specific font.
 */
 class FontManager
 {
 public:
-	FontManager();
-	~FontManager();
+    FontManager();
+    ~FontManager();
 
-	void drawTextOnSurface(SDL_Surface* pSurface, std::string text, Uint32 color, unsigned int fontNum);
-	int	getTextWidth(std::string text, unsigned int fontNum);
-	int getTextHeight(unsigned int fontNum);
-	SDL_Surface* createSurfaceWithText(std::string text, Uint32 color, unsigned int fontNum);
-	SDL_Texture* createTextureWithText(std::string text, Uint32 color, unsigned int fontNum);
-	SDL_Surface* createSurfaceWithMultilineText(std::string text, Uint32 color, unsigned int fontNum, bool bCentered = false);
-	SDL_Texture* createTextureWithMultilineText(std::string text, Uint32 color, unsigned int fontNum, bool bCentered = false);
+    void drawTextOnSurface(SDL_Surface* pSurface, std::string text, Uint32 color, unsigned int fontNum);
+    int getTextWidth(std::string text, unsigned int fontNum);
+    int getTextHeight(unsigned int fontNum);
+    SDL_Surface* createSurfaceWithText(std::string text, Uint32 color, unsigned int fontNum);
+    SDL_Texture* createTextureWithText(std::string text, Uint32 color, unsigned int fontNum);
+    SDL_Surface* createSurfaceWithMultilineText(std::string text, Uint32 color, unsigned int fontNum, bool bCentered = false);
+    SDL_Texture* createTextureWithMultilineText(std::string text, Uint32 color, unsigned int fontNum, bool bCentered = false);
 private:
-	std::shared_ptr<Font> fonts[NUM_FONTS];
+    std::shared_ptr<Font> fonts[NUM_FONTS];
 
 };
 

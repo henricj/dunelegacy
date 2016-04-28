@@ -26,18 +26,18 @@
 class AboutMenu : public MenuBase
 {
 public:
-	AboutMenu();
-	virtual ~AboutMenu();
+    AboutMenu();
+    virtual ~AboutMenu();
 
-	virtual bool doInput(SDL_Event &event);
+    virtual bool doInput(SDL_Event &event);
 
 private:
-	StaticContainer	windowWidget;
-	Label 			text;
+    StaticContainer windowWidget;
+    Label           text;
 
-	PictureLabel	planetPicture;
-	PictureLabel	duneLegacy;
-	PictureLabel	buttonBorder;
+    PictureLabel    planetPicture;
+    PictureLabel    duneLegacy;
+    PictureLabel    buttonBorder;
 };
 
 #endif //ABOUTMENU_H

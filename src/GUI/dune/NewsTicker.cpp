@@ -26,13 +26,13 @@
 #define SLOWDOWN timer/55
 
 NewsTicker::NewsTicker() : Widget() {
-	enableResizing(false,false);
+    enableResizing(false,false);
 
- 	timer = -MESSAGETIME/2;
-	pBackground = pGFXManager->getUIGraphic(UI_MessageBox);
-	pCurrentMessageTexture = nullptr;
+    timer = -MESSAGETIME/2;
+    pBackground = pGFXManager->getUIGraphic(UI_MessageBox);
+    pCurrentMessageTexture = nullptr;
 
-	resize(getTextureSize(pBackground));
+    resize(getTextureSize(pBackground));
 }
 
 NewsTicker::~NewsTicker() {
@@ -44,74 +44,74 @@ NewsTicker::~NewsTicker() {
 
 void NewsTicker::addMessage(const std::string& msg)
 {
-	bool found = false;
+    bool found = false;
 
-	/*if message is already there, do nothing*/
-	std::queue<std::string> msgcpy(messages);
-	while(!msgcpy.empty()) {
-		if(msgcpy.front() == msg) {
-			found = true;
-		}
-	    msgcpy.pop();
-	}
+    /*if message is already there, do nothing*/
+    std::queue<std::string> msgcpy(messages);
+    while(!msgcpy.empty()) {
+        if(msgcpy.front() == msg) {
+            found = true;
+        }
+        msgcpy.pop();
+    }
 
-	if(!found && messages.size() < 3) {
+    if(!found && messages.size() < 3) {
         messages.push(msg);
     }
 }
 
 void NewsTicker::addUrgentMessage(const std::string& msg)
 {
-	while(!messages.empty()) {
-		messages.pop();
-	}
+    while(!messages.empty()) {
+        messages.pop();
+    }
 
-	messages.push(msg);
+    messages.push(msg);
 }
 
 void NewsTicker::draw(Point position) {
-	if(isVisible() == false) {
-		return;
-	}
-
-	//draw background
-	if(pBackground == nullptr) {
+    if(isVisible() == false) {
         return;
-	}
+    }
 
-	SDL_Rect dest = calcDrawingRect(pBackground, position.x, position.y);
-	SDL_RenderCopy(renderer, pBackground, nullptr, &dest);
+    //draw background
+    if(pBackground == nullptr) {
+        return;
+    }
 
-	// draw message
-	if(!messages.empty()) {
-		if(timer++ == (MESSAGETIME/3)) {
-			timer = -MESSAGETIME/2;
-			// delete first message
+    SDL_Rect dest = calcDrawingRect(pBackground, position.x, position.y);
+    SDL_RenderCopy(renderer, pBackground, nullptr, &dest);
+
+    // draw message
+    if(!messages.empty()) {
+        if(timer++ == (MESSAGETIME/3)) {
+            timer = -MESSAGETIME/2;
+            // delete first message
             messages.pop();
 
-			// if no more messages leave
-			if(messages.empty()) {
-				timer = -MESSAGETIME/2;
-				return;
-			};
-		};
+            // if no more messages leave
+            if(messages.empty()) {
+                timer = -MESSAGETIME/2;
+                return;
+            };
+        };
 
-		//draw text
-		SDL_Rect textLocation = { position.x + 10, position.y + 5, 0, 0 };
-		if(timer>0) {
-			textLocation.y -= SLOWDOWN;
-		}
+        //draw text
+        SDL_Rect textLocation = { position.x + 10, position.y + 5, 0, 0 };
+        if(timer>0) {
+            textLocation.y -= SLOWDOWN;
+        }
 
-		if(currentMessage != messages.front()) {
+        if(currentMessage != messages.front()) {
             if(pCurrentMessageTexture != nullptr) {
                 SDL_DestroyTexture(pCurrentMessageTexture);
                 pCurrentMessageTexture = nullptr;
             }
             currentMessage = messages.front();
             pCurrentMessageTexture = pFontManager->createTextureWithText(currentMessage, COLOR_BLACK, FONT_STD10);
-		}
+        }
 
-		if(pCurrentMessageTexture != nullptr) {
+        if(pCurrentMessageTexture != nullptr) {
 
             SDL_Rect cut = { 0, 0, 0, 0 };
             if(timer>0) {
@@ -122,5 +122,5 @@ void NewsTicker::draw(Point position) {
             textLocation.h = cut.h = getHeight(pCurrentMessageTexture) - cut.y;
             SDL_RenderCopy(renderer, pCurrentMessageTexture, &cut, &textLocation);
         }
-	};
+    };
 }

@@ -32,51 +32,51 @@
 
 class RefineryAndSiloInterface : public DefaultStructureInterface {
 public:
-	static RefineryAndSiloInterface* create(int objectID) {
-		RefineryAndSiloInterface* tmp = new RefineryAndSiloInterface(objectID);
-		tmp->pAllocated = true;
-		return tmp;
-	}
+    static RefineryAndSiloInterface* create(int objectID) {
+        RefineryAndSiloInterface* tmp = new RefineryAndSiloInterface(objectID);
+        tmp->pAllocated = true;
+        return tmp;
+    }
 
 protected:
-	RefineryAndSiloInterface(int objectID) : DefaultStructureInterface(objectID) {
-	    Uint32 color = SDL2RGB(palette[houseToPaletteIndex[pLocalHouse->getHouseID()]]);
+    RefineryAndSiloInterface(int objectID) : DefaultStructureInterface(objectID) {
+        Uint32 color = SDL2RGB(palette[houseToPaletteIndex[pLocalHouse->getHouseID()]]);
 
-		mainHBox.addWidget(&textVBox);
+        mainHBox.addWidget(&textVBox);
 
         capacityLabel.setTextFont(FONT_STD10);
         capacityLabel.setTextColor(color+3);
-		textVBox.addWidget(&capacityLabel, 0.005);
-		storedCreditsLabel.setTextFont(FONT_STD10);
+        textVBox.addWidget(&capacityLabel, 0.005);
+        storedCreditsLabel.setTextFont(FONT_STD10);
         storedCreditsLabel.setTextColor(color+3);
-		textVBox.addWidget(&storedCreditsLabel, 0.005);
-		textVBox.addWidget(Spacer::create(), 0.99);
-	}
+        textVBox.addWidget(&storedCreditsLabel, 0.005);
+        textVBox.addWidget(Spacer::create(), 0.99);
+    }
 
-	/**
-		This method updates the object interface.
-		If the object doesn't exists anymore then update returns false.
-		\return true = everything ok, false = the object container should be removed
-	*/
-	virtual bool update() {
-		ObjectBase* pObject = currentGame->getObjectManager().getObject(objectID);
-		if(pObject == nullptr) {
-			return false;
-		}
+    /**
+        This method updates the object interface.
+        If the object doesn't exists anymore then update returns false.
+        \return true = everything ok, false = the object container should be removed
+    */
+    virtual bool update() {
+        ObjectBase* pObject = currentGame->getObjectManager().getObject(objectID);
+        if(pObject == nullptr) {
+            return false;
+        }
 
-		House* pOwner = pObject->getOwner();
+        House* pOwner = pObject->getOwner();
 
         capacityLabel.setText(" " + _("Capacity") + ": " + stringify(pOwner->getCapacity()));
         storedCreditsLabel.setText(" " + _("Stored") + ": " + stringify(lround(pOwner->getStoredCredits())));
 
-		return DefaultStructureInterface::update();
-	}
+        return DefaultStructureInterface::update();
+    }
 
 private:
     VBox    textVBox;
 
-	Label   capacityLabel;
-	Label   storedCreditsLabel;
+    Label   capacityLabel;
+    Label   storedCreditsLabel;
 };
 
 #endif // REFINERYANDSILOINTERFACE_H

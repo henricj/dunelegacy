@@ -32,7 +32,7 @@
 #include <units/Frigate.h>
 
 // Starport is counting in 30s from 10 to 0
-#define STARPORT_ARRIVETIME			(MILLI2CYCLES(30*1000))
+#define STARPORT_ARRIVETIME         (MILLI2CYCLES(30*1000))
 
 #define STARPORT_NO_ARRIVAL_AWAITED -1
 
@@ -58,45 +58,45 @@ StarPort::StarPort(InputStream& stream) : BuilderBase(stream) {
     }
 }
 void StarPort::init() {
-	itemID = Structure_StarPort;
-	owner->incrementStructures(itemID);
+    itemID = Structure_StarPort;
+    owner->incrementStructures(itemID);
 
-	structureSize.x = 3;
-	structureSize.y = 3;
+    structureSize.x = 3;
+    structureSize.y = 3;
 
-	graphicID = ObjPic_Starport;
-	graphic = pGFXManager->getObjPic(graphicID,getOwner()->getHouseID());
-	numImagesX = 10;
-	numImagesY = 1;
-	firstAnimFrame = 2;
-	lastAnimFrame = 3;
+    graphicID = ObjPic_Starport;
+    graphic = pGFXManager->getObjPic(graphicID,getOwner()->getHouseID());
+    numImagesX = 10;
+    numImagesY = 1;
+    firstAnimFrame = 2;
+    lastAnimFrame = 3;
 }
 
 StarPort::~StarPort() {
 }
 
 void StarPort::save(OutputStream& stream) const {
-	BuilderBase::save(stream);
-	stream.writeSint32(arrivalTimer);
-	stream.writeBool(deploying);
+    BuilderBase::save(stream);
+    stream.writeSint32(arrivalTimer);
+    stream.writeBool(deploying);
 }
 
 void StarPort::doBuildRandom() {
-	int Item2Produce = ItemID_Invalid;
+    int Item2Produce = ItemID_Invalid;
 
-	do {
-		int randNum = currentGame->randomGen.rand(0, getBuildListSize()-1);
-		int i = 0;
-		std::list<BuildItem>::iterator iter;
-		for(iter = buildList.begin(); iter != buildList.end(); ++iter,i++) {
-			if(i == randNum) {
-				Item2Produce = iter->itemID;
-				break;
-			}
-		}
-	} while((Item2Produce == Unit_Harvester) || (Item2Produce == Unit_MCV) || (Item2Produce == Unit_Carryall));
+    do {
+        int randNum = currentGame->randomGen.rand(0, getBuildListSize()-1);
+        int i = 0;
+        std::list<BuildItem>::iterator iter;
+        for(iter = buildList.begin(); iter != buildList.end(); ++iter,i++) {
+            if(i == randNum) {
+                Item2Produce = iter->itemID;
+                break;
+            }
+        }
+    } while((Item2Produce == Unit_Harvester) || (Item2Produce == Unit_MCV) || (Item2Produce == Unit_Carryall));
 
-	doProduceItem(Item2Produce);
+    doProduceItem(Item2Produce);
 }
 
 void StarPort::handleProduceItemClick(Uint32 itemID, bool multipleMode) {
@@ -110,95 +110,95 @@ void StarPort::handleProduceItemClick(Uint32 itemID, bool multipleMode) {
     }
 
     std::list<BuildItem>::iterator iter;
-	for(iter = buildList.begin(); iter != buildList.end(); ++iter) {
-		if(iter->itemID == itemID) {
-		    if((owner->getCredits() < (int) iter->price)) {
-		        soundPlayer->playSound(Sound_InvalidAction);
+    for(iter = buildList.begin(); iter != buildList.end(); ++iter) {
+        if(iter->itemID == itemID) {
+            if((owner->getCredits() < (int) iter->price)) {
+                soundPlayer->playSound(Sound_InvalidAction);
                 currentGame->addToNewsTicker(_("Not enough money"));
                 return;
-		    }
-		}
-	}
+            }
+        }
+    }
 
-	BuilderBase::handleProduceItemClick(itemID, multipleMode);
+    BuilderBase::handleProduceItemClick(itemID, multipleMode);
 }
 
 void StarPort::handlePlaceOrderClick() {
-	currentGame->getCommandManager().addCommand(Command(pLocalPlayer->getPlayerID(), CMD_STARPORT_PLACEORDER, objectID));
+    currentGame->getCommandManager().addCommand(Command(pLocalPlayer->getPlayerID(), CMD_STARPORT_PLACEORDER, objectID));
 }
 
 void StarPort::handleCancelOrderClick() {
-	currentGame->getCommandManager().addCommand(Command(pLocalPlayer->getPlayerID(), CMD_STARPORT_CANCELORDER, objectID));
+    currentGame->getCommandManager().addCommand(Command(pLocalPlayer->getPlayerID(), CMD_STARPORT_CANCELORDER, objectID));
 }
 
 void StarPort::doProduceItem(Uint32 itemID, bool multipleMode) {
     Choam& choam = owner->getChoam();
 
-	std::list<BuildItem>::iterator iter;
-	for(iter = buildList.begin(); iter != buildList.end(); ++iter) {
-		if(iter->itemID == itemID) {
-			for(int i = 0; i < (multipleMode ? 5 : 1); i++) {
-			    int numAvailable = choam.getNumAvailable(itemID);
+    std::list<BuildItem>::iterator iter;
+    for(iter = buildList.begin(); iter != buildList.end(); ++iter) {
+        if(iter->itemID == itemID) {
+            for(int i = 0; i < (multipleMode ? 5 : 1); i++) {
+                int numAvailable = choam.getNumAvailable(itemID);
 
-			    if(numAvailable <= 0) {
+                if(numAvailable <= 0) {
                     break;
-			    }
+                }
 
-				if((owner->getCredits() >= (int) iter->price)) {
+                if((owner->getCredits() >= (int) iter->price)) {
                     iter->num++;
-					currentProductionQueue.push_back( ProductionQueueItem(itemID,iter->price) );
-					owner->takeCredits(iter->price);
+                    currentProductionQueue.push_back( ProductionQueueItem(itemID,iter->price) );
+                    owner->takeCredits(iter->price);
 
-				    if(choam.setNumAvailable(itemID, numAvailable - 1) == false) {
+                    if(choam.setNumAvailable(itemID, numAvailable - 1) == false) {
                         // sold out
                         break;
-					}
-				}
-			}
-			break;
-		}
-	}
+                    }
+                }
+            }
+            break;
+        }
+    }
 }
 
 void StarPort::doCancelItem(Uint32 itemID, bool multipleMode) {
     Choam& choam = owner->getChoam();
 
-	std::list<BuildItem>::iterator iter;
-	for(iter = buildList.begin(); iter != buildList.end(); ++iter) {
-		if(iter->itemID == itemID) {
-			for(int i = 0; i < (multipleMode ? 5 : 1); i++) {
-				if(iter->num > 0) {
-					iter->num--;
-					choam.setNumAvailable(iter->itemID, choam.getNumAvailable(iter->itemID) + 1);
+    std::list<BuildItem>::iterator iter;
+    for(iter = buildList.begin(); iter != buildList.end(); ++iter) {
+        if(iter->itemID == itemID) {
+            for(int i = 0; i < (multipleMode ? 5 : 1); i++) {
+                if(iter->num > 0) {
+                    iter->num--;
+                    choam.setNumAvailable(iter->itemID, choam.getNumAvailable(iter->itemID) + 1);
 
                     // find the most expensive item to cancel
                     std::list<ProductionQueueItem>::iterator iterMostExpensiveItem = currentProductionQueue.end();
-					std::list<ProductionQueueItem>::iterator iter2;
-					for(iter2 = currentProductionQueue.begin(); iter2 != currentProductionQueue.end(); ++iter2) {
-						if(iter2->itemID == itemID) {
+                    std::list<ProductionQueueItem>::iterator iter2;
+                    for(iter2 = currentProductionQueue.begin(); iter2 != currentProductionQueue.end(); ++iter2) {
+                        if(iter2->itemID == itemID) {
 
-						    // have we found a better item to cancel?
-						    if(iterMostExpensiveItem == currentProductionQueue.end() || iter2->price > iterMostExpensiveItem->price) {
+                            // have we found a better item to cancel?
+                            if(iterMostExpensiveItem == currentProductionQueue.end() || iter2->price > iterMostExpensiveItem->price) {
                                 iterMostExpensiveItem = iter2;
-						    }
-						}
-					}
+                            }
+                        }
+                    }
 
-					// Cancel the best found item if any was found
-					if(iterMostExpensiveItem != currentProductionQueue.end()) {
+                    // Cancel the best found item if any was found
+                    if(iterMostExpensiveItem != currentProductionQueue.end()) {
                         owner->returnCredits(iterMostExpensiveItem->price);
                         currentProductionQueue.erase(iterMostExpensiveItem);
-					}
-				}
-			}
-			break;
-		}
-	}
+                    }
+                }
+            }
+            break;
+        }
+    }
 }
 
 void StarPort::doPlaceOrder() {
 
-	if (currentProductionQueue.size() > 0) {
+    if (currentProductionQueue.size() > 0) {
 
         if(currentGame->getGameInitSettings().getGameOptions().instantBuild == true) {
             arrivalTimer = 1;
@@ -206,9 +206,9 @@ void StarPort::doPlaceOrder() {
             arrivalTimer = STARPORT_ARRIVETIME;
         }
 
-		firstAnimFrame = 2;
-		lastAnimFrame = 7;
-	}
+        firstAnimFrame = 2;
+        lastAnimFrame = 7;
+    }
 }
 
 void StarPort::doCancelOrder() {
@@ -217,13 +217,13 @@ void StarPort::doCancelOrder() {
             doCancelItem(currentProductionQueue.back().itemID, false);
         }
 
-		currentProducedItem = ItemID_Invalid;
-	}
+        currentProducedItem = ItemID_Invalid;
+    }
 }
 
 
 void StarPort::updateBuildList() {
-	std::list<BuildItem>::iterator iter = buildList.begin();
+    std::list<BuildItem>::iterator iter = buildList.begin();
 
     Choam& choam = owner->getChoam();
 
@@ -239,40 +239,40 @@ void StarPort::updateBuildList() {
 void StarPort::updateStructureSpecificStuff() {
     updateBuildList();
 
-	if (arrivalTimer > 0) {
-		if (--arrivalTimer == 0) {
+    if (arrivalTimer > 0) {
+        if (--arrivalTimer == 0) {
 
-			Frigate*		frigate;
-			Coord		pos;
+            Frigate*        frigate;
+            Coord       pos;
 
-			//make a frigate with all the cargo
-			frigate = (Frigate*)owner->createUnit(Unit_Frigate);
-			pos = currentGameMap->findClosestEdgePoint(getLocation() + Coord(1,1), Coord(1,1));
-			frigate->deploy(pos);
-			frigate->setTarget(this);
-			Coord closestPoint = getClosestPoint(frigate->getLocation());
-			frigate->setDestination(closestPoint);
+            //make a frigate with all the cargo
+            frigate = (Frigate*)owner->createUnit(Unit_Frigate);
+            pos = currentGameMap->findClosestEdgePoint(getLocation() + Coord(1,1), Coord(1,1));
+            frigate->deploy(pos);
+            frigate->setTarget(this);
+            Coord closestPoint = getClosestPoint(frigate->getLocation());
+            frigate->setDestination(closestPoint);
 
-			if (pos.x == 0)
-				frigate->setAngle(RIGHT);
-			else if (pos.x == currentGameMap->getSizeX()-1)
-				frigate->setAngle(LEFT);
-			else if (pos.y == 0)
-				frigate->setAngle(DOWN);
-			else if (pos.y == currentGameMap->getSizeY()-1)
-				frigate->setAngle(UP);
+            if (pos.x == 0)
+                frigate->setAngle(RIGHT);
+            else if (pos.x == currentGameMap->getSizeX()-1)
+                frigate->setAngle(LEFT);
+            else if (pos.y == 0)
+                frigate->setAngle(DOWN);
+            else if (pos.y == currentGameMap->getSizeY()-1)
+                frigate->setAngle(UP);
 
             deployTimer = MILLI2CYCLES(2000);
 
-			currentProducedItem = ItemID_Invalid;
+            currentProducedItem = ItemID_Invalid;
 
-			if(getOwner() == pLocalHouse) {
-				soundPlayer->playVoice(FrigateHasArrived,getOwner()->getHouseID());
-				currentGame->addToNewsTicker(_("@DUNE.ENG|80#Frigate has arrived"));
-			}
+            if(getOwner() == pLocalHouse) {
+                soundPlayer->playVoice(FrigateHasArrived,getOwner()->getHouseID());
+                currentGame->addToNewsTicker(_("@DUNE.ENG|80#Frigate has arrived"));
+            }
 
-		}
-	} else if(deploying == true) {
+        }
+    } else if(deploying == true) {
         deployTimer--;
         if(deployTimer == 0) {
 
@@ -339,7 +339,7 @@ void StarPort::updateStructureSpecificStuff() {
                 }
             }
         }
-	}
+    }
 
 
 

@@ -27,7 +27,7 @@
 WindTrap::WindTrap(House* newOwner) : StructureBase(newOwner) {
     WindTrap::init();
 
-	setHealth(getMaxHealth());
+    setHealth(getMaxHealth());
 }
 
 WindTrap::WindTrap(InputStream& stream) : StructureBase(stream) {
@@ -35,29 +35,29 @@ WindTrap::WindTrap(InputStream& stream) : StructureBase(stream) {
 }
 
 void WindTrap::init() {
-	itemID = Structure_WindTrap;
-	owner->incrementStructures(itemID);
+    itemID = Structure_WindTrap;
+    owner->incrementStructures(itemID);
 
-	structureSize.x = 2;
-	structureSize.y = 2;
+    structureSize.x = 2;
+    structureSize.y = 2;
 
-	graphicID = ObjPic_Windtrap;
-	graphic = pGFXManager->getObjPic(graphicID,getOwner()->getHouseID());
-	numImagesX = NUM_WINDTRAP_ANIMATIONS_PER_ROW;
-	numImagesY = (2+NUM_WINDTRAP_ANIMATIONS+NUM_WINDTRAP_ANIMATIONS_PER_ROW-1)/NUM_WINDTRAP_ANIMATIONS_PER_ROW;
-	firstAnimFrame = 2;
-	lastAnimFrame = 2+NUM_WINDTRAP_ANIMATIONS-1;
+    graphicID = ObjPic_Windtrap;
+    graphic = pGFXManager->getObjPic(graphicID,getOwner()->getHouseID());
+    numImagesX = NUM_WINDTRAP_ANIMATIONS_PER_ROW;
+    numImagesY = (2+NUM_WINDTRAP_ANIMATIONS+NUM_WINDTRAP_ANIMATIONS_PER_ROW-1)/NUM_WINDTRAP_ANIMATIONS_PER_ROW;
+    firstAnimFrame = 2;
+    lastAnimFrame = 2+NUM_WINDTRAP_ANIMATIONS-1;
 }
 
 WindTrap::~WindTrap() {
 }
 
 ObjectInterface* WindTrap::getInterfaceContainer() {
-	if((pLocalHouse == owner) || (debug == true)) {
-		return WindTrapInterface::create(objectID);
-	} else {
-		return DefaultObjectInterface::create(objectID);
-	}
+    if((pLocalHouse == owner) || (debug == true)) {
+        return WindTrapInterface::create(objectID);
+    } else {
+        return DefaultObjectInterface::create(objectID);
+    }
 }
 
 bool WindTrap::update() {

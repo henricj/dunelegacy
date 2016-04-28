@@ -23,16 +23,16 @@
 class Quad : public GroundUnit
 {
 public:
-	Quad(House* newOwner);
+    Quad(House* newOwner);
     Quad(InputStream& stream);
-	void init();
-	virtual ~Quad();
+    void init();
+    virtual ~Quad();
 
-	void playAttackSound();
+    void playAttackSound();
 
-	virtual void destroy();
+    virtual void destroy();
 
-	virtual bool hasBumpyMovementOnRock() const { return true; }
+    virtual bool hasBumpyMovementOnRock() const { return true; }
 };
 
 #endif //QUAD_H

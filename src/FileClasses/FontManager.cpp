@@ -28,42 +28,42 @@
 #include <list>
 
 FontManager::FontManager() {
-	fonts[FONT_STD10] = std::shared_ptr<Font>(new PictureFont(LoadPNG_RW(pFileManager->openFile("Font10.png"),true), true));
-	fonts[FONT_STD12] = std::shared_ptr<Font>(new PictureFont(LoadPNG_RW(pFileManager->openFile("Font12.png"),true), true));
-	fonts[FONT_STD24] = std::shared_ptr<Font>(new PictureFont(LoadPNG_RW(pFileManager->openFile("Font24.png"),true), true));
+    fonts[FONT_STD10] = std::shared_ptr<Font>(new PictureFont(LoadPNG_RW(pFileManager->openFile("Font10.png"),true), true));
+    fonts[FONT_STD12] = std::shared_ptr<Font>(new PictureFont(LoadPNG_RW(pFileManager->openFile("Font12.png"),true), true));
+    fonts[FONT_STD24] = std::shared_ptr<Font>(new PictureFont(LoadPNG_RW(pFileManager->openFile("Font24.png"),true), true));
 }
 
 FontManager::~FontManager() {
 }
 
 void FontManager::drawTextOnSurface(SDL_Surface* pSurface, std::string text, Uint32 color, unsigned int fontNum) {
-	if(fontNum >= NUM_FONTS) {
-		return;
-	}
+    if(fontNum >= NUM_FONTS) {
+        return;
+    }
 
-	fonts[fontNum]->drawTextOnSurface(pSurface,text,color);
+    fonts[fontNum]->drawTextOnSurface(pSurface,text,color);
 }
 
-int	FontManager::getTextWidth(std::string text, unsigned int fontNum) {
-	if(fontNum >= NUM_FONTS) {
-		return 0;
-	}
+int FontManager::getTextWidth(std::string text, unsigned int fontNum) {
+    if(fontNum >= NUM_FONTS) {
+        return 0;
+    }
 
-	return fonts[fontNum]->getTextWidth(text);
+    return fonts[fontNum]->getTextWidth(text);
 }
 
 int FontManager::getTextHeight(unsigned int fontNum) {
-	if(fontNum >= NUM_FONTS) {
-		return 0;
-	}
+    if(fontNum >= NUM_FONTS) {
+        return 0;
+    }
 
-	return fonts[fontNum]->getTextHeight();
+    return fonts[fontNum]->getTextHeight();
 }
 
 SDL_Surface* FontManager::createSurfaceWithText(std::string text, Uint32 color, unsigned int fontNum) {
-	if(fontNum >= NUM_FONTS) {
-		return nullptr;
-	}
+    if(fontNum >= NUM_FONTS) {
+        return nullptr;
+    }
 
     SDL_Surface* pic;
 
@@ -89,22 +89,22 @@ SDL_Texture* FontManager::createTextureWithText(std::string text, Uint32 color, 
 }
 
 SDL_Surface* FontManager::createSurfaceWithMultilineText(std::string text, Uint32 color, unsigned int fontNum, bool bCentered) {
-	if(fontNum >= NUM_FONTS) {
-		return 0;
-	}
+    if(fontNum >= NUM_FONTS) {
+        return 0;
+    }
 
     size_t startpos = 0;
-	size_t nextpos;
-	std::list<std::string> textLines;
-	do {
-		nextpos = text.find("\n",startpos);
-		if(nextpos == std::string::npos) {
-			textLines.push_back(text.substr(startpos,text.length()-startpos));
-		} else {
-			textLines.push_back(text.substr(startpos,nextpos-startpos));
-			startpos = nextpos+1;
-		}
-	} while(nextpos != std::string::npos);
+    size_t nextpos;
+    std::list<std::string> textLines;
+    do {
+        nextpos = text.find("\n",startpos);
+        if(nextpos == std::string::npos) {
+            textLines.push_back(text.substr(startpos,text.length()-startpos));
+        } else {
+            textLines.push_back(text.substr(startpos,nextpos-startpos));
+            startpos = nextpos+1;
+        }
+    } while(nextpos != std::string::npos);
 
     SDL_Surface* pic;
 

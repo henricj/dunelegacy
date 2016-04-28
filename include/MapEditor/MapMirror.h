@@ -31,8 +31,8 @@ typedef enum {
 class MapMirror {
 public:
     MapMirror(int mapsizeX, int mapsizeY);
-	
-	virtual ~MapMirror();
+    
+    virtual ~MapMirror();
 
     virtual int getSize() const = 0;
 

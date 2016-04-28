@@ -45,7 +45,7 @@ Bullet::Bullet(Uint32 shooterID, Coord* newRealLocation, Coord* newRealDestinati
         owner = pShooter->getOwner();
     }
 
-	this->bulletID = bulletID;
+    this->bulletID = bulletID;
 
     this->damage = damage;
 
@@ -53,22 +53,22 @@ Bullet::Bullet(Uint32 shooterID, Coord* newRealLocation, Coord* newRealDestinati
 
     destination = *newRealDestination;
 
-	if(bulletID == Bullet_Sonic) {
-		int diffX = destination.x - newRealLocation->x;
+    if(bulletID == Bullet_Sonic) {
+        int diffX = destination.x - newRealLocation->x;
         int diffY = destination.y - newRealLocation->y;
 
-		int weaponrange = currentGame->objectData.data[Unit_SonicTank][(owner == nullptr) ? HOUSE_ATREIDES : owner->getHouseID()].weaponrange;
+        int weaponrange = currentGame->objectData.data[Unit_SonicTank][(owner == nullptr) ? HOUSE_ATREIDES : owner->getHouseID()].weaponrange;
 
-		if((diffX == 0) && (diffY == 0)) {
-			diffY = weaponrange*TILESIZE;
-		}
+        if((diffX == 0) && (diffY == 0)) {
+            diffY = weaponrange*TILESIZE;
+        }
 
-		FixPoint square_root = FixPoint::sqrt(diffX*diffX + diffY*diffY);
-		FixPoint ratio = (weaponrange*TILESIZE)/square_root;
-		destination.x = newRealLocation->x + floor(diffX*ratio);
-		destination.y = newRealLocation->y + floor(diffY*ratio);
-	} else if(bulletID == Bullet_Rocket || bulletID == Bullet_DRocket) {
-	    FixPoint distance = distanceFrom(*newRealLocation, *newRealDestination);
+        FixPoint square_root = FixPoint::sqrt(diffX*diffX + diffY*diffY);
+        FixPoint ratio = (weaponrange*TILESIZE)/square_root;
+        destination.x = newRealLocation->x + floor(diffX*ratio);
+        destination.y = newRealLocation->y + floor(diffY*ratio);
+    } else if(bulletID == Bullet_Rocket || bulletID == Bullet_DRocket) {
+        FixPoint distance = distanceFrom(*newRealLocation, *newRealDestination);
 
 
         FixPoint randAngle = 2 * FixPt_PI * currentGame->randomGen.randFixPoint();
@@ -77,65 +77,65 @@ Bullet::Bullet(Uint32 shooterID, Coord* newRealLocation, Coord* newRealDestinati
         destination.x += lround(FixPoint::cos(randAngle) * radius);
         destination.y -= lround(FixPoint::sin(randAngle) * radius);
 
-	}
+    }
 
-	realX = newRealLocation->x;
-	realY = newRealLocation->y;
-	source.x = newRealLocation->x;
-	source.y = newRealLocation->y;
-	location.x = newRealLocation->x/TILESIZE;
-	location.y = newRealLocation->y/TILESIZE;
+    realX = newRealLocation->x;
+    realY = newRealLocation->y;
+    source.x = newRealLocation->x;
+    source.y = newRealLocation->y;
+    location.x = newRealLocation->x/TILESIZE;
+    location.y = newRealLocation->y/TILESIZE;
 
     FixPoint angleRad =  destinationAngleRad(*newRealLocation, *newRealDestination);
-	angle = RadToDeg256(angleRad);
-	drawnAngle = lround(numFrames*angle/256) % numFrames;
+    angle = RadToDeg256(angleRad);
+    drawnAngle = lround(numFrames*angle/256) % numFrames;
 
     xSpeed = speed * FixPoint::cos(angleRad);
-	ySpeed = speed * -FixPoint::sin(angleRad);
+    ySpeed = speed * -FixPoint::sin(angleRad);
 }
 
 Bullet::Bullet(InputStream& stream)
 {
-	bulletID = stream.readUint32();
+    bulletID = stream.readUint32();
 
-	airAttack = stream.readBool();
-	damage = stream.readSint32();
+    airAttack = stream.readBool();
+    damage = stream.readSint32();
 
-	shooterID = stream.readUint32();
-	Uint32 x = stream.readUint32();
-	if(x < NUM_HOUSES) {
-		owner = currentGame->getHouse(x);
-	} else {
-		owner = currentGame->getHouse(0);
-	}
+    shooterID = stream.readUint32();
+    Uint32 x = stream.readUint32();
+    if(x < NUM_HOUSES) {
+        owner = currentGame->getHouse(x);
+    } else {
+        owner = currentGame->getHouse(0);
+    }
 
     source.x = stream.readSint32();
-	source.y = stream.readSint32();
-	destination.x = stream.readSint32();
-	destination.y = stream.readSint32();
+    source.y = stream.readSint32();
+    destination.x = stream.readSint32();
+    destination.y = stream.readSint32();
     location.x = stream.readSint32();
-	location.y = stream.readSint32();
-	realX = stream.readFixPoint();
-	realY = stream.readFixPoint();
+    location.y = stream.readSint32();
+    realX = stream.readFixPoint();
+    realY = stream.readFixPoint();
 
     xSpeed = stream.readFixPoint();
-	ySpeed = stream.readFixPoint();
+    ySpeed = stream.readFixPoint();
 
-	drawnAngle = stream.readSint8();
+    drawnAngle = stream.readSint8();
     angle = stream.readFixPoint();
 
-	Bullet::init();
+    Bullet::init();
 
-	detonationTimer = stream.readSint8();
+    detonationTimer = stream.readSint8();
 }
 
 void Bullet::init()
 {
     explodesAtGroundObjects = false;
 
-	int houseID = (owner == nullptr) ? HOUSE_HARKONNEN : owner->getHouseID();
+    int houseID = (owner == nullptr) ? HOUSE_HARKONNEN : owner->getHouseID();
 
-	switch(bulletID) {
+    switch(bulletID) {
         case Bullet_DRocket: {
             damageRadius = TILESIZE/2;
             speed = 20;
@@ -220,7 +220,7 @@ void Bullet::init()
             fprintf(stderr,"Bullet::init(): Unknown Bullet type %d.\n",bulletID);
             graphic = nullptr;
         } break;
-	}
+    }
 }
 
 
@@ -230,27 +230,27 @@ Bullet::~Bullet()
 
 void Bullet::save(OutputStream& stream) const
 {
-	stream.writeUint32(bulletID);
+    stream.writeUint32(bulletID);
 
-	stream.writeBool(airAttack);
+    stream.writeBool(airAttack);
     stream.writeSint32(damage);
 
     stream.writeUint32(shooterID);
     stream.writeUint32(owner->getHouseID());
 
-	stream.writeSint32(source.x);
-	stream.writeSint32(source.y);
-	stream.writeSint32(destination.x);
-	stream.writeSint32(destination.y);
+    stream.writeSint32(source.x);
+    stream.writeSint32(source.y);
+    stream.writeSint32(destination.x);
+    stream.writeSint32(destination.y);
     stream.writeSint32(location.x);
-	stream.writeSint32(location.y);
-	stream.writeFixPoint(realX);
-	stream.writeFixPoint(realY);
+    stream.writeSint32(location.y);
+    stream.writeFixPoint(realX);
+    stream.writeFixPoint(realY);
 
     stream.writeFixPoint(xSpeed);
-	stream.writeFixPoint(ySpeed);
+    stream.writeFixPoint(ySpeed);
 
-	stream.writeSint8(drawnAngle);
+    stream.writeSint8(drawnAngle);
     stream.writeFixPoint(angle);
 
     stream.writeSint8(detonationTimer);
@@ -262,9 +262,9 @@ void Bullet::blitToScreen()
     int imageW = getWidth(graphic[currentZoomlevel])/numFrames;
     int imageH = getHeight(graphic[currentZoomlevel]);
 
-	if(screenborder->isInsideScreen( Coord(lround(realX), lround(realY)), Coord(imageW, imageH)) == false) {
+    if(screenborder->isInsideScreen( Coord(lround(realX), lround(realY)), Coord(imageW, imageH)) == false) {
         return;
-	}
+    }
 
     SDL_Rect dest = calcSpriteDrawingRect(graphic[currentZoomlevel], screenborder->world2screenX(realX), screenborder->world2screenY(realY), numFrames, 1, HAlign::Center, VAlign::Center);
 
@@ -308,7 +308,7 @@ void Bullet::blitToScreen()
 
 void Bullet::update()
 {
-	if(bulletID == Bullet_Rocket || bulletID == Bullet_DRocket) {
+    if(bulletID == Bullet_Rocket || bulletID == Bullet_DRocket) {
 
         FixPoint angleToDestinationRad = destinationAngleRad(Coord(lround(realX), lround(realY)), destination);
         FixPoint angleToDestination = RadToDeg256(angleToDestinationRad);
@@ -343,26 +343,26 @@ void Bullet::update()
     }
 
 
-	FixPoint oldDistanceToDestination = distanceFrom(realX, realY, destination.x, destination.y);
+    FixPoint oldDistanceToDestination = distanceFrom(realX, realY, destination.x, destination.y);
 
-	realX += xSpeed;  //keep the bullet moving by its current speeds
-	realY += ySpeed;
-	location.x = floor(realX/TILESIZE);
-	location.y = floor(realY/TILESIZE);
+    realX += xSpeed;  //keep the bullet moving by its current speeds
+    realY += ySpeed;
+    location.x = floor(realX/TILESIZE);
+    location.y = floor(realY/TILESIZE);
 
-	if((location.x < -5) || (location.x >= currentGameMap->getSizeX() + 5) || (location.y < -5) || (location.y >= currentGameMap->getSizeY() + 5)) {
+    if((location.x < -5) || (location.x >= currentGameMap->getSizeX() + 5) || (location.y < -5) || (location.y >= currentGameMap->getSizeY() + 5)) {
         // it's off the map => delete it
         bulletList.remove(this);
         delete this;
         return;
-	} else {
+    } else {
         FixPoint newDistanceToDestination = distanceFrom(realX, realY, destination.x, destination.y);
 
         if(detonationTimer > 0) {
             detonationTimer--;
         }
 
-	    if(bulletID == Bullet_Sonic) {
+        if(bulletID == Bullet_Sonic) {
 
             if(detonationTimer == 0) {
                 destroy();
@@ -371,13 +371,13 @@ void Bullet::update()
 
             FixPoint weaponDamage = currentGame->objectData.data[Unit_SonicTank][(owner == nullptr) ? HOUSE_ATREIDES : owner->getHouseID()].weapondamage;
 
-	        FixPoint startDamage = (weaponDamage / 4 + 1) / FixPt(4,5);
-	        FixPoint endDamage = ((weaponDamage-9) / 4 + 1) / FixPt(4,5);
+            FixPoint startDamage = (weaponDamage / 4 + 1) / FixPt(4,5);
+            FixPoint endDamage = ((weaponDamage-9) / 4 + 1) / FixPt(4,5);
 
-		    FixPoint damageDecrease = - (startDamage-endDamage)/(45 * 2 * speed);
-		    FixPoint dist = distanceFrom(source.x, source.y, realX, realY);
+            FixPoint damageDecrease = - (startDamage-endDamage)/(45 * 2 * speed);
+            FixPoint dist = distanceFrom(source.x, source.y, realX, realY);
 
-		    FixPoint currentDamage = dist*damageDecrease + startDamage;
+            FixPoint currentDamage = dist*damageDecrease + startDamage;
 
             Coord realPos = Coord(lround(realX), lround(realY));
             currentGameMap->damage(shooterID, owner, realPos, bulletID, currentDamage/2, damageRadius, false);
@@ -387,13 +387,13 @@ void Bullet::update()
 
             realPos = Coord(lround(realX), lround(realY));
             currentGameMap->damage(shooterID, owner, realPos, bulletID, currentDamage/2, damageRadius, false);
-		} else if( explodesAtGroundObjects
+        } else if( explodesAtGroundObjects
                     && currentGameMap->tileExists(location)
                     && currentGameMap->getTile(location)->hasAGroundObject()
                     && currentGameMap->getTile(location)->getGroundObject()->isAStructure()) {
-			destroy();
+            destroy();
             return;
-		} else if(oldDistanceToDestination < newDistanceToDestination || newDistanceToDestination < 4)	{
+        } else if(oldDistanceToDestination < newDistanceToDestination || newDistanceToDestination < 4)  {
 
             if(bulletID == Bullet_Rocket || bulletID == Bullet_DRocket) {
                 if(detonationTimer == 0) {
@@ -406,8 +406,8 @@ void Bullet::update()
                 destroy();
                 return;
             }
-		}
-	}
+        }
+    }
 }
 
 

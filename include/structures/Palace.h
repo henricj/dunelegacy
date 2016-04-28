@@ -23,66 +23,66 @@
 class Palace : public StructureBase
 {
 public:
-	Palace(House* newOwner);
+    Palace(House* newOwner);
     Palace(InputStream& stream);
-	void init();
-	virtual ~Palace();
+    void init();
+    virtual ~Palace();
 
-	virtual void save(OutputStream& stream) const;
+    virtual void save(OutputStream& stream) const;
 
-	virtual ObjectInterface* getInterfaceContainer();
+    virtual ObjectInterface* getInterfaceContainer();
 
-	void handleSpecialClick();
+    void handleSpecialClick();
 
-	void handleDeathhandClick(int xPos, int yPos);
+    void handleDeathhandClick(int xPos, int yPos);
 
-	/**
+    /**
         Activate the special palace weapon Fremen or Saboteur. For the Deathhand see doLaunchDeathhand.
-	*/
-	void doSpecialWeapon();
+    */
+    void doSpecialWeapon();
 
-	/**
+    /**
         Launch the deathhand missile an target position x,y.
         \param  x   x coordinate (in tile coordinates)
         \param  y   y coordinate (in tile coordinates)
-	*/
+    */
     void doLaunchDeathhand(int x, int y);
 
 
     /**
         Can this structure be captured by infantry units?
         \return true, if this structure can be captured, false otherwise
-	*/
-	virtual bool canBeCaptured() const { return false; };
+    */
+    virtual bool canBeCaptured() const { return false; };
 
-	int getPercentComplete() const {
+    int getPercentComplete() const {
         return specialWeaponTimer*100/getMaxSpecialWeaponTimer();
     }
 
-	inline bool isSpecialWeaponReady() const { return (specialWeaponTimer == 0); }
-	inline int getSpecialWeaponTimer() const { return specialWeaponTimer; }
-	inline int getMaxSpecialWeaponTimer() const {
-	    if(originalHouseID == HOUSE_HARKONNEN || originalHouseID == HOUSE_SARDAUKAR) {
-	        // 10 min
+    inline bool isSpecialWeaponReady() const { return (specialWeaponTimer == 0); }
+    inline int getSpecialWeaponTimer() const { return specialWeaponTimer; }
+    inline int getMaxSpecialWeaponTimer() const {
+        if(originalHouseID == HOUSE_HARKONNEN || originalHouseID == HOUSE_SARDAUKAR) {
+            // 10 min
             return MILLI2CYCLES(10*60*1000);
-	    } else {
-	        // 5 min
+        } else {
+            // 5 min
             return MILLI2CYCLES(5*60*1000);
-	    }
-	}
+        }
+    }
 
 protected:
-	bool callFremen();
-	bool spawnSaboteur();
+    bool callFremen();
+    bool spawnSaboteur();
 
     /**
         Used for updating things that are specific to that particular structure. Is called from
         StructureBase::update() before the check if this structure is still alive.
     */
-	virtual void updateStructureSpecificStuff();
+    virtual void updateStructureSpecificStuff();
 
 private:
-	Sint32  specialWeaponTimer;       ///< When is the special weapon ready?
+    Sint32  specialWeaponTimer;       ///< When is the special weapon ready?
 };
 
 #endif // PALACE_H

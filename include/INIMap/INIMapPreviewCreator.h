@@ -32,10 +32,10 @@
 
 class INIMapPreviewCreator : public INIMap {
 public:
-	INIMapPreviewCreator(std::shared_ptr<INIFile>& pINIFile);
-	~INIMapPreviewCreator();
+    INIMapPreviewCreator(std::shared_ptr<INIFile>& pINIFile);
+    ~INIMapPreviewCreator();
 
-	SDL_Surface* createMinimapImageOfMap(int borderWidth, Uint32 borderColor);
+    SDL_Surface* createMinimapImageOfMap(int borderWidth, Uint32 borderColor);
 };
 
 #endif //INIMAPPREVIEWCREATOR_H

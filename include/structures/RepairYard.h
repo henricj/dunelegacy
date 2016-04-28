@@ -26,36 +26,36 @@ class Carryall;
 class RepairYard : public StructureBase
 {
 public:
-	RepairYard(House* newOwner);
+    RepairYard(House* newOwner);
     RepairYard(InputStream& stream);
-	void init();
-	virtual ~RepairYard();
+    void init();
+    virtual ~RepairYard();
 
-	virtual void save(OutputStream& stream) const;
+    virtual void save(OutputStream& stream) const;
 
-	virtual ObjectInterface* getInterfaceContainer();
+    virtual ObjectInterface* getInterfaceContainer();
 
-	void deployRepairUnit(Carryall* pCarryall = nullptr);
+    void deployRepairUnit(Carryall* pCarryall = nullptr);
 
-	inline void book() { bookings++; }
-	inline void unBook() { bookings--; }
-	inline void assignUnit(ObjectPointer newUnit) { repairUnit = newUnit; repairingAUnit = true; }
-	inline bool isFree() const { return !repairingAUnit; }
-	inline int getNumBookings() const { return bookings; }	//number of harvesters goings there
-	inline const UnitBase* getRepairUnit() const { return repairUnit.getUnitPointer(); }
-	inline UnitBase* getRepairUnit() { return repairUnit.getUnitPointer(); }
+    inline void book() { bookings++; }
+    inline void unBook() { bookings--; }
+    inline void assignUnit(ObjectPointer newUnit) { repairUnit = newUnit; repairingAUnit = true; }
+    inline bool isFree() const { return !repairingAUnit; }
+    inline int getNumBookings() const { return bookings; }  //number of harvesters goings there
+    inline const UnitBase* getRepairUnit() const { return repairUnit.getUnitPointer(); }
+    inline UnitBase* getRepairUnit() { return repairUnit.getUnitPointer(); }
 
 protected:
     /**
         Used for updating things that are specific to that particular structure. Is called from
         StructureBase::update() before the check if this structure is still alive.
     */
-	virtual void updateStructureSpecificStuff();
+    virtual void updateStructureSpecificStuff();
 
 private:
-	bool            repairingAUnit; ///< Currently repairing?
-	ObjectPointer   repairUnit;     ///< The unit to repair
-	Uint32          bookings;       ///< Number of bookings for this repair yard
+    bool            repairingAUnit; ///< Currently repairing?
+    ObjectPointer   repairUnit;     ///< The unit to repair
+    Uint32          bookings;       ///< Number of bookings for this repair yard
 };
 
 #endif // REPAIRYARD_H

@@ -25,28 +25,28 @@
 class OFileStream : public OutputStream
 {
 public:
-	OFileStream();
-	~OFileStream();
+    OFileStream();
+    ~OFileStream();
 
-	bool open(const char* filename);
-	bool open(std::string filename);
-	void close();
+    bool open(const char* filename);
+    bool open(std::string filename);
+    void close();
 
-	virtual void flush();
+    virtual void flush();
 
-	// write operations
+    // write operations
 
-	void writeString(const std::string& str);
+    void writeString(const std::string& str);
 
-	void writeUint8(Uint8 x);
-	void writeUint16(Uint16 x);
-	void writeUint32(Uint32 x);
-	void writeUint64(Uint64 x);
-	void writeBool(bool x);
-	void writeFloat(float x);
+    void writeUint8(Uint8 x);
+    void writeUint16(Uint16 x);
+    void writeUint32(Uint32 x);
+    void writeUint64(Uint64 x);
+    void writeBool(bool x);
+    void writeFloat(float x);
 
 private:
-	FILE* fp;
+    FILE* fp;
 };
 
 #endif // OFILESTREAM_H

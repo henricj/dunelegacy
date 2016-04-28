@@ -50,13 +50,13 @@ InfantryBase::InfantryBase(InputStream& stream) : GroundUnit(stream) {
 
     InfantryBase::init();
 
-	tilePosition = stream.readSint8();
-	oldTilePosition = stream.readSint8();
+    tilePosition = stream.readSint8();
+    oldTilePosition = stream.readSint8();
 }
 
 void InfantryBase::init() {
-	infantry = true;
-	walkFrame = 0;
+    infantry = true;
+    walkFrame = 0;
 }
 
 InfantryBase::~InfantryBase() {
@@ -65,51 +65,51 @@ InfantryBase::~InfantryBase() {
 
 void InfantryBase::save(OutputStream& stream) const {
 
-	GroundUnit::save(stream);
+    GroundUnit::save(stream);
 
-	stream.writeSint8(tilePosition);
-	stream.writeSint8(oldTilePosition);
+    stream.writeSint8(tilePosition);
+    stream.writeSint8(oldTilePosition);
 }
 
 void InfantryBase::handleCaptureClick(int xPos, int yPos) {
-	if(respondable && ((getItemID() == Unit_Soldier) || (getItemID() == Unit_Trooper))) {
-		if (currentGameMap->tileExists(xPos, yPos)) {
-			if (currentGameMap->getTile(xPos,yPos)->hasAnObject()) {
-				// capture structure
-				ObjectBase* tempTarget = currentGameMap->getTile(xPos,yPos)->getObject();
+    if(respondable && ((getItemID() == Unit_Soldier) || (getItemID() == Unit_Trooper))) {
+        if (currentGameMap->tileExists(xPos, yPos)) {
+            if (currentGameMap->getTile(xPos,yPos)->hasAnObject()) {
+                // capture structure
+                ObjectBase* tempTarget = currentGameMap->getTile(xPos,yPos)->getObject();
 
-				currentGame->getCommandManager().addCommand(Command(pLocalPlayer->getPlayerID(), CMD_INFANTRY_CAPTURE,objectID,tempTarget->getObjectID()));
-			}
-		}
-	}
+                currentGame->getCommandManager().addCommand(Command(pLocalPlayer->getPlayerID(), CMD_INFANTRY_CAPTURE,objectID,tempTarget->getObjectID()));
+            }
+        }
+    }
 
 }
 
 void InfantryBase::doCaptureStructure(Uint32 targetStructureID) {
-	const StructureBase* pStructure = dynamic_cast<StructureBase*>(currentGame->getObjectManager().getObject(targetStructureID));
+    const StructureBase* pStructure = dynamic_cast<StructureBase*>(currentGame->getObjectManager().getObject(targetStructureID));
     doCaptureStructure(pStructure);
 }
 
 void InfantryBase::doCaptureStructure(const StructureBase* pStructure) {
 
-	if((pStructure == nullptr) || (pStructure->canBeCaptured() == false) || (pStructure->getOwner()->getTeam() == getOwner()->getTeam())) {
-	    // does not exist anymore, cannot be captured or is a friendly building
+    if((pStructure == nullptr) || (pStructure->canBeCaptured() == false) || (pStructure->getOwner()->getTeam() == getOwner()->getTeam())) {
+        // does not exist anymore, cannot be captured or is a friendly building
         return;
-	}
+    }
 
-	doAttackObject(pStructure, true);
-	doSetAttackMode(CAPTURE);
+    doAttackObject(pStructure, true);
+    doSetAttackMode(CAPTURE);
 }
 
 void InfantryBase::assignToMap(const Coord& pos) {
-	if(currentGameMap->tileExists(pos)) {
-		oldTilePosition = tilePosition;
-		tilePosition = currentGameMap->getTile(pos)->assignInfantry(getObjectID());
-	}
+    if(currentGameMap->tileExists(pos)) {
+        oldTilePosition = tilePosition;
+        tilePosition = currentGameMap->getTile(pos)->assignInfantry(getObjectID());
+    }
 }
 
 void InfantryBase::blitToScreen() {
-	SDL_Rect dest = calcSpriteDrawingRect(  graphic[currentZoomlevel],
+    SDL_Rect dest = calcSpriteDrawingRect(  graphic[currentZoomlevel],
                                             screenborder->world2screenX(realX),
                                             screenborder->world2screenY(realY),
                                             numImagesX, numImagesY,
@@ -133,59 +133,59 @@ void InfantryBase::blitToScreen() {
 }
 
 bool InfantryBase::canPass(int xPos, int yPos) const {
-	bool passable = false;
-	if(currentGameMap->tileExists(xPos, yPos)) {
-		Tile* pTile = currentGameMap->getTile(xPos, yPos);
-		if(!pTile->hasAGroundObject()) {
-			if(pTile->getType() != Terrain_Mountain) {
-				passable = true;
-			} else {
-				/* if this unit is infantry so can climb, and tile can take more infantry */
-				if(pTile->infantryNotFull()) {
-					passable = true;
+    bool passable = false;
+    if(currentGameMap->tileExists(xPos, yPos)) {
+        Tile* pTile = currentGameMap->getTile(xPos, yPos);
+        if(!pTile->hasAGroundObject()) {
+            if(pTile->getType() != Terrain_Mountain) {
+                passable = true;
+            } else {
+                /* if this unit is infantry so can climb, and tile can take more infantry */
+                if(pTile->infantryNotFull()) {
+                    passable = true;
                 }
-			}
-		} else {
-			ObjectBase *object = pTile->getGroundObject();
+            }
+        } else {
+            ObjectBase *object = pTile->getGroundObject();
 
-			if((object != nullptr) && (object->getObjectID() == target.getObjectID())
-				&& object->isAStructure()
-				&& (object->getOwner()->getTeam() != owner->getTeam())
-				&& object->isVisible(getOwner()->getTeam())) {
-				passable = true;
-			} else {
-				passable = (!pTile->hasANonInfantryGroundObject()
-							&& (pTile->infantryNotFull()
-							&& (pTile->getInfantryTeam() == getOwner()->getTeam())));
-			}
-		}
-	}
-	return passable;
+            if((object != nullptr) && (object->getObjectID() == target.getObjectID())
+                && object->isAStructure()
+                && (object->getOwner()->getTeam() != owner->getTeam())
+                && object->isVisible(getOwner()->getTeam())) {
+                passable = true;
+            } else {
+                passable = (!pTile->hasANonInfantryGroundObject()
+                            && (pTile->infantryNotFull()
+                            && (pTile->getInfantryTeam() == getOwner()->getTeam())));
+            }
+        }
+    }
+    return passable;
 }
 
 void InfantryBase::checkPos() {
-	if(moving && !justStoppedMoving) {
-		if(++walkFrame > 39) {
-			walkFrame = 0;
-		}
-	}
+    if(moving && !justStoppedMoving) {
+        if(++walkFrame > 39) {
+            walkFrame = 0;
+        }
+    }
 
-	if(justStoppedMoving) {
-		walkFrame = 0;
+    if(justStoppedMoving) {
+        walkFrame = 0;
 
-		if(currentGameMap->getTile(location)->isSpiceBloom()) {
-		    setHealth(0);
-			currentGameMap->getTile(location)->triggerSpiceBloom(getOwner());
-		} else if(currentGameMap->getTile(location)->isSpecialBloom()){
+        if(currentGameMap->getTile(location)->isSpiceBloom()) {
+            setHealth(0);
+            currentGameMap->getTile(location)->triggerSpiceBloom(getOwner());
+        } else if(currentGameMap->getTile(location)->isSpecialBloom()){
             currentGameMap->getTile(location)->triggerSpecialBloom(getOwner());
-		}
+        }
 
         //check to see if close enough to blow up target
         if(target.getObjPointer() != nullptr
             && target.getObjPointer()->isAStructure()
             && (getOwner()->getTeam() != target.getObjPointer()->getOwner()->getTeam()))
         {
-            Coord	closestPoint;
+            Coord   closestPoint;
 
             closestPoint = target.getObjPointer()->getClosestPoint(location);
 
@@ -312,8 +312,8 @@ void InfantryBase::checkPos() {
                 setHealth(0);
                 return;
             }
-        } else if(target.getObjPointer() != nullptr && target.getObjPointer()->isAStructure())	{
-            Coord	closestPoint;
+        } else if(target.getObjPointer() != nullptr && target.getObjPointer()->isAStructure())  {
+            Coord   closestPoint;
             closestPoint = target.getObjPointer()->getClosestPoint(location);
 
             if(blockDistance(location, closestPoint) <= FixPt(0,5)) {
@@ -323,7 +323,7 @@ void InfantryBase::checkPos() {
                 return;
             }
         }
-	}
+    }
 }
 
 void InfantryBase::destroy() {
@@ -356,37 +356,37 @@ void InfantryBase::destroy() {
         }
     }
 
-	GroundUnit::destroy();
+    GroundUnit::destroy();
 }
 
 void InfantryBase::move() {
-	if(!moving && !justStoppedMoving && currentGame->randomGen.rand(0,40) == 0) {
-		currentGameMap->viewMap(owner->getTeam(), location, getViewRange());
-	}
+    if(!moving && !justStoppedMoving && currentGame->randomGen.rand(0,40) == 0) {
+        currentGameMap->viewMap(owner->getTeam(), location, getViewRange());
+    }
 
-	if(moving && !justStoppedMoving) {
-		realX += xSpeed;
-		realY += ySpeed;
+    if(moving && !justStoppedMoving) {
+        realX += xSpeed;
+        realY += ySpeed;
 
 
         // check if unit is on the first half of the way
         FixPoint fromDistanceX;
         FixPoint fromDistanceY;
-		FixPoint toDistanceX;
-		FixPoint toDistanceY;
+        FixPoint toDistanceX;
+        FixPoint toDistanceY;
 
         const FixPoint epsilon = FixPt(3,75);
 
-		if(location != nextSpot) {
-		    FixPoint abstractDistanceX = FixPoint::abs(location.x*TILESIZE + TILESIZE/2 - (realX-bumpyOffsetX));
-		    FixPoint abstractDistanceY = FixPoint::abs(location.y*TILESIZE + TILESIZE/2 - (realY-bumpyOffsetY));
+        if(location != nextSpot) {
+            FixPoint abstractDistanceX = FixPoint::abs(location.x*TILESIZE + TILESIZE/2 - (realX-bumpyOffsetX));
+            FixPoint abstractDistanceY = FixPoint::abs(location.y*TILESIZE + TILESIZE/2 - (realY-bumpyOffsetY));
 
             fromDistanceX = FixPoint::abs(location.x*TILESIZE + TILESIZE/2 + tilePositionOffset[oldTilePosition].x - (realX-bumpyOffsetX));
-		    fromDistanceY = FixPoint::abs(location.y*TILESIZE + TILESIZE/2 + tilePositionOffset[oldTilePosition].y - (realY-bumpyOffsetY));
-		    toDistanceX = FixPoint::abs(nextSpot.x*TILESIZE + TILESIZE/2 + tilePositionOffset[tilePosition].x - (realX-bumpyOffsetX));
-		    toDistanceY = FixPoint::abs(nextSpot.y*TILESIZE + TILESIZE/2 + tilePositionOffset[tilePosition].y - (realY-bumpyOffsetY));
+            fromDistanceY = FixPoint::abs(location.y*TILESIZE + TILESIZE/2 + tilePositionOffset[oldTilePosition].y - (realY-bumpyOffsetY));
+            toDistanceX = FixPoint::abs(nextSpot.x*TILESIZE + TILESIZE/2 + tilePositionOffset[tilePosition].x - (realX-bumpyOffsetX));
+            toDistanceY = FixPoint::abs(nextSpot.y*TILESIZE + TILESIZE/2 + tilePositionOffset[tilePosition].y - (realY-bumpyOffsetY));
 
-		    // check if unit is half way out of old tile
+            // check if unit is half way out of old tile
             if((abstractDistanceX >= TILESIZE/2 + epsilon) || (abstractDistanceY >= TILESIZE/2 + epsilon)) {
                 // let something else go in
                 unassignFromMap(location);
@@ -394,15 +394,15 @@ void InfantryBase::move() {
                 location = nextSpot;
 
                 currentGameMap->viewMap(owner->getTeam(), location, getViewRange());
-		    }
+            }
 
-		} else {
+        } else {
             fromDistanceX = FixPoint::abs(oldLocation.x*TILESIZE + TILESIZE/2 + tilePositionOffset[oldTilePosition].x - (realX-bumpyOffsetX));
-		    fromDistanceY = FixPoint::abs(oldLocation.y*TILESIZE + TILESIZE/2 + tilePositionOffset[oldTilePosition].y - (realY-bumpyOffsetY));
-		    toDistanceX = FixPoint::abs(location.x*TILESIZE + TILESIZE/2 + tilePositionOffset[tilePosition].x - (realX-bumpyOffsetX));
-		    toDistanceY = FixPoint::abs(location.y*TILESIZE + TILESIZE/2 + tilePositionOffset[tilePosition].y - (realY-bumpyOffsetY));
+            fromDistanceY = FixPoint::abs(oldLocation.y*TILESIZE + TILESIZE/2 + tilePositionOffset[oldTilePosition].y - (realY-bumpyOffsetY));
+            toDistanceX = FixPoint::abs(location.x*TILESIZE + TILESIZE/2 + tilePositionOffset[tilePosition].x - (realX-bumpyOffsetX));
+            toDistanceY = FixPoint::abs(location.y*TILESIZE + TILESIZE/2 + tilePositionOffset[tilePosition].y - (realY-bumpyOffsetY));
 
-            Coord	wantedReal;
+            Coord   wantedReal;
             wantedReal.x = nextSpot.x*TILESIZE + TILESIZE/2 + tilePositionOffset[tilePosition].x;
             wantedReal.y = nextSpot.y*TILESIZE + TILESIZE/2 + tilePositionOffset[tilePosition].y;
 
@@ -422,44 +422,44 @@ void InfantryBase::move() {
 
                 oldLocation.invalidate();
             }
-		}
+        }
 
-		bumpyMovementOnRock(fromDistanceX, fromDistanceY, toDistanceX, toDistanceY);
+        bumpyMovementOnRock(fromDistanceX, fromDistanceY, toDistanceX, toDistanceY);
 
-	} else {
-		justStoppedMoving = false;
-	}
+    } else {
+        justStoppedMoving = false;
+    }
 
-	checkPos();
+    checkPos();
 }
 
 
 void InfantryBase::setLocation(int xPos, int yPos) {
-	if(currentGameMap->tileExists(xPos, yPos) || ((xPos == INVALID_POS) && (yPos == INVALID_POS))) {
-		oldTilePosition = tilePosition = INVALID_POS;
-		GroundUnit::setLocation(xPos, yPos);
+    if(currentGameMap->tileExists(xPos, yPos) || ((xPos == INVALID_POS) && (yPos == INVALID_POS))) {
+        oldTilePosition = tilePosition = INVALID_POS;
+        GroundUnit::setLocation(xPos, yPos);
 
-		if(tilePosition != INVALID_POS) {
+        if(tilePosition != INVALID_POS) {
             realX += tilePositionOffset[tilePosition].x;
             realY += tilePositionOffset[tilePosition].y;
-		}
-	}
+        }
+    }
 }
 
 void InfantryBase::setSpeeds() {
-	if(oldTilePosition == INVALID_POS) {
-		fprintf(stderr, "InfantryBase::setSpeeds(): Infantry tile position  == INVALID_POS.\n");
-	} else if(tilePosition == oldTilePosition) {
-	    // havent changed infantry position
-		GroundUnit::setSpeeds();
-	} else {
+    if(oldTilePosition == INVALID_POS) {
+        fprintf(stderr, "InfantryBase::setSpeeds(): Infantry tile position  == INVALID_POS.\n");
+    } else if(tilePosition == oldTilePosition) {
+        // havent changed infantry position
+        GroundUnit::setSpeeds();
+    } else {
 
-		int sx = tilePositionOffset[oldTilePosition].x;
-		int sy = tilePositionOffset[oldTilePosition].y;
+        int sx = tilePositionOffset[oldTilePosition].x;
+        int sy = tilePositionOffset[oldTilePosition].y;
 
-		int dx = 0;
-		int dy = 0;
-		switch(drawnAngle) {
+        int dx = 0;
+        int dy = 0;
+        switch(drawnAngle) {
             case RIGHT:     dx += TILESIZE;                 break;
             case RIGHTUP:   dx += TILESIZE; dy -= TILESIZE; break;
             case UP:                        dy -= TILESIZE; break;
@@ -468,31 +468,31 @@ void InfantryBase::setSpeeds() {
             case LEFTDOWN:  dx -= TILESIZE; dy += TILESIZE; break;
             case DOWN:                      dy += TILESIZE; break;
             case RIGHTDOWN: dx += TILESIZE; dy += TILESIZE; break;
-		}
+        }
 
-		if(tilePosition != INVALID_POS) {
-		    dx += tilePositionOffset[tilePosition].x;
-			dy += tilePositionOffset[tilePosition].y;
-		}
+        if(tilePosition != INVALID_POS) {
+            dx += tilePositionOffset[tilePosition].x;
+            dy += tilePositionOffset[tilePosition].y;
+        }
 
-		dx -= sx;
-		dy -= sy;
+        dx -= sx;
+        dy -= sy;
 
-		FixPoint scale = currentGame->objectData.data[itemID][originalHouseID].maxspeed/FixPoint::sqrt((dx*dx + dy*dy));
-		xSpeed = dx*scale;
-		ySpeed = dy*scale;
-	}
+        FixPoint scale = currentGame->objectData.data[itemID][originalHouseID].maxspeed/FixPoint::sqrt((dx*dx + dy*dy));
+        xSpeed = dx*scale;
+        ySpeed = dy*scale;
+    }
 }
 
 void InfantryBase::squash() {
-	destroy();
-	return;
+    destroy();
+    return;
 }
 
 void InfantryBase::playConfirmSound() {
-	soundPlayer->playSound((Sound_enum) getRandomOf(2,MovingOut,InfantryOut));
+    soundPlayer->playSound((Sound_enum) getRandomOf(2,MovingOut,InfantryOut));
 }
 
 void InfantryBase::playSelectSound() {
-	soundPlayer->playSound(YesSir);
+    soundPlayer->playSound(YesSir);
 }

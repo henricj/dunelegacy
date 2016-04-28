@@ -32,59 +32,59 @@
 #define MAPCHOICESTATE_BLENDPLANET  2
 #define MAPCHOICESTATE_SHOWMAPONLY  3
 #define MAPCHOICESTATE_BLENDMAP     4
-#define MAPCHOICESTATE_BLENDING		5
-#define MAPCHOICESTATE_ARROWS		6
-#define MAPCHOICESTATE_BLINKING		7
+#define MAPCHOICESTATE_BLENDING     5
+#define MAPCHOICESTATE_ARROWS       6
+#define MAPCHOICESTATE_BLINKING     7
 
 class MapChoice : public MenuBase
 {
 public:
-	MapChoice(int newHouse, unsigned int LastMission);
-	virtual ~MapChoice();
+    MapChoice(int newHouse, unsigned int LastMission);
+    virtual ~MapChoice();
 
-	virtual int showMenu();
+    virtual int showMenu();
 
-	void drawSpecificStuff();
-	bool doInput(SDL_Event &event);
-
-private:
-	void createMapSurfaceWithPieces();
-	void loadINI();
+    void drawSpecificStuff();
+    bool doInput(SDL_Event &event);
 
 private:
-	struct TGroup {
-		std::vector<int> newRegion[NUM_HOUSES];
+    void createMapSurfaceWithPieces();
+    void loadINI();
 
-		struct TAttackRegion {
-			int regionNum;
-			int arrowNum;
-			Coord arrowPosition;
-		} attackRegion[4];
+private:
+    struct TGroup {
+        std::vector<int> newRegion[NUM_HOUSES];
 
-		struct TText {
-			std::string message;
-			int region;		///< when this region is changed, this message will appear.
-		};
+        struct TAttackRegion {
+            int regionNum;
+            int arrowNum;
+            Coord arrowPosition;
+        } attackRegion[4];
 
-		std::vector<TText> text;
-	} group[9];
+        struct TText {
+            std::string message;
+            int region;     ///< when this region is changed, this message will appear.
+        };
 
-	int house;
-	unsigned int lastScenario;
-	SDL_Surface* mapSurface;
-	SDL_Texture* mapTexture;
-	Coord piecePosition[28];
-	BlendBlitter* curBlendBlitter;
-	unsigned int curHouse2Blit;
-	unsigned int curRegion2Blit;
-	bool bFastBlending;
-	int mapChoiceState;
-	int selectedRegion;
-	Uint32	selectionTime;
-	Uint32  stateSwitchTime;
-	MessageTicker  msgticker;
+        std::vector<TText> text;
+    } group[9];
 
-	SDL_Rect centerAreaRect;
+    int house;
+    unsigned int lastScenario;
+    SDL_Surface* mapSurface;
+    SDL_Texture* mapTexture;
+    Coord piecePosition[28];
+    BlendBlitter* curBlendBlitter;
+    unsigned int curHouse2Blit;
+    unsigned int curRegion2Blit;
+    bool bFastBlending;
+    int mapChoiceState;
+    int selectedRegion;
+    Uint32  selectionTime;
+    Uint32  stateSwitchTime;
+    MessageTicker  msgticker;
+
+    SDL_Rect centerAreaRect;
 };
 
 #endif //MAPCHOICE_H

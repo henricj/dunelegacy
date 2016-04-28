@@ -19,16 +19,16 @@
 #include <GUI/Container.h>
 
 void Widget::setActive() {
-	active = true;
-	if(parent != nullptr) {
-		parent->setActiveChildWidget(true,this);
-	}
+    active = true;
+    if(parent != nullptr) {
+        parent->setActiveChildWidget(true,this);
+    }
 }
 
 void Widget::setInactive() {
-	active = false;
-	if(parent != nullptr) {
-		parent->setActiveChildWidget(false,this);
-	}
+    active = false;
+    if(parent != nullptr) {
+        parent->setActiveChildWidget(false,this);
+    }
 }
 

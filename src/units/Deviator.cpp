@@ -44,16 +44,16 @@ void Deviator::init()
     itemID = Unit_Deviator;
     owner->incrementUnits(itemID);
 
-	graphicID = ObjPic_Tank_Base;
-	gunGraphicID = ObjPic_Launcher_Gun;
-	graphic = pGFXManager->getObjPic(graphicID,getOwner()->getHouseID());
-	turretGraphic = pGFXManager->getObjPic(gunGraphicID,getOwner()->getHouseID());
+    graphicID = ObjPic_Tank_Base;
+    gunGraphicID = ObjPic_Launcher_Gun;
+    graphic = pGFXManager->getObjPic(graphicID,getOwner()->getHouseID());
+    turretGraphic = pGFXManager->getObjPic(gunGraphicID,getOwner()->getHouseID());
 
-	numImagesX = NUM_ANGLES;
-	numImagesY = 1;
+    numImagesX = NUM_ANGLES;
+    numImagesY = 1;
 
-	numWeapons = 1;
-	bulletType = Bullet_DRocket;
+    numWeapons = 1;
+    bulletType = Bullet_DRocket;
 }
 
 Deviator::~Deviator()
@@ -110,14 +110,14 @@ void Deviator::destroy() {
 
 bool Deviator::canAttack(const ObjectBase* object) const
 {
-	if ((object != nullptr) &&	!object->isAStructure()
-		&& ((object->getOwner()->getTeam() != owner->getTeam()) || object->getItemID() == Unit_Sandworm)
-		&& object->isVisible(getOwner()->getTeam()))
-		return true;
-	else
-		return false;
+    if ((object != nullptr) &&  !object->isAStructure()
+        && ((object->getOwner()->getTeam() != owner->getTeam()) || object->getItemID() == Unit_Sandworm)
+        && object->isVisible(getOwner()->getTeam()))
+        return true;
+    else
+        return false;
 }
 
 void Deviator::playAttackSound() {
-	soundPlayer->playSoundAt(Sound_Rocket,location);
+    soundPlayer->playSoundAt(Sound_Rocket,location);
 }

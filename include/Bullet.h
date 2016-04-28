@@ -33,21 +33,21 @@ class House;
 class Bullet
 {
 public:
-	Bullet(Uint32 shooterID, Coord* newLocation, Coord* newDestination, Uint32 bulletID, int damage, bool air);
-	Bullet(InputStream& stream);
-	void init();
-	~Bullet();
+    Bullet(Uint32 shooterID, Coord* newLocation, Coord* newDestination, Uint32 bulletID, int damage, bool air);
+    Bullet(InputStream& stream);
+    void init();
+    ~Bullet();
 
-	void save(OutputStream& stream) const;
+    void save(OutputStream& stream) const;
 
-	void blitToScreen();
+    void blitToScreen();
 
-	void update();
-	void destroy();
+    void update();
+    void destroy();
 
-	inline int getBulletID() const { return bulletID; }
-	inline FixPoint getRealX() const { return realX; }
-	inline FixPoint getRealY() const { return realY; }
+    inline int getBulletID() const { return bulletID; }
+    inline FixPoint getRealX() const { return realX; }
+    inline FixPoint getRealY() const { return realY; }
 
 private:
     // constants for each bullet type
@@ -61,26 +61,26 @@ private:
 
     Sint32   damage;                     ///< the damage this bullet causes
 
-	Uint32   shooterID;                  ///< the ItemId of the shooter
-	House*	 owner;                      ///< the owner of this bullet
+    Uint32   shooterID;                  ///< the ItemId of the shooter
+    House*   owner;                      ///< the owner of this bullet
 
-	Coord    source;                     ///< the source location (in world coordinates) of this bullet
-	Coord	 destination;                ///< the destination (in world coordinates) of this bullet
-	Coord    location;                   ///< the current location of this bullet (in map coordinates)
-	FixPoint realX;                      ///< the x-coordinate of the current position (in world coordinates)
-	FixPoint realY;                      ///< the y-coordinate of the current position (in world coordinates)
+    Coord    source;                     ///< the source location (in world coordinates) of this bullet
+    Coord    destination;                ///< the destination (in world coordinates) of this bullet
+    Coord    location;                   ///< the current location of this bullet (in map coordinates)
+    FixPoint realX;                      ///< the x-coordinate of the current position (in world coordinates)
+    FixPoint realY;                      ///< the y-coordinate of the current position (in world coordinates)
 
-	FixPoint xSpeed;                     ///< Speed in x direction
-	FixPoint ySpeed;                     ///< Speed in x direction
+    FixPoint xSpeed;                     ///< Speed in x direction
+    FixPoint ySpeed;                     ///< Speed in x direction
 
-	FixPoint angle;                      ///< the angle of the bullet
-	Sint8    drawnAngle;                 ///< the drawn angle of the bullet
+    FixPoint angle;                      ///< the angle of the bullet
+    Sint8    drawnAngle;                 ///< the drawn angle of the bullet
 
-	bool	 airAttack;                  ///< Is this an air attack?
+    bool     airAttack;                  ///< Is this an air attack?
 
-	// drawing information
-	SDL_Texture** graphic;               ///< The graphic of the bullet
-	int           numFrames;             ///< Number of frames of the bullet
+    // drawing information
+    SDL_Texture** graphic;               ///< The graphic of the bullet
+    int           numFrames;             ///< Number of frames of the bullet
 };
 
 #endif // BULLET_H

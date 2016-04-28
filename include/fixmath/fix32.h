@@ -55,28 +55,28 @@ static inline int fix32_to_int(fix32_t a)
 #ifdef FIXMATH_NO_ROUNDING
     return (a >> 32);
 #else
-	if (a >= 0)
-		return (a + (fix32_one >> 1)) / fix32_one;
-	return (a - (fix32_one >> 1)) / fix32_one;
+    if (a >= 0)
+        return (a + (fix32_one >> 1)) / fix32_one;
+    return (a - (fix32_one >> 1)) / fix32_one;
 #endif
 }
 
 static inline fix32_t fix32_from_float(float a)
 {
-	float temp = a * fix32_one;
+    float temp = a * fix32_one;
 #ifndef FIXMATH_NO_ROUNDING
-	temp += (temp >= 0) ? 0.5f : -0.5f;
+    temp += (temp >= 0) ? 0.5f : -0.5f;
 #endif
-	return (fix32_t)temp;
+    return (fix32_t)temp;
 }
 
 static inline fix32_t fix32_from_dbl(double a)
 {
-	double temp = a * fix32_one;
+    double temp = a * fix32_one;
 #ifndef FIXMATH_NO_ROUNDING
-	temp += (temp >= 0) ? 0.5f : -0.5f;
+    temp += (temp >= 0) ? 0.5f : -0.5f;
 #endif
-	return (fix32_t)temp;
+    return (fix32_t)temp;
 }
 
 /* Macro for defining fix32_t constant values.
@@ -91,17 +91,17 @@ static inline fix32_t fix32_from_dbl(double a)
 #define F32(x) ((fix32_t)(((x) >= 0) ? ((x) * 4294967296.0 + 0.5) : ((x) * 4294967296.0 - 0.5)))
 
 static inline fix32_t fix32_abs(fix32_t x)
-	{ return (x < 0 ? -x : x); }
+    { return (x < 0 ? -x : x); }
 static inline fix32_t fix32_floor(fix32_t x)
-	{ return (x & 0xFFFFFFFF00000000ULL); }
+    { return (x & 0xFFFFFFFF00000000ULL); }
 static inline fix32_t fix32_ceil(fix32_t x)
-	{ return (x & 0xFFFFFFFF00000000ULL) + (x & 0x00000000FFFFFFFFULL ? fix32_one : 0); }
+    { return (x & 0xFFFFFFFF00000000ULL) + (x & 0x00000000FFFFFFFFULL ? fix32_one : 0); }
 static inline fix32_t fix32_min(fix32_t x, fix32_t y)
-	{ return (x < y ? x : y); }
+    { return (x < y ? x : y); }
 static inline fix32_t fix32_max(fix32_t x, fix32_t y)
-	{ return (x > y ? x : y); }
+    { return (x > y ? x : y); }
 static inline fix32_t fix32_clamp(fix32_t x, fix32_t lo, fix32_t hi)
-	{ return fix32_min(fix32_max(x, lo), hi); }
+    { return fix32_min(fix32_max(x, lo), hi); }
 
 /* Subtraction and addition with (optional) overflow detection. */
 #ifdef FIXMATH_NO_OVERFLOW
@@ -188,11 +188,11 @@ extern fix32_t fix32_atan2(fix32_t inY, fix32_t inX) FIXMATH_FUNC_ATTRS;
 
 static const fix32_t fix32_rad_to_deg_mult = 0x000000394BB834C8LL;
 static inline fix32_t fix32_rad_to_deg(fix32_t radians)
-	{ return fix32_mul(radians, fix32_rad_to_deg_mult); }
+    { return fix32_mul(radians, fix32_rad_to_deg_mult); }
 
 static const fix32_t fix32_deg_to_rad_mult = 0x000000000477D1A8LL;
 static inline fix32_t fix32_deg_to_rad(fix32_t degrees)
-	{ return fix32_mul(degrees, fix32_deg_to_rad_mult); }
+    { return fix32_mul(degrees, fix32_deg_to_rad_mult); }
 
 
 
@@ -203,7 +203,7 @@ extern fix32_t fix32_sqrt(fix32_t inValue) FIXMATH_FUNC_ATTRS;
 /*! Returns the square of the given fix32_t.
 */
 static inline fix32_t fix32_sq(fix32_t x)
-	{ return fix32_mul(x, x); }
+    { return fix32_mul(x, x); }
 
 /*! Returns the exponent (e^) of the given fix32_t.
 */

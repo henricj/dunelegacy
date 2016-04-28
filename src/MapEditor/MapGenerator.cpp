@@ -24,8 +24,8 @@
 #include <memory>
 
 
-#define ROCKFILLER 2		//how many times random generator will try to remove sand "holes" for rock from the map
-#define SPICEFILLER 2		//for spice
+#define ROCKFILLER 2        //how many times random generator will try to remove sand "holes" for rock from the map
+#define SPICEFILLER 2       //for spice
 #define DUNESFILLER 1
 
 class MapGenerator {
@@ -270,7 +270,7 @@ private:
     void makeSpot(int x, int y, TERRAINTYPE type) {
         int spotSize = (640 * map.getSizeX()*map.getSizeY())/(64*64);
         for(int j = 0; j < spotSize; j++) {
-            int dir = randGen.rand(0,3);	// Random Dir
+            int dir = randGen.rand(0,3);    // Random Dir
 
             switch(dir) {
                 case 0 : x--; break;

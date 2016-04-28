@@ -23,46 +23,46 @@
 class TankBase : public TrackedUnit
 {
 public:
-	TankBase(House* newOwner);
-	TankBase(InputStream& stream);
-	void init();
-	virtual ~TankBase();
+    TankBase(House* newOwner);
+    TankBase(InputStream& stream);
+    void init();
+    virtual ~TankBase();
 
-	virtual void save(OutputStream& stream) const;
+    virtual void save(OutputStream& stream) const;
 
-	void navigate();
+    void navigate();
 
-	inline int getTurretAngle() const { return lround(turretAngle); }
+    inline int getTurretAngle() const { return lround(turretAngle); }
 
-	void setTurretAngle(int newAngle);
+    void setTurretAngle(int newAngle);
 
-	virtual int getCurrentAttackAngle() const;
+    virtual int getCurrentAttackAngle() const;
 
 protected:
-	void engageTarget();
-	void targeting();
+    void engageTarget();
+    void targeting();
 
     /**
         When the unit is currently idling this method is called about every 5 seconds.
     */
-	virtual void idleAction();
+    virtual void idleAction();
 
-	void turn();
-	void turnTurretLeft();
-	void turnTurretRight();
+    void turn();
+    void turnTurretLeft();
+    void turnTurretRight();
 
     // constant for all tanks of the same type
-	FixPoint turretTurnSpeed;        ///< How fast can we turn the turret
+    FixPoint turretTurnSpeed;        ///< How fast can we turn the turret
 
     // tank state
     FixPoint turretAngle;            ///< The angle of the turret
-	Sint8    drawnTurretAngle;       ///< The drawn angle of the turret
+    Sint8    drawnTurretAngle;       ///< The drawn angle of the turret
 
-	ObjectPointer	closeTarget;	 ///< a enemy target that can be shot at while moving
+    ObjectPointer   closeTarget;     ///< a enemy target that can be shot at while moving
 
     // drawing information
-	SDL_Texture**   turretGraphic;   ///< The turret graphic
-	int             gunGraphicID;    ///< The id of the turret graphic (needed if we want to reload the graphic)
+    SDL_Texture**   turretGraphic;   ///< The turret graphic
+    int             gunGraphicID;    ///< The id of the turret graphic (needed if we want to reload the graphic)
 };
 
 #endif // TANKBASE_H

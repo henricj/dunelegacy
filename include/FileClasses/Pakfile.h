@@ -15,8 +15,8 @@
  *  along with Dune Legacy.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef	PAKFILE_H
-#define	PAKFILE_H
+#ifndef PAKFILE_H
+#define PAKFILE_H
 
 #include <stdio.h>
 #include <SDL_rwops.h>
@@ -24,65 +24,65 @@
 #include <vector>
 #include <inttypes.h>
 
-#define PAKFILE_RWOP_TYPE	0x9A5F17EC
+#define PAKFILE_RWOP_TYPE   0x9A5F17EC
 
-///	A class for reading PAK-Files.
+/// A class for reading PAK-Files.
 /**
-	This class can be used to read PAK-Files. PAK-Files are archive files used by Dune2.
-	The files inside the PAK-File can an be read through SDL_RWops.
+    This class can be used to read PAK-Files. PAK-Files are archive files used by Dune2.
+    The files inside the PAK-File can an be read through SDL_RWops.
 */
 class Pakfile
 {
 private:
 
-	/// Internal structure for representing one file in this PAK-File
-	struct PakFileEntry {
-		uint32_t startOffset;
-		uint32_t endOffset;
-		std::string filename;
-	};
+    /// Internal structure for representing one file in this PAK-File
+    struct PakFileEntry {
+        uint32_t startOffset;
+        uint32_t endOffset;
+        std::string filename;
+    };
 
-	/// Internal structure used by opened SDL_RWop
-	struct RWopData {
-		Pakfile* curPakfile;
-		unsigned int fileIndex;
-		uint32_t fileOffset;
-	};
+    /// Internal structure used by opened SDL_RWop
+    struct RWopData {
+        Pakfile* curPakfile;
+        unsigned int fileIndex;
+        uint32_t fileOffset;
+    };
 
 public:
-	Pakfile(std::string pakfilename, bool write = false);
-	~Pakfile();
+    Pakfile(std::string pakfilename, bool write = false);
+    ~Pakfile();
 
-	std::string getFilename(unsigned int index) const;
+    std::string getFilename(unsigned int index) const;
 
-	/// Number of files in this pak-File.
-	/**
-		Returns the number of files in this pak-File.
-		\return	Number of files.
-	*/
-	inline int getNumFiles() const { return fileEntries.size(); };
+    /// Number of files in this pak-File.
+    /**
+        Returns the number of files in this pak-File.
+        \return Number of files.
+    */
+    inline int getNumFiles() const { return fileEntries.size(); };
 
-	SDL_RWops* openFile(std::string filename);
+    SDL_RWops* openFile(std::string filename);
 
-	bool exists(std::string filename) const;
+    bool exists(std::string filename) const;
 
-	void addFile(SDL_RWops* rwop, std::string filename);
+    void addFile(SDL_RWops* rwop, std::string filename);
 
 private:
-	static size_t ReadFile(SDL_RWops* pRWop, void *ptr, size_t size, size_t n);
-	static size_t WriteFile(SDL_RWops *pRWop, const void *ptr, size_t size, size_t n);
-	static Sint64 SeekFile(SDL_RWops *pRWop, Sint64 offset, int whence);
-	static int CloseFile(SDL_RWops *pRWop);
+    static size_t ReadFile(SDL_RWops* pRWop, void *ptr, size_t size, size_t n);
+    static size_t WriteFile(SDL_RWops *pRWop, const void *ptr, size_t size, size_t n);
+    static Sint64 SeekFile(SDL_RWops *pRWop, Sint64 offset, int whence);
+    static int CloseFile(SDL_RWops *pRWop);
 
-	void readIndex();
+    void readIndex();
 
-	bool write;
-	SDL_RWops * fPakFile;
-	std::string filename;
+    bool write;
+    SDL_RWops * fPakFile;
+    std::string filename;
 
-	char* writeOutData;
-	int	numWriteOutData;
-	std::vector<PakFileEntry> fileEntries;
+    char* writeOutData;
+    int numWriteOutData;
+    std::vector<PakFileEntry> fileEntries;
 };
 
 #endif // PAKFILE_H

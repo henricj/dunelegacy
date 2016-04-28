@@ -34,8 +34,8 @@ Saboteur::Saboteur(House* newOwner) : InfantryBase(newOwner)
 
     setHealth(getMaxHealth());
 
-	setVisible(VIS_ALL, false);
-	setVisible(getOwner()->getTeam(), true);
+    setVisible(VIS_ALL, false);
+    setVisible(getOwner()->getTeam(), true);
     attackMode = GUARD;
 }
 
@@ -46,16 +46,16 @@ Saboteur::Saboteur(InputStream& stream) : InfantryBase(stream)
 
 void Saboteur::init()
 {
-	itemID = Unit_Saboteur;
-	owner->incrementUnits(itemID);
+    itemID = Unit_Saboteur;
+    owner->incrementUnits(itemID);
 
-	graphicID = ObjPic_Saboteur;
-	graphic = pGFXManager->getObjPic(graphicID,getOwner()->getHouseID());
+    graphicID = ObjPic_Saboteur;
+    graphic = pGFXManager->getObjPic(graphicID,getOwner()->getHouseID());
 
-	numImagesX = 4;
-	numImagesY = 3;
+    numImagesX = 4;
+    numImagesY = 3;
 
-	numWeapons = 0;
+    numWeapons = 0;
 }
 
 Saboteur::~Saboteur()
@@ -65,43 +65,43 @@ Saboteur::~Saboteur()
 
 void Saboteur::checkPos()
 {
-	bool	canBeSeen[NUM_HOUSES+1];
+    bool    canBeSeen[NUM_HOUSES+1];
 
-	InfantryBase::checkPos();
-	if(active) {
-		for(int i = 1; i <= NUM_HOUSES; i++) {
-			canBeSeen[i] = false;
-		}
+    InfantryBase::checkPos();
+    if(active) {
+        for(int i = 1; i <= NUM_HOUSES; i++) {
+            canBeSeen[i] = false;
+        }
 
-		for(int x = location.x - 2; (x <= location.x + 2); x++) {
-			for(int y = location.y - 2; (y <= location.y + 2); y++) {
-				if(currentGameMap->tileExists(x, y) && currentGameMap->getTile(x, y)->hasAnObject()) {
-					canBeSeen[currentGameMap->getTile(x, y)->getObject()->getOwner()->getTeam()] = true;
-				}
-			}
-		}
+        for(int x = location.x - 2; (x <= location.x + 2); x++) {
+            for(int y = location.y - 2; (y <= location.y + 2); y++) {
+                if(currentGameMap->tileExists(x, y) && currentGameMap->getTile(x, y)->hasAnObject()) {
+                    canBeSeen[currentGameMap->getTile(x, y)->getObject()->getOwner()->getTeam()] = true;
+                }
+            }
+        }
 
-		for(int i = 1; i <= NUM_HOUSES; i++) {
-			setVisible(i, canBeSeen[i]);
-		}
+        for(int i = 1; i <= NUM_HOUSES; i++) {
+            setVisible(i, canBeSeen[i]);
+        }
 
-		setVisible(getOwner()->getTeam(), true);	//owner team can always see it
-		//setVisible(pLocalHouse->getTeam(), true);
-	}
+        setVisible(getOwner()->getTeam(), true);    //owner team can always see it
+        //setVisible(pLocalHouse->getTeam(), true);
+    }
 }
 
 bool Saboteur::update() {
-	if(active) {
-		if(!moving) {
-			//check to see if close enough to blow up target
-			if(target.getObjPointer() != nullptr){ //&& target.getObjPointer()->isAStructure()
-				if(getOwner()->getTeam() != target.getObjPointer()->getOwner()->getTeam())
+    if(active) {
+        if(!moving) {
+            //check to see if close enough to blow up target
+            if(target.getObjPointer() != nullptr){ //&& target.getObjPointer()->isAStructure()
+                if(getOwner()->getTeam() != target.getObjPointer()->getOwner()->getTeam())
                 {
-                    Coord	closestPoint;
+                    Coord   closestPoint;
                     closestPoint = target.getObjPointer()->getClosestPoint(location);
 
 
-                    if(blockDistance(location, closestPoint) <= FixPt(1,5))	{
+                    if(blockDistance(location, closestPoint) <= FixPt(1,5)) {
                         if(isVisible(getOwner()->getTeam())) {
                             screenborder->shakeScreen(18);
                         }
@@ -113,23 +113,23 @@ bool Saboteur::update() {
                         return false;
                     }
                 }
-			}
-		}
-	}
+            }
+        }
+    }
 
-	return InfantryBase::update();
+    return InfantryBase::update();
 }
 
 void Saboteur::deploy(const Coord& newLocation) {
-	UnitBase::deploy(newLocation);
+    UnitBase::deploy(newLocation);
 
-	setVisible(VIS_ALL, false);
-	setVisible(getOwner()->getTeam(), true);
+    setVisible(VIS_ALL, false);
+    setVisible(getOwner()->getTeam(), true);
 }
 
 
 bool Saboteur::canAttack(const ObjectBase* object) const {
-	if(object != nullptr){
+    if(object != nullptr){
         if((object->isAStructure() || (object->isAGroundUnit() && !object->isInfantry() && object->getItemID() != Unit_Sandworm)) /* allow attack tanks*/
             && (object->getOwner()->getTeam() != owner->getTeam())
             && object->isVisible(getOwner()->getTeam())){
@@ -137,7 +137,7 @@ bool Saboteur::canAttack(const ObjectBase* object) const {
             return true;
         }
 
-	}
+    }
 
     return false;
 

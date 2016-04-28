@@ -26,22 +26,22 @@
 #include <string.h>
 #include <stdexcept>
 
-#define	SIZE_X	320
-#define SIZE_Y	200
+#define SIZE_X  320
+#define SIZE_Y  200
 
 extern Palette palette;
 
 SDL_Surface * LoadCPS_RW(SDL_RWops* RWop, int freesrc)
 {
-	if(RWop == nullptr) {
-		return nullptr;
-	}
+    if(RWop == nullptr) {
+        return nullptr;
+    }
 
     uint8_t* pFiledata = nullptr;
     uint8_t* pImageOut = nullptr;
     SDL_Surface *pic = nullptr;
 
-	try {
+    try {
         Uint32 CpsFilesize = SDL_RWseek(RWop,0,SEEK_END);
         if(CpsFilesize <= 0) {
             throw std::runtime_error("LoadCPS_RW(): Cannot determine size of this *.cps-File!");
@@ -89,33 +89,33 @@ SDL_Surface * LoadCPS_RW(SDL_RWops* RWop, int freesrc)
 
         //Now we can copy line by line
         for(int y = 0; y < SIZE_Y;y++) {
-            memcpy(	((char*) (pic->pixels)) + y * pic->pitch , pImageOut + y * SIZE_X, SIZE_X);
+            memcpy( ((char*) (pic->pixels)) + y * pic->pitch , pImageOut + y * SIZE_X, SIZE_X);
         }
 
         SDL_UnlockSurface(pic);
 
-	    delete [] pFiledata;
-	    delete [] pImageOut;
+        delete [] pFiledata;
+        delete [] pImageOut;
 
         if(freesrc) {
             SDL_RWclose(RWop);
         }
 
         return pic;
-	} catch (std::exception &e) {
-		fprintf(stderr, "%s\n", e.what());
+    } catch (std::exception &e) {
+        fprintf(stderr, "%s\n", e.what());
 
-	    delete [] pFiledata;
-	    delete [] pImageOut;
+        delete [] pFiledata;
+        delete [] pImageOut;
 
-	    if(pic != nullptr) {
+        if(pic != nullptr) {
             SDL_FreeSurface(pic);
-	    }
+        }
 
         if(freesrc) {
             SDL_RWclose(RWop);
         }
 
         return nullptr;
-	}
+    }
 }

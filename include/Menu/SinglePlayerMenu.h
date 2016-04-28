@@ -29,38 +29,38 @@
 class SinglePlayerMenu : public MenuBase
 {
 public:
-	SinglePlayerMenu();
-	virtual ~SinglePlayerMenu();
+    SinglePlayerMenu();
+    virtual ~SinglePlayerMenu();
 
-	/**
-		This method is called, when the child window is about to be closed.
-		This child window will be closed after this method returns.
-		\param	pChildWindow	The child window that will be closed
-	*/
-	virtual void onChildWindowClose(Window* pChildWindow);
+    /**
+        This method is called, when the child window is about to be closed.
+        This child window will be closed after this method returns.
+        \param  pChildWindow    The child window that will be closed
+    */
+    virtual void onChildWindowClose(Window* pChildWindow);
 
 private:
 
-	void onCampaign();
-	void onCustom();
-	void onSkirmish();
-	void onLoadSavegame();
-	void onLoadReplay();
-	void onCancel();
+    void onCampaign();
+    void onCustom();
+    void onSkirmish();
+    void onLoadSavegame();
+    void onLoadReplay();
+    void onCancel();
 
-	StaticContainer	windowWidget;
-	VBox			menuButtonsVBox;
+    StaticContainer windowWidget;
+    VBox            menuButtonsVBox;
 
-	TextButton	campaignButton;
-	TextButton	customButton;
-	TextButton	skirmishButton;
-	TextButton	loadSavegameButton;
-	TextButton	loadReplayButton;
-	TextButton	cancelButton;
+    TextButton  campaignButton;
+    TextButton  customButton;
+    TextButton  skirmishButton;
+    TextButton  loadSavegameButton;
+    TextButton  loadReplayButton;
+    TextButton  cancelButton;
 
-	PictureLabel	planetPicture;
-	PictureLabel	duneLegacy;
-	PictureLabel	buttonBorder;
+    PictureLabel    planetPicture;
+    PictureLabel    duneLegacy;
+    PictureLabel    buttonBorder;
 };
 
 #endif //SINGLEPLAYERMENU_H

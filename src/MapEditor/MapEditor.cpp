@@ -61,45 +61,45 @@ private:
 
 
 MapEditor::MapEditor() : pInterface(nullptr) {
-	bQuitEditor = false;
-	scrollDownMode = false;
-	scrollLeftMode = false;
-	scrollRightMode = false;
-	scrollUpMode = false;
-	shift = false;
+    bQuitEditor = false;
+    scrollDownMode = false;
+    scrollLeftMode = false;
+    scrollRightMode = false;
+    scrollUpMode = false;
+    shift = false;
 
-	bChangedSinceLastSave = false;
+    bChangedSinceLastSave = false;
 
     bLeftMousePressed = false;
-	lastTerrainEditPosX = -1;
-	lastTerrainEditPosY = -1;
+    lastTerrainEditPosX = -1;
+    lastTerrainEditPosY = -1;
 
-	selectedUnitID = INVALID;
-	selectedStructureID = INVALID;
-	selectedMapItemCoord.invalidate();
+    selectedUnitID = INVALID;
+    selectedStructureID = INVALID;
+    selectedMapItemCoord.invalidate();
 
-	currentZoomlevel = settings.video.preferredZoomLevel;
+    currentZoomlevel = settings.video.preferredZoomLevel;
 
     sideBarPos = calcAlignedDrawingRect(pGFXManager->getUIGraphic(UI_SideBar), HAlign::Right, VAlign::Top);
     topBarPos = calcAlignedDrawingRect(pGFXManager->getUIGraphic(UI_TopBar), HAlign::Left, VAlign::Top);
     bottomBarPos = calcAlignedDrawingRect(pGFXManager->getUIGraphic(UI_MapEditor_BottomBar), HAlign::Left, VAlign::Bottom);
 
-	SDL_Rect gameBoardRect = { 0, topBarPos.h, sideBarPos.x, getRendererHeight() - topBarPos.h - bottomBarPos.h };
+    SDL_Rect gameBoardRect = { 0, topBarPos.h, sideBarPos.x, getRendererHeight() - topBarPos.h - bottomBarPos.h };
     screenborder = new ScreenBorder(gameBoardRect);
 
-	setMap(MapData(128,128,Terrain_Sand), MapInfo());
-	setMirrorMode(MirrorModeNone);
+    setMap(MapData(128,128,Terrain_Sand), MapInfo());
+    setMirrorMode(MirrorModeNone);
 
-	pInterface = new MapEditorInterface(this);
+    pInterface = new MapEditorInterface(this);
 
-	pInterface->onNew();
+    pInterface->onNew();
 }
 
 MapEditor::~MapEditor() {
     delete pInterface;
 
     delete screenborder;
-	screenborder = nullptr;
+    screenborder = nullptr;
 }
 
 std::string MapEditor::generateMapname() const {
@@ -121,32 +121,32 @@ void MapEditor::setMirrorMode(MirrorMode newMirrorMode) {
 }
 
 void MapEditor::RunEditor() {
-	while(!bQuitEditor) {
+    while(!bQuitEditor) {
 
-	    int frameStart = SDL_GetTicks();
+        int frameStart = SDL_GetTicks();
 
-		processInput();
-		drawScreen();
+        processInput();
+        drawScreen();
 
-		int frameTime = SDL_GetTicks() - frameStart;
+        int frameTime = SDL_GetTicks() - frameStart;
         if(settings.video.frameLimit == true) {
             if(frameTime < 32) {
                 SDL_Delay(32 - frameTime);
             }
         }
-	}
+    }
 }
 
 void MapEditor::setMap(const MapData& mapdata, const MapInfo& newMapInfo) {
     map = mapdata;
     mapInfo = newMapInfo;
 
-	screenborder->adjustScreenBorderToMapsize(map.getSizeX(),map.getSizeY());
+    screenborder->adjustScreenBorderToMapsize(map.getSizeX(),map.getSizeY());
 
-	// reset tools
-	selectedUnitID = INVALID;
-	selectedStructureID = INVALID;
-	selectedMapItemCoord.invalidate();
+    // reset tools
+    selectedUnitID = INVALID;
+    selectedStructureID = INVALID;
+    selectedMapItemCoord.invalidate();
 
     if(pInterface != nullptr) {
         pInterface->deselectAll();
@@ -191,23 +191,23 @@ void MapEditor::setMap(const MapData& mapdata, const MapInfo& newMapInfo) {
         players.push_back(Player(getHouseNameByNumber(HOUSE_MERCENARY),HOUSE_MERCENARY,HOUSE_MERCENARY,false,false,"Team6"));
     }
 
-	// setup default choam
-	choam[Unit_Carryall] = 2;
-	choam[Unit_Harvester] = 4;
-	choam[Unit_Launcher] = 5;
-	choam[Unit_MCV] = 2;
-	choam[Unit_Ornithopter] = 5;
-	choam[Unit_Quad] = 5;
-	choam[Unit_SiegeTank] = 6;
-	choam[Unit_Tank] = 6;
-	choam[Unit_Trike] = 5;
+    // setup default choam
+    choam[Unit_Carryall] = 2;
+    choam[Unit_Harvester] = 4;
+    choam[Unit_Launcher] = 5;
+    choam[Unit_MCV] = 2;
+    choam[Unit_Ornithopter] = 5;
+    choam[Unit_Quad] = 5;
+    choam[Unit_SiegeTank] = 6;
+    choam[Unit_Tank] = 6;
+    choam[Unit_Trike] = 5;
 
     if(pInterface != nullptr) {
         pInterface->onNewMap();
         pInterface->onHouseChanges();
     }
 
-	currentEditorMode = EditorMode();
+    currentEditorMode = EditorMode();
 
     bChangedSinceLastSave = true;
 }
@@ -343,8 +343,8 @@ void MapEditor::redoLastOperation() {
 
 void MapEditor::loadMap(const std::string& filepath) {
     // reset tools
-	selectedUnitID = INVALID;
-	selectedStructureID = INVALID;
+    selectedUnitID = INVALID;
+    selectedStructureID = INVALID;
 
     if(pInterface != nullptr) {
         pInterface->deselectAll();
@@ -389,9 +389,9 @@ void MapEditor::loadMap(const std::string& filepath) {
         pInterface->onHouseChanges();
     }
 
-	currentEditorMode = EditorMode();
+    currentEditorMode = EditorMode();
 
-	bChangedSinceLastSave = false;
+    bChangedSinceLastSave = false;
 }
 
 void MapEditor::saveMap(const std::string& filepath) {
@@ -434,7 +434,7 @@ void MapEditor::saveMap(const std::string& filepath) {
 
     if(version < 2) {
         logicalSizeX = 64;
-	    //logicalSizeY = 64;
+        //logicalSizeY = 64;
 
         int mapscale = 0;
         switch(map.getSizeX()) {
@@ -961,37 +961,37 @@ void MapEditor::performTerrainChange(int x, int y, TERRAINTYPE terrainType) {
 }
 
 void MapEditor::drawScreen() {
-	// clear whole screen
-	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+    // clear whole screen
+    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
     SDL_RenderClear(renderer);
 
-	//the actuall map
-	drawMap(screenborder, false);
+    //the actuall map
+    drawMap(screenborder, false);
 
     pInterface->draw(Point(0,0));
-	pInterface->drawOverlay(Point(0,0));
+    pInterface->drawOverlay(Point(0,0));
 
-	// Cursor
-	drawCursor();
+    // Cursor
+    drawCursor();
 
-	SDL_RenderPresent(renderer);
+    SDL_RenderPresent(renderer);
 }
 
 void MapEditor::processInput() {
-	SDL_Event event;
+    SDL_Event event;
 
-	while(SDL_PollEvent(&event)) {
+    while(SDL_PollEvent(&event)) {
 
-	    // first of all update mouse
-		if(event.type == SDL_MOUSEMOTION) {
-			SDL_MouseMotionEvent* mouse = &event.motion;
-			drawnMouseX = mouse->x;
-			drawnMouseY = mouse->y;
-		}
+        // first of all update mouse
+        if(event.type == SDL_MOUSEMOTION) {
+            SDL_MouseMotionEvent* mouse = &event.motion;
+            drawnMouseX = mouse->x;
+            drawnMouseY = mouse->y;
+        }
 
-	    if(pInterface->hasChildWindow()) {
+        if(pInterface->hasChildWindow()) {
             pInterface->handleInput(event);
-	    } else {
+        } else {
             switch (event.type) {
                 case SDL_KEYDOWN:
                 {
@@ -1303,8 +1303,8 @@ void MapEditor::processInput() {
                     bQuitEditor = true;
                 } break;
             }
-	    }
-	}
+        }
+    }
 
     if((pInterface->hasChildWindow() == false) && (SDL_GetWindowFlags(window) & SDL_WINDOW_MOUSE_FOCUS)) {
         const Uint8 *keystate = SDL_GetKeyboardState(nullptr);
@@ -1342,16 +1342,16 @@ void MapEditor::drawCursor() {
         return;
     }
 
-	SDL_Texture* pCursor = nullptr;
+    SDL_Texture* pCursor = nullptr;
     SDL_Rect dest = { 0, 0, 0, 0};
-	if(scrollLeftMode || scrollRightMode || scrollUpMode || scrollDownMode) {
+    if(scrollLeftMode || scrollRightMode || scrollUpMode || scrollDownMode) {
         if(scrollLeftMode && !scrollRightMode) {
-	        pCursor = pGFXManager->getUIGraphic(UI_CursorLeft);
-	        dest = calcDrawingRect(pCursor, drawnMouseX, drawnMouseY-5, HAlign::Left, VAlign::Top);
-	    } else if(scrollRightMode && !scrollLeftMode) {
+            pCursor = pGFXManager->getUIGraphic(UI_CursorLeft);
+            dest = calcDrawingRect(pCursor, drawnMouseX, drawnMouseY-5, HAlign::Left, VAlign::Top);
+        } else if(scrollRightMode && !scrollLeftMode) {
             pCursor = pGFXManager->getUIGraphic(UI_CursorRight);
-	        dest = calcDrawingRect(pCursor, drawnMouseX, drawnMouseY-5, HAlign::Center, VAlign::Top);
-	    }
+            dest = calcDrawingRect(pCursor, drawnMouseX, drawnMouseY-5, HAlign::Center, VAlign::Top);
+        }
 
         if(pCursor == nullptr) {
             if(scrollUpMode && !scrollDownMode) {
@@ -1365,11 +1365,11 @@ void MapEditor::drawCursor() {
                 dest = calcDrawingRect(pCursor, drawnMouseX, drawnMouseY, HAlign::Left, VAlign::Top);
             }
         }
-	} else {
-	    pCursor = pGFXManager->getUIGraphic(UI_CursorNormal);
+    } else {
+        pCursor = pGFXManager->getUIGraphic(UI_CursorNormal);
         dest = calcDrawingRect(pCursor, drawnMouseX, drawnMouseY, HAlign::Left, VAlign::Top);
 
-	    if((drawnMouseX < sideBarPos.x) && (drawnMouseY > topBarPos.h) && (currentMirrorMode != MirrorModeNone) && (pInterface->hasChildWindow() == false)) {
+        if((drawnMouseX < sideBarPos.x) && (drawnMouseY > topBarPos.h) && (currentMirrorMode != MirrorModeNone) && (pInterface->hasChildWindow() == false)) {
 
             SDL_Texture* pMirrorIcon = nullptr;
             switch(currentMirrorMode) {
@@ -1382,10 +1382,10 @@ void MapEditor::drawCursor() {
 
             SDL_Rect dest2 = calcDrawingRect(pMirrorIcon, drawnMouseX + 5, drawnMouseY + 5);
             SDL_RenderCopy(renderer, pMirrorIcon, nullptr, &dest2);
-	    }
-	}
+        }
+    }
 
-	SDL_RenderCopy(renderer, pCursor, nullptr, &dest);
+    SDL_RenderCopy(renderer, pCursor, nullptr, &dest);
 }
 
 TERRAINTYPE MapEditor::getTerrain(int x, int y) {
@@ -1424,13 +1424,13 @@ void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) {
     BottomRightTile.y = std::min(map.getSizeY()-1, BottomRightTile.y + 1);
 
     // Load Terrain Surface
-	SDL_Texture* TerrainSprite = pGFXManager->getObjPic(ObjPic_Terrain)[currentZoomlevel];
+    SDL_Texture* TerrainSprite = pGFXManager->getObjPic(ObjPic_Terrain)[currentZoomlevel];
 
     /* draw ground */
-	for(int y = TopLeftTile.y; y <= BottomRightTile.y; y++) {
-		for(int x = TopLeftTile.x; x <= BottomRightTile.x; x++) {
+    for(int y = TopLeftTile.y; y <= BottomRightTile.y; y++) {
+        for(int x = TopLeftTile.x; x <= BottomRightTile.x; x++) {
 
-		    int tile;
+            int tile;
 
             switch(getTerrain(x,y)) {
                 case Terrain_Slab: {
@@ -1509,20 +1509,20 @@ void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) {
                                 zoomedTilesize, zoomedTilesize };
             SDL_Rect drawLocation = {   pScreenborder->world2screenX(x*TILESIZE), pScreenborder->world2screenY(y*TILESIZE),
                                         zoomedTilesize, zoomedTilesize };
-			SDL_RenderCopy(renderer, TerrainSprite, &source, &drawLocation);
-		}
-	}
+            SDL_RenderCopy(renderer, TerrainSprite, &source, &drawLocation);
+        }
+    }
 
 
     std::vector<int> selectedStructures = getMirrorStructures(selectedStructureID);
 
-	std::vector<Structure>::const_iterator sIter;
-	for(sIter = structures.begin(); sIter != structures.end(); ++sIter) {
+    std::vector<Structure>::const_iterator sIter;
+    for(sIter = structures.begin(); sIter != structures.end(); ++sIter) {
 
-	    Coord position = sIter->position;
+        Coord position = sIter->position;
 
         SDL_Rect selectionDest;
-	    if(sIter->itemID == Structure_Slab1) {
+        if(sIter->itemID == Structure_Slab1) {
             // Load Terrain sprite
             SDL_Texture* TerrainSprite = pGFXManager->getObjPic(ObjPic_Terrain)[currentZoomlevel];
 
@@ -1532,7 +1532,7 @@ void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) {
             SDL_RenderCopy(renderer, TerrainSprite, &source, &dest);
 
             selectionDest = dest;
-	    } else if(sIter->itemID == Structure_Slab4) {
+        } else if(sIter->itemID == Structure_Slab4) {
             // Load Terrain Surface
             SDL_Texture* TerrainSprite = pGFXManager->getObjPic(ObjPic_Terrain)[currentZoomlevel];
 
@@ -1549,21 +1549,21 @@ void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) {
             selectionDest.y = pScreenborder->world2screenY(position.y*TILESIZE);
             selectionDest.w = world2zoomedWorld(2*TILESIZE);
             selectionDest.h = world2zoomedWorld(2*TILESIZE);
-	    } else if(sIter->itemID == Structure_Wall) {
-	        std::vector<Structure>::const_iterator sIter2;
+        } else if(sIter->itemID == Structure_Wall) {
+            std::vector<Structure>::const_iterator sIter2;
 
-	        bool left = false;
-	        bool down = false;
-	        bool right = false;
-	        bool up = false;
-	        for(sIter2 = structures.begin(); sIter2 != structures.end(); ++sIter2) {
-	            if(sIter2->itemID == Structure_Wall) {
+            bool left = false;
+            bool down = false;
+            bool right = false;
+            bool up = false;
+            for(sIter2 = structures.begin(); sIter2 != structures.end(); ++sIter2) {
+                if(sIter2->itemID == Structure_Wall) {
                     if((sIter2->position.x == position.x - 1) && (sIter2->position.y == position.y))  left = true;
                     if((sIter2->position.x == position.x) && (sIter2->position.y == position.y + 1))  down = true;
                     if((sIter2->position.x == position.x + 1) && (sIter2->position.y == position.y))  right = true;
                     if((sIter2->position.x == position.x) && (sIter2->position.y == position.y - 1))  up = true;
                 }
-	        }
+            }
 
             int maketile = 0;
             if((left == true) && (right == true) && (up == true) && (down == true)) {
@@ -1609,7 +1609,7 @@ void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) {
             SDL_RenderCopy(renderer, WallSprite, &source, &dest);
 
             selectionDest = dest;
-	    } else {
+        } else {
 
             int objectPic = 0;
             switch(sIter->itemID) {
@@ -1643,9 +1643,9 @@ void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) {
             SDL_RenderCopy(renderer, ObjectSprite, &source, &dest);
 
             selectionDest = dest;
-	    }
+        }
 
-	    // draw selection frame
+        // draw selection frame
         if(!bCompleteMap && (std::find(selectedStructures.begin(), selectedStructures.end(), sIter->id) != selectedStructures.end()) ) {
             //now draw the selection box thing, with parts at all corners of structure
 
@@ -1674,12 +1674,12 @@ void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) {
             }
         }
 
-	}
+    }
 
-	std::vector<Unit>::const_iterator uIter;
-	for(uIter = units.begin(); uIter != units.end(); ++uIter) {
+    std::vector<Unit>::const_iterator uIter;
+    for(uIter = units.begin(); uIter != units.end(); ++uIter) {
 
-	    Coord position = uIter->position;
+        Coord position = uIter->position;
 
         const Coord tankTurretOffset[] =    {   Coord(0, 0),
                                                 Coord(0, 0),
@@ -1734,11 +1734,11 @@ void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) {
 
 
 
-	    int objectPicBase = 0;
-	    int framesX = NUM_ANGLES;
-	    int framesY = 1;
-	    int objectPicGun = -1;
-	    const Coord* gunOffset = nullptr;
+        int objectPicBase = 0;
+        int framesX = NUM_ANGLES;
+        int framesY = 1;
+        int objectPicGun = -1;
+        const Coord* gunOffset = nullptr;
 
         switch(uIter->itemID) {
             case Unit_Carryall:         objectPicBase = ObjPic_Carryall;        framesY = 2;                                                                    break;
@@ -1803,10 +1803,10 @@ void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) {
             SDL_RenderCopy(renderer, pStarSprite, nullptr, &drawLocation2);
         }
 
-	}
+    }
 
-	// draw tactical pos rectangle (the starting screen)
-	if(!bCompleteMap && getMapVersion() < 2 && mapInfo.tacticalPos.isValid()) {
+    // draw tactical pos rectangle (the starting screen)
+    if(!bCompleteMap && getMapVersion() < 2 && mapInfo.tacticalPos.isValid()) {
 
         SDL_Rect dest;
         dest.x = pScreenborder->world2screenX( mapInfo.tacticalPos.x*TILESIZE);
@@ -1815,7 +1815,7 @@ void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) {
         dest.h = world2zoomedWorld(10*TILESIZE);
 
         renderDrawRect(renderer, &dest, COLOR_DARKGREY);
-	}
+    }
 
     SDL_Texture* validPlace = nullptr;
     SDL_Texture* invalidPlace = nullptr;
@@ -1849,8 +1849,8 @@ void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) {
 
     if(!bCompleteMap && !pInterface->hasChildWindow() && pScreenborder->isScreenCoordInsideMap(mouseX, mouseY)) {
 
-        int	xPos = pScreenborder->screen2MapX(mouseX);
-		int yPos = pScreenborder->screen2MapY(mouseY);
+        int xPos = pScreenborder->screen2MapX(mouseX);
+        int yPos = pScreenborder->screen2MapY(mouseY);
 
         if(currentEditorMode.mode == EditorMode::EditorMode_Terrain) {
 
@@ -2024,19 +2024,19 @@ void MapEditor::saveMapshot() {
         fprintf(stderr,"SDL_CreateTexture() failed: %s\n", SDL_GetError());
         currentZoomlevel = oldCurrentZoomlevel;
         return;
-	}
+    }
 
-	SDL_Texture* oldRenderTarget = SDL_GetRenderTarget(renderer);
-	if(SDL_SetRenderTarget(renderer, renderTarget) != 0) {
+    SDL_Texture* oldRenderTarget = SDL_GetRenderTarget(renderer);
+    if(SDL_SetRenderTarget(renderer, renderTarget) != 0) {
         fprintf(stderr,"SDL_SetRenderTarget() failed: %s\n", SDL_GetError());
         SDL_SetRenderTarget(renderer, oldRenderTarget);
         SDL_DestroyTexture(renderTarget);
         currentZoomlevel = oldCurrentZoomlevel;
         return;
-	}
+    }
 
-	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-	SDL_RenderClear(renderer);
+    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+    SDL_RenderClear(renderer);
 
     drawMap(&tmpScreenborder, true);
 

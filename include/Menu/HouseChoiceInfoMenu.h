@@ -27,20 +27,20 @@
 
 class HouseChoiceInfoMenu : public MentatMenu {
 public:
-	HouseChoiceInfoMenu(int newHouse);
-	virtual ~HouseChoiceInfoMenu();
+    HouseChoiceInfoMenu(int newHouse);
+    virtual ~HouseChoiceInfoMenu();
 
-	virtual void onMentatTextFinished();
+    virtual void onMentatTextFinished();
 
-	void drawSpecificStuff();
+    void drawSpecificStuff();
 private:
-	void onYes();
-	void onNo();
+    void onYes();
+    void onNo();
 
-	AnimationLabel	planetAnimation;
-	PictureLabel    questionLabel;
-	PictureButton	yesButton;
-	PictureButton	noButton;
+    AnimationLabel  planetAnimation;
+    PictureLabel    questionLabel;
+    PictureButton   yesButton;
+    PictureButton   noButton;
 };
 
 #endif // HOUSECHOICEINFOMENU_H

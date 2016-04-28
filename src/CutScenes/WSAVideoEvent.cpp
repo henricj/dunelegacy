@@ -42,14 +42,14 @@ int WSAVideoEvent::draw()
 
     SDL_Rect dest = calcAlignedDrawingRect(pStreamingTexture, HAlign::Center, bCenterVertical ? VAlign::Center : VAlign::Top);
 
-	SDL_RenderCopy(renderer, pStreamingTexture, nullptr, &dest);
+    SDL_RenderCopy(renderer, pStreamingTexture, nullptr, &dest);
 
-	SDL_FreeSurface(pSurface);
+    SDL_FreeSurface(pSurface);
 
-	currentFrame++;
+    currentFrame++;
 
-	//return (int) (1000.0/pWsafile->getFps());
-	return 170;
+    //return (int) (1000.0/pWsafile->getFps());
+    return 170;
 }
 
 bool WSAVideoEvent::isFinished()

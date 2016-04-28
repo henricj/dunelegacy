@@ -30,32 +30,32 @@
 #include <cstdio>
 
 XMIPlayer::XMIPlayer() : MusicPlayer(settings.audio.playMusic, settings.audio.musicVolume) {
-	music = nullptr;
+    music = nullptr;
 
-	if((Mix_Init(MIX_INIT_FLUIDSYNTH) & MIX_INIT_FLUIDSYNTH) == 0) {
+    if((Mix_Init(MIX_INIT_FLUIDSYNTH) & MIX_INIT_FLUIDSYNTH) == 0) {
         printf("XMIPlayer: Failed to init required midi support: %s\n", SDL_GetError());
     }
 }
 
 XMIPlayer::~XMIPlayer() {
-	if(music != nullptr) {
-		Mix_FreeMusic(music);
-		music = nullptr;
-	}
+    if(music != nullptr) {
+        Mix_FreeMusic(music);
+        music = nullptr;
+    }
 
-	remove(getTmpFileName().c_str());
+    remove(getTmpFileName().c_str());
 
-	Mix_Quit();
+    Mix_Quit();
 }
 
 void XMIPlayer::changeMusic(MUSICTYPE musicType)
 {
-	int musicNum = -1;
-	std::string filename = "";
+    int musicNum = -1;
+    std::string filename = "";
 
-	if(currentMusicType == musicType && Mix_PlayingMusic()) {
-		return;
-	}
+    if(currentMusicType == musicType && Mix_PlayingMusic()) {
+        return;
+    }
 
     /* currently unused:
         DUNE0.XMI/4
@@ -63,8 +63,8 @@ void XMIPlayer::changeMusic(MUSICTYPE musicType)
     */
 
 
-	switch(musicType) {
-		case MUSIC_ATTACK: {
+    switch(musicType) {
+        case MUSIC_ATTACK: {
 
             switch(getRandomInt(0, 5)) {
                 case 0:     filename = "DUNE10.XMI";    musicNum = 7;   break;
@@ -75,9 +75,9 @@ void XMIPlayer::changeMusic(MUSICTYPE musicType)
                 case 5:     filename = "DUNE15.XMI";    musicNum = 7;   break;
             }
 
-		} break;
+        } break;
 
-		case MUSIC_PEACE: {
+        case MUSIC_PEACE: {
 
             switch(getRandomInt(0, 8)) {
                 case 0:     filename = "DUNE1.XMI";     musicNum = 6;   break;
@@ -91,95 +91,95 @@ void XMIPlayer::changeMusic(MUSICTYPE musicType)
                 case 8:     filename = "DUNE18.XMI";    musicNum = 6;   break;
             }
 
-		} break;
-
-		case MUSIC_INTRO: {
-		    filename = "DUNE0.XMI";
-		    musicNum = 2;
         } break;
 
-		case MUSIC_MENU: {
-		    filename = "DUNE7.XMI";
-		    musicNum = 6;
+        case MUSIC_INTRO: {
+            filename = "DUNE0.XMI";
+            musicNum = 2;
         } break;
 
-		case MUSIC_BRIEFING_H: {
-		    filename = "DUNE7.XMI";
-		    musicNum = 2;
+        case MUSIC_MENU: {
+            filename = "DUNE7.XMI";
+            musicNum = 6;
         } break;
 
-		case MUSIC_BRIEFING_A: {
-		    filename = "DUNE7.XMI";
-		    musicNum = 3;
+        case MUSIC_BRIEFING_H: {
+            filename = "DUNE7.XMI";
+            musicNum = 2;
         } break;
 
-		case MUSIC_BRIEFING_O: {
-		    filename = "DUNE7.XMI";
-		    musicNum = 4;
+        case MUSIC_BRIEFING_A: {
+            filename = "DUNE7.XMI";
+            musicNum = 3;
         } break;
 
-		case MUSIC_WIN_H: {
-		    filename = "DUNE8.XMI";
-		    musicNum = 3;
-		} break;
+        case MUSIC_BRIEFING_O: {
+            filename = "DUNE7.XMI";
+            musicNum = 4;
+        } break;
 
-		case MUSIC_WIN_A: {
-		    filename = "DUNE8.XMI";
-		    musicNum = 2;
-		} break;
+        case MUSIC_WIN_H: {
+            filename = "DUNE8.XMI";
+            musicNum = 3;
+        } break;
 
-		case MUSIC_WIN_O: {
-		    filename = "DUNE17.XMI";
-		    musicNum = 4;
-		} break;
+        case MUSIC_WIN_A: {
+            filename = "DUNE8.XMI";
+            musicNum = 2;
+        } break;
 
-		case MUSIC_LOSE_H: {
-		    filename = "DUNE1.XMI";
-		    musicNum = 4;
-		} break;
+        case MUSIC_WIN_O: {
+            filename = "DUNE17.XMI";
+            musicNum = 4;
+        } break;
 
-		case MUSIC_LOSE_A: {
-		    filename = "DUNE1.XMI";
-		    musicNum = 5;
-		} break;
+        case MUSIC_LOSE_H: {
+            filename = "DUNE1.XMI";
+            musicNum = 4;
+        } break;
 
-		case MUSIC_LOSE_O: {
-		    filename = "DUNE1.XMI";
-		    musicNum = 3;
-		} break;
+        case MUSIC_LOSE_A: {
+            filename = "DUNE1.XMI";
+            musicNum = 5;
+        } break;
+
+        case MUSIC_LOSE_O: {
+            filename = "DUNE1.XMI";
+            musicNum = 3;
+        } break;
 
         case MUSIC_GAMESTAT: {
             filename = "DUNE20.XMI";
             musicNum = 2;
-		} break;
+        } break;
 
         case MUSIC_MAPCHOICE: {
-		    filename = "DUNE16.XMI";
-		    musicNum = 7;
-		} break;
+            filename = "DUNE16.XMI";
+            musicNum = 7;
+        } break;
 
-		case MUSIC_MEANWHILE: {
-		    filename = "DUNE16.XMI";
-		    musicNum = 8;
-		} break;
+        case MUSIC_MEANWHILE: {
+            filename = "DUNE16.XMI";
+            musicNum = 8;
+        } break;
 
         case MUSIC_FINALE_H: {
-		    filename = "DUNE19.XMI";
-		    musicNum = 4;
-		} break;
+            filename = "DUNE19.XMI";
+            musicNum = 4;
+        } break;
 
         case MUSIC_FINALE_A: {
-		    filename = "DUNE19.XMI";
-		    musicNum = 2;
-		} break;
+            filename = "DUNE19.XMI";
+            musicNum = 2;
+        } break;
 
         case MUSIC_FINALE_O: {
-		    filename = "DUNE19.XMI";
-		    musicNum = 3;
-		} break;
+            filename = "DUNE19.XMI";
+            musicNum = 3;
+        } break;
 
-		case MUSIC_RANDOM:
-		default: {
+        case MUSIC_RANDOM:
+        default: {
 
             switch(getRandomInt(0, 14)) {
                 // attack
@@ -202,12 +202,12 @@ void XMIPlayer::changeMusic(MUSICTYPE musicType)
                 case 14:    filename = "DUNE18.XMI";    musicNum = 6;   break;
             }
 
-		} break;
-	}
+        } break;
+    }
 
-	currentMusicType = musicType;
+    currentMusicType = musicType;
 
-	if((musicOn == true) && (filename != "")) {
+    if((musicOn == true) && (filename != "")) {
         SDL_RWops* inputrwop = pFileManager->openFile(filename);
         if(inputrwop == nullptr) {
             std::cerr << "Cannot open file " << filename << "!" << std::endl;
@@ -231,56 +231,56 @@ void XMIPlayer::changeMusic(MUSICTYPE musicType)
         output.close();
 
         Mix_HaltMusic();
-		if(music != nullptr) {
-			Mix_FreeMusic(music);
-			music = nullptr;
-		}
+        if(music != nullptr) {
+            Mix_FreeMusic(music);
+            music = nullptr;
+        }
 
-		music = Mix_LoadMUS(tmpFilename.c_str());
-		if(music != nullptr) {
-			if(Mix_PlayMusic(music, -1) == -1) {
+        music = Mix_LoadMUS(tmpFilename.c_str());
+        if(music != nullptr) {
+            if(Mix_PlayMusic(music, -1) == -1) {
                 printf("XMIPlayer: Playing music failed: %s\n", SDL_GetError());
             } else {
                 printf("Now playing %s!\n", tmpFilename.c_str());
-			}
-		} else {
-			printf("Unable to play %s: %s!\n", filename.c_str(), Mix_GetError());
-		}
+            }
+        } else {
+            printf("Unable to play %s: %s!\n", filename.c_str(), Mix_GetError());
+        }
 
-	}
+    }
 }
 
 void XMIPlayer::toggleSound() {
-	if(musicOn == false) {
-		musicOn = true;
-		changeMusic(MUSIC_PEACE);
-	} else {
-		musicOn = false;
-		if (music != nullptr) {
-			Mix_HaltMusic();
+    if(musicOn == false) {
+        musicOn = true;
+        changeMusic(MUSIC_PEACE);
+    } else {
+        musicOn = false;
+        if (music != nullptr) {
+            Mix_HaltMusic();
             Mix_FreeMusic(music);
             music = nullptr;
-		}
-	}
+        }
+    }
 }
 
 bool XMIPlayer::isMusicPlaying() {
-	return Mix_PlayingMusic();
+    return Mix_PlayingMusic();
 }
 
 void XMIPlayer::setMusic(bool value) {
-	musicOn = value;
+    musicOn = value;
 
-	if(musicOn) {
-		changeMusic(MUSIC_RANDOM);
-	} else if(music != nullptr) {
-		Mix_HaltMusic();
-	}
+    if(musicOn) {
+        changeMusic(MUSIC_RANDOM);
+    } else if(music != nullptr) {
+        Mix_HaltMusic();
+    }
 }
 
 std::string XMIPlayer::getTmpFileName() {
-	// determine path to config file
-	char tmp[FILENAME_MAX];
-	fnkdat("tmp.mid", tmp, FILENAME_MAX, FNKDAT_USER | FNKDAT_CREAT);
-	return std::string(tmp);
+    // determine path to config file
+    char tmp[FILENAME_MAX];
+    fnkdat("tmp.mid", tmp, FILENAME_MAX, FNKDAT_USER | FNKDAT_CREAT);
+    return std::string(tmp);
 }

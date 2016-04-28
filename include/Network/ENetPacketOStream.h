@@ -27,64 +27,64 @@
 class ENetPacketOStream : public OutputStream
 {
 public:
-	ENetPacketOStream(enet_uint32 flags)
-	 : currentPos(0) {
-		packet = enet_packet_create(nullptr,16,flags);
+    ENetPacketOStream(enet_uint32 flags)
+     : currentPos(0) {
+        packet = enet_packet_create(nullptr,16,flags);
         if(packet == nullptr) {
             throw OutputStream::error("ENetPacketOStream: enet_packet_create() failed!");
         }
     }
 
-	ENetPacketOStream(const ENetPacketOStream& p)
-	 : currentPos(0), packet(nullptr) {
-		*this = p;
+    ENetPacketOStream(const ENetPacketOStream& p)
+     : currentPos(0), packet(nullptr) {
+        *this = p;
     }
 
-	~ENetPacketOStream() {
+    ~ENetPacketOStream() {
         if(packet != nullptr) {
             enet_packet_destroy(packet);
         }
-	}
+    }
 
-	ENetPacketOStream& operator=(const ENetPacketOStream& p) {
-		if(this != &p) {
-			ENetPacket* packetCopy = enet_packet_create(p.packet->data,p.packet->dataLength,p.packet->flags);
-		    if(packetCopy == nullptr) {
-		        throw InputStream::error("ENetPacketOStream::operator=(): enet_packet_create() failed!");
-		    }
+    ENetPacketOStream& operator=(const ENetPacketOStream& p) {
+        if(this != &p) {
+            ENetPacket* packetCopy = enet_packet_create(p.packet->data,p.packet->dataLength,p.packet->flags);
+            if(packetCopy == nullptr) {
+                throw InputStream::error("ENetPacketOStream::operator=(): enet_packet_create() failed!");
+            }
 
-		    if(packet != nullptr) {
-		        enet_packet_destroy(packet);
-		    }
+            if(packet != nullptr) {
+                enet_packet_destroy(packet);
+            }
 
-			packet = packetCopy;
-			currentPos = p.currentPos;
-		}
+            packet = packetCopy;
+            currentPos = p.currentPos;
+        }
 
-		return *this;
-	}
+        return *this;
+    }
 
     ENetPacket* getPacket() {
-		if(enet_packet_resize(packet,currentPos) < 0) {
+        if(enet_packet_resize(packet,currentPos) < 0) {
             throw OutputStream::error("ENetPacketOStream::getPacket(): enet_packet_resize() failed!");
         }
 
-		ENetPacket* pPacket = packet;
+        ENetPacket* pPacket = packet;
 
-		packet = nullptr;
+        packet = nullptr;
 
         return pPacket;
     }
 
-	void flush() {
+    void flush() {
         ;
-	}
+    }
 
 
-	// write operations
+    // write operations
 
-	void writeString(const std::string& str) {
-	    ensureBufferSize(currentPos + str.length() + sizeof(Uint32));
+    void writeString(const std::string& str) {
+        ensureBufferSize(currentPos + str.length() + sizeof(Uint32));
 
         writeUint32(str.length());
 
@@ -95,41 +95,41 @@ public:
     }
 
 
-	void writeUint8(Uint8 x) {
+    void writeUint8(Uint8 x) {
         ensureBufferSize(currentPos + sizeof(Uint8));
         *((Uint8*) (packet->data + currentPos)) = x;
         currentPos += sizeof(Uint8);
-	}
+    }
 
-	void writeUint16(Uint16 x) {
+    void writeUint16(Uint16 x) {
         ensureBufferSize(currentPos + sizeof(Uint16));
         *((Uint16*) (packet->data + currentPos)) = SDL_SwapLE16(x);
         currentPos += sizeof(Uint16);
-	}
+    }
 
-	void writeUint32(Uint32 x) {
+    void writeUint32(Uint32 x) {
         ensureBufferSize(currentPos + sizeof(Uint32));
         *((Uint32*) (packet->data + currentPos)) = SDL_SwapLE32(x);
         currentPos += sizeof(Uint32);
-	}
+    }
 
-	void writeUint64(Uint64 x) {
+    void writeUint64(Uint64 x) {
         ensureBufferSize(currentPos + sizeof(Uint64));
         *((Uint64*) (packet->data + currentPos)) = SDL_SwapLE64(x);
         currentPos += sizeof(Uint64);
-	}
+    }
 
-	void writeBool(bool x) {
+    void writeBool(bool x) {
         writeUint8(x == true ? 1 : 0);
-	}
+    }
 
-	void writeFloat(float x) {
+    void writeFloat(float x) {
         Uint32 tmp;
         memcpy(&tmp,&x,sizeof(Uint32)); // workaround for a strange optimization in gcc 4.1
         writeUint32(tmp);
     }
 
-	void ensureBufferSize(size_t minBufferSize) {
+    void ensureBufferSize(size_t minBufferSize) {
         if(minBufferSize < packet->dataLength) {
             return;
         }
@@ -142,12 +142,12 @@ public:
         if(enet_packet_resize(packet,newBufferSize) < 0) {
             throw OutputStream::error("ENetPacketOStream::ensureBufferSize(): enet_packet_resize() failed!");
         }
-	}
+    }
 
 
 private:
     size_t  currentPos;
-	ENetPacket* packet;
+    ENetPacket* packet;
 };
 
 #endif // ENETPACKETOSTREAM_H

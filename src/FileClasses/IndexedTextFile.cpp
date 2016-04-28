@@ -27,39 +27,39 @@
 
 IndexedTextFile::IndexedTextFile(SDL_RWops* rwop, bool bDecode) {
 
-	if(rwop == nullptr) {
-	    throw std::invalid_argument("IndexedTextFile:IndexedTextFile(): rwop == nullptr!");
-	}
+    if(rwop == nullptr) {
+        throw std::invalid_argument("IndexedTextFile:IndexedTextFile(): rwop == nullptr!");
+    }
 
-	int indexedTextFilesize = SDL_RWseek(rwop,0,SEEK_END);
-	if(indexedTextFilesize <= 0) {
+    int indexedTextFilesize = SDL_RWseek(rwop,0,SEEK_END);
+    if(indexedTextFilesize <= 0) {
         throw std::runtime_error("IndexedTextFile:IndexedTextFile(): Cannot determine size of this file!");
-	}
+    }
 
-	if(indexedTextFilesize < 2) {
+    if(indexedTextFilesize < 2) {
         throw std::runtime_error("IndexedTextFile:IndexedTextFile(): No valid indexed textfile: File too small!");
-	}
+    }
 
-	if(SDL_RWseek(rwop,0,SEEK_SET) != 0) {
+    if(SDL_RWseek(rwop,0,SEEK_SET) != 0) {
         throw std::runtime_error("IndexedTextFile:IndexedTextFile(): Seeking in this indexed textfile failed!");
-	}
+    }
 
-	unsigned char* pFiledata;
-	if( (pFiledata = (unsigned char*) malloc(indexedTextFilesize)) == nullptr) {
+    unsigned char* pFiledata;
+    if( (pFiledata = (unsigned char*) malloc(indexedTextFilesize)) == nullptr) {
         throw std::bad_alloc();
-	}
+    }
 
-	if(SDL_RWread(rwop, pFiledata, indexedTextFilesize, 1) != 1) {
-	    free(pFiledata);
+    if(SDL_RWread(rwop, pFiledata, indexedTextFilesize, 1) != 1) {
+        free(pFiledata);
         throw std::runtime_error("IndexedTextFile:IndexedTextFile(): Reading this indexed textfile failed!");
-	}
+    }
 
-	int numIndexedStrings = (SDL_SwapLE16(((Uint16*) pFiledata)[0]))/2 - 1;
+    int numIndexedStrings = (SDL_SwapLE16(((Uint16*) pFiledata)[0]))/2 - 1;
 
-	Uint16* pIndex = (Uint16*) pFiledata;
-	for(int i=0; i <= numIndexedStrings; i++) {
-		pIndex[i] = SDL_SwapLE16(pIndex[i]);
-	}
+    Uint16* pIndex = (Uint16*) pFiledata;
+    for(int i=0; i <= numIndexedStrings; i++) {
+        pIndex[i] = SDL_SwapLE16(pIndex[i]);
+    }
 
     try {
         for(int i=0; i < numIndexedStrings; i++) {
@@ -76,7 +76,7 @@ IndexedTextFile::IndexedTextFile(SDL_RWops* rwop, bool bDecode) {
         throw;
     }
 
-	free(pFiledata);
+    free(pFiledata);
 }
 
 IndexedTextFile::~IndexedTextFile() {

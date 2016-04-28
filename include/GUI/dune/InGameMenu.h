@@ -27,43 +27,43 @@
 class InGameMenu : public Window
 {
 public:
-	InGameMenu(bool bMultiplayer, int color);
-	virtual ~InGameMenu();
+    InGameMenu(bool bMultiplayer, int color);
+    virtual ~InGameMenu();
 
-	/**
-		Handles a key stroke.
-		\param	key the key that was pressed or released.
-		\return	true = key stroke was processed by the window, false = key stroke was not processed by the window
-	*/
-	virtual bool handleKeyPress(SDL_KeyboardEvent& key);
+    /**
+        Handles a key stroke.
+        \param  key the key that was pressed or released.
+        \return true = key stroke was processed by the window, false = key stroke was not processed by the window
+    */
+    virtual bool handleKeyPress(SDL_KeyboardEvent& key);
 
-	/**
-		This method is called, when the child window is about to be closed.
-		This child window will be closed after this method returns.
-		\param	pChildWindow	The child window that will be closed
-	*/
-	virtual void onChildWindowClose(Window* pChildWindow);
+    /**
+        This method is called, when the child window is about to be closed.
+        This child window will be closed after this method returns.
+        \param  pChildWindow    The child window that will be closed
+    */
+    virtual void onChildWindowClose(Window* pChildWindow);
 
-	void onResume();
-	void onSettings();
-	void onLoad();
-	void onSave();
-	void onRestart();
-	void onQuit();
+    void onResume();
+    void onSettings();
+    void onLoad();
+    void onSave();
+    void onRestart();
+    void onQuit();
 
 private:
     bool bMultiplayer;
     int color;
 
-	HBox	mainHBox;
-	VBox	mainVBox;
+    HBox    mainHBox;
+    VBox    mainVBox;
 
-	TextButton	resumeButton;
-	TextButton	gameSettingsButton;
-	TextButton	restartGameButton;
-	TextButton	saveGameButton;
-	TextButton	loadGameButton;
-	TextButton	quitButton;
+    TextButton  resumeButton;
+    TextButton  gameSettingsButton;
+    TextButton  restartGameButton;
+    TextButton  saveGameButton;
+    TextButton  loadGameButton;
+    TextButton  quitButton;
 };
 
 

@@ -32,10 +32,10 @@
 MapEditorRadarView::MapEditorRadarView(MapEditor* pMapEditor)
  : RadarViewBase(), pMapEditor(pMapEditor)
 {
-	radarSurface = SDL_CreateRGBSurface(0, RADARWIDTH, RADARHEIGHT, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK);
-	SDL_FillRect(radarSurface, nullptr, COLOR_BLACK);
+    radarSurface = SDL_CreateRGBSurface(0, RADARWIDTH, RADARHEIGHT, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK);
+    SDL_FillRect(radarSurface, nullptr, COLOR_BLACK);
 
-	radarTexture = SDL_CreateTexture(renderer, SCREEN_FORMAT, SDL_TEXTUREACCESS_STREAMING, RADARWIDTH, RADARHEIGHT);
+    radarTexture = SDL_CreateTexture(renderer, SCREEN_FORMAT, SDL_TEXTUREACCESS_STREAMING, RADARWIDTH, RADARHEIGHT);
 }
 
 

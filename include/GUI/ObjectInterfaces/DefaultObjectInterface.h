@@ -35,56 +35,56 @@
 
 class DefaultObjectInterface : public ObjectInterface {
 public:
-	static DefaultObjectInterface* create(int objectID) {
-		DefaultObjectInterface* tmp = new DefaultObjectInterface(objectID);
-		tmp->pAllocated = true;
-		return tmp;
-	}
+    static DefaultObjectInterface* create(int objectID) {
+        DefaultObjectInterface* tmp = new DefaultObjectInterface(objectID);
+        tmp->pAllocated = true;
+        return tmp;
+    }
 
 protected:
-	DefaultObjectInterface(int objectID) : ObjectInterface() {
-		ObjectBase* pObject = currentGame->getObjectManager().getObject(objectID);
-		if(pObject == nullptr) {
-			fprintf(stderr,"DefaultObjectInterface::DefaultObjectInterface(): Cannot resolve ObjectID %d!\n",objectID);
-			exit(EXIT_FAILURE);
-		}
+    DefaultObjectInterface(int objectID) : ObjectInterface() {
+        ObjectBase* pObject = currentGame->getObjectManager().getObject(objectID);
+        if(pObject == nullptr) {
+            fprintf(stderr,"DefaultObjectInterface::DefaultObjectInterface(): Cannot resolve ObjectID %d!\n",objectID);
+            exit(EXIT_FAILURE);
+        }
 
-		this->objectID = objectID;
-		itemID = pObject->getItemID();
+        this->objectID = objectID;
+        itemID = pObject->getItemID();
 
-		addWidget(&topBox,Point(0,0),Point(SIDEBARWIDTH - 25,80));
+        addWidget(&topBox,Point(0,0),Point(SIDEBARWIDTH - 25,80));
 
-		addWidget(&mainHBox,Point(0,80),Point(SIDEBARWIDTH - 25,getRendererHeight() - 80 - 148));
+        addWidget(&mainHBox,Point(0,80),Point(SIDEBARWIDTH - 25,getRendererHeight() - 80 - 148));
 
-		topBox.addWidget(&topBoxHBox,Point(0,22),Point(SIDEBARWIDTH - 25,58));
+        topBox.addWidget(&topBoxHBox,Point(0,22),Point(SIDEBARWIDTH - 25,58));
 
-		topBoxHBox.addWidget(Spacer::create());
-		topBoxHBox.addWidget(&objPicture);
+        topBoxHBox.addWidget(Spacer::create());
+        topBoxHBox.addWidget(&objPicture);
 
-		objPicture.setTexture(resolveItemPicture(itemID, (HOUSETYPE) pObject->getOriginalHouseID()),false);
+        objPicture.setTexture(resolveItemPicture(itemID, (HOUSETYPE) pObject->getOriginalHouseID()),false);
 
-		topBoxHBox.addWidget(Spacer::create());
-	};
+        topBoxHBox.addWidget(Spacer::create());
+    };
 
-	virtual ~DefaultObjectInterface() { ; };
+    virtual ~DefaultObjectInterface() { ; };
 
-	/**
-		This method updates the object interface.
-		If the object doesn't exists anymore then update returns false.
-		\return true = everything ok, false = the object container should be removed
-	*/
-	virtual bool update() {
-		ObjectBase* pObject = currentGame->getObjectManager().getObject(objectID);
-		return (pObject != nullptr);
-	}
+    /**
+        This method updates the object interface.
+        If the object doesn't exists anymore then update returns false.
+        \return true = everything ok, false = the object container should be removed
+    */
+    virtual bool update() {
+        ObjectBase* pObject = currentGame->getObjectManager().getObject(objectID);
+        return (pObject != nullptr);
+    }
 
-	int				objectID;
-	int 			itemID;
+    int             objectID;
+    int             itemID;
 
-	StaticContainer	topBox;
-	HBox			topBoxHBox;
-	HBox			mainHBox;
-	PictureLabel	objPicture;
+    StaticContainer topBox;
+    HBox            topBoxHBox;
+    HBox            mainHBox;
+    PictureLabel    objPicture;
 };
 
 #endif // DEFAULTOBJECTINTERFACE_H

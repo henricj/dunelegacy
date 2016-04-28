@@ -30,26 +30,26 @@
 class MentatHelp : public MentatMenu
 {
 public:
-	MentatHelp(int newHouse, int techLevel, int mission);
-	virtual ~MentatHelp();
+    MentatHelp(int newHouse, int techLevel, int mission);
+    virtual ~MentatHelp();
 
-	virtual void drawSpecificStuff();
+    virtual void drawSpecificStuff();
 
-	virtual bool doInput(SDL_Event &event);
+    virtual bool doInput(SDL_Event &event);
 
-	virtual void onMentatTextFinished();
+    virtual void onMentatTextFinished();
 
 private:
-	void onExit();
-	void onListBoxClick();
+    void onExit();
+    void onListBoxClick();
 
     int mission;
-	std::vector<MentatTextFile::MentatEntry> mentatEntries;
+    std::vector<MentatTextFile::MentatEntry> mentatEntries;
 
     Label           backgroundLabel;
     Label           itemDescriptionLabel;
-	PictureButton	exitButton;
-    AnimationLabel	animation;
+    PictureButton   exitButton;
+    AnimationLabel  animation;
     ListBox         mentatTopicsList;
 
 };

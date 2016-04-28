@@ -31,7 +31,7 @@ public:
     CampaignStatsMenu(int level);
     virtual ~CampaignStatsMenu();
 
-	virtual int showMenu();
+    virtual int showMenu();
 
     virtual bool doInput(SDL_Event &event);
 
@@ -58,62 +58,62 @@ private:
     } CampaignStatsState;
 
 
-	StaticContainer	windowWidget;
-	Label scoreLabel;
-	Label timeLabel;
+    StaticContainer windowWidget;
+    Label scoreLabel;
+    Label timeLabel;
 
-	Label yourRankLabel;
-	Label rankLabel;
+    Label yourRankLabel;
+    Label rankLabel;
 
     // spice statistics
-	Label       spiceHarvestedByLabel;
-	Label       you1Label;
+    Label       spiceHarvestedByLabel;
+    Label       you1Label;
     ProgressBar spiceYouShadowProgressBar;
-	ProgressBar spiceYouProgressBar;
-	Label       spiceYouLabel;
-	Label       enemy1Label;
-	ProgressBar spiceEnemyShadowProgressBar;
-	ProgressBar spiceEnemyProgressBar;
-	Label       spiceEnemyLabel;
+    ProgressBar spiceYouProgressBar;
+    Label       spiceYouLabel;
+    Label       enemy1Label;
+    ProgressBar spiceEnemyShadowProgressBar;
+    ProgressBar spiceEnemyProgressBar;
+    Label       spiceEnemyLabel;
 
     // units statistics
-	Label       unitsDestroyedByLabel;
-	Label       you2Label;
+    Label       unitsDestroyedByLabel;
+    Label       you2Label;
     ProgressBar unitsYouShadowProgressBar;
-	ProgressBar unitsYouProgressBar;
-	Label       unitsYouLabel;
-	Label       enemy2Label;
-	ProgressBar unitsEnemyShadowProgressBar;
-	ProgressBar unitsEnemyProgressBar;
-	Label       unitsEnemyLabel;
+    ProgressBar unitsYouProgressBar;
+    Label       unitsYouLabel;
+    Label       enemy2Label;
+    ProgressBar unitsEnemyShadowProgressBar;
+    ProgressBar unitsEnemyProgressBar;
+    Label       unitsEnemyLabel;
 
     // buildings statistics
-	Label       buildingsDestroyedByLabel;
-	Label       you3Label;
+    Label       buildingsDestroyedByLabel;
+    Label       you3Label;
     ProgressBar buildingsYouShadowProgressBar;
-	ProgressBar buildingsYouProgressBar;
-	Label       buildingsYouLabel;
-	Label       enemy3Label;
-	ProgressBar buildingsEnemyShadowProgressBar;
-	ProgressBar buildingsEnemyProgressBar;
-	Label       buildingsEnemyLabel;
+    ProgressBar buildingsYouProgressBar;
+    Label       buildingsYouLabel;
+    Label       enemy3Label;
+    ProgressBar buildingsEnemyShadowProgressBar;
+    ProgressBar buildingsEnemyProgressBar;
+    Label       buildingsEnemyLabel;
 
-	int currentStateStartTime;
-	CampaignStatsState currentState;
+    int currentStateStartTime;
+    CampaignStatsState currentState;
 
     int unitsDestroyedByHuman;
-	int unitsDestroyedByAI;
+    int unitsDestroyedByAI;
 
     int structuresDestroyedByHuman;
-	int structuresDestroyedByAI;
+    int structuresDestroyedByAI;
 
-	float spiceHarvestedByHuman;
-	float spiceHarvestedByAI;
+    float spiceHarvestedByHuman;
+    float spiceHarvestedByAI;
 
     int totalTime;
-	int totalScore;
+    int totalScore;
 
-	std::string rank;
+    std::string rank;
 };
 
 #endif //CAMPAIGNSTATSMENU_H

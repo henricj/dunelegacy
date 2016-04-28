@@ -34,26 +34,26 @@
 LoadSaveWindow::LoadSaveWindow(bool bSave, std::string caption, std::vector<std::string> directories, std::vector<std::string> directoryTitles, std::string extension, int preselectedDirectoryIndex, std::string preselectedFile, Uint32 color)
  : Window(0,0,0,0), bSaveWindow(bSave), directories(directories), directoryTitles(directoryTitles), extension(extension), currentDirectoryIndex(preselectedDirectoryIndex), preselectedFile(preselectedFile), color(color) {
 
-	// set up window
+    // set up window
     SDL_Texture *pBackground = pGFXManager->getUIGraphic(UI_LoadSaveWindow);
-	setBackground(pBackground, false);
+    setBackground(pBackground, false);
 
-	setCurrentPosition(calcAlignedDrawingRect(pBackground, HAlign::Center, VAlign::Center));
+    setCurrentPosition(calcAlignedDrawingRect(pBackground, HAlign::Center, VAlign::Center));
 
-	setWindowWidget(&mainHBox);
+    setWindowWidget(&mainHBox);
 
-	mainHBox.addWidget(HSpacer::create(16));
-	mainHBox.addWidget(&mainVBox);
-	mainHBox.addWidget(HSpacer::create(16));
+    mainHBox.addWidget(HSpacer::create(16));
+    mainHBox.addWidget(&mainVBox);
+    mainHBox.addWidget(HSpacer::create(16));
 
-	titleLabel.setTextColor(COLOR_LIGHTYELLOW, COLOR_TRANSPARENT);
-	titleLabel.setAlignment((Alignment_Enum) (Alignment_HCenter | Alignment_VCenter));
-	titleLabel.setText(caption);
-	mainVBox.addWidget(&titleLabel);
+    titleLabel.setTextColor(COLOR_LIGHTYELLOW, COLOR_TRANSPARENT);
+    titleLabel.setAlignment((Alignment_Enum) (Alignment_HCenter | Alignment_VCenter));
+    titleLabel.setText(caption);
+    mainVBox.addWidget(&titleLabel);
 
-	mainVBox.addWidget(VSpacer::create(8));
+    mainVBox.addWidget(VSpacer::create(8));
 
-	if(directories.size() > 1) {
+    if(directories.size() > 1) {
         directoryButtons.resize(directories.size());
 
         for(size_t i=0;i<directories.size(); i++) {
@@ -66,40 +66,40 @@ LoadSaveWindow::LoadSaveWindow(bool bSave, std::string caption, std::vector<std:
         }
 
         mainVBox.addWidget(&directoryHBox, 20);
-	}
+    }
 
-	mainVBox.addWidget(&fileListHBox, (bSave ? 120 : 150) - (directories.size() > 1 ? 20 : 0));
-	fileList.setColor(color);
-	fileList.setOnSelectionChange(std::bind(&LoadSaveWindow::onSelectionChange, this, std::placeholders::_1));
-	fileList.setOnDoubleClick(std::bind(&LoadSaveWindow::onOK, this));
-	fileListHBox.addWidget(&fileList);
+    mainVBox.addWidget(&fileListHBox, (bSave ? 120 : 150) - (directories.size() > 1 ? 20 : 0));
+    fileList.setColor(color);
+    fileList.setOnSelectionChange(std::bind(&LoadSaveWindow::onSelectionChange, this, std::placeholders::_1));
+    fileList.setOnDoubleClick(std::bind(&LoadSaveWindow::onOK, this));
+    fileListHBox.addWidget(&fileList);
 
-	mainVBox.addWidget(VSpacer::create(5));
+    mainVBox.addWidget(VSpacer::create(5));
 
-	if(bSave == true) {
-	    saveName.setTextColor(color);
-		mainVBox.addWidget(&saveName);
-		saveName.setMaximumTextLength(64);
-		mainVBox.addWidget(VSpacer::create(5));
-	}
+    if(bSave == true) {
+        saveName.setTextColor(color);
+        mainVBox.addWidget(&saveName);
+        saveName.setMaximumTextLength(64);
+        mainVBox.addWidget(VSpacer::create(5));
+    }
 
-	mainVBox.addWidget(&buttonHBox);
+    mainVBox.addWidget(&buttonHBox);
 
-	okButton.setText(_(bSave ? "Save" : "Load"));
-	okButton.setTextColor(color);
-	okButton.setOnClick(std::bind(&LoadSaveWindow::onOK, this));
+    okButton.setText(_(bSave ? "Save" : "Load"));
+    okButton.setTextColor(color);
+    okButton.setOnClick(std::bind(&LoadSaveWindow::onOK, this));
 
-	buttonHBox.addWidget(&okButton);
+    buttonHBox.addWidget(&okButton);
 
-	buttonHBox.addWidget(HSpacer::create(8));
+    buttonHBox.addWidget(HSpacer::create(8));
 
-	cancelButton.setText(_("Cancel"));
+    cancelButton.setText(_("Cancel"));
     cancelButton.setTextColor(color);
-	cancelButton.setOnClick(std::bind(&LoadSaveWindow::onCancel, this));
+    cancelButton.setOnClick(std::bind(&LoadSaveWindow::onCancel, this));
 
-	buttonHBox.addWidget(&cancelButton);
+    buttonHBox.addWidget(&cancelButton);
 
-	mainVBox.addWidget(VSpacer::create(10));
+    mainVBox.addWidget(VSpacer::create(10));
 
     if(directories.size() > 1) {
         onDirectoryChange(currentDirectoryIndex);
@@ -110,9 +110,9 @@ LoadSaveWindow::LoadSaveWindow(bool bSave, std::string caption, std::vector<std:
     if(bSaveWindow && (fileList.getSelectedIndex() < 0)) {
         saveName.setText(preselectedFile);
         saveName.setActive();
-	}
+    }
 
-	this->preselectedFile = "";
+    this->preselectedFile = "";
 }
 
 LoadSaveWindow::~LoadSaveWindow() {
@@ -122,38 +122,38 @@ LoadSaveWindow::~LoadSaveWindow() {
 void LoadSaveWindow::updateEntries() {
     fileList.clearAllEntries();
 
-	std::list<std::string> Files = getFileNamesList(directories[currentDirectoryIndex],extension, true, FileListOrder_ModifyDate_Dsc);
+    std::list<std::string> Files = getFileNamesList(directories[currentDirectoryIndex],extension, true, FileListOrder_ModifyDate_Dsc);
 
     int preselectedFileIndex = -1;
 
-	std::list<std::string>::const_iterator iter;
-	for(iter = Files.begin(); iter != Files.end(); ++iter) {
-		std::string tmp = *iter;
-		std::string entryName = tmp.substr(0, tmp.length() - extension.length() - 1);
-		fileList.addEntry(entryName);
+    std::list<std::string>::const_iterator iter;
+    for(iter = Files.begin(); iter != Files.end(); ++iter) {
+        std::string tmp = *iter;
+        std::string entryName = tmp.substr(0, tmp.length() - extension.length() - 1);
+        fileList.addEntry(entryName);
 
-		if(entryName == preselectedFile) {
-		    preselectedFileIndex = fileList.getNumEntries()-1;
-		}
-	}
+        if(entryName == preselectedFile) {
+            preselectedFileIndex = fileList.getNumEntries()-1;
+        }
+    }
 
-	if(preselectedFileIndex >= 0) {
-	    fileList.setSelectedItem(preselectedFileIndex);
-	}
+    if(preselectedFileIndex >= 0) {
+        fileList.setSelectedItem(preselectedFileIndex);
+    }
 }
 
 bool LoadSaveWindow::handleKeyPress(SDL_KeyboardEvent& key) {
-	if(pChildWindow != nullptr) {
-		bool ret = pChildWindow->handleKeyPress(key);
-		return ret;
-	}
+    if(pChildWindow != nullptr) {
+        bool ret = pChildWindow->handleKeyPress(key);
+        return ret;
+    }
 
-	if(isEnabled() && (pWindowWidget != nullptr)) {
-		if(key.keysym.sym == SDLK_RETURN) {
-			onOK();
-			return true;
-		} else if(key.keysym.sym == SDLK_DELETE) {
-		    int index = fileList.getSelectedIndex();
+    if(isEnabled() && (pWindowWidget != nullptr)) {
+        if(key.keysym.sym == SDLK_RETURN) {
+            onOK();
+            return true;
+        } else if(key.keysym.sym == SDLK_DELETE) {
+            int index = fileList.getSelectedIndex();
             if(index >= 0) {
                 QstBox* pQstBox = QstBox::create(   strprintf(_("Do you really want to delete '%s' ?"), fileList.getEntry(index).c_str()),
                                                     _("No"),
@@ -166,12 +166,12 @@ bool LoadSaveWindow::handleKeyPress(SDL_KeyboardEvent& key) {
             }
 
             return true;
-		} else {
-			return pWindowWidget->handleKeyPress(key);
-		}
-	} else {
-		return false;
-	}
+        } else {
+            return pWindowWidget->handleKeyPress(key);
+        }
+    } else {
+        return false;
+    }
 }
 
 
@@ -201,37 +201,37 @@ void LoadSaveWindow::onChildWindowClose(Window* pChildWindow) {
 
 
 void LoadSaveWindow::onOK() {
-	if(bSaveWindow == false) {
-		int index = fileList.getSelectedIndex();
-		if(index >= 0) {
-			filename = directories[currentDirectoryIndex] + fileList.getEntry(index) + "." + extension;
+    if(bSaveWindow == false) {
+        int index = fileList.getSelectedIndex();
+        if(index >= 0) {
+            filename = directories[currentDirectoryIndex] + fileList.getEntry(index) + "." + extension;
 
-			Window* pParentWindow = dynamic_cast<Window*>(getParent());
-			if(pParentWindow != nullptr) {
-				pParentWindow->closeChildWindow();
-			}
-		}
-	} else {
-		std::string savename = saveName.getText();
+            Window* pParentWindow = dynamic_cast<Window*>(getParent());
+            if(pParentWindow != nullptr) {
+                pParentWindow->closeChildWindow();
+            }
+        }
+    } else {
+        std::string savename = saveName.getText();
 
-		if(savename != "" && savename.find_first_of("\\/") == std::string::npos) {
-			filename = directories[currentDirectoryIndex] + saveName.getText() + "." + extension;
+        if(savename != "" && savename.find_first_of("\\/") == std::string::npos) {
+            filename = directories[currentDirectoryIndex] + saveName.getText() + "." + extension;
 
-			Window* pParentWindow = dynamic_cast<Window*>(getParent());
-			if(pParentWindow != nullptr) {
-				pParentWindow->closeChildWindow();
-			}
-		} else {
+            Window* pParentWindow = dynamic_cast<Window*>(getParent());
+            if(pParentWindow != nullptr) {
+                pParentWindow->closeChildWindow();
+            }
+        } else {
             openWindow(MsgBox::create(_("Invalid file name! File names must not contain \\ or / and must not be empty!")));
-		}
-	}
+        }
+    }
 }
 
 void LoadSaveWindow::onCancel() {
-	Window* pParentWindow = dynamic_cast<Window*>(getParent());
-	if(pParentWindow != nullptr) {
-		pParentWindow->closeChildWindow();
-	}
+    Window* pParentWindow = dynamic_cast<Window*>(getParent());
+    if(pParentWindow != nullptr) {
+        pParentWindow->closeChildWindow();
+    }
 }
 
 void LoadSaveWindow::onDirectoryChange(int i) {
@@ -244,11 +244,11 @@ void LoadSaveWindow::onDirectoryChange(int i) {
 }
 
 void LoadSaveWindow::onSelectionChange(bool bInteractive) {
-	if(bSaveWindow == true) {
-		int index = fileList.getSelectedIndex();
-		if(index >= 0) {
-			saveName.setText(fileList.getEntry(index));
-		}
-	}
+    if(bSaveWindow == true) {
+        int index = fileList.getSelectedIndex();
+        if(index >= 0) {
+            saveName.setText(fileList.getEntry(index));
+        }
+    }
 }
 

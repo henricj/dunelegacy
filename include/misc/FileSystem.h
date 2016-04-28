@@ -49,23 +49,23 @@ enum FileListOrder {
 };
 
 /**
-	This function finds all the files in the specified directory with the specified
-	extension.
-	\param	directory	the directory name
-	\param	extension	the extension to search for
-	\param	bIgnoreCase	true = extension comparison is case insensitive
-	\return	a list of all the files with the specified extension
+    This function finds all the files in the specified directory with the specified
+    extension.
+    \param  directory   the directory name
+    \param  extension   the extension to search for
+    \param  bIgnoreCase true = extension comparison is case insensitive
+    \return a list of all the files with the specified extension
 */
 std::list<std::string> getFileNamesList(std::string directory, std::string extension, bool bIgnoreCase = false, FileListOrder fileListOrder = FileListOrder_Unsorted);
 
 
 /**
-	This function finds all the files in the specified directory with the specified
-	extension.
-	\param	directory	the directory name
-	\param	extension	the extension to search for
-	\param	IgnoreCase	true = extension comparison is case insensitive
-	\return	a list of all the files with the specified extension
+    This function finds all the files in the specified directory with the specified
+    extension.
+    \param  directory   the directory name
+    \param  extension   the extension to search for
+    \param  IgnoreCase  true = extension comparison is case insensitive
+    \return a list of all the files with the specified extension
 */
 std::list<FileInfo> getFileList(std::string directory, std::string extension, bool IgnoreCase = false, FileListOrder fileListOrder = FileListOrder_Unsorted);
 
@@ -80,9 +80,9 @@ std::list<FileInfo> getFileList(std::string directory, std::string extension, bo
 bool getCaseInsensitiveFilename(std::string& filepath);
 
 /**
-	This function tests if a file exists
-	\param path	path to the file
-	\return true if it exists, false if not
+    This function tests if a file exists
+    \param path path to the file
+    \return true if it exists, false if not
 */
 bool existsFile(const std::string& path);
 

@@ -69,7 +69,7 @@ EXTERN int                  currentZoomlevel;           ///< 0 = the smallest zo
 
 
 // abstraction layers
-EXTERN SoundPlayer*	        soundPlayer;                ///< manager for playing sfx and voice
+EXTERN SoundPlayer*         soundPlayer;                ///< manager for playing sfx and voice
 EXTERN MusicPlayer*         musicPlayer;                ///< manager for playing background music
 
 EXTERN FileManager*         pFileManager;               ///< manager for loading files from PAKs

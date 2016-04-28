@@ -24,54 +24,54 @@ class Harvester : public TrackedUnit
 {
 public:
 
-	Harvester(House* newOwner);
-	Harvester(InputStream& stream);
-	void init();
-	virtual ~Harvester();
+    Harvester(House* newOwner);
+    Harvester(InputStream& stream);
+    void init();
+    virtual ~Harvester();
 
-	virtual void save(OutputStream& stream) const;
+    virtual void save(OutputStream& stream) const;
 
-	void blitToScreen();
+    void blitToScreen();
 
-	void checkPos();
-	virtual void deploy(const Coord& newLocation);
-	void destroy();
-	virtual void drawSelectionBox();
-	void handleDamage(int damage, Uint32 damagerID, House* damagerOwner);
+    void checkPos();
+    virtual void deploy(const Coord& newLocation);
+    void destroy();
+    virtual void drawSelectionBox();
+    void handleDamage(int damage, Uint32 damagerID, House* damagerOwner);
 
-	void handleReturnClick();
+    void handleReturnClick();
 
     /**
         Order this harvester to return to a refinery.
     */
-	void doReturn();
+    void doReturn();
 
-	void move();
-	void setAmountOfSpice(FixPoint newSpice);
-	void setReturned();
+    void move();
+    void setAmountOfSpice(FixPoint newSpice);
+    void setReturned();
 
-	void setDestination(int newX, int newY);
+    void setDestination(int newX, int newY);
     inline void setDestination(const Coord& location) { setDestination(location.x, location.y); }
 
-	void setTarget(const ObjectBase* newTarget);
+    void setTarget(const ObjectBase* newTarget);
 
-	bool canAttack(const ObjectBase* object) const;
+    bool canAttack(const ObjectBase* object) const;
 
-	FixPoint extractSpice(FixPoint extractionSpeed);
+    FixPoint extractSpice(FixPoint extractionSpeed);
 
-	inline FixPoint getAmountOfSpice() const { return spice; }
-	inline bool isReturning() const { return returningToRefinery; }
-	bool isHarvesting() const;
+    inline FixPoint getAmountOfSpice() const { return spice; }
+    inline bool isReturning() const { return returningToRefinery; }
+    bool isHarvesting() const;
 
 private:
 
     virtual void setSpeeds();
 
     // harvester state
-	bool	 harvestingMode;         ///< currently harvesting
+    bool     harvestingMode;         ///< currently harvesting
     bool     returningToRefinery;    ///< currently on the way back to the refinery
-	FixPoint spice;                  ///< loaded spice
-	Uint32   spiceCheckCounter;      ///< Check for available spice on map to harvest
+    FixPoint spice;                  ///< loaded spice
+    Uint32   spiceCheckCounter;      ///< Check for available spice on map to harvest
 };
 
 #endif // HARVESTER_H

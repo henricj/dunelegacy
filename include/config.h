@@ -21,7 +21,7 @@
 #endif
 
 #ifndef PACKAGE
-	#define PACKAGE "dunelegacy"
+    #define PACKAGE "dunelegacy"
 #endif
 
 #define VERSIONSTRING   PACKAGE VERSION
@@ -31,11 +31,11 @@
 #endif
 
 #ifndef CONFIGFILENAME
-	#define CONFIGFILENAME "Dune Legacy.ini"
+    #define CONFIGFILENAME "Dune Legacy.ini"
 #endif
 
 #ifndef LOGFILENAME
-	#define LOGFILENAME "Dune Legacy.log"
+    #define LOGFILENAME "Dune Legacy.log"
 #endif
 
 // Used by misc/FileSystem's getResourcesBundlePath && TextManager ctor

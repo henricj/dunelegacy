@@ -37,24 +37,24 @@
 typedef enum {
     Mode_RadarOff,
     Mode_RadarOn,
-	Mode_AnimationRadarOff,
-	Mode_AnimationRadarOn
+    Mode_AnimationRadarOff,
+    Mode_AnimationRadarOn
 } RadarViewMode;
 
 /// This class manages the mini map at the top right corner of the screen
 class RadarViewBase : public Widget
 {
 public:
-	/**
+    /**
         Constructor
-	*/
-	RadarViewBase() : Widget(), radarMode(false) {
-	    resize(RADARWIDTH + (2 * RADARVIEW_BORDERTHICKNESS), RADARHEIGHT + (2 * RADARVIEW_BORDERTHICKNESS));
+    */
+    RadarViewBase() : Widget(), radarMode(false) {
+        resize(RADARWIDTH + (2 * RADARVIEW_BORDERTHICKNESS), RADARHEIGHT + (2 * RADARVIEW_BORDERTHICKNESS));
     }
 
-	/**
+    /**
         Destructor
-	*/
+    */
     virtual ~RadarViewBase() {
 
     }
@@ -72,20 +72,20 @@ public:
     virtual int getMapSizeY() const = 0;
 
 
-	/**
-		Draws the radar to screen. This method is called before drawOverlay().
-		\param	Position	Position to draw the radar to
-	*/
-	virtual inline void draw(Point position) { ; };
+    /**
+        Draws the radar to screen. This method is called before drawOverlay().
+        \param  Position    Position to draw the radar to
+    */
+    virtual inline void draw(Point position) { ; };
 
 
-	/**
+    /**
         This method checks if position is inside the radar view
         \param mouseX the x-coordinate to check (relative to the top left corner of the radar)
         \param mouseY the y-coordinate to check (relative to the top left corner of the radar)
         \return true, if inside the radar view; false otherwise
-	*/
-	bool isOnRadar(int mouseX, int mouseY) const {
+    */
+    bool isOnRadar(int mouseX, int mouseY) const {
         int scale = 1;
         int offsetX = 0;
         int offsetY = 0;
@@ -106,8 +106,8 @@ public:
         \param mouseX  the position on the radar screen (relative to the top left corner of the radar)
         \param mouseY  the position on the radar screen (relative to the top left corner of the radar)
         \return the world coordinates
-	*/
-	Coord getWorldCoords(int mouseX, int mouseY) const {
+    */
+    Coord getWorldCoords(int mouseX, int mouseY) const {
         Coord positionOnRadar(mouseX - RADARVIEW_BORDERTHICKNESS, mouseY - RADARVIEW_BORDERTHICKNESS);
 
         int scale = 1;
@@ -129,7 +129,7 @@ public:
         \param  offsetX     The offset in x direction is saved here
         \param  offsetY     The offset in y direction is saved here
     */
-	static void calculateScaleAndOffsets(int MapSizeX, int MapSizeY, int& scale, int& offsetX, int& offsetY) {
+    static void calculateScaleAndOffsets(int MapSizeX, int MapSizeY, int& scale, int& offsetX, int& offsetY) {
         scale = 1;
         offsetX = 0;
         offsetY = 0;
@@ -148,42 +148,42 @@ public:
 
         offsetX = (128 - (MapSizeX*scale))/2;
         offsetY = (128 - (MapSizeY*scale))/2;
-	}
-
-
-	/**
-		Returns the minimum size of this widget. The widget should not
-		resized to a size smaller than this. If the widget is not resizeable
-		in a direction this method returns the size in that direction.
-		\return the minimum size of this widget
-	*/
-	virtual Point getMinimumSize() const { return Point(RADARWIDTH + (2 * RADARVIEW_BORDERTHICKNESS),RADARHEIGHT + (2 * RADARVIEW_BORDERTHICKNESS)); };
+    }
 
 
     /**
-		Handles a mouse movement.
-		\param	x               x-coordinate (relative to the left top corner of the widget)
-		\param	y               y-coordinate (relative to the left top corner of the widget)
-		\param  insideOverlay   true, if (x,y) is inside an overlay and this widget may be behind it, false otherwise
-	*/
-	virtual void handleMouseMovement(Sint32 x, Sint32 y, bool insideOverlay) {
+        Returns the minimum size of this widget. The widget should not
+        resized to a size smaller than this. If the widget is not resizeable
+        in a direction this method returns the size in that direction.
+        \return the minimum size of this widget
+    */
+    virtual Point getMinimumSize() const { return Point(RADARWIDTH + (2 * RADARVIEW_BORDERTHICKNESS),RADARHEIGHT + (2 * RADARVIEW_BORDERTHICKNESS)); };
+
+
+    /**
+        Handles a mouse movement.
+        \param  x               x-coordinate (relative to the left top corner of the widget)
+        \param  y               y-coordinate (relative to the left top corner of the widget)
+        \param  insideOverlay   true, if (x,y) is inside an overlay and this widget may be behind it, false otherwise
+    */
+    virtual void handleMouseMovement(Sint32 x, Sint32 y, bool insideOverlay) {
         if(radarMode && isOnRadar(x,y)) {
             if(pOnRadarClick) {
                 radarMode = pOnRadarClick(getWorldCoords(x,y), false, true);
             }
         }
-	}
+    }
 
 
-	/**
-		Handles a left mouse click.
-		\param	x x-coordinate (relative to the left top corner of the widget)
-		\param	y y-coordinate (relative to the left top corner of the widget)
-		\param	pressed	true = mouse button pressed, false = mouse button released
-		\return	true = click was processed by the widget, false = click was not processed by the widget
-	*/
-	virtual bool handleMouseLeft(Sint32 x, Sint32 y, bool pressed) {
-	    if(pressed) {
+    /**
+        Handles a left mouse click.
+        \param  x x-coordinate (relative to the left top corner of the widget)
+        \param  y y-coordinate (relative to the left top corner of the widget)
+        \param  pressed true = mouse button pressed, false = mouse button released
+        \return true = click was processed by the widget, false = click was not processed by the widget
+    */
+    virtual bool handleMouseLeft(Sint32 x, Sint32 y, bool pressed) {
+        if(pressed) {
             if(isOnRadar(x,y)) {
                 if(pOnRadarClick) {
                     radarMode = pOnRadarClick(getWorldCoords(x,y), false, false);
@@ -191,22 +191,22 @@ public:
                 return true;
             }
             return false;
-	    } else {
-	        radarMode = false;
+        } else {
+            radarMode = false;
             return false;
-	    }
-	}
+        }
+    }
 
 
-	/**
-		Handles a right mouse click.
-		\param	x x-coordinate (relative to the left top corner of the widget)
-		\param	y y-coordinate (relative to the left top corner of the widget)
-		\param	pressed	true = mouse button pressed, false = mouse button released
-		\return	true = click was processed by the widget, false = click was not processed by the widget
-	*/
-	virtual bool handleMouseRight(Sint32 x, Sint32 y, bool pressed) {
-	    if(pressed) {
+    /**
+        Handles a right mouse click.
+        \param  x x-coordinate (relative to the left top corner of the widget)
+        \param  y y-coordinate (relative to the left top corner of the widget)
+        \param  pressed true = mouse button pressed, false = mouse button released
+        \return true = click was processed by the widget, false = click was not processed by the widget
+    */
+    virtual bool handleMouseRight(Sint32 x, Sint32 y, bool pressed) {
+        if(pressed) {
             if(isOnRadar(x,y)) {
                 if(pOnRadarClick) {
                     radarMode = pOnRadarClick(getWorldCoords(x,y), true, false);
@@ -214,25 +214,25 @@ public:
                 return true;
             }
             return false;
-	    } else {
-	        radarMode = false;
+        } else {
+            radarMode = false;
             return false;
-	    }
-	}
+        }
+    }
 
 
-	/**
-		Sets the function that should be called when the radar view is clicked.
-		\param	pOnRadarClick	A function to be called on click
-	*/
-	inline void setOnRadarClick(std::function<bool (Coord,bool,bool)> pOnRadarClick) {
-		this->pOnRadarClick = pOnRadarClick;
-	}
+    /**
+        Sets the function that should be called when the radar view is clicked.
+        \param  pOnRadarClick   A function to be called on click
+    */
+    inline void setOnRadarClick(std::function<bool (Coord,bool,bool)> pOnRadarClick) {
+        this->pOnRadarClick = pOnRadarClick;
+    }
 
 protected:
     std::function<bool (Coord,bool,bool)> pOnRadarClick;  ///< this function is called when the user clicks on the radar (1st parameter is world coordinate; 2nd parameter is whether the right mouse button was pressed; 3rd parameter is whether the mouse was moved while being pressed, e.g. dragging; return value shall be true if dragging should start or continue)
 
-    bool	    radarMode;                                  ///< currently dragging on the radar? (e.g. moving the view rectangle on the radar)
+    bool        radarMode;                                  ///< currently dragging on the radar? (e.g. moving the view rectangle on the radar)
 };
 
 #endif // RADARVIEWBASE_H

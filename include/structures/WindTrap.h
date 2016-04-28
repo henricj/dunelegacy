@@ -23,23 +23,23 @@
 class WindTrap : public StructureBase
 {
 public:
-	WindTrap(House* newOwner);
-	WindTrap(InputStream& stream);
-	void init();
-	virtual ~WindTrap();
+    WindTrap(House* newOwner);
+    WindTrap(InputStream& stream);
+    void init();
+    virtual ~WindTrap();
 
     virtual ObjectInterface* getInterfaceContainer();
 
     /**
         Updates this object.
         \return true if this object still exists, false if it was destroyed
-	*/
-	virtual bool update();
+    */
+    virtual bool update();
 
     virtual void setHealth(FixPoint newHealth);
 
 protected:
-	int getProducedPower() const;
+    int getProducedPower() const;
 };
 
 #endif //WINDTRAP_H

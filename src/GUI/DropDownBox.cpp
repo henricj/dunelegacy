@@ -20,28 +20,28 @@
 #include <algorithm>
 
 DropDownBox::DropDownBox() : Widget() {
-	enableResizing(true,false);
+    enableResizing(true,false);
 
     numVisibleEntries = 7;
 
-	color = COLOR_DEFAULT;
-	bHover = false;
+    color = COLOR_DEFAULT;
+    bHover = false;
     updateButtonSurface();
 
-	openListBoxButton.setOnClick(std::bind(&DropDownBox::onOpenListBoxButton, this));
+    openListBoxButton.setOnClick(std::bind(&DropDownBox::onOpenListBoxButton, this));
 
-	listBox.setOnSelectionChange(std::bind(&DropDownBox::onSelectionChange, this, std::placeholders::_1));
+    listBox.setOnSelectionChange(std::bind(&DropDownBox::onSelectionChange, this, std::placeholders::_1));
 
-	pBackground = nullptr;
-	pForeground = nullptr;
-	pActiveForeground = nullptr;
+    pBackground = nullptr;
+    pForeground = nullptr;
+    pActiveForeground = nullptr;
 
-	bShowListBox = false;
-	bListBoxAbove = false;
-	bAutocloseListBoxOnSelectionChange = true;
+    bShowListBox = false;
+    bListBoxAbove = false;
+    bAutocloseListBoxOnSelectionChange = true;
     bOnClickEnabled = true;
 
-	resize(getMinimumSize().x,getMinimumSize().y);
+    resize(getMinimumSize().x,getMinimumSize().y);
 }
 
 DropDownBox::~DropDownBox() {
@@ -51,18 +51,18 @@ DropDownBox::~DropDownBox() {
 
 void DropDownBox::handleMouseMovement(Sint32 x, Sint32 y, bool insideOverlay) {
     if((x < 0) || (x >= getSize().x - openListBoxButton.getSize().x - 1) || (y < 0) || (y >= getSize().y)) {
-		bHover = false;
-	} else if((isEnabled() || (bOnClickEnabled && pOnClick)) && !insideOverlay) {
-		bHover = true;
-	} else {
         bHover = false;
-	}
+    } else if((isEnabled() || (bOnClickEnabled && pOnClick)) && !insideOverlay) {
+        bHover = true;
+    } else {
+        bHover = false;
+    }
 
-	openListBoxButton.handleMouseMovement(x - (getSize().x - openListBoxButton.getSize().x - 1), y - 1, insideOverlay);
+    openListBoxButton.handleMouseMovement(x - (getSize().x - openListBoxButton.getSize().x - 1), y - 1, insideOverlay);
 
-	if(bShowListBox) {
-		listBox.handleMouseMovement(x, bListBoxAbove ? (y + listBox.getSize().y) : (y - getSize().y), insideOverlay);
-	}
+    if(bShowListBox) {
+        listBox.handleMouseMovement(x, bListBoxAbove ? (y + listBox.getSize().y) : (y - getSize().y), insideOverlay);
+    }
 }
 
 bool DropDownBox::handleMouseMovementOverlay(Sint32 x, Sint32 y) {
@@ -87,12 +87,12 @@ bool DropDownBox::handleMouseLeft(Sint32 x, Sint32 y, bool pressed) {
         return true;
     }
 
-	if(openListBoxButton.handleMouseLeft(x - (getSize().x - openListBoxButton.getSize().x - 1), y - 1, pressed)) {
-		setActive();
-		return true;
-	} else {
-		if((x>=0) && (x < getSize().x - openListBoxButton.getSize().x - 1)
-			&& (y>=0) && (y < getSize().y) && (pressed == true)) {
+    if(openListBoxButton.handleMouseLeft(x - (getSize().x - openListBoxButton.getSize().x - 1), y - 1, pressed)) {
+        setActive();
+        return true;
+    } else {
+        if((x>=0) && (x < getSize().x - openListBoxButton.getSize().x - 1)
+            && (y>=0) && (y < getSize().y) && (pressed == true)) {
 
             if(bOnClickEnabled && pOnClick) {
                 pOnClick();
@@ -100,11 +100,11 @@ bool DropDownBox::handleMouseLeft(Sint32 x, Sint32 y, bool pressed) {
                 setActive();
                 onOpenListBoxButton();
             }
-			return true;
-		} else {
-			return false;
-		}
-	}
+            return true;
+        } else {
+            return false;
+        }
+    }
 }
 
 bool DropDownBox::handleMouseLeftOverlay(Sint32 x, Sint32 y, bool pressed) {
@@ -112,8 +112,8 @@ bool DropDownBox::handleMouseLeftOverlay(Sint32 x, Sint32 y, bool pressed) {
         return false;
     }
 
-	if(bShowListBox) {
-	    if(listBox.handleMouseLeft(x, bListBoxAbove ? (y + listBox.getSize().y) : (y - getSize().y), pressed) == false) {
+    if(bShowListBox) {
+        if(listBox.handleMouseLeft(x, bListBoxAbove ? (y + listBox.getSize().y) : (y - getSize().y), pressed) == false) {
             if(x < 0 || x >= getSize().x || y < 0 || y >= getSize().y) {
                 // if not on drop down box => click is handled by closing drop down box
                 bShowListBox = false;
@@ -122,12 +122,12 @@ bool DropDownBox::handleMouseLeftOverlay(Sint32 x, Sint32 y, bool pressed) {
                 // on drop down box we don't handle overlay click
                 return false;
             }
-	    } else {
+        } else {
             return true;
-	    }
-	} else {
-		return false;
-	}
+        }
+    } else {
+        return false;
+    }
 }
 
 bool DropDownBox::handleMouseWheel(Sint32 x, Sint32 y, bool up) {
@@ -135,25 +135,25 @@ bool DropDownBox::handleMouseWheel(Sint32 x, Sint32 y, bool up) {
         return false;
     }
 
-	// forward mouse wheel event to list box
-	if(x >= 0 && x < getSize().x && y >= 0 && y < getSize().y) {
-		if(up) {
-			if(listBox.getSelectedIndex() < 0) {
-				listBox.setSelectedItem(0,true);
-			} else if(listBox.getSelectedIndex() > 0) {
-				listBox.setSelectedItem(listBox.getSelectedIndex()-1,true);
-			}
-		} else {
-			if(listBox.getSelectedIndex() < 0) {
-				listBox.setSelectedItem(0,true);
-			} else if(listBox.getSelectedIndex() < listBox.getNumEntries()-1) {
-				listBox.setSelectedItem(listBox.getSelectedIndex()+1,true);
-			}
-		}
-		return true;
-	} else {
-		return false;
-	}
+    // forward mouse wheel event to list box
+    if(x >= 0 && x < getSize().x && y >= 0 && y < getSize().y) {
+        if(up) {
+            if(listBox.getSelectedIndex() < 0) {
+                listBox.setSelectedItem(0,true);
+            } else if(listBox.getSelectedIndex() > 0) {
+                listBox.setSelectedItem(listBox.getSelectedIndex()-1,true);
+            }
+        } else {
+            if(listBox.getSelectedIndex() < 0) {
+                listBox.setSelectedItem(0,true);
+            } else if(listBox.getSelectedIndex() < listBox.getNumEntries()-1) {
+                listBox.setSelectedItem(listBox.getSelectedIndex()+1,true);
+            }
+        }
+        return true;
+    } else {
+        return false;
+    }
 }
 
 bool DropDownBox::handleMouseWheelOverlay(Sint32 x, Sint32 y, bool up) {
@@ -161,18 +161,18 @@ bool DropDownBox::handleMouseWheelOverlay(Sint32 x, Sint32 y, bool up) {
         return false;
     }
 
-	// forward mouse wheel event to list box
-	if(bShowListBox) {
-	    int newY = bListBoxAbove ? (y + listBox.getSize().y) : (y - getSize().y);
-		listBox.handleMouseWheel(x,newY,up);
-		if(x >= 0 && x < listBox.getSize().x && newY >= 0 && newY < listBox.getSize().y) {
+    // forward mouse wheel event to list box
+    if(bShowListBox) {
+        int newY = bListBoxAbove ? (y + listBox.getSize().y) : (y - getSize().y);
+        listBox.handleMouseWheel(x,newY,up);
+        if(x >= 0 && x < listBox.getSize().x && newY >= 0 && newY < listBox.getSize().y) {
             return true;
-		} else {
+        } else {
             return false;
-		}
-	} else {
-		return false;
-	}
+        }
+    } else {
+        return false;
+    }
 }
 
 bool DropDownBox::handleKeyPress(SDL_KeyboardEvent& key) {
@@ -180,88 +180,88 @@ bool DropDownBox::handleKeyPress(SDL_KeyboardEvent& key) {
         return false;
     }
 
-	Widget::handleKeyPress(key);
-	if(isActive()) {
-		// disable autoclosing of the list box
-		bool bSavedAutoclose = bAutocloseListBoxOnSelectionChange;
-		bAutocloseListBoxOnSelectionChange = false;
+    Widget::handleKeyPress(key);
+    if(isActive()) {
+        // disable autoclosing of the list box
+        bool bSavedAutoclose = bAutocloseListBoxOnSelectionChange;
+        bAutocloseListBoxOnSelectionChange = false;
 
-		switch(key.keysym.sym) {
-			case SDLK_UP: {
-				if(listBox.getSelectedIndex() < 0) {
-					listBox.setSelectedItem(0,true);
-				} else if(listBox.getSelectedIndex() > 0) {
-					listBox.setSelectedItem(listBox.getSelectedIndex()-1,true);
-				}
-			} break;
+        switch(key.keysym.sym) {
+            case SDLK_UP: {
+                if(listBox.getSelectedIndex() < 0) {
+                    listBox.setSelectedItem(0,true);
+                } else if(listBox.getSelectedIndex() > 0) {
+                    listBox.setSelectedItem(listBox.getSelectedIndex()-1,true);
+                }
+            } break;
 
-			case SDLK_DOWN: {
-				if(listBox.getSelectedIndex() < 0) {
-					listBox.setSelectedItem(0,true);
-				} else if(listBox.getSelectedIndex() < listBox.getNumEntries()-1) {
-					listBox.setSelectedItem(listBox.getSelectedIndex()+1,true);
-				}
-			} break;
+            case SDLK_DOWN: {
+                if(listBox.getSelectedIndex() < 0) {
+                    listBox.setSelectedItem(0,true);
+                } else if(listBox.getSelectedIndex() < listBox.getNumEntries()-1) {
+                    listBox.setSelectedItem(listBox.getSelectedIndex()+1,true);
+                }
+            } break;
 
-			case SDLK_SPACE: {
-				bShowListBox = !bShowListBox;
-			} break;
+            case SDLK_SPACE: {
+                bShowListBox = !bShowListBox;
+            } break;
 
-			case SDLK_TAB: {
+            case SDLK_TAB: {
                 setInactive();
             } break;
 
-			default: {
-			} break;
-		}
+            default: {
+            } break;
+        }
 
-		bAutocloseListBoxOnSelectionChange = bSavedAutoclose;
-		return true;
-	}
+        bAutocloseListBoxOnSelectionChange = bSavedAutoclose;
+        return true;
+    }
 
-	return false;
+    return false;
 
 }
 
 void DropDownBox::draw(Point position) {
-	if(isVisible() == false) {
-		return;
-	}
+    if(isVisible() == false) {
+        return;
+    }
 
-	updateBackground();
+    updateBackground();
 
-	if(pBackground != nullptr) {
-		SDL_Rect dest = calcDrawingRect(pBackground, position.x, position.y);
-		SDL_RenderCopy(renderer, pBackground, nullptr, &dest);
-	}
+    if(pBackground != nullptr) {
+        SDL_Rect dest = calcDrawingRect(pBackground, position.x, position.y);
+        SDL_RenderCopy(renderer, pBackground, nullptr, &dest);
+    }
 
-	updateForeground();
+    updateForeground();
 
-	if(pForeground != nullptr && pActiveForeground != nullptr) {
-		if(((bHover == true) && pOnClick) || isActive()) {
-		    SDL_Rect dest = calcDrawingRect(pActiveForeground, position.x + 2, position.y + 2);
+    if(pForeground != nullptr && pActiveForeground != nullptr) {
+        if(((bHover == true) && pOnClick) || isActive()) {
+            SDL_Rect dest = calcDrawingRect(pActiveForeground, position.x + 2, position.y + 2);
             SDL_RenderCopy(renderer, pActiveForeground, nullptr, &dest);
-		} else {
-		    SDL_Rect dest = calcDrawingRect(pForeground, position.x + 2, position.y + 2);
+        } else {
+            SDL_Rect dest = calcDrawingRect(pForeground, position.x + 2, position.y + 2);
             SDL_RenderCopy(renderer, pForeground, nullptr, &dest);
-		}
-	}
+        }
+    }
 
-	openListBoxButton.draw(position + Point(getSize().x - openListBoxButton.getSize().x - 1, 1));
+    openListBoxButton.draw(position + Point(getSize().x - openListBoxButton.getSize().x - 1, 1));
 }
 
 void DropDownBox::drawOverlay(Point position) {
-	if(bShowListBox) {
+    if(bShowListBox) {
         bListBoxAbove = (position.y + listBox.getSize().y > getRendererHeight());
-		listBox.draw(position + Point(0,bListBoxAbove ? -listBox.getSize().y : getSize().y));
-	}
+        listBox.draw(position + Point(0,bListBoxAbove ? -listBox.getSize().y : getSize().y));
+    }
 }
 
 void DropDownBox::resize(Uint32 width, Uint32 height) {
-	Widget::resize(width,height);
+    Widget::resize(width,height);
 
-	invalidateForeground();
-	invalidateBackground();
+    invalidateForeground();
+    invalidateBackground();
 
     resizeListBox();
 }
@@ -272,43 +272,43 @@ void DropDownBox::resizeListBox() {
 }
 
 void DropDownBox::setActive(bool bActive) {
-	if(bActive == false) {
-		bShowListBox = false;
-		openListBoxButton.setInactive();
-	} else {
+    if(bActive == false) {
+        bShowListBox = false;
+        openListBoxButton.setInactive();
+    } else {
         openListBoxButton.setActive();
-	}
-	Widget::setActive(bActive);
+    }
+    Widget::setActive(bActive);
 }
 
 void DropDownBox::onSelectionChange(bool bInteractive) {
     invalidateForeground();
 
-	if(bAutocloseListBoxOnSelectionChange) {
-		bShowListBox = false;
-	}
+    if(bAutocloseListBoxOnSelectionChange) {
+        bShowListBox = false;
+    }
 
-	if(pOnSelectionChange) {
-		pOnSelectionChange(bInteractive);
-	}
+    if(pOnSelectionChange) {
+        pOnSelectionChange(bInteractive);
+    }
 }
 
 void DropDownBox::updateButtonSurface() {
-    openListBoxButton.setSurfaces(	GUIStyle::getInstance().createDropDownBoxButton(17,false,false,color), true,
-									GUIStyle::getInstance().createDropDownBoxButton(17,true,true,color), true,
-									GUIStyle::getInstance().createDropDownBoxButton(17,false,true,color), true);
+    openListBoxButton.setSurfaces(  GUIStyle::getInstance().createDropDownBoxButton(17,false,false,color), true,
+                                    GUIStyle::getInstance().createDropDownBoxButton(17,true,true,color), true,
+                                    GUIStyle::getInstance().createDropDownBoxButton(17,false,true,color), true);
 }
 
 void DropDownBox::invalidateForeground() {
     if(pForeground != nullptr) {
-		SDL_DestroyTexture(pForeground);
-		pForeground = nullptr;
-	}
+        SDL_DestroyTexture(pForeground);
+        pForeground = nullptr;
+    }
 
     if(pActiveForeground != nullptr) {
-		SDL_DestroyTexture(pActiveForeground);
-		pActiveForeground = nullptr;
-	}
+        SDL_DestroyTexture(pActiveForeground);
+        pActiveForeground = nullptr;
+    }
 }
 
 void DropDownBox::updateForeground() {
@@ -317,7 +317,7 @@ void DropDownBox::updateForeground() {
             pForeground = convertSurfaceToTexture(GUIStyle::getInstance().createListBoxEntry(getSize().x - 17, listBox.getEntry(listBox.getSelectedIndex()), false, color), true);
             pActiveForeground = convertSurfaceToTexture(GUIStyle::getInstance().createListBoxEntry(getSize().x - 17, listBox.getEntry(listBox.getSelectedIndex()), true, color), true);
         }
-	}
+    }
 }
 
 void DropDownBox::invalidateBackground() {

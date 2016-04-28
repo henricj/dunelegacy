@@ -30,24 +30,24 @@ int voiceChannel = 0;
 bool PlayingVoiceATM = false;
 
 static void VoiceChunkFinishedCallback(int channel) {
-	if(channel == voiceChannel) {
-		PlayingVoiceATM = false;
-	}
+    if(channel == voiceChannel) {
+        PlayingVoiceATM = false;
+    }
 }
 
 SoundPlayer::SoundPlayer() {
-	sfxVolume = settings.audio.sfxVolume;
+    sfxVolume = settings.audio.sfxVolume;
 
-	Mix_Volume(-1, sfxVolume);
+    Mix_Volume(-1, sfxVolume);
 
-	// init global variables
-	curVoiceChunk = nullptr;
-	PlayingVoiceATM = false;
+    // init global variables
+    curVoiceChunk = nullptr;
+    PlayingVoiceATM = false;
 
-	voiceChannel = Mix_ReserveChannels(1);	//Reserve a channel for voice over
-	Mix_ChannelFinished(VoiceChunkFinishedCallback);
+    voiceChannel = Mix_ReserveChannels(1);  //Reserve a channel for voice over
+    Mix_ChannelFinished(VoiceChunkFinishedCallback);
 
-	soundOn = settings.audio.playSFX;
+    soundOn = settings.audio.playSFX;
 }
 
 SoundPlayer::~SoundPlayer() {
@@ -55,7 +55,7 @@ SoundPlayer::~SoundPlayer() {
 
 void SoundPlayer::playSoundAt(Sound_enum soundID, const Coord& location)
 {
-	if(soundOn) {
+    if(soundOn) {
         if( !currentGameMap->tileExists(location)
             || !currentGameMap->getTile(location)->isExplored(pLocalHouse->getHouseID()) ) {
             return;
@@ -72,62 +72,62 @@ void SoundPlayer::playSoundAt(Sound_enum soundID, const Coord& location)
         } else {
             playSound(soundID, sfxVolume/4);
         }
-	}
+    }
 }
 
 void SoundPlayer::playSound(Sound_enum soundID, int volume)
 {
-	if(soundOn) {
-		Mix_Chunk* tmp;
+    if(soundOn) {
+        Mix_Chunk* tmp;
 
-		if((tmp = pSFXManager->getSound(soundID)) == nullptr) {
-			return;
-		}
-
-		int channel = Mix_PlayChannel(-1,tmp, 0);
-		if(channel != -1) {
-			Mix_Volume(channel, volume);
+        if((tmp = pSFXManager->getSound(soundID)) == nullptr) {
+            return;
         }
-	}
+
+        int channel = Mix_PlayChannel(-1,tmp, 0);
+        if(channel != -1) {
+            Mix_Volume(channel, volume);
+        }
+    }
 }
 
 void SoundPlayer::playVoice(Voice_enum id, int houseID) {
-	if(soundOn) {
-		Mix_Chunk* tmp;
+    if(soundOn) {
+        Mix_Chunk* tmp;
 
-		if((tmp = pSFXManager->getVoice(id,houseID)) == nullptr) {
-			fprintf(stderr,"There is no voice with id %d!\n",id);
-			exit(EXIT_FAILURE);
-		}
+        if((tmp = pSFXManager->getVoice(id,houseID)) == nullptr) {
+            fprintf(stderr,"There is no voice with id %d!\n",id);
+            exit(EXIT_FAILURE);
+        }
 
-		int channel = Mix_PlayChannel(-1, tmp, 0);
-		if(channel != -1) {
+        int channel = Mix_PlayChannel(-1, tmp, 0);
+        if(channel != -1) {
             Mix_Volume(channel, sfxVolume);
         }
-	}
+    }
 }
 
 void SoundPlayer::playSound(Mix_Chunk* sound) {
-	if(soundOn) {
-		int channel = Mix_PlayChannel(-1, sound, 0);
-		if(channel != -1) {
+    if(soundOn) {
+        int channel = Mix_PlayChannel(-1, sound, 0);
+        if(channel != -1) {
             Mix_Volume(channel, sfxVolume);
         }
-	}
+    }
 }
 
 void SoundPlayer::playSound(Sound_enum id) {
-	if(soundOn) {
-		Mix_Chunk* tmp;
+    if(soundOn) {
+        Mix_Chunk* tmp;
 
-		if((tmp = pSFXManager->getSound(id)) == nullptr) {
-			fprintf(stderr,"There is no sound with id %d!\n",id);
-			exit(EXIT_FAILURE);
-		}
+        if((tmp = pSFXManager->getSound(id)) == nullptr) {
+            fprintf(stderr,"There is no sound with id %d!\n",id);
+            exit(EXIT_FAILURE);
+        }
 
-		int channel = Mix_PlayChannel(-1, tmp, 0);
-		if(channel != -1) {
+        int channel = Mix_PlayChannel(-1, tmp, 0);
+        if(channel != -1) {
             Mix_Volume(channel, sfxVolume);
         }
-	}
+    }
 }

@@ -33,105 +33,105 @@
 class LoadSaveWindow : public Window
 {
 public:
-	LoadSaveWindow(bool bSave, std::string caption, std::vector<std::string> directories, std::vector<std::string> directoryTitles, std::string extension, int preselectedDirectoryIndex = 0, std::string preselectedFile = "", Uint32 color = COLOR_DEFAULT);
-	virtual ~LoadSaveWindow();
+    LoadSaveWindow(bool bSave, std::string caption, std::vector<std::string> directories, std::vector<std::string> directoryTitles, std::string extension, int preselectedDirectoryIndex = 0, std::string preselectedFile = "", Uint32 color = COLOR_DEFAULT);
+    virtual ~LoadSaveWindow();
 
-	void updateEntries();
-	std::string getFilename() { return filename; };
+    void updateEntries();
+    std::string getFilename() { return filename; };
 
-	bool isSaveWindow() { return bSaveWindow; };
+    bool isSaveWindow() { return bSaveWindow; };
 
-	const std::string& getDirectory() const { return directories[currentDirectoryIndex]; };
+    const std::string& getDirectory() const { return directories[currentDirectoryIndex]; };
 
-	int getCurrentDirectoryIndex() const { return currentDirectoryIndex; };
+    int getCurrentDirectoryIndex() const { return currentDirectoryIndex; };
 
-	std::string getExtension() { return extension; };
+    std::string getExtension() { return extension; };
 
-	virtual bool handleKeyPress(SDL_KeyboardEvent& key);
+    virtual bool handleKeyPress(SDL_KeyboardEvent& key);
 
-	/**
-		This method is called, when the child window is about to be closed.
-		This child window will be closed after this method returns.
-		\param	pChildWindow	The child window that will be closed
-	*/
-	virtual void onChildWindowClose(Window* pChildWindow);
+    /**
+        This method is called, when the child window is about to be closed.
+        This child window will be closed after this method returns.
+        \param  pChildWindow    The child window that will be closed
+    */
+    virtual void onChildWindowClose(Window* pChildWindow);
 
-	void onSaveNameCancel();
-	void onSaveNameConfirm();
+    void onSaveNameCancel();
+    void onSaveNameConfirm();
 
-	/**
-		This static method creates a dynamic load/save window.
-		The idea behind this method is to simply create a new dialog on the fly and
-		add it as a child window of some other window. If the window gets closed it will be freed.
-		\param	bSave		true = Save window, false = Load window
-		\param	caption		the caption of the window
-		\param	directory	the directory to save/load from
-		\param	extension	the file extension
-		\param  preselectedFile the name of a file (without extension) that shall be selected upon opening this dialog
-		\param  color       the color of the new dialog
-		\return	The new dialog box (will be automatically destroyed when it's closed)
-	*/
-	static LoadSaveWindow* create(bool bSave, std::string caption, std::string directory, std::string extension, std::string preselectedFile = "", Uint32 color = COLOR_DEFAULT) {
-		std::vector<std::string> directories;
-		directories.push_back(directory);
+    /**
+        This static method creates a dynamic load/save window.
+        The idea behind this method is to simply create a new dialog on the fly and
+        add it as a child window of some other window. If the window gets closed it will be freed.
+        \param  bSave       true = Save window, false = Load window
+        \param  caption     the caption of the window
+        \param  directory   the directory to save/load from
+        \param  extension   the file extension
+        \param  preselectedFile the name of a file (without extension) that shall be selected upon opening this dialog
+        \param  color       the color of the new dialog
+        \return The new dialog box (will be automatically destroyed when it's closed)
+    */
+    static LoadSaveWindow* create(bool bSave, std::string caption, std::string directory, std::string extension, std::string preselectedFile = "", Uint32 color = COLOR_DEFAULT) {
+        std::vector<std::string> directories;
+        directories.push_back(directory);
         std::vector<std::string> directoryTitles;
         directoryTitles.push_back("");
 
-		LoadSaveWindow* dlg = new LoadSaveWindow(bSave, caption, directories, directoryTitles, extension, 0, preselectedFile, color);
-		dlg->pAllocated = true;
-		return dlg;
-	}
+        LoadSaveWindow* dlg = new LoadSaveWindow(bSave, caption, directories, directoryTitles, extension, 0, preselectedFile, color);
+        dlg->pAllocated = true;
+        return dlg;
+    }
 
-	/**
-		This static method creates a dynamic load/save window.
-		The idea behind this method is to simply create a new dialog on the fly and
-		add it as a child window of some other window. If the window gets closed it will be freed.
-		\param	bSave		true = Save window, false = Load window
-		\param	caption		the caption of the window
-		\param	directories	a list of directories to save/load from
-		\param  directoryTitles a list of button titles for the listed directories
-		\param	extension	the file extension
-		\param  preselectedDirectoryIndex   which directory to show on opening this dialog?
-		\param  preselectedFile the name of a file (without extension) that shall be selected upon opening this dialog
-		\param  color       the color of the new dialog
-		\return	The new dialog box (will be automatically destroyed when it's closed)
-	*/
-	static LoadSaveWindow* create(bool bSave, std::string caption, std::vector<std::string> directories, std::vector<std::string> directoryTitles, std::string extension, int preselectedDirectoryIndex = 0, std::string preselectedFile = "", Uint32 color = COLOR_DEFAULT) {
-		LoadSaveWindow* dlg = new LoadSaveWindow(bSave, caption, directories, directoryTitles, extension, preselectedDirectoryIndex, preselectedFile, color);
-		dlg->pAllocated = true;
-		return dlg;
-	}
+    /**
+        This static method creates a dynamic load/save window.
+        The idea behind this method is to simply create a new dialog on the fly and
+        add it as a child window of some other window. If the window gets closed it will be freed.
+        \param  bSave       true = Save window, false = Load window
+        \param  caption     the caption of the window
+        \param  directories a list of directories to save/load from
+        \param  directoryTitles a list of button titles for the listed directories
+        \param  extension   the file extension
+        \param  preselectedDirectoryIndex   which directory to show on opening this dialog?
+        \param  preselectedFile the name of a file (without extension) that shall be selected upon opening this dialog
+        \param  color       the color of the new dialog
+        \return The new dialog box (will be automatically destroyed when it's closed)
+    */
+    static LoadSaveWindow* create(bool bSave, std::string caption, std::vector<std::string> directories, std::vector<std::string> directoryTitles, std::string extension, int preselectedDirectoryIndex = 0, std::string preselectedFile = "", Uint32 color = COLOR_DEFAULT) {
+        LoadSaveWindow* dlg = new LoadSaveWindow(bSave, caption, directories, directoryTitles, extension, preselectedDirectoryIndex, preselectedFile, color);
+        dlg->pAllocated = true;
+        return dlg;
+    }
 
 private:
-	void onOK();
-	void onCancel();
+    void onOK();
+    void onCancel();
 
-	void onDirectoryChange(int i);
+    void onDirectoryChange(int i);
 
-	void onSelectionChange(bool bInteractive);
+    void onSelectionChange(bool bInteractive);
 
-	HBox	mainHBox;
-	VBox	mainVBox;
+    HBox    mainHBox;
+    VBox    mainVBox;
 
-	HBox    directoryHBox;
-	HBox	fileListHBox;
+    HBox    directoryHBox;
+    HBox    fileListHBox;
 
-	HBox	buttonHBox;
-	std::vector<TextButton> directoryButtons;
+    HBox    buttonHBox;
+    std::vector<TextButton> directoryButtons;
 
-	Label		titleLabel;
-	ListBox		fileList;
-	TextButton	okButton;
-	TextButton	cancelButton;
-	TextBox		saveName;
+    Label       titleLabel;
+    ListBox     fileList;
+    TextButton  okButton;
+    TextButton  cancelButton;
+    TextBox     saveName;
 
-	bool		bSaveWindow;
-	std::string	filename;
-	std::vector<std::string> directories;
-	std::vector<std::string> directoryTitles;
-	std::string extension;
-	int currentDirectoryIndex;
-	std::string preselectedFile;
+    bool        bSaveWindow;
+    std::string filename;
+    std::vector<std::string> directories;
+    std::vector<std::string> directoryTitles;
+    std::string extension;
+    int currentDirectoryIndex;
+    std::string preselectedFile;
     Uint32      color;
 };
 

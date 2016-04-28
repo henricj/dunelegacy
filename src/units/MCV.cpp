@@ -47,13 +47,13 @@ void MCV::init() {
     itemID = Unit_MCV;
     owner->incrementUnits(itemID);
 
-	canAttackStuff = false;
+    canAttackStuff = false;
 
-	graphicID = ObjPic_MCV;
-	graphic = pGFXManager->getObjPic(graphicID,getOwner()->getHouseID());
+    graphicID = ObjPic_MCV;
+    graphic = pGFXManager->getObjPic(graphicID,getOwner()->getHouseID());
 
-	numImagesX = NUM_ANGLES;
-	numImagesY = 1;
+    numImagesX = NUM_ANGLES;
+    numImagesY = 1;
 }
 
 MCV::~MCV() {
@@ -61,20 +61,20 @@ MCV::~MCV() {
 }
 
 void MCV::handleDeployClick() {
-	currentGame->getCommandManager().addCommand(Command(pLocalPlayer->getPlayerID(), CMD_MCV_DEPLOY,objectID));
+    currentGame->getCommandManager().addCommand(Command(pLocalPlayer->getPlayerID(), CMD_MCV_DEPLOY,objectID));
 }
 
 bool MCV::doDeploy() {
     // check if there is enough room for construction yard
-	if(canDeploy()) {
+    if(canDeploy()) {
         // save needed values
-		House* pOwner = getOwner();
-		Coord newLocation = getLocation();
+        House* pOwner = getOwner();
+        Coord newLocation = getLocation();
 
-		// first place construction yard and then destroy MCV, otherwise a player with only MCV left will lose
+        // first place construction yard and then destroy MCV, otherwise a player with only MCV left will lose
 
-		// place construction yard (force placing to place on still existing MCV)
-		if(pOwner->placeStructure(NONE, Structure_ConstructionYard, newLocation.x, newLocation.y, true) != nullptr) {
+        // place construction yard (force placing to place on still existing MCV)
+        if(pOwner->placeStructure(NONE, Structure_ConstructionYard, newLocation.x, newLocation.y, true) != nullptr) {
             // we hide the MVC so we don't get a soldier on destroy
             setVisible(VIS_ALL, false);
 
@@ -86,17 +86,17 @@ bool MCV::doDeploy() {
     }
 
     if(getOwner() == pLocalHouse) {
-		currentGame->addToNewsTicker(_("You cannot deploy here."));
-	}
+        currentGame->addToNewsTicker(_("You cannot deploy here."));
+    }
 
-	return false;
+    return false;
 }
 
 bool MCV::canAttack(const ObjectBase* object) const {
-	return((object != nullptr)
-			&& object->isInfantry()
-			&& (object->getOwner()->getTeam() != owner->getTeam())
-			&& object->isVisible(getOwner()->getTeam()));
+    return((object != nullptr)
+            && object->isInfantry()
+            && (object->getOwner()->getTeam() != owner->getTeam())
+            && object->isVisible(getOwner()->getTeam()));
 }
 
 void MCV::destroy() {
@@ -112,11 +112,11 @@ void MCV::destroy() {
 }
 
 bool MCV::canDeploy(int x, int y) const {
-	for(int i = 0; i < getStructureSize(Structure_ConstructionYard).x; i++) {
-		for(int j = 0; j < getStructureSize(Structure_ConstructionYard).y; j++) {
-			if(!currentGameMap->tileExists(x+i, y+j)) {
+    for(int i = 0; i < getStructureSize(Structure_ConstructionYard).x; i++) {
+        for(int j = 0; j < getStructureSize(Structure_ConstructionYard).y; j++) {
+            if(!currentGameMap->tileExists(x+i, y+j)) {
                 return false;
-			}
+            }
             const Tile* pTile = currentGameMap->getTile(x+i, y+j);
             if(!pTile->isBlocked() || ((i == 0) && (j == 0))) {
                 // tile is not blocked or we're checking the tile with the MCV on
@@ -127,7 +127,7 @@ bool MCV::canDeploy(int x, int y) const {
                 return false;
             }
         }
-	}
+    }
 
-	return true;
+    return true;
 }

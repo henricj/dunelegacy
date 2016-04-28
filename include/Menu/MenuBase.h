@@ -27,30 +27,30 @@ class MenuBase: public Window
 {
 public:
 
-	MenuBase();
-	virtual ~MenuBase();
+    MenuBase();
+    virtual ~MenuBase();
 
-	virtual int showMenu();
-	virtual void quit(int returnVal = MENU_QUIT_DEFAULT);
-	virtual bool isQuiting() { return quiting; };
-	void disableQuiting(bool disable) { bAllowQuiting = !disable; };
+    virtual int showMenu();
+    virtual void quit(int returnVal = MENU_QUIT_DEFAULT);
+    virtual bool isQuiting() { return quiting; };
+    void disableQuiting(bool disable) { bAllowQuiting = !disable; };
 
-	virtual void update() { };
+    virtual void update() { };
 
-	virtual void drawSpecificStuff();
+    virtual void drawSpecificStuff();
 
-	virtual void draw();
-	virtual bool doInput(SDL_Event &event);
+    virtual void draw();
+    virtual bool doInput(SDL_Event &event);
 
-	void setClearScreen(bool bClearScreen) {
-		this->bClearScreen = bClearScreen;
-	};
+    void setClearScreen(bool bClearScreen) {
+        this->bClearScreen = bClearScreen;
+    };
 
 private:
-	bool bClearScreen;
-	bool bAllowQuiting;
-	bool quiting;
-	int  retVal;
+    bool bClearScreen;
+    bool bAllowQuiting;
+    bool quiting;
+    int  retVal;
 };
 
 #endif // MENUBASE_H

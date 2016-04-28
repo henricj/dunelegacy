@@ -34,55 +34,55 @@
 class SinglePlayerSkirmishMenu : public MenuBase
 {
 public:
-	SinglePlayerSkirmishMenu();
-	virtual ~SinglePlayerSkirmishMenu();
+    SinglePlayerSkirmishMenu();
+    virtual ~SinglePlayerSkirmishMenu();
 
 private:
 
-	void onDifficulty();
-	void onStart();
-	void onCancel();
+    void onDifficulty();
+    void onStart();
+    void onCancel();
 
-	void onSelectHouseButton(int button);
-	void onHouseLeft();
-	void onHouseRight();
+    void onSelectHouseButton(int button);
+    void onHouseLeft();
+    void onHouseRight();
 
-	void onMissionIncrement();
-	void onMissionDecrement();
+    void onMissionIncrement();
+    void onMissionDecrement();
 
-	void updateHouseChoice();
+    void updateHouseChoice();
 
-	InvisibleButton	house1Button;
-	PictureLabel	house1Picture;
-	PictureLabel	house1SelectedPicture;
-	InvisibleButton	house2Button;
-	PictureLabel	house2Picture;
-	PictureLabel	house2SelectedPicture;
-	InvisibleButton	house3Button;
-	PictureLabel	house3Picture;
-	PictureLabel	house3SelectedPicture;
+    InvisibleButton house1Button;
+    PictureLabel    house1Picture;
+    PictureLabel    house1SelectedPicture;
+    InvisibleButton house2Button;
+    PictureLabel    house2Picture;
+    PictureLabel    house2SelectedPicture;
+    InvisibleButton house3Button;
+    PictureLabel    house3Picture;
+    PictureLabel    house3SelectedPicture;
 
-	PictureButton   houseLeftButton;
-	PictureButton   houseRightButton;
+    PictureButton   houseLeftButton;
+    PictureButton   houseRightButton;
 
-	PictureButton	missionPlusButton;
-	PictureButton	missionMinusButton;
-	DigitsCounter	missionCounter;
+    PictureButton   missionPlusButton;
+    PictureButton   missionMinusButton;
+    DigitsCounter   missionCounter;
 
-	StaticContainer	windowWidget;
-	StaticContainer	houseChoiceContainer;
-	VBox			menuButtonsVBox;
+    StaticContainer windowWidget;
+    StaticContainer houseChoiceContainer;
+    VBox            menuButtonsVBox;
 
-	TextButton		startButton;
-	TextButton		backButton;
+    TextButton      startButton;
+    TextButton      backButton;
 
-	PictureLabel	heraldPicture;
-	PictureLabel	duneLegacy;
-	PictureLabel	buttonBorder;
+    PictureLabel    heraldPicture;
+    PictureLabel    duneLegacy;
+    PictureLabel    buttonBorder;
 
     int currentHouseChoiceScrollPos;
     int selectedButton;
-	int mission;
+    int mission;
 };
 
 #endif //SINGLEPLAYERSKIRMISHMENU_H

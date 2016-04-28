@@ -46,42 +46,42 @@ struct StructureSmoke {
 class StructureBase : public ObjectBase
 {
 public:
-	StructureBase(House* newOwner);
-	StructureBase(InputStream& stream);
-	void init();
-	virtual ~StructureBase();
+    StructureBase(House* newOwner);
+    StructureBase(InputStream& stream);
+    void init();
+    virtual ~StructureBase();
 
-	virtual void save(OutputStream& stream) const;
+    virtual void save(OutputStream& stream) const;
 
-	void assignToMap(const Coord& pos);
-	virtual void blitToScreen();
+    void assignToMap(const Coord& pos);
+    virtual void blitToScreen();
 
-	virtual ObjectInterface* getInterfaceContainer();
+    virtual ObjectInterface* getInterfaceContainer();
 
-	void destroy();
-	virtual void drawSelectionBox();
-	virtual void drawOtherPlayerSelectionBox();
+    void destroy();
+    virtual void drawSelectionBox();
+    virtual void drawOtherPlayerSelectionBox();
 
-	virtual Coord getCenterPoint() const;
-	virtual Coord getClosestCenterPoint(const Coord& objectLocation) const;
-	void setDestination(int newX, int newY);
-	void setJustPlaced();
-	void setFogged(bool bFogged) { fogged = bFogged; };
+    virtual Coord getCenterPoint() const;
+    virtual Coord getClosestCenterPoint(const Coord& objectLocation) const;
+    void setDestination(int newX, int newY);
+    void setJustPlaced();
+    void setFogged(bool bFogged) { fogged = bFogged; };
 
-	void playConfirmSound() { ; };
-	void playSelectSound() { ; };
+    void playConfirmSound() { ; };
+    void playSelectSound() { ; };
 
-	/**
-		This method is called when a structure is ordered by a right click
-		\param	xPos	the x position on the map
-		\param	yPos	the y position on the map
-	*/
-	virtual void handleActionClick(int xPos, int yPos);
+    /**
+        This method is called when a structure is ordered by a right click
+        \param  xPos    the x position on the map
+        \param  yPos    the y position on the map
+    */
+    virtual void handleActionClick(int xPos, int yPos);
 
-	/**
-		This method is called when the user clicks on the repair button for this building
-	*/
-	virtual void handleRepairClick();
+    /**
+        This method is called when the user clicks on the repair button for this building
+    */
+    virtual void handleRepairClick();
 
     /**
         Set the deploy position of this structure. Units produced in this structure will move directly to
@@ -89,36 +89,36 @@ public:
         \param  x           the x coordinate (in tile coordinates)
         \param  y           the y coordinate (in tile coordinates)
     */
-	virtual void doSetDeployPosition(int xPos, int yPos);
+    virtual void doSetDeployPosition(int xPos, int yPos);
 
     /**
         Start repairing this structure.
     */
-	void doRepair();
+    void doRepair();
 
-	/**
+    /**
         Updates this object.
         \return true if this object still exists, false if it was destroyed
-	*/
-	virtual bool update();
+    */
+    virtual bool update();
 
-	/**
+    /**
         Can this structure be captured by infantry units?
         \return true, if this structure can be captured, false otherwise
-	*/
-	virtual bool canBeCaptured() const { return true; };
+    */
+    virtual bool canBeCaptured() const { return true; };
 
-	bool isRepairing() const { return repairing; }
+    bool isRepairing() const { return repairing; }
 
-	virtual Coord getClosestPoint(const Coord& objectLocation) const;
+    virtual Coord getClosestPoint(const Coord& objectLocation) const;
 
-	inline short getStructureSizeX() const { return structureSize.x; }
-	inline short getStructureSizeY() const { return structureSize.y; }
-	inline const Coord& getStructureSize() const { return structureSize; }
+    inline short getStructureSizeX() const { return structureSize.x; }
+    inline short getStructureSizeY() const { return structureSize.y; }
+    inline const Coord& getStructureSize() const { return structureSize; }
 
-	inline void addSmoke(const Coord& pos, Uint32 gameCycle) {
-	    std::list<StructureSmoke>::iterator iter;
-	    for(iter = smoke.begin(); iter != smoke.end(); ++iter) {
+    inline void addSmoke(const Coord& pos, Uint32 gameCycle) {
+        std::list<StructureSmoke>::iterator iter;
+        for(iter = smoke.begin(); iter != smoke.end(); ++iter) {
             if(iter->realPos == pos) {
                 iter->startGameCycle = gameCycle;
                 return;
@@ -129,35 +129,35 @@ public:
 
         smoke.push_back(StructureSmoke(pos, gameCycle));
     };
-	inline size_t getNumSmoke() const { return smoke.size(); };
+    inline size_t getNumSmoke() const { return smoke.size(); };
 
 protected:
     /**
         Used for updating things that are specific to that particular structure. Is called from
         StructureBase::update() before the check if this structure is still alive.
     */
-	virtual void updateStructureSpecificStuff() { };
+    virtual void updateStructureSpecificStuff() { };
 
 
-	// constant for all structures of the same type
-    Coord	structureSize;      ///< The size of this structure in tile coordinates (e.g. (3,2) for a refinery)
+    // constant for all structures of the same type
+    Coord   structureSize;      ///< The size of this structure in tile coordinates (e.g. (3,2) for a refinery)
 
     // structure state
-	bool    repairing;          ///< currently repairing?
+    bool    repairing;          ///< currently repairing?
     int     degradeTimer;       ///< after which time of insufficient power should we degrade this building again
 
     // TODO: fogging is currently broken (fogged and lastVisibleFrame differ in multiplayer between players; hidden building disappear when being destroyed)
-	bool        fogged;             ///< Currently fogged?
-	int         lastVisibleFrame;   ///< store picture drawn before fogged
+    bool        fogged;             ///< Currently fogged?
+    int         lastVisibleFrame;   ///< store picture drawn before fogged
 
     // drawing information
-    int		justPlacedTimer;          ///< When the structure is justed placed, we draw some special graphic
+    int     justPlacedTimer;          ///< When the structure is justed placed, we draw some special graphic
     std::list<StructureSmoke> smoke;  ///< A vector containing all the smoke for this structure
 
-	int		firstAnimFrame;     ///< First frame of the current animation
-	int		lastAnimFrame;      ///< Last frame of the current animation
-	int		curAnimFrame;       ///< The current frame of the current animation
-	int     animationCounter;   ///< When to show the next animation frame?
+    int     firstAnimFrame;     ///< First frame of the current animation
+    int     lastAnimFrame;      ///< Last frame of the current animation
+    int     curAnimFrame;       ///< The current frame of the current animation
+    int     animationCounter;   ///< When to show the next animation frame?
 };
 
 #endif //STRUCTUREBASE_H

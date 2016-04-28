@@ -47,15 +47,15 @@ TextManager::TextManager() {
         }
     #endif // defined DUNELEGACY_PLATFORM_OSX
 
-	std::list<std::string> languagesList = getFileNamesList(data_dir + "/locale", settings.general.language + ".po", true, FileListOrder_Name_Asc);
+    std::list<std::string> languagesList = getFileNamesList(data_dir + "/locale", settings.general.language + ".po", true, FileListOrder_Name_Asc);
 
-	if(languagesList.empty()) {
+    if(languagesList.empty()) {
         std::string filepath = data_dir + "/locale/English.en.po";
         localizedString = loadPOFile(SDL_RWFromFile(filepath.c_str(), "r"), true, "English.en.po");
-	} else {
-	    std::string filepath = data_dir + "/locale/" + languagesList.front();
+    } else {
+        std::string filepath = data_dir + "/locale/" + languagesList.front();
         localizedString = loadPOFile(SDL_RWFromFile(filepath.c_str(), "r"), true, languagesList.front());
-	}
+    }
 }
 
 TextManager::~TextManager() {
@@ -68,25 +68,25 @@ void TextManager::loadData() {
     addOrigDuneText("DUNE." + _("LanguageFileExtension"));
 
     // load all mentat texts
-	SDL_RWops* mentat_lng[3];
-	mentat_lng[HOUSE_HARKONNEN] = pFileManager->openFile("MENTATH." + _("LanguageFileExtension"));
-	mentat_lng[HOUSE_ATREIDES] = pFileManager->openFile("MENTATA." + _("LanguageFileExtension"));
-	mentat_lng[HOUSE_ORDOS] = pFileManager->openFile("MENTATO." + _("LanguageFileExtension"));
+    SDL_RWops* mentat_lng[3];
+    mentat_lng[HOUSE_HARKONNEN] = pFileManager->openFile("MENTATH." + _("LanguageFileExtension"));
+    mentat_lng[HOUSE_ATREIDES] = pFileManager->openFile("MENTATA." + _("LanguageFileExtension"));
+    mentat_lng[HOUSE_ORDOS] = pFileManager->openFile("MENTATO." + _("LanguageFileExtension"));
 
-	for(int i=0;i<3;i++) {
-		if(mentat_lng[i] == nullptr) {
-			fprintf(stderr,"TextManager::TextManager: Can not open mentat language file\n");
-			exit(EXIT_FAILURE);
-		}
-		mentatStrings[i] = std::shared_ptr<MentatTextFile>(new MentatTextFile(mentat_lng[i]));
-		SDL_RWclose(mentat_lng[i]);
-	}
+    for(int i=0;i<3;i++) {
+        if(mentat_lng[i] == nullptr) {
+            fprintf(stderr,"TextManager::TextManager: Can not open mentat language file\n");
+            exit(EXIT_FAILURE);
+        }
+        mentatStrings[i] = std::shared_ptr<MentatTextFile>(new MentatTextFile(mentat_lng[i]));
+        SDL_RWclose(mentat_lng[i]);
+    }
 }
 
-std::string	TextManager::getBriefingText(unsigned int mission, unsigned int texttype, int house) const {
-	switch(house) {
-		case HOUSE_HARKONNEN: {
-		    switch(texttype) {
+std::string TextManager::getBriefingText(unsigned int mission, unsigned int texttype, int house) const {
+    switch(house) {
+        case HOUSE_HARKONNEN: {
+            switch(texttype) {
                 case MISSION_DESCRIPTION: {
                     switch(mission) {
                         case 0: return _("@TEXTH.ENG|0#Description of House Harkonnen");       break;
@@ -151,11 +151,11 @@ std::string	TextManager::getBriefingText(unsigned int mission, unsigned int text
                 default: {
                     return "";
                 } break;
-		    }
-		} break;
+            }
+        } break;
 
-		case HOUSE_ATREIDES: {
-		    switch(texttype) {
+        case HOUSE_ATREIDES: {
+            switch(texttype) {
                 case MISSION_DESCRIPTION: {
                     switch(mission) {
                         case 0: return _("@TEXTA.ENG|0#Description of House Atreides");       break;
@@ -220,10 +220,10 @@ std::string	TextManager::getBriefingText(unsigned int mission, unsigned int text
                 default: {
                     return "";
                 } break;
-		    }
-		} break;
+            }
+        } break;
 
-		case HOUSE_ORDOS: {
+        case HOUSE_ORDOS: {
             switch(texttype) {
                 case MISSION_DESCRIPTION: {
                     switch(mission) {
@@ -292,8 +292,8 @@ std::string	TextManager::getBriefingText(unsigned int mission, unsigned int text
             }
         } break;
 
-		case HOUSE_FREMEN: {
-		    switch(texttype) {
+        case HOUSE_FREMEN: {
+            switch(texttype) {
                 case MISSION_DESCRIPTION: {
                     switch(mission) {
                         case 0: return _("House Fremen\nArrakis, the home planet of House Fremen, is one giant sand desert. Perfectly adapted to the warm, dry climate, the Fremen have huge advantage in defending their planet.");       break;
@@ -358,11 +358,11 @@ std::string	TextManager::getBriefingText(unsigned int mission, unsigned int text
                 default: {
                     return "";
                 } break;
-		    }
-		} break;
+            }
+        } break;
 
-		case HOUSE_SARDAUKAR: {
-		    switch(texttype) {
+        case HOUSE_SARDAUKAR: {
+            switch(texttype) {
                 case MISSION_DESCRIPTION: {
                     switch(mission) {
                         case 0: return _("House Sardaukar\nOriginating from an forgotten planet, House Sardaukar has moved from planet to planet since then. Conquering foreign planets has specialized their combat skills which got them a reputation of being cruel.");  break;
@@ -427,11 +427,11 @@ std::string	TextManager::getBriefingText(unsigned int mission, unsigned int text
                 default: {
                     return "";
                 } break;
-		    }
+            }
         } break;
 
-		case HOUSE_MERCENARY:
-		default: {
+        case HOUSE_MERCENARY:
+        default: {
             switch(texttype) {
                 case MISSION_DESCRIPTION: {
                     switch(mission) {

@@ -24,10 +24,10 @@
 #include <stdlib.h>
 
 Animation::Animation() {
-	curFrameStartTime = SDL_GetTicks();
-	frameDurationTime = 1;
-	curFrame = 0;
-	loopsLeft = -1;
+    curFrameStartTime = SDL_GetTicks();
+    frameDurationTime = 1;
+    curFrame = 0;
+    loopsLeft = -1;
 }
 
 Animation::~Animation() {
@@ -45,15 +45,15 @@ Animation::~Animation() {
 }
 
 unsigned int Animation::getCurrentFrameNumber() {
-	if((SDL_GetTicks() - curFrameStartTime) > frameDurationTime) {
-		curFrameStartTime = SDL_GetTicks();
+    if((SDL_GetTicks() - curFrameStartTime) > frameDurationTime) {
+        curFrameStartTime = SDL_GetTicks();
 
-		if(loopsLeft == -1) {
+        if(loopsLeft == -1) {
             curFrame++;
             if(curFrame >= frames.size()) {
                 curFrame = 0;
             }
-		} else if(loopsLeft >= 1) {
+        } else if(loopsLeft >= 1) {
             curFrame++;
             if(curFrame >= frames.size()) {
                 loopsLeft--;
@@ -63,47 +63,47 @@ unsigned int Animation::getCurrentFrameNumber() {
                     curFrame--;
                 }
             }
-		}
-	}
-	return curFrame;
+        }
+    }
+    return curFrame;
 }
 
 SDL_Surface* Animation::getFrame() {
     if(frames.empty()) {
-		return nullptr;
-	}
+        return nullptr;
+    }
 
-	return frames[getCurrentFrameNumber()];
+    return frames[getCurrentFrameNumber()];
 }
 
 SDL_Texture* Animation::getFrameTexture() {
     if(frames.empty()) {
-		return nullptr;
-	}
+        return nullptr;
+    }
 
-	unsigned int index = getCurrentFrameNumber();
+    unsigned int index = getCurrentFrameNumber();
 
-	if(frameTextures.size() <= index) {
+    if(frameTextures.size() <= index) {
         frameTextures.resize(frames.size(), nullptr);
-	}
+    }
 
-	if(frameTextures[index] == nullptr) {
+    if(frameTextures[index] == nullptr) {
         frameTextures[index] = convertSurfaceToTexture(frames[index], false);
-	}
+    }
 
-	return frameTextures[index];
+    return frameTextures[index];
 }
 
 void Animation::addFrame(SDL_Surface* newFrame, bool bDoublePic, bool bSetColorKey) {
-	if(bDoublePic == true) {
-	    newFrame = Scaler::defaultDoubleSurface(newFrame,true);
-	}
+    if(bDoublePic == true) {
+        newFrame = Scaler::defaultDoubleSurface(newFrame,true);
+    }
 
-	if(bSetColorKey == true) {
-		SDL_SetColorKey(newFrame, SDL_TRUE, 0);
-	}
+    if(bSetColorKey == true) {
+        SDL_SetColorKey(newFrame, SDL_TRUE, 0);
+    }
 
-	frames.push_back(newFrame);
+    frames.push_back(newFrame);
 }
 
 void Animation::setPalette(const Palette& newPalette) {

@@ -44,26 +44,26 @@
 
 class CSurroundopl: public Copl
 {
-	private:
-		bool use16bit;
-		short bufsize;
-		short *lbuf, *rbuf;
-		Copl *a, *b;
-		uint8_t iFMReg[2][256];
-		uint8_t iTweakedFMReg[2][256];
-		uint8_t iCurrentTweakedBlock[2][9]; // Current value of the Block in the tweaked OPL chip
-		uint8_t iCurrentFNum[2][9];         // Current value of the FNum in the tweaked OPL chip
+    private:
+        bool use16bit;
+        short bufsize;
+        short *lbuf, *rbuf;
+        Copl *a, *b;
+        uint8_t iFMReg[2][256];
+        uint8_t iTweakedFMReg[2][256];
+        uint8_t iCurrentTweakedBlock[2][9]; // Current value of the Block in the tweaked OPL chip
+        uint8_t iCurrentFNum[2][9];         // Current value of the FNum in the tweaked OPL chip
 
-	public:
+    public:
 
-		CSurroundopl(Copl *a, Copl *b, bool use16bit);
-		~CSurroundopl();
+        CSurroundopl(Copl *a, Copl *b, bool use16bit);
+        ~CSurroundopl();
 
-		void update(short *buf, int samples);
-		void write(int reg, int val);
+        void update(short *buf, int samples);
+        void write(int reg, int val);
 
-		void init();
-		void setchip(int n);
+        void init();
+        void setchip(int n);
 };
 
 #endif

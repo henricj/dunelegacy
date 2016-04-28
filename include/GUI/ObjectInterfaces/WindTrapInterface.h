@@ -32,51 +32,51 @@
 
 class WindTrapInterface : public DefaultStructureInterface {
 public:
-	static WindTrapInterface* create(int objectID) {
-		WindTrapInterface* tmp = new WindTrapInterface(objectID);
-		tmp->pAllocated = true;
-		return tmp;
-	}
+    static WindTrapInterface* create(int objectID) {
+        WindTrapInterface* tmp = new WindTrapInterface(objectID);
+        tmp->pAllocated = true;
+        return tmp;
+    }
 
 protected:
-	WindTrapInterface(int objectID) : DefaultStructureInterface(objectID) {
+    WindTrapInterface(int objectID) : DefaultStructureInterface(objectID) {
         Uint32 color = SDL2RGB(palette[houseToPaletteIndex[pLocalHouse->getHouseID()]]);
 
-		mainHBox.addWidget(&textVBox);
+        mainHBox.addWidget(&textVBox);
 
         requiredEnergyLabel.setTextFont(FONT_STD10);
         requiredEnergyLabel.setTextColor(color+3);
-		textVBox.addWidget(&requiredEnergyLabel, 0.005);
-		producedEnergyLabel.setTextFont(FONT_STD10);
-		producedEnergyLabel.setTextColor(color+3);
-		textVBox.addWidget(&producedEnergyLabel, 0.005);
-		textVBox.addWidget(Spacer::create(),0.99);
-	}
+        textVBox.addWidget(&requiredEnergyLabel, 0.005);
+        producedEnergyLabel.setTextFont(FONT_STD10);
+        producedEnergyLabel.setTextColor(color+3);
+        textVBox.addWidget(&producedEnergyLabel, 0.005);
+        textVBox.addWidget(Spacer::create(),0.99);
+    }
 
-	/**
-		This method updates the object interface.
-		If the object doesn't exists anymore then update returns false.
-		\return true = everything ok, false = the object container should be removed
-	*/
-	virtual bool update() {
-		ObjectBase* pObject = currentGame->getObjectManager().getObject(objectID);
-		if(pObject == nullptr) {
-			return false;
-		}
+    /**
+        This method updates the object interface.
+        If the object doesn't exists anymore then update returns false.
+        \return true = everything ok, false = the object container should be removed
+    */
+    virtual bool update() {
+        ObjectBase* pObject = currentGame->getObjectManager().getObject(objectID);
+        if(pObject == nullptr) {
+            return false;
+        }
 
-		House* pOwner = pObject->getOwner();
+        House* pOwner = pObject->getOwner();
 
         requiredEnergyLabel.setText(" " + _("Required") + ": " + stringify(pOwner->getPowerRequirement()));
         producedEnergyLabel.setText(" " + _("Produced") + ": " + stringify(pOwner->getProducedPower()));
 
-		return DefaultStructureInterface::update();
-	}
+        return DefaultStructureInterface::update();
+    }
 
 private:
     VBox    textVBox;
 
-	Label   requiredEnergyLabel;
-	Label   producedEnergyLabel;
+    Label   requiredEnergyLabel;
+    Label   producedEnergyLabel;
 };
 
 #endif // WINDTRAPINTERFACE_H

@@ -41,20 +41,20 @@ LoadMapWindow::LoadMapWindow(Uint32 color) : Window(0,0,0,0), color(color) {
 
     // set up window
     SDL_Texture *pBackground = pGFXManager->getUIGraphic(UI_NewMapWindow);
-	setBackground(pBackground, false);
+    setBackground(pBackground, false);
 
-	setCurrentPosition(calcAlignedDrawingRect(pBackground, HAlign::Center, VAlign::Center));
+    setCurrentPosition(calcAlignedDrawingRect(pBackground, HAlign::Center, VAlign::Center));
 
-	setWindowWidget(&mainHBox);
+    setWindowWidget(&mainHBox);
 
-	mainHBox.addWidget(HSpacer::create(16));
-	mainHBox.addWidget(&mainVBox);
-	mainHBox.addWidget(HSpacer::create(16));
+    mainHBox.addWidget(HSpacer::create(16));
+    mainHBox.addWidget(&mainVBox);
+    mainHBox.addWidget(HSpacer::create(16));
 
     titleLabel.setTextColor(COLOR_LIGHTYELLOW, COLOR_TRANSPARENT);
-	titleLabel.setAlignment((Alignment_Enum) (Alignment_HCenter | Alignment_VCenter));
-	titleLabel.setText(_("Load Map"));
-	mainVBox.addWidget(&titleLabel);
+    titleLabel.setAlignment((Alignment_Enum) (Alignment_HCenter | Alignment_VCenter));
+    titleLabel.setText(_("Load Map"));
+    mainVBox.addWidget(&titleLabel);
 
     mainVBox.addWidget(VSpacer::create(22));
 
@@ -115,41 +115,41 @@ LoadMapWindow::LoadMapWindow(Uint32 color) : Window(0,0,0,0), color(color) {
 
     mainVBox.addWidget(&buttonHBox);
 
-	cancelButton.setText(_("Cancel"));
+    cancelButton.setText(_("Cancel"));
     cancelButton.setTextColor(color);
-	cancelButton.setOnClick(std::bind(&LoadMapWindow::onCancel, this));
+    cancelButton.setOnClick(std::bind(&LoadMapWindow::onCancel, this));
 
-	buttonHBox.addWidget(&cancelButton);
+    buttonHBox.addWidget(&cancelButton);
 
-	buttonHBox.addWidget(HSpacer::create(8));
+    buttonHBox.addWidget(HSpacer::create(8));
 
     buttonHBox.addWidget(Spacer::create());
 
-	buttonHBox.addWidget(HSpacer::create(8));
+    buttonHBox.addWidget(HSpacer::create(8));
 
     loadButton.setText(_("Load"));
-	loadButton.setTextColor(color);
-	loadButton.setOnClick(std::bind(&LoadMapWindow::onLoad, this));
+    loadButton.setTextColor(color);
+    loadButton.setOnClick(std::bind(&LoadMapWindow::onLoad, this));
 
-	buttonHBox.addWidget(&loadButton);
+    buttonHBox.addWidget(&loadButton);
 
-	mainVBox.addWidget(VSpacer::create(10));
+    mainVBox.addWidget(VSpacer::create(10));
 
-	onMapTypeChange(0);
+    onMapTypeChange(0);
 }
 
 bool LoadMapWindow::handleKeyPress(SDL_KeyboardEvent& key) {
-	if(pChildWindow != nullptr) {
-		bool ret = pChildWindow->handleKeyPress(key);
-		return ret;
-	}
+    if(pChildWindow != nullptr) {
+        bool ret = pChildWindow->handleKeyPress(key);
+        return ret;
+    }
 
-	if(isEnabled() && (pWindowWidget != nullptr)) {
-		if(key.keysym.sym == SDLK_RETURN) {
-			onLoad();
-			return true;
-		} else if(key.keysym.sym == SDLK_DELETE) {
-		    int index = mapList.getSelectedIndex();
+    if(isEnabled() && (pWindowWidget != nullptr)) {
+        if(key.keysym.sym == SDLK_RETURN) {
+            onLoad();
+            return true;
+        } else if(key.keysym.sym == SDLK_DELETE) {
+            int index = mapList.getSelectedIndex();
             if(index >= 0) {
                 QstBox* pQstBox = QstBox::create(   strprintf(_("Do you really want to delete '%s' ?"), mapList.getEntry(index).c_str()),
                                                     _("No"),
@@ -162,12 +162,12 @@ bool LoadMapWindow::handleKeyPress(SDL_KeyboardEvent& key) {
             }
 
             return true;
-		} else {
-			return pWindowWidget->handleKeyPress(key);
-		}
-	} else {
-		return false;
-	}
+        } else {
+            return pWindowWidget->handleKeyPress(key);
+        }
+    } else {
+        return false;
+    }
 }
 
 
@@ -196,10 +196,10 @@ void LoadMapWindow::onChildWindowClose(Window* pChildWindow) {
 }
 
 void LoadMapWindow::onCancel() {
-	Window* pParentWindow = dynamic_cast<Window*>(getParent());
-	if(pParentWindow != nullptr) {
-		pParentWindow->closeChildWindow();
-	}
+    Window* pParentWindow = dynamic_cast<Window*>(getParent());
+    if(pParentWindow != nullptr) {
+        pParentWindow->closeChildWindow();
+    }
 }
 
 void LoadMapWindow::onLoad() {
@@ -212,10 +212,10 @@ void LoadMapWindow::onLoad() {
     loadMapSingleplayer = singleplayerUserMapsButton.getToggleState();
     getCaseInsensitiveFilename(loadMapFilepath);
 
-	Window* pParentWindow = dynamic_cast<Window*>(getParent());
-	if(pParentWindow != nullptr) {
-		pParentWindow->closeChildWindow();
-	}
+    Window* pParentWindow = dynamic_cast<Window*>(getParent());
+    if(pParentWindow != nullptr) {
+        pParentWindow->closeChildWindow();
+    }
 }
 
 void LoadMapWindow::onMapTypeChange(int buttonID)

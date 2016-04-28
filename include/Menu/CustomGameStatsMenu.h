@@ -31,15 +31,15 @@
 class CustomGameStatsMenu : public MenuBase
 {
 public:
-	CustomGameStatsMenu();
-	virtual ~CustomGameStatsMenu();
+    CustomGameStatsMenu();
+    virtual ~CustomGameStatsMenu();
 
 private:
     void onOK();
 
-	StaticContainer	windowWidget;
+    StaticContainer windowWidget;
 
-    VBox			mainVBox;
+    VBox            mainVBox;
 
     Label           captionLabel;
 
@@ -54,7 +54,7 @@ private:
     Label           headerLabel2;
     Label           headerLabel3;
 
-	class HouseStat {
+    class HouseStat {
     public:
         HBox            houseHBox;
         Label           houseName;
@@ -68,14 +68,14 @@ private:
         Label           value3;
         VBox            vBox3;
         ProgressBar     progressBar3;
-	};
+    };
 
     HouseStat               houseStat[NUM_HOUSES];
 
     // bottom row of buttons
     HBox            buttonHBox;
     Label           timeLabel;
-    TextButton		okButton;
+    TextButton      okButton;
 };
 
 #endif //CUSTOMGAMESTATSMENU_H

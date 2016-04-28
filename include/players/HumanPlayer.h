@@ -32,33 +32,33 @@ class ObjectBase;
 class HumanPlayer : public Player
 {
 public:
-	void init();
-	virtual ~HumanPlayer();
-	virtual void save(OutputStream& stream) const;
+    void init();
+    virtual ~HumanPlayer();
+    virtual void save(OutputStream& stream) const;
 
     virtual void update();
 
-	/**
+    /**
         Returns one of the 9 saved units lists
         \param  groupListIndex   which list should be returned
         \return the n-th list.
-	*/
-	inline std::set<Uint32>& getGroupList(int groupListIndex) { return selectedLists[groupListIndex]; };
+    */
+    inline std::set<Uint32>& getGroupList(int groupListIndex) { return selectedLists[groupListIndex]; };
 
-	/**
+    /**
         Sets one of the 9 saved units lists
         \param  groupListIndex     which list should be set
         \param  newGroupList        the new list to set
-	*/
-	void setGroupList(int groupListIndex, const std::set<Uint32>& newGroupList);
+    */
+    void setGroupList(int groupListIndex, const std::set<Uint32>& newGroupList);
 
-	static Player* create(House* associatedHouse, std::string playername) {
+    static Player* create(House* associatedHouse, std::string playername) {
         return new HumanPlayer(associatedHouse, playername);
-	}
+    }
 
-	static Player* load(InputStream& stream, House* associatedHouse) {
+    static Player* load(InputStream& stream, House* associatedHouse) {
         return new HumanPlayer(stream, associatedHouse);
-	}
+    }
 
 public:
     Uint32 nextExpectedCommandsCycle;                       ///< The next cycle we expect commands for (using for network games)
@@ -66,8 +66,8 @@ public:
     std::set<Uint32> selectedLists[NUMSELECTEDLISTS];       ///< Sets of all the different groups on key 1 to 9
 
 private:
-	HumanPlayer(House* associatedHouse, std::string playername);
-	HumanPlayer(InputStream& stream, House* associatedHouse);
+    HumanPlayer(House* associatedHouse, std::string playername);
+    HumanPlayer(InputStream& stream, House* associatedHouse);
 };
 
 

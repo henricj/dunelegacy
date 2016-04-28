@@ -21,55 +21,55 @@
 
 TextView::TextView() : Widget() {
     fontID = FONT_STD12;
-	textcolor = COLOR_DEFAULT;
-	textshadowcolor = COLOR_DEFAULT;
-	backgroundcolor = COLOR_TRANSPARENT;
-	alignment = (Alignment_Enum) (Alignment_Left | Alignment_Top);
-	pForeground = nullptr;
-	pBackground = nullptr;
-	bAutohideScrollbar = true;
-	enableResizing(true,true);
+    textcolor = COLOR_DEFAULT;
+    textshadowcolor = COLOR_DEFAULT;
+    backgroundcolor = COLOR_TRANSPARENT;
+    alignment = (Alignment_Enum) (Alignment_Left | Alignment_Top);
+    pForeground = nullptr;
+    pBackground = nullptr;
+    bAutohideScrollbar = true;
+    enableResizing(true,true);
 
-	resize(getMinimumSize().x,getMinimumSize().y);
+    resize(getMinimumSize().x,getMinimumSize().y);
 }
 
 TextView::~TextView() {
-	invalidateTextures();
+    invalidateTextures();
 }
 
 void TextView::handleMouseMovement(Sint32 x, Sint32 y, bool insideOverlay) {
-	scrollbar.handleMouseMovement(x - getSize().x + scrollbar.getSize().x,y,insideOverlay);
+    scrollbar.handleMouseMovement(x - getSize().x + scrollbar.getSize().x,y,insideOverlay);
 }
 
 bool TextView::handleMouseLeft(Sint32 x, Sint32 y, bool pressed) {
-	return scrollbar.handleMouseLeft(x - getSize().x + scrollbar.getSize().x,y,pressed);
+    return scrollbar.handleMouseLeft(x - getSize().x + scrollbar.getSize().x,y,pressed);
 }
 
 bool TextView::handleMouseWheel(Sint32 x, Sint32 y, bool up)  {
-	// forward mouse wheel event to scrollbar
-	return scrollbar.handleMouseWheel(0,0,up);
+    // forward mouse wheel event to scrollbar
+    return scrollbar.handleMouseWheel(0,0,up);
 }
 
 bool TextView::handleKeyPress(SDL_KeyboardEvent& key) {
-	Widget::handleKeyPress(key);
+    Widget::handleKeyPress(key);
 
-	scrollbar.handleKeyPress(key);
-	return true;
+    scrollbar.handleKeyPress(key);
+    return true;
 }
 
 void TextView::draw(Point position) {
-	if(isVisible() == false) {
-		return;
-	}
+    if(isVisible() == false) {
+        return;
+    }
 
-	updateTextures();
+    updateTextures();
 
-	if(pBackground != nullptr) {
-		SDL_Rect dest = calcDrawingRect(pBackground, position.x, position.y);
-		SDL_RenderCopy(renderer, pBackground, nullptr, &dest);
-	}
+    if(pBackground != nullptr) {
+        SDL_Rect dest = calcDrawingRect(pBackground, position.x, position.y);
+        SDL_RenderCopy(renderer, pBackground, nullptr, &dest);
+    }
 
-	if(pForeground != nullptr) {
+    if(pForeground != nullptr) {
         int lineHeight = GUIStyle::getInstance().getTextHeight(fontID) + 2;
 
         SDL_Rect src = {    0,
@@ -93,7 +93,7 @@ void TextView::draw(Point position) {
 }
 
 void TextView::resize(Uint32 width, Uint32 height) {
-	invalidateTextures();
+    invalidateTextures();
 
     scrollbar.resize(scrollbar.getMinimumSize().x,height);
 
@@ -105,7 +105,7 @@ void TextView::resize(Uint32 width, Uint32 height) {
     scrollbar.setRange(0,std::max(0, ((int) textLines.size()) - numVisibleLines));
     scrollbar.setBigStepSize(std::max(1, numVisibleLines-1));
 
-	Widget::resize(width,height);
+    Widget::resize(width,height);
 }
 
 void TextView::updateTextures() {

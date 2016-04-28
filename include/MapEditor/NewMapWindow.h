@@ -39,80 +39,80 @@ public:
     NewMapWindow(HOUSETYPE currentHouse);
 
 
-	/**
-		This static method creates a dynamic new map window.
-		The idea behind this method is to simply create a new dialog on the fly and
-		add it as a child window of some other window. If the window gets closed it will be freed.
-		\param  house       the currently selected house; used for button colors, etc.
-		\return	The new dialog box (will be automatically destroyed when it's closed)
-	*/
-	static NewMapWindow* create(HOUSETYPE house) {
-		NewMapWindow* dlg = new NewMapWindow(house);
-		dlg->pAllocated = true;
-		return dlg;
-	}
+    /**
+        This static method creates a dynamic new map window.
+        The idea behind this method is to simply create a new dialog on the fly and
+        add it as a child window of some other window. If the window gets closed it will be freed.
+        \param  house       the currently selected house; used for button colors, etc.
+        \return The new dialog box (will be automatically destroyed when it's closed)
+    */
+    static NewMapWindow* create(HOUSETYPE house) {
+        NewMapWindow* dlg = new NewMapWindow(house);
+        dlg->pAllocated = true;
+        return dlg;
+    }
 
-	int getMapSeed() const { return mapSeed; };
+    int getMapSeed() const { return mapSeed; };
 
-	std::string getAuthor() const { return authorTextBox.getText(); };
-	std::string getLicense() const { return licenseTextBox.getText(); };
+    std::string getAuthor() const { return authorTextBox.getText(); };
+    std::string getLicense() const { return licenseTextBox.getText(); };
 
     const std::string& getLoadMapFilepath() const { return loadMapFilepath; };
     const std::string& getLoadMapname() const { return loadMapname; };
     bool isLoadMapSingleplayer() const { return loadMapSingleplayer; };
 
-	const MapData& getMapData() const { return mapdata; };
+    const MapData& getMapData() const { return mapdata; };
 
-	/**
-		This method is called, when the child window is about to be closed.
-		This child window will be closed after this method returns.
-		\param	pChildWindow	The child window that will be closed
-	*/
-	virtual void onChildWindowClose(Window* pChildWindow);
+    /**
+        This method is called, when the child window is about to be closed.
+        This child window will be closed after this method returns.
+        \param  pChildWindow    The child window that will be closed
+    */
+    virtual void onChildWindowClose(Window* pChildWindow);
 
 private:
     void onMapPropertiesChanged();
 
     static SDL_Surface* createMinimapPicture(MapData& mapdata, int borderWidth, Uint32 borderColor);
 
-	void onCancel();
-	void onLoad();
-	void onCreate();
+    void onCancel();
+    void onLoad();
+    void onCreate();
 
 
     void onMapTypeChanged(int buttonID);
 
-	HBox	mainHBox;
-	VBox	mainVBox;
-	VBox	centralVBox;
+    HBox    mainHBox;
+    VBox    mainVBox;
+    VBox    centralVBox;
 
-	HBox                mapTypeHBox;
-	RadioButtonManager  mapTypeRadioButtons;
-	RadioButton         emptyMapRadioButton;
-	RadioButton         randomMapRadioButton;
-	RadioButton         seedMapRadioButton;
+    HBox                mapTypeHBox;
+    RadioButtonManager  mapTypeRadioButtons;
+    RadioButton         emptyMapRadioButton;
+    RadioButton         randomMapRadioButton;
+    RadioButton         seedMapRadioButton;
 
 
     HBox                basicMapPropertiesHBox;
     VBox                basicMapPropertiesVBox;
 
-	HBox                mapSizeHBox;
-	Label               mapSizeXLabel;
-	DropDownBox         mapSizeXDropDownBox;
-	Label               mapSizeYLabel;
-	DropDownBox         mapSizeYDropDownBox;
-	Label               mapScaleLabel;
-	DropDownBox         mapScaleDropDownBox;
+    HBox                mapSizeHBox;
+    Label               mapSizeXLabel;
+    DropDownBox         mapSizeXDropDownBox;
+    Label               mapSizeYLabel;
+    DropDownBox         mapSizeYDropDownBox;
+    Label               mapScaleLabel;
+    DropDownBox         mapScaleDropDownBox;
 
     HBox                rngHBox;
-	Label               rngSeedLabel;
-	DigitsTextBox       rngSeedTextBox;
+    Label               rngSeedLabel;
+    DigitsTextBox       rngSeedTextBox;
 
-	Label               rockLabel;
-	DigitsTextBox       rockDigitsTextBox;
+    Label               rockLabel;
+    DigitsTextBox       rockDigitsTextBox;
 
-	Label               spiceLabel;
-	DigitsTextBox       spiceDigitsTextBox;
+    Label               spiceLabel;
+    DigitsTextBox       spiceDigitsTextBox;
 
     PictureLabel        minimap;
 
@@ -129,18 +129,18 @@ private:
 
 
 
-	HBox	            buttonHBox;
+    HBox                buttonHBox;
 
-	Label		titleLabel;
-	TextButton	cancelButton;
-	TextButton	loadButton;
-	TextButton	createButton;
+    Label       titleLabel;
+    TextButton  cancelButton;
+    TextButton  loadButton;
+    TextButton  createButton;
 
     HOUSETYPE   house;
-	Uint32      color;
+    Uint32      color;
 
     int         mapSeed;
-	MapData     mapdata;
+    MapData     mapdata;
     std::string loadMapFilepath;
     std::string loadMapname;
     bool        loadMapSingleplayer;

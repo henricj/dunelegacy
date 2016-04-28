@@ -24,16 +24,16 @@
 
 class ObjectInterface : public StaticContainer {
 public:
-		ObjectInterface() : StaticContainer() { ; };
+        ObjectInterface() : StaticContainer() { ; };
 
-		virtual ~ObjectInterface() { ; };
+        virtual ~ObjectInterface() { ; };
 
-		/**
-			This method updates the object interface.
-			If the object doesn't exists anymore then update returns false.
-			\return true = everything ok, false = the object container should be removed
-		*/
-		virtual bool update() = 0;
+        /**
+            This method updates the object interface.
+            If the object doesn't exists anymore then update returns false.
+            \return true = everything ok, false = the object container should be removed
+        */
+        virtual bool update() = 0;
 };
 
 #endif //OBJECTINTERFACE_H

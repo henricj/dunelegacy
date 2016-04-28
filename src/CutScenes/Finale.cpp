@@ -99,17 +99,17 @@ Finale::Finale(int house)
 
     SDL_Surface* pPlanetDuneNormalSurface;
     if((pPlanetDuneNormalSurface = LoadCPS_RW(pFileManager->openFile("BIGPLAN.CPS"),true)) == nullptr) {
-		fprintf(stderr,"Finale::Finale(): Cannot open BIGPLAN.CPS!\n");
-		exit(EXIT_FAILURE);
-	}
+        fprintf(stderr,"Finale::Finale(): Cannot open BIGPLAN.CPS!\n");
+        exit(EXIT_FAILURE);
+    }
 
-	SDL_Surface* pTempSurface;
+    SDL_Surface* pTempSurface;
     if((pTempSurface = LoadCPS_RW(pFileManager->openFile("MAPPLAN.CPS"),true)) == nullptr) {
-		fprintf(stderr,"Finale::Finale(): Cannot open MAPPLAN.CPS!\n");
-		exit(EXIT_FAILURE);
-	}
-	SDL_Surface* pPlanetDuneInHouseColorSurface = mapSurfaceColorRange(pTempSurface, houseToPaletteIndex[HOUSE_HARKONNEN], houseToPaletteIndex[house]);
-	SDL_FreeSurface(pTempSurface);
+        fprintf(stderr,"Finale::Finale(): Cannot open MAPPLAN.CPS!\n");
+        exit(EXIT_FAILURE);
+    }
+    SDL_Surface* pPlanetDuneInHouseColorSurface = mapSurfaceColorRange(pTempSurface, houseToPaletteIndex[HOUSE_HARKONNEN], houseToPaletteIndex[house]);
+    SDL_FreeSurface(pTempSurface);
 
     if(house == HOUSE_HARKONNEN || house == HOUSE_ATREIDES || house == HOUSE_ORDOS) {
         lizard = getChunkFromFile("LIZARD1.VOC");
@@ -119,14 +119,14 @@ Finale::Finale(int house)
         blowup = getChunkFromFile("BLOWUP1.VOC");
     }
 
-	SDL_RWops* intro_lng = pFileManager->openFile("INTRO." + _("LanguageFileExtension"));
-	IndexedTextFile* pIntroText = new IndexedTextFile(intro_lng);
-	SDL_RWclose(intro_lng);
+    SDL_RWops* intro_lng = pFileManager->openFile("INTRO." + _("LanguageFileExtension"));
+    IndexedTextFile* pIntroText = new IndexedTextFile(intro_lng);
+    SDL_RWclose(intro_lng);
 
-	Uint32 color = SDL2RGB(palette[houseToPaletteIndex[house]+1]);
-	Uint32 sardaukarColor = SDL2RGB(palette[PALCOLOR_SARDAUKAR+1]);
+    Uint32 color = SDL2RGB(palette[houseToPaletteIndex[house]+1]);
+    Uint32 sardaukarColor = SDL2RGB(palette[PALCOLOR_SARDAUKAR+1]);
 
-	switch(house) {
+    switch(house) {
         case HOUSE_HARKONNEN: {
             startNewScene();
 
@@ -253,7 +253,7 @@ Finale::Finale(int house)
         default: {
             // Nothing
         } break;
-	}
+    }
 
     addVideoEvent(new FadeInVideoEvent(pPlanetDuneNormalSurface, 20, false));
     addVideoEvent(new HoldPictureVideoEvent(pPlanetDuneNormalSurface, 10, false));
@@ -262,10 +262,10 @@ Finale::Finale(int house)
     addVideoEvent(new FadeOutVideoEvent(pPlanetDuneInHouseColorSurface, 20, false));
     addVideoEvent(new HoldPictureVideoEvent(nullptr, 10, false));
 
-	delete pIntroText;
+    delete pIntroText;
 
-	SDL_FreeSurface(pPlanetDuneNormalSurface);
-	SDL_FreeSurface(pPlanetDuneInHouseColorSurface);
+    SDL_FreeSurface(pPlanetDuneNormalSurface);
+    SDL_FreeSurface(pPlanetDuneInHouseColorSurface);
 }
 
 Finale::~Finale() {

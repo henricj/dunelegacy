@@ -25,7 +25,7 @@ class HighTechFactory : public BuilderBase
 public:
     HighTechFactory(House* newOwner);
     HighTechFactory(InputStream& stream);
-	void init();
+    void init();
     virtual ~HighTechFactory();
 };
 

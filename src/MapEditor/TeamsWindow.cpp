@@ -36,20 +36,20 @@ TeamsWindow::TeamsWindow(MapEditor* pMapEditor, HOUSETYPE currentHouse)
 
     // set up window
     SDL_Texture *pBackground = pGFXManager->getUIGraphic(UI_NewMapWindow);
-	setBackground(pBackground, false);
+    setBackground(pBackground, false);
 
-	setCurrentPosition(calcAlignedDrawingRect(pBackground, HAlign::Center, VAlign::Center));
+    setCurrentPosition(calcAlignedDrawingRect(pBackground, HAlign::Center, VAlign::Center));
 
-	setWindowWidget(&mainHBox);
+    setWindowWidget(&mainHBox);
 
-	mainHBox.addWidget(HSpacer::create(16));
-	mainHBox.addWidget(&mainVBox);
-	mainHBox.addWidget(HSpacer::create(16));
+    mainHBox.addWidget(HSpacer::create(16));
+    mainHBox.addWidget(&mainVBox);
+    mainHBox.addWidget(HSpacer::create(16));
 
     titleLabel.setTextColor(COLOR_LIGHTYELLOW, COLOR_TRANSPARENT);
-	titleLabel.setAlignment((Alignment_Enum) (Alignment_HCenter | Alignment_VCenter));
-	titleLabel.setText(_("Teams"));
-	mainVBox.addWidget(&titleLabel);
+    titleLabel.setAlignment((Alignment_Enum) (Alignment_HCenter | Alignment_VCenter));
+    titleLabel.setText(_("Teams"));
+    mainVBox.addWidget(&titleLabel);
 
     mainVBox.addWidget(VSpacer::create(8));
 
@@ -167,25 +167,25 @@ TeamsWindow::TeamsWindow(MapEditor* pMapEditor, HOUSETYPE currentHouse)
 
     mainVBox.addWidget(&buttonHBox);
 
-	cancelButton.setText(_("Cancel"));
+    cancelButton.setText(_("Cancel"));
     cancelButton.setTextColor(color);
-	cancelButton.setOnClick(std::bind(&TeamsWindow::onCancel, this));
+    cancelButton.setOnClick(std::bind(&TeamsWindow::onCancel, this));
 
-	buttonHBox.addWidget(&cancelButton);
+    buttonHBox.addWidget(&cancelButton);
 
-	buttonHBox.addWidget(HSpacer::create(8));
+    buttonHBox.addWidget(HSpacer::create(8));
 
-	buttonHBox.addWidget(Spacer::create());
+    buttonHBox.addWidget(Spacer::create());
 
-	buttonHBox.addWidget(HSpacer::create(8));
+    buttonHBox.addWidget(HSpacer::create(8));
 
     okButton.setText(_("OK"));
-	okButton.setTextColor(color);
-	okButton.setOnClick(std::bind(&TeamsWindow::onOK, this));
+    okButton.setTextColor(color);
+    okButton.setOnClick(std::bind(&TeamsWindow::onOK, this));
 
-	buttonHBox.addWidget(&okButton);
+    buttonHBox.addWidget(&okButton);
 
-	mainVBox.addWidget(VSpacer::create(10));
+    mainVBox.addWidget(VSpacer::create(10));
 
     // setup teams listbox
     std::vector<TeamInfo>::const_iterator teamIter;
@@ -200,10 +200,10 @@ TeamsWindow::TeamsWindow(MapEditor* pMapEditor, HOUSETYPE currentHouse)
 }
 
 void TeamsWindow::onCancel() {
-	Window* pParentWindow = dynamic_cast<Window*>(getParent());
-	if(pParentWindow != nullptr) {
-		pParentWindow->closeChildWindow();
-	}
+    Window* pParentWindow = dynamic_cast<Window*>(getParent());
+    if(pParentWindow != nullptr) {
+        pParentWindow->closeChildWindow();
+    }
 }
 
 
@@ -214,10 +214,10 @@ void TeamsWindow::onOK() {
 
     pMapEditor->addUndoOperation(changeTeamsOperation.perform(pMapEditor));
 
-	Window* pParentWindow = dynamic_cast<Window*>(getParent());
-	if(pParentWindow != nullptr) {
-		pParentWindow->closeChildWindow();
-	}
+    Window* pParentWindow = dynamic_cast<Window*>(getParent());
+    if(pParentWindow != nullptr) {
+        pParentWindow->closeChildWindow();
+    }
 }
 
 void TeamsWindow::onUp() {

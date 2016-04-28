@@ -35,68 +35,68 @@ RepairYard::RepairYard(House* newOwner) : StructureBase(newOwner) {
 
     setHealth(getMaxHealth());
     bookings = 0;
-	repairingAUnit = false;
+    repairingAUnit = false;
 }
 
 RepairYard::RepairYard(InputStream& stream) : StructureBase(stream) {
     RepairYard::init();
 
-	repairingAUnit = stream.readBool();
-	repairUnit.load(stream);
-	bookings = stream.readUint32();
+    repairingAUnit = stream.readBool();
+    repairUnit.load(stream);
+    bookings = stream.readUint32();
 }
 
 void RepairYard::init() {
     itemID = Structure_RepairYard;
-	owner->incrementStructures(itemID);
+    owner->incrementStructures(itemID);
 
-	structureSize.x = 3;
-	structureSize.y = 2;
+    structureSize.x = 3;
+    structureSize.y = 2;
 
-	graphicID = ObjPic_RepairYard;
-	graphic = pGFXManager->getObjPic(graphicID,getOwner()->getHouseID());
-	numImagesX = 10;
-	numImagesY = 1;
-	firstAnimFrame = 2;
-	lastAnimFrame = 5;
+    graphicID = ObjPic_RepairYard;
+    graphic = pGFXManager->getObjPic(graphicID,getOwner()->getHouseID());
+    numImagesX = 10;
+    numImagesY = 1;
+    firstAnimFrame = 2;
+    lastAnimFrame = 5;
 }
 
 RepairYard::~RepairYard() {
     if(repairingAUnit) {
-		unBook();
-		repairUnit.getUnitPointer()->destroy();
-	}
+        unBook();
+        repairUnit.getUnitPointer()->destroy();
+    }
 }
 
 void RepairYard::save(OutputStream& stream) const {
-	StructureBase::save(stream);
+    StructureBase::save(stream);
 
-	stream.writeBool(repairingAUnit);
-	repairUnit.save(stream);
-	stream.writeUint32(bookings);
+    stream.writeBool(repairingAUnit);
+    repairUnit.save(stream);
+    stream.writeUint32(bookings);
 }
 
 
 ObjectInterface* RepairYard::getInterfaceContainer() {
-	if((pLocalHouse == owner) || (debug == true)) {
-		return RepairYardInterface::create(objectID);
-	} else {
-		return DefaultObjectInterface::create(objectID);
-	}
+    if((pLocalHouse == owner) || (debug == true)) {
+        return RepairYardInterface::create(objectID);
+    } else {
+        return DefaultObjectInterface::create(objectID);
+    }
 }
 
 void RepairYard::deployRepairUnit(Carryall* pCarryall) {
-	unBook();
-	repairingAUnit = false;
-	firstAnimFrame = 2;
-	lastAnimFrame = 5;
+    unBook();
+    repairingAUnit = false;
+    firstAnimFrame = 2;
+    lastAnimFrame = 5;
 
     UnitBase* pRepairUnit = repairUnit.getUnitPointer();
-	if(pCarryall != nullptr) {
-	    pCarryall->giveCargo(pRepairUnit);
-	    pCarryall->setTarget(nullptr);
-	    pCarryall->setDestination(pRepairUnit->getGuardPoint());
-	} else {
+    if(pCarryall != nullptr) {
+        pCarryall->giveCargo(pRepairUnit);
+        pCarryall->setTarget(nullptr);
+        pCarryall->setDestination(pRepairUnit->getGuardPoint());
+    } else {
         Coord deployPos = currentGameMap->findDeploySpot(pRepairUnit, location, destination, structureSize);
 
         if(pRepairUnit->getItemID() != Unit_Harvester){
@@ -119,42 +119,42 @@ void RepairYard::deployRepairUnit(Carryall* pCarryall) {
         pRepairUnit->setTarget(nullptr);
         pRepairUnit->setDestination(pRepairUnit->getLocation());
 
-	}
+    }
 
-	repairUnit.pointTo(NONE);
+    repairUnit.pointTo(NONE);
 
-	if(getOwner() == pLocalHouse) {
-		soundPlayer->playVoice(VehicleRepaired,getOwner()->getHouseID());
-	}
+    if(getOwner() == pLocalHouse) {
+        soundPlayer->playVoice(VehicleRepaired,getOwner()->getHouseID());
+    }
 }
 
 void RepairYard::updateStructureSpecificStuff() {
-	if(repairingAUnit) {
-		if(curAnimFrame < 6) {
-			firstAnimFrame = 6;
-			lastAnimFrame = 9;
-			curAnimFrame = 6;
-		}
-	} else {
-		if(curAnimFrame > 5) {
-			firstAnimFrame = 2;
-			lastAnimFrame = 5;
-			curAnimFrame = 2;
-		}
-	}
+    if(repairingAUnit) {
+        if(curAnimFrame < 6) {
+            firstAnimFrame = 6;
+            lastAnimFrame = 9;
+            curAnimFrame = 6;
+        }
+    } else {
+        if(curAnimFrame > 5) {
+            firstAnimFrame = 2;
+            lastAnimFrame = 5;
+            curAnimFrame = 2;
+        }
+    }
 
-	if(repairingAUnit == true) {
-	    UnitBase* pRepairUnit = repairUnit.getUnitPointer();
+    if(repairingAUnit == true) {
+        UnitBase* pRepairUnit = repairUnit.getUnitPointer();
 
-		if (pRepairUnit->getHealth()*100/pRepairUnit->getMaxHealth() < 100) {
-			if (owner->takeCredits(UNIT_REPAIRCOST) > 0) {
-				pRepairUnit->addHealth();
-			}
+        if (pRepairUnit->getHealth()*100/pRepairUnit->getMaxHealth() < 100) {
+            if (owner->takeCredits(UNIT_REPAIRCOST) > 0) {
+                pRepairUnit->addHealth();
+            }
 
-		} else if(((GroundUnit*)pRepairUnit)->isawaitingPickup() == false) {
-		    // find carryall
-		    Carryall* pCarryall = nullptr;
-            if((pRepairUnit->getGuardPoint().isValid()) && getOwner()->hasCarryalls())	{
+        } else if(((GroundUnit*)pRepairUnit)->isawaitingPickup() == false) {
+            // find carryall
+            Carryall* pCarryall = nullptr;
+            if((pRepairUnit->getGuardPoint().isValid()) && getOwner()->hasCarryalls())  {
                 RobustList<UnitBase*>::const_iterator iter;
                 for(iter = unitList.begin(); iter != unitList.end(); ++iter) {
                     UnitBase* unit = *iter;
@@ -178,8 +178,8 @@ void RepairYard::updateStructureSpecificStuff() {
             } else {
                 deployRepairUnit();
             }
-		} else if(((GroundUnit*)pRepairUnit)->hasBookedCarrier() == false) {
+        } else if(((GroundUnit*)pRepairUnit)->hasBookedCarrier() == false) {
             deployRepairUnit();
-		}
-	}
+        }
+    }
 }

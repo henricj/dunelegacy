@@ -23,17 +23,17 @@
 class LightFactory : public BuilderBase
 {
 public:
-	LightFactory(House* newOwner);
+    LightFactory(House* newOwner);
     LightFactory(InputStream& stream);
-	void init();
-	virtual ~LightFactory();
+    void init();
+    virtual ~LightFactory();
 
 protected:
     /**
         Used for updating things that are specific to that particular structure. Is called from
         StructureBase::update() before the check if this structure is still alive.
     */
-	virtual void updateStructureSpecificStuff();
+    virtual void updateStructureSpecificStuff();
 };
 
 #endif //LIGHTFACTORY_H

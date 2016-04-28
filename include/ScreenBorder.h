@@ -180,7 +180,7 @@ public:
     */
     inline bool isInsideScreen(const Coord& objectPosition, const Coord& objectSize) const
     {
-		return (((objectPosition.x + objectSize.x/2) >= topLeftCorner.x + shakingOffset.x)
+        return (((objectPosition.x + objectSize.x/2) >= topLeftCorner.x + shakingOffset.x)
                 && ((objectPosition.x - objectSize.x/2) <= bottomRightCorner.x + shakingOffset.x)
                 && ((objectPosition.y + objectSize.y/2) >= topLeftCorner.y + shakingOffset.y)
                 && ((objectPosition.y - objectSize.y/2) <= bottomRightCorner.y + shakingOffset.y) );

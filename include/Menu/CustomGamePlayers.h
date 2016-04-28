@@ -48,8 +48,8 @@ class INIFile;
 class CustomGamePlayers : public MenuBase
 {
 public:
-	CustomGamePlayers(const GameInitSettings& newGameInitSettings, bool server = true, bool LANServer = true);
-	virtual ~CustomGamePlayers();
+    CustomGamePlayers(const GameInitSettings& newGameInitSettings, bool server = true, bool LANServer = true);
+    virtual ~CustomGamePlayers();
 
     void onReceiveChangeEventList(ChangeEventList changeEventList);
 
@@ -82,19 +82,19 @@ private:
     bool addPlayerToHouseInfo(GameInitSettings::HouseInfo& newHouseInfo, int player, std::string playername);
 
     void onNext();
-	void onCancel();
+    void onCancel();
 
-	void onSendChatMessage();
-	void addInfoMessage(std::string message);
-	void addChatMessage(std::string name, std::string message);
+    void onSendChatMessage();
+    void addInfoMessage(std::string message);
+    void addChatMessage(std::string name, std::string message);
 
-	void disableAllDropDownBoxes();
+    void disableAllDropDownBoxes();
 
     GameInitSettings                gameInitSettings;
     GameInitSettings::HouseInfoList houseInfoListSetup;     ///< only used if we are loading a savegame
 
     StaticContainer windowWidget;
-    VBox			mainVBox;
+    VBox            mainVBox;
 
     Label           captionLabel;
 
@@ -119,14 +119,14 @@ private:
     // bottom row of buttons
     HBox            buttonHBox;
     VBox            backButtonVBox;
-	TextButton		backButton;
-	VBox            chatVBox;
+    TextButton      backButton;
+    VBox            chatVBox;
     TextView        chatTextView;
     TextBox         chatTextBox;
     VBox            nextButtonVBox;
-    TextButton		nextButton;
+    TextButton      nextButton;
 
-	class HouseInfo {
+    class HouseInfo {
     public:
         VBox            houseInfoVBox;
         HBox            houseHBox;
@@ -139,7 +139,7 @@ private:
         DropDownBox     player1DropDown;
         Label           player2Label;
         DropDownBox     player2DropDown;
-	};
+    };
 
     bool                    bServer;
     bool                    bLANServer;

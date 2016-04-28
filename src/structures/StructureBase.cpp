@@ -39,7 +39,7 @@ StructureBase::StructureBase(House* newOwner) : ObjectBase(newOwner) {
 
     repairing = false;
     fogged = false;
-	degradeTimer = MILLI2CYCLES(15*1000);
+    degradeTimer = MILLI2CYCLES(15*1000);
 }
 
 StructureBase::StructureBase(InputStream& stream): ObjectBase(stream) {
@@ -58,74 +58,74 @@ StructureBase::StructureBase(InputStream& stream): ObjectBase(stream) {
 }
 
 void StructureBase::init() {
-	aStructure = true;
+    aStructure = true;
 
-	structureSize.x = 0;
-	structureSize.y = 0;
+    structureSize.x = 0;
+    structureSize.y = 0;
 
-	justPlacedTimer = 0;
+    justPlacedTimer = 0;
 
-	lastVisibleFrame = curAnimFrame = 2;
-	animationCounter = 0;
+    lastVisibleFrame = curAnimFrame = 2;
+    animationCounter = 0;
 
-	structureList.push_back(this);
+    structureList.push_back(this);
 }
 
 StructureBase::~StructureBase() {
-    currentGameMap->removeObjectFromMap(getObjectID());	//no map point will reference now
-	currentGame->getObjectManager().removeObject(getObjectID());
-	structureList.remove(this);
-	owner->decrementStructures(itemID, location);
+    currentGameMap->removeObjectFromMap(getObjectID()); //no map point will reference now
+    currentGame->getObjectManager().removeObject(getObjectID());
+    structureList.remove(this);
+    owner->decrementStructures(itemID, location);
 
     removeFromSelectionLists();
 }
 
 void StructureBase::save(OutputStream& stream) const {
-	ObjectBase::save(stream);
+    ObjectBase::save(stream);
 
     stream.writeBool(repairing);
-	stream.writeBool(fogged);
-	stream.writeUint32(lastVisibleFrame);
+    stream.writeBool(fogged);
+    stream.writeUint32(lastVisibleFrame);
 
-	stream.writeSint32(degradeTimer);
+    stream.writeSint32(degradeTimer);
 
-	stream.writeUint32(smoke.size());
-	std::list<StructureSmoke>::const_iterator iter;
-	for(iter = smoke.begin(); iter != smoke.end(); ++iter) {
+    stream.writeUint32(smoke.size());
+    std::list<StructureSmoke>::const_iterator iter;
+    for(iter = smoke.begin(); iter != smoke.end(); ++iter) {
         iter->save(stream);
-	}
+    }
 }
 
 void StructureBase::assignToMap(const Coord& pos) {
     bool bFoundNonConcreteTile = false;
 
-	Coord temp;
-	for(int i = pos.x; i < pos.x + structureSize.x; i++) {
-		for(int j = pos.y; j < pos.y + structureSize.y; j++) {
-			if(currentGameMap->tileExists(i, j)) {
+    Coord temp;
+    for(int i = pos.x; i < pos.x + structureSize.x; i++) {
+        for(int j = pos.y; j < pos.y + structureSize.y; j++) {
+            if(currentGameMap->tileExists(i, j)) {
                 Tile* pTile = currentGameMap->getTile(i,j);
-				pTile->assignNonInfantryGroundObject(getObjectID());
-				if(!pTile->isConcrete() && currentGame->getGameInitSettings().getGameOptions().concreteRequired && (currentGame->gameState != START)) {
+                pTile->assignNonInfantryGroundObject(getObjectID());
+                if(!pTile->isConcrete() && currentGame->getGameInitSettings().getGameOptions().concreteRequired && (currentGame->gameState != START)) {
                     bFoundNonConcreteTile = true;
 
                     if((itemID != Structure_Wall) && (itemID != Structure_ConstructionYard)) {
                         setHealth(getHealth() - FixPoint(getMaxHealth())/(2*structureSize.x*structureSize.y));
                     }
-				}
-				pTile->setType(Terrain_Rock);
-				pTile->setOwner(getOwner()->getHouseID());
-				currentGameMap->viewMap(getOwner()->getTeam(), Coord(i,j), getViewRange());
+                }
+                pTile->setType(Terrain_Rock);
+                pTile->setOwner(getOwner()->getHouseID());
+                currentGameMap->viewMap(getOwner()->getTeam(), Coord(i,j), getViewRange());
 
-				setVisible(VIS_ALL, true);
-				setActive(true);
-				setRespondable(true);
-			}
-		}
-	}
+                setVisible(VIS_ALL, true);
+                setActive(true);
+                setRespondable(true);
+            }
+        }
+    }
 
-	if(!bFoundNonConcreteTile && !currentGame->getGameInitSettings().getGameOptions().structuresDegradeOnConcrete) {
+    if(!bFoundNonConcreteTile && !currentGame->getGameInitSettings().getGameOptions().structuresDegradeOnConcrete) {
         degradeTimer = -1;
-	}
+    }
 }
 
 void StructureBase::blitToScreen() {
@@ -164,21 +164,21 @@ void StructureBase::blitToScreen() {
 }
 
 ObjectInterface* StructureBase::getInterfaceContainer() {
-	if((pLocalHouse == owner) || (debug == true)) {
-		return DefaultStructureInterface::create(objectID);
-	} else {
-		return DefaultObjectInterface::create(objectID);
-	}
+    if((pLocalHouse == owner) || (debug == true)) {
+        return DefaultStructureInterface::create(objectID);
+    } else {
+        return DefaultObjectInterface::create(objectID);
+    }
 }
 
 void StructureBase::drawSelectionBox() {
-	SDL_Rect dest;
-	dest.x = screenborder->world2screenX(realX);
-	dest.y = screenborder->world2screenY(realY);
-	dest.w = getWidth(graphic[currentZoomlevel])/numImagesX;
-	dest.h = getHeight(graphic[currentZoomlevel])/numImagesY;
+    SDL_Rect dest;
+    dest.x = screenborder->world2screenX(realX);
+    dest.y = screenborder->world2screenY(realY);
+    dest.w = getWidth(graphic[currentZoomlevel])/numImagesX;
+    dest.h = getHeight(graphic[currentZoomlevel])/numImagesY;
 
-	//now draw the selection box thing, with parts at all corners of structure
+    //now draw the selection box thing, with parts at all corners of structure
 
     // top left bit
     for(int i=0;i<=currentZoomlevel;i++) {
@@ -211,13 +211,13 @@ void StructureBase::drawSelectionBox() {
 }
 
 void StructureBase::drawOtherPlayerSelectionBox() {
-	SDL_Rect dest;
-	dest.x = screenborder->world2screenX(realX) + (currentZoomlevel+1);
-	dest.y = screenborder->world2screenY(realY) + (currentZoomlevel+1);
-	dest.w = getWidth(graphic[currentZoomlevel])/numImagesX - 2*(currentZoomlevel+1);
-	dest.h = getHeight(graphic[currentZoomlevel])/numImagesY - 2*(currentZoomlevel+1);
+    SDL_Rect dest;
+    dest.x = screenborder->world2screenX(realX) + (currentZoomlevel+1);
+    dest.y = screenborder->world2screenY(realY) + (currentZoomlevel+1);
+    dest.w = getWidth(graphic[currentZoomlevel])/numImagesX - 2*(currentZoomlevel+1);
+    dest.h = getHeight(graphic[currentZoomlevel])/numImagesY - 2*(currentZoomlevel+1);
 
-	//now draw the selection box thing, with parts at all corners of structure
+    //now draw the selection box thing, with parts at all corners of structure
 
     // top left bit
     for(int i=0;i<=currentZoomlevel;i++) {
@@ -254,43 +254,43 @@ Coord StructureBase::getCenterPoint() const {
 }
 
 Coord StructureBase::getClosestCenterPoint(const Coord& objectLocation) const {
-	return getClosestPoint(objectLocation) * TILESIZE + Coord(TILESIZE/2, TILESIZE/2);
+    return getClosestPoint(objectLocation) * TILESIZE + Coord(TILESIZE/2, TILESIZE/2);
 }
 
 void StructureBase::handleActionClick(int xPos, int yPos) {
-	if ((xPos < location.x) || (xPos >= (location.x + structureSize.x)) || (yPos < location.y) || (yPos >= (location.y + structureSize.y))) {
-		currentGame->getCommandManager().addCommand(Command(pLocalPlayer->getPlayerID(), CMD_STRUCTURE_SETDEPLOYPOSITION,objectID, (Uint32) xPos, (Uint32) yPos));
-	} else {
-		currentGame->getCommandManager().addCommand(Command(pLocalPlayer->getPlayerID(), CMD_STRUCTURE_SETDEPLOYPOSITION,objectID, (Uint32) NONE, (Uint32) NONE));
-	}
+    if ((xPos < location.x) || (xPos >= (location.x + structureSize.x)) || (yPos < location.y) || (yPos >= (location.y + structureSize.y))) {
+        currentGame->getCommandManager().addCommand(Command(pLocalPlayer->getPlayerID(), CMD_STRUCTURE_SETDEPLOYPOSITION,objectID, (Uint32) xPos, (Uint32) yPos));
+    } else {
+        currentGame->getCommandManager().addCommand(Command(pLocalPlayer->getPlayerID(), CMD_STRUCTURE_SETDEPLOYPOSITION,objectID, (Uint32) NONE, (Uint32) NONE));
+    }
 }
 
 void StructureBase::handleRepairClick() {
-	currentGame->getCommandManager().addCommand(Command(pLocalPlayer->getPlayerID(), CMD_STRUCTURE_REPAIR,objectID));
+    currentGame->getCommandManager().addCommand(Command(pLocalPlayer->getPlayerID(), CMD_STRUCTURE_REPAIR,objectID));
 }
 
 void StructureBase::doSetDeployPosition(int xPos, int yPos) {
-	setTarget(nullptr);
-	setDestination(xPos,yPos);
-	setForced(true);
+    setTarget(nullptr);
+    setDestination(xPos,yPos);
+    setForced(true);
 }
 
 
 void StructureBase::doRepair() {
-	repairing = true;
+    repairing = true;
 }
 
 void StructureBase::setDestination(int newX, int newY) {
-	if(currentGameMap->tileExists(newX, newY) || ((newX == INVALID_POS) && (newY == INVALID_POS))) {
-		destination.x = newX;
-		destination.y = newY;
-	}
+    if(currentGameMap->tileExists(newX, newY) || ((newX == INVALID_POS) && (newY == INVALID_POS))) {
+        destination.x = newX;
+        destination.y = newY;
+    }
 }
 
 void StructureBase::setJustPlaced() {
-	justPlacedTimer = 6;
-	curAnimFrame = 0;
-	animationCounter = -STRUCTURE_ANIMATIONTIMER; // make first build animation double as long
+    justPlacedTimer = 6;
+    curAnimFrame = 0;
+    animationCounter = -STRUCTURE_ANIMATIONTIMER; // make first build animation double as long
 }
 
 bool StructureBase::update() {
@@ -450,37 +450,37 @@ void StructureBase::destroy() {
         }
     }
 
-	if(isVisible(pLocalHouse->getTeam()))
-		soundPlayer->playSoundAt(Sound_ExplosionStructure, location);
+    if(isVisible(pLocalHouse->getTeam()))
+        soundPlayer->playSoundAt(Sound_ExplosionStructure, location);
 
 
     delete this;
 }
 
 Coord StructureBase::getClosestPoint(const Coord& objectLocation) const {
-	Coord closestPoint;
+    Coord closestPoint;
 
-	// find the closest tile of a structure from a location
-	if(objectLocation.x <= location.x) {
-	    // if we are left of the structure
+    // find the closest tile of a structure from a location
+    if(objectLocation.x <= location.x) {
+        // if we are left of the structure
         // set destination, left most point
-		closestPoint.x = location.x;
-	} else if(objectLocation.x >= (location.x + structureSize.x-1)) {
-	    //vica versa
-		closestPoint.x = location.x + structureSize.x-1;
-	} else {
+        closestPoint.x = location.x;
+    } else if(objectLocation.x >= (location.x + structureSize.x-1)) {
+        //vica versa
+        closestPoint.x = location.x + structureSize.x-1;
+    } else {
         //we are above or below at least one tile of the structure, closest path is straight
-		closestPoint.x = objectLocation.x;
-	}
+        closestPoint.x = objectLocation.x;
+    }
 
-	//same deal but with y
-	if(objectLocation.y <= location.y) {
-		closestPoint.y = location.y;
-	} else if(objectLocation.y >= (location.y + structureSize.y-1)) {
-		closestPoint.y = location.y + structureSize.y-1;
-	} else {
-		closestPoint.y = objectLocation.y;
-	}
+    //same deal but with y
+    if(objectLocation.y <= location.y) {
+        closestPoint.y = location.y;
+    } else if(objectLocation.y >= (location.y + structureSize.y-1)) {
+        closestPoint.y = location.y + structureSize.y-1;
+    } else {
+        closestPoint.y = objectLocation.y;
+    }
 
-	return closestPoint;
+    return closestPoint;
 }

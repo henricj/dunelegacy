@@ -42,9 +42,9 @@ public:
         CAMPAIGN = 5
     } enum_gameMode;
 
-	void init();
-	~QuantBot();
-	virtual void save(OutputStream& stream) const;
+    void init();
+    ~QuantBot();
+    virtual void save(OutputStream& stream) const;
 
     virtual void update();
 
@@ -54,21 +54,21 @@ public:
     virtual void onIncrementUnitKills(int itemID);
     virtual void onDamage(const ObjectBase* pObject, int damage, Uint32 damagerID);
 
-	static Player* create(House* associatedHouse, std::string playername, Uint32 difficulty) {
+    static Player* create(House* associatedHouse, std::string playername, Uint32 difficulty) {
         return new QuantBot(associatedHouse, playername, difficulty);
-	}
+    }
 
-	static Player* load(InputStream& stream, House* associatedHouse) {
+    static Player* load(InputStream& stream, House* associatedHouse) {
         return new QuantBot(stream, associatedHouse);
-	}
+    }
 
 private:
-	QuantBot(House* associatedHouse, std::string playername, Uint32 difficulty);
-	QuantBot(InputStream& stream, House* associatedHouse);
+    QuantBot(House* associatedHouse, std::string playername, Uint32 difficulty);
+    QuantBot(InputStream& stream, House* associatedHouse);
 
 
-	Uint32	difficulty;     ///< difficulty level
-	Uint32	gameMode;     ///< game mode (custom or campaign)
+    Uint32  difficulty;     ///< difficulty level
+    Uint32  gameMode;     ///< game mode (custom or campaign)
     Sint32  buildTimer;     ///< When to build the next structure/unit
     Sint32  attackTimer;     ///< When to build the next structure/unit
     Sint32  retreatTimer;    ///< When you last retreated>
@@ -86,17 +86,17 @@ private:
 
 
     Coord findMcvPlaceLocation(const MCV* pMCV);
-	Coord findPlaceLocation(Uint32 itemID);
-	Coord findSquadCenter(int houseID);
-	Coord findBaseCentre(int houseID);
-	Coord findSquadRallyLocation();
+    Coord findPlaceLocation(Uint32 itemID);
+    Coord findSquadCenter(int houseID);
+    Coord findBaseCentre(int houseID);
+    Coord findSquadRallyLocation();
 
-	std::list<Coord> placeLocations;    ///< Where to place structures
+    std::list<Coord> placeLocations;    ///< Where to place structures
 
-	void checkAllUnits();
-	void retreatAllUnits();
-	void build();
-	void attack();
+    void checkAllUnits();
+    void retreatAllUnits();
+    void build();
+    void attack();
 
 };
 

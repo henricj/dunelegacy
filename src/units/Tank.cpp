@@ -39,19 +39,19 @@ Tank::Tank(InputStream& stream) : TankBase(stream) {
 }
 
 void Tank::init() {
-	itemID = Unit_Tank;
-	owner->incrementUnits(itemID);
+    itemID = Unit_Tank;
+    owner->incrementUnits(itemID);
 
-	numWeapons = 1;
-	bulletType = Bullet_ShellMedium;
+    numWeapons = 1;
+    bulletType = Bullet_ShellMedium;
 
-	graphicID = ObjPic_Tank_Base;
-	graphic = pGFXManager->getObjPic(graphicID,getOwner()->getHouseID());
-	gunGraphicID = ObjPic_Tank_Gun;
-	turretGraphic = pGFXManager->getObjPic(gunGraphicID,getOwner()->getHouseID());
+    graphicID = ObjPic_Tank_Base;
+    graphic = pGFXManager->getObjPic(graphicID,getOwner()->getHouseID());
+    gunGraphicID = ObjPic_Tank_Gun;
+    turretGraphic = pGFXManager->getObjPic(gunGraphicID,getOwner()->getHouseID());
 
-	numImagesX = NUM_ANGLES;
-	numImagesY = 1;
+    numImagesX = NUM_ANGLES;
+    numImagesY = 1;
 }
 
 Tank::~Tank() {
@@ -93,5 +93,5 @@ void Tank::destroy() {
 }
 
 void Tank::playAttackSound() {
-	soundPlayer->playSoundAt(Sound_ExplosionSmall,location);
+    soundPlayer->playSoundAt(Sound_ExplosionSmall,location);
 }

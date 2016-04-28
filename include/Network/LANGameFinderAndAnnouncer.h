@@ -27,94 +27,94 @@
 #include <list>
 #include <functional>
 
-#define LANGAME_ANNOUNCER_PORT				    28746
-#define	LANGAME_ANNOUNCER_INTERVAL			    3000
-#define LANGAME_ANNOUNCER_MAGICNUMBER		    82071105
-#define LANGAME_ANNOUNCER_MAXGAMENAMESIZE	    32
-#define LANGAME_ANNOUNCER_MAXGAMEVERSIONSIZE	32
+#define LANGAME_ANNOUNCER_PORT                  28746
+#define LANGAME_ANNOUNCER_INTERVAL              3000
+#define LANGAME_ANNOUNCER_MAGICNUMBER           82071105
+#define LANGAME_ANNOUNCER_MAXGAMENAMESIZE       32
+#define LANGAME_ANNOUNCER_MAXGAMEVERSIONSIZE    32
 #define LANGAME_ANNOUNCER_MAXMAPNAMESIZE        64
 
 class LANGameFinderAndAnnouncer {
 public:
 
-	LANGameFinderAndAnnouncer();
-	~LANGameFinderAndAnnouncer();
+    LANGameFinderAndAnnouncer();
+    ~LANGameFinderAndAnnouncer();
 
-	void startAnnounce(std::string serverName, int serverPort, std::string mapName, Uint8 numPlayers, Uint8 maxPlayers) {
-		this->serverName = serverName;
-		this->serverPort = serverPort;
-		this->mapName = mapName;
-		this->numPlayers = numPlayers;
-		this->maxPlayers = maxPlayers;
-		lastAnnounce = 0;
-	}
+    void startAnnounce(std::string serverName, int serverPort, std::string mapName, Uint8 numPlayers, Uint8 maxPlayers) {
+        this->serverName = serverName;
+        this->serverPort = serverPort;
+        this->mapName = mapName;
+        this->numPlayers = numPlayers;
+        this->maxPlayers = maxPlayers;
+        lastAnnounce = 0;
+    }
 
-	void updateAnnounce(Uint8 numPlayers) {
+    void updateAnnounce(Uint8 numPlayers) {
         this->numPlayers = numPlayers;
         if(serverPort > 0) {
             announceGame();
         }
-	}
+    }
 
-	void stopAnnounce() {
-		sendRemoveGameAnnouncement();
-		serverName = "";
-		serverPort = 0;
-	}
+    void stopAnnounce() {
+        sendRemoveGameAnnouncement();
+        serverName = "";
+        serverPort = 0;
+    }
 
-	void update();
+    void update();
 
-	void announceGame();
+    void announceGame();
 
-	void refreshServerList() const;
+    void refreshServerList() const;
 
-	const std::list<GameServerInfo>& getServerInfoList() const {
-		return gameServerInfoList;
-	}
+    const std::list<GameServerInfo>& getServerInfoList() const {
+        return gameServerInfoList;
+    }
 
-	/**
-		Sets the function that should be called when a new server is found
-		\param	pOnNewServer	Function to call on new server found
-	*/
-	inline void setOnNewServer(std::function<void (GameServerInfo)> pOnNewServer) {
-		this->pOnNewServer = pOnNewServer;
-	}
+    /**
+        Sets the function that should be called when a new server is found
+        \param  pOnNewServer    Function to call on new server found
+    */
+    inline void setOnNewServer(std::function<void (GameServerInfo)> pOnNewServer) {
+        this->pOnNewServer = pOnNewServer;
+    }
 
-	/**
-		Sets the function that should be called when a server is updated
-		\param	pOnUpdateServer	Function to call on server update
-	*/
-	inline void setOnUpdateServer(std::function<void (GameServerInfo)> pOnUpdateServer) {
-		this->pOnUpdateServer = pOnUpdateServer;
-	}
+    /**
+        Sets the function that should be called when a server is updated
+        \param  pOnUpdateServer Function to call on server update
+    */
+    inline void setOnUpdateServer(std::function<void (GameServerInfo)> pOnUpdateServer) {
+        this->pOnUpdateServer = pOnUpdateServer;
+    }
 
-	/**
-		Sets the function that should be called when a server is removed from the list of available servers.
-		\param	pOnRemoveServer function to call on server remove
-	*/
-	inline void setOnRemoveServer(std::function<void (GameServerInfo)> pOnRemoveServer) {
-		this->pOnRemoveServer = pOnRemoveServer;
-	}
+    /**
+        Sets the function that should be called when a server is removed from the list of available servers.
+        \param  pOnRemoveServer function to call on server remove
+    */
+    inline void setOnRemoveServer(std::function<void (GameServerInfo)> pOnRemoveServer) {
+        this->pOnRemoveServer = pOnRemoveServer;
+    }
 
 private:
-	void receivePackets();
-	void updateServerInfoList();
-	void sendRemoveGameAnnouncement();
+    void receivePackets();
+    void updateServerInfoList();
+    void sendRemoveGameAnnouncement();
 
-	std::string serverName;
-	int serverPort;
-	std::string mapName;
-	Uint8 numPlayers;
-	Uint8 maxPlayers;
+    std::string serverName;
+    int serverPort;
+    std::string mapName;
+    Uint8 numPlayers;
+    Uint8 maxPlayers;
 
-	Uint32 lastAnnounce;
-	ENetSocket announceSocket;
+    Uint32 lastAnnounce;
+    ENetSocket announceSocket;
 
-	std::list<GameServerInfo> gameServerInfoList;
+    std::list<GameServerInfo> gameServerInfoList;
 
-	std::function<void (GameServerInfo)> pOnNewServer;
-	std::function<void (GameServerInfo)> pOnUpdateServer;
-	std::function<void (GameServerInfo)> pOnRemoveServer;
+    std::function<void (GameServerInfo)> pOnNewServer;
+    std::function<void (GameServerInfo)> pOnUpdateServer;
+    std::function<void (GameServerInfo)> pOnRemoveServer;
 };
 
 #endif // LANGAMEFINDERANDANNOUNCER_H

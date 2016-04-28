@@ -53,14 +53,14 @@ WaitingForOtherPlayers::WaitingForOtherPlayers() : Window(50,50,50,50)
     update();
 
     int xpos = std::max(0,(getRendererWidth() - getSize().x)/2);
-	int ypos = std::max(0,(getRendererHeight() - getSize().y)/2);
+    int ypos = std::max(0,(getRendererHeight() - getSize().y)/2);
 
-	setCurrentPosition(xpos,ypos,getSize().x,getSize().y);
+    setCurrentPosition(xpos,ypos,getSize().x,getSize().y);
 }
 
 WaitingForOtherPlayers::~WaitingForOtherPlayers()
 {
-	;
+    ;
 }
 
 void WaitingForOtherPlayers::update() {
@@ -83,5 +83,5 @@ void WaitingForOtherPlayers::update() {
 
 void WaitingForOtherPlayers::onRemove()
 {
-	currentGame->resumeGame();
+    currentGame->resumeGame();
 }

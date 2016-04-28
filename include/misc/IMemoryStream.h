@@ -26,82 +26,82 @@
 class IMemoryStream : public InputStream
 {
 public:
-	IMemoryStream()
-	 : currentPos(0), bufferSize(0), pBuffer(nullptr) {
+    IMemoryStream()
+     : currentPos(0), bufferSize(0), pBuffer(nullptr) {
         ;
     }
 
-	IMemoryStream(const char* data, int length)
-	 : currentPos(0), bufferSize(length), pBuffer(data) {
+    IMemoryStream(const char* data, int length)
+     : currentPos(0), bufferSize(length), pBuffer(data) {
         ;
     }
 
-	~IMemoryStream() {
-	}
+    ~IMemoryStream() {
+    }
 
-	void open(const char* data, int length) {
+    void open(const char* data, int length) {
         currentPos = 0;
         bufferSize = length;
         pBuffer = data;
-	}
+    }
 
-	std::string readString() {
-	    Uint32 length = readUint32();
+    std::string readString() {
+        Uint32 length = readUint32();
 
-		if(currentPos + length > bufferSize) {
+        if(currentPos + length > bufferSize) {
             throw InputStream::eof("IMemoryStream::readString(): End-of-File reached!");
-	    }
+        }
 
-	    std::string resultString(pBuffer + currentPos, length);
-	    currentPos += length;
-	    return resultString;
-	}
+        std::string resultString(pBuffer + currentPos, length);
+        currentPos += length;
+        return resultString;
+    }
 
-	Uint8 readUint8() {
-	    if(currentPos + sizeof(Uint8) > bufferSize) {
+    Uint8 readUint8() {
+        if(currentPos + sizeof(Uint8) > bufferSize) {
             throw InputStream::eof("IMemoryStream::readUint8(): End-of-File reached!");
-	    }
+        }
 
         Uint8 tmp = *((const Uint8*) (pBuffer + currentPos));
         currentPos += sizeof(Uint8);
         return tmp;
-	}
+    }
 
-	Uint16 readUint16() {
-	    if(currentPos + sizeof(Uint16) > bufferSize) {
+    Uint16 readUint16() {
+        if(currentPos + sizeof(Uint16) > bufferSize) {
             throw InputStream::eof("IMemoryStream::readUint16(): End-of-File reached!");
-	    }
+        }
 
         Uint16 tmp = *((const Uint16*) (pBuffer + currentPos));
         currentPos += sizeof(Uint16);
         return SDL_SwapLE16(tmp);
-	}
+    }
 
-	Uint32 readUint32() {
-	    if(currentPos + sizeof(Uint32) > bufferSize) {
+    Uint32 readUint32() {
+        if(currentPos + sizeof(Uint32) > bufferSize) {
             throw InputStream::eof("IMemoryStream::readUint32(): End-of-File reached!");
-	    }
+        }
 
         Uint32 tmp = *((const Uint32*) (pBuffer + currentPos));
         currentPos += sizeof(Uint32);
         return SDL_SwapLE32(tmp);
-	}
+    }
 
-	Uint64 readUint64() {
-	    if(currentPos + sizeof(Uint64) > bufferSize) {
+    Uint64 readUint64() {
+        if(currentPos + sizeof(Uint64) > bufferSize) {
             throw InputStream::eof("IMemoryStream::readUint64(): End-of-File reached!");
-	    }
+        }
 
         Uint64 tmp = *((const Uint64*) (pBuffer + currentPos));
         currentPos += sizeof(Uint64);
         return SDL_SwapLE64(tmp);
-	}
+    }
 
-	bool readBool() {
+    bool readBool() {
         return (readUint8() == 1 ? true : false);
     }
 
-	float readFloat() {
+    float readFloat() {
         Uint32 tmp = readUint32();
         float tmp2;
         memcpy(&tmp2,&tmp,sizeof(Uint32)); // workaround for a strange optimization in gcc 4.1
@@ -111,7 +111,7 @@ public:
 private:
     size_t      currentPos;
     size_t      bufferSize;
-	const char* pBuffer;
+    const char* pBuffer;
 };
 
 #endif // IMEMORYSTREAM_H

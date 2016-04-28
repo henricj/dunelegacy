@@ -23,16 +23,16 @@
 class Tank : public TankBase
 {
 public:
-	Tank(House* newOwner);
-	Tank(InputStream& stream);
-	void init();
-	virtual ~Tank();
+    Tank(House* newOwner);
+    Tank(InputStream& stream);
+    void init();
+    virtual ~Tank();
 
-	void blitToScreen();
+    void blitToScreen();
 
-	virtual void destroy();
+    virtual void destroy();
 
-	void playAttackSound();
+    void playAttackSound();
 };
 
 #endif // TANK_H

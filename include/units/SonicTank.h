@@ -23,25 +23,25 @@
 class SonicTank : public TrackedUnit
 {
 public:
-	SonicTank(House* newOwner);
-	SonicTank(InputStream& stream);
-	void init();
-	virtual ~SonicTank();
+    SonicTank(House* newOwner);
+    SonicTank(InputStream& stream);
+    void init();
+    virtual ~SonicTank();
 
-	void blitToScreen();
+    void blitToScreen();
 
-	virtual void destroy();
+    virtual void destroy();
 
-	void handleDamage(int damage, Uint32 damagerID, House* damagerOwner);
+    void handleDamage(int damage, Uint32 damagerID, House* damagerOwner);
 
-	bool canAttack(const ObjectBase* object) const;
+    bool canAttack(const ObjectBase* object) const;
 
-	void playAttackSound();
+    void playAttackSound();
 
 private:
     // drawing information
-	SDL_Texture**   turretGraphic;      ///< The turret graphic
-	int             gunGraphicID;       ///< The id of the turret graphic (needed if we want to reload the graphic)
+    SDL_Texture**   turretGraphic;      ///< The turret graphic
+    int             gunGraphicID;       ///< The id of the turret graphic (needed if we want to reload the graphic)
 };
 
 #endif //SONICTANK_H

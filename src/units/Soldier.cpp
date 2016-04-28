@@ -34,37 +34,37 @@ Soldier::Soldier(InputStream& stream) : InfantryBase(stream) {
 }
 
 void Soldier::init() {
-	itemID = Unit_Soldier;
-	owner->incrementUnits(itemID);
+    itemID = Unit_Soldier;
+    owner->incrementUnits(itemID);
 
-	numWeapons = 1;
-	bulletType = Bullet_ShellSmall;
+    numWeapons = 1;
+    bulletType = Bullet_ShellSmall;
 
-	graphicID = ObjPic_Soldier;
-	graphic = pGFXManager->getObjPic(graphicID,getOwner()->getHouseID());
+    graphicID = ObjPic_Soldier;
+    graphic = pGFXManager->getObjPic(graphicID,getOwner()->getHouseID());
 
-	numImagesX = 4;
-	numImagesY = 3;
+    numImagesX = 4;
+    numImagesY = 3;
 }
 
 Soldier::~Soldier() {
 }
 
 bool Soldier::canAttack(const ObjectBase* object) const {
-	if ((object != nullptr)
-		&& (object->isAStructure()
-			|| !object->isAFlyingUnit())
-		&& ((object->getOwner()->getTeam() != owner->getTeam())
-			|| object->getItemID() == Unit_Sandworm)
-		&& object->isVisible(getOwner()->getTeam()))
-	{
-		return true;
-	}
-	else
-		return false;
+    if ((object != nullptr)
+        && (object->isAStructure()
+            || !object->isAFlyingUnit())
+        && ((object->getOwner()->getTeam() != owner->getTeam())
+            || object->getItemID() == Unit_Sandworm)
+        && object->isVisible(getOwner()->getTeam()))
+    {
+        return true;
+    }
+    else
+        return false;
 }
 
 
 void Soldier::playAttackSound() {
-	soundPlayer->playSoundAt(Sound_Gun,location);
+    soundPlayer->playSoundAt(Sound_Gun,location);
 }

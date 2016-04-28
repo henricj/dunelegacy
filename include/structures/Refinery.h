@@ -28,46 +28,46 @@ class Carryall;
 class Refinery : public StructureBase
 {
 public:
-	Refinery(House* newOwner);
+    Refinery(House* newOwner);
     Refinery(InputStream& stream);
-	void init();
-	virtual ~Refinery();
+    void init();
+    virtual ~Refinery();
 
-	virtual void save(OutputStream& stream) const;
+    virtual void save(OutputStream& stream) const;
 
     virtual ObjectInterface* getInterfaceContainer();
 
-	void assignHarvester(Harvester* newHarvester);
-	void deployHarvester(Carryall* pCarryall = nullptr);
-	void startAnimate();
-	void stopAnimate();
+    void assignHarvester(Harvester* newHarvester);
+    void deployHarvester(Carryall* pCarryall = nullptr);
+    void startAnimate();
+    void stopAnimate();
 
-	inline void book() {
-	    bookings++;
-	    startAnimate();
+    inline void book() {
+        bookings++;
+        startAnimate();
     }
-	inline void unBook() {
+    inline void unBook() {
         bookings--;
         if(bookings == 0) {
             stopAnimate();
         }
     }
-	inline bool isFree() const { return !extractingSpice; }
-	inline int getNumBookings() const { return bookings; }	//number of units goings there
-	inline const Harvester* getHarvester() const  { return (Harvester*)harvester.getObjPointer(); }
-	inline Harvester* getHarvester() { return (Harvester*)harvester.getObjPointer(); }
+    inline bool isFree() const { return !extractingSpice; }
+    inline int getNumBookings() const { return bookings; }  //number of units goings there
+    inline const Harvester* getHarvester() const  { return (Harvester*)harvester.getObjPointer(); }
+    inline Harvester* getHarvester() { return (Harvester*)harvester.getObjPointer(); }
 
 protected:
     /**
         Used for updating things that are specific to that particular structure. Is called from
         StructureBase::update() before the check if this structure is still alive.
     */
-	virtual void updateStructureSpecificStuff();
+    virtual void updateStructureSpecificStuff();
 
 private:
 
-	bool            extractingSpice;    ///< Currently extracting spice?
-	ObjectPointer   harvester;          ///< The harverster currently in the refinery
+    bool            extractingSpice;    ///< Currently extracting spice?
+    ObjectPointer   harvester;          ///< The harverster currently in the refinery
     Uint32          bookings;           ///< How many bookings?
 
     bool    firstRun;       ///< On first deploy of a harvester we tell it to the user

@@ -63,63 +63,63 @@ class AdlibDriver;
  */
 class SoundAdlibPC {
 public:
-	SoundAdlibPC(SDL_RWops* rwop);
-	SoundAdlibPC(SDL_RWops* rwop, int freq);
-	~SoundAdlibPC();
+    SoundAdlibPC(SDL_RWops* rwop);
+    SoundAdlibPC(SDL_RWops* rwop, int freq);
+    ~SoundAdlibPC();
 
-	static void callback(void *, Uint8 *, int);
+    static void callback(void *, Uint8 *, int);
 
-	std::vector<int> getSubsongs();
+    std::vector<int> getSubsongs();
 
-	bool init();
-	void process();
+    bool init();
+    void process();
 
-	void playTrack(uint8_t track);
-	void haltTrack();
+    void playTrack(uint8_t track);
+    void haltTrack();
 
-	bool isPlaying();
+    bool isPlaying();
 
-	void playSoundEffect(uint8_t track);
+    void playSoundEffect(uint8_t track);
 
-	void beginFadeOut();
+    void beginFadeOut();
 
-	Mix_Chunk* getSubsong(int Num);
+    Mix_Chunk* getSubsong(int Num);
 
-	void setVolume(int newVolume) {
+    void setVolume(int newVolume) {
         volume = newVolume;
-	}
+    }
 
 private:
-	void internalLoadFile(SDL_RWops* rwop);
+    void internalLoadFile(SDL_RWops* rwop);
 
-	void play(uint8_t track);
+    void play(uint8_t track);
 
-	void unk1();
-	void unk2();
+    void unk1();
+    void unk2();
 
-	AdlibDriver *_driver;
+    AdlibDriver *_driver;
 
-	uint8_t _trackEntries[500];
-	uint8_t *_soundDataPtr;
-	int _sfxPlayingSound;
+    uint8_t _trackEntries[500];
+    uint8_t *_soundDataPtr;
+    int _sfxPlayingSound;
 
-	uint8_t _sfxPriority;
-	uint8_t _sfxFourthByteOfSong;
+    uint8_t _sfxPriority;
+    uint8_t _sfxFourthByteOfSong;
 
-	int _numSoundTriggers;
-	const int *_soundTriggers;
+    int _numSoundTriggers;
+    const int *_soundTriggers;
 
-	unsigned char getsampsize() {
-		return m_channels * (m_format == AUDIO_U8 || m_format == AUDIO_S8 ? 1 : 2);
-	}
+    unsigned char getsampsize() {
+        return m_channels * (m_format == AUDIO_U8 || m_format == AUDIO_S8 ? 1 : 2);
+    }
 
-	int m_channels;
-	int m_freq;
-	Uint16 m_format;
+    int m_channels;
+    int m_freq;
+    Uint16 m_format;
 
-	bool bJustStartedPlaying;
+    bool bJustStartedPlaying;
 
-	int volume;
+    int volume;
 };
 
 #endif

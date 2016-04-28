@@ -23,16 +23,16 @@
 class WOR : public BuilderBase
 {
 public:
-	WOR(House* newOwner);
+    WOR(House* newOwner);
     WOR(InputStream& stream);
-	void init();
-	virtual ~WOR();
+    void init();
+    virtual ~WOR();
 
     /**
         Can this structure be captured by infantry units?
         \return true, if this structure can be captured, false otherwise
-	*/
-	virtual bool canBeCaptured() const { return false; };
+    */
+    virtual bool canBeCaptured() const { return false; };
 };
 
 #endif //WOR_H

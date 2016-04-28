@@ -82,7 +82,7 @@ public:
 
             if(color != 0) {
 
-                if(	(destRect.x + x < dest->w) && (destRect.x + x >= 0) &&
+                if( (destRect.x + x < dest->w) && (destRect.x + x >= 0) &&
                     (destRect.x + x <= destRect.x + destRect.w) &&
                     (destRect.y + y < dest->h) && (destRect.y + y >= 0) &&
                     (destRect.y + y <= destRect.y + destRect.h) ) {
@@ -103,7 +103,7 @@ private:
     SDL_Surface* src;
     bool bFreeSrc;
     SDL_Surface* dest;
-    SDL_Rect	destRect;
+    SDL_Rect    destRect;
     int numSteps;
     int StepsLeft;
 

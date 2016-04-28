@@ -25,46 +25,46 @@
 class TurretBase : public StructureBase
 {
 public:
-	TurretBase(House* newOwner);
-	TurretBase(InputStream& stream);
-	void init();
-	virtual ~TurretBase();
+    TurretBase(House* newOwner);
+    TurretBase(InputStream& stream);
+    void init();
+    virtual ~TurretBase();
 
-	virtual void save(OutputStream& stream) const;
+    virtual void save(OutputStream& stream) const;
 
-	virtual void handleActionCommand(int xPos, int yPos);
+    virtual void handleActionCommand(int xPos, int yPos);
 
-	/**
+    /**
         Set targetObjectID as the attack target for this turret.
         \param  targetObjectID  the object to attack
-	*/
-	virtual void doAttackObject(Uint32 targetObjectID);
+    */
+    virtual void doAttackObject(Uint32 targetObjectID);
 
-	/**
+    /**
         Set pObject as the attack target for this turret.
         \param  pObject  the object to attack
-	*/
-	virtual void doAttackObject(const ObjectBase* pObject);
+    */
+    virtual void doAttackObject(const ObjectBase* pObject);
 
-	void turnLeft();
-	void turnRight();
-	virtual void attack();
+    void turnLeft();
+    void turnRight();
+    virtual void attack();
 
-	inline int getTurretAngle() const { return lround(angle); }
+    inline int getTurretAngle() const { return lround(angle); }
 
 protected:
     /**
         Used for updating things that are specific to that particular structure. Is called from
         StructureBase::update() before the check if this structure is still alive.
     */
-	virtual void updateStructureSpecificStuff();
+    virtual void updateStructureSpecificStuff();
 
     // constant for all turrets of the same type
     int bulletType;             ///< The type of bullet used
-	Sound_enum attackSound;     ///< The id of the sound to play when attack
+    Sound_enum attackSound;     ///< The id of the sound to play when attack
 
-	// turret state
-	Sint32  findTargetTimer;    ///< Timer used for finding a new target
+    // turret state
+    Sint32  findTargetTimer;    ///< Timer used for finding a new target
     Sint32  weaponTimer;        ///< Time until we can shot again
 };
 

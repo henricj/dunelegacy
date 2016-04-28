@@ -26,40 +26,40 @@
 class Animation
 {
 public:
-	Animation();
-	~Animation();
+    Animation();
+    ~Animation();
 
-	unsigned int getCurrentFrameNumber();
+    unsigned int getCurrentFrameNumber();
 
-	SDL_Surface* getFrame();
+    SDL_Surface* getFrame();
 
-	SDL_Texture* getFrameTexture();
+    SDL_Texture* getFrameTexture();
 
-	const std::vector<SDL_Surface*>& getFrames() { return frames; };
+    const std::vector<SDL_Surface*>& getFrames() { return frames; };
 
-	void setFrameRate(double FrameRate) {
-		if(FrameRate == 0.0) {
-			frameDurationTime = 1;
-		} else {
-			frameDurationTime = (int) (1000.0/FrameRate);
-		}
-	}
+    void setFrameRate(double FrameRate) {
+        if(FrameRate == 0.0) {
+            frameDurationTime = 1;
+        } else {
+            frameDurationTime = (int) (1000.0/FrameRate);
+        }
+    }
 
-	void setFrameDurationTime(Uint32 frameDurationTime) {
+    void setFrameDurationTime(Uint32 frameDurationTime) {
         this->frameDurationTime = frameDurationTime;
-	}
+    }
 
     Uint32 getFrameDurationTime() const {
         return frameDurationTime;
     }
 
-	void addFrame(SDL_Surface* newFrame, bool bDoublePic = false, bool bSetColorKey = false);
+    void addFrame(SDL_Surface* newFrame, bool bDoublePic = false, bool bSetColorKey = false);
 
-	void setPalette(const Palette& newPalette);
+    void setPalette(const Palette& newPalette);
 
-	void setNumLoops(int loops) {
-	    curFrame = 0;
-	    loopsLeft = loops;
+    void setNumLoops(int loops) {
+        curFrame = 0;
+        loopsLeft = loops;
     };
 
     int getLoopsLeft() const {
@@ -75,12 +75,12 @@ public:
     }
 
 private:
-	Uint32 curFrameStartTime;
-	Uint32 frameDurationTime;
+    Uint32 curFrameStartTime;
+    Uint32 frameDurationTime;
     int loopsLeft;
-	unsigned int curFrame;
-	std::vector<SDL_Surface*> frames;
-	std::vector<SDL_Texture*> frameTextures;
+    unsigned int curFrame;
+    std::vector<SDL_Surface*> frames;
+    std::vector<SDL_Texture*> frameTextures;
 };
 
 #endif // ANIMATION_H

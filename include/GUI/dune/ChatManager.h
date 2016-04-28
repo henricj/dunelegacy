@@ -51,11 +51,11 @@ public:
 
     void addInfoMessage(std::string message);
 
-	/**
-		Draws this widget to screen. This method is called before drawOverlay().
-		\param	position	Position to draw the widget to
-	*/
-	virtual void draw(Point position);
+    /**
+        Draws this widget to screen. This method is called before drawOverlay().
+        \param  position    Position to draw the widget to
+    */
+    virtual void draw(Point position);
 
 private:
 

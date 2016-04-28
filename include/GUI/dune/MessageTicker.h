@@ -28,29 +28,29 @@
 
 class MessageTicker : public Widget {
 public:
-	MessageTicker();
-	virtual ~MessageTicker();
+    MessageTicker();
+    virtual ~MessageTicker();
 
-	void addMessage(const std::string& msg);
+    void addMessage(const std::string& msg);
 
-	/**
-		Draws this button to screen. This method is called before drawOverlay().
-		\param	position	Position to draw the button to
-	*/
-	void draw(Point position);
+    /**
+        Draws this button to screen. This method is called before drawOverlay().
+        \param  position    Position to draw the button to
+    */
+    void draw(Point position);
 
-	/**
-		Returns the minimum size of this widget. The widget should not
-		be resized to a size smaller than this.
-		\return the minimum size of this widget
-	*/
-	virtual Point getMinimumSize() const {
-		return Point(0,0);
-	}
+    /**
+        Returns the minimum size of this widget. The widget should not
+        be resized to a size smaller than this.
+        \return the minimum size of this widget
+    */
+    virtual Point getMinimumSize() const {
+        return Point(0,0);
+    }
 
 private:
     std::queue<std::shared_ptr<SDL_Texture>> messageTextures;
-	int timer;
+    int timer;
 };
 
 #endif //MESSAGETICKER_H

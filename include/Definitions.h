@@ -18,15 +18,15 @@
 #ifndef DEFINITIONS_H
 #define DEFINITIONS_H
 
-#define SCREEN_BPP			32
+#define SCREEN_BPP          32
 #define SCREEN_FORMAT       SDL_PIXELFORMAT_ABGR8888
-#define SCREEN_MIN_WIDTH	640
-#define SCREEN_MIN_HEIGHT	480
+#define SCREEN_MIN_WIDTH    640
+#define SCREEN_MIN_HEIGHT   480
 #define SCREEN_DISPLAYINDEX 0
 
 #define AUDIO_FREQUENCY     44100
 
-#define DEFAULT_PORT		28747
+#define DEFAULT_PORT        28747
 #define DEFAULT_METASERVER  "http://dunelegacy.sourceforge.net/metaserver/metaserver.php"
 
 #define SAVEMAGIC           8675309
@@ -57,33 +57,33 @@
 #define BUILDRANGE 2
 #define STRUCTURE_ANIMATIONTIMER 31
 
-#define RANDOMSPICEMIN (111 - 37)	     //how much spice on each spice tile
+#define RANDOMSPICEMIN (111 - 37)        //how much spice on each spice tile
 #define RANDOMSPICEMAX (111 + 37)
 #define RANDOMTHICKSPICEMIN (222 - 74)
 #define RANDOMTHICKSPICEMAX (222 + 74)
 
-#define TILESIZE    64		        // size of tile pieces 16x16 in zoom level 0
+#define TILESIZE    64              // size of tile pieces 16x16 in zoom level 0
 
 #define D2_TILESIZE 16              // the size of a tile in D2
 
 #define SIDEBARWIDTH 144
 #define SIDEBAR_COLUMN_WIDTH 12
 
-#define NONE ((Uint32) -1)			// unsigned -1
-#define INVALID_POS	(-1)
+#define NONE ((Uint32) -1)          // unsigned -1
+#define INVALID_POS (-1)
 #define INVALID (-1)
 
 #define DEVIATIONTIME MILLI2CYCLES(120*1000)
 #define HARVESTERMAXSPICE 700
 #define HARVESTSPEED FixPt(0,1344)
-#define BADLYDAMAGEDRATIO FixPt(0,5)	            //if health/getMaxHealth() < this, damage will become bad - smoke and shit
-#define HEAVILYDAMAGEDRATIO FixPt(0,25)	            //if health/getMaxHealth() < this, damage will become heavy damage - red color
+#define BADLYDAMAGEDRATIO FixPt(0,5)                //if health/getMaxHealth() < this, damage will become bad - smoke and shit
+#define HEAVILYDAMAGEDRATIO FixPt(0,25)             //if health/getMaxHealth() < this, damage will become heavy damage - red color
 #define HEAVILYDAMAGEDSPEEDMULTIPLIER FixPt(0,75)
 #define NUMSELECTEDLISTS 9
-#define NUM_INFANTRY_PER_TILE 5		            //how many infantry can fit on a tile
+#define NUM_INFANTRY_PER_TILE 5                 //how many infantry can fit on a tile
 
 #define UNIT_REPAIRCOST FixPt(0,1)
-#define DEFAULT_GUARDRANGE 10			        //0 - 10, how far unit will search for enemy when guarding
+#define DEFAULT_GUARDRANGE 10                   //0 - 10, how far unit will search for enemy when guarding
 #define DEFAULT_STARTINGCREDITS 3000
 
 #define HUMANPLAYERCLASS        "HumanPlayer"

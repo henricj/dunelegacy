@@ -30,32 +30,32 @@ public:
     /**
         Constructor
         \param  pSurface            The picture to show
-        \param  numFrames2Hold		The number of frames the picture should be shown
+        \param  numFrames2Hold      The number of frames the picture should be shown
         \param  bFreeSurface        true = SDL_FreeSurface(pSurface) after this VideoEvent in is done, false = pSurface is not freed
         \param  bCenterVertical     true = center the surface vertically on the screen, false = blit the surface at the top of the screen (default is true)
     */
-	HoldPictureVideoEvent(SDL_Surface* pSurface, int numFrames2Hold, bool bFreeSurface, bool bCenterVertical = true);
+    HoldPictureVideoEvent(SDL_Surface* pSurface, int numFrames2Hold, bool bFreeSurface, bool bCenterVertical = true);
 
-	/// destructor
-	virtual ~HoldPictureVideoEvent();
+    /// destructor
+    virtual ~HoldPictureVideoEvent();
 
     /**
         This method draws the video effect.
         \return the milliseconds until the next frame shall be drawn.
     */
-	virtual int draw();
+    virtual int draw();
 
     /**
         This method checks if this VideoEvent is already finished
         \return true, if there are no more frames to draw with this VideoEvent
     */
-	virtual bool isFinished();
+    virtual bool isFinished();
 
 private:
-    int currentFrame;		///< the current frame number relative to the start of this HoldPictureVideoEvent
-    int numFrames2Hold;		///< the number of frames the picture should be shown
-    SDL_Texture* pTexture;	///< the picture to show
-    bool bCenterVertical;	///< true = center the surface vertically on the screen, false = blit the surface at the top of the screen
+    int currentFrame;       ///< the current frame number relative to the start of this HoldPictureVideoEvent
+    int numFrames2Hold;     ///< the number of frames the picture should be shown
+    SDL_Texture* pTexture;  ///< the picture to show
+    bool bCenterVertical;   ///< true = center the surface vertically on the screen, false = blit the surface at the top of the screen
 };
 
 #endif // HOLDPICTUREVIDEOEVENT_H

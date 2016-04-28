@@ -29,59 +29,59 @@
 
 class DefaultStructureInterface : public DefaultObjectInterface {
 public:
-	static DefaultStructureInterface* create(int objectID) {
-		DefaultStructureInterface* tmp = new DefaultStructureInterface(objectID);
-		tmp->pAllocated = true;
-		return tmp;
-	}
+    static DefaultStructureInterface* create(int objectID) {
+        DefaultStructureInterface* tmp = new DefaultStructureInterface(objectID);
+        tmp->pAllocated = true;
+        return tmp;
+    }
 
 protected:
-	DefaultStructureInterface(int objectID) : DefaultObjectInterface(objectID) {
-		SDL_Texture* pUIRepair = pGFXManager->getUIGraphic(UI_Repair);
-		SDL_Texture* pUIRepairPressed = pGFXManager->getUIGraphic(UI_Repair_Pressed);
+    DefaultStructureInterface(int objectID) : DefaultObjectInterface(objectID) {
+        SDL_Texture* pUIRepair = pGFXManager->getUIGraphic(UI_Repair);
+        SDL_Texture* pUIRepairPressed = pGFXManager->getUIGraphic(UI_Repair_Pressed);
 
-		repairButton.setTextures(pUIRepair, false, pUIRepairPressed,false);
-		repairButton.setToggleButton(true);
-		repairButton.setVisible(false);
-		repairButton.setTooltipText(_("Repair this structure (Hotkey: R)"));
-		repairButton.setOnClick(std::bind(&DefaultStructureInterface::OnRepair, this));
+        repairButton.setTextures(pUIRepair, false, pUIRepairPressed,false);
+        repairButton.setToggleButton(true);
+        repairButton.setVisible(false);
+        repairButton.setTooltipText(_("Repair this structure (Hotkey: R)"));
+        repairButton.setOnClick(std::bind(&DefaultStructureInterface::OnRepair, this));
 
-		topBox.addWidget(&repairButton, Point(2,2), getTextureSize(pUIRepair));
-	}
+        topBox.addWidget(&repairButton, Point(2,2), getTextureSize(pUIRepair));
+    }
 
-	void OnRepair() {
-		ObjectBase* pObject = currentGame->getObjectManager().getObject(objectID);
-		StructureBase* pStructure = dynamic_cast<StructureBase*>(pObject);
-		if(pStructure != nullptr) {
-			pStructure->handleRepairClick();
-		}
-	}
+    void OnRepair() {
+        ObjectBase* pObject = currentGame->getObjectManager().getObject(objectID);
+        StructureBase* pStructure = dynamic_cast<StructureBase*>(pObject);
+        if(pStructure != nullptr) {
+            pStructure->handleRepairClick();
+        }
+    }
 
-	/**
-		This method updates the object interface.
-		If the object doesn't exists anymore then update returns false.
-		\return true = everything ok, false = the object container should be removed
-	*/
-	virtual bool update() {
-		ObjectBase* pObject = currentGame->getObjectManager().getObject(objectID);
-		if(pObject == nullptr) {
-			return false;
-		}
+    /**
+        This method updates the object interface.
+        If the object doesn't exists anymore then update returns false.
+        \return true = everything ok, false = the object container should be removed
+    */
+    virtual bool update() {
+        ObjectBase* pObject = currentGame->getObjectManager().getObject(objectID);
+        if(pObject == nullptr) {
+            return false;
+        }
 
-		StructureBase* pStructure = dynamic_cast<StructureBase*>(pObject);
-		if(pStructure != nullptr) {
-			if(pStructure->getHealth() >= pStructure->getMaxHealth()) {
-				repairButton.setVisible(false);
-			} else {
-				repairButton.setVisible(true);
-				repairButton.setToggleState(pStructure->isRepairing());
-			}
-		}
+        StructureBase* pStructure = dynamic_cast<StructureBase*>(pObject);
+        if(pStructure != nullptr) {
+            if(pStructure->getHealth() >= pStructure->getMaxHealth()) {
+                repairButton.setVisible(false);
+            } else {
+                repairButton.setVisible(true);
+                repairButton.setToggleState(pStructure->isRepairing());
+            }
+        }
 
-		return true;
-	}
+        return true;
+    }
 
-	PictureButton	repairButton;
+    PictureButton   repairButton;
 };
 
 #endif // DEFAULTSTRUCTUREINTERFACE_H

@@ -38,66 +38,66 @@
 class OptionsMenu : public MenuBase
 {
 public:
-	OptionsMenu();
-	virtual ~OptionsMenu();
+    OptionsMenu();
+    virtual ~OptionsMenu();
 
 private:
-	void	onChangeOption(bool bInteractive);
-	void	onOptionsOK();
-	void	onOptionsCancel();
-	void    onGameOptions();
+    void    onChangeOption(bool bInteractive);
+    void    onOptionsOK();
+    void    onOptionsCancel();
+    void    onGameOptions();
 
-	void	saveConfiguration2File();
+    void    saveConfiguration2File();
 
-	virtual void onChildWindowClose(Window* pChildWindow);
+    virtual void onChildWindowClose(Window* pChildWindow);
 
-	/**
+    /**
         This method determines all available suitable screen resolutions.
         If the system returns that any resolution is possible a reasonable
         set of resolutions is provided.
     */
     void determineAvailableScreenResolutions();
 
-	std::vector<Coord> availScreenRes;
+    std::vector<Coord> availScreenRes;
 
-	std::vector<std::string> availLanguages;
+    std::vector<std::string> availLanguages;
 
     SettingsClass::GameOptionsClass currentGameOptions;
 
-	StaticContainer	windowWidget;
+    StaticContainer windowWidget;
 
-	VBox		mainVBox;
+    VBox        mainVBox;
 
-	HBox        NameHBox;
-	TextBox		nameTextBox;
-	HBox        gameOptionsHBox;
-	TextButton  gameOptionsButton;
+    HBox        NameHBox;
+    TextBox     nameTextBox;
+    HBox        gameOptionsHBox;
+    TextButton  gameOptionsButton;
 
-	HBox        languageHBox;
-	DropDownBox languageDropDownBox;
-	HBox        generalHBox;
-	DropDownBox aiDropDownBox;
-	Checkbox	introCheckbox;
+    HBox        languageHBox;
+    DropDownBox languageDropDownBox;
+    HBox        generalHBox;
+    DropDownBox aiDropDownBox;
+    Checkbox    introCheckbox;
 
-	HBox        resolutionHBox;
-	DropDownBox resolutionDropDownBox;
-	DropDownBox zoomlevelDropDownBox;
-	DropDownBox scalerDropDownBox;
-	HBox        videoHBox;
-	Checkbox	fullScreenCheckbox;
+    HBox        resolutionHBox;
+    DropDownBox resolutionDropDownBox;
+    DropDownBox zoomlevelDropDownBox;
+    DropDownBox scalerDropDownBox;
+    HBox        videoHBox;
+    Checkbox    fullScreenCheckbox;
 
-	HBox        audioHBox;
-	Checkbox    playSFXCheckbox;
-	Checkbox    playMusicCheckbox;
+    HBox        audioHBox;
+    Checkbox    playSFXCheckbox;
+    Checkbox    playMusicCheckbox;
 
-	HBox        networkPortHBox;
+    HBox        networkPortHBox;
     TextBox     portTextBox;
     HBox        networkMetaServerHBox;
     TextBox     metaServerTextBox;
 
-	HBox		okCancelHBox;
-	TextButton	acceptButton;
-	TextButton	backButton;
+    HBox        okCancelHBox;
+    TextButton  acceptButton;
+    TextButton  backButton;
 };
 
 

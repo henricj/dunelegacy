@@ -27,95 +27,95 @@
 
 class Coord {
 public:
-	Coord() {
-		x = y = 0;
-	}
+    Coord() {
+        x = y = 0;
+    }
 
-	Coord(int x,int y) {
-		this->x = x;
-		this->y = y;
-	}
+    Coord(int x,int y) {
+        this->x = x;
+        this->y = y;
+    }
 
-	inline bool operator==(const Coord& c) const {
+    inline bool operator==(const Coord& c) const {
         return (x == c.x && y == c.y);
-	}
+    }
 
-	inline bool operator!=(const Coord& c) const {
+    inline bool operator!=(const Coord& c) const {
         return !operator==(c);
-	}
+    }
 
-	inline Coord& operator+=(const Coord& c) {
+    inline Coord& operator+=(const Coord& c) {
         x += c.x;
         y += c.y;
         return *this;
-	}
+    }
 
     inline Coord operator+(const Coord& c) const {
         Coord ret = *this;
         ret += c;
         return ret;
-	}
+    }
 
     inline Coord& operator-=(const Coord& c) {
         x -= c.x;
         y -= c.y;
         return *this;
-	}
+    }
 
     inline Coord operator-(const Coord& c) const {
         Coord ret = *this;
         ret -= c;
         return ret;
-	}
+    }
 
     inline Coord& operator*=(int c) {
         x *= c;
         y *= c;
         return *this;
-	}
+    }
 
     inline Coord operator*(int c) const {
         Coord ret = *this;
         ret *= c;
         return ret;
-	}
+    }
 
     inline Coord& operator/=(int c) {
         x /= c;
         y /= c;
         return *this;
-	}
+    }
 
     inline Coord operator/(int c) const {
         Coord ret = *this;
         ret /= c;
         return ret;
-	}
+    }
 
-	inline void invalidate() {
+    inline void invalidate() {
         x = INVALID_POS;
         y = INVALID_POS;
-	}
+    }
 
-	inline bool isValid() const {
+    inline bool isValid() const {
         return ((x != INVALID_POS) && (y != INVALID_POS));
-	}
+    }
 
     inline bool isInvalid() const {
         return ((x == INVALID_POS) || (y == INVALID_POS));
-	}
+    }
 
-	static inline const Coord Invalid() {
-	    return Coord(INVALID_POS, INVALID_POS);
-	}
+    static inline const Coord Invalid() {
+        return Coord(INVALID_POS, INVALID_POS);
+    }
 
     inline operator bool() const {
-		return isValid();
-	};
+        return isValid();
+    };
 
 public:
-	int	x;
-	int y;
+    int x;
+    int y;
 };
 
 typedef enum {
@@ -149,46 +149,46 @@ typedef enum {
 class SettingsClass
 {
 public:
-	class GeneralClass {
-	public:
-		bool		    playIntro;          ///< Play the intro when starting the game?
-		std::string     playerName;         ///< The name of the player used for multiplayer games
-		std::string     language;           ///< Language code: "en" = English, "fr" = French, "de" = German
-		int             scrollSpeed;        ///< Scroll speed in pixels
-	} general;
+    class GeneralClass {
+    public:
+        bool            playIntro;          ///< Play the intro when starting the game?
+        std::string     playerName;         ///< The name of the player used for multiplayer games
+        std::string     language;           ///< Language code: "en" = English, "fr" = French, "de" = German
+        int             scrollSpeed;        ///< Scroll speed in pixels
+    } general;
 
-	class VideoClass {
-	public:
-		bool	    fullscreen;
-		int		    width;
-		int		    height;
-        bool	    frameLimit;
+    class VideoClass {
+    public:
+        bool        fullscreen;
+        int         width;
+        int         height;
+        bool        frameLimit;
         int         preferredZoomLevel;
         std::string scaler;
-	} video;
+    } video;
 
-	class AudioClass {
-	public:
+    class AudioClass {
+    public:
         bool        playSFX;
-		int         sfxVolume;
+        int         sfxVolume;
         bool        playMusic;
-		int         musicVolume;
-		std::string musicType;
-	} audio;
+        int         musicVolume;
+        std::string musicType;
+    } audio;
 
-	class NetworkClass {
-	public:
-		int		    serverPort;
+    class NetworkClass {
+    public:
+        int         serverPort;
         std::string metaServer;
         bool        debugNetwork;
-	} network;
+    } network;
 
-	class AIClass {
+    class AIClass {
     public:
         std::string campaignAI;
-	} ai;
+    } ai;
 
-	class GameOptionsClass {
+    class GameOptionsClass {
     public:
         GameOptionsClass()
          : gameSpeed(GAMESPEED_DEFAULT), concreteRequired(true), structuresDegradeOnConcrete(true), fogOfWar(false),
@@ -216,30 +216,30 @@ public:
         }
 
         int         gameSpeed;
-        bool		concreteRequired;
-		bool        structuresDegradeOnConcrete;
-		bool        fogOfWar;
-		bool        startWithExploredMap;
-		bool        instantBuild;
-		bool        onlyOnePalace;
-		bool        rocketTurretsNeedPower;
+        bool        concreteRequired;
+        bool        structuresDegradeOnConcrete;
+        bool        fogOfWar;
+        bool        startWithExploredMap;
+        bool        instantBuild;
+        bool        onlyOnePalace;
+        bool        rocketTurretsNeedPower;
         bool        sandwormsRespawn;
-		bool        killedSandwormsDropSpice;
-		bool        manualCarryallDrops;
-	} gameOptions;
+        bool        killedSandwormsDropSpice;
+        bool        manualCarryallDrops;
+    } gameOptions;
 };
 
 typedef enum
 {
     HOUSE_UNUSED    = -2,
     HOUSE_INVALID   = -1,
-	HOUSE_HARKONNEN =  0,
-	HOUSE_ATREIDES  =  1,
-	HOUSE_ORDOS     =  2,
-	HOUSE_FREMEN    =  3,
-	HOUSE_SARDAUKAR =  4,
-	HOUSE_MERCENARY =  5,
-	NUM_HOUSES
+    HOUSE_HARKONNEN =  0,
+    HOUSE_ATREIDES  =  1,
+    HOUSE_ORDOS     =  2,
+    HOUSE_FREMEN    =  3,
+    HOUSE_SARDAUKAR =  4,
+    HOUSE_MERCENARY =  5,
+    NUM_HOUSES
 } HOUSETYPE;
 
 typedef enum {

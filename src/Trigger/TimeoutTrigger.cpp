@@ -47,7 +47,7 @@ void TimeoutTrigger::trigger()
         soundPlayer->playVoice(YourMissionIsComplete, pLocalHouse->getHouseID());
     } else {
         // ai has won
-		currentGame->setGameLost();
-		soundPlayer->playVoice(YouHaveFailedYourMission, pLocalHouse->getHouseID());
+        currentGame->setGameLost();
+        soundPlayer->playVoice(YouHaveFailedYourMission, pLocalHouse->getHouseID());
     }
 }

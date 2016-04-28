@@ -30,37 +30,37 @@ public:
     DirectoryPlayer();
     virtual ~DirectoryPlayer();
 
-	/*!
-		change type of current music
-		@param musicType type of music to be played
-	*/
-	void changeMusic(MUSICTYPE musicType);
+    /*!
+        change type of current music
+        @param musicType type of music to be played
+    */
+    void changeMusic(MUSICTYPE musicType);
 
     /*!
         Toggle the music on and off
     */
-	void toggleSound();
+    void toggleSound();
 
     /**
         Returns whether music is currently being played
         \return true = currently playing, false = not playing
-	*/
-	bool isMusicPlaying();
+    */
+    bool isMusicPlaying();
 
     /*!
-		turns music playing on or off
-		@param value when true the function turns music on
-	*/
-	void setMusic(bool value);
+        turns music playing on or off
+        @param value when true the function turns music on
+    */
+    void setMusic(bool value);
 
     /**
         Sets the volume of the music channel
         \param  newVolume   the new volume [0;MIX_MAX_VOLUME]
     */
-	virtual void setMusicVolume(int newVolume) {
-		MusicPlayer::setMusicVolume(newVolume);
-		Mix_VolumeMusic(newVolume);
-	}
+    virtual void setMusicVolume(int newVolume) {
+        MusicPlayer::setMusicVolume(newVolume);
+        Mix_VolumeMusic(newVolume);
+    }
 
 private:
 
@@ -69,11 +69,11 @@ private:
         @param dir the directory to get the files from
         @return the path to all the music files in this directory
     */
-	std::vector<std::string> getMusicFileNames(const std::string& dir);
+    std::vector<std::string> getMusicFileNames(const std::string& dir);
 
-	std::vector<std::string> musicFileList[MUSIC_NUM_MUSIC_TYPES];
+    std::vector<std::string> musicFileList[MUSIC_NUM_MUSIC_TYPES];
 
-	Mix_Music*      music;
+    Mix_Music*      music;
 };
 
 #endif // DIRECTORYPLAYER_H

@@ -25,49 +25,49 @@
 /// This widget reports the coordinate where the user clicked on
 class ClickMap : public Widget {
 public:
-	/// default constructor
-	ClickMap() : Widget() {
-		enableResizing(true,true);
-	}
+    /// default constructor
+    ClickMap() : Widget() {
+        enableResizing(true,true);
+    }
 
-	/// destructor
-	virtual ~ClickMap() {
+    /// destructor
+    virtual ~ClickMap() {
 
-	}
+    }
 
-	/**
-		Sets the function that should be called when this click map is clicked on.
-		\param	pOnClick	A function to call when this map is clicked on
-	*/
-	inline void setOnClick(std::function<void (int, int)> pOnClick) {
-		this->pOnClick = pOnClick;
-	}
+    /**
+        Sets the function that should be called when this click map is clicked on.
+        \param  pOnClick    A function to call when this map is clicked on
+    */
+    inline void setOnClick(std::function<void (int, int)> pOnClick) {
+        this->pOnClick = pOnClick;
+    }
 
-	/**
-		Handles a left mouse click.
-		\param	x x-coordinate (relative to the left top corner of the widget)
-		\param	y y-coordinate (relative to the left top corner of the widget)
-		\param	pressed	true = mouse button pressed, false = mouse button released
-		\return	true = click was processed by the widget, false = click was not processed by the widget
-	*/
-	virtual bool handleMouseLeft(Sint32 x, Sint32 y, bool pressed) {
-		if((x < 0) || (x >= getSize().x) || (y < 0) || (y >= getSize().y)) {
-			return false;
-		}
+    /**
+        Handles a left mouse click.
+        \param  x x-coordinate (relative to the left top corner of the widget)
+        \param  y y-coordinate (relative to the left top corner of the widget)
+        \param  pressed true = mouse button pressed, false = mouse button released
+        \return true = click was processed by the widget, false = click was not processed by the widget
+    */
+    virtual bool handleMouseLeft(Sint32 x, Sint32 y, bool pressed) {
+        if((x < 0) || (x >= getSize().x) || (y < 0) || (y >= getSize().y)) {
+            return false;
+        }
 
-		if((isEnabled() == false) || (isVisible() == false)) {
-			return true;
-		}
+        if((isEnabled() == false) || (isVisible() == false)) {
+            return true;
+        }
 
-		if(pressed == true && pOnClick) {
-			pOnClick(x,y);
-		}
+        if(pressed == true && pOnClick) {
+            pOnClick(x,y);
+        }
 
-		return true;
-	}
+        return true;
+    }
 
 private:
-	std::function<void (int, int)> pOnClick;	///< function that is called when this click map is clicked
+    std::function<void (int, int)> pOnClick;    ///< function that is called when this click map is clicked
 };
 
 

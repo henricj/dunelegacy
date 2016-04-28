@@ -43,20 +43,20 @@ ChoamWindow::ChoamWindow(MapEditor* pMapEditor, HOUSETYPE currentHouse) : Window
 
     // set up window
     SDL_Texture *pBackground = pGFXManager->getUIGraphic(UI_NewMapWindow);
-	setBackground(pBackground, false);
+    setBackground(pBackground, false);
 
-	setCurrentPosition(calcAlignedDrawingRect(pBackground, HAlign::Center, VAlign::Center));
+    setCurrentPosition(calcAlignedDrawingRect(pBackground, HAlign::Center, VAlign::Center));
 
-	setWindowWidget(&mainHBox);
+    setWindowWidget(&mainHBox);
 
-	mainHBox.addWidget(HSpacer::create(16));
-	mainHBox.addWidget(&mainVBox);
-	mainHBox.addWidget(HSpacer::create(16));
+    mainHBox.addWidget(HSpacer::create(16));
+    mainHBox.addWidget(&mainVBox);
+    mainHBox.addWidget(HSpacer::create(16));
 
     titleLabel.setTextColor(COLOR_LIGHTYELLOW, COLOR_TRANSPARENT);
-	titleLabel.setAlignment((Alignment_Enum) (Alignment_HCenter | Alignment_VCenter));
-	titleLabel.setText(_("Choam"));
-	mainVBox.addWidget(&titleLabel);
+    titleLabel.setAlignment((Alignment_Enum) (Alignment_HCenter | Alignment_VCenter));
+    titleLabel.setText(_("Choam"));
+    mainVBox.addWidget(&titleLabel);
 
     mainVBox.addWidget(VSpacer::create(8));
 
@@ -64,7 +64,7 @@ ChoamWindow::ChoamWindow(MapEditor* pMapEditor, HOUSETYPE currentHouse) : Window
 
     Label_Explanation.setTextColor(color);
     Label_Explanation.setTextFont(FONT_STD10);
-	Label_Explanation.setText(_("These units are available at the starport. The given amount of these units is available at the start of the game and every 30s one unit is added."));
+    Label_Explanation.setText(_("These units are available at the starport. The given amount of these units is available at the start of the game and every 30s one unit is added."));
     centralVBox.addWidget(&Label_Explanation);
 
     centralVBox.addWidget(VSpacer::create(4));
@@ -116,32 +116,32 @@ ChoamWindow::ChoamWindow(MapEditor* pMapEditor, HOUSETYPE currentHouse) : Window
 
     mainVBox.addWidget(&buttonHBox);
 
-	cancelButton.setText(_("Cancel"));
+    cancelButton.setText(_("Cancel"));
     cancelButton.setTextColor(color);
-	cancelButton.setOnClick(std::bind(&ChoamWindow::onCancel, this));
+    cancelButton.setOnClick(std::bind(&ChoamWindow::onCancel, this));
 
-	buttonHBox.addWidget(&cancelButton);
+    buttonHBox.addWidget(&cancelButton);
 
-	buttonHBox.addWidget(HSpacer::create(8));
+    buttonHBox.addWidget(HSpacer::create(8));
 
-	buttonHBox.addWidget(Spacer::create());
+    buttonHBox.addWidget(Spacer::create());
 
-	buttonHBox.addWidget(HSpacer::create(8));
+    buttonHBox.addWidget(HSpacer::create(8));
 
     okButton.setText(_("OK"));
-	okButton.setTextColor(color);
-	okButton.setOnClick(std::bind(&ChoamWindow::onOK, this));
+    okButton.setTextColor(color);
+    okButton.setOnClick(std::bind(&ChoamWindow::onOK, this));
 
-	buttonHBox.addWidget(&okButton);
+    buttonHBox.addWidget(&okButton);
 
-	mainVBox.addWidget(VSpacer::create(10));
+    mainVBox.addWidget(VSpacer::create(10));
 }
 
 void ChoamWindow::onCancel() {
-	Window* pParentWindow = dynamic_cast<Window*>(getParent());
-	if(pParentWindow != nullptr) {
-		pParentWindow->closeChildWindow();
-	}
+    Window* pParentWindow = dynamic_cast<Window*>(getParent());
+    if(pParentWindow != nullptr) {
+        pParentWindow->closeChildWindow();
+    }
 }
 
 
@@ -179,10 +179,10 @@ void ChoamWindow::onOK() {
     }
 
 
-	Window* pParentWindow = dynamic_cast<Window*>(getParent());
-	if(pParentWindow != nullptr) {
-		pParentWindow->closeChildWindow();
-	}
+    Window* pParentWindow = dynamic_cast<Window*>(getParent());
+    if(pParentWindow != nullptr) {
+        pParentWindow->closeChildWindow();
+    }
 }
 
 void ChoamWindow::onUnitCheckbox(int itemID) {

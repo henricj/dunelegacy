@@ -44,30 +44,30 @@ TrackedUnit::~TrackedUnit()
 
 void TrackedUnit::save(OutputStream& stream) const
 {
-	GroundUnit::save(stream);
+    GroundUnit::save(stream);
 }
 
 void TrackedUnit::checkPos()
 {
-	GroundUnit::checkPos();
+    GroundUnit::checkPos();
 
-	if(active && justStoppedMoving)
-		currentGameMap->getTile(location.x, location.y)->squash();
+    if(active && justStoppedMoving)
+        currentGameMap->getTile(location.x, location.y)->squash();
 }
 
 bool TrackedUnit::canPass(int xPos, int yPos) const
 {
-	bool passable = false;
-	if(currentGameMap->tileExists(xPos, yPos)) {
-		Tile* pTile = currentGameMap->getTile(xPos, yPos);
+    bool passable = false;
+    if(currentGameMap->tileExists(xPos, yPos)) {
+        Tile* pTile = currentGameMap->getTile(xPos, yPos);
 
-		if(!pTile->isMountain()) {
-			if (!pTile->hasAGroundObject())
-				passable = true;
-			else if (!pTile->hasANonInfantryGroundObject() && (pTile->getInfantryTeam() != getOwner()->getTeam()))
-				passable = true;
-		}
-	}
+        if(!pTile->isMountain()) {
+            if (!pTile->hasAGroundObject())
+                passable = true;
+            else if (!pTile->hasANonInfantryGroundObject() && (pTile->getInfantryTeam() != getOwner()->getTeam()))
+                passable = true;
+        }
+    }
 
-	return passable;
+    return passable;
 }

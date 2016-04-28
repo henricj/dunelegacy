@@ -26,36 +26,36 @@
 
 /// A base class for running Dune 2 Cutscenes.
 /**
-	This class runs a Dune 2 Cutscene. The cutscene is composed of video elements with aditional audio and text elements. The video
-	is managed by subclasses of VideoEvent. The list if VideoEvents determines the length of the video. TextEvents and CutSceneTriggers
-	(CutSceneMusicTrigger or CutSceneSoundTrigger) can be linked in at specific framenumbers. The whole video is split up in scenes to
-	make it easier to debug the exact timings of TextEvents	and CutSceneTriggers. The timings for both are given relative to the start of
-	the last scene.
+    This class runs a Dune 2 Cutscene. The cutscene is composed of video elements with aditional audio and text elements. The video
+    is managed by subclasses of VideoEvent. The list if VideoEvents determines the length of the video. TextEvents and CutSceneTriggers
+    (CutSceneMusicTrigger or CutSceneSoundTrigger) can be linked in at specific framenumbers. The whole video is split up in scenes to
+    make it easier to debug the exact timings of TextEvents and CutSceneTriggers. The timings for both are given relative to the start of
+    the last scene.
 */
 class CutScene
 {
 public:
 
     /// Default constructor
-	CutScene();
+    CutScene();
 
-	/// Destructor
-	virtual ~CutScene();
+    /// Destructor
+    virtual ~CutScene();
 
     /**
         This method runs the cutscene. This method returns when either the user cancels the cutscene with ESC or when the cutscene is finished.
     */
-	void run();
+    void run();
 
     /**
         Quit this cutscene before the next scene draw.
     */
-	void quit() { quiting = true; };
+    void quit() { quiting = true; };
 
     /**
         This method starts a new scene.
     */
-	void startNewScene();
+    void startNewScene();
 
     /**
         This method adds a new video event at the end of this cutscene (to the last started scene)
@@ -63,7 +63,7 @@ public:
         CutScene gets destroyed.
         \param newVideoEvent the new video event to be played at the end of this scene (must be created with new)
     */
-	void addVideoEvent(VideoEvent* newVideoEvent);
+    void addVideoEvent(VideoEvent* newVideoEvent);
 
     /**
         This method adds a new text event to the current this scene.
@@ -71,15 +71,15 @@ public:
         Scene gets destroyed.
         \param newTextEvent the new text event to be played in the current scene (must be created with new)
     */
-	void addTextEvent(TextEvent* newTextEvent);
+    void addTextEvent(TextEvent* newTextEvent);
 
-	/**
+    /**
         This method adds a new trigger to the current this scene.
         IMPORTANT: The trigger event has to be created by new and will be automatically destroyed when this
         Scene gets destroyed.
         \param newTrigger the new trigger to be triggered in the current scene (must be created with new)
     */
-	void addTrigger(CutSceneTrigger* newTrigger);
+    void addTrigger(CutSceneTrigger* newTrigger);
 
 protected:
     /**

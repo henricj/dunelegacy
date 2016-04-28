@@ -70,76 +70,76 @@
 Game::Game() {
     currentZoomlevel = settings.video.preferredZoomLevel;
 
-	whatNextParam = GAME_NOTHING;
+    whatNextParam = GAME_NOTHING;
 
-	finished = false;
-	bPause = false;
-	bMenu = false;
-	won = false;
+    finished = false;
+    bPause = false;
+    bMenu = false;
+    won = false;
 
-	gameType = GAMETYPE_CAMPAIGN;
-	techLevel = 0;
+    gameType = GAMETYPE_CAMPAIGN;
+    techLevel = 0;
 
     currentCursorMode = CursorMode_Normal;
 
-	chatMode = false;
-	scrollDownMode = false;
-	scrollLeftMode = false;
-	scrollRightMode = false;
-	scrollUpMode = false;
+    chatMode = false;
+    scrollDownMode = false;
+    scrollLeftMode = false;
+    scrollRightMode = false;
+    scrollUpMode = false;
 
-	bShowFPS = false;
-	bShowTime = false;
+    bShowFPS = false;
+    bShowTime = false;
 
-	bCheatsEnabled = false;
+    bCheatsEnabled = false;
 
-	selectionMode = false;
+    selectionMode = false;
 
-	bQuitGame = false;
+    bQuitGame = false;
 
-	bReplay = false;
+    bReplay = false;
 
-	indicatorFrame = NONE;
-	indicatorTime = 5;
-	indicatorTimer = 0;
+    indicatorFrame = NONE;
+    indicatorTime = 5;
+    indicatorTimer = 0;
 
     pInterface = nullptr;
-	pInGameMenu = nullptr;
-	pInGameMentat = nullptr;
-	pWaitingForOtherPlayers = nullptr;
+    pInGameMenu = nullptr;
+    pInGameMentat = nullptr;
+    pWaitingForOtherPlayers = nullptr;
 
-	startWaitingForOtherPlayersTime = 0;
+    startWaitingForOtherPlayersTime = 0;
 
-	bSelectionChanged = false;
+    bSelectionChanged = false;
 
-	unitList.clear();   	//holds all the units
-	structureList.clear();	//all the structures
-	bulletList.clear();
+    unitList.clear();       //holds all the units
+    structureList.clear();  //all the structures
+    bulletList.clear();
 
     house.resize(NUM_HOUSES);
 
-	sideBarPos = calcAlignedDrawingRect(pGFXManager->getUIGraphic(UI_SideBar), HAlign::Right, VAlign::Top);
+    sideBarPos = calcAlignedDrawingRect(pGFXManager->getUIGraphic(UI_SideBar), HAlign::Right, VAlign::Top);
     topBarPos = calcAlignedDrawingRect(pGFXManager->getUIGraphic(UI_TopBar), HAlign::Left, VAlign::Top);
 
     gameState = START;
 
-	gameCycleCount = 0;
-	skipToGameCycle = 0;
+    gameCycleCount = 0;
+    skipToGameCycle = 0;
 
-	averageFrameTime = 31.25f;
-	debug = false;
+    averageFrameTime = 31.25f;
+    debug = false;
 
-	powerIndicatorPos.x = 14;
-	powerIndicatorPos.y = 146;
-	spiceIndicatorPos.x = 20;
-	spiceIndicatorPos.y = 146;
-	powerIndicatorPos.w = spiceIndicatorPos.w = 4;
-	powerIndicatorPos.h = spiceIndicatorPos.h = settings.video.height - 146 - 2;
+    powerIndicatorPos.x = 14;
+    powerIndicatorPos.y = 146;
+    spiceIndicatorPos.x = 20;
+    spiceIndicatorPos.y = 146;
+    powerIndicatorPos.w = spiceIndicatorPos.w = 4;
+    powerIndicatorPos.h = spiceIndicatorPos.h = settings.video.height - 146 - 2;
 
-	musicPlayer->changeMusic(MUSIC_PEACE);
-	//////////////////////////////////////////////////////////////////////////
-	SDL_Rect gameBoardRect = { 0, topBarPos.h, sideBarPos.x, getRendererHeight() - topBarPos.h };
-	screenborder = new ScreenBorder(gameBoardRect);
+    musicPlayer->changeMusic(MUSIC_PEACE);
+    //////////////////////////////////////////////////////////////////////////
+    SDL_Rect gameBoardRect = { 0, topBarPos.h, sideBarPos.x, getRendererHeight() - topBarPos.h };
+    screenborder = new ScreenBorder(gameBoardRect);
 }
 
 
@@ -147,12 +147,12 @@ Game::Game() {
     The destructor frees up all the used memory.
 */
 Game::~Game() {
-	if(pNetworkManager != nullptr) {
+    if(pNetworkManager != nullptr) {
         pNetworkManager->setOnReceiveChatMessage(std::function<void (std::string, std::string)>());
         pNetworkManager->setOnReceiveCommandList(std::function<void (const std::string&, const CommandList&)>());
         pNetworkManager->setOnReceiveSelectionList(std::function<void (std::string, std::set<Uint32>, int)>());
         pNetworkManager->setOnPeerDisconnected(std::function<void (std::string, bool, int)>());
-	}
+    }
 
     delete pInGameMenu;
     pInGameMenu = nullptr;
@@ -173,25 +173,25 @@ Game::~Game() {
     }
     unitList.clear();
 
-	for(RobustList<Bullet*>::const_iterator iter = bulletList.begin(); iter != bulletList.end(); ++iter) {
-	    delete *iter;
-	}
-	bulletList.clear();
+    for(RobustList<Bullet*>::const_iterator iter = bulletList.begin(); iter != bulletList.end(); ++iter) {
+        delete *iter;
+    }
+    bulletList.clear();
 
     for(RobustList<Explosion*>::const_iterator iter = explosionList.begin(); iter != explosionList.end(); ++iter) {
-	    delete *iter;
-	}
-	explosionList.clear();
+        delete *iter;
+    }
+    explosionList.clear();
 
-	for(int i=0;i<NUM_HOUSES;i++) {
-		delete house[i];
-		house[i] = nullptr;
-	}
+    for(int i=0;i<NUM_HOUSES;i++) {
+        delete house[i];
+        house[i] = nullptr;
+    }
 
-	delete currentGameMap;
-	currentGameMap = nullptr;
-	delete screenborder;
-	screenborder = nullptr;
+    delete currentGameMap;
+    currentGameMap = nullptr;
+    delete screenborder;
+    screenborder = nullptr;
 }
 
 
@@ -251,33 +251,33 @@ void Game::initGame(const GameInitSettings& newGameInitSettings) {
 void Game::initReplay(const std::string& filename) {
     bReplay = true;
 
-	IFileStream fs;
+    IFileStream fs;
 
-	if(fs.open(filename) == false) {
-		perror("Game::loadSaveGame()");
-		exit(EXIT_FAILURE);
-	}
+    if(fs.open(filename) == false) {
+        perror("Game::loadSaveGame()");
+        exit(EXIT_FAILURE);
+    }
 
-	// read GameInitInfo
-	GameInitSettings loadedGameInitSettings(fs);
+    // read GameInitInfo
+    GameInitSettings loadedGameInitSettings(fs);
 
-	// load all commands
-	cmdManager.load(fs);
+    // load all commands
+    cmdManager.load(fs);
 
-	initGame(loadedGameInitSettings);
+    initGame(loadedGameInitSettings);
 
-	// fs is closed by its destructor
+    // fs is closed by its destructor
 }
 
 
 void Game::processObjects()
 {
-	// update all tiles
+    // update all tiles
     for(int y = 0; y < currentGameMap->getSizeY(); y++) {
-		for(int x = 0; x < currentGameMap->getSizeX(); x++) {
+        for(int x = 0; x < currentGameMap->getSizeX(); x++) {
             currentGameMap->getTile(x,y)->update();
-		}
-	}
+        }
+    }
 
 
     for(RobustList<StructureBase*>::iterator iter = structureList.begin(); iter != structureList.end(); ++iter) {
@@ -285,22 +285,22 @@ void Game::processObjects()
         tempStructure->update();
     }
 
-	if ((currentCursorMode == CursorMode_Placing) && selectedList.empty()) {
-		currentCursorMode = CursorMode_Normal;
-	}
+    if ((currentCursorMode == CursorMode_Placing) && selectedList.empty()) {
+        currentCursorMode = CursorMode_Normal;
+    }
 
-	for(RobustList<UnitBase*>::iterator iter = unitList.begin(); iter != unitList.end(); ++iter) {
-		UnitBase* tempUnit = *iter;
-		tempUnit->update();
-	}
+    for(RobustList<UnitBase*>::iterator iter = unitList.begin(); iter != unitList.end(); ++iter) {
+        UnitBase* tempUnit = *iter;
+        tempUnit->update();
+    }
 
     for(RobustList<Bullet*>::iterator iter = bulletList.begin(); iter != bulletList.end(); ++iter) {
         (*iter)->update();
-	}
+    }
 
     for(RobustList<Explosion*>::iterator iter = explosionList.begin(); iter != explosionList.end(); ++iter) {
         (*iter)->update();
-	}
+    }
 }
 
 
@@ -318,140 +318,140 @@ void Game::drawScreen()
     Coord currentTile;
 
     /* draw ground */
-	for(currentTile.y = TopLeftTile.y; currentTile.y <= BottomRightTile.y; currentTile.y++) {
-		for(currentTile.x = TopLeftTile.x; currentTile.x <= BottomRightTile.x; currentTile.x++) {
+    for(currentTile.y = TopLeftTile.y; currentTile.y <= BottomRightTile.y; currentTile.y++) {
+        for(currentTile.x = TopLeftTile.x; currentTile.x <= BottomRightTile.x; currentTile.x++) {
 
-			if (currentGameMap->tileExists(currentTile))	{
-				Tile* pTile = currentGameMap->getTile(currentTile);
-				pTile->blitGround( screenborder->world2screenX(currentTile.x*TILESIZE),
+            if (currentGameMap->tileExists(currentTile))    {
+                Tile* pTile = currentGameMap->getTile(currentTile);
+                pTile->blitGround( screenborder->world2screenX(currentTile.x*TILESIZE),
                                   screenborder->world2screenY(currentTile.y*TILESIZE));
-			}
-		}
-	}
+            }
+        }
+    }
 
     /* draw structures */
-	for(currentTile.y = TopLeftTile.y; currentTile.y <= BottomRightTile.y; currentTile.y++) {
-		for(currentTile.x = TopLeftTile.x; currentTile.x <= BottomRightTile.x; currentTile.x++) {
+    for(currentTile.y = TopLeftTile.y; currentTile.y <= BottomRightTile.y; currentTile.y++) {
+        for(currentTile.x = TopLeftTile.x; currentTile.x <= BottomRightTile.x; currentTile.x++) {
 
-			if (currentGameMap->tileExists(currentTile))	{
-				Tile* pTile = currentGameMap->getTile(currentTile);
-				pTile->blitStructures( screenborder->world2screenX(currentTile.x*TILESIZE),
+            if (currentGameMap->tileExists(currentTile))    {
+                Tile* pTile = currentGameMap->getTile(currentTile);
+                pTile->blitStructures( screenborder->world2screenX(currentTile.x*TILESIZE),
                                       screenborder->world2screenY(currentTile.y*TILESIZE));
-			}
-		}
-	}
+            }
+        }
+    }
 
     /* draw underground units */
-	for(currentTile.y = TopLeftTile.y; currentTile.y <= BottomRightTile.y; currentTile.y++) {
-		for(currentTile.x = TopLeftTile.x; currentTile.x <= BottomRightTile.x; currentTile.x++) {
+    for(currentTile.y = TopLeftTile.y; currentTile.y <= BottomRightTile.y; currentTile.y++) {
+        for(currentTile.x = TopLeftTile.x; currentTile.x <= BottomRightTile.x; currentTile.x++) {
 
-			if (currentGameMap->tileExists(currentTile))	{
-				Tile* pTile = currentGameMap->getTile(currentTile);
-				pTile->blitUndergroundUnits( screenborder->world2screenX(currentTile.x*TILESIZE),
+            if (currentGameMap->tileExists(currentTile))    {
+                Tile* pTile = currentGameMap->getTile(currentTile);
+                pTile->blitUndergroundUnits( screenborder->world2screenX(currentTile.x*TILESIZE),
                                             screenborder->world2screenY(currentTile.y*TILESIZE));
-			}
-		}
-	}
+            }
+        }
+    }
 
     /* draw dead objects */
-	for(currentTile.y = TopLeftTile.y; currentTile.y <= BottomRightTile.y; currentTile.y++) {
-		for(currentTile.x = TopLeftTile.x; currentTile.x <= BottomRightTile.x; currentTile.x++) {
+    for(currentTile.y = TopLeftTile.y; currentTile.y <= BottomRightTile.y; currentTile.y++) {
+        for(currentTile.x = TopLeftTile.x; currentTile.x <= BottomRightTile.x; currentTile.x++) {
 
-			if (currentGameMap->tileExists(currentTile))	{
-				Tile* pTile = currentGameMap->getTile(currentTile);
-				pTile->blitDeadUnits( screenborder->world2screenX(currentTile.x*TILESIZE),
+            if (currentGameMap->tileExists(currentTile))    {
+                Tile* pTile = currentGameMap->getTile(currentTile);
+                pTile->blitDeadUnits( screenborder->world2screenX(currentTile.x*TILESIZE),
                                      screenborder->world2screenY(currentTile.y*TILESIZE));
-			}
-		}
-	}
+            }
+        }
+    }
 
     /* draw infantry */
-	for(currentTile.y = TopLeftTile.y; currentTile.y <= BottomRightTile.y; currentTile.y++) {
-		for(currentTile.x = TopLeftTile.x; currentTile.x <= BottomRightTile.x; currentTile.x++) {
+    for(currentTile.y = TopLeftTile.y; currentTile.y <= BottomRightTile.y; currentTile.y++) {
+        for(currentTile.x = TopLeftTile.x; currentTile.x <= BottomRightTile.x; currentTile.x++) {
 
-			if (currentGameMap->tileExists(currentTile))	{
-				Tile* pTile = currentGameMap->getTile(currentTile);
-				pTile->blitInfantry( screenborder->world2screenX(currentTile.x*TILESIZE),
+            if (currentGameMap->tileExists(currentTile))    {
+                Tile* pTile = currentGameMap->getTile(currentTile);
+                pTile->blitInfantry( screenborder->world2screenX(currentTile.x*TILESIZE),
                                     screenborder->world2screenY(currentTile.y*TILESIZE));
-			}
-		}
-	}
+            }
+        }
+    }
 
     /* draw non-infantry ground units */
-	for(currentTile.y = TopLeftTile.y; currentTile.y <= BottomRightTile.y; currentTile.y++) {
-		for(currentTile.x = TopLeftTile.x; currentTile.x <= BottomRightTile.x; currentTile.x++) {
+    for(currentTile.y = TopLeftTile.y; currentTile.y <= BottomRightTile.y; currentTile.y++) {
+        for(currentTile.x = TopLeftTile.x; currentTile.x <= BottomRightTile.x; currentTile.x++) {
 
-			if (currentGameMap->tileExists(currentTile))	{
-				Tile* pTile = currentGameMap->getTile(currentTile);
-				pTile->blitNonInfantryGroundUnits( screenborder->world2screenX(currentTile.x*TILESIZE),
+            if (currentGameMap->tileExists(currentTile))    {
+                Tile* pTile = currentGameMap->getTile(currentTile);
+                pTile->blitNonInfantryGroundUnits( screenborder->world2screenX(currentTile.x*TILESIZE),
                                                   screenborder->world2screenY(currentTile.y*TILESIZE));
-			}
-		}
-	}
+            }
+        }
+    }
 
-	/* draw bullets */
+    /* draw bullets */
     for(RobustList<Bullet*>::const_iterator iter = bulletList.begin(); iter != bulletList.end(); ++iter) {
         Bullet* pBullet = *iter;
         pBullet->blitToScreen();
-	}
+    }
 
 
-	/* draw explosions */
-	for(RobustList<Explosion*>::const_iterator iter = explosionList.begin(); iter != explosionList.end(); ++iter) {
+    /* draw explosions */
+    for(RobustList<Explosion*>::const_iterator iter = explosionList.begin(); iter != explosionList.end(); ++iter) {
         (*iter)->blitToScreen();
-	}
+    }
 
     /* draw air units */
-	for(currentTile.y = TopLeftTile.y; currentTile.y <= BottomRightTile.y; currentTile.y++) {
-		for(currentTile.x = TopLeftTile.x; currentTile.x <= BottomRightTile.x; currentTile.x++) {
+    for(currentTile.y = TopLeftTile.y; currentTile.y <= BottomRightTile.y; currentTile.y++) {
+        for(currentTile.x = TopLeftTile.x; currentTile.x <= BottomRightTile.x; currentTile.x++) {
 
-			if (currentGameMap->tileExists(currentTile))	{
-				Tile* pTile = currentGameMap->getTile(currentTile);
-				pTile->blitAirUnits(   screenborder->world2screenX(currentTile.x*TILESIZE),
+            if (currentGameMap->tileExists(currentTile))    {
+                Tile* pTile = currentGameMap->getTile(currentTile);
+                pTile->blitAirUnits(   screenborder->world2screenX(currentTile.x*TILESIZE),
                                       screenborder->world2screenY(currentTile.y*TILESIZE));
-			}
-		}
-	}
+            }
+        }
+    }
 
     /* draw selection rectangles */
-	for(currentTile.y = TopLeftTile.y; currentTile.y <= BottomRightTile.y; currentTile.y++) {
-		for(currentTile.x = TopLeftTile.x; currentTile.x <= BottomRightTile.x; currentTile.x++) {
+    for(currentTile.y = TopLeftTile.y; currentTile.y <= BottomRightTile.y; currentTile.y++) {
+        for(currentTile.x = TopLeftTile.x; currentTile.x <= BottomRightTile.x; currentTile.x++) {
 
-			if (currentGameMap->tileExists(currentTile))	{
-				Tile* pTile = currentGameMap->getTile(currentTile);
+            if (currentGameMap->tileExists(currentTile))    {
+                Tile* pTile = currentGameMap->getTile(currentTile);
 
-				if(debug || pTile->isExplored(pLocalHouse->getHouseID())) {
-					pTile->blitSelectionRects(   screenborder->world2screenX(currentTile.x*TILESIZE),
+                if(debug || pTile->isExplored(pLocalHouse->getHouseID())) {
+                    pTile->blitSelectionRects(   screenborder->world2screenX(currentTile.x*TILESIZE),
                                                 screenborder->world2screenY(currentTile.y*TILESIZE));
-				}
-			}
-		}
-	}
+                }
+            }
+        }
+    }
 
 
 //////////////////////////////draw unexplored/shade
 
-	if(debug == false) {
-	    int zoomedTileSize = world2zoomedWorld(TILESIZE);
-		for(int x = screenborder->getTopLeftTile().x - 1; x <= screenborder->getBottomRightTile().x + 1; x++) {
-			for (int y = screenborder->getTopLeftTile().y - 1; y <= screenborder->getBottomRightTile().y + 1; y++) {
+    if(debug == false) {
+        int zoomedTileSize = world2zoomedWorld(TILESIZE);
+        for(int x = screenborder->getTopLeftTile().x - 1; x <= screenborder->getBottomRightTile().x + 1; x++) {
+            for (int y = screenborder->getTopLeftTile().y - 1; y <= screenborder->getBottomRightTile().y + 1; y++) {
 
-				if((x >= 0) && (x < currentGameMap->getSizeX()) && (y >= 0) && (y < currentGameMap->getSizeY())) {
-					Tile* pTile = currentGameMap->getTile(x, y);
+                if((x >= 0) && (x < currentGameMap->getSizeX()) && (y >= 0) && (y < currentGameMap->getSizeY())) {
+                    Tile* pTile = currentGameMap->getTile(x, y);
 
-					if(pTile->isExplored(pLocalHouse->getHouseID())) {
-					    int hideTile = pTile->getHideTile(pLocalHouse->getHouseID());
+                    if(pTile->isExplored(pLocalHouse->getHouseID())) {
+                        int hideTile = pTile->getHideTile(pLocalHouse->getHouseID());
 
-						if(hideTile != 0) {
-						    SDL_Texture** hiddenTex = pGFXManager->getObjPic(ObjPic_Terrain_Hidden);
+                        if(hideTile != 0) {
+                            SDL_Texture** hiddenTex = pGFXManager->getObjPic(ObjPic_Terrain_Hidden);
 
-						    SDL_Rect source = { hideTile*zoomedTileSize, 0, zoomedTileSize, zoomedTileSize };
-						    SDL_Rect drawLocation = {   screenborder->world2screenX(x*TILESIZE), screenborder->world2screenY(y*TILESIZE),
+                            SDL_Rect source = { hideTile*zoomedTileSize, 0, zoomedTileSize, zoomedTileSize };
+                            SDL_Rect drawLocation = {   screenborder->world2screenX(x*TILESIZE), screenborder->world2screenY(y*TILESIZE),
                                                         zoomedTileSize, zoomedTileSize };
-							SDL_RenderCopy(renderer, hiddenTex[currentZoomlevel], &source, &drawLocation);
-						}
+                            SDL_RenderCopy(renderer, hiddenTex[currentZoomlevel], &source, &drawLocation);
+                        }
 
-						if(gameInitSettings.getGameOptions().fogOfWar == true) {
+                        if(gameInitSettings.getGameOptions().fogOfWar == true) {
                             int fogTile = pTile->getFogTile(pLocalHouse->getHouseID());
 
                             if(pTile->isFogged(pLocalHouse->getHouseID()) == true) {
@@ -468,49 +468,49 @@ void Game::drawScreen()
 
                                 SDL_RenderCopy(renderer, hiddenFogTex[currentZoomlevel], &source, &drawLocation);
                             }
-						}
-					} else {
-					    if(!debug) {
-					        SDL_Texture** hiddenTex = pGFXManager->getObjPic(ObjPic_Terrain_Hidden);
-					        SDL_Rect source = { zoomedTileSize*15, 0, zoomedTileSize, zoomedTileSize };
-					        SDL_Rect drawLocation = {   screenborder->world2screenX(x*TILESIZE), screenborder->world2screenY(y*TILESIZE),
+                        }
+                    } else {
+                        if(!debug) {
+                            SDL_Texture** hiddenTex = pGFXManager->getObjPic(ObjPic_Terrain_Hidden);
+                            SDL_Rect source = { zoomedTileSize*15, 0, zoomedTileSize, zoomedTileSize };
+                            SDL_Rect drawLocation = {   screenborder->world2screenX(x*TILESIZE), screenborder->world2screenY(y*TILESIZE),
                                                         zoomedTileSize, zoomedTileSize };
                             SDL_RenderCopy(renderer, hiddenTex[currentZoomlevel], &source, &drawLocation);
-					    }
-					}
-				} else {
+                        }
+                    }
+                } else {
                     // we are outside the map => draw complete hidden
                     SDL_Texture** hiddenTex = pGFXManager->getObjPic(ObjPic_Terrain_Hidden);
                     SDL_Rect source = { zoomedTileSize*15, 0, zoomedTileSize, zoomedTileSize };
                     SDL_Rect drawLocation = {   screenborder->world2screenX(x*TILESIZE), screenborder->world2screenY(y*TILESIZE),
                                                 zoomedTileSize, zoomedTileSize };
                     SDL_RenderCopy(renderer, hiddenTex[currentZoomlevel], &source, &drawLocation);
-				}
-			}
-		}
-	}
+                }
+            }
+        }
+    }
 
 /////////////draw placement position
 
-	int mouse_x, mouse_y;
+    int mouse_x, mouse_y;
 
-	SDL_GetMouseState(&mouse_x, &mouse_y);
+    SDL_GetMouseState(&mouse_x, &mouse_y);
     adjustMouseCoords(mouse_x, mouse_y);
 
-	if(currentCursorMode == CursorMode_Placing) {
-		//if user has selected to place a structure
+    if(currentCursorMode == CursorMode_Placing) {
+        //if user has selected to place a structure
 
-		if(screenborder->isScreenCoordInsideMap(mouse_x, mouse_y)) {
-		    //if mouse is not over game bar
+        if(screenborder->isScreenCoordInsideMap(mouse_x, mouse_y)) {
+            //if mouse is not over game bar
 
-			int	xPos = screenborder->screen2MapX(mouse_x);
-			int yPos = screenborder->screen2MapY(mouse_y);
+            int xPos = screenborder->screen2MapX(mouse_x);
+            int yPos = screenborder->screen2MapY(mouse_y);
 
-			bool withinRange = false;
+            bool withinRange = false;
 
-			BuilderBase* builder = nullptr;
-			if(selectedList.size() == 1) {
-			    builder = dynamic_cast<BuilderBase*>(objectManager.getObject(*selectedList.begin()));
+            BuilderBase* builder = nullptr;
+            if(selectedList.size() == 1) {
+                builder = dynamic_cast<BuilderBase*>(objectManager.getObject(*selectedList.begin()));
 
                 int placeItem = builder->getCurrentProducedItem();
                 Coord structuresize = getStructureSize(placeItem);
@@ -518,7 +518,7 @@ void Game::drawScreen()
                 for (int i = xPos; i < (xPos + structuresize.x); i++) {
                     for (int j = yPos; j < (yPos + structuresize.y); j++) {
                         if (currentGameMap->isWithinBuildRange(i, j, builder->getOwner())) {
-                            withinRange = true;			//find out if the structure is close enough to other buildings
+                            withinRange = true;         //find out if the structure is close enough to other buildings
                         }
                     }
                 }
@@ -562,37 +562,37 @@ void Game::drawScreen()
                     }
                 }
             }
-		}
-	}
+        }
+    }
 
 ///////////draw game selection rectangle
-	if(selectionMode) {
+    if(selectionMode) {
 
-		int finalMouseX = mouse_x;
-		int finalMouseY = mouse_y;
-		if(finalMouseX >= sideBarPos.x) {
-		    //this keeps the box on the map, and not over game bar
-			finalMouseX = sideBarPos.x-1;
-		}
+        int finalMouseX = mouse_x;
+        int finalMouseY = mouse_y;
+        if(finalMouseX >= sideBarPos.x) {
+            //this keeps the box on the map, and not over game bar
+            finalMouseX = sideBarPos.x-1;
+        }
 
-		if(finalMouseY < topBarPos.y+topBarPos.h) {
-			finalMouseY = topBarPos.x+topBarPos.h;
-		}
+        if(finalMouseY < topBarPos.y+topBarPos.h) {
+            finalMouseY = topBarPos.x+topBarPos.h;
+        }
 
         // draw the mouse selection rectangle
-		renderDrawRect( renderer,
+        renderDrawRect( renderer,
                         screenborder->world2screenX(selectionRect.x),
                         screenborder->world2screenY(selectionRect.y),
                         finalMouseX,
                         finalMouseY,
                         COLOR_WHITE);
-	}
+    }
 
 
 
 ///////////draw action indicator
 
-	if((indicatorFrame != NONE) && (screenborder->isInsideScreen(indicatorPosition, Coord(TILESIZE,TILESIZE)) == true)) {
+    if((indicatorFrame != NONE) && (screenborder->isInsideScreen(indicatorPosition, Coord(TILESIZE,TILESIZE)) == true)) {
         SDL_Texture* pUIIndicator = pGFXManager->getUIGraphic(UI_Indicator);
         SDL_Rect source = calcSpriteSourceRect(pUIIndicator, indicatorFrame, 3);
         SDL_Rect drawLocation = calcSpriteDrawingRect(  pUIIndicator,
@@ -600,46 +600,46 @@ void Game::drawScreen()
                                                         screenborder->world2screenY(indicatorPosition.y),
                                                         3, 1,
                                                         HAlign::Center, VAlign::Center);
-		SDL_RenderCopy(renderer, pUIIndicator, &source, &drawLocation);
-	}
+        SDL_RenderCopy(renderer, pUIIndicator, &source, &drawLocation);
+    }
 
 
 ///////////draw game bar
-	pInterface->draw(Point(0,0));
-	pInterface->drawOverlay(Point(0,0));
+    pInterface->draw(Point(0,0));
+    pInterface->drawOverlay(Point(0,0));
 
-	// draw chat message currently typed
-	if(chatMode) {
+    // draw chat message currently typed
+    if(chatMode) {
         SDL_Texture* pChatTexture = pFontManager->createTextureWithText("Chat: " + typingChatMessage + (((SDL_GetTicks() / 150) % 2 == 0) ? "_" : ""), COLOR_WHITE, FONT_STD12);
         SDL_Rect drawLocation = calcDrawingRect(pChatTexture, 20, getRendererHeight() - 40);
         SDL_RenderCopy(renderer, pChatTexture, nullptr, &drawLocation);
         SDL_DestroyTexture(pChatTexture);
-	}
+    }
 
-	if(bShowFPS) {
-		char	temp[50];
-		snprintf(temp,50,"fps: %.1f ", 1000.0f/averageFrameTime);
+    if(bShowFPS) {
+        char    temp[50];
+        snprintf(temp,50,"fps: %.1f ", 1000.0f/averageFrameTime);
 
-		SDL_Texture* pFPSTexture = pFontManager->createTextureWithText(temp, COLOR_WHITE, FONT_STD12);
+        SDL_Texture* pFPSTexture = pFontManager->createTextureWithText(temp, COLOR_WHITE, FONT_STD12);
         SDL_Rect drawLocation = calcDrawingRect(pFPSTexture,sideBarPos.x - strlen(temp)*8, 60);
-		SDL_RenderCopy(renderer, pFPSTexture, nullptr, &drawLocation);
-		SDL_DestroyTexture(pFPSTexture);
-	}
+        SDL_RenderCopy(renderer, pFPSTexture, nullptr, &drawLocation);
+        SDL_DestroyTexture(pFPSTexture);
+    }
 
-	if(bShowTime) {
-		char	temp[50];
-		int     seconds = getGameTime() / 1000;
-		snprintf(temp,50," %.2d:%.2d:%.2d", seconds / 3600, (seconds % 3600)/60, (seconds % 60) );
+    if(bShowTime) {
+        char    temp[50];
+        int     seconds = getGameTime() / 1000;
+        snprintf(temp,50," %.2d:%.2d:%.2d", seconds / 3600, (seconds % 3600)/60, (seconds % 60) );
 
-		SDL_Texture* pTimeTexture = pFontManager->createTextureWithText(temp, COLOR_WHITE, FONT_STD12);
+        SDL_Texture* pTimeTexture = pFontManager->createTextureWithText(temp, COLOR_WHITE, FONT_STD12);
         SDL_Rect drawLocation = calcAlignedDrawingRect(pTimeTexture, HAlign::Left, VAlign::Bottom);
         drawLocation.y++;
-		SDL_RenderCopy(renderer, pTimeTexture, nullptr, &drawLocation);
-		SDL_DestroyTexture(pTimeTexture);
-	}
+        SDL_RenderCopy(renderer, pTimeTexture, nullptr, &drawLocation);
+        SDL_DestroyTexture(pTimeTexture);
+    }
 
-	if(finished) {
-		std::string message;
+    if(finished) {
+        std::string message;
 
         if(won) {
             message = _("You Have Completed Your Mission.");
@@ -647,66 +647,66 @@ void Game::drawScreen()
             message = _("You Have Failed Your Mission.");
         }
 
-		SDL_Texture* pFinishMessageTexture = pFontManager->createTextureWithText(message.c_str(), COLOR_WHITE, FONT_STD24);
+        SDL_Texture* pFinishMessageTexture = pFontManager->createTextureWithText(message.c_str(), COLOR_WHITE, FONT_STD24);
         SDL_Rect drawLocation = calcDrawingRect(pFinishMessageTexture, sideBarPos.x/2, topBarPos.h + (getRendererHeight()-topBarPos.h)/2, HAlign::Center, VAlign::Center);
-		SDL_RenderCopy(renderer, pFinishMessageTexture, nullptr, &drawLocation);
-		SDL_DestroyTexture(pFinishMessageTexture);
-	}
+        SDL_RenderCopy(renderer, pFinishMessageTexture, nullptr, &drawLocation);
+        SDL_DestroyTexture(pFinishMessageTexture);
+    }
 
-	if(pWaitingForOtherPlayers != nullptr) {
+    if(pWaitingForOtherPlayers != nullptr) {
         pWaitingForOtherPlayers->draw();
-	}
+    }
 
-	if(pInGameMenu != nullptr) {
-		pInGameMenu->draw();
-	} else if(pInGameMentat != nullptr) {
-		pInGameMentat->draw();
-	}
+    if(pInGameMenu != nullptr) {
+        pInGameMenu->draw();
+    } else if(pInGameMentat != nullptr) {
+        pInGameMentat->draw();
+    }
 
-	drawCursor();
+    drawCursor();
 }
 
 
 void Game::doInput()
 {
-	SDL_Event event;
-	while(SDL_PollEvent(&event)) {
-	    // check for a key press
+    SDL_Event event;
+    while(SDL_PollEvent(&event)) {
+        // check for a key press
 
-		// first of all update mouse
-		if(event.type == SDL_MOUSEMOTION) {
-			SDL_MouseMotionEvent* mouse = &event.motion;
-			drawnMouseX = mouse->x;
-			drawnMouseY = mouse->y;
-		}
+        // first of all update mouse
+        if(event.type == SDL_MOUSEMOTION) {
+            SDL_MouseMotionEvent* mouse = &event.motion;
+            drawnMouseX = mouse->x;
+            drawnMouseY = mouse->y;
+        }
 
-		if(pInGameMenu != nullptr) {
-			pInGameMenu->handleInput(event);
+        if(pInGameMenu != nullptr) {
+            pInGameMenu->handleInput(event);
 
-			if(bMenu == false) {
+            if(bMenu == false) {
                 delete pInGameMenu;
                 pInGameMenu = nullptr;
-			}
+            }
 
-		} else if(pInGameMentat != nullptr) {
-			pInGameMentat->doInput(event);
+        } else if(pInGameMentat != nullptr) {
+            pInGameMentat->doInput(event);
 
-			if(bMenu == false) {
+            if(bMenu == false) {
                 delete pInGameMentat;
                 pInGameMentat = nullptr;
-			}
+            }
 
-		} else if(pWaitingForOtherPlayers != nullptr) {
-			pWaitingForOtherPlayers->handleInput(event);
+        } else if(pWaitingForOtherPlayers != nullptr) {
+            pWaitingForOtherPlayers->handleInput(event);
 
-			if(bMenu == false) {
+            if(bMenu == false) {
                 delete pWaitingForOtherPlayers;
                 pWaitingForOtherPlayers = nullptr;
-			}
+            }
 
-		} else {
-			/* Look for a keypress */
-			switch (event.type) {
+        } else {
+            /* Look for a keypress */
+            switch (event.type) {
 
                 case SDL_KEYDOWN: {
                     if(chatMode) {
@@ -807,7 +807,7 @@ void Game::doInput()
                                     }
                                 } break;
                             }
-                        } break;	//end of SDL_BUTTON_LEFT
+                        } break;    //end of SDL_BUTTON_LEFT
 
                         case SDL_BUTTON_RIGHT: {
                             //if the right mouse button is pressed
@@ -829,7 +829,7 @@ void Game::doInput()
                                     }
                                 }
                             }
-                        } break;	//end of SDL_BUTTON_RIGHT
+                        } break;    //end of SDL_BUTTON_RIGHT
                     }
                 } break;
 
@@ -874,7 +874,7 @@ void Game::doInput()
 
                         // convert start also to map coordinates
                         int rectStartX = selectionRect.x/TILESIZE;
-                        int	rectStartY = selectionRect.y/TILESIZE;
+                        int rectStartY = selectionRect.y/TILESIZE;
 
                         currentGameMap->selectObjects(  pLocalHouse->getHouseID(),
                                                         rectStartX, rectStartY, rectFinishX, rectFinishY,
@@ -930,16 +930,16 @@ void Game::doInput()
 
                 default:
                     break;
-			}
-		}
-	}
+            }
+        }
+    }
 
-	if((pInGameMenu == nullptr) && (pInGameMentat == nullptr) && (pWaitingForOtherPlayers == nullptr) && (SDL_GetWindowFlags(window) & SDL_WINDOW_MOUSE_FOCUS)) {
+    if((pInGameMenu == nullptr) && (pInGameMentat == nullptr) && (pWaitingForOtherPlayers == nullptr) && (SDL_GetWindowFlags(window) & SDL_WINDOW_MOUSE_FOCUS)) {
 
-	    const Uint8 *keystate = SDL_GetKeyboardState(nullptr);
-		scrollDownMode =  (drawnMouseY >= getRendererHeight()-1-SCROLLBORDER) || keystate[SDL_SCANCODE_DOWN];
-		scrollLeftMode = (drawnMouseX <= SCROLLBORDER) || keystate[SDL_SCANCODE_LEFT];
-		scrollRightMode = (drawnMouseX >= getRendererWidth()-1-SCROLLBORDER) || keystate[SDL_SCANCODE_RIGHT];
+        const Uint8 *keystate = SDL_GetKeyboardState(nullptr);
+        scrollDownMode =  (drawnMouseY >= getRendererHeight()-1-SCROLLBORDER) || keystate[SDL_SCANCODE_DOWN];
+        scrollLeftMode = (drawnMouseX <= SCROLLBORDER) || keystate[SDL_SCANCODE_LEFT];
+        scrollRightMode = (drawnMouseX >= getRendererWidth()-1-SCROLLBORDER) || keystate[SDL_SCANCODE_RIGHT];
         scrollUpMode = (drawnMouseY <= SCROLLBORDER) || keystate[SDL_SCANCODE_UP];
 
         if(scrollLeftMode && scrollRightMode) {
@@ -957,12 +957,12 @@ void Game::doInput()
         } else if(scrollUpMode) {
             scrollUpMode = screenborder->scrollUp();
         }
-	} else {
-	    scrollDownMode = false;
-	    scrollLeftMode = false;
-	    scrollRightMode = false;
-	    scrollUpMode = false;
-	}
+    } else {
+        scrollDownMode = false;
+        scrollLeftMode = false;
+        scrollRightMode = false;
+        scrollUpMode = false;
+    }
 }
 
 
@@ -972,16 +972,16 @@ void Game::drawCursor()
         return;
     }
 
-	SDL_Texture* pCursor = nullptr;
+    SDL_Texture* pCursor = nullptr;
     SDL_Rect dest = { 0, 0, 0, 0};
-	if(scrollLeftMode || scrollRightMode || scrollUpMode || scrollDownMode) {
+    if(scrollLeftMode || scrollRightMode || scrollUpMode || scrollDownMode) {
         if(scrollLeftMode && !scrollRightMode) {
-	        pCursor = pGFXManager->getUIGraphic(UI_CursorLeft);
-	        dest = calcDrawingRect(pCursor, drawnMouseX, drawnMouseY-5, HAlign::Left, VAlign::Top);
-	    } else if(scrollRightMode && !scrollLeftMode) {
+            pCursor = pGFXManager->getUIGraphic(UI_CursorLeft);
+            dest = calcDrawingRect(pCursor, drawnMouseX, drawnMouseY-5, HAlign::Left, VAlign::Top);
+        } else if(scrollRightMode && !scrollLeftMode) {
             pCursor = pGFXManager->getUIGraphic(UI_CursorRight);
-	        dest = calcDrawingRect(pCursor, drawnMouseX, drawnMouseY-5, HAlign::Center, VAlign::Top);
-	    }
+            dest = calcDrawingRect(pCursor, drawnMouseX, drawnMouseY-5, HAlign::Center, VAlign::Top);
+        }
 
         if(pCursor == nullptr) {
             if(scrollUpMode && !scrollDownMode) {
@@ -995,12 +995,12 @@ void Game::drawCursor()
                 dest = calcDrawingRect(pCursor, drawnMouseX, drawnMouseY, HAlign::Left, VAlign::Top);
             }
         }
-	} else {
-	    if( (pInGameMenu != nullptr) || (pInGameMentat != nullptr) || (pWaitingForOtherPlayers != nullptr) || (((drawnMouseX >= sideBarPos.x) || (drawnMouseY < topBarPos.h)) && (isOnRadarView(drawnMouseX, drawnMouseY) == false))) {
+    } else {
+        if( (pInGameMenu != nullptr) || (pInGameMentat != nullptr) || (pWaitingForOtherPlayers != nullptr) || (((drawnMouseX >= sideBarPos.x) || (drawnMouseY < topBarPos.h)) && (isOnRadarView(drawnMouseX, drawnMouseY) == false))) {
             // Menu mode or Mentat Menu or Waiting for other players or outside of game screen but not inside minimap
             pCursor = pGFXManager->getUIGraphic(UI_CursorNormal);
             dest = calcDrawingRect(pCursor, drawnMouseX, drawnMouseY, HAlign::Left, VAlign::Top);
-	    } else {
+        } else {
 
             switch(currentCursorMode) {
                 case CursorMode_Normal:
@@ -1086,59 +1086,59 @@ void Game::drawCursor()
                     throw std::runtime_error("Game::drawCursor(): Unknown cursor mode");
                 };
             }
-	    }
-	}
+        }
+    }
 
-	SDL_RenderCopy(renderer, pCursor, nullptr, &dest);
+    SDL_RenderCopy(renderer, pCursor, nullptr, &dest);
 }
 
 void Game::setupView()
 {
-	int i = 0;
-	int j = 0;
-	int count = 0;
+    int i = 0;
+    int j = 0;
+    int count = 0;
 
-	//setup start location/view
-	i = j = count = 0;
+    //setup start location/view
+    i = j = count = 0;
 
     RobustList<UnitBase*>::const_iterator unitIterator;
-	for(unitIterator = unitList.begin(); unitIterator != unitList.end(); ++unitIterator) {
-		UnitBase* pUnit = *unitIterator;
-		if(pUnit->getOwner() == pLocalHouse) {
-			i += pUnit->getX();
-			j += pUnit->getY();
-			count++;
-		}
-	}
+    for(unitIterator = unitList.begin(); unitIterator != unitList.end(); ++unitIterator) {
+        UnitBase* pUnit = *unitIterator;
+        if(pUnit->getOwner() == pLocalHouse) {
+            i += pUnit->getX();
+            j += pUnit->getY();
+            count++;
+        }
+    }
 
     RobustList<StructureBase*>::const_iterator structureIterator;
-	for(structureIterator = structureList.begin(); structureIterator != structureList.end(); ++structureIterator) {
-		StructureBase* pStructure = *structureIterator;
-		if(pStructure->getOwner() == pLocalHouse) {
-			i += pStructure->getX();
-			j += pStructure->getY();
-			count++;
-		}
-	}
+    for(structureIterator = structureList.begin(); structureIterator != structureList.end(); ++structureIterator) {
+        StructureBase* pStructure = *structureIterator;
+        if(pStructure->getOwner() == pLocalHouse) {
+            i += pStructure->getX();
+            j += pStructure->getY();
+            count++;
+        }
+    }
 
-	if(count == 0) {
-		i = currentGameMap->getSizeX()*TILESIZE/2-1;
-		j = currentGameMap->getSizeY()*TILESIZE/2-1;
-	} else {
-		i = i*TILESIZE/count;
-		j = j*TILESIZE/count;
-	}
+    if(count == 0) {
+        i = currentGameMap->getSizeX()*TILESIZE/2-1;
+        j = currentGameMap->getSizeY()*TILESIZE/2-1;
+    } else {
+        i = i*TILESIZE/count;
+        j = j*TILESIZE/count;
+    }
 
-	screenborder->setNewScreenCenter(Coord(i,j));
+    screenborder->setNewScreenCenter(Coord(i,j));
 }
 
 
 void Game::runMainLoop() {
-	printf("Starting game...\n");
-	fflush(stdout);
+    printf("Starting game...\n");
+    fflush(stdout);
 
     // add interface
-	if(pInterface == nullptr) {
+    if(pInterface == nullptr) {
         pInterface = new GameInterface();
         if(gameState == LOADING) {
             // when loading a save game we set radar directly
@@ -1147,66 +1147,66 @@ void Game::runMainLoop() {
             // when starting a new game we switch the radar on with an animation if appropriate
             pInterface->getRadarView().switchRadarMode(true);
         }
-	}
+    }
 
     gameState = BEGUN;
 
-	//setup endlevel conditions
-	finishedLevel = false;
+    //setup endlevel conditions
+    finishedLevel = false;
 
-	bShowTime = winFlags & WINLOSEFLAGS_TIMEOUT;
+    bShowTime = winFlags & WINLOSEFLAGS_TIMEOUT;
 
-	// Check if a player has lost
-	for(int j = 0; j < NUM_HOUSES; j++) {
-		if(house[j] != nullptr) {
-			if(!house[j]->isAlive()) {
-				house[j]->lose(true);
-			}
-		}
-	}
+    // Check if a player has lost
+    for(int j = 0; j < NUM_HOUSES; j++) {
+        if(house[j] != nullptr) {
+            if(!house[j]->isAlive()) {
+                house[j]->lose(true);
+            }
+        }
+    }
 
-	if(bReplay) {
-		cmdManager.setReadOnly(true);
-	} else {
-		char tmp[FILENAME_MAX];
-		fnkdat("replay/auto.rpl", tmp, FILENAME_MAX, FNKDAT_USER | FNKDAT_CREAT);
-		std::string replayname(tmp);
+    if(bReplay) {
+        cmdManager.setReadOnly(true);
+    } else {
+        char tmp[FILENAME_MAX];
+        fnkdat("replay/auto.rpl", tmp, FILENAME_MAX, FNKDAT_USER | FNKDAT_CREAT);
+        std::string replayname(tmp);
 
-		OFileStream* pStream = new OFileStream();
-		pStream->open(replayname);
-		gameInitSettings.save(*pStream);
+        OFileStream* pStream = new OFileStream();
+        pStream->open(replayname);
+        gameInitSettings.save(*pStream);
 
         // when this game was loaded we have to save the old commands to the replay file first
-		cmdManager.save(*pStream);
+        cmdManager.save(*pStream);
 
-		// now all new commands might be added
-		cmdManager.setStream(pStream);
+        // now all new commands might be added
+        cmdManager.setStream(pStream);
 
-		// flush stream
-		pStream->flush();
-	}
+        // flush stream
+        pStream->flush();
+    }
 
-	if(pNetworkManager != nullptr) {
+    if(pNetworkManager != nullptr) {
         pNetworkManager->setOnReceiveChatMessage(std::bind(&ChatManager::addChatMessage, &(pInterface->getChatManager()), std::placeholders::_1, std::placeholders::_2));
         pNetworkManager->setOnReceiveCommandList(std::bind(&CommandManager::addCommandList, &cmdManager, std::placeholders::_1, std::placeholders::_2));
         pNetworkManager->setOnReceiveSelectionList(std::bind(&Game::onReceiveSelectionList, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
         pNetworkManager->setOnPeerDisconnected(std::bind(&Game::onPeerDisconnected, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
 
         cmdManager.setNetworkCycleBuffer( MILLI2CYCLES(pNetworkManager->getMaxPeerRoundTripTime()) + 5 );
-	}
+    }
 
-	// Change music to ingame music
-	musicPlayer->changeMusic(MUSIC_PEACE);
+    // Change music to ingame music
+    musicPlayer->changeMusic(MUSIC_PEACE);
 
 
-	int		frameStart = SDL_GetTicks();
-	int     frameEnd = 0;
-	int     frameTime = 0;
-	int     numFrames = 0;
+    int     frameStart = SDL_GetTicks();
+    int     frameEnd = 0;
+    int     frameTime = 0;
+    int     numFrames = 0;
 
     //fprintf(stderr, "Random Seed (GameCycle %d): 0x%0X\n", GameCycleCount, RandomGen.getSeed());
 
-	//main game loop
+    //main game loop
     do {
         SDL_SetRenderTarget(renderer, screenTexture);
 
@@ -1253,7 +1253,7 @@ void Game::runMainLoop() {
         }
 
 
-        while( (frameTime > getGameSpeed()) || (!finished && (gameCycleCount < skipToGameCycle)) )	{
+        while( (frameTime > getGameSpeed()) || (!finished && (gameCycleCount < skipToGameCycle)) )  {
 
             bool bWaitForNetwork = false;
 
@@ -1317,7 +1317,7 @@ void Game::runMainLoop() {
 
             cmdManager.update();
 
-            if(!bWaitForNetwork && !bPause)	{
+            if(!bWaitForNetwork && !bPause) {
                 pInterface->getRadarView().update();
                 cmdManager.executeCommands(gameCycleCount);
 
@@ -1358,44 +1358,44 @@ void Game::runMainLoop() {
             }
         }
 
-        musicPlayer->musicCheck();	//if song has finished, start playing next one
+        musicPlayer->musicCheck();  //if song has finished, start playing next one
     } while (!bQuitGame && !finishedLevel);//not sure if we need this extra bool
 
 
 
-	// Game is finished
+    // Game is finished
 
-	if(bReplay == false && currentGame->won == true) {
+    if(bReplay == false && currentGame->won == true) {
         // save replay
-		char tmp[FILENAME_MAX];
+        char tmp[FILENAME_MAX];
 
-		std::string mapnameBase = getBasename(gameInitSettings.getFilename(), true);
-		fnkdat(std::string("replay/" + mapnameBase + ".rpl").c_str(), tmp, FILENAME_MAX, FNKDAT_USER | FNKDAT_CREAT);
-		std::string replayname(tmp);
+        std::string mapnameBase = getBasename(gameInitSettings.getFilename(), true);
+        fnkdat(std::string("replay/" + mapnameBase + ".rpl").c_str(), tmp, FILENAME_MAX, FNKDAT_USER | FNKDAT_CREAT);
+        std::string replayname(tmp);
 
-		OFileStream* pStream = new OFileStream();
-		pStream->open(replayname);
-		gameInitSettings.save(*pStream);
-		cmdManager.save(*pStream);
+        OFileStream* pStream = new OFileStream();
+        pStream->open(replayname);
+        gameInitSettings.save(*pStream);
+        cmdManager.save(*pStream);
         delete pStream;
-	}
+    }
 
-	if(pNetworkManager != nullptr) {
+    if(pNetworkManager != nullptr) {
         pNetworkManager->disconnect();
-	}
+    }
 
     gameState = DEINITIALIZE;
-	printf("Game finished!\n");
-	fflush(stdout);
+    printf("Game finished!\n");
+    fflush(stdout);
 }
 
 
 void Game::resumeGame()
 {
-	bMenu = false;
-	if(gameType != GAMETYPE_CUSTOM_MULTIPLAYER) {
+    bMenu = false;
+    if(gameType != GAMETYPE_CUSTOM_MULTIPLAYER) {
         bPause = false;
-	}
+    }
 }
 
 
@@ -1415,104 +1415,104 @@ void Game::onOptions()
 
 void Game::onMentat()
 {
-	pInGameMentat = new MentatHelp(pLocalHouse->getHouseID(), techLevel, gameInitSettings.getMission());
-	bMenu = true;
+    pInGameMentat = new MentatHelp(pLocalHouse->getHouseID(), techLevel, gameInitSettings.getMission());
+    bMenu = true;
     pauseGame();
 }
 
 
 GameInitSettings Game::getNextGameInitSettings()
 {
-	if(nextGameInitSettings.getGameType() != GAMETYPE_INVALID) {
-		// return the prepared game init settings (load game or restart mission)
-		return nextGameInitSettings;
-	}
+    if(nextGameInitSettings.getGameType() != GAMETYPE_INVALID) {
+        // return the prepared game init settings (load game or restart mission)
+        return nextGameInitSettings;
+    }
 
-	switch(gameInitSettings.getGameType()) {
-		case GAMETYPE_CAMPAIGN: {
-			/* do map choice */
-			fprintf(stdout,"Map Choice...");
-			fflush(stdout);
-			MapChoice* pMapChoice = new MapChoice(gameInitSettings.getHouseID(), gameInitSettings.getMission());
-			int nextMission = pMapChoice->showMenu();
-			delete pMapChoice;
+    switch(gameInitSettings.getGameType()) {
+        case GAMETYPE_CAMPAIGN: {
+            /* do map choice */
+            fprintf(stdout,"Map Choice...");
+            fflush(stdout);
+            MapChoice* pMapChoice = new MapChoice(gameInitSettings.getHouseID(), gameInitSettings.getMission());
+            int nextMission = pMapChoice->showMenu();
+            delete pMapChoice;
 
-			fprintf(stdout,"\t\t\tfinished\n");
-			fflush(stdout);
+            fprintf(stdout,"\t\t\tfinished\n");
+            fflush(stdout);
 
             return GameInitSettings(gameInitSettings, nextMission);
-		} break;
+        } break;
 
-		default: {
-			fprintf(stderr,"Game::getNextGameInitClass(): Wrong gameType for next Game.\n");
-			fflush(stderr);
-			return GameInitSettings();
-		} break;
-	}
+        default: {
+            fprintf(stderr,"Game::getNextGameInitClass(): Wrong gameType for next Game.\n");
+            fflush(stderr);
+            return GameInitSettings();
+        } break;
+    }
 
-	return GameInitSettings();
+    return GameInitSettings();
 }
 
 
 int Game::whatNext()
 {
-	if(whatNextParam != GAME_NOTHING) {
-		int tmp = whatNextParam;
-		whatNextParam = GAME_NOTHING;
-		return tmp;
-	}
+    if(whatNextParam != GAME_NOTHING) {
+        int tmp = whatNextParam;
+        whatNextParam = GAME_NOTHING;
+        return tmp;
+    }
 
-	if(nextGameInitSettings.getGameType() != GAMETYPE_INVALID) {
-		return GAME_LOAD;
-	}
+    if(nextGameInitSettings.getGameType() != GAMETYPE_INVALID) {
+        return GAME_LOAD;
+    }
 
-	switch(gameType) {
-		case GAMETYPE_CAMPAIGN: {
-			if(bQuitGame == true) {
-				return GAME_RETURN_TO_MENU;
-			} else if(won == true) {
-				if(gameInitSettings.getMission() == 22) {
-					// there is no mission after this mission
-					whatNextParam = GAME_RETURN_TO_MENU;
-				} else {
-					// there is a mission after this mission
-					whatNextParam = GAME_NEXTMISSION;
-				}
-				return GAME_DEBRIEFING_WIN;
-			} else {
+    switch(gameType) {
+        case GAMETYPE_CAMPAIGN: {
+            if(bQuitGame == true) {
+                return GAME_RETURN_TO_MENU;
+            } else if(won == true) {
+                if(gameInitSettings.getMission() == 22) {
+                    // there is no mission after this mission
+                    whatNextParam = GAME_RETURN_TO_MENU;
+                } else {
+                    // there is a mission after this mission
+                    whatNextParam = GAME_NEXTMISSION;
+                }
+                return GAME_DEBRIEFING_WIN;
+            } else {
                 // copy old init class to init class for next game
                 setNextGameInitSettings(gameInitSettings);
 
-				return GAME_DEBRIEFING_LOST;
-			}
-		} break;
+                return GAME_DEBRIEFING_LOST;
+            }
+        } break;
 
-		case GAMETYPE_SKIRMISH: {
-			if(bQuitGame == true) {
-				return GAME_RETURN_TO_MENU;
-			} else if(won == true) {
-				whatNextParam = GAME_RETURN_TO_MENU;
-				return GAME_DEBRIEFING_WIN;
-			} else {
-				whatNextParam = GAME_RETURN_TO_MENU;
-				return GAME_DEBRIEFING_LOST;
-			}
-		} break;
-
-		case GAMETYPE_CUSTOM:
-		case GAMETYPE_CUSTOM_MULTIPLAYER: {
+        case GAMETYPE_SKIRMISH: {
             if(bQuitGame == true) {
-				return GAME_RETURN_TO_MENU;
-			} else {
+                return GAME_RETURN_TO_MENU;
+            } else if(won == true) {
+                whatNextParam = GAME_RETURN_TO_MENU;
+                return GAME_DEBRIEFING_WIN;
+            } else {
+                whatNextParam = GAME_RETURN_TO_MENU;
+                return GAME_DEBRIEFING_LOST;
+            }
+        } break;
+
+        case GAMETYPE_CUSTOM:
+        case GAMETYPE_CUSTOM_MULTIPLAYER: {
+            if(bQuitGame == true) {
+                return GAME_RETURN_TO_MENU;
+            } else {
                 whatNextParam = GAME_RETURN_TO_MENU;
                 return GAME_CUSTOM_GAME_STATS;
-			}
-		} break;
+            }
+        } break;
 
-		default: {
-			return GAME_RETURN_TO_MENU;
-		} break;
-	}
+        default: {
+            return GAME_RETURN_TO_MENU;
+        } break;
+    }
 }
 
 
@@ -1520,8 +1520,8 @@ bool Game::loadSaveGame(std::string filename) {
     IFileStream fs;
 
     if(fs.open(filename) == false) {
-		return false;
-	}
+        return false;
+    }
 
     bool ret = loadSaveGame(fs);
 
@@ -1531,63 +1531,63 @@ bool Game::loadSaveGame(std::string filename) {
 }
 
 bool Game::loadSaveGame(InputStream& stream) {
-	gameState = LOADING;
+    gameState = LOADING;
 
-	Uint32 magicNum = stream.readUint32();
-	if (magicNum != SAVEMAGIC) {
-		fprintf(stderr,"Game::loadSaveGame(): No valid savegame! Expected magic number %.8X, but got %.8X!\n", SAVEMAGIC, magicNum);
-		return false;
-	}
+    Uint32 magicNum = stream.readUint32();
+    if (magicNum != SAVEMAGIC) {
+        fprintf(stderr,"Game::loadSaveGame(): No valid savegame! Expected magic number %.8X, but got %.8X!\n", SAVEMAGIC, magicNum);
+        return false;
+    }
 
-	Uint32 savegameVersion = stream.readUint32();
-	if (savegameVersion != SAVEGAMEVERSION) {
-		fprintf(stderr,"Game::loadSaveGame(): No valid savegame! Expected savegame version %d, but got %d!\n", SAVEGAMEVERSION, savegameVersion);
-		return false;
-	}
+    Uint32 savegameVersion = stream.readUint32();
+    if (savegameVersion != SAVEGAMEVERSION) {
+        fprintf(stderr,"Game::loadSaveGame(): No valid savegame! Expected savegame version %d, but got %d!\n", SAVEGAMEVERSION, savegameVersion);
+        return false;
+    }
 
-	std::string duneVersion = stream.readString();
+    std::string duneVersion = stream.readString();
 
-	// if this is a multiplayer load we need to save some information before we overwrite gameInitSettings with the settings saved in the savegame
-	bool bMultiplayerLoad = (gameInitSettings.getGameType() == GAMETYPE_LOAD_MULTIPLAYER);
-	GameInitSettings::HouseInfoList oldHouseInfoList = gameInitSettings.getHouseInfoList();
+    // if this is a multiplayer load we need to save some information before we overwrite gameInitSettings with the settings saved in the savegame
+    bool bMultiplayerLoad = (gameInitSettings.getGameType() == GAMETYPE_LOAD_MULTIPLAYER);
+    GameInitSettings::HouseInfoList oldHouseInfoList = gameInitSettings.getHouseInfoList();
 
-	// read gameInitSettings
-	gameInitSettings = GameInitSettings(stream);
+    // read gameInitSettings
+    gameInitSettings = GameInitSettings(stream);
 
     // read the actual house setup choosen at the beginning of the game
     Uint32 numHouseInfo = stream.readUint32();
-	for(Uint32 i=0;i<numHouseInfo;i++) {
+    for(Uint32 i=0;i<numHouseInfo;i++) {
         houseInfoListSetup.push_back(GameInitSettings::HouseInfo(stream));
-	}
+    }
 
-	//read map size
-	short mapSizeX = stream.readUint32();
-	short mapSizeY = stream.readUint32();
+    //read map size
+    short mapSizeX = stream.readUint32();
+    short mapSizeY = stream.readUint32();
 
-	//create the new map
-	currentGameMap = new Map(mapSizeX, mapSizeY);
+    //create the new map
+    currentGameMap = new Map(mapSizeX, mapSizeY);
 
-	//read GameCycleCount
-	gameCycleCount = stream.readUint32();
+    //read GameCycleCount
+    gameCycleCount = stream.readUint32();
 
-	// read some settings
-	gameType = (GAMETYPE) stream.readSint8();
-	techLevel = stream.readUint8();
-	randomGen.setSeed(stream.readUint32());
+    // read some settings
+    gameType = (GAMETYPE) stream.readSint8();
+    techLevel = stream.readUint8();
+    randomGen.setSeed(stream.readUint32());
 
     // read in the unit/structure data
     objectData.load(stream);
 
-	//load the house(s) info
-	for(int i=0; i<NUM_HOUSES; i++) {
-		if (stream.readBool() == true) {
-		    //house in game
-	        house[i] = new House(stream);
-		}
-	}
+    //load the house(s) info
+    for(int i=0; i<NUM_HOUSES; i++) {
+        if (stream.readBool() == true) {
+            //house in game
+            house[i] = new House(stream);
+        }
+    }
 
-	// we have to set the local player
-	if(bMultiplayerLoad) {
+    // we have to set the local player
+    if(bMultiplayerLoad) {
         // get it from the gameInitSettings that started the game (not the one saved in the savegame)
         GameInitSettings::HouseInfoList::iterator iter;
         for(iter = oldHouseInfoList.begin(); iter != oldHouseInfoList.end(); ++iter) {
@@ -1631,33 +1631,33 @@ bool Game::loadSaveGame(InputStream& stream) {
                 }
             }
         }
-	} else {
-	    // it is stored in the savegame, so set it up
+    } else {
+        // it is stored in the savegame, so set it up
         Uint8 localPlayerID = stream.readUint8();
         pLocalPlayer = dynamic_cast<HumanPlayer*>(getPlayerByID(localPlayerID));
         pLocalHouse = house[pLocalPlayer->getHouse()->getHouseID()];
-	}
+    }
 
-	debug = stream.readBool();
+    debug = stream.readBool();
     bCheatsEnabled = stream.readBool();
 
-	winFlags = stream.readUint32();
-	loseFlags = stream.readUint32();
+    winFlags = stream.readUint32();
+    loseFlags = stream.readUint32();
 
-	currentGameMap->load(stream);
+    currentGameMap->load(stream);
 
-	//load the structures and units
-	objectManager.load(stream);
+    //load the structures and units
+    objectManager.load(stream);
 
-	int numBullets = stream.readUint32();
-	for(int i = 0; i < numBullets; i++) {
-		bulletList.push_back(new Bullet(stream));
-	}
+    int numBullets = stream.readUint32();
+    for(int i = 0; i < numBullets; i++) {
+        bulletList.push_back(new Bullet(stream));
+    }
 
     int numExplosions = stream.readUint32();
-	for(int i = 0; i < numExplosions; i++) {
-		explosionList.push_back(new Explosion(stream));
-	}
+    for(int i = 0; i < numExplosions; i++) {
+        explosionList.push_back(new Explosion(stream));
+    }
 
     if(bMultiplayerLoad) {
         screenborder->adjustScreenBorderToMapsize(currentGameMap->getSizeX(), currentGameMap->getSizeY());
@@ -1677,87 +1677,87 @@ bool Game::loadSaveGame(InputStream& stream) {
     triggerManager.load(stream);
 
     // CommandManager is at the very end of the file. DO NOT CHANGE THIS!
-	cmdManager.load(stream);
+    cmdManager.load(stream);
 
-	finished = false;
+    finished = false;
 
-	return true;
+    return true;
 }
 
 
 bool Game::saveGame(std::string filename)
 {
-	OFileStream fs;
+    OFileStream fs;
 
-	if(fs.open(filename) == false) {
-		perror("Game::saveGame()");
-		currentGame->addToNewsTicker(std::string("Game NOT saved: Cannot open \"") + filename + "\".");
-		return false;
-	}
+    if(fs.open(filename) == false) {
+        perror("Game::saveGame()");
+        currentGame->addToNewsTicker(std::string("Game NOT saved: Cannot open \"") + filename + "\".");
+        return false;
+    }
 
-	fs.writeUint32(SAVEMAGIC);
+    fs.writeUint32(SAVEMAGIC);
 
-	fs.writeUint32(SAVEGAMEVERSION);
+    fs.writeUint32(SAVEGAMEVERSION);
 
-	fs.writeString(VERSIONSTRING);
+    fs.writeString(VERSIONSTRING);
 
-	// write gameInitSettings
-	gameInitSettings.save(fs);
+    // write gameInitSettings
+    gameInitSettings.save(fs);
 
     fs.writeUint32(houseInfoListSetup.size());
-	GameInitSettings::HouseInfoList::const_iterator iter;
-	for(iter = houseInfoListSetup.begin(); iter != houseInfoListSetup.end(); ++iter) {
+    GameInitSettings::HouseInfoList::const_iterator iter;
+    for(iter = houseInfoListSetup.begin(); iter != houseInfoListSetup.end(); ++iter) {
         iter->save(fs);
-	}
+    }
 
-	//write the map size
-	fs.writeUint32(currentGameMap->getSizeX());
-	fs.writeUint32(currentGameMap->getSizeY());
+    //write the map size
+    fs.writeUint32(currentGameMap->getSizeX());
+    fs.writeUint32(currentGameMap->getSizeY());
 
-	// write GameCycleCount
-	fs.writeUint32(gameCycleCount);
+    // write GameCycleCount
+    fs.writeUint32(gameCycleCount);
 
-	// write some settings
-	fs.writeSint8(gameType);
-	fs.writeUint8(techLevel);
-	fs.writeUint32(randomGen.getSeed());
+    // write some settings
+    fs.writeSint8(gameType);
+    fs.writeUint8(techLevel);
+    fs.writeUint32(randomGen.getSeed());
 
     // write out the unit/structure data
     objectData.save(fs);
 
-	//write the house(s) info
-	for(int i=0; i<NUM_HOUSES; i++) {
-		fs.writeBool(house[i] != nullptr);
+    //write the house(s) info
+    for(int i=0; i<NUM_HOUSES; i++) {
+        fs.writeBool(house[i] != nullptr);
 
-		if(house[i] != nullptr) {
-			house[i]->save(fs);
-		}
-	}
+        if(house[i] != nullptr) {
+            house[i]->save(fs);
+        }
+    }
 
     if(gameInitSettings.getGameType() != GAMETYPE_CUSTOM_MULTIPLAYER) {
         fs.writeUint8(pLocalPlayer->getPlayerID());
     }
 
-	fs.writeBool(debug);
-	fs.writeBool(bCheatsEnabled);
+    fs.writeBool(debug);
+    fs.writeBool(bCheatsEnabled);
 
-	fs.writeUint32(winFlags);
+    fs.writeUint32(winFlags);
     fs.writeUint32(loseFlags);
 
-	currentGameMap->save(fs);
+    currentGameMap->save(fs);
 
-	// save the structures and units
-	objectManager.save(fs);
+    // save the structures and units
+    objectManager.save(fs);
 
-	fs.writeUint32(bulletList.size());
-	for(RobustList<Bullet*>::const_iterator iter = bulletList.begin(); iter != bulletList.end(); ++iter) {
-		(*iter)->save(fs);
-	}
+    fs.writeUint32(bulletList.size());
+    for(RobustList<Bullet*>::const_iterator iter = bulletList.begin(); iter != bulletList.end(); ++iter) {
+        (*iter)->save(fs);
+    }
 
-	fs.writeUint32(explosionList.size());
-	for(RobustList<Explosion*>::const_iterator iter = explosionList.begin(); iter != explosionList.end(); ++iter) {
-		(*iter)->save(fs);
-	}
+    fs.writeUint32(explosionList.size());
+    for(RobustList<Explosion*>::const_iterator iter = explosionList.begin(); iter != explosionList.end(); ++iter) {
+        (*iter)->save(fs);
+    }
 
     if(gameInitSettings.getGameType() != GAMETYPE_CUSTOM_MULTIPLAYER) {
         // save selection lists
@@ -1770,39 +1770,39 @@ bool Game::saveGame(std::string filename)
     }
 
     // save triggers
-	triggerManager.save(fs);
+    triggerManager.save(fs);
 
     // CommandManager is at the very end of the file. DO NOT CHANGE THIS!
-	cmdManager.save(fs);
+    cmdManager.save(fs);
 
-	fs.close();
+    fs.close();
 
-	return true;
+    return true;
 }
 
 
 void Game::saveObject(OutputStream& stream, ObjectBase* obj) {
-	if(obj == nullptr)
-		return;
+    if(obj == nullptr)
+        return;
 
-	stream.writeUint32(obj->getItemID());
-	obj->save(stream);
+    stream.writeUint32(obj->getItemID());
+    obj->save(stream);
 }
 
 
 ObjectBase* Game::loadObject(InputStream& stream, Uint32 objectID)
 {
-	Uint32 itemID;
+    Uint32 itemID;
 
-	itemID = stream.readUint32();
+    itemID = stream.readUint32();
 
-	ObjectBase* newObject = ObjectBase::loadObject(stream, itemID, objectID);
-	if(newObject == nullptr) {
-		fprintf(stderr,"Game::LoadObject(): ObjectBase::loadObject() returned nullptr!\n");
-		exit(EXIT_FAILURE);
-	}
+    ObjectBase* newObject = ObjectBase::loadObject(stream, itemID, objectID);
+    if(newObject == nullptr) {
+        fprintf(stderr,"Game::LoadObject(): ObjectBase::loadObject() returned nullptr!\n");
+        exit(EXIT_FAILURE);
+    }
 
-	return newObject;
+    return newObject;
 }
 
 
@@ -2366,11 +2366,11 @@ bool Game::handlePlacementClick(int xPos, int yPos) {
         } else {
             //the user has tried to place but clicked on impossible point
             currentGame->addToNewsTicker(_("@DUNE.ENG|135#Cannot place slab here."));
-            soundPlayer->playSound(Sound_InvalidAction);	//can't place noise
+            soundPlayer->playSound(Sound_InvalidAction);    //can't place noise
             return false;
         }
     } else if(placeItem == Structure_Slab4) {
-        if(	(currentGameMap->isWithinBuildRange(xPos, yPos, pBuilder->getOwner()) || currentGameMap->isWithinBuildRange(xPos+1, yPos, pBuilder->getOwner())
+        if( (currentGameMap->isWithinBuildRange(xPos, yPos, pBuilder->getOwner()) || currentGameMap->isWithinBuildRange(xPos+1, yPos, pBuilder->getOwner())
                 || currentGameMap->isWithinBuildRange(xPos+1, yPos+1, pBuilder->getOwner()) || currentGameMap->isWithinBuildRange(xPos, yPos+1, pBuilder->getOwner()))
             && ((currentGameMap->okayToPlaceStructure(xPos, yPos, 1, 1, false, pBuilder->getOwner())
                 || currentGameMap->okayToPlaceStructure(xPos+1, yPos, 1, 1, false, pBuilder->getOwner())
@@ -2387,7 +2387,7 @@ bool Game::handlePlacementClick(int xPos, int yPos) {
         } else {
             //the user has tried to place but clicked on impossible point
             currentGame->addToNewsTicker(_("@DUNE.ENG|135#Cannot place slab here."));
-            soundPlayer->playSound(Sound_InvalidAction);	//can't place noise
+            soundPlayer->playSound(Sound_InvalidAction);    //can't place noise
             return false;
         }
     } else {
@@ -2400,7 +2400,7 @@ bool Game::handlePlacementClick(int xPos, int yPos) {
         } else {
             //the user has tried to place but clicked on impossible point
             currentGame->addToNewsTicker(strprintf(_("@DUNE.ENG|134#Cannot place %%s here."), resolveItemName(placeItem).c_str()));
-            soundPlayer->playSound(Sound_InvalidAction);	//can't place noise
+            soundPlayer->playSound(Sound_InvalidAction);    //can't place noise
 
             // is this building area only blocked by units?
             if(currentGameMap->okayToPlaceStructure(xPos, yPos, structuresize.x, structuresize.y, false, pBuilder->getOwner(), true)) {
@@ -2555,8 +2555,8 @@ bool Game::handleSelectedObjectsCaptureClick(int xPos, int yPos) {
 
 bool Game::handleSelectedObjectsActionClick(int xPos, int yPos) {
     //let unit handle right click on map or target
-    ObjectBase	*responder = nullptr;
-    ObjectBase	*tempObject = nullptr;
+    ObjectBase  *responder = nullptr;
+    ObjectBase  *tempObject = nullptr;
 
     std::set<Uint32>::iterator iter;
     for(iter = selectedList.begin(); iter != selectedList.end(); ++iter) {

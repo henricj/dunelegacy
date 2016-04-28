@@ -102,8 +102,8 @@ GameOptionsWindow::GameOptionsWindow(SettingsClass::GameOptionsClass& initialGam
     vbox2.addWidget(VSpacer::create(4));
 
     gameSpeedMinus.setTextures(pGFXManager->getUIGraphic(UI_Minus), false, pGFXManager->getUIGraphic(UI_Minus_Pressed), false);
-	gameSpeedMinus.setOnClick(std::bind(&GameOptionsWindow::onGameSpeedMinus, this));
-	gameSpeedHBox.addWidget(HSpacer::create(2));
+    gameSpeedMinus.setOnClick(std::bind(&GameOptionsWindow::onGameSpeedMinus, this));
+    gameSpeedHBox.addWidget(HSpacer::create(2));
     gameSpeedHBox.addWidget(&gameSpeedMinus);
     gameSpeedHBox.addWidget(HSpacer::create(2));
 
@@ -112,8 +112,8 @@ GameOptionsWindow::GameOptionsWindow(SettingsClass::GameOptionsClass& initialGam
     currentGameSpeed = gameOptions.gameSpeed;
     updateGameSpeedBar();
     gameSpeedPlus.setTextures(pGFXManager->getUIGraphic(UI_Plus), false, pGFXManager->getUIGraphic(UI_Plus_Pressed), false);
-	gameSpeedPlus.setOnClick(std::bind(&GameOptionsWindow::onGameSpeedPlus, this));
-	gameSpeedHBox.addWidget(HSpacer::create(2));
+    gameSpeedPlus.setOnClick(std::bind(&GameOptionsWindow::onGameSpeedPlus, this));
+    gameSpeedHBox.addWidget(HSpacer::create(2));
     gameSpeedHBox.addWidget(&gameSpeedPlus);
     gameSpeedHBox.addWidget(HSpacer::create(2));
     vbox2.addWidget(&gameSpeedHBox, 20);
@@ -132,13 +132,13 @@ GameOptionsWindow::GameOptionsWindow(SettingsClass::GameOptionsClass& initialGam
     captionlabel.setAlignment(Alignment_HCenter);
 
     int xpos = std::max(0,(getRendererWidth() - getSize().x)/2);
-	int ypos = std::max(0,(getRendererHeight() - getSize().y)/2);
+    int ypos = std::max(0,(getRendererHeight() - getSize().y)/2);
 
-	setCurrentPosition(xpos,ypos,getSize().x,getSize().y);
+    setCurrentPosition(xpos,ypos,getSize().x,getSize().y);
 }
 
 GameOptionsWindow::~GameOptionsWindow() {
-	;
+    ;
 }
 
 void GameOptionsWindow::onOK() {

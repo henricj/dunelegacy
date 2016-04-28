@@ -26,70 +26,70 @@
 /// A class for a checkbox implemented as a toggle button
 class Checkbox : public Button {
 public:
-	/// Default constructor
-	Checkbox() : Button() {
+    /// Default constructor
+    Checkbox() : Button() {
         textcolor = COLOR_DEFAULT;
-	    textshadowcolor = COLOR_DEFAULT;
+        textshadowcolor = COLOR_DEFAULT;
 
-		enableResizing(true,false);
-		setToggleButton(true);
+        enableResizing(true,false);
+        setToggleButton(true);
         pCheckedActiveTexture = nullptr;
         bFreeCheckedActiveTexture = false;
-	}
+    }
 
-	/// destructor
-	virtual ~Checkbox() {
+    /// destructor
+    virtual ~Checkbox() {
         invalidateTextures();
-	}
-
-	/**
-		This method sets a new text for this checkbox and resizes it
-		to fit this text.
-		\param	Text The new text for this checkbox
-	*/
-	virtual inline void setText(std::string text) {
-		this->text = text;
-		resizeAll();
-	}
-
-	/**
-		Get the text of this checkbox.
-		\return the text of this checkbox
-	*/
-	inline std::string getText() { return text; };
+    }
 
     /**
-		Sets the text color for this checkbox.
-		\param	textcolor	    the color of the text (COLOR_DEFAULT = default color)
-        \param	textshadowcolor	the color of the shadow of the text (COLOR_DEFAULT = default color)
-	*/
-	virtual inline void setTextColor(Uint32 textcolor, Uint32 textshadowcolor = COLOR_DEFAULT) {
-		this->textcolor = textcolor;
-		this->textshadowcolor = textshadowcolor;
-		invalidateTextures();
-	}
+        This method sets a new text for this checkbox and resizes it
+        to fit this text.
+        \param  Text The new text for this checkbox
+    */
+    virtual inline void setText(std::string text) {
+        this->text = text;
+        resizeAll();
+    }
 
-	/**
-		This method sets this checkbox to checked or unchecked. It does the same as setToggleState().
-		\param bChecked	true = checked, false = unchecked
-	*/
-	inline void setChecked(bool bChecked) {
-		setToggleState(bChecked);
-	}
+    /**
+        Get the text of this checkbox.
+        \return the text of this checkbox
+    */
+    inline std::string getText() { return text; };
 
-	/**
-		This method returns whether this checkbox is checked. It is the same as getToggleState().
-		\return	true = checked, false = unchecked
-	*/
-	inline bool isChecked() {
-		return getToggleState();
-	}
+    /**
+        Sets the text color for this checkbox.
+        \param  textcolor       the color of the text (COLOR_DEFAULT = default color)
+        \param  textshadowcolor the color of the shadow of the text (COLOR_DEFAULT = default color)
+    */
+    virtual inline void setTextColor(Uint32 textcolor, Uint32 textshadowcolor = COLOR_DEFAULT) {
+        this->textcolor = textcolor;
+        this->textshadowcolor = textshadowcolor;
+        invalidateTextures();
+    }
 
-	/**
-		Draws this button to screen. This method is called before drawOverlay().
-		\param	position	Position to draw the button to
-	*/
-	virtual void draw(Point position) {
+    /**
+        This method sets this checkbox to checked or unchecked. It does the same as setToggleState().
+        \param bChecked true = checked, false = unchecked
+    */
+    inline void setChecked(bool bChecked) {
+        setToggleState(bChecked);
+    }
+
+    /**
+        This method returns whether this checkbox is checked. It is the same as getToggleState().
+        \return true = checked, false = unchecked
+    */
+    inline bool isChecked() {
+        return getToggleState();
+    }
+
+    /**
+        Draws this button to screen. This method is called before drawOverlay().
+        \param  position    Position to draw the button to
+    */
+    virtual void draw(Point position) {
         if(isVisible() == false) {
             return;
         }
@@ -120,41 +120,41 @@ public:
     }
 
     /**
-		This method resizes the checkbox. This method should only
-		called if the new size is a valid size for this progress bar (See getMinumumSize).
-		\param	newSize	the new size of this progress bar
-	*/
-	virtual void resize(Point newSize) {
-		resize(newSize.x,newSize.y);
-	}
+        This method resizes the checkbox. This method should only
+        called if the new size is a valid size for this progress bar (See getMinumumSize).
+        \param  newSize the new size of this progress bar
+    */
+    virtual void resize(Point newSize) {
+        resize(newSize.x,newSize.y);
+    }
 
-	/**
-		This method resizes the checkbox to width and height. This method should only
-		called if the new size is a valid size for this checkbox (See getMinimumSize).
-		\param	width	the new width of this checkbox
-		\param	height	the new height of this checkbox
-	*/
-	virtual void resize(Uint32 width, Uint32 height) {
+    /**
+        This method resizes the checkbox to width and height. This method should only
+        called if the new size is a valid size for this checkbox (See getMinimumSize).
+        \param  width   the new width of this checkbox
+        \param  height  the new height of this checkbox
+    */
+    virtual void resize(Uint32 width, Uint32 height) {
         invalidateTextures();
-		Widget::resize(width,height);
-	}
+        Widget::resize(width,height);
+    }
 
-	/**
-		Returns the minimum size of this button. The button should not
-		resized to a size smaller than this.
-		\return the minimum size of this button
-	*/
-	virtual Point getMinimumSize() const {
-		return GUIStyle::getInstance().getMinimumCheckboxSize(text);
-	}
+    /**
+        Returns the minimum size of this button. The button should not
+        resized to a size smaller than this.
+        \return the minimum size of this button
+    */
+    virtual Point getMinimumSize() const {
+        return GUIStyle::getInstance().getMinimumCheckboxSize(text);
+    }
 
 protected:
-	/**
+    /**
         This method is called whenever the textures of this widget are needed, e.g. before drawing. This method
         should be overwritten by subclasses if they like to defer texture creation as long as possible.
         This method should first check whether a renewal of the textures is necessary.
-	*/
-	virtual void updateTextures() {
+    */
+    virtual void updateTextures() {
         Button::updateTextures();
 
         if(pUnpressedTexture == nullptr) {
@@ -167,12 +167,12 @@ protected:
             pCheckedActiveTexture = convertSurfaceToTexture(GUIStyle::getInstance().createCheckboxSurface(getSize().x, getSize().y, text, true, true, textcolor, textshadowcolor), true);
             bFreeCheckedActiveTexture = true;
         }
-	}
+    }
 
-	/**
-		This method frees all textures that are used by this checkbox
-	*/
-	virtual void invalidateTextures() {
+    /**
+        This method frees all textures that are used by this checkbox
+    */
+    virtual void invalidateTextures() {
         Button::invalidateTextures();
 
         if((bFreeCheckedActiveTexture == true) && (pCheckedActiveTexture != nullptr)) {
@@ -180,14 +180,14 @@ protected:
             bFreeCheckedActiveTexture = false;
         }
         pCheckedActiveTexture = nullptr;
-	}
+    }
 
 private:
     Uint32 textcolor;                       ///< Text color
     Uint32 textshadowcolor;                 ///< Text shadow color
-	std::string text;		                ///< Text of this checkbox
-	SDL_Texture* pCheckedActiveTexture;		///< Texture that is shown when the checkbox is activated by keyboard or by mouse hover
-	bool bFreeCheckedActiveTexture;			///< Should pActiveTexture be freed if this button is destroyed?
+    std::string text;                       ///< Text of this checkbox
+    SDL_Texture* pCheckedActiveTexture;     ///< Texture that is shown when the checkbox is activated by keyboard or by mouse hover
+    bool bFreeCheckedActiveTexture;         ///< Should pActiveTexture be freed if this button is destroyed?
 };
 
 #endif // CHECKBOX_H

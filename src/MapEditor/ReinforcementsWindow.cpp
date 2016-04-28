@@ -38,20 +38,20 @@ ReinforcementsWindow::ReinforcementsWindow(MapEditor* pMapEditor, HOUSETYPE curr
 
     // set up window
     SDL_Texture *pBackground = pGFXManager->getUIGraphic(UI_NewMapWindow);
-	setBackground(pBackground, false);
+    setBackground(pBackground, false);
 
-	setCurrentPosition(calcAlignedDrawingRect(pBackground, HAlign::Center, VAlign::Center));
+    setCurrentPosition(calcAlignedDrawingRect(pBackground, HAlign::Center, VAlign::Center));
 
-	setWindowWidget(&mainHBox);
+    setWindowWidget(&mainHBox);
 
-	mainHBox.addWidget(HSpacer::create(16));
-	mainHBox.addWidget(&mainVBox);
-	mainHBox.addWidget(HSpacer::create(16));
+    mainHBox.addWidget(HSpacer::create(16));
+    mainHBox.addWidget(&mainVBox);
+    mainHBox.addWidget(HSpacer::create(16));
 
     titleLabel.setTextColor(COLOR_LIGHTYELLOW, COLOR_TRANSPARENT);
-	titleLabel.setAlignment((Alignment_Enum) (Alignment_HCenter | Alignment_VCenter));
-	titleLabel.setText(_("Reinforcements"));
-	mainVBox.addWidget(&titleLabel);
+    titleLabel.setAlignment((Alignment_Enum) (Alignment_HCenter | Alignment_VCenter));
+    titleLabel.setText(_("Reinforcements"));
+    mainVBox.addWidget(&titleLabel);
 
     mainVBox.addWidget(VSpacer::create(8));
 
@@ -59,7 +59,7 @@ ReinforcementsWindow::ReinforcementsWindow(MapEditor* pMapEditor, HOUSETYPE curr
 
     Label_Explanation.setTextColor(color);
     Label_Explanation.setTextFont(FONT_STD10);
-	Label_Explanation.setText(_("Reinforcements are brought by a carryall. Multiple reinforcements at the same time are combined."));
+    Label_Explanation.setText(_("Reinforcements are brought by a carryall. Multiple reinforcements at the same time are combined."));
     centralVBox.addWidget(&Label_Explanation);
 
     centralVBox.addWidget(VSpacer::create(4));
@@ -174,25 +174,25 @@ ReinforcementsWindow::ReinforcementsWindow(MapEditor* pMapEditor, HOUSETYPE curr
 
     mainVBox.addWidget(&buttonHBox);
 
-	cancelButton.setText(_("Cancel"));
+    cancelButton.setText(_("Cancel"));
     cancelButton.setTextColor(color);
-	cancelButton.setOnClick(std::bind(&ReinforcementsWindow::onCancel, this));
+    cancelButton.setOnClick(std::bind(&ReinforcementsWindow::onCancel, this));
 
-	buttonHBox.addWidget(&cancelButton);
+    buttonHBox.addWidget(&cancelButton);
 
-	buttonHBox.addWidget(HSpacer::create(8));
+    buttonHBox.addWidget(HSpacer::create(8));
 
-	buttonHBox.addWidget(Spacer::create());
+    buttonHBox.addWidget(Spacer::create());
 
-	buttonHBox.addWidget(HSpacer::create(8));
+    buttonHBox.addWidget(HSpacer::create(8));
 
     okButton.setText(_("OK"));
-	okButton.setTextColor(color);
-	okButton.setOnClick(std::bind(&ReinforcementsWindow::onOK, this));
+    okButton.setTextColor(color);
+    okButton.setOnClick(std::bind(&ReinforcementsWindow::onOK, this));
 
-	buttonHBox.addWidget(&okButton);
+    buttonHBox.addWidget(&okButton);
 
-	mainVBox.addWidget(VSpacer::create(10));
+    mainVBox.addWidget(VSpacer::create(10));
 
     // setup reinforcements listbox
     std::vector<ReinforcementInfo>::const_iterator reinforcementIter;
@@ -207,10 +207,10 @@ ReinforcementsWindow::ReinforcementsWindow(MapEditor* pMapEditor, HOUSETYPE curr
 }
 
 void ReinforcementsWindow::onCancel() {
-	Window* pParentWindow = dynamic_cast<Window*>(getParent());
-	if(pParentWindow != nullptr) {
-		pParentWindow->closeChildWindow();
-	}
+    Window* pParentWindow = dynamic_cast<Window*>(getParent());
+    if(pParentWindow != nullptr) {
+        pParentWindow->closeChildWindow();
+    }
 }
 
 
@@ -221,10 +221,10 @@ void ReinforcementsWindow::onOK() {
 
     pMapEditor->addUndoOperation(changeReinforcementsOperation.perform(pMapEditor));
 
-	Window* pParentWindow = dynamic_cast<Window*>(getParent());
-	if(pParentWindow != nullptr) {
-		pParentWindow->closeChildWindow();
-	}
+    Window* pParentWindow = dynamic_cast<Window*>(getParent());
+    if(pParentWindow != nullptr) {
+        pParentWindow->closeChildWindow();
+    }
 }
 
 void ReinforcementsWindow::onUp() {

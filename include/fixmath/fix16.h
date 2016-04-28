@@ -27,7 +27,7 @@ typedef int32_t fix16_t;
 
 static const fix16_t FOUR_DIV_PI  = 0x145F3;            /*!< Fix16 value of 4/PI */
 static const fix16_t _FOUR_DIV_PI2 = 0xFFFF9840;        /*!< Fix16 value of -4/PI² */
-static const fix16_t X4_CORRECTION_COMPONENT = 0x399A; 	/*!< Fix16 value of 0.225 */
+static const fix16_t X4_CORRECTION_COMPONENT = 0x399A;  /*!< Fix16 value of 0.225 */
 static const fix16_t PI_DIV_4 = 0x0000C90F;             /*!< Fix16 value of PI/4 */
 static const fix16_t THREE_PI_DIV_4 = 0x00025B2F;       /*!< Fix16 value of 3PI/4 */
 
@@ -51,28 +51,28 @@ static inline int fix16_to_int(fix16_t a)
 #ifdef FIXMATH_NO_ROUNDING
     return (a >> 16);
 #else
-	if (a >= 0)
-		return (a + (fix16_one >> 1)) / fix16_one;
-	return (a - (fix16_one >> 1)) / fix16_one;
+    if (a >= 0)
+        return (a + (fix16_one >> 1)) / fix16_one;
+    return (a - (fix16_one >> 1)) / fix16_one;
 #endif
 }
 
 static inline fix16_t fix16_from_float(float a)
 {
-	float temp = a * fix16_one;
+    float temp = a * fix16_one;
 #ifndef FIXMATH_NO_ROUNDING
-	temp += (temp >= 0) ? 0.5f : -0.5f;
+    temp += (temp >= 0) ? 0.5f : -0.5f;
 #endif
-	return (fix16_t)temp;
+    return (fix16_t)temp;
 }
 
 static inline fix16_t fix16_from_dbl(double a)
 {
-	double temp = a * fix16_one;
+    double temp = a * fix16_one;
 #ifndef FIXMATH_NO_ROUNDING
-	temp += (temp >= 0) ? 0.5f : -0.5f;
+    temp += (temp >= 0) ? 0.5f : -0.5f;
 #endif
-	return (fix16_t)temp;
+    return (fix16_t)temp;
 }
 
 /* Macro for defining fix16_t constant values.
@@ -87,17 +87,17 @@ static inline fix16_t fix16_from_dbl(double a)
 #define F16(x) ((fix16_t)(((x) >= 0) ? ((x) * 65536.0 + 0.5) : ((x) * 65536.0 - 0.5)))
 
 static inline fix16_t fix16_abs(fix16_t x)
-	{ return (x < 0 ? -x : x); }
+    { return (x < 0 ? -x : x); }
 static inline fix16_t fix16_floor(fix16_t x)
-	{ return (x & 0xFFFF0000UL); }
+    { return (x & 0xFFFF0000UL); }
 static inline fix16_t fix16_ceil(fix16_t x)
-	{ return (x & 0xFFFF0000UL) + (x & 0x0000FFFFUL ? fix16_one : 0); }
+    { return (x & 0xFFFF0000UL) + (x & 0x0000FFFFUL ? fix16_one : 0); }
 static inline fix16_t fix16_min(fix16_t x, fix16_t y)
-	{ return (x < y ? x : y); }
+    { return (x < y ? x : y); }
 static inline fix16_t fix16_max(fix16_t x, fix16_t y)
-	{ return (x > y ? x : y); }
+    { return (x > y ? x : y); }
 static inline fix16_t fix16_clamp(fix16_t x, fix16_t lo, fix16_t hi)
-	{ return fix16_min(fix16_max(x, lo), hi); }
+    { return fix16_min(fix16_max(x, lo), hi); }
 
 /* Subtraction and addition with (optional) overflow detection. */
 #ifdef FIXMATH_NO_OVERFLOW
@@ -184,11 +184,11 @@ extern fix16_t fix16_atan2(fix16_t inY, fix16_t inX) FIXMATH_FUNC_ATTRS;
 
 static const fix16_t fix16_rad_to_deg_mult = 3754936;
 static inline fix16_t fix16_rad_to_deg(fix16_t radians)
-	{ return fix16_mul(radians, fix16_rad_to_deg_mult); }
+    { return fix16_mul(radians, fix16_rad_to_deg_mult); }
 
 static const fix16_t fix16_deg_to_rad_mult = 1144;
 static inline fix16_t fix16_deg_to_rad(fix16_t degrees)
-	{ return fix16_mul(degrees, fix16_deg_to_rad_mult); }
+    { return fix16_mul(degrees, fix16_deg_to_rad_mult); }
 
 
 
@@ -199,7 +199,7 @@ extern fix16_t fix16_sqrt(fix16_t inValue) FIXMATH_FUNC_ATTRS;
 /*! Returns the square of the given fix16_t.
 */
 static inline fix16_t fix16_sq(fix16_t x)
-	{ return fix16_mul(x, x); }
+    { return fix16_mul(x, x); }
 
 /*! Returns the exponent (e^) of the given fix16_t.
 */

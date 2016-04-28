@@ -44,51 +44,51 @@ public:
     TeamsWindow(MapEditor* pMapEditor, HOUSETYPE currentHouse);
 
 
-	/**
-		This static method creates a dynamic teams window.
-		The idea behind this method is to simply create a new dialog on the fly and
-		add it as a child window of some other window. If the window gets closed it will be freed.
-		\param  pMapEditor  pointer to the currently running map editor
-		\param  house       the currently selected house; used for button colors, etc.
-		\return	The new dialog box (will be automatically destroyed when it's closed)
-	*/
-	static TeamsWindow* create(MapEditor* pMapEditor, HOUSETYPE house) {
-		TeamsWindow* dlg = new TeamsWindow(pMapEditor, house);
-		dlg->pAllocated = true;
-		return dlg;
-	}
+    /**
+        This static method creates a dynamic teams window.
+        The idea behind this method is to simply create a new dialog on the fly and
+        add it as a child window of some other window. If the window gets closed it will be freed.
+        \param  pMapEditor  pointer to the currently running map editor
+        \param  house       the currently selected house; used for button colors, etc.
+        \return The new dialog box (will be automatically destroyed when it's closed)
+    */
+    static TeamsWindow* create(MapEditor* pMapEditor, HOUSETYPE house) {
+        TeamsWindow* dlg = new TeamsWindow(pMapEditor, house);
+        dlg->pAllocated = true;
+        return dlg;
+    }
 
 
 private:
 
-	void onCancel();
-	void onOK();
+    void onCancel();
+    void onOK();
 
-	void onUp();
+    void onUp();
     void onDown();
 
-	void onAdd();
+    void onAdd();
     void onRemove();
 
     void onEntryChange(bool bInteractive);
 
-	void onSelectionChange(bool bInteractive);
+    void onSelectionChange(bool bInteractive);
 
     void onMinUnitsChange(bool bInteractive);
 
     void onMaxUnitsChange(bool bInteractive);
 
-	std::string getDescribingString(const TeamInfo& teamInfo);
+    std::string getDescribingString(const TeamInfo& teamInfo);
 
-	std::string getPlayerName(HOUSETYPE house);
+    std::string getPlayerName(HOUSETYPE house);
 
 
-	HBox	        mainHBox;
-	VBox	        mainVBox;
-	VBox	        centralVBox;
+    HBox            mainHBox;
+    VBox            mainVBox;
+    VBox            centralVBox;
 
-	HBox            hBox1;
-	ListBox         teamsListBox;
+    HBox            hBox1;
+    ListBox         teamsListBox;
     VBox            listControlVBox;
     SymbolButton    listEntryUpButton;
     SymbolButton    listEntryDownButton;
@@ -109,18 +109,18 @@ private:
     Label           maxUnitsLabel;
     DigitsTextBox   maxUnitsTextBox;
 
-	HBox	        buttonHBox;
+    HBox            buttonHBox;
 
-	Label		    titleLabel;
-	TextButton	    cancelButton;
-	TextButton	    okButton;
+    Label           titleLabel;
+    TextButton      cancelButton;
+    TextButton      okButton;
 
     MapEditor*      pMapEditor;
 
     HOUSETYPE       house;
-	Uint32          color;
+    Uint32          color;
 
-	std::vector<TeamInfo>  teams;
+    std::vector<TeamInfo>  teams;
 };
 
 

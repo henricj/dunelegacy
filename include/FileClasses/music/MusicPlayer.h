@@ -47,7 +47,7 @@ typedef enum {  MUSIC_ATTACK = 0,   /*!< Played when at least one of player's un
                 MUSIC_NUM_MUSIC_TYPES,
 
                 MUSIC_RANDOM = 0xFF /*!< Random music (attack music or peace music) */
-			 }  MUSICTYPE;
+             }  MUSICTYPE;
 
 class MusicPlayer
 {
@@ -58,17 +58,17 @@ public:
 
     virtual ~MusicPlayer() { };
 
-	/*!
-		change type of current music
-		@param musicType type of music to be played
-	*/
-	virtual void changeMusic(MUSICTYPE musicType) = 0;
+    /*!
+        change type of current music
+        @param musicType type of music to be played
+    */
+    virtual void changeMusic(MUSICTYPE musicType) = 0;
 
     /*!
-		sets current music to MUSIC_PEACE if there's no
-		other song being played
-	*/
-	void musicCheck() {
+        sets current music to MUSIC_PEACE if there's no
+        other song being played
+    */
+    void musicCheck() {
         if(musicOn) {
             if(!isMusicPlaying()) {
                 changeMusic(MUSIC_PEACE);
@@ -79,51 +79,51 @@ public:
     /*!
         Toggle the music on and off
     */
-	virtual void toggleSound() = 0;
+    virtual void toggleSound() = 0;
 
     /*!
-		turns music playing on or off
-		@param value when true the function turns music on
-	*/
-	virtual void setMusic(bool value) = 0;
+        turns music playing on or off
+        @param value when true the function turns music on
+    */
+    virtual void setMusic(bool value) = 0;
 
     /**
         Returns whether music is currently being played
         \return true = currently playing, false = not playing
-	*/
-	virtual bool isMusicPlaying() = 0;
+    */
+    virtual bool isMusicPlaying() = 0;
 
-	/**
+    /**
         Returns whether music is on or off
         \return true = on, false = off
-	*/
-	bool isMusicOn() const { return musicOn; }
+    */
+    bool isMusicOn() const { return musicOn; }
 
     /**
         Gets the current music volume.
         \return the current volume
     */
-	inline int getMusicVolume() const { return musicVolume; };
+    inline int getMusicVolume() const { return musicVolume; };
 
     /**
         Sets the volume of the music channel
         \param  newVolume   the new volume [0;MIX_MAX_VOLUME]
     */
-	virtual void setMusicVolume(int newVolume) {
-		if(newVolume >= 0 && newVolume <= MIX_MAX_VOLUME) {
-			musicVolume = newVolume;
-		}
-	}
+    virtual void setMusicVolume(int newVolume) {
+        if(newVolume >= 0 && newVolume <= MIX_MAX_VOLUME) {
+            musicVolume = newVolume;
+        }
+    }
 
 protected:
     //! whether music should be played
-	bool	musicOn;
+    bool    musicOn;
 
-	//! music volume
-	int musicVolume;
+    //! music volume
+    int musicVolume;
 
     //! id of currently played music
-	int	thisMusicID;
+    int thisMusicID;
 
     MUSICTYPE currentMusicType;
 };

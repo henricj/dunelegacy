@@ -42,35 +42,35 @@ public:
 
     virtual bool handleKeyPress(SDL_KeyboardEvent& key);
 
-	/**
-		This method is called, when the child window is about to be closed.
-		This child window will be closed after this method returns.
-		\param	pChildWindow	The child window that will be closed
-	*/
-	virtual void onChildWindowClose(Window* pChildWindow);
+    /**
+        This method is called, when the child window is about to be closed.
+        This child window will be closed after this method returns.
+        \param  pChildWindow    The child window that will be closed
+    */
+    virtual void onChildWindowClose(Window* pChildWindow);
 
-	/**
-		This static method creates a dynamic load map window.
-		The idea behind this method is to simply create a new dialog on the fly and
-		add it as a child window of some other window. If the window gets closed it will be freed.
-		\return	The new dialog box (will be automatically destroyed when it's closed)
-	*/
-	static LoadMapWindow* create(int color = -1) {
-		LoadMapWindow* dlg = new LoadMapWindow(color);
-		dlg->pAllocated = true;
-		return dlg;
-	}
+    /**
+        This static method creates a dynamic load map window.
+        The idea behind this method is to simply create a new dialog on the fly and
+        add it as a child window of some other window. If the window gets closed it will be freed.
+        \return The new dialog box (will be automatically destroyed when it's closed)
+    */
+    static LoadMapWindow* create(int color = -1) {
+        LoadMapWindow* dlg = new LoadMapWindow(color);
+        dlg->pAllocated = true;
+        return dlg;
+    }
 
 
 private:
-	void onCancel();
-	void onLoad();
-	void onMapTypeChange(int buttonID);
-	void onMapListSelectionChange(bool bInteractive);
+    void onCancel();
+    void onLoad();
+    void onMapTypeChange(int buttonID);
+    void onMapListSelectionChange(bool bInteractive);
 
-	HBox	mainHBox;
-	VBox	mainVBox;
-	HBox	centralHBox;
+    HBox    mainHBox;
+    VBox    mainVBox;
+    HBox    centralHBox;
 
     // left VBox with map list
     VBox            leftVBox;
@@ -90,18 +90,18 @@ private:
     Label           mapPropertyAuthors;
     Label           mapPropertyLicense;
 
-	HBox	        buttonHBox;
+    HBox            buttonHBox;
 
-	Label		titleLabel;
-	TextButton	cancelButton;
-	TextButton	loadButton;
+    Label       titleLabel;
+    TextButton  cancelButton;
+    TextButton  loadButton;
 
-	Uint32      color;
+    Uint32      color;
 
     std::string loadMapFilepath;
     std::string loadMapname;
     bool        loadMapSingleplayer;
-	std::string currentMapDirectory;
+    std::string currentMapDirectory;
 };
 
 

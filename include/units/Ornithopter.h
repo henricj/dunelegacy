@@ -23,19 +23,19 @@
 class Ornithopter : public AirUnit
 {
 public:
-	Ornithopter(House* newOwner);
-	Ornithopter(InputStream& stream);
-	void init();
-	virtual ~Ornithopter();
+    Ornithopter(House* newOwner);
+    Ornithopter(InputStream& stream);
+    void init();
+    virtual ~Ornithopter();
 
-	void checkPos();
-	bool canAttack(const ObjectBase* object) const;
+    void checkPos();
+    bool canAttack(const ObjectBase* object) const;
 
     bool canPass(int xPos, int yPos) const;
 
-	void destroy();
+    void destroy();
 
-	void playAttackSound();
+    void playAttackSound();
 };
 
 #endif //ORNITHOPTER_H

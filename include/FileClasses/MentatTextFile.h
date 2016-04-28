@@ -27,55 +27,55 @@
 
 /// A class for loading a mentat textfile (e.g. MENTATA.ENG).
 /**
-	This class can read mentat textfiles and return their content in decoded ANSI Code.
+    This class can read mentat textfiles and return their content in decoded ANSI Code.
 */
 class MentatTextFile
 {
 public:
 
-	class MentatEntry {
-	public:
-		MentatEntry(std::string title, unsigned int numMenuEntry, unsigned int menuLevel, unsigned int techLevel, std::string filename, std::string name, std::string content)
-		 : title(title), numMenuEntry(numMenuEntry), menuLevel(menuLevel), techLevel(techLevel), filename(filename), name(name), content(content) {
-		}
+    class MentatEntry {
+    public:
+        MentatEntry(std::string title, unsigned int numMenuEntry, unsigned int menuLevel, unsigned int techLevel, std::string filename, std::string name, std::string content)
+         : title(title), numMenuEntry(numMenuEntry), menuLevel(menuLevel), techLevel(techLevel), filename(filename), name(name), content(content) {
+        }
 
-		std::string title;
-		unsigned int numMenuEntry;
-		unsigned int menuLevel;
-		unsigned int techLevel;
-		std::string	filename;
-		std::string name;
-		std::string content;
-	};
+        std::string title;
+        unsigned int numMenuEntry;
+        unsigned int menuLevel;
+        unsigned int techLevel;
+        std::string filename;
+        std::string name;
+        std::string content;
+    };
 
-	MentatTextFile(SDL_RWops* rwop);
-	~MentatTextFile();
+    MentatTextFile(SDL_RWops* rwop);
+    ~MentatTextFile();
 
 
     /// This method returns the nth entry in this text file.
-	/**
-		This method returns the nth entry in this text file.
-		\param	n		the number of the entry to return
-		\return	the nth entry in the file.
-	*/
-	const MentatEntry& getMentatEntry(unsigned int n) const {
+    /**
+        This method returns the nth entry in this text file.
+        \param  n       the number of the entry to return
+        \return the nth entry in the file.
+    */
+    const MentatEntry& getMentatEntry(unsigned int n) const {
         if(n >= mentatEntries.size()) {
             throw std::invalid_argument("MentatTextFile:getMentatEntry(): Invalid index!");
         }
 
         return mentatEntries[n];
-	}
+    }
 
-	/// This method returns the number of entries in this file
-	/**
-	\return the number of strings in this file
-	*/
-	unsigned int getNumEntries() const {
-		return mentatEntries.size();
-	}
+    /// This method returns the number of entries in this file
+    /**
+    \return the number of strings in this file
+    */
+    unsigned int getNumEntries() const {
+        return mentatEntries.size();
+    }
 
 private:
-	std::vector<MentatEntry> mentatEntries;
+    std::vector<MentatEntry> mentatEntries;
 };
 
 #endif // MENTATTEXTFILE_H

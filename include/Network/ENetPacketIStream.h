@@ -27,97 +27,97 @@
 class ENetPacketIStream : public InputStream
 {
 public:
-	ENetPacketIStream(ENetPacket* pPacket)
-	 : currentPos(0), packet(pPacket) {
+    ENetPacketIStream(ENetPacket* pPacket)
+     : currentPos(0), packet(pPacket) {
         ;
     }
 
-	ENetPacketIStream(const ENetPacketIStream& p)
-	 : currentPos(0), packet(nullptr) {
-		*this = p;
+    ENetPacketIStream(const ENetPacketIStream& p)
+     : currentPos(0), packet(nullptr) {
+        *this = p;
     }
 
-	~ENetPacketIStream() {
+    ~ENetPacketIStream() {
         if(packet != nullptr) {
             enet_packet_destroy(packet);
         }
-	}
+    }
 
-	ENetPacketIStream& operator=(const ENetPacketIStream& p) {
-		if(this != &p) {
-			ENetPacket* packetCopy = enet_packet_create(p.packet->data,p.packet->dataLength,p.packet->flags);
-		    if(packetCopy == nullptr) {
-		        throw InputStream::error("ENetPacketIStream::operator=(): enet_packet_create() failed!");
-		    }
+    ENetPacketIStream& operator=(const ENetPacketIStream& p) {
+        if(this != &p) {
+            ENetPacket* packetCopy = enet_packet_create(p.packet->data,p.packet->dataLength,p.packet->flags);
+            if(packetCopy == nullptr) {
+                throw InputStream::error("ENetPacketIStream::operator=(): enet_packet_create() failed!");
+            }
 
-		    if(packet != nullptr) {
-		        enet_packet_destroy(packet);
-		    }
+            if(packet != nullptr) {
+                enet_packet_destroy(packet);
+            }
 
-			packet = packetCopy;
-			currentPos = p.currentPos;
-		}
+            packet = packetCopy;
+            currentPos = p.currentPos;
+        }
 
-		return *this;
-	}
+        return *this;
+    }
 
-	std::string readString() {
-	    Uint32 length = readUint32();
+    std::string readString() {
+        Uint32 length = readUint32();
 
-		if(currentPos + length > packet->dataLength) {
+        if(currentPos + length > packet->dataLength) {
             throw InputStream::eof("ENetPacketIStream::readString(): End-of-File reached!");
-	    }
+        }
 
-	    std::string resultString((char*) (packet->data + currentPos), length);
-	    currentPos += length;
-	    return resultString;
-	}
+        std::string resultString((char*) (packet->data + currentPos), length);
+        currentPos += length;
+        return resultString;
+    }
 
-	Uint8 readUint8() {
-	    if(currentPos + sizeof(Uint8) > packet->dataLength) {
+    Uint8 readUint8() {
+        if(currentPos + sizeof(Uint8) > packet->dataLength) {
             throw InputStream::eof("ENetPacketIStream::readUint8(): End-of-File reached!");
-	    }
+        }
 
         Uint8 tmp = *((Uint8*) (packet->data + currentPos));
         currentPos += sizeof(Uint8);
         return tmp;
-	}
+    }
 
-	Uint16 readUint16() {
-	    if(currentPos + sizeof(Uint16) > packet->dataLength) {
+    Uint16 readUint16() {
+        if(currentPos + sizeof(Uint16) > packet->dataLength) {
             throw InputStream::eof("ENetPacketIStream::readUint16(): End-of-File reached!");
-	    }
+        }
 
         Uint16 tmp = *((Uint16*) (packet->data + currentPos));
         currentPos += sizeof(Uint16);
         return SDL_SwapLE16(tmp);
-	}
+    }
 
-	Uint32 readUint32() {
-	    if(currentPos + sizeof(Uint32) > packet->dataLength) {
+    Uint32 readUint32() {
+        if(currentPos + sizeof(Uint32) > packet->dataLength) {
             throw InputStream::eof("ENetPacketIStream::readUint32(): End-of-File reached!");
-	    }
+        }
 
         Uint32 tmp = *((Uint32*) (packet->data + currentPos));
         currentPos += sizeof(Uint32);
         return SDL_SwapLE32(tmp);
-	}
+    }
 
-	Uint64 readUint64() {
-	    if(currentPos + sizeof(Uint64) > packet->dataLength) {
+    Uint64 readUint64() {
+        if(currentPos + sizeof(Uint64) > packet->dataLength) {
             throw InputStream::eof("ENetPacketIStream::readUint64(): End-of-File reached!");
-	    }
+        }
 
         Uint64 tmp = *((Uint64*) (packet->data + currentPos));
         currentPos += sizeof(Uint64);
         return SDL_SwapLE64(tmp);
-	}
+    }
 
-	bool readBool() {
+    bool readBool() {
         return (readUint8() == 1 ? true : false);
     }
 
-	float readFloat() {
+    float readFloat() {
         Uint32 tmp = readUint32();
         float tmp2;
         memcpy(&tmp2,&tmp,sizeof(Uint32)); // workaround for a strange optimization in gcc 4.1
@@ -126,7 +126,7 @@ public:
 
 private:
     size_t  currentPos;
-	ENetPacket* packet;
+    ENetPacket* packet;
 };
 
 #endif // ENETPACKETISTREAM_H

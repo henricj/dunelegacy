@@ -27,32 +27,32 @@
 
 class MainMenu : public MenuBase {
 public:
-	MainMenu();
-	virtual ~MainMenu();
+    MainMenu();
+    virtual ~MainMenu();
 
     virtual int showMenu();
 
 private:
-	void onSinglePlayer();
-	void onMultiPlayer();
-	void onMapEditor();
-	void onOptions();
-	void onAbout();
-	void onQuit();
+    void onSinglePlayer();
+    void onMultiPlayer();
+    void onMapEditor();
+    void onOptions();
+    void onAbout();
+    void onQuit();
 
-	StaticContainer	windowWidget;
-	VBox			MenuButtons;
+    StaticContainer windowWidget;
+    VBox            MenuButtons;
 
-	TextButton		singlePlayerButton;
-	TextButton		multiPlayerButton;
-	TextButton		mapEditorButton;
-	TextButton		optionsButton;
-	TextButton		aboutButton;
-	TextButton		quitButton;
+    TextButton      singlePlayerButton;
+    TextButton      multiPlayerButton;
+    TextButton      mapEditorButton;
+    TextButton      optionsButton;
+    TextButton      aboutButton;
+    TextButton      quitButton;
 
-	PictureLabel	planetPicture;
-	PictureLabel	duneLegacy;
-	PictureLabel	buttonBorder;
+    PictureLabel    planetPicture;
+    PictureLabel    duneLegacy;
+    PictureLabel    buttonBorder;
 };
 
 #endif // MAINMENU_H

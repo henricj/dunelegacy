@@ -56,8 +56,8 @@ Harvester::Harvester(House* newOwner) : TrackedUnit(newOwner)
 
     spice = 0;
     harvestingMode = false;
-	returningToRefinery = false;
-	spiceCheckCounter = 0;
+    returningToRefinery = false;
+    spiceCheckCounter = 0;
 
     attackMode = GUARD;
 }
@@ -66,8 +66,8 @@ Harvester::Harvester(InputStream& stream) : TrackedUnit(stream)
 {
     Harvester::init();
 
-	harvestingMode = stream.readBool();
-	returningToRefinery = stream.readBool();
+    harvestingMode = stream.readBool();
+    returningToRefinery = stream.readBool();
     spice = stream.readFixPoint();
     spiceCheckCounter = stream.readUint32();
 }
@@ -77,13 +77,13 @@ void Harvester::init()
     itemID = Unit_Harvester;
     owner->incrementUnits(itemID);
 
-	canAttackStuff = false;
+    canAttackStuff = false;
 
-	graphicID = ObjPic_Harvester;
-	graphic = pGFXManager->getObjPic(graphicID,getOwner()->getHouseID());
+    graphicID = ObjPic_Harvester;
+    graphic = pGFXManager->getObjPic(graphicID,getOwner()->getHouseID());
 
-	numImagesX = NUM_ANGLES;
-	numImagesY = 1;
+    numImagesX = NUM_ANGLES;
+    numImagesY = 1;
 }
 
 Harvester::~Harvester()
@@ -93,9 +93,9 @@ Harvester::~Harvester()
 
 void Harvester::save(OutputStream& stream) const
 {
-	TrackedUnit::save(stream);
-	stream.writeBool(harvestingMode);
-	stream.writeBool(returningToRefinery);
+    TrackedUnit::save(stream);
+    stream.writeBool(harvestingMode);
+    stream.writeBool(returningToRefinery);
     stream.writeFixPoint(spice);
     stream.writeUint32(spiceCheckCounter);
 }
@@ -149,66 +149,66 @@ void Harvester::blitToScreen()
 
 void Harvester::checkPos()
 {
-	TrackedUnit::checkPos();
+    TrackedUnit::checkPos();
 
-	if(attackMode == STOP) {
+    if(attackMode == STOP) {
         harvestingMode = false;
 
         if(getOwner()->isAI()){
             doSetAttackMode(HARVEST);
         } /*The AI doesn't like STOP*/
-	}
+    }
 
-	if(active)	{
-		if (returningToRefinery) {
-			if (target && (target.getObjPointer() != nullptr) && (target.getObjPointer()->getItemID() == Structure_Refinery)) {
-				//find a refinery to return to
-				Coord closestPoint = target.getObjPointer()->getClosestPoint(location);
+    if(active)  {
+        if (returningToRefinery) {
+            if (target && (target.getObjPointer() != nullptr) && (target.getObjPointer()->getItemID() == Structure_Refinery)) {
+                //find a refinery to return to
+                Coord closestPoint = target.getObjPointer()->getClosestPoint(location);
 
                 // Fixed a carryall bug
-				if(!moving && !justStoppedMoving && blockDistance(location, closestPoint) <= 2)	{
-					awaitingPickup = false;
-					if (((Refinery*)target.getObjPointer())->isFree())
-						setReturned();
-				}else if(!awaitingPickup && owner->hasCarryalls() && ((Refinery*)target.getObjPointer())->isFree()){
+                if(!moving && !justStoppedMoving && blockDistance(location, closestPoint) <= 2) {
+                    awaitingPickup = false;
+                    if (((Refinery*)target.getObjPointer())->isFree())
+                        setReturned();
+                }else if(!awaitingPickup && owner->hasCarryalls() && ((Refinery*)target.getObjPointer())->isFree()){
                     requestCarryall();
-				}
-			} else if (!structureList.empty()) {
-				int	leastNumBookings = 1000000; //huge amount so refinery couldn't possibly compete with any refinery num bookings
-				FixPoint closestLeastBookedRefineryDistance = 1000000;
-				Refinery	*bestRefinery = nullptr;
+                }
+            } else if (!structureList.empty()) {
+                int leastNumBookings = 1000000; //huge amount so refinery couldn't possibly compete with any refinery num bookings
+                FixPoint closestLeastBookedRefineryDistance = 1000000;
+                Refinery    *bestRefinery = nullptr;
 
                 RobustList<StructureBase*>::const_iterator iter;
                 for(iter = structureList.begin(); iter != structureList.end(); ++iter) {
-					StructureBase* tempStructure = *iter;
+                    StructureBase* tempStructure = *iter;
 
-					if((tempStructure->getItemID() == Structure_Refinery) && (tempStructure->getOwner() == owner)) {
-						Refinery* tempRefinery = static_cast<Refinery*>(tempStructure);
-						Coord closestPoint = tempRefinery->getClosestPoint(location);
-						FixPoint tempDistance = distanceFrom(location, closestPoint);
-						int tempNumBookings = tempRefinery->getNumBookings();
+                    if((tempStructure->getItemID() == Structure_Refinery) && (tempStructure->getOwner() == owner)) {
+                        Refinery* tempRefinery = static_cast<Refinery*>(tempStructure);
+                        Coord closestPoint = tempRefinery->getClosestPoint(location);
+                        FixPoint tempDistance = distanceFrom(location, closestPoint);
+                        int tempNumBookings = tempRefinery->getNumBookings();
 
-						if (tempNumBookings < leastNumBookings)	{
-							leastNumBookings = tempNumBookings;
-							closestLeastBookedRefineryDistance = tempDistance;
-							bestRefinery = tempRefinery;
-						} else if (tempNumBookings == leastNumBookings) {
-							if (tempDistance < closestLeastBookedRefineryDistance) {
-								closestLeastBookedRefineryDistance = tempDistance;
-								bestRefinery = tempRefinery;
-							}
-						}
-					}
-				}
+                        if (tempNumBookings < leastNumBookings) {
+                            leastNumBookings = tempNumBookings;
+                            closestLeastBookedRefineryDistance = tempDistance;
+                            bestRefinery = tempRefinery;
+                        } else if (tempNumBookings == leastNumBookings) {
+                            if (tempDistance < closestLeastBookedRefineryDistance) {
+                                closestLeastBookedRefineryDistance = tempDistance;
+                                bestRefinery = tempRefinery;
+                            }
+                        }
+                    }
+                }
 
-				if (bestRefinery) {
-					doMove2Object(bestRefinery);
+                if (bestRefinery) {
+                    doMove2Object(bestRefinery);
 
-					bestRefinery->startAnimate();
-				}
-			}
-		} else if (harvestingMode && !hasBookedCarrier() && (blockDistance(location, destination) > 8)) {
-			requestCarryall();
+                    bestRefinery->startAnimate();
+                }
+            }
+        } else if (harvestingMode && !hasBookedCarrier() && (blockDistance(location, destination) > 8)) {
+            requestCarryall();
         } else if(respondable && !harvestingMode && attackMode != STOP) {
             if(spiceCheckCounter == 0) {
                 // Find harvest location nearest to our base
@@ -222,25 +222,25 @@ void Harvester::checkPos()
             } else {
                 spiceCheckCounter--;
             }
-		}
-	}
+        }
+    }
 }
 
 void Harvester::deploy(const Coord& newLocation)
 {
-	if(currentGameMap->tileExists(newLocation)) {
-		UnitBase::deploy(newLocation);
+    if(currentGameMap->tileExists(newLocation)) {
+        UnitBase::deploy(newLocation);
 
 
-		if(spice == 0) {
-			if((attackMode != STOP) && currentGameMap->findSpice(destination, guardPoint)) {
-				harvestingMode = true;
-				guardPoint = destination;
-			} else {
-				harvestingMode = false;
-			}
-		}
-	}
+        if(spice == 0) {
+            if((attackMode != STOP) && currentGameMap->findSpice(destination, guardPoint)) {
+                harvestingMode = true;
+                guardPoint = destination;
+            } else {
+                harvestingMode = false;
+            }
+        }
+    }
 }
 
 void Harvester::destroy()
@@ -296,7 +296,7 @@ void Harvester::destroy()
         }
     }
 
-	TrackedUnit::destroy();
+    TrackedUnit::destroy();
 }
 
 void Harvester::drawSelectionBox()
@@ -311,17 +311,17 @@ void Harvester::drawSelectionBox()
     }
 
     SDL_Rect dest = calcDrawingRect(selectionBox, screenborder->world2screenX(realX), screenborder->world2screenY(realY), HAlign::Center, VAlign::Center);
-	SDL_RenderCopy(renderer, selectionBox, nullptr, &dest);
+    SDL_RenderCopy(renderer, selectionBox, nullptr, &dest);
 
-	for(int i=1;i<=currentZoomlevel+1;i++) {
+    for(int i=1;i<=currentZoomlevel+1;i++) {
         renderDrawHLine(renderer, dest.x+1, dest.y-i, dest.x+1 + (lround((getHealth()/getMaxHealth())*(getWidth(selectionBox)-3))), getHealthColor());
-	}
+    }
 
-	if((getOwner() == pLocalHouse) && (spice > 0)) {
+    if((getOwner() == pLocalHouse) && (spice > 0)) {
         for(int i=1;i<=currentZoomlevel+1;i++) {
             renderDrawHLine(renderer, dest.x+1, dest.y-i-(currentZoomlevel+1), dest.x+1 + (lround(((spice)/HARVESTERMAXSPICE)*(getWidth(selectionBox)-3))), COLOR_ORANGE);
         }
-	}
+    }
 }
 
 void Harvester::handleDamage(int damage, Uint32 damagerID, House* damagerOwner)
@@ -336,90 +336,90 @@ void Harvester::handleDamage(int damage, Uint32 damagerID, House* damagerOwner)
 }
 
 void Harvester::handleReturnClick() {
-	currentGame->getCommandManager().addCommand(Command(pLocalPlayer->getPlayerID(), CMD_HARVESTER_RETURN,objectID));
+    currentGame->getCommandManager().addCommand(Command(pLocalPlayer->getPlayerID(), CMD_HARVESTER_RETURN,objectID));
 }
 
 void Harvester::doReturn()
 {
-	returningToRefinery = true;
-	harvestingMode = false;
+    returningToRefinery = true;
+    harvestingMode = false;
 
-	if(getAttackMode() == STOP) {
+    if(getAttackMode() == STOP) {
         setGuardPoint(Coord::Invalid());
-	}
+    }
 }
 
 void Harvester::setAmountOfSpice(FixPoint newSpice)
 {
-	if((newSpice >= 0) && (newSpice <= HARVESTERMAXSPICE)) {
-		spice = newSpice;
-	}
+    if((newSpice >= 0) && (newSpice <= HARVESTERMAXSPICE)) {
+        spice = newSpice;
+    }
 }
 
 void Harvester::setDestination(int newX, int newY)
 {
-	TrackedUnit::setDestination(newX, newY);
+    TrackedUnit::setDestination(newX, newY);
 
-	harvestingMode =  (attackMode != STOP) && (currentGameMap->tileExists(newX, newY) && currentGameMap->getTile(newX,newY)->hasSpice());
+    harvestingMode =  (attackMode != STOP) && (currentGameMap->tileExists(newX, newY) && currentGameMap->getTile(newX,newY)->hasSpice());
 }
 
 void Harvester::setTarget(const ObjectBase* newTarget)
 {
-	if(returningToRefinery && target && (target.getObjPointer()!= nullptr)
-		&& (target.getObjPointer()->getItemID() == Structure_Refinery))
-	{
-		((Refinery*)target.getObjPointer())->unBook();
-		returningToRefinery = false;
-	}
+    if(returningToRefinery && target && (target.getObjPointer()!= nullptr)
+        && (target.getObjPointer()->getItemID() == Structure_Refinery))
+    {
+        ((Refinery*)target.getObjPointer())->unBook();
+        returningToRefinery = false;
+    }
 
-	TrackedUnit::setTarget(newTarget);
+    TrackedUnit::setTarget(newTarget);
 
-	if(target && (target.getObjPointer() != nullptr)
-		&& (target.getObjPointer()->getOwner() == getOwner())
-		&& (target.getObjPointer()->getItemID() == Structure_Refinery))
-	{
-		((Refinery*)target.getObjPointer())->book();
-		returningToRefinery = true;
-	}
+    if(target && (target.getObjPointer() != nullptr)
+        && (target.getObjPointer()->getOwner() == getOwner())
+        && (target.getObjPointer()->getItemID() == Structure_Refinery))
+    {
+        ((Refinery*)target.getObjPointer())->book();
+        returningToRefinery = true;
+    }
 
 }
 
 void Harvester::setReturned()
 {
-	if(selected) {
-		removeFromSelectionLists();
+    if(selected) {
+        removeFromSelectionLists();
     }
 
-	currentGameMap->removeObjectFromMap(getObjectID());
+    currentGameMap->removeObjectFromMap(getObjectID());
 
-	((Refinery*)target.getObjPointer())->assignHarvester(this);
+    ((Refinery*)target.getObjPointer())->assignHarvester(this);
 
-	returningToRefinery = false;
-	moving = false;
-	respondable = false;
-	setActive(false);
+    returningToRefinery = false;
+    moving = false;
+    respondable = false;
+    setActive(false);
 
-	setLocation(INVALID_POS, INVALID_POS);
-	setVisible(VIS_ALL, false);
+    setLocation(INVALID_POS, INVALID_POS);
+    setVisible(VIS_ALL, false);
 }
 
 void Harvester::move()
 {
-	UnitBase::move();
+    UnitBase::move();
 
-	if(active && !moving && !justStoppedMoving) {
-		if(harvestingMode) {
+    if(active && !moving && !justStoppedMoving) {
+        if(harvestingMode) {
 
-			if(location == destination) {
-				if(spice < HARVESTERMAXSPICE) {
+            if(location == destination) {
+                if(spice < HARVESTERMAXSPICE) {
 
-				    Tile* tile = currentGameMap->getTile(location);
+                    Tile* tile = currentGameMap->getTile(location);
 
-					if(tile->hasSpice()) {
+                    if(tile->hasSpice()) {
 
-					    int beforeTileType = tile->getType();
-					    spice += tile->harvestSpice();
-					    int afterTileType = tile->getType();
+                        int beforeTileType = tile->getType();
+                        spice += tile->harvestSpice();
+                        int afterTileType = tile->getType();
 
                         if(beforeTileType != afterTileType) {
                             currentGameMap->spiceRemoved(location);
@@ -429,17 +429,17 @@ void Harvester::move()
                                 doMove2Pos(destination, false);
                             }
                         }
-					} else if (!currentGameMap->findSpice(destination, location)) {
-						doReturn();
-					} else {
-					    doMove2Pos(destination, false);
-					}
-				} else {
-					doReturn();
-				}
-			}
-		}
-	}
+                    } else if (!currentGameMap->findSpice(destination, location)) {
+                        doReturn();
+                    } else {
+                        doMove2Pos(destination, false);
+                    }
+                } else {
+                    doReturn();
+                }
+            }
+        }
+    }
 }
 
 bool Harvester::isHarvesting() const {
@@ -448,37 +448,37 @@ bool Harvester::isHarvesting() const {
 
 bool Harvester::canAttack(const ObjectBase* object) const
 {
-	return((object != nullptr)
-			&& object->isInfantry()
-			&& (object->getOwner()->getTeam() != owner->getTeam())
-			&& object->isVisible(getOwner()->getTeam()));
+    return((object != nullptr)
+            && object->isInfantry()
+            && (object->getOwner()->getTeam() != owner->getTeam())
+            && object->isVisible(getOwner()->getTeam()));
 }
 
 FixPoint Harvester::extractSpice(FixPoint extractionSpeed)
 {
-	FixPoint oldSpice = spice;
+    FixPoint oldSpice = spice;
 
-	if((spice - extractionSpeed) >= 0) {
-		spice -= extractionSpeed;
-	} else {
-		spice = 0;
-	}
+    if((spice - extractionSpeed) >= 0) {
+        spice -= extractionSpeed;
+    } else {
+        spice = 0;
+    }
 
-	return (oldSpice - spice);
+    return (oldSpice - spice);
 }
 
 void Harvester::setSpeeds()
 {
-	FixPoint speed = getMaxSpeed();
+    FixPoint speed = getMaxSpeed();
 
-	if(isBadlyDamaged()) {
+    if(isBadlyDamaged()) {
         speed *= HEAVILYDAMAGEDSPEEDMULTIPLIER;
-	}
+    }
 
     FixPoint percentFull = spice/HARVESTERMAXSPICE;
-	speed = speed * (1 - MAXIMUMHARVESTERSLOWDOWN*percentFull);
+    speed = speed * (1 - MAXIMUMHARVESTERSLOWDOWN*percentFull);
 
-	switch(drawnAngle){
+    switch(drawnAngle){
         case LEFT:      xSpeed = -speed;                    ySpeed = 0;         break;
         case LEFTUP:    xSpeed = -speed*DIAGONALSPEEDCONST; ySpeed = xSpeed;    break;
         case UP:        xSpeed = 0;                         ySpeed = -speed;    break;
@@ -487,5 +487,5 @@ void Harvester::setSpeeds()
         case RIGHTDOWN: xSpeed = speed*DIAGONALSPEEDCONST;  ySpeed = xSpeed;    break;
         case DOWN:      xSpeed = 0;                         ySpeed = speed;     break;
         case LEFTDOWN:  xSpeed = -speed*DIAGONALSPEEDCONST; ySpeed = -xSpeed;   break;
-	}
+    }
 }

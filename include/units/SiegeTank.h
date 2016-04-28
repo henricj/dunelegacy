@@ -23,16 +23,16 @@
 class SiegeTank : public TankBase
 {
 public:
-	SiegeTank(House* newOwner);
-	SiegeTank(InputStream& stream);
-	void init();
-	virtual ~SiegeTank();
+    SiegeTank(House* newOwner);
+    SiegeTank(InputStream& stream);
+    void init();
+    virtual ~SiegeTank();
 
-	void blitToScreen();
+    void blitToScreen();
 
-	virtual void destroy();
+    virtual void destroy();
 
-	void playAttackSound();
+    void playAttackSound();
 };
 
 #endif // SIEGETANK_H

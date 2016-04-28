@@ -35,17 +35,17 @@ HighTechFactory::HighTechFactory(InputStream& stream) : BuilderBase(stream) {
 
 void HighTechFactory::init() {
     itemID = Structure_HighTechFactory;
-	owner->incrementStructures(itemID);
+    owner->incrementStructures(itemID);
 
-	structureSize.x = 3;
-	structureSize.y = 2;
+    structureSize.x = 3;
+    structureSize.y = 2;
 
-	graphicID = ObjPic_HighTechFactory;
-	graphic = pGFXManager->getObjPic(graphicID,getOwner()->getHouseID());
-	numImagesX = 8;
-	numImagesY = 1;
-	firstAnimFrame = 2;
-	lastAnimFrame = 3;
+    graphicID = ObjPic_HighTechFactory;
+    graphic = pGFXManager->getObjPic(graphicID,getOwner()->getHouseID());
+    numImagesX = 8;
+    numImagesY = 1;
+    firstAnimFrame = 2;
+    lastAnimFrame = 3;
 }
 
 HighTechFactory::~HighTechFactory() {

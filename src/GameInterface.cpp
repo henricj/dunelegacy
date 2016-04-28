@@ -32,76 +32,76 @@
 #include <SDL.h>
 
 GameInterface::GameInterface() : Window(0,0,0,0) {
-	pObjectContainer = nullptr;
-	objectID = NONE;
+    pObjectContainer = nullptr;
+    objectID = NONE;
 
-	setTransparentBackground(true);
+    setTransparentBackground(true);
 
-	setCurrentPosition(0,0,getRendererWidth(),getRendererHeight());
+    setCurrentPosition(0,0,getRendererWidth(),getRendererHeight());
 
-	setWindowWidget(&windowWidget);
+    setWindowWidget(&windowWidget);
 
-	// top bar
-	SDL_Texture* pTopBarTex = pGFXManager->getUIGraphic(UI_TopBar, pLocalHouse->getHouseID());
-	topBar.setTexture(pTopBarTex,false);
-	windowWidget.addWidget(&topBar,Point(0,0),Point(getWidth(pTopBarTex),getHeight(pTopBarTex) - 12));
+    // top bar
+    SDL_Texture* pTopBarTex = pGFXManager->getUIGraphic(UI_TopBar, pLocalHouse->getHouseID());
+    topBar.setTexture(pTopBarTex,false);
+    windowWidget.addWidget(&topBar,Point(0,0),Point(getWidth(pTopBarTex),getHeight(pTopBarTex) - 12));
 
-	// side bar
-	SDL_Texture* pSideBarTex = pGFXManager->getUIGraphic(UI_SideBar, pLocalHouse->getHouseID());
-	sideBar.setTexture(pSideBarTex,false);
-	SDL_Rect dest = calcAlignedDrawingRect(pSideBarTex, HAlign::Right, VAlign::Top);
-	windowWidget.addWidget(&sideBar, dest);
+    // side bar
+    SDL_Texture* pSideBarTex = pGFXManager->getUIGraphic(UI_SideBar, pLocalHouse->getHouseID());
+    sideBar.setTexture(pSideBarTex,false);
+    SDL_Rect dest = calcAlignedDrawingRect(pSideBarTex, HAlign::Right, VAlign::Top);
+    windowWidget.addWidget(&sideBar, dest);
 
-	// add buttons
-	windowWidget.addWidget(&topBarHBox,Point(5,5),
-							Point(getRendererWidth() - sideBar.getSize().x, topBar.getSize().y - 10));
+    // add buttons
+    windowWidget.addWidget(&topBarHBox,Point(5,5),
+                            Point(getRendererWidth() - sideBar.getSize().x, topBar.getSize().y - 10));
 
-	topBarHBox.addWidget(&newsticker);
+    topBarHBox.addWidget(&newsticker);
 
-	topBarHBox.addWidget(Spacer::create());
+    topBarHBox.addWidget(Spacer::create());
 
-	optionsButton.setTextures(  pGFXManager->getUIGraphic(UI_Options, pLocalHouse->getHouseID()), false,
+    optionsButton.setTextures(  pGFXManager->getUIGraphic(UI_Options, pLocalHouse->getHouseID()), false,
                                 pGFXManager->getUIGraphic(UI_Options_Pressed, pLocalHouse->getHouseID()), false);
-	optionsButton.setOnClick(std::bind(&Game::onOptions, currentGame));
-	topBarHBox.addWidget(&optionsButton);
+    optionsButton.setOnClick(std::bind(&Game::onOptions, currentGame));
+    topBarHBox.addWidget(&optionsButton);
 
-	topBarHBox.addWidget(Spacer::create());
+    topBarHBox.addWidget(Spacer::create());
 
-	mentatButton.setTextures(   pGFXManager->getUIGraphic(UI_Mentat, pLocalHouse->getHouseID()), false,
+    mentatButton.setTextures(   pGFXManager->getUIGraphic(UI_Mentat, pLocalHouse->getHouseID()), false,
                                 pGFXManager->getUIGraphic(UI_Mentat_Pressed, pLocalHouse->getHouseID()), false);
-	mentatButton.setOnClick(std::bind(&Game::onMentat, currentGame));
-	topBarHBox.addWidget(&mentatButton);
+    mentatButton.setOnClick(std::bind(&Game::onMentat, currentGame));
+    topBarHBox.addWidget(&mentatButton);
 
-	topBarHBox.addWidget(Spacer::create());
+    topBarHBox.addWidget(Spacer::create());
 
-	// add radar
-	windowWidget.addWidget(&radarView,Point(getRendererWidth()-sideBar.getSize().x+SIDEBAR_COLUMN_WIDTH, 0),radarView.getMinimumSize());
-	radarView.setOnRadarClick(std::bind(&Game::onRadarClick, currentGame, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
+    // add radar
+    windowWidget.addWidget(&radarView,Point(getRendererWidth()-sideBar.getSize().x+SIDEBAR_COLUMN_WIDTH, 0),radarView.getMinimumSize());
+    radarView.setOnRadarClick(std::bind(&Game::onRadarClick, currentGame, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
 
-	// add chat manager
-	windowWidget.addWidget(&chatManager, Point(20, 60), Point(getRendererWidth() - sideBar.getSize().x, 360));
+    // add chat manager
+    windowWidget.addWidget(&chatManager, Point(20, 60), Point(getRendererWidth() - sideBar.getSize().x, 360));
 }
 
 GameInterface::~GameInterface() {
-	removeOldContainer();
+    removeOldContainer();
 }
 
 void GameInterface::draw(Point position) {
-	Window::draw(position);
+    Window::draw(position);
 
-	// draw Power Indicator and Spice indicator
+    // draw Power Indicator and Spice indicator
 
-	SDL_Rect powerIndicatorPos = {	getRendererWidth() - sideBar.getSize().x + 14, 146, 4, getRendererHeight() - 146 - 2 };
+    SDL_Rect powerIndicatorPos = {  getRendererWidth() - sideBar.getSize().x + 14, 146, 4, getRendererHeight() - 146 - 2 };
     renderFillRect(renderer, &powerIndicatorPos, COLOR_BLACK);
 
-	SDL_Rect spiceIndicatorPos = {	getRendererWidth() - sideBar.getSize().x + 20, 146, 4, getRendererHeight() - 146 - 2 };
-	renderFillRect(renderer, &spiceIndicatorPos, COLOR_BLACK);
+    SDL_Rect spiceIndicatorPos = {  getRendererWidth() - sideBar.getSize().x + 20, 146, 4, getRendererHeight() - 146 - 2 };
+    renderFillRect(renderer, &spiceIndicatorPos, COLOR_BLACK);
 
-	int xCount = 0, yCount = 0;
-	int	yCount2 = 0;
+    int xCount = 0, yCount = 0;
+    int yCount2 = 0;
 
     //draw power level indicator
-    if (pLocalHouse->getPowerRequirement() == 0)	{
+    if (pLocalHouse->getPowerRequirement() == 0)    {
         if (pLocalHouse->getProducedPower() > 0) {
             yCount2 = powerIndicatorPos.h + 1;
         } else {
@@ -144,48 +144,48 @@ void GameInterface::draw(Point position) {
         }
     }
 
-	//draw credits
-	char CreditsBuffer[10];
-	int credits = pLocalHouse->getCredits();
-	sprintf(CreditsBuffer, "%d", (credits < 0) ? 0 : credits);
-	int NumDigits = strlen(CreditsBuffer);
-	SDL_Texture* digitsTex = pGFXManager->getUIGraphic(UI_CreditsDigits);
+    //draw credits
+    char CreditsBuffer[10];
+    int credits = pLocalHouse->getCredits();
+    sprintf(CreditsBuffer, "%d", (credits < 0) ? 0 : credits);
+    int NumDigits = strlen(CreditsBuffer);
+    SDL_Texture* digitsTex = pGFXManager->getUIGraphic(UI_CreditsDigits);
 
-	for(int i=NumDigits-1; i>=0; i--) {
+    for(int i=NumDigits-1; i>=0; i--) {
         SDL_Rect source = calcSpriteSourceRect(digitsTex, CreditsBuffer[i] - '0', 10);
         SDL_Rect dest = calcSpriteDrawingRect(digitsTex, getRendererWidth() - sideBar.getSize().x + 49 + (6 - NumDigits + i)*10, 135, 10);
-		SDL_RenderCopy(renderer, digitsTex, &source, &dest);
-	}
+        SDL_RenderCopy(renderer, digitsTex, &source, &dest);
+    }
 }
 
 void GameInterface::updateObjectInterface() {
-	if(currentGame->getSelectedList().size() == 1) {
-		ObjectBase* pObject = currentGame->getObjectManager().getObject( *(currentGame->getSelectedList().begin()));
-		Uint32 newObjectID = pObject->getObjectID();
+    if(currentGame->getSelectedList().size() == 1) {
+        ObjectBase* pObject = currentGame->getObjectManager().getObject( *(currentGame->getSelectedList().begin()));
+        Uint32 newObjectID = pObject->getObjectID();
 
-		if(newObjectID != objectID) {
-			removeOldContainer();
+        if(newObjectID != objectID) {
+            removeOldContainer();
 
-			pObjectContainer = pObject->getInterfaceContainer();
+            pObjectContainer = pObject->getInterfaceContainer();
 
-			if(pObjectContainer != nullptr) {
-				objectID = newObjectID;
+            if(pObjectContainer != nullptr) {
+                objectID = newObjectID;
 
-				windowWidget.addWidget(pObjectContainer,
-										Point(getRendererWidth() - sideBar.getSize().x + 24, 146),
-										Point(sideBar.getSize().x - 25,getRendererHeight() - 148));
+                windowWidget.addWidget(pObjectContainer,
+                                        Point(getRendererWidth() - sideBar.getSize().x + 24, 146),
+                                        Point(sideBar.getSize().x - 25,getRendererHeight() - 148));
 
-			}
+            }
 
-		} else {
-			if(pObjectContainer->update() == false) {
-				removeOldContainer();
-			}
-		}
-	} else if(currentGame->getSelectedList().size() > 1) {
+        } else {
+            if(pObjectContainer->update() == false) {
+                removeOldContainer();
+            }
+        }
+    } else if(currentGame->getSelectedList().size() > 1) {
 
-	    if((pObjectContainer == nullptr) || (objectID != NONE)) {
-	        // either there was nothing selected before or exactly one unit
+        if((pObjectContainer == nullptr) || (objectID != NONE)) {
+            // either there was nothing selected before or exactly one unit
 
             if(pObjectContainer != nullptr) {
                 removeOldContainer();
@@ -196,20 +196,20 @@ void GameInterface::updateObjectInterface() {
             windowWidget.addWidget(pObjectContainer,
                                     Point(getRendererWidth() - sideBar.getSize().x + 24, 146),
                                     Point(sideBar.getSize().x - 25,getRendererHeight() - 148));
-	    } else {
-	        if(pObjectContainer->update() == false) {
-				removeOldContainer();
-			}
-	    }
-	} else {
-		removeOldContainer();
-	}
+        } else {
+            if(pObjectContainer->update() == false) {
+                removeOldContainer();
+            }
+        }
+    } else {
+        removeOldContainer();
+    }
 }
 
 void GameInterface::removeOldContainer() {
-	if(pObjectContainer != nullptr) {
-		delete pObjectContainer;
-		pObjectContainer = nullptr;
-		objectID = NONE;
-	}
+    if(pObjectContainer != nullptr) {
+        delete pObjectContainer;
+        pObjectContainer = nullptr;
+        objectID = NONE;
+    }
 }

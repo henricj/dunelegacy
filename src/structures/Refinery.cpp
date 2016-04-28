@@ -38,147 +38,147 @@ Refinery::Refinery(House* newOwner) : StructureBase(newOwner) {
 
     setHealth(getMaxHealth());
 
-	extractingSpice = false;
+    extractingSpice = false;
     bookings = 0;
 
-	firstRun = true;
+    firstRun = true;
 
     firstAnimFrame = 2;
-	lastAnimFrame = 3;
+    lastAnimFrame = 3;
 }
 
 Refinery::Refinery(InputStream& stream) : StructureBase(stream) {
     Refinery::init();
 
-	extractingSpice = stream.readBool();
-	harvester.load(stream);
-	bookings = stream.readUint32();
+    extractingSpice = stream.readBool();
+    harvester.load(stream);
+    bookings = stream.readUint32();
 
-	if(extractingSpice) {
-		firstAnimFrame = 8;
-		lastAnimFrame = 9;
-		curAnimFrame = 8;
-	} else if(bookings == 0) {
-		stopAnimate();
-	} else {
-		startAnimate();
-	}
+    if(extractingSpice) {
+        firstAnimFrame = 8;
+        lastAnimFrame = 9;
+        curAnimFrame = 8;
+    } else if(bookings == 0) {
+        stopAnimate();
+    } else {
+        startAnimate();
+    }
 
-	firstRun = false;
+    firstRun = false;
 }
 
 void Refinery::init() {
     itemID = Structure_Refinery;
-	owner->incrementStructures(itemID);
+    owner->incrementStructures(itemID);
 
-	structureSize.x = 3;
-	structureSize.y = 2;
+    structureSize.x = 3;
+    structureSize.y = 2;
 
-	graphicID = ObjPic_Refinery;
-	graphic = pGFXManager->getObjPic(graphicID,getOwner()->getHouseID());
-	numImagesX = 10;
-	numImagesY = 1;
+    graphicID = ObjPic_Refinery;
+    graphic = pGFXManager->getObjPic(graphicID,getOwner()->getHouseID());
+    numImagesX = 10;
+    numImagesY = 1;
 }
 
 Refinery::~Refinery() {
     if(extractingSpice && harvester) {
-		if(harvester.getUnitPointer() != nullptr)
-			harvester.getUnitPointer()->destroy();
-		harvester.pointTo(NONE);
-	}
+        if(harvester.getUnitPointer() != nullptr)
+            harvester.getUnitPointer()->destroy();
+        harvester.pointTo(NONE);
+    }
 }
 
 void Refinery::save(OutputStream& stream) const {
-	StructureBase::save(stream);
+    StructureBase::save(stream);
 
     stream.writeBool(extractingSpice);
-	harvester.save(stream);
-	stream.writeUint32(bookings);
+    harvester.save(stream);
+    stream.writeUint32(bookings);
 }
 
 ObjectInterface* Refinery::getInterfaceContainer() {
-	if((pLocalHouse == owner) || (debug == true)) {
-		return RefineryAndSiloInterface::create(objectID);
-	} else {
-		return DefaultObjectInterface::create(objectID);
-	}
+    if((pLocalHouse == owner) || (debug == true)) {
+        return RefineryAndSiloInterface::create(objectID);
+    } else {
+        return DefaultObjectInterface::create(objectID);
+    }
 }
 
 void Refinery::assignHarvester(Harvester* newHarvester) {
-	extractingSpice = true;
-	harvester.pointTo(newHarvester);
-	drawnAngle = 1;
-	firstAnimFrame = 8;
-	lastAnimFrame = 9;
-	curAnimFrame = 8;
+    extractingSpice = true;
+    harvester.pointTo(newHarvester);
+    drawnAngle = 1;
+    firstAnimFrame = 8;
+    lastAnimFrame = 9;
+    curAnimFrame = 8;
 }
 
 void Refinery::deployHarvester(Carryall* pCarryall) {
-	unBook();
-	drawnAngle = 0;
-	extractingSpice = false;
+    unBook();
+    drawnAngle = 0;
+    extractingSpice = false;
 
-	if(firstRun) {
-		if(getOwner() == pLocalHouse) {
-			soundPlayer->playVoice(HarvesterDeployed,getOwner()->getHouseID());
-		}
-	}
+    if(firstRun) {
+        if(getOwner() == pLocalHouse) {
+            soundPlayer->playVoice(HarvesterDeployed,getOwner()->getHouseID());
+        }
+    }
 
-	firstRun = false;
+    firstRun = false;
 
     Harvester* pHarvester = (Harvester*) harvester.getObjPointer();
-	if(pCarryall != nullptr) {
-	    pCarryall->giveCargo(pHarvester);
-	    pCarryall->setTarget(nullptr);
-	    pCarryall->setDestination(pHarvester->getGuardPoint());
-	} else {
+    if(pCarryall != nullptr) {
+        pCarryall->giveCargo(pHarvester);
+        pCarryall->setTarget(nullptr);
+        pCarryall->setDestination(pHarvester->getGuardPoint());
+    } else {
         Coord deployPos = currentGameMap->findDeploySpot(pHarvester, location, destination, structureSize);
         pHarvester->deploy(deployPos);
-	}
+    }
 
-	if(bookings == 0) {
+    if(bookings == 0) {
         stopAnimate();
-	} else {
+    } else {
         startAnimate();
-	}
+    }
 }
 
 void Refinery::startAnimate() {
-	if(extractingSpice == false) {
-		firstAnimFrame = 2;
-		lastAnimFrame = 7;
-		curAnimFrame = 2;
+    if(extractingSpice == false) {
+        firstAnimFrame = 2;
+        lastAnimFrame = 7;
+        curAnimFrame = 2;
         justPlacedTimer = 0;
         animationCounter = 0;
-	}
+    }
 }
 
 void Refinery::stopAnimate() {
     firstAnimFrame = 2;
-	lastAnimFrame = 3;
-	curAnimFrame = 2;
+    lastAnimFrame = 3;
+    curAnimFrame = 2;
 }
 
 void Refinery::updateStructureSpecificStuff() {
-	if(extractingSpice) {
-	    Harvester* pHarvester = (Harvester*) harvester.getObjPointer();
+    if(extractingSpice) {
+        Harvester* pHarvester = (Harvester*) harvester.getObjPointer();
 
-		if(pHarvester->getAmountOfSpice() > 0) {
-		    FixPoint extractionSpeed = MAXIMUMHARVESTEREXTRACTSPEED;
+        if(pHarvester->getAmountOfSpice() > 0) {
+            FixPoint extractionSpeed = MAXIMUMHARVESTEREXTRACTSPEED;
 
-		    int scale = floor(5*getHealth()/getMaxHealth());
-		    if(scale == 0) {
+            int scale = floor(5*getHealth()/getMaxHealth());
+            if(scale == 0) {
                 scale = 1;
-		    }
+            }
 
-		    extractionSpeed = (extractionSpeed * scale) / 5;
+            extractionSpeed = (extractionSpeed * scale) / 5;
 
 
-			owner->addCredits(pHarvester->extractSpice(extractionSpeed), true);
-		} else if(pHarvester->isawaitingPickup() == false) {
-		    // find carryall
-		    Carryall* pCarryall = nullptr;
-            if((pHarvester->getGuardPoint().isValid()) && getOwner()->hasCarryalls())	{
+            owner->addCredits(pHarvester->extractSpice(extractionSpeed), true);
+        } else if(pHarvester->isawaitingPickup() == false) {
+            // find carryall
+            Carryall* pCarryall = nullptr;
+            if((pHarvester->getGuardPoint().isValid()) && getOwner()->hasCarryalls())   {
                 RobustList<UnitBase*>::const_iterator iter;
                 for(iter = unitList.begin(); iter != unitList.end(); ++iter) {
                     UnitBase* unit = *iter;
@@ -199,8 +199,8 @@ void Refinery::updateStructureSpecificStuff() {
             } else {
                 deployHarvester();
             }
-		} else if(!pHarvester->hasBookedCarrier()) {
-		    deployHarvester();
-		}
-	}
+        } else if(!pHarvester->hasBookedCarrier()) {
+            deployHarvester();
+        }
+    }
 }
