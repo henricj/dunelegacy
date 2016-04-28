@@ -204,11 +204,7 @@ SDL_RWops* Pakfile::openFile(std::string filename) {
 	}
 
 	// alloc RWopData
-	RWopData* pRWopData;
-	if((pRWopData = new RWopData) == nullptr) {
-		SDL_FreeRW(pRWop);
-		return nullptr;
-	}
+	RWopData* pRWopData = new RWopData();
 
 	pRWop->type = PAKFILE_RWOP_TYPE;
 	pRWopData->curPakfile = this;
