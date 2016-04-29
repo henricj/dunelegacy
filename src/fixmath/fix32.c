@@ -15,7 +15,7 @@ fix32_t fix32_add(fix32_t a, fix32_t b)
 
 	// Overflow can only happen if sign of a == sign of b, and then
 	// it causes sign of sum != sign of a.
-	if (!((_a ^ _b) & 0x8000000000000000) && ((_a ^ sum) & 0x8000000000000000))
+	if (!((_a ^ _b) & 0x8000000000000000ULL) && ((_a ^ sum) & 0x8000000000000000ULL))
 		return fix32_overflow;
 
 	return sum;
@@ -28,7 +28,7 @@ fix32_t fix32_sub(fix32_t a, fix32_t b)
 
 	// Overflow can only happen if sign of a != sign of b, and then
 	// it causes sign of diff != sign of a.
-	if (((_a ^ _b) & 0x8000000000000000) && ((_a ^ diff) & 0x8000000000000000))
+	if (((_a ^ _b) & 0x8000000000000000ULL) && ((_a ^ diff) & 0x8000000000000000ULL))
 		return fix32_overflow;
 
 	return diff;
@@ -169,7 +169,7 @@ fix32_t fix32_div(fix32_t a, fix32_t b)
 	// Kick-start the division a bit.
 	// This improves speed in the worst-case scenarios where N and D are large
 	// It gets a lower estimate for the result by N/(D >> 33 + 1).
-	if (divider & 0xFFFFFFF000000000)
+	if (divider & 0xFFFFFFF000000000ULL)
 	{
 		uint64_t shifted_div = ((divider >> 33) + 1);
 		quotient = remainder / shifted_div;
@@ -230,7 +230,7 @@ fix32_t fix32_div(fix32_t a, fix32_t b)
 	fix32_t result = quotient >> 1;
 
 	// Figure out the sign of the result
-	if ((a ^ b) & 0x8000000000000000)
+	if ((a ^ b) & 0x8000000000000000ULL)
 	{
 		#ifndef FIXMATH_NO_OVERFLOW
 		if (result == fix32_minimum)

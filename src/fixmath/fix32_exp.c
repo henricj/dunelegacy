@@ -69,7 +69,7 @@ fix32_t fix32_log(fix32_t inValue)
 		return fix32_minimum;
 
 	// Bring the value to the most accurate range (1 < x < 100)
-	const fix32_t e_to_fourth = 0x0000003699205C4E;	// e^4
+	const fix32_t e_to_fourth = 0x0000003699205C4EULL;	// e^4
 	while (inValue > fix32_from_int(100))
 	{
 		inValue = fix32_div(inValue, e_to_fourth);

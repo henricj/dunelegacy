@@ -25,19 +25,19 @@ extern "C"
 
 typedef int64_t fix32_t;
 
-static const fix32_t fix32_FOUR_DIV_PI  = 0x0000000145F306DC;             /*!< Fix32 value of 4/PI */
-static const fix32_t fix32__FOUR_DIV_PI2 = 0xFFFFFFFF983F4277;            /*!< Fix32 value of -4/PI² */
-static const fix32_t fix32_X4_CORRECTION_COMPONENT = 0x000000003999999A;  /*!< Fix32 value of 0.225 */
-static const fix32_t fix32_PI_DIV_4 = 0x00000000C90FDAA2;                 /*!< Fix32 value of PI/4 */
-static const fix32_t fix32_THREE_PI_DIV_4 = 0x000000025B2F8FE6;           /*!< Fix32 value of 3PI/4 */
+static const fix32_t fix32_FOUR_DIV_PI  = 0x0000000145F306DCULL;             /*!< Fix32 value of 4/PI */
+static const fix32_t fix32__FOUR_DIV_PI2 = 0xFFFFFFFF983F4277ULL;            /*!< Fix32 value of -4/PI² */
+static const fix32_t fix32_X4_CORRECTION_COMPONENT = 0x000000003999999AULL;  /*!< Fix32 value of 0.225 */
+static const fix32_t fix32_PI_DIV_4 = 0x00000000C90FDAA2ULL;                 /*!< Fix32 value of PI/4 */
+static const fix32_t fix32_THREE_PI_DIV_4 = 0x000000025B2F8FE6ULL;           /*!< Fix32 value of 3PI/4 */
 
-static const fix32_t fix32_maximum  = 0x7FFFFFFFFFFFFFFF; /*!< the maximum value of fix32_t */
-static const fix32_t fix32_minimum  = 0x8000000000000000; /*!< the minimum value of fix32_t */
-static const fix32_t fix32_overflow = 0x8000000000000000; /*!< the value used to indicate overflows when FIXMATH_NO_OVERFLOW is not specified */
+static const fix32_t fix32_maximum  = 0x7FFFFFFFFFFFFFFFULL; /*!< the maximum value of fix32_t */
+static const fix32_t fix32_minimum  = 0x8000000000000000ULL; /*!< the minimum value of fix32_t */
+static const fix32_t fix32_overflow = 0x8000000000000000ULL; /*!< the value used to indicate overflows when FIXMATH_NO_OVERFLOW is not specified */
 
-static const fix32_t fix32_pi  = 0x00000003243F6A89LL;     /*!< fix32_t value of pi */
-static const fix32_t fix32_e   = 0x00000002B7E15163LL;     /*!< fix32_t value of e */
-static const fix32_t fix32_one = 0x0000000100000000; /*!< fix32_t value of 1 */
+static const fix32_t fix32_pi  = 0x00000003243F6A89ULL;     /*!< fix32_t value of pi */
+static const fix32_t fix32_e   = 0x00000002B7E15163ULL;     /*!< fix32_t value of e */
+static const fix32_t fix32_one = 0x0000000100000000ULL;     /*!< fix32_t value of 1 */
 
 /* Conversion functions between fix32_t and float/integer.
  * These are inlined to allow compiler to optimize away constant numbers
