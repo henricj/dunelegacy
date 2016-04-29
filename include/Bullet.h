@@ -34,7 +34,7 @@ class Bullet
 {
 public:
     Bullet(Uint32 shooterID, Coord* newLocation, Coord* newDestination, Uint32 bulletID, int damage, bool air);
-    Bullet(InputStream& stream);
+    explicit Bullet(InputStream& stream);
     void init();
     ~Bullet();
 

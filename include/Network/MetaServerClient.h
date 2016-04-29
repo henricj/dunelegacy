@@ -36,7 +36,7 @@
 class MetaServerClient {
 public:
 
-    MetaServerClient(std::string metaServerURL);
+    explicit MetaServerClient(std::string metaServerURL);
     ~MetaServerClient();
 
     /**
@@ -109,9 +109,9 @@ private:
     std::list<std::shared_ptr<MetaServerCommand> > metaServerCommandList;       ///< The command queue for the metaserver connection thread (shared between main thread and metaserver connection thread, \see sharedDataMutex)
     SDL_sem*    availableMetaServerCommandsSemaphore;                           ///< This semaphore counts how many commands are available in the metaServerCommandList
 
-    int metaserverErrorCause;                                                   ///< Set to 0 in case of no error, else the id of the command sent to the metaserver
-    std::string metaserverError;                                                ///< Set to some string in case a metaserver error occurs (only one error can be pending at once)
-    bool bUpdatedGameServerInfoList;                                            ///< Was the gameServerInfoList updated? Set to true by the metaserver connection thread and reset to false in the main thread (\see sharedDataMutex)
+    int metaserverErrorCause = 0;                                               ///< Set to 0 in case of no error, else the id of the command sent to the metaserver
+    std::string metaserverError = "";                                           ///< Set to some string in case a metaserver error occurs (only one error can be pending at once)
+    bool bUpdatedGameServerInfoList = false;                                    ///< Was the gameServerInfoList updated? Set to true by the metaserver connection thread and reset to false in the main thread (\see sharedDataMutex)
     std::list<GameServerInfo> gameServerInfoList;                               ///< A list of all available game servers. Writen by the metaserver connection thread and read by the main thread (\see sharedDataMutex)
 
     SDL_mutex* sharedDataMutex;                                                 ///< This mutex must be locked before any shared data structures between the main thread and the metaserver connection thread is read or modified)
@@ -121,18 +121,18 @@ private:
 
     // Non-Shared data (used only by main thread):
 
-    std::string serverName;                                                     ///< The name of the game server
-    int serverPort;                                                             ///< The port of the game server
-    std::string secret;                                                         ///< The secret used for the metaserver updates
-    std::string mapName;                                                        ///< The name of the map for which a game is currently set up
-    Uint8 numPlayers;                                                           ///< The current number of players in the currently set up game
-    Uint8 maxPlayers;                                                           ///< The maximum number of players in the currently set up game
+    std::string serverName = "";                                                ///< The name of the game server
+    int serverPort = 0;                                                         ///< The port of the game server
+    std::string secret = "";                                                    ///< The secret used for the metaserver updates
+    std::string mapName = "";                                                   ///< The name of the map for which a game is currently set up
+    Uint8 numPlayers = 0;                                                       ///< The current number of players in the currently set up game
+    Uint8 maxPlayers = 0;                                                       ///< The maximum number of players in the currently set up game
 
-    Uint32 lastAnnounceUpdate;                                                  ///< The last time the game was announced
-    Uint32 lastServerInfoListUpdate;                                            ///< The last time the server list was updated by a request to the metaserver
+    Uint32 lastAnnounceUpdate = 0;                                              ///< The last time the game was announced
+    Uint32 lastServerInfoListUpdate = 0;                                        ///< The last time the server list was updated by a request to the metaserver
 
     std::function<void (std::list<GameServerInfo>&)> pOnGameServerInfoList;     ///< Callback for updates to the game server list
-    std::function<void (int, std::string)> pOnMetaServerError;                      ///< Callback for metaserver errors
+    std::function<void (int, std::string)> pOnMetaServerError;                  ///< Callback for metaserver errors
 };
 
 #endif // METASERVERCLIENT_H

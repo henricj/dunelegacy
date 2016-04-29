@@ -231,6 +231,7 @@ SDL_Surface* Shpfile::getPictureArray(unsigned int tilesX, unsigned int tilesY, 
         if(TILE_GETINDEX(tiles[i]) >= shpfileEntries.size()) {
             free(tiles);
             fprintf(stderr,"Shpfile::getPictureArray(): There exist only %d files in this *.shp.\n", (int) shpfileEntries.size());
+            va_end(arg_ptr);
             return nullptr;
         }
     }

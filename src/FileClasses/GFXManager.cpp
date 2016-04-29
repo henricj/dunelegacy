@@ -1008,7 +1008,7 @@ GFXManager::~GFXManager() {
 
 SDL_Texture** GFXManager::getObjPic(unsigned int id, int house) {
     if(id >= NUM_OBJPICS) {
-        fprintf(stderr,"GFXManager::getObjPic(): Unit Picture with id %d is not available!\n",id);
+        fprintf(stderr,"GFXManager::getObjPic(): Unit Picture with id %u is not available!\n",id);
         exit(EXIT_FAILURE);
     }
 
@@ -1016,7 +1016,7 @@ SDL_Texture** GFXManager::getObjPic(unsigned int id, int house) {
         if(objPic[id][house][z] == nullptr) {
             // remap to this color
             if(objPic[id][HOUSE_HARKONNEN][z] == nullptr) {
-                fprintf(stderr,"GFXManager::getObjPic(): Unit Picture with id %d is not loaded!\n",id);
+                fprintf(stderr,"GFXManager::getObjPic(): Unit Picture with id %u is not loaded!\n",id);
                 exit(EXIT_FAILURE);
             }
 
@@ -1068,14 +1068,14 @@ SDL_Texture* GFXManager::getSmallDetailPic(unsigned int id) {
 
 SDL_Surface* GFXManager::getUIGraphicSurface(unsigned int id, int house) {
     if(id >= NUM_UIGRAPHICS) {
-        fprintf(stderr,"GFXManager::getUIGraphicSurface(): UI Graphic with id %d is not available!\n",id);
+        fprintf(stderr,"GFXManager::getUIGraphicSurface(): UI Graphic with id %u is not available!\n",id);
         exit(EXIT_FAILURE);
     }
 
     if(uiGraphic[id][house] == nullptr) {
         // remap to this color
         if(uiGraphic[id][HOUSE_HARKONNEN] == nullptr) {
-            fprintf(stderr,"GFXManager::getUIGraphicSurface(): UI Graphic with id %d is not loaded!\n",id);
+            fprintf(stderr,"GFXManager::getUIGraphicSurface(): UI Graphic with id %u is not loaded!\n",id);
             exit(EXIT_FAILURE);
         }
 
@@ -1087,7 +1087,7 @@ SDL_Surface* GFXManager::getUIGraphicSurface(unsigned int id, int house) {
 
 SDL_Texture* GFXManager::getUIGraphic(unsigned int id, int house) {
     if(id >= NUM_UIGRAPHICS) {
-        fprintf(stderr,"GFXManager::getUIGraphic(): UI Graphic with id %d is not available!\n",id);
+        fprintf(stderr,"GFXManager::getUIGraphic(): UI Graphic with id %u is not available!\n",id);
         exit(EXIT_FAILURE);
     }
 
@@ -1106,14 +1106,14 @@ SDL_Texture* GFXManager::getUIGraphic(unsigned int id, int house) {
 
 SDL_Surface* GFXManager::getMapChoicePieceSurface(unsigned int num, int house) {
     if(num >= NUM_MAPCHOICEPIECES) {
-        fprintf(stderr,"GFXManager::getMapChoicePieceSurface(): Map Piece with number %d is not available!\n",num);
+        fprintf(stderr,"GFXManager::getMapChoicePieceSurface(): Map Piece with number %u is not available!\n",num);
         exit(EXIT_FAILURE);
     }
 
     if(mapChoicePieces[num][house] == nullptr) {
         // remap to this color
         if(mapChoicePieces[num][HOUSE_HARKONNEN] == nullptr) {
-            fprintf(stderr,"GFXManager::getMapChoicePieceSurface(): Map Piece with number %d is not loaded!\n",num);
+            fprintf(stderr,"GFXManager::getMapChoicePieceSurface(): Map Piece with number %u is not loaded!\n",num);
             exit(EXIT_FAILURE);
         }
 
@@ -1125,7 +1125,7 @@ SDL_Surface* GFXManager::getMapChoicePieceSurface(unsigned int num, int house) {
 
 SDL_Texture* GFXManager::getMapChoicePiece(unsigned int num, int house) {
     if(num >= NUM_MAPCHOICEPIECES) {
-        fprintf(stderr,"GFXManager::getMapChoicePiece(): Map Piece with number %d is not available!\n",num);
+        fprintf(stderr,"GFXManager::getMapChoicePiece(): Map Piece with number %u is not available!\n",num);
         exit(EXIT_FAILURE);
     }
 
@@ -1138,7 +1138,7 @@ SDL_Texture* GFXManager::getMapChoicePiece(unsigned int num, int house) {
 
 Animation* GFXManager::getAnimation(unsigned int id) {
     if(id >= NUM_ANIMATION) {
-        fprintf(stderr,"GFXManager::getAnimation(): Animation with id %d is not available!\n",id);
+        fprintf(stderr,"GFXManager::getAnimation(): Animation with id %u is not available!\n",id);
         exit(EXIT_FAILURE);
     }
 
@@ -1228,7 +1228,7 @@ Animation* GFXManager::getAnimation(unsigned int id) {
             case Anim_Slab4:            animation[Anim_Slab4] = loadAnimationFromWsa("4SLAB.WSA");               break;
 
             default: {
-                fprintf(stderr,"GFXManager::getAnimation(): Invalid animation id %d\n",id);
+                fprintf(stderr,"GFXManager::getAnimation(): Invalid animation id %u\n",id);
                 exit(EXIT_FAILURE);
             } break;
         }

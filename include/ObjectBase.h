@@ -48,8 +48,8 @@ class ObjectBase
 {
 public:
 
-    ObjectBase(House* newOwner);
-    ObjectBase(InputStream& stream);
+    explicit ObjectBase(House* newOwner);
+    explicit ObjectBase(InputStream& stream);
     void init();
     virtual ~ObjectBase();
 

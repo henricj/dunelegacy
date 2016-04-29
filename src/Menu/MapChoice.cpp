@@ -283,7 +283,7 @@ void MapChoice::drawSpecificStuff() {
                 } else if(lastScenario == 8) {
                     newMission = (lastScenario-1) * 3 - 1 + 2 + regionIndex;
                 } else {
-                    fprintf(stderr,"MapChoice::DrawSpecificStuff(): LastScenario (%d) is no valid scenario!\n", lastScenario);
+                    fprintf(stderr,"MapChoice::DrawSpecificStuff(): LastScenario (%u) is no valid scenario!\n", lastScenario);
                     exit(EXIT_FAILURE);
                 }
 

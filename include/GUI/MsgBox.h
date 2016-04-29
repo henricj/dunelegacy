@@ -114,7 +114,7 @@ protected:
     /** protected constructor (See create)
         \param  text    Text of this message box
     */
-    MsgBox(std::string text)
+    explicit MsgBox(std::string text)
      : Window(50,50,50,50) {
         init(text);
     }

@@ -135,6 +135,6 @@ Running cppcheck
 
 cppcheck is a static analysis. The following command will run it on the source and write all errors/warnings to cppcheck.log:
 
-cppcheck -j 5 --suppress=cstyleCast --enable=all -I include . 2> cppcheck.log
+cppcheck -j 5 --force --enable=all -I include . 2> cppcheck.log
 
 

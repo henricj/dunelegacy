@@ -317,7 +317,7 @@ extern fix32_t fix32_from_str(const char *buf);
     ( \
       (( #i[0] ) == '-') \
         ? -FIXMATH64_COMBINE_I_M((uint64_t)( ( (i ## LL ) * -1LL) ), m) \
-        : FIXMATH64_COMBINE_I_M(i ## LL , m) \
+        : FIXMATH64_COMBINE_I_M((uint64_t)( ( i ## LL ) ) , m) \
     ) \
 )
 

@@ -100,35 +100,6 @@ FixPoint blockDistance(const Coord& p1, const Coord& p2)
     return (std::max(xDis, yDis) + minDis*(FixPt_SQRT2 - 1));
 }
 
-
-// Move one square away from the enemy
-Coord retreatLocation(const Coord& p1, const Coord& p2)
-{
-    int j = 0;
-    int k = 0;
-
-    if(p1.x < p2.x) {
-        j = p1.x - 1;
-    }
-
-    if(p1.x > p2.x) {
-        j = p1.x + 1;
-    }
-
-    if(p1.y < p2.y) {
-        k = p1.y - 1;
-    }
-
-    if(p1.y > p2.y) {
-        k = p1.y + 1;
-    }
-
-    return Coord(j,k);
-}
-
-
-
-
 int mirrorAngleHorizontal(int angle) {
     switch(angle % NUM_ANGLES) {
         case RIGHT:     return LEFT;

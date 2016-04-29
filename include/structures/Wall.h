@@ -38,8 +38,8 @@ public:
         Wall_Full           = 12
     } WALLTYPE;
 
-    Wall(House* newOwner);
-    Wall(InputStream& stream);
+    explicit Wall(House* newOwner);
+    explicit Wall(InputStream& stream);
     void init();
     virtual ~Wall();
 

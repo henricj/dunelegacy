@@ -25,8 +25,8 @@
 class Carryall : public AirUnit
 {
 public:
-    Carryall(House* newOwner);
-    Carryall(InputStream& stream);
+    explicit Carryall(House* newOwner);
+    explicit Carryall(InputStream& stream);
     void init();
     virtual ~Carryall();
 

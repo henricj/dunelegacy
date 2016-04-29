@@ -150,11 +150,6 @@ SinglePlayerSkirmishMenu::~SinglePlayerSkirmishMenu()
     ;
 }
 
-void SinglePlayerSkirmishMenu::onDifficulty()
-{
-}
-
-
 void SinglePlayerSkirmishMenu::onStart()
 {
     HOUSETYPE houseChoice = (HOUSETYPE) houseOrder[currentHouseChoiceScrollPos + selectedButton];

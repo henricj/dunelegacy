@@ -23,8 +23,8 @@
 class HighTechFactory : public BuilderBase
 {
 public:
-    HighTechFactory(House* newOwner);
-    HighTechFactory(InputStream& stream);
+    explicit HighTechFactory(House* newOwner);
+    explicit HighTechFactory(InputStream& stream);
     void init();
     virtual ~HighTechFactory();
 };

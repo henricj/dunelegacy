@@ -643,10 +643,7 @@ void UnitBase::navigate() {
                                && blockDistance(location, destination) >= 6
                                && (currentGame->getGameInitSettings().getGameOptions().manualCarryallDrops
                                    || getOwner()->isAI())){
-
-                                if((GroundUnit*)this != nullptr){
-                                    ((GroundUnit*)this)->requestCarryall();
-                                }
+                               static_cast<GroundUnit*>(this)->requestCarryall();
                             } else {
                                 setDestination(location);   //can't get any closer, give up
                                 forced = false;
@@ -844,7 +841,7 @@ void UnitBase::doAttackObject(const ObjectBase* pTargetObject, bool bForced) {
     setTarget(pTargetObject);
     // hack to make it possible to attack own repair yard
     if(goingToRepairYard && target && (target.getObjPointer()->getItemID() == Structure_RepairYard)) {
-        ((RepairYard*)target.getObjPointer())->unBook();
+        static_cast<RepairYard*>(target.getObjPointer())->unBook();
         goingToRepairYard = false;
     }
 
@@ -1005,7 +1002,7 @@ void UnitBase::setGettingRepaired() {
 
         currentGameMap->removeObjectFromMap(getObjectID());
 
-        ((RepairYard*)target.getObjPointer())->assignUnit(this);
+        static_cast<RepairYard*>(target.getObjPointer())->assignUnit(this);
 
         respondable = false;
         setActive(false);
@@ -1066,13 +1063,13 @@ void UnitBase::setPickedUp(UnitBase* newCarrier) {
     currentGameMap->removeObjectFromMap(getObjectID());
 
     if(goingToRepairYard) {
-        ((RepairYard*)target.getObjPointer())->unBook();
+        static_cast<RepairYard*>(target.getObjPointer())->unBook();
     }
 
     if(getItemID() == Unit_Harvester) {
-        Harvester* harvester = (Harvester*) this;
+        Harvester* harvester = static_cast<Harvester*>(this);
         if(harvester->isReturning() && target && (target.getObjPointer()!= nullptr) && (target.getObjPointer()->getItemID() == Structure_Refinery)) {
-            ((Refinery*)target.getObjPointer())->unBook();
+            static_cast<Refinery*>(target.getObjPointer())->unBook();
         }
     }
 
@@ -1121,7 +1118,7 @@ void UnitBase::setTarget(const ObjectBase* newTarget) {
     targetAngle = INVALID;
 
     if(goingToRepairYard && target && (target.getObjPointer()->getItemID() == Structure_RepairYard)) {
-        ((RepairYard*)target.getObjPointer())->unBook();
+        static_cast<RepairYard*>(target.getObjPointer())->unBook();
         goingToRepairYard = false;
     }
 
@@ -1132,7 +1129,7 @@ void UnitBase::setTarget(const ObjectBase* newTarget) {
         && (target.getObjPointer()->getItemID() == Structure_RepairYard)
         && (itemID != Unit_Carryall) && (itemID != Unit_Frigate)
         && (itemID != Unit_Ornithopter)) {
-        ((RepairYard*)target.getObjPointer())->book();
+        static_cast<RepairYard*>(target.getObjPointer())->book();
         goingToRepairYard = true;
     }
 }

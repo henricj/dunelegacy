@@ -23,8 +23,8 @@
 class Quad : public GroundUnit
 {
 public:
-    Quad(House* newOwner);
-    Quad(InputStream& stream);
+    explicit Quad(House* newOwner);
+    explicit Quad(InputStream& stream);
     void init();
     virtual ~Quad();
 

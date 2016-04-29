@@ -383,7 +383,7 @@ Coord Map::getMapPos(int angle, const Coord& source) const {
 }
 
 //building size is num squares
-Coord Map::findDeploySpot(UnitBase* pUnit, const Coord origin, const Coord gatherPoint, const Coord buildingSize) const {
+Coord Map::findDeploySpot(UnitBase* pUnit, const Coord& origin, const Coord& gatherPoint, const Coord& buildingSize) const {
     FixPoint    closestDistance = FixPt_MAX;
     Coord       closestPoint;
     Coord       size;
@@ -393,7 +393,6 @@ Coord Map::findDeploySpot(UnitBase* pUnit, const Coord origin, const Coord gathe
 
     int counter = 0;
     int depth = 0;
-    int edge;
 
     if(pUnit->isAFlyingUnit()) {
         return origin;
@@ -403,7 +402,7 @@ Coord Map::findDeploySpot(UnitBase* pUnit, const Coord origin, const Coord gathe
     int ranY = origin.y;
 
     do {
-        edge = currentGame->randomGen.rand(0, 3);
+        int edge = currentGame->randomGen.rand(0, 3);
         switch(edge) {
             case 0: //right edge
                 ranX = origin.x + buildingSize.x + depth;

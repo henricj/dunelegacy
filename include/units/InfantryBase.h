@@ -24,8 +24,8 @@ class InfantryBase : public GroundUnit
 {
 
 public:
-    InfantryBase(House* newOwner);
-    InfantryBase(InputStream& stream);
+    explicit InfantryBase(House* newOwner);
+    explicit InfantryBase(InputStream& stream);
     void init();
     virtual ~InfantryBase();
 

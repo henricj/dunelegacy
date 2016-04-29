@@ -129,7 +129,7 @@ public:
     }
 
 private:
-    BuilderList(Uint32 builderObjectID);
+    explicit BuilderList(Uint32 builderObjectID);
     virtual ~BuilderList();
 
     int getRealHeight(int height);

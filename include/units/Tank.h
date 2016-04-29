@@ -23,8 +23,8 @@
 class Tank : public TankBase
 {
 public:
-    Tank(House* newOwner);
-    Tank(InputStream& stream);
+    explicit Tank(House* newOwner);
+    explicit Tank(InputStream& stream);
     void init();
     virtual ~Tank();
 

@@ -23,8 +23,8 @@
 class Barracks : public BuilderBase
 {
 public:
-    Barracks(House* newOwner);
-    Barracks(InputStream& stream);
+    explicit Barracks(House* newOwner);
+    explicit Barracks(InputStream& stream);
     void init();
     virtual ~Barracks();
 

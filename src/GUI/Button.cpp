@@ -22,9 +22,6 @@
 #include <SoundPlayer.h>
 
 Button::Button() : Widget() {
-    tooltipText = "";
-    tooltipTexture = nullptr;
-
     bPressed = false;
     bHover = false;
     bToggleButton = false;

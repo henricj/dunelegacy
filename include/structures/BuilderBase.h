@@ -86,8 +86,8 @@ public:
 class BuilderBase : public StructureBase
 {
 public:
-    BuilderBase(House* newOwner);
-    BuilderBase(InputStream& stream);
+    explicit BuilderBase(House* newOwner);
+    explicit BuilderBase(InputStream& stream);
     void init();
     virtual ~BuilderBase();
 

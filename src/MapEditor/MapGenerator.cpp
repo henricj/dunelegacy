@@ -34,7 +34,6 @@ public:
 
     MapGenerator(int sizeX, int sizeY, int randSeed, int rockfields = ROCKFIELDS, int spicefields = SPICEFIELDS, MirrorMode mirrorMode = MirrorModeNone)
      : map(sizeX, sizeY), randGen(randSeed), rockfields(rockfields), spicefields(spicefields) {
-
          mapMirror = std::shared_ptr<MapMirror>(MapMirror::createMapMirror(mirrorMode, sizeX, sizeY));
     }
 

@@ -32,17 +32,17 @@ class ObjectPointer
 {
 public:
     ObjectPointer() { objectID = NONE; };
-    ObjectPointer(Uint32 newItemID) { pointTo(newItemID); };
+    explicit ObjectPointer(Uint32 newItemID) { pointTo(newItemID); };
     ObjectPointer(const ObjectBase* newObject) { pointTo(newObject); };
-    ~ObjectPointer() { ; };
+    ~ObjectPointer() { }
 
     inline void pointTo(Uint32 newItemID) { objectID = newItemID; };
     void pointTo(const ObjectBase* newObject);
 
     inline Uint32 getObjectID() const { return objectID; };
     ObjectBase* getObjPointer() const;
-    inline UnitBase* getUnitPointer() const { return (UnitBase*) getObjPointer(); };
-    inline StructureBase* getStructurePointer() const { return (StructureBase*) getObjPointer(); };
+    inline UnitBase* getUnitPointer() const { return reinterpret_cast<UnitBase*>(getObjPointer()); };
+    inline StructureBase* getStructurePointer() const { return reinterpret_cast<StructureBase*>(getObjPointer()); };
 
     void save(OutputStream& stream) const;
     void load(InputStream& stream);

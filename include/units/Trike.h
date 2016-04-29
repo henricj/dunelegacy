@@ -23,8 +23,8 @@
 class Trike : public GroundUnit
 {
 public:
-    Trike(House* newOwner);
-    Trike(InputStream& stream);
+    explicit Trike(House* newOwner);
+    explicit Trike(InputStream& stream);
     void init();
     virtual ~Trike();
 

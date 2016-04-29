@@ -228,7 +228,7 @@ public:
 class MapEditorRemoveStructureOperation : public MapEditorOperation {
 public:
 
-    MapEditorRemoveStructureOperation(int id)
+    explicit MapEditorRemoveStructureOperation(int id)
      : MapEditorOperation(), id(id) {
     }
 
@@ -268,7 +268,7 @@ public:
 class MapEditorRemoveUnitOperation : public MapEditorOperation {
 public:
 
-    MapEditorRemoveUnitOperation(int id)
+    explicit MapEditorRemoveUnitOperation(int id)
      : MapEditorOperation(), id(id) {
     }
 
@@ -358,7 +358,7 @@ public:
 class MapEditorChangeReinforcements : public MapEditorOperation {
 public:
 
-    MapEditorChangeReinforcements(std::vector<ReinforcementInfo>& reinforcements)
+    explicit MapEditorChangeReinforcements(std::vector<ReinforcementInfo>& reinforcements)
      : reinforcements(reinforcements) {
     }
 
@@ -373,7 +373,7 @@ public:
 class MapEditorChangeTeams : public MapEditorOperation {
 public:
 
-    MapEditorChangeTeams(std::vector<TeamInfo>& teams)
+    explicit MapEditorChangeTeams(std::vector<TeamInfo>& teams)
      : teams(teams) {
     }
 
@@ -388,7 +388,7 @@ public:
 class MapEditorChangeMapInfo : public MapEditorOperation {
 public:
 
-    MapEditorChangeMapInfo(MapInfo& mapInfo)
+    explicit MapEditorChangeMapInfo(MapInfo& mapInfo)
      : mapInfo(mapInfo) {
     }
 

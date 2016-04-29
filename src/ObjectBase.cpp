@@ -241,7 +241,6 @@ void ObjectBase::handleDamage(int damage, Uint32 damagerID, House* damagerOwner)
 }
 
 void ObjectBase::handleInterfaceEvent(SDL_Event* event) {
-    ;
 }
 
 ObjectInterface* ObjectBase::getInterfaceContainer() {
@@ -530,8 +529,8 @@ const ObjectBase* ObjectBase::findTarget() const {
             if(currentGameMap->getTile(xCheck,yCheck)->hasAnObject()) {
                 tempTarget = currentGameMap->getTile(xCheck,yCheck)->getObject();
 
-                if((tempTarget->getItemID() != Structure_Wall
-                    || tempTarget->getItemID() != Unit_Carryall
+                if(((tempTarget->getItemID() != Structure_Wall
+                    && tempTarget->getItemID() != Unit_Carryall)
                     || closestTarget == nullptr)
                     && canAttack(tempTarget)) {
                     FixPoint targetDistance = blockDistance(location, tempTarget->getLocation());

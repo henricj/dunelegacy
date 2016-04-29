@@ -23,8 +23,8 @@
 class WindTrap : public StructureBase
 {
 public:
-    WindTrap(House* newOwner);
-    WindTrap(InputStream& stream);
+    explicit WindTrap(House* newOwner);
+    explicit WindTrap(InputStream& stream);
     void init();
     virtual ~WindTrap();
 

@@ -23,8 +23,8 @@
 class LightFactory : public BuilderBase
 {
 public:
-    LightFactory(House* newOwner);
-    LightFactory(InputStream& stream);
+    explicit LightFactory(House* newOwner);
+    explicit LightFactory(InputStream& stream);
     void init();
     virtual ~LightFactory();
 

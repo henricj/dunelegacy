@@ -28,11 +28,6 @@ public:
             std::string winPicture = "WIN2.WSA", std::string briefPicture = "SARDUKAR.WSA", int techLevel = INVALID)
     : mapSeed(mapSeed), author(author), license(license), losePicture(losePicture),
       winPicture(winPicture), briefPicture(briefPicture), techLevel(techLevel) {
-        timeout = 0;
-        cursorPos = Coord(10,10);
-        tacticalPos = Coord(10,10);
-        loseFlags = 1;
-        winFlags = 3;
     }
 
     int mapSeed;
@@ -41,12 +36,12 @@ public:
     std::string losePicture;
     std::string winPicture;
     std::string briefPicture;
-    int timeout;
-    Coord   cursorPos;
-    Coord   tacticalPos;
+    int timeout = 0;
+    Coord   cursorPos = Coord(10,10);
+    Coord   tacticalPos = Coord(10,10);
     int techLevel;
-    int loseFlags;
-    int winFlags;
+    int loseFlags = 1;
+    int winFlags = 3;
 
 };
 

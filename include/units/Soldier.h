@@ -24,8 +24,8 @@ class Soldier : public InfantryBase
 {
 
 public:
-    Soldier(House* newOwner);
-    Soldier(InputStream& stream);
+    explicit Soldier(House* newOwner);
+    explicit Soldier(InputStream& stream);
     void init();
     virtual ~Soldier();
 

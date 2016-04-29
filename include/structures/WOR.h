@@ -23,8 +23,8 @@
 class WOR : public BuilderBase
 {
 public:
-    WOR(House* newOwner);
-    WOR(InputStream& stream);
+    explicit WOR(House* newOwner);
+    explicit WOR(InputStream& stream);
     void init();
     virtual ~WOR();
 

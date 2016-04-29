@@ -215,7 +215,7 @@ bool Palace::callFremen() {
                 continue;
             }
 
-            Trooper *pFremen = (Trooper*) getOwner()->createUnit(Unit_Trooper);
+            Trooper *pFremen = static_cast<Trooper*>(getOwner()->createUnit(Unit_Trooper));
 
             int i;
             int j;
@@ -254,7 +254,7 @@ bool Palace::callFremen() {
 }
 
 bool Palace::spawnSaboteur() {
-    Saboteur* saboteur = (Saboteur*)getOwner()->createUnit(Unit_Saboteur);
+    Saboteur* saboteur = static_cast<Saboteur*>(getOwner()->createUnit(Unit_Saboteur));
     Coord spot = currentGameMap->findDeploySpot(saboteur, getLocation(), getDestination(), getStructureSize());
 
     saboteur->deploy(spot);

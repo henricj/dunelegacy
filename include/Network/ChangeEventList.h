@@ -45,7 +45,7 @@ public:
          : eventType(EventType_SetHumanPlayer), slot(slot), newStringValue(newStringValue) {
         }
 
-        ChangeEvent(InputStream& stream) {
+        explicit ChangeEvent(InputStream& stream) {
             eventType = (EventType) stream.readUint32();
             slot = stream.readUint32();
 
@@ -75,7 +75,7 @@ public:
     ChangeEventList() {
     }
 
-    ChangeEventList(InputStream& stream) {
+    explicit ChangeEventList(InputStream& stream) {
         Uint32 numChangeEvents = stream.readUint32();
         for(Uint32 i = 0; i < numChangeEvents; i++) {
             changeEventList.push_back(ChangeEvent(stream));

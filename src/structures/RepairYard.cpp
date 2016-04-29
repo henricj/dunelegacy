@@ -151,7 +151,7 @@ void RepairYard::updateStructureSpecificStuff() {
                 pRepairUnit->addHealth();
             }
 
-        } else if(((GroundUnit*)pRepairUnit)->isawaitingPickup() == false) {
+        } else if(static_cast<GroundUnit*>(pRepairUnit)->isawaitingPickup() == false) {
             // find carryall
             Carryall* pCarryall = nullptr;
             if((pRepairUnit->getGuardPoint().isValid()) && getOwner()->hasCarryalls())  {
@@ -159,8 +159,9 @@ void RepairYard::updateStructureSpecificStuff() {
                 for(iter = unitList.begin(); iter != unitList.end(); ++iter) {
                     UnitBase* unit = *iter;
                     if ((unit->getOwner() == owner) && (unit->getItemID() == Unit_Carryall)) {
-                        if (((Carryall*)unit)->isRespondable() && !((Carryall*)unit)->isBooked()) {
-                            pCarryall = (Carryall*)unit;
+                        Carryall* pTmpCarryall = static_cast<Carryall*>(unit);
+                        if (pTmpCarryall->isRespondable() && !pTmpCarryall->isBooked()) {
+                            pCarryall = pTmpCarryall;
                         }
                     }
                 }
@@ -178,7 +179,7 @@ void RepairYard::updateStructureSpecificStuff() {
             } else {
                 deployRepairUnit();
             }
-        } else if(((GroundUnit*)pRepairUnit)->hasBookedCarrier() == false) {
+        } else if(static_cast<GroundUnit*>(pRepairUnit)->hasBookedCarrier() == false) {
             deployRepairUnit();
         }
     }

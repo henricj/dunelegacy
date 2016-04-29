@@ -198,9 +198,9 @@ protected:
     */
     virtual void invalidateTextures();
 
-    std::string tooltipText;            ///< the tooltip text
-    SDL_Texture* tooltipTexture;        ///< the tooltip texture
-    Uint32 tooltipLastMouseMotion;      ///< the last time the mouse was moved
+    std::string tooltipText = "";          ///< the tooltip text
+    SDL_Texture* tooltipTexture = nullptr; ///< the tooltip texture
+    Uint32 tooltipLastMouseMotion = 0;     ///< the last time the mouse was moved
 
     std::function<void ()> pOnClick;    ///< function that is called when this button is clicked
     bool bPressed;                      ///< true = currently pressed, false = currently unpressed

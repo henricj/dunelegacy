@@ -23,8 +23,8 @@
 class Saboteur : public InfantryBase
 {
 public:
-    Saboteur(House* newOwner);
-    Saboteur(InputStream& stream);
+    explicit Saboteur(House* newOwner);
+    explicit Saboteur(InputStream& stream);
     void init();
     virtual ~Saboteur();
 

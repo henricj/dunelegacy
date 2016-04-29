@@ -288,7 +288,7 @@ void House::updateBuildLists() {
     for(iter = structureList.begin(); iter != structureList.end(); ++iter) {
         StructureBase* tempStructure = *iter;
         if(tempStructure->isABuilder() && (tempStructure->getOwner() == this)) {
-            ((BuilderBase*) tempStructure)->updateBuildList();
+            static_cast<BuilderBase*>(tempStructure)->updateBuildList();
         }
     }
 }
@@ -576,11 +576,11 @@ void House::freeHarvester(int xPos, int yPos) {
         && currentGameMap->getTile(xPos, yPos)->hasAGroundObject()
         && (currentGameMap->getTile(xPos, yPos)->getGroundObject()->getItemID() == Structure_Refinery))
     {
-        Refinery* refinery = (Refinery*)currentGameMap->getTile(xPos, yPos)->getGroundObject();
+        Refinery* refinery = static_cast<Refinery*>(currentGameMap->getTile(xPos, yPos)->getGroundObject());
         Coord closestPos = currentGameMap->findClosestEdgePoint(refinery->getLocation() + Coord(2,0), Coord(1,1));
 
-        Carryall* carryall = (Carryall*)createUnit(Unit_Carryall);
-        Harvester* harvester = (Harvester*)createUnit(Unit_Harvester);
+        Carryall* carryall = static_cast<Carryall*>(createUnit(Unit_Carryall));
+        Harvester* harvester = static_cast<Harvester*>(createUnit(Unit_Harvester));
         harvester->setAmountOfSpice(5);
         carryall->setOwned(false);
         carryall->giveCargo(harvester);
@@ -668,7 +668,7 @@ StructureBase* House::placeStructure(Uint32 builderID, int itemID, int xPos, int
         } break;
 
         default: {
-            tempStructure = (StructureBase*) ObjectBase::createObject(itemID,this);
+            tempStructure = static_cast<StructureBase*>(ObjectBase::createObject(itemID,this));
             if(tempStructure == nullptr) {
                 fprintf(stderr,"House::placeStructure(): Cannot create Object with itemID %d\n",itemID);
                 fflush(stderr);
@@ -733,7 +733,7 @@ StructureBase* House::placeStructure(Uint32 builderID, int itemID, int xPos, int
             }
 
             if(tempStructure->isABuilder()) {
-                ((BuilderBase*) tempStructure)->updateBuildList();
+                static_cast<BuilderBase*>(tempStructure)->updateBuildList();
             }
 
 
@@ -749,7 +749,7 @@ StructureBase* House::placeStructure(Uint32 builderID, int itemID, int xPos, int
 UnitBase* House::createUnit(int itemID) {
     UnitBase* newUnit = nullptr;
 
-    newUnit = (UnitBase*) ObjectBase::createObject(itemID,this);
+    newUnit = static_cast<UnitBase*>(ObjectBase::createObject(itemID,this));
 
     if(newUnit == nullptr) {
         fprintf(stderr,"House::createUnit(): Cannot create Object with itemID %d\n",itemID);

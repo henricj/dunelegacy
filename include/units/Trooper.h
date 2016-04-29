@@ -23,8 +23,8 @@
 class Trooper : public InfantryBase
 {
 public:
-    Trooper(House* newOwner);
-    Trooper(InputStream& stream);
+    explicit Trooper(House* newOwner);
+    explicit Trooper(InputStream& stream);
     void init();
     virtual ~Trooper();
 

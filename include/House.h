@@ -39,7 +39,7 @@ class House
 {
 public:
     House(int newHouse, int newCredits, Uint8 team = 0, int quota = 0);
-    House(InputStream& stream);
+    explicit House(InputStream& stream);
     void init();
     virtual ~House();
     virtual void save(OutputStream& stream) const;

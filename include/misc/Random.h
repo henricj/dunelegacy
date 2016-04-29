@@ -34,12 +34,12 @@ public:
         Constructor which inits the seed value to seed
         \param  seed    the initial seed value
     */
-    Random(Uint32 seed) {
+    explicit Random(Uint32 seed) {
         setSeed(seed);
     }
 
     /// Destructor
-    ~Random() { ; } ;
+    ~Random() { }
 
     /**
         Sets the seed value to newSeed

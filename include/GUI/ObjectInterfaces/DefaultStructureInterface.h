@@ -36,7 +36,7 @@ public:
     }
 
 protected:
-    DefaultStructureInterface(int objectID) : DefaultObjectInterface(objectID) {
+    explicit DefaultStructureInterface(int objectID) : DefaultObjectInterface(objectID) {
         SDL_Texture* pUIRepair = pGFXManager->getUIGraphic(UI_Repair);
         SDL_Texture* pUIRepairPressed = pGFXManager->getUIGraphic(UI_Repair_Pressed);
 

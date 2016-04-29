@@ -29,14 +29,14 @@ class Palette
 
         }
 
-        Palette(int numPaletteEntries) : pSDLPalette(nullptr) {
+        explicit Palette(int numPaletteEntries) : pSDLPalette(nullptr) {
             pSDLPalette = SDL_AllocPalette(numPaletteEntries);
             if (!pSDLPalette) {
                 throw;
             }
         }
 
-        Palette(const SDL_Palette* pSDLPalette) : pSDLPalette(nullptr) {
+        explicit Palette(const SDL_Palette* pSDLPalette) : pSDLPalette(nullptr) {
             setSDLPalette(pSDLPalette);
         }
 

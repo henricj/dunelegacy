@@ -34,7 +34,7 @@ class  LoadMapWindow : public Window
 {
 public:
 
-    LoadMapWindow(Uint32 color = COLOR_DEFAULT);
+    explicit LoadMapWindow(Uint32 color = COLOR_DEFAULT);
 
     const std::string& getLoadMapFilepath() const { return loadMapFilepath; };
     const std::string& getLoadMapname() const { return loadMapname; };

@@ -462,25 +462,6 @@ public:
     inline int getType() const {    return type; }
     inline FixPoint getSpice() const { return spice; }
 
-    /**
-        Returns how fast a unit can move over this tile.
-        \return Returns a speed factor. Higher values mean slower.
-    */
-    inline FixPoint getDifficulty() const {
-        switch(type) {
-            case Terrain_Slab:          return FixPt(0,7);
-            case Terrain_Sand:          return FixPt(1,2);
-            case Terrain_Rock:          return FixPt(1,0);
-            case Terrain_Dunes:         return FixPt(1,5);
-            case Terrain_Mountain:      return FixPt(1,5);
-            case Terrain_Spice:         return FixPt(1,2);
-            case Terrain_ThickSpice:    return FixPt(1,2);
-            case Terrain_SpiceBloom:    return FixPt(1,2);
-            case Terrain_SpecialBloom:  return FixPt(1,2);
-            default:                    return FixPt(1,0);
-        }
-    };
-
     inline FixPoint getSpiceRemaining() { return spice; }
 
     inline const Coord& getLocation() const { return location; }

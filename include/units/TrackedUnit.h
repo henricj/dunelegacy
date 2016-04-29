@@ -24,8 +24,8 @@ class TrackedUnit : public GroundUnit
 {
 public:
 
-    TrackedUnit(House* newOwner);
-    TrackedUnit(InputStream& stream);
+    explicit TrackedUnit(House* newOwner);
+    explicit TrackedUnit(InputStream& stream);
     void init();
     virtual ~TrackedUnit();
 

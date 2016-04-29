@@ -27,7 +27,7 @@
 class ENetPacketOStream : public OutputStream
 {
 public:
-    ENetPacketOStream(enet_uint32 flags)
+    explicit ENetPacketOStream(enet_uint32 flags)
      : currentPos(0) {
         packet = enet_packet_create(nullptr,16,flags);
         if(packet == nullptr) {

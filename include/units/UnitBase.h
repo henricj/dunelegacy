@@ -30,8 +30,8 @@ class Tile;
 class UnitBase : public ObjectBase
 {
 public:
-    UnitBase(House* newOwner);
-    UnitBase(InputStream& stream);
+    explicit UnitBase(House* newOwner);
+    explicit UnitBase(InputStream& stream);
     void init();
     virtual ~UnitBase();
 

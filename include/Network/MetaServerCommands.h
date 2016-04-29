@@ -32,7 +32,7 @@
 
 class MetaServerCommand {
 public:
-    MetaServerCommand(int type) : type(type) {
+    explicit MetaServerCommand(int type) : type(type) {
     }
 
     virtual ~MetaServerCommand() {

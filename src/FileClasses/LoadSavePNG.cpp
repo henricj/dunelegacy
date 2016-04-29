@@ -35,7 +35,6 @@ SDL_Surface* LoadPNG_RW(SDL_RWops* RWop, int freesrc) {
     unsigned int width = 0;
     unsigned int height = 0;
     SDL_Surface *pic = nullptr;
-    unsigned int error = 0;
 
     LodePNGState lodePNGState;
     lodepng_state_init(&lodePNGState);
@@ -58,7 +57,7 @@ SDL_Surface* LoadPNG_RW(SDL_RWops* RWop, int freesrc) {
         }
 
 
-        error = lodepng_inspect(&width, &height, &lodePNGState, pFiledata, filesize);
+        unsigned int error = lodepng_inspect(&width, &height, &lodePNGState, pFiledata, filesize);
         if(error != 0) {
             throw std::runtime_error("LoadPNG_RW(): Inspecting this *.png-File failed: " + std::string(lodepng_error_text(error)));
         }

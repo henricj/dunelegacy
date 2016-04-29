@@ -33,7 +33,7 @@ XMIPlayer::XMIPlayer() : MusicPlayer(settings.audio.playMusic, settings.audio.mu
     music = nullptr;
 
     if((Mix_Init(MIX_INIT_FLUIDSYNTH) & MIX_INIT_FLUIDSYNTH) == 0) {
-        printf("XMIPlayer: Failed to init required midi support: %s\n", SDL_GetError());
+        fprintf(stderr, "XMIPlayer: Failed to init required midi support: %s\n", SDL_GetError());
     }
 }
 
@@ -239,12 +239,12 @@ void XMIPlayer::changeMusic(MUSICTYPE musicType)
         music = Mix_LoadMUS(tmpFilename.c_str());
         if(music != nullptr) {
             if(Mix_PlayMusic(music, -1) == -1) {
-                printf("XMIPlayer: Playing music failed: %s\n", SDL_GetError());
+                fprintf(stderr, "XMIPlayer: Playing music failed: %s\n", SDL_GetError());
             } else {
                 printf("Now playing %s!\n", tmpFilename.c_str());
             }
         } else {
-            printf("Unable to play %s: %s!\n", filename.c_str(), Mix_GetError());
+            fprintf(stderr, "Unable to play %s: %s!\n", filename.c_str(), Mix_GetError());
         }
 
     }

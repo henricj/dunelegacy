@@ -113,7 +113,7 @@ void GroundUnit::checkPos() {
         } else{
             Coord closestPoint = target.getObjPointer()->getClosestPoint(location);
             if (!moving && !justStoppedMoving && (blockDistance(location, closestPoint) <= FixPt(1,5))
-                && ((RepairYard*)target.getObjPointer())->isFree())
+                && static_cast<RepairYard*>(target.getObjPointer())->isFree())
             {
                 if (getHealth() < getMaxHealth()) {
                     setGettingRepaired();
@@ -170,8 +170,8 @@ bool GroundUnit::requestCarryall() {
         for(iter = unitList.begin(); iter != unitList.end(); ++iter) {
             UnitBase* unit = *iter;
             if ((unit->getOwner() == owner) && (unit->getItemID() == Unit_Carryall)) {
-                if(!((Carryall*)unit)->isBooked()) {
-                    carryall = (Carryall*)unit;
+                if(!static_cast<Carryall*>(unit)->isBooked()) {
+                    carryall = static_cast<Carryall*>(unit);
                     carryall->setTarget(this);
                     carryall->clearPath();
                     bookCarrier(carryall);
@@ -216,7 +216,7 @@ bool GroundUnit::hasBookedCarrier() const {
 }
 
 const UnitBase* GroundUnit::getCarrier() const {
-    return (UnitBase*) currentGame->getObjectManager().getObject(bookedCarrier);
+    return static_cast<UnitBase*>(currentGame->getObjectManager().getObject(bookedCarrier));
 }
 
 void GroundUnit::navigate() {
@@ -244,7 +244,7 @@ void GroundUnit::doRepair() {
             StructureBase* tempStructure = *iter;
 
             if ((tempStructure->getItemID() == Structure_RepairYard) && (tempStructure->getOwner() == owner)) {
-                RepairYard* tempRepairYard = ((RepairYard*)tempStructure);
+                RepairYard* tempRepairYard = static_cast<RepairYard*>(tempStructure);
 
                 if(tempRepairYard->getNumBookings() == 0) {
                     FixPoint tempDistance = distanceFrom(location, tempRepairYard->getClosestPoint(location));

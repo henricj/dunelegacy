@@ -30,11 +30,13 @@
 class Wsafile
 {
 public:
-    Wsafile(SDL_RWops* rwop);
+    explicit Wsafile(SDL_RWops* rwop);
     Wsafile(SDL_RWops* rwop0, SDL_RWops* rwop1);
     Wsafile(SDL_RWops* rwop0, SDL_RWops* rwop1, SDL_RWops* rwop2);
     Wsafile(SDL_RWops* rwop0, SDL_RWops* rwop1, SDL_RWops* rwop2, SDL_RWops* rwop3);
     Wsafile(int num,...);
+    Wsafile(const Wsafile& wsafile) = delete;
+    Wsafile& operator=(const Wsafile& wsafile) = delete;
     virtual ~Wsafile();
 
     SDL_Surface * getPicture(Uint32 FrameNumber);
@@ -72,12 +74,12 @@ private:
     unsigned char* readfile(SDL_RWops* rwop, int* filesize);
     void readdata(int numFiles, ...);
     void readdata(int numFiles, va_list args);
-    unsigned char *decodedFrames;
+    unsigned char *decodedFrames = nullptr;
 
-    Uint16 numFrames;
-    Uint16 sizeX;
-    Uint16 sizeY;
-    bool   looped;
+    Uint16 numFrames = 0;
+    Uint16 sizeX = 0;
+    Uint16 sizeY = 0;
+    bool looped = false;
 };
 
 /**

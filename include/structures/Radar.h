@@ -23,8 +23,8 @@
 class Radar : public StructureBase
 {
 public:
-    Radar(House* newOwner);
-    Radar(InputStream& stream);
+    explicit Radar(House* newOwner);
+    explicit Radar(InputStream& stream);
     void init();
     virtual ~Radar();
 

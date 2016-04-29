@@ -22,6 +22,8 @@
 
 #include <FileClasses/GFXManager.h>
 
+#include <algorithm>
+
 extern GFXManager* pGFXManager;
 
 
@@ -49,7 +51,7 @@ public:
         Set the count of this digits counter
         \param  newCount    the new number to show
     */
-    inline void setCount(unsigned int newCount) { count = newCount; }
+    inline void setCount(unsigned int newCount) { count = std::min(99u,newCount); }
 
     /**
         Draws this widget to screen. This method is called before drawOverlay().
@@ -64,7 +66,7 @@ public:
         SDL_Texture* digitsTex = pGFXManager->getUIGraphic(UI_CreditsDigits);
 
         char creditsBuffer[3];
-        sprintf(creditsBuffer, "%d", count);
+        sprintf(creditsBuffer, "%u", count);
         int digits = strlen(creditsBuffer);
 
         for(int i=digits-1; i>=0; i--) {

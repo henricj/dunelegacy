@@ -23,8 +23,8 @@
 class Ornithopter : public AirUnit
 {
 public:
-    Ornithopter(House* newOwner);
-    Ornithopter(InputStream& stream);
+    explicit Ornithopter(House* newOwner);
+    explicit Ornithopter(InputStream& stream);
     void init();
     virtual ~Ornithopter();
 

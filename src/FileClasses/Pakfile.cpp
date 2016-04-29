@@ -33,12 +33,7 @@
     \param write        Specified if the PAK-File is opened for reading or writing (default is false).
 */
 Pakfile::Pakfile(std::string pakfilename, bool write)
-{
-    this->write = write;
-    writeOutData = nullptr;
-    numWriteOutData = 0;
-
-    filename = pakfilename;
+ : write(write), fPakFile(nullptr), filename(pakfilename), writeOutData(nullptr), numWriteOutData(0) {
 
     if(write == false) {
         // Open for reading
@@ -52,7 +47,6 @@ Pakfile::Pakfile(std::string pakfilename, bool write)
             SDL_RWclose(fPakFile);
             throw;
         }
-
     } else {
         // Open for writing
         if( (fPakFile = SDL_RWFromFile(filename.c_str(), "wb")) == nullptr) {
@@ -239,8 +233,8 @@ size_t Pakfile::ReadFile(SDL_RWops* pRWop, void *ptr, size_t size, size_t n) {
 
     int bytes2read = size*n;
 
-    RWopData * pRWopData = (RWopData*) pRWop->hidden.unknown.data1;
-    Pakfile * pPakfile = pRWopData->curPakfile;
+    RWopData* pRWopData = static_cast<RWopData*>(pRWop->hidden.unknown.data1);
+    Pakfile* pPakfile = pRWopData->curPakfile;
     if(pPakfile == nullptr) {
         return 0;
     }
@@ -287,8 +281,8 @@ Sint64 Pakfile::SeekFile(SDL_RWops *pRWop, Sint64 offset, int whence) {
         return -1;
     }
 
-    RWopData * pRWopData = (RWopData*) pRWop->hidden.unknown.data1;
-    Pakfile * pPakfile = pRWopData->curPakfile;
+    RWopData* pRWopData = static_cast<RWopData*>(pRWop->hidden.unknown.data1);
+    Pakfile* pPakfile = pRWopData->curPakfile;
     if(pPakfile == nullptr) {
         return -1;
     }
@@ -335,7 +329,7 @@ int Pakfile::CloseFile(SDL_RWops *pRWop) {
         return -1;
     }
 
-    RWopData* pRWopData = (RWopData*) pRWop->hidden.unknown.data1;
+    RWopData* pRWopData = static_cast<RWopData*>(pRWop->hidden.unknown.data1);
     delete pRWopData;
     pRWop->hidden.unknown.data1 = nullptr;
     SDL_FreeRW(pRWop);

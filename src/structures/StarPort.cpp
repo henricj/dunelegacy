@@ -246,7 +246,7 @@ void StarPort::updateStructureSpecificStuff() {
             Coord       pos;
 
             //make a frigate with all the cargo
-            frigate = (Frigate*)owner->createUnit(Unit_Frigate);
+            frigate = static_cast<Frigate*>(owner->createUnit(Unit_Frigate));
             pos = currentGameMap->findClosestEdgePoint(getLocation() + Coord(1,1), Coord(1,1));
             frigate->deploy(pos);
             frigate->setTarget(this);

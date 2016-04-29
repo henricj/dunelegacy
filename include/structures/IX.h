@@ -23,8 +23,8 @@
 class IX : public StructureBase
 {
 public:
-    IX(House* newOwner);
-    IX(InputStream& stream);
+    explicit IX(House* newOwner);
+    explicit IX(InputStream& stream);
     void init();
     virtual ~IX();
 

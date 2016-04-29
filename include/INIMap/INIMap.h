@@ -35,14 +35,12 @@
 
 class INIMap {
 public:
-    INIMap(std::shared_ptr<INIFile>& pINIFile)
+    explicit INIMap(std::shared_ptr<INIFile>& pINIFile)
      : inifile(pINIFile), version(0), sizeX(0), sizeY(0), logicalSizeX(0), logicalSizeY(0), logicalOffsetX(0), logicalOffsetY(0) {
 
     }
 
-    INIMap(GAMETYPE gameType, std::string mapname, std::string mapdata = "") {
-
-        this->mapname = mapname;
+    INIMap(GAMETYPE gameType, std::string mapname, std::string mapdata = "") : mapname(mapname) {
 
         if(gameType == GAMETYPE_CAMPAIGN || gameType == GAMETYPE_SKIRMISH) {
             // load from PAK-File

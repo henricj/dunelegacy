@@ -23,8 +23,8 @@
 class HeavyFactory : public BuilderBase
 {
 public:
-    HeavyFactory(House* newOwner);
-    HeavyFactory(InputStream& stream);
+    explicit HeavyFactory(House* newOwner);
+    explicit HeavyFactory(InputStream& stream);
     void init();
     virtual ~HeavyFactory();
 

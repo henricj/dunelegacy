@@ -34,7 +34,7 @@ public:
     /**
         Constructor
     */
-    MapEditorRadarView(MapEditor* pMapEditor);
+    explicit MapEditorRadarView(MapEditor* pMapEditor);
 
     /**
         Destructor

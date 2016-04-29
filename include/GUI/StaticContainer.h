@@ -22,16 +22,11 @@
 
 class StaticContainer_WidgetData {
 public:
-    StaticContainer_WidgetData() {
-        pWidget = nullptr;
-        position = Point(0,0);
-        size = Point(0,0);
+    StaticContainer_WidgetData() : pWidget(nullptr), position(0,0), size(0,0) {
     }
 
-    StaticContainer_WidgetData(Widget* pWidget, Point position, Point size) {
-        this->pWidget = pWidget;
-        this->position = position;
-        this->size = size;
+    StaticContainer_WidgetData(Widget* pWidget, Point position, Point size)
+     : pWidget(pWidget), position(position), size(size) {
     }
 
     Widget* pWidget;

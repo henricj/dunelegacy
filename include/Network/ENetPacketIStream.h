@@ -27,12 +27,12 @@
 class ENetPacketIStream : public InputStream
 {
 public:
-    ENetPacketIStream(ENetPacket* pPacket)
+    explicit ENetPacketIStream(ENetPacket* pPacket)
      : currentPos(0), packet(pPacket) {
         ;
     }
 
-    ENetPacketIStream(const ENetPacketIStream& p)
+    explicit ENetPacketIStream(const ENetPacketIStream& p)
      : currentPos(0), packet(nullptr) {
         *this = p;
     }

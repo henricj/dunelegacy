@@ -49,6 +49,7 @@ private:
 
 public:
     Shpfile(SDL_RWops* rwop, int freesrc);
+    Shpfile(const Shpfile& o) = delete;
     virtual ~Shpfile();
 
     SDL_Surface* getPicture(Uint32 indexOfFile);

@@ -237,7 +237,7 @@ int Tile::assignInfantry(Uint32 newObjectID, Sint8 currentPosition) {
 
         std::list<Uint32>::const_iterator iter;
         for(iter = assignedInfantryList.begin(); iter != assignedInfantryList.end() ;++iter) {
-            InfantryBase* infant = (InfantryBase*) currentGame->getObjectManager().getObject(*iter);
+            InfantryBase* infant = static_cast<InfantryBase*>(currentGame->getObjectManager().getObject(*iter));
             if(infant == nullptr) {
                 continue;
             }
@@ -315,7 +315,7 @@ void Tile::blitStructures(int xPos, int yPos) {
     if (hasANonInfantryGroundObject() && getNonInfantryGroundObject()->isAStructure()) {
         //if got a structure, draw the structure, and dont draw any terrain because wont be seen
         bool    done = false;   //only draw it once
-        StructureBase* structure = (StructureBase*) getNonInfantryGroundObject();
+        StructureBase* structure = static_cast<StructureBase*>(getNonInfantryGroundObject());
 
         for(int i = structure->getX(); (i < structure->getX() + structure->getStructureSizeX()) && !done;  i++) {
             for(int j = structure->getY(); (j < structure->getY() + structure->getStructureSizeY()) && !done;  j++) {
@@ -408,7 +408,7 @@ void Tile::blitInfantry(int xPos, int yPos) {
     if(hasInfantry() && !isFogged(pLocalHouse->getHouseID())) {
         std::list<Uint32>::const_iterator iter;
         for(iter = assignedInfantryList.begin(); iter != assignedInfantryList.end() ;++iter) {
-            InfantryBase* current = (InfantryBase*) currentGame->getObjectManager().getObject(*iter);
+            InfantryBase* current = static_cast<InfantryBase*>(currentGame->getObjectManager().getObject(*iter));
 
             if(current == nullptr) {
                 continue;
@@ -443,7 +443,7 @@ void Tile::blitAirUnits(int xPos, int yPos) {
     if(hasAnAirUnit()) {
         std::list<Uint32>::const_iterator iter;
         for(iter = assignedAirUnitList.begin(); iter != assignedAirUnitList.end() ;++iter) {
-            AirUnit* airUnit = (AirUnit*) currentGame->getObjectManager().getObject(*iter);
+            AirUnit* airUnit = static_cast<AirUnit*>(currentGame->getObjectManager().getObject(*iter));
 
             if(airUnit == nullptr) {
                 continue;
@@ -639,12 +639,11 @@ void Tile::setType(int newType) {
         if (isRock()) {
             sandRegion = NONE;
             if (hasAnUndergroundUnit()) {
-                ObjectBase* current;
                 std::list<Uint32>::const_iterator iter;
                 iter = assignedUndergroundUnitList.begin();
 
                 do {
-                    current = currentGame->getObjectManager().getObject(*iter);
+                    ObjectBase* current = currentGame->getObjectManager().getObject(*iter);
                     ++iter;
 
                     if(current == nullptr)
@@ -657,12 +656,11 @@ void Tile::setType(int newType) {
 
             if(type == Terrain_Mountain) {
                 if(hasANonInfantryGroundObject()) {
-                    ObjectBase* current;
                     std::list<Uint32>::const_iterator iter;
                     iter = assignedNonInfantryGroundObjectList.begin();
 
                     do {
-                        current = currentGame->getObjectManager().getObject(*iter);
+                        ObjectBase* current = currentGame->getObjectManager().getObject(*iter);
                         ++iter;
 
                         if(current == nullptr)
@@ -688,12 +686,11 @@ void Tile::setType(int newType) {
 
 void Tile::squash() {
     if(hasInfantry()) {
-        InfantryBase* current;
         std::list<Uint32>::const_iterator iter;
         iter = assignedInfantryList.begin();
 
         do {
-            current = (InfantryBase*) currentGame->getObjectManager().getObject(*iter);
+            InfantryBase* current = static_cast<InfantryBase*>(currentGame->getObjectManager().getObject(*iter));
             ++iter;
 
             if(current == nullptr)
@@ -815,7 +812,7 @@ ObjectBase* Tile::getObjectAt(int x, int y) {
 
         std::list<Uint32>::const_iterator iter;
         for(iter = assignedInfantryList.begin(); iter != assignedInfantryList.end() ;++iter) {
-            infantry = (InfantryBase*) currentGame->getObjectManager().getObject(*iter);
+            infantry = static_cast<InfantryBase*>(currentGame->getObjectManager().getObject(*iter));
             if(infantry == nullptr)
                 continue;
 

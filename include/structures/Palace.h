@@ -23,8 +23,8 @@
 class Palace : public StructureBase
 {
 public:
-    Palace(House* newOwner);
-    Palace(InputStream& stream);
+    explicit Palace(House* newOwner);
+    explicit Palace(InputStream& stream);
     void init();
     virtual ~Palace();
 

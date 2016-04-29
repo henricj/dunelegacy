@@ -136,7 +136,6 @@ static Uint8 *LoadVOC_RW(SDL_RWops* rwop, Uint32 &size, Uint32 &rate) {
         return nullptr;
     }
 
-    size_t len;
     Uint8 *ret_sound = nullptr;
     size = 0;
 
@@ -152,7 +151,7 @@ static Uint8 *LoadVOC_RW(SDL_RWops* rwop, Uint32 &size, Uint32 &rate) {
             fprintf(stderr,"loadVOCFromStream: Invalid block length!\n");
             return ret_sound;
         }
-        len = tmp[0];
+        size_t len = tmp[0];
         len |= tmp[1] << 8;
         len |= tmp[2] << 16;
 

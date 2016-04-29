@@ -23,8 +23,8 @@
 class StarPort : public BuilderBase
 {
 public:
-    StarPort(House* newOwner);
-    StarPort(InputStream& stream);
+    explicit StarPort(House* newOwner);
+    explicit StarPort(InputStream& stream);
     void init();
     virtual ~StarPort();
 

@@ -19,7 +19,7 @@
 #include <GUI/GUIStyle.h>
 #include <misc/draw_util.h>
 
-Window::Window(Uint32 x, Uint32 y, Uint32 w, Uint32 h) : Widget() {
+Window::Window(Uint32 x, Uint32 y, Uint32 w, Uint32 h) : Widget(), position(x,y) {
     closeChildWindowCounter = 0;
     pChildWindow = nullptr;
     pChildWindowAlreadyClosed = false;
@@ -30,7 +30,6 @@ Window::Window(Uint32 x, Uint32 y, Uint32 w, Uint32 h) : Widget() {
     bFreeBackground = false;
     bSelfGeneratedBackground = true;
 
-    position = Point(x,y);
     Widget::resize(w,h);
 }
 

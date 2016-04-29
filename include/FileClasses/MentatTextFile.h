@@ -48,7 +48,7 @@ public:
         std::string content;
     };
 
-    MentatTextFile(SDL_RWops* rwop);
+    explicit MentatTextFile(SDL_RWops* rwop);
     ~MentatTextFile();
 
 

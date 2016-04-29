@@ -53,11 +53,11 @@ public:
 
     /**
         Sets the progress of this progress bar.
-        \param percent  Should be between 0.0 and 100.0
+        \param newPercent  Should be between 0.0 and 100.0
     */
-    void setProgress(double percent) {
-        if(percent != this->percent) {
-            this->percent = percent;
+    void setProgress(double newPercent) {
+        if(percent != newPercent) {
+            percent = newPercent;
             if(percent < 0.0) {
                 percent = 0.0;
             } else if(percent > 100.0) {
@@ -175,10 +175,7 @@ protected:
 class TextProgressBar : public ProgressBar {
 public:
     TextProgressBar() : ProgressBar() {
-        text = "";
         bFreeBackground = true;
-        textcolor = COLOR_DEFAULT;
-        textshadowcolor = COLOR_DEFAULT;
     }
 
     virtual ~TextProgressBar() { ; };
@@ -251,10 +248,10 @@ protected:
         }
     }
 
-    std::string text;           ///< Text of this progress bar
+    std::string text = "";           ///< Text of this progress bar
 
-    Uint32 textcolor;
-    Uint32 textshadowcolor;
+    Uint32 textcolor = COLOR_DEFAULT;
+    Uint32 textshadowcolor = COLOR_DEFAULT;
 };
 
 class PictureProgressBar: public ProgressBar {

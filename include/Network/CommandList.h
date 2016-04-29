@@ -35,7 +35,7 @@ public:
 
         }
 
-        CommandListEntry(InputStream& stream) {
+        explicit CommandListEntry(InputStream& stream) {
             cycle = stream.readUint32();
             Uint32 numCommands = stream.readUint32();
             for(Uint32 i = 0; i < numCommands; i++) {
@@ -60,16 +60,14 @@ public:
     CommandList() {
     }
 
-    CommandList(InputStream& stream) {
+    explicit CommandList(InputStream& stream) {
         Uint32 numCommandListEntries = stream.readUint32();
         for(Uint32 i = 0; i < numCommandListEntries; i++) {
             commandList.push_back(CommandListEntry(stream));
         }
     }
 
-    ~CommandList() {
-
-    }
+    ~CommandList() { }
 
     void save(OutputStream& stream) const {
         stream.writeUint32((Uint32) commandList.size());

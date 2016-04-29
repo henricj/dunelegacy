@@ -39,7 +39,6 @@ public:
 
 private:
 
-    void onDifficulty();
     void onStart();
     void onCancel();
 

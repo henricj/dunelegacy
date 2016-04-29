@@ -36,7 +36,7 @@ class  NewMapWindow : public Window
 {
 public:
 
-    NewMapWindow(HOUSETYPE currentHouse);
+    explicit NewMapWindow(HOUSETYPE currentHouse);
 
 
     /**

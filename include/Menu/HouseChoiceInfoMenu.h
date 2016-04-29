@@ -27,7 +27,7 @@
 
 class HouseChoiceInfoMenu : public MentatMenu {
 public:
-    HouseChoiceInfoMenu(int newHouse);
+    explicit HouseChoiceInfoMenu(int newHouse);
     virtual ~HouseChoiceInfoMenu();
 
     virtual void onMentatTextFinished();

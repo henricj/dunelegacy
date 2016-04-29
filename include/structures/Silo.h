@@ -23,8 +23,8 @@
 class Silo : public StructureBase
 {
 public:
-    Silo(House* newOwner);
-    Silo(InputStream& stream);
+    explicit Silo(House* newOwner);
+    explicit Silo(InputStream& stream);
     void init();
     virtual ~Silo();
 

@@ -168,9 +168,9 @@ void Harvester::checkPos()
                 // Fixed a carryall bug
                 if(!moving && !justStoppedMoving && blockDistance(location, closestPoint) <= 2) {
                     awaitingPickup = false;
-                    if (((Refinery*)target.getObjPointer())->isFree())
+                    if (static_cast<Refinery*>(target.getObjPointer())->isFree())
                         setReturned();
-                }else if(!awaitingPickup && owner->hasCarryalls() && ((Refinery*)target.getObjPointer())->isFree()){
+                }else if(!awaitingPickup && owner->hasCarryalls() && static_cast<Refinery*>(target.getObjPointer())->isFree()){
                     requestCarryall();
                 }
             } else if (!structureList.empty()) {
@@ -368,7 +368,7 @@ void Harvester::setTarget(const ObjectBase* newTarget)
     if(returningToRefinery && target && (target.getObjPointer()!= nullptr)
         && (target.getObjPointer()->getItemID() == Structure_Refinery))
     {
-        ((Refinery*)target.getObjPointer())->unBook();
+        static_cast<Refinery*>(target.getObjPointer())->unBook();
         returningToRefinery = false;
     }
 
@@ -378,7 +378,7 @@ void Harvester::setTarget(const ObjectBase* newTarget)
         && (target.getObjPointer()->getOwner() == getOwner())
         && (target.getObjPointer()->getItemID() == Structure_Refinery))
     {
-        ((Refinery*)target.getObjPointer())->book();
+        static_cast<Refinery*>(target.getObjPointer())->book();
         returningToRefinery = true;
     }
 
@@ -392,7 +392,7 @@ void Harvester::setReturned()
 
     currentGameMap->removeObjectFromMap(getObjectID());
 
-    ((Refinery*)target.getObjPointer())->assignHarvester(this);
+    static_cast<Refinery*>(target.getObjPointer())->assignHarvester(this);
 
     returningToRefinery = false;
     moving = false;

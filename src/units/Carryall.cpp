@@ -169,7 +169,7 @@ void Carryall::checkPos()
             int droppedUnits = 0;
             do {
                 Uint32 unitID = pickedUpUnitList.front();
-                UnitBase* pUnit = (UnitBase*) (currentGame->getObjectManager().getObject(unitID));
+                UnitBase* pUnit = static_cast<UnitBase*>(currentGame->getObjectManager().getObject(unitID));
 
                 if(pUnit == nullptr) {
                     return;
@@ -264,7 +264,7 @@ void Carryall::deployUnit(Uint32 unitID)
 
     soundPlayer->playSoundAt(Sound_Drop, location);
 
-    UnitBase* pUnit = (UnitBase*) (currentGame->getObjectManager().getObject(unitID));
+    UnitBase* pUnit = static_cast<UnitBase*>(currentGame->getObjectManager().getObject(unitID));
 
     if(pUnit == nullptr) {
         return;
@@ -278,21 +278,21 @@ void Carryall::deployUnit(Uint32 unitID)
             ObjectBase* object = currentGameMap->getTile(location)->getNonInfantryGroundObject();
             if (object->getOwner() == getOwner()) {
                 if (object->getItemID() == Structure_RepairYard) {
-                    if (((RepairYard*)object)->isFree()) {
+                    if (static_cast<RepairYard*>(object)->isFree()) {
                         pUnit->setTarget(object);
                         pUnit->setGettingRepaired();
                         pUnit = nullptr;
                     } else {
                         // carryall has booked this repair yard but now will not go there => unbook
-                        ((RepairYard*)object)->unBook();
+                        static_cast<RepairYard*>(object)->unBook();
 
                         // unit is still going to repair yard but was unbooked from repair yard at pickup => book now
-                        ((RepairYard*)object)->book();
+                        static_cast<RepairYard*>(object)->book();
                     }
                 } else if ((object->getItemID() == Structure_Refinery) && (pUnit->getItemID() == Unit_Harvester)) {
-                    if (((Refinery*)object)->isFree()) {
-                        ((Harvester*)pUnit)->setTarget(object);
-                        ((Harvester*)pUnit)->setReturned();
+                    if (static_cast<Refinery*>(object)->isFree()) {
+                        static_cast<Harvester*>(pUnit)->setTarget(object);
+                        static_cast<Harvester*>(pUnit)->setReturned();
                         pUnit = nullptr;
                         goingToRepairYard = false;
                     }
@@ -332,7 +332,7 @@ void Carryall::destroy()
     // destroy cargo
     std::list<Uint32>::const_iterator iter;
     for(iter = pickedUpUnitList.begin() ; iter != pickedUpUnitList.end(); ++iter) {
-        UnitBase* pUnit = (UnitBase*) (currentGame->getObjectManager().getObject(*iter));
+        UnitBase* pUnit = static_cast<UnitBase*>(currentGame->getObjectManager().getObject(*iter));
         if(pUnit != nullptr) {
             pUnit->destroy();
         }
@@ -372,7 +372,7 @@ void Carryall::engageTarget()
         return;
     }
 
-    if(target && target.getObjPointer()->isAGroundUnit() && !((GroundUnit*)target.getObjPointer())->isawaitingPickup()) {
+    if(target && target.getObjPointer()->isAGroundUnit() && !static_cast<GroundUnit*>(target.getObjPointer())->isawaitingPickup()) {
         // the target changed its state to not awaiting pickup anymore
         releaseTarget();
         return;
@@ -400,7 +400,7 @@ void Carryall::engageTarget()
 
     if (targetDistance <= TILESIZE/8) {
         if (target.getObjPointer()->isAUnit()) {
-            targetAngle = ((GroundUnit*)target.getObjPointer())->getAngle();
+            targetAngle = static_cast<GroundUnit*>(target.getObjPointer())->getAngle();
         }
 
         if(hasCargo()) {
@@ -493,10 +493,10 @@ void Carryall::pickupTarget()
         ObjectBase* pObject = target.getObjPointer();
         if(pObject->getItemID() == Structure_Refinery) {
             // get harvester
-            ((Refinery*) pObject)->deployHarvester(this);
+            static_cast<Refinery*>(pObject)->deployHarvester(this);
         } else if(pObject->getItemID() == Structure_RepairYard) {
             // get repaired unit
-            ((RepairYard*) pObject)->deployRepairUnit(this);
+            static_cast<RepairYard*>(pObject)->deployRepairUnit(this);
         }
     }
 }
@@ -505,15 +505,15 @@ void Carryall::setTarget(const ObjectBase* newTarget) {
     if(target.getObjPointer() != nullptr
         && targetFriendly
         && target.getObjPointer()->isAGroundUnit()
-        && (((GroundUnit*)target.getObjPointer())->getCarrier() == this))
+        && (static_cast<GroundUnit*>(target.getObjPointer())->getCarrier() == this))
     {
-        ((GroundUnit*)target.getObjPointer())->bookCarrier(nullptr);
+        static_cast<GroundUnit*>(target.getObjPointer())->bookCarrier(nullptr);
     }
 
     UnitBase::setTarget(newTarget);
 
     if(target && targetFriendly && target.getObjPointer()->isAGroundUnit()) {
-        ((GroundUnit*)target.getObjPointer())->setawaitingPickup(true);
+        static_cast<GroundUnit*>(target.getObjPointer())->setawaitingPickup(true);
     }
 
     booked = target;
@@ -535,7 +535,7 @@ void Carryall::findConstYard() {
         StructureBase* tempStructure = *iter;
 
         if((tempStructure->getItemID() == Structure_ConstructionYard) && (tempStructure->getOwner() == owner)) {
-            ConstructionYard* tempYard = ((ConstructionYard*) tempStructure);
+            ConstructionYard* tempYard = static_cast<ConstructionYard*>(tempStructure);
             Coord closestPoint = tempYard->getClosestPoint(location);
             FixPoint tempDistance = distanceFrom(location, closestPoint);
 

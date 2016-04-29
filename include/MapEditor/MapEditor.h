@@ -73,7 +73,7 @@ public:
          : mode(EditorMode_Selection) {
         }
 
-        EditorMode(bool dummy)
+        explicit EditorMode(bool dummy)
          : mode(EditorMode_TacticalPos) {
         }
 
@@ -97,13 +97,13 @@ public:
             EditorMode_TacticalPos
         } mode;
 
-        TERRAINTYPE     terrainType;
-        int             pensize;
-        HOUSETYPE       house;
-        int             itemID;
-        int             health;
-        unsigned char   angle;
-        ATTACKMODE      attackmode;
+        TERRAINTYPE     terrainType = Terrain_Sand;
+        int             pensize = 0;
+        HOUSETYPE       house = HOUSE_HARKONNEN;
+        int             itemID = 0;
+        int             health = 0;
+        unsigned char   angle = 0;
+        ATTACKMODE      attackmode = ATTACKMODE_INVALID;
     };
 
     class Structure {
@@ -137,6 +137,7 @@ public:
     };
 
     MapEditor();
+    MapEditor(const MapEditor& o) = delete;
     ~MapEditor();
 
     friend class INIMapEditorLoader; ///< loading INI Maps is done with a INIMapEditorLoader helper object

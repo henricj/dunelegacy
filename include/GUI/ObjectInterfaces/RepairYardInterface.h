@@ -35,7 +35,7 @@ public:
     }
 
 protected:
-    RepairYardInterface(int objectID) : DefaultStructureInterface(objectID) {
+    explicit RepairYardInterface(int objectID) : DefaultStructureInterface(objectID) {
         mainHBox.addWidget(Spacer::create());
         mainHBox.addWidget(&repairUnitProgressBar);
         mainHBox.addWidget(Spacer::create());

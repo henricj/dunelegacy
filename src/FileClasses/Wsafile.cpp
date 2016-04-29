@@ -180,12 +180,13 @@ SDL_Surface * Wsafile::getAnimationAsPictureRow() {
 */
 Animation* Wsafile::getAnimation(unsigned int startindex, unsigned int endindex, bool bDoublePic, bool bSetColorKey)
 {
-    SDL_Surface* tmp;
+
 
     Animation* tmpAnimation = new Animation();
 
     for(unsigned int i = startindex; i <= endindex; i++) {
-        if((tmp = getPicture(i)) == nullptr) {
+        SDL_Surface* tmp = getPicture(i);
+        if(tmp == nullptr) {
             delete tmpAnimation;
             return nullptr;
         }
@@ -206,10 +207,9 @@ Animation* Wsafile::getAnimation(unsigned int startindex, unsigned int endindex,
 */
 void Wsafile::decodeFrames(unsigned char* pFiledata, Uint32* index, int numberOfFrames, unsigned char* pDecodedFrames, int x, int y)
 {
-    unsigned char *dec80;
-
     for(int i=0;i<numberOfFrames;i++) {
-        if( (dec80 = (unsigned char*) malloc(x*y*2)) == nullptr) {
+        unsigned char *dec80 = (unsigned char*) malloc(x*y*2);
+        if(dec80 == nullptr) {
             fprintf(stderr, "Error: Unable to allocate memory for decoded WSA-Frames!\n");
             exit(EXIT_FAILURE);
         }

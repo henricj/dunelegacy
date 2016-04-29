@@ -39,7 +39,7 @@ public:
     }
 
 protected:
-    RefineryAndSiloInterface(int objectID) : DefaultStructureInterface(objectID) {
+    explicit RefineryAndSiloInterface(int objectID) : DefaultStructureInterface(objectID) {
         Uint32 color = SDL2RGB(palette[houseToPaletteIndex[pLocalHouse->getHouseID()]]);
 
         mainHBox.addWidget(&textVBox);

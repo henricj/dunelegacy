@@ -23,8 +23,8 @@
 class Frigate : public AirUnit
 {
 public:
-    Frigate(House* newOwner);
-    Frigate(InputStream& stream);
+    explicit Frigate(House* newOwner);
+    explicit Frigate(InputStream& stream);
     void init();
     virtual ~Frigate();
 

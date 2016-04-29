@@ -23,8 +23,8 @@
 class TankBase : public TrackedUnit
 {
 public:
-    TankBase(House* newOwner);
-    TankBase(InputStream& stream);
+    explicit TankBase(House* newOwner);
+    explicit TankBase(InputStream& stream);
     void init();
     virtual ~TankBase();
 

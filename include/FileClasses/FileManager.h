@@ -35,8 +35,13 @@ public:
         Constructor.
         \param saveMode if true, every loading error is ignored
     */
-    FileManager(bool saveMode = false);
+    explicit FileManager(bool saveMode = false);
+
+    FileManager(const FileManager& fileManager) = delete;
+
     ~FileManager();
+
+    FileManager& operator=(const FileManager& fileManager) = delete;
 
     static std::vector<std::string> getSearchPath();
     static std::vector<std::string> getNeededFiles();

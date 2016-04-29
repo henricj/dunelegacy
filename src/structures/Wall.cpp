@@ -74,8 +74,9 @@ void Wall::destroy() {
     if(currentGameMap->tileExists(location.x, location.y-1) == true) {
         ObjectBase* obj = currentGameMap->getTile(location.x, location.y-1)->getGroundObject();
         if((obj != nullptr) && (obj->getItemID() == Structure_Wall)) {
-            ((Wall*) obj)->bWallDestroyedDown = true;
-            ((Wall*) obj)->fixWall();
+            Wall* pWall = static_cast<Wall*>(obj);
+            pWall->bWallDestroyedDown = true;
+            pWall->fixWall();
         }
     }
 
@@ -83,8 +84,9 @@ void Wall::destroy() {
     if(currentGameMap->tileExists(location.x, location.y+1) == true) {
         ObjectBase* obj = currentGameMap->getTile(location.x, location.y+1)->getGroundObject();
         if((obj != nullptr) && (obj->getItemID() == Structure_Wall)) {
-            ((Wall*) obj)->bWallDestroyedUp = true;
-            ((Wall*) obj)->fixWall();
+            Wall* pWall = static_cast<Wall*>(obj);
+            pWall->bWallDestroyedUp = true;
+            pWall->fixWall();
         }
     }
 
@@ -92,8 +94,9 @@ void Wall::destroy() {
     if(currentGameMap->tileExists(location.x-1, location.y) == true) {
         ObjectBase* obj = currentGameMap->getTile(location.x-1, location.y)->getGroundObject();
         if((obj != nullptr) && (obj->getItemID() == Structure_Wall)) {
-            ((Wall*) obj)->bWallDestroyedRight = true;
-            ((Wall*) obj)->fixWall();
+            Wall* pWall = static_cast<Wall*>(obj);
+            pWall->bWallDestroyedRight = true;
+            pWall->fixWall();
         }
     }
 
@@ -101,8 +104,9 @@ void Wall::destroy() {
     if(currentGameMap->tileExists(location.x+1, location.y) == true) {
         ObjectBase* obj = currentGameMap->getTile(location.x+1, location.y)->getGroundObject();
         if((obj != nullptr) && (obj->getItemID() == Structure_Wall)) {
-            ((Wall*) obj)->bWallDestroyedLeft = true;
-            ((Wall*) obj)->fixWall();
+            Wall* pWall = static_cast<Wall*>(obj);
+            pWall->bWallDestroyedLeft = true;
+            pWall->fixWall();
         }
     }
 
@@ -125,8 +129,9 @@ void Wall::setLocation(int xPos, int yPos) {
     if(currentGameMap->tileExists(location.x, location.y-1) == true) {
         ObjectBase* obj = currentGameMap->getTile(location.x, location.y-1)->getGroundObject();
         if((obj != nullptr) && (obj->getItemID() == Structure_Wall)) {
-            ((Wall*) obj)->bWallDestroyedDown = false;
-            ((Wall*) obj)->fixWall();
+            Wall* pWall = static_cast<Wall*>(obj);
+            pWall->bWallDestroyedDown = false;
+            pWall->fixWall();
         }
     }
 
@@ -134,8 +139,9 @@ void Wall::setLocation(int xPos, int yPos) {
     if(currentGameMap->tileExists(location.x, location.y+1) == true) {
         ObjectBase* obj = currentGameMap->getTile(location.x, location.y+1)->getGroundObject();
         if((obj != nullptr) && (obj->getItemID() == Structure_Wall)) {
-            ((Wall*) obj)->bWallDestroyedUp = false;
-            ((Wall*) obj)->fixWall();
+            Wall* pWall = static_cast<Wall*>(obj);
+            pWall->bWallDestroyedUp = false;
+            pWall->fixWall();
         }
     }
 
@@ -143,8 +149,9 @@ void Wall::setLocation(int xPos, int yPos) {
     if(currentGameMap->tileExists(location.x-1, location.y) == true) {
         ObjectBase* obj = currentGameMap->getTile(location.x-1, location.y)->getGroundObject();
         if((obj != nullptr) && (obj->getItemID() == Structure_Wall)) {
-            ((Wall*) obj)->bWallDestroyedRight = false;
-            ((Wall*) obj)->fixWall();
+            Wall* pWall = static_cast<Wall*>(obj);
+            pWall->bWallDestroyedRight = false;
+            pWall->fixWall();
         }
     }
 
@@ -152,8 +159,9 @@ void Wall::setLocation(int xPos, int yPos) {
     if(currentGameMap->tileExists(location.x+1, location.y) == true) {
         ObjectBase* obj = currentGameMap->getTile(location.x+1, location.y)->getGroundObject();
         if((obj != nullptr) && (obj->getItemID() == Structure_Wall)) {
-            ((Wall*) obj)->bWallDestroyedLeft = false;
-            ((Wall*) obj)->fixWall();
+            Wall* pWall = static_cast<Wall*>(obj);
+            pWall->bWallDestroyedLeft = false;
+            pWall->fixWall();
         }
     }
 }

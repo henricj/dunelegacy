@@ -33,13 +33,13 @@ public:
         Constructor
         \param  triggerCycleNumber  the game cycle this trigger shall be triggered
     */
-    Trigger(Uint32 triggerCycleNumber) : cycleNumber(triggerCycleNumber) { };
+    explicit Trigger(Uint32 triggerCycleNumber) : cycleNumber(triggerCycleNumber) { };
 
     /**
         This constructor constructs the trigger from a stream.
         \param  stream  the stream to read from
     */
-    Trigger(InputStream& stream) {
+    explicit Trigger(InputStream& stream) {
         cycleNumber = stream.readUint32();
     }
 

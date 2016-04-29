@@ -25,8 +25,8 @@
 class TurretBase : public StructureBase
 {
 public:
-    TurretBase(House* newOwner);
-    TurretBase(InputStream& stream);
+    explicit TurretBase(House* newOwner);
+    explicit TurretBase(InputStream& stream);
     void init();
     virtual ~TurretBase();
 

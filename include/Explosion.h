@@ -29,7 +29,7 @@ class Explosion
 public:
     Explosion();
     Explosion(Uint32 explosionID, const Coord& position, int house = HOUSE_HARKONNEN);
-    Explosion(InputStream& stream);
+    explicit Explosion(InputStream& stream);
     ~Explosion();
 
     void init();

@@ -28,7 +28,7 @@ class House;
 
 class Choam {
 public:
-    Choam(House* pHouse);
+    explicit Choam(House* pHouse);
     ~Choam();
 
     void save(OutputStream& stream) const;

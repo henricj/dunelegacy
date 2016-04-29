@@ -28,8 +28,8 @@ class Carryall;
 class Refinery : public StructureBase
 {
 public:
-    Refinery(House* newOwner);
-    Refinery(InputStream& stream);
+    explicit Refinery(House* newOwner);
+    explicit Refinery(InputStream& stream);
     void init();
     virtual ~Refinery();
 
@@ -54,8 +54,8 @@ public:
     }
     inline bool isFree() const { return !extractingSpice; }
     inline int getNumBookings() const { return bookings; }  //number of units goings there
-    inline const Harvester* getHarvester() const  { return (Harvester*)harvester.getObjPointer(); }
-    inline Harvester* getHarvester() { return (Harvester*)harvester.getObjPointer(); }
+    inline const Harvester* getHarvester() const  { return reinterpret_cast<Harvester*>(harvester.getObjPointer()); }
+    inline Harvester* getHarvester() { return reinterpret_cast<Harvester*>(harvester.getObjPointer()); }
 
 protected:
     /**

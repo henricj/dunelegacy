@@ -23,8 +23,8 @@
 class Devastator : public TrackedUnit
 {
 public:
-    Devastator(House* newOwner);
-    Devastator(InputStream& stream);
+    explicit Devastator(House* newOwner);
+    explicit Devastator(InputStream& stream);
     void init();
     virtual ~Devastator();
 

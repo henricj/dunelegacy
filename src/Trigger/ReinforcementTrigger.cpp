@@ -32,11 +32,8 @@
 #include <memory>
 #include <stdio.h>
 
-ReinforcementTrigger::ReinforcementTrigger(int houseID, Uint32 itemID, DropLocation location, bool bRepeat, Uint32 triggerCycleNumber) : Trigger(triggerCycleNumber)
-{
-    this->houseID = houseID;
-    dropLocation = location;
-    repeatCycle = (bRepeat == true) ? triggerCycleNumber : 0;
+ReinforcementTrigger::ReinforcementTrigger(int houseID, Uint32 itemID, DropLocation location, bool bRepeat, Uint32 triggerCycleNumber)
+ : Trigger(triggerCycleNumber), dropLocation(location), houseID(houseID), repeatCycle((bRepeat == true) ? triggerCycleNumber : 0) {
     droppedUnits.push_back(itemID);
 }
 
@@ -223,7 +220,7 @@ void ReinforcementTrigger::trigger()
                 if(currentGameMap->tileExists(dropCoord) && currentGameMap->getTile(dropCoord)->hasAGroundObject() == false) {
                     // found the an empty drop location => drop here
 
-                    Carryall* carryall = (Carryall*) dropHouse->createUnit(Unit_Carryall);
+                    Carryall* carryall = static_cast<Carryall*>(dropHouse->createUnit(Unit_Carryall));
                     carryall->setOwned(false);
 
                     std::vector<Uint32>::const_iterator iter;

@@ -36,7 +36,7 @@ public:
     }
 
 protected:
-    PalaceInterface(int objectID) : DefaultStructureInterface(objectID) {
+    explicit PalaceInterface(int objectID) : DefaultStructureInterface(objectID) {
         mainHBox.addWidget(&weaponBox);
 
         SDL_Texture* pTexture = pGFXManager->getSmallDetailPic(Picture_DeathHand);

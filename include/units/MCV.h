@@ -23,8 +23,8 @@
 class MCV : public GroundUnit
 {
 public:
-    MCV(House* newOwner);
-    MCV(InputStream& stream);
+    explicit MCV(House* newOwner);
+    explicit MCV(InputStream& stream);
     void init();
     virtual ~MCV();
 

@@ -23,8 +23,8 @@
 class RocketTurret : public TurretBase
 {
 public:
-    RocketTurret(House* newOwner);
-    RocketTurret(InputStream& stream);
+    explicit RocketTurret(House* newOwner);
+    explicit RocketTurret(InputStream& stream);
     void init();
     virtual ~RocketTurret();
 

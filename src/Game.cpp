@@ -506,8 +506,6 @@ void Game::drawScreen()
             int xPos = screenborder->screen2MapX(mouse_x);
             int yPos = screenborder->screen2MapY(mouse_y);
 
-            bool withinRange = false;
-
             BuilderBase* builder = nullptr;
             if(selectedList.size() == 1) {
                 builder = dynamic_cast<BuilderBase*>(objectManager.getObject(*selectedList.begin()));
@@ -515,6 +513,7 @@ void Game::drawScreen()
                 int placeItem = builder->getCurrentProducedItem();
                 Coord structuresize = getStructureSize(placeItem);
 
+                bool withinRange = false;
                 for (int i = xPos; i < (xPos + structuresize.x); i++) {
                     for (int j = yPos; j < (yPos + structuresize.y); j++) {
                         if (currentGameMap->isWithinBuildRange(i, j, builder->getOwner())) {
@@ -885,7 +884,7 @@ void Game::doInput()
                         if(selectedList.size() == 1) {
                             ObjectBase* pObject = objectManager.getObject( *selectedList.begin());
                             if(pObject != nullptr && pObject->getOwner() == pLocalHouse && pObject->getItemID() == Unit_Harvester) {
-                                Harvester* pHarvester = (Harvester*) pObject;
+                                Harvester* pHarvester = static_cast<Harvester*>(pObject);
 
                                 std::string harvesterMessage = _("@DUNE.ENG|226#Harvester");
 
@@ -1200,7 +1199,6 @@ void Game::runMainLoop() {
 
 
     int     frameStart = SDL_GetTicks();
-    int     frameEnd = 0;
     int     frameTime = 0;
     int     numFrames = 0;
 
@@ -1224,7 +1222,7 @@ void Game::runMainLoop() {
         SDL_RenderCopy(renderer, screenTexture, nullptr, nullptr);
         SDL_RenderPresent(renderer);
 
-        frameEnd = SDL_GetTicks();
+        int frameEnd = SDL_GetTicks();
 
         if(frameEnd == frameStart) {
             SDL_Delay(1);
@@ -2124,7 +2122,7 @@ void Game::handleKeyInput(SDL_KeyboardEvent& keyboardEvent) {
                         break;
                     } else if((tempObject->getItemID() == Structure_Palace)
                                 && ((tempObject->getOwner()->getHouseID() == HOUSE_HARKONNEN) || (tempObject->getOwner()->getHouseID() == HOUSE_SARDAUKAR))) {
-                        if(((Palace*) tempObject)->isSpecialWeaponReady()) {
+                        if(static_cast<Palace*>(tempObject)->isSpecialWeaponReady()) {
                             currentCursorMode = CursorMode_Attack;
                             break;
                         }
@@ -2265,7 +2263,7 @@ void Game::handleKeyInput(SDL_KeyboardEvent& keyboardEvent) {
             for(iter = selectedList.begin(); iter != selectedList.end(); ++iter) {
                 ObjectBase *tempObject = objectManager.getObject(*iter);
                 if(tempObject->getItemID() == Unit_Harvester) {
-                    ((Harvester*)tempObject)->handleReturnClick();
+                    static_cast<Harvester*>(tempObject)->handleReturnClick();
                 }
             }
         } break;
@@ -2276,9 +2274,9 @@ void Game::handleKeyInput(SDL_KeyboardEvent& keyboardEvent) {
             for(iter = selectedList.begin(); iter != selectedList.end(); ++iter) {
                 ObjectBase *tempObject = objectManager.getObject(*iter);
                 if(tempObject->isAStructure()) {
-                    ((StructureBase*)tempObject)->handleRepairClick();
+                    static_cast<StructureBase*>(tempObject)->handleRepairClick();
                 } else if(tempObject->isAGroundUnit() && tempObject->getHealth() < tempObject->getMaxHealth()) {
-                    ((GroundUnit*)tempObject)->handleSendToRepairClick();
+                    static_cast<GroundUnit*>(tempObject)->handleSendToRepairClick();
                 }
             }
         } break;
@@ -2442,13 +2440,14 @@ bool Game::handleSelectedObjectsAttackClick(int xPos, int yPos) {
     for(iter = selectedList.begin(); iter != selectedList.end(); ++iter) {
         ObjectBase *tempObject = objectManager.getObject(*iter);
         if(tempObject->isAUnit() && (tempObject->getOwner() == pLocalHouse) && tempObject->isRespondable()) {
-            responder = (UnitBase*) tempObject;
+            responder = static_cast<UnitBase*>(tempObject);
             responder->handleAttackClick(xPos,yPos);
         } else if((tempObject->getItemID() == Structure_Palace)
                     && ((tempObject->getOwner()->getHouseID() == HOUSE_HARKONNEN) || (tempObject->getOwner()->getHouseID() == HOUSE_SARDAUKAR))) {
 
-            if(((Palace*) tempObject)->isSpecialWeaponReady()) {
-                ((Palace*) tempObject)->handleDeathhandClick(xPos, yPos);
+            Palace* pPalace = static_cast<Palace*>(tempObject);
+            if(pPalace->isSpecialWeaponReady()) {
+                pPalace->handleDeathhandClick(xPos, yPos);
             }
         }
     }
@@ -2469,7 +2468,7 @@ bool Game::handleSelectedObjectsMoveClick(int xPos, int yPos) {
     for(iter = selectedList.begin(); iter != selectedList.end(); ++iter) {
         ObjectBase *tempObject = objectManager.getObject(*iter);
         if (tempObject->isAUnit() && (tempObject->getOwner() == pLocalHouse) && tempObject->isRespondable()) {
-            responder = (UnitBase*) tempObject;
+            responder = static_cast<UnitBase*>(tempObject);
             responder->handleMoveClick(xPos,yPos);
         }
     }
@@ -2503,7 +2502,7 @@ bool Game::handleSelectedObjectsRequestCarryallDropClick(int xPos, int yPos) {
     for(iter = selectedList.begin(); iter != selectedList.end(); ++iter) {
         ObjectBase *tempObject = objectManager.getObject(*iter);
         if (tempObject->isAGroundUnit() && (tempObject->getOwner() == pLocalHouse) && tempObject->isRespondable()) {
-            responder = (UnitBase*) tempObject;
+            responder = static_cast<UnitBase*>(tempObject);
             responder->handleRequestCarryallDropClick(xPos,yPos);
         }
     }
@@ -2535,7 +2534,7 @@ bool Game::handleSelectedObjectsCaptureClick(int xPos, int yPos) {
         for(iter = selectedList.begin(); iter != selectedList.end(); ++iter) {
             ObjectBase *tempObject = objectManager.getObject(*iter);
             if (tempObject->isInfantry() && (tempObject->getOwner() == pLocalHouse) && tempObject->isRespondable()) {
-                responder = (InfantryBase*) tempObject;
+                responder = static_cast<InfantryBase*>(tempObject);
                 responder->handleCaptureClick(xPos,yPos);
             }
         }

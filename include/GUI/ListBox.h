@@ -462,14 +462,12 @@ private:
 
     class ListEntry {
     public:
-        ListEntry(std::string text, int data) {
-            this->text = text;
-            this->data.intData = data;
+        ListEntry(std::string text, int intData) : text(text) {
+            data.intData = intData;
         }
 
-        ListEntry(std::string text, void* data) {
-            this->text = text;
-            this->data.ptrData = data;
+        ListEntry(std::string text, void* ptrData) : text(text) {
+            data.ptrData = ptrData;
         }
 
         std::string text;

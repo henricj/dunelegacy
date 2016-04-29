@@ -32,18 +32,6 @@
 MetaServerClient::MetaServerClient(std::string metaServerURL)
  : metaServerURL(metaServerURL) {
 
-    lastServerInfoListUpdate = 0;
-    lastAnnounceUpdate = 0;
-    metaserverErrorCause = 0;
-    bUpdatedGameServerInfoList = false;
-
-    serverName = "";
-    serverPort = 0;
-    secret = "";
-    mapName = "";
-    numPlayers = 0;
-    maxPlayers = 0;
-
     availableMetaServerCommandsSemaphore = SDL_CreateSemaphore(0);
     if(availableMetaServerCommandsSemaphore == nullptr) {
         throw std::runtime_error("Unable to create semaphore");
@@ -233,7 +221,7 @@ void MetaServerClient::setNewGameServerInfoList(std::list<GameServerInfo>& newGa
 
 
 int MetaServerClient::connectionThreadMain(void* data) {
-    MetaServerClient* pMetaServerClient = (MetaServerClient*) data;
+    MetaServerClient* pMetaServerClient = static_cast<MetaServerClient*>(data);
 
     while(true) {
         std::shared_ptr<MetaServerCommand> nextMetaServerCommand = pMetaServerClient->dequeueMetaServerCommand();

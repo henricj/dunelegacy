@@ -111,7 +111,7 @@ public:
         Read a command from stream.
         \param  stream  the stream to read from
     */
-    Command(InputStream& stream);
+    explicit Command(InputStream& stream);
 
     /// destructor
     virtual ~Command();

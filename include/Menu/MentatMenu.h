@@ -33,7 +33,7 @@
 
 class MentatMenu : public MenuBase {
 public:
-    MentatMenu(int newHouse);
+    explicit MentatMenu(int newHouse);
     virtual ~MentatMenu();
 
     virtual void drawSpecificStuff();

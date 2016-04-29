@@ -44,7 +44,7 @@ public:
         This constructor constructs the trigger from a stream.
         \param  stream  the stream to read from
     */
-    ReinforcementTrigger(InputStream& stream);
+    explicit ReinforcementTrigger(InputStream& stream);
 
     /// destructor
     ~ReinforcementTrigger();

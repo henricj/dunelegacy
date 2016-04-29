@@ -36,7 +36,7 @@ public:
          : playerName(newPlayerName), playerClass(newPlayerClass) {
         }
 
-        PlayerInfo(InputStream& stream) {
+        explicit PlayerInfo(InputStream& stream) {
             playerName = stream.readString();
             playerClass = stream.readString();
         }
@@ -56,7 +56,7 @@ public:
          : houseID(newHouseID), team(newTeam) {
         }
 
-        HouseInfo(InputStream& stream) {
+        explicit HouseInfo(InputStream& stream) {
             houseID = (HOUSETYPE) stream.readSint32();
             team = stream.readSint32();
 
@@ -140,7 +140,7 @@ public:
         an exception is thrown.
         \param  savegame    the name of the savegame
     */
-    GameInitSettings(std::string savegame);
+    explicit GameInitSettings(std::string savegame);
 
     /**
         Constructor for specifying the loading of a network savegame. If the given filename contains no valid savegame
@@ -155,7 +155,7 @@ public:
         Load the game init info from a stream
         \param  stream  the stream to load from
     */
-    GameInitSettings(InputStream& stream);
+    explicit GameInitSettings(InputStream& stream);
 
     ~GameInitSettings();
 

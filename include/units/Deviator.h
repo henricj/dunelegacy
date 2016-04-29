@@ -23,8 +23,8 @@
 class Deviator : public TrackedUnit
 {
 public:
-    Deviator(House* newOwner);
-    Deviator(InputStream& stream);
+    explicit Deviator(House* newOwner);
+    explicit Deviator(InputStream& stream);
     void init();
     virtual ~Deviator();
 

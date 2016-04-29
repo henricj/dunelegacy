@@ -26,8 +26,8 @@ class GroundUnit : public UnitBase
 
 public:
 
-    GroundUnit(House* newOwner);
-    GroundUnit(InputStream& stream);
+    explicit GroundUnit(House* newOwner);
+    explicit GroundUnit(InputStream& stream);
     void init();
     virtual ~GroundUnit();
 

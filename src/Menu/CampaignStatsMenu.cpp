@@ -472,7 +472,7 @@ void CampaignStatsMenu::calculateScore(int level)
     for(RobustList<UnitBase*>::const_iterator iter = unitList.begin(); iter != unitList.end(); ++iter) {
         UnitBase* pUnit = *iter;
         if(pUnit->getItemID() == Unit_Harvester) {
-            Harvester* pHarvester = (Harvester*) pUnit;
+            Harvester* pHarvester = static_cast<Harvester*>(pUnit);
             if(pHarvester->getOwner()->isAI() == true) {
                 spiceHarvestedByAI += pHarvester->getAmountOfSpice().toFloat();
             } else {

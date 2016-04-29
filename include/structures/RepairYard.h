@@ -26,8 +26,8 @@ class Carryall;
 class RepairYard : public StructureBase
 {
 public:
-    RepairYard(House* newOwner);
-    RepairYard(InputStream& stream);
+    explicit RepairYard(House* newOwner);
+    explicit RepairYard(InputStream& stream);
     void init();
     virtual ~RepairYard();
 

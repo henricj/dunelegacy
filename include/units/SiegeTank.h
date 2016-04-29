@@ -23,8 +23,8 @@
 class SiegeTank : public TankBase
 {
 public:
-    SiegeTank(House* newOwner);
-    SiegeTank(InputStream& stream);
+    explicit SiegeTank(House* newOwner);
+    explicit SiegeTank(InputStream& stream);
     void init();
     virtual ~SiegeTank();
 

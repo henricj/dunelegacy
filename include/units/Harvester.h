@@ -24,8 +24,8 @@ class Harvester : public TrackedUnit
 {
 public:
 
-    Harvester(House* newOwner);
-    Harvester(InputStream& stream);
+    explicit Harvester(House* newOwner);
+    explicit Harvester(InputStream& stream);
     void init();
     virtual ~Harvester();
 

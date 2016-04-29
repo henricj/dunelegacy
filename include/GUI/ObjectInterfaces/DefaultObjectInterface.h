@@ -42,7 +42,7 @@ public:
     }
 
 protected:
-    DefaultObjectInterface(int objectID) : ObjectInterface() {
+    explicit DefaultObjectInterface(int objectID) : ObjectInterface() {
         ObjectBase* pObject = currentGame->getObjectManager().getObject(objectID);
         if(pObject == nullptr) {
             fprintf(stderr,"DefaultObjectInterface::DefaultObjectInterface(): Cannot resolve ObjectID %d!\n",objectID);

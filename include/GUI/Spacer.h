@@ -66,16 +66,14 @@ public:
         Constructor.
         \param width    Width of this spacer.
     */
-    HSpacer(Uint32 width) : Widget() {
+    explicit HSpacer(Uint32 width) : Widget() {
         this->width = width;
         resize(width,0);
         enableResizing(false,false);
     }
 
     /// destructor
-    virtual ~HSpacer() {
-        ;
-    }
+    virtual ~HSpacer() { }
 
     /**
         Returns the minimum size of this spacer. The returned size is (width,0).
@@ -115,16 +113,14 @@ public:
         Constructor.
         \param height   Height of this spacer.
     */
-    VSpacer(Uint32 height) : Widget() {
+    explicit VSpacer(Uint32 height) : Widget() {
         this->height = height;
         resize(0,height);
         enableResizing(false,false);
     }
 
     /// destructor
-    virtual ~VSpacer() {
-        ;
-    }
+    virtual ~VSpacer() { }
 
     /**
         Returns the minimum size of this spacer. The returned size is (0,height).

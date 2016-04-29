@@ -23,8 +23,8 @@
 class RaiderTrike : public GroundUnit
 {
 public:
-    RaiderTrike(House* newOwner);
-    RaiderTrike(InputStream& stream);
+    explicit RaiderTrike(House* newOwner);
+    explicit RaiderTrike(InputStream& stream);
     void init();
     virtual ~RaiderTrike();
 

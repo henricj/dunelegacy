@@ -31,6 +31,7 @@ public:
         Creates a map of size xSize x ySize. The map is initialized with all tiles of type Terrain_Sand.
     */
     Map(int xSize, int ySize);
+    Map(const Map& o) = delete;
     ~Map();
 
     void load(InputStream& stream);
@@ -54,7 +55,7 @@ public:
     bool isWithinBuildRange(int x, int y, const House* pHouse) const;
     int getPosAngle(const Coord& source, const Coord& pos) const;
     Coord findClosestEdgePoint(const Coord& origin, const Coord& buildingSize) const;
-    Coord findDeploySpot(UnitBase* pUnit, const Coord origin, const Coord gatherPoint = Coord::Invalid(), const Coord buildingSize = Coord(0,0)) const;//building size is num squares
+    Coord findDeploySpot(UnitBase* pUnit, const Coord& origin, const Coord& gatherPoint = Coord::Invalid(), const Coord& buildingSize = Coord(0,0)) const;//building size is num squares
 
     void createSpiceField(Coord location, int radius, bool centerIsThickSpice = false);
 

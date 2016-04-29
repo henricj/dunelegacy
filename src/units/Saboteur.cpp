@@ -65,10 +65,10 @@ Saboteur::~Saboteur()
 
 void Saboteur::checkPos()
 {
-    bool    canBeSeen[NUM_HOUSES+1];
-
     InfantryBase::checkPos();
+
     if(active) {
+        bool canBeSeen[NUM_HOUSES+1];
         for(int i = 1; i <= NUM_HOUSES; i++) {
             canBeSeen[i] = false;
         }

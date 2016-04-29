@@ -36,8 +36,10 @@ bool splitString(const std::string& parseString, unsigned int numStringPointers,
 
     std::string** pStr;
 
-    if(numStringPointers == 0)
+    if(numStringPointers == 0) {
+        va_end(arg_ptr);
         return false;
+    }
 
     pStr = new std::string*[numStringPointers];
 
@@ -147,6 +149,7 @@ std::string strprintf(const std::string fmt, ...) {
 
     int length = vsnprintf(nullptr, 0, fmt.c_str(), arg_ptr);
     if(length < 0) {
+        va_end(arg_ptr);
         throw std::runtime_error("strprintf(): vsnprintf() failed!");
     }
 

@@ -89,6 +89,7 @@ static inline void warning(const char *str, ...)
     va_start(args, str);
     vfprintf(stderr,str,args);
     fprintf(stderr,"\n");
+    va_end(args);
 }
 
 static inline void debugC(int level, const char *str, ...)
@@ -98,6 +99,7 @@ static inline void debugC(int level, const char *str, ...)
     va_start(args, str);
     vfprintf(stderr,str,args);
     fprintf(stderr,"\n");
+    va_end(args);
 */
 }
 
@@ -437,7 +439,7 @@ private:
 
     uint8 *_soundData;
 
-    uint8 _soundIdTable[0x10];
+    uint8 _soundIdTable[0x10] = { 0 };
 public:
     Channel _channels[10];
 
@@ -2378,7 +2380,7 @@ void SoundAdlibPC::playSoundEffect(uint8 track) {
 
 void SoundAdlibPC::callback(void *userdata, Uint8 *audiobuf, int len)
 {
-    SoundAdlibPC *self = (SoundAdlibPC *)userdata;
+    SoundAdlibPC *self = static_cast<SoundAdlibPC*>(userdata);
 
     self->process();
 
@@ -2439,7 +2441,8 @@ void SoundAdlibPC::internalLoadFile(SDL_RWops* rwop) {
     return;
   }
 
-  uint8 *file_data = 0; size_t file_size = 0;
+  uint8 *file_data = 0;
+  int file_size = 0;
 
   if((file_size = SDL_RWseek(rwop,0,SEEK_END)) <= 0) {
     fprintf(stderr,"SoundAdlibPC::internalLoadFile(): Cannot seek in SDL_RWop!\n");
@@ -2456,7 +2459,7 @@ void SoundAdlibPC::internalLoadFile(SDL_RWops* rwop) {
   }
 
   file_data = new uint8[file_size];
-  if(SDL_RWread(rwop,file_data,1,file_size) != file_size) {
+  if(SDL_RWread(rwop,file_data,1,file_size) != (unsigned int) file_size) {
     fprintf(stderr,"SoundAdlibPC::internalLoadFile(): Cannot read from SDL_RWop!\n");
     delete [] file_data;
     return;

@@ -74,10 +74,9 @@ std::map<std::string, std::string> loadPOFile(SDL_RWops* rwop, bool freesrc, std
 
         std::string completeLine;
         unsigned char tmp;
-        size_t readbytes;
 
         while(1) {
-            readbytes = SDL_RWread(rwop,&tmp,1,1);
+            size_t readbytes = SDL_RWread(rwop,&tmp,1,1);
             if(readbytes == 0) {
                 bFinished = true;
                 break;
@@ -127,10 +126,6 @@ std::map<std::string, std::string> loadPOFile(SDL_RWops* rwop, bool freesrc, std
     if(msgstrMode == true) {
         // we have a last translation to finish
         mapping[msgid] = msgstr;
-        msgid = "";
-        msgstr = "";
-
-        msgstrMode = false;
     }
 
     if(freesrc) {

@@ -381,9 +381,8 @@ INIFile::INIFile(SDL_RWops * RWopsFile, bool bWhitespace)
 */
 INIFile::~INIFile() {
     INIFileLine* curLine = firstLine;
-    INIFileLine* tmp;
     while(curLine != nullptr) {
-        tmp = curLine;
+        INIFileLine* tmp = curLine;
         curLine = curLine->nextLine;
         delete tmp;
     }
@@ -843,9 +842,8 @@ bool INIFile::saveChangesTo(SDL_RWops * file, bool bDOSLineEnding) const {
     INIFileLine* curLine = firstLine;
 
     bool error = false;
-    unsigned int written;
     while(curLine != nullptr) {
-        written = SDL_RWwrite(file, curLine->completeLine.c_str(), 1, curLine->completeLine.size());
+        unsigned int written = SDL_RWwrite(file, curLine->completeLine.c_str(), 1, curLine->completeLine.size());
         if(written != curLine->completeLine.size()) {
             std::cout << SDL_GetError() << std::endl;
             error = true;
@@ -886,7 +884,6 @@ void INIFile::readfile(SDL_RWops * file) {
 
     std::string completeLine;
     int lineNum = 0;
-    bool bSyntaxError = false;
     INIFileLine* curLine = nullptr;
     INIFileLine* newINIFileLine;
     Section* newSection;
@@ -899,10 +896,9 @@ void INIFile::readfile(SDL_RWops * file) {
 
         completeLine = "";
         unsigned char tmp;
-        size_t readbytes;
 
         while(1) {
-            readbytes = SDL_RWread(file,&tmp,1,1);
+            size_t readbytes = SDL_RWread(file,&tmp,1,1);
             if(readbytes == 0) {
                 readfinished = true;
                 break;
@@ -914,7 +910,7 @@ void INIFile::readfile(SDL_RWops * file) {
         }
 
         const unsigned char* line = (const unsigned char*) completeLine.c_str();
-        bSyntaxError = false;
+        bool bSyntaxError = false;
 
         int ret = getNextChar(line,0);
 

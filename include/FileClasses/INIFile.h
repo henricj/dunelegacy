@@ -122,7 +122,7 @@ public:
         KeyIterator() : key(nullptr) {
         }
 
-        KeyIterator(Key* pKey) : key(pKey) {
+        explicit KeyIterator(Key* pKey) : key(pKey) {
         }
 
         Key& operator*() const {
@@ -191,7 +191,7 @@ public:
         SectionIterator() : section(nullptr) {
         }
 
-        SectionIterator(Section* pSection) : section(pSection) {
+        explicit SectionIterator(Section* pSection) : section(pSection) {
         }
 
         Section& operator*() const {
@@ -228,6 +228,7 @@ public:
     INIFile(bool bWhitespace, const std::string& firstLineComment);
     INIFile(const std::string& filename, bool bWhitespace = true);
     INIFile(SDL_RWops * RWopsFile, bool bWhitespace = true);
+    INIFile(const INIFile& o) = delete;
     ~INIFile();
 
     bool hasSection(const std::string& section) const;

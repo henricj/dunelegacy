@@ -23,8 +23,8 @@
 class SonicTank : public TrackedUnit
 {
 public:
-    SonicTank(House* newOwner);
-    SonicTank(InputStream& stream);
+    explicit SonicTank(House* newOwner);
+    explicit SonicTank(InputStream& stream);
     void init();
     virtual ~SonicTank();
 

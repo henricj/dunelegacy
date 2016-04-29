@@ -28,7 +28,7 @@ public:
         Constructor
         \param  frameNumber the frame number relative to the start of the current scene where this trigger should be triggered.
     */
-    CutSceneTrigger(int frameNumber);
+    explicit CutSceneTrigger(int frameNumber);
 
     /// destructor
     virtual ~CutSceneTrigger();

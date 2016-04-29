@@ -57,6 +57,7 @@ class GameInitSettings;
 class NetworkManager {
 public:
     NetworkManager(int port, std::string metaserver);
+    NetworkManager(const NetworkManager& o) = delete;
     ~NetworkManager();
 
     bool isServer() const { return bIsServer; };

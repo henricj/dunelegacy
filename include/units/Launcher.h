@@ -24,8 +24,8 @@ class Launcher : public TrackedUnit
 {
 
 public:
-    Launcher(House* newOwner);
-    Launcher(InputStream& stream);
+    explicit Launcher(House* newOwner);
+    explicit Launcher(InputStream& stream);
     void init();
     virtual ~Launcher();
 

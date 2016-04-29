@@ -177,7 +177,7 @@ void MultiPlayerMenu::onPeerDisconnected(std::string playername, bool bHost, int
 void MultiPlayerMenu::onJoin() {
     int selectedEntry = gameList.getSelectedIndex();
     if(selectedEntry >= 0) {
-        GameServerInfo* pGameServerInfo = (GameServerInfo*) gameList.getEntryPtrData(selectedEntry);
+        GameServerInfo* pGameServerInfo = static_cast<GameServerInfo*>(gameList.getEntryPtrData(selectedEntry));
 
         pNetworkManager->setOnReceiveGameInfo(std::bind(&MultiPlayerMenu::onReceiveGameInfo, this, std::placeholders::_1, std::placeholders::_2));
         pNetworkManager->setOnPeerDisconnected(std::bind(&MultiPlayerMenu::onPeerDisconnected, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
@@ -264,7 +264,7 @@ void MultiPlayerMenu::onUpdateLANServer(GameServerInfo gameServerInfo) {
 
 void MultiPlayerMenu::onRemoveLANServer(GameServerInfo gameServerInfo) {
     for(int i=0;i<gameList.getNumEntries();i++) {
-        GameServerInfo* pGameServerInfo = (GameServerInfo*) gameList.getEntryPtrData(i);
+        GameServerInfo* pGameServerInfo = static_cast<GameServerInfo*>(gameList.getEntryPtrData(i));
         if(*pGameServerInfo == gameServerInfo) {
             gameList.removeEntry(i);
             break;

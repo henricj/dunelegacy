@@ -27,7 +27,7 @@ struct StructureSmoke {
      : realPos(pos), startGameCycle(gameCycle) {
     };
 
-    StructureSmoke(InputStream& stream) {
+    explicit StructureSmoke(InputStream& stream) {
         realPos.x = stream.readSint32();
         realPos.y = stream.readSint32();
         startGameCycle = stream.readUint32();
@@ -46,8 +46,8 @@ struct StructureSmoke {
 class StructureBase : public ObjectBase
 {
 public:
-    StructureBase(House* newOwner);
-    StructureBase(InputStream& stream);
+    explicit StructureBase(House* newOwner);
+    explicit StructureBase(InputStream& stream);
     void init();
     virtual ~StructureBase();
 

@@ -24,9 +24,7 @@
 
 
 GameOptionsWindow::GameOptionsWindow(SettingsClass::GameOptionsClass& initialGameOptions)
- : Window(50,50,400, 450/*380 Stefan: Extended options panel size*/) {
-
-    gameOptions = initialGameOptions;
+ : Window(50,50,400, 450), gameOptions(initialGameOptions) {
 
     setWindowWidget(&vbox);
     vbox.addWidget(VSpacer::create(6));

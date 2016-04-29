@@ -22,14 +22,8 @@
 extern FontManager* pFontManager;
 
 TextEvent::TextEvent(std::string text, Uint32 color, int startFrame, int lengthInFrames, bool bFadeIn, bool bFadeOut, bool bCenterVertical)
+ : text(text), startFrame(startFrame), lengthInFrames(lengthInFrames), bFadeIn(bFadeIn), bFadeOut(bFadeOut), bCenterVertical(bCenterVertical), color(color)
 {
-    this->text = text;
-    this->startFrame = startFrame;
-    this->lengthInFrames = lengthInFrames;
-    this->bFadeIn = bFadeIn;
-    this->bFadeOut = bFadeOut;
-    this->bCenterVertical = bCenterVertical;
-    this->color = color;
     SDL_Surface *pSurface = pFontManager->createSurfaceWithMultilineText(text, color, FONT_STD24, true);
     pTexture = SDL_CreateTextureFromSurface(renderer, pSurface);
     SDL_FreeSurface(pSurface);

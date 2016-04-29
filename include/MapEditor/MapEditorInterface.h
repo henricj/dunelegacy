@@ -39,7 +39,7 @@ class MapEditor;
 class MapEditorInterface : public Window {
 public:
     /// default constructor
-    MapEditorInterface(MapEditor* pMapEditor);
+    explicit MapEditorInterface(MapEditor* pMapEditor);
 
     /// destructor
     virtual ~MapEditorInterface();

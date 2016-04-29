@@ -25,8 +25,8 @@
 class Sandworm : public GroundUnit
 {
 public:
-    Sandworm(House* newOwner);
-    Sandworm(InputStream& stream);
+    explicit Sandworm(House* newOwner);
+    explicit Sandworm(InputStream& stream);
     void init();
     virtual ~Sandworm();
 

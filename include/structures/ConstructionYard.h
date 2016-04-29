@@ -23,8 +23,8 @@
 class ConstructionYard : public BuilderBase
 {
 public:
-    ConstructionYard(House* newOwner);
-    ConstructionYard(InputStream& stream);
+    explicit ConstructionYard(House* newOwner);
+    explicit ConstructionYard(InputStream& stream);
     void init();
     virtual ~ConstructionYard();
 

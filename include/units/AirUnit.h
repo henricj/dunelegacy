@@ -23,8 +23,8 @@
 class AirUnit : public UnitBase
 {
 public:
-    AirUnit(House* newOwner);
-    AirUnit(InputStream& stream);
+    explicit AirUnit(House* newOwner);
+    explicit AirUnit(InputStream& stream);
     void init();
     virtual ~AirUnit();
 

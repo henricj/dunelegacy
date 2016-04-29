@@ -38,7 +38,7 @@ public:
         Constructor
         \param gameBoardRect    this SDL_Rect specifies the rectangle on the screen where the map is shown
     */
-    ScreenBorder(const SDL_Rect& gameBoardRect)
+    explicit ScreenBorder(const SDL_Rect& gameBoardRect)
      : mapSizeX(0), mapSizeY(0) {
 
         this->gameBoardRect = gameBoardRect;
@@ -56,7 +56,7 @@ public:
     /**
         Destructor
     */
-    ~ScreenBorder() { ; };
+    ~ScreenBorder() { }
 
     /**
         Loads the current position on the map from a stream

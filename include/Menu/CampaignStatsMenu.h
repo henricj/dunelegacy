@@ -28,7 +28,7 @@
 
 class CampaignStatsMenu : public MenuBase {
 public:
-    CampaignStatsMenu(int level);
+    explicit CampaignStatsMenu(int level);
     virtual ~CampaignStatsMenu();
 
     virtual int showMenu();

@@ -148,14 +148,14 @@ public:
 
     class exception : public std::exception {
     public:
-        exception() throw () { ; };
-        virtual ~exception() throw () { ; };
+        exception() throw () { };
+        virtual ~exception() throw () { };
     };
 
     class eof : public OutputStream::exception {
     public:
-        eof(const std::string& str) throw () { this->str = str; };
-        virtual ~eof() throw () { ; };
+        explicit eof(const std::string& str) throw () : str(str) { };
+        virtual ~eof() throw () { };
 
         virtual const char* what() const throw () { return str.c_str(); };
 
@@ -165,8 +165,8 @@ public:
 
     class error : public OutputStream::exception {
     public:
-        error(const std::string& str) throw () { this->str = str; };
-        virtual ~error() throw () { ; };
+        explicit error(const std::string& str) throw () : str(str) { };
+        virtual ~error() throw () { };
 
         virtual const char* what() const throw () { return str.c_str(); };
 

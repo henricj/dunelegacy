@@ -63,8 +63,10 @@ class AdlibDriver;
  */
 class SoundAdlibPC {
 public:
-    SoundAdlibPC(SDL_RWops* rwop);
+    explicit SoundAdlibPC(SDL_RWops* rwop);
     SoundAdlibPC(SDL_RWops* rwop, int freq);
+    SoundAdlibPC(const SoundAdlibPC& soundAdlibPC) = delete;
+    SoundAdlibPC& operator=(const SoundAdlibPC& soundAdlibPC) = delete;
     ~SoundAdlibPC();
 
     static void callback(void *, Uint8 *, int);
