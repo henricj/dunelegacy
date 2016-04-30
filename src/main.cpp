@@ -403,11 +403,18 @@ int main(int argc, char *argv[]) {
         }
         setbuf(stdout, nullptr);   // No buffering
 
+        if(freopen(pLogfilePath, "w", stderr) == NULL) {
+            // use stdout in this error case as stderr is not yet ready
+            fprintf(stdout, "Reopening logfile '%s' as stderr failed\n", pLogfilePath);
+            fflush(stdout);
+            exit(EXIT_FAILURE);
+        }
+        setbuf(stderr, nullptr);   // No buffering
+
         if(dup2(fileno(stdout), fileno(stderr)) < 0) {
             fprintf(stderr, "Redirecting stderr to stdout failed\n");
             exit(EXIT_FAILURE);
         }
-        setbuf(stderr, nullptr);   // No buffering
 
         #else
 
