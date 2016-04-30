@@ -30,7 +30,7 @@
 #include <SDL.h>
 
 #include <iostream>
-
+#include <algorithm>
 
 /// A simple class for a message box
 class MsgBox : public Window {

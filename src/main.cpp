@@ -53,7 +53,6 @@
 #include <iostream>
 #include <stdexcept>
 #include <ctime>
-#include <unistd.h>
 //#include <sys/types.h>
 //#include <sys/stat.h>
 #include <fcntl.h>
@@ -62,13 +61,16 @@
 #ifdef _WIN32
     #include <windows.h>
     #include <stdio.h>
+    #include <io.h>
     extern "C" {
-        int _fileno(FILE*);
+		__declspec(dllimport) int _fileno(FILE*);
     }
     #define fileno _fileno
+    #define dup2 _dup2
 #else
     #include <sys/types.h>
     #include <pwd.h>
+    #include <unistd.h>
 #endif
 
 #ifdef __APPLE__
@@ -478,7 +480,7 @@ int main(int argc, char *argv[]) {
     cursorFrame = UI_CursorNormal;
 
     do {
-        int seed = time(nullptr);
+        unsigned int seed = (unsigned int) time(nullptr);
         srand(seed);
 
         // check if configfile exists

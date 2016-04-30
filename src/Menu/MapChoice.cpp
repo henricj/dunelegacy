@@ -123,7 +123,7 @@ void MapChoice::drawSpecificStuff() {
         } break;
 
         case MAPCHOICESTATE_SHOWPLANET: {
-            if(SDL_GetTicks() - stateSwitchTime > (bFastBlending ? 500 : 4000)) {
+            if(SDL_GetTicks() - stateSwitchTime > (bFastBlending ? 500U : 4000U)) {
                 mapChoiceState = MAPCHOICESTATE_BLENDPLANET;
             }
         } break;
@@ -152,7 +152,7 @@ void MapChoice::drawSpecificStuff() {
         } break;
 
         case MAPCHOICESTATE_SHOWMAPONLY: {
-            if(SDL_GetTicks() - stateSwitchTime > (bFastBlending ? 500 : 4000)) {
+            if(SDL_GetTicks() - stateSwitchTime > (bFastBlending ? 500U : 4000U)) {
                 mapChoiceState = MAPCHOICESTATE_BLENDMAP;
             }
         } break;

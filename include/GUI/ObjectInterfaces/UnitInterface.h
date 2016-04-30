@@ -282,7 +282,7 @@ protected:
         attackButton.setVisible(pObject->canAttack());
         captureButton.setToggleState(currentGame->currentCursorMode == Game::CursorMode_Capture);
         carryallDropButton.setToggleState(currentGame->currentCursorMode == Game::CursorMode_CarryallDrop);
-        carryallDropButton.setVisible(currentGame->getGameInitSettings().getGameOptions().manualCarryallDrops && pObject->getOwner()->hasCarryalls() > 0);
+        carryallDropButton.setVisible(currentGame->getGameInitSettings().getGameOptions().manualCarryallDrops && pObject->getOwner()->hasCarryalls());
         sendToRepairButton.setVisible(pObject->getHealth() < pObject->getMaxHealth());
 
         UnitBase* pUnit = dynamic_cast<UnitBase*>(pObject);

@@ -1055,7 +1055,7 @@ int Tile::getTerrainTile() const {
             bool down = (currentGameMap->tileExists(location.x,location.y+1) == false) || (currentGameMap->getTile(location.x, location.y+1)->isRock() == true);
             bool left = (currentGameMap->tileExists(location.x-1,location.y) == false) || (currentGameMap->getTile(location.x-1, location.y)->isRock() == true);
 
-            return TerrainTile_Rock + (up | (right << 1) | (down << 2) | (left << 3));
+            return TerrainTile_Rock + (((int)up) | (right << 1) | (down << 2) | (left << 3));
         } break;
 
         case Terrain_Dunes: {
@@ -1065,7 +1065,7 @@ int Tile::getTerrainTile() const {
             bool down = (currentGameMap->tileExists(location.x,location.y+1) == false) || (currentGameMap->getTile(location.x, location.y+1)->getType() == Terrain_Dunes);
             bool left = (currentGameMap->tileExists(location.x-1,location.y) == false) || (currentGameMap->getTile(location.x-1, location.y)->getType() == Terrain_Dunes);
 
-            return TerrainTile_Dunes + (up | (right << 1) | (down << 2) | (left << 3));
+            return TerrainTile_Dunes + (((int)up) | (right << 1) | (down << 2) | (left << 3));
         } break;
 
         case Terrain_Mountain: {
@@ -1075,7 +1075,7 @@ int Tile::getTerrainTile() const {
             bool down = (currentGameMap->tileExists(location.x,location.y+1) == false) || (currentGameMap->getTile(location.x, location.y+1)->isMountain() == true);
             bool left = (currentGameMap->tileExists(location.x-1,location.y) == false) || (currentGameMap->getTile(location.x-1, location.y)->isMountain() == true);
 
-            return TerrainTile_Mountain + (up | (right << 1) | (down << 2) | (left << 3));
+            return TerrainTile_Mountain + (((int)up) | (right << 1) | (down << 2) | (left << 3));
         } break;
 
         case Terrain_Spice: {
@@ -1085,7 +1085,7 @@ int Tile::getTerrainTile() const {
             bool down = (currentGameMap->tileExists(location.x,location.y+1) == false) || (currentGameMap->getTile(location.x, location.y+1)->isSpice() == true);
             bool left = (currentGameMap->tileExists(location.x-1,location.y) == false) || (currentGameMap->getTile(location.x-1, location.y)->isSpice() == true);
 
-            return TerrainTile_Spice + (up | (right << 1) | (down << 2) | (left << 3));
+            return TerrainTile_Spice + (((int)up) | (right << 1) | (down << 2) | (left << 3));
         } break;
 
         case Terrain_ThickSpice: {
@@ -1095,7 +1095,7 @@ int Tile::getTerrainTile() const {
             bool down = (currentGameMap->tileExists(location.x,location.y+1) == false) || (currentGameMap->getTile(location.x, location.y+1)->getType() == Terrain_ThickSpice);
             bool left = (currentGameMap->tileExists(location.x-1,location.y) == false) || (currentGameMap->getTile(location.x-1, location.y)->getType() == Terrain_ThickSpice);
 
-            return TerrainTile_ThickSpice + (up | (right << 1) | (down << 2) | (left << 3));
+            return TerrainTile_ThickSpice + (((int)up) | (right << 1) | (down << 2) | (left << 3));
         } break;
 
         case Terrain_SpiceBloom: {
@@ -1128,7 +1128,7 @@ int Tile::getHideTile(int houseID) const {
     bool down = (currentGameMap->tileExists(location.x,location.y+1) == false) || (currentGameMap->getTile(location.x, location.y+1)->isExplored(houseID) == false);
     bool left = (currentGameMap->tileExists(location.x-1,location.y) == false) || (currentGameMap->getTile(location.x-1, location.y)->isExplored(houseID) == false);
 
-    return (up | (right << 1) | (down << 2) | (left << 3));
+    return (((int)up) | (right << 1) | (down << 2) | (left << 3));
 }
 
 int Tile::getFogTile(int houseID) const {
@@ -1147,5 +1147,5 @@ int Tile::getFogTile(int houseID) const {
     bool down = (currentGameMap->tileExists(location.x,location.y+1) == false) || (currentGameMap->getTile(location.x, location.y+1)->isFogged(houseID) == true);
     bool left = (currentGameMap->tileExists(location.x-1,location.y) == false) || (currentGameMap->getTile(location.x-1, location.y)->isFogged(houseID) == true);
 
-    return (up | (right << 1) | (down << 2) | (left << 3));
+    return (((int)up) | (right << 1) | (down << 2) | (left << 3));
 }

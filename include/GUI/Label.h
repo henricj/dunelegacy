@@ -24,6 +24,7 @@
 #include <SDL.h>
 #include <string>
 #include <list>
+#include <algorithm>
 
 /// a class for a text label
 class Label : public Widget {

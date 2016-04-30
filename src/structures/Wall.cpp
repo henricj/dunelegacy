@@ -191,10 +191,10 @@ void Wall::fixWall() {
 
     // calculate destroyed tile index
     int destroyedTileIndex = 0;
-    if(left == true)    destroyedTileIndex = (destroyedTileIndex << 1) | bWallDestroyedLeft;
-    if(down == true)    destroyedTileIndex = (destroyedTileIndex << 1) | bWallDestroyedDown;
-    if(right == true)   destroyedTileIndex = (destroyedTileIndex << 1) | bWallDestroyedRight;
-    if(up == true)      destroyedTileIndex = (destroyedTileIndex << 1) | bWallDestroyedUp;
+    if(left == true)    destroyedTileIndex = (destroyedTileIndex << 1) | ((int) bWallDestroyedLeft);
+    if(down == true)    destroyedTileIndex = (destroyedTileIndex << 1) | ((int) bWallDestroyedDown);
+    if(right == true)   destroyedTileIndex = (destroyedTileIndex << 1) | ((int) bWallDestroyedRight);
+    if(up == true)      destroyedTileIndex = (destroyedTileIndex << 1) | ((int) bWallDestroyedUp);
 
     // Now perform the test
     if ((left == true) && (right == true) && (up == true) && (down == true)) {

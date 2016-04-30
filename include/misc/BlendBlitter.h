@@ -29,10 +29,10 @@ public:
         m |= (m >> 32);
         m++;
 
-        c = getRandomInt(0,(m/2)-1) * 2 + 1;  // c is any odd number from [0;m]
-        a = getRandomInt(0,(m/4)-1) * 4 + 1;  // (a-1) is divisible by all prime factors of log_2(m), and 4
+        c = getRandomInt(0, (int) ((m/2)-1)) * 2 + 1;  // c is any odd number from [0;m]
+        a = getRandomInt(0, (int) ((m/4)-1)) * 4 + 1;  // (a-1) is divisible by all prime factors of log_2(m), and 4
 
-        currentValue = getRandomInt(0,m-1);
+        currentValue = getRandomInt(0, (int) (m-1));
 
         StepsLeft = numSteps;
     }
@@ -71,12 +71,12 @@ public:
             exit(EXIT_FAILURE);
         }
 
-        Uint32 numPixelsPerStep = (N / numSteps) + 1;
-        for(Uint32 i=0;i<numPixelsPerStep;i++) {
+        Uint64 numPixelsPerStep = (N / numSteps) + 1;
+        for(Uint64 i=0;i<numPixelsPerStep;i++) {
             Uint64 cur = getNextValue();
 
-            int x = (cur % src->w);
-            int y = (cur / src->w);
+            int x = (int) (cur % src->w);
+            int y = (int) (cur / src->w);
 
             Uint32 color = getPixel(src, x, y);
 

@@ -85,7 +85,7 @@ public:
         \return false if there was no object with this ObjectID, true if it could be removed
     */
     bool removeObject(Uint32 objectID) {
-        return (bool) objectMap.erase(objectID);
+        return (objectMap.erase(objectID) != 0);
     }
 
 private:

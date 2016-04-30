@@ -2357,7 +2357,7 @@ void QuantBot::checkAllUnits() {
 
                 default: {
 
-                    int squadRadius = sqrt(getHouse()->getNumUnits()
+                    int squadRadius = (int) sqrt(getHouse()->getNumUnits()
                                                         - getHouse()->getNumItems(Unit_Harvester)
                                                         - getHouse()->getNumItems(Unit_Carryall)
                                                         - getHouse()->getNumItems(Unit_Ornithopter)

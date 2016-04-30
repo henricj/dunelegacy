@@ -20,6 +20,8 @@
 
 #include "Container.h"
 
+#include <algorithm>
+
 class VBox_WidgetData {
 public:
     VBox_WidgetData() : pWidget(nullptr), fixedHeight(0), weight(0.0) { };

@@ -27,13 +27,13 @@
 
 class FileInfo {
 public:
-    FileInfo(std::string _name, uint32_t _size, uint32_t _modifydate)
+    FileInfo(std::string _name, uint32_t _size, uint64_t _modifydate)
         : name(_name), size(_size), modifydate(_modifydate) {
     }
 
     std::string name;
     uint32_t size;
-    uint32_t modifydate;
+    uint64_t modifydate;
 };
 
 enum FileListOrder {

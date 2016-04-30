@@ -66,7 +66,7 @@ public:
         SDL_Texture* digitsTex = pGFXManager->getUIGraphic(UI_CreditsDigits);
 
         char creditsBuffer[3];
-        sprintf(creditsBuffer, "%u", count);
+        snprintf(creditsBuffer, 3, "%u", count);
         int digits = strlen(creditsBuffer);
 
         for(int i=digits-1; i>=0; i--) {

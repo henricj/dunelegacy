@@ -63,6 +63,7 @@
 #include <units/Harvester.h>
 #include <units/InfantryBase.h>
 
+#include <algorithm>
 #include <sstream>
 #include <iomanip>
 #include <SDL.h>

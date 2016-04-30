@@ -56,8 +56,8 @@ static inline int fix32_to_int(fix32_t a)
     return (a >> 32);
 #else
     if (a >= 0)
-        return (a + (fix32_one >> 1)) / fix32_one;
-    return (a - (fix32_one >> 1)) / fix32_one;
+        return (int) ((a + (fix32_one >> 1)) / fix32_one);
+    return (int) ((a - (fix32_one >> 1)) / fix32_one);
 #endif
 }
 
@@ -316,7 +316,7 @@ extern fix32_t fix32_from_str(const char *buf);
 ( (fix32_t) \
     ( \
       (( #i[0] ) == '-') \
-        ? -FIXMATH64_COMBINE_I_M((uint64_t)( ( (i ## LL ) * -1LL) ), m) \
+        ? -FIXMATH64_COMBINE_I_M(( ( (i ## LL ) * -1LL) ), m) \
         : FIXMATH64_COMBINE_I_M((uint64_t)( ( i ## LL ) ) , m) \
     ) \
 )

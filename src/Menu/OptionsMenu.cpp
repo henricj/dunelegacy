@@ -136,7 +136,7 @@ OptionsMenu::OptionsMenu() : MenuBase()
     int i = 0;
     for(iter = availScreenRes.begin(); iter != availScreenRes.end(); ++iter, ++i) {
         char temp[20];
-        sprintf(temp,"%d x %d", iter->x, iter->y);
+        snprintf(temp, 20, "%d x %d", iter->x, iter->y);
         resolutionDropDownBox.addEntry(temp, i);
         if(iter->x == settings.video.width && iter->y == settings.video.height) {
             resolutionDropDownBox.setSelectedItem(i);

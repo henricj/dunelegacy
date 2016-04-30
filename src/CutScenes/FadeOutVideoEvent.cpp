@@ -22,6 +22,8 @@
 #include <Colors.h>
 #include <globals.h>
 
+#include <algorithm>
+
 FadeOutVideoEvent::FadeOutVideoEvent(SDL_Surface* pSurface, int numFrames2FadeOut, bool bFreeSurface, bool bCenterVertical, bool bFadeWhite) : VideoEvent()
 {
     SDL_Surface *pTmp = convertSurfaceToDisplayFormat(Scaler::defaultDoubleSurface(pSurface, bFreeSurface), true);

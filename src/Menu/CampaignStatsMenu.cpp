@@ -302,7 +302,7 @@ void CampaignStatsMenu::doState(int elapsedTime)
 
         case State_HumanUnits:
         {
-            float MaxUnitsDestroyed = max3(unitsDestroyedByHuman, unitsDestroyedByAI, 200);
+            float MaxUnitsDestroyed = (float) max3(unitsDestroyedByHuman, unitsDestroyedByAI, 200);
             float UnitsComplete = std::min(elapsedTime / PROGRESSBARTIME, 1.0f);
 
             float Human_PercentUnitsComplete;
@@ -332,7 +332,7 @@ void CampaignStatsMenu::doState(int elapsedTime)
 
         case State_AIUnits:
         {
-            float MaxUnitsDestroyed = max3(unitsDestroyedByHuman, unitsDestroyedByAI, 200);
+            float MaxUnitsDestroyed = (float) max3(unitsDestroyedByHuman, unitsDestroyedByAI, 200);
             float UnitsComplete = std::min(elapsedTime / PROGRESSBARTIME, 1.0f);
 
             float AI_PercentUnitsComplete;
@@ -362,7 +362,7 @@ void CampaignStatsMenu::doState(int elapsedTime)
 
         case State_HumanBuildings:
         {
-            float MaxBuildingsDestroyed = max3(structuresDestroyedByHuman, structuresDestroyedByAI, 200);
+            float MaxBuildingsDestroyed = (float) max3(structuresDestroyedByHuman, structuresDestroyedByAI, 200);
             float BuildingsComplete = std::min(elapsedTime / PROGRESSBARTIME, 1.0f);
 
             float Human_PercentBuildingsComplete;
@@ -392,7 +392,7 @@ void CampaignStatsMenu::doState(int elapsedTime)
 
         case State_AIBuildings:
         {
-            float MaxBuildingsDestroyed = max3(structuresDestroyedByHuman, structuresDestroyedByAI, 200);
+            float MaxBuildingsDestroyed = (float) max3(structuresDestroyedByHuman, structuresDestroyedByAI, 200);
             float BuildingsComplete = std::min(elapsedTime / PROGRESSBARTIME, 1.0f);
 
             float AI_PercentBuildingsComplete;

@@ -106,7 +106,7 @@ public:
 
     */
     void writeBools(bool val1 = false, bool val2 = false, bool val3 = false, bool val4 = false, bool val5 = false, bool val6 = false, bool val7 = false, bool val8 = false) {
-        Uint8 val = (val1) | (val2 << 1) | (val3 << 2) | (val4 << 3) | (val5 << 4) | (val6 << 5) | (val7 << 6) | (val8 << 7);
+        Uint8 val = ((Uint8)val1) | (val2 << 1) | (val3 << 2) | (val4 << 3) | (val5 << 4) | (val6 << 5) | (val7 << 6) | (val8 << 7);
         writeUint8(val);
     }
 

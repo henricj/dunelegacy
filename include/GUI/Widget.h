@@ -24,6 +24,7 @@
 
 #include <functional>
 #include <iostream>
+#include <algorithm>
 
 /// A point class for representing a point.
 class Point {

@@ -20,6 +20,8 @@
 
 #include "Container.h"
 
+#include <algorithm>
+
 class HBox_WidgetData {
 public:
     HBox_WidgetData() : pWidget(nullptr), fixedWidth(0), weight(0.0) { };

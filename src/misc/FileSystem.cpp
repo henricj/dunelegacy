@@ -344,7 +344,7 @@ std::string readCompleteFile(std::string filename) {
         return "";
     }
 
-    int filesize = SDL_RWseek(RWopsFile,0,SEEK_END);
+    Sint64 filesize = SDL_RWseek(RWopsFile,0,SEEK_END);
     if(filesize < 0) {
         SDL_RWclose(RWopsFile);
         return "";
@@ -355,15 +355,15 @@ std::string readCompleteFile(std::string filename) {
         return "";
     }
 
-    char* filedata = new char[filesize];
+    char* filedata = new char[(size_t) filesize];
 
-    if(SDL_RWread(RWopsFile, filedata, filesize, 1) != 1) {
+    if(SDL_RWread(RWopsFile, filedata, (size_t) filesize, 1) != 1) {
         delete [] filedata;
         SDL_RWclose(RWopsFile);
         return "";
     }
 
-    std::string retValue(filedata, filesize);
+    std::string retValue(filedata, (size_t) filesize);
 
     delete [] filedata;
 
