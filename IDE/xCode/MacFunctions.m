@@ -29,6 +29,6 @@ void getMacApplicationSupportFolder(char* buffer, int len) {
 		appSupportFolderString = [@"~/Library/Application Support" stringByExpandingTildeInPath];
 	}
 	
-	[appSupportFolderString getCString:buffer maxLength:len-1];
+	[appSupportFolderString getCString:buffer maxLength:len-1 encoding:NSUTF8StringEncoding];
 }
 

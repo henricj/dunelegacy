@@ -1,9 +1,0 @@
-//
-// Prefix header for all source files of the 'Dune Legacy' target in the 'Dune Legacy' project
-//
-
-#include "SDL.h"
-
-#ifdef __OBJC__
-    #import <Cocoa/Cocoa.h>
-#endif
