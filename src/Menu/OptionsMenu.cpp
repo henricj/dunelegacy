@@ -48,7 +48,7 @@ OptionsMenu::OptionsMenu() : MenuBase()
 {
     determineAvailableScreenResolutions();
 
-    std::list<std::string> languagesList = getFileNamesList(DUNELEGACY_DATADIR "/locale", "po", true, FileListOrder_Name_Asc);
+    std::list<std::string> languagesList = getFileNamesList(getDuneLegacyDataDir() + "/locale", "po", true, FileListOrder_Name_Asc);
     availLanguages = std::vector<std::string>(languagesList.begin(), languagesList.end());
 
     currentGameOptions = settings.gameOptions;

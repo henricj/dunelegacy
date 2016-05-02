@@ -22,8 +22,6 @@
 #include <list>
 #include <stdint.h>
 
-// Need DUNELEGACY_PLATFORM_OSX from this header file
-#include <config.h>
 
 class FileInfo {
 public:
@@ -110,10 +108,10 @@ std::string getBasename(const std::string& filepath, bool bStripExtension = fals
 */
 std::string getDirname(const std::string& filepath);
 
-#if defined(DUNELEGACY_PLATFORM_OSX)
-  /// \brief Get the Application Bundle's 'Resources' directory path, i.e.:
-  /// 'Dune Legacy.app/Contents/Resources'.
-  std::string getResourcesBundlePath();
-#endif
+/**
+    Returns the dune legacy data directory, e.g. the installation directory
+    \return the data directory
+*/
+std::string getDuneLegacyDataDir();
 
 #endif //FILESYSTEM_H

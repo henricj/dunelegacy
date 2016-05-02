@@ -82,7 +82,7 @@ FileManager::~FileManager() {
 std::vector<std::string> FileManager::getSearchPath() {
     std::vector<std::string> searchPath;
 
-    searchPath.push_back(DUNELEGACY_DATADIR);
+    searchPath.push_back(getDuneLegacyDataDir());
     char tmp[FILENAME_MAX];
     fnkdat("data", tmp, FILENAME_MAX, FNKDAT_USER | FNKDAT_CREAT);
     searchPath.push_back(tmp);

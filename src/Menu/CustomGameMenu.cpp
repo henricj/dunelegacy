@@ -244,7 +244,7 @@ void CustomGameMenu::onMapTypeChange(int buttonID)
 
     switch(buttonID) {
         case 0: {
-            currentMapDirectory = std::string(DUNELEGACY_DATADIR) + std::string("/maps/singleplayer/");
+            currentMapDirectory = getDuneLegacyDataDir() + "/maps/singleplayer/";
         } break;
         case 1: {
             char tmp[FILENAME_MAX];
@@ -252,7 +252,7 @@ void CustomGameMenu::onMapTypeChange(int buttonID)
             currentMapDirectory = tmp;
         } break;
         case 2: {
-            currentMapDirectory = std::string(DUNELEGACY_DATADIR) + std::string("/maps/multiplayer/");
+            currentMapDirectory = getDuneLegacyDataDir() + "/maps/multiplayer/";
         } break;
         case 3: {
             char tmp[FILENAME_MAX];

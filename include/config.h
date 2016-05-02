@@ -37,9 +37,3 @@
 #ifndef LOGFILENAME
     #define LOGFILENAME "Dune Legacy.log"
 #endif
-
-// Used by misc/FileSystem's getResourcesBundlePath && TextManager ctor
-// TODO: Find a better home for this (i.e.: platform.h)
-#if defined(__APPLE__) || defined (MACOSX) || defined(macintosh) || defined(Macintosh)
-    #define DUNELEGACY_PLATFORM_OSX
-#endif
