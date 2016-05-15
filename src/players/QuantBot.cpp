@@ -46,7 +46,14 @@
 
 /**
     TODO
-    == Building Placement ==
+  
+ New list from May 2016
+ - units should move at start
+ - fix single player campaign crash
+ - fix unit allocation bug - atredes only building light tanks
+ 
+ 
+ == Building Placement ==
 
 
     ia) build concrete when no placement locations are available == in progress, bugs exist ==
@@ -338,8 +345,16 @@ void QuantBot::onDamage(const ObjectBase* pObject, int damage, Uint32 damagerID)
         return;
     }
 
-    // If the human has attacked us then its time to start fighting back...
-    if(gameMode == CAMPAIGN && !pDamager->getOwner()->isAI() && !campaignAIAttackFlag){
+    // If the human has attacked us then its time to start fighting back... unless its an attack on a special unit
+    if(gameMode == CAMPAIGN && !pDamager->getOwner()->isAI() && !campaignAIAttackFlag
+       
+       // Don't trigger with freman
+       && !(pObject->getOwner()->getHouseID() == HOUSE_ATREIDES && pObject->getItemID() == Unit_Trooper)
+       
+       // Don't trigger on saboteur
+       && !(pObject->getItemID() == Unit_Saboteur)
+       
+       ){
         campaignAIAttackFlag = true;
     }
 
@@ -779,14 +794,12 @@ void QuantBot::build() {
 
                 case MEDIUM: {
 
-                    if(currentGame->techLevel == 8){
-                        hLimit = 2;
+
+                    hLimit = 2 * initialItemCount[Structure_Refinery];
+                    militaryValueLimit = lround(initialMilitaryValue * FixPt(1,2));
+
+                    if(militaryValueLimit < 4000 && currentGame->techLevel == 8){
                         militaryValueLimit = 4000;
-
-                    }else{
-                        hLimit = 2 * initialItemCount[Structure_Refinery];
-                        militaryValueLimit = initialMilitaryValue;
-
                     }
 
 
@@ -830,7 +843,7 @@ void QuantBot::build() {
                 case DEFEND: {
 
                     hLimit = 2 * initialItemCount[Structure_Refinery];
-                    militaryValueLimit = lround(initialMilitaryValue * FixPt(1,5));
+                    militaryValueLimit = lround(initialMilitaryValue * FixPt(1,2));
 
                     fprintf(stdout, "Defensive Campaign  ");
 
@@ -1650,10 +1663,12 @@ void QuantBot::build() {
                                     fprintf(stdout,"***CampAI Build A new Silo increasing count to: %d\n", itemCount[Structure_Silo]);
                                 }
 
-                                else if (money > 2000
+                                else if (money > 3000
                                            && pBuilder->isAvailableToBuild(Structure_RocketTurret)
                                            && findPlaceLocation(Structure_RocketTurret).isValid()
-                                           && pBuilder->getProductionQueueSize() == 0){
+                                           && pBuilder->getProductionQueueSize() == 0
+                                           && (itemCount[Structure_RocketTurret] <
+                                               (itemCount[Structure_Silo] + itemCount[Structure_Refinery]) * 2)){
 
                                     doProduceItem(pBuilder, Structure_RocketTurret);
                                     itemCount[Structure_RocketTurret]++;
