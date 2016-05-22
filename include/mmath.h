@@ -21,6 +21,7 @@
 // forward declaration
 class Coord;
 
+#include <DataTypes.h>
 #include <fixmath/FixPoint.h>
 #include <cmath>
 
@@ -32,6 +33,18 @@ FixPoint destinationAngleRad(const Coord& p1, const Coord& p2);
 inline FixPoint RadToDeg256(FixPoint angleRad) { return (angleRad << 7)/FixPt_PI; } // angleRad*256/(2*FixPt_PI)
 
 inline FixPoint Deg256ToRad(FixPoint angle) { return (angle*FixPt_PI) >> 7; }   // angle*2*FixPt_PI/256;
+
+/**
+    Calculates the smaller angle between angle1 and angle2. The result is always positive,
+    e.g. angleDiff(RIGHTUP, DOWN) = angleDiff(DOWN, RIGHTUP) = 5
+    \param  angle1  the first angle
+    \param  angle2  the second angle
+    \return the angle between angle1 and angle2.
+*/
+inline int angleDiff(int angle1, int angle2) {
+    int diff = abs(angle1 - angle2);
+    return std::min(diff, NUM_ANGLES - diff);
+}
 
 inline int angleToDrawnAngle(FixPoint angle) { return lround(angle >> 5) & 0x7; }   //  lround(angle*NUM_ANGLES/256) % NUM_ANGLES;
 

@@ -28,6 +28,8 @@
 #define MAX_NODES_CHECKED   (128*128)
 
 AStarSearch::AStarSearch(Map* pMap, UnitBase* pUnit, Coord start, Coord destination) {
+    FixPoint rotationSpeed = FixPt(1,0)/(currentGame->objectData.data[pUnit->getItemID()][pUnit->getOriginalHouseID()].turnspeed * TILESIZE);
+
     sizeX = pMap->getSizeX();
     sizeY = pMap->getSizeY();
 
@@ -81,8 +83,7 @@ AStarSearch::AStarSearch(Map* pMap, UnitBase* pUnit, Coord start, Coord destinat
                         if(getMapData(currentCoord).parentCoord.isValid())  {
                             //add cost of turning time
                             int posAngle = currentGameMap->getPosAngle(getMapData(currentCoord).parentCoord, currentCoord);
-                            if (posAngle != angle)
-                                g += (FixPt(1,0)/currentGame->objectData.data[pUnit->getItemID()][pUnit->getOriginalHouseID()].turnspeed * std::min(abs(angle - posAngle), NUM_ANGLES - std::max(angle, posAngle) + std::min(angle, posAngle)))/(FixPt(TILESIZE,0));
+                            g += angleDiff(angle,posAngle) * rotationSpeed;
                         }
 
                         FixPoint h = blockDistance(nextCoord, destination);

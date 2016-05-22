@@ -18,7 +18,6 @@
 #include <mmath.h>
 
 #include <Definitions.h>
-#include <DataTypes.h>
 
 #include <stdarg.h>
 #include <algorithm>
