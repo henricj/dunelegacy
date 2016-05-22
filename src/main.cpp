@@ -367,7 +367,7 @@ int main(int argc, char *argv[]) {
         if(parameter == "--showlog") {
             // special parameter which does not overwrite settings
             bShowDebugLog = true;
-        } else if((parameter == "-f") || (parameter == "--fullscreen") || (parameter == "-w") || (parameter == "--window") || (parameter.find_first_of("--PlayerName=") == 0) || (parameter.find_first_of("--ServerPort=") == 0)) {
+        } else if((parameter == "-f") || (parameter == "--fullscreen") || (parameter == "-w") || (parameter == "--window") || (parameter.find("--PlayerName=") == 0) || (parameter.find("--ServerPort=") == 0)) {
             // normal parameter for overwriting settings
             // handle later
         } else {
@@ -558,9 +558,9 @@ int main(int argc, char *argv[]) {
                 settings.video.fullscreen = true;
             } else if((parameter == "-w") || (parameter == "--window")) {
                 settings.video.fullscreen = false;
-            } else if(parameter.find_first_of("--PlayerName=") == 0) {
+            } else if(parameter.find("--PlayerName=") == 0) {
                 settings.general.playerName = parameter.substr(strlen("--PlayerName="));
-            } else if(parameter.find_first_of("--ServerPort=") == 0) {
+            } else if(parameter.find("--ServerPort=") == 0) {
                 settings.network.serverPort = atol(argv[i] + strlen("--ServerPort="));
             }
         }
