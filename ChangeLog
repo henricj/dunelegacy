@@ -11,6 +11,7 @@ version 0.96.4
 	* New game option "Manual Carryall Drops"
 	* Save screenshots as PNG
 	* 64-bit builds for Windows
+	* Store complete map in save games (and replays) of single player custom games
 	* Bugfix (Bug 3610246): Mentat help used wrong houses (Thanks to kuffar for reporting that bug)
 
 version 0.96.3

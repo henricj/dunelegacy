@@ -31,6 +31,7 @@
 				<Option object_output="obj/Release/" />
 				<Option type="0" />
 				<Option compiler="gcc" />
+				<Option parameters="--showlog" />
 				<Compiler>
 					<Add option="-g" />
 				</Compiler>

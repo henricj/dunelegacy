@@ -206,7 +206,7 @@ void CustomGameMenu::onNext()
         std::string servername = settings.general.playerName + "'s Game";
         gameInitSettings = GameInitSettings(getBasename(mapFilename, true), readCompleteFile(mapFilename), servername, multiplePlayersPerHouseCheckbox.isChecked(), currentGameOptions);
     } else {
-        gameInitSettings = GameInitSettings(mapFilename, multiplePlayersPerHouseCheckbox.isChecked(), currentGameOptions);
+        gameInitSettings = GameInitSettings(getBasename(mapFilename, true), readCompleteFile(mapFilename), multiplePlayersPerHouseCheckbox.isChecked(), currentGameOptions);
     }
 
     CustomGamePlayers* pCustomGamePlayers = new CustomGamePlayers(gameInitSettings, true, bLANServer);

@@ -119,11 +119,12 @@ public:
 
     /**
         Constructor for specifying the start of a custom map
-        \param  mapfile                     the path to the map file
+        \param  mapfile             the name of the map (without extension)
+        \param  filedata            the data of the map file
         \param  multiplePlayersPerHouse     allow multiple players per house
         \param  gameOptions         the options for this game
     */
-    GameInitSettings(std::string mapfile, bool multiplePlayersPerHouse, const SettingsClass::GameOptionsClass& gameOptions);
+    GameInitSettings(std::string mapfile, std::string filedata, bool multiplePlayersPerHouse, const SettingsClass::GameOptionsClass& gameOptions);
 
     /**
         Constructor for specifying the start of a multiplayer custom map

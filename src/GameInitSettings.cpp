@@ -51,8 +51,8 @@ GameInitSettings::GameInitSettings(HOUSETYPE newHouseID, int newMission, const S
     randomSeed = rand();
 }
 
-GameInitSettings::GameInitSettings(std::string mapfile, bool multiplePlayersPerHouse, const SettingsClass::GameOptionsClass& gameOptions)
- : gameType(GAMETYPE_CUSTOM), houseID(HOUSE_INVALID), mission(0), filename(mapfile), multiplePlayersPerHouse(multiplePlayersPerHouse), gameOptions(gameOptions) {
+GameInitSettings::GameInitSettings(std::string mapfile, std::string filedata, bool multiplePlayersPerHouse, const SettingsClass::GameOptionsClass& gameOptions)
+ : gameType(GAMETYPE_CUSTOM), houseID(HOUSE_INVALID), mission(0), filename(mapfile), filedata(filedata), multiplePlayersPerHouse(multiplePlayersPerHouse), gameOptions(gameOptions) {
     randomSeed = rand();
 }
 
