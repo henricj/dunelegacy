@@ -51,6 +51,7 @@
 #include <SDL.h>
 #include <SDL_rwops.h>
 #include <iostream>
+#include <future>
 #include <stdexcept>
 #include <ctime>
 //#include <sys/types.h>
@@ -75,6 +76,11 @@
 
 #ifdef __APPLE__
     #include <MacFunctions.h>
+#endif
+
+#if !defined(__GNUG__) || (defined(_GLIBCXX_HAS_GTHREADS) && defined(_GLIBCXX_USE_C99_STDINT_TR1) && (ATOMIC_INT_LOCK_FREE > 1) && !defined(_GLIBCXX_HAS_GTHREADS))
+// g++ does not provide std::async on all platforms
+#define HAS_ASYNC
 #endif
 
 void setVideoMode();
@@ -635,14 +641,21 @@ int main(int argc, char *argv[]) {
             fprintf(stdout, "Deinitialize....."); fflush(stdout);
         } else {
             // everything is just fine and we can start the game
+            fprintf(stdout, "loading graphics and sounds..."); fflush(stdout);
 
-            fprintf(stdout, "loading graphics..."); fflush(stdout);
+#ifdef HAS_ASYNC
+            auto gfxManagerFut = std::async(std::launch::async, []() { return new GFXManager(); } );
+            auto sfxManagerFut = std::async(std::launch::async, []() { return new SFXManager(); } );
+
+            pGFXManager = gfxManagerFut.get();
+            pSFXManager = sfxManagerFut.get();
+#else
+            // g++ does not provide std::launch::async on all platforms
             pGFXManager = new GFXManager();
-            fprintf(stdout, "\t\tfinished\n"); fflush(stdout);
-
-            fprintf(stdout, "loading sounds..."); fflush(stdout);
             pSFXManager = new SFXManager();
-            fprintf(stdout, "\t\tfinished\n"); fflush(stdout);
+#endif
+
+            fprintf(stdout, "\tfinished\n"); fflush(stdout);
 
             GUIStyle::setGUIStyle(new DuneStyle);
 

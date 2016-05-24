@@ -33,8 +33,6 @@ Bug:	Starting a replay with a different player name crashes
 Todo:
 -----
 
-Replay should contain INI of played map (or at least md5 of it)
-
 Reinforcements are delivered in reverse order (really?)
 
 If you lose in a campaign mission only the remaining regions are for selection, if you lose on all three regions you can again choose between all three
