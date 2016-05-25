@@ -78,7 +78,7 @@ void RocketTurret::attack() {
 
         if(distanceFrom(centerPoint, targetCenterPoint) < 3 * TILESIZE) {
             // we are just shooting a bullet as a gun turret would do
-            bulletList.push_back( new Bullet( objectID, &centerPoint, &targetCenterPoint, Bullet_ShellMedium,
+            bulletList.push_back( new Bullet( objectID, &centerPoint, &targetCenterPoint, Bullet_ShellTurret,
                                                    currentGame->objectData.data[Structure_GunTurret][originalHouseID].weapondamage,
                                                    target.getObjPointer()->isAFlyingUnit() ) );
 

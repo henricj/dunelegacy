@@ -195,6 +195,15 @@ void Bullet::init()
             graphic = pGFXManager->getObjPic(ObjPic_Bullet_Large, houseID);
         } break;
 
+        case Bullet_ShellTurret: {
+            damageRadius = TILESIZE/2;
+            explodesAtGroundObjects = true;
+            speed = 20;
+            detonationTimer = -1;
+            numFrames = 1;
+            graphic = pGFXManager->getObjPic(ObjPic_Bullet_Medium, houseID);
+        } break;
+
         case Bullet_SmallRocket: {
             damageRadius = TILESIZE/2;
             speed = 20;
@@ -390,7 +399,8 @@ void Bullet::update()
         } else if( explodesAtGroundObjects
                     && currentGameMap->tileExists(location)
                     && currentGameMap->getTile(location)->hasAGroundObject()
-                    && currentGameMap->getTile(location)->getGroundObject()->isAStructure()) {
+                    && currentGameMap->getTile(location)->getGroundObject()->isAStructure()
+                    && ((bulletID != Bullet_ShellTurret) || (currentGameMap->getTile(location)->getGroundObject()->getOwner() != owner))) {
             destroy();
             return;
         } else if(oldDistanceToDestination < newDistanceToDestination || newDistanceToDestination < 4)  {
@@ -463,6 +473,11 @@ void Bullet::destroy()
         case Bullet_ShellLarge: {
             currentGameMap->damage(shooterID, owner, position, bulletID, damage, damageRadius, airAttack);
             currentGame->getExplosionList().push_back(new Explosion(Explosion_ShellLarge,position,houseID));
+        } break;
+
+        case Bullet_ShellTurret: {
+            currentGameMap->damage(shooterID, owner, position, bulletID, damage, damageRadius, airAttack);
+            currentGame->getExplosionList().push_back(new Explosion(Explosion_ShellMedium,position,houseID));
         } break;
 
         case Bullet_Sonic:

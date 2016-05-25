@@ -38,7 +38,7 @@ void GunTurret::init() {
     owner->incrementStructures(itemID);
 
     attackSound = Sound_Gun;
-    bulletType = Bullet_ShellMedium;
+    bulletType = Bullet_ShellTurret;
 
     graphicID = ObjPic_GunTurret;
     graphic = pGFXManager->getObjPic(ObjPic_GunTurret,getOwner()->getHouseID());
