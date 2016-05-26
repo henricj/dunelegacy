@@ -113,6 +113,8 @@ Game::Game() {
 
     bSelectionChanged = false;
 
+    localPlayerName = settings.general.playerName;
+
     unitList.clear();       //holds all the units
     structureList.clear();  //all the structures
     bulletList.clear();
@@ -259,6 +261,9 @@ void Game::initReplay(const std::string& filename) {
         exit(EXIT_FAILURE);
     }
 
+    // override local player name as it was when the replay was created
+    localPlayerName = fs.readString();
+
     // read GameInitInfo
     GameInitSettings loadedGameInitSettings(fs);
 
@@ -266,8 +271,6 @@ void Game::initReplay(const std::string& filename) {
     cmdManager.load(fs);
 
     initGame(loadedGameInitSettings);
-
-    // fs is closed by its destructor
 }
 
 
@@ -1174,6 +1177,9 @@ void Game::runMainLoop() {
 
         OFileStream* pStream = new OFileStream();
         pStream->open(replayname);
+
+        pStream->writeString(getLocalPlayerName());
+
         gameInitSettings.save(*pStream);
 
         // when this game was loaded we have to save the old commands to the replay file first
@@ -1614,7 +1620,7 @@ bool Game::loadSaveGame(InputStream& stream) {
                                     humanPlayer->setPlayername(playername);
                                     registerPlayer(humanPlayer.get());
 
-                                    if(playername == settings.general.playerName) {
+                                    if(playername == getLocalPlayerName()) {
                                         pLocalHouse = house[i];
                                         pLocalPlayer = humanPlayer.get();
                                     }
@@ -1988,7 +1994,7 @@ void Game::handleChatInput(SDL_KeyboardEvent& keyboardEvent) {
                 if(pNetworkManager != nullptr) {
                     pNetworkManager->sendChatMessage(typingChatMessage);
                 }
-                pInterface->getChatManager().addChatMessage(settings.general.playerName, typingChatMessage);
+                pInterface->getChatManager().addChatMessage(getLocalPlayerName(), typingChatMessage);
             }
         }
 

@@ -31,7 +31,7 @@
 #include <stdexcept>
 #include <algorithm>
 
-INIMapLoader::INIMapLoader(Game* pGame, std::string mapname, std::string mapdata)
+INIMapLoader::INIMapLoader(Game* pGame, const std::string& mapname, const std::string& mapdata)
  : INIMap(pGame->gameType, mapname, mapdata), pGame(pGame)
 {
     load();
@@ -447,7 +447,7 @@ void INIMapLoader::loadHouses()
             Player* pPlayer = pPlayerData->create(pNewHouse, iter2->playerName);
 
             pNewHouse->addPlayer(std::shared_ptr<Player>(pPlayer));
-            if(iter2->playerName == settings.general.playerName) {
+            if(iter2->playerName == pGame->getLocalPlayerName()) {
                 pLocalHouse = pNewHouse;
                 pLocalPlayer = dynamic_cast<HumanPlayer*>(pPlayer);
             }
@@ -860,7 +860,7 @@ House* INIMapLoader::getOrCreateHouse(int houseID) {
                     Player* pPlayer = pPlayerData->create(pNewHouse, iter2->playerName);
 
                     pNewHouse->addPlayer(std::shared_ptr<Player>(pPlayer));
-                    if(iter2->playerName == settings.general.playerName) {
+                    if(iter2->playerName == pGame->getLocalPlayerName()) {
                         pLocalHouse = pNewHouse;
                         pLocalPlayer = dynamic_cast<HumanPlayer*>(pPlayer);
                     }

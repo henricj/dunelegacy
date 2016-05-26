@@ -346,6 +346,12 @@ public:
     bool areCheatsEnabled() const { return bCheatsEnabled; };
 
     /**
+        Returns the name of the local player; this method should be used instead of using settings.general.playerName directly
+        \return the local player name
+    */
+    const std::string& getLocalPlayerName() const { return localPlayerName; }
+
+    /**
         Register a new player in this game.
         \param  player      the player to register
     */
@@ -588,6 +594,7 @@ private:
 
     std::vector<House*> house;                          ///< All the houses of this game, index by their houseID; has the size NUM_HOUSES; unused houses are nullptr
 
+    std::string localPlayerName;                            ///< the name of the local player
     std::multimap<std::string, Player*> playerName2Player;  ///< mapping player names to players (one entry per player)
     std::map<Uint8, Player*> playerID2Player;               ///< mapping player ids to players (one entry per player)
 };
