@@ -224,10 +224,6 @@
 		13E564D1169B55BE00D282B9 /* OPENSD2.PAK in Resources */ = {isa = PBXBuildFile; fileRef = 13E564D0169B55BE00D282B9 /* OPENSD2.PAK */; };
 		13E929C010AF72BF00169991 /* Dune2-Versions.txt in Resources */ = {isa = PBXBuildFile; fileRef = 13E929BF10AF72BF00169991 /* Dune2-Versions.txt */; };
 		8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
-		CEEB16A21CD69D7700CF91D9 /* SDL2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEEB16A11CD69D7700CF91D9 /* SDL2.framework */; };
-		CEEB16A31CD69D7700CF91D9 /* SDL2.framework in Copy Frameworks into .app bundle */ = {isa = PBXBuildFile; fileRef = CEEB16A11CD69D7700CF91D9 /* SDL2.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		CEEB16A51CD69DA700CF91D9 /* SDL2_mixer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEEB16A41CD69DA700CF91D9 /* SDL2_mixer.framework */; };
-		CEEB16A61CD69DA700CF91D9 /* SDL2_mixer.framework in Copy Frameworks into .app bundle */ = {isa = PBXBuildFile; fileRef = CEEB16A41CD69DA700CF91D9 /* SDL2_mixer.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		CEEB16A91CD69F7900CF91D9 /* surroundopl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CEEB16A71CD69F7900CF91D9 /* surroundopl.cpp */; };
 		CEEB16AA1CD69F7900CF91D9 /* woodyopl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CEEB16A81CD69F7900CF91D9 /* woodyopl.cpp */; };
 		CEEB16AD1CD69F8800CF91D9 /* LoadSavePNG.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CEEB16AB1CD69F8800CF91D9 /* LoadSavePNG.cpp */; };
@@ -244,6 +240,8 @@
 		CEEB16D31CD6A23B00CF91D9 /* fix32_str.c in Sources */ = {isa = PBXBuildFile; fileRef = CEEB16C91CD6A23B00CF91D9 /* fix32_str.c */; };
 		CEEB16D41CD6A23B00CF91D9 /* fix32_trig.c in Sources */ = {isa = PBXBuildFile; fileRef = CEEB16CA1CD6A23B00CF91D9 /* fix32_trig.c */; };
 		CEEB16D51CD6A23B00CF91D9 /* fix32.c in Sources */ = {isa = PBXBuildFile; fileRef = CEEB16CB1CD6A23B00CF91D9 /* fix32.c */; };
+		E3F2E6DF1CE6F9650077067F /* SDL2_mixer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E3F2E6DD1CE6F9650077067F /* SDL2_mixer.framework */; };
+		E3F2E6E01CE6F9650077067F /* SDL2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E3F2E6DE1CE6F9650077067F /* SDL2.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -253,8 +251,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				CEEB16A61CD69DA700CF91D9 /* SDL2_mixer.framework in Copy Frameworks into .app bundle */,
-				CEEB16A31CD69D7700CF91D9 /* SDL2.framework in Copy Frameworks into .app bundle */,
 			);
 			name = "Copy Frameworks into .app bundle";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -789,8 +785,6 @@
 		29B97325FDCFA39411CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
 		32CA4F630368D1EE00C91783 /* Dune Legacy_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Dune Legacy_Prefix.pch"; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
-		CEEB16A11CD69D7700CF91D9 /* SDL2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2.framework; path = ../../../../../Library/Frameworks/SDL2.framework; sourceTree = "<group>"; };
-		CEEB16A41CD69DA700CF91D9 /* SDL2_mixer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2_mixer.framework; path = ../../../../../Library/Frameworks/SDL2_mixer.framework; sourceTree = "<group>"; };
 		CEEB16A71CD69F7900CF91D9 /* surroundopl.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = surroundopl.cpp; sourceTree = "<group>"; };
 		CEEB16A81CD69F7900CF91D9 /* woodyopl.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = woodyopl.cpp; sourceTree = "<group>"; };
 		CEEB16AB1CD69F8800CF91D9 /* LoadSavePNG.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = LoadSavePNG.cpp; sourceTree = "<group>"; };
@@ -825,6 +819,8 @@
 		CEEB16DE1CD6A25D00CF91D9 /* int64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = int64.h; path = fixmath/int64.h; sourceTree = "<group>"; };
 		E311BCC51BF9CF8C005C993B /* QuantBot.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QuantBot.h; sourceTree = "<group>"; };
 		E311BCC61BF9CF8C005C993B /* SmartBot.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SmartBot.h; sourceTree = "<group>"; };
+		E3F2E6DD1CE6F9650077067F /* SDL2_mixer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = SDL2_mixer.framework; sourceTree = "<group>"; };
+		E3F2E6DE1CE6F9650077067F /* SDL2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = SDL2.framework; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -832,9 +828,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CEEB16A51CD69DA700CF91D9 /* SDL2_mixer.framework in Frameworks */,
+				E3F2E6E01CE6F9650077067F /* SDL2.framework in Frameworks */,
 				8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */,
-				CEEB16A21CD69D7700CF91D9 /* SDL2.framework in Frameworks */,
+				E3F2E6DF1CE6F9650077067F /* SDL2_mixer.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -853,6 +849,8 @@
 		1058C7A0FEA54F0111CA2CBB /* Linked Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				E3F2E6DD1CE6F9650077067F /* SDL2_mixer.framework */,
+				E3F2E6DE1CE6F9650077067F /* SDL2.framework */,
 				1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */,
 			);
 			name = "Linked Frameworks";
@@ -1685,8 +1683,6 @@
 		29B97314FDCFA39411CA2CEA /* Dune Legacy */ = {
 			isa = PBXGroup;
 			children = (
-				CEEB16A41CD69DA700CF91D9 /* SDL2_mixer.framework */,
-				CEEB16A11CD69D7700CF91D9 /* SDL2.framework */,
 				080E96DDFE201D6D7F000001 /* Classes */,
 				29B97315FDCFA39411CA2CEA /* Other Sources */,
 				29B97317FDCFA39411CA2CEA /* Resources */,
@@ -1792,7 +1788,7 @@
 		29B97313FDCFA39411CA2CEA /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0720;
+				LastUpgradeCheck = 0730;
 			};
 			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "Dune Legacy" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -2042,7 +2038,6 @@
 		C01FCF4B08A954540054247B /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD)";
 				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_USE_OPTIMIZATION_PROFILE = NO;
@@ -2053,6 +2048,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(LOCAL_LIBRARY_DIR)/Frameworks",
+					"$(PROJECT_DIR)",
 				);
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
@@ -2095,7 +2091,6 @@
 		C01FCF4C08A954540054247B /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD)";
 				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_USE_OPTIMIZATION_PROFILE = NO;
@@ -2106,6 +2101,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(LOCAL_LIBRARY_DIR)/Frameworks",
+					"$(PROJECT_DIR)",
 				);
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_ENABLE_SSE3_EXTENSIONS = YES;
@@ -2146,7 +2142,6 @@
 		C01FCF4F08A954540054247B /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
 				COPY_PHASE_STRIP = NO;
 				DEPLOYMENT_POSTPROCESSING = YES;
 				ENABLE_TESTABILITY = YES;
@@ -2199,7 +2194,6 @@
 		C01FCF5008A954540054247B /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
 				COPY_PHASE_STRIP = NO;
 				DEPLOYMENT_POSTPROCESSING = YES;
 				FRAMEWORK_SEARCH_PATHS = (

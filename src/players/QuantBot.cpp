@@ -75,7 +75,7 @@
     == Units ==
     ii) units that get stuck in buildings should be transported to squadcenter =%80=
     vii) fix attack timer =%80=
-    viii) when attack timer exceeds a certain value then all hunting units are set to area guard
+    viii) when attack timer exceeds a certain value then all fing units are set to area guard
 
     2) harvester return distance bug been introduced.= in progress ==
 
@@ -2075,7 +2075,7 @@ void QuantBot::attack() {
             && pUnit->getItemID() != Unit_MCV
             && pUnit->getItemID() != Unit_Carryall
             && pUnit->getItemID() != Unit_Ornithopter
-            && pUnit->getItemID() != Unit_Deviator
+            //&& pUnit->getItemID() != Unit_Deviator - test removal of this
             && pUnit->getHealth() / pUnit->getMaxHealth() > FixPt(0,6)
             /**
                 Only units within the squad should hunt, safety in numbers
