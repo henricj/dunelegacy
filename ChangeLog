@@ -11,7 +11,11 @@ version 0.96.4
 	* New game option "Manual Carryall Drops"
 	* Save screenshots as PNG
 	* 64-bit builds for Windows
-	* Bugfix (Bug 3610246): Mentat help used wrong houses (Thanks to kuffar for reporting that bug)
+	* Store complete map in save games (and replays) of single player custom games
+	* Bugfix (Bug #70): Changing the player name makes replays crash
+	* Bugfix (Bug #67): Saving a game under Windows with (for filenames) illegal characters results in no save at all (Reported by vangrunz)
+	* Bugfix (Bug #40): Bullets from gun turrets hit own building, e.g. other turrets (Reported by Dream Worker)
+	* Bugfix (Bug 3610246): Mentat help used wrong houses (Reported by kuffar)
 
 version 0.96.3
 	* Full-featured map editor with support of Dune2-compatible maps as well as the extended map format

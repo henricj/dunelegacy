@@ -51,23 +51,23 @@ GameInitSettings::GameInitSettings(HOUSETYPE newHouseID, int newMission, const S
     randomSeed = rand();
 }
 
-GameInitSettings::GameInitSettings(std::string mapfile, bool multiplePlayersPerHouse, const SettingsClass::GameOptionsClass& gameOptions)
- : gameType(GAMETYPE_CUSTOM), houseID(HOUSE_INVALID), mission(0), filename(mapfile), multiplePlayersPerHouse(multiplePlayersPerHouse), gameOptions(gameOptions) {
+GameInitSettings::GameInitSettings(const std::string& mapfile, const std::string& filedata, bool multiplePlayersPerHouse, const SettingsClass::GameOptionsClass& gameOptions)
+ : gameType(GAMETYPE_CUSTOM), houseID(HOUSE_INVALID), mission(0), filename(mapfile), filedata(filedata), multiplePlayersPerHouse(multiplePlayersPerHouse), gameOptions(gameOptions) {
     randomSeed = rand();
 }
 
-GameInitSettings::GameInitSettings(std::string mapfile, std::string filedata, std::string serverName, bool multiplePlayersPerHouse, const SettingsClass::GameOptionsClass& gameOptions)
+GameInitSettings::GameInitSettings(const std::string& mapfile, const std::string& filedata, const std::string& serverName, bool multiplePlayersPerHouse, const SettingsClass::GameOptionsClass& gameOptions)
  : gameType(GAMETYPE_CUSTOM_MULTIPLAYER), houseID(HOUSE_INVALID), mission(0), filename(mapfile), filedata(filedata), servername(serverName), multiplePlayersPerHouse(multiplePlayersPerHouse), gameOptions(gameOptions) {
     randomSeed = rand();
 }
 
-GameInitSettings::GameInitSettings(std::string savegame)
+GameInitSettings::GameInitSettings(const std::string& savegame)
  : gameType(GAMETYPE_LOAD_SAVEGAME), houseID(HOUSE_INVALID), mission(0) {
     checkSaveGame(savegame);
     filename = savegame;
 }
 
-GameInitSettings::GameInitSettings(std::string savegame, std::string filedata, std::string serverName)
+GameInitSettings::GameInitSettings(const std::string& savegame, const std::string& filedata, const std::string& serverName)
  : gameType(GAMETYPE_LOAD_MULTIPLAYER), houseID(HOUSE_INVALID), mission(0), filename(savegame), filedata(filedata), servername(serverName) {
     IMemoryStream memStream(filedata.c_str(), filedata.size());
     checkSaveGame(memStream);
@@ -153,7 +153,7 @@ std::string GameInitSettings::getScenarioFilename(HOUSETYPE newHouse, int missio
     return name;
 }
 
-void GameInitSettings::checkSaveGame(std::string savegame) {
+void GameInitSettings::checkSaveGame(const std::string& savegame) {
     IFileStream fs;
 
     if(fs.open(savegame) == false) {

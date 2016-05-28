@@ -80,6 +80,7 @@ LoadSaveWindow::LoadSaveWindow(bool bSave, std::string caption, std::vector<std:
         saveName.setTextColor(color);
         mainVBox.addWidget(&saveName);
         saveName.setMaximumTextLength(64);
+        saveName.setForbiddenChars("?*:|<>/\\\"");
         mainVBox.addWidget(VSpacer::create(5));
     }
 

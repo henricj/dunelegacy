@@ -85,7 +85,7 @@ CustomGamePlayers::CustomGamePlayers(const GameInitSettings& newGameInitSettings
     minimap.setSurface( GUIStyle::getInstance().createButtonSurface(130,130,_("Choose map"), true, false), true);
     rightVBox.addWidget(&minimap);
 
-    if(gameInitSettings.getGameType() == GAMETYPE_CUSTOM_MULTIPLAYER) {
+    if(gameInitSettings.getGameType() == GAMETYPE_CUSTOM || gameInitSettings.getGameType() == GAMETYPE_CUSTOM_MULTIPLAYER) {
         SDL_RWops* RWops = SDL_RWFromConstMem(gameInitSettings.getFiledata().c_str(), gameInitSettings.getFiledata().size());
 
         std::shared_ptr<INIFile> map(new INIFile(RWops));

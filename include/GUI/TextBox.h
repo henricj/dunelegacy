@@ -104,13 +104,20 @@ public:
         this->maxTextLength = maxTextLength;
     }
 
-
     /**
         Sets the set of allowed characters for this text box.
         \param  allowedChars    the set of allowed chars or an empty string if everything is allowed
     */
     virtual inline void setAllowedChars(std::string allowedChars = "") {
         this->allowedChars = allowedChars;
+    }
+
+    /**
+        Sets the set of forbidden characters for this text box.
+        \param  forbiddenChars    the set of forbidden chars or an empty string if everything is allowed
+    */
+    virtual inline void setForbiddenChars(std::string forbiddenChars = "") {
+        this->forbiddenChars = forbiddenChars;
     }
 
     /**
@@ -280,7 +287,9 @@ public:
         std::string::const_iterator iter;
         for(iter = newText.begin(); iter != newText.end(); ++iter) {
             char c = *iter;
-            if(((maxTextLength < 0) || ((int) text.length() < maxTextLength)) && (allowedChars.empty() || allowedChars.find(c) != std::string::npos)) {
+            if(((maxTextLength < 0) || ((int) text.length() < maxTextLength))
+                && (allowedChars.empty() || allowedChars.find(c) != std::string::npos)
+                && (forbiddenChars.find(c) == std::string::npos)) {
                 text += c;
                 bChanged = true;
             }
@@ -331,6 +340,7 @@ private:
     int maxTextLength;                          ///< the maximum length of the typed text
 
     std::string allowedChars;                   ///< a set of allowed characters, empty string for everything allowed
+    std::string forbiddenChars;                 ///< a set of forbidden characters, empty string for everything allowed
 
     Uint32 lastCarretTime;                      ///< Last time the carret changes from off to on or vise versa
 

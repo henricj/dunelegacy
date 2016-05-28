@@ -56,7 +56,7 @@ public:
                 }
                 throw;
             }
-        } else if(gameType == GAMETYPE_CUSTOM_MULTIPLAYER) {
+        } else if(gameType == GAMETYPE_CUSTOM || gameType == GAMETYPE_CUSTOM_MULTIPLAYER) {
             SDL_RWops* RWops = SDL_RWFromConstMem(mapdata.c_str(), mapdata.size());
             inifile = std::shared_ptr<INIFile>(new INIFile(RWops));
             SDL_RWclose(RWops);

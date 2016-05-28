@@ -46,7 +46,7 @@ TurretBase::TurretBase(InputStream& stream) : StructureBase(stream) {
 
 void TurretBase::init() {
     attackSound = Sound_Gun;
-    bulletType = Bullet_ShellMedium;
+    bulletType = Bullet_ShellTurret;
 
     structureSize.x = 1;
     structureSize.y = 1;

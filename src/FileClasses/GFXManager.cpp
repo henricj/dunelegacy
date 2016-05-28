@@ -36,6 +36,88 @@
 
 using std::shared_ptr;
 
+/**
+    Number of columns and rows each obj pic has
+*/
+static Coord objPicTiles[] {
+    { 8, 1 },   // ObjPic_Tank_Base
+    { 8, 1 },   // ObjPic_Tank_Gun
+    { 8, 1 },   // ObjPic_Siegetank_Base
+    { 8, 1 },   // ObjPic_Siegetank_Gun
+    { 8, 1 },   // ObjPic_Devastator_Base
+    { 8, 1 },   // ObjPic_Devastator_Gun
+    { 8, 1 },   // ObjPic_Sonictank_Gun
+    { 8, 1 },   // ObjPic_Launcher_Gun
+    { 8, 1 },   // ObjPic_Quad
+    { 8, 1 },   // ObjPic_Trike
+    { 8, 1 },   // ObjPic_Harvester
+    { 8, 3 },   // ObjPic_Harvester_Sand
+    { 8, 1 },   // ObjPic_MCV
+    { 8, 2 },   // ObjPic_Carryall
+    { 8, 2 },   // ObjPic_CarryallShadow
+    { 8, 1 },   // ObjPic_Frigate
+    { 8, 1 },   // ObjPic_FrigateShadow
+    { 8, 3 },   // ObjPic_Ornithopter
+    { 8, 3 },   // ObjPic_OrnithopterShadow
+    { 4, 3 },   // ObjPic_Trooper
+    { 4, 3 },   // ObjPic_Troopers
+    { 4, 3 },   // ObjPic_Soldier
+    { 4, 3 },   // ObjPic_Infantry
+    { 4, 3 },   // ObjPic_Saboteur
+    { 1, 9 },   // ObjPic_Sandworm
+    { 4, 1 },   // ObjPic_ConstructionYard
+    { 4, 1 },   // ObjPic_Windtrap
+    { 10, 1 },  // ObjPic_Refinery
+    { 4, 1 },   // ObjPic_Barracks
+    { 4, 1 },   // ObjPic_WOR
+    { 4, 1 },   // ObjPic_Radar
+    { 6, 1 },   // ObjPic_LightFactory
+    { 4, 1 },   // ObjPic_Silo
+    { 8, 1 },   // ObjPic_HeavyFactory
+    { 8, 1 },   // ObjPic_HighTechFactory
+    { 4, 1 },   // ObjPic_IX
+    { 4, 1 },   // ObjPic_Palace
+    { 10, 1 },  // ObjPic_RepairYard
+    { 10, 1 },  // ObjPic_Starport
+    { 10, 1 },  // ObjPic_GunTurret
+    { 10, 1 },  // ObjPic_RocketTurret
+    { 75, 1 },  // ObjPic_Wall
+    { 16, 1 },  // ObjPic_Bullet_SmallRocket
+    { 16, 1 },  // ObjPic_Bullet_MediumRocket
+    { 16, 1 },  // ObjPic_Bullet_LargeRocket
+    { 1, 1 },   // ObjPic_Bullet_Small
+    { 1, 1 },   // ObjPic_Bullet_Medium
+    { 1, 1 },   // ObjPic_Bullet_Large
+    { 1, 1 },   // ObjPic_Bullet_Sonic
+    { 1, 1 },   // ObjPic_Bullet_SonicTemp
+    { 5, 1 },   // ObjPic_Hit_Gas
+    { 1, 1 },   // ObjPic_Hit_ShellSmall
+    { 1, 1 },   // ObjPic_Hit_ShellMedium
+    { 1, 1 },   // ObjPic_Hit_ShellLarge
+    { 5, 1 },   // ObjPic_ExplosionSmall
+    { 5, 1 },   // ObjPic_ExplosionMedium1
+    { 5, 1 },   // ObjPic_ExplosionMedium2
+    { 5, 1 },   // ObjPic_ExplosionLarge1
+    { 5, 1 },   // ObjPic_ExplosionLarge2
+    { 2, 1 },   // ObjPic_ExplosionSmallUnit
+    { 21, 1 },  // ObjPic_ExplosionFlames
+    { 3, 1 },   // ObjPic_ExplosionSpiceBloom
+    { 6, 1 },   // ObjPic_DeadInfantry
+    { 6, 1 },   // ObjPic_DeadAirUnit
+    { 3, 1 },   // ObjPic_Smoke
+    { 1, 1 },   // ObjPic_SandwormShimmerMask
+    { 1, 1 },   // ObjPic_SandwormShimmerTemp
+    { 86, 1 },  // ObjPic_Terrain
+    { 14, 1 },  // ObjPic_DestroyedStructure
+    { 6, 1 },   // ObjPic_RockDamage
+    { 3, 1 },   // ObjPic_SandDamage
+    { 16, 1 },  // ObjPic_Terrain_Hidden
+    { 16, 1 },  // ObjPic_Terrain_HiddenFog
+    { 8, 1 },   // ObjPic_Terrain_Tracks
+    { 1, 1 },   // ObjPic_Star
+};
+
+
 GFXManager::GFXManager() {
     // init whole objPic and objPicTex arrays
     for(int i = 0; i < NUM_OBJPICS; i++) {
@@ -125,322 +207,105 @@ GFXManager::GFXManager() {
 
 
 
-    // load Object pics
+    // load object pics in the original resolution
     objPic[ObjPic_Tank_Base][HOUSE_HARKONNEN][0] = units2->getPictureArray(8,1,GROUNDUNIT_ROW(0));
-    objPic[ObjPic_Tank_Base][HOUSE_HARKONNEN][1] = Scaler::defaultDoubleTiledSurface(objPic[ObjPic_Tank_Base][HOUSE_HARKONNEN][0], 8, 1, false);
-    objPic[ObjPic_Tank_Base][HOUSE_HARKONNEN][2] = Scaler::defaultTripleTiledSurface(objPic[ObjPic_Tank_Base][HOUSE_HARKONNEN][0], 8, 1, false);
-
     objPic[ObjPic_Tank_Gun][HOUSE_HARKONNEN][0] = units2->getPictureArray(8,1,GROUNDUNIT_ROW(5));
-    objPic[ObjPic_Tank_Gun][HOUSE_HARKONNEN][1] = Scaler::defaultDoubleTiledSurface(objPic[ObjPic_Tank_Gun][HOUSE_HARKONNEN][0], 8, 1, false);
-    objPic[ObjPic_Tank_Gun][HOUSE_HARKONNEN][2] = Scaler::defaultTripleTiledSurface(objPic[ObjPic_Tank_Gun][HOUSE_HARKONNEN][0], 8, 1, false);
-
     objPic[ObjPic_Siegetank_Base][HOUSE_HARKONNEN][0] = units2->getPictureArray(8,1,GROUNDUNIT_ROW(10));
-    objPic[ObjPic_Siegetank_Base][HOUSE_HARKONNEN][1] = Scaler::defaultDoubleTiledSurface(objPic[ObjPic_Siegetank_Base][HOUSE_HARKONNEN][0], 8, 1, false);
-    objPic[ObjPic_Siegetank_Base][HOUSE_HARKONNEN][2] = Scaler::defaultTripleTiledSurface(objPic[ObjPic_Siegetank_Base][HOUSE_HARKONNEN][0], 8, 1, false);
-
     objPic[ObjPic_Siegetank_Gun][HOUSE_HARKONNEN][0] = units2->getPictureArray(8,1,GROUNDUNIT_ROW(15));
-    objPic[ObjPic_Siegetank_Gun][HOUSE_HARKONNEN][1] = Scaler::defaultDoubleTiledSurface(objPic[ObjPic_Siegetank_Gun][HOUSE_HARKONNEN][0], 8, 1, false);
-    objPic[ObjPic_Siegetank_Gun][HOUSE_HARKONNEN][2] = Scaler::defaultTripleTiledSurface(objPic[ObjPic_Siegetank_Gun][HOUSE_HARKONNEN][0], 8, 1, false);
-
     objPic[ObjPic_Devastator_Base][HOUSE_HARKONNEN][0] = units2->getPictureArray(8,1,GROUNDUNIT_ROW(20));
-    objPic[ObjPic_Devastator_Base][HOUSE_HARKONNEN][1] = Scaler::defaultDoubleTiledSurface(objPic[ObjPic_Devastator_Base][HOUSE_HARKONNEN][0], 8, 1, false);
-    objPic[ObjPic_Devastator_Base][HOUSE_HARKONNEN][2] = Scaler::defaultTripleTiledSurface(objPic[ObjPic_Devastator_Base][HOUSE_HARKONNEN][0], 8, 1, false);
-
     objPic[ObjPic_Devastator_Gun][HOUSE_HARKONNEN][0] = units2->getPictureArray(8,1,GROUNDUNIT_ROW(25));
-    objPic[ObjPic_Devastator_Gun][HOUSE_HARKONNEN][1] = Scaler::defaultDoubleTiledSurface(objPic[ObjPic_Devastator_Gun][HOUSE_HARKONNEN][0], 8, 1, false);
-    objPic[ObjPic_Devastator_Gun][HOUSE_HARKONNEN][2] = Scaler::defaultTripleTiledSurface(objPic[ObjPic_Devastator_Gun][HOUSE_HARKONNEN][0], 8, 1, false);
-
     objPic[ObjPic_Sonictank_Gun][HOUSE_HARKONNEN][0] = units2->getPictureArray(8,1,GROUNDUNIT_ROW(30));
-    objPic[ObjPic_Sonictank_Gun][HOUSE_HARKONNEN][1] = Scaler::defaultDoubleTiledSurface(objPic[ObjPic_Sonictank_Gun][HOUSE_HARKONNEN][0], 8, 1, false);
-    objPic[ObjPic_Sonictank_Gun][HOUSE_HARKONNEN][2] = Scaler::defaultTripleTiledSurface(objPic[ObjPic_Sonictank_Gun][HOUSE_HARKONNEN][0], 8, 1, false);
-
     objPic[ObjPic_Launcher_Gun][HOUSE_HARKONNEN][0] = units2->getPictureArray(8,1,GROUNDUNIT_ROW(35));
-    objPic[ObjPic_Launcher_Gun][HOUSE_HARKONNEN][1] = Scaler::defaultDoubleTiledSurface(objPic[ObjPic_Launcher_Gun][HOUSE_HARKONNEN][0], 8, 1, false);
-    objPic[ObjPic_Launcher_Gun][HOUSE_HARKONNEN][2] = Scaler::defaultTripleTiledSurface(objPic[ObjPic_Launcher_Gun][HOUSE_HARKONNEN][0], 8, 1, false);
-
     objPic[ObjPic_Quad][HOUSE_HARKONNEN][0] = units->getPictureArray(8,1,GROUNDUNIT_ROW(0));
-    objPic[ObjPic_Quad][HOUSE_HARKONNEN][1] = Scaler::defaultDoubleTiledSurface(objPic[ObjPic_Quad][HOUSE_HARKONNEN][0], 8, 1, false);
-    objPic[ObjPic_Quad][HOUSE_HARKONNEN][2] = Scaler::defaultTripleTiledSurface(objPic[ObjPic_Quad][HOUSE_HARKONNEN][0], 8, 1, false);
-
     objPic[ObjPic_Trike][HOUSE_HARKONNEN][0] = units->getPictureArray(8,1,GROUNDUNIT_ROW(5));
-    objPic[ObjPic_Trike][HOUSE_HARKONNEN][1] = Scaler::defaultDoubleTiledSurface(objPic[ObjPic_Trike][HOUSE_HARKONNEN][0], 8, 1, false);
-    objPic[ObjPic_Trike][HOUSE_HARKONNEN][2] = Scaler::defaultTripleTiledSurface(objPic[ObjPic_Trike][HOUSE_HARKONNEN][0], 8, 1, false);
-
     objPic[ObjPic_Harvester][HOUSE_HARKONNEN][0] = units->getPictureArray(8,1,GROUNDUNIT_ROW(10));
-    objPic[ObjPic_Harvester][HOUSE_HARKONNEN][1] = Scaler::defaultDoubleTiledSurface(objPic[ObjPic_Harvester][HOUSE_HARKONNEN][0], 8, 1, false);
-    objPic[ObjPic_Harvester][HOUSE_HARKONNEN][2] = Scaler::defaultTripleTiledSurface(objPic[ObjPic_Harvester][HOUSE_HARKONNEN][0], 8, 1, false);
-
     objPic[ObjPic_Harvester_Sand][HOUSE_HARKONNEN][0] = units1->getPictureArray(8,3,HARVESTERSAND_ROW(72),HARVESTERSAND_ROW(73),HARVESTERSAND_ROW(74));
-    objPic[ObjPic_Harvester_Sand][HOUSE_HARKONNEN][1] = Scaler::defaultDoubleTiledSurface(objPic[ObjPic_Harvester_Sand][HOUSE_HARKONNEN][0], 8, 3, false);
-    objPic[ObjPic_Harvester_Sand][HOUSE_HARKONNEN][2] = Scaler::defaultTripleTiledSurface(objPic[ObjPic_Harvester_Sand][HOUSE_HARKONNEN][0], 8, 3, false);
-
     objPic[ObjPic_MCV][HOUSE_HARKONNEN][0] = units->getPictureArray(8,1,GROUNDUNIT_ROW(15));
-    objPic[ObjPic_MCV][HOUSE_HARKONNEN][1] = Scaler::defaultDoubleTiledSurface(objPic[ObjPic_MCV][HOUSE_HARKONNEN][0], 8, 1, false);
-    objPic[ObjPic_MCV][HOUSE_HARKONNEN][2] = Scaler::defaultTripleTiledSurface(objPic[ObjPic_MCV][HOUSE_HARKONNEN][0], 8, 1, false);
-
     objPic[ObjPic_Carryall][HOUSE_HARKONNEN][0] = units->getPictureArray(8,2,AIRUNIT_ROW(45),AIRUNIT_ROW(48));
-    objPic[ObjPic_Carryall][HOUSE_HARKONNEN][1] = Scaler::defaultDoubleTiledSurface(objPic[ObjPic_Carryall][HOUSE_HARKONNEN][0], 8, 2, false);
-    objPic[ObjPic_Carryall][HOUSE_HARKONNEN][2] = Scaler::defaultTripleTiledSurface(objPic[ObjPic_Carryall][HOUSE_HARKONNEN][0], 8, 2, false);
-
     objPic[ObjPic_CarryallShadow][HOUSE_HARKONNEN][0] = createShadowSurface(objPic[ObjPic_Carryall][HOUSE_HARKONNEN][0]);
-    objPic[ObjPic_CarryallShadow][HOUSE_HARKONNEN][1] = Scaler::defaultDoubleTiledSurface(objPic[ObjPic_CarryallShadow][HOUSE_HARKONNEN][0], 8, 2, false);
-    objPic[ObjPic_CarryallShadow][HOUSE_HARKONNEN][2] = Scaler::defaultTripleTiledSurface(objPic[ObjPic_CarryallShadow][HOUSE_HARKONNEN][0], 8, 2, false);
-
     objPic[ObjPic_Frigate][HOUSE_HARKONNEN][0] = units->getPictureArray(8,1,AIRUNIT_ROW(60));
-    objPic[ObjPic_Frigate][HOUSE_HARKONNEN][1] = Scaler::defaultDoubleTiledSurface(objPic[ObjPic_Frigate][HOUSE_HARKONNEN][0], 8, 1, false);
-    objPic[ObjPic_Frigate][HOUSE_HARKONNEN][2] = Scaler::defaultTripleTiledSurface(objPic[ObjPic_Frigate][HOUSE_HARKONNEN][0], 8, 1, false);
-
     objPic[ObjPic_FrigateShadow][HOUSE_HARKONNEN][0] = createShadowSurface(objPic[ObjPic_Frigate][HOUSE_HARKONNEN][0]);
-    objPic[ObjPic_FrigateShadow][HOUSE_HARKONNEN][1] = Scaler::defaultDoubleTiledSurface(objPic[ObjPic_FrigateShadow][HOUSE_HARKONNEN][0], 8, 1, false);
-    objPic[ObjPic_FrigateShadow][HOUSE_HARKONNEN][2] = Scaler::defaultTripleTiledSurface(objPic[ObjPic_FrigateShadow][HOUSE_HARKONNEN][0], 8, 1, false);
-
     objPic[ObjPic_Ornithopter][HOUSE_HARKONNEN][0] = units->getPictureArray(8,3,ORNITHOPTER_ROW(51),ORNITHOPTER_ROW(52),ORNITHOPTER_ROW(53));
-    objPic[ObjPic_Ornithopter][HOUSE_HARKONNEN][1] = Scaler::defaultDoubleTiledSurface(objPic[ObjPic_Ornithopter][HOUSE_HARKONNEN][0], 8, 3, false);
-    objPic[ObjPic_Ornithopter][HOUSE_HARKONNEN][2] = Scaler::defaultTripleTiledSurface(objPic[ObjPic_Ornithopter][HOUSE_HARKONNEN][0], 8, 3, false);
-
     objPic[ObjPic_OrnithopterShadow][HOUSE_HARKONNEN][0] = createShadowSurface(objPic[ObjPic_Ornithopter][HOUSE_HARKONNEN][0]);
-    objPic[ObjPic_OrnithopterShadow][HOUSE_HARKONNEN][1] = Scaler::defaultDoubleTiledSurface(objPic[ObjPic_OrnithopterShadow][HOUSE_HARKONNEN][0], 8, 3, false);
-    objPic[ObjPic_OrnithopterShadow][HOUSE_HARKONNEN][2] = Scaler::defaultTripleTiledSurface(objPic[ObjPic_OrnithopterShadow][HOUSE_HARKONNEN][0], 8, 3, false);
-
     objPic[ObjPic_Trooper][HOUSE_HARKONNEN][0] = units->getPictureArray(4,3,INFANTRY_ROW(82),INFANTRY_ROW(83),INFANTRY_ROW(84));
-    objPic[ObjPic_Trooper][HOUSE_HARKONNEN][1] = Scaler::defaultDoubleTiledSurface(objPic[ObjPic_Trooper][HOUSE_HARKONNEN][0], 4, 3, false);
-    objPic[ObjPic_Trooper][HOUSE_HARKONNEN][2] = Scaler::defaultTripleTiledSurface(objPic[ObjPic_Trooper][HOUSE_HARKONNEN][0], 4, 3, false);
-
     objPic[ObjPic_Troopers][HOUSE_HARKONNEN][0] = units->getPictureArray(4,4,MULTIINFANTRY_ROW(103),MULTIINFANTRY_ROW(104),MULTIINFANTRY_ROW(105),MULTIINFANTRY_ROW(106));
-    objPic[ObjPic_Troopers][HOUSE_HARKONNEN][1] = Scaler::defaultDoubleTiledSurface(objPic[ObjPic_Troopers][HOUSE_HARKONNEN][0], 4, 3, false);
-    objPic[ObjPic_Troopers][HOUSE_HARKONNEN][2] = Scaler::defaultTripleTiledSurface(objPic[ObjPic_Troopers][HOUSE_HARKONNEN][0], 4, 3, false);
-
     objPic[ObjPic_Soldier][HOUSE_HARKONNEN][0] = units->getPictureArray(4,3,INFANTRY_ROW(73),INFANTRY_ROW(74),INFANTRY_ROW(75));
-    objPic[ObjPic_Soldier][HOUSE_HARKONNEN][1] = Scaler::defaultDoubleTiledSurface(objPic[ObjPic_Soldier][HOUSE_HARKONNEN][0], 4, 3, false);
-    objPic[ObjPic_Soldier][HOUSE_HARKONNEN][2] = Scaler::defaultTripleTiledSurface(objPic[ObjPic_Soldier][HOUSE_HARKONNEN][0], 4, 3, false);
-
     objPic[ObjPic_Infantry][HOUSE_HARKONNEN][0] = units->getPictureArray(4,4,MULTIINFANTRY_ROW(91),MULTIINFANTRY_ROW(92),MULTIINFANTRY_ROW(93),MULTIINFANTRY_ROW(94));
-    objPic[ObjPic_Infantry][HOUSE_HARKONNEN][1] = Scaler::defaultDoubleTiledSurface(objPic[ObjPic_Infantry][HOUSE_HARKONNEN][0], 4, 3, false);
-    objPic[ObjPic_Infantry][HOUSE_HARKONNEN][2] = Scaler::defaultTripleTiledSurface(objPic[ObjPic_Infantry][HOUSE_HARKONNEN][0], 4, 3, false);
-
     objPic[ObjPic_Saboteur][HOUSE_HARKONNEN][0] = units->getPictureArray(4,3,INFANTRY_ROW(63),INFANTRY_ROW(64),INFANTRY_ROW(65));
-    objPic[ObjPic_Saboteur][HOUSE_HARKONNEN][1] = Scaler::defaultDoubleTiledSurface(objPic[ObjPic_Saboteur][HOUSE_HARKONNEN][0], 4, 3, false);
-    objPic[ObjPic_Saboteur][HOUSE_HARKONNEN][2] = Scaler::defaultTripleTiledSurface(objPic[ObjPic_Saboteur][HOUSE_HARKONNEN][0], 4, 3, false);
-
     objPic[ObjPic_Sandworm][HOUSE_HARKONNEN][0] = units1->getPictureArray(1,9,71|TILE_NORMAL,70|TILE_NORMAL,69|TILE_NORMAL,68|TILE_NORMAL,67|TILE_NORMAL,68|TILE_NORMAL,69|TILE_NORMAL,70|TILE_NORMAL,71|TILE_NORMAL);
-    objPic[ObjPic_Sandworm][HOUSE_HARKONNEN][1] = Scaler::defaultDoubleTiledSurface(objPic[ObjPic_Sandworm][HOUSE_HARKONNEN][0], 1, 9, false);
-    objPic[ObjPic_Sandworm][HOUSE_HARKONNEN][2] = Scaler::defaultTripleTiledSurface(objPic[ObjPic_Sandworm][HOUSE_HARKONNEN][0], 1, 9, false);
-
     objPic[ObjPic_ConstructionYard][HOUSE_HARKONNEN][0] = icon->getPictureArray(17);
-    objPic[ObjPic_ConstructionYard][HOUSE_HARKONNEN][1] = Scaler::defaultDoubleTiledSurface(objPic[ObjPic_ConstructionYard][HOUSE_HARKONNEN][0], 4, 1, false);
-    objPic[ObjPic_ConstructionYard][HOUSE_HARKONNEN][2] = Scaler::defaultTripleTiledSurface(objPic[ObjPic_ConstructionYard][HOUSE_HARKONNEN][0], 4, 1, false);
-
     objPic[ObjPic_Windtrap][HOUSE_HARKONNEN][0] = icon->getPictureArray(19);
-    objPic[ObjPic_Windtrap][HOUSE_HARKONNEN][1] = Scaler::defaultDoubleTiledSurface(objPic[ObjPic_Windtrap][HOUSE_HARKONNEN][0], 4, 1, false);
-    objPic[ObjPic_Windtrap][HOUSE_HARKONNEN][2] = Scaler::defaultTripleTiledSurface(objPic[ObjPic_Windtrap][HOUSE_HARKONNEN][0], 4, 1, false);
-
     objPic[ObjPic_Refinery][HOUSE_HARKONNEN][0] = icon->getPictureArray(21);
-    objPic[ObjPic_Refinery][HOUSE_HARKONNEN][1] = Scaler::defaultDoubleTiledSurface(objPic[ObjPic_Refinery][HOUSE_HARKONNEN][0], 10, 1, false);
-    objPic[ObjPic_Refinery][HOUSE_HARKONNEN][2] = Scaler::defaultTripleTiledSurface(objPic[ObjPic_Refinery][HOUSE_HARKONNEN][0], 10, 1, false);
-
     objPic[ObjPic_Barracks][HOUSE_HARKONNEN][0] = icon->getPictureArray(18);
-    objPic[ObjPic_Barracks][HOUSE_HARKONNEN][1] = Scaler::defaultDoubleTiledSurface(objPic[ObjPic_Barracks][HOUSE_HARKONNEN][0], 4, 1, false);
-    objPic[ObjPic_Barracks][HOUSE_HARKONNEN][2] = Scaler::defaultTripleTiledSurface(objPic[ObjPic_Barracks][HOUSE_HARKONNEN][0], 4, 1, false);
-
     objPic[ObjPic_WOR][HOUSE_HARKONNEN][0] = icon->getPictureArray(16);
-    objPic[ObjPic_WOR][HOUSE_HARKONNEN][1] = Scaler::defaultDoubleTiledSurface(objPic[ObjPic_WOR][HOUSE_HARKONNEN][0], 4, 1, false);
-    objPic[ObjPic_WOR][HOUSE_HARKONNEN][2] = Scaler::defaultTripleTiledSurface(objPic[ObjPic_WOR][HOUSE_HARKONNEN][0], 4, 1, false);
-
     objPic[ObjPic_Radar][HOUSE_HARKONNEN][0] = icon->getPictureArray(26);
-    objPic[ObjPic_Radar][HOUSE_HARKONNEN][1] = Scaler::defaultDoubleTiledSurface(objPic[ObjPic_Radar][HOUSE_HARKONNEN][0], 4, 1, false);
-    objPic[ObjPic_Radar][HOUSE_HARKONNEN][2] = Scaler::defaultTripleTiledSurface(objPic[ObjPic_Radar][HOUSE_HARKONNEN][0], 4, 1, false);
-
     objPic[ObjPic_LightFactory][HOUSE_HARKONNEN][0] = icon->getPictureArray(12);
-    objPic[ObjPic_LightFactory][HOUSE_HARKONNEN][1] = Scaler::defaultDoubleTiledSurface(objPic[ObjPic_LightFactory][HOUSE_HARKONNEN][0], 6, 1, false);
-    objPic[ObjPic_LightFactory][HOUSE_HARKONNEN][2] = Scaler::defaultTripleTiledSurface(objPic[ObjPic_LightFactory][HOUSE_HARKONNEN][0], 6, 1, false);
-
     objPic[ObjPic_Silo][HOUSE_HARKONNEN][0] = icon->getPictureArray(25);
-    objPic[ObjPic_Silo][HOUSE_HARKONNEN][1] = Scaler::defaultDoubleTiledSurface(objPic[ObjPic_Silo][HOUSE_HARKONNEN][0], 4, 1, false);
-    objPic[ObjPic_Silo][HOUSE_HARKONNEN][2] = Scaler::defaultTripleTiledSurface(objPic[ObjPic_Silo][HOUSE_HARKONNEN][0], 4, 1, false);
-
     objPic[ObjPic_HeavyFactory][HOUSE_HARKONNEN][0] = icon->getPictureArray(13);
-    objPic[ObjPic_HeavyFactory][HOUSE_HARKONNEN][1] = Scaler::defaultDoubleTiledSurface(objPic[ObjPic_HeavyFactory][HOUSE_HARKONNEN][0], 8, 1, false);
-    objPic[ObjPic_HeavyFactory][HOUSE_HARKONNEN][2] = Scaler::defaultTripleTiledSurface(objPic[ObjPic_HeavyFactory][HOUSE_HARKONNEN][0], 8, 1, false);
-
     objPic[ObjPic_HighTechFactory][HOUSE_HARKONNEN][0] = icon->getPictureArray(14);
-    objPic[ObjPic_HighTechFactory][HOUSE_HARKONNEN][1] = Scaler::defaultDoubleTiledSurface(objPic[ObjPic_HighTechFactory][HOUSE_HARKONNEN][0], 8, 1, false);
-    objPic[ObjPic_HighTechFactory][HOUSE_HARKONNEN][2] = Scaler::defaultTripleTiledSurface(objPic[ObjPic_HighTechFactory][HOUSE_HARKONNEN][0], 8, 1, false);
-
     objPic[ObjPic_IX][HOUSE_HARKONNEN][0] = icon->getPictureArray(15);
-    objPic[ObjPic_IX][HOUSE_HARKONNEN][1] = Scaler::defaultDoubleTiledSurface(objPic[ObjPic_IX][HOUSE_HARKONNEN][0], 4, 1, false);
-    objPic[ObjPic_IX][HOUSE_HARKONNEN][2] = Scaler::defaultTripleTiledSurface(objPic[ObjPic_IX][HOUSE_HARKONNEN][0], 4, 1, false);
-
     objPic[ObjPic_Palace][HOUSE_HARKONNEN][0] = icon->getPictureArray(11);
-    objPic[ObjPic_Palace][HOUSE_HARKONNEN][1] = Scaler::defaultDoubleTiledSurface(objPic[ObjPic_Palace][HOUSE_HARKONNEN][0], 4, 1, false);
-    objPic[ObjPic_Palace][HOUSE_HARKONNEN][2] = Scaler::defaultTripleTiledSurface(objPic[ObjPic_Palace][HOUSE_HARKONNEN][0], 4, 1, false);
-
     objPic[ObjPic_RepairYard][HOUSE_HARKONNEN][0] = icon->getPictureArray(22);
-    objPic[ObjPic_RepairYard][HOUSE_HARKONNEN][1] = Scaler::defaultDoubleTiledSurface(objPic[ObjPic_RepairYard][HOUSE_HARKONNEN][0], 10, 1, false);
-    objPic[ObjPic_RepairYard][HOUSE_HARKONNEN][2] = Scaler::defaultTripleTiledSurface(objPic[ObjPic_RepairYard][HOUSE_HARKONNEN][0], 10, 1, false);
-
     objPic[ObjPic_Starport][HOUSE_HARKONNEN][0] = icon->getPictureArray(20);
-    objPic[ObjPic_Starport][HOUSE_HARKONNEN][1] = Scaler::defaultDoubleTiledSurface(objPic[ObjPic_Starport][HOUSE_HARKONNEN][0], 10, 1, false);
-    objPic[ObjPic_Starport][HOUSE_HARKONNEN][2] = Scaler::defaultTripleTiledSurface(objPic[ObjPic_Starport][HOUSE_HARKONNEN][0], 10, 1, false);
-
     objPic[ObjPic_GunTurret][HOUSE_HARKONNEN][0] = icon->getPictureArray(23);
-    objPic[ObjPic_GunTurret][HOUSE_HARKONNEN][1] = Scaler::defaultDoubleTiledSurface(objPic[ObjPic_GunTurret][HOUSE_HARKONNEN][0], 10, 1, false);
-    objPic[ObjPic_GunTurret][HOUSE_HARKONNEN][2] = Scaler::defaultTripleTiledSurface(objPic[ObjPic_GunTurret][HOUSE_HARKONNEN][0], 10, 1, false);
-
     objPic[ObjPic_RocketTurret][HOUSE_HARKONNEN][0] = icon->getPictureArray(24);
-    objPic[ObjPic_RocketTurret][HOUSE_HARKONNEN][1] = Scaler::defaultDoubleTiledSurface(objPic[ObjPic_RocketTurret][HOUSE_HARKONNEN][0], 10, 1, false);
-    objPic[ObjPic_RocketTurret][HOUSE_HARKONNEN][2] = Scaler::defaultTripleTiledSurface(objPic[ObjPic_RocketTurret][HOUSE_HARKONNEN][0], 10, 1, false);
-
     objPic[ObjPic_Wall][HOUSE_HARKONNEN][0] = icon->getPictureArray(6,1,1,75);
-    objPic[ObjPic_Wall][HOUSE_HARKONNEN][1] = Scaler::defaultDoubleTiledSurface(objPic[ObjPic_Wall][HOUSE_HARKONNEN][0], 75, 1, false);
-    objPic[ObjPic_Wall][HOUSE_HARKONNEN][2] = Scaler::defaultTripleTiledSurface(objPic[ObjPic_Wall][HOUSE_HARKONNEN][0], 75, 1, false);
-
     objPic[ObjPic_Bullet_SmallRocket][HOUSE_HARKONNEN][0] = units->getPictureArray(16,1,ROCKET_ROW(35));
-    objPic[ObjPic_Bullet_SmallRocket][HOUSE_HARKONNEN][1] = Scaler::defaultDoubleTiledSurface(objPic[ObjPic_Bullet_SmallRocket][HOUSE_HARKONNEN][0], 16, 1, false);
-    objPic[ObjPic_Bullet_SmallRocket][HOUSE_HARKONNEN][2] = Scaler::defaultTripleTiledSurface(objPic[ObjPic_Bullet_SmallRocket][HOUSE_HARKONNEN][0], 16, 1, false);
-
     objPic[ObjPic_Bullet_MediumRocket][HOUSE_HARKONNEN][0] = units->getPictureArray(16,1,ROCKET_ROW(20));
-    objPic[ObjPic_Bullet_MediumRocket][HOUSE_HARKONNEN][1] = Scaler::defaultDoubleTiledSurface(objPic[ObjPic_Bullet_MediumRocket][HOUSE_HARKONNEN][0], 16, 1, false);
-    objPic[ObjPic_Bullet_MediumRocket][HOUSE_HARKONNEN][2] = Scaler::defaultTripleTiledSurface(objPic[ObjPic_Bullet_MediumRocket][HOUSE_HARKONNEN][0], 16, 1, false);
-
     objPic[ObjPic_Bullet_LargeRocket][HOUSE_HARKONNEN][0] = units->getPictureArray(16,1,ROCKET_ROW(40));
-    objPic[ObjPic_Bullet_LargeRocket][HOUSE_HARKONNEN][1] = Scaler::defaultDoubleTiledSurface(objPic[ObjPic_Bullet_LargeRocket][HOUSE_HARKONNEN][0], 16, 1, false);
-    objPic[ObjPic_Bullet_LargeRocket][HOUSE_HARKONNEN][2] = Scaler::defaultTripleTiledSurface(objPic[ObjPic_Bullet_LargeRocket][HOUSE_HARKONNEN][0], 16, 1, false);
-
     objPic[ObjPic_Bullet_Small][HOUSE_HARKONNEN][0] = units1->getPicture(23);
-    objPic[ObjPic_Bullet_Small][HOUSE_HARKONNEN][1] = Scaler::defaultDoubleTiledSurface(objPic[ObjPic_Bullet_Small][HOUSE_HARKONNEN][0], 1, 1, false);
-    objPic[ObjPic_Bullet_Small][HOUSE_HARKONNEN][2] = Scaler::defaultTripleTiledSurface(objPic[ObjPic_Bullet_Small][HOUSE_HARKONNEN][0], 1, 1, false);
-
     objPic[ObjPic_Bullet_Medium][HOUSE_HARKONNEN][0] = units1->getPicture(24);
-    objPic[ObjPic_Bullet_Medium][HOUSE_HARKONNEN][1] = Scaler::defaultDoubleTiledSurface(objPic[ObjPic_Bullet_Medium][HOUSE_HARKONNEN][0], 1, 1, false);
-    objPic[ObjPic_Bullet_Medium][HOUSE_HARKONNEN][2] = Scaler::defaultTripleTiledSurface(objPic[ObjPic_Bullet_Medium][HOUSE_HARKONNEN][0], 1, 1, false);
-
     objPic[ObjPic_Bullet_Large][HOUSE_HARKONNEN][0] = units1->getPicture(25);
-    objPic[ObjPic_Bullet_Large][HOUSE_HARKONNEN][1] = Scaler::defaultDoubleTiledSurface(objPic[ObjPic_Bullet_Large][HOUSE_HARKONNEN][0], 1, 1, false);
-    objPic[ObjPic_Bullet_Large][HOUSE_HARKONNEN][2] = Scaler::defaultTripleTiledSurface(objPic[ObjPic_Bullet_Large][HOUSE_HARKONNEN][0], 1, 1, false);
-
     objPic[ObjPic_Bullet_Sonic][HOUSE_HARKONNEN][0] = units1->getPicture(10);
     replaceColor(objPic[ObjPic_Bullet_Sonic][HOUSE_HARKONNEN][0], PALCOLOR_WHITE, PALCOLOR_BLACK);
-    objPic[ObjPic_Bullet_Sonic][HOUSE_HARKONNEN][1] = Scaler::defaultDoubleTiledSurface(objPic[ObjPic_Bullet_Sonic][HOUSE_HARKONNEN][0], 1, 1, false);
-    objPic[ObjPic_Bullet_Sonic][HOUSE_HARKONNEN][2] = Scaler::defaultTripleTiledSurface(objPic[ObjPic_Bullet_Sonic][HOUSE_HARKONNEN][0], 1, 1, false);
-
     objPic[ObjPic_Bullet_SonicTemp][HOUSE_HARKONNEN][0] = units1->getPicture(10);
-    objPic[ObjPic_Bullet_SonicTemp][HOUSE_HARKONNEN][1] = Scaler::defaultDoubleTiledSurface(objPic[ObjPic_Bullet_SonicTemp][HOUSE_HARKONNEN][0], 1, 1, false);
-    objPic[ObjPic_Bullet_SonicTemp][HOUSE_HARKONNEN][2] = Scaler::defaultTripleTiledSurface(objPic[ObjPic_Bullet_SonicTemp][HOUSE_HARKONNEN][0], 1, 1, false);
-
     objPic[ObjPic_Hit_Gas][HOUSE_ORDOS][0] = units1->getPictureArray(5,1,57|TILE_NORMAL,58|TILE_NORMAL,59|TILE_NORMAL,60|TILE_NORMAL,61|TILE_NORMAL);
-    objPic[ObjPic_Hit_Gas][HOUSE_ORDOS][1] = Scaler::defaultDoubleTiledSurface(objPic[ObjPic_Hit_Gas][HOUSE_ORDOS][0], 5, 1, false);
-    objPic[ObjPic_Hit_Gas][HOUSE_ORDOS][2] = Scaler::defaultTripleTiledSurface(objPic[ObjPic_Hit_Gas][HOUSE_ORDOS][0], 5, 1, false);
-
     objPic[ObjPic_Hit_Gas][HOUSE_HARKONNEN][0] = mapSurfaceColorRange(objPic[ObjPic_Hit_Gas][HOUSE_ORDOS][0], PALCOLOR_ORDOS, PALCOLOR_HARKONNEN);
-    objPic[ObjPic_Hit_Gas][HOUSE_HARKONNEN][1] = Scaler::defaultDoubleTiledSurface(objPic[ObjPic_Hit_Gas][HOUSE_HARKONNEN][0], 5, 1, false);
-    objPic[ObjPic_Hit_Gas][HOUSE_HARKONNEN][2] = Scaler::defaultTripleTiledSurface(objPic[ObjPic_Hit_Gas][HOUSE_HARKONNEN][0], 5, 1, false);
-
     objPic[ObjPic_Hit_ShellSmall][HOUSE_HARKONNEN][0] = units1->getPicture(2);
-    objPic[ObjPic_Hit_ShellSmall][HOUSE_HARKONNEN][1] = Scaler::defaultDoubleTiledSurface(objPic[ObjPic_Hit_ShellSmall][HOUSE_HARKONNEN][0], 1, 1, false);
-    objPic[ObjPic_Hit_ShellSmall][HOUSE_HARKONNEN][2] = Scaler::defaultTripleTiledSurface(objPic[ObjPic_Hit_ShellSmall][HOUSE_HARKONNEN][0], 1, 1, false);
-
     objPic[ObjPic_Hit_ShellMedium][HOUSE_HARKONNEN][0] = units1->getPicture(3);
-    objPic[ObjPic_Hit_ShellMedium][HOUSE_HARKONNEN][1] = Scaler::defaultDoubleTiledSurface(objPic[ObjPic_Hit_ShellMedium][HOUSE_HARKONNEN][0], 1, 1, false);
-    objPic[ObjPic_Hit_ShellMedium][HOUSE_HARKONNEN][2] = Scaler::defaultTripleTiledSurface(objPic[ObjPic_Hit_ShellMedium][HOUSE_HARKONNEN][0], 1, 1, false);
-
     objPic[ObjPic_Hit_ShellLarge][HOUSE_HARKONNEN][0] = units1->getPicture(4);
-    objPic[ObjPic_Hit_ShellLarge][HOUSE_HARKONNEN][1] = Scaler::defaultDoubleTiledSurface(objPic[ObjPic_Hit_ShellLarge][HOUSE_HARKONNEN][0], 1, 1, false);
-    objPic[ObjPic_Hit_ShellLarge][HOUSE_HARKONNEN][2] = Scaler::defaultTripleTiledSurface(objPic[ObjPic_Hit_ShellLarge][HOUSE_HARKONNEN][0], 1, 1, false);
-
     objPic[ObjPic_ExplosionSmall][HOUSE_HARKONNEN][0] = units1->getPictureArray(5,1,32|TILE_NORMAL,33|TILE_NORMAL,34|TILE_NORMAL,35|TILE_NORMAL,36|TILE_NORMAL);
-    objPic[ObjPic_ExplosionSmall][HOUSE_HARKONNEN][1] = Scaler::defaultDoubleTiledSurface(objPic[ObjPic_ExplosionSmall][HOUSE_HARKONNEN][0], 5, 1, false);
-    objPic[ObjPic_ExplosionSmall][HOUSE_HARKONNEN][2] = Scaler::defaultTripleTiledSurface(objPic[ObjPic_ExplosionSmall][HOUSE_HARKONNEN][0], 5, 1, false);
-
     objPic[ObjPic_ExplosionMedium1][HOUSE_HARKONNEN][0] = units1->getPictureArray(5,1,47|TILE_NORMAL,48|TILE_NORMAL,49|TILE_NORMAL,50|TILE_NORMAL,51|TILE_NORMAL);
-    objPic[ObjPic_ExplosionMedium1][HOUSE_HARKONNEN][1] = Scaler::defaultDoubleTiledSurface(objPic[ObjPic_ExplosionMedium1][HOUSE_HARKONNEN][0], 5, 1, false);
-    objPic[ObjPic_ExplosionMedium1][HOUSE_HARKONNEN][2] = Scaler::defaultTripleTiledSurface(objPic[ObjPic_ExplosionMedium1][HOUSE_HARKONNEN][0], 5, 1, false);
-
     objPic[ObjPic_ExplosionMedium2][HOUSE_HARKONNEN][0] = units1->getPictureArray(5,1,52|TILE_NORMAL,53|TILE_NORMAL,54|TILE_NORMAL,55|TILE_NORMAL,56|TILE_NORMAL);
-    objPic[ObjPic_ExplosionMedium2][HOUSE_HARKONNEN][1] = Scaler::defaultDoubleTiledSurface(objPic[ObjPic_ExplosionMedium2][HOUSE_HARKONNEN][0], 5, 1, false);
-    objPic[ObjPic_ExplosionMedium2][HOUSE_HARKONNEN][2] = Scaler::defaultTripleTiledSurface(objPic[ObjPic_ExplosionMedium2][HOUSE_HARKONNEN][0], 5, 1, false);
-
     objPic[ObjPic_ExplosionLarge1][HOUSE_HARKONNEN][0] = units1->getPictureArray(5,1,37|TILE_NORMAL,38|TILE_NORMAL,39|TILE_NORMAL,40|TILE_NORMAL,41|TILE_NORMAL);
-    objPic[ObjPic_ExplosionLarge1][HOUSE_HARKONNEN][1] = Scaler::defaultDoubleTiledSurface(objPic[ObjPic_ExplosionLarge1][HOUSE_HARKONNEN][0], 5, 1, false);
-    objPic[ObjPic_ExplosionLarge1][HOUSE_HARKONNEN][2] = Scaler::defaultTripleTiledSurface(objPic[ObjPic_ExplosionLarge1][HOUSE_HARKONNEN][0], 5, 1, false);
-
     objPic[ObjPic_ExplosionLarge2][HOUSE_HARKONNEN][0] = units1->getPictureArray(5,1,42|TILE_NORMAL,43|TILE_NORMAL,44|TILE_NORMAL,45|TILE_NORMAL,46|TILE_NORMAL);
-    objPic[ObjPic_ExplosionLarge2][HOUSE_HARKONNEN][1] = Scaler::defaultDoubleTiledSurface(objPic[ObjPic_ExplosionLarge2][HOUSE_HARKONNEN][0], 5, 1, false);
-    objPic[ObjPic_ExplosionLarge2][HOUSE_HARKONNEN][2] = Scaler::defaultTripleTiledSurface(objPic[ObjPic_ExplosionLarge2][HOUSE_HARKONNEN][0], 5, 1, false);
-
     objPic[ObjPic_ExplosionSmallUnit][HOUSE_HARKONNEN][0] = units1->getPictureArray(2,1,0|TILE_NORMAL,1|TILE_NORMAL);
-    objPic[ObjPic_ExplosionSmallUnit][HOUSE_HARKONNEN][1] = Scaler::defaultDoubleTiledSurface(objPic[ObjPic_ExplosionSmallUnit][HOUSE_HARKONNEN][0], 2, 1, false);
-    objPic[ObjPic_ExplosionSmallUnit][HOUSE_HARKONNEN][2] = Scaler::defaultTripleTiledSurface(objPic[ObjPic_ExplosionSmallUnit][HOUSE_HARKONNEN][0], 2, 1, false);
-
     objPic[ObjPic_ExplosionFlames][HOUSE_HARKONNEN][0] = units1->getPictureArray(21,1,  11|TILE_NORMAL,12|TILE_NORMAL,13|TILE_NORMAL,17|TILE_NORMAL,18|TILE_NORMAL,19|TILE_NORMAL,17|TILE_NORMAL,
                                                                                     18|TILE_NORMAL,19|TILE_NORMAL,17|TILE_NORMAL,18|TILE_NORMAL,19|TILE_NORMAL,17|TILE_NORMAL,18|TILE_NORMAL,
                                                                                     19|TILE_NORMAL,17|TILE_NORMAL,18|TILE_NORMAL,19|TILE_NORMAL,20|TILE_NORMAL,21|TILE_NORMAL,22|TILE_NORMAL);
-    objPic[ObjPic_ExplosionFlames][HOUSE_HARKONNEN][1] = Scaler::defaultDoubleTiledSurface(objPic[ObjPic_ExplosionFlames][HOUSE_HARKONNEN][0], 21, 1, false);
-    objPic[ObjPic_ExplosionFlames][HOUSE_HARKONNEN][2] = Scaler::defaultTripleTiledSurface(objPic[ObjPic_ExplosionFlames][HOUSE_HARKONNEN][0], 21, 1, false);
-
     objPic[ObjPic_ExplosionSpiceBloom][HOUSE_HARKONNEN][0] = units1->getPictureArray(3,1,7|TILE_NORMAL,6|TILE_NORMAL,5|TILE_NORMAL);
-    objPic[ObjPic_ExplosionSpiceBloom][HOUSE_HARKONNEN][1] = Scaler::defaultDoubleTiledSurface(objPic[ObjPic_ExplosionSpiceBloom][HOUSE_HARKONNEN][0], 3, 1, false);
-    objPic[ObjPic_ExplosionSpiceBloom][HOUSE_HARKONNEN][2] = Scaler::defaultTripleTiledSurface(objPic[ObjPic_ExplosionSpiceBloom][HOUSE_HARKONNEN][0], 3, 1, false);
-
     objPic[ObjPic_DeadInfantry][HOUSE_HARKONNEN][0] = icon->getPictureArray(4,1,1,6);
-    objPic[ObjPic_DeadInfantry][HOUSE_HARKONNEN][1] = Scaler::defaultDoubleTiledSurface(objPic[ObjPic_DeadInfantry][HOUSE_HARKONNEN][0], 6, 1, false);
-    objPic[ObjPic_DeadInfantry][HOUSE_HARKONNEN][2] = Scaler::defaultTripleTiledSurface(objPic[ObjPic_DeadInfantry][HOUSE_HARKONNEN][0], 6, 1, false);
-
     objPic[ObjPic_DeadAirUnit][HOUSE_HARKONNEN][0] = icon->getPictureArray(3,1,1,6);
-    objPic[ObjPic_DeadAirUnit][HOUSE_HARKONNEN][1] = Scaler::defaultDoubleTiledSurface(objPic[ObjPic_DeadAirUnit][HOUSE_HARKONNEN][0], 6, 1, false);
-    objPic[ObjPic_DeadAirUnit][HOUSE_HARKONNEN][2] = Scaler::defaultTripleTiledSurface(objPic[ObjPic_DeadAirUnit][HOUSE_HARKONNEN][0], 6, 1, false);
-
     objPic[ObjPic_Smoke][HOUSE_HARKONNEN][0] = units1->getPictureArray(3,1,29|TILE_NORMAL,30|TILE_NORMAL,31|TILE_NORMAL);
-    objPic[ObjPic_Smoke][HOUSE_HARKONNEN][1] = Scaler::defaultDoubleTiledSurface(objPic[ObjPic_Smoke][HOUSE_HARKONNEN][0], 3, 1, false);
-    objPic[ObjPic_Smoke][HOUSE_HARKONNEN][2] = Scaler::defaultTripleTiledSurface(objPic[ObjPic_Smoke][HOUSE_HARKONNEN][0], 3, 1, false);
-
     objPic[ObjPic_SandwormShimmerMask][HOUSE_HARKONNEN][0] = units1->getPicture(10);
     replaceColor(objPic[ObjPic_SandwormShimmerMask][HOUSE_HARKONNEN][0], PALCOLOR_WHITE, PALCOLOR_BLACK);
-    objPic[ObjPic_SandwormShimmerMask][HOUSE_HARKONNEN][1] = Scaler::defaultDoubleTiledSurface(objPic[ObjPic_SandwormShimmerMask][HOUSE_HARKONNEN][0], 1, 1, false);
-    objPic[ObjPic_SandwormShimmerMask][HOUSE_HARKONNEN][2] = Scaler::defaultTripleTiledSurface(objPic[ObjPic_SandwormShimmerMask][HOUSE_HARKONNEN][0], 1, 1, false);
-
     objPic[ObjPic_SandwormShimmerTemp][HOUSE_HARKONNEN][0] = units1->getPicture(10);
-    objPic[ObjPic_SandwormShimmerTemp][HOUSE_HARKONNEN][1] = Scaler::defaultDoubleTiledSurface(objPic[ObjPic_SandwormShimmerTemp][HOUSE_HARKONNEN][0], 1, 1, false);
-    objPic[ObjPic_SandwormShimmerTemp][HOUSE_HARKONNEN][2] = Scaler::defaultTripleTiledSurface(objPic[ObjPic_SandwormShimmerTemp][HOUSE_HARKONNEN][0], 1, 1, false);
-
     objPic[ObjPic_Terrain][HOUSE_HARKONNEN][0] = icon->getPictureRow(124,209);
-    objPic[ObjPic_Terrain][HOUSE_HARKONNEN][1] = Scaler::defaultDoubleTiledSurface(objPic[ObjPic_Terrain][HOUSE_HARKONNEN][0], 86, 1, false);
-    objPic[ObjPic_Terrain][HOUSE_HARKONNEN][2] = Scaler::defaultTripleTiledSurface(objPic[ObjPic_Terrain][HOUSE_HARKONNEN][0], 86, 1, false);
-
     objPic[ObjPic_DestroyedStructure][HOUSE_HARKONNEN][0] = icon->getPictureRow2(14, 33, 125, 213, 214, 215, 223, 224, 225, 232, 233, 234, 240, 246, 247);
-    objPic[ObjPic_DestroyedStructure][HOUSE_HARKONNEN][1] = Scaler::defaultDoubleTiledSurface(objPic[ObjPic_DestroyedStructure][HOUSE_HARKONNEN][0], 14, 1, false);
-    objPic[ObjPic_DestroyedStructure][HOUSE_HARKONNEN][2] = Scaler::defaultTripleTiledSurface(objPic[ObjPic_DestroyedStructure][HOUSE_HARKONNEN][0], 14, 1, false);
-
     objPic[ObjPic_RockDamage][HOUSE_HARKONNEN][0] = icon->getPictureRow(1,6);
-    objPic[ObjPic_RockDamage][HOUSE_HARKONNEN][1] = Scaler::defaultDoubleTiledSurface(objPic[ObjPic_RockDamage][HOUSE_HARKONNEN][0], 6, 1, false);
-    objPic[ObjPic_RockDamage][HOUSE_HARKONNEN][2] = Scaler::defaultTripleTiledSurface(objPic[ObjPic_RockDamage][HOUSE_HARKONNEN][0], 6, 1, false);
-
     objPic[ObjPic_SandDamage][HOUSE_HARKONNEN][0] = icon->getPictureRow(7,12);
-    objPic[ObjPic_SandDamage][HOUSE_HARKONNEN][1] = Scaler::defaultDoubleTiledSurface(objPic[ObjPic_SandDamage][HOUSE_HARKONNEN][0], 3, 1, false);
-    objPic[ObjPic_SandDamage][HOUSE_HARKONNEN][2] = Scaler::defaultTripleTiledSurface(objPic[ObjPic_SandDamage][HOUSE_HARKONNEN][0], 3, 1, false);
-
     objPic[ObjPic_Terrain_Hidden][HOUSE_HARKONNEN][0] = icon->getPictureRow(108,123);
-    objPic[ObjPic_Terrain_Hidden][HOUSE_HARKONNEN][1] = Scaler::defaultDoubleTiledSurface(objPic[ObjPic_Terrain_Hidden][HOUSE_HARKONNEN][0], 16, 1, false);
-    objPic[ObjPic_Terrain_Hidden][HOUSE_HARKONNEN][2] = Scaler::defaultTripleTiledSurface(objPic[ObjPic_Terrain_Hidden][HOUSE_HARKONNEN][0], 16, 1, false);
-
     objPic[ObjPic_Terrain_HiddenFog][HOUSE_HARKONNEN][0] = icon->getPictureRow(108,123);
-    objPic[ObjPic_Terrain_HiddenFog][HOUSE_HARKONNEN][1] = Scaler::defaultDoubleTiledSurface(objPic[ObjPic_Terrain_HiddenFog][HOUSE_HARKONNEN][0], 16, 1, false);
-    objPic[ObjPic_Terrain_HiddenFog][HOUSE_HARKONNEN][2] = Scaler::defaultTripleTiledSurface(objPic[ObjPic_Terrain_HiddenFog][HOUSE_HARKONNEN][0], 16, 1, false);
-
     objPic[ObjPic_Terrain_Tracks][HOUSE_HARKONNEN][0] = icon->getPictureRow(25,32);
-    objPic[ObjPic_Terrain_Tracks][HOUSE_HARKONNEN][1] = Scaler::defaultDoubleTiledSurface(objPic[ObjPic_Terrain_Tracks][HOUSE_HARKONNEN][0], 8, 1, false);
-    objPic[ObjPic_Terrain_Tracks][HOUSE_HARKONNEN][2] = Scaler::defaultTripleTiledSurface(objPic[ObjPic_Terrain_Tracks][HOUSE_HARKONNEN][0], 8, 1, false);
-
     objPic[ObjPic_Star][HOUSE_HARKONNEN][0] = LoadPNG_RW(pFileManager->openFile("Star5x5.png"),true);
     objPic[ObjPic_Star][HOUSE_HARKONNEN][1] = LoadPNG_RW(pFileManager->openFile("Star7x7.png"),true);
     objPic[ObjPic_Star][HOUSE_HARKONNEN][2] = LoadPNG_RW(pFileManager->openFile("Star11x11.png"),true);
 
-    // apply color key
-    for(int i = 0; i < NUM_OBJPICS; i++) {
-        for(int j = 0; j < (int) NUM_HOUSES; j++) {
-            for(int z=0; z < NUM_ZOOMLEVEL; z++) {
-                if(objPic[i][j][z] != nullptr) {
-                    SDL_SetColorKey(objPic[i][j][z], SDL_TRUE, PALCOLOR_TRANSPARENT);
+    // scale obj pics and apply color key
+    for(int id = 0; id < NUM_OBJPICS; id++) {
+        for(int h = 0; h < (int) NUM_HOUSES; h++) {
+            if(objPic[id][h][0] != nullptr) {
+                if(objPic[id][h][1] == nullptr) {
+                    objPic[id][h][1] = Scaler::defaultDoubleTiledSurface(objPic[id][h][0], objPicTiles[id].x, objPicTiles[id].y, false);
                 }
+                SDL_SetColorKey(objPic[id][h][1], SDL_TRUE, PALCOLOR_TRANSPARENT);
+
+                if(objPic[id][h][2] == nullptr) {
+                    objPic[id][h][2] = Scaler::defaultTripleTiledSurface(objPic[id][h][0], objPicTiles[id].x, objPicTiles[id].y, false);
+                }
+                SDL_SetColorKey(objPic[id][h][2], SDL_TRUE, PALCOLOR_TRANSPARENT);
+
+                SDL_SetColorKey(objPic[id][h][0], SDL_TRUE, PALCOLOR_TRANSPARENT);
             }
         }
     }

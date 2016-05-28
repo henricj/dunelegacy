@@ -32,7 +32,7 @@ public:
 
     class PlayerInfo {
     public:
-        PlayerInfo(std::string newPlayerName, std::string newPlayerClass)
+        PlayerInfo(const std::string& newPlayerName, const std::string& newPlayerClass)
          : playerName(newPlayerName), playerClass(newPlayerClass) {
         }
 
@@ -119,11 +119,12 @@ public:
 
     /**
         Constructor for specifying the start of a custom map
-        \param  mapfile                     the path to the map file
+        \param  mapfile             the name of the map (without extension)
+        \param  filedata            the data of the map file
         \param  multiplePlayersPerHouse     allow multiple players per house
         \param  gameOptions         the options for this game
     */
-    GameInitSettings(std::string mapfile, bool multiplePlayersPerHouse, const SettingsClass::GameOptionsClass& gameOptions);
+    GameInitSettings(const std::string& mapfile, const std::string& filedata, bool multiplePlayersPerHouse, const SettingsClass::GameOptionsClass& gameOptions);
 
     /**
         Constructor for specifying the start of a multiplayer custom map
@@ -133,14 +134,14 @@ public:
         \param  multiplePlayersPerHouse     allow multiple players per house
         \param  gameOptions         the options for this game
     */
-    GameInitSettings(std::string mapfile, std::string filedata, std::string serverName, bool multiplePlayersPerHouse, const SettingsClass::GameOptionsClass& gameOptions);
+    GameInitSettings(const std::string& mapfile, const std::string& filedata, const std::string& serverName, bool multiplePlayersPerHouse, const SettingsClass::GameOptionsClass& gameOptions);
 
     /**
         Constructor for specifying the loading of a savegame. If the given filename contains no valid savegame
         an exception is thrown.
         \param  savegame    the name of the savegame
     */
-    explicit GameInitSettings(std::string savegame);
+    explicit GameInitSettings(const std::string& savegame);
 
     /**
         Constructor for specifying the loading of a network savegame. If the given filename contains no valid savegame
@@ -149,7 +150,7 @@ public:
         \param  filedata    the data of the savegame file
         \param  serverName  the name of the game server
     */
-    GameInitSettings(std::string savegame, std::string filedata, std::string serverName);
+    GameInitSettings(const std::string& savegame, const std::string& filedata, const std::string& serverName);
 
     /**
         Load the game init info from a stream
@@ -164,9 +165,9 @@ public:
     inline GAMETYPE getGameType() const { return gameType; };
     inline HOUSETYPE getHouseID() const { return houseID; };
     inline int getMission() const { return mission; };
-    inline std::string getFilename() const { return filename; };
-    inline std::string getFiledata() const { return filedata; };
-    inline std::string getServername() const { return servername; };
+    inline const std::string& getFilename() const { return filename; };
+    inline const std::string& getFiledata() const { return filedata; };
+    inline const std::string& getServername() const { return servername; };
     inline Uint32 getRandomSeed() const { return randomSeed; };
 
     inline bool isMultiplePlayersPerHouse() const { return multiplePlayersPerHouse; };
@@ -187,7 +188,7 @@ private:
         This method checks if it is possible to load a savegame and if the magic number is correct. If there is an error an exception is thrown.
         \param savegame the name of the file to check
     */
-    static void checkSaveGame(std::string savegame);
+    static void checkSaveGame(const std::string& savegame);
 
 
     /**

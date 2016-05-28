@@ -31,7 +31,7 @@
 #include <stdexcept>
 #include <algorithm>
 
-INIMapLoader::INIMapLoader(Game* pGame, std::string mapname, std::string mapdata)
+INIMapLoader::INIMapLoader(Game* pGame, const std::string& mapname, const std::string& mapdata)
  : INIMap(pGame->gameType, mapname, mapdata), pGame(pGame)
 {
     load();
@@ -447,7 +447,7 @@ void INIMapLoader::loadHouses()
             Player* pPlayer = pPlayerData->create(pNewHouse, iter2->playerName);
 
             pNewHouse->addPlayer(std::shared_ptr<Player>(pPlayer));
-            if(iter2->playerName == settings.general.playerName) {
+            if(iter2->playerName == pGame->getLocalPlayerName()) {
                 pLocalHouse = pNewHouse;
                 pLocalPlayer = dynamic_cast<HumanPlayer*>(pPlayer);
             }
@@ -627,7 +627,7 @@ void INIMapLoader::loadStructures()
         std::string tmpkey = iter->getKeyName();
         std::string tmp = iter->getStringValue();
 
-        if(tmpkey.find_first_of("GEN") == 0) {
+        if(tmpkey.find("GEN") == 0) {
             // Gen Object/Structure
             std::string PosStr = tmpkey.substr(3,tmpkey.size()-3);
             int pos;
@@ -659,7 +659,7 @@ void INIMapLoader::loadStructures()
                 logWarning(iter->getLineNumber(), "Invalid building string: '" + BuildingStr + "'!");
                 continue;
             }
-        } else if(tmpkey.find_first_of("ID") == 0) {
+        } else if(tmpkey.find("ID") == 0) {
             // other structure
             std::string HouseStr, BuildingStr, health, PosStr;
             splitString(tmp,6,&HouseStr,&BuildingStr,&health,&PosStr);
@@ -860,7 +860,7 @@ House* INIMapLoader::getOrCreateHouse(int houseID) {
                     Player* pPlayer = pPlayerData->create(pNewHouse, iter2->playerName);
 
                     pNewHouse->addPlayer(std::shared_ptr<Player>(pPlayer));
-                    if(iter2->playerName == settings.general.playerName) {
+                    if(iter2->playerName == pGame->getLocalPlayerName()) {
                         pLocalHouse = pNewHouse;
                         pLocalPlayer = dynamic_cast<HumanPlayer*>(pPlayer);
                     }
