@@ -1074,6 +1074,11 @@ void QuantBot::build() {
         dlrOrnithopter = 0;
     }
     
+    // Ordos can't build Launchers
+    if(getHouse()->getHouseID() == HOUSE_HARKONNEN){
+        dlrLauncher = 0;
+    }
+    
     // Sonic tanks can get into negative damage territory
     if(dlrSpecial < 0){
         dlrSpecial = 0;
