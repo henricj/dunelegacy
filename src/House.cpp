@@ -125,6 +125,7 @@ void House::init() {
         numItemBuilt[i] = 0;
         numItemKills[i] = 0;
         numItemLosses[i] = 0;
+        numItemDamageInflicted[i] = 0;
     }
 
     capacity = 0;
@@ -503,7 +504,14 @@ void House::informHasKilled(Uint32 itemID) {
     }
 }
 
+/**
+ This method informs this house that one of its units has damaged an enemy unit or structure
+ \param itemID   the ID of the enemy unit or structure
+ */
 
+void House::informHasDamaged(Uint32 itemID, Uint32 damage) {
+    numItemDamageInflicted[itemID] += damage;
+}
 
 
 void House::win() {

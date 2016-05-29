@@ -91,6 +91,7 @@ public:
     inline int getNumBuiltItems(int itemID) const { return numItemBuilt[itemID]; }
     inline int getNumKilledItems(int itemID) const { return numItemKills[itemID]; }
     inline int getNumLostItems(int itemID) const { return numItemLosses[itemID]; }
+    inline Sint32 getNumItemDamageInflicted(int itemID) const { return numItemDamageInflicted[itemID]; }
     inline FixPoint getHarvestedSpice() const { return harvestedSpice; }
 
     inline int getQuota() const { return quota; };
@@ -127,6 +128,7 @@ public:
 
     void informWasBuilt(Uint32 itemID);
     void informHasKilled(Uint32 itemID);
+    void informHasDamaged(Uint32 itemID, Uint32 damage);
 
     void lose(bool bSilent = false);
     void win();
@@ -158,6 +160,7 @@ protected:
     int numItemBuilt[Num_ItemID];  /// Number of items built by player
     int numItemKills[Num_ItemID]; /// Number of items killed by player
     int numItemLosses [Num_ItemID]; /// Number of items lost by player
+    Sint32 numItemDamageInflicted[Num_ItemID]; /// Amount of damage inflicted by a specific unit type owned by the player
 
     int capacity;             ///< Total spice capacity
     int producedPower;        ///< Power prodoced by this player

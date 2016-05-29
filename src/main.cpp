@@ -365,7 +365,7 @@ int main(int argc, char *argv[]) {
       exit(EXIT_FAILURE);
     }
 
-    bool bShowDebugLog = false;
+    bool bShowDebugLog = true;  // should be reset to false when done with AI stuff
     for(int i=1; i < argc; i++) {
         //check for overiding params
         std::string parameter(argv[i]);
