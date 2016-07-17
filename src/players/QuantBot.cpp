@@ -349,7 +349,7 @@ void QuantBot::onDamage(const ObjectBase* pObject, int damage, Uint32 damagerID)
     if(gameMode == CAMPAIGN && !pDamager->getOwner()->isAI() && !campaignAIAttackFlag
        
        // Don't trigger with freman
-       && !(pObject->getOwner()->getHouseID() == HOUSE_ATREIDES && pObject->getItemID() == Unit_Trooper)
+       && !(pObject->getOwner()->getHouseID() == HOUSE_ATREIDES && pObject->getItemID() == Unit_Trooper && currentGame->techLevel > 7)
        
        // Don't trigger on saboteur
        && !(pObject->getItemID() == Unit_Saboteur)
@@ -1004,7 +1004,7 @@ void QuantBot::build() {
 
     if(militaryValue > 0 || getHouse()->getNumStructures() > 0){
         
-        /*
+        
         fprintf(stdout,"%s att: %d  crdt: %d  mVal: %d/%d  built: %d  kill: %d  loss: %d hvstr: %d/%d\n",
             houseName.c_str(),
 
@@ -1018,7 +1018,7 @@ void QuantBot::build() {
             getHouse()->getNumItems(Unit_Harvester),
             hLimit
             );
-        */
+        
         
 
     }
@@ -1075,7 +1075,7 @@ void QuantBot::build() {
     }
     
     // Ordos can't build Launchers
-    if(getHouse()->getHouseID() == HOUSE_HARKONNEN){
+    if(getHouse()->getHouseID() == HOUSE_ORDOS){
         dlrLauncher = 0;
     }
     
@@ -2545,38 +2545,55 @@ void QuantBot::checkAllUnits() {
                                                         - getHouse()->getNumItems(Unit_Carryall)
                                                         - getHouse()->getNumItems(Unit_Ornithopter)
                                                         - getHouse()->getNumItems(Unit_Sandworm)
-                                                        - getHouse()->getNumItems(Unit_MCV)) + 2;
+                                                        - getHouse()->getNumItems(Unit_MCV)) + 1;
 
                     if(pUnit->getOwner()->getHouseID() != pUnit->getOriginalHouseID()){
-
-                        if(pUnit->getAttackMode() != AREAGUARD){
-                            doSetAttackMode(pUnit, AREAGUARD);
-                        }
+                    
                         
                         // If its a devastator and its not ours, blow it up!!
                         if(pUnit->getItemID() == Unit_Devastator){
                             const Devastator* pDevastator = dynamic_cast<const Devastator*>(pUnit);
                             if(pDevastator != nullptr){
-                                doSetAttackMode(pDevastator, HUNT);
+                                
                                 doStartDevastate(pDevastator);
+                                doSetAttackMode(pDevastator, HUNT);
                             }
                             
                             
                         }
                         
-                        // Send deviated unit back to our base
-                        else if(blockDistance(pUnit->getLocation(), squadCenterLocation) > squadRadius
-                                && pUnit->getItemID() != Unit_Devastator){
-                            
-                            doMove2Pos(pUnit, squadRetreatLocation.x, squadRetreatLocation.y, true );
-                            
-                            if(pUnit->isAGroundUnit()){
-                                const GroundUnit* pGroundUnit = dynamic_cast<const GroundUnit*>(pUnit);
-                                if(pGroundUnit != nullptr){
-                                    doRepair(pGroundUnit);
-                                }
-                                
+                        else if(pUnit->getItemID() == Unit_Ornithopter){
+                            if(pUnit->getAttackMode() != HUNT){
+                                doSetAttackMode(pUnit, HUNT);
                             }
+                        }
+                        
+                        else if(pUnit->getItemID() == Unit_Harvester){
+                            const Harvester* pHarvester = dynamic_cast<const Harvester*>(pUnit);
+                            if(pHarvester->getAmountOfSpice() >= HARVESTERMAXSPICE/5
+                               && pHarvester != nullptr) {
+                                
+                                doReturn(pHarvester);
+                                
+                                
+                            } else{
+                                doMove2Pos(pUnit, squadCenterLocation.x, squadCenterLocation.y, true );
+                            }
+                        }
+                        
+                        // Send deviated unit to squad centre
+                        else{
+                            
+                            if(pUnit->getAttackMode() != AREAGUARD){
+                                doSetAttackMode(pUnit, AREAGUARD);
+                            }
+                            
+                            if(blockDistance(pUnit->getLocation(),
+                                             squadCenterLocation) > squadRadius - 1){
+                                doMove2Pos(pUnit, squadCenterLocation.x, squadCenterLocation.y, true );
+                            }
+                            
+                            
                         }
 
 
