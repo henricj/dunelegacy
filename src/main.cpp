@@ -167,7 +167,7 @@ void createDefaultConfigFile(std::string configfilepath, std::string language) {
                                 "Fullscreen = false\n"
                                 "FrameLimit = true\t\t\t# Limit the frame rate to save energy?\n"
                                 "Preferred Zoom Level = 0\t\t# 0 = no zooming, 1 = 2x, 2 = 3x\n"
-                                "Scaler = Scale2x\t\t\t# Scaler to use: ScaleNN = nearest neighbour, Scale2x = smooth edges\n"
+                                "Scaler = ScaleHQ\t\t\t# Scaler to use: ScaleHD = apply manual drawn mask to upscale, Scale2x = smooth edges, ScaleNN = nearest neighbour, \n"
                                 "\n"
                                 "[Audio]\n"
                                 "# There are three different possibilities to play music\n"
@@ -515,7 +515,7 @@ int main(int argc, char *argv[]) {
         settings.video.fullscreen = myINIFile.getBoolValue("Video","Fullscreen",false);
         settings.video.frameLimit = myINIFile.getBoolValue("Video","FrameLimit",true);
         settings.video.preferredZoomLevel = myINIFile.getIntValue("Video","Preferred Zoom Level", 0);
-        settings.video.scaler = myINIFile.getStringValue("Video","Scaler", "scale2x");
+        settings.video.scaler = myINIFile.getStringValue("Video","Scaler", "ScaleHD");
         settings.audio.musicType = myINIFile.getStringValue("Audio","Music Type","adl");
         settings.audio.playMusic = myINIFile.getBoolValue("Audio","Play Music", true);
         settings.audio.musicVolume = myINIFile.getIntValue("Audio","Music Volume", 64);

@@ -30,9 +30,10 @@ public:
 
     typedef enum {
         Invalid = -1,
-        ScaleNN = 0,
+        ScaleHD = 0,
         Scale2x = 1,
-        NumScaler = 2
+        ScaleNN = 2,
+        NumScaler = 3
     } ScalerType;
 
     static DoubleSurfaceFunction*       defaultDoubleSurface;
@@ -46,17 +47,20 @@ public:
 
     static std::string getScalerName(Scaler::ScalerType scaler) {
         switch(scaler) {
-            case Scaler::ScaleNN:        return "ScaleNN";
+            case Scaler::ScaleHD:   return "ScaleHD";
             case Scaler::Scale2x:   return "Scale2x";
+            case Scaler::ScaleNN:   return "ScaleNN";
             default:        return "Unknown";
         }
     };
 
     static Scaler::ScalerType getScalerByName(std::string scalerName) {
-        if(scalerName == "ScaleNN") {
-            return Scaler::ScaleNN;
+        if(scalerName == "ScaleHD") {
+            return Scaler::ScaleHD;
         } else if(scalerName == "Scale2x") {
             return Scaler::Scale2x;
+        } else if(scalerName == "ScaleNN") {
+            return Scaler::ScaleNN;
         } else {
             return Scaler::Invalid;
         }

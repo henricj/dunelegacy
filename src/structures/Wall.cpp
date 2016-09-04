@@ -53,8 +53,8 @@ void Wall::init() {
 
     graphicID = ObjPic_Wall;
     graphic = pGFXManager->getObjPic(graphicID,getOwner()->getHouseID());
-    numImagesX = 75;
-    numImagesY = 1;
+    numImagesX = 25;
+    numImagesY = 3;
 }
 
 Wall::~Wall() {

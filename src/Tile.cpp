@@ -267,7 +267,10 @@ void Tile::assignUndergroundUnit(Uint32 newObjectID) {
 }
 
 void Tile::blitGround(int xPos, int yPos) {
-    SDL_Rect source = { getTerrainTile()*world2zoomedWorld(TILESIZE), 0, world2zoomedWorld(TILESIZE), world2zoomedWorld(TILESIZE) };
+    int tileIndex = getTerrainTile();
+    int indexX = tileIndex % NUM_TERRAIN_TILES_X;
+    int indexY = tileIndex / NUM_TERRAIN_TILES_X;
+    SDL_Rect source = { indexX*world2zoomedWorld(TILESIZE), indexY*world2zoomedWorld(TILESIZE), world2zoomedWorld(TILESIZE), world2zoomedWorld(TILESIZE) };
     SDL_Rect drawLocation = { xPos, yPos, world2zoomedWorld(TILESIZE), world2zoomedWorld(TILESIZE) };
 
     if((hasANonInfantryGroundObject() == false) || (getNonInfantryGroundObject()->isAStructure() == false)) {

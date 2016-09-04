@@ -156,7 +156,7 @@ OptionsMenu::OptionsMenu() : MenuBase()
         scalerDropDownBox.addEntry(Scaler::getScalerName((Scaler::ScalerType) i));
     }
     Scaler::ScalerType currentScaler = Scaler::getScalerByName(settings.video.scaler);
-    scalerDropDownBox.setSelectedItem(currentScaler >= 0 ? currentScaler : Scaler::Scale2x);
+    scalerDropDownBox.setSelectedItem(currentScaler >= 0 ? currentScaler : Scaler::ScaleHD);
     scalerDropDownBox.setOnSelectionChange(std::bind(&OptionsMenu::onChangeOption, this, std::placeholders::_1));
     resolutionHBox.addWidget(&scalerDropDownBox, 78);
 

@@ -413,6 +413,11 @@ public:
     */
     bool onRadarClick(Coord worldPosition, bool bRightMouseButton, bool bDrag);
 
+    /**
+        Take a screenshot and save it with a unique name
+    */
+    void takeScreenshot() const;
+
 private:
 
     /**
@@ -546,6 +551,8 @@ private:
     Uint32      gameCycleCount;
 
     Uint32      skipToGameCycle;    ///< skip to this game cycle
+
+    bool        takePeriodicalScreenshots;  ///< take a screenshot every 10 seconds
 
     SDL_Rect    powerIndicatorPos;  ///< position of the power indicator in the right game bar
     SDL_Rect    spiceIndicatorPos;  ///< position of the spice indicator in the right game bar

@@ -47,7 +47,7 @@ public:
 
     SDL_Surface * getPicture(Uint32 IndexOfFile);
     SDL_Surface * getPictureArray(Uint32 mapfileIndex, int tilesX = 0, int tilesY = 0, int tilesN = 0);
-    SDL_Surface * getPictureRow(Uint32 startIndex,Uint32 endIndex);
+    SDL_Surface * getPictureRow(Uint32 startIndex,Uint32 endIndex, Uint32 maxRowLength = 0);
     SDL_Surface * getPictureRow2(unsigned int numTiles, ...);
 
     /// Returns the number of tiles

@@ -406,9 +406,10 @@ SDL_Surface* Icnfile::getPictureArray(Uint32 mapfileIndex, int tilesX, int tiles
     The returned SDL_Surface should be freed with SDL_FreeSurface() if no longer needed.
     \param  startIndex      The first tile to use
     \param  endIndex        The last tile to use
+    \param  maxRowLength    Used to limit the number of tiles per row and put the remaining tiles on the following rows (0 equals no row limitation)
     \return the result surface with (endIndex-startIndex+1) tiles. nullptr on errors.
 */
-SDL_Surface* Icnfile::getPictureRow(Uint32 startIndex, Uint32 endIndex) {
+SDL_Surface* Icnfile::getPictureRow(Uint32 startIndex, Uint32 endIndex, Uint32 maxRowLength) {
     SDL_Surface * pic;
 
     if((startIndex >= numFiles)||(endIndex >= numFiles)||(startIndex > endIndex)) {
@@ -416,41 +417,49 @@ SDL_Surface* Icnfile::getPictureRow(Uint32 startIndex, Uint32 endIndex) {
     }
 
     Uint32 numTiles = endIndex - startIndex + 1;
+    Uint32 numCols = (maxRowLength == 0) ? numTiles : maxRowLength;
+    Uint32 numRows = (numTiles+numCols-1) / numCols;
+
     // create new picture surface
-    if((pic = SDL_CreateRGBSurface(0,SIZE_X*numTiles,SIZE_Y,8,0,0,0,0))== nullptr) {
+    if((pic = SDL_CreateRGBSurface(0,SIZE_X*numCols,SIZE_Y*numRows,8,0,0,0,0))== nullptr) {
         return nullptr;
     }
-
     palette.applyToSurface(pic);
+
     SDL_LockSurface(pic);
 
-    for(Uint32 i = 0; i < numTiles; i++) {
-        int indexOfFile = i+startIndex;
+    Uint32 tileCount = 0;
+    for(Uint32 row = 0; (row < numRows) && (tileCount < numTiles); row++) {
+        for(Uint32 col = 0; (col < numCols) && (tileCount < numTiles); col++) {
+            Uint32 indexOfFile = startIndex + tileCount;
 
-        // check if palette is in range
-        if(RTBL[indexOfFile] >= RPAL_Length / 16) {
-            SDL_UnlockSurface(pic);
-            SDL_FreeSurface(pic);
-            return nullptr;
-        }
-
-        unsigned char* palettestart = RPAL + (16 * RTBL[indexOfFile]);
-        unsigned char * filestart = SSET + (indexOfFile * ((SIZE_X * SIZE_Y)/2));
-
-        //Now we can copy to surface
-        unsigned char *dest = (unsigned char*) (pic->pixels) + i*SIZE_X;
-        unsigned char pixel;
-        for(int y = 0; y < SIZE_Y;y++) {
-            for(int x = 0; x < SIZE_X; x+=2) {
-                pixel = filestart[ (y*SIZE_X + x) / 2];
-                pixel = pixel >> 4;
-                dest[x] = palettestart[pixel];
-
-                pixel = filestart[ (y*SIZE_X + x) / 2];
-                pixel = pixel & 0x0F;
-                dest[x+1] = palettestart[pixel];
+            // check if palette is in range
+            if(RTBL[indexOfFile] >= RPAL_Length / 16) {
+                SDL_UnlockSurface(pic);
+                SDL_FreeSurface(pic);
+                return nullptr;
             }
-            dest += pic->pitch;
+
+            unsigned char* palettestart = RPAL + (16 * RTBL[indexOfFile]);
+            unsigned char * filestart = SSET + (indexOfFile * ((SIZE_X * SIZE_Y)/2));
+
+            //Now we can copy to surface
+            unsigned char *dest = (unsigned char*) (pic->pixels) + (row*SIZE_Y*pic->pitch) + (col*SIZE_X);
+            unsigned char pixel;
+            for(int y = 0; y < SIZE_Y;y++) {
+                for(int x = 0; x < SIZE_X; x+=2) {
+                    pixel = filestart[ (y*SIZE_X + x) / 2];
+                    pixel = pixel >> 4;
+                    dest[x] = palettestart[pixel];
+
+                    pixel = filestart[ (y*SIZE_X + x) / 2];
+                    pixel = pixel & 0x0F;
+                    dest[x+1] = palettestart[pixel];
+                }
+                dest += pic->pitch;
+            }
+
+            tileCount++;
         }
     }
 

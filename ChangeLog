@@ -2,6 +2,7 @@ version 0.96.4
 	* New AI Smart Bot and Quant Bot
 	* Port to SDL 2
 	* Use hardware acceleration for drawing
+	* HD graphics: Use mask overlays to generate high-res graphics out of the low-res ones of the original game
 	* Move to fix-point math for game logic as floating-point operations may differ between platforms and compilers
 	* ADL music playback replaced: Now combines ScummVM AdlibDriver with Woody OPL chip emulation code from adplug
 	* New key bindings: Cycle through construction yards with 'H' and factories with 'F'
@@ -12,6 +13,7 @@ version 0.96.4
 	* Save screenshots as PNG
 	* 64-bit builds for Windows
 	* Store complete map in save games (and replays) of single player custom games
+	* Bugfix (Bug #72): Texture sizes were too big for older hardware; now textures are smaller than 2048x2048 (Reported by gdm85)
 	* Bugfix (Bug #70): Changing the player name makes replays crash
 	* Bugfix (Bug #67): Saving a game under Windows with (for filenames) illegal characters results in no save at all (Reported by vangrunz)
 	* Bugfix (Bug #40): Bullets from gun turrets hit own building, e.g. other turrets (Reported by Dream Worker)

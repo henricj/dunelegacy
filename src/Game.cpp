@@ -129,6 +129,8 @@ Game::Game() {
     gameCycleCount = 0;
     skipToGameCycle = 0;
 
+    takePeriodicalScreenshots = false;
+
     averageFrameTime = 31.25f;
     debug = false;
 
@@ -1257,6 +1259,10 @@ void Game::runMainLoop() {
             }
         }
 
+        if(takePeriodicalScreenshots && ((gameCycleCount % (MILLI2CYCLES(10*1000))) == 0)) {
+            takeScreenshot();
+        }
+
 
         while( (frameTime > getGameSpeed()) || (!finished && (gameCycleCount < skipToGameCycle)) )  {
 
@@ -2252,17 +2258,11 @@ void Game::handleKeyInput(SDL_KeyboardEvent& keyboardEvent) {
 
         case SDLK_PRINTSCREEN:
         case SDLK_SYSREQ: {
-            std::string screenshotFilename;
-            int i = 1;
-            do {
-                screenshotFilename = "Screenshot" + stringify(i) + ".png";
-                i++;
-            } while(existsFile(screenshotFilename) == true);
-
-            SDL_Surface* pCurrentScreen = renderReadSurface(renderer);
-            SavePNG(pCurrentScreen, screenshotFilename.c_str());
-            currentGame->addToNewsTicker(_("Screenshot saved") + ": '" + screenshotFilename + "'");
-            SDL_FreeSurface(pCurrentScreen);
+            if(SDL_GetModState() & KMOD_SHIFT) {
+                takePeriodicalScreenshots = !takePeriodicalScreenshots;
+            } else {
+                takeScreenshot();
+            }
         } break;
 
         case SDLK_h: {
@@ -2584,6 +2584,22 @@ bool Game::handleSelectedObjectsActionClick(int xPos, int yPos) {
         return false;
     }
 }
+
+
+void Game::takeScreenshot() const {
+    std::string screenshotFilename;
+    int i = 1;
+    do {
+        screenshotFilename = "Screenshot" + stringify(i) + ".png";
+        i++;
+    } while(existsFile(screenshotFilename) == true);
+
+    SDL_Surface* pCurrentScreen = renderReadSurface(renderer);
+    SavePNG(pCurrentScreen, screenshotFilename.c_str());
+    currentGame->addToNewsTicker(_("Screenshot saved") + ": '" + screenshotFilename + "'");
+    SDL_FreeSurface(pCurrentScreen);
+}
+
 
 void Game::selectNextStructureOfType(const std::set<Uint32>& itemIDs) {
     bool bSelectNext = true;

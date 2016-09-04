@@ -58,7 +58,7 @@ void RepairYard::init() {
     numImagesX = 10;
     numImagesY = 1;
     firstAnimFrame = 2;
-    lastAnimFrame = 5;
+    lastAnimFrame = 3;
 }
 
 RepairYard::~RepairYard() {
@@ -89,7 +89,7 @@ void RepairYard::deployRepairUnit(Carryall* pCarryall) {
     unBook();
     repairingAUnit = false;
     firstAnimFrame = 2;
-    lastAnimFrame = 5;
+    lastAnimFrame = 3;
 
     UnitBase* pRepairUnit = repairUnit.getUnitPointer();
     if(pCarryall != nullptr) {
@@ -136,9 +136,9 @@ void RepairYard::updateStructureSpecificStuff() {
             curAnimFrame = 6;
         }
     } else {
-        if(curAnimFrame > 5) {
+        if(curAnimFrame > 3) {
             firstAnimFrame = 2;
-            lastAnimFrame = 5;
+            lastAnimFrame = 3;
             curAnimFrame = 2;
         }
     }

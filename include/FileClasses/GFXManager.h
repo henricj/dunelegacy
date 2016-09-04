@@ -25,8 +25,11 @@
 #include <DataTypes.h>
 
 #include <string>
+#include <array>
 #include <memory>
 
+#define NUM_TERRAIN_TILES_X 11
+#define NUM_TERRAIN_TILES_Y 8
 #define NUM_MAPCHOICEPIECES 28
 #define NUM_WINDTRAP_ANIMATIONS (2*STRUCTURE_ANIMATIONTIMER+4)
 #define NUM_WINDTRAP_ANIMATIONS_PER_ROW 10
@@ -110,6 +113,17 @@ typedef enum {
     ObjPic_Star,
     NUM_OBJPICS
 } ObjPic_enum;
+
+static const std::array<std::string, NUM_OBJPICS> ObjPicNames = { "Tank_Base", "Tank_Gun", "Siegetank_Base", "Siegetank_Gun", "Devastator_Base",
+    "Devastator_Gun", "Sonictank_Gun", "Launcher_Gun", "Quad", "Trike", "Harvester", "Harvester_Sand", "MCV", "Carryall", "CarryallShadow",
+    "Frigate", "FrigateShadow", "Ornithopter", "OrnithopterShadow", "Trooper", "Troopers", "Soldier", "Infantry", "Saboteur", "Sandworm",
+    "ConstructionYard", "Windtrap", "Refinery", "Barracks", "WOR", "Radar", "LightFactory", "Silo", "HeavyFactory", "HighTechFactory",
+    "IX", "Palace", "RepairYard", "Starport", "GunTurret", "RocketTurret", "Wall",
+    "Bullet_SmallRocket", "Bullet_MediumRocket", "Bullet_LargeRocket", "Bullet_Small", "Bullet_Medium", "Bullet_Large", "Bullet_Sonic",
+    "Bullet_SonicTemp", "Hit_Gas", "Hit_ShellSmall", "Hit_ShellMedium", "Hit_ShellLarge", "ExplosionSmall", "ExplosionMedium1",
+    "ExplosionMedium2", "ExplosionLarge1", "ExplosionLarge2", "ExplosionSmallUnit", "ExplosionFlames", "ExplosionSpiceBloom",
+    "DeadInfantry", "DeadAirUnit", "Smoke", "SandwormShimmerMask", "SandwormShimmerTemp", "Terrain", "DestroyedStructure", "RockDamage",
+    "SandDamage", "Terrain_Hidden", "Terrain_HiddenFog", "Terrain_Tracks", "Star" };
 
 #define GROUNDUNIT_ROW(i) (i+2)|TILE_NORMAL,(i+1)|TILE_NORMAL,i|TILE_NORMAL,(i+1)|TILE_FLIPV,(i+2)|TILE_FLIPV,(i+3)|TILE_FLIPV, (i+4)|TILE_NORMAL,(i+3)|TILE_NORMAL
 #define AIRUNIT_ROW(i) (i+2)|TILE_NORMAL,(i+1)|TILE_NORMAL,i|TILE_NORMAL,(i+1)|TILE_FLIPV,(i+2)|TILE_FLIPV,(i+1)|TILE_ROTATE, i|TILE_FLIPH,(i+1)|TILE_FLIPH
@@ -475,6 +489,9 @@ private:
     std::shared_ptr<Wsafile>  loadWsafile(std::string filename);
 
     SDL_Texture*    extractSmallDetailPic(std::string filename);
+
+    SDL_Surface*    generateDoubledObjPic(unsigned int id, int h);
+    SDL_Surface*    generateTripledObjPic(unsigned int id, int h);
 
     // 8-bit surfaces kept in main memory for processing as needed, e.g. color remapping
     SDL_Surface*    objPic[NUM_OBJPICS][(int) NUM_HOUSES][NUM_ZOOMLEVEL];

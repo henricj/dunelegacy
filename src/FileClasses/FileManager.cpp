@@ -39,10 +39,10 @@ FileManager::FileManager(bool saveMode) {
     fprintf(stderr,"MD5-Checksum                      Filename\n");
 
     std::vector<std::string> searchPath = getSearchPath();
-    std::vector<std::string> FileList = getNeededFiles();
+    std::vector<std::string> fileList = getNeededFiles();
 
     std::vector<std::string>::const_iterator filenameIter;
-    for(filenameIter = FileList.begin(); filenameIter != FileList.end(); ++filenameIter) {
+    for(filenameIter = fileList.begin(); filenameIter != fileList.end(); ++filenameIter) {
 
         std::vector<std::string>::const_iterator searchPathIter;
         for(searchPathIter = searchPath.begin(); searchPathIter != searchPath.end(); ++searchPathIter) {
@@ -95,6 +95,7 @@ std::vector<std::string> FileManager::getNeededFiles() {
 
     fileList.push_back("LEGACY.PAK");
     fileList.push_back("OPENSD2.PAK");
+    fileList.push_back("GFXHD.PAK");
     fileList.push_back("DUNE.PAK");
     fileList.push_back("SCENARIO.PAK");
     fileList.push_back("MENTAT.PAK");

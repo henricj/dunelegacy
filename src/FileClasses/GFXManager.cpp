@@ -81,7 +81,7 @@ static Coord objPicTiles[] {
     { 10, 1 },  // ObjPic_Starport
     { 10, 1 },  // ObjPic_GunTurret
     { 10, 1 },  // ObjPic_RocketTurret
-    { 75, 1 },  // ObjPic_Wall
+    { 25, 3 },  // ObjPic_Wall
     { 16, 1 },  // ObjPic_Bullet_SmallRocket
     { 16, 1 },  // ObjPic_Bullet_MediumRocket
     { 16, 1 },  // ObjPic_Bullet_LargeRocket
@@ -107,7 +107,7 @@ static Coord objPicTiles[] {
     { 3, 1 },   // ObjPic_Smoke
     { 1, 1 },   // ObjPic_SandwormShimmerMask
     { 1, 1 },   // ObjPic_SandwormShimmerTemp
-    { 86, 1 },  // ObjPic_Terrain
+    { NUM_TERRAIN_TILES_X, NUM_TERRAIN_TILES_Y },  // ObjPic_Terrain
     { 14, 1 },  // ObjPic_DestroyedStructure
     { 6, 1 },   // ObjPic_RockDamage
     { 3, 1 },   // ObjPic_SandDamage
@@ -222,11 +222,11 @@ GFXManager::GFXManager() {
     objPic[ObjPic_Harvester_Sand][HOUSE_HARKONNEN][0] = units1->getPictureArray(8,3,HARVESTERSAND_ROW(72),HARVESTERSAND_ROW(73),HARVESTERSAND_ROW(74));
     objPic[ObjPic_MCV][HOUSE_HARKONNEN][0] = units->getPictureArray(8,1,GROUNDUNIT_ROW(15));
     objPic[ObjPic_Carryall][HOUSE_HARKONNEN][0] = units->getPictureArray(8,2,AIRUNIT_ROW(45),AIRUNIT_ROW(48));
-    objPic[ObjPic_CarryallShadow][HOUSE_HARKONNEN][0] = createShadowSurface(objPic[ObjPic_Carryall][HOUSE_HARKONNEN][0]);
+    objPic[ObjPic_CarryallShadow][HOUSE_HARKONNEN][0] = nullptr;    // create shadow after scaling
     objPic[ObjPic_Frigate][HOUSE_HARKONNEN][0] = units->getPictureArray(8,1,AIRUNIT_ROW(60));
-    objPic[ObjPic_FrigateShadow][HOUSE_HARKONNEN][0] = createShadowSurface(objPic[ObjPic_Frigate][HOUSE_HARKONNEN][0]);
+    objPic[ObjPic_FrigateShadow][HOUSE_HARKONNEN][0] = nullptr;     // create shadow after scaling
     objPic[ObjPic_Ornithopter][HOUSE_HARKONNEN][0] = units->getPictureArray(8,3,ORNITHOPTER_ROW(51),ORNITHOPTER_ROW(52),ORNITHOPTER_ROW(53));
-    objPic[ObjPic_OrnithopterShadow][HOUSE_HARKONNEN][0] = createShadowSurface(objPic[ObjPic_Ornithopter][HOUSE_HARKONNEN][0]);
+    objPic[ObjPic_OrnithopterShadow][HOUSE_HARKONNEN][0] = nullptr; // create shadow after scaling
     objPic[ObjPic_Trooper][HOUSE_HARKONNEN][0] = units->getPictureArray(4,3,INFANTRY_ROW(82),INFANTRY_ROW(83),INFANTRY_ROW(84));
     objPic[ObjPic_Troopers][HOUSE_HARKONNEN][0] = units->getPictureArray(4,4,MULTIINFANTRY_ROW(103),MULTIINFANTRY_ROW(104),MULTIINFANTRY_ROW(105),MULTIINFANTRY_ROW(106));
     objPic[ObjPic_Soldier][HOUSE_HARKONNEN][0] = units->getPictureArray(4,3,INFANTRY_ROW(73),INFANTRY_ROW(74),INFANTRY_ROW(75));
@@ -249,7 +249,7 @@ GFXManager::GFXManager() {
     objPic[ObjPic_Starport][HOUSE_HARKONNEN][0] = icon->getPictureArray(20);
     objPic[ObjPic_GunTurret][HOUSE_HARKONNEN][0] = icon->getPictureArray(23);
     objPic[ObjPic_RocketTurret][HOUSE_HARKONNEN][0] = icon->getPictureArray(24);
-    objPic[ObjPic_Wall][HOUSE_HARKONNEN][0] = icon->getPictureArray(6,1,1,75);
+    objPic[ObjPic_Wall][HOUSE_HARKONNEN][0] = icon->getPictureArray(6,25,3,1);
     objPic[ObjPic_Bullet_SmallRocket][HOUSE_HARKONNEN][0] = units->getPictureArray(16,1,ROCKET_ROW(35));
     objPic[ObjPic_Bullet_MediumRocket][HOUSE_HARKONNEN][0] = units->getPictureArray(16,1,ROCKET_ROW(20));
     objPic[ObjPic_Bullet_LargeRocket][HOUSE_HARKONNEN][0] = units->getPictureArray(16,1,ROCKET_ROW(40));
@@ -280,7 +280,7 @@ GFXManager::GFXManager() {
     objPic[ObjPic_SandwormShimmerMask][HOUSE_HARKONNEN][0] = units1->getPicture(10);
     replaceColor(objPic[ObjPic_SandwormShimmerMask][HOUSE_HARKONNEN][0], PALCOLOR_WHITE, PALCOLOR_BLACK);
     objPic[ObjPic_SandwormShimmerTemp][HOUSE_HARKONNEN][0] = units1->getPicture(10);
-    objPic[ObjPic_Terrain][HOUSE_HARKONNEN][0] = icon->getPictureRow(124,209);
+    objPic[ObjPic_Terrain][HOUSE_HARKONNEN][0] = icon->getPictureRow(124,209,NUM_TERRAIN_TILES_X);
     objPic[ObjPic_DestroyedStructure][HOUSE_HARKONNEN][0] = icon->getPictureRow2(14, 33, 125, 213, 214, 215, 223, 224, 225, 232, 233, 234, 240, 246, 247);
     objPic[ObjPic_RockDamage][HOUSE_HARKONNEN][0] = icon->getPictureRow(1,6);
     objPic[ObjPic_SandDamage][HOUSE_HARKONNEN][0] = icon->getPictureRow(7,12);
@@ -296,12 +296,12 @@ GFXManager::GFXManager() {
         for(int h = 0; h < (int) NUM_HOUSES; h++) {
             if(objPic[id][h][0] != nullptr) {
                 if(objPic[id][h][1] == nullptr) {
-                    objPic[id][h][1] = Scaler::defaultDoubleTiledSurface(objPic[id][h][0], objPicTiles[id].x, objPicTiles[id].y, false);
+                    objPic[id][h][1] = generateDoubledObjPic(id, h);
                 }
                 SDL_SetColorKey(objPic[id][h][1], SDL_TRUE, PALCOLOR_TRANSPARENT);
 
                 if(objPic[id][h][2] == nullptr) {
-                    objPic[id][h][2] = Scaler::defaultTripleTiledSurface(objPic[id][h][0], objPicTiles[id].x, objPicTiles[id].y, false);
+                    objPic[id][h][2] = generateTripledObjPic(id, h);
                 }
                 SDL_SetColorKey(objPic[id][h][2], SDL_TRUE, PALCOLOR_TRANSPARENT);
 
@@ -309,6 +309,16 @@ GFXManager::GFXManager() {
             }
         }
     }
+
+    objPic[ObjPic_CarryallShadow][HOUSE_HARKONNEN][0] = createShadowSurface(objPic[ObjPic_Carryall][HOUSE_HARKONNEN][0]);
+    objPic[ObjPic_CarryallShadow][HOUSE_HARKONNEN][1] = createShadowSurface(objPic[ObjPic_Carryall][HOUSE_HARKONNEN][1]);
+    objPic[ObjPic_CarryallShadow][HOUSE_HARKONNEN][2] = createShadowSurface(objPic[ObjPic_Carryall][HOUSE_HARKONNEN][2]);
+    objPic[ObjPic_FrigateShadow][HOUSE_HARKONNEN][0] = createShadowSurface(objPic[ObjPic_Frigate][HOUSE_HARKONNEN][0]);
+    objPic[ObjPic_FrigateShadow][HOUSE_HARKONNEN][1] = createShadowSurface(objPic[ObjPic_Frigate][HOUSE_HARKONNEN][1]);
+    objPic[ObjPic_FrigateShadow][HOUSE_HARKONNEN][2] = createShadowSurface(objPic[ObjPic_Frigate][HOUSE_HARKONNEN][2]);
+    objPic[ObjPic_OrnithopterShadow][HOUSE_HARKONNEN][0] = createShadowSurface(objPic[ObjPic_Ornithopter][HOUSE_HARKONNEN][0]);
+    objPic[ObjPic_OrnithopterShadow][HOUSE_HARKONNEN][1] = createShadowSurface(objPic[ObjPic_Ornithopter][HOUSE_HARKONNEN][1]);
+    objPic[ObjPic_OrnithopterShadow][HOUSE_HARKONNEN][2] = createShadowSurface(objPic[ObjPic_Ornithopter][HOUSE_HARKONNEN][2]);
 
     // load small detail pics
     smallDetailPicTex[Picture_Barracks] = extractSmallDetailPic("BARRAC.WSA");
@@ -1238,6 +1248,10 @@ SDL_Surface* GFXManager::generateWindtrapAnimationFrames(SDL_Surface* windtrapPi
         dest.x = dest.x % sizeX;
     }
 
+    if((returnPic->w > 2048) || (returnPic->h > 2048)) {
+        fprintf(stderr, "Warning: Size of sprite sheet for windtrap is %dx%d; may exceed hardware limits on older GPUs!\n", returnPic->w, returnPic->h);
+    }
+
     return returnPic;
 }
 
@@ -1257,4 +1271,62 @@ SDL_Surface* GFXManager::generateMapChoiceArrowFrames(SDL_Surface* arrowPic, int
     }
 
     return returnPic;
+}
+
+SDL_Surface* GFXManager::generateDoubledObjPic(unsigned int id, int h) {
+    SDL_Surface* pSurface = nullptr;
+    std::string filename = std::string("Mask_2x_") + ObjPicNames.at(id) + std::string(".png");
+    if((settings.video.scaler == "ScaleHD") && (pFileManager->exists(filename))) {
+        pSurface = Scaler::doubleTiledSurfaceNN(objPic[id][h][0], objPicTiles[id].x, objPicTiles[id].y, false);
+
+        SDL_Surface* pOverlay = LoadPNG_RW(pFileManager->openFile(filename), true);
+        SDL_SetColorKey(pOverlay, SDL_TRUE, PALCOLOR_UI_COLORCYCLE);
+
+        // SDL_BlitSurface will silently map PALCOLOR_BLACK to PALCOLOR_TRANSPARENT as both are RGB(0,0,0,255), so make them temporarily different
+        pOverlay->format->palette->colors[PALCOLOR_BLACK].g = 1;
+        pSurface->format->palette->colors[PALCOLOR_BLACK].g = 1;
+        SDL_BlitSurface(pOverlay, NULL, pSurface, NULL);
+        pOverlay->format->palette->colors[PALCOLOR_BLACK].g = 0;
+        pSurface->format->palette->colors[PALCOLOR_BLACK].g = 0;
+
+        SDL_FreeSurface(pOverlay);
+    } else {
+        fprintf(stderr, "Warning: No HD sprite sheet for '%s' in zoom level 1!\n", ObjPicNames.at(id).c_str());
+        pSurface = Scaler::defaultDoubleTiledSurface(objPic[id][h][0], objPicTiles[id].x, objPicTiles[id].y, false);
+    }
+
+    if((pSurface->w > 2048) || (pSurface->h > 2048)) {
+        fprintf(stderr, "Warning: Size of sprite sheet for '%s' in zoom level 1 is %dx%d; may exceed hardware limits on older GPUs!\n", ObjPicNames.at(id).c_str(), pSurface->w, pSurface->h);
+    }
+
+    return pSurface;
+}
+
+SDL_Surface* GFXManager::generateTripledObjPic(unsigned int id, int h) {
+    SDL_Surface* pSurface = nullptr;
+    std::string filename = std::string("Mask_3x_") + ObjPicNames.at(id) + std::string(".png");
+    if((settings.video.scaler == "ScaleHD") && (pFileManager->exists(filename))) {
+        pSurface = Scaler::tripleTiledSurfaceNN(objPic[id][h][0], objPicTiles[id].x, objPicTiles[id].y, false);
+
+        SDL_Surface* pOverlay = LoadPNG_RW(pFileManager->openFile(filename), true);
+        SDL_SetColorKey(pOverlay, SDL_TRUE, PALCOLOR_UI_COLORCYCLE);
+
+        // SDL_BlitSurface will silently map PALCOLOR_BLACK to PALCOLOR_TRANSPARENT as both are RGB(0,0,0,255), so make them temporarily different
+        pOverlay->format->palette->colors[PALCOLOR_BLACK].g = 1;
+        pSurface->format->palette->colors[PALCOLOR_BLACK].g = 1;
+        SDL_BlitSurface(pOverlay, NULL, pSurface, NULL);
+        pOverlay->format->palette->colors[PALCOLOR_BLACK].g = 0;
+        pSurface->format->palette->colors[PALCOLOR_BLACK].g = 0;
+
+        SDL_FreeSurface(pOverlay);
+    } else {
+        fprintf(stderr, "Warning: No HD sprite sheet for '%s' in zoom level 2!\n", ObjPicNames.at(id).c_str());
+        pSurface = Scaler::defaultTripleTiledSurface(objPic[id][h][0], objPicTiles[id].x, objPicTiles[id].y, false);
+    }
+
+    if((pSurface->w > 2048) || (pSurface->h > 2048)) {
+        fprintf(stderr, "Warning: Size of sprite sheet for '%s' in zoom level 2 is %dx%d; may exceed hardware limits on older GPUs!\n", ObjPicNames.at(id).c_str(), pSurface->w, pSurface->h);
+    }
+
+    return pSurface;
 }

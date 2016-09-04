@@ -1172,7 +1172,11 @@ void MapEditor::processInput() {
                                 Coord position = uIter->position;
 
                                 if((position.x == xpos) && (position.y == ypos)) {
-                                    pInterface->onUnitRotateLeft(uIter->id);
+                                    if(event.wheel.y > 0) {
+                                        pInterface->onUnitRotateLeft(uIter->id);
+                                    } else {
+                                        pInterface->onUnitRotateRight(uIter->id);
+                                    }
                                     break;
                                 }
                             }
@@ -1505,7 +1509,7 @@ void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) {
             }
 
             //draw map[x][y]
-            SDL_Rect source = { tile*zoomedTilesize, 0,
+            SDL_Rect source = { (tile % NUM_TERRAIN_TILES_X)*zoomedTilesize, (tile / NUM_TERRAIN_TILES_X)*zoomedTilesize,
                                 zoomedTilesize, zoomedTilesize };
             SDL_Rect drawLocation = {   pScreenborder->world2screenX(x*TILESIZE), pScreenborder->world2screenY(y*TILESIZE),
                                         zoomedTilesize, zoomedTilesize };

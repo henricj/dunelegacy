@@ -187,7 +187,7 @@ SDL_Surface* renderReadSurface(SDL_Renderer* renderer) {
         return nullptr;
     }
 
-    // Fix bug in SDL2 OpenGL Backend
+    // Fix bug in SDL2 OpenGL Backend (SDL bug #2740)
     SDL_RendererInfo rendererInfo;
     SDL_GetRendererInfo(renderer, &rendererInfo);
     if(strcmp(rendererInfo.name, "opengl") == 0) {

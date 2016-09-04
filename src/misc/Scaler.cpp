@@ -28,11 +28,11 @@ DoubleTiledSurfaceFunction* Scaler::defaultTripleTiledSurface = Scaler::tripleTi
 
 void Scaler::setDefaultScaler(Scaler::ScalerType scaler) {
     switch(scaler) {
-        case Scaler::ScaleNN: {
-            Scaler::defaultDoubleSurface = Scaler::doubleSurfaceNN;
-            Scaler::defaultDoubleTiledSurface = Scaler::doubleTiledSurfaceNN;
-            Scaler::defaultTripleSurface = Scaler::tripleSurfaceNN;
-            Scaler::defaultTripleTiledSurface = Scaler::tripleTiledSurfaceNN;
+        case Scaler::ScaleHD: {
+            Scaler::defaultDoubleSurface = Scaler::doubleSurfaceScale2x;
+            Scaler::defaultDoubleTiledSurface = Scaler::doubleTiledSurfaceScale2x;
+            Scaler::defaultTripleSurface = Scaler::tripleSurfaceScale3x;
+            Scaler::defaultTripleTiledSurface = Scaler::tripleTiledSurfaceScale3x;
         } break;
 
         case Scaler::Scale2x:
@@ -41,6 +41,13 @@ void Scaler::setDefaultScaler(Scaler::ScalerType scaler) {
             Scaler::defaultDoubleTiledSurface = Scaler::doubleTiledSurfaceScale2x;
             Scaler::defaultTripleSurface = Scaler::tripleSurfaceScale3x;
             Scaler::defaultTripleTiledSurface = Scaler::tripleTiledSurfaceScale3x;
+        } break;
+
+        case Scaler::ScaleNN: {
+            Scaler::defaultDoubleSurface = Scaler::doubleSurfaceNN;
+            Scaler::defaultDoubleTiledSurface = Scaler::doubleTiledSurfaceNN;
+            Scaler::defaultTripleSurface = Scaler::tripleSurfaceNN;
+            Scaler::defaultTripleTiledSurface = Scaler::tripleTiledSurfaceNN;
         } break;
     }
 }
@@ -136,9 +143,9 @@ SDL_Surface* Scaler::tripleSurfaceNN(SDL_Surface* src, bool freeSrcSurface) {
     if (has_ckey) {
         SDL_SetColorKey(returnPic, SDL_TRUE, ckey);
     }
-    if (src->flags & SDL_RLEACCEL) {
-        SDL_SetSurfaceRLE(returnPic, SDL_TRUE);
-    }
+//    if (src->flags & SDL_RLEACCEL) {
+//        SDL_SetSurfaceRLE(returnPic, SDL_TRUE);
+//    }
 
     SDL_LockSurface(returnPic);
     SDL_LockSurface(src);
