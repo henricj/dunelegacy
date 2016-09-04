@@ -46,7 +46,14 @@
 
 /**
     TODO
-    == Building Placement ==
+  
+ New list from May 2016
+ - units should move at start
+ - fix single player campaign crash
+ - fix unit allocation bug - atredes only building light tanks
+ 
+ 
+ == Building Placement ==
 
 
     ia) build concrete when no placement locations are available == in progress, bugs exist ==
@@ -68,7 +75,7 @@
     == Units ==
     ii) units that get stuck in buildings should be transported to squadcenter =%80=
     vii) fix attack timer =%80=
-    viii) when attack timer exceeds a certain value then all hunting units are set to area guard
+    viii) when attack timer exceeds a certain value then all fing units are set to area guard
 
     2) harvester return distance bug been introduced.= in progress ==
 
@@ -338,8 +345,16 @@ void QuantBot::onDamage(const ObjectBase* pObject, int damage, Uint32 damagerID)
         return;
     }
 
-    // If the human has attacked us then its time to start fighting back...
-    if(gameMode == CAMPAIGN && !pDamager->getOwner()->isAI() && !campaignAIAttackFlag){
+    // If the human has attacked us then its time to start fighting back... unless its an attack on a special unit
+    if(gameMode == CAMPAIGN && !pDamager->getOwner()->isAI() && !campaignAIAttackFlag
+       
+       // Don't trigger with freman
+       && !(pObject->getOwner()->getHouseID() == HOUSE_ATREIDES && pObject->getItemID() == Unit_Trooper && currentGame->techLevel > 7)
+       
+       // Don't trigger on saboteur
+       && !(pObject->getItemID() == Unit_Saboteur)
+       
+       ){
         campaignAIAttackFlag = true;
     }
 
@@ -779,14 +794,12 @@ void QuantBot::build() {
 
                 case MEDIUM: {
 
-                    if(currentGame->techLevel == 8){
-                        hLimit = 2;
+
+                    hLimit = 2 * initialItemCount[Structure_Refinery];
+                    militaryValueLimit = lround(initialMilitaryValue * FixPt(1,2));
+
+                    if(militaryValueLimit < 4000 && currentGame->techLevel == 8){
                         militaryValueLimit = 4000;
-
-                    }else{
-                        hLimit = 2 * initialItemCount[Structure_Refinery];
-                        militaryValueLimit = initialMilitaryValue;
-
                     }
 
 
@@ -830,7 +843,7 @@ void QuantBot::build() {
                 case DEFEND: {
 
                     hLimit = 2 * initialItemCount[Structure_Refinery];
-                    militaryValueLimit = lround(initialMilitaryValue * FixPt(1,5));
+                    militaryValueLimit = lround(initialMilitaryValue * FixPt(1,2));
 
                     fprintf(stdout, "Defensive Campaign  ");
 
@@ -926,8 +939,6 @@ void QuantBot::build() {
                         activeHeavyFactoryCount++;
                     }
                 }
-
-
             }
 
             else if(pStructure->getItemID() == Structure_RepairYard){
@@ -992,7 +1003,9 @@ void QuantBot::build() {
 
 
     if(militaryValue > 0 || getHouse()->getNumStructures() > 0){
-        fprintf(stdout,"%s att: %d  crdt: %d  mLim: %d  mVal: %d  built: %d  kill: %d  loss: %d hvstr: %d hLim: %d\n",
+        
+        
+        fprintf(stdout,"%s att: %d  crdt: %d  mVal: %d/%d  built: %d  kill: %d  loss: %d hvstr: %d/%d\n",
             houseName.c_str(),
 
             attackTimer,
@@ -1005,7 +1018,158 @@ void QuantBot::build() {
             getHouse()->getNumItems(Unit_Harvester),
             hLimit
             );
+        
+        
+
     }
+    
+    
+    
+    
+    /*
+     Second attempt at unit prioritisation
+     This algorithm calculates damage dealt over units lost value for each unit type
+     referred to as damage loss ratio (dlr)
+     
+     It then prioritises the build of units with a higher dlr
+     
+     */
+    
+    
+    float dlrTank = (float)getHouse()->getNumItemDamageInflicted(Unit_Tank)
+    / (float)((1 + getHouse()->getNumLostItems(Unit_Tank))
+              * currentGame->objectData.data[Unit_Tank][getHouse()->getHouseID()].price);
+    
+    float dlrSiege = (float)getHouse()->getNumItemDamageInflicted(Unit_SiegeTank)
+    / (float)((1 + getHouse()->getNumLostItems(Unit_SiegeTank))
+              * currentGame->objectData.data[Unit_SiegeTank][getHouse()->getHouseID()].price);
+    
+    float dlrSpecial = (float)(getHouse()->getNumItemDamageInflicted(Unit_Devastator)
+                               + getHouse()->getNumItemDamageInflicted(Unit_SonicTank)
+                               + getHouse()->getNumItemDamageInflicted(Unit_Deviator))
+    / ((float)((getHouse()->getNumLostItems(Unit_Devastator))
+               * currentGame->objectData.data[Unit_Devastator][getHouse()->getHouseID()].price)
+       + (float)((getHouse()->getNumLostItems(Unit_SonicTank))
+                 * currentGame->objectData.data[Unit_SonicTank][getHouse()->getHouseID()].price)
+       + (float)((getHouse()->getNumLostItems(Unit_Deviator))
+               * currentGame->objectData.data[Unit_Deviator][getHouse()->getHouseID()].price)
+       + (float)700 /* middle ground 1 for special units*/);
+    
+    float dlrLauncher = (float)getHouse()->getNumItemDamageInflicted(Unit_Launcher)
+    / (float)((1 + getHouse()->getNumLostItems(Unit_Launcher))
+              * currentGame->objectData.data[Unit_Launcher][getHouse()->getHouseID()].price);
+    
+    float dlrOrnithopter = (float)getHouse()->getNumItemDamageInflicted(Unit_Ornithopter)
+    / (float)((1 + getHouse()->getNumLostItems(Unit_Ornithopter))
+              * currentGame->objectData.data[Unit_Ornithopter][getHouse()->getHouseID()].price);
+    
+    Sint32 totalDamage = getHouse()->getNumItemDamageInflicted(Unit_Tank)
+    + getHouse()->getNumItemDamageInflicted(Unit_SiegeTank)
+    + getHouse()->getNumItemDamageInflicted(Unit_Devastator)
+    + getHouse()->getNumItemDamageInflicted(Unit_Launcher)
+    + getHouse()->getNumItemDamageInflicted(Unit_Ornithopter);
+
+    // Harkonan can't build ornithopers
+    if(getHouse()->getHouseID() == HOUSE_HARKONNEN){
+        dlrOrnithopter = 0;
+    }
+    
+    // Ordos can't build Launchers
+    if(getHouse()->getHouseID() == HOUSE_ORDOS){
+        dlrLauncher = 0;
+    }
+    
+    // Sonic tanks can get into negative damage territory
+    if(dlrSpecial < 0){
+        dlrSpecial = 0;
+    }
+    
+    float dlrTotal = dlrTank + dlrSiege + dlrSpecial + dlrLauncher + dlrOrnithopter;
+    
+    if(dlrTotal < 0){
+        dlrTotal = 0;
+    }
+    
+
+    
+    fprintf(stdout,"%s  Dmg: %d DLR: %f",
+            houseName.c_str(),
+            totalDamage,
+            dlrTotal);
+    
+    /// Calculate ratios of launcher, special and light tanks. Remainder will be tank
+    float launcherPercent = dlrLauncher / dlrTotal;
+    float specialPercent = dlrSpecial / dlrTotal;
+    float siegePercent = dlrSiege / dlrTotal;
+    float ornithopterPercent = dlrOrnithopter / dlrTotal;
+    float tankPercent = dlrTank / dlrTotal;
+    
+    // If we haven't done much damage just keep all ratios at optimised defaults
+    // These ratios are based on end game stats over a number of AI test runs to see
+    // Which units perform. By and large launchers and siege tanks have the best damage to loss ratio
+    if(totalDamage < 3000){
+        switch (getHouse()->getHouseID()) {
+            case HOUSE_HARKONNEN:
+                launcherPercent = 0.50;
+                specialPercent = 0.15;
+                siegePercent = 0.35;
+                ornithopterPercent = 0;
+                break;
+ 
+            case HOUSE_ORDOS:
+                launcherPercent = 0; // Don't have these
+                specialPercent = 0.25;
+                siegePercent = 0.75;
+                ornithopterPercent = 0.05;
+                break;
+                
+            default:
+                launcherPercent = 0.40;
+                specialPercent = 0.10;
+                siegePercent = 0.35;
+                ornithopterPercent = 0.15;
+                
+                break;
+        }
+        
+
+    }
+    
+    
+    // lets analyse damage inflicted
+    fprintf(stdout, "  Tank: %d/%d %f Siege: %d/%d %f Special: %d/%d %f Launch: %d/%d %f Orni: %d/%d %f\n",
+            
+            
+            getHouse()->getNumItemDamageInflicted(Unit_Tank),
+            getHouse()->getNumLostItems(Unit_Tank) * 300,
+            tankPercent,
+            
+            getHouse()->getNumItemDamageInflicted(Unit_SiegeTank),
+            getHouse()->getNumLostItems(Unit_SiegeTank) * 600,
+            siegePercent,
+            
+            getHouse()->getNumItemDamageInflicted(Unit_SonicTank) +
+            getHouse()->getNumItemDamageInflicted(Unit_Devastator) +
+            getHouse()->getNumItemDamageInflicted(Unit_Deviator),
+            getHouse()->getNumLostItems(Unit_SonicTank) * 600
+            + getHouse()->getNumLostItems(Unit_Devastator) * 800
+            + getHouse()->getNumLostItems(Unit_Deviator) * 750,
+            specialPercent,
+            
+            getHouse()->getNumItemDamageInflicted(Unit_Launcher),
+            getHouse()->getNumLostItems(Unit_Launcher) * 450,
+            launcherPercent,
+            
+            getHouse()->getNumItemDamageInflicted(Unit_Ornithopter),
+            getHouse()->getNumLostItems(Unit_Ornithopter) * currentGame->objectData.data[Unit_Ornithopter][getHouse()->getHouseID()].price,
+            ornithopterPercent
+            
+            );
+    
+    
+    // End of adaptive unit prioritisation algorithm
+    
+    
 
     for(iter = getStructureList().begin(); iter != getStructureList().end(); ++iter) {
         const StructureBase* pStructure = *iter;
@@ -1109,15 +1273,20 @@ void QuantBot::build() {
 
             }
 
+            
+            
+            
 
-            /*  First attempt at making more generic
+            
+
+            /*  First attempt of unit prioritisation
              We this algorithm prioritises units with the lowest loss ratio
              The idea is if a unit is less likely to die the AI should have
              a higher ratio of that unit in its army
 
              At the moment it takes in special, light tanks and launchers
              The default is siege tanks otherwise
-             */
+            
 
             int launcherLosses = getHouse()->getNumLostItems(Unit_Launcher)
             * currentGame->objectData.data[Unit_Devastator][getHouse()->getHouseID()].price;
@@ -1139,10 +1308,10 @@ void QuantBot::build() {
             int totalLosses = launcherLosses + specialLosses + lightLosses + siegeLosses + ornithopterLosses;
 
 
-            /**
-             Effectively I'm solving a simultaneous equation
-             There's probably an easier way involving matrices but this works
-            **/
+
+             //Effectively I'm solving a simultaneous equation
+             //There's probably an easier way involving matrices but this works
+ 
 
 
             FixPoint launcherWeight = FixPoint((totalLosses - launcherLosses) + 1) / (launcherLosses+1);
@@ -1173,7 +1342,7 @@ void QuantBot::build() {
             FixPoint siegePercent = siegeWeight / totalWeight;
             FixPoint ornithopterPercent = ornithopterWeight / totalWeight;
 
-
+            */
 
             /**
                     End of unit ratio optimisation algorithm ***
@@ -1333,7 +1502,7 @@ void QuantBot::build() {
 
                             // If we are kind of rich make a backup construction yard to spend the excess money
                             else if(gameMode == CUSTOM &&
-                                    (itemCount[Structure_ConstructionYard] + itemCount[Unit_MCV] ) * 7000 < getHouse()->getCredits()
+                                    (itemCount[Structure_ConstructionYard] + itemCount[Unit_MCV] ) * 10000 < getHouse()->getCredits()
                                     && pBuilder->isAvailableToBuild(Unit_MCV)){
 
                                doProduceItem(pBuilder, Unit_MCV);
@@ -1411,6 +1580,18 @@ void QuantBot::build() {
                                     militaryValue += currentGame->objectData.data[Unit_Devastator][getHouse()->getHouseID()].price;
 
 
+                                }
+                                
+                                
+                                else if( pBuilder->isAvailableToBuild(Unit_SonicTank)
+                                        && (militaryValue * specialPercent > specialValue)){
+                                    
+                                    doProduceItem(pBuilder, Unit_SonicTank);
+                                    itemCount[Unit_SonicTank]++;
+                                    money -= currentGame->objectData.data[Unit_SonicTank][getHouse()->getHouseID()].price;
+                                    militaryValue += currentGame->objectData.data[Unit_SonicTank][getHouse()->getHouseID()].price;
+                                    
+                                    
                                 }
 
                                 else if( pBuilder->isAvailableToBuild(Unit_Deviator)
@@ -1650,10 +1831,12 @@ void QuantBot::build() {
                                     fprintf(stdout,"***CampAI Build A new Silo increasing count to: %d\n", itemCount[Structure_Silo]);
                                 }
 
-                                else if (money > 2000
+                                else if (money > 3000
                                            && pBuilder->isAvailableToBuild(Structure_RocketTurret)
                                            && findPlaceLocation(Structure_RocketTurret).isValid()
-                                           && pBuilder->getProductionQueueSize() == 0){
+                                           && pBuilder->getProductionQueueSize() == 0
+                                           && (itemCount[Structure_RocketTurret] <
+                                               (itemCount[Structure_Silo] + itemCount[Structure_Refinery]) * 2)){
 
                                     doProduceItem(pBuilder, Structure_RocketTurret);
                                     itemCount[Structure_RocketTurret]++;
@@ -1888,7 +2071,7 @@ void QuantBot::build() {
 
 
                                 else if(money > militaryValueLimit - militaryValue){
-                                    fprintf(stdout,"Build Luxury.. money: %d  mildecifict: %d\n", money, militaryValueLimit - militaryValue);
+                                    //fprintf(stdout,"Build Luxury.. money: %d  mildecifict: %d\n", money, militaryValueLimit - militaryValue);
                                     if(pBuilder->isAvailableToBuild(Structure_Palace)
                                             && !getGameInitSettings().getGameOptions().onlyOnePalace
                                             && itemCount[Structure_Palace] * 1250 < rocketTurretValue
@@ -2059,8 +2242,8 @@ void QuantBot::attack() {
             && pUnit->getItemID() != Unit_Harvester
             && pUnit->getItemID() != Unit_MCV
             && pUnit->getItemID() != Unit_Carryall
-            && pUnit->getItemID() != Unit_Ornithopter
-            && pUnit->getItemID() != Unit_Deviator
+            && (pUnit->getItemID() != Unit_Ornithopter || getHouse()->getNumItems(Unit_Ornithopter) > 15)
+            && (pUnit->getItemID() != Unit_Deviator || getHouse()->getNumItems(Unit_Deviator) > 10)
             && pUnit->getHealth() / pUnit->getMaxHealth() > FixPt(0,6)
             /**
                 Only units within the squad should hunt, safety in numbers
@@ -2362,31 +2545,59 @@ void QuantBot::checkAllUnits() {
                                                         - getHouse()->getNumItems(Unit_Carryall)
                                                         - getHouse()->getNumItems(Unit_Ornithopter)
                                                         - getHouse()->getNumItems(Unit_Sandworm)
-                                                        - getHouse()->getNumItems(Unit_MCV)) + 2;
+                                                        - getHouse()->getNumItems(Unit_MCV)) + 1;
 
                     if(pUnit->getOwner()->getHouseID() != pUnit->getOriginalHouseID()){
-
-                        if(pUnit->getAttackMode() != AREAGUARD){
-                            doSetAttackMode(pUnit, AREAGUARD);
-                        }
-
-                        // Run towards the center of the squad. once there, the deviated unit is free to attack
-                        if(blockDistance(pUnit->getLocation(), squadCenterLocation) > squadRadius
-                           && pUnit->getItemID() != Unit_Devastator){
-                            doMove2Pos(pUnit, squadCenterLocation.x, squadCenterLocation.y , true);
-                        }
-
-
+                    
+                        
                         // If its a devastator and its not ours, blow it up!!
                         if(pUnit->getItemID() == Unit_Devastator){
                             const Devastator* pDevastator = dynamic_cast<const Devastator*>(pUnit);
                             if(pDevastator != nullptr){
-                                doSetAttackMode(pDevastator, HUNT);
+                                
                                 doStartDevastate(pDevastator);
+                                doSetAttackMode(pDevastator, HUNT);
                             }
-
-
+                            
+                            
                         }
+                        
+                        else if(pUnit->getItemID() == Unit_Ornithopter){
+                            if(pUnit->getAttackMode() != HUNT){
+                                doSetAttackMode(pUnit, HUNT);
+                            }
+                        }
+                        
+                        else if(pUnit->getItemID() == Unit_Harvester){
+                            const Harvester* pHarvester = dynamic_cast<const Harvester*>(pUnit);
+                            if(pHarvester->getAmountOfSpice() >= HARVESTERMAXSPICE/5
+                               && pHarvester != nullptr) {
+                                
+                                doReturn(pHarvester);
+                                
+                                
+                            } else{
+                                doMove2Pos(pUnit, squadCenterLocation.x, squadCenterLocation.y, true );
+                            }
+                        }
+                        
+                        // Send deviated unit to squad centre
+                        else{
+                            
+                            if(pUnit->getAttackMode() != AREAGUARD){
+                                doSetAttackMode(pUnit, AREAGUARD);
+                            }
+                            
+                            if(blockDistance(pUnit->getLocation(),
+                                             squadCenterLocation) > squadRadius - 1){
+                                doMove2Pos(pUnit, squadCenterLocation.x, squadCenterLocation.y, true );
+                            }
+                            
+                            
+                        }
+
+
+
                     }
 
                     // Special logic to keep launchers away from harm

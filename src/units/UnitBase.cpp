@@ -342,6 +342,18 @@ void UnitBase::deviate(House* newOwner) {
         graphic = pGFXManager->getObjPic(graphicID,getOwner()->getHouseID());
         deviationTimer = DEVIATIONTIME;
     }
+    
+    // Adding this in as a surrogate for damage inflicted upon deviation.. Still not sure what the best value
+    // should be... going in with a 25% of the units value unless its a devastator which we can destruct or an ornithoper
+    // which is likely to get killed
+    if(getItemID() == Unit_Devastator || getItemID() == Unit_Ornithopter){
+        newOwner->informHasDamaged(Unit_Deviator, currentGame->objectData.data[getItemID()][newOwner->getHouseID()].price);
+    } else{
+        newOwner->informHasDamaged(Unit_Deviator, currentGame->objectData.data[getItemID()][newOwner->getHouseID()].price / 5);
+    }
+    
+    
+    
 }
 
 void UnitBase::drawSelectionBox() {
@@ -884,15 +896,49 @@ void UnitBase::handleDamage(int damage, Uint32 damagerID, House* damagerOwner) {
 
     ObjectBase::handleDamage(damage, damagerID, damagerOwner);
 
-    if(attackMode == HUNT && !forced) {
-        ObjectBase* pDamager = currentGame->getObjectManager().getObject(damagerID);
-        if(pDamager != nullptr && canAttack(pDamager)) {
-            if(!target || target.getObjPointer() == nullptr || !isInWeaponRange(target.getObjPointer())) {
-                // no target or target not on weapon range => switch target
-                doAttackObject(pDamager, false);
+    ObjectBase* pDamager = currentGame->getObjectManager().getObject(damagerID);
+    
+    if(pDamager != nullptr){
+        
+        if(attackMode == HUNT && !forced) {
+            ObjectBase* pDamager = currentGame->getObjectManager().getObject(damagerID);
+            if(canAttack(pDamager)) {
+                if(!target || target.getObjPointer() == nullptr || !isInWeaponRange(target.getObjPointer())) {
+                    // no target or target not on weapon range => switch target
+                    doAttackObject(pDamager, false);
+                }
+                
             }
         }
+        
+        
+        /**
+         This method records the damage taken so that QuantBot can use it to know how effective different unit
+         classes are during the current game so that it can adjust its unit build ratios
+         
+         I will test it out to make sure it doesn't have a major performance impact
+         
+         **/
+        
+        
+        // If you damaged your own unit then, the damage should be treated as negative.
+        if(damagerOwner == getOwner()){
+            damage *= -1;
+        }
+        
+        
+        damagerOwner->informHasDamaged(pDamager->getItemID(), damage);
+        
+        
+        
+        
     }
+    
+
+    
+
+    
+    
 }
 
 bool UnitBase::isInGuardRange(const ObjectBase* pObject) const  {
