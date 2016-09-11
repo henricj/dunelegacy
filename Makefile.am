@@ -45,6 +45,7 @@ EXTRA_DIST = include \
 
 datafiles_DATA = data/LEGACY.PAK \
 				 data/OPENSD2.PAK \
+				 data/GFXHD.PAK \
                  data/Dune2-Versions.txt
 
 datafilesdir = $(dunelegacydatadir)
