@@ -328,6 +328,30 @@ Mix_Chunk* LoadVOC_RW(SDL_RWops* rwop, int freesrc) {
         return nullptr;
     }
 
+
+    // shift level so that the last sample is 128
+    int minValue = 255;
+    int maxValue = 0;
+    for(Uint32 i=0; i < RawData_Samples; i++) {
+        if(RawDataUint8[i] < minValue) {
+            minValue = RawDataUint8[i];
+        }
+        if(RawDataUint8[i] > maxValue) {
+            maxValue = RawDataUint8[i];
+        }
+    }
+
+    int levelShift = 128 - (int) RawDataUint8[RawData_Samples-1];
+    if(minValue + levelShift < 0) {
+        levelShift = -minValue;
+    } else if(maxValue + levelShift > 255) {
+        levelShift = (255-maxValue);
+    }
+
+    for(Uint32 i=0; i < RawData_Samples; i++) {
+        RawDataUint8[i] = (Uint8) (RawDataUint8[i] + levelShift);
+    }
+
     // Convert to floats
     float* RawDataFloat;
     if((RawDataFloat = (float*) SDL_malloc((RawData_Samples+2*NUM_SAMPLES_OF_SILENCE)*sizeof(float))) == nullptr) {
