@@ -85,6 +85,7 @@
 #define UNIT_REPAIRCOST FixPt(0,1)
 #define DEFAULT_GUARDRANGE 10                   //0 - 10, how far unit will search for enemy when guarding
 #define DEFAULT_STARTINGCREDITS 3000
+#define DEFAULT_MAXIMUM_NUMBER_OF_UNITS 25
 
 #define HUMANPLAYERCLASS        "HumanPlayer"
 #define DEFAULTAIPLAYERCLASS    "qBotCampaignEasy"  //Stefan: updated to use my campaign AI

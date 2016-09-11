@@ -157,6 +157,7 @@ private:
     SDL_Texture*    pAlreadyBuiltTextTexture;
     SDL_Texture*    pPlaceItTextTexture;
     SDL_Texture*    pOnHoldTextTexture;
+    SDL_Texture*    pUnitLimitReachedTextTexture;
 
     SDL_Texture*    pLastTooltip;
     std::string     tooltipText;

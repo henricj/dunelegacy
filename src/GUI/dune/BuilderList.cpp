@@ -68,6 +68,7 @@ BuilderList::BuilderList(Uint32 builderObjectID) : StaticContainer() {
     pAlreadyBuiltTextTexture = pFontManager->createTextureWithMultilineText(_("ALREADY\nBUILT"), COLOR_WHITE, FONT_STD10, true);
     pPlaceItTextTexture = pFontManager->createTextureWithMultilineText(_("PLACE IT"), COLOR_WHITE, FONT_STD10, true);
     pOnHoldTextTexture = pFontManager->createTextureWithMultilineText(_("ON HOLD"), COLOR_WHITE, FONT_STD10, true);
+    pUnitLimitReachedTextTexture = pFontManager->createTextureWithMultilineText(_("UNIT LIMIT\nREACHED"), COLOR_WHITE, FONT_STD10, true);
 
     pLastTooltip = nullptr;
     tooltipText = "";
@@ -81,6 +82,7 @@ BuilderList::~BuilderList() {
     SDL_DestroyTexture(pAlreadyBuiltTextTexture);
     SDL_DestroyTexture(pPlaceItTextTexture);
     SDL_DestroyTexture(pOnHoldTextTexture);
+    SDL_DestroyTexture(pUnitLimitReachedTextTexture);
 
     if(pLastTooltip != nullptr) {
         SDL_DestroyTexture(pLastTooltip);
@@ -292,6 +294,9 @@ void BuilderList::draw(Point position) {
                     } else if(pBuilder->isOnHold() == true) {
                         SDL_Rect drawLocation = calcDrawingRect(pOnHoldTextTexture, dest.x + BUILDERBTN_WIDTH/2, dest.y + BUILDERBTN_HEIGHT/2, HAlign::Center, VAlign::Center);
                         SDL_RenderCopy(renderer, pOnHoldTextTexture, nullptr, &drawLocation);
+                    } else if(pBuilder->isUnitLimitReached() == true) {
+                        SDL_Rect drawLocation = calcDrawingRect(pUnitLimitReachedTextTexture, dest.x + BUILDERBTN_WIDTH/2, dest.y + BUILDERBTN_HEIGHT/2, HAlign::Center, VAlign::Center);
+                        SDL_RenderCopy(renderer, pUnitLimitReachedTextTexture, nullptr, &drawLocation);
                     }
                 }
 

@@ -200,7 +200,8 @@ void createDefaultConfigFile(std::string configfilepath, std::string language) {
                                 "Rocket-Turrets Need Power = false \t\t\t#If true, rocket turrets are dysfunctional on power shortage\n"
                                 "Sandworms Respawn = false\t\t\t\t#If true, killed sandworms respawn after some time\n"
                                 "Killed Sandworms Drop Spice = false \t\t\t#If true, killed sandworms drop some spice\n"
-                                "Manual Carryall Drops = false \t\t\t#If true, player can request carryall to transport units\n";
+                                "Manual Carryall Drops = false \t\t\t#If true, player can request carryall to transport units\n"
+                                "Maximum Number of Units = 25\t\t\t#The maximum number of units each house is allowed to build\n";
 
     char playername[MAX_PLAYERNAMELENGHT+1] = "Player";
 
@@ -539,6 +540,7 @@ int main(int argc, char *argv[]) {
         settings.gameOptions.sandwormsRespawn = myINIFile.getBoolValue("Game Options","Sandworms Respawn",false);
         settings.gameOptions.killedSandwormsDropSpice = myINIFile.getBoolValue("Game Options","Killed Sandworms Drop Spice",false);
         settings.gameOptions.manualCarryallDrops = myINIFile.getBoolValue("Game Options","Manual Carryall Drops",false);
+        settings.gameOptions.maximumNumberOfUnits = myINIFile.getIntValue("Game Options","Maximum Number of Units",DEFAULT_MAXIMUM_NUMBER_OF_UNITS);
 
         fprintf(stdout, "loading texts....."); fflush(stdout);
         pTextManager = new TextManager();

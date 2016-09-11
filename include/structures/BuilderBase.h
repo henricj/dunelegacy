@@ -176,6 +176,7 @@ public:
     inline Uint32 getCurrentProducedItem() const { return currentProducedItem; };
     inline bool isOnHold() const { return bCurrentItemOnHold; };
     bool isWaitingToPlace() const;
+    bool isUnitLimitReached() const;
     inline FixPoint getProductionProgress() const { return productionProgress; };
     inline const std::list<BuildItem>& getBuildList() const { return buildList; };
 
