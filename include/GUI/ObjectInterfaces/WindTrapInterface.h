@@ -40,15 +40,15 @@ public:
 
 protected:
     explicit WindTrapInterface(int objectID) : DefaultStructureInterface(objectID) {
-        Uint32 color = SDL2RGB(palette[houseToPaletteIndex[pLocalHouse->getHouseID()]]);
+        Uint32 color = SDL2RGB(palette[houseToPaletteIndex[pLocalHouse->getHouseID()]+3]);
 
         mainHBox.addWidget(&textVBox);
 
         requiredEnergyLabel.setTextFont(FONT_STD10);
-        requiredEnergyLabel.setTextColor(color+3);
+        requiredEnergyLabel.setTextColor(color);
         textVBox.addWidget(&requiredEnergyLabel, 0.005);
         producedEnergyLabel.setTextFont(FONT_STD10);
-        producedEnergyLabel.setTextColor(color+3);
+        producedEnergyLabel.setTextColor(color);
         textVBox.addWidget(&producedEnergyLabel, 0.005);
         textVBox.addWidget(Spacer::create(),0.99);
     }

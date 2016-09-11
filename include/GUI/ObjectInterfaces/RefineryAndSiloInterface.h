@@ -40,15 +40,15 @@ public:
 
 protected:
     explicit RefineryAndSiloInterface(int objectID) : DefaultStructureInterface(objectID) {
-        Uint32 color = SDL2RGB(palette[houseToPaletteIndex[pLocalHouse->getHouseID()]]);
+        Uint32 color = SDL2RGB(palette[houseToPaletteIndex[pLocalHouse->getHouseID()]+3]);
 
         mainHBox.addWidget(&textVBox);
 
         capacityLabel.setTextFont(FONT_STD10);
-        capacityLabel.setTextColor(color+3);
+        capacityLabel.setTextColor(color);
         textVBox.addWidget(&capacityLabel, 0.005);
         storedCreditsLabel.setTextFont(FONT_STD10);
-        storedCreditsLabel.setTextColor(color+3);
+        storedCreditsLabel.setTextColor(color);
         textVBox.addWidget(&storedCreditsLabel, 0.005);
         textVBox.addWidget(Spacer::create(), 0.99);
     }

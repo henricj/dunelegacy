@@ -33,7 +33,8 @@
 
 InGameSettingsMenu::InGameSettingsMenu() : Window(0,0,0,0) {
     int houseID = pLocalHouse->getHouseID();
-    Uint32 color = SDL2RGB(palette[houseToPaletteIndex[houseID]]);
+    Uint32 color1 = SDL2RGB(palette[houseToPaletteIndex[houseID]+2]);
+    Uint32 color2 = SDL2RGB(palette[houseToPaletteIndex[houseID]+3]);
 
     // set up window
     SDL_Texture *pBackground = pGFXManager->getUIGraphic(UI_OptionsMenu, houseID);
@@ -48,7 +49,7 @@ InGameSettingsMenu::InGameSettingsMenu() : Window(0,0,0,0) {
     gameSpeedMinus.setOnClick(std::bind(&InGameSettingsMenu::onGameSpeedMinus, this));
     windowWidget.addWidget(&gameSpeedMinus, Point(5,52), gameSpeedMinus.getSize());
 
-    gameSpeedBar.setColor(color + 2);
+    gameSpeedBar.setColor(color1);
     windowWidget.addWidget(&gameSpeedBar, Point(23,56), Point(146,6));
 
     gameSpeedPlus.setTextures(pGFXManager->getUIGraphic(UI_Plus, houseID), false, pGFXManager->getUIGraphic(UI_Plus_Pressed, houseID), false);
@@ -60,7 +61,7 @@ InGameSettingsMenu::InGameSettingsMenu() : Window(0,0,0,0) {
     volumeMinus.setOnClick(std::bind(&InGameSettingsMenu::onVolumeMinus, this));
     windowWidget.addWidget(&volumeMinus, Point(5,83), volumeMinus.getSize());
 
-    volumeBar.setColor(color + 2);
+    volumeBar.setColor(color1);
     windowWidget.addWidget(&volumeBar, Point(23,87), Point(146,6));
 
     volumePlus.setTextures(pGFXManager->getUIGraphic(UI_Plus, houseID), false, pGFXManager->getUIGraphic(UI_Plus_Pressed, houseID), false);
@@ -73,7 +74,7 @@ InGameSettingsMenu::InGameSettingsMenu() : Window(0,0,0,0) {
     scrollSpeedMinus.setOnClick(std::bind(&InGameSettingsMenu::onScrollSpeedMinus, this));
     windowWidget.addWidget(&scrollSpeedMinus, Point(5,114), scrollSpeedMinus.getSize());
 
-    scrollSpeedBar.setColor(color + 2);
+    scrollSpeedBar.setColor(color1);
     windowWidget.addWidget(&scrollSpeedBar, Point(23,118), Point(146,6));
 
     scrollSpeedPlus.setTextures(pGFXManager->getUIGraphic(UI_Plus, houseID), false, pGFXManager->getUIGraphic(UI_Plus_Pressed, houseID), false);
@@ -83,12 +84,12 @@ InGameSettingsMenu::InGameSettingsMenu() : Window(0,0,0,0) {
 
     // buttons
     okButton.setText(_("OK"));
-    okButton.setTextColor(color+3);
+    okButton.setTextColor(color2);
     okButton.setOnClick(std::bind(&InGameSettingsMenu::onOK, this));
     windowWidget.addWidget(&okButton, Point(12,134), Point(79,15));
 
     cancelButton.setText(_("Cancel"));
-    cancelButton.setTextColor(color+3);
+    cancelButton.setTextColor(color2);
     cancelButton.setOnClick(std::bind(&InGameSettingsMenu::onCancel, this));
     windowWidget.addWidget(&cancelButton, Point(101,134), Point(79,15));
 

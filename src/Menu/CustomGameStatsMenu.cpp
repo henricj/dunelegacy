@@ -41,12 +41,12 @@ CustomGameStatsMenu::CustomGameStatsMenu() : MenuBase()
 
     setWindowWidget(&windowWidget);
 
-    Uint32 localHouseColor = SDL2RGB(palette[houseToPaletteIndex[pLocalHouse->getHouseID()]]);
+    Uint32 localHouseColor = SDL2RGB(palette[houseToPaletteIndex[pLocalHouse->getHouseID()]+3]);
 
     windowWidget.addWidget(&mainVBox, Point(24,23), Point(getRendererWidth() - 48, getRendererHeight() - 32));
 
     captionLabel.setText(getBasename(currentGame->getGameInitSettings().getFilename(), true));
-    captionLabel.setTextColor(localHouseColor + 3);
+    captionLabel.setTextColor(localHouseColor);
     captionLabel.setAlignment(Alignment_HCenter);
     mainVBox.addWidget(&captionLabel, 24);
     mainVBox.addWidget(VSpacer::create(24));
@@ -62,16 +62,16 @@ CustomGameStatsMenu::CustomGameStatsMenu() : MenuBase()
     headerHBox.addWidget(Spacer::create(), 10);
     headerLabel1.setText(_("Built Object"));
     headerLabel1.setAlignment(Alignment_HCenter);
-    headerLabel1.setTextColor(localHouseColor + 3);
+    headerLabel1.setTextColor(localHouseColor);
     headerHBox.addWidget(&headerLabel1, 132);
     headerHBox.addWidget(Spacer::create(), 30);
     headerLabel2.setText(_("Destroyed"));
     headerLabel2.setAlignment(Alignment_HCenter);
-    headerLabel2.setTextColor(localHouseColor + 3);
+    headerLabel2.setTextColor(localHouseColor);
     headerHBox.addWidget(&headerLabel2, 132);
     headerLabel3.setText(_("Harvested Spice"));
     headerLabel3.setAlignment(Alignment_HCenter);
-    headerLabel3.setTextColor(localHouseColor + 3);
+    headerLabel3.setTextColor(localHouseColor);
     headerHBox.addWidget(Spacer::create(), 30);
     headerHBox.addWidget(&headerLabel3, 132);
 
@@ -98,22 +98,23 @@ CustomGameStatsMenu::CustomGameStatsMenu() : MenuBase()
         House* pHouse = currentGame->getHouse(i);
 
         if(pHouse != nullptr) {
-            Uint32 color = SDL2RGB(palette[houseToPaletteIndex[i]]);
+            Uint32 textcolor = SDL2RGB(palette[houseToPaletteIndex[i]+3]);
+            Uint32 progresscolor = SDL2RGB(palette[houseToPaletteIndex[i]+1]);
 
             curHouseStat.houseName.setText(_("House") + " " + getHouseNameByNumber((HOUSETYPE) i));
-            curHouseStat.houseName.setTextColor(color + 3);
+            curHouseStat.houseName.setTextColor(textcolor);
             curHouseStat.houseHBox.addWidget(&curHouseStat.houseName, 130);
             curHouseStat.houseHBox.addWidget(Spacer::create(), 10);
 
             curHouseStat.value1.setText( stringify(pHouse->getBuiltValue()*100));
             curHouseStat.value1.setTextFont(FONT_STD10);
             curHouseStat.value1.setAlignment(Alignment_Right);
-            curHouseStat.value1.setTextColor(color + 3);
+            curHouseStat.value1.setTextColor(textcolor);
             curHouseStat.houseHBox.addWidget(&curHouseStat.value1, 50);
             curHouseStat.houseHBox.addWidget(HSpacer::create(2));
             curHouseStat.progressBar1.setProgress( (maxBuiltValue == 0) ? 0.0 : (pHouse->getBuiltValue() * 100.0f / maxBuiltValue));
             curHouseStat.progressBar1.setDrawShadow(true);
-            curHouseStat.progressBar1.setColor(color + 1);
+            curHouseStat.progressBar1.setColor(progresscolor);
             curHouseStat.vBox1.addWidget(Spacer::create(), 0.5);
             curHouseStat.vBox1.addWidget(&curHouseStat.progressBar1, 12);
             curHouseStat.vBox1.addWidget(Spacer::create(), 0.5);
@@ -124,12 +125,12 @@ CustomGameStatsMenu::CustomGameStatsMenu() : MenuBase()
             curHouseStat.value2.setText( stringify(pHouse->getDestroyedValue()*100));
             curHouseStat.value2.setTextFont(FONT_STD10);
             curHouseStat.value2.setAlignment(Alignment_Right);
-            curHouseStat.value2.setTextColor(color + 3);
+            curHouseStat.value2.setTextColor(textcolor);
             curHouseStat.houseHBox.addWidget(&curHouseStat.value2, 50);
             curHouseStat.houseHBox.addWidget(HSpacer::create(2));
             curHouseStat.progressBar2.setProgress( (maxDestroyedValue == 0) ? 0.0 : (pHouse->getDestroyedValue() * 100.0f / maxDestroyedValue));
             curHouseStat.progressBar2.setDrawShadow(true);
-            curHouseStat.progressBar2.setColor(color + 1);
+            curHouseStat.progressBar2.setColor(progresscolor);
             curHouseStat.vBox2.addWidget(Spacer::create(), 0.5);
             curHouseStat.vBox2.addWidget(&curHouseStat.progressBar2, 12);
             curHouseStat.vBox2.addWidget(Spacer::create(), 0.5);
@@ -140,12 +141,12 @@ CustomGameStatsMenu::CustomGameStatsMenu() : MenuBase()
             curHouseStat.value3.setText( stringify(lround(pHouse->getHarvestedSpice())));
             curHouseStat.value3.setTextFont(FONT_STD10);
             curHouseStat.value3.setAlignment(Alignment_Right);
-            curHouseStat.value3.setTextColor(color + 3);
+            curHouseStat.value3.setTextColor(textcolor);
             curHouseStat.houseHBox.addWidget(&curHouseStat.value3, 50);
             curHouseStat.houseHBox.addWidget(HSpacer::create(2));
             curHouseStat.progressBar3.setProgress( (maxSpiceHarvested == 0.0) ? 0.0 : (pHouse->getHarvestedSpice().toFloat() * 100.0f / maxSpiceHarvested));
             curHouseStat.progressBar3.setDrawShadow(true);
-            curHouseStat.progressBar3.setColor(color + 1);
+            curHouseStat.progressBar3.setColor(progresscolor);
             curHouseStat.vBox3.addWidget(Spacer::create(), 0.5);
             curHouseStat.vBox3.addWidget(&curHouseStat.progressBar3, 12);
             curHouseStat.vBox3.addWidget(Spacer::create(), 0.5);
@@ -168,7 +169,7 @@ CustomGameStatsMenu::CustomGameStatsMenu() : MenuBase()
     buttonHBox.addWidget(HSpacer::create(70));
     int totalTime = currentGame->getGameTime()/1000;
     timeLabel.setText(strprintf(_("@DUNE.ENG|22#Time: %d:%02d"), totalTime/3600, (totalTime%3600)/60));
-    timeLabel.setTextColor(localHouseColor + 3);
+    timeLabel.setTextColor(localHouseColor);
     buttonHBox.addWidget(&timeLabel, 0.2);
 
     buttonHBox.addWidget(Spacer::create(), 0.0625);
@@ -176,7 +177,7 @@ CustomGameStatsMenu::CustomGameStatsMenu() : MenuBase()
     buttonHBox.addWidget(Spacer::create(), 0.0625);
 
     okButton.setText(_("OK"));
-    okButton.setTextColor(localHouseColor + 3);
+    okButton.setTextColor(localHouseColor);
     okButton.setOnClick(std::bind(&CustomGameStatsMenu::onOK, this));
     buttonHBox.addWidget(&okButton, 0.2);
     buttonHBox.addWidget(HSpacer::create(90));
