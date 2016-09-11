@@ -241,6 +241,7 @@ void XMIPlayer::changeMusic(MUSICTYPE musicType)
             if(Mix_PlayMusic(music, -1) == -1) {
                 fprintf(stderr, "XMIPlayer: Playing music failed: %s\n", SDL_GetError());
             } else {
+                Mix_VolumeMusic(musicVolume);
                 printf("Now playing %s!\n", tmpFilename.c_str());
             }
         } else {

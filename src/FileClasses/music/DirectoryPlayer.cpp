@@ -118,6 +118,7 @@ void DirectoryPlayer::changeMusic(MUSICTYPE musicType)
         if(music != nullptr) {
             printf("Now playing %s!\n",filename.c_str());
             Mix_PlayMusic(music, -1);
+            Mix_VolumeMusic(musicVolume);
         } else {
             fprintf(stderr, "Unable to play %s: %s!\n",filename.c_str(), Mix_GetError());
         }

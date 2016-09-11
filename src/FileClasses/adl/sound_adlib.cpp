@@ -2384,7 +2384,13 @@ void SoundAdlibPC::callback(void *userdata, Uint8 *audiobuf, int len)
 
     self->process();
 
-    self->_driver->readBuffer((int16*) audiobuf, len / self->getsampsize());
+    int16* buf = reinterpret_cast<int16*>(audiobuf);
+    int samples = self->_driver->readBuffer(buf, len / self->getsampsize());
+
+    int volume = self->getVolume();
+    for(int i = 0; i < 2*samples; i++) {
+        buf[i] = static_cast<int16>(buf[i] * volume / MIX_MAX_VOLUME);
+    }
 
     self->bJustStartedPlaying = false;
 }

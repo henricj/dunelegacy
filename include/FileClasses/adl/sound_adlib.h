@@ -91,6 +91,10 @@ public:
         volume = newVolume;
     }
 
+    int getVolume() {
+        return volume;
+    }
+
 private:
     void internalLoadFile(SDL_RWops* rwop);
 
