@@ -1276,22 +1276,26 @@ SDL_Surface* GFXManager::generateMapChoiceArrowFrames(SDL_Surface* arrowPic, int
 SDL_Surface* GFXManager::generateDoubledObjPic(unsigned int id, int h) {
     SDL_Surface* pSurface = nullptr;
     std::string filename = std::string("Mask_2x_") + ObjPicNames.at(id) + std::string(".png");
-    if((settings.video.scaler == "ScaleHD") && (pFileManager->exists(filename))) {
-        pSurface = Scaler::doubleTiledSurfaceNN(objPic[id][h][0], objPicTiles[id].x, objPicTiles[id].y, false);
+    if(settings.video.scaler == "ScaleHD") {
+        if(pFileManager->exists(filename)) {
+            pSurface = Scaler::doubleTiledSurfaceNN(objPic[id][h][0], objPicTiles[id].x, objPicTiles[id].y, false);
 
-        SDL_Surface* pOverlay = LoadPNG_RW(pFileManager->openFile(filename), true);
-        SDL_SetColorKey(pOverlay, SDL_TRUE, PALCOLOR_UI_COLORCYCLE);
+            SDL_Surface* pOverlay = LoadPNG_RW(pFileManager->openFile(filename), true);
+            SDL_SetColorKey(pOverlay, SDL_TRUE, PALCOLOR_UI_COLORCYCLE);
 
-        // SDL_BlitSurface will silently map PALCOLOR_BLACK to PALCOLOR_TRANSPARENT as both are RGB(0,0,0,255), so make them temporarily different
-        pOverlay->format->palette->colors[PALCOLOR_BLACK].g = 1;
-        pSurface->format->palette->colors[PALCOLOR_BLACK].g = 1;
-        SDL_BlitSurface(pOverlay, NULL, pSurface, NULL);
-        pOverlay->format->palette->colors[PALCOLOR_BLACK].g = 0;
-        pSurface->format->palette->colors[PALCOLOR_BLACK].g = 0;
+            // SDL_BlitSurface will silently map PALCOLOR_BLACK to PALCOLOR_TRANSPARENT as both are RGB(0,0,0,255), so make them temporarily different
+            pOverlay->format->palette->colors[PALCOLOR_BLACK].g = 1;
+            pSurface->format->palette->colors[PALCOLOR_BLACK].g = 1;
+            SDL_BlitSurface(pOverlay, NULL, pSurface, NULL);
+            pOverlay->format->palette->colors[PALCOLOR_BLACK].g = 0;
+            pSurface->format->palette->colors[PALCOLOR_BLACK].g = 0;
 
-        SDL_FreeSurface(pOverlay);
+            SDL_FreeSurface(pOverlay);
+        } else {
+            fprintf(stderr, "Warning: No HD sprite sheet for '%s' in zoom level 1!\n", ObjPicNames.at(id).c_str());
+            pSurface = Scaler::defaultDoubleTiledSurface(objPic[id][h][0], objPicTiles[id].x, objPicTiles[id].y, false);
+        }
     } else {
-        fprintf(stderr, "Warning: No HD sprite sheet for '%s' in zoom level 1!\n", ObjPicNames.at(id).c_str());
         pSurface = Scaler::defaultDoubleTiledSurface(objPic[id][h][0], objPicTiles[id].x, objPicTiles[id].y, false);
     }
 
@@ -1305,24 +1309,29 @@ SDL_Surface* GFXManager::generateDoubledObjPic(unsigned int id, int h) {
 SDL_Surface* GFXManager::generateTripledObjPic(unsigned int id, int h) {
     SDL_Surface* pSurface = nullptr;
     std::string filename = std::string("Mask_3x_") + ObjPicNames.at(id) + std::string(".png");
-    if((settings.video.scaler == "ScaleHD") && (pFileManager->exists(filename))) {
-        pSurface = Scaler::tripleTiledSurfaceNN(objPic[id][h][0], objPicTiles[id].x, objPicTiles[id].y, false);
+    if(settings.video.scaler == "ScaleHD") {
+        if(pFileManager->exists(filename)) {
+            pSurface = Scaler::tripleTiledSurfaceNN(objPic[id][h][0], objPicTiles[id].x, objPicTiles[id].y, false);
 
-        SDL_Surface* pOverlay = LoadPNG_RW(pFileManager->openFile(filename), true);
-        SDL_SetColorKey(pOverlay, SDL_TRUE, PALCOLOR_UI_COLORCYCLE);
+            SDL_Surface* pOverlay = LoadPNG_RW(pFileManager->openFile(filename), true);
+            SDL_SetColorKey(pOverlay, SDL_TRUE, PALCOLOR_UI_COLORCYCLE);
 
-        // SDL_BlitSurface will silently map PALCOLOR_BLACK to PALCOLOR_TRANSPARENT as both are RGB(0,0,0,255), so make them temporarily different
-        pOverlay->format->palette->colors[PALCOLOR_BLACK].g = 1;
-        pSurface->format->palette->colors[PALCOLOR_BLACK].g = 1;
-        SDL_BlitSurface(pOverlay, NULL, pSurface, NULL);
-        pOverlay->format->palette->colors[PALCOLOR_BLACK].g = 0;
-        pSurface->format->palette->colors[PALCOLOR_BLACK].g = 0;
+            // SDL_BlitSurface will silently map PALCOLOR_BLACK to PALCOLOR_TRANSPARENT as both are RGB(0,0,0,255), so make them temporarily different
+            pOverlay->format->palette->colors[PALCOLOR_BLACK].g = 1;
+            pSurface->format->palette->colors[PALCOLOR_BLACK].g = 1;
+            SDL_BlitSurface(pOverlay, NULL, pSurface, NULL);
+            pOverlay->format->palette->colors[PALCOLOR_BLACK].g = 0;
+            pSurface->format->palette->colors[PALCOLOR_BLACK].g = 0;
 
-        SDL_FreeSurface(pOverlay);
+            SDL_FreeSurface(pOverlay);
+        } else {
+            fprintf(stderr, "Warning: No HD sprite sheet for '%s' in zoom level 2!\n", ObjPicNames.at(id).c_str());
+            pSurface = Scaler::defaultTripleTiledSurface(objPic[id][h][0], objPicTiles[id].x, objPicTiles[id].y, false);
+        }
     } else {
-        fprintf(stderr, "Warning: No HD sprite sheet for '%s' in zoom level 2!\n", ObjPicNames.at(id).c_str());
         pSurface = Scaler::defaultTripleTiledSurface(objPic[id][h][0], objPicTiles[id].x, objPicTiles[id].y, false);
     }
+
 
     if((pSurface->w > 2048) || (pSurface->h > 2048)) {
         fprintf(stderr, "Warning: Size of sprite sheet for '%s' in zoom level 2 is %dx%d; may exceed hardware limits on older GPUs!\n", ObjPicNames.at(id).c_str(), pSurface->w, pSurface->h);
