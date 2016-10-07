@@ -910,15 +910,17 @@ void Tile::triggerSpecialBloom(House* pTrigger) {
                     break;
                 }
 
+                int candidate = currentGame->randomGen.rand(0, numCandidates-1);
+
                 House* pEnemyHouse = nullptr;
                 for(int i=0;i<NUM_HOUSES;i++) {
                     House* pHouse = currentGame->getHouse(i);
                     if(pHouse != nullptr && pHouse->getTeam() != pTrigger->getTeam() && pHouse->getNumUnits() > 0) {
-                        numCandidates--;
-                        if(numCandidates == 0) {
+                        if(candidate == 0) {
                             pEnemyHouse = pHouse;
                             break;
                         }
+                        candidate--;
                     }
                 }
 
@@ -945,15 +947,17 @@ void Tile::triggerSpecialBloom(House* pTrigger) {
                     break;
                 }
 
+                int candidate = currentGame->randomGen.rand(0, numCandidates-1);
+
                 House* pEnemyHouse = nullptr;
                 for(int i=0;i<NUM_HOUSES;i++) {
                     House* pHouse = currentGame->getHouse(i);
                     if(pHouse != nullptr && pHouse->getTeam() != pTrigger->getTeam() && pHouse->getNumUnits() > 0) {
-                        numCandidates--;
-                        if(numCandidates == 0) {
+                        if(candidate == 0) {
                             pEnemyHouse = pHouse;
                             break;
                         }
+                        candidate--;
                     }
                 }
 

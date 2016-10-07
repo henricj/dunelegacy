@@ -343,8 +343,8 @@ public:
 
     void shakeScreen(int numShakingCycles) {
         this->numShakingCycles += numShakingCycles;
-        if(this->numShakingCycles > 4*numShakingCycles) {
-            this->numShakingCycles = 4*numShakingCycles;
+        if(this->numShakingCycles > 2*numShakingCycles) {
+            this->numShakingCycles = 2*numShakingCycles;
         }
     }
 

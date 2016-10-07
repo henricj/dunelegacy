@@ -1109,7 +1109,7 @@ void Game::setupView()
     RobustList<UnitBase*>::const_iterator unitIterator;
     for(unitIterator = unitList.begin(); unitIterator != unitList.end(); ++unitIterator) {
         UnitBase* pUnit = *unitIterator;
-        if(pUnit->getOwner() == pLocalHouse) {
+        if((pUnit->getOwner() == pLocalHouse) && (pUnit->getItemID() != Unit_Sandworm)) {
             i += pUnit->getX();
             j += pUnit->getY();
             count++;
