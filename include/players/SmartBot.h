@@ -71,6 +71,7 @@ private:
     Sint32  attackTimer;    ///< When to attack?
     Sint32  buildTimer;     ///< When to build the next structure/unit
     Sint32  AIStrategy;     ///< What assult strategy to use
+    int harvesterLimit = 4; ///< maximum number of harvesters
 
     std::list<Coord> placeLocations;    ///< Where to place structures
 
