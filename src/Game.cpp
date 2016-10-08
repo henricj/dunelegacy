@@ -259,7 +259,7 @@ void Game::initReplay(const std::string& filename) {
     IFileStream fs;
 
     if(fs.open(filename) == false) {
-        perror("Game::loadSaveGame()");
+        fprintf(stderr, "Game::loadSaveGame()");
         exit(EXIT_FAILURE);
     }
 
@@ -1386,6 +1386,7 @@ void Game::runMainLoop() {
 
         OFileStream* pStream = new OFileStream();
         pStream->open(replayname);
+        pStream->writeString(getLocalPlayerName());
         gameInitSettings.save(*pStream);
         cmdManager.save(*pStream);
         delete pStream;
