@@ -76,6 +76,18 @@ public:
 
 protected:
 
+    /**
+        Logs a debug message
+        \param  fmt the format string of the debug message
+    */
+    void logDebug(const char* fmt, ...);
+
+    /**
+        Logs a warning message
+        \param  fmt the format string of the debug message
+    */
+    void logWarn(const char* fmt, ...);
+
     Random& getRandomGen() const;
     const GameInitSettings& getGameInitSettings() const;
     Uint32 getGameCylceCount() const;
