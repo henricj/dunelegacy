@@ -119,7 +119,6 @@ NewMapWindow::NewMapWindow(HOUSETYPE currentHouse) : Window(0,0,0,0), house(curr
     rngSeedLabel.setTextColor(color);
     rngHBox.addWidget(&rngSeedLabel);
     rngSeedTextBox.setMinMax(0, 32767);
-    rngSeedTextBox.setMaximumTextLength(5);
     rngSeedTextBox.setValue(rand() % 32768);
     rngSeedTextBox.setColor(house, color);
     rngSeedTextBox.setOnValueChange(std::bind(&NewMapWindow::onMapPropertiesChanged,this));
@@ -132,7 +131,6 @@ NewMapWindow::NewMapWindow(HOUSETYPE currentHouse) : Window(0,0,0,0), house(curr
     rockLabel.setTextColor(color);
     rngHBox.addWidget(&rockLabel);
     rockDigitsTextBox.setMinMax(0, 99);
-    rockDigitsTextBox.setMaximumTextLength(3);
     rockDigitsTextBox.setValue(ROCKFIELDS);
     rockDigitsTextBox.setColor(house, color);
     rockDigitsTextBox.setOnValueChange(std::bind(&NewMapWindow::onMapPropertiesChanged,this));
@@ -145,7 +143,6 @@ NewMapWindow::NewMapWindow(HOUSETYPE currentHouse) : Window(0,0,0,0), house(curr
     spiceLabel.setTextColor(color);
     rngHBox.addWidget(&spiceLabel);
     spiceDigitsTextBox.setMinMax(0, 99);
-    spiceDigitsTextBox.setMaximumTextLength(3);
     spiceDigitsTextBox.setValue(SPICEFIELDS);
     spiceDigitsTextBox.setColor(house, color);
     spiceDigitsTextBox.setOnValueChange(std::bind(&NewMapWindow::onMapPropertiesChanged,this));

@@ -156,7 +156,6 @@ MapSettingsWindow::MapSettingsWindow(MapEditor* pMapEditor, HOUSETYPE currentHou
     winFlagsTimeoutCheckbox.setChecked(mapInfo.winFlags & WINLOSEFLAGS_TIMEOUT);
     winFlags1HBox.addWidget(&winFlagsTimeoutCheckbox, 0.0);
     winFlagsTimeoutTextBox.setColor(house, color);
-    winFlagsTimeoutTextBox.setMaximumTextLength(3);
     winFlagsTimeoutTextBox.setMinMax(0,999);
     winFlagsTimeoutTextBox.setValue(mapInfo.timeout);
     winFlags1HBox.addWidget(&winFlagsTimeoutTextBox, 65);

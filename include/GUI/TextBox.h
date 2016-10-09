@@ -105,6 +105,13 @@ public:
     }
 
     /**
+        Gets the maximum length of the typed text
+    */
+    virtual inline int getMaximumTextLength() const {
+        return maxTextLength;
+    }
+
+    /**
         Sets the set of allowed characters for this text box.
         \param  allowedChars    the set of allowed chars or an empty string if everything is allowed
     */

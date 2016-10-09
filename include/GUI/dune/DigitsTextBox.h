@@ -90,6 +90,10 @@ public:
         } else if(currentValue > maxValue) {
             setValue(maxValue, false);
         }
+
+        textBox.setMaximumTextLength(stringify(maxValue).length() + (((minValue < 0) && (maxValue >= 0)) ? 1 : 0));
+
+        resizeAll();
     }
 
     void setIncrementValue(int newIncrementValue) {
@@ -107,14 +111,6 @@ public:
         } else {
             return 0;
         }
-    }
-
-    /**
-        Sets the maximum length of the typed text
-        \param  maxTextLength   the maximum length, -1 = unlimited
-    */
-    virtual inline void setMaximumTextLength(int maxTextLength) {
-        textBox.setMaximumTextLength(maxTextLength);
     }
 
     /**
@@ -149,6 +145,27 @@ public:
         } else {
             return true;
         }
+    }
+
+    /**
+        Returns the minimum size of this text box. The text box should not
+        resized to a size smaller than this. If the text box is not resizeable
+        in a direction this method returns the size in that direction.
+        \return the minimum size of this text box
+    */
+    virtual Point getMinimumSize() const {
+        if(textBox.getParent() != this || buttonVBox.getParent() != this) {
+            // we are about to be destroyed
+            return Point(0,0);
+        }
+
+        Point textBoxMinimumSize = textBox.getMinimumSize();
+        Point buttonVBoxMinimumSize = buttonVBox.getMinimumSize();
+
+        std::string testString(std::max(1,textBox.getMaximumTextLength()), '9');
+
+        return Point(   textBoxMinimumSize.x + buttonVBoxMinimumSize.x + GUIStyle::getInstance().getTextWidth(testString.c_str(), textBox.getTextFont()),
+                        std::max(textBoxMinimumSize.y,buttonVBoxMinimumSize.y) );
     }
 
 protected:

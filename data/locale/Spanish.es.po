@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: dunelegacy 0.96.3\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-09-11 19:29+0200\n"
+"POT-Creation-Date: 2016-10-09 23:09+0200\n"
 "PO-Revision-Date: 2014-08-29 01:13+0100\n"
 "Last-Translator: Félix Medrano <xukosky at yahoo.es>\n"
 "Language-Team: Spanish <>\n"
@@ -164,7 +164,7 @@ msgstr "Hay nuevos precios en el Espaciopuerto"
 #: src/FileClasses/TextManager.cpp:53 src/FileClasses/TextManager.cpp:54
 #: src/FileClasses/TextManager.cpp:55 src/FileClasses/TextManager.cpp:59
 #: src/FileClasses/TextManager.cpp:60 src/FileClasses/TextManager.cpp:61
-#: src/main.cpp:552 src/Menu/MapChoice.cpp:455
+#: src/main.cpp:552 src/Menu/MapChoice.cpp:456
 msgid "LanguageFileExtension"
 msgstr "ENG"
 
@@ -1996,28 +1996,28 @@ msgstr "vacío y recolectando"
 msgid "@DUNE.ENG|125#empty"
 msgstr "vacío"
 
-#: src/Game.cpp:2108 src/Game.cpp:2120 src/GUI/dune/GameOptionsWindow.cpp:108
+#: src/Game.cpp:2109 src/Game.cpp:2121 src/GUI/dune/GameOptionsWindow.cpp:127
 msgid "Game speed"
 msgstr "Velocidad del juego"
 
-#: src/Game.cpp:2338
+#: src/Game.cpp:2339
 msgid "Game resumed!"
 msgstr "¡Partida reanudada!"
 
-#: src/Game.cpp:2341
+#: src/Game.cpp:2342
 msgid "Game paused!"
 msgstr "¡Partida en pausa!"
 
-#: src/Game.cpp:2373 src/Game.cpp:2394
+#: src/Game.cpp:2374 src/Game.cpp:2395
 msgid "@DUNE.ENG|135#Cannot place slab here."
 msgstr "No se puede ubicar el bloque aquí."
 
-#: src/Game.cpp:2407
+#: src/Game.cpp:2408
 #, c-format
 msgid "@DUNE.ENG|134#Cannot place %%s here."
 msgstr "No se puede ubicar %%s aquí."
 
-#: src/Game.cpp:2599
+#: src/Game.cpp:2600
 msgid "Screenshot saved"
 msgstr "Captura de pantalla guardada"
 
@@ -2057,23 +2057,20 @@ msgstr ""
 msgid "Game Options"
 msgstr "Opciones de partida"
 
-#: src/GUI/dune/GameOptionsWindow.cpp:41
-msgid "Concrete Required"
-msgstr "Se necesita hormigón"
+#: src/GUI/dune/GameOptionsWindow.cpp:45
+msgid "Start with Explored Map"
+msgstr "Empezar con el mapa explorado"
 
-#: src/GUI/dune/GameOptionsWindow.cpp:43
-#, no-c-format
-msgid ""
-"If checked building on bare rock will result in 50% structure health penalty."
+#: src/GUI/dune/GameOptionsWindow.cpp:46
+msgid "If checked the complete map is unhidden at the beginning of the game."
 msgstr ""
-"Si está activado las estructuras sobre la roca tendrán una penalización del "
-"50% de daño."
+"Si está activado se muestra el mapa completo desde el inicio de la partida."
 
-#: src/GUI/dune/GameOptionsWindow.cpp:48
+#: src/GUI/dune/GameOptionsWindow.cpp:51
 msgid "Structures Degrade On Concrete"
 msgstr "Las estructuras sobre hormigón se degradan"
 
-#: src/GUI/dune/GameOptionsWindow.cpp:49
+#: src/GUI/dune/GameOptionsWindow.cpp:52
 msgid ""
 "If checked structures will degrade on power shortage even if built on "
 "concrete."
@@ -2081,11 +2078,61 @@ msgstr ""
 "Si está activado las estructuras se degradarán cuando falte energía incluso "
 "si se construyen sobre hormigón."
 
-#: src/GUI/dune/GameOptionsWindow.cpp:54
+#: src/GUI/dune/GameOptionsWindow.cpp:57
+msgid "Killed Sandworms Respawn"
+msgstr "Los gusanos de arena se regeneran"
+
+#: src/GUI/dune/GameOptionsWindow.cpp:58
+msgid "If checked killed sandworms respawn after some time."
+msgstr ""
+"Si está activado los gusanos de arena se regeneran pasado un tiempo desde su "
+"muerte"
+
+#: src/GUI/dune/GameOptionsWindow.cpp:63
+msgid "Killed Sandworms Drop Spice"
+msgstr "Los gusanos de arena muertos dejan caer especia"
+
+#: src/GUI/dune/GameOptionsWindow.cpp:64
+msgid "If checked killed sandworms drop some spice."
+msgstr ""
+"Si está activado los gusanos de arena dejan caer algo de especia cuando "
+"mueren."
+
+#: src/GUI/dune/GameOptionsWindow.cpp:69
+msgid "Manual Carryall Drops"
+msgstr ""
+
+#: src/GUI/dune/GameOptionsWindow.cpp:70
+msgid "If checked player can request carryall to transport units."
+msgstr ""
+
+#: src/GUI/dune/GameOptionsWindow.cpp:75
+msgid "Override max. number of units"
+msgstr ""
+
+#: src/GUI/dune/GameOptionsWindow.cpp:76
+msgid ""
+"If checked the maximum number of units per house can be overridden; "
+"otherwise it is map dependent."
+msgstr ""
+
+#: src/GUI/dune/GameOptionsWindow.cpp:90
+msgid "Concrete Required"
+msgstr "Se necesita hormigón"
+
+#: src/GUI/dune/GameOptionsWindow.cpp:92
+#, no-c-format
+msgid ""
+"If checked building on bare rock will result in 50% structure health penalty."
+msgstr ""
+"Si está activado las estructuras sobre la roca tendrán una penalización del "
+"50% de daño."
+
+#: src/GUI/dune/GameOptionsWindow.cpp:97
 msgid "Fog of War"
 msgstr "Niebla de guerra"
 
-#: src/GUI/dune/GameOptionsWindow.cpp:55
+#: src/GUI/dune/GameOptionsWindow.cpp:98
 msgid ""
 "If checked explored terrain will become foggy when no unit or structure is "
 "next to it."
@@ -2093,75 +2140,38 @@ msgstr ""
 "Si está activado el terreno explorado se nublará cuando no hay ninguna "
 "unidad o estructura cerca."
 
-#: src/GUI/dune/GameOptionsWindow.cpp:60
-msgid "Start with Explored Map"
-msgstr "Empezar con el mapa explorado"
-
-#: src/GUI/dune/GameOptionsWindow.cpp:61
-msgid "If checked the complete map is unhidden at the beginning of the game."
-msgstr ""
-"Si está activado se muestra el mapa completo desde el inicio de la partida."
-
-#: src/GUI/dune/GameOptionsWindow.cpp:66
+#: src/GUI/dune/GameOptionsWindow.cpp:103
 msgid "Instant Build"
 msgstr "Construcción instantánea"
 
-#: src/GUI/dune/GameOptionsWindow.cpp:67
+#: src/GUI/dune/GameOptionsWindow.cpp:104
 msgid "If checked the building of structures and units does not take any time."
 msgstr ""
 "Si está activado la construcción de estructuras y unidades no requiere "
 "tiempo."
 
-#: src/GUI/dune/GameOptionsWindow.cpp:72
-msgid "Only One Palace per House"
-msgstr "Solo un Palacio por casa"
-
-#: src/GUI/dune/GameOptionsWindow.cpp:73
-msgid "If checked only one palace can be build per house."
-msgstr "Si está activado cada casa puede construir un único palacio."
-
-#: src/GUI/dune/GameOptionsWindow.cpp:78
+#: src/GUI/dune/GameOptionsWindow.cpp:109
 msgid "Rocket-Turrets Need Power"
-msgstr "Las torres de cohetes necesitan energía"
+msgstr "C-torres necesitan energía"
 
-#: src/GUI/dune/GameOptionsWindow.cpp:79
+#: src/GUI/dune/GameOptionsWindow.cpp:110
 msgid "If checked rocket turrets are dysfunctional on power shortage."
 msgstr "Si está activado las torres de cohetes no funcionan si falta energía."
 
-#: src/GUI/dune/GameOptionsWindow.cpp:84
-msgid "Killed Sandworms Respawn"
-msgstr "Los gusanos de arena se regeneran"
+#: src/GUI/dune/GameOptionsWindow.cpp:115
+msgid "Only One Palace per House"
+msgstr "Solo un Palacio por casa"
 
-#: src/GUI/dune/GameOptionsWindow.cpp:85
-msgid "If checked killed sandworms respawn after some time."
-msgstr ""
-"Si está activado los gusanos de arena se regeneran pasado un tiempo desde su "
-"muerte"
+#: src/GUI/dune/GameOptionsWindow.cpp:116
+msgid "If checked only one palace can be build per house."
+msgstr "Si está activado cada casa puede construir un único palacio."
 
-#: src/GUI/dune/GameOptionsWindow.cpp:90
-msgid "Killed Sandworms Drop Spice"
-msgstr "Los gusanos de arena muertos dejan caer especia"
-
-#: src/GUI/dune/GameOptionsWindow.cpp:91
-msgid "If checked killed sandworms drop some spice."
-msgstr ""
-"Si está activado los gusanos de arena dejan caer algo de especia cuando "
-"mueren."
-
-#: src/GUI/dune/GameOptionsWindow.cpp:96
-msgid "Manual Carryall Drops"
-msgstr ""
-
-#: src/GUI/dune/GameOptionsWindow.cpp:97
-msgid "If checked player can request carryall to transport units."
-msgstr ""
-
-#: src/GUI/dune/GameOptionsWindow.cpp:125
-#: src/GUI/dune/InGameSettingsMenu.cpp:85 src/MapEditor/ChoamWindow.cpp:131
-#: src/MapEditor/MapSettingsWindow.cpp:280
-#: src/MapEditor/PlayerSettingsWindow.cpp:188
-#: src/MapEditor/ReinforcementsWindow.cpp:189 src/MapEditor/TeamsWindow.cpp:182
-#: src/Menu/CustomGameStatsMenu.cpp:178
+#: src/GUI/dune/GameOptionsWindow.cpp:143
+#: src/GUI/dune/InGameSettingsMenu.cpp:86 src/MapEditor/ChoamWindow.cpp:131
+#: src/MapEditor/MapSettingsWindow.cpp:279
+#: src/MapEditor/PlayerSettingsWindow.cpp:186
+#: src/MapEditor/ReinforcementsWindow.cpp:188 src/MapEditor/TeamsWindow.cpp:180
+#: src/Menu/CustomGameStatsMenu.cpp:179
 msgid "OK"
 msgstr "Vale"
 
@@ -2210,11 +2220,11 @@ msgstr "No"
 msgid "Yes"
 msgstr "Sí"
 
-#: src/GUI/dune/InGameSettingsMenu.cpp:90 src/GUI/dune/LoadSaveWindow.cpp:97
+#: src/GUI/dune/InGameSettingsMenu.cpp:91 src/GUI/dune/LoadSaveWindow.cpp:97
 #: src/MapEditor/ChoamWindow.cpp:119 src/MapEditor/LoadMapWindow.cpp:118
-#: src/MapEditor/MapSettingsWindow.cpp:268 src/MapEditor/NewMapWindow.cpp:205
-#: src/MapEditor/PlayerSettingsWindow.cpp:172
-#: src/MapEditor/ReinforcementsWindow.cpp:177 src/MapEditor/TeamsWindow.cpp:170
+#: src/MapEditor/MapSettingsWindow.cpp:267 src/MapEditor/NewMapWindow.cpp:202
+#: src/MapEditor/PlayerSettingsWindow.cpp:170
+#: src/MapEditor/ReinforcementsWindow.cpp:176 src/MapEditor/TeamsWindow.cpp:168
 msgid "Cancel"
 msgstr "Cancelar"
 
@@ -2243,12 +2253,12 @@ msgstr "Quitar"
 msgid "Waiting for other players... "
 msgstr "Esperando a otros jugadores..."
 
-#: src/House.cpp:315
+#: src/House.cpp:318
 msgid ""
 "@DUNE.ENG|145#As insufficient spice storage is available, spice is lost."
 msgstr "Los silos están llenos, se ha perdido especia."
 
-#: src/House.cpp:530
+#: src/House.cpp:533
 #, c-format
 msgid "House '%s' has been defeated."
 msgstr "La Casa '%s' ha sido derrotada"
@@ -2266,7 +2276,7 @@ msgstr ""
 "está disponible al inicio de la partida y se añade otra unidad cada 30s."
 
 #: src/MapEditor/LoadMapWindow.cpp:56 src/MapEditor/MapEditorInterface.cpp:108
-#: src/MapEditor/NewMapWindow.cpp:213
+#: src/MapEditor/NewMapWindow.cpp:210
 msgid "Load Map"
 msgstr "Cargar mapa"
 
@@ -2356,27 +2366,27 @@ msgstr "Equipos"
 #: src/MapEditor/MapEditorInterface.cpp:182
 #: src/MapEditor/MapEditorInterface.cpp:191
 #: src/MapEditor/MapEditorInterface.cpp:200
-#: src/MapEditor/MapEditorInterface.cpp:209 src/MapEditor/NewMapWindow.cpp:160
+#: src/MapEditor/MapEditorInterface.cpp:209 src/MapEditor/NewMapWindow.cpp:157
 msgid "Mirror mode"
 msgstr "Modo espejo"
 
-#: src/MapEditor/MapEditorInterface.cpp:173 src/MapEditor/NewMapWindow.cpp:163
+#: src/MapEditor/MapEditorInterface.cpp:173 src/MapEditor/NewMapWindow.cpp:160
 msgid "Off"
 msgstr "Desactivado"
 
-#: src/MapEditor/MapEditorInterface.cpp:182 src/MapEditor/NewMapWindow.cpp:164
+#: src/MapEditor/MapEditorInterface.cpp:182 src/MapEditor/NewMapWindow.cpp:161
 msgid "Horizontal"
 msgstr "Horizontal"
 
-#: src/MapEditor/MapEditorInterface.cpp:191 src/MapEditor/NewMapWindow.cpp:165
+#: src/MapEditor/MapEditorInterface.cpp:191 src/MapEditor/NewMapWindow.cpp:162
 msgid "Vertical"
 msgstr "Vertical"
 
-#: src/MapEditor/MapEditorInterface.cpp:200 src/MapEditor/NewMapWindow.cpp:166
+#: src/MapEditor/MapEditorInterface.cpp:200 src/MapEditor/NewMapWindow.cpp:163
 msgid "Horizontal and vertical"
 msgstr "Horizontal y vertical"
 
-#: src/MapEditor/MapEditorInterface.cpp:209 src/MapEditor/NewMapWindow.cpp:167
+#: src/MapEditor/MapEditorInterface.cpp:209 src/MapEditor/NewMapWindow.cpp:164
 msgid "Inverse"
 msgstr "Invertido"
 
@@ -2436,77 +2446,77 @@ msgid "Conditions for finishing the game"
 msgstr "Condiciones para finalizar la partida"
 
 #: src/MapEditor/MapSettingsWindow.cpp:154
-#: src/MapEditor/MapSettingsWindow.cpp:193
+#: src/MapEditor/MapSettingsWindow.cpp:192
 msgid "Timeout reached"
 msgstr "Límite de tiempo alcanzado"
 
-#: src/MapEditor/MapSettingsWindow.cpp:166
-#: src/MapEditor/MapSettingsWindow.cpp:200
+#: src/MapEditor/MapSettingsWindow.cpp:165
+#: src/MapEditor/MapSettingsWindow.cpp:199
 msgid "Spice quota reached"
 msgstr "Cuota de especia alcanzada"
 
-#: src/MapEditor/MapSettingsWindow.cpp:173
+#: src/MapEditor/MapSettingsWindow.cpp:172
 msgid "Player has no units/structures left"
 msgstr "Al jugador no le quedan unidades/estructuras"
 
-#: src/MapEditor/MapSettingsWindow.cpp:180
-#: src/MapEditor/MapSettingsWindow.cpp:214
+#: src/MapEditor/MapSettingsWindow.cpp:179
+#: src/MapEditor/MapSettingsWindow.cpp:213
 msgid "Others have no units/structures left"
 msgstr "A otros no les quedan unidades/estructuras"
 
-#: src/MapEditor/MapSettingsWindow.cpp:188
+#: src/MapEditor/MapSettingsWindow.cpp:187
 msgid "Conditions for winning the game (in case it is finished)"
 msgstr "Condiciones para ganar la partida (cuando ha finalizado)"
 
-#: src/MapEditor/MapSettingsWindow.cpp:207
+#: src/MapEditor/MapSettingsWindow.cpp:206
 msgid "Player has units/structures left"
 msgstr "Al jugador le quedan unidades/estructuras"
 
-#: src/MapEditor/MapSettingsWindow.cpp:222
+#: src/MapEditor/MapSettingsWindow.cpp:221
 msgid "Tech Level"
 msgstr "Nivel tecnológico"
 
-#: src/MapEditor/MapSettingsWindow.cpp:228
+#: src/MapEditor/MapSettingsWindow.cpp:227
 msgid "Level 1:  Concrete, Windtrap, Refinery"
 msgstr "Nivel 1:  Hormigón, Trampa de Viento, Refinería"
 
-#: src/MapEditor/MapSettingsWindow.cpp:229
+#: src/MapEditor/MapSettingsWindow.cpp:228
 msgid ""
 "Level 2:  Radar, Barracks/Light Factory/WOR, Silo, Soldier/Trooper, Trike"
 msgstr ""
 "Nivel 2:  Radar, Barracas/Fábrica Ligera/WOR, Silo, Soldado/Guardia, Trike"
 
-#: src/MapEditor/MapSettingsWindow.cpp:230
+#: src/MapEditor/MapSettingsWindow.cpp:229
 msgid "Level 3:  Light Factory, Quad"
 msgstr "Nivel 3:  Fábrica Ligera, Quad"
 
-#: src/MapEditor/MapSettingsWindow.cpp:231
+#: src/MapEditor/MapSettingsWindow.cpp:230
 msgid "Level 4:  2x2 Concrete, Wall, Heavy Factory, Tank, Harvester, MCV"
 msgstr "Nivel 4:  Hormigón 2x2, Muro, Fábrica Pesada, Tanque, Recolector, MCV"
 
-#: src/MapEditor/MapSettingsWindow.cpp:232
+#: src/MapEditor/MapSettingsWindow.cpp:231
 msgid "Level 5:  Gun Turret, Hightech Factory, Rapair Yard, Launcher, Carryall"
 msgstr ""
 "Nivel 5:  Torre de Cañón, Fábrica Tecnológica, Planta de Reparación, "
 "Lanzamisiles, Ala de Acarreo"
 
-#: src/MapEditor/MapSettingsWindow.cpp:233
+#: src/MapEditor/MapSettingsWindow.cpp:232
 msgid "Level 6:  Starport, Rocket Turret, Siege Tank"
 msgstr "Nivel 6:  Espaciopuerto, Torre de Cohetes, Tanque de Asedio"
 
-#: src/MapEditor/MapSettingsWindow.cpp:234
+#: src/MapEditor/MapSettingsWindow.cpp:233
 msgid "Level 7:  House IX, Sonic Tank/Deviator/Devastator, Ornithopter"
 msgstr "Nivel 7:  Casa IX, Tanque Sónico/Desviador/Devastador, Ornitóptero"
 
-#: src/MapEditor/MapSettingsWindow.cpp:235
+#: src/MapEditor/MapSettingsWindow.cpp:234
 msgid "Level 8:  Palace, Fremen, Saboteur"
 msgstr "Nivel 8:  Palacio, Fremen, Saboteador"
 
-#: src/MapEditor/MapSettingsWindow.cpp:242 src/MapEditor/NewMapWindow.cpp:179
+#: src/MapEditor/MapSettingsWindow.cpp:241 src/MapEditor/NewMapWindow.cpp:176
 msgid "Author:"
 msgstr "Autor:"
 
-#: src/MapEditor/MapSettingsWindow.cpp:253 src/MapEditor/NewMapWindow.cpp:190
+#: src/MapEditor/MapSettingsWindow.cpp:252 src/MapEditor/NewMapWindow.cpp:187
 msgid "License:"
 msgstr "Licencia:"
 
@@ -2550,21 +2560,21 @@ msgstr "Normal (62x62)"
 msgid "Random Seed:"
 msgstr "Semilla aleatória:"
 
-#: src/MapEditor/NewMapWindow.cpp:131
+#: src/MapEditor/NewMapWindow.cpp:130
 msgid "Rock:"
 msgstr "Piedra:"
 
-#: src/MapEditor/NewMapWindow.cpp:144
+#: src/MapEditor/NewMapWindow.cpp:142
 msgid "Spice:"
 msgstr "Especia:"
 
-#: src/MapEditor/NewMapWindow.cpp:221
+#: src/MapEditor/NewMapWindow.cpp:218
 msgid "Create"
 msgstr "Crear"
 
 #: src/MapEditor/PlayerSettingsWindow.cpp:69
-#: src/MapEditor/ReinforcementsWindow.cpp:352 src/MapEditor/TeamsWindow.cpp:370
-#: src/Menu/CustomGamePlayers.cpp:204 src/Menu/CustomGameStatsMenu.cpp:103
+#: src/MapEditor/ReinforcementsWindow.cpp:351 src/MapEditor/TeamsWindow.cpp:368
+#: src/Menu/CustomGamePlayers.cpp:204 src/Menu/CustomGameStatsMenu.cpp:104
 msgid "House"
 msgstr "Casa"
 
@@ -2590,17 +2600,17 @@ msgstr "Equipo"
 msgid "Quota"
 msgstr "Cuota"
 
-#: src/MapEditor/PlayerSettingsWindow.cpp:149
+#: src/MapEditor/PlayerSettingsWindow.cpp:148
 msgid "Max Units"
 msgstr "Máximas unidades"
 
-#: src/MapEditor/PlayerSettingsWindow.cpp:180
-#: src/MapEditor/PlayerSettingsWindow.cpp:205
-#: src/MapEditor/PlayerSettingsWindow.cpp:224
+#: src/MapEditor/PlayerSettingsWindow.cpp:178
+#: src/MapEditor/PlayerSettingsWindow.cpp:203
+#: src/MapEditor/PlayerSettingsWindow.cpp:222
 msgid "Advanced..."
 msgstr "Avanzado..."
 
-#: src/MapEditor/PlayerSettingsWindow.cpp:206
+#: src/MapEditor/PlayerSettingsWindow.cpp:204
 msgid "Basic..."
 msgstr "Básico..."
 
@@ -2625,8 +2635,8 @@ msgid "Add"
 msgstr "Añadir"
 
 #: src/MapEditor/ReinforcementsWindow.cpp:117
-#: src/MapEditor/ReinforcementsWindow.cpp:351 src/MapEditor/TeamsWindow.cpp:109
-#: src/MapEditor/TeamsWindow.cpp:369
+#: src/MapEditor/ReinforcementsWindow.cpp:350 src/MapEditor/TeamsWindow.cpp:109
+#: src/MapEditor/TeamsWindow.cpp:367
 #, c-format
 msgid "Player %d"
 msgstr "Jugador %d"
@@ -2643,11 +2653,11 @@ msgstr "Lugar de entrega"
 msgid "Time"
 msgstr "Tiempo"
 
-#: src/MapEditor/ReinforcementsWindow.cpp:167
+#: src/MapEditor/ReinforcementsWindow.cpp:166
 msgid "Repeat"
 msgstr "Repetir"
 
-#: src/MapEditor/ReinforcementsWindow.cpp:260 src/MapEditor/TeamsWindow.cpp:253
+#: src/MapEditor/ReinforcementsWindow.cpp:259 src/MapEditor/TeamsWindow.cpp:251
 msgid "Dune2-compatible maps support only up to 16 entries!"
 msgstr "¡Los mapas compatibles con Dune2 solo soportan 16 entradas!"
 
@@ -2687,7 +2697,7 @@ msgstr "Recolector (Recolector)"
 msgid "Units"
 msgstr "Unidades"
 
-#: src/MapEditor/TeamsWindow.cpp:156
+#: src/MapEditor/TeamsWindow.cpp:155
 msgid "to"
 msgstr "a"
 
@@ -2696,7 +2706,7 @@ msgstr "a"
 msgid "@DUNE.ENG|21#Score: %d"
 msgstr "Puntuación %d"
 
-#: src/Menu/CampaignStatsMenu.cpp:63 src/Menu/CustomGameStatsMenu.cpp:170
+#: src/Menu/CampaignStatsMenu.cpp:63 src/Menu/CustomGameStatsMenu.cpp:171
 #, c-format
 msgid "@DUNE.ENG|22#Time: %d:%02d"
 msgstr "Tiempo: %d:%02d"
@@ -2881,7 +2891,7 @@ msgstr "...para tomar control sobre la tierra..."
 msgid "@DUNE.ENG|285#...that has become divided."
 msgstr "..que ha sido dividida."
 
-#: src/Menu/MapChoice.cpp:208
+#: src/Menu/MapChoice.cpp:209
 msgid "@DUNE.ENG|286#Select next region"
 msgstr "Seleccione la próxima región"
 

@@ -27,6 +27,7 @@
 #include <GUI/Checkbox.h>
 #include <GUI/PictureButton.h>
 #include <GUI/ProgressBar.h>
+#include <GUI/dune/DigitsTextBox.h>
 
 #include <DataTypes.h>
 
@@ -65,7 +66,8 @@ private:
 
     VBox vbox;                                      ///< vertical box
     HBox hbox;                                      ///< horizontal box
-    VBox vbox2;                                     ///< inner vertical box;
+    VBox vboxLeft;                                  ///< inner vertical box on the left side
+    VBox vboxRight;                                 ///< inner vertical box on the right side
     Label captionlabel;                             ///< label that contains the caption
     Checkbox concreteRequiredCheckbox;              ///< If not checked we can build without penalties on the bare rock
     Checkbox structuresDegradeOnConcreteCheckbox;   ///< If checked, structures will degrade on power shortage even when build on concrete
@@ -76,11 +78,14 @@ private:
     Checkbox rocketTurretsNeedPowerCheckbox;        ///< If checked rocket turrets are dysfunctional on power shortage
     Checkbox sandwormsRespawnCheckbox;              ///< If checked killed sandworms respawn after some time
     Checkbox killedSandwormsDropSpiceCheckbox;      ///< If checked killed sandworms drop some spice
-    Checkbox manualCarryallDropsCheckbox;            ///< If checked player can request carryall to transport units
+    Checkbox manualCarryallDropsCheckbox;           ///< If checked player can request carryall to transport units
     HBox            gameSpeedHBox;                  ///< The HBox containing the game speed selection
     PictureButton   gameSpeedPlus;                  ///< The button for increasing the game speed
     PictureButton   gameSpeedMinus;                 ///< The button for decreasing the game speed
     TextProgressBar gameSpeedBar;                   ///< The bar showing the current game speed
+    HBox            maxUnitsOverrideHBox;           ///< The HBox containing the override option for the maximum number of units
+    Checkbox        maxUnitsOverrideCheckbox;       ///< If checked the maximum number of units is set directly, otherwise it is determined by the map
+    DigitsTextBox   maxUnitsOverrideTextBox;        ///< The maximum number of units
     TextButton okbutton;                            ///< the ok button
 };
 

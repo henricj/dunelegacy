@@ -149,7 +149,6 @@ TeamsWindow::TeamsWindow(MapEditor* pMapEditor, HOUSETYPE currentHouse)
     minUnitsLabel.setTextColor(color);
     hBox3.addWidget(&minUnitsLabel);
     minUnitsTextBox.setColor(house, color);
-    minUnitsTextBox.setMaximumTextLength(2);
     minUnitsTextBox.setMinMax(0,99);
     minUnitsTextBox.setOnValueChange(std::bind(&TeamsWindow::onMinUnitsChange, this, std::placeholders::_1));
     hBox3.addWidget(&minUnitsTextBox, 47);
@@ -157,7 +156,6 @@ TeamsWindow::TeamsWindow(MapEditor* pMapEditor, HOUSETYPE currentHouse)
     maxUnitsLabel.setTextColor(color);
     hBox3.addWidget(&maxUnitsLabel, 30);
     maxUnitsTextBox.setColor(house, color);
-    maxUnitsTextBox.setMaximumTextLength(2);
     maxUnitsTextBox.setMinMax(0,99);
     maxUnitsTextBox.setOnValueChange(std::bind(&TeamsWindow::onMaxUnitsChange, this, std::placeholders::_1));
     hBox3.addWidget(&maxUnitsTextBox, 47);

@@ -141,7 +141,6 @@ PlayerSettingsWindow::PlayerSettingsWindow(MapEditor* pMapEditor, HOUSETYPE curr
         playerWidgets[i].spiceQuotaLabel.setTextColor(currentColor);
 
         playerWidgets[i].spiceQuotaTextBox.setMinMax(0,99999);
-        playerWidgets[i].maxUnitsTextBox.setMaximumTextLength(5);
         playerWidgets[i].spiceQuotaTextBox.setValue(playerInfo.quota);
         playerWidgets[i].spiceQuotaTextBox.setIncrementValue(100);
         playerWidgets[i].spiceQuotaTextBox.setColor(house, currentColor);
@@ -150,7 +149,6 @@ PlayerSettingsWindow::PlayerSettingsWindow(MapEditor* pMapEditor, HOUSETYPE curr
         playerWidgets[i].maxUnitsLabel.setTextColor(currentColor);
 
         playerWidgets[i].maxUnitsTextBox.setMinMax(0,999);
-        playerWidgets[i].maxUnitsTextBox.setMaximumTextLength(3);
         playerWidgets[i].maxUnitsTextBox.setValue(playerInfo.maxunit);
         playerWidgets[i].maxUnitsTextBox.setColor(house, currentColor);
 

@@ -159,7 +159,6 @@ ReinforcementsWindow::ReinforcementsWindow(MapEditor* pMapEditor, HOUSETYPE curr
     timeLabel.setTextColor(color);
     hBox3.addWidget(&timeLabel, 125);
     timeTextBox.setColor(house, color);
-    timeTextBox.setMaximumTextLength(3);
     timeTextBox.setMinMax(0,999);
     timeTextBox.setOnValueChange(std::bind(&ReinforcementsWindow::onEntryChange, this, std::placeholders::_1));
     hBox3.addWidget(&timeTextBox, 50);
