@@ -68,17 +68,16 @@ private:
 
 
     Uint32  difficulty;     ///< difficulty level
-    Uint32  gameMode;     ///< game mode (custom or campaign)
+    Uint32  gameMode;       ///< game mode (custom or campaign)
     Sint32  buildTimer;     ///< When to build the next structure/unit
-    Sint32  attackTimer;     ///< When to build the next structure/unit
-    Sint32  retreatTimer;    ///< When you last retreated>
+    Sint32  attackTimer;    ///< When to build the next structure/unit
+    Sint32  retreatTimer;   ///< When you last retreated>
 
-    int initialItemCount[ItemID_LastID];
-    int itemCount[ItemID_LastID];
+    int initialItemCount[Num_ItemID];
+    int initialMilitaryValue;
     int militaryValueLimit;
-    bool initialCountComplete;
+    int harvesterLimit;
     bool campaignAIAttackFlag;
-    Coord squadCenterLocation;
     Coord squadRallyLocation;
     Coord squadRetreatLocation;
 
@@ -95,8 +94,8 @@ private:
 
     void checkAllUnits();
     void retreatAllUnits();
-    void build();
-    void attack();
+    void build(int militaryValue);
+    void attack(int militaryValue);
 
 };
 
