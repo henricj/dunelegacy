@@ -315,12 +315,14 @@ bool Sandworm::update() {
                     attackFrameTimer = SANDWORM_ATTACKFRAMETIME;
                     if(drawnFrame == 1) {
                         // the close mouth bit of graphic is currently shown => eat unit
-                        bool wasAlive = ( target && target.getObjPointer()->isVisible(getOwner()->getTeam()));  //see if unit was alive before attack
-                        Coord realPos = Coord(lround(realX), lround(realY));
-                        currentGameMap->damage(objectID, getOwner(), realPos, Bullet_Sandworm, 5000, NONE, false);
+                        if(target && target.getObjPointer() != nullptr) {
+                            bool wasAlive = target.getObjPointer()->isVisible(getOwner()->getTeam());  //see if unit was alive before attack
+                            Coord realPos = Coord(lround(realX), lround(realY));
+                            currentGameMap->damage(objectID, getOwner(), realPos, Bullet_Sandworm, 5000, NONE, false);
 
-                        if(wasAlive && (target.getObjPointer()->isVisible(getOwner()->getTeam()) == false)) {
-                            kills++;
+                            if(wasAlive && target && (target.getObjPointer()->isVisible(getOwner()->getTeam()) == false)) {
+                                kills++;
+                            }
                         }
                     }
                 }

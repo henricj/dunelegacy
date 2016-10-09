@@ -921,34 +921,18 @@ void UnitBase::handleDamage(int damage, Uint32 damagerID, House* damagerOwner) {
             }
         }
 
-
-        /**
+        /*
          This method records the damage taken so that QuantBot can use it to know how effective different unit
          classes are during the current game so that it can adjust its unit build ratios
-
-         I will test it out to make sure it doesn't have a major performance impact
-
-         **/
-
+        */
 
         // If you damaged your own unit then, the damage should be treated as negative.
         if(damagerOwner == getOwner()){
             damage *= -1;
         }
 
-
         damagerOwner->informHasDamaged(pDamager->getItemID(), damage);
-
-
-
-
     }
-
-
-
-
-
-
 }
 
 bool UnitBase::isInGuardRange(const ObjectBase* pObject) const  {
