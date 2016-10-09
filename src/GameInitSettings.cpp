@@ -95,7 +95,7 @@ GameInitSettings::GameInitSettings(InputStream& stream) {
     gameOptions.sandwormsRespawn = stream.readBool();
     gameOptions.killedSandwormsDropSpice = stream.readBool();
     gameOptions.manualCarryallDrops = stream.readBool();
-
+    gameOptions.maximumNumberOfUnitsOverride = stream.readSint32();
 
     Uint32 numHouseInfo = stream.readUint32();
     for(Uint32 i=0;i<numHouseInfo;i++) {
@@ -128,6 +128,7 @@ void GameInitSettings::save(OutputStream& stream) const {
     stream.writeBool(gameOptions.sandwormsRespawn);
     stream.writeBool(gameOptions.killedSandwormsDropSpice);
     stream.writeBool(gameOptions.manualCarryallDrops);
+    stream.writeSint32(gameOptions.maximumNumberOfUnitsOverride);
 
     stream.writeUint32(houseInfoList.size());
     HouseInfoList::const_iterator iter;

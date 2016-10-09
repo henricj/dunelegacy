@@ -195,7 +195,7 @@ bool BuilderBase::isUnitLimitReached() const {
         return false;
     }
 
-    return (getOwner()->getNumUnits() >= currentGame->getGameInitSettings().getGameOptions().maximumNumberOfUnits);
+    return getOwner()->isUnitLimitReached();
 }
 
 

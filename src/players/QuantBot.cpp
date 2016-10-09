@@ -1786,12 +1786,12 @@ void QuantBot::checkAllUnits() {
 
                 default: {
 
-                    int squadRadius = (int) sqrt(getHouse()->getNumUnits()
-                                                        - getHouse()->getNumItems(Unit_Harvester)
-                                                        - getHouse()->getNumItems(Unit_Carryall)
-                                                        - getHouse()->getNumItems(Unit_Ornithopter)
-                                                        - getHouse()->getNumItems(Unit_Sandworm)
-                                                        - getHouse()->getNumItems(Unit_MCV)) + 1;
+                    int squadRadius = lround(FixPoint::sqrt(getHouse()->getNumUnits()
+                                                            - getHouse()->getNumItems(Unit_Harvester)
+                                                            - getHouse()->getNumItems(Unit_Carryall)
+                                                            - getHouse()->getNumItems(Unit_Ornithopter)
+                                                            - getHouse()->getNumItems(Unit_Sandworm)
+                                                            - getHouse()->getNumItems(Unit_MCV))) + 1;
 
                     if(pUnit->getOwner()->getHouseID() != pUnit->getOriginalHouseID()) {
                         // If its a devastator and its not ours, blow it up!!

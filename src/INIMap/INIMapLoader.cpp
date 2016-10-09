@@ -426,9 +426,19 @@ void INIMapLoader::loadHouses()
         housename2house[houseName] = houseID;
 
         int startingCredits = inifile->getIntValue(houseName,"Credits",DEFAULT_STARTINGCREDITS);
+
+        int maxUnits = 0;
+        if(currentGame->getGameInitSettings().getGameOptions().maximumNumberOfUnitsOverride >= 0) {
+            maxUnits = currentGame->getGameInitSettings().getGameOptions().maximumNumberOfUnitsOverride;
+        } else {
+            int defaultMaxUnit = std::max(25, 25*(currentGameMap->getSizeX()*currentGameMap->getSizeY())/(64*64));
+            int maxUnit = inifile->getIntValue(houseName,"MaxUnit",defaultMaxUnit);
+            maxUnits = inifile->getIntValue(houseName,"MaxUnit",maxUnit);
+        }
+
         int quota = inifile->getIntValue(houseName,"Quota",0);
 
-        House* pNewHouse = new House(houseID, startingCredits, iter->team, quota);
+        House* pNewHouse = new House(houseID, startingCredits, maxUnits, iter->team, quota);
         pGame->house[houseID] = pNewHouse;
 
         // add players
@@ -838,7 +848,14 @@ House* INIMapLoader::getOrCreateHouse(int houseID) {
             // in campaign all "other" units are in the same team as the AI
             team = 2;
         }
-        pNewHouse = new House(houseID, 0, team, 0);
+
+        int maxUnits = 0;
+        if(currentGame->getGameInitSettings().getGameOptions().maximumNumberOfUnitsOverride >= 0) {
+            maxUnits = currentGame->getGameInitSettings().getGameOptions().maximumNumberOfUnitsOverride;
+        } else {
+            maxUnits = std::max(25, 25*(currentGameMap->getSizeX()*currentGameMap->getSizeY())/(64*64));
+        }
+        pNewHouse = new House(houseID, 0, maxUnits, team, 0);
 
         const GameInitSettings::HouseInfoList& houseInfoList = pGame->getGameInitSettings().getHouseInfoList();
 

@@ -193,7 +193,7 @@ public:
         GameOptionsClass()
          : gameSpeed(GAMESPEED_DEFAULT), concreteRequired(true), structuresDegradeOnConcrete(true), fogOfWar(false),
            startWithExploredMap(false), instantBuild(false), onlyOnePalace(false), rocketTurretsNeedPower(false),
-           sandwormsRespawn(false), killedSandwormsDropSpice(false), manualCarryallDrops(false), maximumNumberOfUnits(DEFAULT_MAXIMUM_NUMBER_OF_UNITS)  {
+           sandwormsRespawn(false), killedSandwormsDropSpice(false), manualCarryallDrops(false), maximumNumberOfUnitsOverride(-1)  {
         }
 
 
@@ -209,7 +209,7 @@ public:
                     && (sandwormsRespawn == goc.sandwormsRespawn)
                     && (killedSandwormsDropSpice == goc.killedSandwormsDropSpice)
                     && (manualCarryallDrops == goc.manualCarryallDrops)
-                    && (maximumNumberOfUnits == goc.maximumNumberOfUnits);
+                    && (maximumNumberOfUnitsOverride == goc.maximumNumberOfUnitsOverride);
         }
 
         bool operator!=(const GameOptionsClass& goc) const {
@@ -227,7 +227,7 @@ public:
         bool        sandwormsRespawn;
         bool        killedSandwormsDropSpice;
         bool        manualCarryallDrops;
-        int         maximumNumberOfUnits;
+        int         maximumNumberOfUnitsOverride;
     } gameOptions;
 };
 

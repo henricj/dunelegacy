@@ -38,7 +38,7 @@ class HumanPlayer;
 class House
 {
 public:
-    House(int newHouse, int newCredits, Uint8 team = 0, int quota = 0);
+    House(int newHouse, int newCredits, int maxUnits, Uint8 team = 0, int quota = 0);
     explicit House(InputStream& stream);
     void init();
     virtual ~House();
@@ -94,6 +94,8 @@ public:
     inline Sint32 getNumItemDamageInflicted(int itemID) const { return numItemDamageInflicted[itemID]; }
     inline FixPoint getHarvestedSpice() const { return harvestedSpice; }
 
+    inline int getMaxUnits() const { return maxUnits; };
+    inline bool isUnitLimitReached() const { return (numUnits >= maxUnits); };
     inline int getQuota() const { return quota; };
 
     inline Choam& getChoam() { return choam; };
@@ -170,6 +172,7 @@ protected:
     FixPoint startingCredits; ///< number of starting credits this player still has
     int oldCredits;           ///< amount of credits in the last game cycle (used for playing the credits tick sound)
 
+    int maxUnits;             ///< maximum number of units this house is allowed to build
     int quota;                ///< number of credits to win
 
     Choam   choam;            ///< the things that are deliverable at the starport

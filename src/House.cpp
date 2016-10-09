@@ -43,7 +43,7 @@
 #include <algorithm>
 
 
-House::House(int newHouse, int newCredits, Uint8 team, int quota) : choam(this) {
+House::House(int newHouse, int newCredits, int maxUnits, Uint8 team, int quota) : choam(this) {
     House::init();
 
     houseID = ((newHouse >= 0) && (newHouse < NUM_HOUSES)) ? newHouse :  0;
@@ -53,6 +53,7 @@ House::House(int newHouse, int newCredits, Uint8 team, int quota) : choam(this) 
     startingCredits = newCredits;
     oldCredits = lround(storedCredits+startingCredits);
 
+    this->maxUnits = maxUnits;
     this->quota = quota;
 
     unitBuiltValue = 0;
@@ -82,6 +83,7 @@ House::House(InputStream& stream) : choam(this) {
     storedCredits = stream.readFixPoint();
     startingCredits = stream.readFixPoint();
     oldCredits = lround(storedCredits+startingCredits);
+    maxUnits = stream.readSint32();
     quota = stream.readSint32();
 
     unitBuiltValue = stream.readUint32();
@@ -147,6 +149,7 @@ void House::save(OutputStream& stream) const {
 
     stream.writeFixPoint(storedCredits);
     stream.writeFixPoint(startingCredits);
+    stream.writeSint32(maxUnits);
     stream.writeSint32(quota);
 
     stream.writeUint32(unitBuiltValue);
