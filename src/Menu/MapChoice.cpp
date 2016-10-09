@@ -70,6 +70,7 @@ MapChoice::MapChoice(int newHouse, unsigned int LastMission) : MenuBase() {
         msgticker.addMessage(_("@DUNE.ENG|285#...that has become divided."));
     } else {
         mapSurface = nullptr;
+        mapTexture = nullptr;
         mapChoiceState = MAPCHOICESTATE_BLENDING;
         createMapSurfaceWithPieces();
     }
