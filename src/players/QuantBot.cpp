@@ -853,6 +853,7 @@ void QuantBot::build(int militaryValue) {
     }
 
     // lets analyse damage inflicted
+    /*
     logDebug("  Tank: %d/%d %f Siege: %d/%d %f Special: %d/%d %f Launch: %d/%d %f Orni: %d/%d %f",
                 getHouse()->getNumItemDamageInflicted(Unit_Tank), getHouse()->getNumLostItems(Unit_Tank) * 300, tankPercent,
 
@@ -866,7 +867,7 @@ void QuantBot::build(int militaryValue) {
 
                 getHouse()->getNumItemDamageInflicted(Unit_Ornithopter), getHouse()->getNumLostItems(Unit_Ornithopter) * data[Unit_Ornithopter][houseID].price, ornithopterPercent
             );
-
+        */
 
     // End of adaptive unit prioritisation algorithm
 
