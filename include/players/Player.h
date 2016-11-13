@@ -61,7 +61,7 @@ public:
         An object was hit by something or damaged somehow else.
         \param  pObject     the object that was damaged
         \param  damage      the damage taken
-        \param  damagerID   the shooter of the bullet, rocket, etc. if known; NONE otherwise
+        \param  damagerID   the shooter of the bullet, rocket, etc. if known; NONE_ID otherwise
     */
     virtual void onDamage(const ObjectBase* pObject, int damage, Uint32 damagerID) { };
 

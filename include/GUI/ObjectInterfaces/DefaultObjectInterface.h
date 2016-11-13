@@ -45,8 +45,7 @@ protected:
     explicit DefaultObjectInterface(int objectID) : ObjectInterface() {
         ObjectBase* pObject = currentGame->getObjectManager().getObject(objectID);
         if(pObject == nullptr) {
-            fprintf(stderr,"DefaultObjectInterface::DefaultObjectInterface(): Cannot resolve ObjectID %d!\n",objectID);
-            exit(EXIT_FAILURE);
+            throw std::invalid_argument(strprintf("DefaultObjectInterface::DefaultObjectInterface(): Cannot resolve ObjectID %d!",objectID));
         }
 
         this->objectID = objectID;

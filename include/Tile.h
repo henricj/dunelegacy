@@ -430,7 +430,7 @@ public:
     }
 
     inline void setOwner(int newOwner) { owner = newOwner; }
-    inline void setSandRegion(int newSandRegion) { sandRegion = newSandRegion; }
+    inline void setSandRegion(Uint32 newSandRegion) { sandRegion = newSandRegion; }
     inline void setDestroyedStructureTile(int newDestroyedStructureTile) { destroyedStructureTile = newDestroyedStructureTile; };
 
     inline bool hasAGroundObject() const { return (hasInfantry() || hasANonInfantryGroundObject()); }
@@ -457,7 +457,7 @@ public:
     inline bool isSpice() const { return ((type == Terrain_Spice) || (type == Terrain_ThickSpice)); }
     inline bool isThickSpice() const { return (type == Terrain_ThickSpice); }
 
-    inline int getSandRegion() const { return sandRegion; }
+    inline Uint32 getSandRegion() const { return sandRegion; }
     inline int getOwner() const { return owner; }
     inline int getType() const {    return type; }
     inline FixPoint getSpice() const { return spice; }

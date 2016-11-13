@@ -72,7 +72,7 @@
 ObjectBase::ObjectBase(House* newOwner) : originalHouseID(newOwner->getHouseID()), owner(newOwner) {
     ObjectBase::init();
 
-    objectID = NONE;
+    objectID = NONE_ID;
 
     health = 0;
     badlyDamaged = false;
@@ -637,7 +637,7 @@ ObjectBase* ObjectBase::createObject(int itemID, House* Owner, Uint32 objectID) 
         return nullptr;
     }
 
-    if(objectID == NONE) {
+    if(objectID == NONE_ID) {
         objectID = currentGame->getObjectManager().addObject(newObject);
         newObject->setObjectID(objectID);
     } else {

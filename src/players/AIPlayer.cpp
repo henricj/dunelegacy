@@ -493,7 +493,7 @@ void AIPlayer::build() {
                             bConstructionYardChecked = true;
                             if(getHouse()->getCredits() > 100) {
                                 if((pBuilder->getProductionQueueSize() < 1) && (pBuilder->getBuildListSize() > 0)) {
-                                    Uint32 itemID = NONE;
+                                    Uint32 itemID = NONE_ID;
                                     if(getHouse()->getProducedPower() - getHouse()->getPowerRequirement() < 50 && pBuilder->isAvailableToBuild(Structure_WindTrap)) {
                                         itemID = Structure_WindTrap;
                                     } else if(getHouse()->getNumItems(Structure_Refinery) < 3 && pBuilder->isAvailableToBuild(Structure_Refinery)) {
@@ -546,7 +546,7 @@ void AIPlayer::build() {
                                         itemID = Structure_RocketTurret;
                                     }
 
-                                    if(itemID != NONE) {
+                                    if(itemID != NONE_ID) {
                                         Coord location = findPlaceLocation(itemID);
 
                                         if(location.isValid()) {

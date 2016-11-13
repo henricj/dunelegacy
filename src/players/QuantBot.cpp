@@ -1015,7 +1015,7 @@ void QuantBot::build(int militaryValue) {
                             if(pBuilder->getCurrentUpgradeLevel() < pBuilder->getMaxUpgradeLevel() && getHouse()->getCredits() > 1500){
                                 doUpgrade(pBuilder);
                             } else if(!getHouse()->isUnitLimitReached()) {
-                                Uint32 itemID = NONE;
+                                Uint32 itemID = NONE_ID;
 
                                 if(pBuilder->isAvailableToBuild(Unit_RaiderTrike)) {
                                     itemID = Unit_RaiderTrike;
@@ -1025,7 +1025,7 @@ void QuantBot::build(int militaryValue) {
                                     itemID = Unit_Trike;
                                 }
 
-                                if(itemID != NONE){
+                                if(itemID != NONE_ID){
                                     doProduceItem(pBuilder, itemID);
                                     itemCount[itemID]++;
                                 }
@@ -1341,7 +1341,7 @@ void QuantBot::build(int militaryValue) {
                             } else {
                                 // custom AI starts here:
 
-                                Uint32 itemID = NONE;
+                                Uint32 itemID = NONE_ID;
 
                                 if(itemCount[Structure_WindTrap] == 0) {
                                     itemID = Structure_WindTrap;
@@ -1443,7 +1443,7 @@ void QuantBot::build(int militaryValue) {
                                 }
 
                                 // TODO: Build concrete if we have bad building spots
-                                if(pBuilder->isAvailableToBuild(itemID) && findPlaceLocation(itemID).isValid() && itemID != NONE) {
+                                if(pBuilder->isAvailableToBuild(itemID) && findPlaceLocation(itemID).isValid() && itemID != NONE_ID) {
                                     doProduceItem(pBuilder, itemID);
                                     itemCount[itemID]++;
                                 }/*else if(pBuilder->isAvailableToBuild(Structure_Slab1) && findPlaceLocation(Structure_Slab1).isValid()){

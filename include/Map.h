@@ -21,6 +21,7 @@
 #include <Tile.h>
 #include <misc/InputStream.h>
 #include <misc/OutputStream.h>
+#include <misc/string_util.h>
 
 #include <stdio.h>
 
@@ -79,9 +80,7 @@ public:
         if(tileExists(xPos,yPos)) {
             return &tiles[xPos + yPos*sizeX];
         } else {
-            fprintf(stderr,"getTile(): tile (%d, %d) does not exist\n",xPos,yPos);
-            fflush(stderr);
-            return nullptr;
+            throw std::out_of_range(strprintf("Map::getTile(): tile (%d, %d) does not exist!",xPos,yPos));
         }
     }
 
@@ -93,9 +92,7 @@ public:
         if(tileExists(xPos,yPos)) {
             return &tiles[xPos + yPos*sizeX];
         } else {
-            fprintf(stderr,"getTile(): tile (%d, %d) does not exist\n",xPos,yPos);
-            fflush(stderr);
-            return nullptr;
+            throw std::out_of_range(strprintf("Map::getTile(): tile (%d, %d) does not exist!",xPos,yPos));
         }
     }
 

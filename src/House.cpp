@@ -621,7 +621,7 @@ StructureBase* House::placeStructure(Uint32 builderID, int itemID, int xPos, int
         return nullptr;
     }
 
-    BuilderBase* pBuilder = (builderID == NONE) ? nullptr : dynamic_cast<BuilderBase*>(currentGame->getObjectManager().getObject(builderID));
+    BuilderBase* pBuilder = (builderID == NONE_ID) ? nullptr : dynamic_cast<BuilderBase*>(currentGame->getObjectManager().getObject(builderID));
 
     if(currentGame->getGameInitSettings().getGameOptions().onlyOnePalace && pBuilder != nullptr && itemID == Structure_Palace && getNumItems(Structure_Palace) > 0) {
         if(this == pLocalHouse && pBuilder->isSelected()) {
@@ -708,12 +708,12 @@ StructureBase* House::placeStructure(Uint32 builderID, int itemID, int xPos, int
 
             tempStructure->setLocation(xPos, yPos);
 
-            if ((builderID != NONE) && (itemID != Structure_Wall)) {
+            if ((builderID != NONE_ID) && (itemID != Structure_Wall)) {
                 tempStructure->setJustPlaced();
             }
 
             // at the beginning of the game the first refinery gets a harvester for free (brought by a carryall)
-            if((itemID == Structure_Refinery) && ( ((currentGame->gameState == START) && (numItem[Unit_Harvester] <= 0)) || (builderID != NONE)) ) {
+            if((itemID == Structure_Refinery) && ( ((currentGame->gameState == START) && (numItem[Unit_Harvester] <= 0)) || (builderID != NONE_ID)) ) {
                 freeHarvester(xPos, yPos);
             }
 

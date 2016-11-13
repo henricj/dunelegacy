@@ -598,7 +598,7 @@ void SmartBot::build() {
                            && pBuilder->getProductionQueueSize() < 1
                            && pBuilder->getBuildListSize() > 0){
 
-                            Uint32 itemID = NONE;
+                            Uint32 itemID = NONE_ID;
 
                             if(getHouse()->getNumItems(Structure_WindTrap) + buildQueue[Structure_WindTrap] < 1
                                && pBuilder->isAvailableToBuild(Structure_WindTrap)) {
@@ -697,7 +697,7 @@ void SmartBot::build() {
                                 itemID = Structure_RocketTurret;
                             }
 
-                            if(itemID != NONE) {
+                            if(itemID != NONE_ID) {
                                 Coord location = findPlaceLocation(itemID);
 
                                 if(location.isValid()) {

@@ -100,7 +100,7 @@ Game::Game() {
 
     bReplay = false;
 
-    indicatorFrame = NONE;
+    indicatorFrame = NONE_ID;
     indicatorTime = 5;
     indicatorTimer = 0;
 
@@ -597,7 +597,7 @@ void Game::drawScreen()
 
 ///////////draw action indicator
 
-    if((indicatorFrame != NONE) && (screenborder->isInsideScreen(indicatorPosition, Coord(TILESIZE,TILESIZE)) == true)) {
+    if((indicatorFrame != NONE_ID) && (screenborder->isInsideScreen(indicatorPosition, Coord(TILESIZE,TILESIZE)) == true)) {
         SDL_Texture* pUIIndicator = pGFXManager->getUIGraphic(UI_Indicator);
         SDL_Rect source = calcSpriteSourceRect(pUIIndicator, indicatorFrame, 3);
         SDL_Rect drawLocation = calcSpriteDrawingRect(  pUIIndicator,
@@ -1351,11 +1351,11 @@ void Game::runMainLoop() {
 
                 processObjects();
 
-                if ((indicatorFrame != NONE) && (--indicatorTimer <= 0)) {
+                if ((indicatorFrame != NONE_ID) && (--indicatorTimer <= 0)) {
                     indicatorTimer = indicatorTime;
 
                     if (++indicatorFrame > 2) {
-                        indicatorFrame = NONE;
+                        indicatorFrame = NONE_ID;
                     }
                 }
 

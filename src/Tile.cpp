@@ -45,7 +45,7 @@ Tile::Tile() {
     fogColor = COLOR_BLACK;
 
     owner = INVALID;
-    sandRegion = NONE;
+    sandRegion = NONE_ID;
 
     spice = 0;
 
@@ -640,7 +640,7 @@ void Tile::setType(int newType) {
     } else {
         spice = 0;
         if (isRock()) {
-            sandRegion = NONE;
+            sandRegion = NONE_ID;
             if (hasAnUndergroundUnit()) {
                 std::list<Uint32>::const_iterator iter;
                 iter = assignedUndergroundUnitList.begin();
@@ -706,7 +706,7 @@ void Tile::squash() {
 
 
 int Tile::getInfantryTeam() {
-    int team = NONE;
+    int team = INVALID;
     if (hasInfantry())
         team = getInfantry()->getOwner()->getTeam();
     return team;

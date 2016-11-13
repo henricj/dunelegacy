@@ -60,7 +60,7 @@ public:
 
     static GUIStyle& getInstance() {
         if(currentGUIStyle == nullptr) {
-            fprintf(stderr,"GUIStyle::getInstance(): currentGUIStyle == nullptr. Call setGUIStyle before using getInstance()!\n");
+            throw std::runtime_error("GUIStyle::getInstance(): currentGUIStyle == nullptr. Call setGUIStyle before using getInstance()!");
         }
         return *currentGUIStyle;
     }

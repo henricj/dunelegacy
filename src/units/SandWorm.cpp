@@ -248,7 +248,7 @@ void Sandworm::sleep() {
     setVisible(VIS_ALL, false);
     setForced(false);
     currentGameMap->removeObjectFromMap(getObjectID()); //no map point will reference now
-    setLocation(NONE, NONE);
+    setLocation(INVALID_POS, INVALID_POS);
     setHealth(getMaxHealth());
     kills = 0;
     drawnFrame = INVALID;
@@ -318,7 +318,7 @@ bool Sandworm::update() {
                         if(target && target.getObjPointer() != nullptr) {
                             bool wasAlive = target.getObjPointer()->isVisible(getOwner()->getTeam());  //see if unit was alive before attack
                             Coord realPos = Coord(lround(realX), lround(realY));
-                            currentGameMap->damage(objectID, getOwner(), realPos, Bullet_Sandworm, 5000, NONE, false);
+                            currentGameMap->damage(objectID, getOwner(), realPos, Bullet_Sandworm, 5000, NONE_ID, false);
 
                             if(wasAlive && target && (target.getObjPointer()->isVisible(getOwner()->getTeam()) == false)) {
                                 kills++;

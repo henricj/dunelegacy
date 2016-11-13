@@ -21,6 +21,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <stdexcept>
 
 #include <SDL.h>
 
@@ -203,8 +204,8 @@ int decode80(unsigned char *image_in, unsigned char *image_out, unsigned checksu
             writep += count;
             c++;
         } else {
-            fprintf(stderr,"Decode: File contains unknown format80 command: %x\n",*readp);
-            exit(EXIT_FAILURE);
+            throw std::invalid_argument("Decode: File contains unknown format80 command");
+
         }
     }
     if (megacounta + megacountb + megacountc + megacountd + megacounte != checksum)

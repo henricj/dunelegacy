@@ -26,7 +26,7 @@
 #define CYCLES_PER_FRAME    5
 
 Explosion::Explosion()
- : explosionID(NONE), house(HOUSE_HARKONNEN)
+ : explosionID(NONE_ID), house(HOUSE_HARKONNEN)
 {
     graphic = nullptr;
     numFrames = 0;
@@ -124,8 +124,7 @@ void Explosion::init()
         } break;
 
         default: {
-            fprintf(stderr,"Explosion: Unknown explosion type %d.\n",explosionID);
-            exit(EXIT_FAILURE);
+            throw std::invalid_argument(strprintf("Explosion: Unknown explosion type %d.",explosionID));
         } break;
     }
 }

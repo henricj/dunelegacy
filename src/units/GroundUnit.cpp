@@ -34,7 +34,7 @@ GroundUnit::GroundUnit(House* newOwner) : UnitBase(newOwner) {
     GroundUnit::init();
 
     awaitingPickup = false;
-    bookedCarrier = NONE;
+    bookedCarrier = NONE_ID;
 }
 
 GroundUnit::GroundUnit(InputStream& stream) : UnitBase(stream) {
@@ -107,7 +107,7 @@ void GroundUnit::checkPos() {
         if(target.getObjPointer() == nullptr) {
             goingToRepairYard = false;
             awaitingPickup = false;
-            bookedCarrier = NONE;
+            bookedCarrier = NONE_ID;
 
             clearPath();
         } else{
@@ -126,7 +126,7 @@ void GroundUnit::checkPos() {
     }
 
     // If we are awaiting a pickup try book a carryall if we have one
-    if( attackMode == CARRYALLREQUESTED && bookedCarrier == NONE) {
+    if( attackMode == CARRYALLREQUESTED && bookedCarrier == NONE_ID) {
         if(getOwner()->hasCarryalls()) {
             requestCarryall();
         } else {
@@ -190,7 +190,7 @@ bool GroundUnit::requestCarryall() {
 void GroundUnit::setPickedUp(UnitBase* newCarrier) {
     UnitBase::setPickedUp(newCarrier);
     awaitingPickup = false;
-    bookedCarrier = NONE;
+    bookedCarrier = NONE_ID;
 
     clearPath(); // Stefan: I don't think this is right
                  // but there is definitely something to it
@@ -199,7 +199,7 @@ void GroundUnit::setPickedUp(UnitBase* newCarrier) {
 
 void GroundUnit::bookCarrier(UnitBase* newCarrier) {
     if(newCarrier == nullptr) {
-        bookedCarrier = NONE;
+        bookedCarrier = NONE_ID;
         awaitingPickup = false;
     } else {
         bookedCarrier = newCarrier->getObjectID();
@@ -208,7 +208,7 @@ void GroundUnit::bookCarrier(UnitBase* newCarrier) {
 }
 
 bool GroundUnit::hasBookedCarrier() const {
-    if(bookedCarrier == NONE) {
+    if(bookedCarrier == NONE_ID) {
         return false;
     } else {
         return (currentGame->getObjectManager().getObject(bookedCarrier) != nullptr);

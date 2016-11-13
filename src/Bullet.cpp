@@ -221,13 +221,11 @@ void Bullet::init()
         } break;
 
         case Bullet_Sandworm: {
-            fprintf(stderr,"Bullet::init(): Unknown Bullet_Sandworm not allowed.\n");
-            graphic = nullptr;
+            throw std::domain_error("Bullet::init(): Bullet_Sandworm not allowed.");
         } break;
 
         default: {
-            fprintf(stderr,"Bullet::init(): Unknown Bullet type %d.\n",bulletID);
-            graphic = nullptr;
+            throw std::domain_error(strprintf("Bullet::init(): Unknown Bullet type %d.", bulletID));
         } break;
     }
 }

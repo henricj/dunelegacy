@@ -66,6 +66,7 @@ dunelegacy_SOURCES =	AStarSearch.cpp\
 						misc/draw_util.cpp\
 						misc/FileSystem.cpp\
 						misc/fnkdat.cpp\
+						misc/format.cpp\
 						misc/IFileStream.cpp\
 						misc/md5.cpp\
 						misc/OFileStream.cpp\

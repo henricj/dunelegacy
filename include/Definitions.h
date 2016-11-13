@@ -69,7 +69,7 @@
 #define SIDEBARWIDTH 144
 #define SIDEBAR_COLUMN_WIDTH 12
 
-#define NONE ((Uint32) -1)          // unsigned -1
+#define NONE_ID ((Uint32) -1)          // unsigned -1
 #define INVALID_POS (-1)
 #define INVALID (-1)
 

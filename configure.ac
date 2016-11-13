@@ -19,8 +19,8 @@ fi
 AC_SUBST(dunelegacydatadir)
 
 dnl Some flags for gcc
-CXXFLAGS="-std=c++11 -pthread -O3 -pipe -pedantic -Wall -Wextra -Wno-unused-parameter -DNDEBUG"
-CFLAGS="-std=c99 -pthread -O3 -pipe -pedantic -Wall -Wextra -Wno-unused-parameter -DNDEBUG"
+CXXFLAGS="-std=c++11 -pthread -O3 -pipe -pedantic -Wall -Wextra -Wno-unused-parameter -DNDEBUG -DTEST_SYNC"
+CFLAGS="-std=c99 -pthread -O3 -pipe -pedantic -Wall -Wextra -Wno-unused-parameter -DNDEBUG -DTEST_SYNC"
 dnl Additional flags: -Wconversion -Wno-sign-conversion -Wlogical-op
 
 dnl Some flags for clang

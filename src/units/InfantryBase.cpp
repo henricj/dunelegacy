@@ -220,7 +220,7 @@ void InfantryBase::checkPos() {
                         }
                     }
 
-                    Uint32 containedUnitID = NONE;
+                    Uint32 containedUnitID = NONE_ID;
                     FixPoint containedUnitHealth = 0;
                     FixPoint containedHarvesterSpice = 0;
                     if(pContainedUnit != nullptr) {
@@ -260,7 +260,7 @@ void InfantryBase::checkPos() {
                     delete pCapturedStructure;
 
                     // ... and create a new one
-                    StructureBase* pNewStructure = owner->placeStructure(NONE, targetID, posX, posY, true);
+                    StructureBase* pNewStructure = owner->placeStructure(NONE_ID, targetID, posX, posY, true);
 
                     pNewStructure->setOriginalHouseID(origHouse);
                     pNewStructure->setHealth(oldHealth);
@@ -275,7 +275,7 @@ void InfantryBase::checkPos() {
                         currentGame->getSelectedByOtherPlayerList().insert(pNewStructure->getObjectID());
                     }
 
-                    if(containedUnitID != NONE) {
+                    if(containedUnitID != NONE_ID) {
                         UnitBase* pNewUnit = owner->createUnit(containedUnitID);
 
                         pNewUnit->setRespondable(false);
@@ -305,7 +305,7 @@ void InfantryBase::checkPos() {
 
                 } else {
                     int damage = lround(std::min(pCapturedStructure->getHealth()/2, getHealth()*2));
-                    pCapturedStructure->handleDamage(damage, NONE, getOwner());
+                    pCapturedStructure->handleDamage(damage, NONE_ID, getOwner());
                 }
                 // destroy unit indirectly
                 setTarget(nullptr);

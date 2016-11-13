@@ -35,6 +35,7 @@
 #include <data.h>
 
 #include <misc/string_util.h>
+#include <misc/exceptions.h>
 
 #include <algorithm>
 
@@ -432,8 +433,7 @@ std::string getHouseNameByNumber(HOUSETYPE house) {
     if(house >= 0 && house < NUM_HOUSES) {
         return houseName[house];
     } else {
-        fprintf(stderr,"getHouseNameByNumber(): Invalid house number %d!\n", house);
-        exit(EXIT_FAILURE);
+        THROW(std::invalid_argument, "Invalid house number %d!", house);
     }
 }
 
@@ -621,14 +621,14 @@ std::string getTeamTypeNameByID(TeamType teamType) {
     \param  house   the house of the unit (choose the real owner);
 */
 FixPoint getDeviateWeakness(HOUSETYPE house) {
-    
+
     // Deviators are crap enough. If this is a custom game remove the weakness nerf
     // So that Ordos is playable for Humans
     //if(currentGame->gameType == GAMETYPE_CUSTOM){
         //return FixPt(0,100);
     return 1;
     //}
-    
+
 /*
     switch(house) {
         case HOUSE_HARKONNEN:   return FixPt(0,78);

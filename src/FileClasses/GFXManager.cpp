@@ -30,6 +30,7 @@
 #include <FileClasses/Palfile.h>
 
 #include <misc/draw_util.h>
+#include <misc/string_util.h>
 #include <misc/Scaler.h>
 
 #include <stdexcept>
@@ -883,16 +884,14 @@ GFXManager::~GFXManager() {
 
 SDL_Texture** GFXManager::getObjPic(unsigned int id, int house) {
     if(id >= NUM_OBJPICS) {
-        fprintf(stderr,"GFXManager::getObjPic(): Unit Picture with id %u is not available!\n",id);
-        exit(EXIT_FAILURE);
+        throw std::invalid_argument(strprintf("GFXManager::getObjPic(): Unit Picture with id %u is not available!",id));
     }
 
     for(int z = 0; z < NUM_ZOOMLEVEL; z++) {
         if(objPic[id][house][z] == nullptr) {
             // remap to this color
             if(objPic[id][HOUSE_HARKONNEN][z] == nullptr) {
-                fprintf(stderr,"GFXManager::getObjPic(): Unit Picture with id %u is not loaded!\n",id);
-                exit(EXIT_FAILURE);
+                throw std::runtime_error(strprintf("GFXManager::getObjPic(): Unit Picture with id %u is not loaded!",id));
             }
 
             objPic[id][house][z] = mapSurfaceColorRange(objPic[id][HOUSE_HARKONNEN][z], PALCOLOR_HARKONNEN, houseToPaletteIndex[house]);
@@ -943,15 +942,13 @@ SDL_Texture* GFXManager::getSmallDetailPic(unsigned int id) {
 
 SDL_Surface* GFXManager::getUIGraphicSurface(unsigned int id, int house) {
     if(id >= NUM_UIGRAPHICS) {
-        fprintf(stderr,"GFXManager::getUIGraphicSurface(): UI Graphic with id %u is not available!\n",id);
-        exit(EXIT_FAILURE);
+        throw std::invalid_argument(strprintf("GFXManager::getUIGraphicSurface(): UI Graphic with id %u is not available!",id));
     }
 
     if(uiGraphic[id][house] == nullptr) {
         // remap to this color
         if(uiGraphic[id][HOUSE_HARKONNEN] == nullptr) {
-            fprintf(stderr,"GFXManager::getUIGraphicSurface(): UI Graphic with id %u is not loaded!\n",id);
-            exit(EXIT_FAILURE);
+            throw std::runtime_error(strprintf("GFXManager::getUIGraphicSurface(): UI Graphic with id %u is not loaded!",id));
         }
 
         uiGraphic[id][house] = mapSurfaceColorRange(uiGraphic[id][HOUSE_HARKONNEN], PALCOLOR_HARKONNEN, houseToPaletteIndex[house]);
@@ -962,8 +959,7 @@ SDL_Surface* GFXManager::getUIGraphicSurface(unsigned int id, int house) {
 
 SDL_Texture* GFXManager::getUIGraphic(unsigned int id, int house) {
     if(id >= NUM_UIGRAPHICS) {
-        fprintf(stderr,"GFXManager::getUIGraphic(): UI Graphic with id %u is not available!\n",id);
-        exit(EXIT_FAILURE);
+        throw std::invalid_argument(strprintf("GFXManager::getUIGraphic(): UI Graphic with id %u is not available!",id));
     }
 
     if(uiGraphicTex[id][house] == nullptr) {
@@ -981,15 +977,13 @@ SDL_Texture* GFXManager::getUIGraphic(unsigned int id, int house) {
 
 SDL_Surface* GFXManager::getMapChoicePieceSurface(unsigned int num, int house) {
     if(num >= NUM_MAPCHOICEPIECES) {
-        fprintf(stderr,"GFXManager::getMapChoicePieceSurface(): Map Piece with number %u is not available!\n",num);
-        exit(EXIT_FAILURE);
+        throw std::invalid_argument(strprintf("GFXManager::getMapChoicePieceSurface(): Map Piece with number %u is not available!",num));
     }
 
     if(mapChoicePieces[num][house] == nullptr) {
         // remap to this color
         if(mapChoicePieces[num][HOUSE_HARKONNEN] == nullptr) {
-            fprintf(stderr,"GFXManager::getMapChoicePieceSurface(): Map Piece with number %u is not loaded!\n",num);
-            exit(EXIT_FAILURE);
+            throw std::runtime_error(strprintf("GFXManager::getMapChoicePieceSurface(): Map Piece with number %u is not loaded!",num));
         }
 
         mapChoicePieces[num][house] = mapSurfaceColorRange(mapChoicePieces[num][HOUSE_HARKONNEN], PALCOLOR_HARKONNEN, houseToPaletteIndex[house]);
@@ -1000,8 +994,7 @@ SDL_Surface* GFXManager::getMapChoicePieceSurface(unsigned int num, int house) {
 
 SDL_Texture* GFXManager::getMapChoicePiece(unsigned int num, int house) {
     if(num >= NUM_MAPCHOICEPIECES) {
-        fprintf(stderr,"GFXManager::getMapChoicePiece(): Map Piece with number %u is not available!\n",num);
-        exit(EXIT_FAILURE);
+        throw std::invalid_argument(strprintf("GFXManager::getMapChoicePiece(): Map Piece with number %u is not available!",num));
     }
 
     if(mapChoicePiecesTex[num][house] == nullptr) {
@@ -1013,8 +1006,7 @@ SDL_Texture* GFXManager::getMapChoicePiece(unsigned int num, int house) {
 
 Animation* GFXManager::getAnimation(unsigned int id) {
     if(id >= NUM_ANIMATION) {
-        fprintf(stderr,"GFXManager::getAnimation(): Animation with id %u is not available!\n",id);
-        exit(EXIT_FAILURE);
+        throw std::invalid_argument(strprintf("GFXManager::getAnimation(): Animation with id %u is not available!",id));
     }
 
     if(animation[id] == nullptr) {
@@ -1103,8 +1095,7 @@ Animation* GFXManager::getAnimation(unsigned int id) {
             case Anim_Slab4:            animation[Anim_Slab4] = loadAnimationFromWsa("4SLAB.WSA");               break;
 
             default: {
-                fprintf(stderr,"GFXManager::getAnimation(): Invalid animation id %u\n",id);
-                exit(EXIT_FAILURE);
+                throw std::runtime_error(strprintf("GFXManager::getAnimation(): Invalid animation id %u",id));
             } break;
         }
 

@@ -84,7 +84,7 @@ Refinery::~Refinery() {
     if(extractingSpice && harvester) {
         if(harvester.getUnitPointer() != nullptr)
             harvester.getUnitPointer()->destroy();
-        harvester.pointTo(NONE);
+        harvester.pointTo(NONE_ID);
     }
 }
 

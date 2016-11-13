@@ -82,11 +82,11 @@ void Map::createSandRegions() {
 
     for(int i = 0; i < sizeX; i++) {
         for(int j = 0; j < sizeY; j++)  {
-            getTile(i,j)->setSandRegion(NONE);
+            getTile(i,j)->setSandRegion(NONE_ID);
         }
     }
 
-    int region = 0;
+    Uint32 region = 0;
     for(int i = 0; i < sizeX; i++) {
         for(int j = 0; j < sizeY; j++) {
             if(!getTile(i,j)->isRock() && !visited[j*sizeX+i]) {
@@ -232,7 +232,7 @@ void Map::damage(Uint32 damagerID, House* damagerOwner, const Coord& realPos, Ui
                         if(pTile->getType() == Terrain_Slab) {
                             pTile->setType(Terrain_Rock);
                             pTile->setDestroyedStructureTile(Destroyed1x1Structure);
-                            pTile->setOwner(NONE);
+                            pTile->setOwner(NONE_ID);
                         }
 
                         pTile->addDamage(Tile::Terrain_RockDamage, (bulletID==Bullet_SmallRocket) ? Tile::RockDamage1 : Tile::RockDamage2, realPos);

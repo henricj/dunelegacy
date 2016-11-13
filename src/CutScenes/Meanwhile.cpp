@@ -31,13 +31,15 @@
 #include <FileClasses/Wsafile.h>
 #include <FileClasses/IndexedTextFile.h>
 
+#include <misc/string_util.h>
+
 #include <string>
+#include <stdexcept>
 
 Meanwhile::Meanwhile(int house, bool firstMeanwhile) : CutScene() {
 
     if(house != HOUSE_HARKONNEN && house != HOUSE_ATREIDES && house != HOUSE_ORDOS) {
-        fprintf(stderr,"Meanwhile::Meanwhile(): Invalid house number: %d!\n", house);
-        exit(EXIT_FAILURE);
+        throw std::invalid_argument(strprintf("Meanwhile::Meanwhile(): Invalid house number: %d!", house));
     }
 
     SDL_RWops* meanwhil_wsa = pFileManager->openFile("MEANWHIL.WSA");

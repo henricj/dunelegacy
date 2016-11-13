@@ -31,7 +31,7 @@ class StructureBase;
 class ObjectPointer
 {
 public:
-    ObjectPointer() { objectID = NONE; };
+    ObjectPointer() { objectID = NONE_ID; };
     explicit ObjectPointer(Uint32 newItemID) { pointTo(newItemID); };
     ObjectPointer(const ObjectBase* newObject) { pointTo(newObject); };
     ~ObjectPointer() { }
@@ -48,7 +48,7 @@ public:
     void load(InputStream& stream);
 
     inline operator bool() const {
-        return (objectID != NONE);
+        return (objectID != NONE_ID);
     };
 
 private:

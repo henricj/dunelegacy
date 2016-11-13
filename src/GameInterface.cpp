@@ -33,7 +33,7 @@
 
 GameInterface::GameInterface() : Window(0,0,0,0) {
     pObjectContainer = nullptr;
-    objectID = NONE;
+    objectID = NONE_ID;
 
     setTransparentBackground(true);
 
@@ -184,7 +184,7 @@ void GameInterface::updateObjectInterface() {
         }
     } else if(currentGame->getSelectedList().size() > 1) {
 
-        if((pObjectContainer == nullptr) || (objectID != NONE)) {
+        if((pObjectContainer == nullptr) || (objectID != NONE_ID)) {
             // either there was nothing selected before or exactly one unit
 
             if(pObjectContainer != nullptr) {
@@ -210,6 +210,6 @@ void GameInterface::removeOldContainer() {
     if(pObjectContainer != nullptr) {
         delete pObjectContainer;
         pObjectContainer = nullptr;
-        objectID = NONE;
+        objectID = NONE_ID;
     }
 }

@@ -121,7 +121,7 @@ void RepairYard::deployRepairUnit(Carryall* pCarryall) {
 
     }
 
-    repairUnit.pointTo(NONE);
+    repairUnit.pointTo(NONE_ID);
 
     if(getOwner() == pLocalHouse) {
         soundPlayer->playVoice(VehicleRepaired,getOwner()->getHouseID());

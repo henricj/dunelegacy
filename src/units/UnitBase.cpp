@@ -1051,7 +1051,7 @@ void UnitBase::setGettingRepaired() {
         badlyDamaged = false;
 
         setTarget(nullptr);
-        //setLocation(NONE, NONE);
+        //setLocation(INVALID_POS, INVALID_POS);
         setDestination(location);
         nextSpotAngle = DOWN;
     }
