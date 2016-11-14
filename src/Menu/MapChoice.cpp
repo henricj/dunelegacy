@@ -26,6 +26,8 @@
 #include <FileClasses/music/MusicPlayer.h>
 
 #include <misc/string_util.h>
+#include <misc/exceptions.h>
+#include <misc/format.h>
 
 #include <sand.h>
 
@@ -284,8 +286,7 @@ void MapChoice::drawSpecificStuff() {
                 } else if(lastScenario == 8) {
                     newMission = (lastScenario-1) * 3 - 1 + 2 + regionIndex;
                 } else {
-                    fprintf(stderr,"MapChoice::DrawSpecificStuff(): LastScenario (%u) is no valid scenario!\n", lastScenario);
-                    exit(EXIT_FAILURE);
+                    THROW(std::runtime_error, "lastScenario = %u is no valid scenario number!", lastScenario);
                 }
 
                 quit(newMission);
@@ -307,8 +308,7 @@ bool MapChoice::doInput(SDL_Event &event) {
                 SDL_Surface* clickmap = pGFXManager->getUIGraphicSurface(UI_MapChoiceClickMap);
 
                 if(SDL_LockSurface(clickmap) != 0) {
-                    fprintf(stderr,"MapChoice::doInput(): Cannot lock image!\n");
-                    exit(EXIT_FAILURE);
+                    THROW(std::runtime_error, "Cannot lock image!");
                 }
 
                 Uint8 regionNum = ((Uint8*)clickmap->pixels)[y * clickmap->pitch + x];
@@ -359,14 +359,9 @@ void MapChoice::createMapSurfaceWithPieces() {
 }
 
 void MapChoice::loadINI() {
-    std::string filename = strprintf("REGION%c.INI", houseChar[house]);
+    std::string filename = fmt::sprintf("REGION%c.INI", houseChar[house]);
 
-    SDL_RWops* file;
-    if((file = pFileManager->openFile(filename)) == nullptr) {
-        fprintf(stderr,"MapChoice::LoadINI(): Cannot open %s!\n",filename.c_str());
-        exit(EXIT_FAILURE);
-    }
-
+    SDL_RWops* file = pFileManager->openFile(filename);
     INIFile RegionINI(file);
     SDL_RWclose(file);
 
@@ -384,8 +379,7 @@ void MapChoice::loadINI() {
         std::string strYPos;
 
         if(splitString(entry,2,&strXPos,&strYPos) == false) {
-            fprintf(stderr,"MapChoice::LoadINI(): File %s is invalid!\n",filename.c_str());
-            exit(EXIT_FAILURE);
+            THROW(std::runtime_error, "File '%s' contains invalid value for key '%s'", filename, tmp);
         }
 
         piecePosition[i].x = atol(strXPos.c_str());
@@ -437,8 +431,7 @@ void MapChoice::loadINI() {
                 std::vector<std::string> strAttackRegion = splitString(tmp);
 
                 if(strAttackRegion.size() < 4) {
-                    fprintf(stderr,"MapChoice::LoadINI(): %s:[%s]/%s has to have 4 numbers!\n",filename.c_str(),strSection,strKey);
-                    exit(EXIT_FAILURE);
+                    THROW(std::runtime_error, "File '%s' contains invalid value for key [%s]/%s; it has to consist of 4 numbers!", filename, strSection, strKey);
                 }
 
                 group[i].attackRegion[a].regionNum = atol(strAttackRegion[0].c_str());

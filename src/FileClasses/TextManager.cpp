@@ -25,6 +25,7 @@
 #include <FileClasses/POFile.h>
 
 #include <misc/FileSystem.h>
+#include <misc/exceptions.h>
 
 #include <config.h>
 
@@ -61,10 +62,6 @@ void TextManager::loadData() {
     mentat_lng[HOUSE_ORDOS] = pFileManager->openFile("MENTATO." + _("LanguageFileExtension"));
 
     for(int i=0;i<3;i++) {
-        if(mentat_lng[i] == nullptr) {
-            fprintf(stderr,"TextManager::TextManager: Can not open mentat language file\n");
-            exit(EXIT_FAILURE);
-        }
         mentatStrings[i] = std::shared_ptr<MentatTextFile>(new MentatTextFile(mentat_lng[i]));
         SDL_RWclose(mentat_lng[i]);
     }
@@ -572,11 +569,6 @@ const std::string& TextManager::postProcessString(const std::string& unprocessed
 
 void TextManager::addOrigDuneText(const std::string& filename, bool bDecode) {
     SDL_RWops* rwop = pFileManager->openFile(filename);
-
-    if(rwop == nullptr) {
-        fprintf(stderr,"TextManager::addOrigDuneText(): Can not open language file %s\n", filename.c_str());
-        exit(EXIT_FAILURE);
-    }
 
     origDuneText[filename] = std::shared_ptr<IndexedTextFile>(new IndexedTextFile(rwop, bDecode));
 

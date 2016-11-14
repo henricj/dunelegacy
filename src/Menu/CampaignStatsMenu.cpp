@@ -22,7 +22,7 @@
 #include <FileClasses/GFXManager.h>
 #include <FileClasses/TextManager.h>
 #include <FileClasses/music/MusicPlayer.h>
-#include <misc/string_util.h>
+#include <misc/format.h>
 #include <House.h>
 #include <SoundPlayer.h>
 #include <Game.h>
@@ -56,11 +56,11 @@ CampaignStatsMenu::CampaignStatsMenu(int level) : MenuBase()
     setWindowWidget(&windowWidget);
 
     scoreLabel.setTextColor(COLOR_WHITE, COLOR_BLACK);
-    scoreLabel.setText(strprintf(_("@DUNE.ENG|21#Score: %d"), totalScore));
+    scoreLabel.setText(fmt::sprintf(_("@DUNE.ENG|21#Score: %d"), totalScore));
     windowWidget.addWidget(&scoreLabel, (getSize()/2) + Point(-175, -173), scoreLabel.getSize());
 
     timeLabel.setTextColor(COLOR_WHITE, COLOR_BLACK);
-    timeLabel.setText(strprintf(_("@DUNE.ENG|22#Time: %d:%02d"), totalTime/3600, (totalTime%3600)/60));
+    timeLabel.setText(fmt::sprintf(_("@DUNE.ENG|22#Time: %d:%02d"), totalTime/3600, (totalTime%3600)/60));
     windowWidget.addWidget(&timeLabel, (getSize()/2) + Point(+180 - timeLabel.getSize().x, -173), timeLabel.getSize());
 
     yourRankLabel.setAlignment(Alignment_HCenter);

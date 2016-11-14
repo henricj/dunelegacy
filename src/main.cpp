@@ -41,6 +41,8 @@
 #include <misc/FileSystem.h>
 #include <misc/Scaler.h>
 #include <misc/string_util.h>
+#include <misc/exceptions.h>
+#include <misc/format.h>
 
 #include <SoundPlayer.h>
 
@@ -149,8 +151,7 @@ void createDefaultConfigFile(std::string configfilepath, std::string language) {
 
     SDL_RWops* file = SDL_RWFromFile(configfilepath.c_str(), "w");
     if(file == nullptr) {
-        fprintf(stderr,"Failed to open config file: %s\n", SDL_GetError());
-        exit(EXIT_FAILURE);
+        THROW(sdl_error, "Opening config file failed: %s!", SDL_GetError());
     }
 
     const char configfile[] =   "[General]\n"
@@ -220,11 +221,10 @@ void createDefaultConfigFile(std::string configfilepath, std::string language) {
     playername[0] = toupper(playername[0]);
 
     // replace player name, language, server port and metaserver
-    std::string strConfigfile = strprintf(configfile, playername, language.c_str(), DEFAULT_PORT, DEFAULT_METASERVER);
+    std::string strConfigfile = fmt::sprintf(configfile, playername, language, DEFAULT_PORT, DEFAULT_METASERVER);
 
     if(SDL_RWwrite(file, strConfigfile.c_str(), 1, strConfigfile.length()) == 0) {
-        fprintf(stderr,"Failed to write to config file: %s\n", SDL_GetError());
-        exit(EXIT_FAILURE);
+        THROW(sdl_error, "Writing config file failed: %s!", SDL_GetError());
     }
 
     SDL_RWclose(file);
@@ -362,8 +362,7 @@ int main(int argc, char *argv[]) {
 
     // init fnkdat
     if(fnkdat(nullptr, nullptr, 0, FNKDAT_INIT) < 0) {
-      perror("Could not initialize fnkdat");
-      exit(EXIT_FAILURE);
+        THROW(std::runtime_error, "Cannot initialize fnkdat!");
     }
 
     bool bShowDebugLog = true;  // should be reset to false when done with AI stuff
@@ -395,53 +394,44 @@ int main(int argc, char *argv[]) {
         char szLogPath[MAX_PATH];
 
         if(MultiByteToWideChar(CP_UTF8, 0, pLogfilePath, -1, szwLogPath, MAX_PATH) == 0) {
-            fprintf(stderr, "Conversion of logfile path from utf-8 to utf-16 failed\n");
-            exit(EXIT_FAILURE);
+            THROW(std::runtime_error, "Conversion of logfile path from utf-8 to utf-16 failed!");
         }
 
         if(WideCharToMultiByte(CP_ACP, 0, szwLogPath, -1, szLogPath, MAX_PATH, nullptr, nullptr) == 0) {
-            fprintf(stderr, "Conversion of logfile path from utf-16 to ansi failed\n");
-            exit(EXIT_FAILURE);
+            THROW(std::runtime_error, "Conversion of logfile path from utf-16 to ansi failed!");
         }
 
         pLogfilePath = szLogPath;
 
         if(freopen(pLogfilePath, "w", stdout) == NULL) {
-            fprintf(stderr, "Reopening logfile '%s' as stdout failed\n", pLogfilePath);
-            exit(EXIT_FAILURE);
+            THROW(io_error, "Reopening logfile '%s' as stdout failed!", pLogfilePath);
         }
         setbuf(stdout, nullptr);   // No buffering
 
         if(freopen(pLogfilePath, "w", stderr) == NULL) {
             // use stdout in this error case as stderr is not yet ready
-            fprintf(stdout, "Reopening logfile '%s' as stderr failed\n", pLogfilePath);
-            fflush(stdout);
-            exit(EXIT_FAILURE);
+            THROW(io_error, "Reopening logfile '%s' as stderr failed!", pLogfilePath);
         }
         setbuf(stderr, nullptr);   // No buffering
 
         if(dup2(fileno(stdout), fileno(stderr)) < 0) {
-            fprintf(stderr, "Redirecting stderr to stdout failed\n");
-            exit(EXIT_FAILURE);
+            THROW(io_error, "Redirecting stderr to stdout failed!");
         }
 
         #else
 
         int d = open(pLogfilePath, O_WRONLY | O_CREAT | O_TRUNC, 0644);
         if(d < 0) {
-            fprintf(stderr, "Opening logfile '%s' failed\n", pLogfilePath);
-            exit(EXIT_FAILURE);
+            THROW(io_error, "Opening logfile '%s' failed!", pLogfilePath);
         }
         // Hint: fileno(stdout) != STDOUT_FILENO on Win32
         if(dup2(d, fileno(stdout)) < 0) {
-            fprintf(stderr, "Redirecting stdout failed\n");
-            exit(EXIT_FAILURE);
+            THROW(io_error, "Redirecting stdout failed!");
         }
 
         // Hint: fileno(stderr) != STDERR_FILENO on Win32
         if(dup2(d, fileno(stderr)) < 0) {
-            fprintf(stderr, "Redirecting stderr failed\n");
-            exit(EXIT_FAILURE);
+            THROW(io_error, "Redirecting stderr failed!");
         }
 
         #endif
@@ -576,8 +566,7 @@ int main(int argc, char *argv[]) {
         if(bFirstInit == true) {
             fprintf(stdout, "initializing SDL..... \t\t"); fflush(stdout);
             if(SDL_Init(SDL_INIT_TIMER | SDL_INIT_VIDEO) < 0) {
-                fprintf(stderr, "ERROR: Couldn't initialise SDL: %s\n", SDL_GetError());
-                exit(EXIT_FAILURE);
+                THROW(sdl_error, "Couldn't initialize SDL: %s!", SDL_GetError());
             }
             fprintf(stdout, "finished\n"); fflush(stdout);
         }
@@ -606,8 +595,7 @@ int main(int argc, char *argv[]) {
             fprintf(stdout, "initializing sound..... \t");fflush(stdout);
             if( Mix_OpenAudio(AUDIO_FREQUENCY, AUDIO_S16SYS, 2, 1024) < 0 ) {
                 SDL_Quit();
-                fprintf(stderr,"Warning: Couldn't set %d Hz 16-bit audio\n- Reason: %s\n",AUDIO_FREQUENCY,SDL_GetError());
-                exit(EXIT_FAILURE);
+                THROW(sdl_error, "Couldn't set %d Hz 16-bit audio. Reason: %s!", AUDIO_FREQUENCY, SDL_GetError());
             } else {
                 fprintf(stdout, "allocated %d channels.\n", Mix_AllocateChannels(6)); fflush(stdout);
             }
@@ -677,8 +665,7 @@ int main(int argc, char *argv[]) {
                     fprintf(stdout, "playing XMI files\n"); fflush(stdout);
                     musicPlayer = new XMIPlayer();
                 } else {
-                    fprintf(stdout, "failed\n"); fflush(stdout);
-                    exit(EXIT_FAILURE);
+                    THROW(std::runtime_error, "Invalid music type: '%'", settings.audio.musicType);
                 }
 
                 //musicPlayer->changeMusic(MUSIC_INTRO);
@@ -735,8 +722,7 @@ int main(int argc, char *argv[]) {
 
     // deinit fnkdat
     if(fnkdat(nullptr, nullptr, 0, FNKDAT_UNINIT) < 0) {
-        perror("Could not uninitialize fnkdat");
-        exit(EXIT_FAILURE);
+        THROW(std::runtime_error, "Cannot uninitialize fnkdat!");
     }
 
     return EXIT_SUCCESS;

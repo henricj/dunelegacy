@@ -19,8 +19,8 @@
 
 #include <globals.h>
 
-#include <misc/string_util.h>
 #include <misc/FileSystem.h>
+#include <misc/format.h>
 
 #include <FileClasses/GFXManager.h>
 #include <FileClasses/TextManager.h>
@@ -168,7 +168,7 @@ CustomGameStatsMenu::CustomGameStatsMenu() : MenuBase()
 
     buttonHBox.addWidget(HSpacer::create(70));
     int totalTime = currentGame->getGameTime()/1000;
-    timeLabel.setText(strprintf(_("@DUNE.ENG|22#Time: %d:%02d"), totalTime/3600, (totalTime%3600)/60));
+    timeLabel.setText(fmt::sprintf(_("@DUNE.ENG|22#Time: %d:%02d"), totalTime/3600, (totalTime%3600)/60));
     timeLabel.setTextColor(localHouseColor);
     buttonHBox.addWidget(&timeLabel, 0.2);
 

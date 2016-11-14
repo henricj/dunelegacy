@@ -36,8 +36,8 @@
 #include <players/PlayerFactory.h>
 
 #include <misc/Scaler.h>
-#include <misc/string_util.h>
 #include <misc/FileSystem.h>
+#include <misc/format.h>
 
 #include <config.h>
 
@@ -283,7 +283,7 @@ void OptionsMenu::onOptionsOK() {
 
     int serverport;
     if(!parseString(portTextBox.getText(), serverport) || serverport <= 0 || serverport > 65535) {
-        openWindow(MsgBox::create(strprintf(_("Server Port must be between 1 and 65535!\nDefault Server Port is %d!"), DEFAULT_PORT)));
+        openWindow(MsgBox::create(fmt::sprintf(_("Server Port must be between 1 and 65535!\nDefault Server Port is %d!"), DEFAULT_PORT)));
         return;
     }
 

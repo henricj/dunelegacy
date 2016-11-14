@@ -4,6 +4,8 @@
 #include <FileClasses/FileManager.h>
 #include <FileClasses/Vocfile.h>
 
+#include <misc/exceptions.h>
+
 #include <SDL_mixer.h>
 #include <stdlib.h>
 #include <memory.h>
@@ -114,17 +116,11 @@ Mix_Chunk* createSilenceChunk(int length)
 }
 
 Mix_Chunk* getChunkFromFile(std::string filename) {
+    SDL_RWops* rwop = pFileManager->openFile(filename);
+
     Mix_Chunk* returnChunk;
-    SDL_RWops* rwop;
-
-    if((rwop = pFileManager->openFile(filename)) == nullptr) {
-        fprintf(stderr,"getChunkFromFile(): Cannot open %s!\n",filename.c_str());
-        exit(EXIT_FAILURE);
-    }
-
     if((returnChunk = LoadVOC_RW(rwop, 1)) == nullptr) {
-        fprintf(stderr,"getChunkFromFile(): Cannot load %s!\n",filename.c_str());
-        exit(EXIT_FAILURE);
+        THROW(io_error, "Cannot load '%s' !", filename);
     }
 
     return returnChunk;
@@ -136,8 +132,7 @@ Mix_Chunk* getChunkFromFile(std::string filename, std::string alternativeFilenam
     } else if(pFileManager->exists(alternativeFilename)) {
         return getChunkFromFile(alternativeFilename);
     } else {
-        fprintf(stderr,"getChunkFromFile(): Cannot open %s or %s!\n",filename.c_str(), alternativeFilename.c_str());
-        exit(EXIT_FAILURE);
+        THROW(io_error, "Cannot open '%s' or '%s'!", filename, alternativeFilename);
     }
     return nullptr;
 }

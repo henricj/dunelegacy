@@ -22,6 +22,7 @@
 #include <cctype>
 #include <algorithm>
 #include <stdio.h>
+#include <stdexcept>
 
 
 INIFile::INIFileLine::INIFileLine(const std::string& completeLine, int lineNumber)
@@ -368,8 +369,7 @@ INIFile::INIFile(SDL_RWops * RWopsFile, bool bWhitespace)
  : firstLine(nullptr), sectionRoot(nullptr), bWhitespace(bWhitespace) {
 
     if(RWopsFile == nullptr) {
-        std::cerr << "INIFile: RWopsFile == nullptr!" << std::endl;
-        exit(EXIT_FAILURE);
+        throw std::invalid_argument("RWopsFile == nullptr!");
     }
 
     readfile(RWopsFile);

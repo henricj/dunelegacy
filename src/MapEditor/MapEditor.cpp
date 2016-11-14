@@ -29,7 +29,7 @@
 
 #include <misc/FileSystem.h>
 #include <misc/draw_util.h>
-#include <misc/string_util.h>
+#include <misc/format.h>
 
 #include <globals.h>
 #include <mmath.h>
@@ -524,7 +524,7 @@ void MapEditor::saveMap(const std::string& filepath) {
         loadedINIFile->setIntValue("MAP", "SizeY", map.getSizeY());
 
         for(int y = 0; y < map.getSizeY(); y++) {
-            std::string rowKey = strprintf("%.3d", y);
+            std::string rowKey = fmt::sprintf("%.3d", y);
 
             std::string row = "";
             for(int x = 0; x < map.getSizeX(); x++) {
@@ -667,7 +667,7 @@ void MapEditor::saveMap(const std::string& filepath) {
     loadedINIFile->clearSection("UNITS");
     std::vector<Unit>::const_iterator unitsIter;
     for(unitsIter = units.begin(); unitsIter != units.end(); ++unitsIter) {
-        std::string unitKey = strprintf("ID%.3d", unitsIter->id);
+        std::string unitKey = fmt::sprintf("ID%.3d", unitsIter->id);
 
         int position = (logicalOffsetY+unitsIter->position.y) * logicalSizeX + (logicalOffsetX+unitsIter->position.x);
 
@@ -688,7 +688,7 @@ void MapEditor::saveMap(const std::string& filepath) {
         int position = (logicalOffsetY+structuresIter->position.y) * logicalSizeX + (logicalOffsetX+structuresIter->position.x);
 
         if((structuresIter->itemID == Structure_Slab1) || (structuresIter->itemID == Structure_Slab4) || (structuresIter->itemID == Structure_Wall)) {
-            std::string structureKey = strprintf("GEN%.3d", position);
+            std::string structureKey = fmt::sprintf("GEN%.3d", position);
 
             std::string structureValue = house2housename[structuresIter->house] + "," + getItemNameByID(structuresIter->itemID);
 
@@ -696,7 +696,7 @@ void MapEditor::saveMap(const std::string& filepath) {
 
         } else {
 
-            std::string structureKey = strprintf("ID%.3d", structuresIter->id);
+            std::string structureKey = fmt::sprintf("ID%.3d", structuresIter->id);
 
             std::string structureValue = house2housename[structuresIter->house] + "," + getItemNameByID(structuresIter->itemID) + "," + stringify(structuresIter->health) + "," + stringify(position);
 

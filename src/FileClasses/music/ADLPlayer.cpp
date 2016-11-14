@@ -198,20 +198,17 @@ void ADLPlayer::changeMusic(MUSICTYPE musicType)
         delete pSoundAdlibPC;
 
         SDL_RWops* rwop = pFileManager->openFile(filename);
-        if(rwop == nullptr) {
-            fprintf(stderr, "Unable to load %s!\n",filename.c_str());
-        } else {
-            pSoundAdlibPC = new SoundAdlibPC(rwop);
-            pSoundAdlibPC->setVolume(musicVolume);
 
-            SDL_RWclose(rwop);
+        pSoundAdlibPC = new SoundAdlibPC(rwop);
+        pSoundAdlibPC->setVolume(musicVolume);
 
-            pSoundAdlibPC->playTrack(musicNum);
+        SDL_RWclose(rwop);
 
-            Mix_HookMusic(pSoundAdlibPC->callback, pSoundAdlibPC);
+        pSoundAdlibPC->playTrack(musicNum);
 
-            //printf("Now playing %s!\n",filename.c_str());
-        }
+        Mix_HookMusic(pSoundAdlibPC->callback, pSoundAdlibPC);
+
+        //printf("Now playing %s!\n",filename.c_str());
     }
 }
 

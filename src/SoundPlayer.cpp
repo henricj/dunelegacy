@@ -24,6 +24,8 @@
 #include <Map.h>
 #include <House.h>
 
+#include <misc/exceptions.h>
+
 
 Mix_Chunk* curVoiceChunk = nullptr;
 int voiceChannel = 0;
@@ -96,8 +98,7 @@ void SoundPlayer::playVoice(Voice_enum id, int houseID) {
         Mix_Chunk* tmp;
 
         if((tmp = pSFXManager->getVoice(id,houseID)) == nullptr) {
-            fprintf(stderr,"There is no voice with id %d!\n",id);
-            exit(EXIT_FAILURE);
+            THROW(std::invalid_argument, "There is no voice with ID %d!",id);
         }
 
         int channel = Mix_PlayChannel(-1, tmp, 0);
@@ -121,8 +122,7 @@ void SoundPlayer::playSound(Sound_enum id) {
         Mix_Chunk* tmp;
 
         if((tmp = pSFXManager->getSound(id)) == nullptr) {
-            fprintf(stderr,"There is no sound with id %d!\n",id);
-            exit(EXIT_FAILURE);
+            THROW(std::invalid_argument, "There is no sound with ID %d!",id);
         }
 
         int channel = Mix_PlayChannel(-1, tmp, 0);

@@ -24,6 +24,8 @@
 
 #include <sand.h>
 
+#include <misc/format.h>
+
 #include <MapEditor/MapEditor.h>
 
 #include <FileClasses/GFXManager.h>
@@ -106,7 +108,7 @@ TeamsWindow::TeamsWindow(MapEditor* pMapEditor, HOUSETYPE currentHouse)
     int currentPlayerNum = 1;
     for(playerIter = pMapEditor->getPlayers().begin(); playerIter != pMapEditor->getPlayers().end(); ++playerIter) {
         if(playerIter->bActive) {
-            std::string entryName = playerIter->bAnyHouse ? strprintf(_("Player %d"), currentPlayerNum++) : playerIter->name;
+            std::string entryName = playerIter->bAnyHouse ? fmt::sprintf(_("Player %d"), currentPlayerNum++) : playerIter->name;
             playerDropDownBox.addEntry(entryName, playerIter->house);
         }
     }
@@ -364,7 +366,7 @@ std::string TeamsWindow::getPlayerName(HOUSETYPE house) {
     int currentPlayerNum = 1;
     for(playerIter = pMapEditor->getPlayers().begin(); playerIter != pMapEditor->getPlayers().end(); ++playerIter) {
         if(playerIter->house == house) {
-            return playerIter->bAnyHouse ? strprintf(_("Player %d"), currentPlayerNum)
+            return playerIter->bAnyHouse ? fmt::sprintf(_("Player %d"), currentPlayerNum)
                                           : (_("House") + " " + playerIter->name);
         }
 

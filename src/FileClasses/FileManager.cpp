@@ -27,6 +27,7 @@
 #include <misc/fnkdat.h>
 #include <misc/md5.h>
 #include <misc/string_util.h>
+#include <misc/exceptions.h>
 
 #include <algorithm>
 #include <stdexcept>
@@ -58,7 +59,7 @@ FileManager::FileManager(bool saveMode) {
                             pakFiles.pop_back();
                         }
 
-                        throw std::runtime_error("FileManager::FileManager(): Error while opening " + filepath + ": " + e.what());
+                        THROW(io_error, "Error while opening '%s': %s!", filepath, e.what());
                     }
                 }
 
@@ -174,7 +175,7 @@ SDL_RWops* FileManager::openFile(std::string filename) {
         }
     }
 
-    throw std::runtime_error("FileManager::OpenFile(): Cannot find " + filename + "!");
+    THROW(io_error, "Cannot find '%s'!", filename);
 }
 
 bool FileManager::exists(std::string filename) const {
@@ -206,7 +207,7 @@ std::string FileManager::md5FromFilename(std::string filename) {
     unsigned char md5sum[16];
 
     if(md5_file(filename.c_str(), md5sum) != 0) {
-        throw std::runtime_error("Cannot open or read " + filename + "!");
+        THROW(io_error, "Cannot open or read '%s'!", filename);
     } else {
 
         std::stringstream stream;

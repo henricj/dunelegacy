@@ -34,7 +34,6 @@
 #include <GameInitSettings.h>
 #include <data.h>
 
-#include <misc/string_util.h>
 #include <misc/exceptions.h>
 
 #include <algorithm>

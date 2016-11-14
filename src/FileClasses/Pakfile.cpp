@@ -143,8 +143,7 @@ void Pakfile::addFile(SDL_RWops* rwop, std::string filename) {
         char* shrinkedBuffer;
         if((shrinkedBuffer = (char*) realloc(writeOutData,numWriteOutData)) == nullptr) {
             // shrinking the buffer should not fail
-            perror("realloc()");
-            exit(EXIT_FAILURE);
+            throw std::runtime_error("Pakfile::addFile(): realloc failed!");
         }
         writeOutData = shrinkedBuffer;
         throw std::runtime_error("Pakfile::addFile(): SDL_RWread failed!");

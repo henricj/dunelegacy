@@ -209,10 +209,6 @@ void XMIPlayer::changeMusic(MUSICTYPE musicType)
 
     if((musicOn == true) && (filename != "")) {
         SDL_RWops* inputrwop = pFileManager->openFile(filename);
-        if(inputrwop == nullptr) {
-            std::cerr << "Cannot open file " << filename << "!" << std::endl;
-            return;
-        }
         SDLDataSource input(inputrwop,1);
 
         std::string tmpFilename = getTmpFileName();

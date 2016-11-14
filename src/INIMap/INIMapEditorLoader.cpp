@@ -9,7 +9,7 @@
 #include <MapSeed.h>
 #include <ScreenBorder.h>
 
-#include <misc/string_util.h>
+#include <misc/format.h>
 
 #include <sand.h>
 #include <globals.h>
@@ -199,7 +199,7 @@ void INIMapEditorLoader::loadMap() {
         logicalOffsetY = 0;
 
         for(int y=0;y<sizeY;y++) {
-            std::string rowKey = strprintf("%.3d", y);
+            std::string rowKey = fmt::sprintf("%.3d", y);
 
             if(inifile->hasKey("MAP", rowKey) == false) {
                 logWarning(inifile->getSection("MAP")->getLineNumber(), "Map row " + stringify(y) + " does not exist!");

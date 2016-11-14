@@ -30,6 +30,7 @@
 
 #include <misc/draw_util.h>
 #include <misc/Scaler.h>
+#include <misc/exceptions.h>
 
 #include <stdexcept>
 #include <memory>
@@ -379,8 +380,7 @@ SDL_Surface* PictureFactory::createBottomBar() {
 SDL_Surface* PictureFactory::createPlacingGrid(int size, int color) {
     SDL_Surface* placingGrid;
     if((placingGrid = SDL_CreateRGBSurface(0,size,size,8,0,0,0,0)) == nullptr) {
-        fprintf(stderr,"PictureFactory::createPlacingGrid: Cannot create new Picture!\n");
-        exit(EXIT_FAILURE);
+        THROW(sdl_error, "Cannot create new surface: %s!", SDL_GetError());
     }
     palette.applyToSurface(placingGrid);
 
@@ -477,8 +477,7 @@ SDL_Surface* PictureFactory::createFrame(unsigned int DecorationType,int width, 
         Pic = getSubPicture(background.get(),0,0,width,height);
     } else {
         if((Pic = SDL_CreateRGBSurface(0,width,height,8,0,0,0,0)) == nullptr) {
-            fprintf(stderr,"PictureFactory::createFrame: Cannot create new Picture!\n");
-            exit(EXIT_FAILURE);
+            THROW(sdl_error, "Cannot create new surface: %s!", SDL_GetError());
         }
         palette.applyToSurface(Pic);
         SDL_SetColorKey(Pic, SDL_TRUE, 0);
@@ -599,8 +598,7 @@ SDL_Surface* PictureFactory::createMenu(SDL_Surface* CaptionPic,int y) {
 SDL_Surface* PictureFactory::createOptionsMenu() {
     SDL_Surface* tmp;
     if((tmp = LoadPNG_RW(pFileManager->openFile("UI_OptionsMenu.png"),true)) == nullptr) {
-        fprintf(stderr,"PictureFactory::createOptionsMenu(): Cannot load UI_OptionsMenu.png!\n");
-        exit(EXIT_FAILURE);
+        THROW(std::runtime_error, "Cannot load 'UI_OptionsMenu.png'!");
     }
     SDL_SetColorKey(tmp, SDL_TRUE, 0);
 
@@ -671,8 +669,7 @@ SDL_Surface* PictureFactory::createMapChoiceScreen(int House) {
     SDL_Surface* pMapChoiceScreen;
 
     if((pMapChoiceScreen = LoadCPS_RW(pFileManager->openFile("MAPMACH.CPS"),true)) == nullptr) {
-        fprintf(stderr,"PictureFactory::createMapChoiceScreen(): Cannot read MAPMACH.CPS!\n");
-        exit(EXIT_FAILURE);
+        THROW(std::runtime_error, "Cannot load 'MAPMACH.CPS'!");
     }
 
     SDL_Rect LeftLogo = calcDrawingRect(harkonnenLogo.get(),2,145);
@@ -736,8 +733,7 @@ SDL_Surface* PictureFactory::createMapChoiceScreen(int House) {
 SDL_Surface* PictureFactory::createMentatHouseChoiceQuestion(int House, Palette& benePalette) {
     SDL_Surface* pSurface;
     if((pSurface = SDL_CreateRGBSurface(0,416+208,48,8,0,0,0,0)) == nullptr) {
-        fprintf(stderr,"PictureFactory::createMentatHouseChoiceQuestion: Cannot create new Picture!\n");
-        exit(EXIT_FAILURE);
+        THROW(sdl_error, "Cannot create new surface: %s!", SDL_GetError());
     }
 
     benePalette.applyToSurface(pSurface);

@@ -28,6 +28,8 @@
 
 #include <sand.h>
 
+#include <misc/exceptions.h>
+
 #include <ObjectBase.h>
 #include <House.h>
 #include <units/UnitBase.h>
@@ -45,7 +47,7 @@ protected:
     explicit DefaultObjectInterface(int objectID) : ObjectInterface() {
         ObjectBase* pObject = currentGame->getObjectManager().getObject(objectID);
         if(pObject == nullptr) {
-            throw std::invalid_argument(strprintf("DefaultObjectInterface::DefaultObjectInterface(): Cannot resolve ObjectID %d!",objectID));
+            THROW(std::invalid_argument, "Failed to resolve ObjectID %d!", objectID);
         }
 
         this->objectID = objectID;

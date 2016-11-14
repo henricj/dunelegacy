@@ -142,35 +142,6 @@ std::string replaceAll(std::string str, const std::map<std::string, std::string>
     return str;
 }
 
-std::string strprintf(const std::string fmt, ...) {
-    // Note that fmt is not passed by reference as this is not allowed for the last parameter before ...
-    va_list arg_ptr;
-    va_start(arg_ptr, fmt);
-
-    int length = vsnprintf(nullptr, 0, fmt.c_str(), arg_ptr);
-    if(length < 0) {
-        va_end(arg_ptr);
-        throw std::runtime_error("strprintf(): vsnprintf() failed!");
-    }
-
-    char* tmpBuffer = new char[length+1];
-
-    va_end(arg_ptr);
-
-    va_start(arg_ptr, fmt);
-    if(vsnprintf(tmpBuffer, length+1, fmt.c_str(), arg_ptr) < 0) {
-        delete [] tmpBuffer;
-        throw std::runtime_error("strprintf(): vsnprintf() failed!");
-    }
-
-    std::string formatedString(tmpBuffer);
-
-    delete [] tmpBuffer;
-
-    va_end(arg_ptr);
-
-    return formatedString;
-}
 
 std::string convertCP850ToISO8859_1(const std::string& text)
 {

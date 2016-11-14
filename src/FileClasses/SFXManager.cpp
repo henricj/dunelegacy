@@ -25,6 +25,7 @@
 #include <FileClasses/adl/sound_adlib.h>
 
 #include <misc/sound_util.h>
+#include <misc/exceptions.h>
 
 // Not used:
 // - EXCANNON.VOC (same as EXSMALL.VOC)
@@ -43,8 +44,7 @@ SFXManager::SFXManager() {
 
     for(int i = 0; i < NUM_SOUNDCHUNK; i++) {
         if(soundChunk[i] == nullptr) {
-            fprintf(stderr,"SFXManager::SFXManager: Not all sounds could be loaded\n");
-            exit(EXIT_FAILURE);
+            THROW(std::runtime_error, "Not all sounds could be loaded: soundChunk[%d] == nullptr!", i);
         }
     }
 }
@@ -87,11 +87,6 @@ Mix_Chunk* SFXManager::getSound(Sound_enum id) {
 Mix_Chunk* SFXManager::loadMixFromADL(std::string adlFile, int index) {
 
     SDL_RWops* rwop = pFileManager->openFile(adlFile);
-    if(rwop == nullptr) {
-        fprintf(stderr,"SFXManager::LoadMixFromADL:Unable to load %s!\n",adlFile.c_str());
-        return nullptr;
-    }
-
     SoundAdlibPC *pSoundAdlibPC = new SoundAdlibPC(rwop, AUDIO_FREQUENCY);
     Mix_Chunk* chunk = pSoundAdlibPC->getSubsong(index);
     delete pSoundAdlibPC;
@@ -104,8 +99,7 @@ void SFXManager::loadEnglishVoice() {
     numLngVoice = NUM_VOICE*NUM_HOUSES;
 
     if((lngVoice = (Mix_Chunk**) malloc(sizeof(Mix_Chunk*) * numLngVoice)) == nullptr) {
-        fprintf(stderr,"SFXManager::LoadVoice_English: Cannot allocate memory!\n");
-        exit(EXIT_FAILURE);
+        THROW(std::runtime_error, "Cannot allocate memory");
     }
 
     for(int i = 0; i < numLngVoice; i++) {
@@ -217,8 +211,7 @@ void SFXManager::loadEnglishVoice() {
 
     for(int i = 0; i < numLngVoice; i++) {
         if(lngVoice[i] == nullptr) {
-            fprintf(stderr,"SFXManager::LoadVoice_English: Not all voice sounds could be loaded\n");
-            exit(EXIT_FAILURE);
+            THROW(std::runtime_error, "Not all voice sounds could be loaded: lngVoice[%d] == nullptr!", i);
         }
     }
 
@@ -294,8 +287,7 @@ void SFXManager::loadNonEnglishVoice(std::string languagePrefix) {
     numLngVoice = NUM_VOICE;
 
     if((lngVoice = (Mix_Chunk**) malloc(sizeof(Mix_Chunk*) * NUM_VOICE)) == nullptr) {
-        fprintf(stderr,"SFXManager::LoadVoice_NonEnglish: Cannot allocate memory!\n");
-        exit(EXIT_FAILURE);
+        THROW(std::runtime_error, "Cannot allocate memory");
     }
 
     for(int i = 0; i < NUM_VOICE; i++) {
@@ -349,8 +341,7 @@ void SFXManager::loadNonEnglishVoice(std::string languagePrefix) {
 
     for(int i = 0; i < numLngVoice; i++) {
         if(lngVoice[i] == nullptr) {
-            fprintf(stderr,"SFXManager::LoadVoice_NonEnglish: Not all voice sounds could be loaded\n");
-            exit(EXIT_FAILURE);
+            THROW(std::runtime_error, "Not all voice sounds could be loaded: lngVoice[%d] == nullptr!", i);
         }
     }
 

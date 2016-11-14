@@ -6,7 +6,7 @@
 #include <RadarView.h>
 
 #include <misc/draw_util.h>
-#include <misc/string_util.h>
+#include <misc/format.h>
 
 #include <mmath.h>
 #include <sand.h>
@@ -260,7 +260,7 @@ SDL_Surface* INIMapPreviewCreator::createMinimapImageOfMap(int borderWidth, Uint
         offsetY += borderWidth;
 
         for(int y=0;y<sizeY;y++) {
-            std::string rowKey = strprintf("%.3d", y);
+            std::string rowKey = fmt::sprintf("%.3d", y);
 
             if(inifile->hasKey("MAP", rowKey) == false) {
                 SDL_FreeSurface(pMinimap);

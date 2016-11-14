@@ -34,8 +34,9 @@
 #include <misc/FileSystem.h>
 #include <misc/fnkdat.h>
 #include <misc/draw_util.h>
-#include <misc/string_util.h>
 #include <misc/md5.h>
+#include <misc/exceptions.h>
+#include <misc/format.h>
 
 #include <players/HumanPlayer.h>
 
@@ -259,8 +260,7 @@ void Game::initReplay(const std::string& filename) {
     IFileStream fs;
 
     if(fs.open(filename) == false) {
-        fprintf(stderr, "Game::loadSaveGame()");
-        exit(EXIT_FAILURE);
+        THROW(io_error, "Error while opening '%s'!", filename);
     }
 
     // override local player name as it was when the replay was created
@@ -897,13 +897,13 @@ void Game::doInput()
                                 int percent = lround(100 * pHarvester->getAmountOfSpice() / HARVESTERMAXSPICE);
                                 if(percent > 0) {
                                     if(pHarvester->isawaitingPickup()) {
-                                        harvesterMessage += strprintf(_("@DUNE.ENG|124#full and awaiting pickup"), percent);
+                                        harvesterMessage += fmt::sprintf(_("@DUNE.ENG|124#full and awaiting pickup"), percent);
                                     } else if(pHarvester->isReturning()) {
-                                        harvesterMessage += strprintf(_("@DUNE.ENG|123#full and returning"), percent);
+                                        harvesterMessage += fmt::sprintf(_("@DUNE.ENG|123#full and returning"), percent);
                                     } else if(pHarvester->isHarvesting()) {
-                                        harvesterMessage += strprintf(_("@DUNE.ENG|122#full and harvesting"), percent);
+                                        harvesterMessage += fmt::sprintf(_("@DUNE.ENG|122#full and harvesting"), percent);
                                     } else {
-                                        harvesterMessage += strprintf(_("@DUNE.ENG|121#full"), percent);
+                                        harvesterMessage += fmt::sprintf(_("@DUNE.ENG|121#full"), percent);
                                     }
 
                                 } else {
@@ -1810,8 +1810,7 @@ ObjectBase* Game::loadObject(InputStream& stream, Uint32 objectID)
 
     ObjectBase* newObject = ObjectBase::loadObject(stream, itemID, objectID);
     if(newObject == nullptr) {
-        fprintf(stderr,"Game::LoadObject(): ObjectBase::loadObject() returned nullptr!\n");
-        exit(EXIT_FAILURE);
+        THROW(std::runtime_error, "Error while loading an object!");
     }
 
     return newObject;
@@ -2106,7 +2105,7 @@ void Game::handleKeyInput(SDL_KeyboardEvent& keyboardEvent) {
                 INIFile myINIFile(getConfigFilepath());
                 myINIFile.setIntValue("Game Options","Game Speed", settings.gameOptions.gameSpeed);
                 myINIFile.saveChangesTo(getConfigFilepath());
-                currentGame->addToNewsTicker(strprintf(_("Game speed") + ": %d", settings.gameOptions.gameSpeed));
+                currentGame->addToNewsTicker(fmt::sprintf(_("Game speed") + ": %d", settings.gameOptions.gameSpeed));
             }
         } break;
 
@@ -2118,7 +2117,7 @@ void Game::handleKeyInput(SDL_KeyboardEvent& keyboardEvent) {
                 INIFile myINIFile(getConfigFilepath());
                 myINIFile.setIntValue("Game Options","Game Speed", settings.gameOptions.gameSpeed);
                 myINIFile.saveChangesTo(getConfigFilepath());
-                currentGame->addToNewsTicker(strprintf(_("Game speed") + ": %d", settings.gameOptions.gameSpeed));
+                currentGame->addToNewsTicker(fmt::sprintf(_("Game speed") + ": %d", settings.gameOptions.gameSpeed));
             }
         } break;
 
@@ -2405,7 +2404,7 @@ bool Game::handlePlacementClick(int xPos, int yPos) {
             return true;
         } else {
             //the user has tried to place but clicked on impossible point
-            currentGame->addToNewsTicker(strprintf(_("@DUNE.ENG|134#Cannot place %%s here."), resolveItemName(placeItem).c_str()));
+            currentGame->addToNewsTicker(fmt::sprintf(_("@DUNE.ENG|134#Cannot place %%s here."), resolveItemName(placeItem)));
             soundPlayer->playSound(Sound_InvalidAction);    //can't place noise
 
             // is this building area only blocked by units?

@@ -49,6 +49,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
+#include <stdexcept>
 
 #include <SDL_mixer.h>
 #include <SDL_endian.h>
@@ -2512,8 +2513,7 @@ Mix_Chunk* SoundAdlibPC::getSubsong(int Num) {
     do {
         bufSize += 1024;
         if((buf = (Uint8*) SDL_realloc(buf, bufSize)) == NULL) {
-            perror("SoundAdlibPC::getSubsong(): Cannot allocate memory!\n");
-            exit(EXIT_FAILURE);
+            throw std::runtime_error("Cannot allocate memory!");
         }
 
         memset(buf + bufSize - 1024, 0, 1024);

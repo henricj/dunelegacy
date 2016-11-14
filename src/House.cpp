@@ -40,6 +40,9 @@
 #include <units/Carryall.h>
 #include <units/Harvester.h>
 
+#include <misc/exceptions.h>
+#include <misc/format.h>
+
 #include <algorithm>
 
 
@@ -530,7 +533,7 @@ void House::win() {
 
 void House::lose(bool bSilent) {
     if(!bSilent) {
-        currentGame->addToNewsTicker(strprintf(_("House '%s' has been defeated."), getHouseNameByNumber( (HOUSETYPE) getHouseID()).c_str()));
+        currentGame->addToNewsTicker(fmt::sprintf(_("House '%s' has been defeated."), getHouseNameByNumber( (HOUSETYPE) getHouseID())));
     }
 
     if((getTeam() == pLocalHouse->getTeam()) && ((currentGame->winFlags & WINLOSEFLAGS_HUMAN_HAS_BUILDINGS) != 0)) {
@@ -630,8 +633,6 @@ StructureBase* House::placeStructure(Uint32 builderID, int itemID, int xPos, int
         return nullptr;
     }
 
-    StructureBase* tempStructure = nullptr;
-
     switch (itemID) {
         case (Structure_Slab1): {
             // Slabs are no normal buildings
@@ -647,6 +648,8 @@ StructureBase* House::placeStructure(Uint32 builderID, int itemID, int xPos, int
                     currentGame->currentCursorMode = Game::CursorMode_Normal;
                 }
             }
+
+            return nullptr;
 
         } break;
 
@@ -676,40 +679,42 @@ StructureBase* House::placeStructure(Uint32 builderID, int itemID, int xPos, int
                 }
             }
 
+            return nullptr;
+
         } break;
 
         default: {
-            tempStructure = static_cast<StructureBase*>(ObjectBase::createObject(itemID,this));
-            if(tempStructure == nullptr) {
-                fprintf(stderr,"House::placeStructure(): Cannot create Object with itemID %d\n",itemID);
-                fflush(stderr);
-                exit(EXIT_FAILURE);
+            ObjectBase* newObject = ObjectBase::createObject(itemID,this);
+            StructureBase* newStructure = dynamic_cast<StructureBase*>(newObject);
+            if(newStructure == nullptr) {
+                delete newStructure;
+                THROW(std::runtime_error, "Cannot create structure with itemID %d!", itemID);
             }
 
             if(bForcePlacing == false) {
                 // check if there is already something on this tile
-                for(int i=0;i<tempStructure->getStructureSizeX();i++) {
-                    for(int j=0;j<tempStructure->getStructureSizeY();j++) {
+                for(int i=0;i<newStructure->getStructureSizeX();i++) {
+                    for(int j=0;j<newStructure->getStructureSizeY();j++) {
                         if((currentGameMap->tileExists(xPos+i, yPos+j) == false) || (currentGameMap->getTile(xPos+i, yPos+j)->hasAGroundObject() == true)) {
-                            delete tempStructure;
+                            delete newStructure;
                             return nullptr;
                         }
                     }
                 }
             }
 
-            for(int i=0;i<tempStructure->getStructureSizeX();i++) {
-                for(int j=0;j<tempStructure->getStructureSizeY();j++) {
+            for(int i=0;i<newStructure->getStructureSizeX();i++) {
+                for(int j=0;j<newStructure->getStructureSizeY();j++) {
                     if(currentGameMap->tileExists(xPos+i, yPos+j)) {
                         currentGameMap->getTile(xPos+i, yPos+j)->clearTerrain();
                     }
                 }
             }
 
-            tempStructure->setLocation(xPos, yPos);
+            newStructure->setLocation(xPos, yPos);
 
             if ((builderID != NONE_ID) && (itemID != Structure_Wall)) {
-                tempStructure->setJustPlaced();
+                newStructure->setJustPlaced();
             }
 
             // at the beginning of the game the first refinery gets a harvester for free (brought by a carryall)
@@ -743,29 +748,28 @@ StructureBase* House::placeStructure(Uint32 builderID, int itemID, int xPos, int
                 pBuilder->getOwner()->informWasBuilt(itemID);
             }
 
-            if(tempStructure->isABuilder()) {
-                static_cast<BuilderBase*>(tempStructure)->updateBuildList();
+            if(newStructure->isABuilder()) {
+                static_cast<BuilderBase*>(newStructure)->updateBuildList();
             }
 
+            return newStructure;
 
         } break;
     }
 
-    return tempStructure;
+    return nullptr;
 }
 
 
 
 
 UnitBase* House::createUnit(int itemID) {
-    UnitBase* newUnit = nullptr;
-
-    newUnit = static_cast<UnitBase*>(ObjectBase::createObject(itemID,this));
+    ObjectBase* newObject = ObjectBase::createObject(itemID,this);
+    UnitBase* newUnit = dynamic_cast<UnitBase*>(newObject);
 
     if(newUnit == nullptr) {
-        fprintf(stderr,"House::createUnit(): Cannot create Object with itemID %d\n",itemID);
-        fflush(stderr);
-        exit(EXIT_FAILURE);
+        delete newObject;
+        THROW(std::runtime_error, "Cannot create unit with itemID %d!", itemID);
     }
 
     return newUnit;

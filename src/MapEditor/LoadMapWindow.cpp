@@ -30,7 +30,7 @@
 #include <misc/fnkdat.h>
 #include <misc/FileSystem.h>
 #include <misc/draw_util.h>
-#include <misc/string_util.h>
+#include <misc/format.h>
 
 #include <INIMap/INIMapPreviewCreator.h>
 
@@ -151,7 +151,7 @@ bool LoadMapWindow::handleKeyPress(SDL_KeyboardEvent& key) {
         } else if(key.keysym.sym == SDLK_DELETE) {
             int index = mapList.getSelectedIndex();
             if(index >= 0) {
-                QstBox* pQstBox = QstBox::create(   strprintf(_("Do you really want to delete '%s' ?"), mapList.getEntry(index).c_str()),
+                QstBox* pQstBox = QstBox::create(   fmt::sprintf(_("Do you really want to delete '%s' ?"), mapList.getEntry(index).c_str()),
                                                     _("No"),
                                                     _("Yes"),
                                                     QSTBOX_BUTTON2);

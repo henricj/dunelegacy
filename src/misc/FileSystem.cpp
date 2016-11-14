@@ -17,6 +17,7 @@
 
 #include <misc/FileSystem.h>
 #include <misc/string_util.h>
+#include <misc/exceptions.h>
 
 #include <stdio.h>
 #include <algorithm>
@@ -435,8 +436,7 @@ std::string getDuneLegacyDataDir() {
         if((dataDir == "") || (dataDir == ".") || (dataDir == "./") || (dataDir == ".\\")) {
             char* basePath = SDL_GetBasePath();
             if(basePath == nullptr) {
-                fprintf(stderr, "SDL_GetBasePath() failed: %s\n", SDL_GetError());
-                exit(EXIT_FAILURE);
+                THROW(sdl_error, "SDL_GetBasePath() failed: %s!", SDL_GetError());
             }
             dataDir = std::string(basePath);
             SDL_free(basePath);

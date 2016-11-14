@@ -22,6 +22,7 @@
 #include <FileClasses/GFXManager.h>
 #include <Game.h>
 #include <ScreenBorder.h>
+#include <misc/exceptions.h>
 
 #define CYCLES_PER_FRAME    5
 
@@ -124,7 +125,7 @@ void Explosion::init()
         } break;
 
         default: {
-            throw std::invalid_argument(strprintf("Explosion: Unknown explosion type %d.",explosionID));
+            THROW(std::invalid_argument, "Unknown explosion type %d", explosionID);
         } break;
     }
 }

@@ -23,6 +23,7 @@
 #include <globals.h>
 
 #include <misc/draw_util.h>
+#include <misc/format.h>
 
 #include <sand.h>
 
@@ -114,7 +115,7 @@ ReinforcementsWindow::ReinforcementsWindow(MapEditor* pMapEditor, HOUSETYPE curr
     std::vector<MapEditor::Player>::const_iterator playerIter;
     int currentPlayerNum = 1;
     for(playerIter = pMapEditor->getPlayers().begin(); playerIter != pMapEditor->getPlayers().end(); ++playerIter) {
-        std::string entryName = playerIter->bActive ? (playerIter->bAnyHouse ? strprintf(_("Player %d"), currentPlayerNum++)
+        std::string entryName = playerIter->bActive ? (playerIter->bAnyHouse ? fmt::sprintf(_("Player %d"), currentPlayerNum++)
                                                      : playerIter->name) : ("(" + playerIter->name + ")");
         playerDropDownBox.addEntry(entryName, playerIter->house);
     }
@@ -347,7 +348,7 @@ std::string ReinforcementsWindow::getPlayerName(HOUSETYPE house) {
     int currentPlayerNum = 1;
     for(playerIter = pMapEditor->getPlayers().begin(); playerIter != pMapEditor->getPlayers().end(); ++playerIter) {
         if(playerIter->house == house) {
-            return playerIter->bAnyHouse ? strprintf(_("Player %d"), currentPlayerNum)
+            return playerIter->bAnyHouse ? fmt::sprintf(_("Player %d"), currentPlayerNum)
                                           : (_("House") + " " + playerIter->name);
         }
 

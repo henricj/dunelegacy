@@ -30,8 +30,8 @@
 #include <FileClasses/Palfile.h>
 
 #include <misc/draw_util.h>
-#include <misc/string_util.h>
 #include <misc/Scaler.h>
+#include <misc/exceptions.h>
 
 #include <stdexcept>
 
@@ -884,14 +884,14 @@ GFXManager::~GFXManager() {
 
 SDL_Texture** GFXManager::getObjPic(unsigned int id, int house) {
     if(id >= NUM_OBJPICS) {
-        throw std::invalid_argument(strprintf("GFXManager::getObjPic(): Unit Picture with id %u is not available!",id));
+        THROW(std::invalid_argument, "GFXManager::getObjPic(): Unit Picture with ID %u is not available!", id);
     }
 
     for(int z = 0; z < NUM_ZOOMLEVEL; z++) {
         if(objPic[id][house][z] == nullptr) {
             // remap to this color
             if(objPic[id][HOUSE_HARKONNEN][z] == nullptr) {
-                throw std::runtime_error(strprintf("GFXManager::getObjPic(): Unit Picture with id %u is not loaded!",id));
+                THROW(std::runtime_error, "GFXManager::getObjPic(): Unit Picture with ID %u is not loaded!", id);
             }
 
             objPic[id][house][z] = mapSurfaceColorRange(objPic[id][HOUSE_HARKONNEN][z], PALCOLOR_HARKONNEN, houseToPaletteIndex[house]);
@@ -942,13 +942,13 @@ SDL_Texture* GFXManager::getSmallDetailPic(unsigned int id) {
 
 SDL_Surface* GFXManager::getUIGraphicSurface(unsigned int id, int house) {
     if(id >= NUM_UIGRAPHICS) {
-        throw std::invalid_argument(strprintf("GFXManager::getUIGraphicSurface(): UI Graphic with id %u is not available!",id));
+        THROW(std::invalid_argument, "GFXManager::getUIGraphicSurface(): UI Graphic with ID %u is not available!", id);
     }
 
     if(uiGraphic[id][house] == nullptr) {
         // remap to this color
         if(uiGraphic[id][HOUSE_HARKONNEN] == nullptr) {
-            throw std::runtime_error(strprintf("GFXManager::getUIGraphicSurface(): UI Graphic with id %u is not loaded!",id));
+            THROW(std::runtime_error, "GFXManager::getUIGraphicSurface(): UI Graphic with ID %u is not loaded!", id);
         }
 
         uiGraphic[id][house] = mapSurfaceColorRange(uiGraphic[id][HOUSE_HARKONNEN], PALCOLOR_HARKONNEN, houseToPaletteIndex[house]);
@@ -959,7 +959,7 @@ SDL_Surface* GFXManager::getUIGraphicSurface(unsigned int id, int house) {
 
 SDL_Texture* GFXManager::getUIGraphic(unsigned int id, int house) {
     if(id >= NUM_UIGRAPHICS) {
-        throw std::invalid_argument(strprintf("GFXManager::getUIGraphic(): UI Graphic with id %u is not available!",id));
+        THROW(std::invalid_argument, "GFXManager::getUIGraphic(): UI Graphic with ID %u is not available!", id);
     }
 
     if(uiGraphicTex[id][house] == nullptr) {
@@ -977,13 +977,13 @@ SDL_Texture* GFXManager::getUIGraphic(unsigned int id, int house) {
 
 SDL_Surface* GFXManager::getMapChoicePieceSurface(unsigned int num, int house) {
     if(num >= NUM_MAPCHOICEPIECES) {
-        throw std::invalid_argument(strprintf("GFXManager::getMapChoicePieceSurface(): Map Piece with number %u is not available!",num));
+        THROW(std::invalid_argument, "GFXManager::getMapChoicePieceSurface(): Map Piece with number %u is not available!", num);
     }
 
     if(mapChoicePieces[num][house] == nullptr) {
         // remap to this color
         if(mapChoicePieces[num][HOUSE_HARKONNEN] == nullptr) {
-            throw std::runtime_error(strprintf("GFXManager::getMapChoicePieceSurface(): Map Piece with number %u is not loaded!",num));
+            THROW(std::runtime_error, "GFXManager::getMapChoicePieceSurface(): Map Piece with number %u is not loaded!", num);
         }
 
         mapChoicePieces[num][house] = mapSurfaceColorRange(mapChoicePieces[num][HOUSE_HARKONNEN], PALCOLOR_HARKONNEN, houseToPaletteIndex[house]);
@@ -994,7 +994,7 @@ SDL_Surface* GFXManager::getMapChoicePieceSurface(unsigned int num, int house) {
 
 SDL_Texture* GFXManager::getMapChoicePiece(unsigned int num, int house) {
     if(num >= NUM_MAPCHOICEPIECES) {
-        throw std::invalid_argument(strprintf("GFXManager::getMapChoicePiece(): Map Piece with number %u is not available!",num));
+        THROW(std::invalid_argument, "GFXManager::getMapChoicePiece(): Map Piece with number %u is not available!", num);
     }
 
     if(mapChoicePiecesTex[num][house] == nullptr) {
@@ -1006,7 +1006,7 @@ SDL_Texture* GFXManager::getMapChoicePiece(unsigned int num, int house) {
 
 Animation* GFXManager::getAnimation(unsigned int id) {
     if(id >= NUM_ANIMATION) {
-        throw std::invalid_argument(strprintf("GFXManager::getAnimation(): Animation with id %u is not available!",id));
+        THROW(std::invalid_argument, "GFXManager::getAnimation(): Animation with ID %u is not available!", id);
     }
 
     if(animation[id] == nullptr) {
@@ -1095,7 +1095,7 @@ Animation* GFXManager::getAnimation(unsigned int id) {
             case Anim_Slab4:            animation[Anim_Slab4] = loadAnimationFromWsa("4SLAB.WSA");               break;
 
             default: {
-                throw std::runtime_error(strprintf("GFXManager::getAnimation(): Invalid animation id %u",id));
+                THROW(std::runtime_error, "GFXManager::getAnimation(): Invalid animation ID %u", id);
             } break;
         }
 
@@ -1132,31 +1132,24 @@ shared_ptr<Wsafile> GFXManager::loadWsafile(std::string filename) {
 }
 
 SDL_Texture* GFXManager::extractSmallDetailPic(std::string filename) {
-    SDL_RWops* myFile;
-    if((myFile = pFileManager->openFile(filename.c_str())) == nullptr) {
-        fprintf(stderr,"GFXManager::extractSmallDetailPic(): Cannot open %s!\n",filename.c_str());
-        exit(EXIT_FAILURE);
-    }
+    SDL_RWops* myFile = pFileManager->openFile(filename);
 
     Wsafile* myWsafile = new Wsafile(myFile);
 
     SDL_Surface* tmp;
     if((tmp = myWsafile->getPicture(0)) == nullptr) {
-        fprintf(stderr,"GFXManager::extractSmallDetailPic(): Cannot decode first frame in file %s!\n",filename.c_str());
-        exit(EXIT_FAILURE);
+        THROW(std::runtime_error, "Cannot decode first frame in file '%s'!", filename);
     }
 
     if((tmp->w != 184) || (tmp->h != 112)) {
-        fprintf(stderr,"GFXManager::extractSmallDetailPic(): Picture %s is not 184x112!\n",filename.c_str());
-        exit(EXIT_FAILURE);
+        THROW(std::runtime_error, "Picture '%s' is not of size 184x112!", filename);
     }
 
     SDL_Surface* pSurface;
 
     // create new picture surface
     if((pSurface = SDL_CreateRGBSurface(0, 91, 55, 8, 0, 0, 0, 0)) == nullptr) {
-        fprintf(stderr,"GFXManager::extractSmallDetailPic(): Cannot create new Picture for %s!\n",filename.c_str());
-        exit(EXIT_FAILURE);
+        THROW(sdl_error, "Cannot create new surface: %s!", SDL_GetError());
     }
 
     palette.applyToSurface(pSurface);
@@ -1182,14 +1175,8 @@ SDL_Texture* GFXManager::extractSmallDetailPic(std::string filename) {
 }
 
 Animation* GFXManager::loadAnimationFromWsa(std::string filename) {
-    SDL_RWops* file;
-    if((file = pFileManager->openFile(filename)) == nullptr) {
-        fprintf(stderr,"GFXManager::LoadAnimationFromWsa(): Cannot open %s!\n",filename.c_str());
-        exit(EXIT_FAILURE);
-    }
-
+    SDL_RWops* file = pFileManager->openFile(filename);
     Wsafile* wsafile = new Wsafile(file);
-
     Animation* ret = wsafile->getAnimation(0,wsafile->getNumFrames() - 1,true,false);
     delete wsafile;
     SDL_RWclose(file);

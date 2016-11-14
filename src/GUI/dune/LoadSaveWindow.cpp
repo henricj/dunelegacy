@@ -27,7 +27,7 @@
 #include <GUI/QstBox.h>
 #include <GUI/MsgBox.h>
 
-#include <misc/string_util.h>
+#include <misc/format.h>
 
 #include <stdio.h>
 
@@ -156,7 +156,7 @@ bool LoadSaveWindow::handleKeyPress(SDL_KeyboardEvent& key) {
         } else if(key.keysym.sym == SDLK_DELETE) {
             int index = fileList.getSelectedIndex();
             if(index >= 0) {
-                QstBox* pQstBox = QstBox::create(   strprintf(_("Do you really want to delete '%s' ?"), fileList.getEntry(index).c_str()),
+                QstBox* pQstBox = QstBox::create(   fmt::sprintf(_("Do you really want to delete '%s' ?"), fileList.getEntry(index).c_str()),
                                                     _("No"),
                                                     _("Yes"),
                                                     QSTBOX_BUTTON2);

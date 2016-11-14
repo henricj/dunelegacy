@@ -586,8 +586,8 @@ bool Map::findSpice(Coord& destination, const Coord& origin) const {
     int depth = 1;
 
     do {
-        int ranX;
-        int ranY;
+        int ranX = 0;
+        int ranY = 0;
         do {
             ranX = currentGame->randomGen.rand(origin.x-depth, origin.x + depth);
             ranY = currentGame->randomGen.rand(origin.y-depth, origin.y + depth);

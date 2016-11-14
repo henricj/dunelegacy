@@ -31,7 +31,7 @@
 #include <FileClasses/Wsafile.h>
 #include <FileClasses/IndexedTextFile.h>
 
-#include <misc/string_util.h>
+#include <misc/exceptions.h>
 
 #include <string>
 #include <stdexcept>
@@ -39,7 +39,7 @@
 Meanwhile::Meanwhile(int house, bool firstMeanwhile) : CutScene() {
 
     if(house != HOUSE_HARKONNEN && house != HOUSE_ATREIDES && house != HOUSE_ORDOS) {
-        throw std::invalid_argument(strprintf("Meanwhile::Meanwhile(): Invalid house number: %d!", house));
+        THROW(std::invalid_argument, "Invalid house number %d!", house);
     }
 
     SDL_RWops* meanwhil_wsa = pFileManager->openFile("MEANWHIL.WSA");

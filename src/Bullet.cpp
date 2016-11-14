@@ -28,6 +28,7 @@
 #include <Explosion.h>
 
 #include <misc/draw_util.h>
+#include <misc/exceptions.h>
 
 #include <algorithm>
 
@@ -221,11 +222,11 @@ void Bullet::init()
         } break;
 
         case Bullet_Sandworm: {
-            throw std::domain_error("Bullet::init(): Bullet_Sandworm not allowed.");
+            THROW(std::domain_error, "Cannot init 'Bullet_Sandworm': Not allowed!");
         } break;
 
         default: {
-            throw std::domain_error(strprintf("Bullet::init(): Unknown Bullet type %d.", bulletID));
+            THROW(std::domain_error, "Unknown Bullet type %d!", bulletID);
         } break;
     }
 }
