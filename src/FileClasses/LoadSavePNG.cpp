@@ -18,11 +18,10 @@
 #include <FileClasses/LoadSavePNG.h>
 #include <FileClasses/lodepng.h>
 #include <misc/draw_util.h>
+#include <misc/exceptions.h>
 #include <Colors.h>
-
 #include <globals.h>
 
-#include <stdexcept>
 #include <stdio.h>
 
 SDL_Surface* LoadPNG_RW(SDL_RWops* RWop, int freesrc) {
@@ -43,23 +42,23 @@ SDL_Surface* LoadPNG_RW(SDL_RWops* RWop, int freesrc) {
         // read complete file into memory
         size_t filesize = SDL_RWseek(RWop,0,SEEK_END);
         if(filesize <= 0) {
-            throw std::runtime_error("LoadPNG_RW(): Cannot determine size of this *.png-File!");
+            THROW(std::runtime_error, "LoadPNG_RW(): Cannot determine size of this *.png-File!");
         }
 
         if(SDL_RWseek(RWop,0,SEEK_SET) != 0) {
-            throw std::runtime_error("LoadPNG_RW(): Seeking in this *.png-File failed!");
+            THROW(std::runtime_error, "LoadPNG_RW(): Seeking in this *.png-File failed!");
         }
 
         pFiledata = (unsigned char*) malloc(filesize);
 
         if(SDL_RWread(RWop, pFiledata, filesize, 1) != 1) {
-            throw std::runtime_error("LoadPNG_RW(): Reading this *.png-File failed!");
+            THROW(std::runtime_error, "LoadPNG_RW(): Reading this *.png-File failed!");
         }
 
 
         unsigned int error = lodepng_inspect(&width, &height, &lodePNGState, pFiledata, filesize);
         if(error != 0) {
-            throw std::runtime_error("LoadPNG_RW(): Inspecting this *.png-File failed: " + std::string(lodepng_error_text(error)));
+            THROW(std::runtime_error, "LoadPNG_RW(): Inspecting this *.png-File failed: " + std::string(lodepng_error_text(error)));
         }
 
         if(lodePNGState.info_png.color.colortype == LCT_PALETTE && lodePNGState.info_png.color.bitdepth == 8) {
@@ -73,12 +72,12 @@ SDL_Surface* LoadPNG_RW(SDL_RWops* RWop, int freesrc) {
 
             error = lodepng_decode(&pImageOut, &width, &height, &lodePNGState, pFiledata, filesize);
             if(error != 0) {
-                throw std::runtime_error("LoadPNG_RW(): Decoding this palletized *.png-File failed: " + std::string(lodepng_error_text(error)));
+                THROW(std::runtime_error, "LoadPNG_RW(): Decoding this palletized *.png-File failed: " + std::string(lodepng_error_text(error)));
             }
 
             // create new picture surface
             if((pic = SDL_CreateRGBSurface(0, width, height, 8, 0, 0, 0, 0)) == nullptr) {
-                throw std::runtime_error("LoadPNG_RW(): SDL_CreateRGBSurface has failed!");
+                THROW(std::runtime_error, "LoadPNG_RW(): SDL_CreateRGBSurface has failed!");
             }
 
             SDL_Color* colors = (SDL_Color*) lodePNGState.info_png.color.palette;
@@ -104,13 +103,13 @@ SDL_Surface* LoadPNG_RW(SDL_RWops* RWop, int freesrc) {
             // decode to 32-bit RGBA raw image
             error = lodepng_decode32(&pImageOut, &width, &height, pFiledata, filesize);
             if(error != 0) {
-                throw std::runtime_error("LoadPNG_RW(): Decoding this *.png-File failed: " + std::string(lodepng_error_text(error)));
+                THROW(std::runtime_error, "LoadPNG_RW(): Decoding this *.png-File failed: " + std::string(lodepng_error_text(error)));
             }
 
 
             // create new picture surface
             if((pic = SDL_CreateRGBSurface(0, width, height, 32, RMASK, GMASK, BMASK, AMASK)) == nullptr) {
-                throw std::runtime_error("LoadPNG_RW(): SDL_CreateRGBSurface has failed!");
+                THROW(std::runtime_error, "LoadPNG_RW(): SDL_CreateRGBSurface has failed!");
             }
 
             SDL_LockSurface(pic);

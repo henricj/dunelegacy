@@ -19,12 +19,13 @@
 #include <FileClasses/Decode.h>
 #include <FileClasses/Palette.h>
 
+#include <misc/exceptions.h>
+
 #include <SDL.h>
 #include <SDL_endian.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include <stdexcept>
 
 #define SIZE_X  320
 #define SIZE_Y  200
@@ -44,30 +45,30 @@ SDL_Surface * LoadCPS_RW(SDL_RWops* RWop, int freesrc)
     try {
         Uint32 CpsFilesize = SDL_RWseek(RWop,0,SEEK_END);
         if(CpsFilesize <= 0) {
-            throw std::runtime_error("LoadCPS_RW(): Cannot determine size of this *.cps-File!");
+            THROW(std::runtime_error, "LoadCPS_RW(): Cannot determine size of this *.cps-File!");
         }
 
         if(SDL_RWseek(RWop,0,SEEK_SET) != 0) {
-            throw std::runtime_error("LoadCPS_RW(): Seeking in this *.cps-File failed!");
+            THROW(std::runtime_error, "LoadCPS_RW(): Seeking in this *.cps-File failed!");
         }
 
         pFiledata = new uint8_t[CpsFilesize];
 
         if(SDL_RWread(RWop, pFiledata, CpsFilesize, 1) != 1) {
-            throw std::runtime_error("LoadCPS_RW(): Reading this *.cps-File failed!");
+            THROW(std::runtime_error, "LoadCPS_RW(): Reading this *.cps-File failed!");
         }
 
         uint16_t format = SDL_SwapLE16(*(uint16_t*)(pFiledata + 2));
 
         if(format != 0x0004) {
-            throw std::runtime_error("LoadCPS_RW(): Only Format80 encoded *.cps-Files are supported!");
+            THROW(std::runtime_error, "LoadCPS_RW(): Only Format80 encoded *.cps-Files are supported!");
         }
 
         unsigned int SizeXTimeSizeY = SDL_SwapLE16(*((uint16_t*)(pFiledata + 4)));
         SizeXTimeSizeY += SDL_SwapLE16(*((uint16_t*)(pFiledata + 6)));
 
         if(SizeXTimeSizeY != SIZE_X * SIZE_Y) {
-            throw std::runtime_error("LoadCPS_RW(): Images must be 320x200 pixels big!");
+            THROW(std::runtime_error, "LoadCPS_RW(): Images must be 320x200 pixels big!");
         }
 
         uint16_t PaletteSize = SDL_SwapLE16(*((uint16_t*)(pFiledata + 8)));
@@ -76,12 +77,12 @@ SDL_Surface * LoadCPS_RW(SDL_RWops* RWop, int freesrc)
         memset(pImageOut, 0, SIZE_X*SIZE_Y);
 
         if(decode80(pFiledata + 10 + PaletteSize, pImageOut, 0) == -2) {
-            throw std::runtime_error("LoadCPS_RW(): Decoding this *.cps-File failed!");
+            THROW(std::runtime_error, "LoadCPS_RW(): Decoding this *.cps-File failed!");
         }
 
         // create new picture surface
         if((pic = SDL_CreateRGBSurface(0,SIZE_X,SIZE_Y,8,0,0,0,0))== nullptr) {
-            throw std::runtime_error("LoadCPS_RW(): SDL_CreateRGBSurface has failed!");
+            THROW(std::runtime_error, "LoadCPS_RW(): SDL_CreateRGBSurface has failed!");
         }
 
         palette.applyToSurface(pic);

@@ -21,6 +21,8 @@
 #include <FileClasses/FontManager.h>        // For Font IDs
 #include <Colors.h>
 
+#include <misc/exceptions.h>
+
 #include <stdlib.h>
 #include <stdio.h>
 
@@ -60,7 +62,7 @@ public:
 
     static GUIStyle& getInstance() {
         if(currentGUIStyle == nullptr) {
-            throw std::runtime_error("GUIStyle::getInstance(): currentGUIStyle == nullptr. Call setGUIStyle before using getInstance()!");
+            THROW(std::runtime_error, "GUIStyle::getInstance(): currentGUIStyle == nullptr. Call setGUIStyle before using getInstance()!");
         }
         return *currentGUIStyle;
     }

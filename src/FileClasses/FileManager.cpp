@@ -30,7 +30,6 @@
 #include <misc/exceptions.h>
 
 #include <algorithm>
-#include <stdexcept>
 #include <sstream>
 #include <iomanip>
 

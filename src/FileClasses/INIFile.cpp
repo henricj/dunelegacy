@@ -17,12 +17,13 @@
 
 #include <FileClasses/INIFile.h>
 
+#include <misc/exceptions.h>
+
 #include <fstream>
 #include <iostream>
 #include <cctype>
 #include <algorithm>
 #include <stdio.h>
-#include <stdexcept>
 
 
 INIFile::INIFileLine::INIFileLine(const std::string& completeLine, int lineNumber)
@@ -369,7 +370,7 @@ INIFile::INIFile(SDL_RWops * RWopsFile, bool bWhitespace)
  : firstLine(nullptr), sectionRoot(nullptr), bWhitespace(bWhitespace) {
 
     if(RWopsFile == nullptr) {
-        throw std::invalid_argument("RWopsFile == nullptr!");
+        THROW(std::invalid_argument, "RWopsFile == nullptr!");
     }
 
     readfile(RWopsFile);

@@ -33,8 +33,6 @@
 #include <misc/Scaler.h>
 #include <misc/exceptions.h>
 
-#include <stdexcept>
-
 using std::shared_ptr;
 
 /**
@@ -173,7 +171,7 @@ GFXManager::GFXManager() {
     } else if(pFileManager->exists("CHOAMSHP.SHP")) {
         choam = loadShpfile("CHOAMSHP.SHP");
     } else {
-        throw std::runtime_error("GFXManager::GFXManager(): Cannot open CHOAMSHP.SHP or CHOAM."+_("LanguageFileExtension")+"!");
+        THROW(std::runtime_error, "GFXManager::GFXManager(): Cannot open CHOAMSHP.SHP or CHOAM."+_("LanguageFileExtension")+"!");
     }
 
     shared_ptr<Shpfile> bttn;
@@ -1111,7 +1109,7 @@ shared_ptr<Shpfile> GFXManager::loadShpfile(std::string filename) {
     try {
         return shared_ptr<Shpfile>(new Shpfile(pFileManager->openFile(filename), true));
     } catch (std::exception &e) {
-        throw std::runtime_error("Error in file \"" + filename + "\":" + e.what());
+        THROW(std::runtime_error, "Error in file \"" + filename + "\":" + e.what());
     }
 }
 
@@ -1127,7 +1125,7 @@ shared_ptr<Wsafile> GFXManager::loadWsafile(std::string filename) {
         if(file_wsa != nullptr) {
             SDL_RWclose(file_wsa);
         }
-        throw std::runtime_error(std::string("Error in file \"" + filename + "\":") + e.what());
+        THROW(std::runtime_error, std::string("Error in file \"" + filename + "\":") + e.what());
     }
 }
 

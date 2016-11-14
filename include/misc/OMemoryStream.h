@@ -41,7 +41,7 @@ public:
         bufferSize = 4;
         pBuffer = (char*) malloc(4);
         if(pBuffer == nullptr) {
-            throw OMemoryStream::error("OMemoryStream::open(): malloc failed!");
+            THROW(OMemoryStream::error, "OMemoryStream::open(): malloc failed!");
         }
     }
 
@@ -102,7 +102,7 @@ public:
 
     void writeFloat(float x) {
         if(sizeof(float) != sizeof(Uint32)) {
-            throw OMemoryStream::error("OMemoryStream::writeFloat(): sizeof(float) != sizeof(Uint32). Cannot save floats on such systems.");
+            THROW(OMemoryStream::error, "OMemoryStream::writeFloat(): sizeof(float) != sizeof(Uint32). Cannot save floats on such systems.");
         }
         Uint32 tmp;
         memcpy(&tmp,&x,sizeof(Uint32)); // workaround for a strange optimization in gcc 4.1
@@ -121,7 +121,7 @@ public:
 
         char* pNewBuffer = (char*) realloc(pBuffer, newBufferSize);
         if(pNewBuffer == nullptr) {
-            throw OMemoryStream::error("OMemoryStream::ensureBufferSize(): realloc failed!");
+            THROW(OMemoryStream::error, "OMemoryStream::ensureBufferSize(): realloc failed!");
         } else {
             pBuffer = pNewBuffer;
             bufferSize = newBufferSize;

@@ -19,7 +19,7 @@
 #include <Trigger/ReinforcementTrigger.h>
 #include <Trigger/TimeoutTrigger.h>
 
-#include <stdexcept>
+#include <misc/exceptions.h>
 
 TriggerManager::TriggerManager()
 {
@@ -94,7 +94,7 @@ std::shared_ptr<Trigger> TriggerManager::loadTrigger(InputStream& stream)
         } break;
 
         default: {
-            throw std::runtime_error("TriggerManager::loadTrigger(): Unknown trigger type!");
+            THROW(std::runtime_error, "TriggerManager::loadTrigger(): Unknown trigger type!");
         }
     }
 }

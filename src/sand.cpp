@@ -131,7 +131,7 @@ SDL_Texture* resolveItemPicture(int itemID, HOUSETYPE house) {
         } break;
 
         default:
-            throw std::invalid_argument("resolveItemPicture(): Invalid item ID " + stringify(itemID) + "!");
+            THROW(std::invalid_argument, "resolveItemPicture(): Invalid item ID " + stringify(itemID) + "!");
         break;
     }
 
@@ -335,7 +335,7 @@ std::string getItemNameByID(Uint32 itemID) {
         case Unit_Troopers:                 return "Troopers";          break;
 
         default:
-            throw std::invalid_argument("getItemNameByID(): Invalid item ID!");
+            THROW(std::invalid_argument, "getItemNameByID(): Invalid item ID!");
         break;
     }
 }
@@ -391,7 +391,7 @@ std::string resolveItemName(int itemID) {
         case Unit_Troopers:                 return _("@DUNE.ENG|201#Troopers");            break;
 
         default:
-            throw std::invalid_argument("resolveItemName(): Invalid item ID!");
+            THROW(std::invalid_argument, "resolveItemName(): Invalid item ID!");
         break;
     }
 }
@@ -463,7 +463,7 @@ std::string getAttackModeNameByMode(ATTACKMODE attackMode) {
         case STOP:      return "Stop";          break;
         case CAPTURE:   return "Capture";          break;
         default:
-            throw std::invalid_argument("getAttackModeNameByMode(): Invalid attack mode!");
+            THROW(std::invalid_argument, "getAttackModeNameByMode(): Invalid attack mode!");
         break;
     }
 }
@@ -525,7 +525,7 @@ std::string getDropLocationNameByID(DropLocation dropLocation) {
         case Drop_Enemybase: return "Enemybase"; break;
         case Drop_Homebase:  return "Homebase";  break;
         default:
-            throw std::invalid_argument("getDropLocationNameByID(): Invalid drop location!");
+            THROW(std::invalid_argument, "getDropLocationNameByID(): Invalid drop location!");
         break;
     }
 }
@@ -541,7 +541,7 @@ std::string resolveDropLocationName(DropLocation dropLocation) {
         case Drop_Enemybase: return _("enemy base");   break;
         case Drop_Homebase:  return _("home base");    break;
         default:
-            throw std::invalid_argument("resolveDropLocationName(): Invalid drop location!");
+            THROW(std::invalid_argument, "resolveDropLocationName(): Invalid drop location!");
         break;
     }
 }
@@ -573,7 +573,7 @@ std::string getTeamBehaviorNameByID(TeamBehavior teamBehavior) {
         case TeamBehavior_Staging:    return "Staging";    break;
         case TeamBehavior_Flee:       return "Flee";       break;
         default:
-            throw std::invalid_argument("getTeamBehaviorNameByID(): Invalid team behavior!");
+            THROW(std::invalid_argument, "getTeamBehaviorNameByID(): Invalid team behavior!");
         break;
     }
 }
@@ -609,7 +609,7 @@ std::string getTeamTypeNameByID(TeamType teamType) {
         case TeamType_Slither:   return "Slither";   break;
         case TeamType_Harvester: return "Harvester"; break;
         default:
-            throw std::invalid_argument("getTeamTypeNameByID(): Invalid team type!");
+            THROW(std::invalid_argument, "getTeamTypeNameByID(): Invalid team type!");
         break;
     }
 }

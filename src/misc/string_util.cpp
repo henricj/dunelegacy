@@ -250,7 +250,7 @@ std::string decodeString(std::string text) {
 
                 i++;
                 if(i == text.length()) {
-                    throw std::invalid_argument("decodeString(): Special character escape sequence at end of string!");
+                    THROW(std::invalid_argument, "decodeString(): Special character escape sequence at end of string!");
                 }
 
                 unsigned char special = text[i] + 0x7F;

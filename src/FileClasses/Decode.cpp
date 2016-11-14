@@ -17,11 +17,12 @@
 
 #include <FileClasses/Decode.h>
 
+#include <misc/exceptions.h>
+
 #include <SDL_endian.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include <stdexcept>
 
 #include <SDL.h>
 
@@ -204,7 +205,7 @@ int decode80(unsigned char *image_in, unsigned char *image_out, unsigned checksu
             writep += count;
             c++;
         } else {
-            throw std::invalid_argument("Decode: File contains unknown format80 command");
+            THROW(std::invalid_argument, "Decode: File contains unknown format80 command");
 
         }
     }

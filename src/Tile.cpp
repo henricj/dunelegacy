@@ -1114,7 +1114,7 @@ int Tile::getTerrainTile() const {
         } break;
 
         default: {
-            throw std::runtime_error("Tile::getTerrainTile(): Invalid terrain type");
+            THROW(std::runtime_error, "Tile::getTerrainTile(): Invalid terrain type");
         } break;
     }
 }

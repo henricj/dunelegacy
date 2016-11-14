@@ -16,12 +16,12 @@
  */
 
 #include <FileClasses/Pakfile.h>
+#include <misc/exceptions.h>
 
 #include <stdlib.h>
 #include <string>
 #include <SDL_endian.h>
 #include <SDL.h>
-#include <stdexcept>
 
 
 /// Constructor for Pakfile
@@ -38,7 +38,7 @@ Pakfile::Pakfile(std::string pakfilename, bool write)
     if(write == false) {
         // Open for reading
         if( (fPakFile = SDL_RWFromFile(filename.c_str(), "rb")) == nullptr) {
-            throw std::invalid_argument("Pakfile::Pakfile(): Cannot open " + pakfilename + "!");
+            THROW(std::invalid_argument, "Pakfile::Pakfile(): Cannot open " + pakfilename + "!");
         }
 
         try {
@@ -50,7 +50,7 @@ Pakfile::Pakfile(std::string pakfilename, bool write)
     } else {
         // Open for writing
         if( (fPakFile = SDL_RWFromFile(filename.c_str(), "wb")) == nullptr) {
-            throw std::invalid_argument("Pakfile::Pakfile(): Cannot open " + pakfilename + "!");
+            THROW(std::invalid_argument, "Pakfile::Pakfile(): Cannot open " + pakfilename + "!");
         }
     }
 }
@@ -120,11 +120,11 @@ std::string Pakfile::getFilename(unsigned int index) const {
 */
 void Pakfile::addFile(SDL_RWops* rwop, std::string filename) {
     if(write == false) {
-        throw std::runtime_error("Pakfile::addFile(): Pakfile is opened for read-only!");
+        THROW(std::runtime_error, "Pakfile::addFile(): Pakfile is opened for read-only!");
     }
 
     if(rwop == nullptr) {
-        throw std::invalid_argument("Pakfile::addFile(): rwop==nullptr is not allowed!");
+        THROW(std::invalid_argument, "Pakfile::addFile(): rwop==nullptr is not allowed!");
     }
 
 
@@ -143,10 +143,10 @@ void Pakfile::addFile(SDL_RWops* rwop, std::string filename) {
         char* shrinkedBuffer;
         if((shrinkedBuffer = (char*) realloc(writeOutData,numWriteOutData)) == nullptr) {
             // shrinking the buffer should not fail
-            throw std::runtime_error("Pakfile::addFile(): realloc failed!");
+            THROW(std::runtime_error, "Pakfile::addFile(): realloc failed!");
         }
         writeOutData = shrinkedBuffer;
-        throw std::runtime_error("Pakfile::addFile(): SDL_RWread failed!");
+        THROW(std::runtime_error, "Pakfile::addFile(): SDL_RWread failed!");
     }
 
     PakFileEntry newPakFileEntry;
@@ -341,7 +341,7 @@ void Pakfile::readIndex()
         PakFileEntry newEntry;
 
         if(SDL_RWread(fPakFile,(void*) &newEntry.startOffset, sizeof(newEntry.startOffset), 1) != 1) {
-            throw std::runtime_error("Pakfile::readIndex(): SDL_RWread() failed!");
+            THROW(std::runtime_error, "Pakfile::readIndex(): SDL_RWread() failed!");
         }
 
         //pak-files are always little endian encoded
@@ -354,7 +354,7 @@ void Pakfile::readIndex()
         while(1) {
             char tmp;
             if(SDL_RWread(fPakFile,&tmp,1,1) != 1) {
-                throw std::runtime_error("Pakfile::readIndex(): SDL_RWread() failed!");
+                THROW(std::runtime_error, "Pakfile::readIndex(): SDL_RWread() failed!");
             }
 
             if(tmp == '\0') {
@@ -373,7 +373,7 @@ void Pakfile::readIndex()
 
     int filesize = SDL_RWseek(fPakFile,0,SEEK_END);
     if(filesize < 0) {
-        throw std::runtime_error("Pakfile::readIndex(): SDL_RWseek() failed!");
+        THROW(std::runtime_error, "Pakfile::readIndex(): SDL_RWseek() failed!");
     }
 
     fileEntries.back().endOffset = filesize - 1;

@@ -10,12 +10,12 @@
 #include <ScreenBorder.h>
 
 #include <misc/format.h>
+#include <misc/exceptions.h>
 
 #include <sand.h>
 #include <globals.h>
 
 #include <stdio.h>
-#include <stdexcept>
 #include <algorithm>
 
 INIMapEditorLoader::INIMapEditorLoader(MapEditor* pMapEditor, std::shared_ptr<INIFile>& pINIFile)

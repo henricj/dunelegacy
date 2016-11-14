@@ -21,8 +21,10 @@
 
 #include <FileClasses/GFXManager.h>
 #include <FileClasses/TextManager.h>
+
 #include <misc/fnkdat.h>
 #include <misc/string_util.h>
+#include <misc/exceptions.h>
 
 #include <Menu/CustomGameMenu.h>
 #include <Menu/SinglePlayerSkirmishMenu.h>
@@ -34,8 +36,6 @@
 #include <Game.h>
 #include <GameInitSettings.h>
 #include <sand.h>
-
-#include <stdexcept>
 
 SinglePlayerMenu::SinglePlayerMenu() : MenuBase() {
     // set up window

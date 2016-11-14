@@ -416,7 +416,7 @@ void StructureBase::destroy() {
                     pDestroyedStructureTiles = DestroyedStructureTiles3x2;
                     DestroyedStructureTilesSizeY = 3;
                 } else {
-                    throw std::runtime_error("StructureBase::destroy(): Invalid structure size");
+                    THROW(std::runtime_error, "StructureBase::destroy(): Invalid structure size");
                 }
             } break;
 
@@ -426,7 +426,7 @@ void StructureBase::destroy() {
             } break;
 
             default: {
-                throw std::runtime_error("StructureBase::destroy(): Invalid structure size");
+                THROW(std::runtime_error, "StructureBase::destroy(): Invalid structure size");
             } break;
         }
     }

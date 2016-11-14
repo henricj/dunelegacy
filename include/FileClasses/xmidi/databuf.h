@@ -21,8 +21,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #ifndef DATABUF_H
 #define DATABUF_H
 
+#include <misc/exceptions.h>
+
 #include <stdio.h>
-#include <stdexcept>
 #include <SDL.h>
 #include <SDL_rwops.h>
 
@@ -111,7 +112,7 @@ public:
 
     void read(char *b, size_t len) {
         if(fread(b, 1, len, f) != (size_t) len) {
-            throw std::runtime_error("fread failed in FileDataSource::read()!");
+            THROW(std::runtime_error, "fread failed in FileDataSource::read()!");
         }
     };
 

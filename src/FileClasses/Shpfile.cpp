@@ -18,11 +18,11 @@
 #include <FileClasses/Shpfile.h>
 #include <FileClasses/Decode.h>
 #include <FileClasses/Palette.h>
+#include <misc/exceptions.h>
 
 #include <SDL_endian.h>
 #include <stdlib.h>
 #include <stdio.h>
-#include <stdexcept>
 
 extern Palette palette;
 
@@ -36,23 +36,23 @@ extern Palette palette;
 Shpfile::Shpfile(SDL_RWops* rwop, int freesrc)
 {
     if(rwop == nullptr) {
-        throw std::invalid_argument("Shpfile::Shpfile(): rwop == nullptr!");
+        THROW(std::invalid_argument, "Shpfile::Shpfile(): rwop == nullptr!");
     }
 
     shpFilesize = SDL_RWseek(rwop,0,SEEK_END);
     if(shpFilesize <= 0) {
-        throw std::runtime_error("Shpfile::Shpfile(): Cannot determine size of this *.shp-File!");
+        THROW(std::runtime_error, "Shpfile::Shpfile(): Cannot determine size of this *.shp-File!");
     }
 
     if(SDL_RWseek(rwop,0,SEEK_SET) != 0) {
-        throw std::runtime_error("Shpfile::Shpfile(): Seeking in this *.shp-File failed!");
+        THROW(std::runtime_error, "Shpfile::Shpfile(): Seeking in this *.shp-File failed!");
     }
 
     pFiledata = new uint8_t[shpFilesize];
 
     if(SDL_RWread(rwop, pFiledata, shpFilesize, 1) != 1) {
         delete [] pFiledata;
-        throw std::runtime_error("Shpfile::Shpfile(): Reading this *.shp-File failed!");
+        THROW(std::runtime_error, "Shpfile::Shpfile(): Reading this *.shp-File failed!");
     }
 
     try {
@@ -432,7 +432,7 @@ void Shpfile::readIndex()
     uint16_t NumFiles = SDL_SwapLE16( ((Uint16*) pFiledata)[0]);
 
     if(NumFiles == 0) {
-        throw std::runtime_error("Shpfile::readIndex(): There is no file in this shp-File!");
+        THROW(std::runtime_error, "Shpfile::readIndex(): There is no file in this shp-File!");
     }
 
     if(NumFiles == 1) {
@@ -458,7 +458,7 @@ void Shpfile::readIndex()
             /* File has special header with only 2 byte offset */
 
             if( shpFilesize < (Uint32) ((NumFiles * 2) + 2 + 2)) {
-                throw std::runtime_error("Shpfile::readIndex(): Shp-File-Header is not complete! Header too small!");
+                THROW(std::runtime_error, "Shpfile::readIndex(): Shp-File-Header is not complete! Header too small!");
             }
 
             // now fill Index with start and end-offsets
@@ -470,7 +470,7 @@ void Shpfile::readIndex()
                     shpfileEntries.back().endOffset = newShpfileEntry.startOffset - 1;
 
                     if(newShpfileEntry.startOffset >= shpFilesize) {
-                        throw std::runtime_error("Shpfile::readIndex(): Entry in this SHP-File is beyond the end of this file!");
+                        THROW(std::runtime_error, "Shpfile::readIndex(): Entry in this SHP-File is beyond the end of this file!");
                     }
                 }
 
@@ -483,7 +483,7 @@ void Shpfile::readIndex()
             /* File has normal 4 byte offsets */
 
             if( shpFilesize < (Uint32) ((NumFiles * 4) + 2 + 2)) {
-                throw std::runtime_error("Shpfile::readIndex(): Shp-File-Header is not complete! Header too small!");
+                THROW(std::runtime_error, "Shpfile::readIndex(): Shp-File-Header is not complete! Header too small!");
             }
 
             // now fill Index with start and end-offsets
@@ -495,7 +495,7 @@ void Shpfile::readIndex()
                     shpfileEntries.back().endOffset = newShpfileEntry.startOffset - 1;
 
                     if(newShpfileEntry.startOffset >= shpFilesize) {
-                        throw std::runtime_error("Shpfile::readIndex(): Entry in this SHP-File is beyond the end of this file!");
+                        THROW(std::runtime_error, "Shpfile::readIndex(): Entry in this SHP-File is beyond the end of this file!");
                     }
                 }
 

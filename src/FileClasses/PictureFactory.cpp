@@ -32,7 +32,6 @@
 #include <misc/Scaler.h>
 #include <misc/exceptions.h>
 
-#include <stdexcept>
 #include <memory>
 
 using std::shared_ptr;
@@ -40,17 +39,17 @@ using std::shared_ptr;
 PictureFactory::PictureFactory() {
     shared_ptr<SDL_Surface> ScreenPic = shared_ptr<SDL_Surface>( LoadCPS_RW(pFileManager->openFile("SCREEN.CPS"),true), SDL_FreeSurface);
     if(ScreenPic.get() == nullptr) {
-        throw std::runtime_error("PictureFactory::PictureFactory(): Cannot read SCREEN.CPS!");
+        THROW(std::runtime_error, "PictureFactory::PictureFactory(): Cannot read SCREEN.CPS!");
     }
 
     shared_ptr<SDL_Surface> FamePic = shared_ptr<SDL_Surface>( LoadCPS_RW(pFileManager->openFile("FAME.CPS"),true), SDL_FreeSurface);
     if(FamePic.get() == nullptr) {
-        throw std::runtime_error("PictureFactory::PictureFactory(): Cannot read FAME.CPS!");
+        THROW(std::runtime_error, "PictureFactory::PictureFactory(): Cannot read FAME.CPS!");
     }
 
     shared_ptr<SDL_Surface> ChoamPic = shared_ptr<SDL_Surface>( LoadCPS_RW(pFileManager->openFile("CHOAM.CPS"),true), SDL_FreeSurface);
     if(ChoamPic.get() == nullptr) {
-        throw std::runtime_error("PictureFactory::PictureFactory(): Cannot read CHOAM.CPS!");
+        THROW(std::runtime_error, "PictureFactory::PictureFactory(): Cannot read CHOAM.CPS!");
     }
 
     creditsBorder = shared_ptr<SDL_Surface>(getSubPicture(ScreenPic.get() ,257,2,63,13), SDL_FreeSurface);
@@ -58,7 +57,7 @@ PictureFactory::PictureFactory() {
     // background
     background = shared_ptr<SDL_Surface>( SDL_CreateRGBSurface(0,settings.video.width,settings.video.height,8,0,0,0,0), SDL_FreeSurface);
     if(background.get() == nullptr) {
-        throw std::runtime_error("PictureFactory::PictureFactory: Cannot create new Picture!");
+        THROW(std::runtime_error, "PictureFactory::PictureFactory: Cannot create new Picture!");
     }
     palette.applyToSurface(background.get());
 
@@ -207,7 +206,7 @@ PictureFactory::PictureFactory() {
     // create builder list upper cap
     builderListUpperCap = shared_ptr<SDL_Surface>( SDL_CreateRGBSurface(0, 112, 21, 8, 0, 0, 0, 0), SDL_FreeSurface);
     if(builderListUpperCap.get() == nullptr) {
-        throw std::runtime_error("PictureFactory::PictureFactory: Cannot create new Picture!");
+        THROW(std::runtime_error, "PictureFactory::PictureFactory: Cannot create new Picture!");
     }
     palette.applyToSurface(builderListUpperCap.get());
     SDL_FillRect(builderListUpperCap.get(), nullptr, PALCOLOR_TRANSPARENT);
@@ -230,7 +229,7 @@ PictureFactory::PictureFactory() {
     // create builder list lower cap
     builderListLowerCap = shared_ptr<SDL_Surface>( SDL_CreateRGBSurface(0, 112, 17, 8, 0, 0, 0, 0), SDL_FreeSurface);
     if(builderListLowerCap.get() == nullptr) {
-        throw std::runtime_error("PictureFactory::PictureFactory: Cannot create new Picture!");
+        THROW(std::runtime_error, "PictureFactory::PictureFactory: Cannot create new Picture!");
     }
     palette.applyToSurface(builderListLowerCap.get());
     SDL_FillRect(builderListLowerCap.get(), nullptr, PALCOLOR_TRANSPARENT);

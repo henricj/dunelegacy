@@ -16,10 +16,10 @@
  */
 
 #include <FileClasses/PictureFont.h>
+#include <misc/exceptions.h>
 
 #include <stdlib.h>
 #include <string.h>
-#include <stdexcept>
 
 /// Constructor
 /**
@@ -32,7 +32,7 @@ PictureFont::PictureFont(SDL_Surface* pic, int freesrc)
 {
     if(pic == nullptr) {
         if(freesrc) SDL_FreeSurface(pic);
-        throw std::invalid_argument("PictureFont::PictureFont(): pic == nullptr!");
+        THROW(std::invalid_argument, "PictureFont::PictureFont(): pic == nullptr!");
     }
 
     SDL_LockSurface(pic);
@@ -49,7 +49,7 @@ PictureFont::PictureFont(SDL_Surface* pic, int freesrc)
             }
 
             if(curXPos >= pic->w) {
-                throw std::runtime_error("PictureFont::PictureFont(): No valid surface for loading font!");
+                THROW(std::runtime_error, "PictureFont::PictureFont(): No valid surface for loading font!");
             }
 
             character[i].width = curXPos - oldXPos;

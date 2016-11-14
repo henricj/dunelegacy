@@ -1504,7 +1504,7 @@ void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) {
                 } break;
 
                 default: {
-                    throw std::runtime_error("MapEditor::DrawMap(): Invalid terrain type");
+                    THROW(std::runtime_error, "MapEditor::DrawMap(): Invalid terrain type");
                 } break;
             }
 

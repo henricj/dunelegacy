@@ -3,11 +3,11 @@
 
 #include <SDL.h>
 #include <misc/draw_util.h>
+#include <misc/exceptions.h>
 #include <mmath.h>
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdexcept>
 
 // Step by step one more pixel of the source image is blitted to the destination image
 class BlendBlitter {
@@ -63,11 +63,11 @@ public:
         StepsLeft--;
 
         if(SDL_LockSurface(dest) != 0) {
-            throw std::runtime_error("BlendBlitter::nextStep(): Cannot lock image!");
+            THROW(std::runtime_error, "BlendBlitter::nextStep(): Cannot lock image!");
         }
 
         if(SDL_LockSurface(src) != 0) {
-            throw std::runtime_error("BlendBlitter::nextStep(): Cannot lock image!");
+            THROW(std::runtime_error, "BlendBlitter::nextStep(): Cannot lock image!");
         }
 
         Uint64 numPixelsPerStep = (N / numSteps) + 1;

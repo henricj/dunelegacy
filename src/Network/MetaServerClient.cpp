@@ -20,13 +20,13 @@
 #include <Network/ENetHttp.h>
 
 #include <misc/string_util.h>
+#include <misc/exceptions.h>
 
 #include <config.h>
 
 #include <sstream>
 #include <iostream>
 #include <map>
-#include <stdexcept>
 
 
 MetaServerClient::MetaServerClient(std::string metaServerURL)
@@ -34,17 +34,17 @@ MetaServerClient::MetaServerClient(std::string metaServerURL)
 
     availableMetaServerCommandsSemaphore = SDL_CreateSemaphore(0);
     if(availableMetaServerCommandsSemaphore == nullptr) {
-        throw std::runtime_error("Unable to create semaphore");
+        THROW(std::runtime_error, "Unable to create semaphore");
     }
 
     sharedDataMutex = SDL_CreateMutex();
     if(sharedDataMutex == nullptr) {
-        throw std::runtime_error("Unable to create mutex");
+        THROW(std::runtime_error, "Unable to create mutex");
     }
 
     connectionThread = SDL_CreateThread(connectionThreadMain, nullptr, (void*) this);
     if(connectionThread == nullptr) {
-        throw std::runtime_error("Unable to create thread");
+        THROW(std::runtime_error, "Unable to create thread");
     }
 }
 

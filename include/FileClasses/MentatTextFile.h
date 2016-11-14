@@ -18,9 +18,10 @@
 #ifndef MENTATTEXTFILE_H
 #define MENTATTEXTFILE_H
 
+#include <misc/exceptions.h>
+
 #include <string>
 #include <vector>
-#include <stdexcept>
 #include <SDL.h>
 #include <SDL_rwops.h>
 
@@ -60,7 +61,7 @@ public:
     */
     const MentatEntry& getMentatEntry(unsigned int n) const {
         if(n >= mentatEntries.size()) {
-            throw std::invalid_argument("MentatTextFile:getMentatEntry(): Invalid index!");
+            THROW(std::invalid_argument, "MentatTextFile:getMentatEntry(): Invalid index!");
         }
 
         return mentatEntries[n];

@@ -99,12 +99,12 @@ Finale::Finale(int house)
 
     SDL_Surface* pPlanetDuneNormalSurface;
     if((pPlanetDuneNormalSurface = LoadCPS_RW(pFileManager->openFile("BIGPLAN.CPS"),true)) == nullptr) {
-        throw std::runtime_error("Finale::Finale(): Cannot open BIGPLAN.CPS!");
+        THROW(std::runtime_error, "Finale::Finale(): Cannot open BIGPLAN.CPS!");
     }
 
     SDL_Surface* pTempSurface;
     if((pTempSurface = LoadCPS_RW(pFileManager->openFile("MAPPLAN.CPS"),true)) == nullptr) {
-        throw std::runtime_error("Finale::Finale(): Cannot open MAPPLAN.CPS!");
+        THROW(std::runtime_error, "Finale::Finale(): Cannot open MAPPLAN.CPS!");
     }
     SDL_Surface* pPlanetDuneInHouseColorSurface = mapSurfaceColorRange(pTempSurface, houseToPaletteIndex[HOUSE_HARKONNEN], houseToPaletteIndex[house]);
     SDL_FreeSurface(pTempSurface);

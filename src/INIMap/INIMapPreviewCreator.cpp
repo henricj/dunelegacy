@@ -7,13 +7,13 @@
 
 #include <misc/draw_util.h>
 #include <misc/format.h>
+#include <misc/exceptions.h>
 
 #include <mmath.h>
 #include <sand.h>
 #include <globals.h>
 
 #include <stdio.h>
-#include <stdexcept>
 #include <algorithm>
 
 INIMapPreviewCreator::INIMapPreviewCreator(std::shared_ptr<INIFile>& pINIFile)

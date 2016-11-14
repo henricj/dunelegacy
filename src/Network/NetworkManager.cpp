@@ -21,10 +21,11 @@
 
 #include <GameInitSettings.h>
 
+#include <misc/exceptions.h>
+
 #include <globals.h>
 
 #include <stdio.h>
-#include <stdexcept>
 #include <string.h>
 
 #include <algorithm>
@@ -33,7 +34,7 @@ NetworkManager::NetworkManager(int port, std::string metaserver)
  : host(nullptr), bIsServer(false), bLANServer(false), pGameInitSettings(nullptr), numPlayers(0), maxPlayers(0), connectPeer(nullptr), pLANGameFinderAndAnnouncer(nullptr), pMetaServerClient(nullptr)
 {
     if(enet_initialize() != 0) {
-        throw std::runtime_error("NetworkManager: An error occurred while initializing ENet.");
+        THROW(std::runtime_error, "NetworkManager: An error occurred while initializing ENet.");
     }
 
     ENetAddress address;
@@ -43,12 +44,12 @@ NetworkManager::NetworkManager(int port, std::string metaserver)
     host = enet_host_create(&address, 32, 2, 0, 0);
     if(host == nullptr) {
         enet_deinitialize();
-        throw std::runtime_error("NetworkManager: An error occurred while trying to create a server host.");
+        THROW(std::runtime_error, "NetworkManager: An error occurred while trying to create a server host.");
     }
 
     if(enet_host_compress_with_range_coder(host) < 0) {
         enet_deinitialize();
-        throw std::runtime_error("NetworkManager: Cannot activate range coder.");
+        THROW(std::runtime_error, "NetworkManager: Cannot activate range coder.");
     }
 
     try {
@@ -128,7 +129,7 @@ void NetworkManager::connect(std::string hostname, int port, std::string playerN
     ENetAddress address;
 
     if(enet_address_set_host(&address, hostname.c_str()) < 0) {
-        throw std::runtime_error("NetworkManager: Resolving hostname '" + hostname + "' failed!");
+        THROW(std::runtime_error, "NetworkManager: Resolving hostname '" + hostname + "' failed!");
     }
     address.port = port;
 
@@ -140,7 +141,7 @@ void NetworkManager::connect(ENetAddress address, std::string playerName) {
 
     connectPeer = enet_host_connect(host, &address, 2, 0);
     if(connectPeer == nullptr) {
-        throw std::runtime_error("NetworkManager: No available peers for initiating a connection.");
+        THROW(std::runtime_error, "NetworkManager: No available peers for initiating a connection.");
     }
 
     this->playerName = playerName;

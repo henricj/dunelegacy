@@ -18,13 +18,13 @@
 #ifndef STRING_UTIL_H
 #define STRING_UTIL_H
 
+#include <misc/exceptions.h>
+
 #include <string>
 #include <vector>
 #include <map>
 #include <algorithm>
-
 #include <sstream>
-#include <stdexcept>
 
 bool splitString(const std::string& parseString, unsigned int numStringPointers,...);
 
@@ -38,7 +38,7 @@ inline std::string stringify(T x)
 {
     std::ostringstream os;
     if (!(os << x))
-        throw std::runtime_error("stringify() failed!");
+        THROW(std::runtime_error, "stringify() failed!");
     return os.str();
 }
 

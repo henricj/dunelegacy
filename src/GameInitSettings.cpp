@@ -20,12 +20,12 @@
 #include <misc/IFileStream.h>
 #include <misc/IMemoryStream.h>
 #include <misc/string_util.h>
+#include <misc/exceptions.h>
 
 #include <globals.h>
 
 #include <stdlib.h>
 #include <string.h>
-#include <stdexcept>
 
 GameInitSettings::GameInitSettings()
  : gameType(GAMETYPE_INVALID), houseID(HOUSE_INVALID), mission(0), multiplePlayersPerHouse(false) {
@@ -143,7 +143,7 @@ std::string GameInitSettings::getScenarioFilename(HOUSETYPE newHouse, int missio
     std::string name = "SCEN?0??.INI";
 
     if( (mission < 0) || (mission > 22)) {
-        throw std::invalid_argument("GameInitSettings::getScenarioFilename(): There is no mission number " + stringify(mission) + ".");
+        THROW(std::invalid_argument, "GameInitSettings::getScenarioFilename(): There is no mission number " + stringify(mission) + ".");
     }
 
     name[4] = houseChar[newHouse];
@@ -158,7 +158,7 @@ void GameInitSettings::checkSaveGame(const std::string& savegame) {
     IFileStream fs;
 
     if(fs.open(savegame) == false) {
-        throw std::runtime_error("Cannot open savegame. Make sure you have read access to this savegame!");
+        THROW(std::runtime_error, "Cannot open savegame. Make sure you have read access to this savegame!");
     }
 
     checkSaveGame(fs);
@@ -176,18 +176,18 @@ void GameInitSettings::checkSaveGame(InputStream& stream) {
         savegameVersion = stream.readUint32();
         duneVersion = stream.readString();
     } catch (std::exception&) {
-        throw std::runtime_error("Cannot load this savegame,\n because it seems to be truncated!");
+        THROW(std::runtime_error, "Cannot load this savegame,\n because it seems to be truncated!");
     }
 
     if(magicNum != SAVEMAGIC) {
-        throw std::runtime_error("Cannot load this savegame,\n because it has a wrong magic number!");
+        THROW(std::runtime_error, "Cannot load this savegame,\n because it has a wrong magic number!");
     }
 
     if(savegameVersion < SAVEGAMEVERSION) {
-        throw std::runtime_error("Cannot load this savegame,\n because it was created with an older version:\n" + duneVersion);
+        THROW(std::runtime_error, "Cannot load this savegame,\n because it was created with an older version:\n" + duneVersion);
     }
 
     if(savegameVersion > SAVEGAMEVERSION) {
-        throw std::runtime_error("Cannot load this savegame,\n because it was created with a newer version:\n" + duneVersion);
+        THROW(std::runtime_error, "Cannot load this savegame,\n because it was created with a newer version:\n" + duneVersion);
     }
 }

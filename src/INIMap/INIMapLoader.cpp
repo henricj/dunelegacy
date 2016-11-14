@@ -23,12 +23,12 @@
 #include <Trigger/TimeoutTrigger.h>
 
 #include <misc/format.h>
+#include <misc/exceptions.h>
 
 #include <sand.h>
 #include <globals.h>
 
 #include <stdio.h>
-#include <stdexcept>
 #include <algorithm>
 
 INIMapLoader::INIMapLoader(Game* pGame, const std::string& mapname, const std::string& mapdata)

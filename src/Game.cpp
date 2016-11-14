@@ -207,7 +207,7 @@ void Game::initGame(const GameInitSettings& newGameInitSettings) {
     switch(gameInitSettings.getGameType()) {
         case GAMETYPE_LOAD_SAVEGAME: {
             if(loadSaveGame(gameInitSettings.getFilename()) == false) {
-                throw std::runtime_error("Loading save game failed!");
+                THROW(std::runtime_error, "Loading save game failed!");
             }
         } break;
 
@@ -215,7 +215,7 @@ void Game::initGame(const GameInitSettings& newGameInitSettings) {
             IMemoryStream memStream(gameInitSettings.getFiledata().c_str(), gameInitSettings.getFiledata().size());
 
             if(loadSaveGame(memStream) == false) {
-                throw std::runtime_error("Loading save game failed!");
+                THROW(std::runtime_error, "Loading save game failed!");
             }
         } break;
 
@@ -1088,7 +1088,7 @@ void Game::drawCursor()
 
 
                 default: {
-                    throw std::runtime_error("Game::drawCursor(): Unknown cursor mode");
+                    THROW(std::runtime_error, "Game::drawCursor(): Unknown cursor mode");
                 };
             }
         }

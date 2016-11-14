@@ -16,25 +16,25 @@
  */
 
 #include <FileClasses/Palfile.h>
+#include <misc/exceptions.h>
 
 #include <stdio.h>
-#include <stdexcept>
 
 Palette LoadPalette_RW(SDL_RWops* rwop, int freesrc)
 {
     if(rwop == nullptr) {
-        throw std::invalid_argument("Palfile::Palfile(): rwop == nullptr!");
+        THROW(std::invalid_argument, "Palfile::Palfile(): rwop == nullptr!");
     }
 
     int filesize;
     if((filesize = SDL_RWseek(rwop,0,SEEK_END)) < 0) {
         if(freesrc) SDL_RWclose(rwop);
-        throw std::runtime_error("Palfile::Palfile(): SDL_RWseek failed!");
+        THROW(std::runtime_error, "Palfile::Palfile(): SDL_RWseek failed!");
     }
 
     if(filesize % 3 != 0) {
         if(freesrc) SDL_RWclose(rwop);
-        throw std::runtime_error("Palfile::Palfile(): Filesize must be multiple of 3!");
+        THROW(std::runtime_error, "Palfile::Palfile(): Filesize must be multiple of 3!");
     }
 
     SDL_RWseek(rwop,0,SEEK_SET);
@@ -48,21 +48,21 @@ Palette LoadPalette_RW(SDL_RWops* rwop, int freesrc)
         if(SDL_RWread(rwop,&buf,1,1) != 1) {
             if(freesrc) SDL_RWclose(rwop);
 
-            throw std::runtime_error("Palfile::Palfile(): SDL_RWread failed!");
+            THROW(std::runtime_error, "Palfile::Palfile(): SDL_RWread failed!");
         }
         palette[i].r = (char) (((double) buf)*255.0/63.0);
 
         if(SDL_RWread(rwop,&buf,1,1) != 1) {
             if(freesrc) SDL_RWclose(rwop);
 
-            throw std::runtime_error("Palfile::Palfile(): SDL_RWread failed!");
+            THROW(std::runtime_error, "Palfile::Palfile(): SDL_RWread failed!");
         }
         palette[i].g = (char) (((double) buf)*255.0/63.0);
 
         if(SDL_RWread(rwop,&buf,1,1) != 1) {
             if(freesrc) SDL_RWclose(rwop);
 
-            throw std::runtime_error("Palfile::Palfile(): SDL_RWread failed!");
+            THROW(std::runtime_error, "Palfile::Palfile(): SDL_RWread failed!");
         }
         palette[i].b = (char) (((double) buf)*255.0/63.0);
         palette[i].a = 0xFF;

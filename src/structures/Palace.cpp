@@ -125,7 +125,7 @@ void Palace::doSpecialWeapon() {
         } break;
 
         default: {
-            throw std::runtime_error("Palace::DoSpecialWeapon(): Invalid house");
+            THROW(std::runtime_error, "Palace::DoSpecialWeapon(): Invalid house");
         } break;
     }
 }

@@ -54,7 +54,6 @@
 #include <SDL_rwops.h>
 #include <iostream>
 #include <future>
-#include <stdexcept>
 #include <ctime>
 //#include <sys/types.h>
 //#include <sys/stat.h>

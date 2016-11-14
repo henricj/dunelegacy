@@ -34,7 +34,6 @@
 #include <misc/exceptions.h>
 
 #include <string>
-#include <stdexcept>
 
 Meanwhile::Meanwhile(int house, bool firstMeanwhile) : CutScene() {
 

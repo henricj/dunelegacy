@@ -19,6 +19,7 @@
 #define ENETPACKETISTREAM_H
 
 #include <misc/InputStream.h>
+#include <misc/exceptions.h>
 
 #include <enet/enet.h>
 
@@ -47,7 +48,7 @@ public:
         if(this != &p) {
             ENetPacket* packetCopy = enet_packet_create(p.packet->data,p.packet->dataLength,p.packet->flags);
             if(packetCopy == nullptr) {
-                throw InputStream::error("ENetPacketIStream::operator=(): enet_packet_create() failed!");
+                THROW(InputStream::error, "ENetPacketIStream::operator=(): enet_packet_create() failed!");
             }
 
             if(packet != nullptr) {
@@ -65,7 +66,7 @@ public:
         Uint32 length = readUint32();
 
         if(currentPos + length > packet->dataLength) {
-            throw InputStream::eof("ENetPacketIStream::readString(): End-of-File reached!");
+            THROW(InputStream::eof, "ENetPacketIStream::readString(): End-of-File reached!");
         }
 
         std::string resultString((char*) (packet->data + currentPos), length);
@@ -75,7 +76,7 @@ public:
 
     Uint8 readUint8() {
         if(currentPos + sizeof(Uint8) > packet->dataLength) {
-            throw InputStream::eof("ENetPacketIStream::readUint8(): End-of-File reached!");
+            THROW(InputStream::eof, "ENetPacketIStream::readUint8(): End-of-File reached!");
         }
 
         Uint8 tmp = *((Uint8*) (packet->data + currentPos));
@@ -85,7 +86,7 @@ public:
 
     Uint16 readUint16() {
         if(currentPos + sizeof(Uint16) > packet->dataLength) {
-            throw InputStream::eof("ENetPacketIStream::readUint16(): End-of-File reached!");
+            THROW(InputStream::eof, "ENetPacketIStream::readUint16(): End-of-File reached!");
         }
 
         Uint16 tmp = *((Uint16*) (packet->data + currentPos));
@@ -95,7 +96,7 @@ public:
 
     Uint32 readUint32() {
         if(currentPos + sizeof(Uint32) > packet->dataLength) {
-            throw InputStream::eof("ENetPacketIStream::readUint32(): End-of-File reached!");
+            THROW(InputStream::eof, "ENetPacketIStream::readUint32(): End-of-File reached!");
         }
 
         Uint32 tmp = *((Uint32*) (packet->data + currentPos));
@@ -105,7 +106,7 @@ public:
 
     Uint64 readUint64() {
         if(currentPos + sizeof(Uint64) > packet->dataLength) {
-            throw InputStream::eof("ENetPacketIStream::readUint64(): End-of-File reached!");
+            THROW(InputStream::eof, "ENetPacketIStream::readUint64(): End-of-File reached!");
         }
 
         Uint64 tmp = *((Uint64*) (packet->data + currentPos));
