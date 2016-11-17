@@ -223,6 +223,7 @@
 		13E564CF169B559100D282B9 /* 4P - 128x128 - The Sardaukar Outpost.ini in Copy Multiplayer Maps */ = {isa = PBXBuildFile; fileRef = 13E564BB169B550D00D282B9 /* 4P - 128x128 - The Sardaukar Outpost.ini */; };
 		13E564D1169B55BE00D282B9 /* OPENSD2.PAK in Resources */ = {isa = PBXBuildFile; fileRef = 13E564D0169B55BE00D282B9 /* OPENSD2.PAK */; };
 		13E929C010AF72BF00169991 /* Dune2-Versions.txt in Resources */ = {isa = PBXBuildFile; fileRef = 13E929BF10AF72BF00169991 /* Dune2-Versions.txt */; };
+		174241721DDE0953001FB159 /* format.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 174241711DDE0953001FB159 /* format.cpp */; };
 		8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
 		CEEB16A91CD69F7900CF91D9 /* surroundopl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CEEB16A71CD69F7900CF91D9 /* surroundopl.cpp */; };
 		CEEB16AA1CD69F7900CF91D9 /* woodyopl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CEEB16A81CD69F7900CF91D9 /* woodyopl.cpp */; };
@@ -781,6 +782,7 @@
 		13FF590612A2EEA500100C53 /* 2P - 32x32 - X-Factor.ini */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "2P - 32x32 - X-Factor.ini"; sourceTree = "<group>"; };
 		13FF590812A2EEA500100C53 /* 2P - 32x128 - Canyon.ini */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "2P - 32x128 - Canyon.ini"; sourceTree = "<group>"; };
 		13FF590912A2EEA500100C53 /* 2P - 64x64 - North vs. South.ini */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "2P - 64x64 - North vs. South.ini"; sourceTree = "<group>"; };
+		174241711DDE0953001FB159 /* format.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = format.cpp; sourceTree = "<group>"; };
 		29B97324FDCFA39411CA2CEA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
 		29B97325FDCFA39411CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
 		32CA4F630368D1EE00C91783 /* Dune Legacy_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Dune Legacy_Prefix.pch"; sourceTree = "<group>"; };
@@ -1467,6 +1469,7 @@
 		1358FDCF13D3B72F00FAD5B7 /* misc */ = {
 			isa = PBXGroup;
 			children = (
+				174241711DDE0953001FB159 /* format.cpp */,
 				1358FDD013D3B72F00FAD5B7 /* draw_util.cpp */,
 				1358FDD113D3B72F00FAD5B7 /* FileSystem.cpp */,
 				1358FDD213D3B72F00FAD5B7 /* fnkdat.cpp */,
@@ -1918,6 +1921,7 @@
 				1358FE7B13D3B72F00FAD5B7 /* BriefingMenu.cpp in Sources */,
 				1358FE7C13D3B72F00FAD5B7 /* CampaignStatsMenu.cpp in Sources */,
 				1358FE7D13D3B72F00FAD5B7 /* CustomGameMenu.cpp in Sources */,
+				174241721DDE0953001FB159 /* format.cpp in Sources */,
 				1358FE7E13D3B72F00FAD5B7 /* CustomGamePlayers.cpp in Sources */,
 				CEEB16CE1CD6A23B00CF91D9 /* fix16_str.c in Sources */,
 				1358FE7F13D3B72F00FAD5B7 /* CustomGameStatsMenu.cpp in Sources */,
