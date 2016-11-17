@@ -76,23 +76,17 @@ public:
 
 protected:
 
-#if defined(__GNUC__) || defined(__clang__)
-#define PRINTF_STYLE_ATTRIBUTE __attribute__ ((format (printf, 2, 3)))
-#else
-#define PRINTF_STYLE_ATTRIBUTE
-#endif
-
     /**
         Logs a debug message
         \param  fmt the format string of the debug message
     */
-    void logDebug(const char* fmt, ...) PRINTF_STYLE_ATTRIBUTE;
+    void logDebug(SDL_PRINTF_FORMAT_STRING const char* fmt, ...) SDL_PRINTF_VARARG_FUNC(2);
 
     /**
         Logs a warning message
         \param  fmt the format string of the debug message
     */
-    void logWarn(const char* fmt, ...) PRINTF_STYLE_ATTRIBUTE;
+    void logWarn(SDL_PRINTF_FORMAT_STRING const char* fmt, ...) SDL_PRINTF_VARARG_FUNC(2);
 
     Random& getRandomGen() const;
     const GameInitSettings& getGameInitSettings() const;
