@@ -454,7 +454,7 @@ Coord Map::findDeploySpot(UnitBase* pUnit, const Coord& origin, const Coord& gat
             if(++depth > (std::max(currentGameMap->getSizeX(), currentGameMap->getSizeY()))) {
                 closestPoint.invalidate();
                 found = true;
-                fprintf(stderr, "Cannot find deploy position because the map is full!\n"); fflush(stderr);
+                SDL_Log("Warning: Cannot find deploy position because the map is full!");
             }
         }
     } while (!found && (!foundClosest || (counter > 0)));

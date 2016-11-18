@@ -107,24 +107,22 @@ MultiPlayerMenu::MultiPlayerMenu() : MenuBase() {
     buttonHBox.addWidget(HSpacer::create(90));
 
     // Start Network Manager
-    fprintf(stdout, "starting network..."); fflush(stdout);
+    SDL_Log("Starting network...");
     pNetworkManager = new NetworkManager(settings.network.serverPort, settings.network.metaServer);
     LANGameFinderAndAnnouncer* pLANGFAA = pNetworkManager->getLANGameFinderAndAnnouncer();
     pLANGFAA->setOnNewServer(std::bind(&MultiPlayerMenu::onNewLANServer, this, std::placeholders::_1));
     pLANGFAA->setOnUpdateServer(std::bind(&MultiPlayerMenu::onUpdateLANServer, this, std::placeholders::_1));
     pLANGFAA->setOnRemoveServer(std::bind(&MultiPlayerMenu::onRemoveLANServer, this, std::placeholders::_1));
     pLANGFAA->refreshServerList();
-    fprintf(stdout, "\t\tfinished\n"); fflush(stdout);
 
     onGameTypeChange(0);
 }
 
 
 MultiPlayerMenu::~MultiPlayerMenu() {
-    fprintf(stdout, "stopping network..."); fflush(stdout);
+    SDL_Log("Stopping network...");
     delete pNetworkManager;
     pNetworkManager = nullptr;
-    fprintf(stdout, "\t\tfinished\n");
 }
 
 

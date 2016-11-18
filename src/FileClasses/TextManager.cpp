@@ -39,9 +39,11 @@ TextManager::TextManager() {
 
     if(languagesList.empty()) {
         std::string filepath = getDuneLegacyDataDir() + "/locale/English.en.po";
+        SDL_Log("Loading localization from '%s'...", filepath.c_str());
         localizedString = loadPOFile(SDL_RWFromFile(filepath.c_str(), "r"), true, "English.en.po");
     } else {
         std::string filepath = getDuneLegacyDataDir() + "/locale/" + languagesList.front();
+        SDL_Log("Loading localization from '%s'...", filepath.c_str());
         localizedString = loadPOFile(SDL_RWFromFile(filepath.c_str(), "r"), true, languagesList.front());
     }
 }

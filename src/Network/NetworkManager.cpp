@@ -622,29 +622,29 @@ void NetworkManager::handlePacket(ENetPeer* peer, ENetPacketIStream& packetStrea
             } break;
 
             default: {
-                fprintf(stderr,"NetworkManager: Unknown packet type %d\n", packetType);
+                SDL_Log("NetworkManager: Unknown packet type %d", packetType);
             };
         }
 
     } catch (InputStream::eof&) {
-        fprintf(stderr,"NetworkManager: Received packet is too small\n");
+        SDL_Log("NetworkManager: Received packet is too small");
         return;
     } catch (std::exception& e) {
-        fprintf(stderr,"NetworkManager: %s\n", e.what());
+        SDL_Log("NetworkManager: %s", e.what());
     }
 }
 
 
 void NetworkManager::sendPacketToHost(ENetPacketOStream& packetStream, int channel) {
     if(connectPeer == nullptr) {
-        fprintf(stderr,"NetworkManager: sendPacketToHost() called on server!\n");
+        SDL_Log("NetworkManager: sendPacketToHost() called on server!");
         return;
     }
 
     ENetPacket* enetPacket = packetStream.getPacket();
 
     if(enet_peer_send(connectPeer, channel, enetPacket) < 0) {
-        fprintf(stderr,"NetworkManager: Cannot send packet!\n");
+        SDL_Log("NetworkManager: Cannot send packet!");
     }
 }
 
@@ -652,7 +652,7 @@ void NetworkManager::sendPacketToPeer(ENetPeer* peer, ENetPacketOStream& packetS
     ENetPacket* enetPacket = packetStream.getPacket();
 
     if(enet_peer_send(peer, channel, enetPacket) < 0) {
-        fprintf(stderr,"NetworkManager: Cannot send packet!\n");
+        SDL_Log("NetworkManager: Cannot send packet!");
     }
 
     if(enetPacket->referenceCount == 0) {
@@ -667,7 +667,7 @@ void NetworkManager::sendPacketToAllConnectedPeers(ENetPacketOStream& packetStre
     std::list<ENetPeer*>::iterator iter;
     for(iter = peerList.begin(); iter != peerList.end(); ++iter) {
         if(enet_peer_send(*iter, channel, enetPacket) < 0) {
-            fprintf(stderr,"NetworkManager: Cannot send packet!\n");
+            SDL_Log("NetworkManager: Cannot send packet!");
             continue;
         }
     }

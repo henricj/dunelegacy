@@ -2025,14 +2025,14 @@ void MapEditor::saveMapshot() {
 
     SDL_Texture* renderTarget = SDL_CreateTexture(renderer, SCREEN_FORMAT, SDL_TEXTUREACCESS_TARGET, sizeX, sizeY);
     if(renderTarget == nullptr) {
-        fprintf(stderr,"SDL_CreateTexture() failed: %s\n", SDL_GetError());
+        SDL_Log("SDL_CreateTexture() failed: %s", SDL_GetError());
         currentZoomlevel = oldCurrentZoomlevel;
         return;
     }
 
     SDL_Texture* oldRenderTarget = SDL_GetRenderTarget(renderer);
     if(SDL_SetRenderTarget(renderer, renderTarget) != 0) {
-        fprintf(stderr,"SDL_SetRenderTarget() failed: %s\n", SDL_GetError());
+        SDL_Log("SDL_SetRenderTarget() failed: %s", SDL_GetError());
         SDL_SetRenderTarget(renderer, oldRenderTarget);
         SDL_DestroyTexture(renderTarget);
         currentZoomlevel = oldCurrentZoomlevel;

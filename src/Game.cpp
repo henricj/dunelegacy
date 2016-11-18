@@ -238,14 +238,10 @@ void Game::initGame(const GameInitSettings& newGameInitSettings) {
 
             if(bReplay == false && gameInitSettings.getGameType() != GAMETYPE_CUSTOM && gameInitSettings.getGameType() != GAMETYPE_CUSTOM_MULTIPLAYER) {
                 /* do briefing */
-                fprintf(stdout,"Briefing...");
-                fflush(stdout);
+                SDL_Log("Briefing...");
                 BriefingMenu* pBriefing = new BriefingMenu(gameInitSettings.getHouseID(), gameInitSettings.getMission(),BRIEFING);
                 pBriefing->showMenu();
                 delete pBriefing;
-
-                fprintf(stdout,"\t\t\tfinished\n");
-                fflush(stdout);
             }
         } break;
 
@@ -1139,8 +1135,7 @@ void Game::setupView()
 
 
 void Game::runMainLoop() {
-    printf("Starting game...\n");
-    fflush(stdout);
+    SDL_Log("Starting game...");
 
     // add interface
     if(pInterface == nullptr) {
@@ -1211,7 +1206,7 @@ void Game::runMainLoop() {
     int     frameTime = 0;
     int     numFrames = 0;
 
-    //fprintf(stderr, "Random Seed (GameCycle %d): 0x%0X\n", GameCycleCount, RandomGen.getSeed());
+    //SDL_Log("Random Seed (GameCycle %d): 0x%0X", GameCycleCount, RandomGen.getSeed());
 
     //main game loop
     do {
@@ -1278,7 +1273,7 @@ void Game::runMainLoop() {
                     HumanPlayer* pPlayer = dynamic_cast<HumanPlayer*>(getPlayerByName(*iter));
                     if(pPlayer != nullptr) {
                         if(pPlayer->nextExpectedCommandsCycle <= gameCycleCount) {
-                            //fprintf(stderr, "Cycle %d: Waiting for player '%s' to send data for cycle %d...\n", GameCycleCount, pPlayer->getPlayername().c_str(), pPlayer->nextExpectedCommandsCycle);
+                            //SDL_Log("Cycle %d: Waiting for player '%s' to send data for cycle %d...", GameCycleCount, pPlayer->getPlayername().c_str(), pPlayer->nextExpectedCommandsCycle);
                             bWaitForNetwork = true;
                         }
                     }
@@ -1397,8 +1392,7 @@ void Game::runMainLoop() {
     }
 
     gameState = DEINITIALIZE;
-    printf("Game finished!\n");
-    fflush(stdout);
+    SDL_Log("Game finished!");
 }
 
 
@@ -1443,21 +1437,16 @@ GameInitSettings Game::getNextGameInitSettings()
     switch(gameInitSettings.getGameType()) {
         case GAMETYPE_CAMPAIGN: {
             /* do map choice */
-            fprintf(stdout,"Map Choice...");
-            fflush(stdout);
+            SDL_Log("Map Choice...");
             MapChoice* pMapChoice = new MapChoice(gameInitSettings.getHouseID(), gameInitSettings.getMission());
             int nextMission = pMapChoice->showMenu();
             delete pMapChoice;
-
-            fprintf(stdout,"\t\t\tfinished\n");
-            fflush(stdout);
 
             return GameInitSettings(gameInitSettings, nextMission);
         } break;
 
         default: {
-            fprintf(stderr,"Game::getNextGameInitClass(): Wrong gameType for next Game.\n");
-            fflush(stderr);
+            SDL_Log("Game::getNextGameInitClass(): Wrong gameType for next Game.");
             return GameInitSettings();
         } break;
     }
@@ -1547,13 +1536,13 @@ bool Game::loadSaveGame(InputStream& stream) {
 
     Uint32 magicNum = stream.readUint32();
     if (magicNum != SAVEMAGIC) {
-        fprintf(stderr,"Game::loadSaveGame(): No valid savegame! Expected magic number %.8X, but got %.8X!\n", SAVEMAGIC, magicNum);
+        SDL_Log("Game::loadSaveGame(): No valid savegame! Expected magic number %.8X, but got %.8X!", SAVEMAGIC, magicNum);
         return false;
     }
 
     Uint32 savegameVersion = stream.readUint32();
     if (savegameVersion != SAVEGAMEVERSION) {
-        fprintf(stderr,"Game::loadSaveGame(): No valid savegame! Expected savegame version %d, but got %d!\n", SAVEGAMEVERSION, savegameVersion);
+        SDL_Log("Game::loadSaveGame(): No valid savegame! Expected savegame version %d, but got %d!", SAVEGAMEVERSION, savegameVersion);
         return false;
     }
 
@@ -1702,7 +1691,7 @@ bool Game::saveGame(std::string filename)
     OFileStream fs;
 
     if(fs.open(filename) == false) {
-        perror("Game::saveGame()");
+        SDL_Log("Game::saveGame(): %s", strerror(errno));
         currentGame->addToNewsTicker(std::string("Game NOT saved: Cannot open \"") + filename + "\".");
         return false;
     }

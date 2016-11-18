@@ -34,9 +34,8 @@
 #include <iomanip>
 
 FileManager::FileManager(bool saveMode) {
-    fprintf(stderr,"\n");
-    fprintf(stderr,"FileManager is loading PAK-Files...\n\n");
-    fprintf(stderr,"MD5-Checksum                      Filename\n");
+    SDL_Log("\nFileManager is loading PAK-Files...");
+    SDL_Log("\nMD5-Checksum                      Filename");
 
     std::vector<std::string> searchPath = getSearchPath();
     std::vector<std::string> fileList = getNeededFiles();
@@ -49,7 +48,7 @@ FileManager::FileManager(bool saveMode) {
             std::string filepath = *searchPathIter + "/" + *filenameIter;
             if(getCaseInsensitiveFilename(filepath) == true) {
                 try {
-                    fprintf(stderr,"%s  %s\n", md5FromFilename(filepath).c_str(), filepath.c_str());
+                    SDL_Log("%s  %s", md5FromFilename(filepath).c_str(), filepath.c_str());
                     pakFiles.push_back(new Pakfile(filepath));
                 } catch (std::exception &e) {
                     if(saveMode == false) {
@@ -69,7 +68,7 @@ FileManager::FileManager(bool saveMode) {
 
     }
 
-    fprintf(stderr,"\n");
+    SDL_Log("%s", "");
 }
 
 FileManager::~FileManager() {

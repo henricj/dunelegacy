@@ -23,6 +23,7 @@
 #include <algorithm>
 #include <ctype.h>
 
+#include <SDL.h>
 #include <SDL_rwops.h>
 #include <SDL_filesystem.h>
 
@@ -103,12 +104,12 @@ std::list<FileInfo> getFileList(std::string directory, std::string extension, bo
     char szPath[MAX_PATH];
 
     if(MultiByteToWideChar(CP_UTF8, 0, directory.c_str(), -1, szwPath, MAX_PATH) == 0) {
-        fprintf(stderr, "getFileList(): Conversion of search path from utf-8 to utf-16 failed\n");
+        SDL_Log("getFileList(): Conversion of search path from utf-8 to utf-16 failed!");
         return Files;
     }
 
     if(WideCharToMultiByte(CP_ACP, 0, szwPath, -1, szPath, MAX_PATH, nullptr, nullptr) == 0) {
-        fprintf(stderr, "getFileList(): Conversion of search path from utf-16 to ansi failed\n");
+        SDL_Log("getFileList(): Conversion of search path from utf-16 to ansi failed!");
         return Files;
     }
 
@@ -142,12 +143,12 @@ std::list<FileInfo> getFileList(std::string directory, std::string extension, bo
                 char szFilename[MAX_PATH];
 
                 if(MultiByteToWideChar(CP_ACP, 0, filename.c_str(), -1, szwFilename, MAX_PATH) == 0) {
-                    fprintf(stderr, "getFileList(): Conversion of filename from ansi to utf-16 failed\n");
+                    SDL_Log("getFileList(): Conversion of filename from ansi to utf-16 failed!");
                     continue;
                 }
 
                 if(WideCharToMultiByte(CP_UTF8, 0, szwFilename, -1, szFilename, MAX_PATH, nullptr, nullptr) == 0) {
-                    fprintf(stderr, "getFileList(): Conversion of search path from utf-16 to utf-8 failed\n");
+                    SDL_Log("getFileList(): Conversion of search path from utf-16 to utf-8 failed!");
                     continue;
                 }
 
@@ -189,7 +190,7 @@ std::list<FileInfo> getFileList(std::string directory, std::string extension, bo
                 std::string fullpath = directory + "/" + filename;
                 struct stat fdata;
                 if(stat(fullpath.c_str(), &fdata) != 0) {
-                    perror("stat()");
+                    SDL_Log("stat(): %s", strerror(errno));
                     continue;
                 }
                 Files.push_back(FileInfo(filename, fdata.st_size, fdata.st_mtime));
@@ -197,7 +198,7 @@ std::list<FileInfo> getFileList(std::string directory, std::string extension, bo
     }
 
     if(errno != 0) {
-        perror("readdir()");
+        SDL_Log("readdir(): %s", strerror(errno));
     }
 
     closedir(dir);

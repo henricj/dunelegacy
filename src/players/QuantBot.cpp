@@ -399,8 +399,6 @@ void QuantBot::update() {
         attackTimer -= AIUPDATEINTERVAL;
         retreatTimer -= AIUPDATEINTERVAL;
     }
-
-    fflush(stdout);
 }
 
 

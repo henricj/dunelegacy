@@ -110,7 +110,7 @@ void CommandManager::addCommandList(const std::string& playername, const Command
         std::vector<Command>::const_iterator iter2;
         for(iter2 = iter->commands.begin(); iter2 != iter->commands.end(); ++iter2) {
             if(iter2->getPlayerID() != pPlayer->getPlayerID()) {
-                fprintf(stderr, "Player '%s' send a command which he is not allowed to give!\n", playername.c_str());
+                SDL_Log("Warning: Player '%s' send a command which he is not allowed to give!", playername.c_str());
             }
 
             addCommand(*iter2, iter->cycle);
@@ -146,17 +146,6 @@ void CommandManager::executeCommands(Uint32 CycleNumber) const {
     std::vector<Command>::const_iterator iter;
 
     for(iter = cmdlist.begin(); iter != cmdlist.end(); ++iter) {
-
-        /*
-        fprintf(stderr, "Executing Command (GameCycle %d): PlayerID=%d, Cmd=%d, Params=", CycleNumber, iter->getPlayerID(), iter->getCommandID());
-        std::vector<Uint32> params = iter->getParameter();
-        std::vector<Uint32>::const_iterator paramiter;
-        for(paramiter = params.begin(); paramiter != params.end(); ++paramiter) {
-            fprintf(stderr, "%d ", *paramiter);
-        }
-        fprintf(stderr,"\n");
-        */
-
         iter->executeCommand();
     }
 }

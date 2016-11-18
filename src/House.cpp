@@ -110,7 +110,7 @@ House::House(InputStream& stream) : choam(this) {
         std::string playerclass = stream.readString();
         const PlayerFactory::PlayerData* pPlayerData = PlayerFactory::getByPlayerClass(playerclass);
         if(pPlayerData == nullptr) {
-            fprintf(stderr, "Cannot load player \"%s\"", playerclass.c_str());
+            SDL_Log("Warning: Cannot load player '%s'", playerclass.c_str());
         } else {
             addPlayer(std::shared_ptr<Player>(pPlayerData->load(stream,this)));
         }
@@ -266,25 +266,25 @@ FixPoint House::takeCredits(FixPoint amount) {
 
 
 void House::printStat() const {
-    fprintf(stderr,"House %s: (Number of Units: %d, Number of Structures: %d)\n",getHouseNameByNumber( (HOUSETYPE) getHouseID()).c_str(),numUnits,numStructures);
-    fprintf(stderr,"Barracks: %d\t\tWORs: %d\n", numItem[Structure_Barracks],numItem[Structure_WOR]);
-    fprintf(stderr,"Light Factories: %d\tHeavy Factories: %d\n",numItem[Structure_LightFactory],numItem[Structure_HeavyFactory]);
-    fprintf(stderr,"IXs: %d\t\t\tPalaces: %d\n",numItem[Structure_IX],numItem[Structure_Palace]);
-    fprintf(stderr,"Repair Yards: %d\t\tHigh-Tech Factories: %d\n",numItem[Structure_RepairYard],numItem[Structure_HighTechFactory]);
-    fprintf(stderr,"Refineries: %d\t\tStarports: %d\n",numItem[Structure_Refinery],numItem[Structure_StarPort]);
-    fprintf(stderr,"Walls: %d\t\tRocket Turrets: %d\n",numItem[Structure_Wall],numItem[Structure_RocketTurret]);
-    fprintf(stderr,"Gun Turrets: %d\t\tConstruction Yards: %d\n",numItem[Structure_GunTurret],numItem[Structure_ConstructionYard]);
-    fprintf(stderr,"Windtraps: %d\t\tRadars: %d\n",numItem[Structure_WindTrap],numItem[Structure_Radar]);
-    fprintf(stderr,"Silos: %d\n",numItem[Structure_Silo]);
-    fprintf(stderr,"Carryalls: %d\t\tFrigates: %d\n",numItem[Unit_Carryall],numItem[Unit_Frigate]);
-    fprintf(stderr,"Devastators: %d\t\tDeviators: %d\n",numItem[Unit_Devastator],numItem[Unit_Deviator]);
-    fprintf(stderr,"Soldiers: %d\t\tTrooper: %d\n",numItem[Unit_Soldier],numItem[Unit_Trooper]);
-    fprintf(stderr,"Saboteur: %d\t\tSandworms: %d\n",numItem[Unit_Saboteur],numItem[Unit_Sandworm]);
-    fprintf(stderr,"Quads: %d\t\tTrikes: %d\n",numItem[Unit_Quad],numItem[Unit_Trike]);
-    fprintf(stderr,"Raiders: %d\t\tTanks: %d\n",numItem[Unit_RaiderTrike],numItem[Unit_Tank]);
-    fprintf(stderr,"Siege Tanks : %d\t\tSonic Tanks: %d\n",numItem[Unit_SiegeTank],numItem[Unit_SonicTank]);
-    fprintf(stderr,"Harvesters: %d\t\tMCVs: %d\n",numItem[Unit_Harvester],numItem[Unit_MCV]);
-    fprintf(stderr,"Ornithopters: %d\t\tRocket Launchers: %d\n",numItem[Unit_Ornithopter],numItem[Unit_Launcher]);
+    SDL_Log("House %s: (Number of Units: %d, Number of Structures: %d)",getHouseNameByNumber( (HOUSETYPE) getHouseID()).c_str(),numUnits,numStructures);
+    SDL_Log("Barracks: %d\t\tWORs: %d", numItem[Structure_Barracks],numItem[Structure_WOR]);
+    SDL_Log("Light Factories: %d\tHeavy Factories: %d",numItem[Structure_LightFactory],numItem[Structure_HeavyFactory]);
+    SDL_Log("IXs: %d\t\t\tPalaces: %d",numItem[Structure_IX],numItem[Structure_Palace]);
+    SDL_Log("Repair Yards: %d\t\tHigh-Tech Factories: %d",numItem[Structure_RepairYard],numItem[Structure_HighTechFactory]);
+    SDL_Log("Refineries: %d\t\tStarports: %d",numItem[Structure_Refinery],numItem[Structure_StarPort]);
+    SDL_Log("Walls: %d\t\tRocket Turrets: %d",numItem[Structure_Wall],numItem[Structure_RocketTurret]);
+    SDL_Log("Gun Turrets: %d\t\tConstruction Yards: %d",numItem[Structure_GunTurret],numItem[Structure_ConstructionYard]);
+    SDL_Log("Windtraps: %d\t\tRadars: %d",numItem[Structure_WindTrap],numItem[Structure_Radar]);
+    SDL_Log("Silos: %d",numItem[Structure_Silo]);
+    SDL_Log("Carryalls: %d\t\tFrigates: %d",numItem[Unit_Carryall],numItem[Unit_Frigate]);
+    SDL_Log("Devastators: %d\t\tDeviators: %d",numItem[Unit_Devastator],numItem[Unit_Deviator]);
+    SDL_Log("Soldiers: %d\t\tTrooper: %d",numItem[Unit_Soldier],numItem[Unit_Trooper]);
+    SDL_Log("Saboteur: %d\t\tSandworms: %d",numItem[Unit_Saboteur],numItem[Unit_Sandworm]);
+    SDL_Log("Quads: %d\t\tTrikes: %d",numItem[Unit_Quad],numItem[Unit_Trike]);
+    SDL_Log("Raiders: %d\t\tTanks: %d",numItem[Unit_RaiderTrike],numItem[Unit_Tank]);
+    SDL_Log("Siege Tanks : %d\t\tSonic Tanks: %d",numItem[Unit_SiegeTank],numItem[Unit_SonicTank]);
+    SDL_Log("Harvesters: %d\t\tMCVs: %d",numItem[Unit_Harvester],numItem[Unit_MCV]);
+    SDL_Log("Ornithopters: %d\t\tRocket Launchers: %d",numItem[Unit_Ornithopter],numItem[Unit_Launcher]);
 }
 
 

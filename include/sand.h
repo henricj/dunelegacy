@@ -37,10 +37,10 @@ inline void adjustMouseCoords(int& x, int& y) {
     SDL_Rect vp;
     SDL_GetWindowSize(window, &win_w, &win_h);
     SDL_RenderGetViewport(renderer, &vp);
-//    fprintf(stderr, "viewport is %dx%d at (%d,%d), window size %dx%d\n", vp.w, vp.h, vp.x, vp.y, win_w, win_h);
+//    SDL_Log("viewport is %dx%d at (%d,%d), window size %dx%d", vp.w, vp.h, vp.x, vp.y, win_w, win_h);
     x = x * (vp.w+2*vp.x) < vp.x * win_w ? 0 : x * (vp.w+2*vp.x) > (vp.x + vp.w) * win_w ? vp.w : (x*(vp.w+2*vp.x))/win_w-vp.x;
     y = y * (vp.h+2*vp.y) < vp.y * win_h ? 0 : y * (vp.h+2*vp.y) > (vp.y + vp.h) * win_h ? vp.h : (y*(vp.h+2*vp.y))/win_h-vp.y;
-//    fprintf(stderr, "adjusting %d,%d to %d,%d\n", old_x, oldy, x, y);
+//    SDL_Log("adjusting %d,%d to %d,%d", old_x, oldy, x, y);
 }
 
 std::string     resolveItemName(int itemID);

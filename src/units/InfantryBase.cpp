@@ -448,7 +448,7 @@ void InfantryBase::setLocation(int xPos, int yPos) {
 
 void InfantryBase::setSpeeds() {
     if(oldTilePosition == INVALID_POS) {
-        fprintf(stderr, "InfantryBase::setSpeeds(): Infantry tile position  == INVALID_POS.\n");
+        SDL_Log("Warning: InfantryBase::setSpeeds(): Infantry tile position == INVALID_POS.");
     } else if(tilePosition == oldTilePosition) {
         // havent changed infantry position
         GroundUnit::setSpeeds();

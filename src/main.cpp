@@ -103,7 +103,7 @@ void setVideoMode()
     SDL_DisplayMode closestDisplayMode;
 
     if(SDL_GetClosestDisplayMode(SCREEN_DISPLAYINDEX, &targetDisplayMode, &closestDisplayMode) == nullptr) {
-        fprintf(stderr, "WARNING: Falling back to 640x480!\n");
+        SDL_Log("Warning: Falling back to a display resolution of 640x480!");
         settings.video.width = 640;
         settings.video.height = 480;
     } else {
@@ -137,15 +137,14 @@ std::string getLogFilepath()
     // determine path to config file
     char tmp[FILENAME_MAX];
     if(fnkdat(LOGFILENAME, tmp, FILENAME_MAX, FNKDAT_USER | FNKDAT_CREAT) < 0) {
-        fprintf(stderr, "getLogFilepath(): fnkdat failed!\n");
-        return "";
+        THROW(std::runtime_error, "fnkdat() failed!");
     }
 
     return std::string(tmp);
 }
 
 void createDefaultConfigFile(std::string configfilepath, std::string language) {
-    fprintf(stdout,"Creating config file...\t\t"); fflush(stdout);
+    SDL_Log("Creating config file '%s'", configfilepath.c_str());
 
 
     SDL_RWops* file = SDL_RWFromFile(configfilepath.c_str(), "w");
@@ -227,21 +226,22 @@ void createDefaultConfigFile(std::string configfilepath, std::string language) {
     }
 
     SDL_RWclose(file);
-
-    fprintf(stdout,"finished\n"); fflush(stdout);
 }
 
 void logOutputFunction(void *userdata, int category, SDL_LogPriority priority, const char *message) {
+    /*
     static const char* priorityStrings[] = {
         nullptr,
-        "VERBOSE",
-        "DEBUG",
-        "INFO",
-        "WARN",
-        "ERROR",
+        "VERBOSE ",
+        "DEBUG   ",
+        "INFO    ",
+        "WARN    ",
+        "ERROR   ",
         "CRITICAL"
     };
-    fprintf(stderr, "%s: %s\n", priorityStrings[priority], message);
+    fprintf(stderr, "%s:   %s\n", priorityStrings[priority], message);
+    */
+    fprintf(stderr, "%s\n", message);
     fflush(stderr);
 }
 
@@ -315,8 +315,6 @@ void printMissingFilesToScreen() {
 std::string getUserLanguage() {
     const char* pLang = nullptr;
 
-    fprintf(stdout,"Detecting locale...\t\t"); fflush(stdout);
-
 #ifdef _WIN32
     char ISO639_LanguageName[10];
     if(GetLocaleInfo(GetUserDefaultLCID(), LOCALE_SISO639LANGNAME, ISO639_LanguageName, sizeof(ISO639_LanguageName)) == 0) {
@@ -344,7 +342,7 @@ std::string getUserLanguage() {
     }
 #endif
 
-    fprintf(stderr, "'%s'\n", pLang); fflush(stdout);
+    SDL_Log("User locale is '%s'", pLang);
 
     if(strlen(pLang) < 2) {
         return "";
@@ -358,13 +356,14 @@ std::string getUserLanguage() {
 int main(int argc, char *argv[]) {
     SDL_LogSetOutputFunction(logOutputFunction, nullptr);
     SDL_LogSetAllPriority(SDL_LOG_PRIORITY_WARN);
+    SDL_LogSetPriority(SDL_LOG_CATEGORY_APPLICATION, SDL_LOG_PRIORITY_VERBOSE);
 
     // init fnkdat
     if(fnkdat(nullptr, nullptr, 0, FNKDAT_INIT) < 0) {
         THROW(std::runtime_error, "Cannot initialize fnkdat!");
     }
 
-    bool bShowDebugLog = true;  // should be reset to false when done with AI stuff
+    bool bShowDebugLog = false;
     for(int i=1; i < argc; i++) {
         //check for overiding params
         std::string parameter(argv[i]);
@@ -436,7 +435,7 @@ int main(int argc, char *argv[]) {
         #endif
     }
 
-    fprintf(stdout, "Starting Dune Legacy %s on %s...\n", VERSION, SDL_GetPlatform()); fflush(stdout);
+    SDL_Log("Starting Dune Legacy %s on %s", VERSION, SDL_GetPlatform());
 
     // First check for missing files
     std::vector<std::string> missingFiles = FileManager::getMissingFiles();
@@ -531,9 +530,7 @@ int main(int argc, char *argv[]) {
         settings.gameOptions.manualCarryallDrops = myINIFile.getBoolValue("Game Options","Manual Carryall Drops",false);
         settings.gameOptions.maximumNumberOfUnitsOverride = myINIFile.getIntValue("Game Options","Maximum Number of Units Override",-1);
 
-        fprintf(stdout, "loading texts....."); fflush(stdout);
         pTextManager = new TextManager();
-        fprintf(stdout, "\t\tfinished\n"); fflush(stdout);
 
         if(FileManager::getMissingFiles().size() > 0) {
             // set back to english
@@ -543,7 +540,7 @@ int main(int argc, char *argv[]) {
             for(iter = missingFiles.begin(); iter != missingFiles.end(); ++iter) {
                 fprintf(stderr," %s\n",iter->c_str());
             }
-            fprintf(stderr,"Language is changed to English!\n");
+            SDL_Log("Warning: Language is changed to English!");
             settings.general.language = "en";
         }
 
@@ -563,11 +560,19 @@ int main(int argc, char *argv[]) {
         }
 
         if(bFirstInit == true) {
-            fprintf(stdout, "initializing SDL..... \t\t"); fflush(stdout);
+            SDL_Log("Initializing SDL...");
+
             if(SDL_Init(SDL_INIT_TIMER | SDL_INIT_VIDEO) < 0) {
                 THROW(sdl_error, "Couldn't initialize SDL: %s!", SDL_GetError());
             }
-            fprintf(stdout, "finished\n"); fflush(stdout);
+
+            SDL_version compiledVersion;
+            SDL_version linkedVersion;
+            SDL_VERSION(&compiledVersion);
+            SDL_GetVersion(&linkedVersion);
+            SDL_Log("SDL runtime v%d.%d.%d", linkedVersion.major, linkedVersion.minor, linkedVersion.patch);
+            SDL_Log("SDL compile-time v%d.%d.%d", compiledVersion.major, compiledVersion.minor, compiledVersion.patch);
+
         }
 
         if(bFirstGamestart == true && bFirstInit == true) {
@@ -591,12 +596,12 @@ int main(int argc, char *argv[]) {
         Scaler::setDefaultScaler(Scaler::getScalerByName(settings.video.scaler));
 
         if(bFirstInit == true) {
-            fprintf(stdout, "initializing sound..... \t");fflush(stdout);
+            SDL_Log("Initializing audio...");
             if( Mix_OpenAudio(AUDIO_FREQUENCY, AUDIO_S16SYS, 2, 1024) < 0 ) {
                 SDL_Quit();
                 THROW(sdl_error, "Couldn't set %d Hz 16-bit audio. Reason: %s!", AUDIO_FREQUENCY, SDL_GetError());
             } else {
-                fprintf(stdout, "allocated %d channels.\n", Mix_AllocateChannels(6)); fflush(stdout);
+                SDL_Log("%d audio channels were allocated.", Mix_AllocateChannels(6));
             }
         }
 
@@ -611,26 +616,24 @@ int main(int argc, char *argv[]) {
             palette = LoadPalette_RW(pFileManager->openFile("IBM.PAL"), true);
         }
 
-        fprintf(stdout, "SDL rendering backend...");fflush(stdout);
+        SDL_Log("Setting video mode...");
         setVideoMode();
         SDL_RendererInfo rendererInfo;
         SDL_GetRendererInfo(renderer, &rendererInfo);
-        fprintf(stdout, "\t%s\n", rendererInfo.name); fflush(stdout);
-        fprintf(stdout, "Maximum texture size...\t\t%dx%d\n", rendererInfo.max_texture_width, rendererInfo.max_texture_height); fflush(stdout);
+        SDL_Log("Renderer: %s (max texture size: %dx%d)", rendererInfo.name, rendererInfo.max_texture_width, rendererInfo.max_texture_height);
 
 
-        fprintf(stdout, "loading fonts...");fflush(stdout);
+        SDL_Log("Loading fonts...");
         pFontManager = new FontManager();
-        fprintf(stdout, "\t\tfinished\n"); fflush(stdout);
 
         if(!missingFiles.empty()) {
             // some files are missing
             bExitGame = true;
             printMissingFilesToScreen();
-            fprintf(stdout, "Deinitialize....."); fflush(stdout);
+            SDL_Log("Deinitialize...");
         } else {
             // everything is just fine and we can start the game
-            fprintf(stdout, "loading graphics and sounds..."); fflush(stdout);
+            SDL_Log("Loading graphics and sounds...");
 
 #ifdef HAS_ASYNC
             auto gfxManagerFut = std::async(std::launch::async, []() { return new GFXManager(); } );
@@ -644,24 +647,20 @@ int main(int argc, char *argv[]) {
             pSFXManager = new SFXManager();
 #endif
 
-            fprintf(stdout, "\tfinished\n"); fflush(stdout);
-
             GUIStyle::setGUIStyle(new DuneStyle);
 
             if(bFirstInit == true) {
-                fprintf(stdout, "starting sound player..."); fflush(stdout);
+                SDL_Log("Starting sound player...");
                 soundPlayer = new SoundPlayer();
-                fprintf(stdout, "\tfinished\n");
 
-                fprintf(stdout, "starting music player...\t"); fflush(stdout);
                 if(settings.audio.musicType == "directory") {
-                    fprintf(stdout, "playing from music directory\n"); fflush(stdout);
+                    SDL_Log("Starting directory music player...");
                     musicPlayer = new DirectoryPlayer();
                 } else if(settings.audio.musicType == "adl") {
-                    fprintf(stdout, "playing ADL files\n"); fflush(stdout);
+                    SDL_Log("Starting ADL music player...");
                     musicPlayer = new ADLPlayer();
                 } else if(settings.audio.musicType == "xmi") {
-                    fprintf(stdout, "playing XMI files\n"); fflush(stdout);
+                    SDL_Log("Starting XMI music player...");
                     musicPlayer = new XMIPlayer();
                 } else {
                     THROW(std::runtime_error, "Invalid music type: '%'", settings.audio.musicType);
@@ -672,24 +671,22 @@ int main(int argc, char *argv[]) {
 
             // Playing intro
             if(((bFirstGamestart == true) || (settings.general.playIntro == true)) && (bFirstInit==true)) {
-                fprintf(stdout, "playing intro.....");fflush(stdout);
+                SDL_Log("Playing intro...");
                 Intro* pIntro = new Intro();
                 pIntro->run();
                 delete pIntro;
-                fprintf(stdout, "\t\tfinished\n"); fflush(stdout);
             }
 
             bFirstInit = false;
 
-            fprintf(stdout, "starting main menu...");fflush(stdout);
+            SDL_Log("Starting main menu...");
             MainMenu * myMenu = new MainMenu();
-            fprintf(stdout, "\t\tfinished\n"); fflush(stdout);
             if(myMenu->showMenu() == MENU_QUIT_DEFAULT) {
                 bExitGame = true;
             }
             delete myMenu;
 
-            fprintf(stdout, "Deinitialize....."); fflush(stdout);
+            SDL_Log("Deinitialize...");
 
             GUIStyle::destroyGUIStyle();
 
@@ -716,7 +713,7 @@ int main(int argc, char *argv[]) {
         if(bExitGame == true) {
             SDL_Quit();
         }
-        fprintf(stdout, "\t\tfinished\n"); fflush(stdout);
+        SDL_Log("Deinitialization finished!");
     } while(bExitGame == false);
 
     // deinit fnkdat

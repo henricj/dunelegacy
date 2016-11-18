@@ -76,7 +76,7 @@ protected:
         \param  warning the warning message
     */
     void logWarning(std::string warning) {
-        fprintf(stderr, "%s: %s\n", mapname.c_str(), warning.c_str());
+        SDL_Log("%s: %s", mapname.c_str(), warning.c_str());
     }
 
 
@@ -86,7 +86,7 @@ protected:
         \param  warning the warning message
     */
     void logWarning(int line, std::string warning) {
-        fprintf(stderr, "%s:%d: %s\n", mapname.c_str(), line, warning.c_str());
+        SDL_Log("%s:%d: %s", mapname.c_str(), line, warning.c_str());
     }
 
 

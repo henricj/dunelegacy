@@ -90,8 +90,7 @@ MentatTextFile::MentatTextFile(SDL_RWops* rwop) {
 
         if((int) entryContentOffset >= mentatTextFilesize) {
             free(pFiledata);
-            fprintf(stderr, "0x%x\n", entryContentOffset);
-            THROW(std::runtime_error, "MentatTextFile:MentatTextFile(): Entry offset beyond file end!");
+            THROW(std::runtime_error, "MentatTextFile:MentatTextFile(): Entry offset 0x%X beyond file end!", entryContentOffset);
         }
 
         std::string compressedEntryContent((char*) pFiledata + entryContentOffset);

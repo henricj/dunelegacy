@@ -629,7 +629,7 @@ ObjectBase* ObjectBase::createObject(int itemID, House* Owner, Uint32 objectID) 
         } break;
 
         default:                            newObject = nullptr;
-                                            fprintf(stderr,"ObjectBase::createObject(): %d is no valid ItemID!\n",itemID);
+                                            SDL_Log("ObjectBase::createObject(): %d is no valid ItemID!",itemID);
                                             break;
     }
 
@@ -688,7 +688,7 @@ ObjectBase* ObjectBase::loadObject(InputStream& stream, int itemID, Uint32 objec
         case Unit_Trooper:                  newObject = new Trooper(stream); break;
 
         default:                            newObject = nullptr;
-                                            fprintf(stderr,"ObjectBase::loadObject(): %d is no valid ItemID!\n",itemID);
+                                            SDL_Log("ObjectBase::loadObject(): %d is no valid ItemID!",itemID);
                                             break;
     }
 

@@ -1225,7 +1225,7 @@ SDL_Surface* GFXManager::generateWindtrapAnimationFrames(SDL_Surface* windtrapPi
     }
 
     if((returnPic->w > 2048) || (returnPic->h > 2048)) {
-        fprintf(stderr, "Warning: Size of sprite sheet for windtrap is %dx%d; may exceed hardware limits on older GPUs!\n", returnPic->w, returnPic->h);
+        SDL_Log("Warning: Size of sprite sheet for windtrap is %dx%d; may exceed hardware limits on older GPUs!", returnPic->w, returnPic->h);
     }
 
     return returnPic;
@@ -1268,7 +1268,7 @@ SDL_Surface* GFXManager::generateDoubledObjPic(unsigned int id, int h) {
 
             SDL_FreeSurface(pOverlay);
         } else {
-            fprintf(stderr, "Warning: No HD sprite sheet for '%s' in zoom level 1!\n", ObjPicNames.at(id).c_str());
+            SDL_Log("Warning: No HD sprite sheet for '%s' in zoom level 1!", ObjPicNames.at(id).c_str());
             pSurface = Scaler::defaultDoubleTiledSurface(objPic[id][h][0], objPicTiles[id].x, objPicTiles[id].y, false);
         }
     } else {
@@ -1276,7 +1276,7 @@ SDL_Surface* GFXManager::generateDoubledObjPic(unsigned int id, int h) {
     }
 
     if((pSurface->w > 2048) || (pSurface->h > 2048)) {
-        fprintf(stderr, "Warning: Size of sprite sheet for '%s' in zoom level 1 is %dx%d; may exceed hardware limits on older GPUs!\n", ObjPicNames.at(id).c_str(), pSurface->w, pSurface->h);
+        SDL_Log("Warning: Size of sprite sheet for '%s' in zoom level 1 is %dx%d; may exceed hardware limits on older GPUs!", ObjPicNames.at(id).c_str(), pSurface->w, pSurface->h);
     }
 
     return pSurface;
@@ -1301,7 +1301,7 @@ SDL_Surface* GFXManager::generateTripledObjPic(unsigned int id, int h) {
 
             SDL_FreeSurface(pOverlay);
         } else {
-            fprintf(stderr, "Warning: No HD sprite sheet for '%s' in zoom level 2!\n", ObjPicNames.at(id).c_str());
+            SDL_Log("Warning: No HD sprite sheet for '%s' in zoom level 2!", ObjPicNames.at(id).c_str());
             pSurface = Scaler::defaultTripleTiledSurface(objPic[id][h][0], objPicTiles[id].x, objPicTiles[id].y, false);
         }
     } else {
@@ -1310,7 +1310,7 @@ SDL_Surface* GFXManager::generateTripledObjPic(unsigned int id, int h) {
 
 
     if((pSurface->w > 2048) || (pSurface->h > 2048)) {
-        fprintf(stderr, "Warning: Size of sprite sheet for '%s' in zoom level 2 is %dx%d; may exceed hardware limits on older GPUs!\n", ObjPicNames.at(id).c_str(), pSurface->w, pSurface->h);
+        SDL_Log("Warning: Size of sprite sheet for '%s' in zoom level 2 is %dx%d; may exceed hardware limits on older GPUs!", ObjPicNames.at(id).c_str(), pSurface->w, pSurface->h);
     }
 
     return pSurface;

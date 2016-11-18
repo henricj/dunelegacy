@@ -140,7 +140,7 @@ SDL_Surface* LoadPNG_RW(SDL_RWops* RWop, int freesrc) {
 
         return pic;
     } catch (std::exception &e) {
-        fprintf(stderr, "%s\n", e.what());
+        SDL_Log("%s", e.what());
 
         free(pFiledata);
         free(pImageOut);
@@ -191,7 +191,7 @@ int SavePNG_RW(SDL_Surface* surface, SDL_RWops* RWop, int freedst) {
     unsigned int error = lodepng_encode32(&ppngFile, &pngFileSize, pImage, width, height);
     free(pImage);
     if(error != 0) {
-        fprintf(stderr, "%s\n", lodepng_error_text(error));
+        SDL_Log("%s", lodepng_error_text(error));
         if(freedst) {
             SDL_RWclose(RWop);
         }
@@ -199,7 +199,7 @@ int SavePNG_RW(SDL_Surface* surface, SDL_RWops* RWop, int freedst) {
     }
 
     if(SDL_RWwrite(RWop, ppngFile, 1, pngFileSize) != pngFileSize) {
-        fprintf(stderr, "%s\n", SDL_GetError());
+        SDL_Log("%s", SDL_GetError());
         if(freedst) {
             SDL_RWclose(RWop);
         }

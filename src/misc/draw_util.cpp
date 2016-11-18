@@ -182,7 +182,7 @@ SDL_Surface* renderReadSurface(SDL_Renderer* renderer) {
     SDL_Rect rendererSize = getRendererSize();
     SDL_Surface* pScreen = SDL_CreateRGBSurface(0, rendererSize.w, rendererSize.h, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK);
     if((pScreen == nullptr) || (SDL_RenderReadPixels(renderer, nullptr, SCREEN_FORMAT, pScreen->pixels, pScreen->pitch) != 0)) {
-        fprintf(stderr,"renderReadSurface() failed: %s\n", SDL_GetError());
+        SDL_Log("Warning: renderReadSurface() failed: %s", SDL_GetError());
         SDL_FreeSurface(pScreen);
         return nullptr;
     }

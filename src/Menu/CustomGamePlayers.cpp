@@ -97,12 +97,12 @@ CustomGamePlayers::CustomGamePlayers(const GameInitSettings& newGameInitSettings
 
         Uint32 magicNum = memStream.readUint32();
         if(magicNum != SAVEMAGIC) {
-            fprintf(stderr,"CustomGamePlayers: No valid savegame! Expected magic number %.8X, but got %.8X!\n", SAVEMAGIC, magicNum);
+            SDL_Log("CustomGamePlayers: No valid savegame! Expected magic number %.8X, but got %.8X!", SAVEMAGIC, magicNum);
         }
 
         Uint32 savegameVersion = memStream.readUint32();
         if (savegameVersion != SAVEGAMEVERSION) {
-            fprintf(stderr,"CustomGamePlayers: No valid savegame! Expected savegame version %d, but got %d!\n", SAVEGAMEVERSION, savegameVersion);
+            SDL_Log("CustomGamePlayers: No valid savegame! Expected savegame version %d, but got %d!", SAVEGAMEVERSION, savegameVersion);
         }
 
         memStream.readString();     // dune legacy version

@@ -104,7 +104,7 @@ SDL_Surface * LoadCPS_RW(SDL_RWops* RWop, int freesrc)
 
         return pic;
     } catch (std::exception &e) {
-        fprintf(stderr, "%s\n", e.what());
+        SDL_Log("Exception: %s", e.what());
 
         delete [] pFiledata;
         delete [] pImageOut;

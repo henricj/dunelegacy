@@ -104,7 +104,7 @@ SDL_Surface *Shpfile::getPicture(Uint32 indexOfFile)
     Uint16 size = SDL_SwapLE16(*((Uint16*) (Fileheader + 8)));
 
     if((ImageOut = (unsigned char*) calloc(1,sizeX*sizeY)) == nullptr) {
-                return nullptr;
+        return nullptr;
     }
 
     switch(type) {
@@ -117,7 +117,7 @@ SDL_Surface *Shpfile::getPicture(Uint32 indexOfFile)
             }
 
             if(decode80(Fileheader + 10,DecodeDestination,size) == -1) {
-                fprintf(stderr,"Warning: Checksum-Error in Shp-File\n");
+                SDL_Log("Warning: Checksum-Error in Shp-File!");
             }
 
             shpCorrectLF(DecodeDestination,ImageOut, size);
@@ -133,7 +133,7 @@ SDL_Surface *Shpfile::getPicture(Uint32 indexOfFile)
             }
 
             if(decode80(Fileheader + 10 + 16,DecodeDestination,size) == -1) {
-                fprintf(stderr,"Warning: Checksum-Error in Shp-File\n");
+                SDL_Log("Warning: Checksum-Error in Shp-File!");
             }
 
             shpCorrectLF(DecodeDestination, ImageOut, size);
@@ -158,8 +158,8 @@ SDL_Surface *Shpfile::getPicture(Uint32 indexOfFile)
 
         default:
         {
-            fprintf(stderr,"Error: Type %d in SHP-Files not supported!\n",type);
-            exit(EXIT_FAILURE);
+            SDL_Log("Error: Type %d in SHP-Files not supported!",type);
+            return nullptr;
         }
     }
 
@@ -219,8 +219,8 @@ SDL_Surface* Shpfile::getPictureArray(unsigned int tilesX, unsigned int tilesY, 
     }
 
     if((tiles = (Uint32*) malloc(tilesX*tilesY*sizeof(Uint32))) == nullptr) {
-        fprintf(stderr,"Shpfile::getPictureArray(): Cannot allocate memory!\n");
-        exit(EXIT_FAILURE);
+        SDL_Log("Shpfile::getPictureArray(): Cannot allocate memory!");
+        return nullptr;
     }
 
     va_list arg_ptr;
@@ -230,7 +230,7 @@ SDL_Surface* Shpfile::getPictureArray(unsigned int tilesX, unsigned int tilesY, 
         tiles[i] = va_arg( arg_ptr, int );
         if(TILE_GETINDEX(tiles[i]) >= shpfileEntries.size()) {
             free(tiles);
-            fprintf(stderr,"Shpfile::getPictureArray(): There exist only %d files in this *.shp.\n", (int) shpfileEntries.size());
+            SDL_Log("Shpfile::getPictureArray(): There exist only %d files in this *.shp!", (int) shpfileEntries.size());
             va_end(arg_ptr);
             return nullptr;
         }
@@ -245,15 +245,15 @@ SDL_Surface* Shpfile::getPictureArray(unsigned int tilesX, unsigned int tilesY, 
         if(((pFiledata + shpfileEntries[TILE_GETINDEX(tiles[i])].startOffset)[2] != sizeY)
          || ((pFiledata + shpfileEntries[TILE_GETINDEX(tiles[i])].startOffset)[3] != sizeX)) {
             free(tiles);
-            fprintf(stderr,"Shpfile::getPictureArray(): Not all pictures have the same size!\n");
-            exit(EXIT_FAILURE);
+            SDL_Log("Shpfile::getPictureArray(): Not all pictures have the same size!");
+            return nullptr;
          }
     }
 
     // create new picture surface
     if((pic = SDL_CreateRGBSurface(0,sizeX*tilesX,sizeY*tilesY,8,0,0,0,0)) == nullptr) {
-        fprintf(stderr,"Shpfile::getPictureArray(): Cannot create Surface.\n");
-        exit(EXIT_FAILURE);
+        SDL_Log("Shpfile::getPictureArray(): Cannot create Surface.");
+        return nullptr;
     }
 
     palette.applyToSurface(pic);
@@ -270,8 +270,8 @@ SDL_Surface* Shpfile::getPictureArray(unsigned int tilesX, unsigned int tilesY, 
 
             if((ImageOut = (unsigned char*) calloc(1,sizeX*sizeY)) == nullptr) {
                 free(tiles);
-                fprintf(stderr,"Shpfile::getPictureArray(): Cannot allocate memory!\n");
-                exit(EXIT_FAILURE);
+                SDL_Log("Shpfile::getPictureArray(): Cannot allocate memory!");
+                return nullptr;
             }
 
             switch(type) {
@@ -281,12 +281,12 @@ SDL_Surface* Shpfile::getPictureArray(unsigned int tilesX, unsigned int tilesY, 
                     if( (DecodeDestination = (unsigned char*) calloc(1,size)) == nullptr) {
                         free(ImageOut);
                         free(tiles);
-                        fprintf(stderr,"Shpfile::getPictureArray(): Cannot allocate memory!\n");
-                        exit(EXIT_FAILURE);
+                        SDL_Log("Shpfile::getPictureArray(): Cannot allocate memory!");
+                        return nullptr;
                     }
 
                     if(decode80(Fileheader + 10,DecodeDestination,size) == -1) {
-                        fprintf(stderr,"Warning: Checksum-Error in Shp-File\n");
+                        SDL_Log("Warning: Checksum-Error in Shp-File!");
                     }
 
                     shpCorrectLF(DecodeDestination,ImageOut, size);
@@ -299,12 +299,12 @@ SDL_Surface* Shpfile::getPictureArray(unsigned int tilesX, unsigned int tilesY, 
                     if( (DecodeDestination = (unsigned char*) calloc(1,size)) == nullptr) {
                         free(ImageOut);
                         free(tiles);
-                        fprintf(stderr,"Shpfile::getPictureArray(): Cannot allocate memory!\n");
-                        exit(EXIT_FAILURE);
+                        SDL_Log("Shpfile::getPictureArray(): Cannot allocate memory!");
+                        return nullptr;
                     }
 
                     if(decode80(Fileheader + 10 + 16,DecodeDestination,size) == -1) {
-                        fprintf(stderr,"Warning: Checksum-Error in Shp-File\n");
+                        SDL_Log("Warning: Checksum-Error in Shp-File!");
                     }
 
                     shpCorrectLF(DecodeDestination, ImageOut, size);
@@ -327,8 +327,10 @@ SDL_Surface* Shpfile::getPictureArray(unsigned int tilesX, unsigned int tilesY, 
 
                 default:
                 {
-                    fprintf(stderr,"Shpfile: Type %d in SHP-Files not supported!\n",type);
-                    exit(EXIT_FAILURE);
+                    SDL_Log("Shpfile: Type %d in SHP-Files not supported!",type);
+                    free(ImageOut);
+                    free(tiles);
+                    return nullptr;
                 }
             }
 
@@ -368,8 +370,10 @@ SDL_Surface* Shpfile::getPictureArray(unsigned int tilesX, unsigned int tilesY, 
 
                 default:
                 {
-                    fprintf(stderr,"Shpfile: Invalid type for this parameter. Must be one of TILE_NORMAL, TILE_FLIPH, TILE_FLIPV or TILE_ROTATE!\n");
-                    exit(EXIT_FAILURE);
+                    SDL_Log("Shpfile: Invalid type for this parameter. Must be one of TILE_NORMAL, TILE_FLIPH, TILE_FLIPV or TILE_ROTATE!");
+                    free(ImageOut);
+                    free(tiles);
+                    return nullptr;
                 } break;
             }
 

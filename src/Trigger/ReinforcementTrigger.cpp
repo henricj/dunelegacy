@@ -253,7 +253,7 @@ void ReinforcementTrigger::trigger()
 
 
         default: {
-            fprintf(stderr,"ReinforcementTrigger::trigger(): Invalid drop location!\n");
+            SDL_Log("ReinforcementTrigger::trigger(): Invalid drop location!");
         } break;
     }
 

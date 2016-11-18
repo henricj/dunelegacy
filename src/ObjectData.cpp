@@ -242,7 +242,7 @@ int ObjectData::loadItemID(const INIFile& objectDataFile, const std::string& sec
     int itemID = getItemIDByName(strItem);
 
     if(itemID == ItemID_Invalid) {
-        fprintf(stderr, "Warning: Cannot read object data from section '%s', key '%s': '%s' is no valid structure/unit name!\n", section.c_str(), key.c_str(), strItem.c_str() );
+        SDL_Log("Warning: Cannot read object data from section '%s', key '%s': '%s' is no valid structure/unit name!", section.c_str(), key.c_str(), strItem.c_str() );
         return defaultValue;
     }
 
@@ -269,7 +269,7 @@ std::bitset<Structure_LastID> ObjectData::loadPrerequisiteStructuresSet(const IN
 
         int itemID = getItemIDByName(strItem);
         if(itemID == ItemID_Invalid || !isStructure(itemID)) {
-            fprintf(stderr, "Warning: Cannot read object data from section '%s', key '%s': '%s' is no valid structure name!\n", section.c_str(), key.c_str(), strItem.c_str() );
+            SDL_Log("Warning: Cannot read object data from section '%s', key '%s': '%s' is no valid structure name!", section.c_str(), key.c_str(), strItem.c_str() );
             return defaultValue;
         }
 

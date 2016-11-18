@@ -647,12 +647,9 @@ FixPoint getDeviateWeakness(HOUSETYPE house) {
     \param  filename    the filename of the replay file
 */
 void startReplay(std::string filename) {
-    printf("Initing Replay:\n");
+    SDL_Log("Initializing replay...");
     currentGame = new Game();
     currentGame->initReplay(filename);
-
-    printf("Initialization finished!\n");
-    fflush(stdout);
 
     currentGame->runMainLoop();
 
@@ -674,12 +671,9 @@ void startSinglePlayerGame(const GameInitSettings& init)
 
     while(1) {
 
-        printf("Initing Game:\n");
+        SDL_Log("Initializing game...");
         currentGame = new Game();
         currentGame->initGame(currentGameInitInfo);
-
-        printf("Initialization finished!\n");
-        fflush(stdout);
 
         // get init settings from game as it might have changed (through loading the game)
         currentGameInitInfo = currentGame->getGameInitSettings();
@@ -690,21 +684,15 @@ void startSinglePlayerGame(const GameInitSettings& init)
         while(bGetNext) {
             switch(currentGame->whatNext()) {
                 case GAME_DEBRIEFING_WIN: {
-                    fprintf(stdout,"Debriefing...");
-                    fflush(stdout);
+                    SDL_Log("Debriefing...");
                     BriefingMenu* pBriefing = new BriefingMenu(currentGameInitInfo.getHouseID(), currentGameInitInfo.getMission(), DEBRIEFING_WIN);
                     pBriefing->showMenu();
                     delete pBriefing;
-                    fprintf(stdout,"\t\t\tfinished\n");
-                    fflush(stdout);
 
-                    fprintf(stdout,"Game statistics...");
-                    fflush(stdout);
+                    SDL_Log("Game statistics...");
                     CampaignStatsMenu* pCampaignStats = new CampaignStatsMenu(missionNumberToLevelNumber(currentGameInitInfo.getMission()));
                     pCampaignStats->showMenu();
                     delete pCampaignStats;
-                    fprintf(stdout,"\t\tfinished\n");
-                    fflush(stdout);
 
                     int houseID = currentGameInitInfo.getHouseID();
 
@@ -712,45 +700,36 @@ void startSinglePlayerGame(const GameInitSettings& init)
                         int level = missionNumberToLevelNumber(currentGameInitInfo.getMission());
 
                         if(level == 4 && (houseID == HOUSE_HARKONNEN || houseID == HOUSE_ATREIDES || houseID == HOUSE_ORDOS)) {
-                            fprintf(stdout, "playing meanwhile.....");fflush(stdout);
+                            SDL_Log("Playing meanwhile...");
                             Meanwhile* pMeanwhile = new Meanwhile(houseID,true);
                             pMeanwhile->run();
                             delete pMeanwhile;
-                            fprintf(stdout, "\t\tfinished\n"); fflush(stdout);
                         } else if(level == 8 && (houseID == HOUSE_HARKONNEN || houseID == HOUSE_ATREIDES || houseID == HOUSE_ORDOS)) {
-                            fprintf(stdout, "playing meanwhile.....");fflush(stdout);
+                            SDL_Log("Playing meanwhile...");
                             Meanwhile* pMeanwhile = new Meanwhile(houseID,false);
                             pMeanwhile->run();
                             delete pMeanwhile;
-                            fprintf(stdout, "\t\tfinished\n"); fflush(stdout);
                         } else if(level == 9) {
-                            fprintf(stdout, "playing finale.....");fflush(stdout);
+                            SDL_Log("Playing finale.....");
                             Finale* pFinale = new Finale(houseID);
                             pFinale->run();
                             delete pFinale;
-                            fprintf(stdout, "\t\tfinished\n"); fflush(stdout);
                         }
                     }
                 } break;
 
                 case GAME_DEBRIEFING_LOST: {
-                    fprintf(stdout,"Debriefing...");
-                    fflush(stdout);
+                    SDL_Log("Debriefing...");
                     BriefingMenu* pBriefing = new BriefingMenu(currentGameInitInfo.getHouseID(), currentGameInitInfo.getMission(), DEBRIEFING_LOST);
                     pBriefing->showMenu();
                     delete pBriefing;
-                    fprintf(stdout,"\t\t\tfinished\n");
-                    fflush(stdout);
                 } break;
 
                 case GAME_CUSTOM_GAME_STATS: {
-                    fprintf(stdout,"Game statistics...");
-                    fflush(stdout);
+                    SDL_Log("Game statistics...");
                     CustomGameStatsMenu* pCustomGameStats = new CustomGameStatsMenu();
                     pCustomGameStats->showMenu();
                     delete pCustomGameStats;
-                    fprintf(stdout,"\t\tfinished\n");
-                    fflush(stdout);
                 } break;
 
                 case GAME_LOAD:
@@ -785,12 +764,9 @@ void startMultiPlayerGame(const GameInitSettings& init)
 {
     GameInitSettings currentGameInitInfo = init;
 
-    printf("Initing Game:\n");
+    SDL_Log("Initializing game...");
     currentGame = new Game();
     currentGame->initGame(currentGameInitInfo);
-
-    printf("Initialization finished!\n");
-    fflush(stdout);
 
     // get init settings from game as it might have changed (through loading the game)
     currentGameInitInfo = currentGame->getGameInitSettings();
@@ -798,13 +774,10 @@ void startMultiPlayerGame(const GameInitSettings& init)
     currentGame->runMainLoop();
 
     if(currentGame->whatNext() == GAME_CUSTOM_GAME_STATS) {
-        fprintf(stdout,"Game statistics...");
-        fflush(stdout);
+        SDL_Log("Game statistics...");
         CustomGameStatsMenu* pCustomGameStats = new CustomGameStatsMenu();
         pCustomGameStats->showMenu();
         delete pCustomGameStats;
-        fprintf(stdout,"\t\tfinished\n");
-        fflush(stdout);
     }
 
     delete currentGame;

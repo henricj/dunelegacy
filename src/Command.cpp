@@ -374,7 +374,7 @@ void Command::executeCommand() const {
 
             Uint32 currentSeed = currentGame->randomGen.getSeed();
             if(currentSeed != parameter[0]) {
-                fprintf(stderr, "Game is asynchronous in game cycle %d! Saved seed and current seed do not match: %ud != %ud\n", currentGame->getGameCycleCount(), parameter[0], currentSeed);
+                SDL_Log("Warning: Game is asynchronous in game cycle %d! Saved seed and current seed do not match: %ud != %ud", currentGame->getGameCycleCount(), parameter[0], currentSeed);
 #ifdef TEST_SYNC
                 currentGame->saveGame("test.sav");
                 exit(0);
