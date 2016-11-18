@@ -33,9 +33,8 @@ class FileManager {
 public:
     /**
         Constructor.
-        \param saveMode if true, every loading error is ignored
     */
-    explicit FileManager(bool saveMode = false);
+    explicit FileManager();
 
     FileManager(const FileManager& fileManager) = delete;
 

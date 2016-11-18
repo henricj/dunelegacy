@@ -33,7 +33,7 @@
 #include <sstream>
 #include <iomanip>
 
-FileManager::FileManager(bool saveMode) {
+FileManager::FileManager() {
     SDL_Log("\nFileManager is loading PAK-Files...");
     SDL_Log("\nMD5-Checksum                      Filename");
 
@@ -51,14 +51,12 @@ FileManager::FileManager(bool saveMode) {
                     SDL_Log("%s  %s", md5FromFilename(filepath).c_str(), filepath.c_str());
                     pakFiles.push_back(new Pakfile(filepath));
                 } catch (std::exception &e) {
-                    if(saveMode == false) {
-                        while(pakFiles.empty()) {
-                            delete pakFiles.back();
-                            pakFiles.pop_back();
-                        }
-
-                        THROW(io_error, "Error while opening '%s': %s!", filepath, e.what());
+                    while(pakFiles.empty()) {
+                        delete pakFiles.back();
+                        pakFiles.pop_back();
                     }
+
+                    THROW(io_error, "Error while opening '%s': %s!", filepath, e.what());
                 }
 
                 // break out of searchPath-loop because we have opened the file in one directory

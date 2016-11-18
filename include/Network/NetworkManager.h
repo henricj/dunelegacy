@@ -174,7 +174,7 @@ public:
     }
 
 private:
-    static void debugNetwork(const char* fmt, ...);
+    static void debugNetwork(SDL_PRINTF_FORMAT_STRING const char* fmt, ...) SDL_PRINTF_VARARG_FUNC(1);
 
     void sendPacketToHost(ENetPacketOStream& packetStream, int channel = 0);
 

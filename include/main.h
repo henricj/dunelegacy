@@ -51,10 +51,10 @@ void createDefaultConfigFile(std::string configfilepath, std::string language);
 void logOutputFunction(void *userdata, int category, SDL_LogPriority priority, const char *message);
 
 /**
-    This function prints a list of missing pak-files on the screen.
-    It returns, when a key is pressed.
+    This function shows a list of missing pak-files in a message box.
+    It returns, when the message box is closed.
 */
-void printMissingFilesToScreen();
+void showMissingFilesMessageBox();
 
 /**
     This function tries to determine the system language the user uses.

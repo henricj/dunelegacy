@@ -245,7 +245,7 @@ void logOutputFunction(void *userdata, int category, SDL_LogPriority priority, c
     fflush(stderr);
 }
 
-void printMissingFilesToScreen() {
+void showMissingFilesMessageBox() {
     SDL_ShowCursor(SDL_ENABLE);
 
     std::string instruction = "Dune Legacy uses the data files from original Dune II. The following files are missing:\n";
@@ -257,59 +257,18 @@ void printMissingFilesToScreen() {
         instruction += " " + *iter + "\n";
     }
 
-    instruction += "\nPut them in one of the following directories:\n";
+    instruction += "\nPut them in one of the following directories and restart Dune Legacy:\n";
     std::vector<std::string> searchPath = FileManager::getSearchPath();
     std::vector<std::string>::const_iterator searchPathIter;
     for(searchPathIter = searchPath.begin(); searchPathIter != searchPath.end(); ++searchPathIter) {
         instruction += " " + *searchPathIter + "\n";
     }
 
-    instruction += "\nYou may want to add GERMAN.PAK or FRENCH.PAK for playing in these languages.\n";
-    instruction += "\n\nPress ESC to exit.";
+    instruction += "\nYou may want to add GERMAN.PAK or FRENCH.PAK for playing in these languages.";
 
-    SDL_Texture* pTextTexture = pFontManager->createTextureWithMultilineText(instruction, COLOR_BLACK, FONT_STD12);
-
-    SDL_Event   event;
-    bool quiting = false;
-    while(!quiting) {
-        SDL_Delay(20);
-
-        setRenderDrawColor(renderer, DuneStyle::buttonBackgroundColor);
-        SDL_RenderClear(renderer);
-
-        SDL_Rect dest = calcDrawingRect(pTextTexture, 30, 30);
-        SDL_RenderCopy(renderer, pTextTexture, nullptr, &dest);
-
-        SDL_RenderPresent(renderer);
-
-        while(SDL_PollEvent(&event)) {
-            //check the events
-            switch (event.type)
-            {
-                case (SDL_KEYDOWN): // Look for a keypress
-                {
-                    switch(event.key.keysym.sym) {
-                        case SDLK_ESCAPE:
-                            quiting = true;
-                            break;
-
-                        default:
-                            break;
-                    }
-                } break;
-
-
-                case SDL_QUIT:
-                    quiting = true;
-                    break;
-
-                default:
-                    break;
-            }
-        }
+    if(!SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Dune Legacy", instruction.c_str(), nullptr)) {
+        fprintf(stderr, "%s\n", instruction.c_str());
     }
-
-    SDL_DestroyTexture(pTextTexture);
 }
 
 std::string getUserLanguage() {
@@ -440,31 +399,14 @@ int main(int argc, char *argv[]) {
     // First check for missing files
     std::vector<std::string> missingFiles = FileManager::getMissingFiles();
 
-    if(missingFiles.empty() == false) {
+    if(!missingFiles.empty()) {
         // create data directory inside config directory
         char tmp[FILENAME_MAX];
         fnkdat("data/", tmp, FILENAME_MAX, FNKDAT_USER | FNKDAT_CREAT);
 
-        bool cannotShowMissingScreen = false;
-        fprintf(stderr,"The following files are missing:\n");
-        std::vector<std::string>::const_iterator iter;
-        for(iter = missingFiles.begin() ; iter != missingFiles.end(); ++iter) {
-            fprintf(stderr," %s\n",iter->c_str());
-            if(iter->find("LEGACY.PAK") != std::string::npos) {
-                cannotShowMissingScreen = true;
-            }
-        }
+        showMissingFilesMessageBox();
 
-        fprintf(stderr,"Put them in one of the following directories:\n");
-        std::vector<std::string> searchPath = FileManager::getSearchPath();
-        std::vector<std::string>::const_iterator searchPathIter;
-        for(searchPathIter = searchPath.begin(); searchPathIter != searchPath.end(); ++searchPathIter) {
-            fprintf(stderr," %s\n",searchPathIter->c_str());
-        }
-
-        if(cannotShowMissingScreen == true) {
-            return EXIT_FAILURE;
-        }
+        return EXIT_FAILURE;
     }
 
     bool bExitGame = false;
@@ -486,11 +428,8 @@ int main(int argc, char *argv[]) {
                 userLanguage = "en";
             }
 
-            if(missingFiles.empty() == true) {
-                // if all pak files were found we can create the ini file
-                bFirstGamestart = true;
-                createDefaultConfigFile(configfilepath, userLanguage);
-            }
+            bFirstGamestart = true;
+            createDefaultConfigFile(configfilepath, userLanguage);
         }
 
         INIFile myINIFile(configfilepath);
@@ -532,16 +471,26 @@ int main(int argc, char *argv[]) {
 
         pTextManager = new TextManager();
 
-        if(FileManager::getMissingFiles().size() > 0) {
-            // set back to english
-            std::vector<std::string> missingFiles = FileManager::getMissingFiles();
-            fprintf(stderr,"The following files are missing for language \"%s\":\n",_("LanguageFileExtension").c_str());
+        missingFiles = FileManager::getMissingFiles();
+        if(!missingFiles.empty()) {
+            // set back to English
+            std::string setBackToEnglishWarning = fmt::sprintf("The following files are missing for language \"%s\":\n",_("LanguageFileExtension"));
             std::vector<std::string>::const_iterator iter;
-            for(iter = missingFiles.begin(); iter != missingFiles.end(); ++iter) {
-                fprintf(stderr," %s\n",iter->c_str());
+            for(std::string filename : missingFiles) {
+                setBackToEnglishWarning += filename + "\n";
             }
+            setBackToEnglishWarning += "\nLanguage is changed to English!";
+            SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_WARNING, "Dune Legacy", setBackToEnglishWarning.c_str(), NULL);
+
             SDL_Log("Warning: Language is changed to English!");
+
             settings.general.language = "en";
+            myINIFile.setStringValue("General","Language",settings.general.language);
+            myINIFile.saveChangesTo(configfilepath);
+
+            // reinit text manager
+            delete pTextManager;
+            pTextManager = new TextManager();
         }
 
         for(int i=1; i < argc; i++) {
@@ -605,16 +554,12 @@ int main(int argc, char *argv[]) {
             }
         }
 
-        pFileManager = new FileManager( !missingFiles.empty() );
+        pFileManager = new FileManager();
 
         // now we can finish loading texts
-        if(missingFiles.empty()) {
-            pTextManager->loadData();
-        }
+        pTextManager->loadData();
 
-        if(pFileManager->exists("IBM.PAL") == true) {
-            palette = LoadPalette_RW(pFileManager->openFile("IBM.PAL"), true);
-        }
+        palette = LoadPalette_RW(pFileManager->openFile("IBM.PAL"), true);
 
         SDL_Log("Setting video mode...");
         setVideoMode();
@@ -626,83 +571,74 @@ int main(int argc, char *argv[]) {
         SDL_Log("Loading fonts...");
         pFontManager = new FontManager();
 
-        if(!missingFiles.empty()) {
-            // some files are missing
-            bExitGame = true;
-            printMissingFilesToScreen();
-            SDL_Log("Deinitialize...");
-        } else {
-            // everything is just fine and we can start the game
-            SDL_Log("Loading graphics and sounds...");
+        SDL_Log("Loading graphics and sounds...");
 
 #ifdef HAS_ASYNC
-            auto gfxManagerFut = std::async(std::launch::async, []() { return new GFXManager(); } );
-            auto sfxManagerFut = std::async(std::launch::async, []() { return new SFXManager(); } );
+        auto gfxManagerFut = std::async(std::launch::async, []() { return new GFXManager(); } );
+        auto sfxManagerFut = std::async(std::launch::async, []() { return new SFXManager(); } );
 
-            pGFXManager = gfxManagerFut.get();
-            pSFXManager = sfxManagerFut.get();
+        pGFXManager = gfxManagerFut.get();
+        pSFXManager = sfxManagerFut.get();
 #else
-            // g++ does not provide std::launch::async on all platforms
-            pGFXManager = new GFXManager();
-            pSFXManager = new SFXManager();
+        // g++ does not provide std::launch::async on all platforms
+        pGFXManager = new GFXManager();
+        pSFXManager = new SFXManager();
 #endif
 
-            GUIStyle::setGUIStyle(new DuneStyle);
+        GUIStyle::setGUIStyle(new DuneStyle);
 
-            if(bFirstInit == true) {
-                SDL_Log("Starting sound player...");
-                soundPlayer = new SoundPlayer();
+        if(bFirstInit == true) {
+            SDL_Log("Starting sound player...");
+            soundPlayer = new SoundPlayer();
 
-                if(settings.audio.musicType == "directory") {
-                    SDL_Log("Starting directory music player...");
-                    musicPlayer = new DirectoryPlayer();
-                } else if(settings.audio.musicType == "adl") {
-                    SDL_Log("Starting ADL music player...");
-                    musicPlayer = new ADLPlayer();
-                } else if(settings.audio.musicType == "xmi") {
-                    SDL_Log("Starting XMI music player...");
-                    musicPlayer = new XMIPlayer();
-                } else {
-                    THROW(std::runtime_error, "Invalid music type: '%'", settings.audio.musicType);
-                }
-
-                //musicPlayer->changeMusic(MUSIC_INTRO);
+            if(settings.audio.musicType == "directory") {
+                SDL_Log("Starting directory music player...");
+                musicPlayer = new DirectoryPlayer();
+            } else if(settings.audio.musicType == "adl") {
+                SDL_Log("Starting ADL music player...");
+                musicPlayer = new ADLPlayer();
+            } else if(settings.audio.musicType == "xmi") {
+                SDL_Log("Starting XMI music player...");
+                musicPlayer = new XMIPlayer();
+            } else {
+                THROW(std::runtime_error, "Invalid music type: '%'", settings.audio.musicType);
             }
 
-            // Playing intro
-            if(((bFirstGamestart == true) || (settings.general.playIntro == true)) && (bFirstInit==true)) {
-                SDL_Log("Playing intro...");
-                Intro* pIntro = new Intro();
-                pIntro->run();
-                delete pIntro;
-            }
-
-            bFirstInit = false;
-
-            SDL_Log("Starting main menu...");
-            MainMenu * myMenu = new MainMenu();
-            if(myMenu->showMenu() == MENU_QUIT_DEFAULT) {
-                bExitGame = true;
-            }
-            delete myMenu;
-
-            SDL_Log("Deinitialize...");
-
-            GUIStyle::destroyGUIStyle();
-
-            // clear everything
-            if(bExitGame == true) {
-                delete musicPlayer;
-                delete soundPlayer;
-                Mix_HaltMusic();
-                Mix_CloseAudio();
-            }
-
-            delete pTextManager;
-            delete pSFXManager;
-            delete pGFXManager;
+            //musicPlayer->changeMusic(MUSIC_INTRO);
         }
 
+        // Playing intro
+        if(((bFirstGamestart == true) || (settings.general.playIntro == true)) && (bFirstInit==true)) {
+            SDL_Log("Playing intro...");
+            Intro* pIntro = new Intro();
+            pIntro->run();
+            delete pIntro;
+        }
+
+        bFirstInit = false;
+
+        SDL_Log("Starting main menu...");
+        MainMenu * myMenu = new MainMenu();
+        if(myMenu->showMenu() == MENU_QUIT_DEFAULT) {
+            bExitGame = true;
+        }
+        delete myMenu;
+
+        SDL_Log("Deinitialize...");
+
+        GUIStyle::destroyGUIStyle();
+
+        // clear everything
+        if(bExitGame == true) {
+            delete musicPlayer;
+            delete soundPlayer;
+            Mix_HaltMusic();
+            Mix_CloseAudio();
+        }
+
+        delete pTextManager;
+        delete pSFXManager;
+        delete pGFXManager;
         delete pFontManager;
         delete pFileManager;
 
