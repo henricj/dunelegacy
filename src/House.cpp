@@ -399,7 +399,7 @@ void House::incrementStructures(int itemID) {
     // change spice capacity
     capacity += currentGame->objectData.data[itemID][houseID].capacity;
 
-    if(currentGame->gameState != LOADING) {
+    if(currentGame->gameState != GameState::Loading) {
         // do not check selection lists if we are loading
         updateBuildLists();
     }
@@ -426,7 +426,7 @@ void House::decrementStructures(int itemID, const Coord& location) {
     // change spice capacity
     capacity -= currentGame->objectData.data[itemID][houseID].capacity;
 
-    if(currentGame->gameState != LOADING) {
+    if(currentGame->gameState != GameState::Loading) {
         // do not check selection lists if we are loading
         updateBuildLists();
     }
@@ -707,7 +707,7 @@ StructureBase* House::placeStructure(Uint32 builderID, int itemID, int xPos, int
             }
 
             // at the beginning of the game the first refinery gets a harvester for free (brought by a carryall)
-            if((itemID == Structure_Refinery) && ( ((currentGame->gameState == START) && (numItem[Unit_Harvester] <= 0)) || (builderID != NONE_ID)) ) {
+            if((itemID == Structure_Refinery) && ( ((currentGame->gameState == GameState::Start) && (numItem[Unit_Harvester] <= 0)) || (builderID != NONE_ID)) ) {
                 freeHarvester(xPos, yPos);
             }
 
@@ -868,7 +868,7 @@ void House::decrementHarvesters() {
                 }
             }
 
-            if(pClosestRefinery && (currentGame->gameState == BEGUN)) {
+            if(pClosestRefinery && (currentGame->gameState == GameState::Running)) {
                 freeHarvester(pClosestRefinery->getLocation());
             }
         }

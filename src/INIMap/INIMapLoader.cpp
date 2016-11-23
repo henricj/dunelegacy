@@ -843,7 +843,7 @@ House* INIMapLoader::getOrCreateHouse(int houseID) {
 
     if(pNewHouse == nullptr) {
         Uint8 team = 0;
-        if(pGame->gameType == GAMETYPE_CAMPAIGN || pGame->gameType == GAMETYPE_SKIRMISH) {
+        if(pGame->gameType == GameType::Campaign || pGame->gameType == GameType::Skirmish) {
             // in campaign all "other" units are in the same team as the AI
             team = 2;
         }

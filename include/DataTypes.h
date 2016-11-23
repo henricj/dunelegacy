@@ -133,17 +133,22 @@ typedef enum {
     ATTACKMODE_MAX
 } ATTACKMODE;
 
-typedef enum {START, LOADING, BEGUN, DEINITIALIZE} GAMESTATETYPE;
+enum class GameState {
+    Start,
+    Loading,
+    Running,
+    Deinitialize
+};
 
-typedef enum {
-    GAMETYPE_INVALID            = -1,
-    GAMETYPE_LOAD_SAVEGAME      = 0,
-    GAMETYPE_CAMPAIGN           = 1,
-    GAMETYPE_CUSTOM             = 2,
-    GAMETYPE_SKIRMISH           = 3,
-    GAMETYPE_CUSTOM_MULTIPLAYER = 4,
-    GAMETYPE_LOAD_MULTIPLAYER   = 5
-} GAMETYPE;
+enum class GameType {
+    Invalid           = -1,
+    LoadSavegame      = 0,
+    Campaign          = 1,
+    CustomGame        = 2,
+    Skirmish          = 3,
+    CustomMultiplayer = 4,
+    LoadMultiplayer   = 5
+};
 
 
 class SettingsClass

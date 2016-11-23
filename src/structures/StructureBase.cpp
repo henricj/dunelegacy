@@ -104,7 +104,7 @@ void StructureBase::assignToMap(const Coord& pos) {
             if(currentGameMap->tileExists(i, j)) {
                 Tile* pTile = currentGameMap->getTile(i,j);
                 pTile->assignNonInfantryGroundObject(getObjectID());
-                if(!pTile->isConcrete() && currentGame->getGameInitSettings().getGameOptions().concreteRequired && (currentGame->gameState != START)) {
+                if(!pTile->isConcrete() && currentGame->getGameInitSettings().getGameOptions().concreteRequired && (currentGame->gameState != GameState::Start)) {
                     bFoundNonConcreteTile = true;
 
                     if((itemID != Structure_Wall) && (itemID != Structure_ConstructionYard)) {

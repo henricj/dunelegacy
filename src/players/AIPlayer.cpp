@@ -36,16 +36,16 @@
 
 #define AIUPDATEINTERVAL 50
 
-AIPlayer::AIPlayer(House* associatedHouse, std::string playername, Uint8 difficulty)
+AIPlayer::AIPlayer(House* associatedHouse, std::string playername, Difficulty difficulty)
  : Player(associatedHouse, playername), difficulty(difficulty) {
-    attackTimer = ((2-difficulty) * MILLI2CYCLES(2*60*1000)) + getRandomGen().rand(MILLI2CYCLES(8*60*1000), MILLI2CYCLES(11*60*1000));
+    attackTimer = ((2-static_cast<Uint8>(difficulty)) * MILLI2CYCLES(2*60*1000)) + getRandomGen().rand(MILLI2CYCLES(8*60*1000), MILLI2CYCLES(11*60*1000));
     buildTimer = getRandomGen().rand(0,3) * 50;
 }
 
 AIPlayer::AIPlayer(InputStream& stream, House* associatedHouse) : Player(stream, associatedHouse) {
     AIPlayer::init();
 
-    difficulty = stream.readUint8();
+    difficulty = static_cast<Difficulty>(stream.readUint8());
     attackTimer = stream.readSint32();
     buildTimer = stream.readSint32();
 
@@ -68,7 +68,7 @@ AIPlayer::~AIPlayer() {
 void AIPlayer::save(OutputStream& stream) const {
     Player::save(stream);
 
-    stream.writeUint8(difficulty);
+    stream.writeUint8(static_cast<Uint8>(difficulty));
     stream.writeSint32(attackTimer);
     stream.writeSint32(buildTimer);
 
@@ -511,9 +511,9 @@ void AIPlayer::build() {
                                         itemID = Structure_Silo;
                                     } else if(getHouse()->getCredits() > 2000 && (getHouse()->getNumItems(Structure_RepairYard) < 2) && pBuilder->isAvailableToBuild(Structure_RepairYard)) {
                                         itemID = Structure_RepairYard;
-                                    } else if(((difficulty == AIPlayer::MEDIUM) || (difficulty == AIPlayer::HARD)) && getHouse()->getNumItems(Structure_Refinery) < 4 && pBuilder->isAvailableToBuild(Structure_Refinery)) {
+                                    } else if(((difficulty == Difficulty::Medium) || (difficulty == Difficulty::Hard)) && getHouse()->getNumItems(Structure_Refinery) < 4 && pBuilder->isAvailableToBuild(Structure_Refinery)) {
                                         itemID = Structure_Refinery;
-                                    } else if((difficulty == AIPlayer::HARD) && getHouse()->getNumItems(Structure_Refinery) < 5 && pBuilder->isAvailableToBuild(Structure_Refinery)) {
+                                    } else if((difficulty == Difficulty::Hard) && getHouse()->getNumItems(Structure_Refinery) < 5 && pBuilder->isAvailableToBuild(Structure_Refinery)) {
                                         itemID = Structure_Refinery;
                                     } else if((getHouse()->getNumItems(Structure_HeavyFactory) < 3) && pBuilder->isAvailableToBuild(Structure_HeavyFactory)) {
                                         itemID = Structure_HeavyFactory;
@@ -731,15 +731,15 @@ bool AIPlayer::isAllowedToArm() const {
     int ownTeamScore = teamScore[getHouse()->getTeam()];
 
     switch(difficulty) {
-        case EASY: {
+        case Difficulty::Easy: {
             return (ownTeamScore < maxTeamScore);
         } break;
 
-        case MEDIUM: {
+        case Difficulty::Medium: {
             return (ownTeamScore < 2*maxTeamScore);
         } break;
 
-        case HARD:
+        case Difficulty::Hard:
         default: {
             return true;
         } break;
@@ -750,15 +750,15 @@ bool AIPlayer::isAllowedToArm() const {
 
 int AIPlayer::getMaxHarvester() const {
     switch(difficulty) {
-        case AIPlayer::EASY: {
+        case Difficulty::Easy: {
             return getHouse()->getNumItems(Structure_Refinery);
         }
 
-        case AIPlayer::MEDIUM: {
+        case Difficulty::Medium: {
             return (2*getHouse()->getNumItems(Structure_Refinery)+1)/3;
         }
 
-        case AIPlayer::HARD:
+        case Difficulty::Hard:
         default: {
             return 2*getHouse()->getNumItems(Structure_Refinery);
         }

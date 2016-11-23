@@ -623,7 +623,7 @@ FixPoint getDeviateWeakness(HOUSETYPE house) {
 
     // Deviators are crap enough. If this is a custom game remove the weakness nerf
     // So that Ordos is playable for Humans
-    //if(currentGame->gameType == GAMETYPE_CUSTOM){
+    //if(currentGame->gameType == GameType::CustomGame){
         //return FixPt(0,100);
     return 1;
     //}
@@ -696,7 +696,7 @@ void startSinglePlayerGame(const GameInitSettings& init)
 
                     int houseID = currentGameInitInfo.getHouseID();
 
-                    if(currentGameInitInfo.getGameType() == GAMETYPE_CAMPAIGN) {
+                    if(currentGameInitInfo.getGameType() == GameType::Campaign) {
                         int level = missionNumberToLevelNumber(currentGameInitInfo.getMission());
 
                         if(level == 4 && (houseID == HOUSE_HARKONNEN || houseID == HOUSE_ATREIDES || houseID == HOUSE_ORDOS)) {

@@ -79,7 +79,7 @@ Game::Game() {
     bMenu = false;
     won = false;
 
-    gameType = GAMETYPE_CAMPAIGN;
+    gameType = GameType::Campaign;
     techLevel = 0;
 
     currentCursorMode = CursorMode_Normal;
@@ -125,7 +125,7 @@ Game::Game() {
     sideBarPos = calcAlignedDrawingRect(pGFXManager->getUIGraphic(UI_SideBar), HAlign::Right, VAlign::Top);
     topBarPos = calcAlignedDrawingRect(pGFXManager->getUIGraphic(UI_TopBar), HAlign::Left, VAlign::Top);
 
-    gameState = START;
+    gameState = GameState::Start;
 
     gameCycleCount = 0;
     skipToGameCycle = 0;
@@ -205,13 +205,13 @@ void Game::initGame(const GameInitSettings& newGameInitSettings) {
     gameInitSettings = newGameInitSettings;
 
     switch(gameInitSettings.getGameType()) {
-        case GAMETYPE_LOAD_SAVEGAME: {
+        case GameType::LoadSavegame: {
             if(loadSaveGame(gameInitSettings.getFilename()) == false) {
                 THROW(std::runtime_error, "Loading save game failed!");
             }
         } break;
 
-        case GAMETYPE_LOAD_MULTIPLAYER: {
+        case GameType::LoadMultiplayer: {
             IMemoryStream memStream(gameInitSettings.getFiledata().c_str(), gameInitSettings.getFiledata().size());
 
             if(loadSaveGame(memStream) == false) {
@@ -219,10 +219,10 @@ void Game::initGame(const GameInitSettings& newGameInitSettings) {
             }
         } break;
 
-        case GAMETYPE_CAMPAIGN:
-        case GAMETYPE_SKIRMISH:
-        case GAMETYPE_CUSTOM:
-        case GAMETYPE_CUSTOM_MULTIPLAYER: {
+        case GameType::Campaign:
+        case GameType::Skirmish:
+        case GameType::CustomGame:
+        case GameType::CustomMultiplayer: {
             gameType = gameInitSettings.getGameType();
             randomGen.setSeed(gameInitSettings.getRandomSeed());
 
@@ -236,7 +236,7 @@ void Game::initGame(const GameInitSettings& newGameInitSettings) {
             delete pINIMapLoader;
 
 
-            if(bReplay == false && gameInitSettings.getGameType() != GAMETYPE_CUSTOM && gameInitSettings.getGameType() != GAMETYPE_CUSTOM_MULTIPLAYER) {
+            if(bReplay == false && gameInitSettings.getGameType() != GameType::CustomGame && gameInitSettings.getGameType() != GameType::CustomMultiplayer) {
                 /* do briefing */
                 SDL_Log("Briefing...");
                 BriefingMenu* pBriefing = new BriefingMenu(gameInitSettings.getHouseID(), gameInitSettings.getMission(),BRIEFING);
@@ -1130,7 +1130,7 @@ void Game::runMainLoop() {
     // add interface
     if(pInterface == nullptr) {
         pInterface = new GameInterface();
-        if(gameState == LOADING) {
+        if(gameState == GameState::Loading) {
             // when loading a save game we set radar directly
             pInterface->getRadarView().setRadarMode(pLocalHouse->hasRadarOn());
         } else if(pLocalHouse->hasRadarOn()) {
@@ -1139,7 +1139,7 @@ void Game::runMainLoop() {
         }
     }
 
-    gameState = BEGUN;
+    gameState = GameState::Running;
 
     //setup endlevel conditions
     finishedLevel = false;
@@ -1379,7 +1379,7 @@ void Game::runMainLoop() {
         pNetworkManager->disconnect();
     }
 
-    gameState = DEINITIALIZE;
+    gameState = GameState::Deinitialize;
     SDL_Log("Game finished!");
 }
 
@@ -1387,7 +1387,7 @@ void Game::runMainLoop() {
 void Game::resumeGame()
 {
     bMenu = false;
-    if(gameType != GAMETYPE_CUSTOM_MULTIPLAYER) {
+    if(gameType != GameType::CustomMultiplayer) {
         bPause = false;
     }
 }
@@ -1400,7 +1400,7 @@ void Game::onOptions()
         quitGame();
     } else {
         Uint32 color = SDL2RGB(palette[houseToPaletteIndex[pLocalHouse->getHouseID()] + 3]);
-        pInGameMenu = new InGameMenu((gameType == GAMETYPE_CUSTOM_MULTIPLAYER), color);
+        pInGameMenu = new InGameMenu((gameType == GameType::CustomMultiplayer), color);
         bMenu = true;
         pauseGame();
     }
@@ -1417,13 +1417,13 @@ void Game::onMentat()
 
 GameInitSettings Game::getNextGameInitSettings()
 {
-    if(nextGameInitSettings.getGameType() != GAMETYPE_INVALID) {
+    if(nextGameInitSettings.getGameType() != GameType::Invalid) {
         // return the prepared game init settings (load game or restart mission)
         return nextGameInitSettings;
     }
 
     switch(gameInitSettings.getGameType()) {
-        case GAMETYPE_CAMPAIGN: {
+        case GameType::Campaign: {
             /* do map choice */
             SDL_Log("Map Choice...");
             MapChoice* pMapChoice = new MapChoice(gameInitSettings.getHouseID(), gameInitSettings.getMission());
@@ -1451,12 +1451,12 @@ int Game::whatNext()
         return tmp;
     }
 
-    if(nextGameInitSettings.getGameType() != GAMETYPE_INVALID) {
+    if(nextGameInitSettings.getGameType() != GameType::Invalid) {
         return GAME_LOAD;
     }
 
     switch(gameType) {
-        case GAMETYPE_CAMPAIGN: {
+        case GameType::Campaign: {
             if(bQuitGame == true) {
                 return GAME_RETURN_TO_MENU;
             } else if(won == true) {
@@ -1476,7 +1476,7 @@ int Game::whatNext()
             }
         } break;
 
-        case GAMETYPE_SKIRMISH: {
+        case GameType::Skirmish: {
             if(bQuitGame == true) {
                 return GAME_RETURN_TO_MENU;
             } else if(won == true) {
@@ -1488,8 +1488,8 @@ int Game::whatNext()
             }
         } break;
 
-        case GAMETYPE_CUSTOM:
-        case GAMETYPE_CUSTOM_MULTIPLAYER: {
+        case GameType::CustomGame:
+        case GameType::CustomMultiplayer: {
             if(bQuitGame == true) {
                 return GAME_RETURN_TO_MENU;
             } else {
@@ -1520,7 +1520,7 @@ bool Game::loadSaveGame(std::string filename) {
 }
 
 bool Game::loadSaveGame(InputStream& stream) {
-    gameState = LOADING;
+    gameState = GameState::Loading;
 
     Uint32 magicNum = stream.readUint32();
     if (magicNum != SAVEMAGIC) {
@@ -1537,7 +1537,7 @@ bool Game::loadSaveGame(InputStream& stream) {
     std::string duneVersion = stream.readString();
 
     // if this is a multiplayer load we need to save some information before we overwrite gameInitSettings with the settings saved in the savegame
-    bool bMultiplayerLoad = (gameInitSettings.getGameType() == GAMETYPE_LOAD_MULTIPLAYER);
+    bool bMultiplayerLoad = (gameInitSettings.getGameType() == GameType::LoadMultiplayer);
     GameInitSettings::HouseInfoList oldHouseInfoList = gameInitSettings.getHouseInfoList();
 
     // read gameInitSettings
@@ -1560,7 +1560,7 @@ bool Game::loadSaveGame(InputStream& stream) {
     gameCycleCount = stream.readUint32();
 
     // read some settings
-    gameType = (GAMETYPE) stream.readSint8();
+    gameType = static_cast<GameType>(stream.readSint8());
     techLevel = stream.readUint8();
     randomGen.setSeed(stream.readUint32());
 
@@ -1699,7 +1699,7 @@ bool Game::saveGame(std::string filename)
     fs.writeUint32(gameCycleCount);
 
     // write some settings
-    fs.writeSint8(gameType);
+    fs.writeSint8(static_cast<Sint8>(gameType));
     fs.writeUint8(techLevel);
     fs.writeUint32(randomGen.getSeed());
 
@@ -1715,7 +1715,7 @@ bool Game::saveGame(std::string filename)
         }
     }
 
-    if(gameInitSettings.getGameType() != GAMETYPE_CUSTOM_MULTIPLAYER) {
+    if(gameInitSettings.getGameType() != GameType::CustomMultiplayer) {
         fs.writeUint8(pLocalPlayer->getPlayerID());
     }
 
@@ -1740,7 +1740,7 @@ bool Game::saveGame(std::string filename)
         pExplosion->save(fs);
     }
 
-    if(gameInitSettings.getGameType() != GAMETYPE_CUSTOM_MULTIPLAYER) {
+    if(gameInitSettings.getGameType() != GameType::CustomMultiplayer) {
         // save selection lists
 
         // write out selected units list
@@ -1937,26 +1937,26 @@ void Game::handleChatInput(SDL_KeyboardEvent& keyboardEvent) {
             } else if((bCheatsEnabled == true) && (md5string == "0xB8766C8EC7A61036B69893FC17AAF21E")) {
                 pInterface->getChatManager().addInfoMessage("Cheat mode already enabled");
             } else if((bCheatsEnabled == true) && (md5string == "0x57583291CB37F8167EDB0611D8D19E58")) {
-                if (gameType != GAMETYPE_CUSTOM_MULTIPLAYER) {
+                if (gameType != GameType::CustomMultiplayer) {
                     pInterface->getChatManager().addInfoMessage("You win this game");
                     setGameWon();
                 }
             } else if((bCheatsEnabled == true) && (md5string == "0x1A12BE3DBE54C5A504CAA6EE9782C1C8")) {
                 if(debug == true) {
                     pInterface->getChatManager().addInfoMessage("You are already in debug mode");
-                } else if (gameType != GAMETYPE_CUSTOM_MULTIPLAYER) {
+                } else if (gameType != GameType::CustomMultiplayer) {
                     pInterface->getChatManager().addInfoMessage("Debug mode enabled");
                     debug = true;
                 }
             } else if((bCheatsEnabled == true) && (md5string == "0x54F68155FC64A5BC66DCD50C1E925C0B")) {
                 if(debug == false) {
                     pInterface->getChatManager().addInfoMessage("You are not in debug mode");
-                } else if (gameType != GAMETYPE_CUSTOM_MULTIPLAYER) {
+                } else if (gameType != GameType::CustomMultiplayer) {
                     pInterface->getChatManager().addInfoMessage("Debug mode disabled");
                     debug = false;
                 }
             } else if((bCheatsEnabled == true) && (md5string == "0xCEF1D26CE4B145DE985503CA35232ED8")) {
-                if (gameType != GAMETYPE_CUSTOM_MULTIPLAYER) {
+                if (gameType != GameType::CustomMultiplayer) {
                     pInterface->getChatManager().addInfoMessage("You got some credits");
                     pLocalHouse->returnCredits(10000);
                 }
@@ -2061,7 +2061,7 @@ void Game::handleKeyInput(SDL_KeyboardEvent& keyboardEvent) {
 
         case SDLK_KP_MINUS:
         case SDLK_MINUS: {
-            if(gameType != GAMETYPE_CUSTOM_MULTIPLAYER) {
+            if(gameType != GameType::CustomMultiplayer) {
                 settings.gameOptions.gameSpeed = std::min(settings.gameOptions.gameSpeed+1,GAMESPEED_MAX);
                 INIFile myINIFile(getConfigFilepath());
                 myINIFile.setIntValue("Game Options","Game Speed", settings.gameOptions.gameSpeed);
@@ -2073,7 +2073,7 @@ void Game::handleKeyInput(SDL_KeyboardEvent& keyboardEvent) {
         case SDLK_KP_PLUS:
         case SDLK_PLUS:
         case SDLK_EQUALS: {
-            if(gameType != GAMETYPE_CUSTOM_MULTIPLAYER) {
+            if(gameType != GameType::CustomMultiplayer) {
                 settings.gameOptions.gameSpeed = std::max(settings.gameOptions.gameSpeed-1,GAMESPEED_MIN);
                 INIFile myINIFile(getConfigFilepath());
                 myINIFile.setIntValue("Game Options","Game Speed", settings.gameOptions.gameSpeed);
@@ -2132,14 +2132,14 @@ void Game::handleKeyInput(SDL_KeyboardEvent& keyboardEvent) {
 
         case SDLK_F5: {
             // skip a 30 seconds
-            if(gameType != GAMETYPE_CUSTOM_MULTIPLAYER || bReplay) {
+            if(gameType != GameType::CustomMultiplayer || bReplay) {
                 skipToGameCycle = gameCycleCount + (30*1000)/GAMESPEED_DEFAULT;
             }
         } break;
 
         case SDLK_F6: {
             // skip 2 minutes
-            if(gameType != GAMETYPE_CUSTOM_MULTIPLAYER || bReplay) {
+            if(gameType != GameType::CustomMultiplayer || bReplay) {
                 skipToGameCycle = gameCycleCount + (120*1000)/GAMESPEED_DEFAULT;
             }
         } break;
@@ -2280,7 +2280,7 @@ void Game::handleKeyInput(SDL_KeyboardEvent& keyboardEvent) {
         } break;
 
         case SDLK_SPACE: {
-            if(gameType != GAMETYPE_CUSTOM_MULTIPLAYER) {
+            if(gameType != GameType::CustomMultiplayer) {
                 if(bPause) {
                     resumeGame();
                     pInterface->getChatManager().addInfoMessage(_("Game resumed!"));
@@ -2586,7 +2586,7 @@ void Game::selectNextStructureOfType(const std::set<Uint32>& itemIDs) {
 }
 
 int Game::getGameSpeed() const {
-    if(gameType == GAMETYPE_CUSTOM_MULTIPLAYER) {
+    if(gameType == GameType::CustomMultiplayer) {
         return gameInitSettings.getGameOptions().gameSpeed;
     } else {
         return settings.gameOptions.gameSpeed;

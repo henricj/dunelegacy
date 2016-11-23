@@ -26,21 +26,18 @@
 class QuantBot : public Player
 {
 public:
+    enum class Difficulty {
+        Easy = 0,
+        Medium = 1,
+        Hard = 2,
+        Brutal = 3,
+        Defend = 4
+    };
 
-
-
-    typedef enum {
-        EASY = 0,
-        MEDIUM = 1,
-        HARD = 2,
-        BRUTAL = 3,
-        DEFEND = 4
-    } enum_difficulty;
-
-    typedef enum {
-        CUSTOM = 4,
-        CAMPAIGN = 5
-    } enum_gameMode;
+    enum class GameMode {
+        Custom = 4,
+        Campaign = 5
+    };
 
     void init();
     ~QuantBot();
@@ -54,7 +51,7 @@ public:
     virtual void onIncrementUnitKills(int itemID);
     virtual void onDamage(const ObjectBase* pObject, int damage, Uint32 damagerID);
 
-    static Player* create(House* associatedHouse, std::string playername, Uint32 difficulty) {
+    static Player* create(House* associatedHouse, std::string playername, Difficulty difficulty) {
         return new QuantBot(associatedHouse, playername, difficulty);
     }
 
@@ -63,12 +60,12 @@ public:
     }
 
 private:
-    QuantBot(House* associatedHouse, std::string playername, Uint32 difficulty);
+    QuantBot(House* associatedHouse, std::string playername, Difficulty difficulty);
     QuantBot(InputStream& stream, House* associatedHouse);
 
 
-    Uint32  difficulty;     ///< difficulty level
-    Uint32  gameMode;       ///< game mode (custom or campaign)
+    Difficulty difficulty;  ///< difficulty level
+    GameMode  gameMode;     ///< game mode (custom or campaign)
     Sint32  buildTimer;     ///< When to build the next structure/unit
     Sint32  attackTimer;    ///< When to build the next structure/unit
     Sint32  retreatTimer;   ///< When you last retreated>

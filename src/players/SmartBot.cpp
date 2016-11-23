@@ -38,7 +38,7 @@
 #define REFINERYLIMIT 10
 
 
-SmartBot::SmartBot(House* associatedHouse, std::string playername, Uint8 difficulty)
+SmartBot::SmartBot(House* associatedHouse, std::string playername, Difficulty difficulty)
  : Player(associatedHouse, playername), difficulty(difficulty) {
     SmartBot::init();
 
@@ -50,7 +50,7 @@ SmartBot::SmartBot(House* associatedHouse, std::string playername, Uint8 difficu
 SmartBot::SmartBot(InputStream& stream, House* associatedHouse) : Player(stream, associatedHouse) {
     SmartBot::init();
 
-    difficulty = stream.readUint8();
+    difficulty = static_cast<Difficulty>(stream.readUint8());
     attackTimer = stream.readSint32();
     buildTimer = stream.readSint32();
     AIStrategy = stream.readSint32();
@@ -77,7 +77,7 @@ SmartBot::~SmartBot() {
 void SmartBot::save(OutputStream& stream) const {
     Player::save(stream);
 
-    stream.writeUint8(difficulty);
+    stream.writeUint8(static_cast<Uint8>(difficulty));
     stream.writeSint32(attackTimer);
     stream.writeSint32(buildTimer);
     stream.writeSint32(AIStrategy);
@@ -675,7 +675,7 @@ void SmartBot::build() {
                                 doUpgrade(pBuilder);
                             } else if (pBuilder->isAvailableToBuild(Structure_RocketTurret)
                                          && focusMilitary()
-                                         && difficulty == SmartBot::DEFENSIVE) {
+                                         && difficulty == Difficulty::Defense) {
                                 itemID = Structure_RocketTurret;
                             }
 
@@ -778,7 +778,7 @@ void SmartBot::build() {
 
 
 void SmartBot::attack() {
-    if(difficulty == SmartBot::DEFENSIVE && getHouse()->getNumItems(Unit_Ornithopter) < 21){
+    if(difficulty == Difficulty::Defense && getHouse()->getNumItems(Unit_Ornithopter) < 21){
         attackTimer = getRandomGen().rand(10000, 20000);
         return;
     }

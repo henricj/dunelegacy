@@ -40,9 +40,9 @@ public:
 
     }
 
-    INIMap(GAMETYPE gameType, std::string mapname, std::string mapdata = "") : mapname(mapname) {
+    INIMap(GameType gameType, std::string mapname, std::string mapdata = "") : mapname(mapname) {
 
-        if(gameType == GAMETYPE_CAMPAIGN || gameType == GAMETYPE_SKIRMISH) {
+        if(gameType == GameType::Campaign || gameType == GameType::Skirmish) {
             // load from PAK-File
             SDL_RWops* mapiniFile = nullptr;
             try {
@@ -56,7 +56,7 @@ public:
                 }
                 throw;
             }
-        } else if(gameType == GAMETYPE_CUSTOM || gameType == GAMETYPE_CUSTOM_MULTIPLAYER) {
+        } else if(gameType == GameType::CustomGame || gameType == GameType::CustomMultiplayer) {
             SDL_RWops* RWops = SDL_RWFromConstMem(mapdata.c_str(), mapdata.size());
             inifile = std::shared_ptr<INIFile>(new INIFile(RWops));
             SDL_RWclose(RWops);

@@ -34,13 +34,6 @@
 #define RADARHEIGHT 128
 
 
-typedef enum {
-    Mode_RadarOff,
-    Mode_RadarOn,
-    Mode_AnimationRadarOff,
-    Mode_AnimationRadarOn
-} RadarViewMode;
-
 /// This class manages the mini map at the top right corner of the screen
 class RadarViewBase : public Widget
 {
@@ -48,7 +41,7 @@ public:
     /**
         Constructor
     */
-    RadarViewBase() : Widget(), radarMode(false) {
+    RadarViewBase() : Widget(), bRadarInteraction(false) {
         resize(RADARWIDTH + (2 * RADARVIEW_BORDERTHICKNESS), RADARHEIGHT + (2 * RADARVIEW_BORDERTHICKNESS));
     }
 
@@ -167,9 +160,9 @@ public:
         \param  insideOverlay   true, if (x,y) is inside an overlay and this widget may be behind it, false otherwise
     */
     virtual void handleMouseMovement(Sint32 x, Sint32 y, bool insideOverlay) {
-        if(radarMode && isOnRadar(x,y)) {
+        if(bRadarInteraction && isOnRadar(x,y)) {
             if(pOnRadarClick) {
-                radarMode = pOnRadarClick(getWorldCoords(x,y), false, true);
+                bRadarInteraction = pOnRadarClick(getWorldCoords(x,y), false, true);
             }
         }
     }
@@ -186,13 +179,13 @@ public:
         if(pressed) {
             if(isOnRadar(x,y)) {
                 if(pOnRadarClick) {
-                    radarMode = pOnRadarClick(getWorldCoords(x,y), false, false);
+                    bRadarInteraction = pOnRadarClick(getWorldCoords(x,y), false, false);
                 }
                 return true;
             }
             return false;
         } else {
-            radarMode = false;
+            bRadarInteraction = false;
             return false;
         }
     }
@@ -209,13 +202,13 @@ public:
         if(pressed) {
             if(isOnRadar(x,y)) {
                 if(pOnRadarClick) {
-                    radarMode = pOnRadarClick(getWorldCoords(x,y), true, false);
+                    bRadarInteraction = pOnRadarClick(getWorldCoords(x,y), true, false);
                 }
                 return true;
             }
             return false;
         } else {
-            radarMode = false;
+            bRadarInteraction = false;
             return false;
         }
     }
@@ -232,7 +225,7 @@ public:
 protected:
     std::function<bool (Coord,bool,bool)> pOnRadarClick;  ///< this function is called when the user clicks on the radar (1st parameter is world coordinate; 2nd parameter is whether the right mouse button was pressed; 3rd parameter is whether the mouse was moved while being pressed, e.g. dragging; return value shall be true if dragging should start or continue)
 
-    bool        radarMode;                                  ///< currently dragging on the radar? (e.g. moving the view rectangle on the radar)
+    bool bRadarInteraction;                               ///< currently dragging on the radar? (e.g. moving the view rectangle on the radar)
 };
 
 #endif // RADARVIEWBASE_H

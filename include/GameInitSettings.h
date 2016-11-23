@@ -161,7 +161,7 @@ public:
 
     void save(OutputStream& stream) const;
 
-    inline GAMETYPE getGameType() const { return gameType; };
+    inline GameType getGameType() const { return gameType; };
     inline HOUSETYPE getHouseID() const { return houseID; };
     inline int getMission() const { return mission; };
     inline const std::string& getFilename() const { return filename; };
@@ -197,7 +197,7 @@ private:
     static void checkSaveGame(InputStream& stream);
 
 
-    GAMETYPE        gameType;
+    GameType        gameType;
 
     HOUSETYPE       houseID;
     int             mission;

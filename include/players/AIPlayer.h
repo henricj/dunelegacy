@@ -25,11 +25,11 @@
 class AIPlayer : public Player
 {
 public:
-    typedef enum {
-        EASY = 0,
-        MEDIUM = 1,
-        HARD = 2
-    } enum_difficulty;
+    enum class Difficulty {
+        Easy = 0,
+        Medium = 1,
+        Hard = 2
+    };
 
     void init();
     ~AIPlayer();
@@ -41,7 +41,7 @@ public:
     virtual void onDecrementStructures(int itemID, const Coord& location);
     virtual void onDamage(const ObjectBase* pObject, int damage, Uint32 damagerID);
 
-    static Player* create(House* associatedHouse, std::string playername, Uint8 difficulty) {
+    static Player* create(House* associatedHouse, std::string playername, Difficulty difficulty) {
         return new AIPlayer(associatedHouse, playername, difficulty);
     }
 
@@ -50,7 +50,7 @@ public:
     }
 
 private:
-    AIPlayer(House* associatedHouse, std::string playername, Uint8 difficulty);
+    AIPlayer(House* associatedHouse, std::string playername, Difficulty difficulty);
     AIPlayer(InputStream& stream, House* associatedHouse);
 
     void scrambleUnitsAndDefend(const ObjectBase* pIntruder);
@@ -67,7 +67,7 @@ private:
 
     int getMaxHarvester() const;
 
-    Uint8   difficulty;     ///< difficulty level
+    Difficulty difficulty;  ///< difficulty level
     Sint32  attackTimer;    ///< When to attack?
     Sint32  buildTimer;     ///< When to build the next structure/unit
 

@@ -56,7 +56,7 @@ RocketTurret::~RocketTurret() {
 
 void RocketTurret::updateStructureSpecificStuff() {
     if( ( !currentGame->getGameInitSettings().getGameOptions().rocketTurretsNeedPower || getOwner()->hasPower() )
-        || ( ((currentGame->gameType == GAMETYPE_CAMPAIGN) || (currentGame->gameType == GAMETYPE_SKIRMISH)) && getOwner()->isAI()) ) {
+        || ( ((currentGame->gameType == GameType::Campaign) || (currentGame->gameType == GameType::Skirmish)) && getOwner()->isAI()) ) {
         TurretBase::updateStructureSpecificStuff();
     }
 }

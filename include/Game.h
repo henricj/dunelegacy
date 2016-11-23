@@ -200,7 +200,7 @@ public:
         This method pauses the current game.
     */
     void pauseGame() {
-        if(gameType != GAMETYPE_CUSTOM_MULTIPLAYER) {
+        if(gameType != GameType::CustomMultiplayer) {
             bPause = true;
         }
     }
@@ -516,7 +516,7 @@ public:
 
     int         currentCursorMode;
 
-    GAMETYPE    gameType;
+    GameType    gameType;
     int         techLevel;
     int         winFlags;
     int         loseFlags;
@@ -524,7 +524,7 @@ public:
     Random      randomGen;          ///< This is the random number generator for this game
     ObjectData  objectData;         ///< This contains all the unit/structure data
 
-    GAMESTATETYPE gameState;
+    GameState   gameState;
 
 private:
     bool        chatMode;           ///< chat mode on?

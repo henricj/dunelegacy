@@ -123,7 +123,7 @@ ObjectBase::ObjectBase(InputStream& stream) {
     active = stream.readBool();
     respondable = stream.readBool();
 
-    if(currentGame->getGameInitSettings().getGameType() != GAMETYPE_CUSTOM_MULTIPLAYER) {
+    if(currentGame->getGameInitSettings().getGameType() != GameType::CustomMultiplayer) {
         selected = stream.readBool();
         selectedByOtherPlayer = stream.readBool();
     } else {
@@ -185,7 +185,7 @@ void ObjectBase::save(OutputStream& stream) const {
     stream.writeBool(active);
     stream.writeBool(respondable);
 
-    if(currentGame->getGameInitSettings().getGameType() != GAMETYPE_CUSTOM_MULTIPLAYER) {
+    if(currentGame->getGameInitSettings().getGameType() != GameType::CustomMultiplayer) {
         stream.writeBool(selected);
         stream.writeBool(selectedByOtherPlayer);
     }

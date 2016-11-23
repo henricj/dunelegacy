@@ -85,14 +85,14 @@ CustomGamePlayers::CustomGamePlayers(const GameInitSettings& newGameInitSettings
     minimap.setSurface( GUIStyle::getInstance().createButtonSurface(130,130,_("Choose map"), true, false), true);
     rightVBox.addWidget(&minimap);
 
-    if(gameInitSettings.getGameType() == GAMETYPE_CUSTOM || gameInitSettings.getGameType() == GAMETYPE_CUSTOM_MULTIPLAYER) {
+    if(gameInitSettings.getGameType() == GameType::CustomGame || gameInitSettings.getGameType() == GameType::CustomMultiplayer) {
         SDL_RWops* RWops = SDL_RWFromConstMem(gameInitSettings.getFiledata().c_str(), gameInitSettings.getFiledata().size());
 
         std::shared_ptr<INIFile> map(new INIFile(RWops));
         extractMapInfo(map);
 
         SDL_RWclose(RWops);
-    } else if(gameInitSettings.getGameType() == GAMETYPE_LOAD_MULTIPLAYER) {
+    } else if(gameInitSettings.getGameType() == GameType::LoadMultiplayer) {
         IMemoryStream memStream(gameInitSettings.getFiledata().c_str(), gameInitSettings.getFiledata().size());
 
         Uint32 magicNum = memStream.readUint32();
@@ -171,12 +171,12 @@ CustomGamePlayers::CustomGamePlayers(const GameInitSettings& newGameInitSettings
     chatVBox.addWidget(Spacer::create(), 0.03);
     buttonHBox.addWidget(&chatVBox, 0.675);
 
-    if(gameInitSettings.getGameType() != GAMETYPE_CUSTOM_MULTIPLAYER && gameInitSettings.getGameType() != GAMETYPE_LOAD_MULTIPLAYER) {
+    if(gameInitSettings.getGameType() != GameType::CustomMultiplayer && gameInitSettings.getGameType() != GameType::LoadMultiplayer) {
         chatVBox.setVisible(false);
         chatVBox.setEnabled(false);
     }
 
-    bool bLoadMultiplayer = (gameInitSettings.getGameType() == GAMETYPE_LOAD_MULTIPLAYER);
+    bool bLoadMultiplayer = (gameInitSettings.getGameType() == GameType::LoadMultiplayer);
 
     buttonHBox.addWidget(Spacer::create(), 0.0625);
 
@@ -465,7 +465,7 @@ void CustomGamePlayers::onReceiveChangeEventList(ChangeEventList changeEventList
     for(const ChangeEventList::ChangeEvent& changeEvent : changeEventList.changeEventList) {
 
         switch(changeEvent.eventType) {
-            case ChangeEventList::ChangeEvent::EventType_ChangeHouse: {
+            case ChangeEventList::ChangeEvent::EventType::ChangeHouse: {
                 HOUSETYPE houseType = (HOUSETYPE) changeEvent.newValue;
 
                 HouseInfo& curHouseInfo = houseInfo[changeEvent.slot];
@@ -478,7 +478,7 @@ void CustomGamePlayers::onReceiveChangeEventList(ChangeEventList changeEventList
                 }
             } break;
 
-            case ChangeEventList::ChangeEvent::EventType_ChangeTeam: {
+            case ChangeEventList::ChangeEvent::EventType::ChangeTeam: {
                 int newTeam = (int) changeEvent.newValue;
 
                 HouseInfo& curHouseInfo = houseInfo[changeEvent.slot];
@@ -491,7 +491,7 @@ void CustomGamePlayers::onReceiveChangeEventList(ChangeEventList changeEventList
                 }
             } break;
 
-            case ChangeEventList::ChangeEvent::EventType_ChangePlayer: {
+            case ChangeEventList::ChangeEvent::EventType::ChangePlayer: {
                 int newPlayer = (int) changeEvent.newValue;
 
                 HouseInfo& curHouseInfo = houseInfo[changeEvent.slot/2];
@@ -515,7 +515,7 @@ void CustomGamePlayers::onReceiveChangeEventList(ChangeEventList changeEventList
                 checkPlayerBoxes();
             } break;
 
-            case ChangeEventList::ChangeEvent::EventType_SetHumanPlayer: {
+            case ChangeEventList::ChangeEvent::EventType::SetHumanPlayer: {
                 const std::string& name = changeEvent.newStringValue;
                 int slot = changeEvent.slot;
 
@@ -548,21 +548,21 @@ ChangeEventList CustomGamePlayers::getChangeEventList()
         int player1 = curHouseInfo.player1DropDown.getSelectedEntryIntData();
         int player2 = curHouseInfo.player2DropDown.getSelectedEntryIntData();
 
-        changeEventList.changeEventList.push_back(ChangeEventList::ChangeEvent(ChangeEventList::ChangeEvent::EventType_ChangeHouse, i, houseID));
-        changeEventList.changeEventList.push_back(ChangeEventList::ChangeEvent(ChangeEventList::ChangeEvent::EventType_ChangeTeam, i, team));
+        changeEventList.changeEventList.push_back(ChangeEventList::ChangeEvent(ChangeEventList::ChangeEvent::EventType::ChangeHouse, i, houseID));
+        changeEventList.changeEventList.push_back(ChangeEventList::ChangeEvent(ChangeEventList::ChangeEvent::EventType::ChangeTeam, i, team));
 
         if(player1 == PLAYER_HUMAN) {
             std::string playername = curHouseInfo.player1DropDown.getSelectedEntry();
             changeEventList.changeEventList.push_back(ChangeEventList::ChangeEvent(2*i, playername));
         } else {
-            changeEventList.changeEventList.push_back(ChangeEventList::ChangeEvent(ChangeEventList::ChangeEvent::EventType_ChangePlayer, 2*i, player1));
+            changeEventList.changeEventList.push_back(ChangeEventList::ChangeEvent(ChangeEventList::ChangeEvent::EventType::ChangePlayer, 2*i, player1));
         }
 
         if(player2 == PLAYER_HUMAN) {
             std::string playername = curHouseInfo.player2DropDown.getSelectedEntry();
             changeEventList.changeEventList.push_back(ChangeEventList::ChangeEvent(2*i+1, playername));
         } else {
-            changeEventList.changeEventList.push_back(ChangeEventList::ChangeEvent(ChangeEventList::ChangeEvent::EventType_ChangePlayer, 2*i+1, player2));
+            changeEventList.changeEventList.push_back(ChangeEventList::ChangeEvent(ChangeEventList::ChangeEvent::EventType::ChangePlayer, 2*i+1, player2));
         }
     }
 
@@ -934,7 +934,7 @@ void CustomGamePlayers::onChangeHousesDropDownBoxes(bool bInteractive, int house
         int selectedHouseID = houseInfo[houseInfoNum].houseDropDown.getSelectedEntryIntData();
 
         ChangeEventList changeEventList;
-        changeEventList.changeEventList.push_back(ChangeEventList::ChangeEvent(ChangeEventList::ChangeEvent::EventType_ChangeHouse, houseInfoNum, selectedHouseID));
+        changeEventList.changeEventList.push_back(ChangeEventList::ChangeEvent(ChangeEventList::ChangeEvent::EventType::ChangeHouse, houseInfoNum, selectedHouseID));
 
         pNetworkManager->sendChangeEventList(changeEventList);
     }
@@ -978,7 +978,7 @@ void CustomGamePlayers::onChangeHousesDropDownBoxes(bool bInteractive, int house
             }
         }
 
-        if(gameInitSettings.getGameType() == GAMETYPE_LOAD_MULTIPLAYER) {
+        if(gameInitSettings.getGameType() == GameType::LoadMultiplayer) {
             // no house changes possible
             continue;
         }
@@ -1048,7 +1048,7 @@ void CustomGamePlayers::onChangeTeamDropDownBoxes(bool bInteractive, int houseIn
         int selectedTeam = houseInfo[houseInfoNum].teamDropDown.getSelectedEntryIntData();
 
         ChangeEventList changeEventList;
-        changeEventList.changeEventList.push_back(ChangeEventList::ChangeEvent(ChangeEventList::ChangeEvent::EventType_ChangeTeam, houseInfoNum, selectedTeam));
+        changeEventList.changeEventList.push_back(ChangeEventList::ChangeEvent(ChangeEventList::ChangeEvent::EventType::ChangeTeam, houseInfoNum, selectedTeam));
 
         pNetworkManager->sendChangeEventList(changeEventList);
     }
@@ -1061,7 +1061,7 @@ void CustomGamePlayers::onChangePlayerDropDownBoxes(bool bInteractive, int boxnu
         int selectedPlayer = dropDownBox.getSelectedEntryIntData();
 
         ChangeEventList changeEventList;
-        changeEventList.changeEventList.push_back(ChangeEventList::ChangeEvent(ChangeEventList::ChangeEvent::EventType_ChangePlayer, boxnum, selectedPlayer));
+        changeEventList.changeEventList.push_back(ChangeEventList::ChangeEvent(ChangeEventList::ChangeEvent::EventType::ChangePlayer, boxnum, selectedPlayer));
 
         pNetworkManager->sendChangeEventList(changeEventList);
     }
@@ -1099,7 +1099,7 @@ void CustomGamePlayers::onPeerDisconnected(std::string playername, bool bHost, i
                 curDropDownBox.addEntry(_("open"), PLAYER_OPEN);
                 curDropDownBox.setSelectedItem(0);
 
-                if(gameInitSettings.getGameType() != GAMETYPE_LOAD_MULTIPLAYER) {
+                if(gameInitSettings.getGameType() != GameType::LoadMultiplayer) {
                     curDropDownBox.addEntry(_("closed"), PLAYER_CLOSED);
                     for(unsigned int k = 1; k < PlayerFactory::getList().size(); k++) {
                         curDropDownBox.addEntry(PlayerFactory::getByIndex(k)->getName(), k);
@@ -1165,7 +1165,7 @@ void CustomGamePlayers::setPlayer2Slot(std::string playername, int slot) {
                 curDropDownBox.clearAllEntries();
                 curDropDownBox.addEntry(_("open"), PLAYER_OPEN);
 
-                if(gameInitSettings.getGameType() != GAMETYPE_LOAD_MULTIPLAYER) {
+                if(gameInitSettings.getGameType() != GameType::LoadMultiplayer) {
                     curDropDownBox.addEntry(_("closed"), PLAYER_CLOSED);
                     for(unsigned int k = 1; k < PlayerFactory::getList().size(); k++) {
                         curDropDownBox.addEntry(PlayerFactory::getByIndex(k)->getName(), k);
@@ -1192,7 +1192,7 @@ void CustomGamePlayers::setPlayer2Slot(std::string playername, int slot) {
         for(int i=0;i<numHouses;i++) {
             bool bIsThisPlayer = false;
 
-            if(gameInitSettings.getGameType() != GAMETYPE_LOAD_MULTIPLAYER) {
+            if(gameInitSettings.getGameType() != GameType::LoadMultiplayer) {
                 if(houseInfo[i].player1DropDown.getSelectedEntryIntData() == PLAYER_HUMAN) {
                     if(houseInfo[i].player1DropDown.getSelectedEntry() == settings.general.playerName) {
                         bIsThisPlayer = true;
@@ -1255,7 +1255,7 @@ void CustomGamePlayers::checkPlayerBoxes() {
                 }
             }
 
-            if((gameInitSettings.getGameType() == GAMETYPE_LOAD_MULTIPLAYER) && (player2 != PLAYER_OPEN) && (player2 != PLAYER_HUMAN)) {
+            if((gameInitSettings.getGameType() == GameType::LoadMultiplayer) && (player2 != PLAYER_OPEN) && (player2 != PLAYER_HUMAN)) {
                 curHouseInfo.player2DropDown.setEnabled(false);
             } else {
                 curHouseInfo.player2DropDown.setEnabled(bEnableDropDown2);

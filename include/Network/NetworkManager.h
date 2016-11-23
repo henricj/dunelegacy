@@ -185,12 +185,12 @@ private:
 
     class PeerData {
     public:
-        enum PeerState {
-            PEER_STATE_WAITING_FOR_CONNECT,
-            PEER_STATE_WAITING_FOR_NAME,
-            PEER_STATE_READY_FOR_OTHER_PEERS_TO_CONNECT,
-            PEER_STATE_WAITING_FOR_OTHER_PEERS_TO_CONNECT,
-            PEER_STATE_CONNECTED
+        enum class PeerState {
+            WaitingForConnect,
+            WaitingForName,
+            ReadyForOtherPeersToConnect,
+            WaitingForOtherPeersToConnect,
+            Connected
         };
 
 
