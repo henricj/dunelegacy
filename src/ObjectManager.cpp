@@ -26,10 +26,9 @@ void ObjectManager::save(OutputStream& stream) const {
     stream.writeUint32(nextFreeObjectID);
 
     stream.writeUint32(objectMap.size());
-    ObjectMap::const_iterator iter;
-    for(iter = objectMap.begin(); iter != objectMap.end(); ++iter) {
-        stream.writeUint32(iter->second->getObjectID());
-        currentGame->saveObject(stream, iter->second);
+    for(const auto& objectEntry : objectMap) {
+        stream.writeUint32(objectEntry.second->getObjectID());
+        currentGame->saveObject(stream, objectEntry.second);
     }
 }
 

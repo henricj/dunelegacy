@@ -34,15 +34,13 @@ Scene::~Scene()
         delete pVideoEvent;
     }
 
-    std::list<TextEvent*>::iterator iter1;
-    for(iter1 = textEvents.begin(); iter1 != textEvents.end(); ++iter1) {
-        delete (*iter1);
+    for(TextEvent* pTextEvent : textEvents) {
+        delete pTextEvent;
     }
     textEvents.clear();
 
-    std::list<CutSceneTrigger*>::iterator iter2;
-    for(iter2 = triggerList.begin(); iter2 != triggerList.end(); ++iter2) {
-        delete (*iter2);
+    for(CutSceneTrigger* pCutSceneTrigger : triggerList) {
+        delete pCutSceneTrigger;
     }
     triggerList.clear();
 
@@ -95,9 +93,8 @@ int Scene::draw()
         }
     }
 
-    std::list<TextEvent*>::iterator iter;
-    for(iter = textEvents.begin(); iter != textEvents.end(); ++iter) {
-        (*iter)->draw(currentFrameNumber);
+    for(TextEvent* pTextEvent : textEvents) {
+        pTextEvent->draw(currentFrameNumber);
     }
 
     // 3.: Render everything

@@ -111,10 +111,9 @@ std::string replaceAll(std::string str, const std::map<std::string, std::string>
         std::string bestNextKey;
         std::string bestNextValue;
 
-        std::map<std::string, std::string>::const_iterator iter;
-        for(iter = replacementMap.begin(); iter != replacementMap.end(); ++iter) {
+        for(const auto& replacement : replacementMap) {
 
-            std::string nextKey = iter->first;
+            std::string nextKey = replacement.first;
             size_t nextPos = str.find(nextKey, currentPos);
 
             if((nextPos != std::string::npos)
@@ -124,7 +123,7 @@ std::string replaceAll(std::string str, const std::map<std::string, std::string>
                 // best match so far (either smaller position or same position but longer match)
                 bestNextPos = nextPos;
                 bestNextKey = nextKey;
-                bestNextValue = iter->second;
+                bestNextValue = replacement.second;
             }
 
         }

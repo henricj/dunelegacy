@@ -57,10 +57,9 @@ void HumanPlayer::update() {
 void HumanPlayer::setGroupList(int groupListIndex, const std::set<Uint32>& newGroupList) {
     selectedLists[groupListIndex].clear();
 
-    std::set<Uint32>::const_iterator iter;
-    for(iter = newGroupList.begin(); iter != newGroupList.end(); ++iter) {
-        if(currentGame->getObjectManager().getObject(*iter) != nullptr) {
-            selectedLists[groupListIndex].insert(*iter);
+    for(Uint32 objectID : newGroupList) {
+        if(currentGame->getObjectManager().getObject(objectID) != nullptr) {
+            selectedLists[groupListIndex].insert(objectID);
         }
     }
 

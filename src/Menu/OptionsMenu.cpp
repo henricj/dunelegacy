@@ -132,15 +132,13 @@ OptionsMenu::OptionsMenu() : MenuBase()
     resolutionHBox.addWidget(Spacer::create(), 0.5);
     resolutionHBox.addWidget(Label::create(_("Video Resolution")), 190);
 
-    std::vector<Coord>::const_iterator iter;
     int i = 0;
-    for(iter = availScreenRes.begin(); iter != availScreenRes.end(); ++iter, ++i) {
-        char temp[20];
-        snprintf(temp, 20, "%d x %d", iter->x, iter->y);
-        resolutionDropDownBox.addEntry(temp, i);
-        if(iter->x == settings.video.width && iter->y == settings.video.height) {
+    for(const Coord& coord : availScreenRes) {
+        resolutionDropDownBox.addEntry(fmt::sprintf("%d x %d", coord.x, coord.y), i);
+        if(coord.x == settings.video.width && coord.y == settings.video.height) {
             resolutionDropDownBox.setSelectedItem(i);
         }
+        i++;
     }
     resolutionDropDownBox.setOnSelectionChange(std::bind(&OptionsMenu::onChangeOption, this, std::placeholders::_1));
     resolutionHBox.addWidget(&resolutionDropDownBox, 100);

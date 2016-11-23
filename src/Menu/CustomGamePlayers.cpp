@@ -462,14 +462,13 @@ void CustomGamePlayers::update() {
 
 void CustomGamePlayers::onReceiveChangeEventList(ChangeEventList changeEventList)
 {
-    std::list<ChangeEventList::ChangeEvent>::const_iterator iter;
-    for(iter = changeEventList.changeEventList.begin(); iter != changeEventList.changeEventList.end(); ++iter) {
+    for(const ChangeEventList::ChangeEvent& changeEvent : changeEventList.changeEventList) {
 
-        switch(iter->eventType) {
+        switch(changeEvent.eventType) {
             case ChangeEventList::ChangeEvent::EventType_ChangeHouse: {
-                HOUSETYPE houseType = (HOUSETYPE) iter->newValue;
+                HOUSETYPE houseType = (HOUSETYPE) changeEvent.newValue;
 
-                HouseInfo& curHouseInfo = houseInfo[iter->slot];
+                HouseInfo& curHouseInfo = houseInfo[changeEvent.slot];
 
                 for(int i=0;i<curHouseInfo.houseDropDown.getNumEntries();i++) {
                     if(curHouseInfo.houseDropDown.getEntryIntData(i) == houseType) {
@@ -480,9 +479,9 @@ void CustomGamePlayers::onReceiveChangeEventList(ChangeEventList changeEventList
             } break;
 
             case ChangeEventList::ChangeEvent::EventType_ChangeTeam: {
-                int newTeam = (int) iter->newValue;
+                int newTeam = (int) changeEvent.newValue;
 
-                HouseInfo& curHouseInfo = houseInfo[iter->slot];
+                HouseInfo& curHouseInfo = houseInfo[changeEvent.slot];
 
                 for(int i=0;i<curHouseInfo.teamDropDown.getNumEntries();i++) {
                     if(curHouseInfo.teamDropDown.getEntryIntData(i) == newTeam) {
@@ -493,11 +492,11 @@ void CustomGamePlayers::onReceiveChangeEventList(ChangeEventList changeEventList
             } break;
 
             case ChangeEventList::ChangeEvent::EventType_ChangePlayer: {
-                int newPlayer = (int) iter->newValue;
+                int newPlayer = (int) changeEvent.newValue;
 
-                HouseInfo& curHouseInfo = houseInfo[iter->slot/2];
+                HouseInfo& curHouseInfo = houseInfo[changeEvent.slot/2];
 
-                if(iter->slot % 2 == 0) {
+                if(changeEvent.slot % 2 == 0) {
                     for(int i=0;i<curHouseInfo.player1DropDown.getNumEntries();i++) {
                         if(curHouseInfo.player1DropDown.getEntryIntData(i) == newPlayer) {
                             curHouseInfo.player1DropDown.setSelectedItem(i);
@@ -517,8 +516,8 @@ void CustomGamePlayers::onReceiveChangeEventList(ChangeEventList changeEventList
             } break;
 
             case ChangeEventList::ChangeEvent::EventType_SetHumanPlayer: {
-                std::string name = iter->newStringValue;
-                int slot = iter->slot;
+                const std::string& name = changeEvent.newStringValue;
+                int slot = changeEvent.slot;
 
                 setPlayer2Slot(name, slot);
 
@@ -876,18 +875,19 @@ void CustomGamePlayers::extractMapInfo(std::shared_ptr<INIFile>& pMap)
     mapPropertyLicense.setText(pMap->getStringValue("BASIC","License", "-"));
 
     // find Brain=Human
-    int currentIndex;
-    std::list<HOUSETYPE>::const_iterator iter;
-    for(currentIndex = 0, iter = boundHousesOnMap.begin(); iter != boundHousesOnMap.end(); ++iter, ++currentIndex) {
-        if(strToUpper(pMap->getStringValue(getHouseNameByNumber(*iter),"Brain","")) == "HUMAN") {
+    int currentIndex = 0;
+    for(const HOUSETYPE& houseType : boundHousesOnMap) {
+        if(strToUpper(pMap->getStringValue(getHouseNameByNumber(houseType),"Brain","")) == "HUMAN") {
             brainEqHumanSlot = currentIndex;
         }
+        currentIndex++;
     }
 
+    currentIndex = 0;
     int currentTeam = 0;
     std::vector<std::string> teamNames;
-    for(currentIndex = 0, iter = boundHousesOnMap.begin(); iter != boundHousesOnMap.end(); ++iter, ++currentIndex) {
-        std::string teamName = strToUpper(pMap->getStringValue(getHouseNameByNumber(*iter),"Brain","Team " + stringify(currentIndex+1)));
+    for(const HOUSETYPE& houseType : boundHousesOnMap) {
+        std::string teamName = strToUpper(pMap->getStringValue(getHouseNameByNumber(houseType),"Brain","Team " + stringify(currentIndex+1)));
         teamNames.push_back(teamName);
         slotToTeam[currentIndex] = currentTeam;
         currentTeam++;
@@ -900,6 +900,8 @@ void CustomGamePlayers::extractMapInfo(std::shared_ptr<INIFile>& pMap)
                 break;
             }
         }
+
+        currentIndex++;
     }
 
     for(int p = 0; (p < NUM_HOUSES) && (currentIndex < NUM_HOUSES); p++) {
@@ -1334,14 +1336,7 @@ void CustomGamePlayers::removeFromHouseDropDown(DropDownBox& houseDropDownBox, i
 }
 
 bool CustomGamePlayers::isBoundedHouseOnMap(HOUSETYPE houseID) {
-    std::list<HOUSETYPE>::const_iterator iter;
-    for(iter = boundHousesOnMap.begin(); iter != boundHousesOnMap.end(); ++iter) {
-        if(*iter == houseID) {
-            return true;
-        }
-    }
-
-    return false;
+    return (std::find(boundHousesOnMap.begin(), boundHousesOnMap.end(), houseID) != boundHousesOnMap.end());
 }
 
 void CustomGamePlayers::disableAllDropDownBoxes() {

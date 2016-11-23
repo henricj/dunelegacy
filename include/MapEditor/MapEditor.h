@@ -208,10 +208,9 @@ public:
     }
 
     Structure* getStructure(int structureID) {
-        std::vector<Structure>::iterator iter;
-        for(iter = structures.begin(); iter != structures.end(); ++iter) {
-            if(iter->id == structureID) {
-                return &(*iter);
+        for(Structure& structure : structures) {
+            if(structure.id == structureID) {
+                return &structure;
             }
         }
 
@@ -233,10 +232,9 @@ public:
     }
 
     Unit* getUnit(int unitID) {
-        std::vector<Unit>::iterator iter;
-        for(iter = units.begin(); iter != units.end(); ++iter) {
-            if(iter->id == unitID) {
-                return &(*iter);
+        for(Unit& unit : units) {
+            if(unit.id == unitID) {
+                return &unit;
             }
         }
 

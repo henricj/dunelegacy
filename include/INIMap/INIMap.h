@@ -115,16 +115,14 @@ protected:
     Checks if all map features of this map are supported.
     */
     void checkFeatures() {
-        if(inifile->hasSection("FEATURES") == false) {
+        if(!inifile->hasSection("FEATURES")) {
             return;
         }
 
-        INIFile::KeyIterator iter;
-
-        for(iter = inifile->begin("FEATURES"); iter != inifile->end("FEATURES"); ++iter) {
-            if(iter->getBoolValue(true) == true) {
-                logError(iter->getLineNumber(), "Unsupported feature \"" + iter->getKeyName() + "\"!");
-                return; // never reached
+        for(const INIFile::Key& key : inifile->getSection("FEATURES")) {
+            if(key.getBoolValue(true) == true) {
+                logError(key.getLineNumber(), "Unsupported feature \"" + key.getKeyName() + "\"!");
+                return;
             }
         }
     }

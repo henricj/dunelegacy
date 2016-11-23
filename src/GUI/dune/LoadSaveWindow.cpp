@@ -123,14 +123,9 @@ LoadSaveWindow::~LoadSaveWindow() {
 void LoadSaveWindow::updateEntries() {
     fileList.clearAllEntries();
 
-    std::list<std::string> Files = getFileNamesList(directories[currentDirectoryIndex],extension, true, FileListOrder_ModifyDate_Dsc);
-
     int preselectedFileIndex = -1;
-
-    std::list<std::string>::const_iterator iter;
-    for(iter = Files.begin(); iter != Files.end(); ++iter) {
-        std::string tmp = *iter;
-        std::string entryName = tmp.substr(0, tmp.length() - extension.length() - 1);
+    for(const std::string fileName : getFileNamesList(directories[currentDirectoryIndex],extension, true, FileListOrder_ModifyDate_Dsc)) {
+        std::string entryName = fileName.substr(0, fileName.length() - extension.length() - 1);
         fileList.addEntry(entryName);
 
         if(entryName == preselectedFile) {

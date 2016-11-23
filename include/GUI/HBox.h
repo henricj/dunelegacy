@@ -80,15 +80,13 @@ public:
     */
     virtual Point getMinimumSize() const {
         Point p(0,0);
-        WidgetList::const_iterator iter;
-        for(iter = containedWidgets.begin(); iter != containedWidgets.end(); ++iter) {
-            Widget* curWidget = iter->pWidget;
-            if(iter->fixedWidth > 0) {
-                p.x += iter->fixedWidth;
+        for(const HBox_WidgetData& widgetData : containedWidgets) {
+            if(widgetData.fixedWidth > 0) {
+                p.x += widgetData.fixedWidth;
             } else {
-                p.x += curWidget->getMinimumSize().x;
+                p.x += widgetData.pWidget->getMinimumSize().x;
             }
-            p.y = std::max(p.y,curWidget->getMinimumSize().y);
+            p.y = std::max(p.y,widgetData.pWidget->getMinimumSize().y);
         }
         return p;
     }
@@ -117,17 +115,15 @@ public:
         // Find objects that are not allowed to be resized or have a fixed width
         // also find the sum of all weights
         double weightSum = 0.0;
-        WidgetList::const_iterator iter;
-        for(iter = containedWidgets.begin(); iter != containedWidgets.end(); ++iter) {
-            Widget* curWidget = iter->pWidget;
-            if(curWidget->resizingXAllowed() == false) {
-                availableWidth = availableWidth - curWidget->getSize().x;
+        for(const HBox_WidgetData& widgetData : containedWidgets) {
+            if(widgetData.pWidget->resizingXAllowed() == false) {
+                availableWidth = availableWidth - widgetData.pWidget->getSize().x;
                 numRemainingWidgets--;
-            } else if(iter->fixedWidth > 0) {
-                availableWidth = availableWidth - iter->fixedWidth;
+            } else if(widgetData.fixedWidth > 0) {
+                availableWidth = availableWidth - widgetData.fixedWidth;
                 numRemainingWidgets--;
             } else {
-                weightSum += iter->weight;
+                weightSum += widgetData.weight;
             }
         }
 
@@ -135,48 +131,45 @@ public:
         // also calculate the weight sum of all the resizeable widgets that are not oversized
         Sint32 neededOversizeWidth = 0;
         double notOversizedWeightSum = 0.0;
-        for(iter = containedWidgets.begin(); iter != containedWidgets.end(); ++iter) {
-            Widget* curWidget = iter->pWidget;
-            if(curWidget->resizingXAllowed() == true && iter->fixedWidth <= 0) {
-                if((double) curWidget->getMinimumSize().x > availableWidth * (iter->weight/weightSum)) {
-                    neededOversizeWidth += curWidget->getMinimumSize().x;
+        for(const HBox_WidgetData& widgetData : containedWidgets) {
+            if(widgetData.pWidget->resizingXAllowed() == true && widgetData.fixedWidth <= 0) {
+                if((double) widgetData.pWidget->getMinimumSize().x > availableWidth * (widgetData.weight/weightSum)) {
+                    neededOversizeWidth += widgetData.pWidget->getMinimumSize().x;
                 } else {
-                    notOversizedWeightSum += iter->weight;
+                    notOversizedWeightSum += widgetData.weight;
                 }
             }
         }
 
-
         Sint32 totalAvailableWidth = availableWidth;
-        for(iter = containedWidgets.begin(); iter != containedWidgets.end(); ++iter) {
-            Widget* curWidget = iter->pWidget;
+        for(const HBox_WidgetData& widgetData : containedWidgets) {
             Sint32 widgetHeight;
-            if(curWidget->resizingYAllowed() == true) {
+            if(widgetData.pWidget->resizingYAllowed() == true) {
                 widgetHeight = height;
             } else {
-                widgetHeight = curWidget->getMinimumSize().y;
+                widgetHeight = widgetData.pWidget->getMinimumSize().y;
             }
 
-            if(curWidget->resizingXAllowed() == true) {
+            if(widgetData.pWidget->resizingXAllowed() == true) {
                 Sint32 widgetWidth = 0;
 
-                if(iter->fixedWidth <= 0) {
+                if(widgetData.fixedWidth <= 0) {
                     if(numRemainingWidgets <= 1) {
                         widgetWidth = availableWidth;
-                    } else if((double) curWidget->getMinimumSize().x > totalAvailableWidth * (iter->weight/weightSum)) {
-                        widgetWidth = curWidget->getMinimumSize().x;
+                    } else if((double) widgetData.pWidget->getMinimumSize().x > totalAvailableWidth * (widgetData.weight/weightSum)) {
+                        widgetWidth = widgetData.pWidget->getMinimumSize().x;
                     } else {
-                        widgetWidth = (Sint32) ((totalAvailableWidth-neededOversizeWidth) * (iter->weight/notOversizedWeightSum));
+                        widgetWidth = (Sint32) ((totalAvailableWidth-neededOversizeWidth) * (widgetData.weight/notOversizedWeightSum));
                     }
                     availableWidth -= widgetWidth;
                     numRemainingWidgets--;
                 } else {
-                    widgetWidth = iter->fixedWidth;
+                    widgetWidth = widgetData.fixedWidth;
                 }
 
-                curWidget->resize(widgetWidth,widgetHeight);
+                widgetData.pWidget->resize(widgetWidth,widgetHeight);
             } else {
-                curWidget->resize(curWidget->getSize().x,widgetHeight);
+                widgetData.pWidget->resize(widgetData.pWidget->getSize().x,widgetHeight);
             }
         }
 
@@ -204,14 +197,12 @@ protected:
     */
     virtual Point getPosition(const HBox_WidgetData& widgetData) const {
         Point p(0,0);
-        WidgetList::const_iterator iter;
-        for(iter = containedWidgets.begin(); iter != containedWidgets.end(); ++iter) {
-            Widget* curWidget = iter->pWidget;
-            if(widgetData.pWidget == curWidget) {
-                p.y = (getSize().y - curWidget->getSize().y)/2;
+        for(const HBox_WidgetData& tmpWidgetData : containedWidgets) {
+            if(widgetData.pWidget == tmpWidgetData.pWidget) {
+                p.y = (getSize().y - tmpWidgetData.pWidget->getSize().y)/2;
                 return p;
             } else {
-                p.x = p.x + curWidget->getSize().x;
+                p.x = p.x + tmpWidgetData.pWidget->getSize().x;
             }
         }
 

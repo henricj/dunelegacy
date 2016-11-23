@@ -107,8 +107,7 @@ void Animation::addFrame(SDL_Surface* newFrame, bool bDoublePic, bool bSetColorK
 }
 
 void Animation::setPalette(const Palette& newPalette) {
-    std::vector<SDL_Surface*>::const_iterator iter;
-    for(iter = frames.begin(); iter != frames.end(); ++iter) {
-        newPalette.applyToSurface(*iter);
+    for(SDL_Surface* pSurface : frames) {
+        newPalette.applyToSurface(pSurface);
     }
 }

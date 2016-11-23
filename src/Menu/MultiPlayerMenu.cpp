@@ -201,12 +201,10 @@ void MultiPlayerMenu::onGameTypeChange(int buttonID) {
         gameList.clearAllEntries();
         InternetGameList.clear();
 
-        std::list<GameServerInfo>::iterator iter;
-        for(iter = LANGameList.begin(); iter != LANGameList.end(); ++iter) {
-            GameServerInfo& gameServerInfo = *iter;
+        for(GameServerInfo& gameServerInfo : LANGameList) {
             std::string description = gameServerInfo.serverName + " (" + Address2String(gameServerInfo.serverAddress) + " : " + stringify(gameServerInfo.serverAddress.port) + ") - "
-                                + gameServerInfo.mapName + " (" + stringify(gameServerInfo.numPlayers) + "/" + stringify(gameServerInfo.maxPlayers) + ")";
-            gameList.addEntry(description, &*iter);
+                                        + gameServerInfo.mapName + " (" + stringify(gameServerInfo.numPlayers) + "/" + stringify(gameServerInfo.maxPlayers) + ")";
+            gameList.addEntry(description, &gameServerInfo);
         }
 
         // stop listening on internet games
@@ -242,10 +240,9 @@ void MultiPlayerMenu::onNewLANServer(GameServerInfo gameServerInfo) {
 
 void MultiPlayerMenu::onUpdateLANServer(GameServerInfo gameServerInfo) {
     size_t index = 0;
-    std::list<GameServerInfo>::iterator iter;
-    for(iter = LANGameList.begin(); iter != LANGameList.end(); ++iter) {
-        if(*iter == gameServerInfo) {
-            *iter = gameServerInfo;
+    for(GameServerInfo& curGameServerInfo : LANGameList) {
+        if(curGameServerInfo == gameServerInfo) {
+            curGameServerInfo = gameServerInfo;
             break;
         }
 
@@ -291,10 +288,7 @@ void MultiPlayerMenu::onGameServerInfoList(std::list<GameServerInfo>& gameServer
     }
 
     // now add all servers that are included for the first time and update the others
-    std::list<GameServerInfo>::iterator newListIter;
-    for(newListIter = gameServerInfoList.begin(); newListIter != gameServerInfoList.end(); ++newListIter) {
-        GameServerInfo& gameServerInfo = *newListIter;
-
+    for(const GameServerInfo& gameServerInfo : gameServerInfoList) {
         size_t oldListIndex = 0;
         std::list<GameServerInfo>::iterator oldListIter;
         for(oldListIter = InternetGameList.begin(); oldListIter != InternetGameList.end(); ++oldListIter) {

@@ -165,9 +165,9 @@ void UnitBase::save(OutputStream& stream) const {
     stream.writeSint32(nextSpot.x);
     stream.writeSint32(nextSpot.y);
     stream.writeUint32(pathList.size());
-    for(std::list<Coord>::const_iterator iter = pathList.begin(); iter != pathList.end(); ++iter) {
-        stream.writeSint32(iter->x);
-        stream.writeSint32(iter->y);
+    for(const Coord& coord : pathList) {
+        stream.writeSint32(coord.x);
+        stream.writeSint32(coord.y);
     }
 
     stream.writeSint32(findTargetTimer);

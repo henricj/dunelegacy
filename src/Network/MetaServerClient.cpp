@@ -161,9 +161,8 @@ void MetaServerClient::enqueueMetaServerCommand(std::shared_ptr<MetaServerComman
 
     bool bInsert = true;
 
-    std::list<std::shared_ptr<MetaServerCommand> >::const_iterator iter;
-    for(iter = metaServerCommandList.begin(); iter != metaServerCommandList.end(); ++iter) {
-        if(**iter == *metaServerCommand) {
+    for(std::shared_ptr<MetaServerCommand> pMetaServerCommand : metaServerCommandList) {
+        if(*pMetaServerCommand == *metaServerCommand) {
             bInsert = false;
             break;
         }

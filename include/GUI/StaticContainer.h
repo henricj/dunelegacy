@@ -86,11 +86,9 @@ public:
     */
     virtual Point getMinimumSize() const {
         Point p(0,0);
-        WidgetList::const_iterator iter;
-        for(iter = containedWidgets.begin(); iter != containedWidgets.end(); ++iter) {
-            const StaticContainer_WidgetData curWidgetData = *iter;
-            p.x = std::max(p.x , curWidgetData.position.x + curWidgetData.size.x);
-            p.y = std::max(p.y , curWidgetData.position.y + curWidgetData.size.y);
+        for(const StaticContainer_WidgetData& widgetData : containedWidgets) {
+            p.x = std::max(p.x , widgetData.position.x + widgetData.size.x);
+            p.y = std::max(p.y , widgetData.position.y + widgetData.size.y);
         }
         return p;
     }
@@ -112,10 +110,8 @@ public:
         \param  height  the new height of this container
     */
     virtual void resize(Uint32 width, Uint32 height) {
-        WidgetList::const_iterator iter;
-        for(iter = containedWidgets.begin(); iter != containedWidgets.end(); ++iter) {
-            const StaticContainer_WidgetData curWidgetData = *iter;
-            curWidgetData.pWidget->resize(curWidgetData.size.x,curWidgetData.size.y);
+        for(const StaticContainer_WidgetData& widgetData : containedWidgets) {
+            widgetData.pWidget->resize(widgetData.size.x,widgetData.size.y);
         }
         Container<StaticContainer_WidgetData>::resize(width,height);
     }

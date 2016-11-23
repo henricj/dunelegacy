@@ -52,12 +52,11 @@ MentatHelp::MentatHelp(int newHouse, int techLevel, int mission) : MentatMenu(ne
     backgroundLabel.setTextColor(COLOR_DEFAULT, COLOR_DEFAULT, COLOR_THICKSPICE);
     windowWidget.addWidget(&backgroundLabel,Point(256,96),Point(368,224));
 
-    std::vector<MentatTextFile::MentatEntry>::iterator iter;
-    for(iter = mentatEntries.begin(); iter != mentatEntries.end(); ++iter) {
-        if(iter->menuLevel == 0) {
-            mentatTopicsList.addEntry("     " + iter->title + " :");
+    for(const MentatTextFile::MentatEntry& mentatEntry : mentatEntries) {
+        if(mentatEntry.menuLevel == 0) {
+            mentatTopicsList.addEntry("     " + mentatEntry.title + " :");
         } else {
-            mentatTopicsList.addEntry("        " + iter->title);
+            mentatTopicsList.addEntry("        " + mentatEntry.title);
         }
     }
     mentatTopicsList.setHighlightSelectedElement(false);

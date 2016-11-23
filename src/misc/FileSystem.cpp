@@ -41,16 +41,15 @@
 
 std::list<std::string> getFileNamesList(std::string directory, std::string extension, bool IgnoreCase, FileListOrder fileListOrder)
 {
-    std::list<FileInfo> Files = getFileList(directory, extension, IgnoreCase, fileListOrder);
+    std::list<FileInfo> files = getFileList(directory, extension, IgnoreCase, fileListOrder);
 
-    std::list<std::string> FileNames;
+    std::list<std::string> fileNames;
 
-    std::list<FileInfo>::iterator iter;
-    for(iter = Files.begin(); iter != Files.end(); ++iter) {
-        FileNames.push_back(iter->name);
+    for(const FileInfo& fileInfo : files) {
+        fileNames.push_back(fileInfo.name);
     }
 
-    return FileNames;
+    return fileNames;
 }
 
 static bool cmp_Name_Asc(FileInfo& a, FileInfo& b) { return (a.name.compare(b.name) < 0); }

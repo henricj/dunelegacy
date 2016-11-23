@@ -67,10 +67,8 @@ void WaitingForOtherPlayers::update() {
     std::string text = _("Waiting for other players... ");
 
     // test if we need to wait for data to arrive
-    std::list<std::string> peerList = pNetworkManager->getConnectedPeers();
-    std::list<std::string>::iterator iter;
-    for(iter = peerList.begin(); iter != peerList.end(); ++iter) {
-        HumanPlayer* pPlayer = dynamic_cast<HumanPlayer*>(currentGame->getPlayerByName(*iter));
+    for(const std::string& playername : pNetworkManager->getConnectedPeers()) {
+        HumanPlayer* pPlayer = dynamic_cast<HumanPlayer*>(currentGame->getPlayerByName(playername));
         if(pPlayer != nullptr) {
             if(pPlayer->nextExpectedCommandsCycle <= currentGame->getGameCycleCount()) {
                 text += "\n" + pPlayer->getPlayername();

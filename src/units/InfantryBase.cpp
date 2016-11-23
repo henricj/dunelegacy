@@ -239,12 +239,11 @@ void InfantryBase::checkPos() {
                     for(int i = capturedStructureLocation.x; i < capturedStructureLocation.x + pCapturedStructure->getStructureSizeX(); i++) {
                         for(int j = capturedStructureLocation.y; j < capturedStructureLocation.y + pCapturedStructure->getStructureSizeY(); j++) {
 
-                            // make a copy of infantry list to avoid problems of modifing the list during iteration (!)
+                            // make a copy of infantry list to avoid problems of modifying the list during iteration (!)
                             const std::list<Uint32> infantryList = currentGameMap->getTile(i,j)->getInfantryList();
-                            std::list<Uint32>::const_iterator iter;
-                            for(iter = infantryList.begin(); iter != infantryList.end(); ++iter) {
-                                if(*iter != getObjectID()) {
-                                    ObjectBase* pObject = currentGame->getObjectManager().getObject(*iter);
+                            for(const Uint32& infantryID : infantryList) {
+                                if(infantryID != getObjectID()) {
+                                    ObjectBase* pObject = currentGame->getObjectManager().getObject(infantryID);
                                     if(pObject->getLocation() == Coord(i,j)) {
                                         pObject->destroy();
                                     }

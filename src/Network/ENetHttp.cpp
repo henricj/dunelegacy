@@ -80,16 +80,13 @@ std::string percentEncode(const std::string & s) {
     const std::string unreservedCharacters = "-.0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz_~"; // see RFC 3986
 
     std::string result;
-    std::string::const_iterator iter;
-    for(iter = s.begin(); iter != s.end(); ++iter) {
-        if(unreservedCharacters.find_first_of(*iter) == std::string::npos) {
+    for(char c : s) {
+        if(unreservedCharacters.find_first_of(c) == std::string::npos) {
             // percent encode
-            char tmp[4];
-            sprintf(tmp, "%%%.2X", (unsigned char) *iter);
-            result += tmp;
+            result += fmt::sprintf("%%%.2X", (unsigned char) c);
         } else {
             // copy unmodifed
-            result += *iter;
+            result += c;
         }
     }
 
@@ -113,10 +110,7 @@ std::string loadFromHttp(const std::string& url, const std::map<std::string, std
         port = PORT_HTTP;
     }
 
-    std::map<std::string, std::string>::const_iterator iter;
-
-    for(iter = parameters.begin(); iter != parameters.end(); ++iter) {
-
+    for(const auto& param : parameters) {
         if(filepath.find_first_of('?') == std::string::npos) {
             // first parameter
             filepath += "?";
@@ -124,7 +118,7 @@ std::string loadFromHttp(const std::string& url, const std::map<std::string, std
             filepath += "&";
         }
 
-        filepath += percentEncode(iter->first) + "=" + percentEncode(iter->second);
+        filepath += percentEncode(param.first) + "=" + percentEncode(param.second);
     }
 
     return loadFromHttp(domain, filepath, (unsigned short) port);

@@ -52,7 +52,7 @@ public:
         \param pChildWidget Widget to remove
     */
     virtual void removeChildWidget(Widget* pChildWidget) {
-        for(typename WidgetList::iterator iter = containedWidgets.begin(); iter != containedWidgets.end(); ++iter) {
+        for(auto iter = containedWidgets.begin(); iter != containedWidgets.end(); ++iter) {
             if(iter->pWidget == pChildWidget) {
                 setActiveChildWidget(false, pChildWidget);
                 containedWidgets.erase(iter);
@@ -82,12 +82,9 @@ public:
         \param  insideOverlay   true, if (x,y) is inside an overlay and this container may be behind it, false otherwise
     */
     virtual void handleMouseMovement(Sint32 x, Sint32 y, bool insideOverlay) {
-
-        typename WidgetList::const_iterator iter;
-        for(iter = containedWidgets.begin(); iter != containedWidgets.end(); ++iter) {
-            Widget* curWidget = iter->pWidget;
-            Point pos = getPosition(*iter);
-            curWidget->handleMouseMovement(x - pos.x, y - pos.y, insideOverlay);
+        for(const WidgetData& widgetData : containedWidgets) {
+            Point pos = getPosition(widgetData);
+            widgetData.pWidget->handleMouseMovement(x - pos.x, y - pos.y, insideOverlay);
         }
     }
 
@@ -104,11 +101,9 @@ public:
         }
 
         bool bWidgetFound = false;
-        typename WidgetList::const_iterator iter;
-        for(iter = containedWidgets.begin(); iter != containedWidgets.end(); ++iter) {
-            Widget* curWidget = iter->pWidget;
-            Point pos = getPosition(*iter);
-            bWidgetFound |= curWidget->handleMouseLeft(x - pos.x, y - pos.y, pressed);
+        for(const WidgetData& widgetData : containedWidgets) {
+            Point pos = getPosition(widgetData);
+            bWidgetFound |= widgetData.pWidget->handleMouseLeft(x - pos.x, y - pos.y, pressed);
         }
         return bWidgetFound;
     }
@@ -126,11 +121,9 @@ public:
         }
 
         bool bWidgetFound = false;
-        typename WidgetList::const_iterator iter;
-        for(iter = containedWidgets.begin(); iter != containedWidgets.end(); ++iter) {
-            Widget* curWidget = iter->pWidget;
-            Point pos = getPosition(*iter);
-            bWidgetFound |= curWidget->handleMouseRight(x - pos.x, y - pos.y, pressed);
+        for(const WidgetData& widgetData : containedWidgets) {
+            Point pos = getPosition(widgetData);
+            bWidgetFound |= widgetData.pWidget->handleMouseRight(x - pos.x, y - pos.y, pressed);
         }
         return bWidgetFound;
     }
@@ -148,17 +141,14 @@ public:
         }
 
         bool bProcessed = false;
-        typename WidgetList::const_iterator iter;
-        for(iter = containedWidgets.begin(); iter != containedWidgets.end(); ++iter) {
-            Widget* curWidget = iter->pWidget;
-            Point pos = getPosition(*iter);
+        for(const WidgetData& widgetData : containedWidgets) {
+            Point pos = getPosition(widgetData);
 
             int childX = x - pos.x;
             int childY = y - pos.y;
 
-            if((childX >= 0) && (childX < curWidget->getSize().x)
-                && (childY >= 0) && (childY < curWidget->getSize().y)) {
-                bProcessed = curWidget->handleMouseWheel(childX, childY, up);
+            if((childX >= 0) && (childX < widgetData.pWidget->getSize().x) && (childY >= 0) && (childY < widgetData.pWidget->getSize().y)) {
+                bProcessed = widgetData.pWidget->handleMouseWheel(childX, childY, up);
                 if(bProcessed) {
                     break;
                 }
@@ -219,12 +209,9 @@ public:
     */
     virtual inline bool handleMouseMovementOverlay(Sint32 x, Sint32 y) {
         bool insideOverlay = false;
-
-        typename WidgetList::const_iterator iter;
-        for(iter = containedWidgets.begin(); iter != containedWidgets.end(); ++iter) {
-            Widget* curWidget = iter->pWidget;
-            Point pos = getPosition(*iter);
-            insideOverlay |= curWidget->handleMouseMovementOverlay(x - pos.x, y - pos.y);
+        for(const WidgetData& widgetData : containedWidgets) {
+            Point pos = getPosition(widgetData);
+            insideOverlay |= widgetData.pWidget->handleMouseMovementOverlay(x - pos.x, y - pos.y);
         }
 
         return insideOverlay;
@@ -243,11 +230,9 @@ public:
         }
 
         bool bWidgetFound = false;
-        typename WidgetList::const_iterator iter;
-        for(iter = containedWidgets.begin(); iter != containedWidgets.end(); ++iter) {
-            Widget* curWidget = iter->pWidget;
-            Point pos = getPosition(*iter);
-            bWidgetFound |= curWidget->handleMouseLeftOverlay(x - pos.x, y - pos.y, pressed);
+        for(const WidgetData& widgetData : containedWidgets) {
+            Point pos = getPosition(widgetData);
+            bWidgetFound |= widgetData.pWidget->handleMouseLeftOverlay(x - pos.x, y - pos.y, pressed);
         }
         return bWidgetFound;
     }
@@ -265,11 +250,9 @@ public:
         }
 
         bool bWidgetFound = false;
-        typename WidgetList::const_iterator iter;
-        for(iter = containedWidgets.begin(); iter != containedWidgets.end(); ++iter) {
-            Widget* curWidget = iter->pWidget;
-            Point pos = getPosition(*iter);
-            bWidgetFound |= curWidget->handleMouseRightOverlay(x - pos.x, y - pos.y, pressed);
+        for(const WidgetData& widgetData : containedWidgets) {
+            Point pos = getPosition(widgetData);
+            bWidgetFound |= widgetData.pWidget->handleMouseRightOverlay(x - pos.x, y - pos.y, pressed);
         }
         return bWidgetFound;
     }
@@ -287,15 +270,13 @@ public:
         }
 
         bool bProcessed = false;
-        typename WidgetList::const_iterator iter;
-        for(iter = containedWidgets.begin(); iter != containedWidgets.end(); ++iter) {
-            Widget* curWidget = iter->pWidget;
-            Point pos = getPosition(*iter);
+        for(const WidgetData& widgetData : containedWidgets) {
+            Point pos = getPosition(widgetData);
 
             int childX = x - pos.x;
             int childY = y - pos.y;
 
-            bProcessed = curWidget->handleMouseWheelOverlay(childX, childY, up);
+            bProcessed = widgetData.pWidget->handleMouseWheelOverlay(childX, childY, up);
             if(bProcessed) {
                 break;
             }
@@ -350,11 +331,8 @@ public:
             return;
         }
 
-        typename WidgetList::const_iterator iter;
-        for(iter = containedWidgets.begin(); iter != containedWidgets.end(); ++iter) {
-            Widget* curWidget = iter->pWidget;
-            Point pos = getPosition(*iter);
-            curWidget->draw(position+pos);
+        for(const WidgetData& widgetData : containedWidgets) {
+            widgetData.pWidget->draw(position+getPosition(widgetData));
         }
     }
 
@@ -368,11 +346,8 @@ public:
             return;
         }
 
-        typename WidgetList::const_iterator iter;
-        for(iter = containedWidgets.begin(); iter != containedWidgets.end(); ++iter) {
-            Widget* curWidget = iter->pWidget;
-            Point pos = getPosition(*iter);
-            curWidget->drawOverlay(position+pos);
+        for(const WidgetData& widgetData : containedWidgets) {
+            widgetData.pWidget->drawOverlay(position+getPosition(widgetData));
         }
     }
 
@@ -442,13 +417,12 @@ public:
             return false;
         }
 
-        typename WidgetList::const_iterator iter = containedWidgets.begin();
-        while(iter != containedWidgets.end()) {
-            if(iter->pWidget->isActivatable() == true) {
+        for(const WidgetData& widgetData : containedWidgets) {
+            if(widgetData.pWidget->isActivatable() == true) {
                 return true;
             }
-            ++iter;
         }
+
         return false;
     }
 
@@ -540,15 +514,13 @@ protected:
         This method activates the first activatable widget in this container.
     */
     void activateFirstActivatableWidget() {
-        typename WidgetList::const_iterator iter = containedWidgets.begin();
-        while(iter != containedWidgets.end()) {
-            if(iter->pWidget->isActivatable() == true) {
+        for(const WidgetData& widgetData : containedWidgets) {
+            if(widgetData.pWidget->isActivatable() == true) {
                 // activate next widget
-                pActiveChildWidget = iter->pWidget;
+                pActiveChildWidget = widgetData.pWidget;
                 pActiveChildWidget->setActive();
                 return;
             }
-            ++iter;
         }
         pActiveChildWidget = nullptr;
     }
@@ -567,12 +539,10 @@ protected:
         \return a pointer to the WidgetData, nullptr if not found
     */
     WidgetData* getWidgetDataFromWidget(const Widget* pWidget) {
-        typename WidgetList::iterator iter = containedWidgets.begin();
-        while(iter != containedWidgets.end()) {
-            if(iter->pWidget == pWidget) {
-                return &(*iter);
+        for(WidgetData& widgetData : containedWidgets) {
+            if(widgetData.pWidget == pWidget) {
+                return &widgetData;
             }
-            ++iter;
         }
 
         return nullptr;

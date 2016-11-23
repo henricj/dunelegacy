@@ -71,9 +71,8 @@ public:
             stream.writeSint32(team);
 
             stream.writeUint32(playerInfoList.size());
-            PlayerInfoList::const_iterator iter;
-            for(iter = playerInfoList.begin(); iter != playerInfoList.end(); ++iter) {
-                iter->save(stream);
+            for(const PlayerInfo& playerInfo : playerInfoList) {
+                playerInfo.save(stream);
             }
         }
 

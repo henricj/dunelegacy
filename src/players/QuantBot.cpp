@@ -221,10 +221,9 @@ void QuantBot::save(OutputStream& stream) const {
     stream.writeSint32(squadRetreatLocation.y);
 
     stream.writeUint32(placeLocations.size());
-    std::list<Coord>::const_iterator iter;
-    for(iter = placeLocations.begin(); iter != placeLocations.end(); ++iter) {
-        stream.writeSint32(iter->x);
-        stream.writeSint32(iter->y);
+    for(const Coord& placeLocation : placeLocations) {
+        stream.writeSint32(placeLocation.x);
+        stream.writeSint32(placeLocation.y);
     }
 
 }
@@ -577,9 +576,6 @@ Coord QuantBot::findMcvPlaceLocation(const MCV* pMCV) {
 }
 
 Coord QuantBot::findPlaceLocation(Uint32 itemID) {
-
-    RobustList<const StructureBase*>::const_iterator iter;
-
     // Will over allocate space for small maps so its not clean
     // But should allow Richard to compile
     int buildLocationScore[128][128] = {{0}};
@@ -591,9 +587,7 @@ Coord QuantBot::findPlaceLocation(Uint32 itemID) {
     int newSizeY = getStructureSize(itemID).y;
     Coord bestLocation = Coord::Invalid();
 
-    for(iter = getStructureList().begin(); iter != getStructureList().end(); ++iter) {
-        const StructureBase* pStructureExisting = *iter;
-
+    for(const StructureBase* pStructureExisting : getStructureList()) {
         if(pStructureExisting->getOwner() == getHouse()) {
 
             int existingStartX = pStructureExisting->getX();
@@ -725,11 +719,7 @@ void QuantBot::build(int militaryValue) {
     }
 
     // Next add in the objects we are building
-    RobustList<const StructureBase*>::const_iterator iter;
-
-    for(iter = getStructureList().begin(); iter != getStructureList().end(); ++iter) {
-        const StructureBase* pStructure = *iter;
-
+    for(const StructureBase* pStructure : getStructureList()) {
         if(pStructure->getOwner() == getHouse()) {
             if(pStructure->isABuilder()) {
                 const BuilderBase* pBuilder = dynamic_cast<const BuilderBase*>(pStructure);
@@ -865,9 +855,7 @@ void QuantBot::build(int militaryValue) {
     // End of adaptive unit prioritisation algorithm
 
 
-    for(iter = getStructureList().begin(); iter != getStructureList().end(); ++iter) {
-        const StructureBase* pStructure = *iter;
-
+    for(const StructureBase* pStructure : getStructureList()) {
         if(pStructure->getOwner() == getHouse()) {
             if((pStructure->isRepairing() == false)
                && (pStructure->getHealth() < pStructure->getMaxHealth())
@@ -1467,9 +1455,7 @@ void QuantBot::build(int militaryValue) {
 
 
 void QuantBot::scrambleUnitsAndDefend(const ObjectBase* pIntruder) {
-    RobustList<const UnitBase*>::const_iterator iter;
-    for(iter = getUnitList().begin(); iter != getUnitList().end(); ++iter) {
-        const UnitBase* pUnit = *iter;
+    for(const UnitBase* pUnit : getUnitList()) {
         if(pUnit->isRespondable() && (pUnit->getOwner() == getHouse())) {
 
             if(!pUnit->hasATarget() && !pUnit->wasForced()) {
@@ -1543,9 +1529,7 @@ void QuantBot::attack(int militaryValue) {
 
     Coord squadCenterLocation = findSquadCenter(getHouse()->getHouseID());
 
-    RobustList<const UnitBase*>::const_iterator iter;
-    for(iter = getUnitList().begin(); iter != getUnitList().end(); ++iter) {
-        const UnitBase *pUnit = *iter;
+    for(const UnitBase *pUnit : getUnitList()) {
         if (pUnit->isRespondable()
             && (pUnit->getOwner() == getHouse())
             && pUnit->isActive()
@@ -1580,9 +1564,7 @@ Coord QuantBot::findSquadRallyLocation() {
     int enemyTotalX = 0;
     int enemyTotalY = 0;
 
-    RobustList<const StructureBase*>::const_iterator currentStructure;
-    for(currentStructure = getStructureList().begin(); currentStructure != getStructureList().end(); ++currentStructure) {
-        const StructureBase* pCurrentStructure = *currentStructure;
+    for(const StructureBase* pCurrentStructure : getStructureList()) {
         if(pCurrentStructure->getOwner()->getHouseID() == getHouse()->getHouseID()) {
             // Lets find the center of mass of our squad
             buildingCount ++;
@@ -1611,9 +1593,7 @@ Coord QuantBot::findBaseCentre(int houseID) {
     int totalX = 0;
     int totalY = 0;
 
-    RobustList<const StructureBase*>::const_iterator currentStructure;
-    for(currentStructure = getStructureList().begin(); currentStructure != getStructureList().end(); ++currentStructure) {
-        const StructureBase* pCurrentStructure = *currentStructure;
+    for(const StructureBase* pCurrentStructure : getStructureList()) {
         if(pCurrentStructure->getOwner()->getHouseID() == houseID && pCurrentStructure->getStructureSizeX() != 1) {
             // Lets find the center of mass of our squad
             buildingCount++;
@@ -1639,12 +1619,7 @@ Coord QuantBot::findSquadCenter(int houseID) {
     int totalX = 0;
     int totalY = 0;
 
-
-    RobustList<const UnitBase*>::const_iterator currentUnit;
-
-    for(currentUnit = getUnitList().begin(); currentUnit != getUnitList().end(); ++currentUnit) {
-        const UnitBase* pCurrentUnit = *currentUnit;
-
+    for(const UnitBase* pCurrentUnit : getUnitList()) {
         if(pCurrentUnit->getOwner()->getHouseID()  == houseID
             && pCurrentUnit->getItemID() != Unit_Carryall
             && pCurrentUnit->getItemID() != Unit_Harvester
@@ -1695,13 +1670,10 @@ void QuantBot::retreatAllUnits() {
     retreatTimer = MILLI2CYCLES(90000);
 
     FixPoint closestDistance = FixPt_MAX;
-    RobustList<StructureBase*>::const_iterator iter;
-    for(iter = structureList.begin(); iter != structureList.end(); ++iter) {
-        StructureBase* tempStructure = *iter;
-
+    for(const StructureBase* pStructure : getStructureList()) {
         // if it is our building, check to see if it is closer to the squad rally point then we are
-        if(tempStructure->getOwner()->getHouseID() == getHouse()->getHouseID()) {
-            Coord closestStructurePoint = tempStructure->getClosestPoint(squadRallyLocation);
+        if(pStructure->getOwner()->getHouseID() == getHouse()->getHouseID()) {
+            Coord closestStructurePoint = pStructure->getClosestPoint(squadRallyLocation);
             FixPoint structureDistance = blockDistance(squadRallyLocation, closestStructurePoint);
 
             if(structureDistance < closestDistance) {
@@ -1717,11 +1689,8 @@ void QuantBot::retreatAllUnits() {
     }
 
     // If no base exists yet, there is no retreat location
-    if(squadRallyLocation.x != -1 && squadRetreatLocation.x != -1){
-        RobustList<const UnitBase*>::const_iterator iter;
-        for(iter = getUnitList().begin(); iter != getUnitList().end(); ++iter) {
-            const UnitBase* pUnit = *iter;
-
+    if(squadRallyLocation.x != -1 && squadRetreatLocation.x != -1) {
+        for(const UnitBase* pUnit : getUnitList()) {
             if(pUnit->getOwner() == getHouse()
                && pUnit->getItemID() != Unit_Carryall
                && pUnit->getItemID() != Unit_Sandworm
@@ -1748,10 +1717,7 @@ void QuantBot::retreatAllUnits() {
 void QuantBot::checkAllUnits() {
     Coord squadCenterLocation = findSquadCenter(getHouse()->getHouseID());
 
-    RobustList<const UnitBase*>::const_iterator iter;
-    for(iter = getUnitList().begin(); iter != getUnitList().end(); ++iter) {
-        const UnitBase* pUnit = *iter;
-
+    for(const UnitBase* pUnit : getUnitList()) {
         if(pUnit->getOwner() == getHouse()) {
             switch(pUnit->getItemID()) {
                 case Unit_MCV: {

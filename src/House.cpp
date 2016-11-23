@@ -172,10 +172,9 @@ void House::save(OutputStream& stream) const {
     choam.save(stream);
 
     stream.writeUint32(players.size());
-    std::list<std::shared_ptr<Player> >::const_iterator iter;
-    for(iter = players.begin(); iter != players.end(); ++iter) {
-        stream.writeString((*iter)->getPlayerclass());
-        (*iter)->save(stream);
+    for(const std::shared_ptr<Player>& pPlayer : players) {
+        stream.writeString(pPlayer->getPlayerclass());
+        pPlayer->save(stream);
     }
 }
 
@@ -291,11 +290,9 @@ void House::printStat() const {
 
 
 void House::updateBuildLists() {
-    RobustList<StructureBase*>::const_iterator iter;
-    for(iter = structureList.begin(); iter != structureList.end(); ++iter) {
-        StructureBase* tempStructure = *iter;
-        if(tempStructure->isABuilder() && (tempStructure->getOwner() == this)) {
-            static_cast<BuilderBase*>(tempStructure)->updateBuildList();
+    for(StructureBase* pStructure : structureList) {
+        if(pStructure->isABuilder() && (pStructure->getOwner() == this)) {
+            static_cast<BuilderBase*>(pStructure)->updateBuildList();
         }
     }
 }
@@ -330,9 +327,8 @@ void House::update() {
 
     choam.update();
 
-    std::list<std::shared_ptr<Player> >::iterator iter;
-    for(iter = players.begin(); iter != players.end(); ++iter) {
-        (*iter)->update();
+    for(std::shared_ptr<Player>& pPlayer : players) {
+        pPlayer->update();
     }
 }
 
@@ -367,12 +363,9 @@ void House::decrementUnits(int itemID) {
         numItem[itemID]--;
     }
 
-    std::list<std::shared_ptr<Player> >::iterator iter;
-    for(iter = players.begin(); iter != players.end(); ++iter) {
-        (*iter)->onDecrementUnits(itemID);
+    for(std::shared_ptr<Player>& pPlayer : players) {
+        pPlayer->onDecrementUnits(itemID);
     }
-
-
 
     if(itemID != Unit_Saboteur
        && itemID != Unit_Frigate
@@ -411,9 +404,8 @@ void House::incrementStructures(int itemID) {
         updateBuildLists();
     }
 
-    std::list<std::shared_ptr<Player> >::iterator iter;
-    for(iter = players.begin(); iter != players.end(); ++iter) {
-        (*iter)->onIncrementStructures(itemID);
+    for(std::shared_ptr<Player>& pPlayer : players) {
+        pPlayer->onIncrementStructures(itemID);
     }
 }
 
@@ -442,9 +434,8 @@ void House::decrementStructures(int itemID, const Coord& location) {
     if (!isAlive())
         lose();
 
-    std::list<std::shared_ptr<Player> >::iterator iter;
-    for(iter = players.begin(); iter != players.end(); ++iter) {
-        (*iter)->onDecrementStructures(itemID, location);
+    for(std::shared_ptr<Player>& pPlayer : players) {
+        pPlayer->onDecrementStructures(itemID, location);
     }
 }
 
@@ -452,9 +443,8 @@ void House::decrementStructures(int itemID, const Coord& location) {
 
 
 void House::noteDamageLocation(ObjectBase* pObject, int damage, Uint32 damagerID) {
-    std::list<std::shared_ptr<Player> >::iterator iter;
-    for(iter = players.begin(); iter != players.end(); ++iter) {
-        (*iter)->onDamage(pObject, damage, damagerID);
+    for(std::shared_ptr<Player>& pPlayer : players) {
+        pPlayer->onDamage(pObject, damage, damagerID);
     }
 }
 
@@ -504,9 +494,8 @@ void House::informHasKilled(Uint32 itemID) {
     numItemKills[itemID]++;
 
 
-    std::list<std::shared_ptr<Player> >::iterator iter;
-    for(iter = players.begin(); iter != players.end(); ++iter) {
-        (*iter)->onIncrementUnitKills(itemID);
+    for(std::shared_ptr<Player>& pPlayer : players) {
+        pPlayer->onIncrementUnitKills(itemID);
     }
 }
 
@@ -728,10 +717,9 @@ StructureBase* House::placeStructure(Uint32 builderID, int itemID, int xPos, int
 
                 if(itemID == Structure_Palace) {
                     // cancel all other palaces
-                    for(RobustList<StructureBase*>::iterator iter = structureList.begin(); iter != structureList.end(); ++iter) {
-                        if((*iter)->getOwner() == this && (*iter)->getItemID() == Structure_ConstructionYard) {
-                            ConstructionYard* pConstructionYard = (ConstructionYard*) *iter;
-
+                    for(StructureBase* pStructure : structureList) {
+                        if(pStructure->getOwner() == this && pStructure->getItemID() == Structure_ConstructionYard) {
+                            ConstructionYard* pConstructionYard = static_cast<ConstructionYard*>(pStructure);
                             if(pBuilder != pConstructionYard) {
                                 pConstructionYard->doCancelItem(Structure_Palace, false);
                             }
@@ -820,20 +808,14 @@ UnitBase* House::placeUnit(int itemID, int xPos, int yPos) {
 Coord House::getCenterOfMainBase() const {
     Coord center;
     int numStructures = 0;
-
-    RobustList<StructureBase*>::const_iterator iter;
-    for(iter = structureList.begin(); iter != structureList.end(); ++iter) {
-        StructureBase* tempStructure = *iter;
-
-        if(tempStructure->getOwner() == this) {
-            center += tempStructure->getLocation();
+    for(const StructureBase* pStructure : structureList) {
+        if(pStructure->getOwner() == this) {
+            center += pStructure->getLocation();
             numStructures++;
         }
     }
 
-    center /= numStructures;
-
-    return center;
+    return center / numStructures;
 }
 
 
@@ -842,23 +824,20 @@ Coord House::getCenterOfMainBase() const {
     \return the coordinate of the strongest unit
 */
 Coord House::getStrongestUnitPosition() const {
-    Coord position = Coord::Invalid();
-    Sint32 highestCost = 0;
+    Coord strongestUnitPosition = Coord::Invalid();
+    Sint32 strongestUnitCost = 0;
+    for(const UnitBase* pUnit : unitList) {
+        if(pUnit->getOwner() == this) {
+            Sint32 currentCost = currentGame->objectData.data[pUnit->getItemID()][houseID].price;
 
-    RobustList<UnitBase*>::const_iterator iter;
-    for(iter = unitList.begin(); iter != unitList.end(); ++iter) {
-        UnitBase* tempUnit = *iter;
-
-        if(tempUnit->getOwner() == this) {
-            Sint32 currentCost = currentGame->objectData.data[tempUnit->getItemID()][houseID].price;
-
-            if(currentCost > highestCost) {
-                position = tempUnit->getLocation();
+            if(currentCost > strongestUnitCost) {
+                strongestUnitPosition = pUnit->getLocation();
+                strongestUnitCost = currentCost;
             }
         }
     }
 
-    return position;
+    return strongestUnitPosition;
 }
 
 
@@ -872,29 +851,25 @@ void House::decrementHarvesters() {
 
         if(numItem[Structure_Refinery]) {
             Coord   closestPos;
-            Coord   pos = Coord(0,0);
             FixPoint    closestDistance = FixPt_MAX;
-            StructureBase *closestRefinery = nullptr;
+            StructureBase *pClosestRefinery = nullptr;
 
-            RobustList<StructureBase*>::const_iterator iter;
-            for(iter = structureList.begin(); iter != structureList.end(); ++iter) {
-                StructureBase* tempStructure = *iter;
+            for(StructureBase* pStructure : structureList) {
+                if((pStructure->getItemID() == Structure_Refinery) && (pStructure->getOwner() == this) && (pStructure->getHealth() > 0)) {
+                    Coord pos = pStructure->getLocation();
 
-                if((tempStructure->getItemID() == Structure_Refinery) && (tempStructure->getOwner() == this) && (tempStructure->getHealth() > 0)) {
-                    pos = tempStructure->getLocation();
-
-                    Coord closestPoint = tempStructure->getClosestPoint(pos);
+                    Coord closestPoint = pStructure->getClosestPoint(pos);
                     FixPoint refineryDistance = blockDistance(pos, closestPoint);
-                    if(!closestRefinery || (refineryDistance < closestDistance)) {
+                    if(!pClosestRefinery || (refineryDistance < closestDistance)) {
                             closestDistance = refineryDistance;
-                            closestRefinery = tempStructure;
+                            pClosestRefinery = pStructure;
                             closestPos = pos;
                     }
                 }
             }
 
-            if(closestRefinery && (currentGame->gameState == BEGUN)) {
-                freeHarvester(closestRefinery->getLocation().x, closestRefinery->getLocation().y);
+            if(pClosestRefinery && (currentGame->gameState == BEGUN)) {
+                freeHarvester(pClosestRefinery->getLocation());
             }
         }
     }

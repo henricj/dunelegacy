@@ -40,7 +40,7 @@ public:
 
     void save(OutputStream& stream) const;
 
-    void blitToScreen();
+    void blitToScreen() const;
 
     void update();
     void destroy();

@@ -103,13 +103,11 @@ MapEditor::~MapEditor() {
 }
 
 std::string MapEditor::generateMapname() const {
-    int numPlayers = 0;
-    std::vector<MapEditor::Player>::const_iterator iter;
-    for(iter = players.begin(); iter != players.end(); ++iter) {
-        if(iter->bActive) {
-            numPlayers++;
-        }
-    }
+    int numPlayers = std::count_if( players.begin(),
+                                    players.end(),
+                                    [](const MapEditor::Player& player) {
+                                        return player.bActive;
+                                    });
 
     return stringify(numPlayers) + "P - " + stringify(map.getSizeX()) + "x" + stringify(map.getSizeY()) + " - " + _("New Map");
 }
@@ -213,23 +211,21 @@ void MapEditor::setMap(const MapData& mapdata, const MapInfo& newMapInfo) {
 }
 
 bool MapEditor::isTileBlocked(int x, int y, bool bSlabIsBlocking, bool bUnitsAreBlocking) const {
-    std::vector<Structure>::const_iterator sIter;
-    for(sIter = structures.begin(); sIter != structures.end(); ++sIter) {
-        if(!bSlabIsBlocking && ((sIter->itemID == Structure_Slab1) || (sIter->itemID == Structure_Slab4)) ) {
+    for(const Structure& structure : structures) {
+        if(!bSlabIsBlocking && ((structure.itemID == Structure_Slab1) || (structure.itemID == Structure_Slab4)) ) {
             continue;
         }
 
-        Coord structureSize = getStructureSize(sIter->itemID);
-        Coord position = sIter->position;
+        Coord structureSize = getStructureSize(structure.itemID);
+        Coord position = structure.position;
         if((x >= position.x) && (x < position.x+structureSize.x) && (y >= position.y) && (y < position.y+structureSize.y)) {
             return true;
         }
     }
 
     if(bUnitsAreBlocking) {
-        std::vector<Unit>::const_iterator uIter;
-        for(uIter = units.begin(); uIter != units.end(); ++uIter) {
-            if((x == uIter->position.x) && (y == uIter->position.y)) {
+        for(const Unit& unit : units) {
+            if((x == unit.position.x) && (y == unit.position.y)) {
                 return true;
             }
         }
@@ -252,10 +248,9 @@ std::vector<int> MapEditor::getMirrorStructures(int structureID) {
     for(int i=0;i<mapMirror->getSize();i++) {
         Coord position = mapMirror->getCoord( pStructure->position, i, structureSize);
 
-        std::vector<Structure>::iterator iter;
-        for(iter = structures.begin(); iter != structures.end(); ++iter) {
-            if(iter->position == position) {
-                mirrorStructures.push_back(iter->id);
+        for(const Structure& structure : structures) {
+            if(structure.position == position) {
+                mirrorStructures.push_back(structure.id);
                 break;
             }
         }
@@ -276,10 +271,9 @@ std::vector<int> MapEditor::getMirrorUnits(int unitID, bool bAddMissingAsInvalid
     for(int i=0;i<mapMirror->getSize();i++) {
         Coord position = mapMirror->getCoord( pUnit->position, i);
 
-        std::vector<Unit>::iterator iter;
-        for(iter = units.begin(); iter != units.end(); ++iter) {
-            if(iter->position == position) {
-                mirrorUnits.push_back(iter->id);
+        for(const Unit& unit : units) {
+            if(unit.position == position) {
+                mirrorUnits.push_back(unit.id);
                 break;
             }
         }
@@ -584,43 +578,44 @@ void MapEditor::saveMap(const std::string& filepath) {
 
     std::string house2housename[NUM_HOUSES];
     int currentAnyHouseNumber = 1;
-    std::vector<Player>::const_iterator playerIter = players.begin();
-    for(int i = 0; playerIter != players.end(); ++playerIter, ++i) {
-        if(playerIter->bAnyHouse) {
+    int i = 0;
+    for(const Player& player : players) {
+        if(player.bAnyHouse) {
             house2housename[i] =  "Player" + stringify(currentAnyHouseNumber);
         } else {
-            house2housename[i] =  playerIter->name;
+            house2housename[i] =  player.name;
         }
 
-        if(playerIter->bActive) {
+        if(player.bActive) {
             if(version < 2) {
-                loadedINIFile->setIntValue(house2housename[i], "Quota", playerIter->quota);
-                loadedINIFile->setIntValue(house2housename[i], "Credits", playerIter->credits);
-                loadedINIFile->setStringValue(house2housename[i], "Brain", playerIter->brain, false);
-                loadedINIFile->setIntValue(house2housename[i], "MaxUnit", playerIter->maxunit);
+                loadedINIFile->setIntValue(house2housename[i], "Quota", player.quota);
+                loadedINIFile->setIntValue(house2housename[i], "Credits", player.credits);
+                loadedINIFile->setStringValue(house2housename[i], "Brain", player.brain, false);
+                loadedINIFile->setIntValue(house2housename[i], "MaxUnit", player.maxunit);
             } else {
-                if(playerIter->quota > 0) {
-                    loadedINIFile->setIntValue(house2housename[i], "Quota", playerIter->quota);
+                if(player.quota > 0) {
+                    loadedINIFile->setIntValue(house2housename[i], "Quota", player.quota);
                 } else {
                     loadedINIFile->removeKey(house2housename[i], "Quota");
                 }
-                loadedINIFile->setIntValue(house2housename[i], "Credits", playerIter->credits);
-                loadedINIFile->setStringValue(house2housename[i], "Brain", playerIter->brain, false);
+                loadedINIFile->setIntValue(house2housename[i], "Credits", player.credits);
+                loadedINIFile->setStringValue(house2housename[i], "Brain", player.brain, false);
 
-                if(playerIter->bAnyHouse) {
+                if(player.bAnyHouse) {
                     currentAnyHouseNumber++;
                 }
             }
 
-            if(playerIter->bAnyHouse) {
+            if(player.bAnyHouse) {
                 // remove corresponding house name
-                loadedINIFile->removeSection(playerIter->name);
+                loadedINIFile->removeSection(player.name);
             }
 
         } else {
             // remove corresponding house name
-            loadedINIFile->removeSection(playerIter->name);
+            loadedINIFile->removeSection(player.name);
         }
+        i++;
     }
 
     // remove players that are leftovers
@@ -634,10 +629,9 @@ void MapEditor::saveMap(const std::string& filepath) {
     } else {
         loadedINIFile->clearSection("CHOAM");
 
-        std::map<int,int>::const_iterator iter;
-        for(iter = choam.begin(); iter != choam.end(); ++iter) {
-            int itemID = iter->first;
-            int num = iter->second;
+        for(auto& choamEntry : choam) {
+            int itemID = choamEntry.first;
+            int num = choamEntry.second;
 
             if(num == 0) {
                 num = -1;
@@ -654,51 +648,46 @@ void MapEditor::saveMap(const std::string& filepath) {
 
         // we start at 0 for version 1 maps if we have 16 entries to not overflow the table
         int currentIndex = ((getMapVersion() < 2) && (teams.size() >= 16)) ? 0 : 1;
-        std::vector<TeamInfo>::const_iterator iter;
-        for(iter = teams.begin(); iter != teams.end(); ++iter, ++currentIndex) {
-
-            std::string value = house2housename[iter->houseID] + "," + getTeamBehaviorNameByID(iter->teamBehavior) + "," + getTeamTypeNameByID(iter->teamType) + "," + stringify(iter->minUnits) + "," + stringify(iter->maxUnits);
-
+        for(const TeamInfo& teamInfo : teams) {
+            std::string value = house2housename[teamInfo.houseID] + "," + getTeamBehaviorNameByID(teamInfo.teamBehavior) + "," + getTeamTypeNameByID(teamInfo.teamType) + "," + stringify(teamInfo.minUnits) + "," + stringify(teamInfo.maxUnits);
             loadedINIFile->setStringValue("TEAMS", stringify(currentIndex), value, false);
+            currentIndex++;
         }
     }
 
 
     loadedINIFile->clearSection("UNITS");
-    std::vector<Unit>::const_iterator unitsIter;
-    for(unitsIter = units.begin(); unitsIter != units.end(); ++unitsIter) {
-        std::string unitKey = fmt::sprintf("ID%.3d", unitsIter->id);
+    for(const Unit& unit : units) {
+        std::string unitKey = fmt::sprintf("ID%.3d", unit.id);
 
-        int position = (logicalOffsetY+unitsIter->position.y) * logicalSizeX + (logicalOffsetX+unitsIter->position.x);
+        int position = (logicalOffsetY+unit.position.y) * logicalSizeX + (logicalOffsetX+unit.position.x);
 
-        int angle = (int) unitsIter->angle;
+        int angle = (int) unit.angle;
 
         angle = (((NUM_ANGLES - angle) + 2) % NUM_ANGLES) * 32;
 
-        std::string unitValue = house2housename[unitsIter->house] + "," + getItemNameByID(unitsIter->itemID) + "," + stringify(unitsIter->health)
-                                + "," + stringify(position) + "," + stringify(angle) + "," + getAttackModeNameByMode(unitsIter->attackmode);
+        std::string unitValue = house2housename[unit.house] + "," + getItemNameByID(unit.itemID) + "," + stringify(unit.health)
+                                + "," + stringify(position) + "," + stringify(angle) + "," + getAttackModeNameByMode(unit.attackmode);
 
         loadedINIFile->setStringValue("UNITS", unitKey, unitValue, false);
     }
 
     loadedINIFile->clearSection("STRUCTURES");
-    std::vector<Structure>::const_iterator structuresIter;
-    for(structuresIter = structures.begin(); structuresIter != structures.end(); ++structuresIter) {
+    for(const Structure& structure : structures) {
+        int position = (logicalOffsetY+structure.position.y) * logicalSizeX + (logicalOffsetX+structure.position.x);
 
-        int position = (logicalOffsetY+structuresIter->position.y) * logicalSizeX + (logicalOffsetX+structuresIter->position.x);
-
-        if((structuresIter->itemID == Structure_Slab1) || (structuresIter->itemID == Structure_Slab4) || (structuresIter->itemID == Structure_Wall)) {
+        if((structure.itemID == Structure_Slab1) || (structure.itemID == Structure_Slab4) || (structure.itemID == Structure_Wall)) {
             std::string structureKey = fmt::sprintf("GEN%.3d", position);
 
-            std::string structureValue = house2housename[structuresIter->house] + "," + getItemNameByID(structuresIter->itemID);
+            std::string structureValue = house2housename[structure.house] + "," + getItemNameByID(structure.itemID);
 
             loadedINIFile->setStringValue("STRUCTURES", structureKey, structureValue, false);
 
         } else {
 
-            std::string structureKey = fmt::sprintf("ID%.3d", structuresIter->id);
+            std::string structureKey = fmt::sprintf("ID%.3d", structure.id);
 
-            std::string structureValue = house2housename[structuresIter->house] + "," + getItemNameByID(structuresIter->itemID) + "," + stringify(structuresIter->health) + "," + stringify(position);
+            std::string structureValue = house2housename[structure.house] + "," + getItemNameByID(structure.itemID) + "," + stringify(structure.health) + "," + stringify(position);
 
             loadedINIFile->setStringValue("STRUCTURES", structureKey, structureValue, false);
         }
@@ -711,16 +700,13 @@ void MapEditor::saveMap(const std::string& filepath) {
 
         // we start at 0 for version 1 maps if we have 16 entries to not overflow the table
         int currentIndex = ((getMapVersion() < 2) && (reinforcements.size() >= 16)) ? 0 : 1;
-        std::vector<ReinforcementInfo>::const_iterator iter;
-        for(iter = reinforcements.begin(); iter != reinforcements.end(); ++iter, ++currentIndex) {
-
-            std::string value = house2housename[iter->houseID] + "," + getItemNameByID(iter->unitID) + "," + getDropLocationNameByID(iter->dropLocation) + "," + stringify(iter->droptime);
-
-            if(iter->bRepeat) {
+        for(const ReinforcementInfo& reinforcement : reinforcements) {
+            std::string value = house2housename[reinforcement.houseID] + "," + getItemNameByID(reinforcement.unitID) + "," + getDropLocationNameByID(reinforcement.dropLocation) + "," + stringify(reinforcement.droptime);
+            if(reinforcement.bRepeat) {
                 value += ",+";
             }
-
             loadedINIFile->setStringValue("REINFORCEMENTS", stringify(currentIndex), value, false);
+            currentIndex++;
         }
     }
 
@@ -1167,15 +1153,13 @@ void MapEditor::processInput() {
                             int xpos = screenborder->screen2MapX(x);
                             int ypos = screenborder->screen2MapY(y);
 
-                            std::vector<Unit>::iterator uIter;
-                            for(uIter = units.begin(); uIter != units.end(); ++uIter) {
-                                Coord position = uIter->position;
-
+                            for(const Unit& unit : units) {
+                                Coord position = unit.position;
                                 if((position.x == xpos) && (position.y == ypos)) {
                                     if(event.wheel.y > 0) {
-                                        pInterface->onUnitRotateLeft(uIter->id);
+                                        pInterface->onUnitRotateLeft(unit.id);
                                     } else {
-                                        pInterface->onUnitRotateRight(uIter->id);
+                                        pInterface->onUnitRotateRight(unit.id);
                                     }
                                     break;
                                 }
@@ -1250,12 +1234,11 @@ void MapEditor::processInput() {
 
                                         bool bUnitSelected = false;
 
-                                        std::vector<Unit>::iterator uIter;
-                                        for(uIter = units.begin(); uIter != units.end(); ++uIter) {
-                                            Coord position = uIter->position;
+                                        for(const Unit& unit : units) {
+                                            Coord position = unit.position;
 
                                             if((position.x == xpos) && (position.y == ypos)) {
-                                                selectedUnitID = uIter->id;
+                                                selectedUnitID = unit.id;
                                                 bUnitSelected = true;
                                                 pInterface->onObjectSelected();
                                                 mapInfo.cursorPos = position;
@@ -1265,13 +1248,12 @@ void MapEditor::processInput() {
 
                                         bool bStructureSelected = false;
 
-                                        std::vector<Structure>::iterator sIter;
-                                        for(sIter = structures.begin(); sIter != structures.end(); ++sIter) {
-                                            Coord position = sIter->position;
-                                            Coord structureSize = getStructureSize(sIter->itemID);
+                                        for(const Structure& structure : structures) {
+                                            const Coord& position = structure.position;
+                                            Coord structureSize = getStructureSize(structure.itemID);
 
                                             if(!bUnitSelected && (xpos >= position.x) && (xpos < position.x+structureSize.x) && (ypos >= position.y) && (ypos < position.y+structureSize.y)) {
-                                                selectedStructureID = sIter->id;
+                                                selectedStructureID = structure.id;
                                                 bStructureSelected = true;
                                                 pInterface->onObjectSelected();
                                                 mapInfo.cursorPos = position;
@@ -1520,13 +1502,12 @@ void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) {
 
     std::vector<int> selectedStructures = getMirrorStructures(selectedStructureID);
 
-    std::vector<Structure>::const_iterator sIter;
-    for(sIter = structures.begin(); sIter != structures.end(); ++sIter) {
+    for(const Structure& structure : structures) {
 
-        Coord position = sIter->position;
+        Coord position = structure.position;
 
         SDL_Rect selectionDest;
-        if(sIter->itemID == Structure_Slab1) {
+        if(structure.itemID == Structure_Slab1) {
             // Load Terrain sprite
             SDL_Texture* TerrainSprite = pGFXManager->getObjPic(ObjPic_Terrain)[currentZoomlevel];
 
@@ -1536,7 +1517,7 @@ void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) {
             SDL_RenderCopy(renderer, TerrainSprite, &source, &dest);
 
             selectionDest = dest;
-        } else if(sIter->itemID == Structure_Slab4) {
+        } else if(structure.itemID == Structure_Slab4) {
             // Load Terrain Surface
             SDL_Texture* TerrainSprite = pGFXManager->getObjPic(ObjPic_Terrain)[currentZoomlevel];
 
@@ -1553,19 +1534,17 @@ void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) {
             selectionDest.y = pScreenborder->world2screenY(position.y*TILESIZE);
             selectionDest.w = world2zoomedWorld(2*TILESIZE);
             selectionDest.h = world2zoomedWorld(2*TILESIZE);
-        } else if(sIter->itemID == Structure_Wall) {
-            std::vector<Structure>::const_iterator sIter2;
-
+        } else if(structure.itemID == Structure_Wall) {
             bool left = false;
             bool down = false;
             bool right = false;
             bool up = false;
-            for(sIter2 = structures.begin(); sIter2 != structures.end(); ++sIter2) {
-                if(sIter2->itemID == Structure_Wall) {
-                    if((sIter2->position.x == position.x - 1) && (sIter2->position.y == position.y))  left = true;
-                    if((sIter2->position.x == position.x) && (sIter2->position.y == position.y + 1))  down = true;
-                    if((sIter2->position.x == position.x + 1) && (sIter2->position.y == position.y))  right = true;
-                    if((sIter2->position.x == position.x) && (sIter2->position.y == position.y - 1))  up = true;
+            for(const Structure& structure : structures) {
+                if(structure.itemID == Structure_Wall) {
+                    if((structure.position.x == position.x - 1) && (structure.position.y == position.y))  left = true;
+                    if((structure.position.x == position.x) && (structure.position.y == position.y + 1))  down = true;
+                    if((structure.position.x == position.x + 1) && (structure.position.y == position.y))  right = true;
+                    if((structure.position.x == position.x) && (structure.position.y == position.y - 1))  up = true;
                 }
             }
 
@@ -1616,7 +1595,7 @@ void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) {
         } else {
 
             int objectPic = 0;
-            switch(sIter->itemID) {
+            switch(structure.itemID) {
                 case Structure_Barracks:            objectPic = ObjPic_Barracks;            break;
                 case Structure_ConstructionYard:    objectPic = ObjPic_ConstructionYard;    break;
                 case Structure_GunTurret:           objectPic = ObjPic_GunTurret;           break;
@@ -1637,11 +1616,11 @@ void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) {
                 default:                            objectPic = 0;                          break;
             }
 
-            SDL_Texture* ObjectSprite = pGFXManager->getObjPic(objectPic, sIter->house)[currentZoomlevel];
+            SDL_Texture* ObjectSprite = pGFXManager->getObjPic(objectPic, structure.house)[currentZoomlevel];
 
-            Coord frameSize = world2zoomedWorld(getStructureSize(sIter->itemID)*TILESIZE);
+            Coord frameSize = world2zoomedWorld(getStructureSize(structure.itemID)*TILESIZE);
 
-            SDL_Rect source = { frameSize.x*(sIter->itemID == Structure_WindTrap ? 9 : 2), 0, frameSize.x, frameSize.y };
+            SDL_Rect source = { frameSize.x*(structure.itemID == Structure_WindTrap ? 9 : 2), 0, frameSize.x, frameSize.y };
             SDL_Rect dest = { pScreenborder->world2screenX(position.x*TILESIZE), pScreenborder->world2screenY(position.y*TILESIZE), frameSize.x, frameSize.y };
 
             SDL_RenderCopy(renderer, ObjectSprite, &source, &dest);
@@ -1650,7 +1629,7 @@ void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) {
         }
 
         // draw selection frame
-        if(!bCompleteMap && (std::find(selectedStructures.begin(), selectedStructures.end(), sIter->id) != selectedStructures.end()) ) {
+        if(!bCompleteMap && (std::find(selectedStructures.begin(), selectedStructures.end(), structure.id) != selectedStructures.end()) ) {
             //now draw the selection box thing, with parts at all corners of structure
 
             // top left bit
@@ -1680,10 +1659,9 @@ void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) {
 
     }
 
-    std::vector<Unit>::const_iterator uIter;
-    for(uIter = units.begin(); uIter != units.end(); ++uIter) {
+    for(const Unit& unit : units) {
 
-        Coord position = uIter->position;
+        const Coord& position = unit.position;
 
         const Coord tankTurretOffset[] =    {   Coord(0, 0),
                                                 Coord(0, 0),
@@ -1744,7 +1722,7 @@ void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) {
         int objectPicGun = -1;
         const Coord* gunOffset = nullptr;
 
-        switch(uIter->itemID) {
+        switch(unit.itemID) {
             case Unit_Carryall:         objectPicBase = ObjPic_Carryall;        framesY = 2;                                                                    break;
             case Unit_Devastator:       objectPicBase = ObjPic_Devastator_Base; objectPicGun = ObjPic_Devastator_Gun;   gunOffset = devastatorTurretOffset;     break;
             case Unit_Deviator:         objectPicBase = ObjPic_Tank_Base;       objectPicGun = ObjPic_Launcher_Gun;     gunOffset = launcherTurretOffset;       break;
@@ -1768,11 +1746,11 @@ void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) {
             case Unit_Troopers:         objectPicBase = ObjPic_Troopers;         framesX = 4;    framesY = 4;                                                   break;
         }
 
-        SDL_Texture* pObjectSprite = pGFXManager->getObjPic(objectPicBase, uIter->house)[currentZoomlevel];
+        SDL_Texture* pObjectSprite = pGFXManager->getObjPic(objectPicBase, unit.house)[currentZoomlevel];
 
-        int angle = uIter->angle / (NUM_ANGLES/framesX);
+        int angle = unit.angle / (NUM_ANGLES/framesX);
 
-        int frame = (uIter->itemID == Unit_Sandworm) ? 5 : 0;
+        int frame = (unit.itemID == Unit_Sandworm) ? 5 : 0;
 
         SDL_Rect source = calcSpriteSourceRect(pObjectSprite, angle, framesX, frame, framesY);
         int frameSizeX = source.w;
@@ -1785,18 +1763,18 @@ void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) {
         SDL_RenderCopy(renderer, pObjectSprite, &source, &drawLocation);
 
         if(objectPicGun >= 0) {
-            SDL_Texture* pGunSprite = pGFXManager->getObjPic(objectPicGun, uIter->house)[currentZoomlevel];
+            SDL_Texture* pGunSprite = pGFXManager->getObjPic(objectPicGun, unit.house)[currentZoomlevel];
 
-            SDL_Rect source2 = calcSpriteSourceRect(pGunSprite, uIter->angle, NUM_ANGLES);
+            SDL_Rect source2 = calcSpriteSourceRect(pGunSprite, unit.angle, NUM_ANGLES);
             SDL_Rect drawLocation2 = calcSpriteDrawingRect( pGunSprite,
-                                                            pScreenborder->world2screenX((position.x*TILESIZE)+(TILESIZE/2)+gunOffset[uIter->angle].x),
-                                                            pScreenborder->world2screenY((position.y*TILESIZE)+(TILESIZE/2)+gunOffset[uIter->angle].y),
+                                                            pScreenborder->world2screenX((position.x*TILESIZE)+(TILESIZE/2)+gunOffset[unit.angle].x),
+                                                            pScreenborder->world2screenY((position.y*TILESIZE)+(TILESIZE/2)+gunOffset[unit.angle].y),
                                                             NUM_ANGLES, 1, HAlign::Center, VAlign::Center);
 
             SDL_RenderCopy(renderer, pGunSprite, &source2, &drawLocation2);
         }
 
-        if(uIter->itemID == Unit_RaiderTrike || uIter->itemID == Unit_Deviator || uIter->itemID == Unit_Special) {
+        if(unit.itemID == Unit_RaiderTrike || unit.itemID == Unit_Deviator || unit.itemID == Unit_Special) {
             SDL_Texture* pStarSprite = pGFXManager->getObjPic(ObjPic_Star)[currentZoomlevel];
 
             SDL_Rect drawLocation2 = calcDrawingRect(   pStarSprite,
@@ -1962,9 +1940,9 @@ void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) {
     if(!bCompleteMap) {
         std::vector<int> selectedUnits = getMirrorUnits(selectedUnitID);
 
-        for(uIter = units.begin(); uIter != units.end(); ++uIter) {
-            if(std::find(selectedUnits.begin(), selectedUnits.end(), uIter->id) != selectedUnits.end()) {
-                Coord position = uIter->position;
+        for(const Unit& unit : units) {
+            if(std::find(selectedUnits.begin(), selectedUnits.end(), unit.id) != selectedUnits.end()) {
+                const Coord& position = unit.position;
 
                 SDL_Texture* selectionBox = nullptr;
 

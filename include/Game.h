@@ -367,8 +367,7 @@ public:
     void unregisterPlayer(Player* player) {
         playerID2Player.erase(player->getPlayerID());
 
-        std::multimap<std::string, Player*>::iterator iter;
-        for(iter = playerName2Player.begin(); iter != playerName2Player.end(); ++iter) {
+        for(auto iter = playerName2Player.begin(); iter != playerName2Player.end(); ++iter) {
                 if(iter->second == player) {
                     playerName2Player.erase(iter);
                     break;
@@ -382,7 +381,7 @@ public:
         \return the player or nullptr if none was found
     */
     Player* getPlayerByName(const std::string& playername) const {
-        std::multimap<std::string, Player*>::const_iterator iter = playerName2Player.find(playername);
+        auto iter = playerName2Player.find(playername);
         if(iter != playerName2Player.end()) {
             return iter->second;
         } else {
@@ -396,7 +395,7 @@ public:
         \return the player or nullptr if none was found
     */
     Player* getPlayerByID(Uint8 playerID) const {
-        std::map<Uint8, Player*>::const_iterator iter = playerID2Player.find(playerID);
+        auto iter = playerID2Player.find(playerID);
         if(iter != playerID2Player.end()) {
             return iter->second;
         } else {

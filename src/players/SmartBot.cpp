@@ -83,10 +83,9 @@ void SmartBot::save(OutputStream& stream) const {
     stream.writeSint32(AIStrategy);
 
     stream.writeUint32(placeLocations.size());
-    std::list<Coord>::const_iterator iter;
-    for(iter = placeLocations.begin(); iter != placeLocations.end(); ++iter) {
-        stream.writeSint32(iter->x);
-        stream.writeSint32(iter->y);
+    for(const Coord& placeLocation : placeLocations) {
+        stream.writeSint32(placeLocation.x);
+        stream.writeSint32(placeLocation.y);
     }
 }
 
@@ -159,9 +158,7 @@ void SmartBot::onDamage(const ObjectBase* pObject, int damage, Uint32 damagerID)
 
 
 void SmartBot::scrambleUnitsAndDefend(const ObjectBase* pIntruder) {
-    RobustList<const UnitBase*>::const_iterator iter;
-    for(iter = getUnitList().begin(); iter != getUnitList().end(); ++iter) {
-        const UnitBase* pUnit = *iter;
+    for(const UnitBase* pUnit : getUnitList()) {
         if(pUnit->isRespondable() && (pUnit->getOwner() == getHouse())) {
 
             if((pUnit->getAttackMode() != HUNT) && !pUnit->hasATarget()) {
@@ -209,18 +206,16 @@ Coord SmartBot::findPlaceLocation(Uint32 itemID) {
         maxX = getMap().getSizeX() - 1;
         maxY = getMap().getSizeY() - 1;
     } else {
-        RobustList<const StructureBase*>::const_iterator iter;
-        for(iter = getStructureList().begin(); iter != getStructureList().end(); ++iter) {
-            const StructureBase* structure = *iter;
-            if (structure->getOwner() == getHouse()) {
-                if (structure->getX() < minX)
-                    minX = structure->getX();
-                if (structure->getX() > maxX)
-                    maxX = structure->getX();
-                if (structure->getY() < minY)
-                    minY = structure->getY();
-                if (structure->getY() > maxY)
-                    maxY = structure->getY();
+        for(const StructureBase* pStructure : getStructureList()) {
+            if (pStructure->getOwner() == getHouse()) {
+                if (pStructure->getX() < minX)
+                    minX = pStructure->getX();
+                if (pStructure->getX() > maxX)
+                    maxX = pStructure->getX();
+                if (pStructure->getY() < minY)
+                    minY = pStructure->getY();
+                if (pStructure->getY() > maxY)
+                    maxY = pStructure->getY();
             }
         }
     }
@@ -269,9 +264,7 @@ Coord SmartBot::findPlaceLocation(Uint32 itemID) {
                 case Structure_ConstructionYard: {
                     FixPoint nearestUnit = 10000000;
 
-                    RobustList<const UnitBase*>::const_iterator iter;
-                    for(iter = getUnitList().begin(); iter != getUnitList().end(); ++iter) {
-                        const UnitBase* pUnit = *iter;
+                    for(const UnitBase* pUnit : getUnitList()) {
                         if(pUnit->getOwner() == getHouse()) {
                             FixPoint tmp = blockDistance(pos, pUnit->getLocation());
                             if(tmp < nearestUnit) {
@@ -312,14 +305,11 @@ Coord SmartBot::findPlaceLocation(Uint32 itemID) {
                     // place towards enemy
                     FixPoint nearestEnemy = 10000000;
 
-                    RobustList<const StructureBase*>::const_iterator iter2;
-                    for(iter2 = getStructureList().begin(); iter2 != getStructureList().end(); ++iter2) {
-                        const StructureBase* pStructure = *iter2;
+                    for(const StructureBase* pStructure : getStructureList()) {
                         if(pStructure->getOwner()->getTeam() != getHouse()->getTeam()) {
-
-                            FixPoint tmp = blockDistance(pos, pStructure->getLocation());
-                            if(tmp < nearestEnemy) {
-                                nearestEnemy = tmp;
+                            FixPoint dist = blockDistance(pos, pStructure->getLocation());
+                            if(dist < nearestEnemy) {
+                                nearestEnemy = dist;
                             }
 
                         }
@@ -338,14 +328,11 @@ Coord SmartBot::findPlaceLocation(Uint32 itemID) {
                     // place at a save place
                     FixPoint nearestEnemy = 10000000;
 
-                    RobustList<const StructureBase*>::const_iterator iter2;
-                    for(iter2 = getStructureList().begin(); iter2 != getStructureList().end(); ++iter2) {
-                        const StructureBase* pStructure = *iter2;
+                    for(const StructureBase* pStructure : getStructureList()) {
                         if(pStructure->getOwner()->getTeam() != getHouse()->getTeam()) {
-
-                            FixPoint tmp = blockDistance(pos, pStructure->getLocation());
-                            if(tmp < nearestEnemy) {
-                                nearestEnemy = tmp;
+                            FixPoint dist = blockDistance(pos, pStructure->getLocation());
+                            if(dist < nearestEnemy) {
+                                nearestEnemy = dist;
                             }
                         }
                     }
@@ -396,10 +383,7 @@ void SmartBot::build() {
     // Lets count what we are building
     int buildQueue[ItemID_LastID] = {};
 
-    RobustList<const StructureBase*>::const_iterator iter;
-    for(iter = getStructureList().begin(); iter != getStructureList().end(); ++iter) {
-        const StructureBase* pStructure = *iter;
-
+    for(const StructureBase* pStructure : getStructureList()) {
         if(pStructure->getOwner() == getHouse() && pStructure->isABuilder()) {
             const BuilderBase* pBuilder = dynamic_cast<const BuilderBase*>(pStructure);
             if(pBuilder->getBuildListSize() > 0){
@@ -408,9 +392,7 @@ void SmartBot::build() {
         }
     }
 
-    for(iter = getStructureList().begin(); iter != getStructureList().end(); ++iter) {
-        const StructureBase* pStructure = *iter;
-
+    for(const StructureBase* pStructure : getStructureList()) {
         if(pStructure->getOwner() == getHouse()) {
 
             if((pStructure->isRepairing() == false)
@@ -800,11 +782,8 @@ void SmartBot::attack() {
         attackTimer = getRandomGen().rand(10000, 20000);
         return;
     }
-    Coord destination;
 
-    RobustList<const UnitBase*>::const_iterator iter;
-    for(iter = getUnitList().begin(); iter != getUnitList().end(); ++iter) {
-        const UnitBase *pUnit = *iter;
+    for(const UnitBase *pUnit : getUnitList()) {
         if (pUnit->isRespondable()
             && (pUnit->getOwner() == getHouse())
             && pUnit->isActive()
@@ -826,15 +805,9 @@ void SmartBot::attack() {
 
 
 void SmartBot::checkAllUnits() {
-    RobustList<const UnitBase*>::const_iterator iter;
-    for(iter = getUnitList().begin(); iter != getUnitList().end(); ++iter) {
-        const UnitBase* pUnit = *iter;
-
+    for(const UnitBase* pUnit : getUnitList()) {
         if(pUnit->getItemID() == Unit_Sandworm) {
-                RobustList<const UnitBase*>::const_iterator iter2;
-                for(iter2 = getUnitList().begin(); iter2 != getUnitList().end(); ++iter2) {
-                    const UnitBase* pUnit2 = *iter2;
-
+                for(const UnitBase* pUnit2 : getUnitList()) {
                     if(pUnit2->getOwner() == getHouse() && pUnit2->getItemID() == Unit_Harvester) {
                         const Harvester* pHarvester = dynamic_cast<const Harvester*>(pUnit2);
                         if( pHarvester != nullptr

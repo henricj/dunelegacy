@@ -131,9 +131,8 @@ void GameInitSettings::save(OutputStream& stream) const {
     stream.writeSint32(gameOptions.maximumNumberOfUnitsOverride);
 
     stream.writeUint32(houseInfoList.size());
-    HouseInfoList::const_iterator iter;
-    for(iter = houseInfoList.begin(); iter != houseInfoList.end(); ++iter) {
-        iter->save(stream);
+    for(const HouseInfo& houseInfo : houseInfoList) {
+        houseInfo.save(stream);
     }
 }
 

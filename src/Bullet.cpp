@@ -265,7 +265,7 @@ void Bullet::save(OutputStream& stream) const
 }
 
 
-void Bullet::blitToScreen()
+void Bullet::blitToScreen() const
 {
     int imageW = getWidth(graphic[currentZoomlevel])/numFrames;
     int imageH = getHeight(graphic[currentZoomlevel]);

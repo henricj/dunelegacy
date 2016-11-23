@@ -376,95 +376,77 @@ Coord ObjectBase::getClosestPoint(const Coord& point) const {
 }
 
 const StructureBase* ObjectBase::findClosestTargetStructure() const {
-
-    StructureBase   *closestStructure = nullptr;
-    FixPoint        closestDistance = FixPt_MAX;
-
-    RobustList<StructureBase*>::const_iterator iter;
-    for(iter = structureList.begin(); iter != structureList.end(); ++iter) {
-        StructureBase* tempStructure = *iter;
-
-        if(canAttack(tempStructure)) {
-            Coord closestPoint = tempStructure->getClosestPoint(getLocation());
+    const StructureBase *pClosestStructure = nullptr;
+    FixPoint closestDistance = FixPt_MAX;
+    for(const StructureBase* pStructure : structureList) {
+        if(canAttack(pStructure)) {
+            Coord closestPoint = pStructure->getClosestPoint(getLocation());
             FixPoint structureDistance = blockDistance(getLocation(), closestPoint);
 
-            if(tempStructure->getItemID() == Structure_Wall) {
-                    structureDistance += 20000000; //so that walls are targeted very last
+            if(pStructure->getItemID() == Structure_Wall) {
+                structureDistance += 20000000; //so that walls are targeted very last
             }
 
             if(structureDistance < closestDistance) {
                 closestDistance = structureDistance;
-                closestStructure = tempStructure;
+                pClosestStructure = pStructure;
             }
         }
     }
 
-    return closestStructure;
+    return pClosestStructure;
 }
 
 const UnitBase* ObjectBase::findClosestTargetUnit() const {
-    UnitBase    *closestUnit = nullptr;
-    FixPoint    closestDistance = FixPt_MAX;
-
-    RobustList<UnitBase*>::const_iterator iter;
-    for(iter = unitList.begin(); iter != unitList.end(); ++iter) {
-        UnitBase* tempUnit = *iter;
-
-        if(canAttack(tempUnit)) {
-            Coord closestPoint = tempUnit->getClosestPoint(getLocation());
-            FixPoint unitDistance = blockDistance(getLocation(), closestPoint);
-
-                if(unitDistance < closestDistance) {
-                    closestDistance = unitDistance;
-                    closestUnit = tempUnit;
-                }
-
-        }
-    }
-
-    return closestUnit;
-}
-
-const ObjectBase* ObjectBase::findClosestTarget() const {
-
-    ObjectBase  *closestObject = nullptr;
-    FixPoint    closestDistance = FixPt_MAX;
-
-    RobustList<StructureBase*>::const_iterator iter1;
-    for(iter1 = structureList.begin(); iter1 != structureList.end(); ++iter1) {
-        StructureBase* tempStructure = *iter1;
-
-        if(canAttack(tempStructure)) {
-            Coord closestPoint = tempStructure->getClosestPoint(getLocation());
-            FixPoint structureDistance = blockDistance(getLocation(), closestPoint);
-
-            if(tempStructure->getItemID() == Structure_Wall) {
-                    structureDistance += 20000000; //so that walls are targeted very last
-            }
-
-            if(structureDistance < closestDistance) {
-                closestDistance = structureDistance;
-                closestObject = tempStructure;
-            }
-        }
-    }
-
-    RobustList<UnitBase*>::const_iterator iter2;
-    for(iter2 = unitList.begin(); iter2 != unitList.end(); ++iter2) {
-        UnitBase* tempUnit = *iter2;
-
-        if(canAttack(tempUnit)) {
-            Coord closestPoint = tempUnit->getClosestPoint(getLocation());
+    const UnitBase *pClosestUnit = nullptr;
+    FixPoint closestDistance = FixPt_MAX;
+    for(const UnitBase* pUnit : unitList) {
+        if(canAttack(pUnit)) {
+            Coord closestPoint = pUnit->getClosestPoint(getLocation());
             FixPoint unitDistance = blockDistance(getLocation(), closestPoint);
 
             if(unitDistance < closestDistance) {
                 closestDistance = unitDistance;
-                closestObject = tempUnit;
+                pClosestUnit = pUnit;
             }
         }
     }
 
-    return closestObject;
+    return pClosestUnit;
+}
+
+const ObjectBase* ObjectBase::findClosestTarget() const {
+    const ObjectBase *pClosestObject = nullptr;
+    FixPoint closestDistance = FixPt_MAX;
+    for(const StructureBase* pStructure : structureList) {
+        if(canAttack(pStructure)) {
+            Coord closestPoint = pStructure->getClosestPoint(getLocation());
+            FixPoint structureDistance = blockDistance(getLocation(), closestPoint);
+
+            if(pStructure->getItemID() == Structure_Wall) {
+                    structureDistance += 20000000; //so that walls are targeted very last
+            }
+
+            if(structureDistance < closestDistance) {
+                closestDistance = structureDistance;
+                pClosestObject = pStructure;
+            }
+        }
+    }
+
+    for(const UnitBase* pUnit : unitList) {
+        if(canAttack(pUnit)) {
+            Coord closestPoint = pUnit->getClosestPoint(getLocation());
+            FixPoint unitDistance = blockDistance(getLocation(), closestPoint);
+
+            if(unitDistance < closestDistance) {
+                closestDistance = unitDistance;
+                pClosestObject = pUnit;
+            }
+        }
+    }
+
+    return pClosestObject;
 }
 
 const ObjectBase* ObjectBase::findTarget() const {

@@ -166,28 +166,24 @@ void MapEditorRadarView::updateRadarSurface(const MapData& map, int scale, int o
             }
         }
 
-        std::vector<MapEditor::Unit>& units = pMapEditor->getUnitList();
-        std::vector<MapEditor::Unit>::const_iterator uIter;
-        for(uIter = units.begin(); uIter != units.end(); ++uIter) {
+        for(const MapEditor::Unit& unit : pMapEditor->getUnitList()) {
 
-            if(uIter->position.x >= 0 && uIter->position.x < map.getSizeX()
-                && uIter->position.y >= 0 && uIter->position.y < map.getSizeY()) {
+            if(unit.position.x >= 0 && unit.position.x < map.getSizeX()
+                && unit.position.y >= 0 && unit.position.y < map.getSizeY()) {
 
                 for(int i = 0; i < scale; i++) {
                     for(int j = 0; j < scale; j++) {
                         putPixel(   radarSurface,
-                                    offsetX + scale*uIter->position.x + i,
-                                    offsetY + scale*uIter->position.y + j,
-                                    SDL2RGB(palette[houseToPaletteIndex[uIter->house]]));
+                                    offsetX + scale*unit.position.x + i,
+                                    offsetY + scale*unit.position.y + j,
+                                    SDL2RGB(palette[houseToPaletteIndex[unit.house]]));
                     }
                 }
             }
         }
 
-        std::vector<MapEditor::Structure>& structures = pMapEditor->getStructureList();
-        std::vector<MapEditor::Structure>::const_iterator sIter;
-        for(sIter = structures.begin(); sIter != structures.end(); ++sIter) {
-            Coord structureSize = getStructureSize(sIter->itemID);
+        for(const MapEditor::Structure& structure : pMapEditor->getStructureList()) {
+            Coord structureSize = getStructureSize(structure.itemID);
 
             for(int y = 0; y < structureSize.y; y++) {
                 for(int x = 0; x < structureSize.x; x++) {
@@ -198,9 +194,9 @@ void MapEditorRadarView::updateRadarSurface(const MapData& map, int scale, int o
                         for(int i = 0; i < scale; i++) {
                             for(int j = 0; j < scale; j++) {
                                 putPixel(   radarSurface,
-                                            offsetX + scale*(sIter->position.x+x) + i,
-                                            offsetY + scale*(sIter->position.y+y) + j,
-                                            SDL2RGB(palette[houseToPaletteIndex[sIter->house]]));
+                                            offsetX + scale*(structure.position.x+x) + i,
+                                            offsetY + scale*(structure.position.y+y) + j,
+                                            SDL2RGB(palette[houseToPaletteIndex[structure.house]]));
                             }
                         }
                     }

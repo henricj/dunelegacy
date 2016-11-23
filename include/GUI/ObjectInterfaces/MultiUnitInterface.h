@@ -207,9 +207,8 @@ protected:
     }
 
     void onReturn() {
-        std::set<Uint32>::const_iterator iter;
-        for(iter = currentGame->getSelectedList().begin(); iter != currentGame->getSelectedList().end(); ++iter) {
-            ObjectBase* pObject = currentGame->getObjectManager().getObject(*iter);
+        for(const Uint32 selectedUnitID : currentGame->getSelectedList()) {
+            ObjectBase* pObject = currentGame->getObjectManager().getObject(selectedUnitID);
             Harvester* pHarvester = dynamic_cast<Harvester*>(pObject);
             if(pHarvester != nullptr) {
                 pHarvester->handleReturnClick();
@@ -218,9 +217,8 @@ protected:
     }
 
     void OnSendToRepair() {
-        std::set<Uint32>::const_iterator iter;
-        for(iter = currentGame->getSelectedList().begin(); iter != currentGame->getSelectedList().end(); ++iter) {
-            ObjectBase* pObject = currentGame->getObjectManager().getObject(*iter);
+        for(const Uint32 selectedUnitID : currentGame->getSelectedList()) {
+            ObjectBase* pObject = currentGame->getObjectManager().getObject(selectedUnitID);
             GroundUnit* pGroundUnit = dynamic_cast<GroundUnit*>(pObject);
             if((pGroundUnit != nullptr) && (pGroundUnit->getHealth() < pGroundUnit->getMaxHealth())) {
                 pGroundUnit->handleSendToRepairClick();
@@ -229,9 +227,8 @@ protected:
     }
 
     void onDeploy() {
-        std::set<Uint32>::const_iterator iter;
-        for(iter = currentGame->getSelectedList().begin(); iter != currentGame->getSelectedList().end(); ++iter) {
-            ObjectBase* pObject = currentGame->getObjectManager().getObject(*iter);
+        for(const Uint32 selectedUnitID : currentGame->getSelectedList()) {
+            ObjectBase* pObject = currentGame->getObjectManager().getObject(selectedUnitID);
             MCV* pMCV = dynamic_cast<MCV*>(pObject);
             if(pMCV != nullptr) {
                 pMCV->handleDeployClick();
@@ -240,9 +237,8 @@ protected:
     }
 
     void onDestruct() {
-        std::set<Uint32>::const_iterator iter;
-        for(iter = currentGame->getSelectedList().begin(); iter != currentGame->getSelectedList().end(); ++iter) {
-            ObjectBase* pObject = currentGame->getObjectManager().getObject(*iter);
+        for(const Uint32 selectedUnitID : currentGame->getSelectedList()) {
+            ObjectBase* pObject = currentGame->getObjectManager().getObject(selectedUnitID);
             Devastator* pDevastator = dynamic_cast<Devastator*>(pObject);
             if(pDevastator != nullptr) {
                 pDevastator->handleStartDevastateClick();
@@ -277,9 +273,8 @@ protected:
     void setAttackMode(ATTACKMODE newAttackMode) {
 
         UnitBase* pLastUnit = nullptr;
-        std::set<Uint32>::const_iterator iter;
-        for(iter = currentGame->getSelectedList().begin(); iter != currentGame->getSelectedList().end(); ++iter) {
-            ObjectBase* pObject = currentGame->getObjectManager().getObject(*iter);
+        for(const Uint32 selectedUnitID : currentGame->getSelectedList()) {
+            ObjectBase* pObject = currentGame->getObjectManager().getObject(selectedUnitID);
             UnitBase* pUnit = dynamic_cast<UnitBase*>(pObject);
             if(pUnit != nullptr) {
                 pLastUnit = pUnit;
@@ -323,9 +318,8 @@ protected:
         bool bShowRepair = false;
         bool bShowCarryallDrop = false;
 
-        std::set<Uint32>::const_iterator iter;
-        for(iter = currentGame->getSelectedList().begin(); iter != currentGame->getSelectedList().end(); ++iter) {
-            ObjectBase* pObject = currentGame->getObjectManager().getObject(*iter);
+        for(const Uint32 selectedUnitID : currentGame->getSelectedList()) {
+            ObjectBase* pObject = currentGame->getObjectManager().getObject(selectedUnitID);
             UnitBase* pUnit = dynamic_cast<UnitBase*>(pObject);
             if(pUnit != nullptr) {
                 ATTACKMODE attackMode = pUnit->getAttackMode();

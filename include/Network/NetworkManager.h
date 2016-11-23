@@ -86,9 +86,8 @@ public:
     std::list<std::string> getConnectedPeers() const {
         std::list<std::string> peerNameList;
 
-        std::list<ENetPeer*>::const_iterator iter;
-        for(iter = peerList.begin(); iter != peerList.end(); ++iter) {
-            PeerData* peerData = (PeerData*) (*iter)->data;
+        for(const ENetPeer* pPeer : peerList) {
+            PeerData* peerData = static_cast<PeerData*>(pPeer->data);
             if(peerData != nullptr) {
                 peerNameList.push_back(peerData->name);
             }

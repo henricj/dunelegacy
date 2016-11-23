@@ -291,9 +291,7 @@ public:
         std::string newText = convertUTF8ToISO8859_1(textInput.text);
 
         bool bChanged = false;
-        std::string::const_iterator iter;
-        for(iter = newText.begin(); iter != newText.end(); ++iter) {
-            char c = *iter;
+        for(char c : newText) {
             if(((maxTextLength < 0) || ((int) text.length() < maxTextLength))
                 && (allowedChars.empty() || allowedChars.find(c) != std::string::npos)
                 && (forbiddenChars.find(c) == std::string::npos)) {

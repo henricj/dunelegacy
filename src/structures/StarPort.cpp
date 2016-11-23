@@ -82,21 +82,15 @@ void StarPort::save(OutputStream& stream) const {
 }
 
 void StarPort::doBuildRandom() {
-    int Item2Produce = ItemID_Invalid;
+    if(!buildList.empty()) {
+        int item2Produce = ItemID_Invalid;
 
-    do {
-        int randNum = currentGame->randomGen.rand(0, getBuildListSize()-1);
-        int i = 0;
-        std::list<BuildItem>::iterator iter;
-        for(iter = buildList.begin(); iter != buildList.end(); ++iter,i++) {
-            if(i == randNum) {
-                Item2Produce = iter->itemID;
-                break;
-            }
-        }
-    } while((Item2Produce == Unit_Harvester) || (Item2Produce == Unit_MCV) || (Item2Produce == Unit_Carryall));
+        do {
+            item2Produce = std::next(buildList.begin(), currentGame->randomGen.rand(0, buildList.size()-1))->itemID;
+        } while((item2Produce == Unit_Harvester) || (item2Produce == Unit_MCV) || (item2Produce == Unit_Carryall));
 
-    doProduceItem(Item2Produce);
+        doProduceItem(item2Produce);
+    }
 }
 
 void StarPort::handleProduceItemClick(Uint32 itemID, bool multipleMode) {
@@ -109,10 +103,9 @@ void StarPort::handleProduceItemClick(Uint32 itemID, bool multipleMode) {
         return;
     }
 
-    std::list<BuildItem>::iterator iter;
-    for(iter = buildList.begin(); iter != buildList.end(); ++iter) {
-        if(iter->itemID == itemID) {
-            if((owner->getCredits() < (int) iter->price)) {
+    for(const BuildItem& buildItem : buildList) {
+        if(buildItem.itemID == itemID) {
+            if((owner->getCredits() < (int) buildItem.price)) {
                 soundPlayer->playSound(Sound_InvalidAction);
                 currentGame->addToNewsTicker(_("Not enough money"));
                 return;
@@ -134,9 +127,8 @@ void StarPort::handleCancelOrderClick() {
 void StarPort::doProduceItem(Uint32 itemID, bool multipleMode) {
     Choam& choam = owner->getChoam();
 
-    std::list<BuildItem>::iterator iter;
-    for(iter = buildList.begin(); iter != buildList.end(); ++iter) {
-        if(iter->itemID == itemID) {
+    for(BuildItem& buildItem : buildList) {
+        if(buildItem.itemID == itemID) {
             for(int i = 0; i < (multipleMode ? 5 : 1); i++) {
                 int numAvailable = choam.getNumAvailable(itemID);
 
@@ -144,10 +136,10 @@ void StarPort::doProduceItem(Uint32 itemID, bool multipleMode) {
                     break;
                 }
 
-                if((owner->getCredits() >= (int) iter->price)) {
-                    iter->num++;
-                    currentProductionQueue.push_back( ProductionQueueItem(itemID,iter->price) );
-                    owner->takeCredits(iter->price);
+                if((owner->getCredits() >= (int) buildItem.price)) {
+                    buildItem.num++;
+                    currentProductionQueue.push_back( ProductionQueueItem(itemID,buildItem.price) );
+                    owner->takeCredits(buildItem.price);
 
                     if(choam.setNumAvailable(itemID, numAvailable - 1) == false) {
                         // sold out
@@ -163,27 +155,19 @@ void StarPort::doProduceItem(Uint32 itemID, bool multipleMode) {
 void StarPort::doCancelItem(Uint32 itemID, bool multipleMode) {
     Choam& choam = owner->getChoam();
 
-    std::list<BuildItem>::iterator iter;
-    for(iter = buildList.begin(); iter != buildList.end(); ++iter) {
-        if(iter->itemID == itemID) {
+    for(BuildItem& buildItem : buildList) {
+        if(buildItem.itemID == itemID) {
             for(int i = 0; i < (multipleMode ? 5 : 1); i++) {
-                if(iter->num > 0) {
-                    iter->num--;
-                    choam.setNumAvailable(iter->itemID, choam.getNumAvailable(iter->itemID) + 1);
+                if(buildItem.num > 0) {
+                    buildItem.num--;
+                    choam.setNumAvailable(itemID, choam.getNumAvailable(itemID) + 1);
 
                     // find the most expensive item to cancel
-                    std::list<ProductionQueueItem>::iterator iterMostExpensiveItem = currentProductionQueue.end();
-                    std::list<ProductionQueueItem>::iterator iter2;
-                    for(iter2 = currentProductionQueue.begin(); iter2 != currentProductionQueue.end(); ++iter2) {
-                        if(iter2->itemID == itemID) {
-
-                            // have we found a better item to cancel?
-                            if(iterMostExpensiveItem == currentProductionQueue.end() || iter2->price > iterMostExpensiveItem->price) {
-                                iterMostExpensiveItem = iter2;
-                            }
-                        }
-                    }
-
+                    auto iterMostExpensiveItem = std::max_element(  currentProductionQueue.begin(),
+                                                                    currentProductionQueue.end(),
+                                                                    [](ProductionQueueItem& i1, ProductionQueueItem& i2) {
+                                                                        return (i1.price < i2.price);
+                                                                    });
                     // Cancel the best found item if any was found
                     if(iterMostExpensiveItem != currentProductionQueue.end()) {
                         owner->returnCredits(iterMostExpensiveItem->price);
@@ -318,12 +302,13 @@ void StarPort::updateStructureSpecificStuff() {
                     }
                 }
 
-                std::list<BuildItem>::iterator iter2;
-                for(iter2 = buildList.begin(); iter2 != buildList.end(); ++iter2) {
-                    if(iter2->itemID == currentProductionQueue.front().itemID) {
-                        iter2->num--;
-                        break;
-                    }
+                auto currentProducedBuildItem = std::find_if(   buildList.begin(),
+                                                                buildList.end(),
+                                                                [&](BuildItem& buildItem) {
+                                                                    return (buildItem.itemID == currentProductionQueue.front().itemID);
+                                                                });
+                if(currentProducedBuildItem != buildList.end()) {
+                    currentProducedBuildItem->num--;
                 }
 
                 currentProductionQueue.pop_front();

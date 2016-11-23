@@ -176,35 +176,30 @@ void Harvester::checkPos()
             } else if (!structureList.empty()) {
                 int leastNumBookings = 1000000; //huge amount so refinery couldn't possibly compete with any refinery num bookings
                 FixPoint closestLeastBookedRefineryDistance = 1000000;
-                Refinery    *bestRefinery = nullptr;
+                Refinery* pBestRefinery = nullptr;
 
-                RobustList<StructureBase*>::const_iterator iter;
-                for(iter = structureList.begin(); iter != structureList.end(); ++iter) {
-                    StructureBase* tempStructure = *iter;
+                for(StructureBase* pStructure : structureList) {
+                    if((pStructure->getItemID() == Structure_Refinery) && (pStructure->getOwner() == owner)) {
+                        Refinery* pRefinery = static_cast<Refinery*>(pStructure);
+                        Coord closestPoint = pRefinery->getClosestPoint(location);
+                        FixPoint refineryDistance = distanceFrom(location, closestPoint);
 
-                    if((tempStructure->getItemID() == Structure_Refinery) && (tempStructure->getOwner() == owner)) {
-                        Refinery* tempRefinery = static_cast<Refinery*>(tempStructure);
-                        Coord closestPoint = tempRefinery->getClosestPoint(location);
-                        FixPoint tempDistance = distanceFrom(location, closestPoint);
-                        int tempNumBookings = tempRefinery->getNumBookings();
-
-                        if (tempNumBookings < leastNumBookings) {
-                            leastNumBookings = tempNumBookings;
-                            closestLeastBookedRefineryDistance = tempDistance;
-                            bestRefinery = tempRefinery;
-                        } else if (tempNumBookings == leastNumBookings) {
-                            if (tempDistance < closestLeastBookedRefineryDistance) {
-                                closestLeastBookedRefineryDistance = tempDistance;
-                                bestRefinery = tempRefinery;
+                        if (pRefinery->getNumBookings() < leastNumBookings) {
+                            leastNumBookings = pRefinery->getNumBookings();
+                            closestLeastBookedRefineryDistance = refineryDistance;
+                            pBestRefinery = pRefinery;
+                        } else if (pRefinery->getNumBookings() == leastNumBookings) {
+                            if (refineryDistance < closestLeastBookedRefineryDistance) {
+                                closestLeastBookedRefineryDistance = refineryDistance;
+                                pBestRefinery = pRefinery;
                             }
                         }
                     }
                 }
 
-                if (bestRefinery) {
-                    doMove2Object(bestRefinery);
-
-                    bestRefinery->startAnimate();
+                if (pBestRefinery) {
+                    doMove2Object(pBestRefinery);
+                    pBestRefinery->startAnimate();
                 }
             }
         } else if (harvestingMode && !hasBookedCarrier() && (blockDistance(location, destination) > 8)) {

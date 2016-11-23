@@ -739,18 +739,17 @@ void MapEditorInterface::onHouseChanges() {
 
     houseDropDownBox.clearAllEntries();
 
-    std::vector<MapEditor::Player>::const_iterator iter;
-
     int currentIndex = 0;
     int currentPlayerNum = 1;
-    for(iter = pMapEditor->getPlayers().begin(); iter != pMapEditor->getPlayers().end(); ++iter,++currentIndex) {
-        std::string entryName = iter->bActive ? (iter->bAnyHouse ? (_("Player") + " " + stringify(currentPlayerNum++)) : iter->name) : ("(" + iter->name + ")");
+    for(const MapEditor::Player& player : pMapEditor->getPlayers()) {
+        std::string entryName = player.bActive ? (player.bAnyHouse ? (_("Player") + " " + stringify(currentPlayerNum++)) : player.name) : ("(" + player.name + ")");
 
-        houseDropDownBox.addEntry(entryName, iter->house);
+        houseDropDownBox.addEntry(entryName, player.house);
 
-        if(iter->house == currentSelection) {
+        if(player.house == currentSelection) {
             houseDropDownBox.setSelectedItem(currentIndex);
         }
+        currentIndex++;
     }
 
     if(currentSelection == -1) {

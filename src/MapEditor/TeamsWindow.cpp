@@ -104,12 +104,11 @@ TeamsWindow::TeamsWindow(MapEditor* pMapEditor, HOUSETYPE currentHouse)
     playerDropDownBox.setColor(color);
     playerDropDownBox.setOnSelectionChange(std::bind(&TeamsWindow::onEntryChange, this, std::placeholders::_1));
 
-    std::vector<MapEditor::Player>::const_iterator playerIter;
     int currentPlayerNum = 1;
-    for(playerIter = pMapEditor->getPlayers().begin(); playerIter != pMapEditor->getPlayers().end(); ++playerIter) {
-        if(playerIter->bActive) {
-            std::string entryName = playerIter->bAnyHouse ? fmt::sprintf(_("Player %d"), currentPlayerNum++) : playerIter->name;
-            playerDropDownBox.addEntry(entryName, playerIter->house);
+    for(const MapEditor::Player& player : pMapEditor->getPlayers()) {
+        if(player.bActive) {
+            std::string entryName = player.bAnyHouse ? fmt::sprintf(_("Player %d"), currentPlayerNum++) : player.name;
+            playerDropDownBox.addEntry(entryName, player.house);
         }
     }
     playerDropDownBox.setSelectedItem(0);
@@ -188,9 +187,8 @@ TeamsWindow::TeamsWindow(MapEditor* pMapEditor, HOUSETYPE currentHouse)
     mainVBox.addWidget(VSpacer::create(10));
 
     // setup teams listbox
-    std::vector<TeamInfo>::const_iterator teamIter;
-    for(teamIter = teams.begin(); teamIter != teams.end(); ++teamIter) {
-        teamsListBox.addEntry(getDescribingString(*teamIter));
+    for(const TeamInfo& teamInfo : teams) {
+        teamsListBox.addEntry(getDescribingString(teamInfo));
     }
 
     if(teams.empty() == false) {
@@ -362,15 +360,14 @@ std::string TeamsWindow::getDescribingString(const TeamInfo& teamInfo) {
 }
 
 std::string TeamsWindow::getPlayerName(HOUSETYPE house) {
-    std::vector<MapEditor::Player>::const_iterator playerIter;
     int currentPlayerNum = 1;
-    for(playerIter = pMapEditor->getPlayers().begin(); playerIter != pMapEditor->getPlayers().end(); ++playerIter) {
-        if(playerIter->house == house) {
-            return playerIter->bAnyHouse ? fmt::sprintf(_("Player %d"), currentPlayerNum)
-                                          : (_("House") + " " + playerIter->name);
+    for(const MapEditor::Player& player : pMapEditor->getPlayers()) {
+        if(player.house == house) {
+            return player.bAnyHouse ? fmt::sprintf(_("Player %d"), currentPlayerNum)
+                                          : (_("House") + " " + player.name);
         }
 
-        if(playerIter->bActive && playerIter->bAnyHouse) {
+        if(player.bActive && player.bAnyHouse) {
             currentPlayerNum++;
         }
     }

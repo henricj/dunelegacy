@@ -81,15 +81,12 @@ SDL_Surface* DuneStyle::createLabelSurface(Uint32 width, Uint32 height, std::lis
     if(textcolor == COLOR_DEFAULT) textcolor = defaultForegroundColor;
     if(textshadowcolor == COLOR_DEFAULT) textshadowcolor = defaultShadowColor;
 
-    std::list<SDL_Surface*> TextSurfaces;
-    std::list<std::string>::const_iterator iter;
-    for(iter = textLines.begin(); iter != textLines.end() ; ++iter) {
-        std::string text = *iter;
-
+    std::list<SDL_Surface*> textSurfaces;
+    for(const std::string textLine : textLines) {
         // create text background
-        TextSurfaces.push_back(createSurfaceWithText(text.c_str(), textshadowcolor, fontID));
+        textSurfaces.push_back(createSurfaceWithText(textLine.c_str(), textshadowcolor, fontID));
         // create text foreground
-        TextSurfaces.push_back(createSurfaceWithText(text.c_str(), textcolor, fontID));
+        textSurfaces.push_back(createSurfaceWithText(textLine.c_str(), textcolor, fontID));
     }
 
     int fontheight = getTextHeight(fontID);
@@ -108,8 +105,8 @@ SDL_Surface* DuneStyle::createLabelSurface(Uint32 width, Uint32 height, std::lis
         textpos_y = spacing;
     }
 
-    std::list<SDL_Surface*>::const_iterator surfIter = TextSurfaces.begin();
-    while(surfIter != TextSurfaces.end()) {
+    std::list<SDL_Surface*>::const_iterator surfIter = textSurfaces.begin();
+    while(surfIter != textSurfaces.end()) {
         SDL_Surface* textSurface1 = *surfIter;
         ++surfIter;
         SDL_Surface* textSurface2 = *surfIter;

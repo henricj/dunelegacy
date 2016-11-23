@@ -152,11 +152,10 @@ public:
             }
         } while(nextpos != std::string::npos);
 
-        std::list<std::string>::const_iterator iter;
-        for(iter = hardLines.begin();iter != hardLines.end();++iter) {
-            std::string tmp = *iter;
-            p.x = std::max(p.x, GUIStyle::getInstance().getMinimumLabelSize(tmp, fontID).x);
-            p.y += GUIStyle::getInstance().getMinimumLabelSize(tmp, fontID).y;
+        for(const std::string hardLine : hardLines) {
+            Point minLabelSize = GUIStyle::getInstance().getMinimumLabelSize(hardLine, fontID);
+            p.x = std::max(p.x, minLabelSize.x);
+            p.y += minLabelSize.y;
         }
         return p;
     }
@@ -225,11 +224,8 @@ protected:
 
             std::list<std::string> textLines;
 
-            std::list<std::string>::const_iterator iter;
-            for(iter = hardLines.begin();iter != hardLines.end();++iter) {
-                std::string tmpLine = *iter;
-
-                if(tmpLine == "") {
+            for(const std::string hardLine : hardLines) {
+                if(hardLine == "") {
                     textLines.push_back(" ");
                     continue;
                 }
@@ -241,14 +237,14 @@ protected:
 
                 while(bEndOfLine == false) {
                     while(true) {
-                        warppos = tmpLine.find(" ", oldwarppos);
+                        warppos = hardLine.find(" ", oldwarppos);
                         std::string tmp;
                         if(warppos == std::string::npos) {
-                            tmp = tmpLine.substr(lastwarp,tmpLine.length()-lastwarp);
-                            warppos = tmpLine.length();
+                            tmp = hardLine.substr(lastwarp,hardLine.length()-lastwarp);
+                            warppos = hardLine.length();
                             bEndOfLine = true;
                         } else {
-                            tmp = tmpLine.substr(lastwarp,warppos-lastwarp);
+                            tmp = hardLine.substr(lastwarp,warppos-lastwarp);
                         }
 
                         if( GUIStyle::getInstance().getMinimumLabelSize(tmp, fontID).x - 4 > getSize().x) {
@@ -271,7 +267,7 @@ protected:
 
                         warppos = lastwarp;
                         while(true) {
-                            std::string tmp = tmpLine.substr(lastwarp,warppos-lastwarp);
+                            std::string tmp = hardLine.substr(lastwarp,warppos-lastwarp);
                             if( GUIStyle::getInstance().getMinimumLabelSize(tmp, fontID).x - 4 > getSize().x) {
                                 // this line would be too big => in oldwarppos is the last correct warp pos
                                 break;
@@ -281,14 +277,14 @@ protected:
 
                             warppos++;
 
-                            if(warppos > tmpLine.length()) {
-                                oldwarppos = tmpLine.length();
+                            if(warppos > hardLine.length()) {
+                                oldwarppos = hardLine.length();
                                 break;
                             }
                         }
 
                         if(warppos != lastwarp) {
-                            textLines.push_back(tmpLine.substr(lastwarp,oldwarppos-lastwarp));
+                            textLines.push_back(hardLine.substr(lastwarp,oldwarppos-lastwarp));
                             lastwarp = oldwarppos;
                         } else {
                             // the width of this label is too small for the next character
@@ -298,8 +294,7 @@ protected:
                             oldwarppos++;
                         }
                     } else {
-                        std::string tmpStr = tmpLine.substr(lastwarp,oldwarppos-lastwarp);
-                        textLines.push_back(tmpStr);
+                        textLines.push_back(hardLine.substr(lastwarp,oldwarppos-lastwarp));
                         lastwarp = oldwarppos;
                     }
                 }

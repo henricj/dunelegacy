@@ -252,6 +252,7 @@ SDL_Surface* Shpfile::getPictureArray(unsigned int tilesX, unsigned int tilesY, 
 
     // create new picture surface
     if((pic = SDL_CreateRGBSurface(0,sizeX*tilesX,sizeY*tilesY,8,0,0,0,0)) == nullptr) {
+        free(tiles);
         SDL_Log("Shpfile::getPictureArray(): Cannot create Surface.");
         return nullptr;
     }

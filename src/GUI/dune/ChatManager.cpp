@@ -48,43 +48,42 @@ void ChatManager::draw(Point position)
     // determine maximum vertical size of username and time
     int maxUsernameSizeY = 0;
     int maxTimeSizeY = 0;
-    std::list<ChatMessage>::iterator iter;
-    for(iter = chatMessages.begin(); iter != chatMessages.end(); ++iter) {
-        if(iter->messageType == MSGTYPE_NORMAL) {
-            maxUsernameSizeY = std::max(maxUsernameSizeY, getWidth(iter->pUsernameTexture.get()));
-            maxTimeSizeY = std::max(maxTimeSizeY, getWidth(iter->pTimeTexture.get()));
+    for(const ChatMessage& chatMessage : chatMessages) {
+        if(chatMessage.messageType == MSGTYPE_NORMAL) {
+            maxUsernameSizeY = std::max(maxUsernameSizeY, getWidth(chatMessage.pUsernameTexture.get()));
+            maxTimeSizeY = std::max(maxTimeSizeY, getWidth(chatMessage.pTimeTexture.get()));
         }
     }
 
     SDL_Rect timedest = { position.x, position.y, 0, 0};
     SDL_Rect usernamedest = { position.x + 70, position.y, 0, 0};
     SDL_Rect messagedest = { position.x + 70 + maxUsernameSizeY, position.y, 0, 0};
-    for(iter = chatMessages.begin(); iter != chatMessages.end(); ++iter) {
+    for(const ChatMessage& chatMessage : chatMessages) {
 
-        if(iter->messageType == MSGTYPE_NORMAL) {
-            timedest.w = getWidth(iter->pTimeTexture.get());
-            timedest.h = getHeight(iter->pTimeTexture.get());
+        if(chatMessage.messageType == MSGTYPE_NORMAL) {
+            timedest.w = getWidth(chatMessage.pTimeTexture.get());
+            timedest.h = getHeight(chatMessage.pTimeTexture.get());
             SDL_Rect tmpDest1 = timedest;
-            SDL_RenderCopy(renderer, iter->pTimeTexture.get(), nullptr, &tmpDest1);
+            SDL_RenderCopy(renderer, chatMessage.pTimeTexture.get(), nullptr, &tmpDest1);
 
-            usernamedest.w = getWidth(iter->pUsernameTexture.get());
-            usernamedest.h = getHeight(iter->pUsernameTexture.get());
-            usernamedest.x = position.x + 70 + maxUsernameSizeY - getWidth(iter->pUsernameTexture.get());
+            usernamedest.w = getWidth(chatMessage.pUsernameTexture.get());
+            usernamedest.h = getHeight(chatMessage.pUsernameTexture.get());
+            usernamedest.x = position.x + 70 + maxUsernameSizeY - getWidth(chatMessage.pUsernameTexture.get());
             SDL_Rect tmpDest2 = usernamedest;
-            SDL_RenderCopy(renderer, iter->pUsernameTexture.get(), nullptr, &tmpDest2);
+            SDL_RenderCopy(renderer, chatMessage.pUsernameTexture.get(), nullptr, &tmpDest2);
 
-            messagedest.w = getWidth(iter->pMessageTexture.get());
-            messagedest.h = getHeight(iter->pMessageTexture.get());
+            messagedest.w = getWidth(chatMessage.pMessageTexture.get());
+            messagedest.h = getHeight(chatMessage.pMessageTexture.get());
             SDL_Rect tmpDest3 = messagedest;
-            SDL_RenderCopy(renderer, iter->pMessageTexture.get(), nullptr, &tmpDest3);
+            SDL_RenderCopy(renderer, chatMessage.pMessageTexture.get(), nullptr, &tmpDest3);
 
 
         } else {
             // MSGTYPE_INFO
-            SDL_Rect infodest = calcDrawingRect(iter->pMessageTexture.get(), position.x + 70 - 20, messagedest.y);
-            SDL_RenderCopy(renderer, iter->pMessageTexture.get(), nullptr, &infodest);
+            SDL_Rect infodest = calcDrawingRect(chatMessage.pMessageTexture.get(), position.x + 70 - 20, messagedest.y);
+            SDL_RenderCopy(renderer, chatMessage.pMessageTexture.get(), nullptr, &infodest);
 
-            messagedest.h = getHeight(iter->pMessageTexture.get());
+            messagedest.h = getHeight(chatMessage.pMessageTexture.get());
         }
 
         timedest.y += messagedest.h;

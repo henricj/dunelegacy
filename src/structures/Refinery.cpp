@@ -179,11 +179,9 @@ void Refinery::updateStructureSpecificStuff() {
             // find carryall
             Carryall* pCarryall = nullptr;
             if((pHarvester->getGuardPoint().isValid()) && getOwner()->hasCarryalls())   {
-                RobustList<UnitBase*>::const_iterator iter;
-                for(iter = unitList.begin(); iter != unitList.end(); ++iter) {
-                    UnitBase* unit = *iter;
-                    if ((unit->getOwner() == owner) && (unit->getItemID() == Unit_Carryall)) {
-                        Carryall* pTmpCarryall = static_cast<Carryall*>(unit);
+                for(UnitBase* pUnit : unitList) {
+                    if ((pUnit->getOwner() == owner) && (pUnit->getItemID() == Unit_Carryall)) {
+                        Carryall* pTmpCarryall = static_cast<Carryall*>(pUnit);
                         if (pTmpCarryall->isRespondable() && !pTmpCarryall->isBooked()) {
                             pCarryall = pTmpCarryall;
                             break;

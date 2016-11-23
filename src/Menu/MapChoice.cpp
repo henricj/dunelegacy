@@ -200,10 +200,9 @@ void MapChoice::drawSpecificStuff() {
                     curRegion2Blit++;
 
                     // have to show some text?
-                    std::vector<TGroup::TText>::const_iterator iter;
-                    for(iter = group[lastScenario].text.begin(); iter != group[lastScenario].text.end(); ++iter) {
-                        if(iter->region == pieceNum) {
-                            msgticker.addMessage(iter->message);
+                    for(const TGroup::TText& ttext : group[lastScenario].text) {
+                        if(ttext.region == pieceNum) {
+                            msgticker.addMessage(ttext.message);
                         }
                     }
 

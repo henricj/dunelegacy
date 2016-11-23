@@ -54,9 +54,8 @@ public:
     void unregisterRadioButton(RadioButton* pRadioButton);
 
     bool isRegistered(RadioButton* pRadioButton) const {
-        std::vector<RadioButton*>::const_iterator iter;
-        for(iter = radioButtonList.begin(); iter != radioButtonList.end(); ++iter) {
-            if(*iter == pRadioButton) {
+        for(const RadioButton* pTmpRadioButton : radioButtonList) {
+            if(pTmpRadioButton == pRadioButton) {
                 return true;
             }
         }
@@ -65,7 +64,7 @@ public:
     }
 
     void setChecked(RadioButton* pRadioButton) const;
-    
+
 
 private:
     std::vector<RadioButton*>   radioButtonList;

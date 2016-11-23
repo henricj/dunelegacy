@@ -460,8 +460,7 @@ void CampaignStatsMenu::calculateScore(int level)
 
     totalScore += ((int) totalHumanCredits) / 100;
 
-    for(RobustList<StructureBase*>::const_iterator iter = structureList.begin(); iter != structureList.end(); ++iter) {
-        StructureBase* pStructure = *iter;
+    for(const StructureBase* pStructure : structureList) {
         if(pStructure->getOwner()->isAI() == false) {
             totalScore += currentGame->objectData.data[pStructure->getItemID()][pStructure->getOriginalHouseID()].price / 100;
         }
@@ -469,10 +468,9 @@ void CampaignStatsMenu::calculateScore(int level)
 
     totalScore -= ((totalTime/60) + 1);
 
-    for(RobustList<UnitBase*>::const_iterator iter = unitList.begin(); iter != unitList.end(); ++iter) {
-        UnitBase* pUnit = *iter;
+    for(const UnitBase* pUnit : unitList) {
         if(pUnit->getItemID() == Unit_Harvester) {
-            Harvester* pHarvester = static_cast<Harvester*>(pUnit);
+            const Harvester* pHarvester = static_cast<const Harvester*>(pUnit);
             if(pHarvester->getOwner()->isAI() == true) {
                 spiceHarvestedByAI += pHarvester->getAmountOfSpice().toFloat();
             } else {

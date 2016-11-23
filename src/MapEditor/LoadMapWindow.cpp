@@ -238,14 +238,11 @@ void LoadMapWindow::onMapTypeChange(int buttonID)
 
     mapList.clearAllEntries();
 
-    std::list<std::string> filesList = getFileNamesList(currentMapDirectory, "ini", true, FileListOrder_Name_CaseInsensitive_Asc);
-
-    std::list<std::string>::iterator iter;
-    for(iter = filesList.begin(); iter != filesList.end(); ++iter) {
-        mapList.addEntry(iter->substr(0, iter->length() - 4));
+    for(const std::string& filename : getFileNamesList(currentMapDirectory, "ini", true, FileListOrder_Name_CaseInsensitive_Asc)) {
+        mapList.addEntry(filename.substr(0, filename.length() - 4));
     }
 
-    if(filesList.empty() == false) {
+    if(mapList.getNumEntries() > 0) {
         mapList.setSelectedItem(0);
     } else {
         minimap.setSurface( GUIStyle::getInstance().createButtonSurface(130,130,_("No map available"), true, false), true);

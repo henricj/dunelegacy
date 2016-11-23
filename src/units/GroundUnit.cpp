@@ -166,12 +166,10 @@ bool GroundUnit::requestCarryall() {
         // This allows a unit to keep requesting a carryall even if one isn't available right now
         doSetAttackMode(CARRYALLREQUESTED);
 
-        RobustList<UnitBase*>::const_iterator iter;
-        for(iter = unitList.begin(); iter != unitList.end(); ++iter) {
-            UnitBase* unit = *iter;
-            if ((unit->getOwner() == owner) && (unit->getItemID() == Unit_Carryall)) {
-                if(!static_cast<Carryall*>(unit)->isBooked()) {
-                    carryall = static_cast<Carryall*>(unit);
+        for(UnitBase* pUnit : unitList) {
+            if ((pUnit->getOwner() == owner) && (pUnit->getItemID() == Unit_Carryall)) {
+                if(!static_cast<Carryall*>(pUnit)->isBooked()) {
+                    carryall = static_cast<Carryall*>(pUnit);
                     carryall->setTarget(this);
                     carryall->clearPath();
                     bookCarrier(carryall);
@@ -237,30 +235,27 @@ void GroundUnit::doRepair() {
         //find a repair yard to return to
 
         FixPoint closestLeastBookedRepairYardDistance = 1000000;
-        RepairYard* bestRepairYard = nullptr;
+        RepairYard* pBestRepairYard = nullptr;
 
-        RobustList<StructureBase*>::const_iterator iter;
-        for(iter = structureList.begin(); iter != structureList.end(); ++iter) {
-            StructureBase* tempStructure = *iter;
+        for(StructureBase* pStructure : structureList) {
+            if ((pStructure->getItemID() == Structure_RepairYard) && (pStructure->getOwner() == owner)) {
+                RepairYard* pRepairYard = static_cast<RepairYard*>(pStructure);
 
-            if ((tempStructure->getItemID() == Structure_RepairYard) && (tempStructure->getOwner() == owner)) {
-                RepairYard* tempRepairYard = static_cast<RepairYard*>(tempStructure);
-
-                if(tempRepairYard->getNumBookings() == 0) {
-                    FixPoint tempDistance = distanceFrom(location, tempRepairYard->getClosestPoint(location));
+                if(pRepairYard->getNumBookings() == 0) {
+                    FixPoint tempDistance = distanceFrom(location, pRepairYard->getClosestPoint(location));
                     if(tempDistance < closestLeastBookedRepairYardDistance) {
                         closestLeastBookedRepairYardDistance = tempDistance;
-                        bestRepairYard = tempRepairYard;
+                        pBestRepairYard = pRepairYard;
                     }
                 }
             }
         }
 
-        if(bestRepairYard) {
+        if(pBestRepairYard) {
             if((requestCarryall())) {
-                doMove2Object(bestRepairYard);
+                doMove2Object(pBestRepairYard);
             } else {
-                doMove2Object(bestRepairYard);
+                doMove2Object(pBestRepairYard);
             }
         }
     }

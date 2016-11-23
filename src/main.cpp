@@ -250,18 +250,13 @@ void showMissingFilesMessageBox() {
 
     std::string instruction = "Dune Legacy uses the data files from original Dune II. The following files are missing:\n";
 
-    std::vector<std::string> MissingFiles = FileManager::getMissingFiles();
-
-    std::vector<std::string>::const_iterator iter;
-    for(iter = MissingFiles.begin(); iter != MissingFiles.end(); ++iter) {
-        instruction += " " + *iter + "\n";
+    for(const std::string& missingFile : FileManager::getMissingFiles()) {
+        instruction += " " + missingFile + "\n";
     }
 
     instruction += "\nPut them in one of the following directories and restart Dune Legacy:\n";
-    std::vector<std::string> searchPath = FileManager::getSearchPath();
-    std::vector<std::string>::const_iterator searchPathIter;
-    for(searchPathIter = searchPath.begin(); searchPathIter != searchPath.end(); ++searchPathIter) {
-        instruction += " " + *searchPathIter + "\n";
+    for(const std::string& searchPath : FileManager::getSearchPath()) {
+        instruction += " " + searchPath + "\n";
     }
 
     instruction += "\nYou may want to add GERMAN.PAK or FRENCH.PAK for playing in these languages.";
@@ -475,7 +470,6 @@ int main(int argc, char *argv[]) {
         if(!missingFiles.empty()) {
             // set back to English
             std::string setBackToEnglishWarning = fmt::sprintf("The following files are missing for language \"%s\":\n",_("LanguageFileExtension"));
-            std::vector<std::string>::const_iterator iter;
             for(std::string filename : missingFiles) {
                 setBackToEnglishWarning += filename + "\n";
             }

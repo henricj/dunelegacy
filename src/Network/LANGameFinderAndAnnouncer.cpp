@@ -219,11 +219,10 @@ void LANGameFinderAndAnnouncer::receivePackets() {
             gameServerInfo.lastUpdate = SDL_GetTicks();
 
             bool bUpdate = false;
-            std::list<GameServerInfo>::iterator iter;
-            for(iter = gameServerInfoList.begin(); iter != gameServerInfoList.end(); ++iter) {
-                if((iter->serverAddress.host == gameServerInfo.serverAddress.host)
-                    && (iter->serverAddress.port == gameServerInfo.serverAddress.port)) {
-                    *iter = gameServerInfo;
+            for(GameServerInfo& curGameServerInfo : gameServerInfoList) {
+                if((curGameServerInfo.serverAddress.host == gameServerInfo.serverAddress.host)
+                    && (curGameServerInfo.serverAddress.port == gameServerInfo.serverAddress.port)) {
+                    curGameServerInfo = gameServerInfo;
                     bUpdate = true;
                     break;
                 }

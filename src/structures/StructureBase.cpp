@@ -90,9 +90,8 @@ void StructureBase::save(OutputStream& stream) const {
     stream.writeSint32(degradeTimer);
 
     stream.writeUint32(smoke.size());
-    std::list<StructureSmoke>::const_iterator iter;
-    for(iter = smoke.begin(); iter != smoke.end(); ++iter) {
-        iter->save(stream);
+    for(const StructureSmoke& structureSmoke : smoke) {
+        structureSmoke.save(stream);
     }
 }
 
@@ -144,13 +143,12 @@ void StructureBase::blitToScreen() {
     if(!fogged) {
         SDL_Texture** pSmokeSurface = pGFXManager->getObjPic(ObjPic_Smoke,getOwner()->getHouseID());
         SDL_Rect smokeSource = calcSpriteSourceRect(pSmokeSurface[currentZoomlevel], 0, 3);
-        std::list<StructureSmoke>::const_iterator iter;
-        for(iter = smoke.begin(); iter != smoke.end(); ++iter) {
+        for(const StructureSmoke& structureSmoke : smoke) {
             SDL_Rect smokeDest = calcSpriteDrawingRect( pSmokeSurface[currentZoomlevel],
-                                                        screenborder->world2screenX(iter->realPos.x),
-                                                        screenborder->world2screenY(iter->realPos.y),
+                                                        screenborder->world2screenX(structureSmoke.realPos.x),
+                                                        screenborder->world2screenY(structureSmoke.realPos.y),
                                                         3, 1, HAlign::Center, VAlign::Bottom);
-            Uint32 cycleDiff = currentGame->getGameCycleCount() - iter->startGameCycle;
+            Uint32 cycleDiff = currentGame->getGameCycleCount() - structureSmoke.startGameCycle;
 
             Uint32 smokeFrame = (cycleDiff/25) % 4;
             if(smokeFrame == 3) {

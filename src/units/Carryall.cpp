@@ -248,9 +248,8 @@ void Carryall::deployUnit(Uint32 unitID)
 {
     bool found = false;
 
-    std::list<Uint32>::iterator iter;
-    for(iter = pickedUpUnitList.begin() ; iter != pickedUpUnitList.end(); ++iter) {
-        if(*iter == unitID) {
+    for(const Uint32& pickedUpUnitID : pickedUpUnitList) {
+        if(pickedUpUnitID == unitID) {
             found = true;
             break;
         }
@@ -330,11 +329,10 @@ void Carryall::deployUnit(Uint32 unitID)
 void Carryall::destroy()
 {
     // destroy cargo
-    std::list<Uint32>::const_iterator iter;
-    for(iter = pickedUpUnitList.begin() ; iter != pickedUpUnitList.end(); ++iter) {
-        UnitBase* pUnit = static_cast<UnitBase*>(currentGame->getObjectManager().getObject(*iter));
-        if(pUnit != nullptr) {
-            pUnit->destroy();
+    for(const Uint32& pickedUpUnitID : pickedUpUnitList) {
+        UnitBase* pPickedUpUnit = static_cast<UnitBase*>(currentGame->getObjectManager().getObject(pickedUpUnitID));
+        if(pPickedUpUnit != nullptr) {
+            pPickedUpUnit->destroy();
         }
     }
     pickedUpUnitList.clear();
@@ -527,27 +525,25 @@ void Carryall::targeting() {
 
 
 void Carryall::findConstYard() {
-    FixPoint closestYardDistance = 1000000;
-    ConstructionYard* bestYard = nullptr;
+    FixPoint closestConstructionYardDistance = FixPt_MAX;
+    ConstructionYard* pBestConstructionYard = nullptr;
 
-    RobustList<StructureBase*>::const_iterator iter;
-    for(iter = structureList.begin(); iter != structureList.end(); ++iter) {
-        StructureBase* tempStructure = *iter;
+    for(StructureBase* pStructure : structureList) {
 
-        if((tempStructure->getItemID() == Structure_ConstructionYard) && (tempStructure->getOwner() == owner)) {
-            ConstructionYard* tempYard = static_cast<ConstructionYard*>(tempStructure);
-            Coord closestPoint = tempYard->getClosestPoint(location);
-            FixPoint tempDistance = distanceFrom(location, closestPoint);
+        if((pStructure->getItemID() == Structure_ConstructionYard) && (pStructure->getOwner() == owner)) {
+            ConstructionYard* pConstructionYard = static_cast<ConstructionYard*>(pStructure);
+            Coord closestPoint = pConstructionYard->getClosestPoint(location);
+            FixPoint constructionYardDistance = distanceFrom(location, closestPoint);
 
-            if(tempDistance < closestYardDistance) {
-                closestYardDistance = tempDistance;
-                bestYard = tempYard;
+            if(constructionYardDistance < closestConstructionYardDistance) {
+                closestConstructionYardDistance = constructionYardDistance;
+                pBestConstructionYard = pConstructionYard;
             }
         }
     }
 
-    if(bestYard) {
-        constYardPoint = bestYard->getClosestPoint(location);
+    if(pBestConstructionYard) {
+        constYardPoint = pBestConstructionYard->getClosestPoint(location);
     } else {
         constYardPoint = guardPoint;
     }

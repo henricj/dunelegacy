@@ -390,13 +390,11 @@ const ObjectBase* Sandworm::findTarget() const {
     if(attackMode == HUNT) {
         FixPoint closestDistance = FixPt_MAX;
 
-        RobustList<UnitBase*>::const_iterator iter;
-        for(iter = unitList.begin(); iter != unitList.end(); ++iter) {
-            UnitBase* tempUnit = *iter;
-            if (canAttack(tempUnit)
-                && (blockDistance(location, tempUnit->getLocation()) < closestDistance)) {
-                closestTarget = tempUnit;
-                closestDistance = blockDistance(location, tempUnit->getLocation());
+        for(UnitBase* pUnit : unitList) {
+            if (canAttack(pUnit)
+                && (blockDistance(location, pUnit->getLocation()) < closestDistance)) {
+                closestTarget = pUnit;
+                closestDistance = blockDistance(location, pUnit->getLocation());
             }
         }
     } else {

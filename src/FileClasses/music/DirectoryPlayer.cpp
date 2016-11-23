@@ -155,32 +155,25 @@ void DirectoryPlayer::setMusic(bool value) {
 
 std::vector<std::string> DirectoryPlayer::getMusicFileNames(const std::string& dir) {
     std::vector<std::string> files;
-    std::list<std::string> tmp;
-    std::list<std::string>::const_iterator iter;
 
-    tmp = getFileNamesList(dir,"mp3",true);
-    for(iter = tmp.begin(); iter != tmp.end(); ++iter) {
-        files.push_back(dir + *iter);
+    for(const std::string& filename : getFileNamesList(dir,"mp3",true)) {
+        files.push_back(dir + filename);
     }
 
-    tmp = getFileNamesList(dir,"ogg",true);
-    for(iter = tmp.begin(); iter != tmp.end(); ++iter) {
-        files.push_back(dir + *iter);
+    for(const std::string& filename : getFileNamesList(dir,"ogg",true)) {
+        files.push_back(dir + filename);
     }
 
-    tmp = getFileNamesList(dir,"wav",true);
-    for(iter = tmp.begin(); iter != tmp.end(); ++iter) {
-        files.push_back(dir + *iter);
+    for(const std::string& filename : getFileNamesList(dir,"wav",true)) {
+        files.push_back(dir + filename);
     }
 
-    tmp = getFileNamesList(dir,"flac",true);
-    for(iter = tmp.begin(); iter != tmp.end(); ++iter) {
-        files.push_back(dir + *iter);
+    for(const std::string& filename : getFileNamesList(dir,"flac",true)) {
+        files.push_back(dir + filename);
     }
 
-    tmp = getFileNamesList(dir,"mid",true);
-    for(iter = tmp.begin(); iter != tmp.end(); ++iter) {
-        files.push_back(dir + *iter);
+    for(const std::string& filename : getFileNamesList(dir,"mid",true)) {
+        files.push_back(dir + filename);
     }
 
     return files;

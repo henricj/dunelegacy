@@ -30,7 +30,7 @@ class CommandList {
 public:
     class CommandListEntry {
     public:
-        CommandListEntry(Uint32 cycle, std::vector<Command> commands)
+        CommandListEntry(Uint32 cycle, const std::vector<Command>& commands)
          : cycle(cycle), commands(commands) {
 
         }
@@ -47,9 +47,8 @@ public:
             stream.writeUint32(cycle);
 
             stream.writeUint32((Uint32) commands.size());
-            std::vector<Command>::const_iterator iter;
-            for(iter = commands.begin(); iter != commands.end(); ++iter) {
-                iter->save(stream);
+            for(const Command& command : commands) {
+                command.save(stream);
             }
         }
 
@@ -71,10 +70,8 @@ public:
 
     void save(OutputStream& stream) const {
         stream.writeUint32((Uint32) commandList.size());
-
-        std::vector<CommandListEntry>::const_iterator iter;
-        for(iter = commandList.begin(); iter != commandList.end(); ++iter) {
-            iter->save(stream);
+        for(const CommandListEntry& commandListEntry : commandList) {
+            commandListEntry.save(stream);
         }
     }
 

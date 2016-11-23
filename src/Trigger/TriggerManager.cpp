@@ -31,10 +31,8 @@ TriggerManager::~TriggerManager()
 
 void TriggerManager::save(OutputStream& stream) const {
     stream.writeUint32(triggers.size());
-
-    std::list<std::shared_ptr<Trigger> >::const_iterator iter;
-    for(iter = triggers.begin(); iter != triggers.end(); ++iter) {
-        saveTrigger(stream, *iter);
+    for(const std::shared_ptr<Trigger>& pTrigger : triggers) {
+        saveTrigger(stream, pTrigger);
     }
 }
 
@@ -49,17 +47,15 @@ void TriggerManager::load(InputStream& stream) {
 void TriggerManager::trigger(Uint32 CycleNumber)
 {
     while((triggers.empty() == false) && (triggers.front()->getCycleNumber() == CycleNumber)) {
-        std::shared_ptr<Trigger> currentTrigger = triggers.front();
+        std::shared_ptr<Trigger> pCurrentTrigger = triggers.front();
         triggers.pop_front();
-        currentTrigger->trigger();
+        pCurrentTrigger->trigger();
     }
 }
 
 void TriggerManager::addTrigger(std::shared_ptr<Trigger> newTrigger)
 {
-    std::list<std::shared_ptr<Trigger> >::iterator iter;
-
-    for(iter = triggers.begin(); iter != triggers.end(); ++iter) {
+    for(auto iter = triggers.begin(); iter != triggers.end(); ++iter) {
         if((*iter)->getCycleNumber() > newTrigger->getCycleNumber()) {
             triggers.insert(iter, newTrigger);
             return;
@@ -69,7 +65,7 @@ void TriggerManager::addTrigger(std::shared_ptr<Trigger> newTrigger)
     triggers.push_back(newTrigger);
 }
 
-void TriggerManager::saveTrigger(OutputStream& stream, std::shared_ptr<Trigger> t) const
+void TriggerManager::saveTrigger(OutputStream& stream, const std::shared_ptr<Trigger>& t) const
 {
     if(dynamic_cast<ReinforcementTrigger*>(t.get())) {
         stream.writeUint32(TriggerManager::Type_ReinforcementTrigger);

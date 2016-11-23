@@ -116,9 +116,8 @@ void ObjectData::loadFromINIFile(std::string filename)
         }
     }
 
-    INIFile::SectionIterator iter;
-    for(iter = objectDataFile.begin(); iter != objectDataFile.end(); ++iter) {
-        std::string sectionName = iter->getSectionName();
+    for(INIFile::Section& section : objectDataFile) {
+        const std::string& sectionName = section.getSectionName();
 
         if(sectionName == "" || sectionName == "default structure" || sectionName == "default unit") {
             continue;
@@ -127,7 +126,7 @@ void ObjectData::loadFromINIFile(std::string filename)
         Uint32 itemID = getItemIDByName(sectionName);
 
         if(itemID == ItemID_Invalid) {
-            std::cerr << "ObjectData::ObjectData(): \"" << sectionName << "\" is no valid unit/structure name!" << std::endl;
+            SDL_Log("ObjectData::ObjectData(): '%s' is no valid unit/structure name!", sectionName.c_str());
             continue;
         }
 
@@ -263,13 +262,12 @@ std::bitset<Structure_LastID> ObjectData::loadPrerequisiteStructuresSet(const IN
 
     std::vector<std::string> strItemList = splitString(strList);
 
-    std::vector<std::string>::const_iterator iter;
-    for(iter = strItemList.begin(); iter != strItemList.end(); ++iter) {
-        std::string strItem = trim(*iter);
+    for(const std::string& strItem : strItemList) {
+        std::string strItem2 = trim(strItem);
 
-        int itemID = getItemIDByName(strItem);
+        int itemID = getItemIDByName(strItem2);
         if(itemID == ItemID_Invalid || !isStructure(itemID)) {
-            SDL_Log("Warning: Cannot read object data from section '%s', key '%s': '%s' is no valid structure name!", section.c_str(), key.c_str(), strItem.c_str() );
+            SDL_Log("Warning: Cannot read object data from section '%s', key '%s': '%s' is no valid structure name!", section.c_str(), key.c_str(), strItem2.c_str() );
             return defaultValue;
         }
 

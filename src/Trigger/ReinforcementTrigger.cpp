@@ -223,9 +223,8 @@ void ReinforcementTrigger::trigger()
                     Carryall* carryall = static_cast<Carryall*>(dropHouse->createUnit(Unit_Carryall));
                     carryall->setOwned(false);
 
-                    std::vector<Uint32>::const_iterator iter;
-                    for(iter = droppedUnits.begin(); iter != droppedUnits.end(); ++iter) {
-                        UnitBase* pUnit2Drop = dropHouse->createUnit(*iter);
+                    for(Uint32 itemID2Drop : droppedUnits) {
+                        UnitBase* pUnit2Drop = dropHouse->createUnit(itemID2Drop);
                         pUnit2Drop->setActive(false);
                         carryall->giveCargo(pUnit2Drop);
                     }

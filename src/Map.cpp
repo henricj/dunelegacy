@@ -22,7 +22,6 @@
 #include <Game.h>
 #include <House.h>
 #include <ScreenBorder.h>
-#include <ConcatIterator.h>
 #include <sand.h>
 
 #include <units/UnitBase.h>
@@ -131,9 +130,8 @@ void Map::damage(Uint32 damagerID, House* damagerOwner, const Coord& realPos, Ui
     }
 
     if(bulletID == Bullet_Sandworm) {
-        std::set<Uint32>::const_iterator iter;
-        for(iter = affectedGroundAndUndergroundUnits.begin(); iter != affectedGroundAndUndergroundUnits.end() ;++iter) {
-            ObjectBase* pObject = currentGame->getObjectManager().getObject(*iter);
+        for(Uint32 objectID : affectedGroundAndUndergroundUnits) {
+            ObjectBase* pObject = currentGame->getObjectManager().getObject(objectID);
             if((pObject->getItemID() != Unit_Sandworm) && (pObject->isAGroundUnit() || pObject->isInfantry()) && (pObject->getLocation() == location)) {
                 pObject->setVisible(VIS_ALL, false);
                 pObject->handleDamage( lround(damage), damagerID, damagerOwner);
@@ -144,10 +142,8 @@ void Map::damage(Uint32 damagerID, House* damagerOwner, const Coord& realPos, Ui
         if(air == true) {
             // air damage
             if((bulletID == Bullet_DRocket) || (bulletID == Bullet_Rocket) || (bulletID == Bullet_TurretRocket)|| (bulletID == Bullet_SmallRocket)) {
-                std::set<Uint32>::const_iterator iter;
-                for(iter = affectedAirUnits.begin(); iter != affectedAirUnits.end() ;++iter) {
-                    AirUnit* pAirUnit = dynamic_cast<AirUnit*>(currentGame->getObjectManager().getObject(*iter));
-
+                for(Uint32 objectID : affectedAirUnits) {
+                    AirUnit* pAirUnit = dynamic_cast<AirUnit*>(currentGame->getObjectManager().getObject(objectID));
                     if(pAirUnit == nullptr)
                         continue;
 
@@ -173,9 +169,8 @@ void Map::damage(Uint32 damagerID, House* damagerOwner, const Coord& realPos, Ui
             }
         } else {
             // non air damage
-            std::set<Uint32>::const_iterator iter;
-            for(iter = affectedGroundAndUndergroundUnits.begin(); iter != affectedGroundAndUndergroundUnits.end() ;++iter) {
-                ObjectBase* pObject = currentGame->getObjectManager().getObject(*iter);
+            for(Uint32 objectID : affectedGroundAndUndergroundUnits) {
+                ObjectBase* pObject = currentGame->getObjectManager().getObject(objectID);
 
                 if(pObject->isAStructure()) {
                     StructureBase* pStructure = dynamic_cast<StructureBase*>(pObject);

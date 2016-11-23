@@ -88,10 +88,8 @@ public:
 
     void save(OutputStream& stream) const {
         stream.writeUint32(changeEventList.size());
-
-        std::list<ChangeEvent>::const_iterator iter;
-        for(iter = changeEventList.begin(); iter != changeEventList.end(); ++iter) {
-            iter->save(stream);
+        for(const ChangeEvent& changeEvent : changeEventList) {
+            changeEvent.save(stream);
         }
     }
 

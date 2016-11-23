@@ -138,12 +138,8 @@ std::list<std::string> TextView::calcTextLines() {
     } while(nextpos != std::string::npos);
 
     std::list<std::string> textLines;
-
-    std::list<std::string>::const_iterator iter;
-    for(iter = hardLines.begin();iter != hardLines.end();++iter) {
-        std::string tmpLine = *iter;
-
-        if(tmpLine == "") {
+    for(const std::string& hardLine : hardLines) {
+        if(hardLine == "") {
             textLines.push_back(" ");
             continue;
         }
@@ -155,14 +151,14 @@ std::list<std::string> TextView::calcTextLines() {
 
         while(EndOfLine == false) {
             while(true) {
-                warppos = tmpLine.find(" ", oldwarppos);
+                warppos = hardLine.find(" ", oldwarppos);
                 std::string tmp;
                 if(warppos == std::string::npos) {
-                    tmp = tmpLine.substr(lastwarp,tmpLine.length()-lastwarp);
-                    warppos = tmpLine.length();
+                    tmp = hardLine.substr(lastwarp,hardLine.length()-lastwarp);
+                    warppos = hardLine.length();
                     EndOfLine = true;
                 } else {
-                    tmp = tmpLine.substr(lastwarp,warppos-lastwarp);
+                    tmp = hardLine.substr(lastwarp,warppos-lastwarp);
                 }
 
                 if( GUIStyle::getInstance().getMinimumLabelSize(tmp, fontID).x - 4 > getSize().x - scrollbar.getSize().x - 4) {
@@ -185,7 +181,7 @@ std::list<std::string> TextView::calcTextLines() {
 
                 warppos = lastwarp;
                 while(true) {
-                    std::string tmp = tmpLine.substr(lastwarp,warppos-lastwarp);
+                    std::string tmp = hardLine.substr(lastwarp,warppos-lastwarp);
                     if( GUIStyle::getInstance().getMinimumLabelSize(tmp, fontID).x - 4 > getSize().x - scrollbar.getSize().x - 4) {
                         // this line would be too big => in oldwarppos is the last correct warp pos
                         break;
@@ -197,7 +193,7 @@ std::list<std::string> TextView::calcTextLines() {
                 }
 
                 if(warppos != lastwarp) {
-                    textLines.push_back(tmpLine.substr(lastwarp,oldwarppos-lastwarp));
+                    textLines.push_back(hardLine.substr(lastwarp,oldwarppos-lastwarp));
                     lastwarp = oldwarppos;
                 } else {
                     // the width of this label is too small for the next character
@@ -207,8 +203,7 @@ std::list<std::string> TextView::calcTextLines() {
                     oldwarppos++;
                 }
             } else {
-                std::string tmpStr = tmpLine.substr(lastwarp,oldwarppos-lastwarp);
-                textLines.push_back(tmpStr);
+                textLines.push_back(hardLine.substr(lastwarp,oldwarppos-lastwarp));
                 lastwarp = oldwarppos;
             }
         }

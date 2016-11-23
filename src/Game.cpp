@@ -169,23 +169,23 @@ Game::~Game() {
     delete pWaitingForOtherPlayers;
     pWaitingForOtherPlayers = nullptr;
 
-    for(RobustList<StructureBase*>::const_iterator iter = structureList.begin(); iter != structureList.end(); ++iter) {
-        delete *iter;
+    for(StructureBase* pStructure : structureList) {
+        delete pStructure;
     }
     structureList.clear();
 
-    for(RobustList<UnitBase*>::const_iterator iter = unitList.begin(); iter != unitList.end(); ++iter) {
-        delete *iter;
+    for(UnitBase* pUnit : unitList) {
+        delete pUnit;
     }
     unitList.clear();
 
-    for(RobustList<Bullet*>::const_iterator iter = bulletList.begin(); iter != bulletList.end(); ++iter) {
-        delete *iter;
+    for(Bullet* pBullet : bulletList) {
+        delete pBullet;
     }
     bulletList.clear();
 
-    for(RobustList<Explosion*>::const_iterator iter = explosionList.begin(); iter != explosionList.end(); ++iter) {
-        delete *iter;
+    for(Explosion* pExplosion : explosionList) {
+        delete pExplosion;
     }
     explosionList.clear();
 
@@ -281,27 +281,24 @@ void Game::processObjects()
         }
     }
 
-
-    for(RobustList<StructureBase*>::iterator iter = structureList.begin(); iter != structureList.end(); ++iter) {
-        StructureBase* tempStructure = *iter;
-        tempStructure->update();
+    for(StructureBase* pStructure : structureList) {
+        pStructure->update();
     }
 
     if ((currentCursorMode == CursorMode_Placing) && selectedList.empty()) {
         currentCursorMode = CursorMode_Normal;
     }
 
-    for(RobustList<UnitBase*>::iterator iter = unitList.begin(); iter != unitList.end(); ++iter) {
-        UnitBase* tempUnit = *iter;
-        tempUnit->update();
+    for(UnitBase* pUnit : unitList) {
+        pUnit->update();
     }
 
-    for(RobustList<Bullet*>::iterator iter = bulletList.begin(); iter != bulletList.end(); ++iter) {
-        (*iter)->update();
+    for(Bullet* pBullet : bulletList) {
+        pBullet->update();
     }
 
-    for(RobustList<Explosion*>::iterator iter = explosionList.begin(); iter != explosionList.end(); ++iter) {
-        (*iter)->update();
+    for(Explosion* pExplosion : explosionList) {
+        pExplosion->update();
     }
 }
 
@@ -392,15 +389,14 @@ void Game::drawScreen()
     }
 
     /* draw bullets */
-    for(RobustList<Bullet*>::const_iterator iter = bulletList.begin(); iter != bulletList.end(); ++iter) {
-        Bullet* pBullet = *iter;
+    for(const Bullet* pBullet : bulletList) {
         pBullet->blitToScreen();
     }
 
 
     /* draw explosions */
-    for(RobustList<Explosion*>::const_iterator iter = explosionList.begin(); iter != explosionList.end(); ++iter) {
-        (*iter)->blitToScreen();
+    for(const Explosion* pExplosion : explosionList) {
+        pExplosion->blitToScreen();
     }
 
     /* draw air units */
@@ -618,21 +614,19 @@ void Game::drawScreen()
     }
 
     if(bShowFPS) {
-        char    temp[50];
-        snprintf(temp,50,"fps: %.1f ", 1000.0f/averageFrameTime);
+        std::string strFPS = fmt::sprintf("fps: %.1f ", 1000.0f/averageFrameTime);
 
-        SDL_Texture* pFPSTexture = pFontManager->createTextureWithText(temp, COLOR_WHITE, FONT_STD12);
-        SDL_Rect drawLocation = calcDrawingRect(pFPSTexture,sideBarPos.x - strlen(temp)*8, 60);
+        SDL_Texture* pFPSTexture = pFontManager->createTextureWithText(strFPS, COLOR_WHITE, FONT_STD12);
+        SDL_Rect drawLocation = calcDrawingRect(pFPSTexture,sideBarPos.x - strFPS.length()*8, 60);
         SDL_RenderCopy(renderer, pFPSTexture, nullptr, &drawLocation);
         SDL_DestroyTexture(pFPSTexture);
     }
 
     if(bShowTime) {
-        char    temp[50];
-        int     seconds = getGameTime() / 1000;
-        snprintf(temp,50," %.2d:%.2d:%.2d", seconds / 3600, (seconds % 3600)/60, (seconds % 60) );
+        int seconds = getGameTime() / 1000;
+        std::string strTime = fmt::sprintf(" %.2d:%.2d:%.2d", seconds / 3600, (seconds % 3600)/60, (seconds % 60) );
 
-        SDL_Texture* pTimeTexture = pFontManager->createTextureWithText(temp, COLOR_WHITE, FONT_STD12);
+        SDL_Texture* pTimeTexture = pFontManager->createTextureWithText(strTime, COLOR_WHITE, FONT_STD12);
         SDL_Rect drawLocation = calcAlignedDrawingRect(pTimeTexture, HAlign::Left, VAlign::Bottom);
         drawLocation.y++;
         SDL_RenderCopy(renderer, pTimeTexture, nullptr, &drawLocation);
@@ -1102,9 +1096,7 @@ void Game::setupView()
     //setup start location/view
     i = j = count = 0;
 
-    RobustList<UnitBase*>::const_iterator unitIterator;
-    for(unitIterator = unitList.begin(); unitIterator != unitList.end(); ++unitIterator) {
-        UnitBase* pUnit = *unitIterator;
+    for(const UnitBase* pUnit : unitList) {
         if((pUnit->getOwner() == pLocalHouse) && (pUnit->getItemID() != Unit_Sandworm)) {
             i += pUnit->getX();
             j += pUnit->getY();
@@ -1112,9 +1104,7 @@ void Game::setupView()
         }
     }
 
-    RobustList<StructureBase*>::const_iterator structureIterator;
-    for(structureIterator = structureList.begin(); structureIterator != structureList.end(); ++structureIterator) {
-        StructureBase* pStructure = *structureIterator;
+    for(const StructureBase* pStructure : structureList) {
         if(pStructure->getOwner() == pLocalHouse) {
             i += pStructure->getX();
             j += pStructure->getY();
@@ -1267,10 +1257,8 @@ void Game::runMainLoop() {
                 pNetworkManager->update();
 
                 // test if we need to wait for data to arrive
-                std::list<std::string> peerList = pNetworkManager->getConnectedPeers();
-                std::list<std::string>::iterator iter;
-                for(iter = peerList.begin(); iter != peerList.end(); ++iter) {
-                    HumanPlayer* pPlayer = dynamic_cast<HumanPlayer*>(getPlayerByName(*iter));
+                for(const std::string& playername : pNetworkManager->getConnectedPeers()) {
+                    HumanPlayer* pPlayer = dynamic_cast<HumanPlayer*>(getPlayerByName(playername));
                     if(pPlayer != nullptr) {
                         if(pPlayer->nextExpectedCommandsCycle <= gameCycleCount) {
                             //SDL_Log("Cycle %d: Waiting for player '%s' to send data for cycle %d...", GameCycleCount, pPlayer->getPlayername().c_str(), pPlayer->nextExpectedCommandsCycle);
@@ -1590,33 +1578,26 @@ bool Game::loadSaveGame(InputStream& stream) {
     // we have to set the local player
     if(bMultiplayerLoad) {
         // get it from the gameInitSettings that started the game (not the one saved in the savegame)
-        GameInitSettings::HouseInfoList::iterator iter;
-        for(iter = oldHouseInfoList.begin(); iter != oldHouseInfoList.end(); ++iter) {
+        for(const GameInitSettings::HouseInfo& houseInfo : oldHouseInfoList) {
 
             // find the right house
             for(int i=0;i<NUM_HOUSES;i++) {
-                if((house[i] != nullptr) && (house[i]->getHouseID() == iter->houseID)) {
+                if((house[i] != nullptr) && (house[i]->getHouseID() == houseInfo.houseID)) {
                     // iterate over all players
-
-                    const std::list<std::shared_ptr<Player> >& players = house[i]->getPlayerList();
-                    GameInitSettings::HouseInfo::PlayerInfoList playerInfoList = iter->playerInfoList;
-
+                    auto& players = house[i]->getPlayerList();
                     std::list<std::shared_ptr<Player> >::const_iterator playerIter = players.begin();
-                    GameInitSettings::HouseInfo::PlayerInfoList::iterator playerInfoListIter;
-
-                    for(playerInfoListIter = playerInfoList.begin(); playerInfoListIter != playerInfoList.end(); ++playerInfoListIter) {
-                        if(playerInfoListIter->playerClass == HUMANPLAYERCLASS) {
+                    for(const GameInitSettings::PlayerInfo& playerInfo : houseInfo.playerInfoList) {
+                        if(playerInfo.playerClass == HUMANPLAYERCLASS) {
                             while(playerIter != players.end()) {
 
                                 std::shared_ptr<HumanPlayer> humanPlayer = std::dynamic_pointer_cast<HumanPlayer>(*playerIter);
                                 if(humanPlayer.get() != nullptr) {
                                     // we have actually found a human player and now assign the first unused name to it
-                                    std::string playername = playerInfoListIter->playerName;
                                     unregisterPlayer(humanPlayer.get());
-                                    humanPlayer->setPlayername(playername);
+                                    humanPlayer->setPlayername(playerInfo.playerName);
                                     registerPlayer(humanPlayer.get());
 
-                                    if(playername == getLocalPlayerName()) {
+                                    if(playerInfo.playerName == getLocalPlayerName()) {
                                         pLocalHouse = house[i];
                                         pLocalPlayer = humanPlayer.get();
                                     }
@@ -1706,9 +1687,8 @@ bool Game::saveGame(std::string filename)
     gameInitSettings.save(fs);
 
     fs.writeUint32(houseInfoListSetup.size());
-    GameInitSettings::HouseInfoList::const_iterator iter;
-    for(iter = houseInfoListSetup.begin(); iter != houseInfoListSetup.end(); ++iter) {
-        iter->save(fs);
+    for(const GameInitSettings::HouseInfo& houseInfo : houseInfoListSetup) {
+        houseInfo.save(fs);
     }
 
     //write the map size
@@ -1751,13 +1731,13 @@ bool Game::saveGame(std::string filename)
     objectManager.save(fs);
 
     fs.writeUint32(bulletList.size());
-    for(RobustList<Bullet*>::const_iterator iter = bulletList.begin(); iter != bulletList.end(); ++iter) {
-        (*iter)->save(fs);
+    for(const Bullet* pBullet : bulletList) {
+        pBullet->save(fs);
     }
 
     fs.writeUint32(explosionList.size());
-    for(RobustList<Explosion*>::const_iterator iter = explosionList.begin(); iter != explosionList.end(); ++iter) {
-        (*iter)->save(fs);
+    for(const Explosion* pExplosion : explosionList) {
+        pExplosion->save(fs);
     }
 
     if(gameInitSettings.getGameType() != GAMETYPE_CUSTOM_MULTIPLAYER) {
@@ -1808,20 +1788,16 @@ ObjectBase* Game::loadObject(InputStream& stream, Uint32 objectID)
 
 void Game::selectAll(std::set<Uint32>& aList)
 {
-    std::set<Uint32>::iterator iter;
-    for(iter = aList.begin(); iter != aList.end(); ++iter) {
-        ObjectBase *tempObject = objectManager.getObject(*iter);
-        tempObject->setSelected(true);
+    for(Uint32 objectID : aList) {
+        objectManager.getObject(objectID)->setSelected(true);
     }
 }
 
 
 void Game::unselectAll(std::set<Uint32>& aList)
 {
-    std::set<Uint32>::iterator iter;
-    for(iter = aList.begin(); iter != aList.end(); ++iter) {
-        ObjectBase *tempObject = objectManager.getObject(*iter);
-        tempObject->setSelected(false);
+    for(Uint32 objectID : aList) {
+        objectManager.getObject(objectID)->setSelected(false);
     }
 }
 
@@ -1840,9 +1816,8 @@ void Game::onReceiveSelectionList(std::string name, std::set<Uint32> newSelectio
             return;
         }
 
-        std::set<Uint32>::iterator iter;
-        for(iter = selectedByOtherPlayerList.begin(); iter != selectedByOtherPlayerList.end(); ++iter) {
-            ObjectBase* pObject = objectManager.getObject(*iter);
+        for(Uint32 objectID : selectedByOtherPlayerList) {
+            ObjectBase* pObject = objectManager.getObject(objectID);
             if(pObject != nullptr) {
                 pObject->setSelectedByOtherPlayer(false);
             }
@@ -1850,8 +1825,8 @@ void Game::onReceiveSelectionList(std::string name, std::set<Uint32> newSelectio
 
         selectedByOtherPlayerList = newSelectionList;
 
-        for(iter = selectedByOtherPlayerList.begin(); iter != selectedByOtherPlayerList.end(); ++iter) {
-            ObjectBase* pObject = objectManager.getObject(*iter);
+        for(Uint32 objectID : selectedByOtherPlayerList) {
+            ObjectBase* pObject = objectManager.getObject(objectID);
             if(pObject != nullptr) {
                 pObject->setSelectedByOtherPlayer(true);
             }
@@ -2008,20 +1983,17 @@ void Game::handleKeyInput(SDL_KeyboardEvent& keyboardEvent) {
         case SDLK_0: {
             //if ctrl and 0 remove selected units from all groups
             if(SDL_GetModState() & KMOD_CTRL) {
-                std::set<Uint32>::iterator iter;
-                for(iter = selectedList.begin(); iter != selectedList.end(); ++iter) {
-                    ObjectBase* object = objectManager.getObject(*iter);
-                    object->setSelected(false);
-                    object->removeFromSelectionLists();
+                for(Uint32 objectID : selectedList) {
+                    ObjectBase* pObject = objectManager.getObject(objectID);
+                    pObject->setSelected(false);
+                    pObject->removeFromSelectionLists();
                 }
                 selectedList.clear();
                 currentGame->selectionChanged();
                 currentCursorMode = CursorMode_Normal;
             } else {
-                std::set<Uint32>::iterator iter;
-                for(iter = selectedList.begin(); iter != selectedList.end(); ++iter) {
-                    ObjectBase* object = objectManager.getObject(*iter);
-                    object->setSelected(false);
+                for(Uint32 objectID : selectedList) {
+                    objectManager.getObject(objectID)->setSelected(false);
                 }
                 selectedList.clear();
                 currentGame->selectionChanged();
@@ -2051,10 +2023,10 @@ void Game::handleKeyInput(SDL_KeyboardEvent& keyboardEvent) {
                 // find out if we are choosing a group with all items already selected
                 bool bEverythingWasSelected = (selectedList.size() == groupList.size());
                 Coord averagePosition;
-                for(std::set<Uint32>::iterator iter = groupList.begin(); iter != groupList.end(); ++iter) {
-                    ObjectBase* object = objectManager.getObject(*iter);
-                    bEverythingWasSelected = bEverythingWasSelected && object->isSelected();
-                    averagePosition += object->getLocation();
+                for(Uint32 objectID : groupList) {
+                    ObjectBase* pObject = objectManager.getObject(objectID);
+                    bEverythingWasSelected = bEverythingWasSelected && pObject->isSelected();
+                    averagePosition += pObject->getLocation();
                 }
 
                 if(groupList.empty() == false) {
@@ -2072,10 +2044,10 @@ void Game::handleKeyInput(SDL_KeyboardEvent& keyboardEvent) {
                 }
 
                 // now we add the selected items
-                for(std::set<Uint32>::iterator iter = groupList.begin(); iter != groupList.end(); ++iter) {
-                    ObjectBase* object = objectManager.getObject(*iter);
-                    object->setSelected(true);
-                    selectedList.insert(object->getObjectID());
+                for(Uint32 objectID : groupList) {
+                    ObjectBase* pObject = objectManager.getObject(objectID);
+                    pObject->setSelected(true);
+                    selectedList.insert(pObject->getObjectID());
                     currentGame->selectionChanged();
                 }
 
@@ -2113,18 +2085,14 @@ void Game::handleKeyInput(SDL_KeyboardEvent& keyboardEvent) {
         case SDLK_a: {
             //set object to attack
             if(currentCursorMode != CursorMode_Attack) {
-                std::set<Uint32>::iterator iter;
-                for(iter = selectedList.begin(); iter != selectedList.end(); ++iter) {
-
-                    ObjectBase* tempObject = objectManager.getObject(*iter);
-                    if(tempObject->isAUnit() && (tempObject->getOwner() == pLocalHouse)
-                        && tempObject->isRespondable() && tempObject->canAttack()) {
-
+                for(Uint32 objectID : selectedList) {
+                    ObjectBase* pObject = objectManager.getObject(objectID);
+                    House* pOwner = pObject->getOwner();
+                    if(pObject->isAUnit() && (pOwner == pLocalHouse) && pObject->isRespondable() && pObject->canAttack()) {
                         currentCursorMode = CursorMode_Attack;
                         break;
-                    } else if((tempObject->getItemID() == Structure_Palace)
-                                && ((tempObject->getOwner()->getHouseID() == HOUSE_HARKONNEN) || (tempObject->getOwner()->getHouseID() == HOUSE_SARDAUKAR))) {
-                        if(static_cast<Palace*>(tempObject)->isSpecialWeaponReady()) {
+                    } else if((pObject->getItemID() == Structure_Palace) && ((pOwner->getHouseID() == HOUSE_HARKONNEN) || (pOwner->getHouseID() == HOUSE_SARDAUKAR))) {
+                        if(static_cast<Palace*>(pObject)->isSpecialWeaponReady()) {
                             currentCursorMode = CursorMode_Attack;
                             break;
                         }
@@ -2191,13 +2159,9 @@ void Game::handleKeyInput(SDL_KeyboardEvent& keyboardEvent) {
         case SDLK_m: {
             //set object to move
             if(currentCursorMode != CursorMode_Move) {
-                std::set<Uint32>::iterator iter;
-                for(iter = selectedList.begin(); iter != selectedList.end(); ++iter) {
-
-                    ObjectBase* tempObject = objectManager.getObject(*iter);
-                    if(tempObject->isAUnit() && (tempObject->getOwner() == pLocalHouse)
-                        && tempObject->isRespondable()) {
-
+                for(Uint32 objectID : selectedList) {
+                    ObjectBase* pObject = objectManager.getObject(objectID);
+                    if(pObject->isAUnit() && (pObject->getOwner() == pLocalHouse) && pObject->isRespondable()) {
                         currentCursorMode = CursorMode_Move;
                         break;
                     }
@@ -2255,24 +2219,22 @@ void Game::handleKeyInput(SDL_KeyboardEvent& keyboardEvent) {
         } break;
 
         case SDLK_h: {
-            std::set<Uint32>::iterator iter;
-            for(iter = selectedList.begin(); iter != selectedList.end(); ++iter) {
-                ObjectBase *tempObject = objectManager.getObject(*iter);
-                if(tempObject->getItemID() == Unit_Harvester) {
-                    static_cast<Harvester*>(tempObject)->handleReturnClick();
+            for(Uint32 objectID : selectedList) {
+                ObjectBase* pObject = objectManager.getObject(objectID);
+                if(pObject->getItemID() == Unit_Harvester) {
+                    static_cast<Harvester*>(pObject)->handleReturnClick();
                 }
             }
         } break;
 
 
         case SDLK_r: {
-            std::set<Uint32>::iterator iter;
-            for(iter = selectedList.begin(); iter != selectedList.end(); ++iter) {
-                ObjectBase *tempObject = objectManager.getObject(*iter);
-                if(tempObject->isAStructure()) {
-                    static_cast<StructureBase*>(tempObject)->handleRepairClick();
-                } else if(tempObject->isAGroundUnit() && tempObject->getHealth() < tempObject->getMaxHealth()) {
-                    static_cast<GroundUnit*>(tempObject)->handleSendToRepairClick();
+            for(Uint32 objectID : selectedList) {
+                ObjectBase* pObject = objectManager.getObject(objectID);
+                if(pObject->isAStructure()) {
+                    static_cast<StructureBase*>(pObject)->handleRepairClick();
+                } else if(pObject->isAGroundUnit() && pObject->getHealth() < pObject->getMaxHealth()) {
+                    static_cast<GroundUnit*>(pObject)->handleSendToRepairClick();
                 }
             }
         } break;
@@ -2280,10 +2242,9 @@ void Game::handleKeyInput(SDL_KeyboardEvent& keyboardEvent) {
 
         case SDLK_d: {
             if(currentCursorMode != CursorMode_CarryallDrop){
-                std::set<Uint32>::iterator iter;
-                for(iter = selectedList.begin(); iter != selectedList.end(); ++iter) {
-                    ObjectBase *tempObject = objectManager.getObject(*iter);
-                    if(tempObject->isAGroundUnit() && tempObject->getOwner()->hasCarryalls()) {
+                for(Uint32 objectID : selectedList) {
+                    ObjectBase* pObject = objectManager.getObject(objectID);
+                    if(pObject->isAGroundUnit() && pObject->getOwner()->hasCarryalls()) {
                         currentCursorMode = CursorMode_CarryallDrop;
                     }
                 }
@@ -2292,12 +2253,10 @@ void Game::handleKeyInput(SDL_KeyboardEvent& keyboardEvent) {
         } break;
 
         case SDLK_u: {
-            std::set<Uint32>::iterator iter;
-            for(iter = selectedList.begin(); iter != selectedList.end(); ++iter) {
-                ObjectBase *tempObject = objectManager.getObject(*iter);
-                if(tempObject->isABuilder()) {
-                    BuilderBase* pBuilder = dynamic_cast<BuilderBase*>(tempObject);
-
+            for(Uint32 objectID : selectedList) {
+                ObjectBase* pObject = objectManager.getObject(objectID);
+                if(pObject->isABuilder()) {
+                    BuilderBase* pBuilder = dynamic_cast<BuilderBase*>(pObject);
                     if(pBuilder->getHealth() >= pBuilder->getMaxHealth() && pBuilder->isAllowedToUpgrade()) {
                         pBuilder->handleUpgradeClick();
                     }
@@ -2410,9 +2369,8 @@ bool Game::handlePlacementClick(int xPos, int yPos) {
                                 pUnit->handleMoveClick(newDestination.x, newDestination.y);
                             }
                         } else if(pTile->hasInfantry()) {
-                            std::list<Uint32>::const_iterator iter;
-                            for(iter = pTile->getInfantryList().begin(); iter != pTile->getInfantryList().end(); ++iter) {
-                                InfantryBase* pInfantry = dynamic_cast<InfantryBase*>(getObjectManager().getObject(*iter));
+                            for(Uint32 objectID : pTile->getInfantryList()) {
+                                InfantryBase* pInfantry = dynamic_cast<InfantryBase*>(getObjectManager().getObject(objectID));
                                 if((pInfantry != nullptr) && (pInfantry->getOwner() == pBuilder->getOwner())) {
                                     Coord newDestination = currentGameMap->findDeploySpot(pInfantry, Coord(xPos, yPos), pInfantry->getLocation(), structuresize);
                                     pInfantry->handleMoveClick(newDestination.x, newDestination.y);
@@ -2430,18 +2388,15 @@ bool Game::handlePlacementClick(int xPos, int yPos) {
 
 
 bool Game::handleSelectedObjectsAttackClick(int xPos, int yPos) {
-    UnitBase* responder = nullptr;
-
-    std::set<Uint32>::iterator iter;
-    for(iter = selectedList.begin(); iter != selectedList.end(); ++iter) {
-        ObjectBase *tempObject = objectManager.getObject(*iter);
-        if(tempObject->isAUnit() && (tempObject->getOwner() == pLocalHouse) && tempObject->isRespondable()) {
-            responder = static_cast<UnitBase*>(tempObject);
-            responder->handleAttackClick(xPos,yPos);
-        } else if((tempObject->getItemID() == Structure_Palace)
-                    && ((tempObject->getOwner()->getHouseID() == HOUSE_HARKONNEN) || (tempObject->getOwner()->getHouseID() == HOUSE_SARDAUKAR))) {
-
-            Palace* pPalace = static_cast<Palace*>(tempObject);
+    UnitBase* pResponder = nullptr;
+    for(Uint32 objectID : selectedList) {
+        ObjectBase* pObject = objectManager.getObject(objectID);
+        House* pOwner = pObject->getOwner();
+        if(pObject->isAUnit() && (pOwner == pLocalHouse) && pObject->isRespondable()) {
+            pResponder = static_cast<UnitBase*>(pObject);
+            pResponder->handleAttackClick(xPos,yPos);
+        } else if((pObject->getItemID() == Structure_Palace) && ((pOwner->getHouseID() == HOUSE_HARKONNEN) || (pOwner->getHouseID() == HOUSE_SARDAUKAR))) {
+            Palace* pPalace = static_cast<Palace*>(pObject);
             if(pPalace->isSpecialWeaponReady()) {
                 pPalace->handleDeathhandClick(xPos, yPos);
             }
@@ -2449,8 +2404,8 @@ bool Game::handleSelectedObjectsAttackClick(int xPos, int yPos) {
     }
 
     currentCursorMode = CursorMode_Normal;
-    if(responder) {
-        responder->playConfirmSound();
+    if(pResponder) {
+        pResponder->playConfirmSound();
         return true;
     } else {
         return false;
@@ -2458,20 +2413,19 @@ bool Game::handleSelectedObjectsAttackClick(int xPos, int yPos) {
 }
 
 bool Game::handleSelectedObjectsMoveClick(int xPos, int yPos) {
-    UnitBase* responder = nullptr;
+    UnitBase* pResponder = nullptr;
 
-    std::set<Uint32>::iterator iter;
-    for(iter = selectedList.begin(); iter != selectedList.end(); ++iter) {
-        ObjectBase *tempObject = objectManager.getObject(*iter);
-        if (tempObject->isAUnit() && (tempObject->getOwner() == pLocalHouse) && tempObject->isRespondable()) {
-            responder = static_cast<UnitBase*>(tempObject);
-            responder->handleMoveClick(xPos,yPos);
+    for(Uint32 objectID : selectedList) {
+        ObjectBase* pObject = objectManager.getObject(objectID);
+        if (pObject->isAUnit() && (pObject->getOwner() == pLocalHouse) && pObject->isRespondable()) {
+            pResponder = static_cast<UnitBase*>(pObject);
+            pResponder->handleMoveClick(xPos,yPos);
         }
     }
 
     currentCursorMode = CursorMode_Normal;
-    if(responder) {
-        responder->playConfirmSound();
+    if(pResponder) {
+        pResponder->playConfirmSound();
         return true;
     } else {
         return false;
@@ -2483,7 +2437,7 @@ bool Game::handleSelectedObjectsMoveClick(int xPos, int yPos) {
 **/
 bool Game::handleSelectedObjectsRequestCarryallDropClick(int xPos, int yPos) {
 
-    UnitBase* responder = nullptr;
+    UnitBase* pResponder = nullptr;
 
     /*
         If manual carryall mode isn't enabled then turn this off...
@@ -2493,19 +2447,17 @@ bool Game::handleSelectedObjectsRequestCarryallDropClick(int xPos, int yPos) {
         return false;
     }
 
-
-    std::set<Uint32>::iterator iter;
-    for(iter = selectedList.begin(); iter != selectedList.end(); ++iter) {
-        ObjectBase *tempObject = objectManager.getObject(*iter);
-        if (tempObject->isAGroundUnit() && (tempObject->getOwner() == pLocalHouse) && tempObject->isRespondable()) {
-            responder = static_cast<UnitBase*>(tempObject);
-            responder->handleRequestCarryallDropClick(xPos,yPos);
+    for(Uint32 objectID : selectedList) {
+        ObjectBase* pObject = objectManager.getObject(objectID);
+        if (pObject->isAGroundUnit() && (pObject->getOwner() == pLocalHouse) && pObject->isRespondable()) {
+            pResponder = static_cast<UnitBase*>(pObject);
+            pResponder->handleRequestCarryallDropClick(xPos,yPos);
         }
     }
 
     currentCursorMode = CursorMode_Normal;
-    if(responder) {
-        responder->playConfirmSound();
+    if(pResponder) {
+        pResponder->playConfirmSound();
         return true;
     } else {
         return false;
@@ -2524,20 +2476,19 @@ bool Game::handleSelectedObjectsCaptureClick(int xPos, int yPos) {
     StructureBase* pStructure = dynamic_cast<StructureBase*>(pTile->getGroundObject());
 
     if((pStructure != nullptr) && (pStructure->canBeCaptured()) && (pStructure->getOwner()->getTeam() != pLocalHouse->getTeam())) {
-        InfantryBase* responder = nullptr;
+        InfantryBase* pResponder = nullptr;
 
-        std::set<Uint32>::iterator iter;
-        for(iter = selectedList.begin(); iter != selectedList.end(); ++iter) {
-            ObjectBase *tempObject = objectManager.getObject(*iter);
-            if (tempObject->isInfantry() && (tempObject->getOwner() == pLocalHouse) && tempObject->isRespondable()) {
-                responder = static_cast<InfantryBase*>(tempObject);
-                responder->handleCaptureClick(xPos,yPos);
+        for(Uint32 objectID : selectedList) {
+            ObjectBase* pObject = objectManager.getObject(objectID);
+            if (pObject->isInfantry() && (pObject->getOwner() == pLocalHouse) && pObject->isRespondable()) {
+                pResponder = static_cast<InfantryBase*>(pObject);
+                pResponder->handleCaptureClick(xPos,yPos);
             }
         }
 
         currentCursorMode = CursorMode_Normal;
-        if(responder) {
-            responder->playConfirmSound();
+        if(pResponder) {
+            pResponder->playConfirmSound();
             return true;
         } else {
             return false;
@@ -2550,24 +2501,20 @@ bool Game::handleSelectedObjectsCaptureClick(int xPos, int yPos) {
 
 bool Game::handleSelectedObjectsActionClick(int xPos, int yPos) {
     //let unit handle right click on map or target
-    ObjectBase  *responder = nullptr;
-    ObjectBase  *tempObject = nullptr;
-
-    std::set<Uint32>::iterator iter;
-    for(iter = selectedList.begin(); iter != selectedList.end(); ++iter) {
-        tempObject = objectManager.getObject(*iter);
-
-        if(tempObject->getOwner() == pLocalHouse && tempObject->isRespondable()) {
-            tempObject->handleActionClick(xPos, yPos);
+    ObjectBase  *pResponder = nullptr;
+    for(Uint32 objectID : selectedList) {
+        ObjectBase* pObject = objectManager.getObject(objectID);
+        if(pObject->getOwner() == pLocalHouse && pObject->isRespondable()) {
+            pObject->handleActionClick(xPos, yPos);
 
             //if this object obey the command
-            if((responder == nullptr) && tempObject->isRespondable())
-                responder = tempObject;
+            if((pResponder == nullptr) && pObject->isRespondable())
+                pResponder = pObject;
         }
     }
 
-    if(responder) {
-        responder->playConfirmSound();
+    if(pResponder) {
+        pResponder->playConfirmSound();
         return true;
     } else {
         return false;
@@ -2602,9 +2549,7 @@ void Game::selectNextStructureOfType(const std::set<Uint32>& itemIDs) {
 
     StructureBase* pStructure2Select = nullptr;
 
-    for(RobustList<StructureBase*>::const_iterator iter = structureList.begin(); iter != structureList.end(); ++iter) {
-        StructureBase* pStructure = *iter;
-
+    for(StructureBase* pStructure : structureList) {
         if(bSelectNext) {
             if( (itemIDs.count(pStructure->getItemID()) == 1) && (pStructure->getOwner() == pLocalHouse) ) {
                 pStructure2Select = pStructure;
@@ -2619,8 +2564,7 @@ void Game::selectNextStructureOfType(const std::set<Uint32>& itemIDs) {
 
     if(pStructure2Select == nullptr) {
         // start over at the beginning
-        for(RobustList<StructureBase*>::const_iterator iter = structureList.begin(); iter != structureList.end(); ++iter) {
-            StructureBase* pStructure = *iter;
+        for(StructureBase* pStructure : structureList) {
             if( (itemIDs.count(pStructure->getItemID()) == 1) && (pStructure->getOwner() == pLocalHouse) && !pStructure->isSelected() ) {
                 pStructure2Select = pStructure;
                 break;

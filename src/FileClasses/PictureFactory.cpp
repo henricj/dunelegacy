@@ -509,10 +509,7 @@ SDL_Surface* PictureFactory::createMainBackground() {
 
     SDL_Surface* Version = getSubPicture(background.get(),0,0,75,32);
 
-    char versionString[100];
-    sprintf(versionString, "%s", VERSION);
-
-    SDL_Surface *VersionText = pFontManager->createSurfaceWithText(versionString, PALCOLOR_BLACK, FONT_STD12);
+    SDL_Surface *VersionText = pFontManager->createSurfaceWithText(std::string(VERSION), PALCOLOR_BLACK, FONT_STD12);
 
     SDL_Rect dest4 = calcDrawingRect(VersionText, getWidth(Version)/2, getHeight(Version)/2 + 2, HAlign::Center, VAlign::Center);
     SDL_BlitSurface(VersionText,nullptr,Version,&dest4);
@@ -894,15 +891,12 @@ Animation* PictureFactory::createSardaukarPlanet(Animation* ordosPlanetAnimation
     colorMap[163] = 29;
     colorMap[164] = 31;
 
-    const std::vector<SDL_Surface*>& frames = ordosPlanetAnimation->getFrames();
-    std::vector<SDL_Surface*>::const_iterator iter;
-
-    for(iter = frames.begin(); iter != frames.end(); ++iter) {
-        SDL_Surface* newFrame = copySurface(*iter);
+    for(SDL_Surface* pSurface : ordosPlanetAnimation->getFrames()) {
+        SDL_Surface* newFrame = copySurface(pSurface);
 
         mapColor(newFrame, colorMap);
 
-        SDL_Surface* newFrameWithoutPlanet = copySurface(*iter);
+        SDL_Surface* newFrameWithoutPlanet = copySurface(pSurface);
 
         SDL_BlitSurface(maskSurface,nullptr,newFrameWithoutPlanet,nullptr);
         SDL_SetColorKey(newFrameWithoutPlanet, SDL_TRUE, 223);
@@ -947,11 +941,8 @@ Animation* PictureFactory::createMercenaryPlanet(Animation* atreidesPlanetAnimat
     colorMap[178] = 94;
     colorMap[179] = 95;
 
-    const std::vector<SDL_Surface*>& frames = atreidesPlanetAnimation->getFrames();
-    std::vector<SDL_Surface*>::const_iterator iter;
-
-    for(iter = frames.begin(); iter != frames.end(); ++iter) {
-        SDL_Surface* newFrame = copySurface(*iter);
+    for(SDL_Surface* pSurface : atreidesPlanetAnimation->getFrames()) {
+        SDL_Surface* newFrame = copySurface(pSurface);
 
         mapColor(newFrame, colorMap);
 
@@ -984,12 +975,8 @@ SDL_Surface* PictureFactory::mapMentatSurfaceToMercenary(SDL_Surface* ordosMenta
 Animation* PictureFactory::mapMentatAnimationToFremen(Animation* fremenAnimation) {
     Animation* newAnimation = new Animation();
 
-    const std::vector<SDL_Surface*>& frames = fremenAnimation->getFrames();
-    std::vector<SDL_Surface*>::const_iterator iter;
-
-    for(iter = frames.begin(); iter != frames.end(); ++iter) {
-        SDL_Surface* newFrame = mapMentatSurfaceToFremen(*iter);
-        newAnimation->addFrame(newFrame);
+    for(SDL_Surface* pSurface : fremenAnimation->getFrames()) {
+        newAnimation->addFrame(mapMentatSurfaceToFremen(pSurface));
     }
 
     newAnimation->setFrameDurationTime(fremenAnimation->getFrameDurationTime());
@@ -1024,12 +1011,8 @@ SDL_Surface* PictureFactory::mapMentatSurfaceToSardaukar(SDL_Surface* harkonnenM
 Animation* PictureFactory::mapMentatAnimationToSardaukar(Animation* harkonnenAnimation) {
     Animation* newAnimation = new Animation();
 
-    const std::vector<SDL_Surface*>& frames = harkonnenAnimation->getFrames();
-    std::vector<SDL_Surface*>::const_iterator iter;
-
-    for(iter = frames.begin(); iter != frames.end(); ++iter) {
-        SDL_Surface* newFrame = mapMentatSurfaceToSardaukar(*iter);
-        newAnimation->addFrame(newFrame);
+    for(SDL_Surface* pSurface : harkonnenAnimation->getFrames()) {
+        newAnimation->addFrame(mapMentatSurfaceToSardaukar(pSurface));
     }
 
     newAnimation->setFrameDurationTime(harkonnenAnimation->getFrameDurationTime());
@@ -1041,12 +1024,8 @@ Animation* PictureFactory::mapMentatAnimationToSardaukar(Animation* harkonnenAni
 Animation* PictureFactory::mapMentatAnimationToMercenary(Animation* ordosAnimation) {
     Animation* newAnimation = new Animation();
 
-    const std::vector<SDL_Surface*>& frames = ordosAnimation->getFrames();
-    std::vector<SDL_Surface*>::const_iterator iter;
-
-    for(iter = frames.begin(); iter != frames.end(); ++iter) {
-        SDL_Surface* newFrame = mapMentatSurfaceToMercenary(*iter);
-        newAnimation->addFrame(newFrame);
+    for(SDL_Surface* pSurface : ordosAnimation->getFrames()) {
+        newAnimation->addFrame(mapMentatSurfaceToMercenary(pSurface));
     }
 
     newAnimation->setFrameDurationTime(ordosAnimation->getFrameDurationTime());

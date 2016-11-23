@@ -73,10 +73,9 @@ void AIPlayer::save(OutputStream& stream) const {
     stream.writeSint32(buildTimer);
 
     stream.writeUint32(placeLocations.size());
-    std::list<Coord>::const_iterator iter;
-    for(iter = placeLocations.begin(); iter != placeLocations.end(); ++iter) {
-        stream.writeSint32(iter->x);
-        stream.writeSint32(iter->y);
+    for(const Coord& coord : placeLocations) {
+        stream.writeSint32(coord.x);
+        stream.writeSint32(coord.y);
     }
 }
 
@@ -140,15 +139,12 @@ void AIPlayer::onDamage(const ObjectBase* pObject, int damage, Uint32 damagerID)
 }
 
 void AIPlayer::scrambleUnitsAndDefend(const ObjectBase* pIntruder) {
-    RobustList<const UnitBase*>::const_iterator iter;
-    for(iter = getUnitList().begin(); iter != getUnitList().end(); ++iter) {
-        const UnitBase* pUnit = *iter;
+    for(const UnitBase* pUnit : getUnitList()) {
         if(pUnit->isRespondable() && (pUnit->getOwner() == getHouse())) {
-
             if((pUnit->getAttackMode() != HUNT) && !pUnit->hasATarget()) {
                 Uint32 itemID = pUnit->getItemID();
-                if((itemID != Unit_Harvester) && (pUnit->getItemID() != Unit_MCV) && (pUnit->getItemID() != Unit_Carryall)
-                    && (pUnit->getItemID() != Unit_Frigate) && (pUnit->getItemID() != Unit_Saboteur) && (pUnit->getItemID() != Unit_Sandworm)) {
+                if((itemID != Unit_Harvester) && (itemID != Unit_MCV) && (itemID != Unit_Carryall)
+                    && (itemID != Unit_Frigate) && (itemID != Unit_Saboteur) && (itemID != Unit_Sandworm)) {
                     doAttackObject(pUnit, pIntruder, true);
                 }
             }
@@ -172,18 +168,16 @@ Coord AIPlayer::findPlaceLocation(Uint32 itemID) {
         maxX = getMap().getSizeX() - 1;
         maxY = getMap().getSizeY() - 1;
     } else {
-        RobustList<const StructureBase*>::const_iterator iter;
-        for(iter = getStructureList().begin(); iter != getStructureList().end(); ++iter) {
-            const StructureBase* structure = *iter;
-            if (structure->getOwner() == getHouse()) {
-                if (structure->getX() < minX)
-                    minX = structure->getX();
-                if (structure->getX() > maxX)
-                    maxX = structure->getX();
-                if (structure->getY() < minY)
-                    minY = structure->getY();
-                if (structure->getY() > maxY)
-                    maxY = structure->getY();
+        for(const StructureBase* pStructure : getStructureList()) {
+            if (pStructure->getOwner() == getHouse()) {
+                if (pStructure->getX() < minX)
+                    minX = pStructure->getX();
+                if (pStructure->getX() > maxX)
+                    maxX = pStructure->getX();
+                if (pStructure->getY() < minY)
+                    minY = pStructure->getY();
+                if (pStructure->getY() > maxY)
+                    maxY = pStructure->getY();
             }
         }
     }
@@ -230,14 +224,11 @@ Coord AIPlayer::findPlaceLocation(Uint32 itemID) {
 
                 case Structure_ConstructionYard: {
                     FixPoint nearestUnit = 10000000;
-
-                    RobustList<const UnitBase*>::const_iterator iter;
-                    for(iter = getUnitList().begin(); iter != getUnitList().end(); ++iter) {
-                        const UnitBase* pUnit = *iter;
+                    for(const UnitBase* pUnit : getUnitList()) {
                         if(pUnit->getOwner() == getHouse()) {
-                            FixPoint tmp = blockDistance(pos, pUnit->getLocation());
-                            if(tmp < nearestUnit) {
-                                nearestUnit = tmp;
+                            FixPoint distance = blockDistance(pos, pUnit->getLocation());
+                            if(distance < nearestUnit) {
+                                nearestUnit = distance;
                             }
                         }
                     }
@@ -252,15 +243,13 @@ Coord AIPlayer::findPlaceLocation(Uint32 itemID) {
                 case Structure_StarPort:
                 case Structure_WOR: {
                     // place near sand
-
                     FixPoint nearestSand = 10000000;
-
                     for(int y = 0 ; y < currentGameMap->getSizeY(); y++) {
                         for(int x = 0; x < currentGameMap->getSizeX(); x++) {
                             if(currentGameMap->getTile(x,y)->isRock() == false) {
-                                FixPoint tmp = blockDistance(pos, Coord(x,y));
-                                if(tmp < nearestSand) {
-                                    nearestSand = tmp;
+                                FixPoint distance = blockDistance(pos, Coord(x,y));
+                                if(distance < nearestSand) {
+                                    nearestSand = distance;
                                 }
                             }
                         }
@@ -275,15 +264,11 @@ Coord AIPlayer::findPlaceLocation(Uint32 itemID) {
                 case Structure_RocketTurret: {
                     // place towards enemy
                     FixPoint nearestEnemy = 10000000;
-
-                    RobustList<const StructureBase*>::const_iterator iter2;
-                    for(iter2 = getStructureList().begin(); iter2 != getStructureList().end(); ++iter2) {
-                        const StructureBase* pStructure = *iter2;
+                    for(const StructureBase* pStructure : getStructureList()) {
                         if(pStructure->getOwner()->getTeam() != getHouse()->getTeam()) {
-
-                            FixPoint tmp = blockDistance(pos, pStructure->getLocation());
-                            if(tmp < nearestEnemy) {
-                                nearestEnemy = tmp;
+                            FixPoint distance = blockDistance(pos, pStructure->getLocation());
+                            if(distance < nearestEnemy) {
+                                nearestEnemy = distance;
                             }
                         }
                     }
@@ -300,15 +285,11 @@ Coord AIPlayer::findPlaceLocation(Uint32 itemID) {
                 default: {
                     // place at a save place
                     FixPoint nearestEnemy = 10000000;
-
-                    RobustList<const StructureBase*>::const_iterator iter2;
-                    for(iter2 = getStructureList().begin(); iter2 != getStructureList().end(); ++iter2) {
-                        const StructureBase* pStructure = *iter2;
+                    for(const StructureBase* pStructure : getStructureList()) {
                         if(pStructure->getOwner()->getTeam() != getHouse()->getTeam()) {
-
-                            FixPoint tmp = blockDistance(pos, pStructure->getLocation());
-                            if(tmp < nearestEnemy) {
-                                nearestEnemy = tmp;
+                            FixPoint distance = blockDistance(pos, pStructure->getLocation());
+                            if(distance < nearestEnemy) {
+                                nearestEnemy = distance;
                             }
                         }
                     }
@@ -356,11 +337,7 @@ int AIPlayer::getNumAdjacentStructureTiles(Coord pos, int structureSizeX, int st
 
 void AIPlayer::build() {
     bool bConstructionYardChecked = false;
-
-    RobustList<const StructureBase*>::const_iterator iter;
-    for(iter = getStructureList().begin(); iter != getStructureList().end(); ++iter) {
-        const StructureBase* pStructure = *iter;
-
+    for(const StructureBase* pStructure : getStructureList()) {
         //if this players structure, and its a heavy factory, build something
         if(pStructure->getOwner() == getHouse()) {
 
@@ -646,9 +623,7 @@ void AIPlayer::build() {
 void AIPlayer::attack() {
     Coord destination;
     const UnitBase* pLeaderUnit = nullptr;
-    RobustList<const UnitBase*>::const_iterator iter;
-    for(iter = getUnitList().begin(); iter != getUnitList().end(); ++iter) {
-        const UnitBase *pUnit = *iter;
+    for(const UnitBase *pUnit : getUnitList()) {
         if (pUnit->isRespondable()
             && (pUnit->getOwner() == getHouse())
             && pUnit->isActive()
@@ -688,15 +663,9 @@ void AIPlayer::attack() {
 }
 
 void AIPlayer::checkAllUnits() {
-    RobustList<const UnitBase*>::const_iterator iter;
-    for(iter = getUnitList().begin(); iter != getUnitList().end(); ++iter) {
-        const UnitBase* pUnit = *iter;
-
+    for(const UnitBase* pUnit : getUnitList()) {
         if(pUnit->getItemID() == Unit_Sandworm) {
-                RobustList<const UnitBase*>::const_iterator iter2;
-                for(iter2 = getUnitList().begin(); iter2 != getUnitList().end(); ++iter2) {
-                    const UnitBase* pUnit2 = *iter2;
-
+                for(const UnitBase* pUnit2 : getUnitList()) {
                     if(pUnit2->getOwner() == getHouse() && pUnit2->getItemID() == Unit_Harvester) {
                         const Harvester* pHarvester = dynamic_cast<const Harvester*>(pUnit2);
                         if( pHarvester != nullptr

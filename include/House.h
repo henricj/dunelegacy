@@ -136,6 +136,7 @@ public:
     void win();
 
     void freeHarvester(int xPos, int yPos);
+    void freeHarvester(const Coord& coord) { freeHarvester(coord.x, coord.y); };
     StructureBase* placeStructure(Uint32 builderID, int itemID, int xPos, int yPos, bool bForcePlacing = false);
     UnitBase* createUnit(int itemID);
     UnitBase* placeUnit(int itemID, int xPos, int yPos);
