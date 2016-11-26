@@ -61,7 +61,6 @@ private:
     bool bFadeIn;           ///< true = fade in the text (see TEXT_FADE_TIME for the number of frames it takes), false = simply show the text
     bool bFadeOut;          ///< true = fade out the text (see TEXT_FADE_TIME for the number of frames it takes), false = text simply disapears
     bool bCenterVertical;   ///< true = center the text vertically on the screen, false = draw the text near the bottom of the screen
-    Uint32 color;           ///< the color of the text
     SDL_Texture* pTexture;  ///< a texture containing the rendered text
 };
 

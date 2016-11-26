@@ -40,7 +40,7 @@
 #include <globals.h>
 
 
-Player::Player(House* associatedHouse, std::string playername) : pHouse(associatedHouse), playerID(0), playername(playername) {
+Player::Player(House* associatedHouse, const std::string& playername) : pHouse(associatedHouse), playerID(0), playername(playername) {
 }
 
 Player::Player(InputStream& stream, House* associatedHouse) : pHouse(associatedHouse) {

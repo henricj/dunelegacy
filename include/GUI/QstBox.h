@@ -45,7 +45,7 @@ public:
         This method sets a new text for this question box.
         \param  text The new text for this question box
     */
-    virtual inline void setText(std::string text) {
+    virtual inline void setText(const std::string& text) {
         textLabel.setText(text);
         resize(std::max(vbox.getMinimumSize().x,120),vbox.getMinimumSize().y);
     }
@@ -54,7 +54,7 @@ public:
         Get the text of this question box.
         \return the text of this question box
     */
-    inline std::string getText() { return textLabel.getText(); };
+    inline const std::string& getText() { return textLabel.getText(); };
 
     /**
         Sets the text color for this question box.
@@ -121,7 +121,7 @@ public:
         \param  defaultFocus    Button which gets the focus on showing the question box
         \return The new question box (will be automatically destroyed when it's closed)
     */
-    static QstBox* create(std::string text, std::string button1Text = "No", std::string button2Text = "Yes", int defaultFocus = QSTBOX_BUTTON_INVALID) {
+    static QstBox* create(const std::string& text, const std::string& button1Text = "No", const std::string& button2Text = "Yes", int defaultFocus = QSTBOX_BUTTON_INVALID) {
         QstBox* qstbox = new QstBox(text, button1Text, button2Text, defaultFocus);
         qstbox->pAllocated = true;
         return qstbox;
@@ -134,7 +134,7 @@ protected:
         \param  button2Text     Text of button 2
         \param  defaultFocus    Button which gets the focus on showing the question box
     */
-    QstBox(std::string text, std::string button1Text, std::string button2Text, int defaultFocus)
+    QstBox(const std::string& text, const std::string& button1Text, const std::string& button2Text, int defaultFocus)
      : Window(50,50,50,50), pressedButtonID(QSTBOX_BUTTON_INVALID) {
         init(text, button1Text, button2Text, defaultFocus);
     }
@@ -151,7 +151,7 @@ private:
         \param  button2Text     Text of button 2
         \param  defaultFocus    Button which gets the focus on showing the question box
     */
-    void init(std::string text, std::string button1Text, std::string button2Text, int defaultFocus) {
+    void init(const std::string& text, const std::string& button1Text, const std::string& button2Text, int defaultFocus) {
         setWindowWidget(&vbox);
         vbox.addWidget(VSpacer::create(6));
         vbox.addWidget(&textLabel);

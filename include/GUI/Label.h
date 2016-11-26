@@ -31,12 +31,6 @@ class Label : public Widget {
 public:
     /// default constructor
     Label() : Widget() {
-        fontID = FONT_STD12;
-        textcolor = COLOR_DEFAULT;
-        textshadowcolor = COLOR_DEFAULT;
-        backgroundcolor = 0;
-        alignment = (Alignment_Enum) (Alignment_Left | Alignment_VCenter);
-        pTexture = nullptr;
         enableResizing(true,true);
     }
 
@@ -97,7 +91,7 @@ public:
         to fit this text.
         \param  Text The new text for this button
     */
-    virtual inline void setText(std::string text) {
+    virtual inline void setText(const std::string& text) {
         if(text != this->text) {
             this->text = text;
             resizeAll();
@@ -108,7 +102,7 @@ public:
         Get the text of this label.
         \return the text of this button
     */
-    inline std::string getText() const { return text; };
+    inline const std::string& getText() const { return text; };
 
     /**
         This method resizes the label. This method should only
@@ -189,7 +183,7 @@ public:
        \param  backgroundcolor the color of the label background (COLOR_TRANSPARENT = transparent)
         \return The new created label (will be automatically destroyed when it's parent widget is destroyed)
     */
-    static Label* create(std::string text, Uint32 textcolor = COLOR_DEFAULT, Uint32 textshadowcolor = COLOR_DEFAULT, Uint32 backgroundcolor = COLOR_TRANSPARENT) {
+    static Label* create(const std::string& text, Uint32 textcolor = COLOR_DEFAULT, Uint32 textshadowcolor = COLOR_DEFAULT, Uint32 backgroundcolor = COLOR_TRANSPARENT) {
         Label* label = new Label();
         label->setText(text);
         label->setTextColor(textcolor, textshadowcolor, backgroundcolor);
@@ -315,13 +309,13 @@ protected:
     }
 
 private:
-    int fontID;                 ///< the ID of the font to use
-    Uint32 textcolor;           ///< the text color
-    Uint32 textshadowcolor;     ///< the color of the shadow of the text
-    Uint32 backgroundcolor;     ///< the color of the label background
-    std::string text;           ///< the text of this label
-    SDL_Texture* pTexture;      ///< the texture of this label
-    Alignment_Enum alignment;   ///< the alignment of this label
+    int fontID = FONT_STD12;                ///< the ID of the font to use
+    Uint32 textcolor = COLOR_DEFAULT;       ///< the text color
+    Uint32 textshadowcolor = COLOR_DEFAULT; ///< the color of the shadow of the text
+    Uint32 backgroundcolor = COLOR_BLACK;   ///< the color of the label background
+    std::string text;                       ///< the text of this label
+    SDL_Texture* pTexture = nullptr;        ///< the texture of this label
+    Alignment_Enum alignment = (Alignment_Enum) (Alignment_Left | Alignment_VCenter);   ///< the alignment of this label
 };
 
 #endif // LABEL_H

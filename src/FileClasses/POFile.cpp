@@ -22,7 +22,7 @@
 #include <stdio.h>
 
 
-static std::string unescapeString(std::string str) {
+static std::string unescapeString(const std::string& str) {
     std::map<std::string, std::string> replacementMap;
     replacementMap["\\0"] = "\0";
     replacementMap["\\n"] = "\n";

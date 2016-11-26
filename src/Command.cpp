@@ -37,41 +37,44 @@
 #include <structures/StarPort.h>
 #include <structures/ConstructionYard.h>
 
-Command::Command(Uint8 playerID, CMDTYPE id) {
-    commandID = id;
+Command::Command(Uint8 playerID, CMDTYPE id)
+ : playerID(playerID), commandID(id)
+{
 }
 
-Command::Command(Uint8 playerID, CMDTYPE id, Uint32 parameter1) {
-    this->playerID = playerID;
-    commandID = id;
+Command::Command(Uint8 playerID, CMDTYPE id, Uint32 parameter1)
+ : playerID(playerID), commandID(id)
+{
     parameter.push_back(parameter1);
 }
 
-Command::Command(Uint8 playerID, CMDTYPE id, Uint32 parameter1, Uint32 parameter2) {
-    this->playerID = playerID;
-    commandID = id;
+Command::Command(Uint8 playerID, CMDTYPE id, Uint32 parameter1, Uint32 parameter2)
+ : playerID(playerID), commandID(id)
+{
     parameter.push_back(parameter1);
     parameter.push_back(parameter2);
 }
 
-Command::Command(Uint8 playerID, CMDTYPE id, Uint32 parameter1, Uint32 parameter2, Uint32 parameter3) {
-    this->playerID = playerID;
-    commandID = id;
+Command::Command(Uint8 playerID, CMDTYPE id, Uint32 parameter1, Uint32 parameter2, Uint32 parameter3)
+ : playerID(playerID), commandID(id)
+{
     parameter.push_back(parameter1);
     parameter.push_back(parameter2);
     parameter.push_back(parameter3);
 }
 
-Command::Command(Uint8 playerID, CMDTYPE id, Uint32 parameter1, Uint32 parameter2, Uint32 parameter3, Uint32 parameter4) {
-    this->playerID = playerID;
-    commandID = id;
+Command::Command(Uint8 playerID, CMDTYPE id, Uint32 parameter1, Uint32 parameter2, Uint32 parameter3, Uint32 parameter4)
+ : playerID(playerID), commandID(id)
+{
     parameter.push_back(parameter1);
     parameter.push_back(parameter2);
     parameter.push_back(parameter3);
     parameter.push_back(parameter4);
 }
 
-Command::Command(Uint8 playerID, Uint8* data, Uint32 length) {
+Command::Command(Uint8 playerID, Uint8* data, Uint32 length)
+ : playerID(playerID)
+{
     if(length % 4 != 0) {
         THROW(std::invalid_argument, "Command::Command(): Length must be multiple of 4!");
     }
@@ -80,7 +83,6 @@ Command::Command(Uint8 playerID, Uint8* data, Uint32 length) {
         THROW(std::invalid_argument, "Command::Command(): Command must be at least 4 bytes long!");
     }
 
-    this->playerID = playerID;
     commandID = (CMDTYPE) *((Uint32*) data);
 
     if(commandID >= CMD_MAX) {

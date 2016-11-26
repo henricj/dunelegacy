@@ -421,15 +421,14 @@ HOUSETYPE getHouseByName(std::string name) {
     \return the name of the house (e.g. "Atreides").
 */
 std::string getHouseNameByNumber(HOUSETYPE house) {
-    static const char* houseName[NUM_HOUSES] = {    "Harkonnen",
-                                                    "Atreides",
-                                                    "Ordos",
-                                                    "Fremen",
-                                                    "Sardaukar",
-                                                    "Mercenary"
-                                               };
-
     if(house >= 0 && house < NUM_HOUSES) {
+        static const char* houseName[NUM_HOUSES] = {    "Harkonnen",
+                                                        "Atreides",
+                                                        "Ordos",
+                                                        "Fremen",
+                                                        "Sardaukar",
+                                                        "Mercenary"
+                                                   };
         return houseName[house];
     } else {
         THROW(std::invalid_argument, "Invalid house number %d!", house);

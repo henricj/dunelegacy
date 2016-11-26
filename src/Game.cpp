@@ -72,48 +72,6 @@
 Game::Game() {
     currentZoomlevel = settings.video.preferredZoomLevel;
 
-    whatNextParam = GAME_NOTHING;
-
-    finished = false;
-    bPause = false;
-    bMenu = false;
-    won = false;
-
-    gameType = GameType::Campaign;
-    techLevel = 0;
-
-    currentCursorMode = CursorMode_Normal;
-
-    chatMode = false;
-    scrollDownMode = false;
-    scrollLeftMode = false;
-    scrollRightMode = false;
-    scrollUpMode = false;
-
-    bShowFPS = false;
-    bShowTime = false;
-
-    bCheatsEnabled = false;
-
-    selectionMode = false;
-
-    bQuitGame = false;
-
-    bReplay = false;
-
-    indicatorFrame = NONE_ID;
-    indicatorTime = 5;
-    indicatorTimer = 0;
-
-    pInterface = nullptr;
-    pInGameMenu = nullptr;
-    pInGameMentat = nullptr;
-    pWaitingForOtherPlayers = nullptr;
-
-    startWaitingForOtherPlayersTime = 0;
-
-    bSelectionChanged = false;
-
     localPlayerName = settings.general.playerName;
 
     unitList.clear();       //holds all the units
@@ -125,21 +83,8 @@ Game::Game() {
     sideBarPos = calcAlignedDrawingRect(pGFXManager->getUIGraphic(UI_SideBar), HAlign::Right, VAlign::Top);
     topBarPos = calcAlignedDrawingRect(pGFXManager->getUIGraphic(UI_TopBar), HAlign::Left, VAlign::Top);
 
-    gameState = GameState::Start;
-
-    gameCycleCount = 0;
-    skipToGameCycle = 0;
-
-    takePeriodicalScreenshots = false;
-
-    averageFrameTime = 31.25f;
     debug = false;
 
-    powerIndicatorPos.x = 14;
-    powerIndicatorPos.y = 146;
-    spiceIndicatorPos.x = 20;
-    spiceIndicatorPos.y = 146;
-    powerIndicatorPos.w = spiceIndicatorPos.w = 4;
     powerIndicatorPos.h = spiceIndicatorPos.h = settings.video.height - 146 - 2;
 
     musicPlayer->changeMusic(MUSIC_PEACE);
@@ -1801,7 +1746,7 @@ void Game::unselectAll(std::set<Uint32>& aList)
     }
 }
 
-void Game::onReceiveSelectionList(std::string name, std::set<Uint32> newSelectionList, int groupListIndex)
+void Game::onReceiveSelectionList(const std::string& name, const std::set<Uint32>& newSelectionList, int groupListIndex)
 {
     HumanPlayer* pHumanPlayer = dynamic_cast<HumanPlayer*>(getPlayerByName(name));
 
@@ -1837,7 +1782,7 @@ void Game::onReceiveSelectionList(std::string name, std::set<Uint32> newSelectio
     }
 }
 
-void Game::onPeerDisconnected(std::string name, bool bHost, int cause) {
+void Game::onPeerDisconnected(const std::string& name, bool bHost, int cause) {
     pInterface->getChatManager().addInfoMessage(name + " disconnected!");
 }
 

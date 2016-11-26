@@ -41,7 +41,7 @@ public:
     virtual void onDecrementStructures(int itemID, const Coord& location);
     virtual void onDamage(const ObjectBase* pObject, int damage, Uint32 damagerID);
 
-    static Player* create(House* associatedHouse, std::string playername, Difficulty difficulty) {
+    static Player* create(House* associatedHouse, const std::string& playername, Difficulty difficulty) {
         return new AIPlayer(associatedHouse, playername, difficulty);
     }
 
@@ -50,7 +50,7 @@ public:
     }
 
 private:
-    AIPlayer(House* associatedHouse, std::string playername, Difficulty difficulty);
+    AIPlayer(House* associatedHouse, const std::string& playername, Difficulty difficulty);
     AIPlayer(InputStream& stream, House* associatedHouse);
 
     void scrambleUnitsAndDefend(const ObjectBase* pIntruder);

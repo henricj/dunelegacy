@@ -48,7 +48,7 @@ public:
         return MenuBase::doInput(event);
     }
 
-    void setText(std::string text) {
+    void setText(const std::string& text) {
         mentatTexts = splitString(text, ". ", true);
 
         mouthAnim.getAnimation()->setNumLoops(mentatTexts[0].empty() ? 0 : mentatTexts[0].length()/25 + 1);

@@ -53,19 +53,19 @@ public:
 
     void onReceiveChangeEventList(ChangeEventList changeEventList);
 
-    ChangeEventList getChangeEventListForNewPlayer(std::string newPlayerName);
+    ChangeEventList getChangeEventListForNewPlayer(const std::string& newPlayerName);
 
     virtual void update();
 
 private:
     ChangeEventList getChangeEventList();
 
-    void onReceiveChatMessage(std::string name, std::string message);
-    void onPeerDisconnected(std::string playername, bool bHost, int cause);
+    void onReceiveChatMessage(const std::string& name, const std::string& message);
+    void onPeerDisconnected(const std::string& playername, bool bHost, int cause);
 
     void extractMapInfo(std::shared_ptr<INIFile>& pMap);
 
-    void setPlayer2Slot(std::string playername, int slot);
+    void setPlayer2Slot(const std::string& playername, int slot);
 
     void onChangeHousesDropDownBoxes(bool bInteractive, int houseInfoNum = -1);
     void onChangeTeamDropDownBoxes(bool bInteractive, int houseInfoNum = -1);
@@ -79,14 +79,14 @@ private:
 
     void checkPlayerBoxes();
     void addAllPlayersToGameInitSettings();
-    bool addPlayerToHouseInfo(GameInitSettings::HouseInfo& newHouseInfo, int player, std::string playername);
+    bool addPlayerToHouseInfo(GameInitSettings::HouseInfo& newHouseInfo, int player, const std::string& playername);
 
     void onNext();
     void onCancel();
 
     void onSendChatMessage();
-    void addInfoMessage(std::string message);
-    void addChatMessage(std::string name, std::string message);
+    void addInfoMessage(const std::string& message);
+    void addChatMessage(const std::string& name, const std::string& message);
 
     void disableAllDropDownBoxes();
 

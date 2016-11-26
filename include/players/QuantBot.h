@@ -51,7 +51,7 @@ public:
     virtual void onIncrementUnitKills(int itemID);
     virtual void onDamage(const ObjectBase* pObject, int damage, Uint32 damagerID);
 
-    static Player* create(House* associatedHouse, std::string playername, Difficulty difficulty) {
+    static Player* create(House* associatedHouse, const std::string& playername, Difficulty difficulty) {
         return new QuantBot(associatedHouse, playername, difficulty);
     }
 
@@ -60,7 +60,7 @@ public:
     }
 
 private:
-    QuantBot(House* associatedHouse, std::string playername, Difficulty difficulty);
+    QuantBot(House* associatedHouse, const std::string& playername, Difficulty difficulty);
     QuantBot(InputStream& stream, House* associatedHouse);
 
 

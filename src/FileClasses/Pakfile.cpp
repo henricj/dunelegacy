@@ -32,7 +32,7 @@
     \param pakfilename  Filename of the *.pak-File.
     \param write        Specified if the PAK-File is opened for reading or writing (default is false).
 */
-Pakfile::Pakfile(std::string pakfilename, bool write)
+Pakfile::Pakfile(const std::string& pakfilename, bool write)
  : write(write), fPakFile(nullptr), filename(pakfilename), writeOutData(nullptr), numWriteOutData(0) {
 
     if(write == false) {
@@ -104,9 +104,10 @@ Pakfile::~Pakfile()
     \param  index   Index in pak-File
     \return name of the file specified by index
 */
-std::string Pakfile::getFilename(unsigned int index) const {
-    if(index >= fileEntries.size())
-        return "";
+const std::string& Pakfile::getFilename(unsigned int index) const {
+    if(index >= fileEntries.size()) {
+        THROW(std::invalid_argument, "Pakfile::getFilename(%ud): This Pakfile has only %ud entries!", index, fileEntries.size());
+    }
 
     return fileEntries[index].filename;
 }
@@ -118,7 +119,7 @@ std::string Pakfile::getFilename(unsigned int index) const {
     \param  rwop        Data to add (the SDL_RWop can be read-only but must support seeking)
     \param  filename    This is the filename the data is added with
 */
-void Pakfile::addFile(SDL_RWops* rwop, std::string filename) {
+void Pakfile::addFile(SDL_RWops* rwop, const std::string& filename) {
     if(write == false) {
         THROW(std::runtime_error, "Pakfile::addFile(): Pakfile is opened for read-only!");
     }
@@ -171,7 +172,7 @@ void Pakfile::addFile(SDL_RWops* rwop, std::string filename) {
     \param  filename    The name of this file
     \return SDL_RWops for this file
 */
-SDL_RWops* Pakfile::openFile(std::string filename) {
+SDL_RWops* Pakfile::openFile(const std::string& filename) {
     if(write == true) {
         // reading files is not allowed
         return nullptr;
@@ -213,7 +214,7 @@ SDL_RWops* Pakfile::openFile(std::string filename) {
     return pRWop;
 }
 
-bool Pakfile::exists(std::string filename) const {
+bool Pakfile::exists(const std::string& filename) const {
     for(unsigned int i=0;i<fileEntries.size();i++) {
         if(filename == fileEntries[i].filename) {
             return true;

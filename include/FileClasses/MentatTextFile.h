@@ -36,7 +36,13 @@ public:
 
     class MentatEntry {
     public:
-        MentatEntry(std::string title, unsigned int numMenuEntry, unsigned int menuLevel, unsigned int techLevel, std::string filename, std::string name, std::string content)
+        MentatEntry(const std::string& title,
+                    unsigned int numMenuEntry,
+                    unsigned int menuLevel,
+                    unsigned int techLevel,
+                    const std::string& filename,
+                    const std::string& name,
+                    const std::string& content)
          : title(title), numMenuEntry(numMenuEntry), menuLevel(menuLevel), techLevel(techLevel), filename(filename), name(name), content(content) {
         }
 

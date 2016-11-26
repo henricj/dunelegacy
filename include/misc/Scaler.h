@@ -54,7 +54,7 @@ public:
         }
     };
 
-    static Scaler::ScalerType getScalerByName(std::string scalerName) {
+    static Scaler::ScalerType getScalerByName(const std::string& scalerName) {
         if(scalerName == "ScaleHD") {
             return Scaler::ScaleHD;
         } else if(scalerName == "Scale2x") {

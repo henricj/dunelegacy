@@ -41,12 +41,12 @@ public:
 
         }
 
-        ChangeEvent(Uint32 slot, std::string newStringValue)
+        ChangeEvent(Uint32 slot, const std::string& newStringValue)
          : eventType(EventType::SetHumanPlayer), slot(slot), newStringValue(newStringValue) {
         }
 
         explicit ChangeEvent(InputStream& stream) {
-            eventType = (EventType) stream.readUint32();
+            eventType = static_cast<EventType>(stream.readUint32());
             slot = stream.readUint32();
 
             if(eventType == EventType::SetHumanPlayer) {
@@ -57,7 +57,7 @@ public:
         }
 
         void save(OutputStream& stream) const {
-            stream.writeUint32((Uint32) eventType);
+            stream.writeUint32(static_cast<Uint32>(eventType));
             stream.writeUint32(slot);
             if(eventType == EventType::SetHumanPlayer) {
                 stream.writeString(newStringValue);

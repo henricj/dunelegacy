@@ -453,7 +453,7 @@ void INIMapEditorLoader::loadStructures()
         std::string tmpkey = key.getKeyName();
         std::string tmp = key.getStringValue();
 
-        if(tmpkey.find("GEN") == 0) {
+        if(tmpkey.compare(0,3,"GEN") == 0) {
             // Gen Object/Structure
             std::string PosStr = tmpkey.substr(3,tmpkey.size()-3);
             int pos;
@@ -484,7 +484,7 @@ void INIMapEditorLoader::loadStructures()
                 continue;
             }
 
-        } else if(tmpkey.find("ID") == 0) {
+        } else if(tmpkey.compare(0,2,"ID") == 0) {
             // other structure
             int structureID = 0;
             parseString(tmpkey.substr(2), structureID);

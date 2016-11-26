@@ -95,7 +95,7 @@ protected:
         with error as the exception message
         \param  error the error message
     */
-    void logError(std::string error) {
+    void logError(const std::string& error) {
         THROW(std::runtime_error, mapname + ": " + error);
     }
 
@@ -106,7 +106,7 @@ protected:
         \param  line    the line number the error occurs
         \param  error the error message
     */
-    void logError(int line, std::string error) {
+    void logError(int line, const std::string& error) {
         THROW(std::runtime_error, mapname + ":" + stringify(line) + ": " + error);
     }
 

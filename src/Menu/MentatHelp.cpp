@@ -31,6 +31,7 @@
 #include <Game.h>
 
 MentatHelp::MentatHelp(int newHouse, int techLevel, int mission) : MentatMenu(newHouse), mission(mission) {
+
     mentatEntries = pTextManager->getAllMentatEntries(newHouse, techLevel);
 
     Uint32 color = SDL2RGB(palette[houseToPaletteIndex[newHouse]+3]);

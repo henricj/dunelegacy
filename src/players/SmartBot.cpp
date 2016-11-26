@@ -38,7 +38,7 @@
 #define REFINERYLIMIT 10
 
 
-SmartBot::SmartBot(House* associatedHouse, std::string playername, Difficulty difficulty)
+SmartBot::SmartBot(House* associatedHouse, const std::string& playername, Difficulty difficulty)
  : Player(associatedHouse, playername), difficulty(difficulty) {
     SmartBot::init();
 

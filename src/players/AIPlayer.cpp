@@ -36,7 +36,7 @@
 
 #define AIUPDATEINTERVAL 50
 
-AIPlayer::AIPlayer(House* associatedHouse, std::string playername, Difficulty difficulty)
+AIPlayer::AIPlayer(House* associatedHouse, const std::string& playername, Difficulty difficulty)
  : Player(associatedHouse, playername), difficulty(difficulty) {
     attackTimer = ((2-static_cast<Uint8>(difficulty)) * MILLI2CYCLES(2*60*1000)) + getRandomGen().rand(MILLI2CYCLES(8*60*1000), MILLI2CYCLES(11*60*1000));
     buildTimer = getRandomGen().rand(0,3) * 50;

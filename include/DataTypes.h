@@ -27,13 +27,13 @@
 
 class Coord {
 public:
-    Coord() {
-        x = y = 0;
+    Coord()
+     : x(0), y(0) {
     }
 
-    Coord(int x,int y) {
-        this->x = x;
-        this->y = y;
+    Coord(int x,int y)
+     : x(x), y(y)
+    {
     }
 
     inline bool operator==(const Coord& c) const {

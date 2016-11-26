@@ -36,7 +36,7 @@
 class MetaServerClient {
 public:
 
-    explicit MetaServerClient(std::string metaServerURL);
+    explicit MetaServerClient(const std::string& metaServerURL);
     ~MetaServerClient();
 
     /**
@@ -56,7 +56,7 @@ public:
         this->pOnMetaServerError = pOnMetaServerError;
     }
 
-    void startAnnounce(std::string serverName, int serverPort, std::string mapName, Uint8 numPlayers, Uint8 maxPlayers);
+    void startAnnounce(const std::string& serverName, int serverPort, const std::string& mapName, Uint8 numPlayers, Uint8 maxPlayers);
 
     void updateAnnounce(Uint8 numPlayers);
 

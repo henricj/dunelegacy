@@ -569,7 +569,7 @@ ChangeEventList CustomGamePlayers::getChangeEventList()
     return changeEventList;
 }
 
-ChangeEventList CustomGamePlayers::getChangeEventListForNewPlayer(std::string newPlayerName)
+ChangeEventList CustomGamePlayers::getChangeEventListForNewPlayer(const std::string& newPlayerName)
 {
     ChangeEventList changeEventList = getChangeEventList();
 
@@ -636,7 +636,7 @@ ChangeEventList CustomGamePlayers::getChangeEventListForNewPlayer(std::string ne
     return changeEventList;
 }
 
-void CustomGamePlayers::onReceiveChatMessage(std::string name, std::string message) {
+void CustomGamePlayers::onReceiveChatMessage(const std::string& name, const std::string& message) {
     addChatMessage(name, message);
 }
 
@@ -726,7 +726,7 @@ void CustomGamePlayers::addAllPlayersToGameInitSettings()
     }
 }
 
-bool CustomGamePlayers::addPlayerToHouseInfo(GameInitSettings::HouseInfo& newHouseInfo, int player, std::string playername)
+bool CustomGamePlayers::addPlayerToHouseInfo(GameInitSettings::HouseInfo& newHouseInfo, int player, const std::string& playername)
 {
     std::string playerName;
     std::string playerClass;
@@ -777,7 +777,7 @@ void CustomGamePlayers::onSendChatMessage()
 
 }
 
-void CustomGamePlayers::addInfoMessage(std::string message) {
+void CustomGamePlayers::addInfoMessage(const std::string& message) {
     std::string text = chatTextView.getText();
     if(text.length() > 0) {
         text += "\n";
@@ -787,7 +787,7 @@ void CustomGamePlayers::addInfoMessage(std::string message) {
     chatTextView.scrollToEnd();
 }
 
-void CustomGamePlayers::addChatMessage(std::string name, std::string message)
+void CustomGamePlayers::addChatMessage(const std::string& name, const std::string& message)
 {
     std::string text = chatTextView.getText();
     if(text.length() > 0) {
@@ -1086,7 +1086,7 @@ void CustomGamePlayers::onClickPlayerDropDownBox(int boxnum) {
     }
 }
 
-void CustomGamePlayers::onPeerDisconnected(std::string playername, bool bHost, int cause) {
+void CustomGamePlayers::onPeerDisconnected(const std::string& playername, bool bHost, int cause) {
     if(bHost) {
         quit(cause);
     } else {
@@ -1143,7 +1143,7 @@ void CustomGamePlayers::onStartGame(unsigned int timeLeft) {
     disableAllDropDownBoxes();
 }
 
-void CustomGamePlayers::setPlayer2Slot(std::string playername, int slot) {
+void CustomGamePlayers::setPlayer2Slot(const std::string& playername, int slot) {
     DropDownBox& dropDownBox = (slot % 2 == 0) ? houseInfo[slot / 2].player1DropDown : houseInfo[slot / 2].player2DropDown;
 
     std::string oldPlayerName = "";

@@ -20,14 +20,6 @@
 #include <algorithm>
 
 TextView::TextView() : Widget() {
-    fontID = FONT_STD12;
-    textcolor = COLOR_DEFAULT;
-    textshadowcolor = COLOR_DEFAULT;
-    backgroundcolor = COLOR_TRANSPARENT;
-    alignment = (Alignment_Enum) (Alignment_Left | Alignment_Top);
-    pForeground = nullptr;
-    pBackground = nullptr;
-    bAutohideScrollbar = true;
     enableResizing(true,true);
 
     resize(getMinimumSize().x,getMinimumSize().y);

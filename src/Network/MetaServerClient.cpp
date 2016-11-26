@@ -29,7 +29,7 @@
 #include <map>
 
 
-MetaServerClient::MetaServerClient(std::string metaServerURL)
+MetaServerClient::MetaServerClient(const std::string& metaServerURL)
  : metaServerURL(metaServerURL) {
 
     availableMetaServerCommandsSemaphore = SDL_CreateSemaphore(0);
@@ -63,7 +63,7 @@ MetaServerClient::~MetaServerClient() {
 }
 
 
-void MetaServerClient::startAnnounce(std::string serverName, int serverPort, std::string mapName, Uint8 numPlayers, Uint8 maxPlayers) {
+void MetaServerClient::startAnnounce(const std::string& serverName, int serverPort, const std::string& mapName, Uint8 numPlayers, Uint8 maxPlayers) {
 
     stopAnnounce();
 

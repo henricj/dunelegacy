@@ -84,7 +84,7 @@ Mix_Chunk* SFXManager::getSound(Sound_enum id) {
     return soundChunk[id];
 }
 
-Mix_Chunk* SFXManager::loadMixFromADL(std::string adlFile, int index) {
+Mix_Chunk* SFXManager::loadMixFromADL(const std::string& adlFile, int index) {
 
     SDL_RWops* rwop = pFileManager->openFile(adlFile);
     SoundAdlibPC *pSoundAdlibPC = new SoundAdlibPC(rwop, AUDIO_FREQUENCY);
@@ -283,7 +283,7 @@ Mix_Chunk* SFXManager::getEnglishVoice(Voice_enum id, int house) {
     return lngVoice[id*NUM_HOUSES + house];
 }
 
-void SFXManager::loadNonEnglishVoice(std::string languagePrefix) {
+void SFXManager::loadNonEnglishVoice(const std::string& languagePrefix) {
     numLngVoice = NUM_VOICE;
 
     if((lngVoice = (Mix_Chunk**) malloc(sizeof(Mix_Chunk*) * NUM_VOICE)) == nullptr) {

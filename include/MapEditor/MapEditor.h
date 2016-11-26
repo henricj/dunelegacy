@@ -49,7 +49,7 @@ public:
     class Player {
     public:
 
-        Player(std::string name, HOUSETYPE house, HOUSETYPE colorOfHouse, bool bActive, bool bAnyHouse, std::string brain = "Human", int maxunit = 0)
+        Player(const std::string& name, HOUSETYPE house, HOUSETYPE colorOfHouse, bool bActive, bool bAnyHouse, const std::string& brain = "Human", int maxunit = 0)
          : name(name), house(house), colorOfHouse(colorOfHouse), bActive(bActive), bAnyHouse(bAnyHouse), brain(brain), maxunit(maxunit) {
             quota = 0;
             credits = 2000;
@@ -193,13 +193,13 @@ public:
 
     std::vector<ReinforcementInfo>& getReinforcements() { return reinforcements; };
 
-    void setReinforcements(std::vector<ReinforcementInfo>& newReinforcements) {
+    void setReinforcements(const std::vector<ReinforcementInfo>& newReinforcements) {
         reinforcements = newReinforcements;
     }
 
     std::vector<TeamInfo>& getTeams() { return teams; };
 
-    void setTeams(std::vector<TeamInfo>& newTeams) {
+    void setTeams(const std::vector<TeamInfo>& newTeams) {
         teams = newTeams;
     }
 

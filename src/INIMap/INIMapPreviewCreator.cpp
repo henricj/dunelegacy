@@ -328,7 +328,7 @@ SDL_Surface* INIMapPreviewCreator::createMinimapImageOfMap(int borderWidth, Uint
             std::string tmpkey = key.getKeyName();
             std::string tmp = key.getStringValue();
 
-            if(tmpkey.find("GEN") == 0) {
+            if(tmpkey.compare(0,3,"GEN") == 0) {
                 // Gen Object/Structure
 
                 std::string PosStr = tmpkey.substr(3,tmpkey.size()-3);

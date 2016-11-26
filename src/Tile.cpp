@@ -584,15 +584,17 @@ void Tile::setType(int newType) {
                 std::list<Uint32>::const_iterator iter;
                 iter = assignedUndergroundUnitList.begin();
 
-                for(Uint32 objectID : assignedUndergroundUnitList) {
-                    ObjectBase* pObject = currentGame->getObjectManager().getObject(objectID);
+                do {
+                    ObjectBase* current = currentGame->getObjectManager().getObject(*iter);
+                    ++iter;
 
-                    if(pObject == nullptr)
+                    if(current == nullptr)
                         continue;
 
-                    unassignUndergroundUnit(pObject->getObjectID());
-                    pObject->destroy();
+                    unassignUndergroundUnit(current->getObjectID());
+                    current->destroy();
                 } while(iter != assignedUndergroundUnitList.end());
+
             }
 
             if(type == Terrain_Mountain) {
@@ -600,14 +602,16 @@ void Tile::setType(int newType) {
                     std::list<Uint32>::const_iterator iter;
                     iter = assignedNonInfantryGroundObjectList.begin();
 
-                    for(Uint32 objectID : assignedNonInfantryGroundObjectList) {
-                        ObjectBase* pObject = currentGame->getObjectManager().getObject(objectID);
-                        if(pObject == nullptr)
+                    do {
+                        ObjectBase* current = currentGame->getObjectManager().getObject(*iter);
+                        ++iter;
+
+                        if(current == nullptr)
                             continue;
 
-                        unassignNonInfantryGroundObject(pObject->getObjectID());
-                        pObject->destroy();
-                    }
+                        unassignNonInfantryGroundObject(current->getObjectID());
+                        current->destroy();
+                    } while(iter != assignedNonInfantryGroundObjectList.end());
                 }
             }
         }

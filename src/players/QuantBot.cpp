@@ -111,7 +111,7 @@
 **/
 
 
-QuantBot::QuantBot(House* associatedHouse, std::string playername, Difficulty difficulty)
+QuantBot::QuantBot(House* associatedHouse, const std::string& playername, Difficulty difficulty)
 : Player(associatedHouse, playername), difficulty(difficulty) {
 
     buildTimer = getRandomGen().rand(0,3) * 50;
@@ -545,13 +545,12 @@ void QuantBot::onDamage(const ObjectBase* pObject, int damage, Uint32 damagerID)
 }
 
 Coord QuantBot::findMcvPlaceLocation(const MCV* pMCV) {
-    int bestLocationScore = 1000;
-    Coord bestLocation = Coord::Invalid();
-
-    bestLocation = findPlaceLocation(Structure_ConstructionYard);
+    Coord bestLocation = findPlaceLocation(Structure_ConstructionYard);
 
     if(bestLocation == Coord::Invalid()) {
         logDebug("No MCV deploy location adjacent to existing base structures was found, move to full search | ");
+
+        int bestLocationScore = 1000;
 
         // Don't place on the very edge of the map
         for(int placeLocationX = 1; placeLocationX < getMap().getSizeX() -1; placeLocationX++) {

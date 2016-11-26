@@ -92,7 +92,7 @@ void ChatManager::draw(Point position)
     }
 }
 
-void ChatManager::addChatMessage(std::string username, std::string message)
+void ChatManager::addChatMessage(const std::string& username, const std::string& message)
 {
     char timestring[80];
     time_t unixtime = time(nullptr);
@@ -113,7 +113,7 @@ void ChatManager::addChatMessage(std::string username, std::string message)
     }
 }
 
-void ChatManager::addInfoMessage(std::string message)
+void ChatManager::addInfoMessage(const std::string& message)
 {
     std::shared_ptr<SDL_Texture> pMessageTexture = std::shared_ptr<SDL_Texture>( pFontManager->createTextureWithText( "*  " + message, COLOR_GREEN, FONT_STD10), SDL_DestroyTexture);
 

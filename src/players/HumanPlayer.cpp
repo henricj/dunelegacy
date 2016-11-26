@@ -23,7 +23,7 @@
 
 #include <Network/NetworkManager.h>
 
-HumanPlayer::HumanPlayer(House* associatedHouse, std::string playername) : Player(associatedHouse, playername) {
+HumanPlayer::HumanPlayer(House* associatedHouse, const std::string& playername) : Player(associatedHouse, playername) {
     HumanPlayer::init();
 }
 

@@ -78,7 +78,7 @@ public:
         return &playerDataList[index];
     }
 
-    static const PlayerData* getByPlayerClass(std::string playerclass) {
+    static const PlayerData* getByPlayerClass(const std::string& playerclass) {
         if(playerDataList.empty()) {
             registerAllPlayers();
         }
@@ -92,7 +92,7 @@ public:
         return nullptr;
     }
 
-    static int getIndexByPlayerClass(std::string playerclass) {
+    static int getIndexByPlayerClass(const std::string& playerclass) {
         if(playerDataList.empty()) {
             registerAllPlayers();
         }

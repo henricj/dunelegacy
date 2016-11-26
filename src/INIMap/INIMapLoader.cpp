@@ -638,7 +638,7 @@ void INIMapLoader::loadStructures()
         std::string tmpkey = key.getKeyName();
         std::string tmp = key.getStringValue();
 
-        if(tmpkey.find("GEN") == 0) {
+        if(tmpkey.compare(0,3,"GEN") == 0) {
             // Gen Object/Structure
             std::string PosStr = tmpkey.substr(3,tmpkey.size()-3);
             int pos;
@@ -670,7 +670,7 @@ void INIMapLoader::loadStructures()
                 logWarning(key.getLineNumber(), "Invalid building string: '" + BuildingStr + "'!");
                 continue;
             }
-        } else if(tmpkey.find("ID") == 0) {
+        } else if(tmpkey.compare(0,2,"ID") == 0) {
             // other structure
             std::string HouseStr, BuildingStr, health, PosStr;
             splitString(tmp,6,&HouseStr,&BuildingStr,&health,&PosStr);

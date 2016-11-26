@@ -39,7 +39,7 @@
 #endif
 
 
-std::list<std::string> getFileNamesList(std::string directory, std::string extension, bool IgnoreCase, FileListOrder fileListOrder)
+std::list<std::string> getFileNamesList(const std::string& directory, const std::string& extension, bool IgnoreCase, FileListOrder fileListOrder)
 {
     std::list<FileInfo> files = getFileList(directory, extension, IgnoreCase, fileListOrder);
 
@@ -52,8 +52,8 @@ std::list<std::string> getFileNamesList(std::string directory, std::string exten
     return fileNames;
 }
 
-static bool cmp_Name_Asc(FileInfo& a, FileInfo& b) { return (a.name.compare(b.name) < 0); }
-static bool cmp_Name_CaseInsensitive_Asc(FileInfo& a, FileInfo& b) {
+static bool cmp_Name_Asc(const FileInfo& a, const FileInfo& b) { return (a.name.compare(b.name) < 0); }
+static bool cmp_Name_CaseInsensitive_Asc(const FileInfo& a, const FileInfo& b) {
   unsigned int i=0;
   while((i < a.name.length()) && (i < b.name.length())) {
     if(tolower(a.name[i]) < tolower(b.name[i])) {
@@ -67,8 +67,8 @@ static bool cmp_Name_CaseInsensitive_Asc(FileInfo& a, FileInfo& b) {
   return (a.name.length() < b.name.length());
 }
 
-static bool cmp_Name_Dsc(FileInfo& a, FileInfo& b) { return (a.name.compare(b.name) > 0); }
-static bool cmp_Name_CaseInsensitive_Dsc(FileInfo& a, FileInfo& b) {
+static bool cmp_Name_Dsc(const FileInfo& a, const FileInfo& b) { return (a.name.compare(b.name) > 0); }
+static bool cmp_Name_CaseInsensitive_Dsc(const FileInfo& a, const FileInfo& b) {
   unsigned int i=0;
   while((i < a.name.length()) && (i < b.name.length())) {
     if(tolower(a.name[i]) < tolower(b.name[i])) {
@@ -82,13 +82,13 @@ static bool cmp_Name_CaseInsensitive_Dsc(FileInfo& a, FileInfo& b) {
   return (a.name.length() > b.name.length());
 }
 
-static bool cmp_Size_Asc(FileInfo& a, FileInfo& b) { return a.size < b.size; }
-static bool cmp_Size_Dsc(FileInfo& a, FileInfo& b) { return a.size > b.size; }
+static bool cmp_Size_Asc(const FileInfo& a, const FileInfo& b) { return a.size < b.size; }
+static bool cmp_Size_Dsc(const FileInfo& a, const FileInfo& b) { return a.size > b.size; }
 
-static bool cmp_ModifyDate_Asc(FileInfo& a, FileInfo& b) { return a.modifydate < b.modifydate; }
-static bool cmp_ModifyDate_Dsc(FileInfo& a, FileInfo& b) { return a.modifydate > b.modifydate; }
+static bool cmp_ModifyDate_Asc(const FileInfo& a, const FileInfo& b) { return a.modifydate < b.modifydate; }
+static bool cmp_ModifyDate_Dsc(const FileInfo& a, const FileInfo& b) { return a.modifydate > b.modifydate; }
 
-std::list<FileInfo> getFileList(std::string directory, std::string extension, bool bIgnoreCase, FileListOrder fileListOrder)
+std::list<FileInfo> getFileList(const std::string& directory, std::string extension, bool bIgnoreCase, FileListOrder fileListOrder)
 {
 
     std::list<FileInfo> Files;
@@ -335,7 +335,7 @@ bool existsFile(const std::string& path) {
     return true;
 }
 
-std::string readCompleteFile(std::string filename) {
+std::string readCompleteFile(const std::string& filename) {
     SDL_RWops* RWopsFile = SDL_RWFromFile(filename.c_str(),"r");
 
     if(RWopsFile == nullptr) {

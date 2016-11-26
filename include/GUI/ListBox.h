@@ -462,11 +462,11 @@ private:
 
     class ListEntry {
     public:
-        ListEntry(std::string text, int intData) : text(text) {
+        ListEntry(const std::string& text, int intData) : text(text) {
             data.intData = intData;
         }
 
-        ListEntry(std::string text, void* ptrData) : text(text) {
+        ListEntry(const std::string& text, void* ptrData) : text(text) {
             data.ptrData = ptrData;
         }
 

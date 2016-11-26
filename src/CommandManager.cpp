@@ -26,9 +26,6 @@
 
 #include <algorithm>
 
-static bool compareCommands(Command cmd1, Command cmd2) {
-    return (cmd1.getPlayerID() < cmd2.getPlayerID());
-}
 
 CommandManager::CommandManager() {
     pStream = nullptr;
@@ -122,7 +119,11 @@ void CommandManager::addCommand(const Command& cmd, Uint32 CycleNumber) {
         }
 
         timeslot[CycleNumber].push_back(cmd);
-        std::stable_sort(timeslot[CycleNumber].begin(), timeslot[CycleNumber].end(), compareCommands);
+        std::stable_sort(   timeslot[CycleNumber].begin(),
+                            timeslot[CycleNumber].end(),
+                            [](const Command& cmd1, const Command& cmd2) {
+                                return (cmd1.getPlayerID() < cmd2.getPlayerID());
+                            });
 
         if(pStream != nullptr) {
             pStream->writeUint32(CycleNumber);

@@ -95,7 +95,7 @@ static inline fix32_t fix32_abs(fix32_t x)
 static inline fix32_t fix32_floor(fix32_t x)
     { return (x & 0xFFFFFFFF00000000ULL); }
 static inline fix32_t fix32_ceil(fix32_t x)
-    { return (x & 0xFFFFFFFF00000000ULL) + (x & 0x00000000FFFFFFFFULL ? fix32_one : 0); }
+    { return (x & 0xFFFFFFFF00000000ULL) + ((x & 0x00000000FFFFFFFFULL) ? fix32_one : 0); }
 static inline fix32_t fix32_min(fix32_t x, fix32_t y)
     { return (x < y ? x : y); }
 static inline fix32_t fix32_max(fix32_t x, fix32_t y)

@@ -162,7 +162,7 @@ void MultiPlayerMenu::onConnect() {
 }
 
 
-void MultiPlayerMenu::onPeerDisconnected(std::string playername, bool bHost, int cause) {
+void MultiPlayerMenu::onPeerDisconnected(const std::string& playername, bool bHost, int cause) {
     if(bHost) {
         pNetworkManager->setOnReceiveGameInfo(std::function<void (GameInitSettings, ChangeEventList)>());
         pNetworkManager->setOnPeerDisconnected(std::function<void (std::string, bool, int)>());
@@ -269,7 +269,7 @@ void MultiPlayerMenu::onRemoveLANServer(GameServerInfo gameServerInfo) {
     LANGameList.remove(gameServerInfo);
 }
 
-void MultiPlayerMenu::onGameServerInfoList(std::list<GameServerInfo>& gameServerInfoList) {
+void MultiPlayerMenu::onGameServerInfoList(const std::list<GameServerInfo>& gameServerInfoList) {
     // remove all game servers from the list that are not included in the sent list
     std::list<GameServerInfo>::iterator oldListIter = InternetGameList.begin();
     int index = 0;
@@ -319,7 +319,7 @@ void MultiPlayerMenu::onGameServerInfoList(std::list<GameServerInfo>& gameServer
     }
 }
 
-void MultiPlayerMenu::onMetaServerError(int errorcause, std::string errorMessage) {
+void MultiPlayerMenu::onMetaServerError(int errorcause, const std::string& errorMessage) {
     switch(errorcause) {
         case METASERVERCOMMAND_ADD: {
             openWindow(MsgBox::create("MetaServer error on adding game server:\n" + errorMessage));

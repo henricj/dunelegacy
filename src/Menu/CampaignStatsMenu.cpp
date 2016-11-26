@@ -40,9 +40,6 @@
 
 CampaignStatsMenu::CampaignStatsMenu(int level) : MenuBase()
 {
-    currentStateStartTime = 0;
-    currentState = State_HumanSpice;
-
     calculateScore(level);
 
     Uint32 colorYou = SDL2RGB(palette[houseToPaletteIndex[pLocalHouse->getHouseID()] + 1]);

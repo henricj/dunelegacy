@@ -52,7 +52,7 @@ public:
     */
     void setGroupList(int groupListIndex, const std::set<Uint32>& newGroupList);
 
-    static Player* create(House* associatedHouse, std::string playername) {
+    static Player* create(House* associatedHouse, const std::string& playername) {
         return new HumanPlayer(associatedHouse, playername);
     }
 
@@ -66,7 +66,7 @@ public:
     std::set<Uint32> selectedLists[NUMSELECTEDLISTS];       ///< Sets of all the different groups on key 1 to 9
 
 private:
-    HumanPlayer(House* associatedHouse, std::string playername);
+    HumanPlayer(House* associatedHouse, const std::string& playername);
     HumanPlayer(InputStream& stream, House* associatedHouse);
 };
 

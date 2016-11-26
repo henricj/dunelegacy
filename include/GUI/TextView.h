@@ -225,19 +225,19 @@ protected:
 private:
     std::list<std::string> calcTextLines();
 
-    int fontID;                 ///< the ID of the font to use
-    Uint32 textcolor;           ///< the text color
-    Uint32 textshadowcolor;     ///< the color of the shadow of the text
-    Uint32 backgroundcolor;     ///< the color of the label background
-    std::string text;           ///< the text of this label
+    int fontID = FONT_STD12;                    ///< the ID of the font to use
+    Uint32 textcolor = COLOR_DEFAULT;           ///< the text color
+    Uint32 textshadowcolor = COLOR_DEFAULT;     ///< the color of the shadow of the text
+    Uint32 backgroundcolor = COLOR_TRANSPARENT; ///< the color of the label background
+    std::string text;                           ///< the text of this label
 
-    Alignment_Enum alignment;   ///< the alignment of this label
+    Alignment_Enum alignment = (Alignment_Enum) (Alignment_Left | Alignment_Top);   ///< the alignment of this label
 
-    SDL_Texture* pBackground;
-    SDL_Texture* pForeground;
+    SDL_Texture* pBackground = nullptr;
+    SDL_Texture* pForeground = nullptr;
     ScrollBar scrollbar;
 
-    bool bAutohideScrollbar;    ///< hide the scrollbar if not needed (default = true)
+    bool bAutohideScrollbar = true;     ///< hide the scrollbar if not needed (default = true)
 };
 
 #endif //TEXTVIEW_H

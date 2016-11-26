@@ -30,9 +30,8 @@
 
 #include <algorithm>
 
-NetworkManager::NetworkManager(int port, std::string metaserver)
- : host(nullptr), bIsServer(false), bLANServer(false), pGameInitSettings(nullptr), numPlayers(0), maxPlayers(0), connectPeer(nullptr), pLANGameFinderAndAnnouncer(nullptr), pMetaServerClient(nullptr)
-{
+NetworkManager::NetworkManager(int port, const std::string& metaserver) {
+
     if(enet_initialize() != 0) {
         THROW(std::runtime_error, "NetworkManager: An error occurred while initializing ENet.");
     }
@@ -76,7 +75,7 @@ NetworkManager::~NetworkManager() {
     enet_deinitialize();
 }
 
-void NetworkManager::startServer(bool bLANServer, std::string serverName, std::string playerName, GameInitSettings* pGameInitSettings, int numPlayers, int maxPlayers) {
+void NetworkManager::startServer(bool bLANServer, const std::string& serverName, const std::string& playerName, GameInitSettings* pGameInitSettings, int numPlayers, int maxPlayers) {
     if(bLANServer == true) {
         if(pLANGameFinderAndAnnouncer != nullptr) {
             pLANGameFinderAndAnnouncer->startAnnounce(serverName, host->address.port, pGameInitSettings->getFilename(), numPlayers, maxPlayers);
@@ -125,7 +124,7 @@ void NetworkManager::stopServer() {
     pGameInitSettings = nullptr;
 }
 
-void NetworkManager::connect(std::string hostname, int port, std::string playerName) {
+void NetworkManager::connect(const std::string& hostname, int port, const std::string& playerName) {
     ENetAddress address;
 
     if(enet_address_set_host(&address, hostname.c_str()) < 0) {
@@ -136,7 +135,7 @@ void NetworkManager::connect(std::string hostname, int port, std::string playerN
     connect(address, playerName);
 }
 
-void NetworkManager::connect(ENetAddress address, std::string playerName) {
+void NetworkManager::connect(ENetAddress address, const std::string& playerName) {
     debugNetwork("Connecting to %s:%d\n", Address2String(address).c_str(), address.port);
 
     connectPeer = enet_host_connect(host, &address, 2, 0);
@@ -538,7 +537,7 @@ void NetworkManager::handlePacket(ENetPeer* peer, ENetPacketIStream& packetStrea
 
                     if(bFoundName == false) {
                         for(ENetPeer* pCurrentPeer : peerList) {
-                            PeerData* pCurrentPeerData = (PeerData*) pCurrentPeer->data;
+                            PeerData* pCurrentPeerData = static_cast<PeerData*>(pCurrentPeer->data);
                             if(pCurrentPeerData->name == newName) {
                                 enet_peer_disconnect_later(peer, NETWORKDISCONNECT_PLAYER_EXISTS);
                                 bFoundName = true;
@@ -549,7 +548,7 @@ void NetworkManager::handlePacket(ENetPeer* peer, ENetPacketIStream& packetStrea
 
                     if(bFoundName == false) {
                         for(ENetPeer* pAwaitingConnectionPeer : awaitingConnectionList) {
-                            PeerData* pAwaitingConnectionPeerData = (PeerData*) pAwaitingConnectionPeer->data;
+                            PeerData* pAwaitingConnectionPeerData = static_cast<PeerData*>(pAwaitingConnectionPeer->data);
                             if(pAwaitingConnectionPeerData->name == newName) {
                                 enet_peer_disconnect_later(peer, NETWORKDISCONNECT_PLAYER_EXISTS);
                                 bFoundName = true;

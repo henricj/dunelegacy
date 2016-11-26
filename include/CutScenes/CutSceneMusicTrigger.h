@@ -33,8 +33,9 @@ public:
         \param  frameNumber     the frame number relative to the scene start where the music shall be changed
         \param  musicType       the type of the new music
     */
-    CutSceneMusicTrigger(int frameNumber, MUSICTYPE musicType) : CutSceneTrigger(frameNumber) {
-        this->musicType = musicType;
+    CutSceneMusicTrigger(int frameNumber, MUSICTYPE musicType)
+     : CutSceneTrigger(frameNumber), musicType(musicType)
+    {
     }
 
     /// destructor

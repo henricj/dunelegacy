@@ -47,9 +47,9 @@ public:
     /// destructor
     ~ChatManager();
 
-    void addChatMessage(std::string username, std::string message);
+    void addChatMessage(const std::string& username, const std::string& message);
 
-    void addInfoMessage(std::string message);
+    void addInfoMessage(const std::string& message);
 
     /**
         Draws this widget to screen. This method is called before drawOverlay().
@@ -61,12 +61,12 @@ private:
 
     struct ChatMessage {
 
-        ChatMessage(std::shared_ptr<SDL_Texture> _pMessageTexture, Uint32 _messageTime, MessageType _messageType)
+        ChatMessage(std::shared_ptr<SDL_Texture>& _pMessageTexture, Uint32 _messageTime, MessageType _messageType)
          : pMessageTexture(_pMessageTexture), messageTime(_messageTime), messageType(_messageType) {
         }
 
-        ChatMessage(std::shared_ptr<SDL_Texture> _pTimeTexture, std::shared_ptr<SDL_Texture> _pUsernameTexture,
-                    std::shared_ptr<SDL_Texture> _pMessageTexture, Uint32 _messageTime, MessageType _messageType)
+        ChatMessage(std::shared_ptr<SDL_Texture>& _pTimeTexture, std::shared_ptr<SDL_Texture>& _pUsernameTexture,
+                    std::shared_ptr<SDL_Texture>& _pMessageTexture, Uint32 _messageTime, MessageType _messageType)
          : pTimeTexture(_pTimeTexture), pUsernameTexture(_pUsernameTexture), pMessageTexture(_pMessageTexture), messageTime(_messageTime), messageType(_messageType) {
         }
 

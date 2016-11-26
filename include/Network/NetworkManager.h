@@ -56,18 +56,18 @@ class GameInitSettings;
 
 class NetworkManager {
 public:
-    NetworkManager(int port, std::string metaserver);
+    NetworkManager(int port, const std::string& metaserver);
     NetworkManager(const NetworkManager& o) = delete;
     ~NetworkManager();
 
     bool isServer() const { return bIsServer; };
 
-    void startServer(bool bLANServer, std::string serverName, std::string playerName, GameInitSettings* pGameInitSettings, int numPlayers, int maxPlayers);
+    void startServer(bool bLANServer, const std::string& serverName, const std::string& playerName, GameInitSettings* pGameInitSettings, int numPlayers, int maxPlayers);
     void updateServer(int numPlayers);
     void stopServer();
 
-    void connect(std::string hostname, int port, std::string playerName);
-    void connect(ENetAddress address, std::string playerName);
+    void connect(const std::string& hostname, int port, const std::string& playerName);
+    void connect(ENetAddress address, const std::string& playerName);
 
     void disconnect();
 
@@ -208,16 +208,16 @@ private:
         std::list<ENetPeer*>    notYetConnectedPeers;
     };
 
-    ENetHost* host;
-    bool bIsServer;
-    bool bLANServer;
-    GameInitSettings* pGameInitSettings;
-    int numPlayers;
-    int maxPlayers;
+    ENetHost* host = nullptr;
+    bool bIsServer = false;
+    bool bLANServer = false;
+    GameInitSettings* pGameInitSettings = nullptr;
+    int numPlayers = 0;
+    int maxPlayers = 0;
 
     std::string playerName;
 
-    ENetPeer*   connectPeer;
+    ENetPeer*   connectPeer = nullptr;
 
     std::list<ENetPeer*> peerList;
 
@@ -232,8 +232,8 @@ private:
     std::function<void (const std::string&, const CommandList&)>    pOnReceiveCommandList;
     std::function<void (std::string, std::set<Uint32>, int)>        pOnReceiveSelectionList;
 
-    LANGameFinderAndAnnouncer*  pLANGameFinderAndAnnouncer;
-    MetaServerClient*           pMetaServerClient;
+    LANGameFinderAndAnnouncer*  pLANGameFinderAndAnnouncer = nullptr;
+    MetaServerClient*           pMetaServerClient = nullptr;
 };
 
 #endif // NETWORKMANAGER_H

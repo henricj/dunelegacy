@@ -98,20 +98,20 @@ private:
     ProgressBar buildingsEnemyProgressBar;
     Label       buildingsEnemyLabel;
 
-    int currentStateStartTime;
-    CampaignStatsState currentState;
+    int currentStateStartTime = 0;
+    CampaignStatsState currentState = State_HumanSpice;
 
-    int unitsDestroyedByHuman;
-    int unitsDestroyedByAI;
+    int unitsDestroyedByHuman = 0;
+    int unitsDestroyedByAI = 0;
 
-    int structuresDestroyedByHuman;
-    int structuresDestroyedByAI;
+    int structuresDestroyedByHuman = 0;
+    int structuresDestroyedByAI = 0;
 
-    float spiceHarvestedByHuman;
-    float spiceHarvestedByAI;
+    float spiceHarvestedByHuman = 0;
+    float spiceHarvestedByAI = 0;
 
-    int totalTime;
-    int totalScore;
+    int totalTime = 0;
+    int totalScore = 0;
 
     std::string rank;
 };

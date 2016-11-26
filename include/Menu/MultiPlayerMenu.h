@@ -47,7 +47,7 @@ private:
     void onJoin();
     void onQuit();
 
-    void onPeerDisconnected(std::string playername, bool bHost, int cause);
+    void onPeerDisconnected(const std::string& playername, bool bHost, int cause);
 
     void onGameTypeChange(int buttonID);
     void onGameListSelectionChange(bool bInteractive);
@@ -56,8 +56,8 @@ private:
     void onUpdateLANServer(GameServerInfo gameServerInfo);
     void onRemoveLANServer(GameServerInfo gameServerInfo);
 
-    void onGameServerInfoList(std::list<GameServerInfo>& gameServerInfoList);
-    void onMetaServerError(int errorcause, std::string errorMessage);
+    void onGameServerInfoList(const std::list<GameServerInfo>& gameServerInfoList);
+    void onMetaServerError(int errorcause, const std::string& errorMessage);
 
 
     void onReceiveGameInfo(GameInitSettings gameInitSettings, ChangeEventList changeEventList);

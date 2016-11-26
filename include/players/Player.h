@@ -45,7 +45,7 @@ class MCV;
 class Player {
 public:
 
-    Player(House* associatedHouse, std::string playername);
+    Player(House* associatedHouse, const std::string& playername);
     Player(InputStream& stream, House* associatedHouse);
     virtual ~Player();
     virtual void save(OutputStream& stream) const;
