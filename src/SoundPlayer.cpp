@@ -26,28 +26,26 @@
 
 #include <misc/exceptions.h>
 
+#include <map>
 
-Mix_Chunk* curVoiceChunk = nullptr;
-int voiceChannel = 0;
-bool PlayingVoiceATM = false;
-
-static void VoiceChunkFinishedCallback(int channel) {
-    if(channel == voiceChannel) {
-        PlayingVoiceATM = false;
-    }
-}
 
 SoundPlayer::SoundPlayer() {
     sfxVolume = settings.audio.sfxVolume;
 
     Mix_Volume(-1, sfxVolume);
 
-    // init global variables
-    curVoiceChunk = nullptr;
-    PlayingVoiceATM = false;
+    Mix_ReserveChannels(24);  //Reserve a channel for voice over
 
-    voiceChannel = Mix_ReserveChannels(1);  //Reserve a channel for voice over
-    Mix_ChannelFinished(VoiceChunkFinishedCallback);
+    Mix_GroupChannels( 0,  1, static_cast<int>(ChannelGroup::Voice));
+    Mix_GroupChannels( 2,  3, static_cast<int>(ChannelGroup::UI));
+    Mix_GroupChannels( 4,  5, static_cast<int>(ChannelGroup::Credits));
+    Mix_GroupChannels( 6,  8, static_cast<int>(ChannelGroup::Explosion));
+    Mix_GroupChannels( 9, 10, static_cast<int>(ChannelGroup::ExplosionStructure));
+    Mix_GroupChannels(11, 13, static_cast<int>(ChannelGroup::Gun));
+    Mix_GroupChannels(14, 16, static_cast<int>(ChannelGroup::Rocket));
+    Mix_GroupChannels(17, 18, static_cast<int>(ChannelGroup::Scream));
+    Mix_GroupChannels(19, 21, static_cast<int>(ChannelGroup::Sonic));
+    Mix_GroupChannels(22, 23, static_cast<int>(ChannelGroup::Other));
 
     soundOn = settings.audio.playSFX;
 }
@@ -63,7 +61,7 @@ void SoundPlayer::playVoice(Voice_enum id, int houseID) {
             THROW(std::invalid_argument, "There is no voice with ID %d!",id);
         }
 
-        int channel = Mix_PlayChannel(-1, tmp, 0);
+        int channel = Mix_PlayChannel(Mix_GroupAvailable(static_cast<int>(ChannelGroup::Voice)), tmp, 0);
         if(channel != -1) {
             Mix_Volume(channel, sfxVolume);
         }
@@ -92,22 +90,6 @@ void SoundPlayer::playSoundAt(Sound_enum soundID, const Coord& location)
     }
 }
 
-void SoundPlayer::playSound(Sound_enum soundID, int volume)
-{
-    if(soundOn) {
-        Mix_Chunk* tmp;
-
-        if((tmp = pSFXManager->getSound(soundID)) == nullptr) {
-            return;
-        }
-
-        int channel = Mix_PlayChannel(-1,tmp, 0);
-        if(channel != -1) {
-            Mix_Volume(channel, volume);
-        }
-    }
-}
-
 void SoundPlayer::playSound(Mix_Chunk* sound) {
     if(soundOn) {
         int channel = Mix_PlayChannel(-1, sound, 0);
@@ -118,16 +100,52 @@ void SoundPlayer::playSound(Mix_Chunk* sound) {
 }
 
 void SoundPlayer::playSound(Sound_enum id) {
-    if(soundOn) {
-        Mix_Chunk* tmp;
+    playSound(id, sfxVolume);
+}
 
-        if((tmp = pSFXManager->getSound(id)) == nullptr) {
-            THROW(std::invalid_argument, "There is no sound with ID %d!",id);
+void SoundPlayer::playSound(Sound_enum soundID, int volume)
+{
+    static ChannelGroup soundID2ChannelGroup[] = {
+        ChannelGroup::UI,                   // Sound_PlaceStructure
+        ChannelGroup::UI,                   // Sound_ButtonClick
+        ChannelGroup::UI,                   // Sound_InvalidAction
+        ChannelGroup::Credits,              // Sound_CreditsTick
+        ChannelGroup::Credits,              // Sound_Tick
+        ChannelGroup::UI,                   // Sound_RadarNoise
+        ChannelGroup::Explosion,            // Sound_ExplosionGas
+        ChannelGroup::Explosion,            // Sound_ExplosionTiny
+        ChannelGroup::Explosion,            // Sound_ExplosionSmall
+        ChannelGroup::Explosion,            // Sound_ExplosionMedium
+        ChannelGroup::Explosion,            // Sound_ExplosionLarge
+        ChannelGroup::ExplosionStructure,   // Sound_ExplosionStructure
+        ChannelGroup::Other,                // Sound_WormAttack
+        ChannelGroup::Gun,                  // Sound_Gun
+        ChannelGroup::Rocket,               // Sound_Rocket
+        ChannelGroup::Explosion,            // Sound_Bloom
+        ChannelGroup::Scream,               // Sound_Scream1
+        ChannelGroup::Scream,               // Sound_Scream2
+        ChannelGroup::Scream,               // Sound_Scream3
+        ChannelGroup::Scream,               // Sound_Scream4
+        ChannelGroup::Scream,               // Sound_Scream5
+        ChannelGroup::Scream,               // Sound_Trumpet
+        ChannelGroup::Other,                // Sound_Drop
+        ChannelGroup::Scream,               // Sound_Squashed
+        ChannelGroup::Gun,                  // Sound_MachineGun
+        ChannelGroup::Sonic,                // Sound_Sonic
+        ChannelGroup::Rocket,               // Sound_RocketSmall
+    };
+
+    if(soundOn) {
+        Mix_Chunk* sound;
+
+        if((sound = pSFXManager->getSound(soundID)) == nullptr) {
+            THROW(std::invalid_argument, "There is no sound with ID %d!", soundID);
         }
 
-        int channel = Mix_PlayChannel(-1, tmp, 0);
+        int channel = Mix_GroupAvailable(static_cast<int>(soundID2ChannelGroup[soundID]));
+        channel = Mix_PlayChannel(channel, sound, 0);
         if(channel != -1) {
-            Mix_Volume(channel, sfxVolume);
+            Mix_Volume(channel, volume);
         }
     }
 }

@@ -544,7 +544,7 @@ int main(int argc, char *argv[]) {
                 SDL_Quit();
                 THROW(sdl_error, "Couldn't set %d Hz 16-bit audio. Reason: %s!", AUDIO_FREQUENCY, SDL_GetError());
             } else {
-                SDL_Log("%d audio channels were allocated.", Mix_AllocateChannels(6));
+                SDL_Log("%d audio channels were allocated.", Mix_AllocateChannels(28));
             }
         }
 
