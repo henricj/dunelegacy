@@ -489,9 +489,9 @@ void InfantryBase::squash() {
 }
 
 void InfantryBase::playConfirmSound() {
-    soundPlayer->playSound((Sound_enum) getRandomOf(2,MovingOut,InfantryOut));
+    soundPlayer->playVoice((Voice_enum) getRandomOf(2,MovingOut,InfantryOut), getOwner()->getHouseID());
 }
 
 void InfantryBase::playSelectSound() {
-    soundPlayer->playSound(YesSir);
+    soundPlayer->playVoice(YesSir, getOwner()->getHouseID());
 }

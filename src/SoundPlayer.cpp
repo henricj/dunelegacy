@@ -55,6 +55,21 @@ SoundPlayer::SoundPlayer() {
 SoundPlayer::~SoundPlayer() {
 }
 
+void SoundPlayer::playVoice(Voice_enum id, int houseID) {
+    if(soundOn) {
+        Mix_Chunk* tmp;
+
+        if((tmp = pSFXManager->getVoice(id,houseID)) == nullptr) {
+            THROW(std::invalid_argument, "There is no voice with ID %d!",id);
+        }
+
+        int channel = Mix_PlayChannel(-1, tmp, 0);
+        if(channel != -1) {
+            Mix_Volume(channel, sfxVolume);
+        }
+    }
+}
+
 void SoundPlayer::playSoundAt(Sound_enum soundID, const Coord& location)
 {
     if(soundOn) {
@@ -89,21 +104,6 @@ void SoundPlayer::playSound(Sound_enum soundID, int volume)
         int channel = Mix_PlayChannel(-1,tmp, 0);
         if(channel != -1) {
             Mix_Volume(channel, volume);
-        }
-    }
-}
-
-void SoundPlayer::playVoice(Voice_enum id, int houseID) {
-    if(soundOn) {
-        Mix_Chunk* tmp;
-
-        if((tmp = pSFXManager->getVoice(id,houseID)) == nullptr) {
-            THROW(std::invalid_argument, "There is no voice with ID %d!",id);
-        }
-
-        int channel = Mix_PlayChannel(-1, tmp, 0);
-        if(channel != -1) {
-            Mix_Volume(channel, sfxVolume);
         }
     }
 }

@@ -187,7 +187,7 @@ void Sandworm::checkPos() {
         if(currentGameMap->tileExists(location)) {
             Tile* pTile = currentGameMap->getTile(location);
             if(pTile->hasInfantry() && (pTile->getInfantry()->getOwner() == pLocalHouse)) {
-                soundPlayer->playSound(SomethingUnderTheSand);
+                soundPlayer->playVoice(SomethingUnderTheSand, pTile->getInfantry()->getOwner()->getHouseID());
             }
         }
     }

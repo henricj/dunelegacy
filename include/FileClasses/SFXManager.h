@@ -41,11 +41,6 @@ typedef enum {
     BaseIsUnderAttack,  ///< unused
     SaboteurApproaching,
     MissileApproaching,
-    NUM_VOICE
-} Voice_enum;
-
-// Sound
-typedef enum {
     YesSir,
     Reporting,
     Acknowledged,
@@ -56,6 +51,11 @@ typedef enum {
     HouseHarkonnen,
     HouseAtreides,
     HouseOrdos,
+    NUM_VOICE
+} Voice_enum;
+
+// Sound
+typedef enum {
     Sound_PlaceStructure,
     Sound_ButtonClick,
     Sound_InvalidAction,

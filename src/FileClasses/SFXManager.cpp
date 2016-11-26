@@ -207,6 +207,36 @@ void SFXManager::loadEnglishVoice() {
         Mix_FreeChunk(ApproachingChunk);
 
         Mix_FreeChunk(HouseNameChunk);
+
+        // "Yes Sir"
+        lngVoice[YesSir*NUM_HOUSES+VoiceNum] = getChunkFromFile("ZREPORT1.VOC", "REPORT1.VOC");
+
+        // "Reporting"
+        lngVoice[Reporting*NUM_HOUSES+VoiceNum] = getChunkFromFile("ZREPORT2.VOC", "REPORT2.VOC");
+
+        // "Acknowledged"
+        lngVoice[Acknowledged*NUM_HOUSES+VoiceNum] = getChunkFromFile("ZREPORT3.VOC", "REPORT3.VOC");
+
+        // "Affirmative"
+        lngVoice[Affirmative*NUM_HOUSES+VoiceNum] = getChunkFromFile("ZAFFIRM.VOC", "AFFIRM.VOC");
+
+        // "Moving out"
+        lngVoice[MovingOut*NUM_HOUSES+VoiceNum] = getChunkFromFile("ZMOVEOUT.VOC", "MOVEOUT.VOC");
+
+        // "Infantry out"
+        lngVoice[InfantryOut*NUM_HOUSES+VoiceNum] = getChunkFromFile("ZOVEROUT.VOC", "OVEROUT.VOC");
+
+        // "Somthing's under the sand"
+        lngVoice[SomethingUnderTheSand*NUM_HOUSES+VoiceNum] = getChunkFromFile("SANDBUG.VOC");
+
+        // "House Harkonnen"
+        lngVoice[HouseHarkonnen*NUM_HOUSES+VoiceNum] = getChunkFromFile("MHARK.VOC");
+
+        // "House Atreides"
+        lngVoice[HouseAtreides*NUM_HOUSES+VoiceNum] = getChunkFromFile("MATRE.VOC");
+
+        // "House Ordos"
+        lngVoice[HouseOrdos*NUM_HOUSES+VoiceNum] = getChunkFromFile("MORDOS.VOC");
     }
 
     for(int i = 0; i < numLngVoice; i++) {
@@ -214,36 +244,6 @@ void SFXManager::loadEnglishVoice() {
             THROW(std::runtime_error, "Not all voice sounds could be loaded: lngVoice[%d] == nullptr!", i);
         }
     }
-
-    // "Yes Sir"
-    soundChunk[YesSir] = getChunkFromFile("ZREPORT1.VOC", "REPORT1.VOC");
-
-    // "Reporting"
-    soundChunk[Reporting] = getChunkFromFile("ZREPORT2.VOC", "REPORT2.VOC");
-
-    // "Acknowledged"
-    soundChunk[Acknowledged] = getChunkFromFile("ZREPORT3.VOC", "REPORT3.VOC");
-
-    // "Affirmative"
-    soundChunk[Affirmative] = getChunkFromFile("ZAFFIRM.VOC", "AFFIRM.VOC");
-
-    // "Moving out"
-    soundChunk[MovingOut] = getChunkFromFile("ZMOVEOUT.VOC", "MOVEOUT.VOC");
-
-    // "Infantry out"
-    soundChunk[InfantryOut] = getChunkFromFile("ZOVEROUT.VOC", "OVEROUT.VOC");
-
-    // "Somthing's under the sand"
-    soundChunk[SomethingUnderTheSand] = getChunkFromFile("SANDBUG.VOC");
-
-    // "House Harkonnen"
-    soundChunk[HouseHarkonnen] = getChunkFromFile("MHARK.VOC");
-
-    // "House Atreides"
-    soundChunk[HouseAtreides] = getChunkFromFile("MATRE.VOC");
-
-    // "House Ordos"
-    soundChunk[HouseOrdos] = getChunkFromFile("MORDOS.VOC");
 
     // Sfx
     soundChunk[Sound_PlaceStructure] = getChunkFromFile("EXDUD.VOC");
@@ -339,41 +339,41 @@ void SFXManager::loadNonEnglishVoice(const std::string& languagePrefix) {
     // "Missile approaching"
     lngVoice[MissileApproaching] = getChunkFromFile(languagePrefix + "MISSILE.VOC");
 
+        // "Yes Sir"
+    lngVoice[YesSir] = getChunkFromFile(languagePrefix + "REPORT1.VOC");
+
+    // "Reporting"
+    lngVoice[Reporting] = getChunkFromFile(languagePrefix + "REPORT2.VOC");
+
+    // "Acknowledged"
+    lngVoice[Acknowledged] = getChunkFromFile(languagePrefix + "REPORT3.VOC");
+
+    // "Affirmative"
+    lngVoice[Affirmative] = getChunkFromFile(languagePrefix + "AFFIRM.VOC");
+
+    // "Moving out"
+    lngVoice[MovingOut] = getChunkFromFile(languagePrefix + "MOVEOUT.VOC");
+
+    // "Infantry out"
+    lngVoice[InfantryOut] = getChunkFromFile(languagePrefix + "OVEROUT.VOC");
+
+    // "Somthing's under the sand"
+    lngVoice[SomethingUnderTheSand] = getChunkFromFile("SANDBUG.VOC");
+
+    // "House Atreides"
+    lngVoice[HouseAtreides] = getChunkFromFile(languagePrefix + "ATRE.VOC");
+
+    // "House Ordos"
+    lngVoice[HouseOrdos] = getChunkFromFile(languagePrefix + "ORDOS.VOC");
+
+    // "House Harkonnen"
+    lngVoice[HouseHarkonnen] = getChunkFromFile(languagePrefix + "HARK.VOC");
+
     for(int i = 0; i < numLngVoice; i++) {
         if(lngVoice[i] == nullptr) {
             THROW(std::runtime_error, "Not all voice sounds could be loaded: lngVoice[%d] == nullptr!", i);
         }
     }
-
-    // "Yes Sir"
-    soundChunk[YesSir] = getChunkFromFile(languagePrefix + "REPORT1.VOC");
-
-    // "Reporting"
-    soundChunk[Reporting] = getChunkFromFile(languagePrefix + "REPORT2.VOC");
-
-    // "Acknowledged"
-    soundChunk[Acknowledged] = getChunkFromFile(languagePrefix + "REPORT3.VOC");
-
-    // "Affirmative"
-    soundChunk[Affirmative] = getChunkFromFile(languagePrefix + "AFFIRM.VOC");
-
-    // "Moving out"
-    soundChunk[MovingOut] = getChunkFromFile(languagePrefix + "MOVEOUT.VOC");
-
-    // "Infantry out"
-    soundChunk[InfantryOut] = getChunkFromFile(languagePrefix + "OVEROUT.VOC");
-
-    // "Somthing's under the sand"
-    soundChunk[SomethingUnderTheSand] = getChunkFromFile("SANDBUG.VOC");
-
-    // "House Atreides"
-    soundChunk[HouseAtreides] = getChunkFromFile(languagePrefix + "ATRE.VOC");
-
-    // "House Ordos"
-    soundChunk[HouseOrdos] = getChunkFromFile(languagePrefix + "ORDOS.VOC");
-
-    // "House Harkonnen"
-    soundChunk[HouseHarkonnen] = getChunkFromFile(languagePrefix + "HARK.VOC");
 
     // Sfx
     soundChunk[Sound_PlaceStructure] = getChunkFromFile("EXDUD.VOC");

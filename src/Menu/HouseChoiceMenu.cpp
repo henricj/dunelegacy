@@ -77,9 +77,9 @@ void HouseChoiceMenu::onHouseButton(int button) {
     int selectedHouse = houseOrder[currentHouseChoiceScrollPos+button];
 
     switch(selectedHouse) {
-        case HOUSE_HARKONNEN:   soundPlayer->playSound(HouseHarkonnen);     break;
-        case HOUSE_ATREIDES:    soundPlayer->playSound(HouseAtreides);      break;
-        case HOUSE_ORDOS:       soundPlayer->playSound(HouseOrdos);         break;
+        case HOUSE_HARKONNEN:   soundPlayer->playVoice(HouseHarkonnen, selectedHouse);     break;
+        case HOUSE_ATREIDES:    soundPlayer->playVoice(HouseAtreides, selectedHouse);      break;
+        case HOUSE_ORDOS:       soundPlayer->playVoice(HouseOrdos, selectedHouse);         break;
         default:                /* no sounds for the other houses avail.*/  break;
 
     }
