@@ -309,12 +309,12 @@ protected:
     }
 
 private:
-    int fontID = FONT_STD12;                ///< the ID of the font to use
-    Uint32 textcolor = COLOR_DEFAULT;       ///< the text color
-    Uint32 textshadowcolor = COLOR_DEFAULT; ///< the color of the shadow of the text
-    Uint32 backgroundcolor = COLOR_BLACK;   ///< the color of the label background
-    std::string text;                       ///< the text of this label
-    SDL_Texture* pTexture = nullptr;        ///< the texture of this label
+    int fontID = FONT_STD12;                    ///< the ID of the font to use
+    Uint32 textcolor = COLOR_DEFAULT;           ///< the text color
+    Uint32 textshadowcolor = COLOR_DEFAULT;     ///< the color of the shadow of the text
+    Uint32 backgroundcolor = COLOR_TRANSPARENT; ///< the color of the label background
+    std::string text;                           ///< the text of this label
+    SDL_Texture* pTexture = nullptr;            ///< the texture of this label
     Alignment_Enum alignment = (Alignment_Enum) (Alignment_Left | Alignment_VCenter);   ///< the alignment of this label
 };
 
