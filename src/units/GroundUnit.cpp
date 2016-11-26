@@ -153,7 +153,7 @@ void GroundUnit::playSelectSound() {
 **/
 
 void GroundUnit::doRequestCarryallDrop(int xPos, int yPos) {
-    if(getOwner()->hasCarryalls() && !awaitingPickup){
+    if(getOwner()->hasCarryalls() && !awaitingPickup && currentGameMap->tileExists(xPos, yPos)){
         doMove2Pos(xPos, yPos, true);
         requestCarryall();
     }

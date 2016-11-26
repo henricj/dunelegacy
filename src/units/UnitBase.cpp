@@ -790,15 +790,22 @@ void UnitBase::doMove2Pos(int xPos, int yPos, bool bForced) {
         doSetAttackMode(GUARD);
     }
 
-    if((xPos != destination.x) || (yPos != destination.y)) {
-        clearPath();
-        findTargetTimer = 0;
-    }
+    if(currentGameMap->tileExists(xPos, yPos)) {
+        if((xPos != destination.x) || (yPos != destination.y)) {
+            clearPath();
+            findTargetTimer = 0;
+        }
 
-    setTarget(nullptr);
-    setDestination(xPos,yPos);
-    setForced(bForced);
-    setGuardPoint(xPos,yPos);
+        setTarget(nullptr);
+        setDestination(xPos,yPos);
+        setForced(bForced);
+        setGuardPoint(xPos,yPos);
+    } else {
+        setTarget(nullptr);
+        setDestination(location);
+        setForced(bForced);
+        setGuardPoint(location);
+    }
 }
 
 void UnitBase::doMove2Pos(const Coord& coord, bool bForced) {
@@ -835,6 +842,10 @@ void UnitBase::doMove2Object(Uint32 targetObjectID) {
 }
 
 void UnitBase::doAttackPos(int xPos, int yPos, bool bForced) {
+    if(!currentGameMap->tileExists(xPos, yPos)) {
+        return;
+    }
+
     if(attackMode == CAPTURE) {
         doSetAttackMode(GUARD);
     }

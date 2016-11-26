@@ -71,12 +71,12 @@ private:
     Sint32  retreatTimer;   ///< When you last retreated>
 
     int initialItemCount[Num_ItemID];
-    int initialMilitaryValue;
-    int militaryValueLimit;
-    int harvesterLimit;
-    bool campaignAIAttackFlag;
-    Coord squadRallyLocation;
-    Coord squadRetreatLocation;
+    int initialMilitaryValue = 0;
+    int militaryValueLimit = 0;
+    int harvesterLimit = 4;
+    bool campaignAIAttackFlag = false;
+    Coord squadRallyLocation = Coord::Invalid();
+    Coord squadRetreatLocation = Coord::Invalid();
 
     void scrambleUnitsAndDefend(const ObjectBase* pIntruder);
 

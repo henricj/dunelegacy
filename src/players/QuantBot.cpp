@@ -149,11 +149,6 @@ QuantBot::QuantBot(House* associatedHouse, const std::string& playername, Diffic
 
         }
     }
-
-    initialMilitaryValue = 0;
-    militaryValueLimit = 0;
-    harvesterLimit = 4;
-    campaignAIAttackFlag = false;
 }
 
 
@@ -537,7 +532,7 @@ void QuantBot::onDamage(const ObjectBase* pObject, int damage, Uint32 damagerID)
 
             if(getHouse()->hasRepairYard()){
                 doRepair(pUnit);
-            } else if(gameMode == GameMode::Custom && pUnit->getItemID() != Unit_Devastator){
+            } else if(gameMode == GameMode::Custom && pUnit->getItemID() != Unit_Devastator && squadRetreatLocation.isValid()){
                 doSetAttackMode(pUnit, RETREAT);
             }
         }
@@ -712,7 +707,7 @@ void QuantBot::build(int militaryValue) {
     int activeRepairYardCount = 0;
 
     // Let's try just running this once...
-    if(squadRallyLocation.x == 0 && squadRallyLocation.y == 0 ){
+    if(squadRallyLocation.isInvalid()){
         logDebug("Set squad rally location");
         retreatAllUnits();
     }
@@ -1566,11 +1561,11 @@ Coord QuantBot::findSquadRallyLocation() {
     for(const StructureBase* pCurrentStructure : getStructureList()) {
         if(pCurrentStructure->getOwner()->getHouseID() == getHouse()->getHouseID()) {
             // Lets find the center of mass of our squad
-            buildingCount ++;
+            buildingCount++;
             totalX += pCurrentStructure->getX();
             totalY += pCurrentStructure->getY();
         } else if(pCurrentStructure->getOwner()->getTeam() != getHouse()->getTeam()) {
-            enemyBuildingCount ++;
+            enemyBuildingCount++;
             enemyTotalX += pCurrentStructure->getX();
             enemyTotalY += pCurrentStructure->getY();
         }
@@ -1683,12 +1678,11 @@ void QuantBot::retreatAllUnits() {
     }
 
     if(getHouse()->getNumStructures() == 0){
-        squadRetreatLocation.x = -1;
-        squadRetreatLocation.y = -1;
+        squadRetreatLocation = Coord::Invalid();
     }
 
     // If no base exists yet, there is no retreat location
-    if(squadRallyLocation.x != -1 && squadRetreatLocation.x != -1) {
+    if(squadRallyLocation.isValid() && squadRetreatLocation.isValid()) {
         for(const UnitBase* pUnit : getUnitList()) {
             if(pUnit->getOwner() == getHouse()
                && pUnit->getItemID() != Unit_Carryall
