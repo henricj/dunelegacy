@@ -110,16 +110,22 @@ void GroundUnit::checkPos() {
             bookedCarrier = NONE_ID;
 
             clearPath();
-        } else{
-            Coord closestPoint = target.getObjPointer()->getClosestPoint(location);
-            if (!moving && !justStoppedMoving && (blockDistance(location, closestPoint) <= FixPt(1,5))
-                && static_cast<RepairYard*>(target.getObjPointer())->isFree())
+        } else {
+            Tile* pTile = currentGameMap->getTile(location);
+            ObjectBase *pObject = pTile->getGroundObject();
+
+            if( justStoppedMoving
+                && (pObject != nullptr)
+                && (pObject->getObjectID() == target.getObjectID())
+                && (target.getObjPointer()->getItemID() == Structure_RepairYard))
             {
-                if (getHealth() < getMaxHealth()) {
+                RepairYard* pRepairYard = static_cast<RepairYard*>(target.getObjPointer());
+                if(pRepairYard->isFree()) {
                     setGettingRepaired();
                 } else {
-                    setTarget(nullptr);
-                    setDestination(guardPoint);
+                    // the repair yard is already in use by some other unit => move out
+                    Coord newDestination = currentGameMap->findDeploySpot(this, target.getObjPointer()->getLocation(), getLocation(), pRepairYard->getStructureSize());
+                    doMove2Pos(newDestination, true);
                 }
             }
         }

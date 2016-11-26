@@ -1335,7 +1335,34 @@ bool UnitBase::update() {
 }
 
 bool UnitBase::canPass(int xPos, int yPos) const {
-    return (currentGameMap->tileExists(xPos, yPos) && !currentGameMap->getTile(xPos, yPos)->hasAGroundObject() && !currentGameMap->getTile(xPos, yPos)->isMountain());
+    if(!currentGameMap->tileExists(xPos, yPos)) {
+        return false;
+    }
+
+    Tile* pTile = currentGameMap->getTile(xPos, yPos);
+
+    if(pTile->isMountain()) {
+        return false;
+    }
+
+    if(pTile->hasAGroundObject()) {
+        ObjectBase *pObject = pTile->getGroundObject();
+
+        if( (pObject != nullptr)
+            && (pObject->getObjectID() == target.getObjectID())
+            && targetFriendly
+            && pObject->isAStructure()
+            && (pObject->getOwner()->getTeam() == owner->getTeam())
+            && pObject->isVisible(getOwner()->getTeam()))
+        {
+            // are we entering a repair yard?
+            return (goingToRepairYard && (pObject->getItemID() == Structure_RepairYard) && static_cast<const RepairYard*>(pObject)->isFree());
+        } else {
+            return false;
+        }
+    }
+
+    return true;
 }
 
 bool UnitBase::SearchPathWithAStar() {

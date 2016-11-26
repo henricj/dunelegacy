@@ -5,6 +5,7 @@ version 0.96.4
 	* HD graphics: Use mask overlays to generate high-res graphics out of the low-res ones of the original game
 	* Maximum number of units per house (either map dependent or as a new game option "override maximum number of units")
 	* Move to fix-point math for game logic as floating-point operations may differ between platforms and compilers
+	* Units entering refineries or repair yards are now moving onto the structure tile before disappearing
 	* ADL music playback replaced: Now combines ScummVM AdlibDriver with Woody OPL chip emulation code from adplug
 	* New key bindings: Cycle through construction yards with 'H' and factories with 'F'
 	* Improve performance of Fog of War

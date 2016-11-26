@@ -162,16 +162,23 @@ void Harvester::checkPos()
     if(active)  {
         if (returningToRefinery) {
             if (target && (target.getObjPointer() != nullptr) && (target.getObjPointer()->getItemID() == Structure_Refinery)) {
-                //find a refinery to return to
-                Coord closestPoint = target.getObjPointer()->getClosestPoint(location);
+                Tile* pTile = currentGameMap->getTile(location);
+                ObjectBase *pObject = pTile->getGroundObject();
 
-                // Fixed a carryall bug
-                if(!moving && !justStoppedMoving && blockDistance(location, closestPoint) <= 2) {
-                    awaitingPickup = false;
-                    if (static_cast<Refinery*>(target.getObjPointer())->isFree())
+                if( justStoppedMoving
+                    && (pObject != nullptr)
+                    && (pObject->getObjectID() == target.getObjectID()) )
+                {
+                    Refinery* pRefinery = static_cast<Refinery*>(target.getObjPointer());
+                    if(pRefinery->isFree()) {
+                        awaitingPickup = false;
                         setReturned();
-                }else if(!awaitingPickup && owner->hasCarryalls() && static_cast<Refinery*>(target.getObjPointer())->isFree()){
-                    requestCarryall();
+                    } else {
+                        // the repair yard is already in use by some other unit => move out
+                        Coord newDestination = currentGameMap->findDeploySpot(this, target.getObjPointer()->getLocation(), getLocation(), pRefinery->getStructureSize());
+                        doMove2Pos(newDestination, true);
+                        requestCarryall();
+                    }
                 }
             } else if (!structureList.empty()) {
                 int leastNumBookings = 1000000; //huge amount so refinery couldn't possibly compete with any refinery num bookings
