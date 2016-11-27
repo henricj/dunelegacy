@@ -971,8 +971,8 @@ void MapEditor::processInput() {
         // first of all update mouse
         if(event.type == SDL_MOUSEMOTION) {
             SDL_MouseMotionEvent* mouse = &event.motion;
-            drawnMouseX = mouse->x;
-            drawnMouseY = mouse->y;
+            drawnMouseX = std::max(0, std::min(mouse->x, settings.video.width-1));
+            drawnMouseY = std::max(0, std::min(mouse->y, settings.video.height-1));
         }
 
         if(pInterface->hasChildWindow()) {
@@ -1146,12 +1146,10 @@ void MapEditor::processInput() {
 
                 case SDL_MOUSEWHEEL: {
                     if (event.wheel.y != 0) {
-                        int x, y;
-                        SDL_GetMouseState(&x, &y);
-                        if(screenborder->isScreenCoordInsideMap(x, y) == true) {
+                        if(screenborder->isScreenCoordInsideMap(drawnMouseX, drawnMouseY) == true) {
                             //if mouse is not over side bar
-                            int xpos = screenborder->screen2MapX(x);
-                            int ypos = screenborder->screen2MapY(y);
+                            int xpos = screenborder->screen2MapX(drawnMouseX);
+                            int ypos = screenborder->screen2MapY(drawnMouseY);
 
                             for(const Unit& unit : units) {
                                 Coord position = unit.position;
@@ -1166,7 +1164,7 @@ void MapEditor::processInput() {
                             }
                         }
 
-                        pInterface->handleMouseWheel(x,y,(event.wheel.y > 0));
+                        pInterface->handleMouseWheel(drawnMouseX,drawnMouseY,(event.wheel.y > 0));
                     }
                 } break;
 
@@ -1824,15 +1822,10 @@ void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) {
         } break;
     }
 
-    int mouseX;
-    int mouseY;
+    if(!bCompleteMap && !pInterface->hasChildWindow() && pScreenborder->isScreenCoordInsideMap(drawnMouseX, drawnMouseY)) {
 
-    SDL_GetMouseState(&mouseX, &mouseY);
-
-    if(!bCompleteMap && !pInterface->hasChildWindow() && pScreenborder->isScreenCoordInsideMap(mouseX, mouseY)) {
-
-        int xPos = pScreenborder->screen2MapX(mouseX);
-        int yPos = pScreenborder->screen2MapY(mouseY);
+        int xPos = pScreenborder->screen2MapX(drawnMouseX);
+        int yPos = pScreenborder->screen2MapY(drawnMouseY);
 
         if(currentEditorMode.mode == EditorMode::EditorMode_Terrain) {
 

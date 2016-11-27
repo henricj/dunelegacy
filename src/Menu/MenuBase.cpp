@@ -158,9 +158,8 @@ bool MenuBase::doInput(SDL_Event &event) {
 
         case SDL_MOUSEMOTION: {
             SDL_MouseMotionEvent* mouse = &event.motion;
-
-            drawnMouseX = mouse->x;
-            drawnMouseY = mouse->y;
+            drawnMouseX = std::max(0, std::min(mouse->x, settings.video.width-1));
+            drawnMouseY = std::max(0, std::min(mouse->y, settings.video.height-1));
         } break;
 
         case SDL_QUIT: {

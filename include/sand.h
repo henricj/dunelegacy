@@ -31,18 +31,6 @@ extern SDL_Renderer* renderer;
 
 void drawCursor();
 
-inline void adjustMouseCoords(int& x, int& y) {
-//    int old_x = x, oldy = y;
-    int win_w, win_h;
-    SDL_Rect vp;
-    SDL_GetWindowSize(window, &win_w, &win_h);
-    SDL_RenderGetViewport(renderer, &vp);
-//    SDL_Log("viewport is %dx%d at (%d,%d), window size %dx%d", vp.w, vp.h, vp.x, vp.y, win_w, win_h);
-    x = x * (vp.w+2*vp.x) < vp.x * win_w ? 0 : x * (vp.w+2*vp.x) > (vp.x + vp.w) * win_w ? vp.w : (x*(vp.w+2*vp.x))/win_w-vp.x;
-    y = y * (vp.h+2*vp.y) < vp.y * win_h ? 0 : y * (vp.h+2*vp.y) > (vp.y + vp.h) * win_h ? vp.h : (y*(vp.h+2*vp.y))/win_h-vp.y;
-//    SDL_Log("adjusting %d,%d to %d,%d", old_x, oldy, x, y);
-}
-
 std::string     resolveItemName(int itemID);
 
 int             getAnimByFilename(std::string filename);

@@ -435,19 +435,14 @@ void Game::drawScreen()
 
 /////////////draw placement position
 
-    int mouse_x, mouse_y;
-
-    SDL_GetMouseState(&mouse_x, &mouse_y);
-    adjustMouseCoords(mouse_x, mouse_y);
-
     if(currentCursorMode == CursorMode_Placing) {
         //if user has selected to place a structure
 
-        if(screenborder->isScreenCoordInsideMap(mouse_x, mouse_y)) {
+        if(screenborder->isScreenCoordInsideMap(drawnMouseX, drawnMouseY)) {
             //if mouse is not over game bar
 
-            int xPos = screenborder->screen2MapX(mouse_x);
-            int yPos = screenborder->screen2MapY(mouse_y);
+            int xPos = screenborder->screen2MapX(drawnMouseX);
+            int yPos = screenborder->screen2MapY(drawnMouseY);
 
             BuilderBase* builder = nullptr;
             if(selectedList.size() == 1) {
@@ -510,8 +505,8 @@ void Game::drawScreen()
 ///////////draw game selection rectangle
     if(selectionMode) {
 
-        int finalMouseX = mouse_x;
-        int finalMouseY = mouse_y;
+        int finalMouseX = drawnMouseX;
+        int finalMouseY = drawnMouseY;
         if(finalMouseX >= sideBarPos.x) {
             //this keeps the box on the map, and not over game bar
             finalMouseX = sideBarPos.x-1;
@@ -616,8 +611,8 @@ void Game::doInput()
         // first of all update mouse
         if(event.type == SDL_MOUSEMOTION) {
             SDL_MouseMotionEvent* mouse = &event.motion;
-            drawnMouseX = mouse->x;
-            drawnMouseY = mouse->y;
+            drawnMouseX = std::max(0, std::min(mouse->x, settings.video.width-1));
+            drawnMouseY = std::max(0, std::min(mouse->y, settings.video.height-1));
         }
 
         if(pInGameMenu != nullptr) {
@@ -667,9 +662,7 @@ void Game::doInput()
 
                 case SDL_MOUSEWHEEL: {
                     if (event.wheel.y != 0) {
-                        int x, y;
-                        SDL_GetMouseState(&x,&y);
-                        pInterface->handleMouseWheel(x,y,(event.wheel.y > 0));
+                        pInterface->handleMouseWheel(drawnMouseX,drawnMouseY,(event.wheel.y > 0));
                     }
                 } break;
 
