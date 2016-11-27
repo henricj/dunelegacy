@@ -268,7 +268,7 @@ static Uint8 *LoadVOC_RW(SDL_RWops* rwop, Uint32 &size, Uint32 &rate) {
 }
 
 inline Uint8 Float2Uint8(float x) {
-    int val = lround(x*127.0 + 128.0);
+    int val = lround(x*127.0f + 128.0f);
     if(val < 0) {
         val = 0;
     } else if(val > 255) {
@@ -279,7 +279,7 @@ inline Uint8 Float2Uint8(float x) {
 }
 
 inline Sint8 Float2Sint8(float x) {
-    int val = lround(x*127.0);
+    int val = lround(x*127.0f);
     if(val < -128) {
         val = -128;
     } else if(val > 127) {
@@ -290,7 +290,7 @@ inline Sint8 Float2Sint8(float x) {
 }
 
 inline Uint16 Float2Uint16(float x) {
-    int val = lround(x*32767.0 + 32768.0);
+    int val = lround(x*32767.0f + 32768.0f);
     if(val < 0) {
         val = 0;
     } else if(val > 65535) {
@@ -301,7 +301,7 @@ inline Uint16 Float2Uint16(float x) {
 }
 
 inline Sint16 Float2Sint16(float x) {
-    int val = lround(x*32767.0);
+    int val = lround(x*32767.0f);
     if(val < -32768) {
         val = -32768;
     } else if(val > 32767) {
@@ -416,14 +416,14 @@ Mix_Chunk* LoadVOC_RW(SDL_RWops* rwop, int freesrc) {
 
 
     // Equalize if neccessary
-    float distance = 0.0;
+    float distance = 0.0f;
     for(Uint32 i=0; i < TargetData_Samples; i++) {
         if(std::abs(TargetDataFloat[i]) > distance) {
             distance = std::abs(TargetDataFloat[i]);
         }
     }
 
-    if(distance > 1.0) {
+    if(distance > 1.0f) {
         //Equalize
         for(Uint32 i=0; i < TargetData_Samples; i++) {
             TargetDataFloat[i] = TargetDataFloat[i] / distance;
@@ -432,7 +432,7 @@ Mix_Chunk* LoadVOC_RW(SDL_RWops* rwop, int freesrc) {
 
 
     // Convert floats back to integers but leave out 3/4 of silence
-    int ThreeQuaterSilenceLength = (int) ((NUM_SAMPLES_OF_SILENCE * ConversionRatio)*(3.0/4.0));
+    int ThreeQuaterSilenceLength = (int) ((NUM_SAMPLES_OF_SILENCE * ConversionRatio)*(3.0f/4.0f));
     TargetData_Samples -= 2*ThreeQuaterSilenceLength;
 
     Mix_Chunk* myChunk;

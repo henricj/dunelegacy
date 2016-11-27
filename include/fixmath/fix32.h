@@ -74,7 +74,7 @@ static inline fix32_t fix32_from_dbl(double a)
 {
     double temp = a * fix32_one;
 #ifndef FIXMATH_NO_ROUNDING
-    temp += (temp >= 0) ? 0.5f : -0.5f;
+    temp += (temp >= 0) ? 0.5 : -0.5;
 #endif
     return (fix32_t)temp;
 }
