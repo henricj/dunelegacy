@@ -1362,13 +1362,23 @@ GameInitSettings Game::getNextGameInitSettings()
 
     switch(gameInitSettings.getGameType()) {
         case GameType::Campaign: {
-            /* do map choice */
-            SDL_Log("Map Choice...");
-            MapChoice* pMapChoice = new MapChoice(gameInitSettings.getHouseID(), gameInitSettings.getMission());
-            int nextMission = pMapChoice->showMenu();
-            delete pMapChoice;
+            int currentMission = gameInitSettings.getMission();
+            if(!won) {
+                currentMission -= (currentMission >= 22) ? 1 : 3;
+            }
+            int nextMission = gameInitSettings.getMission();
+            Uint32 alreadyPlayedRegions = gameInitSettings.getAlreadyPlayedRegions();
+            if(currentMission >= -1) {
+                // do map choice
+                SDL_Log("Map Choice...");
+                MapChoice* pMapChoice = new MapChoice(gameInitSettings.getHouseID(), currentMission, alreadyPlayedRegions);
+                pMapChoice->showMenu();
+                nextMission = pMapChoice->getSelectedMission();
+                alreadyPlayedRegions = pMapChoice->getAlreadyPlayedRegions();
+                delete pMapChoice;
+            }
 
-            return GameInitSettings(gameInitSettings, nextMission);
+            return GameInitSettings(gameInitSettings, nextMission, alreadyPlayedRegions);
         } break;
 
         default: {
@@ -1407,8 +1417,8 @@ int Game::whatNext()
                 }
                 return GAME_DEBRIEFING_WIN;
             } else {
-                // copy old init class to init class for next game
-                setNextGameInitSettings(gameInitSettings);
+                // we need to play this mission again
+                whatNextParam = GAME_NEXTMISSION;
 
                 return GAME_DEBRIEFING_LOST;
             }

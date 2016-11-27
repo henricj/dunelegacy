@@ -39,16 +39,37 @@
 class MapChoice : public MenuBase
 {
 public:
-    MapChoice(int newHouse, unsigned int LastMission);
+    MapChoice(int newHouse, unsigned int lastMission, Uint32 alreadyPlayedRegions);
     virtual ~MapChoice();
 
     virtual int showMenu();
+
+    inline int getSelectedMission() const {
+        int regionIndex;
+        for(regionIndex = 0; regionIndex < 4; regionIndex++) {
+            if(group[lastScenario].attackRegion[regionIndex].regionNum == selectedRegion) {
+                break;
+            }
+        }
+
+        int newMission;
+        if(lastScenario <= 7) {
+            newMission = (lastScenario-1) * 3 + 2 + regionIndex;
+        } else if(lastScenario == 8) {
+            newMission = (lastScenario-1) * 3 - 1 + 2 + regionIndex;
+        } else {
+            THROW(std::runtime_error, "lastScenario = %u is no valid scenario number!", lastScenario);
+        }
+        return newMission;
+    };
+
+    inline Uint32 getAlreadyPlayedRegions() const { return alreadyPlayedRegions; }
 
     void drawSpecificStuff();
     bool doInput(SDL_Event &event);
 
 private:
-    void createMapSurfaceWithPieces();
+    void createMapSurfaceWithPieces(unsigned int scenario);
     void loadINI();
 
 private:
@@ -71,6 +92,7 @@ private:
 
     int house;
     unsigned int lastScenario;
+    Uint32 alreadyPlayedRegions;
     SDL_Surface* mapSurface;
     SDL_Texture* mapTexture;
     Coord piecePosition[28];

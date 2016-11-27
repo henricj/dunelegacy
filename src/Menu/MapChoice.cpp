@@ -31,7 +31,7 @@
 
 #include <sand.h>
 
-MapChoice::MapChoice(int newHouse, unsigned int LastMission) : MenuBase() {
+MapChoice::MapChoice(int newHouse, unsigned int lastMission, Uint32 oldAlreadyPlayedRegions) : MenuBase() {
     disableQuiting(true);
     selectedRegion = -1;
 
@@ -39,7 +39,8 @@ MapChoice::MapChoice(int newHouse, unsigned int LastMission) : MenuBase() {
     curHouse2Blit = 0;
     curRegion2Blit = 0;
     curBlendBlitter = nullptr;
-    lastScenario = (LastMission + 1)/3 + 1;
+    lastScenario = (lastMission + 1)/3 + 1;
+    alreadyPlayedRegions = oldAlreadyPlayedRegions;
     house = newHouse;
 
     // set up window
@@ -57,24 +58,57 @@ MapChoice::MapChoice(int newHouse, unsigned int LastMission) : MenuBase() {
     // load all data from ini
     loadINI();
 
-    if(lastScenario == 1) {
-        // create black rectangle
-        mapSurface = convertSurfaceToDisplayFormat(copySurface(pGFXManager->getUIGraphicSurface(UI_MapChoicePlanet)), true);
-        SDL_Rect dest = { 16, 48, 608, 240 };
-        SDL_FillRect(mapSurface, &dest, COLOR_BLACK);
-        mapTexture = SDL_CreateTexture(renderer, SCREEN_FORMAT, SDL_TEXTUREACCESS_STREAMING, mapSurface->w, mapSurface->h);
-        SDL_SetTextureBlendMode(mapTexture, SDL_BLENDMODE_BLEND);
+    int numSelectableRegions = 0;
+    int numRegions = 0;
+    for(int i = 0; i < 4; i++) {
+        int regionNum = group[lastScenario].attackRegion[i].regionNum;
+        if(regionNum > 0) {
+            numRegions++;
+            if((alreadyPlayedRegions & (1 << regionNum)) == 0) {
+                numSelectableRegions++;
+            }
+        }
+    }
 
-        mapChoiceState = MAPCHOICESTATE_FADEINPLANET;
-
-        msgticker.addMessage(_("@DUNE.ENG|283#Three Houses have come to Dune..."));
-        msgticker.addMessage(_("@DUNE.ENG|284#...to take control of the land..."));
-        msgticker.addMessage(_("@DUNE.ENG|285#...that has become divided."));
-    } else {
+    if(numSelectableRegions < numRegions) {
+        // we already were on this screen
         mapSurface = nullptr;
         mapTexture = nullptr;
-        mapChoiceState = MAPCHOICESTATE_BLENDING;
-        createMapSurfaceWithPieces();
+        mapChoiceState = MAPCHOICESTATE_ARROWS;
+        createMapSurfaceWithPieces(lastScenario+1);
+    } else {
+
+        if(lastScenario == 1) {
+            // first time we're on the map choice screen
+
+            // create black rectangle
+            mapSurface = convertSurfaceToDisplayFormat(copySurface(pGFXManager->getUIGraphicSurface(UI_MapChoicePlanet)), true);
+            SDL_Rect dest = { 16, 48, 608, 240 };
+            SDL_FillRect(mapSurface, &dest, COLOR_BLACK);
+            mapTexture = SDL_CreateTexture(renderer, SCREEN_FORMAT, SDL_TEXTUREACCESS_STREAMING, mapSurface->w, mapSurface->h);
+            SDL_SetTextureBlendMode(mapTexture, SDL_BLENDMODE_BLEND);
+
+            mapChoiceState = MAPCHOICESTATE_FADEINPLANET;
+
+            msgticker.addMessage(_("@DUNE.ENG|283#Three Houses have come to Dune..."));
+            msgticker.addMessage(_("@DUNE.ENG|284#...to take control of the land..."));
+            msgticker.addMessage(_("@DUNE.ENG|285#...that has become divided."));
+        } else {
+            mapSurface = nullptr;
+            mapTexture = nullptr;
+            mapChoiceState = MAPCHOICESTATE_BLENDING;
+            createMapSurfaceWithPieces(lastScenario);
+        }
+    }
+
+    if(numSelectableRegions == 0) {
+        // reset all selectable regions
+        for(int i = 0; i < 4; i++) {
+            int regionNum = group[lastScenario].attackRegion[i].regionNum;
+            if(regionNum > 0) {
+                alreadyPlayedRegions &= ~(1 << regionNum);
+            }
+        }
     }
 }
 
@@ -175,7 +209,7 @@ void MapChoice::drawSpecificStuff() {
                         delete curBlendBlitter;
                         curBlendBlitter = nullptr;
 
-                        createMapSurfaceWithPieces();
+                        createMapSurfaceWithPieces(lastScenario);
                         mapChoiceState = MAPCHOICESTATE_BLENDING;
                         break;
                     }
@@ -229,7 +263,12 @@ void MapChoice::drawSpecificStuff() {
         {
             // Draw arrows
             for(int i = 0; i < 4; i++) {
-                if(group[lastScenario].attackRegion[i].regionNum == 0) {
+                int regionNum = group[lastScenario].attackRegion[i].regionNum;
+                if(regionNum == 0) {
+                    continue;
+                }
+
+                if(alreadyPlayedRegions & (1 << regionNum)) {
                     continue;
                 }
 
@@ -272,23 +311,7 @@ void MapChoice::drawSpecificStuff() {
             }
 
             if((SDL_GetTicks() - selectionTime) > 2000) {
-                int regionIndex;
-                for(regionIndex = 0; regionIndex < 4; regionIndex++) {
-                    if(group[lastScenario].attackRegion[regionIndex].regionNum == selectedRegion) {
-                        break;
-                    }
-                }
-
-                int newMission;
-                if(lastScenario <= 7) {
-                    newMission = (lastScenario-1) * 3 + 2 + regionIndex;
-                } else if(lastScenario == 8) {
-                    newMission = (lastScenario-1) * 3 - 1 + 2 + regionIndex;
-                } else {
-                    THROW(std::runtime_error, "lastScenario = %u is no valid scenario number!", lastScenario);
-                }
-
-                quit(newMission);
+                quit();
             }
         } break;
 
@@ -310,15 +333,16 @@ bool MapChoice::doInput(SDL_Event &event) {
                     THROW(std::runtime_error, "Cannot lock image!");
                 }
 
-                Uint8 regionNum = ((Uint8*)clickmap->pixels)[y * clickmap->pitch + x];
+                int regionNum = ((Uint8*)clickmap->pixels)[y * clickmap->pitch + x];
 
                 SDL_UnlockSurface(clickmap);
 
-                if(regionNum != 0) {
+                if((regionNum != 0) && ((alreadyPlayedRegions & (1 << regionNum)) == 0)) {
                     for(int i = 0; i < 4; i++) {
                         if(group[lastScenario].attackRegion[i].regionNum == regionNum) {
                             mapChoiceState = MAPCHOICESTATE_BLINKING;
                             selectedRegion = regionNum;
+                            alreadyPlayedRegions |= (1 << selectedRegion);
                             selectionTime = SDL_GetTicks();
                             break;
                         }
@@ -332,7 +356,7 @@ bool MapChoice::doInput(SDL_Event &event) {
     return MenuBase::doInput(event);
 }
 
-void MapChoice::createMapSurfaceWithPieces() {
+void MapChoice::createMapSurfaceWithPieces(unsigned int scenario) {
     if(mapSurface != nullptr) {
         SDL_FreeSurface(mapSurface);
     }
@@ -345,7 +369,7 @@ void MapChoice::createMapSurfaceWithPieces() {
     mapTexture = SDL_CreateTexture(renderer, SCREEN_FORMAT, SDL_TEXTUREACCESS_STREAMING, mapSurface->w, mapSurface->h);
     SDL_SetTextureBlendMode(mapTexture, SDL_BLENDMODE_BLEND);
 
-    for(unsigned int s = 1; s < lastScenario; s++) {
+    for(unsigned int s = 1; s < scenario; s++) {
         for(unsigned int h = 0; h < NUM_HOUSES; h++) {
             for(unsigned int p = 0; p < group[s].newRegion[h].size(); p++) {
                 int pieceNum = (group[s].newRegion[h])[p];

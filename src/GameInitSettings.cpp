@@ -38,9 +38,10 @@ GameInitSettings::GameInitSettings(HOUSETYPE newHouseID, const SettingsClass::Ga
     randomSeed = rand();
 }
 
-GameInitSettings::GameInitSettings(const GameInitSettings& prevGameInitInfoClass, int nextMission) {
+GameInitSettings::GameInitSettings(const GameInitSettings& prevGameInitInfoClass, int nextMission, Uint32 alreadyPlayedRegions) {
     *this = prevGameInitInfoClass;
     mission = nextMission;
+    this->alreadyPlayedRegions = alreadyPlayedRegions;
     filename = getScenarioFilename(houseID, mission);
     randomSeed = rand();
 }
@@ -81,6 +82,7 @@ GameInitSettings::GameInitSettings(InputStream& stream) {
     filedata = stream.readString();
 
     mission = stream.readUint8();
+    alreadyPlayedRegions = stream.readUint32();
     randomSeed = stream.readUint32();
 
     multiplePlayersPerHouse = stream.readBool();
@@ -114,6 +116,7 @@ void GameInitSettings::save(OutputStream& stream) const {
     stream.writeString(filedata);
 
     stream.writeUint8(mission);
+    stream.writeUint32(alreadyPlayedRegions);
     stream.writeUint32(randomSeed);
 
     stream.writeBool(multiplePlayersPerHouse);
