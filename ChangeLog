@@ -13,6 +13,8 @@ version 0.96.4
 	* Save game speed, scroll speed and sound volume as game settings
 	* In campaign mode, the map choice screen remembers the region of a failed mission (the user has to select a different region)
 	* New game option "Manual Carryall Drops"
+	* Mentat's eyes are following the cursor
+	* Clicking on mentat's eyes makes him blink and clicking on mentat's mouth makes him open it
 	* Save screenshots as PNG
 	* 64-bit builds for Windows
 	* Store complete map in save games (and replays) of single player custom games

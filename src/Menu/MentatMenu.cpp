@@ -28,7 +28,7 @@
 MentatMenu::MentatMenu(int newHouse)
  : MenuBase(), currentMentatTextIndex(-1), nextMentatTextSwitch(0)
 {
-    nextSpecialAnimation = SDL_GetTicks() + getRandomInt(5000, 15000);
+    nextSpecialAnimation = SDL_GetTicks() + getRandomInt(8000, 20000);
 
     Animation* anim;
 
@@ -93,6 +93,7 @@ MentatMenu::MentatMenu(int newHouse)
 
             anim = pGFXManager->getAnimation(Anim_OrdosRing);
             specialAnim.setAnimation(anim);
+            specialAnim.getAnimation()->setCurrentFrameNumber(specialAnim.getAnimation()->getNumberOfFrames()-1);
             windowWidget.addWidget(&specialAnim,Point(178,289),specialAnim.getMinimumSize());
 
             anim = pGFXManager->getAnimation(Anim_OrdosShoulder);
@@ -143,6 +144,7 @@ MentatMenu::MentatMenu(int newHouse)
 
             anim = pGFXManager->getAnimation(Anim_MercenaryRing);
             specialAnim.setAnimation(anim);
+            specialAnim.getAnimation()->setCurrentFrameNumber(specialAnim.getAnimation()->getNumberOfFrames()-1);
             windowWidget.addWidget(&specialAnim,Point(178,289),specialAnim.getMinimumSize());
 
             anim = pGFXManager->getAnimation(Anim_MercenaryShoulder);
@@ -171,6 +173,9 @@ MentatMenu::~MentatMenu() {
 }
 
 void MentatMenu::update() {
+    // speedup blink of the eye
+    eyesAnim.getAnimation()->setFrameRate((eyesAnim.getAnimation()->getCurrentFrameNumber() == MentatEyesClosed) ? 4.0 : 0.5);
+
     if(SDL_GetTicks() > nextMentatTextSwitch) {
         currentMentatTextIndex++;
 
@@ -200,8 +205,49 @@ void MentatMenu::update() {
     if(specialAnim.getAnimation() != nullptr && specialAnim.getAnimation()->isFinished()) {
         if(nextSpecialAnimation < SDL_GetTicks()) {
             specialAnim.getAnimation()->setNumLoops(1);
-            nextSpecialAnimation = SDL_GetTicks() + getRandomInt(5000, 15000);
+            nextSpecialAnimation = SDL_GetTicks() + getRandomInt(8000, 20000);
         }
+    }
+
+    const Point mouse(drawnMouseX - getPosition().x, drawnMouseY - getPosition().y);
+    bool bPressed = (SDL_GetMouseState(nullptr, nullptr) & SDL_BUTTON(SDL_BUTTON_LEFT));
+
+    const Point eyesPos = windowWidget.getWidgetPosition(&eyesAnim);
+    const Point& eyesSize = eyesAnim.getSize();
+    const Point eyesCenter = eyesPos + eyesSize/2;
+    const Point mouseEyePos = mouse - eyesCenter;
+
+    eyesAnim.getAnimation()->resetFrameOverride();
+
+    if((mouseEyePos.x >= -eyesSize.x/2 - 30) && (mouseEyePos.x <= -eyesSize.x/2) && (mouseEyePos.y >= -eyesSize.y/2 - 20) && (mouseEyePos.y <= eyesSize.y/2)) {
+         eyesAnim.getAnimation()->setFrameOverride(MentatEyesLeft);
+    } else if((mouseEyePos.x <= eyesSize.x/2 + 30) && (mouseEyePos.x >= eyesSize.x/2) && (mouseEyePos.y >= -eyesSize.y/2 - 20) && (mouseEyePos.y <= eyesSize.y/2)) {
+         eyesAnim.getAnimation()->setFrameOverride(MentatEyesRight);
+    } else if((abs(mouseEyePos.x) < eyesSize.x) && (mouseEyePos.y >= -eyesSize.y/2 - 20) && (mouseEyePos.y <= eyesSize.y/2)) {
+         eyesAnim.getAnimation()->setFrameOverride(MentatEyesNormal);
+    } else if((abs(mouseEyePos.x) < eyesSize.x) && (mouseEyePos.y > eyesSize.y/2) && (mouseEyePos.y <= eyesSize.y/2 + 15)) {
+         eyesAnim.getAnimation()->setFrameOverride(MentatEyesDown);
+    }
+
+    if(bPressed && (abs(mouseEyePos.x) <= eyesSize.x/2) && (abs(mouseEyePos.y) <= eyesSize.y/2)) {
+        eyesAnim.getAnimation()->setFrameOverride(MentatEyesClosed);
+    }
+
+    const Point mouthPos = windowWidget.getWidgetPosition(&mouthAnim);
+    const Point& mouthSize = mouthAnim.getSize();
+    const Point mouthCenter = mouthPos + mouthSize/2;
+    const Point mouseMouthPos = mouse - mouthCenter;
+
+    if(bPressed) {
+        if((abs(mouseMouthPos.x) <= mouthSize.x/2) && (abs(mouseMouthPos.y) <= mouthSize.y/2)) {
+            if(mouthAnim.getAnimation()->getCurrentFrameOverride() == INVALID_FRAME) {
+                mouthAnim.getAnimation()->setFrameOverride(getRandomOf(4, MentatMouthOpen1, MentatMouthOpen2, MentatMouthOpen3, MentatMouthOpen4));
+            }
+        } else {
+            mouthAnim.getAnimation()->resetFrameOverride();
+        }
+    } else {
+        mouthAnim.getAnimation()->resetFrameOverride();
     }
 }
 
@@ -231,6 +277,8 @@ void MentatMenu::drawSpecificStuff() {
     shoulderAnim.draw(shoulderPos);
     textLabel.draw(Point(10,5) + getPosition());
 }
+
+
 
 int MentatMenu::getMissionSpecificAnim(int missionnumber) const {
 
