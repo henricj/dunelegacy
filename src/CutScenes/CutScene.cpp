@@ -62,11 +62,13 @@ void CutScene::run()
             {
                 case (SDL_KEYDOWN): // Look for a keypress
                 {
-                    // Fixes some flickering
-                    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-                    SDL_RenderClear(renderer);
-                    SDL_RenderPresent(renderer);
-                    quiting = true;
+                    if((event.key.keysym.sym == SDLK_SPACE) || (event.key.keysym.sym == SDLK_ESCAPE)) {
+                        // Fixes some flickering
+                        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+                        SDL_RenderClear(renderer);
+                        SDL_RenderPresent(renderer);
+                        quiting = true;
+                    }
                 }
             }
         }
