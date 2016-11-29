@@ -113,7 +113,6 @@ void StructureBase::assignToMap(const Coord& pos) {
                 }
                 pTile->setType(Terrain_Rock);
                 pTile->setOwner(getOwner()->getHouseID());
-                currentGameMap->viewMap(getOwner()->getTeam(), Coord(i,j), getViewRange());
 
                 setVisible(VIS_ALL, true);
                 setActive(true);
@@ -121,6 +120,8 @@ void StructureBase::assignToMap(const Coord& pos) {
             }
         }
     }
+
+    currentGameMap->viewMap(getOwner()->getTeam(), pos, getViewRange());
 
     if(!bFoundNonConcreteTile && !currentGame->getGameInitSettings().getGameOptions().structuresDegradeOnConcrete) {
         degradeTimer = -1;
@@ -292,12 +293,6 @@ void StructureBase::setJustPlaced() {
 }
 
 bool StructureBase::update() {
-    //update map
-    if(currentGame->randomGen.rand(0,40) == 0) {
-        // PROBLEM: causes very low fps
-        currentGameMap->viewMap(owner->getTeam(), location, getViewRange());
-    }
-
     if(!fogged) {
         lastVisibleFrame = curAnimFrame;
     }

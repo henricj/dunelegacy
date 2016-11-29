@@ -105,6 +105,7 @@ void InfantryBase::assignToMap(const Coord& pos) {
     if(currentGameMap->tileExists(pos)) {
         oldTilePosition = tilePosition;
         tilePosition = currentGameMap->getTile(pos)->assignInfantry(getObjectID());
+        currentGameMap->viewMap(owner->getTeam(), location, getViewRange());
     }
 }
 
