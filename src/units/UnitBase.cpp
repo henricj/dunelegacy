@@ -519,10 +519,6 @@ void UnitBase::engageTarget() {
 
 void UnitBase::move() {
 
-    if(!moving && !justStoppedMoving && (isAFlyingUnit() == false) && currentGame->randomGen.rand(0,40) == 0 && itemID != Unit_Sandworm) {
-        currentGameMap->viewMap(owner->getTeam(), location, getViewRange() );
-    }
-
     if(moving && !justStoppedMoving) {
         if((isBadlyDamaged() == false) || isAFlyingUnit()) {
             realX += xSpeed;

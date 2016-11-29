@@ -99,6 +99,11 @@ FixPoint blockDistance(const Coord& p1, const Coord& p2)
     return (std::max(xDis, yDis) + minDis*(FixPt_SQRT2 - 1));
 }
 
+FixPoint maximumDistance(const Coord& p1, const Coord& p2)
+{
+    return std::max(abs(p1.x - p2.x), abs(p1.y - p2.y));
+}
+
 int mirrorAngleHorizontal(int angle) {
     switch(angle % NUM_ANGLES) {
         case RIGHT:     return LEFT;

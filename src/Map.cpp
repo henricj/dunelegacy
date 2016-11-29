@@ -655,7 +655,7 @@ void Map::viewMap(int playerTeam, const Coord& location, int maxViewRange) {
         if (check.y < 0) check.y = 0;
 
         while((check.y < sizeY) && ((check.y - location.y) <= lookDist[abs(check.x - location.x)])) {
-            if(distanceFrom(location, check) <= maxViewRange) {
+            if((maxViewRange <= 1) ? (maximumDistance(location, check) <= maxViewRange) : (distanceFrom(location, check) <= maxViewRange)) {
                 for(int i = 0; i < NUM_HOUSES; i++) {
                     House* pHouse = currentGame->getHouse(i);
                     if((pHouse != nullptr) && (pHouse->getTeam() == playerTeam)) {

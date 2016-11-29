@@ -57,6 +57,8 @@ FixPoint distanceFrom(FixPoint x, FixPoint y, FixPoint to_x, FixPoint to_y);
 
 FixPoint blockDistance(const Coord& p1, const Coord& p2);
 
+FixPoint maximumDistance(const Coord& p1, const Coord& p2);
+
 // Retreat location for launcher
 Coord retreatLocation(const Coord& p1, const Coord& p2);
 
