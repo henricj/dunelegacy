@@ -10,6 +10,7 @@ runtests_SOURCES =  testmain.cpp\
                     INIFileTestCase/INIFileTestCase3.cpp\
                     $(NULL)\
                     ../src/misc/FileSystem.cpp\
+                    ../src/misc/format.cpp\
                     $(NULL)\
                     FileSystemTestCase/FileSystemTestCase.cpp\
                     $(NULL)
