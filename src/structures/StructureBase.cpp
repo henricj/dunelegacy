@@ -293,6 +293,10 @@ void StructureBase::setJustPlaced() {
 }
 
 bool StructureBase::update() {
+    if(((currentGame->getGameCycleCount() + getObjectID()) % 512) == 0) {
+        currentGameMap->viewMap(owner->getTeam(), location, getViewRange());
+    }
+
     if(!fogged) {
         lastVisibleFrame = curAnimFrame;
     }

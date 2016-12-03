@@ -223,6 +223,14 @@ const UnitBase* GroundUnit::getCarrier() const {
     return static_cast<UnitBase*>(currentGame->getObjectManager().getObject(bookedCarrier));
 }
 
+void GroundUnit::move() {
+    if(!moving && !justStoppedMoving && (((currentGame->getGameCycleCount() + getObjectID()) % 512) == 0)) {
+        currentGameMap->viewMap(owner->getTeam(), location, getViewRange());
+    }
+
+    UnitBase::move();
+}
+
 void GroundUnit::navigate() {
     // Lets keep units moving even if they are awaiting a pickup
     // Could potentially make this distance based depending on how

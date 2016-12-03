@@ -407,7 +407,7 @@ void Harvester::setReturned()
 
 void Harvester::move()
 {
-    UnitBase::move();
+    TrackedUnit::move();
 
     if(active && !moving && !justStoppedMoving) {
         if(harvestingMode) {

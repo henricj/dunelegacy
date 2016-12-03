@@ -78,8 +78,8 @@ public:
     }
 
 protected:
-
-    void    navigate();
+    virtual void move();
+    virtual void navigate();
 
     bool    awaitingPickup;     ///< Is this unit waiting for pickup?
     Uint32  bookedCarrier;      ///< What is the carrier if waiting for pickup?

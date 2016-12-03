@@ -360,7 +360,7 @@ void InfantryBase::destroy() {
 }
 
 void InfantryBase::move() {
-    if(!moving && !justStoppedMoving && currentGame->randomGen.rand(0,40) == 0) {
+    if(!moving && !justStoppedMoving && (((currentGame->getGameCycleCount() + getObjectID()) % 512) == 0)) {
         currentGameMap->viewMap(owner->getTeam(), location, getViewRange());
     }
 
