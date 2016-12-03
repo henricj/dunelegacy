@@ -44,7 +44,7 @@ private:
         This method sets a new text for this window.
         \param  Text The new text for this window
     */
-    inline void setText(std::string text) {
+    inline void setText(const std::string& text) {
         textLabel.setText(text);
         resize(std::max(vbox.getMinimumSize().x,120),vbox.getMinimumSize().y);
     }

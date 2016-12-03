@@ -528,14 +528,14 @@ public:
     Animation*      getAnimation(unsigned int id);
 
 private:
-    Animation*      loadAnimationFromWsa(std::string filename);
+    Animation*      loadAnimationFromWsa(const std::string& filename);
     SDL_Surface*    generateWindtrapAnimationFrames(SDL_Surface* windtrapPic);
     SDL_Surface*    generateMapChoiceArrowFrames(SDL_Surface* arrowPic, int house=HOUSE_HARKONNEN);
 
-    std::shared_ptr<Shpfile>  loadShpfile(std::string filename);
-    std::shared_ptr<Wsafile>  loadWsafile(std::string filename);
+    std::shared_ptr<Shpfile>  loadShpfile(const std::string& filename);
+    std::shared_ptr<Wsafile>  loadWsafile(const std::string& filename);
 
-    SDL_Texture*    extractSmallDetailPic(std::string filename);
+    SDL_Texture*    extractSmallDetailPic(const std::string& filename);
 
     SDL_Surface*    generateDoubledObjPic(unsigned int id, int h);
     SDL_Surface*    generateTripledObjPic(unsigned int id, int h);

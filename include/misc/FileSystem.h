@@ -65,7 +65,7 @@ std::list<std::string> getFileNamesList(const std::string& directory, const std:
     \param  IgnoreCase  true = extension comparison is case insensitive
     \return a list of all the files with the specified extension
 */
-std::list<FileInfo> getFileList(const std::string& directory, std::string extension, bool IgnoreCase = false, FileListOrder fileListOrder = FileListOrder_Unsorted);
+std::list<FileInfo> getFileList(const std::string& directory, const std::string& extension, bool IgnoreCase = false, FileListOrder fileListOrder = FileListOrder_Unsorted);
 
 /**
     This function is used to determine a case insensitive filename. The parameter filepath specifies the complete path to the file (relative or absolute).

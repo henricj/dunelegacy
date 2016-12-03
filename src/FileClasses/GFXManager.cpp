@@ -1167,7 +1167,7 @@ Animation* GFXManager::getAnimation(unsigned int id) {
     return animation[id];
 }
 
-shared_ptr<Shpfile> GFXManager::loadShpfile(std::string filename) {
+shared_ptr<Shpfile> GFXManager::loadShpfile(const std::string& filename) {
     try {
         return shared_ptr<Shpfile>(new Shpfile(pFileManager->openFile(filename), true));
     } catch (std::exception &e) {
@@ -1175,7 +1175,7 @@ shared_ptr<Shpfile> GFXManager::loadShpfile(std::string filename) {
     }
 }
 
-shared_ptr<Wsafile> GFXManager::loadWsafile(std::string filename) {
+shared_ptr<Wsafile> GFXManager::loadWsafile(const std::string& filename) {
     SDL_RWops* file_wsa = nullptr;
     std::shared_ptr<Wsafile> wsafile;
     try {
@@ -1191,7 +1191,7 @@ shared_ptr<Wsafile> GFXManager::loadWsafile(std::string filename) {
     }
 }
 
-SDL_Texture* GFXManager::extractSmallDetailPic(std::string filename) {
+SDL_Texture* GFXManager::extractSmallDetailPic(const std::string& filename) {
     SDL_RWops* myFile = pFileManager->openFile(filename);
 
     Wsafile* myWsafile = new Wsafile(myFile);
@@ -1234,7 +1234,7 @@ SDL_Texture* GFXManager::extractSmallDetailPic(std::string filename) {
     return convertSurfaceToTexture(pSurface, true);
 }
 
-Animation* GFXManager::loadAnimationFromWsa(std::string filename) {
+Animation* GFXManager::loadAnimationFromWsa(const std::string& filename) {
     SDL_RWops* file = pFileManager->openFile(filename);
     Wsafile* wsafile = new Wsafile(file);
     Animation* ret = wsafile->getAnimation(0,wsafile->getNumFrames() - 1,true,false);

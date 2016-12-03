@@ -38,7 +38,7 @@ static std::string unescapeString(const std::string& str) {
     return replaceAll(str, replacementMap);
 }
 
-static std::string extractString(std::string str, std::string filename, int lineNum) {
+static std::string extractString(const std::string& str, const std::string& filename, int lineNum) {
     size_t firstQuote = str.find_first_of('\"');
     size_t lastQuote = str.find_last_of('\"');
 
@@ -50,7 +50,7 @@ static std::string extractString(std::string str, std::string filename, int line
     return convertUTF8ToISO8859_1(unescapeString(str.substr(firstQuote+1, lastQuote-firstQuote-1)));
 }
 
-std::map<std::string, std::string> loadPOFile(SDL_RWops* rwop, bool freesrc, std::string filename) {
+std::map<std::string, std::string> loadPOFile(SDL_RWops* rwop, bool freesrc, const std::string& filename) {
 
     std::map<std::string, std::string> mapping;
 

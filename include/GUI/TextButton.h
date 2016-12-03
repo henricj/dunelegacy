@@ -45,7 +45,7 @@ public:
         to fit this text.
         \param  text The new text for this button
     */
-    virtual inline void setText(std::string text) {
+    virtual inline void setText(const std::string& text) {
         this->text = text;
         resizeAll();
     }
@@ -54,7 +54,7 @@ public:
         Get the text of this button.
         \return the text of this button
     */
-    inline std::string getText() { return text; };
+    inline const std::string& getText() { return text; };
 
     /**
         Sets the text color for this button.

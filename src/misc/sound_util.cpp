@@ -115,7 +115,7 @@ Mix_Chunk* createSilenceChunk(int length)
     return returnChunk;
 }
 
-Mix_Chunk* getChunkFromFile(std::string filename) {
+Mix_Chunk* getChunkFromFile(const std::string& filename) {
     SDL_RWops* rwop = pFileManager->openFile(filename);
 
     Mix_Chunk* returnChunk;
@@ -126,7 +126,7 @@ Mix_Chunk* getChunkFromFile(std::string filename) {
     return returnChunk;
 }
 
-Mix_Chunk* getChunkFromFile(std::string filename, std::string alternativeFilename) {
+Mix_Chunk* getChunkFromFile(const std::string& filename, const std::string& alternativeFilename) {
     if(pFileManager->exists(filename)) {
         return getChunkFromFile(filename);
     } else if(pFileManager->exists(alternativeFilename)) {

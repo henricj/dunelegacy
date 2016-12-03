@@ -86,7 +86,7 @@ public:
         to fit this text.
         \param  text The new text for this button
     */
-    virtual inline void setText(std::string text) {
+    virtual inline void setText(const std::string& text) {
         this->text = text;
         resizeAll();
     }
@@ -95,7 +95,7 @@ public:
         Get the text of this label.
         \return the text of this button
     */
-    inline std::string getText() const { return text; };
+    inline const std::string& getText() const { return text; };
 
     /**
         Handles a mouse movement. This method is for example needed for the tooltip.

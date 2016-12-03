@@ -26,7 +26,7 @@ Mix_Chunk* concat3Chunks(Mix_Chunk* sound1, Mix_Chunk* sound2, Mix_Chunk* sound3
 Mix_Chunk* concat4Chunks(Mix_Chunk* sound1, Mix_Chunk* sound2, Mix_Chunk* sound3, Mix_Chunk* sound4);
 Mix_Chunk* createEmptyChunk();
 Mix_Chunk* createSilenceChunk(int length);
-Mix_Chunk* getChunkFromFile(std::string filename);
-Mix_Chunk* getChunkFromFile(std::string filename, std::string alternativeFilename);
+Mix_Chunk* getChunkFromFile(const std::string& filename);
+Mix_Chunk* getChunkFromFile(const std::string& filename, const std::string& alternativeFilename);
 
 #endif // SOUND_UTIL_H

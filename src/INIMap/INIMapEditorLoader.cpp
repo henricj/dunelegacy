@@ -642,12 +642,12 @@ void INIMapEditorLoader::loadTeams()
     }
 }
 
-HOUSETYPE INIMapEditorLoader::getHouseID(std::string name) {
-    convertToLower(name);
+HOUSETYPE INIMapEditorLoader::getHouseID(const std::string& name) {
+    std::string lowerName = strToLower(name);
 
-    if(housename2house.count(name) > 0) {
-        return housename2house[name];
+    if(housename2house.count(lowerName) > 0) {
+        return housename2house[lowerName];
     } else {
-        return getHouseByName(name);
+        return getHouseByName(lowerName);
     }
 }

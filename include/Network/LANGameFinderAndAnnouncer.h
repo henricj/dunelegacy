@@ -40,7 +40,7 @@ public:
     LANGameFinderAndAnnouncer();
     ~LANGameFinderAndAnnouncer();
 
-    void startAnnounce(std::string serverName, int serverPort, std::string mapName, Uint8 numPlayers, Uint8 maxPlayers) {
+    void startAnnounce(const std::string& serverName, int serverPort, const std::string& mapName, Uint8 numPlayers, Uint8 maxPlayers) {
         this->serverName = serverName;
         this->serverPort = serverPort;
         this->mapName = mapName;

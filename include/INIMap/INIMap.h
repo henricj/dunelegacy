@@ -40,7 +40,7 @@ public:
 
     }
 
-    INIMap(GameType gameType, std::string mapname, std::string mapdata = "") : mapname(mapname) {
+    INIMap(GameType gameType, const std::string& mapname, const std::string& mapdata = "") : mapname(mapname) {
 
         if(gameType == GameType::Campaign || gameType == GameType::Skirmish) {
             // load from PAK-File
@@ -75,7 +75,7 @@ protected:
         Log a warning while reading the scenario file.
         \param  warning the warning message
     */
-    void logWarning(std::string warning) {
+    void logWarning(const std::string& warning) {
         SDL_Log("%s: %s", mapname.c_str(), warning.c_str());
     }
 
@@ -85,7 +85,7 @@ protected:
         \param  line    the line number the warning occurs
         \param  warning the warning message
     */
-    void logWarning(int line, std::string warning) {
+    void logWarning(int line, const std::string& warning) {
         SDL_Log("%s:%d: %s", mapname.c_str(), line, warning.c_str());
     }
 

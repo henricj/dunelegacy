@@ -123,7 +123,7 @@ public:
         \param  text    the text to be added to the list
         \param  data    an integer value that is assigned to this entry (see getEntryIntData)
     */
-    void addEntry(std::string text, int data = 0) {
+    void addEntry(const std::string& text, int data = 0) {
         entries.push_back(ListEntry(text,data));
         updateList();
     }
@@ -133,7 +133,7 @@ public:
         \param  text    the text to be added to the list
         \param  data    an pointer value that is assigned to this entry (see getEntryPtrData)
     */
-    void addEntry(std::string text, void* data) {
+    void addEntry(const std::string& text, void* data) {
         entries.push_back(ListEntry(text,data));
         updateList();
     }
@@ -144,7 +144,7 @@ public:
         \param  text    the text to be added to the list
         \param  data    an integer value that is assigned to this entry (see getEntryIntData)
     */
-    void insertEntry(int index, std::string text, int data = 0) {
+    void insertEntry(int index, const std::string& text, int data = 0) {
         if(index <= selectedElement) selectedElement++;
 
         entries.insert(entries.begin() + index, ListEntry(text,data));
@@ -157,7 +157,7 @@ public:
         \param  text    the text to be added to the list
         \param  data    an pointer value that is assigned to this entry (see getEntryPtrData)
     */
-    void insertEntry(int index, std::string text, void* data) {
+    void insertEntry(int index, const std::string& text, void* data) {
         if(index <= selectedElement) selectedElement++;
 
         entries.insert(entries.begin() + index, ListEntry(text,data));
@@ -190,7 +190,7 @@ public:
         \param  index   the zero-based index of the entry
         \param  text    the text to set
     */
-    void setEntry(unsigned int index, std::string text) {
+    void setEntry(unsigned int index, const std::string& text) {
         if(index >= entries.size()) {
             return;
         }

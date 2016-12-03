@@ -102,8 +102,9 @@ std::vector<std::string> splitString(const std::string& parseString, const std::
     \param  replacementMap  a map of replacements
     \return the modified strings
 */
-std::string replaceAll(std::string str, const std::map<std::string, std::string>& replacementMap) {
+std::string replaceAll(const std::string& str, const std::map<std::string, std::string>& replacementMap) {
 
+    std::string result = str;
     size_t currentPos = 0;
 
     while(true) {
@@ -115,7 +116,7 @@ std::string replaceAll(std::string str, const std::map<std::string, std::string>
         for(const auto& replacement : replacementMap) {
 
             std::string nextKey = replacement.first;
-            size_t nextPos = str.find(nextKey, currentPos);
+            size_t nextPos = result.find(nextKey, currentPos);
 
             if((nextPos != std::string::npos)
                 && ( (nextPos < bestNextPos)
@@ -133,13 +134,13 @@ std::string replaceAll(std::string str, const std::map<std::string, std::string>
             break;
         }
 
-        str.replace(bestNextPos, bestNextKey.length(), bestNextValue);
+        result.replace(bestNextPos, bestNextKey.length(), bestNextValue);
 
         currentPos = bestNextPos + bestNextValue.length();
     }
 
 
-    return str;
+    return result;
 }
 
 
@@ -308,7 +309,7 @@ std::string convertUTF8ToISO8859_1(const std::string& text)
     return result;
 }
 
-std::string decodeString(std::string text) {
+std::string decodeString(const std::string& text) {
     std::string out = "";
 
     static const char decodeTable1[16] = { ' ','e','t','a','i','n','o','s','r','l','h','c','d','u','p','m' };

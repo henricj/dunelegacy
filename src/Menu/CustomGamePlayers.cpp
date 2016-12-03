@@ -418,10 +418,10 @@ CustomGamePlayers::~CustomGamePlayers()
     if(pNetworkManager != nullptr) {
         pNetworkManager->disconnect();
 
-        pNetworkManager->setOnPeerDisconnected(std::function<void (std::string, bool, int)>());
-        pNetworkManager->setGetChangeEventListForNewPlayerCallback(std::function<ChangeEventList (std::string)>());
-        pNetworkManager->setOnReceiveChangeEventList(std::function<void (ChangeEventList)>());
-        pNetworkManager->setOnReceiveChatMessage(std::function<void (std::string, std::string)>());
+        pNetworkManager->setOnPeerDisconnected(std::function<void (const std::string&, bool, int)>());
+        pNetworkManager->setGetChangeEventListForNewPlayerCallback(std::function<ChangeEventList (const std::string&)>());
+        pNetworkManager->setOnReceiveChangeEventList(std::function<void (const ChangeEventList&)>());
+        pNetworkManager->setOnReceiveChatMessage(std::function<void (const std::string&, const std::string&)>());
         pNetworkManager->setOnStartGame(std::function<void (unsigned int)>());
 
         if(bServer) {
@@ -435,10 +435,10 @@ void CustomGamePlayers::update() {
         if(SDL_GetTicks() >= startGameTime) {
             startGameTime = 0;
 
-            pNetworkManager->setOnPeerDisconnected(std::function<void (std::string, bool, int)>());
-            pNetworkManager->setGetChangeEventListForNewPlayerCallback(std::function<ChangeEventList (std::string)>());
-            pNetworkManager->setOnReceiveChangeEventList(std::function<void (ChangeEventList)>());
-            pNetworkManager->setOnReceiveChatMessage(std::function<void (std::string, std::string)>());
+            pNetworkManager->setOnPeerDisconnected(std::function<void (const std::string&, bool, int)>());
+            pNetworkManager->setGetChangeEventListForNewPlayerCallback(std::function<ChangeEventList (const std::string&)>());
+            pNetworkManager->setOnReceiveChangeEventList(std::function<void (const ChangeEventList&)>());
+            pNetworkManager->setOnReceiveChatMessage(std::function<void (const std::string&, const std::string&)>());
             pNetworkManager->setOnStartGame(std::function<void (unsigned int)>());
 
             if(bServer) {
@@ -460,7 +460,7 @@ void CustomGamePlayers::update() {
     }
 }
 
-void CustomGamePlayers::onReceiveChangeEventList(ChangeEventList changeEventList)
+void CustomGamePlayers::onReceiveChangeEventList(const ChangeEventList& changeEventList)
 {
     for(const ChangeEventList::ChangeEvent& changeEvent : changeEventList.changeEventList) {
 

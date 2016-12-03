@@ -50,7 +50,7 @@ private:
     void loadView();
 
     House* getOrCreateHouse(int house);
-    HOUSETYPE getHouseID(std::string name);
+    HOUSETYPE getHouseID(const std::string& name);
 
     Game* pGame;
     std::map<std::string, HOUSETYPE> housename2house;

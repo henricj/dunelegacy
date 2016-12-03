@@ -132,7 +132,7 @@ std::vector<std::string> FileManager::getMissingFiles() {
     return MissingFiles;
 }
 
-SDL_RWops* FileManager::openFile(std::string filename) {
+SDL_RWops* FileManager::openFile(const std::string& filename) {
     SDL_RWops* ret;
 
     // try loading external file
@@ -156,7 +156,7 @@ SDL_RWops* FileManager::openFile(std::string filename) {
     THROW(io_error, "Cannot find '%s'!", filename);
 }
 
-bool FileManager::exists(std::string filename) const {
+bool FileManager::exists(const std::string& filename) const {
 
     // try finding external file
     for(const std::string& searchPath : getSearchPath()) {
@@ -177,7 +177,7 @@ bool FileManager::exists(std::string filename) const {
 }
 
 
-std::string FileManager::md5FromFilename(std::string filename) {
+std::string FileManager::md5FromFilename(const std::string& filename) {
     unsigned char md5sum[16];
 
     if(md5_file(filename.c_str(), md5sum) != 0) {

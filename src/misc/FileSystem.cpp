@@ -88,14 +88,10 @@ static bool cmp_Size_Dsc(const FileInfo& a, const FileInfo& b) { return a.size >
 static bool cmp_ModifyDate_Asc(const FileInfo& a, const FileInfo& b) { return a.modifydate < b.modifydate; }
 static bool cmp_ModifyDate_Dsc(const FileInfo& a, const FileInfo& b) { return a.modifydate > b.modifydate; }
 
-std::list<FileInfo> getFileList(const std::string& directory, std::string extension, bool bIgnoreCase, FileListOrder fileListOrder)
+std::list<FileInfo> getFileList(const std::string& directory, const std::string& extension, bool bIgnoreCase, FileListOrder fileListOrder)
 {
-
     std::list<FileInfo> Files;
-
-    if(bIgnoreCase == true) {
-        convertToLower(extension);
-    }
+    std::string lowerExtension= bIgnoreCase ? strToLower(extension) : extension;
 
 #ifdef _WIN32
     // on win32 we need an ansi-encoded filepath
@@ -122,21 +118,21 @@ std::list<FileInfo> getFileList(const std::string& directory, std::string extens
         do {
             std::string filename = fdata.name;
 
-            if(filename.length() < extension.length()+1) {
+            if(filename.length() < lowerExtension.length()+1) {
                 continue;
             }
 
-            if(filename[filename.length() - extension.length() - 1] != '.') {
+            if(filename[filename.length() - lowerExtension.length() - 1] != '.') {
                 continue;
             }
 
-            std::string ext = filename.substr(filename.length() - extension.length());
+            std::string ext = filename.substr(filename.length() - lowerExtension.length());
 
             if(bIgnoreCase == true) {
                 convertToLower(ext);
             }
 
-            if(ext == extension) {
+            if(ext == lowerExtension) {
                 // on win32 we get an ansi-encoded filename
                 WCHAR szwFilename[MAX_PATH];
                 char szFilename[MAX_PATH];
@@ -171,21 +167,21 @@ std::list<FileInfo> getFileList(const std::string& directory, std::string extens
     while((curEntry = readdir(dir)) != nullptr) {
             std::string filename = curEntry->d_name;
 
-            if(filename.length() < extension.length()+1) {
+            if(filename.length() < lowerExtension.length()+1) {
                 continue;
             }
 
-            if(filename[filename.length() - extension.length() - 1] != '.') {
+            if(filename[filename.length() - lowerExtension.length() - 1] != '.') {
                 continue;
             }
 
-            std::string ext = filename.substr(filename.length() - extension.length());
+            std::string ext = filename.substr(filename.length() - lowerExtension.length());
 
             if(bIgnoreCase == true) {
                 convertToLower(ext);
             }
 
-            if(ext == extension) {
+            if(ext == lowerExtension) {
                 std::string fullpath = directory + "/" + filename;
                 struct stat fdata;
                 if(stat(fullpath.c_str(), &fdata) != 0) {

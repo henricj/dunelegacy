@@ -57,7 +57,7 @@ ObjectData::~ObjectData()
 {
 }
 
-void ObjectData::loadFromINIFile(std::string filename)
+void ObjectData::loadFromINIFile(const std::string& filename)
 {
     SDL_RWops *file = pFileManager->openFile(filename);
     INIFile objectDataFile(file);
@@ -220,7 +220,7 @@ FixPoint ObjectData::loadFixPointValue(const INIFile& objectDataFile, const std:
     }
 }
 
-std::string ObjectData::loadStringValue(const INIFile& objectDataFile, const std::string& section, const std::string& key, char houseChar, std::string defaultValue) {
+std::string ObjectData::loadStringValue(const INIFile& objectDataFile, const std::string& section, const std::string& key, char houseChar, const std::string& defaultValue) {
     std::string specializedKey = key + "(" + houseChar + ")";
     if(objectDataFile.hasKey(section, specializedKey)) {
         return objectDataFile.getStringValue(section, specializedKey, defaultValue);

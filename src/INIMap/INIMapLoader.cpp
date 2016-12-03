@@ -898,12 +898,12 @@ House* INIMapLoader::getOrCreateHouse(int houseID) {
     return pNewHouse;
 }
 
-HOUSETYPE INIMapLoader::getHouseID(std::string name) {
-    convertToLower(name);
+HOUSETYPE INIMapLoader::getHouseID(const std::string& name) {
+    std::string lowerName = strToLower(name);
 
-    if(housename2house.count(name) > 0) {
-        return housename2house[name];
+    if(housename2house.count(lowerName) > 0) {
+        return housename2house[lowerName];
     } else {
-        return getHouseByName(name);
+        return getHouseByName(lowerName);
     }
 }

@@ -60,7 +60,7 @@ private:
     void onMetaServerError(int errorcause, const std::string& errorMessage);
 
 
-    void onReceiveGameInfo(GameInitSettings gameInitSettings, ChangeEventList changeEventList);
+    void onReceiveGameInfo(const GameInitSettings& gameInitSettings, const ChangeEventList& changeEventList);
 
     std::list<GameServerInfo> LANGameList;
     std::list<GameServerInfo> InternetGameList;

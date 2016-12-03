@@ -143,7 +143,7 @@ std::string getLogFilepath()
     return std::string(tmp);
 }
 
-void createDefaultConfigFile(std::string configfilepath, std::string language) {
+void createDefaultConfigFile(const std::string& configfilepath, const std::string& language) {
     SDL_Log("Creating config file '%s'", configfilepath.c_str());
 
 
@@ -472,7 +472,7 @@ int main(int argc, char *argv[]) {
         if(!missingFiles.empty()) {
             // set back to English
             std::string setBackToEnglishWarning = fmt::sprintf("The following files are missing for language \"%s\":\n",_("LanguageFileExtension"));
-            for(std::string filename : missingFiles) {
+            for(const std::string& filename : missingFiles) {
                 setBackToEnglishWarning += filename + "\n";
             }
             setBackToEnglishWarning += "\nLanguage is changed to English!";

@@ -51,7 +51,7 @@ public:
     CustomGamePlayers(const GameInitSettings& newGameInitSettings, bool server = true, bool LANServer = true);
     virtual ~CustomGamePlayers();
 
-    void onReceiveChangeEventList(ChangeEventList changeEventList);
+    void onReceiveChangeEventList(const ChangeEventList& changeEventList);
 
     ChangeEventList getChangeEventListForNewPlayer(const std::string& newPlayerName);
 

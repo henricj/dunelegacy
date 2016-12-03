@@ -27,7 +27,7 @@ public:
     class PlayerData {
     public:
         PlayerData( const std::string& playerclass, const std::string& name,
-                    const std::function<Player* (House*, std::string)>& pCreate,
+                    const std::function<Player* (House*, const std::string&)>& pCreate,
                     const std::function<Player* (InputStream&, House*)>& pLoad)
          : playerclass(playerclass), name(name), pCreate(pCreate), pLoad(pLoad) {
         }
@@ -40,7 +40,7 @@ public:
             return name;
         }
 
-        Player* create(House* associatedHouse, std::string playername) const {
+        Player* create(House* associatedHouse, const std::string& playername) const {
             Player* pPlayer = pCreate(associatedHouse, playername);
             pPlayer->setPlayerclass(playerclass);
             return pPlayer;
@@ -55,7 +55,7 @@ public:
     private:
         std::string playerclass;
         std::string name;
-        std::function<Player* (House*, std::string)> pCreate;
+        std::function<Player* (House*, const std::string&)> pCreate;
         std::function<Player* (InputStream&, House*)> pLoad;
     };
 

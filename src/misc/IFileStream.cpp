@@ -70,7 +70,7 @@ bool IFileStream::open(const char* filename)
     }
 }
 
-bool IFileStream::open(std::string filename)
+bool IFileStream::open(const std::string& filename)
 {
     return open(filename.c_str());
 }

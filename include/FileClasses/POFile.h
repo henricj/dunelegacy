@@ -22,6 +22,6 @@
 #include <map>
 #include <string>
 
-std::map<std::string, std::string> loadPOFile(SDL_RWops* rwop, bool freesrc = true, std::string filename = "");
+std::map<std::string, std::string> loadPOFile(SDL_RWops* rwop, bool freesrc = true, const std::string& filename = "");
 
 #endif // POFILE_H

@@ -88,10 +88,10 @@ public:
     Uint8 getPlayerID() const { return playerID; };
 
     std::string getPlayername() const { return playername; };
-    void setPlayername(std::string playername) { this->playername = playername; };
+    void setPlayername(const std::string& playername) { this->playername = playername; };
 
     std::string getPlayerclass() const { return playerclass; };
-    void setPlayerclass(std::string playerclass) { this->playerclass = playerclass; };
+    void setPlayerclass(const std::string& playerclass) { this->playerclass = playerclass; };
 
 protected:
 

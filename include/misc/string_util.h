@@ -31,7 +31,7 @@ bool splitString(const std::string& parseString, unsigned int numStringPointers,
 
 std::vector<std::string> splitString(const std::string& parseString, const std::string& delim = ",", bool keepDelim = false);
 
-std::string replaceAll(std::string str, const std::map<std::string, std::string>& replacementMap);
+std::string replaceAll(const std::string& str, const std::map<std::string, std::string>& replacementMap);
 
 
 template<typename T>
@@ -118,6 +118,6 @@ std::string convertUTF8ToISO8859_1(const std::string& text);
     \param text Text to decode
     \return The decoded text
 */
-std::string decodeString(std::string text);
+std::string decodeString(const std::string& text);
 
 #endif // STRING_UTIL_H

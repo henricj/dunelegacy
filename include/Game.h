@@ -174,7 +174,7 @@ public:
         \param filename the name of the file to load from
         \return true on success, false on failure
     */
-    bool loadSaveGame(std::string filename);
+    bool loadSaveGame(const std::string& filename);
 
     /**
         This method loads a previously saved game.
@@ -188,7 +188,7 @@ public:
         \param filename the name of the file to save to
         \return true on success, false on failure
     */
-    bool saveGame(std::string filename);
+    bool saveGame(const std::string& filename);
 
     /**
         This method starts the game. Will return when the game is finished or aborted.
@@ -270,13 +270,13 @@ public:
         This method selects all units/structures in the list aList.
         \param aList the list containing all the units/structures to be selected
     */
-    void selectAll(std::set<Uint32>& aList);
+    void selectAll(const std::set<Uint32>& aList);
 
     /**
         This method unselects all units/structures in the list aList.
         \param aList the list containing all the units/structures to be unselected
     */
-    void unselectAll(std::set<Uint32>& aList);
+    void unselectAll(const std::set<Uint32>& aList);
 
     /**
         Returns a list of all currently selected objects.

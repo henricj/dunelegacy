@@ -164,8 +164,8 @@ void MultiPlayerMenu::onConnect() {
 
 void MultiPlayerMenu::onPeerDisconnected(const std::string& playername, bool bHost, int cause) {
     if(bHost) {
-        pNetworkManager->setOnReceiveGameInfo(std::function<void (GameInitSettings, ChangeEventList)>());
-        pNetworkManager->setOnPeerDisconnected(std::function<void (std::string, bool, int)>());
+        pNetworkManager->setOnReceiveGameInfo(std::function<void (const GameInitSettings&, const ChangeEventList&)>());
+        pNetworkManager->setOnPeerDisconnected(std::function<void (const std::string&, bool, int)>());
         closeChildWindow();
 
         showDisconnectMessageBox(cause);
@@ -209,7 +209,7 @@ void MultiPlayerMenu::onGameTypeChange(int buttonID) {
 
         // stop listening on internet games
         pMetaServerClient->setOnGameServerInfoList(std::function<void (std::list<GameServerInfo>&)>());
-        pMetaServerClient->setOnMetaServerError(std::function<void (int, std::string)>());
+        pMetaServerClient->setOnMetaServerError(std::function<void (int, const std::string&)>());
     } else if((buttonID == 1) && (LANGamesButton.getToggleState() == true)) {
         // Internet Games
 
@@ -344,10 +344,10 @@ void MultiPlayerMenu::onMetaServerError(int errorcause, const std::string& error
     }
 }
 
-void MultiPlayerMenu::onReceiveGameInfo(GameInitSettings gameInitSettings, ChangeEventList changeEventList) {
+void MultiPlayerMenu::onReceiveGameInfo(const GameInitSettings& gameInitSettings, const ChangeEventList& changeEventList) {
     closeChildWindow();
 
-    pNetworkManager->setOnPeerDisconnected(std::function<void (std::string, bool, int)>());
+    pNetworkManager->setOnPeerDisconnected(std::function<void (const std::string&, bool, int)>());
 
     CustomGamePlayers* pCustomGamePlayers = new CustomGamePlayers(gameInitSettings, false);
     pCustomGamePlayers->onReceiveChangeEventList(changeEventList);

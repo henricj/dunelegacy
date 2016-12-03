@@ -70,7 +70,7 @@ bool OFileStream::open(const char* filename)
     }
 }
 
-bool OFileStream::open(std::string filename)
+bool OFileStream::open(const std::string& filename)
 {
     return open(filename.c_str());
 }

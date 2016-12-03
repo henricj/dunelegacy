@@ -46,7 +46,7 @@ private:
     void loadReinforcements();
     void loadTeams();
 
-    HOUSETYPE getHouseID(std::string name);
+    HOUSETYPE getHouseID(const std::string& name);
 
     MapEditor* pMapEditor;
     std::map<std::string, HOUSETYPE> housename2house;

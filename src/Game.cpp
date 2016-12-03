@@ -99,10 +99,10 @@ Game::Game() {
 */
 Game::~Game() {
     if(pNetworkManager != nullptr) {
-        pNetworkManager->setOnReceiveChatMessage(std::function<void (std::string, std::string)>());
+        pNetworkManager->setOnReceiveChatMessage(std::function<void (const std::string&, const std::string&)>());
         pNetworkManager->setOnReceiveCommandList(std::function<void (const std::string&, const CommandList&)>());
-        pNetworkManager->setOnReceiveSelectionList(std::function<void (std::string, std::set<Uint32>, int)>());
-        pNetworkManager->setOnPeerDisconnected(std::function<void (std::string, bool, int)>());
+        pNetworkManager->setOnReceiveSelectionList(std::function<void (const std::string&, const std::set<Uint32>&, int)>());
+        pNetworkManager->setOnPeerDisconnected(std::function<void (const std::string&, bool, int)>());
     }
 
     delete pInGameMenu;
@@ -1454,7 +1454,7 @@ int Game::whatNext()
 }
 
 
-bool Game::loadSaveGame(std::string filename) {
+bool Game::loadSaveGame(const std::string& filename) {
     IFileStream fs;
 
     if(fs.open(filename) == false) {
@@ -1616,7 +1616,7 @@ bool Game::loadSaveGame(InputStream& stream) {
 }
 
 
-bool Game::saveGame(std::string filename)
+bool Game::saveGame(const std::string& filename)
 {
     OFileStream fs;
 
@@ -1735,7 +1735,7 @@ ObjectBase* Game::loadObject(InputStream& stream, Uint32 objectID)
 }
 
 
-void Game::selectAll(std::set<Uint32>& aList)
+void Game::selectAll(const std::set<Uint32>& aList)
 {
     for(Uint32 objectID : aList) {
         objectManager.getObject(objectID)->setSelected(true);
@@ -1743,7 +1743,7 @@ void Game::selectAll(std::set<Uint32>& aList)
 }
 
 
-void Game::unselectAll(std::set<Uint32>& aList)
+void Game::unselectAll(const std::set<Uint32>& aList)
 {
     for(Uint32 objectID : aList) {
         objectManager.getObject(objectID)->setSelected(false);

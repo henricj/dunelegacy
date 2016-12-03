@@ -33,29 +33,29 @@ void drawCursor();
 
 std::string     resolveItemName(int itemID);
 
-int             getAnimByFilename(std::string filename);
+int             getAnimByFilename(const std::string& filename);
 
 Coord           getStructureSize(int itemID);
 
-Uint32          getItemIDByName(std::string name);
+Uint32          getItemIDByName(const std::string& name);
 std::string     getItemNameByID(Uint32 itemID);
 SDL_Texture*    resolveItemPicture(int itemID, HOUSETYPE house = HOUSE_HARKONNEN);
 
-HOUSETYPE       getHouseByName(std::string name);
+HOUSETYPE       getHouseByName(const std::string& name);
 std::string     getHouseNameByNumber(HOUSETYPE house);
 
-ATTACKMODE      getAttackModeByName(std::string name);
+ATTACKMODE      getAttackModeByName(const std::string& name);
 std::string     getAttackModeNameByMode(ATTACKMODE attackMode);
 
-DropLocation    getDropLocationByName(std::string name);
+DropLocation    getDropLocationByName(const std::string& name);
 std::string     getDropLocationNameByID(DropLocation dropLocation);
 std::string     resolveDropLocationName(DropLocation dropLocation);
 
 
-TeamBehavior    getTeamBehaviorByName(std::string name);
+TeamBehavior    getTeamBehaviorByName(const std::string& name);
 std::string     getTeamBehaviorNameByID(TeamBehavior teamBehavior);
 
-TeamType        getTeamTypeByName(std::string name);
+TeamType        getTeamTypeByName(const std::string& name);
 std::string     getTeamTypeNameByID(TeamType teamType);
 
 
@@ -71,7 +71,7 @@ inline int missionNumberToLevelNumber(int missionNumber) {
     }
 }
 
-void startReplay(std::string filename);
+void startReplay(const std::string& filename);
 void startSinglePlayerGame(const GameInitSettings& init);
 void startMultiPlayerGame(const GameInitSettings& init);
 

@@ -197,7 +197,7 @@ std::shared_ptr<MetaServerCommand> MetaServerClient::dequeueMetaServerCommand() 
 }
 
 
-void MetaServerClient::setErrorMessage(int errorCause, std::string errorMessage) {
+void MetaServerClient::setErrorMessage(int errorCause, const std::string& errorMessage) {
     SDL_LockMutex(sharedDataMutex);
 
     if(metaserverErrorCause == 0) {
@@ -209,7 +209,7 @@ void MetaServerClient::setErrorMessage(int errorCause, std::string errorMessage)
 }
 
 
-void MetaServerClient::setNewGameServerInfoList(std::list<GameServerInfo>& newGameServerInfoList) {
+void MetaServerClient::setNewGameServerInfoList(const std::list<GameServerInfo>& newGameServerInfoList) {
     SDL_LockMutex(sharedDataMutex);
 
     gameServerInfoList = newGameServerInfoList;
