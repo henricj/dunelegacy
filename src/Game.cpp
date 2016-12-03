@@ -1378,7 +1378,8 @@ GameInitSettings Game::getNextGameInitSettings()
                 delete pMapChoice;
             }
 
-            return GameInitSettings(gameInitSettings, nextMission, alreadyPlayedRegions);
+            Uint32 alreadyShownTutorialHints = won ? pLocalPlayer->getAlreadyShownTutorialHints() : gameInitSettings.getAlreadyShownTutorialHints();
+            return GameInitSettings(gameInitSettings, nextMission, alreadyPlayedRegions, alreadyShownTutorialHints);
         } break;
 
         default: {

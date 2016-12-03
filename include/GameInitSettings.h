@@ -103,11 +103,12 @@ public:
 
     /**
         Constructor for continuing a campaign at the specified mission
-        \param  prevGameInitInfoClass   the init settings of the previous mission in the campaign
-        \param  nextMission             the number of the mission to continue the campaign
-        \param  alreadyPlayedRegions    a bit set describing which regions were already played (used to forbid playing these again)
+        \param  prevGameInitInfoClass       the init settings of the previous mission in the campaign
+        \param  nextMission                 the number of the mission to continue the campaign
+        \param  alreadyPlayedRegions        a bit set describing which regions were already played (used to forbid playing these again)
+        \param  alreadyShownTutorialHints   contains flags for each tutorial hint (see enum HumanPlayer::TutorialHint)
     */
-    GameInitSettings(const GameInitSettings& prevGameInitInfoClass, int nextMission, Uint32 alreadyPlayedRegions);
+    GameInitSettings(const GameInitSettings& prevGameInitInfoClass, int nextMission, Uint32 alreadyPlayedRegions, Uint32 alreadyShownTutorialHints);
 
     /**
         Constructor for specifying the start of a skirmish mission in the campaign
@@ -166,6 +167,7 @@ public:
     inline HOUSETYPE getHouseID() const { return houseID; };
     inline int getMission() const { return mission; };
     inline Uint32 getAlreadyPlayedRegions() const { return alreadyPlayedRegions; };
+    inline Uint32 getAlreadyShownTutorialHints() const { return alreadyShownTutorialHints; };
     inline const std::string& getFilename() const { return filename; };
     inline const std::string& getFiledata() const { return filedata; };
     inline const std::string& getServername() const { return servername; };
@@ -204,6 +206,7 @@ private:
     HOUSETYPE       houseID;
     int             mission;
     Uint32          alreadyPlayedRegions;
+    Uint32          alreadyShownTutorialHints;
 
     std::string     filename;
     std::string     filedata;

@@ -633,8 +633,12 @@ StructureBase* House::placeStructure(Uint32 builderID, int itemID, int xPos, int
             if(pBuilder != nullptr) {
                 pBuilder->unSetWaitingToPlace();
 
-                if(this == pLocalHouse && pBuilder->isSelected()) {
-                    currentGame->currentCursorMode = Game::CursorMode_Normal;
+                if(this == pLocalHouse) {
+                    if(pBuilder->isSelected()) {
+                        currentGame->currentCursorMode = Game::CursorMode_Normal;
+                    }
+
+                    pLocalPlayer->onPlaceStructure(nullptr);
                 }
             }
 
@@ -663,8 +667,12 @@ StructureBase* House::placeStructure(Uint32 builderID, int itemID, int xPos, int
             if(pBuilder != nullptr) {
                 pBuilder->unSetWaitingToPlace();
 
-                if(this == pLocalHouse && pBuilder->isSelected()) {
-                    currentGame->currentCursorMode = Game::CursorMode_Normal;
+                if(this == pLocalHouse) {
+                    if(pBuilder->isSelected()) {
+                        currentGame->currentCursorMode = Game::CursorMode_Normal;
+                    }
+
+                    pLocalPlayer->onPlaceStructure(nullptr);
                 }
             }
 
@@ -727,8 +735,11 @@ StructureBase* House::placeStructure(Uint32 builderID, int itemID, int xPos, int
                     }
                 }
 
-                if (this == pLocalHouse && pBuilder->isSelected()) {
-                    currentGame->currentCursorMode = Game::CursorMode_Normal;
+                if (this == pLocalHouse) {
+                    if(pBuilder->isSelected()) {
+                        currentGame->currentCursorMode = Game::CursorMode_Normal;
+                    }
+                    pLocalPlayer->onPlaceStructure(newStructure);
                 }
 
                 // only if we were constructed by construction yard

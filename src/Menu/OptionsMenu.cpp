@@ -169,7 +169,10 @@ OptionsMenu::OptionsMenu() : MenuBase()
     fullScreenCheckbox.setChecked(settings.video.fullscreen);
     fullScreenCheckbox.setOnClick(std::bind(&OptionsMenu::onChangeOption, this, true));
     videoHBox.addWidget(&fullScreenCheckbox, 240);
-    videoHBox.addWidget(HSpacer::create(240));
+    showTutorialHintsCheckbox.setText(_("Show Tutorial Hints"));
+    showTutorialHintsCheckbox.setChecked(settings.general.showTutorialHints);
+    showTutorialHintsCheckbox.setOnClick(std::bind(&OptionsMenu::onChangeOption, this, true));
+    videoHBox.addWidget(&showTutorialHintsCheckbox, 240);
     videoHBox.addWidget(Spacer::create(), 0.5);
 
     mainVBox.addWidget(&videoHBox, 0.01);
@@ -251,6 +254,7 @@ void OptionsMenu::onChangeOption(bool bInteractive) {
     const PlayerFactory::PlayerData* pPlayerData = PlayerFactory::getByIndex(aiDropDownBox.getSelectedEntryIntData());
     bChanged |= ((pPlayerData == nullptr) || (settings.ai.campaignAI != pPlayerData->getPlayerClass()));
     bChanged |= (settings.general.playIntro != introCheckbox.isChecked());
+    bChanged |= (settings.general.showTutorialHints != showTutorialHintsCheckbox.isChecked());
 
     int selectedResolution = resolutionDropDownBox.getSelectedEntryIntData();
     if(selectedResolution >= 0) {
@@ -296,6 +300,7 @@ void OptionsMenu::onOptionsOK() {
     std::string languageFilename = availLanguages[languageDropDownBox.getSelectedEntryIntData()];
     settings.general.language = languageFilename.substr(languageFilename.size()-5,2);
     settings.general.playIntro = introCheckbox.isChecked();
+    settings.general.showTutorialHints = showTutorialHintsCheckbox.isChecked();
 
     const PlayerFactory::PlayerData* pPlayerData = PlayerFactory::getByIndex(aiDropDownBox.getSelectedEntryIntData());
     settings.ai.campaignAI = ((pPlayerData != nullptr) ? pPlayerData->getPlayerClass() : DEFAULTAIPLAYERCLASS);
@@ -341,6 +346,7 @@ void OptionsMenu::saveConfiguration2File() {
     INIFile myINIFile(getConfigFilepath());
 
     myINIFile.setBoolValue("General","Play Intro",settings.general.playIntro);
+    myINIFile.setBoolValue("General","Show Tutorial Hints",settings.general.showTutorialHints);
 
     myINIFile.setIntValue("Video","Width",settings.video.width);
     myINIFile.setIntValue("Video","Height",settings.video.height);

@@ -24,6 +24,7 @@
 #include <vector>
 #include <map>
 #include <algorithm>
+#include <functional>
 #include <sstream>
 
 bool splitString(const std::string& parseString, unsigned int numStringPointers,...);
@@ -96,6 +97,16 @@ inline int stringCaseInsensitiveCompare(const std::string& str1, const std::stri
 
     return tolower(*pStr1) - tolower(*pStr2);
 }
+
+/**
+    This function splits a text into multiple lines such that each line is no longer than linewidth pixels. The function pGetTextWidth is
+    used to determine how width a given text will be in pixels.
+    \param  text            the text to split; any hard line breaks '\n' are also considered
+    \param  linewidth       the maximum width of a line in pixel
+    \param  pGetTextWidth   this function is used to determine the width in pixels of a given string. Its return value shall specify the width in pixels of its parameter.
+    \return the returned vector contains the complete text, split into multiple lines.
+*/
+std::vector<std::string> greedyWordWrap(const std::string& text, int linewidth, std::function<int (const std::string&)> pGetTextWidth);
 
 std::string convertCP850ToISO8859_1(const std::string& text);
 

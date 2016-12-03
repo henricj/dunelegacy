@@ -181,6 +181,52 @@ typedef enum {
     NUM_SMALLDETAILPICS
 } SmallDetailPics_Enum;
 
+// tiny pictures used for tutorial hints (has the same order as ItemID_enum, except the first entry)
+typedef enum {
+    TinyPicture_Spice = 0,
+    TinyPicture_Barracks = 1,
+    TinyPicture_ConstructionYard = 2,
+    TinyPicture_GunTurret = 3,
+    TinyPicture_HeavyFactory = 4,
+    TinyPicture_HighTechFactory = 5,
+    TinyPicture_IX = 6,
+    TinyPicture_LightFactory = 7,
+    TinyPicture_Palace = 8,
+    TinyPicture_Radar = 9,
+    TinyPicture_Refinery = 10,
+    TinyPicture_RepairYard = 11,
+    TinyPicture_RocketTurret = 12,
+    TinyPicture_Silo = 13,
+    TinyPicture_Slab1 = 14,
+    TinyPicture_Slab4 = 15,
+    TinyPicture_StarPort = 16,
+    TinyPicture_Wall = 17,
+    TinyPicture_WindTrap = 18,
+    TinyPicture_WOR = 19,
+    TinyPicture_Carryall = 20,
+    TinyPicture_Devastator = 21,
+    TinyPicture_Deviator = 22,
+    TinyPicture_Frigate = 23,
+    TinyPicture_Harvester = 24,
+    TinyPicture_Soldier = 25,
+    TinyPicture_Launcher = 26,
+    TinyPicture_MCV = 27,
+    TinyPicture_Ornithopter = 28,
+    TinyPicture_Quad = 29,
+    TinyPicture_Saboteur = 30,
+    TinyPicture_Sandworm = 31,
+    TinyPicture_SiegeTank = 32,
+    TinyPicture_SonicTank = 33,
+    TinyPicture_Tank = 34,
+    TinyPicture_Trike = 35,
+    TinyPicture_RaiderTrike = 36,
+    TinyPicture_Trooper = 37,
+    TinyPicture_Special = 38,
+    TinyPicture_Infantry = 39,
+    TinyPicture_Troopers = 40,
+    NUM_TINYPICTURE
+} TinyPicture_Enum;
+
 // UI Graphics
 typedef enum {
     UI_RadarAnimation,
@@ -470,6 +516,7 @@ public:
     SDL_Texture**   getObjPic(unsigned int id, int house=HOUSE_HARKONNEN);
 
     SDL_Texture*    getSmallDetailPic(unsigned int id);
+    SDL_Texture*    getTinyPicture(unsigned int id);
     SDL_Texture*    getUIGraphic(unsigned int id, int house=HOUSE_HARKONNEN);
     SDL_Texture*    getMapChoicePiece(unsigned int num, int house);
 
@@ -505,6 +552,7 @@ private:
     // Textures
     SDL_Texture*    objPicTex[NUM_OBJPICS][(int) NUM_HOUSES][NUM_ZOOMLEVEL];
     SDL_Texture*    smallDetailPicTex[NUM_SMALLDETAILPICS];
+    SDL_Texture*    tinyPictureTex[NUM_TINYPICTURE];
     SDL_Texture*    uiGraphicTex[NUM_UIGRAPHICS][(int) NUM_HOUSES];
     SDL_Texture*    mapChoicePiecesTex[NUM_MAPCHOICEPIECES][(int) NUM_HOUSES];
 };

@@ -133,6 +133,11 @@ GFXManager::GFXManager() {
         smallDetailPicTex[i] = nullptr;
     }
 
+    // init whole tinyPictureTex array
+    for(int i = 0; i < NUM_SMALLDETAILPICS; i++) {
+        tinyPictureTex[i] = nullptr;
+    }
+
     // init whole UIGraphic array
     for(int i = 0; i < NUM_UIGRAPHICS; i++) {
         for(int j = 0; j < (int) NUM_HOUSES; j++) {
@@ -369,6 +374,48 @@ GFXManager::GFXManager() {
     smallDetailPicTex[Picture_WOR] = extractSmallDetailPic("WOR.WSA");
     // unused: FARTR.WSA, FHARK.WSA, FORDOS.WSA
 
+
+    tinyPictureTex[TinyPicture_Spice] = convertSurfaceToTexture(shapes->getPicture(94), true);
+    tinyPictureTex[TinyPicture_Barracks] = convertSurfaceToTexture(shapes->getPicture(62), true);
+    tinyPictureTex[TinyPicture_ConstructionYard] = convertSurfaceToTexture(shapes->getPicture(60), true);
+    tinyPictureTex[TinyPicture_GunTurret] = convertSurfaceToTexture(shapes->getPicture(67), true);
+    tinyPictureTex[TinyPicture_HeavyFactory] = convertSurfaceToTexture(shapes->getPicture(56), true);
+    tinyPictureTex[TinyPicture_HighTechFactory] = convertSurfaceToTexture(shapes->getPicture(57), true);
+    tinyPictureTex[TinyPicture_IX] = convertSurfaceToTexture(shapes->getPicture(58), true);
+    tinyPictureTex[TinyPicture_LightFactory] = convertSurfaceToTexture(shapes->getPicture(55), true);
+    tinyPictureTex[TinyPicture_Palace] = convertSurfaceToTexture(shapes->getPicture(54), true);
+    tinyPictureTex[TinyPicture_Radar] = convertSurfaceToTexture(shapes->getPicture(70), true);
+    tinyPictureTex[TinyPicture_Refinery] = convertSurfaceToTexture(shapes->getPicture(64), true);
+    tinyPictureTex[TinyPicture_RepairYard] = convertSurfaceToTexture(shapes->getPicture(65), true);
+    tinyPictureTex[TinyPicture_RocketTurret] = convertSurfaceToTexture(shapes->getPicture(68), true);
+    tinyPictureTex[TinyPicture_Silo] = convertSurfaceToTexture(shapes->getPicture(69), true);
+    tinyPictureTex[TinyPicture_Slab1] = convertSurfaceToTexture(shapes->getPicture(53), true);
+    tinyPictureTex[TinyPicture_Slab4] = convertSurfaceToTexture(shapes->getPicture(71), true);
+    tinyPictureTex[TinyPicture_StarPort] = convertSurfaceToTexture(shapes->getPicture(63), true);
+    tinyPictureTex[TinyPicture_Wall] = convertSurfaceToTexture(shapes->getPicture(66), true);
+    tinyPictureTex[TinyPicture_WindTrap] = convertSurfaceToTexture(shapes->getPicture(61), true);
+    tinyPictureTex[TinyPicture_WOR] = convertSurfaceToTexture(shapes->getPicture(59), true);
+    tinyPictureTex[TinyPicture_Carryall] = convertSurfaceToTexture(shapes->getPicture(77), true);
+    tinyPictureTex[TinyPicture_Devastator] = convertSurfaceToTexture(shapes->getPicture(75), true);
+    tinyPictureTex[TinyPicture_Deviator] = convertSurfaceToTexture(shapes->getPicture(86), true);
+    tinyPictureTex[TinyPicture_Frigate] = convertSurfaceToTexture(shapes->getPicture(77), true);    // use carryall picture
+    tinyPictureTex[TinyPicture_Harvester] = convertSurfaceToTexture(shapes->getPicture(88), true);
+    tinyPictureTex[TinyPicture_Soldier] = convertSurfaceToTexture(shapes->getPicture(90), true);
+    tinyPictureTex[TinyPicture_Launcher] = convertSurfaceToTexture(shapes->getPicture(73), true);
+    tinyPictureTex[TinyPicture_MCV] = convertSurfaceToTexture(shapes->getPicture(89), true);
+    tinyPictureTex[TinyPicture_Ornithopter] = convertSurfaceToTexture(shapes->getPicture(85), true);
+    tinyPictureTex[TinyPicture_Quad] = convertSurfaceToTexture(shapes->getPicture(74), true);
+    tinyPictureTex[TinyPicture_Saboteur] = convertSurfaceToTexture(shapes->getPicture(84), true);
+    tinyPictureTex[TinyPicture_Sandworm] = convertSurfaceToTexture(shapes->getPicture(93), true);
+    tinyPictureTex[TinyPicture_SiegeTank] = convertSurfaceToTexture(shapes->getPicture(72), true);
+    tinyPictureTex[TinyPicture_SonicTank] = convertSurfaceToTexture(shapes->getPicture(79), true);
+    tinyPictureTex[TinyPicture_Tank] = convertSurfaceToTexture(shapes->getPicture(78), true);
+    tinyPictureTex[TinyPicture_Trike] = convertSurfaceToTexture(shapes->getPicture(80), true);
+    tinyPictureTex[TinyPicture_RaiderTrike] = convertSurfaceToTexture(shapes->getPicture(87), true);
+    tinyPictureTex[TinyPicture_Trooper] = convertSurfaceToTexture(shapes->getPicture(76), true);
+    tinyPictureTex[TinyPicture_Special] = convertSurfaceToTexture(shapes->getPicture(75), true);    // use devastator picture
+    tinyPictureTex[TinyPicture_Infantry] = convertSurfaceToTexture(shapes->getPicture(81), true);
+    tinyPictureTex[TinyPicture_Troopers] = convertSurfaceToTexture(shapes->getPicture(91), true);
 
     // load UI graphics
     uiGraphic[UI_RadarAnimation][HOUSE_HARKONNEN] = Scaler::doubleSurfaceNN(radar->getAnimationAsPictureRow());
@@ -844,6 +891,13 @@ GFXManager::~GFXManager() {
         }
     }
 
+    for(int i = 0; i < NUM_TINYPICTURE; i++) {
+        if(tinyPictureTex[i] != nullptr) {
+            SDL_DestroyTexture(tinyPictureTex[i]);
+            tinyPictureTex[i] = nullptr;
+        }
+    }
+
     for(int i = 0; i < NUM_UIGRAPHICS; i++) {
         for(int j = 0; j < (int) NUM_HOUSES; j++) {
             if(uiGraphic[i][j] != nullptr) {
@@ -935,6 +989,14 @@ SDL_Texture* GFXManager::getSmallDetailPic(unsigned int id) {
         return nullptr;
     }
     return smallDetailPicTex[id];
+}
+
+
+SDL_Texture* GFXManager::getTinyPicture(unsigned int id) {
+    if(id >= NUM_TINYPICTURE) {
+        return nullptr;
+    }
+    return tinyPictureTex[id];
 }
 
 

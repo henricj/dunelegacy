@@ -19,6 +19,7 @@
 
 #include <stdarg.h>
 #include <stdio.h>
+#include <vector>
 #include <algorithm>
 
 /**
@@ -140,6 +141,101 @@ std::string replaceAll(std::string str, const std::map<std::string, std::string>
 
     return str;
 }
+
+
+std::vector<std::string> greedyWordWrap(const std::string& text, int linewidth, std::function<int (const std::string&)> pGetTextWidth) {
+    //split text into single lines at every '\n'
+    size_t startpos = 0;
+    size_t nextpos;
+    std::vector<std::string> hardLines;
+    do {
+        nextpos = text.find("\n",startpos);
+        if(nextpos == std::string::npos) {
+            hardLines.push_back(text.substr(startpos,text.length()-startpos));
+        } else {
+            hardLines.push_back(text.substr(startpos,nextpos-startpos));
+            startpos = nextpos+1;
+        }
+    } while(nextpos != std::string::npos);
+
+    std::vector<std::string> textLines;
+    for(const std::string& hardLine : hardLines) {
+        if(hardLine == "") {
+            textLines.push_back(" ");
+            continue;
+        }
+
+        bool bEndOfLine = false;
+        size_t warppos = 0;
+        size_t oldwarppos = 0;
+        size_t lastwarp = 0;
+
+        while(bEndOfLine == false) {
+            while(true) {
+                warppos = hardLine.find(" ", oldwarppos);
+                std::string tmp;
+                if(warppos == std::string::npos) {
+                    tmp = hardLine.substr(lastwarp,hardLine.length()-lastwarp);
+                    warppos = hardLine.length();
+                    bEndOfLine = true;
+                } else {
+                    tmp = hardLine.substr(lastwarp,warppos-lastwarp);
+                }
+
+                if( pGetTextWidth(tmp) > linewidth) {
+                    // this line would be too big => in oldwarppos is the last correct word warp pos
+                    bEndOfLine = false;
+                    break;
+                } else {
+                    if(bEndOfLine == true) {
+                        oldwarppos = warppos;
+                        break;
+                    } else {
+                        oldwarppos = warppos + 1;
+                    }
+                }
+            }
+
+            if(oldwarppos == lastwarp) {
+                // linewidth is too small for the next word => split the word
+
+                warppos = lastwarp;
+                while(true) {
+                    std::string tmp = hardLine.substr(lastwarp,warppos-lastwarp);
+                    if( pGetTextWidth(tmp) > linewidth) {
+                        // this line would be too big => in oldwarppos is the last correct warp pos
+                        break;
+                    } else {
+                        oldwarppos = warppos;
+                    }
+
+                    warppos++;
+
+                    if(warppos > hardLine.length()) {
+                        oldwarppos = hardLine.length();
+                        break;
+                    }
+                }
+
+                if(warppos != lastwarp) {
+                    textLines.push_back(hardLine.substr(lastwarp,oldwarppos-lastwarp));
+                    lastwarp = oldwarppos;
+                } else {
+                    // linewidth is too small for the next character => create a dummy entry
+                    textLines.push_back(" ");
+                    lastwarp++;
+                    oldwarppos++;
+                }
+            } else {
+                textLines.push_back(hardLine.substr(lastwarp,oldwarppos-lastwarp));
+                lastwarp = oldwarppos;
+            }
+        }
+    }
+
+    return textLines;
+}
+
 
 
 std::string convertCP850ToISO8859_1(const std::string& text)

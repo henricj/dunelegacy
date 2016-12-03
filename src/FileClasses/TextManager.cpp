@@ -56,6 +56,7 @@ void TextManager::loadData() {
     addOrigDuneText("TEXTA." + _("LanguageFileExtension"), true);
     addOrigDuneText("TEXTO." + _("LanguageFileExtension"), true);
     addOrigDuneText("DUNE." + _("LanguageFileExtension"));
+    addOrigDuneText("MESSAGE." + _("LanguageFileExtension"));
 
     // load all mentat texts
     SDL_RWops* mentat_lng[3];

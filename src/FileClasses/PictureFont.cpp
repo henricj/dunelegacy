@@ -91,7 +91,7 @@ PictureFont::~PictureFont()
 
 
 
-void PictureFont::drawTextOnSurface(SDL_Surface* pSurface, std::string text, Uint32 baseColor) {
+void PictureFont::drawTextOnSurface(SDL_Surface* pSurface, const std::string& text, Uint32 baseColor) {
     SDL_LockSurface(pSurface);
 
     int bpp = pSurface->format->BytesPerPixel;
@@ -152,7 +152,7 @@ void PictureFont::drawTextOnSurface(SDL_Surface* pSurface, std::string text, Uin
         \param  text    The text to be checked for it's length in pixel
         \return Number of pixels needed
 */
-int PictureFont::getTextWidth(std::string text) const {
+int PictureFont::getTextWidth(const std::string& text) const {
     int width = 0;
     const unsigned char* pText = (unsigned char*) text.c_str();
     while(*pText != '\0') {

@@ -223,7 +223,6 @@ protected:
     }
 
 private:
-    std::list<std::string> calcTextLines();
 
     int fontID = FONT_STD12;                    ///< the ID of the font to use
     Uint32 textcolor = COLOR_DEFAULT;           ///< the text color

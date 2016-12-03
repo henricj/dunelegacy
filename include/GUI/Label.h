@@ -21,6 +21,7 @@
 #include "Widget.h"
 #include "GUIStyle.h"
 #include <misc/draw_util.h>
+#include <misc/string_util.h>
 #include <SDL.h>
 #include <string>
 #include <list>
@@ -201,98 +202,12 @@ protected:
         Widget::updateTextures();
 
         if(pTexture == nullptr) {
-
-            //split text into single lines at every '\n'
-            size_t startpos = 0;
-            size_t nextpos;
-            std::list<std::string> hardLines;
-            do {
-                nextpos = text.find("\n",startpos);
-                if(nextpos == std::string::npos) {
-                    hardLines.push_back(text.substr(startpos,text.length()-startpos));
-                } else {
-                    hardLines.push_back(text.substr(startpos,nextpos-startpos));
-                    startpos = nextpos+1;
-                }
-            } while(nextpos != std::string::npos);
-
-            std::list<std::string> textLines;
-
-            for(const std::string hardLine : hardLines) {
-                if(hardLine == "") {
-                    textLines.push_back(" ");
-                    continue;
-                }
-
-                bool bEndOfLine = false;
-                size_t warppos = 0;
-                size_t oldwarppos = 0;
-                size_t lastwarp = 0;
-
-                while(bEndOfLine == false) {
-                    while(true) {
-                        warppos = hardLine.find(" ", oldwarppos);
-                        std::string tmp;
-                        if(warppos == std::string::npos) {
-                            tmp = hardLine.substr(lastwarp,hardLine.length()-lastwarp);
-                            warppos = hardLine.length();
-                            bEndOfLine = true;
-                        } else {
-                            tmp = hardLine.substr(lastwarp,warppos-lastwarp);
-                        }
-
-                        if( GUIStyle::getInstance().getMinimumLabelSize(tmp, fontID).x - 4 > getSize().x) {
-                            // this line would be too big => in oldwarppos is the last correct warp pos
-                            bEndOfLine = false;
-                            break;
-                        } else {
-                            if(bEndOfLine == true) {
-                                oldwarppos = warppos;
-                                break;
-                            } else {
-                                oldwarppos = warppos + 1;
-                            }
-                        }
-                    }
-
-                    if(oldwarppos == lastwarp) {
-                        // the width of this label is too small for the next word
-                        // split the word
-
-                        warppos = lastwarp;
-                        while(true) {
-                            std::string tmp = hardLine.substr(lastwarp,warppos-lastwarp);
-                            if( GUIStyle::getInstance().getMinimumLabelSize(tmp, fontID).x - 4 > getSize().x) {
-                                // this line would be too big => in oldwarppos is the last correct warp pos
-                                break;
-                            } else {
-                                oldwarppos = warppos;
-                            }
-
-                            warppos++;
-
-                            if(warppos > hardLine.length()) {
-                                oldwarppos = hardLine.length();
-                                break;
-                            }
-                        }
-
-                        if(warppos != lastwarp) {
-                            textLines.push_back(hardLine.substr(lastwarp,oldwarppos-lastwarp));
-                            lastwarp = oldwarppos;
-                        } else {
-                            // the width of this label is too small for the next character
-                            // create a dummy entry
-                            textLines.push_back(" ");
-                            lastwarp++;
-                            oldwarppos++;
-                        }
-                    } else {
-                        textLines.push_back(hardLine.substr(lastwarp,oldwarppos-lastwarp));
-                        lastwarp = oldwarppos;
-                    }
-                }
-            }
+            int fontID = this->fontID;
+            std::vector<std::string> textLines = greedyWordWrap(text,
+                                                                getSize().x,
+                                                                [fontID](const std::string& tmp) {
+                                                                    return GUIStyle::getInstance().getMinimumLabelSize(tmp, fontID).x - 4;
+                                                                });
 
             pTexture = convertSurfaceToTexture(GUIStyle::getInstance().createLabelSurface(getSize().x,getSize().y,textLines,fontID,alignment,textcolor,textshadowcolor,backgroundcolor), true);
         }

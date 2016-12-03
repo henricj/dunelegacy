@@ -305,6 +305,10 @@ void UnitBase::deploy(const Coord& newLocation) {
                 currentGameMap->getTile(location)->triggerSpecialBloom(getOwner());
             }
         }
+
+        if(pLocalHouse == getOwner()) {
+            pLocalPlayer->onUnitDeployed(this);
+        }
     }
 }
 

@@ -153,10 +153,11 @@ void createDefaultConfigFile(std::string configfilepath, std::string language) {
     }
 
     const char configfile[] =   "[General]\n"
-                                "Play Intro = false        # Play the intro when starting the game?\n"
-                                "Player Name = %s          # The name of the player\n"
-                                "Language = %s             # en = English, fr = French, de = German\n"
-                                "Scroll Speed = 50         # Amount to scroll the map when the cursor is near the screen border\n"
+                                "Play Intro = false          # Play the intro when starting the game?\n"
+                                "Player Name = %s            # The name of the player\n"
+                                "Language = %s               # en = English, fr = French, de = German\n"
+                                "Scroll Speed = 50           # Amount to scroll the map when the cursor is near the screen border\n"
+                                "Show Tutorial Hints = true  # Show tutorial hints during the game\n"
                                 "\n"
                                 "[Video]\n"
                                 "# You may decide to use half the resolution of your monitor, e.g. monitor has 1600x1200 => 800x600\n"
@@ -164,9 +165,9 @@ void createDefaultConfigFile(std::string configfilepath, std::string language) {
                                 "Width = 640\n"
                                 "Height = 480\n"
                                 "Fullscreen = true\n"
-                                "FrameLimit = true         # Limit the frame rate to save energy?\n"
-                                "Preferred Zoom Level = 1  # 0 = no zooming, 1 = 2x, 2 = 3x\n"
-                                "Scaler = ScaleHQ          # Scaler to use: ScaleHD = apply manual drawn mask to upscale, Scale2x = smooth edges, ScaleNN = nearest neighbour, \n"
+                                "FrameLimit = true           # Limit the frame rate to save energy?\n"
+                                "Preferred Zoom Level = 1    # 0 = no zooming, 1 = 2x, 2 = 3x\n"
+                                "Scaler = ScaleHQ            # Scaler to use: ScaleHD = apply manual drawn mask to upscale, Scale2x = smooth edges, ScaleNN = nearest neighbour, \n"
                                 "\n"
                                 "[Audio]\n"
                                 "# There are three different possibilities to play music\n"
@@ -177,9 +178,9 @@ void createDefaultConfigFile(std::string configfilepath, std::string language) {
                                 "#              Put any mp3, ogg or mid file there and it will be played in the particular situation\n"
                                 "Music Type = adl\n"
                                 "Play Music = true\n"
-                                "Music Volume = 64         # Volume between 0 and 128\n"
+                                "Music Volume = 64           # Volume between 0 and 128\n"
                                 "Play SFX = true\n"
-                                "SFX Volume = 64           # Volume between 0 and 128\n"
+                                "SFX Volume = 64             # Volume between 0 and 128\n"
                                 "\n"
                                 "[Network]\n"
                                 "ServerPort = %d\n"
@@ -433,6 +434,7 @@ int main(int argc, char *argv[]) {
         settings.general.playerName = myINIFile.getStringValue("General","Player Name","Player");
         settings.general.language = myINIFile.getStringValue("General","Language","en");
         settings.general.scrollSpeed = myINIFile.getIntValue("General","Scroll Speed",50);
+        settings.general.showTutorialHints = myINIFile.getBoolValue("General","Show Tutorial Hints",true);
         settings.video.width = myINIFile.getIntValue("Video","Width",640);
         settings.video.height = myINIFile.getIntValue("Video","Height",480);
         settings.video.fullscreen = myINIFile.getBoolValue("Video","Fullscreen",false);

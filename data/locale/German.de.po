@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: dunelegacy 0.96.3\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-10-09 23:09+0200\n"
+"POT-Creation-Date: 2016-12-03 17:33+0100\n"
 "PO-Revision-Date: 2012-08-31 01:41+0200\n"
 "Last-Translator: Richard Schaller <richard.schaller@gmx.de>\n"
 "Language-Team: Deutsch <>\n"
@@ -17,12 +17,12 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n!=1);\n"
 
-#: include/GUI/ObjectInterfaces/BuilderInterface.h:49
-#: include/GUI/ObjectInterfaces/BuilderInterface.h:55
+#: include/GUI/ObjectInterfaces/BuilderInterface.h:48
+#: include/GUI/ObjectInterfaces/BuilderInterface.h:54
 msgid "Upgrade"
 msgstr "Verbessern"
 
-#: include/GUI/ObjectInterfaces/BuilderInterface.h:52
+#: include/GUI/ObjectInterfaces/BuilderInterface.h:51
 msgid "Upgrade this structure (Hotkey: U)"
 msgstr "Diese Gebäude upgraden (Hotkey: U)"
 
@@ -150,26 +150,28 @@ msgstr "Benöt."
 msgid "Produced"
 msgstr "Prod."
 
-#: src/Choam.cpp:114
+#: src/Choam.cpp:109
 msgid "New Starport prices"
 msgstr "Neue Preise am Raumflughafen"
 
-#: src/CutScenes/Finale.cpp:122 src/CutScenes/Intro.cpp:137
-#: src/CutScenes/Meanwhile.cpp:51 src/FileClasses/GFXManager.cpp:170
-#: src/FileClasses/GFXManager.cpp:171 src/FileClasses/GFXManager.cpp:175
-#: src/FileClasses/GFXManager.cpp:179 src/FileClasses/GFXManager.cpp:180
-#: src/FileClasses/GFXManager.cpp:187 src/FileClasses/GFXManager.cpp:188
-#: src/FileClasses/GFXManager.cpp:545 src/FileClasses/GFXManager.cpp:546
+#: src/CutScenes/Finale.cpp:120 src/CutScenes/Intro.cpp:137
+#: src/CutScenes/Meanwhile.cpp:52 src/FileClasses/GFXManager.cpp:174
+#: src/FileClasses/GFXManager.cpp:175 src/FileClasses/GFXManager.cpp:179
+#: src/FileClasses/GFXManager.cpp:183 src/FileClasses/GFXManager.cpp:184
+#: src/FileClasses/GFXManager.cpp:191 src/FileClasses/GFXManager.cpp:192
+#: src/FileClasses/GFXManager.cpp:591 src/FileClasses/GFXManager.cpp:592
 #: src/FileClasses/PictureFactory.cpp:199
-#: src/FileClasses/PictureFactory.cpp:200 src/FileClasses/TextManager.cpp:52
-#: src/FileClasses/TextManager.cpp:53 src/FileClasses/TextManager.cpp:54
-#: src/FileClasses/TextManager.cpp:55 src/FileClasses/TextManager.cpp:59
-#: src/FileClasses/TextManager.cpp:60 src/FileClasses/TextManager.cpp:61
-#: src/main.cpp:552 src/Menu/MapChoice.cpp:456
+#: src/FileClasses/PictureFactory.cpp:200 src/FileClasses/TextManager.cpp:55
+#: src/FileClasses/TextManager.cpp:56 src/FileClasses/TextManager.cpp:57
+#: src/FileClasses/TextManager.cpp:58 src/FileClasses/TextManager.cpp:59
+#: src/FileClasses/TextManager.cpp:63 src/FileClasses/TextManager.cpp:64
+#: src/FileClasses/TextManager.cpp:65 src/main.cpp:474
+#: src/Menu/MapChoice.cpp:472
+#, c-format
 msgid "LanguageFileExtension"
 msgstr "GER"
 
-#: src/FileClasses/FileManager.cpp:109
+#: src/FileClasses/FileManager.cpp:99
 msgid "LanguagePakFiles"
 msgstr "GERMAN.PAK"
 
@@ -1314,72 +1316,72 @@ msgid ""
 "text for Mercenary mission 9"
 msgstr "@TEXTO.GER|39|Atreides->Sardaukar|Ordos->Mercenary|Harkonnen->Fremen"
 
-#: src/Game.cpp:650
+#: src/Game.cpp:580
 msgid "You Have Completed Your Mission."
 msgstr "Mission erfolgreich abgeschlossen."
 
-#: src/Game.cpp:652
+#: src/Game.cpp:582
 msgid "You Have Failed Your Mission."
 msgstr "Mission gescheitert."
 
-#: src/Game.cpp:895
+#: src/Game.cpp:823
 msgid "@DUNE.ENG|226#Harvester"
 msgstr "@DUNE.GER|226"
 
-#: src/Game.cpp:900
+#: src/Game.cpp:828
 msgid "@DUNE.ENG|124#full and awaiting pickup"
 msgstr "@DUNE.GER|124"
 
-#: src/Game.cpp:902
+#: src/Game.cpp:830
 msgid "@DUNE.ENG|123#full and returning"
 msgstr "@DUNE.GER|123"
 
-#: src/Game.cpp:904
+#: src/Game.cpp:832
 msgid "@DUNE.ENG|122#full and harvesting"
 msgstr "@DUNE.GER|122"
 
-#: src/Game.cpp:906
+#: src/Game.cpp:834
 msgid "@DUNE.ENG|121#full"
 msgstr "@DUNE.GER|121"
 
-#: src/Game.cpp:911
+#: src/Game.cpp:839
 msgid "@DUNE.ENG|128#empty and awaiting pickup"
 msgstr "@DUNE.GER|128"
 
-#: src/Game.cpp:913
+#: src/Game.cpp:841
 msgid "@DUNE.ENG|127#empty and returning"
 msgstr "@DUNE.GER|127"
 
-#: src/Game.cpp:915
+#: src/Game.cpp:843
 msgid "@DUNE.ENG|126#empty and harvesting"
 msgstr "@DUNE.GER|126"
 
-#: src/Game.cpp:917
+#: src/Game.cpp:845
 msgid "@DUNE.ENG|125#empty"
 msgstr "@DUNE.GER|125"
 
-#: src/Game.cpp:2109 src/Game.cpp:2121 src/GUI/dune/GameOptionsWindow.cpp:127
+#: src/Game.cpp:2018 src/Game.cpp:2030 src/GUI/dune/GameOptionsWindow.cpp:127
 msgid "Game speed"
 msgstr "Spielgeschwindigkeit"
 
-#: src/Game.cpp:2339
+#: src/Game.cpp:2235
 msgid "Game resumed!"
 msgstr "Spiel fortgesetzt!"
 
-#: src/Game.cpp:2342
+#: src/Game.cpp:2238
 msgid "Game paused!"
 msgstr "Spiel angehalten!"
 
-#: src/Game.cpp:2374 src/Game.cpp:2395
+#: src/Game.cpp:2270 src/Game.cpp:2291
 msgid "@DUNE.ENG|135#Cannot place slab here."
 msgstr "@DUNE.GER|135"
 
-#: src/Game.cpp:2408
+#: src/Game.cpp:2304
 #, c-format
 msgid "@DUNE.ENG|134#Cannot place %%s here."
 msgstr "@DUNE.GER|134"
 
-#: src/Game.cpp:2600
+#: src/Game.cpp:2484
 msgid "Screenshot saved"
 msgstr "Screenshot gespeichert"
 
@@ -1532,8 +1534,8 @@ msgstr "Falls gewählt kann maximal ein Palast pro Haus gebaut werden."
 #: src/GUI/dune/GameOptionsWindow.cpp:143
 #: src/GUI/dune/InGameSettingsMenu.cpp:86 src/MapEditor/ChoamWindow.cpp:131
 #: src/MapEditor/MapSettingsWindow.cpp:279
-#: src/MapEditor/PlayerSettingsWindow.cpp:186
-#: src/MapEditor/ReinforcementsWindow.cpp:188 src/MapEditor/TeamsWindow.cpp:180
+#: src/MapEditor/PlayerSettingsWindow.cpp:188
+#: src/MapEditor/ReinforcementsWindow.cpp:188 src/MapEditor/TeamsWindow.cpp:181
 #: src/Menu/CustomGameStatsMenu.cpp:179
 msgid "OK"
 msgstr "OK"
@@ -1572,22 +1574,22 @@ msgid "Do you really want to restart this game?"
 msgstr "Dieses Spiel wirklich neustarten?"
 
 #: src/GUI/dune/InGameMenu.cpp:207 src/GUI/dune/InGameMenu.cpp:219
-#: src/GUI/dune/LoadSaveWindow.cpp:160 src/MapEditor/LoadMapWindow.cpp:155
-#: src/MapEditor/MapEditorInterface.cpp:870
+#: src/GUI/dune/LoadSaveWindow.cpp:155 src/MapEditor/LoadMapWindow.cpp:155
+#: src/MapEditor/MapEditorInterface.cpp:869
 msgid "No"
 msgstr "Nein"
 
 #: src/GUI/dune/InGameMenu.cpp:208 src/GUI/dune/InGameMenu.cpp:220
-#: src/GUI/dune/LoadSaveWindow.cpp:161 src/MapEditor/LoadMapWindow.cpp:156
-#: src/MapEditor/MapEditorInterface.cpp:870
+#: src/GUI/dune/LoadSaveWindow.cpp:156 src/MapEditor/LoadMapWindow.cpp:156
+#: src/MapEditor/MapEditorInterface.cpp:869
 msgid "Yes"
 msgstr "Ja"
 
 #: src/GUI/dune/InGameSettingsMenu.cpp:91 src/GUI/dune/LoadSaveWindow.cpp:97
 #: src/MapEditor/ChoamWindow.cpp:119 src/MapEditor/LoadMapWindow.cpp:118
 #: src/MapEditor/MapSettingsWindow.cpp:267 src/MapEditor/NewMapWindow.cpp:202
-#: src/MapEditor/PlayerSettingsWindow.cpp:170
-#: src/MapEditor/ReinforcementsWindow.cpp:176 src/MapEditor/TeamsWindow.cpp:168
+#: src/MapEditor/PlayerSettingsWindow.cpp:172
+#: src/MapEditor/ReinforcementsWindow.cpp:176 src/MapEditor/TeamsWindow.cpp:169
 msgid "Cancel"
 msgstr "Abbrechen"
 
@@ -1595,12 +1597,12 @@ msgstr "Abbrechen"
 msgid "Save"
 msgstr "Speichern"
 
-#: src/GUI/dune/LoadSaveWindow.cpp:159 src/MapEditor/LoadMapWindow.cpp:154
+#: src/GUI/dune/LoadSaveWindow.cpp:154 src/MapEditor/LoadMapWindow.cpp:154
 #, c-format
 msgid "Do you really want to delete '%s' ?"
 msgstr "Möchten Sie wirklich '%s' löschen?"
 
-#: src/GUI/dune/LoadSaveWindow.cpp:226
+#: src/GUI/dune/LoadSaveWindow.cpp:221
 msgid ""
 "Invalid file name! File names must not contain \\ or / and must not be empty!"
 msgstr ""
@@ -1608,7 +1610,7 @@ msgstr ""
 "leer sein!"
 
 #: src/GUI/dune/WaitingForOtherPlayers.cpp:44
-#: src/MapEditor/ReinforcementsWindow.cpp:98 src/MapEditor/TeamsWindow.cpp:89
+#: src/MapEditor/ReinforcementsWindow.cpp:99 src/MapEditor/TeamsWindow.cpp:91
 msgid "Remove"
 msgstr "Entfernen"
 
@@ -1621,7 +1623,7 @@ msgid ""
 "@DUNE.ENG|145#As insufficient spice storage is available, spice is lost."
 msgstr "@DUNE.GER|145"
 
-#: src/House.cpp:533
+#: src/House.cpp:525
 #, c-format
 msgid "House '%s' has been defeated."
 msgstr "Haus '%s' wurde geschlagen."
@@ -1681,11 +1683,11 @@ msgstr "Lizenz"
 msgid "Load"
 msgstr "Laden"
 
-#: src/MapEditor/LoadMapWindow.cpp:251 src/Menu/CustomGameMenu.cpp:276
+#: src/MapEditor/LoadMapWindow.cpp:248 src/Menu/CustomGameMenu.cpp:273
 msgid "No map available"
 msgstr "Karte nicht verfüg."
 
-#: src/MapEditor/MapEditor.cpp:114 src/MapEditor/MapEditorInterface.cpp:101
+#: src/MapEditor/MapEditor.cpp:112 src/MapEditor/MapEditorInterface.cpp:101
 #: src/MapEditor/NewMapWindow.cpp:56
 msgid "New Map"
 msgstr "Neue Karte"
@@ -1695,7 +1697,7 @@ msgid "Leave Mapeditor"
 msgstr "Karteneditor verlassen"
 
 #: src/MapEditor/MapEditorInterface.cpp:115
-#: src/MapEditor/MapEditorInterface.cpp:910
+#: src/MapEditor/MapEditorInterface.cpp:909
 msgid "Save Map"
 msgstr "Karte speichern"
 
@@ -1708,7 +1710,7 @@ msgid "Redo"
 msgstr "Wiederherstellen"
 
 #: src/MapEditor/MapEditorInterface.cpp:136
-#: src/MapEditor/PlayerSettingsWindow.cpp:51
+#: src/MapEditor/PlayerSettingsWindow.cpp:53
 msgid "Player Settings"
 msgstr "Spielereinstellungen"
 
@@ -1718,11 +1720,11 @@ msgid "Map Settings"
 msgstr "Karteneinstellungen"
 
 #: src/MapEditor/MapEditorInterface.cpp:157
-#: src/MapEditor/ReinforcementsWindow.cpp:53
+#: src/MapEditor/ReinforcementsWindow.cpp:54
 msgid "Reinforcements"
 msgstr "Verstärkung"
 
-#: src/MapEditor/MapEditorInterface.cpp:164 src/MapEditor/TeamsWindow.cpp:51
+#: src/MapEditor/MapEditorInterface.cpp:164 src/MapEditor/TeamsWindow.cpp:53
 msgid "Teams"
 msgstr "Teams"
 
@@ -1774,23 +1776,23 @@ msgstr "Nach links drehen"
 msgid "Rotate right"
 msgstr "Nach rechts drehen"
 
-#: src/MapEditor/MapEditorInterface.cpp:747
-#: src/MapEditor/ReinforcementsWindow.cpp:108 src/MapEditor/TeamsWindow.cpp:99
+#: src/MapEditor/MapEditorInterface.cpp:745
+#: src/MapEditor/ReinforcementsWindow.cpp:109 src/MapEditor/TeamsWindow.cpp:101
 #: src/Menu/CustomGamePlayers.cpp:257 src/Menu/CustomGamePlayers.cpp:314
 msgid "Player"
 msgstr "Spieler"
 
-#: src/MapEditor/MapEditorInterface.cpp:870
+#: src/MapEditor/MapEditorInterface.cpp:869
 msgid "Do you really want to quit and lose unsaved changes to this map?"
 msgstr ""
 "Möchten Sie wirklich den Karteneditor verlassen\n"
 "und ungespeicherte Veränderungen verwerfen?"
 
-#: src/MapEditor/MapEditorInterface.cpp:886 src/Menu/CustomGameMenu.cpp:70
+#: src/MapEditor/MapEditorInterface.cpp:885 src/Menu/CustomGameMenu.cpp:70
 msgid "SP Maps"
 msgstr "SP Karten"
 
-#: src/MapEditor/MapEditorInterface.cpp:890 src/Menu/CustomGameMenu.cpp:80
+#: src/MapEditor/MapEditorInterface.cpp:889 src/Menu/CustomGameMenu.cpp:80
 msgid "MP Maps"
 msgstr "MP Karten"
 
@@ -1937,49 +1939,49 @@ msgstr "Gewürz:"
 msgid "Create"
 msgstr "Erstellen"
 
-#: src/MapEditor/PlayerSettingsWindow.cpp:69
-#: src/MapEditor/ReinforcementsWindow.cpp:351 src/MapEditor/TeamsWindow.cpp:368
+#: src/MapEditor/PlayerSettingsWindow.cpp:71
+#: src/MapEditor/ReinforcementsWindow.cpp:349 src/MapEditor/TeamsWindow.cpp:367
 #: src/Menu/CustomGamePlayers.cpp:204 src/Menu/CustomGameStatsMenu.cpp:104
 msgid "House"
 msgstr "Haus"
 
-#: src/MapEditor/PlayerSettingsWindow.cpp:72
+#: src/MapEditor/PlayerSettingsWindow.cpp:74
 #, c-format
 msgid "Player %d:"
 msgstr "Spieler %d:"
 
-#: src/MapEditor/PlayerSettingsWindow.cpp:77
+#: src/MapEditor/PlayerSettingsWindow.cpp:79
 msgid "any"
 msgstr "beliebig"
 
-#: src/MapEditor/PlayerSettingsWindow.cpp:95
+#: src/MapEditor/PlayerSettingsWindow.cpp:97
 msgid "Credits"
 msgstr "Credits"
 
-#: src/MapEditor/PlayerSettingsWindow.cpp:107
+#: src/MapEditor/PlayerSettingsWindow.cpp:109
 #: src/Menu/CustomGamePlayers.cpp:236 src/Menu/CustomGamePlayers.cpp:243
 msgid "Team"
 msgstr "Team"
 
-#: src/MapEditor/PlayerSettingsWindow.cpp:140
+#: src/MapEditor/PlayerSettingsWindow.cpp:142
 msgid "Quota"
 msgstr "Min Ernte"
 
-#: src/MapEditor/PlayerSettingsWindow.cpp:148
+#: src/MapEditor/PlayerSettingsWindow.cpp:150
 msgid "Max Units"
 msgstr "Max Einh."
 
-#: src/MapEditor/PlayerSettingsWindow.cpp:178
-#: src/MapEditor/PlayerSettingsWindow.cpp:203
-#: src/MapEditor/PlayerSettingsWindow.cpp:222
+#: src/MapEditor/PlayerSettingsWindow.cpp:180
+#: src/MapEditor/PlayerSettingsWindow.cpp:205
+#: src/MapEditor/PlayerSettingsWindow.cpp:224
 msgid "Advanced..."
 msgstr "Erweitert..."
 
-#: src/MapEditor/PlayerSettingsWindow.cpp:204
+#: src/MapEditor/PlayerSettingsWindow.cpp:206
 msgid "Basic..."
 msgstr "Einfach..."
 
-#: src/MapEditor/ReinforcementsWindow.cpp:62
+#: src/MapEditor/ReinforcementsWindow.cpp:63
 msgid ""
 "Reinforcements are brought by a carryall. Multiple reinforcements at the "
 "same time are combined."
@@ -1987,21 +1989,21 @@ msgstr ""
 "Verstärkungen werden von einem Carryall gebracht wobei Gleichzeitige "
 "zusammengefasst werden."
 
-#: src/MapEditor/ReinforcementsWindow.cpp:78 src/MapEditor/TeamsWindow.cpp:69
+#: src/MapEditor/ReinforcementsWindow.cpp:79 src/MapEditor/TeamsWindow.cpp:71
 msgid "Move up"
 msgstr "Nach oben verschieben"
 
-#: src/MapEditor/ReinforcementsWindow.cpp:84 src/MapEditor/TeamsWindow.cpp:75
+#: src/MapEditor/ReinforcementsWindow.cpp:85 src/MapEditor/TeamsWindow.cpp:77
 msgid "Move down"
 msgstr "Nach unten verschieben"
 
-#: src/MapEditor/ReinforcementsWindow.cpp:92 src/MapEditor/TeamsWindow.cpp:83
+#: src/MapEditor/ReinforcementsWindow.cpp:93 src/MapEditor/TeamsWindow.cpp:85
 msgid "Add"
 msgstr "Hinzufügen"
 
 #: src/MapEditor/ReinforcementsWindow.cpp:117
-#: src/MapEditor/ReinforcementsWindow.cpp:350 src/MapEditor/TeamsWindow.cpp:109
-#: src/MapEditor/TeamsWindow.cpp:367
+#: src/MapEditor/ReinforcementsWindow.cpp:348 src/MapEditor/TeamsWindow.cpp:110
+#: src/MapEditor/TeamsWindow.cpp:366
 #, c-format
 msgid "Player %d"
 msgstr "Spieler %d"
@@ -2022,131 +2024,131 @@ msgstr "Zielpunkt"
 msgid "Repeat"
 msgstr "Wiederholen"
 
-#: src/MapEditor/ReinforcementsWindow.cpp:259 src/MapEditor/TeamsWindow.cpp:251
+#: src/MapEditor/ReinforcementsWindow.cpp:258 src/MapEditor/TeamsWindow.cpp:251
 msgid "Dune2-compatible maps support only up to 16 entries!"
 msgstr "Dune2-kompatible Karten unterstützen nur maximal 16 Einträge!"
 
-#: src/MapEditor/TeamsWindow.cpp:116
+#: src/MapEditor/TeamsWindow.cpp:117
 msgid "Team Behavior"
 msgstr "Teamverhalten"
 
-#: src/MapEditor/TeamsWindow.cpp:134
+#: src/MapEditor/TeamsWindow.cpp:135
 msgid "Team Type"
 msgstr "Teamtyp"
 
-#: src/MapEditor/TeamsWindow.cpp:139
+#: src/MapEditor/TeamsWindow.cpp:140
 msgid "Foot (Infantry, Troopers)"
 msgstr "Foot (Soldaten, Trooper)"
 
-#: src/MapEditor/TeamsWindow.cpp:140
+#: src/MapEditor/TeamsWindow.cpp:141
 msgid "Wheeled (Trike, Raider, Quad)"
 msgstr "Wheeled (Trike, Raider, Quad)"
 
-#: src/MapEditor/TeamsWindow.cpp:141
+#: src/MapEditor/TeamsWindow.cpp:142
 msgid "Tracked (Tank, Launcher, Siege Tank,...)"
 msgstr "Tracked (Panzer, Abschussrampe,...)"
 
-#: src/MapEditor/TeamsWindow.cpp:142
+#: src/MapEditor/TeamsWindow.cpp:143
 msgid "Winged (Carryall, Ornithopter, Frigate)"
 msgstr "Winged (Carryall, Ornithopter, Frigatte)"
 
-#: src/MapEditor/TeamsWindow.cpp:143
+#: src/MapEditor/TeamsWindow.cpp:144
 msgid "Slither (Sandworm)"
 msgstr "Slither (Sandwurm)"
 
-#: src/MapEditor/TeamsWindow.cpp:144
+#: src/MapEditor/TeamsWindow.cpp:145
 msgid "Harvester (Harvester)"
 msgstr "Harvester (Erntemaschine)"
 
-#: src/MapEditor/TeamsWindow.cpp:148
+#: src/MapEditor/TeamsWindow.cpp:149
 msgid "Units"
 msgstr "Einheiten"
 
-#: src/MapEditor/TeamsWindow.cpp:155
+#: src/MapEditor/TeamsWindow.cpp:156
 msgid "to"
 msgstr "bis"
 
-#: src/Menu/CampaignStatsMenu.cpp:59
+#: src/Menu/CampaignStatsMenu.cpp:56
 #, c-format
 msgid "@DUNE.ENG|21#Score: %d"
 msgstr "@DUNE.GER|21"
 
-#: src/Menu/CampaignStatsMenu.cpp:63 src/Menu/CustomGameStatsMenu.cpp:171
+#: src/Menu/CampaignStatsMenu.cpp:60 src/Menu/CustomGameStatsMenu.cpp:171
 #, c-format
 msgid "@DUNE.ENG|22#Time: %d:%02d"
 msgstr "@DUNE.GER|22"
 
-#: src/Menu/CampaignStatsMenu.cpp:68
+#: src/Menu/CampaignStatsMenu.cpp:65
 msgid "@DUNE.ENG|23#You have attained the rank"
 msgstr "@DUNE.GER|23"
 
-#: src/Menu/CampaignStatsMenu.cpp:77
+#: src/Menu/CampaignStatsMenu.cpp:74
 msgid "@DUNE.ENG|26#Spice harvested by"
 msgstr "@DUNE.GER|26"
 
-#: src/Menu/CampaignStatsMenu.cpp:82
+#: src/Menu/CampaignStatsMenu.cpp:79
 msgid "@DUNE.ENG|24#Units destroyed by"
 msgstr "@DUNE.GER|24"
 
-#: src/Menu/CampaignStatsMenu.cpp:87
+#: src/Menu/CampaignStatsMenu.cpp:84
 msgid "@DUNE.ENG|25#Buildings destroyed by"
 msgstr "@DUNE.GER|25"
 
-#: src/Menu/CampaignStatsMenu.cpp:94 src/Menu/CampaignStatsMenu.cpp:132
-#: src/Menu/CampaignStatsMenu.cpp:170
+#: src/Menu/CampaignStatsMenu.cpp:91 src/Menu/CampaignStatsMenu.cpp:129
+#: src/Menu/CampaignStatsMenu.cpp:167
 msgid "@DUNE.ENG|329#You:"
 msgstr "@DUNE.GER|329"
 
-#: src/Menu/CampaignStatsMenu.cpp:112 src/Menu/CampaignStatsMenu.cpp:150
-#: src/Menu/CampaignStatsMenu.cpp:188
+#: src/Menu/CampaignStatsMenu.cpp:109 src/Menu/CampaignStatsMenu.cpp:147
+#: src/Menu/CampaignStatsMenu.cpp:185
 msgid "@DUNE.ENG|330#Enemy:"
 msgstr "@DUNE.GER|330"
 
-#: src/Menu/CampaignStatsMenu.cpp:488
+#: src/Menu/CampaignStatsMenu.cpp:483
 msgid "@DUNE.ENG|282#Emperor"
 msgstr "@DUNE.GER|282"
 
-#: src/Menu/CampaignStatsMenu.cpp:489
+#: src/Menu/CampaignStatsMenu.cpp:484
 msgid "@DUNE.ENG|281#Ruler of Arrakis"
 msgstr "@DUNE.GER|281"
 
-#: src/Menu/CampaignStatsMenu.cpp:490
+#: src/Menu/CampaignStatsMenu.cpp:485
 msgid "@DUNE.ENG|280#Chief Warlord"
 msgstr "@DUNE.GER|280"
 
-#: src/Menu/CampaignStatsMenu.cpp:491
+#: src/Menu/CampaignStatsMenu.cpp:486
 msgid "@DUNE.ENG|279#Warlord"
 msgstr "@DUNE.GER|279"
 
-#: src/Menu/CampaignStatsMenu.cpp:492
+#: src/Menu/CampaignStatsMenu.cpp:487
 msgid "@DUNE.ENG|278#Base Commander"
 msgstr "@DUNE.GER|278"
 
-#: src/Menu/CampaignStatsMenu.cpp:493
+#: src/Menu/CampaignStatsMenu.cpp:488
 msgid "@DUNE.ENG|277#Outpost Commander"
 msgstr "@DUNE.GER|277"
 
-#: src/Menu/CampaignStatsMenu.cpp:494
+#: src/Menu/CampaignStatsMenu.cpp:489
 msgid "@DUNE.ENG|276#Squad Leader"
 msgstr "@DUNE.GER|276"
 
-#: src/Menu/CampaignStatsMenu.cpp:495
+#: src/Menu/CampaignStatsMenu.cpp:490
 msgid "@DUNE.ENG|275#Dune Trooper"
 msgstr "@DUNE.GER|275"
 
-#: src/Menu/CampaignStatsMenu.cpp:496
+#: src/Menu/CampaignStatsMenu.cpp:491
 msgid "@DUNE.ENG|274#Sand Warrior"
 msgstr "@DUNE.GER|274"
 
-#: src/Menu/CampaignStatsMenu.cpp:497
+#: src/Menu/CampaignStatsMenu.cpp:492
 msgid "@DUNE.ENG|273#Desert Mongoose"
 msgstr "@DUNE.GER|273"
 
-#: src/Menu/CampaignStatsMenu.cpp:498
+#: src/Menu/CampaignStatsMenu.cpp:493
 msgid "@DUNE.ENG|272#Sand Snake"
 msgstr "@DUNE.GER|272"
 
-#: src/Menu/CampaignStatsMenu.cpp:499
+#: src/Menu/CampaignStatsMenu.cpp:494
 msgid "@DUNE.ENG|271#Sand Flea"
 msgstr "@DUNE.GER|271"
 
@@ -2171,7 +2173,7 @@ msgid "Game Options..."
 msgstr "Spieleinstellungen..."
 
 #: src/Menu/CustomGameMenu.cpp:139 src/Menu/CustomGamePlayers.cpp:156
-#: src/Menu/MultiPlayerMenu.cpp:98 src/Menu/OptionsMenu.cpp:221
+#: src/Menu/MultiPlayerMenu.cpp:98 src/Menu/OptionsMenu.cpp:222
 #: src/Menu/SinglePlayerSkirmishMenu.cpp:66
 msgid "Back"
 msgstr "Zurück"
@@ -2182,17 +2184,17 @@ msgstr "Weiter"
 
 #: src/Menu/CustomGamePlayers.cpp:266 src/Menu/CustomGamePlayers.cpp:301
 #: src/Menu/CustomGamePlayers.cpp:323 src/Menu/CustomGamePlayers.cpp:356
-#: src/Menu/CustomGamePlayers.cpp:1101 src/Menu/CustomGamePlayers.cpp:1167
+#: src/Menu/CustomGamePlayers.cpp:1103 src/Menu/CustomGamePlayers.cpp:1169
 msgid "closed"
 msgstr "geschlossen"
 
 #: src/Menu/CustomGamePlayers.cpp:275 src/Menu/CustomGamePlayers.cpp:299
 #: src/Menu/CustomGamePlayers.cpp:332 src/Menu/CustomGamePlayers.cpp:354
-#: src/Menu/CustomGamePlayers.cpp:1097 src/Menu/CustomGamePlayers.cpp:1164
+#: src/Menu/CustomGamePlayers.cpp:1099 src/Menu/CustomGamePlayers.cpp:1166
 msgid "open"
 msgstr "offen"
 
-#: src/Menu/CustomGamePlayers.cpp:681
+#: src/Menu/CustomGamePlayers.cpp:680
 msgid ""
 "At least 2 houses must be controlled\n"
 "by a human player or an AI player!"
@@ -2200,11 +2202,11 @@ msgstr ""
 "Mindestens zwei Häuser müssen von einem menschlichen\n"
 "Spieler oder dem Computer gespielt werden!"
 
-#: src/Menu/CustomGamePlayers.cpp:684
+#: src/Menu/CustomGamePlayers.cpp:683
 msgid "There must be at least two different teams!"
 msgstr "Es muss mindestens zwei verschiedene Teams geben!"
 
-#: src/Menu/CustomGamePlayers.cpp:1277 src/Menu/CustomGamePlayers.cpp:1289
+#: src/Menu/CustomGamePlayers.cpp:1279 src/Menu/CustomGamePlayers.cpp:1291
 msgid "Random"
 msgstr "Zufällig"
 
@@ -2244,19 +2246,19 @@ msgstr "ÜBER"
 msgid "QUIT"
 msgstr "BEENDEN"
 
-#: src/Menu/MapChoice.cpp:68
+#: src/Menu/MapChoice.cpp:93
 msgid "@DUNE.ENG|283#Three Houses have come to Dune..."
 msgstr "@DUNE.GER|283"
 
-#: src/Menu/MapChoice.cpp:69
+#: src/Menu/MapChoice.cpp:94
 msgid "@DUNE.ENG|284#...to take control of the land..."
 msgstr "@DUNE.GER|284"
 
-#: src/Menu/MapChoice.cpp:70
+#: src/Menu/MapChoice.cpp:95
 msgid "@DUNE.ENG|285#...that has become divided."
 msgstr "@DUNE.GER|285"
 
-#: src/Menu/MapChoice.cpp:209
+#: src/Menu/MapChoice.cpp:244
 msgid "@DUNE.ENG|286#Select next region"
 msgstr "@DUNE.GER|286"
 
@@ -2284,27 +2286,27 @@ msgstr "Internet-Spiele"
 msgid "Join"
 msgstr "Beitreten"
 
-#: src/Menu/MultiPlayerMenu.cpp:163 src/Menu/MultiPlayerMenu.cpp:186
+#: src/Menu/MultiPlayerMenu.cpp:161 src/Menu/MultiPlayerMenu.cpp:184
 msgid "Connecting..."
 msgstr "Verbinden..."
 
-#: src/Menu/MultiPlayerMenu.cpp:382
+#: src/Menu/MultiPlayerMenu.cpp:374
 msgid "The game host quit the game!"
 msgstr "Der Ersteller des Spiels hat das Spiel verlassen!"
 
-#: src/Menu/MultiPlayerMenu.cpp:386
+#: src/Menu/MultiPlayerMenu.cpp:378
 msgid "The server timed out!"
 msgstr "Die Verbindung zum Server hat das timeout überschritten!"
 
-#: src/Menu/MultiPlayerMenu.cpp:390
+#: src/Menu/MultiPlayerMenu.cpp:382
 msgid "A player with the same name as yours already exists!"
 msgstr "Es existiert bereits ein Spieler mit Ihrem Namen!"
 
-#: src/Menu/MultiPlayerMenu.cpp:394
+#: src/Menu/MultiPlayerMenu.cpp:386
 msgid "There is no free player slot in this game left!"
 msgstr "Es gibt keine weiteren freien Plätze in diesem Spiel!"
 
-#: src/Menu/MultiPlayerMenu.cpp:398
+#: src/Menu/MultiPlayerMenu.cpp:390
 msgid "The connection to the game host was lost!"
 msgstr "Die Verbindung zum Ersteller des Spiels ist abgebrochen!"
 
@@ -2336,35 +2338,39 @@ msgstr "Intro abspielen"
 msgid "Video Resolution"
 msgstr "Bildschirmauflösung"
 
-#: src/Menu/OptionsMenu.cpp:170
+#: src/Menu/OptionsMenu.cpp:168
 msgid "Full Screen"
 msgstr "Vollbild"
 
-#: src/Menu/OptionsMenu.cpp:182
+#: src/Menu/OptionsMenu.cpp:172
+msgid "Show Tutorial Hints"
+msgstr "Hilfetexte anzeigen"
+
+#: src/Menu/OptionsMenu.cpp:183
 msgid "Play SFX"
 msgstr "Soundeffekte"
 
-#: src/Menu/OptionsMenu.cpp:186
+#: src/Menu/OptionsMenu.cpp:187
 msgid "Play Music"
 msgstr "Musik"
 
-#: src/Menu/OptionsMenu.cpp:197
+#: src/Menu/OptionsMenu.cpp:198
 msgid "Port"
 msgstr "Port"
 
-#: src/Menu/OptionsMenu.cpp:210
+#: src/Menu/OptionsMenu.cpp:211
 msgid "MetaServer"
 msgstr "MetaServer"
 
-#: src/Menu/OptionsMenu.cpp:227
+#: src/Menu/OptionsMenu.cpp:228
 msgid "Accept"
 msgstr "Annehmen"
 
-#: src/Menu/OptionsMenu.cpp:280
+#: src/Menu/OptionsMenu.cpp:282
 msgid "Please enter a Player Name."
 msgstr "Bitte einen Spielernamen eingeben."
 
-#: src/Menu/OptionsMenu.cpp:286
+#: src/Menu/OptionsMenu.cpp:288
 #, c-format
 msgid ""
 "Server Port must be between 1 and 65535!\n"
@@ -2373,7 +2379,7 @@ msgstr ""
 "Server Port muss zwischen 1 und 65535 sein!\n"
 "Standardeinstellung ist Server Port %d."
 
-#: src/Menu/OptionsMenu.cpp:292
+#: src/Menu/OptionsMenu.cpp:294
 msgid "Please enter a MetaServer."
 msgstr "Bitte einen MetaServer eingeben."
 
@@ -2408,6 +2414,113 @@ msgstr "Replay laden"
 #: src/Menu/SinglePlayerSkirmishMenu.cpp:59
 msgid "Start"
 msgstr "Starten"
+
+#: src/players/HumanPlayer.cpp:90
+msgid ""
+"@MESSAGE.ENG|20#There is not enough concrete for this structure. You may "
+"continue building this structure but it will need repairing."
+msgstr "@MESSAGE.GER|20"
+
+#: src/players/HumanPlayer.cpp:117
+msgid "@MESSAGE.ENG|27#Look out for spice fields."
+msgstr "@MESSAGE.GER|27"
+
+#: src/players/HumanPlayer.cpp:164
+msgid "@MESSAGE.ENG|2#Concrete: Build your buildings on a stable foundation."
+msgstr "@MESSAGE.GER|2"
+
+#: src/players/HumanPlayer.cpp:168
+msgid "@MESSAGE.ENG|3#Palace: This is your palace."
+msgstr "@MESSAGE.GER|3"
+
+#: src/players/HumanPlayer.cpp:172
+msgid ""
+"@MESSAGE.ENG|4#Light Factory: In the Light Factory small vehicles are "
+"produced."
+msgstr "@MESSAGE.GER|4"
+
+#: src/players/HumanPlayer.cpp:176
+msgid ""
+"@MESSAGE.ENG|5#Heavy Factory: In the Heavy Factory tracked vehicles are "
+"produced."
+msgstr "@MESSAGE.GER|5"
+
+#: src/players/HumanPlayer.cpp:180
+msgid ""
+"@MESSAGE.ENG|6#High-Tech Factory: In the High-Tech Factory flying units are "
+"produced."
+msgstr "@MESSAGE.GER|6"
+
+#: src/players/HumanPlayer.cpp:184
+msgid ""
+"@MESSAGE.ENG|7#House IX: The science labs of House IX strengthens the "
+"technology of your house."
+msgstr "@MESSAGE.GER|7"
+
+#: src/players/HumanPlayer.cpp:188
+msgid ""
+"@MESSAGE.ENG|8#WOR: In this facility heavily armed troppers are trained."
+msgstr "@MESSAGE.GER|8"
+
+#: src/players/HumanPlayer.cpp:192
+msgid ""
+"@MESSAGE.ENG|9#Construction Yard: All structures are produced by the "
+"Construction Yard."
+msgstr "@MESSAGE.GER|9"
+
+#: src/players/HumanPlayer.cpp:196
+msgid ""
+"@MESSAGE.ENG|10#Windtrap: Windtraps a supplying your base with energy. "
+"Without energy your buildings are decaying over time."
+msgstr "@MESSAGE.GER|10"
+
+#: src/players/HumanPlayer.cpp:200
+msgid ""
+"@MESSAGE.ENG|11#Barracks: In this facility light armed infantry is trained."
+msgstr "@MESSAGE.GER|11"
+
+#: src/players/HumanPlayer.cpp:204
+msgid ""
+"@MESSAGE.ENG|12#Starport: Ordering and receiving shipments from C.H.O.A.M is "
+"the task of the Starport."
+msgstr "@MESSAGE.GER|12"
+
+#: src/players/HumanPlayer.cpp:208
+msgid ""
+"@MESSAGE.ENG|13#Refinery: In the Refinery Spice is converted into credits."
+msgstr "@MESSAGE.GER|13"
+
+#: src/players/HumanPlayer.cpp:212
+msgid ""
+"@MESSAGE.ENG|14#Repair Yard: Damanged units can be repaired in the Repair "
+"Yard."
+msgstr "@MESSAGE.GER|14"
+
+#: src/players/HumanPlayer.cpp:216
+msgid "@MESSAGE.ENG|15#Wall: Walls help to defend your base."
+msgstr "@MESSAGE.GER|15"
+
+#: src/players/HumanPlayer.cpp:220
+msgid ""
+"@MESSAGE.ENG|16#Gun Turret: This turret type provides short range defense "
+"for your base."
+msgstr "@MESSAGE.GER|16"
+
+#: src/players/HumanPlayer.cpp:224
+msgid ""
+"@MESSAGE.ENG|17#Rocket Turret: This turret type provides short and medium "
+"range defense for your base."
+msgstr "@MESSAGE.GER|17"
+
+#: src/players/HumanPlayer.cpp:228
+msgid "@MESSAGE.ENG|18#Spice Silo: This building stores refined spice."
+msgstr "@MESSAGE.GER|18"
+
+#: src/players/HumanPlayer.cpp:232
+msgid ""
+"@MESSAGE.ENG|19#Outpost: The Outpost allows the usage of a radar and "
+"supports commanding distant vehicles."
+msgstr "@MESSAGE.GER|19"
 
 #: src/sand.cpp:351
 msgid "@DUNE.ENG|253#Barracks"
@@ -2569,43 +2682,43 @@ msgstr "@DUNE.GER|199"
 msgid "@DUNE.ENG|201#Troopers"
 msgstr "@DUNE.GER|201"
 
-#: src/sand.cpp:536
+#: src/sand.cpp:534
 msgid "top edge"
 msgstr "oberer Rand"
 
-#: src/sand.cpp:537
+#: src/sand.cpp:535
 msgid "right edge"
 msgstr "rechter Rand"
 
-#: src/sand.cpp:538
+#: src/sand.cpp:536
 msgid "bottom edge"
 msgstr "unterer Rand"
 
-#: src/sand.cpp:539
+#: src/sand.cpp:537
 msgid "left edge"
 msgstr "linker Rand"
 
-#: src/sand.cpp:540
+#: src/sand.cpp:538
 msgid "random"
 msgstr "zufällig"
 
-#: src/sand.cpp:541
+#: src/sand.cpp:539
 msgid "middle"
 msgstr "Mitte"
 
-#: src/sand.cpp:542
+#: src/sand.cpp:540
 msgid "enemy base"
 msgstr "Feindbasis"
 
-#: src/sand.cpp:543
+#: src/sand.cpp:541
 msgid "home base"
 msgstr "eigene Basis"
 
-#: src/structures/BuilderBase.cpp:235 src/structures/StarPort.cpp:117
+#: src/structures/BuilderBase.cpp:233 src/structures/StarPort.cpp:110
 msgid "Not enough money"
 msgstr "Nicht genügend Credits."
 
-#: src/structures/BuilderBase.cpp:328
+#: src/structures/BuilderBase.cpp:321
 msgid "@DUNE.ENG|51#Construction is complete"
 msgstr "@DUNE.GER|51"
 
@@ -2625,11 +2738,11 @@ msgstr "Kann Fremen nicht rufen."
 msgid "@DUNE.ENG|79#Saboteur is approaching"
 msgstr "@DUNE.GER|79"
 
-#: src/structures/StarPort.cpp:108
+#: src/structures/StarPort.cpp:102
 msgid "This unit is sold out"
 msgstr "Diese Einheit ist ausverkauft"
 
-#: src/structures/StarPort.cpp:271
+#: src/structures/StarPort.cpp:255
 msgid "@DUNE.ENG|80#Frigate has arrived"
 msgstr "@DUNE.GER|80"
 

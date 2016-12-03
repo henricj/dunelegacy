@@ -30,6 +30,7 @@
 #include <GameInitSettings.h>
 #include <Trigger/TriggerManager.h>
 #include <players/Player.h>
+#include <players/HumanPlayer.h>
 
 #include <DataTypes.h>
 
@@ -291,6 +292,7 @@ public:
         if(pInterface) {
             pInterface->updateObjectInterface();
         }
+        pLocalPlayer->onSelectionChanged(selectedList);
     };
 
 

@@ -52,10 +52,29 @@ public:
 
     virtual void update() = 0;
 
+    /**
+        Notifies that a structure of type itemID was built.
+        \param  itemID  the structure that was built
+    */
     virtual void onIncrementStructures(int itemID) { };
+
+    /**
+        Notifies that a structure of type itemID was destroyed at the specified location.
+        \param  itemID      the structure that was destroyed
+        \param  location    the location the building was located
+    */
     virtual void onDecrementStructures(int itemID, const Coord& location) { };
 
+    /**
+        Notifies that a unit of type itemID was destroyed.
+        \param  itemID      the unit that was destroyed
+    */
     virtual void onDecrementUnits(int itemID) { };
+
+    /**
+        Notifies that an enemy unit of type itemID was destroyed.
+        \param  itemID      the enemy unit that was destroyed
+    */
     virtual void onIncrementUnitKills(int itemID) { };
     /**
         An object was hit by something or damaged somehow else.

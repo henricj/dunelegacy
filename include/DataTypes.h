@@ -160,6 +160,7 @@ public:
         std::string     playerName;         ///< The name of the player used for multiplayer games
         std::string     language;           ///< Language code: "en" = English, "fr" = French, "de" = German
         int             scrollSpeed;        ///< Scroll speed in pixels
+        bool            showTutorialHints;  ///< If true, tutorial hints are shown during the game
     } general;
 
     class VideoClass {

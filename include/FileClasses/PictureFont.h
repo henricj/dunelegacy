@@ -41,9 +41,9 @@ public:
     PictureFont(SDL_Surface* pic, int freesrc);
     virtual ~PictureFont();
 
-    void drawTextOnSurface(SDL_Surface* pSurface, std::string text, Uint32 baseColor = 0xFFFFFFFF);
+    void drawTextOnSurface(SDL_Surface* pSurface, const std::string& text, Uint32 baseColor = 0xFFFFFFFF);
 
-    int getTextWidth(std::string text) const;
+    int getTextWidth(const std::string& text) const;
 
     /// Returns the number of pixels this font needs in y-direction.
     /**

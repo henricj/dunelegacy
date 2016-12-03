@@ -488,6 +488,7 @@ void BuilderBase::doProduceItem(Uint32 itemID, bool multipleMode) {
                     productionProgress = 0;
                     currentProducedItem = itemID;
                 }
+                pLocalPlayer->onProduceItem(itemID);
             }
             break;
         }
