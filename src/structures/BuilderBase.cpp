@@ -242,7 +242,7 @@ void BuilderBase::updateProductionProgress() {
 
 void BuilderBase::doBuildRandom() {
     if(!buildList.empty()) {
-        int item2Produce = std::next(buildList.begin(), currentGame->randomGen.rand(0, buildList.size()-1))->itemID;
+        int item2Produce = std::next(buildList.begin(), currentGame->randomGen.rand(0, static_cast<Sint32>(buildList.size())-1))->itemID;
         doProduceItem(item2Produce);
     }
 }

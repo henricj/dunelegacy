@@ -5,7 +5,6 @@ ACLOCAL_AMFLAGS = -I m4
 EXTRA_DIST = include \
              IDE/codeblocks/dunelegacy.cbp \
              IDE/xCode \
-             IDE/xCode3 \
              debian/changelog \
              debian/compat \
              debian/control \
@@ -15,6 +14,7 @@ EXTRA_DIST = include \
              debian/rules \
              data/LEGACY.PAK \
              data/OPENSD2.PAK \
+             data/GFXHD.PAK \
              data/Dune2-Versions.txt \
              data/maps \
              data/locale \

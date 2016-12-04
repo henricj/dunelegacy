@@ -6,9 +6,9 @@ mkdir -p build/x86
 if [ ! -e build/x86/SDL2.dll ]
 then
 	echo "Downloading 32-bit SDL2.dll..."
-	wget -c http://libsdl.org/release/SDL2-2.0.4-win32-x86.zip -O build/x86/SDL2-2.0.4-win32-x86.zip
-	unzip -q build/x86/SDL2-2.0.4-win32-x86.zip -d build/x86 SDL2.dll
-	rm build/x86/SDL2-2.0.4-win32-x86.zip
+	wget -c http://libsdl.org/release/SDL2-2.0.5-win32-x86.zip -O build/x86/SDL2-2.0.5-win32-x86.zip
+	unzip -q build/x86/SDL2-2.0.5-win32-x86.zip -d build/x86 SDL2.dll
+	rm build/x86/SDL2-2.0.5-win32-x86.zip
 fi
 
 if [ ! -e build/x86/SDL2_mixer.dll ]
@@ -23,9 +23,9 @@ mkdir -p build/x64
 if [ ! -e build/x64/SDL2.dll ]
 then
 	echo "Downloading 64-bit SDL2.dll..."
-	wget -c http://libsdl.org/release/SDL2-2.0.4-win32-x64.zip -O build/x64/SDL2-2.0.4-win32-x64.zip
-	unzip -q build/x64/SDL2-2.0.4-win32-x64.zip -d build/x64 SDL2.dll
-	rm build/x64/SDL2-2.0.4-win32-x64.zip
+	wget -c http://libsdl.org/release/SDL2-2.0.5-win32-x64.zip -O build/x64/SDL2-2.0.5-win32-x64.zip
+	unzip -q build/x64/SDL2-2.0.5-win32-x64.zip -d build/x64 SDL2.dll
+	rm build/x64/SDL2-2.0.5-win32-x64.zip
 fi
 
 if [ ! -e build/x64/SDL2_mixer.dll ]

@@ -86,7 +86,7 @@ void StarPort::doBuildRandom() {
         int item2Produce = ItemID_Invalid;
 
         do {
-            item2Produce = std::next(buildList.begin(), currentGame->randomGen.rand(0, buildList.size()-1))->itemID;
+            item2Produce = std::next(buildList.begin(), currentGame->randomGen.rand(0, static_cast<Sint32>(buildList.size())-1))->itemID;
         } while((item2Produce == Unit_Harvester) || (item2Produce == Unit_MCV) || (item2Produce == Unit_Carryall));
 
         doProduceItem(item2Produce);
