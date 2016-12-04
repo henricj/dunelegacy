@@ -1,48 +1,11 @@
-Bugs:
------
-
-Bug:	Harvesters block each other and then stop harvesting
-Update:	Fixed
-
-Bug:	On Mac OS X save games shall be saved under ~/Library/dunelegacy
-Update:	Fixed
-
-Bug:	Units awaiting pickup for repair and then ordered to some other place are picked up by a carryall and transported their instead of repair yard.
-
-Bug:	Package big icon (128x128) in deb and rpm files
-Update:	Fixed
-
-Bug:	Walls at the edge will not display correct (see mission 9)
-Update:	Fixed
-
-Bug:	If you have a lot of units and send them out all together you can see some flickering.
-Update: Should be solved now.
-
-Bug:	AI tries to place buildings outside the map if base is near map edge (see Harkonnen Level 16 (SCENH016.INI)).
-(Fix:)	Until now this bug isn't really fixed but AI is prevented to build outside the map. It seems, that AI can handle this situation and tries somewhere else.
-
-Bug:	When you start a campaign or skirmish game, the briefing theme keeps playing after you exit the briefing room and start the actual game. Also, if you quit a game and go back to the main menu, the in-game music keeps playing instead of switching to the main menu theme.
-Update:	Fixed
-
-Bug:	Not all original terrain effects on unit speed are present right now, e.g. units should slow down when crossing the sand/rock border, and different movement types are affected in a different way by sand and rock: tracked vehicles move faster on rocks and slow down on sand, while wheeled vehicles do just the opposite.
-
-Bug:	When a carryall is about to pick up an unit and the unit is just stopped before the carryall arrives the carryall just halts. 
-
-Bug:	Starting a replay with a different player name crashes
-
 Todo:
 -----
 
 Reinforcements are delivered in reverse order (really?)
 
-If you lose in a campaign mission only the remaining regions are for selection, if you lose on all three regions you can again choose between all three
-
 Make command queues for units possible (e.g. waypoints during movement, hit and run, etc.)
 
-Use the "tutorial" strings from Dune 2 for a short introduction of new buildings
-
-Cleanup the code base:
- - Mix_AllocateChannels() in main might need parameter tuning (4 channel might be too few)
+Not all original terrain effects on unit speed are present right now, e.g. units should slow down when crossing the sand/rock border, and different movement types are affected in a different way by sand and rock: tracked vehicles move faster on rocks and slow down on sand, while wheeled vehicles do just the opposite.
 
 Add missing voice announcements
 
@@ -55,10 +18,6 @@ Make GUI scale option for higher resolution screens.
 Test sound and music volume
 
 Rework message queue to drop redundant messages
-
-Test minimap
-
-Test Alt-Tab
 
 Test XMI playback on Windows 7
 
