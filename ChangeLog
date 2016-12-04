@@ -12,6 +12,7 @@ version 0.96.4
 	* Improve performance of Fog of War
 	* Units can now be instructed to find the next repair yard on their own
 	* Save game speed, scroll speed and sound volume as game settings
+	* Use a smaller logical resolution for high resolution displays, e.g. 960x540 for 1920x1080
 	* In campaign mode, the map choice screen remembers the region of a failed mission (the user has to select a different region)
 	* New game option "Manual Carryall Drops"
 	* Mentat's eyes are following the cursor

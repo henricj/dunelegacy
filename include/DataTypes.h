@@ -166,6 +166,8 @@ public:
     class VideoClass {
     public:
         bool        fullscreen;
+        int         physicalWidth;
+        int         physicalHeight;
         int         width;
         int         height;
         bool        frameLimit;

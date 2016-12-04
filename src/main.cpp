@@ -91,6 +91,16 @@ static void printUsage() {
     fprintf(stderr, "Usage:\n\tdunelegacy [--showlog] [--fullscreen|--window] [--PlayerName=X] [--ServerPort=X]\n");
 }
 
+int getLogicalToPhysicalResolutionFactor(int physicalWidth, int physicalHeight) {
+    if(physicalWidth >= 1280*3 && physicalHeight >= 720*3) {
+        return 3;
+    } else if(physicalWidth >= 640*2 && physicalHeight >= 480*2) {
+        return 2;
+    } else {
+        return 1;
+    }
+}
+
 void setVideoMode()
 {
     int videoFlags = 0;
@@ -99,22 +109,27 @@ void setVideoMode()
         videoFlags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
     }
 
-    SDL_DisplayMode targetDisplayMode = { 0, settings.video.width, settings.video.height, 0, nullptr};
+    SDL_DisplayMode targetDisplayMode = { 0, settings.video.physicalWidth, settings.video.physicalHeight, 0, nullptr};
     SDL_DisplayMode closestDisplayMode;
 
     if(SDL_GetClosestDisplayMode(SCREEN_DISPLAYINDEX, &targetDisplayMode, &closestDisplayMode) == nullptr) {
         SDL_Log("Warning: Falling back to a display resolution of 640x480!");
+        settings.video.physicalWidth = 640;
+        settings.video.physicalHeight = 480;
         settings.video.width = 640;
         settings.video.height = 480;
     } else {
-        settings.video.width = closestDisplayMode.w;
-        settings.video.height = closestDisplayMode.h;
+        settings.video.physicalWidth = closestDisplayMode.w;
+        settings.video.physicalHeight = closestDisplayMode.h;
+        int factor = getLogicalToPhysicalResolutionFactor(settings.video.physicalWidth, settings.video.physicalHeight);
+        settings.video.width = settings.video.physicalWidth / factor;
+        settings.video.height = settings.video.physicalHeight / factor;
+
     }
 
     window = SDL_CreateWindow("Dune Legacy",
                               SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
-                              //settings.video.width, settings.video.height,
-                              settings.video.width, settings.video.height,
+                              settings.video.physicalWidth, settings.video.physicalHeight,
                               videoFlags);
     renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_TARGETTEXTURE);
     SDL_RenderSetLogicalSize(renderer, settings.video.width, settings.video.height);
@@ -160,14 +175,15 @@ void createDefaultConfigFile(const std::string& configfilepath, const std::strin
                                 "Show Tutorial Hints = true  # Show tutorial hints during the game\n"
                                 "\n"
                                 "[Video]\n"
-                                "# You may decide to use half the resolution of your monitor, e.g. monitor has 1600x1200 => 800x600\n"
                                 "# Minimum resolution is 640x480\n"
                                 "Width = 640\n"
                                 "Height = 480\n"
+                                "Physical Width = 640\n"
+                                "Physical Height = 480\n"
                                 "Fullscreen = true\n"
                                 "FrameLimit = true           # Limit the frame rate to save energy?\n"
                                 "Preferred Zoom Level = 1    # 0 = no zooming, 1 = 2x, 2 = 3x\n"
-                                "Scaler = ScaleHQ            # Scaler to use: ScaleHD = apply manual drawn mask to upscale, Scale2x = smooth edges, ScaleNN = nearest neighbour, \n"
+                                "Scaler = ScaleHD            # Scaler to use: ScaleHD = apply manual drawn mask to upscale, Scale2x = smooth edges, ScaleNN = nearest neighbour, \n"
                                 "\n"
                                 "[Audio]\n"
                                 "# There are three different possibilities to play music\n"
@@ -437,10 +453,12 @@ int main(int argc, char *argv[]) {
         settings.general.showTutorialHints = myINIFile.getBoolValue("General","Show Tutorial Hints",true);
         settings.video.width = myINIFile.getIntValue("Video","Width",640);
         settings.video.height = myINIFile.getIntValue("Video","Height",480);
+        settings.video.physicalWidth= myINIFile.getIntValue("Video","Physical Width",640);
+        settings.video.physicalHeight = myINIFile.getIntValue("Video","Physical Height",480);
         settings.video.fullscreen = myINIFile.getBoolValue("Video","Fullscreen",false);
         settings.video.frameLimit = myINIFile.getBoolValue("Video","FrameLimit",true);
         settings.video.preferredZoomLevel = myINIFile.getIntValue("Video","Preferred Zoom Level", 0);
-        settings.video.scaler = myINIFile.getStringValue("Video","Scaler", "ScaleHD");
+        settings.video.scaler = myINIFile.getStringValue("Video","Scaler","ScaleHD");
         settings.audio.musicType = myINIFile.getStringValue("Audio","Music Type","adl");
         settings.audio.playMusic = myINIFile.getBoolValue("Audio","Play Music", true);
         settings.audio.musicVolume = myINIFile.getIntValue("Audio","Music Volume", 64);
@@ -521,21 +539,23 @@ int main(int argc, char *argv[]) {
         }
 
         if(bFirstGamestart == true && bFirstInit == true) {
-            // find screen resolution bigger or equal to 800x600 (otherwise use 640x480)
-            SDL_DisplayMode targetDisplayMode = { 0, 800, 600, 0, nullptr};
-            SDL_DisplayMode closestDisplayMode;
+            SDL_DisplayMode displayMode;
+            SDL_GetDesktopDisplayMode(SCREEN_DISPLAYINDEX, &displayMode);
 
-            if(SDL_GetClosestDisplayMode(SCREEN_DISPLAYINDEX, &targetDisplayMode, &closestDisplayMode) != nullptr) {
-                settings.video.width = closestDisplayMode.w;
-                settings.video.height = closestDisplayMode.h;
-                settings.video.preferredZoomLevel = 1;
+            int factor = getLogicalToPhysicalResolutionFactor(displayMode.w, displayMode.h);
+            settings.video.physicalWidth = displayMode.w;
+            settings.video.physicalHeight = displayMode.h;
+            settings.video.width = displayMode.w / factor;
+            settings.video.height = displayMode.h / factor;
+            settings.video.preferredZoomLevel = 1;
 
-                myINIFile.setIntValue("Video","Width",settings.video.width);
-                myINIFile.setIntValue("Video","Height",settings.video.height);
-                myINIFile.setIntValue("Video","Preferred Zoom Level",1);
+            myINIFile.setIntValue("Video","Width",settings.video.width);
+            myINIFile.setIntValue("Video","Height",settings.video.height);
+            myINIFile.setIntValue("Video","Physical Width",settings.video.physicalWidth);
+            myINIFile.setIntValue("Video","Physical Height",settings.video.physicalHeight);
+            myINIFile.setIntValue("Video","Preferred Zoom Level",1);
 
-                myINIFile.saveChangesTo(getConfigFilepath());
-            }
+            myINIFile.saveChangesTo(getConfigFilepath());
         }
 
         Scaler::setDefaultScaler(Scaler::getScalerByName(settings.video.scaler));

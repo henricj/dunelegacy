@@ -21,6 +21,15 @@
 #include <string>
 #include <SDL.h>
 
+
+/**
+    Return an appropriate factor between logical and physical resolution.
+    \param  physicalWidth   the physical width of the display
+    \param  physicalHeight  the physical height of the display
+    \return the factor between logical and physical resolution, e.g. 1 for physical resolution below 1280x960
+*/
+int getLogicalToPhysicalResolutionFactor(int physicalWidth, int physicalHeight);
+
 /**
     This functions sets the video mode according to the settings
 */

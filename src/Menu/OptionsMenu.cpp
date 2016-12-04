@@ -134,21 +134,26 @@ OptionsMenu::OptionsMenu() : MenuBase()
 
     int i = 0;
     for(const Coord& coord : availScreenRes) {
-        resolutionDropDownBox.addEntry(fmt::sprintf("%d x %d", coord.x, coord.y), i);
-        if(coord.x == settings.video.width && coord.y == settings.video.height) {
+        int factor = getLogicalToPhysicalResolutionFactor(coord.x, coord.y);
+        if(factor > 1) {
+            resolutionDropDownBox.addEntry(fmt::sprintf("%d x %d @ %dx", coord.x, coord.y, factor), i);
+        } else {
+            resolutionDropDownBox.addEntry(fmt::sprintf("%d x %d", coord.x, coord.y), i);
+        }
+        if(coord.x == settings.video.physicalWidth && coord.y == settings.video.physicalHeight) {
             resolutionDropDownBox.setSelectedItem(i);
         }
         i++;
     }
     resolutionDropDownBox.setOnSelectionChange(std::bind(&OptionsMenu::onChangeOption, this, std::placeholders::_1));
-    resolutionHBox.addWidget(&resolutionDropDownBox, 100);
+    resolutionHBox.addWidget(&resolutionDropDownBox, 130);
     resolutionHBox.addWidget(Spacer::create(), 5);
-    zoomlevelDropDownBox.addEntry("Zoomlevel x1", 0);
-    zoomlevelDropDownBox.addEntry("Zoomlevel x2", 1);
-    zoomlevelDropDownBox.addEntry("Zoomlevel x3", 2);
+    zoomlevelDropDownBox.addEntry("Zoom 1x", 0);
+    zoomlevelDropDownBox.addEntry("Zoom 2x", 1);
+    zoomlevelDropDownBox.addEntry("Zoom 3x", 2);
     zoomlevelDropDownBox.setSelectedItem(settings.video.preferredZoomLevel);
     zoomlevelDropDownBox.setOnSelectionChange(std::bind(&OptionsMenu::onChangeOption, this, std::placeholders::_1));
-    resolutionHBox.addWidget(&zoomlevelDropDownBox, 102);
+    resolutionHBox.addWidget(&zoomlevelDropDownBox, 72);
     resolutionHBox.addWidget(Spacer::create(), 5);
     for(int i = 0; i < Scaler::NumScaler; i++) {
         scalerDropDownBox.addEntry(Scaler::getScalerName((Scaler::ScalerType) i));
@@ -258,8 +263,8 @@ void OptionsMenu::onChangeOption(bool bInteractive) {
 
     int selectedResolution = resolutionDropDownBox.getSelectedEntryIntData();
     if(selectedResolution >= 0) {
-        bChanged |= (settings.video.width != availScreenRes[selectedResolution].x);
-        bChanged |= (settings.video.height != availScreenRes[selectedResolution].y);
+        bChanged |= (settings.video.physicalWidth != availScreenRes[selectedResolution].x);
+        bChanged |= (settings.video.physicalHeight != availScreenRes[selectedResolution].y);
     }
     bChanged |= (settings.video.preferredZoomLevel != zoomlevelDropDownBox.getSelectedEntryIntData());
     bChanged |= (settings.video.fullscreen != fullScreenCheckbox.isChecked());
@@ -306,10 +311,12 @@ void OptionsMenu::onOptionsOK() {
     settings.ai.campaignAI = ((pPlayerData != nullptr) ? pPlayerData->getPlayerClass() : DEFAULTAIPLAYERCLASS);
 
     int selectedResolution = resolutionDropDownBox.getSelectedEntryIntData();
-    settings.video.width = availScreenRes[selectedResolution].x;
-    settings.video.height = availScreenRes[selectedResolution].y;
-    int selectedZoomlevel = zoomlevelDropDownBox.getSelectedEntryIntData();
-    settings.video.preferredZoomLevel = selectedZoomlevel;
+    settings.video.physicalWidth = availScreenRes[selectedResolution].x;
+    settings.video.physicalHeight = availScreenRes[selectedResolution].y;
+    int factor = getLogicalToPhysicalResolutionFactor(settings.video.physicalWidth, settings.video.physicalHeight);
+    settings.video.width = settings.video.physicalWidth / factor;
+    settings.video.height = settings.video.physicalHeight / factor;
+    settings.video.preferredZoomLevel = zoomlevelDropDownBox.getSelectedEntryIntData();
     settings.video.scaler = scalerDropDownBox.getSelectedEntry();
     settings.video.fullscreen = fullScreenCheckbox.isChecked();
 
@@ -348,6 +355,8 @@ void OptionsMenu::saveConfiguration2File() {
     myINIFile.setBoolValue("General","Play Intro",settings.general.playIntro);
     myINIFile.setBoolValue("General","Show Tutorial Hints",settings.general.showTutorialHints);
 
+    myINIFile.setIntValue("Video","Physical Width",settings.video.physicalWidth);
+    myINIFile.setIntValue("Video","Physical Height",settings.video.physicalHeight);
     myINIFile.setIntValue("Video","Width",settings.video.width);
     myINIFile.setIntValue("Video","Height",settings.video.height);
     myINIFile.setBoolValue("Video","Fullscreen",settings.video.fullscreen);
@@ -425,9 +434,11 @@ void OptionsMenu::determineAvailableScreenResolutions() {
         availScreenRes.push_back( Coord(1680, 1050) );  // WSXGA+ (16:10)
         availScreenRes.push_back( Coord(1920, 1080) );  // 1080p (16:9)
         availScreenRes.push_back( Coord(1920, 1200) );  // WUXGA (16:10)
+        availScreenRes.push_back( Coord(2560, 1440) );  // WQHD (16:9)
+        availScreenRes.push_back( Coord(3840, 2160) );  // 2160p (16:9)
     }
 
-    Coord currentRes(settings.video.width, settings.video.height);
+    Coord currentRes(settings.video.physicalWidth, settings.video.physicalHeight);
 
     if(std::find(availScreenRes.begin(), availScreenRes.end(), currentRes) == availScreenRes.end()) {
         // not yet in the list
