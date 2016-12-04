@@ -231,13 +231,14 @@ void Harvester::checkPos()
 void Harvester::deploy(const Coord& newLocation)
 {
     if(currentGameMap->tileExists(newLocation)) {
-        UnitBase::deploy(newLocation);
-
-
+        TrackedUnit::deploy(newLocation);
         if(spice == 0) {
-            if((attackMode != STOP) && currentGameMap->findSpice(destination, guardPoint)) {
+            Coord newDestination;
+            if((attackMode != STOP) && currentGameMap->findSpice(newDestination, guardPoint)) {
                 harvestingMode = true;
-                guardPoint = destination;
+                setDestination(newDestination);
+                setGuardPoint(newDestination);
+
             } else {
                 harvestingMode = false;
             }
@@ -343,11 +344,13 @@ void Harvester::handleReturnClick() {
 
 void Harvester::doReturn()
 {
-    returningToRefinery = true;
-    harvestingMode = false;
+    if(!returningToRefinery && isActive()) {
+        returningToRefinery = true;
+        harvestingMode = false;
 
-    if(getAttackMode() == STOP) {
-        setGuardPoint(Coord::Invalid());
+        if(getAttackMode() == STOP) {
+            setGuardPoint(Coord::Invalid());
+        }
     }
 }
 

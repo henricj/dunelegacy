@@ -466,7 +466,9 @@ void QuantBot::onDamage(const ObjectBase* pObject, int damage, Uint32 damagerID)
             // Defend the harvester!
             scrambleUnitsAndDefend(pDamager);
             const Harvester* pHarvester = dynamic_cast<const Harvester*>(pUnit);
-            doReturn(pHarvester);
+            if(pHarvester->isActive() && (pHarvester->getAmountOfSpice() > 0)) {
+                doReturn(pHarvester);
+            }
         } else if (pUnit->getItemID() == Unit_Launcher
             || pUnit->getItemID() == Unit_Deviator) {
             // Always keep Launchers away from harm
@@ -983,7 +985,7 @@ void QuantBot::build(int militaryValue) {
                         if(!pBuilder->isUpgrading()
                            && gameMode == GameMode::Campaign
                            && money > 1000
-                           && (itemCount[Structure_HeavyFactory == 0] || militaryValue < militaryValueLimit * FixPt(0,30))
+                           && ((itemCount[Structure_HeavyFactory] == 0) || militaryValue < militaryValueLimit * FixPt(0,30))
                            && pBuilder->getProductionQueueSize() < 1
                            && pBuilder->getBuildListSize() > 0
                            && militaryValue < militaryValueLimit) {
@@ -1013,7 +1015,7 @@ void QuantBot::build(int militaryValue) {
                         if(!pBuilder->isUpgrading()
                            && gameMode == GameMode::Campaign
                            && money > 1000
-                           && (itemCount[Structure_HeavyFactory == 0] || militaryValue < militaryValueLimit * FixPt(0,30))
+                           && ((itemCount[Structure_HeavyFactory] == 0) || militaryValue < militaryValueLimit * FixPt(0,30))
                            && pBuilder->getProductionQueueSize() < 1
                            && pBuilder->getBuildListSize() > 0
                            && !getHouse()->isUnitLimitReached()
@@ -1027,7 +1029,7 @@ void QuantBot::build(int militaryValue) {
                     case Structure_Barracks: {
                         if(!pBuilder->isUpgrading()
                            && gameMode == GameMode::Campaign
-                           && (itemCount[Structure_HeavyFactory == 0] || militaryValue < militaryValueLimit * FixPt(0,30))
+                           && ((itemCount[Structure_HeavyFactory] == 0) || militaryValue < militaryValueLimit * FixPt(0,30))
                            && itemCount[Structure_WOR == 0]
                            && money > 1000
                            && pBuilder->getProductionQueueSize() < 1
@@ -1735,8 +1737,8 @@ void QuantBot::checkAllUnits() {
 
                 case Unit_Harvester: {
                     const Harvester* pHarvester = dynamic_cast<const Harvester*>(pUnit);
-                    if(getHouse()->getCredits() < 1000 && pHarvester->getAmountOfSpice() >= HARVESTERMAXSPICE/2
-                       && getHouse()->getNumItems(Structure_HeavyFactory) == 0 && pHarvester != nullptr) {
+                    if(getHouse()->getCredits() < 1000 && pHarvester != nullptr && pHarvester->isActive()
+                        && (pHarvester->getAmountOfSpice() >= HARVESTERMAXSPICE/2) && getHouse()->getNumItems(Structure_HeavyFactory) == 0) {
                         doReturn(pHarvester);
                     }
                 } break;
@@ -1774,7 +1776,7 @@ void QuantBot::checkAllUnits() {
                             }
                         } else if(pUnit->getItemID() == Unit_Harvester) {
                             const Harvester* pHarvester = dynamic_cast<const Harvester*>(pUnit);
-                            if(pHarvester->getAmountOfSpice() >= HARVESTERMAXSPICE/5 && pHarvester != nullptr) {
+                            if(pHarvester != nullptr && pHarvester->getAmountOfSpice() >= HARVESTERMAXSPICE/5) {
                                 doReturn(pHarvester);
                             } else {
                                 doMove2Pos(pUnit, squadCenterLocation.x, squadCenterLocation.y, true );
