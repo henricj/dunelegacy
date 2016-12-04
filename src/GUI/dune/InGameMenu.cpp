@@ -23,6 +23,7 @@
 #include <FileClasses/TextManager.h>
 #include <misc/fnkdat.h>
 #include <Game.h>
+#include <main.h>
 #include <GameInitSettings.h>
 
 #include <GUI/MsgBox.h>
@@ -111,7 +112,7 @@ bool InGameMenu::handleKeyPress(SDL_KeyboardEvent& key) {
 
         case SDLK_RETURN:
             if(SDL_GetModState() & KMOD_ALT) {
-                SDL_SetWindowFullscreen(window, (SDL_GetWindowFlags(window) ^ SDL_WINDOW_FULLSCREEN_DESKTOP));
+                toogleFullscreen();
             }
             break;
 

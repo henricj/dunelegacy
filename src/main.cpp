@@ -138,6 +138,35 @@ void setVideoMode()
     SDL_ShowCursor(SDL_DISABLE);
 }
 
+void toogleFullscreen()
+{
+    if(SDL_GetWindowFlags(window) & SDL_WINDOW_FULLSCREEN_DESKTOP) {
+        // switch to windowed mode
+        SDL_Log("Switching to windowed mode.");
+        SDL_SetWindowFullscreen(window, (SDL_GetWindowFlags(window) ^ SDL_WINDOW_FULLSCREEN_DESKTOP));
+
+        SDL_SetWindowSize(window, settings.video.physicalWidth, settings.video.physicalHeight);
+        SDL_RenderSetLogicalSize(renderer, settings.video.width, settings.video.height);
+    } else {
+        // switch to fullscreen mode
+        SDL_Log("Switching to fullscreen mode.");
+        SDL_DisplayMode displayMode;
+        SDL_GetDesktopDisplayMode(SCREEN_DISPLAYINDEX, &displayMode);
+
+        SDL_SetWindowFullscreen(window, (SDL_GetWindowFlags(window) ^ SDL_WINDOW_FULLSCREEN_DESKTOP));
+
+        SDL_SetWindowSize(window, displayMode.w, displayMode.h);
+        SDL_RenderSetLogicalSize(renderer, settings.video.width, settings.video.height);
+    }
+
+    // we just need to flush all events; otherwise we might get them twice
+    SDL_PumpEvents();
+    SDL_FlushEvents(SDL_FIRSTEVENT, SDL_LASTEVENT);
+
+    // wait a bit to avoid immediately switching back
+    SDL_Delay(100);
+}
+
 std::string getConfigFilepath()
 {
     // determine path to config file

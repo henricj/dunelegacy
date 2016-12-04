@@ -34,6 +34,7 @@
 #include <globals.h>
 #include <mmath.h>
 #include <sand.h>
+#include <main.h>
 #include <Tile.h>
 
 #include <config.h>
@@ -985,7 +986,7 @@ void MapEditor::processInput() {
 
                         case SDLK_RETURN: {
                             if(SDL_GetModState() & KMOD_ALT) {
-                                SDL_SetWindowFullscreen(window, (SDL_GetWindowFlags(window) ^ SDL_WINDOW_FULLSCREEN_DESKTOP));
+                                toogleFullscreen();
                             }
                         } break;
 

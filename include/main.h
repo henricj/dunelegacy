@@ -36,6 +36,11 @@ int getLogicalToPhysicalResolutionFactor(int physicalWidth, int physicalHeight);
 void setVideoMode();
 
 /**
+    Toggles fullscreen and windowed mode
+*/
+void toogleFullscreen();
+
+/**
     This function returns the configfile path
     \return the full path to the config file
 */

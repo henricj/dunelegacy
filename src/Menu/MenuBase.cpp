@@ -27,6 +27,7 @@
 #include <globals.h>
 
 #include <sand.h>
+#include <main.h>
 
 
 MenuBase::MenuBase() : Window(0,0,0,0) {
@@ -118,7 +119,7 @@ bool MenuBase::doInput(SDL_Event &event) {
 
                 case SDLK_RETURN: {
                     if(SDL_GetModState() & KMOD_ALT) {
-                        SDL_SetWindowFullscreen(window, (SDL_GetWindowFlags(window) ^ SDL_WINDOW_FULLSCREEN_DESKTOP));
+                        toogleFullscreen();
                     }
                 } break;
 

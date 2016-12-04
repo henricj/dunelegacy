@@ -2215,7 +2215,7 @@ void Game::handleKeyInput(SDL_KeyboardEvent& keyboardEvent) {
 
         case SDLK_RETURN: {
             if(SDL_GetModState() & KMOD_ALT) {
-                SDL_SetWindowFullscreen(window, (SDL_GetWindowFlags(window) ^ SDL_WINDOW_FULLSCREEN_DESKTOP));
+                toogleFullscreen();
             } else {
                 typingChatMessage = "";
                 chatMode = true;
