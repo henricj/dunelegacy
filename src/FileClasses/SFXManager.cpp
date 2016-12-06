@@ -84,10 +84,11 @@ Mix_Chunk* SFXManager::getSound(Sound_enum id) {
     return soundChunk[id];
 }
 
-Mix_Chunk* SFXManager::loadMixFromADL(const std::string& adlFile, int index) {
+Mix_Chunk* SFXManager::loadMixFromADL(const std::string& adlFile, int index, int volume) {
 
     SDL_RWops* rwop = pFileManager->openFile(adlFile);
     SoundAdlibPC *pSoundAdlibPC = new SoundAdlibPC(rwop, AUDIO_FREQUENCY);
+    pSoundAdlibPC->setVolume(volume);
     Mix_Chunk* chunk = pSoundAdlibPC->getSubsong(index);
     delete pSoundAdlibPC;
     SDL_RWclose(rwop);
@@ -249,7 +250,7 @@ void SFXManager::loadEnglishVoice() {
     soundChunk[Sound_PlaceStructure] = getChunkFromFile("EXDUD.VOC");
     soundChunk[Sound_ButtonClick] = getChunkFromFile("BUTTON.VOC");
     soundChunk[Sound_InvalidAction] = loadMixFromADL("DUNE1.ADL", 47);
-    soundChunk[Sound_CreditsTick] = loadMixFromADL("DUNE1.ADL", 52);
+    soundChunk[Sound_CreditsTick] = loadMixFromADL("DUNE1.ADL", 52, 4*MIX_MAX_VOLUME);
     soundChunk[Sound_Tick] = loadMixFromADL("DUNE1.ADL", 38);
     soundChunk[Sound_RadarNoise] = getChunkFromFile("STATICP.VOC");
     soundChunk[Sound_ExplosionGas] = getChunkFromFile("EXGAS.VOC");
@@ -378,8 +379,8 @@ void SFXManager::loadNonEnglishVoice(const std::string& languagePrefix) {
     // Sfx
     soundChunk[Sound_PlaceStructure] = getChunkFromFile("EXDUD.VOC");
     soundChunk[Sound_ButtonClick] = getChunkFromFile("BUTTON.VOC");
-    soundChunk[Sound_InvalidAction] =  loadMixFromADL("DUNE1.ADL", 47);
-    soundChunk[Sound_CreditsTick] = loadMixFromADL("DUNE1.ADL", 52);
+    soundChunk[Sound_InvalidAction] = loadMixFromADL("DUNE1.ADL", 47);
+    soundChunk[Sound_CreditsTick] = loadMixFromADL("DUNE1.ADL", 52, 4*MIX_MAX_VOLUME);
     soundChunk[Sound_Tick] = loadMixFromADL("DUNE1.ADL", 38);
     soundChunk[Sound_RadarNoise] = getChunkFromFile("STATICP.VOC");
     soundChunk[Sound_ExplosionGas] = getChunkFromFile("EXGAS.VOC");

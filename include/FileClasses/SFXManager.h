@@ -96,7 +96,7 @@ public:
     Mix_Chunk*      getSound(Sound_enum id);
 
 private:
-    Mix_Chunk*      loadMixFromADL(const std::string& adlFile, int index);
+    Mix_Chunk*      loadMixFromADL(const std::string& adlFile, int index, int volume = MIX_MAX_VOLUME/2);
 
     void            loadEnglishVoice();
     Mix_Chunk*      getEnglishVoice(Voice_enum id, int house);
