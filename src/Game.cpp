@@ -824,7 +824,7 @@ void Game::doInput()
 
                                 int percent = lround(100 * pHarvester->getAmountOfSpice() / HARVESTERMAXSPICE);
                                 if(percent > 0) {
-                                    if(pHarvester->isawaitingPickup()) {
+                                    if(pHarvester->isAwaitingPickup()) {
                                         harvesterMessage += fmt::sprintf(_("@DUNE.ENG|124#full and awaiting pickup"), percent);
                                     } else if(pHarvester->isReturning()) {
                                         harvesterMessage += fmt::sprintf(_("@DUNE.ENG|123#full and returning"), percent);
@@ -835,7 +835,7 @@ void Game::doInput()
                                     }
 
                                 } else {
-                                    if(pHarvester->isawaitingPickup()) {
+                                    if(pHarvester->isAwaitingPickup()) {
                                         harvesterMessage += _("@DUNE.ENG|128#empty and awaiting pickup");
                                     } else if(pHarvester->isReturning()) {
                                         harvesterMessage += _("@DUNE.ENG|127#empty and returning");

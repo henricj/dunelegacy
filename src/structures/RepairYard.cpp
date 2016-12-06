@@ -151,7 +151,7 @@ void RepairYard::updateStructureSpecificStuff() {
                 pRepairUnit->addHealth();
             }
 
-        } else if(static_cast<GroundUnit*>(pRepairUnit)->isawaitingPickup() == false) {
+        } else if(static_cast<GroundUnit*>(pRepairUnit)->isAwaitingPickup() == false) {
             // find carryall
             Carryall* pCarryall = nullptr;
             if((pRepairUnit->getGuardPoint().isValid()) && getOwner()->hasCarryalls())  {

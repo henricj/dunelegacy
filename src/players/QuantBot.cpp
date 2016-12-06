@@ -457,7 +457,7 @@ void QuantBot::onDamage(const ObjectBase* pObject, int damage, Uint32 damagerID)
             return;
         }
 
-        if(pUnit->isawaitingPickup()) {
+        if(pUnit->isAwaitingPickup()) {
             return;
         }
 

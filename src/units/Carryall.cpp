@@ -370,7 +370,7 @@ void Carryall::engageTarget()
         return;
     }
 
-    if(target && target.getObjPointer()->isAGroundUnit() && !static_cast<GroundUnit*>(target.getObjPointer())->isawaitingPickup()) {
+    if(target && target.getObjPointer()->isAGroundUnit() && !static_cast<GroundUnit*>(target.getObjPointer())->isAwaitingPickup()) {
         // the target changed its state to not awaiting pickup anymore
         releaseTarget();
         return;
@@ -483,7 +483,7 @@ void Carryall::pickupTarget()
             clearPath();
 
         } else {
-            pGroundUnitTarget->setawaitingPickup(false);
+            pGroundUnitTarget->setAwaitingPickup(false);
             releaseTarget();
         }
     } else {
@@ -511,7 +511,7 @@ void Carryall::setTarget(const ObjectBase* newTarget) {
     UnitBase::setTarget(newTarget);
 
     if(target && targetFriendly && target.getObjPointer()->isAGroundUnit()) {
-        static_cast<GroundUnit*>(target.getObjPointer())->setawaitingPickup(true);
+        static_cast<GroundUnit*>(target.getObjPointer())->setAwaitingPickup(true);
     }
 
     booked = target;

@@ -52,8 +52,8 @@ public:
 
     virtual void doRepair();
 
-    inline void setawaitingPickup(bool status) { awaitingPickup = status; }
-    inline bool isawaitingPickup() const { return awaitingPickup; }
+    inline void setAwaitingPickup(bool status) { awaitingPickup = status; }
+    inline bool isAwaitingPickup() const { return awaitingPickup; }
     bool hasBookedCarrier() const;
     const UnitBase* getCarrier() const;
 
