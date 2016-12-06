@@ -78,7 +78,7 @@ private:
     Coord squadRallyLocation = Coord::Invalid();
     Coord squadRetreatLocation = Coord::Invalid();
 
-    void scrambleUnitsAndDefend(const ObjectBase* pIntruder);
+    void scrambleUnitsAndDefend(const ObjectBase* pIntruder, int numUnits = std::numeric_limits<int>::max());
 
 
     Coord findMcvPlaceLocation(const MCV* pMCV);

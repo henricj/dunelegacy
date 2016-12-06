@@ -436,8 +436,16 @@ void QuantBot::onDamage(const ObjectBase* pObject, int damage, Uint32 damagerID)
     } else if (pObject->isAStructure()) {
         doRepair(pObject);
         // no point scrambling to defend a missile
-        if(pDamager->getItemID() != Structure_Palace){
-            scrambleUnitsAndDefend(pDamager);
+        if(pDamager->getItemID() != Structure_Palace) {
+            int numStructureDefenders = 0;
+            switch(difficulty) {
+                case Difficulty::Defend:    numStructureDefenders = 4;                                  break;
+                case Difficulty::Easy:      numStructureDefenders = 6;                                  break;
+                case Difficulty::Medium:    numStructureDefenders = 10;                                 break;
+                case Difficulty::Hard:      numStructureDefenders = 20;                                 break;
+                case Difficulty::Brutal:    numStructureDefenders = std::numeric_limits<int>::max();    break;
+            }
+            scrambleUnitsAndDefend(pDamager, numStructureDefenders);
         }
 
     } else if(pObject->isAGroundUnit()){
@@ -454,7 +462,7 @@ void QuantBot::onDamage(const ObjectBase* pObject, int damage, Uint32 damagerID)
         }
 
         // Stop him dead in his tracks if he's going to rally point
-        if(pUnit->wasForced()) {
+        if(pUnit->wasForced() && (pUnit->getItemID() != Unit_Harvester)) {
             doMove2Pos(pUnit,
                        pUnit->getCenterPoint().x,
                        pUnit->getCenterPoint().y,
@@ -464,9 +472,17 @@ void QuantBot::onDamage(const ObjectBase* pObject, int damage, Uint32 damagerID)
         if (pUnit->getItemID() == Unit_Harvester) {
             // Always keep Harvesters away from harm
             // Defend the harvester!
-            scrambleUnitsAndDefend(pDamager);
             const Harvester* pHarvester = dynamic_cast<const Harvester*>(pUnit);
-            if(pHarvester->isActive() && (pHarvester->getAmountOfSpice() > 0)) {
+            if(pHarvester->isActive() && (!pHarvester->isReturning()) && pHarvester->getAmountOfSpice() > 0) {
+                int numHarvesterDefenders = 0;
+                switch(difficulty) {
+                    case Difficulty::Defend:    numHarvesterDefenders = 2;                                  break;
+                    case Difficulty::Easy:      numHarvesterDefenders = 3;                                  break;
+                    case Difficulty::Medium:    numHarvesterDefenders = 5;                                  break;
+                    case Difficulty::Hard:      numHarvesterDefenders = 10;                                 break;
+                    case Difficulty::Brutal:    numHarvesterDefenders = std::numeric_limits<int>::max();    break;
+                }
+                scrambleUnitsAndDefend(pDamager, numHarvesterDefenders);
                 doReturn(pHarvester);
             }
         } else if (pUnit->getItemID() == Unit_Launcher
@@ -1450,10 +1466,9 @@ void QuantBot::build(int militaryValue) {
 }
 
 
-void QuantBot::scrambleUnitsAndDefend(const ObjectBase* pIntruder) {
+void QuantBot::scrambleUnitsAndDefend(const ObjectBase* pIntruder, int numUnits) {
     for(const UnitBase* pUnit : getUnitList()) {
         if(pUnit->isRespondable() && (pUnit->getOwner() == getHouse())) {
-
             if(!pUnit->hasATarget() && !pUnit->wasForced()) {
                 Uint32 itemID = pUnit->getItemID();
                 if((itemID != Unit_Harvester) && (pUnit->getItemID() != Unit_MCV) && (pUnit->getItemID() != Unit_Carryall)
@@ -1478,6 +1493,10 @@ void QuantBot::scrambleUnitsAndDefend(const ObjectBase* pIntruder) {
                             doRequestCarryallDrop(pGroundUnit); //do request carryall to defend unit
                         }
                     }
+
+                    if(--numUnits == 0) {
+                        break;
+                    }
                 }
             }
         }
@@ -1489,7 +1508,7 @@ void QuantBot::attack(int militaryValue) {
 
     /// Logic to make Brutal AI attack more often
     /// not using this atm
-
+    /*
     int tempLim = militaryValueLimit;
     if(tempLim > 60000) {
         tempLim = 60000;
@@ -1502,8 +1521,10 @@ void QuantBot::attack(int militaryValue) {
     if(newAttack > 100000){
         newAttack = 100000;
     }
+    */
+
     // overwriting existing logic for the time being
-    attackTimer = MILLI2CYCLES(10000);
+    attackTimer = MILLI2CYCLES(100000);
 
     // only attack if we have 35% of maximum military power on max sized map. Required military power scales down accordingly
     if(militaryValue < militaryValueLimit * FixPt(0,35) * currentGameMap->getSizeX() * currentGameMap->getSizeY() / 16384 && militaryValue < 20000) {
@@ -1516,12 +1537,31 @@ void QuantBot::attack(int militaryValue) {
         return;
     }
 
-    if(difficulty == Difficulty::Defend){
-        return;
+    int militaryValueToAttackWith = militaryValue;
+    switch(difficulty) {
+        case Difficulty::Defend: {
+            return;
+        } break;
+
+        case Difficulty::Easy: {
+            militaryValueToAttackWith = militaryValue/5;
+        } break;
+
+        case Difficulty::Medium: {
+            militaryValueToAttackWith = militaryValue/3;
+        } break;
+
+        case Difficulty::Hard: {
+            militaryValueToAttackWith = 2*militaryValue/3;
+        } break;
+
+        case Difficulty::Brutal: {
+            militaryValueToAttackWith = militaryValue;
+        } break;
     }
 
-    logDebug(   "Attack: house: %d  dif: %d  mStr: %d  mLim: %d  strength: %f  attackTimer: %d",
-                getHouse()->getHouseID(), static_cast<Uint8>(difficulty), militaryValue, militaryValueLimit, strength.toFloat(), attackTimer);
+    logDebug(   "Attack: house: %d  dif: %d  mStr: %d  mLim: %d  attackTimer: %d",
+                getHouse()->getHouseID(), static_cast<Uint8>(difficulty), militaryValue, militaryValueLimit, attackTimer);
 
     Coord squadCenterLocation = findSquadCenter(getHouse()->getHouseID());
 
@@ -1545,6 +1585,10 @@ void QuantBot::attack(int militaryValue) {
                                                                                          - getHouse()->getNumItems(Unit_MCV)) + 6)
         {
             doSetAttackMode(pUnit, HUNT);
+            militaryValueToAttackWith -= currentGame->objectData.data[pUnit->getItemID()][getHouse()->getHouseID()].price;
+            if(militaryValueToAttackWith < 0) {
+                break;
+            }
         }
     }
 
