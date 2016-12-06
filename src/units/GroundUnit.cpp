@@ -62,7 +62,7 @@ void GroundUnit::save(OutputStream& stream) const {
 void GroundUnit::assignToMap(const Coord& pos) {
     if (currentGameMap->tileExists(pos)) {
         currentGameMap->getTile(pos)->assignNonInfantryGroundObject(getObjectID());
-        currentGameMap->viewMap(owner->getTeam(), location, getViewRange());
+        currentGameMap->viewMap(owner->getTeam(), pos, getViewRange());
     }
 }
 

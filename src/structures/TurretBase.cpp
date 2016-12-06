@@ -21,6 +21,7 @@
 
 #include <Game.h>
 #include <Map.h>
+#include <House.h>
 #include <Bullet.h>
 #include <SoundPlayer.h>
 
@@ -159,12 +160,14 @@ void TurretBase::turnRight() {
 void TurretBase::attack() {
     if((weaponTimer == 0) && (target.getObjPointer() != nullptr)) {
         Coord centerPoint = getCenterPoint();
-        Coord targetCenterPoint = target.getObjPointer()->getClosestCenterPoint(location);
+        ObjectBase* pObject = target.getObjPointer();
+        Coord targetCenterPoint = pObject->getClosestCenterPoint(location);
 
         bulletList.push_back( new Bullet( objectID, &centerPoint, &targetCenterPoint,bulletType,
                                                currentGame->objectData.data[itemID][originalHouseID].weapondamage,
-                                               target.getObjPointer()->isAFlyingUnit() ) );
+                                               pObject->isAFlyingUnit() ) );
 
+        currentGameMap->viewMap(pObject->getOwner()->getTeam(), location, 2);
         soundPlayer->playSoundAt(attackSound, location);
         weaponTimer = getWeaponReloadTime();
     }

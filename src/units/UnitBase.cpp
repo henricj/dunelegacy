@@ -184,9 +184,10 @@ void UnitBase::attack() {
         Coord centerPoint = getCenterPoint();
         bool bAirBullet;
 
-        if(target.getObjPointer() != nullptr) {
-            targetCenterPoint = target.getObjPointer()->getClosestCenterPoint(location);
-            bAirBullet = target.getObjPointer()->isAFlyingUnit();
+        ObjectBase* pObject = target.getObjPointer();
+        if(pObject != nullptr) {
+            targetCenterPoint = pObject->getClosestCenterPoint(location);
+            bAirBullet = pObject->isAFlyingUnit();
         } else {
             targetCenterPoint = currentGameMap->getTile(attackPos)->getCenterPoint();
             bAirBullet = false;
@@ -210,6 +211,9 @@ void UnitBase::attack() {
 
         if(primaryWeaponTimer == 0) {
             bulletList.push_back( new Bullet( objectID, &centerPoint, &targetCenterPoint, currentBulletType, currentWeaponDamage, bAirBullet) );
+            if(pObject != nullptr) {
+                currentGameMap->viewMap(pObject->getOwner()->getTeam(), location, 2);
+            }
             playAttackSound();
             primaryWeaponTimer = getWeaponReloadTime();
 
@@ -229,6 +233,9 @@ void UnitBase::attack() {
 
         if((numWeapons == 2) && (secondaryWeaponTimer == 0) && (isBadlyDamaged() == false)) {
             bulletList.push_back( new Bullet( objectID, &centerPoint, &targetCenterPoint, currentBulletType, currentWeaponDamage, bAirBullet) );
+            if(pObject != nullptr) {
+                currentGameMap->viewMap(pObject->getOwner()->getTeam(), location, 2);
+            }
             playAttackSound();
             secondaryWeaponTimer = -1;
 

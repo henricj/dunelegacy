@@ -26,6 +26,7 @@
 #include <FileClasses/SFXManager.h>
 #include <House.h>
 #include <Game.h>
+#include <Map.h>
 
 RocketTurret::RocketTurret(House* newOwner) : TurretBase(newOwner) {
     RocketTurret::init();
@@ -74,22 +75,25 @@ bool RocketTurret::canAttack(const ObjectBase* object) const {
 void RocketTurret::attack() {
     if((weaponTimer == 0) && (target.getObjPointer() != nullptr)) {
         Coord centerPoint = getCenterPoint();
-        Coord targetCenterPoint = target.getObjPointer()->getClosestCenterPoint(location);
+        ObjectBase* pObject = target.getObjPointer();
+        Coord targetCenterPoint = pObject->getClosestCenterPoint(location);
 
         if(distanceFrom(centerPoint, targetCenterPoint) < 3 * TILESIZE) {
             // we are just shooting a bullet as a gun turret would do
             bulletList.push_back( new Bullet( objectID, &centerPoint, &targetCenterPoint, Bullet_ShellTurret,
                                                    currentGame->objectData.data[Structure_GunTurret][originalHouseID].weapondamage,
-                                                   target.getObjPointer()->isAFlyingUnit() ) );
+                                                   pObject->isAFlyingUnit() ) );
 
+            currentGameMap->viewMap(pObject->getOwner()->getTeam(), location, 2);
             soundPlayer->playSoundAt(Sound_Gun, location);
             weaponTimer = currentGame->objectData.data[Structure_GunTurret][originalHouseID].weaponreloadtime;
         } else {
             // we are in normal shooting mode
             bulletList.push_back( new Bullet( objectID, &centerPoint, &targetCenterPoint, bulletType,
                                                    currentGame->objectData.data[itemID][originalHouseID].weapondamage,
-                                                   target.getObjPointer()->isAFlyingUnit() ) );
+                                                   pObject->isAFlyingUnit() ) );
 
+            currentGameMap->viewMap(pObject->getOwner()->getTeam(), location, 2);
             soundPlayer->playSoundAt(attackSound, location);
             weaponTimer = getWeaponReloadTime();
         }
