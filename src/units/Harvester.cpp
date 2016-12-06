@@ -214,9 +214,11 @@ void Harvester::checkPos()
         } else if(respondable && !harvestingMode && attackMode != STOP) {
             if(spiceCheckCounter == 0) {
                 // Find harvest location nearest to our base
-                if(currentGameMap->findSpice(destination, guardPoint)) {
+                Coord newDestination;
+                if(currentGameMap->findSpice(newDestination, guardPoint)) {
+                    setDestination(newDestination);
+                    setGuardPoint(newDestination);
                     harvestingMode = true;
-                    guardPoint = destination;
                 } else {
                     harvestingMode = false;
                 }
