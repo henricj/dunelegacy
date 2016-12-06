@@ -492,20 +492,23 @@ void QuantBot::onDamage(const ObjectBase* pObject, int damage, Uint32 damagerID)
             doSetAttackMode(pUnit, AREAGUARD);
             doMove2Pos(pUnit, squadCenterLocation.x, squadCenterLocation.y, true);
 
-        } else if((pUnit->getItemID() == Unit_Quad
-
-                // Quads don't run from trikes, infantry, other quads
-                && !pDamager->isInfantry()
-                && pDamager->getItemID() != Unit_RaiderTrike
-                && pDamager->getItemID() != Unit_Trike
-                && pDamager->getItemID() != Unit_Quad)
-
-                // Trikes run from quads
-                || ((pUnit->getItemID() == Unit_RaiderTrike
-                    || pUnit->getItemID() == Unit_Trike)
+        } else if(  (currentGame->techLevel > 3)
+                    && (pUnit->getItemID() == Unit_Quad)
                     && !pDamager->isInfantry()
-                    && pDamager->getItemID() != Unit_RaiderTrike
-                    && pDamager->getItemID() != Unit_Trike)) {
+                    && (pDamager->getItemID() != Unit_RaiderTrike)
+                    && (pDamager->getItemID() != Unit_Trike)
+                    && (pDamager->getItemID() != Unit_Quad)) {
+            // We want out quads as raiders
+            // Quads flee from every unit except trikes, infantry and other quads (but only if quads are not our main vehicle for that techlevel)
+            doSetAttackMode(pUnit, AREAGUARD);
+            doMove2Pos(pUnit, squadCenterLocation.x, squadCenterLocation.y, true);
+        } else if(  (currentGame->techLevel > 3)
+                    && (pUnit->getItemID() == Unit_RaiderTrike)
+                    && (pUnit->getItemID() == Unit_Trike)
+                    && !pDamager->isInfantry()
+                    && (pDamager->getItemID() != Unit_RaiderTrike)
+                    && (pDamager->getItemID() != Unit_Trike)) {
+            // Quads flee from every unit except infantry and other trikes (but only if trikes are not our main vehicle for that techlevel)
             // We want to use our light vehicles as raiders.
             // This means they are free to engage other light military units
             // but should run away from tanks
@@ -513,33 +516,6 @@ void QuantBot::onDamage(const ObjectBase* pObject, int damage, Uint32 damagerID)
             doSetAttackMode(pUnit, AREAGUARD);
             doMove2Pos(pUnit, squadCenterLocation.x, squadCenterLocation.y, true);
 
-        } else if ((pUnit->getItemID() == Unit_Tank || pUnit->getItemID() == Unit_SiegeTank)
-            && pUnit->getHealth() * 100 / pUnit->getMaxHealth() < 85
-            && pDamager->getItemID() != Structure_GunTurret
-            && pDamager->getItemID() != Structure_RocketTurret
-            && pDamager->getItemID() != Unit_RaiderTrike
-            && pDamager->getItemID() != Unit_Trike
-            && pDamager->getItemID() != Unit_Quad
-            && pDamager->getItemID() != Unit_SonicTank
-            && pDamager->getItemID() != Unit_Deviator
-            && !pDamager->isInfantry()) {
-            // All Tanks run from other tanks and Ornithopters when below 85% health
-
-            doSetAttackMode(pUnit, AREAGUARD);
-            doMove2Pos(pUnit, squadCenterLocation.x, squadCenterLocation.y, true);
-        } else if ((pUnit->getItemID() == Unit_Tank)
-                 && pDamager->getItemID() != Unit_SiegeTank
-                 && pDamager->getItemID() != Structure_GunTurret
-                 && pDamager->getItemID() != Structure_RocketTurret
-                 && pDamager->getItemID() != Unit_RaiderTrike
-                 && pDamager->getItemID() != Unit_Trike
-                 && pDamager->getItemID() != Unit_Quad
-                 && pDamager->getItemID() != Unit_SonicTank
-                 && pDamager->getItemID() != Unit_Deviator
-                 && !pDamager->isInfantry()){
-            // Tanks run from Siege Tanks
-            doSetAttackMode(pUnit, AREAGUARD);
-            doMove2Pos(pUnit, squadCenterLocation.x, squadCenterLocation.y, true);
         }
 
         // If the unit is at 60% health or less and is not being forced to move anywhere
@@ -1524,7 +1500,7 @@ void QuantBot::attack(int militaryValue) {
     */
 
     // overwriting existing logic for the time being
-    attackTimer = MILLI2CYCLES(100000);
+    attackTimer = MILLI2CYCLES(90000);
 
     // only attack if we have 35% of maximum military power on max sized map. Required military power scales down accordingly
     if(militaryValue < militaryValueLimit * FixPt(0,35) * currentGameMap->getSizeX() * currentGameMap->getSizeY() / 16384 && militaryValue < 20000) {
