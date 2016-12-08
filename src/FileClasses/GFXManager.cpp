@@ -1027,6 +1027,10 @@ SDL_Texture* GFXManager::getUIGraphic(unsigned int id, int house) {
 
         if(id >= UI_MapChoiceArrow_None && id <= UI_MapChoiceArrow_Left) {
             uiGraphicTex[id][house] = convertSurfaceToTexture(generateMapChoiceArrowFrames(pSurface, house), true);
+        } else if(id == UI_Indicator) {
+            SDL_Surface* pIndicator = convertSurfaceToDisplayFormat(pSurface, false);
+            replaceColor(pIndicator, COLOR_WHITE, COLOR_INDICATOR_TRANSPARENT);
+            uiGraphicTex[UI_Indicator][house] = convertSurfaceToTexture(pIndicator, true);
         } else {
             uiGraphicTex[id][house] = convertSurfaceToTexture(pSurface, false);
         }

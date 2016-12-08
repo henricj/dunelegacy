@@ -356,6 +356,14 @@ void Game::drawScreen()
         }
     }
 
+    // draw the gathering point line if a structure is selected
+    if(selectedList.size() == 1) {
+        StructureBase *pStructure = dynamic_cast<StructureBase*>(getObjectManager().getObject(*selectedList.begin()));
+        if(pStructure != nullptr) {
+            pStructure->drawGatheringPointLine();
+        }
+    }
+
     /* draw selection rectangles */
     for(currentTile.y = TopLeftTile.y; currentTile.y <= BottomRightTile.y; currentTile.y++) {
         for(currentTile.x = TopLeftTile.x; currentTile.x <= BottomRightTile.x; currentTile.x++) {

@@ -61,6 +61,7 @@ public:
     void destroy();
     virtual void drawSelectionBox();
     virtual void drawOtherPlayerSelectionBox();
+    virtual void drawGatheringPointLine();
 
     virtual Coord getCenterPoint() const;
     virtual Coord getClosestCenterPoint(const Coord& objectLocation) const;

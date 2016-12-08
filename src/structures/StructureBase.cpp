@@ -243,6 +243,31 @@ void StructureBase::drawOtherPlayerSelectionBox() {
     }
 }
 
+void StructureBase::drawGatheringPointLine() {
+    if(isABuilder() && (getItemID() != Structure_ConstructionYard) && destination.isValid() && (getOwner() == pLocalHouse)) {
+        Coord indicatorPosition = destination*TILESIZE + Coord(TILESIZE/2, TILESIZE/2);
+        Coord structurePosition = getCenterPoint();
+
+        renderDrawLine( renderer,
+                        screenborder->world2screenX(structurePosition.x), screenborder->world2screenY(structurePosition.y),
+                        screenborder->world2screenX(indicatorPosition.x), screenborder->world2screenY(indicatorPosition.y),
+                        COLOR_HALF_TRANSPARENT);
+
+
+        SDL_Texture* pUIIndicator = pGFXManager->getUIGraphic(UI_Indicator);
+        SDL_Rect source = calcSpriteSourceRect(pUIIndicator, 0, 3);
+        SDL_Rect drawLocation = calcSpriteDrawingRect(  pUIIndicator,
+                                                        screenborder->world2screenX(indicatorPosition.x),
+                                                        screenborder->world2screenY(indicatorPosition.y),
+                                                        3, 1,
+                                                        HAlign::Center, VAlign::Center);
+
+        // Render twice
+        SDL_RenderCopy(renderer, pUIIndicator, &source, &drawLocation);
+        SDL_RenderCopy(renderer, pUIIndicator, &source, &drawLocation);
+    }
+}
+
 /**
     Returns the center point of this structure
     \return the center point in world coordinates
