@@ -508,9 +508,11 @@ const ObjectBase* ObjectBase::findTarget() const {
         }
 
         while((yCheck < currentGameMap->getSizeY()) && ((yCheck - yPos) <=  lookDist[abs(xCheck - xPos)])) {
-            if(currentGameMap->getTile(xCheck,yCheck)->hasAnObject()) {
-                tempTarget = currentGameMap->getTile(xCheck,yCheck)->getObject();
+            if( currentGameMap->getTile(xCheck,yCheck)->isExplored(getOwner()->getHouseID())
+                && !currentGameMap->getTile(xCheck,yCheck)->isFogged(getOwner()->getHouseID())
+                && currentGameMap->getTile(xCheck,yCheck)->hasAnObject()) {
 
+                tempTarget = currentGameMap->getTile(xCheck,yCheck)->getObject();
                 if(((tempTarget->getItemID() != Structure_Wall
                     && tempTarget->getItemID() != Unit_Carryall)
                     || closestTarget == nullptr)

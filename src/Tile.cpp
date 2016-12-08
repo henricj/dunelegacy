@@ -457,7 +457,8 @@ void Tile::blitSelectionRects(int xPos, int yPos) {
                                             return;
                                         }
 
-                                        if(pObject->isVisible(pLocalHouse->getTeam()) && (location == pObject->getLocation())) {
+                                        // possibly draw selection rectangle multiple times, e.g. for structures
+                                        if(pObject->isVisible(pLocalHouse->getTeam())) {
                                             if(pObject->isSelected()) {
                                                 pObject->drawSelectionBox();
                                             }

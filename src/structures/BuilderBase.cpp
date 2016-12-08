@@ -361,22 +361,23 @@ bool BuilderBase::update() {
                 UnitBase* newUnit = getOwner()->createUnit(finishedItemID);
 
                 if(newUnit != nullptr) {
-                    Coord spot = currentGameMap->findDeploySpot(newUnit, location, destination, structureSize);
-                    newUnit->deploy(spot);
-
-                    if(getOwner()->isAI()
-                        && (newUnit->getItemID() != Unit_Carryall)
-                        && (newUnit->getItemID() != Unit_Harvester)
-                        && (newUnit->getItemID() != Unit_MCV)) {
-                        //newUnit->doSetAttackMode(AREAGUARD);
-                    } else {
+                    Coord unitDestination;
+                    if( getOwner()->isAI()
+                        && ((newUnit->getItemID() == Unit_Carryall)
+                            || (newUnit->getItemID() == Unit_Harvester)
+                            || (newUnit->getItemID() == Unit_MCV))) {
                         // Don't want harvesters going to the rally point
-                        destination = location;
+                        unitDestination = location;
+                    } else {
+                        unitDestination = destination;
                     }
 
-                    if(destination.isValid() && newUnit->getItemID() != Unit_Harvester) {
-                        newUnit->setGuardPoint(destination);
-                        newUnit->setDestination(destination);
+                    Coord spot = currentGameMap->findDeploySpot(newUnit, location, unitDestination, structureSize);
+                    newUnit->deploy(spot);
+
+                    if(unitDestination.isValid()) {
+                        newUnit->setGuardPoint(unitDestination);
+                        newUnit->setDestination(unitDestination);
                         newUnit->setAngle(destinationDrawnAngle(newUnit->getLocation(), newUnit->getDestination()));
                     }
 
