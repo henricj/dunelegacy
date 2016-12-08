@@ -300,21 +300,9 @@ public:
 
 
     inline void update() {
-
-        // Performance tweak because this function is called alot (every game cycle for every tile)
-        bool bHasTracks = false;
         for(int i=0;i<NUM_ANGLES;i++) {
-            if(tracksCounter[i] != 0) {
-                bHasTracks = true;
-                break;
-            }
-        }
-
-        if(bHasTracks) {
-            for(int i=0;i<NUM_ANGLES;i++) {
-                if(tracksCounter[i] > 0) {
-                    tracksCounter[i]--;
-                }
+            if(tracksCounter[i] > 0) {
+                tracksCounter[i]--;
             }
         }
 
@@ -333,7 +321,7 @@ public:
     inline void setTrack(Uint8 direction) {
         if(type == Terrain_Sand || type == Terrain_Dunes
             || type == Terrain_Spice || type == Terrain_ThickSpice) {
-            tracksCounter[direction] = 5000;
+            tracksCounter[direction] = TRACKSTIME;
         }
     }
 

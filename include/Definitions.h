@@ -74,6 +74,7 @@
 #define INVALID (-1)
 
 #define DEVIATIONTIME MILLI2CYCLES(120*1000)
+#define TRACKSTIME MILLI2CYCLES((1 << 16))
 #define HARVESTERMAXSPICE 700
 #define HARVESTSPEED FixPt(0,1344)
 #define BADLYDAMAGEDRATIO FixPt(0,5)                //if health/getMaxHealth() < this, damage will become bad - smoke and shit

@@ -283,10 +283,12 @@ void Tile::blitGround(int xPos, int yPos) {
 
         if(!isFogged(pLocalHouse->getHouseID())) {
             // tracks
+            SDL_Texture* pTracks = pGFXManager->getObjPic(ObjPic_Terrain_Tracks)[currentZoomlevel];
             for(int i=0;i<NUM_ANGLES;i++) {
                 if(tracksCounter[i] > 0) {
                     source.x = ((10-i)%8)*world2zoomedWorld(TILESIZE);
-                    SDL_RenderCopy(renderer, pGFXManager->getObjPic(ObjPic_Terrain_Tracks)[currentZoomlevel], &source, &drawLocation);
+                    SDL_SetTextureAlphaMod(pTracks, std::min(255, 256*tracksCounter[i]/TRACKSTIME));
+                    SDL_RenderCopy(renderer, pTracks, &source, &drawLocation);
                 }
             }
 
