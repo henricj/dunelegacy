@@ -127,7 +127,7 @@ void Refinery::deployHarvester(Carryall* pCarryall) {
     firstRun = false;
 
     Harvester* pHarvester = static_cast<Harvester*>(harvester.getObjPointer());
-    if(pCarryall != nullptr) {
+    if((pCarryall != nullptr) && pHarvester->getGuardPoint().isValid()) {
         pCarryall->giveCargo(pHarvester);
         pCarryall->setTarget(nullptr);
         pCarryall->setDestination(pHarvester->getGuardPoint());
@@ -175,14 +175,14 @@ void Refinery::updateStructureSpecificStuff() {
 
 
             owner->addCredits(pHarvester->extractSpice(extractionSpeed), true);
-        } else if(pHarvester->isAwaitingPickup() == false) {
+        } else if((pHarvester->isAwaitingPickup() == false) && (pHarvester->getGuardPoint().isValid())) {
             // find carryall
             Carryall* pCarryall = nullptr;
             if((pHarvester->getGuardPoint().isValid()) && getOwner()->hasCarryalls())   {
                 for(UnitBase* pUnit : unitList) {
                     if ((pUnit->getOwner() == owner) && (pUnit->getItemID() == Unit_Carryall)) {
                         Carryall* pTmpCarryall = static_cast<Carryall*>(pUnit);
-                        if (pTmpCarryall->isRespondable() && !pTmpCarryall->isBooked()) {
+                        if (!pTmpCarryall->isBooked()) {
                             pCarryall = pTmpCarryall;
                             break;
                         }

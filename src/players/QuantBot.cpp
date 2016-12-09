@@ -520,14 +520,16 @@ void QuantBot::onDamage(const ObjectBase* pObject, int damage, Uint32 damagerID)
 
         // If the unit is at 60% health or less and is not being forced to move anywhere
         // repair them, if they are eligible to be repaired
-        if((pUnit->getHealth() * 100) / pUnit->getMaxHealth() < 60
-            && !pUnit->isInfantry()
-            && pUnit->isVisible()) {
+        if(difficulty == Difficulty::Brutal) {
+            if((pUnit->getHealth() * 100) / pUnit->getMaxHealth() < 60
+                && !pUnit->isInfantry()
+                && pUnit->isVisible()) {
 
-            if(getHouse()->hasRepairYard()){
-                doRepair(pUnit);
-            } else if(gameMode == GameMode::Custom && pUnit->getItemID() != Unit_Devastator && squadRetreatLocation.isValid()){
-                doSetAttackMode(pUnit, RETREAT);
+                if(getHouse()->hasRepairYard()){
+                    doRepair(pUnit);
+                } else if(gameMode == GameMode::Custom && pUnit->getItemID() != Unit_Devastator && squadRetreatLocation.isValid()){
+                    doSetAttackMode(pUnit, RETREAT);
+                }
             }
         }
     }

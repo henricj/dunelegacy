@@ -99,26 +99,11 @@ void RepairYard::deployRepairUnit(Carryall* pCarryall) {
     } else {
         Coord deployPos = currentGameMap->findDeploySpot(pRepairUnit, location, destination, structureSize);
 
-        if(pRepairUnit->getItemID() != Unit_Harvester){
-            pRepairUnit->setForced(false);
-            pRepairUnit->setTarget(nullptr);
-            //pRepairUnit->setDestination(nullptr);
-            pRepairUnit->doSetAttackMode(GUARD);
-
-        }else{
-            // If we need additional harvester logic
-            pRepairUnit->doSetAttackMode(HARVEST);
-        }
+        pRepairUnit->setForced(false);
+        pRepairUnit->doSetAttackMode((pRepairUnit->getItemID() == Unit_Harvester) ? HARVEST : GUARD);
         pRepairUnit->deploy(deployPos);
-        /**
-            Need to fix at some point in a balanced way
-        **/
-        if(pRepairUnit->getAttackMode() == HUNT){
-            pRepairUnit->doSetAttackMode(GUARD);
-        }
         pRepairUnit->setTarget(nullptr);
         pRepairUnit->setDestination(pRepairUnit->getLocation());
-
     }
 
     repairUnit.pointTo(NONE_ID);
@@ -158,7 +143,7 @@ void RepairYard::updateStructureSpecificStuff() {
                 for(UnitBase* pUnit : unitList) {
                     if ((pUnit->getOwner() == owner) && (pUnit->getItemID() == Unit_Carryall)) {
                         Carryall* pTmpCarryall = static_cast<Carryall*>(pUnit);
-                        if (pTmpCarryall->isRespondable() && !pTmpCarryall->isBooked()) {
+                        if (!pTmpCarryall->isBooked()) {
                             pCarryall = pTmpCarryall;
                         }
                     }
@@ -166,14 +151,11 @@ void RepairYard::updateStructureSpecificStuff() {
             }
 
             if(pCarryall != nullptr) {
-                /*
                 pCarryall->setTarget(this);
                 pCarryall->clearPath();
                 ((GroundUnit*)pRepairUnit)->bookCarrier(pCarryall);
                 pRepairUnit->setTarget(nullptr);
                 pRepairUnit->setDestination(pRepairUnit->getGuardPoint());
-                */
-                deployRepairUnit(pCarryall);
             } else {
                 deployRepairUnit();
             }

@@ -673,7 +673,10 @@ void UnitBase::navigate() {
                                && (currentGame->getGameInitSettings().getGameOptions().manualCarryallDrops
                                    || getOwner()->isAI())){
                                static_cast<GroundUnit*>(this)->requestCarryall();
-                            } else if(getOwner()->isAI() && (getItemID() == Unit_Harvester) && !static_cast<Harvester*>(this)->isReturning()) {
+                            } else if(  getOwner()->isAI()
+                                        && (getItemID() == Unit_Harvester)
+                                        && !static_cast<Harvester*>(this)->isReturning()
+                                        && blockDistance(location, destination) >= 2) {
                                 // try getting back to a refinery
                                 static_cast<Harvester*>(this)->doReturn();
                             } else {

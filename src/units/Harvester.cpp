@@ -162,6 +162,7 @@ void Harvester::checkPos()
     if(active)  {
         if (returningToRefinery) {
             if (target && (target.getObjPointer() != nullptr) && (target.getObjPointer()->getItemID() == Structure_Refinery)) {
+                Refinery* pRefinery = static_cast<Refinery*>(target.getObjPointer());
                 Tile* pTile = currentGameMap->getTile(location);
                 ObjectBase *pObject = pTile->getGroundObject();
 
@@ -169,7 +170,6 @@ void Harvester::checkPos()
                     && (pObject != nullptr)
                     && (pObject->getObjectID() == target.getObjectID()) )
                 {
-                    Refinery* pRefinery = static_cast<Refinery*>(target.getObjPointer());
                     if(pRefinery->isFree()) {
                         awaitingPickup = false;
                         setReturned();
@@ -179,7 +179,11 @@ void Harvester::checkPos()
                         doMove2Pos(newDestination, true);
                         requestCarryall();
                     }
+                } else if(!awaitingPickup && owner->hasCarryalls() && pRefinery->isFree() && blockDistance(location, pRefinery->getClosestPoint(location)) > 8) {
+                    requestCarryall();
                 }
+
+
             } else if (!structureList.empty()) {
                 int leastNumBookings = 1000000; //huge amount so refinery couldn't possibly compete with any refinery num bookings
                 FixPoint closestLeastBookedRefineryDistance = 1000000;
@@ -209,7 +213,7 @@ void Harvester::checkPos()
                     pBestRefinery->startAnimate();
                 }
             }
-        } else if (harvestingMode && !hasBookedCarrier() && (blockDistance(location, destination) > 8)) {
+        } else if (harvestingMode && !hasBookedCarrier() && destination.isValid() && (blockDistance(location, destination) > 8)) {
             requestCarryall();
         } else if(respondable && !harvestingMode && attackMode != STOP) {
             if(spiceCheckCounter == 0) {
@@ -437,7 +441,9 @@ void Harvester::move()
                             }
                         }
                     } else if (!currentGameMap->findSpice(destination, location)) {
-                        doReturn();
+                        if(spice > 0) {
+                            doReturn();
+                        }
                     } else {
                         doMove2Pos(destination, false);
                     }
