@@ -703,9 +703,13 @@ void QuantBot::build(int militaryValue) {
     int activeRepairYardCount = 0;
 
     // Let's try just running this once...
-    if(squadRallyLocation.isInvalid()){
-        logDebug("Set squad rally location");
-        retreatAllUnits();
+    if(squadRallyLocation.isInvalid()) {
+        if(gameMode == GameMode::Campaign) {
+            squadRallyLocation = findSquadRallyLocation();
+            squadRetreatLocation = findSquadRetreatLocation();
+        } else {
+            retreatAllUnits();
+        }
     }
 
     // Next add in the objects we are building
@@ -1606,6 +1610,26 @@ Coord QuantBot::findSquadRallyLocation() {
     return baseCentreLocation;
 }
 
+Coord QuantBot::findSquadRetreatLocation() {
+    Coord newSquadRetreatLocation = Coord::Invalid();
+
+    FixPoint closestDistance = FixPt_MAX;
+    for(const StructureBase* pStructure : getStructureList()) {
+        // if it is our building, check to see if it is closer to the squad rally point then we are
+        if(pStructure->getOwner()->getHouseID() == getHouse()->getHouseID()) {
+            Coord closestStructurePoint = pStructure->getClosestPoint(squadRallyLocation);
+            FixPoint structureDistance = blockDistance(squadRallyLocation, closestStructurePoint);
+
+            if(structureDistance < closestDistance) {
+                closestDistance = structureDistance;
+                newSquadRetreatLocation = closestStructurePoint;
+            }
+        }
+    }
+
+    return newSquadRetreatLocation;
+}
+
 Coord QuantBot::findBaseCentre(int houseID) {
     int buildingCount = 0;
     int totalX = 0;
@@ -1683,27 +1707,10 @@ void QuantBot::retreatAllUnits() {
 
     // Set the new squad rally location
     squadRallyLocation = findSquadRallyLocation();
+    squadRetreatLocation = findSquadRetreatLocation();
 
     // set attck timer down a bit
     retreatTimer = MILLI2CYCLES(90000);
-
-    FixPoint closestDistance = FixPt_MAX;
-    for(const StructureBase* pStructure : getStructureList()) {
-        // if it is our building, check to see if it is closer to the squad rally point then we are
-        if(pStructure->getOwner()->getHouseID() == getHouse()->getHouseID()) {
-            Coord closestStructurePoint = pStructure->getClosestPoint(squadRallyLocation);
-            FixPoint structureDistance = blockDistance(squadRallyLocation, closestStructurePoint);
-
-            if(structureDistance < closestDistance) {
-                closestDistance = structureDistance;
-                squadRetreatLocation = closestStructurePoint;
-            }
-        }
-    }
-
-    if(getHouse()->getNumStructures() == 0){
-        squadRetreatLocation = Coord::Invalid();
-    }
 
     // If no base exists yet, there is no retreat location
     if(squadRallyLocation.isValid() && squadRetreatLocation.isValid()) {
@@ -1822,7 +1829,7 @@ void QuantBot::checkAllUnits() {
                             }
                         }
                     } else if(pUnit->getAttackMode() != HUNT && !pUnit->hasATarget() && !pUnit->wasForced()) {
-                        if(pUnit->getAttackMode() == AREAGUARD && squadCenterLocation.isValid()) {
+                        if(pUnit->getAttackMode() == AREAGUARD && squadCenterLocation.isValid() && (gameMode != GameMode::Campaign)) {
                            if(blockDistance(pUnit->getLocation(), squadCenterLocation) > squadRadius) {
                                 if(!pUnit->hasATarget()){
                                     doMove2Pos(pUnit, squadCenterLocation.x, squadCenterLocation.y, false );
@@ -1839,8 +1846,7 @@ void QuantBot::checkAllUnits() {
                                 doSetAttackMode(pUnit, AREAGUARD);
                             }
                         } else if (pUnit->getAttackMode() == GUARD
-                                   && ((pUnit->getDestination().x != squadRallyLocation.x || pUnit->getDestination().y != squadRallyLocation.y)
-                                       || (blockDistance(pUnit->getLocation(),squadRallyLocation) <= squadRadius))) {
+                                   && ((pUnit->getDestination() != squadRallyLocation) || (blockDistance(pUnit->getLocation(),squadRallyLocation) <= squadRadius))) {
                             // A newly deployed unit has reached the rally point, or has been diverted => Change it to area guard
                             doSetAttackMode(pUnit, AREAGUARD);
                         }

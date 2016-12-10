@@ -86,6 +86,7 @@ private:
     Coord findSquadCenter(int houseID);
     Coord findBaseCentre(int houseID);
     Coord findSquadRallyLocation();
+    Coord findSquadRetreatLocation();
 
     std::list<Coord> placeLocations;    ///< Where to place structures
 
