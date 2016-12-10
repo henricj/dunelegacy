@@ -317,11 +317,8 @@ bool ObjectBase::canAttack(const ObjectBase* object) const {
 
     if( canAttack()
         && (object != nullptr)
-        && (object->isAStructure()
-            || !object->isAFlyingUnit())
-        && ((object->getOwner()->getTeam() != owner->getTeam())
-            || object->getItemID() == Unit_Sandworm)
-        && object->isVisible(getOwner()->getTeam()))
+        && (object->isAStructure() || !object->isAFlyingUnit())
+        && (((object->getOwner()->getTeam() != owner->getTeam()) && object->isVisible(getOwner()->getTeam())) || (object->getItemID() == Unit_Sandworm)) )
     {
         return true;
     } else {

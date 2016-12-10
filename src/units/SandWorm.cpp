@@ -46,6 +46,7 @@ Sandworm::Sandworm(House* newOwner) : GroundUnit(newOwner) {
     kills = 0;
     attackFrameTimer = 0;
     sleepTimer = 0;
+    warningWormSignPlayedFlags = 0;
     respondable = false;
 
     for(int i = 0; i < SANDWORM_SEGMENTS; i++) {
@@ -61,6 +62,7 @@ Sandworm::Sandworm(InputStream& stream) : GroundUnit(stream) {
     kills = stream.readSint32();
     attackFrameTimer = stream.readSint32();
     sleepTimer = stream.readSint32();
+    warningWormSignPlayedFlags = stream.readUint8();
     shimmerOffsetIndex = stream.readSint32();
     for(int i = 0; i < SANDWORM_SEGMENTS; i++) {
         lastLocs[i].x = stream.readSint32();
@@ -92,6 +94,7 @@ void Sandworm::save(OutputStream& stream) const {
     stream.writeSint32(kills);
     stream.writeSint32(attackFrameTimer);
     stream.writeSint32(sleepTimer);
+    stream.writeUint8(warningWormSignPlayedFlags);
     stream.writeSint32(shimmerOffsetIndex);
     for(int i = 0; i < SANDWORM_SEGMENTS; i++) {
         stream.writeSint32(lastLocs[i].x);
@@ -251,6 +254,7 @@ void Sandworm::sleep() {
     setLocation(INVALID_POS, INVALID_POS);
     setHealth(getMaxHealth());
     kills = 0;
+    warningWormSignPlayedFlags = 0;
     drawnFrame = INVALID;
     attackFrameTimer = 0;
     shimmerOffsetIndex = -1;
@@ -273,6 +277,23 @@ bool Sandworm::sleepOrDie() {
         destroy();
         return false;
     }
+}
+
+void Sandworm::setTarget(const ObjectBase* newTarget) {
+    GroundUnit::setTarget(newTarget);
+
+    if( (newTarget != nullptr) && (newTarget->getOwner() == pLocalHouse)
+        && ((warningWormSignPlayedFlags & (1 << pLocalHouse->getHouseID())) == 0) ) {
+        soundPlayer->playVoice(WarningWormSign, pLocalHouse->getHouseID());
+        warningWormSignPlayedFlags |= (1 << pLocalHouse->getHouseID());
+    }
+}
+
+void Sandworm::handleDamage(int damage, Uint32 damagerID, House* damagerOwner) {
+    if(damage > 0) {
+        attackMode = HUNT;
+    }
+    GroundUnit::handleDamage(damage, damagerID, damagerOwner);
 }
 
 bool Sandworm::update() {

@@ -42,6 +42,10 @@ public:
     inline void setLocation(const Coord& location) { setLocation(location.x, location.y); }
     void setLocation(int xPos, int yPos);
 
+    virtual void setTarget(const ObjectBase* newTarget);
+
+    virtual void handleDamage(int damage, Uint32 damagerID, House* damagerOwner);
+
     /**
         Updates this sandworm.
         \return true if this object still exists, false if it was destroyed
@@ -81,9 +85,10 @@ protected:
 
 private:
     // sandworm state
-    Sint32      kills;                  ///< How many units does this sandworm alreay killed?
-    Sint32      attackFrameTimer;       ///< When to show the next attack frame
-    Sint32      sleepTimer;             ///< How long has this sandworm slept?
+    Sint32      kills;                      ///< How many units does this sandworm alreay killed?
+    Sint32      attackFrameTimer;           ///< When to show the next attack frame
+    Sint32      sleepTimer;                 ///< How long has this sandworm slept?
+    Uint8       warningWormSignPlayedFlags; ///< Was the "Worm Sign" warning played? If yes, the corresponding flag is the for the local house
 
     // drawing information
     Sint32 shimmerOffsetIndex;

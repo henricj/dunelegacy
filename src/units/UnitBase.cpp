@@ -1231,9 +1231,6 @@ void UnitBase::targeting() {
                     doAttackObject(pNewTarget, false);
 
                     if(getItemID() == Unit_Sandworm) {
-                        if(pNewTarget->getOwner() == pLocalHouse) {
-                            soundPlayer->playVoice(WarningWormSign, pLocalHouse->getHouseID());
-                        }
                         doSetAttackMode(HUNT);
                     }
                 } else if(attackMode == HUNT) {
@@ -1242,7 +1239,7 @@ void UnitBase::targeting() {
                 }
 
                 // reset target timer
-                findTargetTimer = 200;
+                findTargetTimer = MILLI2CYCLES(2*1000);
             }
         }
 

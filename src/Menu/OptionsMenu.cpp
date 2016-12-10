@@ -435,6 +435,7 @@ void OptionsMenu::determineAvailableScreenResolutions() {
         availScreenRes.push_back( Coord(1920, 1080) );  // 1080p (16:9)
         availScreenRes.push_back( Coord(1920, 1200) );  // WUXGA (16:10)
         availScreenRes.push_back( Coord(2560, 1440) );  // WQHD (16:9)
+        availScreenRes.push_back( Coord(2560, 1600) );  // WQXGA (16:10)
         availScreenRes.push_back( Coord(3840, 2160) );  // 2160p (16:9)
     }
 
