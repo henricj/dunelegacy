@@ -453,7 +453,7 @@ void Carryall::pickupTarget()
         }
 
         if (  pTarget->hasATarget()
-            || ( pGroundUnitTarget->getGuardPoint() != pTarget->getLocation())
+            || ( pGroundUnitTarget->getDestination() != pTarget->getLocation())
             || pGroundUnitTarget->isBadlyDamaged()) {
 
             if(pGroundUnitTarget->isBadlyDamaged() || (pTarget->hasATarget() == false && pTarget->getItemID() != Unit_Harvester))   {
@@ -485,6 +485,9 @@ void Carryall::pickupTarget()
 
         } else {
             pGroundUnitTarget->setAwaitingPickup(false);
+            if(pGroundUnitTarget->getAttackMode() == CARRYALLREQUESTED) {
+                pGroundUnitTarget->doSetAttackMode(STOP);
+            }
             releaseTarget();
         }
     } else {

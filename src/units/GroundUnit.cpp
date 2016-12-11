@@ -132,8 +132,8 @@ void GroundUnit::checkPos() {
     }
 
     // If we are awaiting a pickup try book a carryall if we have one
-    if( attackMode == CARRYALLREQUESTED && bookedCarrier == NONE_ID) {
-        if(getOwner()->hasCarryalls()) {
+    if(!pickedUp && attackMode == CARRYALLREQUESTED && bookedCarrier == NONE_ID) {
+        if(getOwner()->hasCarryalls() && (target || (destination != location))) {
             requestCarryall();
         } else {
             if(getItemID() == Unit_Harvester) {

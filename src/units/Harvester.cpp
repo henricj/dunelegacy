@@ -184,7 +184,7 @@ void Harvester::checkPos()
                 }
 
 
-            } else if (!structureList.empty()) {
+            } else {
                 int leastNumBookings = 1000000; //huge amount so refinery couldn't possibly compete with any refinery num bookings
                 FixPoint closestLeastBookedRefineryDistance = 1000000;
                 Refinery* pBestRefinery = nullptr;
@@ -211,6 +211,8 @@ void Harvester::checkPos()
                 if (pBestRefinery) {
                     doMove2Object(pBestRefinery);
                     pBestRefinery->startAnimate();
+                } else {
+                    setDestination(location);
                 }
             }
         } else if (harvestingMode && !hasBookedCarrier() && destination.isValid() && (blockDistance(location, destination) > 8)) {
@@ -224,6 +226,8 @@ void Harvester::checkPos()
                     setGuardPoint(newDestination);
                     harvestingMode = true;
                 } else {
+                    setDestination(location);
+                    setGuardPoint(location);
                     harvestingMode = false;
                 }
                 spiceCheckCounter = 100;
@@ -456,7 +460,10 @@ void Harvester::move()
 }
 
 bool Harvester::isHarvesting() const {
-    return harvestingMode && (blockDistance(location, destination) <= FixPt_SQRT2) && currentGameMap->tileExists(location) && currentGameMap->getTile(location)->hasSpice();
+    return  harvestingMode
+            && (spice < HARVESTERMAXSPICE)
+            && (blockDistance(location, destination) <= FixPt_SQRT2)
+            && currentGameMap->tileExists(location) && currentGameMap->getTile(location)->hasSpice();
 }
 
 bool Harvester::canAttack(const ObjectBase* object) const
