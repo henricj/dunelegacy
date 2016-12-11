@@ -94,9 +94,34 @@ public:
     inline Sint32 getNumItemDamageInflicted(int itemID) const { return numItemDamageInflicted[itemID]; }
     inline FixPoint getHarvestedSpice() const { return harvestedSpice; }
 
-    inline int getMaxUnits() const { return maxUnits; };
-    inline bool isUnitLimitReached() const { return (numUnits >= maxUnits); };
     inline int getQuota() const { return quota; };
+    inline int getMaxUnits() const { return maxUnits; };
+
+    /**
+        This function checks if the limit for ground units is already reached. Infantry units are only counted as 1/3.
+        \return true, if the limit is already reached, false if building further ground units is allowed
+    */
+    inline bool isGroundUnitLimitReached() const {
+        int numGroundUnit = numUnits - numItem[Unit_Soldier] - numItem[Unit_Trooper] - numItem[Unit_Carryall] - numItem[Unit_Ornithopter];
+        return (numGroundUnit + (numItem[Unit_Soldier]+2)/3 + (numItem[Unit_Trooper]+2)/3  >= maxUnits);
+    };
+
+    /**
+        This function checks if the limit for infantry units is already reached. Infantry units are only counted as 1/3.
+        \return true, if the limit is already reached, false if building further infantry units is allowed
+    */
+    inline bool isInfantryUnitLimitReached() const {
+        int numGroundUnit = numUnits - numItem[Unit_Soldier] - numItem[Unit_Trooper] - numItem[Unit_Carryall] - numItem[Unit_Ornithopter];
+        return (numGroundUnit + numItem[Unit_Soldier]/3 + numItem[Unit_Trooper]/3  >= maxUnits);
+    };
+
+    /**
+        This function checks if the limit for air units is already reached.
+        \return true, if the limit is already reached, false if building further air units is allowed
+    */
+    inline bool isAirUnitLimitReached() const {
+        return (numItem[Unit_Carryall] + numItem[Unit_Ornithopter] >= 11);
+    }
 
     inline Choam& getChoam() { return choam; };
     inline const Choam& getChoam() const { return choam; };

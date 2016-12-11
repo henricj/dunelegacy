@@ -188,12 +188,18 @@ bool BuilderBase::isWaitingToPlace() const {
     }
 }
 
-bool BuilderBase::isUnitLimitReached() const {
+bool BuilderBase::isUnitLimitReached(Uint32 itemID) const {
     if((currentProducedItem == ItemID_Invalid) || isStructure(currentProducedItem)) {
         return false;
     }
 
-    return getOwner()->isUnitLimitReached();
+    if(isInfantryUnit(itemID)) {
+        return getOwner()->isInfantryUnitLimitReached();
+    } else if(isFlyingUnit(itemID)) {
+        return getOwner()->isAirUnitLimitReached();
+    } else {
+        return getOwner()->isGroundUnitLimitReached();
+    }
 }
 
 
@@ -201,7 +207,7 @@ void BuilderBase::updateProductionProgress() {
     if(currentProducedItem != ItemID_Invalid) {
         BuildItem* tmp = getBuildItem(currentProducedItem);
 
-        if((productionProgress < tmp->price) && (isOnHold() == false) && (isUnitLimitReached() == false) && (owner->getCredits() > 0)) {
+        if((productionProgress < tmp->price) && (isOnHold() == false) && (isUnitLimitReached(currentProducedItem) == false) && (owner->getCredits() > 0)) {
 
             FixPoint oldProgress = productionProgress;
 

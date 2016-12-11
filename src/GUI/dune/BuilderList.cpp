@@ -258,14 +258,14 @@ void BuilderList::draw(Point position) {
                 SDL_DestroyTexture(pPriceTexture);
 
                 if(pStarport != nullptr) {
-                    bool soldOut = (pStarport->getOwner()->getChoam().getNumAvailable(buildItem.itemID) == 0);
+                    bool bSoldOut = (pStarport->getOwner()->getChoam().getNumAvailable(buildItem.itemID) == 0);
 
-                    if((pStarport->okToOrder() == false) || (soldOut == true)) {
+                    if(pStarport->okToOrder() || bSoldOut) {
                         SDL_Rect progressBar = { dest.x, dest.y, BUILDERBTN_WIDTH, BUILDERBTN_HEIGHT };
                         renderFillRect(renderer, &progressBar, COLOR_HALF_TRANSPARENT);
                     }
 
-                    if(soldOut == true) {
+                    if(bSoldOut) {
                         SDL_Rect drawLocation = calcDrawingRect(pSoldOutTextTexture, dest.x + BUILDERBTN_WIDTH/2, dest.y + BUILDERBTN_HEIGHT/2, HAlign::Center, VAlign::Center);
                         SDL_RenderCopy(renderer, pSoldOutTextTexture, nullptr, &drawLocation);
                     }
@@ -285,13 +285,13 @@ void BuilderList::draw(Point position) {
                     SDL_Rect progressBar = { dest.x, dest.y, max_x, BUILDERBTN_HEIGHT };
                     renderFillRect(renderer, &progressBar, COLOR_HALF_TRANSPARENT);
 
-                    if(pBuilder->isWaitingToPlace() == true) {
+                    if(pBuilder->isWaitingToPlace()) {
                         SDL_Rect drawLocation = calcDrawingRect(pPlaceItTextTexture, dest.x + BUILDERBTN_WIDTH/2, dest.y + BUILDERBTN_HEIGHT/2, HAlign::Center, VAlign::Center);
                         SDL_RenderCopy(renderer, pPlaceItTextTexture, nullptr, &drawLocation);
-                    } else if(pBuilder->isOnHold() == true) {
+                    } else if(pBuilder->isOnHold()) {
                         SDL_Rect drawLocation = calcDrawingRect(pOnHoldTextTexture, dest.x + BUILDERBTN_WIDTH/2, dest.y + BUILDERBTN_HEIGHT/2, HAlign::Center, VAlign::Center);
                         SDL_RenderCopy(renderer, pOnHoldTextTexture, nullptr, &drawLocation);
-                    } else if(pBuilder->isUnitLimitReached() == true) {
+                    } else if(pBuilder->isUnitLimitReached(buildItem.itemID)) {
                         SDL_Rect drawLocation = calcDrawingRect(pUnitLimitReachedTextTexture, dest.x + BUILDERBTN_WIDTH/2, dest.y + BUILDERBTN_HEIGHT/2, HAlign::Center, VAlign::Center);
                         SDL_RenderCopy(renderer, pUnitLimitReachedTextTexture, nullptr, &drawLocation);
                     }
