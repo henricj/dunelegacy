@@ -493,7 +493,7 @@ void UnitBase::engageTarget() {
             // we want to capture the target building
             setDestination(targetLocation);
             targetAngle = INVALID;
-        } else if(isTracked() && target.getObjPointer()->isInfantry() && currentGameMap->tileExists(targetLocation) && !currentGameMap->getTile(targetLocation)->isMountain() && forced) {
+        } else if(isTracked() && target.getObjPointer()->isInfantry() && !targetFriendly && currentGameMap->tileExists(targetLocation) && !currentGameMap->getTile(targetLocation)->isMountain() && forced) {
             // we squash the infantry unit because we are forced to
             setDestination(targetLocation);
             targetAngle = INVALID;
