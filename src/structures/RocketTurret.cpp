@@ -85,7 +85,7 @@ void RocketTurret::attack() {
                                                    pObject->isAFlyingUnit() ) );
 
             currentGameMap->viewMap(pObject->getOwner()->getTeam(), location, 2);
-            soundPlayer->playSoundAt(Sound_Gun, location);
+            soundPlayer->playSoundAt(Sound_ExplosionSmall, location);
             weaponTimer = currentGame->objectData.data[Structure_GunTurret][originalHouseID].weaponreloadtime;
         } else {
             // we are in normal shooting mode
