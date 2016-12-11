@@ -200,8 +200,9 @@ void UnitBase::attack() {
             // Troopers change weapon type depending on distance
 
             FixPoint distance = distanceFrom(centerPoint, targetCenterPoint);
-            if(distance > 2*TILESIZE) {
-                currentBulletType = Bullet_SmallRocket;
+            if(distance <= 2*TILESIZE) {
+                currentBulletType = Bullet_ShellSmall;
+                currentWeaponDamage--;
             }
         } else if(getItemID() == Unit_Launcher && bAirBullet){
             // Launchers change weapon type when targeting flying units

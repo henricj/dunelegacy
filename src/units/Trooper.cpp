@@ -38,7 +38,7 @@ void Trooper::init() {
     owner->incrementUnits(itemID);
 
     numWeapons = 1;
-    bulletType = Bullet_ShellSmall;
+    bulletType = Bullet_SmallRocket;
 
     graphicID = ObjPic_Trooper;
     graphic = pGFXManager->getObjPic(graphicID,getOwner()->getHouseID());
