@@ -125,11 +125,12 @@ bool Carryall::update() {
     FixPoint dist = distanceFrom(location.x*TILESIZE + TILESIZE/2, location.y*TILESIZE + TILESIZE/2,
                                 destination.x*TILESIZE + TILESIZE/2, destination.y*TILESIZE + TILESIZE/2);
 
-    if((target || hasCargo()) && dist < 256) {
-        currentMaxSpeed = (((2 - currentGame->objectData.data[itemID][originalHouseID].maxspeed)/256) * (256 - dist)) + currentGame->objectData.data[itemID][originalHouseID].maxspeed;
+    const FixPoint& maxSpeed = currentGame->objectData.data[itemID][originalHouseID].maxspeed;
+    if((target || hasCargo()) && dist < 512) {
+        currentMaxSpeed = (((2 - maxSpeed)/512) * (512 - dist)) + maxSpeed;
         setSpeeds();
     } else {
-        currentMaxSpeed = std::min(currentMaxSpeed + FixPt(0,2), currentGame->objectData.data[itemID][originalHouseID].maxspeed);
+        currentMaxSpeed = std::min(currentMaxSpeed + FixPt(0,2), maxSpeed);
         setSpeeds();
     }
 
