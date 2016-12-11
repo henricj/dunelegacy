@@ -485,8 +485,8 @@ void QuantBot::onDamage(const ObjectBase* pObject, int damage, Uint32 damagerID)
                 scrambleUnitsAndDefend(pDamager, numHarvesterDefenders);
                 doReturn(pHarvester);
             }
-        } else if (pUnit->getItemID() == Unit_Launcher
-            || pUnit->getItemID() == Unit_Deviator) {
+        } else if ((pUnit->getItemID() == Unit_Launcher || pUnit->getItemID() == Unit_Deviator)
+                    && (difficulty == Difficulty::Hard || difficulty == Difficulty::Brutal) ) {
             // Always keep Launchers away from harm
 
             doSetAttackMode(pUnit, AREAGUARD);
@@ -1820,7 +1820,8 @@ void QuantBot::checkAllUnits() {
                                 doMove2Pos(pUnit, squadCenterLocation.x, squadCenterLocation.y, true );
                             }
                         }
-                    } else if((pUnit->getItemID() == Unit_Launcher || pUnit->getItemID() == Unit_Deviator || pUnit->getItemID() == Unit_SonicTank) && pUnit->hasATarget()) {
+                    } else if((pUnit->getItemID() == Unit_Launcher || pUnit->getItemID() == Unit_Deviator || pUnit->getItemID() == Unit_SonicTank)
+                                && pUnit->hasATarget() && (difficulty == Difficulty::Hard || difficulty == Difficulty::Brutal)) {
                         // Special logic to keep launchers away from harm
                         if(pUnit->getTarget() != nullptr){
                             if(blockDistance(pUnit->getLocation(), pUnit->getTarget()->getLocation()) <= 5 && pUnit->getTarget()->getItemID() != Unit_Ornithopter) {
