@@ -37,7 +37,7 @@ void GunTurret::init() {
     itemID = Structure_GunTurret;
     owner->incrementStructures(itemID);
 
-    attackSound = Sound_Gun;
+    attackSound = Sound_ExplosionSmall;
     bulletType = Bullet_ShellTurret;
 
     graphicID = ObjPic_GunTurret;
