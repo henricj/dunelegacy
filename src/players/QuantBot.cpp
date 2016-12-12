@@ -1295,6 +1295,15 @@ void QuantBot::build(int militaryValue) {
 
                                     doUpgrade(pBuilder);
                                     logDebug("***CampAI Upgrade builder");
+                                } else if((getHouse()->getProducedPower() < getHouse()->getPowerRequirement())
+                                       && pBuilder->isAvailableToBuild(Structure_WindTrap)
+                                       && findPlaceLocation(Structure_WindTrap).isValid()
+                                       && pBuilder->getProductionQueueSize() == 0){
+
+                                    doProduceItem(pBuilder, Structure_WindTrap);
+                                    itemCount[Structure_WindTrap]++;
+
+                                    logDebug("***CampAI Build A new Windtrap increasing count to: %d", itemCount[Structure_WindTrap]);
                                 } else if((getHouse()->getCapacity() < getHouse()->getStoredCredits() + 2000)
                                        && pBuilder->isAvailableToBuild(Structure_Silo)
                                        && findPlaceLocation(Structure_Silo).isValid()
