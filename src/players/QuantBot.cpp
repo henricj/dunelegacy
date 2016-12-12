@@ -1073,7 +1073,8 @@ void QuantBot::build(int militaryValue) {
                         // only if the factory isn't busy
                         if((pBuilder->isUpgrading() == false) && (pBuilder->getProductionQueueSize() < 1) && (pBuilder->getBuildListSize() > 0)) {
                             // we need a construction yard. Build an MCV if we don't have a starport
-                            if(itemCount[Unit_MCV] + itemCount[Structure_ConstructionYard] + itemCount[Structure_StarPort] < 1
+                            if( (difficulty == Difficulty::Hard || difficulty == Difficulty::Brutal)
+                                && itemCount[Unit_MCV] + itemCount[Structure_ConstructionYard] + itemCount[Structure_StarPort] < 1
                                 && pBuilder->isAvailableToBuild(Unit_MCV)
                                 && !getHouse()->isGroundUnitLimitReached()) {
                                 doProduceItem(pBuilder, Unit_MCV);
@@ -1170,7 +1171,10 @@ void QuantBot::build(int militaryValue) {
                             const Choam& choam = getHouse()->getChoam();
 
                             // We need a construction yard!!
-                            if(pStarPort->isAvailableToBuild(Unit_MCV) && choam.getNumAvailable(Unit_MCV) > 0 && itemCount[Structure_ConstructionYard] + itemCount[Unit_MCV] < 1) {
+                            if((difficulty == Difficulty::Hard || difficulty == Difficulty::Brutal)
+                                && pStarPort->isAvailableToBuild(Unit_MCV)
+                                && choam.getNumAvailable(Unit_MCV) > 0
+                                && itemCount[Structure_ConstructionYard] + itemCount[Unit_MCV] < 1) {
                                 doProduceItem(pBuilder, Unit_MCV);
                                 itemCount[Unit_MCV]++;
                                 money = money - choam.getPrice(Unit_MCV);
