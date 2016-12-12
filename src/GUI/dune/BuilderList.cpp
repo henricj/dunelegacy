@@ -260,7 +260,7 @@ void BuilderList::draw(Point position) {
                 if(pStarport != nullptr) {
                     bool bSoldOut = (pStarport->getOwner()->getChoam().getNumAvailable(buildItem.itemID) == 0);
 
-                    if(pStarport->okToOrder() || bSoldOut) {
+                    if(!pStarport->okToOrder() || bSoldOut) {
                         SDL_Rect progressBar = { dest.x, dest.y, BUILDERBTN_WIDTH, BUILDERBTN_HEIGHT };
                         renderFillRect(renderer, &progressBar, COLOR_HALF_TRANSPARENT);
                     }
