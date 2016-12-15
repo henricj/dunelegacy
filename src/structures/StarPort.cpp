@@ -278,22 +278,23 @@ void StarPort::updateStructureSpecificStuff() {
                 for(int i = 0; i < num2Place; i++) {
                     UnitBase* newUnit = getOwner()->createUnit(newUnitItemID);
                     if (newUnit != nullptr) {
-                        Coord spot = newUnit->isAFlyingUnit() ? location + Coord(1,1) : currentGameMap->findDeploySpot(newUnit, location, destination, structureSize);
-                        newUnit->deploy(spot);
-
-                        if (getOwner()->isAI()
-                            && (newUnit->getItemID() != Unit_Carryall)
-                            && (newUnit->getItemID() != Unit_Harvester)
-                            && (newUnit->getItemID() != Unit_MCV)) {
-                            newUnit->doSetAttackMode(AREAGUARD);
-                        } else{
+                        Coord unitDestination;
+                        if( getOwner()->isAI()
+                            && ((newUnit->getItemID() == Unit_Carryall)
+                                || (newUnit->getItemID() == Unit_Harvester)
+                                || (newUnit->getItemID() == Unit_MCV))) {
                             // Don't want harvesters going to the rally point
-                            destination = location;
+                            unitDestination = location;
+                        } else {
+                            unitDestination = destination;
                         }
 
-                        if (destination.isValid()) {
-                            newUnit->setGuardPoint(destination);
-                            newUnit->setDestination(destination);
+                        Coord spot = newUnit->isAFlyingUnit() ? location + Coord(1,1) : currentGameMap->findDeploySpot(newUnit, location, unitDestination, structureSize);
+                        newUnit->deploy(spot);
+
+                        if(unitDestination.isValid()) {
+                            newUnit->setGuardPoint(unitDestination);
+                            newUnit->setDestination(unitDestination);
                             newUnit->setAngle(destinationDrawnAngle(newUnit->getLocation(), newUnit->getDestination()));
                         }
 
