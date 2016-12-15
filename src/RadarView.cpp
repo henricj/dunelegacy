@@ -205,7 +205,7 @@ void RadarView::updateRadarSurface(int mapSizeX, int mapSizeY, int scale, int of
                 Tile* pTile = currentGameMap->getTile(x,y);
 
                 /* Selecting the right color is handled in Tile::getRadarColor() */
-                Uint32 color = pTile->getRadarColor(pLocalHouse, pLocalHouse->hasRadarOn());
+                Uint32 color = pTile->getRadarColor(pLocalHouse, ((currentRadarMode == RadarMode::RadarOn) || (currentRadarMode == RadarMode::AnimationRadarOff)));
                 color = MapRGBA(radarSurface->format, color);
 
                 for(int j = 0; j < scale; j++) {
