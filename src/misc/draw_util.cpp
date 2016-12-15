@@ -282,6 +282,10 @@ SDL_Texture* convertSurfaceToTexture(SDL_Surface* inSurface, bool freeSrcSurface
         return nullptr;
     }
 
+    if(inSurface->w > 2048 || inSurface->h > 2048) {
+        SDL_Log("Warning: Size of texture created in convertSurfaceToTexture is %dx%d; may exceed hardware limits on older GPUs!", inSurface->w, inSurface->h);
+    }
+
     SDL_Texture* pTexture;
     if( (pTexture = SDL_CreateTextureFromSurface(renderer, inSurface)) == nullptr) {
         if(freeSrcSurface) {

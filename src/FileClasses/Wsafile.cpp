@@ -141,25 +141,37 @@ SDL_Surface * Wsafile::getPicture(Uint32 frameNumber)
 /**
     This method returns a SDL_Surface containing the complete animation.
     The returned SDL_Surface should be freed with SDL_FreeSurface() if no longer needed.
+    \param  numFramesX  the maximum number of frames in X direction
     \return the complete animation
 */
-SDL_Surface * Wsafile::getAnimationAsPictureRow() {
+SDL_Surface * Wsafile::getAnimationAsPictureRow(int numFramesX) {
     SDL_Surface * pic;
 
+    numFramesX = std::min(numFramesX, (int) numFrames);
+    int numFramesY = (numFrames + numFramesX -1) / numFramesX;
+
     // create new picture surface
-    if((pic = SDL_CreateRGBSurface(0,sizeX*numFrames,sizeY,8,0,0,0,0))== nullptr) {
+    if((pic = SDL_CreateRGBSurface(0,sizeX*numFramesX,sizeY*numFramesY,8,0,0,0,0))== nullptr) {
         return nullptr;
     }
 
     palette.applyToSurface(pic);
     SDL_LockSurface(pic);
 
-    for(int i = 0; i < numFrames; i++) {
-        unsigned char * Image = decodedFrames + (i * sizeX * sizeY);
+    for(int y = 0; y < numFramesY; y++) {
+        for(int x = 0; x < numFramesX; x++) {
+            int i = y*numFramesX + x;
+            if(i >= numFrames) {
+                SDL_UnlockSurface(pic);
+                return pic;
+            }
 
-        //Now we can copy this frame line by line
-        for(int y = 0; y < sizeY;y++) {
-            memcpy( ((char*) (pic->pixels)) + y * pic->pitch + i*sizeX, Image + y * sizeX, sizeX);
+            unsigned char * pImage = decodedFrames + (i * sizeX * sizeY);
+
+            //Now we can copy this frame line by line
+            for(int line = 0; line < sizeY;line++) {
+                memcpy( ((char*) (pic->pixels)) + (y*sizeY + line) * pic->pitch + x*sizeX, pImage + line * sizeX, sizeX);
+            }
         }
     }
 

@@ -418,7 +418,7 @@ GFXManager::GFXManager() {
     tinyPictureTex[TinyPicture_Troopers] = convertSurfaceToTexture(shapes->getPicture(91), true);
 
     // load UI graphics
-    uiGraphic[UI_RadarAnimation][HOUSE_HARKONNEN] = Scaler::doubleSurfaceNN(radar->getAnimationAsPictureRow());
+    uiGraphic[UI_RadarAnimation][HOUSE_HARKONNEN] = Scaler::doubleSurfaceNN(radar->getAnimationAsPictureRow(NUM_STATIC_ANIMATIONS_PER_ROW));
 
     uiGraphic[UI_CursorNormal][HOUSE_HARKONNEN] = mouse->getPicture(0);
     SDL_SetColorKey(uiGraphic[UI_CursorNormal][HOUSE_HARKONNEN], SDL_TRUE, 0);

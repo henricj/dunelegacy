@@ -122,8 +122,16 @@ void RadarView::draw(Point position)
 
         case RadarMode::AnimationRadarOff:
         case RadarMode::AnimationRadarOn: {
-            SDL_Rect source = calcSpriteSourceRect(radarStaticAnimation, animFrame, NUM_STATIC_FRAMES);
-            SDL_Rect dest = calcSpriteDrawingRect(radarStaticAnimation, radarPosition.x, radarPosition.y, NUM_STATIC_FRAMES);
+            SDL_Rect source = calcSpriteSourceRect( radarStaticAnimation,
+                                                    animFrame % NUM_STATIC_ANIMATIONS_PER_ROW,
+                                                    NUM_STATIC_ANIMATIONS_PER_ROW,
+                                                    animFrame / NUM_STATIC_ANIMATIONS_PER_ROW,
+                                                    (NUM_STATIC_FRAMES + NUM_STATIC_ANIMATIONS_PER_ROW - 1) / NUM_STATIC_ANIMATIONS_PER_ROW);
+            SDL_Rect dest = calcSpriteDrawingRect(  radarStaticAnimation,
+                                                    radarPosition.x,
+                                                    radarPosition.y,
+                                                    NUM_STATIC_ANIMATIONS_PER_ROW,
+                                                    (NUM_STATIC_FRAMES + NUM_STATIC_ANIMATIONS_PER_ROW - 1) / NUM_STATIC_ANIMATIONS_PER_ROW);
             SDL_RenderCopy(renderer, radarStaticAnimation, &source, &dest);
         } break;
     }
