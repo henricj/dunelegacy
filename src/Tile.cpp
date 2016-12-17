@@ -997,7 +997,21 @@ Uint32 Tile::getRadarColor(House* pHouse, bool radar) {
 }
 
 int Tile::getTerrainTile() const {
-    switch(type) {
+    Uint32 terrainType = type;
+    if(terrainType == Terrain_ThickSpice) {
+        // check if we are surrounded by spice/thick spice
+        bool up = (currentGameMap->tileExists(location.x,location.y-1) == false) || (currentGameMap->getTile(location.x, location.y-1)->isSpice() == true);
+        bool right = (currentGameMap->tileExists(location.x+1,location.y) == false) || (currentGameMap->getTile(location.x+1, location.y)->isSpice() == true);
+        bool down = (currentGameMap->tileExists(location.x,location.y+1) == false) || (currentGameMap->getTile(location.x, location.y+1)->isSpice() == true);
+        bool left = (currentGameMap->tileExists(location.x-1,location.y) == false) || (currentGameMap->getTile(location.x-1, location.y)->isSpice() == true);
+
+        if(!up || !right || !down || !left) {
+            // to avoid graphical glitches (there is no tile for thick spice next to a non-spice tile) we draw this tile as normal spice
+            terrainType = Terrain_Spice;
+        }
+    }
+
+    switch(terrainType) {
         case Terrain_Slab: {
             return TerrainTile_Slab;
         } break;
@@ -1007,7 +1021,7 @@ int Tile::getTerrainTile() const {
         } break;
 
         case Terrain_Rock: {
-            //determine which surounding tiles are rock
+            // determine which surrounding tiles are rock
             bool up = (currentGameMap->tileExists(location.x,location.y-1) == false) || (currentGameMap->getTile(location.x, location.y-1)->isRock() == true);
             bool right = (currentGameMap->tileExists(location.x+1,location.y) == false) || (currentGameMap->getTile(location.x+1, location.y)->isRock() == true);
             bool down = (currentGameMap->tileExists(location.x,location.y+1) == false) || (currentGameMap->getTile(location.x, location.y+1)->isRock() == true);
@@ -1017,7 +1031,7 @@ int Tile::getTerrainTile() const {
         } break;
 
         case Terrain_Dunes: {
-            //determine which surounding tiles are dunes
+            // determine which surrounding tiles are dunes
             bool up = (currentGameMap->tileExists(location.x,location.y-1) == false) || (currentGameMap->getTile(location.x, location.y-1)->getType() == Terrain_Dunes);
             bool right = (currentGameMap->tileExists(location.x+1,location.y) == false) || (currentGameMap->getTile(location.x+1, location.y)->getType() == Terrain_Dunes);
             bool down = (currentGameMap->tileExists(location.x,location.y+1) == false) || (currentGameMap->getTile(location.x, location.y+1)->getType() == Terrain_Dunes);
@@ -1027,7 +1041,7 @@ int Tile::getTerrainTile() const {
         } break;
 
         case Terrain_Mountain: {
-            //determine which surounding tiles are mountains
+            // determine which surrounding tiles are mountains
             bool up = (currentGameMap->tileExists(location.x,location.y-1) == false) || (currentGameMap->getTile(location.x, location.y-1)->isMountain() == true);
             bool right = (currentGameMap->tileExists(location.x+1,location.y) == false) || (currentGameMap->getTile(location.x+1, location.y)->isMountain() == true);
             bool down = (currentGameMap->tileExists(location.x,location.y+1) == false) || (currentGameMap->getTile(location.x, location.y+1)->isMountain() == true);
@@ -1037,7 +1051,7 @@ int Tile::getTerrainTile() const {
         } break;
 
         case Terrain_Spice: {
-            //determine which surounding tiles are spice
+            // determine which surrounding tiles are spice
             bool up = (currentGameMap->tileExists(location.x,location.y-1) == false) || (currentGameMap->getTile(location.x, location.y-1)->isSpice() == true);
             bool right = (currentGameMap->tileExists(location.x+1,location.y) == false) || (currentGameMap->getTile(location.x+1, location.y)->isSpice() == true);
             bool down = (currentGameMap->tileExists(location.x,location.y+1) == false) || (currentGameMap->getTile(location.x, location.y+1)->isSpice() == true);
@@ -1047,7 +1061,7 @@ int Tile::getTerrainTile() const {
         } break;
 
         case Terrain_ThickSpice: {
-            //determine which surounding tiles are thick spice
+            // determine which surrounding tiles are thick spice
             bool up = (currentGameMap->tileExists(location.x,location.y-1) == false) || (currentGameMap->getTile(location.x, location.y-1)->getType() == Terrain_ThickSpice);
             bool right = (currentGameMap->tileExists(location.x+1,location.y) == false) || (currentGameMap->getTile(location.x+1, location.y)->getType() == Terrain_ThickSpice);
             bool down = (currentGameMap->tileExists(location.x,location.y+1) == false) || (currentGameMap->getTile(location.x, location.y+1)->getType() == Terrain_ThickSpice);
@@ -1072,7 +1086,7 @@ int Tile::getTerrainTile() const {
 
 int Tile::getHideTile(int houseID) const {
 
-    // are all surounding tiles explored?
+    // are all surrounding tiles explored?
     if( ((currentGameMap->tileExists(location.x,location.y-1) == false) || (currentGameMap->getTile(location.x, location.y-1)->isExplored(houseID) == true))
         && ((currentGameMap->tileExists(location.x+1,location.y) == false) || (currentGameMap->getTile(location.x+1, location.y)->isExplored(houseID) == true))
         && ((currentGameMap->tileExists(location.x,location.y+1) == false) || (currentGameMap->getTile(location.x, location.y+1)->isExplored(houseID) == true))
@@ -1080,7 +1094,7 @@ int Tile::getHideTile(int houseID) const {
         return 0;
     }
 
-    //determine what tiles are unexplored
+    // determine what tiles are unexplored
     bool up = (currentGameMap->tileExists(location.x,location.y-1) == false) || (currentGameMap->getTile(location.x, location.y-1)->isExplored(houseID) == false);
     bool right = (currentGameMap->tileExists(location.x+1,location.y) == false) || (currentGameMap->getTile(location.x+1, location.y)->isExplored(houseID) == false);
     bool down = (currentGameMap->tileExists(location.x,location.y+1) == false) || (currentGameMap->getTile(location.x, location.y+1)->isExplored(houseID) == false);
@@ -1091,7 +1105,7 @@ int Tile::getHideTile(int houseID) const {
 
 int Tile::getFogTile(int houseID) const {
 
-    // are all surounding tiles fogged?
+    // are all surrounding tiles fogged?
     if( ((currentGameMap->tileExists(location.x,location.y-1) == false) || (currentGameMap->getTile(location.x, location.y-1)->isFogged(houseID) == false))
         && ((currentGameMap->tileExists(location.x+1,location.y) == false) || (currentGameMap->getTile(location.x+1, location.y)->isFogged(houseID) == false))
         && ((currentGameMap->tileExists(location.x,location.y+1) == false) || (currentGameMap->getTile(location.x, location.y+1)->isFogged(houseID) == false))
@@ -1099,7 +1113,7 @@ int Tile::getFogTile(int houseID) const {
         return 0;
     }
 
-    //determine what tiles are fogged
+    // determine what tiles are fogged
     bool up = (currentGameMap->tileExists(location.x,location.y-1) == false) || (currentGameMap->getTile(location.x, location.y-1)->isFogged(houseID) == true);
     bool right = (currentGameMap->tileExists(location.x+1,location.y) == false) || (currentGameMap->getTile(location.x+1, location.y)->isFogged(houseID) == true);
     bool down = (currentGameMap->tileExists(location.x,location.y+1) == false) || (currentGameMap->getTile(location.x, location.y+1)->isFogged(houseID) == true);
