@@ -279,13 +279,10 @@ void Carryall::deployUnit(Uint32 unitID)
             if (object->getOwner() == getOwner()) {
                 if (object->getItemID() == Structure_RepairYard) {
                     if (static_cast<RepairYard*>(object)->isFree()) {
-                        pUnit->setTarget(object);
+                        pUnit->setTarget(object);   // unit books repair yard again
                         pUnit->setGettingRepaired();
                         pUnit = nullptr;
                     } else {
-                        // carryall has booked this repair yard but now will not go there => unbook
-                        static_cast<RepairYard*>(object)->unBook();
-
                         // unit is still going to repair yard but was unbooked from repair yard at pickup => book now
                         static_cast<RepairYard*>(object)->book();
                     }
@@ -468,15 +465,14 @@ void Carryall::pickupTarget()
             drawnFrame = 1;
             booked = true;
 
-            if(newTarget && ((newTarget->getItemID() == Structure_Refinery)
-                              || (newTarget->getItemID() == Structure_RepairYard)))
-            {
+            if(newTarget && (newTarget->getItemID() == Structure_Refinery)) {
+                pGroundUnitTarget->setGuardPoint(pGroundUnitTarget->getLocation());
                 setTarget(newTarget);
-                if(newTarget->getItemID() == Structure_Refinery) {
-                    setDestination(target.getObjPointer()->getLocation() + Coord(2,0));
-                } else {
-                    setDestination(target.getObjPointer()->getClosestPoint(location));
-                }
+                setDestination(target.getObjPointer()->getLocation() + Coord(2,0));
+            } else if(newTarget && (newTarget->getItemID() == Structure_RepairYard)) {
+                pGroundUnitTarget->setGuardPoint(pGroundUnitTarget->getLocation());
+                setTarget(newTarget);
+                setDestination(target.getObjPointer()->getClosestPoint(location));
             } else if (pGroundUnitTarget->getDestination().isValid()) {
                 setDestination(pGroundUnitTarget->getDestination());
             }

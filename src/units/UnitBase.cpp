@@ -1191,9 +1191,7 @@ void UnitBase::setTarget(const ObjectBase* newTarget) {
 
     if(target.getObjPointer() != nullptr
         && (target.getObjPointer()->getOwner() == getOwner())
-        && (target.getObjPointer()->getItemID() == Structure_RepairYard)
-        && (itemID != Unit_Carryall) && (itemID != Unit_Frigate)
-        && (itemID != Unit_Ornithopter)) {
+        && (target.getObjPointer()->getItemID() == Structure_RepairYard)) {
         static_cast<RepairYard*>(target.getObjPointer())->book();
         goingToRepairYard = true;
     }

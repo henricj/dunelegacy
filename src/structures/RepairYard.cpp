@@ -129,14 +129,14 @@ void RepairYard::updateStructureSpecificStuff() {
     }
 
     if(repairingAUnit == true) {
-        UnitBase* pRepairUnit = repairUnit.getUnitPointer();
+        GroundUnit* pRepairUnit = static_cast<GroundUnit*>(repairUnit.getUnitPointer());
 
         if (pRepairUnit->getHealth()*100/pRepairUnit->getMaxHealth() < 100) {
             if (owner->takeCredits(UNIT_REPAIRCOST) > 0) {
                 pRepairUnit->addHealth();
             }
 
-        } else if(static_cast<GroundUnit*>(pRepairUnit)->isAwaitingPickup() == false) {
+        } else if(!pRepairUnit->isAwaitingPickup() && distanceFrom(location, pRepairUnit->getGuardPoint()) >= 8) {
             // find carryall
             Carryall* pCarryall = nullptr;
             if((pRepairUnit->getGuardPoint().isValid()) && getOwner()->hasCarryalls())  {
@@ -159,7 +159,7 @@ void RepairYard::updateStructureSpecificStuff() {
             } else {
                 deployRepairUnit();
             }
-        } else if(static_cast<GroundUnit*>(pRepairUnit)->hasBookedCarrier() == false) {
+        } else if(!pRepairUnit->hasBookedCarrier()) {
             deployRepairUnit();
         }
     }
