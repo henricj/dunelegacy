@@ -179,7 +179,7 @@ void Harvester::checkPos()
                         doMove2Pos(newDestination, true);
                         requestCarryall();
                     }
-                } else if(!awaitingPickup && owner->hasCarryalls() && pRefinery->isFree() && blockDistance(location, pRefinery->getClosestPoint(location)) > 8) {
+                } else if(!awaitingPickup && owner->hasCarryalls() && pRefinery->isFree() && blockDistance(location, pRefinery->getClosestPoint(location)) >= MIN_CARRYALL_LIFT_DISTANCE) {
                     requestCarryall();
                 }
 
@@ -215,7 +215,7 @@ void Harvester::checkPos()
                     setDestination(location);
                 }
             }
-        } else if (harvestingMode && !hasBookedCarrier() && destination.isValid() && (blockDistance(location, destination) > 8)) {
+        } else if (harvestingMode && !hasBookedCarrier() && destination.isValid() && (blockDistance(location, destination) >= MIN_CARRYALL_LIFT_DISTANCE)) {
             requestCarryall();
         } else if(respondable && !harvestingMode && attackMode != STOP) {
             if(spiceCheckCounter == 0) {

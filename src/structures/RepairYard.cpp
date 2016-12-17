@@ -136,7 +136,7 @@ void RepairYard::updateStructureSpecificStuff() {
                 pRepairUnit->addHealth();
             }
 
-        } else if(!pRepairUnit->isAwaitingPickup() && distanceFrom(location, pRepairUnit->getGuardPoint()) >= 8) {
+        } else if(!pRepairUnit->isAwaitingPickup() && blockDistance(location, pRepairUnit->getGuardPoint()) >= MIN_CARRYALL_LIFT_DISTANCE) {
             // find carryall
             Carryall* pCarryall = nullptr;
             if((pRepairUnit->getGuardPoint().isValid()) && getOwner()->hasCarryalls())  {
