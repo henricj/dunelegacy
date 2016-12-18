@@ -634,42 +634,36 @@ void Map::spiceRemoved(const Coord& coord) {
     }
 }
 
-void Map::viewMap(int playerTeam, const Coord& location, int maxViewRange) {
+void Map::viewMap(const int playerTeam, const Coord& location, const int maxViewRange) {
 
 //makes map viewable in an area like as shown below
+//
+//                    *
+//                  *****
+//                  *****
+//                 ***T***
+//                  *****
+//                  *****
+//                    *
 
-//                     *****
-//                   *********
-//                  *****T*****
-//                   *********
-//                     *****
 
-    Coord   check;
-    check.x = location.x - maxViewRange;
-    if(check.x < 0) {
-        check.x = 0;
-    }
-
-    while((check.x < sizeX) && ((check.x - location.x) <=  maxViewRange)) {
-        check.y = (location.y - lookDist[abs(check.x - location.x)]);
-        if (check.y < 0) check.y = 0;
-
-        while((check.y < sizeY) && ((check.y - location.y) <= lookDist[abs(check.x - location.x)])) {
-            if((maxViewRange <= 1) ? (maximumDistance(location, check) <= maxViewRange) : (distanceFrom(location, check) <= maxViewRange)) {
+	Coord coord;
+	int startY = std::max(0, location.y - maxViewRange);
+	int endY = std::min(sizeY-1, location.y + maxViewRange);
+	for(coord.y = startY; coord.y <= endY; coord.y++) {
+		int startX = std::max(0, location.x - maxViewRange);
+		int endX = std::min(sizeX-1, location.x + maxViewRange);
+		for(coord.x = startX; coord.x <= endX; coord.x++) {
+            if((maxViewRange <= 1) ? (maximumDistance(location, coord) <= maxViewRange) : (blockDistanceApprox(location, coord) <= maxViewRange)) {
                 for(int i = 0; i < NUM_HOUSES; i++) {
                     House* pHouse = currentGame->getHouse(i);
                     if((pHouse != nullptr) && (pHouse->getTeam() == playerTeam)) {
-                        getTile(check)->setExplored(i,currentGame->getGameCycleCount());
+                        getTile(coord)->setExplored(i,currentGame->getGameCycleCount());
                     }
                 }
             }
-
-            check.y++;
-        }
-
-        check.x++;
-        check.y = location.y;
-    }
+		}
+	}
 }
 
 /**

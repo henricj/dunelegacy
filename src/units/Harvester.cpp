@@ -185,15 +185,15 @@ void Harvester::checkPos()
 
 
             } else {
-                int leastNumBookings = 1000000; //huge amount so refinery couldn't possibly compete with any refinery num bookings
-                FixPoint closestLeastBookedRefineryDistance = 1000000;
+                int leastNumBookings = std::numeric_limits<int>::max(); //huge amount so refinery couldn't possibly compete with any refinery num bookings
+                FixPoint closestLeastBookedRefineryDistance = FixPt32_MAX;
                 Refinery* pBestRefinery = nullptr;
 
                 for(StructureBase* pStructure : structureList) {
                     if((pStructure->getItemID() == Structure_Refinery) && (pStructure->getOwner() == owner)) {
                         Refinery* pRefinery = static_cast<Refinery*>(pStructure);
                         Coord closestPoint = pRefinery->getClosestPoint(location);
-                        FixPoint refineryDistance = distanceFrom(location, closestPoint);
+                        FixPoint refineryDistance = blockDistance(location, closestPoint);
 
                         if (pRefinery->getNumBookings() < leastNumBookings) {
                             leastNumBookings = pRefinery->getNumBookings();

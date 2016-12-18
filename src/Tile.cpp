@@ -760,8 +760,9 @@ ObjectBase* Tile::getObjectAt(int x, int y) {
             }
 
             Coord centerPoint = pInfantry->getCenterPoint();
-            if(distanceFrom(atPos, centerPoint) < closestDistance) {
-                closestDistance = distanceFrom(atPos, centerPoint);
+            FixPoint distance = distanceFrom(atPos, centerPoint);
+            if(distance < closestDistance) {
+                closestDistance = distance;
                 pObject = pInfantry;
             }
         }

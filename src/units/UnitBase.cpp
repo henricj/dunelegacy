@@ -670,9 +670,8 @@ void UnitBase::navigate() {
                             /// This often happens after an AI get nuked and has a hole in their base
                             if(getOwner()->hasCarryalls()
                                && this->isAGroundUnit()
-                               && blockDistance(location, destination) >= 6
-                               && (currentGame->getGameInitSettings().getGameOptions().manualCarryallDrops
-                                   || getOwner()->isAI())){
+                               && (currentGame->getGameInitSettings().getGameOptions().manualCarryallDrops || getOwner()->isAI())
+                               && blockDistance(location, destination) >= MIN_CARRYALL_LIFT_DISTANCE ) {
                                static_cast<GroundUnit*>(this)->requestCarryall();
                             } else if(  getOwner()->isAI()
                                         && (getItemID() == Unit_Harvester)

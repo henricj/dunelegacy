@@ -256,7 +256,7 @@ void GroundUnit::doRepair() {
                 RepairYard* pRepairYard = static_cast<RepairYard*>(pStructure);
 
                 if(pRepairYard->getNumBookings() == 0) {
-                    FixPoint tempDistance = distanceFrom(location, pRepairYard->getClosestPoint(location));
+                    FixPoint tempDistance = blockDistance(location, pRepairYard->getClosestPoint(location));
                     if(tempDistance < closestLeastBookedRepairYardDistance) {
                         closestLeastBookedRepairYardDistance = tempDistance;
                         pBestRepairYard = pRepairYard;

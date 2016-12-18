@@ -447,22 +447,17 @@ const ObjectBase* ObjectBase::findClosestTarget() const {
 }
 
 const ObjectBase* ObjectBase::findTarget() const {
-    ObjectBase  *tempTarget,
-                *closestTarget = nullptr;
+//searches for a target in an area like as shown below
+//
+//                    *
+//                  *****
+//                  *****
+//                 ***T***
+//                  *****
+//                  *****
+//                    *
 
     int checkRange = 0;
-    int xPos = location.x;
-    int yPos = location.y;
-
-    FixPoint closestDistance = FixPt_MAX;
-
-//searches for a target in an area like as shown below
-//                     *****
-//                   *********
-//                  *****T*****
-//                   *********
-//                     *****
-
     switch(attackMode) {
         case GUARD: {
             checkRange = getWeaponRange();
@@ -491,44 +486,39 @@ const ObjectBase* ObjectBase::findTarget() const {
         checkRange = getViewRange();
     }
 
-    int xCheck = xPos - checkRange;
+    ObjectBase *pClosestTarget = nullptr;
+    FixPoint closestTargetDistance = FixPt_MAX;
 
-    if(xCheck < 0) {
-        xCheck = 0;
-    }
+    Coord coord;
+	int startY = std::max(0, location.y - checkRange);
+	int endY = std::min(currentGameMap->getSizeY()-1, location.y + checkRange);
+	for(coord.y = startY; coord.y <= endY; coord.y++) {
+		int startX = std::max(0, location.x - checkRange);
+		int endX = std::min(currentGameMap->getSizeX()-1, location.x + checkRange);
+		for(coord.x = startX; coord.x <= endX; coord.x++) {
 
-    while((xCheck < currentGameMap->getSizeX()) && ((xCheck - xPos) <= checkRange)) {
-        int yCheck = (yPos - lookDist[abs(xCheck - xPos)]);
+            FixPoint targetDistance = blockDistance(location, coord);
+            if(targetDistance <= checkRange) {
+                Tile* pTile = currentGameMap->getTile(coord);
+                if( pTile->isExplored(getOwner()->getHouseID())
+                    && !pTile->isFogged(getOwner()->getHouseID())
+                    && pTile->hasAnObject()) {
 
-        if(yCheck < 0) {
-            yCheck = 0;
-        }
-
-        while((yCheck < currentGameMap->getSizeY()) && ((yCheck - yPos) <=  lookDist[abs(xCheck - xPos)])) {
-            if( currentGameMap->getTile(xCheck,yCheck)->isExplored(getOwner()->getHouseID())
-                && !currentGameMap->getTile(xCheck,yCheck)->isFogged(getOwner()->getHouseID())
-                && currentGameMap->getTile(xCheck,yCheck)->hasAnObject()) {
-
-                tempTarget = currentGameMap->getTile(xCheck,yCheck)->getObject();
-                if(((tempTarget->getItemID() != Structure_Wall
-                    && tempTarget->getItemID() != Unit_Carryall)
-                    || closestTarget == nullptr)
-                    && canAttack(tempTarget)) {
-                    FixPoint targetDistance = blockDistance(location, tempTarget->getLocation());
-                    if(targetDistance < closestDistance) {
-                        closestTarget = tempTarget;
-                        closestDistance = targetDistance;
+                    ObjectBase* pNewTarget = pTile->getObject();
+                    if(((pNewTarget->getItemID() != Structure_Wall && pNewTarget->getItemID() != Unit_Carryall) || pClosestTarget == nullptr) && canAttack(pNewTarget)) {
+                        if(targetDistance < closestTargetDistance) {
+                            pClosestTarget = pNewTarget;
+                            closestTargetDistance = targetDistance;
+                        }
                     }
                 }
             }
 
-            yCheck++;
-        }
 
-        xCheck++;
-    }
+		}
+	}
 
-    return closestTarget;
+    return pClosestTarget;
 }
 
 int ObjectBase::getViewRange() const {

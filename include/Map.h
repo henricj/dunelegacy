@@ -45,8 +45,8 @@ public:
     void spiceRemoved(const Coord& coord);
     void selectObjects(int houseID, int x1, int y1, int x2, int y2, int realX, int realY, bool objectARGMode);
 
-    void viewMap(int playerTeam, const Coord& location, int maxViewRange);
-    void viewMap(int playerTeam, int x, int y, int maxViewRange) {
+    void viewMap(const int playerTeam, const Coord& location, const int maxViewRange);
+    void viewMap(const int playerTeam, int x, int y, const int maxViewRange) {
         viewMap(playerTeam, Coord(x,y), maxViewRange);
     }
 
