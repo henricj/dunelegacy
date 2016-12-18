@@ -28,6 +28,7 @@
 #include <memory.h>
 #include <stdio.h>
 #include <cmath>
+#include <cerrno>
 
 #define VOC_CODE_TERM       0
 #define VOC_CODE_DATA       1

@@ -72,8 +72,8 @@ inline int maximumDistance(const Coord& p1, const Coord& p2) {
     \return the distance
 */
 inline FixPoint blockDistance(const Coord& p1, const Coord& p2) {
-    int diffX = std::abs(p1.x - p2.x);
-    int diffY = std::abs(p1.y - p2.y);
+    int diffX = abs(p1.x - p2.x);
+    int diffY = abs(p1.y - p2.y);
 
 	if(diffX > diffY) {
 		return diffX + diffY*(FixPt_SQRT2 - 1);
@@ -89,8 +89,8 @@ inline FixPoint blockDistance(const Coord& p1, const Coord& p2) {
     \return the distance
 */
 inline int blockDistanceApprox(const Coord& p1, const Coord& p2) {
-	int diffX = std::abs(p1.x - p2.x);
-	int diffY = std::abs(p1.y - p2.y);
+	int diffX = abs(p1.x - p2.x);
+	int diffY = abs(p1.y - p2.y);
 
 	if(diffX > diffY) {
 		return ((diffX*2 + diffY) + 1)/2;
