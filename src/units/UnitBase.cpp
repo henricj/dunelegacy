@@ -135,6 +135,10 @@ UnitBase::~UnitBase() {
     pathList.clear();
     removeFromSelectionLists();
 
+    for(int i=0; i < NUMSELECTEDLISTS; i++) {
+        pLocalPlayer->getGroupList(i).erase(objectID);
+    }
+
     currentGame->getObjectManager().removeObject(objectID);
 }
 

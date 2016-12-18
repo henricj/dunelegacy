@@ -252,10 +252,6 @@ void ObjectBase::removeFromSelectionLists() {
     currentGame->selectionChanged();
     currentGame->getSelectedByOtherPlayerList().erase(getObjectID());
     selected = false;
-
-    for(int i=0; i < NUMSELECTEDLISTS; i++) {
-        pLocalPlayer->getGroupList(i).erase(getObjectID());
-    }
 }
 
 void ObjectBase::setDestination(int newX, int newY) {

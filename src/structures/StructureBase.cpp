@@ -78,6 +78,10 @@ StructureBase::~StructureBase() {
     owner->decrementStructures(itemID, location);
 
     removeFromSelectionLists();
+
+    for(int i=0; i < NUMSELECTEDLISTS; i++) {
+        pLocalPlayer->getGroupList(i).erase(getObjectID());
+    }
 }
 
 void StructureBase::save(OutputStream& stream) const {

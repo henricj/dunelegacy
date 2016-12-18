@@ -1944,6 +1944,9 @@ void Game::handleKeyInput(SDL_KeyboardEvent& keyboardEvent) {
                     ObjectBase* pObject = objectManager.getObject(objectID);
                     pObject->setSelected(false);
                     pObject->removeFromSelectionLists();
+                    for(int i=0; i < NUMSELECTEDLISTS; i++) {
+                        pLocalPlayer->getGroupList(i).erase(objectID);
+                    }
                 }
                 selectedList.clear();
                 currentGame->selectionChanged();
@@ -2003,9 +2006,11 @@ void Game::handleKeyInput(SDL_KeyboardEvent& keyboardEvent) {
                 // now we add the selected items
                 for(Uint32 objectID : groupList) {
                     ObjectBase* pObject = objectManager.getObject(objectID);
-                    pObject->setSelected(true);
-                    selectedList.insert(pObject->getObjectID());
-                    currentGame->selectionChanged();
+                    if(pObject->getOwner() == pLocalHouse) {
+                        pObject->setSelected(true);
+                        selectedList.insert(pObject->getObjectID());
+                        currentGame->selectionChanged();
+                    }
                 }
 
                 if(bEverythingWasSelected && (groupList.empty() == false)) {
