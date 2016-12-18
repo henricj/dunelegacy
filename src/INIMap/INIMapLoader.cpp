@@ -454,7 +454,8 @@ void INIMapLoader::loadHouses()
             Player* pPlayer = pPlayerData->create(pNewHouse, playerInfo.playerName);
 
             pNewHouse->addPlayer(std::shared_ptr<Player>(pPlayer));
-            if(playerInfo.playerName == pGame->getLocalPlayerName()) {
+            if( ((pGame->getGameInitSettings().getGameType() != GameType::CustomMultiplayer) && (dynamic_cast<HumanPlayer*>(pPlayer) != nullptr))
+                || (playerInfo.playerName == pGame->getLocalPlayerName())) {
                 pLocalHouse = pNewHouse;
                 pLocalPlayer = dynamic_cast<HumanPlayer*>(pPlayer);
             }
