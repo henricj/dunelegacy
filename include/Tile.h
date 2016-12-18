@@ -300,12 +300,6 @@ public:
 
 
     inline void update() {
-        for(int i=0;i<NUM_ANGLES;i++) {
-            if(tracksCounter[i] > 0) {
-                tracksCounter[i]--;
-            }
-        }
-
         for(int i=0 ; i < (int)deadUnits.size() ; i++) {
             if(deadUnits[i].timer == 0) {
                 deadUnits.erase(deadUnits.begin()+i);
@@ -318,12 +312,7 @@ public:
 
     void clearTerrain();
 
-    inline void setTrack(Uint8 direction) {
-        if(type == Terrain_Sand || type == Terrain_Dunes
-            || type == Terrain_Spice || type == Terrain_ThickSpice) {
-            tracksCounter[direction] = TRACKSTIME;
-        }
-    }
+    void setTrack(Uint8 direction);
 
     void selectAllPlayersUnits(int houseID, ObjectBase** lastCheckedObject, ObjectBase** lastSelectedObject);
     void selectAllPlayersUnitsOfType(int houseID, int itemID, ObjectBase** lastCheckedObject, ObjectBase** lastSelectedObject);
@@ -491,15 +480,15 @@ private:
 
     SDL_Texture** sprite;       ///< the graphic to draw
 
-    Sint32                          destroyedStructureTile;     ///< the tile drawn for a destroyed structure
-    Sint16                          tracksCounter[NUM_ANGLES];  ///< Contains counters for the tracks on sand
-    std::vector<DAMAGETYPE>         damage;                     ///< damage positions
-    std::vector<DEADUNITTYPE>       deadUnits;                  ///< dead units
+    Sint32                          destroyedStructureTile;         ///< the tile drawn for a destroyed structure
+    Uint32                          tracksCreationTime[NUM_ANGLES]; ///< Contains the game cycle the tracks on sand appeared
+    std::vector<DAMAGETYPE>         damage;                         ///< damage positions
+    std::vector<DEADUNITTYPE>       deadUnits;                      ///< dead units
 
-    std::list<Uint32>   assignedAirUnitList;                    ///< all the air units on this tile
-    std::list<Uint32>   assignedInfantryList;                   ///< all infantry units on this tile
-    std::list<Uint32>   assignedUndergroundUnitList;            ///< all underground units on this tile
-    std::list<Uint32>   assignedNonInfantryGroundObjectList;    ///< all structures/vehicles on this tile
+    std::list<Uint32>   assignedAirUnitList;                        ///< all the air units on this tile
+    std::list<Uint32>   assignedInfantryList;                       ///< all infantry units on this tile
+    std::list<Uint32>   assignedUndergroundUnitList;                ///< all underground units on this tile
+    std::list<Uint32>   assignedNonInfantryGroundObjectList;        ///< all structures/vehicles on this tile
 
     Uint32      lastAccess[NUM_HOUSES];    ///< contains for every house when this tile was seen last by this house
     bool        explored[NUM_HOUSES];      ///< contains for every house if this tile is explored

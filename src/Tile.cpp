@@ -52,7 +52,7 @@ Tile::Tile() {
     sprite = pGFXManager->getObjPic(ObjPic_Terrain);
 
     for(int i=0; i < NUM_ANGLES; i++) {
-        tracksCounter[i] = 0;
+        tracksCreationTime[i] = 0;
     }
 
     location.x = 0;
@@ -124,7 +124,7 @@ void Tile::load(InputStream& stream) {
 
     for(int i=0; i < NUM_ANGLES; i++) {
         if(bTrackCounter[i] == true) {
-            tracksCounter[i] = stream.readSint16();
+            tracksCreationTime[i] = stream.readUint32();
         }
     }
 
@@ -191,12 +191,17 @@ void Tile::save(OutputStream& stream) const {
 
     stream.writeSint32(destroyedStructureTile);
 
-
-    stream.writeBools(  (tracksCounter[0] != 0), (tracksCounter[1] != 0), (tracksCounter[2] != 0), (tracksCounter[3] != 0),
-                        (tracksCounter[4] != 0), (tracksCounter[5] != 0), (tracksCounter[6] != 0), (tracksCounter[7] != 0));
+    // clean-up tracksCreationTime to save space in the save game
+    Uint32 tracksCreationTimeToSave[NUM_ANGLES];
     for(int i=0; i < NUM_ANGLES; i++) {
-        if(tracksCounter[i] != 0) {
-            stream.writeSint16(tracksCounter[i]);
+        tracksCreationTimeToSave[i] = (tracksCreationTime[i] + TRACKSTIME < currentGame->getGameCycleCount()) ? 0 : tracksCreationTime[i];
+    }
+
+    stream.writeBools(  (tracksCreationTimeToSave[0] != 0), (tracksCreationTimeToSave[1] != 0), (tracksCreationTimeToSave[2] != 0), (tracksCreationTimeToSave[3] != 0),
+                        (tracksCreationTimeToSave[4] != 0), (tracksCreationTimeToSave[5] != 0), (tracksCreationTimeToSave[6] != 0), (tracksCreationTimeToSave[7] != 0));
+    for(int i=0; i < NUM_ANGLES; i++) {
+        if(tracksCreationTimeToSave[i] != 0) {
+            stream.writeUint32(tracksCreationTimeToSave[i]);
         }
     }
 
@@ -285,9 +290,11 @@ void Tile::blitGround(int xPos, int yPos) {
             // tracks
             SDL_Texture* pTracks = pGFXManager->getObjPic(ObjPic_Terrain_Tracks)[currentZoomlevel];
             for(int i=0;i<NUM_ANGLES;i++) {
-                if(tracksCounter[i] > 0) {
+
+                int tracktime = currentGame->getGameCycleCount() - tracksCreationTime[i];
+                if((tracksCreationTime[i] != 0) && (tracktime < TRACKSTIME)) {
                     source.x = ((10-i)%8)*world2zoomedWorld(TILESIZE);
-                    SDL_SetTextureAlphaMod(pTracks, std::min(255, 256*tracksCounter[i]/TRACKSTIME));
+                    SDL_SetTextureAlphaMod(pTracks, std::min(255, 256*(TRACKSTIME-tracktime)/TRACKSTIME));
                     SDL_RenderCopy(renderer, pTracks, &source, &drawLocation);
                 }
             }
@@ -495,6 +502,13 @@ void Tile::blitSelectionRects(int xPos, int yPos) {
 void Tile::clearTerrain() {
     damage.clear();
     deadUnits.clear();
+}
+
+
+void Tile::setTrack(Uint8 direction) {
+    if(type == Terrain_Sand || type == Terrain_Dunes || type == Terrain_Spice || type == Terrain_ThickSpice) {
+        tracksCreationTime[direction] = currentGame->getGameCycleCount();
+    }
 }
 
 
