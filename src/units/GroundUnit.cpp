@@ -89,7 +89,7 @@ void GroundUnit::checkPos() {
     /*
         Go to repair yard if low on health
     */
-    if(active && ((getHealth()/getMaxHealth()) < FixPt(0,5))
+    if(active && (getHealth() < getMaxHealth()/2)
             && !goingToRepairYard
             && owner->hasRepairYard()
             && !pickedUp

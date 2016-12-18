@@ -362,9 +362,9 @@ bool StructureBase::update() {
             FixPoint repairprice = FixPoint(fraction * currentGame->objectData.data[itemID][originalHouseID].price) / 256;
 
             // Original dune is always repairing 5 hitpoints (for the costs of 2) but we are only repairing 1/30th of that
+            const FixPoint repairHealth = FixPt(5,0)/FixPt(30,0);
             owner->takeCredits(repairprice/30);
-            FixPoint newHealth = getHealth();
-            newHealth += FixPt(5,0)/FixPt(30,0);
+            FixPoint newHealth = getHealth() + repairHealth;
             if(newHealth >= getMaxHealth()) {
                 setHealth(getMaxHealth());
                 repairing = false;
@@ -374,7 +374,7 @@ bool StructureBase::update() {
         } else {
             repairing = false;
         }
-    } else if(owner->isAI() && ((getHealth()/getMaxHealth()) < FixPt(0,5))) {
+    } else if(owner->isAI() && (getHealth() < getMaxHealth()/2)) {
         doRepair();
     }
 
