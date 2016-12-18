@@ -92,7 +92,8 @@ emerge dunelegacy
 
 
 Mac OS X:
-Open the XCode-Project from IDE/xCode/Dune Legacy.xcodeproj and build Dune Legacy. The resulting bundle will be put under IDE/xCode/build/Release.
+First you need the SDL2 and SDL2-mixer framework. Download them as dmgs from the official website, open the dmgs and copy SDL2.framework and SDL2_mixer.framework to /Library/Frameworks/.
+Then open the XCode-Project from IDE/xCode/Dune Legacy.xcodeproj and build Dune Legacy. The resulting bundle will be put under IDE/xCode/build/Release.
 Now go to the folder MacOSX and extract Dune Legacy.dmg.zip and then mount Dune Legacy.dmg. Put the compiled Dune Legacy bundle into the mounted dmg and unmount it afterwards.
 Zip the dmg again to save a lot of download bandwidth.
 
