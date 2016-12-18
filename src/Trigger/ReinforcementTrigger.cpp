@@ -106,7 +106,7 @@ void ReinforcementTrigger::trigger()
 
             // try 30 times
             int r = 1;
-            while(units2Drop.empty() == false && ++r < 32) {
+            while(units2Drop.empty() == false && ++r < 64) {
 
                 Coord newCoord = placeCoord;
                 if(dropLocation == Drop_North || dropLocation == Drop_South) {
@@ -115,7 +115,9 @@ void ReinforcementTrigger::trigger()
                     newCoord += Coord(0, currentGame->randomGen.rand(-r,r));
                 }
 
-                if(currentGameMap->tileExists(newCoord) && currentGameMap->getTile(newCoord)->hasAGroundObject() == false) {
+                if(currentGameMap->tileExists(newCoord)
+                    && (currentGameMap->getTile(newCoord)->hasAGroundObject() == false)
+                    && ((units2Drop.front() != Unit_Sandworm) || (currentGameMap->getTile(newCoord)->isSand()))) {
                     UnitBase* pUnit2Drop = dropHouse->createUnit(units2Drop.front());
                     units2Drop.erase(units2Drop.begin());
 
