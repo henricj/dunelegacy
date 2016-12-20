@@ -857,7 +857,7 @@ void Tile::triggerSpecialBloom(House* pTrigger) {
                 // The house gets a Trike for free. It spawns beside the special bloom.
                 UnitBase* pNewUnit = pTrigger->createUnit(Unit_Trike);
                 if(pNewUnit != nullptr) {
-                    Coord spot = currentGameMap->findDeploySpot(pNewUnit, location);
+                    Coord spot = currentGameMap->findDeploySpot(pNewUnit, location, currentGame->randomGen);
                     pNewUnit->deploy(spot);
                 }
             } break;
@@ -892,7 +892,7 @@ void Tile::triggerSpecialBloom(House* pTrigger) {
 
                 UnitBase* pNewUnit = pEnemyHouse->createUnit(Unit_Trike);
                 if(pNewUnit != nullptr) {
-                    Coord spot = currentGameMap->findDeploySpot(pNewUnit, location);
+                    Coord spot = currentGameMap->findDeploySpot(pNewUnit, location, currentGame->randomGen);
                     pNewUnit->deploy(spot);
                 }
 
@@ -930,7 +930,7 @@ void Tile::triggerSpecialBloom(House* pTrigger) {
                 for(int i=0;i<3;i++) {
                     UnitBase* pNewUnit = pEnemyHouse->createUnit(Unit_Soldier);
                     if(pNewUnit != nullptr) {
-                        Coord spot = currentGameMap->findDeploySpot(pNewUnit, location);
+                        Coord spot = currentGameMap->findDeploySpot(pNewUnit, location, currentGame->randomGen);
                         pNewUnit->deploy(spot);
                     }
                 }

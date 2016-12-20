@@ -22,6 +22,7 @@
 #include <misc/InputStream.h>
 #include <misc/OutputStream.h>
 #include <misc/exceptions.h>
+#include <misc/Random.h>
 
 #include <stdio.h>
 
@@ -56,7 +57,7 @@ public:
     bool isWithinBuildRange(int x, int y, const House* pHouse) const;
     int getPosAngle(const Coord& source, const Coord& pos) const;
     Coord findClosestEdgePoint(const Coord& origin, const Coord& buildingSize) const;
-    Coord findDeploySpot(UnitBase* pUnit, const Coord& origin, const Coord& gatherPoint = Coord::Invalid(), const Coord& buildingSize = Coord(0,0)) const;//building size is num squares
+    Coord findDeploySpot(UnitBase* pUnit, const Coord& origin, Random& randomGen, const Coord& gatherPoint = Coord::Invalid(), const Coord& buildingSize = Coord(0,0)) const; //building size is num squares
 
     void createSpiceField(Coord location, int radius, bool centerIsThickSpice = false);
 

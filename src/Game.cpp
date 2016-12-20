@@ -2320,6 +2320,10 @@ bool Game::handlePlacementClick(int xPos, int yPos) {
             // is this building area only blocked by units?
             if(currentGameMap->okayToPlaceStructure(xPos, yPos, structuresize.x, structuresize.y, false, pBuilder->getOwner(), true)) {
                 // then we try to move all units outside the building area
+
+                // generate a independent temporal random number generator as we are in input handling code (and outside game logic code)
+                Random tempRandomGen(getGameCycleCount());
+
                 for(int y = yPos; y < yPos + structuresize.y; y++) {
                     for(int x = xPos; x < xPos + structuresize.x; x++) {
                         Tile* pTile = currentGameMap->getTile(x,y);
@@ -2327,14 +2331,14 @@ bool Game::handlePlacementClick(int xPos, int yPos) {
                             ObjectBase* pObject = pTile->getNonInfantryGroundObject();
                             if(pObject->isAUnit() && pObject->getOwner() == pBuilder->getOwner()) {
                                 UnitBase* pUnit = dynamic_cast<UnitBase*>(pObject);
-                                Coord newDestination = currentGameMap->findDeploySpot(pUnit, Coord(xPos, yPos), pUnit->getLocation(), structuresize);
+                                Coord newDestination = currentGameMap->findDeploySpot(pUnit, Coord(xPos, yPos), tempRandomGen, pUnit->getLocation(), structuresize);
                                 pUnit->handleMoveClick(newDestination.x, newDestination.y);
                             }
                         } else if(pTile->hasInfantry()) {
                             for(Uint32 objectID : pTile->getInfantryList()) {
                                 InfantryBase* pInfantry = dynamic_cast<InfantryBase*>(getObjectManager().getObject(objectID));
                                 if((pInfantry != nullptr) && (pInfantry->getOwner() == pBuilder->getOwner())) {
-                                    Coord newDestination = currentGameMap->findDeploySpot(pInfantry, Coord(xPos, yPos), pInfantry->getLocation(), structuresize);
+                                    Coord newDestination = currentGameMap->findDeploySpot(pInfantry, Coord(xPos, yPos), tempRandomGen, pInfantry->getLocation(), structuresize);
                                     pInfantry->handleMoveClick(newDestination.x, newDestination.y);
                                 }
                             }

@@ -378,7 +378,7 @@ Coord Map::getMapPos(int angle, const Coord& source) const {
 }
 
 //building size is num squares
-Coord Map::findDeploySpot(UnitBase* pUnit, const Coord& origin, const Coord& gatherPoint, const Coord& buildingSize) const {
+Coord Map::findDeploySpot(UnitBase* pUnit, const Coord& origin, Random& randomGen, const Coord& gatherPoint, const Coord& buildingSize) const {
     FixPoint    closestDistance = FixPt_MAX;
     Coord       closestPoint;
     Coord       size;
@@ -397,22 +397,22 @@ Coord Map::findDeploySpot(UnitBase* pUnit, const Coord& origin, const Coord& gat
     int ranY = origin.y;
 
     do {
-        int edge = currentGame->randomGen.rand(0, 3);
+        int edge = randomGen.rand(0, 3);
         switch(edge) {
             case 0: //right edge
                 ranX = origin.x + buildingSize.x + depth;
-                ranY = currentGame->randomGen.rand(origin.y - depth, origin.y + buildingSize.y + depth);
+                ranY = randomGen.rand(origin.y - depth, origin.y + buildingSize.y + depth);
                 break;
             case 1: //top edge
-                ranX = currentGame->randomGen.rand(origin.x - depth, origin.x + buildingSize.x + depth);
+                ranX = randomGen.rand(origin.x - depth, origin.x + buildingSize.x + depth);
                 ranY = origin.y - depth - ((buildingSize.y == 0) ? 0 : 1);
                 break;
             case 2: //left edge
                 ranX = origin.x - depth - ((buildingSize.x == 0) ? 0 : 1);
-                ranY = currentGame->randomGen.rand(origin.y - depth, origin.y + buildingSize.y + depth);
+                ranY = randomGen.rand(origin.y - depth, origin.y + buildingSize.y + depth);
                 break;
             case 3: //bottom edge
-                ranX = currentGame->randomGen.rand(origin.x - depth, origin.x + buildingSize.x + depth);
+                ranX = randomGen.rand(origin.x - depth, origin.x + buildingSize.x + depth);
                 ranY = origin.y + buildingSize.y + depth;
                 break;
             default:

@@ -303,7 +303,7 @@ void Carryall::deployUnit(Uint32 unitID)
 
         if(pUnit != nullptr) {
             pUnit->setAngle(drawnAngle);
-            Coord deployPos = currentGameMap->findDeploySpot(pUnit, location);
+            Coord deployPos = currentGameMap->findDeploySpot(pUnit, location, currentGame->randomGen);
             pUnit->setForced(false); // Stop units being forced if they are deployed
             pUnit->deploy(deployPos);
             if(pUnit->getItemID() == Unit_Saboteur) {
