@@ -330,6 +330,7 @@ void QuantBot::update() {
 
                     case EASY: {
                         harvesterLimit = (currentGameMap->getSizeX() * currentGameMap->getSizeY() / 2048);
+                        
                         militaryValueLimit = 10000;
                         //logDebug("BUILD EASY SKIRM ");
                     } break;
