@@ -50,10 +50,10 @@ private:
     };
 
 public:
-    Pakfile(std::string pakfilename, bool write = false);
+    Pakfile(const std::string& pakfilename, bool write = false);
     ~Pakfile();
 
-    std::string getFilename(unsigned int index) const;
+    const std::string& getFilename(unsigned int index) const;
 
     /// Number of files in this pak-File.
     /**
@@ -62,11 +62,11 @@ public:
     */
     inline int getNumFiles() const { return fileEntries.size(); };
 
-    SDL_RWops* openFile(std::string filename);
+    SDL_RWops* openFile(const std::string& filename);
 
-    bool exists(std::string filename) const;
+    bool exists(const std::string& filename) const;
 
-    void addFile(SDL_RWops* rwop, std::string filename);
+    void addFile(SDL_RWops* rwop, const std::string& filename);
 
 private:
     static size_t ReadFile(SDL_RWops* pRWop, void *ptr, size_t size, size_t n);

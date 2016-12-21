@@ -30,14 +30,14 @@ extern GFXManager*  pGFXManager;
 extern FontManager* pFontManager;
 
 
-SDL_Surface* DuneStyle::createSurfaceWithText(const char* text, Uint32 color, unsigned int fontsize) {
+SDL_Surface* DuneStyle::createSurfaceWithText(const std::string& text, Uint32 color, unsigned int fontsize) {
     if(pFontManager != nullptr) {
         return pFontManager->createSurfaceWithText(text, color, fontsize);
     } else {
         // create dummy surface
         SDL_Surface* surface;
 
-        if((surface = SDL_CreateRGBSurface(0, strlen(text)*10, 12, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK)) == nullptr) {
+        if((surface = SDL_CreateRGBSurface(0, text.length()*10, 12, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK)) == nullptr) {
             return nullptr;
         }
 
@@ -55,20 +55,20 @@ unsigned int DuneStyle::getTextHeight(unsigned int FontNum) {
     }
 }
 
-unsigned int DuneStyle::getTextWidth(const char* text, unsigned int FontNum)  {
+unsigned int DuneStyle::getTextWidth(const std::string& text, unsigned int FontNum)  {
     if(pFontManager != nullptr) {
         return pFontManager->getTextWidth(text,FontNum);
     } else {
-        return strlen(text)*10;
+        return text.length()*10;
     }
 }
 
 
-Point DuneStyle::getMinimumLabelSize(std::string text, int fontID) {
-    return Point(getTextWidth(text.c_str(),fontID) + 12,getTextHeight(fontID) + 4);
+Point DuneStyle::getMinimumLabelSize(const std::string& text, int fontID) {
+    return Point(getTextWidth(text,fontID) + 12,getTextHeight(fontID) + 4);
 }
 
-SDL_Surface* DuneStyle::createLabelSurface(Uint32 width, Uint32 height, std::list<std::string> textLines, int fontID, Alignment_Enum alignment, Uint32 textcolor, Uint32 textshadowcolor, Uint32 backgroundcolor) {
+SDL_Surface* DuneStyle::createLabelSurface(Uint32 width, Uint32 height, const std::vector<std::string>& textLines, int fontID, Alignment_Enum alignment, Uint32 textcolor, Uint32 textshadowcolor, Uint32 backgroundcolor) {
     SDL_Surface* surface;
 
     // create surfaces
@@ -81,15 +81,12 @@ SDL_Surface* DuneStyle::createLabelSurface(Uint32 width, Uint32 height, std::lis
     if(textcolor == COLOR_DEFAULT) textcolor = defaultForegroundColor;
     if(textshadowcolor == COLOR_DEFAULT) textshadowcolor = defaultShadowColor;
 
-    std::list<SDL_Surface*> TextSurfaces;
-    std::list<std::string>::const_iterator iter;
-    for(iter = textLines.begin(); iter != textLines.end() ; ++iter) {
-        std::string text = *iter;
-
+    std::vector<SDL_Surface*> textSurfaces;
+    for(const std::string& textLine : textLines) {
         // create text background
-        TextSurfaces.push_back(createSurfaceWithText(text.c_str(), textshadowcolor, fontID));
+        textSurfaces.push_back(createSurfaceWithText(textLine, textshadowcolor, fontID));
         // create text foreground
-        TextSurfaces.push_back(createSurfaceWithText(text.c_str(), textcolor, fontID));
+        textSurfaces.push_back(createSurfaceWithText(textLine, textcolor, fontID));
     }
 
     int fontheight = getTextHeight(fontID);
@@ -108,8 +105,8 @@ SDL_Surface* DuneStyle::createLabelSurface(Uint32 width, Uint32 height, std::lis
         textpos_y = spacing;
     }
 
-    std::list<SDL_Surface*>::const_iterator surfIter = TextSurfaces.begin();
-    while(surfIter != TextSurfaces.end()) {
+    std::vector<SDL_Surface*>::const_iterator surfIter = textSurfaces.begin();
+    while(surfIter != textSurfaces.end()) {
         SDL_Surface* textSurface1 = *surfIter;
         ++surfIter;
         SDL_Surface* textSurface2 = *surfIter;
@@ -145,11 +142,11 @@ SDL_Surface* DuneStyle::createLabelSurface(Uint32 width, Uint32 height, std::lis
 
 
 
-Point DuneStyle::getMinimumCheckboxSize(std::string text) {
+Point DuneStyle::getMinimumCheckboxSize(const std::string& text) {
     return Point(getTextWidth(text.c_str(),FONT_STD12) + 20 + 17,getTextHeight(FONT_STD12) + 8);
 }
 
-SDL_Surface* DuneStyle::createCheckboxSurface(Uint32 width, Uint32 height, std::string text, bool checked, bool activated, Uint32 textcolor, Uint32 textshadowcolor, Uint32 backgroundcolor) {
+SDL_Surface* DuneStyle::createCheckboxSurface(Uint32 width, Uint32 height, const std::string& text, bool checked, bool activated, Uint32 textcolor, Uint32 textshadowcolor, Uint32 backgroundcolor) {
     SDL_Surface* surface;
 
     // create surfaces
@@ -192,12 +189,12 @@ SDL_Surface* DuneStyle::createCheckboxSurface(Uint32 width, Uint32 height, std::
     }
 
 
-    SDL_Surface* textSurface1 = createSurfaceWithText(text.c_str(), textshadowcolor, FONT_STD12);
+    SDL_Surface* textSurface1 = createSurfaceWithText(text, textshadowcolor, FONT_STD12);
     SDL_Rect textRect1 = calcDrawingRect(textSurface1,  10+2 + 17, surface->h/2 + 3, HAlign::Left, VAlign::Center);
     SDL_BlitSurface(textSurface1,nullptr,surface,&textRect1);
     SDL_FreeSurface(textSurface1);
 
-    SDL_Surface* textSurface2 = createSurfaceWithText(text.c_str(), textcolor, FONT_STD12);
+    SDL_Surface* textSurface2 = createSurfaceWithText(text, textcolor, FONT_STD12);
     SDL_Rect textRect2 = calcDrawingRect(textSurface2,  10+1 + 17, surface->h/2 + 2, HAlign::Left, VAlign::Center);
     SDL_BlitSurface(textSurface2,nullptr,surface,&textRect2);
     SDL_FreeSurface(textSurface2);
@@ -209,11 +206,11 @@ SDL_Surface* DuneStyle::createCheckboxSurface(Uint32 width, Uint32 height, std::
 
 
 
-Point DuneStyle::getMinimumRadioButtonSize(std::string text) {
-    return Point(getTextWidth(text.c_str(),FONT_STD12) + 16 + 15,getTextHeight(FONT_STD12) + 8);
+Point DuneStyle::getMinimumRadioButtonSize(const std::string& text) {
+    return Point(getTextWidth(text,FONT_STD12) + 16 + 15,getTextHeight(FONT_STD12) + 8);
 }
 
-SDL_Surface* DuneStyle::createRadioButtonSurface(Uint32 width, Uint32 height, std::string text, bool checked, bool activated, Uint32 textcolor, Uint32 textshadowcolor, Uint32 backgroundcolor) {
+SDL_Surface* DuneStyle::createRadioButtonSurface(Uint32 width, Uint32 height, const std::string& text, bool checked, bool activated, Uint32 textcolor, Uint32 textshadowcolor, Uint32 backgroundcolor) {
     SDL_Surface* surface;
 
     // create surfaces
@@ -263,12 +260,12 @@ SDL_Surface* DuneStyle::createRadioButtonSurface(Uint32 width, Uint32 height, st
     }
 
 
-    SDL_Surface* textSurface1 = createSurfaceWithText(text.c_str(), textshadowcolor, FONT_STD12);
+    SDL_Surface* textSurface1 = createSurfaceWithText(text, textshadowcolor, FONT_STD12);
     SDL_Rect textRect1 = calcDrawingRect(textSurface1, 8+2 + 15, surface->h/2 + 3, HAlign::Left, VAlign::Center);
     SDL_BlitSurface(textSurface1,nullptr,surface,&textRect1);
     SDL_FreeSurface(textSurface1);
 
-    SDL_Surface* textSurface2 = createSurfaceWithText(text.c_str(), textcolor, FONT_STD12);
+    SDL_Surface* textSurface2 = createSurfaceWithText(text, textcolor, FONT_STD12);
     SDL_Rect textRect2 = calcDrawingRect(textSurface2, 8+1 + 15, surface->h/2 + 2, HAlign::Left, VAlign::Center);
     SDL_BlitSurface(textSurface2,nullptr,surface,&textRect2);
     SDL_FreeSurface(textSurface2);
@@ -326,11 +323,11 @@ SDL_Surface* DuneStyle::createDropDownBoxButton(Uint32 size, bool pressed, bool 
 
 
 
-Point DuneStyle::getMinimumButtonSize(std::string text) {
+Point DuneStyle::getMinimumButtonSize(const std::string& text) {
     return Point(getTextWidth(text.c_str(),FONT_STD10)+12,getTextHeight(FONT_STD10));
 }
 
-SDL_Surface* DuneStyle::createButtonSurface(Uint32 width, Uint32 height, std::string text, bool pressed, bool activated, Uint32 textcolor, Uint32 textshadowcolor) {
+SDL_Surface* DuneStyle::createButtonSurface(Uint32 width, Uint32 height, const std::string& text, bool pressed, bool activated, Uint32 textcolor, Uint32 textshadowcolor) {
 
     // create surfaces
     SDL_Surface* surface;
@@ -357,7 +354,7 @@ SDL_Surface* DuneStyle::createButtonSurface(Uint32 width, Uint32 height, std::st
 
     // create text on this button
     int fontsize;
-    if( (width < getTextWidth(text.c_str(),FONT_STD12) + 12) ||
+    if( (width < getTextWidth(text,FONT_STD12) + 12) ||
         (height < getTextHeight(FONT_STD12) + 2)) {
         fontsize = FONT_STD10;
     } else {
@@ -367,12 +364,12 @@ SDL_Surface* DuneStyle::createButtonSurface(Uint32 width, Uint32 height, std::st
     if(textcolor == COLOR_DEFAULT) textcolor = defaultForegroundColor;
     if(textshadowcolor == COLOR_DEFAULT) textshadowcolor = defaultShadowColor;
 
-    SDL_Surface* textSurface1 = createSurfaceWithText(text.c_str(), textshadowcolor, fontsize);
+    SDL_Surface* textSurface1 = createSurfaceWithText(text, textshadowcolor, fontsize);
     SDL_Rect textRect1 = calcDrawingRect(textSurface1, surface->w/2 + 2 + (pressed ? 1 : 0), surface->h/2 + 3 + (pressed ? 1 : 0), HAlign::Center, VAlign::Center);
     SDL_BlitSurface(textSurface1,nullptr,surface,&textRect1);
     SDL_FreeSurface(textSurface1);
 
-    SDL_Surface* textSurface2 = createSurfaceWithText(text.c_str(), (activated == true) ? brightenUp(textcolor) : textcolor, fontsize);
+    SDL_Surface* textSurface2 = createSurfaceWithText(text, (activated == true) ? brightenUp(textcolor) : textcolor, fontsize);
     SDL_Rect textRect2 = calcDrawingRect(textSurface2, surface->w/2 + 1 + (pressed ? 1 : 0), surface->h/2 + 2 + (pressed ? 1 : 0), HAlign::Center, VAlign::Center);
     SDL_BlitSurface(textSurface2,nullptr,surface,&textRect2);
     SDL_FreeSurface(textSurface2);
@@ -387,7 +384,7 @@ Point DuneStyle::getMinimumTextBoxSize(int fontID) {
     return Point(10,getTextHeight(fontID) + 6);
 }
 
-SDL_Surface* DuneStyle::createTextBoxSurface(Uint32 width, Uint32 height, std::string text, bool carret, int fontID, Alignment_Enum alignment, Uint32 textcolor, Uint32 textshadowcolor) {
+SDL_Surface* DuneStyle::createTextBoxSurface(Uint32 width, Uint32 height, const std::string& text, bool carret, int fontID, Alignment_Enum alignment, Uint32 textcolor, Uint32 textshadowcolor) {
 
     // create surfaces
     SDL_Surface* surface;
@@ -412,8 +409,8 @@ SDL_Surface* DuneStyle::createTextBoxSurface(Uint32 width, Uint32 height, std::s
 
     // create text in this text box
     if(text.size() != 0) {
-        SDL_Surface* textSurface1 = createSurfaceWithText(text.c_str(), textshadowcolor, fontID);
-        SDL_Surface* textSurface2 = createSurfaceWithText(text.c_str(), textcolor, fontID);
+        SDL_Surface* textSurface1 = createSurfaceWithText(text, textshadowcolor, fontID);
+        SDL_Surface* textSurface2 = createSurfaceWithText(text, textcolor, fontID);
         SDL_Rect textRect1 = calcDrawingRect(textSurface1, 0, surface->h/2 + 3, HAlign::Left, VAlign::Center);
         SDL_Rect textRect2 = calcDrawingRect(textSurface2, 0, surface->h/2 + 2, HAlign::Left, VAlign::Center);
 
@@ -531,7 +528,7 @@ Uint32 DuneStyle::getListBoxEntryHeight() {
     return 16;
 }
 
-SDL_Surface* DuneStyle::createListBoxEntry(Uint32 width, std::string text, bool selected, Uint32 color) {
+SDL_Surface* DuneStyle::createListBoxEntry(Uint32 width, const std::string& text, bool selected, Uint32 color) {
     if(color == COLOR_DEFAULT) {
         color = defaultForegroundColor;
     }
@@ -549,7 +546,7 @@ SDL_Surface* DuneStyle::createListBoxEntry(Uint32 width, std::string text, bool 
     }
 
     SDL_Surface* textSurface;
-    textSurface = createSurfaceWithText(text.c_str(), color, FONT_STD10);
+    textSurface = createSurfaceWithText(text, color, FONT_STD10);
     SDL_Rect textRect = calcDrawingRect(textSurface, 3, surface->h/2 + 1, HAlign::Left, VAlign::Center);
     SDL_BlitSurface(textSurface,nullptr,surface,&textRect);
     SDL_FreeSurface(textSurface);
@@ -595,11 +592,11 @@ SDL_Surface* DuneStyle::createProgressBarOverlay(Uint32 width, Uint32 height, do
 
 
 
-SDL_Surface* DuneStyle::createToolTip(std::string text) {
+SDL_Surface* DuneStyle::createToolTip(const std::string& text) {
     SDL_Surface* surface;
     SDL_Surface* helpTextSurface;
 
-    if((helpTextSurface = createSurfaceWithText(text.c_str(), COLOR_YELLOW, FONT_STD10)) == nullptr) {
+    if((helpTextSurface = createSurfaceWithText(text, COLOR_YELLOW, FONT_STD10)) == nullptr) {
         return nullptr;
     }
 

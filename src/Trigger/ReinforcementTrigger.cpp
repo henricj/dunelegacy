@@ -106,7 +106,7 @@ void ReinforcementTrigger::trigger()
 
             // try 30 times
             int r = 1;
-            while(units2Drop.empty() == false && ++r < 32) {
+            while(units2Drop.empty() == false && ++r < 64) {
 
                 Coord newCoord = placeCoord;
                 if(dropLocation == Drop_North || dropLocation == Drop_South) {
@@ -115,7 +115,9 @@ void ReinforcementTrigger::trigger()
                     newCoord += Coord(0, currentGame->randomGen.rand(-r,r));
                 }
 
-                if(currentGameMap->tileExists(newCoord) && currentGameMap->getTile(newCoord)->hasAGroundObject() == false) {
+                if(currentGameMap->tileExists(newCoord)
+                    && (currentGameMap->getTile(newCoord)->hasAGroundObject() == false)
+                    && ((units2Drop.front() != Unit_Sandworm) || (currentGameMap->getTile(newCoord)->isSand()))) {
                     UnitBase* pUnit2Drop = dropHouse->createUnit(units2Drop.front());
                     units2Drop.erase(units2Drop.begin());
 
@@ -223,9 +225,8 @@ void ReinforcementTrigger::trigger()
                     Carryall* carryall = static_cast<Carryall*>(dropHouse->createUnit(Unit_Carryall));
                     carryall->setOwned(false);
 
-                    std::vector<Uint32>::const_iterator iter;
-                    for(iter = droppedUnits.begin(); iter != droppedUnits.end(); ++iter) {
-                        UnitBase* pUnit2Drop = dropHouse->createUnit(*iter);
+                    for(Uint32 itemID2Drop : droppedUnits) {
+                        UnitBase* pUnit2Drop = dropHouse->createUnit(itemID2Drop);
                         pUnit2Drop->setActive(false);
                         carryall->giveCargo(pUnit2Drop);
                     }
@@ -253,7 +254,7 @@ void ReinforcementTrigger::trigger()
 
 
         default: {
-            fprintf(stderr,"ReinforcementTrigger::trigger(): Invalid drop location!\n");
+            SDL_Log("ReinforcementTrigger::trigger(): Invalid drop location!");
         } break;
     }
 

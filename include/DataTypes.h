@@ -27,13 +27,13 @@
 
 class Coord {
 public:
-    Coord() {
-        x = y = 0;
+    Coord()
+     : x(0), y(0) {
     }
 
-    Coord(int x,int y) {
-        this->x = x;
-        this->y = y;
+    Coord(int x,int y)
+     : x(x), y(y)
+    {
     }
 
     inline bool operator==(const Coord& c) const {
@@ -133,17 +133,22 @@ typedef enum {
     ATTACKMODE_MAX
 } ATTACKMODE;
 
-typedef enum {START, LOADING, BEGUN, DEINITIALIZE} GAMESTATETYPE;
+enum class GameState {
+    Start,
+    Loading,
+    Running,
+    Deinitialize
+};
 
-typedef enum {
-    GAMETYPE_INVALID            = -1,
-    GAMETYPE_LOAD_SAVEGAME      = 0,
-    GAMETYPE_CAMPAIGN           = 1,
-    GAMETYPE_CUSTOM             = 2,
-    GAMETYPE_SKIRMISH           = 3,
-    GAMETYPE_CUSTOM_MULTIPLAYER = 4,
-    GAMETYPE_LOAD_MULTIPLAYER   = 5
-} GAMETYPE;
+enum class GameType {
+    Invalid           = -1,
+    LoadSavegame      = 0,
+    Campaign          = 1,
+    CustomGame        = 2,
+    Skirmish          = 3,
+    CustomMultiplayer = 4,
+    LoadMultiplayer   = 5
+};
 
 
 class SettingsClass
@@ -155,11 +160,14 @@ public:
         std::string     playerName;         ///< The name of the player used for multiplayer games
         std::string     language;           ///< Language code: "en" = English, "fr" = French, "de" = German
         int             scrollSpeed;        ///< Scroll speed in pixels
+        bool            showTutorialHints;  ///< If true, tutorial hints are shown during the game
     } general;
 
     class VideoClass {
     public:
         bool        fullscreen;
+        int         physicalWidth;
+        int         physicalHeight;
         int         width;
         int         height;
         bool        frameLimit;

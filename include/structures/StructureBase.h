@@ -61,6 +61,7 @@ public:
     void destroy();
     virtual void drawSelectionBox();
     virtual void drawOtherPlayerSelectionBox();
+    virtual void drawGatheringPointLine();
 
     virtual Coord getCenterPoint() const;
     virtual Coord getClosestCenterPoint(const Coord& objectLocation) const;
@@ -117,8 +118,7 @@ public:
     inline const Coord& getStructureSize() const { return structureSize; }
 
     inline void addSmoke(const Coord& pos, Uint32 gameCycle) {
-        std::list<StructureSmoke>::iterator iter;
-        for(iter = smoke.begin(); iter != smoke.end(); ++iter) {
+        for(auto iter = smoke.begin(); iter != smoke.end(); ++iter) {
             if(iter->realPos == pos) {
                 iter->startGameCycle = gameCycle;
                 return;

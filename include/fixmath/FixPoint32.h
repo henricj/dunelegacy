@@ -38,7 +38,7 @@ public:
     FixPoint32(const int inValue)                { value = fix32_from_int(inValue); }
     FixPoint32(const unsigned int inValue)       { value = fix32_from_int(static_cast<int>(inValue)); }
 
-    explicit FixPoint32(std::string inValue) {
+    explicit FixPoint32(const std::string& inValue) {
         value = fix32_from_str(inValue.c_str());
     }
 

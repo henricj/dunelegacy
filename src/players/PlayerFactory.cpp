@@ -35,47 +35,47 @@ void PlayerFactory::registerAllPlayers() {
 
     playerDataList.push_back( PlayerData(  "qBotVeryEasy",
                                             "qBotVeryEasy",
-                                            std::bind(QuantBot::create, std::placeholders::_1, std::placeholders::_2, QuantBot::DEFEND),
+                                            std::bind(QuantBot::create, std::placeholders::_1, std::placeholders::_2, QuantBot::Difficulty::Defend),
                                             std::bind(QuantBot::load, std::placeholders::_1, std::placeholders::_2) ));
 
     playerDataList.push_back( PlayerData(  "qBotEasy",
                                             "qBotEasy",
-                                            std::bind(QuantBot::create, std::placeholders::_1, std::placeholders::_2, QuantBot::EASY),
+                                            std::bind(QuantBot::create, std::placeholders::_1, std::placeholders::_2, QuantBot::Difficulty::Easy),
                                             std::bind(QuantBot::load, std::placeholders::_1, std::placeholders::_2) ));
 
     playerDataList.push_back( PlayerData(  "qBotMedium",
                                             "qBotMedium",
-                                            std::bind(QuantBot::create, std::placeholders::_1, std::placeholders::_2, QuantBot::MEDIUM),
+                                            std::bind(QuantBot::create, std::placeholders::_1, std::placeholders::_2, QuantBot::Difficulty::Medium),
                                             std::bind(QuantBot::load, std::placeholders::_1, std::placeholders::_2) ));
 
     playerDataList.push_back( PlayerData(  "qBotHard",
                                             "qBotHard",
-                                            std::bind(QuantBot::create, std::placeholders::_1, std::placeholders::_2, QuantBot::HARD),
+                                            std::bind(QuantBot::create, std::placeholders::_1, std::placeholders::_2, QuantBot::Difficulty::Hard),
                                             std::bind(QuantBot::load, std::placeholders::_1, std::placeholders::_2) ));
 
     playerDataList.push_back( PlayerData(  "qBotBrutal",
                                             "qBotBrutal",
-                                            std::bind(QuantBot::create, std::placeholders::_1, std::placeholders::_2, QuantBot::BRUTAL),
+                                            std::bind(QuantBot::create, std::placeholders::_1, std::placeholders::_2, QuantBot::Difficulty::Brutal),
                                             std::bind(QuantBot::load, std::placeholders::_1, std::placeholders::_2) ));
 
     playerDataList.push_back( PlayerData(  "SmartBot",
                                             "SmartBot",
-                                            std::bind(SmartBot::create, std::placeholders::_1, std::placeholders::_2, SmartBot::NORMAL),
+                                            std::bind(SmartBot::create, std::placeholders::_1, std::placeholders::_2, SmartBot::Difficulty::Normal),
                                             std::bind(SmartBot::load, std::placeholders::_1, std::placeholders::_2) ));
 
     playerDataList.push_back( PlayerData(  "AIPlayerEasy",
                                             "AI Player (easy)",
-                                            std::bind(AIPlayer::create, std::placeholders::_1, std::placeholders::_2, AIPlayer::EASY),
+                                            std::bind(AIPlayer::create, std::placeholders::_1, std::placeholders::_2, AIPlayer::Difficulty::Easy),
                                             std::bind(AIPlayer::load, std::placeholders::_1, std::placeholders::_2) ));
 
     playerDataList.push_back( PlayerData(  "AIPlayerMedium",
                                             "AI Player (medium)",
-                                            std::bind(AIPlayer::create, std::placeholders::_1, std::placeholders::_2, AIPlayer::MEDIUM),
+                                            std::bind(AIPlayer::create, std::placeholders::_1, std::placeholders::_2, AIPlayer::Difficulty::Medium),
                                             std::bind(AIPlayer::load, std::placeholders::_1, std::placeholders::_2) ));
 
     playerDataList.push_back( PlayerData(  "AIPlayerHard",
                                             "AI Player (hard)",
-                                            std::bind(AIPlayer::create, std::placeholders::_1, std::placeholders::_2, AIPlayer::HARD),
+                                            std::bind(AIPlayer::create, std::placeholders::_1, std::placeholders::_2, AIPlayer::Difficulty::Hard),
                                             std::bind(AIPlayer::load, std::placeholders::_1, std::placeholders::_2) ));
 
 }

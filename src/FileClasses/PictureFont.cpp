@@ -16,10 +16,10 @@
  */
 
 #include <FileClasses/PictureFont.h>
+#include <misc/exceptions.h>
 
 #include <stdlib.h>
 #include <string.h>
-#include <stdexcept>
 
 /// Constructor
 /**
@@ -32,7 +32,7 @@ PictureFont::PictureFont(SDL_Surface* pic, int freesrc)
 {
     if(pic == nullptr) {
         if(freesrc) SDL_FreeSurface(pic);
-        throw std::invalid_argument("PictureFont::PictureFont(): pic == nullptr!");
+        THROW(std::invalid_argument, "PictureFont::PictureFont(): pic == nullptr!");
     }
 
     SDL_LockSurface(pic);
@@ -49,7 +49,7 @@ PictureFont::PictureFont(SDL_Surface* pic, int freesrc)
             }
 
             if(curXPos >= pic->w) {
-                throw std::runtime_error("PictureFont::PictureFont(): No valid surface for loading font!");
+                THROW(std::runtime_error, "PictureFont::PictureFont(): No valid surface for loading font!");
             }
 
             character[i].width = curXPos - oldXPos;
@@ -91,7 +91,7 @@ PictureFont::~PictureFont()
 
 
 
-void PictureFont::drawTextOnSurface(SDL_Surface* pSurface, std::string text, Uint32 baseColor) {
+void PictureFont::drawTextOnSurface(SDL_Surface* pSurface, const std::string& text, Uint32 baseColor) {
     SDL_LockSurface(pSurface);
 
     int bpp = pSurface->format->BytesPerPixel;
@@ -152,7 +152,7 @@ void PictureFont::drawTextOnSurface(SDL_Surface* pSurface, std::string text, Uin
         \param  text    The text to be checked for it's length in pixel
         \return Number of pixels needed
 */
-int PictureFont::getTextWidth(std::string text) const {
+int PictureFont::getTextWidth(const std::string& text) const {
     int width = 0;
     const unsigned char* pText = (unsigned char*) text.c_str();
     while(*pText != '\0') {

@@ -25,6 +25,7 @@
 #include <FileClasses/adl/sound_adlib.h>
 
 #include <misc/sound_util.h>
+#include <misc/exceptions.h>
 
 // Not used:
 // - EXCANNON.VOC (same as EXSMALL.VOC)
@@ -43,8 +44,7 @@ SFXManager::SFXManager() {
 
     for(int i = 0; i < NUM_SOUNDCHUNK; i++) {
         if(soundChunk[i] == nullptr) {
-            fprintf(stderr,"SFXManager::SFXManager: Not all sounds could be loaded\n");
-            exit(EXIT_FAILURE);
+            THROW(std::runtime_error, "Not all sounds could be loaded: soundChunk[%d] == nullptr!", i);
         }
     }
 }
@@ -84,15 +84,11 @@ Mix_Chunk* SFXManager::getSound(Sound_enum id) {
     return soundChunk[id];
 }
 
-Mix_Chunk* SFXManager::loadMixFromADL(std::string adlFile, int index) {
+Mix_Chunk* SFXManager::loadMixFromADL(const std::string& adlFile, int index, int volume) {
 
     SDL_RWops* rwop = pFileManager->openFile(adlFile);
-    if(rwop == nullptr) {
-        fprintf(stderr,"SFXManager::LoadMixFromADL:Unable to load %s!\n",adlFile.c_str());
-        return nullptr;
-    }
-
     SoundAdlibPC *pSoundAdlibPC = new SoundAdlibPC(rwop, AUDIO_FREQUENCY);
+    pSoundAdlibPC->setVolume(volume);
     Mix_Chunk* chunk = pSoundAdlibPC->getSubsong(index);
     delete pSoundAdlibPC;
     SDL_RWclose(rwop);
@@ -104,8 +100,7 @@ void SFXManager::loadEnglishVoice() {
     numLngVoice = NUM_VOICE*NUM_HOUSES;
 
     if((lngVoice = (Mix_Chunk**) malloc(sizeof(Mix_Chunk*) * numLngVoice)) == nullptr) {
-        fprintf(stderr,"SFXManager::LoadVoice_English: Cannot allocate memory!\n");
-        exit(EXIT_FAILURE);
+        THROW(std::runtime_error, "Cannot allocate memory");
     }
 
     for(int i = 0; i < numLngVoice; i++) {
@@ -213,50 +208,49 @@ void SFXManager::loadEnglishVoice() {
         Mix_FreeChunk(ApproachingChunk);
 
         Mix_FreeChunk(HouseNameChunk);
+
+        // "Yes Sir"
+        lngVoice[YesSir*NUM_HOUSES+VoiceNum] = getChunkFromFile("ZREPORT1.VOC", "REPORT1.VOC");
+
+        // "Reporting"
+        lngVoice[Reporting*NUM_HOUSES+VoiceNum] = getChunkFromFile("ZREPORT2.VOC", "REPORT2.VOC");
+
+        // "Acknowledged"
+        lngVoice[Acknowledged*NUM_HOUSES+VoiceNum] = getChunkFromFile("ZREPORT3.VOC", "REPORT3.VOC");
+
+        // "Affirmative"
+        lngVoice[Affirmative*NUM_HOUSES+VoiceNum] = getChunkFromFile("ZAFFIRM.VOC", "AFFIRM.VOC");
+
+        // "Moving out"
+        lngVoice[MovingOut*NUM_HOUSES+VoiceNum] = getChunkFromFile("ZMOVEOUT.VOC", "MOVEOUT.VOC");
+
+        // "Infantry out"
+        lngVoice[InfantryOut*NUM_HOUSES+VoiceNum] = getChunkFromFile("ZOVEROUT.VOC", "OVEROUT.VOC");
+
+        // "Somthing's under the sand"
+        lngVoice[SomethingUnderTheSand*NUM_HOUSES+VoiceNum] = getChunkFromFile("SANDBUG.VOC");
+
+        // "House Harkonnen"
+        lngVoice[HouseHarkonnen*NUM_HOUSES+VoiceNum] = getChunkFromFile("MHARK.VOC");
+
+        // "House Atreides"
+        lngVoice[HouseAtreides*NUM_HOUSES+VoiceNum] = getChunkFromFile("MATRE.VOC");
+
+        // "House Ordos"
+        lngVoice[HouseOrdos*NUM_HOUSES+VoiceNum] = getChunkFromFile("MORDOS.VOC");
     }
 
     for(int i = 0; i < numLngVoice; i++) {
         if(lngVoice[i] == nullptr) {
-            fprintf(stderr,"SFXManager::LoadVoice_English: Not all voice sounds could be loaded\n");
-            exit(EXIT_FAILURE);
+            THROW(std::runtime_error, "Not all voice sounds could be loaded: lngVoice[%d] == nullptr!", i);
         }
     }
-
-    // "Yes Sir"
-    soundChunk[YesSir] = getChunkFromFile("ZREPORT1.VOC", "REPORT1.VOC");
-
-    // "Reporting"
-    soundChunk[Reporting] = getChunkFromFile("ZREPORT2.VOC", "REPORT2.VOC");
-
-    // "Acknowledged"
-    soundChunk[Acknowledged] = getChunkFromFile("ZREPORT3.VOC", "REPORT3.VOC");
-
-    // "Affirmative"
-    soundChunk[Affirmative] = getChunkFromFile("ZAFFIRM.VOC", "AFFIRM.VOC");
-
-    // "Moving out"
-    soundChunk[MovingOut] = getChunkFromFile("ZMOVEOUT.VOC", "MOVEOUT.VOC");
-
-    // "Infantry out"
-    soundChunk[InfantryOut] = getChunkFromFile("ZOVEROUT.VOC", "OVEROUT.VOC");
-
-    // "Somthing's under the sand"
-    soundChunk[SomethingUnderTheSand] = getChunkFromFile("SANDBUG.VOC");
-
-    // "House Harkonnen"
-    soundChunk[HouseHarkonnen] = getChunkFromFile("MHARK.VOC");
-
-    // "House Atreides"
-    soundChunk[HouseAtreides] = getChunkFromFile("MATRE.VOC");
-
-    // "House Ordos"
-    soundChunk[HouseOrdos] = getChunkFromFile("MORDOS.VOC");
 
     // Sfx
     soundChunk[Sound_PlaceStructure] = getChunkFromFile("EXDUD.VOC");
     soundChunk[Sound_ButtonClick] = getChunkFromFile("BUTTON.VOC");
     soundChunk[Sound_InvalidAction] = loadMixFromADL("DUNE1.ADL", 47);
-    soundChunk[Sound_CreditsTick] = loadMixFromADL("DUNE1.ADL", 52);
+    soundChunk[Sound_CreditsTick] = loadMixFromADL("DUNE1.ADL", 52, 4*MIX_MAX_VOLUME);
     soundChunk[Sound_Tick] = loadMixFromADL("DUNE1.ADL", 38);
     soundChunk[Sound_RadarNoise] = getChunkFromFile("STATICP.VOC");
     soundChunk[Sound_ExplosionGas] = getChunkFromFile("EXGAS.VOC");
@@ -290,12 +284,11 @@ Mix_Chunk* SFXManager::getEnglishVoice(Voice_enum id, int house) {
     return lngVoice[id*NUM_HOUSES + house];
 }
 
-void SFXManager::loadNonEnglishVoice(std::string languagePrefix) {
+void SFXManager::loadNonEnglishVoice(const std::string& languagePrefix) {
     numLngVoice = NUM_VOICE;
 
     if((lngVoice = (Mix_Chunk**) malloc(sizeof(Mix_Chunk*) * NUM_VOICE)) == nullptr) {
-        fprintf(stderr,"SFXManager::LoadVoice_NonEnglish: Cannot allocate memory!\n");
-        exit(EXIT_FAILURE);
+        THROW(std::runtime_error, "Cannot allocate memory");
     }
 
     for(int i = 0; i < NUM_VOICE; i++) {
@@ -347,48 +340,47 @@ void SFXManager::loadNonEnglishVoice(std::string languagePrefix) {
     // "Missile approaching"
     lngVoice[MissileApproaching] = getChunkFromFile(languagePrefix + "MISSILE.VOC");
 
-    for(int i = 0; i < numLngVoice; i++) {
-        if(lngVoice[i] == nullptr) {
-            fprintf(stderr,"SFXManager::LoadVoice_NonEnglish: Not all voice sounds could be loaded\n");
-            exit(EXIT_FAILURE);
-        }
-    }
-
-    // "Yes Sir"
-    soundChunk[YesSir] = getChunkFromFile(languagePrefix + "REPORT1.VOC");
+        // "Yes Sir"
+    lngVoice[YesSir] = getChunkFromFile(languagePrefix + "REPORT1.VOC");
 
     // "Reporting"
-    soundChunk[Reporting] = getChunkFromFile(languagePrefix + "REPORT2.VOC");
+    lngVoice[Reporting] = getChunkFromFile(languagePrefix + "REPORT2.VOC");
 
     // "Acknowledged"
-    soundChunk[Acknowledged] = getChunkFromFile(languagePrefix + "REPORT3.VOC");
+    lngVoice[Acknowledged] = getChunkFromFile(languagePrefix + "REPORT3.VOC");
 
     // "Affirmative"
-    soundChunk[Affirmative] = getChunkFromFile(languagePrefix + "AFFIRM.VOC");
+    lngVoice[Affirmative] = getChunkFromFile(languagePrefix + "AFFIRM.VOC");
 
     // "Moving out"
-    soundChunk[MovingOut] = getChunkFromFile(languagePrefix + "MOVEOUT.VOC");
+    lngVoice[MovingOut] = getChunkFromFile(languagePrefix + "MOVEOUT.VOC");
 
     // "Infantry out"
-    soundChunk[InfantryOut] = getChunkFromFile(languagePrefix + "OVEROUT.VOC");
+    lngVoice[InfantryOut] = getChunkFromFile(languagePrefix + "OVEROUT.VOC");
 
     // "Somthing's under the sand"
-    soundChunk[SomethingUnderTheSand] = getChunkFromFile("SANDBUG.VOC");
+    lngVoice[SomethingUnderTheSand] = getChunkFromFile("SANDBUG.VOC");
 
     // "House Atreides"
-    soundChunk[HouseAtreides] = getChunkFromFile(languagePrefix + "ATRE.VOC");
+    lngVoice[HouseAtreides] = getChunkFromFile(languagePrefix + "ATRE.VOC");
 
     // "House Ordos"
-    soundChunk[HouseOrdos] = getChunkFromFile(languagePrefix + "ORDOS.VOC");
+    lngVoice[HouseOrdos] = getChunkFromFile(languagePrefix + "ORDOS.VOC");
 
     // "House Harkonnen"
-    soundChunk[HouseHarkonnen] = getChunkFromFile(languagePrefix + "HARK.VOC");
+    lngVoice[HouseHarkonnen] = getChunkFromFile(languagePrefix + "HARK.VOC");
+
+    for(int i = 0; i < numLngVoice; i++) {
+        if(lngVoice[i] == nullptr) {
+            THROW(std::runtime_error, "Not all voice sounds could be loaded: lngVoice[%d] == nullptr!", i);
+        }
+    }
 
     // Sfx
     soundChunk[Sound_PlaceStructure] = getChunkFromFile("EXDUD.VOC");
     soundChunk[Sound_ButtonClick] = getChunkFromFile("BUTTON.VOC");
-    soundChunk[Sound_InvalidAction] =  loadMixFromADL("DUNE1.ADL", 47);
-    soundChunk[Sound_CreditsTick] = loadMixFromADL("DUNE1.ADL", 52);
+    soundChunk[Sound_InvalidAction] = loadMixFromADL("DUNE1.ADL", 47);
+    soundChunk[Sound_CreditsTick] = loadMixFromADL("DUNE1.ADL", 52, 4*MIX_MAX_VOLUME);
     soundChunk[Sound_Tick] = loadMixFromADL("DUNE1.ADL", 38);
     soundChunk[Sound_RadarNoise] = getChunkFromFile("STATICP.VOC");
     soundChunk[Sound_ExplosionGas] = getChunkFromFile("EXGAS.VOC");

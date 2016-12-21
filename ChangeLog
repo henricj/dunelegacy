@@ -5,12 +5,18 @@ version 0.96.4
 	* HD graphics: Use mask overlays to generate high-res graphics out of the low-res ones of the original game
 	* Maximum number of units per house (either map dependent or as a new game option "override maximum number of units")
 	* Move to fix-point math for game logic as floating-point operations may differ between platforms and compilers
+	* Units entering refineries or repair yards are now moving onto the structure tile before disappearing
 	* ADL music playback replaced: Now combines ScummVM AdlibDriver with Woody OPL chip emulation code from adplug
+	* Tutorial hints are shown in the campaign to guide the user
 	* New key bindings: Cycle through construction yards with 'H' and factories with 'F'
 	* Improve performance of Fog of War
 	* Units can now be instructed to find the next repair yard on their own
 	* Save game speed, scroll speed and sound volume as game settings
+	* Use a smaller logical resolution for high resolution displays, e.g. 960x540 for 1920x1080
+	* In campaign mode, the map choice screen remembers the region of a failed mission (the user has to select a different region)
 	* New game option "Manual Carryall Drops"
+	* Mentat's eyes are following the cursor
+	* Clicking on mentat's eyes makes him blink and clicking on mentat's mouth makes him open it
 	* Save screenshots as PNG
 	* 64-bit builds for Windows
 	* Store complete map in save games (and replays) of single player custom games

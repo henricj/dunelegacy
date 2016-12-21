@@ -27,6 +27,7 @@ Animation::Animation() {
     curFrameStartTime = SDL_GetTicks();
     frameDurationTime = 1;
     curFrame = 0;
+    curFrameOverride = INVALID_FRAME;
     loopsLeft = -1;
 }
 
@@ -65,7 +66,8 @@ unsigned int Animation::getCurrentFrameNumber() {
             }
         }
     }
-    return curFrame;
+
+    return (curFrameOverride != INVALID_FRAME) ? curFrameOverride : curFrame;
 }
 
 SDL_Surface* Animation::getFrame() {
@@ -107,8 +109,7 @@ void Animation::addFrame(SDL_Surface* newFrame, bool bDoublePic, bool bSetColorK
 }
 
 void Animation::setPalette(const Palette& newPalette) {
-    std::vector<SDL_Surface*>::const_iterator iter;
-    for(iter = frames.begin(); iter != frames.end(); ++iter) {
-        newPalette.applyToSurface(*iter);
+    for(SDL_Surface* pSurface : frames) {
+        newPalette.applyToSurface(pSurface);
     }
 }

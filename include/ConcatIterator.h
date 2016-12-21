@@ -66,8 +66,7 @@ public:
 
     T operator* () {
         if(isIterationFinished()) {
-            fprintf(stderr,"ConcatIterator::operator*(): Cannot dereference because iteration is finished.\n");
-            exit(EXIT_FAILURE);
+            THROW(std::out_of_range, "ConcatIterator::operator*(): Cannot dereference because iteration is finished.");
         }
 
         return *listIter;
@@ -75,8 +74,7 @@ public:
 
     void operator++ () {
         if(isIterationFinished()) {
-            fprintf(stderr,"ConcatIterator::operator++(): Cannot increment because iteration is finished.\n");
-            exit(EXIT_FAILURE);
+            THROW(std::out_of_range, "ConcatIterator::operator++(): Cannot increment because iteration is finished.");
         }
 
         ++listIter;

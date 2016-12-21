@@ -33,6 +33,7 @@
 #define NUM_MAPCHOICEPIECES 28
 #define NUM_WINDTRAP_ANIMATIONS (2*STRUCTURE_ANIMATIONTIMER+4)
 #define NUM_WINDTRAP_ANIMATIONS_PER_ROW 10
+#define NUM_STATIC_ANIMATIONS_PER_ROW 7
 
 // ObjPics
 typedef enum {
@@ -114,7 +115,7 @@ typedef enum {
     NUM_OBJPICS
 } ObjPic_enum;
 
-static const std::array<std::string, NUM_OBJPICS> ObjPicNames = { "Tank_Base", "Tank_Gun", "Siegetank_Base", "Siegetank_Gun", "Devastator_Base",
+static const std::array<std::string, NUM_OBJPICS> ObjPicNames =  { { "Tank_Base", "Tank_Gun", "Siegetank_Base", "Siegetank_Gun", "Devastator_Base",
     "Devastator_Gun", "Sonictank_Gun", "Launcher_Gun", "Quad", "Trike", "Harvester", "Harvester_Sand", "MCV", "Carryall", "CarryallShadow",
     "Frigate", "FrigateShadow", "Ornithopter", "OrnithopterShadow", "Trooper", "Troopers", "Soldier", "Infantry", "Saboteur", "Sandworm",
     "ConstructionYard", "Windtrap", "Refinery", "Barracks", "WOR", "Radar", "LightFactory", "Silo", "HeavyFactory", "HighTechFactory",
@@ -123,7 +124,7 @@ static const std::array<std::string, NUM_OBJPICS> ObjPicNames = { "Tank_Base", "
     "Bullet_SonicTemp", "Hit_Gas", "Hit_ShellSmall", "Hit_ShellMedium", "Hit_ShellLarge", "ExplosionSmall", "ExplosionMedium1",
     "ExplosionMedium2", "ExplosionLarge1", "ExplosionLarge2", "ExplosionSmallUnit", "ExplosionFlames", "ExplosionSpiceBloom",
     "DeadInfantry", "DeadAirUnit", "Smoke", "SandwormShimmerMask", "SandwormShimmerTemp", "Terrain", "DestroyedStructure", "RockDamage",
-    "SandDamage", "Terrain_Hidden", "Terrain_HiddenFog", "Terrain_Tracks", "Star" };
+    "SandDamage", "Terrain_Hidden", "Terrain_HiddenFog", "Terrain_Tracks", "Star" } };
 
 #define GROUNDUNIT_ROW(i) (i+2)|TILE_NORMAL,(i+1)|TILE_NORMAL,i|TILE_NORMAL,(i+1)|TILE_FLIPV,(i+2)|TILE_FLIPV,(i+3)|TILE_FLIPV, (i+4)|TILE_NORMAL,(i+3)|TILE_NORMAL
 #define AIRUNIT_ROW(i) (i+2)|TILE_NORMAL,(i+1)|TILE_NORMAL,i|TILE_NORMAL,(i+1)|TILE_FLIPV,(i+2)|TILE_FLIPV,(i+1)|TILE_ROTATE, i|TILE_FLIPH,(i+1)|TILE_FLIPH
@@ -180,6 +181,52 @@ typedef enum {
     Picture_WOR,
     NUM_SMALLDETAILPICS
 } SmallDetailPics_Enum;
+
+// tiny pictures used for tutorial hints (has the same order as ItemID_enum, except the first entry)
+typedef enum {
+    TinyPicture_Spice = 0,
+    TinyPicture_Barracks = 1,
+    TinyPicture_ConstructionYard = 2,
+    TinyPicture_GunTurret = 3,
+    TinyPicture_HeavyFactory = 4,
+    TinyPicture_HighTechFactory = 5,
+    TinyPicture_IX = 6,
+    TinyPicture_LightFactory = 7,
+    TinyPicture_Palace = 8,
+    TinyPicture_Radar = 9,
+    TinyPicture_Refinery = 10,
+    TinyPicture_RepairYard = 11,
+    TinyPicture_RocketTurret = 12,
+    TinyPicture_Silo = 13,
+    TinyPicture_Slab1 = 14,
+    TinyPicture_Slab4 = 15,
+    TinyPicture_StarPort = 16,
+    TinyPicture_Wall = 17,
+    TinyPicture_WindTrap = 18,
+    TinyPicture_WOR = 19,
+    TinyPicture_Carryall = 20,
+    TinyPicture_Devastator = 21,
+    TinyPicture_Deviator = 22,
+    TinyPicture_Frigate = 23,
+    TinyPicture_Harvester = 24,
+    TinyPicture_Soldier = 25,
+    TinyPicture_Launcher = 26,
+    TinyPicture_MCV = 27,
+    TinyPicture_Ornithopter = 28,
+    TinyPicture_Quad = 29,
+    TinyPicture_Saboteur = 30,
+    TinyPicture_Sandworm = 31,
+    TinyPicture_SiegeTank = 32,
+    TinyPicture_SonicTank = 33,
+    TinyPicture_Tank = 34,
+    TinyPicture_Trike = 35,
+    TinyPicture_RaiderTrike = 36,
+    TinyPicture_Trooper = 37,
+    TinyPicture_Special = 38,
+    TinyPicture_Infantry = 39,
+    TinyPicture_Troopers = 40,
+    NUM_TINYPICTURE
+} TinyPicture_Enum;
 
 // UI Graphics
 typedef enum {
@@ -470,6 +517,7 @@ public:
     SDL_Texture**   getObjPic(unsigned int id, int house=HOUSE_HARKONNEN);
 
     SDL_Texture*    getSmallDetailPic(unsigned int id);
+    SDL_Texture*    getTinyPicture(unsigned int id);
     SDL_Texture*    getUIGraphic(unsigned int id, int house=HOUSE_HARKONNEN);
     SDL_Texture*    getMapChoicePiece(unsigned int num, int house);
 
@@ -481,14 +529,14 @@ public:
     Animation*      getAnimation(unsigned int id);
 
 private:
-    Animation*      loadAnimationFromWsa(std::string filename);
+    Animation*      loadAnimationFromWsa(const std::string& filename);
     SDL_Surface*    generateWindtrapAnimationFrames(SDL_Surface* windtrapPic);
     SDL_Surface*    generateMapChoiceArrowFrames(SDL_Surface* arrowPic, int house=HOUSE_HARKONNEN);
 
-    std::shared_ptr<Shpfile>  loadShpfile(std::string filename);
-    std::shared_ptr<Wsafile>  loadWsafile(std::string filename);
+    std::shared_ptr<Shpfile>  loadShpfile(const std::string& filename);
+    std::shared_ptr<Wsafile>  loadWsafile(const std::string& filename);
 
-    SDL_Texture*    extractSmallDetailPic(std::string filename);
+    SDL_Texture*    extractSmallDetailPic(const std::string& filename);
 
     SDL_Surface*    generateDoubledObjPic(unsigned int id, int h);
     SDL_Surface*    generateTripledObjPic(unsigned int id, int h);
@@ -505,6 +553,7 @@ private:
     // Textures
     SDL_Texture*    objPicTex[NUM_OBJPICS][(int) NUM_HOUSES][NUM_ZOOMLEVEL];
     SDL_Texture*    smallDetailPicTex[NUM_SMALLDETAILPICS];
+    SDL_Texture*    tinyPictureTex[NUM_TINYPICTURE];
     SDL_Texture*    uiGraphicTex[NUM_UIGRAPHICS][(int) NUM_HOUSES];
     SDL_Texture*    mapChoicePiecesTex[NUM_MAPCHOICEPIECES][(int) NUM_HOUSES];
 };

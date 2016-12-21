@@ -17,11 +17,13 @@
 
 #include <misc/FileSystem.h>
 #include <misc/string_util.h>
+#include <misc/exceptions.h>
 
 #include <stdio.h>
 #include <algorithm>
 #include <ctype.h>
 
+#include <SDL.h>
 #include <SDL_rwops.h>
 #include <SDL_filesystem.h>
 
@@ -37,22 +39,21 @@
 #endif
 
 
-std::list<std::string> getFileNamesList(std::string directory, std::string extension, bool IgnoreCase, FileListOrder fileListOrder)
+std::list<std::string> getFileNamesList(const std::string& directory, const std::string& extension, bool IgnoreCase, FileListOrder fileListOrder)
 {
-    std::list<FileInfo> Files = getFileList(directory, extension, IgnoreCase, fileListOrder);
+    std::list<FileInfo> files = getFileList(directory, extension, IgnoreCase, fileListOrder);
 
-    std::list<std::string> FileNames;
+    std::list<std::string> fileNames;
 
-    std::list<FileInfo>::iterator iter;
-    for(iter = Files.begin(); iter != Files.end(); ++iter) {
-        FileNames.push_back(iter->name);
+    for(const FileInfo& fileInfo : files) {
+        fileNames.push_back(fileInfo.name);
     }
 
-    return FileNames;
+    return fileNames;
 }
 
-static bool cmp_Name_Asc(FileInfo& a, FileInfo& b) { return (a.name.compare(b.name) < 0); }
-static bool cmp_Name_CaseInsensitive_Asc(FileInfo& a, FileInfo& b) {
+static bool cmp_Name_Asc(const FileInfo& a, const FileInfo& b) { return (a.name.compare(b.name) < 0); }
+static bool cmp_Name_CaseInsensitive_Asc(const FileInfo& a, const FileInfo& b) {
   unsigned int i=0;
   while((i < a.name.length()) && (i < b.name.length())) {
     if(tolower(a.name[i]) < tolower(b.name[i])) {
@@ -66,8 +67,8 @@ static bool cmp_Name_CaseInsensitive_Asc(FileInfo& a, FileInfo& b) {
   return (a.name.length() < b.name.length());
 }
 
-static bool cmp_Name_Dsc(FileInfo& a, FileInfo& b) { return (a.name.compare(b.name) > 0); }
-static bool cmp_Name_CaseInsensitive_Dsc(FileInfo& a, FileInfo& b) {
+static bool cmp_Name_Dsc(const FileInfo& a, const FileInfo& b) { return (a.name.compare(b.name) > 0); }
+static bool cmp_Name_CaseInsensitive_Dsc(const FileInfo& a, const FileInfo& b) {
   unsigned int i=0;
   while((i < a.name.length()) && (i < b.name.length())) {
     if(tolower(a.name[i]) < tolower(b.name[i])) {
@@ -81,20 +82,16 @@ static bool cmp_Name_CaseInsensitive_Dsc(FileInfo& a, FileInfo& b) {
   return (a.name.length() > b.name.length());
 }
 
-static bool cmp_Size_Asc(FileInfo& a, FileInfo& b) { return a.size < b.size; }
-static bool cmp_Size_Dsc(FileInfo& a, FileInfo& b) { return a.size > b.size; }
+static bool cmp_Size_Asc(const FileInfo& a, const FileInfo& b) { return a.size < b.size; }
+static bool cmp_Size_Dsc(const FileInfo& a, const FileInfo& b) { return a.size > b.size; }
 
-static bool cmp_ModifyDate_Asc(FileInfo& a, FileInfo& b) { return a.modifydate < b.modifydate; }
-static bool cmp_ModifyDate_Dsc(FileInfo& a, FileInfo& b) { return a.modifydate > b.modifydate; }
+static bool cmp_ModifyDate_Asc(const FileInfo& a, const FileInfo& b) { return a.modifydate < b.modifydate; }
+static bool cmp_ModifyDate_Dsc(const FileInfo& a, const FileInfo& b) { return a.modifydate > b.modifydate; }
 
-std::list<FileInfo> getFileList(std::string directory, std::string extension, bool bIgnoreCase, FileListOrder fileListOrder)
+std::list<FileInfo> getFileList(const std::string& directory, const std::string& extension, bool bIgnoreCase, FileListOrder fileListOrder)
 {
-
     std::list<FileInfo> Files;
-
-    if(bIgnoreCase == true) {
-        convertToLower(extension);
-    }
+    std::string lowerExtension= bIgnoreCase ? strToLower(extension) : extension;
 
 #ifdef _WIN32
     // on win32 we need an ansi-encoded filepath
@@ -102,12 +99,12 @@ std::list<FileInfo> getFileList(std::string directory, std::string extension, bo
     char szPath[MAX_PATH];
 
     if(MultiByteToWideChar(CP_UTF8, 0, directory.c_str(), -1, szwPath, MAX_PATH) == 0) {
-        fprintf(stderr, "getFileList(): Conversion of search path from utf-8 to utf-16 failed\n");
+        SDL_Log("getFileList(): Conversion of search path from utf-8 to utf-16 failed!");
         return Files;
     }
 
     if(WideCharToMultiByte(CP_ACP, 0, szwPath, -1, szPath, MAX_PATH, nullptr, nullptr) == 0) {
-        fprintf(stderr, "getFileList(): Conversion of search path from utf-16 to ansi failed\n");
+        SDL_Log("getFileList(): Conversion of search path from utf-16 to ansi failed!");
         return Files;
     }
 
@@ -121,32 +118,32 @@ std::list<FileInfo> getFileList(std::string directory, std::string extension, bo
         do {
             std::string filename = fdata.name;
 
-            if(filename.length() < extension.length()+1) {
+            if(filename.length() < lowerExtension.length()+1) {
                 continue;
             }
 
-            if(filename[filename.length() - extension.length() - 1] != '.') {
+            if(filename[filename.length() - lowerExtension.length() - 1] != '.') {
                 continue;
             }
 
-            std::string ext = filename.substr(filename.length() - extension.length());
+            std::string ext = filename.substr(filename.length() - lowerExtension.length());
 
             if(bIgnoreCase == true) {
                 convertToLower(ext);
             }
 
-            if(ext == extension) {
+            if(ext == lowerExtension) {
                 // on win32 we get an ansi-encoded filename
                 WCHAR szwFilename[MAX_PATH];
                 char szFilename[MAX_PATH];
 
                 if(MultiByteToWideChar(CP_ACP, 0, filename.c_str(), -1, szwFilename, MAX_PATH) == 0) {
-                    fprintf(stderr, "getFileList(): Conversion of filename from ansi to utf-16 failed\n");
+                    SDL_Log("getFileList(): Conversion of filename from ansi to utf-16 failed!");
                     continue;
                 }
 
                 if(WideCharToMultiByte(CP_UTF8, 0, szwFilename, -1, szFilename, MAX_PATH, nullptr, nullptr) == 0) {
-                    fprintf(stderr, "getFileList(): Conversion of search path from utf-16 to utf-8 failed\n");
+                    SDL_Log("getFileList(): Conversion of search path from utf-16 to utf-8 failed!");
                     continue;
                 }
 
@@ -170,25 +167,25 @@ std::list<FileInfo> getFileList(std::string directory, std::string extension, bo
     while((curEntry = readdir(dir)) != nullptr) {
             std::string filename = curEntry->d_name;
 
-            if(filename.length() < extension.length()+1) {
+            if(filename.length() < lowerExtension.length()+1) {
                 continue;
             }
 
-            if(filename[filename.length() - extension.length() - 1] != '.') {
+            if(filename[filename.length() - lowerExtension.length() - 1] != '.') {
                 continue;
             }
 
-            std::string ext = filename.substr(filename.length() - extension.length());
+            std::string ext = filename.substr(filename.length() - lowerExtension.length());
 
             if(bIgnoreCase == true) {
                 convertToLower(ext);
             }
 
-            if(ext == extension) {
+            if(ext == lowerExtension) {
                 std::string fullpath = directory + "/" + filename;
                 struct stat fdata;
                 if(stat(fullpath.c_str(), &fdata) != 0) {
-                    perror("stat()");
+                    SDL_Log("stat(): %s", strerror(errno));
                     continue;
                 }
                 Files.push_back(FileInfo(filename, fdata.st_size, fdata.st_mtime));
@@ -196,7 +193,7 @@ std::list<FileInfo> getFileList(std::string directory, std::string extension, bo
     }
 
     if(errno != 0) {
-        perror("readdir()");
+        SDL_Log("readdir(): %s", strerror(errno));
     }
 
     closedir(dir);
@@ -334,7 +331,7 @@ bool existsFile(const std::string& path) {
     return true;
 }
 
-std::string readCompleteFile(std::string filename) {
+std::string readCompleteFile(const std::string& filename) {
     SDL_RWops* RWopsFile = SDL_RWFromFile(filename.c_str(),"r");
 
     if(RWopsFile == nullptr) {
@@ -435,8 +432,7 @@ std::string getDuneLegacyDataDir() {
         if((dataDir == "") || (dataDir == ".") || (dataDir == "./") || (dataDir == ".\\")) {
             char* basePath = SDL_GetBasePath();
             if(basePath == nullptr) {
-                fprintf(stderr, "SDL_GetBasePath() failed: %s\n", SDL_GetError());
-                exit(EXIT_FAILURE);
+                THROW(sdl_error, "SDL_GetBasePath() failed: %s!", SDL_GetError());
             }
             dataDir = std::string(basePath);
             SDL_free(basePath);

@@ -176,7 +176,7 @@ public:
     inline Uint32 getCurrentProducedItem() const { return currentProducedItem; };
     inline bool isOnHold() const { return bCurrentItemOnHold; };
     bool isWaitingToPlace() const;
-    bool isUnitLimitReached() const;
+    bool isUnitLimitReached(Uint32 itemID) const;
     inline FixPoint getProductionProgress() const { return productionProgress; };
     inline const std::list<BuildItem>& getBuildList() const { return buildList; };
 
@@ -194,20 +194,18 @@ protected:
     void removeItem(std::list<BuildItem>& buildItemList, std::list<BuildItem>::iterator& iter, Uint32 itemID);
 
     BuildItem* getBuildItem(Uint32 itemID) {
-        std::list<BuildItem>::iterator iter;
-        for(iter = buildList.begin(); iter != buildList.end(); ++iter) {
-            if(iter->itemID == itemID) {
-                return &(*iter);
+        for(BuildItem& buildItem : buildList) {
+            if(buildItem.itemID == itemID) {
+                return &buildItem;
             }
         }
         return nullptr;
     }
 
     const BuildItem* getBuildItem(Uint32 itemID) const {
-        std::list<BuildItem>::const_iterator iter;
-        for(iter = buildList.begin(); iter != buildList.end(); ++iter) {
-            if(iter->itemID == itemID) {
-                return &(*iter);
+        for(const BuildItem& buildItem : buildList) {
+            if(buildItem.itemID == itemID) {
+                return &buildItem;
             }
         }
         return nullptr;

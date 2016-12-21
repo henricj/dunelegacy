@@ -41,13 +41,13 @@ public:
     FontManager();
     ~FontManager();
 
-    void drawTextOnSurface(SDL_Surface* pSurface, std::string text, Uint32 color, unsigned int fontNum);
-    int getTextWidth(std::string text, unsigned int fontNum);
+    void drawTextOnSurface(SDL_Surface* pSurface, const std::string& text, Uint32 color, unsigned int fontNum);
+    int getTextWidth(const std::string& text, unsigned int fontNum);
     int getTextHeight(unsigned int fontNum);
-    SDL_Surface* createSurfaceWithText(std::string text, Uint32 color, unsigned int fontNum);
-    SDL_Texture* createTextureWithText(std::string text, Uint32 color, unsigned int fontNum);
-    SDL_Surface* createSurfaceWithMultilineText(std::string text, Uint32 color, unsigned int fontNum, bool bCentered = false);
-    SDL_Texture* createTextureWithMultilineText(std::string text, Uint32 color, unsigned int fontNum, bool bCentered = false);
+    SDL_Surface* createSurfaceWithText(const std::string& text, Uint32 color, unsigned int fontNum);
+    SDL_Texture* createTextureWithText(const std::string& text, Uint32 color, unsigned int fontNum);
+    SDL_Surface* createSurfaceWithMultilineText(const std::string& text, Uint32 color, unsigned int fontNum, bool bCentered = false);
+    SDL_Texture* createTextureWithMultilineText(const std::string& text, Uint32 color, unsigned int fontNum, bool bCentered = false);
 private:
     std::shared_ptr<Font> fonts[NUM_FONTS];
 

@@ -20,31 +20,31 @@
 #include <Network/ENetHttp.h>
 
 #include <misc/string_util.h>
+#include <misc/exceptions.h>
 
 #include <config.h>
 
 #include <sstream>
 #include <iostream>
 #include <map>
-#include <stdexcept>
 
 
-MetaServerClient::MetaServerClient(std::string metaServerURL)
+MetaServerClient::MetaServerClient(const std::string& metaServerURL)
  : metaServerURL(metaServerURL) {
 
     availableMetaServerCommandsSemaphore = SDL_CreateSemaphore(0);
     if(availableMetaServerCommandsSemaphore == nullptr) {
-        throw std::runtime_error("Unable to create semaphore");
+        THROW(std::runtime_error, "Unable to create semaphore");
     }
 
     sharedDataMutex = SDL_CreateMutex();
     if(sharedDataMutex == nullptr) {
-        throw std::runtime_error("Unable to create mutex");
+        THROW(std::runtime_error, "Unable to create mutex");
     }
 
     connectionThread = SDL_CreateThread(connectionThreadMain, nullptr, (void*) this);
     if(connectionThread == nullptr) {
-        throw std::runtime_error("Unable to create thread");
+        THROW(std::runtime_error, "Unable to create thread");
     }
 }
 
@@ -63,7 +63,7 @@ MetaServerClient::~MetaServerClient() {
 }
 
 
-void MetaServerClient::startAnnounce(std::string serverName, int serverPort, std::string mapName, Uint8 numPlayers, Uint8 maxPlayers) {
+void MetaServerClient::startAnnounce(const std::string& serverName, int serverPort, const std::string& mapName, Uint8 numPlayers, Uint8 maxPlayers) {
 
     stopAnnounce();
 
@@ -161,9 +161,8 @@ void MetaServerClient::enqueueMetaServerCommand(std::shared_ptr<MetaServerComman
 
     bool bInsert = true;
 
-    std::list<std::shared_ptr<MetaServerCommand> >::const_iterator iter;
-    for(iter = metaServerCommandList.begin(); iter != metaServerCommandList.end(); ++iter) {
-        if(**iter == *metaServerCommand) {
+    for(std::shared_ptr<MetaServerCommand> pMetaServerCommand : metaServerCommandList) {
+        if(*pMetaServerCommand == *metaServerCommand) {
             bInsert = false;
             break;
         }
@@ -198,7 +197,7 @@ std::shared_ptr<MetaServerCommand> MetaServerClient::dequeueMetaServerCommand() 
 }
 
 
-void MetaServerClient::setErrorMessage(int errorCause, std::string errorMessage) {
+void MetaServerClient::setErrorMessage(int errorCause, const std::string& errorMessage) {
     SDL_LockMutex(sharedDataMutex);
 
     if(metaserverErrorCause == 0) {
@@ -210,7 +209,7 @@ void MetaServerClient::setErrorMessage(int errorCause, std::string errorMessage)
 }
 
 
-void MetaServerClient::setNewGameServerInfoList(std::list<GameServerInfo>& newGameServerInfoList) {
+void MetaServerClient::setNewGameServerInfoList(const std::list<GameServerInfo>& newGameServerInfoList) {
     SDL_LockMutex(sharedDataMutex);
 
     gameServerInfoList = newGameServerInfoList;

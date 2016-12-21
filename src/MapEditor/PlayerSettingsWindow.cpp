@@ -23,6 +23,8 @@
 
 #include <sand.h>
 
+#include <misc/format.h>
+
 #include <MapEditor/MapEditor.h>
 
 #include <FileClasses/GFXManager.h>
@@ -69,7 +71,7 @@ PlayerSettingsWindow::PlayerSettingsWindow(MapEditor* pMapEditor, HOUSETYPE curr
             playerWidgets[i].playerCheckbox.setText(_("House") + " " + getHouseNameByNumber((HOUSETYPE) i) + ":");
             playerWidgets[i].playerHBox.addWidget(&playerWidgets[i].playerCheckbox, 150);
         } else {
-            playerWidgets[i].playerCheckbox.setText(strprintf(_("Player %d:"), i+1));
+            playerWidgets[i].playerCheckbox.setText(fmt::sprintf(_("Player %d:"), i+1));
             playerWidgets[i].playerHBox.addWidget(&playerWidgets[i].playerCheckbox, 0.22);
         }
 

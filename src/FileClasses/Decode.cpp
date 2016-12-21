@@ -17,6 +17,8 @@
 
 #include <FileClasses/Decode.h>
 
+#include <misc/exceptions.h>
+
 #include <SDL_endian.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -148,7 +150,7 @@ int decode80(unsigned char *image_in, unsigned char *image_out, unsigned checksu
             // 10cccccc (1)
             //
             unsigned count = readp[0] & 0x3f;
-            //printf("Cmd 1, count: %d\n", count);
+            //SDL_Log("Cmd 1, count: %d", count);
             megacounta += count;
             if (!count) {
                 break;
@@ -203,8 +205,8 @@ int decode80(unsigned char *image_in, unsigned char *image_out, unsigned checksu
             writep += count;
             c++;
         } else {
-            fprintf(stderr,"Decode: File contains unknown format80 command: %x\n",*readp);
-            exit(EXIT_FAILURE);
+            THROW(std::invalid_argument, "Decode: File contains unknown format80 command");
+
         }
     }
     if (megacounta + megacountb + megacountc + megacountd + megacounte != checksum)

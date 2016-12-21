@@ -34,7 +34,7 @@
 #include <GameInitSettings.h>
 #include <data.h>
 
-#include <misc/string_util.h>
+#include <misc/exceptions.h>
 
 #include <algorithm>
 
@@ -131,7 +131,7 @@ SDL_Texture* resolveItemPicture(int itemID, HOUSETYPE house) {
         } break;
 
         default:
-            throw std::invalid_argument("resolveItemPicture(): Invalid item ID " + stringify(itemID) + "!");
+            THROW(std::invalid_argument, "resolveItemPicture(): Invalid item ID " + stringify(itemID) + "!");
         break;
     }
 
@@ -144,57 +144,57 @@ SDL_Texture* resolveItemPicture(int itemID, HOUSETYPE house) {
     \param  filename    the filename (e.g. STARPORT.WSA)
     \return the id of the animation (e.g. Anim_StarPort)
 */
-int getAnimByFilename(std::string filename) {
-    convertToLower(filename);
+int getAnimByFilename(const std::string& filename) {
+    std::string lowerFilename = strToLower(filename);
 
-    if(filename == "fartr.wsa")         return Anim_AtreidesPlanet;
-    else if(filename == "fhark.wsa")    return Anim_HarkonnenPlanet;
-    else if(filename == "fordos.wsa")   return Anim_OrdosPlanet;
-    else if(filename == "win1.wsa")     return Anim_Win1;
-    else if(filename == "win2.wsa")     return Anim_Win2;
-    else if(filename == "lostbild.wsa") return Anim_Lose1;
-    else if(filename == "lostvehc.wsa") return Anim_Lose2;
-    else if(filename == "barrac.wsa")   return Anim_Barracks;
-    else if(filename == "carryall.wsa") return Anim_Carryall;
-    else if(filename == "construc.wsa") return Anim_ConstructionYard;
-    else if(filename == "fremen.wsa")   return Anim_Fremen;
-    else if(filename == "gold-bb.wsa")  return Anim_DeathHand;
-    else if(filename == "harktank.wsa") return Anim_Devastator;
-    else if(filename == "harvest.wsa")  return Anim_Harvester;
-    else if(filename == "headqrts.wsa") return Anim_Radar;
-    else if(filename == "hitcftry.wsa") return Anim_HighTechFactory;
-    else if(filename == "htank.wsa")    return Anim_SiegeTank;
-    else if(filename == "hvyftry.wsa")  return Anim_HeavyFactory;
-    else if(filename == "hyinfy.wsa")   return Anim_Trooper;
-    else if(filename == "infantry.wsa") return Anim_Infantry;
-    else if(filename == "ix.wsa")       return Anim_IX;
-    else if(filename == "liteftry.wsa") return Anim_LightFactory;
-    else if(filename == "ltank.wsa")    return Anim_Tank;
-    else if(filename == "mcv.wsa")      return Anim_MCV;
-    else if(filename == "ordrtank.wsa") return Anim_Deviator;
-    else if(filename == "orni.wsa")     return Anim_Ornithopter;
-    else if(filename == "otrike.wsa")   return Anim_Raider;
-    else if(filename == "palace.wsa")   return Anim_Palace;
-    else if(filename == "quad.wsa")     return Anim_Quad;
-    else if(filename == "refinery.wsa") return Anim_Refinery;
-    else if(filename == "repair.wsa")   return Anim_RepairYard;
-    else if(filename == "rtank.wsa")    return Anim_Launcher;
-    else if(filename == "rturret.wsa")  return Anim_RocketTurret;
-    else if(filename == "saboture.wsa") return Anim_Saboteur;
-    else if(filename == "slab.wsa")     return Anim_Slab1;
-    else if(filename == "stank.wsa")    return Anim_SonicTank;
-    else if(filename == "starport.wsa") return Anim_StarPort;
-    else if(filename == "storage.wsa")  return Anim_Silo;
-    else if(filename == "trike.wsa")    return Anim_Trike;
-    else if(filename == "turret.wsa")   return Anim_GunTurret;
-    else if(filename == "wall.wsa")     return Anim_Wall;
-    else if(filename == "windtrap.wsa") return Anim_WindTrap;
-    else if(filename == "wor.wsa")      return Anim_WOR;
-    else if(filename == "worm.wsa")     return Anim_Sandworm;
-    else if(filename == "sardukar.wsa") return Anim_Sardaukar;
-    else if(filename == "frigate.wsa")  return Anim_Frigate;
-    else if(filename == "4slab.wsa")    return Anim_Slab4;
-    else                                return 0;
+    if(lowerFilename == "fartr.wsa")            return Anim_AtreidesPlanet;
+    else if(lowerFilename == "fhark.wsa")       return Anim_HarkonnenPlanet;
+    else if(lowerFilename == "fordos.wsa")      return Anim_OrdosPlanet;
+    else if(lowerFilename == "win1.wsa")        return Anim_Win1;
+    else if(lowerFilename == "win2.wsa")        return Anim_Win2;
+    else if(lowerFilename == "lostbild.wsa")    return Anim_Lose1;
+    else if(lowerFilename == "lostvehc.wsa")    return Anim_Lose2;
+    else if(lowerFilename == "barrac.wsa")      return Anim_Barracks;
+    else if(lowerFilename == "carryall.wsa")    return Anim_Carryall;
+    else if(lowerFilename == "construc.wsa")    return Anim_ConstructionYard;
+    else if(lowerFilename == "fremen.wsa")      return Anim_Fremen;
+    else if(lowerFilename == "gold-bb.wsa")     return Anim_DeathHand;
+    else if(lowerFilename == "harktank.wsa")    return Anim_Devastator;
+    else if(lowerFilename == "harvest.wsa")     return Anim_Harvester;
+    else if(lowerFilename == "headqrts.wsa")    return Anim_Radar;
+    else if(lowerFilename == "hitcftry.wsa")    return Anim_HighTechFactory;
+    else if(lowerFilename == "htank.wsa")       return Anim_SiegeTank;
+    else if(lowerFilename == "hvyftry.wsa")     return Anim_HeavyFactory;
+    else if(lowerFilename == "hyinfy.wsa")      return Anim_Trooper;
+    else if(lowerFilename == "infantry.wsa")    return Anim_Infantry;
+    else if(lowerFilename == "ix.wsa")          return Anim_IX;
+    else if(lowerFilename == "liteftry.wsa")    return Anim_LightFactory;
+    else if(lowerFilename == "ltank.wsa")       return Anim_Tank;
+    else if(lowerFilename == "mcv.wsa")         return Anim_MCV;
+    else if(lowerFilename == "ordrtank.wsa")    return Anim_Deviator;
+    else if(lowerFilename == "orni.wsa")        return Anim_Ornithopter;
+    else if(lowerFilename == "otrike.wsa")      return Anim_Raider;
+    else if(lowerFilename == "palace.wsa")      return Anim_Palace;
+    else if(lowerFilename == "quad.wsa")        return Anim_Quad;
+    else if(lowerFilename == "refinery.wsa")    return Anim_Refinery;
+    else if(lowerFilename == "repair.wsa")      return Anim_RepairYard;
+    else if(lowerFilename == "rtank.wsa")       return Anim_Launcher;
+    else if(lowerFilename == "rturret.wsa")     return Anim_RocketTurret;
+    else if(lowerFilename == "saboture.wsa")    return Anim_Saboteur;
+    else if(lowerFilename == "slab.wsa")        return Anim_Slab1;
+    else if(lowerFilename == "stank.wsa")       return Anim_SonicTank;
+    else if(lowerFilename == "starport.wsa")    return Anim_StarPort;
+    else if(lowerFilename == "storage.wsa")     return Anim_Silo;
+    else if(lowerFilename == "trike.wsa")       return Anim_Trike;
+    else if(lowerFilename == "turret.wsa")      return Anim_GunTurret;
+    else if(lowerFilename == "wall.wsa")        return Anim_Wall;
+    else if(lowerFilename == "windtrap.wsa")    return Anim_WindTrap;
+    else if(lowerFilename == "wor.wsa")         return Anim_WOR;
+    else if(lowerFilename == "worm.wsa")        return Anim_Sandworm;
+    else if(lowerFilename == "sardukar.wsa")    return Anim_Sardaukar;
+    else if(lowerFilename == "frigate.wsa")     return Anim_Frigate;
+    else if(lowerFilename == "4slab.wsa")       return Anim_Slab4;
+    else                                        return 0;
 }
 
 /**
@@ -236,52 +236,52 @@ Coord getStructureSize(int itemID) {
     \param name the name of the item (e.g. "rocket-turret" or "r-turret".
     \return the id of the item (e.g. Structure_RocketTurret)
 */
-Uint32  getItemIDByName(std::string name) {
-    convertToLower(name);
+Uint32  getItemIDByName(const std::string& name) {
+    std::string lowerName = strToLower(name);
 
-    if(name == "barracks")                                              return Structure_Barracks;
-    else if((name == "const yard") || (name == "construction yard"))    return Structure_ConstructionYard;
-    else if((name == "r-turret") || (name == "rocket-turret"))          return Structure_RocketTurret;
-    else if((name == "turret") || (name == "gun-turret"))               return Structure_GunTurret;
-    else if((name == "heavy fctry") || (name == "heavy factory"))       return Structure_HeavyFactory;
-    else if((name == "hi-tech") || (name == "hightech factory"))        return Structure_HighTechFactory;
-    else if((name == "ix") || (name == "house ix"))                     return Structure_IX;
-    else if((name == "light fctry") || (name == "light factory"))       return Structure_LightFactory;
-    else if(name == "palace")                                           return Structure_Palace;
-    else if((name == "outpost") || (name == "radar"))                   return Structure_Radar;
-    else if(name == "refinery")                                         return Structure_Refinery;
-    else if((name == "repair") || (name == "repair yard"))              return Structure_RepairYard;
-    else if((name == "spice silo") || (name == "silo"))                 return Structure_Silo;
-    else if((name == "concrete") || (name == "slab1"))                  return Structure_Slab1;
-    else if(name == "slab4")                                            return Structure_Slab4;
-    else if((name == "star port") || (name == "starport"))              return Structure_StarPort;
-    else if(name == "wall")                                             return Structure_Wall;
-    else if(name == "windtrap")                                         return Structure_WindTrap;
-    else if(name == "wor")                                              return Structure_WOR;
-    else if((name == "carryall") || (name == "carry-all"))              return Unit_Carryall;
-    else if((name == "devastator") || (name == "devistator"))           return Unit_Devastator;
-    else if(name == "deviator")                                         return Unit_Deviator;
-    else if(name == "frigate")                                          return Unit_Frigate;
-    else if(name == "harvester")                                        return Unit_Harvester;
-    else if(name == "soldier")                                          return Unit_Soldier;
-    else if(name == "launcher")                                         return Unit_Launcher;
-    else if(name == "mcv")                                              return Unit_MCV;
-    else if((name == "thopters") || (name == "'thopters")
-            || (name == "thopter") || (name == "'thopter")
-            || (name == "ornithopter"))                                 return Unit_Ornithopter;
-    else if(name == "quad")                                             return Unit_Quad;
-    else if(name == "saboteur")                                         return Unit_Saboteur;
-    else if(name == "sandworm")                                         return Unit_Sandworm;
-    else if(name == "siege tank")                                       return Unit_SiegeTank;
-    else if((name == "sonic tank") || (name == "sonictank"))            return Unit_SonicTank;
-    else if(name == "tank")                                             return Unit_Tank;
-    else if(name == "trike")                                            return Unit_Trike;
-    else if((name == "raider trike") || (name == "raider"))             return Unit_RaiderTrike;
-    else if(name == "trooper")                                          return Unit_Trooper;
-    else if(name == "special")                                          return Unit_Special;
-    else if(name == "infantry")                                         return Unit_Infantry;
-    else if(name == "troopers")                                         return Unit_Troopers;
-    else                                                                return ItemID_Invalid;
+    if(lowerName == "barracks")                                                 return Structure_Barracks;
+    else if((lowerName == "const yard") || (lowerName == "construction yard"))  return Structure_ConstructionYard;
+    else if((lowerName == "r-turret") || (lowerName == "rocket-turret"))        return Structure_RocketTurret;
+    else if((lowerName == "turret") || (lowerName == "gun-turret"))             return Structure_GunTurret;
+    else if((lowerName == "heavy fctry") || (lowerName == "heavy factory"))     return Structure_HeavyFactory;
+    else if((lowerName == "hi-tech") || (lowerName == "hightech factory"))      return Structure_HighTechFactory;
+    else if((lowerName == "ix") || (lowerName == "house ix"))                   return Structure_IX;
+    else if((lowerName == "light fctry") || (lowerName == "light factory"))     return Structure_LightFactory;
+    else if(lowerName == "palace")                                              return Structure_Palace;
+    else if((lowerName == "outpost") || (lowerName == "radar"))                 return Structure_Radar;
+    else if(lowerName == "refinery")                                            return Structure_Refinery;
+    else if((lowerName == "repair") || (lowerName == "repair yard"))            return Structure_RepairYard;
+    else if((lowerName == "spice silo") || (lowerName == "silo"))               return Structure_Silo;
+    else if((lowerName == "concrete") || (lowerName == "slab1"))                return Structure_Slab1;
+    else if(lowerName == "slab4")                                               return Structure_Slab4;
+    else if((lowerName == "star port") || (lowerName == "starport"))            return Structure_StarPort;
+    else if(lowerName == "wall")                                                return Structure_Wall;
+    else if(lowerName == "windtrap")                                            return Structure_WindTrap;
+    else if(lowerName == "wor")                                                 return Structure_WOR;
+    else if((lowerName == "carryall") || (lowerName == "carry-all"))            return Unit_Carryall;
+    else if((lowerName == "devastator") || (lowerName == "devistator"))         return Unit_Devastator;
+    else if(lowerName == "deviator")                                            return Unit_Deviator;
+    else if(lowerName == "frigate")                                             return Unit_Frigate;
+    else if(lowerName == "harvester")                                           return Unit_Harvester;
+    else if(lowerName == "soldier")                                             return Unit_Soldier;
+    else if(lowerName == "launcher")                                            return Unit_Launcher;
+    else if(lowerName == "mcv")                                                 return Unit_MCV;
+    else if((lowerName == "thopters") || (lowerName == "'thopters")
+            || (lowerName == "thopter") || (lowerName == "'thopter")
+            || (lowerName == "ornithopter"))                                    return Unit_Ornithopter;
+    else if(lowerName == "quad")                                                return Unit_Quad;
+    else if(lowerName == "saboteur")                                            return Unit_Saboteur;
+    else if(lowerName == "sandworm")                                            return Unit_Sandworm;
+    else if(lowerName == "siege tank")                                          return Unit_SiegeTank;
+    else if((lowerName == "sonic tank") || (lowerName == "sonictank"))          return Unit_SonicTank;
+    else if(lowerName == "tank")                                                return Unit_Tank;
+    else if(lowerName == "trike")                                               return Unit_Trike;
+    else if((lowerName == "raider trike") || (lowerName == "raider"))           return Unit_RaiderTrike;
+    else if(lowerName == "trooper")                                             return Unit_Trooper;
+    else if(lowerName == "special")                                             return Unit_Special;
+    else if(lowerName == "infantry")                                            return Unit_Infantry;
+    else if(lowerName == "troopers")                                            return Unit_Troopers;
+    else                                                                        return ItemID_Invalid;
 }
 
 
@@ -335,7 +335,7 @@ std::string getItemNameByID(Uint32 itemID) {
         case Unit_Troopers:                 return "Troopers";          break;
 
         default:
-            throw std::invalid_argument("getItemNameByID(): Invalid item ID!");
+            THROW(std::invalid_argument, "getItemNameByID(): Invalid item ID!");
         break;
     }
 }
@@ -391,7 +391,7 @@ std::string resolveItemName(int itemID) {
         case Unit_Troopers:                 return _("@DUNE.ENG|201#Troopers");            break;
 
         default:
-            throw std::invalid_argument("resolveItemName(): Invalid item ID!");
+            THROW(std::invalid_argument, "resolveItemName(): Invalid item ID!");
         break;
     }
 }
@@ -403,16 +403,16 @@ std::string resolveItemName(int itemID) {
     \param name the name of the house (e.g."Atreides")
     \return the number of the house (e.g. HOUSE_ATREIDES). HOUSE_INVALID is returned on error.
 */
-HOUSETYPE getHouseByName(std::string name) {
-    convertToLower(name);
+HOUSETYPE getHouseByName(const std::string& name) {
+    std::string lowerName = strToLower(name);
 
-    if(name == "harkonnen")         return HOUSE_HARKONNEN;
-    else if(name == "atreides")     return HOUSE_ATREIDES;
-    else if(name == "ordos")        return HOUSE_ORDOS;
-    else if(name == "fremen")       return HOUSE_FREMEN;
-    else if(name == "sardaukar")    return HOUSE_SARDAUKAR;
-    else if(name == "mercenary")    return HOUSE_MERCENARY;
-    else                            return HOUSE_INVALID;
+    if(lowerName == "harkonnen")         return HOUSE_HARKONNEN;
+    else if(lowerName == "atreides")     return HOUSE_ATREIDES;
+    else if(lowerName == "ordos")        return HOUSE_ORDOS;
+    else if(lowerName == "fremen")       return HOUSE_FREMEN;
+    else if(lowerName == "sardaukar")    return HOUSE_SARDAUKAR;
+    else if(lowerName == "mercenary")    return HOUSE_MERCENARY;
+    else                                return HOUSE_INVALID;
 }
 
 /**
@@ -421,35 +421,33 @@ HOUSETYPE getHouseByName(std::string name) {
     \return the name of the house (e.g. "Atreides").
 */
 std::string getHouseNameByNumber(HOUSETYPE house) {
-    static const char* houseName[NUM_HOUSES] = {    "Harkonnen",
-                                                    "Atreides",
-                                                    "Ordos",
-                                                    "Fremen",
-                                                    "Sardaukar",
-                                                    "Mercenary"
-                                               };
-
     if(house >= 0 && house < NUM_HOUSES) {
+        static const char* houseName[NUM_HOUSES] = {    "Harkonnen",
+                                                        "Atreides",
+                                                        "Ordos",
+                                                        "Fremen",
+                                                        "Sardaukar",
+                                                        "Mercenary"
+                                                   };
         return houseName[house];
     } else {
-        fprintf(stderr,"getHouseNameByNumber(): Invalid house number %d!\n", house);
-        exit(EXIT_FAILURE);
+        THROW(std::invalid_argument, "Invalid house number %d!", house);
     }
 }
 
-ATTACKMODE getAttackModeByName(std::string name) {
-    convertToLower(name);
+ATTACKMODE getAttackModeByName(const std::string& name) {
+    std::string lowerName = strToLower(name);
 
-    if(name == "guard")                             return GUARD;
-    else if(name == "area guard")                   return AREAGUARD;
-    else if(name == "ambush")                       return AMBUSH;
-    else if((name == "hunt") || (name == "attack")) return HUNT;
-    else if(name == "harvest")                      return HARVEST;
-    else if(name == "sabotage")                     return SABOTAGE;
-    else if(name == "stop")                         return STOP;
-    else if(name == "capture")                      return CAPTURE;
-    else if(name == "retreat")                      return RETREAT;
-    else                                            return ATTACKMODE_INVALID;
+    if(lowerName == "guard")                                    return GUARD;
+    else if(lowerName == "area guard")                          return AREAGUARD;
+    else if(lowerName == "ambush")                              return AMBUSH;
+    else if((lowerName == "hunt") || (lowerName == "attack"))   return HUNT;
+    else if(lowerName == "harvest")                             return HARVEST;
+    else if(lowerName == "sabotage")                            return SABOTAGE;
+    else if(lowerName == "stop")                                return STOP;
+    else if(lowerName == "capture")                             return CAPTURE;
+    else if(lowerName == "retreat")                             return RETREAT;
+    else                                                        return ATTACKMODE_INVALID;
 }
 
 
@@ -464,7 +462,7 @@ std::string getAttackModeNameByMode(ATTACKMODE attackMode) {
         case STOP:      return "Stop";          break;
         case CAPTURE:   return "Capture";          break;
         default:
-            throw std::invalid_argument("getAttackModeNameByMode(): Invalid attack mode!");
+            THROW(std::invalid_argument, "getAttackModeNameByMode(): Invalid attack mode!");
         break;
     }
 }
@@ -490,24 +488,24 @@ Uint32 getColorByTerrainType(int terrainType) {
 
 
 
-DropLocation getDropLocationByName(std::string name) {
-    convertToLower(name);
+DropLocation getDropLocationByName(const std::string& name) {
+    std::string lowerName = strToLower(name);
 
-    if(name == "north") {
+    if(lowerName == "north") {
         return Drop_North;
-    } else if(name == "east") {
+    } else if(lowerName == "east") {
         return Drop_East;
-    } else if(name == "south") {
+    } else if(lowerName == "south") {
         return Drop_South;
-    } else if(name == "west") {
+    } else if(lowerName == "west") {
         return Drop_West;
-    } else if(name == "air") {
+    } else if(lowerName == "air") {
         return Drop_Air;
-    } else if(name == "visible") {
+    } else if(lowerName == "visible") {
         return Drop_Visible;
-    } else if(name == "enemybase") {
+    } else if(lowerName == "enemybase") {
         return Drop_Enemybase;
-    } else if(name == "homebase") {
+    } else if(lowerName == "homebase") {
         return Drop_Homebase;
     } else {
         return Drop_Invalid;
@@ -526,7 +524,7 @@ std::string getDropLocationNameByID(DropLocation dropLocation) {
         case Drop_Enemybase: return "Enemybase"; break;
         case Drop_Homebase:  return "Homebase";  break;
         default:
-            throw std::invalid_argument("getDropLocationNameByID(): Invalid drop location!");
+            THROW(std::invalid_argument, "getDropLocationNameByID(): Invalid drop location!");
         break;
     }
 }
@@ -542,23 +540,23 @@ std::string resolveDropLocationName(DropLocation dropLocation) {
         case Drop_Enemybase: return _("enemy base");   break;
         case Drop_Homebase:  return _("home base");    break;
         default:
-            throw std::invalid_argument("resolveDropLocationName(): Invalid drop location!");
+            THROW(std::invalid_argument, "resolveDropLocationName(): Invalid drop location!");
         break;
     }
 }
 
-TeamBehavior getTeamBehaviorByName(std::string name) {
-    convertToLower(name);
+TeamBehavior getTeamBehaviorByName(const std::string& name) {
+    std::string lowerName = strToLower(name);
 
-    if(name == "normal") {
+    if(lowerName == "normal") {
         return TeamBehavior_Normal;
-    } else if(name == "guard") {
+    } else if(lowerName == "guard") {
         return TeamBehavior_Guard;
-    } else if(name == "kamikaze") {
+    } else if(lowerName == "kamikaze") {
         return TeamBehavior_Kamikaze;
-    } else if(name == "staging") {
+    } else if(lowerName == "staging") {
         return TeamBehavior_Staging;
-    } else if(name == "flee") {
+    } else if(lowerName == "flee") {
         return TeamBehavior_Flee;
     } else {
         return TeamBehavior_Invalid;
@@ -574,26 +572,26 @@ std::string getTeamBehaviorNameByID(TeamBehavior teamBehavior) {
         case TeamBehavior_Staging:    return "Staging";    break;
         case TeamBehavior_Flee:       return "Flee";       break;
         default:
-            throw std::invalid_argument("getTeamBehaviorNameByID(): Invalid team behavior!");
+            THROW(std::invalid_argument, "getTeamBehaviorNameByID(): Invalid team behavior!");
         break;
     }
 }
 
 
-TeamType getTeamTypeByName(std::string name) {
-    convertToLower(name);
+TeamType getTeamTypeByName(const std::string& name) {
+    std::string lowerName = strToLower(name);
 
-    if(name == "foot") {
+    if(lowerName == "foot") {
         return TeamType_Foot;
-    } else if(name == "wheel" || name == "wheeled") {
+    } else if(lowerName == "wheel" || lowerName == "wheeled") {
         return TeamType_Wheeled;
-    } else if(name == "track" || name == "tracked") {
+    } else if(lowerName == "track" || lowerName == "tracked") {
         return TeamType_Tracked;
-    } else if(name == "winged") {
+    } else if(lowerName == "winged") {
         return TeamType_Winged;
-    } else if(name == "slither") {
+    } else if(lowerName == "slither") {
         return TeamType_Slither;
-    } else if(name == "harvester") {
+    } else if(lowerName == "harvester") {
         return TeamType_Harvester;
     } else {
         return TeamType_Invalid;
@@ -610,7 +608,7 @@ std::string getTeamTypeNameByID(TeamType teamType) {
         case TeamType_Slither:   return "Slither";   break;
         case TeamType_Harvester: return "Harvester"; break;
         default:
-            throw std::invalid_argument("getTeamTypeNameByID(): Invalid team type!");
+            THROW(std::invalid_argument, "getTeamTypeNameByID(): Invalid team type!");
         break;
     }
 }
@@ -621,14 +619,14 @@ std::string getTeamTypeNameByID(TeamType teamType) {
     \param  house   the house of the unit (choose the real owner);
 */
 FixPoint getDeviateWeakness(HOUSETYPE house) {
-    
+
     // Deviators are crap enough. If this is a custom game remove the weakness nerf
     // So that Ordos is playable for Humans
-    //if(currentGame->gameType == GAMETYPE_CUSTOM){
+    //if(currentGame->gameType == GameType::CustomGame){
         //return FixPt(0,100);
     return 1;
     //}
-    
+
 /*
     switch(house) {
         case HOUSE_HARKONNEN:   return FixPt(0,78);
@@ -647,13 +645,10 @@ FixPoint getDeviateWeakness(HOUSETYPE house) {
     Starts a game replay
     \param  filename    the filename of the replay file
 */
-void startReplay(std::string filename) {
-    printf("Initing Replay:\n");
+void startReplay(const std::string& filename) {
+    SDL_Log("Initializing replay...");
     currentGame = new Game();
     currentGame->initReplay(filename);
-
-    printf("Initialization finished!\n");
-    fflush(stdout);
 
     currentGame->runMainLoop();
 
@@ -675,12 +670,9 @@ void startSinglePlayerGame(const GameInitSettings& init)
 
     while(1) {
 
-        printf("Initing Game:\n");
+        SDL_Log("Initializing game...");
         currentGame = new Game();
         currentGame->initGame(currentGameInitInfo);
-
-        printf("Initialization finished!\n");
-        fflush(stdout);
 
         // get init settings from game as it might have changed (through loading the game)
         currentGameInitInfo = currentGame->getGameInitSettings();
@@ -691,67 +683,52 @@ void startSinglePlayerGame(const GameInitSettings& init)
         while(bGetNext) {
             switch(currentGame->whatNext()) {
                 case GAME_DEBRIEFING_WIN: {
-                    fprintf(stdout,"Debriefing...");
-                    fflush(stdout);
+                    SDL_Log("Debriefing...");
                     BriefingMenu* pBriefing = new BriefingMenu(currentGameInitInfo.getHouseID(), currentGameInitInfo.getMission(), DEBRIEFING_WIN);
                     pBriefing->showMenu();
                     delete pBriefing;
-                    fprintf(stdout,"\t\t\tfinished\n");
-                    fflush(stdout);
 
-                    fprintf(stdout,"Game statistics...");
-                    fflush(stdout);
+                    SDL_Log("Game statistics...");
                     CampaignStatsMenu* pCampaignStats = new CampaignStatsMenu(missionNumberToLevelNumber(currentGameInitInfo.getMission()));
                     pCampaignStats->showMenu();
                     delete pCampaignStats;
-                    fprintf(stdout,"\t\tfinished\n");
-                    fflush(stdout);
 
                     int houseID = currentGameInitInfo.getHouseID();
 
-                    if(currentGameInitInfo.getGameType() == GAMETYPE_CAMPAIGN) {
+                    if(currentGameInitInfo.getGameType() == GameType::Campaign) {
                         int level = missionNumberToLevelNumber(currentGameInitInfo.getMission());
 
                         if(level == 4 && (houseID == HOUSE_HARKONNEN || houseID == HOUSE_ATREIDES || houseID == HOUSE_ORDOS)) {
-                            fprintf(stdout, "playing meanwhile.....");fflush(stdout);
+                            SDL_Log("Playing meanwhile...");
                             Meanwhile* pMeanwhile = new Meanwhile(houseID,true);
                             pMeanwhile->run();
                             delete pMeanwhile;
-                            fprintf(stdout, "\t\tfinished\n"); fflush(stdout);
                         } else if(level == 8 && (houseID == HOUSE_HARKONNEN || houseID == HOUSE_ATREIDES || houseID == HOUSE_ORDOS)) {
-                            fprintf(stdout, "playing meanwhile.....");fflush(stdout);
+                            SDL_Log("Playing meanwhile...");
                             Meanwhile* pMeanwhile = new Meanwhile(houseID,false);
                             pMeanwhile->run();
                             delete pMeanwhile;
-                            fprintf(stdout, "\t\tfinished\n"); fflush(stdout);
                         } else if(level == 9) {
-                            fprintf(stdout, "playing finale.....");fflush(stdout);
+                            SDL_Log("Playing finale.....");
                             Finale* pFinale = new Finale(houseID);
                             pFinale->run();
                             delete pFinale;
-                            fprintf(stdout, "\t\tfinished\n"); fflush(stdout);
                         }
                     }
                 } break;
 
                 case GAME_DEBRIEFING_LOST: {
-                    fprintf(stdout,"Debriefing...");
-                    fflush(stdout);
+                    SDL_Log("Debriefing...");
                     BriefingMenu* pBriefing = new BriefingMenu(currentGameInitInfo.getHouseID(), currentGameInitInfo.getMission(), DEBRIEFING_LOST);
                     pBriefing->showMenu();
                     delete pBriefing;
-                    fprintf(stdout,"\t\t\tfinished\n");
-                    fflush(stdout);
                 } break;
 
                 case GAME_CUSTOM_GAME_STATS: {
-                    fprintf(stdout,"Game statistics...");
-                    fflush(stdout);
+                    SDL_Log("Game statistics...");
                     CustomGameStatsMenu* pCustomGameStats = new CustomGameStatsMenu();
                     pCustomGameStats->showMenu();
                     delete pCustomGameStats;
-                    fprintf(stdout,"\t\tfinished\n");
-                    fflush(stdout);
                 } break;
 
                 case GAME_LOAD:
@@ -786,12 +763,9 @@ void startMultiPlayerGame(const GameInitSettings& init)
 {
     GameInitSettings currentGameInitInfo = init;
 
-    printf("Initing Game:\n");
+    SDL_Log("Initializing game...");
     currentGame = new Game();
     currentGame->initGame(currentGameInitInfo);
-
-    printf("Initialization finished!\n");
-    fflush(stdout);
 
     // get init settings from game as it might have changed (through loading the game)
     currentGameInitInfo = currentGame->getGameInitSettings();
@@ -799,13 +773,10 @@ void startMultiPlayerGame(const GameInitSettings& init)
     currentGame->runMainLoop();
 
     if(currentGame->whatNext() == GAME_CUSTOM_GAME_STATS) {
-        fprintf(stdout,"Game statistics...");
-        fflush(stdout);
+        SDL_Log("Game statistics...");
         CustomGameStatsMenu* pCustomGameStats = new CustomGameStatsMenu();
         pCustomGameStats->showMenu();
         delete pCustomGameStats;
-        fprintf(stdout,"\t\tfinished\n");
-        fflush(stdout);
     }
 
     delete currentGame;

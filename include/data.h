@@ -134,18 +134,33 @@ typedef enum {
 } HIDDENTYPE;
 
 /**
-    This function determines if the specified itemID is a unit or not.
+    This function determines if the specified itemID is an unit or not.
     \param itemID   the ID of the item (e.g. Unit_Harvester)
     \return true if it is an unit, false otherwise
 */
-inline  bool isUnit(int itemID) { return (itemID >= Unit_FirstID && itemID <= Unit_LastID); }
+inline bool isUnit(int itemID) { return (itemID >= Unit_FirstID && itemID <= Unit_LastID); }
 
 /**
     This function determines if the specified itemID is a structure or not.
     \param itemID   the ID of the item (e.g. Structure_ConstructionYard)
     \return true if it is a structure, false otherwise
 */
-inline  bool isStructure(int itemID) { return (itemID >= Structure_FirstID && itemID <= Structure_LastID); }
+inline bool isStructure(int itemID) { return (itemID >= Structure_FirstID && itemID <= Structure_LastID); }
+
+
+/**
+    This function determines if the specified itemID is a flying unit or not.
+    \param itemID   the ID of the item (e.g. Unit_Carryall)
+    \return true if it is a flying unit, false otherwise
+*/
+inline bool isFlyingUnit(int itemID) { return (itemID == Unit_Carryall) || (itemID == Unit_Ornithopter) || (itemID == Unit_Frigate); }
+
+/**
+    This function determines if the specified itemID is an infantry unit or not.
+    \param itemID   the ID of the item (e.g. Unit_Carryall)
+    \return true if it is an infantry unit, false otherwise
+*/
+inline bool isInfantryUnit(int itemID) { return (itemID == Unit_Soldier) || (itemID == Unit_Trooper) || (itemID == Unit_Infantry) || (itemID == Unit_Troopers) || (itemID == Unit_Saboteur); }
 
 
 #endif // DATA_H

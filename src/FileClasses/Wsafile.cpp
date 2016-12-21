@@ -141,25 +141,37 @@ SDL_Surface * Wsafile::getPicture(Uint32 frameNumber)
 /**
     This method returns a SDL_Surface containing the complete animation.
     The returned SDL_Surface should be freed with SDL_FreeSurface() if no longer needed.
+    \param  numFramesX  the maximum number of frames in X direction
     \return the complete animation
 */
-SDL_Surface * Wsafile::getAnimationAsPictureRow() {
+SDL_Surface * Wsafile::getAnimationAsPictureRow(int numFramesX) {
     SDL_Surface * pic;
 
+    numFramesX = std::min(numFramesX, (int) numFrames);
+    int numFramesY = (numFrames + numFramesX -1) / numFramesX;
+
     // create new picture surface
-    if((pic = SDL_CreateRGBSurface(0,sizeX*numFrames,sizeY,8,0,0,0,0))== nullptr) {
+    if((pic = SDL_CreateRGBSurface(0,sizeX*numFramesX,sizeY*numFramesY,8,0,0,0,0))== nullptr) {
         return nullptr;
     }
 
     palette.applyToSurface(pic);
     SDL_LockSurface(pic);
 
-    for(int i = 0; i < numFrames; i++) {
-        unsigned char * Image = decodedFrames + (i * sizeX * sizeY);
+    for(int y = 0; y < numFramesY; y++) {
+        for(int x = 0; x < numFramesX; x++) {
+            int i = y*numFramesX + x;
+            if(i >= numFrames) {
+                SDL_UnlockSurface(pic);
+                return pic;
+            }
 
-        //Now we can copy this frame line by line
-        for(int y = 0; y < sizeY;y++) {
-            memcpy( ((char*) (pic->pixels)) + y * pic->pitch + i*sizeX, Image + y * sizeX, sizeX);
+            unsigned char * pImage = decodedFrames + (i * sizeX * sizeY);
+
+            //Now we can copy this frame line by line
+            for(int line = 0; line < sizeY;line++) {
+                memcpy( ((char*) (pic->pixels)) + (y*sizeY + line) * pic->pitch + x*sizeX, pImage + line * sizeX, sizeX);
+            }
         }
     }
 
@@ -210,7 +222,7 @@ void Wsafile::decodeFrames(unsigned char* pFiledata, Uint32* index, int numberOf
     for(int i=0;i<numberOfFrames;i++) {
         unsigned char *dec80 = (unsigned char*) malloc(x*y*2);
         if(dec80 == nullptr) {
-            fprintf(stderr, "Error: Unable to allocate memory for decoded WSA-Frames!\n");
+            SDL_Log("Error: Unable to allocate memory for decoded WSA-Frames!");
             exit(EXIT_FAILURE);
         }
 
@@ -236,38 +248,38 @@ unsigned char* Wsafile::readfile(SDL_RWops* rwop, int* filesize) {
     unsigned char* pFiledata;
 
     if(filesize == nullptr) {
-        fprintf(stderr, "Wsafile: filesize == nullptr!\n");
+        SDL_Log("Wsafile: filesize == nullptr!");
         exit(EXIT_FAILURE);
     }
 
     if(rwop == nullptr) {
-        fprintf(stderr, "Wsafile: rwop == nullptr!\n");
+        SDL_Log("Wsafile: rwop == nullptr!");
         exit(EXIT_FAILURE);
     }
 
     int wsaFilesize = SDL_RWseek(rwop,0,SEEK_END);
     if(wsaFilesize <= 0) {
-        fprintf(stderr,"Wsafile: Cannot determine size of this *.wsa-File!\n");
+        SDL_Log("Wsafile: Cannot determine size of this *.wsa-File!");
         exit(EXIT_FAILURE);
     }
 
     if(wsaFilesize < 10) {
-        fprintf(stderr, "Wsafile: No valid WSA-File: File too small!\n");
+        SDL_Log("Wsafile: No valid WSA-File: File too small!");
         exit(EXIT_FAILURE);
     }
 
     if(SDL_RWseek(rwop,0,SEEK_SET) != 0) {
-        fprintf(stderr,"Wsafile: Seeking in this *.wsa-File failed!\n");
+        SDL_Log("Wsafile: Seeking in this *.wsa-File failed!");
         exit(EXIT_FAILURE);
     }
 
     if( (pFiledata = (unsigned char*) malloc(wsaFilesize)) == nullptr) {
-        fprintf(stderr,"Wsafile: Allocating memory failed!\n");
+        SDL_Log("Wsafile: Allocating memory failed!");
         exit(EXIT_FAILURE);
     }
 
     if(SDL_RWread(rwop, pFiledata, wsaFilesize, 1) != 1) {
-        fprintf(stderr,"Wsafile: Reading this *.wsa-File failed!\n");
+        SDL_Log("Wsafile: Reading this *.wsa-File failed!");
         exit(EXIT_FAILURE);
     }
 
@@ -304,22 +316,22 @@ void Wsafile::readdata(int numFiles, va_list args) {
     bool* extended;
 
     if((pFiledata = (unsigned char**) malloc(sizeof(unsigned char*) * numFiles)) == nullptr) {
-        fprintf(stderr, "Wsafile::readdata(): Unable to allocate memory!\n");
+        SDL_Log("Wsafile::readdata(): Unable to allocate memory!");
         exit(EXIT_FAILURE);
     }
 
     if((index = (Uint32**) malloc(sizeof(Uint32*) * numFiles)) == nullptr) {
-        fprintf(stderr, "Wsafile::readdata(): Unable to allocate memory!\n");
+        SDL_Log("Wsafile::readdata(): Unable to allocate memory!");
         exit(EXIT_FAILURE);
     }
 
     if((numberOfFrames = (Uint16*) malloc(sizeof(Uint16) * numFiles)) == nullptr) {
-        fprintf(stderr, "Wsafile::readdata(): Unable to allocate memory!\n");
+        SDL_Log("Wsafile::readdata(): Unable to allocate memory!");
         exit(EXIT_FAILURE);
     }
 
     if((extended = (bool*) malloc(sizeof(bool) * numFiles)) == nullptr) {
-        fprintf(stderr, "Wsafile::readdata(): Unable to allocate memory!\n");
+        SDL_Log("Wsafile::readdata(): Unable to allocate memory!");
         exit(EXIT_FAILURE);
     }
 
@@ -339,7 +351,7 @@ void Wsafile::readdata(int numFiles, va_list args) {
         } else {
             if( (sizeX != (SDL_SwapLE16(*((Uint16*) (pFiledata[i] + 2)) )))
                 || (sizeY != (SDL_SwapLE16(*((Uint16*) (pFiledata[i] + 4)) )))) {
-                fprintf(stderr, "Wsafile: The wsa-files have different picture dimensions. Cannot concatinate them!\n");
+                SDL_Log("Wsafile: The wsa-files have different picture dimensions. Cannot concatenate them!");
                 exit(EXIT_FAILURE);
             }
         }
@@ -353,7 +365,7 @@ void Wsafile::readdata(int numFiles, va_list args) {
         if(index[i][0] == 0) {
             // extended animation
             if(i == 0) {
-                fprintf(stderr,"Extended WSA-File!\n");
+                SDL_Log("Extended WSA-File!");
             }
             index[i]++;
             numberOfFrames[i]--;
@@ -370,13 +382,13 @@ void Wsafile::readdata(int numFiles, va_list args) {
             } else {
                 // index[numberOfFrames[0]] point to loop frame
                 // => looped animation
-                //  fprintf(stderr,"Looped WSA-File!\n");
+                //  SDL_Log("Looped WSA-File!");
                 looped = true;
             }
         }
 
         if(pFiledata[i] + wsaFilesize < (((unsigned char *) index[i]) + sizeof(Uint32) * numberOfFrames[i])) {
-            fprintf(stderr, "Wsafile: No valid WSA-File: File too small!\n");
+            SDL_Log("Wsafile: No valid WSA-File: File too small!");
             exit(EXIT_FAILURE);
         }
 
@@ -385,7 +397,7 @@ void Wsafile::readdata(int numFiles, va_list args) {
 
 
     if( (decodedFrames = (unsigned char*) calloc(1,sizeX*sizeY*numFrames)) == nullptr) {
-        fprintf(stderr, "Wsafile: Unable to allocate memory for decoded WSA-Frames!\n");
+        SDL_Log("Wsafile: Unable to allocate memory for decoded WSA-Frames!");
         exit(EXIT_FAILURE);
     }
 

@@ -32,11 +32,66 @@ class ObjectBase;
 class HumanPlayer : public Player
 {
 public:
+
+    /// This enum has the same int values as ItemID_enum for structures (exceptions are the first and the last entry)
+    enum class TutorialHint {
+        HarvestSpice = 0,
+        ThisIsABarrack = 1,
+        ThisIsAConstructionYard = 2,
+        ThisIsAGunTurret = 3,
+        ThisIsAHeavyFactory = 4,
+        ThisIsAHighTechFactory = 5,
+        ThisIsHouseIX = 6,
+        ThisIsALightFactory = 7,
+        ThisIsAPalace = 8,
+        ThisIsARadar = 9,
+        ThisIsARefinery = 10,
+        ThisIsARepairYard = 11,
+        ThisIsARocketTurret = 12,
+        ThisIsASilo = 13,
+        ThisIsASlab1 = 14,
+        ThisIsASlab4 = 15,
+        ThisIsAStarPort = 16,
+        ThisIsAWall = 17,
+        ThisIsAWindTrap = 18,
+        ThisIsAWOR = 19,
+        NotEnoughConrete = 20,
+    };
+
     void init();
     virtual ~HumanPlayer();
     virtual void save(OutputStream& stream) const;
 
     virtual void update();
+
+    Uint32 getAlreadyShownTutorialHints() const {
+        return alreadyShownTutorialHints;
+    }
+
+    /**
+        The player just started to produce an item.
+        \param  itemID  the item that is produced
+    */
+    virtual void onProduceItem(Uint32 itemID);
+
+    /**
+        The player just placed a structure.
+        \param  pStructure  the structure that was placed (nullptr for Slab)
+    */
+    virtual void onPlaceStructure(const StructureBase* pStructure);
+
+    /**
+        A unit of this player was deployed.
+        \param  pUnit  the unit that was deployed
+    */
+    virtual void onUnitDeployed(const UnitBase* pUnit);
+
+
+    /**
+        The set of selected units or structures has changed.
+        \param  selectedObjectIDs   the new set of selected objects
+    */
+    virtual void onSelectionChanged(const std::set<Uint32>& selectedObjectIDs);
 
     /**
         Returns one of the 9 saved units lists
@@ -52,7 +107,7 @@ public:
     */
     void setGroupList(int groupListIndex, const std::set<Uint32>& newGroupList);
 
-    static Player* create(House* associatedHouse, std::string playername) {
+    static Player* create(House* associatedHouse, const std::string& playername) {
         return new HumanPlayer(associatedHouse, playername);
     }
 
@@ -65,9 +120,16 @@ public:
 
     std::set<Uint32> selectedLists[NUMSELECTEDLISTS];       ///< Sets of all the different groups on key 1 to 9
 
+    Uint32 alreadyShownTutorialHints;                       ///< Contains flags for each tutorial hint (see enum TutorialHint)
+
 private:
-    HumanPlayer(House* associatedHouse, std::string playername);
+    HumanPlayer(House* associatedHouse, const std::string& playername);
     HumanPlayer(InputStream& stream, House* associatedHouse);
+
+    void triggerStructureTutorialHint(Uint32 itemID);
+
+    bool hasConcreteOfSize(const Coord& concreteSize) const;
+    bool hasConcreteAtPositionOfSize(const Coord& pos, const Coord& concreteSize) const;
 };
 
 

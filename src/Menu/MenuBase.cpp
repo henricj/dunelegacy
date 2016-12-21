@@ -27,6 +27,7 @@
 #include <globals.h>
 
 #include <sand.h>
+#include <main.h>
 
 
 MenuBase::MenuBase() : Window(0,0,0,0) {
@@ -118,7 +119,7 @@ bool MenuBase::doInput(SDL_Event &event) {
 
                 case SDLK_RETURN: {
                     if(SDL_GetModState() & KMOD_ALT) {
-                        SDL_SetWindowFullscreen(window, (SDL_GetWindowFlags(window) ^ SDL_WINDOW_FULLSCREEN_DESKTOP));
+                        toogleFullscreen();
                     }
                 } break;
 
@@ -158,9 +159,8 @@ bool MenuBase::doInput(SDL_Event &event) {
 
         case SDL_MOUSEMOTION: {
             SDL_MouseMotionEvent* mouse = &event.motion;
-
-            drawnMouseX = mouse->x;
-            drawnMouseY = mouse->y;
+            drawnMouseX = std::max(0, std::min(mouse->x, settings.video.width-1));
+            drawnMouseY = std::max(0, std::min(mouse->y, settings.video.height-1));
         } break;
 
         case SDL_QUIT: {

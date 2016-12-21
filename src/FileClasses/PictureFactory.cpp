@@ -30,8 +30,8 @@
 
 #include <misc/draw_util.h>
 #include <misc/Scaler.h>
+#include <misc/exceptions.h>
 
-#include <stdexcept>
 #include <memory>
 
 using std::shared_ptr;
@@ -39,17 +39,17 @@ using std::shared_ptr;
 PictureFactory::PictureFactory() {
     shared_ptr<SDL_Surface> ScreenPic = shared_ptr<SDL_Surface>( LoadCPS_RW(pFileManager->openFile("SCREEN.CPS"),true), SDL_FreeSurface);
     if(ScreenPic.get() == nullptr) {
-        throw std::runtime_error("PictureFactory::PictureFactory(): Cannot read SCREEN.CPS!");
+        THROW(std::runtime_error, "PictureFactory::PictureFactory(): Cannot read SCREEN.CPS!");
     }
 
     shared_ptr<SDL_Surface> FamePic = shared_ptr<SDL_Surface>( LoadCPS_RW(pFileManager->openFile("FAME.CPS"),true), SDL_FreeSurface);
     if(FamePic.get() == nullptr) {
-        throw std::runtime_error("PictureFactory::PictureFactory(): Cannot read FAME.CPS!");
+        THROW(std::runtime_error, "PictureFactory::PictureFactory(): Cannot read FAME.CPS!");
     }
 
     shared_ptr<SDL_Surface> ChoamPic = shared_ptr<SDL_Surface>( LoadCPS_RW(pFileManager->openFile("CHOAM.CPS"),true), SDL_FreeSurface);
     if(ChoamPic.get() == nullptr) {
-        throw std::runtime_error("PictureFactory::PictureFactory(): Cannot read CHOAM.CPS!");
+        THROW(std::runtime_error, "PictureFactory::PictureFactory(): Cannot read CHOAM.CPS!");
     }
 
     creditsBorder = shared_ptr<SDL_Surface>(getSubPicture(ScreenPic.get() ,257,2,63,13), SDL_FreeSurface);
@@ -57,7 +57,7 @@ PictureFactory::PictureFactory() {
     // background
     background = shared_ptr<SDL_Surface>( SDL_CreateRGBSurface(0,settings.video.width,settings.video.height,8,0,0,0,0), SDL_FreeSurface);
     if(background.get() == nullptr) {
-        throw std::runtime_error("PictureFactory::PictureFactory: Cannot create new Picture!");
+        THROW(std::runtime_error, "PictureFactory::PictureFactory: Cannot create new Picture!");
     }
     palette.applyToSurface(background.get());
 
@@ -206,7 +206,7 @@ PictureFactory::PictureFactory() {
     // create builder list upper cap
     builderListUpperCap = shared_ptr<SDL_Surface>( SDL_CreateRGBSurface(0, 112, 21, 8, 0, 0, 0, 0), SDL_FreeSurface);
     if(builderListUpperCap.get() == nullptr) {
-        throw std::runtime_error("PictureFactory::PictureFactory: Cannot create new Picture!");
+        THROW(std::runtime_error, "PictureFactory::PictureFactory: Cannot create new Picture!");
     }
     palette.applyToSurface(builderListUpperCap.get());
     SDL_FillRect(builderListUpperCap.get(), nullptr, PALCOLOR_TRANSPARENT);
@@ -229,7 +229,7 @@ PictureFactory::PictureFactory() {
     // create builder list lower cap
     builderListLowerCap = shared_ptr<SDL_Surface>( SDL_CreateRGBSurface(0, 112, 17, 8, 0, 0, 0, 0), SDL_FreeSurface);
     if(builderListLowerCap.get() == nullptr) {
-        throw std::runtime_error("PictureFactory::PictureFactory: Cannot create new Picture!");
+        THROW(std::runtime_error, "PictureFactory::PictureFactory: Cannot create new Picture!");
     }
     palette.applyToSurface(builderListLowerCap.get());
     SDL_FillRect(builderListLowerCap.get(), nullptr, PALCOLOR_TRANSPARENT);
@@ -379,8 +379,7 @@ SDL_Surface* PictureFactory::createBottomBar() {
 SDL_Surface* PictureFactory::createPlacingGrid(int size, int color) {
     SDL_Surface* placingGrid;
     if((placingGrid = SDL_CreateRGBSurface(0,size,size,8,0,0,0,0)) == nullptr) {
-        fprintf(stderr,"PictureFactory::createPlacingGrid: Cannot create new Picture!\n");
-        exit(EXIT_FAILURE);
+        THROW(sdl_error, "Cannot create new surface: %s!", SDL_GetError());
     }
     palette.applyToSurface(placingGrid);
 
@@ -477,8 +476,7 @@ SDL_Surface* PictureFactory::createFrame(unsigned int DecorationType,int width, 
         Pic = getSubPicture(background.get(),0,0,width,height);
     } else {
         if((Pic = SDL_CreateRGBSurface(0,width,height,8,0,0,0,0)) == nullptr) {
-            fprintf(stderr,"PictureFactory::createFrame: Cannot create new Picture!\n");
-            exit(EXIT_FAILURE);
+            THROW(sdl_error, "Cannot create new surface: %s!", SDL_GetError());
         }
         palette.applyToSurface(Pic);
         SDL_SetColorKey(Pic, SDL_TRUE, 0);
@@ -511,10 +509,7 @@ SDL_Surface* PictureFactory::createMainBackground() {
 
     SDL_Surface* Version = getSubPicture(background.get(),0,0,75,32);
 
-    char versionString[100];
-    sprintf(versionString, "%s", VERSION);
-
-    SDL_Surface *VersionText = pFontManager->createSurfaceWithText(versionString, PALCOLOR_BLACK, FONT_STD12);
+    SDL_Surface *VersionText = pFontManager->createSurfaceWithText(std::string(VERSION), PALCOLOR_BLACK, FONT_STD12);
 
     SDL_Rect dest4 = calcDrawingRect(VersionText, getWidth(Version)/2, getHeight(Version)/2 + 2, HAlign::Center, VAlign::Center);
     SDL_BlitSurface(VersionText,nullptr,Version,&dest4);
@@ -599,8 +594,7 @@ SDL_Surface* PictureFactory::createMenu(SDL_Surface* CaptionPic,int y) {
 SDL_Surface* PictureFactory::createOptionsMenu() {
     SDL_Surface* tmp;
     if((tmp = LoadPNG_RW(pFileManager->openFile("UI_OptionsMenu.png"),true)) == nullptr) {
-        fprintf(stderr,"PictureFactory::createOptionsMenu(): Cannot load UI_OptionsMenu.png!\n");
-        exit(EXIT_FAILURE);
+        THROW(std::runtime_error, "Cannot load 'UI_OptionsMenu.png'!");
     }
     SDL_SetColorKey(tmp, SDL_TRUE, 0);
 
@@ -671,8 +665,7 @@ SDL_Surface* PictureFactory::createMapChoiceScreen(int House) {
     SDL_Surface* pMapChoiceScreen;
 
     if((pMapChoiceScreen = LoadCPS_RW(pFileManager->openFile("MAPMACH.CPS"),true)) == nullptr) {
-        fprintf(stderr,"PictureFactory::createMapChoiceScreen(): Cannot read MAPMACH.CPS!\n");
-        exit(EXIT_FAILURE);
+        THROW(std::runtime_error, "Cannot load 'MAPMACH.CPS'!");
     }
 
     SDL_Rect LeftLogo = calcDrawingRect(harkonnenLogo.get(),2,145);
@@ -736,8 +729,7 @@ SDL_Surface* PictureFactory::createMapChoiceScreen(int House) {
 SDL_Surface* PictureFactory::createMentatHouseChoiceQuestion(int House, Palette& benePalette) {
     SDL_Surface* pSurface;
     if((pSurface = SDL_CreateRGBSurface(0,416+208,48,8,0,0,0,0)) == nullptr) {
-        fprintf(stderr,"PictureFactory::createMentatHouseChoiceQuestion: Cannot create new Picture!\n");
-        exit(EXIT_FAILURE);
+        THROW(sdl_error, "Cannot create new surface: %s!", SDL_GetError());
     }
 
     benePalette.applyToSurface(pSurface);
@@ -899,15 +891,12 @@ Animation* PictureFactory::createSardaukarPlanet(Animation* ordosPlanetAnimation
     colorMap[163] = 29;
     colorMap[164] = 31;
 
-    const std::vector<SDL_Surface*>& frames = ordosPlanetAnimation->getFrames();
-    std::vector<SDL_Surface*>::const_iterator iter;
-
-    for(iter = frames.begin(); iter != frames.end(); ++iter) {
-        SDL_Surface* newFrame = copySurface(*iter);
+    for(SDL_Surface* pSurface : ordosPlanetAnimation->getFrames()) {
+        SDL_Surface* newFrame = copySurface(pSurface);
 
         mapColor(newFrame, colorMap);
 
-        SDL_Surface* newFrameWithoutPlanet = copySurface(*iter);
+        SDL_Surface* newFrameWithoutPlanet = copySurface(pSurface);
 
         SDL_BlitSurface(maskSurface,nullptr,newFrameWithoutPlanet,nullptr);
         SDL_SetColorKey(newFrameWithoutPlanet, SDL_TRUE, 223);
@@ -952,11 +941,8 @@ Animation* PictureFactory::createMercenaryPlanet(Animation* atreidesPlanetAnimat
     colorMap[178] = 94;
     colorMap[179] = 95;
 
-    const std::vector<SDL_Surface*>& frames = atreidesPlanetAnimation->getFrames();
-    std::vector<SDL_Surface*>::const_iterator iter;
-
-    for(iter = frames.begin(); iter != frames.end(); ++iter) {
-        SDL_Surface* newFrame = copySurface(*iter);
+    for(SDL_Surface* pSurface : atreidesPlanetAnimation->getFrames()) {
+        SDL_Surface* newFrame = copySurface(pSurface);
 
         mapColor(newFrame, colorMap);
 
@@ -989,12 +975,8 @@ SDL_Surface* PictureFactory::mapMentatSurfaceToMercenary(SDL_Surface* ordosMenta
 Animation* PictureFactory::mapMentatAnimationToFremen(Animation* fremenAnimation) {
     Animation* newAnimation = new Animation();
 
-    const std::vector<SDL_Surface*>& frames = fremenAnimation->getFrames();
-    std::vector<SDL_Surface*>::const_iterator iter;
-
-    for(iter = frames.begin(); iter != frames.end(); ++iter) {
-        SDL_Surface* newFrame = mapMentatSurfaceToFremen(*iter);
-        newAnimation->addFrame(newFrame);
+    for(SDL_Surface* pSurface : fremenAnimation->getFrames()) {
+        newAnimation->addFrame(mapMentatSurfaceToFremen(pSurface));
     }
 
     newAnimation->setFrameDurationTime(fremenAnimation->getFrameDurationTime());
@@ -1029,12 +1011,8 @@ SDL_Surface* PictureFactory::mapMentatSurfaceToSardaukar(SDL_Surface* harkonnenM
 Animation* PictureFactory::mapMentatAnimationToSardaukar(Animation* harkonnenAnimation) {
     Animation* newAnimation = new Animation();
 
-    const std::vector<SDL_Surface*>& frames = harkonnenAnimation->getFrames();
-    std::vector<SDL_Surface*>::const_iterator iter;
-
-    for(iter = frames.begin(); iter != frames.end(); ++iter) {
-        SDL_Surface* newFrame = mapMentatSurfaceToSardaukar(*iter);
-        newAnimation->addFrame(newFrame);
+    for(SDL_Surface* pSurface : harkonnenAnimation->getFrames()) {
+        newAnimation->addFrame(mapMentatSurfaceToSardaukar(pSurface));
     }
 
     newAnimation->setFrameDurationTime(harkonnenAnimation->getFrameDurationTime());
@@ -1046,12 +1024,8 @@ Animation* PictureFactory::mapMentatAnimationToSardaukar(Animation* harkonnenAni
 Animation* PictureFactory::mapMentatAnimationToMercenary(Animation* ordosAnimation) {
     Animation* newAnimation = new Animation();
 
-    const std::vector<SDL_Surface*>& frames = ordosAnimation->getFrames();
-    std::vector<SDL_Surface*>::const_iterator iter;
-
-    for(iter = frames.begin(); iter != frames.end(); ++iter) {
-        SDL_Surface* newFrame = mapMentatSurfaceToMercenary(*iter);
-        newAnimation->addFrame(newFrame);
+    for(SDL_Surface* pSurface : ordosAnimation->getFrames()) {
+        newAnimation->addFrame(mapMentatSurfaceToMercenary(pSurface));
     }
 
     newAnimation->setFrameDurationTime(ordosAnimation->getFrameDurationTime());

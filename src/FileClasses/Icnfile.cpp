@@ -18,11 +18,12 @@
 #include <FileClasses/Icnfile.h>
 #include <FileClasses/Palette.h>
 
+#include <misc/exceptions.h>
+
 #include <SDL_endian.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include <stdexcept>
 
 #define SIZE_X  16
 #define SIZE_Y  16
@@ -44,10 +45,10 @@ Icnfile::Icnfile(SDL_RWops* icnRWop, SDL_RWops* mapRWop, int freesrc)
 
     if(icnRWop == nullptr) {
         if(freesrc && mapRWop != nullptr) SDL_RWclose(mapRWop);
-        throw std::invalid_argument("Icnfile::Icnfile(): icnRWop == nullptr!");
+        THROW(std::invalid_argument, "Icnfile::Icnfile(): icnRWop == nullptr!");
     } else if(mapRWop == nullptr) {
         if(freesrc) SDL_RWclose(icnRWop);
-        throw std::invalid_argument("Icnfile::Icnfile(): mapRWop == nullptr!");
+        THROW(std::invalid_argument, "Icnfile::Icnfile(): mapRWop == nullptr!");
     }
 
     uint8_t* pMapFiledata = nullptr;
@@ -55,43 +56,43 @@ Icnfile::Icnfile(SDL_RWops* icnRWop, SDL_RWops* mapRWop, int freesrc)
     try {
         int icnFilesize = SDL_RWseek(icnRWop,0,SEEK_END);
         if(icnFilesize <= 0) {
-            throw std::runtime_error("Icnfile::Icnfile(): Cannot determine size of this *.icn-File!");
+            THROW(std::runtime_error, "Icnfile::Icnfile(): Cannot determine size of this *.icn-File!");
         }
         pIcnFiledata = new uint8_t[icnFilesize];
 
         if(SDL_RWseek(icnRWop,0,SEEK_SET) != 0) {
-            throw std::runtime_error("Icnfile::Icnfile(): Seeking in this *.icn-File failed!");
+            THROW(std::runtime_error, "Icnfile::Icnfile(): Seeking in this *.icn-File failed!");
         }
 
         if(SDL_RWread(icnRWop, &pIcnFiledata[0], icnFilesize, 1) != 1) {
-            throw std::runtime_error("Icnfile::Icnfile(): Reading this *.icn-File failed!");
+            THROW(std::runtime_error, "Icnfile::Icnfile(): Reading this *.icn-File failed!");
         }
 
 
         int mapFilesize = SDL_RWseek(mapRWop,0,SEEK_END);
         if(mapFilesize <= 0) {
-            throw std::runtime_error("Icnfile::Icnfile(): Cannot determine size of this *.map-File!");
+            THROW(std::runtime_error, "Icnfile::Icnfile(): Cannot determine size of this *.map-File!");
         }
 
         pMapFiledata = new uint8_t[mapFilesize];
 
         if(SDL_RWseek(mapRWop,0,SEEK_SET) != 0) {
-            throw std::runtime_error("Icnfile::Icnfile(): Seeking in this *.map-File failed!");
+            THROW(std::runtime_error, "Icnfile::Icnfile(): Seeking in this *.map-File failed!");
         }
 
         if(SDL_RWread(mapRWop, &pMapFiledata[0], mapFilesize, 1) != 1) {
-            throw std::runtime_error("Icnfile::Icnfile(): Reading this *.map-File failed!");
+            THROW(std::runtime_error, "Icnfile::Icnfile(): Reading this *.map-File failed!");
         }
 
         // now we can start creating the Tilesetindex
         if(mapFilesize < 2) {
-            throw std::runtime_error("Icnfile::Icnfile(): This *.map-File is too short!");
+            THROW(std::runtime_error, "Icnfile::Icnfile(): This *.map-File is too short!");
         }
 
         Uint16 numTilesets = SDL_SwapLE16( *((Uint16 *) pMapFiledata));
 
         if(mapFilesize < numTilesets * 2) {
-            throw std::runtime_error("Icnfile::Icnfile(): This *.map-File is too short!");
+            THROW(std::runtime_error, "Icnfile::Icnfile(): This *.map-File is too short!");
         }
 
         // calculate size for all entries
@@ -111,7 +112,7 @@ Icnfile::Icnfile(SDL_RWops* icnRWop, SDL_RWops* mapRWop, int freesrc)
             index = SDL_SwapLE16( ((Uint16*) pMapFiledata)[i]);
 
             if((unsigned int) mapFilesize < (index+tilesets[i].numTiles)*2 ) {
-                throw std::runtime_error("Icnfile::Icnfile(): This *.map-File is too short!");
+                THROW(std::runtime_error, "Icnfile::Icnfile(): This *.map-File is too short!");
             }
 
             // now we can read in
@@ -125,7 +126,7 @@ Icnfile::Icnfile(SDL_RWops* icnRWop, SDL_RWops* mapRWop, int freesrc)
 
         // check if we can access first section in ICN-File
         if(icnFilesize < 0x20) {
-            throw std::runtime_error("Icnfile::Icnfile(): Invalid ICN-File: No SSET-Section found!\n");
+            THROW(std::runtime_error, "Icnfile::Icnfile(): Invalid ICN-File: No SSET-Section found!\n");
         }
 
         SSET = pIcnFiledata+0x18;
@@ -135,14 +136,14 @@ Icnfile::Icnfile(SDL_RWops* icnRWop, SDL_RWops* mapRWop, int freesrc)
             ||  (SSET[1] != 'S')
             ||  (SSET[2] != 'E')
             ||  (SSET[3] != 'T')) {
-            throw std::runtime_error("Icnfile::Icnfile(): Invalid ICN-File: No SSET-Section found!\n");
+            THROW(std::runtime_error, "Icnfile::Icnfile(): Invalid ICN-File: No SSET-Section found!\n");
         }
 
         SSET_Length = SDL_SwapBE32( *((Uint32*) (SSET + 4))) - 8;
         SSET += 16;
 
         if(pIcnFiledata + icnFilesize < SSET + SSET_Length) {
-            throw std::runtime_error("Icnfile::Icnfile(): Invalid ICN-File: SSET-Section is bigger than ICN-File!\n");
+            THROW(std::runtime_error, "Icnfile::Icnfile(): Invalid ICN-File: SSET-Section is bigger than ICN-File!\n");
         }
 
         RPAL = SSET + SSET_Length;
@@ -152,14 +153,14 @@ Icnfile::Icnfile(SDL_RWops* icnRWop, SDL_RWops* mapRWop, int freesrc)
             ||  (RPAL[1] != 'P')
             ||  (RPAL[2] != 'A')
             ||  (RPAL[3] != 'L')) {
-            throw std::runtime_error("Icnfile::Icnfile(): Invalid ICN-File: No RPAL-Section found!\n");
+            THROW(std::runtime_error, "Icnfile::Icnfile(): Invalid ICN-File: No RPAL-Section found!\n");
         }
 
         RPAL_Length = SDL_SwapBE32( *((Uint32*) (RPAL + 4)));
         RPAL += 8;
 
         if(pIcnFiledata + icnFilesize < RPAL + RPAL_Length) {
-            throw std::runtime_error("Icnfile::Icnfile(): Invalid ICN-File: RPAL-Section is bigger than ICN-File!\n");
+            THROW(std::runtime_error, "Icnfile::Icnfile(): Invalid ICN-File: RPAL-Section is bigger than ICN-File!\n");
         }
 
         RTBL = RPAL + RPAL_Length;
@@ -169,20 +170,20 @@ Icnfile::Icnfile(SDL_RWops* icnRWop, SDL_RWops* mapRWop, int freesrc)
             ||  (RTBL[1] != 'T')
             ||  (RTBL[2] != 'B')
             ||  (RTBL[3] != 'L')) {
-            throw std::runtime_error("Icnfile::Icnfile(): Invalid ICN-File: No RTBL-Section found!\n");
+            THROW(std::runtime_error, "Icnfile::Icnfile(): Invalid ICN-File: No RTBL-Section found!\n");
         }
 
         RTBL_Length = SDL_SwapBE32( *((Uint32*) (RTBL + 4)));
         RTBL += 8;
 
         if(pIcnFiledata + icnFilesize < RTBL + RTBL_Length) {
-            throw std::runtime_error("Icnfile::Icnfile(): Invalid ICN-File: RTBL-Section is bigger than ICN-File!\n");
+            THROW(std::runtime_error, "Icnfile::Icnfile(): Invalid ICN-File: RTBL-Section is bigger than ICN-File!\n");
         }
 
         numFiles = SSET_Length / ((SIZE_X * SIZE_Y) / 2);
 
         if(RTBL_Length < numFiles) {
-            throw std::runtime_error("Icnfile::Icnfile(): Invalid ICN-File: RTBL-Section is too small!\n");
+            THROW(std::runtime_error, "Icnfile::Icnfile(): Invalid ICN-File: RTBL-Section is too small!\n");
         }
 
         if(freesrc) SDL_RWclose(icnRWop);

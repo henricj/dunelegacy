@@ -228,11 +228,10 @@ void BuilderList::draw(Point position) {
         }
 
         int i = 0;
-        std::list<BuildItem>::const_iterator iter;
-        for(iter = pBuilder->getBuildList().begin(); iter != pBuilder->getBuildList().end(); ++iter, i++) {
+        for(const BuildItem& buildItem : pBuilder->getBuildList()) {
 
             if((i >= currentListPos) && (i < currentListPos+getNumButtons(getSize().y) )) {
-                SDL_Texture* pTexture = resolveItemPicture(iter->itemID);
+                SDL_Texture* pTexture = resolveItemPicture(buildItem.itemID);
 
                 SDL_Rect dest = calcDrawingRect(pTexture, position.x + getButtonPosition(i - currentListPos).x, position.y + getButtonPosition(i - currentListPos).y);
 
@@ -241,74 +240,73 @@ void BuilderList::draw(Point position) {
                     SDL_RenderCopy(renderer, pTexture, nullptr, &tmpDest);
                 }
 
-                if(isStructure(iter->itemID)) {
+                if(isStructure(buildItem.itemID)) {
                     SDL_Texture* pLattice = pGFXManager->getUIGraphic(UI_StructureSizeLattice);
                     SDL_Rect destLattice = calcDrawingRect(pLattice, dest.x + 2, dest.y + 2);
                     SDL_RenderCopy(renderer, pLattice, nullptr, &destLattice);
 
                     SDL_Texture* pConcrete = pGFXManager->getUIGraphic(UI_StructureSizeConcrete);
-                    SDL_Rect srcConcrete = { 0, 0, 1 + getStructureSize(iter->itemID).x*6, 1 + getStructureSize(iter->itemID).y*6 };
+                    SDL_Rect srcConcrete = { 0, 0, 1 + getStructureSize(buildItem.itemID).x*6, 1 + getStructureSize(buildItem.itemID).y*6 };
                     SDL_Rect destConcrete = { dest.x + 2, dest.y + 2, srcConcrete.w, srcConcrete.h };
                     SDL_RenderCopy(renderer, pConcrete, &srcConcrete, &destConcrete);
                 }
 
                 // draw price
-                char text[50];
-                sprintf(text, "%d", iter->price);
-                SDL_Texture* pPriceTexture = pFontManager->createTextureWithText(text, COLOR_WHITE, FONT_STD10);
+                SDL_Texture* pPriceTexture = pFontManager->createTextureWithText(fmt::sprintf("%d", buildItem.price), COLOR_WHITE, FONT_STD10);
                 SDL_Rect drawLocation = calcDrawingRect(pPriceTexture, dest.x + 2, dest.y + BUILDERBTN_HEIGHT - getHeight(pPriceTexture) + 3);
                 SDL_RenderCopy(renderer, pPriceTexture, nullptr, &drawLocation);
                 SDL_DestroyTexture(pPriceTexture);
 
                 if(pStarport != nullptr) {
-                    bool soldOut = (pStarport->getOwner()->getChoam().getNumAvailable(iter->itemID) == 0);
+                    bool bSoldOut = (pStarport->getOwner()->getChoam().getNumAvailable(buildItem.itemID) == 0);
 
-                    if((pStarport->okToOrder() == false) || (soldOut == true)) {
+                    if(!pStarport->okToOrder() || bSoldOut) {
                         SDL_Rect progressBar = { dest.x, dest.y, BUILDERBTN_WIDTH, BUILDERBTN_HEIGHT };
                         renderFillRect(renderer, &progressBar, COLOR_HALF_TRANSPARENT);
                     }
 
-                    if(soldOut == true) {
+                    if(bSoldOut) {
                         SDL_Rect drawLocation = calcDrawingRect(pSoldOutTextTexture, dest.x + BUILDERBTN_WIDTH/2, dest.y + BUILDERBTN_HEIGHT/2, HAlign::Center, VAlign::Center);
                         SDL_RenderCopy(renderer, pSoldOutTextTexture, nullptr, &drawLocation);
                     }
 
-                } else if(currentGame->getGameInitSettings().getGameOptions().onlyOnePalace && iter->itemID == Structure_Palace && pBuilder->getOwner()->getNumItems(Structure_Palace) > 0) {
+                } else if(currentGame->getGameInitSettings().getGameOptions().onlyOnePalace && buildItem.itemID == Structure_Palace && pBuilder->getOwner()->getNumItems(Structure_Palace) > 0) {
 
                     SDL_Rect progressBar = { dest.x, dest.y, BUILDERBTN_WIDTH, BUILDERBTN_HEIGHT };
                     renderFillRect(renderer, &progressBar, COLOR_HALF_TRANSPARENT);
 
                     SDL_Rect drawLocation = calcDrawingRect(pAlreadyBuiltTextTexture, dest.x + BUILDERBTN_WIDTH/2, dest.y + BUILDERBTN_HEIGHT/2, HAlign::Center, VAlign::Center);
                     SDL_RenderCopy(renderer, pAlreadyBuiltTextTexture, nullptr, &drawLocation);
-                } else if(iter->itemID == pBuilder->getCurrentProducedItem()) {
+                } else if(buildItem.itemID == pBuilder->getCurrentProducedItem()) {
                     FixPoint progress = pBuilder->getProductionProgress();
-                    FixPoint price = iter->price;
+                    FixPoint price = buildItem.price;
                     int max_x = lround((progress/price)*BUILDERBTN_WIDTH);
 
                     SDL_Rect progressBar = { dest.x, dest.y, max_x, BUILDERBTN_HEIGHT };
                     renderFillRect(renderer, &progressBar, COLOR_HALF_TRANSPARENT);
 
-                    if(pBuilder->isWaitingToPlace() == true) {
+                    if(pBuilder->isWaitingToPlace()) {
                         SDL_Rect drawLocation = calcDrawingRect(pPlaceItTextTexture, dest.x + BUILDERBTN_WIDTH/2, dest.y + BUILDERBTN_HEIGHT/2, HAlign::Center, VAlign::Center);
                         SDL_RenderCopy(renderer, pPlaceItTextTexture, nullptr, &drawLocation);
-                    } else if(pBuilder->isOnHold() == true) {
+                    } else if(pBuilder->isOnHold()) {
                         SDL_Rect drawLocation = calcDrawingRect(pOnHoldTextTexture, dest.x + BUILDERBTN_WIDTH/2, dest.y + BUILDERBTN_HEIGHT/2, HAlign::Center, VAlign::Center);
                         SDL_RenderCopy(renderer, pOnHoldTextTexture, nullptr, &drawLocation);
-                    } else if(pBuilder->isUnitLimitReached() == true) {
+                    } else if(pBuilder->isUnitLimitReached(buildItem.itemID)) {
                         SDL_Rect drawLocation = calcDrawingRect(pUnitLimitReachedTextTexture, dest.x + BUILDERBTN_WIDTH/2, dest.y + BUILDERBTN_HEIGHT/2, HAlign::Center, VAlign::Center);
                         SDL_RenderCopy(renderer, pUnitLimitReachedTextTexture, nullptr, &drawLocation);
                     }
                 }
 
-                if(iter->num > 0) {
+                if(buildItem.num > 0) {
                     // draw number of this in build list
-                    sprintf(text, "%d", iter->num);
-                    SDL_Texture* pNumberTexture = pFontManager->createTextureWithText(text, COLOR_RED, FONT_STD10);
+                    SDL_Texture* pNumberTexture = pFontManager->createTextureWithText(fmt::sprintf("%d", buildItem.num), COLOR_RED, FONT_STD10);
                     SDL_Rect drawLocation = calcDrawingRect(pNumberTexture, dest.x + BUILDERBTN_WIDTH - 3, dest.y + BUILDERBTN_HEIGHT + 2, HAlign::Right, VAlign::Bottom);
                     SDL_RenderCopy(renderer, pNumberTexture, nullptr, &drawLocation);
                     SDL_DestroyTexture(pNumberTexture);
                 }
             }
+
+            i++;
         }
     }
 
@@ -335,17 +333,11 @@ void BuilderList::drawOverlay(Point position) {
 
             BuilderBase* pBuilder = dynamic_cast<BuilderBase*>(currentGame->getObjectManager().getObject(builderObjectID));
 
-            int j = 0;
-            std::list<BuildItem>::const_iterator iter;
-            for(iter = pBuilder->getBuildList().begin(); iter != pBuilder->getBuildList().end(); ++iter, j++) {
-                if(j == btn) {
-                    break;
-                }
-            }
+            auto buildItemIter = std::next(pBuilder->getBuildList().begin(), btn);
 
-            std::string text = resolveItemName(iter->itemID);
+            std::string text = resolveItemName(buildItemIter->itemID);
 
-            if(iter->itemID == pBuilder->getCurrentProducedItem() && pBuilder->isWaitingToPlace()) {
+            if(buildItemIter->itemID == pBuilder->getCurrentProducedItem() && pBuilder->isWaitingToPlace()) {
                 text += " (Hotkey: P)";
             }
 
@@ -385,19 +377,18 @@ void BuilderList::resize(Uint32 width, Uint32 height) {
     // move list to show currently produced item
     BuilderBase* pBuilder = dynamic_cast<BuilderBase*>(currentGame->getObjectManager().getObject(builderObjectID));
     if(pBuilder != nullptr) {
-        int currentProducedItemPos = 0;
-        for(std::list<BuildItem>::const_iterator iter = pBuilder->getBuildList().begin();
-             iter != pBuilder->getBuildList().end();
-             ++iter, ++currentProducedItemPos)
-        {
-            if(iter->itemID == pBuilder->getCurrentProducedItem()) {
-                break;
-            }
-        }
+        auto& buildList = pBuilder->getBuildList();
+        auto currentProducedItemIter = std::find_if(buildList.begin(),
+                                                    buildList.end(),
+                                                    [pBuilder](const BuildItem& buildItem) {
+                                                        return (buildItem.itemID == pBuilder->getCurrentProducedItem());
+                                                    });
 
-        if(currentProducedItemPos < (int)pBuilder->getBuildList().size()) {
-            int biggestLegalPosition = ((int)pBuilder->getBuildList().size()) - getNumButtons(getSize().y);
-            currentListPos = std::max(0, std::min(currentProducedItemPos-1,biggestLegalPosition));
+        if(currentProducedItemIter != buildList.end()) {
+            const int shiftFromTopPos = 1;
+            int biggestLegalPosition = ((int)buildList.size()) - getNumButtons(getSize().y);
+            int currentProducedItemPos = std::distance(buildList.begin(), currentProducedItemIter);
+            currentListPos = std::max(0, std::min(currentProducedItemPos-shiftFromTopPos,biggestLegalPosition));
         }
     }
 }
@@ -457,10 +448,7 @@ int BuilderList::getButton(int x, int y) {
     BuilderBase* pBuilder = dynamic_cast<BuilderBase*>(currentGame->getObjectManager().getObject(builderObjectID));
 
     if(pBuilder != nullptr) {
-        int i = 0;
-        std::list<BuildItem>::const_iterator iter;
-        for(iter = pBuilder->getBuildList().begin(); iter != pBuilder->getBuildList().end(); ++iter, i++) {
-
+        for(int i = 0; i < (int) pBuilder->getBuildList().size(); i++) {
             if((i >= currentListPos) && (i < currentListPos+getNumButtons(getSize().y) )) {
                 if(     (x >= getButtonPosition(i - currentListPos).x)
                     &&  (x < getButtonPosition(i - currentListPos).x + BUILDERBTN_WIDTH)
@@ -481,12 +469,9 @@ int BuilderList::getItemIDFromIndex(int i) {
     BuilderBase* pBuilder = dynamic_cast<BuilderBase*>(currentGame->getObjectManager().getObject(builderObjectID));
 
     if(pBuilder != nullptr) {
-        int j = 0;
-        std::list<BuildItem>::const_iterator iter;
-        for(iter = pBuilder->getBuildList().begin(); iter != pBuilder->getBuildList().end(); ++iter, j++) {
-            if(j == i) {
-                return iter->itemID;
-            }
+        auto buildItemIter = std::next(pBuilder->getBuildList().begin(), i);
+        if(buildItemIter != pBuilder->getBuildList().end()) {
+            return buildItemIter->itemID;
         }
     }
 

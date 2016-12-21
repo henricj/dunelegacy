@@ -6,14 +6,14 @@
 #include <RadarView.h>
 
 #include <misc/draw_util.h>
-#include <misc/string_util.h>
+#include <misc/format.h>
+#include <misc/exceptions.h>
 
 #include <mmath.h>
 #include <sand.h>
 #include <globals.h>
 
 #include <stdio.h>
-#include <stdexcept>
 #include <algorithm>
 
 INIMapPreviewCreator::INIMapPreviewCreator(std::shared_ptr<INIFile>& pINIFile)
@@ -260,11 +260,11 @@ SDL_Surface* INIMapPreviewCreator::createMinimapImageOfMap(int borderWidth, Uint
         offsetY += borderWidth;
 
         for(int y=0;y<sizeY;y++) {
-            std::string rowKey = strprintf("%.3d", y);
+            std::string rowKey = fmt::sprintf("%.3d", y);
 
             if(inifile->hasKey("MAP", rowKey) == false) {
                 SDL_FreeSurface(pMinimap);
-                logError(inifile->getSection("MAP")->getLineNumber(), "Map row " + stringify(y) + " does not exist!");
+                logError(inifile->getSection("MAP").getLineNumber(), "Map row " + stringify(y) + " does not exist!");
             }
 
             std::string rowString = inifile->getStringValue("MAP",rowKey);
@@ -323,96 +323,96 @@ SDL_Surface* INIMapPreviewCreator::createMinimapImageOfMap(int borderWidth, Uint
     }
 
     // draw structures
-    INIFile::KeyIterator iter;
+    if(inifile->hasSection("STRUCTURES")) {
+        for(const INIFile::Key& key : inifile->getSection("STRUCTURES")) {
+            std::string tmpkey = key.getKeyName();
+            std::string tmp = key.getStringValue();
 
-    for(iter = inifile->begin("STRUCTURES"); iter != inifile->end("STRUCTURES"); ++iter) {
-        std::string tmpkey = iter->getKeyName();
-        std::string tmp = iter->getStringValue();
+            if(tmpkey.compare(0,3,"GEN") == 0) {
+                // Gen Object/Structure
 
-        if(tmpkey.find("GEN") == 0) {
-            // Gen Object/Structure
-
-            std::string PosStr = tmpkey.substr(3,tmpkey.size()-3);
-            int pos;
-            if(!parseString(PosStr, pos)) {
-                continue;
-            }
-
-            std::string HouseStr, BuildingStr;
-            splitString(tmp,2,&HouseStr,&BuildingStr);
-
-            int house = getHouseByName(HouseStr);
-            Uint32 color = COLOR_WHITE;
-            if(house != HOUSE_INVALID) {
-                color = SDL2RGB(palette[houseToPaletteIndex[house]]);
-            } else {
-                convertToLower(HouseStr);
-                if(HouseStr.length() == 7 && HouseStr.substr(0,6) == "player") {
-                    int playernum = HouseStr.at(6)-'0';
-
-                    if(playernum >= 1 && playernum <= 6) {
-                        int val = 32*(playernum - 1) + 32;
-                        color = COLOR_RGB(val, val, val);
-                    }
-                } else {
-                    SDL_FreeSurface(pMinimap);
-                    logError(iter->getLineNumber(), "Invalid house string: '" + HouseStr + "'!");
+                std::string PosStr = tmpkey.substr(3,tmpkey.size()-3);
+                int pos;
+                if(!parseString(PosStr, pos)) {
+                    continue;
                 }
-            }
 
-            if(BuildingStr == "Concrete") {
-                // nothing
-            } else if(BuildingStr == "Wall") {
-                int x = pos % logicalSizeX - logicalOffsetX;
-                int y = pos / logicalSizeX - logicalOffsetY;
+                std::string HouseStr, BuildingStr;
+                splitString(tmp,2,&HouseStr,&BuildingStr);
 
-                if(x >= 0 && x < sizeX && y >= 0 && y < sizeY) {
-                    for(int i=0;i<scale;i++) {
-                        for(int j=0;j<scale;j++) {
-                            putPixel(pMinimap, x*scale + i + offsetX, y*scale + j + offsetY, color);
+                int house = getHouseByName(HouseStr);
+                Uint32 color = COLOR_WHITE;
+                if(house != HOUSE_INVALID) {
+                    color = SDL2RGB(palette[houseToPaletteIndex[house]]);
+                } else {
+                    convertToLower(HouseStr);
+                    if(HouseStr.length() == 7 && HouseStr.substr(0,6) == "player") {
+                        int playernum = HouseStr.at(6)-'0';
+
+                        if(playernum >= 1 && playernum <= 6) {
+                            int val = 32*(playernum - 1) + 32;
+                            color = COLOR_RGB(val, val, val);
                         }
+                    } else {
+                        SDL_FreeSurface(pMinimap);
+                        logError(key.getLineNumber(), "Invalid house string: '" + HouseStr + "'!");
                     }
                 }
-            }
-        } else if(iter->getKeyName().find("ID") == 0) {
-            // other structure
-            std::string HouseStr, BuildingStr, health, PosStr;
-            splitString(tmp,6,&HouseStr,&BuildingStr,&health,&PosStr);
 
-            int pos;
-            if(!parseString(PosStr, pos)) {
-                continue;
-            }
+                if(BuildingStr == "Concrete") {
+                    // nothing
+                } else if(BuildingStr == "Wall") {
+                    int x = pos % logicalSizeX - logicalOffsetX;
+                    int y = pos / logicalSizeX - logicalOffsetY;
 
-            int house = getHouseByName(HouseStr);
-            Uint32 color = COLOR_WHITE;
-            if(house != HOUSE_INVALID) {
-                color = SDL2RGB(palette[houseToPaletteIndex[house]]);
-            } else {
-                convertToLower(HouseStr);
-                if(HouseStr.length() == 7 && HouseStr.substr(0,6) == "player") {
-                    int playernum = HouseStr.at(6)-'0';
-
-                    if(playernum >= 1 && playernum <= 6) {
-                        int val = 32*(playernum - 1) + 32;
-                        color = COLOR_RGB(val, val, val);
-                    }
-                } else {
-                    SDL_FreeSurface(pMinimap);
-                    logError(iter->getLineNumber(), "Invalid house string: '" + HouseStr + "'!");
-                }
-            }
-
-            Coord size = getStructureSize(getItemIDByName(BuildingStr));
-
-            int posX = pos % logicalSizeX - logicalOffsetX;
-            int posY = pos / logicalSizeX - logicalOffsetY;
-            for(int x = posX; x < posX + size.x; x++) {
-                for(int y = posY; y < posY + size.y; y++) {
                     if(x >= 0 && x < sizeX && y >= 0 && y < sizeY) {
                         for(int i=0;i<scale;i++) {
                             for(int j=0;j<scale;j++) {
                                 putPixel(pMinimap, x*scale + i + offsetX, y*scale + j + offsetY, color);
+                            }
+                        }
+                    }
+                }
+            } else if(key.getKeyName().find("ID") == 0) {
+                // other structure
+                std::string HouseStr, BuildingStr, health, PosStr;
+                splitString(tmp,6,&HouseStr,&BuildingStr,&health,&PosStr);
+
+                int pos;
+                if(!parseString(PosStr, pos)) {
+                    continue;
+                }
+
+                int house = getHouseByName(HouseStr);
+                Uint32 color = COLOR_WHITE;
+                if(house != HOUSE_INVALID) {
+                    color = SDL2RGB(palette[houseToPaletteIndex[house]]);
+                } else {
+                    convertToLower(HouseStr);
+                    if(HouseStr.length() == 7 && HouseStr.substr(0,6) == "player") {
+                        int playernum = HouseStr.at(6)-'0';
+
+                        if(playernum >= 1 && playernum <= 6) {
+                            int val = 32*(playernum - 1) + 32;
+                            color = COLOR_RGB(val, val, val);
+                        }
+                    } else {
+                        SDL_FreeSurface(pMinimap);
+                        logError(key.getLineNumber(), "Invalid house string: '" + HouseStr + "'!");
+                    }
+                }
+
+                Coord size = getStructureSize(getItemIDByName(BuildingStr));
+
+                int posX = pos % logicalSizeX - logicalOffsetX;
+                int posY = pos / logicalSizeX - logicalOffsetY;
+                for(int x = posX; x < posX + size.x; x++) {
+                    for(int y = posY; y < posY + size.y; y++) {
+                        if(x >= 0 && x < sizeX && y >= 0 && y < sizeY) {
+                            for(int i=0;i<scale;i++) {
+                                for(int j=0;j<scale;j++) {
+                                    putPixel(pMinimap, x*scale + i + offsetX, y*scale + j + offsetY, color);
+                                }
                             }
                         }
                     }

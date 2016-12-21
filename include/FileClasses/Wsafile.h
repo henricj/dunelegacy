@@ -40,7 +40,7 @@ public:
     virtual ~Wsafile();
 
     SDL_Surface * getPicture(Uint32 FrameNumber);
-    SDL_Surface * getAnimationAsPictureRow();
+    SDL_Surface * getAnimationAsPictureRow(int numFramesX = std::numeric_limits<int>::max());
     Animation* getAnimation(unsigned int startindex, unsigned int endindex, bool bDoublePic=true, bool bSetColorKey=true);
 
     /// Returns the number of frames

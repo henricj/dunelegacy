@@ -147,9 +147,9 @@ public:
     void executeCommand() const;
 
 private:
-    std::vector<Uint32> parameter;      ///< the parameters for this command
-    CMDTYPE commandID;                  ///< the type of command
     Uint8   playerID;                   ///< the ID of the player that gave the command
+    CMDTYPE commandID;                  ///< the type of command
+    std::vector<Uint32> parameter;      ///< the parameters for this command
 };
 
 #endif // COMMAND_H

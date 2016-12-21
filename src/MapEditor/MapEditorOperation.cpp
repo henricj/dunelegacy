@@ -129,10 +129,9 @@ std::shared_ptr<MapEditorOperation> MapEditorStructurePlaceOperation::perform(Ma
 
     int maxID = 0;
     int minID = -1;
-    std::vector<MapEditor::Structure>::const_iterator iter;
-    for(iter = structures.begin(); iter != structures.end(); ++iter) {
-        maxID = std::max(maxID, iter->id );
-        minID = std::min(minID, iter->id );
+    for(const MapEditor::Structure& structure : structures) {
+        maxID = std::max(maxID, structure.id);
+        minID = std::min(minID, structure.id);
     }
 
     int newID = (preferredID != INVALID) ? preferredID : (maxID + 1);
@@ -152,9 +151,7 @@ std::shared_ptr<MapEditorOperation> MapEditorRemoveStructureOperation::perform(M
 
     std::vector<MapEditor::Structure>& structures = pMapEditor->getStructureList();
 
-    std::vector<MapEditor::Structure>::iterator iter;
-    for(iter = structures.begin(); iter != structures.end(); ++iter) {
-
+    for(auto iter = structures.begin(); iter != structures.end(); ++iter) {
         if(iter->id == id) {
             std::shared_ptr<MapEditorOperation> redoOperation(new MapEditorStructurePlaceOperation(iter->id, iter->position, iter->house, iter->itemID, iter->health));
 
@@ -174,9 +171,8 @@ std::shared_ptr<MapEditorOperation> MapEditorUnitPlaceOperation::perform(MapEdit
     std::vector<MapEditor::Unit>& units = pMapEditor->getUnitList();
 
     int maxID = 0;
-    std::vector<MapEditor::Unit>::const_iterator iter;
-    for(iter = units.begin(); iter != units.end(); ++iter) {
-        maxID = std::max(maxID, iter->id );
+    for(const MapEditor::Unit& unit : units) {
+        maxID = std::max(maxID, unit.id );
     }
 
     int newID = (preferredID != INVALID) ? preferredID : (maxID + 1);
@@ -192,9 +188,7 @@ std::shared_ptr<MapEditorOperation> MapEditorRemoveUnitOperation::perform(MapEdi
 
     std::vector<MapEditor::Unit>& units = pMapEditor->getUnitList();
 
-    std::vector<MapEditor::Unit>::iterator iter;
-    for(iter = units.begin(); iter != units.end(); ++iter) {
-
+    for(auto iter = units.begin(); iter != units.end(); ++iter) {
         if(iter->id == id) {
             std::shared_ptr<MapEditorOperation> redoOperation(new MapEditorUnitPlaceOperation(iter->id, iter->position, iter->house, iter->itemID, iter->health, iter->angle, iter->attackmode));
 

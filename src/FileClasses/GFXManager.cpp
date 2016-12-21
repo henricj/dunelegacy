@@ -31,8 +31,7 @@
 
 #include <misc/draw_util.h>
 #include <misc/Scaler.h>
-
-#include <stdexcept>
+#include <misc/exceptions.h>
 
 using std::shared_ptr;
 
@@ -134,6 +133,11 @@ GFXManager::GFXManager() {
         smallDetailPicTex[i] = nullptr;
     }
 
+    // init whole tinyPictureTex array
+    for(int i = 0; i < NUM_SMALLDETAILPICS; i++) {
+        tinyPictureTex[i] = nullptr;
+    }
+
     // init whole UIGraphic array
     for(int i = 0; i < NUM_UIGRAPHICS; i++) {
         for(int j = 0; j < (int) NUM_HOUSES; j++) {
@@ -172,7 +176,7 @@ GFXManager::GFXManager() {
     } else if(pFileManager->exists("CHOAMSHP.SHP")) {
         choam = loadShpfile("CHOAMSHP.SHP");
     } else {
-        throw std::runtime_error("GFXManager::GFXManager(): Cannot open CHOAMSHP.SHP or CHOAM."+_("LanguageFileExtension")+"!");
+        THROW(std::runtime_error, "GFXManager::GFXManager(): Cannot open CHOAMSHP.SHP or CHOAM."+_("LanguageFileExtension")+"!");
     }
 
     shared_ptr<Shpfile> bttn;
@@ -371,8 +375,50 @@ GFXManager::GFXManager() {
     // unused: FARTR.WSA, FHARK.WSA, FORDOS.WSA
 
 
+    tinyPictureTex[TinyPicture_Spice] = convertSurfaceToTexture(shapes->getPicture(94), true);
+    tinyPictureTex[TinyPicture_Barracks] = convertSurfaceToTexture(shapes->getPicture(62), true);
+    tinyPictureTex[TinyPicture_ConstructionYard] = convertSurfaceToTexture(shapes->getPicture(60), true);
+    tinyPictureTex[TinyPicture_GunTurret] = convertSurfaceToTexture(shapes->getPicture(67), true);
+    tinyPictureTex[TinyPicture_HeavyFactory] = convertSurfaceToTexture(shapes->getPicture(56), true);
+    tinyPictureTex[TinyPicture_HighTechFactory] = convertSurfaceToTexture(shapes->getPicture(57), true);
+    tinyPictureTex[TinyPicture_IX] = convertSurfaceToTexture(shapes->getPicture(58), true);
+    tinyPictureTex[TinyPicture_LightFactory] = convertSurfaceToTexture(shapes->getPicture(55), true);
+    tinyPictureTex[TinyPicture_Palace] = convertSurfaceToTexture(shapes->getPicture(54), true);
+    tinyPictureTex[TinyPicture_Radar] = convertSurfaceToTexture(shapes->getPicture(70), true);
+    tinyPictureTex[TinyPicture_Refinery] = convertSurfaceToTexture(shapes->getPicture(64), true);
+    tinyPictureTex[TinyPicture_RepairYard] = convertSurfaceToTexture(shapes->getPicture(65), true);
+    tinyPictureTex[TinyPicture_RocketTurret] = convertSurfaceToTexture(shapes->getPicture(68), true);
+    tinyPictureTex[TinyPicture_Silo] = convertSurfaceToTexture(shapes->getPicture(69), true);
+    tinyPictureTex[TinyPicture_Slab1] = convertSurfaceToTexture(shapes->getPicture(53), true);
+    tinyPictureTex[TinyPicture_Slab4] = convertSurfaceToTexture(shapes->getPicture(71), true);
+    tinyPictureTex[TinyPicture_StarPort] = convertSurfaceToTexture(shapes->getPicture(63), true);
+    tinyPictureTex[TinyPicture_Wall] = convertSurfaceToTexture(shapes->getPicture(66), true);
+    tinyPictureTex[TinyPicture_WindTrap] = convertSurfaceToTexture(shapes->getPicture(61), true);
+    tinyPictureTex[TinyPicture_WOR] = convertSurfaceToTexture(shapes->getPicture(59), true);
+    tinyPictureTex[TinyPicture_Carryall] = convertSurfaceToTexture(shapes->getPicture(77), true);
+    tinyPictureTex[TinyPicture_Devastator] = convertSurfaceToTexture(shapes->getPicture(75), true);
+    tinyPictureTex[TinyPicture_Deviator] = convertSurfaceToTexture(shapes->getPicture(86), true);
+    tinyPictureTex[TinyPicture_Frigate] = convertSurfaceToTexture(shapes->getPicture(77), true);    // use carryall picture
+    tinyPictureTex[TinyPicture_Harvester] = convertSurfaceToTexture(shapes->getPicture(88), true);
+    tinyPictureTex[TinyPicture_Soldier] = convertSurfaceToTexture(shapes->getPicture(90), true);
+    tinyPictureTex[TinyPicture_Launcher] = convertSurfaceToTexture(shapes->getPicture(73), true);
+    tinyPictureTex[TinyPicture_MCV] = convertSurfaceToTexture(shapes->getPicture(89), true);
+    tinyPictureTex[TinyPicture_Ornithopter] = convertSurfaceToTexture(shapes->getPicture(85), true);
+    tinyPictureTex[TinyPicture_Quad] = convertSurfaceToTexture(shapes->getPicture(74), true);
+    tinyPictureTex[TinyPicture_Saboteur] = convertSurfaceToTexture(shapes->getPicture(84), true);
+    tinyPictureTex[TinyPicture_Sandworm] = convertSurfaceToTexture(shapes->getPicture(93), true);
+    tinyPictureTex[TinyPicture_SiegeTank] = convertSurfaceToTexture(shapes->getPicture(72), true);
+    tinyPictureTex[TinyPicture_SonicTank] = convertSurfaceToTexture(shapes->getPicture(79), true);
+    tinyPictureTex[TinyPicture_Tank] = convertSurfaceToTexture(shapes->getPicture(78), true);
+    tinyPictureTex[TinyPicture_Trike] = convertSurfaceToTexture(shapes->getPicture(80), true);
+    tinyPictureTex[TinyPicture_RaiderTrike] = convertSurfaceToTexture(shapes->getPicture(87), true);
+    tinyPictureTex[TinyPicture_Trooper] = convertSurfaceToTexture(shapes->getPicture(76), true);
+    tinyPictureTex[TinyPicture_Special] = convertSurfaceToTexture(shapes->getPicture(75), true);    // use devastator picture
+    tinyPictureTex[TinyPicture_Infantry] = convertSurfaceToTexture(shapes->getPicture(81), true);
+    tinyPictureTex[TinyPicture_Troopers] = convertSurfaceToTexture(shapes->getPicture(91), true);
+
     // load UI graphics
-    uiGraphic[UI_RadarAnimation][HOUSE_HARKONNEN] = Scaler::doubleSurfaceNN(radar->getAnimationAsPictureRow());
+    uiGraphic[UI_RadarAnimation][HOUSE_HARKONNEN] = Scaler::doubleSurfaceNN(radar->getAnimationAsPictureRow(NUM_STATIC_ANIMATIONS_PER_ROW));
 
     uiGraphic[UI_CursorNormal][HOUSE_HARKONNEN] = mouse->getPicture(0);
     SDL_SetColorKey(uiGraphic[UI_CursorNormal][HOUSE_HARKONNEN], SDL_TRUE, 0);
@@ -845,6 +891,13 @@ GFXManager::~GFXManager() {
         }
     }
 
+    for(int i = 0; i < NUM_TINYPICTURE; i++) {
+        if(tinyPictureTex[i] != nullptr) {
+            SDL_DestroyTexture(tinyPictureTex[i]);
+            tinyPictureTex[i] = nullptr;
+        }
+    }
+
     for(int i = 0; i < NUM_UIGRAPHICS; i++) {
         for(int j = 0; j < (int) NUM_HOUSES; j++) {
             if(uiGraphic[i][j] != nullptr) {
@@ -883,16 +936,14 @@ GFXManager::~GFXManager() {
 
 SDL_Texture** GFXManager::getObjPic(unsigned int id, int house) {
     if(id >= NUM_OBJPICS) {
-        fprintf(stderr,"GFXManager::getObjPic(): Unit Picture with id %u is not available!\n",id);
-        exit(EXIT_FAILURE);
+        THROW(std::invalid_argument, "GFXManager::getObjPic(): Unit Picture with ID %u is not available!", id);
     }
 
     for(int z = 0; z < NUM_ZOOMLEVEL; z++) {
         if(objPic[id][house][z] == nullptr) {
             // remap to this color
             if(objPic[id][HOUSE_HARKONNEN][z] == nullptr) {
-                fprintf(stderr,"GFXManager::getObjPic(): Unit Picture with id %u is not loaded!\n",id);
-                exit(EXIT_FAILURE);
+                THROW(std::runtime_error, "GFXManager::getObjPic(): Unit Picture with ID %u is not loaded!", id);
             }
 
             objPic[id][house][z] = mapSurfaceColorRange(objPic[id][HOUSE_HARKONNEN][z], PALCOLOR_HARKONNEN, houseToPaletteIndex[house]);
@@ -941,17 +992,23 @@ SDL_Texture* GFXManager::getSmallDetailPic(unsigned int id) {
 }
 
 
+SDL_Texture* GFXManager::getTinyPicture(unsigned int id) {
+    if(id >= NUM_TINYPICTURE) {
+        return nullptr;
+    }
+    return tinyPictureTex[id];
+}
+
+
 SDL_Surface* GFXManager::getUIGraphicSurface(unsigned int id, int house) {
     if(id >= NUM_UIGRAPHICS) {
-        fprintf(stderr,"GFXManager::getUIGraphicSurface(): UI Graphic with id %u is not available!\n",id);
-        exit(EXIT_FAILURE);
+        THROW(std::invalid_argument, "GFXManager::getUIGraphicSurface(): UI Graphic with ID %u is not available!", id);
     }
 
     if(uiGraphic[id][house] == nullptr) {
         // remap to this color
         if(uiGraphic[id][HOUSE_HARKONNEN] == nullptr) {
-            fprintf(stderr,"GFXManager::getUIGraphicSurface(): UI Graphic with id %u is not loaded!\n",id);
-            exit(EXIT_FAILURE);
+            THROW(std::runtime_error, "GFXManager::getUIGraphicSurface(): UI Graphic with ID %u is not loaded!", id);
         }
 
         uiGraphic[id][house] = mapSurfaceColorRange(uiGraphic[id][HOUSE_HARKONNEN], PALCOLOR_HARKONNEN, houseToPaletteIndex[house]);
@@ -962,8 +1019,7 @@ SDL_Surface* GFXManager::getUIGraphicSurface(unsigned int id, int house) {
 
 SDL_Texture* GFXManager::getUIGraphic(unsigned int id, int house) {
     if(id >= NUM_UIGRAPHICS) {
-        fprintf(stderr,"GFXManager::getUIGraphic(): UI Graphic with id %u is not available!\n",id);
-        exit(EXIT_FAILURE);
+        THROW(std::invalid_argument, "GFXManager::getUIGraphic(): UI Graphic with ID %u is not available!", id);
     }
 
     if(uiGraphicTex[id][house] == nullptr) {
@@ -971,6 +1027,10 @@ SDL_Texture* GFXManager::getUIGraphic(unsigned int id, int house) {
 
         if(id >= UI_MapChoiceArrow_None && id <= UI_MapChoiceArrow_Left) {
             uiGraphicTex[id][house] = convertSurfaceToTexture(generateMapChoiceArrowFrames(pSurface, house), true);
+        } else if(id == UI_Indicator) {
+            SDL_Surface* pIndicator = convertSurfaceToDisplayFormat(pSurface, false);
+            replaceColor(pIndicator, COLOR_WHITE, COLOR_INDICATOR_TRANSPARENT);
+            uiGraphicTex[UI_Indicator][house] = convertSurfaceToTexture(pIndicator, true);
         } else {
             uiGraphicTex[id][house] = convertSurfaceToTexture(pSurface, false);
         }
@@ -981,15 +1041,13 @@ SDL_Texture* GFXManager::getUIGraphic(unsigned int id, int house) {
 
 SDL_Surface* GFXManager::getMapChoicePieceSurface(unsigned int num, int house) {
     if(num >= NUM_MAPCHOICEPIECES) {
-        fprintf(stderr,"GFXManager::getMapChoicePieceSurface(): Map Piece with number %u is not available!\n",num);
-        exit(EXIT_FAILURE);
+        THROW(std::invalid_argument, "GFXManager::getMapChoicePieceSurface(): Map Piece with number %u is not available!", num);
     }
 
     if(mapChoicePieces[num][house] == nullptr) {
         // remap to this color
         if(mapChoicePieces[num][HOUSE_HARKONNEN] == nullptr) {
-            fprintf(stderr,"GFXManager::getMapChoicePieceSurface(): Map Piece with number %u is not loaded!\n",num);
-            exit(EXIT_FAILURE);
+            THROW(std::runtime_error, "GFXManager::getMapChoicePieceSurface(): Map Piece with number %u is not loaded!", num);
         }
 
         mapChoicePieces[num][house] = mapSurfaceColorRange(mapChoicePieces[num][HOUSE_HARKONNEN], PALCOLOR_HARKONNEN, houseToPaletteIndex[house]);
@@ -1000,8 +1058,7 @@ SDL_Surface* GFXManager::getMapChoicePieceSurface(unsigned int num, int house) {
 
 SDL_Texture* GFXManager::getMapChoicePiece(unsigned int num, int house) {
     if(num >= NUM_MAPCHOICEPIECES) {
-        fprintf(stderr,"GFXManager::getMapChoicePiece(): Map Piece with number %u is not available!\n",num);
-        exit(EXIT_FAILURE);
+        THROW(std::invalid_argument, "GFXManager::getMapChoicePiece(): Map Piece with number %u is not available!", num);
     }
 
     if(mapChoicePiecesTex[num][house] == nullptr) {
@@ -1013,8 +1070,7 @@ SDL_Texture* GFXManager::getMapChoicePiece(unsigned int num, int house) {
 
 Animation* GFXManager::getAnimation(unsigned int id) {
     if(id >= NUM_ANIMATION) {
-        fprintf(stderr,"GFXManager::getAnimation(): Animation with id %u is not available!\n",id);
-        exit(EXIT_FAILURE);
+        THROW(std::invalid_argument, "GFXManager::getAnimation(): Animation with ID %u is not available!", id);
     }
 
     if(animation[id] == nullptr) {
@@ -1103,8 +1159,7 @@ Animation* GFXManager::getAnimation(unsigned int id) {
             case Anim_Slab4:            animation[Anim_Slab4] = loadAnimationFromWsa("4SLAB.WSA");               break;
 
             default: {
-                fprintf(stderr,"GFXManager::getAnimation(): Invalid animation id %u\n",id);
-                exit(EXIT_FAILURE);
+                THROW(std::runtime_error, "GFXManager::getAnimation(): Invalid animation ID %u", id);
             } break;
         }
 
@@ -1116,15 +1171,15 @@ Animation* GFXManager::getAnimation(unsigned int id) {
     return animation[id];
 }
 
-shared_ptr<Shpfile> GFXManager::loadShpfile(std::string filename) {
+shared_ptr<Shpfile> GFXManager::loadShpfile(const std::string& filename) {
     try {
         return shared_ptr<Shpfile>(new Shpfile(pFileManager->openFile(filename), true));
     } catch (std::exception &e) {
-        throw std::runtime_error("Error in file \"" + filename + "\":" + e.what());
+        THROW(std::runtime_error, "Error in file \"" + filename + "\":" + e.what());
     }
 }
 
-shared_ptr<Wsafile> GFXManager::loadWsafile(std::string filename) {
+shared_ptr<Wsafile> GFXManager::loadWsafile(const std::string& filename) {
     SDL_RWops* file_wsa = nullptr;
     std::shared_ptr<Wsafile> wsafile;
     try {
@@ -1136,36 +1191,29 @@ shared_ptr<Wsafile> GFXManager::loadWsafile(std::string filename) {
         if(file_wsa != nullptr) {
             SDL_RWclose(file_wsa);
         }
-        throw std::runtime_error(std::string("Error in file \"" + filename + "\":") + e.what());
+        THROW(std::runtime_error, std::string("Error in file \"" + filename + "\":") + e.what());
     }
 }
 
-SDL_Texture* GFXManager::extractSmallDetailPic(std::string filename) {
-    SDL_RWops* myFile;
-    if((myFile = pFileManager->openFile(filename.c_str())) == nullptr) {
-        fprintf(stderr,"GFXManager::extractSmallDetailPic(): Cannot open %s!\n",filename.c_str());
-        exit(EXIT_FAILURE);
-    }
+SDL_Texture* GFXManager::extractSmallDetailPic(const std::string& filename) {
+    SDL_RWops* myFile = pFileManager->openFile(filename);
 
     Wsafile* myWsafile = new Wsafile(myFile);
 
     SDL_Surface* tmp;
     if((tmp = myWsafile->getPicture(0)) == nullptr) {
-        fprintf(stderr,"GFXManager::extractSmallDetailPic(): Cannot decode first frame in file %s!\n",filename.c_str());
-        exit(EXIT_FAILURE);
+        THROW(std::runtime_error, "Cannot decode first frame in file '%s'!", filename);
     }
 
     if((tmp->w != 184) || (tmp->h != 112)) {
-        fprintf(stderr,"GFXManager::extractSmallDetailPic(): Picture %s is not 184x112!\n",filename.c_str());
-        exit(EXIT_FAILURE);
+        THROW(std::runtime_error, "Picture '%s' is not of size 184x112!", filename);
     }
 
     SDL_Surface* pSurface;
 
     // create new picture surface
     if((pSurface = SDL_CreateRGBSurface(0, 91, 55, 8, 0, 0, 0, 0)) == nullptr) {
-        fprintf(stderr,"GFXManager::extractSmallDetailPic(): Cannot create new Picture for %s!\n",filename.c_str());
-        exit(EXIT_FAILURE);
+        THROW(sdl_error, "Cannot create new surface: %s!", SDL_GetError());
     }
 
     palette.applyToSurface(pSurface);
@@ -1190,15 +1238,9 @@ SDL_Texture* GFXManager::extractSmallDetailPic(std::string filename) {
     return convertSurfaceToTexture(pSurface, true);
 }
 
-Animation* GFXManager::loadAnimationFromWsa(std::string filename) {
-    SDL_RWops* file;
-    if((file = pFileManager->openFile(filename)) == nullptr) {
-        fprintf(stderr,"GFXManager::LoadAnimationFromWsa(): Cannot open %s!\n",filename.c_str());
-        exit(EXIT_FAILURE);
-    }
-
+Animation* GFXManager::loadAnimationFromWsa(const std::string& filename) {
+    SDL_RWops* file = pFileManager->openFile(filename);
     Wsafile* wsafile = new Wsafile(file);
-
     Animation* ret = wsafile->getAnimation(0,wsafile->getNumFrames() - 1,true,false);
     delete wsafile;
     SDL_RWclose(file);
@@ -1249,7 +1291,7 @@ SDL_Surface* GFXManager::generateWindtrapAnimationFrames(SDL_Surface* windtrapPi
     }
 
     if((returnPic->w > 2048) || (returnPic->h > 2048)) {
-        fprintf(stderr, "Warning: Size of sprite sheet for windtrap is %dx%d; may exceed hardware limits on older GPUs!\n", returnPic->w, returnPic->h);
+        SDL_Log("Warning: Size of sprite sheet for windtrap is %dx%d; may exceed hardware limits on older GPUs!", returnPic->w, returnPic->h);
     }
 
     return returnPic;
@@ -1292,7 +1334,7 @@ SDL_Surface* GFXManager::generateDoubledObjPic(unsigned int id, int h) {
 
             SDL_FreeSurface(pOverlay);
         } else {
-            fprintf(stderr, "Warning: No HD sprite sheet for '%s' in zoom level 1!\n", ObjPicNames.at(id).c_str());
+            SDL_Log("Warning: No HD sprite sheet for '%s' in zoom level 1!", ObjPicNames.at(id).c_str());
             pSurface = Scaler::defaultDoubleTiledSurface(objPic[id][h][0], objPicTiles[id].x, objPicTiles[id].y, false);
         }
     } else {
@@ -1300,7 +1342,7 @@ SDL_Surface* GFXManager::generateDoubledObjPic(unsigned int id, int h) {
     }
 
     if((pSurface->w > 2048) || (pSurface->h > 2048)) {
-        fprintf(stderr, "Warning: Size of sprite sheet for '%s' in zoom level 1 is %dx%d; may exceed hardware limits on older GPUs!\n", ObjPicNames.at(id).c_str(), pSurface->w, pSurface->h);
+        SDL_Log("Warning: Size of sprite sheet for '%s' in zoom level 1 is %dx%d; may exceed hardware limits on older GPUs!", ObjPicNames.at(id).c_str(), pSurface->w, pSurface->h);
     }
 
     return pSurface;
@@ -1325,7 +1367,7 @@ SDL_Surface* GFXManager::generateTripledObjPic(unsigned int id, int h) {
 
             SDL_FreeSurface(pOverlay);
         } else {
-            fprintf(stderr, "Warning: No HD sprite sheet for '%s' in zoom level 2!\n", ObjPicNames.at(id).c_str());
+            SDL_Log("Warning: No HD sprite sheet for '%s' in zoom level 2!", ObjPicNames.at(id).c_str());
             pSurface = Scaler::defaultTripleTiledSurface(objPic[id][h][0], objPicTiles[id].x, objPicTiles[id].y, false);
         }
     } else {
@@ -1334,7 +1376,7 @@ SDL_Surface* GFXManager::generateTripledObjPic(unsigned int id, int h) {
 
 
     if((pSurface->w > 2048) || (pSurface->h > 2048)) {
-        fprintf(stderr, "Warning: Size of sprite sheet for '%s' in zoom level 2 is %dx%d; may exceed hardware limits on older GPUs!\n", ObjPicNames.at(id).c_str(), pSurface->w, pSurface->h);
+        SDL_Log("Warning: Size of sprite sheet for '%s' in zoom level 2 is %dx%d; may exceed hardware limits on older GPUs!", ObjPicNames.at(id).c_str(), pSurface->w, pSurface->h);
     }
 
     return pSurface;

@@ -103,15 +103,13 @@ void BuilderBase::save(OutputStream& stream) const {
     stream.writeUint32(deployTimer);
 
     stream.writeUint32(currentProductionQueue.size());
-    std::list<ProductionQueueItem>::const_iterator iter;
-    for(iter = currentProductionQueue.begin(); iter != currentProductionQueue.end(); ++iter) {
-        iter->save(stream);
+    for(const ProductionQueueItem& queueItem : currentProductionQueue) {
+        queueItem.save(stream);
     }
 
     stream.writeUint32(buildList.size());
-    std::list<BuildItem>::const_iterator iter2;
-    for(iter2 = buildList.begin(); iter2 != buildList.end(); ++iter2) {
-        iter2->save(stream);
+    for(const BuildItem& buildItem : buildList) {
+        buildItem.save(stream);
     }
 }
 
@@ -190,12 +188,18 @@ bool BuilderBase::isWaitingToPlace() const {
     }
 }
 
-bool BuilderBase::isUnitLimitReached() const {
+bool BuilderBase::isUnitLimitReached(Uint32 itemID) const {
     if((currentProducedItem == ItemID_Invalid) || isStructure(currentProducedItem)) {
         return false;
     }
 
-    return getOwner()->isUnitLimitReached();
+    if(isInfantryUnit(itemID)) {
+        return getOwner()->isInfantryUnitLimitReached();
+    } else if(isFlyingUnit(itemID)) {
+        return getOwner()->isAirUnitLimitReached();
+    } else {
+        return getOwner()->isGroundUnitLimitReached();
+    }
 }
 
 
@@ -203,7 +207,7 @@ void BuilderBase::updateProductionProgress() {
     if(currentProducedItem != ItemID_Invalid) {
         BuildItem* tmp = getBuildItem(currentProducedItem);
 
-        if((productionProgress < tmp->price) && (isOnHold() == false) && (isUnitLimitReached() == false) && (owner->getCredits() > 0)) {
+        if((productionProgress < tmp->price) && (isOnHold() == false) && (isUnitLimitReached(currentProducedItem) == false) && (owner->getCredits() > 0)) {
 
             FixPoint oldProgress = productionProgress;
 
@@ -222,7 +226,7 @@ void BuilderBase::updateProductionProgress() {
                 productionProgress += owner->takeCredits(buildCosts*buildSpeed);
 
                 /* That was wrong. Build speed does not depend on power production
-                if (getOwner()->hasPower() || (((currentGame->gameType == GAMETYPE_CAMPAIGN) || (currentGame->gameType == GAMETYPE_SKIRMISH)) && getOwner()->isAI())) {
+                if (getOwner()->hasPower() || (((currentGame->gameType == GameType::Campaign) || (currentGame->gameType == GameType::Skirmish)) && getOwner()->isAI())) {
                     //if not enough power, production is halved
                     ProductionProgress += owner->takeCredits(FixPt(0,25));
                 } else {
@@ -243,14 +247,9 @@ void BuilderBase::updateProductionProgress() {
 }
 
 void BuilderBase::doBuildRandom() {
-    int randNum = currentGame->randomGen.rand(0, getBuildListSize()-1);
-    int i = 0;
-    std::list<BuildItem>::iterator iter;
-    for(iter = buildList.begin(); iter != buildList.end(); ++iter) {
-        if(i == randNum) {
-            doProduceItem(iter->itemID);
-            break;
-        }
+    if(!buildList.empty()) {
+        int item2Produce = std::next(buildList.begin(), currentGame->randomGen.rand(0, static_cast<Sint32>(buildList.size())-1))->itemID;
+        doProduceItem(item2Produce);
     }
 }
 
@@ -368,22 +367,23 @@ bool BuilderBase::update() {
                 UnitBase* newUnit = getOwner()->createUnit(finishedItemID);
 
                 if(newUnit != nullptr) {
-                    Coord spot = currentGameMap->findDeploySpot(newUnit, location, destination, structureSize);
-                    newUnit->deploy(spot);
-
-                    if(getOwner()->isAI()
-                        && (newUnit->getItemID() != Unit_Carryall)
-                        && (newUnit->getItemID() != Unit_Harvester)
-                        && (newUnit->getItemID() != Unit_MCV)) {
-                        //newUnit->doSetAttackMode(AREAGUARD);
-                    } else {
+                    Coord unitDestination;
+                    if( getOwner()->isAI()
+                        && ((newUnit->getItemID() == Unit_Carryall)
+                            || (newUnit->getItemID() == Unit_Harvester)
+                            || (newUnit->getItemID() == Unit_MCV))) {
                         // Don't want harvesters going to the rally point
-                        destination = location;
+                        unitDestination = location;
+                    } else {
+                        unitDestination = destination;
                     }
 
-                    if(destination.isValid() && newUnit->getItemID() != Unit_Harvester) {
-                        newUnit->setGuardPoint(destination);
-                        newUnit->setDestination(destination);
+                    Coord spot = newUnit->isAFlyingUnit() ? location + Coord(1,1) : currentGameMap->findDeploySpot(newUnit, location, currentGame->randomGen, unitDestination, structureSize);
+                    newUnit->deploy(spot);
+
+                    if(unitDestination.isValid()) {
+                        newUnit->setGuardPoint(unitDestination);
+                        newUnit->setDestination(unitDestination);
                         newUnit->setAngle(destinationDrawnAngle(newUnit->getLocation(), newUnit->getDestination()));
                     }
 
@@ -421,14 +421,15 @@ bool BuilderBase::update() {
 
 void BuilderBase::removeBuiltItemFromProductionQueue() {
     productionProgress = 0;
-    std::list<BuildItem>::iterator iter;
-    for(iter = buildList.begin(); iter != buildList.end(); ++iter) {
-        if(iter->itemID == currentProducedItem) {
-            if(iter->num > 0) {
-                iter->num--;
-                break;
-            }
-        }
+
+    auto currentBuildItemIter = std::find_if(   buildList.begin(),
+                                                buildList.end(),
+                                                [&](BuildItem& buildItem) {
+                                                    return ((buildItem.itemID == currentProducedItem) && (buildItem.num > 0));
+                                                });
+
+    if(currentBuildItemIter != buildList.end()) {
+        currentBuildItemIter->num--;
     }
 
     deployTimer = 0;
@@ -441,10 +442,11 @@ void BuilderBase::handleUpgradeClick() {
 }
 
 void BuilderBase::handleProduceItemClick(Uint32 itemID, bool multipleMode) {
-    std::list<BuildItem>::iterator iter;
-    for(iter = buildList.begin(); iter != buildList.end(); ++iter) {
-        if(iter->itemID == itemID) {
-            if(currentGame->getGameInitSettings().getGameOptions().onlyOnePalace && itemID == Structure_Palace && (iter->num > 0 || owner->getNumItems(Structure_Palace) > 0)) {
+    for(const BuildItem& buildItem : buildList) {
+        if(buildItem.itemID == itemID) {
+            if( currentGame->getGameInitSettings().getGameOptions().onlyOnePalace
+                && (itemID == Structure_Palace)
+                && ((buildItem.num > 0) || (owner->getNumItems(Structure_Palace) > 0))) {
                 // only one palace allowed
                 soundPlayer->playSound(Sound_InvalidAction);
                 return;
@@ -477,21 +479,23 @@ bool BuilderBase::doUpgrade() {
 }
 
 void BuilderBase::doProduceItem(Uint32 itemID, bool multipleMode) {
-    std::list<BuildItem>::iterator iter;
-    for(iter = buildList.begin(); iter != buildList.end(); ++iter) {
-        if(iter->itemID == itemID) {
+    for(BuildItem& buildItem : buildList) {
+        if(buildItem.itemID == itemID) {
             for(int i = 0; i < (multipleMode ? 5 : 1); i++) {
-                if(currentGame->getGameInitSettings().getGameOptions().onlyOnePalace && itemID == Structure_Palace && (iter->num > 0 || owner->getNumItems(Structure_Palace) > 0)) {
+                if( currentGame->getGameInitSettings().getGameOptions().onlyOnePalace
+                    && (itemID == Structure_Palace)
+                    && ((buildItem.num > 0) || (owner->getNumItems(Structure_Palace) > 0))) {
                     // only one palace allowed
                     return;
                 }
 
-                iter->num++;
-                currentProductionQueue.push_back( ProductionQueueItem(itemID, iter->price) );
+                buildItem.num++;
+                currentProductionQueue.push_back( ProductionQueueItem(itemID, buildItem.price) );
                 if(currentProducedItem == ItemID_Invalid) {
                     productionProgress = 0;
                     currentProducedItem = itemID;
                 }
+                pLocalPlayer->onProduceItem(itemID);
             }
             break;
         }
@@ -499,29 +503,30 @@ void BuilderBase::doProduceItem(Uint32 itemID, bool multipleMode) {
 }
 
 void BuilderBase::doCancelItem(Uint32 itemID, bool multipleMode) {
-    std::list<BuildItem>::iterator iter;
-    for(iter = buildList.begin(); iter != buildList.end(); ++iter) {
-        if(iter->itemID == itemID) {
+    for(BuildItem& buildItem : buildList) {
+        if(buildItem.itemID == itemID) {
             for(int i = 0; i < (multipleMode ? 5 : 1); i++) {
-                if(iter->num > 0) {
-                    iter->num--;
+                if(buildItem.num > 0) {
+                    buildItem.num--;
 
-                    bool cancelCurrentItem = (itemID == currentProducedItem);
-                    std::list<ProductionQueueItem>::reverse_iterator iter2;
-                    for(iter2 = currentProductionQueue.rbegin(); iter2 != currentProductionQueue.rend(); ++iter2) {
-                        if(iter2->itemID == itemID) {
-                            if(iter->num == 0 && cancelCurrentItem == true) {
-                                owner->returnCredits(productionProgress);
-                            } else {
-                                cancelCurrentItem = false;
-                            }
-                            currentProductionQueue.erase((++iter2).base());
+                    bool bCancelCurrentItem = (itemID == currentProducedItem);
 
-                            break;
+                    auto queueItemIter = std::find_if(  currentProductionQueue.rbegin(),
+                                                        currentProductionQueue.rend(),
+                                                        [&](ProductionQueueItem& queueItem) {
+                                                            return (queueItem.itemID == itemID);
+                                                        });
+
+                    if(queueItemIter != currentProductionQueue.rend()) {
+                        if(buildItem.num == 0 && bCancelCurrentItem) {
+                            owner->returnCredits(productionProgress);
+                        } else {
+                            bCancelCurrentItem = false;
                         }
+                        currentProductionQueue.erase(std::next(queueItemIter).base());
                     }
 
-                    if(cancelCurrentItem == true) {
+                    if(bCancelCurrentItem) {
                         deployTimer = 0;
                         produceNextAvailableItem();
                     }

@@ -28,11 +28,11 @@ class ChangeEventList {
 public:
     class ChangeEvent {
     public:
-        enum EventType {
-            EventType_ChangeHouse,
-            EventType_ChangeTeam,
-            EventType_ChangePlayer,
-            EventType_SetHumanPlayer
+        enum class EventType {
+            ChangeHouse,
+            ChangeTeam,
+            ChangePlayer,
+            SetHumanPlayer
         };
 
 
@@ -41,15 +41,15 @@ public:
 
         }
 
-        ChangeEvent(Uint32 slot, std::string newStringValue)
-         : eventType(EventType_SetHumanPlayer), slot(slot), newStringValue(newStringValue) {
+        ChangeEvent(Uint32 slot, const std::string& newStringValue)
+         : eventType(EventType::SetHumanPlayer), slot(slot), newStringValue(newStringValue) {
         }
 
         explicit ChangeEvent(InputStream& stream) {
-            eventType = (EventType) stream.readUint32();
+            eventType = static_cast<EventType>(stream.readUint32());
             slot = stream.readUint32();
 
-            if(eventType == EventType_SetHumanPlayer) {
+            if(eventType == EventType::SetHumanPlayer) {
                 newStringValue = stream.readString();
             } else {
                 newValue = stream.readUint32();
@@ -57,9 +57,9 @@ public:
         }
 
         void save(OutputStream& stream) const {
-            stream.writeUint32((Uint32) eventType);
+            stream.writeUint32(static_cast<Uint32>(eventType));
             stream.writeUint32(slot);
-            if(eventType == EventType_SetHumanPlayer) {
+            if(eventType == EventType::SetHumanPlayer) {
                 stream.writeString(newStringValue);
             } else {
                 stream.writeUint32(newValue);
@@ -88,10 +88,8 @@ public:
 
     void save(OutputStream& stream) const {
         stream.writeUint32(changeEventList.size());
-
-        std::list<ChangeEvent>::const_iterator iter;
-        for(iter = changeEventList.begin(); iter != changeEventList.end(); ++iter) {
-            iter->save(stream);
+        for(const ChangeEvent& changeEvent : changeEventList) {
+            changeEvent.save(stream);
         }
     }
 

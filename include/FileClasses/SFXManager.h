@@ -41,11 +41,6 @@ typedef enum {
     BaseIsUnderAttack,  ///< unused
     SaboteurApproaching,
     MissileApproaching,
-    NUM_VOICE
-} Voice_enum;
-
-// Sound
-typedef enum {
     YesSir,
     Reporting,
     Acknowledged,
@@ -56,6 +51,11 @@ typedef enum {
     HouseHarkonnen,
     HouseAtreides,
     HouseOrdos,
+    NUM_VOICE
+} Voice_enum;
+
+// Sound
+typedef enum {
     Sound_PlaceStructure,
     Sound_ButtonClick,
     Sound_InvalidAction,
@@ -96,12 +96,12 @@ public:
     Mix_Chunk*      getSound(Sound_enum id);
 
 private:
-    Mix_Chunk*      loadMixFromADL(std::string adlFile, int index);
+    Mix_Chunk*      loadMixFromADL(const std::string& adlFile, int index, int volume = MIX_MAX_VOLUME/2);
 
     void            loadEnglishVoice();
     Mix_Chunk*      getEnglishVoice(Voice_enum id, int house);
 
-    void            loadNonEnglishVoice(std::string languagePrefix);
+    void            loadNonEnglishVoice(const std::string& languagePrefix);
     Mix_Chunk*      getNonEnglishVoice(Voice_enum id, int house);
 
     Mix_Chunk**     lngVoice;

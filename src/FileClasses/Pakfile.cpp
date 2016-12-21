@@ -16,12 +16,12 @@
  */
 
 #include <FileClasses/Pakfile.h>
+#include <misc/exceptions.h>
 
 #include <stdlib.h>
 #include <string>
 #include <SDL_endian.h>
 #include <SDL.h>
-#include <stdexcept>
 
 
 /// Constructor for Pakfile
@@ -32,13 +32,13 @@
     \param pakfilename  Filename of the *.pak-File.
     \param write        Specified if the PAK-File is opened for reading or writing (default is false).
 */
-Pakfile::Pakfile(std::string pakfilename, bool write)
+Pakfile::Pakfile(const std::string& pakfilename, bool write)
  : write(write), fPakFile(nullptr), filename(pakfilename), writeOutData(nullptr), numWriteOutData(0) {
 
     if(write == false) {
         // Open for reading
         if( (fPakFile = SDL_RWFromFile(filename.c_str(), "rb")) == nullptr) {
-            throw std::invalid_argument("Pakfile::Pakfile(): Cannot open " + pakfilename + "!");
+            THROW(std::invalid_argument, "Pakfile::Pakfile(): Cannot open " + pakfilename + "!");
         }
 
         try {
@@ -50,7 +50,7 @@ Pakfile::Pakfile(std::string pakfilename, bool write)
     } else {
         // Open for writing
         if( (fPakFile = SDL_RWFromFile(filename.c_str(), "wb")) == nullptr) {
-            throw std::invalid_argument("Pakfile::Pakfile(): Cannot open " + pakfilename + "!");
+            THROW(std::invalid_argument, "Pakfile::Pakfile(): Cannot open " + pakfilename + "!");
         }
     }
 }
@@ -104,9 +104,10 @@ Pakfile::~Pakfile()
     \param  index   Index in pak-File
     \return name of the file specified by index
 */
-std::string Pakfile::getFilename(unsigned int index) const {
-    if(index >= fileEntries.size())
-        return "";
+const std::string& Pakfile::getFilename(unsigned int index) const {
+    if(index >= fileEntries.size()) {
+        THROW(std::invalid_argument, "Pakfile::getFilename(%ud): This Pakfile has only %ud entries!", index, fileEntries.size());
+    }
 
     return fileEntries[index].filename;
 }
@@ -118,13 +119,13 @@ std::string Pakfile::getFilename(unsigned int index) const {
     \param  rwop        Data to add (the SDL_RWop can be read-only but must support seeking)
     \param  filename    This is the filename the data is added with
 */
-void Pakfile::addFile(SDL_RWops* rwop, std::string filename) {
+void Pakfile::addFile(SDL_RWops* rwop, const std::string& filename) {
     if(write == false) {
-        throw std::runtime_error("Pakfile::addFile(): Pakfile is opened for read-only!");
+        THROW(std::runtime_error, "Pakfile::addFile(): Pakfile is opened for read-only!");
     }
 
     if(rwop == nullptr) {
-        throw std::invalid_argument("Pakfile::addFile(): rwop==nullptr is not allowed!");
+        THROW(std::invalid_argument, "Pakfile::addFile(): rwop==nullptr is not allowed!");
     }
 
 
@@ -143,11 +144,10 @@ void Pakfile::addFile(SDL_RWops* rwop, std::string filename) {
         char* shrinkedBuffer;
         if((shrinkedBuffer = (char*) realloc(writeOutData,numWriteOutData)) == nullptr) {
             // shrinking the buffer should not fail
-            perror("realloc()");
-            exit(EXIT_FAILURE);
+            THROW(std::runtime_error, "Pakfile::addFile(): realloc failed!");
         }
         writeOutData = shrinkedBuffer;
-        throw std::runtime_error("Pakfile::addFile(): SDL_RWread failed!");
+        THROW(std::runtime_error, "Pakfile::addFile(): SDL_RWread failed!");
     }
 
     PakFileEntry newPakFileEntry;
@@ -172,7 +172,7 @@ void Pakfile::addFile(SDL_RWops* rwop, std::string filename) {
     \param  filename    The name of this file
     \return SDL_RWops for this file
 */
-SDL_RWops* Pakfile::openFile(std::string filename) {
+SDL_RWops* Pakfile::openFile(const std::string& filename) {
     if(write == true) {
         // reading files is not allowed
         return nullptr;
@@ -214,7 +214,7 @@ SDL_RWops* Pakfile::openFile(std::string filename) {
     return pRWop;
 }
 
-bool Pakfile::exists(std::string filename) const {
+bool Pakfile::exists(const std::string& filename) const {
     for(unsigned int i=0;i<fileEntries.size();i++) {
         if(filename == fileEntries[i].filename) {
             return true;
@@ -342,7 +342,7 @@ void Pakfile::readIndex()
         PakFileEntry newEntry;
 
         if(SDL_RWread(fPakFile,(void*) &newEntry.startOffset, sizeof(newEntry.startOffset), 1) != 1) {
-            throw std::runtime_error("Pakfile::readIndex(): SDL_RWread() failed!");
+            THROW(std::runtime_error, "Pakfile::readIndex(): SDL_RWread() failed!");
         }
 
         //pak-files are always little endian encoded
@@ -355,7 +355,7 @@ void Pakfile::readIndex()
         while(1) {
             char tmp;
             if(SDL_RWread(fPakFile,&tmp,1,1) != 1) {
-                throw std::runtime_error("Pakfile::readIndex(): SDL_RWread() failed!");
+                THROW(std::runtime_error, "Pakfile::readIndex(): SDL_RWread() failed!");
             }
 
             if(tmp == '\0') {
@@ -374,7 +374,7 @@ void Pakfile::readIndex()
 
     int filesize = SDL_RWseek(fPakFile,0,SEEK_END);
     if(filesize < 0) {
-        throw std::runtime_error("Pakfile::readIndex(): SDL_RWseek() failed!");
+        THROW(std::runtime_error, "Pakfile::readIndex(): SDL_RWseek() failed!");
     }
 
     fileEntries.back().endOffset = filesize - 1;

@@ -25,11 +25,11 @@
 class SmartBot : public Player
 {
 public:
-    typedef enum {
-        NORMAL = 0,
-        DEFENSIVE = 1,
-        HARD = 2
-    } enum_difficulty;
+    enum class Difficulty {
+        Normal = 0,
+        Defense = 1,
+        Hard = 2
+    };
 
     void init();
     ~SmartBot();
@@ -41,7 +41,7 @@ public:
     virtual void onDecrementStructures(int itemID, const Coord& location);
     virtual void onDamage(const ObjectBase* pObject, int damage, Uint32 damagerID);
 
-    static Player* create(House* associatedHouse, std::string playername, Uint8 difficulty) {
+    static Player* create(House* associatedHouse, const std::string& playername, Difficulty difficulty) {
         return new SmartBot(associatedHouse, playername, difficulty);
     }
 
@@ -50,7 +50,7 @@ public:
     }
 
 private:
-    SmartBot(House* associatedHouse, std::string playername, Uint8 difficulty);
+    SmartBot(House* associatedHouse, const std::string& playername, Difficulty difficulty);
     SmartBot(InputStream& stream, House* associatedHouse);
 
     void scrambleUnitsAndDefend(const ObjectBase* pIntruder);
@@ -67,7 +67,7 @@ private:
 
     int getMaxHarvester() const;
 
-    Uint8   difficulty;     ///< difficulty level
+    Difficulty difficulty;  ///< difficulty level
     Sint32  attackTimer;    ///< When to attack?
     Sint32  buildTimer;     ///< When to build the next structure/unit
     Sint32  AIStrategy;     ///< What assult strategy to use

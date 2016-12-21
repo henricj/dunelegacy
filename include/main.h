@@ -21,10 +21,24 @@
 #include <string>
 #include <SDL.h>
 
+
+/**
+    Return an appropriate factor between logical and physical resolution.
+    \param  physicalWidth   the physical width of the display
+    \param  physicalHeight  the physical height of the display
+    \return the factor between logical and physical resolution, e.g. 1 for physical resolution below 1280x960
+*/
+int getLogicalToPhysicalResolutionFactor(int physicalWidth, int physicalHeight);
+
 /**
     This functions sets the video mode according to the settings
 */
 void setVideoMode();
+
+/**
+    Toggles fullscreen and windowed mode
+*/
+void toogleFullscreen();
 
 /**
     This function returns the configfile path
@@ -43,7 +57,7 @@ std::string getLogFilepath();
     \param configfilepath the path to the config file
     \param language the language to use as default (e.g. en, de, fr)
 */
-void createDefaultConfigFile(std::string configfilepath, std::string language);
+void createDefaultConfigFile(const std::string& configfilepath, const std::string& language);
 
 /**
     This function is used by SDL to write out log messages
@@ -51,10 +65,10 @@ void createDefaultConfigFile(std::string configfilepath, std::string language);
 void logOutputFunction(void *userdata, int category, SDL_LogPriority priority, const char *message);
 
 /**
-    This function prints a list of missing pak-files on the screen.
-    It returns, when a key is pressed.
+    This function shows a list of missing pak-files in a message box.
+    It returns, when the message box is closed.
 */
-void printMissingFilesToScreen();
+void showMissingFilesMessageBox();
 
 /**
     This function tries to determine the system language the user uses.

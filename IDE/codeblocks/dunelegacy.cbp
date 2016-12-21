@@ -31,7 +31,6 @@
 				<Option object_output="obj/Release/" />
 				<Option type="0" />
 				<Option compiler="gcc" />
-				<Option parameters="--showlog" />
 				<Compiler>
 					<Add option="-g" />
 				</Compiler>
@@ -43,6 +42,9 @@
 		</Build>
 		<Compiler>
 			<Add option="-O3" />
+			<Add option="-Wcast-align" />
+			<Add option="-Wunreachable-code" />
+			<Add option="-Wmissing-declarations" />
 			<Add option="-pedantic" />
 			<Add option="-Wextra" />
 			<Add option="-Wall" />
@@ -265,7 +267,9 @@
 		<Unit filename="../../include/misc/RobustList.h" />
 		<Unit filename="../../include/misc/Scaler.h" />
 		<Unit filename="../../include/misc/draw_util.h" />
+		<Unit filename="../../include/misc/exceptions.h" />
 		<Unit filename="../../include/misc/fnkdat.h" />
+		<Unit filename="../../include/misc/format.h" />
 		<Unit filename="../../include/misc/md5.h" />
 		<Unit filename="../../include/misc/sound_util.h" />
 		<Unit filename="../../include/misc/string_util.h" />
@@ -510,6 +514,7 @@
 		<Unit filename="../../src/misc/Scaler.cpp" />
 		<Unit filename="../../src/misc/draw_util.cpp" />
 		<Unit filename="../../src/misc/fnkdat.cpp" />
+		<Unit filename="../../src/misc/format.cpp" />
 		<Unit filename="../../src/misc/md5.cpp" />
 		<Unit filename="../../src/misc/sound_util.cpp" />
 		<Unit filename="../../src/misc/string_util.cpp" />

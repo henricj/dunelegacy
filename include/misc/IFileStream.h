@@ -29,7 +29,7 @@ public:
     ~IFileStream();
 
     bool open(const char* filename);
-    bool open(std::string filename);
+    bool open(const std::string& filename);
     void close();
 
     std::string readString();

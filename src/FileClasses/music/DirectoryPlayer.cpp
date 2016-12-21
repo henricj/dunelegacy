@@ -116,11 +116,11 @@ void DirectoryPlayer::changeMusic(MUSICTYPE musicType)
 
         music = Mix_LoadMUS(filename.c_str());
         if(music != nullptr) {
-            printf("Now playing %s!\n",filename.c_str());
+            SDL_Log("Now playing %s!",filename.c_str());
             Mix_PlayMusic(music, -1);
             Mix_VolumeMusic(musicVolume);
         } else {
-            fprintf(stderr, "Unable to play %s: %s!\n",filename.c_str(), Mix_GetError());
+            SDL_Log("Unable to play %s: %s!",filename.c_str(), Mix_GetError());
         }
     }
 }
@@ -155,32 +155,25 @@ void DirectoryPlayer::setMusic(bool value) {
 
 std::vector<std::string> DirectoryPlayer::getMusicFileNames(const std::string& dir) {
     std::vector<std::string> files;
-    std::list<std::string> tmp;
-    std::list<std::string>::const_iterator iter;
 
-    tmp = getFileNamesList(dir,"mp3",true);
-    for(iter = tmp.begin(); iter != tmp.end(); ++iter) {
-        files.push_back(dir + *iter);
+    for(const std::string& filename : getFileNamesList(dir,"mp3",true)) {
+        files.push_back(dir + filename);
     }
 
-    tmp = getFileNamesList(dir,"ogg",true);
-    for(iter = tmp.begin(); iter != tmp.end(); ++iter) {
-        files.push_back(dir + *iter);
+    for(const std::string& filename : getFileNamesList(dir,"ogg",true)) {
+        files.push_back(dir + filename);
     }
 
-    tmp = getFileNamesList(dir,"wav",true);
-    for(iter = tmp.begin(); iter != tmp.end(); ++iter) {
-        files.push_back(dir + *iter);
+    for(const std::string& filename : getFileNamesList(dir,"wav",true)) {
+        files.push_back(dir + filename);
     }
 
-    tmp = getFileNamesList(dir,"flac",true);
-    for(iter = tmp.begin(); iter != tmp.end(); ++iter) {
-        files.push_back(dir + *iter);
+    for(const std::string& filename : getFileNamesList(dir,"flac",true)) {
+        files.push_back(dir + filename);
     }
 
-    tmp = getFileNamesList(dir,"mid",true);
-    for(iter = tmp.begin(); iter != tmp.end(); ++iter) {
-        files.push_back(dir + *iter);
+    for(const std::string& filename : getFileNamesList(dir,"mid",true)) {
+        files.push_back(dir + filename);
     }
 
     return files;

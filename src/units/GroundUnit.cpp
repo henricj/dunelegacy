@@ -34,7 +34,7 @@ GroundUnit::GroundUnit(House* newOwner) : UnitBase(newOwner) {
     GroundUnit::init();
 
     awaitingPickup = false;
-    bookedCarrier = NONE;
+    bookedCarrier = NONE_ID;
 }
 
 GroundUnit::GroundUnit(InputStream& stream) : UnitBase(stream) {
@@ -62,7 +62,7 @@ void GroundUnit::save(OutputStream& stream) const {
 void GroundUnit::assignToMap(const Coord& pos) {
     if (currentGameMap->tileExists(pos)) {
         currentGameMap->getTile(pos)->assignNonInfantryGroundObject(getObjectID());
-        currentGameMap->viewMap(owner->getTeam(), location, getViewRange());
+        currentGameMap->viewMap(owner->getTeam(), pos, getViewRange());
     }
 }
 
@@ -89,7 +89,7 @@ void GroundUnit::checkPos() {
     /*
         Go to repair yard if low on health
     */
-    if(active && ((getHealth()/getMaxHealth()) < FixPt(0,5))
+    if(active && (getHealth() < getMaxHealth()/2)
             && !goingToRepairYard
             && owner->hasRepairYard()
             && !pickedUp
@@ -107,27 +107,33 @@ void GroundUnit::checkPos() {
         if(target.getObjPointer() == nullptr) {
             goingToRepairYard = false;
             awaitingPickup = false;
-            bookedCarrier = NONE;
+            bookedCarrier = NONE_ID;
 
             clearPath();
-        } else{
-            Coord closestPoint = target.getObjPointer()->getClosestPoint(location);
-            if (!moving && !justStoppedMoving && (blockDistance(location, closestPoint) <= FixPt(1,5))
-                && static_cast<RepairYard*>(target.getObjPointer())->isFree())
+        } else {
+            Tile* pTile = currentGameMap->getTile(location);
+            ObjectBase *pObject = pTile->getGroundObject();
+
+            if( justStoppedMoving
+                && (pObject != nullptr)
+                && (pObject->getObjectID() == target.getObjectID())
+                && (target.getObjPointer()->getItemID() == Structure_RepairYard))
             {
-                if (getHealth() < getMaxHealth()) {
+                RepairYard* pRepairYard = static_cast<RepairYard*>(target.getObjPointer());
+                if(pRepairYard->isFree()) {
                     setGettingRepaired();
                 } else {
-                    setTarget(nullptr);
-                    setDestination(guardPoint);
+                    // the repair yard is already in use by some other unit => move out
+                    Coord newDestination = currentGameMap->findDeploySpot(this, target.getObjPointer()->getLocation(), currentGame->randomGen, getLocation(), pRepairYard->getStructureSize());
+                    doMove2Pos(newDestination, true);
                 }
             }
         }
     }
 
     // If we are awaiting a pickup try book a carryall if we have one
-    if( attackMode == CARRYALLREQUESTED && bookedCarrier == NONE) {
-        if(getOwner()->hasCarryalls()) {
+    if(!pickedUp && attackMode == CARRYALLREQUESTED && bookedCarrier == NONE_ID) {
+        if(getOwner()->hasCarryalls() && (target || (destination != location))) {
             requestCarryall();
         } else {
             if(getItemID() == Unit_Harvester) {
@@ -141,11 +147,11 @@ void GroundUnit::checkPos() {
 
 
 void GroundUnit::playConfirmSound() {
-    soundPlayer->playSound((Sound_enum) getRandomOf(2,Acknowledged,Affirmative));
+    soundPlayer->playVoice((Voice_enum) getRandomOf(2,Acknowledged,Affirmative), getOwner()->getHouseID());
 }
 
 void GroundUnit::playSelectSound() {
-    soundPlayer->playSound(Reporting);
+    soundPlayer->playVoice(Reporting, getOwner()->getHouseID());
 }
 
 /**
@@ -153,7 +159,7 @@ void GroundUnit::playSelectSound() {
 **/
 
 void GroundUnit::doRequestCarryallDrop(int xPos, int yPos) {
-    if(getOwner()->hasCarryalls() && !awaitingPickup){
+    if(getOwner()->hasCarryalls() && !awaitingPickup && currentGameMap->tileExists(xPos, yPos)){
         doMove2Pos(xPos, yPos, true);
         requestCarryall();
     }
@@ -166,12 +172,10 @@ bool GroundUnit::requestCarryall() {
         // This allows a unit to keep requesting a carryall even if one isn't available right now
         doSetAttackMode(CARRYALLREQUESTED);
 
-        RobustList<UnitBase*>::const_iterator iter;
-        for(iter = unitList.begin(); iter != unitList.end(); ++iter) {
-            UnitBase* unit = *iter;
-            if ((unit->getOwner() == owner) && (unit->getItemID() == Unit_Carryall)) {
-                if(!static_cast<Carryall*>(unit)->isBooked()) {
-                    carryall = static_cast<Carryall*>(unit);
+        for(UnitBase* pUnit : unitList) {
+            if ((pUnit->getOwner() == owner) && (pUnit->getItemID() == Unit_Carryall)) {
+                if(!static_cast<Carryall*>(pUnit)->isBooked()) {
+                    carryall = static_cast<Carryall*>(pUnit);
                     carryall->setTarget(this);
                     carryall->clearPath();
                     bookCarrier(carryall);
@@ -190,7 +194,7 @@ bool GroundUnit::requestCarryall() {
 void GroundUnit::setPickedUp(UnitBase* newCarrier) {
     UnitBase::setPickedUp(newCarrier);
     awaitingPickup = false;
-    bookedCarrier = NONE;
+    bookedCarrier = NONE_ID;
 
     clearPath(); // Stefan: I don't think this is right
                  // but there is definitely something to it
@@ -199,7 +203,7 @@ void GroundUnit::setPickedUp(UnitBase* newCarrier) {
 
 void GroundUnit::bookCarrier(UnitBase* newCarrier) {
     if(newCarrier == nullptr) {
-        bookedCarrier = NONE;
+        bookedCarrier = NONE_ID;
         awaitingPickup = false;
     } else {
         bookedCarrier = newCarrier->getObjectID();
@@ -208,7 +212,7 @@ void GroundUnit::bookCarrier(UnitBase* newCarrier) {
 }
 
 bool GroundUnit::hasBookedCarrier() const {
-    if(bookedCarrier == NONE) {
+    if(bookedCarrier == NONE_ID) {
         return false;
     } else {
         return (currentGame->getObjectManager().getObject(bookedCarrier) != nullptr);
@@ -217,6 +221,14 @@ bool GroundUnit::hasBookedCarrier() const {
 
 const UnitBase* GroundUnit::getCarrier() const {
     return static_cast<UnitBase*>(currentGame->getObjectManager().getObject(bookedCarrier));
+}
+
+void GroundUnit::move() {
+    if(!moving && !justStoppedMoving && (((currentGame->getGameCycleCount() + getObjectID()) % 512) == 0)) {
+        currentGameMap->viewMap(owner->getTeam(), location, getViewRange());
+    }
+
+    UnitBase::move();
 }
 
 void GroundUnit::navigate() {
@@ -237,30 +249,27 @@ void GroundUnit::doRepair() {
         //find a repair yard to return to
 
         FixPoint closestLeastBookedRepairYardDistance = 1000000;
-        RepairYard* bestRepairYard = nullptr;
+        RepairYard* pBestRepairYard = nullptr;
 
-        RobustList<StructureBase*>::const_iterator iter;
-        for(iter = structureList.begin(); iter != structureList.end(); ++iter) {
-            StructureBase* tempStructure = *iter;
+        for(StructureBase* pStructure : structureList) {
+            if ((pStructure->getItemID() == Structure_RepairYard) && (pStructure->getOwner() == owner)) {
+                RepairYard* pRepairYard = static_cast<RepairYard*>(pStructure);
 
-            if ((tempStructure->getItemID() == Structure_RepairYard) && (tempStructure->getOwner() == owner)) {
-                RepairYard* tempRepairYard = static_cast<RepairYard*>(tempStructure);
-
-                if(tempRepairYard->getNumBookings() == 0) {
-                    FixPoint tempDistance = distanceFrom(location, tempRepairYard->getClosestPoint(location));
+                if(pRepairYard->getNumBookings() == 0) {
+                    FixPoint tempDistance = blockDistance(location, pRepairYard->getClosestPoint(location));
                     if(tempDistance < closestLeastBookedRepairYardDistance) {
                         closestLeastBookedRepairYardDistance = tempDistance;
-                        bestRepairYard = tempRepairYard;
+                        pBestRepairYard = pRepairYard;
                     }
                 }
             }
         }
 
-        if(bestRepairYard) {
-            if((requestCarryall())) {
-                doMove2Object(bestRepairYard);
+        if(pBestRepairYard) {
+            if(requestCarryall()) {
+                doMove2Object(pBestRepairYard);
             } else {
-                doMove2Object(bestRepairYard);
+                doMove2Object(pBestRepairYard);
             }
         }
     }

@@ -97,31 +97,16 @@ void RepairYard::deployRepairUnit(Carryall* pCarryall) {
         pCarryall->setTarget(nullptr);
         pCarryall->setDestination(pRepairUnit->getGuardPoint());
     } else {
-        Coord deployPos = currentGameMap->findDeploySpot(pRepairUnit, location, destination, structureSize);
+        Coord deployPos = currentGameMap->findDeploySpot(pRepairUnit, location, currentGame->randomGen, destination, structureSize);
 
-        if(pRepairUnit->getItemID() != Unit_Harvester){
-            pRepairUnit->setForced(false);
-            pRepairUnit->setTarget(nullptr);
-            //pRepairUnit->setDestination(nullptr);
-            pRepairUnit->doSetAttackMode(GUARD);
-
-        }else{
-            // If we need additional harvester logic
-            pRepairUnit->doSetAttackMode(HARVEST);
-        }
+        pRepairUnit->setForced(false);
+        pRepairUnit->doSetAttackMode((pRepairUnit->getItemID() == Unit_Harvester) ? HARVEST : GUARD);
         pRepairUnit->deploy(deployPos);
-        /**
-            Need to fix at some point in a balanced way
-        **/
-        if(pRepairUnit->getAttackMode() == HUNT){
-            pRepairUnit->doSetAttackMode(GUARD);
-        }
         pRepairUnit->setTarget(nullptr);
         pRepairUnit->setDestination(pRepairUnit->getLocation());
-
     }
 
-    repairUnit.pointTo(NONE);
+    repairUnit.pointTo(NONE_ID);
 
     if(getOwner() == pLocalHouse) {
         soundPlayer->playVoice(VehicleRepaired,getOwner()->getHouseID());
@@ -144,23 +129,21 @@ void RepairYard::updateStructureSpecificStuff() {
     }
 
     if(repairingAUnit == true) {
-        UnitBase* pRepairUnit = repairUnit.getUnitPointer();
+        GroundUnit* pRepairUnit = static_cast<GroundUnit*>(repairUnit.getUnitPointer());
 
         if (pRepairUnit->getHealth()*100/pRepairUnit->getMaxHealth() < 100) {
             if (owner->takeCredits(UNIT_REPAIRCOST) > 0) {
                 pRepairUnit->addHealth();
             }
 
-        } else if(static_cast<GroundUnit*>(pRepairUnit)->isawaitingPickup() == false) {
+        } else if(!pRepairUnit->isAwaitingPickup() && blockDistance(location, pRepairUnit->getGuardPoint()) >= MIN_CARRYALL_LIFT_DISTANCE) {
             // find carryall
             Carryall* pCarryall = nullptr;
             if((pRepairUnit->getGuardPoint().isValid()) && getOwner()->hasCarryalls())  {
-                RobustList<UnitBase*>::const_iterator iter;
-                for(iter = unitList.begin(); iter != unitList.end(); ++iter) {
-                    UnitBase* unit = *iter;
-                    if ((unit->getOwner() == owner) && (unit->getItemID() == Unit_Carryall)) {
-                        Carryall* pTmpCarryall = static_cast<Carryall*>(unit);
-                        if (pTmpCarryall->isRespondable() && !pTmpCarryall->isBooked()) {
+                for(UnitBase* pUnit : unitList) {
+                    if ((pUnit->getOwner() == owner) && (pUnit->getItemID() == Unit_Carryall)) {
+                        Carryall* pTmpCarryall = static_cast<Carryall*>(pUnit);
+                        if (!pTmpCarryall->isBooked()) {
                             pCarryall = pTmpCarryall;
                         }
                     }
@@ -168,18 +151,15 @@ void RepairYard::updateStructureSpecificStuff() {
             }
 
             if(pCarryall != nullptr) {
-                /*
                 pCarryall->setTarget(this);
                 pCarryall->clearPath();
                 ((GroundUnit*)pRepairUnit)->bookCarrier(pCarryall);
                 pRepairUnit->setTarget(nullptr);
                 pRepairUnit->setDestination(pRepairUnit->getGuardPoint());
-                */
-                deployRepairUnit(pCarryall);
             } else {
                 deployRepairUnit();
             }
-        } else if(static_cast<GroundUnit*>(pRepairUnit)->hasBookedCarrier() == false) {
+        } else if(!pRepairUnit->hasBookedCarrier()) {
             deployRepairUnit();
         }
     }

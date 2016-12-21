@@ -319,7 +319,7 @@ public:
 class MapEditorChangePlayer : public MapEditorOperation {
 public:
 
-    MapEditorChangePlayer(int playerNum, bool bActive, bool bAnyHouse, int credits, std::string brain, int quota = 0, int maxunit = 0)
+    MapEditorChangePlayer(int playerNum, bool bActive, bool bAnyHouse, int credits, const std::string& brain, int quota = 0, int maxunit = 0)
      : playerNum(playerNum), bActive(bActive), bAnyHouse(bAnyHouse), credits(credits), brain(brain), quota(quota), maxunit(maxunit) {
     }
 

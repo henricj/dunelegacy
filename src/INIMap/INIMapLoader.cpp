@@ -22,13 +22,13 @@
 #include <Trigger/ReinforcementTrigger.h>
 #include <Trigger/TimeoutTrigger.h>
 
-#include <misc/string_util.h>
+#include <misc/format.h>
+#include <misc/exceptions.h>
 
 #include <sand.h>
 #include <globals.h>
 
 #include <stdio.h>
-#include <stdexcept>
 #include <algorithm>
 
 INIMapLoader::INIMapLoader(Game* pGame, const std::string& mapname, const std::string& mapdata)
@@ -258,10 +258,10 @@ void INIMapLoader::loadMap() {
         currentGameMap = new Map(sizeX, sizeY);
 
         for(int y=0;y<sizeY;y++) {
-            std::string rowKey = strprintf("%.3d", y);
+            std::string rowKey = fmt::sprintf("%.3d", y);
 
             if(inifile->hasKey("MAP", rowKey) == false) {
-                logWarning(inifile->getSection("MAP")->getLineNumber(), "Map row " + stringify(y) + " does not exist!");
+                logWarning(inifile->getSection("MAP").getLineNumber(), "Map row " + stringify(y) + " does not exist!");
                 continue;
             }
 
@@ -342,7 +342,6 @@ void INIMapLoader::loadMap() {
 void INIMapLoader::loadHouses()
 {
     const GameInitSettings::HouseInfoList& houseInfoList = pGame->getGameInitSettings().getHouseInfoList();
-    GameInitSettings::HouseInfoList::const_iterator iter;
 
     // find "player?" sections
     std::vector<std::string> playerSectionsOnMap;
@@ -358,8 +357,8 @@ void INIMapLoader::loadHouses()
 
     for(int h=0;h<NUM_HOUSES;h++) {
         bool bFound = false;
-        for(iter = houseInfoList.begin(); iter != houseInfoList.end(); ++iter) {
-            if(iter->houseID == (HOUSETYPE) h) {
+        for(const GameInitSettings::HouseInfo& houseInfo : houseInfoList) {
+            if(houseInfo.houseID == (HOUSETYPE) h) {
                 bFound = true;
                 break;
             }
@@ -382,18 +381,17 @@ void INIMapLoader::loadHouses()
     }
 
     // init housename2house mapping with every player section on map marked as unused
-    std::vector<std::string>::iterator playerSectionsOnMapIter;
-    for(playerSectionsOnMapIter = playerSectionsOnMap.begin(); playerSectionsOnMapIter != playerSectionsOnMap.end(); ++playerSectionsOnMapIter) {
-        housename2house[*playerSectionsOnMapIter] = HOUSE_UNUSED;
+    for(const std::string& playSection : playerSectionsOnMap) {
+        housename2house[playSection] = HOUSE_UNUSED;
     }
 
     // now set up all the houses
-    for(iter = houseInfoList.begin(); iter != houseInfoList.end(); ++iter) {
+    for(const GameInitSettings::HouseInfo& houseInfo : houseInfoList) {
         HOUSETYPE houseID;
 
-        pGame->houseInfoListSetup.push_back(*iter);
+        pGame->houseInfoListSetup.push_back(houseInfo);
 
-        if(iter->houseID == HOUSE_INVALID) {
+        if(houseInfo.houseID == HOUSE_INVALID) {
             // random house => select one unbound house
             if(unboundedHouses.empty()) {
                 // skip this house
@@ -405,7 +403,7 @@ void INIMapLoader::loadHouses()
 
             pGame->houseInfoListSetup.back().houseID = houseID;
         } else {
-            houseID = iter->houseID;
+            houseID = houseInfo.houseID;
         }
 
         std::string houseName = getHouseNameByNumber(houseID);
@@ -438,15 +436,14 @@ void INIMapLoader::loadHouses()
 
         int quota = inifile->getIntValue(houseName,"Quota",0);
 
-        House* pNewHouse = new House(houseID, startingCredits, maxUnits, iter->team, quota);
+        House* pNewHouse = new House(houseID, startingCredits, maxUnits, houseInfo.team, quota);
         pGame->house[houseID] = pNewHouse;
 
         // add players
-        GameInitSettings::HouseInfo::PlayerInfoList::const_iterator iter2;
-        for(iter2 = iter->playerInfoList.begin(); iter2 != iter->playerInfoList.end(); ++iter2) {
-            const PlayerFactory::PlayerData* pPlayerData = PlayerFactory::getByPlayerClass(iter2->playerClass);
+        for(const GameInitSettings::PlayerInfo& playerInfo : houseInfo.playerInfoList) {
+            const PlayerFactory::PlayerData* pPlayerData = PlayerFactory::getByPlayerClass(playerInfo.playerClass);
             if(pPlayerData == nullptr) {
-                logWarning("Cannot load '" + iter2->playerClass + "', using default AI player!");
+                logWarning("Cannot load '" + playerInfo.playerClass + "', using default AI player!");
                 pPlayerData = PlayerFactory::getByPlayerClass(DEFAULTAIPLAYERCLASS);
                 if(pPlayerData == nullptr) {
                     logWarning("Cannot load default AI player!");
@@ -454,10 +451,11 @@ void INIMapLoader::loadHouses()
                 }
             }
 
-            Player* pPlayer = pPlayerData->create(pNewHouse, iter2->playerName);
+            Player* pPlayer = pPlayerData->create(pNewHouse, playerInfo.playerName);
 
             pNewHouse->addPlayer(std::shared_ptr<Player>(pPlayer));
-            if(iter2->playerName == pGame->getLocalPlayerName()) {
+            if( ((pGame->getGameInitSettings().getGameType() != GameType::CustomMultiplayer) && (dynamic_cast<HumanPlayer*>(pPlayer) != nullptr))
+                || (playerInfo.playerName == pGame->getLocalPlayerName())) {
                 pLocalHouse = pNewHouse;
                 pLocalPlayer = dynamic_cast<HumanPlayer*>(pPlayer);
             }
@@ -470,20 +468,20 @@ void INIMapLoader::loadHouses()
 */
 void INIMapLoader::loadChoam()
 {
-    INIFile::KeyIterator iter;
+    if(!inifile->hasSection("CHOAM")) {
+        return;
+    }
 
-    for(iter = inifile->begin("CHOAM"); iter != inifile->end("CHOAM"); ++iter) {
-        std::string UnitStr = iter->getKeyName();
-
-        Uint32 unitID = getItemIDByName(UnitStr);
+    for(const INIFile::Key& key : inifile->getSection("CHOAM")) {
+        Uint32 unitID = getItemIDByName(key.getKeyName());
         if((unitID == ItemID_Invalid) || !isUnit(unitID)) {
-            logWarning(iter->getLineNumber(), "Invalid unit string: '" + UnitStr + "'");
+            logWarning(key.getLineNumber(), "Invalid unit string: '" + key.getKeyName() + "'");
             continue;
         }
 
-        int num = iter->getIntValue(-2);
+        int num = key.getIntValue(-2);
         if(num == -2) {
-            logWarning(iter->getLineNumber(), "Invalid choam number!");
+            logWarning(key.getLineNumber(), "Invalid choam number!");
             continue;
 
         }
@@ -505,36 +503,38 @@ void INIMapLoader::loadChoam()
 */
 void INIMapLoader::loadUnits()
 {
+    if(!inifile->hasSection("UNITS")) {
+        return;
+    }
+
     bool nextSpecialUnitIsSonicTank[NUM_HOUSES];
     for(int i=0;i<NUM_HOUSES;i++) {
         nextSpecialUnitIsSonicTank[i] = true;
     }
 
-    INIFile::KeyIterator iter;
-
-    for(iter = inifile->begin("UNITS"); iter != inifile->end("UNITS"); ++iter) {
-        if(iter->getKeyName().find("ID") == 0) {
+    for(const INIFile::Key& key : inifile->getSection("UNITS")) {
+        if(key.getKeyName().find("ID") == 0) {
             std::string HouseStr, UnitStr, health, PosStr, rotation, mode;
-            splitString(iter->getStringValue(),6,&HouseStr,&UnitStr,&health,&PosStr,&rotation,&mode);
+            splitString(key.getStringValue(),6,&HouseStr,&UnitStr,&health,&PosStr,&rotation,&mode);
 
             int houseID = getHouseID(HouseStr);
             if(houseID == HOUSE_UNUSED) {
                 // skip unit for unused house
                 continue;
             } else if(houseID == HOUSE_INVALID) {
-                logWarning(iter->getLineNumber(), "Invalid house string for '" + UnitStr + "': '" + HouseStr + "'!");
+                logWarning(key.getLineNumber(), "Invalid house string for '" + UnitStr + "': '" + HouseStr + "'!");
                 continue;
             }
 
             int pos;
             if(!parseString(PosStr, pos) || (pos < 0)) {
-                logWarning(iter->getLineNumber(), "Invalid position string for '" + UnitStr + "': '" + PosStr + "'!");
+                logWarning(key.getLineNumber(), "Invalid position string for '" + UnitStr + "': '" + PosStr + "'!");
                 continue;
             }
 
             int angle;
             if(!parseString(rotation, angle) || (angle < 0) || (angle > 255)) {
-                logWarning(iter->getLineNumber(), "Invalid rotation string: '" + rotation + "'!");
+                logWarning(key.getLineNumber(), "Invalid rotation string: '" + rotation + "'!");
                 angle = 64;
             }
             angle = (angle+16)/32;
@@ -544,7 +544,7 @@ void INIMapLoader::loadUnits()
             int Num2Place = 1;
             int itemID = getItemIDByName(UnitStr);
             if((itemID == ItemID_Invalid) || !isUnit(itemID)) {
-                logWarning(iter->getLineNumber(), "Invalid unit string: '" + UnitStr + "'!");
+                logWarning(key.getLineNumber(), "Invalid unit string: '" + UnitStr + "'!");
                 continue;
             }
 
@@ -591,7 +591,7 @@ void INIMapLoader::loadUnits()
 
             int iHealth;
             if(!parseString(health, iHealth) || (iHealth < 0) || (iHealth > 256)) {
-                logWarning(iter->getLineNumber(), "Invalid health string: '" + health + "'!");
+                logWarning(key.getLineNumber(), "Invalid health string: '" + health + "'!");
                 iHealth = 256;
             }
 
@@ -599,14 +599,14 @@ void INIMapLoader::loadUnits()
 
             ATTACKMODE attackmode = getAttackModeByName(mode);
             if(attackmode == ATTACKMODE_INVALID) {
-                logWarning(iter->getLineNumber(), "Invalid attackmode string: '" + mode + "'!");
+                logWarning(key.getLineNumber(), "Invalid attackmode string: '" + mode + "'!");
                 attackmode = AREAGUARD;
             }
 
             for(int i = 0; i < Num2Place; i++) {
                 UnitBase* newUnit = getOrCreateHouse(houseID)->placeUnit(itemID, getXPos(pos), getYPos(pos));
                 if(newUnit == nullptr) {
-                    logWarning(iter->getLineNumber(), "Invalid or occupied position for '" + UnitStr + "': '" + stringify(pos) + "'!");
+                    logWarning(key.getLineNumber(), "Invalid or occupied position for '" + UnitStr + "': '" + stringify(pos) + "'!");
                     continue;
                 } else {
                     newUnit->setHealth((newUnit->getMaxHealth() * percentHealth));
@@ -620,7 +620,7 @@ void INIMapLoader::loadUnits()
                 }
             }
         } else {
-            logWarning(iter->getLineNumber(), "Invalid unit key: '" + iter->getKeyName() + "'!");
+            logWarning(key.getLineNumber(), "Invalid unit key: '" + key.getKeyName() + "'!");
             continue;
         }
     }
@@ -631,18 +631,20 @@ void INIMapLoader::loadUnits()
 */
 void INIMapLoader::loadStructures()
 {
-    INIFile::KeyIterator iter;
+    if(!inifile->hasSection("STRUCTURES")) {
+        return;
+    }
 
-    for(iter = inifile->begin("STRUCTURES"); iter != inifile->end("STRUCTURES"); ++iter) {
-        std::string tmpkey = iter->getKeyName();
-        std::string tmp = iter->getStringValue();
+    for(const INIFile::Key& key : inifile->getSection("STRUCTURES")) {
+        std::string tmpkey = key.getKeyName();
+        std::string tmp = key.getStringValue();
 
-        if(tmpkey.find("GEN") == 0) {
+        if(tmpkey.compare(0,3,"GEN") == 0) {
             // Gen Object/Structure
             std::string PosStr = tmpkey.substr(3,tmpkey.size()-3);
             int pos;
             if(!parseString(PosStr, pos) || (pos < 0)) {
-                logWarning(iter->getLineNumber(), "Invalid position string: '" + PosStr + "'!");
+                logWarning(key.getLineNumber(), "Invalid position string: '" + PosStr + "'!");
                 continue;
             }
 
@@ -654,29 +656,29 @@ void INIMapLoader::loadStructures()
                 // skip structure for unused house
                 continue;
             } else if(houseID == HOUSE_INVALID) {
-                logWarning(iter->getLineNumber(), "Invalid house string for '" + BuildingStr + "': '" + HouseStr + "'!");
+                logWarning(key.getLineNumber(), "Invalid house string for '" + BuildingStr + "': '" + HouseStr + "'!");
                 continue;
             }
 
             if(BuildingStr == "Concrete") {
-                getOrCreateHouse(houseID)->placeStructure(NONE, Structure_Slab1, getXPos(pos), getYPos(pos));
+                getOrCreateHouse(houseID)->placeStructure(NONE_ID, Structure_Slab1, getXPos(pos), getYPos(pos));
             } else if(BuildingStr == "Wall") {
-                if(getOrCreateHouse(houseID)->placeStructure(NONE, Structure_Wall, getXPos(pos), getYPos(pos)) == nullptr) {
-                    logWarning(iter->getLineNumber(), "Invalid or occupied position for '" + BuildingStr + "': '" + PosStr + "'!");
+                if(getOrCreateHouse(houseID)->placeStructure(NONE_ID, Structure_Wall, getXPos(pos), getYPos(pos)) == nullptr) {
+                    logWarning(key.getLineNumber(), "Invalid or occupied position for '" + BuildingStr + "': '" + PosStr + "'!");
                     continue;
                 }
             } else {
-                logWarning(iter->getLineNumber(), "Invalid building string: '" + BuildingStr + "'!");
+                logWarning(key.getLineNumber(), "Invalid building string: '" + BuildingStr + "'!");
                 continue;
             }
-        } else if(tmpkey.find("ID") == 0) {
+        } else if(tmpkey.compare(0,2,"ID") == 0) {
             // other structure
             std::string HouseStr, BuildingStr, health, PosStr;
             splitString(tmp,6,&HouseStr,&BuildingStr,&health,&PosStr);
 
             int pos;
             if(!parseString(PosStr, pos) || (pos < 0)) {
-                logWarning(iter->getLineNumber(), "Invalid position string for '" + BuildingStr + "': '" + PosStr + "'!");
+                logWarning(key.getLineNumber(), "Invalid position string for '" + BuildingStr + "': '" + PosStr + "'!");
                 continue;
             }
 
@@ -685,13 +687,13 @@ void INIMapLoader::loadStructures()
                 // skip structure for unused house
                 continue;
             } else if(houseID == HOUSE_INVALID) {
-                logWarning(iter->getLineNumber(), "Invalid house string for '" + BuildingStr + "': '" + HouseStr + "'!");
+                logWarning(key.getLineNumber(), "Invalid house string for '" + BuildingStr + "': '" + HouseStr + "'!");
                 continue;
             }
 
             int iHealth;
             if(!parseString(health, iHealth) || (iHealth < 0) || (iHealth > 256)) {
-                logWarning(iter->getLineNumber(), "Invalid health string: '" + health + "'!");
+                logWarning(key.getLineNumber(), "Invalid health string: '" + health + "'!");
                 iHealth = 256;
             }
             FixPoint percentHealth = std::min(FixPoint(iHealth) / 256, FixPoint(1));
@@ -699,21 +701,21 @@ void INIMapLoader::loadStructures()
             int itemID = getItemIDByName(BuildingStr);
 
             if((itemID == ItemID_Invalid) || !isStructure(itemID)) {
-                logWarning(iter->getLineNumber(), "Invalid building string: '" + BuildingStr + "'!");
+                logWarning(key.getLineNumber(), "Invalid building string: '" + BuildingStr + "'!");
                 continue;
             }
 
             if (itemID != 0) {
-                ObjectBase* newStructure = getOrCreateHouse(houseID)->placeStructure(NONE, itemID, getXPos(pos), getYPos(pos));
+                ObjectBase* newStructure = getOrCreateHouse(houseID)->placeStructure(NONE_ID, itemID, getXPos(pos), getYPos(pos));
                 if(newStructure == nullptr) {
-                    logWarning(iter->getLineNumber(), "Invalid or occupied position for '" + BuildingStr + "': '" + PosStr + "'!");
+                    logWarning(key.getLineNumber(), "Invalid or occupied position for '" + BuildingStr + "': '" + PosStr + "'!");
                     continue;
                 } else {
                     newStructure->setHealth(newStructure->getMaxHealth() * percentHealth);
                 }
             }
         } else {
-            logWarning(iter->getLineNumber(), "Invalid structure key: '" + tmpkey + "'!");
+            logWarning(key.getLineNumber(), "Invalid structure key: '" + tmpkey + "'!");
             continue;
         }
     }
@@ -724,18 +726,20 @@ void INIMapLoader::loadStructures()
 */
 void INIMapLoader::loadReinforcements()
 {
-    INIFile::KeyIterator iter;
+    if(!inifile->hasSection("REINFORCEMENTS")) {
+        return;
+    }
 
-    for(iter = inifile->begin("REINFORCEMENTS"); iter != inifile->end("REINFORCEMENTS"); ++iter) {
+    for(const INIFile::Key& key : inifile->getSection("REINFORCEMENTS")) {
         std::string strHouseName;
         std::string strUnitName;
         std::string strDropLocation;
         std::string strTime;
         std::string strPlus;
 
-        if(splitString(iter->getStringValue(), 4, &strHouseName, &strUnitName, &strDropLocation, &strTime) == false) {
-            if(splitString(iter->getStringValue(), 5, &strHouseName, &strUnitName, &strDropLocation, &strTime, &strPlus) == false) {
-                logWarning(iter->getLineNumber(), "Invalid reinforcement string: " + iter->getKeyName() + " = " + iter->getStringValue());
+        if(splitString(key.getStringValue(), 4, &strHouseName, &strUnitName, &strDropLocation, &strTime) == false) {
+            if(splitString(key.getStringValue(), 5, &strHouseName, &strUnitName, &strDropLocation, &strTime, &strPlus) == false) {
+                logWarning(key.getLineNumber(), "Invalid reinforcement string: " + key.getKeyName() + " = " + key.getStringValue());
                 continue;
             }
         }
@@ -745,14 +749,14 @@ void INIMapLoader::loadReinforcements()
             // skip reinforcement for unused house
             continue;
         } else if(houseID == HOUSE_INVALID) {
-            logWarning(iter->getLineNumber(), "Invalid house string: '" + strHouseName + "'!");
+            logWarning(key.getLineNumber(), "Invalid house string: '" + strHouseName + "'!");
             continue;
         }
 
         int Num2Drop = 1;
         Uint32 itemID = getItemIDByName(strUnitName);
         if((itemID == ItemID_Invalid) || !isUnit(itemID)) {
-            logWarning(iter->getLineNumber(), "Invalid unit string: '" + strUnitName + "'!");
+            logWarning(key.getLineNumber(), "Invalid unit string: '" + strUnitName + "'!");
             continue;
         }
 
@@ -768,13 +772,13 @@ void INIMapLoader::loadReinforcements()
 
         DropLocation dropLocation = getDropLocationByName(strDropLocation);
         if(dropLocation == Drop_Invalid) {
-            logWarning(iter->getLineNumber(), "Invalid drop location string: '" + strDropLocation + "'!");
+            logWarning(key.getLineNumber(), "Invalid drop location string: '" + strDropLocation + "'!");
             dropLocation = Drop_Homebase;
         }
 
         Uint32 droptime;
         if(!parseString(strTime, droptime)) {
-            logWarning(iter->getLineNumber(), "Invalid drop time string: '" + strTime + "'!");
+            logWarning(key.getLineNumber(), "Invalid drop time string: '" + strTime + "'!");
             continue;
         }
         Uint32 dropCycle = MILLI2CYCLES(droptime * 60 * 1000);
@@ -783,14 +787,10 @@ void INIMapLoader::loadReinforcements()
 
         for(int i=0;i<Num2Drop;i++) {
             // check if there is a similar trigger at the same time
-            const std::list< std::shared_ptr<Trigger> >& triggerList = pGame->getTriggerManager().getTriggers();
-            std::list< std::shared_ptr<Trigger> >::const_iterator iter;
 
             bool bInserted = false;
-            for(iter = triggerList.begin(); iter != triggerList.end(); ++iter) {
-                Trigger *pTrigger = iter->get();
-
-                ReinforcementTrigger* pReinforcementTrigger = dynamic_cast<ReinforcementTrigger*>(pTrigger);
+            for(const std::shared_ptr<Trigger>& pTrigger : pGame->getTriggerManager().getTriggers()) {
+                ReinforcementTrigger* pReinforcementTrigger = dynamic_cast<ReinforcementTrigger*>(pTrigger.get());
 
                 if(pReinforcementTrigger != nullptr
                     && pReinforcementTrigger->getCycleNumber() == dropCycle
@@ -844,7 +844,7 @@ House* INIMapLoader::getOrCreateHouse(int houseID) {
 
     if(pNewHouse == nullptr) {
         Uint8 team = 0;
-        if(pGame->gameType == GAMETYPE_CAMPAIGN || pGame->gameType == GAMETYPE_SKIRMISH) {
+        if(pGame->gameType == GameType::Campaign || pGame->gameType == GameType::Skirmish) {
             // in campaign all "other" units are in the same team as the AI
             team = 2;
         }
@@ -859,14 +859,12 @@ House* INIMapLoader::getOrCreateHouse(int houseID) {
 
         const GameInitSettings::HouseInfoList& houseInfoList = pGame->getGameInitSettings().getHouseInfoList();
 
-        std::vector<GameInitSettings::HouseInfo>::const_iterator iter;
-        for(iter = houseInfoList.begin(); iter != houseInfoList.end(); ++iter) {
-            if(iter->houseID == houseID) {
-                GameInitSettings::HouseInfo::PlayerInfoList::const_iterator iter2;
-                for(iter2 = iter->playerInfoList.begin(); iter2 != iter->playerInfoList.end(); ++iter2) {
-                    const PlayerFactory::PlayerData* pPlayerData = PlayerFactory::getByPlayerClass(iter2->playerClass);
+        for(const GameInitSettings::HouseInfo& houseInfo : houseInfoList) {
+            if(houseInfo.houseID == houseID) {
+                for(const GameInitSettings::PlayerInfo& playerInfo : houseInfo.playerInfoList) {
+                    const PlayerFactory::PlayerData* pPlayerData = PlayerFactory::getByPlayerClass(playerInfo.playerClass);
                     if(pPlayerData == nullptr) {
-                        logWarning("Cannot load '" + iter2->playerClass + "', using default AI player!");
+                        logWarning("Cannot load '" + playerInfo.playerClass + "', using default AI player!");
                         pPlayerData = PlayerFactory::getByPlayerClass(DEFAULTAIPLAYERCLASS);
                         if(pPlayerData == nullptr) {
                             logWarning("Cannot load default AI player!");
@@ -874,10 +872,10 @@ House* INIMapLoader::getOrCreateHouse(int houseID) {
                         }
                     }
 
-                    Player* pPlayer = pPlayerData->create(pNewHouse, iter2->playerName);
+                    Player* pPlayer = pPlayerData->create(pNewHouse, playerInfo.playerName);
 
                     pNewHouse->addPlayer(std::shared_ptr<Player>(pPlayer));
-                    if(iter2->playerName == pGame->getLocalPlayerName()) {
+                    if(playerInfo.playerName == pGame->getLocalPlayerName()) {
                         pLocalHouse = pNewHouse;
                         pLocalPlayer = dynamic_cast<HumanPlayer*>(pPlayer);
                     }
@@ -901,12 +899,12 @@ House* INIMapLoader::getOrCreateHouse(int houseID) {
     return pNewHouse;
 }
 
-HOUSETYPE INIMapLoader::getHouseID(std::string name) {
-    convertToLower(name);
+HOUSETYPE INIMapLoader::getHouseID(const std::string& name) {
+    std::string lowerName = strToLower(name);
 
-    if(housename2house.count(name) > 0) {
-        return housename2house[name];
+    if(housename2house.count(lowerName) > 0) {
+        return housename2house[lowerName];
     } else {
-        return getHouseByName(name);
+        return getHouseByName(lowerName);
     }
 }

@@ -74,7 +74,8 @@ void AirUnit::assignToMap(const Coord& pos)
 {
     if(currentGameMap->tileExists(pos)) {
         currentGameMap->getTile(pos)->assignAirUnit(getObjectID());
-//      currentGameMap->viewMap(owner->getTeam(), location, getViewRange());
+        // do not reveal map for air units
+        // currentGameMap->viewMap(owner->getTeam(), location, getViewRange());
     }
 }
 

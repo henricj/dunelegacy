@@ -107,24 +107,22 @@ MultiPlayerMenu::MultiPlayerMenu() : MenuBase() {
     buttonHBox.addWidget(HSpacer::create(90));
 
     // Start Network Manager
-    fprintf(stdout, "starting network..."); fflush(stdout);
+    SDL_Log("Starting network...");
     pNetworkManager = new NetworkManager(settings.network.serverPort, settings.network.metaServer);
     LANGameFinderAndAnnouncer* pLANGFAA = pNetworkManager->getLANGameFinderAndAnnouncer();
     pLANGFAA->setOnNewServer(std::bind(&MultiPlayerMenu::onNewLANServer, this, std::placeholders::_1));
     pLANGFAA->setOnUpdateServer(std::bind(&MultiPlayerMenu::onUpdateLANServer, this, std::placeholders::_1));
     pLANGFAA->setOnRemoveServer(std::bind(&MultiPlayerMenu::onRemoveLANServer, this, std::placeholders::_1));
     pLANGFAA->refreshServerList();
-    fprintf(stdout, "\t\tfinished\n"); fflush(stdout);
 
     onGameTypeChange(0);
 }
 
 
 MultiPlayerMenu::~MultiPlayerMenu() {
-    fprintf(stdout, "stopping network..."); fflush(stdout);
+    SDL_Log("Stopping network...");
     delete pNetworkManager;
     pNetworkManager = nullptr;
-    fprintf(stdout, "\t\tfinished\n");
 }
 
 
@@ -164,10 +162,10 @@ void MultiPlayerMenu::onConnect() {
 }
 
 
-void MultiPlayerMenu::onPeerDisconnected(std::string playername, bool bHost, int cause) {
+void MultiPlayerMenu::onPeerDisconnected(const std::string& playername, bool bHost, int cause) {
     if(bHost) {
-        pNetworkManager->setOnReceiveGameInfo(std::function<void (GameInitSettings, ChangeEventList)>());
-        pNetworkManager->setOnPeerDisconnected(std::function<void (std::string, bool, int)>());
+        pNetworkManager->setOnReceiveGameInfo(std::function<void (const GameInitSettings&, const ChangeEventList&)>());
+        pNetworkManager->setOnPeerDisconnected(std::function<void (const std::string&, bool, int)>());
         closeChildWindow();
 
         showDisconnectMessageBox(cause);
@@ -203,17 +201,15 @@ void MultiPlayerMenu::onGameTypeChange(int buttonID) {
         gameList.clearAllEntries();
         InternetGameList.clear();
 
-        std::list<GameServerInfo>::iterator iter;
-        for(iter = LANGameList.begin(); iter != LANGameList.end(); ++iter) {
-            GameServerInfo& gameServerInfo = *iter;
+        for(GameServerInfo& gameServerInfo : LANGameList) {
             std::string description = gameServerInfo.serverName + " (" + Address2String(gameServerInfo.serverAddress) + " : " + stringify(gameServerInfo.serverAddress.port) + ") - "
-                                + gameServerInfo.mapName + " (" + stringify(gameServerInfo.numPlayers) + "/" + stringify(gameServerInfo.maxPlayers) + ")";
-            gameList.addEntry(description, &*iter);
+                                        + gameServerInfo.mapName + " (" + stringify(gameServerInfo.numPlayers) + "/" + stringify(gameServerInfo.maxPlayers) + ")";
+            gameList.addEntry(description, &gameServerInfo);
         }
 
         // stop listening on internet games
         pMetaServerClient->setOnGameServerInfoList(std::function<void (std::list<GameServerInfo>&)>());
-        pMetaServerClient->setOnMetaServerError(std::function<void (int, std::string)>());
+        pMetaServerClient->setOnMetaServerError(std::function<void (int, const std::string&)>());
     } else if((buttonID == 1) && (LANGamesButton.getToggleState() == true)) {
         // Internet Games
 
@@ -244,10 +240,9 @@ void MultiPlayerMenu::onNewLANServer(GameServerInfo gameServerInfo) {
 
 void MultiPlayerMenu::onUpdateLANServer(GameServerInfo gameServerInfo) {
     size_t index = 0;
-    std::list<GameServerInfo>::iterator iter;
-    for(iter = LANGameList.begin(); iter != LANGameList.end(); ++iter) {
-        if(*iter == gameServerInfo) {
-            *iter = gameServerInfo;
+    for(GameServerInfo& curGameServerInfo : LANGameList) {
+        if(curGameServerInfo == gameServerInfo) {
+            curGameServerInfo = gameServerInfo;
             break;
         }
 
@@ -274,7 +269,7 @@ void MultiPlayerMenu::onRemoveLANServer(GameServerInfo gameServerInfo) {
     LANGameList.remove(gameServerInfo);
 }
 
-void MultiPlayerMenu::onGameServerInfoList(std::list<GameServerInfo>& gameServerInfoList) {
+void MultiPlayerMenu::onGameServerInfoList(const std::list<GameServerInfo>& gameServerInfoList) {
     // remove all game servers from the list that are not included in the sent list
     std::list<GameServerInfo>::iterator oldListIter = InternetGameList.begin();
     int index = 0;
@@ -293,10 +288,7 @@ void MultiPlayerMenu::onGameServerInfoList(std::list<GameServerInfo>& gameServer
     }
 
     // now add all servers that are included for the first time and update the others
-    std::list<GameServerInfo>::iterator newListIter;
-    for(newListIter = gameServerInfoList.begin(); newListIter != gameServerInfoList.end(); ++newListIter) {
-        GameServerInfo& gameServerInfo = *newListIter;
-
+    for(const GameServerInfo& gameServerInfo : gameServerInfoList) {
         size_t oldListIndex = 0;
         std::list<GameServerInfo>::iterator oldListIter;
         for(oldListIter = InternetGameList.begin(); oldListIter != InternetGameList.end(); ++oldListIter) {
@@ -327,7 +319,7 @@ void MultiPlayerMenu::onGameServerInfoList(std::list<GameServerInfo>& gameServer
     }
 }
 
-void MultiPlayerMenu::onMetaServerError(int errorcause, std::string errorMessage) {
+void MultiPlayerMenu::onMetaServerError(int errorcause, const std::string& errorMessage) {
     switch(errorcause) {
         case METASERVERCOMMAND_ADD: {
             openWindow(MsgBox::create("MetaServer error on adding game server:\n" + errorMessage));
@@ -352,10 +344,10 @@ void MultiPlayerMenu::onMetaServerError(int errorcause, std::string errorMessage
     }
 }
 
-void MultiPlayerMenu::onReceiveGameInfo(GameInitSettings gameInitSettings, ChangeEventList changeEventList) {
+void MultiPlayerMenu::onReceiveGameInfo(const GameInitSettings& gameInitSettings, const ChangeEventList& changeEventList) {
     closeChildWindow();
 
-    pNetworkManager->setOnPeerDisconnected(std::function<void (std::string, bool, int)>());
+    pNetworkManager->setOnPeerDisconnected(std::function<void (const std::string&, bool, int)>());
 
     CustomGamePlayers* pCustomGamePlayers = new CustomGamePlayers(gameInitSettings, false);
     pCustomGamePlayers->onReceiveChangeEventList(changeEventList);

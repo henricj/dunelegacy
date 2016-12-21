@@ -40,9 +40,9 @@ public:
 
     }
 
-    INIMap(GAMETYPE gameType, std::string mapname, std::string mapdata = "") : mapname(mapname) {
+    INIMap(GameType gameType, const std::string& mapname, const std::string& mapdata = "") : mapname(mapname) {
 
-        if(gameType == GAMETYPE_CAMPAIGN || gameType == GAMETYPE_SKIRMISH) {
+        if(gameType == GameType::Campaign || gameType == GameType::Skirmish) {
             // load from PAK-File
             SDL_RWops* mapiniFile = nullptr;
             try {
@@ -56,7 +56,7 @@ public:
                 }
                 throw;
             }
-        } else if(gameType == GAMETYPE_CUSTOM || gameType == GAMETYPE_CUSTOM_MULTIPLAYER) {
+        } else if(gameType == GameType::CustomGame || gameType == GameType::CustomMultiplayer) {
             SDL_RWops* RWops = SDL_RWFromConstMem(mapdata.c_str(), mapdata.size());
             inifile = std::shared_ptr<INIFile>(new INIFile(RWops));
             SDL_RWclose(RWops);
@@ -75,8 +75,8 @@ protected:
         Log a warning while reading the scenario file.
         \param  warning the warning message
     */
-    void logWarning(std::string warning) {
-        fprintf(stderr, "%s: %s\n", mapname.c_str(), warning.c_str());
+    void logWarning(const std::string& warning) {
+        SDL_Log("%s: %s", mapname.c_str(), warning.c_str());
     }
 
 
@@ -85,8 +85,8 @@ protected:
         \param  line    the line number the warning occurs
         \param  warning the warning message
     */
-    void logWarning(int line, std::string warning) {
-        fprintf(stderr, "%s:%d: %s\n", mapname.c_str(), line, warning.c_str());
+    void logWarning(int line, const std::string& warning) {
+        SDL_Log("%s:%d: %s", mapname.c_str(), line, warning.c_str());
     }
 
 
@@ -95,8 +95,8 @@ protected:
         with error as the exception message
         \param  error the error message
     */
-    void logError(std::string error) {
-        throw std::runtime_error(mapname + ": " + error);
+    void logError(const std::string& error) {
+        THROW(std::runtime_error, mapname + ": " + error);
     }
 
 
@@ -106,8 +106,8 @@ protected:
         \param  line    the line number the error occurs
         \param  error the error message
     */
-    void logError(int line, std::string error) {
-        throw std::runtime_error(mapname + ":" + stringify(line) + ": " + error);
+    void logError(int line, const std::string& error) {
+        THROW(std::runtime_error, mapname + ":" + stringify(line) + ": " + error);
     }
 
 
@@ -115,16 +115,14 @@ protected:
     Checks if all map features of this map are supported.
     */
     void checkFeatures() {
-        if(inifile->hasSection("FEATURES") == false) {
+        if(!inifile->hasSection("FEATURES")) {
             return;
         }
 
-        INIFile::KeyIterator iter;
-
-        for(iter = inifile->begin("FEATURES"); iter != inifile->end("FEATURES"); ++iter) {
-            if(iter->getBoolValue(true) == true) {
-                logError(iter->getLineNumber(), "Unsupported feature \"" + iter->getKeyName() + "\"!");
-                return; // never reached
+        for(const INIFile::Key& key : inifile->getSection("FEATURES")) {
+            if(key.getBoolValue(true) == true) {
+                logError(key.getLineNumber(), "Unsupported feature \"" + key.getKeyName() + "\"!");
+                return;
             }
         }
     }

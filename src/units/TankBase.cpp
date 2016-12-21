@@ -117,28 +117,28 @@ void TankBase::engageTarget() {
     if(closeTarget && (closeTarget.getObjPointer() == nullptr)) {
         // the target does not exist anymore
         // => release target
-        closeTarget.pointTo(NONE);
+        closeTarget.pointTo(NONE_ID);
         return;
     }
 
     if(closeTarget && !closeTarget.getObjPointer()->isActive()) {
         // the target changed its state to inactive
         // => release target
-        closeTarget.pointTo(NONE);
+        closeTarget.pointTo(NONE_ID);
         return;
     }
 
     if(closeTarget && !canAttack(closeTarget.getObjPointer())) {
         // the target cannot be attacked anymore
         // => release target
-        closeTarget.pointTo(NONE);
+        closeTarget.pointTo(NONE_ID);
         return;
     }
 
     if(target && (targetDistance <= getWeaponRange()) && !targetFriendly) {
         // we already have a (non-friendly) target in weapon range
         // => we need no close temporary target
-        closeTarget.pointTo(NONE);
+        closeTarget.pointTo(NONE_ID);
         return;
     }
 
@@ -148,7 +148,7 @@ void TankBase::engageTarget() {
 
         if(closeTargetDistance > getWeaponRange()) {
             // we are too far away
-            closeTarget.pointTo(NONE);
+            closeTarget.pointTo(NONE_ID);
             return;
         }
 

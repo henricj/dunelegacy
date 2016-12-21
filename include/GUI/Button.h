@@ -58,7 +58,7 @@ public:
         Sets a tooltip text. This text is shown when the mouse remains a short time over this button.
         \param  text    The text for this tooltip
     */
-    inline void setTooltipText(std::string text) {
+    inline void setTooltipText(const std::string& text) {
         tooltipText = text;
 
         if(tooltipTexture != nullptr) {
@@ -75,7 +75,7 @@ public:
         Returns the current tooltip text.
         \return the current tooltip text
     */
-    inline std::string getTooltipText() {
+    inline const std::string& getTooltipText() {
         return tooltipText;
     }
 

@@ -56,18 +56,18 @@ class GameInitSettings;
 
 class NetworkManager {
 public:
-    NetworkManager(int port, std::string metaserver);
+    NetworkManager(int port, const std::string& metaserver);
     NetworkManager(const NetworkManager& o) = delete;
     ~NetworkManager();
 
     bool isServer() const { return bIsServer; };
 
-    void startServer(bool bLANServer, std::string serverName, std::string playerName, GameInitSettings* pGameInitSettings, int numPlayers, int maxPlayers);
+    void startServer(bool bLANServer, const std::string& serverName, const std::string& playerName, GameInitSettings* pGameInitSettings, int numPlayers, int maxPlayers);
     void updateServer(int numPlayers);
     void stopServer();
 
-    void connect(std::string hostname, int port, std::string playerName);
-    void connect(ENetAddress address, std::string playerName);
+    void connect(const std::string& hostname, int port, const std::string& playerName);
+    void connect(ENetAddress address, const std::string& playerName);
 
     void disconnect();
 
@@ -86,9 +86,8 @@ public:
     std::list<std::string> getConnectedPeers() const {
         std::list<std::string> peerNameList;
 
-        std::list<ENetPeer*>::const_iterator iter;
-        for(iter = peerList.begin(); iter != peerList.end(); ++iter) {
-            PeerData* peerData = (PeerData*) (*iter)->data;
+        for(const ENetPeer* pPeer : peerList) {
+            PeerData* peerData = static_cast<PeerData*>(pPeer->data);
             if(peerData != nullptr) {
                 peerNameList.push_back(peerData->name);
             }
@@ -111,7 +110,7 @@ public:
         Sets the function that should be called when a chat message is received
         \param  pOnReceiveChatMessage   function to call on new chat message
     */
-    inline void setOnReceiveChatMessage(std::function<void (std::string, std::string)> pOnReceiveChatMessage) {
+    inline void setOnReceiveChatMessage(std::function<void (const std::string&, const std::string&)> pOnReceiveChatMessage) {
         this->pOnReceiveChatMessage = pOnReceiveChatMessage;
     }
 
@@ -119,7 +118,7 @@ public:
         Sets the function that should be called when game infos are received after connecting to the server.
         \param  pOnReceiveGameInfo  function to call on receive
     */
-    inline void setOnReceiveGameInfo(std::function<void (GameInitSettings, ChangeEventList)> pOnReceiveGameInfo) {
+    inline void setOnReceiveGameInfo(std::function<void (const GameInitSettings&, const ChangeEventList&)> pOnReceiveGameInfo) {
         this->pOnReceiveGameInfo = pOnReceiveGameInfo;
     }
 
@@ -128,7 +127,7 @@ public:
         Sets the function that should be called when a change event is received.
         \param  pOnReceiveChangeEventList   function to call on receive
     */
-    inline void setOnReceiveChangeEventList(std::function<void (ChangeEventList)> pOnReceiveChangeEventList) {
+    inline void setOnReceiveChangeEventList(std::function<void (const ChangeEventList&)> pOnReceiveChangeEventList) {
         this->pOnReceiveChangeEventList = pOnReceiveChangeEventList;
     }
 
@@ -137,7 +136,7 @@ public:
         Sets the function that should be called when a peer disconnects.
         \param  pOnPeerDisconnected function to call on disconnect
     */
-    inline void setOnPeerDisconnected(std::function<void (std::string, bool, int)> pOnPeerDisconnected) {
+    inline void setOnPeerDisconnected(std::function<void (const std::string&, bool, int)> pOnPeerDisconnected) {
         this->pOnPeerDisconnected = pOnPeerDisconnected;
     }
 
@@ -145,7 +144,7 @@ public:
         Sets the function that can be used to retreive all house/player changes to get the current state
         \param  pGetGameInitSettingsCallback    function to call
     */
-    inline void setGetChangeEventListForNewPlayerCallback(std::function<ChangeEventList (std::string)> pGetChangeEventListForNewPlayerCallback) {
+    inline void setGetChangeEventListForNewPlayerCallback(std::function<ChangeEventList (const std::string&)> pGetChangeEventListForNewPlayerCallback) {
         this->pGetChangeEventListForNewPlayerCallback = pGetChangeEventListForNewPlayerCallback;
     }
 
@@ -169,12 +168,12 @@ public:
         Sets the function that should be called when a selection list is received.
         \param  pOnReceiveSelectionList function to call on receive
     */
-    inline void setOnReceiveSelectionList(std::function<void (std::string, std::set<Uint32>, int)> pOnReceiveSelectionList) {
+    inline void setOnReceiveSelectionList(std::function<void (const std::string&, const std::set<Uint32>&, int)> pOnReceiveSelectionList) {
         this->pOnReceiveSelectionList = pOnReceiveSelectionList;
     }
 
 private:
-    static void debugNetwork(const char* fmt, ...);
+    static void debugNetwork(SDL_PRINTF_FORMAT_STRING const char* fmt, ...) SDL_PRINTF_VARARG_FUNC(1);
 
     void sendPacketToHost(ENetPacketOStream& packetStream, int channel = 0);
 
@@ -186,12 +185,12 @@ private:
 
     class PeerData {
     public:
-        enum PeerState {
-            PEER_STATE_WAITING_FOR_CONNECT,
-            PEER_STATE_WAITING_FOR_NAME,
-            PEER_STATE_READY_FOR_OTHER_PEERS_TO_CONNECT,
-            PEER_STATE_WAITING_FOR_OTHER_PEERS_TO_CONNECT,
-            PEER_STATE_CONNECTED
+        enum class PeerState {
+            WaitingForConnect,
+            WaitingForName,
+            ReadyForOtherPeersToConnect,
+            WaitingForOtherPeersToConnect,
+            Connected
         };
 
 
@@ -209,32 +208,32 @@ private:
         std::list<ENetPeer*>    notYetConnectedPeers;
     };
 
-    ENetHost* host;
-    bool bIsServer;
-    bool bLANServer;
-    GameInitSettings* pGameInitSettings;
-    int numPlayers;
-    int maxPlayers;
+    ENetHost* host = nullptr;
+    bool bIsServer = false;
+    bool bLANServer = false;
+    GameInitSettings* pGameInitSettings = nullptr;
+    int numPlayers = 0;
+    int maxPlayers = 0;
 
     std::string playerName;
 
-    ENetPeer*   connectPeer;
+    ENetPeer*   connectPeer = nullptr;
 
     std::list<ENetPeer*> peerList;
 
     std::list<ENetPeer*> awaitingConnectionList;
 
-    std::function<void (std::string, std::string)>                  pOnReceiveChatMessage;
-    std::function<void (GameInitSettings, ChangeEventList)>         pOnReceiveGameInfo;
-    std::function<void (ChangeEventList)>                           pOnReceiveChangeEventList;
-    std::function<void (std::string, bool, int)>                    pOnPeerDisconnected;
-    std::function<ChangeEventList (std::string)>                    pGetChangeEventListForNewPlayerCallback;
-    std::function<void (unsigned int)>                              pOnStartGame;
-    std::function<void (const std::string&, const CommandList&)>    pOnReceiveCommandList;
-    std::function<void (std::string, std::set<Uint32>, int)>        pOnReceiveSelectionList;
+    std::function<void (const std::string&, const std::string&)>            pOnReceiveChatMessage;
+    std::function<void (const GameInitSettings&, const ChangeEventList&)>   pOnReceiveGameInfo;
+    std::function<void (const ChangeEventList&)>                            pOnReceiveChangeEventList;
+    std::function<void (const std::string&, bool, int)>                     pOnPeerDisconnected;
+    std::function<ChangeEventList (const std::string&)>                     pGetChangeEventListForNewPlayerCallback;
+    std::function<void (unsigned int)>                                      pOnStartGame;
+    std::function<void (const std::string&, const CommandList&)>            pOnReceiveCommandList;
+    std::function<void (const std::string&, const std::set<Uint32>&, int)>  pOnReceiveSelectionList;
 
-    LANGameFinderAndAnnouncer*  pLANGameFinderAndAnnouncer;
-    MetaServerClient*           pMetaServerClient;
+    LANGameFinderAndAnnouncer*  pLANGameFinderAndAnnouncer = nullptr;
+    MetaServerClient*           pMetaServerClient = nullptr;
 };
 
 #endif // NETWORKMANAGER_H

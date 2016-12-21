@@ -177,7 +177,7 @@ public:
 
     inline void setOwner(House* no) { owner = no; }
 
-    static ObjectBase* createObject(int itemID,House* Owner, Uint32 objectID = NONE);
+    static ObjectBase* createObject(int itemID,House* Owner, Uint32 objectID = NONE_ID);
     static ObjectBase* loadObject(InputStream& stream, int itemID, Uint32 objectID);
 
 protected:

@@ -37,13 +37,13 @@ public:
         \param  fontID  The ID of the font to use
         \return the mimimum size of this label
     */
-    virtual Point getMinimumLabelSize(std::string text, int fontID);
+    virtual Point getMinimumLabelSize(const std::string& text, int fontID);
 
     /**
         Creates the surface for a label with TextLines as content.
         \param  width           the width of the label
         \param  height          the height of the label
-        \param  TextLines       a list of text lines for this label
+        \param  textLines       a vector of text lines for this label
         \param  fontID          the ID of the font to use
         \param  alignment       the alignment for this label
         \param  textcolor       the color of the text (COLOR_DEFAULT = default color for this style)
@@ -51,7 +51,7 @@ public:
         \param  backgroundcolor the background color (default is transparent)
         \return the new surface (has to be freed by the caller)
     */
-    virtual SDL_Surface* createLabelSurface(Uint32 width, Uint32 height, std::list<std::string> textLines, int fontID, Alignment_Enum alignment = Alignment_HCenter, Uint32 textcolor = COLOR_DEFAULT, Uint32 textshadowcolor = COLOR_DEFAULT, Uint32 backgroundcolor = COLOR_TRANSPARENT);
+    virtual SDL_Surface* createLabelSurface(Uint32 width, Uint32 height, const std::vector<std::string>& textLines, int fontID, Alignment_Enum alignment = Alignment_HCenter, Uint32 textcolor = COLOR_DEFAULT, Uint32 textshadowcolor = COLOR_DEFAULT, Uint32 backgroundcolor = COLOR_TRANSPARENT);
 
 
 
@@ -61,7 +61,7 @@ public:
         \param  text    The text for the checkbox
         \return the mimimum size of this checkbox
     */
-    virtual Point getMinimumCheckboxSize(std::string text);
+    virtual Point getMinimumCheckboxSize(const std::string& text);
 
     /**
         Creates the surface for a checkbox with text as content.
@@ -75,7 +75,7 @@ public:
         \param  backgroundcolor the background color (default is transparent)
         \return the new surface (has to be freed by the caller)
     */
-    virtual SDL_Surface* createCheckboxSurface(Uint32 width, Uint32 height, std::string text, bool checked, bool activated, Uint32 textcolor = COLOR_DEFAULT, Uint32 textshadowcolor = COLOR_DEFAULT, Uint32 backgroundcolor = COLOR_TRANSPARENT);
+    virtual SDL_Surface* createCheckboxSurface(Uint32 width, Uint32 height, const std::string& text, bool checked, bool activated, Uint32 textcolor = COLOR_DEFAULT, Uint32 textshadowcolor = COLOR_DEFAULT, Uint32 backgroundcolor = COLOR_TRANSPARENT);
 
 
 
@@ -85,7 +85,7 @@ public:
         \param  text    The text for the radio button
         \return the mimimum size of this radio button
     */
-    virtual Point getMinimumRadioButtonSize(std::string text);
+    virtual Point getMinimumRadioButtonSize(const std::string& text);
 
     /**
         Creates the surface for a radio button with text as content.
@@ -99,7 +99,7 @@ public:
         \param  backgroundcolor the background color (default is transparent)
         \return the new surface (has to be freed by the caller)
     */
-    virtual SDL_Surface* createRadioButtonSurface(Uint32 width, Uint32 height, std::string text, bool checked, bool activated, Uint32 textcolor = COLOR_DEFAULT, Uint32 textshadowcolor = COLOR_DEFAULT, Uint32 backgroundcolor = COLOR_TRANSPARENT);
+    virtual SDL_Surface* createRadioButtonSurface(Uint32 width, Uint32 height, const std::string& text, bool checked, bool activated, Uint32 textcolor = COLOR_DEFAULT, Uint32 textshadowcolor = COLOR_DEFAULT, Uint32 backgroundcolor = COLOR_TRANSPARENT);
 
 
 
@@ -122,7 +122,7 @@ public:
         \param  text    The text for the button
         \return the mimimum size of this button
     */
-    virtual Point getMinimumButtonSize(std::string text);
+    virtual Point getMinimumButtonSize(const std::string& text);
 
     /**
         Creates the surface for a button with text as content.
@@ -135,7 +135,7 @@ public:
         \param  textshadowcolor the color of the shadow under the text (COLOR_DEFAULT = default color for this style)
         \return the new surface (has to be freed by the caller)
     */
-    virtual SDL_Surface* createButtonSurface(Uint32 width, Uint32 height, std::string text, bool pressed, bool activated, Uint32 textcolor = COLOR_DEFAULT, Uint32 textshadowcolor = COLOR_DEFAULT);
+    virtual SDL_Surface* createButtonSurface(Uint32 width, Uint32 height, const std::string& text, bool pressed, bool activated, Uint32 textcolor = COLOR_DEFAULT, Uint32 textshadowcolor = COLOR_DEFAULT);
 
 
 
@@ -159,7 +159,7 @@ public:
         \param  textshadowcolor the color of the shadow under the text (COLOR_DEFAULT = default color for this style)
         \return the new surface (has to be freed by the caller)
     */
-    virtual SDL_Surface* createTextBoxSurface(Uint32 width, Uint32 height, std::string text, bool carret, int fontID, Alignment_Enum alignment = Alignment_Left, Uint32 textcolor = COLOR_DEFAULT, Uint32 textshadowcolor = COLOR_DEFAULT);
+    virtual SDL_Surface* createTextBoxSurface(Uint32 width, Uint32 height, const std::string& text, bool carret, int fontID, Alignment_Enum alignment = Alignment_Left, Uint32 textcolor = COLOR_DEFAULT, Uint32 textshadowcolor = COLOR_DEFAULT);
 
 
 
@@ -197,7 +197,7 @@ public:
         \param  color       the color of the text (COLOR_DEFAULT = default color for this style)
         \return the new surface (has to be freed by the caller)
     */
-    virtual SDL_Surface* createListBoxEntry(Uint32 width, std::string text, bool selected, Uint32 color = COLOR_DEFAULT);
+    virtual SDL_Surface* createListBoxEntry(Uint32 width, const std::string& text, bool selected, Uint32 color = COLOR_DEFAULT);
 
 
 
@@ -219,7 +219,7 @@ public:
         \param  text        the tool tip text
         \return the new surface (has to be freed by the caller)
     */
-    virtual SDL_Surface* createToolTip(std::string text);
+    virtual SDL_Surface* createToolTip(const std::string& text);
 
     /**
         Creates a simple background for e.g. a window
@@ -250,7 +250,7 @@ public:
         \param  FontNum     the font
         \return the width of the text
     */
-    virtual unsigned int getTextWidth(const char* text, unsigned int FontNum);
+    virtual unsigned int getTextWidth(const std::string& text, unsigned int FontNum);
 
 public:
     static const Uint32 defaultForegroundColor = COLOR_RGB(125,0,0);
@@ -271,7 +271,7 @@ private:
         \param  fontsize    the size of the text
         \return the new created surface (the caller of this method is responsible of freeing it)
     */
-    SDL_Surface* createSurfaceWithText(const char* text, Uint32 color, unsigned int fontsize);
+    SDL_Surface* createSurfaceWithText(const std::string& text, Uint32 color, unsigned int fontsize);
 
     Uint32 brightenUp(Uint32 color) {
         Uint32 r = (color & RMASK) >> RSHIFT;

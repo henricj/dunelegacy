@@ -112,37 +112,34 @@ public:
 
     /**
         Writes out a complete list of Uint32
-        \param  List    the list to write
+        \param  dataList    the list to write
     */
-    void writeUint32List(const std::list<Uint32>& List) {
-        writeUint32((Uint32) List.size());
-        std::list<Uint32>::const_iterator iter;
-        for(iter=List.begin(); iter != List.end(); ++iter) {
-            writeUint32(*iter);
+    void writeUint32List(const std::list<Uint32>& dataList) {
+        writeUint32((Uint32) dataList.size());
+        for(const Uint32 data : dataList) {
+            writeUint32(data);
         }
     }
 
     /**
         Writes out a complete vector of Uint32
-        \param  vec the vector to write
+        \param  dataVector the vector to write
     */
-    void writeUint32Vector(const std::vector<Uint32>& vec) {
-        writeUint32((Uint32) vec.size());
-        std::vector<Uint32>::const_iterator iter;
-        for(iter=vec.begin(); iter != vec.end(); ++iter) {
-            writeUint32(*iter);
+    void writeUint32Vector(const std::vector<Uint32>& dataVector) {
+        writeUint32((Uint32) dataVector.size());
+        for(const Uint32 data : dataVector) {
+            writeUint32(data);
         }
     }
 
     /**
         Writes out a complete set of Uint32
-        \param  set2write   the set to write
+        \param  dataSet   the set to write
     */
-    void writeUint32Set(const std::set<Uint32>& set2write) {
-        writeUint32((Uint32) set2write.size());
-        std::set<Uint32>::const_iterator iter;
-        for(iter=set2write.begin(); iter != set2write.end(); ++iter) {
-            writeUint32(*iter);
+    void writeUint32Set(const std::set<Uint32>& dataSet) {
+        writeUint32((Uint32) dataSet.size());
+        for(const Uint32 data : dataSet) {
+            writeUint32(data);
         }
     }
 

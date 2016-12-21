@@ -28,6 +28,7 @@
 #include <Explosion.h>
 
 #include <misc/draw_util.h>
+#include <misc/exceptions.h>
 
 #include <algorithm>
 
@@ -221,13 +222,11 @@ void Bullet::init()
         } break;
 
         case Bullet_Sandworm: {
-            fprintf(stderr,"Bullet::init(): Unknown Bullet_Sandworm not allowed.\n");
-            graphic = nullptr;
+            THROW(std::domain_error, "Cannot init 'Bullet_Sandworm': Not allowed!");
         } break;
 
         default: {
-            fprintf(stderr,"Bullet::init(): Unknown Bullet type %d.\n",bulletID);
-            graphic = nullptr;
+            THROW(std::domain_error, "Unknown Bullet type %d!", bulletID);
         } break;
     }
 }
@@ -266,7 +265,7 @@ void Bullet::save(OutputStream& stream) const
 }
 
 
-void Bullet::blitToScreen()
+void Bullet::blitToScreen() const
 {
     int imageW = getWidth(graphic[currentZoomlevel])/numFrames;
     int imageH = getHeight(graphic[currentZoomlevel]);

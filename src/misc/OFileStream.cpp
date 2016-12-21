@@ -17,6 +17,8 @@
 
 #include <misc/OFileStream.h>
 
+#include <misc/exceptions.h>
+
 #include <string.h>
 #include <stdio.h>
 #include <SDL_endian.h>
@@ -68,7 +70,7 @@ bool OFileStream::open(const char* filename)
     }
 }
 
-bool OFileStream::open(std::string filename)
+bool OFileStream::open(const std::string& filename)
 {
     return open(filename.c_str());
 }
@@ -93,7 +95,7 @@ void OFileStream::writeString(const std::string& str)
 
     if(!str.empty()) {
         if(fwrite(str.c_str(),str.length(),1,fp) != 1) {
-            throw OutputStream::error("OFileStream::writeString(): An I/O-Error occurred!");
+            THROW(OutputStream::error, "OFileStream::writeString(): An I/O-Error occurred!");
         }
     }
 }
@@ -101,7 +103,7 @@ void OFileStream::writeString(const std::string& str)
 void OFileStream::writeUint8(Uint8 x)
 {
     if(fwrite(&x,sizeof(Uint8),1,fp) != 1) {
-        throw OutputStream::error("OFileStream::writeUint8(): An I/O-Error occurred!");
+        THROW(OutputStream::error, "OFileStream::writeUint8(): An I/O-Error occurred!");
     }
 }
 
@@ -110,7 +112,7 @@ void OFileStream::writeUint16(Uint16 x)
     x = SDL_SwapLE16(x);
 
     if(fwrite(&x,sizeof(Uint16),1,fp) != 1) {
-        throw OutputStream::error("OFileStream::writeUint16(): An I/O-Error occurred!");
+        THROW(OutputStream::error, "OFileStream::writeUint16(): An I/O-Error occurred!");
     }
 }
 
@@ -119,7 +121,7 @@ void OFileStream::writeUint32(Uint32 x)
     x = SDL_SwapLE32(x);
 
     if(fwrite(&x,sizeof(Uint32),1,fp) != 1) {
-        throw OutputStream::error("OFileStream::writeUint32(): An I/O-Error occurred!");
+        THROW(OutputStream::error, "OFileStream::writeUint32(): An I/O-Error occurred!");
     }
 }
 
@@ -127,7 +129,7 @@ void OFileStream::writeUint64(Uint64 x)
 {
     x = SDL_SwapLE64(x);
     if(fwrite(&x,sizeof(Uint64),1,fp) != 1) {
-        throw OutputStream::error("OFileStream::writeUint64(): An I/O-Error occurred!");
+        THROW(OutputStream::error, "OFileStream::writeUint64(): An I/O-Error occurred!");
     }
 }
 

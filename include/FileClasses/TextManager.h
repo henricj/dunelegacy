@@ -93,7 +93,7 @@ private:
         \return the localized version of unlocalizedString
     */
     const std::string& getLocalizedRaw(const std::string& unlocalizedString) const {
-        std::map<std::string, std::string>::const_iterator iter = localizedString.find(unlocalizedString);
+        auto iter = localizedString.find(unlocalizedString);
         if((iter != localizedString.end()) && !iter->second.empty()) {
             return iter->second;
         } else {

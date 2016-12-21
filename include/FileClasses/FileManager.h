@@ -33,9 +33,8 @@ class FileManager {
 public:
     /**
         Constructor.
-        \param saveMode if true, every loading error is ignored
     */
-    explicit FileManager(bool saveMode = false);
+    explicit FileManager();
 
     FileManager(const FileManager& fileManager) = delete;
 
@@ -47,11 +46,19 @@ public:
     static std::vector<std::string> getNeededFiles();
     static std::vector<std::string> getMissingFiles();
 
-    SDL_RWops* openFile(std::string filename);
+    /**
+        Opens the file specified via filename. This method first tries to open the file in one of the
+        search paths (see getSearchPath()). If no file exists with the given name the content of all
+        pak files is considered. In case the file cannot be found an io_error is thrown.
+        \param  filename    the filename to look for
+        \return a rwop to read the content of the specified file. Use SDL_RWclose() to close the file after usage.
 
-    bool exists(std::string filename) const;
+    */
+    SDL_RWops* openFile(const std::string& filename);
+
+    bool exists(const std::string& filename) const;
 private:
-    std::string md5FromFilename(std::string filename);
+    std::string md5FromFilename(const std::string& filename);
 
     std::vector<Pakfile*> pakFiles;
 };

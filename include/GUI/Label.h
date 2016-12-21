@@ -21,6 +21,7 @@
 #include "Widget.h"
 #include "GUIStyle.h"
 #include <misc/draw_util.h>
+#include <misc/string_util.h>
 #include <SDL.h>
 #include <string>
 #include <list>
@@ -31,12 +32,6 @@ class Label : public Widget {
 public:
     /// default constructor
     Label() : Widget() {
-        fontID = FONT_STD12;
-        textcolor = COLOR_DEFAULT;
-        textshadowcolor = COLOR_DEFAULT;
-        backgroundcolor = 0;
-        alignment = (Alignment_Enum) (Alignment_Left | Alignment_VCenter);
-        pTexture = nullptr;
         enableResizing(true,true);
     }
 
@@ -97,7 +92,7 @@ public:
         to fit this text.
         \param  Text The new text for this button
     */
-    virtual inline void setText(std::string text) {
+    virtual inline void setText(const std::string& text) {
         if(text != this->text) {
             this->text = text;
             resizeAll();
@@ -108,7 +103,7 @@ public:
         Get the text of this label.
         \return the text of this button
     */
-    inline std::string getText() const { return text; };
+    inline const std::string& getText() const { return text; };
 
     /**
         This method resizes the label. This method should only
@@ -152,11 +147,10 @@ public:
             }
         } while(nextpos != std::string::npos);
 
-        std::list<std::string>::const_iterator iter;
-        for(iter = hardLines.begin();iter != hardLines.end();++iter) {
-            std::string tmp = *iter;
-            p.x = std::max(p.x, GUIStyle::getInstance().getMinimumLabelSize(tmp, fontID).x);
-            p.y += GUIStyle::getInstance().getMinimumLabelSize(tmp, fontID).y;
+        for(const std::string hardLine : hardLines) {
+            Point minLabelSize = GUIStyle::getInstance().getMinimumLabelSize(hardLine, fontID);
+            p.x = std::max(p.x, minLabelSize.x);
+            p.y += minLabelSize.y;
         }
         return p;
     }
@@ -190,7 +184,7 @@ public:
        \param  backgroundcolor the color of the label background (COLOR_TRANSPARENT = transparent)
         \return The new created label (will be automatically destroyed when it's parent widget is destroyed)
     */
-    static Label* create(std::string text, Uint32 textcolor = COLOR_DEFAULT, Uint32 textshadowcolor = COLOR_DEFAULT, Uint32 backgroundcolor = COLOR_TRANSPARENT) {
+    static Label* create(const std::string& text, Uint32 textcolor = COLOR_DEFAULT, Uint32 textshadowcolor = COLOR_DEFAULT, Uint32 backgroundcolor = COLOR_TRANSPARENT) {
         Label* label = new Label();
         label->setText(text);
         label->setTextColor(textcolor, textshadowcolor, backgroundcolor);
@@ -208,102 +202,12 @@ protected:
         Widget::updateTextures();
 
         if(pTexture == nullptr) {
-
-            //split text into single lines at every '\n'
-            size_t startpos = 0;
-            size_t nextpos;
-            std::list<std::string> hardLines;
-            do {
-                nextpos = text.find("\n",startpos);
-                if(nextpos == std::string::npos) {
-                    hardLines.push_back(text.substr(startpos,text.length()-startpos));
-                } else {
-                    hardLines.push_back(text.substr(startpos,nextpos-startpos));
-                    startpos = nextpos+1;
-                }
-            } while(nextpos != std::string::npos);
-
-            std::list<std::string> textLines;
-
-            std::list<std::string>::const_iterator iter;
-            for(iter = hardLines.begin();iter != hardLines.end();++iter) {
-                std::string tmpLine = *iter;
-
-                if(tmpLine == "") {
-                    textLines.push_back(" ");
-                    continue;
-                }
-
-                bool bEndOfLine = false;
-                size_t warppos = 0;
-                size_t oldwarppos = 0;
-                size_t lastwarp = 0;
-
-                while(bEndOfLine == false) {
-                    while(true) {
-                        warppos = tmpLine.find(" ", oldwarppos);
-                        std::string tmp;
-                        if(warppos == std::string::npos) {
-                            tmp = tmpLine.substr(lastwarp,tmpLine.length()-lastwarp);
-                            warppos = tmpLine.length();
-                            bEndOfLine = true;
-                        } else {
-                            tmp = tmpLine.substr(lastwarp,warppos-lastwarp);
-                        }
-
-                        if( GUIStyle::getInstance().getMinimumLabelSize(tmp, fontID).x - 4 > getSize().x) {
-                            // this line would be too big => in oldwarppos is the last correct warp pos
-                            bEndOfLine = false;
-                            break;
-                        } else {
-                            if(bEndOfLine == true) {
-                                oldwarppos = warppos;
-                                break;
-                            } else {
-                                oldwarppos = warppos + 1;
-                            }
-                        }
-                    }
-
-                    if(oldwarppos == lastwarp) {
-                        // the width of this label is too small for the next word
-                        // split the word
-
-                        warppos = lastwarp;
-                        while(true) {
-                            std::string tmp = tmpLine.substr(lastwarp,warppos-lastwarp);
-                            if( GUIStyle::getInstance().getMinimumLabelSize(tmp, fontID).x - 4 > getSize().x) {
-                                // this line would be too big => in oldwarppos is the last correct warp pos
-                                break;
-                            } else {
-                                oldwarppos = warppos;
-                            }
-
-                            warppos++;
-
-                            if(warppos > tmpLine.length()) {
-                                oldwarppos = tmpLine.length();
-                                break;
-                            }
-                        }
-
-                        if(warppos != lastwarp) {
-                            textLines.push_back(tmpLine.substr(lastwarp,oldwarppos-lastwarp));
-                            lastwarp = oldwarppos;
-                        } else {
-                            // the width of this label is too small for the next character
-                            // create a dummy entry
-                            textLines.push_back(" ");
-                            lastwarp++;
-                            oldwarppos++;
-                        }
-                    } else {
-                        std::string tmpStr = tmpLine.substr(lastwarp,oldwarppos-lastwarp);
-                        textLines.push_back(tmpStr);
-                        lastwarp = oldwarppos;
-                    }
-                }
-            }
+            int fontID = this->fontID;
+            std::vector<std::string> textLines = greedyWordWrap(text,
+                                                                getSize().x,
+                                                                [fontID](const std::string& tmp) {
+                                                                    return GUIStyle::getInstance().getMinimumLabelSize(tmp, fontID).x - 4;
+                                                                });
 
             pTexture = convertSurfaceToTexture(GUIStyle::getInstance().createLabelSurface(getSize().x,getSize().y,textLines,fontID,alignment,textcolor,textshadowcolor,backgroundcolor), true);
         }
@@ -320,13 +224,13 @@ protected:
     }
 
 private:
-    int fontID;                 ///< the ID of the font to use
-    Uint32 textcolor;           ///< the text color
-    Uint32 textshadowcolor;     ///< the color of the shadow of the text
-    Uint32 backgroundcolor;     ///< the color of the label background
-    std::string text;           ///< the text of this label
-    SDL_Texture* pTexture;      ///< the texture of this label
-    Alignment_Enum alignment;   ///< the alignment of this label
+    int fontID = FONT_STD12;                    ///< the ID of the font to use
+    Uint32 textcolor = COLOR_DEFAULT;           ///< the text color
+    Uint32 textshadowcolor = COLOR_DEFAULT;     ///< the color of the shadow of the text
+    Uint32 backgroundcolor = COLOR_TRANSPARENT; ///< the color of the label background
+    std::string text;                           ///< the text of this label
+    SDL_Texture* pTexture = nullptr;            ///< the texture of this label
+    Alignment_Enum alignment = (Alignment_Enum) (Alignment_Left | Alignment_VCenter);   ///< the alignment of this label
 };
 
 #endif // LABEL_H

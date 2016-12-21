@@ -27,11 +27,11 @@
 #include <GUI/QstBox.h>
 #include <GUI/MsgBox.h>
 
-#include <misc/string_util.h>
+#include <misc/format.h>
 
 #include <stdio.h>
 
-LoadSaveWindow::LoadSaveWindow(bool bSave, std::string caption, std::vector<std::string> directories, std::vector<std::string> directoryTitles, std::string extension, int preselectedDirectoryIndex, std::string preselectedFile, Uint32 color)
+LoadSaveWindow::LoadSaveWindow(bool bSave, const std::string& caption, const std::vector<std::string>& directories, const std::vector<std::string>& directoryTitles, const std::string& extension, int preselectedDirectoryIndex, const std::string& preselectedFile, Uint32 color)
  : Window(0,0,0,0), bSaveWindow(bSave), directories(directories), directoryTitles(directoryTitles), extension(extension), currentDirectoryIndex(preselectedDirectoryIndex), preselectedFile(preselectedFile), color(color) {
 
     // set up window
@@ -123,14 +123,9 @@ LoadSaveWindow::~LoadSaveWindow() {
 void LoadSaveWindow::updateEntries() {
     fileList.clearAllEntries();
 
-    std::list<std::string> Files = getFileNamesList(directories[currentDirectoryIndex],extension, true, FileListOrder_ModifyDate_Dsc);
-
     int preselectedFileIndex = -1;
-
-    std::list<std::string>::const_iterator iter;
-    for(iter = Files.begin(); iter != Files.end(); ++iter) {
-        std::string tmp = *iter;
-        std::string entryName = tmp.substr(0, tmp.length() - extension.length() - 1);
+    for(const std::string fileName : getFileNamesList(directories[currentDirectoryIndex],extension, true, FileListOrder_ModifyDate_Dsc)) {
+        std::string entryName = fileName.substr(0, fileName.length() - extension.length() - 1);
         fileList.addEntry(entryName);
 
         if(entryName == preselectedFile) {
@@ -156,7 +151,7 @@ bool LoadSaveWindow::handleKeyPress(SDL_KeyboardEvent& key) {
         } else if(key.keysym.sym == SDLK_DELETE) {
             int index = fileList.getSelectedIndex();
             if(index >= 0) {
-                QstBox* pQstBox = QstBox::create(   strprintf(_("Do you really want to delete '%s' ?"), fileList.getEntry(index).c_str()),
+                QstBox* pQstBox = QstBox::create(   fmt::sprintf(_("Do you really want to delete '%s' ?"), fileList.getEntry(index).c_str()),
                                                     _("No"),
                                                     _("Yes"),
                                                     QSTBOX_BUTTON2);

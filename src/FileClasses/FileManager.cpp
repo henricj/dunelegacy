@@ -27,39 +27,30 @@
 #include <misc/fnkdat.h>
 #include <misc/md5.h>
 #include <misc/string_util.h>
+#include <misc/exceptions.h>
 
 #include <algorithm>
-#include <stdexcept>
 #include <sstream>
 #include <iomanip>
 
-FileManager::FileManager(bool saveMode) {
-    fprintf(stderr,"\n");
-    fprintf(stderr,"FileManager is loading PAK-Files...\n\n");
-    fprintf(stderr,"MD5-Checksum                      Filename\n");
+FileManager::FileManager() {
+    SDL_Log("\nFileManager is loading PAK-Files...");
+    SDL_Log("\nMD5-Checksum                      Filename");
 
-    std::vector<std::string> searchPath = getSearchPath();
-    std::vector<std::string> fileList = getNeededFiles();
-
-    std::vector<std::string>::const_iterator filenameIter;
-    for(filenameIter = fileList.begin(); filenameIter != fileList.end(); ++filenameIter) {
-
-        std::vector<std::string>::const_iterator searchPathIter;
-        for(searchPathIter = searchPath.begin(); searchPathIter != searchPath.end(); ++searchPathIter) {
-            std::string filepath = *searchPathIter + "/" + *filenameIter;
+    for(const std::string& filename : getNeededFiles()) {
+        for(const std::string& searchPath : getSearchPath()) {
+            std::string filepath = searchPath + "/" + filename;
             if(getCaseInsensitiveFilename(filepath) == true) {
                 try {
-                    fprintf(stderr,"%s  %s\n", md5FromFilename(filepath).c_str(), filepath.c_str());
+                    SDL_Log("%s  %s", md5FromFilename(filepath).c_str(), filepath.c_str());
                     pakFiles.push_back(new Pakfile(filepath));
                 } catch (std::exception &e) {
-                    if(saveMode == false) {
-                        while(pakFiles.empty()) {
-                            delete pakFiles.back();
-                            pakFiles.pop_back();
-                        }
-
-                        throw std::runtime_error("FileManager::FileManager(): Error while opening " + filepath + ": " + e.what());
+                    while(pakFiles.empty()) {
+                        delete pakFiles.back();
+                        pakFiles.pop_back();
                     }
+
+                    THROW(io_error, "Error while opening '%s': %s!", filepath, e.what());
                 }
 
                 // break out of searchPath-loop because we have opened the file in one directory
@@ -69,13 +60,12 @@ FileManager::FileManager(bool saveMode) {
 
     }
 
-    fprintf(stderr,"\n");
+    SDL_Log("%s", "");
 }
 
 FileManager::~FileManager() {
-    std::vector<Pakfile*>::const_iterator iter;
-    for(iter = pakFiles.begin(); iter != pakFiles.end(); ++iter) {
-        delete *iter;
+    for(Pakfile* pPakFile : pakFiles) {
+        delete pPakFile;
     }
 }
 
@@ -113,10 +103,7 @@ std::vector<std::string> FileManager::getNeededFiles() {
     }
 
     std::vector<std::string> additionalPakFiles = splitString(LanguagePakFiles);
-    std::vector<std::string>::iterator iter;
-    for(iter = additionalPakFiles.begin(); iter != additionalPakFiles.end(); ++iter) {
-        fileList.push_back(*iter);
-    }
+    fileList.insert(std::end(fileList), std::begin(additionalPakFiles), std::end(additionalPakFiles));
 
     std::sort(fileList.begin(), fileList.end());
 
@@ -126,15 +113,11 @@ std::vector<std::string> FileManager::getNeededFiles() {
 std::vector<std::string> FileManager::getMissingFiles() {
     std::vector<std::string> MissingFiles;
     std::vector<std::string> searchPath = getSearchPath();
-    std::vector<std::string> FileList = getNeededFiles();
 
-    std::vector<std::string>::const_iterator filenameIter;
-    for(filenameIter = FileList.begin(); filenameIter != FileList.end(); ++filenameIter) {
+    for(const std::string& fileName : getNeededFiles()) {
         bool bFound = false;
-
-        std::vector<std::string>::const_iterator searchPathIter;
-        for(searchPathIter = searchPath.begin(); searchPathIter != searchPath.end(); ++searchPathIter) {
-            std::string filepath = *searchPathIter + "/" + *filenameIter;
+        for(const std::string& searchPath : getSearchPath()) {
+            std::string filepath = searchPath + "/" + fileName;
             if(getCaseInsensitiveFilename(filepath) == true) {
                 bFound = true;
                 break;
@@ -142,22 +125,19 @@ std::vector<std::string> FileManager::getMissingFiles() {
         }
 
         if(bFound == false) {
-            MissingFiles.push_back(*filenameIter);
+            MissingFiles.push_back(fileName);
         }
     }
 
     return MissingFiles;
 }
 
-SDL_RWops* FileManager::openFile(std::string filename) {
+SDL_RWops* FileManager::openFile(const std::string& filename) {
     SDL_RWops* ret;
 
     // try loading external file
-    std::vector<std::string> searchPath = getSearchPath();
-    std::vector<std::string>::const_iterator searchPathIter;
-    for(searchPathIter = searchPath.begin(); searchPathIter != searchPath.end(); ++searchPathIter) {
-
-        std::string externalFilename = *searchPathIter + "/" + filename;
+    for(const std::string& searchPath : getSearchPath()) {
+        std::string externalFilename = searchPath + "/" + filename;
         if(getCaseInsensitiveFilename(externalFilename) == true) {
             if((ret = SDL_RWFromFile(externalFilename.c_str(), "rb")) != nullptr) {
                 return ret;
@@ -166,34 +146,29 @@ SDL_RWops* FileManager::openFile(std::string filename) {
     }
 
     // now try loading from pak file
-    std::vector<Pakfile*>::const_iterator iter;
-    for(iter = pakFiles.begin(); iter != pakFiles.end(); ++iter) {
-        ret = (*iter)->openFile(filename);
+    for(Pakfile* pPakFile : pakFiles) {
+        ret = pPakFile->openFile(filename);
         if(ret != nullptr) {
             return ret;
         }
     }
 
-    throw std::runtime_error("FileManager::OpenFile(): Cannot find " + filename + "!");
+    THROW(io_error, "Cannot find '%s'!", filename);
 }
 
-bool FileManager::exists(std::string filename) const {
+bool FileManager::exists(const std::string& filename) const {
 
     // try finding external file
-    std::vector<std::string> searchPath = getSearchPath();
-    std::vector<std::string>::const_iterator searchPathIter;
-    for(searchPathIter = searchPath.begin(); searchPathIter != searchPath.end(); ++searchPathIter) {
-
-        std::string externalFilename = *searchPathIter + "/" + filename;
+    for(const std::string& searchPath : getSearchPath()) {
+        std::string externalFilename = searchPath + "/" + filename;
         if(getCaseInsensitiveFilename(externalFilename) == true) {
             return true;
         }
     }
 
     // now try finding in one pak file
-    std::vector<Pakfile*>::const_iterator iter;
-    for(iter = pakFiles.begin(); iter != pakFiles.end(); ++iter) {
-        if((*iter)->exists(filename) == true) {
+    for(const Pakfile* pPakFile : pakFiles) {
+        if(pPakFile->exists(filename)) {
             return true;
         }
     }
@@ -202,11 +177,11 @@ bool FileManager::exists(std::string filename) const {
 }
 
 
-std::string FileManager::md5FromFilename(std::string filename) {
+std::string FileManager::md5FromFilename(const std::string& filename) {
     unsigned char md5sum[16];
 
     if(md5_file(filename.c_str(), md5sum) != 0) {
-        throw std::runtime_error("Cannot open or read " + filename + "!");
+        THROW(io_error, "Cannot open or read '%s'!", filename);
     } else {
 
         std::stringstream stream;

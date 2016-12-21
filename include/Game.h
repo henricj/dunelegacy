@@ -30,6 +30,7 @@
 #include <GameInitSettings.h>
 #include <Trigger/TriggerManager.h>
 #include <players/Player.h>
+#include <players/HumanPlayer.h>
 
 #include <DataTypes.h>
 
@@ -173,7 +174,7 @@ public:
         \param filename the name of the file to load from
         \return true on success, false on failure
     */
-    bool loadSaveGame(std::string filename);
+    bool loadSaveGame(const std::string& filename);
 
     /**
         This method loads a previously saved game.
@@ -187,7 +188,7 @@ public:
         \param filename the name of the file to save to
         \return true on success, false on failure
     */
-    bool saveGame(std::string filename);
+    bool saveGame(const std::string& filename);
 
     /**
         This method starts the game. Will return when the game is finished or aborted.
@@ -200,7 +201,7 @@ public:
         This method pauses the current game.
     */
     void pauseGame() {
-        if(gameType != GAMETYPE_CUSTOM_MULTIPLAYER) {
+        if(gameType != GameType::CustomMultiplayer) {
             bPause = true;
         }
     }
@@ -269,13 +270,13 @@ public:
         This method selects all units/structures in the list aList.
         \param aList the list containing all the units/structures to be selected
     */
-    void selectAll(std::set<Uint32>& aList);
+    void selectAll(const std::set<Uint32>& aList);
 
     /**
         This method unselects all units/structures in the list aList.
         \param aList the list containing all the units/structures to be unselected
     */
-    void unselectAll(std::set<Uint32>& aList);
+    void unselectAll(const std::set<Uint32>& aList);
 
     /**
         Returns a list of all currently selected objects.
@@ -291,10 +292,11 @@ public:
         if(pInterface) {
             pInterface->updateObjectInterface();
         }
+        pLocalPlayer->onSelectionChanged(selectedList);
     };
 
 
-    void onReceiveSelectionList(std::string name, std::set<Uint32> newSelectionList, int groupListIndex);
+    void onReceiveSelectionList(const std::string& name, const std::set<Uint32>& newSelectionList, int groupListIndex);
 
     /**
         Returns a list of all currently by  the other player selected objects (Only in multiplayer with multiple players per house).
@@ -305,7 +307,7 @@ public:
     /**
         Called when a peer disconnects the game.
     */
-    void onPeerDisconnected(std::string name, bool bHost, int cause);
+    void onPeerDisconnected(const std::string& name, bool bHost, int cause);
 
     /**
         Adds a new message to the news ticker.
@@ -367,8 +369,7 @@ public:
     void unregisterPlayer(Player* player) {
         playerID2Player.erase(player->getPlayerID());
 
-        std::multimap<std::string, Player*>::iterator iter;
-        for(iter = playerName2Player.begin(); iter != playerName2Player.end(); ++iter) {
+        for(auto iter = playerName2Player.begin(); iter != playerName2Player.end(); ++iter) {
                 if(iter->second == player) {
                     playerName2Player.erase(iter);
                     break;
@@ -382,7 +383,7 @@ public:
         \return the player or nullptr if none was found
     */
     Player* getPlayerByName(const std::string& playername) const {
-        std::multimap<std::string, Player*>::const_iterator iter = playerName2Player.find(playername);
+        auto iter = playerName2Player.find(playername);
         if(iter != playerName2Player.end()) {
             return iter->second;
         } else {
@@ -396,7 +397,7 @@ public:
         \return the player or nullptr if none was found
     */
     Player* getPlayerByID(Uint8 playerID) const {
-        std::map<Uint8, Player*>::const_iterator iter = playerID2Player.find(playerID);
+        auto iter = playerID2Player.find(playerID);
         if(iter != playerID2Player.end()) {
             return iter->second;
         } else {
@@ -515,49 +516,49 @@ public:
         CursorMode_Placing
     };
 
-    int         currentCursorMode;
+    int         currentCursorMode = CursorMode_Normal;
 
-    GAMETYPE    gameType;
-    int         techLevel;
-    int         winFlags;
-    int         loseFlags;
+    GameType    gameType = GameType::Campaign;
+    int         techLevel = 0;
+    int         winFlags = 0;
+    int         loseFlags = 0;
 
     Random      randomGen;          ///< This is the random number generator for this game
     ObjectData  objectData;         ///< This contains all the unit/structure data
 
-    GAMESTATETYPE gameState;
+    GameState   gameState = GameState::Start;
 
 private:
-    bool        chatMode;           ///< chat mode on?
+    bool        chatMode = false;   ///< chat mode on?
     std::string typingChatMessage;  ///< currently typed chat message
 
-    bool        scrollDownMode;     ///< currently scrolling the map down?
-    bool        scrollLeftMode;     ///< currently scrolling the map left?
-    bool        scrollRightMode;    ///< currently scrolling the map right?
-    bool        scrollUpMode;       ///< currently scrolling the map up?
+    bool        scrollDownMode = false;     ///< currently scrolling the map down?
+    bool        scrollLeftMode = false;     ///< currently scrolling the map left?
+    bool        scrollRightMode = false;    ///< currently scrolling the map right?
+    bool        scrollUpMode = false;       ///< currently scrolling the map up?
 
-    bool        selectionMode;      ///< currently selection multiple units with a selection rectangle?
-    SDL_Rect    selectionRect;      ///< the drawn rectangle while selection multiple units
+    bool        selectionMode = false;          ///< currently selection multiple units with a selection rectangle?
+    SDL_Rect    selectionRect = {0, 0, 0, 0};   ///< the drawn rectangle while selection multiple units
 
-    int         whatNextParam;
+    int         whatNextParam = GAME_NOTHING;
 
-    Uint32      indicatorFrame;
-    int         indicatorTime;
-    int         indicatorTimer;
-    Coord       indicatorPosition;
+    Uint32      indicatorFrame = NONE_ID;
+    int         indicatorTime = 5;
+    int         indicatorTimer = 0;
+    Coord       indicatorPosition = Coord::Invalid();
 
-    float       averageFrameTime;   ///< The weighted average of the frame time of all previous frames (smoothed fps = 1000.0f/averageFrameTime)
+    float       averageFrameTime = 31.25f;      ///< The weighted average of the frame time of all previous frames (smoothed fps = 1000.0f/averageFrameTime)
 
-    Uint32      gameCycleCount;
+    Uint32      gameCycleCount = 0;
 
-    Uint32      skipToGameCycle;    ///< skip to this game cycle
+    Uint32      skipToGameCycle = 0;            ///< skip to this game cycle
 
-    bool        takePeriodicalScreenshots;  ///< take a screenshot every 10 seconds
+    bool        takePeriodicalScreenshots = false;      ///< take a screenshot every 10 seconds
 
-    SDL_Rect    powerIndicatorPos;  ///< position of the power indicator in the right game bar
-    SDL_Rect    spiceIndicatorPos;  ///< position of the spice indicator in the right game bar
-    SDL_Rect    topBarPos;          ///< position of the top game bar
-    SDL_Rect    sideBarPos;         ///< position of the right side bar
+    SDL_Rect    powerIndicatorPos = {14, 146, 4, 0};    ///< position of the power indicator in the right game bar
+    SDL_Rect    spiceIndicatorPos = {20, 146, 4, 0};    ///< position of the spice indicator in the right game bar
+    SDL_Rect    topBarPos = {0, 0, 0, 0};               ///< position of the top game bar
+    SDL_Rect    sideBarPos = {0, 0, 0, 0};              ///< position of the right side bar
 
     ////////////////////
 
@@ -572,29 +573,29 @@ private:
 
     TriggerManager      triggerManager;         ///< This is the manager for all the triggers the scenario has (e.g. reinforcements)
 
-    bool    bQuitGame;                  ///< Should the game be quited after this game tick
-    bool    bPause;                     ///< Is the game currently halted
-    bool    bMenu;                      ///< Is there currently a menu shown (options or mentat menu)
-    bool    bReplay;                    ///< Is this game actually a replay
+    bool    bQuitGame = false;                  ///< Should the game be quited after this game tick
+    bool    bPause = false;                     ///< Is the game currently halted
+    bool    bMenu = false;                      ///< Is there currently a menu shown (options or mentat menu)
+    bool    bReplay = false;                    ///< Is this game actually a replay
 
-    bool    bShowFPS;                   ///< Show the FPS
+    bool    bShowFPS = false;                   ///< Show the FPS
 
-    bool    bShowTime;                  ///< Show how long this game is running
+    bool    bShowTime = false;                  ///< Show how long this game is running
 
-    bool    bCheatsEnabled;             ///< Cheat codes are enabled?
+    bool    bCheatsEnabled = false;             ///< Cheat codes are enabled?
 
-    bool    finished;                   ///< Is the game finished (won or lost) and we are just waiting for the end message to be shown
-    bool    won;                        ///< If the game is finished, is it won or lost
-    Uint32  finishedLevelTime;          ///< The time in milliseconds when the level was finished (won or lost)
-    bool    finishedLevel;              ///< Set, when the game is really finished and the end message was shown
+    bool    finished = false;                   ///< Is the game finished (won or lost) and we are just waiting for the end message to be shown
+    bool    won = false;                        ///< If the game is finished, is it won or lost
+    Uint32  finishedLevelTime = 0;              ///< The time in milliseconds when the level was finished (won or lost)
+    bool    finishedLevel = false;              ///< Set, when the game is really finished and the end message was shown
 
-    GameInterface*          pInterface;                         ///< This is the whole interface (top bar and side bar)
-    InGameMenu*             pInGameMenu;                        ///< This is the menu that is opened by the option button
-    MentatHelp*             pInGameMentat;                      ///< This is the mentat dialog opened by the mentat button
-    WaitingForOtherPlayers* pWaitingForOtherPlayers;            ///< This is the dialog that pops up when we are waiting for other players during network hangs
-    Uint32                  startWaitingForOtherPlayersTime;    ///< The time in milliseconds when we started waiting for other players
+    GameInterface*          pInterface = nullptr;                   ///< This is the whole interface (top bar and side bar)
+    InGameMenu*             pInGameMenu = nullptr;                  ///< This is the menu that is opened by the option button
+    MentatHelp*             pInGameMentat = nullptr;                ///< This is the mentat dialog opened by the mentat button
+    WaitingForOtherPlayers* pWaitingForOtherPlayers = nullptr;      ///< This is the dialog that pops up when we are waiting for other players during network hangs
+    Uint32                  startWaitingForOtherPlayersTime = 0;    ///< The time in milliseconds when we started waiting for other players
 
-    bool    bSelectionChanged;                          ///< Has the selected list changed (and must be retransmitted to other plays in multiplayer games)
+    bool    bSelectionChanged = false;                  ///< Has the selected list changed (and must be retransmitted to other plays in multiplayer games)
     std::set<Uint32> selectedList;                      ///< A set of all selected units/structures
     std::set<Uint32> selectedByOtherPlayerList;         ///< This is only used in multiplayer games where two players control one house
     RobustList<Explosion*> explosionList;               ///< A list containing all the explosions that must be drawn

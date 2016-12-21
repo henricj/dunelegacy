@@ -17,17 +17,11 @@
 
 #include <GUI/TextView.h>
 
+#include <misc/string_util.h>
+
 #include <algorithm>
 
 TextView::TextView() : Widget() {
-    fontID = FONT_STD12;
-    textcolor = COLOR_DEFAULT;
-    textshadowcolor = COLOR_DEFAULT;
-    backgroundcolor = COLOR_TRANSPARENT;
-    alignment = (Alignment_Enum) (Alignment_Left | Alignment_Top);
-    pForeground = nullptr;
-    pBackground = nullptr;
-    bAutohideScrollbar = true;
     enableResizing(true,true);
 
     resize(getMinimumSize().x,getMinimumSize().y);
@@ -97,7 +91,12 @@ void TextView::resize(Uint32 width, Uint32 height) {
 
     scrollbar.resize(scrollbar.getMinimumSize().x,height);
 
-    std::list<std::string> textLines = calcTextLines();
+    int fontID = this->fontID;
+    std::vector<std::string> textLines = greedyWordWrap(text,
+                                                        getSize().x - scrollbar.getSize().x - 4,
+                                                        [fontID](const std::string& tmp) {
+                                                            return GUIStyle::getInstance().getMinimumLabelSize(tmp, fontID).x - 4;
+                                                        });
 
     int lineHeight = GUIStyle::getInstance().getTextHeight(fontID) + 2;
 
@@ -114,105 +113,15 @@ void TextView::updateTextures() {
     }
 
     if(pForeground == nullptr) {
-        std::list<std::string> textLines = calcTextLines();
+        int fontID = this->fontID;
+        std::vector<std::string> textLines = greedyWordWrap(text,
+                                                            getSize().x - scrollbar.getSize().x - 4,
+                                                            [fontID](const std::string& tmp) {
+                                                                return GUIStyle::getInstance().getMinimumLabelSize(tmp, fontID).x - 4;
+                                                            });
 
         int lineHeight = GUIStyle::getInstance().getTextHeight(fontID) + 2;
         int labelHeight = lineHeight * textLines.size() + 2;
         pForeground = convertSurfaceToTexture(GUIStyle::getInstance().createLabelSurface(getSize().x-4,labelHeight,textLines,fontID,alignment,textcolor,textshadowcolor,backgroundcolor), true);
     }
-}
-
-std::list<std::string> TextView::calcTextLines() {
-    //split text into single lines at every '\n'
-    size_t startpos = 0;
-    size_t nextpos;
-    std::list<std::string> hardLines;
-    do {
-        nextpos = text.find("\n",startpos);
-        if(nextpos == std::string::npos) {
-            hardLines.push_back(text.substr(startpos,text.length()-startpos));
-        } else {
-            hardLines.push_back(text.substr(startpos,nextpos-startpos));
-            startpos = nextpos+1;
-        }
-    } while(nextpos != std::string::npos);
-
-    std::list<std::string> textLines;
-
-    std::list<std::string>::const_iterator iter;
-    for(iter = hardLines.begin();iter != hardLines.end();++iter) {
-        std::string tmpLine = *iter;
-
-        if(tmpLine == "") {
-            textLines.push_back(" ");
-            continue;
-        }
-
-        bool EndOfLine = false;
-        size_t warppos = 0;
-        size_t oldwarppos = 0;
-        size_t lastwarp = 0;
-
-        while(EndOfLine == false) {
-            while(true) {
-                warppos = tmpLine.find(" ", oldwarppos);
-                std::string tmp;
-                if(warppos == std::string::npos) {
-                    tmp = tmpLine.substr(lastwarp,tmpLine.length()-lastwarp);
-                    warppos = tmpLine.length();
-                    EndOfLine = true;
-                } else {
-                    tmp = tmpLine.substr(lastwarp,warppos-lastwarp);
-                }
-
-                if( GUIStyle::getInstance().getMinimumLabelSize(tmp, fontID).x - 4 > getSize().x - scrollbar.getSize().x - 4) {
-                    // this line would be too big => in oldwarppos is the last correct warp pos
-                    EndOfLine = false;
-                    break;
-                } else {
-                    if(EndOfLine == true) {
-                        oldwarppos = warppos;
-                        break;
-                    } else {
-                        oldwarppos = warppos + 1;
-                    }
-                }
-            }
-
-            if(oldwarppos == lastwarp) {
-                // the width of this label is too small for the next word
-                // split the word
-
-                warppos = lastwarp;
-                while(true) {
-                    std::string tmp = tmpLine.substr(lastwarp,warppos-lastwarp);
-                    if( GUIStyle::getInstance().getMinimumLabelSize(tmp, fontID).x - 4 > getSize().x - scrollbar.getSize().x - 4) {
-                        // this line would be too big => in oldwarppos is the last correct warp pos
-                        break;
-                    } else {
-                        oldwarppos = warppos;
-                    }
-
-                    warppos++;
-                }
-
-                if(warppos != lastwarp) {
-                    textLines.push_back(tmpLine.substr(lastwarp,oldwarppos-lastwarp));
-                    lastwarp = oldwarppos;
-                } else {
-                    // the width of this label is too small for the next character
-                    // create a dummy entry
-                    textLines.push_back(" ");
-                    lastwarp++;
-                    oldwarppos++;
-                }
-            } else {
-                std::string tmpStr = tmpLine.substr(lastwarp,oldwarppos-lastwarp);
-                textLines.push_back(tmpStr);
-                lastwarp = oldwarppos;
-            }
-        }
-    }
-
-    return textLines;
 }

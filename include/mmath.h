@@ -55,7 +55,49 @@ inline int destinationDrawnAngle(const Coord& p1, const Coord& p2) {
 FixPoint distanceFrom(const Coord& p1, const Coord& p2);
 FixPoint distanceFrom(FixPoint x, FixPoint y, FixPoint to_x, FixPoint to_y);
 
-FixPoint blockDistance(const Coord& p1, const Coord& p2);
+/**
+    Calculates the maximum distances, that is max(abs(diffX), abs(diffY))
+    \param  p1  first coordinate
+    \param  p2  second coordinate
+    \return the distance
+*/
+inline int maximumDistance(const Coord& p1, const Coord& p2) {
+    return std::max(abs(p1.x - p2.x), abs(p1.y - p2.y));
+}
+
+/**
+    Calculates the block distance, that is the distance when moving along blocks
+    \param  p1  first coordinate
+    \param  p2  second coordinate
+    \return the distance
+*/
+inline FixPoint blockDistance(const Coord& p1, const Coord& p2) {
+    int diffX = abs(p1.x - p2.x);
+    int diffY = abs(p1.y - p2.y);
+
+	if(diffX > diffY) {
+		return diffX + diffY*(FixPt_SQRT2 - 1);
+	} else {
+		return diffX*(FixPt_SQRT2 - 1) + diffY;
+	}
+}
+
+/**
+    Calculates the block distance the same as the original, that is diffX + diffY/2 for diffX > diffY and diffX/2 + diffY for diffX <= diffY
+    \param  p1  first coordinate
+    \param  p2  second coordinate
+    \return the distance
+*/
+inline int blockDistanceApprox(const Coord& p1, const Coord& p2) {
+	int diffX = abs(p1.x - p2.x);
+	int diffY = abs(p1.y - p2.y);
+
+	if(diffX > diffY) {
+		return ((diffX*2 + diffY) + 1)/2;
+	} else {
+		return ((diffX + diffY*2) + 1)/2;
+	}
+}
 
 // Retreat location for launcher
 Coord retreatLocation(const Coord& p1, const Coord& p2);

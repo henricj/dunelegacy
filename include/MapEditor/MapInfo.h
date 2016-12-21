@@ -24,8 +24,8 @@
 
 class MapInfo {
 public:
-    MapInfo(int mapSeed = INVALID, std::string author = "", std::string license = "", std::string losePicture = "LOSTVEHC.WSA",
-            std::string winPicture = "WIN2.WSA", std::string briefPicture = "SARDUKAR.WSA", int techLevel = INVALID)
+    MapInfo(int mapSeed = INVALID, const std::string& author = "", const std::string& license = "", const std::string& losePicture = "LOSTVEHC.WSA",
+            const std::string& winPicture = "WIN2.WSA", const std::string& briefPicture = "SARDUKAR.WSA", int techLevel = INVALID)
     : mapSeed(mapSeed), author(author), license(license), losePicture(losePicture),
       winPicture(winPicture), briefPicture(briefPicture), techLevel(techLevel) {
     }

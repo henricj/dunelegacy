@@ -52,8 +52,8 @@ public:
 
     virtual void doRepair();
 
-    inline void setawaitingPickup(bool status) { awaitingPickup = status; }
-    inline bool isawaitingPickup() const { return awaitingPickup; }
+    inline void setAwaitingPickup(bool status) { awaitingPickup = status; }
+    inline bool isAwaitingPickup() const { return awaitingPickup; }
     bool hasBookedCarrier() const;
     const UnitBase* getCarrier() const;
 
@@ -78,8 +78,8 @@ public:
     }
 
 protected:
-
-    void    navigate();
+    virtual void move();
+    virtual void navigate();
 
     bool    awaitingPickup;     ///< Is this unit waiting for pickup?
     Uint32  bookedCarrier;      ///< What is the carrier if waiting for pickup?

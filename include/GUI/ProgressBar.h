@@ -185,7 +185,7 @@ public:
         to fit this text.
         \param  text The new text for this progress bar
     */
-    virtual inline void setText(std::string text) {
+    virtual inline void setText(const std::string& text) {
         if(this->text != text) {
             this->text = text;
             resizeAll();
@@ -196,7 +196,7 @@ public:
         Get the text of this progress bar.
         \return the text of this button
     */
-    inline std::string getText() { return text; };
+    inline const std::string& getText() const { return text; };
 
     /**
         Sets the text color for this progress bar.

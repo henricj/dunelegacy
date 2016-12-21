@@ -100,14 +100,14 @@ public:
         Adds a command at the next possible game cycle
         \param  cmd     the command to add
     */
-    void addCommand(Command cmd);
+    void addCommand(const Command& cmd);
 
     /**
         Adds a command at the game cycle CycleNumber
         \param  cmd         the command to add
         \param  CycleNumber the game cycle this command shall take effect
     */
-    void addCommand(Command cmd, Uint32 CycleNumber);
+    void addCommand(const Command& cmd, Uint32 CycleNumber);
 
     /**
         Runs all commands scheduled for game cycle CycleNumber

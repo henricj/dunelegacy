@@ -122,14 +122,19 @@ bool Carryall::update() {
         return false;
     }
 
-    FixPoint dist = distanceFrom(location.x*TILESIZE + TILESIZE/2, location.y*TILESIZE + TILESIZE/2,
-                                destination.x*TILESIZE + TILESIZE/2, destination.y*TILESIZE + TILESIZE/2);
-
-    if((target || hasCargo()) && dist < 256) {
-        currentMaxSpeed = (((2 - currentGame->objectData.data[itemID][originalHouseID].maxspeed)/256) * (256 - dist)) + currentGame->objectData.data[itemID][originalHouseID].maxspeed;
-        setSpeeds();
+    const FixPoint& maxSpeed = currentGame->objectData.data[itemID][originalHouseID].maxspeed;
+    if(target || hasCargo()) {
+        FixPoint dist = distanceFrom(   location.x*TILESIZE + TILESIZE/2, location.y*TILESIZE + TILESIZE/2,
+                                        destination.x*TILESIZE + TILESIZE/2, destination.y*TILESIZE + TILESIZE/2);
+        if(dist < 512) {
+            currentMaxSpeed = (((2 - maxSpeed)/512) * (512 - dist)) + maxSpeed;
+            setSpeeds();
+        } else {
+            currentMaxSpeed = std::min(currentMaxSpeed + FixPt(0,2), maxSpeed);
+            setSpeeds();
+        }
     } else {
-        currentMaxSpeed = std::min(currentMaxSpeed + FixPt(0,2), currentGame->objectData.data[itemID][originalHouseID].maxspeed);
+        currentMaxSpeed = std::min(currentMaxSpeed + FixPt(0,2), maxSpeed);
         setSpeeds();
     }
 
@@ -248,9 +253,8 @@ void Carryall::deployUnit(Uint32 unitID)
 {
     bool found = false;
 
-    std::list<Uint32>::iterator iter;
-    for(iter = pickedUpUnitList.begin() ; iter != pickedUpUnitList.end(); ++iter) {
-        if(*iter == unitID) {
+    for(const Uint32& pickedUpUnitID : pickedUpUnitList) {
+        if(pickedUpUnitID == unitID) {
             found = true;
             break;
         }
@@ -279,13 +283,10 @@ void Carryall::deployUnit(Uint32 unitID)
             if (object->getOwner() == getOwner()) {
                 if (object->getItemID() == Structure_RepairYard) {
                     if (static_cast<RepairYard*>(object)->isFree()) {
-                        pUnit->setTarget(object);
+                        pUnit->setTarget(object);   // unit books repair yard again
                         pUnit->setGettingRepaired();
                         pUnit = nullptr;
                     } else {
-                        // carryall has booked this repair yard but now will not go there => unbook
-                        static_cast<RepairYard*>(object)->unBook();
-
                         // unit is still going to repair yard but was unbooked from repair yard at pickup => book now
                         static_cast<RepairYard*>(object)->book();
                     }
@@ -302,7 +303,7 @@ void Carryall::deployUnit(Uint32 unitID)
 
         if(pUnit != nullptr) {
             pUnit->setAngle(drawnAngle);
-            Coord deployPos = currentGameMap->findDeploySpot(pUnit, location);
+            Coord deployPos = currentGameMap->findDeploySpot(pUnit, location, currentGame->randomGen);
             pUnit->setForced(false); // Stop units being forced if they are deployed
             pUnit->deploy(deployPos);
             if(pUnit->getItemID() == Unit_Saboteur) {
@@ -330,11 +331,10 @@ void Carryall::deployUnit(Uint32 unitID)
 void Carryall::destroy()
 {
     // destroy cargo
-    std::list<Uint32>::const_iterator iter;
-    for(iter = pickedUpUnitList.begin() ; iter != pickedUpUnitList.end(); ++iter) {
-        UnitBase* pUnit = static_cast<UnitBase*>(currentGame->getObjectManager().getObject(*iter));
-        if(pUnit != nullptr) {
-            pUnit->destroy();
+    for(const Uint32& pickedUpUnitID : pickedUpUnitList) {
+        UnitBase* pPickedUpUnit = static_cast<UnitBase*>(currentGame->getObjectManager().getObject(pickedUpUnitID));
+        if(pPickedUpUnit != nullptr) {
+            pPickedUpUnit->destroy();
         }
     }
     pickedUpUnitList.clear();
@@ -372,7 +372,7 @@ void Carryall::engageTarget()
         return;
     }
 
-    if(target && target.getObjPointer()->isAGroundUnit() && !static_cast<GroundUnit*>(target.getObjPointer())->isawaitingPickup()) {
+    if(target && target.getObjPointer()->isAGroundUnit() && !static_cast<GroundUnit*>(target.getObjPointer())->isAwaitingPickup()) {
         // the target changed its state to not awaiting pickup anymore
         releaseTarget();
         return;
@@ -454,7 +454,7 @@ void Carryall::pickupTarget()
         }
 
         if (  pTarget->hasATarget()
-            || ( pGroundUnitTarget->getGuardPoint() != pTarget->getLocation())
+            || ( pGroundUnitTarget->getDestination() != pTarget->getLocation())
             || pGroundUnitTarget->isBadlyDamaged()) {
 
             if(pGroundUnitTarget->isBadlyDamaged() || (pTarget->hasATarget() == false && pTarget->getItemID() != Unit_Harvester))   {
@@ -469,15 +469,14 @@ void Carryall::pickupTarget()
             drawnFrame = 1;
             booked = true;
 
-            if(newTarget && ((newTarget->getItemID() == Structure_Refinery)
-                              || (newTarget->getItemID() == Structure_RepairYard)))
-            {
+            if(newTarget && (newTarget->getItemID() == Structure_Refinery)) {
+                pGroundUnitTarget->setGuardPoint(pGroundUnitTarget->getLocation());
                 setTarget(newTarget);
-                if(newTarget->getItemID() == Structure_Refinery) {
-                    setDestination(target.getObjPointer()->getLocation() + Coord(2,0));
-                } else {
-                    setDestination(target.getObjPointer()->getClosestPoint(location));
-                }
+                setDestination(target.getObjPointer()->getLocation() + Coord(2,0));
+            } else if(newTarget && (newTarget->getItemID() == Structure_RepairYard)) {
+                pGroundUnitTarget->setGuardPoint(pGroundUnitTarget->getLocation());
+                setTarget(newTarget);
+                setDestination(target.getObjPointer()->getClosestPoint(location));
             } else if (pGroundUnitTarget->getDestination().isValid()) {
                 setDestination(pGroundUnitTarget->getDestination());
             }
@@ -485,7 +484,10 @@ void Carryall::pickupTarget()
             clearPath();
 
         } else {
-            pGroundUnitTarget->setawaitingPickup(false);
+            pGroundUnitTarget->setAwaitingPickup(false);
+            if(pGroundUnitTarget->getAttackMode() == CARRYALLREQUESTED) {
+                pGroundUnitTarget->doSetAttackMode(STOP);
+            }
             releaseTarget();
         }
     } else {
@@ -513,7 +515,7 @@ void Carryall::setTarget(const ObjectBase* newTarget) {
     UnitBase::setTarget(newTarget);
 
     if(target && targetFriendly && target.getObjPointer()->isAGroundUnit()) {
-        static_cast<GroundUnit*>(target.getObjPointer())->setawaitingPickup(true);
+        static_cast<GroundUnit*>(target.getObjPointer())->setAwaitingPickup(true);
     }
 
     booked = target;
@@ -527,27 +529,25 @@ void Carryall::targeting() {
 
 
 void Carryall::findConstYard() {
-    FixPoint closestYardDistance = 1000000;
-    ConstructionYard* bestYard = nullptr;
+    FixPoint closestConstructionYardDistance = FixPt_MAX;
+    ConstructionYard* pBestConstructionYard = nullptr;
 
-    RobustList<StructureBase*>::const_iterator iter;
-    for(iter = structureList.begin(); iter != structureList.end(); ++iter) {
-        StructureBase* tempStructure = *iter;
+    for(StructureBase* pStructure : structureList) {
 
-        if((tempStructure->getItemID() == Structure_ConstructionYard) && (tempStructure->getOwner() == owner)) {
-            ConstructionYard* tempYard = static_cast<ConstructionYard*>(tempStructure);
-            Coord closestPoint = tempYard->getClosestPoint(location);
-            FixPoint tempDistance = distanceFrom(location, closestPoint);
+        if((pStructure->getItemID() == Structure_ConstructionYard) && (pStructure->getOwner() == owner)) {
+            ConstructionYard* pConstructionYard = static_cast<ConstructionYard*>(pStructure);
+            Coord closestPoint = pConstructionYard->getClosestPoint(location);
+            FixPoint constructionYardDistance = distanceFrom(location, closestPoint);
 
-            if(tempDistance < closestYardDistance) {
-                closestYardDistance = tempDistance;
-                bestYard = tempYard;
+            if(constructionYardDistance < closestConstructionYardDistance) {
+                closestConstructionYardDistance = constructionYardDistance;
+                pBestConstructionYard = pConstructionYard;
             }
         }
     }
 
-    if(bestYard) {
-        constYardPoint = bestYard->getClosestPoint(location);
+    if(pBestConstructionYard) {
+        constYardPoint = pBestConstructionYard->getClosestPoint(location);
     } else {
         constYardPoint = guardPoint;
     }

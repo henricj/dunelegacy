@@ -17,6 +17,8 @@
 
 #include <FileClasses/INIFile.h>
 
+#include <misc/exceptions.h>
+
 #include <fstream>
 #include <iostream>
 #include <cctype>
@@ -205,10 +207,10 @@ bool INIFile::Section::hasKey(const std::string& key) const {
 }
 
 INIFile::Key* INIFile::Section::getKey(const std::string& keyname) const {
-    for(INIFile::KeyIterator iter = begin(); iter != end(); ++iter) {
-        if(iter->keyStringLength == (int) keyname.size()) {
-                if(strncicmp(keyname.c_str(), iter->completeLine.c_str()+iter->keyStringBegin, keyname.size()) == 0) {
-                    return &(*iter);
+    for(INIFile::Key& key : *this) {
+        if(key.keyStringLength == (int) keyname.size()) {
+                if(strncicmp(keyname.c_str(), key.completeLine.c_str()+key.keyStringBegin, keyname.size()) == 0) {
+                    return &key;
                 }
         }
     }
@@ -368,8 +370,7 @@ INIFile::INIFile(SDL_RWops * RWopsFile, bool bWhitespace)
  : firstLine(nullptr), sectionRoot(nullptr), bWhitespace(bWhitespace) {
 
     if(RWopsFile == nullptr) {
-        std::cerr << "INIFile: RWopsFile == nullptr!" << std::endl;
-        exit(EXIT_FAILURE);
+        THROW(std::invalid_argument, "RWopsFile == nullptr!");
     }
 
     readfile(RWopsFile);
@@ -398,30 +399,23 @@ INIFile::~INIFile() {
     \return true, if the section exists, false otherwise
 */
 bool INIFile::hasSection(const std::string& section) const {
-    return (getSection(section) != nullptr);
+    return (getSectionInternal(section) != nullptr);
 }
 
 
 /**
-    This method returns a pointer to the section specified by sectionname
+    This method returns a reference to the section specified by sectionname
     \param  sectionname the name of the section
     \return the section if found, nullptr otherwise
 */
-const INIFile::Section* INIFile::getSection(const std::string& sectionname) const {
-    Section* curSection = sectionRoot;
-    int sectionnameSize = sectionname.size();
+const INIFile::Section& INIFile::getSection(const std::string& sectionname) const {
+    const Section* curSection = getSectionInternal(sectionname);
 
-    while(curSection != nullptr) {
-        if(curSection->sectionStringLength == sectionnameSize) {
-                if(strncicmp(sectionname.c_str(), curSection->completeLine.c_str()+curSection->sectionStringBegin, sectionnameSize) == 0) {
-                    return curSection;
-                }
-        }
-
-        curSection = curSection->nextSection;
+    if(curSection == nullptr) {
+        throw std::out_of_range("There is no section '" + sectionname + "' in this INI file");
+    } else {
+        return *curSection;
     }
-
-    return nullptr;
 }
 
 
@@ -434,7 +428,7 @@ const INIFile::Section* INIFile::getSection(const std::string& sectionname) cons
 bool INIFile::removeSection(const std::string& sectionname) {
     clearSection(sectionname, false);
 
-    INIFile::Section* curSection = const_cast<Section*>(getSection(sectionname));
+    INIFile::Section* curSection = const_cast<Section*>(getSectionInternal(sectionname));
     if(curSection == nullptr) {
         return false;
     }
@@ -479,7 +473,7 @@ bool INIFile::removeSection(const std::string& sectionname) {
     \return true on success
 */
 bool INIFile::clearSection(const std::string& sectionname, bool bBlankLineAtSectionEnd) {
-    INIFile::Section* curSection = const_cast<Section*>(getSection(sectionname));
+    INIFile::Section* curSection = const_cast<Section*>(getSectionInternal(sectionname));
     if(curSection == nullptr) {
         return false;
     }
@@ -528,7 +522,7 @@ bool INIFile::clearSection(const std::string& sectionname, bool bBlankLineAtSect
     \return true, if the key exists, false otherwise
 */
 bool INIFile::hasKey(const std::string& section, const std::string& key) const {
-    const Section* curSection = getSection(section);
+    const Section* curSection = getSectionInternal(section);
     if(curSection == nullptr) {
         return false;
     } else {
@@ -544,7 +538,7 @@ bool INIFile::hasKey(const std::string& section, const std::string& key) const {
     \return the key if found, nullptr otherwise
 */
 const INIFile::Key* INIFile::getKey(const std::string& sectionname, const std::string& keyname) const {
-    const INIFile::Section* curSection = getSection(sectionname);
+    const INIFile::Section* curSection = getSectionInternal(sectionname);
     if(curSection == nullptr) {
         return nullptr;
     }
@@ -560,7 +554,7 @@ const INIFile::Key* INIFile::getKey(const std::string& sectionname, const std::s
     \return true if removing was successful
 */
 bool INIFile::removeKey(const std::string& sectionname, const std::string& keyname) {
-    INIFile::Section* curSection = const_cast<Section*>(getSection(sectionname));
+    INIFile::Section* curSection = const_cast<Section*>(getSectionInternal(sectionname));
     if(curSection == nullptr) {
         return false;
     }
@@ -794,7 +788,7 @@ INIFile::SectionIterator INIFile::end() const {
     \return the iterator
 */
 INIFile::KeyIterator INIFile::begin(const std::string& section) const {
-    const Section* curSection = getSection(section);
+    const Section* curSection = getSectionInternal(section);
     if(curSection == nullptr) {
         return KeyIterator(nullptr);
     } else {
@@ -1060,8 +1054,26 @@ void INIFile::insertSection(Section* newSection) {
 }
 
 
+const INIFile::Section* INIFile::getSectionInternal(const std::string& sectionname) const {
+    Section* curSection = sectionRoot;
+    int sectionnameSize = sectionname.size();
+
+    while(curSection != nullptr) {
+        if(curSection->sectionStringLength == sectionnameSize) {
+                if(strncicmp(sectionname.c_str(), curSection->completeLine.c_str()+curSection->sectionStringBegin, sectionnameSize) == 0) {
+                    return curSection;
+                }
+        }
+
+        curSection = curSection->nextSection;
+    }
+
+    return nullptr;
+}
+
+
 INIFile::Section* INIFile::getSectionOrCreate(const std::string& sectionname) {
-    Section* curSection = const_cast<Section*>(getSection(sectionname));
+    Section* curSection = const_cast<Section*>(getSectionInternal(sectionname));
 
     if(curSection == nullptr) {
         // create new section

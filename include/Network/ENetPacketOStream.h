@@ -31,7 +31,7 @@ public:
      : currentPos(0) {
         packet = enet_packet_create(nullptr,16,flags);
         if(packet == nullptr) {
-            throw OutputStream::error("ENetPacketOStream: enet_packet_create() failed!");
+            THROW(OutputStream::error, "ENetPacketOStream: enet_packet_create() failed!");
         }
     }
 
@@ -50,7 +50,7 @@ public:
         if(this != &p) {
             ENetPacket* packetCopy = enet_packet_create(p.packet->data,p.packet->dataLength,p.packet->flags);
             if(packetCopy == nullptr) {
-                throw InputStream::error("ENetPacketOStream::operator=(): enet_packet_create() failed!");
+                THROW(InputStream::error, "ENetPacketOStream::operator=(): enet_packet_create() failed!");
             }
 
             if(packet != nullptr) {
@@ -66,7 +66,7 @@ public:
 
     ENetPacket* getPacket() {
         if(enet_packet_resize(packet,currentPos) < 0) {
-            throw OutputStream::error("ENetPacketOStream::getPacket(): enet_packet_resize() failed!");
+            THROW(OutputStream::error, "ENetPacketOStream::getPacket(): enet_packet_resize() failed!");
         }
 
         ENetPacket* pPacket = packet;
@@ -140,7 +140,7 @@ public:
         }
 
         if(enet_packet_resize(packet,newBufferSize) < 0) {
-            throw OutputStream::error("ENetPacketOStream::ensureBufferSize(): enet_packet_resize() failed!");
+            THROW(OutputStream::error, "ENetPacketOStream::ensureBufferSize(): enet_packet_resize() failed!");
         }
     }
 

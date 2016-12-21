@@ -27,7 +27,7 @@ public:
     Font() { };
     virtual ~Font() { };
 
-    virtual void drawTextOnSurface(SDL_Surface* pSurface, std::string text, Uint32 baseColor = 0xFFFFFFFF) = 0;
+    virtual void drawTextOnSurface(SDL_Surface* pSurface, const std::string& text, Uint32 baseColor = 0xFFFFFFFF) = 0;
 
     /// Returns the number of pixels a text needs
     /**
@@ -35,7 +35,7 @@ public:
         \param  text    The text to be checked for it's length in pixel
         \return Number of pixels needed
     */
-    virtual int getTextWidth(std::string text) const = 0;
+    virtual int getTextWidth(const std::string& text) const = 0;
 
     /// Returns the number of pixels this font needs in y-direction.
     /**

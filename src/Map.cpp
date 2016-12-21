@@ -22,7 +22,6 @@
 #include <Game.h>
 #include <House.h>
 #include <ScreenBorder.h>
-#include <ConcatIterator.h>
 #include <sand.h>
 
 #include <units/UnitBase.h>
@@ -82,11 +81,11 @@ void Map::createSandRegions() {
 
     for(int i = 0; i < sizeX; i++) {
         for(int j = 0; j < sizeY; j++)  {
-            getTile(i,j)->setSandRegion(NONE);
+            getTile(i,j)->setSandRegion(NONE_ID);
         }
     }
 
-    int region = 0;
+    Uint32 region = 0;
     for(int i = 0; i < sizeX; i++) {
         for(int j = 0; j < sizeY; j++) {
             if(!getTile(i,j)->isRock() && !visited[j*sizeX+i]) {
@@ -131,9 +130,8 @@ void Map::damage(Uint32 damagerID, House* damagerOwner, const Coord& realPos, Ui
     }
 
     if(bulletID == Bullet_Sandworm) {
-        std::set<Uint32>::const_iterator iter;
-        for(iter = affectedGroundAndUndergroundUnits.begin(); iter != affectedGroundAndUndergroundUnits.end() ;++iter) {
-            ObjectBase* pObject = currentGame->getObjectManager().getObject(*iter);
+        for(Uint32 objectID : affectedGroundAndUndergroundUnits) {
+            ObjectBase* pObject = currentGame->getObjectManager().getObject(objectID);
             if((pObject->getItemID() != Unit_Sandworm) && (pObject->isAGroundUnit() || pObject->isInfantry()) && (pObject->getLocation() == location)) {
                 pObject->setVisible(VIS_ALL, false);
                 pObject->handleDamage( lround(damage), damagerID, damagerOwner);
@@ -144,10 +142,8 @@ void Map::damage(Uint32 damagerID, House* damagerOwner, const Coord& realPos, Ui
         if(air == true) {
             // air damage
             if((bulletID == Bullet_DRocket) || (bulletID == Bullet_Rocket) || (bulletID == Bullet_TurretRocket)|| (bulletID == Bullet_SmallRocket)) {
-                std::set<Uint32>::const_iterator iter;
-                for(iter = affectedAirUnits.begin(); iter != affectedAirUnits.end() ;++iter) {
-                    AirUnit* pAirUnit = dynamic_cast<AirUnit*>(currentGame->getObjectManager().getObject(*iter));
-
+                for(Uint32 objectID : affectedAirUnits) {
+                    AirUnit* pAirUnit = dynamic_cast<AirUnit*>(currentGame->getObjectManager().getObject(objectID));
                     if(pAirUnit == nullptr)
                         continue;
 
@@ -173,9 +169,8 @@ void Map::damage(Uint32 damagerID, House* damagerOwner, const Coord& realPos, Ui
             }
         } else {
             // non air damage
-            std::set<Uint32>::const_iterator iter;
-            for(iter = affectedGroundAndUndergroundUnits.begin(); iter != affectedGroundAndUndergroundUnits.end() ;++iter) {
-                ObjectBase* pObject = currentGame->getObjectManager().getObject(*iter);
+            for(Uint32 objectID : affectedGroundAndUndergroundUnits) {
+                ObjectBase* pObject = currentGame->getObjectManager().getObject(objectID);
 
                 if(pObject->isAStructure()) {
                     StructureBase* pStructure = dynamic_cast<StructureBase*>(pObject);
@@ -232,7 +227,7 @@ void Map::damage(Uint32 damagerID, House* damagerOwner, const Coord& realPos, Ui
                         if(pTile->getType() == Terrain_Slab) {
                             pTile->setType(Terrain_Rock);
                             pTile->setDestroyedStructureTile(Destroyed1x1Structure);
-                            pTile->setOwner(NONE);
+                            pTile->setOwner(NONE_ID);
                         }
 
                         pTile->addDamage(Tile::Terrain_RockDamage, (bulletID==Bullet_SmallRocket) ? Tile::RockDamage1 : Tile::RockDamage2, realPos);
@@ -383,7 +378,7 @@ Coord Map::getMapPos(int angle, const Coord& source) const {
 }
 
 //building size is num squares
-Coord Map::findDeploySpot(UnitBase* pUnit, const Coord& origin, const Coord& gatherPoint, const Coord& buildingSize) const {
+Coord Map::findDeploySpot(UnitBase* pUnit, const Coord& origin, Random& randomGen, const Coord& gatherPoint, const Coord& buildingSize) const {
     FixPoint    closestDistance = FixPt_MAX;
     Coord       closestPoint;
     Coord       size;
@@ -402,22 +397,22 @@ Coord Map::findDeploySpot(UnitBase* pUnit, const Coord& origin, const Coord& gat
     int ranY = origin.y;
 
     do {
-        int edge = currentGame->randomGen.rand(0, 3);
+        int edge = randomGen.rand(0, 3);
         switch(edge) {
             case 0: //right edge
                 ranX = origin.x + buildingSize.x + depth;
-                ranY = currentGame->randomGen.rand(origin.y - depth, origin.y + buildingSize.y + depth);
+                ranY = randomGen.rand(origin.y - depth, origin.y + buildingSize.y + depth);
                 break;
             case 1: //top edge
-                ranX = currentGame->randomGen.rand(origin.x - depth, origin.x + buildingSize.x + depth);
+                ranX = randomGen.rand(origin.x - depth, origin.x + buildingSize.x + depth);
                 ranY = origin.y - depth - ((buildingSize.y == 0) ? 0 : 1);
                 break;
             case 2: //left edge
                 ranX = origin.x - depth - ((buildingSize.x == 0) ? 0 : 1);
-                ranY = currentGame->randomGen.rand(origin.y - depth, origin.y + buildingSize.y + depth);
+                ranY = randomGen.rand(origin.y - depth, origin.y + buildingSize.y + depth);
                 break;
             case 3: //bottom edge
-                ranX = currentGame->randomGen.rand(origin.x - depth, origin.x + buildingSize.x + depth);
+                ranX = randomGen.rand(origin.x - depth, origin.x + buildingSize.x + depth);
                 ranY = origin.y + buildingSize.y + depth;
                 break;
             default:
@@ -454,7 +449,7 @@ Coord Map::findDeploySpot(UnitBase* pUnit, const Coord& origin, const Coord& gat
             if(++depth > (std::max(currentGameMap->getSizeX(), currentGameMap->getSizeY()))) {
                 closestPoint.invalidate();
                 found = true;
-                fprintf(stderr, "Cannot find deploy position because the map is full!\n"); fflush(stderr);
+                SDL_Log("Warning: Cannot find deploy position because the map is full!");
             }
         }
     } while (!found && (!foundClosest || (counter > 0)));
@@ -586,8 +581,8 @@ bool Map::findSpice(Coord& destination, const Coord& origin) const {
     int depth = 1;
 
     do {
-        int ranX;
-        int ranY;
+        int ranX = 0;
+        int ranY = 0;
         do {
             ranX = currentGame->randomGen.rand(origin.x-depth, origin.x + depth);
             ranY = currentGame->randomGen.rand(origin.y-depth, origin.y + depth);
@@ -639,42 +634,36 @@ void Map::spiceRemoved(const Coord& coord) {
     }
 }
 
-void Map::viewMap(int playerTeam, const Coord& location, int maxViewRange) {
+void Map::viewMap(const int playerTeam, const Coord& location, const int maxViewRange) {
 
 //makes map viewable in an area like as shown below
+//
+//                    *
+//                  *****
+//                  *****
+//                 ***T***
+//                  *****
+//                  *****
+//                    *
 
-//                     *****
-//                   *********
-//                  *****T*****
-//                   *********
-//                     *****
 
-    Coord   check;
-    check.x = location.x - maxViewRange;
-    if(check.x < 0) {
-        check.x = 0;
-    }
-
-    while((check.x < sizeX) && ((check.x - location.x) <=  maxViewRange)) {
-        check.y = (location.y - lookDist[abs(check.x - location.x)]);
-        if (check.y < 0) check.y = 0;
-
-        while((check.y < sizeY) && ((check.y - location.y) <= lookDist[abs(check.x - location.x)])) {
-            if(distanceFrom(location, check) <= maxViewRange) {
+	Coord coord;
+	int startY = std::max(0, location.y - maxViewRange);
+	int endY = std::min(sizeY-1, location.y + maxViewRange);
+	for(coord.y = startY; coord.y <= endY; coord.y++) {
+		int startX = std::max(0, location.x - maxViewRange);
+		int endX = std::min(sizeX-1, location.x + maxViewRange);
+		for(coord.x = startX; coord.x <= endX; coord.x++) {
+            if((maxViewRange <= 1) ? (maximumDistance(location, coord) <= maxViewRange) : (blockDistanceApprox(location, coord) <= maxViewRange)) {
                 for(int i = 0; i < NUM_HOUSES; i++) {
                     House* pHouse = currentGame->getHouse(i);
                     if((pHouse != nullptr) && (pHouse->getTeam() == playerTeam)) {
-                        getTile(check)->setExplored(i,currentGame->getGameCycleCount());
+                        getTile(coord)->setExplored(i,currentGame->getGameCycleCount());
                     }
                 }
             }
-
-            check.y++;
-        }
-
-        check.x++;
-        check.y = location.y;
-    }
+		}
+	}
 }
 
 /**

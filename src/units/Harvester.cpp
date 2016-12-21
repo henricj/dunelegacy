@@ -162,60 +162,72 @@ void Harvester::checkPos()
     if(active)  {
         if (returningToRefinery) {
             if (target && (target.getObjPointer() != nullptr) && (target.getObjPointer()->getItemID() == Structure_Refinery)) {
-                //find a refinery to return to
-                Coord closestPoint = target.getObjPointer()->getClosestPoint(location);
+                Refinery* pRefinery = static_cast<Refinery*>(target.getObjPointer());
+                Tile* pTile = currentGameMap->getTile(location);
+                ObjectBase *pObject = pTile->getGroundObject();
 
-                // Fixed a carryall bug
-                if(!moving && !justStoppedMoving && blockDistance(location, closestPoint) <= 2) {
-                    awaitingPickup = false;
-                    if (static_cast<Refinery*>(target.getObjPointer())->isFree())
+                if( justStoppedMoving
+                    && (pObject != nullptr)
+                    && (pObject->getObjectID() == target.getObjectID()) )
+                {
+                    if(pRefinery->isFree()) {
+                        awaitingPickup = false;
                         setReturned();
-                }else if(!awaitingPickup && owner->hasCarryalls() && static_cast<Refinery*>(target.getObjPointer())->isFree()){
+                    } else {
+                        // the repair yard is already in use by some other unit => move out
+                        Coord newDestination = currentGameMap->findDeploySpot(this, target.getObjPointer()->getLocation(), currentGame->randomGen, getLocation(), pRefinery->getStructureSize());
+                        doMove2Pos(newDestination, true);
+                        requestCarryall();
+                    }
+                } else if(!awaitingPickup && owner->hasCarryalls() && pRefinery->isFree() && blockDistance(location, pRefinery->getClosestPoint(location)) >= MIN_CARRYALL_LIFT_DISTANCE) {
                     requestCarryall();
                 }
-            } else if (!structureList.empty()) {
-                int leastNumBookings = 1000000; //huge amount so refinery couldn't possibly compete with any refinery num bookings
-                FixPoint closestLeastBookedRefineryDistance = 1000000;
-                Refinery    *bestRefinery = nullptr;
 
-                RobustList<StructureBase*>::const_iterator iter;
-                for(iter = structureList.begin(); iter != structureList.end(); ++iter) {
-                    StructureBase* tempStructure = *iter;
 
-                    if((tempStructure->getItemID() == Structure_Refinery) && (tempStructure->getOwner() == owner)) {
-                        Refinery* tempRefinery = static_cast<Refinery*>(tempStructure);
-                        Coord closestPoint = tempRefinery->getClosestPoint(location);
-                        FixPoint tempDistance = distanceFrom(location, closestPoint);
-                        int tempNumBookings = tempRefinery->getNumBookings();
+            } else {
+                int leastNumBookings = std::numeric_limits<int>::max(); //huge amount so refinery couldn't possibly compete with any refinery num bookings
+                FixPoint closestLeastBookedRefineryDistance = FixPt32_MAX;
+                Refinery* pBestRefinery = nullptr;
 
-                        if (tempNumBookings < leastNumBookings) {
-                            leastNumBookings = tempNumBookings;
-                            closestLeastBookedRefineryDistance = tempDistance;
-                            bestRefinery = tempRefinery;
-                        } else if (tempNumBookings == leastNumBookings) {
-                            if (tempDistance < closestLeastBookedRefineryDistance) {
-                                closestLeastBookedRefineryDistance = tempDistance;
-                                bestRefinery = tempRefinery;
+                for(StructureBase* pStructure : structureList) {
+                    if((pStructure->getItemID() == Structure_Refinery) && (pStructure->getOwner() == owner)) {
+                        Refinery* pRefinery = static_cast<Refinery*>(pStructure);
+                        Coord closestPoint = pRefinery->getClosestPoint(location);
+                        FixPoint refineryDistance = blockDistance(location, closestPoint);
+
+                        if (pRefinery->getNumBookings() < leastNumBookings) {
+                            leastNumBookings = pRefinery->getNumBookings();
+                            closestLeastBookedRefineryDistance = refineryDistance;
+                            pBestRefinery = pRefinery;
+                        } else if (pRefinery->getNumBookings() == leastNumBookings) {
+                            if (refineryDistance < closestLeastBookedRefineryDistance) {
+                                closestLeastBookedRefineryDistance = refineryDistance;
+                                pBestRefinery = pRefinery;
                             }
                         }
                     }
                 }
 
-                if (bestRefinery) {
-                    doMove2Object(bestRefinery);
-
-                    bestRefinery->startAnimate();
+                if (pBestRefinery) {
+                    doMove2Object(pBestRefinery);
+                    pBestRefinery->startAnimate();
+                } else {
+                    setDestination(location);
                 }
             }
-        } else if (harvestingMode && !hasBookedCarrier() && (blockDistance(location, destination) > 8)) {
+        } else if (harvestingMode && !hasBookedCarrier() && destination.isValid() && (blockDistance(location, destination) >= MIN_CARRYALL_LIFT_DISTANCE)) {
             requestCarryall();
         } else if(respondable && !harvestingMode && attackMode != STOP) {
             if(spiceCheckCounter == 0) {
                 // Find harvest location nearest to our base
-                if(currentGameMap->findSpice(destination, guardPoint)) {
+                Coord newDestination;
+                if(currentGameMap->findSpice(newDestination, guardPoint)) {
+                    setDestination(newDestination);
+                    setGuardPoint(newDestination);
                     harvestingMode = true;
-                    guardPoint = destination;
                 } else {
+                    setDestination(location);
+                    setGuardPoint(location);
                     harvestingMode = false;
                 }
                 spiceCheckCounter = 100;
@@ -229,13 +241,14 @@ void Harvester::checkPos()
 void Harvester::deploy(const Coord& newLocation)
 {
     if(currentGameMap->tileExists(newLocation)) {
-        UnitBase::deploy(newLocation);
-
-
+        TrackedUnit::deploy(newLocation);
         if(spice == 0) {
-            if((attackMode != STOP) && currentGameMap->findSpice(destination, guardPoint)) {
+            Coord newDestination;
+            if((attackMode != STOP) && currentGameMap->findSpice(newDestination, guardPoint)) {
                 harvestingMode = true;
-                guardPoint = destination;
+                setDestination(newDestination);
+                setGuardPoint(newDestination);
+
             } else {
                 harvestingMode = false;
             }
@@ -341,11 +354,13 @@ void Harvester::handleReturnClick() {
 
 void Harvester::doReturn()
 {
-    returningToRefinery = true;
-    harvestingMode = false;
+    if(!returningToRefinery && isActive()) {
+        returningToRefinery = true;
+        harvestingMode = false;
 
-    if(getAttackMode() == STOP) {
-        setGuardPoint(Coord::Invalid());
+        if(getAttackMode() == STOP) {
+            setGuardPoint(Coord::Invalid());
+        }
     }
 }
 
@@ -405,7 +420,7 @@ void Harvester::setReturned()
 
 void Harvester::move()
 {
-    UnitBase::move();
+    TrackedUnit::move();
 
     if(active && !moving && !justStoppedMoving) {
         if(harvestingMode) {
@@ -430,7 +445,9 @@ void Harvester::move()
                             }
                         }
                     } else if (!currentGameMap->findSpice(destination, location)) {
-                        doReturn();
+                        if(spice > 0) {
+                            doReturn();
+                        }
                     } else {
                         doMove2Pos(destination, false);
                     }
@@ -443,7 +460,10 @@ void Harvester::move()
 }
 
 bool Harvester::isHarvesting() const {
-    return harvestingMode && (blockDistance(location, destination) <= FixPt_SQRT2) && currentGameMap->tileExists(location) && currentGameMap->getTile(location)->hasSpice();
+    return  harvestingMode
+            && (spice < HARVESTERMAXSPICE)
+            && (blockDistance(location, destination) <= FixPt_SQRT2)
+            && currentGameMap->tileExists(location) && currentGameMap->getTile(location)->hasSpice();
 }
 
 bool Harvester::canAttack(const ObjectBase* object) const

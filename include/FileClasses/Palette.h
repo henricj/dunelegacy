@@ -18,9 +18,10 @@
 #ifndef PALETTE_H
 #define PALETTE_H
 
+#include <misc/exceptions.h>
+
 #include <SDL.h>
 #include <string.h>
-#include <stdexcept>
 
 class Palette
 {
@@ -60,7 +61,7 @@ class Palette
 
         inline SDL_Color& operator[](const int i) {
             if(pSDLPalette == nullptr || i < 0 || i >= pSDLPalette->ncolors) {
-                throw std::runtime_error("Palette::operator[]: Invalid index!");
+                THROW(std::runtime_error, "Palette::operator[]: Invalid index!");
             }
 
             return pSDLPalette->colors[i];
@@ -68,7 +69,7 @@ class Palette
 
         inline const SDL_Color& operator[](const int i) const {
             if(pSDLPalette == nullptr || i < 0 || i >= pSDLPalette->ncolors) {
-                throw std::runtime_error("Palette::operator[]: Invalid index!");
+                THROW(std::runtime_error, "Palette::operator[]: Invalid index!");
             }
 
             return pSDLPalette->colors[i];
@@ -106,15 +107,15 @@ class Palette
             bool hasColorKey = (SDL_GetColorKey(pSurface, &colorKey) == 0);
 
             if(pSDLPalette == nullptr) {
-                throw std::runtime_error("Palette::applyToSurface(): Palette not initialized yet!");
+                THROW(std::runtime_error, "Palette::applyToSurface(): Palette not initialized yet!");
             }
 
             if(pSurface == nullptr) {
-                throw std::runtime_error("Palette::applyToSurface(): pSurface == nullptr!");
+                THROW(std::runtime_error, "Palette::applyToSurface(): pSurface == nullptr!");
             }
 
             if(pSurface->format->palette == nullptr) {
-                throw std::runtime_error("Palette::applyToSurface(): Cannot apply palette to surface without a palette!");
+                THROW(std::runtime_error, "Palette::applyToSurface(): Cannot apply palette to surface without a palette!");
             }
 
             int nColors = (endColor != -1) ? (endColor - firstColor + 1) : (pSDLPalette->ncolors - firstColor);

@@ -41,6 +41,8 @@
 
 #include <FileClasses/adl/sound_adlib.h>
 
+#include <misc/exceptions.h>
+
 #include <algorithm>
 #include <inttypes.h>
 #include <stdarg.h>
@@ -2451,7 +2453,7 @@ void SoundAdlibPC::internalLoadFile(SDL_RWops* rwop) {
   int file_size = 0;
 
   if((file_size = SDL_RWseek(rwop,0,SEEK_END)) <= 0) {
-    fprintf(stderr,"SoundAdlibPC::internalLoadFile(): Cannot seek in SDL_RWop!\n");
+    SDL_Log("SoundAdlibPC::internalLoadFile(): Cannot seek in SDL_RWop!");
     return;
   }
 
@@ -2460,13 +2462,13 @@ void SoundAdlibPC::internalLoadFile(SDL_RWops* rwop) {
   unk1();
 
   if(SDL_RWseek(rwop,0,SEEK_SET) != 0) {
-    fprintf(stderr,"SoundAdlibPC::internalLoadFile(): Cannot seek in SDL_RWop!\n");
+    SDL_Log("SoundAdlibPC::internalLoadFile(): Cannot seek in SDL_RWop!");
     return;
   }
 
   file_data = new uint8[file_size];
   if(SDL_RWread(rwop,file_data,1,file_size) != (unsigned int) file_size) {
-    fprintf(stderr,"SoundAdlibPC::internalLoadFile(): Cannot read from SDL_RWop!\n");
+    SDL_Log("SoundAdlibPC::internalLoadFile(): Cannot read from SDL_RWop!");
     delete [] file_data;
     return;
   }
@@ -2512,8 +2514,7 @@ Mix_Chunk* SoundAdlibPC::getSubsong(int Num) {
     do {
         bufSize += 1024;
         if((buf = (Uint8*) SDL_realloc(buf, bufSize)) == NULL) {
-            perror("SoundAdlibPC::getSubsong(): Cannot allocate memory!\n");
-            exit(EXIT_FAILURE);
+            THROW(std::runtime_error, "Cannot allocate memory!");
         }
 
         memset(buf + bufSize - 1024, 0, 1024);
@@ -2529,7 +2530,7 @@ Mix_Chunk* SoundAdlibPC::getSubsong(int Num) {
         }
 
         if(bufSize > 1024*1024*16) {
-            fprintf(stderr,"SoundAdlibPC::getSubsong(): Decoding aborted after 16MB have been decoded.\n");
+            SDL_Log("SoundAdlibPC::getSubsong(): Decoding aborted after 16MB have been decoded.");
             break;
         }
 

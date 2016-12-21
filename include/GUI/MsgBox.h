@@ -40,7 +40,7 @@ public:
         This method sets a new text for this message box.
         \param  text The new text for this message box
     */
-    virtual inline void setText(std::string text) {
+    virtual inline void setText(const std::string& text) {
         textLabel.setText(text);
         resize(std::max(vbox.getMinimumSize().x,120),vbox.getMinimumSize().y);
     }
@@ -49,7 +49,7 @@ public:
         Get the text of this message box.
         \return the text of this message box
     */
-    inline std::string getText() { return textLabel.getText(); };
+    inline const std::string& getText() { return textLabel.getText(); };
 
     /**
         Sets the text color for this message box.
@@ -104,7 +104,7 @@ public:
         \param  text    The message box text
         \return The new message box (will be automatically destroyed when it's closed)
     */
-    static MsgBox* create(std::string text) {
+    static MsgBox* create(const std::string& text) {
         MsgBox* msgbox = new MsgBox(text);
         msgbox->pAllocated = true;
         return msgbox;
@@ -114,7 +114,7 @@ protected:
     /** protected constructor (See create)
         \param  text    Text of this message box
     */
-    explicit MsgBox(std::string text)
+    explicit MsgBox(const std::string& text)
      : Window(50,50,50,50) {
         init(text);
     }
@@ -128,7 +128,7 @@ private:
         Initialization helper method.
         \param  Text    Text of this message box
     */
-    void init(std::string text) {
+    void init(const std::string& text) {
         setWindowWidget(&vbox);
         vbox.addWidget(VSpacer::create(6));
         vbox.addWidget(&textLabel);

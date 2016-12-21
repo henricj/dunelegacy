@@ -40,7 +40,7 @@
 #include <globals.h>
 
 
-Player::Player(House* associatedHouse, std::string playername) : pHouse(associatedHouse), playerID(0), playername(playername) {
+Player::Player(House* associatedHouse, const std::string& playername) : pHouse(associatedHouse), playerID(0), playername(playername) {
 }
 
 Player::Player(InputStream& stream, House* associatedHouse) : pHouse(associatedHouse) {
@@ -115,100 +115,100 @@ const House* Player::getHouse(int houseID) const {
 }
 
 void Player::doRepair(const ObjectBase* pObject) {
-    if(pObject->getOwner() == getHouse()) {
+    if(pObject->getOwner() == getHouse() && pObject->isActive()) {
         const_cast<ObjectBase*>(pObject)->doRepair();
     } else {
-        logWarn("This player tries to repair a structure or unit he doesn't own!\n", playername.c_str());
+        logWarn("The player '%s' tries to repair a structure or unit he doesn't own or that is inactive!\n", playername.c_str());
     }
 }
 
 void Player::doSetDeployPosition(const StructureBase* pStructure, int x, int y) {
-    if(pStructure->getOwner() == getHouse()) {
+    if(pStructure->getOwner() == getHouse() && pStructure->isActive()) {
         const_cast<StructureBase*>(pStructure)->doSetDeployPosition(x, y);
     } else {
-        logWarn("This player tries to set the deploy position of a structure he doesn't own!\n", playername.c_str());
+        logWarn("The player '%s' tries to set the deploy position of a structure he doesn't own or that is inactive!\n", playername.c_str());
     }
 }
 
 bool Player::doUpgrade(const BuilderBase* pBuilder) {
-    if(pBuilder->getOwner() == getHouse()) {
+    if(pBuilder->getOwner() == getHouse() && pBuilder->isActive()) {
         return const_cast<BuilderBase*>(pBuilder)->doUpgrade();
     } else {
-        logWarn("This player tries to upgrade a structure he doesn't own!\n", playername.c_str());
+        logWarn("The player '%s' tries to upgrade a structure he doesn't own or that is inactive!\n", playername.c_str());
         return false;
     }
 }
 
 void Player::doProduceItem(const BuilderBase* pBuilder, Uint32 itemID) {
-    if(pBuilder->getOwner() == getHouse()) {
+    if(pBuilder->getOwner() == getHouse() && pBuilder->isActive()) {
         const_cast<BuilderBase*>(pBuilder)->doProduceItem(itemID);
     } else {
-        logWarn("This player tries to build some item in a structure he doesn't own!\n", playername.c_str());
+        logWarn("The player '%s' tries to build some item in a structure he doesn't own or that is inactive!\n", playername.c_str());
     }
 }
 
 void Player::doCancelItem(const BuilderBase* pBuilder, Uint32 itemID) {
-    if(pBuilder->getOwner() == getHouse()) {
+    if(pBuilder->getOwner() == getHouse() && pBuilder->isActive()) {
         const_cast<BuilderBase*>(pBuilder)->doCancelItem(itemID);
     } else {
-        logWarn("This player tries to cancel production of some item in a structure he doesn't own!\n", playername.c_str());
+        logWarn("The player '%s' tries to cancel production of some item in a structure he doesn't own or that is inactive!\n", playername.c_str());
     }
 }
 
 void Player::doSetOnHold(const BuilderBase* pBuilder, bool bOnHold) {
-    if(pBuilder->getOwner() == getHouse()) {
+    if(pBuilder->getOwner() == getHouse() && pBuilder->isActive()) {
         const_cast<BuilderBase*>(pBuilder)->doSetOnHold(bOnHold);
     } else {
-        logWarn("This player tries to hold/resume production in a structure he doesn't own!\n", playername.c_str());
+        logWarn("The player '%s' tries to hold/resume production in a structure he doesn't own or that is inactive!\n", playername.c_str());
     }
 }
 
 void Player::doBuildRandom(const BuilderBase* pBuilder) {
-    if(pBuilder->getOwner() == getHouse()) {
+    if(pBuilder->getOwner() == getHouse() && pBuilder->isActive()) {
         const_cast<BuilderBase*>(pBuilder)->doBuildRandom();
     } else {
-        logWarn("This player tries to randomly build some item in a structure he doesn't own!\n", playername.c_str());
+        logWarn("The player '%s' tries to randomly build some item in a structure he doesn't own or that is inactive!\n", playername.c_str());
     }
 }
 
 void Player::doPlaceOrder(const StarPort* pStarport) {
-    if(pStarport->getOwner() == getHouse()) {
+    if(pStarport->getOwner() == getHouse() && pStarport->isActive()) {
         const_cast<StarPort*>(pStarport)->doPlaceOrder();
     } else {
-        logWarn("This player tries to order something from a starport he doesn't own!\n", playername.c_str());
+        logWarn("The player '%s' tries to order something from a starport he doesn't own or that is inactive!\n", playername.c_str());
     }
 }
 
 bool Player::doPlaceStructure(const ConstructionYard* pConstYard, int x, int y) {
-    if(pConstYard->getOwner() == getHouse()) {
+    if(pConstYard->getOwner() == getHouse() && pConstYard->isActive()) {
         return const_cast<ConstructionYard*>(pConstYard)->doPlaceStructure(x, y);
     } else {
-        logWarn("This player tries to place a structure he hasn't produced!\n", playername.c_str());
+        logWarn("The player '%s' tries to place a structure he hasn't produced (or the construction yard is inactive)!\n", playername.c_str());
         return false;
     }
 }
 
 void Player::doSpecialWeapon(const Palace* pPalace) {
-    if(pPalace->getOwner() == getHouse()) {
+    if(pPalace->getOwner() == getHouse() && pPalace->isActive()) {
         const_cast<Palace*>(pPalace)->doSpecialWeapon();
     } else {
-        logWarn("This player tries to activate a special weapon from a palace he doesn't own!\n", playername.c_str());
+        logWarn("The player '%s' tries to activate a special weapon from a palace he doesn't own or that is inactive!\n", playername.c_str());
     }
 }
 
 void Player::doLaunchDeathhand(const Palace* pPalace, int x, int y) {
-    if(pPalace->getOwner() == getHouse()) {
+    if(pPalace->getOwner() == getHouse() && pPalace->isActive()) {
         const_cast<Palace*>(pPalace)->doLaunchDeathhand(x, y);
     } else {
-        logWarn("This player tries to launch a deathhand from a palace he doesn't own!\n", playername.c_str());
+        logWarn("The player '%s' tries to launch a deathhand from a palace he doesn't own or that is inactive!\n", playername.c_str());
     }
 }
 
 void Player::doAttackObject(const TurretBase* pTurret, const ObjectBase* pTargetObject) {
-    if(pTurret->getOwner() == getHouse()) {
+    if(pTurret->getOwner() == getHouse() && pTurret->isActive()) {
         const_cast<TurretBase*>(pTurret)->doAttackObject(pTargetObject);
     } else {
-        logWarn("This player tries to attack with a turret he doesn't own!\n", playername.c_str());
+        logWarn("The player '%s' tries to attack with a turret he doesn't own or that is inactive!\n", playername.c_str());
         return;
     }
 }
@@ -216,92 +216,92 @@ void Player::doAttackObject(const TurretBase* pTurret, const ObjectBase* pTarget
 
 
 void Player::doMove2Pos(const UnitBase* pUnit, int x, int y, bool bForced) {
-    if(pUnit->getOwner() == getHouse()) {
+    if(pUnit->getOwner() == getHouse() && pUnit->isActive()) {
         const_cast<UnitBase*>(pUnit)->doMove2Pos(x, y, bForced);
     } else {
-        logWarn("This player tries to move a unit he doesn't own!\n", playername.c_str());
+        logWarn("The player '%s' tries to move a unit he doesn't own or that is inactive!\n", playername.c_str());
         return;
     }
 }
 
 void Player::doMove2Object(const UnitBase* pUnit, const ObjectBase* pTargetObject) {
-    if(pUnit->getOwner() == getHouse()) {
+    if(pUnit->getOwner() == getHouse() && pUnit->isActive()) {
         const_cast<UnitBase*>(pUnit)->doMove2Object(pTargetObject);
     } else {
-        logWarn("This player tries to move a unit (to an object) he doesn't own!\n", playername.c_str());
+        logWarn("The player '%s' tries to move a unit (to an object) he doesn't own or that is inactive!\n", playername.c_str());
         return;
     }
 }
 
 void Player::doAttackPos(const UnitBase* pUnit, int x, int y, bool bForced) {
-    if(pUnit->getOwner() == getHouse()) {
+    if(pUnit->getOwner() == getHouse() && pUnit->isActive()) {
         const_cast<UnitBase*>(pUnit)->doAttackPos(x, y, bForced);
     } else {
-        logWarn("This player tries to order a unit (to attack a position) he doesn't own!\n", playername.c_str());
+        logWarn("The player '%s' tries to order a unit (to attack a position) he doesn't own or that is inactive!\n", playername.c_str());
         return;
     }
 }
 
 void Player::doAttackObject(const UnitBase* pUnit, const ObjectBase* pTargetObject, bool bForced) {
-    if(pUnit->getOwner() == getHouse()) {
+    if(pUnit->getOwner() == getHouse() && pUnit->isActive()) {
         const_cast<UnitBase*>(pUnit)->doAttackObject(pTargetObject, bForced);
     } else {
-        logWarn("This player tries to attack with a unit he doesn't own!\n", playername.c_str());
+        logWarn("The player '%s' tries to attack with a unit he doesn't own or that is inactive!\n", playername.c_str());
         return;
     }
 }
 
 void Player::doSetAttackMode(const UnitBase* pUnit, ATTACKMODE attackMode) {
-    if(pUnit->getOwner() == getHouse()) {
+    if(pUnit->getOwner() == getHouse() && pUnit->isActive()) {
         const_cast<UnitBase*>(pUnit)->doSetAttackMode(attackMode);
     } else {
-        logWarn("This player tries to change the attack mode of a unit he doesn't own!\n", playername.c_str());
+        logWarn("The player '%s' tries to change the attack mode of a unit he doesn't own or that is inactive!\n", playername.c_str());
         return;
     }
 }
 
 void Player::doStartDevastate(const Devastator* pDevastator) {
-    if(pDevastator->getOwner() == getHouse()) {
+    if(pDevastator->getOwner() == getHouse() && pDevastator->isActive()) {
         const_cast<Devastator*>(pDevastator)->doStartDevastate();
     } else {
-        logWarn("This player tries to devastate a devastator he doesn't own!\n", playername.c_str());
+        logWarn("The player '%s' tries to devastate a devastator he doesn't own or that is inactive!\n", playername.c_str());
         return;
     }
 }
 
 void Player::doReturn(const Harvester* pHarvester) {
-    if(pHarvester->getOwner() == getHouse()) {
+    if(pHarvester->getOwner() == getHouse() && pHarvester->isActive()) {
         const_cast<Harvester*>(pHarvester)->doReturn();
     } else {
-        logWarn("This player tries to return a harvester he doesn't own!\n", playername.c_str());
+        logWarn("The player '%s' tries to return a harvester he doesn't own or that is inactive!\n", playername.c_str());
         return;
     }
 }
 
 void Player::doCaptureStructure(const InfantryBase* pInfantry, const StructureBase* pTargetStructure) {
-    if(pInfantry->getOwner() == getHouse()) {
+    if(pInfantry->getOwner() == getHouse() && pInfantry->isActive()) {
         const_cast<InfantryBase*>(pInfantry)->doCaptureStructure(pTargetStructure);
     } else {
-        logWarn("This player tries to capture with a unit he doesn't own!\n", playername.c_str());
+        logWarn("The player '%s' tries to capture with a unit he doesn't own or that is inactive!\n", playername.c_str());
         return;
     }
 }
 
 bool Player::doDeploy(const MCV* pMCV) {
-    if(pMCV->getOwner() == getHouse()) {
+    if(pMCV->getOwner() == getHouse() && pMCV->isActive()) {
         return const_cast<MCV*>(pMCV)->doDeploy();
     } else {
-        logWarn("This player tries to deploy a MCV he doesn't own!\n", playername.c_str());
+        logWarn("The player '%s' tries to deploy a MCV he doesn't own or that is inactive!\n", playername.c_str());
         return false;
     }
 }
 
 
 bool Player::doRequestCarryallDrop(const GroundUnit* pGroundUnit) {
-    if(pGroundUnit->getOwner() == getHouse()) {
+    if(pGroundUnit->getOwner() == getHouse() && pGroundUnit->isActive()) {
         return const_cast<GroundUnit*>(pGroundUnit)->requestCarryall();
     } else {
-        logWarn("This player tries request a carryall for a ground unit he doesn't own!\n", playername.c_str());
+        logWarn("The player '%s' tries request a carryall for a ground unit he doesn't own or that is inactive!\n", playername.c_str());
         return false;
     }
 }

@@ -34,12 +34,12 @@
 
 
 RadarView::RadarView()
- : RadarViewBase(), currentRadarMode(Mode_RadarOff), animFrame(NUM_STATIC_FRAMES - 1), animCounter(NUM_STATIC_FRAME_TIME)
+ : RadarViewBase(), currentRadarMode(RadarMode::RadarOff), animFrame(NUM_STATIC_FRAMES - 1), animCounter(NUM_STATIC_FRAME_TIME)
 {
     radarStaticAnimation = pGFXManager->getUIGraphic(UI_RadarAnimation);
 
     if((radarSurface = SDL_CreateRGBSurface(0, 128, 128, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK)) == nullptr) {
-        throw std::runtime_error("RadarView::RadarView(): Cannot create new surface!");
+        THROW(std::runtime_error, "RadarView::RadarView(): Cannot create new surface!");
     }
     SDL_FillRect(radarSurface, nullptr, COLOR_BLACK);
 
@@ -67,8 +67,8 @@ void RadarView::draw(Point position)
     SDL_Rect radarPosition = { position.x + RADARVIEW_BORDERTHICKNESS, position.y + RADARVIEW_BORDERTHICKNESS, RADARWIDTH, RADARHEIGHT};
 
     switch(currentRadarMode) {
-        case Mode_RadarOff:
-        case Mode_RadarOn: {
+        case RadarMode::RadarOff:
+        case RadarMode::RadarOn: {
             int mapSizeX = currentGameMap->getSizeX();
             int mapSizeY = currentGameMap->getSizeY();
 
@@ -120,10 +120,18 @@ void RadarView::draw(Point position)
 
         } break;
 
-        case Mode_AnimationRadarOff:
-        case Mode_AnimationRadarOn: {
-            SDL_Rect source = calcSpriteSourceRect(radarStaticAnimation, animFrame, NUM_STATIC_FRAMES);
-            SDL_Rect dest = calcSpriteDrawingRect(radarStaticAnimation, radarPosition.x, radarPosition.y, NUM_STATIC_FRAMES);
+        case RadarMode::AnimationRadarOff:
+        case RadarMode::AnimationRadarOn: {
+            SDL_Rect source = calcSpriteSourceRect( radarStaticAnimation,
+                                                    animFrame % NUM_STATIC_ANIMATIONS_PER_ROW,
+                                                    NUM_STATIC_ANIMATIONS_PER_ROW,
+                                                    animFrame / NUM_STATIC_ANIMATIONS_PER_ROW,
+                                                    (NUM_STATIC_FRAMES + NUM_STATIC_ANIMATIONS_PER_ROW - 1) / NUM_STATIC_ANIMATIONS_PER_ROW);
+            SDL_Rect dest = calcSpriteDrawingRect(  radarStaticAnimation,
+                                                    radarPosition.x,
+                                                    radarPosition.y,
+                                                    NUM_STATIC_ANIMATIONS_PER_ROW,
+                                                    (NUM_STATIC_FRAMES + NUM_STATIC_ANIMATIONS_PER_ROW - 1) / NUM_STATIC_ANIMATIONS_PER_ROW);
             SDL_RenderCopy(renderer, radarStaticAnimation, &source, &dest);
         } break;
     }
@@ -131,27 +139,27 @@ void RadarView::draw(Point position)
 
 void RadarView::update() {
     if(pLocalHouse->hasRadarOn()) {
-        if(currentRadarMode != Mode_RadarOn && currentRadarMode != Mode_AnimationRadarOn && currentRadarMode != Mode_AnimationRadarOff) {
+        if(currentRadarMode != RadarMode::RadarOn && currentRadarMode != RadarMode::AnimationRadarOn && currentRadarMode != RadarMode::AnimationRadarOff) {
             switchRadarMode(true);
         }
     } else {
-        if(currentRadarMode != Mode_RadarOff && currentRadarMode != Mode_AnimationRadarOn && currentRadarMode != Mode_AnimationRadarOff) {
+        if(currentRadarMode != RadarMode::RadarOff && currentRadarMode != RadarMode::AnimationRadarOn && currentRadarMode != RadarMode::AnimationRadarOff) {
             switchRadarMode(false);
         }
     }
 
     switch(currentRadarMode) {
-        case Mode_RadarOff: {
+        case RadarMode::RadarOff: {
 
         } break;
 
-        case Mode_RadarOn: {
+        case RadarMode::RadarOn: {
 
         } break;
 
-        case Mode_AnimationRadarOff: {
+        case RadarMode::AnimationRadarOff: {
             if(animFrame >= NUM_STATIC_FRAMES-1) {
-                currentRadarMode = Mode_RadarOff;
+                currentRadarMode = RadarMode::RadarOff;
             } else {
                 animCounter--;
                 if(animCounter <= 0) {
@@ -161,9 +169,9 @@ void RadarView::update() {
             }
         } break;
 
-        case Mode_AnimationRadarOn: {
+        case RadarMode::AnimationRadarOn: {
             if(animFrame <= 0) {
-                currentRadarMode = Mode_RadarOn;
+                currentRadarMode = RadarMode::RadarOn;
             } else {
                 animCounter--;
                 if(animCounter <= 0) {
@@ -180,10 +188,10 @@ void RadarView::switchRadarMode(bool bOn) {
 
     if(bOn == true) {
         soundPlayer->playVoice(RadarActivated,pLocalHouse->getHouseID());
-        currentRadarMode = Mode_AnimationRadarOn;
+        currentRadarMode = RadarMode::AnimationRadarOn;
     } else {
         soundPlayer->playVoice(RadarDeactivated,pLocalHouse->getHouseID());
-        currentRadarMode = Mode_AnimationRadarOff;
+        currentRadarMode = RadarMode::AnimationRadarOff;
     }
 }
 
@@ -197,7 +205,7 @@ void RadarView::updateRadarSurface(int mapSizeX, int mapSizeY, int scale, int of
                 Tile* pTile = currentGameMap->getTile(x,y);
 
                 /* Selecting the right color is handled in Tile::getRadarColor() */
-                Uint32 color = pTile->getRadarColor(pLocalHouse, pLocalHouse->hasRadarOn());
+                Uint32 color = pTile->getRadarColor(pLocalHouse, ((currentRadarMode == RadarMode::RadarOn) || (currentRadarMode == RadarMode::AnimationRadarOff)));
                 color = MapRGBA(radarSurface->format, color);
 
                 for(int j = 0; j < scale; j++) {

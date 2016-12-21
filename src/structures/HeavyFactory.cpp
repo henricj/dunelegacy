@@ -57,21 +57,15 @@ void HeavyFactory::doBuildRandom() {
         return;
     }
 
-    int item2Produce = ItemID_Invalid;
+    if(!buildList.empty()) {
+        int item2Produce = ItemID_Invalid;
 
-    do {
-        int randNum = currentGame->randomGen.rand(0, getBuildListSize()-1);
-        int i = 0;
-        std::list<BuildItem>::iterator iter;
-        for(iter = buildList.begin(); iter != buildList.end(); ++iter) {
-            if(i == randNum) {
-                item2Produce = iter->itemID;
-                break;
-            }
-        }
-    } while((item2Produce == Unit_Harvester) || (item2Produce == Unit_MCV));
+        do {
+            item2Produce = std::next(buildList.begin(), currentGame->randomGen.rand(0, static_cast<Sint32>(buildList.size())-1))->itemID;
+        } while((item2Produce == Unit_Harvester) || (item2Produce == Unit_MCV));
 
-    doProduceItem(item2Produce);
+        doProduceItem(item2Produce);
+    }
 }
 
 void HeavyFactory::updateStructureSpecificStuff() {

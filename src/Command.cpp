@@ -22,6 +22,8 @@
 #include <Game.h>
 #include <House.h>
 
+#include <misc/exceptions.h>
+
 #include <units/UnitBase.h>
 #include <units/GroundUnit.h>
 #include <units/Carryall.h>
@@ -35,56 +37,56 @@
 #include <structures/StarPort.h>
 #include <structures/ConstructionYard.h>
 
-#include <stdexcept>
-
-Command::Command(Uint8 playerID, CMDTYPE id) {
-    commandID = id;
+Command::Command(Uint8 playerID, CMDTYPE id)
+ : playerID(playerID), commandID(id)
+{
 }
 
-Command::Command(Uint8 playerID, CMDTYPE id, Uint32 parameter1) {
-    this->playerID = playerID;
-    commandID = id;
+Command::Command(Uint8 playerID, CMDTYPE id, Uint32 parameter1)
+ : playerID(playerID), commandID(id)
+{
     parameter.push_back(parameter1);
 }
 
-Command::Command(Uint8 playerID, CMDTYPE id, Uint32 parameter1, Uint32 parameter2) {
-    this->playerID = playerID;
-    commandID = id;
+Command::Command(Uint8 playerID, CMDTYPE id, Uint32 parameter1, Uint32 parameter2)
+ : playerID(playerID), commandID(id)
+{
     parameter.push_back(parameter1);
     parameter.push_back(parameter2);
 }
 
-Command::Command(Uint8 playerID, CMDTYPE id, Uint32 parameter1, Uint32 parameter2, Uint32 parameter3) {
-    this->playerID = playerID;
-    commandID = id;
+Command::Command(Uint8 playerID, CMDTYPE id, Uint32 parameter1, Uint32 parameter2, Uint32 parameter3)
+ : playerID(playerID), commandID(id)
+{
     parameter.push_back(parameter1);
     parameter.push_back(parameter2);
     parameter.push_back(parameter3);
 }
 
-Command::Command(Uint8 playerID, CMDTYPE id, Uint32 parameter1, Uint32 parameter2, Uint32 parameter3, Uint32 parameter4) {
-    this->playerID = playerID;
-    commandID = id;
+Command::Command(Uint8 playerID, CMDTYPE id, Uint32 parameter1, Uint32 parameter2, Uint32 parameter3, Uint32 parameter4)
+ : playerID(playerID), commandID(id)
+{
     parameter.push_back(parameter1);
     parameter.push_back(parameter2);
     parameter.push_back(parameter3);
     parameter.push_back(parameter4);
 }
 
-Command::Command(Uint8 playerID, Uint8* data, Uint32 length) {
+Command::Command(Uint8 playerID, Uint8* data, Uint32 length)
+ : playerID(playerID)
+{
     if(length % 4 != 0) {
-        throw std::invalid_argument("Command::Command(): Length must be multiple of 4!");
+        THROW(std::invalid_argument, "Command::Command(): Length must be multiple of 4!");
     }
 
     if(length < 4) {
-        throw std::invalid_argument("Command::Command(): Command must be at least 4 bytes long!");
+        THROW(std::invalid_argument, "Command::Command(): Command must be at least 4 bytes long!");
     }
 
-    this->playerID = playerID;
     commandID = (CMDTYPE) *((Uint32*) data);
 
     if(commandID >= CMD_MAX) {
-        throw std::invalid_argument("Command::Command(): CommandID unknown!");
+        THROW(std::invalid_argument, "Command::Command(): CommandID unknown!");
     }
 
     Uint32* pData = (Uint32*) (data+4);
@@ -115,7 +117,7 @@ void Command::executeCommand() const {
 
         case CMD_PLACE_STRUCTURE: {
             if(parameter.size() != 3) {
-                throw std::invalid_argument("Command::executeCommand(): CMD_PLACE_STRUCTURE needs 3 Parameters!");
+                THROW(std::invalid_argument, "Command::executeCommand(): CMD_PLACE_STRUCTURE needs 3 Parameters!");
             }
             ConstructionYard* pConstYard = dynamic_cast<ConstructionYard*>(currentGame->getObjectManager().getObject(parameter[0]));
             if(pConstYard == nullptr) {
@@ -127,7 +129,7 @@ void Command::executeCommand() const {
 
         case CMD_UNIT_MOVE2POS: {
             if(parameter.size() != 4) {
-                throw std::invalid_argument("Command::executeCommand(): CMD_UNIT_MOVE2POS needs 4 Parameters!");
+                THROW(std::invalid_argument, "Command::executeCommand(): CMD_UNIT_MOVE2POS needs 4 Parameters!");
             }
             UnitBase* unit = dynamic_cast<UnitBase*>(currentGame->getObjectManager().getObject(parameter[0]));
             if(unit == nullptr) {
@@ -138,7 +140,7 @@ void Command::executeCommand() const {
 
         case CMD_UNIT_MOVE2OBJECT: {
             if(parameter.size() != 2) {
-                throw std::invalid_argument("Command::executeCommand(): CMD_UNIT_MOVE2OBJECT needs 2 Parameters!");
+                THROW(std::invalid_argument, "Command::executeCommand(): CMD_UNIT_MOVE2OBJECT needs 2 Parameters!");
             }
             UnitBase* unit = dynamic_cast<UnitBase*>(currentGame->getObjectManager().getObject(parameter[0]));
             if(unit == nullptr) {
@@ -149,7 +151,7 @@ void Command::executeCommand() const {
 
         case CMD_UNIT_ATTACKPOS: {
             if(parameter.size() != 4) {
-                throw std::invalid_argument("Command::executeCommand(): CMD_UNIT_ATTACKPOS needs 4 Parameters!");
+                THROW(std::invalid_argument, "Command::executeCommand(): CMD_UNIT_ATTACKPOS needs 4 Parameters!");
             }
             UnitBase* unit = dynamic_cast<UnitBase*>(currentGame->getObjectManager().getObject(parameter[0]));
             if(unit == nullptr) {
@@ -160,7 +162,7 @@ void Command::executeCommand() const {
 
         case CMD_UNIT_ATTACKOBJECT: {
             if(parameter.size() != 2) {
-                throw std::invalid_argument("Command::executeCommand(): CMD_UNIT_ATTACKOBJECT needs 2 Parameters!");
+                THROW(std::invalid_argument, "Command::executeCommand(): CMD_UNIT_ATTACKOBJECT needs 2 Parameters!");
             }
             UnitBase* pUnit = dynamic_cast<UnitBase*>(currentGame->getObjectManager().getObject(parameter[0]));
             if(pUnit == nullptr) {
@@ -171,7 +173,7 @@ void Command::executeCommand() const {
 
         case CMD_INFANTRY_CAPTURE: {
             if(parameter.size() != 2) {
-                throw std::invalid_argument("Command::executeCommand(): CMD_INFANTRY_CAPTURE needs 2 Parameters!");
+                THROW(std::invalid_argument, "Command::executeCommand(): CMD_INFANTRY_CAPTURE needs 2 Parameters!");
             }
             InfantryBase* pInfantry = dynamic_cast<InfantryBase*>(currentGame->getObjectManager().getObject(parameter[0]));
             if(pInfantry == nullptr) {
@@ -182,7 +184,7 @@ void Command::executeCommand() const {
 
         case CMD_UNIT_REQUESTCARRYALLDROP: {
             if(parameter.size() != 3) {
-                throw std::invalid_argument("Command::executeCommand(): CMD_UNIT_REQUESTCARRYALLDROP needs 3 Parameters!");
+                THROW(std::invalid_argument, "Command::executeCommand(): CMD_UNIT_REQUESTCARRYALLDROP needs 3 Parameters!");
             }
             GroundUnit* pGroundUnit = dynamic_cast<GroundUnit*>(currentGame->getObjectManager().getObject(parameter[0]));
             if(pGroundUnit == nullptr) {
@@ -193,7 +195,7 @@ void Command::executeCommand() const {
 
         case CMD_UNIT_SENDTOREPAIR: {
             if(parameter.size() != 1) {
-                throw std::invalid_argument("Command::executeCommand(): CMD_UNIT_SENDTOREPAIR needs 1 Parameter!");
+                THROW(std::invalid_argument, "Command::executeCommand(): CMD_UNIT_SENDTOREPAIR needs 1 Parameter!");
             }
             GroundUnit* pGroundUnit = dynamic_cast<GroundUnit*>(currentGame->getObjectManager().getObject(parameter[0]));
             if(pGroundUnit == nullptr) {
@@ -204,7 +206,7 @@ void Command::executeCommand() const {
 
         case CMD_UNIT_SETMODE: {
             if(parameter.size() != 2) {
-                throw std::invalid_argument("Command::executeCommand(): CMD_UNIT_SETMODE needs 2 Parameter!");
+                THROW(std::invalid_argument, "Command::executeCommand(): CMD_UNIT_SETMODE needs 2 Parameter!");
             }
             UnitBase* pUnit = dynamic_cast<UnitBase*>(currentGame->getObjectManager().getObject(parameter[0]));
             if(pUnit == nullptr) {
@@ -215,7 +217,7 @@ void Command::executeCommand() const {
 
         case CMD_DEVASTATOR_STARTDEVASTATE: {
             if(parameter.size() != 1) {
-                throw std::invalid_argument("Command::executeCommand(): CMD_DEVASTATOR_STARTDEVASTATE needs 1 Parameter!");
+                THROW(std::invalid_argument, "Command::executeCommand(): CMD_DEVASTATOR_STARTDEVASTATE needs 1 Parameter!");
             }
             Devastator* pDevastator = dynamic_cast<Devastator*>(currentGame->getObjectManager().getObject(parameter[0]));
             if(pDevastator == nullptr) {
@@ -226,7 +228,7 @@ void Command::executeCommand() const {
 
         case CMD_MCV_DEPLOY: {
             if(parameter.size() != 1) {
-                throw std::invalid_argument("Command::executeCommand(): CMD_MCV_DEPLOY needs 1 Parameter!");
+                THROW(std::invalid_argument, "Command::executeCommand(): CMD_MCV_DEPLOY needs 1 Parameter!");
             }
             MCV* pMCV = dynamic_cast<MCV*>(currentGame->getObjectManager().getObject(parameter[0]));
             if(pMCV == nullptr) {
@@ -237,7 +239,7 @@ void Command::executeCommand() const {
 
         case CMD_HARVESTER_RETURN: {
             if(parameter.size() != 1) {
-                throw std::invalid_argument("Command::executeCommand(): CMD_HARVESTER_RETURN needs 1 Parameter!");
+                THROW(std::invalid_argument, "Command::executeCommand(): CMD_HARVESTER_RETURN needs 1 Parameter!");
             }
             Harvester* pHarvester = dynamic_cast<Harvester*>(currentGame->getObjectManager().getObject(parameter[0]));
             if(pHarvester == nullptr) {
@@ -248,7 +250,7 @@ void Command::executeCommand() const {
 
         case CMD_STRUCTURE_SETDEPLOYPOSITION: {
             if(parameter.size() != 3) {
-                throw std::invalid_argument("Command::executeCommand(): CMD_STRUCTURE_SETDEPLOYPOSITION needs 3 Parameters!");
+                THROW(std::invalid_argument, "Command::executeCommand(): CMD_STRUCTURE_SETDEPLOYPOSITION needs 3 Parameters!");
             }
             StructureBase* pStructure = dynamic_cast<StructureBase*>(currentGame->getObjectManager().getObject(parameter[0]));
             if(pStructure == nullptr) {
@@ -259,7 +261,7 @@ void Command::executeCommand() const {
 
         case CMD_STRUCTURE_REPAIR: {
             if(parameter.size() != 1) {
-                throw std::invalid_argument("Command::executeCommand(): CMD_STRUCTURE_REPAIR needs 1 Parameter!");
+                THROW(std::invalid_argument, "Command::executeCommand(): CMD_STRUCTURE_REPAIR needs 1 Parameter!");
             }
             StructureBase* pStructure = dynamic_cast<StructureBase*>(currentGame->getObjectManager().getObject(parameter[0]));
             if(pStructure == nullptr) {
@@ -270,7 +272,7 @@ void Command::executeCommand() const {
 
         case CMD_BUILDER_UPGRADE: {
             if(parameter.size() != 1) {
-                throw std::invalid_argument("Command::executeCommand(): CMD_BUILDER_UPGRADE needs 1 Parameter!");
+                THROW(std::invalid_argument, "Command::executeCommand(): CMD_BUILDER_UPGRADE needs 1 Parameter!");
             }
             BuilderBase* pBuilder = dynamic_cast<BuilderBase*>(currentGame->getObjectManager().getObject(parameter[0]));
             if(pBuilder == nullptr) {
@@ -281,7 +283,7 @@ void Command::executeCommand() const {
 
         case CMD_BUILDER_PRODUCEITEM: {
             if(parameter.size() != 3) {
-                throw std::invalid_argument("Command::executeCommand(): CMD_BUILDER_PRODUCEITEM needs 3 Parameter!");
+                THROW(std::invalid_argument, "Command::executeCommand(): CMD_BUILDER_PRODUCEITEM needs 3 Parameter!");
             }
             BuilderBase* pBuilder = dynamic_cast<BuilderBase*>(currentGame->getObjectManager().getObject(parameter[0]));
             if(pBuilder == nullptr) {
@@ -292,7 +294,7 @@ void Command::executeCommand() const {
 
         case CMD_BUILDER_CANCELITEM: {
             if(parameter.size() != 3) {
-                throw std::invalid_argument("Command::executeCommand(): CMD_BUILDER_CANCELITEM needs 3 Parameter!");
+                THROW(std::invalid_argument, "Command::executeCommand(): CMD_BUILDER_CANCELITEM needs 3 Parameter!");
             }
             BuilderBase* pBuilder = dynamic_cast<BuilderBase*>(currentGame->getObjectManager().getObject(parameter[0]));
             if(pBuilder == nullptr) {
@@ -303,7 +305,7 @@ void Command::executeCommand() const {
 
         case CMD_BUILDER_SETONHOLD: {
             if(parameter.size() != 2) {
-                throw std::invalid_argument("Command::executeCommand(): CMD_BUILDER_SETONHOLD needs 2 Parameters!");
+                THROW(std::invalid_argument, "Command::executeCommand(): CMD_BUILDER_SETONHOLD needs 2 Parameters!");
             }
             BuilderBase* pBuilder = dynamic_cast<BuilderBase*>(currentGame->getObjectManager().getObject(parameter[0]));
             if(pBuilder == nullptr) {
@@ -314,7 +316,7 @@ void Command::executeCommand() const {
 
         case CMD_PALACE_SPECIALWEAPON: {
             if(parameter.size() != 1) {
-                throw std::invalid_argument("Command::executeCommand(): CMD_PALACE_SPECIALWEAPON needs 1 Parameter!");
+                THROW(std::invalid_argument, "Command::executeCommand(): CMD_PALACE_SPECIALWEAPON needs 1 Parameter!");
             }
             Palace* palace = dynamic_cast<Palace*>(currentGame->getObjectManager().getObject(parameter[0]));
             if(palace == nullptr) {
@@ -325,7 +327,7 @@ void Command::executeCommand() const {
 
         case CMD_PALACE_DEATHHAND: {
             if(parameter.size() != 3) {
-                throw std::invalid_argument("Command::executeCommand(): CMD_PALACE_DEATHHAND needs 3 Parameter!");
+                THROW(std::invalid_argument, "Command::executeCommand(): CMD_PALACE_DEATHHAND needs 3 Parameter!");
             }
             Palace* palace = dynamic_cast<Palace*>(currentGame->getObjectManager().getObject(parameter[0]));
             if(palace == nullptr) {
@@ -336,7 +338,7 @@ void Command::executeCommand() const {
 
         case CMD_STARPORT_PLACEORDER: {
             if(parameter.size() != 1) {
-                throw std::invalid_argument("Command::executeCommand(): CMD_STARPORT_PLACEORDER needs 1 Parameter!");
+                THROW(std::invalid_argument, "Command::executeCommand(): CMD_STARPORT_PLACEORDER needs 1 Parameter!");
             }
             StarPort* pStarport = dynamic_cast<StarPort*>(currentGame->getObjectManager().getObject(parameter[0]));
             if(pStarport == nullptr) {
@@ -347,7 +349,7 @@ void Command::executeCommand() const {
 
         case CMD_STARPORT_CANCELORDER: {
             if(parameter.size() != 1) {
-                throw std::invalid_argument("Command::executeCommand(): CMD_STARPORT_CANCELORDER needs 1 Parameter!");
+                THROW(std::invalid_argument, "Command::executeCommand(): CMD_STARPORT_CANCELORDER needs 1 Parameter!");
             }
             StarPort* pStarport = dynamic_cast<StarPort*>(currentGame->getObjectManager().getObject(parameter[0]));
             if(pStarport == nullptr) {
@@ -358,7 +360,7 @@ void Command::executeCommand() const {
 
         case CMD_TURRET_ATTACKOBJECT: {
             if(parameter.size() != 2) {
-                throw std::invalid_argument("Command::executeCommand(): CMD_TURRET_ATTACKOBJECT needs 2 Parameters!");
+                THROW(std::invalid_argument, "Command::executeCommand(): CMD_TURRET_ATTACKOBJECT needs 2 Parameters!");
             }
             TurretBase* pTurret = dynamic_cast<TurretBase*>(currentGame->getObjectManager().getObject(parameter[0]));
             if(pTurret == nullptr) {
@@ -369,12 +371,12 @@ void Command::executeCommand() const {
 
         case CMD_TEST_SYNC: {
             if(parameter.size() != 1) {
-                throw std::invalid_argument("Command::executeCommand(): CMD_TEST_SYNC needs 1 Parameters!");
+                THROW(std::invalid_argument, "Command::executeCommand(): CMD_TEST_SYNC needs 1 Parameters!");
             }
 
             Uint32 currentSeed = currentGame->randomGen.getSeed();
             if(currentSeed != parameter[0]) {
-                fprintf(stderr, "Game is asynchronous in game cycle %d! Saved seed and current seed do not match: %ud != %ud\n", currentGame->getGameCycleCount(), parameter[0], currentSeed);
+                SDL_Log("Warning: Game is asynchronous in game cycle %d! Saved seed and current seed do not match: %ud != %ud", currentGame->getGameCycleCount(), parameter[0], currentSeed);
 #ifdef TEST_SYNC
                 currentGame->saveGame("test.sav");
                 exit(0);
@@ -383,7 +385,7 @@ void Command::executeCommand() const {
         } break;
 
         default: {
-            throw std::invalid_argument("Command::executeCommand(): Unknown CommandID!");
+            THROW(std::invalid_argument, "Command::executeCommand(): Unknown CommandID!");
         } break;
     }
 

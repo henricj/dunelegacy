@@ -45,23 +45,42 @@ class MCV;
 class Player {
 public:
 
-    Player(House* associatedHouse, std::string playername);
+    Player(House* associatedHouse, const std::string& playername);
     Player(InputStream& stream, House* associatedHouse);
     virtual ~Player();
     virtual void save(OutputStream& stream) const;
 
     virtual void update() = 0;
 
+    /**
+        Notifies that a structure of type itemID was built.
+        \param  itemID  the structure that was built
+    */
     virtual void onIncrementStructures(int itemID) { };
+
+    /**
+        Notifies that a structure of type itemID was destroyed at the specified location.
+        \param  itemID      the structure that was destroyed
+        \param  location    the location the building was located
+    */
     virtual void onDecrementStructures(int itemID, const Coord& location) { };
 
+    /**
+        Notifies that a unit of type itemID was destroyed.
+        \param  itemID      the unit that was destroyed
+    */
     virtual void onDecrementUnits(int itemID) { };
+
+    /**
+        Notifies that an enemy unit of type itemID was destroyed.
+        \param  itemID      the enemy unit that was destroyed
+    */
     virtual void onIncrementUnitKills(int itemID) { };
     /**
         An object was hit by something or damaged somehow else.
         \param  pObject     the object that was damaged
         \param  damage      the damage taken
-        \param  damagerID   the shooter of the bullet, rocket, etc. if known; NONE otherwise
+        \param  damagerID   the shooter of the bullet, rocket, etc. if known; NONE_ID otherwise
     */
     virtual void onDamage(const ObjectBase* pObject, int damage, Uint32 damagerID) { };
 
@@ -69,10 +88,10 @@ public:
     Uint8 getPlayerID() const { return playerID; };
 
     std::string getPlayername() const { return playername; };
-    void setPlayername(std::string playername) { this->playername = playername; };
+    void setPlayername(const std::string& playername) { this->playername = playername; };
 
     std::string getPlayerclass() const { return playerclass; };
-    void setPlayerclass(std::string playerclass) { this->playerclass = playerclass; };
+    void setPlayerclass(const std::string& playerclass) { this->playerclass = playerclass; };
 
 protected:
 
@@ -80,13 +99,13 @@ protected:
         Logs a debug message
         \param  fmt the format string of the debug message
     */
-    void logDebug(const char* fmt, ...);
+    void logDebug(SDL_PRINTF_FORMAT_STRING const char* fmt, ...) SDL_PRINTF_VARARG_FUNC(2);
 
     /**
         Logs a warning message
         \param  fmt the format string of the debug message
     */
-    void logWarn(const char* fmt, ...);
+    void logWarn(SDL_PRINTF_FORMAT_STRING const char* fmt, ...) SDL_PRINTF_VARARG_FUNC(2);
 
     Random& getRandomGen() const;
     const GameInitSettings& getGameInitSettings() const;

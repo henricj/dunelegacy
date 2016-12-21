@@ -72,7 +72,7 @@
 ObjectBase::ObjectBase(House* newOwner) : originalHouseID(newOwner->getHouseID()), owner(newOwner) {
     ObjectBase::init();
 
-    objectID = NONE;
+    objectID = NONE_ID;
 
     health = 0;
     badlyDamaged = false;
@@ -123,7 +123,7 @@ ObjectBase::ObjectBase(InputStream& stream) {
     active = stream.readBool();
     respondable = stream.readBool();
 
-    if(currentGame->getGameInitSettings().getGameType() != GAMETYPE_CUSTOM_MULTIPLAYER) {
+    if(currentGame->getGameInitSettings().getGameType() != GameType::CustomMultiplayer) {
         selected = stream.readBool();
         selectedByOtherPlayer = stream.readBool();
     } else {
@@ -185,7 +185,7 @@ void ObjectBase::save(OutputStream& stream) const {
     stream.writeBool(active);
     stream.writeBool(respondable);
 
-    if(currentGame->getGameInitSettings().getGameType() != GAMETYPE_CUSTOM_MULTIPLAYER) {
+    if(currentGame->getGameInitSettings().getGameType() != GameType::CustomMultiplayer) {
         stream.writeBool(selected);
         stream.writeBool(selectedByOtherPlayer);
     }
@@ -252,10 +252,6 @@ void ObjectBase::removeFromSelectionLists() {
     currentGame->selectionChanged();
     currentGame->getSelectedByOtherPlayerList().erase(getObjectID());
     selected = false;
-
-    for(int i=0; i < NUMSELECTEDLISTS; i++) {
-        pLocalPlayer->getGroupList(i).erase(getObjectID());
-    }
 }
 
 void ObjectBase::setDestination(int newX, int newY) {
@@ -317,11 +313,8 @@ bool ObjectBase::canAttack(const ObjectBase* object) const {
 
     if( canAttack()
         && (object != nullptr)
-        && (object->isAStructure()
-            || !object->isAFlyingUnit())
-        && ((object->getOwner()->getTeam() != owner->getTeam())
-            || object->getItemID() == Unit_Sandworm)
-        && object->isVisible(getOwner()->getTeam()))
+        && (object->isAStructure() || !object->isAFlyingUnit())
+        && (((object->getOwner()->getTeam() != owner->getTeam()) && object->isVisible(getOwner()->getTeam())) || (object->getItemID() == Unit_Sandworm)) )
     {
         return true;
     } else {
@@ -376,114 +369,91 @@ Coord ObjectBase::getClosestPoint(const Coord& point) const {
 }
 
 const StructureBase* ObjectBase::findClosestTargetStructure() const {
-
-    StructureBase   *closestStructure = nullptr;
-    FixPoint        closestDistance = FixPt_MAX;
-
-    RobustList<StructureBase*>::const_iterator iter;
-    for(iter = structureList.begin(); iter != structureList.end(); ++iter) {
-        StructureBase* tempStructure = *iter;
-
-        if(canAttack(tempStructure)) {
-            Coord closestPoint = tempStructure->getClosestPoint(getLocation());
+    const StructureBase *pClosestStructure = nullptr;
+    FixPoint closestDistance = FixPt_MAX;
+    for(const StructureBase* pStructure : structureList) {
+        if(canAttack(pStructure)) {
+            Coord closestPoint = pStructure->getClosestPoint(getLocation());
             FixPoint structureDistance = blockDistance(getLocation(), closestPoint);
 
-            if(tempStructure->getItemID() == Structure_Wall) {
-                    structureDistance += 20000000; //so that walls are targeted very last
+            if(pStructure->getItemID() == Structure_Wall) {
+                structureDistance += 20000000; //so that walls are targeted very last
             }
 
             if(structureDistance < closestDistance) {
                 closestDistance = structureDistance;
-                closestStructure = tempStructure;
+                pClosestStructure = pStructure;
             }
         }
     }
 
-    return closestStructure;
+    return pClosestStructure;
 }
 
 const UnitBase* ObjectBase::findClosestTargetUnit() const {
-    UnitBase    *closestUnit = nullptr;
-    FixPoint    closestDistance = FixPt_MAX;
-
-    RobustList<UnitBase*>::const_iterator iter;
-    for(iter = unitList.begin(); iter != unitList.end(); ++iter) {
-        UnitBase* tempUnit = *iter;
-
-        if(canAttack(tempUnit)) {
-            Coord closestPoint = tempUnit->getClosestPoint(getLocation());
-            FixPoint unitDistance = blockDistance(getLocation(), closestPoint);
-
-                if(unitDistance < closestDistance) {
-                    closestDistance = unitDistance;
-                    closestUnit = tempUnit;
-                }
-
-        }
-    }
-
-    return closestUnit;
-}
-
-const ObjectBase* ObjectBase::findClosestTarget() const {
-
-    ObjectBase  *closestObject = nullptr;
-    FixPoint    closestDistance = FixPt_MAX;
-
-    RobustList<StructureBase*>::const_iterator iter1;
-    for(iter1 = structureList.begin(); iter1 != structureList.end(); ++iter1) {
-        StructureBase* tempStructure = *iter1;
-
-        if(canAttack(tempStructure)) {
-            Coord closestPoint = tempStructure->getClosestPoint(getLocation());
-            FixPoint structureDistance = blockDistance(getLocation(), closestPoint);
-
-            if(tempStructure->getItemID() == Structure_Wall) {
-                    structureDistance += 20000000; //so that walls are targeted very last
-            }
-
-            if(structureDistance < closestDistance) {
-                closestDistance = structureDistance;
-                closestObject = tempStructure;
-            }
-        }
-    }
-
-    RobustList<UnitBase*>::const_iterator iter2;
-    for(iter2 = unitList.begin(); iter2 != unitList.end(); ++iter2) {
-        UnitBase* tempUnit = *iter2;
-
-        if(canAttack(tempUnit)) {
-            Coord closestPoint = tempUnit->getClosestPoint(getLocation());
+    const UnitBase *pClosestUnit = nullptr;
+    FixPoint closestDistance = FixPt_MAX;
+    for(const UnitBase* pUnit : unitList) {
+        if(canAttack(pUnit)) {
+            Coord closestPoint = pUnit->getClosestPoint(getLocation());
             FixPoint unitDistance = blockDistance(getLocation(), closestPoint);
 
             if(unitDistance < closestDistance) {
                 closestDistance = unitDistance;
-                closestObject = tempUnit;
+                pClosestUnit = pUnit;
             }
         }
     }
 
-    return closestObject;
+    return pClosestUnit;
+}
+
+const ObjectBase* ObjectBase::findClosestTarget() const {
+    const ObjectBase *pClosestObject = nullptr;
+    FixPoint closestDistance = FixPt_MAX;
+    for(const StructureBase* pStructure : structureList) {
+        if(canAttack(pStructure)) {
+            Coord closestPoint = pStructure->getClosestPoint(getLocation());
+            FixPoint structureDistance = blockDistance(getLocation(), closestPoint);
+
+            if(pStructure->getItemID() == Structure_Wall) {
+                    structureDistance += 20000000; //so that walls are targeted very last
+            }
+
+            if(structureDistance < closestDistance) {
+                closestDistance = structureDistance;
+                pClosestObject = pStructure;
+            }
+        }
+    }
+
+    for(const UnitBase* pUnit : unitList) {
+        if(canAttack(pUnit)) {
+            Coord closestPoint = pUnit->getClosestPoint(getLocation());
+            FixPoint unitDistance = blockDistance(getLocation(), closestPoint);
+
+            if(unitDistance < closestDistance) {
+                closestDistance = unitDistance;
+                pClosestObject = pUnit;
+            }
+        }
+    }
+
+    return pClosestObject;
 }
 
 const ObjectBase* ObjectBase::findTarget() const {
-    ObjectBase  *tempTarget,
-                *closestTarget = nullptr;
+//searches for a target in an area like as shown below
+//
+//                    *
+//                  *****
+//                  *****
+//                 ***T***
+//                  *****
+//                  *****
+//                    *
 
     int checkRange = 0;
-    int xPos = location.x;
-    int yPos = location.y;
-
-    FixPoint closestDistance = FixPt_MAX;
-
-//searches for a target in an area like as shown below
-//                     *****
-//                   *********
-//                  *****T*****
-//                   *********
-//                     *****
-
     switch(attackMode) {
         case GUARD: {
             checkRange = getWeaponRange();
@@ -512,42 +482,39 @@ const ObjectBase* ObjectBase::findTarget() const {
         checkRange = getViewRange();
     }
 
-    int xCheck = xPos - checkRange;
+    ObjectBase *pClosestTarget = nullptr;
+    FixPoint closestTargetDistance = FixPt_MAX;
 
-    if(xCheck < 0) {
-        xCheck = 0;
-    }
+    Coord coord;
+	int startY = std::max(0, location.y - checkRange);
+	int endY = std::min(currentGameMap->getSizeY()-1, location.y + checkRange);
+	for(coord.y = startY; coord.y <= endY; coord.y++) {
+		int startX = std::max(0, location.x - checkRange);
+		int endX = std::min(currentGameMap->getSizeX()-1, location.x + checkRange);
+		for(coord.x = startX; coord.x <= endX; coord.x++) {
 
-    while((xCheck < currentGameMap->getSizeX()) && ((xCheck - xPos) <= checkRange)) {
-        int yCheck = (yPos - lookDist[abs(xCheck - xPos)]);
+            FixPoint targetDistance = blockDistance(location, coord);
+            if(targetDistance <= checkRange) {
+                Tile* pTile = currentGameMap->getTile(coord);
+                if( pTile->isExplored(getOwner()->getHouseID())
+                    && !pTile->isFogged(getOwner()->getHouseID())
+                    && pTile->hasAnObject()) {
 
-        if(yCheck < 0) {
-            yCheck = 0;
-        }
-
-        while((yCheck < currentGameMap->getSizeY()) && ((yCheck - yPos) <=  lookDist[abs(xCheck - xPos)])) {
-            if(currentGameMap->getTile(xCheck,yCheck)->hasAnObject()) {
-                tempTarget = currentGameMap->getTile(xCheck,yCheck)->getObject();
-
-                if(((tempTarget->getItemID() != Structure_Wall
-                    && tempTarget->getItemID() != Unit_Carryall)
-                    || closestTarget == nullptr)
-                    && canAttack(tempTarget)) {
-                    FixPoint targetDistance = blockDistance(location, tempTarget->getLocation());
-                    if(targetDistance < closestDistance) {
-                        closestTarget = tempTarget;
-                        closestDistance = targetDistance;
+                    ObjectBase* pNewTarget = pTile->getObject();
+                    if(((pNewTarget->getItemID() != Structure_Wall && pNewTarget->getItemID() != Unit_Carryall) || pClosestTarget == nullptr) && canAttack(pNewTarget)) {
+                        if(targetDistance < closestTargetDistance) {
+                            pClosestTarget = pNewTarget;
+                            closestTargetDistance = targetDistance;
+                        }
                     }
                 }
             }
 
-            yCheck++;
-        }
 
-        xCheck++;
-    }
+		}
+	}
 
-    return closestTarget;
+    return pClosestTarget;
 }
 
 int ObjectBase::getViewRange() const {
@@ -629,7 +596,7 @@ ObjectBase* ObjectBase::createObject(int itemID, House* Owner, Uint32 objectID) 
         } break;
 
         default:                            newObject = nullptr;
-                                            fprintf(stderr,"ObjectBase::createObject(): %d is no valid ItemID!\n",itemID);
+                                            SDL_Log("ObjectBase::createObject(): %d is no valid ItemID!",itemID);
                                             break;
     }
 
@@ -637,7 +604,7 @@ ObjectBase* ObjectBase::createObject(int itemID, House* Owner, Uint32 objectID) 
         return nullptr;
     }
 
-    if(objectID == NONE) {
+    if(objectID == NONE_ID) {
         objectID = currentGame->getObjectManager().addObject(newObject);
         newObject->setObjectID(objectID);
     } else {
@@ -688,7 +655,7 @@ ObjectBase* ObjectBase::loadObject(InputStream& stream, int itemID, Uint32 objec
         case Unit_Trooper:                  newObject = new Trooper(stream); break;
 
         default:                            newObject = nullptr;
-                                            fprintf(stderr,"ObjectBase::loadObject(): %d is no valid ItemID!\n",itemID);
+                                            SDL_Log("ObjectBase::loadObject(): %d is no valid ItemID!",itemID);
                                             break;
     }
 

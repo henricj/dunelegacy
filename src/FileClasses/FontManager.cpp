@@ -36,7 +36,7 @@ FontManager::FontManager() {
 FontManager::~FontManager() {
 }
 
-void FontManager::drawTextOnSurface(SDL_Surface* pSurface, std::string text, Uint32 color, unsigned int fontNum) {
+void FontManager::drawTextOnSurface(SDL_Surface* pSurface, const std::string& text, Uint32 color, unsigned int fontNum) {
     if(fontNum >= NUM_FONTS) {
         return;
     }
@@ -44,7 +44,7 @@ void FontManager::drawTextOnSurface(SDL_Surface* pSurface, std::string text, Uin
     fonts[fontNum]->drawTextOnSurface(pSurface,text,color);
 }
 
-int FontManager::getTextWidth(std::string text, unsigned int fontNum) {
+int FontManager::getTextWidth(const std::string& text, unsigned int fontNum) {
     if(fontNum >= NUM_FONTS) {
         return 0;
     }
@@ -60,7 +60,7 @@ int FontManager::getTextHeight(unsigned int fontNum) {
     return fonts[fontNum]->getTextHeight();
 }
 
-SDL_Surface* FontManager::createSurfaceWithText(std::string text, Uint32 color, unsigned int fontNum) {
+SDL_Surface* FontManager::createSurfaceWithText(const std::string& text, Uint32 color, unsigned int fontNum) {
     if(fontNum >= NUM_FONTS) {
         return nullptr;
     }
@@ -84,11 +84,11 @@ SDL_Surface* FontManager::createSurfaceWithText(std::string text, Uint32 color, 
     return pic;
 }
 
-SDL_Texture* FontManager::createTextureWithText(std::string text, Uint32 color, unsigned int fontNum) {
+SDL_Texture* FontManager::createTextureWithText(const std::string& text, Uint32 color, unsigned int fontNum) {
     return convertSurfaceToTexture(createSurfaceWithText(text, color, fontNum), true);
 }
 
-SDL_Surface* FontManager::createSurfaceWithMultilineText(std::string text, Uint32 color, unsigned int fontNum, bool bCentered) {
+SDL_Surface* FontManager::createSurfaceWithMultilineText(const std::string& text, Uint32 color, unsigned int fontNum, bool bCentered) {
     if(fontNum >= NUM_FONTS) {
         return 0;
     }
@@ -121,20 +121,21 @@ SDL_Surface* FontManager::createSurfaceWithMultilineText(std::string text, Uint3
     SDL_FillRect(pic, nullptr, COLOR_INVALID);
     SDL_SetColorKey(pic, SDL_TRUE, COLOR_INVALID);
 
-    int line = 0;
-    std::list<std::string>::iterator iter;
-    for(iter = textLines.begin(); iter != textLines.end(); ++iter, line++) {
-        SDL_Surface* tmpSurface = createSurfaceWithText(*iter, color, fontNum);
+    int currentLineNum = 0;
+    for(const std::string& textLine : textLines) {
+        SDL_Surface* tmpSurface = createSurfaceWithText(textLine, color, fontNum);
 
-        SDL_Rect dest = calcDrawingRect(tmpSurface, bCentered ? width/2 : 0, line*lineHeight, bCentered ? HAlign::Center : HAlign::Left, VAlign::Top);
+        SDL_Rect dest = calcDrawingRect(tmpSurface, bCentered ? width/2 : 0, currentLineNum*lineHeight, bCentered ? HAlign::Center : HAlign::Left, VAlign::Top);
         SDL_BlitSurface(tmpSurface,nullptr,pic,&dest);
 
         SDL_FreeSurface(tmpSurface);
+
+        currentLineNum++;
     }
 
     return pic;
 }
 
-SDL_Texture* FontManager::createTextureWithMultilineText(std::string text, Uint32 color, unsigned int fontNum, bool bCentered) {
+SDL_Texture* FontManager::createTextureWithMultilineText(const std::string& text, Uint32 color, unsigned int fontNum, bool bCentered) {
     return convertSurfaceToTexture(createSurfaceWithMultilineText(text, color, fontNum, bCentered), true);
 }

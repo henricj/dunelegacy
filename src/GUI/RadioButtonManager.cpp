@@ -39,12 +39,11 @@ void RadioButtonManager::unregisterRadioButton(RadioButton* pRadioButton) {
 }
 
 void RadioButtonManager::setChecked(RadioButton* pRadioButton) const {
-    std::vector<RadioButton*>::const_iterator iter = radioButtonList.begin();
-    for(iter = radioButtonList.begin(); iter != radioButtonList.end(); ++iter) {
-        if(*iter == pRadioButton) {
-            (*iter)->Button::setToggleState(true);
+    for(RadioButton* pTmpRadioButton : radioButtonList) {
+        if(pTmpRadioButton == pRadioButton) {
+            pTmpRadioButton->Button::setToggleState(true);
         } else {
-            (*iter)->Button::setToggleState(false);
+            pTmpRadioButton->Button::setToggleState(false);
         }
     }
 }

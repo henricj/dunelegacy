@@ -30,7 +30,7 @@
 #include <misc/fnkdat.h>
 #include <misc/FileSystem.h>
 #include <misc/draw_util.h>
-#include <misc/string_util.h>
+#include <misc/format.h>
 
 #include <INIMap/INIMapPreviewCreator.h>
 
@@ -151,7 +151,7 @@ bool LoadMapWindow::handleKeyPress(SDL_KeyboardEvent& key) {
         } else if(key.keysym.sym == SDLK_DELETE) {
             int index = mapList.getSelectedIndex();
             if(index >= 0) {
-                QstBox* pQstBox = QstBox::create(   strprintf(_("Do you really want to delete '%s' ?"), mapList.getEntry(index).c_str()),
+                QstBox* pQstBox = QstBox::create(   fmt::sprintf(_("Do you really want to delete '%s' ?"), mapList.getEntry(index).c_str()),
                                                     _("No"),
                                                     _("Yes"),
                                                     QSTBOX_BUTTON2);
@@ -238,14 +238,11 @@ void LoadMapWindow::onMapTypeChange(int buttonID)
 
     mapList.clearAllEntries();
 
-    std::list<std::string> filesList = getFileNamesList(currentMapDirectory, "ini", true, FileListOrder_Name_CaseInsensitive_Asc);
-
-    std::list<std::string>::iterator iter;
-    for(iter = filesList.begin(); iter != filesList.end(); ++iter) {
-        mapList.addEntry(iter->substr(0, iter->length() - 4));
+    for(const std::string& filename : getFileNamesList(currentMapDirectory, "ini", true, FileListOrder_Name_CaseInsensitive_Asc)) {
+        mapList.addEntry(filename.substr(0, filename.length() - 4));
     }
 
-    if(filesList.empty() == false) {
+    if(mapList.getNumEntries() > 0) {
         mapList.setSelectedItem(0);
     } else {
         minimap.setSurface( GUIStyle::getInstance().createButtonSurface(130,130,_("No map available"), true, false), true);

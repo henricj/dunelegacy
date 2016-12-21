@@ -26,10 +26,9 @@ void ObjectManager::save(OutputStream& stream) const {
     stream.writeUint32(nextFreeObjectID);
 
     stream.writeUint32(objectMap.size());
-    ObjectMap::const_iterator iter;
-    for(iter = objectMap.begin(); iter != objectMap.end(); ++iter) {
-        stream.writeUint32(iter->second->getObjectID());
-        currentGame->saveObject(stream, iter->second);
+    for(const auto& objectEntry : objectMap) {
+        stream.writeUint32(objectEntry.second->getObjectID());
+        currentGame->saveObject(stream, objectEntry.second);
     }
 }
 
@@ -42,7 +41,7 @@ void ObjectManager::load(InputStream& stream) {
 
         ObjectBase* pObject = currentGame->loadObject(stream,objectID);
         if(objectID != pObject->getObjectID()) {
-            fprintf(stderr,"ObjectManager::load(): The loaded object has a different ID than expected (%d!=%d)!\n",objectID,pObject->getObjectID());
+            SDL_Log("ObjectManager::load(): The loaded object has a different ID than expected (%d!=%d)!",objectID,pObject->getObjectID());
         }
 
         objectMap.insert( std::pair<Uint32,ObjectBase*>(objectID, pObject) );
@@ -56,7 +55,7 @@ Uint32 ObjectManager::addObject(ObjectBase* pObject) {
 
     if(insertPosition.second == false) {
         // there is already such an object in the list
-        return NONE;
+        return NONE_ID;
     } else {
         return nextFreeObjectID++;  // Caution: Old value is returned but value is incremented afterwards
     }

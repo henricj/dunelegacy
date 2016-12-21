@@ -23,6 +23,7 @@
 #include <globals.h>
 
 #include <misc/draw_util.h>
+#include <misc/format.h>
 
 #include <sand.h>
 
@@ -111,12 +112,11 @@ ReinforcementsWindow::ReinforcementsWindow(MapEditor* pMapEditor, HOUSETYPE curr
     playerDropDownBox.setColor(color);
     playerDropDownBox.setOnSelectionChange(std::bind(&ReinforcementsWindow::onEntryChange, this, std::placeholders::_1));
 
-    std::vector<MapEditor::Player>::const_iterator playerIter;
     int currentPlayerNum = 1;
-    for(playerIter = pMapEditor->getPlayers().begin(); playerIter != pMapEditor->getPlayers().end(); ++playerIter) {
-        std::string entryName = playerIter->bActive ? (playerIter->bAnyHouse ? strprintf(_("Player %d"), currentPlayerNum++)
-                                                     : playerIter->name) : ("(" + playerIter->name + ")");
-        playerDropDownBox.addEntry(entryName, playerIter->house);
+    for(const MapEditor::Player& player : pMapEditor->getPlayers()) {
+        std::string entryName = player.bActive ? (player.bAnyHouse ? fmt::sprintf(_("Player %d"), currentPlayerNum++)
+                                                    : player.name) : ("(" + player.name + ")");
+        playerDropDownBox.addEntry(entryName, player.house);
     }
     playerDropDownBox.setSelectedItem(0);
     hBox2.addWidget(&playerDropDownBox, 120);
@@ -194,9 +194,8 @@ ReinforcementsWindow::ReinforcementsWindow(MapEditor* pMapEditor, HOUSETYPE curr
     mainVBox.addWidget(VSpacer::create(10));
 
     // setup reinforcements listbox
-    std::vector<ReinforcementInfo>::const_iterator reinforcementIter;
-    for(reinforcementIter = reinforcements.begin(); reinforcementIter != reinforcements.end(); ++reinforcementIter) {
-        reinforcementsListBox.addEntry(getDescribingString(*reinforcementIter));
+    for(const ReinforcementInfo& reinforcement : reinforcements) {
+        reinforcementsListBox.addEntry(getDescribingString(reinforcement));
     }
 
     if(reinforcements.empty() == false) {
@@ -343,15 +342,14 @@ std::string ReinforcementsWindow::getDescribingString(const ReinforcementInfo& r
 }
 
 std::string ReinforcementsWindow::getPlayerName(HOUSETYPE house) {
-    std::vector<MapEditor::Player>::const_iterator playerIter;
     int currentPlayerNum = 1;
-    for(playerIter = pMapEditor->getPlayers().begin(); playerIter != pMapEditor->getPlayers().end(); ++playerIter) {
-        if(playerIter->house == house) {
-            return playerIter->bAnyHouse ? strprintf(_("Player %d"), currentPlayerNum)
-                                          : (_("House") + " " + playerIter->name);
+    for(const MapEditor::Player& player : pMapEditor->getPlayers()) {
+        if(player.house == house) {
+            return player.bAnyHouse ? fmt::sprintf(_("Player %d"), currentPlayerNum)
+                                          : (_("House") + " " + player.name);
         }
 
-        if(playerIter->bActive && playerIter->bAnyHouse) {
+        if(player.bActive && player.bAnyHouse) {
             currentPlayerNum++;
         }
     }

@@ -19,9 +19,10 @@
 
 #include <Definitions.h>
 
+#include <misc/exceptions.h>
+
 #include <config.h>
 
-#include <stdexcept>
 #include <string.h>
 
 
@@ -77,22 +78,22 @@ LANGameFinderAndAnnouncer::LANGameFinderAndAnnouncer()
 
     announceSocket = enet_socket_create(ENET_SOCKET_TYPE_DATAGRAM);
     if(announceSocket == ENET_SOCKET_NULL) {
-        throw std::runtime_error("LANGameFinderAndAnnouncer: Creating socket failed!");
+        THROW(std::runtime_error, "LANGameFinderAndAnnouncer: Creating socket failed!");
     }
 
     if(enet_socket_set_option(announceSocket, ENET_SOCKOPT_REUSEADDR, 1) < 0) {
         enet_socket_destroy(announceSocket);
-        throw std::runtime_error("LANGameFinderAndAnnouncer: Setting socket option 'ENET_SOCKOPT_REUSEADDR' failed!");
+        THROW(std::runtime_error, "LANGameFinderAndAnnouncer: Setting socket option 'ENET_SOCKOPT_REUSEADDR' failed!");
     }
 
     if(enet_socket_set_option(announceSocket, ENET_SOCKOPT_NONBLOCK, 1) < 0) {
         enet_socket_destroy(announceSocket);
-        throw std::runtime_error("LANGameFinderAndAnnouncer: Setting socket option 'ENET_SOCKOPT_NONBLOCK' failed!");
+        THROW(std::runtime_error, "LANGameFinderAndAnnouncer: Setting socket option 'ENET_SOCKOPT_NONBLOCK' failed!");
     }
 
     if(enet_socket_set_option(announceSocket, ENET_SOCKOPT_BROADCAST, 1) < 0) {
         enet_socket_destroy(announceSocket);
-        throw std::runtime_error("LANGameFinderAndAnnouncer: Setting socket option 'ENET_SOCKOPT_BROADCAST' failed!");
+        THROW(std::runtime_error, "LANGameFinderAndAnnouncer: Setting socket option 'ENET_SOCKOPT_BROADCAST' failed!");
     }
 
     ENetAddress address;
@@ -101,7 +102,7 @@ LANGameFinderAndAnnouncer::LANGameFinderAndAnnouncer()
 
     if(enet_socket_bind(announceSocket, &address) < 0) {
         enet_socket_destroy(announceSocket);
-        throw std::runtime_error("LANGameFinderAndAnnouncer: Binding socket to address failed!");
+        THROW(std::runtime_error, "LANGameFinderAndAnnouncer: Binding socket to address failed!");
     }
 }
 
@@ -149,7 +150,7 @@ void LANGameFinderAndAnnouncer::announceGame() {
     if(err==0) {
         // blocked
     } else if(err < 0) {
-        throw std::runtime_error("LANGameFinderAndAnnouncer: Announcing failed!");
+        THROW(std::runtime_error, "LANGameFinderAndAnnouncer: Announcing failed!");
     } else {
         lastAnnounce = SDL_GetTicks();
     }
@@ -174,7 +175,7 @@ void LANGameFinderAndAnnouncer::refreshServerList() const {
     if(err==0) {
         // blocked
     } else if(err < 0) {
-        throw std::runtime_error("LANGameFinderAndAnnouncer: Refreshing server list failed!");
+        THROW(std::runtime_error, "LANGameFinderAndAnnouncer: Refreshing server list failed!");
     }
 }
 
@@ -190,7 +191,7 @@ void LANGameFinderAndAnnouncer::receivePackets() {
     if(receivedBytes==0) {
         // blocked
     } else if(receivedBytes < 0) {
-        throw std::runtime_error("LANGameFinderAndAnnouncer: Receiving data failed!");
+        THROW(std::runtime_error, "LANGameFinderAndAnnouncer: Receiving data failed!");
     } else {
         if((receivedBytes == sizeof(NetworkPacket_AnnounceGame))
             && (SDL_SwapLE32(announcePacket.magicNumber) == LANGAME_ANNOUNCER_MAGICNUMBER)
@@ -218,11 +219,10 @@ void LANGameFinderAndAnnouncer::receivePackets() {
             gameServerInfo.lastUpdate = SDL_GetTicks();
 
             bool bUpdate = false;
-            std::list<GameServerInfo>::iterator iter;
-            for(iter = gameServerInfoList.begin(); iter != gameServerInfoList.end(); ++iter) {
-                if((iter->serverAddress.host == gameServerInfo.serverAddress.host)
-                    && (iter->serverAddress.port == gameServerInfo.serverAddress.port)) {
-                    *iter = gameServerInfo;
+            for(GameServerInfo& curGameServerInfo : gameServerInfoList) {
+                if((curGameServerInfo.serverAddress.host == gameServerInfo.serverAddress.host)
+                    && (curGameServerInfo.serverAddress.port == gameServerInfo.serverAddress.port)) {
+                    curGameServerInfo = gameServerInfo;
                     bUpdate = true;
                     break;
                 }
@@ -307,7 +307,7 @@ void LANGameFinderAndAnnouncer::sendRemoveGameAnnouncement() {
     if(err==0) {
         // would have blocked, need to resend later
     } else if(err < 0) {
-        throw std::runtime_error("LANGameFinderAndAnnouncer: Removing game announcement failed!");
+        THROW(std::runtime_error, "LANGameFinderAndAnnouncer: Removing game announcement failed!");
     }
 }
 

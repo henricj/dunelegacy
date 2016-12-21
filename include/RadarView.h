@@ -71,11 +71,11 @@ public:
     */
     void setRadarMode(bool bStatus) {
         if(bStatus == true) {
-            currentRadarMode = Mode_RadarOn;
+            currentRadarMode = RadarMode::RadarOn;
             animFrame = 0;
             animCounter = NUM_STATIC_FRAME_TIME;
         } else {
-            currentRadarMode = Mode_RadarOff;
+            currentRadarMode = RadarMode::RadarOff;
             animFrame = NUM_STATIC_FRAMES - 1;
             animCounter = NUM_STATIC_FRAME_TIME;
         }
@@ -89,9 +89,16 @@ public:
 
 private:
 
+    enum class RadarMode {
+        RadarOff,
+        RadarOn,
+        AnimationRadarOff,
+        AnimationRadarOn
+    };
+
     void updateRadarSurface(int mapSizeX, int mapSizeY, int scale, int offsetX, int offsetY);
 
-    RadarViewMode currentRadarMode;         ///< the current mode of the radar
+    RadarMode currentRadarMode;             ///< the current mode of the radar
 
     int animFrame;                          ///< the current animation frame
 

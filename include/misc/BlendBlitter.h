@@ -3,6 +3,7 @@
 
 #include <SDL.h>
 #include <misc/draw_util.h>
+#include <misc/exceptions.h>
 #include <mmath.h>
 
 #include <stdio.h>
@@ -62,13 +63,11 @@ public:
         StepsLeft--;
 
         if(SDL_LockSurface(dest) != 0) {
-            fprintf(stderr,"BlendBlitter::nextStep(): Cannot lock image!\n");
-            exit(EXIT_FAILURE);
+            THROW(std::runtime_error, "BlendBlitter::nextStep(): Cannot lock image!");
         }
 
         if(SDL_LockSurface(src) != 0) {
-            fprintf(stderr,"BlendBlitter::nextStep(): Cannot lock image!\n");
-            exit(EXIT_FAILURE);
+            THROW(std::runtime_error, "BlendBlitter::nextStep(): Cannot lock image!");
         }
 
         Uint64 numPixelsPerStep = (N / numSteps) + 1;

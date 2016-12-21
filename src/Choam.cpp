@@ -23,15 +23,14 @@ Choam::~Choam() {
 
 void Choam::save(OutputStream& stream) const {
     stream.writeUint32(availableItems.size());
-    std::vector<BuildItem>::const_iterator iter;
-    for(iter = availableItems.begin(); iter != availableItems.end(); ++iter) {
-        iter->save(stream);
+    for(const BuildItem& buildItem : availableItems) {
+        buildItem.save(stream);
     }
 }
 
 void Choam::load(InputStream& stream) {
-    int num = stream.readUint32();
-    for(int i=0;i<num;i++) {
+    Uint32 num = stream.readUint32();
+    for(Uint32 i=0;i<num;i++) {
         BuildItem tmp;
         tmp.load(stream);
         availableItems.push_back(tmp);
@@ -39,10 +38,9 @@ void Choam::load(InputStream& stream) {
 }
 
 int Choam::getPrice(Uint32 itemID) const {
-    std::vector<BuildItem>::const_iterator iter;
-    for(iter = availableItems.begin(); iter != availableItems.end(); ++iter) {
-        if(iter->itemID == itemID) {
-            return iter->price;
+    for(const BuildItem& buildItem : availableItems) {
+        if(buildItem.itemID == itemID) {
+            return buildItem.price;
         }
     }
 
@@ -54,10 +52,9 @@ bool Choam::isCheap(Uint32 itemID) const {
 }
 
 int Choam::getNumAvailable(Uint32 itemID) const {
-    std::vector<BuildItem>::const_iterator iter;
-    for(iter = availableItems.begin(); iter != availableItems.end(); ++iter) {
-        if(iter->itemID == itemID) {
-            return iter->num;
+    for(const BuildItem& buildItem : availableItems) {
+        if(buildItem.itemID == itemID) {
+            return buildItem.num;
         }
     }
 
@@ -65,11 +62,10 @@ int Choam::getNumAvailable(Uint32 itemID) const {
 }
 
 bool Choam::setNumAvailable(Uint32 itemID, int newValue) {
-    std::vector<BuildItem>::iterator iter;
-    for(iter = availableItems.begin(); iter != availableItems.end(); ++iter) {
-        if(iter->itemID == itemID) {
-            iter->num = newValue;
-            return (iter->num > 0);
+    for(BuildItem& buildItem : availableItems) {
+        if(buildItem.itemID == itemID) {
+            buildItem.num = newValue;
+            return (buildItem.num > 0);
         }
     }
 
@@ -95,9 +91,8 @@ void Choam::update() {
 
 
     if((currentGame->getGameCycleCount() % CHOAM_CHANGE_PRICETIME) == 0) {
-        std::vector<BuildItem>::iterator iter;
-        for(iter = availableItems.begin(); iter != availableItems.end(); ++iter) {
-            int price = currentGame->objectData.data[iter->itemID][house->getHouseID()].price;
+        for(BuildItem& buildItem : availableItems) {
+            int price = currentGame->objectData.data[buildItem.itemID][house->getHouseID()].price;
 
             const int min_mod = 2;
             const int max_mod = 8;
@@ -107,7 +102,7 @@ void Choam::update() {
 
             price = std::min((rand1+rand2)*(price/10), 999);
 
-            iter->price = price;
+            buildItem.price = price;
         }
 
         if((pLocalHouse == house) && (house->hasStarPort())) {

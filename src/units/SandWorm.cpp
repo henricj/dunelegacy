@@ -46,6 +46,7 @@ Sandworm::Sandworm(House* newOwner) : GroundUnit(newOwner) {
     kills = 0;
     attackFrameTimer = 0;
     sleepTimer = 0;
+    warningWormSignPlayedFlags = 0;
     respondable = false;
 
     for(int i = 0; i < SANDWORM_SEGMENTS; i++) {
@@ -61,6 +62,7 @@ Sandworm::Sandworm(InputStream& stream) : GroundUnit(stream) {
     kills = stream.readSint32();
     attackFrameTimer = stream.readSint32();
     sleepTimer = stream.readSint32();
+    warningWormSignPlayedFlags = stream.readUint8();
     shimmerOffsetIndex = stream.readSint32();
     for(int i = 0; i < SANDWORM_SEGMENTS; i++) {
         lastLocs[i].x = stream.readSint32();
@@ -92,6 +94,7 @@ void Sandworm::save(OutputStream& stream) const {
     stream.writeSint32(kills);
     stream.writeSint32(attackFrameTimer);
     stream.writeSint32(sleepTimer);
+    stream.writeUint8(warningWormSignPlayedFlags);
     stream.writeSint32(shimmerOffsetIndex);
     for(int i = 0; i < SANDWORM_SEGMENTS; i++) {
         stream.writeSint32(lastLocs[i].x);
@@ -187,7 +190,7 @@ void Sandworm::checkPos() {
         if(currentGameMap->tileExists(location)) {
             Tile* pTile = currentGameMap->getTile(location);
             if(pTile->hasInfantry() && (pTile->getInfantry()->getOwner() == pLocalHouse)) {
-                soundPlayer->playSound(SomethingUnderTheSand);
+                soundPlayer->playVoice(SomethingUnderTheSand, pTile->getInfantry()->getOwner()->getHouseID());
             }
         }
     }
@@ -248,9 +251,10 @@ void Sandworm::sleep() {
     setVisible(VIS_ALL, false);
     setForced(false);
     currentGameMap->removeObjectFromMap(getObjectID()); //no map point will reference now
-    setLocation(NONE, NONE);
+    setLocation(INVALID_POS, INVALID_POS);
     setHealth(getMaxHealth());
     kills = 0;
+    warningWormSignPlayedFlags = 0;
     drawnFrame = INVALID;
     attackFrameTimer = 0;
     shimmerOffsetIndex = -1;
@@ -273,6 +277,23 @@ bool Sandworm::sleepOrDie() {
         destroy();
         return false;
     }
+}
+
+void Sandworm::setTarget(const ObjectBase* newTarget) {
+    GroundUnit::setTarget(newTarget);
+
+    if( (newTarget != nullptr) && (newTarget->getOwner() == pLocalHouse)
+        && ((warningWormSignPlayedFlags & (1 << pLocalHouse->getHouseID())) == 0) ) {
+        soundPlayer->playVoice(WarningWormSign, pLocalHouse->getHouseID());
+        warningWormSignPlayedFlags |= (1 << pLocalHouse->getHouseID());
+    }
+}
+
+void Sandworm::handleDamage(int damage, Uint32 damagerID, House* damagerOwner) {
+    if(damage > 0) {
+        attackMode = HUNT;
+    }
+    GroundUnit::handleDamage(damage, damagerID, damagerOwner);
 }
 
 bool Sandworm::update() {
@@ -318,7 +339,7 @@ bool Sandworm::update() {
                         if(target && target.getObjPointer() != nullptr) {
                             bool wasAlive = target.getObjPointer()->isVisible(getOwner()->getTeam());  //see if unit was alive before attack
                             Coord realPos = Coord(lround(realX), lround(realY));
-                            currentGameMap->damage(objectID, getOwner(), realPos, Bullet_Sandworm, 5000, NONE, false);
+                            currentGameMap->damage(objectID, getOwner(), realPos, Bullet_Sandworm, 5000, NONE_ID, false);
 
                             if(wasAlive && target && (target.getObjPointer()->isVisible(getOwner()->getTeam()) == false)) {
                                 kills++;
@@ -390,13 +411,11 @@ const ObjectBase* Sandworm::findTarget() const {
     if(attackMode == HUNT) {
         FixPoint closestDistance = FixPt_MAX;
 
-        RobustList<UnitBase*>::const_iterator iter;
-        for(iter = unitList.begin(); iter != unitList.end(); ++iter) {
-            UnitBase* tempUnit = *iter;
-            if (canAttack(tempUnit)
-                && (blockDistance(location, tempUnit->getLocation()) < closestDistance)) {
-                closestTarget = tempUnit;
-                closestDistance = blockDistance(location, tempUnit->getLocation());
+        for(UnitBase* pUnit : unitList) {
+            if (canAttack(pUnit)
+                && (blockDistance(location, pUnit->getLocation()) < closestDistance)) {
+                closestTarget = pUnit;
+                closestDistance = blockDistance(location, pUnit->getLocation());
             }
         }
     } else {

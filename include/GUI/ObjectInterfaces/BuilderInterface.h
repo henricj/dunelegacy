@@ -29,7 +29,6 @@
 #include <GUI/dune/BuilderList.h>
 
 #include <misc/draw_util.h>
-#include <misc/string_util.h>
 
 #include <structures/BuilderBase.h>
 #include <structures/StarPort.h>

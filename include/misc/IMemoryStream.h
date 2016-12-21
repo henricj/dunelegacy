@@ -19,6 +19,9 @@
 #define IMEMORYSTREAM_H
 
 #include "InputStream.h"
+
+#include <misc/exceptions.h>
+
 #include <stdlib.h>
 #include <memory.h>
 #include <string>
@@ -49,7 +52,7 @@ public:
         Uint32 length = readUint32();
 
         if(currentPos + length > bufferSize) {
-            throw InputStream::eof("IMemoryStream::readString(): End-of-File reached!");
+            THROW(InputStream::eof, "IMemoryStream::readString(): End-of-File reached!");
         }
 
         std::string resultString(pBuffer + currentPos, length);
@@ -59,7 +62,7 @@ public:
 
     Uint8 readUint8() {
         if(currentPos + sizeof(Uint8) > bufferSize) {
-            throw InputStream::eof("IMemoryStream::readUint8(): End-of-File reached!");
+            THROW(InputStream::eof, "IMemoryStream::readUint8(): End-of-File reached!");
         }
 
         Uint8 tmp = *((const Uint8*) (pBuffer + currentPos));
@@ -69,7 +72,7 @@ public:
 
     Uint16 readUint16() {
         if(currentPos + sizeof(Uint16) > bufferSize) {
-            throw InputStream::eof("IMemoryStream::readUint16(): End-of-File reached!");
+            THROW(InputStream::eof, "IMemoryStream::readUint16(): End-of-File reached!");
         }
 
         Uint16 tmp = *((const Uint16*) (pBuffer + currentPos));
@@ -79,7 +82,7 @@ public:
 
     Uint32 readUint32() {
         if(currentPos + sizeof(Uint32) > bufferSize) {
-            throw InputStream::eof("IMemoryStream::readUint32(): End-of-File reached!");
+            THROW(InputStream::eof, "IMemoryStream::readUint32(): End-of-File reached!");
         }
 
         Uint32 tmp = *((const Uint32*) (pBuffer + currentPos));
@@ -89,7 +92,7 @@ public:
 
     Uint64 readUint64() {
         if(currentPos + sizeof(Uint64) > bufferSize) {
-            throw InputStream::eof("IMemoryStream::readUint64(): End-of-File reached!");
+            THROW(InputStream::eof, "IMemoryStream::readUint64(): End-of-File reached!");
         }
 
         Uint64 tmp = *((const Uint64*) (pBuffer + currentPos));

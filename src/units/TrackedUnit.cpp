@@ -17,6 +17,11 @@
 
 #include <units/TrackedUnit.h>
 
+#include <units/Harvester.h>
+
+#include <structures/RepairYard.h>
+#include <structures/Refinery.h>
+
 #include <globals.h>
 
 #include <House.h>
@@ -57,17 +62,42 @@ void TrackedUnit::checkPos()
 
 bool TrackedUnit::canPass(int xPos, int yPos) const
 {
-    bool passable = false;
-    if(currentGameMap->tileExists(xPos, yPos)) {
-        Tile* pTile = currentGameMap->getTile(xPos, yPos);
+    if(!currentGameMap->tileExists(xPos, yPos)) {
+        return false;
+    }
 
-        if(!pTile->isMountain()) {
-            if (!pTile->hasAGroundObject())
-                passable = true;
-            else if (!pTile->hasANonInfantryGroundObject() && (pTile->getInfantryTeam() != getOwner()->getTeam()))
-                passable = true;
+    Tile* pTile = currentGameMap->getTile(xPos, yPos);
+
+    if(pTile->isMountain()) {
+        return false;
+    }
+
+    if(pTile->hasAGroundObject()) {
+        ObjectBase *pObject = pTile->getGroundObject();
+
+        if( (pObject != nullptr)
+            && (pObject->getObjectID() == target.getObjectID())
+            && targetFriendly
+            && pObject->isAStructure()
+            && (pObject->getOwner()->getTeam() == owner->getTeam())
+            && pObject->isVisible(getOwner()->getTeam()))
+        {
+            // are we entering a repair yard?
+            if(goingToRepairYard && (pObject->getItemID() == Structure_RepairYard)) {
+                return static_cast<const RepairYard*>(pObject)->isFree();
+            } else {
+                const Harvester* pHarvester = dynamic_cast<const Harvester*>(this);
+                return ((pHarvester != nullptr) && pHarvester->isReturning() && (pObject->getItemID() == Structure_Refinery) && static_cast<const Refinery*>(pObject)->isFree());
+            }
+        } else {
+            if (!pTile->hasANonInfantryGroundObject() && (pTile->getInfantryTeam() != getOwner()->getTeam())) {
+                // possibly squashing this unit
+                return true;
+            } else {
+                return false;
+            }
         }
     }
 
-    return passable;
+    return true;
 }

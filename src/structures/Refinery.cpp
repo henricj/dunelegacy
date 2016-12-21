@@ -84,7 +84,7 @@ Refinery::~Refinery() {
     if(extractingSpice && harvester) {
         if(harvester.getUnitPointer() != nullptr)
             harvester.getUnitPointer()->destroy();
-        harvester.pointTo(NONE);
+        harvester.pointTo(NONE_ID);
     }
 }
 
@@ -127,12 +127,12 @@ void Refinery::deployHarvester(Carryall* pCarryall) {
     firstRun = false;
 
     Harvester* pHarvester = static_cast<Harvester*>(harvester.getObjPointer());
-    if(pCarryall != nullptr) {
+    if((pCarryall != nullptr) && pHarvester->getGuardPoint().isValid()) {
         pCarryall->giveCargo(pHarvester);
         pCarryall->setTarget(nullptr);
         pCarryall->setDestination(pHarvester->getGuardPoint());
     } else {
-        Coord deployPos = currentGameMap->findDeploySpot(pHarvester, location, destination, structureSize);
+        Coord deployPos = currentGameMap->findDeploySpot(pHarvester, location, currentGame->randomGen, destination, structureSize);
         pHarvester->deploy(deployPos);
     }
 
@@ -175,16 +175,14 @@ void Refinery::updateStructureSpecificStuff() {
 
 
             owner->addCredits(pHarvester->extractSpice(extractionSpeed), true);
-        } else if(pHarvester->isawaitingPickup() == false) {
+        } else if((pHarvester->isAwaitingPickup() == false) && (pHarvester->getGuardPoint().isValid())) {
             // find carryall
             Carryall* pCarryall = nullptr;
             if((pHarvester->getGuardPoint().isValid()) && getOwner()->hasCarryalls())   {
-                RobustList<UnitBase*>::const_iterator iter;
-                for(iter = unitList.begin(); iter != unitList.end(); ++iter) {
-                    UnitBase* unit = *iter;
-                    if ((unit->getOwner() == owner) && (unit->getItemID() == Unit_Carryall)) {
-                        Carryall* pTmpCarryall = static_cast<Carryall*>(unit);
-                        if (pTmpCarryall->isRespondable() && !pTmpCarryall->isBooked()) {
+                for(UnitBase* pUnit : unitList) {
+                    if ((pUnit->getOwner() == owner) && (pUnit->getItemID() == Unit_Carryall)) {
+                        Carryall* pTmpCarryall = static_cast<Carryall*>(pUnit);
+                        if (!pTmpCarryall->isBooked()) {
                             pCarryall = pTmpCarryall;
                             break;
                         }

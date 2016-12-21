@@ -22,7 +22,7 @@
 #include <stdio.h>
 
 
-static std::string unescapeString(std::string str) {
+static std::string unescapeString(const std::string& str) {
     std::map<std::string, std::string> replacementMap;
     replacementMap["\\0"] = "\0";
     replacementMap["\\n"] = "\n";
@@ -38,24 +38,24 @@ static std::string unescapeString(std::string str) {
     return replaceAll(str, replacementMap);
 }
 
-static std::string extractString(std::string str, std::string filename, int lineNum) {
+static std::string extractString(const std::string& str, const std::string& filename, int lineNum) {
     size_t firstQuote = str.find_first_of('\"');
     size_t lastQuote = str.find_last_of('\"');
 
     if(firstQuote == std::string::npos || lastQuote == std::string::npos) {
-        fprintf(stderr, "%s:%d: Missing opening or closing quotes!\n", filename.c_str(), lineNum);
+        SDL_Log("%s:%d: Missing opening or closing quotes!", filename.c_str(), lineNum);
         return "";
     }
 
     return convertUTF8ToISO8859_1(unescapeString(str.substr(firstQuote+1, lastQuote-firstQuote-1)));
 }
 
-std::map<std::string, std::string> loadPOFile(SDL_RWops* rwop, bool freesrc, std::string filename) {
+std::map<std::string, std::string> loadPOFile(SDL_RWops* rwop, bool freesrc, const std::string& filename) {
 
     std::map<std::string, std::string> mapping;
 
     if(rwop == nullptr) {
-        fprintf(stderr, "%s: Cannot find this file!\n", filename.c_str());
+        SDL_Log("%s: Cannot find this file!", filename.c_str());
         return mapping;
     }
 
@@ -95,7 +95,7 @@ std::map<std::string, std::string> loadPOFile(SDL_RWops* rwop, bool freesrc, std
 
         if(completeLine.substr(lineStart, 5) == "msgid") {
             if(msgidMode == true) {
-                fprintf(stderr, "%s:%d: Opening a new msgid without finishing the previous one!\n", filename.c_str(), lineNum);
+                SDL_Log("%s:%d: Opening a new msgid without finishing the previous one!", filename.c_str(), lineNum);
             } else if(msgstrMode == true) {
                 // we have finished the previous translation
                 mapping[msgid] = msgstr;

@@ -19,9 +19,9 @@
 
 #include <Network/ENetHelper.h>
 
-#include <string.h>
+#include <misc/exceptions.h>
 
-#include <stdexcept>
+#include <string.h>
 #include <algorithm>
 #include <stdio.h>
 #include <enet/enet.h>
@@ -80,16 +80,13 @@ std::string percentEncode(const std::string & s) {
     const std::string unreservedCharacters = "-.0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz_~"; // see RFC 3986
 
     std::string result;
-    std::string::const_iterator iter;
-    for(iter = s.begin(); iter != s.end(); ++iter) {
-        if(unreservedCharacters.find_first_of(*iter) == std::string::npos) {
+    for(char c : s) {
+        if(unreservedCharacters.find_first_of(c) == std::string::npos) {
             // percent encode
-            char tmp[4];
-            sprintf(tmp, "%%%.2X", (unsigned char) *iter);
-            result += tmp;
+            result += fmt::sprintf("%%%.2X", (unsigned char) c);
         } else {
             // copy unmodifed
-            result += *iter;
+            result += c;
         }
     }
 
@@ -106,17 +103,14 @@ std::string loadFromHttp(const std::string& url, const std::map<std::string, std
     int port = getPortFromURL(url);
 
     if(port < 0 || port > 65535) {
-        throw std::runtime_error("Invalid port number");
+        THROW(std::runtime_error, "Invalid port number");
     }
 
     if(port == 0) {
         port = PORT_HTTP;
     }
 
-    std::map<std::string, std::string>::const_iterator iter;
-
-    for(iter = parameters.begin(); iter != parameters.end(); ++iter) {
-
+    for(const auto& param : parameters) {
         if(filepath.find_first_of('?') == std::string::npos) {
             // first parameter
             filepath += "?";
@@ -124,7 +118,7 @@ std::string loadFromHttp(const std::string& url, const std::map<std::string, std
             filepath += "&";
         }
 
-        filepath += percentEncode(iter->first) + "=" + percentEncode(iter->second);
+        filepath += percentEncode(param.first) + "=" + percentEncode(param.second);
     }
 
     return loadFromHttp(domain, filepath, (unsigned short) port);
@@ -133,18 +127,18 @@ std::string loadFromHttp(const std::string& url, const std::map<std::string, std
 std::string loadFromHttp(const std::string& domain, const std::string& filepath, unsigned short port) {
     ENetAddress address;
     if(enet_address_set_host(&address, domain.c_str()) < 0) {
-        throw std::runtime_error("Cannot resolve '" + domain + "'");
+        THROW(std::runtime_error, "Cannot resolve '" + domain + "'");
     }
 
     address.port = port;
 
     ENetSocket httpSocket = enet_socket_create(ENET_SOCKET_TYPE_STREAM);
     if(httpSocket == ENET_SOCKET_NULL) {
-        throw std::runtime_error("Unable to create socket");
+        THROW(std::runtime_error, "Unable to create socket");
     }
 
     if(enet_socket_connect(httpSocket, &address) < 0) {
-        throw std::runtime_error("Unable to connect to '" + domain + "'");
+        THROW(std::runtime_error, "Unable to connect to '" + domain + "'");
     }
 
 
@@ -158,7 +152,7 @@ std::string loadFromHttp(const std::string& domain, const std::string& filepath,
     sendBuffer.dataLength = request.size();
 
     if(enet_socket_send(httpSocket, nullptr, &sendBuffer, 1) < 0) {
-        throw std::runtime_error("Error while sending HTTP request to '" + domain + "'");
+        THROW(std::runtime_error, "Error while sending HTTP request to '" + domain + "'");
     }
 
     std::string result;
@@ -175,7 +169,7 @@ std::string loadFromHttp(const std::string& domain, const std::string& filepath,
         int receiveLength = enet_socket_receive(httpSocket, nullptr, &receiveBuffer, 1);
 
         if(receiveLength < 0) {
-            throw std::runtime_error("Error while receiving from '" + domain + "'");
+            THROW(std::runtime_error, "Error while receiving from '" + domain + "'");
         }
 
         result.append(resultBuffer, receiveLength);
@@ -189,7 +183,7 @@ std::string loadFromHttp(const std::string& domain, const std::string& filepath,
     enet_socket_destroy(httpSocket);
 
     if(result.substr(9,3) != "200") {
-        throw std::runtime_error("Server Error: Received status code '" + result.substr(9,3) + "' from " + domain + ": " + result.substr(0, result.find(newline)));
+        THROW(std::runtime_error, "Server Error: Received status code '" + result.substr(9,3) + "' from " + domain + ": " + result.substr(0, result.find(newline)));
     }
 
     size_t contentStart = result.find(doubleNewline);

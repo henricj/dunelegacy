@@ -36,7 +36,7 @@
 class MetaServerClient {
 public:
 
-    explicit MetaServerClient(std::string metaServerURL);
+    explicit MetaServerClient(const std::string& metaServerURL);
     ~MetaServerClient();
 
     /**
@@ -52,11 +52,11 @@ public:
         Sets the function that shall be called if the metaserver reports an error
         \param  pOnMetaServerError  Function to call on metaserver error
     */
-    inline void setOnMetaServerError(std::function<void (int, std::string)> pOnMetaServerError) {
+    inline void setOnMetaServerError(std::function<void (int, const std::string&)> pOnMetaServerError) {
         this->pOnMetaServerError = pOnMetaServerError;
     }
 
-    void startAnnounce(std::string serverName, int serverPort, std::string mapName, Uint8 numPlayers, Uint8 maxPlayers);
+    void startAnnounce(const std::string& serverName, int serverPort, const std::string& mapName, Uint8 numPlayers, Uint8 maxPlayers);
 
     void updateAnnounce(Uint8 numPlayers);
 
@@ -95,13 +95,13 @@ private:
         \param  errorCause      the id of the command sent to the metaserver
         \param  errorMessage    the error message to post
     */
-    void setErrorMessage(int errorCause, std::string errorMessage);
+    void setErrorMessage(int errorCause, const std::string& errorMessage);
 
     /**
         Sets a new game server info list. This method shall only be called from the metaserver connection thread.
         \param  newGameServerInfoList   the new game server list
     */
-    void setNewGameServerInfoList(std::list<GameServerInfo>& newGameServerInfoList);
+    void setNewGameServerInfoList(const std::list<GameServerInfo>& newGameServerInfoList);
 
 
     // Shared data (used by main thread and connection thread):

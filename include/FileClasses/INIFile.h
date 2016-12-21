@@ -232,7 +232,7 @@ public:
     ~INIFile();
 
     bool hasSection(const std::string& section) const;
-    const Section* getSection(const std::string& sectionname) const;
+    const Section& getSection(const std::string& sectionname) const;
     bool removeSection(const std::string& sectionname);
     bool clearSection(const std::string& sectionname, bool bBlankLineAtSectionEnd = true);
     bool hasKey(const std::string& section, const std::string& key) const;
@@ -259,9 +259,6 @@ public:
     bool saveChangesTo(const std::string& filename, bool bDOSLineEnding = false) const;
     bool saveChangesTo(SDL_RWops * file, bool bDOSLineEnding = false) const;
 
-
-
-
 private:
     INIFileLine* firstLine;
     Section* sectionRoot;
@@ -272,6 +269,7 @@ private:
 
     void insertSection(Section* newSection);
 
+    const Section* getSectionInternal(const std::string& sectionname) const;
     Section* getSectionOrCreate(const std::string& sectionname);
 
     static bool isValidSectionName(const std::string& sectionname);

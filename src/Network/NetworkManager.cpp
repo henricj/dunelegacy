@@ -21,19 +21,19 @@
 
 #include <GameInitSettings.h>
 
+#include <misc/exceptions.h>
+
 #include <globals.h>
 
 #include <stdio.h>
-#include <stdexcept>
 #include <string.h>
 
 #include <algorithm>
 
-NetworkManager::NetworkManager(int port, std::string metaserver)
- : host(nullptr), bIsServer(false), bLANServer(false), pGameInitSettings(nullptr), numPlayers(0), maxPlayers(0), connectPeer(nullptr), pLANGameFinderAndAnnouncer(nullptr), pMetaServerClient(nullptr)
-{
+NetworkManager::NetworkManager(int port, const std::string& metaserver) {
+
     if(enet_initialize() != 0) {
-        throw std::runtime_error("NetworkManager: An error occurred while initializing ENet.");
+        THROW(std::runtime_error, "NetworkManager: An error occurred while initializing ENet.");
     }
 
     ENetAddress address;
@@ -43,12 +43,12 @@ NetworkManager::NetworkManager(int port, std::string metaserver)
     host = enet_host_create(&address, 32, 2, 0, 0);
     if(host == nullptr) {
         enet_deinitialize();
-        throw std::runtime_error("NetworkManager: An error occurred while trying to create a server host.");
+        THROW(std::runtime_error, "NetworkManager: An error occurred while trying to create a server host.");
     }
 
     if(enet_host_compress_with_range_coder(host) < 0) {
         enet_deinitialize();
-        throw std::runtime_error("NetworkManager: Cannot activate range coder.");
+        THROW(std::runtime_error, "NetworkManager: Cannot activate range coder.");
     }
 
     try {
@@ -75,7 +75,7 @@ NetworkManager::~NetworkManager() {
     enet_deinitialize();
 }
 
-void NetworkManager::startServer(bool bLANServer, std::string serverName, std::string playerName, GameInitSettings* pGameInitSettings, int numPlayers, int maxPlayers) {
+void NetworkManager::startServer(bool bLANServer, const std::string& serverName, const std::string& playerName, GameInitSettings* pGameInitSettings, int numPlayers, int maxPlayers) {
     if(bLANServer == true) {
         if(pLANGameFinderAndAnnouncer != nullptr) {
             pLANGameFinderAndAnnouncer->startAnnounce(serverName, host->address.port, pGameInitSettings->getFilename(), numPlayers, maxPlayers);
@@ -124,38 +124,37 @@ void NetworkManager::stopServer() {
     pGameInitSettings = nullptr;
 }
 
-void NetworkManager::connect(std::string hostname, int port, std::string playerName) {
+void NetworkManager::connect(const std::string& hostname, int port, const std::string& playerName) {
     ENetAddress address;
 
     if(enet_address_set_host(&address, hostname.c_str()) < 0) {
-        throw std::runtime_error("NetworkManager: Resolving hostname '" + hostname + "' failed!");
+        THROW(std::runtime_error, "NetworkManager: Resolving hostname '" + hostname + "' failed!");
     }
     address.port = port;
 
     connect(address, playerName);
 }
 
-void NetworkManager::connect(ENetAddress address, std::string playerName) {
+void NetworkManager::connect(ENetAddress address, const std::string& playerName) {
     debugNetwork("Connecting to %s:%d\n", Address2String(address).c_str(), address.port);
 
     connectPeer = enet_host_connect(host, &address, 2, 0);
     if(connectPeer == nullptr) {
-        throw std::runtime_error("NetworkManager: No available peers for initiating a connection.");
+        THROW(std::runtime_error, "NetworkManager: No available peers for initiating a connection.");
     }
 
     this->playerName = playerName;
 
-    connectPeer->data = new PeerData(connectPeer, PeerData::PEER_STATE_WAITING_FOR_CONNECT);
+    connectPeer->data = new PeerData(connectPeer, PeerData::PeerState::WaitingForConnect);
     awaitingConnectionList.push_back(connectPeer);
 }
 
 void NetworkManager::disconnect() {
-    std::list<ENetPeer*>::iterator iter;
-    for(iter = awaitingConnectionList.begin(); iter != awaitingConnectionList.end(); ++iter) {
-        enet_peer_disconnect_later(*iter, NETWORKDISCONNECT_QUIT);
+    for(ENetPeer* pAwaitingConnectionPeer : awaitingConnectionList) {
+        enet_peer_disconnect_later(pAwaitingConnectionPeer, NETWORKDISCONNECT_QUIT);
     }
-    for(iter = peerList.begin(); iter != peerList.end(); ++iter) {
-        enet_peer_disconnect_later(*iter, NETWORKDISCONNECT_QUIT);
+    for(ENetPeer* pCurrentPeer : peerList) {
+        enet_peer_disconnect_later(pCurrentPeer, NETWORKDISCONNECT_QUIT);
     }
 }
 
@@ -175,12 +174,12 @@ void NetworkManager::update()
             ENetPeer* pCurrentPeer = awaitingConnectionList.front();
             PeerData* peerData = static_cast<PeerData*>(pCurrentPeer->data);
 
-            if(peerData->peerState == PeerData::PEER_STATE_READY_FOR_OTHER_PEERS_TO_CONNECT) {
+            if(peerData->peerState == PeerData::PeerState::ReadyForOtherPeersToConnect) {
                 if(numPlayers >= maxPlayers) {
                     enet_peer_disconnect_later(pCurrentPeer, NETWORKDISCONNECT_GAME_FULL);
                 } else {
-                    // only one peer should be in state 'PEER_STATE_WAITING_FOR_OTHER_PEERS_TO_CONNECT'
-                    peerData->peerState = PeerData::PEER_STATE_WAITING_FOR_OTHER_PEERS_TO_CONNECT;
+                    // only one peer should be in state 'PeerState::WaitingForOtherPeersToConnect'
+                    peerData->peerState = PeerData::PeerState::WaitingForOtherPeersToConnect;
                     peerData->timeout = SDL_GetTicks() + AWAITING_CONNECTION_TIMEOUT;
                     peerData->notYetConnectedPeers = peerList;
 
@@ -193,7 +192,7 @@ void NetworkManager::update()
 
                         debugNetwork("Moving '%s' from awaiting connection list to peer list\n", peerData->name.c_str());
                         peerList.push_back(pCurrentPeer);
-                        peerData->peerState = PeerData::PEER_STATE_CONNECTED;
+                        peerData->peerState = PeerData::PeerState::Connected;
                         peerData->timeout = 0;
                         awaitingConnectionList.remove(pCurrentPeer);
 
@@ -222,11 +221,11 @@ void NetworkManager::update()
             if(peerData->timeout > 0 && SDL_GetTicks() > peerData->timeout) {
                 // timeout
                 switch(peerData->peerState) {
-                    case PeerData::PEER_STATE_WAITING_FOR_NAME: {
+                    case PeerData::PeerState::WaitingForName: {
                         // nothing to do
                     } break;
 
-                    case PeerData::PEER_STATE_WAITING_FOR_OTHER_PEERS_TO_CONNECT: {
+                    case PeerData::PeerState::WaitingForOtherPeersToConnect: {
                         // the client awaiting connection has timed out => send everyone a disconnect message
                         ENetPacketOStream packetStream(ENET_PACKET_FLAG_RELIABLE);
                         packetStream.writeUint32(NETWORKPACKET_DISCONNECT);
@@ -240,7 +239,7 @@ void NetworkManager::update()
                         awaitingConnectionList.pop_front();
                     } break;
 
-                    case PeerData::PEER_STATE_CONNECTED:
+                    case PeerData::PeerState::Connected:
                     default: {
                         // should never happen
                     } break;
@@ -260,7 +259,7 @@ void NetworkManager::update()
                     // Server
                     debugNetwork("NetworkManager: %s:%u connected.\n", Address2String(peer->address).c_str(), peer->address.port);
 
-                    PeerData* newPeerData = new PeerData(peer, PeerData::PEER_STATE_WAITING_FOR_NAME);
+                    PeerData* newPeerData = new PeerData(peer, PeerData::PeerState::WaitingForName);
                     newPeerData->timeout = SDL_GetTicks() + AWAITING_CONNECTION_TIMEOUT;
                     peer->data = newPeerData;
 
@@ -284,16 +283,16 @@ void NetworkManager::update()
 
                         sendPacketToHost(packetStream);
 
-                        peerData->peerState = PeerData::PEER_STATE_WAITING_FOR_OTHER_PEERS_TO_CONNECT;
+                        peerData->peerState = PeerData::PeerState::WaitingForOtherPeersToConnect;
                         peerData->timeout = 0;
                     } else {
                         debugNetwork("NetworkManager: %s:%u connected.\n", Address2String(peer->address).c_str(), peer->address.port);
 
                         PeerData* pConnectPeerData = static_cast<PeerData*>(connectPeer->data);
 
-                        if(pConnectPeerData->peerState == PeerData::PEER_STATE_WAITING_FOR_OTHER_PEERS_TO_CONNECT) {
+                        if(pConnectPeerData->peerState == PeerData::PeerState::WaitingForOtherPeersToConnect) {
                             if(peerData == nullptr) {
-                                peerData = new PeerData(peer, PeerData::PEER_STATE_CONNECTED);
+                                peerData = new PeerData(peer, PeerData::PeerState::Connected);
                                 peer->data = peerData;
 
                                 debugNetwork("Adding '%s' to awaiting connection list\n", peerData->name.c_str());
@@ -336,7 +335,7 @@ void NetworkManager::update()
                 debugNetwork("NetworkManager: %s:%u (%s) disconnected (%d).\n", Address2String(peer->address).c_str(), peer->address.port, (peerData != nullptr) ? peerData->name.c_str() : "unknown", disconnectCause);
 
                 if(std::find(awaitingConnectionList.begin(), awaitingConnectionList.end(), peer) != awaitingConnectionList.end()) {
-                    if(peerData->peerState == PeerData::PEER_STATE_WAITING_FOR_OTHER_PEERS_TO_CONNECT) {
+                    if(peerData->peerState == PeerData::PeerState::WaitingForOtherPeersToConnect) {
                         ENetPacketOStream packetStream(ENET_PACKET_FLAG_RELIABLE);
                         packetStream.writeUint32(NETWORKPACKET_DISCONNECT);
                         packetStream.writeUint32(SDL_SwapBE32(peer->address.host));
@@ -410,7 +409,7 @@ void NetworkManager::handlePacket(ENetPeer* peer, ENetPacketIStream& packetStrea
                     if(newPeer == nullptr) {
                         debugNetwork("NetworkManager: No available peers for initiating a connection.");
                     } else {
-                        PeerData* peerData = new PeerData(newPeer, PeerData::PEER_STATE_WAITING_FOR_OTHER_PEERS_TO_CONNECT);
+                        PeerData* peerData = new PeerData(newPeer, PeerData::PeerState::WaitingForOtherPeersToConnect);
                         peerData->name = packetStream.readString();
 
                         newPeer->data = peerData;
@@ -426,19 +425,16 @@ void NetworkManager::handlePacket(ENetPeer* peer, ENetPacketIStream& packetStrea
                 address.host = SDL_SwapBE32(packetStream.readUint32());
                 address.port = packetStream.readUint16();
 
-                std::list<ENetPeer*>::iterator iter;
-                for(iter = peerList.begin(); iter != peerList.end(); ++iter) {
-                    ENetPeer* currentPeer = *iter;
-                    if((currentPeer->address.host == address.host) && (currentPeer->address.port == address.port)) {
-                        enet_peer_disconnect_later(currentPeer, NETWORKDISCONNECT_QUIT);
+                for(ENetPeer* pCurrentPeer : peerList) {
+                    if((pCurrentPeer->address.host == address.host) && (pCurrentPeer->address.port == address.port)) {
+                        enet_peer_disconnect_later(pCurrentPeer, NETWORKDISCONNECT_QUIT);
                         break;
                     }
                 }
 
-                for(iter = awaitingConnectionList.begin(); iter != awaitingConnectionList.end(); ++iter) {
-                    ENetPeer* currentPeer = *iter;
-                    if((currentPeer->address.host == address.host) && (currentPeer->address.port == address.port)) {
-                        enet_peer_disconnect_later(currentPeer, NETWORKDISCONNECT_QUIT);
+                for(ENetPeer* pAwaitingConnectionPeer : awaitingConnectionList) {
+                    if((pAwaitingConnectionPeer->address.host == address.host) && (pAwaitingConnectionPeer->address.port == address.port)) {
+                        enet_peer_disconnect_later(pAwaitingConnectionPeer, NETWORKDISCONNECT_QUIT);
                         break;
                     }
                 }
@@ -477,7 +473,7 @@ void NetworkManager::handlePacket(ENetPeer* peer, ENetPacketIStream& packetStrea
                                 // move peer to peer list
                                 debugNetwork("Moving '%s' from awaiting connection list to peer list\n", peerData->name.c_str());
                                 peerList.push_back(pCurrentPeer);
-                                peerData->peerState = PeerData::PEER_STATE_CONNECTED;
+                                peerData->peerState = PeerData::PeerState::Connected;
                                 peerData->timeout = 0;
                                 awaitingConnectionList.remove(pCurrentPeer);
 
@@ -493,15 +489,14 @@ void NetworkManager::handlePacket(ENetPeer* peer, ENetPacketIStream& packetStrea
                         }
                     }
                 } else {
-                    std::list<ENetPeer*>::iterator iter;
-                    for(iter = awaitingConnectionList.begin(); iter != awaitingConnectionList.end(); ++iter) {
+                    for(auto iter = awaitingConnectionList.begin(); iter != awaitingConnectionList.end(); ++iter) {
                         ENetPeer* pCurrentPeer = *iter;
-                        PeerData* peerData = static_cast<PeerData*>(pCurrentPeer->data);
 
                         if((pCurrentPeer->address.host == address.host) && (pCurrentPeer->address.port == address.port)) {
+                            PeerData* peerData = static_cast<PeerData*>(pCurrentPeer->data);
                             debugNetwork("Moving '%s' from awaiting connection list to peer list\n", peerData->name.c_str());
                             peerList.push_back(pCurrentPeer);
-                            peerData->peerState = PeerData::PEER_STATE_CONNECTED;
+                            peerData->peerState = PeerData::PeerState::Connected;
                             peerData->timeout = 0;
                             awaitingConnectionList.erase(iter);
                             break;
@@ -515,7 +510,7 @@ void NetworkManager::handlePacket(ENetPeer* peer, ENetPacketIStream& packetStrea
                 PeerData* peerData = static_cast<PeerData*>(connectPeer->data);
 
                 peerList = awaitingConnectionList;
-                peerData->peerState = PeerData::PEER_STATE_CONNECTED;
+                peerData->peerState = PeerData::PeerState::Connected;
                 peerData->timeout = 0;
                 awaitingConnectionList.clear();
 
@@ -541,10 +536,9 @@ void NetworkManager::handlePacket(ENetPeer* peer, ENetPacketIStream& packetStrea
                     }
 
                     if(bFoundName == false) {
-                        std::list<ENetPeer*>::iterator iter;
-                        for(iter = peerList.begin(); iter != peerList.end(); ++iter) {
-                            PeerData* currentPeerData = (PeerData*) (*iter)->data;
-                            if(currentPeerData->name == newName) {
+                        for(ENetPeer* pCurrentPeer : peerList) {
+                            PeerData* pCurrentPeerData = static_cast<PeerData*>(pCurrentPeer->data);
+                            if(pCurrentPeerData->name == newName) {
                                 enet_peer_disconnect_later(peer, NETWORKDISCONNECT_PLAYER_EXISTS);
                                 bFoundName = true;
                                 break;
@@ -553,10 +547,9 @@ void NetworkManager::handlePacket(ENetPeer* peer, ENetPacketIStream& packetStrea
                     }
 
                     if(bFoundName == false) {
-                        std::list<ENetPeer*>::iterator iter;
-                        for(iter = awaitingConnectionList.begin(); iter != awaitingConnectionList.end(); ++iter) {
-                            PeerData* currentPeerData = (PeerData*) (*iter)->data;
-                            if(currentPeerData->name == newName) {
+                        for(ENetPeer* pAwaitingConnectionPeer : awaitingConnectionList) {
+                            PeerData* pAwaitingConnectionPeerData = static_cast<PeerData*>(pAwaitingConnectionPeer->data);
+                            if(pAwaitingConnectionPeerData->name == newName) {
                                 enet_peer_disconnect_later(peer, NETWORKDISCONNECT_PLAYER_EXISTS);
                                 bFoundName = true;
                                 break;
@@ -568,8 +561,8 @@ void NetworkManager::handlePacket(ENetPeer* peer, ENetPacketIStream& packetStrea
                 if(bFoundName == false) {
                     peerData->name = newName;
 
-                    if(peerData->peerState == PeerData::PEER_STATE_WAITING_FOR_NAME) {
-                        peerData->peerState = PeerData::PEER_STATE_READY_FOR_OTHER_PEERS_TO_CONNECT;
+                    if(peerData->peerState == PeerData::PeerState::WaitingForName) {
+                        peerData->peerState = PeerData::PeerState::ReadyForOtherPeersToConnect;
                     }
                 }
             } break;
@@ -621,29 +614,29 @@ void NetworkManager::handlePacket(ENetPeer* peer, ENetPacketIStream& packetStrea
             } break;
 
             default: {
-                fprintf(stderr,"NetworkManager: Unknown packet type %d\n", packetType);
+                SDL_Log("NetworkManager: Unknown packet type %d", packetType);
             };
         }
 
     } catch (InputStream::eof&) {
-        fprintf(stderr,"NetworkManager: Received packet is too small\n");
+        SDL_Log("NetworkManager: Received packet is too small");
         return;
     } catch (std::exception& e) {
-        fprintf(stderr,"NetworkManager: %s\n", e.what());
+        SDL_Log("NetworkManager: %s", e.what());
     }
 }
 
 
 void NetworkManager::sendPacketToHost(ENetPacketOStream& packetStream, int channel) {
     if(connectPeer == nullptr) {
-        fprintf(stderr,"NetworkManager: sendPacketToHost() called on server!\n");
+        SDL_Log("NetworkManager: sendPacketToHost() called on server!");
         return;
     }
 
     ENetPacket* enetPacket = packetStream.getPacket();
 
     if(enet_peer_send(connectPeer, channel, enetPacket) < 0) {
-        fprintf(stderr,"NetworkManager: Cannot send packet!\n");
+        SDL_Log("NetworkManager: Cannot send packet!");
     }
 }
 
@@ -651,7 +644,7 @@ void NetworkManager::sendPacketToPeer(ENetPeer* peer, ENetPacketOStream& packetS
     ENetPacket* enetPacket = packetStream.getPacket();
 
     if(enet_peer_send(peer, channel, enetPacket) < 0) {
-        fprintf(stderr,"NetworkManager: Cannot send packet!\n");
+        SDL_Log("NetworkManager: Cannot send packet!");
     }
 
     if(enetPacket->referenceCount == 0) {
@@ -663,10 +656,9 @@ void NetworkManager::sendPacketToPeer(ENetPeer* peer, ENetPacketOStream& packetS
 void NetworkManager::sendPacketToAllConnectedPeers(ENetPacketOStream& packetStream, int channel) {
     ENetPacket* enetPacket = packetStream.getPacket();
 
-    std::list<ENetPeer*>::iterator iter;
-    for(iter = peerList.begin(); iter != peerList.end(); ++iter) {
-        if(enet_peer_send(*iter, channel, enetPacket) < 0) {
-            fprintf(stderr,"NetworkManager: Cannot send packet!\n");
+    for(ENetPeer* pCurrentPeer : peerList) {
+        if(enet_peer_send(pCurrentPeer, channel, enetPacket) < 0) {
+            SDL_Log("NetworkManager: Cannot send packet!");
             continue;
         }
     }
@@ -700,14 +692,13 @@ void NetworkManager::sendChangeEventList(const ChangeEventList& changeEventList)
 }
 
 void NetworkManager::sendStartGame(unsigned int timeLeft) {
-    std::list<ENetPeer*>::iterator iter;
-    for(iter = peerList.begin(); iter != peerList.end(); ++iter) {
+    for(ENetPeer* pCurrentPeer : peerList) {
         ENetPacketOStream packetStream(ENET_PACKET_FLAG_RELIABLE);
         packetStream.writeUint32(NETWORKPACKET_STARTGAME);
 
-        packetStream.writeUint32(timeLeft - (*iter)->roundTripTime/2);
+        packetStream.writeUint32(timeLeft - pCurrentPeer->roundTripTime/2);
 
-        sendPacketToPeer(*iter, packetStream);
+        sendPacketToPeer(pCurrentPeer, packetStream);
     }
 }
 
@@ -731,9 +722,8 @@ void NetworkManager::sendSelectedList(const std::set<Uint32>& selectedList, int 
 int NetworkManager::getMaxPeerRoundTripTime() {
     int maxPeerRTT = 0;
 
-    std::list<ENetPeer*>::iterator iter;
-    for(iter = peerList.begin(); iter != peerList.end(); ++iter) {
-        maxPeerRTT = std::max(maxPeerRTT, (int) ((*iter)->roundTripTime));
+    for(ENetPeer* pCurrentPeer : peerList) {
+        maxPeerRTT = std::max(maxPeerRTT, (int) (pCurrentPeer->roundTripTime));
     }
 
     return maxPeerRTT;

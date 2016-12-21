@@ -48,7 +48,7 @@ public:
         return MenuBase::doInput(event);
     }
 
-    void setText(std::string text) {
+    void setText(const std::string& text) {
         mentatTexts = splitString(text, ". ", true);
 
         mouthAnim.getAnimation()->setNumLoops(mentatTexts[0].empty() ? 0 : mentatTexts[0].length()/25 + 1);
@@ -69,6 +69,23 @@ public:
     int getMissionSpecificAnim(int missionnumber) const;
 
 protected:
+    enum MentatEyes {
+        MentatEyesNormal = 0,
+        MentatEyesLeft = 1,
+        MentatEyesRight = 2,
+        MentatEyesDown = 3,
+        MentatEyesClosed = 4
+    };
+
+
+    enum MentatMouth {
+        MentatMouthClosed = 0,
+        MentatMouthOpen1 = 1,
+        MentatMouthOpen2 = 2,
+        MentatMouthOpen3 = 3,
+        MentatMouthOpen4 = 4
+    };
+
     Uint32  nextSpecialAnimation;
 
     std::vector<std::string> mentatTexts;

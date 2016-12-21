@@ -23,6 +23,8 @@
 #include <SDL.h>
 #include <vector>
 
+#define INVALID_FRAME ((unsigned int) -1)
+
 class Animation
 {
 public:
@@ -30,6 +32,10 @@ public:
     ~Animation();
 
     unsigned int getCurrentFrameNumber();
+
+    void setCurrentFrameNumber(unsigned int newCurrentFrame) { curFrame = newCurrentFrame; };
+
+    unsigned int getNumberOfFrames() const { return (unsigned int) frames.size(); };
 
     SDL_Surface* getFrame();
 
@@ -74,11 +80,18 @@ public:
         }
     }
 
+    void setFrameOverride(unsigned int frameOverride) { curFrameOverride = frameOverride; };
+
+    void resetFrameOverride() { curFrameOverride = INVALID_FRAME; };
+
+    unsigned int getCurrentFrameOverride() const { return curFrameOverride; };
+
 private:
     Uint32 curFrameStartTime;
     Uint32 frameDurationTime;
     int loopsLeft;
     unsigned int curFrame;
+    unsigned int curFrameOverride;
     std::vector<SDL_Surface*> frames;
     std::vector<SDL_Texture*> frameTextures;
 };

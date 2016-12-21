@@ -19,6 +19,7 @@
 
 #include <stdarg.h>
 #include <stdio.h>
+#include <vector>
 #include <algorithm>
 
 /**
@@ -101,8 +102,9 @@ std::vector<std::string> splitString(const std::string& parseString, const std::
     \param  replacementMap  a map of replacements
     \return the modified strings
 */
-std::string replaceAll(std::string str, const std::map<std::string, std::string>& replacementMap) {
+std::string replaceAll(const std::string& str, const std::map<std::string, std::string>& replacementMap) {
 
+    std::string result = str;
     size_t currentPos = 0;
 
     while(true) {
@@ -111,11 +113,10 @@ std::string replaceAll(std::string str, const std::map<std::string, std::string>
         std::string bestNextKey;
         std::string bestNextValue;
 
-        std::map<std::string, std::string>::const_iterator iter;
-        for(iter = replacementMap.begin(); iter != replacementMap.end(); ++iter) {
+        for(const auto& replacement : replacementMap) {
 
-            std::string nextKey = iter->first;
-            size_t nextPos = str.find(nextKey, currentPos);
+            std::string nextKey = replacement.first;
+            size_t nextPos = result.find(nextKey, currentPos);
 
             if((nextPos != std::string::npos)
                 && ( (nextPos < bestNextPos)
@@ -124,7 +125,7 @@ std::string replaceAll(std::string str, const std::map<std::string, std::string>
                 // best match so far (either smaller position or same position but longer match)
                 bestNextPos = nextPos;
                 bestNextKey = nextKey;
-                bestNextValue = iter->second;
+                bestNextValue = replacement.second;
             }
 
         }
@@ -133,44 +134,110 @@ std::string replaceAll(std::string str, const std::map<std::string, std::string>
             break;
         }
 
-        str.replace(bestNextPos, bestNextKey.length(), bestNextValue);
+        result.replace(bestNextPos, bestNextKey.length(), bestNextValue);
 
         currentPos = bestNextPos + bestNextValue.length();
     }
 
 
-    return str;
+    return result;
 }
 
-std::string strprintf(const std::string fmt, ...) {
-    // Note that fmt is not passed by reference as this is not allowed for the last parameter before ...
-    va_list arg_ptr;
-    va_start(arg_ptr, fmt);
 
-    int length = vsnprintf(nullptr, 0, fmt.c_str(), arg_ptr);
-    if(length < 0) {
-        va_end(arg_ptr);
-        throw std::runtime_error("strprintf(): vsnprintf() failed!");
+std::vector<std::string> greedyWordWrap(const std::string& text, int linewidth, std::function<int (const std::string&)> pGetTextWidth) {
+    //split text into single lines at every '\n'
+    size_t startpos = 0;
+    size_t nextpos;
+    std::vector<std::string> hardLines;
+    do {
+        nextpos = text.find("\n",startpos);
+        if(nextpos == std::string::npos) {
+            hardLines.push_back(text.substr(startpos,text.length()-startpos));
+        } else {
+            hardLines.push_back(text.substr(startpos,nextpos-startpos));
+            startpos = nextpos+1;
+        }
+    } while(nextpos != std::string::npos);
+
+    std::vector<std::string> textLines;
+    for(const std::string& hardLine : hardLines) {
+        if(hardLine == "") {
+            textLines.push_back(" ");
+            continue;
+        }
+
+        bool bEndOfLine = false;
+        size_t warppos = 0;
+        size_t oldwarppos = 0;
+        size_t lastwarp = 0;
+
+        while(bEndOfLine == false) {
+            while(true) {
+                warppos = hardLine.find(" ", oldwarppos);
+                std::string tmp;
+                if(warppos == std::string::npos) {
+                    tmp = hardLine.substr(lastwarp,hardLine.length()-lastwarp);
+                    warppos = hardLine.length();
+                    bEndOfLine = true;
+                } else {
+                    tmp = hardLine.substr(lastwarp,warppos-lastwarp);
+                }
+
+                if( pGetTextWidth(tmp) > linewidth) {
+                    // this line would be too big => in oldwarppos is the last correct word warp pos
+                    bEndOfLine = false;
+                    break;
+                } else {
+                    if(bEndOfLine == true) {
+                        oldwarppos = warppos;
+                        break;
+                    } else {
+                        oldwarppos = warppos + 1;
+                    }
+                }
+            }
+
+            if(oldwarppos == lastwarp) {
+                // linewidth is too small for the next word => split the word
+
+                warppos = lastwarp;
+                while(true) {
+                    std::string tmp = hardLine.substr(lastwarp,warppos-lastwarp);
+                    if( pGetTextWidth(tmp) > linewidth) {
+                        // this line would be too big => in oldwarppos is the last correct warp pos
+                        break;
+                    } else {
+                        oldwarppos = warppos;
+                    }
+
+                    warppos++;
+
+                    if(warppos > hardLine.length()) {
+                        oldwarppos = hardLine.length();
+                        break;
+                    }
+                }
+
+                if(warppos != lastwarp) {
+                    textLines.push_back(hardLine.substr(lastwarp,oldwarppos-lastwarp));
+                    lastwarp = oldwarppos;
+                } else {
+                    // linewidth is too small for the next character => create a dummy entry
+                    textLines.push_back(" ");
+                    lastwarp++;
+                    oldwarppos++;
+                }
+            } else {
+                textLines.push_back(hardLine.substr(lastwarp,oldwarppos-lastwarp));
+                lastwarp = oldwarppos;
+            }
+        }
     }
 
-    char* tmpBuffer = new char[length+1];
-
-    va_end(arg_ptr);
-
-    va_start(arg_ptr, fmt);
-    if(vsnprintf(tmpBuffer, length+1, fmt.c_str(), arg_ptr) < 0) {
-        delete [] tmpBuffer;
-        throw std::runtime_error("strprintf(): vsnprintf() failed!");
-    }
-
-    std::string formatedString(tmpBuffer);
-
-    delete [] tmpBuffer;
-
-    va_end(arg_ptr);
-
-    return formatedString;
+    return textLines;
 }
+
+
 
 std::string convertCP850ToISO8859_1(const std::string& text)
 {
@@ -242,7 +309,7 @@ std::string convertUTF8ToISO8859_1(const std::string& text)
     return result;
 }
 
-std::string decodeString(std::string text) {
+std::string decodeString(const std::string& text) {
     std::string out = "";
 
     static const char decodeTable1[16] = { ' ','e','t','a','i','n','o','s','r','l','h','c','d','u','p','m' };
@@ -279,7 +346,7 @@ std::string decodeString(std::string text) {
 
                 i++;
                 if(i == text.length()) {
-                    throw std::invalid_argument("decodeString(): Special character escape sequence at end of string!");
+                    THROW(std::invalid_argument, "decodeString(): Special character escape sequence at end of string!");
                 }
 
                 unsigned char special = text[i] + 0x7F;

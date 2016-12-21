@@ -25,8 +25,8 @@
 
 class FileInfo {
 public:
-    FileInfo(std::string _name, uint32_t _size, uint64_t _modifydate)
-        : name(_name), size(_size), modifydate(_modifydate) {
+    FileInfo(const std::string& name, uint32_t size, uint64_t modifydate)
+        : name(name), size(size), modifydate(modifydate) {
     }
 
     std::string name;
@@ -54,7 +54,7 @@ enum FileListOrder {
     \param  bIgnoreCase true = extension comparison is case insensitive
     \return a list of all the files with the specified extension
 */
-std::list<std::string> getFileNamesList(std::string directory, std::string extension, bool bIgnoreCase = false, FileListOrder fileListOrder = FileListOrder_Unsorted);
+std::list<std::string> getFileNamesList(const std::string& directory, const std::string& extension, bool bIgnoreCase = false, FileListOrder fileListOrder = FileListOrder_Unsorted);
 
 
 /**
@@ -65,14 +65,14 @@ std::list<std::string> getFileNamesList(std::string directory, std::string exten
     \param  IgnoreCase  true = extension comparison is case insensitive
     \return a list of all the files with the specified extension
 */
-std::list<FileInfo> getFileList(std::string directory, std::string extension, bool IgnoreCase = false, FileListOrder fileListOrder = FileListOrder_Unsorted);
+std::list<FileInfo> getFileList(const std::string& directory, const std::string& extension, bool IgnoreCase = false, FileListOrder fileListOrder = FileListOrder_Unsorted);
 
 /**
     This function is used to determine a case insensitive filename. The parameter filepath specifies the complete path to the file (relative or absolute).
     The path components are treated case sensitive to determine the directory to search the file in. The filename component of filepath is then compared
     case insensitive with all entries in this directory. If there is one entry found which matches (case insensitive), filepath is changed to point to this file
     (e.g. "data/DUNE.PAK" will become "data/dune.PAK" if there is a "dune.PAK" file in the "data" directory).
-    \param  filepath    the path to the file to look for. This string is changed if there is file found with the same name (case insensitive compared)
+    \param  filepath    the path to the file to look for. This string is changed if there is a file found with the same name (case insensitive compared)
     \return true if a file was found and filepath was changed accordingly. false if there was no file found or the directory was not found
 */
 bool getCaseInsensitiveFilename(std::string& filepath);
@@ -88,7 +88,7 @@ bool existsFile(const std::string& path);
 /**
     Reads a complete file into a string. Caution: If the file contains 0-bytes they will also be contained in the returned string
 */
-std::string readCompleteFile(std::string filename);
+std::string readCompleteFile(const std::string& filename);
 
 
 /**

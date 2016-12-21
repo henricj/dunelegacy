@@ -19,8 +19,8 @@
 
 #include <globals.h>
 
-#include <misc/string_util.h>
 #include <misc/FileSystem.h>
+#include <misc/format.h>
 
 #include <FileClasses/GFXManager.h>
 #include <FileClasses/TextManager.h>
@@ -112,7 +112,7 @@ CustomGameStatsMenu::CustomGameStatsMenu() : MenuBase()
             curHouseStat.value1.setTextColor(textcolor);
             curHouseStat.houseHBox.addWidget(&curHouseStat.value1, 50);
             curHouseStat.houseHBox.addWidget(HSpacer::create(2));
-            curHouseStat.progressBar1.setProgress( (maxBuiltValue == 0) ? 0.0 : (pHouse->getBuiltValue() * 100.0f / maxBuiltValue));
+            curHouseStat.progressBar1.setProgress( (maxBuiltValue == 0) ? 0.0f : (pHouse->getBuiltValue() * 100.0f / maxBuiltValue));
             curHouseStat.progressBar1.setDrawShadow(true);
             curHouseStat.progressBar1.setColor(progresscolor);
             curHouseStat.vBox1.addWidget(Spacer::create(), 0.5);
@@ -128,7 +128,7 @@ CustomGameStatsMenu::CustomGameStatsMenu() : MenuBase()
             curHouseStat.value2.setTextColor(textcolor);
             curHouseStat.houseHBox.addWidget(&curHouseStat.value2, 50);
             curHouseStat.houseHBox.addWidget(HSpacer::create(2));
-            curHouseStat.progressBar2.setProgress( (maxDestroyedValue == 0) ? 0.0 : (pHouse->getDestroyedValue() * 100.0f / maxDestroyedValue));
+            curHouseStat.progressBar2.setProgress( (maxDestroyedValue == 0) ? 0.0f : (pHouse->getDestroyedValue() * 100.0f / maxDestroyedValue));
             curHouseStat.progressBar2.setDrawShadow(true);
             curHouseStat.progressBar2.setColor(progresscolor);
             curHouseStat.vBox2.addWidget(Spacer::create(), 0.5);
@@ -144,7 +144,7 @@ CustomGameStatsMenu::CustomGameStatsMenu() : MenuBase()
             curHouseStat.value3.setTextColor(textcolor);
             curHouseStat.houseHBox.addWidget(&curHouseStat.value3, 50);
             curHouseStat.houseHBox.addWidget(HSpacer::create(2));
-            curHouseStat.progressBar3.setProgress( (maxSpiceHarvested == 0.0) ? 0.0 : (pHouse->getHarvestedSpice().toFloat() * 100.0f / maxSpiceHarvested));
+            curHouseStat.progressBar3.setProgress( (maxSpiceHarvested == 0.0f) ? 0.0f : (pHouse->getHarvestedSpice().toFloat() * 100.0f / maxSpiceHarvested));
             curHouseStat.progressBar3.setDrawShadow(true);
             curHouseStat.progressBar3.setColor(progresscolor);
             curHouseStat.vBox3.addWidget(Spacer::create(), 0.5);
@@ -168,7 +168,7 @@ CustomGameStatsMenu::CustomGameStatsMenu() : MenuBase()
 
     buttonHBox.addWidget(HSpacer::create(70));
     int totalTime = currentGame->getGameTime()/1000;
-    timeLabel.setText(strprintf(_("@DUNE.ENG|22#Time: %d:%02d"), totalTime/3600, (totalTime%3600)/60));
+    timeLabel.setText(fmt::sprintf(_("@DUNE.ENG|22#Time: %d:%02d"), totalTime/3600, (totalTime%3600)/60));
     timeLabel.setTextColor(localHouseColor);
     buttonHBox.addWidget(&timeLabel, 0.2);
 

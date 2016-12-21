@@ -36,6 +36,7 @@ public:
     enum MessageType {
         MSGTYPE_NORMAL = 0,
         MSGTYPE_INFO = 1,
+        MSGTYPE_PICTURE = 2,
         NUM_MSGTYPE
     };
 
@@ -47,9 +48,11 @@ public:
     /// destructor
     ~ChatManager();
 
-    void addChatMessage(std::string username, std::string message);
+    void addChatMessage(const std::string& username, const std::string& message);
 
-    void addInfoMessage(std::string message);
+    void addInfoMessage(const std::string& message);
+
+    void addHintMessage(const std::string& message, SDL_Texture* pTexture);
 
     /**
         Draws this widget to screen. This method is called before drawOverlay().
@@ -61,17 +64,21 @@ private:
 
     struct ChatMessage {
 
-        ChatMessage(std::shared_ptr<SDL_Texture> _pMessageTexture, Uint32 _messageTime, MessageType _messageType)
+        ChatMessage(std::shared_ptr<SDL_Texture>& _pMessageTexture, Uint32 _messageTime, MessageType _messageType)
          : pMessageTexture(_pMessageTexture), messageTime(_messageTime), messageType(_messageType) {
         }
 
-        ChatMessage(std::shared_ptr<SDL_Texture> _pTimeTexture, std::shared_ptr<SDL_Texture> _pUsernameTexture,
-                    std::shared_ptr<SDL_Texture> _pMessageTexture, Uint32 _messageTime, MessageType _messageType)
-         : pTimeTexture(_pTimeTexture), pUsernameTexture(_pUsernameTexture), pMessageTexture(_pMessageTexture), messageTime(_messageTime), messageType(_messageType) {
+        ChatMessage(std::shared_ptr<SDL_Texture>& _pTimeTexture, std::shared_ptr<SDL_Texture>& _pUsernameTexture,
+                    std::shared_ptr<SDL_Texture>& _pMessageTexture, Uint32 _messageTime, MessageType _messageType)
+         : pTimeTexture(_pTimeTexture), pUsernameOrPictureTexture(_pUsernameTexture), pMessageTexture(_pMessageTexture), messageTime(_messageTime), messageType(_messageType) {
+        }
+
+        ChatMessage(std::shared_ptr<SDL_Texture>& _pMessageTexture, std::shared_ptr<SDL_Texture>& _pPictureTexture, Uint32 _messageTime, MessageType _messageType)
+         : pUsernameOrPictureTexture(_pPictureTexture), pMessageTexture(_pMessageTexture), messageTime(_messageTime), messageType(_messageType) {
         }
 
         std::shared_ptr<SDL_Texture>    pTimeTexture;
-        std::shared_ptr<SDL_Texture>    pUsernameTexture;
+        std::shared_ptr<SDL_Texture>    pUsernameOrPictureTexture;
         std::shared_ptr<SDL_Texture>    pMessageTexture;
 
         Uint32      messageTime;

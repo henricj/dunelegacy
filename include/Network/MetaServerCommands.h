@@ -47,7 +47,7 @@ public:
 
 class MetaServerAdd : public MetaServerCommand {
 public:
-    MetaServerAdd(std::string serverName, int serverPort, std::string secret, std::string mapName, Uint8 numPlayers, Uint8 maxPlayers)
+    MetaServerAdd(const std::string& serverName, int serverPort, const std::string& secret, const std::string& mapName, Uint8 numPlayers, Uint8 maxPlayers)
      : MetaServerCommand(METASERVERCOMMAND_ADD), serverName(serverName), serverPort(serverPort), secret(secret),
        mapName(mapName), numPlayers(numPlayers), maxPlayers(maxPlayers) {
     }
@@ -78,7 +78,7 @@ public:
 
 class MetaServerUpdate : public MetaServerCommand {
 public:
-    MetaServerUpdate(std::string serverName, int serverPort, std::string secret, std::string mapName, Uint8 numPlayers, Uint8 maxPlayers)
+    MetaServerUpdate(const std::string& serverName, int serverPort, const std::string& secret, const std::string& mapName, Uint8 numPlayers, Uint8 maxPlayers)
      : MetaServerCommand(METASERVERCOMMAND_UPDATE), serverName(serverName), serverPort(serverPort), secret(secret),
        mapName(mapName), numPlayers(numPlayers), maxPlayers(maxPlayers) {
     }
@@ -109,7 +109,7 @@ public:
 
 class MetaServerRemove : public MetaServerCommand {
 public:
-    MetaServerRemove(int serverPort, std::string secret)
+    MetaServerRemove(int serverPort, const std::string& secret)
      : MetaServerCommand(METASERVERCOMMAND_REMOVE), serverPort(serverPort), secret(secret) {
     }
 

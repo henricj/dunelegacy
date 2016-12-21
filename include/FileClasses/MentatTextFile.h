@@ -18,9 +18,10 @@
 #ifndef MENTATTEXTFILE_H
 #define MENTATTEXTFILE_H
 
+#include <misc/exceptions.h>
+
 #include <string>
 #include <vector>
-#include <stdexcept>
 #include <SDL.h>
 #include <SDL_rwops.h>
 
@@ -35,7 +36,13 @@ public:
 
     class MentatEntry {
     public:
-        MentatEntry(std::string title, unsigned int numMenuEntry, unsigned int menuLevel, unsigned int techLevel, std::string filename, std::string name, std::string content)
+        MentatEntry(const std::string& title,
+                    unsigned int numMenuEntry,
+                    unsigned int menuLevel,
+                    unsigned int techLevel,
+                    const std::string& filename,
+                    const std::string& name,
+                    const std::string& content)
          : title(title), numMenuEntry(numMenuEntry), menuLevel(menuLevel), techLevel(techLevel), filename(filename), name(name), content(content) {
         }
 
@@ -60,7 +67,7 @@ public:
     */
     const MentatEntry& getMentatEntry(unsigned int n) const {
         if(n >= mentatEntries.size()) {
-            throw std::invalid_argument("MentatTextFile:getMentatEntry(): Invalid index!");
+            THROW(std::invalid_argument, "MentatTextFile:getMentatEntry(): Invalid index!");
         }
 
         return mentatEntries[n];

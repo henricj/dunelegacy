@@ -18,33 +18,28 @@
 #ifndef STRING_UTIL_H
 #define STRING_UTIL_H
 
+#include <misc/exceptions.h>
+
 #include <string>
 #include <vector>
 #include <map>
 #include <algorithm>
-
+#include <functional>
 #include <sstream>
-#include <stdexcept>
 
 bool splitString(const std::string& parseString, unsigned int numStringPointers,...);
 
 std::vector<std::string> splitString(const std::string& parseString, const std::string& delim = ",", bool keepDelim = false);
 
-std::string replaceAll(std::string str, const std::map<std::string, std::string>& replacementMap);
+std::string replaceAll(const std::string& str, const std::map<std::string, std::string>& replacementMap);
 
-/**
-    sprintf-like function for std::string.
-    \param  fmt the format string
-    \return the formated string
-*/
-std::string strprintf(const std::string fmt, ...);
 
 template<typename T>
 inline std::string stringify(T x)
 {
     std::ostringstream os;
     if (!(os << x))
-        throw std::runtime_error("stringify() failed!");
+        THROW(std::runtime_error, "stringify() failed!");
     return os.str();
 }
 
@@ -103,6 +98,16 @@ inline int stringCaseInsensitiveCompare(const std::string& str1, const std::stri
     return tolower(*pStr1) - tolower(*pStr2);
 }
 
+/**
+    This function splits a text into multiple lines such that each line is no longer than linewidth pixels. The function pGetTextWidth is
+    used to determine how width a given text will be in pixels.
+    \param  text            the text to split; any hard line breaks '\n' are also considered
+    \param  linewidth       the maximum width of a line in pixel
+    \param  pGetTextWidth   this function is used to determine the width in pixels of a given string. Its return value shall specify the width in pixels of its parameter.
+    \return the returned vector contains the complete text, split into multiple lines.
+*/
+std::vector<std::string> greedyWordWrap(const std::string& text, int linewidth, std::function<int (const std::string&)> pGetTextWidth);
+
 std::string convertCP850ToISO8859_1(const std::string& text);
 
 std::string convertUTF8ToISO8859_1(const std::string& text);
@@ -113,6 +118,6 @@ std::string convertUTF8ToISO8859_1(const std::string& text);
     \param text Text to decode
     \return The decoded text
 */
-std::string decodeString(std::string text);
+std::string decodeString(const std::string& text);
 
 #endif // STRING_UTIL_H

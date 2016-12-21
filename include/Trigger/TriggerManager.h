@@ -80,7 +80,7 @@ private:
         \param  stream      the stream to save to
         \param  t           shared pointer to the trigger to save
     */
-    void saveTrigger(OutputStream& stream, std::shared_ptr<Trigger> t) const;
+    void saveTrigger(OutputStream& stream, const std::shared_ptr<Trigger>& t) const;
 
     /**
         Helper method for loading one trigger

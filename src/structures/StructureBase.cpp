@@ -78,6 +78,10 @@ StructureBase::~StructureBase() {
     owner->decrementStructures(itemID, location);
 
     removeFromSelectionLists();
+
+    for(int i=0; i < NUMSELECTEDLISTS; i++) {
+        pLocalPlayer->getGroupList(i).erase(getObjectID());
+    }
 }
 
 void StructureBase::save(OutputStream& stream) const {
@@ -90,9 +94,8 @@ void StructureBase::save(OutputStream& stream) const {
     stream.writeSint32(degradeTimer);
 
     stream.writeUint32(smoke.size());
-    std::list<StructureSmoke>::const_iterator iter;
-    for(iter = smoke.begin(); iter != smoke.end(); ++iter) {
-        iter->save(stream);
+    for(const StructureSmoke& structureSmoke : smoke) {
+        structureSmoke.save(stream);
     }
 }
 
@@ -105,7 +108,7 @@ void StructureBase::assignToMap(const Coord& pos) {
             if(currentGameMap->tileExists(i, j)) {
                 Tile* pTile = currentGameMap->getTile(i,j);
                 pTile->assignNonInfantryGroundObject(getObjectID());
-                if(!pTile->isConcrete() && currentGame->getGameInitSettings().getGameOptions().concreteRequired && (currentGame->gameState != START)) {
+                if(!pTile->isConcrete() && currentGame->getGameInitSettings().getGameOptions().concreteRequired && (currentGame->gameState != GameState::Start)) {
                     bFoundNonConcreteTile = true;
 
                     if((itemID != Structure_Wall) && (itemID != Structure_ConstructionYard)) {
@@ -114,7 +117,6 @@ void StructureBase::assignToMap(const Coord& pos) {
                 }
                 pTile->setType(Terrain_Rock);
                 pTile->setOwner(getOwner()->getHouseID());
-                currentGameMap->viewMap(getOwner()->getTeam(), Coord(i,j), getViewRange());
 
                 setVisible(VIS_ALL, true);
                 setActive(true);
@@ -122,6 +124,8 @@ void StructureBase::assignToMap(const Coord& pos) {
             }
         }
     }
+
+    currentGameMap->viewMap(getOwner()->getTeam(), pos, getViewRange());
 
     if(!bFoundNonConcreteTile && !currentGame->getGameInitSettings().getGameOptions().structuresDegradeOnConcrete) {
         degradeTimer = -1;
@@ -144,13 +148,12 @@ void StructureBase::blitToScreen() {
     if(!fogged) {
         SDL_Texture** pSmokeSurface = pGFXManager->getObjPic(ObjPic_Smoke,getOwner()->getHouseID());
         SDL_Rect smokeSource = calcSpriteSourceRect(pSmokeSurface[currentZoomlevel], 0, 3);
-        std::list<StructureSmoke>::const_iterator iter;
-        for(iter = smoke.begin(); iter != smoke.end(); ++iter) {
+        for(const StructureSmoke& structureSmoke : smoke) {
             SDL_Rect smokeDest = calcSpriteDrawingRect( pSmokeSurface[currentZoomlevel],
-                                                        screenborder->world2screenX(iter->realPos.x),
-                                                        screenborder->world2screenY(iter->realPos.y),
+                                                        screenborder->world2screenX(structureSmoke.realPos.x),
+                                                        screenborder->world2screenY(structureSmoke.realPos.y),
                                                         3, 1, HAlign::Center, VAlign::Bottom);
-            Uint32 cycleDiff = currentGame->getGameCycleCount() - iter->startGameCycle;
+            Uint32 cycleDiff = currentGame->getGameCycleCount() - structureSmoke.startGameCycle;
 
             Uint32 smokeFrame = (cycleDiff/25) % 4;
             if(smokeFrame == 3) {
@@ -244,6 +247,31 @@ void StructureBase::drawOtherPlayerSelectionBox() {
     }
 }
 
+void StructureBase::drawGatheringPointLine() {
+    if(isABuilder() && (getItemID() != Structure_ConstructionYard) && destination.isValid() && (getOwner() == pLocalHouse)) {
+        Coord indicatorPosition = destination*TILESIZE + Coord(TILESIZE/2, TILESIZE/2);
+        Coord structurePosition = getCenterPoint();
+
+        renderDrawLine( renderer,
+                        screenborder->world2screenX(structurePosition.x), screenborder->world2screenY(structurePosition.y),
+                        screenborder->world2screenX(indicatorPosition.x), screenborder->world2screenY(indicatorPosition.y),
+                        COLOR_HALF_TRANSPARENT);
+
+
+        SDL_Texture* pUIIndicator = pGFXManager->getUIGraphic(UI_Indicator);
+        SDL_Rect source = calcSpriteSourceRect(pUIIndicator, 0, 3);
+        SDL_Rect drawLocation = calcSpriteDrawingRect(  pUIIndicator,
+                                                        screenborder->world2screenX(indicatorPosition.x),
+                                                        screenborder->world2screenY(indicatorPosition.y),
+                                                        3, 1,
+                                                        HAlign::Center, VAlign::Center);
+
+        // Render twice
+        SDL_RenderCopy(renderer, pUIIndicator, &source, &drawLocation);
+        SDL_RenderCopy(renderer, pUIIndicator, &source, &drawLocation);
+    }
+}
+
 /**
     Returns the center point of this structure
     \return the center point in world coordinates
@@ -261,7 +289,7 @@ void StructureBase::handleActionClick(int xPos, int yPos) {
     if ((xPos < location.x) || (xPos >= (location.x + structureSize.x)) || (yPos < location.y) || (yPos >= (location.y + structureSize.y))) {
         currentGame->getCommandManager().addCommand(Command(pLocalPlayer->getPlayerID(), CMD_STRUCTURE_SETDEPLOYPOSITION,objectID, (Uint32) xPos, (Uint32) yPos));
     } else {
-        currentGame->getCommandManager().addCommand(Command(pLocalPlayer->getPlayerID(), CMD_STRUCTURE_SETDEPLOYPOSITION,objectID, (Uint32) NONE, (Uint32) NONE));
+        currentGame->getCommandManager().addCommand(Command(pLocalPlayer->getPlayerID(), CMD_STRUCTURE_SETDEPLOYPOSITION,objectID, (Uint32) NONE_ID, (Uint32) NONE_ID));
     }
 }
 
@@ -294,9 +322,7 @@ void StructureBase::setJustPlaced() {
 }
 
 bool StructureBase::update() {
-    //update map
-    if(currentGame->randomGen.rand(0,40) == 0) {
-        // PROBLEM: causes very low fps
+    if(((currentGame->getGameCycleCount() + getObjectID()) % 512) == 0) {
         currentGameMap->viewMap(owner->getTeam(), location, getViewRange());
     }
 
@@ -340,9 +366,9 @@ bool StructureBase::update() {
             FixPoint repairprice = FixPoint(fraction * currentGame->objectData.data[itemID][originalHouseID].price) / 256;
 
             // Original dune is always repairing 5 hitpoints (for the costs of 2) but we are only repairing 1/30th of that
+            const FixPoint repairHealth = FixPt(5,0)/FixPt(30,0);
             owner->takeCredits(repairprice/30);
-            FixPoint newHealth = getHealth();
-            newHealth += FixPt(5,0)/FixPt(30,0);
+            FixPoint newHealth = getHealth() + repairHealth;
             if(newHealth >= getMaxHealth()) {
                 setHealth(getMaxHealth());
                 repairing = false;
@@ -352,7 +378,7 @@ bool StructureBase::update() {
         } else {
             repairing = false;
         }
-    } else if(owner->isAI() && ((getHealth()/getMaxHealth()) < FixPt(0,5))) {
+    } else if(owner->isAI() && (getHealth() < getMaxHealth()/2)) {
         doRepair();
     }
 
@@ -416,7 +442,7 @@ void StructureBase::destroy() {
                     pDestroyedStructureTiles = DestroyedStructureTiles3x2;
                     DestroyedStructureTilesSizeY = 3;
                 } else {
-                    throw std::runtime_error("StructureBase::destroy(): Invalid structure size");
+                    THROW(std::runtime_error, "StructureBase::destroy(): Invalid structure size");
                 }
             } break;
 
@@ -426,7 +452,7 @@ void StructureBase::destroy() {
             } break;
 
             default: {
-                throw std::runtime_error("StructureBase::destroy(): Invalid structure size");
+                THROW(std::runtime_error, "StructureBase::destroy(): Invalid structure size");
             } break;
         }
     }

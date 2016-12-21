@@ -176,16 +176,8 @@ void Button::drawOverlay(Point Pos) {
     if(isVisible() && isEnabled() && (bHover == true)) {
         if(tooltipTexture != nullptr) {
             if((SDL_GetTicks() - tooltipLastMouseMotion) > 750) {
-                int x,y;
-                SDL_GetMouseState(&x,&y);
-                int win_w, win_h;
-                SDL_GetWindowSize(window, &win_w, &win_h);
-                SDL_Rect vp;
-                SDL_RenderGetViewport(renderer, &vp);
-                x = (x*vp.w)/win_w-vp.x;
-                y = (y*vp.h)/win_h-vp.y;
                 SDL_Rect renderRect = getRendererSize();
-                SDL_Rect dest = calcDrawingRect(tooltipTexture, x, y, HAlign::Left, VAlign::Bottom);
+                SDL_Rect dest = calcDrawingRect(tooltipTexture, drawnMouseX, drawnMouseY, HAlign::Left, VAlign::Bottom);
                 if(dest.x + dest.w >= renderRect.w) {
                     // do not draw tooltip outside screen
                     dest.x = renderRect.w - dest.w;

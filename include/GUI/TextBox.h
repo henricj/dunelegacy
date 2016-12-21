@@ -58,7 +58,7 @@ public:
         This method sets a new text for this text box.
         \param  Text The new text for this text box
     */
-    virtual void setText(std::string text) {
+    virtual void setText(const std::string& text) {
         setText(text, false);
     }
 
@@ -66,7 +66,7 @@ public:
         Get the text of this text box.
         \return the text of this text box
     */
-    inline std::string getText() const { return text; };
+    inline const std::string& getText() const { return text; };
 
     /**
         Sets a font for this text box. Default font of a text box is FONT_STD12
@@ -115,7 +115,7 @@ public:
         Sets the set of allowed characters for this text box.
         \param  allowedChars    the set of allowed chars or an empty string if everything is allowed
     */
-    virtual inline void setAllowedChars(std::string allowedChars = "") {
+    virtual inline void setAllowedChars(const std::string& allowedChars = "") {
         this->allowedChars = allowedChars;
     }
 
@@ -123,7 +123,7 @@ public:
         Sets the set of forbidden characters for this text box.
         \param  forbiddenChars    the set of forbidden chars or an empty string if everything is allowed
     */
-    virtual inline void setForbiddenChars(std::string forbiddenChars = "") {
+    virtual inline void setForbiddenChars(const std::string& forbiddenChars = "") {
         this->forbiddenChars = forbiddenChars;
     }
 
@@ -291,9 +291,7 @@ public:
         std::string newText = convertUTF8ToISO8859_1(textInput.text);
 
         bool bChanged = false;
-        std::string::const_iterator iter;
-        for(iter = newText.begin(); iter != newText.end(); ++iter) {
-            char c = *iter;
+        for(char c : newText) {
             if(((maxTextLength < 0) || ((int) text.length() < maxTextLength))
                 && (allowedChars.empty() || allowedChars.find(c) != std::string::npos)
                 && (forbiddenChars.find(c) == std::string::npos)) {
@@ -315,7 +313,7 @@ protected:
         \param  text            The new text for this text box
         \param  bInteractive    Was this text change initiated by the user?
     */
-    virtual void setText(std::string text, bool bInteractive) {
+    virtual void setText(const std::string& text, bool bInteractive) {
         bool bChanged = (text != this->text);
         this->text = text;
         invalidateTextures();

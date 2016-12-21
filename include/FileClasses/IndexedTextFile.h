@@ -18,9 +18,10 @@
 #ifndef INDEXEDTEXTFILE_H
 #define INDEXEDTEXTFILE_H
 
+#include <misc/exceptions.h>
+
 #include <string>
 #include <vector>
-#include <stdexcept>
 #include <SDL.h>
 #include <SDL_rwops.h>
 
@@ -44,7 +45,7 @@ public:
     */
     const std::string& getString(unsigned int n) const {
         if(n >= indexedStrings.size()) {
-            throw std::invalid_argument("IndexedTextFile:getString(): Invalid index!");
+            THROW(std::invalid_argument, "IndexedTextFile:getString(): Invalid index!");
         }
 
         return indexedStrings[n];
