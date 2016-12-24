@@ -200,7 +200,7 @@ void UnitBase::attack() {
         int currentBulletType = bulletType;
         Sint32 currentWeaponDamage = currentGame->objectData.data[itemID][originalHouseID].weapondamage;
 
-        if(getItemID() == Unit_Trooper) {
+        if(getItemID() == Unit_Trooper && !bAirBullet) {
             // Troopers change weapon type depending on distance
 
             FixPoint distance = distanceFrom(centerPoint, targetCenterPoint);
@@ -478,9 +478,15 @@ void UnitBase::engageTarget() {
 
         if(targetDistance > getWeaponRange()) {
             // we are not in attack range
-            // => follow the target
-            setDestination(targetLocation);
-            return;
+            if(target.getObjPointer()->isAFlyingUnit()) {
+                // we are not following this air unit
+                releaseTarget();
+                return;
+            } else {
+                // follow the target
+                setDestination(targetLocation);
+                return;
+            }
         }
 
         // we are in attack range

@@ -229,6 +229,11 @@ void Bullet::init()
             THROW(std::domain_error, "Unknown Bullet type %d!", bulletID);
         } break;
     }
+
+    if(airAttack) {
+        // double radius to hit fast-moving air units
+        damageRadius *= 2;
+    }
 }
 
 
