@@ -212,7 +212,10 @@ void StarPort::updateBuildList() {
     Choam& choam = owner->getChoam();
 
     for(int i = 0; itemOrder[i] != ItemID_Invalid; ++i) {
-        if(choam.getNumAvailable(itemOrder[i]) != INVALID) {
+
+        const ObjectData::ObjectDataStruct& objData = currentGame->objectData.data[itemOrder[i]][originalHouseID];
+
+        if(objData.enabled && (choam.getNumAvailable(itemOrder[i]) != INVALID)) {
             insertItem(buildList, iter, itemOrder[i], choam.getPrice(itemOrder[i]));
         } else {
             removeItem(buildList, iter, itemOrder[i]);

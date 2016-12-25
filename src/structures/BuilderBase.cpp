@@ -270,7 +270,7 @@ int BuilderBase::getMaxUpgradeLevel() const {
     for(int i = ItemID_FirstID; i <= ItemID_LastID; i++) {
         const ObjectData::ObjectDataStruct& objData = currentGame->objectData.data[i][originalHouseID];
 
-        if((objData.builder == (int) itemID) && (objData.techLevel <= currentGame->techLevel)) {
+        if(objData.enabled && (objData.builder == (int) itemID) && (objData.techLevel <= currentGame->techLevel)) {
             upgradeLevel = std::max(upgradeLevel, (int) objData.upgradeLevel);
         }
     }
@@ -288,7 +288,7 @@ void BuilderBase::updateBuildList()
 
         const ObjectData::ObjectDataStruct& objData = currentGame->objectData.data[itemID2Add][originalHouseID];
 
-        if((objData.builder != (int) itemID) || (objData.upgradeLevel > curUpgradeLev) || (objData.techLevel > currentGame->techLevel)) {
+        if(!objData.enabled || (objData.builder != (int) itemID) || (objData.upgradeLevel > curUpgradeLev) || (objData.techLevel > currentGame->techLevel)) {
             // first simple checks have rejected this item as being available for built in this builder
             removeItem(buildList, iter, itemID2Add);
         } else {

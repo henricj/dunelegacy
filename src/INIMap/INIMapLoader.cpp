@@ -572,9 +572,9 @@ void INIMapLoader::loadUnits()
                     case HOUSE_FREMEN:
                     case HOUSE_SARDAUKAR:
                     case HOUSE_MERCENARY: {
-                        if(nextSpecialUnitIsSonicTank[houseID] == true) {
+                        if(nextSpecialUnitIsSonicTank[houseID] == true && pGame->objectData.data[Unit_SonicTank][houseID].enabled) {
                             itemID = Unit_SonicTank;
-                            nextSpecialUnitIsSonicTank[houseID] = false;
+                            nextSpecialUnitIsSonicTank[houseID] = !pGame->objectData.data[Unit_Devastator][houseID].enabled;
                         } else {
                             itemID = Unit_Devastator;
                             nextSpecialUnitIsSonicTank[houseID] = true;
@@ -586,6 +586,10 @@ void INIMapLoader::loadUnits()
                         continue;
                     } break;
                 }
+            }
+
+            if(!pGame->objectData.data[itemID][houseID].enabled) {
+                continue;
             }
 
             int iHealth;
@@ -659,14 +663,14 @@ void INIMapLoader::loadStructures()
                 continue;
             }
 
-            if(BuildingStr == "Concrete") {
+            if(BuildingStr == "Concrete" && pGame->objectData.data[Structure_Slab1][houseID].enabled) {
                 getOrCreateHouse(houseID)->placeStructure(NONE_ID, Structure_Slab1, getXPos(pos), getYPos(pos));
-            } else if(BuildingStr == "Wall") {
+            } else if(BuildingStr == "Wall" && pGame->objectData.data[Structure_Wall][houseID].enabled) {
                 if(getOrCreateHouse(houseID)->placeStructure(NONE_ID, Structure_Wall, getXPos(pos), getYPos(pos)) == nullptr) {
                     logWarning(key.getLineNumber(), "Invalid or occupied position for '" + BuildingStr + "': '" + PosStr + "'!");
                     continue;
                 }
-            } else {
+            } else if((BuildingStr != "Concrete") && (BuildingStr != "Wall")) {
                 logWarning(key.getLineNumber(), "Invalid building string: '" + BuildingStr + "'!");
                 continue;
             }
@@ -704,7 +708,7 @@ void INIMapLoader::loadStructures()
                 continue;
             }
 
-            if (itemID != 0) {
+            if (itemID != 0 && pGame->objectData.data[itemID][houseID].enabled) {
                 ObjectBase* newStructure = getOrCreateHouse(houseID)->placeStructure(NONE_ID, itemID, getXPos(pos), getYPos(pos));
                 if(newStructure == nullptr) {
                     logWarning(key.getLineNumber(), "Invalid or occupied position for '" + BuildingStr + "': '" + PosStr + "'!");
@@ -756,6 +760,10 @@ void INIMapLoader::loadReinforcements()
         Uint32 itemID = getItemIDByName(strUnitName);
         if((itemID == ItemID_Invalid) || !isUnit(itemID)) {
             logWarning(key.getLineNumber(), "Invalid unit string: '" + strUnitName + "'!");
+            continue;
+        }
+
+        if(!pGame->objectData.data[itemID][houseID].enabled) {
             continue;
         }
 

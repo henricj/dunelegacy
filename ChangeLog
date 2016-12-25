@@ -17,6 +17,7 @@ version 0.96.4
 	* New game option "Manual Carryall Drops"
 	* Mentat's eyes are following the cursor
 	* Clicking on mentat's eyes makes him blink and clicking on mentat's mouth makes him open it
+	* Modding: Make it possible to disable a unit or structure
 	* Save screenshots as PNG
 	* 64-bit builds for Windows
 	* Store complete map in save games (and replays) of single player custom games

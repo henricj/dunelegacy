@@ -46,77 +46,77 @@
 
 /**
  TODO
- 
+
  New list from Dec 2016
  - Some harvesters getting 'stuck' by base when 100% full
  - rocket launchers are firing on units too close again...
  - unit rally points need to be adjusted for unit producers
  - add in writing of game log to a repository
- 
+
  - fix game performance when toomany units
- 
- 
+
+
  New list from May 2016
  - units should move at start
  - fix single player campaign crash
  - fix unit allocation bug - atredes only building light tanks
- 
- 
+
+
  == Building Placement ==
- 
- 
+
+
  ia) build concrete when no placement locations are available == in progress, bugs exist ==
  iii) increase favourability of being near other buildings == 50% done ==
- 
+
  1. Refinerys near spice == tried but failed ==
  4. Repair yards factories, & Turrets near enemy == 50% done ==
  5. All buildings away from enemy other that silos and turrets
- 
- 
+
+
  == buildings ==
  i) stop repair when just on yellow (at 50%) == 50% done, still broken for some buildings as goes into yellow health ==
  ii) silo build broken == fixed ==
- 
- 
+
+
  building algo still leaving gaps
  increase alignment score when sides match
- 
+
  == Units ==
  ii) units that get stuck in buildings should be transported to squadcenter =%80=
  vii) fix attack timer =%80=
  viii) when attack timer exceeds a certain value then all fing units are set to area guard
- 
+
  2) harvester return distance bug been introduced.= in progress ==
- 
+
  3) carryalls sit over units hovering bug introduced.... fix scramble units and defend + manual carryall = 50% =
- 
+
  4) theres a bug in on increment and decrement units...
- 
+
  5) turn off force move to rally point after attacked = 50% =
  6) reduce turret building when lacking a military = 50% =
- 
+
  7) remove turrets from nuke target calculation =50%=
  8) adjust turret placement algo to include points for proximitry to base centre =50%=
- 
- 
- 
+
+
+
  1. Harvesters deploy away from enemy
  5. fix gun turret & gun for rocket turret
- 
+
  x. Improve squad management
- 
+
  == New work ==
  1. Add them with some logic =50%=
  2. fix force ratio optimisation algorithm,
  need to make it based off kill / death ratio instead of just losses =50%=
  3. create a retreate mechanism = 50% = still need to add retreat timer, say 1 retreat per minute, max
  - fix rally point and ybut deploy logic
- 
- 
+
+
  2. Make carryalls and ornithopers easier to hit
- 
+
  ====> FIX WORM CRASH GAME BUG
- 
+
  **/
 
 
@@ -334,7 +334,7 @@ void QuantBot::update() {
 
                     case Difficulty::Easy: {
                         harvesterLimit = (currentGameMap->getSizeX() * currentGameMap->getSizeY() / 2048);
-                        
+
                         militaryValueLimit = 10000;
                         //logDebug("BUILD EASY SKIRM ");
                     } break;
@@ -846,7 +846,7 @@ void QuantBot::build(int militaryValue) {
     }
 
     // lets analyse damage inflicted
-    
+
     logDebug("  Tank: %d/%d %f Siege: %d/%d %f Special: %d/%d %f Launch: %d/%d %f Orni: %d/%d %f",
                 getHouse()->getNumItemDamageInflicted(Unit_Tank), getHouse()->getNumLostItems(Unit_Tank) * 300, tankPercent.toDouble(),
                 getHouse()->getNumItemDamageInflicted(Unit_SiegeTank), getHouse()->getNumLostItems(Unit_SiegeTank) * 600, siegePercent.toDouble(),
@@ -856,7 +856,7 @@ void QuantBot::build(int militaryValue) {
                 getHouse()->getNumItemDamageInflicted(Unit_Launcher), getHouse()->getNumLostItems(Unit_Launcher) * 450, launcherPercent.toDouble(),
                 getHouse()->getNumItemDamageInflicted(Unit_Ornithopter), getHouse()->getNumLostItems(Unit_Ornithopter) * data[Unit_Ornithopter][houseID].price, ornithopterPercent.toDouble()
             );
-        
+
 
     // End of adaptive unit prioritisation algorithm
 
@@ -1023,6 +1023,7 @@ void QuantBot::build(int militaryValue) {
 
                     case Structure_WOR: {
                         if(!pBuilder->isUpgrading()
+                           && pBuilder->isAvailableToBuild(Unit_Trooper)
                            && gameMode == GameMode::Campaign
                            && money > 1000
                            && ((itemCount[Structure_HeavyFactory] == 0) || militaryValue < militaryValueLimit * FixPt(0,30))
@@ -1038,6 +1039,7 @@ void QuantBot::build(int militaryValue) {
 
                     case Structure_Barracks: {
                         if(!pBuilder->isUpgrading()
+                           && pBuilder->isAvailableToBuild(Unit_Soldier)
                            && gameMode == GameMode::Campaign
                            && ((itemCount[Structure_HeavyFactory] == 0) || militaryValue < militaryValueLimit * FixPt(0,30))
                            && itemCount[Structure_WOR == 0]
@@ -1055,7 +1057,8 @@ void QuantBot::build(int militaryValue) {
                     case Structure_HighTechFactory: {
                         int ornithopterValue = data[Unit_Ornithopter][houseID].price * itemCount[Unit_Ornithopter];
 
-                        if(itemCount[Unit_Carryall] < (militaryValue + itemCount[Unit_Harvester] * 500) / 3000
+                        if(pBuilder->isAvailableToBuild(Unit_Carryall)
+                           && itemCount[Unit_Carryall] < (militaryValue + itemCount[Unit_Harvester] * 500) / 3000
                            && (pBuilder->getProductionQueueSize() < 1)
                            && money > 1000
                            && !getHouse()->isAirUnitLimitReached()){
@@ -1102,11 +1105,12 @@ void QuantBot::build(int militaryValue) {
                             } else if(gameMode == GameMode::Custom
                                         && (itemCount[Structure_ConstructionYard] + itemCount[Unit_MCV] ) * 10000 < getHouse()->getCredits()
                                         && !getHouse()->isGroundUnitLimitReached()
-                                        && pBuilder->isAvailableToBuild(Unit_MCV)){
+                                        && pBuilder->isAvailableToBuild(Unit_MCV)) {
                                 // If we are kind of rich make a backup construction yard to spend the excess money
                                 doProduceItem(pBuilder, Unit_MCV);
                                 itemCount[Unit_MCV]++;
                             } else if(gameMode == GameMode::Custom
+                                        && pBuilder->isAvailableToBuild(Unit_Harvester)
                                         && !getHouse()->isGroundUnitLimitReached()
                                         && itemCount[Unit_Harvester] < militaryValue / 1000
                                         && itemCount[Unit_Harvester] < harvesterLimit ) {
@@ -1114,6 +1118,7 @@ void QuantBot::build(int militaryValue) {
                                 doProduceItem(pBuilder, Unit_Harvester);
                                 itemCount[Unit_Harvester]++;
                             } else if(itemCount[Unit_Harvester] < harvesterLimit
+                                        && pBuilder->isAvailableToBuild(Unit_Harvester)
                                         && !getHouse()->isGroundUnitLimitReached()
                                         && (money < 2500 || gameMode == GameMode::Campaign)) {
                                 //logDebug("*Building a Harvester.",
@@ -1192,7 +1197,9 @@ void QuantBot::build(int militaryValue) {
                                 money = money - choam.getPrice(Unit_MCV);
                             }
 
-                            if(money >= choam.getPrice(Unit_Carryall) && itemCount[Unit_Carryall] == 0) {
+                            if(money >= choam.getPrice(Unit_Carryall)
+                                && choam.getNumAvailable(Unit_Carryall) > 0
+                                && itemCount[Unit_Carryall] == 0) {
                                 doProduceItem(pBuilder, Unit_Carryall);
                                 itemCount[Unit_Carryall]++;
                                 money = money - choam.getPrice(Unit_Carryall);
@@ -1344,14 +1351,14 @@ void QuantBot::build(int militaryValue) {
 
                                 Uint32 itemID = NONE_ID;
 
-                                if(itemCount[Structure_WindTrap] == 0) {
+                                if(itemCount[Structure_WindTrap] == 0 && pBuilder->isAvailableToBuild(Structure_WindTrap)) {
                                     itemID = Structure_WindTrap;
                                     itemCount[Structure_WindTrap]++;
-                                } else if(itemCount[Structure_Refinery] == 0 || itemCount[Structure_Refinery] < itemCount[Unit_Harvester] / 2) {
+                                } else if((itemCount[Structure_Refinery] == 0 || itemCount[Structure_Refinery] < itemCount[Unit_Harvester] / 2) && pBuilder->isAvailableToBuild(Structure_Refinery)) {
                                     itemID = Structure_Refinery;
                                     itemCount[Unit_Harvester]++;
                                     itemCount[Structure_Refinery]++;
-                                } else if(itemCount[Structure_Refinery] < 6 - (money / 2000) ) {
+                                } else if(itemCount[Structure_Refinery] < 6 - (money / 2000) && pBuilder->isAvailableToBuild(Structure_Refinery)) {
                                     itemID = Structure_Refinery;
                                     itemCount[Unit_Harvester]++;
                                     itemCount[Structure_Refinery]++;
@@ -1360,11 +1367,12 @@ void QuantBot::build(int militaryValue) {
                                 } else if(itemCount[Unit_Harvester] < (harvesterLimit / 3) && money < 2000
                                         && ((itemCount[Structure_Refinery] < harvesterLimit / 4
                                              && itemCount[Structure_Refinery] < 8)
-                                            || itemCount[Structure_HeavyFactory] > 0)) {
+                                            || itemCount[Structure_HeavyFactory] > 0)
+                                        && pBuilder->isAvailableToBuild(Structure_Refinery)) {
                                     // Focus on the economy
                                     itemID = Structure_Refinery;
                                     itemCount[Unit_Harvester]++;
-                                } else if(itemCount[Unit_Harvester] < harvesterLimit / 2  && money < 1200) {
+                                } else if(itemCount[Unit_Harvester] < harvesterLimit / 2  && money < 1200 && pBuilder->isAvailableToBuild(Structure_Refinery)) {
                                     itemID = Structure_Refinery;
                                     itemCount[Unit_Harvester]++;
                                     itemCount[Structure_Refinery]++;
@@ -1378,7 +1386,7 @@ void QuantBot::build(int militaryValue) {
                                     }
                                 } else if(itemCount[Structure_RepairYard] == 0 && pBuilder->isAvailableToBuild(Structure_RepairYard)) {
                                     itemID = Structure_RepairYard;
-                                } else if(money < 2000 && itemCount[Unit_Harvester] < harvesterLimit) {
+                                } else if(money < 2000 && itemCount[Unit_Harvester] < harvesterLimit && pBuilder->isAvailableToBuild(Structure_Refinery)) {
                                     // Focus on the economy
                                     itemID = Structure_Refinery;
                                     itemCount[Unit_Harvester]++;
@@ -1404,9 +1412,9 @@ void QuantBot::build(int militaryValue) {
                                     // If we have a lot of money get more heavy factories
                                     itemID = Structure_HeavyFactory;
                                     logDebug("Build Factory... active: %d  total: %d", activeHeavyFactoryCount, getHouse()->getNumItems(Structure_HeavyFactory));
-                                } else if(itemCount[Structure_Refinery] * FixPt(3,5) < itemCount[Unit_Harvester]) {
+                                } else if(itemCount[Structure_Refinery] * FixPt(3,5) < itemCount[Unit_Harvester] && pBuilder->isAvailableToBuild(Structure_Refinery)) {
                                     itemID = Structure_Refinery;
-                                } else if (getHouse()->getStoredCredits() + 2000 > (itemCount[Structure_Refinery] + itemCount[Structure_Silo]) * 1000){
+                                } else if (getHouse()->getStoredCredits() + 2000 > (itemCount[Structure_Refinery] + itemCount[Structure_Silo]) * 1000  && pBuilder->isAvailableToBuild(Structure_Silo)){
                                     // We are running out of spice storage capacity
                                     itemID = Structure_Silo;
                                 } else if(money > 1200

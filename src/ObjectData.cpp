@@ -33,6 +33,7 @@ ObjectData::ObjectData()
     // set default values
     for(int i=0;i<Num_ItemID;i++) {
         for(int h=0;h<NUM_HOUSES;h++) {
+            data[i][h].enabled = false;
             data[i][h].hitpoints = 0;
             data[i][h].price = 0;
             data[i][h].power = 0;
@@ -66,6 +67,7 @@ void ObjectData::loadFromINIFile(const std::string& filename)
     // load default structure values
     ObjectDataStruct structureDefaultData[NUM_HOUSES];
     for(int h=0;h<NUM_HOUSES;h++) {
+        structureDefaultData[h].enabled = loadBoolValue(objectDataFile, "default structure", "Enabled", houseChar[h]);
         structureDefaultData[h].hitpoints = loadIntValue(objectDataFile, "default structure", "HitPoints", houseChar[h]);
         structureDefaultData[h].price = loadIntValue(objectDataFile, "default structure", "Price", houseChar[h]);
         structureDefaultData[h].power = loadIntValue(objectDataFile, "default structure", "Power", houseChar[h]);
@@ -87,6 +89,7 @@ void ObjectData::loadFromINIFile(const std::string& filename)
     // load default unit values
     ObjectDataStruct unitDefaultData[NUM_HOUSES];
     for(int h=0;h<NUM_HOUSES;h++) {
+        unitDefaultData[h].enabled = loadBoolValue(objectDataFile, "default unit", "Enabled", houseChar[h]);
         unitDefaultData[h].hitpoints = loadIntValue(objectDataFile, "default unit", "HitPoints", houseChar[h]);
         unitDefaultData[h].price = loadIntValue(objectDataFile, "default unit", "Price", houseChar[h]);
         unitDefaultData[h].power = loadIntValue(objectDataFile, "default unit", "Power", houseChar[h]);
@@ -134,6 +137,7 @@ void ObjectData::loadFromINIFile(const std::string& filename)
 
             ObjectDataStruct& defaultData = isStructure(itemID) ? structureDefaultData[h] : unitDefaultData[h];
 
+            data[itemID][h].enabled = loadBoolValue(objectDataFile, sectionName, "Enabled", houseChar[h], defaultData.enabled);
             data[itemID][h].hitpoints = loadIntValue(objectDataFile, sectionName, "HitPoints", houseChar[h], defaultData.hitpoints);
             data[itemID][h].price = loadIntValue(objectDataFile, sectionName, "Price", houseChar[h], defaultData.price);
             data[itemID][h].power = loadIntValue(objectDataFile, sectionName, "Power", houseChar[h], defaultData.power);
@@ -158,6 +162,7 @@ void ObjectData::save(OutputStream& stream) const
 {
     for(int i=0;i<Num_ItemID;i++) {
         for(int h=0;h<NUM_HOUSES;h++) {
+            stream.writeBool(data[i][h].enabled);
             stream.writeSint32(data[i][h].hitpoints);
             stream.writeSint32(data[i][h].price);
             stream.writeSint32(data[i][h].power);
@@ -182,6 +187,7 @@ void ObjectData::load(InputStream& stream)
 {
     for(int i=0;i<Num_ItemID;i++) {
         for(int h=0;h<NUM_HOUSES;h++) {
+            data[i][h].enabled = stream.readBool();
             data[i][h].hitpoints = stream.readSint32();
             data[i][h].price = stream.readSint32();
             data[i][h].power = stream.readSint32();
@@ -208,6 +214,15 @@ int ObjectData::loadIntValue(const INIFile& objectDataFile, const std::string& s
         return objectDataFile.getIntValue(section, specializedKey, defaultValue);
     } else {
         return objectDataFile.getIntValue(section, key, defaultValue);
+    }
+}
+
+bool ObjectData::loadBoolValue(const INIFile& objectDataFile, const std::string& section, const std::string& key, char houseChar, bool defaultValue) {
+    std::string specializedKey = key + "(" + houseChar + ")";
+    if(objectDataFile.hasKey(section, specializedKey)) {
+        return objectDataFile.getBoolValue(section, specializedKey, defaultValue);
+    } else {
+        return objectDataFile.getBoolValue(section, key, defaultValue);
     }
 }
 
