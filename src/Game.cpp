@@ -2047,6 +2047,19 @@ void Game::handleKeyInput(SDL_KeyboardEvent& keyboardEvent) {
             }
         } break;
 
+        case SDLK_c: {
+            //set object to capture
+            if(currentCursorMode != CursorMode_Capture) {
+                for(Uint32 objectID : selectedList) {
+                    ObjectBase* pObject = objectManager.getObject(objectID);
+                    if(pObject->isAUnit() && (pObject->getOwner() == pLocalHouse) && pObject->isRespondable() && pObject->canAttack() && pObject->isInfantry()) {
+                        currentCursorMode = CursorMode_Capture;
+                        break;
+                    }
+                }
+            }
+        } break;
+
         case SDLK_a: {
             //set object to attack
             if(currentCursorMode != CursorMode_Attack) {
