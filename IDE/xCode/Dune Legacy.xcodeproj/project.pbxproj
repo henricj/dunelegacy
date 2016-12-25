@@ -211,6 +211,28 @@
 		13E929C010AF72BF00169991 /* Dune2-Versions.txt in Resources */ = {isa = PBXBuildFile; fileRef = 13E929BF10AF72BF00169991 /* Dune2-Versions.txt */; };
 		174241721DDE0953001FB159 /* format.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 174241711DDE0953001FB159 /* format.cpp */; };
 		8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
+		CE6BA2011E10043D000640F9 /* 4P - 64x64 - 3 vs 1.ini in Copy Singleplayer Maps */ = {isa = PBXBuildFile; fileRef = CE6BA1FB1E100409000640F9 /* 4P - 64x64 - 3 vs 1.ini */; };
+		CE6BA2021E10043D000640F9 /* 5P - 128x128 - Sardaukar Base Easy.ini in Copy Singleplayer Maps */ = {isa = PBXBuildFile; fileRef = CE6BA1FD1E10041D000640F9 /* 5P - 128x128 - Sardaukar Base Easy.ini */; };
+		CE6BA2031E10043D000640F9 /* 5P - 128x128 - Sardaukar Base.ini in Copy Singleplayer Maps */ = {isa = PBXBuildFile; fileRef = CE6BA1FF1E100424000640F9 /* 5P - 128x128 - Sardaukar Base.ini */; };
+		CE6BA2221E100506000640F9 /* 2P - 32x128 - Gatekeeper.ini in Copy Multiplayer Maps */ = {isa = PBXBuildFile; fileRef = CE6BA2041E10045A000640F9 /* 2P - 32x128 - Gatekeeper.ini */; };
+		CE6BA2231E100506000640F9 /* 4P - 64x64 - Channels.ini in Copy Multiplayer Maps */ = {isa = PBXBuildFile; fileRef = CE6BA2061E10046E000640F9 /* 4P - 64x64 - Channels.ini */; };
+		CE6BA2241E100506000640F9 /* 4P - 64x64 - Combed.ini in Copy Multiplayer Maps */ = {isa = PBXBuildFile; fileRef = CE6BA2081E10047E000640F9 /* 4P - 64x64 - Combed.ini */; };
+		CE6BA2251E100506000640F9 /* 4P - 64x64 - Silicon Valley.ini in Copy Multiplayer Maps */ = {isa = PBXBuildFile; fileRef = CE6BA20A1E100497000640F9 /* 4P - 64x64 - Silicon Valley.ini */; };
+		CE6BA2261E100506000640F9 /* 4P - 64x64 - Stronghold.ini in Copy Multiplayer Maps */ = {isa = PBXBuildFile; fileRef = CE6BA20B1E100497000640F9 /* 4P - 64x64 - Stronghold.ini */; };
+		CE6BA2271E100506000640F9 /* 4P - 128x64 - Gamma Sector.ini in Copy Multiplayer Maps */ = {isa = PBXBuildFile; fileRef = CE6BA20E1E1004A3000640F9 /* 4P - 128x64 - Gamma Sector.ini */; };
+		CE6BA2281E100506000640F9 /* 4P - 128x128 - Deserted.ini in Copy Multiplayer Maps */ = {isa = PBXBuildFile; fileRef = CE6BA20F1E1004A3000640F9 /* 4P - 128x128 - Deserted.ini */; };
+		CE6BA2291E100506000640F9 /* 4P - 128x128 - Silicon Valley XL.ini in Copy Multiplayer Maps */ = {isa = PBXBuildFile; fileRef = CE6BA2121E1004B2000640F9 /* 4P - 128x128 - Silicon Valley XL.ini */; };
+		CE6BA22A1E100506000640F9 /* 4P - 128x128 - Spicestorm.ini in Copy Multiplayer Maps */ = {isa = PBXBuildFile; fileRef = CE6BA2141E1004C3000640F9 /* 4P - 128x128 - Spicestorm.ini */; };
+		CE6BA22B1E100506000640F9 /* 4P - 128x128 - Wormhole.ini in Copy Multiplayer Maps */ = {isa = PBXBuildFile; fileRef = CE6BA2161E1004D6000640F9 /* 4P - 128x128 - Wormhole.ini */; };
+		CE6BA22C1E100506000640F9 /* 5P - 128x64 - Watch Your Track.ini in Copy Multiplayer Maps */ = {isa = PBXBuildFile; fileRef = CE6BA2171E1004D6000640F9 /* 5P - 128x64 - Watch Your Track.ini */; };
+		CE6BA22D1E100506000640F9 /* 5P - 128x128 - Fortress.ini in Copy Multiplayer Maps */ = {isa = PBXBuildFile; fileRef = CE6BA2181E1004D6000640F9 /* 5P - 128x128 - Fortress.ini */; };
+		CE6BA22E1E100506000640F9 /* 5P - 128x128 - Gridlocked.ini in Copy Multiplayer Maps */ = {isa = PBXBuildFile; fileRef = CE6BA2191E1004D6000640F9 /* 5P - 128x128 - Gridlocked.ini */; };
+		CE6BA22F1E100506000640F9 /* 5P - 128x128 - Meadow.ini in Copy Multiplayer Maps */ = {isa = PBXBuildFile; fileRef = CE6BA21A1E1004D6000640F9 /* 5P - 128x128 - Meadow.ini */; };
+		CE6BA2301E100506000640F9 /* 6P - 64x128 - Rocking Fields.ini in Copy Multiplayer Maps */ = {isa = PBXBuildFile; fileRef = CE6BA21B1E1004D6000640F9 /* 6P - 64x128 - Rocking Fields.ini */; };
+		CE8E0B721E07438400A71916 /* SDL2_mixer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE8E0B711E07438400A71916 /* SDL2_mixer.framework */; };
+		CE8E0B741E07439B00A71916 /* SDL2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE8E0B731E07439B00A71916 /* SDL2.framework */; };
+		CE8E0B9E1E07481A00A71916 /* SDL2.framework in Copy Frameworks into .app bundle */ = {isa = PBXBuildFile; fileRef = CE8E0B731E07439B00A71916 /* SDL2.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		CE8E0B9F1E07481D00A71916 /* SDL2_mixer.framework in Copy Frameworks into .app bundle */ = {isa = PBXBuildFile; fileRef = CE8E0B711E07438400A71916 /* SDL2_mixer.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		CE8E0BA01E07487700A71916 /* 2P - 32x32 - X-Factor.ini in Copy Multiplayer Maps */ = {isa = PBXBuildFile; fileRef = CE8E0B781E0747DC00A71916 /* 2P - 32x32 - X-Factor.ini */; };
 		CE8E0BA11E07487700A71916 /* 2P - 64x32 - Cliffs Of Rene.ini in Copy Multiplayer Maps */ = {isa = PBXBuildFile; fileRef = CE8E0B791E0747DC00A71916 /* 2P - 64x32 - Cliffs Of Rene.ini */; };
 		CE8E0BA21E07487700A71916 /* 2P - 64x64 - Bottle Neck.ini in Copy Multiplayer Maps */ = {isa = PBXBuildFile; fileRef = CE8E0B7A1E0747DC00A71916 /* 2P - 64x64 - Bottle Neck.ini */; };
@@ -232,6 +254,10 @@
 		CE8E0BB21E07487700A71916 /* 4P - 128x128 - Worm Investation.ini in Copy Multiplayer Maps */ = {isa = PBXBuildFile; fileRef = CE8E0B8A1E0747DC00A71916 /* 4P - 128x128 - Worm Investation.ini */; };
 		CE8E0BB31E0748A500A71916 /* GFXHD.PAK in Resources */ = {isa = PBXBuildFile; fileRef = CE8E0B751E07478600A71916 /* GFXHD.PAK */; };
 		CE8E0BB41E0748B200A71916 /* Spanish.es.po in Copy Locale */ = {isa = PBXBuildFile; fileRef = CE8E0B761E0747A300A71916 /* Spanish.es.po */; };
+		CE9218641E101EE8009005A8 /* 5P - 128x128 - Hellvetika.ini in Copy Multiplayer Maps */ = {isa = PBXBuildFile; fileRef = CE9218621E100F97009005A8 /* 5P - 128x128 - Hellvetika.ini */; };
+		CE9218651E101EE8009005A8 /* 5P - 128x128 - Kragetam.ini in Copy Multiplayer Maps */ = {isa = PBXBuildFile; fileRef = CE9218601E100F8B009005A8 /* 5P - 128x128 - Kragetam.ini */; };
+		CE9218661E101EE8009005A8 /* 6P - 64x64 - Fertile Basin.ini in Copy Multiplayer Maps */ = {isa = PBXBuildFile; fileRef = CE92185E1E100F82009005A8 /* 6P - 64x64 - Fertile Basin.ini */; };
+		CE9218671E101EE8009005A8 /* 6P - 128x128 - Gargantuan Mountains.ini in Copy Multiplayer Maps */ = {isa = PBXBuildFile; fileRef = CE92185C1E100F76009005A8 /* 6P - 128x128 - Gargantuan Mountains.ini */; };
 		CEEB16A91CD69F7900CF91D9 /* surroundopl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CEEB16A71CD69F7900CF91D9 /* surroundopl.cpp */; };
 		CEEB16AA1CD69F7900CF91D9 /* woodyopl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CEEB16A81CD69F7900CF91D9 /* woodyopl.cpp */; };
 		CEEB16AD1CD69F8800CF91D9 /* LoadSavePNG.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CEEB16AB1CD69F8800CF91D9 /* LoadSavePNG.cpp */; };
@@ -248,8 +274,6 @@
 		CEEB16D31CD6A23B00CF91D9 /* fix32_str.c in Sources */ = {isa = PBXBuildFile; fileRef = CEEB16C91CD6A23B00CF91D9 /* fix32_str.c */; };
 		CEEB16D41CD6A23B00CF91D9 /* fix32_trig.c in Sources */ = {isa = PBXBuildFile; fileRef = CEEB16CA1CD6A23B00CF91D9 /* fix32_trig.c */; };
 		CEEB16D51CD6A23B00CF91D9 /* fix32.c in Sources */ = {isa = PBXBuildFile; fileRef = CEEB16CB1CD6A23B00CF91D9 /* fix32.c */; };
-		E3C99CAC1E0E61CC00DEBD54 /* SDL2_mixer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E3C99CAA1E0E61CC00DEBD54 /* SDL2_mixer.framework */; };
-		E3C99CAD1E0E61CC00DEBD54 /* SDL2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E3C99CAB1E0E61CC00DEBD54 /* SDL2.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -259,6 +283,8 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				CE8E0B9E1E07481A00A71916 /* SDL2.framework in Copy Frameworks into .app bundle */,
+				CE8E0B9F1E07481D00A71916 /* SDL2_mixer.framework in Copy Frameworks into .app bundle */,
 			);
 			name = "Copy Frameworks into .app bundle";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -284,6 +310,9 @@
 			dstPath = maps/singleplayer;
 			dstSubfolderSpec = 7;
 			files = (
+				CE6BA2011E10043D000640F9 /* 4P - 64x64 - 3 vs 1.ini in Copy Singleplayer Maps */,
+				CE6BA2021E10043D000640F9 /* 5P - 128x128 - Sardaukar Base Easy.ini in Copy Singleplayer Maps */,
+				CE6BA2031E10043D000640F9 /* 5P - 128x128 - Sardaukar Base.ini in Copy Singleplayer Maps */,
 				13C90AF012EB941200DD9D87 /* 3P - 64x32 - Middle Man.ini in Copy Singleplayer Maps */,
 				1334718512A30F6900E06BB4 /* 2P - 32x128 - Canyon.ini in Copy Singleplayer Maps */,
 				1334718612A30F6E00E06BB4 /* 2P - 64x64 - North vs. South.ini in Copy Singleplayer Maps */,
@@ -300,6 +329,25 @@
 			dstPath = maps/multiplayer;
 			dstSubfolderSpec = 7;
 			files = (
+				CE9218641E101EE8009005A8 /* 5P - 128x128 - Hellvetika.ini in Copy Multiplayer Maps */,
+				CE9218651E101EE8009005A8 /* 5P - 128x128 - Kragetam.ini in Copy Multiplayer Maps */,
+				CE9218661E101EE8009005A8 /* 6P - 64x64 - Fertile Basin.ini in Copy Multiplayer Maps */,
+				CE9218671E101EE8009005A8 /* 6P - 128x128 - Gargantuan Mountains.ini in Copy Multiplayer Maps */,
+				CE6BA2221E100506000640F9 /* 2P - 32x128 - Gatekeeper.ini in Copy Multiplayer Maps */,
+				CE6BA2231E100506000640F9 /* 4P - 64x64 - Channels.ini in Copy Multiplayer Maps */,
+				CE6BA2241E100506000640F9 /* 4P - 64x64 - Combed.ini in Copy Multiplayer Maps */,
+				CE6BA2251E100506000640F9 /* 4P - 64x64 - Silicon Valley.ini in Copy Multiplayer Maps */,
+				CE6BA2261E100506000640F9 /* 4P - 64x64 - Stronghold.ini in Copy Multiplayer Maps */,
+				CE6BA2271E100506000640F9 /* 4P - 128x64 - Gamma Sector.ini in Copy Multiplayer Maps */,
+				CE6BA2281E100506000640F9 /* 4P - 128x128 - Deserted.ini in Copy Multiplayer Maps */,
+				CE6BA2291E100506000640F9 /* 4P - 128x128 - Silicon Valley XL.ini in Copy Multiplayer Maps */,
+				CE6BA22A1E100506000640F9 /* 4P - 128x128 - Spicestorm.ini in Copy Multiplayer Maps */,
+				CE6BA22B1E100506000640F9 /* 4P - 128x128 - Wormhole.ini in Copy Multiplayer Maps */,
+				CE6BA22C1E100506000640F9 /* 5P - 128x64 - Watch Your Track.ini in Copy Multiplayer Maps */,
+				CE6BA22D1E100506000640F9 /* 5P - 128x128 - Fortress.ini in Copy Multiplayer Maps */,
+				CE6BA22E1E100506000640F9 /* 5P - 128x128 - Gridlocked.ini in Copy Multiplayer Maps */,
+				CE6BA22F1E100506000640F9 /* 5P - 128x128 - Meadow.ini in Copy Multiplayer Maps */,
+				CE6BA2301E100506000640F9 /* 6P - 64x128 - Rocking Fields.ini in Copy Multiplayer Maps */,
 				CE8E0BA01E07487700A71916 /* 2P - 32x32 - X-Factor.ini in Copy Multiplayer Maps */,
 				CE8E0BA11E07487700A71916 /* 2P - 64x32 - Cliffs Of Rene.ini in Copy Multiplayer Maps */,
 				CE8E0BA21E07487700A71916 /* 2P - 64x64 - Bottle Neck.ini in Copy Multiplayer Maps */,
@@ -786,6 +834,26 @@
 		29B97325FDCFA39411CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
 		32CA4F630368D1EE00C91783 /* Dune Legacy_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Dune Legacy_Prefix.pch"; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		CE6BA1FB1E100409000640F9 /* 4P - 64x64 - 3 vs 1.ini */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "4P - 64x64 - 3 vs 1.ini"; sourceTree = "<group>"; };
+		CE6BA1FD1E10041D000640F9 /* 5P - 128x128 - Sardaukar Base Easy.ini */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "5P - 128x128 - Sardaukar Base Easy.ini"; sourceTree = "<group>"; };
+		CE6BA1FF1E100424000640F9 /* 5P - 128x128 - Sardaukar Base.ini */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "5P - 128x128 - Sardaukar Base.ini"; sourceTree = "<group>"; };
+		CE6BA2041E10045A000640F9 /* 2P - 32x128 - Gatekeeper.ini */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "2P - 32x128 - Gatekeeper.ini"; sourceTree = "<group>"; };
+		CE6BA2061E10046E000640F9 /* 4P - 64x64 - Channels.ini */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "4P - 64x64 - Channels.ini"; sourceTree = "<group>"; };
+		CE6BA2081E10047E000640F9 /* 4P - 64x64 - Combed.ini */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "4P - 64x64 - Combed.ini"; sourceTree = "<group>"; };
+		CE6BA20A1E100497000640F9 /* 4P - 64x64 - Silicon Valley.ini */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "4P - 64x64 - Silicon Valley.ini"; sourceTree = "<group>"; };
+		CE6BA20B1E100497000640F9 /* 4P - 64x64 - Stronghold.ini */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "4P - 64x64 - Stronghold.ini"; sourceTree = "<group>"; };
+		CE6BA20E1E1004A3000640F9 /* 4P - 128x64 - Gamma Sector.ini */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "4P - 128x64 - Gamma Sector.ini"; sourceTree = "<group>"; };
+		CE6BA20F1E1004A3000640F9 /* 4P - 128x128 - Deserted.ini */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "4P - 128x128 - Deserted.ini"; sourceTree = "<group>"; };
+		CE6BA2121E1004B2000640F9 /* 4P - 128x128 - Silicon Valley XL.ini */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "4P - 128x128 - Silicon Valley XL.ini"; sourceTree = "<group>"; };
+		CE6BA2141E1004C3000640F9 /* 4P - 128x128 - Spicestorm.ini */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "4P - 128x128 - Spicestorm.ini"; sourceTree = "<group>"; };
+		CE6BA2161E1004D6000640F9 /* 4P - 128x128 - Wormhole.ini */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "4P - 128x128 - Wormhole.ini"; sourceTree = "<group>"; };
+		CE6BA2171E1004D6000640F9 /* 5P - 128x64 - Watch Your Track.ini */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "5P - 128x64 - Watch Your Track.ini"; sourceTree = "<group>"; };
+		CE6BA2181E1004D6000640F9 /* 5P - 128x128 - Fortress.ini */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "5P - 128x128 - Fortress.ini"; sourceTree = "<group>"; };
+		CE6BA2191E1004D6000640F9 /* 5P - 128x128 - Gridlocked.ini */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "5P - 128x128 - Gridlocked.ini"; sourceTree = "<group>"; };
+		CE6BA21A1E1004D6000640F9 /* 5P - 128x128 - Meadow.ini */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "5P - 128x128 - Meadow.ini"; sourceTree = "<group>"; };
+		CE6BA21B1E1004D6000640F9 /* 6P - 64x128 - Rocking Fields.ini */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "6P - 64x128 - Rocking Fields.ini"; sourceTree = "<group>"; };
+		CE8E0B711E07438400A71916 /* SDL2_mixer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2_mixer.framework; path = /Library/Frameworks/SDL2_mixer.framework; sourceTree = "<group>"; };
+		CE8E0B731E07439B00A71916 /* SDL2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2.framework; path = /Library/Frameworks/SDL2.framework; sourceTree = "<group>"; };
 		CE8E0B751E07478600A71916 /* GFXHD.PAK */ = {isa = PBXFileReference; lastKnownFileType = file; name = GFXHD.PAK; path = ../../data/GFXHD.PAK; sourceTree = "<group>"; };
 		CE8E0B761E0747A300A71916 /* Spanish.es.po */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Spanish.es.po; sourceTree = "<group>"; };
 		CE8E0B781E0747DC00A71916 /* 2P - 32x32 - X-Factor.ini */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "2P - 32x32 - X-Factor.ini"; sourceTree = "<group>"; };
@@ -807,6 +875,10 @@
 		CE8E0B881E0747DC00A71916 /* 4P - 128x128 - Snake Pass.ini */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "4P - 128x128 - Snake Pass.ini"; sourceTree = "<group>"; };
 		CE8E0B891E0747DC00A71916 /* 4P - 128x128 - The Sardaukar Outpost.ini */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "4P - 128x128 - The Sardaukar Outpost.ini"; sourceTree = "<group>"; };
 		CE8E0B8A1E0747DC00A71916 /* 4P - 128x128 - Worm Investation.ini */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "4P - 128x128 - Worm Investation.ini"; sourceTree = "<group>"; };
+		CE92185C1E100F76009005A8 /* 6P - 128x128 - Gargantuan Mountains.ini */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "6P - 128x128 - Gargantuan Mountains.ini"; sourceTree = "<group>"; };
+		CE92185E1E100F82009005A8 /* 6P - 64x64 - Fertile Basin.ini */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "6P - 64x64 - Fertile Basin.ini"; sourceTree = "<group>"; };
+		CE9218601E100F8B009005A8 /* 5P - 128x128 - Kragetam.ini */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "5P - 128x128 - Kragetam.ini"; sourceTree = "<group>"; };
+		CE9218621E100F97009005A8 /* 5P - 128x128 - Hellvetika.ini */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "5P - 128x128 - Hellvetika.ini"; sourceTree = "<group>"; };
 		CEEB16A71CD69F7900CF91D9 /* surroundopl.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = surroundopl.cpp; sourceTree = "<group>"; };
 		CEEB16A81CD69F7900CF91D9 /* woodyopl.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = woodyopl.cpp; sourceTree = "<group>"; };
 		CEEB16AB1CD69F8800CF91D9 /* LoadSavePNG.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = LoadSavePNG.cpp; sourceTree = "<group>"; };
@@ -841,8 +913,6 @@
 		CEEB16DE1CD6A25D00CF91D9 /* int64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = int64.h; path = fixmath/int64.h; sourceTree = "<group>"; };
 		E311BCC51BF9CF8C005C993B /* QuantBot.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QuantBot.h; sourceTree = "<group>"; };
 		E311BCC61BF9CF8C005C993B /* SmartBot.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SmartBot.h; sourceTree = "<group>"; };
-		E3C99CAA1E0E61CC00DEBD54 /* SDL2_mixer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = SDL2_mixer.framework; sourceTree = "<group>"; };
-		E3C99CAB1E0E61CC00DEBD54 /* SDL2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = SDL2.framework; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -850,9 +920,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E3C99CAD1E0E61CC00DEBD54 /* SDL2.framework in Frameworks */,
-				E3C99CAC1E0E61CC00DEBD54 /* SDL2_mixer.framework in Frameworks */,
+				CE8E0B721E07438400A71916 /* SDL2_mixer.framework in Frameworks */,
 				8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */,
+				CE8E0B741E07439B00A71916 /* SDL2.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -871,8 +941,8 @@
 		1058C7A0FEA54F0111CA2CBB /* Linked Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				E3C99CAA1E0E61CC00DEBD54 /* SDL2_mixer.framework */,
-				E3C99CAB1E0E61CC00DEBD54 /* SDL2.framework */,
+				CE8E0B731E07439B00A71916 /* SDL2.framework */,
+				CE8E0B711E07438400A71916 /* SDL2_mixer.framework */,
 				1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */,
 			);
 			name = "Linked Frameworks";
@@ -1666,6 +1736,7 @@
 			isa = PBXGroup;
 			children = (
 				CE8E0B781E0747DC00A71916 /* 2P - 32x32 - X-Factor.ini */,
+				CE6BA2041E10045A000640F9 /* 2P - 32x128 - Gatekeeper.ini */,
 				CE8E0B791E0747DC00A71916 /* 2P - 64x32 - Cliffs Of Rene.ini */,
 				CE8E0B7A1E0747DC00A71916 /* 2P - 64x64 - Bottle Neck.ini */,
 				CE8E0B7B1E0747DC00A71916 /* 2P - 64x64 - Broken Mountains.ini */,
@@ -1673,17 +1744,35 @@
 				CE8E0B7D1E0747DC00A71916 /* 2P - 64x64 - Face Off.ini */,
 				CE8E0B7E1E0747DC00A71916 /* 2P - 64x64 - Great Divide.ini */,
 				CE8E0B7F1E0747DC00A71916 /* 2P - 64x64 - Sanctuarys.ini */,
+				CE6BA2061E10046E000640F9 /* 4P - 64x64 - Channels.ini */,
 				CE8E0B801E0747DC00A71916 /* 4P - 64x64 - Clear Path.ini */,
+				CE6BA2081E10047E000640F9 /* 4P - 64x64 - Combed.ini */,
 				CE8E0B811E0747DC00A71916 /* 4P - 64x64 - Four Chambers.ini */,
 				CE8E0B821E0747DC00A71916 /* 4P - 64x64 - Four Courners.ini */,
 				CE8E0B831E0747DC00A71916 /* 4P - 64x64 - Sietch Stefan.ini */,
+				CE6BA20A1E100497000640F9 /* 4P - 64x64 - Silicon Valley.ini */,
+				CE6BA20B1E100497000640F9 /* 4P - 64x64 - Stronghold.ini */,
 				CE8E0B841E0747DC00A71916 /* 4P - 64x64 - Vast Armies Have Arrived.ini */,
+				CE6BA20E1E1004A3000640F9 /* 4P - 128x64 - Gamma Sector.ini */,
+				CE6BA20F1E1004A3000640F9 /* 4P - 128x128 - Deserted.ini */,
 				CE8E0B851E0747DC00A71916 /* 4P - 128x128 - Equilibrium.ini */,
 				CE8E0B861E0747DC00A71916 /* 4P - 128x128 - Four Cities.ini */,
 				CE8E0B871E0747DC00A71916 /* 4P - 128x128 - Hungry Hippos.ini */,
+				CE6BA2121E1004B2000640F9 /* 4P - 128x128 - Silicon Valley XL.ini */,
 				CE8E0B881E0747DC00A71916 /* 4P - 128x128 - Snake Pass.ini */,
+				CE6BA2141E1004C3000640F9 /* 4P - 128x128 - Spicestorm.ini */,
 				CE8E0B891E0747DC00A71916 /* 4P - 128x128 - The Sardaukar Outpost.ini */,
 				CE8E0B8A1E0747DC00A71916 /* 4P - 128x128 - Worm Investation.ini */,
+				CE6BA2161E1004D6000640F9 /* 4P - 128x128 - Wormhole.ini */,
+				CE6BA2171E1004D6000640F9 /* 5P - 128x64 - Watch Your Track.ini */,
+				CE6BA2181E1004D6000640F9 /* 5P - 128x128 - Fortress.ini */,
+				CE6BA2191E1004D6000640F9 /* 5P - 128x128 - Gridlocked.ini */,
+				CE9218621E100F97009005A8 /* 5P - 128x128 - Hellvetika.ini */,
+				CE9218601E100F8B009005A8 /* 5P - 128x128 - Kragetam.ini */,
+				CE6BA21A1E1004D6000640F9 /* 5P - 128x128 - Meadow.ini */,
+				CE92185E1E100F82009005A8 /* 6P - 64x64 - Fertile Basin.ini */,
+				CE6BA21B1E1004D6000640F9 /* 6P - 64x128 - Rocking Fields.ini */,
+				CE92185C1E100F76009005A8 /* 6P - 128x128 - Gargantuan Mountains.ini */,
 			);
 			path = multiplayer;
 			sourceTree = "<group>";
@@ -1692,11 +1781,14 @@
 			isa = PBXGroup;
 			children = (
 				13FF590812A2EEA500100C53 /* 2P - 32x128 - Canyon.ini */,
-				13FF590912A2EEA500100C53 /* 2P - 64x64 - North vs. South.ini */,
 				13C90ADE12EB93A000DD9D87 /* 2P - 64x64 - Duality.ini */,
+				13FF590912A2EEA500100C53 /* 2P - 64x64 - North vs. South.ini */,
 				13C90ADF12EB93A000DD9D87 /* 2P - 64x64 - Twin Fists.ini */,
 				13C90AE012EB93A000DD9D87 /* 3P - 64x32 - Middle Man.ini */,
+				CE6BA1FB1E100409000640F9 /* 4P - 64x64 - 3 vs 1.ini */,
 				13E564B8169B54C000D282B9 /* 5P - 128x128 - All against Atreides.ini */,
+				CE6BA1FD1E10041D000640F9 /* 5P - 128x128 - Sardaukar Base Easy.ini */,
+				CE6BA1FF1E100424000640F9 /* 5P - 128x128 - Sardaukar Base.ini */,
 			);
 			path = singleplayer;
 			sourceTree = "<group>";
