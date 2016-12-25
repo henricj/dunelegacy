@@ -1261,6 +1261,8 @@ void Game::runMainLoop() {
                 pInterface->getRadarView().update();
                 cmdManager.executeCommands(gameCycleCount);
 
+//              SDL_Log("cycle %d : %d", gameCycleCount, currentGame->randomGen.getSeed());
+
 #ifdef TEST_SYNC
                 // add every gamecycles one test sync command
                 if(bReplay == false) {
