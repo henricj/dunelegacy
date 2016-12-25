@@ -82,6 +82,7 @@ General Keyboard Shortcuts:
  Key G							-	Cycle through construction yards
  Key F							-	Cycle through factories/other builders
 
+ Key F4							-	Skip 10 seconds (only in singleplayer)
  Key F5							-	Skip 30 seconds (only in singleplayer)
  Key F6							-	Skip 2 minutes (only in singleplayer)
  Key -							-	Decrease gamespeed (only in singleplayer)
@@ -95,6 +96,7 @@ General Keyboard Shortcuts:
 
  Key M							-	Order unit to move to some position
  Key A							-	Order selected units to attack some unit, structure or position
+ Key C							-	Order selected infantry units to capture some structure
  Key R							-	Repair selected structure or send selected units to repair yard
  Key H							-	Return selected harvester
  Key D							-	Request a carryall drop (only if this game option is enabled)

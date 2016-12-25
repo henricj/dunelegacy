@@ -2108,6 +2108,13 @@ void Game::handleKeyInput(SDL_KeyboardEvent& keyboardEvent) {
             screenborder->setNewScreenCenter(oldCenterCoord);
         } break;
 
+        case SDLK_F4: {
+            // skip a 30 seconds
+            if(gameType != GameType::CustomMultiplayer || bReplay) {
+                skipToGameCycle = gameCycleCount + (10*1000)/GAMESPEED_DEFAULT;
+            }
+        } break;
+
         case SDLK_F5: {
             // skip a 30 seconds
             if(gameType != GameType::CustomMultiplayer || bReplay) {
