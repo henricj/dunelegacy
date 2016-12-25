@@ -22,10 +22,16 @@ version 0.96.4
 	* Store complete map in save games (and replays) of single player custom games
 	* 18 new maps by heinrich arkonnen
 	* 4 new maps by Kuffar
-	* Bugfix (Bug #72): Texture sizes were too big for older hardware; now textures are smaller than 2048x2048 (Reported by gdm85)
-	* Bugfix (Bug #70): Changing the player name makes replays crash
-	* Bugfix (Bug #67): Saving a game under Windows with (for filenames) illegal characters results in no save at all (Reported by vangrunz)
+	* Bugfix (Bug #32): Repaired units getting removed from control group (Reported by Chan Kun Wa)
+	* Bugfix (Bug #36): AI non-hostile and inactive (Reported by Chan Kun Wa)
 	* Bugfix (Bug #40): Bullets from gun turrets hit own building, e.g. other turrets (Reported by Dream Worker)
+	* Bugfix (Bug #50): Changing the player's name while playing a mission makes starting the next mission or restarting the current mission crash
+	* Bugfix (Bug #62): Worms spawn under rock (Reported by heinrich arkonnen)
+	* Bugfix (Bug #67): Saving a game under Windows with (for filenames) illegal characters results in no save at all (Reported by vangrunz)
+	* Bugfix (Bug #70): Changing the player name makes replays crash
+	* Bugfix (Bug #71): Ornithopter animation is too fast (Thanks to Kartones for the patch)
+	* Bugfix (Bug #72): Texture sizes were too big for older hardware; now textures are smaller than 2048x2048 (Reported by gdm85)
+	* Bugfix (Bug #73): Shift the level of the voc files so that the last sample is 128 (Reported by Vortaka)
 	* Bugfix (Bug 3610246): Mentat help used wrong houses (Reported by kuffar)
 
 version 0.96.3
