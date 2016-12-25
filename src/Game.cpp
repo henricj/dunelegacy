@@ -83,6 +83,7 @@ Game::Game() {
     sideBarPos = calcAlignedDrawingRect(pGFXManager->getUIGraphic(UI_SideBar), HAlign::Right, VAlign::Top);
     topBarPos = calcAlignedDrawingRect(pGFXManager->getUIGraphic(UI_TopBar), HAlign::Left, VAlign::Top);
 
+    // set to true for now
     debug = false;
 
     powerIndicatorPos.h = spiceIndicatorPos.h = settings.video.height - 146 - 2;

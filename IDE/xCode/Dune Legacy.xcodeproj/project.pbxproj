@@ -211,10 +211,6 @@
 		13E929C010AF72BF00169991 /* Dune2-Versions.txt in Resources */ = {isa = PBXBuildFile; fileRef = 13E929BF10AF72BF00169991 /* Dune2-Versions.txt */; };
 		174241721DDE0953001FB159 /* format.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 174241711DDE0953001FB159 /* format.cpp */; };
 		8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
-		CE8E0B721E07438400A71916 /* SDL2_mixer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE8E0B711E07438400A71916 /* SDL2_mixer.framework */; };
-		CE8E0B741E07439B00A71916 /* SDL2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE8E0B731E07439B00A71916 /* SDL2.framework */; };
-		CE8E0B9E1E07481A00A71916 /* SDL2.framework in Copy Frameworks into .app bundle */ = {isa = PBXBuildFile; fileRef = CE8E0B731E07439B00A71916 /* SDL2.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		CE8E0B9F1E07481D00A71916 /* SDL2_mixer.framework in Copy Frameworks into .app bundle */ = {isa = PBXBuildFile; fileRef = CE8E0B711E07438400A71916 /* SDL2_mixer.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		CE8E0BA01E07487700A71916 /* 2P - 32x32 - X-Factor.ini in Copy Multiplayer Maps */ = {isa = PBXBuildFile; fileRef = CE8E0B781E0747DC00A71916 /* 2P - 32x32 - X-Factor.ini */; };
 		CE8E0BA11E07487700A71916 /* 2P - 64x32 - Cliffs Of Rene.ini in Copy Multiplayer Maps */ = {isa = PBXBuildFile; fileRef = CE8E0B791E0747DC00A71916 /* 2P - 64x32 - Cliffs Of Rene.ini */; };
 		CE8E0BA21E07487700A71916 /* 2P - 64x64 - Bottle Neck.ini in Copy Multiplayer Maps */ = {isa = PBXBuildFile; fileRef = CE8E0B7A1E0747DC00A71916 /* 2P - 64x64 - Bottle Neck.ini */; };
@@ -252,6 +248,8 @@
 		CEEB16D31CD6A23B00CF91D9 /* fix32_str.c in Sources */ = {isa = PBXBuildFile; fileRef = CEEB16C91CD6A23B00CF91D9 /* fix32_str.c */; };
 		CEEB16D41CD6A23B00CF91D9 /* fix32_trig.c in Sources */ = {isa = PBXBuildFile; fileRef = CEEB16CA1CD6A23B00CF91D9 /* fix32_trig.c */; };
 		CEEB16D51CD6A23B00CF91D9 /* fix32.c in Sources */ = {isa = PBXBuildFile; fileRef = CEEB16CB1CD6A23B00CF91D9 /* fix32.c */; };
+		E3C99CAC1E0E61CC00DEBD54 /* SDL2_mixer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E3C99CAA1E0E61CC00DEBD54 /* SDL2_mixer.framework */; };
+		E3C99CAD1E0E61CC00DEBD54 /* SDL2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E3C99CAB1E0E61CC00DEBD54 /* SDL2.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -261,8 +259,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				CE8E0B9E1E07481A00A71916 /* SDL2.framework in Copy Frameworks into .app bundle */,
-				CE8E0B9F1E07481D00A71916 /* SDL2_mixer.framework in Copy Frameworks into .app bundle */,
 			);
 			name = "Copy Frameworks into .app bundle";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -790,8 +786,6 @@
 		29B97325FDCFA39411CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
 		32CA4F630368D1EE00C91783 /* Dune Legacy_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Dune Legacy_Prefix.pch"; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
-		CE8E0B711E07438400A71916 /* SDL2_mixer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2_mixer.framework; path = ../../../../../Library/Frameworks/SDL2_mixer.framework; sourceTree = "<group>"; };
-		CE8E0B731E07439B00A71916 /* SDL2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2.framework; path = ../../../../../Library/Frameworks/SDL2.framework; sourceTree = "<group>"; };
 		CE8E0B751E07478600A71916 /* GFXHD.PAK */ = {isa = PBXFileReference; lastKnownFileType = file; name = GFXHD.PAK; path = ../../data/GFXHD.PAK; sourceTree = "<group>"; };
 		CE8E0B761E0747A300A71916 /* Spanish.es.po */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Spanish.es.po; sourceTree = "<group>"; };
 		CE8E0B781E0747DC00A71916 /* 2P - 32x32 - X-Factor.ini */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "2P - 32x32 - X-Factor.ini"; sourceTree = "<group>"; };
@@ -847,6 +841,8 @@
 		CEEB16DE1CD6A25D00CF91D9 /* int64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = int64.h; path = fixmath/int64.h; sourceTree = "<group>"; };
 		E311BCC51BF9CF8C005C993B /* QuantBot.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QuantBot.h; sourceTree = "<group>"; };
 		E311BCC61BF9CF8C005C993B /* SmartBot.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SmartBot.h; sourceTree = "<group>"; };
+		E3C99CAA1E0E61CC00DEBD54 /* SDL2_mixer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = SDL2_mixer.framework; sourceTree = "<group>"; };
+		E3C99CAB1E0E61CC00DEBD54 /* SDL2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = SDL2.framework; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -854,9 +850,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CE8E0B721E07438400A71916 /* SDL2_mixer.framework in Frameworks */,
+				E3C99CAD1E0E61CC00DEBD54 /* SDL2.framework in Frameworks */,
+				E3C99CAC1E0E61CC00DEBD54 /* SDL2_mixer.framework in Frameworks */,
 				8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */,
-				CE8E0B741E07439B00A71916 /* SDL2.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -875,8 +871,8 @@
 		1058C7A0FEA54F0111CA2CBB /* Linked Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				CE8E0B731E07439B00A71916 /* SDL2.framework */,
-				CE8E0B711E07438400A71916 /* SDL2_mixer.framework */,
+				E3C99CAA1E0E61CC00DEBD54 /* SDL2_mixer.framework */,
+				E3C99CAB1E0E61CC00DEBD54 /* SDL2.framework */,
 				1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */,
 			);
 			name = "Linked Frameworks";

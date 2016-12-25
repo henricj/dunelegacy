@@ -45,70 +45,80 @@
 
 
 /**
-    TODO
-
+ TODO
+ 
+ New list from Dec 2016
+ - Some harvesters getting 'stuck' by base when 100% full
+ - rocket launchers are firing on units too close again...
+ - unit rally points need to be adjusted for unit producers
+ - add in writing of game log to a repository
+ 
+ - fix game performance when toomany units
+ 
+ 
  New list from May 2016
  - units should move at start
  - fix single player campaign crash
  - fix unit allocation bug - atredes only building light tanks
-
-
+ 
+ 
  == Building Placement ==
+ 
+ 
+ ia) build concrete when no placement locations are available == in progress, bugs exist ==
+ iii) increase favourability of being near other buildings == 50% done ==
+ 
+ 1. Refinerys near spice == tried but failed ==
+ 4. Repair yards factories, & Turrets near enemy == 50% done ==
+ 5. All buildings away from enemy other that silos and turrets
+ 
+ 
+ == buildings ==
+ i) stop repair when just on yellow (at 50%) == 50% done, still broken for some buildings as goes into yellow health ==
+ ii) silo build broken == fixed ==
+ 
+ 
+ building algo still leaving gaps
+ increase alignment score when sides match
+ 
+ == Units ==
+ ii) units that get stuck in buildings should be transported to squadcenter =%80=
+ vii) fix attack timer =%80=
+ viii) when attack timer exceeds a certain value then all fing units are set to area guard
+ 
+ 2) harvester return distance bug been introduced.= in progress ==
+ 
+ 3) carryalls sit over units hovering bug introduced.... fix scramble units and defend + manual carryall = 50% =
+ 
+ 4) theres a bug in on increment and decrement units...
+ 
+ 5) turn off force move to rally point after attacked = 50% =
+ 6) reduce turret building when lacking a military = 50% =
+ 
+ 7) remove turrets from nuke target calculation =50%=
+ 8) adjust turret placement algo to include points for proximitry to base centre =50%=
+ 
+ 
+ 
+ 1. Harvesters deploy away from enemy
+ 5. fix gun turret & gun for rocket turret
+ 
+ x. Improve squad management
+ 
+ == New work ==
+ 1. Add them with some logic =50%=
+ 2. fix force ratio optimisation algorithm,
+ need to make it based off kill / death ratio instead of just losses =50%=
+ 3. create a retreate mechanism = 50% = still need to add retreat timer, say 1 retreat per minute, max
+ - fix rally point and ybut deploy logic
+ 
+ 
+ 2. Make carryalls and ornithopers easier to hit
+ 
+ ====> FIX WORM CRASH GAME BUG
+ 
+ **/
 
-
-    ia) build concrete when no placement locations are available == in progress, bugs exist ==
-    iii) increase favourability of being near other buildings == 50% done ==
-
-    1. Refinerys near spice == tried but failed ==
-    4. Repair yards factories, & Turrets near enemy == 50% done ==
-    5. All buildings away from enemy other that silos and turrets
-
-
-    == buildings ==
-    i) stop repair when just on yellow (at 50%) == 50% done, still broken for some buildings as goes into yellow health ==
-    ii) silo build broken == fixed ==
-
-
-    building algo still leaving gaps
-    increase alignment score when sides match
-
-    == Units ==
-    ii) units that get stuck in buildings should be transported to squadcenter =%80=
-    vii) fix attack timer =%80=
-    viii) when attack timer exceeds a certain value then all fing units are set to area guard
-
-    2) harvester return distance bug been introduced.= in progress ==
-
-    3) carryalls sit over units hovering bug introduced.... fix scramble units and defend + manual carryall = 50% =
-
-    4) theres a bug in on increment and decrement units...
-
-    5) turn off force move to rally point after attacked = 50% =
-    6) reduce turret building when lacking a military = 50% =
-
-    7) remove turrets from nuke target calculation =50%=
-    8) adjust turret placement algo to include points for proximitry to base centre =50%=
-
-
-
-    1. Harvesters deploy away from enemy
-    5. fix gun turret & gun for rocket turret
-
-    x. Improve squad management
-
-    == New work ==
-    1. Add them with some logic =50%=
-    2. fix force ratio optimisation algorithm,
-        need to make it based off kill / death ratio instead of just losses =50%=
-    3. create a retreate mechanism = 50% = still need to add retreat timer, say 1 retreat per minute, max
-        - fix rally point and ybut deploy logic
-
-
-    2. Make carryalls and ornithopers easier to hit
-
-    ====> FIX WORM CRASH GAME BUG
-
-**/
 
 
 QuantBot::QuantBot(House* associatedHouse, const std::string& playername, Difficulty difficulty)
@@ -324,6 +334,7 @@ void QuantBot::update() {
 
                     case Difficulty::Easy: {
                         harvesterLimit = (currentGameMap->getSizeX() * currentGameMap->getSizeY() / 2048);
+                        
                         militaryValueLimit = 10000;
                         //logDebug("BUILD EASY SKIRM ");
                     } break;
@@ -835,6 +846,7 @@ void QuantBot::build(int militaryValue) {
     }
 
     // lets analyse damage inflicted
+    
     logDebug("  Tank: %d/%d %f Siege: %d/%d %f Special: %d/%d %f Launch: %d/%d %f Orni: %d/%d %f",
                 getHouse()->getNumItemDamageInflicted(Unit_Tank), getHouse()->getNumLostItems(Unit_Tank) * 300, tankPercent.toDouble(),
                 getHouse()->getNumItemDamageInflicted(Unit_SiegeTank), getHouse()->getNumLostItems(Unit_SiegeTank) * 600, siegePercent.toDouble(),
@@ -844,7 +856,7 @@ void QuantBot::build(int militaryValue) {
                 getHouse()->getNumItemDamageInflicted(Unit_Launcher), getHouse()->getNumLostItems(Unit_Launcher) * 450, launcherPercent.toDouble(),
                 getHouse()->getNumItemDamageInflicted(Unit_Ornithopter), getHouse()->getNumLostItems(Unit_Ornithopter) * data[Unit_Ornithopter][houseID].price, ornithopterPercent.toDouble()
             );
-
+        
 
     // End of adaptive unit prioritisation algorithm
 
