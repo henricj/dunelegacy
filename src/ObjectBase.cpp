@@ -136,7 +136,7 @@ ObjectBase::ObjectBase(InputStream& stream) {
     targetFriendly = stream.readBool();
     attackMode = (ATTACKMODE) stream.readUint32();
 
-    stream.readBools(&visible[0], &visible[1], &visible[2], &visible[3], &visible[4], &visible[5]);
+    stream.readBools(&visible[0], &visible[1], &visible[2], &visible[3], &visible[4], &visible[5], &visible[6]);
 }
 
 void ObjectBase::init() {
@@ -195,7 +195,7 @@ void ObjectBase::save(OutputStream& stream) const {
     stream.writeBool(targetFriendly);
     stream.writeUint32(attackMode);
 
-    stream.writeBools(visible[0], visible[1], visible[2], visible[3], visible[4], visible[5]);
+    stream.writeBools(visible[0], visible[1], visible[2], visible[3], visible[4], visible[5], visible[6]);
 }
 
 
@@ -289,10 +289,10 @@ void ObjectBase::setObjectID(int newObjectID) {
 
 void ObjectBase::setVisible(int team, bool status) {
     if(team == VIS_ALL) {
-        for(int i = 0; i < NUM_HOUSES; i++) {
+        for(int i = 0; i < NUM_TEAMS; i++) {
             visible[i] = status;
         }
-    } else if ((team >= 0) && (team < NUM_HOUSES)) {
+    } else if ((team >= 0) && (team < NUM_TEAMS)) {
         visible[team] = status;
     }
 }
@@ -335,7 +335,7 @@ bool ObjectBase::isOnScreen() const {
 }
 
 bool ObjectBase::isVisible(int team) const {
-    if((team >= 0) && (team < NUM_HOUSES)) {
+    if((team >= 0) && (team < NUM_TEAMS)) {
         return visible[team];
     } else {
         return false;
@@ -343,7 +343,7 @@ bool ObjectBase::isVisible(int team) const {
 }
 
 bool ObjectBase::isVisible() const {
-    for(int i=0;i<NUM_HOUSES;i++) {
+    for(int i=0;i<NUM_TEAMS;i++) {
         if(visible[i]) {
             return true;
         }

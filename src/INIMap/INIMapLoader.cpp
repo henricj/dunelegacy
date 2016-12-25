@@ -8,7 +8,6 @@
 #include <players/Player.h>
 #include <players/AIPlayer.h>
 #include <players/HumanPlayer.h>
-#include <House.h>
 #include <Map.h>
 #include <ScreenBorder.h>
 #include <MapSeed.h>

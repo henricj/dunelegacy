@@ -221,7 +221,7 @@ protected:
     ObjectPointer target;            ///< The target to attack or move to
     ATTACKMODE    attackMode;        ///< The attack mode of this unit/structure
 
-    bool     visible[NUM_HOUSES];    ///< To which houses is this unit visible?
+    bool     visible[NUM_TEAMS];     ///< To which teams is this unit visible?
 
     // drawing information
     bool     badlyDamaged;           ///< Is the health below 50%?

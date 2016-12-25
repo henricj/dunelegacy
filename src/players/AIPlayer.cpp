@@ -710,9 +710,9 @@ void AIPlayer::checkAllUnits() {
 }
 
 bool AIPlayer::isAllowedToArm() const {
-    int teamScore[NUM_HOUSES+1];
+    int teamScore[NUM_TEAMS];
 
-    for(int i = 0; i < NUM_HOUSES+1; i++) {
+    for(int i = 0; i < NUM_TEAMS; i++) {
         teamScore[i] = 0;
     }
 

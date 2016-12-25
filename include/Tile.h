@@ -490,8 +490,8 @@ private:
     std::list<Uint32>   assignedUndergroundUnitList;                ///< all underground units on this tile
     std::list<Uint32>   assignedNonInfantryGroundObjectList;        ///< all structures/vehicles on this tile
 
-    Uint32      lastAccess[NUM_HOUSES];    ///< contains for every house when this tile was seen last by this house
-    bool        explored[NUM_HOUSES];      ///< contains for every house if this tile is explored
+    Uint32      lastAccess[NUM_TEAMS];    ///< contains for every team when this tile was seen last by this house
+    bool        explored[NUM_TEAMS];      ///< contains for every team if this tile is explored
 };
 
 

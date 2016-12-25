@@ -68,8 +68,8 @@ void Saboteur::checkPos()
     InfantryBase::checkPos();
 
     if(active) {
-        bool canBeSeen[NUM_HOUSES+1];
-        for(int i = 1; i <= NUM_HOUSES; i++) {
+        bool canBeSeen[NUM_TEAMS];
+        for(int i = 0; i < NUM_TEAMS; i++) {
             canBeSeen[i] = false;
         }
 
@@ -81,7 +81,7 @@ void Saboteur::checkPos()
             }
         }
 
-        for(int i = 1; i <= NUM_HOUSES; i++) {
+        for(int i = 0; i < NUM_TEAMS; i++) {
             setVisible(i, canBeSeen[i]);
         }
 

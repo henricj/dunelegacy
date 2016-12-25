@@ -37,7 +37,7 @@
 Tile::Tile() {
     type = Terrain_Sand;
 
-    for(int i = 0; i < NUM_HOUSES; i++) {
+    for(int i = 0; i < NUM_TEAMS; i++) {
         explored[i] = currentGame->getGameInitSettings().getGameOptions().startWithExploredMap;
         lastAccess[i] = 0;
     }
@@ -68,12 +68,12 @@ Tile::~Tile() {
 void Tile::load(InputStream& stream) {
     type = stream.readUint32();
 
-    stream.readBools(&explored[0], &explored[1], &explored[2], &explored[3], &explored[4], &explored[5]);
+    stream.readBools(&explored[0], &explored[1], &explored[2], &explored[3], &explored[4], &explored[5], &explored[6]);
 
-    bool bLastAccess[NUM_HOUSES];
-    stream.readBools(&bLastAccess[0], &bLastAccess[1], &bLastAccess[2], &bLastAccess[3], &bLastAccess[4], &bLastAccess[5]);
+    bool bLastAccess[NUM_TEAMS];
+    stream.readBools(&bLastAccess[0], &bLastAccess[1], &bLastAccess[2], &bLastAccess[3], &bLastAccess[4], &bLastAccess[5], &bLastAccess[6]);
 
-    for(int i=0;i<NUM_HOUSES;i++) {
+    for(int i=0;i<NUM_TEAMS;i++) {
         if(bLastAccess[i] == true) {
             lastAccess[i] = stream.readUint32();
         }
@@ -148,10 +148,10 @@ void Tile::load(InputStream& stream) {
 void Tile::save(OutputStream& stream) const {
     stream.writeUint32(type);
 
-    stream.writeBools(explored[0], explored[1], explored[2], explored[3], explored[4], explored[5]);
+    stream.writeBools(explored[0], explored[1], explored[2], explored[3], explored[4], explored[5], explored[6]);
 
-    stream.writeBools((lastAccess[0] != 0), (lastAccess[1] != 0), (lastAccess[2] != 0), (lastAccess[3] != 0), (lastAccess[4] != 0), (lastAccess[5] != 0));
-    for(int i=0;i<NUM_HOUSES;i++) {
+    stream.writeBools((lastAccess[0] != 0), (lastAccess[1] != 0), (lastAccess[2] != 0), (lastAccess[3] != 0), (lastAccess[4] != 0), (lastAccess[5] != 0), (lastAccess[6] != 0));
+    for(int i=0;i<NUM_TEAMS;i++) {
         if(lastAccess[i] != 0) {
             stream.writeUint32(lastAccess[i]);
         }
