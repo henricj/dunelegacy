@@ -22,7 +22,10 @@
 #include <FileClasses/GFXManager.h>
 #include <Map.h>
 #include <House.h>
+#include <Game.h>
 #include <SoundPlayer.h>
+
+#define ORNITHOPTER_FRAMETIME 3
 
 Ornithopter::Ornithopter(House* newOwner) : AirUnit(newOwner) {
 
@@ -56,14 +59,11 @@ Ornithopter::~Ornithopter() {
 void Ornithopter::checkPos() {
     AirUnit::checkPos();
 
-    ++drawnFrame;
-    if(drawnFrame >= 3) {
-        drawnFrame = 0;
-    }
+    drawnFrame = ((currentGame->getGameCycleCount() + getObjectID())/ORNITHOPTER_FRAMETIME) % numImagesY;
 }
 
 bool Ornithopter::canAttack(const ObjectBase* object) const {
-    if ((object != nullptr)
+    if ((object != nullptr) && !object->isAFlyingUnit()
         && ((object->getOwner()->getTeam() != owner->getTeam()) || object->getItemID() == Unit_Sandworm)
         && object->isVisible(getOwner()->getTeam()))
         return true;
