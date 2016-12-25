@@ -50,7 +50,7 @@
  New list from Dec 2016
  - Some harvesters getting 'stuck' by base when 100% full
  - rocket launchers are firing on units too close again...
- - unit raly points need to be adjusted for unit producers
+ - unit rally points need to be adjusted for unit producers
  - add in writing of game log to a repository
  
  - fix game performance when toomany units
@@ -846,7 +846,7 @@ void QuantBot::build(int militaryValue) {
     }
 
     // lets analyse damage inflicted
-    /*
+    
     logDebug("  Tank: %d/%d %f Siege: %d/%d %f Special: %d/%d %f Launch: %d/%d %f Orni: %d/%d %f",
                 getHouse()->getNumItemDamageInflicted(Unit_Tank), getHouse()->getNumLostItems(Unit_Tank) * 300, tankPercent.toDouble(),
                 getHouse()->getNumItemDamageInflicted(Unit_SiegeTank), getHouse()->getNumLostItems(Unit_SiegeTank) * 600, siegePercent.toDouble(),
@@ -856,7 +856,7 @@ void QuantBot::build(int militaryValue) {
                 getHouse()->getNumItemDamageInflicted(Unit_Launcher), getHouse()->getNumLostItems(Unit_Launcher) * 450, launcherPercent.toDouble(),
                 getHouse()->getNumItemDamageInflicted(Unit_Ornithopter), getHouse()->getNumLostItems(Unit_Ornithopter) * data[Unit_Ornithopter][houseID].price, ornithopterPercent.toDouble()
             );
-        */
+        
 
     // End of adaptive unit prioritisation algorithm
 
