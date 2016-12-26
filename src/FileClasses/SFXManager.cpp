@@ -140,12 +140,18 @@ void SFXManager::loadEnglishVoice() {
                 break;
         }
 
-        // "... Harvester deployed"
+        // "... Harvester deployed", "... Unit deployed" and "... Unit launched"
         Mix_Chunk* Harvester = getChunkFromFile(HouseString + "HARVEST.VOC");
+        Mix_Chunk* Unit = getChunkFromFile(HouseString + "UNIT.VOC");
         Mix_Chunk* Deployed = getChunkFromFile(HouseString + "DEPLOY.VOC");
+        Mix_Chunk* Launched = getChunkFromFile(HouseString + "LAUNCH.VOC");
         lngVoice[HarvesterDeployed*NUM_HOUSES+VoiceNum] = concat3Chunks(HouseNameChunk, Harvester, Deployed);
+        lngVoice[UnitDeployed*NUM_HOUSES+VoiceNum] = concat3Chunks(HouseNameChunk, Unit, Deployed);
+        lngVoice[UnitLaunched*NUM_HOUSES+VoiceNum] = concat3Chunks(HouseNameChunk, Unit, Launched);
         Mix_FreeChunk(Harvester);
+        Mix_FreeChunk(Unit);
         Mix_FreeChunk(Deployed);
+        Mix_FreeChunk(Launched);
 
         // "Contruction complete"
         lngVoice[ConstructionComplete*NUM_HOUSES+VoiceNum] = getChunkFromFile(HouseString + "CONST.VOC");
@@ -295,8 +301,14 @@ void SFXManager::loadNonEnglishVoice(const std::string& languagePrefix) {
         lngVoice[i] = nullptr;
     }
 
-
+    // "Harvester deployed"
     lngVoice[HarvesterDeployed] = getChunkFromFile(languagePrefix + "HARVEST.VOC");
+
+    // "Unit deployed"
+    lngVoice[UnitDeployed] = getChunkFromFile(languagePrefix + "DEPLOY.VOC");
+
+    // "Unit launched"
+    lngVoice[UnitLaunched] = getChunkFromFile(languagePrefix + "LAUNCH.VOC");
 
     // "Contruction complete"
     lngVoice[ConstructionComplete] = getChunkFromFile(languagePrefix + "CONST.VOC");

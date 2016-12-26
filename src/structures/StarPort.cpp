@@ -301,6 +301,16 @@ void StarPort::updateStructureSpecificStuff() {
                             newUnit->setAngle(destinationDrawnAngle(newUnit->getLocation(), newUnit->getDestination()));
                         }
 
+                        if(getOwner() == pLocalHouse) {
+                            if(isFlyingUnit(newUnitItemID)) {
+                                soundPlayer->playVoice(UnitLaunched, getOwner()->getHouseID());
+                            } else if(newUnitItemID == Unit_Harvester) {
+                                soundPlayer->playVoice(HarvesterDeployed, getOwner()->getHouseID());
+                            } else {
+                                soundPlayer->playVoice(UnitDeployed, getOwner()->getHouseID());
+                            }
+                        }
+
                         // inform owner of its new unit
                         newUnit->getOwner()->informWasBuilt(newUnitItemID);
                     }

@@ -29,6 +29,8 @@
 // Voice
 typedef enum {
     HarvesterDeployed,
+    UnitDeployed,
+    UnitLaunched,
     ConstructionComplete,
     VehicleRepaired,
     FrigateHasArrived,

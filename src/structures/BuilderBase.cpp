@@ -315,7 +315,15 @@ void BuilderBase::updateBuildList()
 void BuilderBase::setWaitingToPlace() {
     if (currentProducedItem != ItemID_Invalid)  {
         if (owner == pLocalHouse) {
-            soundPlayer->playVoice(ConstructionComplete,getOwner()->getHouseID());
+            if(isStructure(currentProducedItem)) {
+                soundPlayer->playVoice(ConstructionComplete, getOwner()->getHouseID());
+            } else if(isFlyingUnit(currentProducedItem)) {
+                soundPlayer->playVoice(UnitLaunched, getOwner()->getHouseID());
+            } else if(currentProducedItem == Unit_Harvester) {
+                soundPlayer->playVoice(HarvesterDeployed, getOwner()->getHouseID());
+            } else {
+                soundPlayer->playVoice(UnitDeployed, getOwner()->getHouseID());
+            }
         }
 
         if (isUnit(currentProducedItem)) {
