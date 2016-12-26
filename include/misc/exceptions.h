@@ -25,15 +25,15 @@
 #define THROW(TException, ...) throw TException(fmt::sprintf("%s:%d: %s", __FILE__, __LINE__, fmt::sprintf(__VA_ARGS__)))
 
 class io_error : public std::runtime_error {
-	using std::runtime_error::runtime_error;
+    using std::runtime_error::runtime_error;
 };
 
 class invalid_file_format : public std::runtime_error {
-	using std::runtime_error::runtime_error;
+    using std::runtime_error::runtime_error;
 };
 
 class sdl_error : public std::runtime_error {
-	using std::runtime_error::runtime_error;
+    using std::runtime_error::runtime_error;
 };
 
 #endif // EXCEPTIONS_H

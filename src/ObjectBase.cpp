@@ -486,12 +486,12 @@ const ObjectBase* ObjectBase::findTarget() const {
     FixPoint closestTargetDistance = FixPt_MAX;
 
     Coord coord;
-	int startY = std::max(0, location.y - checkRange);
-	int endY = std::min(currentGameMap->getSizeY()-1, location.y + checkRange);
-	for(coord.y = startY; coord.y <= endY; coord.y++) {
-		int startX = std::max(0, location.x - checkRange);
-		int endX = std::min(currentGameMap->getSizeX()-1, location.x + checkRange);
-		for(coord.x = startX; coord.x <= endX; coord.x++) {
+    int startY = std::max(0, location.y - checkRange);
+    int endY = std::min(currentGameMap->getSizeY()-1, location.y + checkRange);
+    for(coord.y = startY; coord.y <= endY; coord.y++) {
+        int startX = std::max(0, location.x - checkRange);
+        int endX = std::min(currentGameMap->getSizeX()-1, location.x + checkRange);
+        for(coord.x = startX; coord.x <= endX; coord.x++) {
 
             FixPoint targetDistance = blockDistance(location, coord);
             if(targetDistance <= checkRange) {
@@ -509,10 +509,8 @@ const ObjectBase* ObjectBase::findTarget() const {
                     }
                 }
             }
-
-
-		}
-	}
+        }
+    }
 
     return pClosestTarget;
 }

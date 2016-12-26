@@ -76,11 +76,11 @@ inline FixPoint blockDistance(const Coord& p1, const Coord& p2) {
     int diffX = abs(p1.x - p2.x);
     int diffY = abs(p1.y - p2.y);
 
-	if(diffX > diffY) {
-		return diffX + diffY*(FixPt_SQRT2 - 1);
-	} else {
-		return diffX*(FixPt_SQRT2 - 1) + diffY;
-	}
+    if(diffX > diffY) {
+        return diffX + diffY*(FixPt_SQRT2 - 1);
+    } else {
+        return diffX*(FixPt_SQRT2 - 1) + diffY;
+    }
 }
 
 /**
@@ -90,14 +90,14 @@ inline FixPoint blockDistance(const Coord& p1, const Coord& p2) {
     \return the distance
 */
 inline int blockDistanceApprox(const Coord& p1, const Coord& p2) {
-	int diffX = abs(p1.x - p2.x);
-	int diffY = abs(p1.y - p2.y);
+    int diffX = abs(p1.x - p2.x);
+    int diffY = abs(p1.y - p2.y);
 
-	if(diffX > diffY) {
-		return ((diffX*2 + diffY) + 1)/2;
-	} else {
-		return ((diffX + diffY*2) + 1)/2;
-	}
+    if(diffX > diffY) {
+        return ((diffX*2 + diffY) + 1)/2;
+    } else {
+        return ((diffX + diffY*2) + 1)/2;
+    }
 }
 
 // Retreat location for launcher

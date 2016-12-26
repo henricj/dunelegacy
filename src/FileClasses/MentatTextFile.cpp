@@ -37,7 +37,7 @@ MentatTextFile::MentatTextFile(SDL_RWops* rwop) {
         THROW(std::runtime_error, "MentatTextFile:MentatTextFile(): Cannot determine size of this file!");
     }
 
-	size_t mentatTextFilesize = static_cast<size_t>(endOffset);
+    size_t mentatTextFilesize = static_cast<size_t>(endOffset);
 
     if(mentatTextFilesize < 20) {
         THROW(std::runtime_error, "MentatTextFile:MentatTextFile(): No valid mentat textfile: File too small!");

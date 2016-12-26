@@ -263,7 +263,7 @@ unsigned char* Wsafile::readfile(SDL_RWops* rwop, int* filesize) {
         SDL_Log("Wsafile: Cannot determine size of this *.wsa-File!");
         exit(EXIT_FAILURE);
     }
-	size_t wsaFilesize = static_cast<size_t>(endOffset);
+    size_t wsaFilesize = static_cast<size_t>(endOffset);
 
     if(wsaFilesize < 10) {
         SDL_Log("Wsafile: No valid WSA-File: File too small!");

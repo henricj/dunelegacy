@@ -36,7 +36,7 @@ IndexedTextFile::IndexedTextFile(SDL_RWops* rwop, bool bDecode) {
         THROW(std::runtime_error, "IndexedTextFile:IndexedTextFile(): Cannot determine size of this file!");
     }
 
-	size_t indexedTextFilesize = static_cast<size_t>(endOffset);
+    size_t indexedTextFilesize = static_cast<size_t>(endOffset);
 
     if(indexedTextFilesize < 2) {
         THROW(std::runtime_error, "IndexedTextFile:IndexedTextFile(): No valid indexed textfile: File too small!");

@@ -66,7 +66,7 @@
     #include <stdio.h>
     #include <io.h>
     extern "C" {
-		__declspec(dllimport) int _fileno(FILE*);
+        __declspec(dllimport) int _fileno(FILE*);
     }
     #define fileno _fileno
     #define dup2 _dup2

@@ -647,13 +647,13 @@ void Map::viewMap(const int playerTeam, const Coord& location, const int maxView
 //                    *
 
 
-	Coord coord;
-	int startY = std::max(0, location.y - maxViewRange);
-	int endY = std::min(sizeY-1, location.y + maxViewRange);
-	for(coord.y = startY; coord.y <= endY; coord.y++) {
-		int startX = std::max(0, location.x - maxViewRange);
-		int endX = std::min(sizeX-1, location.x + maxViewRange);
-		for(coord.x = startX; coord.x <= endX; coord.x++) {
+    Coord coord;
+    int startY = std::max(0, location.y - maxViewRange);
+    int endY = std::min(sizeY-1, location.y + maxViewRange);
+    for(coord.y = startY; coord.y <= endY; coord.y++) {
+        int startX = std::max(0, location.x - maxViewRange);
+        int endX = std::min(sizeX-1, location.x + maxViewRange);
+        for(coord.x = startX; coord.x <= endX; coord.x++) {
             if((maxViewRange <= 1) ? (maximumDistance(location, coord) <= maxViewRange) : (blockDistanceApprox(location, coord) <= maxViewRange)) {
                 for(int i = 0; i < NUM_HOUSES; i++) {
                     House* pHouse = currentGame->getHouse(i);
@@ -662,8 +662,8 @@ void Map::viewMap(const int playerTeam, const Coord& location, const int maxView
                     }
                 }
             }
-		}
-	}
+        }
+    }
 }
 
 /**
