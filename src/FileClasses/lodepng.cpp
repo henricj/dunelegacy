@@ -1,5 +1,5 @@
 /*
-LodePNG version 20160124
+LodePNG version 20161127
 
 Copyright (c) 2005-2016 Lode Vandevenne
 
@@ -28,21 +28,18 @@ The manual and changelog are in the header file "lodepng.h"
 Rename this file to lodepng.cpp to use it for C++, or to lodepng.c to use it for C.
 */
 
-#include "FileClasses/lodepng.h"
+#include <FileClasses/lodepng.h>
 
+#include <limits.h>
 #include <stdio.h>
 #include <stdlib.h>
-
-#ifdef LODEPNG_COMPILE_CPP
-#include <fstream>
-#endif /*LODEPNG_COMPILE_CPP*/
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1310) /*Visual Studio: A few warning types are not desired here.*/
 #pragma warning( disable : 4244 ) /*implicit conversions: not warned by gcc -Wall -Wextra and requires too much casts*/
 #pragma warning( disable : 4996 ) /*VS does not like fopen, but fopen_s is not standard C so unusable here*/
 #endif /*_MSC_VER */
 
-const char* LODEPNG_VERSION_STRING = "20160124";
+const char* LODEPNG_VERSION_STRING = "20161127";
 
 /*
 This source file is built up in the following large parts. The code sections
@@ -350,31 +347,53 @@ static void lodepng_add32bitInt(ucvector* buffer, unsigned value)
 
 #ifdef LODEPNG_COMPILE_DISK
 
-unsigned lodepng_load_file(unsigned char** out, size_t* outsize, const char* filename)
+/* returns negative value on error. This should be pure C compatible, so no fstat. */
+static long lodepng_filesize(const char* filename)
 {
   FILE* file;
   long size;
+  file = fopen(filename, "rb");
+  if(!file) return -1;
 
-  /*provide some proper output values if error will happen*/
-  *out = 0;
-  *outsize = 0;
+  if(fseek(file, 0, SEEK_END) != 0)
+  {
+    fclose(file);
+    return -1;
+  }
 
+  size = ftell(file);
+  /* It may give LONG_MAX as directory size, this is invalid for us. */
+  if(size == LONG_MAX) size = -1;
+
+  fclose(file);
+  return size;
+}
+
+/* load file into buffer that already has the correct allocated size. Returns error code.*/
+static unsigned lodepng_buffer_file(unsigned char* out, size_t size, const char* filename)
+{
+  FILE* file;
+  size_t readsize;
   file = fopen(filename, "rb");
   if(!file) return 78;
 
-  /*get filesize:*/
-  fseek(file , 0 , SEEK_END);
-  size = ftell(file);
-  rewind(file);
-
-  /*read contents of the file into the vector*/
-  *outsize = 0;
-  *out = (unsigned char*)lodepng_malloc((size_t)size);
-  if(size && (*out)) (*outsize) = fread(*out, 1, (size_t)size, file);
-
+  readsize = fread(out, 1, size, file);
   fclose(file);
-  if(!(*out) && size) return 83; /*the above malloc failed*/
+
+  if (readsize != size) return 78;
   return 0;
+}
+
+unsigned lodepng_load_file(unsigned char** out, size_t* outsize, const char* filename)
+{
+  long size = lodepng_filesize(filename);
+  if (size < 0) return 78;
+  *outsize = (size_t)size;
+
+  *out = (unsigned char*)lodepng_malloc((size_t)size);
+  if(!(*out) && size > 0) return 83; /*the above malloc failed*/
+
+  return lodepng_buffer_file(*out, (size_t)size, filename);
 }
 
 /*write given buffer to the file, overwriting the file, it doesn't append to it.*/
@@ -708,14 +727,31 @@ static BPMNode* bpmnode_create(BPMLists* lists, int weight, unsigned index, BPMN
   return result;
 }
 
-static int bpmnode_compare(const void* a, const void* b)
+/*sort the leaves with stable mergesort*/
+static void bpmnode_sort(BPMNode* leaves, size_t num)
 {
-  int wa = ((const BPMNode*)a)->weight;
-  int wb = ((const BPMNode*)b)->weight;
-  if(wa < wb) return -1;
-  if(wa > wb) return 1;
-  /*make the qsort a stable sort*/
-  return ((const BPMNode*)a)->index < ((const BPMNode*)b)->index ? 1 : -1;
+  BPMNode* mem = (BPMNode*)lodepng_malloc(sizeof(*leaves) * num);
+  size_t width, counter = 0;
+  for(width = 1; width < num; width *= 2)
+  {
+    BPMNode* a = (counter & 1) ? mem : leaves;
+    BPMNode* b = (counter & 1) ? leaves : mem;
+    size_t p;
+    for(p = 0; p < num; p += 2 * width)
+    {
+      size_t q = (p + width > num) ? num : (p + width);
+      size_t r = (p + 2 * width > num) ? num : (p + 2 * width);
+      size_t i = p, j = q, k;
+      for(k = p; k < r; k++)
+      {
+        if(i < q && (j >= r || a[i].weight <= a[j].weight)) b[k] = a[i++];
+        else b[k] = a[j++];
+      }
+    }
+    counter++;
+  }
+  if(counter & 1) memcpy(leaves, mem, sizeof(*leaves) * num);
+  lodepng_free(mem);
 }
 
 /*Boundary Package Merge step, numpresent is the amount of leaves, and c is the current chain.*/
@@ -795,7 +831,7 @@ unsigned lodepng_huffman_code_lengths(unsigned* lengths, const unsigned* frequen
     BPMLists lists;
     BPMNode* node;
 
-    qsort(leaves, numpresent, sizeof(BPMNode), bpmnode_compare);
+    bpmnode_sort(leaves, numpresent);
 
     lists.listsize = maxbitlen;
     lists.memsize = 2 * maxbitlen * (maxbitlen + 1);
@@ -2349,9 +2385,10 @@ static unsigned readBitsFromReversedStream(size_t* bitpointer, const unsigned ch
 {
   unsigned result = 0;
   size_t i;
-  for(i = nbits - 1; i < nbits; --i)
+  for(i = 0 ; i < nbits; ++i)
   {
-    result += (unsigned)readBitFromReversedStream(bitpointer, bitstream) << i;
+    result <<= 1;
+    result |= (unsigned)readBitFromReversedStream(bitpointer, bitstream);
   }
   return result;
 }
@@ -2671,7 +2708,7 @@ unsigned lodepng_can_have_alpha(const LodePNGColorMode* info)
 size_t lodepng_get_raw_size(unsigned w, unsigned h, const LodePNGColorMode* color)
 {
   /*will not overflow for any color type if roughly w * h < 268435455*/
-  int bpp = lodepng_get_bpp(color);
+  size_t bpp = lodepng_get_bpp(color);
   size_t n = w * h;
   return ((n / 8) * bpp) + ((n & 7) * bpp + 7) / 8;
 }
@@ -2679,7 +2716,7 @@ size_t lodepng_get_raw_size(unsigned w, unsigned h, const LodePNGColorMode* colo
 size_t lodepng_get_raw_size_lct(unsigned w, unsigned h, LodePNGColorType colortype, unsigned bitdepth)
 {
   /*will not overflow for any color type if roughly w * h < 268435455*/
-  int bpp = lodepng_get_bpp_lct(colortype, bitdepth);
+  size_t bpp = lodepng_get_bpp_lct(colortype, bitdepth);
   size_t n = w * h;
   return ((n / 8) * bpp) + ((n & 7) * bpp + 7) / 8;
 }
@@ -2691,7 +2728,7 @@ size_t lodepng_get_raw_size_lct(unsigned w, unsigned h, LodePNGColorType colorty
 static size_t lodepng_get_raw_size_idat(unsigned w, unsigned h, const LodePNGColorMode* color)
 {
   /*will not overflow for any color type if roughly w * h < 268435455*/
-  int bpp = lodepng_get_bpp(color);
+  size_t bpp = lodepng_get_bpp(color);
   size_t line = ((w / 8) * bpp) + ((w & 7) * bpp + 7) / 8;
   return h * line;
 }
@@ -3497,8 +3534,8 @@ void lodepng_color_profile_init(LodePNGColorProfile* profile)
 {
   profile->colored = 0;
   profile->key = 0;
-  profile->alpha = 0;
   profile->key_r = profile->key_g = profile->key_b = 0;
+  profile->alpha = 0;
   profile->numcolors = 0;
   profile->bits = 1;
 }
@@ -3585,8 +3622,8 @@ unsigned lodepng_get_color_profile(LodePNGColorProfile* profile,
         if(a != 65535 && (a != 0 || (profile->key && !matchkey)))
         {
           profile->alpha = 1;
+          profile->key = 0;
           alpha_done = 1;
-          if(profile->bits < 8) profile->bits = 8; /*PNG has no alphachannel modes with less than 8-bit per channel*/
         }
         else if(a == 0 && !profile->alpha && !profile->key)
         {
@@ -3599,18 +3636,33 @@ unsigned lodepng_get_color_profile(LodePNGColorProfile* profile,
         {
           /* Color key cannot be used if an opaque pixel also has that RGB color. */
           profile->alpha = 1;
+          profile->key = 0;
           alpha_done = 1;
         }
       }
-
       if(alpha_done && numcolors_done && colored_done && bits_done) break;
+    }
+
+    if(profile->key && !profile->alpha)
+    {
+      for(i = 0; i != numpixels; ++i)
+      {
+        getPixelColorRGBA16(&r, &g, &b, &a, in, i, mode);
+        if(a != 0 && r == profile->key_r && g == profile->key_g && b == profile->key_b)
+        {
+          /* Color key cannot be used if an opaque pixel also has that RGB color. */
+          profile->alpha = 1;
+          profile->key = 0;
+          alpha_done = 1;
+        }
+      }
     }
   }
   else /* < 16-bit */
   {
+    unsigned char r = 0, g = 0, b = 0, a = 0;
     for(i = 0; i != numpixels; ++i)
     {
-      unsigned char r = 0, g = 0, b = 0, a = 0;
       getPixelColorRGBA8(&r, &g, &b, &a, in, i, mode);
 
       if(!bits_done && profile->bits < 8)
@@ -3634,6 +3686,7 @@ unsigned lodepng_get_color_profile(LodePNGColorProfile* profile,
         if(a != 255 && (a != 0 || (profile->key && !matchkey)))
         {
           profile->alpha = 1;
+          profile->key = 0;
           alpha_done = 1;
           if(profile->bits < 8) profile->bits = 8; /*PNG has no alphachannel modes with less than 8-bit per channel*/
         }
@@ -3648,6 +3701,7 @@ unsigned lodepng_get_color_profile(LodePNGColorProfile* profile,
         {
           /* Color key cannot be used if an opaque pixel also has that RGB color. */
           profile->alpha = 1;
+          profile->key = 0;
           alpha_done = 1;
           if(profile->bits < 8) profile->bits = 8; /*PNG has no alphachannel modes with less than 8-bit per channel*/
         }
@@ -3675,6 +3729,22 @@ unsigned lodepng_get_color_profile(LodePNGColorProfile* profile,
       if(alpha_done && numcolors_done && colored_done && bits_done) break;
     }
 
+    if(profile->key && !profile->alpha)
+    {
+      for(i = 0; i != numpixels; ++i)
+      {
+        getPixelColorRGBA8(&r, &g, &b, &a, in, i, mode);
+        if(a != 0 && r == profile->key_r && g == profile->key_g && b == profile->key_b)
+        {
+          /* Color key cannot be used if an opaque pixel also has that RGB color. */
+          profile->alpha = 1;
+          profile->key = 0;
+          alpha_done = 1;
+          if(profile->bits < 8) profile->bits = 8; /*PNG has no alphachannel modes with less than 8-bit per channel*/
+        }
+      }
+    }
+
     /*make the profile's key always 16-bit for consistency - repeat each byte twice*/
     profile->key_r += (profile->key_r << 8);
     profile->key_g += (profile->key_g << 8);
@@ -3696,7 +3766,7 @@ unsigned lodepng_auto_choose_color(LodePNGColorMode* mode_out,
 {
   LodePNGColorProfile prof;
   unsigned error = 0;
-  unsigned i, n, palettebits, grey_ok, palette_ok;
+  unsigned i, n, palettebits, palette_ok;
 
   lodepng_color_profile_init(&prof);
   error = lodepng_get_color_profile(&prof, image, w, h, mode_in);
@@ -3706,14 +3776,14 @@ unsigned lodepng_auto_choose_color(LodePNGColorMode* mode_out,
   if(prof.key && w * h <= 16)
   {
     prof.alpha = 1; /*too few pixels to justify tRNS chunk overhead*/
+    prof.key = 0;
     if(prof.bits < 8) prof.bits = 8; /*PNG has no alphachannel modes with less than 8-bit per channel*/
   }
-  grey_ok = !prof.colored && !prof.alpha; /*grey without alpha, with potentially low bits*/
   n = prof.numcolors;
   palettebits = n <= 2 ? 1 : (n <= 4 ? 2 : (n <= 16 ? 4 : 8));
-  palette_ok = n <= 256 && (n * 2 < w * h) && prof.bits <= 8;
+  palette_ok = n <= 256 && prof.bits <= 8;
   if(w * h < n * 2) palette_ok = 0; /*don't add palette overhead if image has only a few pixels*/
-  if(grey_ok && prof.bits <= palettebits) palette_ok = 0; /*grey is less overhead*/
+  if(!prof.colored && prof.bits <= palettebits) palette_ok = 0; /*grey is less overhead*/
 
   if(palette_ok)
   {
@@ -3742,7 +3812,7 @@ unsigned lodepng_auto_choose_color(LodePNGColorMode* mode_out,
     mode_out->colortype = prof.alpha ? (prof.colored ? LCT_RGBA : LCT_GREY_ALPHA)
                                      : (prof.colored ? LCT_RGB : LCT_GREY);
 
-    if(prof.key && !prof.alpha)
+    if(prof.key)
     {
       unsigned mask = (1u << mode_out->bitdepth) - 1u; /*profile always uses 16-bit, mask converts it*/
       mode_out->key_r = prof.key_r & mask;
@@ -4460,6 +4530,7 @@ static void decodeGeneric(unsigned char** out, unsigned* w, unsigned* h,
   ucvector scanlines;
   size_t predict;
   size_t numpixels;
+  size_t outsize = 0;
 
   /*for unknown chunk order*/
   unsigned unknown = 0;
@@ -4637,11 +4708,14 @@ static void decodeGeneric(unsigned char** out, unsigned* w, unsigned* h,
 
   if(!state->error)
   {
-    size_t outsize = lodepng_get_raw_size(*w, *h, &state->info_png.color);
+    outsize = lodepng_get_raw_size(*w, *h, &state->info_png.color);
     *out = (unsigned char*)lodepng_malloc(outsize);
     if(!*out) state->error = 83; /*alloc fail*/
+  }
+  if(!state->error)
+  {
     for(i = 0; i < outsize; i++) (*out)[i] = 0;
-    if(!state->error) state->error = postProcessScanlines(*out, scanlines.data, *w, *h, &state->info_png);
+    state->error = postProcessScanlines(*out, scanlines.data, *w, *h, &state->info_png);
   }
   ucvector_cleanup(&scanlines);
 }
@@ -4718,7 +4792,7 @@ unsigned lodepng_decode24(unsigned char** out, unsigned* w, unsigned* h, const u
 unsigned lodepng_decode_file(unsigned char** out, unsigned* w, unsigned* h, const char* filename,
                              LodePNGColorType colortype, unsigned bitdepth)
 {
-  unsigned char* buffer;
+  unsigned char* buffer = 0;
   size_t buffersize;
   unsigned error;
   error = lodepng_load_file(&buffer, &buffersize, filename);
@@ -5345,7 +5419,7 @@ static unsigned filter(unsigned char* out, const unsigned char* in, unsigned w, 
       out[y * (linebytes + 1)] = bestType; /*the first byte of a scanline will be the filter type*/
       for(x = 0; x != linebytes; ++x) out[y * (linebytes + 1) + 1 + x] = attempt[bestType][x];
     }
-    for(type = 0; type != 5; ++type) free(attempt[type]);
+    for(type = 0; type != 5; ++type) lodepng_free(attempt[type]);
   }
   else return 88; /* unknown filter strategy */
 
@@ -5610,7 +5684,7 @@ unsigned lodepng_encode(unsigned char** out, size_t* outsize,
   if(!lodepng_color_mode_equal(&state->info_raw, &info.color))
   {
     unsigned char* converted;
-    size_t size = (w * h * lodepng_get_bpp(&info.color) + 7) / 8;
+    size_t size = (w * h * (size_t)lodepng_get_bpp(&info.color) + 7) / 8;
 
     converted = (unsigned char*)lodepng_malloc(size);
     if(!converted && size) state->error = 83; /*alloc fail*/
@@ -5942,28 +6016,16 @@ namespace lodepng
 #ifdef LODEPNG_COMPILE_DISK
 unsigned load_file(std::vector<unsigned char>& buffer, const std::string& filename)
 {
-  std::ifstream file(filename.c_str(), std::ios::in|std::ios::binary|std::ios::ate);
-  if(!file) return 78;
-
-  /*get filesize*/
-  std::streamsize size = 0;
-  if(file.seekg(0, std::ios::end).good()) size = file.tellg();
-  if(file.seekg(0, std::ios::beg).good()) size -= file.tellg();
-
-  /*read contents of the file into the vector*/
-  buffer.resize(size_t(size));
-  if(size > 0) file.read((char*)(&buffer[0]), size);
-
-  return 0; /* OK */
+  long size = lodepng_filesize(filename.c_str());
+  if(size < 0) return 78;
+  buffer.resize((size_t)size);
+  return size == 0 ? 0 : lodepng_buffer_file(&buffer[0], (size_t)size, filename.c_str());
 }
 
 /*write given buffer to the file, overwriting the file, it doesn't append to it.*/
 unsigned save_file(const std::vector<unsigned char>& buffer, const std::string& filename)
 {
-  std::ofstream file(filename.c_str(), std::ios::out|std::ios::binary);
-  if(!file) return 79;
-  file.write(buffer.empty() ? 0 : (char*)&buffer[0], std::streamsize(buffer.size()));
-  return 0;
+  return lodepng_save_file(buffer.empty() ? 0 : &buffer[0], buffer.size(), filename.c_str());
 }
 #endif /* LODEPNG_COMPILE_DISK */
 
