@@ -27,6 +27,7 @@ version 0.96.4
 	* Bugfix (Bug #36): AI non-hostile and inactive (Reported by Chan Kun Wa)
 	* Bugfix (Bug #40): Bullets from gun turrets hit own building, e.g. other turrets (Reported by Dream Worker)
 	* Bugfix (Bug #50): Changing the player's name while playing a mission makes starting the next mission or restarting the current mission crash
+	* Bugfix (Bug #53): SFX mismatch when playing Harkonnen 
 	* Bugfix (Bug #62): Worms spawn under rock (Reported by heinrich arkonnen)
 	* Bugfix (Bug #67): Saving a game under Windows with (for filenames) illegal characters results in no save at all (Reported by vangrunz)
 	* Bugfix (Bug #70): Changing the player name makes replays crash
