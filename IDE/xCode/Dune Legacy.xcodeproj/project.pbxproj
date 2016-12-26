@@ -2206,7 +2206,7 @@
 					"-dylib_file",
 					"@loader_path/Frameworks/smpeg.framework/Versions/A/smpeg:/Library/Frameworks/SDL2_mixer.framework/Versions/A/Frameworks/smpeg.framework/Versions/A/smpeg",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "Dune-Legacy-OSX-0.96.4b-build17";
+				PRODUCT_BUNDLE_IDENTIFIER = "Dune-Legacy-OSX-0.96.4-build1";
 				PRODUCT_NAME = "Dune Legacy";
 				SYMROOT = "${SRCROOT}/build";
 				WRAPPER_EXTENSION = app;
@@ -2260,7 +2260,7 @@
 					"-dylib_file",
 					"@loader_path/Frameworks/smpeg.framework/Versions/A/smpeg:/Library/Frameworks/SDL2_mixer.framework/Versions/A/Frameworks/smpeg.framework/Versions/A/smpeg",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "Dune-Legacy-OSX-0.96.4b-build17";
+				PRODUCT_BUNDLE_IDENTIFIER = "Dune-Legacy-OSX-0.96.4-build1";
 				PRODUCT_NAME = "Dune Legacy";
 				SYMROOT = "${SRCROOT}/build";
 				WRAPPER_EXTENSION = app;

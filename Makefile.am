@@ -34,7 +34,7 @@ EXTRA_DIST = include \
              dunelegacy.desktop \
              MacOSX \
              dunelegacy.spec \
-             dunelegacy-0.96.3.ebuild \
+             dunelegacy-0.96.4.ebuild \
              dunelegacy.nsi \
              nsis-background1.bmp \
              nsis-background2.bmp \
@@ -69,4 +69,3 @@ uninstall-local:
 dist-hook:
 	rm -rf `find $(distdir) -name .svn`
 	rm -rf $(distdir)/IDE/xCode/Dune\ Legacy.xcodeproj/.svn
-	rm -rf $(distdir)/IDE/xCode3/Dune\ Legacy.xcodeproj/.svn

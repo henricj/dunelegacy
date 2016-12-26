@@ -1,14 +1,14 @@
 Summary:	A Dune II clone
 Summary(pl.UTF-8):	Zaktualizowany klon gry Dune2
 Name:		dunelegacy
-Version:	0.96.3
+Version:	0.96.4
 Release:	0.1
 License:	GPL v2+
 Group:		X11/Applications/Games/Strategy
 Source0:	http://www.myway.de/richieland/%{name}-%{version}-src.tar.bz2
 URL:		http://dunelegacy.sourceforge.net/
-BuildRequires:	SDL_mixer-devel
-BuildRequires:	SDL-devel
+BuildRequires:	SDL2_mixer-devel
+BuildRequires:	SDL2-devel
 BuildRequires:	autoconf
 BuildRequires:	automake
 BuildRequires:	libstdc++-devel

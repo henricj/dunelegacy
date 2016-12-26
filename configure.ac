@@ -1,4 +1,4 @@
-AC_INIT(dunelegacy, 0.96.4a2, http://dunelegacy.sourceforge.net)
+AC_INIT(dunelegacy, 0.96.4, http://dunelegacy.sourceforge.net)
 
 AC_CANONICAL_BUILD
 
@@ -19,8 +19,8 @@ fi
 AC_SUBST(dunelegacydatadir)
 
 dnl Some flags for gcc
-CXXFLAGS="-std=c++11 -pthread -O3 -pipe -pedantic -Wall -Wextra -Wno-unused-parameter -DNDEBUG"
-CFLAGS="-std=c99 -pthread -O3 -pipe -pedantic -Wall -Wextra -Wno-unused-parameter -DNDEBUG"
+CXXFLAGS="-std=c++11 -pthread -fPIC -O3 -pipe -pedantic -Wall -Wextra -Wno-unused-parameter -Wno-shift-negative-value -DNDEBUG"
+CFLAGS="-std=c99 -pthread -fPIC -O3 -pipe -pedantic -Wall -Wextra -Wno-unused-parameter -Wno-shift-negative-value -DNDEBUG"
 dnl Additional flags: -Wconversion -Wno-sign-conversion -Wlogical-op
 
 dnl Some flags for clang
@@ -50,7 +50,7 @@ dnl Check for SDL_mixer library.
 AC_CHECK_LIB(SDL2_mixer, 
        Mix_OpenAudio, 
        LIBS="$LIBS -lSDL2_mixer", 
-       AC_MSG_ERROR([*** SDL2_mixer library not found!]) 
+       AC_MSG_ERROR([*** SDL2_mixer library not found!])
 )
 
 dnl enet defines

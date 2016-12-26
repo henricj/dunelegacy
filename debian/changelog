@@ -1,11 +1,43 @@
-dunelegacy (0.96.4alpha1) unstable; urgency=low
+dunelegacy (0.96.4) unstable; urgency=low
   * New AI Smart Bot and Quant Bot
-  * New key bindings: Cycle through construction yards with 'H' and factories with 'F'
+  * Port to SDL 2
+  * Use hardware acceleration for drawing
+  * HD graphics: Use mask overlays to generate high-res graphics out of the low-res ones of the original game
+  * Maximum number of units per house (either map dependent or as a new game option "override maximum number of units")
+  * Move to fix-point math for game logic as floating-point operations may differ between platforms and compilers
+  * Units entering refineries or repair yards are now moving onto the structure tile before disappearing
+  * ADL music playback replaced: Now combines ScummVM AdlibDriver with Woody OPL chip emulation code from adplug
+  * Tutorial hints are shown in the campaign to guide the user
+  * New key bindings: Cycle through construction yards with 'H' and factories with 'F'; capture buildings with 'C'
   * Improve performance of Fog of War
-  * Bugfix (Bug 3610246): Mentat help used wrong houses (Thanks to kuffar for reporting that bug)
+  * Units can now be instructed to find the next repair yard on their own
+  * Save game speed, scroll speed and sound volume as game settings
+  * Use a smaller logical resolution for high resolution displays, e.g. 960x540 for 1920x1080
+  * In campaign mode, the map choice screen remembers the region of a failed mission (the user has to select a different region)
+  * New game option "Manual Carryall Drops"
+  * Mentat's eyes are following the cursor
+  * Clicking on mentat's eyes makes him blink and clicking on mentat's mouth makes him open it
+  * Modding: Make it possible to disable a unit or structure
+  * Save screenshots as PNG
+  * 64-bit builds for Windows
+  * Store complete map in save games (and replays) of single player custom games
+  * 18 new maps by heinrich arkonnen
+  * 4 new maps by Kuffar
+  * Bugfix (Bug #32): Repaired units getting removed from control group (Reported by Chan Kun Wa)
+  * Bugfix (Bug #36): AI non-hostile and inactive (Reported by Chan Kun Wa)
+  * Bugfix (Bug #40): Bullets from gun turrets hit own building, e.g. other turrets (Reported by Dream Worker)
+  * Bugfix (Bug #50): Changing the player's name while playing a mission makes starting the next mission or restarting the current mission crash
+  * Bugfix (Bug #53): SFX mismatch when playing Harkonnen 
+  * Bugfix (Bug #62): Worms spawn under rock (Reported by heinrich arkonnen)
+  * Bugfix (Bug #67): Saving a game under Windows with (for filenames) illegal characters results in no save at all (Reported by vangrunz)
+  * Bugfix (Bug #70): Changing the player name makes replays crash
+  * Bugfix (Bug #71): Ornithopter animation is too fast (Thanks to Kartones for the patch)
+  * Bugfix (Bug #72): Texture sizes were too big for older hardware; now textures are smaller than 2048x2048 (Reported by gdm85)
+  * Bugfix (Bug #73): Shift the level of the voc files so that the last sample is 128 (Reported by Vortaka)
+  * Bugfix (Bug 3610246): Mentat help used wrong houses (Reported by kuffar)
   * Various smaller bugfixes
 
- -- Richard Schaller <richard.schallerATgmx.de>  Tue, 29 Sep 2015 00:00:00 +0100
+ -- Richard Schaller <richard.schallerATgmx.de>  Mon, 26 Dec 2016 00:00:00 +0100
 
 dunelegacy (0.96.3) unstable; urgency=low
   * Full-featured map editor with support of Dune2-compatible maps as well as the extended map format

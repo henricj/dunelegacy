@@ -7,19 +7,19 @@ inherit eutils games
 
 DESCRIPTION="Dune Legacy is an open source clone of Dune 2."
 HOMEPAGE="http://dunelegacy.sourceforge.net"
-SRC_URI="http://www.myway.de/richieland/${PN}-0.96.3-src.tar.bz2"
+SRC_URI="http://www.myway.de/richieland/${PN}-0.96.4-src.tar.bz2"
 
 LICENSE="GPL-2 or later"
 SLOT="0"
 KEYWORDS="amd64 x86 ppc"
 IUSE=""
 
-RDEPEND="media-libs/libsdl
-	media-libs/sdl-mixer"
+RDEPEND="media-libs/libsdl2
+	media-libs/sdl2-mixer"
 
 DEPEND="${RDEPEND}"
 
-S=${WORKDIR}/${PN}-0.96.3
+S=${WORKDIR}/${PN}-0.96.4
 
 src_install() {
         cd "${S}/src"
