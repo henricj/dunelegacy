@@ -77,7 +77,7 @@ You will get a dunelegacy_0.96-1_*.deb file one directory above.
 
 
 Fedora:
-You need the source tarball (see Packaging/Source in this file) and the following packages: rpm-build, gcc, gcc-c++, libstdc++-devel, SDL-devel2, SDL2_mixer-devel. Then run the following command:
+You need the source tarball (see Packaging/Source in this file) and the following packages: rpm-build, gcc, gcc-c++, libstdc++-devel, SDL2-devel, SDL2_mixer-devel. Then run the following command:
 
 rpmbuild -tb dunelegacy-?-src.tar.bz2
 

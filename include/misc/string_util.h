@@ -27,6 +27,16 @@
 #include <functional>
 #include <sstream>
 
+
+#if defined(_MSC_VER) && (_MSC_VER >= 1600) /* VS 2010 and above */
+#include <sal.h>
+#define PRINTF_FORMAT_STRING _Printf_format_string_
+#define PRINTF_VARARG_FUNC( fmtargnumber )
+#elif defined(__GNUC__)
+#define PRINTF_FORMAT_STRING
+#define PRINTF_VARARG_FUNC( fmtargnumber ) __attribute__ (( format( __printf__, fmtargnumber, fmtargnumber+1 )))
+#endif
+
 bool splitString(const std::string& parseString, unsigned int numStringPointers,...);
 
 std::vector<std::string> splitString(const std::string& parseString, const std::string& delim = ",", bool keepDelim = false);

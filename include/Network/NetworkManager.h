@@ -26,6 +26,8 @@
 #include <Network/LANGameFinderAndAnnouncer.h>
 #include <Network/MetaServerClient.h>
 
+#include <misc/string_util.h>
+
 #include <enet/enet.h>
 #include <SDL.h>
 #include <string>
@@ -173,7 +175,7 @@ public:
     }
 
 private:
-    static void debugNetwork(SDL_PRINTF_FORMAT_STRING const char* fmt, ...) SDL_PRINTF_VARARG_FUNC(1);
+    static void debugNetwork(PRINTF_FORMAT_STRING const char* fmt, ...) PRINTF_VARARG_FUNC(1);
 
     void sendPacketToHost(ENetPacketOStream& packetStream, int channel = 0);
 

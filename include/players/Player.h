@@ -23,6 +23,7 @@
 #include <misc/InputStream.h>
 #include <misc/OutputStream.h>
 #include <misc/RobustList.h>
+#include <misc/string_util.h>
 
 class GameInitSettings;
 class Random;
@@ -99,13 +100,13 @@ protected:
         Logs a debug message
         \param  fmt the format string of the debug message
     */
-    void logDebug(SDL_PRINTF_FORMAT_STRING const char* fmt, ...) SDL_PRINTF_VARARG_FUNC(2);
+    void logDebug(PRINTF_FORMAT_STRING const char* fmt, ...) PRINTF_VARARG_FUNC(2);
 
     /**
         Logs a warning message
         \param  fmt the format string of the debug message
     */
-    void logWarn(SDL_PRINTF_FORMAT_STRING const char* fmt, ...) SDL_PRINTF_VARARG_FUNC(2);
+    void logWarn(PRINTF_FORMAT_STRING const char* fmt, ...) PRINTF_VARARG_FUNC(2);
 
     Random& getRandomGen() const;
     const GameInitSettings& getGameInitSettings() const;
