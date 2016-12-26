@@ -31,18 +31,15 @@ IndexedTextFile::IndexedTextFile(SDL_RWops* rwop, bool bDecode) {
         THROW(std::invalid_argument, "IndexedTextFile:IndexedTextFile(): rwop == nullptr!");
     }
 
-    Sint64 endOffset = SDL_RWseek(rwop,0,SEEK_END);
+    Sint64 endOffset = SDL_RWsize(rwop);
     if(endOffset < 0) {
         THROW(std::runtime_error, "IndexedTextFile:IndexedTextFile(): Cannot determine size of this file!");
     }
+
 	size_t indexedTextFilesize = static_cast<size_t>(endOffset);
 
     if(indexedTextFilesize < 2) {
         THROW(std::runtime_error, "IndexedTextFile:IndexedTextFile(): No valid indexed textfile: File too small!");
-    }
-
-    if(SDL_RWseek(rwop,0,SEEK_SET) != 0) {
-        THROW(std::runtime_error, "IndexedTextFile:IndexedTextFile(): Seeking in this indexed textfile failed!");
     }
 
     unsigned char* pFiledata;

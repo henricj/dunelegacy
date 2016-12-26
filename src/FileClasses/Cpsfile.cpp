@@ -43,16 +43,12 @@ SDL_Surface * LoadCPS_RW(SDL_RWops* RWop, int freesrc)
     SDL_Surface *pic = nullptr;
 
     try {
-        Sint64 endOffset = SDL_RWseek(RWop,0,SEEK_END);
+        Sint64 endOffset = SDL_RWsize(RWop);
         if(endOffset <= 0) {
             THROW(std::runtime_error, "LoadCPS_RW(): Cannot determine size of this *.cps-File!");
         }
-		size_t cpsFilesize = static_cast<size_t>(endOffset);
 
-        if(SDL_RWseek(RWop,0,SEEK_SET) != 0) {
-            THROW(std::runtime_error, "LoadCPS_RW(): Seeking in this *.cps-File failed!");
-        }
-
+        size_t cpsFilesize = static_cast<size_t>(endOffset);
         pFiledata = new uint8_t[cpsFilesize];
 
         if(SDL_RWread(RWop, pFiledata, cpsFilesize, 1) != 1) {

@@ -338,13 +338,8 @@ std::string readCompleteFile(const std::string& filename) {
         return "";
     }
 
-    Sint64 filesize = SDL_RWseek(RWopsFile,0,SEEK_END);
+    Sint64 filesize = SDL_RWsize(RWopsFile);
     if(filesize < 0) {
-        SDL_RWclose(RWopsFile);
-        return "";
-    }
-
-    if(SDL_RWseek(RWopsFile,0,SEEK_SET) != 0) {
         SDL_RWclose(RWopsFile);
         return "";
     }

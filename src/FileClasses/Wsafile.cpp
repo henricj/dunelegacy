@@ -258,7 +258,7 @@ unsigned char* Wsafile::readfile(SDL_RWops* rwop, int* filesize) {
         exit(EXIT_FAILURE);
     }
 
-    Sint64 endOffset = SDL_RWseek(rwop,0,SEEK_END);
+    Sint64 endOffset = SDL_RWsize(rwop);
     if(endOffset < 0) {
         SDL_Log("Wsafile: Cannot determine size of this *.wsa-File!");
         exit(EXIT_FAILURE);
@@ -267,11 +267,6 @@ unsigned char* Wsafile::readfile(SDL_RWops* rwop, int* filesize) {
 
     if(wsaFilesize < 10) {
         SDL_Log("Wsafile: No valid WSA-File: File too small!");
-        exit(EXIT_FAILURE);
-    }
-
-    if(SDL_RWseek(rwop,0,SEEK_SET) != 0) {
-        SDL_Log("Wsafile: Seeking in this *.wsa-File failed!");
         exit(EXIT_FAILURE);
     }
 

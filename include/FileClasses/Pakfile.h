@@ -71,6 +71,7 @@ public:
 private:
     static size_t ReadFile(SDL_RWops* pRWop, void *ptr, size_t size, size_t n);
     static size_t WriteFile(SDL_RWops *pRWop, const void *ptr, size_t size, size_t n);
+    static Sint64 SizeFile(SDL_RWops *pRWop);
     static Sint64 SeekFile(SDL_RWops *pRWop, Sint64 offset, int whence);
     static int CloseFile(SDL_RWops *pRWop);
 

@@ -129,8 +129,7 @@ void Pakfile::addFile(SDL_RWops* rwop, const std::string& filename) {
     }
 
 
-    size_t filelength = static_cast<size_t>(SDL_RWseek(rwop,0,SEEK_END));
-    SDL_RWseek(rwop,0,SEEK_SET);
+    size_t filelength = static_cast<size_t>(SDL_RWsize(rwop));
 
     char* extendedBuffer;
     if((extendedBuffer = (char*) realloc(writeOutData,numWriteOutData+filelength)) == nullptr) {
@@ -165,7 +164,7 @@ void Pakfile::addFile(SDL_RWops* rwop, const std::string& filename) {
 /// Opens a file in this PAK-File.
 /**
     This method opens the file specified by filename. It is only allowed if the Pakfile is opened for reading.
-    The returned SDL_RWops-structure can be used readonly with SDL_RWread, SDL_RWseek and SDL_RWclose. No writing
+    The returned SDL_RWops-structure can be used readonly with SDL_RWread, SDL_RWsize, SDL_RWseek and SDL_RWclose. No writing
     is supported. If the Pakfile is opened for writing this method returns nullptr.<br>
     NOTICE: The returned SDL_RWops-Structure is only valid as long as this Pakfile-Object exists. It gets
     invalid as soon as Pakfile:~Pakfile() is executed.
@@ -207,6 +206,7 @@ SDL_RWops* Pakfile::openFile(const std::string& filename) {
 
     pRWop->read = Pakfile::ReadFile;
     pRWop->write = Pakfile::WriteFile;
+    pRWop->size = Pakfile::SizeFile;
     pRWop->seek = Pakfile::SeekFile;
     pRWop->close = Pakfile::CloseFile;
     pRWop->hidden.unknown.data1 = (void*) pRWopData;
@@ -273,6 +273,25 @@ size_t Pakfile::ReadFile(SDL_RWops* pRWop, void *ptr, size_t size, size_t n) {
 
 size_t Pakfile::WriteFile(SDL_RWops *pRWop, const void *ptr, size_t size, size_t n) {
     return 0;
+}
+
+Sint64 Pakfile::SizeFile(SDL_RWops *pRWop) {
+    if((pRWop == nullptr) || (pRWop->hidden.unknown.data1 == nullptr)
+        || (pRWop->type != PAKFILE_RWOP_TYPE)) {
+        return -1;
+    }
+
+    RWopData* pRWopData = static_cast<RWopData*>(pRWop->hidden.unknown.data1);
+    Pakfile* pPakfile = pRWopData->curPakfile;
+    if(pPakfile == nullptr) {
+        return -1;
+    }
+
+    if(pRWopData->fileIndex >= pPakfile->fileEntries.size()) {
+        return -1;
+    }
+
+    return static_cast<Sint64>(pPakfile->fileEntries[pRWopData->fileIndex].endOffset - pPakfile->fileEntries[pRWopData->fileIndex].startOffset + 1);
 }
 
 Sint64 Pakfile::SeekFile(SDL_RWops *pRWop, Sint64 offset, int whence) {
@@ -372,9 +391,9 @@ void Pakfile::readIndex()
         fileEntries.push_back(newEntry);
     }
 
-    Sint64 filesize = SDL_RWseek(fPakFile,0,SEEK_END);
+    Sint64 filesize = SDL_RWsize(fPakFile);
     if(filesize < 0) {
-        THROW(std::runtime_error, "Pakfile::readIndex(): SDL_RWseek() failed!");
+        THROW(std::runtime_error, "Pakfile::readIndex(): SDL_RWsize() failed!");
     }
 
     fileEntries.back().endOffset = static_cast<size_t>(filesize) - 1;
