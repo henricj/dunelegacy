@@ -930,6 +930,12 @@
     <ClInclude Include="..\..\include\units\UnitBase.h">
       <Filter>include\units</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\misc\exceptions.h">
+      <Filter>include\misc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\misc\format.h">
+      <Filter>include\misc</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\AStarSearch.cpp">
@@ -1540,6 +1546,9 @@
     </ClCompile>
     <ClCompile Include="..\..\src\units\UnitBase.cpp">
       <Filter>src\units</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\misc\format.cpp">
+      <Filter>src\misc</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

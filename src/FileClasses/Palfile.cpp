@@ -26,11 +26,12 @@ Palette LoadPalette_RW(SDL_RWops* rwop, int freesrc)
         THROW(std::invalid_argument, "Palfile::Palfile(): rwop == nullptr!");
     }
 
-    int filesize;
-    if((filesize = SDL_RWseek(rwop,0,SEEK_END)) < 0) {
+    Sint64 endOffset;
+    if((endOffset = SDL_RWseek(rwop,0,SEEK_END)) < 0) {
         if(freesrc) SDL_RWclose(rwop);
         THROW(std::runtime_error, "Palfile::Palfile(): SDL_RWseek failed!");
     }
+	size_t filesize = static_cast<size_t>(endOffset);
 
     if(filesize % 3 != 0) {
         if(freesrc) SDL_RWclose(rwop);

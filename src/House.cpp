@@ -190,7 +190,7 @@ void House::addPlayer(std::shared_ptr<Player> newPlayer) {
 
     players.push_back(newPlayer);
 
-    Uint8 newPlayerID = (houseID << 4) | players.size();
+    Uint8 newPlayerID = static_cast<Uint8>((houseID << 4) | players.size());
     newPlayer->playerID = newPlayerID;
 
     currentGame->registerPlayer(newPlayer.get());

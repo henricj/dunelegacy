@@ -39,10 +39,11 @@ Shpfile::Shpfile(SDL_RWops* rwop, int freesrc)
         THROW(std::invalid_argument, "Shpfile::Shpfile(): rwop == nullptr!");
     }
 
-    shpFilesize = SDL_RWseek(rwop,0,SEEK_END);
-    if(shpFilesize <= 0) {
+    Sint64 endOffset = SDL_RWseek(rwop,0,SEEK_END);
+    if(endOffset <= 0) {
         THROW(std::runtime_error, "Shpfile::Shpfile(): Cannot determine size of this *.shp-File!");
     }
+	shpFilesize = static_cast<size_t>(endOffset);
 
     if(SDL_RWseek(rwop,0,SEEK_SET) != 0) {
         THROW(std::runtime_error, "Shpfile::Shpfile(): Seeking in this *.shp-File failed!");

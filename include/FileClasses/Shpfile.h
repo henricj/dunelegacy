@@ -70,7 +70,7 @@ private:
 
     std::vector<ShpfileEntry> shpfileEntries;
     unsigned char* pFiledata;
-    Uint32 shpFilesize;
+    size_t shpFilesize;
 };
 
 

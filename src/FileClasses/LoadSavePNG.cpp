@@ -40,10 +40,11 @@ SDL_Surface* LoadPNG_RW(SDL_RWops* RWop, int freesrc) {
 
     try {
         // read complete file into memory
-        size_t filesize = SDL_RWseek(RWop,0,SEEK_END);
-        if(filesize <= 0) {
+        Sint64 endOffset = SDL_RWseek(RWop,0,SEEK_END);
+        if(endOffset <= 0) {
             THROW(std::runtime_error, "LoadPNG_RW(): Cannot determine size of this *.png-File!");
         }
+		size_t filesize = static_cast<size_t>(endOffset);
 
         if(SDL_RWseek(RWop,0,SEEK_SET) != 0) {
             THROW(std::runtime_error, "LoadPNG_RW(): Seeking in this *.png-File failed!");

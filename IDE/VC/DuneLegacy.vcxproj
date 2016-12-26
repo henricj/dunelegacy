@@ -345,8 +345,10 @@
     <ClInclude Include="..\..\include\misc\BlendBlitter.h" />
     <ClInclude Include="..\..\include\misc\DrawingRectHelper.h" />
     <ClInclude Include="..\..\include\misc\draw_util.h" />
+    <ClInclude Include="..\..\include\misc\exceptions.h" />
     <ClInclude Include="..\..\include\misc\FileSystem.h" />
     <ClInclude Include="..\..\include\misc\fnkdat.h" />
+    <ClInclude Include="..\..\include\misc\format.h" />
     <ClInclude Include="..\..\include\misc\IFileStream.h" />
     <ClInclude Include="..\..\include\misc\IMemoryStream.h" />
     <ClInclude Include="..\..\include\misc\InputStream.h" />
@@ -567,6 +569,7 @@
     <ClCompile Include="..\..\src\misc\draw_util.cpp" />
     <ClCompile Include="..\..\src\misc\FileSystem.cpp" />
     <ClCompile Include="..\..\src\misc\fnkdat.cpp" />
+    <ClCompile Include="..\..\src\misc\format.cpp" />
     <ClCompile Include="..\..\src\misc\IFileStream.cpp" />
     <ClCompile Include="..\..\src\misc\md5.cpp" />
     <ClCompile Include="..\..\src\misc\OFileStream.cpp" />

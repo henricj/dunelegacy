@@ -23,6 +23,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <algorithm>
 
 extern Palette palette;
 
@@ -257,11 +258,12 @@ unsigned char* Wsafile::readfile(SDL_RWops* rwop, int* filesize) {
         exit(EXIT_FAILURE);
     }
 
-    int wsaFilesize = SDL_RWseek(rwop,0,SEEK_END);
-    if(wsaFilesize <= 0) {
+    Sint64 endOffset = SDL_RWseek(rwop,0,SEEK_END);
+    if(endOffset < 0) {
         SDL_Log("Wsafile: Cannot determine size of this *.wsa-File!");
         exit(EXIT_FAILURE);
     }
+	size_t wsaFilesize = static_cast<size_t>(endOffset);
 
     if(wsaFilesize < 10) {
         SDL_Log("Wsafile: No valid WSA-File: File too small!");

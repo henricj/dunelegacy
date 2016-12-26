@@ -129,7 +129,7 @@ void Pakfile::addFile(SDL_RWops* rwop, const std::string& filename) {
     }
 
 
-    size_t filelength = SDL_RWseek(rwop,0,SEEK_END);
+    size_t filelength = static_cast<size_t>(SDL_RWseek(rwop,0,SEEK_END));
     SDL_RWseek(rwop,0,SEEK_SET);
 
     char* extendedBuffer;
@@ -319,7 +319,7 @@ Sint64 Pakfile::SeekFile(SDL_RWops *pRWop, Sint64 offset, int whence) {
         return -1;
     }
 
-    pRWopData->fileOffset = newOffset;
+    pRWopData->fileOffset = static_cast<size_t>(newOffset);
     return newOffset;
 }
 
@@ -372,10 +372,10 @@ void Pakfile::readIndex()
         fileEntries.push_back(newEntry);
     }
 
-    int filesize = SDL_RWseek(fPakFile,0,SEEK_END);
+    Sint64 filesize = SDL_RWseek(fPakFile,0,SEEK_END);
     if(filesize < 0) {
         THROW(std::runtime_error, "Pakfile::readIndex(): SDL_RWseek() failed!");
     }
 
-    fileEntries.back().endOffset = filesize - 1;
+    fileEntries.back().endOffset = static_cast<size_t>(filesize) - 1;
 }

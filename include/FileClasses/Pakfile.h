@@ -46,7 +46,7 @@ private:
     struct RWopData {
         Pakfile* curPakfile;
         unsigned int fileIndex;
-        uint32_t fileOffset;
+        size_t fileOffset;
     };
 
 public:

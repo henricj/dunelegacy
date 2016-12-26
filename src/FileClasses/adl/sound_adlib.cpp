@@ -2450,13 +2450,12 @@ void SoundAdlibPC::internalLoadFile(SDL_RWops* rwop) {
   }
 
   uint8 *file_data = 0;
-  int file_size = 0;
-
-  if((file_size = SDL_RWseek(rwop,0,SEEK_END)) <= 0) {
+  Sint64 endOffset = SDL_RWseek(rwop, 0, SEEK_END);
+  if(endOffset <= 0) {
     SDL_Log("SoundAdlibPC::internalLoadFile(): Cannot seek in SDL_RWop!");
     return;
   }
-
+  size_t file_size = static_cast<size_t>(endOffset);
 
   unk2();
   unk1();
