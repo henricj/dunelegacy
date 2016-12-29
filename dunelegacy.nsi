@@ -175,6 +175,7 @@ Section ""
   ${EndIf}
   File data\LEGACY.PAK
   File data\OPENSD2.PAK
+  File data\GFXHD.PAK
   File data\Dune2-Versions.txt
 
   File COPYING
