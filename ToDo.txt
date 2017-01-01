@@ -26,6 +26,14 @@ Test Menu music change with directory player
 Ideas:
 ------
 
+Allow for selecting whole rulesets (rules + object data), e.g. for Dune 2 Extended
+
+Air units flying grid-independend
+
+Collecting replays on the game statistics screen
+
+Make the UI scalable, e.g. 2x
+
 Configurable hotkeys for various commands (placing building, ordering units, scrolling, ...). SDL 2.0 has some functions for mapping keys/scancodes to key names which simplifies key mappings a lot.
 
 Upgrades for Windtraps, Silos, Refineries (another Harvester?), Gun-Turrets, ...

@@ -308,7 +308,7 @@ void SFXManager::loadNonEnglishVoice(const std::string& languagePrefix) {
     lngVoice[UnitDeployed] = getChunkFromFile(languagePrefix + "DEPLOY.VOC");
 
     // "Unit launched"
-    lngVoice[UnitLaunched] = getChunkFromFile(languagePrefix + "LAUNCH.VOC");
+    lngVoice[UnitLaunched] = getChunkFromFile(languagePrefix + "VEHICLE.VOC");
 
     // "Contruction complete"
     lngVoice[ConstructionComplete] = getChunkFromFile(languagePrefix + "CONST.VOC");
