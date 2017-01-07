@@ -108,13 +108,13 @@ std::list<FileInfo> getFileList(const std::string& directory, const std::string&
         return Files;
     }
 
-    long hFile;
+	intptr_t hFile;
 
     _finddata_t fdata;
 
     std::string searchString = std::string(szPath) + "/*";
 
-    if ((hFile = (long)_findfirst(searchString.c_str(), &fdata)) != -1L) {
+    if ((hFile = (intptr_t)_findfirst(searchString.c_str(), &fdata)) != -1L) {
         do {
             std::string filename = fdata.name;
 
