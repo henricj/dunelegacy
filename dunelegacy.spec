@@ -75,6 +75,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/%{name}/*
 %{_datadir}/applications/%{name}.desktop
 %{_datadir}/pixmaps/%{name}.png
+%{_mandir}/man6/dunelegacy.6*
 
 %define date	%(echo `LC_ALL="C" date +"%a %b %d %Y"`)
 %changelog

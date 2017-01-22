@@ -11,6 +11,7 @@ EXTRA_DIST = include \
              debian/copyright \
              debian/dirs \
              debian/docs \
+             debian/dunelegacy.manpages \
              debian/rules \
              data/LEGACY.PAK \
              data/OPENSD2.PAK \
@@ -26,6 +27,7 @@ EXTRA_DIST = include \
              builddebug.sh \
              buildcrosswin32.sh \
              runUnitTests.sh \
+             dunelegacy.6 \
              dunelegacy.png \
              dunelegacy.svg \
              dunelegacy-128x128.png \

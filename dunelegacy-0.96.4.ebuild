@@ -34,6 +34,8 @@ src_install() {
 	doicon dunelegacy.png
 	make_desktop_entry ${PN} "Dune Legacy" dunelegacy.png "Game;StrategyGame;"
 
+	doman dunelegacy.6
+
 	prepgamesdirs
 }
 
