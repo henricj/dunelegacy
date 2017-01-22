@@ -1364,6 +1364,8 @@ void QuantBot::build(int militaryValue) {
                                     itemCount[Structure_Refinery]++;
                                 } else if(itemCount[Structure_StarPort] == 0 && pBuilder->isAvailableToBuild(Structure_StarPort) && findPlaceLocation(Structure_StarPort).isValid()) {
                                     itemID = Structure_StarPort;
+								} else if (itemCount[Structure_RepairYard] == 0 && pBuilder->isAvailableToBuild(Structure_RepairYard)) {
+									itemID = Structure_RepairYard;
                                 } else if(itemCount[Unit_Harvester] < (harvesterLimit / 3) && money < 2000
                                         && ((itemCount[Structure_Refinery] < harvesterLimit / 4
                                              && itemCount[Structure_Refinery] < 8)
@@ -1384,8 +1386,6 @@ void QuantBot::build(int militaryValue) {
                                     if(pBuilder->isAvailableToBuild(Structure_HeavyFactory)) {
                                         itemID = Structure_HeavyFactory;
                                     }
-                                } else if(itemCount[Structure_RepairYard] == 0 && pBuilder->isAvailableToBuild(Structure_RepairYard)) {
-                                    itemID = Structure_RepairYard;
                                 } else if(money < 2000 && itemCount[Unit_Harvester] < harvesterLimit && pBuilder->isAvailableToBuild(Structure_Refinery)) {
                                     // Focus on the economy
                                     itemID = Structure_Refinery;
