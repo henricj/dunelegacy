@@ -91,6 +91,6 @@
 #define DEFAULT_STARTINGCREDITS 3000
 
 #define HUMANPLAYERCLASS        "HumanPlayer"
-#define DEFAULTAIPLAYERCLASS    "qBotCampaignEasy"  //Stefan: updated to use my campaign AI
+#define DEFAULTAIPLAYERCLASS    "qBotMedium"
 
 #endif //DEFINITIONS_H
