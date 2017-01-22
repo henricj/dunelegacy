@@ -430,7 +430,7 @@ void INIMapLoader::loadHouses()
         } else {
             int defaultMaxUnit = std::max(25, 25*(currentGameMap->getSizeX()*currentGameMap->getSizeY())/(64*64));
             int maxUnit = inifile->getIntValue(houseName,"MaxUnit",defaultMaxUnit);
-            maxUnits = inifile->getIntValue(houseName,"MaxUnit",maxUnit);
+            maxUnits = inifile->getIntValue(houseName,"MaxUnits",maxUnit);
         }
 
         int quota = inifile->getIntValue(houseName,"Quota",0);
