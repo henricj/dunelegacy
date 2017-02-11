@@ -149,7 +149,7 @@ void setVideoMode(int displayIndex)
     }
 
     window = SDL_CreateWindow("Dune Legacy",
-                              SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
+                              SDL_WINDOWPOS_CENTERED_DISPLAY(displayIndex), SDL_WINDOWPOS_CENTERED_DISPLAY(displayIndex),
                               settings.video.physicalWidth, settings.video.physicalHeight,
                               videoFlags);
     renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_TARGETTEXTURE);
