@@ -105,7 +105,7 @@ inline std::string demangleSymbol(const char* symbolname) {
 }
 #endif
 
-void setVideoMode();
+void setVideoMode(int displayIndex);
 void realign_buttons();
 
 static void printUsage() {
@@ -122,7 +122,7 @@ int getLogicalToPhysicalResolutionFactor(int physicalWidth, int physicalHeight) 
     }
 }
 
-void setVideoMode()
+void setVideoMode(int displayIndex)
 {
     int videoFlags = 0;
 
@@ -133,7 +133,7 @@ void setVideoMode()
     SDL_DisplayMode targetDisplayMode = { 0, settings.video.physicalWidth, settings.video.physicalHeight, 0, nullptr};
     SDL_DisplayMode closestDisplayMode;
 
-    if(SDL_GetClosestDisplayMode(SCREEN_DISPLAYINDEX, &targetDisplayMode, &closestDisplayMode) == nullptr) {
+    if(SDL_GetClosestDisplayMode(displayIndex, &targetDisplayMode, &closestDisplayMode) == nullptr) {
         SDL_Log("Warning: Falling back to a display resolution of 640x480!");
         settings.video.physicalWidth = 640;
         settings.video.physicalHeight = 480;
@@ -172,7 +172,7 @@ void toogleFullscreen()
         // switch to fullscreen mode
         SDL_Log("Switching to fullscreen mode.");
         SDL_DisplayMode displayMode;
-        SDL_GetDesktopDisplayMode(SCREEN_DISPLAYINDEX, &displayMode);
+        SDL_GetDesktopDisplayMode(SDL_GetWindowDisplayIndex(window), &displayMode);
 
         SDL_SetWindowFullscreen(window, (SDL_GetWindowFlags(window) ^ SDL_WINDOW_FULLSCREEN_DESKTOP));
 
@@ -481,6 +481,8 @@ int main(int argc, char *argv[]) {
         debug = false;
         cursorFrame = UI_CursorNormal;
 
+        int currentDisplayIndex = SCREEN_DEFAULT_DISPLAYINDEX;
+
         do {
             unsigned int seed = (unsigned int) time(nullptr);
             srand(seed);
@@ -593,7 +595,7 @@ int main(int argc, char *argv[]) {
 
             if(bFirstGamestart == true && bFirstInit == true) {
                 SDL_DisplayMode displayMode;
-                SDL_GetDesktopDisplayMode(SCREEN_DISPLAYINDEX, &displayMode);
+                SDL_GetDesktopDisplayMode(currentDisplayIndex, &displayMode);
 
                 int factor = getLogicalToPhysicalResolutionFactor(displayMode.w, displayMode.h);
                 settings.video.physicalWidth = displayMode.w;
@@ -631,7 +633,7 @@ int main(int argc, char *argv[]) {
             palette = LoadPalette_RW(pFileManager->openFile("IBM.PAL"), true);
 
             SDL_Log("Setting video mode...");
-            setVideoMode();
+            setVideoMode(currentDisplayIndex);
             SDL_RendererInfo rendererInfo;
             SDL_GetRendererInfo(renderer, &rendererInfo);
             SDL_Log("Renderer: %s (max texture size: %dx%d)", rendererInfo.name, rendererInfo.max_texture_width, rendererInfo.max_texture_height);
@@ -703,6 +705,9 @@ int main(int argc, char *argv[]) {
                 delete soundPlayer;
                 Mix_HaltMusic();
                 Mix_CloseAudio();
+            } else {
+                // save the current display index for later reuse
+                currentDisplayIndex = SDL_GetWindowDisplayIndex(window);
             }
 
             delete pTextManager;

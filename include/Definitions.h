@@ -18,11 +18,11 @@
 #ifndef DEFINITIONS_H
 #define DEFINITIONS_H
 
-#define SCREEN_BPP          32
-#define SCREEN_FORMAT       SDL_PIXELFORMAT_ABGR8888
-#define SCREEN_MIN_WIDTH    640
-#define SCREEN_MIN_HEIGHT   480
-#define SCREEN_DISPLAYINDEX 0
+#define SCREEN_BPP                  32
+#define SCREEN_FORMAT               SDL_PIXELFORMAT_ABGR8888
+#define SCREEN_MIN_WIDTH            640
+#define SCREEN_MIN_HEIGHT           480
+#define SCREEN_DEFAULT_DISPLAYINDEX 0
 
 #define AUDIO_FREQUENCY     44100
 

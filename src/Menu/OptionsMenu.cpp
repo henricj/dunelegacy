@@ -394,9 +394,10 @@ void OptionsMenu::determineAvailableScreenResolutions() {
     availScreenRes.clear();
 
     SDL_DisplayMode displayMode;
-    int numDisplayModes = SDL_GetNumDisplayModes(SCREEN_DISPLAYINDEX);
+    int displayIndex = SDL_GetWindowDisplayIndex(window);
+    int numDisplayModes = SDL_GetNumDisplayModes(displayIndex);
     for(int i = numDisplayModes-1; i >=0; i--) {
-        if(SDL_GetDisplayMode(SCREEN_DISPLAYINDEX, i, &displayMode) == 0) {
+        if(SDL_GetDisplayMode(displayIndex, i, &displayMode) == 0) {
             Coord screenRes(displayMode.w, displayMode.h);
             if(screenRes.x >= SCREEN_MIN_WIDTH && screenRes.y >= SCREEN_MIN_HEIGHT) {
                 if(std::find(availScreenRes.begin(), availScreenRes.end(), screenRes) == availScreenRes.end()) {

@@ -1,5 +1,6 @@
 version 0.97.0
 	* Air unit limit increases with (ground) unit limit
+	* Bugfix (Bug #77) Window moves to primary screen on resolution change (Reported by Urs Enke)
 	* Bugfix (Bug #81) Wrong "Built Object" stats (Reported by Urs Enke)
 	* Bugfix (Bug #82) Deviator effectlessly targets Sandworms (Reported by Urs Enke)
 
