@@ -1,5 +1,6 @@
 version 0.97.0
 	* Air unit limit increases with (ground) unit limit
+	* Bugfix (Bug #82) Deviator effectlessly targets Sandworms
 
 version 0.96.4
 	* New AI Smart Bot and Quant Bot
