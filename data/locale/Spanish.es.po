@@ -2846,7 +2846,7 @@ msgid "Random"
 msgstr "Aleatorio"
 
 #: src/Menu/CustomGameStatsMenu.cpp:63
-msgid "Built Object"
+msgid "Built Objects"
 msgstr "Obj. construidos"
 
 #: src/Menu/CustomGameStatsMenu.cpp:68

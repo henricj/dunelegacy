@@ -1,6 +1,7 @@
 version 0.97.0
 	* Air unit limit increases with (ground) unit limit
-	* Bugfix (Bug #82) Deviator effectlessly targets Sandworms
+	* Bugfix (Bug #81) Wrong "Built Object" stats (Reported by Urs Enke)
+	* Bugfix (Bug #82) Deviator effectlessly targets Sandworms (Reported by Urs Enke)
 
 version 0.96.4
 	* New AI Smart Bot and Quant Bot

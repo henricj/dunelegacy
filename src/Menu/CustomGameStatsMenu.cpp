@@ -60,7 +60,7 @@ CustomGameStatsMenu::CustomGameStatsMenu() : MenuBase()
 
     headerHBox.addWidget(&headerLabelDummy, 130);
     headerHBox.addWidget(Spacer::create(), 10);
-    headerLabel1.setText(_("Built Object"));
+    headerLabel1.setText(_("Built Objects"));
     headerLabel1.setAlignment(Alignment_HCenter);
     headerLabel1.setTextColor(localHouseColor);
     headerHBox.addWidget(&headerLabel1, 132);
@@ -103,10 +103,10 @@ CustomGameStatsMenu::CustomGameStatsMenu() : MenuBase()
 
             curHouseStat.houseName.setText(_("House") + " " + getHouseNameByNumber((HOUSETYPE) i));
             curHouseStat.houseName.setTextColor(textcolor);
-            curHouseStat.houseHBox.addWidget(&curHouseStat.houseName, 130);
-            curHouseStat.houseHBox.addWidget(Spacer::create(), 10);
+            curHouseStat.houseHBox.addWidget(&curHouseStat.houseName, 145);
+            curHouseStat.houseHBox.addWidget(Spacer::create(), 5);
 
-            curHouseStat.value1.setText( stringify(pHouse->getBuiltValue()*100));
+            curHouseStat.value1.setText( stringify(pHouse->getBuiltValue()));
             curHouseStat.value1.setTextFont(FONT_STD10);
             curHouseStat.value1.setAlignment(Alignment_Right);
             curHouseStat.value1.setTextColor(textcolor);
@@ -120,7 +120,7 @@ CustomGameStatsMenu::CustomGameStatsMenu() : MenuBase()
             curHouseStat.vBox1.addWidget(Spacer::create(), 0.5);
             curHouseStat.houseHBox.addWidget(&curHouseStat.vBox1, 80);
 
-            curHouseStat.houseHBox.addWidget(Spacer::create(), 30);
+            curHouseStat.houseHBox.addWidget(Spacer::create(), 25);
 
             curHouseStat.value2.setText( stringify(pHouse->getDestroyedValue()*100));
             curHouseStat.value2.setTextFont(FONT_STD10);
@@ -136,7 +136,7 @@ CustomGameStatsMenu::CustomGameStatsMenu() : MenuBase()
             curHouseStat.vBox2.addWidget(Spacer::create(), 0.5);
             curHouseStat.houseHBox.addWidget(&curHouseStat.vBox2, 80);
 
-            curHouseStat.houseHBox.addWidget(Spacer::create(), 30);
+            curHouseStat.houseHBox.addWidget(Spacer::create(), 25);
 
             curHouseStat.value3.setText( stringify(lround(pHouse->getHarvestedSpice())));
             curHouseStat.value3.setTextFont(FONT_STD10);

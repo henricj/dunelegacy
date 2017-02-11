@@ -455,10 +455,10 @@ void House::noteDamageLocation(ObjectBase* pObject, int damage, Uint32 damagerID
 */
 void House::informWasBuilt(Uint32 itemID) {
     if(isStructure(itemID)) {
-        structureBuiltValue += currentGame->objectData.data[itemID][houseID].price; // Removed divide by 100
+        structureBuiltValue += currentGame->objectData.data[itemID][houseID].price;
         numBuiltStructures++;
     } else {
-        unitBuiltValue += currentGame->objectData.data[itemID][houseID].price; // Removed divide by 100
+        unitBuiltValue += currentGame->objectData.data[itemID][houseID].price;
         numBuiltUnits++;
     }
 
