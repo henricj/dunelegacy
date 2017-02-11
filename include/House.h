@@ -120,7 +120,7 @@ public:
         \return true, if the limit is already reached, false if building further air units is allowed
     */
     inline bool isAirUnitLimitReached() const {
-        return (numItem[Unit_Carryall] + numItem[Unit_Ornithopter] >= 11);
+        return (numItem[Unit_Carryall] + numItem[Unit_Ornithopter] >= 11*std::max(maxUnits,25)/25);
     }
 
     inline Choam& getChoam() { return choam; };

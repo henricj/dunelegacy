@@ -1,3 +1,6 @@
+version 0.97.0
+	* Air unit limit increases with (ground) unit limit
+
 version 0.96.4
 	* New AI Smart Bot and Quant Bot
 	* Port to SDL 2
