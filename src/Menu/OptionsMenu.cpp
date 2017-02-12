@@ -301,8 +301,7 @@ void OptionsMenu::onOptionsOK() {
     }
 
     settings.general.playerName = playername;
-
-    std::string languageFilename = availLanguages[languageDropDownBox.getSelectedEntryIntData()];
+    std::string languageFilename = (languageDropDownBox.getSelectedEntryIntData() < 0) ? "English.en.po" : availLanguages[languageDropDownBox.getSelectedEntryIntData()];
     settings.general.language = languageFilename.substr(languageFilename.size()-5,2);
     settings.general.playIntro = introCheckbox.isChecked();
     settings.general.showTutorialHints = showTutorialHintsCheckbox.isChecked();
