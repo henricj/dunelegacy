@@ -24,7 +24,7 @@
 static Uint32 Seed;
 
 // a point that has 2 coordinates
-typedef struct  {
+typedef struct {
     Uint16 x;
     Uint16 y;
 } MapSeedPoint;
