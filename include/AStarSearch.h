@@ -127,6 +127,9 @@ private:
         getMapData(openList[0]).openListIndex = 0;
         openList.pop_back();
 
+        if (openList.empty())
+            return ret;
+
         size_t current = 0;
         Coord top = openList[current];  // save root
         FixPoint topf = getMapData(top).f;
