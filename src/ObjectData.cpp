@@ -201,7 +201,7 @@ void ObjectData::load(InputStream& stream)
             data[i][h].buildtime = stream.readSint32();
             data[i][h].infspawnprop = stream.readSint32();
             data[i][h].builder = stream.readSint32();
-            data[i][h].prerequisiteStructuresSet = std::bitset<Structure_LastID>( (unsigned long) stream.readUint32());
+            data[i][h].prerequisiteStructuresSet = std::bitset<Structure_LastID + 1>( (unsigned long) stream.readUint32());
             data[i][h].techLevel = stream.readSint8();
             data[i][h].upgradeLevel = stream.readSint8();
         }
@@ -264,8 +264,8 @@ int ObjectData::loadItemID(const INIFile& objectDataFile, const std::string& sec
 }
 
 
-std::bitset<Structure_LastID> ObjectData::loadPrerequisiteStructuresSet(const INIFile& objectDataFile, const std::string& section, const std::string& key, char houseChar, std::bitset<Structure_LastID> defaultValue) {
-    std::bitset<Structure_LastID> resultSet;
+std::bitset<Structure_LastID + 1> ObjectData::loadPrerequisiteStructuresSet(const INIFile& objectDataFile, const std::string& section, const std::string& key, char houseChar, std::bitset<Structure_LastID + 1> defaultValue) {
+    std::bitset<Structure_LastID + 1> resultSet;
 
     std::string strList = loadStringValue(objectDataFile, section, key, houseChar, "");
 

@@ -103,7 +103,7 @@ public:
         Sint32   buildtime;                                           ///< how much time does the production of this structure/unit take?
         Sint32   infspawnprop;                                        ///< what is the probability (in percent) that a infantry soldier is spawn on destruction?
         int      builder;                                             ///< In which building can this item be built
-        std::bitset<Structure_LastID>   prerequisiteStructuresSet;    ///< What buildings are prerequisite for building this item
+        std::bitset<Structure_LastID + 1>   prerequisiteStructuresSet;    ///< What buildings are prerequisite for building this item
         Sint8    techLevel;                                           ///< What techLevel is needed to build this item (in campaign mode this equals to mission number)
         Sint8    upgradeLevel;                                        ///< How many upgrades must the builder already have made
     };
@@ -117,7 +117,7 @@ private:
     FixPoint loadFixPointValue(const INIFile& objectDataFile, const std::string& section, const std::string& key, char houseChar, FixPoint defaultValue = 0);
     std::string loadStringValue(const INIFile& objectDataFile, const std::string& section, const std::string& key, char houseChar, const std::string& defaultValue = "");
     int loadItemID(const INIFile& objectDataFile, const std::string& section, const std::string& key, char houseChar, int defaultValue = ItemID_Invalid);
-    std::bitset<Structure_LastID> loadPrerequisiteStructuresSet(const INIFile& objectDataFile, const std::string& section, const std::string& key, char houseChar, std::bitset<Structure_LastID> defaultValue = std::bitset<Structure_LastID>());
+    std::bitset<Structure_LastID + 1> loadPrerequisiteStructuresSet(const INIFile& objectDataFile, const std::string& section, const std::string& key, char houseChar, std::bitset<Structure_LastID + 1> defaultValue = std::bitset<Structure_LastID + 1>());
 };
 
 #endif // OBJECTDATA_H
