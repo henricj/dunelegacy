@@ -115,7 +115,9 @@
 #ifdef _WIN32
 
 #define WIN32_LEAN_AND_MEAN
+#ifndef STRICT
 #define STRICT
+#endif
 #include <windows.h>
 #include <direct.h>
 #include <cctype>
