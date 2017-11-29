@@ -464,14 +464,16 @@ int BuilderList::getButton(int x, int y) {
     return -1;
 }
 
-int BuilderList::getItemIDFromIndex(int i) {
+int BuilderList::getItemIDFromIndex(int i) const {
 
-    BuilderBase* pBuilder = dynamic_cast<BuilderBase*>(currentGame->getObjectManager().getObject(builderObjectID));
+    if (i >= 0) {
+        const auto pBuilder = dynamic_cast<BuilderBase*>(currentGame->getObjectManager().getObject(builderObjectID));
 
-    if(pBuilder != nullptr) {
-        auto buildItemIter = std::next(pBuilder->getBuildList().begin(), i);
-        if(buildItemIter != pBuilder->getBuildList().end()) {
-            return buildItemIter->itemID;
+        if (pBuilder != nullptr) {
+            const auto buildItemIter = std::next(pBuilder->getBuildList().begin(), i);
+            if (buildItemIter != pBuilder->getBuildList().end()) {
+                return buildItemIter->itemID;
+            }
         }
     }
 

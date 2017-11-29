@@ -136,7 +136,7 @@ private:
     int getNumButtons(int height);
     Point getButtonPosition(int BtnNumber);
     int getButton(int x, int y);
-    int getItemIDFromIndex(int i);
+    int getItemIDFromIndex(int i) const;
 
     void onUp();
     void onDown();
