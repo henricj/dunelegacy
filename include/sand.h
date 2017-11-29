@@ -18,7 +18,7 @@
 #ifndef SAND_H
 #define SAND_H
 
-#include <SDL.h>
+#include <SDL2/SDL.h>
 
 #include <fixmath/FixPoint.h>
 #include <DataTypes.h>

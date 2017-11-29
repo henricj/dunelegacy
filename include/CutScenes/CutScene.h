@@ -21,7 +21,7 @@
 #include <CutScenes/Scene.h>
 #include <FileClasses/Palette.h>
 
-#include <SDL.h>
+#include <SDL2/SDL.h>
 #include <queue>
 
 /// A base class for running Dune 2 Cutscenes.

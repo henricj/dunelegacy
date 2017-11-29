@@ -23,7 +23,7 @@
 #include "ListBox.h"
 
 
-#include <SDL.h>
+#include <SDL2/SDL.h>
 #include <vector>
 #include <string>
 #include <functional>

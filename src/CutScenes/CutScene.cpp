@@ -24,7 +24,7 @@
 #include <globals.h>
 #include <sand.h>
 
-#include <SDL.h>
+#include <SDL2/SDL.h>
 
 CutScene::CutScene()
 {

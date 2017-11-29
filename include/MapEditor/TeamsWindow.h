@@ -31,7 +31,7 @@
 #include <GUI/ListBox.h>
 #include <GUI/dune/DigitsTextBox.h>
 
-#include <SDL.h>
+#include <SDL2/SDL.h>
 
 // forward declaration
 class MapEditor;

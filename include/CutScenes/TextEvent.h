@@ -18,7 +18,7 @@
 #ifndef TEXTEVENT_H
 #define TEXTEVENT_H
 
-#include <SDL.h>
+#include <SDL2/SDL.h>
 #include <string>
 
 #include <Definitions.h>

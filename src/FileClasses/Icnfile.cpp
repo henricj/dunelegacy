@@ -20,7 +20,7 @@
 
 #include <misc/exceptions.h>
 
-#include <SDL_endian.h>
+#include <SDL2/SDL_endian.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>

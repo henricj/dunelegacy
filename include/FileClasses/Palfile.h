@@ -19,8 +19,8 @@
 #define PALFILE_H
 
 #include <FileClasses/Palette.h>
-#include <SDL.h>
-#include <SDL_rwops.h>
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_rwops.h>
 
 /// A class for reading palettes out of PAL-Files.
 /**

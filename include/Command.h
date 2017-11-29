@@ -22,7 +22,7 @@
 #include <misc/OutputStream.h>
 
 #include <vector>
-#include <SDL.h>
+#include <SDL2/SDL.h>
 
 typedef enum {
     CMD_NONE,

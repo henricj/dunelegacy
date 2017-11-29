@@ -29,7 +29,7 @@
 
 #include <misc/draw_util.h>
 
-#include <SDL.h>
+#include <SDL2/SDL.h>
 
 GameInterface::GameInterface() : Window(0,0,0,0) {
     pObjectContainer = nullptr;

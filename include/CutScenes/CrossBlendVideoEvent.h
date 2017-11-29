@@ -20,7 +20,7 @@
 
 #include <CutScenes/VideoEvent.h>
 #include <misc/BlendBlitter.h>
-#include <SDL.h>
+#include <SDL2/SDL.h>
 
 /**
     This VideoEvent blends between two pictures. The blending is done in 30 steps revealing more and more pixels

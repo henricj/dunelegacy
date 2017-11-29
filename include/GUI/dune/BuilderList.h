@@ -22,7 +22,7 @@
 #include <GUI/PictureButton.h>
 #include <GUI/TextButton.h>
 
-#include <SDL.h>
+#include <SDL2/SDL.h>
 
 #define ARROWBTN_WIDTH 48
 #define ARROWBTN_HEIGHT 16

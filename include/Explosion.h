@@ -22,7 +22,7 @@
 #include <misc/InputStream.h>
 #include <misc/OutputStream.h>
 
-#include <SDL.h>
+#include <SDL2/SDL.h>
 
 class Explosion
 {

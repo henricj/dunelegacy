@@ -22,7 +22,7 @@
 #include "GUIStyle.h"
 #include <misc/draw_util.h>
 #include <misc/string_util.h>
-#include <SDL.h>
+#include <SDL2/SDL.h>
 #include <string>
 #include <list>
 #include <algorithm>

@@ -19,7 +19,7 @@
 #define PAKFILE_H
 
 #include <stdio.h>
-#include <SDL_rwops.h>
+#include <SDL2/SDL_rwops.h>
 #include <string>
 #include <vector>
 #include <inttypes.h>

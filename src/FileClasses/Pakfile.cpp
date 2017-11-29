@@ -20,8 +20,8 @@
 
 #include <stdlib.h>
 #include <string>
-#include <SDL_endian.h>
-#include <SDL.h>
+#include <SDL2/SDL_endian.h>
+#include <SDL2/SDL.h>
 
 
 /// Constructor for Pakfile

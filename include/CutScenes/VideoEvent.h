@@ -18,7 +18,7 @@
 #ifndef VIDEOEVENT_H
 #define VIDEOEVENT_H
 
-#include <SDL.h>
+#include <SDL2/SDL.h>
 
 /**
     This class is the base class for all video events/effects.

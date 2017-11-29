@@ -29,7 +29,7 @@
 
 #include <algorithm>
 
-#include <SDL.h>
+#include <SDL2/SDL.h>
 
 // forward declarations
 class House;

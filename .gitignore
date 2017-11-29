@@ -19,3 +19,5 @@ UserInterfaceState.xcuserstate
 *~.xib 
 .DS_Store 
 xcuserdata/
+IDE/VC/obj
+*.user

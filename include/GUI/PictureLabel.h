@@ -21,7 +21,7 @@
 #include "Widget.h"
 #include <misc/draw_util.h>
 
-#include <SDL.h>
+#include <SDL2/SDL.h>
 
 /// A class for showning a static picture
 class PictureLabel : public Widget {

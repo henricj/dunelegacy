@@ -21,7 +21,7 @@
 #include "Font.h"
 
 #include <vector>
-#include <SDL.h>
+#include <SDL2/SDL.h>
 
 /// A class for loading a font from a surface.
 /**

@@ -22,8 +22,8 @@
 
 #include <string>
 #include <vector>
-#include <SDL.h>
-#include <SDL_rwops.h>
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_rwops.h>
 
 
 /// A class for loading a mentat textfile (e.g. MENTATA.ENG).

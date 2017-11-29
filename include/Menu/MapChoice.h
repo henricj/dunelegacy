@@ -25,7 +25,7 @@
 #include <misc/BlendBlitter.h>
 #include <mmath.h>
 #include <vector>
-#include <SDL.h>
+#include <SDL2/SDL.h>
 
 #define MAPCHOICESTATE_FADEINPLANET 0
 #define MAPCHOICESTATE_SHOWPLANET   1

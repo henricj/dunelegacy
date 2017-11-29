@@ -18,7 +18,7 @@
 #ifndef GFXMANAGER_H
 #define GFXMANAGER_H
 
-#include <SDL.h>
+#include <SDL2/SDL.h>
 #include "Animation.h"
 #include "Shpfile.h"
 #include "Wsafile.h"

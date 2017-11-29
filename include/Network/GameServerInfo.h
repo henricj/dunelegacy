@@ -19,7 +19,7 @@
 #define GAMESERVERINFO_H
 
 #include <enet/enet.h>
-#include <SDL.h>
+#include <SDL2/SDL.h>
 #include <string>
 
 class GameServerInfo {

@@ -18,7 +18,7 @@
 #ifndef COLORS_H
 #define COLORS_H
 
-#include <SDL.h>
+#include <SDL2/SDL.h>
 
 #if SDL_BYTEORDER == SDL_BIG_ENDIAN
     #define RMASK 0xFF000000U

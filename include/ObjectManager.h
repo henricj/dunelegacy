@@ -22,7 +22,7 @@
 #include <misc/OutputStream.h>
 
 #include <map>
-#include <SDL.h>
+#include <SDL2/SDL.h>
 
 // forward declarations
 class ObjectBase;

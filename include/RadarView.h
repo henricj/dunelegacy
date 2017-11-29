@@ -22,7 +22,7 @@
 
 #include <DataTypes.h>
 
-#include <SDL.h>
+#include <SDL2/SDL.h>
 
 
 /// This class manages the mini map at the top right corner of the screen

@@ -20,7 +20,7 @@
 
 #include "Button.h"
 
-#include <SDL.h>
+#include <SDL2/SDL.h>
 
 /// A class for a picture button
 class PictureButton : public Button {

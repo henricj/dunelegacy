@@ -21,7 +21,7 @@
 #include "Widget.h"
 #include "GUIStyle.h"
 #include "misc/draw_util.h"
-#include <SDL.h>
+#include <SDL2/SDL.h>
 
 #include <string>
 #include <functional>

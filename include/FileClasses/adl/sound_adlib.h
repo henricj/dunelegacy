@@ -42,11 +42,11 @@
 #ifndef SOUND_ADLIB_H
 #define SOUND_ADLIB_H
 
-#include <SDL_rwops.h>
+#include <SDL2/SDL_rwops.h>
 #include <inttypes.h>
 #include <vector>
-#include <SDL.h>
-#include <SDL_mixer.h>
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_mixer.h>
 
 class AdlibDriver;
 

@@ -19,7 +19,7 @@
 #define MENUBASE_H
 
 #include <GUI/Window.h>
-#include <SDL.h>
+#include <SDL2/SDL.h>
 
 #define MENU_QUIT_DEFAULT   (-1)
 

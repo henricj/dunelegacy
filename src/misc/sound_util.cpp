@@ -6,7 +6,7 @@
 
 #include <misc/exceptions.h>
 
-#include <SDL_mixer.h>
+#include <SDL2/SDL_mixer.h>
 #include <stdlib.h>
 #include <memory.h>
 

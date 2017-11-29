@@ -19,8 +19,8 @@
 #define WSAFILE_H
 
 #include "Animation.h"
-#include <SDL.h>
-#include <SDL_rwops.h>
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_rwops.h>
 #include <stdarg.h>
 
 /// A class for loading a *.WSA-File.

@@ -21,8 +21,8 @@
 #include <string>
 #include <list>
 #include <algorithm>
-#include <SDL_rwops.h>
-#include <SDL.h>
+#include <SDL2/SDL_rwops.h>
+#include <SDL2/SDL.h>
 
 #define INVALID_LINE (-1)
 

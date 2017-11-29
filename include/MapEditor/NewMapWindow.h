@@ -30,7 +30,7 @@
 #include <GUI/PictureLabel.h>
 #include <GUI/dune/DigitsTextBox.h>
 
-#include <SDL.h>
+#include <SDL2/SDL.h>
 
 class  NewMapWindow : public Window
 {

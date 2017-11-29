@@ -18,8 +18,8 @@
 #ifndef SHPFILE_H
 #define SHPFILE_H
 
-#include <SDL.h>
-#include <SDL_rwops.h>
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_rwops.h>
 #include <stdarg.h>
 #include <vector>
 

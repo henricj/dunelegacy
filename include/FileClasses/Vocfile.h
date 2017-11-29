@@ -18,9 +18,9 @@
 #ifndef VOCFILE_H
 #define VOCFILE_H
 
-#include <SDL.h>
-#include <SDL_rwops.h>
-#include <SDL_mixer.h>
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_rwops.h>
+#include <SDL2/SDL_mixer.h>
 
 /**
  Try to load a VOC from the RWop. Returns a pointer to Mix_Chunk.

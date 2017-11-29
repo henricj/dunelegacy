@@ -52,8 +52,8 @@
 #include <string.h>
 #include <math.h>
 
-#include <SDL_mixer.h>
-#include <SDL_endian.h>
+#include <SDL2/SDL_mixer.h>
+#include <SDL2/SDL_endian.h>
 
 
 #include <FileClasses/adl/wemuopl.h>

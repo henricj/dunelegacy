@@ -20,7 +20,7 @@
 
 #include <misc/exceptions.h>
 
-#include <SDL.h>
+#include <SDL2/SDL.h>
 #include <string.h>
 
 class Palette

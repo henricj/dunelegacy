@@ -19,7 +19,7 @@
 #define HOLDPICTUREVIDEOEVENT_H
 
 #include <CutScenes/VideoEvent.h>
-#include <SDL.h>
+#include <SDL2/SDL.h>
 
 /**
     This VideoEvent statical shows a picture for a number of frames.

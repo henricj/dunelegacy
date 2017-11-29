@@ -23,7 +23,7 @@
 #include <FileClasses/Vocfile.h>
 
 #include <string>
-#include <SDL_mixer.h>
+#include <SDL2/SDL_mixer.h>
 #include <stdlib.h>
 #include <memory.h>
 #include <stdio.h>

@@ -23,9 +23,9 @@
 #include <algorithm>
 #include <ctype.h>
 
-#include <SDL.h>
-#include <SDL_rwops.h>
-#include <SDL_filesystem.h>
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_rwops.h>
+#include <SDL2/SDL_filesystem.h>
 
 #ifdef _WIN32
 #include <io.h>

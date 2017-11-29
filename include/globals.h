@@ -26,7 +26,7 @@
 #include <misc/RobustList.h>
 #include <misc/DrawingRectHelper.h>
 
-#include <SDL.h>
+#include <SDL2/SDL.h>
 
 #define _(msgid) pTextManager->getLocalized(msgid)
 

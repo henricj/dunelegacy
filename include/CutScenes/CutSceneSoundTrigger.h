@@ -18,7 +18,7 @@
 #ifndef CUTSCENESOUNDTRIGGER_H
 #define CUTSCENESOUNDTRIGGER_H
 
-#include <SDL_mixer.h>
+#include <SDL2/SDL_mixer.h>
 
 #include <SoundPlayer.h>
 

@@ -23,7 +23,7 @@
 
 #include <vector>
 #include <string>
-#include <SDL_mixer.h>
+#include <SDL2/SDL_mixer.h>
 
 class DirectoryPlayer : public MusicPlayer {
 public:

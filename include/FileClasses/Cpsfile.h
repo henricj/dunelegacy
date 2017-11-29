@@ -18,8 +18,8 @@
 #ifndef CPSFILE_H
 #define CPSFILE_H
 
-#include <SDL.h>
-#include <SDL_rwops.h>
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_rwops.h>
 
 /**
     This function reads a cps-File from a SDL_RWop and returns it as a SDL_Surface. The SDL_RWops can be readonly but must support

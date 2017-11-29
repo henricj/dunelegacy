@@ -18,7 +18,7 @@
 #ifndef SCALER_H
 #define SCALER_H
 
-#include <SDL.h>
+#include <SDL2/SDL.h>
 
 #include <string>
 

@@ -20,7 +20,7 @@
 
 #include <FileClasses/Palette.h>
 
-#include <SDL.h>
+#include <SDL2/SDL.h>
 #include <vector>
 
 #define INVALID_FRAME ((unsigned int) -1)

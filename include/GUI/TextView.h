@@ -21,7 +21,7 @@
 #include "Widget.h"
 #include "ScrollBar.h"
 
-#include <SDL.h>
+#include <SDL2/SDL.h>
 #include <vector>
 #include <string>
 

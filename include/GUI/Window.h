@@ -24,7 +24,7 @@
 #include <iostream>
 #include <queue>
 
-#include <SDL.h>
+#include <SDL2/SDL.h>
 
 /// A class representing a window
 class Window : public Widget {

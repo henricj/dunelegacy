@@ -18,7 +18,7 @@
 #ifndef FONTMANAGER_H
 #define FONTMANAGER_H
 
-#include <SDL.h>
+#include <SDL2/SDL.h>
 #include "Font.h"
 
 #include <memory>

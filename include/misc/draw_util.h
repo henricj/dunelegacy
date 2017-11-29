@@ -19,7 +19,7 @@
 #define DRAW_UTIL_H
 
 #include <Colors.h>
-#include <SDL.h>
+#include <SDL2/SDL.h>
 
 /**
     Return the pixel value at (x, y) in surface

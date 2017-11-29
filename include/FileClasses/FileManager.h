@@ -20,8 +20,8 @@
 
 #include "Pakfile.h"
 
-#include <SDL_rwops.h>
-#include <SDL.h>
+#include <SDL2/SDL_rwops.h>
+#include <SDL2/SDL.h>
 #include <string>
 #include <vector>
 

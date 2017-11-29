@@ -50,8 +50,8 @@
 
 #include <CutScenes/Intro.h>
 
-#include <SDL.h>
-#include <SDL_rwops.h>
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_rwops.h>
 #include <iostream>
 #include <typeinfo>
 #include <future>

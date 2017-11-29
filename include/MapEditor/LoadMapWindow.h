@@ -28,7 +28,7 @@
 #include <GUI/ListBox.h>
 #include <GUI/PictureLabel.h>
 
-#include <SDL.h>
+#include <SDL2/SDL.h>
 
 class  LoadMapWindow : public Window
 {

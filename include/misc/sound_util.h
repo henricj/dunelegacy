@@ -19,7 +19,7 @@
 #define SOUND_UTIL_H
 
 #include <string>
-#include <SDL_mixer.h>
+#include <SDL2/SDL_mixer.h>
 
 Mix_Chunk* concat2Chunks(Mix_Chunk* sound1, Mix_Chunk* sound2);
 Mix_Chunk* concat3Chunks(Mix_Chunk* sound1, Mix_Chunk* sound2, Mix_Chunk* sound3);

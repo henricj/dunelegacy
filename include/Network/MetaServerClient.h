@@ -27,7 +27,7 @@
 #include <enet/enet.h>
 #include <string>
 #include <list>
-#include <SDL.h>
+#include <SDL2/SDL.h>
 
 #define SERVERLIST_UPDATE_INTERVAL  (8*1000)
 #define GAMESERVER_UPDATE_INTERVAL  (10*1000)

@@ -936,6 +936,9 @@
     <ClInclude Include="..\..\include\misc\format.h">
       <Filter>include\misc</Filter>
     </ClInclude>
+    <ClInclude Include="stdafx.h">
+      <Filter>include</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\AStarSearch.cpp">
@@ -1549,6 +1552,9 @@
     </ClCompile>
     <ClCompile Include="..\..\src\misc\format.cpp">
       <Filter>src\misc</Filter>
+    </ClCompile>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -21,7 +21,7 @@
 #include <FileClasses/Animation.h>
 #include <FileClasses/Palette.h>
 
-#include <SDL.h>
+#include <SDL2/SDL.h>
 
 #include <memory>
 

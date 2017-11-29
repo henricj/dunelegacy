@@ -19,7 +19,7 @@
 #define FADEOUTVIDEOEVENT_H
 
 #include <CutScenes/VideoEvent.h>
-#include <SDL.h>
+#include <SDL2/SDL.h>
 
 /**
     This VideoEvent is used for fading out a picture
