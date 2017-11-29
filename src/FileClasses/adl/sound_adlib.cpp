@@ -64,8 +64,7 @@
 
 #define CALLBACKS_PER_SECOND 72
 
-#define ARRAYSIZE(x) ((int)(sizeof(x) / sizeof(x[0])))
-
+#define ADLIB_ARRAYSIZE(x) ((int)(sizeof(x) / sizeof(x[0])))
 
 typedef uint8_t uint8;
 typedef int8_t  int8;
@@ -1978,7 +1977,7 @@ void AdlibDriver::setupOpcodeList() {
     };
 
     _opcodeList = opcodeList;
-    _opcodesEntries = ARRAYSIZE(opcodeList);
+    _opcodesEntries = ADLIB_ARRAYSIZE(opcodeList);
 }
 
 void AdlibDriver::setupParserOpcodeTable() {
@@ -2098,7 +2097,7 @@ void AdlibDriver::setupParserOpcodeTable() {
     };
 
     _parserOpcodeTable = parserOpcodeTable;
-    _parserOpcodeTableSize = ARRAYSIZE(parserOpcodeTable);
+    _parserOpcodeTableSize = ADLIB_ARRAYSIZE(parserOpcodeTable);
 }
 #undef COMMAND
 
