@@ -729,7 +729,7 @@ int main(int argc, char *argv[]) {
         std::string message = fmt::sprintf("An unhandled exception of type '%s' was thrown:\n\n%s\n\nDune Legacy will now be terminated!", demangleSymbol(typeid(e).name()), e.what());
         SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Dune Legacy: Unrecoverable error", message.c_str(), nullptr);
 
-        throw;
+        return EXIT_FAILURE;
     }
 
     return EXIT_SUCCESS;
