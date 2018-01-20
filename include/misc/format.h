@@ -653,7 +653,7 @@ class Buffer {
   virtual void grow(std::size_t size) = 0;
 
  public:
-  virtual ~Buffer() {}
+  virtual ~Buffer() = default;
 
   /** Returns the size of this buffer. */
   std::size_t size() const { return size_; }
