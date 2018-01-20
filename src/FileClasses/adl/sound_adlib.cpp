@@ -160,8 +160,8 @@ private:
     };
 
     void setupOpcodeList();
-    const OpcodeEntry *_opcodeList;
-    int _opcodesEntries;
+    static const OpcodeEntry _opcodeList[];
+    static const int _opcodesEntries;
 
     int snd_ret0x100(va_list &list);
     int snd_ret0x1983(va_list &list);
@@ -1963,30 +1963,30 @@ int AdlibDriver::updateCallback56(uint8 *&dataptr, Channel &channel, uint8 value
 
 #define COMMAND(x) { &AdlibDriver::x, #x }
 
-void AdlibDriver::setupOpcodeList() {
-    static const OpcodeEntry opcodeList[] = {
-        COMMAND(snd_ret0x100),
-        COMMAND(snd_ret0x1983),
-        COMMAND(snd_initDriver),
-        COMMAND(snd_deinitDriver),
-        COMMAND(snd_setSoundData),
-        COMMAND(snd_unkOpcode1),
-        COMMAND(snd_startSong),
-        COMMAND(snd_isChannelPlaying),
-        COMMAND(snd_unkOpcode3),
-        COMMAND(snd_readByte),
-        COMMAND(snd_writeByte),
-        COMMAND(snd_getSoundTrigger),
-        COMMAND(snd_unkOpcode4),
-        COMMAND(snd_dummy),
-        COMMAND(snd_getNullvar4),
-        COMMAND(snd_setNullvar3),
-        COMMAND(snd_setFlag),
-        COMMAND(snd_clearFlag)
-    };
+const AdlibDriver::OpcodeEntry AdlibDriver::_opcodeList[] = {
+    COMMAND(snd_ret0x100),
+    COMMAND(snd_ret0x1983),
+    COMMAND(snd_initDriver),
+    COMMAND(snd_deinitDriver),
+    COMMAND(snd_setSoundData),
+    COMMAND(snd_unkOpcode1),
+    COMMAND(snd_startSong),
+    COMMAND(snd_isChannelPlaying),
+    COMMAND(snd_unkOpcode3),
+    COMMAND(snd_readByte),
+    COMMAND(snd_writeByte),
+    COMMAND(snd_getSoundTrigger),
+    COMMAND(snd_unkOpcode4),
+    COMMAND(snd_dummy),
+    COMMAND(snd_getNullvar4),
+    COMMAND(snd_setNullvar3),
+    COMMAND(snd_setFlag),
+    COMMAND(snd_clearFlag)
+};
 
-    _opcodeList = opcodeList;
-    _opcodesEntries = ADLIB_ARRAYSIZE(opcodeList);
+const int AdlibDriver::_opcodesEntries = ADLIB_ARRAYSIZE(_opcodeList);
+
+void AdlibDriver::setupOpcodeList() {
 }
 
 void AdlibDriver::setupParserOpcodeTable() {
