@@ -44,7 +44,7 @@ public:
     FileManager& operator=(const FileManager& fileManager) = delete;
     FileManager& operator=(FileManager&& fileManager) = delete;
 
-    static std::vector<std::string> getSearchPath();
+    static const std::vector<std::string>& getSearchPath();
     static std::vector<std::string> getNeededFiles();
     static std::vector<std::string> getMissingFiles();
 
