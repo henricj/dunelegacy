@@ -29,7 +29,7 @@
 /**
     This class manages all the PAK-Files and provides access to the contained files through SDL_RWops.
 */
-class FileManager {
+class FileManager final {
 public:
     /**
         Constructor.
@@ -37,10 +37,12 @@ public:
     explicit FileManager();
 
     FileManager(const FileManager& fileManager) = delete;
+    FileManager(FileManager&& fileManager) = delete;
 
     ~FileManager();
 
     FileManager& operator=(const FileManager& fileManager) = delete;
+    FileManager& operator=(FileManager&& fileManager) = delete;
 
     static std::vector<std::string> getSearchPath();
     static std::vector<std::string> getNeededFiles();
@@ -58,7 +60,7 @@ public:
 
     bool exists(const std::string& filename) const;
 private:
-    std::string md5FromFilename(const std::string& filename);
+    std::string md5FromFilename(const std::string& filename) const;
 
     std::vector<Pakfile*> pakFiles;
 };

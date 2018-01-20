@@ -44,13 +44,15 @@
 #include <misc/exceptions.h>
 
 #include <algorithm>
-#include <inttypes.h>
-#include <stdarg.h>
-#include <assert.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <math.h>
+#include <cinttypes>
+#include <cstdarg>
+#include <cassert>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <cmath>
+
+#include <memory>
 
 #include <SDL2/SDL_mixer.h>
 #include <SDL2/SDL_endian.h>
@@ -75,12 +77,12 @@ typedef int32_t int32;
 typedef uint8_t byte;
 
 static inline uint16 READ_LE_uint16(const void *ptr) {
-  const byte *b = (const byte *)ptr;
+  const auto *b = static_cast<const byte *>(ptr);
   return (b[1] << 8) + b[0];
 }
 
 static inline uint16 READ_BE_uint16(const void *ptr) {
-  const byte *b = (const byte *)ptr;
+  const auto *b = static_cast<const byte *>(ptr);
   return (b[0] << 8) + b[1];
 }
 
@@ -105,10 +107,16 @@ static inline void debugC(int level, const char *str, ...)
 }
 
 
-class AdlibDriver {
+class AdlibDriver final {
 public:
-    AdlibDriver(int rate);
+    explicit AdlibDriver(int rate);
     ~AdlibDriver();
+
+    AdlibDriver(const AdlibDriver &) = delete;
+    AdlibDriver(AdlibDriver &&) = delete;
+    AdlibDriver& operator=(const AdlibDriver &) = delete;
+    AdlibDriver& operator=(AdlibDriver &&) = delete;
+
 
     int callback(int opcode, ...);
     void callback();
@@ -128,7 +136,7 @@ public:
                 }
             }
 
-            int32 render = std::min(samplesLeft, _samplesTillCallback);
+            const int32 render = std::min(samplesLeft, _samplesTillCallback);
             samplesLeft -= render;
             _samplesTillCallback -= render;
             //YM3812UpdateOne(_adlib, buffer, render);
@@ -254,10 +262,10 @@ private:
     void secondaryEffect1(Channel &channel);
 
     void resetAdlibState();
-    void writeOPL(uint8 reg, uint8 val);
+    void writeOPL(uint8 reg, uint8 val) const;
     void initChannel(Channel &channel);
     void noteOff(Channel &channel);
-    void unkOutput2(uint8 num);
+    void unkOutput2(uint8 chan);
 
     uint16 getRandomNr();
     void setupDuration(uint8 duration, Channel &channel);
@@ -271,7 +279,7 @@ private:
     uint8 calculateOpLevel1(Channel &channel);
     uint8 calculateOpLevel2(Channel &channel);
 
-    uint16 checkValue(int16 val) {
+    static uint16 checkValue(int16 val) {
         if (val < 0)
             val = 0;
         else if (val > 0x3F)
@@ -284,18 +292,18 @@ private:
     // * One for programs, starting at offset 0.
     // * One for instruments, starting at offset 500.
 
-    uint8 *getProgram(int progId) {
-        uint16 offset = READ_LE_uint16(_soundData + 2 * progId);
+    uint8 *getProgram(int progId) const {
+        const uint16 offset = READ_LE_uint16(_soundData + 2 * progId);
         //TODO: Check in LoL CD Adlib driver
         if (offset == 0xFFFF)
-            return 0;
+            return nullptr;
         return _soundData + READ_LE_uint16(_soundData + 2 * progId);
     }
 
-    uint8 *getInstrument(int instrumentId) {
-        unsigned short tmp = READ_LE_uint16(_soundData + (_v2 ? 1000 : 500) + 2 * instrumentId);
+    uint8 *getInstrument(int instrumentId) const {
+        const unsigned short tmp = READ_LE_uint16(_soundData + (_v2 ? 1000 : 500) + 2 * instrumentId);
         if(tmp == 0xFFFF) {
-           return NULL;
+           return nullptr;
         } else {
            return _soundData + tmp;
         }
@@ -485,7 +493,7 @@ AdlibDriver::AdlibDriver(int rate) {
     // CSurroundopl now owns a and b and will free upon destruction
 
     memset(_channels, 0, sizeof(_channels));
-    _soundData = 0;
+    _soundData = nullptr;
 
     _vibratoAndAMDepthBits = _curRegOffset = 0;
 
@@ -502,7 +510,7 @@ AdlibDriver::AdlibDriver(int rate) {
     _unkValue11 = _unkValue12 = _unkValue13 = _unkValue14 = _unkValue15 =
     _unkValue16 = _unkValue17 = _unkValue18 = _unkValue19 = _unkValue20 = 0;
 
-    _tablePtr1 = _tablePtr2 = 0;
+    _tablePtr1 = _tablePtr2 = nullptr;
 
     // HACK: We use MusicSoundType here for now so we can adjust the volume in the launcher dialog.
     // This affects SFX too, but if we want to support different volumes for SFX and music we would
@@ -536,7 +544,7 @@ int AdlibDriver::callback(int opcode, ...) {
 
     va_list args;
     va_start(args, opcode);
-    int returnValue = (this->*(_opcodeList[opcode].function))(args);
+    const int returnValue = (this->*(_opcodeList[opcode].function))(args);
     va_end(args);
     unlock();
     return returnValue;
@@ -566,7 +574,7 @@ int AdlibDriver::snd_deinitDriver(va_list &list) {
 int AdlibDriver::snd_setSoundData(va_list &list) {
     if (_soundData) {
         delete[] _soundData;
-        _soundData = 0;
+        _soundData = nullptr;
     }
     _soundData = va_arg(list, uint8*);
     return 0;
@@ -578,12 +586,12 @@ int AdlibDriver::snd_unkOpcode1(va_list &list) {
 }
 
 int AdlibDriver::snd_startSong(va_list &list) {
-    int songId = va_arg(list, int);
+    const int songId = va_arg(list, int);
     _flags |= 8;
     _flagTrigger = 1;
 
-    uint8 *ptr = getProgram(songId);
-    if(ptr == NULL)
+    const uint8 *ptr = getProgram(songId);
+    if(ptr == nullptr)
         return 0;
 
     uint8 chan = *ptr;
@@ -637,7 +645,7 @@ int AdlibDriver::snd_unkOpcode3(va_list &list) {
 int AdlibDriver::snd_readByte(va_list &list) {
     int a = va_arg(list, int);
     int b = va_arg(list, int);
-    uint8 *ptr = getProgram(a) + b;
+    const uint8 *ptr = getProgram(a) + b;
     if(ptr == NULL) {
         warning("AdlibDriver::snd_readByte(): ptr == NULL!");
         return -1;
@@ -901,25 +909,25 @@ void AdlibDriver::resetAdlibState() {
 // Old calling style: output0x388(0xABCD)
 // New calling style: writeOPL(0xAB, 0xCD)
 
-void AdlibDriver::writeOPL(uint8 reg, uint8 val) {
+void AdlibDriver::writeOPL(uint8 reg, uint8 val) const {
     opl->write(reg, val);
 }
 
 void AdlibDriver::initChannel(Channel &channel) {
-    debugC(9, "initChannel(%lu)", (long)(&channel - _channels));
-    memset(&channel.dataptr, 0, sizeof(Channel) - ((char *)&channel.dataptr - (char *)&channel));
+    debugC(9, "initChannel(%" PRIdPTR ")", static_cast<ptrdiff_t>(&channel - _channels));
+    memset(&channel.dataptr, 0, sizeof(Channel) - (reinterpret_cast<char *>(&channel.dataptr) - reinterpret_cast<char *>(&channel)));
 
     channel.tempo = 0xFF;
     channel.priority = 0;
     // normally here are nullfuncs but we set 0 for now
-    channel.primaryEffect = 0;
-    channel.secondaryEffect = 0;
+    channel.primaryEffect = nullptr;
+    channel.secondaryEffect = nullptr;
     channel.spacing1 = 1;
     channel.lock = false;
 }
 
 void AdlibDriver::noteOff(Channel &channel) {
-    debugC(9, "noteOff(%lu)", (long)(&channel - _channels));
+    debugC(9, "noteOff(%" PRIdPTR ")", static_cast<ptrdiff_t>(&channel - _channels));
 
     // The control channel has no corresponding Adlib channel
 
@@ -1341,7 +1349,7 @@ int AdlibDriver::update_setRepeat(uint8 *&dataptr, Channel &channel, uint8 value
 int AdlibDriver::update_checkRepeat(uint8 *&dataptr, Channel &channel, uint8 value) {
     ++dataptr;
     if (--channel.repeatCounter) {
-        int16 add = READ_LE_uint16(dataptr - 2);
+        const int16 add = READ_LE_uint16(dataptr - 2);
         dataptr += add;
     }
     return 0;
@@ -1355,8 +1363,8 @@ int AdlibDriver::update_setupProgram(uint8 *&dataptr, Channel &channel, uint8 va
     //TODO: Check in LoL CD Adlib driver
     if (!ptr)
         return 0;
-    uint8 chan = *ptr++;
-    uint8 priority = *ptr++;
+    const uint8 chan = *ptr++;
+    const uint8 priority = *ptr++;
 
     Channel &channel2 = _channels[chan];
 
@@ -2273,7 +2281,7 @@ const uint8 AdlibDriver::_unkTables[][32] = {
 //#pragma mark -
 
 
-SoundAdlibPC::SoundAdlibPC(SDL_RWops* rwop) : _driver(0), _trackEntries(), _soundDataPtr(0), volume(MIX_MAX_VOLUME/2) {
+SoundAdlibPC::SoundAdlibPC(SDL_RWops* rwop) : _driver(0), _trackEntries(), _soundDataPtr(nullptr), volume(MIX_MAX_VOLUME/2) {
     memset(_trackEntries, 0, sizeof(_trackEntries));
 
     Mix_QuerySpec(&m_freq, &m_format, &m_channels);
@@ -2293,7 +2301,7 @@ SoundAdlibPC::SoundAdlibPC(SDL_RWops* rwop) : _driver(0), _trackEntries(), _soun
     internalLoadFile(rwop);
 }
 
-SoundAdlibPC::SoundAdlibPC(SDL_RWops* rwop, int freq) : _driver(0), _trackEntries(), _soundDataPtr(0), volume(MIX_MAX_VOLUME/2) {
+SoundAdlibPC::SoundAdlibPC(SDL_RWops* rwop, int freq) : _driver(nullptr), _trackEntries(), _soundDataPtr(nullptr), volume(MIX_MAX_VOLUME/2) {
     memset(_trackEntries, 0, sizeof(_trackEntries));
 
     m_freq = freq;
@@ -2365,13 +2373,15 @@ void SoundAdlibPC::haltTrack() {
     bJustStartedPlaying = false;
 }
 
-bool SoundAdlibPC::isPlaying() {
+bool SoundAdlibPC::isPlaying() const
+{
     bool bPlaying = false;
     for(int i = 0; i < 10; i++) {
-        bPlaying |= _driver->callback(7, i);    // AdlibDriver::snd_isChannelPlaying
+       if (_driver->callback(7, i))    // AdlibDriver::snd_isChannelPlaying
+          bPlaying = true;
     }
 
-    return (bJustStartedPlaying == true) || bPlaying;
+    return bJustStartedPlaying || bPlaying;
 }
 
 void SoundAdlibPC::playSoundEffect(uint8 track) {
@@ -2397,9 +2407,9 @@ void SoundAdlibPC::callback(void *userdata, Uint8 *audiobuf, int len)
 }
 
 void SoundAdlibPC::play(uint8 track) {
-    uint8 soundId = _trackEntries[track];
+    const uint8 soundId = _trackEntries[track];
 
-    if ((int8)soundId == -1 || !_soundDataPtr)
+    if (soundId == 0xff || !_soundDataPtr)
         return;
 
     if (_sfxPlayingSound != -1) {
@@ -2409,7 +2419,7 @@ void SoundAdlibPC::play(uint8 track) {
         _sfxPlayingSound = -1;
     }
 
-    int chan = _driver->callback(9, soundId, int(0));
+    const int chan = _driver->callback(9, soundId, int(0));
 
     if (chan >= 0 && chan != 9) {
         _sfxPlayingSound = soundId;
@@ -2444,12 +2454,12 @@ void SoundAdlibPC::beginFadeOut() {
 }
 
 void SoundAdlibPC::internalLoadFile(SDL_RWops* rwop) {
-  if(rwop == NULL) {
+  if(rwop == nullptr) {
     return;
   }
 
   uint8 *file_data = 0;
-  Sint64 endOffset = SDL_RWsize(rwop);
+    const Sint64 endOffset = SDL_RWsize(rwop);
   if(endOffset <= 0) {
     SDL_Log("SoundAdlibPC::internalLoadFile(): Cannot determine size of SDL_RWop!");
     return;
@@ -2468,13 +2478,13 @@ void SoundAdlibPC::internalLoadFile(SDL_RWops* rwop) {
 
 
   _driver->callback(8, int(-1));
-  _soundDataPtr = 0;
+  _soundDataPtr = nullptr;
 
   uint8 *p = file_data;
   memcpy(_trackEntries, p, 120*sizeof(uint8));
   p += 120;
 
-  int soundDataSize = file_size - 120;
+    const int soundDataSize = file_size - 120;
 
   _soundDataPtr = new uint8[soundDataSize];
   assert(_soundDataPtr);
@@ -2498,7 +2508,7 @@ void SoundAdlibPC::unk2() {
 }
 
 Mix_Chunk* SoundAdlibPC::getSubsong(int Num) {
-    Uint8*  buf = NULL;
+    Uint8*  buf = nullptr;
     int     bufSize = 0;
     bool    bSilent = true;
 
@@ -2506,7 +2516,7 @@ Mix_Chunk* SoundAdlibPC::getSubsong(int Num) {
 
     do {
         bufSize += 1024;
-        if((buf = (Uint8*) SDL_realloc(buf, bufSize)) == NULL) {
+        if((buf = static_cast<Uint8*>(SDL_realloc(buf, bufSize))) == nullptr) {
             THROW(std::runtime_error, "Cannot allocate memory!");
         }
 
@@ -2530,8 +2540,8 @@ Mix_Chunk* SoundAdlibPC::getSubsong(int Num) {
     } while(isPlaying() || !bSilent);
 
     Mix_Chunk* myChunk;
-    if((myChunk = (Mix_Chunk*) SDL_calloc(sizeof(Mix_Chunk),1)) == NULL) {
-        return NULL;
+    if((myChunk = static_cast<Mix_Chunk*>(SDL_calloc(sizeof(Mix_Chunk), 1))) == nullptr) {
+        return nullptr;
     }
 
     myChunk->volume = 128;

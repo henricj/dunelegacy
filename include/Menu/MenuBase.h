@@ -30,6 +30,11 @@ public:
     MenuBase();
     virtual ~MenuBase();
 
+    MenuBase(const MenuBase &) = delete;
+    MenuBase(MenuBase &&) = delete;
+    MenuBase& operator=(const MenuBase &) = delete;
+    MenuBase& operator=(MenuBase &&) = delete;
+
     virtual int showMenu();
     virtual void quit(int returnVal = MENU_QUIT_DEFAULT);
     virtual bool isQuiting() { return quiting; };

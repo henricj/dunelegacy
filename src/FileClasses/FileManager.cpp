@@ -37,10 +37,13 @@ FileManager::FileManager() {
     SDL_Log("\nFileManager is loading PAK-Files...");
     SDL_Log("\nMD5-Checksum                      Filename");
 
-    for(const std::string& filename : getNeededFiles()) {
-        for(const std::string& searchPath : getSearchPath()) {
-            std::string filepath = searchPath + "/" + filename;
-            if(getCaseInsensitiveFilename(filepath) == true) {
+    const auto search_path = getSearchPath();
+
+    for(const auto& filename : getNeededFiles()) {
+        for(const auto& sp : search_path) {
+            auto filepath = sp + "/";
+            filepath += filename;
+            if(getCaseInsensitiveFilename(filepath)) {
                 try {
                     SDL_Log("%s  %s", md5FromFilename(filepath).c_str(), filepath.c_str());
                     pakFiles.push_back(new Pakfile(filepath));
@@ -81,20 +84,20 @@ std::vector<std::string> FileManager::getSearchPath() {
 }
 
 std::vector<std::string> FileManager::getNeededFiles() {
-    std::vector<std::string> fileList;
-
-    fileList.push_back("LEGACY.PAK");
-    fileList.push_back("OPENSD2.PAK");
-    fileList.push_back("GFXHD.PAK");
-    fileList.push_back("DUNE.PAK");
-    fileList.push_back("SCENARIO.PAK");
-    fileList.push_back("MENTAT.PAK");
-    fileList.push_back("VOC.PAK");
-    fileList.push_back("MERC.PAK");
-    fileList.push_back("FINALE.PAK");
-    fileList.push_back("INTRO.PAK");
-    fileList.push_back("INTROVOC.PAK");
-    fileList.push_back("SOUND.PAK");
+    std::vector<std::string> fileList = {
+        "LEGACY.PAK",
+        "OPENSD2.PAK",
+        "GFXHD.PAK",
+        "DUNE.PAK",
+        "SCENARIO.PAK",
+        "MENTAT.PAK",
+        "VOC.PAK",
+        "MERC.PAK",
+        "FINALE.PAK",
+        "INTRO.PAK",
+        "INTROVOC.PAK",
+        "SOUND.PAK",
+    };
 
     std::string LanguagePakFiles = (pTextManager != nullptr) ? _("LanguagePakFiles") : "";
 
@@ -124,7 +127,7 @@ std::vector<std::string> FileManager::getMissingFiles() {
             }
         }
 
-        if(bFound == false) {
+        if(!bFound) {
             MissingFiles.push_back(fileName);
         }
     }
@@ -136,9 +139,10 @@ SDL_RWops* FileManager::openFile(const std::string& filename) {
     SDL_RWops* ret;
 
     // try loading external file
-    for(const std::string& searchPath : getSearchPath()) {
-        std::string externalFilename = searchPath + "/" + filename;
-        if(getCaseInsensitiveFilename(externalFilename) == true) {
+    for(const auto& searchPath : getSearchPath()) {
+        auto externalFilename = searchPath + "/";
+        externalFilename += filename;
+        if(getCaseInsensitiveFilename(externalFilename)) {
             if((ret = SDL_RWFromFile(externalFilename.c_str(), "rb")) != nullptr) {
                 return ret;
             }
@@ -146,7 +150,7 @@ SDL_RWops* FileManager::openFile(const std::string& filename) {
     }
 
     // now try loading from pak file
-    for(Pakfile* pPakFile : pakFiles) {
+    for(const auto& pPakFile : pakFiles) {
         ret = pPakFile->openFile(filename);
         if(ret != nullptr) {
             return ret;
@@ -160,14 +164,15 @@ bool FileManager::exists(const std::string& filename) const {
 
     // try finding external file
     for(const std::string& searchPath : getSearchPath()) {
-        std::string externalFilename = searchPath + "/" + filename;
-        if(getCaseInsensitiveFilename(externalFilename) == true) {
+        auto externalFilename = searchPath + "/";
+        externalFilename += filename;
+        if(getCaseInsensitiveFilename(externalFilename)) {
             return true;
         }
     }
 
     // now try finding in one pak file
-    for(const Pakfile* pPakFile : pakFiles) {
+    for(const auto& pPakFile : pakFiles) {
         if(pPakFile->exists(filename)) {
             return true;
         }
@@ -177,7 +182,7 @@ bool FileManager::exists(const std::string& filename) const {
 }
 
 
-std::string FileManager::md5FromFilename(const std::string& filename) {
+std::string FileManager::md5FromFilename(const std::string& filename) const {
     unsigned char md5sum[16];
 
     if(md5_file(filename.c_str(), md5sum) != 0) {
@@ -186,8 +191,8 @@ std::string FileManager::md5FromFilename(const std::string& filename) {
 
         std::stringstream stream;
         stream << std::setfill('0') << std::hex;
-        for(int i=0;i<16;i++) {
-            stream << std::setw(2) << (int) md5sum[i];
+        for(int i : md5sum) {
+            stream << std::setw(2) << i;
         }
         return stream.str();
     }

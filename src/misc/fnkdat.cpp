@@ -118,7 +118,7 @@
 #define STRICT
 #include <windows.h>
 #include <direct.h>
-#include <ctype.h>
+#include <cctype>
 
 /*
  * Constants passed to the silly-ass MS function
@@ -497,7 +497,7 @@ int fnkdat(const char* target, char* buffer, int len, int flags) {
  ********************/
 
 /*
- * This will make the resquested directory, along with
+ * This will make the requested directory, along with
  * any necessary parent directory.
  */
 static int fnkdat_mkdirs(_TCHAR* buffer, int rlevel) {

@@ -37,8 +37,7 @@ MenuBase::MenuBase() : Window(0,0,0,0) {
     quiting = false;
 }
 
-MenuBase::~MenuBase() {
-}
+MenuBase::~MenuBase() = default;
 
 void MenuBase::quit(int returnVal) {
     retVal = returnVal;

@@ -79,7 +79,7 @@ public:
     void playTrack(uint8_t track);
     void haltTrack();
 
-    bool isPlaying();
+    bool isPlaying() const;
 
     void playSoundEffect(uint8_t track);
 

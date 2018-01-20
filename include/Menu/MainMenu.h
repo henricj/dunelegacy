@@ -25,12 +25,17 @@
 #include <GUI/Spacer.h>
 #include <GUI/PictureLabel.h>
 
-class MainMenu : public MenuBase {
+class MainMenu final : public MenuBase {
 public:
     MainMenu();
     virtual ~MainMenu();
 
-    virtual int showMenu();
+    MainMenu(const MainMenu &) = delete;
+    MainMenu(MainMenu &&) = delete;
+    MainMenu& operator=(const MainMenu &) = delete;
+    MainMenu& operator=(MainMenu &&) = delete;
+
+    virtual int showMenu() override;
 
 private:
     void onSinglePlayer();

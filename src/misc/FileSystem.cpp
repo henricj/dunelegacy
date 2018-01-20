@@ -147,7 +147,7 @@ std::list<FileInfo> getFileList(const std::string& directory, const std::string&
                     continue;
                 }
 
-                Files.push_back(FileInfo(szFilename, fdata.size, fdata.time_write));
+                Files.emplace_back(szFilename, fdata.size, fdata.time_write);
             }
         } while(_findnext(hFile, &fdata) == 0);
 
@@ -338,7 +338,7 @@ std::string readCompleteFile(const std::string& filename) {
         return "";
     }
 
-    Sint64 filesize = SDL_RWsize(RWopsFile);
+    const Sint64 filesize = SDL_RWsize(RWopsFile);
     if(filesize < 0) {
         SDL_RWclose(RWopsFile);
         return "";
@@ -369,7 +369,7 @@ std::string getBasename(const std::string& filepath, bool bStripExtension) {
     }
 
     // strip trailing slashes
-    size_t nameEndPos = filepath.find_last_not_of("/\\");
+    const size_t nameEndPos = filepath.find_last_not_of("/\\");
 
     size_t nameStart = filepath.find_last_of("/\\", nameEndPos);
     if(nameStart == std::string::npos) {
@@ -380,7 +380,7 @@ std::string getBasename(const std::string& filepath, bool bStripExtension) {
 
     size_t extensionStart;
     if(bStripExtension) {
-        extensionStart = filepath.find_last_of(".");
+        extensionStart = filepath.find_last_of('.');
         if(extensionStart == std::string::npos) {
             extensionStart = filepath.length();
         }
@@ -399,17 +399,17 @@ std::string getDirname(const std::string& filepath) {
     }
 
     // strip trailing slashes
-    size_t nameEndPos = filepath.find_last_not_of("/\\");
+    const size_t nameEndPos = filepath.find_last_not_of("/\\");
 
     // strip trailing name
-    size_t nameStartPos = filepath.find_last_of("/\\", nameEndPos);
+    const size_t nameStartPos = filepath.find_last_of("/\\", nameEndPos);
 
     if(nameStartPos == std::string::npos) {
         return ".";
     }
 
     // strip separator between dir name and file name
-    size_t dirEndPos = filepath.find_last_not_of("/\\", nameStartPos);
+    const size_t dirEndPos = filepath.find_last_not_of("/\\", nameStartPos);
 
     return filepath.substr(0, dirEndPos+1);
 }
@@ -417,14 +417,14 @@ std::string getDirname(const std::string& filepath) {
 static std::string duneLegacyDataDir;
 
 std::string getDuneLegacyDataDir() {
-    if(duneLegacyDataDir == "") {
+    if(duneLegacyDataDir.empty()) {
 
         std::string dataDir;
 #ifdef DUNELEGACY_DATADIR
         dataDir = DUNELEGACY_DATADIR;
 #endif
 
-        if((dataDir == "") || (dataDir == ".") || (dataDir == "./") || (dataDir == ".\\")) {
+        if((dataDir.empty()) || (dataDir == ".") || (dataDir == "./") || (dataDir == ".\\")) {
             char* basePath = SDL_GetBasePath();
             if(basePath == nullptr) {
                 THROW(sdl_error, "SDL_GetBasePath() failed: %s!", SDL_GetError());

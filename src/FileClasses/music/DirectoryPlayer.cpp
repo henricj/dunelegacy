@@ -23,7 +23,7 @@
 #include <misc/fnkdat.h>
 #include <mmath.h>
 
-#include <stdio.h>
+#include <cstdio>
 
 DirectoryPlayer::DirectoryPlayer() : MusicPlayer(settings.audio.playMusic, settings.audio.musicVolume) {
     // determine path to config file
@@ -31,7 +31,7 @@ DirectoryPlayer::DirectoryPlayer() : MusicPlayer(settings.audio.playMusic, setti
     fnkdat(nullptr, tmp, FILENAME_MAX, FNKDAT_USER | FNKDAT_CREAT);
     std::string configfilepath(tmp);
 
-    static const char* musicDirectoryNames[MUSIC_NUM_MUSIC_TYPES] = { "/music/attack/",
+    static const char* const musicDirectoryNames[MUSIC_NUM_MUSIC_TYPES] = { "/music/attack/",
                                                                         "/music/peace/",
                                                                         "/music/intro/",
                                                                         "/music/menu/",
