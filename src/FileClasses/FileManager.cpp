@@ -46,12 +46,9 @@ FileManager::FileManager() {
             if(getCaseInsensitiveFilename(filepath)) {
                 try {
                     SDL_Log("%s  %s", md5FromFilename(filepath).c_str(), filepath.c_str());
-                    pakFiles.push_back(new Pakfile(filepath));
+                    pakFiles.push_back(std::make_unique<Pakfile>(filepath));
                 } catch (std::exception &e) {
-                    while(pakFiles.empty()) {
-                        delete pakFiles.back();
-                        pakFiles.pop_back();
-                    }
+                    pakFiles.clear();
 
                     THROW(io_error, "Error while opening '%s': %s!", filepath, e.what());
                 }
@@ -66,11 +63,7 @@ FileManager::FileManager() {
     SDL_Log("%s", "");
 }
 
-FileManager::~FileManager() {
-    for(Pakfile* pPakFile : pakFiles) {
-        delete pPakFile;
-    }
-}
+FileManager::~FileManager() = default;
 
 std::vector<std::string> FileManager::getSearchPath() {
     std::vector<std::string> searchPath;

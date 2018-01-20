@@ -620,7 +620,7 @@ int main(int argc, char *argv[]) {
                 }
             }
 
-            pFileManager = new FileManager();
+            auto pFileManager = std::make_unique<FileManager>();
 
             // now we can finish loading texts
             pTextManager->loadData();
@@ -684,11 +684,10 @@ int main(int argc, char *argv[]) {
             bFirstInit = false;
 
             SDL_Log("Starting main menu...");
-            MainMenu * myMenu = new MainMenu();
-            if(myMenu->showMenu() == MENU_QUIT_DEFAULT) {
+            MainMenu myMenu;
+            if(myMenu.showMenu() == MENU_QUIT_DEFAULT) {
                 bExitGame = true;
             }
-            delete myMenu;
 
             SDL_Log("Deinitialize...");
 
@@ -709,7 +708,7 @@ int main(int argc, char *argv[]) {
             delete pSFXManager;
             delete pGFXManager;
             delete pFontManager;
-            delete pFileManager;
+            pFileManager.reset();
 
             SDL_DestroyTexture(screenTexture);
             SDL_DestroyRenderer(renderer);

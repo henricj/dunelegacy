@@ -344,17 +344,14 @@ std::string readCompleteFile(const std::string& filename) {
         return "";
     }
 
-    char* filedata = new char[(size_t) filesize];
+    std::unique_ptr<char[]> filedata = std::make_unique<char[]>((size_t) filesize);
 
-    if(SDL_RWread(RWopsFile, filedata, (size_t) filesize, 1) != 1) {
-        delete [] filedata;
+    if(SDL_RWread(RWopsFile, filedata.get(), (size_t) filesize, 1) != 1) {
         SDL_RWclose(RWopsFile);
         return "";
     }
 
-    std::string retValue(filedata, (size_t) filesize);
-
-    delete [] filedata;
+    std::string retValue(filedata.get(), (size_t) filesize);
 
     SDL_RWclose(RWopsFile);
 

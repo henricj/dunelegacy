@@ -62,7 +62,7 @@ public:
 private:
     std::string md5FromFilename(const std::string& filename) const;
 
-    std::vector<Pakfile*> pakFiles;
+    std::vector<std::unique_ptr<Pakfile>> pakFiles;
 };
 
 #endif // FILEMANAGER_H

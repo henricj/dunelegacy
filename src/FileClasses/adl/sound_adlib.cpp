@@ -443,7 +443,7 @@ private:
     uint8 _unkValue20;
 
     int _flags;
-    Copl *opl;
+    std::unique_ptr<Copl> opl;
     int _rate;
 
     uint8 *_soundData;
@@ -489,7 +489,7 @@ AdlibDriver::AdlibDriver(int rate) {
     _flags = 0;
     Copl *a = new CWemuopl(rate, false);
     Copl *b = new CWemuopl(rate, false);
-    opl = new CSurroundopl(a, b, true);
+    opl = std::make_unique<CSurroundopl>(a, b, true);
     // CSurroundopl now owns a and b and will free upon destruction
 
     memset(_channels, 0, sizeof(_channels));
@@ -529,9 +529,7 @@ AdlibDriver::AdlibDriver(int rate) {
     _syncJumpMask = 0;
 }
 
-AdlibDriver::~AdlibDriver() {
-    delete opl;
-}
+AdlibDriver::~AdlibDriver() = default;
 
 int AdlibDriver::callback(int opcode, ...) {
     lock();
