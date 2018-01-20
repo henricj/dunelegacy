@@ -109,39 +109,38 @@ int MainMenu::showMenu()
     return MenuBase::showMenu();
 }
 
-void MainMenu::onSinglePlayer() {
-    SinglePlayerMenu* pSinglePlayerMenu = new SinglePlayerMenu();
-    pSinglePlayerMenu->showMenu();
-    delete pSinglePlayerMenu;
+void MainMenu::onSinglePlayer() const
+{
+    SinglePlayerMenu singlePlayerMenu;
+    singlePlayerMenu.showMenu();
 }
 
-void MainMenu::onMultiPlayer() {
-    MultiPlayerMenu* pMultiPlayerMenu = new MultiPlayerMenu();
-    pMultiPlayerMenu->showMenu();
-    delete pMultiPlayerMenu;
+void MainMenu::onMultiPlayer() const
+{
+    MultiPlayerMenu multiPlayerMenu;
+    multiPlayerMenu.showMenu();
 }
 
-void MainMenu::onMapEditor() {
-    MapEditor *pMapEditor = new MapEditor();
-    pMapEditor->RunEditor();
-    delete pMapEditor;
+void MainMenu::onMapEditor() const
+{
+    MapEditor mapEditor;
+    mapEditor.RunEditor();
 }
 
 
 void MainMenu::onOptions() {
-    OptionsMenu* pOptionsMenu = new OptionsMenu();
-    int ret = pOptionsMenu->showMenu();
-    delete pOptionsMenu;
+    OptionsMenu  optionsMenu;
+    int ret = optionsMenu.showMenu();
 
     if(ret == MENU_QUIT_REINITIALIZE) {
         quit(MENU_QUIT_REINITIALIZE);
     }
 }
 
-void MainMenu::onAbout() {
-    AboutMenu* myAbout = new AboutMenu();
-    myAbout->showMenu();
-    delete myAbout;
+void MainMenu::onAbout() const
+{
+    AboutMenu myAbout;
+    myAbout.showMenu();
 }
 
 void MainMenu::onQuit() {
