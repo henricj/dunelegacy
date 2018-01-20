@@ -120,6 +120,8 @@
 #endif
 #include <windows.h>
 #include <direct.h>
+#include <Shlobj.h>
+#include <Shlwapi.h>
 #include <cctype>
 
 /*
@@ -149,54 +151,13 @@ typedef HRESULT (WINAPI *LPSHGETFOLDERPATH) (HWND,int,HANDLE,DWORD,LPTSTR);
 /*
  * Get the requested info
  */
-int fnkdat(const _TCHAR* target, _TCHAR* buffer, int len, int flags) {
-
-   static LPSHGETFOLDERPATH SHGetFolderPath = NULL;
-   static HMODULE hSHFolderDLL = NULL;
-   static LPGETUSERNAME GetUserName = NULL;
-   static HMODULE hAdvapi32DLL = NULL;
-   _TCHAR szPath[MAX_PATH];
-   LPTSTR szCommandLine, szTmp;
-   DWORD dwSize;
-   int total,i;
-   HRESULT hresult;
-   DWORD dwFlags;
-   int rawflags;
-
-   if (buffer && len)
-      buffer[0] = _T('\0');
-
-   /* save room for the null term char
-    */
-   total = len - 1;
+int fnkdat(const _TCHAR* target, _TCHAR* buffer0, int len, int flags) {
 
    /* Initialize, if requested to.  Note that initialize must be called
     * from a single thread before anything else.  Other then that,
     * there are no concurrency issues (as far as I know).
     */
    if (flags == FNKDAT_INIT) {
-
-      if ((hSHFolderDLL = LoadLibrary(_T("SHFOLDER.DLL"))) != NULL) {
-
-         /* one would expect that the strings below should be wrapped
-            in a _T(), but the docs (and the compiler) say "no!"
-          */
-         SHGetFolderPath = (LPSHGETFOLDERPATH) GetProcAddress(
-            hSHFolderDLL, "SHGetFolderPath" FNKDAT_U);
-
-      } else {
-         SHGetFolderPath = NULL;
-      }
-
-      if ((hAdvapi32DLL = LoadLibrary(_T("ADVAPI32.DLL"))) != NULL) {
-
-         GetUserName = (LPGETUSERNAME) GetProcAddress(
-            hAdvapi32DLL, "GetUserName" FNKDAT_U);
-
-      } else {
-         GetUserName = NULL;
-      }
-
       return 0;
    }
 
@@ -204,30 +165,38 @@ int fnkdat(const _TCHAR* target, _TCHAR* buffer, int len, int flags) {
     * the hell, why not?
     */
    if (flags == FNKDAT_UNINIT) {
-      if (hSHFolderDLL)
-         FreeLibrary(hSHFolderDLL);
-      if (hAdvapi32DLL)
-         FreeLibrary(hAdvapi32DLL);
-
       return 0;
    }
+
+   if (!buffer0)
+       return -1;
 
    /* if target is absolute then simply return it
     */
    if (target) {
-      if ((target[0] && target[0] == _T('\\'))
-          || (target[0] && target[0] == _T('/'))
+      if ((target[0] == _T('\\'))
+          || (target[0] == _T('/'))
           || (target[0] && target[1] && target[1] == _T(':'))) {
 
-         _tcsncpy(buffer, target, len);
+         _tcsncpy(buffer0, target, len);
          return 0;
       }
    }
 
-   hresult = S_OK;
-   dwFlags = 0;
+   wchar_t szPath[MAX_PATH];
+   wchar_t buffer[MAX_PATH];
 
-   rawflags = flags & (0xFFFFFFFF ^ FNKDAT_CREAT);
+   if (len)
+      buffer0[0] = _T('\0');
+
+   /* save room for the null term char
+   */
+   const int total = len - 1;
+
+   HRESULT hresult = S_OK;
+   DWORD dwFlags = 0;
+
+   const int rawflags = flags & (0xFFFFFFFF ^ FNKDAT_CREAT);
 
    if (rawflags == FNKDAT_USER)
       dwFlags = CSIDL_APPDATA;
@@ -239,21 +208,17 @@ int fnkdat(const _TCHAR* target, _TCHAR* buffer, int len, int flags) {
       is available.
     */
    if (dwFlags
-       && SHGetFolderPath
-       && SUCCEEDED(hresult = SHGetFolderPath(
+       && SUCCEEDED(hresult = SHGetFolderPathW(
          NULL,
          dwFlags | ((flags & FNKDAT_CREAT) ? CSIDL_FLAG_CREATE : 0),
          NULL,
          SHGFP_TYPE_CURRENT,
          szPath))) {
 
-         FNKDAT_S(_tcsncpy(buffer, szPath, len));
-         FNKDAT_S(_tcsncat(buffer, _T("\\"), len));
-         FNKDAT_S(_tcsncat(buffer, _T(PACKAGE), len));
-         FNKDAT_S(_tcsncat(buffer, _T("\\"), len));
-
-
-
+      if (!PathAppendW(szPath, L"" PACKAGE)) {
+         errno = ENOMEM;
+         return -1;
+      }
 
    /* We always compute the system conf and data directories
       relative to argv[0]
@@ -271,69 +236,80 @@ int fnkdat(const _TCHAR* target, _TCHAR* buffer, int len, int flags) {
       to the executable, as that's what most existing software seems
       to do.
     */
-   } else if ((flags == FNKDAT_CONF)
-       || (flags == FNKDAT_USER)
-       || (flags == FNKDAT_DATA)
-       || (flags == (FNKDAT_VAR | FNKDAT_DATA))) {
-      szCommandLine = GetCommandLine();
+   }
+   else if ((flags == FNKDAT_CONF)
+      || (flags == FNKDAT_USER)
+      || (flags == FNKDAT_DATA)
+      || (flags == (FNKDAT_VAR | FNKDAT_DATA))) {
+      const wchar_t * szCommandLine = GetCommandLineW();
+
+      const wchar_t * command_end;
 
       /* argv[0] may be quoted -- if so, skip the quote
          and whack everything after the end quote
        */
-      if (szCommandLine[0] == _T('"')) {
+      if (szCommandLine[0] == L'"') {
+         ++szCommandLine;
 
-         szCommandLine++;
-         _tcsncpy(buffer, szCommandLine, len);
-         szTmp = buffer;
+         command_end = wcschr(szCommandLine, L'"');
 
-         while(szTmp[0] && szTmp[0] != _T('"'))
-            szTmp++;
+         if (!command_end)
+            return -1;
 
-         szTmp[0] = _T('\0');
+           //szCommandLine++;
+           //_tcsncpy(buffer, szCommandLine, len);
+           //szTmp = buffer;
 
-      /* otherwise, whack everything after the first
-         space character
-       */
+           //while(szTmp[0] && szTmp[0] != _T('"'))
+           //   szTmp++;
+
+           //szTmp[0] = _T('\0');
+
+        /* otherwise, whack everything after the first
+           space character
+         */
       } else {
-         _tcsncpy(buffer, szCommandLine, len);
-         szTmp = buffer;
+          for (command_end = szCommandLine; *command_end && !iswspace(*command_end); ++command_end)
+          { }
 
-         while(szTmp[0] && !_istspace(szTmp[0]))
-            szTmp++;
+          //_tcsncpy(buffer, szCommandLine, len);
+          //szTmp = buffer;
 
-         szTmp[0] = _T('\0');
-      }
+          //while(szTmp[0] && !_istspace(szTmp[0]))
+          //   szTmp++;
 
+          //szTmp[0] = _T('\0');
+       }
 
-      szTmp = _tcsrchr(buffer, _T('\\'));
+      if (command_end == szCommandLine)
+         wcscpy(szPath, L".\\");
+      else {
+         const auto command_length = command_end - szCommandLine;
 
-      if (!szTmp)
-         szTmp = _tcsrchr(buffer, _T('/'));
+         assert(command_length > 0);
 
-      if (szTmp) {
-         szTmp++;
-         szTmp[0] = _T('\0');
+         if (command_length >= MAX_PATH - 1)
+            return -1;
 
-      } else {
-         _tcsncpy(buffer, _T(".\\"), len);
+         memcpy(szPath, szCommandLine, sizeof(wchar_t) * command_length);
+
+         szPath[command_length] = L'\0';
       }
 
       /* this only happens when we don't have the silly-ass function */
       if (flags & FNKDAT_USER) {
-         dwSize = MAX_PATH;
+          PathAppendW(szPath, L"users");
 
-         FNKDAT_S(_tcsncat(buffer, _T("users\\"), len));
+         DWORD dwSize = MAX_PATH;
 
          /* Grab what windows thinks is the current user name */
-         if (GetUserName(szPath, &dwSize) == TRUE) {
-            FNKDAT_S(_tcsncat(buffer, szPath, len));
+         if (GetUserNameW(buffer, &dwSize) == TRUE) {
+            PathAppendW(szPath, buffer);
 
          /* if that fails, make something up */
          } else {
-            FNKDAT_S(_tcsncat(buffer, _T("default"), len));
+             PathAppendW(szPath, L"default");
          }
-
-         FNKDAT_S(_tcsncat(buffer, _T("\\"), len));
       }
 
 
@@ -345,33 +321,31 @@ int fnkdat(const _TCHAR* target, _TCHAR* buffer, int len, int flags) {
       return -1;
    }
 
-   /* append any given filename */
-   if (target) {
-      FNKDAT_S(_tcsncat(buffer, target, len));
-   }
-
    /* replace unix path characters w/ windows path chars
-      so that the fnk_mkdirs funtion works
-    */
-   for(i = 0; buffer[i]; i++) {
-      if (buffer[i] == _T('/'))
-         buffer[i] = _T('\\');
+   so that the fnk_mkdirs funtion works
+   */
+   for (int i = 0; szPath[i]; i++) {
+       if (szPath[i] == L'/')
+           szPath[i] = L'\\';
    }
 
    /* do the mkdir(s), if asked to */
-   if ((flags & FNKDAT_CREAT)
-       && fnkdat_mkdirs(buffer, -1) < 0) {
+   if ((flags & FNKDAT_CREAT)) {
+       const auto ret = SHCreateDirectoryExW(nullptr, szPath, nullptr);
 
-      return -1;
+       if (ret != ERROR_SUCCESS && ret != ERROR_ALREADY_EXISTS)
+           return -1;
    }
 
-   WCHAR szwPath[MAX_PATH];
+   /* append any given filename */
+   if (target) {
+       if (!MultiByteToWideChar(CP_UTF8, 0, target, -1, buffer, MAX_PATH))
+           return -1;
 
-   if(MultiByteToWideChar(CP_ACP, 0, buffer, -1, szwPath, MAX_PATH) == 0) {
-       return -1;
+       PathAppendW(szPath, buffer);
    }
 
-   if(WideCharToMultiByte(CP_UTF8, 0, szwPath, -1, buffer, MAX_PATH, NULL, NULL) == 0) {
+   if(WideCharToMultiByte(CP_UTF8, 0, szPath, -1, buffer0, len, nullptr, nullptr) == 0) {
        return -1;
    }
 
