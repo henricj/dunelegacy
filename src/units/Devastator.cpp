@@ -64,9 +64,7 @@ void Devastator::init()
 }
 
 
-Devastator::~Devastator()
-{
-}
+Devastator::~Devastator() = default;
 
 void Devastator::save(OutputStream& stream) const
 {

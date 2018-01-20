@@ -48,8 +48,7 @@ TextManager::TextManager() {
     }
 }
 
-TextManager::~TextManager() {
-}
+TextManager::~TextManager() = default;
 
 void TextManager::loadData() {
     addOrigDuneText("TEXTH." + _("LanguageFileExtension"), true);

@@ -48,8 +48,7 @@ void HeavyFactory::init() {
     lastAnimFrame = 3;
 }
 
-HeavyFactory::~HeavyFactory() {
-}
+HeavyFactory::~HeavyFactory() = default;
 
 void HeavyFactory::doBuildRandom() {
     if(isAllowedToUpgrade() && (getUpgradeCost() <= owner->getCredits())) {

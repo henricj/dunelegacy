@@ -40,7 +40,7 @@ public:
     }
 
     /// destructor
-    ~CutSceneSoundTrigger() { };
+    ~CutSceneSoundTrigger() = default;
 
     /**
         Trigger this trigger. This method is only called if currentFrameNumber == getTriggerFrameNumber()

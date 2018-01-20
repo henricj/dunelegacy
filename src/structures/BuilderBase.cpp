@@ -86,8 +86,7 @@ void BuilderBase::init() {
     aBuilder = true;
 }
 
-BuilderBase::~BuilderBase() {
-}
+BuilderBase::~BuilderBase() = default;
 
 
 void BuilderBase::save(OutputStream& stream) const {

@@ -56,7 +56,7 @@ public:
         Mix_VolumeMusic(musicVolume);
     };
 
-    virtual ~MusicPlayer() { };
+    virtual ~MusicPlayer() = default;
 
     /*!
         change type of current music

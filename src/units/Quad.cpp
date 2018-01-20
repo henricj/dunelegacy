@@ -50,8 +50,7 @@ void Quad::init() {
     numImagesY = 1;
 }
 
-Quad::~Quad() {
-}
+Quad::~Quad() = default;
 
 void Quad::playAttackSound() {
     soundPlayer->playSoundAt(Sound_MachineGun,location);

@@ -21,13 +21,9 @@
 
 #include <misc/exceptions.h>
 
-TriggerManager::TriggerManager()
-{
-}
+TriggerManager::TriggerManager() = default;
 
-TriggerManager::~TriggerManager()
-{
-}
+TriggerManager::~TriggerManager() = default;
 
 void TriggerManager::save(OutputStream& stream) const {
     stream.writeUint32(triggers.size());

@@ -52,8 +52,7 @@ void RocketTurret::init() {
     curAnimFrame = firstAnimFrame = lastAnimFrame = ((10-drawnAngle) % 8) + 2;
 }
 
-RocketTurret::~RocketTurret() {
-}
+RocketTurret::~RocketTurret() = default;
 
 void RocketTurret::updateStructureSpecificStuff() {
     if( ( !currentGame->getGameInitSettings().getGameOptions().rocketTurretsNeedPower || getOwner()->hasPower() )

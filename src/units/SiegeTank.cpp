@@ -53,8 +53,7 @@ void SiegeTank::init() {
     numImagesY = 1;
 }
 
-SiegeTank::~SiegeTank() {
-}
+SiegeTank::~SiegeTank() = default;
 
 void SiegeTank::blitToScreen() {
     int x1 = screenborder->world2screenX(realX);

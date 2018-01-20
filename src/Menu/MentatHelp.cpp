@@ -82,8 +82,7 @@ MentatHelp::MentatHelp(int newHouse, int techLevel, int mission) : MentatMenu(ne
     windowWidget.addWidget(&exitButton,Point(370,340), getTextureSize(pMentatExit));
 }
 
-MentatHelp::~MentatHelp() {
-}
+MentatHelp::~MentatHelp() = default;
 
 void MentatHelp::drawSpecificStuff()
 {

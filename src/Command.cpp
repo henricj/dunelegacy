@@ -102,8 +102,7 @@ Command::Command(InputStream& stream) {
     parameter = stream.readUint32Vector();
 }
 
-Command::~Command() {
-}
+Command::~Command() = default;
 
 void Command::save(OutputStream& stream) const {
     stream.writeUint8(playerID);

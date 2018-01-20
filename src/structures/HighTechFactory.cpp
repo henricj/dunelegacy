@@ -48,5 +48,4 @@ void HighTechFactory::init() {
     lastAnimFrame = 3;
 }
 
-HighTechFactory::~HighTechFactory() {
-}
+HighTechFactory::~HighTechFactory() = default;

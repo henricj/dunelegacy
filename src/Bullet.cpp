@@ -237,9 +237,7 @@ void Bullet::init()
 }
 
 
-Bullet::~Bullet()
-{
-}
+Bullet::~Bullet() = default;
 
 void Bullet::save(OutputStream& stream) const
 {

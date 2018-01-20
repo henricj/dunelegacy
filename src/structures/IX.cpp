@@ -47,6 +47,5 @@ void IX::init() {
     lastAnimFrame = 3;
 }
 
-IX::~IX() {
-}
+IX::~IX() = default;
 

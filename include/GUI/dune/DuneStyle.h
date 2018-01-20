@@ -27,8 +27,7 @@ public:
     }
 
     /// destructor
-    virtual ~DuneStyle() {
-    }
+    virtual ~DuneStyle() = default;
 
 
     /**

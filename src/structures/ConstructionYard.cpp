@@ -49,8 +49,7 @@ void ConstructionYard::init() {
     lastAnimFrame = 3;
 }
 
-ConstructionYard::~ConstructionYard() {
-}
+ConstructionYard::~ConstructionYard() = default;
 
 bool ConstructionYard::doPlaceStructure(int x, int y) {
     if(isWaitingToPlace()) {

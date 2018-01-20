@@ -49,8 +49,7 @@ void GroundUnit::init() {
     aGroundUnit = true;
 }
 
-GroundUnit::~GroundUnit() {
-}
+GroundUnit::~GroundUnit() = default;
 
 void GroundUnit::save(OutputStream& stream) const {
     UnitBase::save(stream);

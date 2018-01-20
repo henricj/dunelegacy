@@ -77,5 +77,4 @@ IndexedTextFile::IndexedTextFile(SDL_RWops* rwop, bool bDecode) {
     free(pFiledata);
 }
 
-IndexedTextFile::~IndexedTextFile() {
-}
+IndexedTextFile::~IndexedTextFile() = default;

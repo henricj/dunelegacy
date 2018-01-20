@@ -59,8 +59,7 @@ void InfantryBase::init() {
     walkFrame = 0;
 }
 
-InfantryBase::~InfantryBase() {
-}
+InfantryBase::~InfantryBase() = default;
 
 
 void InfantryBase::save(OutputStream& stream) const {

@@ -47,5 +47,4 @@ void WOR::init() {
     lastAnimFrame = 3;
 }
 
-WOR::~WOR() {
-}
+WOR::~WOR() = default;

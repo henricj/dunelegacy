@@ -47,8 +47,7 @@ void Radar::init() {
     lastAnimFrame = 5;
 }
 
-Radar::~Radar() {
-}
+Radar::~Radar() = default;
 
 
 void Radar::destroy() {

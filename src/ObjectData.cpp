@@ -54,9 +54,7 @@ ObjectData::ObjectData()
     }
 }
 
-ObjectData::~ObjectData()
-{
-}
+ObjectData::~ObjectData() = default;
 
 void ObjectData::loadFromINIFile(const std::string& filename)
 {

@@ -62,8 +62,7 @@ void AIPlayer::init() {
 }
 
 
-AIPlayer::~AIPlayer() {
-}
+AIPlayer::~AIPlayer() = default;
 
 void AIPlayer::save(OutputStream& stream) const {
     Player::save(stream);

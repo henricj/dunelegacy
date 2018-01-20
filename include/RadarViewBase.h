@@ -48,9 +48,7 @@ public:
     /**
         Destructor
     */
-    virtual ~RadarViewBase() {
-
-    }
+    virtual ~RadarViewBase() = default;
 
     /**
         Get the map size in x direction

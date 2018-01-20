@@ -58,9 +58,7 @@ void Saboteur::init()
     numWeapons = 0;
 }
 
-Saboteur::~Saboteur()
-{
-}
+Saboteur::~Saboteur() = default;
 
 
 void Saboteur::checkPos()

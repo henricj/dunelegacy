@@ -32,9 +32,7 @@ MessageTicker::MessageTicker() : Widget() {
     resize(0,0);
 }
 
-MessageTicker::~MessageTicker() {
-
-}
+MessageTicker::~MessageTicker() = default;
 
 void MessageTicker::addMessage(const std::string& msg)
 {

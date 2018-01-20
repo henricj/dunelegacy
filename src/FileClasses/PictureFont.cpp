@@ -84,11 +84,7 @@ PictureFont::PictureFont(SDL_Surface* pic, int freesrc)
 /**
     Frees all memory.
 */
-PictureFont::~PictureFont()
-{
-}
-
-
+PictureFont::~PictureFont() = default;
 
 
 void PictureFont::drawTextOnSurface(SDL_Surface* pSurface, const std::string& text, Uint32 baseColor) {

@@ -47,5 +47,4 @@ void Barracks::init() {
     lastAnimFrame = 3;
 }
 
-Barracks::~Barracks() {
-}
+Barracks::~Barracks() = default;

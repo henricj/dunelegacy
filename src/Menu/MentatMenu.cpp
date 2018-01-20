@@ -169,8 +169,7 @@ MentatMenu::MentatMenu(int newHouse)
     textLabel.setVisible(false);
 }
 
-MentatMenu::~MentatMenu() {
-}
+MentatMenu::~MentatMenu() = default;
 
 void MentatMenu::update() {
     // speedup blink of the eye

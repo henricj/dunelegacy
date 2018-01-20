@@ -48,8 +48,7 @@ void LightFactory::init() {
     lastAnimFrame = 3;
 }
 
-LightFactory::~LightFactory() {
-}
+LightFactory::~LightFactory() = default;
 
 void LightFactory::updateStructureSpecificStuff() {
     if(deployTimer > 0) {

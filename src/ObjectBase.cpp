@@ -160,8 +160,7 @@ void ObjectBase::init() {
 
 }
 
-ObjectBase::~ObjectBase() {
-}
+ObjectBase::~ObjectBase() = default;
 
 void ObjectBase::save(OutputStream& stream) const {
     stream.writeUint32(originalHouseID);

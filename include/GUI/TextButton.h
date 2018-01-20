@@ -37,8 +37,7 @@ public:
     }
 
     /// destructor
-    virtual ~TextButton() {
-    }
+    virtual ~TextButton() = default;
 
     /**
         This method sets a new text for this button and resizes this button

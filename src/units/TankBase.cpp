@@ -54,8 +54,7 @@ void TankBase::init() {
     turretGraphic = nullptr;
 }
 
-TankBase::~TankBase() {
-}
+TankBase::~TankBase() = default;
 
 void TankBase::save(OutputStream& stream) const {
     TrackedUnit::save(stream);

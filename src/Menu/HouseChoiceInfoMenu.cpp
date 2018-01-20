@@ -76,8 +76,7 @@ HouseChoiceInfoMenu::HouseChoiceInfoMenu(int newHouse) : MentatMenu(HOUSE_INVALI
     windowWidget.addWidget(&yesButton,Point(480,340), getTextureSize(pMentatYes));
 }
 
-HouseChoiceInfoMenu::~HouseChoiceInfoMenu() {
-}
+HouseChoiceInfoMenu::~HouseChoiceInfoMenu() = default;
 
 void HouseChoiceInfoMenu::onMentatTextFinished() {
     yesButton.setEnabled(true);

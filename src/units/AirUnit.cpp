@@ -52,9 +52,7 @@ void AirUnit::init()
     aFlyingUnit = true;
 }
 
-AirUnit::~AirUnit()
-{
-}
+AirUnit::~AirUnit() = default;
 
 void AirUnit::save(OutputStream& stream) const
 {

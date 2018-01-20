@@ -50,8 +50,7 @@ void Trike::init() {
     numImagesY = 1;
 }
 
-Trike::~Trike() {
-}
+Trike::~Trike() = default;
 
 void Trike::destroy() {
     if(currentGameMap->tileExists(location) && isVisible()) {

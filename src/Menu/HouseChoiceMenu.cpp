@@ -70,8 +70,7 @@ HouseChoiceMenu::HouseChoiceMenu() : MenuBase()
     updateHouseChoice();
 }
 
-HouseChoiceMenu::~HouseChoiceMenu() {
-}
+HouseChoiceMenu::~HouseChoiceMenu() = default;
 
 void HouseChoiceMenu::onHouseButton(int button) {
     int selectedHouse = houseOrder[currentHouseChoiceScrollPos+button];

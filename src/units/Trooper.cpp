@@ -47,8 +47,7 @@ void Trooper::init() {
     numImagesY = 3;
 }
 
-Trooper::~Trooper() {
-}
+Trooper::~Trooper() = default;
 
 bool Trooper::canAttack(const ObjectBase* object) const {
     if ((object != nullptr)

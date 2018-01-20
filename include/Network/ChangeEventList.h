@@ -72,8 +72,7 @@ public:
         std::string newStringValue;
     };
 
-    ChangeEventList() {
-    }
+    ChangeEventList() = default;
 
     explicit ChangeEventList(InputStream& stream) {
         Uint32 numChangeEvents = stream.readUint32();
@@ -82,9 +81,7 @@ public:
         }
     }
 
-    ~ChangeEventList() {
-
-    }
+    ~ChangeEventList() = default;
 
     void save(OutputStream& stream) const {
         stream.writeUint32(changeEventList.size());

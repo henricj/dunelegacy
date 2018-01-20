@@ -111,6 +111,5 @@ MentatTextFile::MentatTextFile(SDL_RWops* rwop) {
     free(pFiledata);
 }
 
-MentatTextFile::~MentatTextFile() {
-}
+MentatTextFile::~MentatTextFile() = default;
 

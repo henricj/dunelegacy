@@ -49,8 +49,7 @@ void WindTrap::init() {
     lastAnimFrame = 2+NUM_WINDTRAP_ANIMATIONS-1;
 }
 
-WindTrap::~WindTrap() {
-}
+WindTrap::~WindTrap() = default;
 
 ObjectInterface* WindTrap::getInterfaceContainer() {
     if((pLocalHouse == owner) || (debug == true)) {

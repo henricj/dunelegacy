@@ -57,8 +57,7 @@ void Wall::init() {
     numImagesY = 3;
 }
 
-Wall::~Wall() {
-}
+Wall::~Wall() = default;
 
 void Wall::save(OutputStream& stream) const {
     StructureBase::save(stream);

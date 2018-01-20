@@ -96,8 +96,7 @@ InGameSettingsMenu::InGameSettingsMenu() : Window(0,0,0,0) {
     init();
 }
 
-InGameSettingsMenu::~InGameSettingsMenu() {
-}
+InGameSettingsMenu::~InGameSettingsMenu() = default;
 
 void InGameSettingsMenu::init() {
     newGamespeed = settings.gameOptions.gameSpeed;

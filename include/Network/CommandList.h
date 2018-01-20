@@ -56,8 +56,7 @@ public:
         std::vector<Command> commands;
     };
 
-    CommandList() {
-    }
+    CommandList() = default;
 
     explicit CommandList(InputStream& stream) {
         Uint32 numCommandListEntries = stream.readUint32();
@@ -66,7 +65,7 @@ public:
         }
     }
 
-    ~CommandList() { }
+    ~CommandList() = default;
 
     void save(OutputStream& stream) const {
         stream.writeUint32((Uint32) commandList.size());

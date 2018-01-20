@@ -32,8 +32,8 @@ typedef char * charptr;
 class DataSource
 {
 public:
-    DataSource() {};
-    virtual ~DataSource() {};
+    DataSource() = default;;
+    virtual ~DataSource() = default;
 
     virtual unsigned int read1() =0;
     virtual unsigned int read2() =0;
@@ -65,7 +65,7 @@ public:
         f = fp;
     };
 
-    virtual ~FileDataSource() {};
+    virtual ~FileDataSource() = default;
 
     virtual unsigned int read1()
     {
@@ -180,7 +180,7 @@ public:
         size = len;
     };
 
-    virtual ~BufferDataSource() {};
+    virtual ~BufferDataSource() = default;
 
     virtual unsigned int read1()
     {

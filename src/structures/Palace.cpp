@@ -72,8 +72,7 @@ void Palace::init() {
     canAttackStuff = true;
 }
 
-Palace::~Palace() {
-}
+Palace::~Palace() = default;
 
 void Palace::save(OutputStream& stream) const {
     StructureBase::save(stream);

@@ -51,8 +51,7 @@ public:
     }
 
     /// default destructor
-    virtual ~StaticContainer() {
-    }
+    virtual ~StaticContainer() = default;
 
     /**
         This method adds a new widget to this container.

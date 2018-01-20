@@ -43,9 +43,7 @@ void TrackedUnit::init()
     tracked = true;
 }
 
-TrackedUnit::~TrackedUnit()
-{
-}
+TrackedUnit::~TrackedUnit() = default;
 
 void TrackedUnit::save(OutputStream& stream) const
 {

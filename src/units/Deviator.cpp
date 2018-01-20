@@ -56,9 +56,7 @@ void Deviator::init()
     bulletType = Bullet_DRocket;
 }
 
-Deviator::~Deviator()
-{
-}
+Deviator::~Deviator() = default;
 
 void Deviator::blitToScreen()
 {

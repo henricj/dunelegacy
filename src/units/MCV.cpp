@@ -56,9 +56,7 @@ void MCV::init() {
     numImagesY = 1;
 }
 
-MCV::~MCV() {
-
-}
+MCV::~MCV() = default;
 
 void MCV::handleDeployClick() {
     currentGame->getCommandManager().addCommand(Command(pLocalPlayer->getPlayerID(), CMD_MCV_DEPLOY,objectID));

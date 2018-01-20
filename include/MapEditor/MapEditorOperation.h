@@ -34,11 +34,9 @@ class MapEditor;
 class MapEditorOperation {
 public:
 
-    MapEditorOperation() {
-    }
+    MapEditorOperation() = default;
 
-    virtual ~MapEditorOperation() {
-    }
+    virtual ~MapEditorOperation() = default;
 
     virtual std::shared_ptr<MapEditorOperation> perform(MapEditor *pMapEditor) = 0;
 };
@@ -46,11 +44,9 @@ public:
 class MapEditorNoOperation : public MapEditorOperation {
 public:
 
-    MapEditorNoOperation() {
-    }
+    MapEditorNoOperation() = default;
 
-    virtual ~MapEditorNoOperation() {
-    }
+    virtual ~MapEditorNoOperation() = default;
 
     virtual std::shared_ptr<MapEditorOperation> perform(MapEditor *pMapEditor) {
         return std::shared_ptr<MapEditorOperation>(new MapEditorNoOperation());
@@ -63,8 +59,7 @@ public:
     MapEditorStartOperation() : MapEditorOperation() {
     }
 
-    virtual ~MapEditorStartOperation() {
-    }
+    virtual ~MapEditorStartOperation() = default;
 
     virtual std::shared_ptr<MapEditorOperation> perform(MapEditor *pMapEditor);
 };
@@ -93,8 +88,7 @@ public:
      : MapEditorOperation(), x(x), y(y) {
     }
 
-    virtual ~MapEditorTerrainAddSpiceBloomOperation() {
-    }
+    virtual ~MapEditorTerrainAddSpiceBloomOperation() = default;
 
     virtual std::shared_ptr<MapEditorOperation> perform(MapEditor *pMapEditor);
 
@@ -109,8 +103,7 @@ public:
      : MapEditorOperation(), x(x), y(y) {
     }
 
-    virtual ~MapEditorTerrainRemoveSpiceBloomOperation() {
-    }
+    virtual ~MapEditorTerrainRemoveSpiceBloomOperation() = default;
 
     virtual std::shared_ptr<MapEditorOperation> perform(MapEditor *pMapEditor);
 
@@ -125,8 +118,7 @@ public:
      : MapEditorOperation(), x(x), y(y) {
     }
 
-    virtual ~MapEditorTerrainAddSpecialBloomOperation() {
-    }
+    virtual ~MapEditorTerrainAddSpecialBloomOperation() = default;
 
     virtual std::shared_ptr<MapEditorOperation> perform(MapEditor *pMapEditor);
 
@@ -141,8 +133,7 @@ public:
      : MapEditorOperation(), x(x), y(y) {
     }
 
-    virtual ~MapEditorTerrainRemoveSpecialBloomOperation() {
-    }
+    virtual ~MapEditorTerrainRemoveSpecialBloomOperation() = default;
 
     virtual std::shared_ptr<MapEditorOperation> perform(MapEditor *pMapEditor);
 
@@ -191,8 +182,7 @@ public:
      : MapEditorOperation(), x(x), y(y) {
     }
 
-    virtual ~MapEditorSetTacticalPositionOperation() {
-    }
+    virtual ~MapEditorSetTacticalPositionOperation() = default;
 
     virtual std::shared_ptr<MapEditorOperation> perform(MapEditor *pMapEditor);
 
@@ -213,8 +203,7 @@ public:
      : MapEditorOperation(), preferredID(INVALID), position(position), house(house), itemID(itemID), health(health) {
     }
 
-    virtual ~MapEditorStructurePlaceOperation() {
-    }
+    virtual ~MapEditorStructurePlaceOperation() = default;
 
     virtual std::shared_ptr<MapEditorOperation> perform(MapEditor *pMapEditor);
 
@@ -232,8 +221,7 @@ public:
      : MapEditorOperation(), id(id) {
     }
 
-    virtual ~MapEditorRemoveStructureOperation() {
-    }
+    virtual ~MapEditorRemoveStructureOperation() = default;
 
     virtual std::shared_ptr<MapEditorOperation> perform(MapEditor *pMapEditor);
 
@@ -251,8 +239,7 @@ public:
      : MapEditorOperation(), preferredID(INVALID), position(position), house(house), itemID(itemID), health(health), angle(angle), attackmode(attackmode) {
     }
 
-    virtual ~MapEditorUnitPlaceOperation() {
-    }
+    virtual ~MapEditorUnitPlaceOperation() = default;
 
     virtual std::shared_ptr<MapEditorOperation> perform(MapEditor *pMapEditor);
 
@@ -272,8 +259,7 @@ public:
      : MapEditorOperation(), id(id) {
     }
 
-    virtual ~MapEditorRemoveUnitOperation() {
-    }
+    virtual ~MapEditorRemoveUnitOperation() = default;
 
     virtual std::shared_ptr<MapEditorOperation> perform(MapEditor *pMapEditor);
 
@@ -288,8 +274,7 @@ public:
      : MapEditorOperation(), id(id), health(health) {
     }
 
-    virtual ~MapEditorEditStructureOperation() {
-    }
+    virtual ~MapEditorEditStructureOperation() = default;
 
     virtual std::shared_ptr<MapEditorOperation> perform(MapEditor *pMapEditor);
 
@@ -345,8 +330,7 @@ public:
      : itemID(itemID), amount(amount) {
     }
 
-    virtual ~MapEditorChangeChoam() {
-    }
+    virtual ~MapEditorChangeChoam() = default;
 
     virtual std::shared_ptr<MapEditorOperation> perform(MapEditor *pMapEditor);
 
@@ -377,8 +361,7 @@ public:
      : teams(teams) {
     }
 
-    virtual ~MapEditorChangeTeams() {
-    }
+    virtual ~MapEditorChangeTeams() = default;
 
     virtual std::shared_ptr<MapEditorOperation> perform(MapEditor *pMapEditor);
 
@@ -392,8 +375,7 @@ public:
      : mapInfo(mapInfo) {
     }
 
-    virtual ~MapEditorChangeMapInfo() {
-    }
+    virtual ~MapEditorChangeMapInfo() = default;
 
     virtual std::shared_ptr<MapEditorOperation> perform(MapEditor *pMapEditor);
 

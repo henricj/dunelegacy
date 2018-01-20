@@ -250,8 +250,7 @@ PictureFactory::PictureFactory() {
     SDL_SetColorKey(builderListLowerCap.get(), SDL_TRUE, 0);
 }
 
-PictureFactory::~PictureFactory() {
-}
+PictureFactory::~PictureFactory() = default;
 
 SDL_Surface* PictureFactory::createTopBar() {
     SDL_Surface* topBar;

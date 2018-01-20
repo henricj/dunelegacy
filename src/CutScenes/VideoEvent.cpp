@@ -17,13 +17,9 @@
 
 #include <CutScenes/VideoEvent.h>
 
-VideoEvent::VideoEvent()
-{
-}
+VideoEvent::VideoEvent() = default;
 
-VideoEvent::~VideoEvent()
-{
-}
+VideoEvent::~VideoEvent() = default;
 
 int VideoEvent::draw()
 {

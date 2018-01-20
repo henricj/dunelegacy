@@ -30,9 +30,7 @@ TimeoutTrigger::TimeoutTrigger(InputStream& stream) : Trigger(stream)
 {
 }
 
-TimeoutTrigger::~TimeoutTrigger()
-{
-}
+TimeoutTrigger::~TimeoutTrigger() = default;
 
 void TimeoutTrigger::save(OutputStream& stream)
 {

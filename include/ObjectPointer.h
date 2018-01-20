@@ -34,7 +34,7 @@ public:
     ObjectPointer() { objectID = NONE_ID; };
     explicit ObjectPointer(Uint32 newItemID) { pointTo(newItemID); };
     ObjectPointer(const ObjectBase* newObject) { pointTo(newObject); };
-    ~ObjectPointer() { }
+    ~ObjectPointer() = default;
 
     inline void pointTo(Uint32 newItemID) { objectID = newItemID; };
     void pointTo(const ObjectBase* newObject);

@@ -45,9 +45,7 @@ ReinforcementTrigger::ReinforcementTrigger(InputStream& stream) : Trigger(stream
     repeatCycle = stream.readUint32();
 }
 
-ReinforcementTrigger::~ReinforcementTrigger()
-{
-}
+ReinforcementTrigger::~ReinforcementTrigger() = default;
 
 void ReinforcementTrigger::save(OutputStream& stream)
 {

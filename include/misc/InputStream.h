@@ -156,16 +156,16 @@ public:
 
     class exception : public std::exception {
     public:
-        exception() throw () { };
-        virtual ~exception() throw () { };
+        exception() throw () = default;
+        virtual ~exception() throw () = default;
     };
 
     class eof : public InputStream::exception {
     public:
-        explicit eof(const std::string& str) throw () : str(str) { };
-        virtual ~eof() throw () { };
+        explicit eof(const std::string& str) throw () : str(str) { }
+        virtual ~eof() throw () = default;
 
-        virtual const char* what() const throw () { return str.c_str(); };
+        virtual const char* what() const throw () { return str.c_str(); }
 
     private:
         std::string str;
@@ -174,7 +174,7 @@ public:
     class error : public InputStream::exception {
     public:
         explicit error(const std::string& str) throw () : str(str) { };
-        virtual ~error() throw () { };
+        virtual ~error() throw () = default;
 
         virtual const char* what() const throw () { return str.c_str(); };
 

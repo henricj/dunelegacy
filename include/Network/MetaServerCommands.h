@@ -35,8 +35,7 @@ public:
     explicit MetaServerCommand(int type) : type(type) {
     }
 
-    virtual ~MetaServerCommand() {
-    }
+    virtual ~MetaServerCommand() = default;
 
     virtual bool operator==(const MetaServerCommand& metaServerCommand) const {
         return (type == metaServerCommand.type);

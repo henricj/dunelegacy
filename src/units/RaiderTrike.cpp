@@ -50,8 +50,7 @@ void RaiderTrike::init() {
     numImagesY = 1;
 }
 
-RaiderTrike::~RaiderTrike() {
-}
+RaiderTrike::~RaiderTrike() = default;
 
 void RaiderTrike::destroy() {
     if(currentGameMap->tileExists(location) && isVisible()) {

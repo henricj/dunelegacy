@@ -54,8 +54,7 @@ void Tank::init() {
     numImagesY = 1;
 }
 
-Tank::~Tank() {
-}
+Tank::~Tank() = default;
 
 
 void Tank::blitToScreen() {

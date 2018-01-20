@@ -140,8 +140,7 @@ void House::init() {
 
 
 
-House::~House() {
-}
+House::~House() = default;
 
 
 

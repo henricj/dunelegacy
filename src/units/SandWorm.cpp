@@ -85,8 +85,7 @@ void Sandworm::init() {
     drawnFrame = INVALID;
 }
 
-Sandworm::~Sandworm() {
-}
+Sandworm::~Sandworm() = default;
 
 void Sandworm::save(OutputStream& stream) const {
     GroundUnit::save(stream);

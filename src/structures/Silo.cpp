@@ -49,8 +49,7 @@ void Silo::init() {
     lastAnimFrame = 3;
 }
 
-Silo::~Silo() {
-}
+Silo::~Silo() = default;
 
 ObjectInterface* Silo::getInterfaceContainer() {
     if((pLocalHouse == owner) || (debug == true)) {

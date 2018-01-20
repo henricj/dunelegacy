@@ -39,7 +39,7 @@ public:
     }
 
     /// destructor
-    ~CutSceneMusicTrigger() { };
+    ~CutSceneMusicTrigger() = default;
 
     /**
         Trigger this trigger. This method is only called if currentFrameNumber == getTriggerFrameNumber()

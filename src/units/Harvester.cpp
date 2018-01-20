@@ -86,10 +86,7 @@ void Harvester::init()
     numImagesY = 1;
 }
 
-Harvester::~Harvester()
-{
-
-}
+Harvester::~Harvester() = default;
 
 void Harvester::save(OutputStream& stream) const
 {

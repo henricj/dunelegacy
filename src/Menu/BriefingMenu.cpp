@@ -74,8 +74,7 @@ BriefingMenu::BriefingMenu(int newHouse,int mission,int type) : MentatMenu(newHo
     windowWidget.addWidget(&animation,Point(256,96),animation.getMinimumSize());
 }
 
-BriefingMenu::~BriefingMenu() {
-}
+BriefingMenu::~BriefingMenu() = default;
 
 void BriefingMenu::onMentatTextFinished() {
     proccedButton.setEnabled(true);

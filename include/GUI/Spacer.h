@@ -31,8 +31,7 @@ public:
     }
 
     /// destructor
-    virtual ~Spacer() {
-    }
+    virtual ~Spacer() = default;
 
     /**
         Returns the minimum size of this spacer. That is (0,0).
@@ -73,7 +72,7 @@ public:
     }
 
     /// destructor
-    virtual ~HSpacer() { }
+    virtual ~HSpacer() = default;
 
     /**
         Returns the minimum size of this spacer. The returned size is (width,0).
@@ -120,7 +119,7 @@ public:
     }
 
     /// destructor
-    virtual ~VSpacer() { }
+    virtual ~VSpacer() = default;
 
     /**
         Returns the minimum size of this spacer. The returned size is (0,height).

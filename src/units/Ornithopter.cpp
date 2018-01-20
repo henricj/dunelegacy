@@ -55,8 +55,7 @@ void Ornithopter::init() {
     currentMaxSpeed = currentGame->objectData.data[itemID][originalHouseID].maxspeed;
 }
 
-Ornithopter::~Ornithopter() {
-}
+Ornithopter::~Ornithopter() = default;
 
 void Ornithopter::checkPos() {
     AirUnit::checkPos();

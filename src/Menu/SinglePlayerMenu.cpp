@@ -103,8 +103,7 @@ SinglePlayerMenu::SinglePlayerMenu() : MenuBase() {
     menuButtonsVBox.addWidget(&cancelButton);
 }
 
-SinglePlayerMenu::~SinglePlayerMenu() {
-}
+SinglePlayerMenu::~SinglePlayerMenu() = default;
 
 void SinglePlayerMenu::onCampaign() {
     HouseChoiceMenu* pHouseChoiceMenu = new HouseChoiceMenu();

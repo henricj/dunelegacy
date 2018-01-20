@@ -39,7 +39,7 @@ public:
     }
 
     /// Destructor
-    ~Random() { }
+    ~Random() = default;
 
     /**
         Sets the seed value to newSeed

@@ -51,8 +51,7 @@ void HumanPlayer::init() {
     nextExpectedCommandsCycle = 0;
 }
 
-HumanPlayer::~HumanPlayer() {
-}
+HumanPlayer::~HumanPlayer() = default;
 
 void HumanPlayer::save(OutputStream& stream) const {
     Player::save(stream);

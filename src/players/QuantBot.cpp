@@ -200,8 +200,7 @@ void QuantBot::init() {
 }
 
 
-QuantBot::~QuantBot() {
-}
+QuantBot::~QuantBot() = default;
 
 void QuantBot::save(OutputStream& stream) const {
     Player::save(stream);

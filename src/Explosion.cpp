@@ -56,10 +56,7 @@ Explosion::Explosion(InputStream& stream)
     init();
 }
 
-Explosion::~Explosion()
-{
-
-}
+Explosion::~Explosion() = default;
 
 void Explosion::init()
 {

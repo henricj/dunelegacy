@@ -30,7 +30,7 @@
 #include <Menu/OptionsMenu.h>
 #include <Menu/AboutMenu.h>
 
-MainMenu::MainMenu() : MenuBase()
+MainMenu::MainMenu()
 {
     // set up window
     SDL_Texture *pBackground = pGFXManager->getUIGraphic(UI_MenuBackground);
@@ -99,8 +99,7 @@ MainMenu::MainMenu() : MenuBase()
     MenuButtons.addWidget(&quitButton);
 }
 
-MainMenu::~MainMenu() {
-}
+MainMenu::~MainMenu() = default;
 
 int MainMenu::showMenu()
 {

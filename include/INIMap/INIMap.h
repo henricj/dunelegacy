@@ -65,9 +65,7 @@ public:
         }
     }
 
-    ~INIMap() {
-
-    }
+    ~INIMap() = default;
 
 protected:
 

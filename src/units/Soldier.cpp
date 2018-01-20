@@ -47,8 +47,7 @@ void Soldier::init() {
     numImagesY = 3;
 }
 
-Soldier::~Soldier() {
-}
+Soldier::~Soldier() = default;
 
 bool Soldier::canAttack(const ObjectBase* object) const {
     if ((object != nullptr)

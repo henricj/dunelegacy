@@ -56,8 +56,7 @@ void TurretBase::init() {
     attackMode = AREAGUARD;
 }
 
-TurretBase::~TurretBase() {
-}
+TurretBase::~TurretBase() = default;
 
 void TurretBase::save(OutputStream& stream) const {
     StructureBase::save(stream);

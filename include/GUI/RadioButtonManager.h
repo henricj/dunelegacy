@@ -27,9 +27,7 @@ class RadioButton;
 class RadioButtonManager {
 public:
     /// Default constructor
-    RadioButtonManager()  {
-
-    }
+    RadioButtonManager()  = default;
 
     /// destructor
     virtual ~RadioButtonManager() {

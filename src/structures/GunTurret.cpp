@@ -47,5 +47,4 @@ void GunTurret::init() {
     curAnimFrame = firstAnimFrame = lastAnimFrame = ((10-drawnAngle) % 8) + 2;
 }
 
-GunTurret::~GunTurret() {
-}
+GunTurret::~GunTurret() = default;

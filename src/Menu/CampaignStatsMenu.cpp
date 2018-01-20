@@ -200,8 +200,7 @@ CampaignStatsMenu::CampaignStatsMenu(int level) : MenuBase()
 
 }
 
-CampaignStatsMenu::~CampaignStatsMenu() {
-}
+CampaignStatsMenu::~CampaignStatsMenu() = default;
 
 int CampaignStatsMenu::showMenu()
 {

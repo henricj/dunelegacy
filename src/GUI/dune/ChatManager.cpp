@@ -30,15 +30,9 @@
 #define MAX_NUMBEROFMESSAGES    25
 #define LEFT_BORDER_WIDTH       70
 
-ChatManager::ChatManager() : Widget()
-{
+ChatManager::ChatManager() = default;
 
-}
-
-ChatManager::~ChatManager()
-{
-
-}
+ChatManager::~ChatManager() = default;
 
 void ChatManager::draw(Point position)
 {

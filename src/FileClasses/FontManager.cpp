@@ -33,8 +33,7 @@ FontManager::FontManager() {
     fonts[FONT_STD24] = std::shared_ptr<Font>(new PictureFont(LoadPNG_RW(pFileManager->openFile("Font24.png"),true), true));
 }
 
-FontManager::~FontManager() {
-}
+FontManager::~FontManager() = default;
 
 void FontManager::drawTextOnSurface(SDL_Surface* pSurface, const std::string& text, Uint32 color, unsigned int fontNum) {
     if(fontNum >= NUM_FONTS) {

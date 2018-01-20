@@ -52,8 +52,7 @@ void Launcher::init() {
     bulletType = Bullet_Rocket;
 }
 
-Launcher::~Launcher() {
-}
+Launcher::~Launcher() = default;
 
 void Launcher::blitToScreen() {
     int x1 = screenborder->world2screenX(realX);

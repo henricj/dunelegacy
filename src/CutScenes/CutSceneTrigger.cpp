@@ -21,5 +21,4 @@ CutSceneTrigger::CutSceneTrigger(int frameNumber) {
     this->frameNumber = frameNumber;
 }
 
-CutSceneTrigger::~CutSceneTrigger() {
-}
+CutSceneTrigger::~CutSceneTrigger() = default;

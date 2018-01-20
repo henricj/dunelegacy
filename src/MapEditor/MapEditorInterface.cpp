@@ -729,8 +729,7 @@ MapEditorInterface::MapEditorInterface(MapEditor* pMapEditor)
     onMirrorModeButton(0);
 }
 
-MapEditorInterface::~MapEditorInterface() {
-}
+MapEditorInterface::~MapEditorInterface() = default;
 
 
 void MapEditorInterface::onHouseChanges() {

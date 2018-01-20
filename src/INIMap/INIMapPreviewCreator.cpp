@@ -22,8 +22,7 @@ INIMapPreviewCreator::INIMapPreviewCreator(std::shared_ptr<INIFile>& pINIFile)
 
 }
 
-INIMapPreviewCreator::~INIMapPreviewCreator() {
-}
+INIMapPreviewCreator::~INIMapPreviewCreator() = default;
 
 /**
     This method is used to create a mini map of a map file before the map is being played (e.g. in the map selection menu).

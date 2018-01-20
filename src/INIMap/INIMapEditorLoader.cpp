@@ -24,8 +24,7 @@ INIMapEditorLoader::INIMapEditorLoader(MapEditor* pMapEditor, std::shared_ptr<IN
     load();
 }
 
-INIMapEditorLoader::~INIMapEditorLoader() {
-}
+INIMapEditorLoader::~INIMapEditorLoader() = default;
 
 
 /**

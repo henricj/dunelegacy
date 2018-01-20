@@ -50,8 +50,7 @@ SoundPlayer::SoundPlayer() {
     soundOn = settings.audio.playSFX;
 }
 
-SoundPlayer::~SoundPlayer() {
-}
+SoundPlayer::~SoundPlayer() = default;
 
 void SoundPlayer::playVoice(Voice_enum id, int houseID) {
     if(soundOn) {

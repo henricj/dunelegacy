@@ -24,8 +24,8 @@
 
 class Font {
 public:
-    Font() { };
-    virtual ~Font() { };
+    Font() = default;
+    virtual ~Font() = default;
 
     virtual void drawTextOnSurface(SDL_Surface* pSurface, const std::string& text, Uint32 baseColor = 0xFFFFFFFF) = 0;
 

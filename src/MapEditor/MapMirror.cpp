@@ -23,8 +23,7 @@ MapMirror::MapMirror(int mapsizeX, int mapsizeY)
  : mapsizeX(mapsizeX), mapsizeY(mapsizeY) {
 }
 
-MapMirror::~MapMirror() {
-}
+MapMirror::~MapMirror() = default;
 
 MapMirror* MapMirror::createMapMirror(MirrorMode mirrorMode, int mapsizeX, int mapsizeY) {
     switch(mirrorMode) {

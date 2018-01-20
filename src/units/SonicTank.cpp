@@ -54,8 +54,7 @@ void SonicTank::init() {
     numImagesY = 1;
 }
 
-SonicTank::~SonicTank() {
-}
+SonicTank::~SonicTank() = default;
 
 void SonicTank::blitToScreen() {
     int x1 = screenborder->world2screenX(realX);
