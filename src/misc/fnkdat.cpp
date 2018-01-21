@@ -50,6 +50,7 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <misc/fnkdat.h>
+#include <algorithm>
 
 /* version is automatically generated
    #define FNKDAT_VERSION "0.0.8"
@@ -174,11 +175,16 @@ int fnkdat(const _TCHAR* target, _TCHAR* buffer0, int len, int flags) {
    /* if target is absolute then simply return it
     */
    if (target) {
-      if ((target[0] == _T('\\'))
-          || (target[0] == _T('/'))
-          || (target[0] && target[1] && target[1] == _T(':'))) {
+      if (!PathIsRelative(target)) {
 
-         _tcsncpy(buffer0, target, len);
+         _TCHAR target_buffer[MAX_PATH];
+
+         if (!PathCanonicalize(target_buffer, target))
+            return -1;
+
+         if (_tcsncpy_s(buffer0, len, target, len))
+            return -1;
+
          return 0;
       }
    }
@@ -321,28 +327,39 @@ int fnkdat(const _TCHAR* target, _TCHAR* buffer0, int len, int flags) {
       return -1;
    }
 
-   /* replace unix path characters w/ windows path chars
-   so that the fnk_mkdirs funtion works
-   */
-   for (int i = 0; szPath[i]; i++) {
-       if (szPath[i] == L'/')
-           szPath[i] = L'\\';
-   }
-
-   /* do the mkdir(s), if asked to */
-   if ((flags & FNKDAT_CREAT)) {
-       const auto ret = SHCreateDirectoryExW(nullptr, szPath, nullptr);
-
-       if (ret != ERROR_SUCCESS && ret != ERROR_ALREADY_EXISTS)
-           return -1;
-   }
-
    /* append any given filename */
    if (target) {
        if (!MultiByteToWideChar(CP_UTF8, 0, target, -1, buffer, MAX_PATH))
            return -1;
 
        PathAppendW(szPath, buffer);
+   }
+
+   /* replace unix path characters w/ windows path chars
+   so that the fnk_mkdirs funtion works
+   */
+   for (int i = 0; szPath[i]; i++) {
+       if (szPath[i] == L'/')
+           szPath[i] = FNKDAT_FILE_SEPARATOR;
+   }
+
+   /* do the mkdir(s), if asked to */
+   if ((flags & FNKDAT_CREAT)) {
+       const auto last_separator = wcsrchr(szPath, FNKDAT_FILE_SEPARATOR);
+
+       if (last_separator && last_separator > szPath) {
+           const auto count = last_separator - szPath;
+
+           assert(count > 0);
+
+           if (wcsncpy_s(buffer, MAX_PATH, szPath, count))
+               return -1;
+
+           const auto ret = SHCreateDirectoryExW(nullptr, buffer, nullptr);
+
+           if (ret != ERROR_SUCCESS && ret != ERROR_ALREADY_EXISTS)
+               return -1;
+       }
    }
 
    if(WideCharToMultiByte(CP_UTF8, 0, szPath, -1, buffer0, len, nullptr, nullptr) == 0) {
