@@ -61,7 +61,7 @@ public:
     explicit CommandList(InputStream& stream) {
         Uint32 numCommandListEntries = stream.readUint32();
         for(Uint32 i = 0; i < numCommandListEntries; i++) {
-            commandList.push_back(CommandListEntry(stream));
+            commandList.emplace_back(stream);
         }
     }
 

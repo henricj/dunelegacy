@@ -126,7 +126,7 @@ public:
         \param  data    an integer value that is assigned to this entry (see getEntryIntData)
     */
     void addEntry(const std::string& text, int data = 0) {
-        entries.push_back(ListEntry(text,data));
+        entries.emplace_back(text,data);
         updateList();
     }
 

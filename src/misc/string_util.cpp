@@ -162,7 +162,7 @@ std::vector<std::string> greedyWordWrap(const std::string& text, int linewidth, 
     std::vector<std::string> textLines;
     for(const std::string& hardLine : hardLines) {
         if(hardLine == "") {
-            textLines.push_back(" ");
+            textLines.emplace_back(" ");
             continue;
         }
 
@@ -223,7 +223,7 @@ std::vector<std::string> greedyWordWrap(const std::string& text, int linewidth, 
                     lastwarp = oldwarppos;
                 } else {
                     // linewidth is too small for the next character => create a dummy entry
-                    textLines.push_back(" ");
+                    textLines.emplace_back(" ");
                     lastwarp++;
                     oldwarppos++;
                 }

@@ -81,7 +81,7 @@ void CommandManager::update() {
                 }
             }
 
-            commandList.commandList.push_back(CommandList::CommandListEntry(i, commands));
+            commandList.commandList.emplace_back(i, commands);
         }
 
         pNetworkManager->sendCommandList(commandList);

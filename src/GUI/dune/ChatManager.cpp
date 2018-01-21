@@ -114,7 +114,7 @@ void ChatManager::addChatMessage(const std::string& username, const std::string&
     std::shared_ptr<SDL_Texture> pUsernameTexture = std::shared_ptr<SDL_Texture>( pFontManager->createTextureWithText( username + ": ", COLOR_WHITE, FONT_STD10), SDL_DestroyTexture);
     std::shared_ptr<SDL_Texture> pMessageTexture = std::shared_ptr<SDL_Texture>( pFontManager->createTextureWithText( message, COLOR_WHITE, FONT_STD10), SDL_DestroyTexture);
 
-    chatMessages.push_back( ChatMessage(pTimeTexture, pUsernameTexture, pMessageTexture, SDL_GetTicks(), MSGTYPE_NORMAL) );
+    chatMessages.emplace_back(pTimeTexture, pUsernameTexture, pMessageTexture, SDL_GetTicks(), MSGTYPE_NORMAL );
 
     // delete old messages if there are too many messages on the screen
     while(chatMessages.size() > MAX_NUMBEROFMESSAGES) {
@@ -126,7 +126,7 @@ void ChatManager::addInfoMessage(const std::string& message)
 {
     std::shared_ptr<SDL_Texture> pMessageTexture = std::shared_ptr<SDL_Texture>( pFontManager->createTextureWithText( "*  " + message, COLOR_GREEN, FONT_STD10), SDL_DestroyTexture);
 
-    chatMessages.push_back( ChatMessage(pMessageTexture, SDL_GetTicks(), MSGTYPE_INFO) );
+    chatMessages.emplace_back(pMessageTexture, SDL_GetTicks(), MSGTYPE_INFO );
 
     // delete old messages if there are too many messages on the screen
     while(chatMessages.size() > MAX_NUMBEROFMESSAGES) {
@@ -151,7 +151,7 @@ void ChatManager::addHintMessage(const std::string& message, SDL_Texture* pTextu
     std::shared_ptr<SDL_Texture> pMessageTexture = std::shared_ptr<SDL_Texture>(pTextTexture, SDL_DestroyTexture);
     std::shared_ptr<SDL_Texture> pPictureTexture = std::shared_ptr<SDL_Texture>(std::shared_ptr<SDL_Texture>(), pTexture);
 
-    chatMessages.push_back( ChatMessage(pMessageTexture, pPictureTexture, SDL_GetTicks(), MSGTYPE_PICTURE) );
+    chatMessages.emplace_back(pMessageTexture, pPictureTexture, SDL_GetTicks(), MSGTYPE_PICTURE );
 
     // delete old messages if there are too many messages on the screen
     while(chatMessages.size() > MAX_NUMBEROFMESSAGES) {

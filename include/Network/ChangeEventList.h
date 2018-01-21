@@ -77,7 +77,7 @@ public:
     explicit ChangeEventList(InputStream& stream) {
         Uint32 numChangeEvents = stream.readUint32();
         for(Uint32 i = 0; i < numChangeEvents; i++) {
-            changeEventList.push_back(ChangeEvent(stream));
+            changeEventList.emplace_back(stream);
         }
     }
 

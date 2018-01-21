@@ -138,7 +138,7 @@ void StarPort::doProduceItem(Uint32 itemID, bool multipleMode) {
 
                 if((owner->getCredits() >= (int) buildItem.price)) {
                     buildItem.num++;
-                    currentProductionQueue.push_back( ProductionQueueItem(itemID,buildItem.price) );
+                    currentProductionQueue.emplace_back(itemID,buildItem.price );
                     owner->takeCredits(buildItem.price);
 
                     if(choam.setNumAvailable(itemID, numAvailable - 1) == false) {

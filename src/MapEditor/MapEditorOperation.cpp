@@ -33,7 +33,7 @@ std::shared_ptr<MapEditorOperation> MapEditorTerrainAddSpiceBloomOperation::perf
     if(std::find(spiceBlooms.begin(), spiceBlooms.end(), Coord(x,y)) != spiceBlooms.end()) {
         return std::shared_ptr<MapEditorOperation>(new MapEditorNoOperation());
     } else {
-        spiceBlooms.push_back(Coord(x,y));
+        spiceBlooms.emplace_back(x,y);
         return std::shared_ptr<MapEditorOperation>(new MapEditorTerrainRemoveSpiceBloomOperation(x, y));
     }
 }
@@ -62,7 +62,7 @@ std::shared_ptr<MapEditorOperation> MapEditorTerrainAddSpecialBloomOperation::pe
     if(std::find(specialBlooms.begin(), specialBlooms.end(), Coord(x,y)) != specialBlooms.end()) {
         return std::shared_ptr<MapEditorOperation>(new MapEditorNoOperation());
     } else {
-        specialBlooms.push_back(Coord(x,y));
+        specialBlooms.emplace_back(x,y);
         return std::shared_ptr<MapEditorOperation>(new MapEditorTerrainRemoveSpecialBloomOperation(x, y));
     }
 }
@@ -91,7 +91,7 @@ std::shared_ptr<MapEditorOperation> MapEditorTerrainAddSpiceFieldOperation::perf
     if(std::find(spiceFields.begin(), spiceFields.end(), Coord(x,y)) != spiceFields.end()) {
         return std::shared_ptr<MapEditorOperation>(new MapEditorNoOperation());
     } else {
-        spiceFields.push_back(Coord(x,y));
+        spiceFields.emplace_back(x,y);
         return std::shared_ptr<MapEditorOperation>(new MapEditorTerrainRemoveSpiceFieldOperation(x, y));
     }
 }
@@ -140,7 +140,7 @@ std::shared_ptr<MapEditorOperation> MapEditorStructurePlaceOperation::perform(Ma
         newID = minID-1;
     }
 
-    structures.push_back(MapEditor::Structure(newID, house, itemID, health, position));
+    structures.emplace_back(newID, house, itemID, health, position);
 
     return std::shared_ptr<MapEditorOperation>(new MapEditorRemoveStructureOperation(newID));
 }
@@ -177,7 +177,7 @@ std::shared_ptr<MapEditorOperation> MapEditorUnitPlaceOperation::perform(MapEdit
 
     int newID = (preferredID != INVALID) ? preferredID : (maxID + 1);
 
-    units.push_back(MapEditor::Unit(newID, house, itemID, health, position, angle, attackmode));
+    units.emplace_back(newID, house, itemID, health, position, angle, attackmode);
 
     return std::shared_ptr<MapEditorOperation>(new MapEditorRemoveUnitOperation(newID));
 }

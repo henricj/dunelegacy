@@ -551,11 +551,11 @@ void AIPlayer::build() {
                                                             && pBuilder->isAvailableToBuild(Structure_Slab4)
                                                             && (abs(i - location.x) < 2) && (abs(j - location.y) < 2)) {
                                                             if( (i == location.x) && (j == location.y) && pTile->getType() != Terrain_Slab) {
-                                                                placeLocations.push_back(Coord(i,j));
+                                                                placeLocations.emplace_back(i,j);
                                                                 doProduceItem(pBuilder, Structure_Slab4);
                                                             }
                                                         } else if(pTile->getType() != Terrain_Slab) {
-                                                            placeLocations.push_back(Coord(i,j));
+                                                            placeLocations.emplace_back(i,j);
                                                             doProduceItem(pBuilder, Structure_Slab1);
                                                         }
                                                     }

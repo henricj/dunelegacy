@@ -497,7 +497,7 @@ void BuilderBase::doProduceItem(Uint32 itemID, bool multipleMode) {
                 }
 
                 buildItem.num++;
-                currentProductionQueue.push_back( ProductionQueueItem(itemID, buildItem.price) );
+                currentProductionQueue.emplace_back(itemID, buildItem.price );
                 if(currentProducedItem == ItemID_Invalid) {
                     productionProgress = 0;
                     currentProducedItem = itemID;

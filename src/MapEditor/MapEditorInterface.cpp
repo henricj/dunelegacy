@@ -880,11 +880,11 @@ void MapEditorInterface::onSave() {
 
     char tmp[FILENAME_MAX];
     fnkdat("maps/singleplayer/", tmp, FILENAME_MAX, FNKDAT_USER | FNKDAT_CREAT);
-    mapDirectories.push_back(std::string(tmp));
+    mapDirectories.emplace_back(tmp);
     directoryTitles.push_back(_("SP Maps"));
 
     fnkdat("maps/multiplayer/", tmp, FILENAME_MAX, FNKDAT_USER | FNKDAT_CREAT);
-    mapDirectories.push_back(std::string(tmp));
+    mapDirectories.emplace_back(tmp);
     directoryTitles.push_back(_("MP Maps"));
 
     const std::string& lastSaveName = pMapEditor->getLastSaveName();

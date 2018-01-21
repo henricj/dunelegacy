@@ -75,7 +75,7 @@ public:
         std::vector<std::string> directories;
         directories.push_back(directory);
         std::vector<std::string> directoryTitles;
-        directoryTitles.push_back("");
+        directoryTitles.emplace_back("");
 
         LoadSaveWindow* dlg = new LoadSaveWindow(bSave, caption, directories, directoryTitles, extension, 0, preselectedFile, color);
         dlg->pAllocated = true;

@@ -108,7 +108,7 @@ UnitBase::UnitBase(InputStream& stream) : ObjectBase(stream) {
     for(int i=0;i<numPathNodes; i++) {
         Sint32 x = stream.readSint32();
         Sint32 y = stream.readSint32();
-        pathList.push_back(Coord(x,y));
+        pathList.emplace_back(x,y);
     }
 
     findTargetTimer = stream.readSint32();

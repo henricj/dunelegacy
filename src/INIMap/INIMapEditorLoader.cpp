@@ -132,7 +132,7 @@ void INIMapEditorLoader::loadMap() {
                 if(parseString(BloomPositions[i], BloomPos)) {
                     int xpos = getXPos(BloomPos);
                     int ypos = getYPos(BloomPos);
-                    pMapEditor->getSpiceBlooms().push_back(Coord(xpos,ypos));
+                    pMapEditor->getSpiceBlooms().emplace_back(xpos,ypos);
                 } else {
                     logWarning(inifile->getKey("MAP", "Bloom")->getLineNumber(), "Invalid spice bloom position: '" + BloomPositions[i] + "'");
                 }
@@ -168,7 +168,7 @@ void INIMapEditorLoader::loadMap() {
                 if(parseString(FieldPositions[i], FieldPos)) {
                     int xpos = getXPos(FieldPos);
                     int ypos = getYPos(FieldPos);
-                    pMapEditor->getSpiceFields().push_back(Coord(xpos,ypos));
+                    pMapEditor->getSpiceFields().emplace_back(xpos,ypos);
                 } else {
                     logWarning(inifile->getKey("MAP", "Field")->getLineNumber(), "Invalid spice field position: '" + FieldPositions[i] + "'");
                 }
@@ -428,7 +428,7 @@ void INIMapEditorLoader::loadUnits()
                 }
             }
 
-            pMapEditor->units.push_back(MapEditor::Unit(unitID, houseID, itemID, iHealth, Coord(getXPos(pos),getYPos(pos)), (unsigned char) angle, attackmode));
+            pMapEditor->units.emplace_back(unitID, houseID, itemID, iHealth, Coord(getXPos(pos),getYPos(pos)), (unsigned char) angle, attackmode);
 
         } else {
             logWarning(key.getLineNumber(), "Invalid unit key: '" + key.getKeyName() + "'!");
@@ -476,7 +476,7 @@ void INIMapEditorLoader::loadStructures()
             int itemID = getItemIDByName(BuildingStr);
 
             if((itemID == Structure_Slab1) || (itemID == Structure_Slab4) || (itemID == Structure_Wall)) {
-                pMapEditor->structures.push_back(MapEditor::Structure(genID, houseID, itemID, 256, Coord(getXPos(pos),getYPos(pos))));
+                pMapEditor->structures.emplace_back(genID, houseID, itemID, 256, Coord(getXPos(pos),getYPos(pos)));
                 genID--;
             } else {
                 logWarning(key.getLineNumber(), "Invalid building string: '" + BuildingStr + "' for GEN-Placement!");
@@ -519,7 +519,7 @@ void INIMapEditorLoader::loadStructures()
                 continue;
             }
 
-            pMapEditor->structures.push_back(MapEditor::Structure(structureID, houseID, itemID, iHealth, Coord(getXPos(pos),getYPos(pos))));
+            pMapEditor->structures.emplace_back(structureID, houseID, itemID, iHealth, Coord(getXPos(pos),getYPos(pos)));
         } else {
             logWarning(key.getLineNumber(), "Invalid structure key: '" + tmpkey + "'!");
             continue;
@@ -579,7 +579,7 @@ void INIMapEditorLoader::loadReinforcements()
 
         bool bRepeat = (strTime.rfind('+') == (strTime.length() - 1)) || (strPlus == "+");
 
-        pMapEditor->getReinforcements().push_back(ReinforcementInfo(houseID, unitID, dropLocation, droptime, bRepeat));
+        pMapEditor->getReinforcements().emplace_back(houseID, unitID, dropLocation, droptime, bRepeat);
     }
 }
 
@@ -637,7 +637,7 @@ void INIMapEditorLoader::loadTeams()
             continue;
         }
 
-        pMapEditor->getTeams().push_back(TeamInfo(houseID, teamBehavior, teamType, minUnits, maxUnits));
+        pMapEditor->getTeams().emplace_back(houseID, teamBehavior, teamType, minUnits, maxUnits);
     }
 }
 

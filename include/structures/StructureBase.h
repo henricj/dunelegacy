@@ -131,7 +131,7 @@ public:
             }
         }
 
-        smoke.push_back(StructureSmoke(pos, gameCycle));
+        smoke.emplace_back(pos, gameCycle);
     }
     inline size_t getNumSmoke() const { return smoke.size(); }
 

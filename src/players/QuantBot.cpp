@@ -191,7 +191,7 @@ QuantBot::QuantBot(InputStream& stream, House* associatedHouse) : Player(stream,
         Sint32 x = stream.readSint32();
         Sint32 y = stream.readSint32();
 
-        placeLocations.push_back(Coord(x,y));
+        placeLocations.emplace_back(x,y);
     }
 }
 

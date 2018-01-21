@@ -103,7 +103,7 @@ MentatTextFile::MentatTextFile(SDL_RWops* rwop) {
         std::string name = nameAndContent.substr(0,delimPos2);
         std::string content = (delimPos2 == std::string::npos) ? "" : nameAndContent.substr(delimPos2 + 2);
 
-        mentatEntries.push_back( MentatEntry( convertCP850ToISO8859_1(entryTitle), numMenuEntry, menuLevel, techLevel, filename, name, content) );
+        mentatEntries.emplace_back( convertCP850ToISO8859_1(entryTitle), numMenuEntry, menuLevel, techLevel, filename, name, content );
 
         pCurrentPos += entryLength;
     }

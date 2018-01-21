@@ -68,8 +68,8 @@ MapSettingsWindow::MapSettingsWindow(MapEditor* pMapEditor, HOUSETYPE currentHou
     winPictureVBox.addWidget(VSpacer::create(3));
     winPictureDropDownBox.setColor(color);
 
-    availableWinPictures.push_back("WIN1.WSA");
-    availableWinPictures.push_back("WIN2.WSA");
+    availableWinPictures.emplace_back("WIN1.WSA");
+    availableWinPictures.emplace_back("WIN2.WSA");
 
     for(size_t i = 0; i < availableWinPictures.size(); ++i) {
         winPictureDropDownBox.addEntry(availableWinPictures[i], i);
@@ -94,8 +94,8 @@ MapSettingsWindow::MapSettingsWindow(MapEditor* pMapEditor, HOUSETYPE currentHou
     losePictureVBox.addWidget(VSpacer::create(3));
     losePictureDropDownBox.setColor(color);
 
-    availableLosePictures.push_back("LOSTBILD.WSA");
-    availableLosePictures.push_back("LOSTVEHC.WSA");
+    availableLosePictures.emplace_back("LOSTBILD.WSA");
+    availableLosePictures.emplace_back("LOSTVEHC.WSA");
 
     for(size_t i = 0; i < availableLosePictures.size(); ++i) {
         losePictureDropDownBox.addEntry(availableLosePictures[i], i);
@@ -120,15 +120,15 @@ MapSettingsWindow::MapSettingsWindow(MapEditor* pMapEditor, HOUSETYPE currentHou
     briefingPictureVBox.addWidget(VSpacer::create(3));
     briefingPictureDropDownBox.setColor(color);
 
-    availableBriefingPictures.push_back("HARVEST.WSA");
-    availableBriefingPictures.push_back("HEADQRTS.WSA");
-    availableBriefingPictures.push_back("QUAD.WSA");
-    availableBriefingPictures.push_back("LTANK.WSA");
-    availableBriefingPictures.push_back("REPAIR.WSA");
-    availableBriefingPictures.push_back("HVYFTRY.WSA");
-    availableBriefingPictures.push_back("IX.WSA");
-    availableBriefingPictures.push_back("PALACE.WSA");
-    availableBriefingPictures.push_back("SARDUKAR.WSA");
+    availableBriefingPictures.emplace_back("HARVEST.WSA");
+    availableBriefingPictures.emplace_back("HEADQRTS.WSA");
+    availableBriefingPictures.emplace_back("QUAD.WSA");
+    availableBriefingPictures.emplace_back("LTANK.WSA");
+    availableBriefingPictures.emplace_back("REPAIR.WSA");
+    availableBriefingPictures.emplace_back("HVYFTRY.WSA");
+    availableBriefingPictures.emplace_back("IX.WSA");
+    availableBriefingPictures.emplace_back("PALACE.WSA");
+    availableBriefingPictures.emplace_back("SARDUKAR.WSA");
 
     for(size_t i = 0; i < availableBriefingPictures.size(); ++i) {
         briefingPictureDropDownBox.addEntry(availableBriefingPictures[i], i);

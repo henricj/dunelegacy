@@ -560,9 +560,9 @@ ChangeEventList CustomGamePlayers::getChangeEventList()
 
         if(player2 == PLAYER_HUMAN) {
             std::string playername = curHouseInfo.player2DropDown.getSelectedEntry();
-            changeEventList.changeEventList.push_back(ChangeEventList::ChangeEvent(2*i+1, playername));
+            changeEventList.changeEventList.emplace_back(2*i+1, playername);
         } else {
-            changeEventList.changeEventList.push_back(ChangeEventList::ChangeEvent(ChangeEventList::ChangeEvent::EventType::ChangePlayer, 2*i+1, player2));
+            changeEventList.changeEventList.emplace_back(ChangeEventList::ChangeEvent::EventType::ChangePlayer, 2*i+1, player2);
         }
     }
 
@@ -934,7 +934,7 @@ void CustomGamePlayers::onChangeHousesDropDownBoxes(bool bInteractive, int house
         int selectedHouseID = houseInfo[houseInfoNum].houseDropDown.getSelectedEntryIntData();
 
         ChangeEventList changeEventList;
-        changeEventList.changeEventList.push_back(ChangeEventList::ChangeEvent(ChangeEventList::ChangeEvent::EventType::ChangeHouse, houseInfoNum, selectedHouseID));
+        changeEventList.changeEventList.emplace_back(ChangeEventList::ChangeEvent::EventType::ChangeHouse, houseInfoNum, selectedHouseID);
 
         pNetworkManager->sendChangeEventList(changeEventList);
     }
@@ -1048,7 +1048,7 @@ void CustomGamePlayers::onChangeTeamDropDownBoxes(bool bInteractive, int houseIn
         int selectedTeam = houseInfo[houseInfoNum].teamDropDown.getSelectedEntryIntData();
 
         ChangeEventList changeEventList;
-        changeEventList.changeEventList.push_back(ChangeEventList::ChangeEvent(ChangeEventList::ChangeEvent::EventType::ChangeTeam, houseInfoNum, selectedTeam));
+        changeEventList.changeEventList.emplace_back(ChangeEventList::ChangeEvent::EventType::ChangeTeam, houseInfoNum, selectedTeam);
 
         pNetworkManager->sendChangeEventList(changeEventList);
     }
@@ -1061,7 +1061,7 @@ void CustomGamePlayers::onChangePlayerDropDownBoxes(bool bInteractive, int boxnu
         int selectedPlayer = dropDownBox.getSelectedEntryIntData();
 
         ChangeEventList changeEventList;
-        changeEventList.changeEventList.push_back(ChangeEventList::ChangeEvent(ChangeEventList::ChangeEvent::EventType::ChangePlayer, boxnum, selectedPlayer));
+        changeEventList.changeEventList.emplace_back(ChangeEventList::ChangeEvent::EventType::ChangePlayer, boxnum, selectedPlayer);
 
         pNetworkManager->sendChangeEventList(changeEventList);
     }
@@ -1080,7 +1080,7 @@ void CustomGamePlayers::onClickPlayerDropDownBox(int boxnum) {
 
     if(boxnum >= 0 && pNetworkManager != nullptr) {
         ChangeEventList changeEventList;
-        changeEventList.changeEventList.push_back(ChangeEventList::ChangeEvent(boxnum, settings.general.playerName));
+        changeEventList.changeEventList.emplace_back(boxnum, settings.general.playerName);
 
         pNetworkManager->sendChangeEventList(changeEventList);
     }

@@ -53,7 +53,7 @@ StructureBase::StructureBase(InputStream& stream): ObjectBase(stream) {
 
     size_t numSmoke = stream.readUint32();
     for(size_t i=0;i<numSmoke; i++) {
-        smoke.push_back(StructureSmoke(stream));
+        smoke.emplace_back(stream);
     }
 }
 
