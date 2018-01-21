@@ -69,6 +69,8 @@
 #include <units/Trike.h>
 #include <units/Trooper.h>
 
+#include <array>
+
 ObjectBase::ObjectBase(House* newOwner) : originalHouseID(newOwner->getHouseID()), owner(newOwner) {
     ObjectBase::init();
 
@@ -136,7 +138,12 @@ ObjectBase::ObjectBase(InputStream& stream) {
     targetFriendly = stream.readBool();
     attackMode = static_cast<ATTACKMODE>(stream.readUint32());
 
-    stream.readBools(&visible[0], &visible[1], &visible[2], &visible[3], &visible[4], &visible[5], &visible[6]);
+    std::array<bool, 7> b{false, false, false, false, false, false, false};
+
+    stream.readBools(&b[0], &b[1], &b[2], &b[3], &b[4], &b[5], &b[6]);
+
+    for (decltype(visible.count()) i = 0; i < visible.count(); ++i)
+        visible[i] = b[i];
 }
 
 void ObjectBase::init() {
@@ -288,9 +295,10 @@ void ObjectBase::setObjectID(int newObjectID) {
 
 void ObjectBase::setVisible(int team, bool status) {
     if(team == VIS_ALL) {
-        for(int i = 0; i < NUM_TEAMS; i++) {
-            visible[i] = status;
-        }
+        if (status)
+            visible.set();
+        else
+            visible.reset();
     } else if ((team >= 0) && (team < NUM_TEAMS)) {
         visible[team] = status;
     }
@@ -331,13 +339,7 @@ bool ObjectBase::isVisible(int team) const {
 }
 
 bool ObjectBase::isVisible() const {
-    for(int i=0;i<NUM_TEAMS;i++) {
-        if(visible[i]) {
-            return true;
-        }
-    }
-
-    return false;
+    return visible.any();
 }
 
 Uint32 ObjectBase::getHealthColor() const {

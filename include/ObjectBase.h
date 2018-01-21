@@ -28,6 +28,7 @@
 #include <globals.h>
 
 #include <algorithm>
+#include <bitset>
 
 #include <SDL2/SDL.h>
 
@@ -226,7 +227,7 @@ protected:
     ObjectPointer target;            ///< The target to attack or move to
     ATTACKMODE    attackMode;        ///< The attack mode of this unit/structure
 
-    bool     visible[NUM_TEAMS];     ///< To which teams is this unit visible?
+    std::bitset<NUM_TEAMS> visible;  ///< To which teams is this unit visible?
 
     // drawing information
     bool     badlyDamaged;           ///< Is the health below 50%?
