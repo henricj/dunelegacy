@@ -20,7 +20,7 @@
 
 #include <units/TankBase.h>
 
-class SiegeTank : public TankBase
+class SiegeTank final : public TankBase
 {
 public:
     explicit SiegeTank(House* newOwner);

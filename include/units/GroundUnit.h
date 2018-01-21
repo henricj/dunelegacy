@@ -31,6 +31,11 @@ public:
     void init();
     virtual ~GroundUnit();
 
+    GroundUnit(const GroundUnit &) = delete;
+    GroundUnit(GroundUnit &&) = delete;
+    GroundUnit& operator=(const GroundUnit &) = delete;
+    GroundUnit& operator=(GroundUnit &&) = delete;
+
     void save(OutputStream& stream) const override;
 
     void assignToMap(const Coord& pos) override;

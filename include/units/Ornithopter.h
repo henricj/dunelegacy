@@ -20,7 +20,7 @@
 
 #include <units/AirUnit.h>
 
-class Ornithopter : public AirUnit
+class Ornithopter final : public AirUnit
 {
 public:
     explicit Ornithopter(House* newOwner);

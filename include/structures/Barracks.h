@@ -20,7 +20,7 @@
 
 #include <structures/BuilderBase.h>
 
-class Barracks : public BuilderBase
+class Barracks final : public BuilderBase
 {
 public:
     explicit Barracks(House* newOwner);
@@ -32,7 +32,7 @@ public:
         Can this structure be captured by infantry units?
         \return true, if this structure can be captured, false otherwise
     */
-    bool canBeCaptured() const override { return false; };
+    bool canBeCaptured() const override { return false; }
 
 private:
 

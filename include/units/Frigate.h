@@ -20,7 +20,7 @@
 
 #include <units/AirUnit.h>
 
-class Frigate : public AirUnit
+class Frigate final : public AirUnit
 {
 public:
     explicit Frigate(House* newOwner);

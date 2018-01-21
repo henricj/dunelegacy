@@ -20,7 +20,7 @@
 
 #include <units/InfantryBase.h>
 
-class Trooper : public InfantryBase
+class Trooper final : public InfantryBase
 {
 public:
     explicit Trooper(House* newOwner);

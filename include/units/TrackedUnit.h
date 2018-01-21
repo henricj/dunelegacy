@@ -29,6 +29,11 @@ public:
     void init();
     virtual ~TrackedUnit();
 
+    TrackedUnit(const TrackedUnit &) = delete;
+    TrackedUnit(TrackedUnit &&) = delete;
+    TrackedUnit& operator=(const TrackedUnit &) = delete;
+    TrackedUnit& operator=(TrackedUnit &&) = delete;
+
     void save(OutputStream& stream) const override;
 
     void checkPos() override;

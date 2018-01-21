@@ -20,7 +20,7 @@
 
 #include <structures/BuilderBase.h>
 
-class HighTechFactory : public BuilderBase
+class HighTechFactory final : public BuilderBase
 {
 public:
     explicit HighTechFactory(House* newOwner);

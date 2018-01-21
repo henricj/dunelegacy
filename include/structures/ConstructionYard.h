@@ -20,7 +20,7 @@
 
 #include <structures/BuilderBase.h>
 
-class ConstructionYard : public BuilderBase
+class ConstructionYard final : public BuilderBase
 {
 public:
     explicit ConstructionYard(House* newOwner);

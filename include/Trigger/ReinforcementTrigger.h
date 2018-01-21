@@ -27,7 +27,7 @@
 /**
     This trigger is used for delivering reinforcements at specific game cycles.
 */
-class ReinforcementTrigger : public Trigger {
+class ReinforcementTrigger final : public Trigger {
 public:
 
     /**
@@ -59,31 +59,31 @@ public:
         Get the house of the unit to be dropped.
         \return the house of the owner
     */
-    int getHouseID() const { return houseID; };
+    int getHouseID() const { return houseID; }
 
     /**
         Get the type of drop.
         \return the type of the drop
     */
-    DropLocation getDropLocation() const { return dropLocation; };
+    DropLocation getDropLocation() const { return dropLocation; }
 
     /**
         Return if this Reinforcment is repeated.
         \return true = is repeated, false = not repeated
     */
-    bool isRepeat() const { return (repeatCycle != 0); };
+    bool isRepeat() const { return (repeatCycle != 0); }
 
     /**
         Get a vector of all the itemIDs of the to be dropped units (that will be dropped by one carryall)
         \return a vector of the itemIDs of the to be dropped units.
     */
-    const std::vector<Uint32>& getDroppedUnits() const { return droppedUnits; };
+    const std::vector<Uint32>& getDroppedUnits() const { return droppedUnits; }
 
     /**
         Adds another unit to this delivery.
         \param  itemID  the itemID of the unit to add
     */
-    void addUnit(Uint32 itemID) { droppedUnits.push_back(itemID); };
+    void addUnit(Uint32 itemID) { droppedUnits.push_back(itemID); }
 
     /**
         Trigger this trigger. Shall only be called when getCycleNumber() is equal to the current game cycle

@@ -25,7 +25,7 @@
 /**
     This trigger is used for ending the game when the game has run for the specified time. What player has won is determined by the Lose-Flags.
 */
-class TimeoutTrigger : public Trigger {
+class TimeoutTrigger final : public Trigger {
 public:
 
     /**

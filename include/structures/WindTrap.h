@@ -20,12 +20,11 @@
 
 #include <structures/StructureBase.h>
 
-class WindTrap : public StructureBase
+class WindTrap final : public StructureBase
 {
 public:
     explicit WindTrap(House* newOwner);
     explicit WindTrap(InputStream& stream);
-    void init();
     virtual ~WindTrap();
 
     ObjectInterface* getInterfaceContainer() override;
@@ -40,6 +39,9 @@ public:
 
 protected:
     int getProducedPower() const;
+
+private:
+    void init();
 };
 
 #endif //WINDTRAP_H

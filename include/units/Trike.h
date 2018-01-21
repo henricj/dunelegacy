@@ -20,7 +20,7 @@
 
 #include <units/GroundUnit.h>
 
-class Trike : public GroundUnit
+class Trike final : public GroundUnit
 {
 public:
     explicit Trike(House* newOwner);

@@ -25,7 +25,7 @@
 class Harvester;
 class Carryall;
 
-class Refinery : public StructureBase
+class Refinery final : public StructureBase
 {
 public:
     explicit Refinery(House* newOwner);

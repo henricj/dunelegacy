@@ -20,7 +20,7 @@
 
 #include <units/TankBase.h>
 
-class Tank : public TankBase
+class Tank final : public TankBase
 {
 public:
     explicit Tank(House* newOwner);

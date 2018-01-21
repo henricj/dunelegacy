@@ -20,7 +20,7 @@
 
 #include <structures/TurretBase.h>
 
-class RocketTurret : public TurretBase
+class RocketTurret final : public TurretBase
 {
 public:
     explicit RocketTurret(House* newOwner);

@@ -28,6 +28,11 @@ public:
     void init();
     virtual ~TankBase();
 
+    TankBase(const TankBase &) = delete;
+    TankBase(TankBase &&) = delete;
+    TankBase& operator=(const TankBase &) = delete;
+    TankBase& operator=(TankBase &&) = delete;
+
     void save(OutputStream& stream) const override;
 
     void navigate() override;

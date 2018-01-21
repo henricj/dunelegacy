@@ -20,7 +20,7 @@
 
 #include <units/TrackedUnit.h>
 
-class Launcher : public TrackedUnit
+class Launcher final : public TrackedUnit
 {
 
 public:

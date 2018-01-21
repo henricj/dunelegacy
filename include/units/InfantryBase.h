@@ -29,6 +29,11 @@ public:
     void init();
     virtual ~InfantryBase();
 
+    InfantryBase(const InfantryBase &) = delete;
+    InfantryBase(InfantryBase &&) = delete;
+    InfantryBase& operator=(const InfantryBase &) = delete;
+    InfantryBase& operator=(InfantryBase &&) = delete;
+
     void save(OutputStream& stream) const override;
 
     /**

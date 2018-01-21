@@ -35,6 +35,11 @@ public:
     void init();
     virtual ~UnitBase();
 
+    UnitBase(const UnitBase &) = delete;
+    UnitBase(UnitBase &&) = delete;
+    UnitBase& operator=(const UnitBase &) = delete;
+    UnitBase& operator=(UnitBase &&) = delete;
+
     void save(OutputStream& stream) const override;
 
     void blitToScreen() override;
@@ -143,7 +148,7 @@ public:
 
     void handleDamage(int damage, Uint32 damagerID, House* damagerOwner) override;
 
-    void doRepair() override { };
+    void doRepair() override { }
 
     /**
         Is this object in a range we are guarding. If yes we shall react.

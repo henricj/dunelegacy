@@ -20,7 +20,7 @@
 
 #include <units/GroundUnit.h>
 
-class Quad : public GroundUnit
+class Quad final : public GroundUnit
 {
 public:
     explicit Quad(House* newOwner);

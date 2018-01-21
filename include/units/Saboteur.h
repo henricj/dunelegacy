@@ -20,7 +20,7 @@
 
 #include <units/InfantryBase.h>
 
-class Saboteur : public InfantryBase
+class Saboteur final : public InfantryBase
 {
 public:
     explicit Saboteur(House* newOwner);

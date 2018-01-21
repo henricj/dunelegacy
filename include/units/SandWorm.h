@@ -22,7 +22,7 @@
 
 #include <units/GroundUnit.h>
 
-class Sandworm : public GroundUnit
+class Sandworm final : public GroundUnit
 {
 public:
     explicit Sandworm(House* newOwner);

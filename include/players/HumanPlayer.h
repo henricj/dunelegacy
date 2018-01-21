@@ -98,7 +98,7 @@ public:
         \param  groupListIndex   which list should be returned
         \return the n-th list.
     */
-    inline std::set<Uint32>& getGroupList(int groupListIndex) { return selectedLists[groupListIndex]; };
+    inline std::set<Uint32>& getGroupList(int groupListIndex) { return selectedLists[groupListIndex]; }
 
     /**
         Sets one of the 9 saved units lists

@@ -20,7 +20,7 @@
 
 #include <units/TrackedUnit.h>
 
-class Harvester : public TrackedUnit
+class Harvester final : public TrackedUnit
 {
 public:
 

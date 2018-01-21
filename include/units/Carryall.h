@@ -22,7 +22,7 @@
 
 #include <list>
 
-class Carryall : public AirUnit
+class Carryall final : public AirUnit
 {
 public:
     explicit Carryall(House* newOwner);

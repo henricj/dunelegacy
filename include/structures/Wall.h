@@ -20,7 +20,7 @@
 
 #include <structures/StructureBase.h>
 
-class Wall : public StructureBase
+class Wall final : public StructureBase
 {
 public:
     typedef enum {
@@ -51,7 +51,7 @@ public:
         Can this structure be captured by infantry units?
         \return true, if this structure can be captured, false otherwise
     */
-    bool canBeCaptured() const override { return false; };
+    bool canBeCaptured() const override { return false; }
 
     inline void setLocation(const Coord& location) { setLocation(location.x, location.y); }
     void setLocation(int xPos, int yPos) override;

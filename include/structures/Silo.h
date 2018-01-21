@@ -20,7 +20,7 @@
 
 #include <structures/StructureBase.h>
 
-class Silo : public StructureBase
+class Silo final : public StructureBase
 {
 public:
     explicit Silo(House* newOwner);

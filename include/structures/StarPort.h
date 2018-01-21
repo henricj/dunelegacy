@@ -20,7 +20,7 @@
 
 #include <structures/BuilderBase.h>
 
-class StarPort : public BuilderBase
+class StarPort final : public BuilderBase
 {
 public:
     explicit StarPort(House* newOwner);
@@ -75,7 +75,7 @@ public:
         deploying = true;
         firstAnimFrame = 8;
         lastAnimFrame = 9;
-    };
+    }
 
     /**
       Inform the starport that the frigate was destroyed and new orders can be given.

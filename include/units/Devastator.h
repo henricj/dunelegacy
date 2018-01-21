@@ -20,7 +20,7 @@
 
 #include <units/TrackedUnit.h>
 
-class Devastator : public TrackedUnit
+class Devastator final : public TrackedUnit
 {
 public:
     explicit Devastator(House* newOwner);

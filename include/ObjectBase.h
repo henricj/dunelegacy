@@ -51,7 +51,6 @@ public:
 
     explicit ObjectBase(House* newOwner);
     explicit ObjectBase(InputStream& stream);
-    void init();
     virtual ~ObjectBase();
 
     ObjectBase(const ObjectBase &) = delete;
@@ -239,6 +238,7 @@ protected:
 
 private:
     FixPoint health;                 ///< The health of this object
+    void init();
 };
 
 

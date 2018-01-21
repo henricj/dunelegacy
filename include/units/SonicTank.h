@@ -20,7 +20,7 @@
 
 #include <units/TrackedUnit.h>
 
-class SonicTank : public TrackedUnit
+class SonicTank final : public TrackedUnit
 {
 public:
     explicit SonicTank(House* newOwner);

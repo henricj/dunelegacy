@@ -20,7 +20,7 @@
 
 #include <units/GroundUnit.h>
 
-class MCV : public GroundUnit
+class MCV final : public GroundUnit
 {
 public:
     explicit MCV(House* newOwner);

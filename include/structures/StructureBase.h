@@ -25,19 +25,19 @@
 struct StructureSmoke {
     StructureSmoke(const Coord& pos, Uint32 gameCycle)
      : realPos(pos), startGameCycle(gameCycle) {
-    };
+    }
 
     explicit StructureSmoke(InputStream& stream) {
         realPos.x = stream.readSint32();
         realPos.y = stream.readSint32();
         startGameCycle = stream.readUint32();
-    };
+    }
 
     void save(OutputStream& stream) const {
         stream.writeSint32(realPos.x);
         stream.writeSint32(realPos.y);
         stream.writeUint32(startGameCycle);
-    };
+    }
 
     Coord   realPos;
     Uint32  startGameCycle;
@@ -48,8 +48,12 @@ class StructureBase : public ObjectBase
 public:
     explicit StructureBase(House* newOwner);
     explicit StructureBase(InputStream& stream);
-    void init();
     virtual ~StructureBase();
+
+    StructureBase(const StructureBase &) = delete;
+    StructureBase(StructureBase &&) = delete;
+    StructureBase& operator=(const StructureBase &) = delete;
+    StructureBase& operator=(StructureBase &&) = delete;
 
     void save(OutputStream& stream) const override;
 
@@ -67,10 +71,10 @@ public:
     Coord getClosestCenterPoint(const Coord& objectLocation) const override;
     void setDestination(int newX, int newY) override;
     void setJustPlaced();
-    void setFogged(bool bFogged) { fogged = bFogged; };
+    void setFogged(bool bFogged) { fogged = bFogged; }
 
-    void playConfirmSound() override { ; };
-    void playSelectSound() override { ; };
+    void playConfirmSound() override { }
+    void playSelectSound() override { }
 
     /**
         This method is called when a structure is ordered by a right click
@@ -107,7 +111,7 @@ public:
         Can this structure be captured by infantry units?
         \return true, if this structure can be captured, false otherwise
     */
-    virtual bool canBeCaptured() const { return true; };
+    virtual bool canBeCaptured() const { return true; }
 
     bool isRepairing() const { return repairing; }
 
@@ -128,15 +132,15 @@ public:
         }
 
         smoke.push_back(StructureSmoke(pos, gameCycle));
-    };
-    inline size_t getNumSmoke() const { return smoke.size(); };
+    }
+    inline size_t getNumSmoke() const { return smoke.size(); }
 
 protected:
     /**
         Used for updating things that are specific to that particular structure. Is called from
         StructureBase::update() before the check if this structure is still alive.
     */
-    virtual void updateStructureSpecificStuff() { };
+    virtual void updateStructureSpecificStuff() { }
 
 
     // constant for all structures of the same type
@@ -158,6 +162,9 @@ protected:
     int     lastAnimFrame;      ///< Last frame of the current animation
     int     curAnimFrame;       ///< The current frame of the current animation
     int     animationCounter;   ///< When to show the next animation frame?
+
+private:
+    void init();
 };
 
 #endif //STRUCTUREBASE_H

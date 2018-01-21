@@ -20,7 +20,7 @@
 
 #include <units/InfantryBase.h>
 
-class Soldier : public InfantryBase
+class Soldier final : public InfantryBase
 {
 
 public:

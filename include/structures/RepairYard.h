@@ -23,7 +23,7 @@
 
 class Carryall;
 
-class RepairYard : public StructureBase
+class RepairYard final : public StructureBase
 {
 public:
     explicit RepairYard(House* newOwner);

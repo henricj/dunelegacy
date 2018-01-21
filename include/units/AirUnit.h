@@ -32,8 +32,8 @@ public:
 
     void blitToScreen() override;
 
-    void playConfirmSound() override { ; };
-    void playSelectSound() override { ; };
+    void playConfirmSound() override { }
+    void playSelectSound() override { }
 
     void destroy() override;
 

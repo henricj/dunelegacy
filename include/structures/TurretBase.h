@@ -30,6 +30,11 @@ public:
     void init();
     virtual ~TurretBase();
 
+    TurretBase(const TurretBase &) = delete;
+    TurretBase(TurretBase &&) = delete;
+    TurretBase& operator=(const TurretBase &) = delete;
+    TurretBase& operator=(TurretBase &&) = delete;
+
     void save(OutputStream& stream) const override;
 
     virtual void handleActionCommand(int xPos, int yPos);

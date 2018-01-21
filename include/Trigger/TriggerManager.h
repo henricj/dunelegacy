@@ -65,7 +65,7 @@ public:
         This method returns a list of all the managed triggers.
         \return a list of all the triggers
     */
-    const std::list<std::shared_ptr<Trigger> >& getTriggers() const { return triggers; };
+    const std::list<std::shared_ptr<Trigger> >& getTriggers() const { return triggers; }
 
 private:
     std::list<std::shared_ptr<Trigger> > triggers;  ///< list of all triggers. sorted by the time when they shall be triggered.

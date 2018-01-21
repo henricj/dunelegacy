@@ -91,6 +91,11 @@ public:
     void init();
     virtual ~BuilderBase();
 
+    BuilderBase(const BuilderBase &) = delete;
+    BuilderBase(BuilderBase &&) = delete;
+    BuilderBase& operator=(const BuilderBase &) = delete;
+    BuilderBase& operator=(BuilderBase &&) = delete;
+
     void save(OutputStream& stream) const override;
 
     ObjectInterface* getInterfaceContainer() override;
@@ -118,9 +123,9 @@ public:
     void setWaitingToPlace();
     void unSetWaitingToPlace();
 
-    int getBuildListSize() const { return buildList.size(); };
+    int getBuildListSize() const { return buildList.size(); }
 
-    int getProductionQueueSize() const { return currentProductionQueue.size(); };
+    int getProductionQueueSize() const { return currentProductionQueue.size(); }
 
     /**
         Updates this builder.
@@ -159,7 +164,7 @@ public:
         Sets the currently produced item on hold or continues production.
         \param  bOnHold         true = hold production; false = resume production
     */
-    inline void doSetOnHold(bool bOnHold) { bCurrentItemOnHold = bOnHold; };
+    inline void doSetOnHold(bool bOnHold) { bCurrentItemOnHold = bOnHold; }
 
     /**
         Start building a random item in this builder.
@@ -168,18 +173,18 @@ public:
 
 
 
-    inline bool isUpgrading() const { return upgrading; };
-    inline bool isAllowedToUpgrade() const { return (curUpgradeLev < getMaxUpgradeLevel()); };
-    inline int getCurrentUpgradeLevel() const { return curUpgradeLev; };
+    inline bool isUpgrading() const { return upgrading; }
+    inline bool isAllowedToUpgrade() const { return (curUpgradeLev < getMaxUpgradeLevel()); }
+    inline int getCurrentUpgradeLevel() const { return curUpgradeLev; }
     int getUpgradeCost() const;
-    inline FixPoint getUpgradeProgress() const { return upgradeProgress; };
+    inline FixPoint getUpgradeProgress() const { return upgradeProgress; }
 
-    inline Uint32 getCurrentProducedItem() const { return currentProducedItem; };
-    inline bool isOnHold() const { return bCurrentItemOnHold; };
+    inline Uint32 getCurrentProducedItem() const { return currentProducedItem; }
+    inline bool isOnHold() const { return bCurrentItemOnHold; }
     bool isWaitingToPlace() const;
     bool isUnitLimitReached(Uint32 itemID) const;
-    inline FixPoint getProductionProgress() const { return productionProgress; };
-    inline const std::list<BuildItem>& getBuildList() const { return buildList; };
+    inline FixPoint getProductionProgress() const { return productionProgress; }
+    inline const std::list<BuildItem>& getBuildList() const { return buildList; }
 
     virtual inline bool isAvailableToBuild(Uint32 itemID) const {
         return (getBuildItem(itemID) != nullptr);
