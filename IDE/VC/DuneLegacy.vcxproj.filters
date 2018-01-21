@@ -1556,6 +1556,9 @@
     <ClCompile Include="stdafx.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\misc\Random.cpp">
+      <Filter>src\misc</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="..\..\resource.rc">

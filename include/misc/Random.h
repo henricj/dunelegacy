@@ -23,7 +23,7 @@
 #include <SDL2/SDL.h>
 
 /// A class for generating random numbers (there are better algorithms but this one is quite fast)
-class Random {
+class Random final {
 public:
     /// Default constructor.
     Random() {
@@ -39,7 +39,7 @@ public:
     }
 
     /// Destructor
-    ~Random() = default;
+    ~Random();
 
     /**
         Sets the seed value to newSeed

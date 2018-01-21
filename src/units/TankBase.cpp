@@ -49,9 +49,6 @@ TankBase::TankBase(InputStream& stream) : TrackedUnit(stream) {
 
 void TankBase::init() {
     turreted = true;
-    turretTurnSpeed = FixPt(0,0625);
-    gunGraphicID = -1;
-    turretGraphic = nullptr;
 }
 
 TankBase::~TankBase() = default;

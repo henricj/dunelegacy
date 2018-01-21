@@ -134,7 +134,7 @@ ObjectBase::ObjectBase(InputStream& stream) {
     forced = stream.readBool();
     target.load(stream);
     targetFriendly = stream.readBool();
-    attackMode = (ATTACKMODE) stream.readUint32();
+    attackMode = static_cast<ATTACKMODE>(stream.readUint32());
 
     stream.readBools(&visible[0], &visible[1], &visible[2], &visible[3], &visible[4], &visible[5], &visible[6]);
 }
@@ -301,7 +301,7 @@ void ObjectBase::setTarget(const ObjectBase* newTarget) {
     targetFriendly = (target && (target.getObjPointer()->getOwner()->getTeam() == owner->getTeam()) && (getItemID() != Unit_Sandworm) && (target.getObjPointer()->getItemID() != Unit_Sandworm));
 }
 
-void ObjectBase::unassignFromMap(const Coord& location) {
+void ObjectBase::unassignFromMap(const Coord& location) const {
     if(currentGameMap->tileExists(location)) {
         currentGameMap->getTile(location)->unassignObject(getObjectID());
     }
@@ -309,28 +309,17 @@ void ObjectBase::unassignFromMap(const Coord& location) {
 
 
 bool ObjectBase::canAttack(const ObjectBase* object) const {
-
-    if( canAttack()
+    return canAttack()
         && (object != nullptr)
         && (object->isAStructure() || !object->isAFlyingUnit())
-        && (((object->getOwner()->getTeam() != owner->getTeam()) && object->isVisible(getOwner()->getTeam())) || (object->getItemID() == Unit_Sandworm)) )
-    {
-        return true;
-    } else {
-        return false;
-    }
-    return false;
+        && (((object->getOwner()->getTeam() != owner->getTeam()) && object->isVisible(getOwner()->getTeam())) || (object->getItemID() == Unit_Sandworm));
 }
 
 bool ObjectBase::isOnScreen() const {
-    Coord position = Coord(lround(getRealX()), lround(getRealY()));
-    Coord size = Coord(getWidth(graphic[currentZoomlevel])/numImagesX, getHeight(graphic[currentZoomlevel])/numImagesY);
+    const Coord position{ lround(getRealX()), lround(getRealY()) };
+    const Coord size{ getWidth(graphic[currentZoomlevel]) / numImagesX, getHeight(graphic[currentZoomlevel]) / numImagesY };
 
-    if(screenborder->isInsideScreen(position,size) == true){
-        return true;
-    } else {
-        return false;
-    }
+    return screenborder->isInsideScreen(position,size);
 }
 
 bool ObjectBase::isVisible(int team) const {
@@ -352,7 +341,7 @@ bool ObjectBase::isVisible() const {
 }
 
 Uint32 ObjectBase::getHealthColor() const {
-    FixPoint healthPercent = health/getMaxHealth();
+    const FixPoint healthPercent = health/getMaxHealth();
 
     if(healthPercent >= BADLYDAMAGEDRATIO) {
         return COLOR_LIGHTGREEN;
@@ -369,11 +358,11 @@ Coord ObjectBase::getClosestPoint(const Coord& point) const {
 
 const StructureBase* ObjectBase::findClosestTargetStructure() const {
     const StructureBase *pClosestStructure = nullptr;
-    FixPoint closestDistance = FixPt_MAX;
+    auto closestDistance = FixPt_MAX;
     for(const StructureBase* pStructure : structureList) {
         if(canAttack(pStructure)) {
-            Coord closestPoint = pStructure->getClosestPoint(getLocation());
-            FixPoint structureDistance = blockDistance(getLocation(), closestPoint);
+            const auto closestPoint = pStructure->getClosestPoint(getLocation());
+            auto structureDistance = blockDistance(getLocation(), closestPoint);
 
             if(pStructure->getItemID() == Structure_Wall) {
                 structureDistance += 20000000; //so that walls are targeted very last
@@ -391,11 +380,11 @@ const StructureBase* ObjectBase::findClosestTargetStructure() const {
 
 const UnitBase* ObjectBase::findClosestTargetUnit() const {
     const UnitBase *pClosestUnit = nullptr;
-    FixPoint closestDistance = FixPt_MAX;
+    auto closestDistance = FixPt_MAX;
     for(const UnitBase* pUnit : unitList) {
         if(canAttack(pUnit)) {
-            Coord closestPoint = pUnit->getClosestPoint(getLocation());
-            FixPoint unitDistance = blockDistance(getLocation(), closestPoint);
+            const auto closestPoint = pUnit->getClosestPoint(getLocation());
+            const auto unitDistance = blockDistance(getLocation(), closestPoint);
 
             if(unitDistance < closestDistance) {
                 closestDistance = unitDistance;
@@ -412,8 +401,8 @@ const ObjectBase* ObjectBase::findClosestTarget() const {
     FixPoint closestDistance = FixPt_MAX;
     for(const StructureBase* pStructure : structureList) {
         if(canAttack(pStructure)) {
-            Coord closestPoint = pStructure->getClosestPoint(getLocation());
-            FixPoint structureDistance = blockDistance(getLocation(), closestPoint);
+            const auto closestPoint = pStructure->getClosestPoint(getLocation());
+            auto structureDistance = blockDistance(getLocation(), closestPoint);
 
             if(pStructure->getItemID() == Structure_Wall) {
                     structureDistance += 20000000; //so that walls are targeted very last
@@ -428,8 +417,8 @@ const ObjectBase* ObjectBase::findClosestTarget() const {
 
     for(const UnitBase* pUnit : unitList) {
         if(canAttack(pUnit)) {
-            Coord closestPoint = pUnit->getClosestPoint(getLocation());
-            FixPoint unitDistance = blockDistance(getLocation(), closestPoint);
+            const auto closestPoint = pUnit->getClosestPoint(getLocation());
+            const auto unitDistance = blockDistance(getLocation(), closestPoint);
 
             if(unitDistance < closestDistance) {
                 closestDistance = unitDistance;
@@ -452,7 +441,7 @@ const ObjectBase* ObjectBase::findTarget() const {
 //                  *****
 //                    *
 
-    int checkRange = 0;
+    auto checkRange = 0;
     switch(attackMode) {
         case GUARD: {
             checkRange = getWeaponRange();
@@ -482,24 +471,24 @@ const ObjectBase* ObjectBase::findTarget() const {
     }
 
     ObjectBase *pClosestTarget = nullptr;
-    FixPoint closestTargetDistance = FixPt_MAX;
+    auto closestTargetDistance = FixPt_MAX;
 
     Coord coord;
-    int startY = std::max(0, location.y - checkRange);
-    int endY = std::min(currentGameMap->getSizeY()-1, location.y + checkRange);
+    const auto startY = std::max(0, location.y - checkRange);
+    const auto endY = std::min(currentGameMap->getSizeY()-1, location.y + checkRange);
     for(coord.y = startY; coord.y <= endY; coord.y++) {
-        int startX = std::max(0, location.x - checkRange);
-        int endX = std::min(currentGameMap->getSizeX()-1, location.x + checkRange);
+        const auto startX = std::max(0, location.x - checkRange);
+        const auto endX = std::min(currentGameMap->getSizeX()-1, location.x + checkRange);
         for(coord.x = startX; coord.x <= endX; coord.x++) {
 
-            FixPoint targetDistance = blockDistance(location, coord);
+            const auto targetDistance = blockDistance(location, coord);
             if(targetDistance <= checkRange) {
                 Tile* pTile = currentGameMap->getTile(coord);
                 if( pTile->isExplored(getOwner()->getHouseID())
                     && !pTile->isFogged(getOwner()->getHouseID())
                     && pTile->hasAnObject()) {
-
-                    ObjectBase* pNewTarget = pTile->getObject();
+                    
+                    const auto pNewTarget = pTile->getObject();
                     if(((pNewTarget->getItemID() != Structure_Wall && pNewTarget->getItemID() != Unit_Carryall) || pClosestTarget == nullptr) && canAttack(pNewTarget)) {
                         if(targetDistance < closestTargetDistance) {
                             pClosestTarget = pNewTarget;

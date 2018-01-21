@@ -53,6 +53,11 @@ public:
     void init();
     virtual ~ObjectBase();
 
+    ObjectBase(const ObjectBase &) = delete;
+    ObjectBase(ObjectBase &&) = delete;
+    ObjectBase& operator=(const ObjectBase &) = delete;
+    ObjectBase& operator=(ObjectBase &&) = delete;
+
     virtual void save(OutputStream& stream) const;
 
     virtual ObjectInterface* getInterfaceContainer();
@@ -105,7 +110,7 @@ public:
     */
     virtual bool update() = 0;
 
-    void unassignFromMap(const Coord& location);
+    void unassignFromMap(const Coord& location) const;
 
     bool isOnScreen() const;
     bool isVisible(int team) const;
