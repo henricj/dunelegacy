@@ -620,7 +620,7 @@ int main(int argc, char *argv[]) {
                 }
             }
 
-            auto pFileManager = std::make_unique<FileManager>();
+            pFileManager = new FileManager();
 
             // now we can finish loading texts
             pTextManager->loadData();
@@ -708,7 +708,7 @@ int main(int argc, char *argv[]) {
             delete pSFXManager;
             delete pGFXManager;
             delete pFontManager;
-            pFileManager.reset();
+            delete pFileManager;
 
             SDL_DestroyTexture(screenTexture);
             SDL_DestroyRenderer(renderer);
