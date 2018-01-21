@@ -35,10 +35,10 @@ public:
     */
     explicit Trigger(Uint32 triggerCycleNumber) : cycleNumber(triggerCycleNumber) { }
 
-    Trigger(const Trigger &) = delete;
-    Trigger(Trigger &&) = delete;
-    Trigger& operator=(const Trigger &) = delete;
-    Trigger& operator=(Trigger &&) = delete;
+    Trigger(const Trigger &) = default;
+    Trigger(Trigger &&) = default;
+    Trigger& operator=(const Trigger &) = default;
+    Trigger& operator=(Trigger &&) = default;
 
     /**
         This constructor constructs the trigger from a stream.

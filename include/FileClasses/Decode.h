@@ -27,7 +27,7 @@
     \param  src source
     \param  cnt length in bytes
 */
-void memcpy_overlap(unsigned char *dst, unsigned char *src, unsigned cnt);
+inline void memcpy_overlap(unsigned char *dst, const unsigned char *src, unsigned cnt);
 
 
 /// Decompresses format40 compressed images/data.
@@ -36,7 +36,7 @@ void memcpy_overlap(unsigned char *dst, unsigned char *src, unsigned cnt);
     \param  image_out   pointer to output uncompressed data
     \return written bytes to image_out
  */
-int decode40(unsigned char *image_in, unsigned char *image_out);
+int decode40(const unsigned char *image_in, unsigned char *image_out);
 
 
 /// Decompresses format80 compressed images/data.
@@ -47,6 +47,6 @@ int decode40(unsigned char *image_in, unsigned char *image_out);
     \param  checksum    checksum for this file
     \return 0 if checksum is correct<br> -1 if checksum is incorrect
  */
-int decode80(unsigned char *image_in, unsigned char *image_out,unsigned checksum);
+int decode80(const unsigned char *image_in, unsigned char *image_out,unsigned checksum);
 
 #endif // DECODE_H

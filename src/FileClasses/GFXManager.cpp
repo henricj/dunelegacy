@@ -38,7 +38,7 @@ using std::shared_ptr;
 /**
     Number of columns and rows each obj pic has
 */
-static Coord objPicTiles[] {
+static const Coord objPicTiles[] {
     { 8, 1 },   // ObjPic_Tank_Base
     { 8, 1 },   // ObjPic_Tank_Gun
     { 8, 1 },   // ObjPic_Siegetank_Base
@@ -118,6 +118,7 @@ static Coord objPicTiles[] {
 
 
 GFXManager::GFXManager() {
+
     // init whole objPic and objPicTex arrays
     for(int i = 0; i < NUM_OBJPICS; i++) {
         for(int j = 0; j < (int) NUM_HOUSES; j++) {
@@ -198,7 +199,8 @@ GFXManager::GFXManager() {
     shared_ptr<Shpfile> arrows = loadShpfile("ARROWS.SHP");
 
     // Load icon file
-    shared_ptr<Icnfile> icon = shared_ptr<Icnfile>(new Icnfile(pFileManager->openFile("ICON.ICN"),pFileManager->openFile("ICON.MAP"), true));
+    shared_ptr<Icnfile> icon = std::make_shared<Icnfile>(pFileManager->openFile("ICON.ICN"),
+                                                         pFileManager->openFile("ICON.MAP"), true);
 
     // Load radar static
     shared_ptr<Wsafile> radar = loadWsafile("STATIC.WSA");
@@ -207,7 +209,7 @@ GFXManager::GFXManager() {
     Palette benePalette = LoadPalette_RW(pFileManager->openFile("BENE.PAL"), true);
 
     //create PictureFactory
-    shared_ptr<PictureFactory> PicFactory = shared_ptr<PictureFactory>(new PictureFactory());
+    shared_ptr<PictureFactory> PicFactory = std::make_shared<PictureFactory>();
 
 
 
@@ -1173,7 +1175,7 @@ Animation* GFXManager::getAnimation(unsigned int id) {
 
 shared_ptr<Shpfile> GFXManager::loadShpfile(const std::string& filename) {
     try {
-        return shared_ptr<Shpfile>(new Shpfile(pFileManager->openFile(filename), true));
+        return std::make_shared<Shpfile>(pFileManager->openFile(filename), true);
     } catch (std::exception &e) {
         THROW(std::runtime_error, "Error in file \"" + filename + "\":" + e.what());
     }
@@ -1184,7 +1186,7 @@ shared_ptr<Wsafile> GFXManager::loadWsafile(const std::string& filename) {
     std::shared_ptr<Wsafile> wsafile;
     try {
         file_wsa = pFileManager->openFile(filename);
-        wsafile = std::shared_ptr<Wsafile>(new Wsafile(file_wsa));
+        wsafile = std::make_shared<Wsafile>(file_wsa);
         SDL_RWclose(file_wsa);
         return wsafile;
     } catch (std::exception &e) {

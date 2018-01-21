@@ -358,7 +358,7 @@ void Tile::blitUndergroundUnits(int xPos, int yPos) {
 
 void Tile::blitDeadUnits(int xPos, int yPos) {
     if(!isFogged(pLocalHouse->getHouseID())) {
-        for(const DEADUNITTYPE& deadUnit : deadUnits) {
+        for(const auto& deadUnit : deadUnits) {
             SDL_Rect source = { 0, 0, world2zoomedWorld(TILESIZE), world2zoomedWorld(TILESIZE) };
             SDL_Texture** pTexture = nullptr;
             switch(deadUnit.type) {

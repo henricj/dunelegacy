@@ -27,7 +27,7 @@
 #include <SDL2/SDL.h>
 
 
-void memcpy_overlap(unsigned char *dst, unsigned char *src, unsigned cnt)
+void memcpy_overlap(unsigned char *dst, const unsigned char *src, unsigned cnt)
 {
     /* Copies memory areas that may overlap byte by byte from small memory
      * addresses to big memory addresses. Thus, already copied bytes can be
@@ -44,7 +44,7 @@ void memcpy_overlap(unsigned char *dst, unsigned char *src, unsigned cnt)
 }
 
 
-int decode40(unsigned char *image_in, unsigned char *image_out)
+int decode40(const unsigned char *image_in, unsigned char *image_out)
 {
     /*
     0 fill 00000000 c v
@@ -117,13 +117,13 @@ int decode40(unsigned char *image_in, unsigned char *image_out)
     return (writep - image_out);
 }
 
-int decode80(unsigned char *image_in, unsigned char *image_out, unsigned checksum)
+int decode80(const unsigned char *image_in, unsigned char *image_out, unsigned checksum)
 {
     //
     // should decode all the format80 stuff ;-)
     //
 
-    unsigned char *readp = image_in;
+    const unsigned char *readp = image_in;
     unsigned char *writep = image_out;
 
     unsigned int a = 0;

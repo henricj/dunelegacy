@@ -257,9 +257,8 @@ void ReinforcementTrigger::trigger()
     }
 
     if(isRepeat()) {
-        ReinforcementTrigger* pReinforcementTrigger = new ReinforcementTrigger(*this);
+        auto pReinforcementTrigger =  std::make_unique<ReinforcementTrigger>(*this);
         pReinforcementTrigger->cycleNumber += repeatCycle;
-        std::shared_ptr<Trigger> newTrigger = std::shared_ptr<Trigger>(pReinforcementTrigger);
-        currentGame->getTriggerManager().addTrigger(newTrigger);
+        currentGame->getTriggerManager().addTrigger(std::move(pReinforcementTrigger));
     }
 }

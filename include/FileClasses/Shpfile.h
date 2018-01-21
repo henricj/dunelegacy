@@ -20,7 +20,7 @@
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_rwops.h>
-#include <stdarg.h>
+#include <cstdarg>
 #include <vector>
 
 #include "Animation.h"
@@ -48,8 +48,11 @@ private:
     };
 
 public:
-    Shpfile(SDL_RWops* rwop, int freesrc);
+    Shpfile(SDL_RWops* rwop, bool freesrc);
     Shpfile(const Shpfile& o) = delete;
+    Shpfile(Shpfile &&) = delete;
+    Shpfile& operator=(const Shpfile &) = delete;
+    Shpfile& operator=(Shpfile &&) = delete;
     virtual ~Shpfile();
 
     SDL_Surface* getPicture(Uint32 indexOfFile);
@@ -61,15 +64,15 @@ public:
         Returns the number of pictures in this SHP-File.
         \return Number of pictures in this SHP-File.
     */
-    inline int getNumFiles() const { return (int) shpfileEntries.size(); };
+    inline int getNumFiles() const { return static_cast<int>(shpfileEntries.size()); };
 
 private:
     void readIndex();
-    void shpCorrectLF(unsigned char *in, unsigned char *out, int size);
-    void applyPalOffsets(unsigned char *offsets, unsigned char *data,unsigned int length);
+    static void shpCorrectLF(const unsigned char *in, unsigned char *out, int size);
+    static void applyPalOffsets(const unsigned char *offsets, unsigned char *data,unsigned int length);
 
     std::vector<ShpfileEntry> shpfileEntries;
-    unsigned char* pFiledata;
+    std::unique_ptr<const unsigned char[]> pFiledata;
     size_t shpFilesize;
 };
 

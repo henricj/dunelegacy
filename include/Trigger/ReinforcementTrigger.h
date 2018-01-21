@@ -39,6 +39,11 @@ public:
         \param  triggerCycleNumber  the game cycle this trigger shall be triggered (must be >0 if bRepeat == true)
     */
     ReinforcementTrigger(int houseID, Uint32 itemID, DropLocation location, bool bRepeat, Uint32 triggerCycleNumber);
+    ReinforcementTrigger(const ReinforcementTrigger &) = default;
+    ReinforcementTrigger(ReinforcementTrigger &&) = default;
+
+    ReinforcementTrigger& operator=(const ReinforcementTrigger &&);
+    ReinforcementTrigger& operator=(ReinforcementTrigger &&);
 
     /**
         This constructor constructs the trigger from a stream.
