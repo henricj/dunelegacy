@@ -41,15 +41,15 @@ public:
 
     void init();
     ~QuantBot();
-    virtual void save(OutputStream& stream) const;
+    void save(OutputStream& stream) const override;
 
-    virtual void update();
+    void update() override;
 
-    virtual void onIncrementStructures(int itemID);
-    virtual void onDecrementStructures(int itemID, const Coord& location);
-    virtual void onDecrementUnits(int itemID);
-    virtual void onIncrementUnitKills(int itemID);
-    virtual void onDamage(const ObjectBase* pObject, int damage, Uint32 damagerID);
+    void onIncrementStructures(int itemID) override;
+    void onDecrementStructures(int itemID, const Coord& location) override;
+    void onDecrementUnits(int itemID) override;
+    void onIncrementUnitKills(int itemID) override;
+    void onDamage(const ObjectBase* pObject, int damage, Uint32 damagerID) override;
 
     static Player* create(House* associatedHouse, const std::string& playername, Difficulty difficulty) {
         return new QuantBot(associatedHouse, playername, difficulty);

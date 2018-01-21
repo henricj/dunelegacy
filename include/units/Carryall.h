@@ -30,25 +30,25 @@ public:
     void init();
     virtual ~Carryall();
 
-    void checkPos();
+    void checkPos() override;
 
     /**
         Updates this carryall.
         \return true if this object still exists, false if it was destroyed
     */
-    bool update();
+    bool update() override;
 
-    virtual void deploy(const Coord& newLocation);
+    void deploy(const Coord& newLocation) override;
 
-    void destroy();
+    void destroy() override;
 
     void deployUnit(Uint32 unitID);
 
     void giveCargo(UnitBase* newUnit);
 
-    void save(OutputStream& stream) const;
+    void save(OutputStream& stream) const override;
 
-    void setTarget(const ObjectBase* newTarget);
+    void setTarget(const ObjectBase* newTarget) override;
 
     bool hasCargo() const {
         return !pickedUpUnitList.empty();
@@ -63,10 +63,10 @@ public:
     inline bool isBooked() const { return (target || hasCargo()); }
 
 protected:
-    void releaseTarget();
-    void engageTarget();
+    void releaseTarget() override;
+    void engageTarget() override;
     void pickupTarget();
-    void targeting();
+    void targeting() override;
     virtual void turn();
 
     // unit state/properties

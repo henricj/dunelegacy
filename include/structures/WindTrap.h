@@ -28,15 +28,15 @@ public:
     void init();
     virtual ~WindTrap();
 
-    virtual ObjectInterface* getInterfaceContainer();
+    ObjectInterface* getInterfaceContainer() override;
 
     /**
         Updates this object.
         \return true if this object still exists, false if it was destroyed
     */
-    virtual bool update();
+    bool update() override;
 
-    virtual void setHealth(FixPoint newHealth);
+    void setHealth(FixPoint newHealth) override;
 
 protected:
     int getProducedPower() const;

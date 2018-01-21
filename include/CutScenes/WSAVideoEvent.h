@@ -41,13 +41,13 @@ public:
         This method draws the video effect.
         \return the milliseconds until the next frame shall be drawn.
     */
-    virtual int draw();
+    int draw() override;
 
     /**
         This method checks if this VideoEvent is already finished
         \return true, if there are no more frames to draw with this VideoEvent
     */
-    virtual bool isFinished();
+    bool isFinished() override;
 private:
     int currentFrame;               ///< the current frame number relative to the start of this WSAVideoEvent
     Wsafile* pWsafile;              ///< the video to play

@@ -32,18 +32,18 @@ public:
     bool open(const std::string& filename);
     void close();
 
-    virtual void flush();
+    void flush() override;
 
     // write operations
 
-    void writeString(const std::string& str);
+    void writeString(const std::string& str) override;
 
-    void writeUint8(Uint8 x);
-    void writeUint16(Uint16 x);
-    void writeUint32(Uint32 x);
-    void writeUint64(Uint64 x);
-    void writeBool(bool x);
-    void writeFloat(float x);
+    void writeUint8(Uint8 x) override;
+    void writeUint16(Uint16 x) override;
+    void writeUint32(Uint32 x) override;
+    void writeUint64(Uint64 x) override;
+    void writeBool(bool x) override;
+    void writeFloat(float x) override;
 
 private:
     FILE* fp;

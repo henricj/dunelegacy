@@ -59,11 +59,11 @@ class CSurroundopl: public Copl
         CSurroundopl(Copl *a, Copl *b, bool use16bit);
         ~CSurroundopl();
 
-        void update(short *buf, int samples);
-        void write(int reg, int val);
+        void update(short *buf, int samples) override;
+        void write(int reg, int val) override;
 
-        void init();
-        void setchip(int n);
+        void init() override;
+        void setchip(int n) override;
 };
 
 #endif

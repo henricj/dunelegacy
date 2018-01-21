@@ -72,7 +72,8 @@ public:
         called if the new size is a valid size for this question box (See getMinumumSize).
         \param  newSize the new size of this progress bar
     */
-    virtual void resize(Point newSize) {
+    void resize(Point newSize) override
+    {
         resize(newSize.x,newSize.y);
     }
 
@@ -83,7 +84,8 @@ public:
         \param  width   the new width of this question box
         \param  height  the new height of this question box
     */
-    virtual void resize(Uint32 width, Uint32 height) {
+    void resize(Uint32 width, Uint32 height) override
+    {
         Window::resize(width,height);
         position.x = (getRendererWidth() - getSize().x)/2;
         position.y = (getRendererHeight() - getSize().y)/2;
@@ -93,7 +95,8 @@ public:
         This method is called by the window widget if it requests a resizing of
         this window.
     */
-    virtual void resizeAll() {
+    void resizeAll() override
+    {
         // QstBox should get bigger if content changes
         if(pWindowWidget != nullptr) {
             Point newSize = pWindowWidget->getMinimumSize();

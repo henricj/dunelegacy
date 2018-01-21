@@ -35,27 +35,27 @@ public:
     void init();
     virtual ~UnitBase();
 
-    virtual void save(OutputStream& stream) const;
+    void save(OutputStream& stream) const override;
 
-    void blitToScreen();
+    void blitToScreen() override;
 
-    virtual ObjectInterface* getInterfaceContainer();
+    ObjectInterface* getInterfaceContainer() override;
 
     virtual void checkPos() = 0;
     virtual void deploy(const Coord& newLocation);
 
-    virtual void destroy();
+    void destroy() override;
     void deviate(House* newOwner);
 
-    virtual void drawSelectionBox();
-    virtual void drawOtherPlayerSelectionBox();
+    void drawSelectionBox() override;
+    void drawOtherPlayerSelectionBox() override;
 
     /**
         This method is called when an unit is ordered by a right click
         \param  xPos    the x position on the map
         \param  yPos    the y position on the map
     */
-    virtual void handleActionClick(int xPos, int yPos);
+    void handleActionClick(int xPos, int yPos) override;
 
     /**
         This method is called when an unit is ordered to attack
@@ -141,9 +141,9 @@ public:
     */
     void doSetAttackMode(ATTACKMODE newAttackMode);
 
-    virtual void handleDamage(int damage, Uint32 damagerID, House* damagerOwner);
+    void handleDamage(int damage, Uint32 damagerID, House* damagerOwner) override;
 
-    virtual void doRepair() { };
+    void doRepair() override { };
 
     /**
         Is this object in a range we are guarding. If yes we shall react.
@@ -165,7 +165,7 @@ public:
 
     void setAngle(int newAngle);
 
-    virtual void setTarget(const ObjectBase* newTarget);
+    void setTarget(const ObjectBase* newTarget) override;
 
     void setGettingRepaired();
 
@@ -173,11 +173,12 @@ public:
 
     void setGuardPoint(int newX, int newY);
 
-    void setLocation(int xPos, int yPos);
+    void setLocation(int xPos, int yPos) override;
 
     inline void setLocation(const Coord& location) { setLocation(location.x, location.y); }
 
-    inline void setDestination(int newX, int newY) {
+    inline void setDestination(int newX, int newY) override
+    {
         if((destination.x != newX) || (destination.y != newY)) {
             ObjectBase::setDestination(newX, newY);
             clearPath();
@@ -192,7 +193,7 @@ public:
         Updates this unit.
         \return true if this unit still exists, false if it was destroyed
     */
-    virtual bool update();
+    bool update() override;
 
     virtual bool canPass(int xPos, int yPos) const;
 

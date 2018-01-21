@@ -67,14 +67,14 @@ public:
 
     virtual ~FileDataSource() = default;
 
-    virtual unsigned int read1()
+    unsigned int read1() override
     {
         unsigned char b0;
         b0 = fgetc(f);
         return (b0);
     };
 
-    virtual unsigned int read2()
+    unsigned int read2() override
     {
         unsigned char b0, b1;
         b0 = fgetc(f);
@@ -82,7 +82,7 @@ public:
         return (b0 + (b1 << 8));
     };
 
-    virtual unsigned int read2high()
+    unsigned int read2high() override
     {
         unsigned char b0, b1;
         b1 = fgetc(f);
@@ -90,7 +90,7 @@ public:
         return (b0 + (b1 << 8));
     };
 
-    virtual unsigned int read4()
+    unsigned int read4() override
     {
         unsigned char b0, b1, b2, b3;
         b0 = fgetc(f);
@@ -100,7 +100,7 @@ public:
         return (b0 + (b1<<8) + (b2<<16) + (b3<<24));
     };
 
-    virtual unsigned int read4high()
+    unsigned int read4high() override
     {
         unsigned char b0, b1, b2, b3;
         b3 = fgetc(f);
@@ -110,30 +110,31 @@ public:
         return (b0 + (b1<<8) + (b2<<16) + (b3<<24));
     };
 
-    void read(char *b, size_t len) {
+    void read(char *b, size_t len) override
+    {
         if(fread(b, 1, len, f) != (size_t) len) {
             THROW(std::runtime_error, "fread failed in FileDataSource::read()!");
         }
     };
 
-    virtual void write1(unsigned int val)
+    void write1(unsigned int val) override
     {
         fputc((char) (val&0xff),f);
     };
 
-    virtual void write2(unsigned int val)
+    void write2(unsigned int val) override
     {
         fputc((char) (val&0xff),f);
         fputc((char) ((val>>8)&0xff),f);
     };
 
-    virtual void write2high(unsigned int val)
+    void write2high(unsigned int val) override
     {
         fputc((char) ((val>>8)&0xff),f);
         fputc((char) (val&0xff),f);
     };
 
-    virtual void write4(unsigned int val)
+    void write4(unsigned int val) override
     {
         fputc((char) (val&0xff),f);
         fputc((char) ((val>>8)&0xff),f);
@@ -141,7 +142,7 @@ public:
         fputc((char) ((val>>24)&0xff),f);
     };
 
-    virtual void write4high(unsigned int val)
+    void write4high(unsigned int val) override
     {
         fputc((char) ((val>>24)&0xff),f);
         fputc((char) ((val>>16)&0xff),f);
@@ -149,11 +150,11 @@ public:
         fputc((char) (val&0xff),f);
     };
 
-    virtual void seek(unsigned int pos) { fseek(f, pos, SEEK_SET); };
+    void seek(unsigned int pos) override { fseek(f, pos, SEEK_SET); };
 
-    virtual void skip(int pos) { fseek(f, pos, SEEK_CUR); };
+    void skip(int pos) override { fseek(f, pos, SEEK_CUR); };
 
-    virtual unsigned int getSize()
+    unsigned int getSize() override
     {
         long pos = ftell(f);
         fseek(f, 0, SEEK_END);
@@ -162,7 +163,7 @@ public:
         return len;
     };
 
-    virtual unsigned int getPos()
+    unsigned int getPos() override
     {
         return ftell(f);
     };
@@ -182,14 +183,14 @@ public:
 
     virtual ~BufferDataSource() = default;
 
-    virtual unsigned int read1()
+    unsigned int read1() override
     {
         unsigned char b0;
         b0 = (unsigned char)*buf_ptr++;
         return (b0);
     };
 
-    virtual unsigned int read2()
+    unsigned int read2() override
     {
         unsigned char b0, b1;
         b0 = (unsigned char)*buf_ptr++;
@@ -197,7 +198,7 @@ public:
         return (b0 + (b1 << 8));
     };
 
-    virtual unsigned int read2high()
+    unsigned int read2high() override
     {
         unsigned char b0, b1;
         b1 = (unsigned char)*buf_ptr++;
@@ -205,7 +206,7 @@ public:
         return (b0 + (b1 << 8));
     };
 
-    virtual unsigned int read4()
+    unsigned int read4() override
     {
         unsigned char b0, b1, b2, b3;
         b0 = (unsigned char)*buf_ptr++;
@@ -215,7 +216,7 @@ public:
         return (b0 + (b1<<8) + (b2<<16) + (b3<<24));
     };
 
-    virtual unsigned int read4high()
+    unsigned int read4high() override
     {
         unsigned char b0, b1, b2, b3;
         b3 = (unsigned char)*buf_ptr++;
@@ -225,30 +226,31 @@ public:
         return (b0 + (b1<<8) + (b2<<16) + (b3<<24));
     };
 
-    void read(char *b, size_t len) {
+    void read(char *b, size_t len) override
+    {
         memcpy(b, buf_ptr, len);
         buf_ptr += len;
     };
 
-    virtual void write1(unsigned int val)
+    void write1(unsigned int val) override
     {
         *buf_ptr++ = val & 0xff;
     };
 
-    virtual void write2(unsigned int val)
+    void write2(unsigned int val) override
     {
         *buf_ptr++ = val & 0xff;
         *buf_ptr++ = (val>>8) & 0xff;
     };
 
-    virtual void write2high(unsigned int val)
+    void write2high(unsigned int val) override
     {
         *buf_ptr++ = (val>>8) & 0xff;
         *buf_ptr++ = val & 0xff;
     };
 
 
-    virtual void write4(unsigned int val)
+    void write4(unsigned int val) override
     {
         *buf_ptr++ = val & 0xff;
         *buf_ptr++ = (val>>8) & 0xff;
@@ -256,7 +258,7 @@ public:
         *buf_ptr++ = (val>>24)&0xff;
     };
 
-    virtual void write4high(unsigned int val)
+    void write4high(unsigned int val) override
     {
         *buf_ptr++ = (val>>24)&0xff;
         *buf_ptr++ = (val>>16)&0xff;
@@ -264,13 +266,13 @@ public:
         *buf_ptr++ = val & 0xff;
     };
 
-    virtual void seek(unsigned int pos) { buf_ptr = buf+pos; };
+    void seek(unsigned int pos) override { buf_ptr = buf+pos; };
 
-    virtual void skip(int pos) { buf_ptr += pos; };
+    void skip(int pos) override { buf_ptr += pos; };
 
-    virtual unsigned int getSize() { return size; };
+    unsigned int getSize() override { return size; };
 
-    virtual unsigned int getPos() { return (buf_ptr-buf); };
+    unsigned int getPos() override { return (buf_ptr-buf); };
 
     unsigned char *getPtr() { return buf_ptr; };
 };
@@ -297,14 +299,14 @@ public:
         }
     };
 
-    virtual unsigned int read1()
+    unsigned int read1() override
     {
         unsigned char b0;
         SDL_RWread(rwop,&b0,sizeof(b0),1);
         return (b0);
     };
 
-    virtual unsigned int read2()
+    unsigned int read2() override
     {
         unsigned char b0, b1;
         SDL_RWread(rwop,&b0,sizeof(b0),1);
@@ -312,7 +314,7 @@ public:
         return (b0 + (b1 << 8));
     };
 
-    virtual unsigned int read2high()
+    unsigned int read2high() override
     {
         unsigned char b0, b1;
         SDL_RWread(rwop,&b1,sizeof(b1),1);
@@ -320,7 +322,7 @@ public:
         return (b0 + (b1 << 8));
     };
 
-    virtual unsigned int read4()
+    unsigned int read4() override
     {
         unsigned char b0, b1, b2, b3;
         SDL_RWread(rwop,&b0,sizeof(b0),1);
@@ -330,7 +332,7 @@ public:
         return (b0 + (b1<<8) + (b2<<16) + (b3<<24));
     };
 
-    virtual unsigned int read4high()
+    unsigned int read4high() override
     {
         unsigned char b0, b1, b2, b3;
         SDL_RWread(rwop,&b3,sizeof(b3),1);
@@ -340,17 +342,18 @@ public:
         return (b0 + (b1<<8) + (b2<<16) + (b3<<24));
     };
 
-    void read(char *b, size_t len) {
+    void read(char *b, size_t len) override
+    {
         SDL_RWread(rwop,b,1,len);
     };
 
-    virtual void write1(unsigned int val)
+    void write1(unsigned int val) override
     {
         Uint8 b0 = val & 0xff;
         SDL_RWwrite(rwop,&b0,sizeof(b0),1);
     };
 
-    virtual void write2(unsigned int val)
+    void write2(unsigned int val) override
     {
         Uint8 b0 = val & 0xff;
         Uint8 b1 = (val>>8) & 0xff;
@@ -358,7 +361,7 @@ public:
         SDL_RWwrite(rwop,&b1,sizeof(b1),1);
     };
 
-    virtual void write2high(unsigned int val)
+    void write2high(unsigned int val) override
     {
         Uint8 b0 = val & 0xff;
         Uint8 b1 = (val>>8) & 0xff;
@@ -367,7 +370,7 @@ public:
     };
 
 
-    virtual void write4(unsigned int val)
+    void write4(unsigned int val) override
     {
         Uint8 b0 = val & 0xff;
         Uint8 b1 = (val>>8) & 0xff;
@@ -379,7 +382,7 @@ public:
         SDL_RWwrite(rwop,&b3,sizeof(b3),1);
     };
 
-    virtual void write4high(unsigned int val)
+    void write4high(unsigned int val) override
     {
         Uint8 b0 = val & 0xff;
         Uint8 b1 = (val>>8) & 0xff;
@@ -391,19 +394,23 @@ public:
         SDL_RWwrite(rwop,&b0,sizeof(b0),1);
     };
 
-    virtual void seek(unsigned int pos) {
+    void seek(unsigned int pos) override
+    {
         SDL_RWseek(rwop, pos, SEEK_SET);
     };
 
-    virtual void skip(int pos) {
+    void skip(int pos) override
+    {
         SDL_RWseek(rwop, pos, SEEK_CUR);
     };
 
-    virtual unsigned int getSize() {
+    unsigned int getSize() override
+    {
         return static_cast<unsigned int>(SDL_RWsize(rwop));
     };
 
-    virtual unsigned int getPos() {
+    unsigned int getPos() override
+    {
         return static_cast<unsigned int>(SDL_RWtell(rwop));
     };
 };

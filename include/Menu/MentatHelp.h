@@ -33,11 +33,11 @@ public:
     MentatHelp(int newHouse, int techLevel, int mission);
     virtual ~MentatHelp();
 
-    virtual void drawSpecificStuff();
+    void drawSpecificStuff() override;
 
-    virtual bool doInput(SDL_Event &event);
+    bool doInput(SDL_Event &event) override;
 
-    virtual void onMentatTextFinished();
+    void onMentatTextFinished() override;
 
 private:
     void onExit();

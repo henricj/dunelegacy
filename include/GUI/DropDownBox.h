@@ -43,7 +43,7 @@ public:
         \param  y               y-coordinate (relative to the left top corner of the widget)
         \param  insideOverlay   true, if (x,y) is inside an overlay and this widget may be behind it, false otherwise
     */
-    virtual void handleMouseMovement(Sint32 x, Sint32 y, bool insideOverlay);
+    void handleMouseMovement(Sint32 x, Sint32 y, bool insideOverlay) override;
 
     /**
         Handles mouse movement in overlays.
@@ -51,7 +51,7 @@ public:
         \param  y y-coordinate (relative to the left top corner of the widget)
         \return true if (x,y) is in overlay of this widget, false otherwise
     */
-    virtual bool handleMouseMovementOverlay(Sint32 x, Sint32 y);
+    bool handleMouseMovementOverlay(Sint32 x, Sint32 y) override;
 
     /**
         Handles a left mouse click.
@@ -60,7 +60,7 @@ public:
         \param  pressed true = mouse button pressed, false = mouse button released
         \return true = click was processed by the widget, false = click was not processed by the widget
     */
-    virtual bool handleMouseLeft(Sint32 x, Sint32 y, bool pressed);
+    bool handleMouseLeft(Sint32 x, Sint32 y, bool pressed) override;
 
     /**
         Handles a left mouse click in overlays.
@@ -69,7 +69,7 @@ public:
         \param  pressed true = mouse button pressed, false = mouse button released
         \return true = click was processed by the widget, false = click was not processed by the widget
     */
-    virtual bool handleMouseLeftOverlay(Sint32 x, Sint32 y, bool pressed);
+    bool handleMouseLeftOverlay(Sint32 x, Sint32 y, bool pressed) override;
 
     /**
         Handles mouse wheel scrolling.
@@ -78,7 +78,7 @@ public:
         \param  up  true = mouse wheel up, false = mouse wheel down
         \return true = the mouse wheel scrolling was processed by the widget, false = mouse wheel scrolling was not processed by the widget
     */
-    virtual bool handleMouseWheel(Sint32 x, Sint32 y, bool up);
+    bool handleMouseWheel(Sint32 x, Sint32 y, bool up) override;
 
     /**
         Handles mouse wheel scrolling in overlays.
@@ -87,7 +87,7 @@ public:
         \param  up  true = mouse wheel up, false = mouse wheel down
         \return true = the mouse wheel scrolling was processed by the widget, false = mouse wheel scrolling was not processed by the widget
     */
-    virtual bool handleMouseWheelOverlay(Sint32 x, Sint32 y, bool up);
+    bool handleMouseWheelOverlay(Sint32 x, Sint32 y, bool up) override;
 
     /**
         Handles a key stroke. This method is neccessary for controlling an application
@@ -95,27 +95,28 @@ public:
         \param  key the key that was pressed or released.
         \return true = key stroke was processed by the widget, false = key stroke was not processed by the widget
     */
-    virtual bool handleKeyPress(SDL_KeyboardEvent& key);
+    bool handleKeyPress(SDL_KeyboardEvent& key) override;
 
     /**
         Draws this scroll bar to screen. This method is called before drawOverlay().
         \param  position    Position to draw the scroll bar to
     */
-    virtual void draw(Point position);
+    void draw(Point position) override;
 
     /**
         This method draws the parts of this widget that must be drawn after all the other
         widgets are drawn (e.g. tooltips). This method is called after draw().
         \param  position    Position to draw the widget to
     */
-    virtual void drawOverlay(Point position);
+    void drawOverlay(Point position) override;
 
     /**
         This method resizes the dropdownbox. This method should only
         called if the new size is a valid size for this dropdownbox (See getMinumumSize).
         \param  newSize the new size of this progress bar
     */
-    virtual void resize(Point newSize) {
+    void resize(Point newSize) override
+    {
         resize(newSize.x,newSize.y);
     }
 
@@ -125,14 +126,15 @@ public:
         \param  width   the new width of this scroll bar
         \param  height  the new height of this scroll bar
     */
-    virtual void resize(Uint32 width, Uint32 height);
+    void resize(Uint32 width, Uint32 height) override;
 
     /**
         Returns the minimum size of this scroll bar. The scroll bar should not
         resized to a size smaller than this.
         \return the minimum size of this scroll bar
     */
-    virtual Point getMinimumSize() const {
+    Point getMinimumSize() const override
+    {
         return Point(listBox.getMinimumSize().x,openListBoxButton.getSize().y+2);
     }
 
@@ -140,7 +142,7 @@ public:
         Returns whether this widget can be set active.
         \return true = activatable, false = not activatable
     */
-    virtual inline bool isActivatable() const { return isEnabled(); };
+    inline bool isActivatable() const override { return isEnabled(); };
 
     /**
         Adds a new entry to this dropdown box
@@ -341,7 +343,8 @@ public:
         Sets this widget active. The parent widgets are also activated and the
         currently active widget is set to inactive.
     */
-    virtual void setActive() {
+    void setActive() override
+    {
         openListBoxButton.setActive();
         Widget::setActive();
     }
@@ -362,7 +365,8 @@ public:
         to clicks and key strokes and might look different.
         \param  bEnabled    true = enable widget, false = disable widget
     */
-    virtual inline void setEnabled(bool bEnabled) {
+    inline void setEnabled(bool bEnabled) override
+    {
         openListBoxButton.setEnabled(bEnabled);
 
         Widget::setEnabled(bEnabled);
@@ -401,7 +405,7 @@ protected:
         widget.
         \param  bActive true = activate this widget, false = deactiviate this widget
     */
-    virtual void setActive(bool bActive);
+    void setActive(bool bActive) override;
 
     /**
         Sets the selected item. The user is informed about this switch

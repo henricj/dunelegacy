@@ -28,23 +28,23 @@ public:
     void init();
     virtual ~Devastator();
 
-    void save(OutputStream& stream) const;
+    void save(OutputStream& stream) const override;
 
-    void blitToScreen();
+    void blitToScreen() override;
 
     void handleStartDevastateClick();
 
     void doStartDevastate();
 
-    virtual void destroy();
+    void destroy() override;
 
     /**
         Updates this devastator.
         \return true if this object still exists, false if it was destroyed
     */
-    virtual bool update();
+    bool update() override;
 
-    void playAttackSound();
+    void playAttackSound() override;
 
 private:
     // devastator state

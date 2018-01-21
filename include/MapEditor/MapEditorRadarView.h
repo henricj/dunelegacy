@@ -45,19 +45,19 @@ public:
         Get the map size in x direction
         \return map width
     */
-    virtual int getMapSizeX() const;
+    int getMapSizeX() const override;
 
     /**
         Get the map size in y direction
         \return map height
     */
-    virtual int getMapSizeY() const;
+    int getMapSizeY() const override;
 
     /**
         Draws the radar to screen. This method is called before drawOverlay().
         \param  Position    Position to draw the radar to
     */
-    virtual void draw(Point position);
+    void draw(Point position) override;
 
 private:
     void updateRadarSurface(const MapData& map, int scale, int offsetX, int offsetY);

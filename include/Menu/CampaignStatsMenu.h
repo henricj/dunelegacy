@@ -31,11 +31,11 @@ public:
     explicit CampaignStatsMenu(int level);
     virtual ~CampaignStatsMenu();
 
-    virtual int showMenu();
+    int showMenu() override;
 
-    virtual bool doInput(SDL_Event &event);
+    bool doInput(SDL_Event &event) override;
 
-    virtual void drawSpecificStuff();
+    void drawSpecificStuff() override;
 
 private:
     void doState(int elapsedTime);

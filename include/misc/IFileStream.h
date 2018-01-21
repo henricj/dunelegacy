@@ -32,14 +32,14 @@ public:
     bool open(const std::string& filename);
     void close();
 
-    std::string readString();
+    std::string readString() override;
 
-    Uint8 readUint8();
-    Uint16 readUint16();
-    Uint32 readUint32();
-    Uint64 readUint64();
-    bool readBool();
-    float readFloat();
+    Uint8 readUint8() override;
+    Uint16 readUint16() override;
+    Uint32 readUint32() override;
+    Uint64 readUint64() override;
+    bool readBool() override;
+    float readFloat() override;
 
 private:
     FILE* fp;

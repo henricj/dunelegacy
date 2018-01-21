@@ -47,7 +47,8 @@ public:
         pBuffer = data;
     }
 
-    std::string readString() {
+    std::string readString() override
+    {
         Uint32 length = readUint32();
 
         if(currentPos + length > bufferSize) {
@@ -59,7 +60,8 @@ public:
         return resultString;
     }
 
-    Uint8 readUint8() {
+    Uint8 readUint8() override
+    {
         if(currentPos + sizeof(Uint8) > bufferSize) {
             THROW(InputStream::eof, "IMemoryStream::readUint8(): End-of-File reached!");
         }
@@ -69,7 +71,8 @@ public:
         return tmp;
     }
 
-    Uint16 readUint16() {
+    Uint16 readUint16() override
+    {
         if(currentPos + sizeof(Uint16) > bufferSize) {
             THROW(InputStream::eof, "IMemoryStream::readUint16(): End-of-File reached!");
         }
@@ -79,7 +82,8 @@ public:
         return SDL_SwapLE16(tmp);
     }
 
-    Uint32 readUint32() {
+    Uint32 readUint32() override
+    {
         if(currentPos + sizeof(Uint32) > bufferSize) {
             THROW(InputStream::eof, "IMemoryStream::readUint32(): End-of-File reached!");
         }
@@ -89,7 +93,8 @@ public:
         return SDL_SwapLE32(tmp);
     }
 
-    Uint64 readUint64() {
+    Uint64 readUint64() override
+    {
         if(currentPos + sizeof(Uint64) > bufferSize) {
             THROW(InputStream::eof, "IMemoryStream::readUint64(): End-of-File reached!");
         }
@@ -99,11 +104,13 @@ public:
         return SDL_SwapLE64(tmp);
     }
 
-    bool readBool() {
+    bool readBool() override
+    {
         return (readUint8() == 1 ? true : false);
     }
 
-    float readFloat() {
+    float readFloat() override
+    {
         Uint32 tmp = readUint32();
         float tmp2;
         memcpy(&tmp2,&tmp,sizeof(Uint32)); // workaround for a strange optimization in gcc 4.1

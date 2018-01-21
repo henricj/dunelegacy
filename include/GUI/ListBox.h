@@ -45,7 +45,7 @@ public:
         \param  y               y-coordinate (relative to the left top corner of the widget)
         \param  insideOverlay   true, if (x,y) is inside an overlay and this widget may be behind it, false otherwise
     */
-    virtual void handleMouseMovement(Sint32 x, Sint32 y, bool insideOverlay);
+    void handleMouseMovement(Sint32 x, Sint32 y, bool insideOverlay) override;
 
     /**
         Handles a left mouse click.
@@ -54,7 +54,7 @@ public:
         \param  pressed true = mouse button pressed, false = mouse button released
         \return true = click was processed by the widget, false = click was not processed by the widget
     */
-    virtual bool handleMouseLeft(Sint32 x, Sint32 y, bool pressed);
+    bool handleMouseLeft(Sint32 x, Sint32 y, bool pressed) override;
 
     /**
         Handles mouse wheel scrolling.
@@ -63,7 +63,7 @@ public:
         \param  up  true = mouse wheel up, false = mouse wheel down
         \return true = the mouse wheel scrolling was processed by the widget, false = mouse wheel scrolling was not processed by the widget
     */
-    virtual bool handleMouseWheel(Sint32 x, Sint32 y, bool up);
+    bool handleMouseWheel(Sint32 x, Sint32 y, bool up) override;
 
     /**
         Handles a key stroke. This method is neccessary for controlling an application
@@ -71,20 +71,21 @@ public:
         \param  key the key that was pressed or released.
         \return true = key stroke was processed by the widget, false = key stroke was not processed by the widget
     */
-    virtual bool handleKeyPress(SDL_KeyboardEvent& key);
+    bool handleKeyPress(SDL_KeyboardEvent& key) override;
 
     /**
         Draws this scroll bar to screen. This method is called before drawOverlay().
         \param  position    Position to draw the scroll bar to
     */
-    virtual void draw(Point position);
+    void draw(Point position) override;
 
     /**
         This method resizes the list box. This method should only
         called if the new size is a valid size for this list box (See getMinumumSize).
         \param  newSize the new size of this progress bar
     */
-    virtual void resize(Point newSize) {
+    void resize(Point newSize) override
+    {
         resize(newSize.x,newSize.y);
     }
     /**
@@ -93,14 +94,15 @@ public:
         \param  width   the new width of this scroll bar
         \param  height  the new height of this scroll bar
     */
-    virtual void resize(Uint32 width, Uint32 height);
+    void resize(Uint32 width, Uint32 height) override;
 
     /**
         Returns the minimum size of this scroll bar. The scroll bar should not
         resized to a size smaller than this.
         \return the minimum size of this scroll bar
     */
-    virtual Point getMinimumSize() const {
+    Point getMinimumSize() const override
+    {
         Point tmp = scrollbar.getMinimumSize();
         tmp.x += 30;
         return tmp;
@@ -110,13 +112,13 @@ public:
         Sets this widget active. The parent widgets are also activated and the
         currently active widget is set to inactive.
     */
-    virtual void setActive();
+    void setActive() override;
 
     /**
         Returns whether this widget can be set active.
         \return true = activatable, false = not activatable
     */
-    virtual inline bool isActivatable() const { return isEnabled(); };
+    inline bool isActivatable() const override { return isEnabled(); };
 
     /**
         Adds a new entry to this list box
@@ -405,7 +407,8 @@ protected:
         should be overwritten by subclasses if they like to defer texture creation as long as possible.
         This method should first check whether a renewal of the textures is necessary.
     */
-    virtual void updateTextures() {
+    void updateTextures() override
+    {
         Widget::updateTextures();
 
         if(pBackground == nullptr) {
@@ -440,7 +443,8 @@ protected:
     /**
         This method frees all textures that are used by this list box
     */
-    virtual void invalidateTextures() {
+    void invalidateTextures() override
+    {
         if(pBackground != nullptr) {
             SDL_DestroyTexture(pBackground);
             pBackground = nullptr;

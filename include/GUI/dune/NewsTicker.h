@@ -38,14 +38,15 @@ public:
         Draws this button to screen. This method is called before drawOverlay().
         \param  position    Position to draw the button to
     */
-    void draw(Point position);
+    void draw(Point position) override;
 
     /**
         Returns the minimum size of this widget. The widget should not
         be resized to a size smaller than this.
         \return the minimum size of this widget
     */
-    virtual Point getMinimumSize() const {
+    Point getMinimumSize() const override
+    {
         if(pBackground != nullptr) {
             return getTextureSize(pBackground);
         } else {

@@ -44,7 +44,7 @@ public:
 
     virtual void drawSpecificStuff();
 
-    virtual void draw();
+    void draw() override;
     virtual bool doInput(SDL_Event &event);
 
     void setClearScreen(bool bClearScreen) {

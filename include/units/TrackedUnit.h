@@ -29,17 +29,18 @@ public:
     void init();
     virtual ~TrackedUnit();
 
-    virtual void save(OutputStream& stream) const;
+    void save(OutputStream& stream) const override;
 
-    void checkPos();
-    bool canPass(int xPos, int yPos) const;
+    void checkPos() override;
+    bool canPass(int xPos, int yPos) const override;
 
     /**
         Returns how fast a unit can move over the specified terrain type.
         \param  terrainType the type to consider
         \return Returns a speed factor. Higher values mean slower.
     */
-    virtual FixPoint getTerrainDifficulty(TERRAINTYPE terrainType) const {
+    FixPoint getTerrainDifficulty(TERRAINTYPE terrainType) const override
+    {
         switch(terrainType) {
             case Terrain_Slab:          return FixPt(1,0);
             case Terrain_Sand:          return FixPt(1,5625);

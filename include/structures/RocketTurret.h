@@ -28,16 +28,16 @@ public:
     void init();
     virtual ~RocketTurret();
 
-    bool canAttack(const ObjectBase* object) const;
+    bool canAttack(const ObjectBase* object) const override;
 
-    virtual void attack();
+    void attack() override;
 
 protected:
     /**
         Used for updating things that are specific to that particular structure. Is called from
         StructureBase::update() before the check if this structure is still alive.
     */
-    virtual void updateStructureSpecificStuff();
+    void updateStructureSpecificStuff() override;
 
 private:
 };

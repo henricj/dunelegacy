@@ -32,9 +32,9 @@ public:
     BriefingMenu(int newHouse,int mission, int type);
     virtual ~BriefingMenu();
 
-    virtual void onMentatTextFinished();
+    void onMentatTextFinished() override;
 
-    virtual int showMenu();
+    int showMenu() override;
 
 private:
     std::string text;

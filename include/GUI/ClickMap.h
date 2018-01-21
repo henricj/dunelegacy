@@ -48,7 +48,8 @@ public:
         \param  pressed true = mouse button pressed, false = mouse button released
         \return true = click was processed by the widget, false = click was not processed by the widget
     */
-    virtual bool handleMouseLeft(Sint32 x, Sint32 y, bool pressed) {
+    bool handleMouseLeft(Sint32 x, Sint32 y, bool pressed) override
+    {
         if((x < 0) || (x >= getSize().x) || (y < 0) || (y >= getSize().y)) {
             return false;
         }

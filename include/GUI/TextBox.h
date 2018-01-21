@@ -52,7 +52,7 @@ public:
         Returns true.
         \return true = activatable, false = not activatable
     */
-    virtual inline bool isActivatable() const { return isEnabled(); };
+    inline bool isActivatable() const override { return isEnabled(); };
 
     /**
         This method sets a new text for this text box.
@@ -151,7 +151,8 @@ public:
         in a direction this method returns the size in that direction.
         \return the minimum size of this text box
     */
-    virtual Point getMinimumSize() const {
+    Point getMinimumSize() const override
+    {
         return GUIStyle::getInstance().getMinimumTextBoxSize(fontID);
     }
 
@@ -160,7 +161,8 @@ public:
         called if the new size is a valid size for this text box (See getMinumumSize).
         \param  newSize the new size of this progress bar
     */
-    virtual void resize(Point newSize) {
+    void resize(Point newSize) override
+    {
         resize(newSize.x,newSize.y);
     }
 
@@ -171,7 +173,8 @@ public:
         \param  width   the new width of this text box
         \param  height  the new height of this text box
     */
-    virtual void resize(Uint32 width, Uint32 height) {
+    void resize(Uint32 width, Uint32 height) override
+    {
         Widget::resize(width,height);
         invalidateTextures();
     }
@@ -180,7 +183,8 @@ public:
         This method updates all surfaces for this text box. This method will be called
         if this text box is resized or the text changes.
     */
-    virtual void updateTextures() {
+    void updateTextures() override
+    {
         if(pTextureWithoutCarret == nullptr || pTextureWithCarret == nullptr) {
             invalidateTextures();
 
@@ -193,7 +197,8 @@ public:
         Draws this text box to screen.
         \param  Position    Position to draw the text box to
     */
-    virtual void draw(Point position) {
+    void draw(Point position) override
+    {
         if(isVisible() == false) {
             return;
         }
@@ -228,7 +233,8 @@ public:
         \param  pressed true = mouse button pressed, false = mouse button released
         \return true = click was processed by the widget, false = click was not processed by the text box
     */
-    virtual bool handleMouseLeft(Sint32 x, Sint32 y, bool pressed) {
+    bool handleMouseLeft(Sint32 x, Sint32 y, bool pressed) override
+    {
         if((x < 0) || (x >= getSize().x) || (y < 0) || (y >= getSize().y)) {
             return false;
         }
@@ -249,7 +255,8 @@ public:
         \param  key the key that was pressed or released.
         \return true = key stroke was processed by the text box, false = key stroke was not processed by the text box
     */
-    virtual bool handleKeyPress(SDL_KeyboardEvent& key) {
+    bool handleKeyPress(SDL_KeyboardEvent& key) override
+    {
         if((isVisible() == false) || (isEnabled() == false) || (isActive() == false)) {
             return true;
         }
@@ -283,7 +290,8 @@ public:
         \param  textInput the text input that was performed.
         \return true = text input was processed by the widget, false = text input was not processed by the widget
     */
-    virtual inline bool handleTextInput(SDL_TextInputEvent& textInput) {
+    inline bool handleTextInput(SDL_TextInputEvent& textInput) override
+    {
         if((isVisible() == false) || (isEnabled() == false) || (isActive() == false)) {
             return true;
         }
@@ -325,7 +333,8 @@ protected:
     /**
         This method frees all textures that are used by this text box
     */
-    virtual void invalidateTextures() {
+    void invalidateTextures() override
+    {
         if(pTextureWithoutCarret != nullptr) {
             SDL_DestroyTexture(pTextureWithoutCarret);
             pTextureWithoutCarret = nullptr;

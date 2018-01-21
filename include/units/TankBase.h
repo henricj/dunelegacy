@@ -28,26 +28,26 @@ public:
     void init();
     virtual ~TankBase();
 
-    virtual void save(OutputStream& stream) const;
+    void save(OutputStream& stream) const override;
 
-    void navigate();
+    void navigate() override;
 
     inline int getTurretAngle() const { return lround(turretAngle); }
 
     void setTurretAngle(int newAngle);
 
-    virtual int getCurrentAttackAngle() const;
+    int getCurrentAttackAngle() const override;
 
 protected:
-    void engageTarget();
-    void targeting();
+    void engageTarget() override;
+    void targeting() override;
 
     /**
         When the unit is currently idling this method is called about every 5 seconds.
     */
-    virtual void idleAction();
+    void idleAction() override;
 
-    void turn();
+    void turn() override;
     void turnTurretLeft();
     void turnTurretRight();
 

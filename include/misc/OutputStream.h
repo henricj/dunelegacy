@@ -153,7 +153,7 @@ public:
         explicit eof(const std::string& str) throw () : str(str) { };
         virtual ~eof() throw () { };
 
-        virtual const char* what() const throw () { return str.c_str(); }
+        const char* what() const throw () override { return str.c_str(); }
 
     private:
         std::string str;
@@ -164,7 +164,7 @@ public:
         explicit error(const std::string& str) throw () : str(str) { };
         virtual ~error() throw () = default;
 
-        virtual const char* what() const throw () { return str.c_str(); };
+        const char* what() const throw () override { return str.c_str(); };
 
     private:
         std::string str;

@@ -40,14 +40,14 @@ public:
     const std::string& getLoadMapname() const { return loadMapname; };
     bool isLoadMapSingleplayer() const { return loadMapSingleplayer; };
 
-    virtual bool handleKeyPress(SDL_KeyboardEvent& key);
+    bool handleKeyPress(SDL_KeyboardEvent& key) override;
 
     /**
         This method is called, when the child window is about to be closed.
         This child window will be closed after this method returns.
         \param  pChildWindow    The child window that will be closed
     */
-    virtual void onChildWindowClose(Window* pChildWindow);
+    void onChildWindowClose(Window* pChildWindow) override;
 
     /**
         This static method creates a dynamic load map window.

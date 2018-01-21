@@ -103,7 +103,8 @@ public:
         but cannot deselect it
         \param bToggleState true = toggled, false = untoggled
     */
-    virtual void setToggleState(bool bToggleState) {
+    void setToggleState(bool bToggleState) override
+    {
         if(bToggleState != true) {
             return;
         }
@@ -135,7 +136,8 @@ public:
         Draws this button to screen. This method is called before drawOverlay().
         \param  position    Position to draw the button to
     */
-    virtual void draw(Point position) {
+    void draw(Point position) override
+    {
         if(isVisible() == false) {
             return;
         }
@@ -170,7 +172,8 @@ public:
         called if the new size is a valid size for this radio button (See getMinumumSize).
         \param  newSize the new size of this progress bar
     */
-    virtual void resize(Point newSize) {
+    void resize(Point newSize) override
+    {
         resize(newSize.x,newSize.y);
     }
 
@@ -180,7 +183,8 @@ public:
         \param  width   the new width of this radio button
         \param  height  the new height of this radio button
     */
-    virtual void resize(Uint32 width, Uint32 height) {
+    void resize(Uint32 width, Uint32 height) override
+    {
         invalidateTextures();
         Widget::resize(width,height);
     }
@@ -190,7 +194,8 @@ public:
         resized to a size smaller than this.
         \return the minimum size of this button
     */
-    virtual Point getMinimumSize() const {
+    Point getMinimumSize() const override
+    {
         return GUIStyle::getInstance().getMinimumRadioButtonSize(text);
     }
 protected:
@@ -199,7 +204,8 @@ protected:
         should be overwritten by subclasses if they like to defer texture creation as long as possible.
         This method should first check whether a renewal of the textures is necessary.
     */
-    virtual void updateTextures() {
+    void updateTextures() override
+    {
         Button::updateTextures();
 
         if(pUnpressedTexture == nullptr) {
@@ -217,7 +223,8 @@ protected:
     /**
         This method frees all textures that are used by this radio button
     */
-    virtual void invalidateTextures() {
+    void invalidateTextures() override
+    {
         Button::invalidateTextures();
 
         if((bFreeCheckedActiveTexture == true) && (pCheckedActiveTexture != nullptr)) {

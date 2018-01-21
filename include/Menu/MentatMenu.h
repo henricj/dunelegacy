@@ -36,11 +36,12 @@ public:
     explicit MentatMenu(int newHouse);
     virtual ~MentatMenu();
 
-    virtual void drawSpecificStuff();
+    void drawSpecificStuff() override;
 
-    virtual void update();
+    void update() override;
 
-    virtual bool doInput(SDL_Event &event) {
+    bool doInput(SDL_Event &event) override
+    {
         if(event.type == SDL_MOUSEBUTTONDOWN) {
             showNextMentatText();
         }

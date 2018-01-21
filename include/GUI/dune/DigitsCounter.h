@@ -57,7 +57,8 @@ public:
         Draws this widget to screen. This method is called before drawOverlay().
         \param  position    Position to draw the widget to
     */
-    virtual inline void draw(Point position) {
+    inline void draw(Point position) override
+    {
         SDL_Texture* tex = pGFXManager->getUIGraphic(UI_MissionSelect);
 
         SDL_Rect dest = calcDrawingRect(tex, position.x, position.y);
@@ -82,7 +83,8 @@ public:
         be resized to a size smaller than this.
         \return the minimum size of this digits counter
     */
-    virtual Point getMinimumSize() const {
+    Point getMinimumSize() const override
+    {
         SDL_Texture* tex = pGFXManager->getUIGraphic(UI_MissionSelect);
         if(tex != nullptr) {
             return getTextureSize(tex);

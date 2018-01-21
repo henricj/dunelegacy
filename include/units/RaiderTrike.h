@@ -28,11 +28,11 @@ public:
     void init();
     virtual ~RaiderTrike();
 
-    virtual void destroy();
+    void destroy() override;
 
-    virtual bool hasBumpyMovementOnRock() const { return true; }
+    bool hasBumpyMovementOnRock() const override { return true; }
 
-    void playAttackSound();
+    void playAttackSound() override;
 };
 
 #endif //RAIDERTRIKE_H

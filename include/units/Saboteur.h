@@ -28,18 +28,18 @@ public:
     void init();
     virtual ~Saboteur();
 
-    virtual void checkPos();
+    void checkPos() override;
 
     /**
         Updates this saboteur.
         \return true if this object still exists, false if it was destroyed
     */
-    virtual bool update();
+    bool update() override;
 
-    virtual void deploy(const Coord& newLocation);
-    bool canAttack(const ObjectBase* object) const;
+    void deploy(const Coord& newLocation) override;
+    bool canAttack(const ObjectBase* object) const override;
 
-    void destroy();
+    void destroy() override;
 };
 
 #endif // SABOTEUR_H

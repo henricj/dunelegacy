@@ -47,7 +47,8 @@ public:
         is removed. If pChildWidget is the child window then the child window is closed.
         \param  pChildWidget    widget to remove
     */
-    virtual void removeChildWidget(Widget* pChildWidget) {
+    void removeChildWidget(Widget* pChildWidget) override
+    {
         if(pChildWidget == pWindowWidget) {
             pWindowWidget = nullptr;
         } else if(pChildWidget == pChildWindow) {
@@ -116,7 +117,7 @@ public:
         \param  y y-coordinate (relative to the left top corner of the window)
         \param  insideOverlay   true, if (x,y) is inside an overlay and this widget may be behind it, false otherwise
     */
-    virtual void handleMouseMovement(Sint32 x, Sint32 y, bool insideOverlay = false);
+    void handleMouseMovement(Sint32 x, Sint32 y, bool insideOverlay = false) override;
 
     /**
         Handles a left mouse click.
@@ -125,7 +126,7 @@ public:
         \param  pressed true = mouse button pressed, false = mouse button released
         \return true = click was processed by the window, false = click was not processed by the window
     */
-    virtual bool handleMouseLeft(Sint32 x, Sint32 y, bool pressed);
+    bool handleMouseLeft(Sint32 x, Sint32 y, bool pressed) override;
 
     /**
         Handles a right mouse click.
@@ -134,7 +135,7 @@ public:
         \param  pressed true = mouse button pressed, false = mouse button released
         \return true = click was processed by the window, false = click was not processed by the window
     */
-    virtual bool handleMouseRight(Sint32 x, Sint32 y, bool pressed);
+    bool handleMouseRight(Sint32 x, Sint32 y, bool pressed) override;
 
     /**
         Handles mouse wheel scrolling.
@@ -144,21 +145,21 @@ public:
         \return true = the mouse wheel scrolling was processed by the widget, false = mouse wheel scrolling was not processed by the widget
     */
 
-    virtual bool handleMouseWheel(Sint32 x, Sint32 y, bool up);
+    bool handleMouseWheel(Sint32 x, Sint32 y, bool up) override;
 
     /**
         Handles a key stroke.
         \param  key the key that was pressed or released.
         \return true = key stroke was processed by the window, false = key stroke was not processed by the window
     */
-    virtual bool handleKeyPress(SDL_KeyboardEvent& key);
+    bool handleKeyPress(SDL_KeyboardEvent& key) override;
 
     /**
         Handles a text input event.
         \param  textInput the text input that was performed.
         \return true = text input was processed by the window, false = text input was not processed by the window
     */
-    virtual bool handleTextInput(SDL_TextInputEvent& textInput);
+    bool handleTextInput(SDL_TextInputEvent& textInput) override;
 
     /**
         Draws this window to screen. This method should be called every frame.
@@ -169,7 +170,7 @@ public:
         Draws this window to screen. This method should be called every frame.
         \param  position    Position to draw the window to. The position of the window is added to this.
     */
-    virtual void draw(Point position);
+    void draw(Point position) override;
 
     /**
         This method draws the parts of this window that must be drawn after all the other
@@ -182,7 +183,7 @@ public:
         widgets are drawn (e.g. tooltips). This method is called after draw().
         \param  Position    Position to draw the window to. The position of the window is added to this.
     */
-    virtual void drawOverlay(Point position);
+    void drawOverlay(Point position) override;
 
     /**
         That the current window widget. This is typically a container that hold all the widgets in this window.
@@ -208,7 +209,8 @@ public:
         This method resizes the window.
         \param  newSize the new size of this widget
     */
-    virtual inline void resize(Point newSize) {
+    inline void resize(Point newSize) override
+    {
         resize(newSize.x, newSize.y);
     };
 
@@ -217,14 +219,15 @@ public:
         \param  width   the new width of this widget
         \param  height  the new height of this widget
     */
-    virtual void resize(Uint32 width, Uint32 height);
+    void resize(Uint32 width, Uint32 height) override;
 
     /**
         This method is typically called by the child widget when the child widget
         requests to resizes its surrounding container. But windows do not resize if
         it's content changes.
     */
-    virtual void resizeAll() {
+    void resizeAll() override
+    {
         // Windows do not get bigger if content changes
         resize(getSize().x,getSize().y);
     };

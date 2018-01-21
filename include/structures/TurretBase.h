@@ -30,7 +30,7 @@ public:
     void init();
     virtual ~TurretBase();
 
-    virtual void save(OutputStream& stream) const;
+    void save(OutputStream& stream) const override;
 
     virtual void handleActionCommand(int xPos, int yPos);
 
@@ -57,7 +57,7 @@ protected:
         Used for updating things that are specific to that particular structure. Is called from
         StructureBase::update() before the check if this structure is still alive.
     */
-    virtual void updateStructureSpecificStuff();
+    void updateStructureSpecificStuff() override;
 
     // constant for all turrets of the same type
     int bulletType;             ///< The type of bullet used

@@ -36,9 +36,9 @@ public:
     */
     bool doDeploy();
 
-    bool canAttack(const ObjectBase* object) const;
+    bool canAttack(const ObjectBase* object) const override;
 
-    virtual void destroy();
+    void destroy() override;
 
     bool canDeploy() const {
         return canDeploy(getLocation().x, getLocation().y);

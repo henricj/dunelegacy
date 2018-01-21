@@ -29,15 +29,15 @@ public:
     void init();
     virtual ~Harvester();
 
-    virtual void save(OutputStream& stream) const;
+    void save(OutputStream& stream) const override;
 
-    void blitToScreen();
+    void blitToScreen() override;
 
-    void checkPos();
-    virtual void deploy(const Coord& newLocation);
-    void destroy();
-    virtual void drawSelectionBox();
-    void handleDamage(int damage, Uint32 damagerID, House* damagerOwner);
+    void checkPos() override;
+    void deploy(const Coord& newLocation) override;
+    void destroy() override;
+    void drawSelectionBox() override;
+    void handleDamage(int damage, Uint32 damagerID, House* damagerOwner) override;
 
     void handleReturnClick();
 
@@ -46,16 +46,16 @@ public:
     */
     void doReturn();
 
-    void move();
+    void move() override;
     void setAmountOfSpice(FixPoint newSpice);
     void setReturned();
 
-    void setDestination(int newX, int newY);
+    void setDestination(int newX, int newY) override;
     inline void setDestination(const Coord& location) { setDestination(location.x, location.y); }
 
-    void setTarget(const ObjectBase* newTarget);
+    void setTarget(const ObjectBase* newTarget) override;
 
-    bool canAttack(const ObjectBase* object) const;
+    bool canAttack(const ObjectBase* object) const override;
 
     FixPoint extractSpice(FixPoint extractionSpeed);
 
@@ -65,7 +65,7 @@ public:
 
 private:
 
-    virtual void setSpeeds();
+    void setSpeeds() override;
 
     // harvester state
     bool     harvestingMode;         ///< currently harvesting

@@ -28,14 +28,14 @@ public:
     void init();
     virtual ~Ornithopter();
 
-    void checkPos();
-    bool canAttack(const ObjectBase* object) const;
+    void checkPos() override;
+    bool canAttack(const ObjectBase* object) const override;
 
-    bool canPass(int xPos, int yPos) const;
+    bool canPass(int xPos, int yPos) const override;
 
-    void destroy();
+    void destroy() override;
 
-    void playAttackSound();
+    void playAttackSound() override;
 };
 
 #endif //ORNITHOPTER_H

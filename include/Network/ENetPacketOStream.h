@@ -76,14 +76,16 @@ public:
         return pPacket;
     }
 
-    void flush() {
+    void flush() override
+    {
         ;
     }
 
 
     // write operations
 
-    void writeString(const std::string& str) {
+    void writeString(const std::string& str) override
+    {
         ensureBufferSize(currentPos + str.length() + sizeof(Uint32));
 
         writeUint32(str.length());
@@ -95,35 +97,41 @@ public:
     }
 
 
-    void writeUint8(Uint8 x) {
+    void writeUint8(Uint8 x) override
+    {
         ensureBufferSize(currentPos + sizeof(Uint8));
         *((Uint8*) (packet->data + currentPos)) = x;
         currentPos += sizeof(Uint8);
     }
 
-    void writeUint16(Uint16 x) {
+    void writeUint16(Uint16 x) override
+    {
         ensureBufferSize(currentPos + sizeof(Uint16));
         *((Uint16*) (packet->data + currentPos)) = SDL_SwapLE16(x);
         currentPos += sizeof(Uint16);
     }
 
-    void writeUint32(Uint32 x) {
+    void writeUint32(Uint32 x) override
+    {
         ensureBufferSize(currentPos + sizeof(Uint32));
         *((Uint32*) (packet->data + currentPos)) = SDL_SwapLE32(x);
         currentPos += sizeof(Uint32);
     }
 
-    void writeUint64(Uint64 x) {
+    void writeUint64(Uint64 x) override
+    {
         ensureBufferSize(currentPos + sizeof(Uint64));
         *((Uint64*) (packet->data + currentPos)) = SDL_SwapLE64(x);
         currentPos += sizeof(Uint64);
     }
 
-    void writeBool(bool x) {
+    void writeBool(bool x) override
+    {
         writeUint8(x == true ? 1 : 0);
     }
 
-    void writeFloat(float x) {
+    void writeFloat(float x) override
+    {
         Uint32 tmp;
         memcpy(&tmp,&x,sizeof(Uint32)); // workaround for a strange optimization in gcc 4.1
         writeUint32(tmp);

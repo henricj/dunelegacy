@@ -31,26 +31,26 @@ public:
     void init();
     virtual ~GroundUnit();
 
-    virtual void save(OutputStream& stream) const;
+    void save(OutputStream& stream) const override;
 
-    virtual void assignToMap(const Coord& pos);
+    void assignToMap(const Coord& pos) override;
 
-    void playConfirmSound();
-    void playSelectSound();
+    void playConfirmSound() override;
+    void playSelectSound() override;
 
     void bookCarrier(UnitBase* newCarrier);
-    virtual void checkPos();
+    void checkPos() override;
 
     void doRequestCarryallDrop(int x, int y);
     bool requestCarryall();
-    void setPickedUp(UnitBase* newCarrier);
+    void setPickedUp(UnitBase* newCarrier) override;
 
     /**
         This method is called when the user clicks on the repair button for this unit
     */
     virtual void handleSendToRepairClick();
 
-    virtual void doRepair();
+    void doRepair() override;
 
     inline void setAwaitingPickup(bool status) { awaitingPickup = status; }
     inline bool isAwaitingPickup() const { return awaitingPickup; }
@@ -62,7 +62,8 @@ public:
         \param  terrainType the type to consider
         \return Returns a speed factor. Higher values mean slower.
     */
-    virtual FixPoint getTerrainDifficulty(TERRAINTYPE terrainType) const {
+    FixPoint getTerrainDifficulty(TERRAINTYPE terrainType) const override
+    {
         switch(terrainType) {
             case Terrain_Slab:          return FixPt(1,0);
             case Terrain_Sand:          return FixPt(1,375);
@@ -78,8 +79,8 @@ public:
     }
 
 protected:
-    virtual void move();
-    virtual void navigate();
+    void move() override;
+    void navigate() override;
 
     bool    awaitingPickup;     ///< Is this unit waiting for pickup?
     Uint32  bookedCarrier;      ///< What is the carrier if waiting for pickup?

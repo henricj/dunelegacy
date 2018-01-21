@@ -51,7 +51,8 @@ public:
         will be resized afterwards.
         \param pChildWidget Widget to remove
     */
-    virtual void removeChildWidget(Widget* pChildWidget) {
+    void removeChildWidget(Widget* pChildWidget) override
+    {
         for(auto iter = containedWidgets.begin(); iter != containedWidgets.end(); ++iter) {
             if(iter->pWidget == pChildWidget) {
                 setActiveChildWidget(false, pChildWidget);
@@ -81,7 +82,8 @@ public:
         \param  y               y-coordinate (relative to the left top corner of the container)
         \param  insideOverlay   true, if (x,y) is inside an overlay and this container may be behind it, false otherwise
     */
-    virtual void handleMouseMovement(Sint32 x, Sint32 y, bool insideOverlay) {
+    void handleMouseMovement(Sint32 x, Sint32 y, bool insideOverlay) override
+    {
         for(const WidgetData& widgetData : containedWidgets) {
             Point pos = getPosition(widgetData);
             widgetData.pWidget->handleMouseMovement(x - pos.x, y - pos.y, insideOverlay);
@@ -95,7 +97,8 @@ public:
         \param  pressed true = mouse button pressed, false = mouse button released
         \return true = click was processed by the container, false = click was not processed by the container
     */
-    virtual bool handleMouseLeft(Sint32 x, Sint32 y, bool pressed) {
+    bool handleMouseLeft(Sint32 x, Sint32 y, bool pressed) override
+    {
         if((isEnabled() == false) || (isVisible() == false)) {
             return false;
         }
@@ -115,7 +118,8 @@ public:
         \param  pressed true = mouse button pressed, false = mouse button released
         \return true = click was processed by the container, false = click was not processed by the container
     */
-    virtual bool handleMouseRight(Sint32 x, Sint32 y, bool pressed) {
+    bool handleMouseRight(Sint32 x, Sint32 y, bool pressed) override
+    {
         if((isEnabled() == false) || (isVisible() == false)) {
             return false;
         }
@@ -135,7 +139,8 @@ public:
         \param  up  true = mouse wheel up, false = mouse wheel down
         \return true = the mouse wheel scrolling was processed by the widget, false = mouse wheel scrolling was not processed by the widget
     */
-    virtual inline bool handleMouseWheel(Sint32 x, Sint32 y, bool up)  {
+    inline bool handleMouseWheel(Sint32 x, Sint32 y, bool up) override
+    {
         if((isEnabled() == false) || (isVisible() == false)) {
             return false;
         }
@@ -168,7 +173,8 @@ public:
         \param  key the key that was pressed or released.
         \return true = key stroke was processed by the container, false = key stroke was not processed by the container
     */
-    virtual bool handleKeyPress(SDL_KeyboardEvent& key) {
+    bool handleKeyPress(SDL_KeyboardEvent& key) override
+    {
         if((isEnabled() == false) || (isVisible() == false) || (isActive() == false)) {
             return false;
         }
@@ -190,7 +196,8 @@ public:
         \param  textInput the text input that was performed.
         \return true = text input was processed by the container, false = text input was not processed by the container
     */
-    virtual inline bool handleTextInput(SDL_TextInputEvent& textInput) {
+    inline bool handleTextInput(SDL_TextInputEvent& textInput) override
+    {
         if((isEnabled() == false) || (isVisible() == false) || (isActive() == false)) {
             return false;
         }
@@ -207,7 +214,8 @@ public:
         \param  y y-coordinate (relative to the left top corner of the container)
         \return true if (x,y) is in overlay of this container, false otherwise
     */
-    virtual inline bool handleMouseMovementOverlay(Sint32 x, Sint32 y) {
+    inline bool handleMouseMovementOverlay(Sint32 x, Sint32 y) override
+    {
         bool insideOverlay = false;
         for(const WidgetData& widgetData : containedWidgets) {
             Point pos = getPosition(widgetData);
@@ -224,7 +232,8 @@ public:
         \param  pressed true = mouse button pressed, false = mouse button released
         \return true = click was processed by the container, false = click was not processed by the container
     */
-    virtual bool handleMouseLeftOverlay(Sint32 x, Sint32 y, bool pressed) {
+    bool handleMouseLeftOverlay(Sint32 x, Sint32 y, bool pressed) override
+    {
         if((isEnabled() == false) || (isVisible() == false)) {
             return false;
         }
@@ -244,7 +253,8 @@ public:
         \param  pressed true = mouse button pressed, false = mouse button released
         \return true = click was processed by the container, false = click was not processed by the container
     */
-    virtual bool handleMouseRightOverlay(Sint32 x, Sint32 y, bool pressed) {
+    bool handleMouseRightOverlay(Sint32 x, Sint32 y, bool pressed) override
+    {
         if((isEnabled() == false) || (isVisible() == false)) {
             return false;
         }
@@ -264,7 +274,8 @@ public:
         \param  up  true = mouse wheel up, false = mouse wheel down
         \return true = the mouse wheel scrolling was processed by the widget, false = mouse wheel scrolling was not processed by the widget
     */
-    virtual inline bool handleMouseWheelOverlay(Sint32 x, Sint32 y, bool up)  {
+    inline bool handleMouseWheelOverlay(Sint32 x, Sint32 y, bool up) override
+    {
         if((isEnabled() == false) || (isVisible() == false)) {
             return false;
         }
@@ -295,7 +306,8 @@ public:
         \param  key the key that was pressed or released.
         \return true = key stroke was processed by the container, false = key stroke was not processed by the container
     */
-    virtual bool handleKeyPressOverlay(SDL_KeyboardEvent& key) {
+    bool handleKeyPressOverlay(SDL_KeyboardEvent& key) override
+    {
         if((isEnabled() == false) || (isVisible() == false) || (isActive() == false)) {
             return false;
         }
@@ -311,7 +323,8 @@ public:
         \param  textInput the text input that was performed.
         \return true = text input was processed by the container, false = text input was not processed by the container
     */
-    virtual inline bool handleTextInputOverlay(SDL_TextInputEvent& textInput) {
+    inline bool handleTextInputOverlay(SDL_TextInputEvent& textInput) override
+    {
         if((isEnabled() == false) || (isVisible() == false) || (isActive() == false)) {
             return false;
         }
@@ -326,7 +339,8 @@ public:
         Draws this container and it's children to screen. This method is called before drawOverlay().
         \param  position    Position to draw the container to
     */
-    virtual void draw(Point position) {
+    void draw(Point position) override
+    {
         if(isVisible() == false) {
             return;
         }
@@ -341,7 +355,8 @@ public:
         widgets are drawn (e.g. tooltips). This method is called after draw().
         \param  position    Position to draw the container to
     */
-    virtual void drawOverlay(Point position) {
+    void drawOverlay(Point position) override
+    {
         if(isVisible() == false) {
             return;
         }
@@ -356,7 +371,8 @@ public:
         called if the new size is a valid size for this container (See getMinumumSize).
         \param  newSize the new size of this progress bar
     */
-    virtual void resize(Point newSize) {
+    void resize(Point newSize) override
+    {
         resize(newSize.x,newSize.y);
     }
 
@@ -366,7 +382,8 @@ public:
         \param  width   the new width of this container
         \param  height  the new height of this container
     */
-    virtual void resize(Uint32 width, Uint32 height) {
+    void resize(Uint32 width, Uint32 height) override
+    {
         Widget::resize(width,height);
     }
 
@@ -388,7 +405,8 @@ public:
         Sets this container and its children active. The parent widgets are also activated and the
         currently widget is set to inactive.
     */
-    virtual void setActive() {
+    void setActive() override
+    {
         if(pActiveChildWidget == nullptr) {
             activateFirstActivatableWidget();
         }
@@ -399,7 +417,8 @@ public:
     /**
         Sets this container and its children inactive. The next activatable widget is activated.
     */
-    virtual void setInactive() {
+    void setInactive() override
+    {
         if(pActiveChildWidget != nullptr) {
             pActiveChildWidget->setActive(false);
             pActiveChildWidget = nullptr;
@@ -412,7 +431,8 @@ public:
         Returns whether one of this container's children can be set active.
         \return true = activatable, false = not activatable
     */
-    virtual inline bool isActivatable() const {
+    inline bool isActivatable() const override
+    {
         if(isEnabled() == false) {
             return false;
         }
@@ -430,7 +450,7 @@ public:
         Returns whether this widget is an container.
         \return true = container, false = any other widget
     */
-    virtual inline bool isContainer() const { return true; }
+    inline bool isContainer() const override { return true; }
 
 protected:
     /**
@@ -439,7 +459,8 @@ protected:
         widget.
         \param  bActive true = activate this widget, false = deactiviate this widget
     */
-    virtual void setActive(bool bActive) {
+    void setActive(bool bActive) override
+    {
         if(pActiveChildWidget != nullptr) {
             pActiveChildWidget->setActive(bActive);
             if(bActive == false) {
@@ -455,7 +476,8 @@ protected:
         \param  active  true = activate, false = deactivate
         \param  childWidget the widget to activate/deactivate
     */
-    virtual void setActiveChildWidget(bool active, Widget* childWidget) {
+    void setActiveChildWidget(bool active, Widget* childWidget) override
+    {
         if(childWidget == nullptr) {
             return;
         }

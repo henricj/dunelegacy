@@ -49,7 +49,7 @@ private:
 
     void    saveConfiguration2File();
 
-    virtual void onChildWindowClose(Window* pChildWindow);
+    void onChildWindowClose(Window* pChildWindow) override;
 
     /**
         This method determines all available suitable screen resolutions.

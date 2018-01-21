@@ -28,19 +28,19 @@ public:
     void init();
     virtual ~Frigate();
 
-    void save(OutputStream& stream) const;
+    void save(OutputStream& stream) const override;
 
-    void checkPos();
+    void checkPos() override;
 
-    bool canPass(int xPos, int yPos) const;
+    bool canPass(int xPos, int yPos) const override;
 
     /**
         Updates this frigate.
         \return true if this object still exists, false if it was destroyed
     */
-    bool update();
+    bool update() override;
 
-    virtual void deploy(const Coord& newLocation);
+    void deploy(const Coord& newLocation) override;
 
 protected:
     virtual void turn();

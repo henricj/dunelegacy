@@ -68,7 +68,7 @@ public:
         This child window will be closed after this method returns.
         \param  pChildWindow    The child window that will be closed
     */
-    virtual void onChildWindowClose(Window* pChildWindow);
+    void onChildWindowClose(Window* pChildWindow) override;
 
 private:
     void onMapPropertiesChanged();

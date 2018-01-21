@@ -53,7 +53,8 @@ public:
         Draws this widget to screen. This method is called before drawOverlay().
         \param  position    Position to draw the widget to
     */
-    virtual inline void draw(Point position) {
+    inline void draw(Point position) override
+    {
         if(pAnim == nullptr) {
             return;
         }
@@ -71,7 +72,8 @@ public:
         be resized to a size smaller than this.
         \return the minimum size of this animation label
     */
-    virtual Point getMinimumSize() const {
+    Point getMinimumSize() const override
+    {
         SDL_Surface* surface = pAnim->getFrame();
         if(surface != nullptr) {
             return Point((Sint32) surface->w, (Sint32) surface->h);

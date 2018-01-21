@@ -35,14 +35,14 @@ public:
         \param  key the key that was pressed or released.
         \return true = key stroke was processed by the window, false = key stroke was not processed by the window
     */
-    virtual bool handleKeyPress(SDL_KeyboardEvent& key);
+    bool handleKeyPress(SDL_KeyboardEvent& key) override;
 
     /**
         This method is called, when the child window is about to be closed.
         This child window will be closed after this method returns.
         \param  pChildWindow    The child window that will be closed
     */
-    virtual void onChildWindowClose(Window* pChildWindow);
+    void onChildWindowClose(Window* pChildWindow) override;
 
     void onResume();
     void onSettings();

@@ -44,7 +44,7 @@ public:
         Draws this window to screen. This method should be called every frame.
         \param  position    Position to draw the window to. The position of the window is added to this.
     */
-    virtual void draw(Point position);
+    void draw(Point position) override;
 
     /**
         Checks whether the newticker currently shows a message

@@ -43,18 +43,18 @@ public:
     void init();
     virtual ~Wall();
 
-    virtual void save(OutputStream& stream) const;
+    void save(OutputStream& stream) const override;
 
-    void destroy();
+    void destroy() override;
 
     /**
         Can this structure be captured by infantry units?
         \return true, if this structure can be captured, false otherwise
     */
-    virtual bool canBeCaptured() const { return false; };
+    bool canBeCaptured() const override { return false; };
 
     inline void setLocation(const Coord& location) { setLocation(location.x, location.y); }
-    virtual void setLocation(int xPos, int yPos);
+    void setLocation(int xPos, int yPos) override;
 
 private:
     inline void setWallTile(int newTile) {

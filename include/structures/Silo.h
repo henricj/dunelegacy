@@ -28,7 +28,7 @@ public:
     void init();
     virtual ~Silo();
 
-    virtual ObjectInterface* getInterfaceContainer();
+    ObjectInterface* getInterfaceContainer() override;
 
 };
 

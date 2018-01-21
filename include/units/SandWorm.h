@@ -30,37 +30,38 @@ public:
     void init();
     virtual ~Sandworm();
 
-    virtual void save(OutputStream& stream) const;
+    void save(OutputStream& stream) const override;
 
-    virtual void deploy(const Coord& newLocation);
+    void deploy(const Coord& newLocation) override;
 
-    void assignToMap(const Coord& pos);
-    void attack();
-    void blitToScreen();
-    void checkPos();
+    void assignToMap(const Coord& pos) override;
+    void attack() override;
+    void blitToScreen() override;
+    void checkPos() override;
 
     inline void setLocation(const Coord& location) { setLocation(location.x, location.y); }
-    void setLocation(int xPos, int yPos);
+    void setLocation(int xPos, int yPos) override;
 
-    virtual void setTarget(const ObjectBase* newTarget);
+    void setTarget(const ObjectBase* newTarget) override;
 
-    virtual void handleDamage(int damage, Uint32 damagerID, House* damagerOwner);
+    void handleDamage(int damage, Uint32 damagerID, House* damagerOwner) override;
 
     /**
         Updates this sandworm.
         \return true if this object still exists, false if it was destroyed
     */
-    virtual bool update();
+    bool update() override;
 
-    bool canAttack(const ObjectBase* object) const;
-    bool canPass(int xPos, int yPos) const;
+    bool canAttack(const ObjectBase* object) const override;
+    bool canPass(int xPos, int yPos) const override;
     inline int getSleepTimer() const { return sleepTimer; }
 
-    virtual int getCurrentAttackAngle() const;
+    int getCurrentAttackAngle() const override;
 
-    void playAttackSound();
+    void playAttackSound() override;
 
-    virtual FixPoint getTerrainDifficulty(TERRAINTYPE terrainType) const {
+    FixPoint getTerrainDifficulty(TERRAINTYPE terrainType) const override
+    {
         switch(terrainType) {
             case Terrain_Slab:          return FixPt(1,0);
             case Terrain_Sand:          return FixPt(1,25);
@@ -78,8 +79,8 @@ public:
     bool isEating() const { return (drawnFrame != INVALID); }
 
 protected:
-    const ObjectBase* findTarget() const;
-    void engageTarget();
+    const ObjectBase* findTarget() const override;
+    void engageTarget() override;
     void sleep();
     bool sleepOrDie();
 

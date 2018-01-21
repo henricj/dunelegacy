@@ -757,7 +757,7 @@ class FixedBuffer : public fmt::Buffer<Char> {
   FixedBuffer(Char *array, std::size_t size) : fmt::Buffer<Char>(array, size) {}
 
  protected:
-  FMT_API void grow(std::size_t size);
+  FMT_API void grow(std::size_t size) override;
 };
 
 template <typename Char>

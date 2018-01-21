@@ -55,7 +55,7 @@ public:
 
     ChangeEventList getChangeEventListForNewPlayer(const std::string& newPlayerName);
 
-    virtual void update();
+    void update() override;
 
 private:
     ChangeEventList getChangeEventList();

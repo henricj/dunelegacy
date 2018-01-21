@@ -67,7 +67,7 @@ public:
         Draws the radar to screen. This method is called before drawOverlay().
         \param  Position    Position to draw the radar to
     */
-    virtual inline void draw(Point position) { ; };
+    inline void draw(Point position) override { ; };
 
 
     /**
@@ -148,7 +148,7 @@ public:
         in a direction this method returns the size in that direction.
         \return the minimum size of this widget
     */
-    virtual Point getMinimumSize() const { return Point(RADARWIDTH + (2 * RADARVIEW_BORDERTHICKNESS),RADARHEIGHT + (2 * RADARVIEW_BORDERTHICKNESS)); };
+    Point getMinimumSize() const override { return Point(RADARWIDTH + (2 * RADARVIEW_BORDERTHICKNESS),RADARHEIGHT + (2 * RADARVIEW_BORDERTHICKNESS)); };
 
 
     /**
@@ -157,7 +157,8 @@ public:
         \param  y               y-coordinate (relative to the left top corner of the widget)
         \param  insideOverlay   true, if (x,y) is inside an overlay and this widget may be behind it, false otherwise
     */
-    virtual void handleMouseMovement(Sint32 x, Sint32 y, bool insideOverlay) {
+    void handleMouseMovement(Sint32 x, Sint32 y, bool insideOverlay) override
+    {
         if(bRadarInteraction && isOnRadar(x,y)) {
             if(pOnRadarClick) {
                 bRadarInteraction = pOnRadarClick(getWorldCoords(x,y), false, true);
@@ -173,7 +174,8 @@ public:
         \param  pressed true = mouse button pressed, false = mouse button released
         \return true = click was processed by the widget, false = click was not processed by the widget
     */
-    virtual bool handleMouseLeft(Sint32 x, Sint32 y, bool pressed) {
+    bool handleMouseLeft(Sint32 x, Sint32 y, bool pressed) override
+    {
         if(pressed) {
             if(isOnRadar(x,y)) {
                 if(pOnRadarClick) {
@@ -196,7 +198,8 @@ public:
         \param  pressed true = mouse button pressed, false = mouse button released
         \return true = click was processed by the widget, false = click was not processed by the widget
     */
-    virtual bool handleMouseRight(Sint32 x, Sint32 y, bool pressed) {
+    bool handleMouseRight(Sint32 x, Sint32 y, bool pressed) override
+    {
         if(pressed) {
             if(isOnRadar(x,y)) {
                 if(pOnRadarClick) {

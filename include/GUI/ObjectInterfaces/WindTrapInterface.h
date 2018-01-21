@@ -58,7 +58,8 @@ protected:
         If the object doesn't exists anymore then update returns false.
         \return true = everything ok, false = the object container should be removed
     */
-    virtual bool update() {
+    bool update() override
+    {
         ObjectBase* pObject = currentGame->getObjectManager().getObject(objectID);
         if(pObject == nullptr) {
             return false;

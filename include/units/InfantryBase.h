@@ -29,7 +29,7 @@ public:
     void init();
     virtual ~InfantryBase();
 
-    void save(OutputStream& stream) const;
+    void save(OutputStream& stream) const override;
 
     /**
         This method is called when an unit is ordered to capture
@@ -50,26 +50,26 @@ public:
     */
     virtual void doCaptureStructure(const StructureBase* pStructure);
 
-    void assignToMap(const Coord& pos);
-    void blitToScreen();
-    virtual void checkPos();
-    void destroy();
-    void move();
+    void assignToMap(const Coord& pos) override;
+    void blitToScreen() override;
+    void checkPos() override;
+    void destroy() override;
+    void move() override;
 
     inline void setLocation(const Coord& location) { setLocation(location.x, location.y); }
-    void setLocation(int xPos, int yPos);
+    void setLocation(int xPos, int yPos) override;
 
     void squash();
 
-    void playConfirmSound();
-    void playSelectSound();
+    void playConfirmSound() override;
+    void playSelectSound() override;
 
-    bool canPass(int xPos, int yPos) const;
+    bool canPass(int xPos, int yPos) const override;
 
     inline int getTilePosition() const { return tilePosition; }
 
 protected:
-    void setSpeeds();
+    void setSpeeds() override;
 
     // infantry state
     Sint8   tilePosition;       ///< The position in the current tile (0 to 4)

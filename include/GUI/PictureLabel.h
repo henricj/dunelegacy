@@ -76,7 +76,8 @@ public:
         be resized to a size smaller than this.
         \return the minimum size of this picture label
     */
-    virtual Point getMinimumSize() const {
+    Point getMinimumSize() const override
+    {
         if(pTexture != nullptr) {
             return getTextureSize(pTexture);
         } else {
@@ -88,7 +89,8 @@ public:
         Draws this button to screen. This method is called before drawOverlay().
         \param  position    Position to draw the button to
     */
-    void draw(Point position) {
+    void draw(Point position) override
+    {
         if(isVisible() == false) {
             return;
         }

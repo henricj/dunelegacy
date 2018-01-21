@@ -78,7 +78,8 @@ public:
         in a direction this method returns the size in that direction.
         \return the minimum size of this container
     */
-    virtual Point getMinimumSize() const {
+    Point getMinimumSize() const override
+    {
         Point p(0,0);
         for(const VBox_WidgetData& widgetData : containedWidgets) {
             p.x = std::max(p.x,widgetData.pWidget->getMinimumSize().x);
@@ -96,7 +97,8 @@ public:
         called if the new size is a valid size for this container (See getMinumumSize).
         \param  newSize the new size of this progress bar
     */
-    virtual void resize(Point newSize) {
+    void resize(Point newSize) override
+    {
         resize(newSize.x,newSize.y);
     }
 
@@ -107,7 +109,8 @@ public:
         \param  width   the new width of this container
         \param  height  the new height of this container
     */
-    virtual void resize(Uint32 width, Uint32 height) {
+    void resize(Uint32 width, Uint32 height) override
+    {
         Sint32 availableHeight = height;
 
         int numRemainingWidgets = containedWidgets.size();
@@ -195,7 +198,8 @@ protected:
         \param widgetData   the widget data to get the position from.
         \return The position of the left upper corner
     */
-    virtual Point getPosition(const VBox_WidgetData& widgetData) const {
+    Point getPosition(const VBox_WidgetData& widgetData) const override
+    {
         Point p(0,0);
         for(const VBox_WidgetData& tmpWidgetData : containedWidgets) {
             if(widgetData.pWidget == tmpWidgetData.pWidget) {

@@ -37,7 +37,7 @@ public:
         Returns the minimum size of this spacer. That is (0,0).
         \return the minimum size of this widget
     */
-    virtual Point getMinimumSize() const { return Point(0,0); };
+    Point getMinimumSize() const override { return Point(0,0); };
 
     /**
         This static method creates a dynamic spacer object.
@@ -78,7 +78,8 @@ public:
         Returns the minimum size of this spacer. The returned size is (width,0).
         \return the minimum size of this spacer
     */
-    virtual Point getMinimumSize() const {
+    Point getMinimumSize() const override
+    {
         return Point(width,0);
     }
 
@@ -125,7 +126,8 @@ public:
         Returns the minimum size of this spacer. The returned size is (0,height).
         \return the minimum size of this spacer
     */
-    virtual Point getMinimumSize() const {
+    Point getMinimumSize() const override
+    {
         return Point(0,height);
     }
 

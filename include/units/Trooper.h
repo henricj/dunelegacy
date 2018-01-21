@@ -28,11 +28,11 @@ public:
     void init();
     virtual ~Trooper();
 
-    bool canAttack(const ObjectBase* object) const;
+    bool canAttack(const ObjectBase* object) const override;
 
-    virtual bool hasBumpyMovementOnRock() const { return true; }
+    bool hasBumpyMovementOnRock() const override { return true; }
 
-    void playAttackSound();
+    void playAttackSound() override;
 };
 
 #endif //TROOPER_H

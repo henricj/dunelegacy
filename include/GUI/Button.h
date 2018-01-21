@@ -39,14 +39,15 @@ public:
         Returns that this button can be set active.
         \return true(= activatable)
     */
-    virtual inline bool isActivatable() const { return isEnabled(); };
+    inline bool isActivatable() const override { return isEnabled(); };
 
     /**
         Enable or disable this button. A disabled button is not responding
         to clicks and key strokes and might look different.
         \param  bEnabled    true = enable button, false = disable button
     */
-    virtual inline void setEnabled(bool bEnabled) {
+    inline void setEnabled(bool bEnabled) override
+    {
         Widget::setEnabled(bEnabled);
         if(bEnabled == false) {
             bPressed = false;
@@ -128,7 +129,7 @@ public:
         \param  y               y-coordinate (relative to the left top corner of the widget)
         \param  insideOverlay   true, if (x,y) is inside an overlay and this widget may be behind it, false otherwise
     */
-    virtual void handleMouseMovement(Sint32 x, Sint32 y, bool insideOverlay);
+    void handleMouseMovement(Sint32 x, Sint32 y, bool insideOverlay) override;
 
     /**
         Handles a left mouse click.
@@ -137,7 +138,7 @@ public:
         \param  pressed true = mouse button pressed, false = mouse button released
         \return true = click was processed by the widget, false = click was not processed by the widget
     */
-    virtual bool handleMouseLeft(Sint32 x, Sint32 y, bool pressed);
+    bool handleMouseLeft(Sint32 x, Sint32 y, bool pressed) override;
 
     /**
         Handles a key stroke. This method is neccessary for controlling an application
@@ -145,19 +146,19 @@ public:
         \param  key the key that was pressed or released.
         \return true = key stroke was processed by the widget, false = key stroke was not processed by the widget
     */
-    virtual bool handleKeyPress(SDL_KeyboardEvent& key);
+    bool handleKeyPress(SDL_KeyboardEvent& key) override;
 
     /**
         Draws this button to screen. This method is called before drawOverlay().
         \param  position    Position to draw the button to
     */
-    virtual void draw(Point position);
+    void draw(Point position) override;
 
     /**
         This method draws the tooltip for this button. This method is called after draw().
         \param  position    Position to draw the widget to
     */
-    virtual void drawOverlay(Point position);
+    void drawOverlay(Point position) override;
 
 protected:
     /**
@@ -196,7 +197,7 @@ protected:
     /**
         This method frees all textures that are used by this button
     */
-    virtual void invalidateTextures();
+    void invalidateTextures() override;
 
     std::string tooltipText = "";          ///< the tooltip text
     SDL_Texture* tooltipTexture = nullptr; ///< the tooltip texture

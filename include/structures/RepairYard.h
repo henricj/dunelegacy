@@ -31,9 +31,9 @@ public:
     void init();
     virtual ~RepairYard();
 
-    virtual void save(OutputStream& stream) const;
+    void save(OutputStream& stream) const override;
 
-    virtual ObjectInterface* getInterfaceContainer();
+    ObjectInterface* getInterfaceContainer() override;
 
     void deployRepairUnit(Carryall* pCarryall = nullptr);
 
@@ -50,7 +50,7 @@ protected:
         Used for updating things that are specific to that particular structure. Is called from
         StructureBase::update() before the check if this structure is still alive.
     */
-    virtual void updateStructureSpecificStuff();
+    void updateStructureSpecificStuff() override;
 
 private:
     bool            repairingAUnit; ///< Currently repairing?

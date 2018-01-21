@@ -28,15 +28,15 @@ public:
     void init();
     virtual ~SonicTank();
 
-    void blitToScreen();
+    void blitToScreen() override;
 
-    virtual void destroy();
+    void destroy() override;
 
-    void handleDamage(int damage, Uint32 damagerID, House* damagerOwner);
+    void handleDamage(int damage, Uint32 damagerID, House* damagerOwner) override;
 
-    bool canAttack(const ObjectBase* object) const;
+    bool canAttack(const ObjectBase* object) const override;
 
-    void playAttackSound();
+    void playAttackSound() override;
 
 private:
     // drawing information

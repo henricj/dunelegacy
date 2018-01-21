@@ -28,11 +28,11 @@ public:
     void init();
     virtual ~Deviator();
 
-    void blitToScreen();
-    virtual void destroy();
-    virtual bool canAttack(const ObjectBase* object) const;
+    void blitToScreen() override;
+    void destroy() override;
+    bool canAttack(const ObjectBase* object) const override;
 
-    void playAttackSound();
+    void playAttackSound() override;
 
 private:
     // drawing information

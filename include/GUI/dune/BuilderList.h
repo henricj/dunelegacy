@@ -42,7 +42,7 @@ public:
         \param  y               y-coordinate (relative to the left top corner of the widget)
         \param  insideOverlay   true, if (x,y) is inside an overlay and this widget may be behind it, false otherwise
     */
-    virtual void handleMouseMovement(Sint32 x, Sint32 y, bool insideOverlay);
+    void handleMouseMovement(Sint32 x, Sint32 y, bool insideOverlay) override;
 
     /**
         Handles a left mouse click.
@@ -51,7 +51,7 @@ public:
         \param  pressed true = mouse button pressed, false = mouse button released
         \return true = click was processed by the widget, false = click was not processed by the widget
     */
-    virtual bool handleMouseLeft(Sint32 x, Sint32 y, bool pressed);
+    bool handleMouseLeft(Sint32 x, Sint32 y, bool pressed) override;
 
     /**
         Handles a right mouse click.
@@ -60,7 +60,7 @@ public:
         \param  pressed true = mouse button pressed, false = mouse button released
         \return true = click was processed by the widget, false = click was not processed by the widget
     */
-    virtual bool handleMouseRight(Sint32 x, Sint32 y, bool pressed);
+    bool handleMouseRight(Sint32 x, Sint32 y, bool pressed) override;
 
     /**
         Handles mouse wheel scrolling.
@@ -69,34 +69,35 @@ public:
         \param  up  true = mouse wheel up, false = mouse wheel down
         \return true = the mouse wheel scrolling was processed by the widget, false = mouse wheel scrolling was not processed by the widget
     */
-    virtual bool handleMouseWheel(Sint32 x, Sint32 y, bool up);
+    bool handleMouseWheel(Sint32 x, Sint32 y, bool up) override;
 
     /**
         Handles a key stroke.
         \param  key the key that was pressed or released.
         \return true = key stroke was processed by the widget, false = key stroke was not processed by the widget
     */
-    virtual bool handleKeyPress(SDL_KeyboardEvent& key);
+    bool handleKeyPress(SDL_KeyboardEvent& key) override;
 
     /**
         Draws this widget to screen. This method is called before drawOverlay().
         \param  Position    Position to draw the widget to
     */
-    virtual void draw(Point position);
+    void draw(Point position) override;
 
     /**
         This method draws the parts of this window that must be drawn after all the other
         widgets are drawn (e.g. tooltips). This method is called after draw().
         \param  Position    Position to draw the window to. The position of the window is added to this.
     */
-    virtual void drawOverlay(Point position);
+    void drawOverlay(Point position) override;
 
     /**
         This method resizes the builder list. This method should only
         called if the new size is a valid size for this builder list (See getMinumumSize).
         \param  newSize the new size of this progress bar
     */
-    virtual void resize(Point newSize) {
+    void resize(Point newSize) override
+    {
         resize(newSize.x,newSize.y);
     }
 
@@ -107,7 +108,7 @@ public:
         \param  width   the new width of this widget
         \param  height  the new height of this widget
     */
-    virtual void resize(Uint32 width, Uint32 height);
+    void resize(Uint32 width, Uint32 height) override;
 
 
     /**
@@ -116,7 +117,8 @@ public:
         in a direction this method returns the size in that direction.
         \return the minimum size of this widget
     */
-    virtual Point getMinimumSize() const {
+    Point getMinimumSize() const override
+    {
         return Point(   WIDGET_WIDTH,
                         BUILDERBTN_HEIGHT*3 + (ARROWBTN_HEIGHT+BUILDERBTN_SPACING)*2 + BUILDERBTN_SPACING*4 + ORDERBTN_HEIGHT + BUILDERBTN_SPACING);
     };

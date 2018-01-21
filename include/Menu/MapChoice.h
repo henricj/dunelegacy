@@ -42,7 +42,7 @@ public:
     MapChoice(int newHouse, unsigned int lastMission, Uint32 alreadyPlayedRegions);
     virtual ~MapChoice();
 
-    virtual int showMenu();
+    int showMenu() override;
 
     inline int getSelectedMission() const {
         int regionIndex;
@@ -65,8 +65,8 @@ public:
 
     inline Uint32 getAlreadyPlayedRegions() const { return alreadyPlayedRegions; }
 
-    void drawSpecificStuff();
-    bool doInput(SDL_Event &event);
+    void drawSpecificStuff() override;
+    bool doInput(SDL_Event &event) override;
 
 private:
     void createMapSurfaceWithPieces(unsigned int scenario);

@@ -60,9 +60,9 @@ public:
 
     void init();
     virtual ~HumanPlayer();
-    virtual void save(OutputStream& stream) const;
+    void save(OutputStream& stream) const override;
 
-    virtual void update();
+    void update() override;
 
     Uint32 getAlreadyShownTutorialHints() const {
         return alreadyShownTutorialHints;

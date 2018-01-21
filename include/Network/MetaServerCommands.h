@@ -51,7 +51,8 @@ public:
        mapName(mapName), numPlayers(numPlayers), maxPlayers(maxPlayers) {
     }
 
-    bool operator==(const MetaServerCommand& metaServerCommand) const {
+    bool operator==(const MetaServerCommand& metaServerCommand) const override
+    {
         const MetaServerAdd* pMetaServerAdd = dynamic_cast<const MetaServerAdd*>(&metaServerCommand);
 
         if(pMetaServerAdd == nullptr) {
@@ -82,7 +83,8 @@ public:
        mapName(mapName), numPlayers(numPlayers), maxPlayers(maxPlayers) {
     }
 
-    bool operator==(const MetaServerCommand& metaServerCommand) const {
+    bool operator==(const MetaServerCommand& metaServerCommand) const override
+    {
         const MetaServerUpdate* pMetaServerUpdate = dynamic_cast<const MetaServerUpdate*>(&metaServerCommand);
 
         if(pMetaServerUpdate == nullptr) {
@@ -112,7 +114,8 @@ public:
      : MetaServerCommand(METASERVERCOMMAND_REMOVE), serverPort(serverPort), secret(secret) {
     }
 
-    bool operator==(const MetaServerCommand& metaServerCommand) const {
+    bool operator==(const MetaServerCommand& metaServerCommand) const override
+    {
         const MetaServerRemove* pMetaServerRemove = dynamic_cast<const MetaServerRemove*>(&metaServerCommand);
 
         if(pMetaServerRemove == nullptr) {

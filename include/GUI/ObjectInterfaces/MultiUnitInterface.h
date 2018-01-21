@@ -294,7 +294,8 @@ protected:
         If the object doesn't exists anymore then update returns false.
         \return true = everything ok, false = the object container should be removed
     */
-    virtual bool update() {
+    bool update() override
+    {
         if(currentGame->getSelectedList().empty() == true) {
             return false;
         }

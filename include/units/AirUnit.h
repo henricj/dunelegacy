@@ -28,18 +28,18 @@ public:
     void init();
     virtual ~AirUnit();
 
-    virtual void save(OutputStream& stream) const;
+    void save(OutputStream& stream) const override;
 
-    void blitToScreen();
+    void blitToScreen() override;
 
-    void playConfirmSound() { ; };
-    void playSelectSound() { ; };
+    void playConfirmSound() override { ; };
+    void playSelectSound() override { ; };
 
-    virtual void destroy();
+    void destroy() override;
 
-    void assignToMap(const Coord& pos);
-    virtual void checkPos();
-    bool canPass(int xPos, int yPos) const;
+    void assignToMap(const Coord& pos) override;
+    void checkPos() override;
+    bool canPass(int xPos, int yPos) const override;
 
     virtual FixPoint getMaxSpeed() const {
         return currentMaxSpeed;

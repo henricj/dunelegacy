@@ -37,16 +37,16 @@ public:
       currType = TYPE_OPL2;
     };
 
-  void update(short *buf, int samples)
-    {
+  void update(short *buf, int samples) override
+  {
       //      if(use16bit) samples *= 2;
       if(stereo) samples *= 2;
       opl.adlib_getsample(buf, samples);
     }
 
   // template methods
-  void write(int reg, int val)
-    {
+  void write(int reg, int val) override
+  {
       if(currChip != 0)
     return;
 
@@ -54,7 +54,7 @@ public:
       opl.adlib_write(opl.index, val, 0);
     };
 
-  void init() {};
+  void init() override {};
 
 private:
   bool      stereo;

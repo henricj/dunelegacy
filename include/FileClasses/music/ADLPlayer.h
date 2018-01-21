@@ -36,30 +36,30 @@ public:
         change type of current music
         @param musicType type of music to be played
     */
-    void changeMusic(MUSICTYPE musicType);
+    void changeMusic(MUSICTYPE musicType) override;
 
     /*!
         Toggle the music on and off
     */
-    void toggleSound();
+    void toggleSound() override;
 
     /**
         Returns whether music is currently being played
         \return true = currently playing, false = not playing
     */
-    bool isMusicPlaying();
+    bool isMusicPlaying() override;
 
     /*!
         turns music playing on or off
         @param value when true the function turns music on
     */
-    void setMusic(bool value);
+    void setMusic(bool value) override;
 
     /**
         Sets the volume of the music channel
         \param  newVolume   the new volume [0;MIX_MAX_VOLUME]
     */
-    virtual void setMusicVolume(int newVolume);
+    void setMusicVolume(int newVolume) override;
 
 private:
     SoundAdlibPC* pSoundAdlibPC;

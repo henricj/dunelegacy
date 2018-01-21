@@ -28,9 +28,9 @@ public:
     void init();
     virtual ~Palace();
 
-    virtual void save(OutputStream& stream) const;
+    void save(OutputStream& stream) const override;
 
-    virtual ObjectInterface* getInterfaceContainer();
+    ObjectInterface* getInterfaceContainer() override;
 
     void handleSpecialClick();
 
@@ -53,7 +53,7 @@ public:
         Can this structure be captured by infantry units?
         \return true, if this structure can be captured, false otherwise
     */
-    virtual bool canBeCaptured() const { return false; };
+    bool canBeCaptured() const override { return false; };
 
     int getPercentComplete() const {
         return specialWeaponTimer*100/getMaxSpecialWeaponTimer();
@@ -79,7 +79,7 @@ protected:
         Used for updating things that are specific to that particular structure. Is called from
         StructureBase::update() before the check if this structure is still alive.
     */
-    virtual void updateStructureSpecificStuff();
+    void updateStructureSpecificStuff() override;
 
 private:
     Sint32  specialWeaponTimer;       ///< When is the special weapon ready?

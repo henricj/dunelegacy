@@ -29,11 +29,11 @@ public:
     void init();
     virtual ~Soldier();
 
-    bool canAttack(const ObjectBase* object) const;
+    bool canAttack(const ObjectBase* object) const override;
 
-    virtual bool hasBumpyMovementOnRock() const { return true; }
+    bool hasBumpyMovementOnRock() const override { return true; }
 
-    void playAttackSound();
+    void playAttackSound() override;
 };
 
 #endif // SOLDIER_H

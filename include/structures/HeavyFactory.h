@@ -28,14 +28,14 @@ public:
     void init();
     virtual ~HeavyFactory();
 
-    void doBuildRandom();
+    void doBuildRandom() override;
 
 protected:
     /**
         Used for updating things that are specific to that particular structure. Is called from
         StructureBase::update() before the check if this structure is still alive.
     */
-    virtual void updateStructureSpecificStuff();
+    void updateStructureSpecificStuff() override;
 
 private:
 

@@ -35,7 +35,8 @@ public:
         This method draws nothing to screen. This method is called before drawOverlay().
         \param  position    Position to draw the button to
     */
-    virtual void draw(Point position) {
+    void draw(Point position) override
+    {
         ;
     }
 

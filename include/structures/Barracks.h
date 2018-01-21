@@ -32,7 +32,7 @@ public:
         Can this structure be captured by infantry units?
         \return true, if this structure can be captured, false otherwise
     */
-    virtual bool canBeCaptured() const { return false; };
+    bool canBeCaptured() const override { return false; };
 
 private:
 

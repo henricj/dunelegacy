@@ -28,11 +28,11 @@ public:
     void init();
     virtual ~Quad();
 
-    void playAttackSound();
+    void playAttackSound() override;
 
-    virtual void destroy();
+    void destroy() override;
 
-    virtual bool hasBumpyMovementOnRock() const { return true; }
+    bool hasBumpyMovementOnRock() const override { return true; }
 };
 
 #endif //QUAD_H

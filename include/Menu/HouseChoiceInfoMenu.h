@@ -30,9 +30,9 @@ public:
     explicit HouseChoiceInfoMenu(int newHouse);
     virtual ~HouseChoiceInfoMenu();
 
-    virtual void onMentatTextFinished();
+    void onMentatTextFinished() override;
 
-    void drawSpecificStuff();
+    void drawSpecificStuff() override;
 private:
     void onYes();
     void onNo();

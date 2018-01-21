@@ -91,13 +91,14 @@ public:
     void init();
     virtual ~BuilderBase();
 
-    virtual void save(OutputStream& stream) const;
+    void save(OutputStream& stream) const override;
 
-    virtual ObjectInterface* getInterfaceContainer();
+    ObjectInterface* getInterfaceContainer() override;
 
     void setOwner(House *no);
 
-    virtual void setOriginalHouseID(int i) {
+    void setOriginalHouseID(int i) override
+    {
         StructureBase::setOriginalHouseID(i);
         updateBuildList();
     }
@@ -125,7 +126,7 @@ public:
         Updates this builder.
         \return true if this object still exists, false if it was destroyed
     */
-    virtual bool update();
+    bool update() override;
 
     virtual void handleUpgradeClick();
     virtual void handleProduceItemClick(Uint32 itemID, bool multipleMode = false);

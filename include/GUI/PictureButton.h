@@ -42,9 +42,10 @@ public:
         \param  pActiveSurface          This surface is shown when the button is activated by keyboard or by mouse hover
         \param  bFreeActiveSurface      Should pActiveSurface be freed if this button is destroyed?
     */
-    virtual void setSurfaces(   SDL_Surface* pUnpressedSurface,bool bFreeUnpressedSurface,
+    void setSurfaces(   SDL_Surface* pUnpressedSurface,bool bFreeUnpressedSurface,
                                 SDL_Surface* pPressedSurface = nullptr,bool bFreePressedSurface = false,
-                                SDL_Surface* pActiveSurface = nullptr,bool bFreeActiveSurface = false) {
+                                SDL_Surface* pActiveSurface = nullptr,bool bFreeActiveSurface = false) override
+    {
         Button::setSurfaces(pUnpressedSurface,bFreeUnpressedSurface,
                             pPressedSurface,bFreePressedSurface,
                             pActiveSurface,bFreeActiveSurface);
@@ -65,9 +66,10 @@ public:
         \param  pActiveTexture          This texture is shown when the button is activated by keyboard or by mouse hover
         \param  bFreeActiveTexture      Should pActiveTexture be freed if this button is destroyed?
     */
-    virtual void setTextures(   SDL_Texture* pUnpressedTexture,bool bFreeUnpressedTexture,
+    void setTextures(   SDL_Texture* pUnpressedTexture,bool bFreeUnpressedTexture,
                                 SDL_Texture* pPressedTexture = nullptr,bool bFreePressedTexture = false,
-                                SDL_Texture* pActiveTexture = nullptr,bool bFreeActiveTexture = false) {
+                                SDL_Texture* pActiveTexture = nullptr,bool bFreeActiveTexture = false) override
+    {
         Button::setTextures(pUnpressedTexture,bFreeUnpressedTexture,
                             pPressedTexture,bFreePressedTexture,
                             pActiveTexture,bFreeActiveTexture);
@@ -84,7 +86,8 @@ public:
         be resized to a size smaller than this.
         \return the minimum size of this button
     */
-    virtual Point getMinimumSize() const {
+    Point getMinimumSize() const override
+    {
         if(pUnpressedTexture != nullptr) {
             return getTextureSize(pUnpressedTexture);
         } else {

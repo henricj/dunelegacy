@@ -55,15 +55,16 @@ class MapMirrorNone : public MapMirror {
 public:
     MapMirrorNone(int mapsizeX, int mapsizeY);
 
-    virtual int getSize() const { return 1; };
+    int getSize() const override { return 1; };
 
-    virtual bool mirroringPossible(Coord coord, Coord objectSize = Coord(1,1)) const {
+    bool mirroringPossible(Coord coord, Coord objectSize = Coord(1,1)) const override
+    {
         return true;
     }
 
-    virtual Coord getCoord(Coord originalCoord, int i, Coord objectSize = Coord(1,1)) const;
+    Coord getCoord(Coord originalCoord, int i, Coord objectSize = Coord(1,1)) const override;
 
-    virtual int getAngle(int angle, int i) const;
+    int getAngle(int angle, int i) const override;
 };
 
 
@@ -72,15 +73,16 @@ class MapMirrorHorizontal : public MapMirror {
 public:
     MapMirrorHorizontal(int mapsizeX, int mapsizeY);
 
-    virtual int getSize() const { return 2; };
+    int getSize() const override { return 2; };
 
-    virtual bool mirroringPossible(Coord coord, Coord objectSize = Coord(1,1)) const {
+    bool mirroringPossible(Coord coord, Coord objectSize = Coord(1,1)) const override
+    {
         return !(coord.x < mapsizeX/2 && coord.x + objectSize.x - 1 >= mapsizeX/2);
     }
 
-    virtual Coord getCoord(Coord originalCoord, int i, Coord objectSize = Coord(1,1)) const;
+    Coord getCoord(Coord originalCoord, int i, Coord objectSize = Coord(1,1)) const override;
 
-    virtual int getAngle(int angle, int i) const;
+    int getAngle(int angle, int i) const override;
 };
 
 
@@ -89,15 +91,16 @@ class MapMirrorVertical : public MapMirror {
 public:
     MapMirrorVertical(int mapsizeX, int mapsizeY);
 
-    virtual int getSize() const { return 2; };
+    int getSize() const override { return 2; };
 
-    virtual bool mirroringPossible(Coord coord, Coord objectSize = Coord(1,1)) const {
+    bool mirroringPossible(Coord coord, Coord objectSize = Coord(1,1)) const override
+    {
         return !(coord.y < mapsizeY/2 && coord.y + objectSize.y - 1 >= mapsizeY/2);
     }
 
-    virtual Coord getCoord(Coord originalCoord, int i, Coord objectSize = Coord(1,1)) const;
+    Coord getCoord(Coord originalCoord, int i, Coord objectSize = Coord(1,1)) const override;
 
-    virtual int getAngle(int angle, int i) const;
+    int getAngle(int angle, int i) const override;
 };
 
 
@@ -106,15 +109,16 @@ class MapMirrorBoth : public MapMirror {
 public:
     MapMirrorBoth(int mapsizeX, int mapsizeY);
 
-    virtual int getSize() const { return 4; };
+    int getSize() const override { return 4; };
 
-    virtual bool mirroringPossible(Coord coord, Coord objectSize = Coord(1,1)) const {
+    bool mirroringPossible(Coord coord, Coord objectSize = Coord(1,1)) const override
+    {
         return !((coord.x < mapsizeX/2 && coord.x + objectSize.x - 1 >= mapsizeX/2) || (coord.y < mapsizeY/2 && coord.y + objectSize.y - 1 >= mapsizeY/2));
     }
 
-    virtual Coord getCoord(Coord originalCoord, int i, Coord objectSize = Coord(1,1)) const;
+    Coord getCoord(Coord originalCoord, int i, Coord objectSize = Coord(1,1)) const override;
 
-    virtual int getAngle(int angle, int i) const;
+    int getAngle(int angle, int i) const override;
 };
 
 
@@ -123,15 +127,16 @@ class MapMirrorPoint : public MapMirror {
 public:
     MapMirrorPoint(int mapsizeX, int mapsizeY);
 
-    virtual int getSize() const { return 2; };
+    int getSize() const override { return 2; };
 
-    virtual bool mirroringPossible(Coord coord, Coord objectSize = Coord(1,1)) const {
+    bool mirroringPossible(Coord coord, Coord objectSize = Coord(1,1)) const override
+    {
         return !((coord.x < mapsizeX/2 && coord.x + objectSize.x - 1 >= mapsizeX/2) && (coord.y < mapsizeY/2 && coord.y + objectSize.y - 1 >= mapsizeY/2));
     }
 
-    virtual Coord getCoord(Coord originalCoord, int i, Coord objectSize = Coord(1,1)) const;
+    Coord getCoord(Coord originalCoord, int i, Coord objectSize = Coord(1,1)) const override;
 
-    virtual int getAngle(int angle, int i) const;
+    int getAngle(int angle, int i) const override;
 };
 
 

@@ -28,9 +28,9 @@ public:
     void init();
     virtual ~StarPort();
 
-    virtual void save(OutputStream& stream) const;
+    void save(OutputStream& stream) const override;
 
-    virtual void handleProduceItemClick(Uint32 itemID, bool multipleMode = false);
+    void handleProduceItemClick(Uint32 itemID, bool multipleMode = false) override;
 
     virtual void handlePlaceOrderClick();
     virtual void handleCancelOrderClick();
@@ -41,14 +41,14 @@ public:
         \param  itemID          the item to produce
         \param  multipleMode    false = 1 item, true = 5 items
     */
-    virtual void doProduceItem(Uint32 itemID, bool multipleMode = false);
+    void doProduceItem(Uint32 itemID, bool multipleMode = false) override;
 
     /**
         Cancel ordering of the specified item.
         \param  itemID          the item to cancel
         \param  multipleMode    false = 1 item, true = 5 items
     */
-    virtual void doCancelItem(Uint32 itemID, bool multipleMode = false);
+    void doCancelItem(Uint32 itemID, bool multipleMode = false) override;
 
     /**
         Send order and wait for delivery.
@@ -63,10 +63,10 @@ public:
     /**
         Start adding a random item to the order list.
     */
-    virtual void doBuildRandom();
+    void doBuildRandom() override;
 
 
-    void updateBuildList();
+    void updateBuildList() override;
 
     /**
         Begin with the deploying of the delivered units.
@@ -90,7 +90,7 @@ protected:
         Used for updating things that are specific to that particular structure. Is called from
         StructureBase::update() before the check if this structure is still alive.
     */
-    virtual void updateStructureSpecificStuff();
+    void updateStructureSpecificStuff() override;
 
 private:
     Sint32  arrivalTimer;       ///< When will the frigate arrive?

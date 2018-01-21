@@ -29,7 +29,7 @@ public:
     AboutMenu();
     virtual ~AboutMenu();
 
-    virtual bool doInput(SDL_Event &event);
+    bool doInput(SDL_Event &event) override;
 
 private:
     StaticContainer windowWidget;

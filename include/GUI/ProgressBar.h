@@ -98,7 +98,8 @@ public:
         called if the new size is a valid size for this progress bar (See getMinumumSize).
         \param  newSize the new size of this progress bar
     */
-    virtual void resize(Point newSize) {
+    void resize(Point newSize) override
+    {
         resize(newSize.x,newSize.y);
     }
 
@@ -108,7 +109,8 @@ public:
         \param  width   the new width of this progress bar
         \param  height  the new height of this progress bar
     */
-    virtual void resize(Uint32 width, Uint32 height) {
+    void resize(Uint32 width, Uint32 height) override
+    {
         Widget::resize(width,height);
 
         invalidateTextures();
@@ -118,7 +120,8 @@ public:
         Draws this progress bar to screen
         \param  position    Position to draw the progress bar to
     */
-    virtual void draw(Point position) {
+    void draw(Point position) override
+    {
         if(isVisible() == false) {
             return;
         }
@@ -147,7 +150,8 @@ protected:
         should be overwritten by subclasses if they like to defer texture creation as long as possible.
         This method should first check whether a renewal of the textures is necessary.
     */
-    virtual void updateTextures() {
+    void updateTextures() override
+    {
         if(pForeground == nullptr) {
             pForeground = convertSurfaceToTexture(GUIStyle::getInstance().createProgressBarOverlay(getSize().x, getSize().y, percent, color), true);
         }
@@ -156,7 +160,8 @@ protected:
     /**
         This method frees all textures that are used by this progress bar
     */
-    virtual void invalidateTextures() {
+    void invalidateTextures() override
+    {
         if(pForeground != nullptr) {
             SDL_DestroyTexture(pForeground);
             pForeground = nullptr;
@@ -214,7 +219,8 @@ public:
         resized to a size smaller than this.
         \return the minimum size of this progress bar
     */
-    virtual Point getMinimumSize() const {
+    Point getMinimumSize() const override
+    {
         if(text == "") {
             return Point(4,4);
         } else {
@@ -228,7 +234,8 @@ protected:
         should be overwritten by subclasses if they like to defer texture creation as long as possible.
         This method should first check whether a renewal of the textures is necessary.
     */
-    virtual void updateTextures() {
+    void updateTextures() override
+    {
         ProgressBar::updateTextures();
 
         if(pBackground == nullptr) {
@@ -239,7 +246,8 @@ protected:
     /**
         This method frees all textures that are used by this progress bar
     */
-    virtual void invalidateTextures() {
+    void invalidateTextures() override
+    {
         ProgressBar::invalidateTextures();
 
         if(pBackground != nullptr) {
@@ -288,7 +296,8 @@ public:
         called if the new size is a valid size for this progress bar (See getMinumumSize).
         \param  newSize the new size of this progress bar
     */
-    virtual void resize(Point newSize) {
+    void resize(Point newSize) override
+    {
         resize(newSize.x,newSize.y);
     }
 
@@ -298,7 +307,8 @@ public:
         \param  width   the new width of this progress bar
         \param  height  the new height of this progress bar
     */
-    virtual void resize(Uint32 width, Uint32 height) {
+    void resize(Uint32 width, Uint32 height) override
+    {
         Widget::resize(width,height);
     }
 
@@ -307,7 +317,8 @@ public:
         resized to a size smaller than this.
         \return the minimum size of this progress bar
     */
-    virtual Point getMinimumSize() const {
+    Point getMinimumSize() const override
+    {
         if(pBackground == nullptr) {
             return Point(4,4);
         } else {

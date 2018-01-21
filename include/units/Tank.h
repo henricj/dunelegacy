@@ -28,11 +28,11 @@ public:
     void init();
     virtual ~Tank();
 
-    void blitToScreen();
+    void blitToScreen() override;
 
-    virtual void destroy();
+    void destroy() override;
 
-    void playAttackSound();
+    void playAttackSound() override;
 };
 
 #endif // TANK_H

@@ -51,33 +51,33 @@ public:
     void init();
     virtual ~StructureBase();
 
-    virtual void save(OutputStream& stream) const;
+    void save(OutputStream& stream) const override;
 
-    void assignToMap(const Coord& pos);
-    virtual void blitToScreen();
+    void assignToMap(const Coord& pos) override;
+    void blitToScreen() override;
 
-    virtual ObjectInterface* getInterfaceContainer();
+    ObjectInterface* getInterfaceContainer() override;
 
-    void destroy();
-    virtual void drawSelectionBox();
-    virtual void drawOtherPlayerSelectionBox();
+    void destroy() override;
+    void drawSelectionBox() override;
+    void drawOtherPlayerSelectionBox() override;
     virtual void drawGatheringPointLine();
 
-    virtual Coord getCenterPoint() const;
-    virtual Coord getClosestCenterPoint(const Coord& objectLocation) const;
-    void setDestination(int newX, int newY);
+    Coord getCenterPoint() const override;
+    Coord getClosestCenterPoint(const Coord& objectLocation) const override;
+    void setDestination(int newX, int newY) override;
     void setJustPlaced();
     void setFogged(bool bFogged) { fogged = bFogged; };
 
-    void playConfirmSound() { ; };
-    void playSelectSound() { ; };
+    void playConfirmSound() override { ; };
+    void playSelectSound() override { ; };
 
     /**
         This method is called when a structure is ordered by a right click
         \param  xPos    the x position on the map
         \param  yPos    the y position on the map
     */
-    virtual void handleActionClick(int xPos, int yPos);
+    void handleActionClick(int xPos, int yPos) override;
 
     /**
         This method is called when the user clicks on the repair button for this building
@@ -95,13 +95,13 @@ public:
     /**
         Start repairing this structure.
     */
-    void doRepair();
+    void doRepair() override;
 
     /**
         Updates this object.
         \return true if this object still exists, false if it was destroyed
     */
-    virtual bool update();
+    bool update() override;
 
     /**
         Can this structure be captured by infantry units?
@@ -111,7 +111,7 @@ public:
 
     bool isRepairing() const { return repairing; }
 
-    virtual Coord getClosestPoint(const Coord& objectLocation) const;
+    Coord getClosestPoint(const Coord& objectLocation) const override;
 
     inline short getStructureSizeX() const { return structureSize.x; }
     inline short getStructureSizeY() const { return structureSize.y; }

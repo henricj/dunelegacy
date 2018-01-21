@@ -129,7 +129,8 @@ public:
         \param  up  true = mouse wheel up, false = mouse wheel down
         \return true = the mouse wheel scrolling was processed by the widget, false = mouse wheel scrolling was not processed by the widget
     */
-    virtual inline bool handleMouseWheel(Sint32 x, Sint32 y, bool up) {
+    inline bool handleMouseWheel(Sint32 x, Sint32 y, bool up) override
+    {
         if((isEnabled() == false) || (isVisible() == false)) {
             return true;
         }
@@ -153,7 +154,8 @@ public:
         in a direction this method returns the size in that direction.
         \return the minimum size of this text box
     */
-    virtual Point getMinimumSize() const {
+    Point getMinimumSize() const override
+    {
         if(textBox.getParent() != this || buttonVBox.getParent() != this) {
             // we are about to be destroyed
             return Point(0,0);

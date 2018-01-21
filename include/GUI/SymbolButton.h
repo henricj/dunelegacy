@@ -87,7 +87,8 @@ public:
         called if the new size is a valid size for this button (See getMinumumSize).
         \param  newSize the new size of this progress bar
     */
-    virtual void resize(Point newSize) {
+    void resize(Point newSize) override
+    {
         resize(newSize.x,newSize.y);
     }
 
@@ -97,7 +98,8 @@ public:
         \param  width   the new width of this button
         \param  height  the new height of this button
     */
-    virtual void resize(Uint32 width, Uint32 height) {
+    void resize(Uint32 width, Uint32 height) override
+    {
         invalidateTextures();
         Widget::resize(width,height);
     }
@@ -107,7 +109,8 @@ public:
         resized to a size smaller than this.
         \return the minimum size of this button
     */
-    virtual Point getMinimumSize() const {
+    Point getMinimumSize() const override
+    {
         if(pSymbolSurface != nullptr) {
             return Point((Sint32) pSymbolSurface->w + 5, (Sint32) pSymbolSurface->h + 5);
         } else {
@@ -121,7 +124,8 @@ protected:
         should be overwritten by subclasses if they like to defer texture creation as long as possible.
         This method should first check whether a renewal of the textures is necessary.
     */
-    virtual void updateTextures() {
+    void updateTextures() override
+    {
         Button::updateTextures();
 
         if(pUnpressedTexture == nullptr) {

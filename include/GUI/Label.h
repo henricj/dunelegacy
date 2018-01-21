@@ -110,7 +110,8 @@ public:
         called if the new size is a valid size for this label (See getMinumumSize).
         \param  newSize the new size of this progress bar
     */
-    virtual void resize(Point newSize) {
+    void resize(Point newSize) override
+    {
         resize(newSize.x,newSize.y);
     }
 
@@ -120,7 +121,8 @@ public:
         \param  width   the new width of this label
         \param  height  the new height of this label
     */
-    virtual void resize(Uint32 width, Uint32 height) {
+    void resize(Uint32 width, Uint32 height) override
+    {
         invalidateTextures();
         Widget::resize(width,height);
     }
@@ -130,7 +132,8 @@ public:
         resized to a size smaller than this.
         \return the minimum size of this label
     */
-    virtual Point getMinimumSize() const {
+    Point getMinimumSize() const override
+    {
         Point p(0,0);
 
         //split text into single lines at every '\n'
@@ -159,7 +162,8 @@ public:
         Draws this label to screen.
         \param  position    Position to draw the label to
     */
-    virtual void draw(Point position) {
+    void draw(Point position) override
+    {
         if((isEnabled() == false) || (isVisible() == false)) {
             return;
         }
@@ -198,7 +202,8 @@ protected:
         should be overwritten by subclasses if they like to defer texture creation as long as possible.
         This method should first check whether a renewal of the textures is necessary.
     */
-    virtual void updateTextures() {
+    void updateTextures() override
+    {
         Widget::updateTextures();
 
         if(pTexture == nullptr) {
@@ -216,7 +221,8 @@ protected:
     /**
         This method frees all textures that are used by this label
     */
-    virtual void invalidateTextures() {
+    void invalidateTextures() override
+    {
         if(pTexture != nullptr) {
             SDL_DestroyTexture(pTexture);
             pTexture = nullptr;
