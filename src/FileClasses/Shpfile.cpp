@@ -450,7 +450,7 @@ void Shpfile::shpCorrectLF(const unsigned char *in, unsigned char *out, int size
 {
     const unsigned char * end = in + size;
     while(in < end) {
-        unsigned char val = *in;
+        const auto val = *in;
         in++;
 
         if(val != 0) {
