@@ -1107,23 +1107,30 @@ void Game::runMainLoop() {
     } else {
         char tmp[FILENAME_MAX];
         fnkdat("replay/auto.rpl", tmp, FILENAME_MAX, FNKDAT_USER | FNKDAT_CREAT);
-        std::string replayname(tmp);
+        const std::string replayname(tmp);
 
-        OFileStream* pStream = new OFileStream();
-        pStream->open(replayname);
+        auto pStream = std::make_unique<OFileStream>();
 
-        pStream->writeString(getLocalPlayerName());
+        if (pStream->open(replayname)) {
+            pStream->writeString(getLocalPlayerName());
 
-        gameInitSettings.save(*pStream);
+            gameInitSettings.save(*pStream);
 
-        // when this game was loaded we have to save the old commands to the replay file first
-        cmdManager.save(*pStream);
+            // when this game was loaded we have to save the old commands to the replay file first
+            cmdManager.save(*pStream);
 
-        // now all new commands might be added
-        cmdManager.setStream(pStream);
+            // flush stream
+            pStream->flush();
 
-        // flush stream
-        pStream->flush();
+            // now all new commands might be added
+            cmdManager.setStream(pStream.release());
+        }
+        else
+        {
+            // Should we throw instead?
+            // TODO: Report problem to user...?
+            quitGame();
+        }
     }
 
     if(pNetworkManager != nullptr) {
