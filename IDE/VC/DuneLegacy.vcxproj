@@ -389,6 +389,9 @@ IF %ERRORLEVEL% LSS 8 exit 0</Command>
     <ClInclude Include="..\..\include\misc\OMemoryStream.h" />
     <ClInclude Include="..\..\include\misc\OutputStream.h" />
     <ClInclude Include="..\..\include\misc\Random.h" />
+    <ClInclude Include="..\..\include\misc\random_xoroshiro128plus.h" />
+    <ClInclude Include="..\..\include\misc\random_xorshift1024star.h" />
+    <ClInclude Include="..\..\include\misc\RngSupport.h" />
     <ClInclude Include="..\..\include\misc\RobustList.h" />
     <ClInclude Include="..\..\include\misc\Scaler.h" />
     <ClInclude Include="..\..\include\misc\sdl_support.h" />
@@ -870,6 +873,7 @@ IF %ERRORLEVEL% LSS 8 exit 0</Command>
     <ClCompile Include="..\..\src\misc\md5.cpp" />
     <ClCompile Include="..\..\src\misc\OFileStream.cpp" />
     <ClCompile Include="..\..\src\misc\Random.cpp" />
+    <ClCompile Include="..\..\src\misc\RngSupport.cpp" />
     <ClCompile Include="..\..\src\misc\Scaler.cpp" />
     <ClCompile Include="..\..\src\misc\sound_util.cpp" />
     <ClCompile Include="..\..\src\misc\string_util.cpp" />

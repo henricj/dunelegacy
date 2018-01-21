@@ -1,4 +1,4 @@
-﻿
+
 #ifndef STDAFX_H
 #define STDAFX_H
 
@@ -37,6 +37,7 @@
 #include <misc/string_util.h>
 #include <misc/exceptions.h>
 #include <misc/format.h>
+#include <misc/Random.h>
 
 #include <SoundPlayer.h>
 
