@@ -53,7 +53,7 @@ MetaServerClient::~MetaServerClient() {
 
     stopAnnounce();
 
-    enqueueMetaServerCommand(std::shared_ptr<MetaServerCommand>(new MetaServerExit()));
+    enqueueMetaServerCommand(std::static_pointer_cast<MetaServerCommand>(std::make_shared<MetaServerExit>()));
 
     SDL_WaitThread(connectionThread, nullptr);
 
@@ -74,7 +74,7 @@ void MetaServerClient::startAnnounce(const std::string& serverName, int serverPo
     this->numPlayers = numPlayers;
     this->maxPlayers = maxPlayers;
 
-    enqueueMetaServerCommand(std::shared_ptr<MetaServerCommand>(new MetaServerAdd(serverName, serverPort, secret, mapName, numPlayers, maxPlayers)));
+    enqueueMetaServerCommand(std::static_pointer_cast<MetaServerCommand>(std::make_shared<MetaServerAdd>(serverName, serverPort, secret, mapName, numPlayers, maxPlayers)));
     lastAnnounceUpdate = SDL_GetTicks();
 }
 
@@ -82,7 +82,7 @@ void MetaServerClient::startAnnounce(const std::string& serverName, int serverPo
 void MetaServerClient::updateAnnounce(Uint8 numPlayers) {
     if(serverPort > 0) {
         this->numPlayers = numPlayers;
-        enqueueMetaServerCommand(std::shared_ptr<MetaServerCommand>(new MetaServerUpdate(serverName, serverPort, secret, mapName, numPlayers, maxPlayers)));
+        enqueueMetaServerCommand(std::static_pointer_cast<MetaServerCommand>(std::make_shared<MetaServerUpdate>(serverName, serverPort, secret, mapName, numPlayers, maxPlayers)));
         lastAnnounceUpdate = SDL_GetTicks();
     }
 }
@@ -91,7 +91,7 @@ void MetaServerClient::updateAnnounce(Uint8 numPlayers) {
 void MetaServerClient::stopAnnounce() {
     if(serverPort != 0) {
 
-        enqueueMetaServerCommand(std::shared_ptr<MetaServerCommand>(new MetaServerRemove(serverPort, secret)));
+        enqueueMetaServerCommand(std::static_pointer_cast<MetaServerCommand>(std::make_shared<MetaServerRemove>(serverPort, secret)));
 
         serverName = "";
         serverPort = 0;
@@ -109,7 +109,7 @@ void MetaServerClient::update() {
         // someone is waiting for the list
 
         if(SDL_GetTicks() - lastServerInfoListUpdate > SERVERLIST_UPDATE_INTERVAL) {
-            enqueueMetaServerCommand(std::shared_ptr<MetaServerCommand>(new MetaServerList()));
+            enqueueMetaServerCommand(std::static_pointer_cast<MetaServerCommand>(std::make_shared<MetaServerList>()));
             lastServerInfoListUpdate = SDL_GetTicks();
         }
 
@@ -117,7 +117,7 @@ void MetaServerClient::update() {
 
     if(serverPort != 0) {
         if(SDL_GetTicks() - lastAnnounceUpdate > GAMESERVER_UPDATE_INTERVAL) {
-            enqueueMetaServerCommand(std::shared_ptr<MetaServerCommand>(new MetaServerUpdate(serverName, serverPort, secret, mapName, numPlayers, maxPlayers)));
+            enqueueMetaServerCommand(std::static_pointer_cast<MetaServerCommand>(std::make_shared<MetaServerUpdate>(serverName, serverPort, secret, mapName, numPlayers, maxPlayers)));
             lastAnnounceUpdate = SDL_GetTicks();
         }
     }
@@ -161,7 +161,7 @@ void MetaServerClient::enqueueMetaServerCommand(std::shared_ptr<MetaServerComman
 
     bool bInsert = true;
 
-    for(std::shared_ptr<MetaServerCommand> pMetaServerCommand : metaServerCommandList) {
+    for(const std::shared_ptr<MetaServerCommand> pMetaServerCommand : metaServerCommandList) {
         if(*pMetaServerCommand == *metaServerCommand) {
             bInsert = false;
             break;
@@ -223,13 +223,13 @@ int MetaServerClient::connectionThreadMain(void* data) {
     MetaServerClient* pMetaServerClient = static_cast<MetaServerClient*>(data);
 
     while(true) {
-        std::shared_ptr<MetaServerCommand> nextMetaServerCommand = pMetaServerClient->dequeueMetaServerCommand();
+        const std::shared_ptr<MetaServerCommand> nextMetaServerCommand = pMetaServerClient->dequeueMetaServerCommand();
 
         switch(nextMetaServerCommand->type) {
 
             case METASERVERCOMMAND_ADD: {
 
-                std::shared_ptr<MetaServerAdd> pMetaServerAdd = std::dynamic_pointer_cast<MetaServerAdd>(nextMetaServerCommand);
+                const std::shared_ptr<MetaServerAdd> pMetaServerAdd = std::dynamic_pointer_cast<MetaServerAdd>(nextMetaServerCommand);
 
                 std::map<std::string, std::string> parameters;
 
@@ -253,7 +253,7 @@ int MetaServerClient::connectionThreadMain(void* data) {
                 }
 
                 if(result.substr(0,2) != "OK") {
-                    std::string errorMsg = result.substr(result.find_first_not_of("\x0D\x0A",5), std::string::npos);
+                    const std::string errorMsg = result.substr(result.find_first_not_of("\x0D\x0A",5), std::string::npos);
 
                     pMetaServerClient->setErrorMessage(METASERVERCOMMAND_ADD, errorMsg);
                 }
@@ -262,7 +262,7 @@ int MetaServerClient::connectionThreadMain(void* data) {
             } break;
 
             case METASERVERCOMMAND_UPDATE: {
-                std::shared_ptr<MetaServerUpdate> pMetaServerUpdate = std::dynamic_pointer_cast<MetaServerUpdate>(nextMetaServerCommand);
+                const std::shared_ptr<MetaServerUpdate> pMetaServerUpdate = std::dynamic_pointer_cast<MetaServerUpdate>(nextMetaServerCommand);
 
                 std::map<std::string, std::string> parameters;
 
@@ -298,7 +298,7 @@ int MetaServerClient::connectionThreadMain(void* data) {
                     } catch(std::exception&) {
                         // adding the game again did not work => report updating error
 
-                        std::string errorMsg = result1.substr(result1.find_first_not_of("\x0D\x0A",5), std::string::npos);
+                        const std::string errorMsg = result1.substr(result1.find_first_not_of("\x0D\x0A",5), std::string::npos);
 
                         pMetaServerClient->setErrorMessage(METASERVERCOMMAND_UPDATE, errorMsg);
 
@@ -308,7 +308,7 @@ int MetaServerClient::connectionThreadMain(void* data) {
                     if(result2.substr(0,2) != "OK") {
                         // adding the game again did not work => report updating error
 
-                        std::string errorMsg = result1.substr(result1.find_first_not_of("\x0D\x0A",5), std::string::npos);
+                        const std::string errorMsg = result1.substr(result1.find_first_not_of("\x0D\x0A",5), std::string::npos);
 
                         pMetaServerClient->setErrorMessage(METASERVERCOMMAND_UPDATE, errorMsg);
                     }
@@ -317,7 +317,7 @@ int MetaServerClient::connectionThreadMain(void* data) {
             } break;
 
             case METASERVERCOMMAND_REMOVE: {
-                std::shared_ptr<MetaServerRemove> pMetaServerRemove = std::dynamic_pointer_cast<MetaServerRemove>(nextMetaServerCommand);
+                const std::shared_ptr<MetaServerRemove> pMetaServerRemove = std::dynamic_pointer_cast<MetaServerRemove>(nextMetaServerCommand);
 
                 std::map<std::string, std::string> parameters;
 
@@ -376,7 +376,7 @@ int MetaServerClient::connectionThreadMain(void* data) {
                             break;
                         }
 
-                        gameServerInfo.serverAddress.port = (Uint16) port;
+                        gameServerInfo.serverAddress.port = static_cast<Uint16>(port);
 
                         gameServerInfo.serverName = parts[2];
                         gameServerInfo.serverVersion = parts[3];
@@ -406,7 +406,7 @@ int MetaServerClient::connectionThreadMain(void* data) {
                     pMetaServerClient->setNewGameServerInfoList(newGameServerInfoList);
 
                 } else {
-                    std::string errorMsg = result.substr(result.find_first_not_of("\x0D\x0A",5), std::string::npos);
+                    const std::string errorMsg = result.substr(result.find_first_not_of("\x0D\x0A",5), std::string::npos);
 
                     pMetaServerClient->setErrorMessage(METASERVERCOMMAND_LIST, errorMsg);
                 }

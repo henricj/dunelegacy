@@ -144,16 +144,16 @@ public:
 
     class exception : public std::exception {
     public:
-        exception() throw () = default;
-        virtual ~exception() throw () = default;
+        exception() noexcept = default;
+        virtual ~exception() noexcept = default;
     };
 
     class eof : public OutputStream::exception {
     public:
-        explicit eof(const std::string& str) throw () : str(str) { };
-        virtual ~eof() throw () { };
+        explicit eof(const std::string& str) noexcept : str(str) { };
+        virtual ~eof() noexcept { };
 
-        const char* what() const throw () override { return str.c_str(); }
+        const char* what() const noexcept override { return str.c_str(); }
 
     private:
         std::string str;
@@ -161,10 +161,10 @@ public:
 
     class error : public OutputStream::exception {
     public:
-        explicit error(const std::string& str) throw () : str(str) { };
-        virtual ~error() throw () = default;
+        explicit error(const std::string& str) noexcept : str(str) { };
+        virtual ~error() noexcept = default;
 
-        const char* what() const throw () override { return str.c_str(); };
+        const char* what() const noexcept override { return str.c_str(); };
 
     private:
         std::string str;

@@ -547,7 +547,7 @@ class FormatError : public std::runtime_error {
  public:
   explicit FormatError(CStringRef message)
   : std::runtime_error(message.c_str()) {}
-  ~FormatError() throw();
+  ~FormatError() noexcept;
 };
 
 namespace internal {
