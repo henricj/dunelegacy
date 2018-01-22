@@ -2326,7 +2326,7 @@ class SystemError : public internal::RuntimeError {
 
   typedef char Char;  // For FMT_VARIADIC_CTOR.
 
-  SystemError() {}
+  SystemError() = default;
 
  public:
   /**
@@ -2497,7 +2497,7 @@ class BasicWriter {
     Destroys a ``BasicWriter`` object.
     \endrst
    */
-  virtual ~BasicWriter() {}
+  virtual ~BasicWriter() = default;
 
   /**
     Returns the total number of characters written.
