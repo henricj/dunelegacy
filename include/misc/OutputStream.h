@@ -23,6 +23,7 @@
 #include <SDL2/SDL.h>
 #include <string>
 #include <list>
+#include <utility>
 #include <vector>
 #include <set>
 #include <exception>
@@ -31,7 +32,7 @@ class OutputStream
 {
 public:
     OutputStream() { ; };
-    virtual ~OutputStream() { }
+    virtual ~OutputStream() = default;
     /**
         This method flushes all caches and finally writes out all cached output.
     */
@@ -53,7 +54,7 @@ public:
         \param x    the value to write out
     */
     void writeSint8(Sint8 x) {
-        Uint8 tmp = *((Uint8*) &x);
+        Uint8 tmp = *reinterpret_cast<Uint8*>(&x);
         writeUint8(tmp);
     }
 
@@ -62,7 +63,7 @@ public:
         \param x    the value to write out
     */
     void writeSint16(Sint16 x) {
-        Uint16 tmp = *((Uint16*) &x);
+        Uint16 tmp = *reinterpret_cast<Uint16*>(&x);
         writeUint16(tmp);
     }
 
@@ -71,7 +72,7 @@ public:
         \param x    the value to write out
     */
     void writeSint32(Sint32 x) {
-        Uint32 tmp = *((Uint32*) &x);
+        Uint32 tmp = *reinterpret_cast<Uint32*>(&x);
         writeUint32(tmp);
     }
 
@@ -80,7 +81,7 @@ public:
         \param x    the value to write out
     */
     void writeSint64(Sint64 x) {
-        Uint64 tmp = *((Uint64*) &x);
+        Uint64 tmp = *reinterpret_cast<Uint64*>(&x);
         writeUint64(tmp);
     }
 
@@ -105,7 +106,7 @@ public:
 
     */
     void writeBools(bool val1 = false, bool val2 = false, bool val3 = false, bool val4 = false, bool val5 = false, bool val6 = false, bool val7 = false, bool val8 = false) {
-        Uint8 val = ((Uint8)val1) | (val2 << 1) | (val3 << 2) | (val4 << 3) | (val5 << 4) | (val6 << 5) | (val7 << 6) | (val8 << 7);
+        Uint8 val = static_cast<Uint8>(val1) | (val2 << 1) | (val3 << 2) | (val4 << 3) | (val5 << 4) | (val6 << 5) | (val7 << 6) | (val8 << 7);
         writeUint8(val);
     }
 
@@ -114,7 +115,7 @@ public:
         \param  dataList    the list to write
     */
     void writeUint32List(const std::list<Uint32>& dataList) {
-        writeUint32((Uint32) dataList.size());
+        writeUint32(static_cast<Uint32>(dataList.size()));
         for(const Uint32 data : dataList) {
             writeUint32(data);
         }
@@ -125,7 +126,7 @@ public:
         \param  dataVector the vector to write
     */
     void writeUint32Vector(const std::vector<Uint32>& dataVector) {
-        writeUint32((Uint32) dataVector.size());
+        writeUint32(static_cast<Uint32>(dataVector.size()));
         for(const Uint32 data : dataVector) {
             writeUint32(data);
         }
@@ -136,7 +137,7 @@ public:
         \param  dataSet   the set to write
     */
     void writeUint32Set(const std::set<Uint32>& dataSet) {
-        writeUint32((Uint32) dataSet.size());
+        writeUint32(static_cast<Uint32>(dataSet.size()));
         for(const Uint32 data : dataSet) {
             writeUint32(data);
         }
@@ -150,8 +151,8 @@ public:
 
     class eof : public OutputStream::exception {
     public:
-        explicit eof(const std::string& str) noexcept : str(str) { };
-        virtual ~eof() noexcept { };
+        explicit eof(std::string  str) noexcept : str(std::move(str)) { };
+        virtual ~eof() noexcept = default;;
 
         const char* what() const noexcept override { return str.c_str(); }
 
@@ -161,7 +162,7 @@ public:
 
     class error : public OutputStream::exception {
     public:
-        explicit error(const std::string& str) noexcept : str(str) { };
+        explicit error(std::string  str) noexcept : str(std::move(str)) { };
         virtual ~error() noexcept = default;
 
         const char* what() const noexcept override { return str.c_str(); };

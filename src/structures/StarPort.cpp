@@ -72,8 +72,7 @@ void StarPort::init() {
     lastAnimFrame = 3;
 }
 
-StarPort::~StarPort() {
-}
+StarPort::~StarPort() = default;
 
 void StarPort::save(OutputStream& stream) const {
     BuilderBase::save(stream);

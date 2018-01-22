@@ -70,8 +70,7 @@ void SmartBot::init() {
 }
 
 
-SmartBot::~SmartBot() {
-}
+SmartBot::~SmartBot() = default;
 
 
 void SmartBot::save(OutputStream& stream) const {

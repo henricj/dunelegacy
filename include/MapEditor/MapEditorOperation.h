@@ -72,8 +72,7 @@ public:
      : MapEditorOperation(), x(x), y(y), terrainType(terrainType) {
     }
 
-    virtual ~MapEditorTerrainEditOperation() {
-    }
+    virtual ~MapEditorTerrainEditOperation() = default;
 
     std::shared_ptr<MapEditorOperation> perform(MapEditor *pMapEditor) override;
 
@@ -165,8 +164,7 @@ public:
      : MapEditorOperation(), x(x), y(y) {
     }
 
-    virtual ~MapEditorTerrainRemoveSpiceFieldOperation() {
-    }
+    virtual ~MapEditorTerrainRemoveSpiceFieldOperation() = default;
 
     std::shared_ptr<MapEditorOperation> perform(MapEditor *pMapEditor) override;
 
@@ -291,8 +289,7 @@ public:
      : MapEditorOperation(), id(id), health(health), angle(angle), attackmode(attackmode) {
     }
 
-    virtual ~MapEditorEditUnitOperation() {
-    }
+    virtual ~MapEditorEditUnitOperation() = default;
 
     std::shared_ptr<MapEditorOperation> perform(MapEditor *pMapEditor) override;
 
@@ -347,8 +344,7 @@ public:
      : reinforcements(reinforcements) {
     }
 
-    virtual ~MapEditorChangeReinforcements() {
-    }
+    virtual ~MapEditorChangeReinforcements() = default;
 
     std::shared_ptr<MapEditorOperation> perform(MapEditor *pMapEditor) override;
 
