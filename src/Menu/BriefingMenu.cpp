@@ -54,6 +54,8 @@ BriefingMenu::BriefingMenu(int newHouse,int mission,int type) : MentatMenu(newHo
         missionnumber = 9;
     }
 
+    std::random_device rd;
+
     switch(type) {
         case DEBRIEFING_WIN: {
             anim = pGFXManager->getAnimation(getRandomBool() ? Anim_Win1 : Anim_Win2);

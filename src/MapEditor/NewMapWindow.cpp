@@ -116,6 +116,9 @@ NewMapWindow::NewMapWindow(HOUSETYPE currentHouse) : Window(0,0,0,0), house(curr
     basicMapPropertiesVBox.addWidget(VSpacer::create(4));
     basicMapPropertiesVBox.addWidget(&rngHBox);
 
+    std::random_device rd;
+    std::uniform_int_distribution<> uniform{ 0, 32767 };
+
     rngSeedLabel.setText(_("Random Seed:"));
     rngSeedLabel.setTextColor(color);
     rngHBox.addWidget(&rngSeedLabel);
