@@ -21,6 +21,8 @@
 #include <random>
 #include <limits>
 
+#include "misc/RngSupport.h"
+
 extern int currentZoomlevel;
 
 int getRandomInt() {

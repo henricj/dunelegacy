@@ -104,8 +104,7 @@ GameInitSettings::GameInitSettings(InputStream& stream) {
     }
 }
 
-GameInitSettings::~GameInitSettings() {
-}
+GameInitSettings::~GameInitSettings() = default;
 
 void GameInitSettings::save(OutputStream& stream) const {
     stream.writeSint8(static_cast<Sint8>(gameType));
