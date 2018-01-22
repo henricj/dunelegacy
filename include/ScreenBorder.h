@@ -28,6 +28,8 @@
 
 #include <algorithm>
 
+#include "misc/RngSupport.h"
+
 #define SCROLLBORDER 3
 
 /// This class manages everything that is related to the current view onto the map.
@@ -56,7 +58,7 @@ public:
     /**
         Destructor
     */
-    ~ScreenBorder() { }
+    ~ScreenBorder() = default;
 
     /**
         Loads the current position on the map from a stream
@@ -351,6 +353,7 @@ public:
     void update() {
         if(numShakingCycles > 0) {
             int offsetMax = std::min(TILESIZE-1,numShakingCycles);
+            std::uniform_int_distribution<> uniform{ -offsetMax / 2, offsetMax / 2 };
 
             shakingOffset.x = getRandomInt(-offsetMax/2, offsetMax/2);
             shakingOffset.y = getRandomInt(-offsetMax/2, offsetMax/2);
@@ -374,6 +377,7 @@ private:
     Coord bottomRightCornerOnScreen;///< the position of the bottom right corner in screen coordinates
 
     int numShakingCycles;           ///< the number of cycles the screen will shake
+    Nyq::NyqEngine<> generator_;
 };
 
 #endif //SCREENBORDER
