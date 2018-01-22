@@ -30,6 +30,12 @@
 #include <Menu/MainMenu.h>
 
 #include <CutScenes/Intro.h>
+#include <House.h>
+#include <Game.h>
+#include <Map.h>
+#include <Explosion.h>
+#include <ScreenBorder.h>
+#include <SoundPlayer.h>
 
 #include <misc/fnkdat.h>
 #include <misc/FileSystem.h>
