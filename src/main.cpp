@@ -684,9 +684,11 @@ int main(int argc, char *argv[]) {
             bFirstInit = false;
 
             SDL_Log("Starting main menu...");
-            MainMenu myMenu;
-            if(myMenu.showMenu() == MENU_QUIT_DEFAULT) {
-                bExitGame = true;
+            { // Scope
+                MainMenu myMenu;
+                if (myMenu.showMenu() == MENU_QUIT_DEFAULT) {
+                    bExitGame = true;
+                }
             }
 
             SDL_Log("Deinitialize...");
