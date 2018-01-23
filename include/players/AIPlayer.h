@@ -50,7 +50,7 @@ private:
 
     Coord findPlaceLocation(Uint32 itemID);
 
-    int getNumAdjacentStructureTiles(Coord pos, int structureSizeX, int structureSizeY);
+    static int getNumAdjacentStructureTiles(Coord pos, int structureSizeX, int structureSizeY);
 
     void checkAllUnits();
     void build();
