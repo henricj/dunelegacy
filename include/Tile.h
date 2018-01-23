@@ -33,7 +33,7 @@
 #define DAMAGE_PER_TILE 5
 
 
-// forward declarations
+ // forward declarations
 class House;
 class ObjectBase;
 class UnitBase;
@@ -66,31 +66,31 @@ typedef struct
 } DEADUNITTYPE;
 
 enum destroyedStructureEnum {
-    DestroyedStructure_None             = -1,
-    DestroyedStructure_Wall             = 0,
-    Destroyed1x1Structure               = 1,
+    DestroyedStructure_None = -1,
+    DestroyedStructure_Wall = 0,
+    Destroyed1x1Structure = 1,
 
-    Destroyed3x3Structure_TopLeft       = 2,
-    Destroyed3x3Structure_TopCenter     = 3,
-    Destroyed3x3Structure_TopRight      = 4,
-    Destroyed3x3Structure_CenterLeft    = 5,
-    Destroyed3x3Structure_CenterCenter  = 6,
-    Destroyed3x3Structure_CenterRight   = 7,
-    Destroyed3x3Structure_BottomLeft    = 8,
-    Destroyed3x3Structure_BottomCenter  = 9,
-    Destroyed3x3Structure_BottomRight   = 10,
+    Destroyed3x3Structure_TopLeft = 2,
+    Destroyed3x3Structure_TopCenter = 3,
+    Destroyed3x3Structure_TopRight = 4,
+    Destroyed3x3Structure_CenterLeft = 5,
+    Destroyed3x3Structure_CenterCenter = 6,
+    Destroyed3x3Structure_CenterRight = 7,
+    Destroyed3x3Structure_BottomLeft = 8,
+    Destroyed3x3Structure_BottomCenter = 9,
+    Destroyed3x3Structure_BottomRight = 10,
 
-    Destroyed3x2Structure_TopLeft       = 5,
-    Destroyed3x2Structure_TopCenter     = 6,
-    Destroyed3x2Structure_TopRight      = 7,
-    Destroyed3x2Structure_BottomLeft    = 8,
-    Destroyed3x2Structure_BottomCenter  = 9,
-    Destroyed3x2Structure_BottomRight   = 10,
+    Destroyed3x2Structure_TopLeft = 5,
+    Destroyed3x2Structure_TopCenter = 6,
+    Destroyed3x2Structure_TopRight = 7,
+    Destroyed3x2Structure_BottomLeft = 8,
+    Destroyed3x2Structure_BottomCenter = 9,
+    Destroyed3x2Structure_BottomRight = 10,
 
-    Destroyed2x2Structure_TopLeft       = 1,
-    Destroyed2x2Structure_TopRight      = 11,
-    Destroyed2x2Structure_BottomLeft    = 12,
-    Destroyed2x2Structure_BottomRight   = 13
+    Destroyed2x2Structure_TopLeft = 1,
+    Destroyed2x2Structure_TopRight = 11,
+    Destroyed2x2Structure_BottomLeft = 12,
+    Destroyed2x2Structure_BottomRight = 13
 };
 
 
@@ -116,104 +116,104 @@ public:
     } ROCKDAMAGETYPE;
 
     typedef enum {
-        TerrainTile_SlabHalfDestroyed   = 0x00,
-        TerrainTile_SlabDestroyed       = 0x01,
-        TerrainTile_Slab                = 0x02,
+        TerrainTile_SlabHalfDestroyed = 0x00,
+        TerrainTile_SlabDestroyed = 0x01,
+        TerrainTile_Slab = 0x02,
 
-        TerrainTile_Sand                = 0x03,
+        TerrainTile_Sand = 0x03,
 
-        TerrainTile_Rock                = 0x04,
-        TerrainTile_RockIsland          = TerrainTile_Rock + 0x00,
-        TerrainTile_RockUp              = TerrainTile_Rock + 0x01,
-        TerrainTile_RockRight           = TerrainTile_Rock + 0x02,
-        TerrainTile_RockUpRight         = TerrainTile_Rock + 0x03,
-        TerrainTile_RockDown            = TerrainTile_Rock + 0x04,
-        TerrainTile_RockUpDown          = TerrainTile_Rock + 0x05,
-        TerrainTile_RockDownRight       = TerrainTile_Rock + 0x06,
-        TerrainTile_RockNotLeft         = TerrainTile_Rock + 0x07,
-        TerrainTile_RockLeft            = TerrainTile_Rock + 0x08,
-        TerrainTile_RockUpLeft          = TerrainTile_Rock + 0x09,
-        TerrainTile_RockLeftRight       = TerrainTile_Rock + 0x0A,
-        TerrainTile_RockNotDown         = TerrainTile_Rock + 0x0B,
-        TerrainTile_RockDownLeft        = TerrainTile_Rock + 0x0C,
-        TerrainTile_RockNotRight        = TerrainTile_Rock + 0x0D,
-        TerrainTile_RockNotUp           = TerrainTile_Rock + 0x0E,
-        TerrainTile_RockFull            = TerrainTile_Rock + 0x0F,
+        TerrainTile_Rock = 0x04,
+        TerrainTile_RockIsland = TerrainTile_Rock + 0x00,
+        TerrainTile_RockUp = TerrainTile_Rock + 0x01,
+        TerrainTile_RockRight = TerrainTile_Rock + 0x02,
+        TerrainTile_RockUpRight = TerrainTile_Rock + 0x03,
+        TerrainTile_RockDown = TerrainTile_Rock + 0x04,
+        TerrainTile_RockUpDown = TerrainTile_Rock + 0x05,
+        TerrainTile_RockDownRight = TerrainTile_Rock + 0x06,
+        TerrainTile_RockNotLeft = TerrainTile_Rock + 0x07,
+        TerrainTile_RockLeft = TerrainTile_Rock + 0x08,
+        TerrainTile_RockUpLeft = TerrainTile_Rock + 0x09,
+        TerrainTile_RockLeftRight = TerrainTile_Rock + 0x0A,
+        TerrainTile_RockNotDown = TerrainTile_Rock + 0x0B,
+        TerrainTile_RockDownLeft = TerrainTile_Rock + 0x0C,
+        TerrainTile_RockNotRight = TerrainTile_Rock + 0x0D,
+        TerrainTile_RockNotUp = TerrainTile_Rock + 0x0E,
+        TerrainTile_RockFull = TerrainTile_Rock + 0x0F,
 
-        TerrainTile_Dunes               = 0x14,
-        TerrainTile_DunesIsland         = TerrainTile_Dunes + 0x00,
-        TerrainTile_DunesUp             = TerrainTile_Dunes + 0x01,
-        TerrainTile_DunesRight          = TerrainTile_Dunes + 0x02,
-        TerrainTile_DunesUpRight        = TerrainTile_Dunes + 0x03,
-        TerrainTile_DunesDown           = TerrainTile_Dunes + 0x04,
-        TerrainTile_DunesUpDown         = TerrainTile_Dunes + 0x05,
-        TerrainTile_DunesDownRight      = TerrainTile_Dunes + 0x06,
-        TerrainTile_DunesNotLeft        = TerrainTile_Dunes + 0x07,
-        TerrainTile_DunesLeft           = TerrainTile_Dunes + 0x08,
-        TerrainTile_DunesUpLeft         = TerrainTile_Dunes + 0x09,
-        TerrainTile_DunesLeftRight      = TerrainTile_Dunes + 0x0A,
-        TerrainTile_DunesNotDown        = TerrainTile_Dunes + 0x0B,
-        TerrainTile_DunesDownLeft       = TerrainTile_Dunes + 0x0C,
-        TerrainTile_DunesNotRight       = TerrainTile_Dunes + 0x0D,
-        TerrainTile_DunesNotUp          = TerrainTile_Dunes + 0x0E,
-        TerrainTile_DunesFull           = TerrainTile_Dunes + 0x0F,
+        TerrainTile_Dunes = 0x14,
+        TerrainTile_DunesIsland = TerrainTile_Dunes + 0x00,
+        TerrainTile_DunesUp = TerrainTile_Dunes + 0x01,
+        TerrainTile_DunesRight = TerrainTile_Dunes + 0x02,
+        TerrainTile_DunesUpRight = TerrainTile_Dunes + 0x03,
+        TerrainTile_DunesDown = TerrainTile_Dunes + 0x04,
+        TerrainTile_DunesUpDown = TerrainTile_Dunes + 0x05,
+        TerrainTile_DunesDownRight = TerrainTile_Dunes + 0x06,
+        TerrainTile_DunesNotLeft = TerrainTile_Dunes + 0x07,
+        TerrainTile_DunesLeft = TerrainTile_Dunes + 0x08,
+        TerrainTile_DunesUpLeft = TerrainTile_Dunes + 0x09,
+        TerrainTile_DunesLeftRight = TerrainTile_Dunes + 0x0A,
+        TerrainTile_DunesNotDown = TerrainTile_Dunes + 0x0B,
+        TerrainTile_DunesDownLeft = TerrainTile_Dunes + 0x0C,
+        TerrainTile_DunesNotRight = TerrainTile_Dunes + 0x0D,
+        TerrainTile_DunesNotUp = TerrainTile_Dunes + 0x0E,
+        TerrainTile_DunesFull = TerrainTile_Dunes + 0x0F,
 
-        TerrainTile_Mountain            = 0x24,
-        TerrainTile_MountainIsland      = TerrainTile_Mountain + 0x00,
-        TerrainTile_MountainUp          = TerrainTile_Mountain + 0x01,
-        TerrainTile_MountainRight       = TerrainTile_Mountain + 0x02,
-        TerrainTile_MountainUpRight     = TerrainTile_Mountain + 0x03,
-        TerrainTile_MountainDown        = TerrainTile_Mountain + 0x04,
-        TerrainTile_MountainUpDown      = TerrainTile_Mountain + 0x05,
-        TerrainTile_MountainDownRight   = TerrainTile_Mountain + 0x06,
-        TerrainTile_MountainNotLeft     = TerrainTile_Mountain + 0x07,
-        TerrainTile_MountainLeft        = TerrainTile_Mountain + 0x08,
-        TerrainTile_MountainUpLeft      = TerrainTile_Mountain + 0x09,
-        TerrainTile_MountainLeftRight   = TerrainTile_Mountain + 0x0A,
-        TerrainTile_MountainNotDown     = TerrainTile_Mountain + 0x0B,
-        TerrainTile_MountainDownLeft    = TerrainTile_Mountain + 0x0C,
-        TerrainTile_MountainNotRight    = TerrainTile_Mountain + 0x0D,
-        TerrainTile_MountainNotUp       = TerrainTile_Mountain + 0x0E,
-        TerrainTile_MountainFull        = TerrainTile_Mountain + 0x0F,
+        TerrainTile_Mountain = 0x24,
+        TerrainTile_MountainIsland = TerrainTile_Mountain + 0x00,
+        TerrainTile_MountainUp = TerrainTile_Mountain + 0x01,
+        TerrainTile_MountainRight = TerrainTile_Mountain + 0x02,
+        TerrainTile_MountainUpRight = TerrainTile_Mountain + 0x03,
+        TerrainTile_MountainDown = TerrainTile_Mountain + 0x04,
+        TerrainTile_MountainUpDown = TerrainTile_Mountain + 0x05,
+        TerrainTile_MountainDownRight = TerrainTile_Mountain + 0x06,
+        TerrainTile_MountainNotLeft = TerrainTile_Mountain + 0x07,
+        TerrainTile_MountainLeft = TerrainTile_Mountain + 0x08,
+        TerrainTile_MountainUpLeft = TerrainTile_Mountain + 0x09,
+        TerrainTile_MountainLeftRight = TerrainTile_Mountain + 0x0A,
+        TerrainTile_MountainNotDown = TerrainTile_Mountain + 0x0B,
+        TerrainTile_MountainDownLeft = TerrainTile_Mountain + 0x0C,
+        TerrainTile_MountainNotRight = TerrainTile_Mountain + 0x0D,
+        TerrainTile_MountainNotUp = TerrainTile_Mountain + 0x0E,
+        TerrainTile_MountainFull = TerrainTile_Mountain + 0x0F,
 
-        TerrainTile_Spice               = 0x34,
-        TerrainTile_SpiceIsland         = TerrainTile_Spice + 0x00,
-        TerrainTile_SpiceUp             = TerrainTile_Spice + 0x01,
-        TerrainTile_SpiceRight          = TerrainTile_Spice + 0x02,
-        TerrainTile_SpiceUpRight        = TerrainTile_Spice + 0x03,
-        TerrainTile_SpiceDown           = TerrainTile_Spice + 0x04,
-        TerrainTile_SpiceUpDown         = TerrainTile_Spice + 0x05,
-        TerrainTile_SpiceDownRight      = TerrainTile_Spice + 0x06,
-        TerrainTile_SpiceNotLeft        = TerrainTile_Spice + 0x07,
-        TerrainTile_SpiceLeft           = TerrainTile_Spice + 0x08,
-        TerrainTile_SpiceUpLeft         = TerrainTile_Spice + 0x09,
-        TerrainTile_SpiceLeftRight      = TerrainTile_Spice + 0x0A,
-        TerrainTile_SpiceNotDown        = TerrainTile_Spice + 0x0B,
-        TerrainTile_SpiceDownLeft       = TerrainTile_Spice + 0x0C,
-        TerrainTile_SpiceNotRight       = TerrainTile_Spice + 0x0D,
-        TerrainTile_SpiceNotUp          = TerrainTile_Spice + 0x0E,
-        TerrainTile_SpiceFull           = TerrainTile_Spice + 0x0F,
+        TerrainTile_Spice = 0x34,
+        TerrainTile_SpiceIsland = TerrainTile_Spice + 0x00,
+        TerrainTile_SpiceUp = TerrainTile_Spice + 0x01,
+        TerrainTile_SpiceRight = TerrainTile_Spice + 0x02,
+        TerrainTile_SpiceUpRight = TerrainTile_Spice + 0x03,
+        TerrainTile_SpiceDown = TerrainTile_Spice + 0x04,
+        TerrainTile_SpiceUpDown = TerrainTile_Spice + 0x05,
+        TerrainTile_SpiceDownRight = TerrainTile_Spice + 0x06,
+        TerrainTile_SpiceNotLeft = TerrainTile_Spice + 0x07,
+        TerrainTile_SpiceLeft = TerrainTile_Spice + 0x08,
+        TerrainTile_SpiceUpLeft = TerrainTile_Spice + 0x09,
+        TerrainTile_SpiceLeftRight = TerrainTile_Spice + 0x0A,
+        TerrainTile_SpiceNotDown = TerrainTile_Spice + 0x0B,
+        TerrainTile_SpiceDownLeft = TerrainTile_Spice + 0x0C,
+        TerrainTile_SpiceNotRight = TerrainTile_Spice + 0x0D,
+        TerrainTile_SpiceNotUp = TerrainTile_Spice + 0x0E,
+        TerrainTile_SpiceFull = TerrainTile_Spice + 0x0F,
 
-        TerrainTile_ThickSpice          = 0x44,
-        TerrainTile_ThickSpiceIsland    = TerrainTile_ThickSpice + 0x00,
-        TerrainTile_ThickSpiceUp        = TerrainTile_ThickSpice + 0x01,
-        TerrainTile_ThickSpiceRight     = TerrainTile_ThickSpice + 0x02,
-        TerrainTile_ThickSpiceUpRight   = TerrainTile_ThickSpice + 0x03,
-        TerrainTile_ThickSpiceDown      = TerrainTile_ThickSpice + 0x04,
-        TerrainTile_ThickSpiceUpDown    = TerrainTile_ThickSpice + 0x05,
+        TerrainTile_ThickSpice = 0x44,
+        TerrainTile_ThickSpiceIsland = TerrainTile_ThickSpice + 0x00,
+        TerrainTile_ThickSpiceUp = TerrainTile_ThickSpice + 0x01,
+        TerrainTile_ThickSpiceRight = TerrainTile_ThickSpice + 0x02,
+        TerrainTile_ThickSpiceUpRight = TerrainTile_ThickSpice + 0x03,
+        TerrainTile_ThickSpiceDown = TerrainTile_ThickSpice + 0x04,
+        TerrainTile_ThickSpiceUpDown = TerrainTile_ThickSpice + 0x05,
         TerrainTile_ThickSpiceDownRight = TerrainTile_ThickSpice + 0x06,
-        TerrainTile_ThickSpiceNotLeft   = TerrainTile_ThickSpice + 0x07,
-        TerrainTile_ThickSpiceLeft      = TerrainTile_ThickSpice + 0x08,
-        TerrainTile_ThickSpiceUpLeft    = TerrainTile_ThickSpice + 0x09,
+        TerrainTile_ThickSpiceNotLeft = TerrainTile_ThickSpice + 0x07,
+        TerrainTile_ThickSpiceLeft = TerrainTile_ThickSpice + 0x08,
+        TerrainTile_ThickSpiceUpLeft = TerrainTile_ThickSpice + 0x09,
         TerrainTile_ThickSpiceLeftRight = TerrainTile_ThickSpice + 0x0A,
-        TerrainTile_ThickSpiceNotDown   = TerrainTile_ThickSpice + 0x0B,
-        TerrainTile_ThickSpiceDownLeft  = TerrainTile_ThickSpice + 0x0C,
-        TerrainTile_ThickSpiceNotRight  = TerrainTile_ThickSpice + 0x0D,
-        TerrainTile_ThickSpiceNotUp     = TerrainTile_ThickSpice + 0x0E,
-        TerrainTile_ThickSpiceFull      = TerrainTile_ThickSpice + 0x0F,
+        TerrainTile_ThickSpiceNotDown = TerrainTile_ThickSpice + 0x0B,
+        TerrainTile_ThickSpiceDownLeft = TerrainTile_ThickSpice + 0x0C,
+        TerrainTile_ThickSpiceNotRight = TerrainTile_ThickSpice + 0x0D,
+        TerrainTile_ThickSpiceNotUp = TerrainTile_ThickSpice + 0x0E,
+        TerrainTile_ThickSpiceFull = TerrainTile_ThickSpice + 0x0F,
 
-        TerrainTile_SpiceBloom          = 0x54,
-        TerrainTile_SpecialBloom        = 0x55
+        TerrainTile_SpiceBloom = 0x54,
+        TerrainTile_SpecialBloom = 0x55
     } TERRAINTILETYPE;
 
 
@@ -364,19 +364,19 @@ public:
     ObjectBase* getObjectWithID(Uint32 objectID) const;
 
 
-    const std::list<Uint32>& getAirUnitList() const {
+    const std::vector<Uint32>& getAirUnitList() const {
         return assignedAirUnitList;
     }
 
-    const std::list<Uint32>& getInfantryList() const {
+    const std::vector<Uint32>& getInfantryList() const {
         return assignedInfantryList;
     }
 
-    const std::list<Uint32>& getUndergroundUnitList() const {
+    const std::vector<Uint32>& getUndergroundUnitList() const {
         return assignedUndergroundUnitList;
     }
 
-    const std::list<Uint32>& getNonInfantryGroundObjectList() const {
+    const std::vector<Uint32>& getNonInfantryGroundObjectList() const {
         return assignedNonInfantryGroundObjectList;
     }
 

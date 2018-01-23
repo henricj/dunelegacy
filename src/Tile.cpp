@@ -500,6 +500,7 @@ void Tile::blitSelectionRects(int xPos, int yPos) const {
         }
     };
 
+#if __cpp_coroutines
     // draw underground selection rectangles
 
     std::for_each(  assignedUndergroundUnitList.begin(),
@@ -557,19 +558,19 @@ void Tile::selectAllPlayersUnitsOfType(int houseID, int itemID, ObjectBase** las
 }
 
 void Tile::unassignAirUnit(Uint32 objectID) {
-    assignedAirUnitList.remove(objectID);
+    erase_remove(assignedAirUnitList, objectID);
 }
 
 void Tile::unassignNonInfantryGroundObject(Uint32 objectID) {
-    assignedNonInfantryGroundObjectList.remove(objectID);
+    erase_remove(assignedNonInfantryGroundObjectList, objectID);
 }
 
 void Tile::unassignUndergroundUnit(Uint32 objectID) {
-    assignedUndergroundUnitList.remove(objectID);
+    erase_remove(assignedUndergroundUnitList, objectID);
 }
 
 void Tile::unassignInfantry(Uint32 objectID, int currentPosition) {
-    assignedInfantryList.remove(objectID);
+    erase_remove(assignedInfantryList, objectID);
 }
 
 void Tile::unassignObject(Uint32 objectID) {
@@ -596,16 +597,18 @@ void Tile::setType(int newType) {
         spice = 0;
 
         if (isRock()) {
+            std::vector<ObjectBase*> pending_destroy;
+
             sandRegion = NONE_ID;
             if (hasAnUndergroundUnit()) {
                 auto iter = assignedUndergroundUnitList.begin();
 
-                do {
-                    ObjectBase* current = currentGame->getObjectManager().getObject(*iter);
-                    ++iter;
+                auto units = std::move(assignedUndergroundUnitList);
+                assignedUndergroundUnitList.clear();
 
-                    if(current == nullptr)
-                        continue;
+                for (const auto object_id : units)
+                {
+                    const auto object = currentGame->getObjectManager().getObject(object_id);
 
                     unassignUndergroundUnit(current->getObjectID());
                     current->destroy();
@@ -616,18 +619,29 @@ void Tile::setType(int newType) {
                 if (hasANonInfantryGroundObject()) {
                     auto iter = assignedNonInfantryGroundObjectList.begin();
 
-                    do {
-                        ObjectBase* current = currentGame->getObjectManager().getObject(*iter);
-                        ++iter;
+                    auto units = std::move(assignedNonInfantryGroundObjectList);
+                    assignedNonInfantryGroundObjectList.clear();
 
-                        if(current == nullptr)
-                            continue;
+                    for (const auto object_id : units)
+                    {
+                        const auto object = currentGame->getObjectManager().getObject(object_id);
 
-                        unassignNonInfantryGroundObject(current->getObjectID());
-                        current->destroy();
-                    } while(iter != assignedNonInfantryGroundObjectList.end());
+                        if (object)
+                            pending_destroy.push_back(object);
+                        else
+                            assignedNonInfantryGroundObjectList.push_back(object_id);
+                    }
+
+                    // Try to keep the largest buffer.
+                    if (assignedNonInfantryGroundObjectList.empty() && units.capacity() > assignedNonInfantryGroundObjectList.capacity())
+                    {
+                        units.clear();
+                        assignedNonInfantryGroundObjectList = std::move(units);
+                    }
                 }
             }
+
+            std::for_each(std::begin(pending_destroy), std::end(pending_destroy), [](ObjectBase* obj) { obj->destroy(); });
         }
     }
 
@@ -808,6 +822,7 @@ ObjectBase* Tile::getObjectWithID(Uint32 objectID) const {
     }
 
     return nullptr;
+#endif
 }
 
 void Tile::triggerSpiceBloom(House* pTrigger) {
@@ -1144,8 +1159,21 @@ int Tile::getHideTile(int teamID) const {
     bool down = (currentGameMap->tileExists(location.x, location.y + 1) == false) || (currentGameMap->getTile(location.x, location.y + 1)->isExploredByTeam(teamID) == false);
     bool left = (currentGameMap->tileExists(location.x - 1, location.y) == false) || (currentGameMap->getTile(location.x - 1, location.y)->isExploredByTeam(teamID) == false);
 
-    return (((int)up) | (right << 1) | (down << 2) | (left << 3));
+    if (obj)
+        *lastCheckedObject = obj;
+
+    if (last_selected)
+        *lastSelectedObject = last_selected;
 }
+#else
+template<typename Pred>
+void Tile::selectFilter(int houseID, ObjectBase** lastCheckedObject, ObjectBase** lastSelectedObject, Pred&& predicate)
+{
+    ConcatIterator<Uint32> iterator;
+    iterator.addList(assignedInfantryList);
+    iterator.addList(assignedNonInfantryGroundObjectList);
+    iterator.addList(assignedUndergroundUnitList);
+    iterator.addList(assignedAirUnitList);
 
 int Tile::getFogTile(int teamID) const {
     // are all surrounding tiles fogged?
@@ -1162,7 +1190,11 @@ int Tile::getFogTile(int teamID) const {
     bool down = (currentGameMap->tileExists(location.x, location.y + 1) == false) || (currentGameMap->getTile(location.x, location.y + 1)->isFoggedByTeam(teamID) == true);
     bool left = (currentGameMap->tileExists(location.x - 1, location.y) == false) || (currentGameMap->getTile(location.x - 1, location.y)->isFoggedByTeam(teamID) == true);
 
-    return (((int)up) | (right << 1) | (down << 2) | (left << 3));
+    if (obj)
+        *lastCheckedObject = obj;
+
+    if (last_selected)
+        *lastSelectedObject = last_selected;
 }
 
 template<typename Pred>
