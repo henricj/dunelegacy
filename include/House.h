@@ -41,75 +41,79 @@ class House
 public:
     House(int newHouse, int newCredits, int maxUnits, Uint8 teamID = 0, int quota = 0);
     explicit House(InputStream& stream);
+    House(const House &) = delete;
+    House(House &&) = delete;
+    House& operator=(const House &) = delete;
+    House& operator=(House &&) = delete;
     void init();
     virtual ~House();
     virtual void save(OutputStream& stream) const;
 
     void addPlayer(std::unique_ptr<Player> newPlayer);
 
-    inline int getHouseID() const { return houseID; }
-    inline int getTeamID() const { return teamID; }
+    int getHouseID() const noexcept { return houseID; }
+    int getTeamID() const noexcept { return teamID; }
 
-    inline bool isAI() const { return ai; }
-    inline bool isAlive() const { return (teamID == 0) || !(((numStructures - numItem[Structure_Wall]) <= 0) && (((numUnits - numItem[Unit_Carryall] - numItem[Unit_Harvester] - numItem[Unit_Frigate] - numItem[Unit_Sandworm]) <= 0))); }
+    bool isAI() const noexcept { return ai; }
+    bool isAlive() const noexcept { return (teamID == 0) || !(((numStructures - numItem[Structure_Wall]) <= 0) && (((numUnits - numItem[Unit_Carryall] - numItem[Unit_Harvester] - numItem[Unit_Frigate] - numItem[Unit_Sandworm]) <= 0))); }
 
-    inline bool hasCarryalls() const { return (numItem[Unit_Carryall] > 0); }
-    inline bool hasBarracks() const { return (numItem[Structure_Barracks] > 0); }
-    inline bool hasIX() const { return (numItem[Structure_IX] > 0); }
-    inline bool hasLightFactory() const { return (numItem[Structure_LightFactory] > 0); }
-    inline bool hasHeavyFactory() const { return (numItem[Structure_HeavyFactory] > 0); }
-    inline bool hasRefinery() const { return (numItem[Structure_Refinery] > 0); }
-    inline bool hasRepairYard() const { return (numItem[Structure_RepairYard] > 0); }
-    inline bool hasStarPort() const { return (numItem[Structure_StarPort] > 0); }
-    inline bool hasWindTrap() const { return (numItem[Structure_WindTrap] > 0); }
-    inline bool hasSandworm() const { return (numItem[Unit_Sandworm] > 0); }
-    inline bool hasRadar() const { return (numItem[Structure_Radar] > 0); }
+    bool hasCarryalls() const noexcept { return (numItem[Unit_Carryall] > 0); }
+    bool hasBarracks() const noexcept { return (numItem[Structure_Barracks] > 0); }
+    bool hasIX() const noexcept { return (numItem[Structure_IX] > 0); }
+    bool hasLightFactory() const noexcept { return (numItem[Structure_LightFactory] > 0); }
+    bool hasHeavyFactory() const noexcept { return (numItem[Structure_HeavyFactory] > 0); }
+    bool hasRefinery() const noexcept { return (numItem[Structure_Refinery] > 0); }
+    bool hasRepairYard() const noexcept { return (numItem[Structure_RepairYard] > 0); }
+    bool hasStarPort() const noexcept { return (numItem[Structure_StarPort] > 0); }
+    bool hasWindTrap() const noexcept { return (numItem[Structure_WindTrap] > 0); }
+    bool hasSandworm() const noexcept { return (numItem[Unit_Sandworm] > 0); }
+    bool hasRadar() const noexcept { return (numItem[Structure_Radar] > 0); }
 
-    inline bool hasRadarOn() const { return (hasRadar() && hasPower()); }
-    inline bool hasPower() const { return (producedPower >= powerRequirement); }
+    bool hasRadarOn() const noexcept { return (hasRadar() && hasPower()); }
+    bool hasPower() const noexcept { return (producedPower >= powerRequirement); }
 
-    inline int getNumStructures() const { return numStructures; };
-    inline int getNumUnits() const { return numUnits; };
-    inline int getNumItems(int itemID) const { return (isStructure(itemID) || isUnit(itemID)) ? numItem[itemID] : 0; };
+    int getNumStructures() const noexcept { return numStructures; };
+    int getNumUnits() const noexcept{ return numUnits; };
+    int getNumItems(int itemID) const { return (isStructure(itemID) || isUnit(itemID)) ? numItem[itemID] : 0; };
 
-    inline int getCapacity() const { return capacity; }
+    int getCapacity() const noexcept{ return capacity; }
 
-    inline int getProducedPower() const { return producedPower; }
+    int getProducedPower() const noexcept { return producedPower; }
     void setProducedPower(int newPower);
-    inline int getPowerRequirement() const { return powerRequirement; }
+    int getPowerRequirement() const noexcept { return powerRequirement; }
 
-    inline int getBuiltValue() const { return unitBuiltValue + structureBuiltValue; }
-    inline int getUnitBuiltValue() const { return unitBuiltValue; }
-    inline int getMilitaryValue() const { return militaryValue; }
-    inline int getKillValue() const { return killValue; }
-    inline int getLossValue() const { return lossValue; }
-    inline int getStructureBuiltValue() const { return structureBuiltValue; }
-    inline int getNumBuiltUnits() const { return numBuiltUnits; }
-    inline int getNumBuiltStructures() const { return numBuiltStructures; }
-    inline int getDestroyedValue() const { return destroyedValue; }
-    inline int getNumDestroyedUnits() const { return numDestroyedUnits; }
-    inline int getNumDestroyedStructures() const { return numDestroyedStructures; }
-    inline int getNumBuiltItems(int itemID) const { return numItemBuilt[itemID]; }
-    inline int getNumKilledItems(int itemID) const { return numItemKills[itemID]; }
-    inline int getNumLostItems(int itemID) const { return numItemLosses[itemID]; }
-    inline Sint32 getNumItemDamageInflicted(int itemID) const { return numItemDamageInflicted[itemID]; }
-    inline FixPoint getHarvestedSpice() const { return harvestedSpice; }
-    inline int getNumVisibleEnemyUnits() const { return numVisibleEnemyUnits; }
-    inline int getNumVisibleFriendlyUnits() const { return numVisibleFriendlyUnits; }
+    int getBuiltValue() const noexcept { return unitBuiltValue + structureBuiltValue; }
+    int getUnitBuiltValue() const noexcept { return unitBuiltValue; }
+    int getMilitaryValue() const noexcept { return militaryValue; }
+    int getKillValue() const noexcept { return killValue; }
+    int getLossValue() const noexcept { return lossValue; }
+    int getStructureBuiltValue() const noexcept { return structureBuiltValue; }
+    int getNumBuiltUnits() const noexcept { return numBuiltUnits; }
+    int getNumBuiltStructures() const noexcept { return numBuiltStructures; }
+    int getDestroyedValue() const noexcept { return destroyedValue; }
+    int getNumDestroyedUnits() const noexcept { return numDestroyedUnits; }
+    int getNumDestroyedStructures() const noexcept { return numDestroyedStructures; }
+    int getNumBuiltItems(int itemID) const noexcept { return numItemBuilt[itemID]; }
+    int getNumKilledItems(int itemID) const noexcept { return numItemKills[itemID]; }
+    int getNumLostItems(int itemID) const noexcept { return numItemLosses[itemID]; }
+    Sint32 getNumItemDamageInflicted(int itemID) const noexcept { return numItemDamageInflicted[itemID]; }
+    FixPoint getHarvestedSpice() const noexcept { return harvestedSpice; }
+    int getNumVisibleEnemyUnits() const noexcept { return numVisibleEnemyUnits; }
+    int getNumVisibleFriendlyUnits() const noexcept { return numVisibleFriendlyUnits; }
 
-    inline int getQuota() const { return quota; };
-    inline int getMaxUnits() const { return maxUnits; };
+    int getQuota() const noexcept { return quota; };
+    int getMaxUnits() const noexcept { return maxUnits; };
 
-    inline void informContactWithEnemy() { bHadContactWithEnemy = true; };
-    inline bool hadContactWithEnemy() const { return bHadContactWithEnemy; };
-    inline void informDirectContactWithEnemy() { bHadDirectContactWithEnemy = true; };
-    inline bool hadDirectContactWithEnemy() const { return bHadDirectContactWithEnemy; };
+    void informContactWithEnemy() { bHadContactWithEnemy = true; };
+    bool hadContactWithEnemy() const { return bHadContactWithEnemy; };
+    void informDirectContactWithEnemy() { bHadDirectContactWithEnemy = true; };
+    bool hadDirectContactWithEnemy() const { return bHadDirectContactWithEnemy; };
 
-    inline void informVisibleEnemyUnit() {
+    void informVisibleEnemyUnit() {
         numVisibleEnemyUnits++;
     }
 
-    inline void informVisibleFriendlyUnit() {
+    void informVisibleFriendlyUnit() {
         numVisibleFriendlyUnits++;
     }
 
@@ -117,7 +121,7 @@ public:
         This function checks if the limit for ground units is already reached. Infantry units are only counted as 1/3.
         \return true, if the limit is already reached, false if building further ground units is allowed
     */
-    inline bool isGroundUnitLimitReached() const {
+    bool isGroundUnitLimitReached() const {
         int numGroundUnit = numUnits - numItem[Unit_Soldier] - numItem[Unit_Trooper] - numItem[Unit_Carryall] - numItem[Unit_Ornithopter];
         return (numGroundUnit + (numItem[Unit_Soldier]+2)/3 + (numItem[Unit_Trooper]+2)/3  >= maxUnits);
     };
@@ -126,8 +130,8 @@ public:
         This function checks if the limit for infantry units is already reached. Infantry units are only counted as 1/3.
         \return true, if the limit is already reached, false if building further infantry units is allowed
     */
-    inline bool isInfantryUnitLimitReached() const {
-        int numGroundUnit = numUnits - numItem[Unit_Soldier] - numItem[Unit_Trooper] - numItem[Unit_Carryall] - numItem[Unit_Ornithopter];
+    bool isInfantryUnitLimitReached() const {
+        const auto numGroundUnit = numUnits - numItem[Unit_Soldier] - numItem[Unit_Trooper] - numItem[Unit_Carryall] - numItem[Unit_Ornithopter];
         return (numGroundUnit + numItem[Unit_Soldier]/3 + numItem[Unit_Trooper]/3  >= maxUnits);
     };
 
@@ -135,17 +139,17 @@ public:
         This function checks if the limit for air units is already reached.
         \return true, if the limit is already reached, false if building further air units is allowed
     */
-    inline bool isAirUnitLimitReached() const {
+    bool isAirUnitLimitReached() const {
         return (numItem[Unit_Carryall] + numItem[Unit_Ornithopter] >= 11*std::max(maxUnits,25)/25);
     }
 
-    inline Choam& getChoam() { return choam; };
-    inline const Choam& getChoam() const { return choam; };
+    Choam& getChoam() { return choam; };
+    const Choam& getChoam() const { return choam; };
 
 
-    inline FixPoint getStartingCredits() const { return startingCredits; }
-    inline FixPoint getStoredCredits() const { return storedCredits; }
-    inline int getCredits() const { return lround(storedCredits+startingCredits); }
+    FixPoint getStartingCredits() const { return startingCredits; }
+    FixPoint getStoredCredits() const { return storedCredits; }
+    int getCredits() const { return lround(storedCredits+startingCredits); }
     void addCredits(FixPoint newCredits, bool wasRefined = false);
     void returnCredits(FixPoint newCredits);
     FixPoint takeCredits(FixPoint amount);

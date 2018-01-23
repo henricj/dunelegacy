@@ -26,7 +26,12 @@
 class VideoEvent {
 public:
     /// default constructor
-    VideoEvent();
+    VideoEvent() noexcept;
+
+    VideoEvent(const VideoEvent &) = delete;
+    VideoEvent(VideoEvent &&) = delete;
+    VideoEvent& operator=(const VideoEvent &) = delete;
+    VideoEvent& operator=(VideoEvent &&) = delete;
 
     /// destructor
     virtual ~VideoEvent();

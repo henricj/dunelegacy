@@ -18,11 +18,14 @@
 #ifndef INPUTSTREAM_H
 #define INPUTSTREAM_H
 
+#include <DataTypes.h>
+
 #include <fixmath/FixPoint.h>
 #include <misc/SDL2pp.h>
 
 #include <string>
 #include <list>
+#include <utility>
 #include <vector>
 #include <set>
 #include <exception>
@@ -30,8 +33,8 @@
 class InputStream
 {
 public:
-    InputStream() { ; };
-    virtual ~InputStream() { ; };
+    InputStream() = default;
+    virtual ~InputStream() = default;
 
     /**
         readString reads in a strings from the stream.
@@ -121,7 +124,7 @@ public:
     */
     std::list<Uint32> readUint32List() {
         std::list<Uint32> List;
-        Uint32 size = readUint32();
+        const auto size = readUint32();
         for(unsigned int i=0; i < size; i++) {
             List.push_back(readUint32());
         }
@@ -130,14 +133,26 @@ public:
 
     /**
         Reads a vector of Uint32 written by writeUint32Vector().
+        \param vec operate in place (reduce heap thrashing)
+    */
+    void readUint32Vector(std::vector<Uint32>& vec)
+    {
+        vec.clear();
+        const auto size = readUint32();
+        vec.reserve(size);
+        for(unsigned int i=0; i < size; i++) {
+            vec.push_back(readUint32());
+        }
+    }
+
+    /**
+        Reads a vector of Uint32 written by writeUint32Vector().
         \return the read vector
     */
     std::vector<Uint32> readUint32Vector() {
         std::vector<Uint32> vec;
-        Uint32 size = readUint32();
-        for(unsigned int i=0; i < size; i++) {
-            vec.push_back(readUint32());
-        }
+        readUint32Vector(vec);
+
         return vec;
     }
 
@@ -145,10 +160,10 @@ public:
         Reads a set of Uint32 written by writeUint32Set().
         \return the read set
     */
-    std::set<Uint32> readUint32Set() {
-        std::set<Uint32> retSet;
-        Uint32 size = readUint32();
-        for(unsigned int i=0; i < size; i++) {
+    Dune::selected_set_type readUint32Set() {
+        Dune::selected_set_type retSet;
+        const auto size = readUint32();
+        for (auto i = decltype(size){0}; i < size; i++) {
             retSet.insert(readUint32());
         }
         return retSet;
@@ -157,15 +172,25 @@ public:
     class exception : public std::exception {
     public:
         exception() noexcept = default;
+        exception(const exception &) = default;
+        exception(exception &&) = default;
         virtual ~exception() noexcept = default;
+
+        exception& operator=(const exception &) = default;
+        exception& operator=(exception &&) = default;
     };
 
     class eof : public InputStream::exception {
     public:
-        explicit eof(const std::string& str) noexcept : str(str) { }
+        explicit eof(std::string str) noexcept : str(std::move(str)) { }
+        eof(const eof &) = default;
+        eof(eof &&) = default;
         virtual ~eof() noexcept = default;
 
-        const char* what() const throw () override { return str.c_str(); }
+        eof& operator=(const eof &) = default;
+        eof& operator=(eof &&) = default;
+
+        const char* what() const noexcept override { return str.c_str(); }
 
     private:
         std::string str;
@@ -173,8 +198,13 @@ public:
 
     class error : public InputStream::exception {
     public:
-        explicit error(const std::string& str) noexcept : str(str) { };
+        explicit error(std::string str) noexcept : str(std::move(str)) { };
+        error(const error &) = default;
+        error(error &&) = default;
         virtual ~error() noexcept = default;
+
+        error& operator=(const error &) = default;
+        error& operator=(error &&) = default;
 
         const char* what() const noexcept override { return str.c_str(); };
 

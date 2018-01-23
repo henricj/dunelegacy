@@ -102,7 +102,7 @@ MapEditor::~MapEditor() {
 }
 
 std::string MapEditor::generateMapname() const {
-    int numPlayers = std::count_if( players.begin(),
+    const auto numPlayers = std::count_if( players.begin(),
                                     players.end(),
                                     [](const MapEditor::Player& player) {
                                         return player.bActive;

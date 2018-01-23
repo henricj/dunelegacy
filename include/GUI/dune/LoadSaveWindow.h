@@ -33,19 +33,24 @@
 class LoadSaveWindow : public Window
 {
 public:
-    LoadSaveWindow(bool bSave, const std::string& caption, const std::vector<std::string>& directories, const std::vector<std::string>& directoryTitles, const std::string& extension, int preselectedDirectoryIndex = 0, const std::string& preselectedFile = "", Uint32 color = COLOR_DEFAULT);
+    LoadSaveWindow(bool bSave, const std::string& caption, const std::vector<std::string>& directories, const std::vector<std::string>& directoryTitles, std::string extension, int preselectedDirectoryIndex = 0, const std::string& preselectedFile = "", Uint32 color = COLOR_DEFAULT);
     virtual ~LoadSaveWindow();
 
-    void updateEntries();
-    std::string getFilename() { return filename; };
+    LoadSaveWindow(const LoadSaveWindow &) = delete;
+    LoadSaveWindow(LoadSaveWindow &&) = delete;
+    LoadSaveWindow& operator=(const LoadSaveWindow &) = delete;
+    LoadSaveWindow& operator=(LoadSaveWindow &&) = delete;
 
-    bool isSaveWindow() { return bSaveWindow; };
+    void updateEntries();
+    std::string getFilename() const noexcept { return filename; };
+
+    bool isSaveWindow() const noexcept { return bSaveWindow; };
 
     const std::string& getDirectory() const { return directories[currentDirectoryIndex]; };
 
     int getCurrentDirectoryIndex() const { return currentDirectoryIndex; };
 
-    std::string getExtension() { return extension; };
+    std::string getExtension() const noexcept { return extension; };
 
     bool handleKeyPress(SDL_KeyboardEvent& key) override;
 

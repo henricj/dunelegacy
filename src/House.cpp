@@ -224,17 +224,17 @@ void House::setProducedPower(int newPower) {
 
 
 void House::addCredits(FixPoint newCredits, bool wasRefined) {
-    if(newCredits > 0) {
-        if(wasRefined == true) {
-            harvestedSpice += newCredits;
-        }
+    if(newCredits <= 0) return;
+    
+    if(wasRefined == true) {
+        harvestedSpice += newCredits;
+    }
 
-        storedCredits += newCredits;
-        if(this == pLocalHouse) {
-            if(((currentGame->winFlags & WINLOSEFLAGS_QUOTA) != 0) && (quota != 0)) {
-                if(storedCredits >= quota) {
-                    win();
-                }
+    storedCredits += newCredits;
+    if(this == pLocalHouse) {
+        if(((currentGame->winFlags & WINLOSEFLAGS_QUOTA) != 0) && (quota != 0)) {
+            if(storedCredits >= quota) {
+                win();
             }
         }
     }
@@ -245,7 +245,7 @@ void House::addCredits(FixPoint newCredits, bool wasRefined) {
 
 void House::returnCredits(FixPoint newCredits) {
     if(newCredits > 0) {
-        FixPoint leftCapacity = capacity - storedCredits;
+        const auto leftCapacity = capacity - storedCredits;
         if(newCredits <= leftCapacity) {
             addCredits(newCredits, false);
         } else {
@@ -311,9 +311,10 @@ void House::printStat() const {
 
 
 void House::updateBuildLists() {
-    for(StructureBase* pStructure : structureList) {
+    for(auto pStructure : structureList) {
         if(pStructure->isABuilder() && (pStructure->getOwner() == this)) {
-            static_cast<BuilderBase*>(pStructure)->updateBuildList();
+            assert(nullptr != dynamic_cast<BuilderBase*>(pStructure));
+            static_cast<BuilderBase*>(pStructure)->updateBuildList();  // NOLINT
         }
     }
 }

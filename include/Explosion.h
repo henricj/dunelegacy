@@ -31,7 +31,10 @@ public:
     explicit Explosion(InputStream& stream);
     ~Explosion();
 
-    void init();
+    Explosion(const Explosion &) = delete;
+    Explosion(Explosion &&) = delete;
+    Explosion& operator=(const Explosion &) = delete;
+    Explosion& operator=(Explosion &&) = delete;
 
     void save(OutputStream& stream) const;
 
@@ -47,6 +50,8 @@ private:
     int numFrames = 0;
     int currentFrame;
     int frameTimer;
+
+    void init();
 };
 
 

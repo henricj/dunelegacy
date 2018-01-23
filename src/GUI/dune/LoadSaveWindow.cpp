@@ -29,10 +29,11 @@
 
 #include <misc/format.h>
 
-#include <stdio.h>
+#include <cstdio>
+#include <utility>
 
-LoadSaveWindow::LoadSaveWindow(bool bSave, const std::string& caption, const std::vector<std::string>& directories, const std::vector<std::string>& directoryTitles, const std::string& extension, int preselectedDirectoryIndex, const std::string& preselectedFile, Uint32 color)
- : Window(0,0,0,0), bSaveWindow(bSave), directories(directories), directoryTitles(directoryTitles), extension(extension), currentDirectoryIndex(preselectedDirectoryIndex), preselectedFile(preselectedFile), color(color) {
+LoadSaveWindow::LoadSaveWindow(bool bSave, const std::string& caption, const std::vector<std::string>& directories, const std::vector<std::string>& directoryTitles, std::string extension, int preselectedDirectoryIndex, const std::string& preselectedFile, Uint32 color)
+ : Window(0,0,0,0), bSaveWindow(bSave), directories(directories), directoryTitles(directoryTitles), extension(std::move(extension)), currentDirectoryIndex(preselectedDirectoryIndex), preselectedFile(preselectedFile), color(color) {
 
     // set up window
     SDL_Texture *pBackground = pGFXManager->getUIGraphic(UI_LoadSaveWindow);
@@ -47,7 +48,7 @@ LoadSaveWindow::LoadSaveWindow(bool bSave, const std::string& caption, const std
     mainHBox.addWidget(HSpacer::create(16));
 
     titleLabel.setTextColor(COLOR_LIGHTYELLOW, COLOR_TRANSPARENT);
-    titleLabel.setAlignment((Alignment_Enum) (Alignment_HCenter | Alignment_VCenter));
+    titleLabel.setAlignment(static_cast<Alignment_Enum>(Alignment_HCenter | Alignment_VCenter));
     titleLabel.setText(caption);
     mainVBox.addWidget(&titleLabel);
 
@@ -60,7 +61,7 @@ LoadSaveWindow::LoadSaveWindow(bool bSave, const std::string& caption, const std
             directoryButtons[i].setText(directoryTitles[i]);
             directoryButtons[i].setTextColor(color);
             directoryButtons[i].setToggleButton(true);
-            directoryButtons[i].setOnClick(std::bind(&LoadSaveWindow::onDirectoryChange, this, i));
+            directoryButtons[i].setOnClick(std::bind(&LoadSaveWindow::onDirectoryChange, this, static_cast<int>(i)));
 
             directoryHBox.addWidget(&directoryButtons[i]);
         }
@@ -124,8 +125,8 @@ void LoadSaveWindow::updateEntries() {
     fileList.clearAllEntries();
 
     int preselectedFileIndex = -1;
-    for(const std::string fileName : getFileNamesList(directories[currentDirectoryIndex],extension, true, FileListOrder_ModifyDate_Dsc)) {
-        std::string entryName = fileName.substr(0, fileName.length() - extension.length() - 1);
+    for(const auto& fileName : getFileNamesList(directories[currentDirectoryIndex], extension, true, FileListOrder_ModifyDate_Dsc)) {
+        const auto entryName = fileName.substr(0, fileName.length() - extension.length() - 1);
         fileList.addEntry(entryName);
 
         if(entryName == preselectedFile) {
@@ -149,7 +150,7 @@ bool LoadSaveWindow::handleKeyPress(SDL_KeyboardEvent& key) {
             onOK();
             return true;
         } else if(key.keysym.sym == SDLK_DELETE) {
-            int index = fileList.getSelectedIndex();
+            const auto index = fileList.getSelectedIndex();
             if(index >= 0) {
                 QstBox* pQstBox = QstBox::create(   fmt::sprintf(_("Do you really want to delete '%s' ?"), fileList.getEntry(index).c_str()),
                                                     _("Yes"),

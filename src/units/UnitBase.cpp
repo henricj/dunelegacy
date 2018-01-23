@@ -974,7 +974,7 @@ void UnitBase::handleDamage(int damage, Uint32 damagerID, House* damagerOwner) {
     }
 }
 
-bool UnitBase::isInGuardRange(const ObjectBase* pObject) const  {
+bool UnitBase::isInGuardRange(const ObjectBase* object) const {
     int checkRange;
     switch(attackMode) {
         case GUARD: {
@@ -1013,7 +1013,7 @@ bool UnitBase::isInGuardRange(const ObjectBase* pObject) const  {
     return (blockDistance(guardPoint*TILESIZE + Coord(TILESIZE/2, TILESIZE/2), pObject->getCenterPoint()) <= checkRange*TILESIZE);
 }
 
-bool UnitBase::isInAttackRange(const ObjectBase* pObject) const {
+bool UnitBase::isInAttackRange(const ObjectBase* object) const {
     int checkRange;
     switch(attackMode) {
         case GUARD: {
@@ -1050,7 +1050,7 @@ bool UnitBase::isInAttackRange(const ObjectBase* pObject) const {
         checkRange = getViewRange() + 1;
     }
 
-    return (blockDistance(guardPoint*TILESIZE + Coord(TILESIZE/2, TILESIZE/2), pObject->getCenterPoint()) <= checkRange*TILESIZE);
+    return (blockDistance(guardPoint*TILESIZE + Coord(TILESIZE/2, TILESIZE/2), object->getCenterPoint()) <= checkRange*TILESIZE);
 }
 
 bool UnitBase::isInWeaponRange(const ObjectBase* object) const {
@@ -1434,7 +1434,7 @@ bool UnitBase::SearchPathWithAStar() {
     }
 
     AStarSearch pathfinder(currentGameMap, this, location, destinationCoord);
-    pathList = pathfinder.getFoundPath();
+    pathfinder.getFoundPath(pathList);
 
     if(pathList.empty() == true) {
         nextSpotFound = false;

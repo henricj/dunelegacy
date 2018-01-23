@@ -87,11 +87,11 @@ public:
 
     Mix_Chunk* getSubsong(int Num);
 
-    void setVolume(int newVolume) {
+    void setVolume(int newVolume) noexcept {
         volume = newVolume;
     }
 
-    int getVolume() {
+    int getVolume() const noexcept {
         return volume;
     }
 
@@ -115,7 +115,7 @@ private:
     int _numSoundTriggers;
     const int *_soundTriggers;
 
-    unsigned char getsampsize() {
+    unsigned char getsampsize() const noexcept {
         return m_channels * (m_format == AUDIO_U8 || m_format == AUDIO_S8 ? 1 : 2);
     }
 
