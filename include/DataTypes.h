@@ -28,6 +28,7 @@
 
 typedef std::array<SDL_Texture*, NUM_ZOOMLEVEL> zoomable_texture;
 
+#include <unordered_set>
 
 class Coord {
 public:
@@ -299,5 +300,11 @@ typedef enum {
     AITeamType_Slither,
     AITeamType_Harvester
 } AITeamType;
+
+
+namespace Dune {
+    typedef Uint32 object_id_type;
+    typedef std::unordered_set<object_id_type> selected_set_type;
+}
 
 #endif //DATATYPES_H

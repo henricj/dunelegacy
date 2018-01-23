@@ -270,19 +270,20 @@ public:
         This method selects all units/structures in the list aList.
         \param aList the list containing all the units/structures to be selected
     */
-    void selectAll(const std::set<Uint32>& aList);
+    void selectAll(const Dune::selected_set_type& aList)  const;
 
     /**
         This method unselects all units/structures in the list aList.
         \param aList the list containing all the units/structures to be unselected
     */
-    void unselectAll(const std::set<Uint32>& aList);
+    void unselectAll(const Dune::selected_set_type& aList) const;
 
     /**
         Returns a list of all currently selected objects.
         \return list of currently selected units/structures
     */
-    std::set<Uint32>& getSelectedList() { return selectedList; };
+    Dune::selected_set_type& getSelectedList() noexcept { return selectedList; }
+    const Dune::selected_set_type& getSelectedList() const noexcept { return selectedList; }
 
     /**
         Marks that the selection changed (and must be retransmitted to other players in multiplayer games)
@@ -296,13 +297,14 @@ public:
     };
 
 
-    void onReceiveSelectionList(const std::string& name, const std::set<Uint32>& newSelectionList, int groupListIndex);
+    void onReceiveSelectionList(const std::string& name, const Dune::selected_set_type& newSelectionList, int groupListIndex);
 
     /**
         Returns a list of all currently by  the other player selected objects (Only in multiplayer with multiple players per house).
         \return list of currently selected units/structures by the other player
     */
-    std::set<Uint32>& getSelectedByOtherPlayerList() { return selectedByOtherPlayerList; };
+    Dune::selected_set_type& getSelectedByOtherPlayerList() noexcept { return selectedByOtherPlayerList; };
+    const Dune::selected_set_type& getSelectedByOtherPlayerList() const noexcept { return selectedByOtherPlayerList; };
 
     /**
         Called when a peer disconnects the game.
@@ -496,7 +498,7 @@ private:
         Selects the next structure of any of the types specified in itemIDs. If none of this type is currently selected the first one is selected.
         \param  itemIDs  the ids of the structures to select
     */
-    void selectNextStructureOfType(const std::set<Uint32>& itemIDs);
+    void selectNextStructureOfType(const Dune::selected_set_type& itemIDs);
 
     /**
         Returns the game speed of this game: The number of ms per game cycle.
@@ -596,8 +598,8 @@ private:
     Uint32                                  startWaitingForOtherPlayersTime = 0;    ///< The time in milliseconds when we started waiting for other players
 
     bool    bSelectionChanged = false;                  ///< Has the selected list changed (and must be retransmitted to other plays in multiplayer games)
-    std::set<Uint32> selectedList;                      ///< A set of all selected units/structures
-    std::set<Uint32> selectedByOtherPlayerList;         ///< This is only used in multiplayer games where two players control one house
+    Dune::selected_set_type selectedList;                      ///< A set of all selected units/structures
+    Dune::selected_set_type selectedByOtherPlayerList;         ///< This is only used in multiplayer games where two players control one house
     RobustList<Explosion*> explosionList;               ///< A list containing all the explosions that must be drawn
 
     std::string localPlayerName;                            ///< the name of the local player

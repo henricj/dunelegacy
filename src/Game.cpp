@@ -100,7 +100,7 @@ Game::~Game() {
     if(pNetworkManager != nullptr) {
         pNetworkManager->setOnReceiveChatMessage(std::function<void (const std::string&, const std::string&)>());
         pNetworkManager->setOnReceiveCommandList(std::function<void (const std::string&, const CommandList&)>());
-        pNetworkManager->setOnReceiveSelectionList(std::function<void (const std::string&, const std::set<Uint32>&, int)>());
+        pNetworkManager->setOnReceiveSelectionList(std::function<void (const std::string&, const Dune::selected_set_type&, int)>());
         pNetworkManager->setOnPeerDisconnected(std::function<void (const std::string&, bool, int)>());
     }
 
@@ -2463,7 +2463,7 @@ void Game::takeScreenshot() const {
 }
 
 
-void Game::selectNextStructureOfType(const std::set<Uint32>& itemIDs) {
+void Game::selectNextStructureOfType(const Dune::selected_set_type& itemIDs) {
     bool bSelectNext = true;
 
     if(selectedList.size() == 1) {
