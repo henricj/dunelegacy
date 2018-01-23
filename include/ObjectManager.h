@@ -27,10 +27,10 @@
 // forward declarations
 class ObjectBase;
 
-typedef std::map<Uint32,ObjectBase*> ObjectMap;
+typedef std::unordered_map<Uint32,ObjectBase*> ObjectMap;
 
 /// This class holds all objects (structures and units) in the game.
-class ObjectManager{
+class ObjectManager {
 public:
     /**
         Default constructor
@@ -39,10 +39,15 @@ public:
     {
     }
 
+    ObjectManager(const ObjectManager &) = delete;
+    ObjectManager(ObjectManager &&) = delete;
+    ObjectManager& operator=(const ObjectManager &) = delete;
+    ObjectManager& operator=(ObjectManager &&) = delete;
+
     /**
         Default destructor
     */
-    ~ObjectManager() { ; }
+    ~ObjectManager() = default;
 
 
     /**
@@ -66,22 +71,22 @@ public:
 
     /**
         This method searches for the object with ObjectID.
-        \param  ObjectID        ID of the object to search for
+        \param  objectID        ID of the object to search for
         \return Pointer to this object (nullptr if not found)
     */
-    inline ObjectBase* getObject(Uint32 objectID) const {
-        ObjectMap::const_iterator iter = objectMap.find(objectID);
+    ObjectBase* getObject(Uint32 objectID) const {
+        const auto iter = objectMap.find(objectID);
 
         if(iter == objectMap.end()) {
             return nullptr;
-        } else {
-            return iter->second;
         }
+  
+        return iter->second;
     }
 
     /**
         This method removes one object.
-        \param  ObjectID        ID of the object to remove
+        \param  objectID        ID of the object to remove
         \return false if there was no object with this ObjectID, true if it could be removed
     */
     bool removeObject(Uint32 objectID) {
