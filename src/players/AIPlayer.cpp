@@ -33,6 +33,7 @@
 #include <units/Harvester.h>
 
 #include <algorithm>
+#include <array>
 
 #define AIUPDATEINTERVAL 50
 
@@ -49,12 +50,12 @@ AIPlayer::AIPlayer(InputStream& stream, House* associatedHouse) : Player(stream,
     attackTimer = stream.readSint32();
     buildTimer = stream.readSint32();
 
-    Uint32 NumPlaceLocations = stream.readUint32();
-    for(Uint32 i = 0; i < NumPlaceLocations; i++) {
-        Sint32 x = stream.readSint32();
-        Sint32 y = stream.readSint32();
+    const auto NumPlaceLocations = stream.readUint32();
+    for (auto i = decltype(NumPlaceLocations){0}; i < NumPlaceLocations; ++i) {
+        const auto x = stream.readSint32();
+        const auto y = stream.readSint32();
 
-        placeLocations.push_back(Coord(x,y));
+        placeLocations.emplace_back(x, y);
     }
 }
 
@@ -108,7 +109,7 @@ void AIPlayer::onDecrementStructures(int itemID, const Coord& location) {
 }
 
 void AIPlayer::onDamage(const ObjectBase* pObject, int damage, Uint32 damagerID) {
-    const ObjectBase* pDamager = getObject(damagerID);
+    auto pDamager = getObject(damagerID);
 
     if(pDamager == nullptr || pDamager->getOwner()->getTeamID() == getHouse()->getTeamID()) {
         return;
@@ -137,10 +138,10 @@ void AIPlayer::onDamage(const ObjectBase* pObject, int damage, Uint32 damagerID)
 }
 
 void AIPlayer::scrambleUnitsAndDefend(const ObjectBase* pIntruder) {
-    for(const UnitBase* pUnit : getUnitList()) {
+    for(auto pUnit : getUnitList()) {
         if(pUnit->isRespondable() && (pUnit->getOwner() == getHouse())) {
             if((pUnit->getAttackMode() != HUNT) && !pUnit->hasATarget()) {
-                Uint32 itemID = pUnit->getItemID();
+                const auto itemID = pUnit->getItemID();
                 if((itemID != Unit_Harvester) && (itemID != Unit_MCV) && (itemID != Unit_Carryall)
                     && (itemID != Unit_Frigate) && (itemID != Unit_Saboteur) && (itemID != Unit_Sandworm)) {
                     doAttackObject(pUnit, pIntruder, true);
@@ -151,8 +152,8 @@ void AIPlayer::scrambleUnitsAndDefend(const ObjectBase* pIntruder) {
 }
 
 Coord AIPlayer::findPlaceLocation(Uint32 itemID) {
-    int structureSizeX = getStructureSize(itemID).x;
-    int structureSizeY = getStructureSize(itemID).y;
+    const auto structureSizeX = getStructureSize(itemID).x;
+    const auto structureSizeY = getStructureSize(itemID).y;
 
     int minX = getMap().getSizeX();
     int maxX = -1;
@@ -166,7 +167,7 @@ Coord AIPlayer::findPlaceLocation(Uint32 itemID) {
         maxX = getMap().getSizeX() - 1;
         maxY = getMap().getSizeY() - 1;
     } else {
-        for(const StructureBase* pStructure : getStructureList()) {
+        for(auto pStructure : getStructureList()) {
             if (pStructure->getOwner() == getHouse()) {
                 if (pStructure->getX() < minX)
                     minX = pStructure->getX();
@@ -222,9 +223,9 @@ Coord AIPlayer::findPlaceLocation(Uint32 itemID) {
 
                 case Structure_ConstructionYard: {
                     FixPoint nearestUnit = 10000000;
-                    for(const UnitBase* pUnit : getUnitList()) {
+                    for(auto pUnit : getUnitList()) {
                         if(pUnit->getOwner() == getHouse()) {
-                            FixPoint distance = blockDistance(pos, pUnit->getLocation());
+                            const auto distance = blockDistance(pos, pUnit->getLocation());
                             if(distance < nearestUnit) {
                                 nearestUnit = distance;
                             }
@@ -245,7 +246,7 @@ Coord AIPlayer::findPlaceLocation(Uint32 itemID) {
                     for(int y = 0 ; y < currentGameMap->getSizeY(); y++) {
                         for(int x = 0; x < currentGameMap->getSizeX(); x++) {
                             if(currentGameMap->getTile(x,y)->isRock() == false) {
-                                FixPoint distance = blockDistance(pos, Coord(x,y));
+                                const auto distance = blockDistance(pos, Coord(x,y));
                                 if(distance < nearestSand) {
                                     nearestSand = distance;
                                 }
@@ -262,9 +263,9 @@ Coord AIPlayer::findPlaceLocation(Uint32 itemID) {
                 case Structure_RocketTurret: {
                     // place towards enemy
                     FixPoint nearestEnemy = 10000000;
-                    for(const StructureBase* pStructure : getStructureList()) {
+                    for(const auto pStructure : getStructureList()) {
                         if(pStructure->getOwner()->getTeamID() != getHouse()->getTeamID()) {
-                            FixPoint distance = blockDistance(pos, pStructure->getLocation());
+                            const auto distance = blockDistance(pos, pStructure->getLocation());
                             if(distance < nearestEnemy) {
                                 nearestEnemy = distance;
                             }
@@ -283,9 +284,9 @@ Coord AIPlayer::findPlaceLocation(Uint32 itemID) {
                 default: {
                     // place at a save place
                     FixPoint nearestEnemy = 10000000;
-                    for(const StructureBase* pStructure : getStructureList()) {
+                    for(const auto pStructure : getStructureList()) {
                         if(pStructure->getOwner()->getTeamID() != getHouse()->getTeamID()) {
-                            FixPoint distance = blockDistance(pos, pStructure->getLocation());
+                            const auto distance = blockDistance(pos, pStructure->getLocation());
                             if(distance < nearestEnemy) {
                                 nearestEnemy = distance;
                             }
@@ -383,8 +384,8 @@ void AIPlayer::build() {
                             if(getHouse()->getNumItems(Unit_Harvester) < getMaxHarvester()) {
                                 doProduceItem(pBuilder, Unit_Harvester);
                             } else if(getHouse()->getCredits() > 1500) {
-                                int numTanks = getHouse()->getNumItems(Unit_Devastator) + getHouse()->getNumItems(Unit_SiegeTank) + getHouse()->getNumItems(Unit_Tank);
-                                int numLauncher = getHouse()->getNumItems(Unit_Launcher) + getHouse()->getNumItems(Unit_Deviator);
+                                const auto numTanks = getHouse()->getNumItems(Unit_Devastator) + getHouse()->getNumItems(Unit_SiegeTank) + getHouse()->getNumItems(Unit_Tank);
+                                const auto numLauncher = getHouse()->getNumItems(Unit_Launcher) + getHouse()->getNumItems(Unit_Deviator);
 
                                 if(pBuilder->isAvailableToBuild(Unit_SonicTank)) {
                                     doProduceItem(pBuilder, Unit_SonicTank);
@@ -419,7 +420,7 @@ void AIPlayer::build() {
                     case Structure_StarPort: {
                         const StarPort* pStarPort = static_cast<const StarPort*>(pBuilder);
                         if(isAllowedToArm() && pStarPort->okToOrder())  {
-                            const Choam& choam = getHouse()->getChoam();
+                            const auto& choam = getHouse()->getChoam();
 
                             if(getHouse()->getNumItems(Unit_Harvester) < getMaxHarvester() && choam.getNumAvailable(Unit_Harvester) > 0) {
                                 if(getHouse()->getCredits() > 300) {
@@ -436,7 +437,7 @@ void AIPlayer::build() {
                                 }
                             } else {
                                 // order max 6 units
-                                int num = 6;
+                                auto num = 6;
                                 while((num > 0) && (getHouse()->getCredits() > 2000)) {
                                     if(pStarPort->isAvailableToBuild(Unit_SiegeTank) && choam.getNumAvailable(Unit_SiegeTank) > 0 && choam.isCheap(Unit_SiegeTank)) {
                                         doProduceItem(pBuilder, Unit_SiegeTank);
@@ -461,7 +462,7 @@ void AIPlayer::build() {
                             && (pBuilder->getHealth() >= pBuilder->getMaxHealth())
                             && (pBuilder->isUpgrading() == false)
                             && (pBuilder->getCurrentUpgradeLevel() < pBuilder->getMaxUpgradeLevel()) ) {
-                            doUpgrade(pBuilder);
+                            auto upgrading = doUpgrade(pBuilder);
                         }
 
                         if(bConstructionYardChecked == false && !pBuilder->isUpgrading()) {
@@ -578,8 +579,8 @@ void AIPlayer::build() {
 
                         if(pBuilder->isWaitingToPlace()) {
                             //find total region of possible placement and place in random ok position
-                            int itemID = pBuilder->getCurrentProducedItem();
-                            Coord itemsize = getStructureSize(itemID);
+                            const auto itemID = pBuilder->getCurrentProducedItem();
+                            const auto itemsize = getStructureSize(itemID);
 
                             //see if there is already a spot to put it stored
                             if(!placeLocations.empty()) {
@@ -621,7 +622,7 @@ void AIPlayer::build() {
 void AIPlayer::attack() {
     Coord destination;
     const UnitBase* pLeaderUnit = nullptr;
-    for(const UnitBase *pUnit : getUnitList()) {
+    for(auto pUnit : getUnitList()) {
         if (pUnit->isRespondable()
             && (pUnit->getOwner() == getHouse())
             && pUnit->isActive()
@@ -639,11 +640,11 @@ void AIPlayer::attack() {
                 destination.x = pLeaderUnit->getX();
                 destination.y = pLeaderUnit->getY();
 
-                const StructureBase* closestStructure = pLeaderUnit->findClosestTargetStructure();
+                const auto closestStructure = pLeaderUnit->findClosestTargetStructure();
                 if(closestStructure) {
                     destination = closestStructure->getClosestPoint(pLeaderUnit->getLocation());
                 } else {
-                    const UnitBase* closestUnit = pLeaderUnit->findClosestTargetUnit();
+                    auto closestUnit = pLeaderUnit->findClosestTargetUnit();
                     if(closestUnit) {
                         destination.x = closestUnit->getX();
                         destination.y = closestUnit->getY();
@@ -661,9 +662,9 @@ void AIPlayer::attack() {
 }
 
 void AIPlayer::checkAllUnits() {
-    for(const UnitBase* pUnit : getUnitList()) {
+    for(auto pUnit : getUnitList()) {
         if(pUnit->getItemID() == Unit_Sandworm) {
-                for(const UnitBase* pUnit2 : getUnitList()) {
+                for(auto pUnit2 : getUnitList()) {
                     if(pUnit2->getOwner() == getHouse() && pUnit2->getItemID() == Unit_Harvester) {
                         const Harvester* pHarvester = static_cast<const Harvester*>(pUnit2);
                         if( getMap().tileExists(pHarvester->getLocation())
@@ -687,7 +688,7 @@ void AIPlayer::checkAllUnits() {
                     if(pMCV->canDeploy()) {
                         doDeploy(pMCV);
                     } else {
-                        Coord pos = findPlaceLocation(Structure_ConstructionYard);
+                        const auto pos = findPlaceLocation(Structure_ConstructionYard);
                         doMove2Pos(pMCV, pos.x, pos.y, true);
                     }
                 }
@@ -707,11 +708,7 @@ void AIPlayer::checkAllUnits() {
 }
 
 bool AIPlayer::isAllowedToArm() const {
-    int teamScore[NUM_TEAMS];
-
-    for(int i = 0; i < NUM_TEAMS; i++) {
-        teamScore[i] = 0;
-    }
+    std::array<int, NUM_TEAMS> teamScore{};
 
     int maxTeamScore = 0;
     for(int i = 0; i < NUM_HOUSES; i++) {

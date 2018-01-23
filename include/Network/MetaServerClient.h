@@ -36,14 +36,20 @@
 class MetaServerClient {
 public:
 
-    explicit MetaServerClient(const std::string& metaServerURL);
+    explicit MetaServerClient(std::string metaServerURL);
     ~MetaServerClient();
+
+    MetaServerClient(const MetaServerClient &) = delete;
+    MetaServerClient(MetaServerClient &&) = delete;
+
+    MetaServerClient& operator=(const MetaServerClient &) = delete;
+    MetaServerClient& operator=(MetaServerClient &&) = delete;
 
     /**
         Sets the function that shall be called if there is an update to the server list
         \param  pOnGameServerInfoList   Function to call on an update to the server list
     */
-    inline void setOnGameServerInfoList(std::function<void (std::list<GameServerInfo>&)> pOnGameServerInfoList) {
+    void setOnGameServerInfoList(std::function<void (std::list<GameServerInfo>&)> pOnGameServerInfoList) {
         this->pOnGameServerInfoList = pOnGameServerInfoList;
         lastServerInfoListUpdate = 0;
     }
@@ -52,7 +58,7 @@ public:
         Sets the function that shall be called if the metaserver reports an error
         \param  pOnMetaServerError  Function to call on metaserver error
     */
-    inline void setOnMetaServerError(std::function<void (int, const std::string&)> pOnMetaServerError) {
+    void setOnMetaServerError(std::function<void (int, const std::string&)> pOnMetaServerError) {
         this->pOnMetaServerError = pOnMetaServerError;
     }
 

@@ -38,9 +38,10 @@
 
 #include <sand.h>
 #include <globals.h>
+ #include <utility>
 
 
-Player::Player(House* associatedHouse, const std::string& playername) : pHouse(associatedHouse), playerID(0), playername(playername) {
+Player::Player(House* associatedHouse, std::string playername) : pHouse(associatedHouse), playerID(0), playername(std::move(playername)) {
 }
 
 Player::Player(InputStream& stream, House* associatedHouse) : pHouse(associatedHouse) {
@@ -79,11 +80,11 @@ void Player::logWarn(const char* fmt, ...) const {
     fprintf(stderr, "\n");
 }
 
-Random& Player::getRandomGen() const {
+Random& Player::getRandomGen() {
     return currentGame->randomGen;
 }
 
-const GameInitSettings& Player::getGameInitSettings() const {
+const GameInitSettings& Player::getGameInitSettings() {
     return currentGame->getGameInitSettings();
 }
 
@@ -99,19 +100,19 @@ const Map& Player::getMap() const {
     return *currentGameMap;
 }
 
-const ObjectBase* Player::getObject(Uint32 objectID) const {
+const ObjectBase* Player::getObject(Uint32 objectID) {
     return currentGame->getObjectManager().getObject(objectID);
 }
 
-const RobustList<const StructureBase*>& Player::getStructureList() const {
+const RobustList<const StructureBase*>& Player::getStructureList() {
     return reinterpret_cast<const RobustList<const StructureBase*>&>(structureList);
 }
 
-const RobustList<const UnitBase*>& Player::getUnitList() const {
+const RobustList<const UnitBase*>& Player::getUnitList() {
     return reinterpret_cast<const RobustList<const UnitBase*>&>(unitList);
 }
 
-const House* Player::getHouse(int houseID) const {
+const House* Player::getHouse(int houseID) {
     if(houseID < 0 || houseID >= NUM_HOUSES) {
         return nullptr;
     }

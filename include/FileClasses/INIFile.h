@@ -57,17 +57,17 @@ public:
     class INIFileLine
     {
     public:
-        INIFileLine(const std::string& completeLine, int lineNumber);
+        INIFileLine(std::string completeLine, int lineNumber);
         virtual ~INIFileLine();
 
-        inline int getLineNumber() const { return line; };
+        int getLineNumber() const noexcept { return line; };
 
         friend class INIFile;
         friend class INIFile::Section;
 
     protected:
-        inline void shiftLineNumber(int shift) {
-            INIFileLine* pCurrentLine = this;
+        void shiftLineNumber(int shift) noexcept {
+            auto pCurrentLine = this;
             while(pCurrentLine != nullptr) {
                 pCurrentLine->line += shift;
                 pCurrentLine = pCurrentLine->nextLine;
@@ -84,7 +84,7 @@ public:
     class Key : public INIFileLine
     {
     public:
-        Key(const std::string& completeLine, int lineNumber, int keystringbegin, int keystringlength, int valuestringbegin, int valuestringlength);
+        Key(std::string completeLine, int lineNumber, int keystringbegin, int keystringlength, int valuestringbegin, int valuestringlength);
         Key(const std::string& keyname, const std::string& value, bool bEscapeIfNeeded = true, bool bWhitespace = true);
         ~Key();
 
@@ -121,25 +121,25 @@ public:
     class KeyIterator
     {
     public:
-        KeyIterator() : key(nullptr) {
+        KeyIterator() noexcept : key(nullptr) {
         }
 
-        explicit KeyIterator(Key* pKey) : key(pKey) {
+        explicit KeyIterator(Key* pKey) noexcept : key(pKey) {
         }
 
-        Key& operator*() const {
+        Key& operator*() const noexcept {
             return *key;
         }
 
-        Key* operator->() const {
+        Key* operator->() const noexcept {
             return key;
         }
 
-        bool operator==(const KeyIterator& other) const {
+        bool operator==(const KeyIterator& other) const noexcept {
             return (key == other.key);
         }
 
-        bool operator!=(const KeyIterator& other) const {
+        bool operator!=(const KeyIterator& other) const noexcept {
             return !(operator==(other));
         }
 
@@ -157,7 +157,7 @@ public:
     class Section : public INIFileLine
     {
     public:
-        Section(const std::string& completeLine, int lineNumber, int sectionstringbegin, int sectionstringlength, bool bWhitespace = true);
+        Section(std::string completeLine, int lineNumber, int sectionstringbegin, int sectionstringlength, bool bWhitespace = true);
         Section(const std::string& sectionname, bool bWhitespace = true);
         ~Section();
 
@@ -191,29 +191,29 @@ public:
     class SectionIterator
     {
     public:
-        SectionIterator() : section(nullptr) {
+        SectionIterator() noexcept : section(nullptr) {
         }
 
-        explicit SectionIterator(Section* pSection) : section(pSection) {
+        explicit SectionIterator(Section* pSection) noexcept : section(pSection) {
         }
 
-        Section& operator*() const {
+        Section& operator*() const noexcept {
             return *section;
         }
 
-        Section* operator->() const {
+        Section* operator->() const noexcept {
             return section;
         }
 
-        bool operator==(const SectionIterator& other) const {
+        bool operator==(const SectionIterator& other) const noexcept {
             return (section == other.section);
         }
 
-        bool operator!=(const SectionIterator& other) const {
+        bool operator!=(const SectionIterator& other) const noexcept {
             return !(operator==(other));
         }
 
-        void operator++() {
+        void operator++() noexcept {
             if(section != nullptr) {
                 section = section->nextSection;
             }

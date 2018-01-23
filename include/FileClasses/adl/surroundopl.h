@@ -63,7 +63,7 @@ class CSurroundopl: public Copl
         void write(int reg, int val) override;
 
         void init() override;
-        void setchip(int n) override;
+        void setchip(int n) noexcept override;
 };
 
 #endif

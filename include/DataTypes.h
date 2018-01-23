@@ -31,60 +31,60 @@ typedef std::array<SDL_Texture*, NUM_ZOOMLEVEL> zoomable_texture;
 
 class Coord {
 public:
-    Coord()
+    Coord() noexcept
      : x(0), y(0) {
     }
 
-    Coord(int x,int y)
+    Coord(int x,int y) noexcept
      : x(x), y(y)
     {
     }
 
-    inline bool operator==(const Coord& c) const {
+    bool operator==(const Coord& c) const noexcept {
         return (x == c.x && y == c.y);
     }
 
-    inline bool operator!=(const Coord& c) const {
+    bool operator!=(const Coord& c) const noexcept {
         return !operator==(c);
     }
 
-    inline Coord& operator+=(const Coord& c) {
+    Coord& operator+=(const Coord& c) noexcept {
         x += c.x;
         y += c.y;
         return *this;
     }
 
-    inline Coord operator+(const Coord& c) const {
+    Coord operator+(const Coord& c) const noexcept {
         Coord ret = *this;
         ret += c;
         return ret;
     }
 
-    inline Coord& operator-=(const Coord& c) {
+    Coord& operator-=(const Coord& c) noexcept {
         x -= c.x;
         y -= c.y;
         return *this;
     }
 
-    inline Coord operator-(const Coord& c) const {
+    Coord operator-(const Coord& c) const {
         Coord ret = *this;
         ret -= c;
         return ret;
     }
 
-    inline Coord& operator*=(int c) {
+    Coord& operator*=(int c) noexcept {
         x *= c;
         y *= c;
         return *this;
     }
 
-    inline Coord operator*(int c) const {
+    Coord operator*(int c) const {
         Coord ret = *this;
         ret *= c;
         return ret;
     }
 
-    inline Coord& operator/=(int c) {
+    Coord& operator/=(int c) noexcept {
         x /= c;
         y /= c;
         return *this;
@@ -96,26 +96,26 @@ public:
         return ret;
     }
 
-    inline void invalidate() {
+    void invalidate() {
         x = INVALID_POS;
         y = INVALID_POS;
     }
 
-    inline bool isValid() const {
+    constexpr bool isValid() const noexcept {
         return ((x != INVALID_POS) && (y != INVALID_POS));
     }
 
-    inline bool isInvalid() const {
+    constexpr bool isInvalid() const noexcept {
         return ((x == INVALID_POS) || (y == INVALID_POS));
     }
 
-    static inline const Coord Invalid() {
+    static const Coord Invalid() {
         return Coord(INVALID_POS, INVALID_POS);
     }
 
-    inline operator bool() const {
+    operator bool() const {
         return isValid();
-    };
+    }
 
 public:
     int x;
@@ -203,14 +203,14 @@ public:
 
     class GameOptionsClass {
     public:
-        GameOptionsClass()
+        GameOptionsClass() noexcept
          : gameSpeed(GAMESPEED_DEFAULT), concreteRequired(true), structuresDegradeOnConcrete(true), fogOfWar(false),
            startWithExploredMap(false), instantBuild(false), onlyOnePalace(false), rocketTurretsNeedPower(false),
            sandwormsRespawn(false), killedSandwormsDropSpice(false), manualCarryallDrops(false), maximumNumberOfUnitsOverride(-1)  {
         }
 
 
-        bool operator==(const GameOptionsClass& goc) const {
+        bool operator==(const GameOptionsClass& goc) const noexcept {
             return (gameSpeed == goc.gameSpeed)
                     && (concreteRequired == goc.concreteRequired)
                     && (structuresDegradeOnConcrete == goc.structuresDegradeOnConcrete)

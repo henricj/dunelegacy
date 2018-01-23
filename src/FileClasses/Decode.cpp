@@ -51,10 +51,9 @@ int decode40(const unsigned char *image_in, unsigned char *image_out)
 
     const unsigned char* readp = image_in;
     unsigned char* writep = image_out;
-    Uint16 code;
     Uint16 count;
-    while(1) {
-        code = *readp++;
+    while(true) {
+        Uint16 code = *readp++;
         if(~code & 0x80) {
             //bit 7 = 0
             if(!code) {
@@ -108,7 +107,7 @@ int decode40(const unsigned char *image_in, unsigned char *image_out)
             }
         }
     }
-    return (writep - image_out);
+    return static_cast<int>(writep - image_out);
 }
 
 int decode80(const unsigned char *image_in, unsigned char *image_out, unsigned checksum)
@@ -138,7 +137,7 @@ int decode80(const unsigned char *image_in, unsigned char *image_out, unsigned c
        5 11111111 c c p p
      */
 
-    while (1) {
+    while (true) {
         if ((*readp & 0xc0) == 0x80) {
             //
             // 10cccccc (1)

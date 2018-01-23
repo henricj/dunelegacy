@@ -58,13 +58,13 @@ public:
         If bReadOnly == true it is impossible to add new commands to this command manager. This is useful for replays.
         \param  bReadOnly   true = addCommand() is a NO-OP, false = addCommand() has normal behaviour
     */
-    void setReadOnly(bool bReadOnly) { this->bReadOnly = bReadOnly; }
+    void setReadOnly(bool bReadOnly) noexcept { this->bReadOnly = bReadOnly; }
 
     /**
         Get the current read-only status.
         \return true = addCommand() is a NO-OP, false = addCommand() has normal behaviour
     */
-    bool getReadOnly() const { return bReadOnly; }
+    bool getReadOnly() const noexcept { return bReadOnly; }
 
     /**
         Save all commands to stream. The read-only status is not saved.
@@ -79,10 +79,10 @@ public:
     void load(InputStream& stream);
 
 
-    Uint32 getNetworkCycleBuffer() const { return networkCycleBuffer; }
+    Uint32 getNetworkCycleBuffer() const noexcept { return networkCycleBuffer; }
 
 
-    void setNetworkCycleBuffer(Uint32 newNetworkCycleBuffer) { networkCycleBuffer = newNetworkCycleBuffer; };
+    void setNetworkCycleBuffer(Uint32 newNetworkCycleBuffer) noexcept { networkCycleBuffer = newNetworkCycleBuffer; };
 
     /**
         Updates the command manager and sends commands to other peers

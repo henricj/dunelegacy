@@ -157,9 +157,9 @@ public:
 
     unsigned int getSize() override { return size; };
 
-    unsigned int getPos() override { return (buf_ptr-buf); };
+    unsigned int getPos() override { return static_cast<int>(buf_ptr-buf); };
 
-    unsigned char *getPtr() { return buf_ptr; };
+    unsigned char *getPtr() const noexcept { return buf_ptr; };
 };
 
 class SDLDataSource : public DataSource

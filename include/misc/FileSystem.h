@@ -20,13 +20,14 @@
 
 #include <string>
 #include <list>
+#include <utility>
 #include <stdint.h>
 
 
 class FileInfo {
 public:
-    FileInfo(const std::string& name, uint32_t size, uint64_t modifydate)
-        : name(name), size(size), modifydate(modifydate) {
+    FileInfo(std::string  name, uint32_t size, uint64_t modifydate)
+        : name(std::move(name)), size(size), modifydate(modifydate) {
     }
 
     std::string name;

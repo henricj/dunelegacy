@@ -61,7 +61,6 @@ public:
     void destroy() override;
     void move() override;
 
-    inline void setLocation(const Coord& location) { setLocation(location.x, location.y); }
     void setLocation(int xPos, int yPos) override;
 
     void squash();

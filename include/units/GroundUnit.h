@@ -55,7 +55,7 @@ public:
     */
     virtual void handleSendToRepairClick();
 
-    void doRepair() override;
+    void doRepair() noexcept override;
 
     inline void setAwaitingPickup(bool status) { awaitingPickup = status; }
     inline bool isAwaitingPickup() const { return awaitingPickup; }

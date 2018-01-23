@@ -39,7 +39,6 @@ public:
     void blitToScreen() override;
     void checkPos() override;
 
-    inline void setLocation(const Coord& location) { setLocation(location.x, location.y); }
     void setLocation(int xPos, int yPos) override;
 
     void setTarget(const ObjectBase* newTarget) override;

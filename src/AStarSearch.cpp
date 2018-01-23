@@ -23,7 +23,7 @@
 #include <Game.h>
 #include <units/UnitBase.h>
 
-#include <stdlib.h>
+#include <cstdlib>
 
 #define MAX_NODES_CHECKED   (128*128)
 
@@ -33,12 +33,9 @@ AStarSearch::AStarSearch(Map* pMap, UnitBase* pUnit, Coord start, Coord destinat
     sizeX = pMap->getSizeX();
     sizeY = pMap->getSizeY();
 
-    mapData = static_cast<TileData*>(calloc(sizeX*sizeY, sizeof(TileData)));
-    if(mapData == nullptr) {
-        throw std::bad_alloc();
-    }
+    mapData.resize(sizeX * sizeY);
 
-    FixPoint heuristic = blockDistance(start, destination);
+    const FixPoint heuristic = blockDistance(start, destination);
     FixPoint smallestHeuristic = FixPt_MAX;
     bestCoord = Coord::Invalid();
 
@@ -51,7 +48,7 @@ AStarSearch::AStarSearch(Map* pMap, UnitBase* pUnit, Coord start, Coord destinat
 
         int numNodesChecked = 0;
         while(openList.empty() == false) {
-            Coord currentCoord = extractMin();
+            const Coord currentCoord = extractMin();
 
             if (getMapData(currentCoord).h < smallestHeuristic) {
                 smallestHeuristic = getMapData(currentCoord).h;
@@ -68,7 +65,7 @@ AStarSearch::AStarSearch(Map* pMap, UnitBase* pUnit, Coord start, Coord destinat
             if (numNodesChecked < MAX_NODES_CHECKED) {
                 //push a node for each direction we could go
                 for (int angle=0; angle<=7; angle++) {
-                    Coord nextCoord = pMap->getMapPos(angle, currentCoord);
+                    const Coord nextCoord = pMap->getMapPos(angle, currentCoord);
                     if(pUnit->canPass(nextCoord.x, nextCoord.y)) {
                         Tile& nextTile = *(pMap->getTile(nextCoord));
                         FixPoint g = getMapData(currentCoord).g;
@@ -82,7 +79,7 @@ AStarSearch::AStarSearch(Map* pMap, UnitBase* pUnit, Coord start, Coord destinat
 
                         if(getMapData(currentCoord).parentCoord.isValid())  {
                             //add cost of turning time
-                            int posAngle = currentGameMap->getPosAngle(getMapData(currentCoord).parentCoord, currentCoord);
+                            const int posAngle = currentGameMap->getPosAngle(getMapData(currentCoord).parentCoord, currentCoord);
                             g += angleDiff(angle,posAngle) * rotationSpeed;
                         }
 
@@ -97,8 +94,7 @@ AStarSearch::AStarSearch(Map* pMap, UnitBase* pUnit, Coord start, Coord destinat
             }
 
             if (getMapData(currentCoord).bClosed == false) {
-
-                int depth = std::max(abs(currentCoord.x - destination.x), abs(currentCoord.y - destination.y));
+                const int depth = std::max(abs(currentCoord.x - destination.x), abs(currentCoord.y - destination.y));
 
                 if(depth < std::min(sizeX,sizeY)) {
 
@@ -131,12 +127,12 @@ AStarSearch::AStarSearch(Map* pMap, UnitBase* pUnit, Coord start, Coord destinat
                     //  ####..     => depthcheckmax(0,1,2) = 7
 
 
-                    int x = destination.x;
-                    int y = destination.y;
-                    int k = depth;
-                    int horizontal = std::min(sizeX-1, x+(k-1)) - std::max(0, x-(k-1)) + 1;
-                    int vertical = std::min(sizeY-1, y+k) - std::max(0, y-k) + 1;
-                    int depthCheckMax = ((x-k >= 0) ? vertical : 0) +  ((x+k < sizeX) ? vertical : 0) + ((y-k >= 0) ? horizontal : 0) +  ((y+k < sizeY) ? horizontal : 0);
+                    const auto x = destination.x;
+                    const auto y = destination.y;
+                    const auto k = depth;
+                    const auto horizontal = std::min(sizeX-1, x+(k-1)) - std::max(0, x-(k-1)) + 1;
+                    const auto vertical = std::min(sizeY-1, y+k) - std::max(0, y-k) + 1;
+                    const auto depthCheckMax = ((x-k >= 0) ? vertical : 0) +  ((x+k < sizeX) ? vertical : 0) + ((y-k >= 0) ? horizontal : 0) +  ((y+k < sizeY) ? horizontal : 0);
 
 
                     if (++depthCheckCount[k] >= depthCheckMax) {
@@ -149,13 +145,8 @@ AStarSearch::AStarSearch(Map* pMap, UnitBase* pUnit, Coord start, Coord destinat
                 numNodesChecked++;
             }
         }
-
     }
-
-
 }
 
-AStarSearch::~AStarSearch() {
-    free(mapData);
-}
+AStarSearch::~AStarSearch() = default;
 

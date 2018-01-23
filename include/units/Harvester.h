@@ -50,8 +50,8 @@ public:
     void setAmountOfSpice(FixPoint newSpice);
     void setReturned();
 
+    using ObjectBase::setDestination;
     void setDestination(int newX, int newY) override;
-    inline void setDestination(const Coord& location) { setDestination(location.x, location.y); }
 
     void setTarget(const ObjectBase* newTarget) override;
 

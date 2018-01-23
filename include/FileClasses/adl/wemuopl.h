@@ -54,7 +54,7 @@ public:
       opl.adlib_write(opl.index, val, 0);
     };
 
-  void init() override {};
+  void init() noexcept override {};
 
 private:
   bool      stereo;

@@ -116,7 +116,7 @@ public:
     */
     void writeUint32List(const std::list<Uint32>& dataList) {
         writeUint32(static_cast<Uint32>(dataList.size()));
-        for(const Uint32 data : dataList) {
+        for(const auto data : dataList) {
             writeUint32(data);
         }
     }
@@ -127,7 +127,7 @@ public:
     */
     void writeUint32Vector(const std::vector<Uint32>& dataVector) {
         writeUint32(static_cast<Uint32>(dataVector.size()));
-        for(const Uint32 data : dataVector) {
+        for(const auto data : dataVector) {
             writeUint32(data);
         }
     }
@@ -136,9 +136,9 @@ public:
         Writes out a complete set of Uint32
         \param  dataSet   the set to write
     */
-    void writeUint32Set(const std::set<Uint32>& dataSet) {
+    void writeUint32Set(const Dune::selected_set_type& dataSet) {
         writeUint32(static_cast<Uint32>(dataSet.size()));
-        for(const Uint32 data : dataSet) {
+        for(const auto data : dataSet) {
             writeUint32(data);
         }
     }

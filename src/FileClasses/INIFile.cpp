@@ -23,18 +23,18 @@
 #include <iostream>
 #include <cctype>
 #include <algorithm>
-#include <stdio.h>
+#include <utility>
+#include <cstdio>
 
 
-INIFile::INIFileLine::INIFileLine(const std::string& completeLine, int lineNumber)
- : completeLine(completeLine), line(lineNumber), nextLine(nullptr), prevLine(nullptr) {
+INIFile::INIFileLine::INIFileLine(std::string completeLine, int lineNumber)
+ : completeLine(std::move(completeLine)), line(lineNumber), nextLine(nullptr), prevLine(nullptr) {
 }
 
 INIFile::INIFileLine::~INIFileLine() = default;
 
-INIFile::Key::Key(const std::string& completeLine, int lineNumber, int keystringbegin, int keystringlength, int valuestringbegin, int valuestringlength)
- :  INIFileLine(completeLine, lineNumber), keyStringBegin(keystringbegin), keyStringLength(keystringlength),
-
+INIFile::Key::Key(std::string completeLine, int lineNumber, int keystringbegin, int keystringlength, int valuestringbegin, int valuestringlength)
+ :  INIFileLine(std::move(completeLine), lineNumber), keyStringBegin(keystringbegin), keyStringLength(keystringlength),
     valueStringBegin(valuestringbegin), valueStringLength(valuestringlength),
     nextKey(nullptr), prevKey(nullptr) {
 }
@@ -58,7 +58,7 @@ std::string INIFile::Key::getStringValue() const {
 
 int INIFile::Key::getIntValue(int defaultValue) const {
     std::string value = getStringValue();
-    if(value.size() == 0) {
+    if(value.empty()) {
         return defaultValue;
     }
 
@@ -76,12 +76,12 @@ int INIFile::Key::getIntValue(int defaultValue) const {
 
 bool INIFile::Key::getBoolValue(bool defaultValue) const {
     std::string value = getStringValue();
-    if(value.size() == 0) {
+    if(value.empty()) {
         return defaultValue;
     }
 
     // convert string to lower case
-    std::transform(value.begin(),value.end(), value.begin(), (int(*)(int)) tolower);
+    std::transform(value.begin(),value.end(), value.begin(), static_cast<int(*)(int)>(std::tolower));
 
     if((value == "true") || (value == "enabled") || (value == "on") || (value == "1")) {
         return true;
@@ -93,23 +93,23 @@ bool INIFile::Key::getBoolValue(bool defaultValue) const {
 }
 
 float INIFile::Key::getFloatValue(float defaultValue) const {
-    std::string value = getStringValue();
-    if(value.size() == 0) {
+    auto value = getStringValue();
+    if(value.empty()) {
         return defaultValue;
     }
 
-    float ret = strtof(value.c_str(), nullptr);
+    const auto ret = strtof(value.c_str(), nullptr);
 
     return ret;
 }
 
 double INIFile::Key::getDoubleValue(double defaultValue) const {
-    std::string value = getStringValue();
-    if(value.size() == 0) {
+    auto value = getStringValue();
+    if(value.empty()) {
         return defaultValue;
     }
 
-    double ret = strtod(value.c_str(), nullptr);
+    const auto ret = strtod(value.c_str(), nullptr);
 
     return ret;
 }
@@ -139,7 +139,7 @@ void INIFile::Key::setDoubleValue(double newValue) {
 }
 
 bool INIFile::Key::escapingValueNeeded(const std::string& value) {
-    if(value == "") {
+    if(value.empty()) {
         return true;
     } else {
         // test for non normal char
@@ -161,8 +161,8 @@ std::string INIFile::Key::escapeValue(const std::string& value) {
 }
 
 
-INIFile::Section::Section(const std::string& completeLine, int lineNumber, int sectionstringbegin, int sectionstringlength, bool bWhitespace)
- :  INIFileLine(completeLine, lineNumber), sectionStringBegin(sectionstringbegin), sectionStringLength(sectionstringlength),
+INIFile::Section::Section(std::string completeLine, int lineNumber, int sectionstringbegin, int sectionstringlength, bool bWhitespace)
+ :  INIFileLine(std::move(completeLine), lineNumber), sectionStringBegin(sectionstringbegin), sectionStringLength(sectionstringlength),
     nextSection(nullptr), prevSection(nullptr), keyRoot(nullptr), bWhitespace(bWhitespace) {
 }
 
@@ -1090,7 +1090,7 @@ INIFile::Section* INIFile::getSectionOrCreate(const std::string& sectionname) {
             }
 
 
-            if(curLine->completeLine != "") {
+            if(!curLine->completeLine.empty()) {
                 // previous line is not a blank line => add one blank line
                 INIFileLine* blankLine = new INIFileLine("",INVALID_LINE);
                 curLine->nextLine = blankLine;
