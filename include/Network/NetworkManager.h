@@ -33,7 +33,7 @@
 #include <string>
 #include <list>
 #include <functional>
-#include <stdarg.h>
+#include <cstdarg>
 
 #define NETWORKDISCONNECT_QUIT              1
 #define NETWORKDISCONNECT_TIMEOUT           2
@@ -60,9 +60,13 @@ class NetworkManager {
 public:
     NetworkManager(int port, const std::string& metaserver);
     NetworkManager(const NetworkManager& o) = delete;
+    NetworkManager(NetworkManager&& o) = delete;
     ~NetworkManager();
 
-    bool isServer() const { return bIsServer; };
+    NetworkManager& operator=(const NetworkManager &) = delete;
+    NetworkManager& operator=(NetworkManager &&) = delete;
+
+    bool isServer() const noexcept { return bIsServer; };
 
     void startServer(bool bLANServer, const std::string& serverName, const std::string& playerName, GameInitSettings* pGameInitSettings, int numPlayers, int maxPlayers);
     void updateServer(int numPlayers);
@@ -144,7 +148,7 @@ public:
 
     /**
         Sets the function that can be used to retreive all house/player changes to get the current state
-        \param  pGetGameInitSettingsCallback    function to call
+        \param pGetChangeEventListForNewPlayerCallback    function to call
     */
     inline void setGetChangeEventListForNewPlayerCallback(std::function<ChangeEventList (const std::string&)> pGetChangeEventListForNewPlayerCallback) {
         this->pGetChangeEventListForNewPlayerCallback = pGetChangeEventListForNewPlayerCallback;
@@ -162,7 +166,7 @@ public:
         Sets the function that should be called when a command list is received.
         \param  pOnReceiveCommandList   function to call on receive
     */
-    inline void setOnReceiveCommandList(std::function<void (const std::string&, const CommandList&)> pOnReceiveCommandList) {
+    void setOnReceiveCommandList(std::function<void (const std::string&, const CommandList&)> pOnReceiveCommandList) {
         this->pOnReceiveCommandList = pOnReceiveCommandList;
     }
 
@@ -170,7 +174,7 @@ public:
         Sets the function that should be called when a selection list is received.
         \param  pOnReceiveSelectionList function to call on receive
     */
-    inline void setOnReceiveSelectionList(std::function<void (const std::string&, const std::set<Uint32>&, int)> pOnReceiveSelectionList) {
+    void setOnReceiveSelectionList(std::function<void (const std::string&, const Dune::selected_set_type&, int)> pOnReceiveSelectionList) {
         this->pOnReceiveSelectionList = pOnReceiveSelectionList;
     }
 
