@@ -27,6 +27,11 @@ public:
     Font() = default;
     virtual ~Font() = default;
 
+    Font(const Font &) = delete;
+    Font(Font &&) = delete;
+    Font& operator=(const Font &) = delete;
+    Font& operator=(Font &&) = delete;
+
     virtual void drawTextOnSurface(SDL_Surface* pSurface, const std::string& text, Uint32 baseColor = 0xFFFFFFFF) = 0;
 
     /// Returns the number of pixels a text needs

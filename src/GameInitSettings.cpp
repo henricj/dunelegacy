@@ -98,7 +98,7 @@ GameInitSettings::GameInitSettings(InputStream& stream) {
     gameOptions.manualCarryallDrops = stream.readBool();
     gameOptions.maximumNumberOfUnitsOverride = stream.readSint32();
 
-    Uint32 numHouseInfo = stream.readUint32();
+    const auto numHouseInfo = stream.readUint32();
     for(Uint32 i=0;i<numHouseInfo;i++) {
         houseInfoList.push_back(HouseInfo(stream));
     }

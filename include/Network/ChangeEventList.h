@@ -23,6 +23,7 @@
 #include <misc/SDL2pp.h>
 
 #include <list>
+#include <utility>
 
 class ChangeEventList {
 public:
@@ -38,11 +39,10 @@ public:
 
         ChangeEvent(EventType eventType, Uint32 slot, Uint32 newValue)
          : eventType(eventType), slot(slot), newValue(newValue) {
-
         }
 
-        ChangeEvent(Uint32 slot, const std::string& newStringValue)
-         : eventType(EventType::SetHumanPlayer), slot(slot), newStringValue(newStringValue) {
+        ChangeEvent(Uint32 slot, std::string newStringValue)
+         : eventType(EventType::SetHumanPlayer), slot(slot), newStringValue(std::move(newStringValue)) {
         }
 
         explicit ChangeEvent(InputStream& stream) {
@@ -75,13 +75,19 @@ public:
     ChangeEventList() = default;
 
     explicit ChangeEventList(InputStream& stream) {
-        Uint32 numChangeEvents = stream.readUint32();
+        const auto numChangeEvents = stream.readUint32();
         for(Uint32 i = 0; i < numChangeEvents; i++) {
             changeEventList.emplace_back(stream);
         }
     }
 
+    ChangeEventList(const ChangeEventList &) = default;
+    ChangeEventList(ChangeEventList &&) = default;
+
     ~ChangeEventList() = default;
+
+    ChangeEventList& operator=(const ChangeEventList &) = default;
+    ChangeEventList& operator=(ChangeEventList &&) = default;
 
     void save(OutputStream& stream) const {
         stream.writeUint32(changeEventList.size());

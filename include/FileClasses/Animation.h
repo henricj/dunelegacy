@@ -33,9 +33,9 @@ public:
 
     unsigned int getCurrentFrameNumber();
 
-    void setCurrentFrameNumber(unsigned int newCurrentFrame) { curFrame = newCurrentFrame; };
+    void setCurrentFrameNumber(unsigned int newCurrentFrame) noexcept { curFrame = newCurrentFrame; };
 
-    unsigned int getNumberOfFrames() const { return (unsigned int) frames.size(); };
+    unsigned int getNumberOfFrames() const noexcept { return static_cast<unsigned int>(frames.size()); };
 
     SDL_Surface* getFrame();
 
@@ -43,19 +43,19 @@ public:
 
     const std::vector<sdl2::surface_ptr>& getFrames() { return frames; };
 
-    void setFrameRate(double FrameRate) {
+    void setFrameRate(double FrameRate) noexcept {
         if(FrameRate == 0.0) {
             frameDurationTime = 1;
         } else {
-            frameDurationTime = (int) (1000.0/FrameRate);
+            frameDurationTime = static_cast<int>(1000.0 / FrameRate);
         }
     }
 
-    void setFrameDurationTime(Uint32 frameDurationTime) {
+    void setFrameDurationTime(Uint32 frameDurationTime) noexcept {
         this->frameDurationTime = frameDurationTime;
     }
 
-    Uint32 getFrameDurationTime() const {
+    Uint32 getFrameDurationTime() const noexcept {
         return frameDurationTime;
     }
 
@@ -63,16 +63,16 @@ public:
 
     void setPalette(const Palette& newPalette);
 
-    void setNumLoops(int loops) {
+    void setNumLoops(int loops) noexcept {
         curFrame = 0;
         loopsLeft = loops;
     };
 
-    int getLoopsLeft() const {
+    int getLoopsLeft() const noexcept {
         return loopsLeft;
     };
 
-    bool isFinished() const {
+    bool isFinished() const noexcept {
         if(loopsLeft == -1 || loopsLeft > 0) {
             return false;
         } else {
@@ -80,11 +80,11 @@ public:
         }
     }
 
-    void setFrameOverride(unsigned int frameOverride) { curFrameOverride = frameOverride; };
+    void setFrameOverride(unsigned int frameOverride) noexcept { curFrameOverride = frameOverride; };
 
-    void resetFrameOverride() { curFrameOverride = INVALID_FRAME; };
+    void resetFrameOverride() noexcept { curFrameOverride = INVALID_FRAME; };
 
-    unsigned int getCurrentFrameOverride() const { return curFrameOverride; };
+    unsigned int getCurrentFrameOverride() const noexcept { return curFrameOverride; };
 
 private:
     Uint32 curFrameStartTime;

@@ -17,7 +17,7 @@
 
 #include <CutScenes/VideoEvent.h>
 
-VideoEvent::VideoEvent() = default;
+VideoEvent::VideoEvent() noexcept = default;
 
 VideoEvent::~VideoEvent() = default;
 

@@ -113,6 +113,12 @@ public:
     */
     explicit Command(InputStream& stream);
 
+    Command(const Command &) = default;
+    Command(Command &&) = default;
+
+    Command& operator=(const Command &) = default;
+    Command& operator=(Command &&) = default;
+
     /// destructor
     virtual ~Command();
 
@@ -126,13 +132,13 @@ public:
         Gets the ID of the player that added this command.
         \return the ID of the player
     */
-    Uint8 getPlayerID() const { return playerID; };
+    Uint8 getPlayerID() const noexcept { return playerID; };
 
     /**
         Gets the ID of this command.
         \return the ID of this command
     */
-    CMDTYPE getCommandID() const { return commandID; };
+    CMDTYPE getCommandID() const noexcept { return commandID; };
 
     /**
         Gets the parameters of this command.

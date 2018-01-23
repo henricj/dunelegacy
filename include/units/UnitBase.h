@@ -148,7 +148,7 @@ public:
 
     void handleDamage(int damage, Uint32 damagerID, House* damagerOwner) override;
 
-    void doRepair() override { }
+    void doRepair() noexcept override { }
 
     /**
         Is this object in a range we are guarding. If yes we shall react.
@@ -174,23 +174,21 @@ public:
 
     void setGettingRepaired();
 
-    inline void setGuardPoint(const Coord& newGuardPoint) { setGuardPoint(newGuardPoint.x, newGuardPoint.y); }
+    void setGuardPoint(const Coord& newGuardPoint) { setGuardPoint(newGuardPoint.x, newGuardPoint.y); }
 
     void setGuardPoint(int newX, int newY);
 
+    using ObjectBase::setLocation;
     void setLocation(int xPos, int yPos) override;
 
-    inline void setLocation(const Coord& location) { setLocation(location.x, location.y); }
-
-    inline void setDestination(int newX, int newY) override
+    using ObjectBase::setDestination;
+    void setDestination(int newX, int newY) override
     {
         if((destination.x != newX) || (destination.y != newY)) {
             ObjectBase::setDestination(newX, newY);
             clearPath();
         }
     }
-
-    inline void setDestination(const Coord& location) { setDestination(location.x, location.y); }
 
     virtual void setPickedUp(UnitBase* newCarrier);
 
@@ -215,7 +213,7 @@ public:
 
     virtual FixPoint getMaxSpeed() const;
 
-    inline void clearPath() {
+    void clearPath() {
         pathList.clear();
         nextSpotFound = false;
         recalculatePathTimer = 0;
@@ -223,19 +221,19 @@ public:
         noCloserPointCount = 0;
     }
 
-    inline bool isTracked() const { return tracked; }
+    bool isTracked() const { return tracked; }
 
-    inline bool isTurreted() const { return turreted; }
+     bool isTurreted() const noexcept { return turreted; }
 
-    inline bool isMoving() const { return moving; }
+     bool isMoving() const noexcept { return moving; }
 
-    inline bool wasDeviated() const { return (owner->getHouseID() != originalHouseID); }
+     bool wasDeviated() const noexcept { return (owner->getHouseID() != originalHouseID); }
 
-    inline int getAngle() const { return drawnAngle; }
+     int getAngle() const noexcept { return drawnAngle; }
 
-    inline ATTACKMODE getAttackMode() const { return attackMode; }
+     ATTACKMODE getAttackMode() const noexcept { return attackMode; }
 
-    inline const Coord& getGuardPoint() const { return guardPoint; }
+     const Coord& getGuardPoint() const noexcept { return guardPoint; }
 
     virtual void playAttackSound();
 
@@ -303,7 +301,7 @@ protected:
     Sint8    nextSpotAngle;          ///< The angle to get to the next spot
     Sint32   recalculatePathTimer;   ///< This timer is for recalculating the best path after x ticks
     Coord    nextSpot;               ///< The next spot to move to
-    std::list<Coord> pathList;       ///< The path to the destination found so far
+    std::deque<Coord> pathList;      ///< The path to the destination found so far
 
     Sint32  findTargetTimer;         ///< When to look for the next target?
     Sint32  primaryWeaponTimer;      ///< When can the primary weapon shot again?

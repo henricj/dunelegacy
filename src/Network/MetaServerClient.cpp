@@ -29,9 +29,10 @@
 #include <iostream>
 #include <map>
 #include <random>
+#include <utility>
 
-MetaServerClient::MetaServerClient(const std::string& metaServerURL)
- : metaServerURL(metaServerURL) {
+MetaServerClient::MetaServerClient(std::string metaServerURL)
+ : metaServerURL(std::move(metaServerURL)) {
 
     availableMetaServerCommandsSemaphore = SDL_CreateSemaphore(0);
     if(availableMetaServerCommandsSemaphore == nullptr) {

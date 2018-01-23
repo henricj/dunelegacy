@@ -35,8 +35,7 @@ INIMapLoader::INIMapLoader(Game* pGame, const std::string& mapname, const std::s
     load();
 }
 
-INIMapLoader::~INIMapLoader() {
-}
+INIMapLoader::~INIMapLoader() = default;
 
 
 /**
@@ -68,7 +67,7 @@ void INIMapLoader::loadMap() {
         pGame->techLevel = inifile->getIntValue("BASIC","TechLevel",8);
     }
 
-    int timeout = inifile->getIntValue("BASIC","TIMEOUT",0);
+    const auto timeout = inifile->getIntValue("BASIC","TIMEOUT",0);
 
     if((timeout != 0) && ((pGame->winFlags & WINLOSEFLAGS_TIMEOUT) != 0)) {
         pGame->getTriggerManager().addTrigger(std::make_unique<TimeoutTrigger>(MILLI2CYCLES(timeout * 60 * 1000)));
@@ -167,64 +166,64 @@ void INIMapLoader::loadMap() {
 
         currentGameMap->createSandRegions();
 
-        std::string BloomString = inifile->getStringValue("MAP","Bloom");
-        if(BloomString != "") {
-            std::vector<std::string> BloomPositions  = splitStringToStringVector(BloomString);
+        const auto BloomString = inifile->getStringValue("MAP","Bloom");
+        if(!BloomString.empty()) {
+            std::vector<std::string> BloomPositions = splitStringToStringVector(BloomString);
 
-            for(unsigned int i=0; i < BloomPositions.size();i++) {
+            for(const auto& BloomPosition : BloomPositions) {
                 // set bloom
                 int BloomPos;
-                if(parseString(BloomPositions[i], BloomPos)) {
+                if(parseString(BloomPosition, BloomPos)) {
                     int xpos = getXPos(BloomPos);
                     int ypos = getYPos(BloomPos);
                     if(currentGameMap->tileExists(xpos, ypos)) {
                         currentGameMap->getTile(xpos,ypos)->setType(Terrain_SpiceBloom);
                     } else {
-                        logWarning(inifile->getKey("MAP", "Bloom")->getLineNumber(), "Spice bloom position '" + BloomPositions[i] + "' outside map!");
+                        logWarning(inifile->getKey("MAP", "Bloom")->getLineNumber(), "Spice bloom position '" + BloomPosition + "' outside map!");
                     }
                 } else {
-                    logWarning(inifile->getKey("MAP", "Bloom")->getLineNumber(), "Invalid spice bloom position: '" + BloomPositions[i] + "'");
+                    logWarning(inifile->getKey("MAP", "Bloom")->getLineNumber(), "Invalid spice bloom position: '" + BloomPosition + "'");
                 }
             }
 
         }
 
-        std::string SpecialString = inifile->getStringValue("MAP","Special");
-        if(SpecialString != "") {
-            std::vector<std::string> SpecialPositions  = splitStringToStringVector(SpecialString);
+        const auto SpecialString = inifile->getStringValue("MAP","Special");
+        if(!SpecialString.empty()) {
+            std::vector<std::string> SpecialPositions = splitStringToStringVector(SpecialString);
 
-            for(unsigned int i=0; i < SpecialPositions.size();i++) {
+            for(const auto& SpecialPosition : SpecialPositions) {
                 // set special
                 int SpecialPos;
-                if(parseString(SpecialPositions[i], SpecialPos)) {
+                if(parseString(SpecialPosition, SpecialPos)) {
                     int xpos = getXPos(SpecialPos);
                     int ypos = getYPos(SpecialPos);
                     if(currentGameMap->tileExists(xpos, ypos)) {
                         currentGameMap->getTile(xpos,ypos)->setType(Terrain_SpecialBloom);
                     } else {
-                        logWarning(inifile->getKey("MAP", "Special")->getLineNumber(), "Special bloom position '" + SpecialPositions[i] + "' outside map!");
+                        logWarning(inifile->getKey("MAP", "Special")->getLineNumber(), "Special bloom position '" + SpecialPosition + "' outside map!");
                     }
                 } else {
-                    logWarning(inifile->getKey("MAP", "Special")->getLineNumber(), "Invalid special bloom position: '" + SpecialPositions[i] + "'");
+                    logWarning(inifile->getKey("MAP", "Special")->getLineNumber(), "Invalid special bloom position: '" + SpecialPosition + "'");
                 }
             }
 
         }
 
-        std::string FieldString = inifile->getStringValue("MAP","Field");
-        if(FieldString != "") {
-            std::vector<std::string> FieldPositions  = splitStringToStringVector(FieldString);
+        const auto FieldString = inifile->getStringValue("MAP","Field");
+        if(!FieldString.empty()) {
+            const auto FieldPositions = splitStringToStringVector(FieldString);
 
-            for(unsigned int i=0; i < FieldPositions.size();i++) {
+            for(const auto& FieldPosition : FieldPositions) {
                 // set bloom
                 int FieldPos;
-                if(parseString(FieldPositions[i], FieldPos)) {
+                if(parseString(FieldPosition, FieldPos)) {
                     int xpos = getXPos(FieldPos);
                     int ypos = getYPos(FieldPos);
 
                     currentGameMap->createSpiceField(Coord(xpos, ypos), 5, true);
                 } else {
-                    logWarning(inifile->getKey("MAP", "Field")->getLineNumber(), "Invalid spice field position: '" + FieldPositions[i] + "'");
+                    logWarning(inifile->getKey("MAP", "Field")->getLineNumber(), "Invalid spice field position: '" + FieldPosition + "'");
                 }
             }
 
@@ -355,22 +354,22 @@ void INIMapLoader::loadHouses()
 
     for(int h=0;h<NUM_HOUSES;h++) {
         bool bFound = false;
-        for(const GameInitSettings::HouseInfo& houseInfo : houseInfoList) {
-            if(houseInfo.houseID == (HOUSETYPE) h) {
+        for(const auto& houseInfo : houseInfoList) {
+            if(houseInfo.houseID == static_cast<HOUSETYPE>(h)) {
                 bFound = true;
                 break;
             }
         }
 
-        std::string houseName = getHouseNameByNumber((HOUSETYPE) h);
+        const auto houseName = getHouseNameByNumber(static_cast<HOUSETYPE>(h));
         if((bFound == false) && (inifile->hasSection(houseName) || (playerSectionsOnMap.empty() == false))) {
-            unboundedHouses.push_back((HOUSETYPE) h);
+            unboundedHouses.push_back(static_cast<HOUSETYPE>(h));
         }
     }
 
     // init housename2house mapping with every house section marked as unused
     for(int i=0;i<NUM_HOUSES;i++) {
-        std::string houseName = getHouseNameByNumber((HOUSETYPE) i);
+        std::string houseName = getHouseNameByNumber(static_cast<HOUSETYPE>(i));
         convertToLower(houseName);
 
         if(inifile->hasSection(houseName)) {
@@ -438,8 +437,8 @@ void INIMapLoader::loadHouses()
         House* pNewHouse = pGame->house[houseID].get();
 
         // add players
-        for(const GameInitSettings::PlayerInfo& playerInfo : houseInfo.playerInfoList) {
-            const PlayerFactory::PlayerData* pPlayerData = PlayerFactory::getByPlayerClass(playerInfo.playerClass);
+        for(const auto& playerInfo : houseInfo.playerInfoList) {
+            auto pPlayerData = PlayerFactory::getByPlayerClass(playerInfo.playerClass);
             if(pPlayerData == nullptr) {
                 logWarning("Cannot load '" + playerInfo.playerClass + "', using default AI player!");
                 pPlayerData = PlayerFactory::getByPlayerClass(DEFAULTAIPLAYERCLASS);
@@ -733,7 +732,7 @@ void INIMapLoader::loadReinforcements()
         return;
     }
 
-    for(const INIFile::Key& key : inifile->getSection("REINFORCEMENTS")) {
+    for(const auto& key : inifile->getSection("REINFORCEMENTS")) {
         std::string strHouseName;
         std::string strUnitName;
         std::string strDropLocation;
@@ -747,7 +746,7 @@ void INIMapLoader::loadReinforcements()
             }
         }
 
-        int houseID = getHouseID(strHouseName);
+        const auto houseID = getHouseID(strHouseName);
         if(houseID == HOUSE_UNUSED) {
             // skip reinforcement for unused house
             continue;
@@ -756,8 +755,8 @@ void INIMapLoader::loadReinforcements()
             continue;
         }
 
-        int Num2Drop = 1;
-        Uint32 itemID = getItemIDByName(strUnitName);
+        auto Num2Drop = 1;
+        auto itemID = getItemIDByName(strUnitName);
         if((itemID == ItemID_Invalid) || !isUnit(itemID)) {
             logWarning(key.getLineNumber(), "Invalid unit string: '" + strUnitName + "'!");
             continue;
@@ -777,7 +776,7 @@ void INIMapLoader::loadReinforcements()
             continue;
         }
 
-        DropLocation dropLocation = getDropLocationByName(strDropLocation);
+        auto dropLocation = getDropLocationByName(strDropLocation);
         if(dropLocation == Drop_Invalid) {
             logWarning(key.getLineNumber(), "Invalid drop location string: '" + strDropLocation + "'!");
             dropLocation = Drop_Homebase;
@@ -788,11 +787,11 @@ void INIMapLoader::loadReinforcements()
             logWarning(key.getLineNumber(), "Invalid drop time string: '" + strTime + "'!");
             continue;
         }
-        Uint32 dropCycle = MILLI2CYCLES(droptime * 60 * 1000);
+        const auto dropCycle = MILLI2CYCLES(droptime * 60 * 1000);
 
-        bool bRepeat = (strTime.rfind('+') == (strTime.length() - 1)) || (strPlus == "+");
+        const auto bRepeat = (strTime.rfind('+') == (strTime.length() - 1)) || (strPlus == "+");
 
-        for(int i=0;i<Num2Drop;i++) {
+        for(auto i=0;i<Num2Drop;i++) {
             // check if there is a similar trigger at the same time
 
             bool bInserted = false;
@@ -884,8 +883,8 @@ void INIMapLoader::loadAITeams()
 void INIMapLoader::loadView()
 {
     if(inifile->hasKey("BASIC", "TacticalPos")) {
-        int tacticalPosInt = inifile->getIntValue("BASIC","TacticalPos",-10000) + 64*5 + 7;
-        Coord tacticalPos(getXPos(tacticalPosInt), getYPos(tacticalPosInt));
+        const auto tacticalPosInt = inifile->getIntValue("BASIC","TacticalPos",-10000) + 64*5 + 7;
+        const Coord tacticalPos(getXPos(tacticalPosInt), getYPos(tacticalPosInt));
 
         if(tacticalPos.x < 0 || tacticalPos.x >= sizeX || tacticalPos.y < 0 || tacticalPos.y >= sizeY) {
             logWarning(inifile->getKey("BASIC", "TacticalPos")->getLineNumber(), "Invalid TacticalPos: '" + std::to_string(tacticalPosInt) + "'!");
@@ -945,11 +944,20 @@ House* INIMapLoader::getOrCreateHouse(int houseID) {
 
                     pNewHouse->addPlayer(std::move(pPlayer));
                 }
-                break;
+            }
+
+            std::shared_ptr<Player> pPlayer = pPlayerData->create(pNewHouse, playerInfo.playerName);
+
+            pNewHouse->addPlayer(pPlayer);
+            if(playerInfo.playerName == pGame->getLocalPlayerName()) {
+                pLocalHouse = pNewHouse;
+                pLocalPlayer = dynamic_cast<HumanPlayer*>(pPlayer.get());
             }
         }
+        break;
+    }
 
-        /*
+    /*
         // probably not a good idea to treat any "anonymous" house as an AI player
         if(pNewHouse->getPlayerList().empty()) {
             const PlayerFactory::PlayerData* pPlayerData = PlayerFactory::getByPlayerClass(DEFAULTAIPLAYERCLASS);
@@ -964,7 +972,7 @@ House* INIMapLoader::getOrCreateHouse(int houseID) {
 }
 
 HOUSETYPE INIMapLoader::getHouseID(const std::string& name) {
-    std::string lowerName = strToLower(name);
+    const auto lowerName = strToLower(name);
 
     if(housename2house.count(lowerName) > 0) {
         return housename2house[lowerName];

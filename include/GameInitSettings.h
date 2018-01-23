@@ -24,6 +24,7 @@
 #include <misc/OutputStream.h>
 
 #include <string>
+#include <utility>
 
 
 class GameInitSettings
@@ -32,8 +33,8 @@ public:
 
     class PlayerInfo {
     public:
-        PlayerInfo(const std::string& newPlayerName, const std::string& newPlayerClass)
-         : playerName(newPlayerName), playerClass(newPlayerClass) {
+        PlayerInfo(std::string newPlayerName, std::string newPlayerClass)
+         : playerName(std::move(newPlayerName)), playerClass(std::move(newPlayerClass)) {
         }
 
         explicit PlayerInfo(InputStream& stream) {
@@ -57,10 +58,10 @@ public:
         }
 
         explicit HouseInfo(InputStream& stream) {
-            houseID = (HOUSETYPE) stream.readSint32();
+            houseID = static_cast<HOUSETYPE>(stream.readSint32());
             team = stream.readSint32();
 
-            Uint32 numPlayerInfo = stream.readUint32();
+            const auto numPlayerInfo = stream.readUint32();
             for(Uint32 i=0;i<numPlayerInfo;i++) {
                 playerInfoList.push_back(PlayerInfo(stream));
             }
@@ -71,12 +72,12 @@ public:
             stream.writeSint32(team);
 
             stream.writeUint32(playerInfoList.size());
-            for(const PlayerInfo& playerInfo : playerInfoList) {
+            for(const auto& playerInfo : playerInfoList) {
                 playerInfo.save(stream);
             }
         }
 
-        inline void addPlayerInfo(const PlayerInfo& newPlayerInfo) { playerInfoList.push_back(newPlayerInfo); };
+        void addPlayerInfo(const PlayerInfo& newPlayerInfo) { playerInfoList.push_back(newPlayerInfo); };
 
         typedef std::vector<PlayerInfo> PlayerInfoList;
 
@@ -125,7 +126,7 @@ public:
         \param  multiplePlayersPerHouse     allow multiple players per house
         \param  gameOptions         the options for this game
     */
-    GameInitSettings(const std::string& mapfile, const std::string& filedata, bool multiplePlayersPerHouse, const SettingsClass::GameOptionsClass& gameOptions);
+    GameInitSettings(std::string mapfile, const std::string filedata, bool multiplePlayersPerHouse, const SettingsClass::GameOptionsClass& gameOptions);
 
     /**
         Constructor for specifying the start of a multiplayer custom map
@@ -135,7 +136,7 @@ public:
         \param  multiplePlayersPerHouse     allow multiple players per house
         \param  gameOptions         the options for this game
     */
-    GameInitSettings(const std::string& mapfile, const std::string& filedata, const std::string& serverName, bool multiplePlayersPerHouse, const SettingsClass::GameOptionsClass& gameOptions);
+    GameInitSettings(std::string mapfile, std::string filedata, const std::string serverName, bool multiplePlayersPerHouse, const SettingsClass::GameOptionsClass& gameOptions);
 
     /**
         Constructor for specifying the loading of a savegame. If the given filename contains no valid savegame
@@ -151,7 +152,7 @@ public:
         \param  filedata    the data of the savegame file
         \param  serverName  the name of the game server
     */
-    GameInitSettings(const std::string& savegame, const std::string& filedata, const std::string& serverName);
+    GameInitSettings(std::string savegame, std::string filedata, std::string serverName);
 
     /**
         Load the game init info from a stream
@@ -163,26 +164,26 @@ public:
 
     void save(OutputStream& stream) const;
 
-    inline GameType getGameType() const { return gameType; };
-    inline HOUSETYPE getHouseID() const { return houseID; };
-    inline int getMission() const { return mission; };
-    inline Uint32 getAlreadyPlayedRegions() const { return alreadyPlayedRegions; };
-    inline Uint32 getAlreadyShownTutorialHints() const { return alreadyShownTutorialHints; };
-    inline const std::string& getFilename() const { return filename; };
-    inline const std::string& getFiledata() const { return filedata; };
-    inline const std::string& getServername() const { return servername; };
-    inline Uint32 getRandomSeed() const { return randomSeed; };
+    GameType getGameType() const noexcept { return gameType; };
+    HOUSETYPE getHouseID() const noexcept { return houseID; };
+    int getMission() const noexcept { return mission; };
+    Uint32 getAlreadyPlayedRegions() const noexcept { return alreadyPlayedRegions; };
+    Uint32 getAlreadyShownTutorialHints() const noexcept { return alreadyShownTutorialHints; };
+    const std::string& getFilename() const noexcept { return filename; };
+    const std::string& getFiledata() const noexcept { return filedata; };
+    const std::string& getServername() const noexcept { return servername; };
+    Uint32 getRandomSeed() const noexcept { return randomSeed; };
 
-    inline bool isMultiplePlayersPerHouse() const { return multiplePlayersPerHouse; };
-    inline void setMultiplePlayersPerHouse(bool multiplePlayersPerHouse) { this->multiplePlayersPerHouse = multiplePlayersPerHouse; };
-    inline const SettingsClass::GameOptionsClass& getGameOptions() const { return gameOptions; };
-    inline void setGameSpeed(int gameSpeed) { gameOptions.gameSpeed = gameSpeed; };
+    bool isMultiplePlayersPerHouse() const noexcept { return multiplePlayersPerHouse; };
+    void setMultiplePlayersPerHouse(bool multiplePlayersPerHouse) noexcept { this->multiplePlayersPerHouse = multiplePlayersPerHouse; };
+    const SettingsClass::GameOptionsClass& getGameOptions() const noexcept { return gameOptions; };
+    void setGameSpeed(int gameSpeed) noexcept { gameOptions.gameSpeed = gameSpeed; };
 
-    inline void addHouseInfo(const HouseInfo& newHouseInfo) { houseInfoList.push_back(newHouseInfo); };
-    inline void clearHouseInfo() { houseInfoList.clear(); };
-    inline const HouseInfoList& getHouseInfoList() const { return houseInfoList; };
+    void addHouseInfo(const HouseInfo& newHouseInfo) { houseInfoList.push_back(newHouseInfo); };
+    void clearHouseInfo() { houseInfoList.clear(); };
+    const HouseInfoList& getHouseInfoList() const noexcept { return houseInfoList; };
 
-    inline void setHouseID(HOUSETYPE houseID) { this->houseID = houseID; };
+    void setHouseID(HOUSETYPE houseID) noexcept { this->houseID = houseID; };
 
 private:
     static std::string getScenarioFilename(HOUSETYPE newHouse, int mission);

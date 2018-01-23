@@ -36,6 +36,7 @@
 #include <AITeamInfo.h>
 
 #include <string>
+#include <utility>
 #include <vector>
 #include <stack>
 
@@ -48,8 +49,8 @@ public:
     class Player {
     public:
 
-        Player(const std::string& name, HOUSETYPE house, HOUSETYPE colorOfHouse, bool bActive, bool bAnyHouse, const std::string& brain = "Human", int maxunit = 0)
-         : name(name), house(house), colorOfHouse(colorOfHouse), bActive(bActive), bAnyHouse(bAnyHouse), brain(brain), maxunit(maxunit) {
+        Player(std::string  name, HOUSETYPE house, HOUSETYPE colorOfHouse, bool bActive, bool bAnyHouse, std::string  brain = "Human", int maxunit = 0)
+         : name(std::move(name)), house(house), colorOfHouse(colorOfHouse), bActive(bActive), bAnyHouse(bAnyHouse), brain(std::move(brain)), maxunit(maxunit) {
             quota = 0;
             credits = 2000;
         }

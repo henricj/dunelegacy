@@ -37,6 +37,11 @@ public:
     {
     }
 
+    CutSceneMusicTrigger(const CutSceneMusicTrigger &) = delete;
+    CutSceneMusicTrigger(CutSceneMusicTrigger &&) = delete;
+    CutSceneMusicTrigger& operator=(const CutSceneMusicTrigger &) = delete;
+    CutSceneMusicTrigger& operator=(CutSceneMusicTrigger &&) = delete;
+
     /// destructor
     ~CutSceneMusicTrigger() = default;
 

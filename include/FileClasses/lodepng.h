@@ -635,6 +635,13 @@ typedef struct LodePNGState
   LodePNGInfo info_png; /*info of the PNG image obtained after decoding*/
   unsigned error;
 #ifdef LODEPNG_COMPILE_CPP
+  LodePNGState() : decoder{}, encoder{}, info_raw{}, info_png{}, error{}
+  { }
+  LodePNGState(const LodePNGState &) = default;
+  LodePNGState(LodePNGState &&) = default;
+  LodePNGState& operator=(const LodePNGState &) = default;
+  LodePNGState& operator=(LodePNGState &&) = default;
+
   /* For the lodepng::State subclass. */
   virtual ~LodePNGState()= default;
 #endif

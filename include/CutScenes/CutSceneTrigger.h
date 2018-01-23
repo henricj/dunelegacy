@@ -30,6 +30,11 @@ public:
     */
     explicit CutSceneTrigger(int frameNumber);
 
+    CutSceneTrigger(const CutSceneTrigger &) = delete;
+    CutSceneTrigger(CutSceneTrigger &&) = delete;
+    CutSceneTrigger& operator=(const CutSceneTrigger &) = delete;
+    CutSceneTrigger& operator=(CutSceneTrigger&&) = delete;
+
     /// destructor
     virtual ~CutSceneTrigger();
 
@@ -37,7 +42,7 @@ public:
         This method returns the frame number where this trigger shall be triggered.
         \return the frame number where this trigger shall be triggered
     */
-    inline int getTriggerFrameNumber() const {
+    inline int getTriggerFrameNumber() const noexcept {
         return frameNumber;
     }
 

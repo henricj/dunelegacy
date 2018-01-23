@@ -385,7 +385,7 @@ void NetworkManager::update()
 void NetworkManager::handlePacket(ENetPeer* peer, ENetPacketIStream& packetStream)
 {
     try {
-        Uint32 packetType = packetStream.readUint32();
+        const auto packetType = packetStream.readUint32();
 
         switch(packetType) {
             case NETWORKPACKET_CONNECT: {
@@ -398,11 +398,11 @@ void NetworkManager::handlePacket(ENetPeer* peer, ENetPacketIStream& packetStrea
 
                     debugNetwork("Connecting to %s:%d\n", Address2String(address).c_str(), address.port);
 
-                    ENetPeer *newPeer = enet_host_connect(host, &address, 2, 0);
+                    auto newPeer = enet_host_connect(host, &address, 2, 0);
                     if(newPeer == nullptr) {
                         debugNetwork("NetworkManager: No available peers for initiating a connection.");
                     } else {
-                        PeerData* peerData = new PeerData(newPeer, PeerData::PeerState::WaitingForOtherPeersToConnect);
+                        auto peerData = new PeerData(newPeer, PeerData::PeerState::WaitingForOtherPeersToConnect);
                         peerData->name = packetStream.readString();
 
                         newPeer->data = peerData;
@@ -418,14 +418,14 @@ void NetworkManager::handlePacket(ENetPeer* peer, ENetPacketIStream& packetStrea
                 address.host = SDL_SwapBE32(packetStream.readUint32());
                 address.port = packetStream.readUint16();
 
-                for(ENetPeer* pCurrentPeer : peerList) {
+                for(const auto pCurrentPeer : peerList) {
                     if((pCurrentPeer->address.host == address.host) && (pCurrentPeer->address.port == address.port)) {
                         enet_peer_disconnect_later(pCurrentPeer, NETWORKDISCONNECT_QUIT);
                         break;
                     }
                 }
 
-                for(ENetPeer* pAwaitingConnectionPeer : awaitingConnectionList) {
+                for(const auto pAwaitingConnectionPeer : awaitingConnectionList) {
                     if((pAwaitingConnectionPeer->address.host == address.host) && (pAwaitingConnectionPeer->address.port == address.port)) {
                         enet_peer_disconnect_later(pAwaitingConnectionPeer, NETWORKDISCONNECT_QUIT);
                         break;
@@ -486,7 +486,7 @@ void NetworkManager::handlePacket(ENetPeer* peer, ENetPacketIStream& packetStrea
                     }
                 } else {
                     for(auto iter = awaitingConnectionList.begin(); iter != awaitingConnectionList.end(); ++iter) {
-                        ENetPeer* pCurrentPeer = *iter;
+                        const auto pCurrentPeer = *iter;
 
                         if((pCurrentPeer->address.host == address.host) && (pCurrentPeer->address.port == address.port)) {
                             PeerData* peerData = static_cast<PeerData*>(pCurrentPeer->data);
@@ -520,8 +520,8 @@ void NetworkManager::handlePacket(ENetPeer* peer, ENetPacketIStream& packetStrea
                 peerData->timeout = 0;
                 awaitingConnectionList.clear();
 
-                GameInitSettings gameInitSettings(packetStream);
-                ChangeEventList changeEventList(packetStream);
+                const GameInitSettings gameInitSettings(packetStream);
+                const ChangeEventList changeEventList(packetStream);
 
                 if(pOnReceiveGameInfo) {
                     pOnReceiveGameInfo(gameInitSettings, changeEventList);
@@ -534,8 +534,8 @@ void NetworkManager::handlePacket(ENetPeer* peer, ENetPacketIStream& packetStrea
                     break;
                 }
 
-                std::string newName = packetStream.readString();
-                bool bFoundName = false;
+                const auto newName = packetStream.readString();
+                auto bFoundName = false;
 
                 //check if name already exists
                 if(bIsServer) {
@@ -585,14 +585,14 @@ void NetworkManager::handlePacket(ENetPeer* peer, ENetPacketIStream& packetStrea
                     break;
                 }
 
-                std::string message = packetStream.readString();
+                const auto message = packetStream.readString();
                 if(pOnReceiveChatMessage) {
                     pOnReceiveChatMessage(peerData->name, message);
                 }
             } break;
 
             case NETWORKPACKET_CHANGEEVENTLIST: {
-                ChangeEventList changeEventList(packetStream);
+                const ChangeEventList changeEventList(packetStream);
 
                 if(pOnReceiveChangeEventList) {
                     pOnReceiveChangeEventList(changeEventList);
@@ -600,7 +600,7 @@ void NetworkManager::handlePacket(ENetPeer* peer, ENetPacketIStream& packetStrea
             } break;
 
             case NETWORKPACKET_STARTGAME: {
-                Uint32 timeLeft = packetStream.readUint32();
+                const auto timeLeft = packetStream.readUint32();
 
                 if(pOnStartGame) {
                     pOnStartGame(timeLeft);
@@ -613,7 +613,7 @@ void NetworkManager::handlePacket(ENetPeer* peer, ENetPacketIStream& packetStrea
                     break;
                 }
 
-                CommandList commandList(packetStream);
+                const CommandList commandList(packetStream);
 
                 if(pOnReceiveCommandList) {
                     pOnReceiveCommandList(peerData->name, commandList);
@@ -626,8 +626,8 @@ void NetworkManager::handlePacket(ENetPeer* peer, ENetPacketIStream& packetStrea
                     break;
                 }
 
-                int groupListIndex = packetStream.readSint32();
-                std::set<Uint32> selectedList = packetStream.readUint32Set();
+                const auto groupListIndex = packetStream.readSint32();
+                const auto selectedList = packetStream.readUint32Set();
 
                 if(pOnReceiveSelectionList) {
                     pOnReceiveSelectionList(peerData->name, selectedList, groupListIndex);
@@ -713,7 +713,7 @@ void NetworkManager::sendChangeEventList(const ChangeEventList& changeEventList)
 }
 
 void NetworkManager::sendStartGame(unsigned int timeLeft) {
-    for(ENetPeer* pCurrentPeer : peerList) {
+    for(auto pCurrentPeer : peerList) {
         ENetPacketOStream packetStream(ENET_PACKET_FLAG_RELIABLE);
         packetStream.writeUint32(NETWORKPACKET_STARTGAME);
 
@@ -731,7 +731,7 @@ void NetworkManager::sendCommandList(const CommandList& commandList) {
     sendPacketToAllConnectedPeers(packetStream, 1);
 }
 
-void NetworkManager::sendSelectedList(const std::set<Uint32>& selectedList, int groupListIndex) {
+void NetworkManager::sendSelectedList(const Dune::selected_set_type& selectedList, int groupListIndex) {
     ENetPacketOStream packetStream(ENET_PACKET_FLAG_RELIABLE);
     packetStream.writeUint32(NETWORKPACKET_SELECTIONLIST);
     packetStream.writeSint32(groupListIndex);

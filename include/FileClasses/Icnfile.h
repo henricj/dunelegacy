@@ -35,13 +35,14 @@ private:
     /// Internal structure for the MAP-File.
     struct MapfileEntry
     {
-        Uint32 numTiles;
+        Uint32 numTiles{};
         std::vector<Uint16> tileIndices;
     };
 
 public:
     Icnfile(SDL_RWops* icnRWop, SDL_RWops* mapRWop);
     Icnfile(const Icnfile& o) = delete;
+    Icnfile(Icnfile&& o) = delete;
     ~Icnfile();
 
     sdl2::surface_ptr getPicture(Uint32 indexOfFile) const;
@@ -54,14 +55,14 @@ public:
         Returns the number of tiles in the icn-File.
         \return Number of tiles
     */
-    int getNumFiles() const { return numFiles; };
+    int getNumFiles() const noexcept { return numFiles; };
 
     /// Returns the number of tilesets
     /**
         Returns the number of tilesets in the map-File.
         \return Number of tilesets
     */
-    int getNumTilesets() const { return tilesets.size(); };
+    int getNumTilesets() const noexcept { return tilesets.size(); };
 
 private:
     std::unique_ptr<uint8_t[]> pIcnFiledata;

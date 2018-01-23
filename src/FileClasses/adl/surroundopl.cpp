@@ -212,7 +212,7 @@ void CSurroundopl::init()
     }
 }
 
-void CSurroundopl::setchip(int n)
+void CSurroundopl::setchip(int n) noexcept
 {
     a->setchip(n);
     b->setchip(n);

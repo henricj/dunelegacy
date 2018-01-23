@@ -35,23 +35,21 @@ void ObjectManager::save(OutputStream& stream) const {
 void ObjectManager::load(InputStream& stream) {
     nextFreeObjectID = stream.readUint32();
 
-    Uint32 numObjects = stream.readUint32();
-    for(Uint32 i=0;i<numObjects;i++) {
-        Uint32 objectID = stream.readUint32();
+    const auto numObjects = stream.readUint32();
+    for (auto i = decltype(numObjects){0}; i < numObjects; i++) {
+        auto objectID = stream.readUint32();
 
-        ObjectBase* pObject = currentGame->loadObject(stream,objectID);
+        const auto pObject = currentGame->loadObject(stream,objectID);
         if(objectID != pObject->getObjectID()) {
             SDL_Log("ObjectManager::load(): The loaded object has a different ID than expected (%d!=%d)!",objectID,pObject->getObjectID());
         }
 
-        objectMap.insert( std::pair<Uint32,ObjectBase*>(objectID, pObject) );
+        objectMap[objectID] = pObject;
     }
 }
 
 Uint32 ObjectManager::addObject(ObjectBase* pObject) {
-    std::pair<ObjectMap::iterator,bool> insertPosition;
-
-    insertPosition = objectMap.insert( std::pair<Uint32,ObjectBase*>(nextFreeObjectID, pObject) );
+    const auto insertPosition = objectMap.insert( std::pair<Uint32,ObjectBase*>(nextFreeObjectID, pObject) );
 
     if(insertPosition.second == false) {
         // there is already such an object in the list

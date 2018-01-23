@@ -243,26 +243,27 @@ void GroundUnit::handleSendToRepairClick() {
     currentGame->getCommandManager().addCommand(Command(pLocalPlayer->getPlayerID(), CMD_UNIT_SENDTOREPAIR,objectID));
 }
 
-void GroundUnit::doRepair() {
-    if(getHealth() < getMaxHealth()) {
-        //find a repair yard to return to
+void GroundUnit::doRepair() noexcept {
+    if(getHealth() >= getMaxHealth()) return;
+    
+    //find a repair yard to return to
 
-        FixPoint closestLeastBookedRepairYardDistance = 1000000;
-        RepairYard* pBestRepairYard = nullptr;
+    FixPoint closestLeastBookedRepairYardDistance = 1000000;
+    RepairYard* pBestRepairYard = nullptr;
 
-        for(StructureBase* pStructure : structureList) {
-            if ((pStructure->getItemID() == Structure_RepairYard) && (pStructure->getOwner() == owner)) {
-                RepairYard* pRepairYard = static_cast<RepairYard*>(pStructure);
+    for(auto pStructure : structureList) {
+        if ((pStructure->getItemID() == Structure_RepairYard) && (pStructure->getOwner() == owner)) {
+            const auto pRepairYard = static_cast<RepairYard*>(pStructure);
 
-                if(pRepairYard->getNumBookings() == 0) {
-                    FixPoint tempDistance = blockDistance(location, pRepairYard->getClosestPoint(location));
-                    if(tempDistance < closestLeastBookedRepairYardDistance) {
-                        closestLeastBookedRepairYardDistance = tempDistance;
-                        pBestRepairYard = pRepairYard;
-                    }
+            if(pRepairYard->getNumBookings() == 0) {
+                const auto tempDistance = blockDistance(location, pRepairYard->getClosestPoint(location));
+                if(tempDistance < closestLeastBookedRepairYardDistance) {
+                    closestLeastBookedRepairYardDistance = tempDistance;
+                    pBestRepairYard = pRepairYard;
                 }
             }
         }
+    }
 
         if(pBestRepairYard) {
             requestCarryall();
