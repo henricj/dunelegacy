@@ -41,12 +41,12 @@ public:
         std::list<Coord> path;
 
         if(bestCoord.isInvalid()) {
-            return path;
+            return false;
         }
 
-        Coord currentCoord = bestCoord;
+        auto currentCoord = bestCoord;
         while(true) {
-            Coord nextCoord = getMapData(currentCoord).parentCoord;
+            const auto nextCoord = getMapData(currentCoord).parentCoord;
 
             if(nextCoord.isInvalid()) {
                 break;
@@ -56,26 +56,27 @@ public:
             currentCoord = nextCoord;
         }
 
-        return path;
+        return true;
     };
 
 private:
     struct TileData {
         Coord    parentCoord;
-        size_t   openListIndex;
+        size_t   openListIndex{};
         FixPoint g;
         FixPoint h;
         FixPoint f;
-        bool     bInOpenList;
-        bool     bClosed;
+        bool     bInOpenList{};
+        bool     bClosed{};
     };
 
 
-    inline TileData& getMapData(const Coord& coord) const { return mapData[coord.y * sizeX + coord.x]; };
+    inline TileData& getMapData(const Coord& coord) noexcept { return mapData[coord.y * sizeX + coord.x]; };
+    inline const TileData& getMapData(const Coord& coord) const noexcept { return mapData[coord.y * sizeX + coord.x]; };
 
     void trickleUp(size_t openListIndex) {
-        Coord bottom = openList[openListIndex];
-        FixPoint newf = getMapData(bottom).f;
+        const Coord bottom = openList[openListIndex];
+        const FixPoint newf = getMapData(bottom).f;
 
         size_t current = openListIndex;
         size_t parent = (openListIndex - 1)/2;
@@ -95,37 +96,39 @@ private:
     };
 
     void putOnOpenListIfBetter(const Coord& coord, const Coord& parentCoord, FixPoint g, FixPoint h) {
-        FixPoint f = g + h;
+        const FixPoint f = g + h;
 
-        if(getMapData(coord).bInOpenList == false) {
+        auto& map_data = getMapData(coord);
+
+        if(map_data.bInOpenList == false) {
             // not yet in openlist => add at the end of the open list
-            getMapData(coord).g = g;
-            getMapData(coord).h = h;
-            getMapData(coord).f = f;
-            getMapData(coord).parentCoord = parentCoord;
-            getMapData(coord).bInOpenList = true;
+            map_data.g = g;
+            map_data.h = h;
+            map_data.f = f;
+            map_data.parentCoord = parentCoord;
+            map_data.bInOpenList = true;
             openList.push_back(coord);
-            getMapData(coord).openListIndex = openList.size() - 1;
+            map_data.openListIndex = openList.size() - 1;
 
             trickleUp(openList.size() - 1);
         } else {
             // already on openlist
-            if(f >= getMapData(coord).f) {
+            if(f >= map_data.f) {
                 // new item is worse => don't change anything
                 return;
             } else {
                 // new item is better => replace
-                getMapData(coord).g = g;
-                getMapData(coord).h = h;
-                getMapData(coord).f = f;
-                getMapData(coord).parentCoord = parentCoord;
-                trickleUp(getMapData(coord).openListIndex);
+                map_data.g = g;
+                map_data.h = h;
+                map_data.f = f;
+                map_data.parentCoord = parentCoord;
+                trickleUp(map_data.openListIndex);
             }
         }
     };
 
     Coord extractMin() {
-        Coord ret = openList[0];
+        const auto ret = openList[0];
         getMapData(ret).bInOpenList = false;
 
         openList[0] = openList.back();
@@ -136,19 +139,19 @@ private:
             return ret;
 
         size_t current = 0;
-        Coord top = openList[current];  // save root
-        FixPoint topf = getMapData(top).f;
+        const auto top = openList[current];  // save root
+        const auto topf = getMapData(top).f;
         while(current < openList.size()/2) {
 
-            size_t leftChild = 2*current+1;
-            size_t rightChild = leftChild+1;
+            const auto leftChild = 2*current+1;
+            const auto rightChild = leftChild+1;
 
             // find smaller child
             size_t smallerChild;
             FixPoint smallerChildf;
             if(rightChild < openList.size()) {
-                FixPoint leftf = getMapData(openList[leftChild]).f;
-                FixPoint rightf = getMapData(openList[rightChild]).f;
+                const auto leftf = getMapData(openList[leftChild]).f;
+                const auto rightf = getMapData(openList[rightChild]).f;
 
                 if(leftf < rightf) {
                     smallerChild = leftChild;
@@ -184,7 +187,7 @@ private:
     int sizeX;
     int sizeY;
     Coord bestCoord;
-    TileData* mapData;
+    std::vector<TileData> mapData;
     std::vector<Coord> openList;
 };
 
