@@ -70,20 +70,36 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <OutDir>..\..\bin\$(Configuration)-$(Platform)\</OutDir>
     <IntDir>obj\$(Configuration)-$(Platform)\</IntDir>
+    <CodeAnalysisRuleSet>NativeRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <RunCodeAnalysis>false</RunCodeAnalysis>
+    <EnableCppCoreCheck>true</EnableCppCoreCheck>
+    <EnableExperimentalCppCoreCheck>true</EnableExperimentalCppCoreCheck>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>..\..\bin\$(Configuration)-$(Platform)\</OutDir>
     <IntDir>obj\$(Configuration)-$(Platform)\</IntDir>
+    <CodeAnalysisRuleSet>NativeRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <RunCodeAnalysis>false</RunCodeAnalysis>
+    <EnableCppCoreCheck>true</EnableCppCoreCheck>
+    <EnableExperimentalCppCoreCheck>true</EnableExperimentalCppCoreCheck>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>..\..\bin\$(Configuration)-$(Platform)\</OutDir>
     <IntDir>obj\$(Configuration)-$(Platform)\</IntDir>
+    <CodeAnalysisRuleSet>NativeRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <RunCodeAnalysis>false</RunCodeAnalysis>
+    <EnableCppCoreCheck>true</EnableCppCoreCheck>
+    <EnableExperimentalCppCoreCheck>true</EnableExperimentalCppCoreCheck>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>..\..\..\bin\$(Configuration)-$(Platform)\</OutDir>
     <IntDir>..\..\..\obj\$(Configuration)-$(Platform)\</IntDir>
     <IncludePath>$(IncludePath)</IncludePath>
     <LibraryPath>$(LibraryPath)</LibraryPath>
+    <CodeAnalysisRuleSet>NativeRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <RunCodeAnalysis>false</RunCodeAnalysis>
+    <EnableCppCoreCheck>true</EnableCppCoreCheck>
+    <EnableExperimentalCppCoreCheck>true</EnableExperimentalCppCoreCheck>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -99,6 +115,13 @@
       <ForcedIncludeFiles>stdafx.h</ForcedIncludeFiles>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <MinimalRebuild>false</MinimalRebuild>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <EnablePREfast>false</EnablePREfast>
+      <AdditionalOptions>/utf-8 /await %(AdditionalOptions)</AdditionalOptions>
+      <StringPooling>true</StringPooling>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions</EnableEnhancedInstructionSet>
+      <FloatingPointModel>Fast</FloatingPointModel>
     </ClCompile>
     <Link>
       <AdditionalDependencies>SDL2maind.lib;imm32.lib;version.lib;ws2_32.lib;winmm.lib;pathcch.lib;shlwapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -123,6 +146,13 @@ IF %ERRORLEVEL% LSS 8 exit 0</Command>
       <ForcedIncludeFiles>stdafx.h</ForcedIncludeFiles>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <MinimalRebuild>false</MinimalRebuild>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <EnablePREfast>false</EnablePREfast>
+      <AdditionalOptions>/utf-8 /await %(AdditionalOptions)</AdditionalOptions>
+      <StringPooling>true</StringPooling>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions</EnableEnhancedInstructionSet>
+      <FloatingPointModel>Fast</FloatingPointModel>
     </ClCompile>
     <Link>
       <AdditionalDependencies>SDL2maind.lib;imm32.lib;version.lib;ws2_32.lib;winmm.lib;pathcch.lib;shlwapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -152,7 +182,11 @@ IF %ERRORLEVEL% LSS 8 exit 0</Command>
       <ForcedIncludeFiles>stdafx.h</ForcedIncludeFiles>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalOptions>/utf8 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>/utf-8 /await %(AdditionalOptions)</AdditionalOptions>
+      <EnablePREfast>false</EnablePREfast>
+      <StringPooling>true</StringPooling>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions</EnableEnhancedInstructionSet>
+      <FloatingPointModel>Fast</FloatingPointModel>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -183,7 +217,11 @@ IF %ERRORLEVEL% LSS 8 exit 0</Command>
       <ForcedIncludeFiles>stdafx.h</ForcedIncludeFiles>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalOptions>/utf8 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>/utf-8 /await %(AdditionalOptions)</AdditionalOptions>
+      <EnablePREfast>false</EnablePREfast>
+      <StringPooling>true</StringPooling>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions</EnableEnhancedInstructionSet>
+      <FloatingPointModel>Fast</FloatingPointModel>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
