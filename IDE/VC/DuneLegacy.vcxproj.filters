@@ -956,6 +956,9 @@
     <ClInclude Include="..\..\include\misc\random_xorshift1024star.h">
       <Filter>include\misc</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\misc\generator.h">
+      <Filter>include\misc</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\AStarSearch.cpp">
