@@ -83,7 +83,7 @@ public:
 
     void sendCommandList(const CommandList& commandList);
 
-    void sendSelectedList(const std::set<Uint32>& selectedList, int groupListIndex = -1);
+    void sendSelectedList(const Dune::selected_set_type& selectedList, int groupListIndex = -1);
 
     std::list<std::string> getConnectedPeers() const {
         std::list<std::string> peerNameList;
@@ -232,7 +232,7 @@ private:
     std::function<ChangeEventList (const std::string&)>                     pGetChangeEventListForNewPlayerCallback;
     std::function<void (unsigned int)>                                      pOnStartGame;
     std::function<void (const std::string&, const CommandList&)>            pOnReceiveCommandList;
-    std::function<void (const std::string&, const std::set<Uint32>&, int)>  pOnReceiveSelectionList;
+    std::function<void (const std::string&, const Dune::selected_set_type&, int)>  pOnReceiveSelectionList;
 
     std::unique_ptr<LANGameFinderAndAnnouncer>  pLANGameFinderAndAnnouncer = nullptr;
     std::unique_ptr<MetaServerClient>           pMetaServerClient = nullptr;
