@@ -129,37 +129,37 @@ public:
     const ObjectBase* findClosestTarget() const;
     virtual const ObjectBase* findTarget() const;
 
-    inline void addHealth() { if (health < getMaxHealth()) setHealth(health + 1); }
-    inline void setActive(bool status) { active = status; }
-    inline void setForced(bool status) { forced = status; }
-    inline void setRespondable(bool status) { respondable = status; }
-    inline void setSelected(bool value) { selected = value; }
-    inline void setSelectedByOtherPlayer(bool value) { selectedByOtherPlayer = value; }
-    inline void setDestination(const Coord& location) { setDestination(location.x, location.y); }
-    inline void setLocation(const Coord& location) { setLocation(location.x, location.y); }
-    inline bool canAttack() const { return canAttackStuff; }
-    inline bool hasATarget() const { return (target); }
-    inline bool hasObjectID(Uint32 id) const { return (objectID == id); }
-    inline bool isActive() const { return active; }
-    inline bool isAFlyingUnit() const { return aFlyingUnit; }
-    inline bool isAGroundUnit() const { return aGroundUnit; }
-    inline bool isAStructure() const { return aStructure; }
-    inline bool isABuilder() const { return aBuilder; }
-    inline bool isInfantry() const { return infantry; }
-    inline bool isAUnit() const { return aUnit; }
-    inline bool isRespondable() const { return respondable; }
-    inline bool isByScenario() const { return byScenario; }
-    inline bool isSelected() const { return selected; }
-    inline bool isSelectedByOtherPlayer() const { return selectedByOtherPlayer; }
-    inline bool isBadlyDamaged() const { return badlyDamaged; };
-    inline bool wasForced() const { return forced; }
-    inline int getItemID() const { return itemID; }
-    inline int getX() const { return location.x; }
-    inline int getY() const { return location.y; }
+    void addHealth() { if (health < getMaxHealth()) setHealth(health + 1); }
+    void setActive(bool status) { active = status; }
+    void setForced(bool status) { forced = status; }
+    void setRespondable(bool status) { respondable = status; }
+    void setSelected(bool value) { selected = value; }
+    void setSelectedByOtherPlayer(bool value) { selectedByOtherPlayer = value; }
+    void setDestination(const Coord& location) { setDestination(location.x, location.y); }
+    void setLocation(const Coord& location) { setLocation(location.x, location.y); }
+    bool canAttack() const { return canAttackStuff; }
+    bool hasATarget() const { return (target); }
+    bool hasObjectID(Uint32 id) const { return (objectID == id); }
+    bool isActive() const { return active; }
+    bool isAFlyingUnit() const { return aFlyingUnit; }
+    bool isAGroundUnit() const { return aGroundUnit; }
+    bool isAStructure() const { return aStructure; }
+    bool isABuilder() const { return aBuilder; }
+    bool isInfantry() const { return infantry; }
+    bool isAUnit() const { return aUnit; }
+    bool isRespondable() const { return respondable; }
+    bool isByScenario() const { return byScenario; }
+    bool isSelected() const { return selected; }
+    bool isSelectedByOtherPlayer() const { return selectedByOtherPlayer; }
+    bool isBadlyDamaged() const { return badlyDamaged; };
+    bool wasForced() const { return forced; }
+    int getItemID() const { return itemID; }
+    int getX() const { return location.x; }
+    int getY() const { return location.y; }
 
-    inline FixPoint getHealth() const { return health; }
+    FixPoint getHealth() const { return health; }
     int getMaxHealth() const;
-    inline Uint32 getObjectID() const { return objectID; }
+    Uint32 getObjectID() const { return objectID; }
 
 
     int getViewRange() const;
