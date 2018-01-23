@@ -114,8 +114,8 @@ void Map::createSandRegions() {
 void Map::damage(Uint32 damagerID, House* damagerOwner, const Coord& realPos, Uint32 bulletID, FixPoint damage, int damageRadius, bool air) {
     const auto location = Coord(realPos.x/TILESIZE, realPos.y/TILESIZE);
 
-    std::set<Uint32>    affectedAirUnits;
-    std::set<Uint32>    affectedGroundAndUndergroundUnits;
+    std::unordered_set<Dune::object_id_type>    affectedAirUnits;
+    std::unordered_set<Dune::object_id_type>    affectedGroundAndUndergroundUnits;
 
     for(auto i = location.x-2; i <= location.x+2; i++) {
         for(auto j = location.y-2; j <= location.y+2; j++) {
