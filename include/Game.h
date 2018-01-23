@@ -39,6 +39,7 @@
 #include <string>
 #include <map>
 #include <utility>
+#include <unordered_set>
 
 // forward declarations
 class ObjectBase;
@@ -64,7 +65,6 @@ class Explosion;
 class Game
 {
 public:
-
     /**
         Default constructor. Call initGame() or initReplay() afterwards.
     */
@@ -72,11 +72,16 @@ public:
 
 
     Game(const Game& o) = delete;
+    Game(Game&& o) = delete;
 
     /**
         Destructor
     */
     ~Game();
+
+
+    Game& operator=(const Game &) = delete;
+    Game& operator=(Game &&) = delete;
 
     /**
         Initializes a game with the specified settings
@@ -114,31 +119,31 @@ public:
         Returns the current game cycle number.
         \return the current game cycle
     */
-    Uint32 getGameCycleCount() const { return gameCycleCount; };
+    Uint32 getGameCycleCount() const noexcept { return gameCycleCount; };
 
     /**
         Return the game time in milliseconds.
         \return the current game time in milliseconds
     */
-    Uint32 getGameTime() const { return gameCycleCount * GAMESPEED_DEFAULT; };
+    Uint32 getGameTime() const noexcept { return gameCycleCount * GAMESPEED_DEFAULT; };
 
     /**
         Get the command manager of this game
         \return the command manager
     */
-    CommandManager& getCommandManager() { return cmdManager; };
+    CommandManager& getCommandManager() noexcept { return cmdManager; };
 
     /**
         Get the trigger manager of this game
         \return the trigger manager
     */
-    TriggerManager& getTriggerManager() { return triggerManager; };
+    TriggerManager& getTriggerManager() noexcept { return triggerManager; };
 
     /**
         Get the explosion list.
         \return the explosion list
     */
-    RobustList<Explosion*>& getExplosionList() { return explosionList; };
+    RobustList<Explosion*>& getExplosionList() noexcept { return explosionList; };
 
     /**
         Returns the house with the id houseID
@@ -221,15 +226,15 @@ public:
     /**
         This method loads an object from the stream.
         \param stream   the stream to read from
-        \param ObjectID the object id that this unit/structure should get
+        \param objectID the object id that this unit/structure should get
         \return the read unit/structure
     */
-    ObjectBase* loadObject(InputStream& stream, Uint32 objectID);
+    ObjectBase* loadObject(InputStream& stream, Uint32 objectID) const;
 
-    inline ObjectManager& getObjectManager() { return objectManager; };
-    inline GameInterface& getGameInterface() { return *pInterface; };
+    ObjectManager& getObjectManager() noexcept { return objectManager; };
+    GameInterface& getGameInterface() const noexcept { return *pInterface; };
 
-    const GameInitSettings& getGameInitSettings() const { return gameInitSettings; };
+    const GameInitSettings& getGameInitSettings() const noexcept { return gameInitSettings; };
     void setNextGameInitSettings(const GameInitSettings& nextGameInitSettings) { this->nextGameInitSettings = nextGameInitSettings; };
 
     /**
@@ -288,7 +293,7 @@ public:
     /**
         Marks that the selection changed (and must be retransmitted to other players in multiplayer games)
     */
-    inline void selectionChanged() {
+    void selectionChanged() {
         bSelectionChanged = true;
         if(pInterface) {
             pInterface->updateObjectInterface();
@@ -309,13 +314,13 @@ public:
     /**
         Called when a peer disconnects the game.
     */
-    void onPeerDisconnected(const std::string& name, bool bHost, int cause);
+    void onPeerDisconnected(const std::string& name, bool bHost, int cause) const;
 
     /**
         Adds a new message to the news ticker.
         \param  text    the text to add
     */
-    void addToNewsTicker(const std::string& text) {
+    void addToNewsTicker(const std::string& text) const {
         if(pInterface != nullptr) {
             pInterface->addToNewsTicker(text);
         }
@@ -325,7 +330,7 @@ public:
         Adds an urgent message to the news ticker.
         \param  text    the text to add
     */
-    void addUrgentMessageToNewsTicker(const std::string& text) {
+    void addUrgentMessageToNewsTicker(const std::string& text) const {
         if(pInterface != nullptr) {
             pInterface->addUrgentMessageToNewsTicker(text);
         }
@@ -335,25 +340,25 @@ public:
         This method returns wether the game is currently paused
         \return true, if paused, false otherwise
     */
-    bool isGamePaused() const { return bPause; };
+    bool isGamePaused() const noexcept { return bPause; }
 
     /**
         This method returns wether the game is finished
         \return true, if paused, false otherwise
     */
-    bool isGameFinished() const { return finished; };
+    bool isGameFinished() const noexcept { return finished; }
 
     /**
         Are cheats enabled?
         \return true = cheats enabled, false = cheats disabled
     */
-    bool areCheatsEnabled() const { return bCheatsEnabled; };
+    bool areCheatsEnabled() const noexcept { return bCheatsEnabled; }
 
     /**
         Returns the name of the local player; this method should be used instead of using settings.general.playerName directly
         \return the local player name
     */
-    const std::string& getLocalPlayerName() const { return localPlayerName; }
+    const std::string& getLocalPlayerName() const noexcept { return localPlayerName; }
 
     /**
         Register a new player in this game.
@@ -385,7 +390,7 @@ public:
         \return the player or nullptr if none was found
     */
     Player* getPlayerByName(const std::string& playername) const {
-        auto iter = playerName2Player.find(playername);
+        const auto iter = playerName2Player.find(playername);
         if(iter != playerName2Player.end()) {
             return iter->second;
         } else {
@@ -399,7 +404,7 @@ public:
         \return the player or nullptr if none was found
     */
     Player* getPlayerByID(Uint8 playerID) const {
-        auto iter = playerID2Player.find(playerID);
+        const auto iter = playerID2Player.find(playerID);
         if(iter != playerID2Player.end()) {
             return iter->second;
         } else {
@@ -433,13 +438,13 @@ private:
 
     /**
         Handles the press of one key while chatting
-        \param  key the key pressed
+        \param keyboardEvent the key pressed
     */
     void handleChatInput(SDL_KeyboardEvent& keyboardEvent);
 
     /**
         Handles the press of one key
-        \param  key the key pressed
+        \param  keyboardEvent the key pressed
     */
     void handleKeyInput(SDL_KeyboardEvent& keyboardEvent);
 
