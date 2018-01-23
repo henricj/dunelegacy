@@ -46,7 +46,7 @@ class MCV;
 class Player {
 public:
 
-    Player(House* associatedHouse, const std::string& playername);
+    Player(House* associatedHouse, std::string playername);
     Player(InputStream& stream, House* associatedHouse);
     virtual ~Player() = 0;
 
@@ -121,13 +121,13 @@ protected:
     Uint32 getGameCycleCount() const;
     int getTechLevel() const;
 
-    const Map& getMap() const;
-    const ObjectBase* getObject(Uint32 objectID) const;
+    static const Map& getMap();
+    static const ObjectBase* getObject(Uint32 objectID);
 
-    const RobustList<const StructureBase*>& getStructureList() const;
-    const RobustList<const UnitBase*>& getUnitList() const;
+    static const RobustList<const StructureBase*>& getStructureList();
+    static const RobustList<const UnitBase*>& getUnitList();
 
-    const House* getHouse(int houseID) const;
+    static const House* getHouse(int houseID);
 
     /**
         Start repairing the structure pObject or sending the unit pObject to the rapair yard.
