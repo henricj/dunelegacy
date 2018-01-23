@@ -15,8 +15,6 @@
  *  along with Dune Legacy.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-class ObjectPointer;
-
 #ifndef OBJECTPOINTER_H
 #define OBJECTPOINTER_H
 
@@ -32,22 +30,27 @@ class ObjectPointer
 {
 public:
     ObjectPointer() { objectID = NONE_ID; };
-    explicit ObjectPointer(Uint32 newItemID) { pointTo(newItemID); };
+    explicit ObjectPointer(Uint32 newItemID) : objectID(newItemID) { };
     ObjectPointer(const ObjectBase* newObject) { pointTo(newObject); };
     ~ObjectPointer() = default;
 
-    inline void pointTo(Uint32 newItemID) { objectID = newItemID; };
+    ObjectPointer(const ObjectPointer &) = default;
+    ObjectPointer(ObjectPointer &&) = default;
+    ObjectPointer& operator=(const ObjectPointer &) = default;
+    ObjectPointer& operator=(ObjectPointer &&) = default;
+
+    void pointTo(Uint32 newItemID) { objectID = newItemID; };
     void pointTo(const ObjectBase* newObject);
 
-    inline Uint32 getObjectID() const { return objectID; };
+    Uint32 getObjectID() const noexcept { return objectID; };
     ObjectBase* getObjPointer() const;
-    inline UnitBase* getUnitPointer() const { return reinterpret_cast<UnitBase*>(getObjPointer()); };
-    inline StructureBase* getStructurePointer() const { return reinterpret_cast<StructureBase*>(getObjPointer()); };
+    UnitBase* getUnitPointer() const;
+    StructureBase* getStructurePointer() const;
 
     void save(OutputStream& stream) const;
     void load(InputStream& stream);
 
-    inline operator bool() const {
+    operator bool() const {
         return (objectID != NONE_ID);
     };
 

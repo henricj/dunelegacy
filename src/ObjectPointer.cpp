@@ -22,6 +22,9 @@
 #include <Game.h>
 #include <ObjectBase.h>
 
+#include "units/UnitBase.h"
+#include "structures/StructureBase.h"
+
 ObjectBase* ObjectPointer::getObjPointer() const
 {
     if(objectID == NONE_ID) {
@@ -33,6 +36,16 @@ ObjectBase* ObjectPointer::getObjPointer() const
         objectID = NONE_ID;
     }
     return ObjPointer;
+}
+
+UnitBase* ObjectPointer::getUnitPointer() const
+{
+    return dynamic_cast<UnitBase*>(getObjPointer());
+}
+
+StructureBase* ObjectPointer::getStructurePointer() const
+{
+    return dynamic_cast<StructureBase*>(getObjPointer());
 }
 
 void ObjectPointer::save(OutputStream& stream) const
