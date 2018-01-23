@@ -26,6 +26,7 @@
 #include <MapEditor/ReinforcementInfo.h>
 #include <MapEditor/MapInfo.h>
 
+#include <utility>
 #include <vector>
 #include <memory>
 
@@ -302,8 +303,8 @@ public:
 class MapEditorChangePlayer : public MapEditorOperation {
 public:
 
-    MapEditorChangePlayer(int playerNum, bool bActive, bool bAnyHouse, int credits, const std::string& brain, int quota = 0, int maxunit = 0)
-     : playerNum(playerNum), bActive(bActive), bAnyHouse(bAnyHouse), credits(credits), brain(brain), quota(quota), maxunit(maxunit) {
+    MapEditorChangePlayer(int playerNum, bool bActive, bool bAnyHouse, int credits, std::string  brain, int quota = 0, int maxunit = 0)
+     : playerNum(playerNum), bActive(bActive), bAnyHouse(bAnyHouse), credits(credits), brain(std::move(brain)), quota(quota), maxunit(maxunit) {
     }
 
     virtual ~MapEditorChangePlayer() {

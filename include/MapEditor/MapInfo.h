@@ -21,13 +21,14 @@
 #include <DataTypes.h>
 
 #include <string>
+#include <utility>
 
 class MapInfo {
 public:
-    MapInfo(int mapSeed = INVALID, const std::string& author = "", const std::string& license = "", const std::string& losePicture = "LOSTVEHC.WSA",
-            const std::string& winPicture = "WIN2.WSA", const std::string& briefPicture = "SARDUKAR.WSA", int techLevel = INVALID)
-    : mapSeed(mapSeed), author(author), license(license), losePicture(losePicture),
-      winPicture(winPicture), briefPicture(briefPicture), techLevel(techLevel) {
+    MapInfo(int mapSeed = INVALID, std::string author = "", std::string license = "", std::string losePicture = "LOSTVEHC.WSA",
+            std::string winPicture = "WIN2.WSA", std::string briefPicture = "SARDUKAR.WSA", int techLevel = INVALID)
+    : mapSeed(mapSeed), author(std::move(author)), license(std::move(license)), losePicture(std::move(losePicture)),
+      winPicture(std::move(winPicture)), briefPicture(std::move(briefPicture)), techLevel(techLevel) {
     }
 
     int mapSeed;

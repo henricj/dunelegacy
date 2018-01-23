@@ -65,27 +65,20 @@ void Saboteur::checkPos()
 {
     InfantryBase::checkPos();
 
-    if(active) {
-        bool canBeSeen[NUM_TEAMS];
-        for(int i = 0; i < NUM_TEAMS; i++) {
-            canBeSeen[i] = false;
-        }
+    if(!active)
+        return;
 
-        for(int x = location.x - 2; (x <= location.x + 2); x++) {
-            for(int y = location.y - 2; (y <= location.y + 2); y++) {
-                if(currentGameMap->tileExists(x, y) && currentGameMap->getTile(x, y)->hasAnObject()) {
-                    canBeSeen[currentGameMap->getTile(x, y)->getObject()->getOwner()->getTeamID()] = true;
-                }
+    std::array<bool, NUM_TEAMS> canBeSeen{};
+    for(int x = location.x - 2; (x <= location.x + 2); x++) {
+        for(int y = location.y - 2; (y <= location.y + 2); y++) {
+            if(currentGameMap->tileExists(x, y) && currentGameMap->getTile(x, y)->hasAnObject()) {
+                canBeSeen[currentGameMap->getTile(x, y)->getObject()->getOwner()->getTeamID()] = true;
             }
         }
-
-        for(int i = 0; i < NUM_TEAMS; i++) {
-            setVisible(i, canBeSeen[i]);
-        }
-
-        setVisible(getOwner()->getTeamID(), true);    //owner team can always see it
-        //setVisible(pLocalHouse->getTeamID(), true);
     }
+
+    setVisible(getOwner()->getTeamID(), true);    //owner team can always see it
+    //setVisible(pLocalHouse->getTeamID(), true);
 }
 
 bool Saboteur::update() {
@@ -110,6 +103,12 @@ bool Saboteur::update() {
                         pObject->destroy();
                         return false;
                     }
+
+                    auto pObject = target.getObjPointer();
+                    destroy();
+                    pObject->setHealth(0);
+                    pObject->destroy();
+                    return false;
                 }
             }
         }
@@ -127,19 +126,10 @@ void Saboteur::deploy(const Coord& newLocation) {
 
 
 bool Saboteur::canAttack(const ObjectBase* object) const {
-    if(object != nullptr){
-        if((object->isAStructure() || (object->isAGroundUnit() && !object->isInfantry() && object->getItemID() != Unit_Sandworm)) /* allow attack tanks*/
-            && (object->getOwner()->getTeamID() != owner->getTeamID())
-            && object->isVisible(getOwner()->getTeamID())){
-
-            return true;
-        }
-
-    }
-
-    return false;
-
-
+    return object != nullptr
+        && ((object->isAStructure() || (object->isAGroundUnit() && !object->isInfantry() && object->getItemID() != Unit_Sandworm)) /* allow attack tanks*/
+        && (object->getOwner()->getTeamID() != owner->getTeamID())
+        && object->isVisible(getOwner()->getTeamID()));
 }
 
 void Saboteur::destroy()

@@ -38,6 +38,11 @@ public:
         this->sound = sound;
     }
 
+    CutSceneSoundTrigger(const CutSceneSoundTrigger &) = delete;
+    CutSceneSoundTrigger(CutSceneSoundTrigger &&) = delete;
+    CutSceneSoundTrigger& operator=(const CutSceneSoundTrigger &) = delete;
+    CutSceneSoundTrigger& operator=(CutSceneSoundTrigger &&) = delete;
+
     /// destructor
     ~CutSceneSoundTrigger() = default;
 

@@ -137,15 +137,15 @@ private:
     explicit BuilderList(Uint32 builderObjectID);
     virtual ~BuilderList();
 
-    int getRealHeight(int height);
-    int getNumButtons(int height);
-    Point getButtonPosition(int BtnNumber);
-    int getButton(int x, int y);
+    static int getRealHeight(int height);
+    int getNumButtons(int height) const;
+    Point getButtonPosition(int BtnNumber) const;
+    int getButton(int x, int y) const;
     int getItemIDFromIndex(int i) const;
 
     void onUp();
     void onDown();
-    void onOrder();
+    void onOrder() const;
     void onCancel();
 
     int currentListPos;

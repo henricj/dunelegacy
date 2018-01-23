@@ -53,7 +53,7 @@ public:
     */
     bool canBeCaptured() const override { return false; }
 
-    inline void setLocation(const Coord& location) { setLocation(location.x, location.y); }
+    using ObjectBase::setLocation;
     void setLocation(int xPos, int yPos) override;
 
 private:

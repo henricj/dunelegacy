@@ -30,24 +30,24 @@ class CommandList {
 public:
     class CommandListEntry {
     public:
-        CommandListEntry(Uint32 cycle, const std::vector<Command>& commands)
-         : cycle(cycle), commands(commands) {
+        CommandListEntry(Uint32 cycle, std::vector<Command> commands)
+         : cycle(cycle), commands(std::move(commands)) {
 
         }
 
         explicit CommandListEntry(InputStream& stream) {
             cycle = stream.readUint32();
-            Uint32 numCommands = stream.readUint32();
+            const auto numCommands = stream.readUint32();
             for(Uint32 i = 0; i < numCommands; i++) {
-                commands.push_back(Command(stream));
+                commands.emplace_back(stream);
             }
         }
 
         void save(OutputStream& stream) const {
             stream.writeUint32(cycle);
 
-            stream.writeUint32((Uint32) commands.size());
-            for(const Command& command : commands) {
+            stream.writeUint32(static_cast<Uint32>(commands.size()));
+            for(const auto& command : commands) {
                 command.save(stream);
             }
         }
@@ -57,9 +57,11 @@ public:
     };
 
     CommandList() = default;
+    CommandList(const CommandList &) = delete;
+    CommandList(CommandList &&) = delete;
 
     explicit CommandList(InputStream& stream) {
-        Uint32 numCommandListEntries = stream.readUint32();
+        const auto numCommandListEntries = stream.readUint32();
         for(Uint32 i = 0; i < numCommandListEntries; i++) {
             commandList.emplace_back(stream);
         }
@@ -67,9 +69,12 @@ public:
 
     ~CommandList() = default;
 
+    CommandList& operator=(const CommandList &) = delete;
+    CommandList& operator=(CommandList &&) = delete;
+
     void save(OutputStream& stream) const {
-        stream.writeUint32((Uint32) commandList.size());
-        for(const CommandListEntry& commandListEntry : commandList) {
+        stream.writeUint32(static_cast<Uint32>(commandList.size()));
+        for(const auto& commandListEntry : commandList) {
             commandListEntry.save(stream);
         }
     }
