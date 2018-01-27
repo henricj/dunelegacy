@@ -229,8 +229,11 @@ void Game::processObjects()
 
 void Game::drawScreen()
 {
-    auto TopLeftTile = screenborder->getTopLeftTile();
-    auto BottomRightTile = screenborder->getBottomRightTile();
+    const auto top_left = screenborder->getTopLeftTile();
+    const auto bottom_right = screenborder->getBottomRightTile();
+
+    auto TopLeftTile = top_left;
+    auto BottomRightTile = bottom_right;
 
     // extend the view a little bit to avoid graphical glitches
     TopLeftTile.x = std::max(0, TopLeftTile.x - 1);
@@ -340,7 +343,7 @@ void Game::drawScreen()
         const auto zoomedTileSize = world2zoomedWorld(TILESIZE);
         const auto hideTile = pTile->getHideTile(pLocalHouse->getTeamID());
 
-        tiles->for_each(x1, y1, x2, y2,
+        tiles->for_each(top_left.x - 1, top_left.y - 1, bottom_right.x + 2, bottom_right.y + 1,
             [=](Tile& t) {
                 const auto x = t.getLocation().x;
                 const auto y = t.getLocation().y;
