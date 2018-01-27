@@ -17,6 +17,7 @@
 
 #include <misc/draw_util.h>
 #include <misc/exceptions.h>
+#include <misc/sdl_support.h>
 
 #include <globals.h>
 
@@ -117,59 +118,41 @@ void drawVLineNoLock(SDL_Surface *surface, int x, int y1, int y2, Uint32 color) 
 
 
 void drawHLine(SDL_Surface *surface, int x1, int y, int x2, Uint32 color) {
-    if(!SDL_MUSTLOCK(surface) || (SDL_LockSurface(surface) == 0)) {
-        drawHLineNoLock(surface, x1, y, x2, color);
+    sdl2::surface_lock lock{ surface };
 
-        if(SDL_MUSTLOCK(surface)) {
-            SDL_UnlockSurface(surface);
-        }
-    }
+    drawHLineNoLock(surface, x1, y, x2, color);
 }
 
 
 void drawVLine(SDL_Surface *surface, int x, int y1, int y2, Uint32 color) {
-    if(!SDL_MUSTLOCK(surface) || (SDL_LockSurface(surface) == 0)) {
-        drawVLineNoLock(surface, x, y1, y2, color);
+    sdl2::surface_lock lock{ surface };
 
-        if (SDL_MUSTLOCK(surface)) {
-            SDL_UnlockSurface(surface);
-        }
-    }
+    drawVLineNoLock(surface, x, y1, y2, color);
 }
 
 
-void drawRect(SDL_Surface *surface, int x1, int y1, int x2, int y2, Uint32 color) {
-    if(!SDL_MUSTLOCK(surface) || (SDL_LockSurface(surface) == 0)) {
-        int min = x1;
-        int max = x2;
+void drawRectNoLock(SDL_Surface *surface, int x1, int y1, int x2, int y2, Uint32 color) {
+    int min = x1;
+    int max = x2;
 
-        if(min > max) {
-            int temp = max;
-            max = min;
-            min = temp;
-        }
+    if(min > max) {
+        std::swap(min, max);
+    }
 
-        for(int i = min; i <= max; i++) {
-            putPixel(surface, i, y1, color);
-            putPixel(surface, i, y2, color);
-        }
+    for(auto i = min; i <= max; i++) {
+        putPixel(surface, i, y1, color);
+        putPixel(surface, i, y2, color);
+    }
 
-        min = y1+1;
-        max = y2;
-        if(min > max) {
-            int temp = max;
-            max = min;
-            min = temp;
-        }
+    min = y1+1;
+    max = y2;
+    if(min > max) {
+        std::swap(min, max);
+    }
 
-        for(int j = min; j < max; j++) {
-            putPixel(surface, x1, j, color);
-            putPixel(surface, x2, j, color);
-        }
-
-        if(SDL_MUSTLOCK(surface)) {
-            SDL_UnlockSurface(surface);
-        }
+    for(auto j = min; j < max; j++) {
+        putPixel(surface, x1, j, color);
+        putPixel(surface, x2, j, color);
     }
 }
 
@@ -182,8 +165,11 @@ sdl2::surface_ptr renderReadSurface(SDL_Renderer* renderer) {
         return nullptr;
     }
 
-    SDL_version version;
-    SDL_GetVersion(&version);
+    static bool need_workaround;
+    static std::once_flag  flag;
+    std::call_once(flag,
+        [&]() {
+            need_workaround = false;
 
     if((version.major <= 2) && (version.minor <= 0) && (version.patch <= 4)) {
         // Fix bug in SDL2 OpenGL Backend (SDL bug #2740 and #3350) in SDL version <= 2.0.4
@@ -196,40 +182,30 @@ sdl2::surface_ptr renderReadSurface(SDL_Renderer* renderer) {
         }
     }
 
-    return pScreen;
+    return pScreen.release();
 }
 
 void replaceColor(SDL_Surface *surface, Uint32 oldColor, Uint32 newColor) {
-    if(!SDL_MUSTLOCK(surface) || (SDL_LockSurface(surface) == 0)) {
-        for(int y = 0; y < surface->h; y++) {
-            Uint8 *p = (Uint8 *)surface->pixels + (y * surface->pitch);
+    sdl2::surface_lock lock{ surface };
 
-            for(int x = 0; x < surface->w; x++, ++p) {
-                Uint32 color = getPixel(surface, x, y);
-                if(color == oldColor) {
-                    putPixel(surface, x, y, newColor);
-                }
+    for(auto y = 0; y < surface->h; y++) {
+        for(auto x = 0; x < surface->w; ++x) {
+            const auto color = getPixel(surface, x, y);
+            if(color == oldColor) {
+                putPixel(surface, x, y, newColor);
             }
-        }
-
-        if(SDL_MUSTLOCK(surface)) {
-            SDL_UnlockSurface(surface);
         }
     }
 }
 
 void mapColor(SDL_Surface *surface, Uint8 colorMap[256]) {
-    if(!SDL_MUSTLOCK(surface) || (SDL_LockSurface(surface) == 0)) {
-        for(int y = 0; y < surface->h; y++) {
-            Uint8 *p = (Uint8 *)surface->pixels + (y * surface->pitch);
+    sdl2::surface_lock lock{ surface };
 
-            for(int x = 0; x < surface->w; x++, ++p) {
-                *p = colorMap[*p];
-            }
-        }
+    for(auto y = 0; y < surface->h; y++) {
+        Uint8* RESTRICT p = static_cast<Uint8 *>(surface->pixels) + (y * surface->pitch);
 
-        if(SDL_MUSTLOCK(surface)) {
-            SDL_UnlockSurface(surface);
+        for(auto x = 0; x < surface->w; ++x, ++p) {
+            *p = colorMap[*p];
         }
     }
 }
@@ -265,6 +241,8 @@ sdl2::texture_ptr convertSurfaceToTexture(SDL_Surface* inSurface) {
     if(inSurface == nullptr) {
         return nullptr;
     }
+
+    sdl2::surface_ptr surface_handle{ freeSrcSurface ? inSurface : nullptr };
 
     if(inSurface->w <= 0 || inSurface->h <= 0) {
         return nullptr;
@@ -375,7 +353,7 @@ sdl2::surface_ptr combinePictures(SDL_Surface* basePicture, SDL_Surface* topPict
     SDL_Rect destRect = calcDrawingRect(topPicture, x, y);
     SDL_BlitSurface(topPicture, nullptr, dest.get(), &destRect);
 
-    return dest;
+    return dest.release();
 }
 
 
@@ -596,6 +574,6 @@ sdl2::surface_ptr mapSurfaceColorRange(SDL_Surface* source, int srcColor, int de
         }
     }
 
-    return retPic;
+    return retPic.release();
 }
 
