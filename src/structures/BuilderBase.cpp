@@ -132,34 +132,32 @@ void BuilderBase::insertItem(std::list<BuildItem>& buildItemList, std::list<Buil
 }
 
 void BuilderBase::removeItem(std::list<BuildItem>& buildItemList, std::list<BuildItem>::iterator& iter, Uint32 itemID) {
-    if(iter != buildItemList.end()) {
-        if(iter->itemID == itemID) {
-            std::list<BuildItem>::iterator iter2 = iter;
-            ++iter;
-            buildItemList.erase(iter2);
+    if(iter == buildItemList.end() || iter->itemID != itemID) return;
 
-            // is this item currently produced?
-            if(currentProducedItem == itemID) {
-                owner->returnCredits(productionProgress);
-                productionProgress = 0;
-                currentProducedItem = ItemID_Invalid;
-            }
+    const auto iter2 = iter;
+    ++iter;
+    buildItemList.erase(iter2);
 
-            // remove from production list
-            std::list<ProductionQueueItem>::iterator iter3 = currentProductionQueue.begin();
-            while(iter3 != currentProductionQueue.end()) {
-                if(iter3->itemID == itemID) {
-                    std::list<ProductionQueueItem>::iterator iter4 = iter3;
-                    ++iter3;
-                    currentProductionQueue.erase(iter4);
-                } else {
-                    ++iter3;
-                }
-            }
+    // is this item currently produced?
+    if(currentProducedItem == itemID) {
+        owner->returnCredits(productionProgress);
+        productionProgress = 0;
+        currentProducedItem = ItemID_Invalid;
+    }
 
-            produceNextAvailableItem();
+    // remove from production list
+    auto iter3 = currentProductionQueue.begin();
+    while(iter3 != currentProductionQueue.end()) {
+        if(iter3->itemID == itemID) {
+            const auto iter4 = iter3;
+            ++iter3;
+            currentProductionQueue.erase(iter4);
+        } else {
+            ++iter3;
         }
     }
+
+    produceNextAvailableItem();
 }
 
 
