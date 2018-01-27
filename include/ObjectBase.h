@@ -50,7 +50,7 @@ public:
 
     explicit ObjectBase(House* newOwner);
     explicit ObjectBase(InputStream& stream);
-    virtual ~ObjectBase();
+    virtual ~ObjectBase() = 0;
 
     ObjectBase(const ObjectBase &) = delete;
     ObjectBase(ObjectBase &&) = delete;
@@ -130,36 +130,36 @@ public:
     virtual const ObjectBase* findTarget() const;
 
     void addHealth() { if (health < getMaxHealth()) setHealth(health + 1); }
-    void setActive(bool status) { active = status; }
-    void setForced(bool status) { forced = status; }
-    void setRespondable(bool status) { respondable = status; }
-    void setSelected(bool value) { selected = value; }
-    void setSelectedByOtherPlayer(bool value) { selectedByOtherPlayer = value; }
+    void setActive(bool status) noexcept { active = status; }
+    void setForced(bool status) noexcept { forced = status; }
+    void setRespondable(bool status) noexcept { respondable = status; }
+    void setSelected(bool value) noexcept { selected = value; }
+    void setSelectedByOtherPlayer(bool value) noexcept { selectedByOtherPlayer = value; }
     void setDestination(const Coord& location) { setDestination(location.x, location.y); }
     void setLocation(const Coord& location) { setLocation(location.x, location.y); }
-    bool canAttack() const { return canAttackStuff; }
-    bool hasATarget() const { return (target); }
-    bool hasObjectID(Uint32 id) const { return (objectID == id); }
-    bool isActive() const { return active; }
-    bool isAFlyingUnit() const { return aFlyingUnit; }
-    bool isAGroundUnit() const { return aGroundUnit; }
-    bool isAStructure() const { return aStructure; }
-    bool isABuilder() const { return aBuilder; }
-    bool isInfantry() const { return infantry; }
-    bool isAUnit() const { return aUnit; }
-    bool isRespondable() const { return respondable; }
-    bool isByScenario() const { return byScenario; }
-    bool isSelected() const { return selected; }
-    bool isSelectedByOtherPlayer() const { return selectedByOtherPlayer; }
-    bool isBadlyDamaged() const { return badlyDamaged; };
-    bool wasForced() const { return forced; }
-    int getItemID() const { return itemID; }
-    int getX() const { return location.x; }
-    int getY() const { return location.y; }
+    bool canAttack() const noexcept { return canAttackStuff; }
+    bool hasATarget() const noexcept { return (target); }
+    bool hasObjectID(Uint32 id) const noexcept { return (objectID == id); }
+    bool isActive() const noexcept { return active; }
+    bool isAFlyingUnit() const noexcept { return aFlyingUnit; }
+    bool isAGroundUnit() const noexcept { return aGroundUnit; }
+    bool isAStructure() const noexcept { return aStructure; }
+    bool isABuilder() const noexcept { return aBuilder; }
+    bool isInfantry() const noexcept { return infantry; }
+    bool isAUnit() const noexcept { return aUnit; }
+    bool isRespondable() const noexcept { return respondable; }
+    bool isByScenario() const noexcept { return byScenario; }
+    bool isSelected() const noexcept { return selected; }
+    bool isSelectedByOtherPlayer() const noexcept { return selectedByOtherPlayer; }
+    bool isBadlyDamaged() const noexcept { return badlyDamaged; };
+    bool wasForced() const noexcept { return forced; }
+    int getItemID() const noexcept { return itemID; }
+    int getX() const noexcept { return location.x; }
+    int getY() const noexcept { return location.y; }
 
-    FixPoint getHealth() const { return health; }
+    FixPoint getHealth() const noexcept { return health; }
     int getMaxHealth() const;
-    Uint32 getObjectID() const { return objectID; }
+    Uint32 getObjectID() const noexcept { return objectID; }
 
 
     int getViewRange() const;
@@ -168,19 +168,18 @@ public:
     int getWeaponReloadTime() const;
     int getInfSpawnProp() const;
 
-    inline FixPoint getRealX() const { return realX; }
-    inline FixPoint getRealY() const { return realY; }
-    inline const Coord& getLocation() const { return location; }
-    inline const Coord& getDestination() const { return destination; }
-    inline ObjectBase* getTarget() { return target.getObjPointer(); }
-    inline const ObjectBase* getTarget() const { return target.getObjPointer(); }
+    FixPoint getRealX() const noexcept { return realX; }
+    FixPoint getRealY() const noexcept { return realY; }
+    const Coord& getLocation() const noexcept { return location; }
+    const Coord& getDestination() const noexcept { return destination; }
+    ObjectBase* getTarget() noexcept { return target.getObjPointer(); }
+    const ObjectBase* getTarget() const noexcept { return target.getObjPointer(); }
 
-    inline int getOriginalHouseID() const { return originalHouseID; }
+    int getOriginalHouseID() const noexcept { return originalHouseID; }
     virtual void setOriginalHouseID(int i) { originalHouseID = i; }
-    inline House* getOwner() { return owner; }
-    inline const House* getOwner() const { return owner; }
+    House* getOwner() const noexcept { return owner; }
 
-    inline void setOwner(House* no) { owner = no; }
+    void setOwner(House* no) noexcept { owner = no; }
 
     static ObjectBase* createObject(int itemID, House* Owner, bool byScenario);
     static ObjectBase* loadObject(InputStream& stream, int itemID, Uint32 objectID);
@@ -189,18 +188,18 @@ protected:
     bool targetInWeaponRange() const;
 
     // constant for all objects of the same type
-    Uint32   itemID;                 ///< The ItemID of this object.
-    int      radius;                 ///< The radius of this object
+    Uint32   itemID = ItemID_Invalid; ///< The ItemID of this object.
+    int      radius = TILESIZE/2;     ///< The radius of this object
 
-    bool     aStructure;             ///< Is this a structure?
-    bool     aBuilder;               ///< Is this a builder?
+    bool     aStructure{};             ///< Is this a structure?
+    bool     aBuilder{};               ///< Is this a builder?
 
-    bool     aUnit;                  ///< Is this a unit?
-    bool     aFlyingUnit;            ///< Is this a flying unit?
-    bool     aGroundUnit;            ///< Is this a ground unit?
-    bool     infantry;               ///< Is this an infantry unit?
+    bool     aUnit{};                  ///< Is this a unit?
+    bool     aFlyingUnit{};            ///< Is this a flying unit?
+    bool     aGroundUnit{};            ///< Is this a ground unit?
+    bool     infantry{};               ///< Is this an infantry unit?
 
-    bool     canAttackStuff;         ///< Can this unit/structure attack?
+    bool     canAttackStuff{};         ///< Can this unit/structure attack?
 
     // object state/properties
     Uint32   objectID;               ///< The unique object ID of this object
@@ -239,7 +238,6 @@ protected:
 
 private:
     FixPoint health;                 ///< The health of this object
-    void init();
 };
 
 

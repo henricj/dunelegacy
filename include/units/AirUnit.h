@@ -25,8 +25,12 @@ class AirUnit : public UnitBase
 public:
     explicit AirUnit(House* newOwner);
     explicit AirUnit(InputStream& stream);
-    void init();
-    virtual ~AirUnit();
+    virtual ~AirUnit() = 0;
+
+    AirUnit(const AirUnit &) = delete;
+    AirUnit(AirUnit &&) = delete;
+    AirUnit& operator=(const AirUnit &) = delete;
+    AirUnit& operator=(AirUnit &&) = delete;
 
     void save(OutputStream& stream) const override;
 

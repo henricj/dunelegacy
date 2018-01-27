@@ -37,6 +37,10 @@ public:
     ~SoundPlayer();
     //@}
 
+    SoundPlayer(const SoundPlayer &) = delete;
+    SoundPlayer(SoundPlayer &&) = delete;
+    SoundPlayer& operator=(const SoundPlayer &) = delete;
+    SoundPlayer& operator=(const SoundPlayer &&) = delete;
     /*!
         plays a certain sound at certain coordinates.
         the volume of sound depends on the difference between
@@ -44,7 +48,7 @@ public:
         @param soundID id of the sound to be played
         @param location coordinates where the sound is to be played
     */
-    void playSoundAt(Sound_enum soundID, const Coord& location);
+    void playSoundAt(Sound_enum soundID, const Coord& location) const;
 
     /*!
         Toggle the sound on and off
@@ -57,11 +61,11 @@ public:
     */
     void setSound(bool value) { soundOn = value; }
 
-    void playVoice(Voice_enum id, int houseID);
+    void playVoice(Voice_enum id, int houseID) const;
 
-    void playSound(Mix_Chunk* sound);
+    void playSound(Mix_Chunk* sound) const;
 
-    void playSound(Sound_enum id);
+    void playSound(Sound_enum id) const;
 
     /**
         Gets the current sfx volume.
@@ -98,7 +102,7 @@ private:
         @param soundID id of a sound to be played
         @param volume sound will be played with this volume
     */
-    void playSound(Sound_enum soundID, int volume);
+    void playSound(Sound_enum soundID, int volume) const;
 
     //! whether sound should be played
     bool    soundOn;

@@ -26,8 +26,6 @@
 #include <FileClasses/TTFFont.h>
 #include <FileClasses/LoadSavePNG.h>
 
-#include <list>
-
 FontManager::FontManager() = default;
 
 FontManager::~FontManager() = default;
@@ -67,13 +65,13 @@ sdl2::texture_ptr FontManager::createTextureWithText(const std::string& text, Ui
 sdl2::surface_ptr FontManager::createSurfaceWithMultilineText(const std::string& text, Uint32 color, unsigned int fontSize, bool bCentered) {
     size_t startpos = 0;
     size_t nextpos;
-    std::list<std::string> textLines;
+    std::vector<std::string> textLines;
     do {
-        nextpos = text.find("\n",startpos);
+        nextpos = text.find('\n',startpos);
         if(nextpos == std::string::npos) {
-            textLines.push_back(text.substr(startpos,text.length()-startpos));
+            textLines.emplace_back(text.substr(startpos,text.length()-startpos));
         } else {
-            textLines.push_back(text.substr(startpos,nextpos-startpos));
+            textLines.emplace_back(text.substr(startpos,nextpos-startpos));
             startpos = nextpos+1;
         }
     } while(nextpos != std::string::npos);

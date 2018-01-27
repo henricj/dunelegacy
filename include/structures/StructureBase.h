@@ -48,7 +48,7 @@ class StructureBase : public ObjectBase
 public:
     explicit StructureBase(House* newOwner);
     explicit StructureBase(InputStream& stream);
-    virtual ~StructureBase();
+    virtual ~StructureBase() = 0;
 
     StructureBase(const StructureBase &) = delete;
     StructureBase(StructureBase &&) = delete;
