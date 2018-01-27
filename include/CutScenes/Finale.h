@@ -27,7 +27,7 @@
 /**
     This class is for showing the finale video after mission 9.
 */
-class Finale : public CutScene
+class Finale final : public CutScene
 {
 public:
     /**

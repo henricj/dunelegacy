@@ -177,7 +177,7 @@ public:
     void informHasKilled(Uint32 itemID);
     void informHasDamaged(Uint32 itemID, Uint32 damage);
 
-    void lose(bool bSilent = false);
+    void lose(bool bSilent = false) const;
     void win();
 
     void freeHarvester(int xPos, int yPos);

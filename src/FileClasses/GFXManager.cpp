@@ -917,7 +917,7 @@ SDL_Texture* GFXManager::getUIGraphic(unsigned int id, int house) {
     }
 
     if(uiGraphicTex[id][house] == nullptr) {
-        SDL_Surface* pSurface = getUIGraphicSurface(id, house);
+        const auto pSurface = getUIGraphicSurface(id, house);
 
         if(id >= UI_MapChoiceArrow_None && id <= UI_MapChoiceArrow_Left) {
             uiGraphicTex[id][house] = convertSurfaceToTexture(generateMapChoiceArrowFrames(pSurface, house));
@@ -1141,18 +1141,18 @@ sdl2::surface_ptr GFXManager::generateWindtrapAnimationFrames(SDL_Surface* windt
     dest.x += dest.w;
     dest.w = windtrapSize;
 
-    for(int i = 0; i < NUM_WINDTRAP_ANIMATIONS; i++) {
+    for(auto i = 0; i < NUM_WINDTRAP_ANIMATIONS; i++) {
         src.x = ((i/3) % 2 == 0) ? 2*windtrapSize : 3*windtrapSize;
 
         SDL_Color windtrapColor;
         if(i < NUM_WINDTRAP_ANIMATIONS/2) {
-            int val = i*windtrapColorQuantizizer;
+            const auto val = i*windtrapColorQuantizizer;
             windtrapColor.r = static_cast<Uint8>(std::min(80, val));
             windtrapColor.g = static_cast<Uint8>(std::min(80, val));
             windtrapColor.b = static_cast<Uint8>(std::min(255, val));
             windtrapColor.a = 255;
         } else {
-            int val = (i-NUM_WINDTRAP_ANIMATIONS/2)*windtrapColorQuantizizer;
+            const auto val = (i-NUM_WINDTRAP_ANIMATIONS/2)*windtrapColorQuantizizer;
             windtrapColor.r = static_cast<Uint8>(std::max(0, 80-val));
             windtrapColor.g = static_cast<Uint8>(std::max(0, 80-val));
             windtrapColor.b = static_cast<Uint8>(std::max(0, 255-val));
@@ -1171,7 +1171,7 @@ sdl2::surface_ptr GFXManager::generateWindtrapAnimationFrames(SDL_Surface* windt
         SDL_Log("Warning: Size of sprite sheet for windtrap is %dx%d; may exceed hardware limits on older GPUs!", returnPic->w, returnPic->h);
     }
 
-    return returnPic;
+    return returnPic.release();
 }
 
 
@@ -1189,7 +1189,7 @@ sdl2::surface_ptr GFXManager::generateMapChoiceArrowFrames(SDL_Surface* arrowPic
         dest.x += dest.w;
     }
 
-    return returnPic;
+    return returnPic.release();
 }
 
 sdl2::surface_ptr GFXManager::generateDoubledObjPic(unsigned int id, int h) const {
@@ -1220,7 +1220,7 @@ sdl2::surface_ptr GFXManager::generateDoubledObjPic(unsigned int id, int h) cons
         SDL_Log("Warning: Size of sprite sheet for '%s' in zoom level 1 is %dx%d; may exceed hardware limits on older GPUs!", ObjPicNames.at(id).c_str(), pSurface->w, pSurface->h);
     }
 
-    return pSurface;
+    return pSurface.release();
 }
 
 sdl2::surface_ptr GFXManager::generateTripledObjPic(unsigned int id, int h) const {
@@ -1252,5 +1252,5 @@ sdl2::surface_ptr GFXManager::generateTripledObjPic(unsigned int id, int h) cons
         SDL_Log("Warning: Size of sprite sheet for '%s' in zoom level 2 is %dx%d; may exceed hardware limits on older GPUs!", ObjPicNames.at(id).c_str(), pSurface->w, pSurface->h);
     }
 
-    return pSurface;
+    return pSurface.release();
 }

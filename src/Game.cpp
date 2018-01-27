@@ -88,7 +88,7 @@ Game::Game() {
 
     musicPlayer->changeMusic(MUSIC_PEACE);
     //////////////////////////////////////////////////////////////////////////
-    SDL_Rect gameBoardRect = { 0, topBarPos.h, sideBarPos.x, getRendererHeight() - topBarPos.h };
+    const SDL_Rect gameBoardRect = { 0, topBarPos.h, sideBarPos.x, getRendererHeight() - topBarPos.h };
     screenborder = new ScreenBorder(gameBoardRect);
 }
 
@@ -189,7 +189,7 @@ void Game::initReplay(const std::string& filename) {
     localPlayerName = fs.readString();
 
     // read GameInitInfo
-    GameInitSettings loadedGameInitSettings(fs);
+    const GameInitSettings loadedGameInitSettings(fs);
 
     // load all commands
     cmdManager.load(fs);
@@ -387,26 +387,26 @@ void Game::drawScreen()
                 }
                 else {
                     if (!debug) {
-                        SDL_Rect source = { zoomedTileSize * 15, 0, zoomedTileSize, zoomedTileSize };
-                        SDL_Rect drawLocation = { screenborder->world2screenX(x*TILESIZE), screenborder->world2screenY(y*TILESIZE),
+                        const SDL_Rect source = { zoomedTileSize * 15, 0, zoomedTileSize, zoomedTileSize };
+                        const SDL_Rect drawLocation = { screenborder->world2screenX(x*TILESIZE), screenborder->world2screenY(y*TILESIZE),
                                                     zoomedTileSize, zoomedTileSize };
                         SDL_RenderCopy(renderer, hiddenTex, &source, &drawLocation);
                     }
                 }
             });
 
-        const auto size_x = std::min(tiles->getSizeX(), screenborder->getBottomRightTile().x + 1);
-        const auto size_y = std::min(tiles->getSizeY(), screenborder->getBottomRightTile().y + 1);
-        for (auto x = screenborder->getTopLeftTile().x - 1; x <= screenborder->getBottomRightTile().x + 1; ++x) {
-            for (auto y = screenborder->getTopLeftTile().y - 1; y <= screenborder->getBottomRightTile().y + 1; ++y) {
+        const auto size_x = std::min(tiles->getSizeX(), bottom_right.x + 1);
+        const auto size_y = std::min(tiles->getSizeY(), bottom_right.y + 1);
+        for (auto x = top_left.x - 1; x <= bottom_right.x + 1; ++x) {
+            for (auto y = top_left.y - 1; y <= bottom_right.y + 1; ++y) {
                 if (x >= 0 && x < size_x)
                     x = size_x;
                 if (y >= 0 && y < size_y)
                     y = size_y;
 
                 // we are outside the map => draw complete hidden
-                SDL_Rect source = { zoomedTileSize * 15, 0, zoomedTileSize, zoomedTileSize };
-                SDL_Rect drawLocation = { screenborder->world2screenX(x*TILESIZE), screenborder->world2screenY(y*TILESIZE),
+                const SDL_Rect source = { zoomedTileSize * 15, 0, zoomedTileSize, zoomedTileSize };
+                const SDL_Rect drawLocation = { screenborder->world2screenX(x*TILESIZE), screenborder->world2screenY(y*TILESIZE),
                     zoomedTileSize, zoomedTileSize };
                 SDL_RenderCopy(renderer, hiddenTex, &source, &drawLocation);
             }
@@ -510,9 +510,9 @@ void Game::drawScreen()
 ///////////draw action indicator
 
     if((indicatorFrame != NONE_ID) && (screenborder->isInsideScreen(indicatorPosition, Coord(TILESIZE,TILESIZE)) == true)) {
-        SDL_Texture* pUIIndicator = pGFXManager->getUIGraphic(UI_Indicator);
-        SDL_Rect source = calcSpriteSourceRect(pUIIndicator, indicatorFrame, 3);
-        SDL_Rect drawLocation = calcSpriteDrawingRect(  pUIIndicator,
+        const auto pUIIndicator = pGFXManager->getUIGraphic(UI_Indicator);
+        auto source = calcSpriteSourceRect(pUIIndicator, indicatorFrame, 3);
+        auto drawLocation = calcSpriteDrawingRect(  pUIIndicator,
                                                         screenborder->world2screenX(indicatorPosition.x),
                                                         screenborder->world2screenY(indicatorPosition.y),
                                                         3, 1,
@@ -533,7 +533,7 @@ void Game::drawScreen()
     }
 
     if(bShowFPS) {
-        std::string strFPS = fmt::sprintf("fps: %.1f ", 1000.0f/averageFrameTime);
+        const auto strFPS = fmt::sprintf("fps: %.1f ", 1000.0f/averageFrameTime);
 
         sdl2::texture_ptr pFPSTexture = pFontManager->createTextureWithText(strFPS, COLOR_WHITE, 14);
         SDL_Rect drawLocation = calcDrawingRect(pFPSTexture.get(),sideBarPos.x - strFPS.length()*8, 60);
@@ -541,8 +541,8 @@ void Game::drawScreen()
     }
 
     if(bShowTime) {
-        int seconds = getGameTime() / 1000;
-        std::string strTime = fmt::sprintf(" %.2d:%.2d:%.2d", seconds / 3600, (seconds % 3600)/60, (seconds % 60) );
+        const int seconds = getGameTime() / 1000;
+        const auto strTime = fmt::sprintf(" %.2d:%.2d:%.2d", seconds / 3600, (seconds % 3600)/60, (seconds % 60) );
 
         sdl2::texture_ptr pTimeTexture = pFontManager->createTextureWithText(strTime, COLOR_WHITE, 14);
         SDL_Rect drawLocation = calcAlignedDrawingRect(pTimeTexture.get(), HAlign::Left, VAlign::Bottom);
@@ -626,7 +626,7 @@ void Game::doInput()
 
                 case SDL_TEXTINPUT: {
                     if(chatMode) {
-                        std::string newText = event.text.text;
+                        const auto newText = event.text.text;
                         if(utf8Length(typingChatMessage) + utf8Length(newText) <= 60) {
                             typingChatMessage += newText;
                         }
@@ -640,7 +640,7 @@ void Game::doInput()
                 } break;
 
                 case SDL_MOUSEBUTTONDOWN: {
-                    SDL_MouseButtonEvent* mouse = &event.button;
+                    const auto mouse = &event.button;
 
                     switch(mouse->button) {
                         case SDL_BUTTON_LEFT: {
@@ -650,6 +650,9 @@ void Game::doInput()
                         case SDL_BUTTON_RIGHT: {
                             pInterface->handleMouseRight(mouse->x, mouse->y, true);
                         } break;
+
+                        default:
+                            break;
                     }
 
                     switch(mouse->button) {
@@ -736,17 +739,19 @@ void Game::doInput()
                                 }
                             }
                         } break;    //end of SDL_BUTTON_RIGHT
+                        default:
+                            break;
                     }
                 } break;
 
                 case SDL_MOUSEMOTION: {
-                    SDL_MouseMotionEvent* mouse = &event.motion;
+                    const auto mouse = &event.motion;
 
                     pInterface->handleMouseMovement(mouse->x,mouse->y);
                 } break;
 
                 case SDL_MOUSEBUTTONUP: {
-                    SDL_MouseButtonEvent* mouse = &event.button;
+                    const auto mouse = &event.button;
 
                     switch(mouse->button) {
                         case SDL_BUTTON_LEFT: {
@@ -756,6 +761,8 @@ void Game::doInput()
                         case SDL_BUTTON_RIGHT: {
                             pInterface->handleMouseRight(mouse->x, mouse->y, false);
                         } break;
+                    default:
+                        break;
                     }
 
                     if(selectionMode && (mouse->button == SDL_BUTTON_LEFT)) {
@@ -789,11 +796,11 @@ void Game::doInput()
                                                         SDL_GetModState() & KMOD_SHIFT);
 
                         if(selectedList.size() == 1) {
-                            ObjectBase* pObject = objectManager.getObject( *selectedList.begin());
+                            auto pObject = objectManager.getObject( *selectedList.begin());
                             if(pObject != nullptr && pObject->getOwner() == pLocalHouse && pObject->getItemID() == Unit_Harvester) {
-                                Harvester* pHarvester = static_cast<Harvester*>(pObject);
+                                auto pHarvester = static_cast<Harvester*>(pObject);
 
-                                std::string harvesterMessage = _("@DUNE.ENG|226#Harvester");
+                                auto harvesterMessage = _("@DUNE.ENG|226#Harvester");
 
                                 int percent = lround(100 * pHarvester->getAmountOfSpice() / HARVESTERMAXSPICE);
                                 if(percent > 0) {
@@ -842,7 +849,7 @@ void Game::doInput()
 
     if((pInGameMenu == nullptr) && (pInGameMentat == nullptr) && (pWaitingForOtherPlayers == nullptr) && (SDL_GetWindowFlags(window) & SDL_WINDOW_MOUSE_FOCUS)) {
 
-        const Uint8 *keystate = SDL_GetKeyboardState(nullptr);
+        auto keystate = SDL_GetKeyboardState(nullptr);
         scrollDownMode =  (drawnMouseY >= getRendererHeight()-1-SCROLLBORDER) || keystate[SDL_SCANCODE_DOWN];
         scrollLeftMode = (drawnMouseX <= SCROLLBORDER) || keystate[SDL_SCANCODE_LEFT];
         scrollRightMode = (drawnMouseX >= getRendererWidth()-1-SCROLLBORDER) || keystate[SDL_SCANCODE_RIGHT];
@@ -961,12 +968,11 @@ void Game::drawCursor() const
                     }
 
                     if((xPos != INVALID_POS) && (yPos != INVALID_POS)) {
-
-                        Tile* pTile = currentGameMap->getTile(xPos, yPos);
+                        const auto pTile = currentGameMap->getTile(xPos, yPos);
 
                         if(pTile->isExploredByTeam(pLocalHouse->getTeamID())) {
 
-                            StructureBase* pStructure = dynamic_cast<StructureBase*>(pTile->getGroundObject());
+                            const auto pStructure = dynamic_cast<StructureBase*>(pTile->getGroundObject());
 
                             if((pStructure != nullptr) && (pStructure->canBeCaptured()) && (pStructure->getOwner()->getTeamID() != pLocalHouse->getTeamID())) {
                                 dest.y += ((getGameCycleCount() / 10) % 5);
@@ -998,7 +1004,7 @@ void Game::drawCursor() const
     SDL_RenderCopy(renderer, pCursor, nullptr, &dest);
 }
 
-void Game::setupView()
+void Game::setupView() const
 {
     int i = 0;
     int j = 0;
@@ -1175,8 +1181,8 @@ void Game::runMainLoop() {
                 pNetworkManager->update();
 
                 // test if we need to wait for data to arrive
-                for(const std::string& playername : pNetworkManager->getConnectedPeers()) {
-                    HumanPlayer* pPlayer = dynamic_cast<HumanPlayer*>(getPlayerByName(playername));
+                for(const auto& playername : pNetworkManager->getConnectedPeers()) {
+                    auto pPlayer = dynamic_cast<HumanPlayer*>(getPlayerByName(playername));
                     if(pPlayer != nullptr) {
                         if(pPlayer->nextExpectedCommandsCycle <= gameCycleCount) {
                             //SDL_Log("Cycle %d: Waiting for player '%s' to send data for cycle %d...", GameCycleCount, pPlayer->getPlayername().c_str(), pPlayer->nextExpectedCommandsCycle);

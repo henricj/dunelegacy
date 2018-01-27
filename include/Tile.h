@@ -49,21 +49,21 @@ enum deadUnitEnum {
     DeadUnit_Ornithopter = 5
 };
 
-typedef struct
+struct DAMAGETYPE
 {
     Uint32 damageType;
     int tile;
     Coord realPos;
-} DAMAGETYPE;
+} ;
 
-typedef struct
+struct DEADUNITTYPE
 {
     Coord   realPos;
     Sint16  timer;
     Uint8   type;
     Uint8   house;
     bool    onSand;
-} DEADUNITTYPE;
+};
 
 enum destroyedStructureEnum {
     DestroyedStructure_None = -1,
@@ -222,6 +222,11 @@ public:
     */
     Tile();
     ~Tile();
+
+    Tile(const Tile &) = default;
+    Tile(Tile &&) = default;
+    Tile& operator=(const Tile &) = default;
+    Tile& operator=(Tile &&) = default;
 
     void load(InputStream& stream);
     void save(OutputStream& stream) const;
@@ -479,7 +484,7 @@ private:
     zoomable_texture sprite{};  ///< the graphic to draw
 
     Sint32                          destroyedStructureTile;         ///< the tile drawn for a destroyed structure
-    Uint32                          tracksCreationTime[NUM_ANGLES]; ///< Contains the game cycle the tracks on sand appeared
+    std::array<Uint32, NUM_ANGLES>  tracksCreationTime{};           ///< Contains the game cycle the tracks on sand appeared
     std::vector<DAMAGETYPE>         damage;                         ///< damage positions
     std::vector<DEADUNITTYPE>       deadUnits;                      ///< dead units
 
@@ -488,8 +493,8 @@ private:
     std::list<Uint32>   assignedUndergroundUnitList;              ///< all underground units on this tile
     std::list<Uint32>   assignedNonInfantryGroundObjectList;      ///< all structures/vehicles on this tile
 
-    Uint32      lastAccess[NUM_TEAMS];    ///< contains for every team when this tile was seen last by this house
-    bool        explored[NUM_TEAMS];      ///< contains for every team if this tile is explored
+    std::array<Uint32, NUM_TEAMS>   lastAccess{};                   ///< contains for every team when this tile was seen last by this house
+    std::array<bool, NUM_TEAMS>     explored{};                     ///< contains for every team if this tile is explored
 
     void update_impl();
 

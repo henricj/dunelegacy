@@ -96,11 +96,11 @@ void SoundPlayer::playSound(Mix_Chunk* sound) {
     }
 }
 
-void SoundPlayer::playSound(Sound_enum id) {
+void SoundPlayer::playSound(Sound_enum id) const {
     playSound(id, sfxVolume);
 }
 
-void SoundPlayer::playSound(Sound_enum soundID, int volume)
+void SoundPlayer::playSound(Sound_enum soundID, int volume) const
 {
     static ChannelGroup soundID2ChannelGroup[] = {
         ChannelGroup::UI,                   // Sound_PlaceStructure

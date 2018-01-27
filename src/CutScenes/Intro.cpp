@@ -38,7 +38,7 @@
 
 #include <string>
 
-const char* Intro::VoiceFileNames[Voice_NUM_ENTRIES] =   {  "BLDING.VOC",
+const char * const Intro::VoiceFileNames[Voice_NUM_ENTRIES] =   {  "BLDING.VOC",
                                                             "DYNASTY.VOC",
                                                             "PLANET.VOC",
                                                             "KNOWN.VOC",
