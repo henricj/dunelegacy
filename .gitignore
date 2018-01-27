@@ -24,3 +24,4 @@ IDE/VC/obj
 IDE/VC/*.out?
 /.vs/ProjectSettings.json
 /.vs
+*.TMP
