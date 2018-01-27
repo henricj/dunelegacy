@@ -643,7 +643,7 @@ typedef struct LodePNGState
   LodePNGState& operator=(LodePNGState &&) = default;
 
   /* For the lodepng::State subclass. */
-  virtual ~LodePNGState()= default;
+  virtual ~LodePNGState() = default;
 #endif
 } LodePNGState;
 
