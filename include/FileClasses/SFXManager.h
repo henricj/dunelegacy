@@ -90,10 +90,15 @@ typedef enum {
 } Sound_enum;
 
 
-class SFXManager {
+class SFXManager final {
 public:
     SFXManager();
     ~SFXManager();
+
+    SFXManager(const SFXManager &) = delete;
+    SFXManager(SFXManager &&) = delete;
+    SFXManager& operator=(const SFXManager &) = delete;
+    SFXManager& operator=(SFXManager &&) = delete;
 
     Mix_Chunk*      getVoice(Voice_enum id, int house);
     Mix_Chunk*      getSound(Sound_enum id);

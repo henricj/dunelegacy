@@ -22,16 +22,16 @@
 
 
 Uint32 getPixel(SDL_Surface *surface, int x, int y) {
-    int bpp = surface->format->BytesPerPixel;
+    const int bpp = surface->format->BytesPerPixel;
     /* Here p is the address to the pixel we want to retrieve */
-    Uint8 *p = (Uint8 *)surface->pixels + (y * surface->pitch) + (x * bpp);
+    const auto p = static_cast<Uint8 *>(surface->pixels) + (y * surface->pitch) + (x * bpp);
 
     switch(bpp) {
     case 1:
         return *p;
 
     case 2:
-        return *(Uint16 *)p;
+        return *reinterpret_cast<Uint16 *>(p);
 
     case 3:
         if(SDL_BYTEORDER == SDL_BIG_ENDIAN)
@@ -39,13 +39,12 @@ Uint32 getPixel(SDL_Surface *surface, int x, int y) {
         else
             return p[0] | p[1] << 8 | p[2] << 16;
 
-    case 4:
-        Uint32 value;
-        value = *(Uint32 *)p;
-        Uint8 r,g,b,a;
-        SDL_GetRGBA(value,surface->format,&r,&g,&b,&a);
-        return COLOR_RGBA(r,g,b,a);
-
+    case 4: {
+        const auto value = *reinterpret_cast<Uint32 *>(p);
+        Uint8 r, g, b, a;
+        SDL_GetRGBA(value, surface->format, &r, &g, &b, &a);
+        return COLOR_RGBA(r, g, b, a);
+    }
     default:
         THROW(std::runtime_error, "getPixel(): Invalid bpp value!");
     }
@@ -53,67 +52,65 @@ Uint32 getPixel(SDL_Surface *surface, int x, int y) {
 
 
 void putPixel(SDL_Surface *surface, int x, int y, Uint32 color) {
-    if(x >= 0 && x < surface->w && y >=0 && y < surface->h) {
-        int bpp = surface->format->BytesPerPixel;
-        /* Here p is the address to the pixel want to set */
-        Uint8 *p = (Uint8 *)surface->pixels + y * surface->pitch + x * bpp;
+    if(x < 0 || x >= surface->w || y < 0 || y >= surface->h) return;
 
-        switch(bpp) {
-        case 1:
-            *p = color;
-            break;
+    const int bpp = surface->format->BytesPerPixel;
+    /* Here p is the address to the pixel want to set */
+    const auto p = static_cast<Uint8 *>(surface->pixels) + y * surface->pitch + x * bpp;
 
-        case 2:
-            *(Uint16 *)p = color;
-            break;
+    switch(bpp) {
+    case 1:
+        *p = color;
+        break;
 
-        case 3:
-            if(SDL_BYTEORDER == SDL_BIG_ENDIAN) {
-                p[0] = (color>> 16) & 0xff;
-                p[1] = (color>> 8) & 0xff;
-                p[2] = color& 0xff;
-            } else {
-                p[0] = color& 0xff;
-                p[1] = (color>> 8) & 0xff;
-                p[2] = (color>> 16) & 0xff;
-            }
-            break;
+    case 2:
+        *reinterpret_cast<Uint16 *>(p) = color;
+        break;
 
-        case 4:
-            *(Uint32 *)p = MapRGBA(surface->format, color);
-            break;
+    case 3:
+        if(SDL_BYTEORDER == SDL_BIG_ENDIAN) {
+            p[0] = (color>> 16) & 0xff;
+            p[1] = (color>> 8) & 0xff;
+            p[2] = color& 0xff;
+        } else {
+            p[0] = color& 0xff;
+            p[1] = (color>> 8) & 0xff;
+            p[2] = (color>> 16) & 0xff;
         }
+        break;
+
+    case 4:
+        *reinterpret_cast<Uint32 *>(p) = MapRGBA(surface->format, color);
+        break;
+    default:
+        THROW(std::runtime_error, "putPixel(): Invalid bpp value!");
     }
 }
 
 
 void drawHLineNoLock(SDL_Surface *surface, int x1, int y, int x2, Uint32 color) {
-    int min = x1;
-    int max = x2;
+    auto min = x1;
+    auto max = x2;
 
     if(min > max) {
-        int temp = max;
-        max = min;
-        min = temp;
+        std::swap(min, max);
     }
 
-    for(int i = min; i <= max; i++) {
+    for(auto i = min; i <= max; i++) {
         putPixel(surface, i, y, color);
     }
 }
 
 
 void drawVLineNoLock(SDL_Surface *surface, int x, int y1, int y2, Uint32 color) {
-    int min = y1;
-    int max = y2;
+    auto min = y1;
+    auto max = y2;
 
     if(min > max) {
-        int temp = max;
-        max = min;
-        min = temp;
+        std::swap(min, max);
     }
 
-    for(int i = min; i <= max; i++) {
+    for(auto i = min; i <= max; i++) {
         putPixel(surface, x, i, color);
     }
 }

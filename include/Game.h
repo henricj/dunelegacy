@@ -175,7 +175,7 @@ public:
     /**
         This method sets up the view. The start position is the center point of all owned units/structures
     */
-    void setupView();
+    void setupView() const;
 
     /**
         This method loads a previously saved game.
@@ -368,8 +368,8 @@ public:
         \param  player      the player to register
     */
     void registerPlayer(Player* player) {
-        playerName2Player.insert( std::make_pair(player->getPlayername(), player) );
-        playerID2Player.insert( std::make_pair(player->getPlayerID(), player) );
+        playerName2Player.emplace(player->getPlayername(), player);
+        playerID2Player[player->getPlayerID()] = player;
     }
 
     /**
@@ -379,12 +379,11 @@ public:
     void unregisterPlayer(Player* player) {
         playerID2Player.erase(player->getPlayerID());
 
-        for(auto iter = playerName2Player.begin(); iter != playerName2Player.end(); ++iter) {
-                if(iter->second == player) {
-                    playerName2Player.erase(iter);
-                    break;
-                }
-        }
+        const auto iter = std::find_if(playerName2Player.begin(), playerName2Player.end(),
+            [=](decltype(playerName2Player)::reference kv) { return kv.second == player; });
+
+        if (iter != playerName2Player.end())
+            playerName2Player.erase(iter);
     }
 
     /**
@@ -605,7 +604,7 @@ private:
     std::unique_ptr<WaitingForOtherPlayers> pWaitingForOtherPlayers;                ///< This is the dialog that pops up when we are waiting for other players during network hangs
     Uint32                                  startWaitingForOtherPlayersTime = 0;    ///< The time in milliseconds when we started waiting for other players
 
-    bool    bSelectionChanged = false;                  ///< Has the selected list changed (and must be retransmitted to other plays in multiplayer games)
+    bool    bSelectionChanged = false;                      ///< Has the selected list changed (and must be retransmitted to other plays in multiplayer games)
     Dune::selected_set_type selectedList;                      ///< A set of all selected units/structures
     Dune::selected_set_type selectedByOtherPlayerList;         ///< This is only used in multiplayer games where two players control one house
 

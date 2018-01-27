@@ -25,7 +25,7 @@
 #include <list>
 #include <string>
 
-class BuildItem {
+class BuildItem final {
 public:
     BuildItem() {
         itemID = ItemID_Invalid;
@@ -56,7 +56,7 @@ public:
     Uint32 num;
 };
 
-class ProductionQueueItem {
+class ProductionQueueItem final {
 public:
     ProductionQueueItem()
      : itemID(0), price(0) {
@@ -89,7 +89,7 @@ public:
     explicit BuilderBase(House* newOwner);
     explicit BuilderBase(InputStream& stream);
     void init();
-    virtual ~BuilderBase();
+    virtual ~BuilderBase() = 0;
 
     BuilderBase(const BuilderBase &) = delete;
     BuilderBase(BuilderBase &&) = delete;
@@ -180,20 +180,20 @@ public:
 
 
 
-    inline bool isUpgrading() const { return upgrading; }
-    inline bool isAllowedToUpgrade() const { return (curUpgradeLev < getMaxUpgradeLevel()); }
-    inline int getCurrentUpgradeLevel() const { return curUpgradeLev; }
+    bool isUpgrading() const noexcept { return upgrading; }
+    bool isAllowedToUpgrade() const { return (curUpgradeLev < getMaxUpgradeLevel()); }
+    int getCurrentUpgradeLevel() const noexcept { return curUpgradeLev; }
     int getUpgradeCost() const;
-    inline FixPoint getUpgradeProgress() const { return upgradeProgress; }
+    FixPoint getUpgradeProgress() const noexcept { return upgradeProgress; }
 
-    inline Uint32 getCurrentProducedItem() const { return currentProducedItem; }
-    inline bool isOnHold() const { return bCurrentItemOnHold; }
+    Uint32 getCurrentProducedItem() const noexcept { return currentProducedItem; }
+    bool isOnHold() const noexcept { return bCurrentItemOnHold; }
     bool isWaitingToPlace() const;
     bool isUnitLimitReached(Uint32 itemID) const;
-    inline FixPoint getProductionProgress() const { return productionProgress; }
-    inline const std::list<BuildItem>& getBuildList() const { return buildList; }
+    FixPoint getProductionProgress() const noexcept { return productionProgress; }
+    const std::list<BuildItem>& getBuildList() const noexcept { return buildList; }
 
-    virtual inline bool isAvailableToBuild(Uint32 itemID) const {
+    virtual bool isAvailableToBuild(Uint32 itemID) const {
         return (getBuildItem(itemID) != nullptr);
     }
 
@@ -213,7 +213,7 @@ protected:
     void removeItem(std::list<BuildItem>& buildItemList, std::list<BuildItem>::iterator& iter, Uint32 itemID);
 
     BuildItem* getBuildItem(Uint32 itemID) {
-        for(BuildItem& buildItem : buildList) {
+        for(auto& buildItem : buildList) {
             if(buildItem.itemID == itemID) {
                 return &buildItem;
             }
@@ -222,7 +222,7 @@ protected:
     }
 
     const BuildItem* getBuildItem(Uint32 itemID) const {
-        for(const BuildItem& buildItem : buildList) {
+        for(const auto& buildItem : buildList) {
             if(buildItem.itemID == itemID) {
                 return &buildItem;
             }
@@ -236,14 +236,14 @@ protected:
     static const int itemOrder[];  ///< the order in which items are in the build list
 
     // structure state
-    bool     upgrading;              ///< Currently upgrading?
-    FixPoint upgradeProgress;        ///< The current state of the upgrade progress (measured in money spent)
-    Uint8    curUpgradeLev;          ///< Current upgrade level
+    bool     upgrading{};              ///< Currently upgrading?
+    FixPoint upgradeProgress{};        ///< The current state of the upgrade progress (measured in money spent)
+    Uint8    curUpgradeLev{};          ///< Current upgrade level
 
-    bool     bCurrentItemOnHold;     ///< Is the currently produced item on hold?
-    Uint32   currentProducedItem;    ///< The ItemID of the currently produced item
-    FixPoint productionProgress;     ///< The current state of the production progress (measured in money spent)
-    Uint32   deployTimer;            ///< Timer for deploying a unit
+    bool     bCurrentItemOnHold{};     ///< Is the currently produced item on hold?
+    Uint32   currentProducedItem = ItemID_Invalid;    ///< The ItemID of the currently produced item
+    FixPoint productionProgress{};     ///< The current state of the production progress (measured in money spent)
+    Uint32   deployTimer{};            ///< Timer for deploying a unit
 
     FixPoint buildSpeedLimit;        ///< Limit the build speed to that percentage [0;1]. This may be used by the AI to make it weaker.
 

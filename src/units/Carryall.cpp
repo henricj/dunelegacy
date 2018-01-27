@@ -71,10 +71,7 @@ void Carryall::init()
     numImagesY = 2;
 }
 
-Carryall::~Carryall()
-{
-    ;
-}
+Carryall::~Carryall() = default;
 
 void Carryall::save(OutputStream& stream) const
 {
@@ -202,18 +199,17 @@ void Carryall::checkPos()
 
 void Carryall::deployUnit(Uint32 unitID)
 {
-    bool found = false;
+    const auto iter = std::find(pickedUpUnitList.cbegin(), pickedUpUnitList.cend(), unitID);
 
-    for(const Uint32& pickedUpUnitID : pickedUpUnitList) {
-        if(pickedUpUnitID == unitID) {
-            found = true;
-            break;
-        }
-    }
-
-    if(found == false) {
+    if (pickedUpUnitList.end() == iter)
         return;
-    }
+
+    pickedUpUnitList.erase(iter);
+
+    const auto pUnit = static_cast<UnitBase*>(currentGame->getObjectManager().getObject(unitID));
+
+    if(pUnit == nullptr)
+        return;
 
     pickedUpUnitList.remove(unitID);
 
@@ -282,8 +278,8 @@ void Carryall::deployUnit(Uint32 unitID)
 void Carryall::destroy()
 {
     // destroy cargo
-    for(const Uint32& pickedUpUnitID : pickedUpUnitList) {
-        UnitBase* pPickedUpUnit = static_cast<UnitBase*>(currentGame->getObjectManager().getObject(pickedUpUnitID));
+    for(const auto pickedUpUnitID : pickedUpUnitList) {
+        auto pPickedUpUnit = static_cast<UnitBase*>(currentGame->getObjectManager().getObject(pickedUpUnitID));
         if(pPickedUpUnit != nullptr) {
             pPickedUpUnit->destroy();
         }
@@ -292,7 +288,7 @@ void Carryall::destroy()
 
     // place wreck
     if(isVisible() && currentGameMap->tileExists(location)) {
-        Tile* pTile = currentGameMap->getTile(location);
+        auto pTile = currentGameMap->getTile(location);
         pTile->assignDeadUnit(DeadUnit_Carrall, owner->getHouseID(), Coord(lround(realX), lround(realY)));
     }
 
@@ -348,8 +344,8 @@ void Carryall::engageTarget()
     if (targetDistance <= TILESIZE/32) {
         if(hasCargo()) {
             if(target.getObjPointer()->isAStructure()) {
-                while(pickedUpUnitList.begin() != pickedUpUnitList.end()) {
-                    deployUnit(*(pickedUpUnitList.begin()) );
+                while(!pickedUpUnitList.empty()) {
+                    deployUnit(pickedUpUnitList.back());
                 }
 
                 setTarget(nullptr);
@@ -402,7 +398,7 @@ void Carryall::pickupTarget()
                 pGroundUnitTarget->doRepair();
             }
 
-            ObjectBase* newTarget = pGroundUnitTarget->hasATarget() ? pGroundUnitTarget->getTarget() : nullptr;
+            auto newTarget = pGroundUnitTarget->hasATarget() ? pGroundUnitTarget->getTarget() : nullptr;
 
             pickedUpUnitList.push_back(target.getObjectID());
             pGroundUnitTarget->setPickedUp(this);
