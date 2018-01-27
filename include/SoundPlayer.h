@@ -53,13 +53,13 @@ public:
     /*!
         Toggle the sound on and off
     */
-    void toggleSound() { soundOn = !soundOn; }
+    void toggleSound() { soundOn = !soundOn && pSFXManager; }
 
     /*!
         turns sound playing on or off
         @param value when true the function turns sfx on
     */
-    void setSound(bool value) { soundOn = value; }
+    void setSound(bool value) { soundOn = value && pSFXManager; }
 
     void playVoice(Voice_enum id, int houseID) const;
 

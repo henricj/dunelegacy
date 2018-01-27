@@ -625,8 +625,8 @@ int main(int argc, char *argv[]) {
             if(bFirstInit == true) {
                 SDL_Log("Initializing audio...");
                 if( Mix_OpenAudio(AUDIO_FREQUENCY, AUDIO_S16SYS, 2, 1024) < 0 ) {
-                    SDL_Quit();
-                    THROW(sdl_error, "Couldn't set %d Hz 16-bit audio. Reason: %s!", AUDIO_FREQUENCY, SDL_GetError());
+                    //SDL_Quit();
+                    //THROW(sdl_error, "Couldn't set %d Hz 16-bit audio. Reason: %s!", AUDIO_FREQUENCY, SDL_GetError());
                 } else {
                     SDL_Log("%d audio channels were allocated.", Mix_AllocateChannels(28));
                 }
@@ -656,7 +656,14 @@ int main(int argc, char *argv[]) {
             auto sfxManagerFut = std::async(std::launch::async, []() { return std::make_unique<SFXManager>(); } );
 
             pGFXManager = gfxManagerFut.get();
-            pSFXManager = sfxManagerFut.get();
+
+            try {
+                pSFXManager = sfxManagerFut.get();
+            } catch(const std::exception& e) {
+                pSFXManager = nullptr;
+                const auto message = fmt::sprintf("The sound manager was unable to initialize: '%s' was thrown:\n\n%s\n\nDune Legacy is unable to play sound!", demangleSymbol(typeid(e).name()), e.what());
+                SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_WARNING, "Dune Legacy: Warning", message.c_str(), nullptr);
+            }
 #else
             // g++ does not provide std::launch::async on all platforms
             pGFXManager = std::make_unique<GFXManager>();
