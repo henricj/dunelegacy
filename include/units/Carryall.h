@@ -20,8 +20,6 @@
 
 #include <units/AirUnit.h>
 
-#include <list>
-
 class Carryall final : public AirUnit
 {
 public:
@@ -63,6 +61,12 @@ public:
 
     inline void setDropOfferer(bool status) {
         aDropOfferer = status;
+<<<<<<< HEAD
+=======
+        if (aDropOfferer) {
+            booked = true;
+        }
+>>>>>>> Switch Carryall's pickedUpUnitList from std::list to std::vector.
     }
 
     inline bool isBooked() const { return (target || hasCargo()); }
@@ -75,12 +79,52 @@ private:
     virtual void turn() override;
 
     // unit state/properties
-    std::list<Uint32>   pickedUpUnitList;   ///< What units does this carryall carry?
+    std::vector<Uint32>   pickedUpUnitList;   ///< What units does this carryall carry?
 
     bool     owned;              ///< Is this carryall owned or is it just here to drop something off
 
     bool     aDropOfferer;       ///< This carryall just drops some units and vanishes afterwards
     bool     droppedOffCargo;    ///< Is the cargo already dropped off?
+
+
+    template<typename F>
+    void removeUnits(F&& predicate) {
+        auto& units = pickedUpUnitList;
+
+        units.erase(std::remove_if(units.begin(), units.end(),
+            [](Uint32 unit_id) {
+                const auto unit = static_cast<UnitBase*>(currentGame->getObjectManager().getObject(unit_id));
+
+                if (!unit)
+                    return true;
+
+                return F(unit);
+            }),
+            units.end());
+    }
+
+    void pre_deployUnits();
+    void deployUnit(Tile* tile, UnitBase* pUnit);
+    void post_deployUnits();
+
+    template<typename F>
+    void deployUnits(F&& predicate) {
+        pre_deployUnits();
+
+        const auto tile = currentGameMap->getTile(location);
+
+        removeUnits([=](UnitBase* unit)
+                    {
+                        if (!F(unit))
+                            return false;
+
+                        deployUnit(tile, unit);
+
+                        return true;
+                    });
+
+        post_deployUnits();
+    }
 };
 
 #endif // CARRYALL_H
