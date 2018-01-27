@@ -59,7 +59,7 @@ void Quad::playAttackSound() {
 void Quad::destroy() {
     if(currentGameMap->tileExists(location) && isVisible()) {
         Coord realPos(lround(realX), lround(realY));
-        currentGame->getExplosionList().push_back(new Explosion(Explosion_SmallUnit, realPos, owner->getHouseID()));
+        currentGame->addExplosion(Explosion_SmallUnit, realPos, owner->getHouseID());
 
         if(isVisible(getOwner()->getTeamID()))
             soundPlayer->playSoundAt(Sound_ExplosionSmall,location);

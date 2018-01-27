@@ -151,7 +151,7 @@ void Explosion::blitToScreen() const
     }
 }
 
-void Explosion::update()
+bool Explosion::update()
 {
     frameTimer--;
 
@@ -161,8 +161,9 @@ void Explosion::update()
 
         if(currentFrame >= numFrames) {
             //this explosion is finished
-            currentGame->getExplosionList().remove(this);
-            delete this;
+            return true;
         }
     }
+
+    return false;
 }
