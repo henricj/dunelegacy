@@ -72,7 +72,6 @@
 #include <array>
 
 ObjectBase::ObjectBase(House* newOwner) : originalHouseID(newOwner->getHouseID()), owner(newOwner) {
-    ObjectBase::init();
 
     objectID = NONE_ID;
 
@@ -106,8 +105,6 @@ ObjectBase::ObjectBase(InputStream& stream) {
     objectID = NONE_ID; // has to be set after loading
     originalHouseID = stream.readUint32();
     owner = currentGame->getHouse(stream.readUint32());
-
-    ObjectBase::init();
 
     health = stream.readFixPoint();
     badlyDamaged = stream.readBool();

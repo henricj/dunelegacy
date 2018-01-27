@@ -235,10 +235,10 @@ void Tile::assignNonInfantryGroundObject(Uint32 newObjectID) {
 }
 
 int Tile::assignInfantry(Uint32 newObjectID, Sint8 currentPosition) {
-    Sint8 newPosition = currentPosition;
+    auto newPosition = currentPosition;
 
     if (currentPosition < 0) {
-        bool used[NUM_INFANTRY_PER_TILE]{ false };
+        std::array<bool, NUM_INFANTRY_PER_TILE> used{};
 
         for (auto objectID : assignedInfantryList) {
             const auto pInfantry = dynamic_cast<InfantryBase*>(currentGame->getObjectManager().getObject(objectID));

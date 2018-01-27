@@ -96,7 +96,7 @@ bool Ornithopter::canAttack(const ObjectBase* object) const {
 void Ornithopter::destroy() {
     // place wreck
     if(currentGameMap->tileExists(location)) {
-        Tile* pTile = currentGameMap->getTile(location);
+        auto pTile = currentGameMap->getTile(location);
         pTile->assignDeadUnit(DeadUnit_Ornithopter, owner->getHouseID(), Coord(lround(realX), lround(realY)));
     }
 

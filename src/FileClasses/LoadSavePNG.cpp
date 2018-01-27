@@ -22,7 +22,19 @@
 #include <Colors.h>
 #include <globals.h>
 
-#include <stdio.h>
+#include <misc/sdl_support.h>
+
+#include <cstdio>
+
+
+struct free_deleter
+{
+    void operator()(void* p) const { std::free(p); }
+};
+
+typedef std::unique_ptr<unsigned char, free_deleter> lodepng_ptr;
+
+// TODO: Whis is this code using lodepng's C API, instead of the C++ API?
 
 struct free_deleter
 {
@@ -46,7 +58,7 @@ sdl2::surface_ptr LoadPNG_RW(SDL_RWops* RWop) {
 
     try {
         // read complete file into memory
-        Sint64 endOffset = SDL_RWsize(RWop);
+        const auto endOffset = SDL_RWsize(RWop);
         if(endOffset <= 0) {
             THROW(std::runtime_error, "LoadPNG_RW(): Cannot determine size of this *.png-File!");
         }
@@ -87,7 +99,7 @@ sdl2::surface_ptr LoadPNG_RW(SDL_RWops* RWop) {
                 THROW(std::runtime_error, "LoadPNG_RW(): SDL_CreateRGBSurface has failed!");
             }
 
-            SDL_Color* colors = (SDL_Color*) lodePNGState.info_png.color.palette;
+            const auto colors = reinterpret_cast<SDL_Color*>(lodePNGState.info_png.color.palette);
             SDL_SetPaletteColors(pic->format->palette, colors, 0, lodePNGState.info_png.color.palettesize);
 
             sdl2::surface_lock pic_lock{pic.get()};
@@ -159,8 +171,8 @@ int SavePNG_RW(SDL_Surface* surface, SDL_RWops* RWop) {
         return -1;
     }
 
-    unsigned int width = surface->w;
-    unsigned int height = surface->h;
+    const unsigned int width = surface->w;
+    const unsigned int height = surface->h;
 
     std::vector<unsigned char> image(width*height*4);
 
@@ -188,7 +200,9 @@ int SavePNG_RW(SDL_Surface* surface, SDL_RWops* RWop) {
         return -1;
     }
 
-    if(SDL_RWwrite(RWop, ppngFile, 1, pngFileSize) != pngFileSize) {
+    lodepng_ptr ppngFile{ lode_out };
+
+    if(SDL_RWwrite(RWop, ppngFile.get(), 1, pngFileSize) != pngFileSize) {
         SDL_Log("%s", SDL_GetError());
         free(ppngFile);
         return -1;

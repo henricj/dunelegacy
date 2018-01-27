@@ -60,7 +60,7 @@ static Uint32 getSampleRateFromVOCRate(Uint8 vocSR) {
     } else if (vocSR == 0xd2 || vocSR == 0xd3) {
         return 22050;
     } else {
-        int sr = 1000000L / (256L - vocSR);
+        const auto sr = 1000000L / (256L - vocSR);
         // inexact sampling rates occur e.g. in the kitchen in Monkey Island,
         // very easy to reach right from the start of the game.
         //warning("inexact sample rate used: %i (0x%x)", sr, vocSR);
@@ -196,12 +196,12 @@ static sdl2::sdl_ptr<Uint8[]> LoadVOC_RW(SDL_RWops* rwop, Uint32 &decsize, Uint3
                     THROW(std::runtime_error, "LoadVOC_RW(): Cannot read time constant!");
                 }
 
-                Uint32 SilenceRate = getSampleRateFromVOCRate(time_constant);
+                const auto SilenceRate = getSampleRateFromVOCRate(time_constant);
 
 
                 Uint32 length = 0;
                 if(rate != 0) {
-                    length = (Uint32) ((((double) SilenceRate)/((double) rate)) * SilenceLength) + 1;
+                    length = static_cast<Uint32>((static_cast<double>(SilenceRate) / static_cast<double>(rate)) * SilenceLength) + 1;
                 } else {
                     SDL_Log("LoadVOC_RW(): The silence in this voc-file is right at the beginning. Therefore it is not possible to adjust the silence sample rate to the sample rate of the other sound data in this file!");
                     length = SilenceLength;
@@ -243,7 +243,7 @@ inline Uint8 Float2Uint8(float x) {
         val = 255;
     }
 
-    return (Uint8) val;
+    return static_cast<Uint8>(val);
 }
 
 inline Sint8 Float2Sint8(float x) {
@@ -254,7 +254,7 @@ inline Sint8 Float2Sint8(float x) {
         val = 127;
     }
 
-    return (Sint8) val;
+    return static_cast<Sint8>(val);
 }
 
 inline Uint16 Float2Uint16(float x) {
@@ -265,7 +265,7 @@ inline Uint16 Float2Uint16(float x) {
         val = 65535;
     }
 
-    return (Uint16) val;
+    return static_cast<Uint16>(val);
 }
 
 inline Sint16 Float2Sint16(float x) {
@@ -276,7 +276,7 @@ inline Sint16 Float2Sint16(float x) {
         val = 32767;
     }
 
-    return (Sint16) val;
+    return static_cast<Sint16>(val);
 }
 
 sdl2::mix_chunk_ptr LoadVOC_RW(SDL_RWops* rwop) {
@@ -284,6 +284,8 @@ sdl2::mix_chunk_ptr LoadVOC_RW(SDL_RWops* rwop) {
     if(rwop == nullptr) {
         THROW(std::invalid_argument, "LoadVOC_RW(): rwop == nullptr!");
     }
+
+    sdl2::RWop_ptr cleanup_rwop{ freesrc ? rwop : nullptr };
 
     // Read voc file
     Uint32 RawData_Frequency;
@@ -305,7 +307,7 @@ sdl2::mix_chunk_ptr LoadVOC_RW(SDL_RWops* rwop) {
         }
     }
 
-    int levelShift = 128 - (int) RawDataUint8[RawData_Samples-1];
+    auto levelShift = 128 - static_cast<int>(RawDataUint8[RawData_Samples - 1]);
     if(minValue + levelShift < 0) {
         levelShift = -minValue;
     } else if(maxValue + levelShift > 255) {
@@ -313,7 +315,7 @@ sdl2::mix_chunk_ptr LoadVOC_RW(SDL_RWops* rwop) {
     }
 
     for(Uint32 i=0; i < RawData_Samples; i++) {
-        RawDataUint8[i] = (Uint8) (RawDataUint8[i] + levelShift);
+        RawDataUint8[i] = static_cast<Uint8>(RawDataUint8[i] + levelShift);
     }
 
     // Convert to floats
@@ -324,7 +326,7 @@ sdl2::mix_chunk_ptr LoadVOC_RW(SDL_RWops* rwop) {
     }
 
     for(Uint32 i=NUM_SAMPLES_OF_SILENCE; i < RawData_Samples+NUM_SAMPLES_OF_SILENCE; i++) {
-        RawDataFloat[i] = (((float) RawDataUint8[i-NUM_SAMPLES_OF_SILENCE])/128.0f) - 1.0f;
+        RawDataFloat[i] = (static_cast<float>(RawDataUint8[i - NUM_SAMPLES_OF_SILENCE])/128.0f) - 1.0f;
     }
 
     for(Uint32 i=RawData_Samples+NUM_SAMPLES_OF_SILENCE; i < RawData_Samples + 2*NUM_SAMPLES_OF_SILENCE; i++) {
@@ -351,8 +353,8 @@ sdl2::mix_chunk_ptr LoadVOC_RW(SDL_RWops* rwop) {
     std::vector<float> TargetDataFloat(TargetDataFloat_Samples);
 
     for(Uint32 x=0;x<TargetDataFloat_Samples;x++) {
-        float pos = x/ConversionRatio;
-        int i = (int) pos; //lrint(floor(pos));
+        const auto pos = x/ConversionRatio;
+        const auto i = static_cast<int>(pos); //lrint(floor(pos));
         TargetDataFloat[x] = RawDataFloat[i] * ((i+1)-pos) + RawDataFloat[i+1] * (pos-i);
     }
 
@@ -362,7 +364,7 @@ sdl2::mix_chunk_ptr LoadVOC_RW(SDL_RWops* rwop) {
 
 
     // Equalize if neccessary
-    float distance = 0.0f;
+    auto distance = 0.0f;
     for(Uint32 i=0; i < TargetData_Samples; i++) {
         if(std::abs(TargetDataFloat[i]) > distance) {
             distance = std::abs(TargetDataFloat[i]);
@@ -378,7 +380,7 @@ sdl2::mix_chunk_ptr LoadVOC_RW(SDL_RWops* rwop) {
 
 
     // Convert floats back to integers but leave out 3/4 of silence
-    int ThreeQuaterSilenceLength = (int) ((NUM_SAMPLES_OF_SILENCE * ConversionRatio)*(3.0f/4.0f));
+    const auto ThreeQuaterSilenceLength = static_cast<int>((NUM_SAMPLES_OF_SILENCE * ConversionRatio) * (3.0f / 4.0f));
     TargetData_Samples -= 2*ThreeQuaterSilenceLength;
 
     auto myChunk = sdl2::mix_chunk_ptr{ (Mix_Chunk*) SDL_calloc(sizeof(Mix_Chunk),1) };

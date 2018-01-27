@@ -30,6 +30,11 @@ public:
     void init();
     virtual ~Carryall();
 
+    Carryall(const Carryall &) = delete;
+    Carryall(Carryall &&) = delete;
+    Carryall& operator=(const Carryall &) = delete;
+    Carryall& operator=(Carryall &&) = delete;
+
     void checkPos() override;
 
     /**
@@ -62,7 +67,7 @@ public:
 
     inline bool isBooked() const { return (target || hasCargo()); }
 
-protected:
+private:
     void releaseTarget() override;
     void engageTarget() override;
     void pickupTarget();

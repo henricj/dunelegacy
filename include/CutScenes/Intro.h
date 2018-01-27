@@ -31,12 +31,17 @@
 /**
     This class is for showing the intro video.
 */
-class Intro : public CutScene
+class Intro final : public CutScene
 {
 public:
 
     /// Default constructor
     Intro();
+
+    Intro(const Intro &) = delete;
+    Intro(Intro &&) = delete;
+    Intro& operator=(const Intro &) = delete;
+    Intro& operator=(Intro &&) = delete;
 
     /// destructor
     virtual ~Intro();
@@ -129,7 +134,7 @@ private:
     };
     /// \endcond
 
-    static const char* VoiceFileNames[Voice_NUM_ENTRIES];   ///< List of all the voice files
+    static const char * const VoiceFileNames[Voice_NUM_ENTRIES];   ///< List of all the voice files
 
     sdl2::mix_chunk_ptr  voice[Voice_NUM_ENTRIES];          ///< All the loaded voices
 
