@@ -120,6 +120,7 @@
       <StringPooling>true</StringPooling>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions</EnableEnhancedInstructionSet>
       <FloatingPointModel>Fast</FloatingPointModel>
+      <DiagnosticsFormat>Caret</DiagnosticsFormat>
     </ClCompile>
     <Link>
       <AdditionalDependencies>SDL2maind.lib;imm32.lib;version.lib;ws2_32.lib;winmm.lib;pathcch.lib;shlwapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -151,6 +152,7 @@ IF %ERRORLEVEL% LSS 8 exit 0</Command>
       <StringPooling>true</StringPooling>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions</EnableEnhancedInstructionSet>
       <FloatingPointModel>Fast</FloatingPointModel>
+      <DiagnosticsFormat>Caret</DiagnosticsFormat>
     </ClCompile>
     <Link>
       <AdditionalDependencies>SDL2maind.lib;imm32.lib;version.lib;ws2_32.lib;winmm.lib;pathcch.lib;shlwapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -185,6 +187,7 @@ IF %ERRORLEVEL% LSS 8 exit 0</Command>
       <StringPooling>true</StringPooling>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions</EnableEnhancedInstructionSet>
       <FloatingPointModel>Fast</FloatingPointModel>
+      <DiagnosticsFormat>Caret</DiagnosticsFormat>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -220,6 +223,7 @@ IF %ERRORLEVEL% LSS 8 exit 0</Command>
       <StringPooling>true</StringPooling>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions</EnableEnhancedInstructionSet>
       <FloatingPointModel>Fast</FloatingPointModel>
+      <DiagnosticsFormat>Caret</DiagnosticsFormat>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
