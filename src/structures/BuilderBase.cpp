@@ -62,18 +62,14 @@ BuilderBase::BuilderBase(InputStream& stream) : StructureBase(stream) {
 
     buildSpeedLimit = stream.readFixPoint();
 
-    int numProductionQueueItem = stream.readUint32();
-    for(int i=0;i<numProductionQueueItem;i++) {
-        ProductionQueueItem tmp;
-        tmp.load(stream);
-        currentProductionQueue.push_back(tmp);
+    const int numProductionQueueItem = stream.readUint32();
+    for(auto i=0;i<numProductionQueueItem;i++) {
+        currentProductionQueue.emplace_back(stream);
     }
 
-    int numBuildItem = stream.readUint32();
-    for(int i=0;i<numBuildItem;i++) {
-        BuildItem tmp;
-        tmp.load(stream);
-        buildList.push_back(tmp);
+    const int numBuildItem = stream.readUint32();
+    for(auto i=0;i<numBuildItem;i++) {
+        buildList.emplace_back(stream);
     }
 }
 
