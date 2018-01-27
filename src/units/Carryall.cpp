@@ -48,7 +48,7 @@ Carryall::Carryall(InputStream& stream) : AirUnit(stream)
 {
     Carryall::init();
 
-    pickedUpUnitList = stream.readUint32List();
+    pickedUpUnitList = stream.readUint32Vector();
     if(!pickedUpUnitList.empty()) {
         drawnFrame = 1;
     }
@@ -77,7 +77,7 @@ void Carryall::save(OutputStream& stream) const
 {
     AirUnit::save(stream);
 
-    stream.writeUint32List(pickedUpUnitList);
+    stream.writeUint32Vector(pickedUpUnitList);
 
     stream.writeBools(owned, aDropOfferer, droppedOffCargo);
 }
@@ -142,8 +142,8 @@ void Carryall::checkPos()
                 // drop up to 3 infantry units at once or one other unit
                 int droppedUnits = 0;
                 do {
-                    Uint32 unitID = pickedUpUnitList.front();
-                    UnitBase* pUnit = static_cast<UnitBase*>(currentGame->getObjectManager().getObject(unitID));
+                    const auto unitID = pickedUpUnitList.front();
+                    const auto pUnit = static_cast<UnitBase*>(currentGame->getObjectManager().getObject(unitID));
 
                     if(pUnit == nullptr) {
                         return;
@@ -197,6 +197,14 @@ void Carryall::checkPos()
 
 }
 
+void Carryall::pre_deployUnits()
+{
+    soundPlayer->playSoundAt(Sound_Drop, location);
+
+    currentMaxSpeed = 0;
+    setSpeeds();
+}
+
 void Carryall::deployUnit(Uint32 unitID)
 {
     const auto iter = std::find(pickedUpUnitList.cbegin(), pickedUpUnitList.cend(), unitID);
@@ -211,68 +219,59 @@ void Carryall::deployUnit(Uint32 unitID)
     if(pUnit == nullptr)
         return;
 
-    pickedUpUnitList.remove(unitID);
+    pre_deployUnits();
 
-    soundPlayer->playSoundAt(Sound_Drop, location);
+    const auto tile = currentGameMap->getTile(location);
 
-    UnitBase* pUnit = static_cast<UnitBase*>(currentGame->getObjectManager().getObject(unitID));
+    deployUnit(tile, pUnit);
 
-    if(pUnit == nullptr) {
-        return;
-    }
+    post_deployUnits();
+}
 
-    if (found) {
-        currentMaxSpeed = 0;
-        setSpeeds();
+void Carryall::deployUnit(Tile* tile, UnitBase* pUnit)
+{
+    if (tile->hasANonInfantryGroundObject()) {
+        auto object = tile->getNonInfantryGroundObject();
+        if (object->getOwner() == getOwner()) {
+            if (object->getItemID() == Structure_RepairYard) {
+                auto repair_yard = static_cast<RepairYard*>(object);
 
-        if (currentGameMap->getTile(location)->hasANonInfantryGroundObject()) {
-            ObjectBase* object = currentGameMap->getTile(location)->getNonInfantryGroundObject();
-            if (object->getOwner() == getOwner()) {
-                if (object->getItemID() == Structure_RepairYard) {
-                    if (static_cast<RepairYard*>(object)->isFree()) {
-                        pUnit->setTarget(object);   // unit books repair yard again
-                        pUnit->setGettingRepaired();
-                        pUnit = nullptr;
-                    } else {
-                        // unit is still going to repair yard but was unbooked from repair yard at pickup => book now
-                        static_cast<RepairYard*>(object)->book();
-                    }
-                } else if ((object->getItemID() == Structure_Refinery) && (pUnit->getItemID() == Unit_Harvester)) {
-                    if (static_cast<Refinery*>(object)->isFree()) {
-                        static_cast<Harvester*>(pUnit)->setTarget(object);
-                        static_cast<Harvester*>(pUnit)->setReturned();
-                        pUnit = nullptr;
-                        goingToRepairYard = false;
-                    }
+                if (repair_yard->isFree()) {
+                    pUnit->setTarget(object);   // unit books repair yard again
+                    pUnit->setGettingRepaired();
+
+                    return;
+                }
+                else {
+                    // unit is still going to repair yard but was unbooked from repair yard at pickup => book now
+                    repair_yard->book();
+                }
+            }
+            else if ((object->getItemID() == Structure_Refinery) && (pUnit->getItemID() == Unit_Harvester)) {
+                if (static_cast<Refinery*>(object)->isFree()) {
+                    auto harvester = static_cast<Harvester*>(pUnit);
+                    harvester->setTarget(object);
+                    harvester->setReturned();
+                    goingToRepairYard = false;
+
+                    return;
                 }
             }
         }
-
-        if(pUnit != nullptr) {
-            pUnit->setAngle(drawnAngle);
-            Coord deployPos = currentGameMap->findDeploySpot(pUnit, location, currentGame->randomGen);
-            pUnit->setForced(false); // Stop units being forced if they are deployed
-            pUnit->deploy(deployPos);
-            if(pUnit->getItemID() == Unit_Saboteur) {
-                pUnit->doSetAttackMode(HUNT);
-            } else if(pUnit->getItemID() != Unit_Harvester) {
-                pUnit->doSetAttackMode(AREAGUARD);
-            } else {
-                pUnit->doSetAttackMode(HARVEST);
-            }
-        }
-
-        if (pickedUpUnitList.empty()) {
-            if(!aDropOfferer) {
-                setTarget(nullptr);
-                setDestination(guardPoint);
-            }
-            droppedOffCargo = true;
-            drawnFrame = 0;
-
-            clearPath();
-        }
     }
+}
+
+void Carryall::post_deployUnits() {
+    if (!pickedUpUnitList.empty()) return;
+
+    if (!aDropOfferer) {
+        setTarget(nullptr);
+        setDestination(guardPoint);
+    }
+    droppedOffCargo = true;
+    drawnFrame = 0;
+
+    clearPath();
 }
 
 void Carryall::destroy()
