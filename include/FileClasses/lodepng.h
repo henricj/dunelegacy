@@ -28,7 +28,7 @@ freely, subject to the following restrictions:
 
 #include <string.h> /*for size_t*/
 
-extern const char* LODEPNG_VERSION_STRING;
+extern const char* const LODEPNG_VERSION_STRING;
 
 /*
 The following #defines are used to create code sections. They can be disabled
