@@ -49,15 +49,20 @@
 
 #include <mmath.h>
 
+#include <array>
 #include <ctime>
 #include <exception>
 #include <future>
 #include <iostream>
 #include <list>
+#include <map>
+#include <mutex>
 #include <random>
 #include <set>
 #include <string>
 #include <typeinfo>
+#include <unordered_set>
+#include <utility>
 #include <vector>
 
 #endif // __cplusplus
