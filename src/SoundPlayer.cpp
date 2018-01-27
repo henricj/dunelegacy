@@ -28,7 +28,13 @@
 
 
 SoundPlayer::SoundPlayer() {
+
     sfxVolume = settings.audio.sfxVolume;
+
+    if (!pSFXManager) {
+        soundOn = false;
+        return;
+    }
 
     Mix_Volume(-1, sfxVolume);
 
@@ -50,49 +56,49 @@ SoundPlayer::SoundPlayer() {
 
 SoundPlayer::~SoundPlayer() = default;
 
-void SoundPlayer::playVoice(Voice_enum id, int houseID) {
-    if(soundOn) {
-        Mix_Chunk* tmp;
+void SoundPlayer::playVoice(Voice_enum id, int houseID) const {
+    if(!soundOn || !pSFXManager) return;
 
-        if((tmp = pSFXManager->getVoice(id,houseID)) == nullptr) {
-            THROW(std::invalid_argument, "There is no voice with ID %d!",id);
-        }
+    Mix_Chunk* tmp;
 
-        int channel = Mix_PlayChannel(Mix_GroupAvailable(static_cast<int>(ChannelGroup::Voice)), tmp, 0);
-        if(channel != -1) {
-            Mix_Volume(channel, sfxVolume);
-        }
+    if((tmp = pSFXManager->getVoice(id,houseID)) == nullptr) {
+        THROW(std::invalid_argument, "There is no voice with ID %d!",id);
+    }
+
+    const auto channel = Mix_PlayChannel(Mix_GroupAvailable(static_cast<int>(ChannelGroup::Voice)), tmp, 0);
+    if(channel != -1) {
+        Mix_Volume(channel, sfxVolume);
     }
 }
 
 void SoundPlayer::playSoundAt(Sound_enum soundID, const Coord& location)
 {
-    if(soundOn) {
-        if( !currentGameMap->tileExists(location)
-            || !currentGameMap->getTile(location)->isExploredByTeam(pLocalHouse->getTeamID()) ) {
-            return;
-        }
+    if(!soundOn) return;
 
-        Coord realCoord = location * TILESIZE + Coord(TILESIZE/2, TILESIZE/2);
+    if( !currentGameMap->tileExists(location)
+        || !currentGameMap->getTile(location)->isExploredByTeam(pLocalHouse->getTeamID()) ) {
+        return;
+    }
 
-        if(screenborder->isInsideScreen(realCoord, Coord(TILESIZE, TILESIZE)) ) {
-            playSound(soundID, sfxVolume);
-        } else if(screenborder->isInsideScreen(realCoord, Coord(TILESIZE*16, TILESIZE*16)) ) {
-            playSound(soundID, (sfxVolume*3)/4);
-        } else if(screenborder->isInsideScreen(realCoord, Coord(TILESIZE*24, TILESIZE*24)) ) {
-            playSound(soundID, sfxVolume/2);
-        } else {
-            playSound(soundID, sfxVolume/4);
-        }
+    const auto realCoord = location * TILESIZE + Coord(TILESIZE/2, TILESIZE/2);
+
+    if(screenborder->isInsideScreen(realCoord, Coord(TILESIZE, TILESIZE)) ) {
+        playSound(soundID, sfxVolume);
+    } else if(screenborder->isInsideScreen(realCoord, Coord(TILESIZE*16, TILESIZE*16)) ) {
+        playSound(soundID, (sfxVolume*3)/4);
+    } else if(screenborder->isInsideScreen(realCoord, Coord(TILESIZE*24, TILESIZE*24)) ) {
+        playSound(soundID, sfxVolume/2);
+    } else {
+        playSound(soundID, sfxVolume/4);
     }
 }
 
-void SoundPlayer::playSound(Mix_Chunk* sound) {
-    if(soundOn) {
-        int channel = Mix_PlayChannel(-1, sound, 0);
-        if(channel != -1) {
-            Mix_Volume(channel, sfxVolume);
-        }
+void SoundPlayer::playSound(Mix_Chunk* sound) const {
+    if(!soundOn) return;
+
+    const auto channel = Mix_PlayChannel(-1, sound, 0);
+    if(channel != -1) {
+        Mix_Volume(channel, sfxVolume);
     }
 }
 
@@ -102,7 +108,9 @@ void SoundPlayer::playSound(Sound_enum id) const {
 
 void SoundPlayer::playSound(Sound_enum soundID, int volume) const
 {
-    static ChannelGroup soundID2ChannelGroup[] = {
+    if (!soundOn || !pSFXManager) return;
+
+    static const ChannelGroup soundID2ChannelGroup[] = {
         ChannelGroup::UI,                   // Sound_PlaceStructure
         ChannelGroup::UI,                   // Sound_ButtonClick
         ChannelGroup::UI,                   // Sound_InvalidAction
@@ -132,17 +140,15 @@ void SoundPlayer::playSound(Sound_enum soundID, int volume) const
         ChannelGroup::Rocket,               // Sound_RocketSmall
     };
 
-    if(soundOn) {
-        Mix_Chunk* sound;
+    Mix_Chunk* sound;
 
-        if((sound = pSFXManager->getSound(soundID)) == nullptr) {
-            THROW(std::invalid_argument, "There is no sound with ID %d!", soundID);
-        }
+    if((sound = pSFXManager->getSound(soundID)) == nullptr) {
+        THROW(std::invalid_argument, "There is no sound with ID %d!", soundID);
+    }
 
-        int channel = Mix_GroupAvailable(static_cast<int>(soundID2ChannelGroup[soundID]));
-        channel = Mix_PlayChannel(channel, sound, 0);
-        if(channel != -1) {
-            Mix_Volume(channel, volume);
-        }
+    auto channel = Mix_GroupAvailable(static_cast<int>(soundID2ChannelGroup[soundID]));
+    channel = Mix_PlayChannel(channel, sound, 0);
+    if(channel != -1) {
+        Mix_Volume(channel, volume);
     }
 }
