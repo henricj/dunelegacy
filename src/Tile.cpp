@@ -849,7 +849,7 @@ void Tile::triggerSpiceBloom(House* pTrigger) {
         damage.push_back(newDamage);
     }
 
-    currentGame->getExplosionList().push_back(new Explosion(Explosion_SpiceBloom, realLocation, pTrigger->getHouseID()));
+    currentGame->addExplosion(Explosion_SpiceBloom, realLocation, pTrigger->getHouseID());
 }
 
 void Tile::triggerSpecialBloom(House* pTrigger) {

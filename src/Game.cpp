@@ -223,9 +223,7 @@ void Game::processObjects()
         pBullet->update();
     }
 
-    for(auto pExplosion : explosionList) {
-        pExplosion->update();
-    }
+    explosionList.erase(std::remove_if(explosionList.begin(), explosionList.end(), [](std::unique_ptr<Explosion>& e) { return e->update(); }), explosionList.end());
 }
 
 
@@ -302,7 +300,7 @@ void Game::drawScreen()
 
 
     /* draw explosions */
-    for (const auto pExplosion : explosionList) {
+    for (const auto& pExplosion : explosionList) {
         pExplosion->blitToScreen();
     }
 
@@ -1569,7 +1567,7 @@ bool Game::loadSaveGame(InputStream& stream) {
 
     int numExplosions = stream.readUint32();
     for(int i = 0; i < numExplosions; i++) {
-        explosionList.push_back(new Explosion(stream));
+        addExplosion(stream);
     }
 
     if(bMultiplayerLoad) {
@@ -1667,7 +1665,7 @@ bool Game::saveGame(const std::string& filename)
     }
 
     fs.writeUint32(explosionList.size());
-    for(const Explosion* pExplosion : explosionList) {
+    for(const auto& pExplosion : explosionList) {
         pExplosion->save(fs);
     }
 
