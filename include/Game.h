@@ -37,6 +37,8 @@
 
 #include <stdarg.h>
 #include <string>
+
+#include <array>
 #include <map>
 #include <utility>
 #include <unordered_set>
@@ -140,11 +142,12 @@ public:
     TriggerManager& getTriggerManager() noexcept { return triggerManager; };
 
     /**
-        Get the explosion list.
-        \return the explosion list
+        Add an explosin.
     */
-    RobustList<Explosion*>& getExplosionList() noexcept { return explosionList; };
-
+    template <class... Args>
+    void addExplosion(Args&&... args) {
+        explosionList.emplace_back(std::make_unique<Explosion>(std::forward<Args>(args)...));
+    }
     /**
         Returns the house with the id houseID
         \param  houseID the id of the house to return
@@ -605,7 +608,6 @@ private:
     bool    bSelectionChanged = false;                  ///< Has the selected list changed (and must be retransmitted to other plays in multiplayer games)
     Dune::selected_set_type selectedList;                      ///< A set of all selected units/structures
     Dune::selected_set_type selectedByOtherPlayerList;         ///< This is only used in multiplayer games where two players control one house
-    RobustList<Explosion*> explosionList;               ///< A list containing all the explosions that must be drawn
 
     std::string localPlayerName;                            ///< the name of the local player
     std::multimap<std::string, Player*> playerName2Player;  ///< mapping player names to players (one entry per player)
