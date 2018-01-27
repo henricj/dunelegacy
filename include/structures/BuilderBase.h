@@ -39,6 +39,10 @@ public:
         num = 0;
     }
 
+    BuildItem(InputStream& stream) {
+        load(stream);
+    }
+
     void save(OutputStream& stream) const {
         stream.writeUint32(itemID);
         stream.writeUint32(price);
@@ -59,13 +63,17 @@ public:
 class ProductionQueueItem final {
 public:
     ProductionQueueItem()
-     : itemID(0), price(0) {
+        : itemID(0), price(0) {
 
     }
 
     ProductionQueueItem(Uint32 _ItemID, Uint32 _price)
-     : itemID(_ItemID), price(_price) {
+        : itemID(_ItemID), price(_price) {
 
+    }
+
+    ProductionQueueItem(InputStream& stream) {
+        load(stream);
     }
 
     void save(OutputStream& stream) const {
