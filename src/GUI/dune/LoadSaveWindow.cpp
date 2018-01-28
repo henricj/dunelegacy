@@ -39,9 +39,9 @@ LoadSaveWindow::LoadSaveWindow(bool bSave, const std::string& caption, const std
     SDL_Texture *pBackground = pGFXManager->getUIGraphic(UI_LoadSaveWindow);
     setBackground(pBackground);
 
-    setCurrentPosition(calcAlignedDrawingRect(pBackground, HAlign::Center, VAlign::Center));
+    Window::setCurrentPosition(calcAlignedDrawingRect(pBackground, HAlign::Center, VAlign::Center));
 
-    setWindowWidget(&mainHBox);
+    Window::setWindowWidget(&mainHBox);
 
     mainHBox.addWidget(HSpacer::create(16));
     mainHBox.addWidget(&mainVBox);
@@ -152,7 +152,7 @@ bool LoadSaveWindow::handleKeyPress(SDL_KeyboardEvent& key) {
         } else if(key.keysym.sym == SDLK_DELETE) {
             const auto index = fileList.getSelectedIndex();
             if(index >= 0) {
-                QstBox* pQstBox = QstBox::create(   fmt::sprintf(_("Do you really want to delete '%s' ?"), fileList.getEntry(index).c_str()),
+                auto pQstBox = QstBox::create(   fmt::sprintf(_("Do you really want to delete '%s' ?"), fileList.getEntry(index).c_str()),
                                                     _("Yes"),
                                                     _("No"),
                                                     QSTBOX_BUTTON1);
@@ -223,7 +223,7 @@ void LoadSaveWindow::onOK() {
 }
 
 void LoadSaveWindow::onCancel() {
-    Window* pParentWindow = dynamic_cast<Window*>(getParent());
+    auto pParentWindow = dynamic_cast<Window*>(getParent());
     if(pParentWindow != nullptr) {
         pParentWindow->closeChildWindow();
     }
@@ -231,7 +231,7 @@ void LoadSaveWindow::onCancel() {
 
 void LoadSaveWindow::onDirectoryChange(int i) {
     currentDirectoryIndex = i;
-    for(int j = 0; j < (int) directoryButtons.size(); j++) {
+    for(auto j = 0; j < directoryButtons.size(); j++) {
         directoryButtons[j].setToggleState( (i==j) );
     }
 

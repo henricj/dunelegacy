@@ -158,9 +158,9 @@ sdl2::surface_ptr Wsafile::getAnimationAsPictureRow(int numFramesX) const {
 
     sdl2::surface_lock lock{ pic.get() };
 
-    for(int y = 0; y < numFramesY; y++) {
-        for(int x = 0; x < numFramesX; x++) {
-            int i = y*numFramesX + x;
+    for(auto y = 0; y < numFramesY; y++) {
+        for(auto x = 0; x < numFramesX; x++) {
+            auto i = y*numFramesX + x;
             if(i >= numFrames) {
                 return pic;
             }
@@ -240,11 +240,11 @@ std::unique_ptr<unsigned char[]> Wsafile::readfile(SDL_RWops* rwop, int* filesiz
         THROW(std::runtime_error, "Wsafile::readfile(): rwop == nullptr!");
     }
 
-    Sint64 endOffset = SDL_RWsize(rwop);
+    const auto endOffset = SDL_RWsize(rwop);
     if(endOffset < 0) {
         THROW(std::runtime_error, "Wsafile::readfile(): Cannot determine size of this *.wsa-File!");
     }
-    size_t wsaFilesize = static_cast<size_t>(endOffset);
+    const auto wsaFilesize = static_cast<size_t>(endOffset);
 
     if(wsaFilesize < 10) {
         THROW(std::runtime_error, "Wsafile::readfile(): No valid WSA-File: File too small!");

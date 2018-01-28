@@ -23,6 +23,8 @@
 #include <stdarg.h>
 #include <vector>
 
+#include <misc/sdl_support.h>
+
 /// A class for loading a *.ICN-File and the corresponding *.MAP-File.
 /**
     This class can read icn-Files and return the contained pictures as a SDL_Surface. An icn-File contains

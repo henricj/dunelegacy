@@ -56,6 +56,10 @@ public:
         }
     }
 
+    void setTexture(sdl2::texture_ptr&& texture) {
+        setTexture(texture.release(), true);
+    }
+
     /**
         Returns the minimum size of this picture label. The picture label should not
         be resized to a size smaller than this.

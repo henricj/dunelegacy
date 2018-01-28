@@ -53,10 +53,10 @@ Meanwhile::Meanwhile(int house, bool firstMeanwhile) {
         textBaseIndex -= 2;
     }
 
-    int houseOfVisitor = (house+2)%3;
-    Uint32 color = SDL2RGB(palette[houseToPaletteIndex[house]+1]);
-    Uint32 sardaukarColor = SDL2RGB(palette[PALCOLOR_SARDAUKAR+1]);
-    Uint32 visitorColor = SDL2RGB(palette[houseToPaletteIndex[houseOfVisitor]+1]);
+    const auto houseOfVisitor = (house+2)%3;
+    const auto color = SDL2RGB(palette[houseToPaletteIndex[house]+1]);
+    const auto sardaukarColor = SDL2RGB(palette[PALCOLOR_SARDAUKAR+1]);
+    const auto visitorColor = SDL2RGB(palette[houseToPaletteIndex[houseOfVisitor]+1]);
 
     if(firstMeanwhile == true) {
         // Meanwhile after level 4
