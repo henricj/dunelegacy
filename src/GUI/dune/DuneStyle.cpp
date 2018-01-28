@@ -117,7 +117,7 @@ sdl2::surface_ptr DuneStyle::createLabelSurface(Uint32 width, Uint32 height, con
         textpos_y += fontheight + spacing;
     }
 
-    return surface;
+    return surface.release();
 }
 
 
@@ -595,7 +595,7 @@ sdl2::surface_ptr DuneStyle::createBackground(Uint32 width, Uint32 height) {
     drawVLine(pSurface.get(), pSurface->w-2, 1, pSurface->h-2, buttonEdgeBottomRightColor);
     drawVLine(pSurface.get(), pSurface->w-3, 2, pSurface->h-3, buttonEdgeBottomRightColor);
 
-    return pSurface;
+    return pSurface.release();
 }
 
 sdl2::surface_ptr DuneStyle::createWidgetBackground(Uint32 width, Uint32 height) {

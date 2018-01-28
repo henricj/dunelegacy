@@ -32,7 +32,7 @@ Frigate::Frigate(House* newOwner) : AirUnit(newOwner)
 {
     Frigate::init();
 
-    setHealth(getMaxHealth());
+    ObjectBase::setHealth(getMaxHealth());
 
     attackMode = GUARD;
 

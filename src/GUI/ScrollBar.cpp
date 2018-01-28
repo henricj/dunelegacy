@@ -25,7 +25,7 @@ ScrollBar::ScrollBar() : Widget() {
     bigStepSize = 10;
     bDragSlider = false;
 
-    enableResizing(false,true);
+    Widget::enableResizing(false,true);
 
     updateArrowButtonSurface();
 
@@ -44,8 +44,8 @@ void ScrollBar::handleMouseMovement(Sint32 x, Sint32 y, bool insideOverlay) {
     arrow2.handleMouseMovement(x,y - getSize().y + arrow2.getSize().y,insideOverlay);
 
     if(bDragSlider) {
-        int SliderAreaHeight = getSize().y - arrow1.getSize().y - arrow2.getSize().y;
-        int Range = (maxValue - minValue + 1);
+        const auto SliderAreaHeight = getSize().y - arrow1.getSize().y - arrow2.getSize().y;
+        const auto Range = (maxValue - minValue + 1);
 
         double OneTickHeight = static_cast<double>(SliderAreaHeight - sliderButton.getSize().y) / static_cast<double>(Range - 1);
 
@@ -113,7 +113,7 @@ void ScrollBar::draw(Point position) {
     }
 
     arrow1.draw(position);
-    Point p = position;
+    auto p = position;
     p.y = p.y + getSize().y - arrow2.getSize().y;
     arrow2.draw(p);
     sliderButton.draw(position+sliderPosition);

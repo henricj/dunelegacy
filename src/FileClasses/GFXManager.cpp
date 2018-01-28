@@ -886,7 +886,7 @@ SDL_Texture* GFXManager::getSmallDetailPic(unsigned int id) {
 }
 
 
-SDL_Texture* GFXManager::getTinyPicture(unsigned int id) {
+SDL_Texture* GFXManager::getTinyPicture(unsigned int id) const {
     if(id >= NUM_TINYPICTURE) {
         return nullptr;
     }
@@ -1171,7 +1171,7 @@ sdl2::surface_ptr GFXManager::generateWindtrapAnimationFrames(SDL_Surface* windt
         SDL_Log("Warning: Size of sprite sheet for windtrap is %dx%d; may exceed hardware limits on older GPUs!", returnPic->w, returnPic->h);
     }
 
-    return returnPic.release();
+    return returnPic;
 }
 
 
@@ -1189,7 +1189,7 @@ sdl2::surface_ptr GFXManager::generateMapChoiceArrowFrames(SDL_Surface* arrowPic
         dest.x += dest.w;
     }
 
-    return returnPic.release();
+    return returnPic;
 }
 
 sdl2::surface_ptr GFXManager::generateDoubledObjPic(unsigned int id, int h) const {
@@ -1220,7 +1220,7 @@ sdl2::surface_ptr GFXManager::generateDoubledObjPic(unsigned int id, int h) cons
         SDL_Log("Warning: Size of sprite sheet for '%s' in zoom level 1 is %dx%d; may exceed hardware limits on older GPUs!", ObjPicNames.at(id).c_str(), pSurface->w, pSurface->h);
     }
 
-    return pSurface.release();
+    return pSurface;
 }
 
 sdl2::surface_ptr GFXManager::generateTripledObjPic(unsigned int id, int h) const {
@@ -1252,5 +1252,5 @@ sdl2::surface_ptr GFXManager::generateTripledObjPic(unsigned int id, int h) cons
         SDL_Log("Warning: Size of sprite sheet for '%s' in zoom level 2 is %dx%d; may exceed hardware limits on older GPUs!", ObjPicNames.at(id).c_str(), pSurface->w, pSurface->h);
     }
 
-    return pSurface.release();
+    return pSurface;
 }

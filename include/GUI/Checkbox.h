@@ -31,14 +31,14 @@ public:
         textcolor = COLOR_DEFAULT;
         textshadowcolor = COLOR_DEFAULT;
 
-        enableResizing(true,false);
+        Widget::enableResizing(true,false);
         setToggleButton(true);
         pCheckedActiveTexture = nullptr;
     }
 
     /// destructor
     virtual ~Checkbox() {
-        invalidateTextures();
+        Checkbox::invalidateTextures();
     }
 
     /**
