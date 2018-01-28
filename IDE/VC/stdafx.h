@@ -29,7 +29,6 @@
 
 #include <Menu/MainMenu.h>
 
-#include <CutScenes/Intro.h>
 #include <House.h>
 #include <Game.h>
 #include <Map.h>
@@ -40,6 +39,7 @@
 #include <misc/fnkdat.h>
 #include <misc/FileSystem.h>
 #include <misc/Scaler.h>
+#include <misc/sdl_support.h>
 #include <misc/string_util.h>
 #include <misc/exceptions.h>
 #include <misc/format.h>
@@ -49,18 +49,34 @@
 
 #include <mmath.h>
 
+#include <algorithm>
 #include <array>
+#include <bitset>
+#include <deque>
+#include <chrono>
+#include <cinttypes>
 #include <ctime>
+#include <cmath>
+#include <cassert>
+#include <cstdarg>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
 #include <exception>
 #include <future>
+#include <functional>
 #include <iostream>
 #include <list>
+#include <limits>
 #include <map>
+#include <memory>
 #include <mutex>
+#include <queue>
 #include <random>
 #include <set>
 #include <string>
 #include <typeinfo>
+#include <unordered_map>
 #include <unordered_set>
 #include <utility>
 #include <vector>
