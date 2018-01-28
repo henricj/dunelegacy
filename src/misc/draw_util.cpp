@@ -261,6 +261,9 @@ sdl2::texture_ptr convertSurfaceToTexture(SDL_Surface* inSurface) {
     return pTexture;
 }
 
+sdl2::texture_ptr convertSurfaceToTexture(sdl2::surface_ptr inSurface) {
+    return convertSurfaceToTexture(inSurface.get(), false);
+}
 
 sdl2::surface_ptr scaleSurface(SDL_Surface *surf, double ratio) {
 
@@ -353,7 +356,7 @@ sdl2::surface_ptr combinePictures(SDL_Surface* basePicture, SDL_Surface* topPict
     SDL_Rect destRect = calcDrawingRect(topPicture, x, y);
     SDL_BlitSurface(topPicture, nullptr, dest.get(), &destRect);
 
-    return dest.release();
+    return dest;
 }
 
 
@@ -469,6 +472,7 @@ sdl2::surface_ptr flipHSurface(SDL_Surface* inputPic) {
             putPixel(returnPic.get(), x, inputPic->h - y - 1, getPixel(inputPic, x, y));
         }
     }
+}
 
     return returnPic;
 }
@@ -502,7 +506,6 @@ sdl2::surface_ptr flipVSurface(SDL_Surface* inputPic) {
         if (returnPic == nullptr) {
             THROW(std::runtime_error, "flipHSurface(): Cannot create new Picture!");
         }
-    }
 
     sdl2::surface_lock lock_pic{ returnPic.get() };
     sdl2::surface_lock lock_input{ inputPic };
@@ -574,6 +577,6 @@ sdl2::surface_ptr mapSurfaceColorRange(SDL_Surface* source, int srcColor, int de
         }
     }
 
-    return retPic.release();
+    return retPic;
 }
 
