@@ -22,6 +22,7 @@
 #include <misc/SDL2pp.h>
 
 #include <vector>
+#include "GUI/ProgressBar.h"
 
 #define INVALID_FRAME ((unsigned int) -1)
 
@@ -31,11 +32,22 @@ public:
     Animation();
     ~Animation();
 
+    Animation(const Animation &) = delete;
+    Animation(Animation &&) = delete;
+    Animation& operator=(const Animation &) = delete;
+    Animation& operator=(Animation &&) = delete;
+
     unsigned int getCurrentFrameNumber();
 
-    void setCurrentFrameNumber(unsigned int newCurrentFrame) noexcept { curFrame = newCurrentFrame; };
+    void setCurrentFrameNumber(unsigned int newCurrentFrame) noexcept { curFrame = newCurrentFrame; }
 
-    unsigned int getNumberOfFrames() const noexcept { return static_cast<unsigned int>(frames.size()); };
+    unsigned int getNumberOfFrames() const noexcept { return static_cast<unsigned int>(frames.size()); }
+
+    template<typename Visitor>
+    void for_each_frame(Visitor&& visitor) {
+        for (auto& s : frames)
+            visitor(s.get());
+    }
 
     SDL_Surface* getFrame();
 
