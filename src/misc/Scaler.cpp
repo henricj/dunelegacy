@@ -52,6 +52,41 @@ void Scaler::setDefaultScaler(Scaler::ScalerType scaler) {
     }
 }
 
+namespace
+{
+    template<typename Scale>
+    sdl2::surface_ptr scale_surface(SDL_Surface* src, bool freeSrcSurface, int width, int height, bool allow_rle, Scale&& scale) {
+        if (src == nullptr) {
+            return nullptr;
+        }
+
+        sdl2::surface_ptr src_handle{ freeSrcSurface ? src : nullptr };
+
+        // create new picture surface
+        auto returnPic = sdl2::surface_ptr{ SDL_CreateRGBSurface(0, width, height, 8, 0, 0, 0, 0) };
+        if (returnPic == nullptr) {
+            return nullptr;
+        }
+
+        SDL_SetPaletteColors(returnPic->format->palette, src->format->palette->colors, 0, src->format->palette->ncolors);
+        Uint32 ckey;
+        const auto has_ckey = !SDL_GetColorKey(src, &ckey);
+        if (has_ckey) {
+            SDL_SetColorKey(returnPic.get(), SDL_TRUE, ckey);
+        }
+        if (allow_rle, src->flags & SDL_RLEACCEL) {
+            SDL_SetSurfaceRLE(returnPic.get(), SDL_TRUE);
+        }
+
+        sdl2::surface_lock return_lock{ returnPic.get() };
+        sdl2::surface_lock src_lock{ src };
+
+        //Now we can copy pixel by pixel
+        scale(src, returnPic.get());
+
+        return returnPic;
+    }
+}
 
 /**
     This function doubles a surface by making 4 same-colored pixels out of one.
