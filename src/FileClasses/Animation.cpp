@@ -68,7 +68,7 @@ SDL_Texture* Animation::getFrameTexture() {
         return nullptr;
     }
 
-    unsigned int index = getCurrentFrameNumber();
+    const unsigned int index = getCurrentFrameNumber();
 
     if(frameTextures.size() <= index) {
         // vector<>.resize() doesn't work with unique_ptr<>

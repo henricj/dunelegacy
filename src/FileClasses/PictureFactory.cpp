@@ -936,7 +936,7 @@ std::unique_ptr<Animation> PictureFactory::createMercenaryPlanet(Animation* atre
         newAnimation->addFrame(std::move(newFrame));
     }
 
-    return newAnimation;
+    return newAnimation.release();
 }
 
 sdl2::surface_ptr PictureFactory::mapMentatSurfaceToMercenary(SDL_Surface* ordosMentat) {
@@ -965,7 +965,7 @@ std::unique_ptr<Animation> PictureFactory::mapMentatAnimationToFremen(Animation*
     newAnimation->setFrameDurationTime(fremenAnimation->getFrameDurationTime());
     newAnimation->setNumLoops(fremenAnimation->getLoopsLeft());
 
-    return newAnimation;
+    return newAnimation.release();
 }
 
 sdl2::surface_ptr PictureFactory::mapMentatSurfaceToSardaukar(SDL_Surface* harkonnenMentat) {
@@ -1001,7 +1001,7 @@ std::unique_ptr<Animation> PictureFactory::mapMentatAnimationToSardaukar(Animati
     newAnimation->setFrameDurationTime(harkonnenAnimation->getFrameDurationTime());
     newAnimation->setNumLoops(harkonnenAnimation->getLoopsLeft());
 
-    return newAnimation;
+    return newAnimation.release();
 }
 
 std::unique_ptr<Animation> PictureFactory::mapMentatAnimationToMercenary(Animation* ordosAnimation) {
@@ -1014,7 +1014,7 @@ std::unique_ptr<Animation> PictureFactory::mapMentatAnimationToMercenary(Animati
     newAnimation->setFrameDurationTime(ordosAnimation->getFrameDurationTime());
     newAnimation->setNumLoops(ordosAnimation->getLoopsLeft());
 
-    return newAnimation;
+    return newAnimation.release();
 }
 
 sdl2::surface_ptr PictureFactory::mapMentatSurfaceToFremen(SDL_Surface* fremenMentat) {
