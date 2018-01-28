@@ -26,41 +26,29 @@
 #define MESSAGESCROLLTIME   (16*MESSAGESCROLLSPEED)
 #define MESSAGETIME         (16*MESSAGESCROLLSPEED)
 
-NewsTicker::NewsTicker() : Widget() {
-    enableResizing(false,false);
+NewsTicker::NewsTicker() {
+    Widget::enableResizing(false,false);
 
     timer = -MESSAGETIME;
     pBackground = pGFXManager->getUIGraphic(UI_MessageBox);
     pCurrentMessageTexture = nullptr;
 
-    resize(getTextureSize(pBackground));
+    Widget::resize(getTextureSize(pBackground));
 }
 
 NewsTicker::~NewsTicker() = default;
 
 void NewsTicker::addMessage(const std::string& msg)
 {
-    bool found = false;
+    if (messages.contains(msg) || messages.size() >= 3)
+        return;
 
-    /*if message is already there, do nothing*/
-    std::queue<std::string> msgcpy(messages);
-    while(!msgcpy.empty()) {
-        if(msgcpy.front() == msg) {
-            found = true;
-        }
-        msgcpy.pop();
-    }
-
-    if(!found && messages.size() < 3) {
-        messages.push(msg);
-    }
+    messages.push(msg);
 }
 
 void NewsTicker::addUrgentMessage(const std::string& msg)
 {
-    while(!messages.empty()) {
-        messages.pop();
-    }
+    messages.clear();
 
     messages.push(msg);
 }

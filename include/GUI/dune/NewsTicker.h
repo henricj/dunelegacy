@@ -55,7 +55,7 @@ public:
 
 private:
     SDL_Texture* pBackground;
-    std::queue<std::string> messages;
+    unique_queue<std::string> messages;
     std::string currentMessage;
     sdl2::texture_ptr pCurrentMessageTexture;
     int timer;
