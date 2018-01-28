@@ -23,7 +23,8 @@
 
 #include <memory>
 #include <string>
-#include <list>
+#include <deque>
+#include <unordered_map>
 
 /**
     This class manages all the chat messages that are shown on the screen.
@@ -44,6 +45,11 @@ public:
     */
     ChatManager();
 
+    ChatManager(const ChatManager &) = delete;
+    ChatManager(ChatManager &&) = delete;
+    ChatManager& operator=(const ChatManager&) = delete;
+    ChatManager& operator=(ChatManager &&) = delete;
+
     /// destructor
     ~ChatManager();
 
@@ -60,8 +66,10 @@ public:
     void draw(Point position) override;
 
 private:
+    SDL_Texture * getUserTexture(std::string username);
+    void prune_messages();
 
-    struct ChatMessage {
+    struct ChatMessage final {
 
         ChatMessage(sdl2::texture_unique_or_nonowning_ptr _pMessageTexture, Uint32 _messageTime, MessageType _messageType)
          : pMessageTexture(std::move(_pMessageTexture)), messageTime(_messageTime), messageType(_messageType) {
@@ -84,7 +92,8 @@ private:
         MessageType messageType;
     };
 
-    std::list<ChatMessage> chatMessages;
+    std::deque<ChatMessage> chatMessages;
+    std::unordered_map<std::string, sdl2::texture_ptr> user_textures;
 };
 
 #endif // CHATMANAGER_H
