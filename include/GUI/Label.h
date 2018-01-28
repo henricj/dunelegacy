@@ -206,7 +206,7 @@ protected:
         Widget::updateTextures();
 
         if(!pTexture) {
-            std::vector<std::string> textLines = greedyWordWrap(text,
+            const auto textLines = greedyWordWrap(text,
                                                                 getSize().x,
                                                                 [font = fontSize](const std::string& tmp) {
                                                                     return GUIStyle::getInstance().getMinimumLabelSize(tmp, font).x - 4;

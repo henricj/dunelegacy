@@ -260,7 +260,7 @@ sdl2::surface_ptr Icnfile::getPictureArray(Uint32 mapfileIndex, int tilesX, int 
 
     if((tilesX == 0) && (tilesY == 0) && (tilesN == 0)) {
         // guest what is best
-        int tmp = tilesets[mapfileIndex].numTiles;
+        const auto tmp = tilesets[mapfileIndex].numTiles;
         if(tmp == 24) {
             // special case (radar station and light factory)
             tilesX = 2;
@@ -370,9 +370,9 @@ sdl2::surface_ptr Icnfile::getPictureRow(Uint32 startIndex, Uint32 endIndex, Uin
         THROW(std::invalid_argument, "Icnfile::getPictureRow(): Invalid start index (%ud) or end index (%ud) for an icn file with %ud tiles!", startIndex, endIndex, numFiles);
     }
 
-    Uint32 numTiles = endIndex - startIndex + 1;
-    Uint32 numCols = (maxRowLength == 0) ? numTiles : maxRowLength;
-    Uint32 numRows = (numTiles+numCols-1) / numCols;
+    const auto numTiles = endIndex - startIndex + 1;
+    const auto numCols = (maxRowLength == 0) ? numTiles : maxRowLength;
+    const auto numRows = (numTiles+numCols-1) / numCols;
 
     // create new picture surface
     sdl2::surface_ptr pic{ SDL_CreateRGBSurface(0,SIZE_X*numCols,SIZE_Y*numRows,8,0,0,0,0) };
@@ -437,7 +437,7 @@ sdl2::surface_ptr Icnfile::getPictureRow2(unsigned int numTiles, ...) const {
     va_start(arg_ptr, numTiles);
 
     for(unsigned int i = 0; i < numTiles; i++) {
-        unsigned int indexOfFile = va_arg( arg_ptr, unsigned int);
+        const auto indexOfFile = va_arg( arg_ptr, unsigned int);
 
         if(indexOfFile >= numFiles) {
             va_end(arg_ptr);

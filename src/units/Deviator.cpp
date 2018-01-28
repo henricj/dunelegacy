@@ -31,7 +31,7 @@ Deviator::Deviator(House* newOwner) : TrackedUnit(newOwner)
 {
     Deviator::init();
 
-    setHealth(getMaxHealth());
+    ObjectBase::setHealth(getMaxHealth());
 }
 
 Deviator::Deviator(InputStream& stream) : TrackedUnit(stream)

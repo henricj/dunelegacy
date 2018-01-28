@@ -34,7 +34,7 @@ ListBox::ListBox() {
 }
 
 ListBox::~ListBox() {
-    invalidateTextures();
+    ListBox::invalidateTextures();
 }
 
 void ListBox::handleMouseMovement(Sint32 x, Sint32 y, bool insideOverlay) {

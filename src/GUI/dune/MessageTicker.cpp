@@ -30,7 +30,7 @@ MessageTicker::MessageTicker() {
 
     timer = -MESSAGETIME;
 
-    resize(0,0);
+    Widget::resize(0,0);
 }
 
 MessageTicker::~MessageTicker() = default;

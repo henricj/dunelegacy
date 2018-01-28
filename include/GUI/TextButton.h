@@ -33,7 +33,7 @@ public:
         textcolor = COLOR_DEFAULT;
         textshadowcolor = COLOR_DEFAULT;
 
-        enableResizing(true,true);
+        Widget::enableResizing(true,true);
     }
 
     TextButton(const TextButton &) = default;

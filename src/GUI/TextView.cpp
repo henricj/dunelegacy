@@ -22,7 +22,7 @@
 #include <algorithm>
 
 TextView::TextView() : Widget() {
-    enableResizing(true,true);
+    Widget::enableResizing(true,true);
 
     resize(TextView::getMinimumSize().x, TextView::getMinimumSize().y);
 }

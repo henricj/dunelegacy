@@ -34,7 +34,7 @@ Devastator::Devastator(House* newOwner) : TrackedUnit(newOwner)
 {
     Devastator::init();
 
-    setHealth(getMaxHealth());
+    ObjectBase::setHealth(getMaxHealth());
 
     devastateTimer = 0;
 }

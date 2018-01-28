@@ -658,7 +658,7 @@ int main(int argc, char *argv[]) {
             pGFXManager = gfxManagerFut.get();
 
             try {
-                pSFXManager = sfxManagerFut.get();
+                pSFXManager = sfxManagerFut.get().release();
             } catch(const std::exception& e) {
                 pSFXManager = nullptr;
                 const auto message = fmt::sprintf("The sound manager was unable to initialize: '%s' was thrown:\n\n%s\n\nDune Legacy is unable to play sound!", demangleSymbol(typeid(e).name()), e.what());

@@ -26,6 +26,8 @@
 
 #include <GUI/GUIStyle.h>
 
+#include <GUI/GUIStyle.h>
+
 #include <cmath>
 
 

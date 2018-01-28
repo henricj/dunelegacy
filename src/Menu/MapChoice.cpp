@@ -60,8 +60,8 @@ MapChoice::MapChoice(int newHouse, unsigned int lastMission, Uint32 oldAlreadyPl
     // load all data from ini
     loadINI();
 
-    int numSelectableRegions = 0;
-    int numRegions = 0;
+    auto numSelectableRegions = 0;
+    auto numRegions = 0;
     for(int i = 0; i < 4; i++) {
         const int regionNum = group[lastScenario].attackRegion[i].regionNum;
         if(regionNum > 0) {
@@ -167,7 +167,7 @@ void MapChoice::drawSpecificStuff() {
             if(curBlendBlitter != nullptr) {
                 const int numSteps = bFastBlending ? 8 : 1;
 
-                for(int i = 0; i < numSteps; i++) {
+                for(auto i = 0; i < numSteps; i++) {
                     if(curBlendBlitter->nextStep() == 0) {
                         curBlendBlitter.reset();
 
@@ -195,7 +195,7 @@ void MapChoice::drawSpecificStuff() {
             if(curBlendBlitter != nullptr) {
                 const int numSteps = bFastBlending ? 8 : 1;
 
-                for(int i = 0; i < numSteps; i++) {
+                for(auto i = 0; i < numSteps; i++) {
                     if(curBlendBlitter->nextStep() == 0) {
                         curBlendBlitter.reset();
 
@@ -239,7 +239,7 @@ void MapChoice::drawSpecificStuff() {
             if(curBlendBlitter != nullptr) {
                 const int numSteps = bFastBlending ? 8 : 1;
 
-                for(int i = 0; i < numSteps; i++) {
+                for(auto i = 0; i < numSteps; i++) {
                     if(curBlendBlitter->nextStep() == 0) {
                         curBlendBlitter.reset();
                         break;
