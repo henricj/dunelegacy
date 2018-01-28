@@ -669,7 +669,7 @@ void startReplay(const std::string& filename) {
 */
 void startSinglePlayerGame(const GameInitSettings& init)
 {
-    GameInitSettings currentGameInitInfo = init;
+    auto currentGameInitInfo = init;
 
     while(1) {
 
@@ -765,7 +765,7 @@ void startSinglePlayerGame(const GameInitSettings& init)
 */
 void startMultiPlayerGame(const GameInitSettings& init)
 {
-    GameInitSettings currentGameInitInfo = init;
+    auto currentGameInitInfo = init;
 
     SDL_Log("Initializing game...");
     try {

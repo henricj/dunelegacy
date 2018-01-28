@@ -44,16 +44,16 @@ BuilderList::BuilderList(Uint32 builderObjectID) {
     downButton.setTextures( pGFXManager->getUIGraphic(UI_ButtonDown,pLocalHouse->getHouseID()),
                             pGFXManager->getUIGraphic(UI_ButtonDown_Pressed,pLocalHouse->getHouseID()));
 
-    addWidget(&upButton,Point( (WIDGET_WIDTH - ARROWBTN_WIDTH)/2,0),upButton.getSize());
+    StaticContainer::addWidget(&upButton,Point( (WIDGET_WIDTH - ARROWBTN_WIDTH)/2,0),upButton.getSize());
     upButton.setOnClick(std::bind(&BuilderList::onUp, this));
 
-    addWidget(&downButton,
+    StaticContainer::addWidget(&downButton,
                 Point( (WIDGET_WIDTH - ARROWBTN_WIDTH)/2,
                         (ARROWBTN_HEIGHT + BUILDERBTN_SPACING)),
                 downButton.getSize());
     downButton.setOnClick(std::bind(&BuilderList::onDown, this));
 
-    addWidget(&orderButton,
+    StaticContainer::addWidget(&orderButton,
                 Point(0,(ARROWBTN_HEIGHT + BUILDERBTN_SPACING) + BUILDERBTN_SPACING),
                 Point(WIDGET_WIDTH,ORDERBTN_HEIGHT));
     orderButton.setOnClick(std::bind(&BuilderList::onOrder, this));
@@ -193,9 +193,9 @@ void BuilderList::draw(Point position) {
                                 getSize().x, getRealHeight(getSize().y) - 2*(ARROWBTN_HEIGHT + BUILDERBTN_SPACING) - BUILDERBTN_SPACING - ORDERBTN_HEIGHT };
     renderFillRect(renderer, &blackRectDest, COLOR_BLACK);
 
-    BuilderBase* pBuilder = dynamic_cast<BuilderBase*>(currentGame->getObjectManager().getObject(builderObjectID));
+    const auto pBuilder = dynamic_cast<BuilderBase*>(currentGame->getObjectManager().getObject(builderObjectID));
     if(pBuilder != nullptr) {
-        StarPort* pStarport = dynamic_cast<StarPort*>(pBuilder);
+        const auto pStarport = dynamic_cast<StarPort*>(pBuilder);
 
         if(pStarport != nullptr) {
             orderButton.setVisible(true);
@@ -225,10 +225,10 @@ void BuilderList::draw(Point position) {
         }
 
         int i = 0;
-        for(const BuildItem& buildItem : pBuilder->getBuildList()) {
+        for(const auto& buildItem : pBuilder->getBuildList()) {
 
             if((i >= currentListPos) && (i < currentListPos+getNumButtons(getSize().y) )) {
-                SDL_Texture* pTexture = resolveItemPicture(buildItem.itemID);
+                auto pTexture = resolveItemPicture(buildItem.itemID);
 
                 const SDL_Rect dest = calcDrawingRect(pTexture, position.x + getButtonPosition(i - currentListPos).x, position.y + getButtonPosition(i - currentListPos).y);
 

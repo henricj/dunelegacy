@@ -35,7 +35,7 @@ Window::Window(Uint32 x, Uint32 y, Uint32 w, Uint32 h) : position(x,y) {
 
 Window::~Window() {
     if(pChildWindow != nullptr) {
-        closeChildWindow();
+        Window::closeChildWindow();
         processChildWindowOpenCloses();
     }
 
@@ -296,6 +296,10 @@ void Window::setBackground(sdl2::texture_unique_or_nonowning_ptr pBackground) {
         bSelfGeneratedBackground = false;
         this->pBackground = std::move(pBackground);
     }
+}
+
+void Window::setBackground(sdl2::texture_ptr pBackground) {
+    setBackground(pBackground.release(), true);
 }
 
 void Window::setTransparentBackground(bool bTransparent) {

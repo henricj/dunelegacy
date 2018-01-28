@@ -30,7 +30,7 @@
 SiegeTank::SiegeTank(House* newOwner) : TankBase(newOwner) {
     SiegeTank::init();
 
-    setHealth(getMaxHealth());
+    ObjectBase::setHealth(getMaxHealth());
 }
 
 SiegeTank::SiegeTank(InputStream& stream) : TankBase(stream) {

@@ -156,7 +156,7 @@ bool DropDownBox::handleMouseWheelOverlay(Sint32 x, Sint32 y, bool up) {
 
     // forward mouse wheel event to list box
     if(bShowListBox) {
-        int newY = bListBoxAbove ? (y + listBox.getSize().y) : (y - getSize().y);
+        const auto newY = bListBoxAbove ? (y + listBox.getSize().y) : (y - getSize().y);
         listBox.handleMouseWheel(x,newY,up);
         return x >= 0 && x < listBox.getSize().x && newY >= 0 && newY < listBox.getSize().y;
     } else {

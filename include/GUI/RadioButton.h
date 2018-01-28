@@ -33,7 +33,7 @@ public:
         textcolor = COLOR_DEFAULT;
         textshadowcolor = COLOR_DEFAULT;
 
-        enableResizing(true,false);
+        Widget::enableResizing(true,false);
         setToggleButton(true);
         pCheckedActiveTexture = nullptr;
 
@@ -42,7 +42,7 @@ public:
 
     /// destructor
     virtual ~RadioButton() {
-        invalidateTextures();
+        RadioButton::invalidateTextures();
 
         unregisterFromRadioButtonManager();
     }

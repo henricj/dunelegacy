@@ -104,7 +104,7 @@ public:
     */
     Point getMinimumSize() const override
     {
-        Point tmp = GUIStyle::getInstance().getMinimumScrollBarArrowButtonSize();
+        auto tmp = GUIStyle::getInstance().getMinimumScrollBarArrowButtonSize();
         tmp.y = tmp.y * 3;
         return tmp;
     }
