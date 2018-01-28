@@ -21,10 +21,7 @@
 
 #include <misc/SDL2pp.h>
 
-Scene::Scene()
-{
-    currentFrameNumber = 0;
-}
+Scene::Scene() = default;
 
 Scene::~Scene() = default;
 
@@ -54,7 +51,7 @@ void Scene::addTrigger(std::unique_ptr<CutSceneTrigger> newTrigger)
 
 int Scene::draw()
 {
-    int nextFrameTime = 0;
+    auto nextFrameTime = 0;
 
     // 1.: Clear the whole screen
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);

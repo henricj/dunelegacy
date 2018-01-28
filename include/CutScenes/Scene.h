@@ -28,7 +28,7 @@
 /**
     Every CutScene consists of multiple Scene objects. This makes debugging the timings easier because all timings are relative to the scene start.
 */
-class Scene {
+class Scene final {
 public:
 
     /// Default constructor
@@ -65,7 +65,7 @@ public:
         This method checks if there is something to draw in the next frame
         \return true, if there are no more VideoEvents in the queue
     */
-    bool isFinished() {
+    bool isFinished() const {
         if(videoEvents.empty()) {
             return true;
         } else if(videoEvents.size() == 1) {
@@ -82,7 +82,7 @@ public:
     int draw();
 
 private:
-    int currentFrameNumber;                     ///< current frame number in this frame
+    int currentFrameNumber{};                     ///< current frame number in this frame
 
     std::queue< std::unique_ptr<VideoEvent> > videoEvents;        ///< queue of all VideoEvents in this scene
     std::list< std::unique_ptr<TextEvent> > textEvents;           ///< list of all TextEvents in this scene
