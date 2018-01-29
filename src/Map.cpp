@@ -33,12 +33,23 @@
 #include <stack>
 #include <set>
 
+class BoxOffsets
+{
+    std::vector<std::vector<std::pair<int, int>>> box_sets_;
+public:
+    BoxOffsets(int size);
+    std::vector<std::pair<int, int>>& search_set(int depth) {
+        return box_sets_[depth - 1];
+    };
+};
+
 Map::Map(int xSize, int ySize)
  : sizeX(xSize), sizeY(ySize), lastSinglySelectedObject(nullptr) {
 
     tiles.resize(sizeX * sizeY);
 
     init_tile_location();
+    init_box_sets();
 }
 
 
@@ -594,6 +605,35 @@ bool Map::findSpice(Coord& destination, const Coord& origin) const {
         return true;
     }
 
+    auto& gen = currentGame->randomGen;
+
+    for (auto depth = 1; depth <= std::max(sizeX, sizeY); ++depth) {
+        auto& offsets = offsets_->search_set(depth);
+        const auto size = offsets.size();
+
+        // We do an incremental Fisher-Yates shuffle.  This should be as
+        // random as the generator, and guarantees that each tile will
+        // be visited exactly once.
+        for(auto i = 0u; i < size; ++i) {
+            std::swap(offsets[i], offsets[gen.rand(i, size - 1)]);
+
+            const auto ranX = origin.x + offsets[i].first;
+            const auto ranY = origin.y + offsets[i].second;
+
+            const auto tile = getTile_internal(ranX, ranY);
+
+            if (tile && !tile->hasAGroundObject() && tile->hasSpice()) {
+                destination.x = ranX;
+                destination.y = ranY;
+                return true;
+            }
+        }
+    }
+
+    //there is definitely no spice left anywhere on map
+    return false;
+
+#if 0
     auto counter = 0;
     auto depth = 1;
 
@@ -624,6 +664,7 @@ bool Map::findSpice(Coord& destination, const Coord& origin) const {
             return false;   //there is possibly no spice left anywhere on map
         }
     }
+#endif //0
 }
 
 /**
