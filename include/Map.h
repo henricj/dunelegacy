@@ -26,6 +26,8 @@
 
 #include <cstdio>
 
+class BoxOffsets;
+
 class Map
 {
 public:
@@ -297,6 +299,10 @@ private:
 
         return &tiles[tile_index(xPos, yPos)];
     }
+
+    std::unique_ptr<BoxOffsets> offsets_;
+
+    void init_box_sets();
 };
 
 
