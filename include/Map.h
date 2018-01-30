@@ -176,6 +176,25 @@ public:
             }
         }
     }
+protected:
+    template<typename F>
+    void index_for_each_angle(int x, int y, F&& f)
+    {
+        if (tileExists(x - 1, y - 1)) f(LEFTUP   , tile_index(x - 1, y - 1));
+        if (tileExists(x - 1, y    )) f(LEFT     , tile_index(x - 1, y    ));
+        if (tileExists(x - 1, y + 1)) f(LEFTDOWN , tile_index(x - 1, y + 1));
+        if (tileExists(x    , y - 1)) f(UP       , tile_index(x    , y - 1));
+        if (tileExists(x    , y + 1)) f(DOWN     , tile_index(x    , y + 1));
+        if (tileExists(x + 1, y - 1)) f(RIGHTUP  , tile_index(x + 1, y - 1));
+        if (tileExists(x + 1, y    )) f(RIGHT    , tile_index(x + 1, y    ));
+        if (tileExists(x + 1, y + 1)) f(RIGHTDOWN, tile_index(x + 1, y + 1));
+    }
+public:
+    template<typename F>
+    void for_each_angle(int x, int y, F&& f)
+    {
+        index_for_each_angle(x, y, [&](ANGLETYPE angle, int index) { f(angle, tiles[index]); });
+    }
 
     template<typename F>
     int get_neighbor_mask(int x, int y, F&& predicate)

@@ -132,34 +132,33 @@ void InfantryBase::blitToScreen() {
     SDL_RenderCopy(renderer, graphic[currentZoomlevel], &source, &dest);
 }
 
-bool InfantryBase::canPass(int xPos, int yPos) const {
+bool InfantryBase::canPassTile(Tile* pTile) const {
     bool passable = false;
-    if(currentGameMap->tileExists(xPos, yPos)) {
-        Tile* pTile = currentGameMap->getTile(xPos, yPos);
-        if(!pTile->hasAGroundObject()) {
-            if(pTile->getType() != Terrain_Mountain) {
-                passable = true;
-            } else {
-                /* if this unit is infantry so can climb, and tile can take more infantry */
-                if(pTile->infantryNotFull()) {
-                    passable = true;
-                }
-            }
-        } else {
-            ObjectBase *object = pTile->getGroundObject();
 
-            if((object != nullptr) && (object->getObjectID() == target.getObjectID())
-                && object->isAStructure()
-                && (object->getOwner()->getTeamID() != owner->getTeamID())
-                && object->isVisible(getOwner()->getTeamID())) {
+    if(!pTile->hasAGroundObject()) {
+        if(pTile->getType() != Terrain_Mountain) {
+            passable = true;
+        } else {
+            /* if this unit is infantry so can climb, and tile can take more infantry */
+            if(pTile->infantryNotFull()) {
                 passable = true;
-            } else {
-                passable = (!pTile->hasANonInfantryGroundObject()
-                            && (pTile->infantryNotFull()
-                            && (pTile->getInfantryTeam() == getOwner()->getTeamID())));
             }
         }
+    } else {
+        const auto object = pTile->getGroundObject();
+
+        if((object != nullptr) && (object->getObjectID() == target.getObjectID())
+            && object->isAStructure()
+            && (object->getOwner()->getTeamID() != owner->getTeamID())
+            && object->isVisible(getOwner()->getTeamID())) {
+            passable = true;
+        } else {
+            passable = (!pTile->hasANonInfantryGroundObject()
+                        && (pTile->infantryNotFull()
+                        && (pTile->getInfantryTeam() == getOwner()->getTeam())));
+        }
     }
+
     return passable;
 }
 
