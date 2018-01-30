@@ -145,10 +145,9 @@ void GameInterface::draw(Point position) {
     }
 
     //draw credits
-    char CreditsBuffer[10];
-    int credits = pLocalHouse->getCredits();
-    sprintf(CreditsBuffer, "%d", (credits < 0) ? 0 : credits);
-    int NumDigits = strlen(CreditsBuffer);
+    const auto credits = pLocalHouse->getCredits();
+    const auto CreditsBuffer = std::to_string((credits < 0) ? 0 : credits);
+    const auto NumDigits = CreditsBuffer.length();
     SDL_Texture* digitsTex = pGFXManager->getUIGraphic(UI_CreditsDigits);
 
     for(int i=NumDigits-1; i>=0; i--) {
