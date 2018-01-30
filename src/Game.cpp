@@ -201,11 +201,7 @@ void Game::initReplay(const std::string& filename) {
 void Game::processObjects()
 {
     // update all tiles
-    for(auto y = 0; y < currentGameMap->getSizeY(); y++) {
-        for(auto x = 0; x < currentGameMap->getSizeX(); x++) {
-            currentGameMap->getTile(x,y)->update();
-        }
-    }
+    currentGameMap->for_all([](Tile& t) { t.update(); });
 
     for(auto pStructure : structureList) {
         pStructure->update();
