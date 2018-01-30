@@ -34,6 +34,7 @@ public:
     bool canAttack(const ObjectBase* object) const override;
 
     bool canPass(int xPos, int yPos) const override;
+    bool canPassTile(Tile* pTile) const override;
 
     void destroy() override;
 

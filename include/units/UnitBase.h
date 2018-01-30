@@ -198,7 +198,18 @@ public:
     */
     bool update() override;
 
-    virtual bool canPass(int xPos, int yPos) const;
+    virtual bool canPass(int xPos, int yPos) const {
+        const auto map = currentGameMap;
+
+        if (!map->tileExists(xPos, yPos))
+            return false;
+
+        const auto pTile = map->getTile(xPos, yPos);
+
+        return canPassTile(pTile);
+    }
+
+    virtual bool canPassTile(Tile* pTile) const;
 
     virtual bool hasBumpyMovementOnRock() const { return false; }
 
