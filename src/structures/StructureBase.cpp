@@ -158,15 +158,15 @@ void StructureBase::assignToMap(const Coord& pos) {
 }
 
 void StructureBase::blitToScreen() {
-    int index = fogged ? lastVisibleFrame : curAnimFrame;
-    int indexX = index % numImagesX;
-    int indexY = index / numImagesX;
+    const auto index = fogged ? lastVisibleFrame : curAnimFrame;
+    const auto indexX = index % numImagesX;
+    const auto indexY = index / numImagesX;
 
-    SDL_Rect dest = calcSpriteDrawingRect(  graphic[currentZoomlevel],
+    auto dest = calcSpriteDrawingRect(  graphic[currentZoomlevel],
                                             screenborder->world2screenX(lround(realX)),
                                             screenborder->world2screenY(lround(realY)),
                                             numImagesX, numImagesY);
-    SDL_Rect source = calcSpriteSourceRect(graphic[currentZoomlevel],indexX,numImagesX,indexY,numImagesY);
+    auto source = calcSpriteSourceRect(graphic[currentZoomlevel],indexX,numImagesX,indexY,numImagesY);
 
     SDL_RenderCopy(renderer, graphic[currentZoomlevel], &source, &dest);
 
@@ -188,6 +188,9 @@ void StructureBase::blitToScreen() {
             smokeSource.x = smokeFrame * smokeSource.w;
             SDL_RenderCopy(renderer, pSmokeTex, &smokeSource, &smokeDest);
         }
+
+        smokeSource.x = smokeFrame * smokeSource.w;
+        SDL_RenderCopy(renderer, pSmokeSurface[currentZoomlevel], &smokeSource, &smokeDest);
     }
 }
 
