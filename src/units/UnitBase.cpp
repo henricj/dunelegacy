@@ -1390,35 +1390,26 @@ void UnitBase::updateVisibleUnits() {
     }
 }
 
-bool UnitBase::canPass(int xPos, int yPos) const {
-    if(!currentGameMap->tileExists(xPos, yPos)) {
+bool UnitBase::canPassTile(Tile* pTile) const
+{
+    if (!pTile || pTile->isMountain()) return false;
+
+    if(!pTile->hasAGroundObject()) return true;
+
+    const auto pObject = pTile->getGroundObject();
+
+    if( (pObject != nullptr)
+        && (pObject->getObjectID() == target.getObjectID())
+        && targetFriendly
+        && pObject->isAStructure()
+        && (pObject->getOwner()->getTeamID() == owner->getTeamID())
+        && pObject->isVisible(getOwner()->getTeamID()))
+    {
+        // are we entering a repair yard?
+        return (goingToRepairYard && (pObject->getItemID() == Structure_RepairYard) && static_cast<const RepairYard*>(pObject)->isFree());
+    } else {
         return false;
     }
-
-    Tile* pTile = currentGameMap->getTile(xPos, yPos);
-
-    if(pTile->isMountain()) {
-        return false;
-    }
-
-    if(pTile->hasAGroundObject()) {
-        ObjectBase *pObject = pTile->getGroundObject();
-
-        if( (pObject != nullptr)
-            && (pObject->getObjectID() == target.getObjectID())
-            && targetFriendly
-            && pObject->isAStructure()
-            && (pObject->getOwner()->getTeamID() == owner->getTeamID())
-            && pObject->isVisible(getOwner()->getTeamID()))
-        {
-            // are we entering a repair yard?
-            return (goingToRepairYard && (pObject->getItemID() == Structure_RepairYard) && static_cast<const RepairYard*>(pObject)->isFree());
-        } else {
-            return false;
-        }
-    }
-
-    return true;
 }
 
 bool UnitBase::SearchPathWithAStar() {

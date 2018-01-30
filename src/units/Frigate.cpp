@@ -77,12 +77,6 @@ void Frigate::save(OutputStream& stream) const
     stream.writeBool(droppedOffCargo);
 }
 
-bool Frigate::canPass(int xPos, int yPos) const
-{
-    // frigate can always pass other air units
-    return currentGameMap->tileExists(xPos, yPos);
-}
-
 void Frigate::checkPos()
 {
     AirUnit::checkPos();
