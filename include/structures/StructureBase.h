@@ -121,7 +121,18 @@ public:
     inline short getStructureSizeY() const { return structureSize.y; }
     inline const Coord& getStructureSize() const { return structureSize; }
 
-    inline void addSmoke(const Coord& pos, Uint32 gameCycle) {
+    void addSmoke(const Coord& pos, Uint32 gameCycle) {
+        const auto iter = std::upper_bound(std::begin(smoke), std::end(smoke), pos,
+            [](const Coord& p, const StructureSmoke& s) { return p < s.realPos; });
+
+        if (iter != std::end(smoke) && iter->realPos == pos) {
+            iter->startGameCycle = gameCycle;
+            return;
+        }
+
+        smoke.emplace(iter, pos, gameCycle);
+
+#if 0
         for(auto iter = smoke.begin(); iter != smoke.end(); ++iter) {
             if(iter->realPos == pos) {
                 iter->startGameCycle = gameCycle;
@@ -132,6 +143,7 @@ public:
         }
 
         smoke.emplace_back(pos, gameCycle);
+#endif //0
     }
     inline size_t getNumSmoke() const { return smoke.size(); }
 
@@ -156,7 +168,7 @@ protected:
 
     // drawing information
     int     justPlacedTimer;          ///< When the structure is justed placed, we draw some special graphic
-    std::list<StructureSmoke> smoke;  ///< A vector containing all the smoke for this structure
+    std::vector<StructureSmoke> smoke;  ///< A vector containing all the smoke for this structure
 
     int     firstAnimFrame;     ///< First frame of the current animation
     int     lastAnimFrame;      ///< Last frame of the current animation
