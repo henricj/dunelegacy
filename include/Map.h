@@ -197,6 +197,15 @@ public:
     }
 
     template<typename F>
+    void for_each_neighbor(int x, int y, F&& f)
+    {
+        if (tileExists(x - 1, y)) f(tiles[tile_index(x - 1, y)]);
+        if (tileExists(x, y - 1)) f(tiles[tile_index(x, y - 1)]);
+        if (tileExists(x, y + 1)) f(tiles[tile_index(x, y + 1)]);
+        if (tileExists(x + 1, y)) f(tiles[tile_index(x + 1, y)]);
+    }
+
+    template<typename F>
     int get_neighbor_mask(int x, int y, F&& predicate)
     {
         const auto e_up = tileExists(x, y - 1);
