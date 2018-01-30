@@ -53,23 +53,17 @@ public:
 
     void setTarget(const ObjectBase* newTarget) override;
 
-    bool hasCargo() const {
+    bool hasCargo() const noexcept {
         return !pickedUpUnitList.empty();
     }
 
-    inline void setOwned(bool b) { owned = b; }
+    void setOwned(bool b) noexcept { owned = b; }
 
-    inline void setDropOfferer(bool status) {
+    void setDropOfferer(bool status) {
         aDropOfferer = status;
-<<<<<<< HEAD
-=======
-        if (aDropOfferer) {
-            booked = true;
-        }
->>>>>>> Switch Carryall's pickedUpUnitList from std::list to std::vector.
     }
 
-    inline bool isBooked() const { return (target || hasCargo()); }
+    bool isBooked() const noexcept { return (target || hasCargo()); }
 
 private:
     void releaseTarget() override;
