@@ -178,7 +178,7 @@ public:
     }
 
     template<typename F>
-    int for_all_neighbors(int x, int y, F&& predicate)
+    int get_neighbor_mask(int x, int y, F&& predicate)
     {
         const auto e_up = tileExists(x, y - 1);
         const auto e_right = tileExists(x + 1, y);
@@ -226,7 +226,7 @@ public:
     }
 
     template<typename F>
-    int for_all_neighbors_expensive_predicate(int x, int y, F&& predicate)
+    int get_neighbor_mask_expensive_predicate(int x, int y, F&& predicate)
     {
         const auto e_up    = tileExists(x    , y - 1);
         const auto e_right = tileExists(x + 1, y    );
