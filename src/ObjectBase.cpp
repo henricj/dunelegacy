@@ -331,6 +331,8 @@ bool ObjectBase::isOnScreen() const {
 }
 
 bool ObjectBase::isVisible(int teamID) const {
+    if(visible.all()) return true;
+
     if((teamID >= 0) && (teamID < NUM_TEAMS)) {
         return visible[teamID];
     } else {
