@@ -379,25 +379,25 @@ bool Sandworm::update() {
 }
 
 bool Sandworm::canAttack(const ObjectBase* object) const {
-    if((object != nullptr)
-        && object->isAGroundUnit()
-        && (object->getItemID() != Unit_Sandworm)   //wont kill other sandworms
-        //&& object->isVisible(getOwner()->getTeamID())
-        //&& (object->getOwner()->getTeamID() != owner->getTeamID())
-        && currentGameMap->tileExists(object->getLocation())
-        && canPass(object->getLocation().x, object->getLocation().y)
-        && (currentGameMap->getTile(object->getLocation())->getSandRegion() == currentGameMap->getTile(location)->getSandRegion())) {
-        return true;
-    } else {
+    if (!object || !object->isAGroundUnit() || object->getItemID() == Unit_Sandworm)
         return false;
-    }
+
+    auto map = currentGameMap;
+
+    if (!map->tileExists(object->getLocation()))
+        return false;
+
+    const auto pTile = map->getTile(object->getLocation());
+
+    if (!canPassTile(pTile))
+        return false;
+
+    return pTile->getSandRegion() == map->getTile(location)->getSandRegion();
 }
 
-bool Sandworm::canPass(int xPos, int yPos) const {
-    return (currentGameMap->tileExists(xPos, yPos)
-            && !currentGameMap->getTile(xPos, yPos)->isRock()
-            && (!currentGameMap->getTile(xPos, yPos)->hasAnUndergroundUnit()
-                || (currentGameMap->getTile(xPos, yPos)->getUndergroundUnit() == this)));
+bool Sandworm::canPassTile(Tile* pTile) const {
+    return !pTile->isRock()
+        && (!pTile->hasAnUndergroundUnit() || (pTile->getUndergroundUnit() == this));
 }
 
 const ObjectBase* Sandworm::findTarget() const {
@@ -408,9 +408,9 @@ const ObjectBase* Sandworm::findTarget() const {
     const ObjectBase* closestTarget = nullptr;
 
     if((attackMode == HUNT) || (attackMode == AREAGUARD)) {
-        FixPoint closestDistance = FixPt_MAX;
+        auto closestDistance = FixPt_MAX;
 
-        for(UnitBase* pUnit : unitList) {
+        for(auto pUnit : unitList) {
             if (canAttack(pUnit)
                 && (blockDistance(location, pUnit->getLocation()) < closestDistance)) {
                 closestTarget = pUnit;

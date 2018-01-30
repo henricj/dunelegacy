@@ -32,8 +32,6 @@ public:
 
     void checkPos() override;
 
-    bool canPass(int xPos, int yPos) const override;
-
     /**
         Updates this frigate.
         \return true if this object still exists, false if it was destroyed

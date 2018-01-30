@@ -44,6 +44,7 @@ public:
     void assignToMap(const Coord& pos) override;
     void checkPos() override;
     bool canPass(int xPos, int yPos) const override;
+    bool canPassTile(Tile* pTile) const override;
 
     virtual FixPoint getMaxSpeed() const override {
         return currentMaxSpeed;

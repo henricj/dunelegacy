@@ -204,3 +204,9 @@ void AirUnit::turn() {
         drawnAngle = lround(angle) % NUM_ANGLES;
     }
 }
+
+bool AirUnit::canPassTile(Tile* pTile) const
+{
+    return pTile;
+}
+

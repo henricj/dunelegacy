@@ -101,6 +101,21 @@ void Map::createSandRegions() {
                 tileQueue.pop();
 
                 pTile->setSandRegion(region);
+
+                index_for_each_angle(pTile->location.x, pTile->location.y,
+                    [&](ANGLETYPE angle, int index) {
+                        if (!visited[index])
+                            return;
+
+                        const auto tile_angle = &tiles[index];
+
+                        if (!tile_angle->isRock()) {
+                            tileQueue.push(tile_angle);
+                            visited[index] = true;
+                        }
+                    });
+
+#if 0
                 for (auto angle = 0; angle < NUM_ANGLES; angle++) {
                     const auto pos = getMapPos(angle, pTile->location);
 
@@ -116,6 +131,7 @@ void Map::createSandRegions() {
                         visited[index] = true;
                     }
                 }
+#endif // 0
             }
             region++;
         }
