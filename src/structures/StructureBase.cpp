@@ -104,8 +104,28 @@ void StructureBase::save(OutputStream& stream) const {
 }
 
 void StructureBase::assignToMap(const Coord& pos) {
-    bool bFoundNonConcreteTile = false;
+    auto map = currentGameMap;
 
+    auto bFoundNonConcreteTile = false;
+
+    map->for_each(pos.x, pos.y, pos.x + structureSize.x, pos.y + structureSize.y,
+        [&](Tile& t) {
+            t.assignNonInfantryGroundObject(getObjectID());
+            if (!t.isConcrete() && currentGame->getGameInitSettings().getGameOptions().concreteRequired && (currentGame->gameState != GameState::Start)) {
+                bFoundNonConcreteTile = true;
+
+                if ((itemID != Structure_Wall) && (itemID != Structure_ConstructionYard)) {
+                    setHealth(getHealth() - FixPoint(getMaxHealth()) / (2 * structureSize.x*structureSize.y));
+                }
+            }
+            t.setType(Terrain_Rock);
+            t.setOwner(getOwner()->getHouseID());
+
+            setVisible(VIS_ALL, true);
+            setActive(true);
+            setRespondable(true);
+        });
+#if 0
     Coord temp;
     for(int i = pos.x; i < pos.x + structureSize.x; i++) {
         for(int j = pos.y; j < pos.y + structureSize.y; j++) {
@@ -128,8 +148,9 @@ void StructureBase::assignToMap(const Coord& pos) {
             }
         }
     }
+#endif // 0
 
-    currentGameMap->viewMap(getOwner()->getHouseID(), pos, getViewRange());
+    map->viewMap(getOwner()->getHouseID(), pos, getViewRange());
 
     if(!bFoundNonConcreteTile && !currentGame->getGameInitSettings().getGameOptions().structuresDegradeOnConcrete) {
         degradeTimer = -1;
