@@ -93,6 +93,16 @@ void SoundPlayer::playSoundAt(Sound_enum soundID, const Coord& location)
     }
 }
 
+void SoundPlayer::toggleSound() noexcept
+{
+    soundOn = !soundOn && pSFXManager;
+}
+
+void SoundPlayer::setSound(bool value) noexcept
+{
+    soundOn = value && pSFXManager;
+}
+
 void SoundPlayer::playSound(Mix_Chunk* sound) const {
     if(!soundOn) return;
 

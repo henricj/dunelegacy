@@ -22,6 +22,7 @@
 #include <DataTypes.h>
 #include <misc/sound_util.h>
 
+#include <array>
 #include <string>
 
 #define NUM_MAPCHOICEPIECES 28

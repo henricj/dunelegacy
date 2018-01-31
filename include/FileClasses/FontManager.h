@@ -21,6 +21,8 @@
 #include <misc/SDL2pp.h>
 #include "Font.h"
 
+#include <misc/sdl_support.h>
+
 #include <memory>
 #include <string>
 #include <map>
