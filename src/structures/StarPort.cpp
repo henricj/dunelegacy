@@ -214,11 +214,11 @@ void StarPort::doCancelOrder() {
 void StarPort::updateBuildList() {
     std::list<BuildItem>::iterator iter = buildList.begin();
 
-    Choam& choam = owner->getChoam();
+    auto& choam = owner->getChoam();
 
     for(int i = 0; itemOrder[i] != ItemID_Invalid; ++i) {
 
-        const ObjectData::ObjectDataStruct& objData = currentGame->objectData.data[itemOrder[i]][originalHouseID];
+        const auto& objData = currentGame->objectData.data[itemOrder[i]][originalHouseID];
 
         if(objData.enabled && (choam.getNumAvailable(itemOrder[i]) != INVALID)) {
             insertItem(buildList, iter, itemOrder[i], choam.getPrice(itemOrder[i]));
