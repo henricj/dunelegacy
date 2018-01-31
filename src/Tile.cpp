@@ -459,13 +459,16 @@ void Tile::blitNonInfantryGroundUnits(int xPos, int yPos) {
 
 
 void Tile::blitAirUnits(int xPos, int yPos) {
+    const auto player_house = pLocalHouse;
+    const auto is_fogged = isFoggedByTeam(player_house->getTeamID());
+
     for (auto objectID : assignedAirUnitList) {
         auto pAirUnit = static_cast<AirUnit*>(currentGame->getObjectManager().getObject(objectID));
         if (pAirUnit == nullptr) {
             continue;
         }
 
-        if (!isFoggedByTeam(pLocalHouse->getTeamID()) || (pAirUnit->getOwner() == pLocalHouse)) {
+        if (!is_fogged || pAirUnit->getOwner() == player_house) {
             if (pAirUnit->isVisible(pLocalHouse->getTeamID())) {
                 if (location == pAirUnit->getLocation()) {
                     pAirUnit->blitToScreen();
