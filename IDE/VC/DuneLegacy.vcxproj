@@ -130,6 +130,9 @@
       <Command>robocopy "..\..\data\." "$(OutDir)." /E /NP /NJH /NJS
 IF %ERRORLEVEL% LSS 8 exit 0</Command>
     </PostBuildEvent>
+    <Manifest>
+      <EnableDpiAwareness>true</EnableDpiAwareness>
+    </Manifest>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -163,6 +166,9 @@ IF %ERRORLEVEL% LSS 8 exit 0</Command>
       <Command>robocopy "..\..\data\." "$(OutDir)." /E /NP /NJH /NJS
 IF %ERRORLEVEL% LSS 8 exit 0</Command>
     </PostBuildEvent>
+    <Manifest>
+      <EnableDpiAwareness>true</EnableDpiAwareness>
+    </Manifest>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -199,6 +205,9 @@ IF %ERRORLEVEL% LSS 8 exit 0</Command>
       <Command>robocopy "..\..\data\." "$(OutDir)." /E /NP /NJH /NJS
 IF %ERRORLEVEL% LSS 8 exit 0</Command>
     </PostBuildEvent>
+    <Manifest>
+      <EnableDpiAwareness>true</EnableDpiAwareness>
+    </Manifest>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -236,6 +245,9 @@ IF %ERRORLEVEL% LSS 8 exit 0</Command>
       <Command>robocopy "..\..\data\." "$(OutDir)." /E /NP /NJH /NJS
 IF %ERRORLEVEL% LSS 8 exit 0</Command>
     </PostBuildEvent>
+    <Manifest>
+      <EnableDpiAwareness>true</EnableDpiAwareness>
+    </Manifest>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\..\include\AStarSearch.h" />
