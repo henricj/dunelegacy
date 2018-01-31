@@ -304,6 +304,7 @@ IF %ERRORLEVEL% LSS 8 exit 0</Command>
     <ClInclude Include="..\..\include\FileClasses\Palfile.h" />
     <ClInclude Include="..\..\include\FileClasses\PictureFactory.h" />
     <ClInclude Include="..\..\include\FileClasses\POFile.h" />
+    <ClInclude Include="..\..\include\FileClasses\SaveTextureAsBmp.h" />
     <ClInclude Include="..\..\include\FileClasses\SFXManager.h" />
     <ClInclude Include="..\..\include\FileClasses\Shpfile.h" />
     <ClInclude Include="..\..\include\FileClasses\TextManager.h" />
