@@ -29,6 +29,8 @@
 
 #include <RadarView.h>
 
+#include <memory>
+
 class ObjectInterface;
 
 /// This class represents the in-game interface.
@@ -92,9 +94,8 @@ private:
     void removeOldContainer();
 
 
-    ObjectInterface*    pObjectContainer;       ///< The container holding information about the currently selected unit/structure
-    Uint32              objectID;               ///< The id of the currently selected object
-
+    // windowWidget needs to be above pObjectContainer so that pObjectContainer's dtor
+    // runs before windowWidget's dtor.
     StaticContainer     windowWidget;           ///< The main widget of this interface
 
     HBox                topBarHBox;             ///< The container for the top bar containing newsticker, options button and mentat button
