@@ -249,6 +249,8 @@ void Game::drawScreen()
     const auto x2 = BottomRightTile.x + 1;
     const auto y2 = BottomRightTile.y + 1;
 
+    SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_NONE);
+
     /* draw ground */
 
     currentGameMap->for_each(x1, y1, x2, y2,
@@ -263,6 +265,8 @@ void Game::drawScreen()
             t.blitStructures(screenborder->world2screenX(t.getLocation().x*TILESIZE),
                 screenborder->world2screenY(t.getLocation().y*TILESIZE));
         });
+
+    SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
 
     /* draw underground units */
     currentGameMap->for_each(x1, y1, x2, y2,
