@@ -26,6 +26,7 @@
 #include <misc/SDL2pp.h>
 
 #include <mmath.h>
+#include <array>
 #include <vector>
 
 #define MAPCHOICESTATE_FADEINPLANET 0

@@ -19,6 +19,7 @@
 #define AIRUNIT_H
 
 #include <units/UnitBase.h>
+#include <FileClasses/GFXManager.h>
 
 class AirUnit : public UnitBase
 {
