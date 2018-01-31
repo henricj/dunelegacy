@@ -142,12 +142,13 @@ public:
     TriggerManager& getTriggerManager() noexcept { return triggerManager; };
 
     /**
-        Add an explosin.
+        Add an explosion.
     */
     template <class... Args>
     void addExplosion(Args&&... args) {
         explosionList.emplace_back(std::make_unique<Explosion>(std::forward<Args>(args)...));
     }
+
     /**
         Returns the house with the id houseID
         \param  houseID the id of the house to return
