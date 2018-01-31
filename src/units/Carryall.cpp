@@ -35,7 +35,7 @@ Carryall::Carryall(House* newOwner) : AirUnit(newOwner)
 {
     Carryall::init();
 
-    setHealth(getMaxHealth());
+    ObjectBase::setHealth(getMaxHealth());
 
     owned = true;
 
