@@ -664,6 +664,10 @@ int main(int argc, char *argv[]) {
                 const auto message = fmt::sprintf("The sound manager was unable to initialize: '%s' was thrown:\n\n%s\n\nDune Legacy is unable to play sound!", demangleSymbol(typeid(e).name()), e.what());
                 SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_WARNING, "Dune Legacy: Warning", message.c_str(), nullptr);
             }
+
+            SDL_Log("GFXManager time: %s", std::to_string(std::chrono::duration<double>(elapsed_gfx).count()).c_str());
+            SDL_Log("SFXManager time: %s", std::to_string(std::chrono::duration<double>(elapsed_sfx).count()).c_str());
+
 #else
             // g++ does not provide std::launch::async on all platforms
             pGFXManager = std::make_unique<GFXManager>();
