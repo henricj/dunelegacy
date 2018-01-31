@@ -22,6 +22,7 @@
 #include <misc/SDL2pp.h>
 
 #include <string>
+#include <memory>
 #include <vector>
 #include <memory>
 

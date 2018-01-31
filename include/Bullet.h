@@ -23,6 +23,7 @@
 #include <ObjectPointer.h>
 #include <DataTypes.h>
 #include <ScreenBorder.h>
+#include <FileClasses/GFXManager.h>
 #include <misc/InputStream.h>
 #include <misc/OutputStream.h>
 #include <fixmath/FixPoint.h>

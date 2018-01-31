@@ -20,8 +20,9 @@
 
 #include <DataTypes.h>
 #include <fixmath/FixPoint.h>
+#include <FileClasses/GFXManager.h>
 
-#include <list>
+#include <deque>
 #include <vector>
 
 class UnitBase;

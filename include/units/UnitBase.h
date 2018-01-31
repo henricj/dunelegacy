@@ -19,10 +19,11 @@
 #define UNITBASE_H
 
 #include <ObjectBase.h>
+#include <Map.h>
 
 #include <House.h>
 
-#include <list>
+#include <deque>
 
 // forward declarations
 class Tile;

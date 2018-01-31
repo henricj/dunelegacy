@@ -22,6 +22,7 @@
 #include <string>
 #include <SDL2/SDL_mixer.h>
 #include <misc/sdl_support.h>
+#include <misc/sound_util.h>
 
 #include <misc/sound_util.h>
 #include <misc/SDL2pp.h>
