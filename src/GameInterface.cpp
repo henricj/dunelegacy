@@ -31,14 +31,15 @@
 #include <misc/SDL2pp.h>
 
 GameInterface::GameInterface() : Window(0,0,0,0) {
-    pObjectContainer = nullptr;
     objectID = NONE_ID;
 
-    setTransparentBackground(true);
+    Window::setTransparentBackground(true);
 
-    setCurrentPosition(0,0,getRendererWidth(),getRendererHeight());
+    Window::setCurrentPosition(0,0,getRendererWidth(),getRendererHeight());
 
-    setWindowWidget(&windowWidget);
+    Window::setWindowWidget(&windowWidget);
+
+    const auto gfx = pGFXManager;
 
     // top bar
     SDL_Texture* pTopBarTex = pGFXManager->getUIGraphic(UI_TopBar, pLocalHouse->getHouseID());
@@ -75,15 +76,16 @@ GameInterface::GameInterface() : Window(0,0,0,0) {
 
     // add radar
     windowWidget.addWidget(&radarView,Point(getRendererWidth()-sideBar.getSize().x+SIDEBAR_COLUMN_WIDTH, 0),radarView.getMinimumSize());
-    radarView.setOnRadarClick(std::bind(&Game::onRadarClick, currentGame, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
+    //radarView.setOnRadarClick(std::bind(&Game::onRadarClick, currentGame, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
+    radarView.setOnRadarClick([game=currentGame](Coord worldPosition, bool bRightMouseButton, bool bDrag) {
+        return game->onRadarClick(worldPosition, bRightMouseButton, bDrag);
+    });
 
     // add chat manager
     windowWidget.addWidget(&chatManager, Point(20, 60), Point(getRendererWidth() - sideBar.getSize().x, 360));
 }
 
-GameInterface::~GameInterface() {
-    removeOldContainer();
-}
+GameInterface::~GameInterface() = default;
 
 void GameInterface::draw(Point position) {
     Window::draw(position);
@@ -147,29 +149,31 @@ void GameInterface::draw(Point position) {
     const auto credits = pLocalHouse->getCredits();
     const auto CreditsBuffer = std::to_string((credits < 0) ? 0 : credits);
     const auto NumDigits = CreditsBuffer.length();
-    SDL_Texture* digitsTex = pGFXManager->getUIGraphic(UI_CreditsDigits);
+    auto digitsTex = pGFXManager->getUIGraphic(UI_CreditsDigits);
 
     for(int i=NumDigits-1; i>=0; i--) {
-        SDL_Rect source = calcSpriteSourceRect(digitsTex, CreditsBuffer[i] - '0', 10);
-        SDL_Rect dest = calcSpriteDrawingRect(digitsTex, getRendererWidth() - sideBar.getSize().x + 49 + (6 - NumDigits + i)*10, 135, 10);
+        auto source = calcSpriteSourceRect(digitsTex, CreditsBuffer[i] - '0', 10);
+        auto dest = calcSpriteDrawingRect(digitsTex, getRendererWidth() - sideBar.getSize().x + 49 + (6 - NumDigits + i)*10, 135, 10);
         SDL_RenderCopy(renderer, digitsTex, &source, &dest);
     }
 }
 
 void GameInterface::updateObjectInterface() {
-    if(currentGame->getSelectedList().size() == 1) {
-        ObjectBase* pObject = currentGame->getObjectManager().getObject( *(currentGame->getSelectedList().begin()));
-        Uint32 newObjectID = pObject->getObjectID();
+    auto& selected = currentGame->getSelectedList();
+    const auto size = selected.size();
+    if(size == 1) {
+        auto pObject = currentGame->getObjectManager().getObject( *(selected.begin()));
+        const auto newObjectID = pObject->getObjectID();
 
         if(newObjectID != objectID) {
             removeOldContainer();
 
-            pObjectContainer = pObject->getInterfaceContainer();
+            pObjectContainer = std::unique_ptr<ObjectInterface>{ pObject->getInterfaceContainer() };
 
             if(pObjectContainer != nullptr) {
                 objectID = newObjectID;
 
-                windowWidget.addWidget(pObjectContainer,
+                windowWidget.addWidget(pObjectContainer.get(),
                                         Point(getRendererWidth() - sideBar.getSize().x + 24, 146),
                                         Point(sideBar.getSize().x - 25,getRendererHeight() - 148));
 
@@ -180,7 +184,7 @@ void GameInterface::updateObjectInterface() {
                 removeOldContainer();
             }
         }
-    } else if(currentGame->getSelectedList().size() > 1) {
+    } else if(size > 1) {
 
         if((pObjectContainer == nullptr) || (objectID != NONE_ID)) {
             // either there was nothing selected before or exactly one unit
@@ -189,9 +193,9 @@ void GameInterface::updateObjectInterface() {
                 removeOldContainer();
             }
 
-            pObjectContainer = MultiUnitInterface::create();
+            pObjectContainer = std::unique_ptr<ObjectInterface>{ MultiUnitInterface::create() };
 
-            windowWidget.addWidget(pObjectContainer,
+            windowWidget.addWidget(pObjectContainer.get(),
                                     Point(getRendererWidth() - sideBar.getSize().x + 24, 146),
                                     Point(sideBar.getSize().x - 25,getRendererHeight() - 148));
         } else {
@@ -206,8 +210,7 @@ void GameInterface::updateObjectInterface() {
 
 void GameInterface::removeOldContainer() {
     if(pObjectContainer != nullptr) {
-        delete pObjectContainer;
-        pObjectContainer = nullptr;
+        pObjectContainer.reset();
         objectID = NONE_ID;
     }
 }
