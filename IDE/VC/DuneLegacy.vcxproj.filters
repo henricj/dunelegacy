@@ -959,6 +959,9 @@
     <ClInclude Include="..\..\include\misc\sdl_support.h">
       <Filter>include\misc</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\FileClasses\SaveTextureAsBmp.h">
+      <Filter>include\FileClasses</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\AStarSearch.cpp">
@@ -1585,6 +1588,10 @@
     <ClCompile Include="..\..\src\players\CampaignAIPlayer.cpp">
       <Filter>src\players</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\FileClasses\SaveTextureAsBmp.cpp">
+      <Filter>src\FileClasses</Filter>
+    </ClCompile>
+    <Manifest Include="DuneLegacy.exe.manifest" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="..\..\resource.rc">
