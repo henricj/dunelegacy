@@ -1,5 +1,8 @@
 #pragma once
 
+#include <misc/exceptions.h>
+
+#include <cassert>
 #include <memory>
 #include <SDL2/SDL.h>
 

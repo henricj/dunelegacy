@@ -45,8 +45,9 @@
 
 */
 
-#include <errno.h>
-#include <string.h>
+#include <cassert>
+#include <cerrno>
+#include <cstring>
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <misc/fnkdat.h>
@@ -56,7 +57,7 @@
    #define FNKDAT_VERSION "0.0.8"
  */
 
-#include <stdio.h>
+#include <cstdio>
 
 #include "config.h"
 

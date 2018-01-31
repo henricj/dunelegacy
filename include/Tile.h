@@ -29,6 +29,7 @@
 #include <list>
 #include <vector>
 #include <algorithm>
+#include "FileClasses/GFXManager.h"
 
 #define DAMAGE_PER_TILE 5
 
