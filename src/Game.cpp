@@ -1055,6 +1055,8 @@ void Game::runMainLoop() {
         }
     }
 
+    SDL_Log("Sizes: Tile %s UnitBase %s StructureBase %s", std::to_string(sizeof(Tile)).c_str(), std::to_string(sizeof(UnitBase)).c_str(), std::to_string(sizeof(StructureBase)).c_str());
+
     gameState = GameState::Running;
 
     //setup endlevel conditions
