@@ -116,7 +116,7 @@ typedef enum {
     NUM_OBJPICS
 } ObjPic_enum;
 
-static const std::array<std::string, NUM_OBJPICS> ObjPicNames =  { { "Tank_Base", "Tank_Gun", "Siegetank_Base", "Siegetank_Gun", "Devastator_Base",
+static inline const std::array<std::string, NUM_OBJPICS> ObjPicNames =  { { "Tank_Base", "Tank_Gun", "Siegetank_Base", "Siegetank_Gun", "Devastator_Base",
     "Devastator_Gun", "Sonictank_Gun", "Launcher_Gun", "Quad", "Trike", "Harvester", "Harvester_Sand", "MCV", "Carryall", "CarryallShadow",
     "Frigate", "FrigateShadow", "Ornithopter", "OrnithopterShadow", "Trooper", "Troopers", "Soldier", "Infantry", "Saboteur", "Sandworm",
     "ConstructionYard", "Windtrap", "Refinery", "Barracks", "WOR", "Radar", "LightFactory", "Silo", "HeavyFactory", "HighTechFactory",
