@@ -1562,8 +1562,9 @@ bool Game::loadSaveGame(InputStream& stream) {
         bulletList.push_back(new Bullet(stream));
     }
 
-    int numExplosions = stream.readUint32();
-    for(int i = 0; i < numExplosions; i++) {
+    const auto numExplosions = stream.readUint32();
+    explosionList.reserve(numExplosions);
+    for(auto i = 0u; i < numExplosions; i++) {
         addExplosion(stream);
     }
 
