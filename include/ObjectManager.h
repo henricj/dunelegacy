@@ -93,6 +93,13 @@ public:
         return (objectMap.erase(objectID) != 0);
     }
 
+    template<typename Visitor>
+    void for_each(Visitor&& visitor) {
+        for (auto& pair : objectMap) {
+            assert(pair.first == pair.second->getObjectID());
+            visitor(pair.second);
+        }
+    }
 private:
     Uint32 nextFreeObjectID;
     ObjectMap objectMap;
