@@ -52,7 +52,7 @@ public:
     bool update() override;
 
     bool canAttack(const ObjectBase* object) const override;
-    bool canPassTile(Tile* pTile) const override;
+    bool canPassTile(const Tile* pTile) const override;
     int getSleepTimer() const noexcept { return sleepTimer; }
 
     int getCurrentAttackAngle() const override;
