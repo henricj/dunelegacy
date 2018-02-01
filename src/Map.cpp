@@ -756,7 +756,7 @@ void Map::viewMap(int houseID, const Coord& location, const int maxViewRange) {
     \param  radius              the radius in tiles (0 = only one tile is filled)
     \param  centerIsThickSpice  if set the center is filled with thick spice
 */
-void Map::createSpiceField(Coord location, int radius, bool centerIsThickSpice) const {
+void Map::createSpiceField(Coord location, int radius, bool centerIsThickSpice) {
     Coord offset;
     for(offset.x = -radius; offset.x <= radius; offset.x++) {
         for(offset.y = -radius; offset.y <= radius; offset.y++) {
