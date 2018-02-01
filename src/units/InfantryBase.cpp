@@ -132,7 +132,7 @@ void InfantryBase::blitToScreen() {
     SDL_RenderCopy(renderer, graphic[currentZoomlevel], &source, &dest);
 }
 
-bool InfantryBase::canPassTile(Tile* pTile) const {
+bool InfantryBase::canPassTile(const Tile* pTile) const {
     bool passable = false;
 
     if(!pTile->hasAGroundObject()) {
