@@ -58,7 +58,7 @@ void TrackedUnit::checkPos()
         currentGameMap->getTile(location.x, location.y)->squash();
 }
 
-bool TrackedUnit::canPassTile(Tile* pTile) const {
+bool TrackedUnit::canPassTile(const Tile* pTile) const {
     if(!pTile || pTile->isMountain()) {
         return false;
     }

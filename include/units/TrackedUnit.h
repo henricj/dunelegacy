@@ -37,7 +37,7 @@ public:
     void save(OutputStream& stream) const override;
 
     void checkPos() override;
-    bool canPassTile(Tile* pTile) const override;
+    bool canPassTile(const Tile* pTile) const override;
 
     /**
         Returns how fast a unit can move over the specified terrain type.

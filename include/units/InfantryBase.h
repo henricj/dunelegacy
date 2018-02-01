@@ -68,7 +68,7 @@ public:
     void playConfirmSound() override;
     void playSelectSound() override;
 
-    bool canPassTile(Tile* pTile) const override;
+    bool canPassTile(const Tile* pTile) const override;
 
     inline int getTilePosition() const { return tilePosition; }
 
