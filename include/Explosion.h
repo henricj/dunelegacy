@@ -23,7 +23,7 @@
 #include <misc/OutputStream.h>
 #include <misc/SDL2pp.h>
 
-class Explosion
+class Explosion final
 {
 public:
     Explosion();

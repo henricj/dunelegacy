@@ -37,7 +37,7 @@ class Pakfile
 private:
 
     /// Internal structure for representing one file in this PAK-File
-    struct PakFileEntry {
+    struct PakFileEntry final {
         uint32_t startOffset;
         uint32_t endOffset;
         std::string filename;
