@@ -33,16 +33,6 @@
 #include <stack>
 #include <set>
 
-class BoxOffsets
-{
-    std::vector<std::vector<std::pair<int, int>>> box_sets_;
-public:
-    BoxOffsets(int size);
-    std::vector<std::pair<int, int>>& search_set(int depth) {
-        return box_sets_[depth - 1];
-    };
-};
-
 Map::Map(int xSize, int ySize)
  : sizeX(xSize), sizeY(ySize), lastSinglySelectedObject(nullptr) {
 
@@ -144,6 +134,15 @@ void Map::damage(Uint32 damagerID, House* damagerOwner, const Coord& realPos, Ui
     std::unordered_set<Dune::object_id_type>    affectedAirUnits;
     std::unordered_set<Dune::object_id_type>    affectedGroundAndUndergroundUnits;
 
+    for_each(location.x - 2, location.y - 2, location.x + 2, location.y + 2,
+        [&](Tile& t) {
+            affectedAirUnits.insert(std::begin(t.getAirUnitList()), std::end(t.getAirUnitList()));
+            affectedGroundAndUndergroundUnits.insert(std::begin(t.getInfantryList()), std::end(t.getInfantryList()));
+            affectedGroundAndUndergroundUnits.insert(std::begin(t.getUndergroundUnitList()), std::end(t.getUndergroundUnitList()));
+            affectedGroundAndUndergroundUnits.insert(std::begin(t.getNonInfantryGroundObjectList()), std::end(t.getNonInfantryGroundObjectList()));
+        });
+
+#if  0
     for(auto i = location.x-2; i <= location.x+2; i++) {
         for(auto j = location.y-2; j <= location.y+2; j++) {
             const auto pTile = getTile_internal(i,j);
@@ -157,7 +156,7 @@ void Map::damage(Uint32 damagerID, House* damagerOwner, const Coord& realPos, Ui
             affectedGroundAndUndergroundUnits.insert(pTile->getNonInfantryGroundObjectList().begin(), pTile->getNonInfantryGroundObjectList().end());
         }
     }
-
+#endif // 0
     if(bulletID == Bullet_Sandworm) {
         for(auto objectID : affectedGroundAndUndergroundUnits) {
             auto pObject = currentGame->getObjectManager().getObject(objectID);
@@ -298,6 +297,30 @@ bool Map::isAStructureGap(int x, int y, int buildingSizeX, int buildingSizeY) co
     const auto yMin = y - 1;
     const auto yMax = y + buildingSizeY + 1;
 
+    // I need some more conditions to make it ignore units
+    const auto predicate = [](const Tile * tile) {
+        return !tile || (tile->hasAStructure() && !tile->isConcrete());
+    };
+
+    //Corners are ok as units can get through
+
+    // Vertical lines
+    for (auto j = yMin; j < yMax; ++j) {
+        if (predicate(getTile_internal(xMin, j)))
+            return false;
+        if (predicate(getTile_internal(xMax, j)))
+            return false;
+    }
+    // Horizontal lines, but skipping the corners we already checked.
+    for (auto i = xMin + 1; i < xMax - 1; ++i) {
+        if (predicate(getTile_internal(i, yMin)))
+            return false;
+        if (predicate(getTile_internal(i, yMax)))
+            return false;
+    }
+
+    return true;
+#if 0
     for(auto i = xMin; i < xMax; i++) {
         for(auto j = yMin; j < yMax; j++) {
             if(!((i == xMin || i == xMax) && (j == yMin || j == yMax))) { //Corners are ok as units can get through
@@ -313,6 +336,7 @@ bool Map::isAStructureGap(int x, int y, int buildingSizeX, int buildingSizeY) co
     }
 
     return true;
+#endif // 0
 }
 
 bool Map::okayToPlaceStructure(int x, int y, int buildingSizeX, int buildingSizeY, bool tilesRequired, const House* pHouse, bool bIgnoreUnits) const {
@@ -408,6 +432,10 @@ Coord Map::getMapPos(int angle, const Coord& source) {
 
 //building size is num squares
 Coord Map::findDeploySpot(UnitBase* pUnit, const Coord& origin, Random& randomGen, const Coord& gatherPoint, const Coord& buildingSize) const {
+    if (pUnit->isAFlyingUnit()) {
+        return origin;
+    }
+
     auto closestDistance = FixPt_MAX;
     Coord       closestPoint;
     Coord       size;
@@ -415,12 +443,43 @@ Coord Map::findDeploySpot(UnitBase* pUnit, const Coord& origin, Random& randomGe
     auto found = false;
     auto foundClosest = false;
 
+    search_all_by_box_edge(origin.x, origin.y, buildingSize, currentGame->randomGen,
+        [&](const Tile& t) {
+            if (!pUnit->canPassTile(&t))
+                return false;
+
+            if (pUnit->isTracked()) {
+                if (t.hasInfantry()) {
+                    // we do not deploy on enemy infantry
+                    return false;
+                }
+            }
+
+            if (gatherPoint.isInvalid()) {
+                closestPoint = t.location;
+                found = true;
+                return true;
+            }
+
+            if (blockDistance(t.location, gatherPoint) < closestDistance) {
+                closestDistance = blockDistance(t.location, gatherPoint);
+                closestPoint = t.location;
+                foundClosest = true;
+            }
+
+            return false;
+        });
+
+    if (found || foundClosest)
+        return closestPoint;
+
+    SDL_Log("Warning: Cannot find deploy position because the map is full!");
+
+    return Coord::Invalid();
+
+#if 0
     auto counter = 0;
     auto depth = 0;
-
-    if(pUnit->isAFlyingUnit()) {
-        return origin;
-    }
 
     auto ranX = origin.x;
     auto ranY = origin.y;
@@ -485,9 +544,12 @@ Coord Map::findDeploySpot(UnitBase* pUnit, const Coord& origin, Random& randomGe
                 SDL_Log("Warning: Cannot find deploy position because the map is full!");
             }
         }
-    } while (!found && (!foundClosest || (counter > 0)));
+        // The criteria was that it should only look at foundClosest if
+        // counter > 0, but that is always true at this point.
+    } while (!found && (!foundClosest || (depth > 0)));
 
     return closestPoint;
+#endif
 }
 
 /**
@@ -527,6 +589,10 @@ Coord Map::findClosestEdgePoint(const Coord& origin, const Coord& buildingSize) 
 
 
 void Map::removeObjectFromMap(Uint32 objectID) {
+    // TODO: Should we try the object manager first?
+    // At worst, if we find the object, we can use the location
+    // plus the size of the building to avoid going through the
+    // whole map.
     for (auto& tile : tiles)
         tile.unassignObject(objectID);
 }
@@ -614,6 +680,16 @@ void Map::selectObjects(const House* pHouse, int x1, int y1, int x2, int y2, int
 
 bool Map::findSpice(Coord& destination, const Coord& origin) const {
 
+    return search_all_by_box_edge(origin.x, origin.y, currentGame->randomGen,
+        [&](const Tile& t) {
+            if (t.hasAGroundObject() || !t.hasSpice())
+                return false;
+
+            destination = t.location;
+            return true;
+        });
+
+#if 0
     const auto tile_origin = getTile_internal(origin.x, origin.y);
 
     if (tile_origin && tile_origin->hasSpice()) {
@@ -648,7 +724,7 @@ bool Map::findSpice(Coord& destination, const Coord& origin) const {
 
     //there is definitely no spice left anywhere on map
     return false;
-
+#endif // 0
 #if 0
     auto counter = 0;
     auto depth = 1;
@@ -689,11 +765,18 @@ bool Map::findSpice(Coord& destination, const Coord& origin) const {
 */
 void Map::spiceRemoved(const Coord& coord) {
 
-    auto pCenterTile = getTile_internal(coord.x , coord.y);
+    const auto pCenterTile = getTile_internal(coord.x , coord.y);
 
     if(!pCenterTile || pCenterTile->getType() != Terrain_Sand) return;
 
     //thickspice tiles can't handle non-(thick)spice tiles next to them, if this happens after changes, make it non thick
+    //only check tile right, up, left and down of this one
+    for_each_neighbor(coord.x, coord.y, [](Tile& t) {
+        if (t.isThickSpice())
+            t.setType(Terrain_Spice);
+    });
+
+#if 0
     for(auto i = coord.x-1; i <= coord.x+1; i++) {
         for(auto j = coord.y-1; j <= coord.y+1; j++) {
             if ((i != coord.x) && (j != coord.y)) {
@@ -709,6 +792,7 @@ void Map::spiceRemoved(const Coord& coord) {
             }
         }
     }
+#endif //0
 }
 
 void Map::viewMap(int houseID, const Coord& location, const int maxViewRange) {
@@ -725,6 +809,20 @@ void Map::viewMap(int houseID, const Coord& location, const int maxViewRange) {
 
     const auto cycle_count = currentGame->getGameCycleCount();
 
+    for_each_filter(location.x - maxViewRange, location.y - maxViewRange,
+        location.x + maxViewRange, location.y + maxViewRange,
+        [&](int x, int y) {
+            const auto distance = maxViewRange <= 1
+                ? maximumDistance(location, { x, y })
+                : blockDistanceApprox(location, { x, y });
+            return distance <= maxViewRange;
+        },
+        [&](Tile& t) {
+            for (auto house : houses)
+                t.setExplored(house, cycle_count);
+        });
+
+#if 0
     const auto startY = std::max(0, location.y - maxViewRange);
     const auto endY = std::min(sizeY-1, location.y + maxViewRange);
     const auto startX = std::max(0, location.x - maxViewRange);
@@ -748,6 +846,7 @@ void Map::viewMap(int houseID, const Coord& location, const int maxViewRange) {
             tile->setExplored(houseID, cycle_count);
         }
     }
+#endif // 0
 }
 
 /**
@@ -757,6 +856,19 @@ void Map::viewMap(int houseID, const Coord& location, const int maxViewRange) {
     \param  centerIsThickSpice  if set the center is filled with thick spice
 */
 void Map::createSpiceField(Coord location, int radius, bool centerIsThickSpice) {
+
+    for_each_filter(location.x - radius, location.y - radius, location.x + radius, location.y + radius,
+        [&](int x, int y) { return distanceFrom(location, { x, y }) <= radius; },
+        [&](Tile& t) {
+            if (t.isSand()) {
+                const auto terrain = centerIsThickSpice && (t.location == location)
+                    ? Terrain_ThickSpice : Terrain_Spice;
+
+                t.setType(terrain);
+            }
+        });
+
+#if 0
     Coord offset;
     for(offset.x = -radius; offset.x <= radius; offset.x++) {
         for(offset.y = -radius; offset.y <= radius; offset.y++) {
@@ -776,5 +888,6 @@ void Map::createSpiceField(Coord location, int radius, bool centerIsThickSpice) 
             }
         }
     }
+#endif // 0
 }
 
