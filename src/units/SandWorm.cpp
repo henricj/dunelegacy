@@ -395,7 +395,7 @@ bool Sandworm::canAttack(const ObjectBase* object) const {
     return pTile->getSandRegion() == map->getTile(location)->getSandRegion();
 }
 
-bool Sandworm::canPassTile(Tile* pTile) const {
+bool Sandworm::canPassTile(const Tile* pTile) const {
     return !pTile->isRock()
         && (!pTile->hasAnUndergroundUnit() || (pTile->getUndergroundUnit() == this));
 }

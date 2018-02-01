@@ -1390,7 +1390,7 @@ void UnitBase::updateVisibleUnits() {
     }
 }
 
-bool UnitBase::canPassTile(Tile* pTile) const
+bool UnitBase::canPassTile(const Tile* pTile) const
 {
     if (!pTile || pTile->isMountain()) return false;
 

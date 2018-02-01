@@ -210,7 +210,7 @@ public:
         return canPassTile(pTile);
     }
 
-    virtual bool canPassTile(Tile* pTile) const;
+    virtual bool canPassTile(const Tile* pTile) const;
 
     virtual bool hasBumpyMovementOnRock() const { return false; }
 
