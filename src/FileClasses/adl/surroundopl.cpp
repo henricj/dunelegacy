@@ -159,7 +159,7 @@ void CSurroundopl::write(int reg, int val)
             iValue = (iValue & ~0x1F) | (iNewBlock << 2) | ((iNewFNum >> 8) & 0x03);
 
             this->iCurrentTweakedBlock[this->currChip][iChannel] = iNewBlock; // save it so we don't have to update register 0xB0 later on
-            this->iCurrentFNum[this->currChip][iChannel] = iNewFNum;
+            this->iCurrentFNum[this->currChip][iChannel] = static_cast<uint8_t>(iNewFNum);
 
             if (this->iTweakedFMReg[this->currChip][0xA0 + iChannel] != (iNewFNum & 0xFF)) {
                 // Need to write out low bits
