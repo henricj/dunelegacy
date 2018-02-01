@@ -26,8 +26,6 @@
 
 #include <cstdio>
 
-class BoxOffsets;
-
 class Map
 {
 public:
@@ -120,10 +118,9 @@ public:
     {
         std::for_each(std::begin(tiles), std::end(tiles), f);
     }
-
+protected:
     template<typename F>
-    void for_each(int x1, int y1, int x2, int y2, F&& f) const
-    {
+    void location_for_each(int x1, int y1, int x2, int y2, F&& f) const {
         if (x1 < 0)
             x1 = 0;
         if (x2 < x1)
@@ -144,38 +141,155 @@ public:
 
         for (auto x = x1; x < x2; ++x) {
             for (auto y = y1; y < y2; ++y) {
-                f(tiles[tile_index(x, y)]);
+                f(x, y);
             }
         }
+    }
+    template<typename F>
+    void coord_for_each(int x1, int y1, int x2, int y2, F&& f) const {
+        location_for_each(x1, y1, x2, y2, [&](int x, int y) { f(Coord(x, y)); });
+    }
+    template<typename Filter, typename F>
+    void coord_for_each_filter(int x1, int y1, int x2, int y2, F&& f) const {
+        location_for_each(x1, y1, x2, y2, [&](int x, int y) { f(Coord(x, y)); });
+    }
+    template<typename F>
+    void index_for_each(int x1, int y1, int x2, int y2, F&& f) const {
+        location_for_each(x1, y1, x2, y2, [&](int x, int y) {f(tile_index(x, y)); });
+    }
+    template<typename Filter, typename F>
+    void index_for_each_filter(int x1, int y1, int x2, int y2, Filter&& filter, F&& f) const {
+        location_for_each(x1, y1, x2, y2, [&](int x, int y) { if (filter(x, y)) f(tile_index(x, y)); });
+    }
+    class BoxOffsets
+    {
+        std::vector<std::vector<std::pair<int, int>>> box_sets_;
+    public:
+        BoxOffsets(int size, Coord box = Coord(1, 1));
+        std::vector<std::pair<int, int>>& search_set(int depth) {
+            return box_sets_[depth - 1];
+        }
+
+        auto max_depth() const noexcept { return box_sets_.size(); }
+    };
+public:
+
+    template<typename F>
+    void for_each(int x1, int y1, int x2, int y2, F&& f) const {
+        index_for_each(x1, y1, x2, y2, [&](int index) { f(tiles[index]); });
     }
 
     template<typename F>
-    void for_each(int x1, int y1, int x2, int y2, F&& f)
-    {
-        if (x1 < 0)
-            x1 = 0;
-        if (x2 < x1)
-            x2 = x1;
-        else if (x2 >= sizeX)
-            x2 = sizeX;
-        if (x1 > x2)
-            x1 = x2;
-
-        if (y1 < 0)
-            y1 = 0;
-        if (y2 < y1)
-            y2 = y1;
-        else if (y2 >= sizeY)
-            y2 = sizeY;
-        if (y1 > y2)
-            y1 = y2;
-
-        for (auto x = x1; x < x2; ++x) {
-            for (auto y = y1; y < y2; ++y) {
-                f(tiles[tile_index(x, y)]);
-            }
-        }
+    void for_each(int x1, int y1, int x2, int y2, F&& f) {
+        index_for_each(x1, y1, x2, y2, [&](int index) { f(tiles[index]); });
     }
+
+    template<typename Filter, typename F>
+    void for_each_filter(int x1, int y1, int x2, int y2, Filter&& filter, F&& f) const {
+        index_for_each_filter(x1, y1, x2, y2, filter, [&](int index) { f(tiles[index]); });
+    }
+
+    template<typename Filter, typename F>
+    void for_each_filter(int x1, int y1, int x2, int y2, Filter&& filter, F&& f) {
+        index_for_each_filter(x1, y1, x2, y2, filter, [&](int index) { f(tiles[index]); });
+    }
+
+    template<typename F, typename Predicate>
+    bool search(int x1, int y1, int x2, int y2, Predicate&& predicate) const {
+        index_for_each(x1, y1, x2, y2, [&](int index) { predicate(tiles[index]); });
+    }
+
+    template<typename Filter, typename Predicate>
+    bool search_filter(int x1, int y1, int x2, int y2, Filter&& filter, Predicate&& predicate) const {
+        index_for_each_filter(x1, y1, x2, y2, filter, [&](int index) { predicate(tiles[index]); });
+    }
+
+    template<typename Offsets, typename Generator, typename Predicate>
+    bool search_random_offsets(int x, int y, Offsets&& offsets, Generator&& generator, Predicate&& predicate) const {
+
+        const auto size = offsets.size();
+
+        // We do an incremental Fisher-Yates shuffle.  This should be as
+        // random as the generator, and guarantees that each tile will
+        // be visited exactly once.
+        for (auto i = 0u; i < size; ++i) {
+            std::swap(offsets[i], offsets[generator.rand(i, size - 1)]);
+
+            const auto ranX = x + offsets[i].first;
+            const auto ranY = y + offsets[i].second;
+
+            const auto tile = getTile_internal(ranX, ranY);
+
+            if (tile && predicate(*tile))
+                return true;
+        }
+
+        return false;
+    }
+
+protected:
+    template<typename Generator, typename Predicate>
+    bool search_box_edge(int x, int y, int depth, BoxOffsets* offsets, Generator&& generator, Predicate&& predicate) const {
+
+        if (0 == depth) {
+            const auto tile = getTile_internal(x, y);
+            return tile && predicate(*tile);
+        }
+
+        return search_random_offsets(x, y, offsets->search_set(depth), generator, predicate);
+    }
+
+    template<typename Generator, typename Predicate>
+    bool search_all_by_box_edge(int x, int y, BoxOffsets* offsets, Generator generator, Predicate&& predicate) const {
+        for (auto depth = 0u; depth <= offsets->max_depth(); ++depth) {
+            if (search_box_edge(x, y, depth, offsets, generator, predicate))
+                return true;
+        }
+
+        return false;
+    }
+
+public:
+    template<typename Generator, typename Predicate>
+    bool search_all_by_box_edge(int x, int y, Generator&& generator, Predicate&& predicate) const {
+        return search_all_by_box_edge(x, y, offsets_.get(), generator, predicate);
+    }
+
+    template<typename Generator, typename Predicate>
+    bool search_all_by_box_edge_2x2(int x, int y, Generator&& generator, Predicate&& predicate) const {
+        return search_all_by_box_edge(x, y, offsets_2x2_.get(), generator, predicate);
+    }
+
+    template<typename Generator, typename Predicate>
+    bool search_all_by_box_edge_2x3(int x, int y, Generator&& generator, Predicate&& predicate) const {
+        return search_all_by_box_edge(x, y, offsets_2x3_.get(), generator, predicate);
+    }
+
+    template<typename Generator, typename Predicate>
+    bool search_all_by_box_edge_3x2(int x, int y, Generator&& generator, Predicate&& predicate) const {
+        return search_all_by_box_edge(x, y, offsets_3x2_.get(), generator, predicate);
+    }
+
+    template<typename Generator, typename Predicate>
+    bool search_all_by_box_edge_3x3(int x, int y, Generator&& generator, Predicate&& predicate) const {
+        return search_all_by_box_edge(x, y, offsets_3x3_.get(), generator, predicate);
+    }
+
+    template<typename Generator, typename Predicate>
+    bool search_all_by_box_edge(int x, int y, Coord buildingSize, Generator&& generator, Predicate&& predicate) const {
+
+        if (buildingSize == Coord{ 2, 2 })
+            return search_all_by_box_edge_2x2(x, y, currentGame->randomGen, predicate);
+        if (buildingSize == Coord{ 2, 3 })
+            return search_all_by_box_edge_2x3(x, y, currentGame->randomGen, predicate);
+        if (buildingSize == Coord{ 3, 2 })
+            return search_all_by_box_edge_3x2(x, y, currentGame->randomGen, predicate);
+        if (buildingSize == Coord{ 3, 3 })
+            return search_all_by_box_edge_3x3(x, y, currentGame->randomGen, predicate);
+
+        return search_all_by_box_edge(x, y, currentGame->randomGen, predicate);
+    }
+
 protected:
     template<typename F>
     void index_for_each_angle(int x, int y, F&& f)
@@ -329,6 +443,10 @@ private:
     }
 
     std::unique_ptr<BoxOffsets> offsets_;
+    std::unique_ptr<BoxOffsets> offsets_2x2_;
+    std::unique_ptr<BoxOffsets> offsets_3x2_;
+    std::unique_ptr<BoxOffsets> offsets_2x3_;
+    std::unique_ptr<BoxOffsets> offsets_3x3_;
 
     void init_box_sets();
 };
