@@ -132,7 +132,7 @@ OPLChipClass* oplchip[2];
 
 
 // start of the waveform
-static Bitu waveform[8] = {
+static const Bitu waveform[8] = {
     WAVPREC,
     WAVPREC>>1,
     WAVPREC,
@@ -144,7 +144,7 @@ static Bitu waveform[8] = {
 };
 
 // length of the waveform as mask
-static Bitu wavemask[8] = {
+static const Bitu wavemask[8] = {
     WAVPREC-1,
     WAVPREC-1,
     (WAVPREC>>1)-1,
@@ -156,7 +156,7 @@ static Bitu wavemask[8] = {
 };
 
 // where the first entry resides
-static fltype wavestart[8] = {
+static const fltype wavestart[8] = {
     (fltype)(0),
     (fltype)(WAVPREC>>1),
     (fltype)(0),
@@ -168,8 +168,8 @@ static fltype wavestart[8] = {
 };
 
 // envelope generator function constants
-static fltype attackconst[4] = {1/2.82624,1/2.25280,1/1.88416,1/1.59744};
-static fltype decrelconst[4] = {1/39.28064,1/31.41608,1/26.17344,1/22.44608};
+static const fltype attackconst[4] = {1/2.82624,1/2.25280,1/1.88416,1/1.59744};
+static const fltype decrelconst[4] = {1/39.28064,1/31.41608,1/26.17344,1/22.44608};
 
 static fltype generator_add;    // should be a chip parameter
 
