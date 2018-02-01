@@ -279,12 +279,12 @@ private:
     uint8 calculateOpLevel1(Channel &channel);
     uint8 calculateOpLevel2(Channel &channel);
 
-    static uint16 checkValue(int16 val) {
+    static uint8 checkValue(int16 val) {
         if (val < 0)
             val = 0;
         else if (val > 0x3F)
             val = 0x3F;
-        return val;
+        return static_cast<uint8>(val);
     }
 
     // The sound data has at least two lookup tables:
@@ -1315,7 +1315,10 @@ void AdlibDriver::secondaryEffect1(Channel &channel) {
 }
 
 uint8 AdlibDriver::calculateOpLevel1(Channel &channel) {
-    int8 value = channel.opLevel1 & 0x3F;
+    // TODO: Should "val" really be computed as a signed 8 bit with overflow
+    // then converted to to int16 before being passed to checkValue?
+    // Use int16 for now.
+    int16 value = channel.opLevel1 & 0x3F;
 
     if (channel.twoChan) {
         value += channel.opExtraLevel1;
@@ -1329,7 +1332,10 @@ uint8 AdlibDriver::calculateOpLevel1(Channel &channel) {
 }
 
 uint8 AdlibDriver::calculateOpLevel2(Channel &channel) {
-    int8 value = channel.opLevel2 & 0x3F;
+    // TODO: Should "val" really be computed as a signed 8 bit with overflow
+    // then converted to to int16 before being passed to checkValue?
+    // Use int16 for now.
+    int16 value = channel.opLevel2 & 0x3F;
 
     value += channel.opExtraLevel1;
     value += channel.opExtraLevel2;

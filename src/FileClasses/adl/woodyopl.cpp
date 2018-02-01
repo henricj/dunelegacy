@@ -506,9 +506,9 @@ void OPLChipClass::adlib_init(Bits samplerate,bool highprec/*=false*/) {
 
     // create tremolo table
     Bit32s trem_table_int[TREMTAB_SIZE];
-    for (i=0; i<14; i++)    trem_table_int[i] = i-13;       // upwards (13 to 26 -> -0.5/6 to 0)
-    for (i=14; i<41; i++)   trem_table_int[i] = -i+14;      // downwards (26 to 0 -> 0 to -1/6)
-    for (i=41; i<53; i++)   trem_table_int[i] = i-40-26;    // upwards (1 to 12 -> -1/6 to -0.5/6)
+    for (i=0; i<14; i++)    trem_table_int[i] = static_cast<Bit32s>(i-13);       // upwards (13 to 26 -> -0.5/6 to 0)
+    for (i=14; i<41; i++)   trem_table_int[i] = static_cast<Bit32s>(-i+14);      // downwards (26 to 0 -> 0 to -1/6)
+    for (i=41; i<53; i++)   trem_table_int[i] = static_cast<Bit32s>(i-40-26);    // upwards (1 to 12 -> -1/6 to -0.5/6)
 
     for (i=0; i<TREMTAB_SIZE; i++) {
         trem_table[i]=(fltype)(((fltype)trem_table_int[i])*4.8/26.0/6.0);               // 4.8db
