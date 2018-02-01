@@ -243,7 +243,7 @@ void Map::damage(Uint32 damagerID, House* damagerOwner, const Coord& realPos, Ui
                 }
             }
 
-            const auto pTile = currentGameMap->getTile_internal(location.x, location.y);
+            const auto pTile = getTile_internal(location.x, location.y);
 
             if(pTile
                 && ((bulletID == Bullet_Rocket) || (bulletID == Bullet_TurretRocket) || (bulletID == Bullet_SmallRocket) || (bulletID == Bullet_LargeRocket))
@@ -479,7 +479,7 @@ Coord Map::findDeploySpot(UnitBase* pUnit, const Coord& origin, Random& randomGe
             //if hasn't found a spot on tempObject layer in 100 tries, goto next
 
             counter = 0;
-            if(++depth > (std::max(currentGameMap->getSizeX(), currentGameMap->getSizeY()))) {
+            if(++depth > (std::max(getSizeX(), getSizeY()))) {
                 closestPoint.invalidate();
                 found = true;
                 SDL_Log("Warning: Cannot find deploy position because the map is full!");
@@ -762,7 +762,7 @@ void Map::createSpiceField(Coord location, int radius, bool centerIsThickSpice) 
         for(offset.y = -radius; offset.y <= radius; offset.y++) {
             const auto coord = location + offset;
 
-            const auto pTile = currentGameMap->getTile_internal(coord.x, coord.y);
+            const auto pTile = getTile_internal(coord.x, coord.y);
 
             if (!pTile)
                 continue;
