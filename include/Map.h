@@ -65,7 +65,7 @@ public:
     Coord findClosestEdgePoint(const Coord& origin, const Coord& buildingSize) const;
     Coord findDeploySpot(UnitBase* pUnit, const Coord& origin, Random& randomGen, const Coord& gatherPoint = Coord::Invalid(), const Coord& buildingSize = Coord(0, 0)) const; //building size is num squares
 
-    void createSpiceField(Coord location, int radius, bool centerIsThickSpice = false) const;
+    void createSpiceField(Coord location, int radius, bool centerIsThickSpice = false);
 
     Sint32 getSizeX() const noexcept {
         return sizeX;
