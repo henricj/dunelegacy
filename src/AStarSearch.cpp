@@ -71,19 +71,22 @@ AStarSearch::AStarSearch(Map* pMap, UnitBase* pUnit, Coord start, Coord destinat
 
                                      const auto nextCoord = nextTile.location;
 
-                                     auto g = getMapData(currentCoord).g;
+                                     const auto& map_data = getMapData(currentCoord);
+
+                                     auto g = map_data.g;
+
+                                     auto difficulty = (pUnit->isAFlyingUnit() ? FixPoint(1) : pUnit->getTerrainDifficulty(static_cast<TERRAINTYPE>(nextTile.getType())));
 
                                      if ((nextCoord.x != currentCoord.x) && (nextCoord.y != currentCoord.y)) {
                                          //add diagonal movement cost
-                                         g += FixPt_SQRT2 * (pUnit->isAFlyingUnit() ? FixPoint(1) : pUnit->getTerrainDifficulty(static_cast<TERRAINTYPE>(nextTile.getType())));
-                                     }
-                                     else {
-                                         g += (pUnit->isAFlyingUnit() ? FixPoint(1) : pUnit->getTerrainDifficulty(static_cast<TERRAINTYPE>(nextTile.getType())));
+                                         difficulty *= FixPt_SQRT2;
                                      }
 
-                                     if (getMapData(currentCoord).parentCoord.isValid()) {
+                                     g += difficulty;
+
+                                     if (map_data.parentCoord.isValid()) {
                                          //add cost of turning time
-                                         const auto posAngle = Map::getPosAngle(getMapData(currentCoord).parentCoord, currentCoord);
+                                         const auto posAngle = Map::getPosAngle(map_data.parentCoord, currentCoord);
                                          g += angleDiff(angle, posAngle) * rotationSpeed;
                                      }
 
