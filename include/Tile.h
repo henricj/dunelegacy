@@ -362,6 +362,16 @@ public:
     */
     ObjectBase* getGroundObject() const;
 
+    std::pair<bool, Dune::object_id_type> getGroundObjectID() const {
+        if (hasANonInfantryGroundObject())
+            return { true, assignedNonInfantryGroundObjectList.front() };
+        if (hasInfantry())
+            return { true, assignedInfantryList.front() };
+
+        return {false, 0 };
+    }
+
+
     /*!
         returns a pointer to infantry object on this tile (if there's one)
         @return InfantryBase*  pointer to infantry object

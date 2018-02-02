@@ -26,7 +26,7 @@
 
 #include <House.h>
 #include <Map.h>
-
+#include <Game.h>
 
 TrackedUnit::TrackedUnit(House* newOwner) : GroundUnit(newOwner)
 {
@@ -59,7 +59,7 @@ void TrackedUnit::checkPos()
 }
 
 bool TrackedUnit::canPassTile(const Tile* pTile) const {
-    if(!pTile || pTile->isMountain()) {
+    if (!pTile || pTile->isMountain()) {
         return false;
     }
 
@@ -87,10 +87,16 @@ bool TrackedUnit::canPassTile(const Tile* pTile) const {
         }
     }
 
-    if (!pTile->hasANonInfantryGroundObject() && (pTile->getInfantryTeam() != getOwner()->getTeamID())) {
-        // possibly squashing this unit
-        return true;
-    } else {
-        return false;
+    if (!pTile->hasANonInfantryGroundObject()) {
+        // The tile does not have a non-infantry ground object, therefore the ground object ID must
+        // be for an infantry unit.  We have complicated this function since profiling puts it in
+        // the hotpath...
+        const auto pObject = currentGame->getObjectManager().getObject(ground_object_result.second);
+        if (pObject->getOwner()->getTeamID() != getOwner()->getTeamID()) {
+            // possibly squashing this unit
+            return true;
+        }
     }
+
+    return false;
 }
