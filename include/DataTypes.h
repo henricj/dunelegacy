@@ -30,7 +30,7 @@ typedef std::array<SDL_Texture*, NUM_ZOOMLEVEL> zoomable_texture;
 
 #include <unordered_set>
 
-class Coord {
+class Coord final {
 public:
     Coord() noexcept
      : x(0), y(0) {
