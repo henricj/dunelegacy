@@ -182,7 +182,7 @@ sdl2::surface_ptr renderReadSurface(SDL_Renderer* renderer) {
         }
     }
 
-    return pScreen.release();
+    return pScreen;
 }
 
 void replaceColor(SDL_Surface *surface, Uint32 oldColor, Uint32 newColor) {
