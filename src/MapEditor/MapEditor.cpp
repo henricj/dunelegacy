@@ -1980,15 +1980,15 @@ void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) {
 }
 
 void MapEditor::saveMapshot() {
-    int oldCurrentZoomlevel = currentZoomlevel;
+    const int oldCurrentZoomlevel = currentZoomlevel;
     currentZoomlevel = 0;
 
-    std::string mapshotFilename = (lastSaveName.empty() ? generateMapname() : getBasename(lastSaveName, true)) + ".png";
+    auto mapshotFilename = (lastSaveName.empty() ? generateMapname() : getBasename(lastSaveName, true)) + ".png";
 
-    int sizeX = world2zoomedWorld(map.getSizeX()*TILESIZE);
-    int sizeY = world2zoomedWorld(map.getSizeY()*TILESIZE);
+    const auto sizeX = world2zoomedWorld(map.getSizeX()*TILESIZE);
+    const auto sizeY = world2zoomedWorld(map.getSizeY()*TILESIZE);
 
-    SDL_Rect board = { 0, 0, sizeX, sizeY };
+    const SDL_Rect board = { 0, 0, sizeX, sizeY };
 
     ScreenBorder tmpScreenborder(board);
     tmpScreenborder.adjustScreenBorderToMapsize(map.getSizeX(), map.getSizeY());
