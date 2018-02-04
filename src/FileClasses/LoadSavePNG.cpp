@@ -179,6 +179,8 @@ int SavePNG_RW(SDL_Surface* surface, SDL_RWops* RWop) {
     {
         sdl2::surface_lock lock{ surface };
 
+        unsigned char * RESTRICT out = pImage.get();
+
         // Now we can copy pixel by pixel
         for(unsigned int y = 0; y < height; y++) {
             unsigned char* out = image.data() + y * 4*width;
