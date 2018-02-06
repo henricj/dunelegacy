@@ -8,6 +8,50 @@
 
 namespace sdl2
 {
+    class texture_lock final
+    {
+        SDL_Texture * const texture_;
+        void* pixels_;
+        int pitch_;
+    public:
+        explicit texture_lock(SDL_Texture* texture) : texture_(texture)
+        {
+            assert(texture);
+
+            if (!texture_)
+                return;
+
+            if (0 == SDL_LockTexture(texture_, nullptr, &pixels_, &pitch_))
+                return;
+
+            THROW(std::runtime_error, "Unable to lock SDL texture!");
+        }
+        explicit texture_lock(SDL_Texture* texture, SDL_Rect& rect) : texture_(texture)
+        {
+            assert(texture);
+
+            if (!texture_)
+                return;
+
+            if (0 == SDL_LockTexture(texture_, &rect, &pixels_, &pitch_))
+                return;
+
+            THROW(std::runtime_error, "Unable to lock SDL texture!");
+        }
+        ~texture_lock()
+        {
+            if (texture_)
+                SDL_UnlockTexture(texture_);
+        }
+
+        void * pixels() const { return pixels_; }
+
+        texture_lock(const texture_lock &) = delete;
+        texture_lock(texture_lock &&) = delete;
+        texture_lock& operator=(const texture_lock &) = delete;
+        texture_lock& operator=(texture_lock &&) = delete;
+    };
+
     class surface_lock final
     {
         SDL_Surface * const surface_;
