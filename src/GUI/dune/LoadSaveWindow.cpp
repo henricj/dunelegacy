@@ -54,16 +54,20 @@ LoadSaveWindow::LoadSaveWindow(bool bSave, const std::string& caption, const std
 
     mainVBox.addWidget(VSpacer::create(8));
 
-    if(directories.size() > 1) {
-        directoryButtons.resize(directories.size());
+    if (directories.size()> 1) {
+        directoryButtons.reserve(directories.size());
 
-        for(size_t i=0;i<directories.size(); i++) {
-            directoryButtons[i].setText(directoryTitles[i]);
-            directoryButtons[i].setTextColor(color);
-            directoryButtons[i].setToggleButton(true);
-            directoryButtons[i].setOnClick(std::bind(&LoadSaveWindow::onDirectoryChange, this, static_cast<int>(i)));
+        for (const auto& title : directoryTitles) {
+            directoryButtons.emplace_back();
 
-            directoryHBox.addWidget(&directoryButtons[i]);
+            auto& button = directoryButtons.back();
+
+            button.setText(title);
+            button.setTextColor(color);
+            button.setToggleButton(true);
+            button.setOnClick([=, i = static_cast<int>(directoryButtons.size() - 1)]() { onDirectoryChange(i); });
+
+            directoryHBox.addWidget(&button);
         }
 
         mainVBox.addWidget(&directoryHBox, 20);
