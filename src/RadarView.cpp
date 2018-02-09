@@ -42,7 +42,8 @@ RadarView::RadarView()
     if(radarSurface == nullptr) {
         THROW(std::runtime_error, "RadarView::RadarView(): Cannot create new surface!");
     }
-    SDL_FillRect(radarSurface.get(), nullptr, COLOR_BLACK);
+
+    SDL_FillRect(radarSurface.get(), nullptr, SDL_MapRGB(radarSurface->format, 100, 50, 0));
 
     radarTexture = sdl2::texture_ptr{ SDL_CreateTexture(renderer, SCREEN_FORMAT, SDL_TEXTUREACCESS_STREAMING, 128, 128) };
 }
