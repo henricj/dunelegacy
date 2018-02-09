@@ -49,8 +49,10 @@ void Map::load(InputStream& stream) {
     const auto x = stream.readSint32();
     const auto y = stream.readSint32();
 
-    tiles.clear();
-    tiles.resize(sizeX * sizeY);
+    if (x != sizeX || y != sizeY)
+        THROW(std::runtime_error, "Map load size mismatch (%d, %d) != (%d, %d)", x, y, sizeX, sizeY);
+
+    assert(tiles.size() == sizeX * sizeY);
 
     for (auto& tile : tiles)
         tile.load(stream);
