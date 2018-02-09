@@ -35,13 +35,13 @@ public:
         Widget::enableResizing(true,true);
     }
 
-    TextButton(const TextButton &) = default;
+    TextButton(const TextButton &) = delete;
     TextButton(TextButton &&) = default;
-    TextButton& operator=(const TextButton &) = default;
+    TextButton& operator=(const TextButton &) = delete;
     TextButton& operator=(TextButton &&) = default;
 
     /// destructor
-    virtual ~TextButton() = default;
+    virtual ~TextButton();
 
     /**
         This method sets a new text for this button and resizes this button
