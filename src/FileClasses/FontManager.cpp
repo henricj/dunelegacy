@@ -53,7 +53,11 @@ sdl2::surface_ptr FontManager::createSurfaceWithText(const std::string& text, Ui
     SDL_FillRect(pic.get(), nullptr, COLOR_INVALID);
     SDL_SetColorKey(pic.get(), SDL_TRUE, COLOR_INVALID);
 
+<<<<<<< HEAD
     pFont->drawTextOnSurface(pic.get(),text,color);
+=======
+    font->drawTextOnSurface(pic.get(),text, color);
+>>>>>>> Use unique_ptr<> instead of shard_ptr<> for FontManager::fonts.
 
     return pic;
 }
@@ -76,7 +80,7 @@ sdl2::surface_ptr FontManager::createSurfaceWithMultilineText(const std::string&
         }
     } while(nextpos != std::string::npos);
 
-    Font* pFont = getFont(fontSize);
+    const auto pFont = getFont(fontSize);
 
     int lineHeight = pFont->getTextHeight();
     int width = pFont->getTextWidth(text);
