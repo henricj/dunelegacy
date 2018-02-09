@@ -1132,6 +1132,7 @@ void Game::runMainLoop() {
         SDL_RenderPresent(renderer);
 
         SDL_SetRenderTarget(renderer, nullptr);
+        SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_NONE);
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
         SDL_RenderClear(renderer);
         SDL_RenderCopy(renderer, screenTexture, nullptr, nullptr);
