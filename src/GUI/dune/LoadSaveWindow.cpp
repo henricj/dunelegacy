@@ -71,8 +71,8 @@ LoadSaveWindow::LoadSaveWindow(bool bSave, const std::string& caption, const std
 
     mainVBox.addWidget(&fileListHBox, (bSave ? 120 : 150) - (directories.size() > 1 ? 20 : 0));
     fileList.setColor(color);
-    fileList.setOnSelectionChange(std::bind(&LoadSaveWindow::onSelectionChange, this, std::placeholders::_1));
-    fileList.setOnDoubleClick(std::bind(&LoadSaveWindow::onOK, this));
+    fileList.setOnSelectionChange([=](bool bInteractive){ onSelectionChange(bInteractive); });
+    fileList.setOnDoubleClick([=](){ onOK(); });
     fileListHBox.addWidget(&fileList);
 
     mainVBox.addWidget(VSpacer::create(5));
@@ -89,7 +89,7 @@ LoadSaveWindow::LoadSaveWindow(bool bSave, const std::string& caption, const std
 
     okButton.setText(_(bSave ? "Save" : "Load"));
     okButton.setTextColor(color);
-    okButton.setOnClick(std::bind(&LoadSaveWindow::onOK, this));
+    okButton.setOnClick([=]() { onOK(); });
 
     buttonHBox.addWidget(&okButton);
 
@@ -97,7 +97,7 @@ LoadSaveWindow::LoadSaveWindow(bool bSave, const std::string& caption, const std
 
     cancelButton.setText(_("Cancel"));
     cancelButton.setTextColor(color);
-    cancelButton.setOnClick(std::bind(&LoadSaveWindow::onCancel, this));
+    cancelButton.setOnClick([=]() { onCancel(); });
 
     buttonHBox.addWidget(&cancelButton);
 
@@ -141,7 +141,7 @@ void LoadSaveWindow::updateEntries() {
 
 bool LoadSaveWindow::handleKeyPress(SDL_KeyboardEvent& key) {
     if(pChildWindow != nullptr) {
-        bool ret = pChildWindow->handleKeyPress(key);
+        const auto ret = pChildWindow->handleKeyPress(key);
         return ret;
     }
 
@@ -197,22 +197,22 @@ void LoadSaveWindow::onChildWindowClose(Window* pChildWindow) {
 
 void LoadSaveWindow::onOK() {
     if(bSaveWindow == false) {
-        int index = fileList.getSelectedIndex();
+        const auto index = fileList.getSelectedIndex();
         if(index >= 0) {
             filename = directories[currentDirectoryIndex] + fileList.getEntry(index) + "." + extension;
 
-            Window* pParentWindow = dynamic_cast<Window*>(getParent());
+            const auto pParentWindow = dynamic_cast<Window*>(getParent());
             if(pParentWindow != nullptr) {
                 pParentWindow->closeChildWindow();
             }
         }
     } else {
-        std::string savename = saveName.getText();
+        auto savename = saveName.getText();
 
-        if(savename != "" && savename.find_first_of("\\/") == std::string::npos) {
+        if(!savename.empty() && savename.find_first_of("\\/") == std::string::npos) {
             filename = directories[currentDirectoryIndex] + saveName.getText() + "." + extension;
 
-            Window* pParentWindow = dynamic_cast<Window*>(getParent());
+            const auto pParentWindow = dynamic_cast<Window*>(getParent());
             if(pParentWindow != nullptr) {
                 pParentWindow->closeChildWindow();
             }
@@ -222,8 +222,8 @@ void LoadSaveWindow::onOK() {
     }
 }
 
-void LoadSaveWindow::onCancel() {
-    auto pParentWindow = dynamic_cast<Window*>(getParent());
+void LoadSaveWindow::onCancel() const {
+    const auto pParentWindow = dynamic_cast<Window*>(getParent());
     if(pParentWindow != nullptr) {
         pParentWindow->closeChildWindow();
     }

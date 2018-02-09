@@ -34,7 +34,7 @@
 
 
 RadarView::RadarView()
- : RadarViewBase(), currentRadarMode(RadarMode::RadarOff), animFrame(NUM_STATIC_FRAMES - 1), animCounter(NUM_STATIC_FRAME_TIME)
+ : currentRadarMode(RadarMode::RadarOff), animFrame(NUM_STATIC_FRAMES - 1), animCounter(NUM_STATIC_FRAME_TIME)
 {
     radarStaticAnimation = pGFXManager->getUIGraphic(UI_RadarAnimation);
 
@@ -61,13 +61,13 @@ int RadarView::getMapSizeY() const {
 
 void RadarView::draw(Point position)
 {
-    SDL_Rect radarPosition = { position.x + RADARVIEW_BORDERTHICKNESS, position.y + RADARVIEW_BORDERTHICKNESS, RADARWIDTH, RADARHEIGHT};
+    const SDL_Rect radarPosition = { position.x + RADARVIEW_BORDERTHICKNESS, position.y + RADARVIEW_BORDERTHICKNESS, RADARWIDTH, RADARHEIGHT};
 
     switch(currentRadarMode) {
         case RadarMode::RadarOff:
         case RadarMode::RadarOn: {
-            int mapSizeX = currentGameMap->getSizeX();
-            int mapSizeY = currentGameMap->getSizeY();
+            const auto mapSizeX = currentGameMap->getSizeX();
+            const auto mapSizeY = currentGameMap->getSizeY();
 
             int scale = 1;
             int offsetX = 0;
@@ -75,7 +75,7 @@ void RadarView::draw(Point position)
 
             calculateScaleAndOffsets(mapSizeX, mapSizeY, scale, offsetX, offsetY);
 
-            updateRadarSurface(mapSizeX, mapSizeY, scale, offsetX, offsetY);
+            updateRadarSurface(scale, offsetX, offsetY);
 
             SDL_UpdateTexture(radarTexture.get(), nullptr, radarSurface->pixels, radarSurface->pitch);
 
@@ -98,12 +98,12 @@ void RadarView::draw(Point position)
                 radarRect.y = offsetY;
             }
 
-            int offsetFromRightX = 128 - mapSizeX*scale - offsetX;
+            const auto offsetFromRightX = 128 - mapSizeX*scale - offsetX;
             if(radarRect.x + radarRect.w > radarPosition.w - offsetFromRightX) {
                 radarRect.w  = radarPosition.w - offsetFromRightX - radarRect.x - 1;
             }
 
-            int offsetFromBottomY = 128 - mapSizeY*scale - offsetY;
+            const auto offsetFromBottomY = 128 - mapSizeY*scale - offsetY;
             if(radarRect.y + radarRect.h > radarPosition.h - offsetFromBottomY) {
                 radarRect.h = radarPosition.h - offsetFromBottomY - radarRect.y - 1;
             }
@@ -119,16 +119,16 @@ void RadarView::draw(Point position)
 
         case RadarMode::AnimationRadarOff:
         case RadarMode::AnimationRadarOn: {
-            SDL_Rect source = calcSpriteSourceRect( radarStaticAnimation,
-                                                    animFrame % NUM_STATIC_ANIMATIONS_PER_ROW,
-                                                    NUM_STATIC_ANIMATIONS_PER_ROW,
-                                                    animFrame / NUM_STATIC_ANIMATIONS_PER_ROW,
-                                                    (NUM_STATIC_FRAMES + NUM_STATIC_ANIMATIONS_PER_ROW - 1) / NUM_STATIC_ANIMATIONS_PER_ROW);
-            SDL_Rect dest = calcSpriteDrawingRect(  radarStaticAnimation,
-                                                    radarPosition.x,
-                                                    radarPosition.y,
-                                                    NUM_STATIC_ANIMATIONS_PER_ROW,
-                                                    (NUM_STATIC_FRAMES + NUM_STATIC_ANIMATIONS_PER_ROW - 1) / NUM_STATIC_ANIMATIONS_PER_ROW);
+            auto source = calcSpriteSourceRect( radarStaticAnimation,
+                                                animFrame % NUM_STATIC_ANIMATIONS_PER_ROW,
+                                                NUM_STATIC_ANIMATIONS_PER_ROW,
+                                                animFrame / NUM_STATIC_ANIMATIONS_PER_ROW,
+                                                (NUM_STATIC_FRAMES + NUM_STATIC_ANIMATIONS_PER_ROW - 1) / NUM_STATIC_ANIMATIONS_PER_ROW);
+            auto dest = calcSpriteDrawingRect(  radarStaticAnimation,
+                                                radarPosition.x,
+                                                radarPosition.y,
+                                                NUM_STATIC_ANIMATIONS_PER_ROW,
+                                                (NUM_STATIC_FRAMES + NUM_STATIC_ANIMATIONS_PER_ROW - 1) / NUM_STATIC_ANIMATIONS_PER_ROW);
             SDL_RenderCopy(renderer, radarStaticAnimation, &source, &dest);
         } break;
     }
@@ -213,4 +213,5 @@ void RadarView::updateRadarSurface(int mapSizeX, int mapSizeY, int scale, int of
             }
         }
     }
+#endif // 0
 }

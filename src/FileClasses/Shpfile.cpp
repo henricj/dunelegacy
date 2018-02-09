@@ -145,6 +145,8 @@ sdl2::surface_ptr Shpfile::getPicture(Uint32 indexOfFile)
     palette.applyToSurface(pic.get());
     sdl2::surface_lock lock{ pic.get() };
 
+    char* const RESTRICT out = static_cast<char*>(pic->pixels);
+
     //Now we can copy line by line
     for(unsigned int y = 0u; y < sizeY; ++y) {
         memcpy( static_cast<char*>(pic->pixels) + y * pic->pitch , ImageOut.get() + y * sizeX, sizeX);
@@ -478,9 +480,9 @@ void Shpfile::shpCorrectLF(const unsigned char *in, unsigned char *out, int size
     \param  data    the picture to be corrected
     \param  length  size of the picture
 */
-void Shpfile::applyPalOffsets(const unsigned char *offsets, unsigned char *data, unsigned int length)
+void Shpfile::applyPalOffsets(const unsigned char * const RESTRICT offsets, unsigned char * const RESTRICT data, unsigned int length)
 {
-    for(unsigned int i = 0; i < length; i ++) {
+    for(auto i = 0u; i < length; i ++) {
         data[i] = offsets[data[i]];
     }
 }

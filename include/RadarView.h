@@ -26,7 +26,7 @@
 
 
 /// This class manages the mini map at the top right corner of the screen
-class RadarView : public RadarViewBase
+class RadarView final : public RadarViewBase
 {
 public:
     /**
@@ -54,7 +54,7 @@ public:
 
     /**
         Draws the radar to screen. This method is called before drawOverlay().
-        \param  Position    Position to draw the radar to
+        \param  position    Position to draw the radar to
     */
     void draw(Point position) override;
 
@@ -96,7 +96,7 @@ private:
         AnimationRadarOn
     };
 
-    void updateRadarSurface(int mapSizeX, int mapSizeY, int scale, int offsetX, int offsetY);
+    void updateRadarSurface(int scale, int offsetX, int offsetY);
 
     RadarMode currentRadarMode;             ///< the current mode of the radar
 

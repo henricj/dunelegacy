@@ -109,7 +109,7 @@ void GameInterface::draw(Point position) {
             yCount2 = powerIndicatorPos.h/2;
         }
     } else {
-        yCount2 = lround((double)pLocalHouse->getProducedPower()/(double)pLocalHouse->getPowerRequirement()*(double)(powerIndicatorPos.h/2));
+        yCount2 = lround(static_cast<double>(pLocalHouse->getProducedPower())/static_cast<double>(pLocalHouse->getPowerRequirement())*static_cast<double>(powerIndicatorPos.h / 2));
     }
 
     if (yCount2 > powerIndicatorPos.h + 1) {
@@ -149,7 +149,7 @@ void GameInterface::draw(Point position) {
     const auto credits = pLocalHouse->getCredits();
     const auto CreditsBuffer = std::to_string((credits < 0) ? 0 : credits);
     const auto NumDigits = CreditsBuffer.length();
-    auto digitsTex = pGFXManager->getUIGraphic(UI_CreditsDigits);
+    const auto digitsTex = pGFXManager->getUIGraphic(UI_CreditsDigits);
 
     for(int i=NumDigits-1; i>=0; i--) {
         auto source = calcSpriteSourceRect(digitsTex, CreditsBuffer[i] - '0', 10);

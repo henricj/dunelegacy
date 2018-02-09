@@ -33,7 +33,7 @@
 #include <structures/BuilderBase.h>
 #include <structures/StarPort.h>
 
-class BuilderInterface : public DefaultStructureInterface {
+class BuilderInterface final : public DefaultStructureInterface {
 public:
     static BuilderInterface* create(int objectID) {
         BuilderInterface* tmp = new BuilderInterface(objectID);
@@ -43,7 +43,7 @@ public:
 
 protected:
     explicit BuilderInterface(int objectID) : DefaultStructureInterface(objectID) {
-        Uint32 color = SDL2RGB(palette[houseToPaletteIndex[pLocalHouse->getHouseID()]+3]);
+        const auto color = SDL2RGB(palette[houseToPaletteIndex[pLocalHouse->getHouseID()]+3]);
 
         upgradeButton.setText(_("Upgrade"));
         upgradeButton.setTextColor(color);
@@ -74,15 +74,15 @@ protected:
         if(pStarport != nullptr) {
             starportTimerLabel.setTextFontSize(28);
             starportTimerLabel.setTextColor(COLOR_WHITE, COLOR_TRANSPARENT);
-            starportTimerLabel.setAlignment((Alignment_Enum) (Alignment_HCenter | Alignment_VCenter));
+            starportTimerLabel.setAlignment(static_cast<Alignment_Enum>(Alignment_HCenter | Alignment_VCenter));
             topBox.addWidget(&starportTimerLabel, topBox.getWidgetPosition(&topBoxHBox) + topBoxHBox.getWidgetPosition(&objPicture) + Point(0, 4), objPicture.getSize());
         }
     }
 
 
-    void onUpgrade() {
-        ObjectBase* pObject = currentGame->getObjectManager().getObject(objectID);
-        BuilderBase* pBuilder = dynamic_cast<BuilderBase*>(pObject);
+    void onUpgrade() const {
+        const auto pObject = currentGame->getObjectManager().getObject(objectID);
+        const auto pBuilder = dynamic_cast<BuilderBase*>(pObject);
         if(pBuilder != nullptr && !pBuilder->isUpgrading()) {
             pBuilder->handleUpgradeClick();
         }
@@ -95,16 +95,16 @@ protected:
     */
     bool update() override
     {
-        ObjectBase* pObject = currentGame->getObjectManager().getObject(objectID);
+        const auto pObject = currentGame->getObjectManager().getObject(objectID);
         if(pObject == nullptr) {
             return false;
         }
 
-        BuilderBase* pBuilder = dynamic_cast<BuilderBase*>(pObject);
+        const auto pBuilder = dynamic_cast<BuilderBase*>(pObject);
         if(pBuilder != nullptr) {
-            StarPort* pStarport = dynamic_cast<StarPort*>(pBuilder);
+            const auto pStarport = dynamic_cast<StarPort*>(pBuilder);
             if(pStarport != nullptr) {
-                int arrivalTimer = pStarport->getArrivalTimer();
+                const auto arrivalTimer = pStarport->getArrivalTimer();
                 if(arrivalTimer > 0) {
                     int seconds = ((arrivalTimer*10)/(MILLI2CYCLES(30*1000))) + 1;
                     starportTimerLabel.setText(std::to_string(seconds));

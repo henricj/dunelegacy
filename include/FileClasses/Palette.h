@@ -98,7 +98,7 @@ class Palette
 
         void applyToSurface(SDL_Surface* pSurface, int firstColor = 0, int endColor = -1) const {
             Uint32 colorKey = 0;
-            bool hasColorKey = (SDL_GetColorKey(pSurface, &colorKey) == 0);
+            const auto hasColorKey = (SDL_GetColorKey(pSurface, &colorKey) == 0);
 
             if(pSDLPalette == nullptr) {
                 THROW(std::runtime_error, "Palette::applyToSurface(): Palette not initialized yet!");
@@ -112,7 +112,7 @@ class Palette
                 THROW(std::runtime_error, "Palette::applyToSurface(): Cannot apply palette to surface without a palette!");
             }
 
-            int nColors = (endColor != -1) ? (endColor - firstColor + 1) : (pSDLPalette->ncolors - firstColor);
+            const auto nColors = (endColor != -1) ? (endColor - firstColor + 1) : (pSDLPalette->ncolors - firstColor);
             SDL_SetPaletteColors(pSurface->format->palette, pSDLPalette->colors + firstColor, firstColor, nColors);
 
             if(hasColorKey) {

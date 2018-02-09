@@ -23,7 +23,6 @@
 
 #include <string>
 
-#include <iostream>
 
 /// A class for a text button
 class TextButton : public Button {

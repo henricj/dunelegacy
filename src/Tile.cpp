@@ -1019,7 +1019,7 @@ Uint32 Tile::getRadarColor(House* pHouse, bool radar) {
         return fogColor;
     }
 
-    auto pObject = getObject();
+    const auto pObject = getObject();
     if (pObject != nullptr) {
         Uint32 color;
 
