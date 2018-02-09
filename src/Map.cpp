@@ -46,8 +46,8 @@ Map::Map(int xSize, int ySize)
 Map::~Map() = default;
 
 void Map::load(InputStream& stream) {
-    sizeX = stream.readSint32();
-    sizeY = stream.readSint32();
+    const auto x = stream.readSint32();
+    const auto y = stream.readSint32();
 
     tiles.clear();
     tiles.resize(sizeX * sizeY);

@@ -53,8 +53,8 @@ public:
     void destroy();
 
     inline int getBulletID() const noexcept { return bulletID; }
-    inline FixPoint getRealX() const { return realX; }
-    inline FixPoint getRealY() const { return realY; }
+    inline FixPoint getRealX() const noexcept { return realX; }
+    inline FixPoint getRealY() const noexcept { return realY; }
 
 private:
     // constants for each bullet type

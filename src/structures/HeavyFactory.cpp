@@ -26,7 +26,7 @@
 HeavyFactory::HeavyFactory(House* newOwner) : BuilderBase(newOwner) {
     HeavyFactory::init();
 
-    setHealth(getMaxHealth());
+    ObjectBase::setHealth(getMaxHealth());
 }
 
 HeavyFactory::HeavyFactory(InputStream& stream) : BuilderBase(stream) {
