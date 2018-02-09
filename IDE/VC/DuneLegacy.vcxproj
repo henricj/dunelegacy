@@ -1020,6 +1020,9 @@ IF %ERRORLEVEL% LSS 8 exit 0</Command>
     <VcpkgPackage Include="sdl2-mixer" />
     <VcpkgPackage Include="sdl2-ttf" />
   </ItemGroup>
+  <ItemGroup>
+    <Manifest Include="DuneLegacy.exe.manifest" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
