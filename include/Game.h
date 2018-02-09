@@ -171,7 +171,7 @@ public:
     /**
         Draws the cursor.
     */
-    void drawCursor() const;
+    void drawCursor(const SDL_Rect& map_rect) const;
 
     /**
         This method sets up the view. The start position is the center point of all owned units/structures

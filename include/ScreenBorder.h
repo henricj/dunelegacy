@@ -174,6 +174,11 @@ public:
         return ((topLeftCorner + shakingOffset) / TILESIZE) * TILESIZE - (topLeftCorner + shakingOffset);
     }
 
+    const SDL_Rect& getGameBoard() const
+    {
+        return gameBoardRect;
+    }
+
     /**
         This method checks if some object is (partly) inside or completely outside the current view.
         \param objectPosition   object position in world coordinates
