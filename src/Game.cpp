@@ -397,7 +397,7 @@ void Game::drawScreen()
                 else {
                     if (!debug) {
                         const SDL_Rect source = { zoomedTileSize * 15, 0, zoomedTileSize, zoomedTileSize };
-                        const SDL_Rect drawLocation = { screenborder->world2screenX(x*TILESIZE), screenborder->world2screenY(y*TILESIZE),
+                        const SDL_Rect drawLocation = { border->world2screenX(x*TILESIZE), border->world2screenY(y*TILESIZE),
                                                     zoomedTileSize, zoomedTileSize };
                         SDL_RenderCopy(renderer, hiddenTex, &source, &drawLocation);
                     }
@@ -1177,7 +1177,7 @@ void Game::runMainLoop() {
 
                 // test if we need to wait for data to arrive
                 for(const auto& playername : pNetworkManager->getConnectedPeers()) {
-                    auto pPlayer = dynamic_cast<HumanPlayer*>(getPlayerByName(playername));
+                    const auto pPlayer = dynamic_cast<HumanPlayer*>(getPlayerByName(playername));
                     if(pPlayer != nullptr) {
                         if(pPlayer->nextExpectedCommandsCycle <= gameCycleCount) {
                             //SDL_Log("Cycle %d: Waiting for player '%s' to send data for cycle %d...", GameCycleCount, pPlayer->getPlayername().c_str(), pPlayer->nextExpectedCommandsCycle);
@@ -1470,7 +1470,8 @@ bool Game::loadSaveGame(InputStream& stream) {
     gameInitSettings = GameInitSettings(stream);
 
     // read the actual house setup choosen at the beginning of the game
-    Uint32 numHouseInfo = stream.readUint32();
+    const auto numHouseInfo = stream.readUint32();
+    houseInfoListSetup.reserve(numHouseInfo);
     for(Uint32 i=0;i<numHouseInfo;i++) {
         houseInfoListSetup.push_back(GameInitSettings::HouseInfo(stream));
     }
