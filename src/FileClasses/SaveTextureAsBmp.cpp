@@ -1,6 +1,17 @@
 #include <SDL2/SDL.h>
 #include <misc/sdl_support.h>
 
+namespace
+{
+    class RestoreRenderTarget final
+    {
+        SDL_Renderer* const renderer_;
+        SDL_Texture* const texture_;
+    public:
+        RestoreRenderTarget(SDL_Renderer* renderer) : renderer_(renderer), texture_(SDL_GetRenderTarget(renderer)) { }
+        ~RestoreRenderTarget() { SDL_SetRenderTarget(renderer_, texture_); }
+    };
+}
 void SaveTextureAsBmp(SDL_Renderer *renderer, SDL_Texture* texture, const char* filename)
 {
     // From https://stackoverflow.com/a/48176678
@@ -21,6 +32,8 @@ void SaveTextureAsBmp(SDL_Renderer *renderer, SDL_Texture* texture, const char* 
         SDL_Log("Failed creating render texture: %s\n", SDL_GetError());
         return;
     }
+
+    RestoreRenderTarget rrt{ renderer };
 
     /*
     * Initialize our canvas, then copy texture to a target whose pixel data we
