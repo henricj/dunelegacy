@@ -131,7 +131,7 @@ sdl2::surface_ptr LoadPNG_RW(SDL_RWops* RWop) {
             lodepng_ptr pImageOut{ lode_out };
 
             // create new picture surface
-            pic = sdl2::surface_ptr{ SDL_CreateRGBSurface(0, width, height, 32, RMASK, GMASK, BMASK, AMASK) };
+            pic = sdl2::surface_ptr{ SDL_CreateRGBSurfaceWithFormat(0, width, height, 32, SDL_PIXELFORMAT_RGBA8888) };
             if(pic == nullptr) {
                 THROW(std::runtime_error, "LoadPNG_RW(): SDL_CreateRGBSurface has failed!");
             }
