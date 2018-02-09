@@ -928,6 +928,7 @@ IF %ERRORLEVEL% LSS 8 exit 0</Command>
     <ClCompile Include="..\..\src\misc\IFileStream.cpp" />
     <ClCompile Include="..\..\src\misc\md5.cpp" />
     <ClCompile Include="..\..\src\misc\OFileStream.cpp" />
+    <ClCompile Include="..\..\src\misc\SDL_LogRenderer.cpp" />
     <ClCompile Include="..\..\src\misc\Random.cpp" />
     <ClCompile Include="..\..\src\misc\RngSupport.cpp" />
     <ClCompile Include="..\..\src\misc\Scaler.cpp" />
