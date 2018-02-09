@@ -18,6 +18,14 @@
 #include <GUI/Widget.h>
 #include <GUI/Container.h>
 
+Widget::~Widget() {
+    pAllocated = false;
+    if (parent != nullptr)
+    {
+        parent->removeChildWidget(this);
+    }
+}
+
 void Widget::setActive() {
     active = true;
     if(parent != nullptr) {

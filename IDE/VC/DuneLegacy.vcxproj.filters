@@ -1594,6 +1594,9 @@
     <ClCompile Include="..\..\src\FileClasses\SaveTextureAsBmp.cpp">
       <Filter>src\FileClasses</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\GUI\TextButton.cpp">
+      <Filter>src\GUI</Filter>
+    </ClCompile>
     <Manifest Include="DuneLegacy.exe.manifest" />
   </ItemGroup>
   <ItemGroup>

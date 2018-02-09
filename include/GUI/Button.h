@@ -32,12 +32,12 @@ public:
     /// Default contructor
     Button();
 
-    /// desctructor
+    /// destructor
     virtual ~Button();
 
-    Button(const Button &) = default;
+    Button(const Button &) = delete;
     Button(Button &&) = default;
-    Button& operator=(const Button &) = default;
+    Button& operator=(const Button &) = delete;
     Button& operator=(Button &&) = default;
 
     /**

@@ -132,14 +132,9 @@ public:
     /** Destructor
         Removes this widget from its parent.
     */
-    virtual ~Widget() {
-        pAllocated = false;
-        if(parent != nullptr) {
-            parent->removeChildWidget(this);
-        }
-    }
+    virtual ~Widget();
 
-    Widget(const Widget &) = default;
+    Widget(const Widget &) = delete;
     Widget(Widget &&) = default;
     Widget& operator=(const Widget &) = delete;
     Widget& operator=(Widget &&) = default;
