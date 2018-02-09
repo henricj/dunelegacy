@@ -109,5 +109,7 @@ private:
     RadarView           radarView;              ///< This is the minimap/radar in the side bar
 
     ChatManager         chatManager;            ///< Manages chat manages shown overlayed with the main map
+
+    std::vector<SDL_Point> render_points_;
 };
 #endif // GAMEINTERFACE_H
