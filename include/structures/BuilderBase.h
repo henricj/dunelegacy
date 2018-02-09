@@ -192,6 +192,7 @@ public:
     bool isAllowedToUpgrade() const { return (curUpgradeLev < getMaxUpgradeLevel()); }
     int getCurrentUpgradeLevel() const noexcept { return curUpgradeLev; }
     int getUpgradeCost() const;
+    void produce_item();
     FixPoint getUpgradeProgress() const noexcept { return upgradeProgress; }
 
     Uint32 getCurrentProducedItem() const noexcept { return currentProducedItem; }

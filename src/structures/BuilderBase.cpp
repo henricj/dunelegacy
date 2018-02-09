@@ -337,6 +337,55 @@ int BuilderBase::getUpgradeCost() const {
 }
 
 
+void BuilderBase::produce_item()
+{
+    int finishedItemID = currentProducedItem;
+    removeBuiltItemFromProductionQueue();
+
+    auto num2Place = 1;
+
+    if(finishedItemID == Unit_Infantry) {
+        // make three
+        finishedItemID = Unit_Soldier;
+        num2Place = 3;
+    } else if(finishedItemID == Unit_Troopers) {
+        // make three
+        finishedItemID = Unit_Trooper;
+        num2Place = 3;
+    }
+
+    auto game = currentGame;
+
+    for(auto i = 0; i < num2Place; i++) {
+        auto newUnit = getOwner()->createUnit(finishedItemID);
+
+        if(newUnit != nullptr) {
+            Coord unitDestination;
+            if( getOwner()->isAI()
+                && ((newUnit->getItemID() == Unit_Carryall)
+                    || (newUnit->getItemID() == Unit_Harvester)
+                    || (newUnit->getItemID() == Unit_MCV))) {
+                // Don't want harvesters going to the rally point
+                unitDestination = location;
+            } else {
+                unitDestination = destination;
+            }
+
+            const auto spot = currentGameMap->findDeploySpot(newUnit, location, game->randomGen, unitDestination, structureSize);
+
+            newUnit->deploy(spot);
+
+            if(unitDestination.isValid()) {
+                newUnit->setGuardPoint(unitDestination);
+                newUnit->ObjectBase::setDestination(unitDestination);
+                newUnit->setAngle(destinationDrawnAngle(newUnit->getLocation(), newUnit->getDestination()));
+            }
+
+            // inform owner of its new unit
+            newUnit->getOwner()->informWasBuilt(newUnit);
+        }
+    }
+}
 
 bool BuilderBase::update() {
     if(StructureBase::update() == false) {
@@ -346,49 +395,7 @@ bool BuilderBase::update() {
     if(isUnit(currentProducedItem) && (productionProgress >= getBuildItem(currentProducedItem)->price)) {
         deployTimer--;
         if(deployTimer == 0) {
-            int finishedItemID = currentProducedItem;
-            removeBuiltItemFromProductionQueue();
-
-            int num2Place = 1;
-
-            if(finishedItemID == Unit_Infantry) {
-                // make three
-                finishedItemID = Unit_Soldier;
-                num2Place = 3;
-            } else if(finishedItemID == Unit_Troopers) {
-                // make three
-                finishedItemID = Unit_Trooper;
-                num2Place = 3;
-            }
-
-            for(int i = 0; i < num2Place; i++) {
-                auto newUnit = getOwner()->createUnit(finishedItemID);
-
-                if(newUnit != nullptr) {
-                    Coord unitDestination;
-                    if( getOwner()->isAI()
-                        && ((newUnit->getItemID() == Unit_Carryall)
-                            || (newUnit->getItemID() == Unit_Harvester)
-                            || (newUnit->getItemID() == Unit_MCV))) {
-                        // Don't want harvesters going to the rally point
-                        unitDestination = location;
-                    } else {
-                        unitDestination = destination;
-                    }
-
-                    const auto spot = newUnit->isAFlyingUnit() ? location + Coord(1,1) : currentGameMap->findDeploySpot(newUnit, location, currentGame->randomGen, unitDestination, structureSize);
-                    newUnit->deploy(spot);
-
-                    if(unitDestination.isValid()) {
-                        newUnit->setGuardPoint(unitDestination);
-                        newUnit->setDestination(unitDestination);
-                        newUnit->setAngle(destinationDrawnAngle(newUnit->getLocation(), newUnit->getDestination()));
-                    }
-
-                    // inform owner of its new unit
-                    newUnit->getOwner()->informWasBuilt(newUnit);
-                }
-            }
+            produce_item();
         }
     }
 
