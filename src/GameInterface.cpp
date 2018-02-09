@@ -117,13 +117,20 @@ void GameInterface::draw(Point position) {
     }
 
     setRenderDrawColor(renderer, COLOR_GREEN);
+    render_points_.clear();
     for (yCount = 0; yCount < yCount2; yCount++) {
         for (xCount = 1; xCount < powerIndicatorPos.w - 1; xCount++) {
             if(((yCount/2) % 3) != 0) {
-                SDL_RenderDrawPoint(renderer, xCount + powerIndicatorPos.x, powerIndicatorPos.y + powerIndicatorPos.h - yCount);
+                SDL_Point point;
+                point.x = xCount + powerIndicatorPos.x;
+                point.y = powerIndicatorPos.y + powerIndicatorPos.h - yCount;
+
+                render_points_.emplace_back(point);
             }
         }
     }
+    if (!render_points_.empty())
+        SDL_RenderDrawPoints(renderer, &render_points_[0], render_points_.size());
 
     //draw spice level indicator
     if (pLocalHouse->getCapacity() == 0) {
@@ -137,13 +144,20 @@ void GameInterface::draw(Point position) {
     }
 
     setRenderDrawColor(renderer, COLOR_ORANGE);
+    render_points_.clear();
     for (yCount = 0; yCount < yCount2; yCount++) {
         for (xCount = 1; xCount < spiceIndicatorPos.w - 1; xCount++) {
             if(((yCount/2) % 3) != 0) {
-                SDL_RenderDrawPoint(renderer, xCount + spiceIndicatorPos.x, spiceIndicatorPos.y + spiceIndicatorPos.h - yCount);
+                SDL_Point point;
+                point.x = xCount + spiceIndicatorPos.x;
+                point.y = spiceIndicatorPos.y + spiceIndicatorPos.h - yCount;
+
+                render_points_.emplace_back(point);
             }
         }
     }
+    if (!render_points_.empty())
+        SDL_RenderDrawPoints(renderer, &render_points_[0], render_points_.size());
 
     //draw credits
     const auto credits = pLocalHouse->getCredits();
