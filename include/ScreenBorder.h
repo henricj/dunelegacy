@@ -33,17 +33,14 @@
 #define SCROLLBORDER 3
 
 /// This class manages everything that is related to the current view onto the map.
-class ScreenBorder
+class ScreenBorder final
 {
 public:
     /**
         Constructor
         \param gameBoardRect    this SDL_Rect specifies the rectangle on the screen where the map is shown
     */
-    explicit ScreenBorder(const SDL_Rect& gameBoardRect)
-     : mapSizeX(0), mapSizeY(0) {
-
-        this->gameBoardRect = gameBoardRect;
+    explicit ScreenBorder(const SDL_Rect& gameBoardRect) : gameBoardRect(gameBoardRect) {
 
         bottomRightCorner.x = gameBoardRect.w;
         bottomRightCorner.y = gameBoardRect.h;
@@ -51,14 +48,17 @@ public:
         topLeftCornerOnScreen.y = gameBoardRect.y;
         bottomRightCornerOnScreen.x = gameBoardRect.x + gameBoardRect.w;
         bottomRightCornerOnScreen.y = gameBoardRect.y + gameBoardRect.h;
-
-        numShakingCycles = 0;
     };
 
     /**
         Destructor
     */
     ~ScreenBorder() = default;
+
+    ScreenBorder(const ScreenBorder &) = delete;
+    ScreenBorder(ScreenBorder &&) = delete;
+    ScreenBorder& operator=(const ScreenBorder &) = delete;
+    ScreenBorder& operator=(ScreenBorder &&) = delete;
 
     /**
         Loads the current position on the map from a stream
@@ -78,7 +78,7 @@ public:
     */
     void save(OutputStream& stream) const
     {
-        Coord center = getCurrentCenter();
+        const auto center = getCurrentCenter();
         stream.writeSint16(center.x);
         stream.writeSint16(center.y);
     }
@@ -87,7 +87,7 @@ public:
         Get the current center point of the view in world coordinates.
         \return current center point in world coordinates.
     */
-    inline Coord getCurrentCenter() const
+    Coord getCurrentCenter() const
     {
         return topLeftCorner + shakingOffset + (bottomRightCorner - topLeftCorner)/2;
     }
@@ -96,7 +96,7 @@ public:
         Returns the top left corner of the view in world coordinates.
         \return current top left corner in world coordinates.
     */
-    inline Coord getTopLeftCorner() const
+    Coord getTopLeftCorner() const
     {
         return topLeftCorner + shakingOffset;
     }
@@ -105,7 +105,7 @@ public:
         Returns the bottom right corner of the view in world coordinates.
         \return current bottom right corner in world coordinates.
     */
-    inline Coord getBottomRightCorner() const
+    Coord getBottomRightCorner() const
     {
         return bottomRightCorner + shakingOffset;
     }
@@ -114,7 +114,7 @@ public:
         Returns the position of the left edge of the view in world coordinates.
         \return current left edge in world coordinates.
     */
-    inline short getLeft() const
+    short getLeft() const
     {
         return topLeftCorner.x + shakingOffset.x;
     }
@@ -123,7 +123,7 @@ public:
         Returns the position of the top edge of the view in world coordinates.
         \return current top edge in world coordinates.
     */
-    inline short getTop() const
+    short getTop() const
     {
         return topLeftCorner.y + shakingOffset.y;
     }
@@ -132,7 +132,7 @@ public:
         Returns the position of the right edge of the view in world coordinates.
         \return current right edge in world coordinates.
     */
-    inline short getRight() const
+    short getRight() const
     {
         return bottomRightCorner.x + shakingOffset.x;
     }
@@ -141,7 +141,7 @@ public:
         Returns the position of the bottom edge of the view in world coordinates.
         \return current bottom edge in world coordinates.
     */
-    inline short getBottom() const
+    short getBottom() const
     {
         return bottomRightCorner.y + shakingOffset.y;
     }
@@ -150,7 +150,7 @@ public:
         Returns the map coordinate of the top left corner of the current view.
         \return map coordinate of the top left corner
     */
-    inline Coord getTopLeftTile() const
+    Coord getTopLeftTile() const
     {
         return (topLeftCorner + shakingOffset) / TILESIZE;
     }
@@ -159,7 +159,7 @@ public:
         Returns the map coordinate of the bottom right corner of the current view.
         \return map coordinate of the bottom right corner
     */
-    inline Coord getBottomRightTile() const
+    Coord getBottomRightTile() const
     {
         return (bottomRightCorner + shakingOffset) / TILESIZE;
     }
@@ -169,7 +169,7 @@ public:
         This method returns how much is outside the screen (in world coordinates).
         \return the part of the tile that lies outside the screen.
     */
-    inline Coord getCornerOffset() const
+    Coord getCornerOffset() const
     {
         return ((topLeftCorner + shakingOffset) / TILESIZE) * TILESIZE - (topLeftCorner + shakingOffset);
     }
@@ -180,7 +180,7 @@ public:
         \param objectSize       the size of the object (in world coordinates)
         \return true if (partly) inside, false if completly outside
     */
-    inline bool isInsideScreen(const Coord& objectPosition, const Coord& objectSize) const
+    bool isInsideScreen(const Coord& objectPosition, const Coord& objectSize) const
     {
         return (((objectPosition.x + objectSize.x/2) >= topLeftCorner.x + shakingOffset.x)
                 && ((objectPosition.x - objectSize.x/2) <= bottomRightCorner.x + shakingOffset.x)
@@ -193,7 +193,7 @@ public:
         \param tileLocation the location of the tile in map coordinates
         \return true if (partly) inside, false if completly outside
     */
-    inline bool isTileInsideScreen(const Coord& tileLocation) const
+    bool isTileInsideScreen(const Coord& tileLocation) const
     {
         return isInsideScreen(tileLocation*TILESIZE + Coord(TILESIZE/2, TILESIZE/2), Coord(TILESIZE,TILESIZE));
     }
@@ -229,7 +229,7 @@ public:
         \param x    the x position in world coordinates
         \return the x-coordinate on the screen
     */
-    inline int world2screenX(int x) const
+    int world2screenX(int x) const
     {
         return world2zoomedWorld(x - topLeftCorner.x + shakingOffset.x + topLeftCornerOnScreen.x);
     }
@@ -239,9 +239,9 @@ public:
         \param x    the x position in world coordinates
         \return the x-coordinate on the screen
     */
-    inline int world2screenX(float x) const
+    int world2screenX(float x) const
     {
-        return world2zoomedWorld(x - (float) topLeftCorner.x + (float) shakingOffset.x + (float) topLeftCornerOnScreen.x);
+        return world2zoomedWorld(x - static_cast<float>(topLeftCorner.x - shakingOffset.x - topLeftCornerOnScreen.x));
     }
 
     /**
@@ -249,9 +249,9 @@ public:
         \param x    the x position in world coordinates
         \return the x-coordinate on the screen
     */
-    inline int world2screenX(FixPoint x) const
+    int world2screenX(const FixPoint& x) const
     {
-        return world2zoomedWorld(x.toFloat() - (float) topLeftCorner.x + (float) shakingOffset.x + (float) topLeftCornerOnScreen.x);
+        return world2zoomedWorld(x.toFloat() - static_cast<float>(topLeftCorner.x - shakingOffset.x - topLeftCornerOnScreen.x));
     }
 
     /**
@@ -259,7 +259,7 @@ public:
         \param y    the y position in world coordinates
         \return the y-coordinate on the screen
     */
-    inline int world2screenY(int y) const
+    int world2screenY(int y) const
     {
         return world2zoomedWorld(y - topLeftCorner.y + shakingOffset.y + topLeftCornerOnScreen.y);
     }
@@ -269,9 +269,9 @@ public:
         \param y    the y position in world coordinates
         \return the y-coordinate on the screen
     */
-    inline int world2screenY(float y) const
+    int world2screenY(float y) const
     {
-        return world2zoomedWorld(y - (float) topLeftCorner.y + (float) shakingOffset.y + (float) topLeftCornerOnScreen.y);
+        return world2zoomedWorld(y - static_cast<float>(topLeftCorner.y - shakingOffset.y - topLeftCornerOnScreen.y));
     }
 
     /**
@@ -279,9 +279,9 @@ public:
         \param y    the y position in world coordinates
         \return the y-coordinate on the screen
     */
-    inline int world2screenY(FixPoint y) const
+    int world2screenY(const FixPoint& y) const
     {
-        return world2zoomedWorld(y.toFloat() - (float) topLeftCorner.y + (float) shakingOffset.y + (float) topLeftCornerOnScreen.y);
+        return world2zoomedWorld(y.toFloat() - static_cast<float>(topLeftCorner.y - shakingOffset.y - topLeftCornerOnScreen.y));
     }
 
     /**
@@ -289,7 +289,7 @@ public:
         \param x    the x coordinate on the screen
         \return the x-position in world coordinates
     */
-    inline int screen2worldX(int x) const
+    int screen2worldX(int x) const
     {
         return zoomedWorld2world(x) - topLeftCornerOnScreen.x + topLeftCorner.x + shakingOffset.x;
     }
@@ -299,7 +299,7 @@ public:
         \param y    the y coordinate on the screen
         \return the y-position in world coordinates
     */
-    inline int screen2worldY(int y) const
+    int screen2worldY(int y) const
     {
         return zoomedWorld2world(y) - topLeftCornerOnScreen.y + topLeftCorner.y + shakingOffset.y;
     }
@@ -309,7 +309,7 @@ public:
         \param x    the x coordinate on the screen
         \return the x-coordinate of the tile at position x in map coordinates
     */
-    inline int screen2MapX(int x) const
+    int screen2MapX(int x) const
     {
         return screen2worldX(x)/TILESIZE;
     };
@@ -319,7 +319,7 @@ public:
         \param y    the y coordinate on the screen
         \return the y-coordinate of the tile at position y in map coordinates
     */
-    inline int screen2MapY(int y) const
+    int screen2MapY(int y) const
     {
         return screen2worldY(y)/TILESIZE;
     };
@@ -330,7 +330,7 @@ public:
         \param  y the y coordinate in screen coordinates
         \return true, if inside, false otherwise
     */
-    inline bool isScreenCoordInsideMap(int x, int y) const {
+    bool isScreenCoordInsideMap(int x, int y) const {
         return (zoomedWorld2world(x) >= topLeftCornerOnScreen.x  && zoomedWorld2world(x) < bottomRightCornerOnScreen.x
                 && zoomedWorld2world(y) >= topLeftCornerOnScreen.y  && zoomedWorld2world(y) < bottomRightCornerOnScreen.y);
     }
@@ -351,22 +351,22 @@ public:
     }
 
     void update() {
-        if(numShakingCycles > 0) {
-            int offsetMax = std::min(TILESIZE-1,numShakingCycles);
-            std::uniform_int_distribution<> uniform{ -offsetMax / 2, offsetMax / 2 };
+        if(numShakingCycles <= 0) return;
 
             shakingOffset.x = getRandomInt(-offsetMax/2, offsetMax/2);
             shakingOffset.y = getRandomInt(-offsetMax/2, offsetMax/2);
 
-            numShakingCycles--;
-        }
+        shakingOffset.x = uniform(generator_);
+        shakingOffset.y = uniform(generator_);
+
+        numShakingCycles--;
     }
 
 private:
     SDL_Rect gameBoardRect;         ///< the complete game board rectangle
 
-    int mapSizeX;                   ///< The number of tiles in x direction
-    int mapSizeY;                   ///< The number of tiles in y direction
+    int mapSizeX{};                 ///< The number of tiles in x direction
+    int mapSizeY{};                 ///< The number of tiles in y direction
 
     Coord topLeftCorner;            ///< the position of the top left corner in world coordinates
     Coord bottomRightCorner;        ///< the position of the bottom right corner in world coordinates
@@ -376,7 +376,7 @@ private:
     Coord topLeftCornerOnScreen;    ///< the position of the top left corner in screen coordinates
     Coord bottomRightCornerOnScreen;///< the position of the bottom right corner in screen coordinates
 
-    int numShakingCycles;           ///< the number of cycles the screen will shake
+    int numShakingCycles{};         ///< the number of cycles the screen will shake
     Nyq::NyqEngine<> generator_;
 };
 

@@ -41,7 +41,7 @@
 StarPort::StarPort(House* newOwner) : BuilderBase(newOwner) {
     StarPort::init();
 
-    setHealth(getMaxHealth());
+    ObjectBase::setHealth(getMaxHealth());
 
     arrivalTimer = STARPORT_NO_ARRIVAL_AWAITED;
     deploying = false;
@@ -93,8 +93,8 @@ void StarPort::doBuildRandom() {
 }
 
 void StarPort::handleProduceItemClick(Uint32 itemID, bool multipleMode) {
-    Choam& choam = owner->getChoam();
-    int numAvailable = choam.getNumAvailable(itemID);
+    auto& choam = owner->getChoam();
+    const auto numAvailable = choam.getNumAvailable(itemID);
 
     if(numAvailable <= 0) {
         soundPlayer->playSound(Sound_InvalidAction);
@@ -102,9 +102,9 @@ void StarPort::handleProduceItemClick(Uint32 itemID, bool multipleMode) {
         return;
     }
 
-    for(const BuildItem& buildItem : buildList) {
+    for(const auto& buildItem : buildList) {
         if(buildItem.itemID == itemID) {
-            if((owner->getCredits() < (int) buildItem.price)) {
+            if((owner->getCredits() < static_cast<int>(buildItem.price))) {
                 soundPlayer->playSound(Sound_InvalidAction);
                 currentGame->addToNewsTicker(_("Not enough money"));
                 return;
@@ -124,37 +124,37 @@ void StarPort::handleCancelOrderClick() {
 }
 
 void StarPort::doProduceItem(Uint32 itemID, bool multipleMode) {
-    Choam& choam = owner->getChoam();
+    auto& choam = owner->getChoam();
 
-    for(BuildItem& buildItem : buildList) {
-        if(buildItem.itemID == itemID) {
-            for(int i = 0; i < (multipleMode ? 5 : 1); i++) {
-                int numAvailable = choam.getNumAvailable(itemID);
+    for(auto& buildItem : buildList) {
+        if(buildItem.itemID != itemID) continue;
 
-                if(numAvailable <= 0) {
+        for(auto i = 0; i < (multipleMode ? 5 : 1); i++) {
+            const auto numAvailable = choam.getNumAvailable(itemID);
+
+            if(numAvailable <= 0) {
+                break;
+            }
+
+            if((owner->getCredits() >= static_cast<int>(buildItem.price))) {
+                buildItem.num++;
+                currentProductionQueue.emplace_back(itemID,buildItem.price );
+                owner->takeCredits(buildItem.price);
+
+                if(choam.setNumAvailable(itemID, numAvailable - 1) == false) {
+                    // sold out
                     break;
                 }
-
-                if((owner->getCredits() >= (int) buildItem.price)) {
-                    buildItem.num++;
-                    currentProductionQueue.emplace_back(itemID,buildItem.price );
-                    owner->takeCredits(buildItem.price);
-
-                    if(choam.setNumAvailable(itemID, numAvailable - 1) == false) {
-                        // sold out
-                        break;
-                    }
-                }
             }
-            break;
         }
+        break;
     }
 }
 
 void StarPort::doCancelItem(Uint32 itemID, bool multipleMode) {
-    Choam& choam = owner->getChoam();
+    auto& choam = owner->getChoam();
 
-    for(BuildItem& buildItem : buildList) {
+    for(auto& buildItem : buildList) {
         if(buildItem.itemID == itemID) {
             for(int i = 0; i < (multipleMode ? 5 : 1); i++) {
                 if(buildItem.num > 0) {
@@ -180,8 +180,8 @@ void StarPort::doCancelItem(Uint32 itemID, bool multipleMode) {
                     }
                 }
             }
-            break;
         }
+        break;
     }
 }
 
@@ -212,11 +212,11 @@ void StarPort::doCancelOrder() {
 
 
 void StarPort::updateBuildList() {
-    std::list<BuildItem>::iterator iter = buildList.begin();
+    auto iter = buildList.begin();
 
     auto& choam = owner->getChoam();
 
-    for(int i = 0; itemOrder[i] != ItemID_Invalid; ++i) {
+    for(auto i = 0; itemOrder[i] != ItemID_Invalid; ++i) {
 
         const auto& objData = currentGame->objectData.data[itemOrder[i]][originalHouseID];
 
@@ -233,16 +233,12 @@ void StarPort::updateStructureSpecificStuff() {
 
     if (arrivalTimer > 0) {
         if (--arrivalTimer == 0) {
-
-            Frigate*        frigate;
-            Coord       pos;
-
             //make a frigate with all the cargo
-            frigate = static_cast<Frigate*>(owner->createUnit(Unit_Frigate));
-            pos = currentGameMap->findClosestEdgePoint(getLocation() + Coord(1,1), Coord(1,1));
+            const auto frigate = static_cast<Frigate*>(owner->createUnit(Unit_Frigate));
+            const auto pos = currentGameMap->findClosestEdgePoint(getLocation() + Coord(1,1), Coord(1,1));
             frigate->deploy(pos);
             frigate->setTarget(this);
-            Coord closestPoint = getClosestPoint(frigate->getLocation());
+            const auto closestPoint = getClosestPoint(frigate->getLocation());
             frigate->setDestination(closestPoint);
 
             if (pos.x == 0)
@@ -269,9 +265,9 @@ void StarPort::updateStructureSpecificStuff() {
         if(deployTimer == 0) {
 
             if(currentProductionQueue.empty() == false) {
-                Uint32 newUnitItemID = currentProductionQueue.front().itemID;
+                auto newUnitItemID = currentProductionQueue.front().itemID;
 
-                int num2Place = 1;
+                auto num2Place = 1;
 
                 if(newUnitItemID == Unit_Infantry) {
                     // make three
@@ -283,8 +279,8 @@ void StarPort::updateStructureSpecificStuff() {
                     num2Place = 3;
                 }
 
-                for(int i = 0; i < num2Place; i++) {
-                    UnitBase* newUnit = getOwner()->createUnit(newUnitItemID);
+                for(auto i = 0; i < num2Place; i++) {
+                    auto newUnit = getOwner()->createUnit(newUnitItemID);
                     if (newUnit != nullptr) {
                         Coord unitDestination;
                         if( getOwner()->isAI()
@@ -321,11 +317,11 @@ void StarPort::updateStructureSpecificStuff() {
                     }
                 }
 
-                auto currentProducedBuildItem = std::find_if(   buildList.begin(),
-                                                                buildList.end(),
-                                                                [&](BuildItem& buildItem) {
-                                                                    return (buildItem.itemID == currentProductionQueue.front().itemID);
-                                                                });
+                const auto currentProducedBuildItem = std::find_if(   buildList.begin(),
+                                                                      buildList.end(),
+                                                                      [&](BuildItem& buildItem) {
+                                                                         return (buildItem.itemID == currentProductionQueue.front().itemID);
+                                                                      });
                 if(currentProducedBuildItem != buildList.end()) {
                     currentProducedBuildItem->num--;
                 }
@@ -344,9 +340,6 @@ void StarPort::updateStructureSpecificStuff() {
             }
         }
     }
-
-
-
 }
 
 void StarPort::informFrigateDestroyed() {

@@ -114,7 +114,7 @@ public:
         return Coord(INVALID_POS, INVALID_POS);
     }
 
-    operator bool() const {
+    explicit operator bool() const {
         return isValid();
     }
 

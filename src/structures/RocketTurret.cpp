@@ -31,7 +31,7 @@
 RocketTurret::RocketTurret(House* newOwner) : TurretBase(newOwner) {
     RocketTurret::init();
 
-    setHealth(getMaxHealth());
+    ObjectBase::setHealth(getMaxHealth());
 }
 
 RocketTurret::RocketTurret(InputStream& stream) : TurretBase(stream) {
@@ -102,5 +102,27 @@ void RocketTurret::attack() {
             weaponTimer = getWeaponReloadTime();
         }
 
+    const auto centerPoint = getCenterPoint();
+    const auto pObject = target.getObjPointer();
+    const auto targetCenterPoint = pObject->getClosestCenterPoint(location);
+
+    if(distanceFrom(centerPoint, targetCenterPoint) < 3 * TILESIZE) {
+        // we are just shooting a bullet as a gun turret would do
+        bulletList.push_back( new Bullet( objectID, &centerPoint, &targetCenterPoint, Bullet_ShellTurret,
+                                          currentGame->objectData.data[Structure_GunTurret][originalHouseID].weapondamage,
+                                          pObject->isAFlyingUnit() ) );
+
+        currentGameMap->viewMap(pObject->getOwner()->getTeam(), location, 2);
+        soundPlayer->playSoundAt(Sound_ExplosionSmall, location);
+        weaponTimer = currentGame->objectData.data[Structure_GunTurret][originalHouseID].weaponreloadtime;
+    } else {
+        // we are in normal shooting mode
+        bulletList.push_back( new Bullet( objectID, &centerPoint, &targetCenterPoint, bulletType,
+                                          currentGame->objectData.data[itemID][originalHouseID].weapondamage,
+                                          pObject->isAFlyingUnit() ) );
+
+        currentGameMap->viewMap(pObject->getOwner()->getTeam(), location, 2);
+        soundPlayer->playSoundAt(attackSound, location);
+        weaponTimer = getWeaponReloadTime();
     }
 }

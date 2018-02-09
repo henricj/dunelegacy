@@ -64,7 +64,7 @@ class Explosion;
 #define GAME_CUSTOM_GAME_STATS  5
 
 
-class Game
+class Game final
 {
 public:
     /**

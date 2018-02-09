@@ -439,7 +439,7 @@ void House::decrementStructures(int itemID, const Coord& location) {
     numItemLosses[itemID]++;
 
     // change power requirements
-    int currentItemPower = currentGame->objectData.data[itemID][houseID].power;
+    const auto currentItemPower = currentGame->objectData.data[itemID][houseID].power;
     if(currentItemPower >= 0) {
         powerRequirement -= currentItemPower;
     }
