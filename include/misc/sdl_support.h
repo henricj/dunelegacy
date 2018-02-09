@@ -150,6 +150,8 @@ namespace sdl2
     typedef implementation::unique_ptr_deleter<SDL_PixelFormat, SDL_FreeFormat> pixel_format_ptr;
     typedef implementation::unique_ptr_deleter<SDL_Renderer, SDL_DestroyRenderer> renderer_ptr;
     typedef std::unique_ptr<SDL_RWops, implementation::RWop_deleter> RWop_ptr;
+
+    void SDL_LogRenderer(const SDL_RendererInfo * info);
 }
 
 #ifndef RESTRICT
