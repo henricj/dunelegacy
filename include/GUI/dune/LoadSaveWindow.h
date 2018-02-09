@@ -109,7 +109,7 @@ public:
 
 private:
     void onOK();
-    void onCancel();
+    void onCancel() const;
 
     void onDirectoryChange(int i);
 

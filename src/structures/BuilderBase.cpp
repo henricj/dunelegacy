@@ -303,27 +303,27 @@ void BuilderBase::updateBuildList()
 }
 
 void BuilderBase::setWaitingToPlace() {
-    if (currentProducedItem != ItemID_Invalid)  {
-        if (owner == pLocalHouse) {
-            if(isStructure(currentProducedItem)) {
-                soundPlayer->playVoice(ConstructionComplete, getOwner()->getHouseID());
-            } else if(isFlyingUnit(currentProducedItem)) {
-                soundPlayer->playVoice(UnitLaunched, getOwner()->getHouseID());
-            } else if(currentProducedItem == Unit_Harvester) {
-                soundPlayer->playVoice(HarvesterDeployed, getOwner()->getHouseID());
-            } else {
-                soundPlayer->playVoice(UnitDeployed, getOwner()->getHouseID());
-            }
-        }
+    if (currentProducedItem == ItemID_Invalid) return;
 
-        if (isUnit(currentProducedItem)) {
-            //if its a unit
-            deployTimer = MILLI2CYCLES(750);
+    if (owner == pLocalHouse) {
+        if(isStructure(currentProducedItem)) {
+            soundPlayer->playVoice(ConstructionComplete, getOwner()->getHouseID());
+        } else if(isFlyingUnit(currentProducedItem)) {
+            soundPlayer->playVoice(UnitLaunched, getOwner()->getHouseID());
+        } else if(currentProducedItem == Unit_Harvester) {
+            soundPlayer->playVoice(HarvesterDeployed, getOwner()->getHouseID());
         } else {
-            //its a structure
-            if (owner == pLocalHouse) {
-                currentGame->addToNewsTicker(_("@DUNE.ENG|51#Construction is complete"));
-            }
+            soundPlayer->playVoice(UnitDeployed, getOwner()->getHouseID());
+        }
+    }
+
+    if (isUnit(currentProducedItem)) {
+        //if its a unit
+        deployTimer = MILLI2CYCLES(750);
+    } else {
+        //its a structure
+        if (owner == pLocalHouse) {
+            currentGame->addToNewsTicker(_("@DUNE.ENG|51#Construction is complete"));
         }
     }
 }

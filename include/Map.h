@@ -26,7 +26,7 @@
 
 #include <cstdio>
 
-class Map
+class Map final
 {
 public:
     /**

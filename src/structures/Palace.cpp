@@ -253,8 +253,8 @@ bool Palace::callFremen() {
 }
 
 bool Palace::spawnSaboteur() {
-    Saboteur* saboteur = static_cast<Saboteur*>(getOwner()->createUnit(Unit_Saboteur));
-    Coord spot = currentGameMap->findDeploySpot(saboteur, getLocation(), currentGame->randomGen, getDestination(), getStructureSize());
+    auto saboteur = static_cast<Saboteur*>(getOwner()->createUnit(Unit_Saboteur));
+    const auto spot = currentGameMap->findDeploySpot(saboteur, getLocation(), currentGame->randomGen, getDestination(), getStructureSize());
 
     saboteur->deploy(spot);
 
