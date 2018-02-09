@@ -1598,4 +1598,7 @@
       <Filter>res</Filter>
     </ResourceCompile>
   </ItemGroup>
+  <ItemGroup>
+    <Manifest Include="DuneLegacy.exe.manifest" />
+  </ItemGroup>
 </Project>
