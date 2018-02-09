@@ -138,7 +138,7 @@ void setVideoMode(int displayIndex)
     } else {
         settings.video.physicalWidth = closestDisplayMode.w;
         settings.video.physicalHeight = closestDisplayMode.h;
-        auto factor = getLogicalToPhysicalResolutionFactor(settings.video.physicalWidth, settings.video.physicalHeight);
+        const auto factor = getLogicalToPhysicalResolutionFactor(settings.video.physicalWidth, settings.video.physicalHeight);
         settings.video.width = settings.video.physicalWidth / factor;
         settings.video.height = settings.video.physicalHeight / factor;
 

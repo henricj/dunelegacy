@@ -104,11 +104,11 @@ UnitBase::UnitBase(InputStream& stream) : ObjectBase(stream) {
     recalculatePathTimer = stream.readSint32();
     nextSpot.x = stream.readSint32();
     nextSpot.y = stream.readSint32();
-    int numPathNodes = stream.readUint32();
-    for(int i=0;i<numPathNodes; i++) {
+    const auto numPathNodes = stream.readUint32();
         Sint32 x = stream.readSint32();
         Sint32 y = stream.readSint32();
         pathList.emplace_back(x,y);
+    for(auto i=0u;i<numPathNodes; ++i) {
     }
 
     findTargetTimer = stream.readSint32();
