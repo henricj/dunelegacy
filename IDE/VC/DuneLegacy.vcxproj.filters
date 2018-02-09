@@ -1589,6 +1589,9 @@
     <ClCompile Include="..\..\src\FileClasses\SaveTextureAsBmp.cpp">
       <Filter>src\FileClasses</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\misc\SDL_LogRenderer.cpp">
+      <Filter>src\misc</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\src\GUI\TextButton.cpp">
       <Filter>src\GUI</Filter>
     </ClCompile>
