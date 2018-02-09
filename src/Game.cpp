@@ -251,6 +251,14 @@ void Game::drawScreen()
 
     SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
 
+    const auto zoomedTileSize = world2zoomedWorld(TILESIZE);
+    SDL_Rect tile_rect = { screenborder->world2screenX(0), screenborder->world2screenY(0),
+        zoomedTileSize * currentGameMap->getSizeX(), zoomedTileSize * currentGameMap->getSizeY() };
+    SDL_Rect on_screen_rect;
+    SDL_IntersectRect(&screenborder->getGameBoard(), &tile_rect, &on_screen_rect);
+
+    SDL_RenderSetClipRect(renderer, &on_screen_rect);
+
     /* draw ground */
 
     currentGameMap->for_each(x1, y1, x2, y2,
@@ -395,24 +403,9 @@ void Game::drawScreen()
                     }
                 }
             });
-
-        const auto size_x = std::min(tiles->getSizeX(), bottom_right.x + 1);
-        const auto size_y = std::min(tiles->getSizeY(), bottom_right.y + 1);
-        for (auto x = top_left.x - 1; x <= bottom_right.x + 1; ++x) {
-            for (auto y = top_left.y - 1; y <= bottom_right.y + 1; ++y) {
-                if (x >= 0 && x < size_x)
-                    x = size_x;
-                if (y >= 0 && y < size_y)
-                    y = size_y;
-
-                // we are outside the map => draw complete hidden
-                const SDL_Rect source = { zoomedTileSize * 15, 0, zoomedTileSize, zoomedTileSize };
-                const SDL_Rect drawLocation = { screenborder->world2screenX(x*TILESIZE), screenborder->world2screenY(y*TILESIZE),
-                    zoomedTileSize, zoomedTileSize };
-                SDL_RenderCopy(renderer, hiddenTex, &source, &drawLocation);
-            }
-        }
     }
+
+    SDL_RenderSetClipRect(renderer, nullptr);
 
 /////////////draw placement position
 
@@ -575,7 +568,7 @@ void Game::drawScreen()
         pInGameMentat->draw();
     }
 
-    drawCursor();
+    drawCursor(on_screen_rect);
 }
 
 
@@ -880,7 +873,7 @@ void Game::doInput()
 }
 
 
-void Game::drawCursor() const
+void Game::drawCursor(const SDL_Rect& map_rect) const
 {
     if(!(SDL_GetWindowFlags(window) & SDL_WINDOW_MOUSE_FOCUS)) {
         return;
@@ -910,7 +903,11 @@ void Game::drawCursor() const
             }
         }
     } else {
-        if( (pInGameMenu != nullptr) || (pInGameMentat != nullptr) || (pWaitingForOtherPlayers != nullptr) || (((drawnMouseX >= sideBarPos.x) || (drawnMouseY < topBarPos.h)) && (isOnRadarView(drawnMouseX, drawnMouseY) == false))) {
+        const SDL_Point mouse_point{ drawnMouseX, drawnMouseY };
+        if( (pInGameMenu != nullptr)
+            || (pInGameMentat != nullptr)
+            || (pWaitingForOtherPlayers != nullptr)
+            || ((!SDL_PointInRect(&mouse_point, &map_rect)) && (isOnRadarView(drawnMouseX, drawnMouseY) == false))) {
             // Menu mode or Mentat Menu or Waiting for other players or outside of game screen but not inside minimap
             pCursor = pGFXManager->getUIGraphic(UI_CursorNormal);
             dest = calcDrawingRect(pCursor, drawnMouseX, drawnMouseY, HAlign::Left, VAlign::Top);
@@ -1124,7 +1121,7 @@ void Game::runMainLoop() {
         SDL_SetRenderTarget(renderer, screenTexture);
 
         // clear whole screen
-        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+        SDL_SetRenderDrawColor(renderer, 100, 50, 0, 255);
         SDL_RenderClear(renderer);
 
         drawScreen();
