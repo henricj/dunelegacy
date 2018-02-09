@@ -416,8 +416,8 @@ public:
         return mask;
     }
 private:
-    Sint32  sizeX;                          ///< number of tiles this map is wide (read only)
-    Sint32  sizeY;                          ///< number of tiles this map is high (read only)
+    const Sint32  sizeX;                    ///< number of tiles this map is wide (read only)
+    const Sint32  sizeY;                    ///< number of tiles this map is high (read only)
     std::vector<Tile> tiles;                ///< the 2d-array containing all the tiles of the map
     ObjectBase* lastSinglySelectedObject;   ///< The last selected object. If selected again all units of the same type are selected
 
