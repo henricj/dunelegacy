@@ -32,7 +32,7 @@
 #define SAVEMAGIC           8675309
 #define SAVEGAMEVERSION     9704
 
-#define MAX_PLAYERNAMELENGHT    24
+#define MAX_PLAYERNAMELENGTH    24
 
 #define DIAGONALSPEEDCONST (FixPt_SQRT2 >> 1)           // = sqrt(2)/2 = 0.707106781
 
