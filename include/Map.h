@@ -22,9 +22,8 @@
 #include <misc/InputStream.h>
 #include <misc/OutputStream.h>
 #include <misc/exceptions.h>
-#include <misc/Random.h>
 
-#include <cstdio>
+#include "AStarSearch.h"
 
 class Map final
 {
@@ -71,6 +70,15 @@ public:
 
     Sint32 getSizeY() const noexcept {
         return sizeY;
+    }
+
+    int getKey(const Tile& tile) const noexcept { return tile_index(tile.getLocation().x, tile.getLocation().y); }
+
+    int getKey(int xPos, int yPos) const {
+        if (!tileExists(xPos, yPos))
+            THROW(std::out_of_range, "Tile (%d, %d) does not exist!", xPos, yPos);
+
+        return tile_index(xPos, yPos);
     }
 
     bool tileExists(int xPos, int yPos) const noexcept {
@@ -415,6 +423,13 @@ public:
 
         return mask;
     }
+
+    bool find_path(UnitBase* pUnit, Coord start, Coord destination, std::vector<Coord>& path)
+    {
+        pathfinder_.Search(this, pUnit, start, destination);
+
+        return pathfinder_.getFoundPath(this, path);
+    }
 private:
     const Sint32  sizeX;                    ///< number of tiles this map is wide (read only)
     const Sint32  sizeY;                    ///< number of tiles this map is high (read only)
@@ -441,6 +456,8 @@ private:
 
         return &tiles[tile_index(xPos, yPos)];
     }
+
+    AStarSearch pathfinder_;
 
     std::unique_ptr<BoxOffsets> offsets_;
     std::unique_ptr<BoxOffsets> offsets_2x2_;
