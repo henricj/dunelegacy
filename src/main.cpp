@@ -149,8 +149,32 @@ void setVideoMode(int displayIndex)
                               settings.video.physicalWidth, settings.video.physicalHeight,
                               videoFlags);
     renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_TARGETTEXTURE);
+    { // Scope
+        SDL_RendererInfo info;
+        if (0 == SDL_GetRendererInfo(renderer, &info)) {
+            sdl2::SDL_LogRenderer(&info);
+
+            const auto end = info.texture_formats + info.num_texture_formats;
+            const auto sf_ptr = std::find(info.texture_formats, end, SCREEN_FORMAT);
+
+            if (sf_ptr == end)
+                SDL_LogWarn(SDL_LOG_CATEGORY_RENDER, "The SCREEN_FORMAT is not in the renderer's texture_formats");
+        }
+        else {
+            const auto error = SDL_GetError();
+
+            SDL_LogError(SDL_LOG_CATEGORY_RENDER, "Unable to get render info: %s", error);
+        }
+    }
     SDL_RenderSetLogicalSize(renderer, settings.video.width, settings.video.height);
     screenTexture = SDL_CreateTexture(renderer, SCREEN_FORMAT, SDL_TEXTUREACCESS_TARGET, settings.video.width, settings.video.height);
+
+    Uint32 screen_format;
+    int screen_access;
+    if (0 == SDL_QueryTexture(screenTexture, &screen_format, &screen_access, nullptr, nullptr)) {
+        if (screen_format != SCREEN_FORMAT)
+            SDL_LogWarn(SDL_LOG_CATEGORY_RENDER, "Actual screen format: %s", std::to_string(screen_format).c_str());
+    }
 
     SDL_ShowCursor(SDL_DISABLE);
 }
