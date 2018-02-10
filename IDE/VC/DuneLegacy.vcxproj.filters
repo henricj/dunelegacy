@@ -968,6 +968,9 @@
     <ClInclude Include="..\..\include\fixmath\fix32_support.h">
       <Filter>include\fixmath</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\misc\reverse.h">
+      <Filter>include\misc</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\AStarSearch.cpp">
