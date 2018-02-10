@@ -34,7 +34,7 @@
 #include <set>
 
 Map::Map(int xSize, int ySize)
- : sizeX(xSize), sizeY(ySize), lastSinglySelectedObject(nullptr) {
+ : sizeX(xSize), sizeY(ySize), lastSinglySelectedObject(nullptr), pathfinder_(this) {
 
     tiles.resize(sizeX * sizeY);
 

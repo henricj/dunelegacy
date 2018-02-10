@@ -31,13 +31,12 @@
 
 #include <misc/draw_util.h>
 
-#include <AStarSearch.h>
-
 #include <GUI/ObjectInterfaces/UnitInterface.h>
 
 #include <structures/Refinery.h>
 #include <structures/RepairYard.h>
 #include <units/Harvester.h>
+#include <misc/reverse.h>
 
 #define SMOKEDELAY 30
 #define UNITIDLETIMER (GAMESPEED_DEFAULT *  315)  // about every 5s
@@ -105,10 +104,11 @@ UnitBase::UnitBase(InputStream& stream) : ObjectBase(stream) {
     nextSpot.x = stream.readSint32();
     nextSpot.y = stream.readSint32();
     const auto numPathNodes = stream.readUint32();
-        Sint32 x = stream.readSint32();
-        Sint32 y = stream.readSint32();
-        pathList.emplace_back(x,y);
+    pathList.resize(numPathNodes);
     for(auto i=0u;i<numPathNodes; ++i) {
+        auto x = stream.readSint32();
+        auto y = stream.readSint32();
+        pathList[numPathNodes - 1 - i] = { x, y };
     }
 
     findTargetTimer = stream.readSint32();
@@ -143,7 +143,6 @@ UnitBase::~UnitBase() {
     currentGame->getObjectManager().removeObject(objectID);
 }
 
-
 void UnitBase::save(OutputStream& stream) const {
 
     ObjectBase::save(stream);
@@ -170,7 +169,7 @@ void UnitBase::save(OutputStream& stream) const {
     stream.writeSint32(nextSpot.x);
     stream.writeSint32(nextSpot.y);
     stream.writeUint32(pathList.size());
-    for(const Coord& coord : pathList) {
+    for(const auto& coord : Dune::reverse(pathList)) {
         stream.writeSint32(coord.x);
         stream.writeSint32(coord.y);
     }
@@ -705,8 +704,8 @@ void UnitBase::navigate() {
                     }
 
                     if(!pathList.empty()) {
-                        nextSpot = pathList.front();
-                        pathList.pop_front();
+                        nextSpot = pathList.back();
+                        pathList.pop_back();
                         nextSpotFound = true;
                         recalculatePathTimer = 0;
                         noCloserPointCount = 0;
@@ -1427,8 +1426,7 @@ bool UnitBase::SearchPathWithAStar() {
         destinationCoord = destination;
     }
 
-    AStarSearch pathfinder(currentGameMap, this, location, destinationCoord);
-    pathfinder.getFoundPath(pathList);
+    currentGameMap->find_path(this, location, destinationCoord, pathList);
 
     if(pathList.empty() == true) {
         nextSpotFound = false;
