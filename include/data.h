@@ -19,7 +19,7 @@
 #define DATA_H
 
 // data definitions
-typedef enum {
+enum BulletID_enum {
     Bullet_DRocket = 0,
     Bullet_LargeRocket = 1,
     Bullet_Rocket = 2,
@@ -31,9 +31,9 @@ typedef enum {
     Bullet_SmallRocket = 8,
     Bullet_Sonic = 9,
     Bullet_Sandworm = 10
-} BulletID_enum;
+};
 
-typedef enum {
+enum ExplosionID_enum {
     Explosion_Small = 0,
     Explosion_Medium1 = 1,
     Explosion_Medium2 = 2,
@@ -46,9 +46,9 @@ typedef enum {
     Explosion_SmallUnit = 9,
     Explosion_Flames = 10,
     Explosion_SpiceBloom = 11
-} ExplosionID_enum;
+};
 
-typedef enum {
+enum ItemID_enum {
     ItemID_Invalid = 0,
     ItemID_FirstID = 1,
 
@@ -100,9 +100,9 @@ typedef enum {
     ItemID_LastID = 40,
 
     Num_ItemID
-} ItemID_enum;
+};
 
-typedef enum {
+ enum TERRAINTYPE {
     Terrain_Slab,
     Terrain_Sand,
     Terrain_Rock,
@@ -112,9 +112,9 @@ typedef enum {
     Terrain_ThickSpice,
     Terrain_SpiceBloom,
     Terrain_SpecialBloom
-} TERRAINTYPE;
+};
 
-typedef enum {
+enum HIDDENTYPE {
     Terrain_HiddenIsland    = 0x0,
     Terrain_HiddenUp        = 0x1,
     Terrain_HiddenRight     = 0x2,
@@ -131,7 +131,7 @@ typedef enum {
     Terrain_HiddenNotRight  = 0xD,
     Terrain_HiddenNotUp     = 0xE,
     Terrain_HiddenFull      = 0xF
-} HIDDENTYPE;
+};
 
 /**
     This function determines if the specified itemID is an unit or not.
