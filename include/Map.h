@@ -325,7 +325,8 @@ public:
     template<typename F>
     void for_each_angle(int x, int y, F&& f)
     {
-        index_for_each_angle(x, y, [&](ANGLETYPE angle, int index) { f(angle, tiles[index]); });
+        if (tileExists(x, y))
+            index_for_each_angle(x, y, [&](ANGLETYPE angle, int index) { f(angle, tiles[index]); });
     }
 
     template<typename F>
