@@ -313,7 +313,7 @@ protected:
     Sint8    nextSpotAngle;          ///< The angle to get to the next spot
     Sint32   recalculatePathTimer;   ///< This timer is for recalculating the best path after x ticks
     Coord    nextSpot;               ///< The next spot to move to
-    std::deque<Coord> pathList;      ///< The path to the destination found so far
+    std::vector<Coord> pathList;      ///< The path to the destination found so far
 
     Sint32  findTargetTimer;         ///< When to look for the next target?
     Sint32  primaryWeaponTimer;      ///< When can the primary weapon shot again?
