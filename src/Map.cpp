@@ -435,7 +435,7 @@ Coord Map::getMapPos(int angle, const Coord& source) {
 //building size is num squares
 Coord Map::findDeploySpot(UnitBase* pUnit, const Coord& origin, Random& randomGen, const Coord& gatherPoint, const Coord& buildingSize) const {
     if (pUnit->isAFlyingUnit()) {
-        return origin;
+        return origin + Coord(randomGen.rand(0, buildingSize.x - 1), randomGen.rand(0, buildingSize.y - 1));
     }
 
     auto closestDistance = FixPt_MAX;
