@@ -1393,35 +1393,46 @@ bool UnitBase::canPassTile(const Tile* pTile) const
 {
     if (!pTile || pTile->isMountain()) return false;
 
-    if(!pTile->hasAGroundObject()) return true;
+    const auto ground_object_result = pTile->getGroundObjectID();
 
-    const auto pObject = pTile->getGroundObject();
+    if (!ground_object_result.first) return true;
 
-    if( (pObject != nullptr)
-        && (pObject->getObjectID() == target.getObjectID())
-        && targetFriendly
-        && pObject->isAStructure()
-        && (pObject->getOwner()->getTeamID() == owner->getTeamID())
-        && pObject->isVisible(getOwner()->getTeamID()))
-    {
-        // are we entering a repair yard?
-        return (goingToRepairYard && (pObject->getItemID() == Structure_RepairYard) && static_cast<const RepairYard*>(pObject)->isFree());
-    } else {
-        return false;
+    if (ground_object_result.second == target.getObjectID()) {
+        const auto pObject = currentGame->getObjectManager().getObject(ground_object_result.second);
+
+        if ((pObject != nullptr)
+            && (pObject->getObjectID() == target.getObjectID())
+            && targetFriendly
+            && pObject->isAStructure()
+            && (pObject->getOwner()->getTeamID() == owner->getTeamID())
+            && pObject->isVisible(getOwner()->getTeam()))
+        {
+            // are we entering a repair yard?
+            return (goingToRepairYard && (pObject->getItemID() == Structure_RepairYard) && static_cast<const RepairYard*>(pObject)->isFree());
+        }
     }
+    return false;
 }
 
 bool UnitBase::SearchPathWithAStar() {
     Coord destinationCoord;
 
-    if(target && target.getObjPointer() != nullptr) {
-        if(itemID == Unit_Carryall && target.getObjPointer()->getItemID() == Structure_Refinery) {
-            destinationCoord = target.getObjPointer()->getLocation() + Coord(2,0);
-        } else if(itemID == Unit_Frigate && target.getObjPointer()->getItemID() == Structure_StarPort) {
-            destinationCoord = target.getObjPointer()->getLocation() + Coord(1,1);
-        } else {
-            destinationCoord = target.getObjPointer()->getClosestPoint(location);
+    if (target) {
+        const auto obj_pointer = target.getObjPointer();
+
+        if (obj_pointer != nullptr) {
+            if (itemID == Unit_Carryall && obj_pointer->getItemID() == Structure_Refinery) {
+                destinationCoord = obj_pointer->getLocation() + Coord(2, 0);
+            }
+            else if (itemID == Unit_Frigate && obj_pointer->getItemID() == Structure_StarPort) {
+                destinationCoord = obj_pointer->getLocation() + Coord(1, 1);
+            }
+            else {
+                destinationCoord = obj_pointer->getClosestPoint(location);
+            }
         }
+        else
+            destinationCoord = destination;
     } else {
         destinationCoord = destination;
     }
