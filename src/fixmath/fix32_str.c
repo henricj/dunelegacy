@@ -11,7 +11,7 @@ static char *itoa_loop(char *buf, uint64_t scale, uint64_t value, bool skip)
 {
     while (scale)
     {
-        unsigned digit = (value / scale);
+        unsigned digit = (unsigned)(value / scale);
 
         if (!skip || digit || scale == 1)
         {
