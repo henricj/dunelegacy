@@ -1426,50 +1426,50 @@ void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) {
 
                 case Terrain_Rock: {
                     //determine which surounding tiles are rock
-                    bool up = (y-1 < 0) || (getTerrain(x, y-1) == Terrain_Rock) || (getTerrain(x, y-1) == Terrain_Slab) || (getTerrain(x, y-1) == Terrain_Mountain);
-                    bool right = (x+1 >= map.getSizeX()) || (getTerrain(x+1, y) == Terrain_Rock) || (getTerrain(x+1, y) == Terrain_Slab) || (getTerrain(x+1, y) == Terrain_Mountain);
-                    bool down = (y+1 >= map.getSizeY()) || (getTerrain(x, y+1) == Terrain_Rock) || (getTerrain(x, y+1) == Terrain_Slab) || (getTerrain(x, y+1) == Terrain_Mountain);
-                    bool left = (x-1 < 0) || (getTerrain(x-1, y) == Terrain_Rock) || (getTerrain(x-1, y) == Terrain_Slab) || (getTerrain(x-1, y) == Terrain_Mountain);
+                    const int up = (y-1 < 0) || (getTerrain(x, y-1) == Terrain_Rock) || (getTerrain(x, y-1) == Terrain_Slab) || (getTerrain(x, y-1) == Terrain_Mountain);
+                    const int right = (x+1 >= map.getSizeX()) || (getTerrain(x+1, y) == Terrain_Rock) || (getTerrain(x+1, y) == Terrain_Slab) || (getTerrain(x+1, y) == Terrain_Mountain);
+                    const int down = (y+1 >= map.getSizeY()) || (getTerrain(x, y+1) == Terrain_Rock) || (getTerrain(x, y+1) == Terrain_Slab) || (getTerrain(x, y+1) == Terrain_Mountain);
+                    const int left = (x-1 < 0) || (getTerrain(x-1, y) == Terrain_Rock) || (getTerrain(x-1, y) == Terrain_Slab) || (getTerrain(x-1, y) == Terrain_Mountain);
 
                     tile = Tile::TerrainTile_Rock + (up | (right << 1) | (down << 2) | (left << 3));
                 } break;
 
                 case Terrain_Dunes: {
                     //determine which surounding tiles are dunes
-                    bool up = (y-1 < 0) || (getTerrain(x, y-1) == Terrain_Dunes);
-                    bool right = (x+1 >= map.getSizeX()) || (getTerrain(x+1, y) == Terrain_Dunes);
-                    bool down = (y+1 >= map.getSizeY()) || (getTerrain(x, y+1) == Terrain_Dunes);
-                    bool left = (x-1 < 0) || (getTerrain(x-1, y) == Terrain_Dunes);
+                    const int up = (y-1 < 0) || (getTerrain(x, y-1) == Terrain_Dunes);
+                    const int right = (x+1 >= map.getSizeX()) || (getTerrain(x+1, y) == Terrain_Dunes);
+                    const int down = (y+1 >= map.getSizeY()) || (getTerrain(x, y+1) == Terrain_Dunes);
+                    const int left = (x-1 < 0) || (getTerrain(x-1, y) == Terrain_Dunes);
 
                     tile = Tile::TerrainTile_Dunes + (up | (right << 1) | (down << 2) | (left << 3));
                 } break;
 
                 case Terrain_Mountain: {
                     //determine which surounding tiles are mountains
-                    bool up = (y-1 < 0) || (getTerrain(x, y-1) == Terrain_Mountain);
-                    bool right = (x+1 >= map.getSizeX()) || (getTerrain(x+1, y) == Terrain_Mountain);
-                    bool down = (y+1 >= map.getSizeY()) || (getTerrain(x, y+1) == Terrain_Mountain);
-                    bool left = (x-1 < 0) || (getTerrain(x-1, y) == Terrain_Mountain);
+                    const int up = (y-1 < 0) || (getTerrain(x, y-1) == Terrain_Mountain);
+                    const int right = (x+1 >= map.getSizeX()) || (getTerrain(x+1, y) == Terrain_Mountain);
+                    const int down = (y+1 >= map.getSizeY()) || (getTerrain(x, y+1) == Terrain_Mountain);
+                    const int left = (x-1 < 0) || (getTerrain(x-1, y) == Terrain_Mountain);
 
                     tile = Tile::TerrainTile_Mountain + (up | (right << 1) | (down << 2) | (left << 3));
                 } break;
 
                 case Terrain_Spice: {
                     //determine which surounding tiles are spice
-                    bool up = (y-1 < 0) || (getTerrain(x, y-1) == Terrain_Spice) || (getTerrain(x, y-1) == Terrain_ThickSpice);
-                    bool right = (x+1 >= map.getSizeX()) || (getTerrain(x+1, y) == Terrain_Spice) || (getTerrain(x+1, y) == Terrain_ThickSpice);
-                    bool down = (y+1 >= map.getSizeY()) || (getTerrain(x, y+1) == Terrain_Spice) || (getTerrain(x, y+1) == Terrain_ThickSpice);
-                    bool left = (x-1 < 0) || (getTerrain(x-1, y) == Terrain_Spice) || (getTerrain(x-1, y) == Terrain_ThickSpice);
+                    const int up = (y-1 < 0) || (getTerrain(x, y-1) == Terrain_Spice) || (getTerrain(x, y-1) == Terrain_ThickSpice);
+                    const int right = (x+1 >= map.getSizeX()) || (getTerrain(x+1, y) == Terrain_Spice) || (getTerrain(x+1, y) == Terrain_ThickSpice);
+                    const int down = (y+1 >= map.getSizeY()) || (getTerrain(x, y+1) == Terrain_Spice) || (getTerrain(x, y+1) == Terrain_ThickSpice);
+                    const int left = (x-1 < 0) || (getTerrain(x-1, y) == Terrain_Spice) || (getTerrain(x-1, y) == Terrain_ThickSpice);
 
                     tile = Tile::TerrainTile_Spice + (up | (right << 1) | (down << 2) | (left << 3));
                 } break;
 
                 case Terrain_ThickSpice: {
                     //determine which surounding tiles are thick spice
-                    bool up = (y-1 < 0) || (getTerrain(x, y-1) == Terrain_ThickSpice);
-                    bool right = (x+1 >= map.getSizeX()) || (getTerrain(x+1, y) == Terrain_ThickSpice);
-                    bool down = (y+1 >= map.getSizeY()) || (getTerrain(x, y+1) == Terrain_ThickSpice);
-                    bool left = (x-1 < 0) || (getTerrain(x-1, y) == Terrain_ThickSpice);
+                    const int up = (y-1 < 0) || (getTerrain(x, y-1) == Terrain_ThickSpice);
+                    const int right = (x+1 >= map.getSizeX()) || (getTerrain(x+1, y) == Terrain_ThickSpice);
+                    const int down = (y+1 >= map.getSizeY()) || (getTerrain(x, y+1) == Terrain_ThickSpice);
+                    const int left = (x-1 < 0) || (getTerrain(x-1, y) == Terrain_ThickSpice);
 
                     tile = Tile::TerrainTile_ThickSpice + (up | (right << 1) | (down << 2) | (left << 3));
                 } break;

@@ -302,8 +302,8 @@ void MapSettingsWindow::onOK() {
     mapInfo.losePicture = availableLosePictures[losePictureDropDownBox.getSelectedIndex()];
     mapInfo.briefPicture = availableBriefingPictures[briefingPictureDropDownBox.getSelectedIndex()];
 
-    mapInfo.winFlags = (winFlagsTimeoutCheckbox.isChecked() << 3) | (winFlagsSpiceQuotaCheckbox.isChecked() << 2) | (winFlagsPlayerNoObjectsLeftCheckbox.isChecked() << 1) | winFlagsAIPlayerNoObjectsLeftCheckbox.isChecked();
-    mapInfo.loseFlags = (loseFlagsTimeoutCheckbox.isChecked() << 3) | (loseFlagsSpiceQuotaCheckbox.isChecked() << 2) | (loseFlagsPlayerHasObjectsLeftCheckbox.isChecked() << 1) | loseFlagsAIPlayerNoObjectsLeftCheckbox.isChecked();
+    mapInfo.winFlags = (winFlagsTimeoutCheckbox.isChecked() << 3) | (winFlagsSpiceQuotaCheckbox.isChecked() << 2) | (winFlagsPlayerNoObjectsLeftCheckbox.isChecked() << 1) | (winFlagsAIPlayerNoObjectsLeftCheckbox.isChecked() << 0);
+    mapInfo.loseFlags = (loseFlagsTimeoutCheckbox.isChecked() << 3) | (loseFlagsSpiceQuotaCheckbox.isChecked() << 2) | (loseFlagsPlayerHasObjectsLeftCheckbox.isChecked() << 1) | (loseFlagsAIPlayerNoObjectsLeftCheckbox.isChecked() << 0);
 
     mapInfo.timeout = winFlagsTimeoutTextBox.getValue();
 
