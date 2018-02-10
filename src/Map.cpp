@@ -440,39 +440,34 @@ Coord Map::findDeploySpot(UnitBase* pUnit, const Coord& origin, Random& randomGe
 
     auto closestDistance = FixPt_MAX;
     Coord       closestPoint;
-    Coord       size;
 
-    auto found = false;
-    auto foundClosest = false;
-
-    search_all_by_box_edge(origin.x, origin.y, buildingSize, currentGame->randomGen,
+    const auto found = search_all_by_box_edge(origin.x, origin.y, buildingSize, randomGen,
         [&](const Tile& t) {
             if (!pUnit->canPassTile(&t))
-                return false;
+                return SearchResult::NotDone;
 
             if (pUnit->isTracked()) {
                 if (t.hasInfantry()) {
                     // we do not deploy on enemy infantry
-                    return false;
+                    return SearchResult::NotDone;
                 }
             }
 
             if (gatherPoint.isInvalid()) {
                 closestPoint = t.location;
-                found = true;
-                return true;
+                return SearchResult::Done;
             }
 
             if (blockDistance(t.location, gatherPoint) < closestDistance) {
                 closestDistance = blockDistance(t.location, gatherPoint);
                 closestPoint = t.location;
-                foundClosest = true;
+                return SearchResult::DoneAtDepth;
             }
 
-            return false;
+            return SearchResult::NotDone;
         });
 
-    if (found || foundClosest)
+    if (found)
         return closestPoint;
 
     SDL_Log("Warning: Cannot find deploy position because the map is full!");
@@ -685,10 +680,10 @@ bool Map::findSpice(Coord& destination, const Coord& origin) const {
     return search_all_by_box_edge(origin.x, origin.y, currentGame->randomGen,
         [&](const Tile& t) {
             if (t.hasAGroundObject() || !t.hasSpice())
-                return false;
+                return SearchResult::NotDone;
 
             destination = t.location;
-            return true;
+            return SearchResult::Done;
         });
 
 #if 0
