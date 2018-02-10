@@ -97,7 +97,7 @@ fix16_t fix16_mul(fix16_t inArg0, fix16_t inArg1)
 	#ifdef FIXMATH_NO_ROUNDING
 	return product >> 16;
 	#else
-	fix16_t result = product >> 16;
+	fix16_t result = (fix16_t)(product >> 16);
 	result += (product & 0x8000) >> 15;
 
 	return result;
