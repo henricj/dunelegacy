@@ -290,17 +290,17 @@ void createDefaultConfigFile(const std::string& configfilepath, const std::strin
                                 "Manual Carryall Drops = false           # If true, player can request carryall to transport units\n"
                                 "Maximum Number of Units Override = -1   # Override the maximum number of units each house is allowed to build (-1 = do not override)\n";
 
-    char playername[MAX_PLAYERNAMELENGHT+1] = "Player";
+    char playername[MAX_PLAYERNAMELENGTH+1] = "Player";
 
 #ifdef _WIN32
-    DWORD playernameLength = MAX_PLAYERNAMELENGHT+1;
+    DWORD playernameLength = MAX_PLAYERNAMELENGTH+1;
     GetUserName(playername, &playernameLength);
 #else
     struct passwd* pwent = getpwuid(getuid());
 
     if(pwent != nullptr) {
-        strncpy(playername, pwent->pw_name, MAX_PLAYERNAMELENGHT + 1);
-        playername[MAX_PLAYERNAMELENGHT] = '\0';
+        strncpy(playername, pwent->pw_name, MAX_PLAYERNAMELENGTH + 1);
+        playername[MAX_PLAYERNAMELENGTH] = '\0';
     }
 #endif
 
