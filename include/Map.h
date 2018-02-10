@@ -202,20 +202,13 @@ public:
         index_for_each_filter(x1, y1, x2, y2, filter, [&](int index) { f(tiles[index]); });
     }
 
-    template<typename F, typename Predicate>
-    bool search(int x1, int y1, int x2, int y2, Predicate&& predicate) const {
-        index_for_each(x1, y1, x2, y2, [&](int index) { predicate(tiles[index]); });
-    }
-
-    template<typename Filter, typename Predicate>
-    bool search_filter(int x1, int y1, int x2, int y2, Filter&& filter, Predicate&& predicate) const {
-        index_for_each_filter(x1, y1, x2, y2, filter, [&](int index) { predicate(tiles[index]); });
-    }
-
+    enum class SearchResult { NotDone, DoneAtDepth, Done };
+protected:
     template<typename Offsets, typename Generator, typename Predicate>
-    bool search_random_offsets(int x, int y, Offsets&& offsets, Generator&& generator, Predicate&& predicate) const {
+    SearchResult search_random_offsets(int x, int y, Offsets&& offsets, Generator&& generator, Predicate&& predicate) const {
 
         const auto size = offsets.size();
+        auto found = false;
 
         // We do an incremental Fisher-Yates shuffle.  This should be as
         // random as the generator, and guarantees that each tile will
@@ -228,20 +221,30 @@ public:
 
             const auto tile = getTile_internal(ranX, ranY);
 
-            if (tile && predicate(*tile))
-                return true;
+            if (!tile)
+                return SearchResult::NotDone;
+
+            const auto result = predicate(*tile);
+
+            if (SearchResult::Done == result)
+                return SearchResult::Done;
+
+            if (SearchResult::DoneAtDepth == result)
+                found = true;
         }
 
-        return false;
+        return found ? SearchResult::DoneAtDepth : SearchResult::NotDone;
     }
 
-protected:
     template<typename Generator, typename Predicate>
-    bool search_box_edge(int x, int y, int depth, BoxOffsets* offsets, Generator&& generator, Predicate&& predicate) const {
+    SearchResult search_box_edge(int x, int y, int depth, BoxOffsets* offsets, Generator&& generator, Predicate&& predicate) const {
 
         if (0 == depth) {
             const auto tile = getTile_internal(x, y);
-            return tile && predicate(*tile);
+            if (!tile)
+                return SearchResult::NotDone;
+
+            return predicate(*tile);
         }
 
         return search_random_offsets(x, y, offsets->search_set(depth), generator, predicate);
@@ -249,15 +252,17 @@ protected:
 
     template<typename Generator, typename Predicate>
     bool search_all_by_box_edge(int x, int y, BoxOffsets* offsets, Generator generator, Predicate&& predicate) const {
+
         for (auto depth = 0u; depth <= offsets->max_depth(); ++depth) {
-            if (search_box_edge(x, y, depth, offsets, generator, predicate))
+            const auto ret = search_box_edge(x, y, depth, offsets, generator, predicate);
+
+            if (SearchResult::NotDone != ret)
                 return true;
         }
 
         return false;
     }
 
-public:
     template<typename Generator, typename Predicate>
     bool search_all_by_box_edge(int x, int y, Generator&& generator, Predicate&& predicate) const {
         return search_all_by_box_edge(x, y, offsets_.get(), generator, predicate);
@@ -283,8 +288,9 @@ public:
         return search_all_by_box_edge(x, y, offsets_3x3_.get(), generator, predicate);
     }
 
+public:
     template<typename Generator, typename Predicate>
-    bool search_all_by_box_edge(int x, int y, Coord buildingSize, Generator&& generator, Predicate&& predicate) const {
+    bool search_all_by_box_edge(int x, int y, const Coord& buildingSize, Generator&& generator, Predicate&& predicate) const {
 
         if (buildingSize == Coord{ 2, 2 })
             return search_all_by_box_edge_2x2(x, y, currentGame->randomGen, predicate);
