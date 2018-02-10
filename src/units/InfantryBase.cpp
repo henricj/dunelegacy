@@ -412,8 +412,8 @@ void InfantryBase::move() {
         const FixPoint epsilon = 3.75_fix;
 
         if(location != nextSpot) {
-            FixPoint abstractDistanceX = FixPoint::abs(location.x*TILESIZE + TILESIZE/2 - (realX-bumpyOffsetX));
-            FixPoint abstractDistanceY = FixPoint::abs(location.y*TILESIZE + TILESIZE/2 - (realY-bumpyOffsetY));
+            const auto abstractDistanceX = FixPoint::abs(location.x*TILESIZE + TILESIZE/2 - (realX-bumpyOffsetX));
+            const auto abstractDistanceY = FixPoint::abs(location.y*TILESIZE + TILESIZE/2 - (realY-bumpyOffsetY));
 
             fromDistanceX = FixPoint::abs(location.x*TILESIZE + TILESIZE/2 + tilePositionOffset[oldTilePosition].x - (realX-bumpyOffsetX));
             fromDistanceY = FixPoint::abs(location.y*TILESIZE + TILESIZE/2 + tilePositionOffset[oldTilePosition].y - (realY-bumpyOffsetY));
