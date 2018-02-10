@@ -191,7 +191,7 @@ void InfantryBase::checkPos() {
     {
         const auto closestPoint = object->getClosestPoint(location);
 
-        if(blockDistance(location, closestPoint) <= FixPt(0,5)) {
+        if(blockDistance(location, closestPoint) <= 0.5_fix) {
             // destroy unit indirectly
             setTarget(nullptr);
             setHealth(0);
