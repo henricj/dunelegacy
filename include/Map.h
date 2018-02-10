@@ -222,7 +222,7 @@ protected:
             const auto tile = getTile_internal(ranX, ranY);
 
             if (!tile)
-                return SearchResult::NotDone;
+                continue;;
 
             const auto result = predicate(*tile);
 
