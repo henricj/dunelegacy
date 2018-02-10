@@ -36,7 +36,7 @@
 Refinery::Refinery(House* newOwner) : StructureBase(newOwner) {
     Refinery::init();
 
-    setHealth(getMaxHealth());
+    ObjectBase::setHealth(getMaxHealth());
 
     extractingSpice = false;
     bookings = 0;

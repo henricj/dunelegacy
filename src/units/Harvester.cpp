@@ -259,9 +259,9 @@ void Harvester::destroy()
 
         if(currentGameMap->tileExists(xpos,ypos)) {
             const auto spiceSpreaded = spice * 0.75_fix;
-            int availableSandPos = 0;
+            auto availableSandPos = 0;
 
-            int circleRadius = lround(spice / 210);
+            const auto circleRadius = lround(spice / 210);
 
             /* how many regions have sand */
             for(int i = -circleRadius; i <= circleRadius; i++) {
@@ -269,7 +269,7 @@ void Harvester::destroy()
                     if(currentGameMap->tileExists(xpos + i, ypos + j)
                         && (distanceFrom(xpos, ypos, xpos + i, ypos + j) + 0.0005_fix <= circleRadius))
                     {
-                        Tile *pTile = currentGameMap->getTile(xpos + i, ypos + j);
+                        auto pTile = currentGameMap->getTile(xpos + i, ypos + j);
                         if((pTile != nullptr) & ((pTile->isSand()) || (pTile->isSpice()) )) {
                             availableSandPos++;
                         }

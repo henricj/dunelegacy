@@ -907,7 +907,7 @@ void QuantBot::build(int militaryValue) {
     // End of adaptive unit prioritisation algorithm
 
 
-    for(const StructureBase* pStructure : getStructureList()) {
+    for(auto pStructure : getStructureList()) {
         if(pStructure->getOwner() == getHouse()) {
             if((pStructure->isRepairing() == false)
                && (pStructure->getHealth() < pStructure->getMaxHealth())
