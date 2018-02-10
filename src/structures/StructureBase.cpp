@@ -391,13 +391,13 @@ bool StructureBase::update() {
         if(owner->getCredits() >= 5) {
             // Original dune 2 is doing the repair calculation with fix-point math (multiply everything with 256).
             // It is calculating what fraction 2 hitpoints of the maximum health would be.
-            int fraction = (2*256)/getMaxHealth();
-            FixPoint repairprice = FixPoint(fraction * currentGame->objectData.data[itemID][originalHouseID].price) / 256;
+            const auto fraction = (2*256)/getMaxHealth();
+            const FixPoint repairprice = FixPoint(fraction * currentGame->objectData.data[itemID][originalHouseID].price) / 256;
 
             // Original dune is always repairing 5 hitpoints (for the costs of 2) but we are only repairing 1/30th of that
             const auto repairHealth = 5_fix/30_fix;
             owner->takeCredits(repairprice/30);
-            FixPoint newHealth = getHealth() + repairHealth;
+            const auto newHealth = getHealth() + repairHealth;
             if(newHealth >= getMaxHealth()) {
                 setHealth(getMaxHealth());
                 repairing = false;
