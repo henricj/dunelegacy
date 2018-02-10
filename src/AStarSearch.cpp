@@ -35,30 +35,51 @@ AStarSearch::AStarSearch(Map* pMap, UnitBase* pUnit, Coord start, Coord destinat
 
     mapData.resize(sizeX * sizeY);
 
-    const FixPoint heuristic = blockDistance(start, destination);
-    FixPoint smallestHeuristic = FixPt_MAX;
-    bestCoord = Coord::Invalid();
+    depthCheckCount.resize(std::min(sizeX, sizeY));
+}
+
+void AStarSearch::Search(Map* pMap, UnitBase* pUnit, Coord start, Coord destination) {
+#if 1
+    std::fill(std::begin(mapData), std::end(mapData), TileData{});
+    std::fill(std::begin(depthCheckCount), std::end(depthCheckCount), 0);
+#else
+    // Clobber PODs the evil way...
+    memset(&mapData[0], 0, sizeof(mapData[0]) * mapData.size());
+    memset(&depthCheckCount[0], 0, sizeof(depthCheckCount[0]) * depthCheckCount.size());
+#endif
+    openList.clear();
+    openList.reserve(2 * std::max(sizeX, sizeY));
+
+    const auto destinationTile = pMap->getTile(destination);
+
+    const FixPoint rotationSpeed = 1_fix / (currentGame->objectData.data[pUnit->getItemID()][pUnit->getOriginalHouseID()].turnspeed * TILESIZE);
+
+    const auto heuristic = blockDistance(start, destination);
+    auto smallestHeuristic = FixPt_MAX;
+    bestCoord = nullptr;
 
     //if the unit is not directly next to its destination or it is and the destination is unblocked
     if ((heuristic > 1.5_fix) || (pUnit->canPass(destination.x, destination.y) == true)) {
 
-    putOnOpenListIfBetter(start, Coord::Invalid(), 0 , heuristic);
-
-    std::vector<short> depthCheckCount(std::min(sizeX, sizeY));
+    putOnOpenListIfBetter(pMap->getKey(start.x, start.y), start, nullptr, 0 , heuristic);
 
     int numNodesChecked = 0;
-    while(openList.empty() == false) {
-        const Coord currentCoord = extractMin();
+    while(const auto currentTileData = extractMin()) {
+        auto& map_data = *currentTileData; // getMapData(currentKey);
 
-        if (getMapData(currentCoord).h < smallestHeuristic) {
-            smallestHeuristic = getMapData(currentCoord).h;
-            bestCoord = currentCoord;
+        const auto& currentCoord = map_data.coord;
+
+        //assert(currentKey == pMap->getKey(currentCoord.x, currentCoord.y));
+
+        if (map_data.h < smallestHeuristic) {
+            smallestHeuristic = map_data.h;
+            bestCoord = currentTileData;
         }
 
         if(currentCoord == destination) {
             // destination found
-            smallestHeuristic = getMapData(currentCoord).h;
-            bestCoord = currentCoord;
+            smallestHeuristic = map_data.h;
+            bestCoord = currentTileData;
             break;
         }
 
@@ -69,9 +90,10 @@ AStarSearch::AStarSearch(Map* pMap, UnitBase* pUnit, Coord start, Coord destinat
                                      if (!pUnit->canPassTile(&nextTile))
                                          return;
 
-                                     const auto nextCoord = nextTile.location;
+                                     const auto& nextCoord = nextTile.location;
+                                     const auto nextKey = pMap->getKey(nextTile);
 
-                                     const auto& map_data = getMapData(currentCoord);
+                                     assert(nextKey == pMap->getKey(nextCoord.x, nextCoord.y));
 
                                      auto g = map_data.g;
 
@@ -84,16 +106,18 @@ AStarSearch::AStarSearch(Map* pMap, UnitBase* pUnit, Coord start, Coord destinat
 
                                      g += difficulty;
 
-                                     if (map_data.parentCoord.isValid()) {
+                                     if (map_data.parentKey) {
                                          //add cost of turning time
-                                         const auto posAngle = Map::getPosAngle(map_data.parentCoord, currentCoord);
+                                         //assert(map_data.parentKey == pMap->getKey(mapData[map_data.parentKey].coord.x, mapData[map_data.parentKey].coord.y));
+                                         const auto posAngle = Map::getPosAngle(map_data.parentKey->coord, currentCoord);
                                          g += angleDiff(angle, posAngle) * rotationSpeed;
                                      }
 
-                                     if (getMapData(nextCoord).bClosed == false) {
+                                     auto& next_map_data = getMapData(nextKey);
+                                     if (next_map_data.bClosed == false) {
                                          const auto h = blockDistance(nextCoord, destination);
 
-                                         putOnOpenListIfBetter(nextCoord, currentCoord, g, h);
+                                         putOnOpenListIfBetter(nextKey, nextCoord, &map_data, g, h);
                                      }
                                  });
 #if 0
@@ -126,7 +150,7 @@ AStarSearch::AStarSearch(Map* pMap, UnitBase* pUnit, Coord start, Coord destinat
 #endif // 0
         }
 
-        if (getMapData(currentCoord).bClosed == false) {
+        if (map_data.bClosed == false) {
             const int depth = std::max(abs(currentCoord.x - destination.x), abs(currentCoord.y - destination.y));
 
             if(depth < std::min(sizeX,sizeY)) {
@@ -174,10 +198,66 @@ AStarSearch::AStarSearch(Map* pMap, UnitBase* pUnit, Coord start, Coord destinat
                 }
             }
 
-            getMapData(currentCoord).bClosed = true;
+            map_data.bClosed = true;
             numNodesChecked++;
         }
     }
+}
+
+bool AStarSearch::getFoundPath(Map * pMap, std::vector<Coord>& path) const
+{
+    path.clear();
+
+    if (!bestCoord)
+    {
+        return false;
+    }
+
+    for (auto p = bestCoord; p->parentKey; p = p->parentKey) {
+        path.push_back(p->coord);
+    }
+
+    return true;
+}
+
+void AStarSearch::putOnOpenListIfBetter(int key, const Coord& coord, TileData* parentKey, FixPoint g, FixPoint h)
+{
+    const FixPoint f = g + h;
+
+    auto& map_data = getMapData(key);
+
+    if (map_data.bInOpenList) {
+        if (map_data.f <= f) {
+            return;
+        }
+    }
+
+    map_data.g = g;
+    map_data.h = h;
+    map_data.f = f;
+    map_data.coord = coord;
+    map_data.parentKey = parentKey;
+    map_data.bInOpenList = true;
+    // This will result in duplicate entries for the same location, but the
+    // newest one will always be found first and subsequent closed ones will
+    // be ignored.
+    openList.emplace_back(open_list{ f, &map_data });
+    std::push_heap(std::begin(openList), std::end(openList));
+}
+
+AStarSearch::TileData* AStarSearch::extractMin()
+{
+    while (!openList.empty()) {
+        const auto ret = openList.front().key;
+
+        std::pop_heap(std::begin(openList), std::end(openList));
+        openList.pop_back();
+
+        if (!ret->bClosed)
+            return ret;
+    }
+
+    return nullptr;
 }
 
 AStarSearch::~AStarSearch() = default;
