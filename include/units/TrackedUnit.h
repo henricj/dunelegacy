@@ -46,22 +46,11 @@ public:
     */
     FixPoint getTerrainDifficulty(TERRAINTYPE terrainType) const override
     {
-        static const FixPoint difficulty[] = {
-            FixPt(1,0), //Terrain_Slab,
-            FixPt(1,5625), //Terrain_Sand,
-            FixPt(1,375), //Terrain_Rock,
-            FixPt(1,375), //Terrain_Dunes,
-            FixPt(1,0), //Terrain_Mountain,
-            FixPt(1,375), //Terrain_Spice,
-            FixPt(1,375), //Terrain_ThickSpice,
-            FixPt(1,5625), //Terrain_SpiceBloom,
-            FixPt(1,5625) //Terrain_SpecialBloom
-        };
-
         if (terrainType < 0 || terrainType > Terrain_SpecialBloom)
-            return FixPt(0, 0);
+            return 1_fix;
 
-        return difficulty[terrainType];
+        return terrain_difficulty[terrainType];
+    }
 
 #if 0
         switch(terrainType) {
