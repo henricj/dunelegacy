@@ -63,7 +63,7 @@ OptionsMenu::OptionsMenu() : MenuBase()
 
     NameHBox.addWidget(Spacer::create(), 0.5);
     NameHBox.addWidget(Label::create(_("Player Name")), 190);
-    nameTextBox.setMaximumTextLength(MAX_PLAYERNAMELENGHT);
+    nameTextBox.setMaximumTextLength(MAX_PLAYERNAMELENGTH);
     nameTextBox.setOnTextChange(std::bind(&OptionsMenu::onChangeOption, this, std::placeholders::_1));
     NameHBox.addWidget(&nameTextBox, 290);
     NameHBox.addWidget(Spacer::create(), 0.5);
