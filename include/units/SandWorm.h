@@ -75,7 +75,7 @@ public:
         }
     }
 
-    bool isEating() const { return (drawnFrame != INVALID); }
+    bool isEating() const noexcept { return (drawnFrame != INVALID); }
 
 protected:
     const ObjectBase* findTarget() const override;
