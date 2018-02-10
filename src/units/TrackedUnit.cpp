@@ -100,3 +100,15 @@ bool TrackedUnit::canPassTile(const Tile* pTile) const {
 
     return false;
 }
+
+const FixPoint TrackedUnit::terrain_difficulty[] = {
+    1_fix,      //Terrain_Slab
+    1.5625_fix, //Terrain_Sand
+    1.375_fix,  //Terrain_Rock
+    1.375_fix,  //Terrain_Dunes
+    1.0_fix,    //Terrain_Mountain
+    1.375_fix,  //Terrain_Spice
+    1.375_fix,  //Terrain_ThickSpice
+    1.5625_fix, //Terrain_SpiceBloom
+    1.5625_fix  //Terrain_SpecialBloom
+};
