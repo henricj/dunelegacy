@@ -56,15 +56,12 @@
 #include <iostream>
 #include <typeinfo>
 #include <future>
-#include <ctime>
-//#include <sys/types.h>
-//#include <sys/stat.h>
+#include <random>
 #include <fcntl.h>
-
 
 #ifdef _WIN32
     #include <windows.h>
-    #include <stdio.h>
+    #include <cstdio>
     #include <io.h>
 #else
     #include <sys/types.h>
