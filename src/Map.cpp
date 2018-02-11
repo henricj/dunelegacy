@@ -106,24 +106,6 @@ void Map::createSandRegions() {
                             visited[index] = true;
                         }
                     });
-
-#if 0
-                for (auto angle = 0; angle < NUM_ANGLES; angle++) {
-                    const auto pos = getMapPos(angle, pTile->location);
-
-                    if (!tileExists(pos))
-                        continue;
-
-                    const auto index = tile_index(pos.x, pos.y);
-
-                    const auto tile_angle = &tiles[index];
-
-                    if (!tile_angle->isRock() && !visited[index]) {
-                        tileQueue.push(tile_angle);
-                        visited[index] = true;
-                    }
-                }
-#endif // 0
             }
             region++;
         }
@@ -322,23 +304,6 @@ bool Map::isAStructureGap(int x, int y, int buildingSizeX, int buildingSizeY) co
     }
 
     return true;
-#if 0
-    for(auto i = xMin; i < xMax; i++) {
-        for(auto j = yMin; j < yMax; j++) {
-            if(!((i == xMin || i == xMax) && (j == yMin || j == yMax))) { //Corners are ok as units can get through
-
-                const auto pTile = getTile_internal(i,j);
-
-                if(pTile && (pTile->hasAStructure() && !pTile->isConcrete())) { // I need some more conditions to make it ignore units
-
-                    return false;
-                }
-            }
-        }
-    }
-
-    return true;
-#endif // 0
 }
 
 bool Map::okayToPlaceStructure(int x, int y, int buildingSizeX, int buildingSizeY, bool tilesRequired, const House* pHouse, bool bIgnoreUnits) const {
@@ -473,80 +438,6 @@ Coord Map::findDeploySpot(UnitBase* pUnit, const Coord& origin, Random& randomGe
     SDL_Log("Warning: Cannot find deploy position because the map is full!");
 
     return Coord::Invalid();
-
-#if 0
-    auto counter = 0;
-    auto depth = 0;
-
-    auto ranX = origin.x;
-    auto ranY = origin.y;
-
-    do {
-        const auto edge = randomGen.rand(0, 3);
-        switch(edge) {
-            case 0: //right edge
-                ranX = origin.x + buildingSize.x + depth;
-                ranY = randomGen.rand(origin.y - depth, origin.y + buildingSize.y + depth);
-                break;
-            case 1: //top edge
-                ranX = randomGen.rand(origin.x - depth, origin.x + buildingSize.x + depth);
-                ranY = origin.y - depth - ((buildingSize.y == 0) ? 0 : 1);
-                break;
-            case 2: //left edge
-                ranX = origin.x - depth - ((buildingSize.x == 0) ? 0 : 1);
-                ranY = randomGen.rand(origin.y - depth, origin.y + buildingSize.y + depth);
-                break;
-            case 3: //bottom edge
-                ranX = randomGen.rand(origin.x - depth, origin.x + buildingSize.x + depth);
-                ranY = origin.y + buildingSize.y + depth;
-                break;
-            default:
-                break;
-        }
-
-        auto bOK2Deploy = pUnit->canPass(ranX, ranY);
-
-        if (bOK2Deploy && pUnit->isTracked()) {
-            const auto tile = getTile_internal(ranX, ranY);
-
-            if (tile && tile->hasInfantry()) {
-                // we do not deploy on enemy infantry
-                bOK2Deploy = false;
-            }
-        }
-
-        if(bOK2Deploy) {
-            if(gatherPoint.isInvalid()) {
-                closestPoint.x = ranX;
-                closestPoint.y = ranY;
-                found = true;
-            } else {
-                const auto temp = Coord(ranX, ranY);
-                if(blockDistance(temp, gatherPoint) < closestDistance) {
-                    closestDistance = blockDistance(temp, gatherPoint);
-                    closestPoint.x = ranX;
-                    closestPoint.y = ranY;
-                    foundClosest = true;
-                }
-            }
-        }
-
-        if(counter++ >= 100) {
-            //if hasn't found a spot on tempObject layer in 100 tries, goto next
-
-            counter = 0;
-            if(++depth > (std::max(getSizeX(), getSizeY()))) {
-                closestPoint.invalidate();
-                found = true;
-                SDL_Log("Warning: Cannot find deploy position because the map is full!");
-            }
-        }
-        // The criteria was that it should only look at foundClosest if
-        // counter > 0, but that is always true at this point.
-    } while (!found && (!foundClosest || (depth > 0)));
-
-    return closestPoint;
-#endif
 }
 
 /**
@@ -685,75 +576,6 @@ bool Map::findSpice(Coord& destination, const Coord& origin) const {
             destination = t.location;
             return SearchResult::Done;
         });
-
-#if 0
-    const auto tile_origin = getTile_internal(origin.x, origin.y);
-
-    if (tile_origin && tile_origin->hasSpice()) {
-        destination = origin;
-        return true;
-    }
-
-    auto& gen = currentGame->randomGen;
-
-    for (auto depth = 1; depth <= std::max(sizeX, sizeY); ++depth) {
-        auto& offsets = offsets_->search_set(depth);
-        const auto size = offsets.size();
-
-        // We do an incremental Fisher-Yates shuffle.  This should be as
-        // random as the generator, and guarantees that each tile will
-        // be visited exactly once.
-        for(auto i = 0u; i < size; ++i) {
-            std::swap(offsets[i], offsets[gen.rand(i, size - 1)]);
-
-            const auto ranX = origin.x + offsets[i].first;
-            const auto ranY = origin.y + offsets[i].second;
-
-            const auto tile = getTile_internal(ranX, ranY);
-
-            if (tile && !tile->hasAGroundObject() && tile->hasSpice()) {
-                destination.x = ranX;
-                destination.y = ranY;
-                return true;
-            }
-        }
-    }
-
-    //there is definitely no spice left anywhere on map
-    return false;
-#endif // 0
-#if 0
-    auto counter = 0;
-    auto depth = 1;
-
-    while(true) {
-        auto ranX = 0;
-        auto ranY = 0;
-        do {
-            ranX = currentGame->randomGen.rand(origin.x-depth, origin.x + depth);
-            ranY = currentGame->randomGen.rand(origin.y-depth, origin.y + depth);
-        } while(((ranX >= (origin.x+1 - depth)) && (ranX < (origin.x + depth))) && ((ranY >= (origin.y+1 - depth)) && (ranY < (origin.y + depth))));
-
-        const auto tile = getTile_internal(ranX, ranY);
-
-        if (tile && !tile->hasAGroundObject() && tile->hasSpice()) {
-            destination.x = ranX;
-            destination.y = ranY;
-            return true;
-        }
-
-        counter++;
-        if(counter >= 100) {
-            //if hasn't found a spot on tempObject layer in 100 tries, goto next
-            counter = 0;
-            depth++;
-        }
-
-        if(depth > std::max(sizeX, sizeY)) {
-            return false;   //there is possibly no spice left anywhere on map
-        }
-    }
-#endif //0
 }
 
 /**
@@ -772,24 +594,6 @@ void Map::spiceRemoved(const Coord& coord) {
         if (t.isThickSpice())
             t.setType(Terrain_Spice);
     });
-
-#if 0
-    for(auto i = coord.x-1; i <= coord.x+1; i++) {
-        for(auto j = coord.y-1; j <= coord.y+1; j++) {
-            if ((i != coord.x) && (j != coord.y)) {
-                // skip diagonal
-                continue;
-            }
-
-            auto pTile = getTile_internal(i, j);
-
-            if (pTile && pTile->isThickSpice()) {
-                //only check tile right, up, left and down of this one
-                pTile->setType(Terrain_Spice);
-            }
-        }
-    }
-#endif //0
 }
 
 void Map::viewMap(int houseID, const Coord& location, const int maxViewRange) {
@@ -818,32 +622,6 @@ void Map::viewMap(int houseID, const Coord& location, const int maxViewRange) {
             for (auto house : houses)
                 t.setExplored(house, cycle_count);
         });
-
-#if 0
-    const auto startY = std::max(0, location.y - maxViewRange);
-    const auto endY = std::min(sizeY-1, location.y + maxViewRange);
-    const auto startX = std::max(0, location.x - maxViewRange);
-    const auto endX = std::min(sizeX - 1, location.x + maxViewRange);
-
-    Coord coord;
-
-    for (coord.x = startX; coord.x <= endX; coord.x++) {
-        for(coord.y = startY; coord.y <= endY; coord.y++) {
-            const auto distance = maxViewRange <= 1 ? maximumDistance(location, coord) : blockDistanceApprox(location, coord);
-            if(distance > maxViewRange) {
-                continue;
-            }
-
-            const auto tile = getTile_internal(coord.x, coord.y);
-
-            if (!tile) {
-                continue;
-            }
-
-            tile->setExplored(houseID, cycle_count);
-        }
-    }
-#endif // 0
 }
 
 /**
@@ -864,27 +642,5 @@ void Map::createSpiceField(Coord location, int radius, bool centerIsThickSpice) 
                 t.setType(terrain);
             }
         });
-
-#if 0
-    Coord offset;
-    for(offset.x = -radius; offset.x <= radius; offset.x++) {
-        for(offset.y = -radius; offset.y <= radius; offset.y++) {
-            const auto coord = location + offset;
-
-            const auto pTile = getTile_internal(coord.x, coord.y);
-
-            if (!pTile)
-                continue;
-
-            if(pTile->isSand() && (distanceFrom(location, coord) <= radius)) {
-                if(centerIsThickSpice && (offset.x == 0) && (offset.y == 0)) {
-                    pTile->setType(Terrain_ThickSpice);
-                } else {
-                    pTile->setType(Terrain_Spice);
-                }
-            }
-        }
-    }
-#endif // 0
 }
 

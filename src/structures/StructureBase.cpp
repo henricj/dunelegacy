@@ -125,30 +125,6 @@ void StructureBase::assignToMap(const Coord& pos) {
             setActive(true);
             setRespondable(true);
         });
-#if 0
-    Coord temp;
-    for(int i = pos.x; i < pos.x + structureSize.x; i++) {
-        for(int j = pos.y; j < pos.y + structureSize.y; j++) {
-            if(currentGameMap->tileExists(i, j)) {
-                Tile* pTile = currentGameMap->getTile(i,j);
-                pTile->assignNonInfantryGroundObject(getObjectID());
-                if(!pTile->isConcrete() && currentGame->getGameInitSettings().getGameOptions().concreteRequired && (currentGame->gameState != GameState::Start)) {
-                    bFoundNonConcreteTile = true;
-
-                    if((itemID != Structure_Wall) && (itemID != Structure_ConstructionYard)) {
-                        setHealth(getHealth() - FixPoint(getMaxHealth())/(2*structureSize.x*structureSize.y));
-                    }
-                }
-                pTile->setType(Terrain_Rock);
-                pTile->setOwner(getOwner()->getHouseID());
-
-                setVisible(VIS_ALL, true);
-                setActive(true);
-                setRespondable(true);
-            }
-        }
-    }
-#endif // 0
 
     map->viewMap(getOwner()->getHouseID(), pos, getViewRange());
 
@@ -415,17 +391,6 @@ bool StructureBase::update() {
     smoke.erase(std::remove_if(std::begin(smoke), std::end(smoke),
         [](const StructureSmoke& s) { return currentGame->getGameCycleCount() - s.startGameCycle >= MILLI2CYCLES(8 * 1000); }),
         std::end(smoke));
-
-#if 0
-    std::list<StructureSmoke>::iterator iter = smoke.begin();
-    while(iter != smoke.end()) {
-        if(currentGame->getGameCycleCount() - iter->startGameCycle >= MILLI2CYCLES(8*1000)) {
-            smoke.erase(iter++);
-        } else {
-            ++iter;
-        }
-    }
-#endif // 0
 
     // update animations
     animationCounter++;
