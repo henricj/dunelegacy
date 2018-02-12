@@ -24,7 +24,7 @@
 #include <vector>
 #include <misc/SDL2pp.h>
 
-typedef enum {
+enum CMDTYPE {
     CMD_NONE,
     CMD_PLACE_STRUCTURE,                ///< PLACE_STRUCTURE(BUILDER_ID, X, Y)
     CMD_UNIT_MOVE2POS,                  ///< UNIT_MOVE2POS(OBJECT_ID,X,Y,BFORCED)
@@ -51,13 +51,13 @@ typedef enum {
     CMD_TURRET_ATTACKOBJECT,            ///< TURRET_ATTACKOBJECT(OBJECT_ID,TARGET_OBJECT_ID)
     CMD_TEST_SYNC,                      ///< TEST_SYNC(SEED)
     CMD_MAX
-} CMDTYPE;
+};
 
 /**
     This class represents one command with all its parameters. The command is specified by CommandID (see CMDTYPE)
     and Parameter holds all its parameters (see the documentation for every CMDTYPE). There can be up to 4 parameters
 */
-class Command {
+class Command final {
 public:
 
     /**
@@ -120,7 +120,7 @@ public:
     Command& operator=(Command &&) = default;
 
     /// destructor
-    virtual ~Command();
+    ~Command();
 
     /**
         Writes the command to a stream.
