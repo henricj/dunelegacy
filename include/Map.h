@@ -338,7 +338,7 @@ public:
         if (tileExists(x + 1, y)) f(tiles[tile_index(x + 1, y)]);
     }
 
-    template<typename F>
+    template<bool EmptyTile = true, bool PredicateValue = true, int AllEmptyMask = EmptyTile ? 0x0f : 0, int AllTrueMask = 0x0f, typename F>
     int get_neighbor_mask(int x, int y, F&& predicate)
     {
         const auto e_up = tileExists(x, y - 1);
@@ -347,90 +347,35 @@ public:
         const auto e_left = tileExists(x - 1, y);
 
         if (!e_up && !e_right && !e_down && !e_left)
-            return 0;
+            return AllEmptyMask;
 
         auto mask = 0;
 
-        if (!e_up || predicate(tiles[tile_index(x, y - 1)]))
-            mask |= 1 << 0;
-        if (!e_right || predicate(tiles[tile_index(x + 1, y)]))
-            mask |= 1 << 1;
-        if (!e_down || predicate(tiles[tile_index(x, y + 1)]))
-            mask |= 1 << 2;
-        if (!e_left || predicate(tiles[tile_index(x - 1, y)]))
-            mask |= 1 << 3;
+        if (EmptyTile)
+        {
+            if (!e_up || PredicateValue == predicate(tiles[tile_index(x, y - 1)]))
+                mask |= 1 << 0;
+            if (!e_right || PredicateValue == predicate(tiles[tile_index(x + 1, y)]))
+                mask |= 1 << 1;
+            if (!e_down || PredicateValue == predicate(tiles[tile_index(x, y + 1)]))
+                mask |= 1 << 2;
+            if (!e_left || PredicateValue == predicate(tiles[tile_index(x - 1, y)]))
+                mask |= 1 << 3;
+        }
+        else
+        {
+            if (e_up && PredicateValue == predicate(tiles[tile_index(x, y - 1)]))
+                mask |= 1 << 0;
+            if (e_right && PredicateValue == predicate(tiles[tile_index(x + 1, y)]))
+                mask |= 1 << 1;
+            if (e_down && PredicateValue == predicate(tiles[tile_index(x, y + 1)]))
+                mask |= 1 << 2;
+            if (e_left && PredicateValue == predicate(tiles[tile_index(x - 1, y)]))
+                mask |= 1 << 3;
+        }
 
-        if (0x0f == mask)
-            return 0;
-
-        const auto e_mask = static_cast<int>(e_up) | (static_cast<int>(e_right) << 1) | (static_cast<int>(e_down) << 2) | (static_cast<int>(e_left) << 3);
-
-        // up = !e_up || predicate(up)
-        // Substitute, and simplify...
-        //   !e_up || !up
-        // = !e_up || !(!e_up || predicate(up))
-        // = !e_up || (e_up && !predicate(up))
-        // = (!e_up || e_up) && (!e_up || !predicate(up))
-        // = true && (!e_up || !predicate(up))
-        // = !e_up || !predicate(up)
-
-        //if (!e_up || !up)
-        //    mask |= 1 << 0;
-        //if (!e_right && !right)
-        //    mask |= 1 << 1;
-        //if (!e_down || !down)
-        //    mask |= 1 << 2;
-        //if (!e_left || !left)
-        //    mask |= 1 << 3;
-
-        return 0x0f & (~e_mask | ~mask);
-    }
-
-    template<typename F>
-    int get_neighbor_mask_expensive_predicate(int x, int y, F&& predicate)
-    {
-        const auto e_up    = tileExists(x    , y - 1);
-        const auto e_right = tileExists(x + 1, y    );
-        const auto e_down  = tileExists(x    , y + 1);
-        const auto e_left  = tileExists(x - 1, y    );
-
-        if (!e_up && !e_right && !e_down && !e_left)
-            return 0;
-
-        const auto up    = !e_up    || predicate(tiles[tile_index(x    , y - 1)]);
-        if (up && !e_right && !e_down && !e_left)
-            return 0;
-
-        const auto right = !e_right || predicate(tiles[tile_index(x + 1, y    )]);
-        if (up && right && !e_down && !e_left)
-            return 0;
-
-        const auto down  = !e_down  || predicate(tiles[tile_index(x    , y + 1)]);
-        if (up && right && down && !e_left)
-            return 0;
-
-        const auto left  = !e_left  || predicate(tiles[tile_index(x - 1, y    )]);
-        if (up && right && down && left)
-            return 0;
-
-        auto mask = 0;
-
-        // up = !e_up || predicate(up)
-        // Substitute, and simplify...
-        //   !e_up || !up
-        // = !e_up || !(!e_up || predicate(up))
-        // = !e_up || (e_up && !predicate(up))
-        // = (!e_up || e_up) && (!e_up || !predicate(up))
-        // = true && (!e_up || !predicate(up))
-        // = !e_up || !predicate(up)
-        if (!e_up || !up)
-            mask |= 1 << 0;
-        if (!e_right && !right)
-            mask |= 1 << 1;
-        if (!e_down || !down)
-            mask |= 1 << 2;
-        if (!e_left || !left)
-            mask |= 1 << 3;
+        if (AllTrueMask != 0x0f && 0x0f == mask)
+            return AllTrueMask;
 
         return mask;
     }
