@@ -660,77 +660,76 @@ void UnitBase::bumpyMovementOnRock(FixPoint fromDistanceX, FixPoint fromDistance
 
 void UnitBase::navigate() {
 
-    if(isAFlyingUnit() || (((currentGame->getGameCycleCount() + getObjectID()*1337) % 5) == 0)) {
-        // navigation is only performed every 5th frame
+    // navigation is only performed every 5th frame
+    if(!isAFlyingUnit() && (currentGame->getGameCycleCount() + getObjectID()*1337) % 5 != 0) return;
 
-        if(!moving && !justStoppedMoving) {
-            if(location != destination) {
-                if(nextSpotFound == false)  {
+    if(moving || justStoppedMoving) return;
 
-                    if(pathList.empty() && (recalculatePathTimer == 0)) {
-                        recalculatePathTimer = 100;
+    if(location != destination) {
+        if(nextSpotFound == false) {
 
-                        if(!SearchPathWithAStar() && (++noCloserPointCount >= 3)
-                            && (location != oldLocation))
-                        {   //try searching for a path a number of times then give up
-                            if (target.getObjPointer() != nullptr && targetFriendly
-                                && (target.getObjPointer()->getItemID() != Structure_RepairYard)
-                                && ((target.getObjPointer()->getItemID() != Structure_Refinery)
-                                || (getItemID() != Unit_Harvester))) {
-                                setTarget(nullptr);
-                            }
+            if(pathList.empty() && (recalculatePathTimer == 0)) {
+                recalculatePathTimer = 100;
 
-                            /// This method will transport units if they get stuck inside a base
+                if(!SearchPathWithAStar() && (++noCloserPointCount >= 3)
+                    && (location != oldLocation))
+                {   //try searching for a path a number of times then give up
+                    if (target.getObjPointer() != nullptr && targetFriendly
+                        && (target.getObjPointer()->getItemID() != Structure_RepairYard)
+                        && ((target.getObjPointer()->getItemID() != Structure_Refinery)
+                            || (getItemID() != Unit_Harvester))) {
+                        setTarget(nullptr);
+                    }
+
+                    /// This method will transport units if they get stuck inside a base
                             /// This often happens after an AI get nuked and has a hole in their base
-                            if(getOwner()->hasCarryalls()
-                               && this->isAGroundUnit()
-                               && (currentGame->getGameInitSettings().getGameOptions().manualCarryallDrops || getOwner()->isAI())
-                               && blockDistance(location, destination) >= MIN_CARRYALL_LIFT_DISTANCE ) {
-                               static_cast<GroundUnit*>(this)->requestCarryall();
-                            } else if(  getOwner()->isAI()
-                                        && (getItemID() == Unit_Harvester)
-                                        && !static_cast<Harvester*>(this)->isReturning()
-                                        && blockDistance(location, destination) >= 2) {
-                                // try getting back to a refinery
-                                static_cast<Harvester*>(this)->doReturn();
-                            } else {
-                                setDestination(location);   //can't get any closer, give up
-                                forced = false;
-                            }
-                        }
-                    }
-
-                    if(!pathList.empty()) {
-                        nextSpot = pathList.back();
-                        pathList.pop_back();
-                        nextSpotFound = true;
-                        recalculatePathTimer = 0;
-                        noCloserPointCount = 0;
-                    }
-                } else {
-                    const auto tempAngle = currentGameMap->getPosAngle(location, nextSpot);
-                    if(tempAngle != INVALID) {
-                        nextSpotAngle = tempAngle;
-                    }
-
-                    if(!canPass(nextSpot.x, nextSpot.y)) {
-                        clearPath();
+                    if(getOwner()->hasCarryalls()
+                        && this->isAGroundUnit()
+                        && (currentGame->getGameInitSettings().getGameOptions().manualCarryallDrops || getOwner()->isAI())
+                        && blockDistance(location, destination) >= MIN_CARRYALL_LIFT_DISTANCE ) {
+                        static_cast<GroundUnit*>(this)->requestCarryall();
+                    } else if(  getOwner()->isAI()
+                        && (getItemID() == Unit_Harvester)
+                        && !static_cast<Harvester*>(this)->isReturning()
+                        && blockDistance(location, destination) >= 2) {
+                        // try getting back to a refinery
+                        static_cast<Harvester*>(this)->doReturn();
                     } else {
-                        if (drawnAngle == nextSpotAngle)    {
-                            moving = true;
-                            nextSpotFound = false;
-
-                            assignToMap(nextSpot);
-                            angle = drawnAngle;
-                            setSpeeds();
-                        }
+                        setDestination(location);   //can't get any closer, give up
+                        forced = false;
                     }
-                }
-            } else if(!target && attackPos.isInvalid()) {
-                if(((currentGame->getGameCycleCount() + getObjectID()*1337) % MILLI2CYCLES(UNITIDLETIMER)) == 0) {
-                    idleAction();
                 }
             }
+
+            if(!pathList.empty()) {
+                nextSpot = pathList.back();
+                pathList.pop_back();
+                nextSpotFound = true;
+                recalculatePathTimer = 0;
+                noCloserPointCount = 0;
+            }
+        } else {
+            const auto tempAngle = currentGameMap->getPosAngle(location, nextSpot);
+            if(tempAngle != INVALID) {
+                nextSpotAngle = tempAngle;
+            }
+
+            if(!canPass(nextSpot.x, nextSpot.y)) {
+                clearPath();
+            } else {
+                if (drawnAngle == nextSpotAngle)    {
+                    moving = true;
+                    nextSpotFound = false;
+
+                    assignToMap(nextSpot);
+                    angle = drawnAngle;
+                    setSpeeds();
+                }
+            }
+        }
+    } else if(!target && attackPos.isInvalid()) {
+        if(((currentGame->getGameCycleCount() + getObjectID()*1337) % MILLI2CYCLES(UNITIDLETIMER)) == 0) {
+            idleAction();
         }
     }
 }
@@ -738,7 +737,7 @@ void UnitBase::navigate() {
 void UnitBase::idleAction() {
     //not moving and not wanting to go anywhere, do some random turning
     if(isAGroundUnit() && (getItemID() != Unit_Harvester) && (getAttackMode() == GUARD)) {
-        // we might turn this cylce with 20% chance
+        // we might turn this cycle with 20% chance
         if(currentGame->randomGen.rand(0, 4) == 0) {
             // choose a random one of the eight possible angles
             nextSpotAngle = currentGame->randomGen.rand(0, 7);
@@ -747,24 +746,22 @@ void UnitBase::idleAction() {
 }
 
 void UnitBase::handleActionClick(int xPos, int yPos) {
-    if(respondable) {
-        if(currentGameMap->tileExists(xPos, yPos)) {
-            if(currentGameMap->getTile(xPos,yPos)->hasAnObject()) {
-                // attack unit/structure or move to structure
-                ObjectBase* tempTarget = currentGameMap->getTile(xPos,yPos)->getObject();
+    if(!respondable || !currentGameMap->tileExists(xPos, yPos)) return;
 
-                if(tempTarget->getOwner()->getTeamID() != getOwner()->getTeamID()) {
-                    // attack
-                    currentGame->getCommandManager().addCommand(Command(pLocalPlayer->getPlayerID(), CMD_UNIT_ATTACKOBJECT,objectID,tempTarget->getObjectID()));
-                } else {
-                    // move to object/structure
-                    currentGame->getCommandManager().addCommand(Command(pLocalPlayer->getPlayerID(), CMD_UNIT_MOVE2OBJECT,objectID,tempTarget->getObjectID()));
-                }
-            } else {
-                // move this unit
-                currentGame->getCommandManager().addCommand(Command(pLocalPlayer->getPlayerID(), CMD_UNIT_MOVE2POS,objectID,(Uint32) xPos, (Uint32) yPos, (Uint32) true));
-            }
-        }
+    const auto tile = currentGameMap->getTile(xPos,yPos);
+    const auto game = currentGame;
+
+    if(tile->hasAnObject()) {
+        // attack unit/structure or move to structure
+        const auto tempTarget = tile->getObject();
+
+        const auto is_owner = tempTarget->getOwner()->getTeamID() == getOwner()->getTeamID();
+        const auto cmd_type = is_owner ? CMD_UNIT_MOVE2OBJECT : CMD_UNIT_ATTACKOBJECT;
+
+        game->getCommandManager().addCommand(Command{ pLocalPlayer->getPlayerID(), cmd_type, objectID, tempTarget->getObjectID() });
+    } else {
+        // move this unit
+        game->getCommandManager().addCommand(Command{ pLocalPlayer->getPlayerID(), CMD_UNIT_MOVE2POS,objectID,static_cast<Uint32>(xPos), static_cast<Uint32>(yPos), static_cast<Uint32>(true) });
     }
 }
 
