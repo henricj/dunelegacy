@@ -44,6 +44,15 @@ void CommandManager::addCommand(const Command& cmd) {
     addCommand(cmd, CycleNumber);
 }
 
+void CommandManager::addCommand(Command&& cmd) {
+    auto CycleNumber = currentGame->getGameCycleCount();
+
+    if (pNetworkManager != nullptr) {
+        CycleNumber += networkCycleBuffer;
+    }
+    addCommand(std::move(cmd), CycleNumber);
+}
+
 void CommandManager::save(OutputStream& stream) const {
     for(unsigned int i=0;i<timeslot.size();i++) {
         for(const Command& command : timeslot[i]) {
@@ -127,7 +136,25 @@ void CommandManager::addCommand(const Command& cmd, Uint32 CycleNumber) {
         cmd.save(*pStream);
     }
 }
+
+void CommandManager::addCommand(Command&& cmd, Uint32 CycleNumber) {
+    if (bReadOnly != false) return;
+
+    if (CycleNumber >= timeslot.size()) {
+        timeslot.resize(CycleNumber + 1);
     }
+
+    if (pStream != nullptr) {
+        pStream->writeUint32(CycleNumber);
+        cmd.save(*pStream);
+    }
+
+    timeslot[CycleNumber].push_back(std::move(cmd));
+    std::stable_sort(timeslot[CycleNumber].begin(),
+        timeslot[CycleNumber].end(),
+        [](const Command& cmd1, const Command& cmd2) {
+            return (cmd1.getPlayerID() < cmd2.getPlayerID());
+        });
 }
 
 void CommandManager::executeCommands(Uint32 CycleNumber) const {
