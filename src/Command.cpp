@@ -37,6 +37,7 @@
 #include <structures/StarPort.h>
 #include <structures/ConstructionYard.h>
 
+#if 0
 Command::Command(Uint8 playerID, CMDTYPE id)
  : playerID(playerID), commandID(id)
 {
@@ -71,6 +72,7 @@ Command::Command(Uint8 playerID, CMDTYPE id, Uint32 parameter1, Uint32 parameter
     parameter.push_back(parameter3);
     parameter.push_back(parameter4);
 }
+#endif // 0
 
 Command::Command(Uint8 playerID, Uint8* data, Uint32 length)
  : playerID(playerID)
