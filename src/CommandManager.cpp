@@ -36,9 +36,9 @@ CommandManager::CommandManager() {
 CommandManager::~CommandManager() = default;
 
 void CommandManager::addCommand(const Command& cmd) {
-    Uint32 CycleNumber = currentGame->getGameCycleCount();
+    auto CycleNumber = currentGame->getGameCycleCount();
 
-    if(pNetworkManager != nullptr) {
+    if (pNetworkManager != nullptr) {
         CycleNumber += networkCycleBuffer;
     }
     addCommand(cmd, CycleNumber);
@@ -55,9 +55,9 @@ void CommandManager::save(OutputStream& stream) const {
 
 void CommandManager::load(InputStream& stream) {
     try {
-        while(1) {
-            Uint32 cycle = stream.readUint32();
-            addCommand(Command(stream), cycle);
+        while(true) {
+            const Uint32 cycle = stream.readUint32();
+            addCommand(Command{ stream }, cycle);
         }
     } catch (InputStream::exception&) {
         ;
@@ -65,38 +65,38 @@ void CommandManager::load(InputStream& stream) {
 }
 
 void CommandManager::update() {
-    if(pNetworkManager != nullptr) {
-        CommandList commandList;
-        for(Uint32 i = std::max((int) currentGame->getGameCycleCount() - MILLI2CYCLES(2500), 0); i < currentGame->getGameCycleCount() + networkCycleBuffer; i++) {
-            std::vector<Command> commands;
+    if(pNetworkManager == nullptr) return;
 
-            if(i < timeslot.size()) {
-                for(Command& command : timeslot[i]) {
-                    if(command.getPlayerID() == pLocalPlayer->getPlayerID()) {
-                        commands.push_back(command);
-                    }
+    CommandList commandList;
+    for(Uint32 i = std::max(static_cast<int>(currentGame->getGameCycleCount()) - MILLI2CYCLES(2500), 0); i < currentGame->getGameCycleCount() + networkCycleBuffer; i++) {
+        std::vector<Command> commands;
+
+        if(i < timeslot.size()) {
+            for(auto& command : timeslot[i]) {
+                if(command.getPlayerID() == pLocalPlayer->getPlayerID()) {
+                    commands.push_back(command);
                 }
             }
-
-            commandList.commandList.emplace_back(i, commands);
         }
 
-        pNetworkManager->sendCommandList(commandList);
+        commandList.commandList.emplace_back(i, commands);
     }
+
+    pNetworkManager->sendCommandList(commandList);
 }
 
 void CommandManager::addCommandList(const std::string& playername, const CommandList& commandList) {
-    HumanPlayer* pPlayer = dynamic_cast<HumanPlayer*>(currentGame->getPlayerByName(playername));
+    const auto pPlayer = dynamic_cast<HumanPlayer*>(currentGame->getPlayerByName(playername));
     if(pPlayer == nullptr) {
         return;
     }
 
-    for(const CommandList::CommandListEntry& commandListEntry : commandList.commandList) {
+    for(const auto& commandListEntry : commandList.commandList) {
         if(pPlayer->nextExpectedCommandsCycle > commandListEntry.cycle) {
             continue;
         }
 
-        for(const Command& command : commandListEntry.commands) {
+        for(const auto& command : commandListEntry.commands) {
             if(command.getPlayerID() != pPlayer->getPlayerID()) {
                 SDL_Log("Warning: Player '%s' send a command which he is not allowed to give!", playername.c_str());
             }
@@ -109,23 +109,24 @@ void CommandManager::addCommandList(const std::string& playername, const Command
 }
 
 void CommandManager::addCommand(const Command& cmd, Uint32 CycleNumber) {
-    if(bReadOnly == false) {
+    if (bReadOnly != false) return;
 
-        if(CycleNumber >= timeslot.size()) {
-            timeslot.resize(CycleNumber+1);
-        }
+    if (CycleNumber >= timeslot.size()) {
+        timeslot.resize(CycleNumber + 1);
+    }
 
-        timeslot[CycleNumber].push_back(cmd);
-        std::stable_sort(   timeslot[CycleNumber].begin(),
-                            timeslot[CycleNumber].end(),
-                            [](const Command& cmd1, const Command& cmd2) {
-                                return (cmd1.getPlayerID() < cmd2.getPlayerID());
-                            });
+    timeslot[CycleNumber].push_back(cmd);
+    std::stable_sort(timeslot[CycleNumber].begin(),
+        timeslot[CycleNumber].end(),
+        [](const Command& cmd1, const Command& cmd2) {
+            return (cmd1.getPlayerID() < cmd2.getPlayerID());
+        });
 
-        if(pStream != nullptr) {
-            pStream->writeUint32(CycleNumber);
-            cmd.save(*pStream);
-        }
+    if (pStream != nullptr) {
+        pStream->writeUint32(CycleNumber);
+        cmd.save(*pStream);
+    }
+}
     }
 }
 
