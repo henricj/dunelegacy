@@ -99,24 +99,24 @@ class Tile final
 {
 public:
 
-    typedef enum {
+    enum TerrainDamage_enum {
         Terrain_RockDamage,
         Terrain_SandDamage
-    } TerrainDamage_enum;
+    };
 
-    typedef enum {
+    enum SANDDAMAGETYPE {
         SandDamage1 = 0,
         SandDamage2 = 1,
         SandDamage3 = 2,
         SandDamage4 = 3
-    } SANDDAMAGETYPE;
+    };
 
-    typedef enum {
+    enum ROCKDAMAGETYPE {
         RockDamage1 = 0,
         RockDamage2 = 1
-    } ROCKDAMAGETYPE;
+    };
 
-    typedef enum {
+    enum TERRAINTILETYPE {
         TerrainTile_SlabHalfDestroyed = 0x00,
         TerrainTile_SlabDestroyed = 0x01,
         TerrainTile_Slab = 0x02,
@@ -217,7 +217,7 @@ public:
         TerrainTile_SpecialBloom = 0x55,
 
         TerrainTile_Invalid = ~0
-    } TERRAINTILETYPE;
+    };
 
 
     /**
