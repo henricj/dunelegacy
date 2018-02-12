@@ -21,6 +21,7 @@
 #include <misc/InputStream.h>
 #include <misc/OutputStream.h>
 
+#include <type_traits>
 #include <vector>
 #include <misc/SDL2pp.h>
 
@@ -64,8 +65,20 @@ public:
         Construct a command with CMDTYPE id and no parameter.
         \param  id  the id of the command
     */
-    Command(Uint8 playerID, CMDTYPE id);
+    Command(Uint8 playerID, CMDTYPE id) : playerID{ playerID }, commandID{ id } { }
 
+    // Both the MSVC in VS2017 15.5.6 and daily 14.13.26209-Pre fail to find the
+    // variadic template ctor if type check is a template parameter.
+    template<typename... Parameters> //, std::enable_if_t<(std::is_convertible_v<Parameters, Uint32> && ...)>>
+    Command(Uint8 playerID, CMDTYPE id, Parameters&&... parameters) : playerID{playerID}, commandID{ id } {
+        static_assert((std::is_convertible_v<decltype(parameters), Uint32> && ...));
+
+        // Pilfered from https://stackoverflow.com/a/39659128
+        parameter.reserve(sizeof...(parameters));
+        (parameter.push_back(parameters), ...);
+    }
+
+#if 0
     /**
         Construct a command with CMDTYPE id and one parameter.
         \param  id          the id of the command
@@ -99,6 +112,7 @@ public:
         \param  parameter4  the forth parameter
     */
     Command(Uint8 playerID, CMDTYPE id, Uint32 parameter1, Uint32 parameter2, Uint32 parameter3, Uint32 parameter4);
+#endif // 0
 
     /**
         Construct a command from raw memory.
