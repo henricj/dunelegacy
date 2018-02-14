@@ -76,6 +76,7 @@ dunelegacy_SOURCES =	AStarSearch.cpp\
 						misc/Scaler.cpp\
 						$(NULL)\
 						GUI/Button.cpp\
+						GUI/TextButton.cpp\
 						GUI/GUIStyle.cpp\
 						GUI/Widget.cpp\
 						GUI/Window.cpp\
