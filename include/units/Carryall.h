@@ -20,6 +20,8 @@
 
 #include <units/AirUnit.h>
 
+#include <Game.h>
+
 class Carryall final : public AirUnit
 {
 public:
