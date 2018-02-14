@@ -21,6 +21,7 @@
 #include <Tile.h>
 #include <misc/InputStream.h>
 #include <misc/OutputStream.h>
+#include <misc/Random.h>
 #include <misc/exceptions.h>
 
 #include "AStarSearch.h"
