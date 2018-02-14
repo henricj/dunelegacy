@@ -2,12 +2,12 @@
 # Copyright (C) 2012 THE dunelegacy'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the dunelegacy package.
 # Richard Schaller <richard.schaller@gmx.de>, 2012.
-#
+# 
 msgid ""
 msgstr ""
 "Project-Id-Version: dunelegacy 0.96.4\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-05-26 20:16+0200\n"
+"POT-Creation-Date: 2019-06-08 16:20-0700\n"
 "PO-Revision-Date: 2012-08-31 01:41+0200\n"
 "Last-Translator: Richard Schaller <richard.schaller@gmx.de>\n"
 "Language-Team: Deutsch <>\n"
@@ -17,172 +17,25 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n!=1);\n"
 
-#: include/GUI/ObjectInterfaces/BuilderInterface.h:48
-#: include/GUI/ObjectInterfaces/BuilderInterface.h:54
-msgid "Upgrade"
-msgstr "Verbessern"
-
-#: include/GUI/ObjectInterfaces/BuilderInterface.h:51
-msgid "Upgrade this structure (Hotkey: U)"
-msgstr "Diese Gebäude upgraden (Hotkey: U)"
-
-#: include/GUI/ObjectInterfaces/DefaultStructureInterface.h:46
-msgid "Repair this structure (Hotkey: R)"
-msgstr "Dieses Gebäude reparieren (Hotkey: R)"
-
-#: include/GUI/ObjectInterfaces/MultiUnitInterface.h:68
-#: include/GUI/ObjectInterfaces/UnitInterface.h:55
-msgid "Move to a position (Hotkey: M)"
-msgstr "Zu einer Position bewegen (Hotkey: M)"
-
-#: include/GUI/ObjectInterfaces/MultiUnitInterface.h:76
-#: include/GUI/ObjectInterfaces/UnitInterface.h:63
-msgid "Attack a unit, structure or position (Hotkey: A)"
-msgstr "Eine Einheit, Gebäude oder Position angreifen (Hotkey: A)"
-
-#: include/GUI/ObjectInterfaces/MultiUnitInterface.h:84
-#: include/GUI/ObjectInterfaces/UnitInterface.h:71
-msgid "Request Carryall drop to a position (Hotkey: D)"
-msgstr "Per Carryall zu einer Position bringen (Hotkey: D)"
-
-#: include/GUI/ObjectInterfaces/MultiUnitInterface.h:92
-#: include/GUI/ObjectInterfaces/UnitInterface.h:79
-msgid "Capture a building (Hotkey: C)"
-msgstr "Ein Gebäude einnehmen (Hotkey: C)"
-
-#: include/GUI/ObjectInterfaces/MultiUnitInterface.h:102
-#: include/GUI/ObjectInterfaces/UnitInterface.h:90
-msgid "Return harvester to refinery (Hotkey: H)"
-msgstr "Erntemaschine in Raffinerie zurückschicken (Hotkey: H)"
-
-#: include/GUI/ObjectInterfaces/MultiUnitInterface.h:109
-#: include/GUI/ObjectInterfaces/UnitInterface.h:98
-msgid "Build a new construction yard"
-msgstr "Bauhof aufbauen"
-
-#: include/GUI/ObjectInterfaces/MultiUnitInterface.h:116
-#: include/GUI/ObjectInterfaces/UnitInterface.h:106
-msgid "Self-destruct this unit"
-msgstr "Einheit selbst-zerstören"
-
-#: include/GUI/ObjectInterfaces/MultiUnitInterface.h:123
-#: include/GUI/ObjectInterfaces/UnitInterface.h:114
-msgid "Repair this unit (Hotkey: R)"
-msgstr "Diese Einheit reparieren (Hotkey: R)"
-
-#: include/GUI/ObjectInterfaces/MultiUnitInterface.h:131
-#: include/GUI/ObjectInterfaces/UnitInterface.h:122
-msgid "Guard"
-msgstr "Bewachen"
-
-#: include/GUI/ObjectInterfaces/MultiUnitInterface.h:133
-#: include/GUI/ObjectInterfaces/UnitInterface.h:124
-msgid "Unit will not move from location"
-msgstr "Die Einheit wird sich von ihrem Ort nicht wegbewegen"
-
-#: include/GUI/ObjectInterfaces/MultiUnitInterface.h:140
-#: include/GUI/ObjectInterfaces/UnitInterface.h:131
-msgid "Area Guard"
-msgstr "Überwachen"
-
-#: include/GUI/ObjectInterfaces/MultiUnitInterface.h:142
-#: include/GUI/ObjectInterfaces/UnitInterface.h:133
-msgid "Unit will engage any unit within guard range"
-msgstr "Jede feindliche Einheit in der Umgebung verfolgen"
-
-#: include/GUI/ObjectInterfaces/MultiUnitInterface.h:149
-#: include/GUI/ObjectInterfaces/UnitInterface.h:140
-msgid "Stop"
-msgstr "Stoppen"
-
-#: include/GUI/ObjectInterfaces/MultiUnitInterface.h:151
-#: include/GUI/ObjectInterfaces/UnitInterface.h:142
-msgid "Unit will not move, nor attack"
-msgstr "Die Einheit wird sich weder bewegen noch angreifen"
-
-#: include/GUI/ObjectInterfaces/MultiUnitInterface.h:158
-#: include/GUI/ObjectInterfaces/UnitInterface.h:149
-msgid "Ambush"
-msgstr "Hinterhalt"
-
-#: include/GUI/ObjectInterfaces/MultiUnitInterface.h:160
-#: include/GUI/ObjectInterfaces/UnitInterface.h:151
-msgid "Unit will not move until enemy unit spotted"
-msgstr "Die Einheit bewegt sich erst, wenn sie einen Gegner sieht"
-
-#: include/GUI/ObjectInterfaces/MultiUnitInterface.h:167
-#: include/GUI/ObjectInterfaces/UnitInterface.h:158
-msgid "Hunt"
-msgstr "Jagd"
-
-#: include/GUI/ObjectInterfaces/MultiUnitInterface.h:169
-#: include/GUI/ObjectInterfaces/UnitInterface.h:160
-msgid "Unit will immediately start to engage an enemy unit"
-msgstr "Die Einheit sucht sich sofort einen Gegner"
-
-#: include/GUI/ObjectInterfaces/MultiUnitInterface.h:176
-#: include/GUI/ObjectInterfaces/UnitInterface.h:167
-msgid "Retreat"
-msgstr "Rückzug"
-
-#: include/GUI/ObjectInterfaces/MultiUnitInterface.h:178
-#: include/GUI/ObjectInterfaces/UnitInterface.h:169
-msgid "Unit will retreat back to base"
-msgstr "Die Einheit zieht sich zur eignen Basis zurück"
-
-#: include/GUI/ObjectInterfaces/PalaceInterface.h:47
-msgid "READY"
-msgstr "BEREIT"
-
-#: include/GUI/ObjectInterfaces/RadarInterface.h:70
-msgid "Friend"
-msgstr "Freund"
-
-#: include/GUI/ObjectInterfaces/RadarInterface.h:71
-msgid "Enemy"
-msgstr "Feind"
-
-#: include/GUI/ObjectInterfaces/RefineryAndSiloInterface.h:70
-msgid "Capacity"
-msgstr "Kapaz."
-
-#: include/GUI/ObjectInterfaces/RefineryAndSiloInterface.h:71
-msgid "Stored"
-msgstr "Inhalt"
-
-#: include/GUI/ObjectInterfaces/WindTrapInterface.h:70
-msgid "Required"
-msgstr "Benöt."
-
-#: include/GUI/ObjectInterfaces/WindTrapInterface.h:71
-msgid "Produced"
-msgstr "Prod."
-
-#: src/Choam.cpp:109
-msgid "New Starport prices"
-msgstr "Neue Preise am Raumflughafen"
+#: src/FileClasses/FileManager.cpp:98
+msgid "LanguagePakFiles"
+msgstr "GERMAN.PAK"
 
 #. / GROUP1 / GERTXT 6: Add space after TXT
-#: src/CutScenes/Finale.cpp:90 src/CutScenes/Intro.cpp:99
-#: src/CutScenes/Meanwhile.cpp:47 src/FileClasses/GFXManager.cpp:132
-#: src/FileClasses/GFXManager.cpp:133 src/FileClasses/GFXManager.cpp:137
-#: src/FileClasses/GFXManager.cpp:141 src/FileClasses/GFXManager.cpp:142
-#: src/FileClasses/GFXManager.cpp:149 src/FileClasses/GFXManager.cpp:150
-#: src/FileClasses/GFXManager.cpp:556 src/FileClasses/GFXManager.cpp:557
-#: src/FileClasses/PictureFactory.cpp:199
+#: src/FileClasses/GFXManager.cpp:132 src/FileClasses/GFXManager.cpp:133
+#: src/FileClasses/GFXManager.cpp:137 src/FileClasses/GFXManager.cpp:141
+#: src/FileClasses/GFXManager.cpp:142 src/FileClasses/GFXManager.cpp:149
+#: src/FileClasses/GFXManager.cpp:150 src/FileClasses/GFXManager.cpp:556
+#: src/FileClasses/GFXManager.cpp:557 src/FileClasses/PictureFactory.cpp:199
 #: src/FileClasses/PictureFactory.cpp:200 src/FileClasses/TextManager.cpp:54
 #: src/FileClasses/TextManager.cpp:55 src/FileClasses/TextManager.cpp:56
 #: src/FileClasses/TextManager.cpp:57 src/FileClasses/TextManager.cpp:58
 #: src/FileClasses/TextManager.cpp:61 src/FileClasses/TextManager.cpp:62
-#: src/FileClasses/TextManager.cpp:63 src/main.cpp:544
+#: src/FileClasses/TextManager.cpp:63 src/main.cpp:565
 #: src/Menu/MapChoice.cpp:448 src/Menu/MapChoice.cpp:452
 #, c-format
 msgid "LanguageFileExtension"
 msgstr "GER"
-
-#: src/FileClasses/FileManager.cpp:94
-msgid "LanguagePakFiles"
-msgstr "GERMAN.PAK"
 
 #: src/FileClasses/TextManager.cpp:72
 msgid "@TEXTH.ENG|0#Description of House Harkonnen"
@@ -1325,72 +1178,72 @@ msgid ""
 "text for Mercenary mission 9"
 msgstr "@TEXTO.GER|39|Atreides->Sardaukar|Ordos->Mercenary|Harkonnen->Fremen"
 
-#: src/Game.cpp:525
+#: src/Game.cpp:551
 msgid "You Have Completed Your Mission."
 msgstr "Mission erfolgreich abgeschlossen."
 
-#: src/Game.cpp:527
+#: src/Game.cpp:553
 msgid "You Have Failed Your Mission."
 msgstr "Mission gescheitert."
 
-#: src/Game.cpp:764
+#: src/Game.cpp:797
 msgid "@DUNE.ENG|226#Harvester"
 msgstr "@DUNE.GER|226"
 
-#: src/Game.cpp:769
+#: src/Game.cpp:802
 msgid "@DUNE.ENG|124#full and awaiting pickup"
 msgstr "@DUNE.GER|124"
 
-#: src/Game.cpp:771
+#: src/Game.cpp:804
 msgid "@DUNE.ENG|123#full and returning"
 msgstr "@DUNE.GER|123"
 
-#: src/Game.cpp:773
+#: src/Game.cpp:806
 msgid "@DUNE.ENG|122#full and harvesting"
 msgstr "@DUNE.GER|122"
 
-#: src/Game.cpp:775
+#: src/Game.cpp:808
 msgid "@DUNE.ENG|121#full"
 msgstr "@DUNE.GER|121"
 
-#: src/Game.cpp:780
+#: src/Game.cpp:813
 msgid "@DUNE.ENG|128#empty and awaiting pickup"
 msgstr "@DUNE.GER|128"
 
-#: src/Game.cpp:782
+#: src/Game.cpp:815
 msgid "@DUNE.ENG|127#empty and returning"
 msgstr "@DUNE.GER|127"
 
-#: src/Game.cpp:784
+#: src/Game.cpp:817
 msgid "@DUNE.ENG|126#empty and harvesting"
 msgstr "@DUNE.GER|126"
 
-#: src/Game.cpp:786
+#: src/Game.cpp:819
 msgid "@DUNE.ENG|125#empty"
 msgstr "@DUNE.GER|125"
 
-#: src/Game.cpp:1969 src/Game.cpp:1981 src/GUI/dune/GameOptionsWindow.cpp:127
+#: src/Game.cpp:2001 src/Game.cpp:2013 src/GUI/dune/GameOptionsWindow.cpp:127
 msgid "Game speed"
 msgstr "Spielgeschwindigkeit"
 
-#: src/Game.cpp:2206
+#: src/Game.cpp:2238
 msgid "Game resumed!"
 msgstr "Spiel fortgesetzt!"
 
-#: src/Game.cpp:2209
+#: src/Game.cpp:2241
 msgid "Game paused!"
 msgstr "Spiel angehalten!"
 
-#: src/Game.cpp:2245 src/Game.cpp:2266
+#: src/Game.cpp:2277 src/Game.cpp:2298
 msgid "@DUNE.ENG|135#Cannot place slab here."
 msgstr "@DUNE.GER|135"
 
-#: src/Game.cpp:2279
+#: src/Game.cpp:2311
 #, c-format
 msgid "@DUNE.ENG|134#Cannot place %%s here."
 msgstr "@DUNE.GER|134"
 
-#: src/Game.cpp:2462
+#: src/Game.cpp:2494
 msgid "Screenshot saved"
 msgstr "Screenshot gespeichert"
 
@@ -1583,35 +1436,35 @@ msgid "Do you really want to restart this game?"
 msgstr "Dieses Spiel wirklich neustarten?"
 
 #: src/GUI/dune/InGameMenu.cpp:208 src/GUI/dune/InGameMenu.cpp:220
-#: src/GUI/dune/LoadSaveWindow.cpp:155 src/MapEditor/LoadMapWindow.cpp:154
+#: src/GUI/dune/LoadSaveWindow.cpp:160 src/MapEditor/LoadMapWindow.cpp:154
 #: src/MapEditor/MapEditorInterface.cpp:869
 msgid "No"
 msgstr "Nein"
 
 #: src/GUI/dune/InGameMenu.cpp:209 src/GUI/dune/InGameMenu.cpp:221
-#: src/GUI/dune/LoadSaveWindow.cpp:156 src/MapEditor/LoadMapWindow.cpp:155
+#: src/GUI/dune/LoadSaveWindow.cpp:161 src/MapEditor/LoadMapWindow.cpp:155
 #: src/MapEditor/MapEditorInterface.cpp:869
 msgid "Yes"
 msgstr "Ja"
 
-#: src/GUI/dune/InGameSettingsMenu.cpp:91 src/GUI/dune/LoadSaveWindow.cpp:97
+#: src/GUI/dune/InGameSettingsMenu.cpp:91 src/GUI/dune/LoadSaveWindow.cpp:102
 #: src/MapEditor/ChoamWindow.cpp:119 src/MapEditor/LoadMapWindow.cpp:117
-#: src/MapEditor/MapSettingsWindow.cpp:267 src/MapEditor/NewMapWindow.cpp:203
+#: src/MapEditor/MapSettingsWindow.cpp:267 src/MapEditor/NewMapWindow.cpp:206
 #: src/MapEditor/PlayerSettingsWindow.cpp:172
 #: src/MapEditor/ReinforcementsWindow.cpp:176 src/MapEditor/TeamsWindow.cpp:169
 msgid "Cancel"
 msgstr "Abbrechen"
 
-#: src/GUI/dune/LoadSaveWindow.cpp:89
+#: src/GUI/dune/LoadSaveWindow.cpp:94
 msgid "Save"
 msgstr "Speichern"
 
-#: src/GUI/dune/LoadSaveWindow.cpp:154 src/MapEditor/LoadMapWindow.cpp:153
+#: src/GUI/dune/LoadSaveWindow.cpp:159 src/MapEditor/LoadMapWindow.cpp:153
 #, c-format
 msgid "Do you really want to delete '%s' ?"
 msgstr "Möchten Sie wirklich '%s' löschen?"
 
-#: src/GUI/dune/LoadSaveWindow.cpp:219
+#: src/GUI/dune/LoadSaveWindow.cpp:224
 msgid ""
 "Invalid file name! File names must not contain \\ or / and must not be empty!"
 msgstr ""
@@ -1627,12 +1480,12 @@ msgstr "Entfernen"
 msgid "Waiting for other players... "
 msgstr "Auf andere Spieler warten... "
 
-#: src/House.cpp:331
+#: src/House.cpp:344
 msgid ""
 "@DUNE.ENG|145#As insufficient spice storage is available, spice is lost."
 msgstr "@DUNE.GER|145"
 
-#: src/House.cpp:540
+#: src/House.cpp:565
 #, c-format
 msgid "House '%s' has been defeated."
 msgstr "Haus '%s' wurde geschlagen."
@@ -1651,7 +1504,7 @@ msgstr ""
 "erhöht."
 
 #: src/MapEditor/LoadMapWindow.cpp:55 src/MapEditor/MapEditorInterface.cpp:109
-#: src/MapEditor/NewMapWindow.cpp:211
+#: src/MapEditor/NewMapWindow.cpp:214
 msgid "Load Map"
 msgstr "Karte laden"
 
@@ -1741,27 +1594,27 @@ msgstr "Teams"
 #: src/MapEditor/MapEditorInterface.cpp:183
 #: src/MapEditor/MapEditorInterface.cpp:192
 #: src/MapEditor/MapEditorInterface.cpp:201
-#: src/MapEditor/MapEditorInterface.cpp:210 src/MapEditor/NewMapWindow.cpp:158
+#: src/MapEditor/MapEditorInterface.cpp:210 src/MapEditor/NewMapWindow.cpp:161
 msgid "Mirror mode"
 msgstr "Spiegelmodus"
 
-#: src/MapEditor/MapEditorInterface.cpp:174 src/MapEditor/NewMapWindow.cpp:161
+#: src/MapEditor/MapEditorInterface.cpp:174 src/MapEditor/NewMapWindow.cpp:164
 msgid "Off"
 msgstr "Aus"
 
-#: src/MapEditor/MapEditorInterface.cpp:183 src/MapEditor/NewMapWindow.cpp:162
+#: src/MapEditor/MapEditorInterface.cpp:183 src/MapEditor/NewMapWindow.cpp:165
 msgid "Horizontal"
 msgstr "Horizontal"
 
-#: src/MapEditor/MapEditorInterface.cpp:192 src/MapEditor/NewMapWindow.cpp:163
+#: src/MapEditor/MapEditorInterface.cpp:192 src/MapEditor/NewMapWindow.cpp:166
 msgid "Vertical"
 msgstr "Vertikal"
 
-#: src/MapEditor/MapEditorInterface.cpp:201 src/MapEditor/NewMapWindow.cpp:164
+#: src/MapEditor/MapEditorInterface.cpp:201 src/MapEditor/NewMapWindow.cpp:167
 msgid "Horizontal and vertical"
 msgstr "Horizontal und vertikal"
 
-#: src/MapEditor/MapEditorInterface.cpp:210 src/MapEditor/NewMapWindow.cpp:165
+#: src/MapEditor/MapEditorInterface.cpp:210 src/MapEditor/NewMapWindow.cpp:168
 msgid "Inverse"
 msgstr "Invertiert"
 
@@ -1888,11 +1741,11 @@ msgstr "Level 7:  Haus IX, Sonic Tank/Deviator/Devastator, Ornithopter"
 msgid "Level 8:  Palace, Fremen, Saboteur"
 msgstr "Level 8:  Palast, Fremen, Saboteur"
 
-#: src/MapEditor/MapSettingsWindow.cpp:241 src/MapEditor/NewMapWindow.cpp:177
+#: src/MapEditor/MapSettingsWindow.cpp:241 src/MapEditor/NewMapWindow.cpp:180
 msgid "Author:"
 msgstr "Ersteller:"
 
-#: src/MapEditor/MapSettingsWindow.cpp:252 src/MapEditor/NewMapWindow.cpp:188
+#: src/MapEditor/MapSettingsWindow.cpp:252 src/MapEditor/NewMapWindow.cpp:191
 msgid "License:"
 msgstr "Lizenz:"
 
@@ -1932,19 +1785,19 @@ msgstr "Klein (32x32)"
 msgid "Normal (62x62)"
 msgstr "Normal (62x62)"
 
-#: src/MapEditor/NewMapWindow.cpp:119
+#: src/MapEditor/NewMapWindow.cpp:122
 msgid "Random Seed:"
 msgstr "Zufallswert:"
 
-#: src/MapEditor/NewMapWindow.cpp:131
+#: src/MapEditor/NewMapWindow.cpp:134
 msgid "Rock:"
 msgstr "Fels:"
 
-#: src/MapEditor/NewMapWindow.cpp:143
+#: src/MapEditor/NewMapWindow.cpp:146
 msgid "Spice:"
 msgstr "Gewürz:"
 
-#: src/MapEditor/NewMapWindow.cpp:219
+#: src/MapEditor/NewMapWindow.cpp:222
 msgid "Create"
 msgstr "Erstellen"
 
@@ -2723,11 +2576,11 @@ msgstr "Feindbasis"
 msgid "home base"
 msgstr "eigene Basis"
 
-#: src/structures/BuilderBase.cpp:244 src/structures/StarPort.cpp:109
+#: src/structures/BuilderBase.cpp:230 src/structures/StarPort.cpp:109
 msgid "Not enough money"
 msgstr "Nicht genügend Credits."
 
-#: src/structures/BuilderBase.cpp:340
+#: src/structures/BuilderBase.cpp:326
 msgid "@DUNE.ENG|51#Construction is complete"
 msgstr "@DUNE.GER|51"
 
@@ -2751,13 +2604,100 @@ msgstr "@DUNE.GER|79"
 msgid "This unit is sold out"
 msgstr "Diese Einheit ist ausverkauft"
 
-#: src/structures/StarPort.cpp:263
+#: src/structures/StarPort.cpp:259
 msgid "@DUNE.ENG|80#Frigate has arrived"
 msgstr "@DUNE.GER|80"
 
 #: src/units/MCV.cpp:87
 msgid "You cannot deploy here."
 msgstr "Kann hier nicht eingesetzt werden."
+
+#~ msgid "Upgrade"
+#~ msgstr "Verbessern"
+
+#~ msgid "Upgrade this structure (Hotkey: U)"
+#~ msgstr "Diese Gebäude upgraden (Hotkey: U)"
+
+#~ msgid "Repair this structure (Hotkey: R)"
+#~ msgstr "Dieses Gebäude reparieren (Hotkey: R)"
+
+#~ msgid "Move to a position (Hotkey: M)"
+#~ msgstr "Zu einer Position bewegen (Hotkey: M)"
+
+#~ msgid "Attack a unit, structure or position (Hotkey: A)"
+#~ msgstr "Eine Einheit, Gebäude oder Position angreifen (Hotkey: A)"
+
+#~ msgid "Request Carryall drop to a position (Hotkey: D)"
+#~ msgstr "Per Carryall zu einer Position bringen (Hotkey: D)"
+
+#~ msgid "Capture a building (Hotkey: C)"
+#~ msgstr "Ein Gebäude einnehmen (Hotkey: C)"
+
+#~ msgid "Return harvester to refinery (Hotkey: H)"
+#~ msgstr "Erntemaschine in Raffinerie zurückschicken (Hotkey: H)"
+
+#~ msgid "Build a new construction yard"
+#~ msgstr "Bauhof aufbauen"
+
+#~ msgid "Self-destruct this unit"
+#~ msgstr "Einheit selbst-zerstören"
+
+#~ msgid "Repair this unit (Hotkey: R)"
+#~ msgstr "Diese Einheit reparieren (Hotkey: R)"
+
+#~ msgid "Guard"
+#~ msgstr "Bewachen"
+
+#~ msgid "Unit will not move from location"
+#~ msgstr "Die Einheit wird sich von ihrem Ort nicht wegbewegen"
+
+#~ msgid "Area Guard"
+#~ msgstr "Überwachen"
+
+#~ msgid "Unit will engage any unit within guard range"
+#~ msgstr "Jede feindliche Einheit in der Umgebung verfolgen"
+
+#~ msgid "Stop"
+#~ msgstr "Stoppen"
+
+#~ msgid "Unit will not move, nor attack"
+#~ msgstr "Die Einheit wird sich weder bewegen noch angreifen"
+
+#~ msgid "Ambush"
+#~ msgstr "Hinterhalt"
+
+#~ msgid "Unit will not move until enemy unit spotted"
+#~ msgstr "Die Einheit bewegt sich erst, wenn sie einen Gegner sieht"
+
+#~ msgid "Hunt"
+#~ msgstr "Jagd"
+
+#~ msgid "Unit will immediately start to engage an enemy unit"
+#~ msgstr "Die Einheit sucht sich sofort einen Gegner"
+
+#~ msgid "Retreat"
+#~ msgstr "Rückzug"
+
+#~ msgid "Unit will retreat back to base"
+#~ msgstr "Die Einheit zieht sich zur eignen Basis zurück"
+
+#~ msgid "READY"
+#~ msgstr "BEREIT"
+
+#~ msgid "Capacity"
+#~ msgstr "Kapaz."
+
+#~ msgid "Stored"
+#~ msgstr "Inhalt"
+
+#~ msgid "Required"
+#~ msgstr "Benöt."
+
+#~ msgid "Produced"
+#~ msgstr "Prod."
+
+#~ msgid "New Starport prices"
+#~ msgstr "Neue Preise am Raumflughafen"
 
 #~ msgid "Double Buffering"
 #~ msgstr "Double Buffering"
