@@ -56,6 +56,8 @@ static RNG CreateRootGenerator()
 #else
 #define THREAD_LOCAL thread_local
 #endif
+#elif defined(__clang__)
+#define THREAD_LOCAL thread_local
 #else
 #define THREAD_LOCAL __thread
 #endif
