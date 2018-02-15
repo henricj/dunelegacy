@@ -118,7 +118,6 @@
       <EnablePREfast>false</EnablePREfast>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
       <StringPooling>true</StringPooling>
-      <EnableEnhancedInstructionSet>AdvancedVectorExtensions</EnableEnhancedInstructionSet>
       <FloatingPointModel>Fast</FloatingPointModel>
       <DiagnosticsFormat>Caret</DiagnosticsFormat>
     </ClCompile>
@@ -153,7 +152,6 @@ IF %ERRORLEVEL% LSS 8 exit 0</Command>
       <EnablePREfast>false</EnablePREfast>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
       <StringPooling>true</StringPooling>
-      <EnableEnhancedInstructionSet>AdvancedVectorExtensions</EnableEnhancedInstructionSet>
       <FloatingPointModel>Fast</FloatingPointModel>
       <DiagnosticsFormat>Caret</DiagnosticsFormat>
     </ClCompile>
@@ -191,7 +189,6 @@ IF %ERRORLEVEL% LSS 8 exit 0</Command>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
       <EnablePREfast>false</EnablePREfast>
       <StringPooling>true</StringPooling>
-      <EnableEnhancedInstructionSet>AdvancedVectorExtensions</EnableEnhancedInstructionSet>
       <FloatingPointModel>Fast</FloatingPointModel>
       <DiagnosticsFormat>Caret</DiagnosticsFormat>
     </ClCompile>
@@ -230,7 +227,6 @@ IF %ERRORLEVEL% LSS 8 exit 0</Command>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
       <EnablePREfast>false</EnablePREfast>
       <StringPooling>true</StringPooling>
-      <EnableEnhancedInstructionSet>AdvancedVectorExtensions</EnableEnhancedInstructionSet>
       <FloatingPointModel>Fast</FloatingPointModel>
       <DiagnosticsFormat>Caret</DiagnosticsFormat>
     </ClCompile>
