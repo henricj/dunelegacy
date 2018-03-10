@@ -31,7 +31,7 @@ namespace fix32_support
         {
             static_assert(First == '.' || (First >= '0' && First <= '9'));
 
-            if (First == '.')
+            if constexpr (First == '.')
                 return fp32_fraction_parser<I, 0ull, 1, Chars...>();
 
             return fp32_parser<10 * I + (static_cast<int>(First) - '0'), Chars...>();
