@@ -30,7 +30,7 @@ class CommandList {
 public:
     class CommandListEntry {
     public:
-        CommandListEntry(Uint32 cycle, std::vector<Command> commands)
+        CommandListEntry(Uint32 cycle, std::vector<Command>&& commands)
          : cycle(cycle), commands(std::move(commands)) {
 
         }
