@@ -90,7 +90,7 @@ EXTERN HumanPlayer*         pLocalPlayer;               ///< the player that is 
 
 EXTERN RobustList<UnitBase*>       unitList;            ///< the list of all units
 EXTERN RobustList<StructureBase*>  structureList;       ///< the list of all structures
-EXTERN RobustList<Bullet*>         bulletList;          ///< the list of all bullets
+EXTERN std::vector<std::unique_ptr<Bullet>>         bulletList;          ///< the list of all bullets
 
 
 // misc
