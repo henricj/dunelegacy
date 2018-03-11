@@ -108,18 +108,18 @@ void RocketTurret::attack() {
 
     if(distanceFrom(centerPoint, targetCenterPoint) < 3 * TILESIZE) {
         // we are just shooting a bullet as a gun turret would do
-        bulletList.push_back( new Bullet( objectID, &centerPoint, &targetCenterPoint, Bullet_ShellTurret,
+        currentGameMap->add_bullet(objectID, &centerPoint, &targetCenterPoint, Bullet_ShellTurret,
                                           currentGame->objectData.data[Structure_GunTurret][originalHouseID].weapondamage,
-                                          pObject->isAFlyingUnit() ) );
+                                          pObject->isAFlyingUnit());
 
         currentGameMap->viewMap(pObject->getOwner()->getTeam(), location, 2);
         soundPlayer->playSoundAt(Sound_ExplosionSmall, location);
         weaponTimer = currentGame->objectData.data[Structure_GunTurret][originalHouseID].weaponreloadtime;
     } else {
         // we are in normal shooting mode
-        bulletList.push_back( new Bullet( objectID, &centerPoint, &targetCenterPoint, bulletType,
+        currentGameMap->add_bullet(objectID, &centerPoint, &targetCenterPoint, bulletType,
                                           currentGame->objectData.data[itemID][originalHouseID].weapondamage,
-                                          pObject->isAFlyingUnit() ) );
+                                          pObject->isAFlyingUnit());
 
         currentGameMap->viewMap(pObject->getOwner()->getTeam(), location, 2);
         soundPlayer->playSoundAt(attackSound, location);
