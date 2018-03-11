@@ -1063,7 +1063,7 @@ void Game::runMainLoop() {
     bShowTime = winFlags & WINLOSEFLAGS_TIMEOUT;
 
     // Check if a player has lost
-    std::for_each(house.begin(), house.end(), [](std::unique_ptr<House>& h) { if (h && !h->isAlive()) h->lose(true); });
+    std::for_each(house.begin(), house.end(), [](auto& h) { if (h && !h->isAlive()) h->lose(true); });
 
     if(bReplay) {
         cmdManager.setReadOnly(true);
