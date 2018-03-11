@@ -586,21 +586,23 @@ void Game::doInput()
             drawnMouseY = std::max(0, std::min(mouse->y, settings.video.height-1));
         }
 
-        if(pInGameMenu != nullptr) {
+        if (pInGameMenu != nullptr) {
             pInGameMenu->handleInput(event);
 
             if(bMenu == false) {
                 pInGameMenu.reset();
             }
 
-        } else if(pInGameMentat != nullptr) {
+        }
+        else if (pInGameMentat != nullptr) {
             pInGameMentat->doInput(event);
 
             if(bMenu == false) {
                 pInGameMentat.reset();
             }
 
-        } else if(pWaitingForOtherPlayers != nullptr) {
+        }
+        else if (pWaitingForOtherPlayers != nullptr) {
             pWaitingForOtherPlayers->handleInput(event);
 
             if(bMenu == false) {
