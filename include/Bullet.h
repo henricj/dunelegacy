@@ -49,8 +49,8 @@ public:
 
     void blitToScreen() const;
 
-    void update();
-    void destroy();
+    bool update();
+    void destroy() const;
 
     inline int getBulletID() const noexcept { return bulletID; }
     inline FixPoint getRealX() const noexcept { return realX; }

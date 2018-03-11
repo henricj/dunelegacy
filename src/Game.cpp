@@ -114,9 +114,6 @@ Game::~Game() {
     }
     unitList.clear();
 
-    for(auto pBullet : bulletList) {
-        delete pBullet;
-    }
     bulletList.clear();
 
     for(Explosion* pExplosion : explosionList) {
@@ -215,9 +212,8 @@ void Game::processObjects()
         pUnit->update();
     }
 
-    for(auto pBullet : bulletList) {
-        pBullet->update();
-    }
+    bulletList.erase(std::remove_if(std::begin(bulletList), std::end(bulletList),
+        [](auto& b) { return b->update(); }), std::end(bulletList));
 
     explosionList.erase(std::remove_if(std::begin(explosionList), std::end(explosionList),
         [](std::unique_ptr<Explosion>& e) { return e->update(); }), std::end(explosionList));
@@ -304,7 +300,7 @@ void Game::drawScreen()
         });
 
     /* draw bullets */
-    for (const auto pBullet : bulletList) {
+    for (const auto& pBullet : bulletList) {
         pBullet->blitToScreen();
     }
 
@@ -1561,9 +1557,10 @@ bool Game::loadSaveGame(InputStream& stream) {
     //load the structures and units
     objectManager.load(stream);
 
-    int numBullets = stream.readUint32();
-    for(int i = 0; i < numBullets; i++) {
-        bulletList.push_back(new Bullet(stream));
+    const auto numBullets = stream.readUint32();
+    bulletList.reserve(numBullets);
+    for (auto i = 0u; i < numBullets; i++) {
+        currentGameMap->add_bullet(stream);
     }
 
     const auto numExplosions = stream.readUint32();
@@ -1662,7 +1659,7 @@ bool Game::saveGame(const std::string& filename)
     objectManager.save(fs);
 
     fs.writeUint32(bulletList.size());
-    for(const Bullet* pBullet : bulletList) {
+    for (const auto& pBullet : bulletList) {
         pBullet->save(fs);
     }
 
