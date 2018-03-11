@@ -100,7 +100,7 @@ EXTERN bool debug;                                      ///< is set for debuggin
 
 
 // constants
-static const int houseToPaletteIndex[NUM_HOUSES] = { PALCOLOR_HARKONNEN, PALCOLOR_ATREIDES, PALCOLOR_ORDOS, PALCOLOR_FREMEN, PALCOLOR_SARDAUKAR, PALCOLOR_MERCENARY };    ///< the base colors for the different houses
-static const char houseChar[] = { 'H', 'A', 'O', 'F', 'S', 'M' };   ///< character for each house
+inline static const int houseToPaletteIndex[NUM_HOUSES] = { PALCOLOR_HARKONNEN, PALCOLOR_ATREIDES, PALCOLOR_ORDOS, PALCOLOR_FREMEN, PALCOLOR_SARDAUKAR, PALCOLOR_MERCENARY };    ///< the base colors for the different houses
+inline static const char houseChar[] = { 'H', 'A', 'O', 'F', 'S', 'M' };   ///< character for each house
 
 #endif //GLOBALS_H
