@@ -1470,7 +1470,7 @@ bool Game::loadSaveGame(InputStream& stream) {
     // read gameInitSettings
     gameInitSettings = GameInitSettings(stream);
 
-    // read the actual house setup choosen at the beginning of the game
+    // read the actual house setup chosen at the beginning of the game
     const auto numHouseInfo = stream.readUint32();
     houseInfoListSetup.reserve(numHouseInfo);
     for(Uint32 i=0;i<numHouseInfo;i++) {
