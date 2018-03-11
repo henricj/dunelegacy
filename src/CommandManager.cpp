@@ -27,11 +27,7 @@
 #include <algorithm>
 
 
-CommandManager::CommandManager() {
-    pStream = nullptr;
-    bReadOnly = false;
-    networkCycleBuffer = 0;
-}
+CommandManager::CommandManager() = default;
 
 CommandManager::~CommandManager() = default;
 
@@ -54,8 +50,8 @@ void CommandManager::addCommand(Command&& cmd) {
 }
 
 void CommandManager::save(OutputStream& stream) const {
-    for(unsigned int i=0;i<timeslot.size();i++) {
-        for(const Command& command : timeslot[i]) {
+    for(auto i=0u;i<timeslot.size();i++) {
+        for(const auto& command : timeslot[i]) {
             stream.writeUint32(i);
             command.save(stream);
         }
@@ -65,7 +61,7 @@ void CommandManager::save(OutputStream& stream) const {
 void CommandManager::load(InputStream& stream) {
     try {
         while(true) {
-            const Uint32 cycle = stream.readUint32();
+            const auto cycle = stream.readUint32();
             addCommand(Command{ stream }, cycle);
         }
     } catch (InputStream::exception&) {
@@ -77,8 +73,8 @@ void CommandManager::update() {
     if(pNetworkManager == nullptr) return;
 
     CommandList commandList;
+    std::vector<Command> commands;
     for(Uint32 i = std::max(static_cast<int>(currentGame->getGameCycleCount()) - MILLI2CYCLES(2500), 0); i < currentGame->getGameCycleCount() + networkCycleBuffer; i++) {
-        std::vector<Command> commands;
 
         if(i < timeslot.size()) {
             for(auto& command : timeslot[i]) {
@@ -88,7 +84,8 @@ void CommandManager::update() {
             }
         }
 
-        commandList.commandList.emplace_back(i, commands);
+        commandList.commandList.emplace_back(i, std::move(commands));
+        commands.clear();
     }
 
     pNetworkManager->sendCommandList(commandList);
