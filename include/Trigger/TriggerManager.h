@@ -23,7 +23,7 @@
 #include <misc/OutputStream.h>
 
 #include <memory>
-#include <list>
+#include <deque>
 
 /**
     This class manages triggers for the game play. A trigger is triggered at a specific game cycle.
