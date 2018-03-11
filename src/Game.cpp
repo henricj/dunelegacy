@@ -109,12 +109,12 @@ Game::~Game() {
     }
     structureList.clear();
 
-    for(UnitBase* pUnit : unitList) {
+    for(auto pUnit : unitList) {
         delete pUnit;
     }
     unitList.clear();
 
-    for(Bullet* pBullet : bulletList) {
+    for(auto pBullet : bulletList) {
         delete pBullet;
     }
     bulletList.clear();
@@ -219,7 +219,8 @@ void Game::processObjects()
         pBullet->update();
     }
 
-    explosionList.erase(std::remove_if(explosionList.begin(), explosionList.end(), [](std::unique_ptr<Explosion>& e) { return e->update(); }), explosionList.end());
+    explosionList.erase(std::remove_if(std::begin(explosionList), std::end(explosionList),
+        [](std::unique_ptr<Explosion>& e) { return e->update(); }), std::end(explosionList));
 }
 
 
@@ -2260,8 +2261,7 @@ bool Game::handlePlacementClick(int xPos, int yPos) {
         return false;
     }
 
-    int placeItem = pBuilder->getCurrentProducedItem();
-    Coord structuresize = getStructureSize(placeItem);
+    const auto structuresize = getStructureSize(placeItem);
 
     if(placeItem == Structure_Slab1) {
         if((currentGameMap->isWithinBuildRange(xPos, yPos, pBuilder->getOwner()))
@@ -2316,23 +2316,23 @@ bool Game::handlePlacementClick(int xPos, int yPos) {
                 // then we try to move all units outside the building area
 
                 // generate a independent temporal random number generator as we are in input handling code (and outside game logic code)
-                Random tempRandomGen(getGameCycleCount());
+                Random tempRandomGen(std::random_device{}());
 
                 for(int y = yPos; y < yPos + structuresize.y; y++) {
                     for(int x = xPos; x < xPos + structuresize.x; x++) {
-                        Tile* pTile = currentGameMap->getTile(x,y);
+                        const auto pTile = currentGameMap->getTile(x,y);
                         if(pTile->hasANonInfantryGroundObject()) {
-                            ObjectBase* pObject = pTile->getNonInfantryGroundObject();
+                            const auto pObject = pTile->getNonInfantryGroundObject();
                             if(pObject->isAUnit() && pObject->getOwner() == pBuilder->getOwner()) {
                                 UnitBase* pUnit = static_cast<UnitBase*>(pObject);
                                 Coord newDestination = currentGameMap->findDeploySpot(pUnit, Coord(xPos, yPos), tempRandomGen, pUnit->getLocation(), structuresize);
                                 pUnit->handleMoveClick(newDestination.x, newDestination.y);
                             }
                         } else if(pTile->hasInfantry()) {
-                            for(Uint32 objectID : pTile->getInfantryList()) {
-                                InfantryBase* pInfantry = dynamic_cast<InfantryBase*>(getObjectManager().getObject(objectID));
+                            for(auto objectID : pTile->getInfantryList()) {
+                                auto pInfantry = dynamic_cast<InfantryBase*>(getObjectManager().getObject(objectID));
                                 if((pInfantry != nullptr) && (pInfantry->getOwner() == pBuilder->getOwner())) {
-                                    Coord newDestination = currentGameMap->findDeploySpot(pInfantry, Coord(xPos, yPos), tempRandomGen, pInfantry->getLocation(), structuresize);
+                                    const auto newDestination = currentGameMap->findDeploySpot(pInfantry, Coord(xPos, yPos), tempRandomGen, pInfantry->getLocation(), structuresize);
                                     pInfantry->handleMoveClick(newDestination.x, newDestination.y);
                                 }
                             }
