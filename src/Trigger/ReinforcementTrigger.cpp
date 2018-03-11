@@ -38,7 +38,7 @@ ReinforcementTrigger::ReinforcementTrigger(int houseID, Uint32 itemID, DropLocat
 ReinforcementTrigger::ReinforcementTrigger(InputStream& stream) : Trigger(stream)
 {
     droppedUnits = stream.readUint32Vector();
-    dropLocation = (DropLocation) stream.readUint32();
+    dropLocation = static_cast<DropLocation>(stream.readUint32());
     houseID = stream.readSint32();
     repeatCycle = stream.readUint32();
 }
@@ -57,7 +57,7 @@ void ReinforcementTrigger::save(OutputStream& stream) const
 
 void ReinforcementTrigger::trigger()
 {
-    House* dropHouse = currentGame->getHouse(houseID);
+    auto dropHouse = currentGame->getHouse(houseID);
 
     if(dropHouse == nullptr) {
         return;
@@ -103,8 +103,7 @@ void ReinforcementTrigger::trigger()
             // try 30 times
             int r = 1;
             while(units2Drop.empty() == false && ++r < 64) {
-
-                Coord newCoord = placeCoord;
+                auto newCoord = placeCoord;
                 if(dropLocation == Drop_North || dropLocation == Drop_South) {
                     newCoord += Coord(currentGame->randomGen.rand(-r,r), 0);
                 } else {
@@ -114,7 +113,7 @@ void ReinforcementTrigger::trigger()
                 if(currentGameMap->tileExists(newCoord)
                     && (currentGameMap->getTile(newCoord)->hasAGroundObject() == false)
                     && ((units2Drop.front() != Unit_Sandworm) || (currentGameMap->getTile(newCoord)->isSand()))) {
-                    UnitBase* pUnit2Drop = dropHouse->createUnit(units2Drop.front());
+                    auto pUnit2Drop = dropHouse->createUnit(units2Drop.front());
                     units2Drop.erase(units2Drop.begin());
 
                     pUnit2Drop->deploy(newCoord);
@@ -141,7 +140,7 @@ void ReinforcementTrigger::trigger()
         case Drop_Visible:
         case Drop_Enemybase:
         case Drop_Homebase: {
-            Coord dropCoord = Coord::Invalid();
+            auto dropCoord = Coord::Invalid();
 
             switch(dropLocation) {
                 case Drop_Air: {
@@ -156,7 +155,7 @@ void ReinforcementTrigger::trigger()
 
                 case Drop_Enemybase: {
                     for(int i=0;i<NUM_HOUSES;i++) {
-                        House* pHouse = currentGame->getHouse(i);
+                        auto pHouse = currentGame->getHouse(i);
                         if(pHouse != nullptr && pHouse->getNumStructures() != 0 && pHouse->getTeamID() != 0 && pHouse->getTeamID() != dropHouse->getTeamID()) {
                             dropCoord = pHouse->getCenterOfMainBase();
                             break;
@@ -166,7 +165,7 @@ void ReinforcementTrigger::trigger()
                     if(dropCoord.isInvalid()) {
                         // no house with structures found => search for units
                         for(int i=0;i<NUM_HOUSES;i++) {
-                            House* pHouse = currentGame->getHouse(i);
+                            auto pHouse = currentGame->getHouse(i);
                             if(pHouse != nullptr && pHouse->getNumUnits() != 0 && pHouse->getTeamID() != 0 && pHouse->getTeamID() != dropHouse->getTeamID()) {
                                 dropCoord = pHouse->getStrongestUnitPosition();
                                 break;
@@ -209,25 +208,25 @@ void ReinforcementTrigger::trigger()
             }
 
             // try 32 times
-            for(int i=0;i<32;i++) {
-                int r = currentGame->randomGen.rand(0,7);
-                FixPoint angle = 2*FixPt_PI*currentGame->randomGen.randFixPoint();
+            for(auto i=0;i<32;i++) {
+                const auto r = currentGame->randomGen.rand(0,7);
+                const auto angle = 2*FixPt_PI*currentGame->randomGen.randFixPoint();
 
                 dropCoord += Coord( lround(r*FixPoint::sin(angle)), lround(-r*FixPoint::cos(angle)));
 
                 if(currentGameMap->tileExists(dropCoord) && currentGameMap->getTile(dropCoord)->hasAGroundObject() == false) {
                     // found the an empty drop location => drop here
 
-                    Carryall* carryall = static_cast<Carryall*>(dropHouse->createUnit(Unit_Carryall));
+                    auto carryall = static_cast<Carryall*>(dropHouse->createUnit(Unit_Carryall));
                     carryall->setOwned(false);
 
-                    for(Uint32 itemID2Drop : droppedUnits) {
-                        UnitBase* pUnit2Drop = dropHouse->createUnit(itemID2Drop);
+                    for(auto itemID2Drop : droppedUnits) {
+                        auto pUnit2Drop = dropHouse->createUnit(itemID2Drop);
                         pUnit2Drop->setActive(false);
                         carryall->giveCargo(pUnit2Drop);
                     }
 
-                    Coord closestPos = currentGameMap->findClosestEdgePoint(dropCoord, Coord(1,1));
+                    const auto closestPos = currentGameMap->findClosestEdgePoint(dropCoord, Coord(1,1));
                     carryall->deploy(closestPos);
                     carryall->setDropOfferer(true);
 
