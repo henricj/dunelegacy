@@ -62,7 +62,7 @@ public:
         This method returns the game cycle this trigger shall be triggered.
         \return the cycle number this trigger shall be triggered
     */
-    Uint32 getCycleNumber() const { return cycleNumber; }
+    Uint32 getCycleNumber() const noexcept { return cycleNumber; }
 
     /**
         Trigger this trigger. Shall only be called when getCycleNumber() is equal to the current game cycle
