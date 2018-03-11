@@ -158,9 +158,9 @@ void TurretBase::turnRight() {
 
 void TurretBase::attack() {
     if((weaponTimer == 0) && (target.getObjPointer() != nullptr)) {
-        Coord centerPoint = getCenterPoint();
-        ObjectBase* pObject = target.getObjPointer();
-        Coord targetCenterPoint = pObject->getClosestCenterPoint(location);
+        const auto centerPoint = getCenterPoint();
+        const auto pObject = target.getObjPointer();
+        const auto targetCenterPoint = pObject->getClosestCenterPoint(location);
 
         currentGameMap->add_bullet(objectID, &centerPoint, &targetCenterPoint,bulletType,
                                                currentGame->objectData.data[itemID][originalHouseID].weapondamage,
