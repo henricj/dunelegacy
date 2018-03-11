@@ -312,7 +312,7 @@ void Bullet::blitToScreen() const
 }
 
 
-void Bullet::update()
+bool Bullet::update()
 {
     if(bulletID == Bullet_Rocket || bulletID == Bullet_DRocket || bulletID == Bullet_TurretRocket) {
 
@@ -363,10 +363,9 @@ void Bullet::update()
 
     if((location.x < -5) || (location.x >= currentGameMap->getSizeX() + 5) || (location.y < -5) || (location.y >= currentGameMap->getSizeY() + 5)) {
         // it's off the map => delete it
-        bulletList.remove(this);
-        delete this;
-        return;
-    } else {
+        return true;
+    }
+    else {
         const auto newDistanceToDestination = distanceFrom(realX, realY, destination.x, destination.y);
 
         if(detonationTimer > 0) {
@@ -377,7 +376,7 @@ void Bullet::update()
 
             if(detonationTimer == 0) {
                 destroy();
-                return;
+                return true;
             }
 
             FixPoint weaponDamage = currentGame->objectData.data[Unit_SonicTank][owner->getHouseID()].weapondamage;
@@ -404,26 +403,28 @@ void Bullet::update()
                     && currentGameMap->getTile(location)->getGroundObject()->isAStructure()
                     && ((bulletID != Bullet_ShellTurret) || (currentGameMap->getTile(location)->getGroundObject()->getOwner() != owner))) {
             destroy();
-            return;
+            return true;
         } else if(oldDistanceToDestination < newDistanceToDestination || newDistanceToDestination < 4)  {
 
             if(bulletID == Bullet_Rocket || bulletID == Bullet_DRocket) {
                 if(detonationTimer == 0) {
                     destroy();
-                return;
+                    return true;
                 }
             } else {
                 realX = destination.x;
                 realY = destination.y;
                 destroy();
-                return;
+                return true;
             }
         }
     }
+
+    return false;
 }
 
 
-void Bullet::destroy()
+void Bullet::destroy() const
 {
     auto position = Coord(lround(realX), lround(realY));
 
@@ -488,8 +489,5 @@ void Bullet::destroy()
             // do nothing
         } break;
     }
-
-    bulletList.remove(this);
-    delete this;
 }
 

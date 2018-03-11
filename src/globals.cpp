@@ -26,5 +26,6 @@
 #include <Network/NetworkManager.h>
 
 #define SKIP_EXTERN_DEFINITION
- #include <globals.h>
+#include <Bullet.h>
+#include <globals.h>
 #undef SKIP_EXTERN_DEFINITION

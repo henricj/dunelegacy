@@ -116,6 +116,12 @@ public:
         return getTile(location.x, location.y);
     }
 
+    template<class...Args>
+    void add_bullet(Args&&...args)
+    {
+        bulletList.push_back(std::make_unique<Bullet>(std::forward<Args>(args)...));
+    }
+
     template<typename F>
     void for_all(F&& f)
     {
