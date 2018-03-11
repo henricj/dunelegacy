@@ -198,7 +198,7 @@ void replaceColor(SDL_Surface *surface, Uint32 oldColor, Uint32 newColor) {
     }
 }
 
-void mapColor(SDL_Surface *surface, Uint8 colorMap[256]) {
+void mapColor(SDL_Surface *surface, const Uint8 colorMap[256]) {
     sdl2::surface_lock lock{ surface };
 
     for(auto y = 0; y < surface->h; y++) {
