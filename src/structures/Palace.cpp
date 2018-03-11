@@ -140,11 +140,11 @@ void Palace::doLaunchDeathhand(int x, int y) {
     }
 
     FixPoint randAngle = 2 * FixPt_PI * currentGame->randomGen.randFixPoint();
-    int radius = currentGame->randomGen.rand(0,10*TILESIZE);
-    int deathOffX = lround(FixPoint::sin(randAngle) * radius);
-    int deathOffY = lround(FixPoint::cos(randAngle) * radius);
+    const auto radius = currentGame->randomGen.rand(0,10*TILESIZE);
+    const auto deathOffX = lround(FixPoint::sin(randAngle) * radius);
+    const auto deathOffY = lround(FixPoint::cos(randAngle) * radius);
 
-    Coord centerPoint = getCenterPoint();
+    auto centerPoint = getCenterPoint();
     Coord dest( x * TILESIZE + TILESIZE/2 + deathOffX,
                 y * TILESIZE + TILESIZE/2 + deathOffY);
 
