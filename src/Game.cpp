@@ -1182,6 +1182,7 @@ void Game::runMainLoop() {
                         if(pPlayer->nextExpectedCommandsCycle <= gameCycleCount) {
                             //SDL_Log("Cycle %d: Waiting for player '%s' to send data for cycle %d...", GameCycleCount, pPlayer->getPlayername().c_str(), pPlayer->nextExpectedCommandsCycle);
                             bWaitForNetwork = true;
+                            break;
                         }
                     }
                 }
