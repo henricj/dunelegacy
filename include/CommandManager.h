@@ -30,7 +30,7 @@
 /**
     The command manager collects all the given user commands (e.g. move unit u to position (x,y)) . These commands might be transfered over a network.
 */
-class CommandManager {
+class CommandManager final {
 public:
 
     /**
@@ -38,8 +38,13 @@ public:
     */
     CommandManager();
 
+    CommandManager(CommandManager&&) = delete;
+    CommandManager(const CommandManager&) = delete;
+    CommandManager& operator=(const CommandManager &) = delete;
+    CommandManager& operator=(CommandManager &&) = delete;
+
     /// destructor
-    virtual ~CommandManager();
+    ~CommandManager();
 
     /**
         This method sets a stream where all commands are written when they are added to the command manager. This can be used for
