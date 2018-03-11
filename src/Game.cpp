@@ -1096,11 +1096,12 @@ void Game::runMainLoop() {
         }
     }
 
-    if(pNetworkManager != nullptr) {
-        pNetworkManager->setOnReceiveChatMessage(std::bind(&ChatManager::addChatMessage, &(pInterface->getChatManager()), std::placeholders::_1, std::placeholders::_2));
-        pNetworkManager->setOnReceiveCommandList(std::bind(&CommandManager::addCommandList, &cmdManager, std::placeholders::_1, std::placeholders::_2));
-        pNetworkManager->setOnReceiveSelectionList(std::bind(&Game::onReceiveSelectionList, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
-        pNetworkManager->setOnPeerDisconnected(std::bind(&Game::onPeerDisconnected, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
+    if (pNetworkManager != nullptr) {
+        pNetworkManager->setOnReceiveChatMessage([cm = &pInterface->getChatManager()](const auto& username, const auto& message) { cm->addChatMessage(username, message); });
+        pNetworkManager->setOnReceiveCommandList([cm = &cmdManager](const auto& playername, const auto& commands) { cm->addCommandList(playername, commands); });
+        pNetworkManager->setOnReceiveSelectionList([this](const auto& name, const auto& newSelectionList, auto groupListIndex)
+        {this->onReceiveSelectionList(name, newSelectionList, groupListIndex); });
+        pNetworkManager->setOnPeerDisconnected([this](const auto& name, auto bHost, auto cause) {onPeerDisconnected(name, bHost, cause); });
 
         cmdManager.setNetworkCycleBuffer( MILLI2CYCLES(pNetworkManager->getMaxPeerRoundTripTime()) + 5 );
     }
