@@ -25,17 +25,20 @@ TriggerManager::TriggerManager() = default;
 
 TriggerManager::~TriggerManager() = default;
 
-void TriggerManager::save(OutputStream& stream) const {
+void TriggerManager::save(OutputStream& stream) const
+{
     stream.writeUint32(triggers.size());
     for(const auto& pTrigger : triggers) {
         saveTrigger(stream, pTrigger.get());
     }
 }
 
-void TriggerManager::load(InputStream& stream) {
-    Uint32 numTriggers = stream.readUint32();
+void TriggerManager::load(InputStream& stream)
+{
+    const auto numTriggers = stream.readUint32();
 
-    for(Uint32 i=0;i<numTriggers;i++) {
+    for (auto i = 0u; i < numTriggers; i++)
+    {
         triggers.push_back(loadTrigger(stream));
     }
 }
@@ -47,6 +50,14 @@ void TriggerManager::trigger(Uint32 CycleNumber)
         triggers.pop_front();
         pCurrentTrigger->trigger();
     }
+
+    if (clear)
+        triggers.clear();
+
+    for (auto& t : active_trigger)
+        t->trigger();
+
+    active_trigger.clear();
 }
 
 void TriggerManager::addTrigger(std::unique_ptr<Trigger> newTrigger)
@@ -74,7 +85,7 @@ void TriggerManager::saveTrigger(OutputStream& stream, const Trigger* t) const
 
 std::unique_ptr<Trigger> TriggerManager::loadTrigger(InputStream& stream)
 {
-    Uint32 type = stream.readUint32();
+    const auto type = stream.readUint32();
 
     switch(type) {
         case TriggerManager::Type_ReinforcementTrigger: {
@@ -85,8 +96,7 @@ std::unique_ptr<Trigger> TriggerManager::loadTrigger(InputStream& stream)
             return std::make_unique<TimeoutTrigger>(stream);
         } break;
 
-        default: {
-            THROW(std::runtime_error, "TriggerManager::loadTrigger(): Unknown trigger type!");
-        }
+    default:
+        THROW(std::runtime_error, "TriggerManager::loadTrigger(): Unknown trigger type!");
     }
 }
