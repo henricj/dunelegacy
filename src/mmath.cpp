@@ -51,9 +51,14 @@ int getRandomOf(int numParam, ...) {
 
 FixPoint destinationAngleRad(const Coord& p1, const Coord& p2)
 {
+    return destinationAngleRad(p1.x, p1.y, p2.x, p2.y);
+}
 
-    FixPoint diffX = p2.x - p1.x;
-    FixPoint diffY = -(p2.y - p1.y);    // flip y
+FixPoint destinationAngleRad(FixPoint x1, FixPoint y1, FixPoint x2, FixPoint y2)
+{
+
+    FixPoint diffX = x2 - x1;
+    FixPoint diffY = -(y2 - y1);    // flip y
 
     if(diffX == 0 && diffY == 0) {
         return FixPt_PI/2;

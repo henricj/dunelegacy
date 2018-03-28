@@ -42,6 +42,9 @@ public:
 
     virtual void deploy(const Coord& newLocation);
 
+protected:
+    virtual void turn();
+
 private:
     bool    droppedOffCargo;    ///< Is the cargo already dropped off?
 };

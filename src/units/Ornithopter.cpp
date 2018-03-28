@@ -51,6 +51,8 @@ void Ornithopter::init() {
 
     numWeapons = 1;
     bulletType = Bullet_SmallRocket;
+
+    currentMaxSpeed = currentGame->objectData.data[itemID][originalHouseID].maxspeed;
 }
 
 Ornithopter::~Ornithopter() {
@@ -58,6 +60,18 @@ Ornithopter::~Ornithopter() {
 
 void Ornithopter::checkPos() {
     AirUnit::checkPos();
+
+    if(!target) {
+        if(destination.isValid()) {
+            if(blockDistance(location, destination) <= 2) {
+                destination.invalidate();
+            }
+        } else {
+            if(blockDistance(location, guardPoint) > 17) {
+                setDestination(guardPoint);
+            }
+        }
+    }
 
     drawnFrame = ((currentGame->getGameCycleCount() + getObjectID())/ORNITHOPTER_FRAMETIME) % numImagesY;
 }

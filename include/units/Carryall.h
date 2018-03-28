@@ -38,8 +38,6 @@ public:
     */
     bool update();
 
-    virtual FixPoint getMaxSpeed() const;
-
     virtual void deploy(const Coord& newLocation);
 
     void destroy();
@@ -56,42 +54,28 @@ public:
         return !pickedUpUnitList.empty();
     }
 
-    inline void book() { booked = true; }
-
     inline void setOwned(bool b) { owned = b; }
 
     inline void setDropOfferer(bool status) {
         aDropOfferer = status;
-        if(aDropOfferer) {
-            booked = true;
-        }
     }
 
-    inline bool isBooked() const { return (booked || hasCargo()); }
+    inline bool isBooked() const { return (target || hasCargo()); }
 
 protected:
-    void findConstYard();
     void releaseTarget();
     void engageTarget();
     void pickupTarget();
     void targeting();
+    virtual void turn();
 
     // unit state/properties
     std::list<Uint32>   pickedUpUnitList;   ///< What units does this carryall carry?
 
-    bool     booked;             ///< Is this carryall currently booked?
-    bool     idle;               ///< Is this carryall currently idle?
-    bool     firstRun;           ///< Is this carryall new?
     bool     owned;              ///< Is this carryall owned or is it just here to drop something off
 
     bool     aDropOfferer;       ///< This carryall just drops some units and vanishes afterwards
     bool     droppedOffCargo;    ///< Is the cargo already dropped off?
-
-    FixPoint currentMaxSpeed;    ///< The current maximum allowed speed
-
-    Uint8    curFlyPoint;        ///< The current flyPoint
-    Coord    flyPoints[8];       ///< Array of flight points
-    Coord    constYardPoint;     ///< The position of the construction yard to fly around
 };
 
 #endif // CARRYALL_H

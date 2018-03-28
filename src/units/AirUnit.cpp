@@ -35,11 +35,15 @@
 AirUnit::AirUnit(House* newOwner) : UnitBase(newOwner)
 {
     AirUnit::init();
+
+    currentMaxSpeed = 2;
 }
 
 AirUnit::AirUnit(InputStream& stream) : UnitBase(stream)
 {
     AirUnit::init();
+
+    currentMaxSpeed = stream.readFixPoint();
 }
 
 void AirUnit::init()
@@ -55,6 +59,8 @@ AirUnit::~AirUnit()
 void AirUnit::save(OutputStream& stream) const
 {
     UnitBase::save(stream);
+
+    stream.writeFixPoint(currentMaxSpeed);
 }
 
 void AirUnit::destroy()
@@ -73,6 +79,10 @@ void AirUnit::destroy()
 void AirUnit::assignToMap(const Coord& pos)
 {
     if(currentGameMap->tileExists(pos)) {
+        if(guardPoint.isInvalid()) {
+            guardPoint = pos;
+        }
+
         currentGameMap->getTile(pos)->assignAirUnit(getObjectID());
         // do not reveal map for air units
         // currentGameMap->viewMap(owner->getTeam(), location, getViewRange());
@@ -81,6 +91,7 @@ void AirUnit::assignToMap(const Coord& pos)
 
 void AirUnit::checkPos()
 {
+    // do nothing
 }
 
 void AirUnit::blitToScreen()
@@ -100,5 +111,65 @@ void AirUnit::blitToScreen()
 
 bool AirUnit::canPass(int xPos, int yPos) const
 {
-    return currentGameMap->tileExists(xPos, yPos);
+    return true;
+}
+
+void AirUnit::navigate() {
+    moving = true;
+    justStoppedMoving = false;
+}
+
+void AirUnit::move() {
+    FixPoint angleRad = (angle * (FixPt_PI << 1)) / 8;
+    FixPoint speed = getMaxSpeed();
+
+    realX += FixPoint::cos(angleRad)*speed;
+    realY += -FixPoint::sin(angleRad)*speed;
+
+    Coord newLocation = Coord(realX.lround()/TILESIZE, realY.lround()/TILESIZE);
+
+    if(newLocation != location) {
+        unassignFromMap(location);
+        assignToMap(newLocation);
+        location = newLocation;
+    }
+
+    checkPos();
+}
+
+void AirUnit::turn() {
+    if(destination.isValid() && (primaryWeaponTimer <= getWeaponReloadTime()/3)) {
+        FixPoint destinationAngle = destinationAngleRad(realX, realY, destination.x*TILESIZE + TILESIZE/2, destination.y*TILESIZE + TILESIZE/2)*8 / (FixPt_PI << 1);
+
+        FixPoint angleLeft = 0;
+        FixPoint angleRight = 0;
+
+        if(angle > destinationAngle) {
+            angleRight = angle - destinationAngle;
+            angleLeft = FixPoint::abs(NUM_ANGLES-angle)+destinationAngle;
+        } else if (angle < destinationAngle) {
+            angleRight = FixPoint::abs(NUM_ANGLES-destinationAngle) + angle;
+            angleLeft = destinationAngle - angle;
+        }
+
+        if(angleLeft <= angleRight) {
+            angle += std::min(currentGame->objectData.data[itemID][originalHouseID].turnspeed, angleLeft);
+            if(angle >= NUM_ANGLES) {
+                angle -= NUM_ANGLES;
+            }
+            drawnAngle = lround(angle) % NUM_ANGLES;
+        } else {
+            angle -= std::min(currentGame->objectData.data[itemID][originalHouseID].turnspeed, angleRight);
+            if(angle < 0) {
+                angle += NUM_ANGLES;
+            }
+            drawnAngle = lround(angle) % NUM_ANGLES;
+        }
+    } else {
+        angle -= currentGame->objectData.data[itemID][originalHouseID].turnspeed / 8;
+        if(angle < 0) {
+            angle += NUM_ANGLES;
+        }
+        drawnAngle = lround(angle) % NUM_ANGLES;
+    }
 }

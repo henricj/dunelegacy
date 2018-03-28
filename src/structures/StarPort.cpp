@@ -163,11 +163,17 @@ void StarPort::doCancelItem(Uint32 itemID, bool multipleMode) {
                     choam.setNumAvailable(itemID, choam.getNumAvailable(itemID) + 1);
 
                     // find the most expensive item to cancel
-                    auto iterMostExpensiveItem = std::max_element(  currentProductionQueue.begin(),
-                                                                    currentProductionQueue.end(),
-                                                                    [](ProductionQueueItem& i1, ProductionQueueItem& i2) {
-                                                                        return (i1.price < i2.price);
-                                                                    });
+                    auto iterMostExpensiveItem = currentProductionQueue.end();
+                    Uint32 mostExpensiveItemPrice = 0;
+                    for(auto iter = currentProductionQueue.begin(); iter != currentProductionQueue.end(); ++iter) {
+                        if(iter->itemID == itemID) {
+                            if(iter->price > mostExpensiveItemPrice) {
+                                iterMostExpensiveItem = iter;
+                                mostExpensiveItemPrice = iter->price;
+                            }
+                        }
+                    }
+
                     // Cancel the best found item if any was found
                     if(iterMostExpensiveItem != currentProductionQueue.end()) {
                         owner->returnCredits(iterMostExpensiveItem->price);

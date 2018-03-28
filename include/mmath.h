@@ -30,6 +30,7 @@ int getRandomInt(int min, int max);
 int getRandomOf(int numParam, ...);
 
 FixPoint destinationAngleRad(const Coord& p1, const Coord& p2);
+FixPoint destinationAngleRad(FixPoint x1, FixPoint y1, FixPoint x2, FixPoint y2);
 
 inline FixPoint RadToDeg256(FixPoint angleRad) { return (angleRad << 7)/FixPt_PI; } // angleRad*256/(2*FixPt_PI)
 

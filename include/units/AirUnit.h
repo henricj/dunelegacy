@@ -41,8 +41,18 @@ public:
     virtual void checkPos();
     bool canPass(int xPos, int yPos) const;
 
+    virtual FixPoint getMaxSpeed() const {
+        return currentMaxSpeed;
+    }
+
 protected:
-    SDL_Texture**   shadowGraphic;           ///< The graphic for the shadow of this air unit
+    virtual void navigate();
+    virtual void move();
+    virtual void turn();
+
+    FixPoint currentMaxSpeed;               ///< The current maximum allowed speed
+
+    SDL_Texture**   shadowGraphic;          ///< The graphic for the shadow of this air unit
 };
 
 #endif // AIRUNIT_H

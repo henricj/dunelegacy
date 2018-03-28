@@ -23,6 +23,7 @@
 #include <FileClasses/SFXManager.h>
 #include <House.h>
 #include <Map.h>
+#include <Game.h>
 #include <SoundPlayer.h>
 
 #include <structures/StarPort.h>
@@ -99,6 +100,30 @@ void Frigate::checkPos()
 }
 
 bool Frigate::update() {
+    const FixPoint& maxSpeed = currentGame->objectData.data[itemID][originalHouseID].maxspeed;
+
+    FixPoint dist = -1;
+    ObjectBase* pTarget = target.getObjPointer();
+    if(pTarget != nullptr && pTarget->isAUnit()) {
+        dist = distanceFrom(realX, realY, pTarget->getRealX(), pTarget->getRealY());
+    } else if((pTarget != nullptr) || !droppedOffCargo) {
+        dist = distanceFrom(realX, realY, destination.x*TILESIZE + TILESIZE/2, destination.y*TILESIZE + TILESIZE/2);
+    }
+
+    if(dist >= 0) {
+        static const FixPoint minSpeed = FixPoint32(TILESIZE/32);
+        if(dist < TILESIZE/2) {
+            currentMaxSpeed = std::min(dist, minSpeed);
+        } else if(dist >= 10*TILESIZE) {
+            currentMaxSpeed = maxSpeed;
+        } else {
+            FixPoint m = (maxSpeed-minSpeed) / ((10*TILESIZE)-(TILESIZE/2));
+            FixPoint t = minSpeed-(TILESIZE/2)*m;
+            currentMaxSpeed = dist*m+t;
+        }
+    } else {
+        currentMaxSpeed = std::min(currentMaxSpeed + FixPt(0,2), maxSpeed);
+    }
 
     if(AirUnit::update() == false) {
         return false;
@@ -113,9 +138,8 @@ bool Frigate::update() {
     // check if this frigate has to be removed because it has just brought all units to the Starport
     if (active) {
         if(droppedOffCargo
-            && (    (location.x == 0) || (location.x == currentGameMap->getSizeX()-1)
-                    || (location.y == 0) || (location.y == currentGameMap->getSizeY()-1))
-            && !moving) {
+            && ((getRealX() < -TILESIZE) || (getRealX() > (currentGameMap->getSizeX()+1)*TILESIZE)
+                || (getRealY() < -TILESIZE) || (getRealY() > (currentGameMap->getSizeY()+1)*TILESIZE))) {
 
             setVisible(VIS_ALL, false);
             destroy();
@@ -129,4 +153,15 @@ void Frigate::deploy(const Coord& newLocation) {
     AirUnit::deploy(newLocation);
 
     respondable = false;
+}
+
+void Frigate::turn() {
+    if (active && droppedOffCargo
+        && ((getRealX() < TILESIZE/2) || (getRealX() > currentGameMap->getSizeX()*TILESIZE - TILESIZE/2)
+            || (getRealY() < TILESIZE/2) || (getRealY() > currentGameMap->getSizeY()*TILESIZE - TILESIZE/2))) {
+        // already partially outside the map => do not turn
+        return;
+    }
+
+    AirUnit::turn();
 }
