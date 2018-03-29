@@ -117,9 +117,7 @@ void INIFile::Key::setStringValue(const std::string& newValue, bool bEscapeIfNee
 }
 
 void INIFile::Key::setIntValue(int newValue) {
-    char tmp[20];
-    sprintf(tmp,"%d",newValue);
-    setStringValue(tmp);
+    setStringValue(std::to_string(newValue));
 }
 
 void INIFile::Key::setBoolValue(bool newValue) {
@@ -131,9 +129,7 @@ void INIFile::Key::setBoolValue(bool newValue) {
 }
 
 void INIFile::Key::setDoubleValue(double newValue) {
-    char tmp[30];
-    sprintf(tmp,"%f",newValue);
-    setStringValue(tmp);
+    setStringValue(std::to_string(newValue));
 }
 
 bool INIFile::Key::escapingValueNeeded(const std::string& value) {
@@ -276,9 +272,7 @@ void INIFile::Section::setStringValue(const std::string& key, const std::string&
 }
 
 void INIFile::Section::setIntValue(const std::string& key, int newValue) {
-    char tmp[20];
-    sprintf(tmp,"%d",newValue);
-    setStringValue(key, tmp, false);
+    setStringValue(key, std::to_string(newValue), false);
 }
 
 void INIFile::Section::setBoolValue(const std::string& key, bool newValue) {
@@ -290,9 +284,7 @@ void INIFile::Section::setBoolValue(const std::string& key, bool newValue) {
 }
 
 void INIFile::Section::setDoubleValue(const std::string& key, double newValue) {
-    char tmp[30];
-    sprintf(tmp,"%f",newValue);
-    setStringValue(key, tmp, false);
+    setStringValue(key, std::to_string(newValue), false);
 }
 
 
@@ -725,9 +717,7 @@ void INIFile::setStringValue(const std::string& section, const std::string& key,
     \param  value           value that should be set
 */
 void INIFile::setIntValue(const std::string& section, const std::string& key, int value) {
-    char tmp[20];
-    sprintf(tmp,"%d",value);
-    setStringValue(section, key, tmp, false);
+    setStringValue(section, key, std::to_string(value), false);
 }
 
 /// Sets the boolean that is adressed by the section/key pair.
@@ -757,9 +747,7 @@ void INIFile::setBoolValue(const std::string& section, const std::string& key, b
     \param  value           value that should be set
 */
 void INIFile::setDoubleValue(const std::string& section, const std::string& key, double value) {
-    char tmp[30];
-    sprintf(tmp,"%f",value);
-    setStringValue(section, key, tmp, false);
+    setStringValue(section, key, std::to_string(value), false);
 }
 
 

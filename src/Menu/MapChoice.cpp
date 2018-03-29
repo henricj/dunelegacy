@@ -394,15 +394,13 @@ void MapChoice::loadINI() {
 
     // read [PIECES]
     for(int i=1; i < 28; i++) {
-        char tmp[3];
-        sprintf(tmp,"%d",i);
-        std::string entry = RegionINI.getStringValue("PIECES",tmp);
+        std::string entry = RegionINI.getStringValue("PIECES",std::to_string(i));
 
         std::string strXPos;
         std::string strYPos;
 
         if(splitString(entry,2,&strXPos,&strYPos) == false) {
-            THROW(std::runtime_error, "File '%s' contains invalid value for key '%s'", filename, tmp);
+            THROW(std::runtime_error, "File '%s' contains invalid value for key '%d'", filename, i);
         }
 
         piecePosition[i].x = atol(strXPos.c_str());
@@ -414,8 +412,7 @@ void MapChoice::loadINI() {
     }
 
     for(int i=1; i<=8; i++) {
-        char strSection[8];
-        sprintf(strSection,"GROUP%d",i);
+        std::string strSection = "GROUP" + std::to_string(i);
 
         // read new regions
         for(int h = 0; h < NUM_HOUSES; h++) {
@@ -441,8 +438,7 @@ void MapChoice::loadINI() {
 
         // read attackRegion (REG1, REG2, REG3)
         for(int a = 0; a < 4; a++) {
-            char strKey[5];
-            sprintf(strKey,"REG%d",a+1);
+            std::string strKey = "REG" + std::to_string(a+1);
 
             std::string tmp = RegionINI.getStringValue(strSection,strKey);
             if(tmp == "") {
@@ -468,8 +464,7 @@ void MapChoice::loadINI() {
 
         // read text
         for(int j = 1; j < 28; j++) {
-            char key[10];
-            sprintf(key,"%sTXT%d",_("LanguageFileExtension").c_str(),j);
+            std::string key = _("LanguageFileExtension") + "TXT" + std::to_string(j);
 
             std::string str = convertCP850ToISO8859_1(RegionINI.getStringValue(strSection,key));
             if(str != "") {
@@ -479,7 +474,7 @@ void MapChoice::loadINI() {
                 group[i].text.push_back(tmp);
             } else {
                 // try TXT? without leading language
-                sprintf(key,"TXT%d",j);
+                std::string key = std::string("TXT") + std::to_string(j);
 
                 std::string str = convertCP850ToISO8859_1(RegionINI.getStringValue(strSection,key));
                 if(str != "") {
