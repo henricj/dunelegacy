@@ -149,48 +149,59 @@ void Carryall::checkPos()
                         return;
                     }
 
-                    if((pUnit != nullptr) && (pUnit->isInfantry() == false) && (droppedUnits > 0)) {
-                        // we already dropped infantry and this is no infantry
-                        // => do not drop this here
-                        break;
-                    }
+    if (hasCargo()) {
+        if((location == destination) && (currentMaxSpeed <= 0.5_fix) ) {
+            // drop up to 3 infantry units at once or one other unit
+            auto droppedUnits = 0;
+            do {
+                const auto unitID = pickedUpUnitList.front();
+                const auto pUnit = static_cast<UnitBase*>(currentGame->getObjectManager().getObject(unitID));
 
-                    deployUnit(unitID);
-                    droppedUnits++;
-
-                    if((pUnit != nullptr) && (pUnit->isInfantry() == false)) {
-                        // we dropped a non infantry unit
-                        // => do not drop another unit
-                        break;
-                    }
-                } while(hasCargo() && (droppedUnits < 3));
-
-                if(pickedUpUnitList.empty() == false) {
-                    // find next place to drop
-                    for(int i=8;i<18;i++) {
-                        int r = currentGame->randomGen.rand(3,i/2);
-                        FixPoint angle = 2 * FixPt_PI * currentGame->randomGen.randFixPoint();
-
-                        Coord dropCoord = location + Coord( lround(r*FixPoint::sin(angle)), lround(-r*FixPoint::cos(angle)));
-                        if(currentGameMap->tileExists(dropCoord) && currentGameMap->getTile(dropCoord)->hasAGroundObject() == false) {
-                            setDestination(dropCoord);
-                            break;
-                        }
-                    }
-                } else {
-                    setTarget(nullptr);
-                    setDestination(guardPoint);
+                if(pUnit == nullptr) {
+                    return;
                 }
-            }
-        } else if(isBooked() == false) {
-            if(destination.isValid()) {
-                if(blockDistance(location, destination) <= 2) {
-                    destination.invalidate();
+
+                if((pUnit != nullptr) && (pUnit->isInfantry() == false) && (droppedUnits > 0)) {
+                    // we already dropped infantry and this is no infantry
+                    // => do not drop this here
+                    break;
+                }
+
+                deployUnit(unitID);
+                droppedUnits++;
+
+                if((pUnit != nullptr) && (pUnit->isInfantry() == false)) {
+                    // we dropped a non infantry unit
+                    // => do not drop another unit
+                    break;
+                }
+            } while(hasCargo() && (droppedUnits < 3));
+
+            if(pickedUpUnitList.empty() == false) {
+                // find next place to drop
+                for(auto i=8;i<18;i++) {
+                    auto r = currentGame->randomGen.rand(3,i/2);
+                    const auto angle = 2 * FixPt_PI * currentGame->randomGen.randFixPoint();
+
+                    auto dropCoord = location + Coord( lround(r*FixPoint::sin(angle)), lround(-r*FixPoint::cos(angle)));
+                    if(currentGameMap->tileExists(dropCoord) && currentGameMap->getTile(dropCoord)->hasAGroundObject() == false) {
+                        setDestination(dropCoord);
+                        break;
+                    }
                 }
             } else {
-                if(blockDistance(location, guardPoint) > 17) {
-                    setDestination(guardPoint);
-                }
+                setTarget(nullptr);
+                setDestination(guardPoint);
+            }
+        }
+    } else if(isBooked() == false) {
+        if(destination.isValid()) {
+            if(blockDistance(location, destination) <= 2) {
+                destination.invalidate();
+            }
+        } else {
+            if(blockDistance(location, guardPoint) > 17) {
+                setDestination(guardPoint);
             }
         }
     }
@@ -231,7 +242,7 @@ void Carryall::deployUnit(Uint32 unitID)
 void Carryall::deployUnit(Tile* tile, UnitBase* pUnit)
 {
     if (tile->hasANonInfantryGroundObject()) {
-        auto object = tile->getNonInfantryGroundObject();
+        const auto object = tile->getNonInfantryGroundObject();
         if (object->getOwner() == getOwner()) {
             if (object->getItemID() == Structure_RepairYard) {
                 auto repair_yard = static_cast<RepairYard*>(object);
