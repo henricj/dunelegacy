@@ -48,7 +48,7 @@
 			<Add option="-pedantic" />
 			<Add option="-Wextra" />
 			<Add option="-Wall" />
-			<Add option="-std=c++11" />
+			<Add option="-std=c++14" />
 			<Add option="`sdl2-config --cflags` -Wno-unused-parameter -Wno-unknown-pragmas -Wlogical-op" />
 			<Add directory="../../include" />
 		</Compiler>
@@ -511,6 +511,7 @@
 		<Unit filename="../../src/misc/FileSystem.cpp" />
 		<Unit filename="../../src/misc/IFileStream.cpp" />
 		<Unit filename="../../src/misc/OFileStream.cpp" />
+		<Unit filename="../../src/misc/Random.cpp" />
 		<Unit filename="../../src/misc/Scaler.cpp" />
 		<Unit filename="../../src/misc/draw_util.cpp" />
 		<Unit filename="../../src/misc/fnkdat.cpp" />

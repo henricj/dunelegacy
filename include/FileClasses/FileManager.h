@@ -24,6 +24,7 @@
 #include <SDL2/SDL.h>
 #include <string>
 #include <vector>
+#include <memory>
 
 /// A class for loading all the PAK-Files.
 /**

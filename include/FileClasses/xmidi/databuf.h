@@ -32,7 +32,7 @@ typedef char * charptr;
 class DataSource
 {
 public:
-    DataSource() = default;;
+    DataSource() = default;
     virtual ~DataSource() = default;
 
     virtual unsigned int read1() =0;

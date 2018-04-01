@@ -19,12 +19,12 @@ fi
 AC_SUBST(dunelegacydatadir)
 
 dnl Some flags for gcc
-CXXFLAGS="-std=c++11 -pthread -fPIC -O3 -pipe -pedantic -Wall -Wextra -Wno-unused-parameter -Wno-shift-negative-value -DNDEBUG"
+CXXFLAGS="-std=c++14 -pthread -fPIC -O3 -pipe -pedantic -Wall -Wextra -Wno-unused-parameter -Wno-shift-negative-value -DNDEBUG"
 CFLAGS="-std=c99 -pthread -fPIC -O3 -pipe -pedantic -Wall -Wextra -Wno-unused-parameter -Wno-shift-negative-value -DNDEBUG"
 dnl Additional flags: -Wconversion -Wno-sign-conversion -Wlogical-op
 
 dnl Some flags for clang
-dnl CXXFLAGS="-std=c++11 -O3 -pipe -pedantic -Weverything -Wno-sign-conversion -Wno-conversion -Wno-shadow -Wno-missing-noreturn -Wno-padded -Wno-packed -Wno-weak-vtables -Wno-c++11-narrowing -Wno-cast-align -Wno-unreachable-code -Wno-missing-prototypes -Wno-float-equal -Wno-global-constructors -Wno-exit-time-destructors -Wno-format-nonliteral -Wno-unused-macros -Wreserved-id-macro -Wextra -Wno-unused-parameter -Wno-narrowing"
+dnl CXXFLAGS="-std=c++14 -O3 -pipe -pedantic -Weverything -Wno-sign-conversion -Wno-conversion -Wno-shadow -Wno-missing-noreturn -Wno-padded -Wno-packed -Wno-weak-vtables -Wno-c++11-narrowing -Wno-cast-align -Wno-unreachable-code -Wno-missing-prototypes -Wno-float-equal -Wno-global-constructors -Wno-exit-time-destructors -Wno-format-nonliteral -Wno-unused-macros -Wreserved-id-macro -Wextra -Wno-unused-parameter -Wno-narrowing"
 
 
 AC_ARG_ENABLE([debug],

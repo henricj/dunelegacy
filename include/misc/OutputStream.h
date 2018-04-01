@@ -152,7 +152,7 @@ public:
     class eof : public OutputStream::exception {
     public:
         explicit eof(std::string  str) noexcept : str(std::move(str)) { };
-        virtual ~eof() noexcept = default;;
+        virtual ~eof() noexcept = default;
 
         const char* what() const noexcept override { return str.c_str(); }
 
