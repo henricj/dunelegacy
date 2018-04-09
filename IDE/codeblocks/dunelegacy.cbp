@@ -61,7 +61,6 @@
 		<Unit filename="../../include/Colors.h" />
 		<Unit filename="../../include/Command.h" />
 		<Unit filename="../../include/CommandManager.h" />
-		<Unit filename="../../include/ConcatIterator.h" />
 		<Unit filename="../../include/CutScenes/CrossBlendVideoEvent.h" />
 		<Unit filename="../../include/CutScenes/CutScene.h" />
 		<Unit filename="../../include/CutScenes/CutSceneMusicTrigger.h" />

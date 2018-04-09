@@ -142,7 +142,7 @@ ObjectBase::ObjectBase(InputStream& stream) {
 
     stream.readBools(&b[0], &b[1], &b[2], &b[3], &b[4], &b[5], &b[6]);
 
-    for (decltype(visible.count()) i = 0; i < visible.count(); ++i)
+    for (decltype(visible.size()) i = 0; i < visible.size(); ++i)
         visible[i] = b[i];
 }
 
@@ -489,7 +489,7 @@ const ObjectBase* ObjectBase::findTarget() const {
                 if( pTile->isExplored(getOwner()->getHouseID())
                     && !pTile->isFogged(getOwner()->getHouseID())
                     && pTile->hasAnObject()) {
-                    
+
                     const auto pNewTarget = pTile->getObject();
                     if(((pNewTarget->getItemID() != Structure_Wall && pNewTarget->getItemID() != Unit_Carryall) || pClosestTarget == nullptr) && canAttack(pNewTarget)) {
                         if(targetDistance < closestTargetDistance) {
