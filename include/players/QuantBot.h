@@ -39,6 +39,8 @@ public:
         Campaign = 5
     };
 
+    QuantBot(House* associatedHouse, const std::string& playername, Difficulty difficulty);
+    QuantBot(InputStream& stream, House* associatedHouse);
     void init();
     ~QuantBot();
     void save(OutputStream& stream) const override;
@@ -51,18 +53,7 @@ public:
     void onIncrementUnitKills(int itemID) override;
     void onDamage(const ObjectBase* pObject, int damage, Uint32 damagerID) override;
 
-    static Player* create(House* associatedHouse, const std::string& playername, Difficulty difficulty) {
-        return new QuantBot(associatedHouse, playername, difficulty);
-    }
-
-    static Player* load(InputStream& stream, House* associatedHouse) {
-        return new QuantBot(stream, associatedHouse);
-    }
-
 private:
-    QuantBot(House* associatedHouse, const std::string& playername, Difficulty difficulty);
-    QuantBot(InputStream& stream, House* associatedHouse);
-
 
     Difficulty difficulty;  ///< difficulty level
     GameMode  gameMode;     ///< game mode (custom or campaign)

@@ -234,7 +234,7 @@ void QuantBot::save(OutputStream& stream) const {
 
 
 void QuantBot::update() {
-    if(getGameCylceCount() == 0) {
+    if(getGameCycleCount() == 0) {
         // The game just started and we gather some
         // Count the items once initially
 
@@ -368,7 +368,7 @@ void QuantBot::update() {
     }
 
 
-    if((getGameCylceCount() + getHouse()->getHouseID()) % AIUPDATEINTERVAL != 0) {
+    if((getGameCycleCount() + getHouse()->getHouseID()) % AIUPDATEINTERVAL != 0) {
         // we are not updating this AI player this cycle
         return;
     }

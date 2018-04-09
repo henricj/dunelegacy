@@ -31,6 +31,8 @@ public:
         Hard = 2
     };
 
+    SmartBot(House* associatedHouse, const std::string& playername, Difficulty difficulty);
+    SmartBot(InputStream& stream, House* associatedHouse);
     void init();
     ~SmartBot();
     void save(OutputStream& stream) const override;
@@ -41,18 +43,7 @@ public:
     void onDecrementStructures(int itemID, const Coord& location) override;
     void onDamage(const ObjectBase* pObject, int damage, Uint32 damagerID) override;
 
-    static Player* create(House* associatedHouse, const std::string& playername, Difficulty difficulty) {
-        return new SmartBot(associatedHouse, playername, difficulty);
-    }
-
-    static Player* load(InputStream& stream, House* associatedHouse) {
-        return new SmartBot(stream, associatedHouse);
-    }
-
 private:
-    SmartBot(House* associatedHouse, const std::string& playername, Difficulty difficulty);
-    SmartBot(InputStream& stream, House* associatedHouse);
-
     void scrambleUnitsAndDefend(const ObjectBase* pIntruder);
 
     Coord findPlaceLocation(Uint32 itemID);

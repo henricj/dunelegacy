@@ -28,54 +28,54 @@ void PlayerFactory::registerAllPlayers() {
 
     playerDataList.emplace_back(  HUMANPLAYERCLASS,
                                             "Human Player",
-                                            std::bind(HumanPlayer::create, std::placeholders::_1, std::placeholders::_2),
-                                            std::bind(HumanPlayer::load, std::placeholders::_1, std::placeholders::_2) );
+                                            [](House* house,const std::string& playername) { return std::make_unique<HumanPlayer>(house, playername); },
+                                            [](InputStream& inputStream, House* house) { return std::make_unique<HumanPlayer>(inputStream, house); } );
 
 
 
     playerDataList.emplace_back(  "qBotVeryEasy",
                                             "qBotVeryEasy",
-                                            std::bind(QuantBot::create, std::placeholders::_1, std::placeholders::_2, QuantBot::Difficulty::Defend),
-                                            std::bind(QuantBot::load, std::placeholders::_1, std::placeholders::_2) );
+        [](House* house, const std::string& playername) { return std::make_unique<QuantBot>(house, playername, QuantBot::Difficulty::Defend); },
+        [](InputStream& inputStream, House* house) { return std::make_unique<QuantBot>(inputStream, house); } );
 
     playerDataList.emplace_back(  "qBotEasy",
                                             "qBotEasy",
-                                            std::bind(QuantBot::create, std::placeholders::_1, std::placeholders::_2, QuantBot::Difficulty::Easy),
-                                            std::bind(QuantBot::load, std::placeholders::_1, std::placeholders::_2) );
+        [](House* house, const std::string& playername) { return std::make_unique<QuantBot>(house, playername, QuantBot::Difficulty::Easy); },
+        [](InputStream& inputStream, House* house) { return std::make_unique<QuantBot>(inputStream, house); });
 
     playerDataList.emplace_back(  "qBotMedium",
                                             "qBotMedium",
-                                            std::bind(QuantBot::create, std::placeholders::_1, std::placeholders::_2, QuantBot::Difficulty::Medium),
-                                            std::bind(QuantBot::load, std::placeholders::_1, std::placeholders::_2) );
+        [](House* house, const std::string& playername) { return std::make_unique<QuantBot>(house, playername, QuantBot::Difficulty::Medium); },
+        [](InputStream& inputStream, House* house) { return std::make_unique<QuantBot>(inputStream, house); });
 
     playerDataList.emplace_back(  "qBotHard",
                                             "qBotHard",
-                                            std::bind(QuantBot::create, std::placeholders::_1, std::placeholders::_2, QuantBot::Difficulty::Hard),
-                                            std::bind(QuantBot::load, std::placeholders::_1, std::placeholders::_2) );
+        [](House* house, const std::string& playername) { return std::make_unique<QuantBot>(house, playername, QuantBot::Difficulty::Hard); },
+        [](InputStream& inputStream, House* house) { return std::make_unique<QuantBot>(inputStream, house); });
 
     playerDataList.emplace_back(  "qBotBrutal",
                                             "qBotBrutal",
-                                            std::bind(QuantBot::create, std::placeholders::_1, std::placeholders::_2, QuantBot::Difficulty::Brutal),
-                                            std::bind(QuantBot::load, std::placeholders::_1, std::placeholders::_2) );
+        [](House* house, const std::string& playername) { return std::make_unique<QuantBot>(house, playername, QuantBot::Difficulty::Brutal); },
+        [](InputStream& inputStream, House* house) { return std::make_unique<QuantBot>(inputStream, house); });
 
     playerDataList.emplace_back(  "SmartBot",
                                             "SmartBot",
-                                            std::bind(SmartBot::create, std::placeholders::_1, std::placeholders::_2, SmartBot::Difficulty::Normal),
-                                            std::bind(SmartBot::load, std::placeholders::_1, std::placeholders::_2) );
+        [](House* house, const std::string& playername) { return std::make_unique<SmartBot>(house, playername, SmartBot::Difficulty::Normal); },
+        [](InputStream& inputStream, House* house) { return std::make_unique<SmartBot>(inputStream, house); });
 
     playerDataList.emplace_back(  "AIPlayerEasy",
                                             "AI Player (easy)",
-                                            std::bind(AIPlayer::create, std::placeholders::_1, std::placeholders::_2, AIPlayer::Difficulty::Easy),
-                                            std::bind(AIPlayer::load, std::placeholders::_1, std::placeholders::_2) );
+        [](House* house, const std::string& playername) { return std::make_unique<AIPlayer>(house, playername, AIPlayer::Difficulty::Easy); },
+        [](InputStream& inputStream, House* house) { return std::make_unique<AIPlayer>(inputStream, house); });
 
     playerDataList.emplace_back(  "AIPlayerMedium",
                                             "AI Player (medium)",
-                                            std::bind(AIPlayer::create, std::placeholders::_1, std::placeholders::_2, AIPlayer::Difficulty::Medium),
-                                            std::bind(AIPlayer::load, std::placeholders::_1, std::placeholders::_2) );
+        [](House* house, const std::string& playername) { return std::make_unique<AIPlayer>(house, playername, AIPlayer::Difficulty::Medium); },
+        [](InputStream& inputStream, House* house) { return std::make_unique<AIPlayer>(inputStream, house); });
 
     playerDataList.emplace_back(  "AIPlayerHard",
                                             "AI Player (hard)",
-                                            std::bind(AIPlayer::create, std::placeholders::_1, std::placeholders::_2, AIPlayer::Difficulty::Hard),
-                                            std::bind(AIPlayer::load, std::placeholders::_1, std::placeholders::_2) );
+        [](House* house, const std::string& playername) { return std::make_unique<AIPlayer>(house, playername, AIPlayer::Difficulty::Hard); },
+        [](InputStream& inputStream, House* house) { return std::make_unique<AIPlayer>(inputStream, house); });
 
 }

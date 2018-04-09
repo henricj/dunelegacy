@@ -450,14 +450,15 @@ void INIMapLoader::loadHouses()
                 }
             }
 
-            Player* pPlayer = pPlayerData->create(pNewHouse, playerInfo.playerName);
+            auto pPlayer = pPlayerData->create(pNewHouse, playerInfo.playerName);
 
-            pNewHouse->addPlayer(std::shared_ptr<Player>(pPlayer));
-            if( ((pGame->getGameInitSettings().getGameType() != GameType::CustomMultiplayer) && (dynamic_cast<HumanPlayer*>(pPlayer) != nullptr))
+            if( ((pGame->getGameInitSettings().getGameType() != GameType::CustomMultiplayer) && (dynamic_cast<HumanPlayer*>(pPlayer.get()) != nullptr))
                 || (playerInfo.playerName == pGame->getLocalPlayerName())) {
                 pLocalHouse = pNewHouse;
-                pLocalPlayer = dynamic_cast<HumanPlayer*>(pPlayer);
+                pLocalPlayer = dynamic_cast<HumanPlayer*>(pPlayer.get());
             }
+
+            pNewHouse->addPlayer(std::move(pPlayer));
         }
     }
 }
@@ -879,13 +880,14 @@ House* INIMapLoader::getOrCreateHouse(int houseID) {
                         }
                     }
 
-                    Player* pPlayer = pPlayerData->create(pNewHouse, playerInfo.playerName);
+                    auto pPlayer = pPlayerData->create(pNewHouse, playerInfo.playerName);
 
-                    pNewHouse->addPlayer(std::shared_ptr<Player>(pPlayer));
                     if(playerInfo.playerName == pGame->getLocalPlayerName()) {
                         pLocalHouse = pNewHouse;
-                        pLocalPlayer = dynamic_cast<HumanPlayer*>(pPlayer);
+                        pLocalPlayer = dynamic_cast<HumanPlayer*>(pPlayer.get());
                     }
+
+                    pNewHouse->addPlayer(std::move(pPlayer));
                 }
                 break;
             }

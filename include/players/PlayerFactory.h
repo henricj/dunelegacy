@@ -21,14 +21,15 @@
 #include <players/Player.h>
 
 #include <functional>
+#include <memory>
 
 class PlayerFactory {
 public:
     class PlayerData {
     public:
         PlayerData( const std::string& playerclass, const std::string& name,
-                    const std::function<Player* (House*, const std::string&)>& pCreate,
-                    const std::function<Player* (InputStream&, House*)>& pLoad)
+                    const std::function<std::unique_ptr<Player> (House*, const std::string&)>& pCreate,
+                    const std::function<std::unique_ptr<Player> (InputStream&, House*)>& pLoad)
          : playerclass(playerclass), name(name), pCreate(pCreate), pLoad(pLoad) {
         }
 
@@ -40,14 +41,14 @@ public:
             return name;
         }
 
-        Player* create(House* associatedHouse, const std::string& playername) const {
-            Player* pPlayer = pCreate(associatedHouse, playername);
+        std::unique_ptr<Player> create(House* associatedHouse, const std::string& playername) const {
+            auto pPlayer = pCreate(associatedHouse, playername);
             pPlayer->setPlayerclass(playerclass);
             return pPlayer;
         }
 
-        Player* load(InputStream& stream, House* associatedHouse) const {
-            Player* pPlayer = pLoad(stream, associatedHouse);
+        std::unique_ptr<Player> load(InputStream& stream, House* associatedHouse) const {
+            auto pPlayer = pLoad(stream, associatedHouse);
             pPlayer->setPlayerclass(playerclass);
             return pPlayer;
         }
@@ -55,8 +56,8 @@ public:
     private:
         std::string playerclass;
         std::string name;
-        std::function<Player* (House*, const std::string&)> pCreate;
-        std::function<Player* (InputStream&, House*)> pLoad;
+        std::function<std::unique_ptr<Player>(House*, const std::string&)> pCreate;
+        std::function<std::unique_ptr<Player>(InputStream&, House*)> pLoad;
     };
 
     static const std::vector<PlayerData>& getList() {
@@ -71,7 +72,7 @@ public:
             registerAllPlayers();
         }
 
-        if(index < 0 || index >= (int) playerDataList.size()) {
+        if(index < 0 || index >= static_cast<int>(playerDataList.size())) {
             return nullptr;
         }
 
@@ -83,9 +84,9 @@ public:
             registerAllPlayers();
         }
 
-        for(unsigned int i = 0; i < playerDataList.size(); i++) {
-            if(playerDataList[i].getPlayerClass() == playerclass) {
-                return &playerDataList[i];
+        for(auto& player_data : playerDataList) {
+            if(player_data.getPlayerClass() == playerclass) {
+                return &player_data;
             }
         }
 

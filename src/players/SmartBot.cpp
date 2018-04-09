@@ -90,7 +90,7 @@ void SmartBot::save(OutputStream& stream) const {
 
 
 void SmartBot::update() {
-    if( (getGameCylceCount() + getHouse()->getHouseID()) % AIUPDATEINTERVAL != 0) {
+    if( (getGameCycleCount() + getHouse()->getHouseID()) % AIUPDATEINTERVAL != 0) {
         // we are not updating this AI player this cycle
         return;
     }

@@ -22,6 +22,8 @@
 
 #include <DataTypes.h>
 
+#include <deque>
+
 class AIPlayer : public Player
 {
 public:
@@ -31,6 +33,8 @@ public:
         Hard = 2
     };
 
+    AIPlayer(House* associatedHouse, const std::string& playername, Difficulty difficulty);
+    AIPlayer(InputStream& stream, House* associatedHouse);
     void init();
     ~AIPlayer();
     void save(OutputStream& stream) const override;
@@ -41,18 +45,7 @@ public:
     void onDecrementStructures(int itemID, const Coord& location) override;
     void onDamage(const ObjectBase* pObject, int damage, Uint32 damagerID) override;
 
-    static Player* create(House* associatedHouse, const std::string& playername, Difficulty difficulty) {
-        return new AIPlayer(associatedHouse, playername, difficulty);
-    }
-
-    static Player* load(InputStream& stream, House* associatedHouse) {
-        return new AIPlayer(stream, associatedHouse);
-    }
-
 private:
-    AIPlayer(House* associatedHouse, const std::string& playername, Difficulty difficulty);
-    AIPlayer(InputStream& stream, House* associatedHouse);
-
     void scrambleUnitsAndDefend(const ObjectBase* pIntruder);
 
     Coord findPlaceLocation(Uint32 itemID);
@@ -71,7 +64,7 @@ private:
     Sint32  attackTimer;    ///< When to attack?
     Sint32  buildTimer;     ///< When to build the next structure/unit
 
-    std::list<Coord> placeLocations;    ///< Where to place structures
+    std::deque<Coord> placeLocations;    ///< Where to place structures
 };
 
 #endif //AIPLAYER_H

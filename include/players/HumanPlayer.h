@@ -58,6 +58,8 @@ public:
         NotEnoughConrete = 20,
     };
 
+    HumanPlayer(House* associatedHouse, const std::string& playername);
+    HumanPlayer(InputStream& stream, House* associatedHouse);
     void init();
     virtual ~HumanPlayer();
     void save(OutputStream& stream) const override;
@@ -106,15 +108,6 @@ public:
         \param  newGroupList        the new list to set
     */
     void setGroupList(int groupListIndex, const std::set<Uint32>& newGroupList);
-
-    static Player* create(House* associatedHouse, const std::string& playername) {
-        return new HumanPlayer(associatedHouse, playername);
-    }
-
-    static Player* load(InputStream& stream, House* associatedHouse) {
-        return new HumanPlayer(stream, associatedHouse);
-    }
-
 public:
     Uint32 nextExpectedCommandsCycle;                       ///< The next cycle we expect commands for (using for network games)
 
@@ -123,9 +116,6 @@ public:
     Uint32 alreadyShownTutorialHints;                       ///< Contains flags for each tutorial hint (see enum TutorialHint)
 
 private:
-    HumanPlayer(House* associatedHouse, const std::string& playername);
-    HumanPlayer(InputStream& stream, House* associatedHouse);
-
     void triggerStructureTutorialHint(Uint32 itemID);
 
     bool hasConcreteOfSize(const Coord& concreteSize) const;

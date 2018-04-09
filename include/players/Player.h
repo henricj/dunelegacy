@@ -48,7 +48,13 @@ public:
 
     Player(House* associatedHouse, const std::string& playername);
     Player(InputStream& stream, House* associatedHouse);
-    virtual ~Player();
+    virtual ~Player() = 0;
+
+    Player(const Player &) = delete;
+    Player(Player &&) = delete;
+    Player& operator=(const Player &) = delete;
+    Player& operator=(Player &&) = delete;
+
     virtual void save(OutputStream& stream) const;
 
     virtual void update() = 0;
@@ -99,18 +105,20 @@ protected:
     /**
         Logs a debug message
         \param  fmt the format string of the debug message
+        \param ...
     */
-    void logDebug(PRINTF_FORMAT_STRING const char* fmt, ...) PRINTF_VARARG_FUNC(2);
+    void logDebug(PRINTF_FORMAT_STRING const char* fmt, ...) const PRINTF_VARARG_FUNC(2);
 
     /**
         Logs a warning message
         \param  fmt the format string of the debug message
-    */
-    void logWarn(PRINTF_FORMAT_STRING const char* fmt, ...) PRINTF_VARARG_FUNC(2);
+        \param ...
+        */
+    void logWarn(PRINTF_FORMAT_STRING const char* fmt, ...) const PRINTF_VARARG_FUNC(2);
 
     Random& getRandomGen() const;
     const GameInitSettings& getGameInitSettings() const;
-    Uint32 getGameCylceCount() const;
+    Uint32 getGameCycleCount() const;
 
     const Map& getMap() const;
     const ObjectBase* getObject(Uint32 objectID) const;
@@ -124,7 +132,7 @@ protected:
         Start repairing the structure pObject or sending the unit pObject to the rapair yard.
         \param  pObject  the structure or unit to repair
     */
-    void doRepair(const ObjectBase* pObject);
+    void doRepair(const ObjectBase* pObject) const;
 
     /**
         Set the deploy position of pStructure. Units produced in this structure will move directly to
@@ -133,48 +141,48 @@ protected:
         \param  x           the x coordinate (in tile coordinates)
         \param  y           the y coordinate (in tile coordinates)
     */
-    void doSetDeployPosition(const StructureBase* pStructure, int x, int y);
+    void doSetDeployPosition(const StructureBase* pStructure, int x, int y) const;
 
     /**
         Start upgrading pBuilder.
         \param  pBuilder  the structure to upgrade
         \return true if upgrading was started, false if not possible or already upgrading
     */
-    bool doUpgrade(const BuilderBase* pBuilder);
+    bool doUpgrade(const BuilderBase* pBuilder) const;
 
     /**
         Start production of the specified item in pBuilder.
         \param  pBuilder        the structure to build in
         \param  itemID          the item to produce
     */
-    void doProduceItem(const BuilderBase* pBuilder, Uint32 itemID);
+    void doProduceItem(const BuilderBase* pBuilder, Uint32 itemID) const;
 
     /**
         Cancel production of the specified item in pBuilder.
         \param  pBuilder        the structure to build in
         \param  itemID          the item to cancel
     */
-    void doCancelItem(const BuilderBase* pBuilder, Uint32 itemID);
+    void doCancelItem(const BuilderBase* pBuilder, Uint32 itemID) const;
 
     /**
         Sets the currently in pBuilder produced item on hold or continues production.
         \param  pBuilder        the structure to stop/resume production in
         \param  bOnHold         true = hold production; false = resume production
     */
-    void doSetOnHold(const BuilderBase* pBuilder, bool bOnHold);
+    void doSetOnHold(const BuilderBase* pBuilder, bool bOnHold) const;
 
     /**
         Start building a random item in pBuilder. If pBuilder is a Starport a random item is
         added to the order list
         \param  pBuilder  the structure to build in
     */
-    void doBuildRandom(const BuilderBase* pBuilder);
+    void doBuildRandom(const BuilderBase* pBuilder) const;
 
     /**
         Send order and wait for delivery to pStarport.
         \param  pStarport  the Starport to send order for
     */
-    void doPlaceOrder(const StarPort* pStarport);
+    void doPlaceOrder(const StarPort* pStarport) const;
 
     /**
         Places the currently in pConstYard produced structure on the map at x,y.
@@ -183,13 +191,13 @@ protected:
         \param  y           the y coordinate (in tile coordinates)
         \return true if placement was successful, false otherwise
     */
-    bool doPlaceStructure(const ConstructionYard* pConstYard, int x, int y);
+    bool doPlaceStructure(const ConstructionYard* pConstYard, int x, int y) const;
 
     /**
         Activate the special palace weapon Fremen or Saboteur. For the Deathhand see doLaunchDeathhand.
         \param  pPalace the palace to activate the special weapon of
     */
-    void doSpecialWeapon(const Palace* pPalace);
+    void doSpecialWeapon(const Palace* pPalace) const;
 
     /**
         Launch the deathhand missile an target position x,y.
@@ -197,14 +205,14 @@ protected:
         \param  xpos    x coordinate (in tile coordinates)
         \param  ypos    y coordinate (in tile coordinates)
     */
-    void doLaunchDeathhand(const Palace* pPalace, int x, int y);
+    void doLaunchDeathhand(const Palace* pPalace, int x, int y) const;
 
     /**
         Attacks with turret pTurret the object pObject.
         \param  pTurret         the turret to attack with
         \param  pTargetObject   the object to attack
     */
-    void doAttackObject(const TurretBase* pTurret, const ObjectBase* pTargetObject);
+    void doAttackObject(const TurretBase* pTurret, const ObjectBase* pTargetObject) const;
 
 
     /**
@@ -214,14 +222,14 @@ protected:
         \param  y    the y position on the map
         \param  bForced true, if the unit should ignore everything else
     */
-    void doMove2Pos(const UnitBase* pUnit, int x, int y, bool bForced);
+    void doMove2Pos(const UnitBase* pUnit, int x, int y, bool bForced) const;
 
     /**
         Moves the unit pUnit to x,y.
         \param  pUnit           the unit to move
         \param  pTargetObject   the object to move to
     */
-    void doMove2Object(const UnitBase* pUnit, const ObjectBase* pTargetObject);
+    void doMove2Object(const UnitBase* pUnit, const ObjectBase* pTargetObject) const;
 
     /**
         Orders the unit pUnit to attack position x,y.
@@ -230,7 +238,7 @@ protected:
         \param  y       the y position on the map
         \param  bForced true, if the unit should ignore everything else
     */
-    void doAttackPos(const UnitBase* pUnit, int x, int y, bool bForced);
+    void doAttackPos(const UnitBase* pUnit, int x, int y, bool bForced) const;
 
     /**
         Attacks with unit pUnit the object pObject.
@@ -238,40 +246,40 @@ protected:
         \param  pTargetObject   the object to attack
         \param  bForced         true, if the unit should ignore everything else
     */
-    void doAttackObject(const UnitBase* pUnit, const ObjectBase* pTargetObject, bool bForced);
+    void doAttackObject(const UnitBase* pUnit, const ObjectBase* pTargetObject, bool bForced) const;
 
     /**
         Change the attack mode of pUnit to attackMode.
         \param  pUnit           the unit to change attack mode of
         \param  attackMode      the new attack mode
     */
-    void doSetAttackMode(const UnitBase* pUnit, ATTACKMODE attackMode);
+    void doSetAttackMode(const UnitBase* pUnit, ATTACKMODE attackMode) const;
 
     /**
         Start the devastation sequence of a devastator
         \param  pDevastator the devastator to devastate
     */
-    void doStartDevastate(const Devastator* pDevastator);
+    void doStartDevastate(const Devastator* pDevastator) const;
 
     /**
         Orders pHarvester to return to a refinery
         \param  pHarvester the harvester to return
     */
-    void doReturn(const Harvester* pHarvester);
+    void doReturn(const Harvester* pHarvester) const;
 
     /**
         The infantry unit pInfantry shall capture pTargetStructure
         \param  pInfantry           the unit to capture with
         \param  pTargetStructure    the object to attack
     */
-    void doCaptureStructure(const InfantryBase* pInfantry, const StructureBase* pTargetStructure);
+    void doCaptureStructure(const InfantryBase* pInfantry, const StructureBase* pTargetStructure) const;
 
     /**
        Deploy MCV pMCV. If deploying was successful this unit does not exist anymore.
        \param  pMCV the MCV to deploy
        \return true, if deploying was successful, false otherwise.
     */
-    bool doDeploy(const MCV* pMCV);
+    bool doDeploy(const MCV* pMCV) const;
 
 
     /**
@@ -279,7 +287,7 @@ protected:
         This isn't in the original game but will make it fun
     */
 
-    bool doRequestCarryallDrop(const GroundUnit* pGroundUnit);
+    bool doRequestCarryallDrop(const GroundUnit* pGroundUnit) const;
 
 
 private:
