@@ -33,10 +33,15 @@ class House;
 class Bullet
 {
 public:
-    Bullet(Uint32 shooterID, Coord* newLocation, Coord* newDestination, Uint32 bulletID, int damage, bool air);
+    Bullet(Uint32 shooterID, Coord* newRealLocation, Coord* newRealDestination, Uint32 bulletID, int damage, bool air);
     explicit Bullet(InputStream& stream);
     void init();
     ~Bullet();
+
+    Bullet(const Bullet &) = delete;
+    Bullet(Bullet &&) = delete;
+    Bullet& operator=(const Bullet &) = delete;
+    Bullet& operator=(Bullet &&) = delete;
 
     void save(OutputStream& stream) const;
 
