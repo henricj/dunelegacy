@@ -32,6 +32,11 @@ public:
     AStarSearch(Map* pMap, UnitBase* pUnit, Coord start, Coord destination);
     ~AStarSearch();
 
+    AStarSearch(const AStarSearch &) = delete;
+    AStarSearch(AStarSearch &&) = delete;
+    AStarSearch& operator=(const AStarSearch &) = delete;
+    AStarSearch& operator=(AStarSearch &&) = delete;
+
     std::list<Coord> getFoundPath() {
         std::list<Coord> path;
 
