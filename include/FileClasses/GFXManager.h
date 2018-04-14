@@ -24,6 +24,8 @@
 #include "Wsafile.h"
 #include <DataTypes.h>
 
+#include "misc/sdl_support.h"
+
 #include <string>
 #include <array>
 #include <memory>

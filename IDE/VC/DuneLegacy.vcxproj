@@ -381,6 +381,7 @@ IF %ERRORLEVEL% LSS 8 exit 0</Command>
     <ClInclude Include="..\..\include\misc\Random.h" />
     <ClInclude Include="..\..\include\misc\RobustList.h" />
     <ClInclude Include="..\..\include\misc\Scaler.h" />
+    <ClInclude Include="..\..\include\misc\sdl_support.h" />
     <ClInclude Include="..\..\include\misc\sound_util.h" />
     <ClInclude Include="..\..\include\misc\string_util.h" />
     <ClInclude Include="..\..\include\mmath.h" />
