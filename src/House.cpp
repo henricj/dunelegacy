@@ -649,21 +649,16 @@ StructureBase* House::placeStructure(Uint32 builderID, int itemID, int xPos, int
 
         case (Structure_Slab4): {
             // Slabs are no normal buildings
-            int i,j;
-            for(i = xPos; i < xPos + 2; i++) {
-                for(j = yPos; j < yPos + 2; j++) {
-                    if (currentGameMap->tileExists(i, j)) {
-                        Tile* pTile = currentGameMap->getTile(i, j);
+            currentGameMap->for_each(xPos, yPos, xPos + 2, yPos + 2,
+                [=](Tile& t) {
+                    if (t.hasAGroundObject() || !t.isRock() || t.isMountain())
+                        return;
 
-                        if (!pTile->hasAGroundObject() && pTile->isRock() && !pTile->isMountain()) {
-                            pTile->setType(Terrain_Slab);
-                            pTile->setOwner(getHouseID());
-                            currentGameMap->viewMap(getTeam(), i, j, currentGame->objectData.data[Structure_Slab4][houseID].viewrange);
-                            //pTile->clearTerrain();
-                        }
-                    }
-                }
-            }
+                    t.setType(Terrain_Slab);
+                    t.setOwner(houseID);
+                    currentGameMap->viewMap(team, t.getLocation().x, t.getLocation().y, currentGame->objectData.data[Structure_Slab4][houseID].viewrange);
+                    //pTile->clearTerrain();
+                });
 
             if(pBuilder != nullptr) {
                 pBuilder->unSetWaitingToPlace();
