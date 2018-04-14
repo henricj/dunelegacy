@@ -263,6 +263,7 @@ IF %ERRORLEVEL% LSS 8 exit 0</Command>
     <ClInclude Include="..\..\include\fixmath\fix16.h" />
     <ClInclude Include="..\..\include\fixmath\fix16_trig_sin_lut.h" />
     <ClInclude Include="..\..\include\fixmath\fix32.h" />
+    <ClInclude Include="..\..\include\fixmath\fix32_support.h" />
     <ClInclude Include="..\..\include\fixmath\fixmath.h" />
     <ClInclude Include="..\..\include\fixmath\FixPoint.h" />
     <ClInclude Include="..\..\include\fixmath\FixPoint16.h" />

@@ -29,4 +29,14 @@ typedef FixPoint32 FixPoint;
 #define FixPt_E FixPt32_E
 #define FixPt_SQRT2 FixPt32_SQRT2
 
+#include "fix32_support.h"
+
+template<char...Chars>
+constexpr auto operator""_fix()
+{
+    return FixPoint32::FromRawValue(fix32_support::operator ""_fix32<Chars...>());
+}
+
+
+
 #endif // FIXPOINT_H
