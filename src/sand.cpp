@@ -623,19 +623,19 @@ FixPoint getDeviateWeakness(HOUSETYPE house) {
     // Deviators are crap enough. If this is a custom game remove the weakness nerf
     // So that Ordos is playable for Humans
     //if(currentGame->gameType == GameType::CustomGame){
-        //return FixPt(0,100);
+        //return 0.100_fix;
     return 1;
     //}
 
 /*
     switch(house) {
-        case HOUSE_HARKONNEN:   return FixPt(0,78);
-        case HOUSE_ATREIDES:    return FixPt(0,30);
-        case HOUSE_ORDOS:       return FixPt(0,50);
-        case HOUSE_FREMEN:      return FixPt(0,08);
-        case HOUSE_SARDAUKAR:   return FixPt(0,04);
-        case HOUSE_MERCENARY:   return FixPt(0,50);
-        default:                return FixPt(0,00);
+        case HOUSE_HARKONNEN:   return 0.78_fix;
+        case HOUSE_ATREIDES:    return 0.30_fix;
+        case HOUSE_ORDOS:       return 0.50_fix;
+        case HOUSE_FREMEN:      return 0.08_fix;
+        case HOUSE_SARDAUKAR:   return 0.04_fix;
+        case HOUSE_MERCENARY:   return 0.50_fix;
+        default:                return 0.00_fix;
     }*/
 }
 

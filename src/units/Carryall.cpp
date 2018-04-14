@@ -141,7 +141,7 @@ void Carryall::checkPos()
 
     if (active) {
         if (hasCargo()) {
-            if((location == destination) && (currentMaxSpeed <= FixPt(0,5)) ) {
+            if((location == destination) && (currentMaxSpeed <= 0.5_fix) ) {
                 // drop up to 3 infantry units at once or one other unit
                 int droppedUnits = 0;
                 do {

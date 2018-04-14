@@ -227,9 +227,9 @@ void BuilderBase::updateProductionProgress() {
                 /* That was wrong. Build speed does not depend on power production
                 if (getOwner()->hasPower() || (((currentGame->gameType == GameType::Campaign) || (currentGame->gameType == GameType::Skirmish)) && getOwner()->isAI())) {
                     //if not enough power, production is halved
-                    ProductionProgress += owner->takeCredits(FixPt(0,25));
+                    ProductionProgress += owner->takeCredits(0.25_fix);
                 } else {
-                    ProductionProgress += owner->takeCredits(FixPt(0,125));
+                    ProductionProgress += owner->takeCredits(0.125_fix);
                 }*/
 
             }

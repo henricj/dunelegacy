@@ -122,7 +122,7 @@ bool Frigate::update() {
             currentMaxSpeed = dist*m+t;
         }
     } else {
-        currentMaxSpeed = std::min(currentMaxSpeed + FixPt(0,2), maxSpeed);
+        currentMaxSpeed = std::min(currentMaxSpeed + 0.2_fix, maxSpeed);
     }
 
     if(AirUnit::update() == false) {

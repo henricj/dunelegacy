@@ -1528,7 +1528,7 @@ void QuantBot::attack(int militaryValue) {
         tempLim = 60000;
     }
 
-    FixPoint strength = (FixPoint(militaryValue) + 1) / (FixPoint(tempLim)) + FixPt(0,03);
+    FixPoint strength = (FixPoint(militaryValue) + 1) / (FixPoint(tempLim)) + 0.03_fix;
 
     FixPoint newAttack = 15000 / strength;
 

@@ -28,7 +28,7 @@
 #define MAX_NODES_CHECKED   (128*128)
 
 AStarSearch::AStarSearch(Map* pMap, UnitBase* pUnit, Coord start, Coord destination) {
-    FixPoint rotationSpeed = FixPt(1,0)/(currentGame->objectData.data[pUnit->getItemID()][pUnit->getOriginalHouseID()].turnspeed * TILESIZE);
+    FixPoint rotationSpeed = 1.0_fix/(currentGame->objectData.data[pUnit->getItemID()][pUnit->getOriginalHouseID()].turnspeed * TILESIZE);
 
     sizeX = pMap->getSizeX();
     sizeY = pMap->getSizeY();
@@ -43,7 +43,7 @@ AStarSearch::AStarSearch(Map* pMap, UnitBase* pUnit, Coord start, Coord destinat
     bestCoord = Coord::Invalid();
 
     //if the unit is not directly next to its destination or it is and the destination is unblocked
-    if ((heuristic > FixPt(1,5)) || (pUnit->canPass(destination.x, destination.y) == true)) {
+    if ((heuristic > 1.5_fix) || (pUnit->canPass(destination.x, destination.y) == true)) {
 
         putOnOpenListIfBetter(start, Coord::Invalid(), 0 , heuristic);
 
@@ -75,9 +75,9 @@ AStarSearch::AStarSearch(Map* pMap, UnitBase* pUnit, Coord start, Coord destinat
 
                         if((nextCoord.x != currentCoord.x) && (nextCoord.y != currentCoord.y)) {
                             //add diagonal movement cost
-                            g += FixPt_SQRT2*(pUnit->isAFlyingUnit() ? FixPoint(1) : pUnit->getTerrainDifficulty((TERRAINTYPE) nextTile.getType()));
+                            g += FixPt_SQRT2*(pUnit->isAFlyingUnit() ? 1.0_fix : pUnit->getTerrainDifficulty((TERRAINTYPE) nextTile.getType()));
                         } else {
-                            g += (pUnit->isAFlyingUnit() ? FixPoint(1) : pUnit->getTerrainDifficulty((TERRAINTYPE) nextTile.getType()));
+                            g += (pUnit->isAFlyingUnit() ? 1.0_fix : pUnit->getTerrainDifficulty((TERRAINTYPE) nextTile.getType()));
                         }
 
                         if(getMapData(currentCoord).parentCoord.isValid())  {
