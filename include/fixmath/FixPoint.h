@@ -29,12 +29,47 @@ typedef FixPoint32 FixPoint;
 #define FixPt_E FixPt32_E
 #define FixPt_SQRT2 FixPt32_SQRT2
 
-#include "fix32_support.h"
+namespace fix32_parserimpl
+{
+#pragma warning(push)
+    // The unused branches in the template functions have integer overflows.
+#pragma warning(disable:4307)
+
+    template<uint64_t I, uint64_t F, uint64_t Scale>
+    static constexpr uint64_t fp32_fraction_parser()
+    {
+        return ((I) << 32) | (((F) << 32) / Scale);
+    }
+
+    template<uint64_t I, uint64_t F, uint64_t Scale, char First, char ...Chars>
+    static constexpr uint64_t fp32_fraction_parser()
+    {
+        return fp32_fraction_parser<I, 10 * F + (First - '0'), 10 * Scale, Chars...>();
+    }
+
+    template<uint64_t I>
+    static constexpr uint64_t fp32_parser()
+    {
+        return (I) << 32;
+    }
+
+    template<uint64_t I, char First, char...Chars>
+    static constexpr uint64_t fp32_parser()
+    {
+        static_assert(First == '.' || (First >= '0' && First <= '9'), "Character must be '0' to '9' or '.'");
+
+        if (First == '.')
+            return fp32_fraction_parser<I, 0ull, 1, Chars...>();
+
+        return fp32_parser<10 * I + (static_cast<int>(First) - '0'), Chars...>();
+    }
+#pragma warning(pop)
+}
 
 template<char...Chars>
 constexpr auto operator""_fix()
 {
-    return FixPoint32::FromRawValue(fix32_support::operator ""_fix32<Chars...>());
+    return FixPoint32::FromRawValue(fix32_parserimpl::fp32_parser<0ull, Chars...>());
 }
 
 
