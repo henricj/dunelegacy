@@ -20,6 +20,12 @@
 
 #include <string>
 #include <SDL2/SDL_mixer.h>
+#include <misc/sdl_support.h>
+
+namespace sdl2
+{
+    typedef implementation::unique_ptr_deleter<Mix_Chunk, Mix_FreeChunk> mix_chunk_ptr;
+}
 
 Mix_Chunk* concat2Chunks(Mix_Chunk* sound1, Mix_Chunk* sound2);
 Mix_Chunk* concat3Chunks(Mix_Chunk* sound1, Mix_Chunk* sound2, Mix_Chunk* sound3);
