@@ -1,6 +1,8 @@
 #pragma once
 
 #include <memory>
+#include <assert.h>
+#include <misc/exceptions.h>
 #include <SDL2/SDL.h>
 
 namespace sdl2

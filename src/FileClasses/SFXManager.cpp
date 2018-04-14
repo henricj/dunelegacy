@@ -17,6 +17,8 @@
 
 #include <FileClasses/SFXManager.h>
 
+#include <algorithm>
+
 #include <globals.h>
 
 #include <FileClasses/FileManager.h>
@@ -49,25 +51,7 @@ SFXManager::SFXManager() {
     }
 }
 
-SFXManager::~SFXManager() {
-    // unload voice
-    for(int i = 0; i < numLngVoice; i++) {
-        if(lngVoice[i] != nullptr) {
-            Mix_FreeChunk(lngVoice[i]);
-            lngVoice[i] = nullptr;
-        }
-    }
-
-    free(lngVoice);
-
-    // unload sound
-    for(int i = 0; i < NUM_SOUNDCHUNK; i++) {
-        if(soundChunk[i] != nullptr) {
-            Mix_FreeChunk(soundChunk[i]);
-            soundChunk[i] = nullptr;
-        }
-    }
-}
+SFXManager::~SFXManager() = default;
 
 Mix_Chunk* SFXManager::getVoice(Voice_enum id, int house) {
     if(settings.general.language == "de" || settings.general.language == "fr") {
@@ -78,41 +62,32 @@ Mix_Chunk* SFXManager::getVoice(Voice_enum id, int house) {
 }
 
 Mix_Chunk* SFXManager::getSound(Sound_enum id) {
-    if(id >= NUM_SOUNDCHUNK)
+    if(id >= soundChunk.size())
         return nullptr;
 
-    return soundChunk[id];
+    return soundChunk[id].get();
 }
 
-Mix_Chunk* SFXManager::loadMixFromADL(const std::string& adlFile, int index, int volume) {
+sdl2::mix_chunk_ptr SFXManager::loadMixFromADL(const std::string& adlFile, int index, int volume) const {
 
-    SDL_RWops* rwop = pFileManager->openFile(adlFile);
-    SoundAdlibPC *pSoundAdlibPC = new SoundAdlibPC(rwop, AUDIO_FREQUENCY);
+    sdl2::RWop_ptr rwop{ pFileManager->openFile(adlFile) };
+    auto pSoundAdlibPC = std::make_unique<SoundAdlibPC>(rwop.get(), AUDIO_FREQUENCY);
     pSoundAdlibPC->setVolume(volume);
-    Mix_Chunk* chunk = pSoundAdlibPC->getSubsong(index);
-    delete pSoundAdlibPC;
-    SDL_RWclose(rwop);
+    sdl2::mix_chunk_ptr chunk{ pSoundAdlibPC->getSubsong(index) };
 
     return chunk;
 }
 
 void SFXManager::loadEnglishVoice() {
-    numLngVoice = NUM_VOICE*NUM_HOUSES;
-
-    if((lngVoice = (Mix_Chunk**) malloc(sizeof(Mix_Chunk*) * numLngVoice)) == nullptr) {
-        THROW(std::runtime_error, "Cannot allocate memory");
-    }
-
-    for(int i = 0; i < numLngVoice; i++) {
-        lngVoice[i] = nullptr;
-    }
+    lngVoice.clear();
+    lngVoice.resize(NUM_VOICE*NUM_HOUSES);
 
     // now we can load
-    for(int house = 0; house < NUM_HOUSES; house++) {
-        Mix_Chunk* HouseNameChunk = nullptr;
+    for(auto house = 0; house < NUM_HOUSES; house++) {
+        sdl2::mix_chunk_ptr HouseNameChunk;
 
         std::string HouseString;
-        int VoiceNum = house;
+        const int VoiceNum = house;
         switch(house) {
             case HOUSE_HARKONNEN:
                 HouseString = "H";
@@ -138,37 +113,37 @@ void SFXManager::loadEnglishVoice() {
                 HouseString = "O";
                 HouseNameChunk = getChunkFromFile(HouseString + "MERC.VOC");
                 break;
+            default:
+                break;
         }
 
+        { // Scope
         // "... Harvester deployed", "... Unit deployed" and "... Unit launched"
-        Mix_Chunk* Harvester = getChunkFromFile(HouseString + "HARVEST.VOC");
-        Mix_Chunk* Unit = getChunkFromFile(HouseString + "UNIT.VOC");
-        Mix_Chunk* Deployed = getChunkFromFile(HouseString + "DEPLOY.VOC");
-        Mix_Chunk* Launched = getChunkFromFile(HouseString + "LAUNCH.VOC");
-        lngVoice[HarvesterDeployed*NUM_HOUSES+VoiceNum] = concat3Chunks(HouseNameChunk, Harvester, Deployed);
-        lngVoice[UnitDeployed*NUM_HOUSES+VoiceNum] = concat3Chunks(HouseNameChunk, Unit, Deployed);
-        lngVoice[UnitLaunched*NUM_HOUSES+VoiceNum] = concat3Chunks(HouseNameChunk, Unit, Launched);
-        Mix_FreeChunk(Harvester);
-        Mix_FreeChunk(Unit);
-        Mix_FreeChunk(Deployed);
-        Mix_FreeChunk(Launched);
+            auto Harvester = getChunkFromFile(HouseString + "HARVEST.VOC");
+            auto Unit = getChunkFromFile(HouseString + "UNIT.VOC");
+            auto Deployed = getChunkFromFile(HouseString + "DEPLOY.VOC");
+            auto Launched = getChunkFromFile(HouseString + "LAUNCH.VOC");
+            lngVoice[HarvesterDeployed*NUM_HOUSES + VoiceNum] = concat3Chunks(HouseNameChunk.get(), Harvester.get(), Deployed.get());
+            lngVoice[UnitDeployed*NUM_HOUSES + VoiceNum] = concat3Chunks(HouseNameChunk.get(), Unit.get(), Deployed.get());
+            lngVoice[UnitLaunched*NUM_HOUSES + VoiceNum] = concat3Chunks(HouseNameChunk.get(), Unit.get(), Launched.get());
+        }
 
         // "Contruction complete"
         lngVoice[ConstructionComplete*NUM_HOUSES+VoiceNum] = getChunkFromFile(HouseString + "CONST.VOC");
 
-        // "Vehicle repaired"
-        Mix_Chunk* Vehicle = getChunkFromFile(HouseString + "VEHICLE.VOC");
-        Mix_Chunk* Repaired = getChunkFromFile(HouseString + "REPAIR.VOC");
-        lngVoice[VehicleRepaired*NUM_HOUSES+VoiceNum] = concat2Chunks(Vehicle, Repaired);
-        Mix_FreeChunk(Vehicle);
-        Mix_FreeChunk(Repaired);
+        { // Scope
+          // "Vehicle repaired"
+            auto Vehicle = getChunkFromFile(HouseString + "VEHICLE.VOC");
+            auto Repaired = getChunkFromFile(HouseString + "REPAIR.VOC");
+            lngVoice[VehicleRepaired*NUM_HOUSES + VoiceNum] = concat2Chunks(Vehicle.get(), Repaired.get());
+        }
 
-        // "Frigate has arrived"
-        Mix_Chunk* FrigateChunk = getChunkFromFile(HouseString + "FRIGATE.VOC");
-        Mix_Chunk* HasArrivedChunk = getChunkFromFile(HouseString + "ARRIVE.VOC");
-        lngVoice[FrigateHasArrived*NUM_HOUSES+VoiceNum] = concat2Chunks(FrigateChunk, HasArrivedChunk);
-        Mix_FreeChunk(FrigateChunk);
-        Mix_FreeChunk(HasArrivedChunk);
+        { // Scope
+          // "Frigate has arrived"
+            auto FrigateChunk = getChunkFromFile(HouseString + "FRIGATE.VOC");
+            auto HasArrivedChunk = getChunkFromFile(HouseString + "ARRIVE.VOC");
+            lngVoice[FrigateHasArrived*NUM_HOUSES + VoiceNum] = concat2Chunks(FrigateChunk.get(), HasArrivedChunk.get());
+        }
 
         // "Your mission is complete"
         lngVoice[YourMissionIsComplete*NUM_HOUSES+VoiceNum] = getChunkFromFile(HouseString + "WIN.VOC");
@@ -176,44 +151,42 @@ void SFXManager::loadEnglishVoice() {
         // "You have failed your mission"
         lngVoice[YouHaveFailedYourMission*NUM_HOUSES+VoiceNum] = getChunkFromFile(HouseString + "LOSE.VOC");
 
-        // "Radar activated"/"Radar deactivated"
-        Mix_Chunk* RadarChunk = getChunkFromFile(HouseString + "RADAR.VOC");
-        Mix_Chunk* RadarActivatedChunk = getChunkFromFile(HouseString + "ON.VOC");
-        Mix_Chunk* RadarDeactivatedChunk = getChunkFromFile(HouseString + "OFF.VOC");
-        lngVoice[RadarActivated*NUM_HOUSES+VoiceNum] = concat2Chunks(RadarChunk, RadarActivatedChunk);
-        lngVoice[RadarDeactivated*NUM_HOUSES+VoiceNum] = concat2Chunks(RadarChunk, RadarDeactivatedChunk);
-        Mix_FreeChunk(RadarChunk);
-        Mix_FreeChunk(RadarActivatedChunk);
-        Mix_FreeChunk(RadarDeactivatedChunk);
+        { // Scope
+          // "Radar activated"/"Radar deactivated"
+            auto RadarChunk = getChunkFromFile(HouseString + "RADAR.VOC");
+            auto RadarActivatedChunk = getChunkFromFile(HouseString + "ON.VOC");
+            auto RadarDeactivatedChunk = getChunkFromFile(HouseString + "OFF.VOC");
+            lngVoice[RadarActivated*NUM_HOUSES + VoiceNum] = concat2Chunks(RadarChunk.get(), RadarActivatedChunk.get());
+            lngVoice[RadarDeactivated*NUM_HOUSES + VoiceNum] = concat2Chunks(RadarChunk.get(), RadarDeactivatedChunk.get());
+        }
 
-        // "Bloom located"
-        Mix_Chunk* Bloom = getChunkFromFile(HouseString + "BLOOM.VOC");
-        Mix_Chunk* Located = getChunkFromFile(HouseString + "LOCATED.VOC");
-        lngVoice[BloomLocated*NUM_HOUSES+VoiceNum] = concat2Chunks(Bloom, Located);
-        Mix_FreeChunk(Bloom);
-        Mix_FreeChunk(Located);
+        { // Scope
+          // "Bloom located"
+            auto Bloom = getChunkFromFile(HouseString + "BLOOM.VOC");
+            auto Located = getChunkFromFile(HouseString + "LOCATED.VOC");
+            lngVoice[BloomLocated*NUM_HOUSES + VoiceNum] = concat2Chunks(Bloom.get(), Located.get());
+        }
 
-        // "Warning Wormsign"
-        Mix_Chunk* WarningChunk = getChunkFromFile(HouseString + "WARNING.VOC");
-        Mix_Chunk* WormSignChunk = getChunkFromFile(HouseString + "WORMY.VOC");
-        lngVoice[WarningWormSign*NUM_HOUSES+VoiceNum] = concat2Chunks(WarningChunk, WormSignChunk);
-        Mix_FreeChunk(WarningChunk);
-        Mix_FreeChunk(WormSignChunk);
+        { // Scope
+          // "Warning Wormsign"
+            auto WarningChunk = getChunkFromFile(HouseString + "WARNING.VOC");
+            auto WormSignChunk = getChunkFromFile(HouseString + "WORMY.VOC");
+            lngVoice[WarningWormSign*NUM_HOUSES + VoiceNum] = concat2Chunks(WarningChunk.get(), WormSignChunk.get());
+        }
 
         // "Our base is under attack"
         lngVoice[BaseIsUnderAttack*NUM_HOUSES+VoiceNum] = getChunkFromFile(HouseString + "ATTACK.VOC");
 
-        // "Saboteur approaching" and "Missile approaching"
-        Mix_Chunk* SabotChunk = getChunkFromFile(HouseString + "SABOT.VOC");
-        Mix_Chunk* MissileChunk = getChunkFromFile(HouseString + "MISSILE.VOC");
-        Mix_Chunk* ApproachingChunk = getChunkFromFile(HouseString + "APPRCH.VOC");
-        lngVoice[SaboteurApproaching*NUM_HOUSES+VoiceNum] = concat2Chunks(SabotChunk, ApproachingChunk);
-        lngVoice[MissileApproaching*NUM_HOUSES+VoiceNum] = concat2Chunks(MissileChunk, ApproachingChunk);
-        Mix_FreeChunk(SabotChunk);
-        Mix_FreeChunk(MissileChunk);
-        Mix_FreeChunk(ApproachingChunk);
+        { // Scope
+          // "Saboteur approaching" and "Missile approaching"
+            auto SabotChunk = getChunkFromFile(HouseString + "SABOT.VOC");
+            auto MissileChunk = getChunkFromFile(HouseString + "MISSILE.VOC");
+            auto ApproachingChunk = getChunkFromFile(HouseString + "APPRCH.VOC");
+            lngVoice[SaboteurApproaching*NUM_HOUSES + VoiceNum] = concat2Chunks(SabotChunk.get(), ApproachingChunk.get());
+            lngVoice[MissileApproaching*NUM_HOUSES + VoiceNum] = concat2Chunks(MissileChunk.get(), ApproachingChunk.get());
+        }
 
-        Mix_FreeChunk(HouseNameChunk);
+        HouseNameChunk.reset();
 
         // "Yes Sir"
         lngVoice[YesSir*NUM_HOUSES+VoiceNum] = getChunkFromFile("ZREPORT1.VOC", "REPORT1.VOC");
@@ -246,10 +219,10 @@ void SFXManager::loadEnglishVoice() {
         lngVoice[HouseOrdos*NUM_HOUSES+VoiceNum] = getChunkFromFile("MORDOS.VOC");
     }
 
-    for(int i = 0; i < numLngVoice; i++) {
-        if(lngVoice[i] == nullptr) {
-            THROW(std::runtime_error, "Not all voice sounds could be loaded: lngVoice[%d] == nullptr!", i);
-        }
+    const auto bad_voice = std::find(lngVoice.cbegin(), lngVoice.cend(), nullptr);
+
+    if (bad_voice != lngVoice.cend()) {
+        THROW(std::runtime_error, "Not all voice sounds could be loaded: lngVoice[%d] == nullptr!", static_cast<int>(bad_voice - lngVoice.cbegin()));
     }
 
     // Sfx
@@ -283,23 +256,16 @@ void SFXManager::loadEnglishVoice() {
 }
 
 
-Mix_Chunk* SFXManager::getEnglishVoice(Voice_enum id, int house) {
-    if((int) id >= numLngVoice)
+Mix_Chunk* SFXManager::getEnglishVoice(Voice_enum id, int house) const {
+    if(static_cast<size_t>(id) >= lngVoice.size())
         return nullptr;
 
-    return lngVoice[id*NUM_HOUSES + house];
+    return lngVoice[id*NUM_HOUSES + house].get();
 }
 
 void SFXManager::loadNonEnglishVoice(const std::string& languagePrefix) {
-    numLngVoice = NUM_VOICE;
-
-    if((lngVoice = (Mix_Chunk**) malloc(sizeof(Mix_Chunk*) * NUM_VOICE)) == nullptr) {
-        THROW(std::runtime_error, "Cannot allocate memory");
-    }
-
-    for(int i = 0; i < NUM_VOICE; i++) {
-        lngVoice[i] = nullptr;
-    }
+    lngVoice.clear();
+    lngVoice.resize(NUM_VOICE);
 
     // "Harvester deployed"
     lngVoice[HarvesterDeployed] = getChunkFromFile(languagePrefix + "HARVEST.VOC");
@@ -334,11 +300,9 @@ void SFXManager::loadNonEnglishVoice(const std::string& languagePrefix) {
 
     // "Warning Wormsign"
     if(pFileManager->exists(languagePrefix + "WORMY.VOC")) {
-        Mix_Chunk* WarningChunk = getChunkFromFile(languagePrefix + "WARNING.VOC");
-        Mix_Chunk* WormSignChunk = getChunkFromFile(languagePrefix + "WORMY.VOC");
-        lngVoice[WarningWormSign] = concat2Chunks(WarningChunk, WormSignChunk);
-        Mix_FreeChunk(WarningChunk);
-        Mix_FreeChunk(WormSignChunk);
+        auto WarningChunk = getChunkFromFile(languagePrefix + "WARNING.VOC");
+        auto WormSignChunk = getChunkFromFile(languagePrefix + "WORMY.VOC");
+        lngVoice[WarningWormSign] = concat2Chunks(WarningChunk.get(), WormSignChunk.get());
     } else {
         lngVoice[WarningWormSign] = getChunkFromFile(languagePrefix + "WARNING.VOC");
     }
@@ -382,10 +346,10 @@ void SFXManager::loadNonEnglishVoice(const std::string& languagePrefix) {
     // "House Harkonnen"
     lngVoice[HouseHarkonnen] = getChunkFromFile(languagePrefix + "HARK.VOC");
 
-    for(int i = 0; i < numLngVoice; i++) {
-        if(lngVoice[i] == nullptr) {
-            THROW(std::runtime_error, "Not all voice sounds could be loaded: lngVoice[%d] == nullptr!", i);
-        }
+    const auto bad_voice = std::find(lngVoice.cbegin(), lngVoice.cend(), nullptr);
+
+    if (bad_voice != lngVoice.cend()) {
+        THROW(std::runtime_error, "Not all voice sounds could be loaded: lngVoice[%d] == nullptr!", static_cast<int>(bad_voice - lngVoice.cbegin()));
     }
 
     // Sfx
@@ -418,9 +382,9 @@ void SFXManager::loadNonEnglishVoice(const std::string& languagePrefix) {
     soundChunk[Sound_RocketSmall] = getChunkFromFile("MISLTINP.VOC");
 }
 
-Mix_Chunk* SFXManager::getNonEnglishVoice(Voice_enum id, int house) {
-    if((int)id >= numLngVoice)
+Mix_Chunk* SFXManager::getNonEnglishVoice(Voice_enum id, int house) const {
+    if(static_cast<int>(id) >= lngVoice.size())
         return nullptr;
 
-    return lngVoice[id];
+    return lngVoice[id].get();
 }

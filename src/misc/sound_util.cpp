@@ -5,6 +5,7 @@
 #include <FileClasses/Vocfile.h>
 
 #include <misc/exceptions.h>
+#include <misc/sdl_support.h>
 
 #include <SDL2/SDL_mixer.h>
 #include <stdlib.h>
@@ -12,10 +13,15 @@
 
 extern FileManager* pFileManager;
 
-Mix_Chunk* concat2Chunks(Mix_Chunk* sound1, Mix_Chunk* sound2)
+sdl2::mix_chunk_ptr create_chunk()
 {
-    Mix_Chunk* returnChunk;
-    if((returnChunk = (Mix_Chunk*) SDL_malloc(sizeof(Mix_Chunk))) == nullptr) {
+    return sdl2::mix_chunk_ptr{ static_cast<Mix_Chunk*>(SDL_malloc(sizeof(Mix_Chunk))) };
+}
+
+sdl2::mix_chunk_ptr concat2Chunks(Mix_Chunk* sound1, Mix_Chunk* sound2)
+{
+    auto returnChunk = create_chunk();
+    if(returnChunk == nullptr) {
         return nullptr;
     }
 
@@ -23,21 +29,26 @@ Mix_Chunk* concat2Chunks(Mix_Chunk* sound1, Mix_Chunk* sound2)
     returnChunk->volume = sound1->volume;
     returnChunk->alen = sound1->alen + sound2->alen;
 
-    if((returnChunk->abuf = (Uint8 *)SDL_malloc(returnChunk->alen)) == nullptr) {
-        SDL_free(returnChunk);
+    sdl2::sdl_ptr<Uint8> buffer{ static_cast<Uint8 *>(SDL_malloc(returnChunk->alen)) };
+    if (buffer == nullptr) {
         return nullptr;
     }
 
-    memcpy(returnChunk->abuf, sound1->abuf, sound1->alen);
-    memcpy(returnChunk->abuf + sound1->alen, sound2->abuf, sound2->alen);
+    auto p = buffer.get();
+
+    memcpy(p, sound1->abuf, sound1->alen);
+    p += sound1->alen;
+    memcpy(p, sound2->abuf, sound2->alen);
+
+    returnChunk->abuf = buffer.release();
 
     return returnChunk;
 }
 
-Mix_Chunk* concat3Chunks(Mix_Chunk* sound1, Mix_Chunk* sound2, Mix_Chunk* sound3)
+sdl2::mix_chunk_ptr concat3Chunks(Mix_Chunk* sound1, Mix_Chunk* sound2, Mix_Chunk* sound3)
 {
-    Mix_Chunk* returnChunk;
-    if((returnChunk = (Mix_Chunk*) SDL_malloc(sizeof(Mix_Chunk))) == nullptr) {
+    auto returnChunk = create_chunk();
+    if(returnChunk == nullptr) {
         return nullptr;
     }
 
@@ -45,22 +56,28 @@ Mix_Chunk* concat3Chunks(Mix_Chunk* sound1, Mix_Chunk* sound2, Mix_Chunk* sound3
     returnChunk->volume = sound1->volume;
     returnChunk->alen = sound1->alen + sound2->alen + sound3->alen;
 
-    if((returnChunk->abuf = (Uint8 *)SDL_malloc(returnChunk->alen)) == nullptr) {
-        SDL_free(returnChunk);
+    sdl2::sdl_ptr<Uint8> buffer{ static_cast<Uint8 *>(SDL_malloc(returnChunk->alen)) };
+    if(buffer == nullptr) {
         return nullptr;
     }
 
-    memcpy(returnChunk->abuf, sound1->abuf, sound1->alen);
-    memcpy(returnChunk->abuf + sound1->alen, sound2->abuf, sound2->alen);
-    memcpy(returnChunk->abuf + sound1->alen + sound2->alen, sound3->abuf, sound3->alen);
+    auto p = buffer.get();
+
+    memcpy(p, sound1->abuf, sound1->alen);
+    p += sound1->alen;
+    memcpy(p, sound2->abuf, sound2->alen);
+    p += sound2->alen;
+    memcpy(p, sound3->abuf, sound3->alen);
+
+    returnChunk->abuf = buffer.release();
 
     return returnChunk;
 }
 
-Mix_Chunk* concat4Chunks(Mix_Chunk* sound1, Mix_Chunk* sound2, Mix_Chunk* sound3, Mix_Chunk* sound4)
+sdl2::mix_chunk_ptr concat4Chunks(Mix_Chunk* sound1, Mix_Chunk* sound2, Mix_Chunk* sound3, Mix_Chunk* sound4)
 {
-    Mix_Chunk* returnChunk;
-    if((returnChunk = (Mix_Chunk*) SDL_malloc(sizeof(Mix_Chunk))) == nullptr) {
+    auto returnChunk = create_chunk();
+    if (returnChunk == nullptr) {
         return nullptr;
     }
 
@@ -68,23 +85,30 @@ Mix_Chunk* concat4Chunks(Mix_Chunk* sound1, Mix_Chunk* sound2, Mix_Chunk* sound3
     returnChunk->volume = sound1->volume;
     returnChunk->alen = sound1->alen + sound2->alen + sound3->alen + sound4->alen;
 
-    if((returnChunk->abuf = (Uint8 *)SDL_malloc(returnChunk->alen)) == nullptr) {
-        SDL_free(returnChunk);
+    sdl2::sdl_ptr<Uint8> buffer{ static_cast<Uint8 *>(SDL_malloc(returnChunk->alen)) };
+    if (buffer == nullptr) {
         return nullptr;
     }
 
-    memcpy(returnChunk->abuf, sound1->abuf, sound1->alen);
-    memcpy(returnChunk->abuf + sound1->alen, sound2->abuf, sound2->alen);
-    memcpy(returnChunk->abuf + sound1->alen + sound2->alen, sound3->abuf, sound3->alen);
-    memcpy(returnChunk->abuf + sound1->alen + sound2->alen + sound3->alen, sound4->abuf, sound4->alen);
+    auto p = buffer.get();
+
+    memcpy(p, sound1->abuf, sound1->alen);
+    p += sound1->alen;
+    memcpy(p, sound2->abuf, sound2->alen);
+    p += sound2->alen;
+    memcpy(p, sound3->abuf, sound3->alen);
+    p += sound3->alen;
+    memcpy(p, sound4->abuf, sound4->alen);
+
+    returnChunk->abuf = buffer.release();
 
     return returnChunk;
 }
 
-Mix_Chunk* createEmptyChunk()
+sdl2::mix_chunk_ptr createEmptyChunk()
 {
-    Mix_Chunk* returnChunk;
-    if((returnChunk = (Mix_Chunk*) SDL_malloc(sizeof(Mix_Chunk))) == nullptr) {
+    auto returnChunk = create_chunk();
+    if (returnChunk == nullptr) {
         return nullptr;
     }
 
@@ -96,10 +120,10 @@ Mix_Chunk* createEmptyChunk()
     return returnChunk;
 }
 
-Mix_Chunk* createSilenceChunk(int length)
+sdl2::mix_chunk_ptr createSilenceChunk(int length)
 {
-    Mix_Chunk* returnChunk;
-    if((returnChunk = (Mix_Chunk*) SDL_malloc(sizeof(Mix_Chunk))) == nullptr) {
+    auto returnChunk = create_chunk();
+    if (returnChunk == nullptr) {
         return nullptr;
     }
 
@@ -107,26 +131,28 @@ Mix_Chunk* createSilenceChunk(int length)
     returnChunk->volume = MIX_MAX_VOLUME;
     returnChunk->alen = length;
 
-    if((returnChunk->abuf = (Uint8 *)SDL_calloc(returnChunk->alen,1)) == nullptr) {
-        SDL_free(returnChunk);
+    sdl2::sdl_ptr<Uint8> buffer{ static_cast<Uint8 *>(SDL_calloc(returnChunk->alen, 1)) };
+    if (buffer == nullptr) {
         return nullptr;
     }
+
+    returnChunk->abuf = buffer.release();
 
     return returnChunk;
 }
 
-Mix_Chunk* getChunkFromFile(const std::string& filename) {
-    SDL_RWops* rwop = pFileManager->openFile(filename);
+sdl2::mix_chunk_ptr getChunkFromFile(const std::string& filename) {
+    sdl2::RWop_ptr rwop{ pFileManager->openFile(filename) };
 
-    Mix_Chunk* returnChunk;
-    if((returnChunk = LoadVOC_RW(rwop, 1)) == nullptr) {
+    sdl2::mix_chunk_ptr returnChunk{ LoadVOC_RW(rwop.get(), false) };
+    if(returnChunk == nullptr) {
         THROW(io_error, "Cannot load '%s' !", filename);
     }
 
     return returnChunk;
 }
 
-Mix_Chunk* getChunkFromFile(const std::string& filename, const std::string& alternativeFilename) {
+sdl2::mix_chunk_ptr getChunkFromFile(const std::string& filename, const std::string& alternativeFilename) {
     if(pFileManager->exists(filename)) {
         return getChunkFromFile(filename);
     } else if(pFileManager->exists(alternativeFilename)) {

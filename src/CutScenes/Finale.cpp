@@ -163,13 +163,13 @@ Finale::Finale(int house)
             addVideoEvent(new HoldPictureVideoEvent(pPalace2->getPicture(pPalace2->getNumFrames()-1), 15, true));
             addVideoEvent(new FadeOutVideoEvent(pPalace2->getPicture(pPalace2->getNumFrames()-1), 20, true));
             addTextEvent(new TextEvent(pIntroText->getString(FinaleText_NO_NO_NOOO),sardaukarColor,10,30,false,true,false));
-            addTrigger(new CutSceneSoundTrigger(10,click));
-            addTrigger(new CutSceneSoundTrigger(15,blaster));
-            addTrigger(new CutSceneSoundTrigger(17,blowup));
-            addTrigger(new CutSceneSoundTrigger(38,click));
-            addTrigger(new CutSceneSoundTrigger(43,blaster));
-            addTrigger(new CutSceneSoundTrigger(45,blowup));
-            addTrigger(new CutSceneSoundTrigger(67,glass));
+            addTrigger(new CutSceneSoundTrigger(10,click.get()));
+            addTrigger(new CutSceneSoundTrigger(15,blaster.get()));
+            addTrigger(new CutSceneSoundTrigger(17,blowup.get()));
+            addTrigger(new CutSceneSoundTrigger(38,click.get()));
+            addTrigger(new CutSceneSoundTrigger(43,blaster.get()));
+            addTrigger(new CutSceneSoundTrigger(45,blowup.get()));
+            addTrigger(new CutSceneSoundTrigger(67,glass.get()));
 
         } break;
 
@@ -231,8 +231,8 @@ Finale::Finale(int house)
             addTextEvent(new TextEvent(pIntroText->getString(FinaleText_I_am_referring_to_your_game),color,2,35,false,true,false));
             addTextEvent(new TextEvent(pIntroText->getString(FinaleText_We_were_your_pawns_and_Dune),color,40,45,true,true,false));
             addTextEvent(new TextEvent(pIntroText->getString(FinaleText_We_have_decided_to_take),color,88,105,true,false,false));
-            addTrigger(new CutSceneSoundTrigger(42,lizard));
-            addTrigger(new CutSceneSoundTrigger(62,lizard));
+            addTrigger(new CutSceneSoundTrigger(42,lizard.get()));
+            addTrigger(new CutSceneSoundTrigger(62,lizard.get()));
 
             startNewScene();
 
@@ -271,10 +271,4 @@ Finale::~Finale() {
     delete pPalace2;
     delete pImperator;
     delete pImperatorShocked;
-
-    Mix_FreeChunk(lizard);
-    Mix_FreeChunk(glass);
-    Mix_FreeChunk(click);
-    Mix_FreeChunk(blaster);
-    Mix_FreeChunk(blowup);
 }

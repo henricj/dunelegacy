@@ -20,6 +20,7 @@
 
 #include <string>
 #include <SDL2/SDL_mixer.h>
+#include <misc/sound_util.h>
 
 #include <CutScenes/CutScene.h>
 #include <FileClasses/Wsafile.h>
@@ -127,7 +128,7 @@ private:
 
     static const char* VoiceFileNames[Voice_NUM_ENTRIES];   ///< List of all the voice files
 
-    Mix_Chunk*  voice[Voice_NUM_ENTRIES];                   ///< All the loaded voices
+    sdl2::mix_chunk_ptr  voice[Voice_NUM_ENTRIES];          ///< All the loaded voices
 
     Wsafile* pDuneText;         ///< 1. video sequence showing the dune text
     Wsafile* pPlanet;           ///< 2. video sequence showing the planet
@@ -141,15 +142,15 @@ private:
     Wsafile* pHarkonnen;        ///< 10. video sequence showing two harkonnen troopers under attack
     Wsafile* pDestroyedTank;    ///< 11. video sequence showing destroyed tanks
 
-    Mix_Chunk*  wind;               ///< SFX: wind blowing
-    Mix_Chunk*  carryallLanding;    ///< SFX: carryall loading a harvester
-    Mix_Chunk*  harvester;          ///< SFX: harvester stopping
-    Mix_Chunk*  gunshot;            ///< SFX: a gunshot
-    Mix_Chunk*  glass;              ///< SFX: broken glass, destroyed by atreides ornithopters
-    Mix_Chunk*  missle;             ///< SFX: missle launched
-    Mix_Chunk*  blaster;            ///< SFX: trooper hit
-    Mix_Chunk*  blowup1;            ///< SFX: explosion
-    Mix_Chunk*  blowup2;            ///< SFX: explosion
+    sdl2::mix_chunk_ptr  wind;               ///< SFX: wind blowing
+    sdl2::mix_chunk_ptr  carryallLanding;    ///< SFX: carryall loading a harvester
+    sdl2::mix_chunk_ptr  harvester;          ///< SFX: harvester stopping
+    sdl2::mix_chunk_ptr  gunshot;            ///< SFX: a gunshot
+    sdl2::mix_chunk_ptr  glass;              ///< SFX: broken glass, destroyed by atreides ornithopters
+    sdl2::mix_chunk_ptr  missle;             ///< SFX: missle launched
+    sdl2::mix_chunk_ptr  blaster;            ///< SFX: trooper hit
+    sdl2::mix_chunk_ptr  blowup1;            ///< SFX: explosion
+    sdl2::mix_chunk_ptr  blowup2;            ///< SFX: explosion
 };
 
 #endif // INTRO_H

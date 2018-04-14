@@ -19,6 +19,7 @@
 #define FINALE_H
 
 #include <SDL2/SDL_mixer.h>
+#include <misc/sound_util.h>
 
 #include <CutScenes/CutScene.h>
 #include <FileClasses/Wsafile.h>
@@ -69,11 +70,11 @@ private:
     Wsafile* pImperator;            ///< video sequence showing the imperator taking
     Wsafile* pImperatorShocked;     ///< video sequence showing the imperator shocked
 
-    Mix_Chunk*  lizard;     ///< SFX: the lizard barking
-    Mix_Chunk*  glass;      ///< SFX: glass bursting
-    Mix_Chunk*  click;      ///< SFX: loading the gun
-    Mix_Chunk*  blaster;    ///< SFX: shooting the gun
-    Mix_Chunk*  blowup;     ///< SFX: explosion
+    sdl2::mix_chunk_ptr  lizard;     ///< SFX: the lizard barking
+    sdl2::mix_chunk_ptr  glass;      ///< SFX: glass bursting
+    sdl2::mix_chunk_ptr  click;      ///< SFX: loading the gun
+    sdl2::mix_chunk_ptr  blaster;    ///< SFX: shooting the gun
+    sdl2::mix_chunk_ptr  blowup;     ///< SFX: explosion
 };
 
 #endif // FINALE_H
