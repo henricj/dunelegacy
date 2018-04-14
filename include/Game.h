@@ -162,7 +162,7 @@ public:
     /**
         Draws the cursor.
     */
-    void drawCursor();
+    void drawCursor() const;
 
     /**
         This method sets up the view. The start position is the center point of all owned units/structures
@@ -216,7 +216,7 @@ public:
         \param stream   the stream to write to
         \param obj      the object to be saved
     */
-    void saveObject(OutputStream& stream, ObjectBase* obj);
+    void saveObject(OutputStream& stream, ObjectBase* obj) const;
 
     /**
         This method loads an object from the stream.
@@ -427,7 +427,7 @@ private:
         \param  mouseY  y-coordinate of cursor
         \return true if on radar view
     */
-    bool isOnRadarView(int mouseX, int mouseY);
+    bool isOnRadarView(int mouseX, int mouseY) const;
 
     /**
         Handles the press of one key while chatting

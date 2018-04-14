@@ -260,79 +260,53 @@ void Game::drawScreen()
     BottomRightTile.x = std::min(currentGameMap->getSizeX()-1, BottomRightTile.x + 1);
     BottomRightTile.y = std::min(currentGameMap->getSizeY()-1, BottomRightTile.y + 1);
 
-    Coord currentTile;
+    const auto x1 = TopLeftTile.x;
+    const auto y1 = TopLeftTile.y;
+    const auto x2 = BottomRightTile.x + 1;
+    const auto y2 = BottomRightTile.y + 1;
 
     /* draw ground */
-    for(currentTile.y = TopLeftTile.y; currentTile.y <= BottomRightTile.y; currentTile.y++) {
-        for(currentTile.x = TopLeftTile.x; currentTile.x <= BottomRightTile.x; currentTile.x++) {
 
-            if (currentGameMap->tileExists(currentTile))    {
-                Tile* pTile = currentGameMap->getTile(currentTile);
-                pTile->blitGround( screenborder->world2screenX(currentTile.x*TILESIZE),
-                                  screenborder->world2screenY(currentTile.y*TILESIZE));
-            }
-        }
-    }
+    currentGameMap->for_each(x1, y1, x2, y2,
+        [](Tile& t) {
+            t.blitGround(screenborder->world2screenX(t.getLocation().x*TILESIZE),
+                screenborder->world2screenY(t.getLocation().y*TILESIZE));
+        });
 
     /* draw structures */
-    for(currentTile.y = TopLeftTile.y; currentTile.y <= BottomRightTile.y; currentTile.y++) {
-        for(currentTile.x = TopLeftTile.x; currentTile.x <= BottomRightTile.x; currentTile.x++) {
-
-            if (currentGameMap->tileExists(currentTile))    {
-                Tile* pTile = currentGameMap->getTile(currentTile);
-                pTile->blitStructures( screenborder->world2screenX(currentTile.x*TILESIZE),
-                                      screenborder->world2screenY(currentTile.y*TILESIZE));
-            }
-        }
-    }
+    currentGameMap->for_each(x1, y1, x2, y2,
+        [](Tile& t) {
+            t.blitStructures(screenborder->world2screenX(t.getLocation().x*TILESIZE),
+                screenborder->world2screenY(t.getLocation().y*TILESIZE));
+        });
 
     /* draw underground units */
-    for(currentTile.y = TopLeftTile.y; currentTile.y <= BottomRightTile.y; currentTile.y++) {
-        for(currentTile.x = TopLeftTile.x; currentTile.x <= BottomRightTile.x; currentTile.x++) {
-
-            if (currentGameMap->tileExists(currentTile))    {
-                Tile* pTile = currentGameMap->getTile(currentTile);
-                pTile->blitUndergroundUnits( screenborder->world2screenX(currentTile.x*TILESIZE),
-                                            screenborder->world2screenY(currentTile.y*TILESIZE));
-            }
-        }
-    }
+    currentGameMap->for_each(x1, y1, x2, y2,
+        [](Tile& t) {
+            t.blitUndergroundUnits(screenborder->world2screenX(t.getLocation().x*TILESIZE),
+                screenborder->world2screenY(t.getLocation().y*TILESIZE));
+        });
 
     /* draw dead objects */
-    for(currentTile.y = TopLeftTile.y; currentTile.y <= BottomRightTile.y; currentTile.y++) {
-        for(currentTile.x = TopLeftTile.x; currentTile.x <= BottomRightTile.x; currentTile.x++) {
-
-            if (currentGameMap->tileExists(currentTile))    {
-                Tile* pTile = currentGameMap->getTile(currentTile);
-                pTile->blitDeadUnits( screenborder->world2screenX(currentTile.x*TILESIZE),
-                                     screenborder->world2screenY(currentTile.y*TILESIZE));
-            }
-        }
-    }
+    currentGameMap->for_each(x1, y1, x2, y2,
+        [](Tile& t) {
+            t.blitDeadUnits(screenborder->world2screenX(t.getLocation().x*TILESIZE),
+                screenborder->world2screenY(t.getLocation().y*TILESIZE));
+        });
 
     /* draw infantry */
-    for(currentTile.y = TopLeftTile.y; currentTile.y <= BottomRightTile.y; currentTile.y++) {
-        for(currentTile.x = TopLeftTile.x; currentTile.x <= BottomRightTile.x; currentTile.x++) {
-
-            if (currentGameMap->tileExists(currentTile))    {
-                Tile* pTile = currentGameMap->getTile(currentTile);
-                pTile->blitInfantry( screenborder->world2screenX(currentTile.x*TILESIZE),
-                                    screenborder->world2screenY(currentTile.y*TILESIZE));
-            }
-        }
-    }
+    currentGameMap->for_each(x1, y1, x2, y2,
+        [](Tile& t) {
+            t.blitInfantry(screenborder->world2screenX(t.getLocation().x*TILESIZE),
+                screenborder->world2screenY(t.getLocation().y*TILESIZE));
+        });
 
     /* draw non-infantry ground units */
-    for(currentTile.y = TopLeftTile.y; currentTile.y <= BottomRightTile.y; currentTile.y++) {
-        for(currentTile.x = TopLeftTile.x; currentTile.x <= BottomRightTile.x; currentTile.x++) {
-
-            if (currentGameMap->tileExists(currentTile))    {
-                Tile* pTile = currentGameMap->getTile(currentTile);
-                pTile->blitNonInfantryGroundUnits( screenborder->world2screenX(currentTile.x*TILESIZE),
-                                                  screenborder->world2screenY(currentTile.y*TILESIZE));
-            }
-        }
-    }
+    currentGameMap->for_each(x1, y1, x2, y2,
+        [](Tile& t) {
+            t.blitNonInfantryGroundUnits(screenborder->world2screenX(t.getLocation().x*TILESIZE),
+                screenborder->world2screenY(t.getLocation().y*TILESIZE));
+        });
 
     /* draw bullets */
     for(const Bullet* pBullet : bulletList) {
@@ -346,16 +320,11 @@ void Game::drawScreen()
     }
 
     /* draw air units */
-    for(currentTile.y = TopLeftTile.y; currentTile.y <= BottomRightTile.y; currentTile.y++) {
-        for(currentTile.x = TopLeftTile.x; currentTile.x <= BottomRightTile.x; currentTile.x++) {
-
-            if (currentGameMap->tileExists(currentTile))    {
-                Tile* pTile = currentGameMap->getTile(currentTile);
-                pTile->blitAirUnits(   screenborder->world2screenX(currentTile.x*TILESIZE),
-                                      screenborder->world2screenY(currentTile.y*TILESIZE));
-            }
-        }
-    }
+    currentGameMap->for_each(x1, y1, x2, y2,
+        [&](Tile& t) {
+            t.blitAirUnits(screenborder->world2screenX(t.getLocation().x*TILESIZE),
+                screenborder->world2screenY(t.getLocation().y*TILESIZE));
+        });
 
     // draw the gathering point line if a structure is selected
     if(selectedList.size() == 1) {
@@ -366,19 +335,13 @@ void Game::drawScreen()
     }
 
     /* draw selection rectangles */
-    for(currentTile.y = TopLeftTile.y; currentTile.y <= BottomRightTile.y; currentTile.y++) {
-        for(currentTile.x = TopLeftTile.x; currentTile.x <= BottomRightTile.x; currentTile.x++) {
-
-            if (currentGameMap->tileExists(currentTile))    {
-                Tile* pTile = currentGameMap->getTile(currentTile);
-
-                if(debug || pTile->isExplored(pLocalHouse->getHouseID())) {
-                    pTile->blitSelectionRects(   screenborder->world2screenX(currentTile.x*TILESIZE),
-                                                screenborder->world2screenY(currentTile.y*TILESIZE));
-                }
+    currentGameMap->for_each(x1, y1, x2, y2,
+        [](Tile& t) {
+            if (debug || t.isExplored(pLocalHouse->getHouseID())) {
+                t.blitSelectionRects(screenborder->world2screenX(t.getLocation().x*TILESIZE),
+                    screenborder->world2screenY(t.getLocation().y*TILESIZE));
             }
-        }
-    }
+        });
 
 
 //////////////////////////////draw unexplored/shade
@@ -908,7 +871,7 @@ void Game::doInput()
 }
 
 
-void Game::drawCursor()
+void Game::drawCursor() const
 {
     if(!(SDL_GetWindowFlags(window) & SDL_WINDOW_MOUSE_FOCUS)) {
         return;
@@ -1552,13 +1515,13 @@ bool Game::loadSaveGame(InputStream& stream) {
                 if((house[i] != nullptr) && (house[i]->getHouseID() == houseInfo.houseID)) {
                     // iterate over all players
                     auto& players = house[i]->getPlayerList();
-                    std::list<std::shared_ptr<Player> >::const_iterator playerIter = players.begin();
-                    for(const GameInitSettings::PlayerInfo& playerInfo : houseInfo.playerInfoList) {
+                    auto playerIter = players.cbegin();
+                    for(const auto& playerInfo : houseInfo.playerInfoList) {
                         if(playerInfo.playerClass == HUMANPLAYERCLASS) {
-                            while(playerIter != players.end()) {
+                            while(playerIter != players.cend()) {
 
-                                std::shared_ptr<HumanPlayer> humanPlayer = std::dynamic_pointer_cast<HumanPlayer>(*playerIter);
-                                if(humanPlayer.get() != nullptr) {
+                                const auto& humanPlayer = std::dynamic_pointer_cast<HumanPlayer>(*playerIter);
+                                if(humanPlayer) {
                                     // we have actually found a human player and now assign the first unused name to it
                                     unregisterPlayer(humanPlayer.get());
                                     humanPlayer->setPlayername(playerInfo.playerName);
@@ -1729,7 +1692,8 @@ bool Game::saveGame(const std::string& filename)
 }
 
 
-void Game::saveObject(OutputStream& stream, ObjectBase* obj) {
+void Game::saveObject(OutputStream& stream, ObjectBase* obj) const
+{
     if(obj == nullptr)
         return;
 
@@ -1876,7 +1840,7 @@ bool Game::onRadarClick(Coord worldPosition, bool bRightMouseButton, bool bDrag)
 }
 
 
-bool Game::isOnRadarView(int mouseX, int mouseY) {
+bool Game::isOnRadarView(int mouseX, int mouseY) const {
     return pInterface->getRadarView().isOnRadar(mouseX - (sideBarPos.x + SIDEBAR_COLUMN_WIDTH), mouseY - sideBarPos.y);
 }
 
@@ -1896,7 +1860,7 @@ void Game::handleChatInput(SDL_KeyboardEvent& keyboardEvent) {
                 md5stream << std::setw(2) << (int) md5sum[i];
             }
 
-            std::string md5string = md5stream.str();
+            const std::string md5string = md5stream.str();
 
             if((bCheatsEnabled == false) && (md5string == "0xB8766C8EC7A61036B69893FC17AAF21E")) {
                 bCheatsEnabled = true;
