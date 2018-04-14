@@ -31,7 +31,7 @@
 #include <GUI/ObjectInterfaces/RefineryAndSiloInterface.h>
 
 /* how fast is spice extracted */
-#define MAXIMUMHARVESTEREXTRACTSPEED FixPt(0,625)
+#define MAXIMUMHARVESTEREXTRACTSPEED (0.625_fix)
 
 Refinery::Refinery(House* newOwner) : StructureBase(newOwner) {
     Refinery::init();

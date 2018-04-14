@@ -619,8 +619,8 @@ void UnitBase::bumpyMovementOnRock(FixPoint fromDistanceX, FixPoint fromDistance
                                     || (currentGameMap->getTile(location)->getType() == Terrain_ThickSpice))) {
         // bumping effect
 
-        const FixPoint epsilon = FixPt(0,005);
-        const FixPoint bumpyOffset = FixPt(2,5);
+        const FixPoint epsilon = 0.005_fix;
+        const FixPoint bumpyOffset = 2.5_fix;
         const FixPoint absXSpeed = FixPoint::abs(xSpeed);
         const FixPoint absYSpeed = FixPoint::abs(ySpeed);
 
@@ -1290,7 +1290,7 @@ void UnitBase::turn() {
 
 void UnitBase::turnLeft() {
     angle += currentGame->objectData.data[itemID][originalHouseID].turnspeed;
-    if(angle >= FixPt(7,5)) {
+    if(angle >= 7.5_fix) {
         drawnAngle = lround(angle) - NUM_ANGLES;
         angle -= NUM_ANGLES;
     } else {
@@ -1300,7 +1300,7 @@ void UnitBase::turnLeft() {
 
 void UnitBase::turnRight() {
     angle -= currentGame->objectData.data[itemID][originalHouseID].turnspeed;
-    if(angle <= FixPt(-0,5)) {
+    if(angle <= -0.5_fix) {
         drawnAngle = lround(angle) + NUM_ANGLES;
         angle += NUM_ANGLES;
     } else {

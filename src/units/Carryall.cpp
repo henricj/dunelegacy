@@ -86,10 +86,10 @@ void Carryall::save(OutputStream& stream) const
 }
 
 bool Carryall::update() {
-    const FixPoint& maxSpeed = currentGame->objectData.data[itemID][originalHouseID].maxspeed;
+    const auto& maxSpeed = currentGame->objectData.data[itemID][originalHouseID].maxspeed;
 
     FixPoint dist = -1;
-    ObjectBase* pTarget = target.getObjPointer();
+    const auto pTarget = target.getObjPointer();
     if(pTarget != nullptr && pTarget->isAUnit()) {
         dist = distanceFrom(realX, realY, pTarget->getRealX(), pTarget->getRealY());
     } else if((pTarget != nullptr) || hasCargo()) {
@@ -108,7 +108,7 @@ bool Carryall::update() {
             currentMaxSpeed = dist*m+t;
         }
     } else {
-        currentMaxSpeed = std::min(currentMaxSpeed + FixPt(0,2), maxSpeed);
+        currentMaxSpeed = std::min(currentMaxSpeed + 0.2_fix, maxSpeed);
     }
 
     if(AirUnit::update() == false) {

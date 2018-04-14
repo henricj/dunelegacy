@@ -79,14 +79,14 @@
 #define DEVIATIONTIME MILLI2CYCLES(120*1000)
 #define TRACKSTIME MILLI2CYCLES((1 << 16))
 #define HARVESTERMAXSPICE 700
-#define HARVESTSPEED FixPt(0,1344)
-#define BADLYDAMAGEDRATIO FixPt(0,5)                //if health/getMaxHealth() < this, damage will become bad - smoke and shit
-#define HEAVILYDAMAGEDRATIO FixPt(0,25)             //if health/getMaxHealth() < this, damage will become heavy damage - red color
-#define HEAVILYDAMAGEDSPEEDMULTIPLIER FixPt(0,75)
+#define HARVESTSPEED (0.1344_fix)
+#define BADLYDAMAGEDRATIO (0.5_fix)                //if health/getMaxHealth() < this, damage will become bad - smoke and shit
+#define HEAVILYDAMAGEDRATIO (025_fix)             //if health/getMaxHealth() < this, damage will become heavy damage - red color
+#define HEAVILYDAMAGEDSPEEDMULTIPLIER (0.75_fix)
 #define NUMSELECTEDLISTS 9
 #define NUM_INFANTRY_PER_TILE 5                 //how many infantry can fit on a tile
 
-#define UNIT_REPAIRCOST FixPt(0,1)
+#define UNIT_REPAIRCOST (0.1_fix)
 #define DEFAULT_GUARDRANGE 10                   //0 - 10, how far unit will search for enemy when guarding
 #define DEFAULT_STARTINGCREDITS 3000
 

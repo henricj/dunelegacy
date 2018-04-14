@@ -29,7 +29,7 @@ namespace fix32_support
         template<uint64_t I, char First, char...Chars>
         static constexpr uint64_t fp32_parser()
         {
-            static_assert(First == '.' || (First >= '0' && First <= '9'));
+            static_assert(First == '.' || (First >= '0' && First <= '9'), "Character must be '0' to '9' or '.'");
 
             if (First == '.')
                 return fp32_fraction_parser<I, 0ull, 1, Chars...>();

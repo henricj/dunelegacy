@@ -140,7 +140,7 @@ void TurretBase::doAttackObject(const ObjectBase* pObject) {
 
 void TurretBase::turnLeft() {
     angle += currentGame->objectData.data[itemID][originalHouseID].turnspeed;
-    if (angle >= FixPt(7,5))    //must keep drawnangle between 0 and 7
+    if (angle >= 7.5_fix)    //must keep drawnangle between 0 and 7
         angle -= 8;
     drawnAngle = lround(angle);
     curAnimFrame = firstAnimFrame = lastAnimFrame = ((10-drawnAngle) % 8) + 2;
@@ -148,7 +148,7 @@ void TurretBase::turnLeft() {
 
 void TurretBase::turnRight() {
     angle -= currentGame->objectData.data[itemID][originalHouseID].turnspeed;
-    if(angle < FixPt(-0,5)) {
+    if(angle < -0.5_fix) {
         //must keep angle between 0 and 7
         angle += 8;
     }

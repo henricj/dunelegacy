@@ -284,7 +284,7 @@ void QuantBot::update() {
 
                     case Difficulty::Medium: {
                         harvesterLimit = 2 * initialItemCount[Structure_Refinery];
-                        militaryValueLimit = lround(initialMilitaryValue * FixPt(1,2));
+                        militaryValueLimit = lround(initialMilitaryValue * 1.2_fix);
                         if(militaryValueLimit < 4000 && currentGame->techLevel == 8) {
                             militaryValueLimit = 4000;
                         }
@@ -299,7 +299,7 @@ void QuantBot::update() {
                             militaryValueLimit = 5000;
                         } else {
                             harvesterLimit = 2 * initialItemCount[Structure_Refinery];
-                            militaryValueLimit = lround(initialMilitaryValue * FixPt(1,5));
+                            militaryValueLimit = lround(initialMilitaryValue * 1.5_fix);
                         }
 
                         logDebug("Hard Campaign  ");
@@ -314,7 +314,7 @@ void QuantBot::update() {
 
                     case Difficulty::Defend: {
                         harvesterLimit = 2 * initialItemCount[Structure_Refinery];
-                        militaryValueLimit = lround(initialMilitaryValue * FixPt(1,2));
+                        militaryValueLimit = lround(initialMilitaryValue * 1.2_fix);
 
                         logDebug("Defensive Campaign  ");
                     } break;
@@ -821,24 +821,24 @@ void QuantBot::build(int militaryValue) {
     if(totalDamage < 3000){
         switch (houseID) {
             case HOUSE_HARKONNEN:
-                launcherPercent = FixPt(0,5);
-                specialPercent = FixPt(0,15);
-                siegePercent = FixPt(0,35);
-                ornithopterPercent = FixPt(0,0);
+                launcherPercent = 0.5_fix;
+                specialPercent = 0.15_fix;
+                siegePercent = 0.35_fix;
+                ornithopterPercent = 0.0_fix;
                 break;
 
             case HOUSE_ORDOS:
-                launcherPercent = FixPt(0,0); // Don't have these
-                specialPercent = FixPt(0,25);
-                siegePercent = FixPt(0,75);
-                ornithopterPercent = FixPt(0,05);
+                launcherPercent = 0.0_fix; // Don't have these
+                specialPercent = 0.25_fix;
+                siegePercent = 0.75_fix;
+                ornithopterPercent = 0.05_fix;
                 break;
 
             default:
-                launcherPercent = FixPt(0,40);
-                specialPercent = FixPt(0,10);
-                siegePercent = FixPt(0,35);
-                ornithopterPercent = FixPt(0,15);
+                launcherPercent = 0.40_fix;
+                specialPercent = 0.10_fix;
+                siegePercent = 0.35_fix;
+                ornithopterPercent = 0.15_fix;
 
                 break;
         }
@@ -873,7 +873,7 @@ void QuantBot::build(int militaryValue) {
             {
                 doRepair(pStructure);
             } else if(  (pStructure->isRepairing() == false)
-                        && (pStructure->getHealth() < pStructure->getMaxHealth() * FixPt(0,45))
+                        && (pStructure->getHealth() < pStructure->getMaxHealth() * 0.45_fix)
                         && !getGameInitSettings().getGameOptions().concreteRequired
                         && money > 1000) {
                 doRepair(pStructure);
@@ -994,7 +994,7 @@ void QuantBot::build(int militaryValue) {
                         if(!pBuilder->isUpgrading()
                            && gameMode == GameMode::Campaign
                            && money > 1000
-                           && ((itemCount[Structure_HeavyFactory] == 0) || militaryValue < militaryValueLimit * FixPt(0,30))
+                           && ((itemCount[Structure_HeavyFactory] == 0) || militaryValue < militaryValueLimit * 0.30_fix)
                            && pBuilder->getProductionQueueSize() < 1
                            && pBuilder->getBuildListSize() > 0
                            && militaryValue < militaryValueLimit) {
@@ -1025,7 +1025,7 @@ void QuantBot::build(int militaryValue) {
                            && pBuilder->isAvailableToBuild(Unit_Trooper)
                            && gameMode == GameMode::Campaign
                            && money > 1000
-                           && ((itemCount[Structure_HeavyFactory] == 0) || militaryValue < militaryValueLimit * FixPt(0,30))
+                           && ((itemCount[Structure_HeavyFactory] == 0) || militaryValue < militaryValueLimit * 0.30_fix)
                            && pBuilder->getProductionQueueSize() < 1
                            && pBuilder->getBuildListSize() > 0
                            && !getHouse()->isInfantryUnitLimitReached()
@@ -1040,7 +1040,7 @@ void QuantBot::build(int militaryValue) {
                         if(!pBuilder->isUpgrading()
                            && pBuilder->isAvailableToBuild(Unit_Soldier)
                            && gameMode == GameMode::Campaign
-                           && ((itemCount[Structure_HeavyFactory] == 0) || militaryValue < militaryValueLimit * FixPt(0,30))
+                           && ((itemCount[Structure_HeavyFactory] == 0) || militaryValue < militaryValueLimit * 0.30_fix)
                            && itemCount[Structure_WOR == 0]
                            && money > 1000
                            && pBuilder->getProductionQueueSize() < 1
@@ -1411,7 +1411,7 @@ void QuantBot::build(int militaryValue) {
                                     // If we have a lot of money get more heavy factories
                                     itemID = Structure_HeavyFactory;
                                     logDebug("Build Factory... active: %d  total: %d", activeHeavyFactoryCount, getHouse()->getNumItems(Structure_HeavyFactory));
-                                } else if(itemCount[Structure_Refinery] * FixPt(3,5) < itemCount[Unit_Harvester] && pBuilder->isAvailableToBuild(Structure_Refinery)) {
+                                } else if(itemCount[Structure_Refinery] * 3.5_fix < itemCount[Unit_Harvester] && pBuilder->isAvailableToBuild(Structure_Refinery)) {
                                     itemID = Structure_Refinery;
                                 } else if (getHouse()->getStoredCredits() + 2000 > (itemCount[Structure_Refinery] + itemCount[Structure_Silo]) * 1000  && pBuilder->isAvailableToBuild(Structure_Silo)){
                                     // We are running out of spice storage capacity
@@ -1428,8 +1428,8 @@ void QuantBot::build(int militaryValue) {
                                     // First off we need to upgrade the construction yard
                                     doUpgrade(pBuilder);
                                 } else if(money > 1200
-                                          && rocketTurretValue < militaryValueLimit * FixPt(0,10) + itemCount[Structure_Palace] * 750 + itemCount[Structure_Refinery] * 250
-                                          && rocketTurretValue < militaryValue * FixPt(0,25) + itemCount[Structure_Palace] * 750 + itemCount[Structure_Refinery] * 250
+                                          && rocketTurretValue < militaryValueLimit * 0.10_fix + itemCount[Structure_Palace] * 750 + itemCount[Structure_Refinery] * 250
+                                          && rocketTurretValue < militaryValue * 0.25_fix + itemCount[Structure_Palace] * 750 + itemCount[Structure_Refinery] * 250
                                           && pBuilder->isAvailableToBuild(Structure_RocketTurret)) {
                                     // Lets build turrets based on our military value limit, palaces and silo's
                                     itemID = Structure_RocketTurret;
@@ -1541,13 +1541,13 @@ void QuantBot::attack(int militaryValue) {
     attackTimer = MILLI2CYCLES(90000);
 
     // only attack if we have 35% of maximum military power on max sized map. Required military power scales down accordingly
-    if(militaryValue < militaryValueLimit * FixPt(0,35) * currentGameMap->getSizeX() * currentGameMap->getSizeY() / 16384 && militaryValue < 20000) {
+    if(militaryValue < militaryValueLimit * 0.35_fix * currentGameMap->getSizeX() * currentGameMap->getSizeY() / 16384 && militaryValue < 20000) {
         return;
     }
 
     // In campaign mode don't attack if  the attack trigger isn't set
     // And don't attack with less than 40% of your limit
-    if((!campaignAIAttackFlag || militaryValue < militaryValueLimit * FixPt(0,80)) && gameMode == GameMode::Campaign) {
+    if((!campaignAIAttackFlag || militaryValue < militaryValueLimit * 0.80_fix) && gameMode == GameMode::Campaign) {
         return;
     }
 
@@ -1589,7 +1589,7 @@ void QuantBot::attack(int militaryValue) {
             && pUnit->getItemID() != Unit_Carryall
             && (pUnit->getItemID() != Unit_Ornithopter || getHouse()->getNumItems(Unit_Ornithopter) > 15)
             && (pUnit->getItemID() != Unit_Deviator || getHouse()->getNumItems(Unit_Deviator) > 10)
-            && pUnit->getHealth() / pUnit->getMaxHealth() > FixPt(0,6)
+            && pUnit->getHealth() / pUnit->getMaxHealth() > 0.6_fix
             // Only units within the squad should hunt, safety in numbers
             && blockDistance(pUnit->getLocation(), squadCenterLocation) < FixPoint::sqrt(getHouse()->getNumUnits()
                                                                                          - getHouse()->getNumItems(Unit_Harvester)
@@ -1633,8 +1633,8 @@ Coord QuantBot::findSquadRallyLocation() {
 
     Coord baseCentreLocation = Coord::Invalid();
     if(enemyBuildingCount > 0 && buildingCount > 0) {
-        baseCentreLocation.x = lround((totalX / buildingCount) * FixPt(0,75) + (enemyTotalX / enemyBuildingCount) * FixPt(0,25));
-        baseCentreLocation.y = lround((totalY / buildingCount) * FixPt(0,75) + (enemyTotalY / enemyBuildingCount) * FixPt(0,25));
+        baseCentreLocation.x = lround((totalX / buildingCount) * 0.75_fix + (enemyTotalX / enemyBuildingCount) * 0.25_fix);
+        baseCentreLocation.y = lround((totalY / buildingCount) * 0.75_fix + (enemyTotalY / enemyBuildingCount) * 0.25_fix);
     }
 
     //logDebug("Squad rally location: %d, %d", baseCentreLocation.x , baseCentreLocation.y );

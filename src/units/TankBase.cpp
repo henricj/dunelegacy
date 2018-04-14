@@ -211,7 +211,7 @@ void TankBase::turn() {
 
 void TankBase::turnTurretLeft() {
     turretAngle += turretTurnSpeed;
-    if(turretAngle >= FixPt(7,5)) {
+    if(turretAngle >= 7.5_fix) {
         drawnTurretAngle = lround(turretAngle) - NUM_ANGLES;
         turretAngle -= NUM_ANGLES;
     } else {
@@ -221,7 +221,7 @@ void TankBase::turnTurretLeft() {
 
 void TankBase::turnTurretRight() {
     turretAngle -= turretTurnSpeed;
-    if(turretAngle <= FixPt(-0,5)) {
+    if(turretAngle <= -0.5_fix) {
         drawnTurretAngle = lround(turretAngle) + NUM_ANGLES;
         turretAngle += NUM_ANGLES;
     } else {

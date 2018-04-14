@@ -189,7 +189,7 @@ void InfantryBase::checkPos() {
 
             closestPoint = target.getObjPointer()->getClosestPoint(location);
 
-            if(blockDistance(location, closestPoint) <= FixPt(0,5)) {
+            if(blockDistance(location, closestPoint) <= 0.5_fix) {
                 StructureBase* pCapturedStructure = target.getStructurePointer();
                 if(pCapturedStructure->getHealthColor() == COLOR_RED) {
                     House* pOwner = pCapturedStructure->getOwner();
@@ -315,7 +315,7 @@ void InfantryBase::checkPos() {
             Coord   closestPoint;
             closestPoint = target.getObjPointer()->getClosestPoint(location);
 
-            if(blockDistance(location, closestPoint) <= FixPt(0,5)) {
+            if(blockDistance(location, closestPoint) <= 0.5_fix) {
                 // destroy unit indirectly
                 setTarget(nullptr);
                 setHealth(0);
@@ -374,7 +374,7 @@ void InfantryBase::move() {
         FixPoint toDistanceX;
         FixPoint toDistanceY;
 
-        const FixPoint epsilon = FixPt(3,75);
+        const FixPoint epsilon = 3.75_fix;
 
         if(location != nextSpot) {
             FixPoint abstractDistanceX = FixPoint::abs(location.x*TILESIZE + TILESIZE/2 - (realX-bumpyOffsetX));

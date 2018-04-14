@@ -155,7 +155,7 @@ void Bullet::init()
 
         case Bullet_Rocket: {
             damageRadius = TILESIZE/2;
-            speed = FixPt(17,5);
+            speed = 17.5_fix;
             detonationTimer = 22;
             numFrames = 16;
             graphic = pGFXManager->getObjPic(ObjPic_Bullet_MediumRocket, houseID);
@@ -331,7 +331,7 @@ void Bullet::update()
             angleDiff += 256;
         }
 
-        static const FixPoint turnSpeed = FixPt(4,5);
+        static const FixPoint turnSpeed = 4.5_fix;
 
         if(angleDiff >= turnSpeed) {
             angleDiff = turnSpeed;
@@ -382,8 +382,8 @@ void Bullet::update()
 
             FixPoint weaponDamage = currentGame->objectData.data[Unit_SonicTank][(owner == nullptr) ? HOUSE_ATREIDES : owner->getHouseID()].weapondamage;
 
-            FixPoint startDamage = (weaponDamage / 4 + 1) / FixPt(4,5);
-            FixPoint endDamage = ((weaponDamage-9) / 4 + 1) / FixPt(4,5);
+            FixPoint startDamage = (weaponDamage / 4 + 1) / 4.5_fix;
+            FixPoint endDamage = ((weaponDamage-9) / 4 + 1) / 4.5_fix;
 
             FixPoint damageDecrease = - (startDamage-endDamage)/(45 * 2 * speed);
             FixPoint dist = distanceFrom(source.x, source.y, realX, realY);

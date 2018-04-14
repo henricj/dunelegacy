@@ -43,7 +43,7 @@
 #define RANDOMHARVESTMOVE 500
 
 /* how much is the harvester movement slowed down when full  */
-#define MAXIMUMHARVESTERSLOWDOWN FixPt(0,4)
+#define MAXIMUMHARVESTERSLOWDOWN 0.4_fix
 
 /* number spice output frames - 1 */
 #define LASTSANDFRAME 2
@@ -260,7 +260,7 @@ void Harvester::destroy()
         int ypos = location.y;
 
         if(currentGameMap->tileExists(xpos,ypos)) {
-            FixPoint spiceSpreaded = spice * FixPt(0,75);
+            const auto spiceSpreaded = spice * 0.75_fix;
             int availableSandPos = 0;
 
             int circleRadius = lround(spice / 210);
@@ -269,7 +269,7 @@ void Harvester::destroy()
             for(int i = -circleRadius; i <= circleRadius; i++) {
                 for(int j = -circleRadius; j <= circleRadius; j++) {
                     if(currentGameMap->tileExists(xpos + i, ypos + j)
-                        && (distanceFrom(xpos, ypos, xpos + i, ypos + j) + FixPt(0,0005) <= circleRadius))
+                        && (distanceFrom(xpos, ypos, xpos + i, ypos + j) + 0.0005_fix <= circleRadius))
                     {
                         Tile *pTile = currentGameMap->getTile(xpos + i, ypos + j);
                         if((pTile != nullptr) & ((pTile->isSand()) || (pTile->isSpice()) )) {
@@ -283,7 +283,7 @@ void Harvester::destroy()
             for(int i = -circleRadius; i <= circleRadius; i++) {
                 for(int j = -circleRadius; j <= circleRadius; j++) {
                     if(currentGameMap->tileExists(xpos + i, ypos + j)
-                        && (distanceFrom(xpos, ypos, xpos + i, ypos + j) + FixPt(0,0005)  <= circleRadius))
+                        && (distanceFrom(xpos, ypos, xpos + i, ypos + j) + 0.0005_fix  <= circleRadius))
                     {
                         Tile *pTile = currentGameMap->getTile(xpos + i, ypos + j);
                         if((pTile != nullptr) & ((pTile->isSand()) || (pTile->isSpice()) )) {

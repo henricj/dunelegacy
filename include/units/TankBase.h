@@ -57,7 +57,7 @@ protected:
     void turnTurretRight();
 
     // constant for all tanks of the same type
-    FixPoint turretTurnSpeed = FixPt(0, 0625);        ///< How fast can we turn the turret
+    FixPoint turretTurnSpeed = 0.0625_fix;        ///< How fast can we turn the turret
 
     // tank state
     FixPoint turretAngle;            ///< The angle of the turret

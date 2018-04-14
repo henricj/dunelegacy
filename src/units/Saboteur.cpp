@@ -99,7 +99,7 @@ bool Saboteur::update() {
                     closestPoint = target.getObjPointer()->getClosestPoint(location);
 
 
-                    if(blockDistance(location, closestPoint) <= FixPt(1,5)) {
+                    if(blockDistance(location, closestPoint) <= 1.5_fix) {
                         if(isVisible(getOwner()->getTeam())) {
                             screenborder->shakeScreen(18);
                         }
