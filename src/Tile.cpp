@@ -632,13 +632,7 @@ void Tile::setType(int newType) {
         }
     }
 
-    for (auto i = location.x; i <= location.x + 3; i++) {
-        for (auto j = location.y; j <= location.y + 3; j++) {
-            if (currentGameMap->tileExists(i, j)) {
-                currentGameMap->getTile(i, j)->clearTerrain();
-            }
-        }
-    }
+    currentGameMap->for_each(location.x, location.y, location.x + 4, location.y + 4, [](Tile &t) { t.clearTerrain(); });
 }
 
 
