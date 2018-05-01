@@ -282,8 +282,8 @@ void Bullet::blitToScreen() const
     if(bulletID == Bullet_Sonic) {
         static const int shimmerOffset[]  = { 1, 3, 2, 5, 4, 3, 2, 1 };
 
-        SDL_Texture* shimmerTex = pGFXManager->getObjPic(ObjPic_Bullet_SonicTemp,HOUSE_HARKONNEN)[currentZoomlevel];
-        SDL_Texture* shimmerMaskTex = pGFXManager->getObjPic(ObjPic_Bullet_Sonic,HOUSE_HARKONNEN)[currentZoomlevel];
+        SDL_Texture* shimmerTex = pGFXManager->getZoomedObjPic(ObjPic_Bullet_SonicTemp, currentZoomlevel);
+        SDL_Texture* shimmerMaskTex = pGFXManager->getZoomedObjPic(ObjPic_Bullet_Sonic, currentZoomlevel);
 
         // switch to texture 'shimmerTex' for rendering
         SDL_Texture* oldRenderTarget = SDL_GetRenderTarget(renderer);

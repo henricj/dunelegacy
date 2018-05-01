@@ -132,8 +132,8 @@ void Sandworm::blitToScreen() {
     if(shimmerOffsetIndex >= 0) {
         // render sandworm's shimmer
 
-        SDL_Texture* shimmerTex = pGFXManager->getObjPic(ObjPic_SandwormShimmerTemp,HOUSE_HARKONNEN)[currentZoomlevel];
-        SDL_Texture* shimmerMaskTex = pGFXManager->getObjPic(ObjPic_SandwormShimmerMask,HOUSE_HARKONNEN)[currentZoomlevel];
+        SDL_Texture* shimmerTex = pGFXManager->getZoomedObjPic(ObjPic_SandwormShimmerTemp, currentZoomlevel);
+        SDL_Texture* shimmerMaskTex = pGFXManager->getZoomedObjPic(ObjPic_SandwormShimmerMask, currentZoomlevel);
 
         for(int i = 0; i < SANDWORM_SEGMENTS; i++) {
             if(lastLocs[i].isInvalid()) {

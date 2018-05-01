@@ -23,6 +23,10 @@
 // Libraries
 #include <SDL2/SDL.h>
 #include <string>
+#include <array>
+
+
+typedef std::array<SDL_Texture*, NUM_ZOOMLEVEL> zoomable_texture;
 
 
 class Coord {

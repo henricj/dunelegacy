@@ -48,11 +48,11 @@ public:
 
 private:
     // devastator state
-    Sint32      devastateTimer;     ///< When will this devastator devastate
+    Sint32      devastateTimer;       ///< When will this devastator devastate
 
     // drawing information
-    SDL_Texture**   turretGraphic;  ///< The graphic of the turret
-    int             gunGraphicID;   ///< The id of the turret graphic (needed if we want to reload the graphic)
+    zoomable_texture turretGraphic{}; ///< The graphic of the turret
+    int              gunGraphicID;    ///< The id of the turret graphic (needed if we want to reload the graphic)
 };
 
 #endif // DEVASTATOR_H

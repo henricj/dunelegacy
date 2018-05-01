@@ -1409,7 +1409,7 @@ void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) {
     BottomRightTile.y = std::min(map.getSizeY()-1, BottomRightTile.y + 1);
 
     // Load Terrain Surface
-    SDL_Texture* TerrainSprite = pGFXManager->getObjPic(ObjPic_Terrain)[currentZoomlevel];
+    SDL_Texture* TerrainSprite = pGFXManager->getZoomedObjPic(ObjPic_Terrain, currentZoomlevel);
 
     /* draw ground */
     for(int y = TopLeftTile.y; y <= BottomRightTile.y; y++) {
@@ -1508,7 +1508,7 @@ void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) {
         SDL_Rect selectionDest;
         if(structure.itemID == Structure_Slab1) {
             // Load Terrain sprite
-            SDL_Texture* TerrainSprite = pGFXManager->getObjPic(ObjPic_Terrain)[currentZoomlevel];
+            SDL_Texture* TerrainSprite = pGFXManager->getZoomedObjPic(ObjPic_Terrain, currentZoomlevel);
 
             SDL_Rect source = { Tile::TerrainTile_Slab * zoomedTilesize, 0, zoomedTilesize, zoomedTilesize };
             SDL_Rect dest = { pScreenborder->world2screenX(position.x*TILESIZE), pScreenborder->world2screenY(position.y*TILESIZE), zoomedTilesize, zoomedTilesize };
@@ -1518,7 +1518,7 @@ void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) {
             selectionDest = dest;
         } else if(structure.itemID == Structure_Slab4) {
             // Load Terrain Surface
-            SDL_Texture* TerrainSprite = pGFXManager->getObjPic(ObjPic_Terrain)[currentZoomlevel];
+            SDL_Texture* TerrainSprite = pGFXManager->getZoomedObjPic(ObjPic_Terrain, currentZoomlevel);
 
             for(int y = position.y; y < position.y+2; y++) {
                 for(int x = position.x; x < position.x+2; x++) {
@@ -1583,7 +1583,7 @@ void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) {
             }
 
             // Load Wall texture
-            SDL_Texture* WallSprite = pGFXManager->getObjPic(ObjPic_Wall)[currentZoomlevel];
+            SDL_Texture* WallSprite = pGFXManager->getZoomedObjPic(ObjPic_Wall, currentZoomlevel);
 
             SDL_Rect source = { maketile * zoomedTilesize, 0, zoomedTilesize, zoomedTilesize };
             SDL_Rect dest = { pScreenborder->world2screenX(position.x*TILESIZE), pScreenborder->world2screenY(position.y*TILESIZE), zoomedTilesize, zoomedTilesize };
@@ -1615,7 +1615,7 @@ void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) {
                 default:                            objectPic = 0;                          break;
             }
 
-            SDL_Texture* ObjectSprite = pGFXManager->getObjPic(objectPic, structure.house)[currentZoomlevel];
+            SDL_Texture* ObjectSprite = pGFXManager->getZoomedObjPic(objectPic, structure.house, currentZoomlevel);
 
             Coord frameSize = world2zoomedWorld(getStructureSize(structure.itemID)*TILESIZE);
 
@@ -1745,7 +1745,7 @@ void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) {
             case Unit_Troopers:         objectPicBase = ObjPic_Troopers;         framesX = 4;    framesY = 4;                                                   break;
         }
 
-        SDL_Texture* pObjectSprite = pGFXManager->getObjPic(objectPicBase, unit.house)[currentZoomlevel];
+        SDL_Texture* pObjectSprite = pGFXManager->getZoomedObjPic(objectPicBase, unit.house, currentZoomlevel);
 
         int angle = unit.angle / (NUM_ANGLES/framesX);
 
@@ -1762,7 +1762,7 @@ void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) {
         SDL_RenderCopy(renderer, pObjectSprite, &source, &drawLocation);
 
         if(objectPicGun >= 0) {
-            SDL_Texture* pGunSprite = pGFXManager->getObjPic(objectPicGun, unit.house)[currentZoomlevel];
+            SDL_Texture* pGunSprite = pGFXManager->getZoomedObjPic(objectPicGun, unit.house, currentZoomlevel);
 
             SDL_Rect source2 = calcSpriteSourceRect(pGunSprite, unit.angle, NUM_ANGLES);
             SDL_Rect drawLocation2 = calcSpriteDrawingRect( pGunSprite,
@@ -1774,7 +1774,7 @@ void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) {
         }
 
         if(unit.itemID == Unit_RaiderTrike || unit.itemID == Unit_Deviator || unit.itemID == Unit_Special) {
-            SDL_Texture* pStarSprite = pGFXManager->getObjPic(ObjPic_Star)[currentZoomlevel];
+            SDL_Texture* pStarSprite = pGFXManager->getZoomedObjPic(ObjPic_Star, currentZoomlevel);
 
             SDL_Rect drawLocation2 = calcDrawingRect(   pStarSprite,
                                                         pScreenborder->world2screenX((position.x*TILESIZE)+(TILESIZE/2)) + frameSizeX/2 - 1,

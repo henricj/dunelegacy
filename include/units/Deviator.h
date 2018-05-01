@@ -36,8 +36,8 @@ public:
 
 private:
     // drawing information
-    SDL_Texture**   turretGraphic;      ///< The turret graphic
-    int             gunGraphicID;       ///< The id of the turret graphic (needed if we want to reload the graphic)
+    zoomable_texture turretGraphic{};   ///< The turret graphic
+    int              gunGraphicID;      ///< The id of the turret graphic (needed if we want to reload the graphic)
 };
 
 #endif //DEVIATOR_H

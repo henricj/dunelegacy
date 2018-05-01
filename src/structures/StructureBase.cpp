@@ -146,10 +146,10 @@ void StructureBase::blitToScreen() {
     SDL_RenderCopy(renderer, graphic[currentZoomlevel], &source, &dest);
 
     if(!fogged) {
-        SDL_Texture** pSmokeSurface = pGFXManager->getObjPic(ObjPic_Smoke,getOwner()->getHouseID());
-        SDL_Rect smokeSource = calcSpriteSourceRect(pSmokeSurface[currentZoomlevel], 0, 3);
+        SDL_Texture* pSmokeTex = pGFXManager->getZoomedObjPic(ObjPic_Smoke, getOwner()->getHouseID(), currentZoomlevel);
+        SDL_Rect smokeSource = calcSpriteSourceRect(pSmokeTex, 0, 3);
         for(const StructureSmoke& structureSmoke : smoke) {
-            SDL_Rect smokeDest = calcSpriteDrawingRect( pSmokeSurface[currentZoomlevel],
+            SDL_Rect smokeDest = calcSpriteDrawingRect( pSmokeTex,
                                                         screenborder->world2screenX(structureSmoke.realPos.x),
                                                         screenborder->world2screenY(structureSmoke.realPos.y),
                                                         3, 1, HAlign::Center, VAlign::Bottom);
@@ -161,7 +161,7 @@ void StructureBase::blitToScreen() {
             }
 
             smokeSource.x = smokeFrame * smokeSource.w;
-            SDL_RenderCopy(renderer, pSmokeSurface[currentZoomlevel], &smokeSource, &smokeDest);
+            SDL_RenderCopy(renderer, pSmokeTex, &smokeSource, &smokeDest);
         }
     }
 }

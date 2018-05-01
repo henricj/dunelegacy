@@ -121,8 +121,7 @@ void Harvester::blitToScreen()
                                             };
 
 
-        SDL_Texture** sand = pGFXManager->getObjPic(ObjPic_Harvester_Sand,getOwner()->getHouseID());
-        SDL_Texture* pSandGraphic = sand[currentZoomlevel];
+        SDL_Texture* pSandGraphic = pGFXManager->getZoomedObjPic(ObjPic_Harvester_Sand, getOwner()->getHouseID(), currentZoomlevel);
 
         int frame = ((currentGame->getGameCycleCount() + (getObjectID() * 10)) / HARVESTERDELAY) % (2*LASTSANDFRAME);
         if(frame > LASTSANDFRAME) {

@@ -285,16 +285,16 @@ void Tile::blitGround(int xPos, int yPos) {
     }
 
     if (destroyedStructureTile != DestroyedStructure_None) {
-        const auto pDestroyedStructureSurface = pGFXManager->getObjPic(ObjPic_DestroyedStructure);
+        SDL_Texture* pDestroyedStructureTex = pGFXManager->getZoomedObjPic(ObjPic_DestroyedStructure, currentZoomlevel);
         SDL_Rect source2 = { destroyedStructureTile*zoomed_tilesize, 0, zoomed_tilesize, zoomed_tilesize };
-        SDL_RenderCopy(renderer, pDestroyedStructureSurface[currentZoomlevel], &source2, &drawLocation);
+        SDL_RenderCopy(renderer, pDestroyedStructureTex, &source2, &drawLocation);
     }
 
     if (isFogged(pLocalHouse->getHouseID()))
         return;
 
     // tracks
-    const auto pTracks = pGFXManager->getObjPic(ObjPic_Terrain_Tracks)[currentZoomlevel];
+    SDL_Texture* pTracks = pGFXManager->getZoomedObjPic(ObjPic_Terrain_Tracks, currentZoomlevel);
     for (auto i = 0; i < NUM_ANGLES; i++) {
         const auto tracktime = static_cast<int>(currentGame->getGameCycleCount() - tracksCreationTime[i]);
         if ((tracksCreationTime[i] != 0) && (tracktime < TRACKSTIME)) {
@@ -313,10 +313,10 @@ void Tile::blitGround(int xPos, int yPos) {
             zoomed_tilesize };
 
         if (damageItem.damageType == Terrain_RockDamage) {
-            SDL_RenderCopy(renderer, pGFXManager->getObjPic(ObjPic_RockDamage)[currentZoomlevel], &source, &dest);
+            SDL_RenderCopy(renderer, pGFXManager->getZoomedObjPic(ObjPic_RockDamage, currentZoomlevel), &source, &dest);
         }
         else {
-            SDL_RenderCopy(renderer, pGFXManager->getObjPic(ObjPic_SandDamage)[currentZoomlevel], &source, &drawLocation);
+            SDL_RenderCopy(renderer, pGFXManager->getZoomedObjPic(ObjPic_SandDamage, currentZoomlevel), &source, &drawLocation);
         }
     }
 }
@@ -373,25 +373,25 @@ void Tile::blitDeadUnits(int xPos, int yPos) {
 
     for (const auto& deadUnit : deadUnits) {
         SDL_Rect source = { 0, 0, zoomed_tile, zoomed_tile };
-        SDL_Texture** pTexture = nullptr;
+        SDL_Texture* pTexture = nullptr;
         switch (deadUnit.type) {
         case DeadUnit_Infantry: {
-            pTexture = pGFXManager->getObjPic(ObjPic_DeadInfantry, deadUnit.house);
+            pTexture = pGFXManager->getZoomedObjPic(ObjPic_DeadInfantry, deadUnit.house, currentZoomlevel);
             source.x = (deadUnit.timer < 1000 && deadUnit.onSand) ? zoomed_tile : 0;
         } break;
 
         case DeadUnit_Infantry_Squashed1: {
-            pTexture = pGFXManager->getObjPic(ObjPic_DeadInfantry, deadUnit.house);
+            pTexture = pGFXManager->getZoomedObjPic(ObjPic_DeadInfantry, deadUnit.house, currentZoomlevel);
             source.x = 4 * zoomed_tile;
         } break;
 
         case DeadUnit_Infantry_Squashed2: {
-            pTexture = pGFXManager->getObjPic(ObjPic_DeadInfantry, deadUnit.house);
+            pTexture = pGFXManager->getZoomedObjPic(ObjPic_DeadInfantry, deadUnit.house, currentZoomlevel);
             source.x = 5 * zoomed_tile;
         } break;
 
         case DeadUnit_Carrall: {
-            pTexture = pGFXManager->getObjPic(ObjPic_DeadAirUnit, deadUnit.house);
+            pTexture = pGFXManager->getZoomedObjPic(ObjPic_DeadAirUnit, deadUnit.house, currentZoomlevel);
             if (deadUnit.onSand) {
                 source.x = (deadUnit.timer < 1000) ? 5 * zoomed_tile : 4 * zoomed_tile;
             }
@@ -401,7 +401,7 @@ void Tile::blitDeadUnits(int xPos, int yPos) {
         } break;
 
         case DeadUnit_Ornithopter: {
-            pTexture = pGFXManager->getObjPic(ObjPic_DeadAirUnit, deadUnit.house);
+            pTexture = pGFXManager->getZoomedObjPic(ObjPic_DeadAirUnit, deadUnit.house, currentZoomlevel);
             if (deadUnit.onSand) {
                 source.x = (deadUnit.timer < 1000) ? 2 * zoomed_tile : zoomed_tile;
             }
@@ -419,7 +419,7 @@ void Tile::blitDeadUnits(int xPos, int yPos) {
                 screenborder->world2screenY(deadUnit.realPos.y) - zoomed_tile / 2,
                 zoomed_tile,
                 zoomed_tile };
-            SDL_RenderCopy(renderer, pTexture[currentZoomlevel], &source, &dest);
+            SDL_RenderCopy(renderer, pTexture, &source, &dest);
         }
     }
 }

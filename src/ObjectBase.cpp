@@ -161,7 +161,6 @@ void ObjectBase::init() {
     radius = TILESIZE/2;
 
     graphicID = -1;
-    graphic = nullptr;
     numImagesX = 0;
     numImagesY = 0;
 

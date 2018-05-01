@@ -936,53 +936,65 @@ GFXManager::~GFXManager() {
     SDL_FreeSurface(pBackgroundSurface);
 }
 
-SDL_Texture** GFXManager::getObjPic(unsigned int id, int house) {
+SDL_Texture* GFXManager::getZoomedObjPic(unsigned int id, int house, unsigned int z) {
+    if(id >= NUM_OBJPICS) {
+        THROW(std::invalid_argument, "GFXManager::getZoomedObjPic(): Unit Picture with ID %u is not available!", id);
+    }
+
+    if(objPic[id][house][z] == nullptr) {
+        // remap to this color
+        if(objPic[id][HOUSE_HARKONNEN][z] == nullptr) {
+            THROW(std::runtime_error, "GFXManager::getZoomedObjPic(): Unit Picture with ID %u is not loaded!", id);
+        }
+
+        objPic[id][house][z] = mapSurfaceColorRange(objPic[id][HOUSE_HARKONNEN][z], PALCOLOR_HARKONNEN, houseToPaletteIndex[house]);
+    }
+
+    if(objPicTex[id][house][z] == nullptr) {
+        // now convert to display format
+        if(id == ObjPic_Windtrap) {
+            // Windtrap uses palette animation on PALCOLOR_WINDTRAP_COLORCYCLE; fake this
+            objPicTex[id][house][z] = convertSurfaceToTexture(generateWindtrapAnimationFrames(objPic[id][house][z]), true);
+        } else if(id == ObjPic_Terrain_HiddenFog) {
+            SDL_Surface* pHiddenFog = convertSurfaceToDisplayFormat(objPic[id][house][z], false);
+            replaceColor(pHiddenFog, COLOR_BLACK, COLOR_FOG_TRANSPARENT);
+            objPicTex[id][house][z] = convertSurfaceToTexture(pHiddenFog, true);
+        } else if(id == ObjPic_CarryallShadow) {
+            SDL_Surface* pShadow = convertSurfaceToDisplayFormat(objPic[id][house][z], false);
+            replaceColor(pShadow, COLOR_BLACK, COLOR_SHADOW_TRANSPARENT);
+            objPicTex[id][house][z] = convertSurfaceToTexture(pShadow, true);
+        } else if(id == ObjPic_FrigateShadow) {
+            SDL_Surface* pShadow = convertSurfaceToDisplayFormat(objPic[id][house][z], false);
+            replaceColor(pShadow, COLOR_BLACK, COLOR_SHADOW_TRANSPARENT);
+            objPicTex[id][house][z] = convertSurfaceToTexture(pShadow, true);
+        } else if(id == ObjPic_OrnithopterShadow) {
+            SDL_Surface* pShadow = convertSurfaceToDisplayFormat(objPic[id][house][z], false);
+            replaceColor(pShadow, COLOR_BLACK, COLOR_SHADOW_TRANSPARENT);
+            objPicTex[id][house][z] = convertSurfaceToTexture(pShadow, true);
+        } else if(id == ObjPic_Bullet_SonicTemp) {
+            objPicTex[id][house][z] = SDL_CreateTexture(renderer, SCREEN_FORMAT, SDL_TEXTUREACCESS_TARGET, objPic[id][house][z]->w, objPic[id][house][z]->h);
+        } else if(id == ObjPic_SandwormShimmerTemp) {
+            objPicTex[id][house][z] = SDL_CreateTexture(renderer, SCREEN_FORMAT, SDL_TEXTUREACCESS_TARGET, objPic[id][house][z]->w, objPic[id][house][z]->h);
+        } else {
+            objPicTex[id][house][z] = convertSurfaceToTexture(objPic[id][house][z], false);
+        }
+    }
+
+    return objPicTex[id][house][z];
+}
+
+zoomable_texture GFXManager::getObjPic(unsigned int id, int house) {
     if(id >= NUM_OBJPICS) {
         THROW(std::invalid_argument, "GFXManager::getObjPic(): Unit Picture with ID %u is not available!", id);
     }
 
     for(int z = 0; z < NUM_ZOOMLEVEL; z++) {
-        if(objPic[id][house][z] == nullptr) {
-            // remap to this color
-            if(objPic[id][HOUSE_HARKONNEN][z] == nullptr) {
-                THROW(std::runtime_error, "GFXManager::getObjPic(): Unit Picture with ID %u is not loaded!", id);
-            }
-
-            objPic[id][house][z] = mapSurfaceColorRange(objPic[id][HOUSE_HARKONNEN][z], PALCOLOR_HARKONNEN, houseToPaletteIndex[house]);
-        }
-
         if(objPicTex[id][house][z] == nullptr) {
-            // now convert to display format
-            if(id == ObjPic_Windtrap) {
-                // Windtrap uses palette animation on PALCOLOR_WINDTRAP_COLORCYCLE; fake this
-                objPicTex[id][house][z] = convertSurfaceToTexture(generateWindtrapAnimationFrames(objPic[id][house][z]), true);
-            } else if(id == ObjPic_Terrain_HiddenFog) {
-                SDL_Surface* pHiddenFog = convertSurfaceToDisplayFormat(objPic[id][house][z], false);
-                replaceColor(pHiddenFog, COLOR_BLACK, COLOR_FOG_TRANSPARENT);
-                objPicTex[id][house][z] = convertSurfaceToTexture(pHiddenFog, true);
-            } else if(id == ObjPic_CarryallShadow) {
-                SDL_Surface* pShadow = convertSurfaceToDisplayFormat(objPic[id][house][z], false);
-                replaceColor(pShadow, COLOR_BLACK, COLOR_SHADOW_TRANSPARENT);
-                objPicTex[id][house][z] = convertSurfaceToTexture(pShadow, true);
-            } else if(id == ObjPic_FrigateShadow) {
-                SDL_Surface* pShadow = convertSurfaceToDisplayFormat(objPic[id][house][z], false);
-                replaceColor(pShadow, COLOR_BLACK, COLOR_SHADOW_TRANSPARENT);
-                objPicTex[id][house][z] = convertSurfaceToTexture(pShadow, true);
-            } else if(id == ObjPic_OrnithopterShadow) {
-                SDL_Surface* pShadow = convertSurfaceToDisplayFormat(objPic[id][house][z], false);
-                replaceColor(pShadow, COLOR_BLACK, COLOR_SHADOW_TRANSPARENT);
-                objPicTex[id][house][z] = convertSurfaceToTexture(pShadow, true);
-            } else if(id == ObjPic_Bullet_SonicTemp) {
-                objPicTex[id][house][z] = SDL_CreateTexture(renderer, SCREEN_FORMAT, SDL_TEXTUREACCESS_TARGET, objPic[id][house][z]->w, objPic[id][house][z]->h);
-            } else if(id == ObjPic_SandwormShimmerTemp) {
-                objPicTex[id][house][z] = SDL_CreateTexture(renderer, SCREEN_FORMAT, SDL_TEXTUREACCESS_TARGET, objPic[id][house][z]->w, objPic[id][house][z]->h);
-            } else {
-                objPicTex[id][house][z] = convertSurfaceToTexture(objPic[id][house][z], false);
-            }
+            getZoomedObjPic(id, house, z);  // no assignment as the return value is already stored in objPicTex
         }
     }
 
-    return objPicTex[id][house];
+    return zoomable_texture{ objPicTex[id][house][0], objPicTex[id][house][1], objPicTex[id][house][2] };
 }
 
 

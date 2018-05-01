@@ -347,6 +347,8 @@ void Game::drawScreen()
 //////////////////////////////draw unexplored/shade
 
     if(debug == false) {
+        SDL_Texture* hiddenTexZoomed = pGFXManager->getZoomedObjPic(ObjPic_Terrain_Hidden, currentZoomlevel);
+        SDL_Texture* hiddenFogTexZoomed = pGFXManager->getZoomedObjPic(ObjPic_Terrain_HiddenFog, currentZoomlevel);
         int zoomedTileSize = world2zoomedWorld(TILESIZE);
         for(int x = screenborder->getTopLeftTile().x - 1; x <= screenborder->getBottomRightTile().x + 1; x++) {
             for (int y = screenborder->getTopLeftTile().y - 1; y <= screenborder->getBottomRightTile().y + 1; y++) {
@@ -358,12 +360,10 @@ void Game::drawScreen()
                         int hideTile = pTile->getHideTile(pLocalHouse->getHouseID());
 
                         if(hideTile != 0) {
-                            SDL_Texture** hiddenTex = pGFXManager->getObjPic(ObjPic_Terrain_Hidden);
-
                             SDL_Rect source = { hideTile*zoomedTileSize, 0, zoomedTileSize, zoomedTileSize };
                             SDL_Rect drawLocation = {   screenborder->world2screenX(x*TILESIZE), screenborder->world2screenY(y*TILESIZE),
                                                         zoomedTileSize, zoomedTileSize };
-                            SDL_RenderCopy(renderer, hiddenTex[currentZoomlevel], &source, &drawLocation);
+                            SDL_RenderCopy(renderer, hiddenTexZoomed, &source, &drawLocation);
                         }
 
                         if(gameInitSettings.getGameOptions().fogOfWar == true) {
@@ -374,32 +374,28 @@ void Game::drawScreen()
                             }
 
                             if(fogTile != 0) {
-                                SDL_Texture** hiddenFogTex = pGFXManager->getObjPic(ObjPic_Terrain_HiddenFog);
-
                                 SDL_Rect source = { fogTile*zoomedTileSize, 0,
                                                     zoomedTileSize, zoomedTileSize };
                                 SDL_Rect drawLocation = {   screenborder->world2screenX(x*TILESIZE), screenborder->world2screenY(y*TILESIZE),
                                                             zoomedTileSize, zoomedTileSize };
 
-                                SDL_RenderCopy(renderer, hiddenFogTex[currentZoomlevel], &source, &drawLocation);
+                                SDL_RenderCopy(renderer, hiddenFogTexZoomed, &source, &drawLocation);
                             }
                         }
                     } else {
                         if(!debug) {
-                            SDL_Texture** hiddenTex = pGFXManager->getObjPic(ObjPic_Terrain_Hidden);
                             SDL_Rect source = { zoomedTileSize*15, 0, zoomedTileSize, zoomedTileSize };
                             SDL_Rect drawLocation = {   screenborder->world2screenX(x*TILESIZE), screenborder->world2screenY(y*TILESIZE),
                                                         zoomedTileSize, zoomedTileSize };
-                            SDL_RenderCopy(renderer, hiddenTex[currentZoomlevel], &source, &drawLocation);
+                            SDL_RenderCopy(renderer, hiddenTexZoomed, &source, &drawLocation);
                         }
                     }
                 } else {
                     // we are outside the map => draw complete hidden
-                    SDL_Texture** hiddenTex = pGFXManager->getObjPic(ObjPic_Terrain_Hidden);
                     SDL_Rect source = { zoomedTileSize*15, 0, zoomedTileSize, zoomedTileSize };
                     SDL_Rect drawLocation = {   screenborder->world2screenX(x*TILESIZE), screenborder->world2screenY(y*TILESIZE),
                                                 zoomedTileSize, zoomedTileSize };
-                    SDL_RenderCopy(renderer, hiddenTex[currentZoomlevel], &source, &drawLocation);
+                    SDL_RenderCopy(renderer, hiddenTexZoomed, &source, &drawLocation);
                 }
             }
         }

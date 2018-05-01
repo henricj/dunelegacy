@@ -516,19 +516,21 @@ public:
     GFXManager();
     ~GFXManager();
 
-    SDL_Texture**   getObjPic(unsigned int id, int house=HOUSE_HARKONNEN);
+    SDL_Texture*     getZoomedObjPic(unsigned int id, int house, unsigned int z);
+    SDL_Texture*     getZoomedObjPic(unsigned int id, unsigned int z) { return getZoomedObjPic(id, HOUSE_HARKONNEN, z); };
+    zoomable_texture getObjPic(unsigned int id, int house=HOUSE_HARKONNEN);
 
-    SDL_Texture*    getSmallDetailPic(unsigned int id);
-    SDL_Texture*    getTinyPicture(unsigned int id);
-    SDL_Texture*    getUIGraphic(unsigned int id, int house=HOUSE_HARKONNEN);
-    SDL_Texture*    getMapChoicePiece(unsigned int num, int house);
+    SDL_Texture*     getSmallDetailPic(unsigned int id);
+    SDL_Texture*     getTinyPicture(unsigned int id);
+    SDL_Texture*     getUIGraphic(unsigned int id, int house=HOUSE_HARKONNEN);
+    SDL_Texture*     getMapChoicePiece(unsigned int num, int house);
 
-    SDL_Surface*    getUIGraphicSurface(unsigned int id, int house=HOUSE_HARKONNEN);
-    SDL_Surface*    getMapChoicePieceSurface(unsigned int num, int house);
+    SDL_Surface*     getUIGraphicSurface(unsigned int id, int house=HOUSE_HARKONNEN);
+    SDL_Surface*     getMapChoicePieceSurface(unsigned int num, int house);
 
-    SDL_Surface*    getBackgroundSurface() { return pBackgroundSurface; };
+    SDL_Surface*     getBackgroundSurface() { return pBackgroundSurface; };
 
-    Animation*      getAnimation(unsigned int id);
+    Animation*       getAnimation(unsigned int id);
 
 private:
     Animation*      loadAnimationFromWsa(const std::string& filename);

@@ -231,7 +231,7 @@ protected:
     // drawing information
     bool     badlyDamaged;           ///< Is the health below 50%?
 
-    SDL_Texture** graphic;           ///< The graphic for this object
+    zoomable_texture graphic{};      ///< The graphic for this object
     int         graphicID;           ///< The id of the graphic (needed if we want to reload the graphic, e.g. when a unit is deviated)
     int         numImagesX;          ///< The number of images in x direction
     int         numImagesY;          ///< The number of images in y direction

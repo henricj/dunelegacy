@@ -52,7 +52,7 @@ protected:
 
     FixPoint currentMaxSpeed;               ///< The current maximum allowed speed
 
-    SDL_Texture**   shadowGraphic;          ///< The graphic for the shadow of this air unit
+    zoomable_texture shadowGraphic{};       ///< The graphic for the shadow of this air unit
 };
 
 #endif // AIRUNIT_H

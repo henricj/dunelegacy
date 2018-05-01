@@ -1415,12 +1415,12 @@ void UnitBase::drawSmoke(int x, int y) {
         frame = 1;
     }
 
-    SDL_Texture** smoke = pGFXManager->getObjPic(ObjPic_Smoke,getOwner()->getHouseID());
+    SDL_Texture* pSmokeTex = pGFXManager->getZoomedObjPic(ObjPic_Smoke, getOwner()->getHouseID(), currentZoomlevel);
 
-    SDL_Rect dest = calcSpriteDrawingRect(smoke[currentZoomlevel], x, y, 3, 1, HAlign::Center, VAlign::Bottom);
-    SDL_Rect source = calcSpriteSourceRect(smoke[currentZoomlevel], frame, 3);
+    SDL_Rect dest = calcSpriteDrawingRect(pSmokeTex, x, y, 3, 1, HAlign::Center, VAlign::Bottom);
+    SDL_Rect source = calcSpriteSourceRect(pSmokeTex, frame, 3);
 
-    SDL_RenderCopy(renderer, smoke[currentZoomlevel], &source, &dest);
+    SDL_RenderCopy(renderer, pSmokeTex, &source, &dest);
 }
 
 void UnitBase::playAttackSound() {
