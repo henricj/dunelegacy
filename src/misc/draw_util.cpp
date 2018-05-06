@@ -20,8 +20,6 @@
 
 #include <globals.h>
 
-#include <stdio.h>
-
 
 Uint32 getPixel(SDL_Surface *surface, int x, int y) {
     int bpp = surface->format->BytesPerPixel;

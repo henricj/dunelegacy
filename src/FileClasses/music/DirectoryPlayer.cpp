@@ -23,8 +23,6 @@
 #include <misc/fnkdat.h>
 #include <mmath.h>
 
-#include <cstdio>
-
 DirectoryPlayer::DirectoryPlayer() : MusicPlayer(settings.audio.playMusic, settings.audio.musicVolume) {
     // determine path to config file
     char tmp[FILENAME_MAX];

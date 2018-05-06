@@ -24,8 +24,6 @@
 #include <FileClasses/TextManager.h>
 #include <FileClasses/Palfile.h>
 
-#include <string>
-
 HouseChoiceInfoMenu::HouseChoiceInfoMenu(int newHouse) : MentatMenu(HOUSE_INVALID)
 {
     disableQuiting(true);

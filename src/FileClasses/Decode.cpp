@@ -20,10 +20,6 @@
 #include <misc/exceptions.h>
 #include <misc/SDL2pp.h>
 
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
-
 
 void memcpy_overlap(unsigned char *dst, const unsigned char *src, unsigned cnt)
 {

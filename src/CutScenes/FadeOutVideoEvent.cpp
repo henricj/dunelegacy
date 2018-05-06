@@ -18,7 +18,6 @@
 #include <CutScenes/FadeOutVideoEvent.h>
 #include <misc/Scaler.h>
 #include <misc/draw_util.h>
-#include <Definitions.h>
 #include <Colors.h>
 #include <globals.h>
 

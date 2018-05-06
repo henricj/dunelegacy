@@ -16,7 +16,6 @@
  */
 
 #include <GUI/ScrollBar.h>
-#include <cmath>
 
 ScrollBar::ScrollBar() : Widget() {
     color = COLOR_DEFAULT;

@@ -23,7 +23,6 @@
 #include <SDL2/SDL_endian.h>
 #include <stdlib.h>
 #include <stdio.h>
-#include <string.h>
 
 #define SIZE_X  16
 #define SIZE_Y  16

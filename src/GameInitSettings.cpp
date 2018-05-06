@@ -24,9 +24,6 @@
 
 #include <globals.h>
 
-#include <stdlib.h>
-#include <string.h>
-
 GameInitSettings::GameInitSettings()
  : gameType(GameType::Invalid), houseID(HOUSE_INVALID), mission(0), alreadyPlayedRegions(0), multiplePlayersPerHouse(false) {
     randomSeed = rand();

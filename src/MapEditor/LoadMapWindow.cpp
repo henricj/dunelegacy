@@ -26,7 +26,6 @@
 #include <GUI/QstBox.h>
 #include <GUI/dune/DuneStyle.h>
 
-#include <config.h>
 #include <misc/fnkdat.h>
 #include <misc/FileSystem.h>
 #include <misc/draw_util.h>

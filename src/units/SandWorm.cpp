@@ -30,8 +30,6 @@
 
 #include <units/InfantryBase.h>
 
-#include <limits>
-
 #define MAX_SANDWORMSLEEPTIME 50000
 #define MIN_SANDWORMSLEEPTIME 10000
 

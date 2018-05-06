@@ -8,8 +8,6 @@
 #include <misc/SDL2pp.h>
 
 #include <SDL2/SDL_mixer.h>
-#include <stdlib.h>
-#include <memory.h>
 
 extern FileManager* pFileManager;
 

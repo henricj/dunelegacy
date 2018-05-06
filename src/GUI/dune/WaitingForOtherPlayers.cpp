@@ -25,9 +25,6 @@
 
 #include <Game.h>
 
-#include <list>
-#include <string>
-
 
 WaitingForOtherPlayers::WaitingForOtherPlayers() : Window(50,50,50,50)
 {

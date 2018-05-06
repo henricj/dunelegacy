@@ -25,9 +25,6 @@
 
 #include <misc/string_util.h>
 
-#include <stdlib.h>
-#include <iostream>
-
 ObjectData::ObjectData()
 {
     // set default values

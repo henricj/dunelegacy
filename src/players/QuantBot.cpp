@@ -38,7 +38,6 @@
 #include <units/Devastator.h>
 
 #include <algorithm>
-#include <string>
 
 #define AIUPDATEINTERVAL 50
 

@@ -13,7 +13,6 @@
 #include <sand.h>
 #include <globals.h>
 
-#include <stdio.h>
 #include <algorithm>
 
 INIMapPreviewCreator::INIMapPreviewCreator(std::shared_ptr<INIFile>& pINIFile)

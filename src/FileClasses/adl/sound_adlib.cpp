@@ -912,7 +912,7 @@ void AdlibDriver::writeOPL(uint8 reg, uint8 val) const {
 }
 
 void AdlibDriver::initChannel(Channel &channel) {
-    debugC(9, "initChannel(%" PRIdPTR ")", static_cast<ptrdiff_t>(&channel - _channels));
+    debugC(9, "initChannel(%d)", static_cast<int>(&channel - _channels));
     memset(&channel.dataptr, 0, sizeof(Channel) - (reinterpret_cast<char *>(&channel.dataptr) - reinterpret_cast<char *>(&channel)));
 
     channel.tempo = 0xFF;
@@ -925,7 +925,7 @@ void AdlibDriver::initChannel(Channel &channel) {
 }
 
 void AdlibDriver::noteOff(Channel &channel) {
-    debugC(9, "noteOff(%" PRIdPTR ")", static_cast<ptrdiff_t>(&channel - _channels));
+    debugC(9, "noteOff(%d)", static_cast<int>(&channel - _channels));
 
     // The control channel has no corresponding Adlib channel
 

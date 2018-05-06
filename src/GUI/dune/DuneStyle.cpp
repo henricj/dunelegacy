@@ -22,8 +22,6 @@
 #include <FileClasses/GFXManager.h>
 #include <FileClasses/FontManager.h>
 
-#include <iostream>
-#include <cmath>
 #include <algorithm>
 
 extern GFXManager*  pGFXManager;

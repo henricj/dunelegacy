@@ -17,13 +17,9 @@
 
 #include <Network/LANGameFinderAndAnnouncer.h>
 
-#include <Definitions.h>
-
 #include <misc/exceptions.h>
 
 #include <config.h>
-
-#include <string.h>
 
 
 

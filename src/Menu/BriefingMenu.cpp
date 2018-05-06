@@ -23,8 +23,6 @@
 #include <FileClasses/TextManager.h>
 #include <FileClasses/music/MusicPlayer.h>
 
-#include <stdlib.h>
-
 BriefingMenu::BriefingMenu(int newHouse,int mission,int type) : MentatMenu(newHouse) {
     this->mission = mission;
     this->type = type;

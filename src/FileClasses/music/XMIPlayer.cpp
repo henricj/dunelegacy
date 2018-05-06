@@ -22,12 +22,10 @@
 #include <FileClasses/FileManager.h>
 #include <FileClasses/xmidi/xmidi.h>
 
-#include <misc/FileSystem.h>
 #include <misc/fnkdat.h>
 #include <mmath.h>
 
 #include <iostream>
-#include <cstdio>
 
 XMIPlayer::XMIPlayer() : MusicPlayer(settings.audio.playMusic, settings.audio.musicVolume) {
     music = nullptr;

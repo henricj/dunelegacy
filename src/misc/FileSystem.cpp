@@ -32,9 +32,7 @@
 #include <windows.h>
 #else
 #include <dirent.h>
-#include <errno.h>
 #include <sys/stat.h>
-#include <string.h>
 #endif
 
 

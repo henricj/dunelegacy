@@ -19,8 +19,6 @@
 
 #include <misc/exceptions.h>
 
-#include <string.h>
-#include <stdio.h>
 #include <SDL2/SDL_endian.h>
 
 #ifdef _WIN32

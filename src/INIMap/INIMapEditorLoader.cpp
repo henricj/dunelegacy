@@ -15,7 +15,6 @@
 #include <sand.h>
 #include <globals.h>
 
-#include <stdio.h>
 #include <algorithm>
 
 INIMapEditorLoader::INIMapEditorLoader(MapEditor* pMapEditor, std::shared_ptr<INIFile>& pINIFile)

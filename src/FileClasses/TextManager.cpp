@@ -27,8 +27,6 @@
 #include <misc/FileSystem.h>
 #include <misc/exceptions.h>
 
-#include <config.h>
-
 #ifdef _
 #undef _
 #endif

@@ -26,8 +26,6 @@
 
 #include <misc/exceptions.h>
 
-#include <map>
-
 
 SoundPlayer::SoundPlayer() {
     sfxVolume = settings.audio.sfxVolume;

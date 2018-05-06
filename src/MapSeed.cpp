@@ -18,9 +18,6 @@
 
 #include <misc/SDL2pp.h>
 
-#include <string.h>
-#include <stdlib.h>
-
 #include "MapSeed.h"
 
 // global seed value

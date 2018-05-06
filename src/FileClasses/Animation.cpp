@@ -20,9 +20,6 @@
 #include <misc/Scaler.h>
 #include <misc/draw_util.h>
 
-#include <stdio.h>
-#include <stdlib.h>
-
 Animation::Animation() {
     curFrameStartTime = SDL_GetTicks();
     frameDurationTime = 1;

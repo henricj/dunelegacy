@@ -39,9 +39,6 @@
 #include <misc/FileSystem.h>
 #include <misc/format.h>
 
-#include <config.h>
-
-#include <string.h>
 #include <algorithm>
 
 OptionsMenu::OptionsMenu() : MenuBase()

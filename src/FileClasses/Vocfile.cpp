@@ -25,7 +25,6 @@
 #include <string>
 #include <SDL2/SDL_mixer.h>
 #include <stdlib.h>
-#include <memory.h>
 #include <algorithm>
 #include <cstdio>
 #include <cmath>

@@ -27,7 +27,6 @@
 #include <sand.h>
 #include <globals.h>
 
-#include <stdio.h>
 #include <algorithm>
 
 INIMapLoader::INIMapLoader(Game* pGame, const std::string& mapname, const std::string& mapdata)

@@ -21,7 +21,6 @@
 
 #include <misc/exceptions.h>
 
-#include <string.h>
 #include <algorithm>
 #include <stdio.h>
 #include <enet/enet.h>

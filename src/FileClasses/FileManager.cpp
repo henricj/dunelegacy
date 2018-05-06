@@ -23,7 +23,6 @@
 
 #include <misc/FileSystem.h>
 
-#include <config.h>
 #include <misc/fnkdat.h>
 #include <misc/md5.h>
 #include <misc/string_util.h>

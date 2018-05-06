@@ -18,9 +18,6 @@
 #include <FileClasses/PictureFont.h>
 #include <misc/exceptions.h>
 
-#include <stdlib.h>
-#include <string.h>
-
 /// Constructor
 /**
     The constructor reads from the surface all data and saves them internal. Immediately after the PictureFont-Object is

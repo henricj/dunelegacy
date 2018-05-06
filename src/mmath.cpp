@@ -17,9 +17,6 @@
 
 #include <mmath.h>
 
-#include <Definitions.h>
-
-#include <stdarg.h>
 #include <algorithm>
 #include <limits>
 
