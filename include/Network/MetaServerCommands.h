@@ -18,7 +18,7 @@
 #ifndef METASERVERCOMMANDS_H
 #define METASERVERCOMMANDS_H
 
-#include <SDL2/SDL.h>
+#include <misc/SDL2pp.h>
 #include <string>
 
 

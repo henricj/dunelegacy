@@ -20,25 +20,21 @@
 
 #include "Widget.h"
 #include <misc/draw_util.h>
-
-#include <SDL2/SDL.h>
+#include <misc/SDL2pp.h>
 
 /// A class for showning a static picture
 class PictureLabel : public Widget {
 public:
 
     /// default constructor
-    PictureLabel() : Widget() {
-        pTexture = nullptr;
+    PictureLabel() {
         bFreeTexture = false;
     }
 
     /// destructor
     virtual ~PictureLabel() {
-        if((bFreeTexture == true) && (pTexture != nullptr)) {
-            SDL_DestroyTexture(pTexture);
-            pTexture = nullptr;
-        }
+        if (!bFreeTexture)
+            pTexture.release();
     }
 
     /**
@@ -47,7 +43,7 @@ public:
         \param  bFreeSurface    Should pSurface be freed if this picture label is destroyed?
     */
     virtual void setSurface(SDL_Surface* pSurface, bool bFreeSurface) {
-        setTexture(convertSurfaceToTexture(pSurface, bFreeSurface), true);
+        setTexture(convertSurfaceToTexture(pSurface, bFreeSurface));
     }
 
     /**
@@ -56,19 +52,22 @@ public:
         \param  bFreeTexture    Should pTexture be freed if this picture label is destroyed?
     */
     virtual void setTexture(SDL_Texture* pTexture, bool bFreeTexture) {
-        if((this->bFreeTexture == true) && (this->pTexture != nullptr)) {
-            SDL_DestroyTexture(this->pTexture);
-            this->pTexture = nullptr;
+        if ((this->bFreeTexture == false)) {
+            this->pTexture.release();
         }
 
-        this->pTexture = pTexture;
         this->bFreeTexture = bFreeTexture;
+        this->pTexture = sdl2::texture_ptr{ pTexture };
 
         if(this->pTexture != nullptr) {
-            resize(getTextureSize(this->pTexture));
+            resize(getTextureSize(this->pTexture.get()));
         } else {
             resize(0,0);
         }
+    }
+
+    void setTexture(sdl2::texture_ptr&& texture) {
+        setTexture(texture.release(), true);
     }
 
     /**
@@ -79,7 +78,7 @@ public:
     Point getMinimumSize() const override
     {
         if(pTexture != nullptr) {
-            return getTextureSize(pTexture);
+            return getTextureSize(pTexture.get());
         } else {
             return Point(0,0);
         }
@@ -99,13 +98,13 @@ public:
             return;
         }
 
-        SDL_Rect dest = calcDrawingRect(pTexture, position.x, position.y);
-        SDL_RenderCopy(renderer, pTexture, nullptr, &dest);
+        SDL_Rect dest = calcDrawingRect(pTexture.get(), position.x, position.y);
+        SDL_RenderCopy(renderer, pTexture.get(), nullptr, &dest);
     }
 
 
 private:
-    SDL_Texture* pTexture;  ///< The texture that is shown
+    sdl2::texture_ptr pTexture;  ///< The texture that is shown
     bool bFreeTexture;      ///< Should pTexture be freed if this picture label is destroyed?
 };
 

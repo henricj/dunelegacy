@@ -18,7 +18,7 @@
 #ifndef MAPSEED_H
 #define MAPSEED_H
 
-#include <SDL2/SDL.h>
+#include <misc/SDL2pp.h>
 
 #include <MapEditor/MapData.h>
 

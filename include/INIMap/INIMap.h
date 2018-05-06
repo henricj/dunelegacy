@@ -26,8 +26,7 @@
 #include <globals.h>
 
 #include <misc/string_util.h>
-
-#include <SDL2/SDL.h>
+#include <misc/SDL2pp.h>
 
 #include <string>
 #include <memory>

@@ -20,8 +20,8 @@
 
 #include "Widget.h"
 #include "ScrollBar.h"
+#include <misc/SDL2pp.h>
 
-#include <SDL2/SDL.h>
 #include <vector>
 #include <string>
 #include <functional>
@@ -407,53 +407,15 @@ protected:
         should be overwritten by subclasses if they like to defer texture creation as long as possible.
         This method should first check whether a renewal of the textures is necessary.
     */
-    void updateTextures() override
-    {
-        Widget::updateTextures();
-
-        if(pBackground == nullptr) {
-            pBackground = convertSurfaceToTexture(GUIStyle::getInstance().createWidgetBackground(getSize().x, getSize().y), true);
-        }
-
-        if(pForeground == nullptr) {
-            // create surfaces
-            int surfaceHeight = getSize().y - 2;
-            if(surfaceHeight < 0) {
-                surfaceHeight = 0;
-            }
-
-            SDL_Surface* pForegroundSurface = GUIStyle::getInstance().createEmptySurface(getSize().x - 4, surfaceHeight,true);
-
-            int numVisibleElements = surfaceHeight / GUIStyle::getInstance().getListBoxEntryHeight();
-            for(int i = firstVisibleElement; i < firstVisibleElement + numVisibleElements; i++) {
-                if(i >= getNumEntries()) {
-                    break;
-                }
-
-                SDL_Surface* pSurface = GUIStyle::getInstance().createListBoxEntry(getSize().x - 4, getEntry(i), bHighlightSelectedElement && (i==selectedElement), color);
-
-                SDL_Rect dest = calcDrawingRect(pSurface, 0, (i-firstVisibleElement) * (int) GUIStyle::getInstance().getListBoxEntryHeight());
-                SDL_BlitSurface(pSurface,nullptr,pForegroundSurface,&dest);
-                SDL_FreeSurface(pSurface);
-            }
-            pForeground = convertSurfaceToTexture(pForegroundSurface, true);
-        }
-    }
+    void updateTextures() override;
 
     /**
         This method frees all textures that are used by this list box
     */
     void invalidateTextures() override
     {
-        if(pBackground != nullptr) {
-            SDL_DestroyTexture(pBackground);
-            pBackground = nullptr;
-        }
-
-        if(pForeground != nullptr) {
-            SDL_DestroyTexture(pForeground);
-            pForeground = nullptr;
-        }
+        pBackground.reset();
+        pForeground.reset();
     }
 
 private:
@@ -482,8 +444,8 @@ private:
     };
 
     std::vector<ListEntry> entries;
-    SDL_Texture* pBackground;
-    SDL_Texture* pForeground;
+    sdl2::texture_ptr pBackground;
+    sdl2::texture_ptr pForeground;
     ScrollBar scrollbar;
 
     std::function<void (bool)> pOnSelectionChange;  ///< this function is called when the selection changes

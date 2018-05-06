@@ -27,9 +27,9 @@
 #include <Network/MetaServerClient.h>
 
 #include <misc/string_util.h>
+#include <misc/SDL2pp.h>
 
 #include <enet/enet.h>
-#include <SDL2/SDL.h>
 #include <string>
 #include <list>
 #include <functional>

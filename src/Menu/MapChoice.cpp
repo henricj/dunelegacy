@@ -61,7 +61,7 @@ MapChoice::MapChoice(int newHouse, unsigned int lastMission, Uint32 oldAlreadyPl
     int numSelectableRegions = 0;
     int numRegions = 0;
     for(int i = 0; i < 4; i++) {
-        int regionNum = group[lastScenario].attackRegion[i].regionNum;
+        const int regionNum = group[lastScenario].attackRegion[i].regionNum;
         if(regionNum > 0) {
             numRegions++;
             if((alreadyPlayedRegions & (1 << regionNum)) == 0) {
@@ -82,11 +82,11 @@ MapChoice::MapChoice(int newHouse, unsigned int lastMission, Uint32 oldAlreadyPl
             // first time we're on the map choice screen
 
             // create black rectangle
-            mapSurface = convertSurfaceToDisplayFormat(copySurface(pGFXManager->getUIGraphicSurface(UI_MapChoicePlanet)), true);
+            mapSurface = convertSurfaceToDisplayFormat(copySurface(pGFXManager->getUIGraphicSurface(UI_MapChoicePlanet)).release(), true);
             SDL_Rect dest = { 16, 48, 608, 240 };
-            SDL_FillRect(mapSurface, &dest, COLOR_BLACK);
-            mapTexture = SDL_CreateTexture(renderer, SCREEN_FORMAT, SDL_TEXTUREACCESS_STREAMING, mapSurface->w, mapSurface->h);
-            SDL_SetTextureBlendMode(mapTexture, SDL_BLENDMODE_BLEND);
+            SDL_FillRect(mapSurface.get(), &dest, COLOR_BLACK);
+            mapTexture = sdl2::texture_ptr{ SDL_CreateTexture(renderer, SCREEN_FORMAT, SDL_TEXTUREACCESS_STREAMING, mapSurface->w, mapSurface->h) };
+            SDL_SetTextureBlendMode(mapTexture.get(), SDL_BLENDMODE_BLEND);
 
             mapChoiceState = MAPCHOICESTATE_FADEINPLANET;
 
@@ -104,7 +104,7 @@ MapChoice::MapChoice(int newHouse, unsigned int lastMission, Uint32 oldAlreadyPl
     if(numSelectableRegions == 0) {
         // reset all selectable regions
         for(int i = 0; i < 4; i++) {
-            int regionNum = group[lastScenario].attackRegion[i].regionNum;
+            const int regionNum = group[lastScenario].attackRegion[i].regionNum;
             if(regionNum > 0) {
                 alreadyPlayedRegions &= ~(1 << regionNum);
             }
@@ -112,16 +112,7 @@ MapChoice::MapChoice(int newHouse, unsigned int lastMission, Uint32 oldAlreadyPl
     }
 }
 
-MapChoice::~MapChoice() {
-    delete curBlendBlitter;
-    curBlendBlitter = nullptr;
-
-    SDL_FreeSurface(mapSurface);
-    mapSurface = nullptr;
-
-    SDL_DestroyTexture(mapTexture);
-    mapTexture = nullptr;
-}
+MapChoice::~MapChoice() = default;
 
 int MapChoice::showMenu()
 {
@@ -131,25 +122,24 @@ int MapChoice::showMenu()
 }
 
 void MapChoice::drawSpecificStuff() {
-    SDL_UpdateTexture(mapTexture, nullptr, mapSurface->pixels, mapSurface->pitch);
-    SDL_RenderCopy(renderer, mapTexture, nullptr, &centerAreaRect);
+    SDL_UpdateTexture(mapTexture.get(), nullptr, mapSurface->pixels, mapSurface->pitch);
+    SDL_RenderCopy(renderer, mapTexture.get(), nullptr, &centerAreaRect);
 
     switch(mapChoiceState) {
 
         case MAPCHOICESTATE_FADEINPLANET: {
             if(curBlendBlitter == nullptr) {
-                SDL_Surface* pSurface = convertSurfaceToDisplayFormat(pGFXManager->getUIGraphicSurface(UI_MapChoicePlanet), false);
-                SDL_Rect dest = { 0, 0, getWidth(pSurface), getHeight(pSurface) };
-                curBlendBlitter = new BlendBlitter(pSurface, true, mapSurface, dest);
+                sdl2::surface_ptr pSurface = convertSurfaceToDisplayFormat(pGFXManager->getUIGraphicSurface(UI_MapChoicePlanet), false);
+                SDL_Rect dest = { 0, 0, getWidth(pSurface.get()), getHeight(pSurface.get()) };
+                curBlendBlitter = std::make_unique<BlendBlitter>(pSurface.release(), true, mapSurface.get(), dest);
             }
 
             if(curBlendBlitter != nullptr) {
-                int numSteps = bFastBlending ? 8 : 1;
+                const int numSteps = bFastBlending ? 8 : 1;
 
                 for(int i = 0; i < numSteps; i++) {
                     if(curBlendBlitter->nextStep() == 0) {
-                        delete curBlendBlitter;
-                        curBlendBlitter = nullptr;
+                        curBlendBlitter.reset();
 
                         stateSwitchTime = SDL_GetTicks();
                         mapChoiceState = MAPCHOICESTATE_SHOWPLANET;
@@ -167,18 +157,17 @@ void MapChoice::drawSpecificStuff() {
 
         case MAPCHOICESTATE_BLENDPLANET: {
             if(curBlendBlitter == nullptr) {
-                SDL_Surface* pSurface = convertSurfaceToDisplayFormat(pGFXManager->getUIGraphicSurface(UI_MapChoiceMapOnly), false);
-                SDL_Rect dest = { 0, 0, getWidth(pSurface), getHeight(pSurface) };
-                curBlendBlitter = new BlendBlitter(pSurface, true, mapSurface, dest);
+                sdl2::surface_ptr pSurface = convertSurfaceToDisplayFormat(pGFXManager->getUIGraphicSurface(UI_MapChoiceMapOnly), false);
+                SDL_Rect dest = { 0, 0, getWidth(pSurface.get()), getHeight(pSurface.get()) };
+                curBlendBlitter = std::make_unique< BlendBlitter>(pSurface.release(), true, mapSurface.get(), dest);
             }
 
             if(curBlendBlitter != nullptr) {
-                int numSteps = bFastBlending ? 8 : 1;
+                const int numSteps = bFastBlending ? 8 : 1;
 
                 for(int i = 0; i < numSteps; i++) {
                     if(curBlendBlitter->nextStep() == 0) {
-                        delete curBlendBlitter;
-                        curBlendBlitter = nullptr;
+                        curBlendBlitter.reset();
 
                         stateSwitchTime = SDL_GetTicks();
                         mapChoiceState = MAPCHOICESTATE_SHOWMAPONLY;
@@ -196,18 +185,17 @@ void MapChoice::drawSpecificStuff() {
 
         case MAPCHOICESTATE_BLENDMAP: {
             if(curBlendBlitter == nullptr) {
-                SDL_Surface* pSurface = convertSurfaceToDisplayFormat(pGFXManager->getUIGraphicSurface(UI_MapChoiceMap), false);
-                SDL_Rect dest = { 0, 0, getWidth(pSurface), getHeight(pSurface) };
-                curBlendBlitter = new BlendBlitter(pSurface, true, mapSurface, dest);
+                sdl2::surface_ptr pSurface = convertSurfaceToDisplayFormat(pGFXManager->getUIGraphicSurface(UI_MapChoiceMap), false);
+                SDL_Rect dest = { 0, 0, getWidth(pSurface.get()), getHeight(pSurface.get()) };
+                curBlendBlitter = std::make_unique<BlendBlitter>(pSurface.release(), true, mapSurface.get(), dest);
             }
 
             if(curBlendBlitter != nullptr) {
-                int numSteps = bFastBlending ? 8 : 1;
+                const int numSteps = bFastBlending ? 8 : 1;
 
                 for(int i = 0; i < numSteps; i++) {
                     if(curBlendBlitter->nextStep() == 0) {
-                        delete curBlendBlitter;
-                        curBlendBlitter = nullptr;
+                        curBlendBlitter.reset();
 
                         createMapSurfaceWithPieces(lastScenario);
                         mapChoiceState = MAPCHOICESTATE_BLENDING;
@@ -227,10 +215,10 @@ void MapChoice::drawSpecificStuff() {
 
                 if((curHouse2Blit < NUM_HOUSES)&&(curRegion2Blit < group[lastScenario].newRegion[(curHouse2Blit + house) % NUM_HOUSES].size())) {
                     // there is still some region to blend in
-                    int pieceNum = (group[lastScenario].newRegion[(curHouse2Blit + house) % NUM_HOUSES])[curRegion2Blit];
-                    SDL_Surface* pPieceSurface = convertSurfaceToDisplayFormat(pGFXManager->getMapChoicePieceSurface(pieceNum,(curHouse2Blit + house) % NUM_HOUSES), false);
-                    SDL_Rect dest = calcDrawingRect(pPieceSurface, piecePosition[pieceNum].x, piecePosition[pieceNum].y);
-                    curBlendBlitter = new BlendBlitter(pPieceSurface, true, mapSurface, dest);
+                    const int pieceNum = (group[lastScenario].newRegion[(curHouse2Blit + house) % NUM_HOUSES])[curRegion2Blit];
+                    sdl2::surface_ptr pPieceSurface = convertSurfaceToDisplayFormat(pGFXManager->getMapChoicePieceSurface(pieceNum,(curHouse2Blit + house) % NUM_HOUSES), false);
+                    SDL_Rect dest = calcDrawingRect(pPieceSurface.get(), piecePosition[pieceNum].x, piecePosition[pieceNum].y);
+                    curBlendBlitter = std::make_unique<BlendBlitter>(pPieceSurface.release(), true, mapSurface.get(), dest);
                     curRegion2Blit++;
 
                     // have to show some text?
@@ -247,12 +235,11 @@ void MapChoice::drawSpecificStuff() {
             }
 
             if(curBlendBlitter != nullptr) {
-                int numSteps = bFastBlending ? 8 : 1;
+                const int numSteps = bFastBlending ? 8 : 1;
 
                 for(int i = 0; i < numSteps; i++) {
                     if(curBlendBlitter->nextStep() == 0) {
-                        delete curBlendBlitter;
-                        curBlendBlitter = nullptr;
+                        curBlendBlitter.reset();
                         break;
                     }
                 }
@@ -263,7 +250,7 @@ void MapChoice::drawSpecificStuff() {
         {
             // Draw arrows
             for(int i = 0; i < 4; i++) {
-                int regionNum = group[lastScenario].attackRegion[i].regionNum;
+                const int regionNum = group[lastScenario].attackRegion[i].regionNum;
                 if(regionNum == 0) {
                     continue;
                 }
@@ -272,9 +259,9 @@ void MapChoice::drawSpecificStuff() {
                     continue;
                 }
 
-                int arrowNum = std::max(0, std::min(8, group[lastScenario].attackRegion[i].arrowNum));
+                const int arrowNum = std::max<int>(0, std::min<int>(8, group[lastScenario].attackRegion[i].arrowNum));
                 SDL_Texture* arrow = pGFXManager->getUIGraphic(UI_MapChoiceArrow_None + arrowNum, house);
-                int arrowFrame = (SDL_GetTicks() / 128) % 4;
+                const int arrowFrame = (SDL_GetTicks() / 128) % 4;
                 SDL_Rect src = calcSpriteSourceRect(arrow, arrowFrame, 4);
                 SDL_Rect dest = calcSpriteDrawingRect(  arrow,
                                                         group[lastScenario].attackRegion[i].arrowPosition.x + centerAreaRect.x,
@@ -298,9 +285,9 @@ void MapChoice::drawSpecificStuff() {
                     continue;
                 }
 
-                int arrowNum = std::max(0, std::min(8, group[lastScenario].attackRegion[i].arrowNum));
+                const int arrowNum = std::max<int>(0, std::min<int>(8, group[lastScenario].attackRegion[i].arrowNum));
                 SDL_Texture* arrow = pGFXManager->getUIGraphic(UI_MapChoiceArrow_None + arrowNum, house);
-                int arrowFrame = (SDL_GetTicks() / 128) % 4;
+                const int arrowFrame = (SDL_GetTicks() / 128) % 4;
                 SDL_Rect src = calcSpriteSourceRect(arrow, arrowFrame, 4);
                 SDL_Rect dest = calcSpriteDrawingRect(  arrow,
                                                         group[lastScenario].attackRegion[i].arrowPosition.x + centerAreaRect.x,
@@ -329,13 +316,12 @@ bool MapChoice::doInput(SDL_Event &event) {
             if((x > 0) && (x < centerAreaRect.w) && (y > 0) && (y < centerAreaRect.h)) {
                 SDL_Surface* clickmap = pGFXManager->getUIGraphicSurface(UI_MapChoiceClickMap);
 
-                if(SDL_LockSurface(clickmap) != 0) {
-                    THROW(std::runtime_error, "Cannot lock image!");
+                Uint8 regionNum;
+                {
+                    sdl2::surface_lock lock{ clickmap };
+
+                    regionNum = static_cast<Uint8*>(clickmap->pixels)[y * clickmap->pitch + x];
                 }
-
-                int regionNum = ((Uint8*)clickmap->pixels)[y * clickmap->pitch + x];
-
-                SDL_UnlockSurface(clickmap);
 
                 if((regionNum != 0) && ((alreadyPlayedRegions & (1 << regionNum)) == 0)) {
                     for(int i = 0; i < 4; i++) {
@@ -357,36 +343,32 @@ bool MapChoice::doInput(SDL_Event &event) {
 }
 
 void MapChoice::createMapSurfaceWithPieces(unsigned int scenario) {
-    if(mapSurface != nullptr) {
-        SDL_FreeSurface(mapSurface);
-    }
-    if(mapTexture != nullptr) {
-        SDL_DestroyTexture(mapTexture);
-    }
-
     // Load map surface
-    mapSurface = convertSurfaceToDisplayFormat(copySurface(pGFXManager->getUIGraphicSurface(UI_MapChoiceMap)), true);
-    mapTexture = SDL_CreateTexture(renderer, SCREEN_FORMAT, SDL_TEXTUREACCESS_STREAMING, mapSurface->w, mapSurface->h);
-    SDL_SetTextureBlendMode(mapTexture, SDL_BLENDMODE_BLEND);
+    mapSurface = convertSurfaceToDisplayFormat(copySurface(pGFXManager->getUIGraphicSurface(UI_MapChoiceMap)).release(), true);
+    mapTexture = sdl2::texture_ptr{ SDL_CreateTexture(renderer, SCREEN_FORMAT, SDL_TEXTUREACCESS_STREAMING, mapSurface->w, mapSurface->h) };
+    SDL_SetTextureBlendMode(mapTexture.get(), SDL_BLENDMODE_BLEND);
+
+    if (group.size() < 2)
+        return;
 
     for(unsigned int s = 1; s < scenario; s++) {
-        for(unsigned int h = 0; h < NUM_HOUSES; h++) {
-            for(unsigned int p = 0; p < group[s].newRegion[h].size(); p++) {
-                int pieceNum = (group[s].newRegion[h])[p];
-                SDL_Surface* pieceSurface = pGFXManager->getMapChoicePieceSurface(pieceNum,h);
+        auto g = group[s];
+        for(unsigned int h = 0; h < g.newRegion.size(); h++) {
+            for (int pieceNum : g.newRegion[h]) {
+                SDL_Surface* pieceSurface = pGFXManager->getMapChoicePieceSurface(pieceNum, h);
                 SDL_Rect dest = calcDrawingRect(pieceSurface, piecePosition[pieceNum].x, piecePosition[pieceNum].y);
-                SDL_BlitSurface(pieceSurface,nullptr,mapSurface,&dest);
+                SDL_BlitSurface(pieceSurface,nullptr,mapSurface.get(),&dest);
             }
         }
     }
 }
 
 void MapChoice::loadINI() {
-    std::string filename = fmt::sprintf("REGION%c.INI", houseChar[house]);
+    const std::string filename = fmt::sprintf("REGION%c.INI", houseChar[house]);
 
-    SDL_RWops* file = pFileManager->openFile(filename);
-    INIFile RegionINI(file);
-    SDL_RWclose(file);
+    sdl2::RWop_ptr file{ pFileManager->openFile(filename) };
+    INIFile RegionINI(file.get());
+    file.reset();
 
 
     piecePosition[0].x = 0;
@@ -467,7 +449,7 @@ void MapChoice::loadINI() {
             std::string key = _("LanguageFileExtension") + "TXT" + std::to_string(j);
 
             std::string str = convertCP850ToISO8859_1(RegionINI.getStringValue(strSection,key));
-            if(str != "") {
+            if(!str.empty()) {
                 TGroup::TText tmp;
                 tmp.message = str;
                 tmp.region = j;
@@ -477,7 +459,7 @@ void MapChoice::loadINI() {
                 std::string key = std::string("TXT") + std::to_string(j);
 
                 std::string str = convertCP850ToISO8859_1(RegionINI.getStringValue(strSection,key));
-                if(str != "") {
+                if(!str.empty()) {
                     TGroup::TText tmp;
                     tmp.message = str;
                     tmp.region = j;

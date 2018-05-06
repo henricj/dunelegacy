@@ -5,7 +5,7 @@
 #include <FileClasses/Vocfile.h>
 
 #include <misc/exceptions.h>
-#include <misc/sdl_support.h>
+#include <misc/SDL2pp.h>
 
 #include <SDL2/SDL_mixer.h>
 #include <stdlib.h>

@@ -29,8 +29,7 @@
 #include <GUI/TextButton.h>
 #include <GUI/Checkbox.h>
 #include <GUI/dune/DigitsTextBox.h>
-
-#include <SDL2/SDL.h>
+#include <misc/SDL2pp.h>
 
 // forward declaration
 class MapEditor;

@@ -140,9 +140,8 @@ bool MenuBase::doInput(SDL_Event &event) {
                         i++;
                     } while(existsFile(screenshotFilename) == true);
 
-                    SDL_Surface* pCurrentScreen = renderReadSurface(renderer);
-                    SavePNG(pCurrentScreen, screenshotFilename.c_str());
-                    SDL_FreeSurface(pCurrentScreen);
+                    sdl2::surface_ptr pCurrentScreen = renderReadSurface(renderer);
+                    SavePNG(pCurrentScreen.get(), screenshotFilename.c_str());
                 } break;
 
                 case SDLK_TAB: {

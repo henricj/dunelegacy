@@ -19,8 +19,8 @@
 #include <FileClasses/Decode.h>
 #include <FileClasses/Palette.h>
 #include <misc/exceptions.h>
+#include <misc/SDL2pp.h>
 
-#include <SDL2/SDL_endian.h>
 #include <cstdlib>
 #include <cstdio>
 
@@ -45,17 +45,15 @@ Shpfile::Shpfile(SDL_RWops* rwop, bool freesrc)
     }
 
     shpFilesize = static_cast<size_t>(endOffset);
-    auto filedata = std::make_unique<uint8_t[]>(shpFilesize);
+    pFiledata = std::make_unique<unsigned char[]>(shpFilesize);
 
-    if(SDL_RWread(rwop, filedata.get(), shpFilesize, 1) != 1) {
+    if(SDL_RWread(rwop, pFiledata.get(), shpFilesize, 1) != 1) {
         THROW(std::runtime_error, "Shpfile::Shpfile(): Reading this *.shp-File failed!");
     }
 
     if (freesrc) {
         SDL_RWclose(rwop);
     }
-
-    pFiledata = std::move(filedata);
 
     try {
         readIndex();
@@ -77,12 +75,8 @@ Shpfile::~Shpfile() = default;
     \param  indexOfFile specifies which picture to return (zero based)
     \return nth picture in this shp-File
 */
-SDL_Surface *Shpfile::getPicture(Uint32 indexOfFile)
+sdl2::surface_ptr Shpfile::getPicture(Uint32 indexOfFile)
 {
-    SDL_Surface *pic = nullptr;
-    unsigned char *DecodeDestination = nullptr;
-    unsigned char *ImageOut = nullptr;
-
     if(indexOfFile >= shpfileEntries.size()) {
         return nullptr;
     }
@@ -94,60 +88,52 @@ SDL_Surface *Shpfile::getPicture(Uint32 indexOfFile)
     const unsigned char sizeY = Fileheader[2];
     const unsigned char sizeX = Fileheader[3];
 
-    /* size and also checksum */
-    const auto size = SDL_SwapLE16(*reinterpret_cast<const Uint16 *>(Fileheader + 8));
+    std::vector<unsigned char> DecodeDestination;
 
-    if((ImageOut = static_cast<unsigned char*>(calloc(1, sizeX * sizeY))) == nullptr) {
-        return nullptr;
-    }
+    /* size and also checksum */
+    Uint16 size = SDL_SwapLE16(*reinterpret_cast<const Uint16 *>(Fileheader + 8));
+
+    auto ImageOut = std::make_unique<unsigned char[]>(sizeX * sizeY);
 
     switch(type) {
 
         case 0:
         {
-            if( (DecodeDestination = static_cast<unsigned char*>(calloc(1, size))) == nullptr) {
-                free(ImageOut);
-                return nullptr;
-            }
+            DecodeDestination.clear();
+            DecodeDestination.resize(size);
 
-            if(decode80(Fileheader + 10,DecodeDestination,size) == -1) {
+            if(decode80(Fileheader + 10, &DecodeDestination[0], size) == -1) {
                 SDL_Log("Warning: Checksum-Error in Shp-File!");
             }
 
-            shpCorrectLF(DecodeDestination,ImageOut, size);
-
-            free(DecodeDestination);
+            shpCorrectLF(&DecodeDestination[0], ImageOut.get(), size);
         } break;
 
         case 1:
         {
-            if( (DecodeDestination = static_cast<unsigned char*>(calloc(1, size))) == nullptr) {
-                free(ImageOut);
-                return nullptr;
-            }
+            DecodeDestination.clear();
+            DecodeDestination.resize(size);
 
-            if(decode80(Fileheader + 10 + 16,DecodeDestination,size) == -1) {
+            if(decode80(Fileheader + 10 + 16, &DecodeDestination[0], size) == -1) {
                 SDL_Log("Warning: Checksum-Error in Shp-File!");
             }
 
-            shpCorrectLF(DecodeDestination, ImageOut, size);
+            shpCorrectLF(&DecodeDestination[0], ImageOut.get(), size);
 
-            applyPalOffsets(Fileheader + 10,ImageOut,sizeX*sizeY);
-
-            free(DecodeDestination);
+            applyPalOffsets(Fileheader + 10, ImageOut.get(), sizeX*sizeY);
         } break;
 
         case 2:
         {
-            shpCorrectLF(Fileheader+10, ImageOut,size);
+            shpCorrectLF(Fileheader+10, ImageOut.get(), size);
         } break;
 
         case 3:
         {
 
-            shpCorrectLF(Fileheader + 10 + 16, ImageOut,size);
+            shpCorrectLF(Fileheader + 10 + 16, ImageOut.get(), size);
 
-            applyPalOffsets(Fileheader + 10,ImageOut,sizeX*sizeY);
+            applyPalOffsets(Fileheader + 10,ImageOut.get(), sizeX*sizeY);
         } break;
 
         default:
@@ -158,21 +144,18 @@ SDL_Surface *Shpfile::getPicture(Uint32 indexOfFile)
     }
 
     // create new picture surface
-    if((pic = SDL_CreateRGBSurface(0,sizeX,sizeY,8,0,0,0,0))== nullptr) {
+    sdl2::surface_ptr pic{ SDL_CreateRGBSurface(0, sizeX, sizeY, 8, 0, 0, 0, 0) };
+    if(pic == nullptr) {
         return nullptr;
     }
 
-    palette.applyToSurface(pic);
-    SDL_LockSurface(pic);
+    palette.applyToSurface(pic.get());
+    sdl2::surface_lock lock{ pic.get() };
 
     //Now we can copy line by line
-    for(int y = 0; y < sizeY;y++) {
-        memcpy( static_cast<char*>(pic->pixels) + y * pic->pitch , ImageOut + y * sizeX, sizeX);
+    for(unsigned int y = 0u; y < sizeY; ++y) {
+        memcpy( static_cast<char*>(pic->pixels) + y * pic->pitch , ImageOut.get() + y * sizeX, sizeX);
     }
-
-    SDL_UnlockSurface(pic);
-
-    free(ImageOut);
 
     return pic;
 }
@@ -201,31 +184,22 @@ SDL_Surface *Shpfile::getPicture(Uint32 indexOfFile)
     \param ...
     \return picture in this shp-File containing all specified pictures
 */
-SDL_Surface* Shpfile::getPictureArray(unsigned int tilesX, unsigned int tilesY, ...) {
-    SDL_Surface *pic = nullptr;
-    unsigned char *DecodeDestination = nullptr;
-    unsigned char *ImageOut = nullptr;
-    Uint32 i,j;
-
-    Uint32* tiles;
+sdl2::surface_ptr Shpfile::getPictureArray(unsigned int tilesX, unsigned int tilesY, ...) {
+    std::vector<Uint32> tiles;
 
     if((tilesX == 0) || (tilesY == 0)) {
         return nullptr;
     }
 
-    if((tiles = static_cast<Uint32*>(malloc(tilesX * tilesY * sizeof(Uint32)))) == nullptr) {
-        SDL_Log("Shpfile::getPictureArray(): Cannot allocate memory!");
-        return nullptr;
-    }
+    tiles.resize(tilesX * tilesY);
 
     va_list arg_ptr;
     va_start(arg_ptr, tilesY);
 
-    for(i = 0; i < tilesX*tilesY; i++) {
+    for(unsigned int i = 0u; i < tilesX*tilesY; i++) {
         tiles[i] = va_arg( arg_ptr, int );
         if(TILE_GETINDEX(tiles[i]) >= shpfileEntries.size()) {
-            free(tiles);
-            SDL_Log("Shpfile::getPictureArray(): There exist only %d files in this *.shp!", (int) shpfileEntries.size());
+            SDL_Log("Shpfile::getPictureArray(): There exist only %d files in this *.shp!", static_cast<int>(shpfileEntries.size()));
             va_end(arg_ptr);
             return nullptr;
         }
@@ -233,99 +207,85 @@ SDL_Surface* Shpfile::getPictureArray(unsigned int tilesX, unsigned int tilesY, 
 
     va_end(arg_ptr);
 
-    unsigned char sizeY = (pFiledata.get() + shpfileEntries[TILE_GETINDEX(tiles[0])].startOffset)[2];
-    unsigned char sizeX = (pFiledata.get() + shpfileEntries[TILE_GETINDEX(tiles[0])].startOffset)[3];
+    unsigned char* pData = pFiledata.get();
 
-    for(i = 1; i < tilesX*tilesY; i++) {
-        if(((pFiledata.get() + shpfileEntries[TILE_GETINDEX(tiles[i])].startOffset)[2] != sizeY)
-         || ((pFiledata.get() + shpfileEntries[TILE_GETINDEX(tiles[i])].startOffset)[3] != sizeX)) {
-            free(tiles);
+    unsigned char sizeY = (pData + shpfileEntries[TILE_GETINDEX(tiles[0])].startOffset)[2];
+    unsigned char sizeX = (pData + shpfileEntries[TILE_GETINDEX(tiles[0])].startOffset)[3];
+
+    for(unsigned int i = 1u; i < tilesX*tilesY; i++) {
+        if(((pData + shpfileEntries[TILE_GETINDEX(tiles[i])].startOffset)[2] != sizeY)
+         || ((pData + shpfileEntries[TILE_GETINDEX(tiles[i])].startOffset)[3] != sizeX)) {
             SDL_Log("Shpfile::getPictureArray(): Not all pictures have the same size!");
             return nullptr;
          }
     }
 
+    std::vector<unsigned char> DecodeDestination;
+    auto ImageOut = std::make_unique<unsigned char[]>(sizeX * sizeY);
+
     // create new picture surface
-    if((pic = SDL_CreateRGBSurface(0,sizeX*tilesX,sizeY*tilesY,8,0,0,0,0)) == nullptr) {
-        free(tiles);
+    sdl2::surface_ptr pic{ SDL_CreateRGBSurface(0, sizeX*tilesX, sizeY*tilesY, 8, 0, 0, 0, 0) };
+    if(pic == nullptr) {
         SDL_Log("Shpfile::getPictureArray(): Cannot create Surface.");
         return nullptr;
     }
 
-    palette.applyToSurface(pic);
-    SDL_LockSurface(pic);
+    palette.applyToSurface(pic.get());
+    sdl2::surface_lock lock{ pic.get() };
 
-    for(j = 0; j < tilesY; j++) {
-        for(i = 0; i < tilesX; i++) {
+    for(unsigned int j = 0u; j < tilesY; j++) {
+        for(unsigned int i = 0u; i < tilesX; i++) {
 
-            const unsigned char * Fileheader = pFiledata.get() + shpfileEntries[TILE_GETINDEX(tiles[j*tilesX+i])].startOffset;
+            const unsigned char * Fileheader = pData + shpfileEntries[TILE_GETINDEX(tiles[j*tilesX+i])].startOffset;
             unsigned char type = Fileheader[0];
 
             /* size and also checksum */
             Uint16 size = SDL_SwapLE16(*(reinterpret_cast<const Uint16 *>(Fileheader + 8)));
 
-            if((ImageOut = static_cast<unsigned char*>(calloc(1, sizeX * sizeY))) == nullptr) {
-                free(tiles);
-                SDL_Log("Shpfile::getPictureArray(): Cannot allocate memory!");
-                return nullptr;
-            }
+            memset(ImageOut.get(), 0, sizeX * sizeY);
 
             switch(type) {
 
                 case 0:
                 {
-                    if( (DecodeDestination = static_cast<unsigned char*>(calloc(1, size))) == nullptr) {
-                        free(ImageOut);
-                        free(tiles);
-                        SDL_Log("Shpfile::getPictureArray(): Cannot allocate memory!");
-                        return nullptr;
-                    }
+                    DecodeDestination.clear();
+                    DecodeDestination.resize(size);
 
-                    if(decode80(Fileheader + 10,DecodeDestination,size) == -1) {
+                    if(decode80(Fileheader + 10,&DecodeDestination[0],size) == -1) {
                         SDL_Log("Warning: Checksum-Error in Shp-File!");
                     }
 
-                    shpCorrectLF(DecodeDestination,ImageOut, size);
-
-                    free(DecodeDestination);
+                    shpCorrectLF(&DecodeDestination[0], ImageOut.get(), size);
                 } break;
 
                 case 1:
                 {
-                    if( (DecodeDestination = static_cast<unsigned char*>(calloc(1, size))) == nullptr) {
-                        free(ImageOut);
-                        free(tiles);
-                        SDL_Log("Shpfile::getPictureArray(): Cannot allocate memory!");
-                        return nullptr;
-                    }
+                    DecodeDestination.clear();
+                    DecodeDestination.resize(size);
 
-                    if(decode80(Fileheader + 10 + 16,DecodeDestination,size) == -1) {
+                    if(decode80(Fileheader + 10 + 16, &DecodeDestination[0], size) == -1) {
                         SDL_Log("Warning: Checksum-Error in Shp-File!");
                     }
 
-                    shpCorrectLF(DecodeDestination, ImageOut, size);
+                    shpCorrectLF(&DecodeDestination[0], ImageOut.get(), size);
 
-                    applyPalOffsets(Fileheader + 10,ImageOut,sizeX*sizeY);
-
-                    free(DecodeDestination);
+                    applyPalOffsets(Fileheader + 10, ImageOut.get(), sizeX*sizeY);
                 } break;
 
                 case 2:
                 {
-                    shpCorrectLF(Fileheader+10, ImageOut,size);
+                    shpCorrectLF(Fileheader+10, ImageOut.get(),size);
                 } break;
 
                 case 3:
                 {
-                    shpCorrectLF(Fileheader + 10 + 16, ImageOut,size);
-                    applyPalOffsets(Fileheader + 10,ImageOut,sizeX*sizeY);
+                    shpCorrectLF(Fileheader + 10 + 16, ImageOut.get(), size);
+                    applyPalOffsets(Fileheader + 10,ImageOut.get(), sizeX*sizeY);
                 } break;
 
                 default:
                 {
                     SDL_Log("Shpfile: Type %d in SHP-Files not supported!",type);
-                    free(ImageOut);
-                    free(tiles);
                     return nullptr;
                 }
             }
@@ -334,32 +294,36 @@ SDL_Surface* Shpfile::getPictureArray(unsigned int tilesX, unsigned int tilesY, 
             switch(TILE_GETTYPE(tiles[i])) {
                 case TILE_NORMAL:
                 {
-                    for(int y = 0; y < sizeY; y++) {
-                        memcpy( static_cast<char*>(pic->pixels) + i*sizeX + (y+j*sizeY) * pic->pitch , ImageOut + y * sizeX, sizeX);
+                    for(auto y = 0; y < sizeY; y++) {
+                        memcpy( static_cast<char*>(pic->pixels) + i*sizeX + (y+j*sizeY) * pic->pitch , ImageOut.get() + y * sizeX, sizeX);
                     }
                 } break;
 
                 case TILE_FLIPH:
                 {
-                    for(int y = 0; y < sizeY; y++) {
-                        memcpy( static_cast<char*>(pic->pixels) + i*sizeX + (y+j*sizeY) * pic->pitch , ImageOut + (sizeY-1-y) * sizeX, sizeX);
+                    for(auto y = 0; y < sizeY; y++) {
+                        memcpy( static_cast<char*>(pic->pixels) + i*sizeX + (y+j*sizeY) * pic->pitch , ImageOut.get() + (sizeY-1-y) * sizeX, sizeX);
                     }
                 } break;
 
                 case TILE_FLIPV:
                 {
-                    for(int y = 0; y < sizeY; y++) {
-                        for(int x = 0; x < sizeX; x++) {
-                            *(static_cast<char*>(pic->pixels) + i*sizeX + (y+j*sizeY) * pic->pitch + x) = *(ImageOut + y * sizeX + (sizeX-1-x));
+                    for(auto y = 0; y < sizeY; y++) {
+                        unsigned char * const RESTRICT out = static_cast<unsigned char*>(pic->pixels) + i * sizeX + (y + j * sizeY) * pic->pitch;
+                        const unsigned char* const RESTRICT in = ImageOut.get() + y * sizeX;
+                        for(auto x = 0; x < sizeX; x++) {
+                            out[x] = in[sizeX-1-x];
                         }
                     }
                 } break;
 
                 case TILE_ROTATE:
                 {
-                    for(int y = 0; y < sizeY; y++) {
-                        for(int x = 0; x < sizeX; x++) {
-                            *(static_cast<char*>(pic->pixels) + i*sizeX + (y+j*sizeY) * pic->pitch + x) = *(ImageOut + (sizeY-1-y) * sizeX + (sizeX-1-x));
+                    for(auto y = 0; y < sizeY; y++) {
+                        unsigned char * const RESTRICT out = static_cast<unsigned char*>(pic->pixels) + i * sizeX + (y + j * sizeY) * pic->pitch;
+                        const unsigned char * const RESTRICT in = ImageOut.get() + (sizeY - 1 - y) * sizeX;
+                        for(auto x = 0; x < sizeX; x++) {
+                            out[x] = in[sizeX-1-x];
                         }
                     }
                 } break;
@@ -367,19 +331,12 @@ SDL_Surface* Shpfile::getPictureArray(unsigned int tilesX, unsigned int tilesY, 
                 default:
                 {
                     SDL_Log("Shpfile: Invalid type for this parameter. Must be one of TILE_NORMAL, TILE_FLIPH, TILE_FLIPV or TILE_ROTATE!");
-                    free(ImageOut);
-                    free(tiles);
                     return nullptr;
                 } break;
             }
-
-            free(ImageOut);
         }
     }
 
-    free(tiles);
-
-    SDL_UnlockSurface(pic);
     return pic;
 }
 
@@ -397,29 +354,27 @@ SDL_Surface* Shpfile::getPictureArray(unsigned int tilesX, unsigned int tilesY, 
 */
 Animation* Shpfile::getAnimation(unsigned int startindex,unsigned int endindex, bool bDoublePic, bool bSetColorKey, bool bLoopRewindBackwards)
 {
-    SDL_Surface* tmp;
+    auto animation = std::make_unique<Animation>();
 
-    Animation* animation = new Animation();
-
-    for(unsigned int i = startindex; i <= endindex; i++) {
-        if((tmp = getPicture(i)) == nullptr) {
-            delete animation;
+    for(unsigned int i = startindex; i <= endindex; ++i) {
+        auto tmp = getPicture(i);
+        if(tmp == nullptr) {
             return nullptr;
         }
-        animation->addFrame(tmp,bDoublePic,bSetColorKey);
+        animation->addFrame(tmp.release(),bDoublePic,bSetColorKey);
     }
 
     if(bLoopRewindBackwards) {
-        for(int i = (int) endindex - 1; i >= (int) startindex; i--) {
-            if((tmp = getPicture(i)) == nullptr) {
-                delete animation;
+        for(unsigned int i = endindex - 1; i >= startindex; --i) {
+            auto tmp = getPicture(i);
+            if(tmp == nullptr) {
                 return nullptr;
             }
-            animation->addFrame(tmp,bDoublePic,bSetColorKey);
+            animation->addFrame(tmp.release(),bDoublePic,bSetColorKey);
         }
     }
 
-    return animation;
+    return animation.release();
 }
 
 /// Helper method for reading the index
@@ -429,7 +384,7 @@ Animation* Shpfile::getAnimation(unsigned int startindex,unsigned int endindex, 
 void Shpfile::readIndex()
 {
     // First get number of files in shp-file
-    const auto NumFiles = SDL_SwapLE16(reinterpret_cast<const Uint16 *>(pFiledata.get())[0]);
+    Uint16 NumFiles = SDL_SwapLE16(reinterpret_cast<const Uint16 *>(pFiledata.get())[0]);
 
     if(NumFiles == 0) {
         THROW(std::runtime_error, "Shpfile::readIndex(): There is no file in this shp-File!");
@@ -517,16 +472,16 @@ void Shpfile::readIndex()
 */
 void Shpfile::shpCorrectLF(const unsigned char *in, unsigned char *out, int size)
 {
-    const auto end = in + size;
+    const unsigned char * end = in + size;
     while(in < end) {
-        const auto val = *in;
+        unsigned char val = *in;
         in++;
 
         if(val != 0) {
             *out = val;
             out++;
         } else {
-            const auto count = *in;
+            unsigned char count = *in;
             in++;
             if (count == 0) {
                 return;

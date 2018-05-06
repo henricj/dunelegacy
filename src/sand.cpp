@@ -145,7 +145,7 @@ SDL_Texture* resolveItemPicture(int itemID, HOUSETYPE house) {
     \return the id of the animation (e.g. Anim_StarPort)
 */
 int getAnimByFilename(const std::string& filename) {
-    std::string lowerFilename = strToLower(filename);
+    const std::string lowerFilename = strToLower(filename);
 
     if(lowerFilename == "fartr.wsa")            return Anim_AtreidesPlanet;
     else if(lowerFilename == "fhark.wsa")       return Anim_HarkonnenPlanet;
@@ -237,7 +237,7 @@ Coord getStructureSize(int itemID) {
     \return the id of the item (e.g. Structure_RocketTurret)
 */
 Uint32  getItemIDByName(const std::string& name) {
-    std::string lowerName = strToLower(name);
+    const std::string lowerName = strToLower(name);
 
     if(lowerName == "barracks")                                                 return Structure_Barracks;
     else if((lowerName == "const yard") || (lowerName == "construction yard"))  return Structure_ConstructionYard;
@@ -404,7 +404,7 @@ std::string resolveItemName(int itemID) {
     \return the number of the house (e.g. HOUSE_ATREIDES). HOUSE_INVALID is returned on error.
 */
 HOUSETYPE getHouseByName(const std::string& name) {
-    std::string lowerName = strToLower(name);
+    const std::string lowerName = strToLower(name);
 
     if(lowerName == "harkonnen")         return HOUSE_HARKONNEN;
     else if(lowerName == "atreides")     return HOUSE_ATREIDES;
@@ -422,12 +422,12 @@ HOUSETYPE getHouseByName(const std::string& name) {
 */
 std::string getHouseNameByNumber(HOUSETYPE house) {
     if(house >= 0 && house < NUM_HOUSES) {
-        static const char* houseName[NUM_HOUSES] = {    "Harkonnen",
-                                                        "Atreides",
-                                                        "Ordos",
-                                                        "Fremen",
-                                                        "Sardaukar",
-                                                        "Mercenary"
+        static const char* const houseName[NUM_HOUSES] = {  "Harkonnen",
+                                                            "Atreides",
+                                                            "Ordos",
+                                                            "Fremen",
+                                                            "Sardaukar",
+                                                            "Mercenary"
                                                    };
         return houseName[house];
     } else {
@@ -436,7 +436,7 @@ std::string getHouseNameByNumber(HOUSETYPE house) {
 }
 
 ATTACKMODE getAttackModeByName(const std::string& name) {
-    std::string lowerName = strToLower(name);
+    const std::string lowerName = strToLower(name);
 
     if(lowerName == "guard")                                    return GUARD;
     else if(lowerName == "area guard")                          return AREAGUARD;
@@ -489,7 +489,7 @@ Uint32 getColorByTerrainType(int terrainType) {
 
 
 DropLocation getDropLocationByName(const std::string& name) {
-    std::string lowerName = strToLower(name);
+    const std::string lowerName = strToLower(name);
 
     if(lowerName == "north") {
         return Drop_North;
@@ -546,7 +546,7 @@ std::string resolveDropLocationName(DropLocation dropLocation) {
 }
 
 TeamBehavior getTeamBehaviorByName(const std::string& name) {
-    std::string lowerName = strToLower(name);
+    const std::string lowerName = strToLower(name);
 
     if(lowerName == "normal") {
         return TeamBehavior_Normal;
@@ -579,7 +579,7 @@ std::string getTeamBehaviorNameByID(TeamBehavior teamBehavior) {
 
 
 TeamType getTeamTypeByName(const std::string& name) {
-    std::string lowerName = strToLower(name);
+    const std::string lowerName = strToLower(name);
 
     if(lowerName == "foot") {
         return TeamType_Foot;
@@ -671,76 +671,73 @@ void startSinglePlayerGame(const GameInitSettings& init)
     while(1) {
 
         SDL_Log("Initializing game...");
-        currentGame = new Game();
-        currentGame->initGame(currentGameInitInfo);
+        auto game = std::make_unique<Game>();
+        currentGame = game.get();
+        game->initGame(currentGameInitInfo);
 
         // get init settings from game as it might have changed (through loading the game)
-        currentGameInitInfo = currentGame->getGameInitSettings();
+        currentGameInitInfo = game->getGameInitSettings();
 
-        currentGame->runMainLoop();
+        game->runMainLoop();
 
         bool bGetNext = true;
         while(bGetNext) {
-            switch(currentGame->whatNext()) {
+            switch(game->whatNext()) {
                 case GAME_DEBRIEFING_WIN: {
                     SDL_Log("Debriefing...");
-                    BriefingMenu* pBriefing = new BriefingMenu(currentGameInitInfo.getHouseID(), currentGameInitInfo.getMission(), DEBRIEFING_WIN);
-                    pBriefing->showMenu();
-                    delete pBriefing;
+                    {
+                        BriefingMenu briefing(currentGameInitInfo.getHouseID(), currentGameInitInfo.getMission(), DEBRIEFING_WIN);
+                        briefing.showMenu();
+                    }
 
                     SDL_Log("Game statistics...");
-                    CampaignStatsMenu* pCampaignStats = new CampaignStatsMenu(missionNumberToLevelNumber(currentGameInitInfo.getMission()));
-                    pCampaignStats->showMenu();
-                    delete pCampaignStats;
+                    {
+                        CampaignStatsMenu campaignStats(missionNumberToLevelNumber(currentGameInitInfo.getMission()));
+                        campaignStats.showMenu();
+                    }
 
-                    int houseID = currentGameInitInfo.getHouseID();
+                    const int houseID = currentGameInitInfo.getHouseID();
 
                     if(currentGameInitInfo.getGameType() == GameType::Campaign) {
-                        int level = missionNumberToLevelNumber(currentGameInitInfo.getMission());
+                        const int level = missionNumberToLevelNumber(currentGameInitInfo.getMission());
 
                         if(level == 4 && (houseID == HOUSE_HARKONNEN || houseID == HOUSE_ATREIDES || houseID == HOUSE_ORDOS)) {
                             SDL_Log("Playing meanwhile...");
-                            Meanwhile* pMeanwhile = new Meanwhile(houseID,true);
-                            pMeanwhile->run();
-                            delete pMeanwhile;
+                            Meanwhile meanwhile(houseID,true);
+                            meanwhile.run();
                         } else if(level == 8 && (houseID == HOUSE_HARKONNEN || houseID == HOUSE_ATREIDES || houseID == HOUSE_ORDOS)) {
                             SDL_Log("Playing meanwhile...");
-                            Meanwhile* pMeanwhile = new Meanwhile(houseID,false);
-                            pMeanwhile->run();
-                            delete pMeanwhile;
+                            Meanwhile meanwhile(houseID,false);
+                            meanwhile.run();
                         } else if(level == 9) {
                             SDL_Log("Playing finale.....");
-                            Finale* pFinale = new Finale(houseID);
-                            pFinale->run();
-                            delete pFinale;
+                            Finale finale(houseID);
+                            finale.run();
                         }
                     }
                 } break;
 
                 case GAME_DEBRIEFING_LOST: {
                     SDL_Log("Debriefing...");
-                    BriefingMenu* pBriefing = new BriefingMenu(currentGameInitInfo.getHouseID(), currentGameInitInfo.getMission(), DEBRIEFING_LOST);
-                    pBriefing->showMenu();
-                    delete pBriefing;
+                    BriefingMenu briefing(currentGameInitInfo.getHouseID(), currentGameInitInfo.getMission(), DEBRIEFING_LOST);
+                    briefing.showMenu();
                 } break;
 
                 case GAME_CUSTOM_GAME_STATS: {
                     SDL_Log("Game statistics...");
-                    CustomGameStatsMenu* pCustomGameStats = new CustomGameStatsMenu();
-                    pCustomGameStats->showMenu();
-                    delete pCustomGameStats;
+                    CustomGameStatsMenu stats;
+                    stats.showMenu();
                 } break;
 
                 case GAME_LOAD:
                 case GAME_NEXTMISSION: {
-                    currentGameInitInfo = currentGame->getNextGameInitSettings();
-                    delete currentGame;
+                    currentGameInitInfo = game->getNextGameInitSettings();
                     bGetNext = false;
                 } break;
 
                 case GAME_RETURN_TO_MENU:
                 default: {
-                    delete currentGame;
+                    game.reset();
                     currentGame = nullptr;
 
                     // Change music to menu music
@@ -750,8 +747,6 @@ void startSinglePlayerGame(const GameInitSettings& init)
                 } break;
             }
         }
-
-
     }
 }
 
@@ -764,21 +759,20 @@ void startMultiPlayerGame(const GameInitSettings& init)
     GameInitSettings currentGameInitInfo = init;
 
     SDL_Log("Initializing game...");
-    currentGame = new Game();
-    currentGame->initGame(currentGameInitInfo);
+    auto game = std::make_unique<Game>();
+    currentGame = game.get();
+    game->initGame(currentGameInitInfo);
 
     // get init settings from game as it might have changed (through loading the game)
-    currentGameInitInfo = currentGame->getGameInitSettings();
+    currentGameInitInfo = game->getGameInitSettings();
 
-    currentGame->runMainLoop();
+    game->runMainLoop();
 
     if(currentGame->whatNext() == GAME_CUSTOM_GAME_STATS) {
         SDL_Log("Game statistics...");
-        CustomGameStatsMenu* pCustomGameStats = new CustomGameStatsMenu();
-        pCustomGameStats->showMenu();
-        delete pCustomGameStats;
+        CustomGameStatsMenu stats;
+        stats.showMenu();
     }
 
-    delete currentGame;
     currentGame = nullptr;
 }

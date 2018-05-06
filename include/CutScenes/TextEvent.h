@@ -18,11 +18,11 @@
 #ifndef TEXTEVENT_H
 #define TEXTEVENT_H
 
-#include <SDL2/SDL.h>
-#include <string>
-
 #include <Definitions.h>
 #include <Colors.h>
+#include <misc/SDL2pp.h>
+
+#include <string>
 
 #define TEXT_FADE_TIME 16
 
@@ -30,7 +30,7 @@
     This class is used for showing text while playing a cutscene. It can show the video in the middle of the screen
     or at the bottom of the screen. The text can be faded in and out.
 */
-class TextEvent {
+class TextEvent final {
 public:
 
     /**
@@ -52,7 +52,7 @@ public:
         This method draws the text.
         \param  currentFrameNumber  the current frame number relative to the current Scene start
     */
-    void draw(int currentFrameNumber);
+    void draw(int currentFrameNumber) const;
 
 private:
     std::string text;       ///< the text to show
@@ -61,7 +61,7 @@ private:
     bool bFadeIn;           ///< true = fade in the text (see TEXT_FADE_TIME for the number of frames it takes), false = simply show the text
     bool bFadeOut;          ///< true = fade out the text (see TEXT_FADE_TIME for the number of frames it takes), false = text simply disapears
     bool bCenterVertical;   ///< true = center the text vertically on the screen, false = draw the text near the bottom of the screen
-    SDL_Texture* pTexture;  ///< a texture containing the rendered text
+    sdl2::texture_ptr pTexture;  ///< a texture containing the rendered text
 };
 
 #endif // TEXTEVENT_H

@@ -18,13 +18,12 @@
 #include <misc/FileSystem.h>
 #include <misc/string_util.h>
 #include <misc/exceptions.h>
+#include <misc/SDL2pp.h>
 
 #include <stdio.h>
 #include <algorithm>
 #include <ctype.h>
 
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_rwops.h>
 #include <SDL2/SDL_filesystem.h>
 
 #ifdef _WIN32

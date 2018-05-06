@@ -43,6 +43,7 @@
 #include <misc/string_util.h>
 #include <misc/exceptions.h>
 #include <misc/format.h>
+#include <misc/SDL2pp.h>
 
 #include <SoundPlayer.h>
 
@@ -50,8 +51,6 @@
 
 #include <CutScenes/Intro.h>
 
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_rwops.h>
 #include <iostream>
 #include <typeinfo>
 #include <future>

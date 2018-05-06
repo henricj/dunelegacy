@@ -19,7 +19,7 @@
 
 #include <algorithm>
 
-DropDownBox::DropDownBox() : Widget() {
+DropDownBox::DropDownBox() {
     enableResizing(true,false);
 
     numVisibleEntries = 7;
@@ -41,13 +41,10 @@ DropDownBox::DropDownBox() : Widget() {
     bAutocloseListBoxOnSelectionChange = true;
     bOnClickEnabled = true;
 
-    resize(getMinimumSize().x,getMinimumSize().y);
+    resize(DropDownBox::getMinimumSize().x, DropDownBox::getMinimumSize().y);
 }
 
-DropDownBox::~DropDownBox() {
-    invalidateForeground();
-    invalidateBackground();
-}
+DropDownBox::~DropDownBox() = default;
 
 void DropDownBox::handleMouseMovement(Sint32 x, Sint32 y, bool insideOverlay) {
     if((x < 0) || (x >= getSize().x - openListBoxButton.getSize().x - 1) || (y < 0) || (y >= getSize().y)) {
@@ -67,11 +64,7 @@ void DropDownBox::handleMouseMovement(Sint32 x, Sint32 y, bool insideOverlay) {
 
 bool DropDownBox::handleMouseMovementOverlay(Sint32 x, Sint32 y) {
     int newY = bListBoxAbove ? (y + listBox.getSize().y) : (y - getSize().y);
-    if(bShowListBox && x >= 0 && x < listBox.getSize().x && newY >= 0 && newY < listBox.getSize().y) {
-        return true;
-    } else {
-        return false;
-    }
+    return bShowListBox && x >= 0 && x < listBox.getSize().x && newY >= 0 && newY < listBox.getSize().y;
 }
 
 bool DropDownBox::handleMouseLeft(Sint32 x, Sint32 y, bool pressed) {
@@ -165,11 +158,7 @@ bool DropDownBox::handleMouseWheelOverlay(Sint32 x, Sint32 y, bool up) {
     if(bShowListBox) {
         int newY = bListBoxAbove ? (y + listBox.getSize().y) : (y - getSize().y);
         listBox.handleMouseWheel(x,newY,up);
-        if(x >= 0 && x < listBox.getSize().x && newY >= 0 && newY < listBox.getSize().y) {
-            return true;
-        } else {
-            return false;
-        }
+        return x >= 0 && x < listBox.getSize().x && newY >= 0 && newY < listBox.getSize().y;
     } else {
         return false;
     }
@@ -231,19 +220,19 @@ void DropDownBox::draw(Point position) {
     updateBackground();
 
     if(pBackground != nullptr) {
-        SDL_Rect dest = calcDrawingRect(pBackground, position.x, position.y);
-        SDL_RenderCopy(renderer, pBackground, nullptr, &dest);
+        SDL_Rect dest = calcDrawingRect(pBackground.get(), position.x, position.y);
+        SDL_RenderCopy(renderer, pBackground.get(), nullptr, &dest);
     }
 
     updateForeground();
 
     if(pForeground != nullptr && pActiveForeground != nullptr) {
         if(((bHover == true) && pOnClick) || isActive()) {
-            SDL_Rect dest = calcDrawingRect(pActiveForeground, position.x + 2, position.y + 2);
-            SDL_RenderCopy(renderer, pActiveForeground, nullptr, &dest);
+            SDL_Rect dest = calcDrawingRect(pActiveForeground.get(), position.x + 2, position.y + 2);
+            SDL_RenderCopy(renderer, pActiveForeground.get(), nullptr, &dest);
         } else {
-            SDL_Rect dest = calcDrawingRect(pForeground, position.x + 2, position.y + 2);
-            SDL_RenderCopy(renderer, pForeground, nullptr, &dest);
+            SDL_Rect dest = calcDrawingRect(pForeground.get(), position.x + 2, position.y + 2);
+            SDL_RenderCopy(renderer, pForeground.get(), nullptr, &dest);
         }
     }
 
@@ -267,7 +256,7 @@ void DropDownBox::resize(Uint32 width, Uint32 height) {
 }
 
 void DropDownBox::resizeListBox() {
-    int listBoxHeight = std::max(1,std::min(numVisibleEntries,getNumEntries())) * (int) GUIStyle::getInstance().getListBoxEntryHeight() + 2;
+    int listBoxHeight = std::max(1,std::min(numVisibleEntries,getNumEntries())) * static_cast<int>(GUIStyle::getInstance().getListBoxEntryHeight()) + 2;
     listBox.resize(getSize().x-1, listBoxHeight);
 }
 
@@ -300,15 +289,8 @@ void DropDownBox::updateButtonSurface() {
 }
 
 void DropDownBox::invalidateForeground() {
-    if(pForeground != nullptr) {
-        SDL_DestroyTexture(pForeground);
-        pForeground = nullptr;
-    }
-
-    if(pActiveForeground != nullptr) {
-        SDL_DestroyTexture(pActiveForeground);
-        pActiveForeground = nullptr;
-    }
+    pForeground.reset();
+    pActiveForeground.reset();
 }
 
 void DropDownBox::updateForeground() {
@@ -321,10 +303,7 @@ void DropDownBox::updateForeground() {
 }
 
 void DropDownBox::invalidateBackground() {
-    if(pBackground != nullptr) {
-        SDL_DestroyTexture(pBackground);
-        pBackground = nullptr;
-    }
+    pBackground.reset();
 }
 
 void DropDownBox::updateBackground() {

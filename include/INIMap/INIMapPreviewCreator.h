@@ -22,8 +22,7 @@
 #include <DataTypes.h>
 
 #include <INIMap/INIMap.h>
-
-#include <SDL2/SDL.h>
+#include <misc/SDL2pp.h>
 
 #include <string>
 #include <map>

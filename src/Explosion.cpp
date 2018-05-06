@@ -29,7 +29,6 @@
 Explosion::Explosion()
  : explosionID(NONE_ID), house(HOUSE_HARKONNEN)
 {
-    numFrames = 0;
     frameTimer = CYCLES_PER_FRAME;
     currentFrame = 0;
 }

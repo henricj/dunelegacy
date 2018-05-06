@@ -21,7 +21,7 @@
 
 #include <SoundPlayer.h>
 
-Button::Button() : Widget() {
+Button::Button() {
     bPressed = false;
     bHover = false;
     bToggleButton = false;
@@ -37,11 +37,6 @@ Button::Button() : Widget() {
 
 Button::~Button() {
     invalidateTextures();
-
-    if(tooltipTexture != nullptr) {
-        SDL_DestroyTexture(tooltipTexture);
-        tooltipTexture = nullptr;
-    }
 }
 
 void Button::handleMouseMovement(Sint32 x, Sint32 y, bool insideOverlay) {
@@ -136,30 +131,30 @@ void Button::draw(Point position) {
     SDL_Texture* tex;
     if(bToggleState == true) {
         if(pPressedTexture != nullptr) {
-            tex = pPressedTexture;
+            tex = pPressedTexture.get();
         } else {
             if(isActive() && pActiveTexture != nullptr) {
-                tex = pActiveTexture;
+                tex = pActiveTexture.get();
             } else {
-                tex = pUnpressedTexture;
+                tex = pUnpressedTexture.get();
             }
         }
     } else {
         if(bPressed == true) {
             if(pPressedTexture != nullptr) {
-                tex = pPressedTexture;
+                tex = pPressedTexture.get();
             } else {
                 if(isActive() && pActiveTexture != nullptr) {
-                    tex = pActiveTexture;
+                    tex = pActiveTexture.get();
                 } else {
-                    tex = pUnpressedTexture;
+                    tex = pUnpressedTexture.get();
                 }
             }
         } else {
             if((isActive() || bHover) && pActiveTexture != nullptr) {
-                tex = pActiveTexture;
+                tex = pActiveTexture.get();
             } else {
-                tex = pUnpressedTexture;
+                tex = pUnpressedTexture.get();
             }
         }
     }
@@ -172,68 +167,75 @@ void Button::draw(Point position) {
     SDL_RenderCopy(renderer, tex, nullptr, &dest);
 }
 
-void Button::drawOverlay(Point Pos) {
-    if(isVisible() && isEnabled() && (bHover == true)) {
-        if(tooltipTexture != nullptr) {
-            if((SDL_GetTicks() - tooltipLastMouseMotion) > 750) {
-                SDL_Rect renderRect = getRendererSize();
-                SDL_Rect dest = calcDrawingRect(tooltipTexture, drawnMouseX, drawnMouseY, HAlign::Left, VAlign::Bottom);
-                if(dest.x + dest.w >= renderRect.w) {
-                    // do not draw tooltip outside screen
-                    dest.x = renderRect.w - dest.w;
-                }
+void Button::drawOverlay(Point position) {
+    if(!isVisible() || !isEnabled() || bHover != true || tooltipTexture == nullptr) return;
 
-                if(dest.y < 0) {
-                    // do not draw tooltip outside screen
-                    dest.y = 0;
-                } else if(dest.y + dest.h >= renderRect.h) {
-                    // do not draw tooltip outside screen
-                    dest.y = renderRect.h - dest.h;
-                }
+    if(SDL_GetTicks() - tooltipLastMouseMotion <= 750) return;
 
-                SDL_RenderCopy(renderer, tooltipTexture, nullptr, &dest);
-            }
-        }
+    SDL_Rect renderRect = getRendererSize();
+    SDL_Rect dest = calcDrawingRect(tooltipTexture.get(), drawnMouseX, drawnMouseY, HAlign::Left, VAlign::Bottom);
+    if(dest.x + dest.w >= renderRect.w) {
+        // do not draw tooltip outside screen
+        dest.x = renderRect.w - dest.w;
     }
+
+    if(dest.y < 0) {
+        // do not draw tooltip outside screen
+        dest.y = 0;
+    } else if(dest.y + dest.h >= renderRect.h) {
+        // do not draw tooltip outside screen
+        dest.y = renderRect.h - dest.h;
+    }
+
+    SDL_RenderCopy(renderer, tooltipTexture.get(), nullptr, &dest);
 }
 
 void Button::setSurfaces(   SDL_Surface* pUnpressedSurface,bool bFreeUnpressedSurface,
                             SDL_Surface* pPressedSurface,bool bFreePressedSurface,
                             SDL_Surface* pActiveSurface,bool bFreeActiveSurface) {
 
-    setTextures(    convertSurfaceToTexture(pUnpressedSurface, bFreeUnpressedSurface), true,
-                    convertSurfaceToTexture(pPressedSurface, bFreePressedSurface), true,
-                    convertSurfaceToTexture(pActiveSurface, bFreeActiveSurface), true);
+    setTextures(    convertSurfaceToTexture(pUnpressedSurface, bFreeUnpressedSurface).release(), true,
+                    convertSurfaceToTexture(pPressedSurface, bFreePressedSurface).release(), true,
+                    convertSurfaceToTexture(pActiveSurface, bFreeActiveSurface).release(), true);
 }
 
 void Button::setTextures(   SDL_Texture* pUnpressedTexture, bool bFreeUnpressedTexture,
                             SDL_Texture* pPressedTexture, bool bFreePressedTexture,
                             SDL_Texture* pActiveTexture, bool bFreeActiveTexture) {
     invalidateTextures();
-    this->pUnpressedTexture = pUnpressedTexture;
+    this->pUnpressedTexture = sdl2::texture_ptr{ pUnpressedTexture };
     this->bFreeUnpressedTexture = bFreeUnpressedTexture;
-    this->pPressedTexture = pPressedTexture;
+    this->pPressedTexture = sdl2::texture_ptr{ pPressedTexture};
     this->bFreePressedTexture = bFreePressedTexture;
-    this->pActiveTexture = pActiveTexture;
+    this->pActiveTexture = sdl2::texture_ptr{ pActiveTexture };
     this->bFreeActiveTexture = bFreeActiveTexture;
 }
 
 void Button::invalidateTextures() {
-    if((bFreeUnpressedTexture == true) && (pUnpressedTexture != nullptr)) {
-        SDL_DestroyTexture(pUnpressedTexture);
-        pUnpressedTexture = nullptr;
-        bFreeUnpressedTexture = false;
+    if (pUnpressedTexture != nullptr) {
+        if ((bFreeUnpressedTexture == true)) {
+            pUnpressedTexture.reset();
+            bFreeUnpressedTexture = false;
+        } else {
+            pUnpressedTexture.release();
+        }
     }
 
-    if((bFreePressedTexture == true) && (pPressedTexture != nullptr)) {
-        SDL_DestroyTexture(pPressedTexture);
-        pPressedTexture = nullptr;
-        bFreePressedTexture = false;
+    if ((pPressedTexture != nullptr)) {
+        if ((bFreePressedTexture == true)) {
+            pPressedTexture.reset();
+            bFreePressedTexture = false;
+        } else {
+            pPressedTexture.release();
+        }
     }
 
-    if((bFreeActiveTexture == true) && (pActiveTexture != nullptr)) {
-        SDL_DestroyTexture(pActiveTexture);
-        pActiveTexture = nullptr;
-        bFreeActiveTexture = false;
+    if ((pActiveTexture != nullptr)) {
+        if ((bFreeActiveTexture == true) && (pActiveTexture != nullptr)) {
+            pActiveTexture.reset();
+            bFreeActiveTexture = false;
+        } else {
+            pActiveTexture.release();
+        }
     }
 }

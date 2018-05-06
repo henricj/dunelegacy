@@ -21,7 +21,7 @@
 #include "Widget.h"
 #include "GUIStyle.h"
 #include "misc/draw_util.h"
-#include <SDL2/SDL.h>
+#include <misc/SDL2pp.h>
 
 #include <string>
 #include <functional>
@@ -35,18 +35,23 @@ public:
     /// desctructor
     virtual ~Button();
 
+    Button(const Button &) = default;
+    Button(Button &&) = default;
+    Button& operator=(const Button &) = default;
+    Button& operator=(Button &&) = default;
+
     /**
         Returns that this button can be set active.
         \return true(= activatable)
     */
-    inline bool isActivatable() const override { return isEnabled(); };
+    bool isActivatable() const override { return isEnabled(); };
 
     /**
         Enable or disable this button. A disabled button is not responding
         to clicks and key strokes and might look different.
         \param  bEnabled    true = enable button, false = disable button
     */
-    inline void setEnabled(bool bEnabled) override
+    void setEnabled(bool bEnabled) override
     {
         Widget::setEnabled(bEnabled);
         if(bEnabled == false) {
@@ -59,15 +64,13 @@ public:
         Sets a tooltip text. This text is shown when the mouse remains a short time over this button.
         \param  text    The text for this tooltip
     */
-    inline void setTooltipText(const std::string& text) {
+    void setTooltipText(const std::string& text) {
         tooltipText = text;
 
-        if(tooltipTexture != nullptr) {
-            SDL_DestroyTexture(tooltipTexture);
-            tooltipTexture = nullptr;
-        }
+        if(tooltipTexture != nullptr)
+            tooltipTexture.reset();
 
-        if(tooltipText != "") {
+        if(!tooltipText.empty()) {
             tooltipTexture = convertSurfaceToTexture(GUIStyle::getInstance().createToolTip(tooltipText), true);
         }
     }
@@ -76,7 +79,7 @@ public:
         Returns the current tooltip text.
         \return the current tooltip text
     */
-    inline const std::string& getTooltipText() {
+    const std::string& getTooltipText() const noexcept {
         return tooltipText;
     }
 
@@ -84,7 +87,7 @@ public:
         Sets the function that should be called when this button is clicked on.
         \param  pOnClick    A function to call on click
     */
-    inline void setOnClick(std::function<void ()> pOnClick) {
+    void setOnClick(std::function<void ()> pOnClick) noexcept {
         this->pOnClick = pOnClick;
     }
 
@@ -92,7 +95,7 @@ public:
         Sets whether this button is a toggle button.
         \param bToggleButton    true = toggle button, false = normal button
     */
-    inline void setToggleButton(bool bToggleButton) {
+    void setToggleButton(bool bToggleButton) {
         this->bToggleButton = bToggleButton;
     }
 
@@ -100,7 +103,7 @@ public:
         Returns whether this button is a toggle button
         \return true = toggle button, false = normal button
     */
-    inline bool isToggleButton() {
+    bool isToggleButton() const noexcept {
         return bToggleButton;
     }
 
@@ -119,7 +122,7 @@ public:
         This method returns whether this button is currently toggled or not.
         \return true = toggled, false = untoggled
     */
-    inline bool getToggleState() const {
+    bool getToggleState() const {
         return bToggleState;
     }
 
@@ -187,9 +190,9 @@ protected:
                                 SDL_Texture* pPressedTexture,bool bFreePressedTexture,
                                 SDL_Texture* pActiveTexture = nullptr,bool bFreeActiveTexture = false);
 
-    SDL_Texture* pUnpressedTexture;     ///< Texture that is normally shown
-    SDL_Texture* pPressedTexture;       ///< Texture that is shown when the button is pressed
-    SDL_Texture* pActiveTexture;        ///< Texture that is shown when the button is activated by keyboard or by mouse hover
+    sdl2::texture_ptr pUnpressedTexture;     ///< Texture that is normally shown
+    sdl2::texture_ptr pPressedTexture;       ///< Texture that is shown when the button is pressed
+    sdl2::texture_ptr pActiveTexture;        ///< Texture that is shown when the button is activated by keyboard or by mouse hover
     bool bFreeUnpressedTexture;         ///< Should pUnpressedTexture be freed if this button is destroyed?
     bool bFreePressedTexture;           ///< Should pPressedTexture be freed if this button is destroyed?
     bool bFreeActiveTexture;            ///< Should pActiveTexture be freed if this button is destroyed?
@@ -200,7 +203,7 @@ protected:
     void invalidateTextures() override;
 
     std::string tooltipText = "";          ///< the tooltip text
-    SDL_Texture* tooltipTexture = nullptr; ///< the tooltip texture
+    sdl2::texture_ptr tooltipTexture; ///< the tooltip texture
     Uint32 tooltipLastMouseMotion = 0;     ///< the last time the mouse was moved
 
     std::function<void ()> pOnClick;    ///< function that is called when this button is clicked

@@ -29,7 +29,7 @@
 class RadioButton : public Button {
 public:
     /// Default constructor
-    RadioButton() : Button() {
+    RadioButton() {
         textcolor = COLOR_DEFAULT;
         textshadowcolor = COLOR_DEFAULT;
 
@@ -74,7 +74,7 @@ public:
         to fit this text.
         \param  text The new text for this radio button
     */
-    virtual inline void setText(const std::string& text) {
+    virtual void setText(const std::string& text) {
         this->text = text;
         resizeAll();
     }
@@ -83,14 +83,14 @@ public:
         Get the text of this radio button.
         \return the text of this radio button
     */
-    inline const std::string& getText() const { return text; };
+    const std::string& getText() const { return text; };
 
     /**
         Sets the text color for this radio button.
         \param  textcolor       the color of the text (COLOR_DEFAULT = default color)
         \param  textshadowcolor the color of the shadow of the text (COLOR_DEFAULT = default color)
     */
-    virtual inline void setTextColor(Uint32 textcolor, Uint32 textshadowcolor = COLOR_DEFAULT) {
+    virtual void setTextColor(Uint32 textcolor, Uint32 textshadowcolor = COLOR_DEFAULT) {
         this->textcolor = textcolor;
         this->textshadowcolor = textshadowcolor;
         invalidateTextures();
@@ -147,15 +147,15 @@ public:
         SDL_Texture* tex;
         if(isChecked()) {
             if((isActive() || bHover) && pCheckedActiveTexture != nullptr) {
-                tex = pCheckedActiveTexture;
+                tex = pCheckedActiveTexture.get();
             } else {
-                tex = pPressedTexture;
+                tex = pPressedTexture.get();
             }
         } else {
             if((isActive() || bHover) && pActiveTexture != nullptr) {
-                tex = pActiveTexture;
+                tex = pActiveTexture.get();
             } else {
-                tex = pUnpressedTexture;
+                tex = pUnpressedTexture.get();
             }
         }
 
@@ -227,18 +227,21 @@ protected:
     {
         Button::invalidateTextures();
 
-        if((bFreeCheckedActiveTexture == true) && (pCheckedActiveTexture != nullptr)) {
-            SDL_DestroyTexture(pCheckedActiveTexture);
-            bFreeCheckedActiveTexture = false;
+        if (pCheckedActiveTexture != nullptr) {
+            if (bFreeCheckedActiveTexture) {
+                pCheckedActiveTexture.reset();
+                bFreeCheckedActiveTexture = false;
+            } else {
+                pCheckedActiveTexture.release();
+            }
         }
-        pCheckedActiveTexture = nullptr;
     }
 
 private:
     Uint32 textcolor;                       ///< Text color
     Uint32 textshadowcolor;                 ///< Text shadow color
     std::string text;                       ///< Text of this radio button
-    SDL_Texture* pCheckedActiveTexture;     ///< Texture that is shown when the radio button is activated by keyboard or by mouse hover
+    sdl2::texture_ptr pCheckedActiveTexture;     ///< Texture that is shown when the radio button is activated by keyboard or by mouse hover
     bool bFreeCheckedActiveTexture;         ///< Should pActiveSurface be freed if this button is destroyed?
 
     RadioButtonManager* pRadioButtonManager;///< The Manager for managing the toggle states

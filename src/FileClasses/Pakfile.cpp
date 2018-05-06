@@ -17,11 +17,10 @@
 
 #include <FileClasses/Pakfile.h>
 #include <misc/exceptions.h>
+#include <misc/SDL2pp.h>
 
 #include <stdlib.h>
 #include <string>
-#include <SDL2/SDL_endian.h>
-#include <SDL2/SDL.h>
 
 
 /// Constructor for Pakfile

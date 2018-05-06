@@ -26,11 +26,10 @@
 
 FadeOutVideoEvent::FadeOutVideoEvent(SDL_Surface* pSurface, int numFrames2FadeOut, bool bFreeSurface, bool bCenterVertical, bool bFadeWhite) : VideoEvent()
 {
-    SDL_Surface *pTmp = convertSurfaceToDisplayFormat(Scaler::defaultDoubleSurface(pSurface, bFreeSurface), true);
-    pTexture = SDL_CreateTextureFromSurface(renderer, pTmp);
-    SDL_FreeSurface(pTmp);
+    sdl2::surface_ptr pTmp = convertSurfaceToDisplayFormat(Scaler::defaultDoubleSurface(pSurface, bFreeSurface).release(), true);
+    pTexture = sdl2::texture_ptr{ SDL_CreateTextureFromSurface(renderer, pTmp.get()) };
 
-    SDL_SetTextureBlendMode(pTexture, SDL_BLENDMODE_BLEND);
+    SDL_SetTextureBlendMode(pTexture.get(), SDL_BLENDMODE_BLEND);
 
     this->numFrames2FadeOut = numFrames2FadeOut;
     this->bCenterVertical = bCenterVertical;
@@ -38,23 +37,20 @@ FadeOutVideoEvent::FadeOutVideoEvent(SDL_Surface* pSurface, int numFrames2FadeOu
     currentFrame = 0;
 }
 
-FadeOutVideoEvent::~FadeOutVideoEvent()
-{
-    SDL_DestroyTexture(pTexture);
-}
+FadeOutVideoEvent::~FadeOutVideoEvent() = default;
 
 int FadeOutVideoEvent::draw()
 {
-    SDL_Rect dest = calcAlignedDrawingRect(pTexture, HAlign::Center, bCenterVertical ? VAlign::Center : VAlign::Top);
+    SDL_Rect dest = calcAlignedDrawingRect(pTexture.get(), HAlign::Center, bCenterVertical ? VAlign::Center : VAlign::Top);
 
-    int alpha  = std::max(0, 255 - (255*currentFrame)/numFrames2FadeOut);
+    int alpha = std::max(0, 255 - (255*currentFrame)/numFrames2FadeOut);
     if(bFadeWhite) {
         // fade to white
         SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
         SDL_RenderFillRect(renderer, &dest);
     }
-    SDL_SetTextureAlphaMod(pTexture, alpha);
-    SDL_RenderCopy(renderer, pTexture, nullptr, &dest);
+    SDL_SetTextureAlphaMod(pTexture.get(), alpha);
+    SDL_RenderCopy(renderer, pTexture.get(), nullptr, &dest);
 
     currentFrame++;
 

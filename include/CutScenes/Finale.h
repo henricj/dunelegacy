@@ -65,10 +65,10 @@ private:
     /// \endcond
 
 
-    Wsafile* pPalace1;              ///< video sequence showing the palace and the intruders
-    Wsafile* pPalace2;              ///< video sequence showing the palace after the imperator was degraded
-    Wsafile* pImperator;            ///< video sequence showing the imperator taking
-    Wsafile* pImperatorShocked;     ///< video sequence showing the imperator shocked
+    std::unique_ptr<Wsafile> pPalace1;              ///< video sequence showing the palace and the intruders
+    std::unique_ptr<Wsafile> pPalace2;              ///< video sequence showing the palace after the imperator was degraded
+    std::unique_ptr<Wsafile> pImperator;            ///< video sequence showing the imperator taking
+    std::unique_ptr<Wsafile> pImperatorShocked;     ///< video sequence showing the imperator shocked
 
     sdl2::mix_chunk_ptr  lizard;     ///< SFX: the lizard barking
     sdl2::mix_chunk_ptr  glass;      ///< SFX: glass bursting

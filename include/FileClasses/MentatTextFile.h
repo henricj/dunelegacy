@@ -19,11 +19,10 @@
 #define MENTATTEXTFILE_H
 
 #include <misc/exceptions.h>
+#include <misc/SDL2pp.h>
 
 #include <string>
 #include <vector>
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_rwops.h>
 
 
 /// A class for loading a mentat textfile (e.g. MENTATA.ENG).

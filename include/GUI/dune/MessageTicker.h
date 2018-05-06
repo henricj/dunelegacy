@@ -19,12 +19,11 @@
 #define MESSAGETICKER_H
 
 #include <GUI/Widget.h>
+#include <misc/SDL2pp.h>
 
 #include <string>
 #include <memory>
 #include <queue>
-
-#include <SDL2/SDL.h>
 
 class MessageTicker : public Widget {
 public:
@@ -50,7 +49,7 @@ public:
     }
 
 private:
-    std::queue<std::shared_ptr<SDL_Texture>> messageTextures;
+    std::queue<sdl2::texture_ptr> messageTextures;
     int timer;
 };
 

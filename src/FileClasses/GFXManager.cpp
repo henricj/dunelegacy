@@ -263,10 +263,10 @@ GFXManager::GFXManager() {
     objPic[ObjPic_Bullet_Medium][HOUSE_HARKONNEN][0] = units1->getPicture(24);
     objPic[ObjPic_Bullet_Large][HOUSE_HARKONNEN][0] = units1->getPicture(25);
     objPic[ObjPic_Bullet_Sonic][HOUSE_HARKONNEN][0] = units1->getPicture(10);
-    replaceColor(objPic[ObjPic_Bullet_Sonic][HOUSE_HARKONNEN][0], PALCOLOR_WHITE, PALCOLOR_BLACK);
+    replaceColor(objPic[ObjPic_Bullet_Sonic][HOUSE_HARKONNEN][0].get(), PALCOLOR_WHITE, PALCOLOR_BLACK);
     objPic[ObjPic_Bullet_SonicTemp][HOUSE_HARKONNEN][0] = units1->getPicture(10);
     objPic[ObjPic_Hit_Gas][HOUSE_ORDOS][0] = units1->getPictureArray(5,1,57|TILE_NORMAL,58|TILE_NORMAL,59|TILE_NORMAL,60|TILE_NORMAL,61|TILE_NORMAL);
-    objPic[ObjPic_Hit_Gas][HOUSE_HARKONNEN][0] = mapSurfaceColorRange(objPic[ObjPic_Hit_Gas][HOUSE_ORDOS][0], PALCOLOR_ORDOS, PALCOLOR_HARKONNEN);
+    objPic[ObjPic_Hit_Gas][HOUSE_HARKONNEN][0] = mapSurfaceColorRange(objPic[ObjPic_Hit_Gas][HOUSE_ORDOS][0].get(), PALCOLOR_ORDOS, PALCOLOR_HARKONNEN);
     objPic[ObjPic_Hit_ShellSmall][HOUSE_HARKONNEN][0] = units1->getPicture(2);
     objPic[ObjPic_Hit_ShellMedium][HOUSE_HARKONNEN][0] = units1->getPicture(3);
     objPic[ObjPic_Hit_ShellLarge][HOUSE_HARKONNEN][0] = units1->getPicture(4);
@@ -284,7 +284,7 @@ GFXManager::GFXManager() {
     objPic[ObjPic_DeadAirUnit][HOUSE_HARKONNEN][0] = icon->getPictureArray(3,1,1,6);
     objPic[ObjPic_Smoke][HOUSE_HARKONNEN][0] = units1->getPictureArray(3,1,29|TILE_NORMAL,30|TILE_NORMAL,31|TILE_NORMAL);
     objPic[ObjPic_SandwormShimmerMask][HOUSE_HARKONNEN][0] = units1->getPicture(10);
-    replaceColor(objPic[ObjPic_SandwormShimmerMask][HOUSE_HARKONNEN][0], PALCOLOR_WHITE, PALCOLOR_BLACK);
+    replaceColor(objPic[ObjPic_SandwormShimmerMask][HOUSE_HARKONNEN][0].get(), PALCOLOR_WHITE, PALCOLOR_BLACK);
     objPic[ObjPic_SandwormShimmerTemp][HOUSE_HARKONNEN][0] = units1->getPicture(10);
     objPic[ObjPic_Terrain][HOUSE_HARKONNEN][0] = icon->getPictureRow(124,209,NUM_TERRAIN_TILES_X);
     objPic[ObjPic_DestroyedStructure][HOUSE_HARKONNEN][0] = icon->getPictureRow2(14, 33, 125, 213, 214, 215, 223, 224, 225, 232, 233, 234, 240, 246, 247);
@@ -304,27 +304,27 @@ GFXManager::GFXManager() {
                 if(objPic[id][h][1] == nullptr) {
                     objPic[id][h][1] = generateDoubledObjPic(id, h);
                 }
-                SDL_SetColorKey(objPic[id][h][1], SDL_TRUE, PALCOLOR_TRANSPARENT);
+                SDL_SetColorKey(objPic[id][h][1].get(), SDL_TRUE, PALCOLOR_TRANSPARENT);
 
                 if(objPic[id][h][2] == nullptr) {
                     objPic[id][h][2] = generateTripledObjPic(id, h);
                 }
-                SDL_SetColorKey(objPic[id][h][2], SDL_TRUE, PALCOLOR_TRANSPARENT);
+                SDL_SetColorKey(objPic[id][h][2].get(), SDL_TRUE, PALCOLOR_TRANSPARENT);
 
-                SDL_SetColorKey(objPic[id][h][0], SDL_TRUE, PALCOLOR_TRANSPARENT);
+                SDL_SetColorKey(objPic[id][h][0].get(), SDL_TRUE, PALCOLOR_TRANSPARENT);
             }
         }
     }
 
-    objPic[ObjPic_CarryallShadow][HOUSE_HARKONNEN][0] = createShadowSurface(objPic[ObjPic_Carryall][HOUSE_HARKONNEN][0]);
-    objPic[ObjPic_CarryallShadow][HOUSE_HARKONNEN][1] = createShadowSurface(objPic[ObjPic_Carryall][HOUSE_HARKONNEN][1]);
-    objPic[ObjPic_CarryallShadow][HOUSE_HARKONNEN][2] = createShadowSurface(objPic[ObjPic_Carryall][HOUSE_HARKONNEN][2]);
-    objPic[ObjPic_FrigateShadow][HOUSE_HARKONNEN][0] = createShadowSurface(objPic[ObjPic_Frigate][HOUSE_HARKONNEN][0]);
-    objPic[ObjPic_FrigateShadow][HOUSE_HARKONNEN][1] = createShadowSurface(objPic[ObjPic_Frigate][HOUSE_HARKONNEN][1]);
-    objPic[ObjPic_FrigateShadow][HOUSE_HARKONNEN][2] = createShadowSurface(objPic[ObjPic_Frigate][HOUSE_HARKONNEN][2]);
-    objPic[ObjPic_OrnithopterShadow][HOUSE_HARKONNEN][0] = createShadowSurface(objPic[ObjPic_Ornithopter][HOUSE_HARKONNEN][0]);
-    objPic[ObjPic_OrnithopterShadow][HOUSE_HARKONNEN][1] = createShadowSurface(objPic[ObjPic_Ornithopter][HOUSE_HARKONNEN][1]);
-    objPic[ObjPic_OrnithopterShadow][HOUSE_HARKONNEN][2] = createShadowSurface(objPic[ObjPic_Ornithopter][HOUSE_HARKONNEN][2]);
+    objPic[ObjPic_CarryallShadow][HOUSE_HARKONNEN][0] = createShadowSurface(objPic[ObjPic_Carryall][HOUSE_HARKONNEN][0].get());
+    objPic[ObjPic_CarryallShadow][HOUSE_HARKONNEN][1] = createShadowSurface(objPic[ObjPic_Carryall][HOUSE_HARKONNEN][1].get());
+    objPic[ObjPic_CarryallShadow][HOUSE_HARKONNEN][2] = createShadowSurface(objPic[ObjPic_Carryall][HOUSE_HARKONNEN][2].get());
+    objPic[ObjPic_FrigateShadow][HOUSE_HARKONNEN][0] = createShadowSurface(objPic[ObjPic_Frigate][HOUSE_HARKONNEN][0].get());
+    objPic[ObjPic_FrigateShadow][HOUSE_HARKONNEN][1] = createShadowSurface(objPic[ObjPic_Frigate][HOUSE_HARKONNEN][1].get());
+    objPic[ObjPic_FrigateShadow][HOUSE_HARKONNEN][2] = createShadowSurface(objPic[ObjPic_Frigate][HOUSE_HARKONNEN][2].get());
+    objPic[ObjPic_OrnithopterShadow][HOUSE_HARKONNEN][0] = createShadowSurface(objPic[ObjPic_Ornithopter][HOUSE_HARKONNEN][0].get());
+    objPic[ObjPic_OrnithopterShadow][HOUSE_HARKONNEN][1] = createShadowSurface(objPic[ObjPic_Ornithopter][HOUSE_HARKONNEN][1].get());
+    objPic[ObjPic_OrnithopterShadow][HOUSE_HARKONNEN][2] = createShadowSurface(objPic[ObjPic_Ornithopter][HOUSE_HARKONNEN][2].get());
 
     // load small detail pics
     smallDetailPicTex[Picture_Barracks] = extractSmallDetailPic("BARRAC.WSA");
@@ -377,107 +377,107 @@ GFXManager::GFXManager() {
     // unused: FARTR.WSA, FHARK.WSA, FORDOS.WSA
 
 
-    tinyPictureTex[TinyPicture_Spice] = convertSurfaceToTexture(shapes->getPicture(94), true);
-    tinyPictureTex[TinyPicture_Barracks] = convertSurfaceToTexture(shapes->getPicture(62), true);
-    tinyPictureTex[TinyPicture_ConstructionYard] = convertSurfaceToTexture(shapes->getPicture(60), true);
-    tinyPictureTex[TinyPicture_GunTurret] = convertSurfaceToTexture(shapes->getPicture(67), true);
-    tinyPictureTex[TinyPicture_HeavyFactory] = convertSurfaceToTexture(shapes->getPicture(56), true);
-    tinyPictureTex[TinyPicture_HighTechFactory] = convertSurfaceToTexture(shapes->getPicture(57), true);
-    tinyPictureTex[TinyPicture_IX] = convertSurfaceToTexture(shapes->getPicture(58), true);
-    tinyPictureTex[TinyPicture_LightFactory] = convertSurfaceToTexture(shapes->getPicture(55), true);
-    tinyPictureTex[TinyPicture_Palace] = convertSurfaceToTexture(shapes->getPicture(54), true);
-    tinyPictureTex[TinyPicture_Radar] = convertSurfaceToTexture(shapes->getPicture(70), true);
-    tinyPictureTex[TinyPicture_Refinery] = convertSurfaceToTexture(shapes->getPicture(64), true);
-    tinyPictureTex[TinyPicture_RepairYard] = convertSurfaceToTexture(shapes->getPicture(65), true);
-    tinyPictureTex[TinyPicture_RocketTurret] = convertSurfaceToTexture(shapes->getPicture(68), true);
-    tinyPictureTex[TinyPicture_Silo] = convertSurfaceToTexture(shapes->getPicture(69), true);
-    tinyPictureTex[TinyPicture_Slab1] = convertSurfaceToTexture(shapes->getPicture(53), true);
-    tinyPictureTex[TinyPicture_Slab4] = convertSurfaceToTexture(shapes->getPicture(71), true);
-    tinyPictureTex[TinyPicture_StarPort] = convertSurfaceToTexture(shapes->getPicture(63), true);
-    tinyPictureTex[TinyPicture_Wall] = convertSurfaceToTexture(shapes->getPicture(66), true);
-    tinyPictureTex[TinyPicture_WindTrap] = convertSurfaceToTexture(shapes->getPicture(61), true);
-    tinyPictureTex[TinyPicture_WOR] = convertSurfaceToTexture(shapes->getPicture(59), true);
-    tinyPictureTex[TinyPicture_Carryall] = convertSurfaceToTexture(shapes->getPicture(77), true);
-    tinyPictureTex[TinyPicture_Devastator] = convertSurfaceToTexture(shapes->getPicture(75), true);
-    tinyPictureTex[TinyPicture_Deviator] = convertSurfaceToTexture(shapes->getPicture(86), true);
-    tinyPictureTex[TinyPicture_Frigate] = convertSurfaceToTexture(shapes->getPicture(77), true);    // use carryall picture
-    tinyPictureTex[TinyPicture_Harvester] = convertSurfaceToTexture(shapes->getPicture(88), true);
-    tinyPictureTex[TinyPicture_Soldier] = convertSurfaceToTexture(shapes->getPicture(90), true);
-    tinyPictureTex[TinyPicture_Launcher] = convertSurfaceToTexture(shapes->getPicture(73), true);
-    tinyPictureTex[TinyPicture_MCV] = convertSurfaceToTexture(shapes->getPicture(89), true);
-    tinyPictureTex[TinyPicture_Ornithopter] = convertSurfaceToTexture(shapes->getPicture(85), true);
-    tinyPictureTex[TinyPicture_Quad] = convertSurfaceToTexture(shapes->getPicture(74), true);
-    tinyPictureTex[TinyPicture_Saboteur] = convertSurfaceToTexture(shapes->getPicture(84), true);
-    tinyPictureTex[TinyPicture_Sandworm] = convertSurfaceToTexture(shapes->getPicture(93), true);
-    tinyPictureTex[TinyPicture_SiegeTank] = convertSurfaceToTexture(shapes->getPicture(72), true);
-    tinyPictureTex[TinyPicture_SonicTank] = convertSurfaceToTexture(shapes->getPicture(79), true);
-    tinyPictureTex[TinyPicture_Tank] = convertSurfaceToTexture(shapes->getPicture(78), true);
-    tinyPictureTex[TinyPicture_Trike] = convertSurfaceToTexture(shapes->getPicture(80), true);
-    tinyPictureTex[TinyPicture_RaiderTrike] = convertSurfaceToTexture(shapes->getPicture(87), true);
-    tinyPictureTex[TinyPicture_Trooper] = convertSurfaceToTexture(shapes->getPicture(76), true);
-    tinyPictureTex[TinyPicture_Special] = convertSurfaceToTexture(shapes->getPicture(75), true);    // use devastator picture
-    tinyPictureTex[TinyPicture_Infantry] = convertSurfaceToTexture(shapes->getPicture(81), true);
-    tinyPictureTex[TinyPicture_Troopers] = convertSurfaceToTexture(shapes->getPicture(91), true);
+    tinyPictureTex[TinyPicture_Spice] = convertSurfaceToTexture(shapes->getPicture(94));
+    tinyPictureTex[TinyPicture_Barracks] = convertSurfaceToTexture(shapes->getPicture(62));
+    tinyPictureTex[TinyPicture_ConstructionYard] = convertSurfaceToTexture(shapes->getPicture(60));
+    tinyPictureTex[TinyPicture_GunTurret] = convertSurfaceToTexture(shapes->getPicture(67));
+    tinyPictureTex[TinyPicture_HeavyFactory] = convertSurfaceToTexture(shapes->getPicture(56));
+    tinyPictureTex[TinyPicture_HighTechFactory] = convertSurfaceToTexture(shapes->getPicture(57));
+    tinyPictureTex[TinyPicture_IX] = convertSurfaceToTexture(shapes->getPicture(58));
+    tinyPictureTex[TinyPicture_LightFactory] = convertSurfaceToTexture(shapes->getPicture(55));
+    tinyPictureTex[TinyPicture_Palace] = convertSurfaceToTexture(shapes->getPicture(54));
+    tinyPictureTex[TinyPicture_Radar] = convertSurfaceToTexture(shapes->getPicture(70));
+    tinyPictureTex[TinyPicture_Refinery] = convertSurfaceToTexture(shapes->getPicture(64));
+    tinyPictureTex[TinyPicture_RepairYard] = convertSurfaceToTexture(shapes->getPicture(65));
+    tinyPictureTex[TinyPicture_RocketTurret] = convertSurfaceToTexture(shapes->getPicture(68));
+    tinyPictureTex[TinyPicture_Silo] = convertSurfaceToTexture(shapes->getPicture(69));
+    tinyPictureTex[TinyPicture_Slab1] = convertSurfaceToTexture(shapes->getPicture(53));
+    tinyPictureTex[TinyPicture_Slab4] = convertSurfaceToTexture(shapes->getPicture(71));
+    tinyPictureTex[TinyPicture_StarPort] = convertSurfaceToTexture(shapes->getPicture(63));
+    tinyPictureTex[TinyPicture_Wall] = convertSurfaceToTexture(shapes->getPicture(66));
+    tinyPictureTex[TinyPicture_WindTrap] = convertSurfaceToTexture(shapes->getPicture(61));
+    tinyPictureTex[TinyPicture_WOR] = convertSurfaceToTexture(shapes->getPicture(59));
+    tinyPictureTex[TinyPicture_Carryall] = convertSurfaceToTexture(shapes->getPicture(77));
+    tinyPictureTex[TinyPicture_Devastator] = convertSurfaceToTexture(shapes->getPicture(75));
+    tinyPictureTex[TinyPicture_Deviator] = convertSurfaceToTexture(shapes->getPicture(86));
+    tinyPictureTex[TinyPicture_Frigate] = convertSurfaceToTexture(shapes->getPicture(77));    // use carryall picture
+    tinyPictureTex[TinyPicture_Harvester] = convertSurfaceToTexture(shapes->getPicture(88));
+    tinyPictureTex[TinyPicture_Soldier] = convertSurfaceToTexture(shapes->getPicture(90));
+    tinyPictureTex[TinyPicture_Launcher] = convertSurfaceToTexture(shapes->getPicture(73));
+    tinyPictureTex[TinyPicture_MCV] = convertSurfaceToTexture(shapes->getPicture(89));
+    tinyPictureTex[TinyPicture_Ornithopter] = convertSurfaceToTexture(shapes->getPicture(85));
+    tinyPictureTex[TinyPicture_Quad] = convertSurfaceToTexture(shapes->getPicture(74));
+    tinyPictureTex[TinyPicture_Saboteur] = convertSurfaceToTexture(shapes->getPicture(84));
+    tinyPictureTex[TinyPicture_Sandworm] = convertSurfaceToTexture(shapes->getPicture(93));
+    tinyPictureTex[TinyPicture_SiegeTank] = convertSurfaceToTexture(shapes->getPicture(72));
+    tinyPictureTex[TinyPicture_SonicTank] = convertSurfaceToTexture(shapes->getPicture(79));
+    tinyPictureTex[TinyPicture_Tank] = convertSurfaceToTexture(shapes->getPicture(78));
+    tinyPictureTex[TinyPicture_Trike] = convertSurfaceToTexture(shapes->getPicture(80));
+    tinyPictureTex[TinyPicture_RaiderTrike] = convertSurfaceToTexture(shapes->getPicture(87));
+    tinyPictureTex[TinyPicture_Trooper] = convertSurfaceToTexture(shapes->getPicture(76));
+    tinyPictureTex[TinyPicture_Special] = convertSurfaceToTexture(shapes->getPicture(75));    // use devastator picture
+    tinyPictureTex[TinyPicture_Infantry] = convertSurfaceToTexture(shapes->getPicture(81));
+    tinyPictureTex[TinyPicture_Troopers] = convertSurfaceToTexture(shapes->getPicture(91));
 
     // load UI graphics
-    uiGraphic[UI_RadarAnimation][HOUSE_HARKONNEN] = Scaler::doubleSurfaceNN(radar->getAnimationAsPictureRow(NUM_STATIC_ANIMATIONS_PER_ROW));
+    uiGraphic[UI_RadarAnimation][HOUSE_HARKONNEN] = Scaler::doubleSurfaceNN(radar->getAnimationAsPictureRow(NUM_STATIC_ANIMATIONS_PER_ROW).release());
 
     uiGraphic[UI_CursorNormal][HOUSE_HARKONNEN] = mouse->getPicture(0);
-    SDL_SetColorKey(uiGraphic[UI_CursorNormal][HOUSE_HARKONNEN], SDL_TRUE, 0);
+    SDL_SetColorKey(uiGraphic[UI_CursorNormal][HOUSE_HARKONNEN].get(), SDL_TRUE, 0);
     uiGraphic[UI_CursorUp][HOUSE_HARKONNEN] = mouse->getPicture(1);
-    SDL_SetColorKey(uiGraphic[UI_CursorUp][HOUSE_HARKONNEN], SDL_TRUE, 0);
+    SDL_SetColorKey(uiGraphic[UI_CursorUp][HOUSE_HARKONNEN].get(), SDL_TRUE, 0);
     uiGraphic[UI_CursorRight][HOUSE_HARKONNEN] = mouse->getPicture(2);
-    SDL_SetColorKey(uiGraphic[UI_CursorRight][HOUSE_HARKONNEN], SDL_TRUE, 0);
+    SDL_SetColorKey(uiGraphic[UI_CursorRight][HOUSE_HARKONNEN].get(), SDL_TRUE, 0);
     uiGraphic[UI_CursorDown][HOUSE_HARKONNEN] = mouse->getPicture(3);
-    SDL_SetColorKey(uiGraphic[UI_CursorDown][HOUSE_HARKONNEN], SDL_TRUE, 0);
+    SDL_SetColorKey(uiGraphic[UI_CursorDown][HOUSE_HARKONNEN].get(), SDL_TRUE, 0);
     uiGraphic[UI_CursorLeft][HOUSE_HARKONNEN] = mouse->getPicture(4);
-    SDL_SetColorKey(uiGraphic[UI_CursorLeft][HOUSE_HARKONNEN], SDL_TRUE, 0);
+    SDL_SetColorKey(uiGraphic[UI_CursorLeft][HOUSE_HARKONNEN].get() , SDL_TRUE, 0);
 
     uiGraphic[UI_CursorMove_Zoomlevel0][HOUSE_HARKONNEN] = mouse->getPicture(5);
-    SDL_SetColorKey(uiGraphic[UI_CursorMove_Zoomlevel0][HOUSE_HARKONNEN], SDL_TRUE, 0);
-    uiGraphic[UI_CursorMove_Zoomlevel1][HOUSE_HARKONNEN] = Scaler::defaultDoubleTiledSurface(uiGraphic[UI_CursorMove_Zoomlevel0][HOUSE_HARKONNEN], 1, 1, false);
-    SDL_SetColorKey(uiGraphic[UI_CursorMove_Zoomlevel1][HOUSE_HARKONNEN], SDL_TRUE, 0);
-    uiGraphic[UI_CursorMove_Zoomlevel2][HOUSE_HARKONNEN] = Scaler::defaultTripleTiledSurface(uiGraphic[UI_CursorMove_Zoomlevel0][HOUSE_HARKONNEN], 1, 1, false);
-    SDL_SetColorKey(uiGraphic[UI_CursorMove_Zoomlevel2][HOUSE_HARKONNEN], SDL_TRUE, 0);
+    SDL_SetColorKey(uiGraphic[UI_CursorMove_Zoomlevel0][HOUSE_HARKONNEN].get(), SDL_TRUE, 0);
+    uiGraphic[UI_CursorMove_Zoomlevel1][HOUSE_HARKONNEN] = Scaler::defaultDoubleTiledSurface(uiGraphic[UI_CursorMove_Zoomlevel0][HOUSE_HARKONNEN].get(), 1, 1, false);
+    SDL_SetColorKey(uiGraphic[UI_CursorMove_Zoomlevel1][HOUSE_HARKONNEN].get(), SDL_TRUE, 0);
+    uiGraphic[UI_CursorMove_Zoomlevel2][HOUSE_HARKONNEN] = Scaler::defaultTripleTiledSurface(uiGraphic[UI_CursorMove_Zoomlevel0][HOUSE_HARKONNEN].get(), 1, 1, false);
+    SDL_SetColorKey(uiGraphic[UI_CursorMove_Zoomlevel2][HOUSE_HARKONNEN].get(), SDL_TRUE, 0);
 
-    uiGraphic[UI_CursorAttack_Zoomlevel0][HOUSE_HARKONNEN] = mapSurfaceColorRange(uiGraphic[UI_CursorMove_Zoomlevel0][HOUSE_HARKONNEN], 232, PALCOLOR_HARKONNEN);
-    SDL_SetColorKey(uiGraphic[UI_CursorAttack_Zoomlevel0][HOUSE_HARKONNEN], SDL_TRUE, 0);
-    uiGraphic[UI_CursorAttack_Zoomlevel1][HOUSE_HARKONNEN] = Scaler::defaultDoubleTiledSurface(uiGraphic[UI_CursorAttack_Zoomlevel0][HOUSE_HARKONNEN], 1, 1, false);
-    SDL_SetColorKey(uiGraphic[UI_CursorAttack_Zoomlevel1][HOUSE_HARKONNEN], SDL_TRUE, 0);
-    uiGraphic[UI_CursorAttack_Zoomlevel2][HOUSE_HARKONNEN] = Scaler::defaultTripleTiledSurface(uiGraphic[UI_CursorAttack_Zoomlevel0][HOUSE_HARKONNEN], 1, 1, false);
-    SDL_SetColorKey(uiGraphic[UI_CursorAttack_Zoomlevel2][HOUSE_HARKONNEN], SDL_TRUE, 0);
+    uiGraphic[UI_CursorAttack_Zoomlevel0][HOUSE_HARKONNEN] = mapSurfaceColorRange(uiGraphic[UI_CursorMove_Zoomlevel0][HOUSE_HARKONNEN].get(), 232, PALCOLOR_HARKONNEN);
+    SDL_SetColorKey(uiGraphic[UI_CursorAttack_Zoomlevel0][HOUSE_HARKONNEN].get(), SDL_TRUE, 0);
+    uiGraphic[UI_CursorAttack_Zoomlevel1][HOUSE_HARKONNEN] = Scaler::defaultDoubleTiledSurface(uiGraphic[UI_CursorAttack_Zoomlevel0][HOUSE_HARKONNEN].get(), 1, 1, false);
+    SDL_SetColorKey(uiGraphic[UI_CursorAttack_Zoomlevel1][HOUSE_HARKONNEN].get(), SDL_TRUE, 0);
+    uiGraphic[UI_CursorAttack_Zoomlevel2][HOUSE_HARKONNEN] = Scaler::defaultTripleTiledSurface(uiGraphic[UI_CursorAttack_Zoomlevel0][HOUSE_HARKONNEN].get(), 1, 1, false);
+    SDL_SetColorKey(uiGraphic[UI_CursorAttack_Zoomlevel2][HOUSE_HARKONNEN].get(), SDL_TRUE, 0);
 
     uiGraphic[UI_CursorCapture_Zoomlevel0][HOUSE_HARKONNEN] = LoadPNG_RW(pFileManager->openFile("Capture.png"),true);
-    SDL_SetColorKey(uiGraphic[UI_CursorCapture_Zoomlevel0][HOUSE_HARKONNEN], SDL_TRUE, 0);
-    uiGraphic[UI_CursorCapture_Zoomlevel1][HOUSE_HARKONNEN] = Scaler::defaultDoubleTiledSurface(uiGraphic[UI_CursorCapture_Zoomlevel0][HOUSE_HARKONNEN], 1, 1, false);
-    SDL_SetColorKey(uiGraphic[UI_CursorCapture_Zoomlevel1][HOUSE_HARKONNEN], SDL_TRUE, 0);
-    uiGraphic[UI_CursorCapture_Zoomlevel2][HOUSE_HARKONNEN] = Scaler::defaultTripleTiledSurface(uiGraphic[UI_CursorCapture_Zoomlevel0][HOUSE_HARKONNEN], 1, 1, false);
-    SDL_SetColorKey(uiGraphic[UI_CursorCapture_Zoomlevel2][HOUSE_HARKONNEN], SDL_TRUE, 0);
+    SDL_SetColorKey(uiGraphic[UI_CursorCapture_Zoomlevel0][HOUSE_HARKONNEN].get(), SDL_TRUE, 0);
+    uiGraphic[UI_CursorCapture_Zoomlevel1][HOUSE_HARKONNEN] = Scaler::defaultDoubleTiledSurface(uiGraphic[UI_CursorCapture_Zoomlevel0][HOUSE_HARKONNEN].get(), 1, 1, false);
+    SDL_SetColorKey(uiGraphic[UI_CursorCapture_Zoomlevel1][HOUSE_HARKONNEN].get(), SDL_TRUE, 0);
+    uiGraphic[UI_CursorCapture_Zoomlevel2][HOUSE_HARKONNEN] = Scaler::defaultTripleTiledSurface(uiGraphic[UI_CursorCapture_Zoomlevel0][HOUSE_HARKONNEN].get(), 1, 1, false);
+    SDL_SetColorKey(uiGraphic[UI_CursorCapture_Zoomlevel2][HOUSE_HARKONNEN].get(), SDL_TRUE, 0);
 
     uiGraphic[UI_CursorCarryallDrop_Zoomlevel0][HOUSE_HARKONNEN] = LoadPNG_RW(pFileManager->openFile("CarryallDrop.png"),true);
-    SDL_SetColorKey(uiGraphic[UI_CursorCarryallDrop_Zoomlevel0][HOUSE_HARKONNEN], SDL_TRUE, 0);
-    uiGraphic[UI_CursorCarryallDrop_Zoomlevel1][HOUSE_HARKONNEN] = Scaler::defaultDoubleTiledSurface(uiGraphic[UI_CursorCarryallDrop_Zoomlevel0][HOUSE_HARKONNEN], 1, 1, false);
-    SDL_SetColorKey(uiGraphic[UI_CursorCarryallDrop_Zoomlevel1][HOUSE_HARKONNEN], SDL_TRUE, 0);
-    uiGraphic[UI_CursorCarryallDrop_Zoomlevel2][HOUSE_HARKONNEN] = Scaler::defaultTripleTiledSurface(uiGraphic[UI_CursorCarryallDrop_Zoomlevel0][HOUSE_HARKONNEN], 1, 1, false);
-    SDL_SetColorKey(uiGraphic[UI_CursorCarryallDrop_Zoomlevel2][HOUSE_HARKONNEN], SDL_TRUE, 0);
+    SDL_SetColorKey(uiGraphic[UI_CursorCarryallDrop_Zoomlevel0][HOUSE_HARKONNEN].get(), SDL_TRUE, 0);
+    uiGraphic[UI_CursorCarryallDrop_Zoomlevel1][HOUSE_HARKONNEN] = Scaler::defaultDoubleTiledSurface(uiGraphic[UI_CursorCarryallDrop_Zoomlevel0][HOUSE_HARKONNEN].get(), 1, 1, false);
+    SDL_SetColorKey(uiGraphic[UI_CursorCarryallDrop_Zoomlevel1][HOUSE_HARKONNEN].get(), SDL_TRUE, 0);
+    uiGraphic[UI_CursorCarryallDrop_Zoomlevel2][HOUSE_HARKONNEN] = Scaler::defaultTripleTiledSurface(uiGraphic[UI_CursorCarryallDrop_Zoomlevel0][HOUSE_HARKONNEN].get(), 1, 1, false);
+    SDL_SetColorKey(uiGraphic[UI_CursorCarryallDrop_Zoomlevel2][HOUSE_HARKONNEN].get(), SDL_TRUE, 0);
 
     uiGraphic[UI_ReturnIcon][HOUSE_HARKONNEN] = LoadPNG_RW(pFileManager->openFile("Return.png"),true);
-    SDL_SetColorKey(uiGraphic[UI_ReturnIcon][HOUSE_HARKONNEN], SDL_TRUE, 0);
+    SDL_SetColorKey(uiGraphic[UI_ReturnIcon][HOUSE_HARKONNEN].get(), SDL_TRUE, 0);
 
     uiGraphic[UI_DeployIcon][HOUSE_HARKONNEN] = LoadPNG_RW(pFileManager->openFile("Deploy.png"),true);
-    SDL_SetColorKey(uiGraphic[UI_DeployIcon][HOUSE_HARKONNEN], SDL_TRUE, 0);
+    SDL_SetColorKey(uiGraphic[UI_DeployIcon][HOUSE_HARKONNEN].get(), SDL_TRUE, 0);
 
     uiGraphic[UI_DestructIcon][HOUSE_HARKONNEN] = LoadPNG_RW(pFileManager->openFile("Destruct.png"),true);
-    SDL_SetColorKey(uiGraphic[UI_DestructIcon][HOUSE_HARKONNEN], SDL_TRUE, 0);
+    SDL_SetColorKey(uiGraphic[UI_DestructIcon][HOUSE_HARKONNEN].get(), SDL_TRUE, 0);
 
     uiGraphic[UI_SendToRepairIcon][HOUSE_HARKONNEN] = LoadPNG_RW(pFileManager->openFile("SendToRepair.png"),true);
-    SDL_SetColorKey(uiGraphic[UI_SendToRepairIcon][HOUSE_HARKONNEN], SDL_TRUE, 0);
+    SDL_SetColorKey(uiGraphic[UI_SendToRepairIcon][HOUSE_HARKONNEN].get(), SDL_TRUE, 0);
 
     uiGraphic[UI_CreditsDigits][HOUSE_HARKONNEN] = shapes->getPictureArray(10,1,2|TILE_NORMAL,3|TILE_NORMAL,4|TILE_NORMAL,5|TILE_NORMAL,6|TILE_NORMAL,
                                                                                 7|TILE_NORMAL,8|TILE_NORMAL,9|TILE_NORMAL,10|TILE_NORMAL,11|TILE_NORMAL);
     uiGraphic[UI_SideBar][HOUSE_HARKONNEN] = PicFactory->createSideBar(false);
     uiGraphic[UI_Indicator][HOUSE_HARKONNEN] = units1->getPictureArray(3,1,8|TILE_NORMAL,9|TILE_NORMAL,10|TILE_NORMAL);
-    SDL_SetColorKey(uiGraphic[UI_Indicator][HOUSE_HARKONNEN], SDL_TRUE, 0);
+    SDL_SetColorKey(uiGraphic[UI_Indicator][HOUSE_HARKONNEN].get(), SDL_TRUE, 0);
     uiGraphic[UI_InvalidPlace_Zoomlevel0][HOUSE_HARKONNEN] = PicFactory->createPlacingGrid(16, PALCOLOR_LIGHTRED);
     uiGraphic[UI_InvalidPlace_Zoomlevel1][HOUSE_HARKONNEN] = PicFactory->createPlacingGrid(32, PALCOLOR_LIGHTRED);
     uiGraphic[UI_InvalidPlace_Zoomlevel2][HOUSE_HARKONNEN] = PicFactory->createPlacingGrid(48, PALCOLOR_LIGHTRED);
@@ -495,17 +495,17 @@ GFXManager::GFXManager() {
     uiGraphic[UI_GameStatsBackground][HOUSE_SARDAUKAR] = PicFactory->createGameStatsBackground(HOUSE_SARDAUKAR);
     uiGraphic[UI_GameStatsBackground][HOUSE_MERCENARY] = PicFactory->createGameStatsBackground(HOUSE_MERCENARY);
     uiGraphic[UI_SelectionBox_Zoomlevel0][HOUSE_HARKONNEN] = LoadPNG_RW(pFileManager->openFile("UI_SelectionBox.png"),true);
-    SDL_SetColorKey(uiGraphic[UI_SelectionBox_Zoomlevel0][HOUSE_HARKONNEN], SDL_TRUE, 0);
-    uiGraphic[UI_SelectionBox_Zoomlevel1][HOUSE_HARKONNEN] = Scaler::defaultDoubleTiledSurface(uiGraphic[UI_SelectionBox_Zoomlevel0][HOUSE_HARKONNEN], 1, 1, false);
-    SDL_SetColorKey(uiGraphic[UI_SelectionBox_Zoomlevel1][HOUSE_HARKONNEN], SDL_TRUE, 0);
-    uiGraphic[UI_SelectionBox_Zoomlevel2][HOUSE_HARKONNEN] = Scaler::defaultTripleTiledSurface(uiGraphic[UI_SelectionBox_Zoomlevel0][HOUSE_HARKONNEN], 1, 1, false);
-    SDL_SetColorKey(uiGraphic[UI_SelectionBox_Zoomlevel2][HOUSE_HARKONNEN], SDL_TRUE, 0);
+    SDL_SetColorKey(uiGraphic[UI_SelectionBox_Zoomlevel0][HOUSE_HARKONNEN].get(), SDL_TRUE, 0);
+    uiGraphic[UI_SelectionBox_Zoomlevel1][HOUSE_HARKONNEN] = Scaler::defaultDoubleTiledSurface(uiGraphic[UI_SelectionBox_Zoomlevel0][HOUSE_HARKONNEN].get(), 1, 1, false);
+    SDL_SetColorKey(uiGraphic[UI_SelectionBox_Zoomlevel1][HOUSE_HARKONNEN].get(), SDL_TRUE, 0);
+    uiGraphic[UI_SelectionBox_Zoomlevel2][HOUSE_HARKONNEN] = Scaler::defaultTripleTiledSurface(uiGraphic[UI_SelectionBox_Zoomlevel0][HOUSE_HARKONNEN].get(), 1, 1, false);
+    SDL_SetColorKey(uiGraphic[UI_SelectionBox_Zoomlevel2][HOUSE_HARKONNEN].get(), SDL_TRUE, 0);
     uiGraphic[UI_OtherPlayerSelectionBox_Zoomlevel0][HOUSE_HARKONNEN] = LoadPNG_RW(pFileManager->openFile("UI_OtherPlayerSelectionBox.png"),true);
-    SDL_SetColorKey(uiGraphic[UI_OtherPlayerSelectionBox_Zoomlevel0][HOUSE_HARKONNEN], SDL_TRUE, 0);
-    uiGraphic[UI_OtherPlayerSelectionBox_Zoomlevel1][HOUSE_HARKONNEN] = Scaler::defaultDoubleTiledSurface(uiGraphic[UI_OtherPlayerSelectionBox_Zoomlevel0][HOUSE_HARKONNEN], 1, 1, false);
-    SDL_SetColorKey(uiGraphic[UI_OtherPlayerSelectionBox_Zoomlevel1][HOUSE_HARKONNEN], SDL_TRUE, 0);
-    uiGraphic[UI_OtherPlayerSelectionBox_Zoomlevel2][HOUSE_HARKONNEN] = Scaler::defaultTripleTiledSurface(uiGraphic[UI_OtherPlayerSelectionBox_Zoomlevel0][HOUSE_HARKONNEN], 1, 1, false);
-    SDL_SetColorKey(uiGraphic[UI_OtherPlayerSelectionBox_Zoomlevel2][HOUSE_HARKONNEN], SDL_TRUE, 0);
+    SDL_SetColorKey(uiGraphic[UI_OtherPlayerSelectionBox_Zoomlevel0][HOUSE_HARKONNEN].get(), SDL_TRUE, 0);
+    uiGraphic[UI_OtherPlayerSelectionBox_Zoomlevel1][HOUSE_HARKONNEN] = Scaler::defaultDoubleTiledSurface(uiGraphic[UI_OtherPlayerSelectionBox_Zoomlevel0][HOUSE_HARKONNEN].get(), 1, 1, false);
+    SDL_SetColorKey(uiGraphic[UI_OtherPlayerSelectionBox_Zoomlevel1][HOUSE_HARKONNEN].get(), SDL_TRUE, 0);
+    uiGraphic[UI_OtherPlayerSelectionBox_Zoomlevel2][HOUSE_HARKONNEN] = Scaler::defaultTripleTiledSurface(uiGraphic[UI_OtherPlayerSelectionBox_Zoomlevel0][HOUSE_HARKONNEN].get(), 1, 1, false);
+    SDL_SetColorKey(uiGraphic[UI_OtherPlayerSelectionBox_Zoomlevel2][HOUSE_HARKONNEN].get(), SDL_TRUE, 0);
     uiGraphic[UI_TopBar][HOUSE_HARKONNEN] = PicFactory->createTopBar();
     uiGraphic[UI_ButtonUp][HOUSE_HARKONNEN] = choam->getPicture(0);
     uiGraphic[UI_ButtonUp_Pressed][HOUSE_HARKONNEN] = choam->getPicture(1);
@@ -514,12 +514,12 @@ GFXManager::GFXManager() {
     uiGraphic[UI_BuilderListUpperCap][HOUSE_HARKONNEN] = PicFactory->createBuilderListUpperCap();
     uiGraphic[UI_BuilderListLowerCap][HOUSE_HARKONNEN] = PicFactory->createBuilderListLowerCap();
     uiGraphic[UI_CustomGamePlayersArrow][HOUSE_HARKONNEN] = LoadPNG_RW(pFileManager->openFile("CustomGamePlayers_Arrow.png"),true);
-    SDL_SetColorKey(uiGraphic[UI_CustomGamePlayersArrow][HOUSE_HARKONNEN], SDL_TRUE, 0);
+    SDL_SetColorKey(uiGraphic[UI_CustomGamePlayersArrow][HOUSE_HARKONNEN].get(), SDL_TRUE, 0);
     uiGraphic[UI_CustomGamePlayersArrowNeutral][HOUSE_HARKONNEN] = LoadPNG_RW(pFileManager->openFile("CustomGamePlayers_ArrowNeutral.png"),true);
-    SDL_SetColorKey(uiGraphic[UI_CustomGamePlayersArrowNeutral][HOUSE_HARKONNEN], SDL_TRUE, 0);
+    SDL_SetColorKey(uiGraphic[UI_CustomGamePlayersArrowNeutral][HOUSE_HARKONNEN].get(), SDL_TRUE, 0);
     uiGraphic[UI_MessageBox][HOUSE_HARKONNEN] = PicFactory->createMessageBoxBorder();
 
-    if(bttn.get() != nullptr) {
+    if(bttn != nullptr) {
         uiGraphic[UI_Mentat][HOUSE_HARKONNEN] = bttn->getPicture(0);
         uiGraphic[UI_Mentat_Pressed][HOUSE_HARKONNEN] = bttn->getPicture(1);
         uiGraphic[UI_Options][HOUSE_HARKONNEN] = bttn->getPicture(2);
@@ -532,43 +532,43 @@ GFXManager::GFXManager() {
     }
 
     uiGraphic[UI_Upgrade][HOUSE_HARKONNEN] = choam->getPicture(4);
-    SDL_SetColorKey(uiGraphic[UI_Upgrade][HOUSE_HARKONNEN], SDL_TRUE, 0);
+    SDL_SetColorKey(uiGraphic[UI_Upgrade][HOUSE_HARKONNEN].get(), SDL_TRUE, 0);
     uiGraphic[UI_Upgrade_Pressed][HOUSE_HARKONNEN] = choam->getPicture(5);
-    SDL_SetColorKey(uiGraphic[UI_Upgrade_Pressed][HOUSE_HARKONNEN], SDL_TRUE, 0);
+    SDL_SetColorKey(uiGraphic[UI_Upgrade_Pressed][HOUSE_HARKONNEN].get(), SDL_TRUE, 0);
     uiGraphic[UI_Repair][HOUSE_HARKONNEN] = LoadPNG_RW(pFileManager->openFile("Button_Repair.png"),true);
     uiGraphic[UI_Repair_Pressed][HOUSE_HARKONNEN] = LoadPNG_RW(pFileManager->openFile("Button_RepairPushed.png"),true);
     uiGraphic[UI_Minus][HOUSE_HARKONNEN] = LoadPNG_RW(pFileManager->openFile("Button_Minus.png"),true);
-    uiGraphic[UI_Minus_Active][HOUSE_HARKONNEN] = mapSurfaceColorRange(uiGraphic[UI_Minus][HOUSE_HARKONNEN], PALCOLOR_HARKONNEN, PALCOLOR_HARKONNEN-2);
+    uiGraphic[UI_Minus_Active][HOUSE_HARKONNEN] = mapSurfaceColorRange(uiGraphic[UI_Minus][HOUSE_HARKONNEN].get(), PALCOLOR_HARKONNEN, PALCOLOR_HARKONNEN-2);
     uiGraphic[UI_Minus_Pressed][HOUSE_HARKONNEN] = LoadPNG_RW(pFileManager->openFile("Button_MinusPushed.png"),true);
     uiGraphic[UI_Plus][HOUSE_HARKONNEN] = LoadPNG_RW(pFileManager->openFile("Button_Plus.png"),true);
-    uiGraphic[UI_Plus_Active][HOUSE_HARKONNEN] = mapSurfaceColorRange(uiGraphic[UI_Plus][HOUSE_HARKONNEN], PALCOLOR_HARKONNEN, PALCOLOR_HARKONNEN-2);
+    uiGraphic[UI_Plus_Active][HOUSE_HARKONNEN] = mapSurfaceColorRange(uiGraphic[UI_Plus][HOUSE_HARKONNEN].get(), PALCOLOR_HARKONNEN, PALCOLOR_HARKONNEN-2);
     uiGraphic[UI_Plus_Pressed][HOUSE_HARKONNEN] = LoadPNG_RW(pFileManager->openFile("Button_PlusPushed.png"),true);
     uiGraphic[UI_MissionSelect][HOUSE_HARKONNEN] = LoadPNG_RW(pFileManager->openFile("Menu_MissionSelect.png"),true);
-    PicFactory->drawFrame(uiGraphic[UI_MissionSelect][HOUSE_HARKONNEN],PictureFactory::SimpleFrame,nullptr);
-    SDL_SetColorKey(uiGraphic[UI_MissionSelect][HOUSE_HARKONNEN], SDL_TRUE, 0);
+    PicFactory->drawFrame(uiGraphic[UI_MissionSelect][HOUSE_HARKONNEN].get(),PictureFactory::SimpleFrame,nullptr);
+    SDL_SetColorKey(uiGraphic[UI_MissionSelect][HOUSE_HARKONNEN].get(), SDL_TRUE, 0);
     uiGraphic[UI_OptionsMenu][HOUSE_HARKONNEN] = PicFactory->createOptionsMenu();
     uiGraphic[UI_LoadSaveWindow][HOUSE_HARKONNEN] = PicFactory->createMenu(280,228);
     uiGraphic[UI_NewMapWindow][HOUSE_HARKONNEN] = PicFactory->createMenu(600,440);
     uiGraphic[UI_DuneLegacy][HOUSE_HARKONNEN] = LoadPNG_RW(pFileManager->openFile("DuneLegacy.png"),true);
-    uiGraphic[UI_GameMenu][HOUSE_HARKONNEN] = PicFactory->createMenu(uiGraphic[UI_DuneLegacy][HOUSE_HARKONNEN],158);
-    PicFactory->drawFrame(uiGraphic[UI_DuneLegacy][HOUSE_HARKONNEN],PictureFactory::SimpleFrame);
+    uiGraphic[UI_GameMenu][HOUSE_HARKONNEN] = PicFactory->createMenu(uiGraphic[UI_DuneLegacy][HOUSE_HARKONNEN].get(),158);
+    PicFactory->drawFrame(uiGraphic[UI_DuneLegacy][HOUSE_HARKONNEN].get(),PictureFactory::SimpleFrame);
 
     uiGraphic[UI_PlanetBackground][HOUSE_HARKONNEN] = LoadCPS_RW(pFileManager->openFile("BIGPLAN.CPS"),true);
-    PicFactory->drawFrame(uiGraphic[UI_PlanetBackground][HOUSE_HARKONNEN],PictureFactory::SimpleFrame);
+    PicFactory->drawFrame(uiGraphic[UI_PlanetBackground][HOUSE_HARKONNEN].get(),PictureFactory::SimpleFrame);
     uiGraphic[UI_MenuButtonBorder][HOUSE_HARKONNEN] = PicFactory->createFrame(PictureFactory::DecorationFrame1,190,123,false);
 
-    PicFactory->drawFrame(uiGraphic[UI_DuneLegacy][HOUSE_HARKONNEN],PictureFactory::SimpleFrame);
+    PicFactory->drawFrame(uiGraphic[UI_DuneLegacy][HOUSE_HARKONNEN].get(),PictureFactory::SimpleFrame);
 
-    uiGraphic[UI_MentatBackground][HOUSE_HARKONNEN] = Scaler::defaultDoubleSurface(LoadCPS_RW(pFileManager->openFile("MENTATH.CPS"),true),true);
-    uiGraphic[UI_MentatBackground][HOUSE_ATREIDES] = Scaler::defaultDoubleSurface(LoadCPS_RW(pFileManager->openFile("MENTATA.CPS"),true),true);
-    uiGraphic[UI_MentatBackground][HOUSE_ORDOS] = Scaler::defaultDoubleSurface(LoadCPS_RW(pFileManager->openFile("MENTATO.CPS"),true),true);
-    uiGraphic[UI_MentatBackground][HOUSE_FREMEN] = PictureFactory::mapMentatSurfaceToFremen(uiGraphic[UI_MentatBackground][HOUSE_ATREIDES]);
-    uiGraphic[UI_MentatBackground][HOUSE_SARDAUKAR] = PictureFactory::mapMentatSurfaceToSardaukar(uiGraphic[UI_MentatBackground][HOUSE_HARKONNEN]);
-    uiGraphic[UI_MentatBackground][HOUSE_MERCENARY] = PictureFactory::mapMentatSurfaceToMercenary(uiGraphic[UI_MentatBackground][HOUSE_ORDOS]);
+    uiGraphic[UI_MentatBackground][HOUSE_HARKONNEN] = Scaler::defaultDoubleSurface(LoadCPS_RW(pFileManager->openFile("MENTATH.CPS"),true).release(),true);
+    uiGraphic[UI_MentatBackground][HOUSE_ATREIDES] = Scaler::defaultDoubleSurface(LoadCPS_RW(pFileManager->openFile("MENTATA.CPS"),true).release(),true);
+    uiGraphic[UI_MentatBackground][HOUSE_ORDOS] = Scaler::defaultDoubleSurface(LoadCPS_RW(pFileManager->openFile("MENTATO.CPS"),true).release(),true);
+    uiGraphic[UI_MentatBackground][HOUSE_FREMEN] = PictureFactory::mapMentatSurfaceToFremen(uiGraphic[UI_MentatBackground][HOUSE_ATREIDES].get());
+    uiGraphic[UI_MentatBackground][HOUSE_SARDAUKAR] = PictureFactory::mapMentatSurfaceToSardaukar(uiGraphic[UI_MentatBackground][HOUSE_HARKONNEN].get());
+    uiGraphic[UI_MentatBackground][HOUSE_MERCENARY] = PictureFactory::mapMentatSurfaceToMercenary(uiGraphic[UI_MentatBackground][HOUSE_ORDOS].get());
 
-    uiGraphic[UI_MentatBackgroundBene][HOUSE_HARKONNEN] = Scaler::defaultDoubleSurface(LoadCPS_RW(pFileManager->openFile("MENTATM.CPS"),true),true);
+    uiGraphic[UI_MentatBackgroundBene][HOUSE_HARKONNEN] = Scaler::defaultDoubleSurface(LoadCPS_RW(pFileManager->openFile("MENTATM.CPS"),true).release(),true);
     if(uiGraphic[UI_MentatBackgroundBene][HOUSE_HARKONNEN] != nullptr) {
-        benePalette.applyToSurface(uiGraphic[UI_MentatBackgroundBene][HOUSE_HARKONNEN]);
+        benePalette.applyToSurface(uiGraphic[UI_MentatBackgroundBene][HOUSE_HARKONNEN].get());
     }
 
     uiGraphic[UI_MentatHouseChoiceInfoQuestion][HOUSE_HARKONNEN] = PicFactory->createMentatHouseChoiceQuestion(HOUSE_HARKONNEN, benePalette);
@@ -578,56 +578,57 @@ GFXManager::GFXManager() {
     uiGraphic[UI_MentatHouseChoiceInfoQuestion][HOUSE_FREMEN] = PicFactory->createMentatHouseChoiceQuestion(HOUSE_FREMEN, benePalette);
     uiGraphic[UI_MentatHouseChoiceInfoQuestion][HOUSE_MERCENARY] = PicFactory->createMentatHouseChoiceQuestion(HOUSE_MERCENARY, benePalette);
 
-    uiGraphic[UI_MentatYes][HOUSE_HARKONNEN] = Scaler::defaultDoubleSurface(mentat->getPicture(0),true);
-    uiGraphic[UI_MentatYes_Pressed][HOUSE_HARKONNEN] = Scaler::defaultDoubleSurface(mentat->getPicture(1),true);
-    uiGraphic[UI_MentatNo][HOUSE_HARKONNEN] = Scaler::defaultDoubleSurface(mentat->getPicture(2),true);
-    uiGraphic[UI_MentatNo_Pressed][HOUSE_HARKONNEN] = Scaler::defaultDoubleSurface(mentat->getPicture(3),true);
-    uiGraphic[UI_MentatExit][HOUSE_HARKONNEN] = Scaler::defaultDoubleSurface(mentat->getPicture(4),true);
-    uiGraphic[UI_MentatExit_Pressed][HOUSE_HARKONNEN] = Scaler::defaultDoubleSurface(mentat->getPicture(5),true);
-    uiGraphic[UI_MentatProcced][HOUSE_HARKONNEN] = Scaler::defaultDoubleSurface(mentat->getPicture(6),true);
-    uiGraphic[UI_MentatProcced_Pressed][HOUSE_HARKONNEN] = Scaler::defaultDoubleSurface(mentat->getPicture(7),true);
-    uiGraphic[UI_MentatRepeat][HOUSE_HARKONNEN] = Scaler::defaultDoubleSurface(mentat->getPicture(8),true);
-    uiGraphic[UI_MentatRepeat_Pressed][HOUSE_HARKONNEN] = Scaler::defaultDoubleSurface(mentat->getPicture(9),true);
+    uiGraphic[UI_MentatYes][HOUSE_HARKONNEN] = Scaler::defaultDoubleSurface(mentat->getPicture(0).release(),true);
+    uiGraphic[UI_MentatYes_Pressed][HOUSE_HARKONNEN] = Scaler::defaultDoubleSurface(mentat->getPicture(1).release(),true);
+    uiGraphic[UI_MentatNo][HOUSE_HARKONNEN] = Scaler::defaultDoubleSurface(mentat->getPicture(2).release(),true);
+    uiGraphic[UI_MentatNo_Pressed][HOUSE_HARKONNEN] = Scaler::defaultDoubleSurface(mentat->getPicture(3).release(),true);
+    uiGraphic[UI_MentatExit][HOUSE_HARKONNEN] = Scaler::defaultDoubleSurface(mentat->getPicture(4).release(),true);
+    uiGraphic[UI_MentatExit_Pressed][HOUSE_HARKONNEN] = Scaler::defaultDoubleSurface(mentat->getPicture(5).release(),true);
+    uiGraphic[UI_MentatProcced][HOUSE_HARKONNEN] = Scaler::defaultDoubleSurface(mentat->getPicture(6).release(),true);
+    uiGraphic[UI_MentatProcced_Pressed][HOUSE_HARKONNEN] = Scaler::defaultDoubleSurface(mentat->getPicture(7).release(),true);
+    uiGraphic[UI_MentatRepeat][HOUSE_HARKONNEN] = Scaler::defaultDoubleSurface(mentat->getPicture(8).release(),true);
+    uiGraphic[UI_MentatRepeat_Pressed][HOUSE_HARKONNEN] = Scaler::defaultDoubleSurface(mentat->getPicture(9).release(),true);
 
-    SDL_Surface* pHouseChoiceBackground;
-    if(pFileManager->exists("HERALD." + _("LanguageFileExtension"))) {
-        pHouseChoiceBackground = LoadCPS_RW(pFileManager->openFile("HERALD." + _("LanguageFileExtension")),true);
-    } else {
-        pHouseChoiceBackground = LoadCPS_RW(pFileManager->openFile("HERALD.CPS"),true);
+    { // Scope
+        sdl2::surface_ptr pHouseChoiceBackground;
+        if (pFileManager->exists("HERALD." + _("LanguageFileExtension"))) {
+            pHouseChoiceBackground = LoadCPS_RW(pFileManager->openFile("HERALD." + _("LanguageFileExtension")), true);
+        }
+        else {
+            pHouseChoiceBackground = LoadCPS_RW(pFileManager->openFile("HERALD.CPS"), true);
+        }
+
+        uiGraphic[UI_HouseSelect][HOUSE_HARKONNEN] = PicFactory->createHouseSelect(pHouseChoiceBackground.get());
+        uiGraphic[UI_SelectYourHouseLarge][HOUSE_HARKONNEN] = Scaler::defaultDoubleSurface(getSubPicture(pHouseChoiceBackground.get(), 0, 0, 320, 50).release(), true);
+        uiGraphic[UI_Herald_Colored][HOUSE_ATREIDES] = getSubPicture(pHouseChoiceBackground.get(), 20, 54, 83, 91);
+        uiGraphic[UI_Herald_ColoredLarge][HOUSE_ATREIDES] = Scaler::defaultDoubleSurface(uiGraphic[UI_Herald_Colored][HOUSE_ATREIDES].get(), false);
+        uiGraphic[UI_Herald_Colored][HOUSE_ORDOS] = getSubPicture(pHouseChoiceBackground.get(), 117, 54, 83, 91);
+        uiGraphic[UI_Herald_ColoredLarge][HOUSE_ORDOS] = Scaler::defaultDoubleSurface(uiGraphic[UI_Herald_Colored][HOUSE_ORDOS].get(), false);
+        uiGraphic[UI_Herald_Colored][HOUSE_HARKONNEN] = getSubPicture(pHouseChoiceBackground.get(), 215, 54, 83, 91);
+        uiGraphic[UI_Herald_ColoredLarge][HOUSE_HARKONNEN] = Scaler::defaultDoubleSurface(uiGraphic[UI_Herald_Colored][HOUSE_HARKONNEN].get(), false);
+        uiGraphic[UI_Herald_Colored][HOUSE_FREMEN] = PicFactory->createHeraldFre(uiGraphic[UI_Herald_Colored][HOUSE_HARKONNEN].get());
+        uiGraphic[UI_Herald_ColoredLarge][HOUSE_FREMEN] = Scaler::defaultDoubleSurface(uiGraphic[UI_Herald_Colored][HOUSE_FREMEN].get(), false);
+        uiGraphic[UI_Herald_Colored][HOUSE_SARDAUKAR] = PicFactory->createHeraldSard(uiGraphic[UI_Herald_Colored][HOUSE_ORDOS].get(), uiGraphic[UI_Herald_Colored][HOUSE_ATREIDES].get());
+        uiGraphic[UI_Herald_ColoredLarge][HOUSE_SARDAUKAR] = Scaler::defaultDoubleSurface(uiGraphic[UI_Herald_Colored][HOUSE_SARDAUKAR].get(), false);
+        uiGraphic[UI_Herald_Colored][HOUSE_MERCENARY] = PicFactory->createHeraldMerc(uiGraphic[UI_Herald_Colored][HOUSE_ATREIDES].get(), uiGraphic[UI_Herald_Colored][HOUSE_ORDOS].get());
+        uiGraphic[UI_Herald_ColoredLarge][HOUSE_MERCENARY] = Scaler::defaultDoubleSurface(uiGraphic[UI_Herald_Colored][HOUSE_MERCENARY].get(), false);
     }
 
-    uiGraphic[UI_HouseSelect][HOUSE_HARKONNEN] = PicFactory->createHouseSelect(pHouseChoiceBackground);
-    uiGraphic[UI_SelectYourHouseLarge][HOUSE_HARKONNEN] = Scaler::defaultDoubleSurface(getSubPicture(pHouseChoiceBackground, 0, 0, 320, 50), true);
-    uiGraphic[UI_Herald_Colored][HOUSE_ATREIDES] = getSubPicture(pHouseChoiceBackground,20,54,83,91);
-    uiGraphic[UI_Herald_ColoredLarge][HOUSE_ATREIDES] = Scaler::defaultDoubleSurface(uiGraphic[UI_Herald_Colored][HOUSE_ATREIDES], false);
-    uiGraphic[UI_Herald_Colored][HOUSE_ORDOS] = getSubPicture(pHouseChoiceBackground,117,54,83,91);
-    uiGraphic[UI_Herald_ColoredLarge][HOUSE_ORDOS] = Scaler::defaultDoubleSurface(uiGraphic[UI_Herald_Colored][HOUSE_ORDOS], false);
-    uiGraphic[UI_Herald_Colored][HOUSE_HARKONNEN] = getSubPicture(pHouseChoiceBackground,215,54,83,91);
-    uiGraphic[UI_Herald_ColoredLarge][HOUSE_HARKONNEN] = Scaler::defaultDoubleSurface(uiGraphic[UI_Herald_Colored][HOUSE_HARKONNEN], false);
-    uiGraphic[UI_Herald_Colored][HOUSE_FREMEN] = PicFactory->createHeraldFre(uiGraphic[UI_Herald_Colored][HOUSE_HARKONNEN]);
-    uiGraphic[UI_Herald_ColoredLarge][HOUSE_FREMEN] = Scaler::defaultDoubleSurface(uiGraphic[UI_Herald_Colored][HOUSE_FREMEN], false);
-    uiGraphic[UI_Herald_Colored][HOUSE_SARDAUKAR] = PicFactory->createHeraldSard(uiGraphic[UI_Herald_Colored][HOUSE_ORDOS], uiGraphic[UI_Herald_Colored][HOUSE_ATREIDES]);
-    uiGraphic[UI_Herald_ColoredLarge][HOUSE_SARDAUKAR] = Scaler::defaultDoubleSurface(uiGraphic[UI_Herald_Colored][HOUSE_SARDAUKAR], false);
-    uiGraphic[UI_Herald_Colored][HOUSE_MERCENARY] = PicFactory->createHeraldMerc(uiGraphic[UI_Herald_Colored][HOUSE_ATREIDES], uiGraphic[UI_Herald_Colored][HOUSE_ORDOS]);
-    uiGraphic[UI_Herald_ColoredLarge][HOUSE_MERCENARY] = Scaler::defaultDoubleSurface(uiGraphic[UI_Herald_Colored][HOUSE_MERCENARY], false);
-
-    SDL_FreeSurface(pHouseChoiceBackground);
-
-    uiGraphic[UI_Herald_Grey][HOUSE_HARKONNEN] = PicFactory->createGreyHouseChoice(uiGraphic[UI_Herald_Colored][HOUSE_HARKONNEN]);
-    uiGraphic[UI_Herald_Grey][HOUSE_ATREIDES] = PicFactory->createGreyHouseChoice(uiGraphic[UI_Herald_Colored][HOUSE_ATREIDES]);
-    uiGraphic[UI_Herald_Grey][HOUSE_ORDOS] = PicFactory->createGreyHouseChoice(uiGraphic[UI_Herald_Colored][HOUSE_ORDOS]);
-    uiGraphic[UI_Herald_Grey][HOUSE_FREMEN] = PicFactory->createGreyHouseChoice(uiGraphic[UI_Herald_Colored][HOUSE_FREMEN]);
-    uiGraphic[UI_Herald_Grey][HOUSE_SARDAUKAR] = PicFactory->createGreyHouseChoice(uiGraphic[UI_Herald_Colored][HOUSE_SARDAUKAR]);
-    uiGraphic[UI_Herald_Grey][HOUSE_MERCENARY] = PicFactory->createGreyHouseChoice(uiGraphic[UI_Herald_Colored][HOUSE_MERCENARY]);
+    uiGraphic[UI_Herald_Grey][HOUSE_HARKONNEN] = PicFactory->createGreyHouseChoice(uiGraphic[UI_Herald_Colored][HOUSE_HARKONNEN].get());
+    uiGraphic[UI_Herald_Grey][HOUSE_ATREIDES] = PicFactory->createGreyHouseChoice(uiGraphic[UI_Herald_Colored][HOUSE_ATREIDES].get());
+    uiGraphic[UI_Herald_Grey][HOUSE_ORDOS] = PicFactory->createGreyHouseChoice(uiGraphic[UI_Herald_Colored][HOUSE_ORDOS].get());
+    uiGraphic[UI_Herald_Grey][HOUSE_FREMEN] = PicFactory->createGreyHouseChoice(uiGraphic[UI_Herald_Colored][HOUSE_FREMEN].get());
+    uiGraphic[UI_Herald_Grey][HOUSE_SARDAUKAR] = PicFactory->createGreyHouseChoice(uiGraphic[UI_Herald_Colored][HOUSE_SARDAUKAR].get());
+    uiGraphic[UI_Herald_Grey][HOUSE_MERCENARY] = PicFactory->createGreyHouseChoice(uiGraphic[UI_Herald_Colored][HOUSE_MERCENARY].get());
 
     uiGraphic[UI_Herald_ArrowLeft][HOUSE_HARKONNEN] = LoadPNG_RW(pFileManager->openFile("ArrowLeft.png"),true);
-    uiGraphic[UI_Herald_ArrowLeftLarge][HOUSE_HARKONNEN] = Scaler::defaultDoubleSurface(uiGraphic[UI_Herald_ArrowLeft][HOUSE_HARKONNEN], false);
+    uiGraphic[UI_Herald_ArrowLeftLarge][HOUSE_HARKONNEN] = Scaler::defaultDoubleSurface(uiGraphic[UI_Herald_ArrowLeft][HOUSE_HARKONNEN].get(), false);
     uiGraphic[UI_Herald_ArrowLeftHighlight][HOUSE_HARKONNEN] = LoadPNG_RW(pFileManager->openFile("ArrowLeftHighlight.png"),true);
-    uiGraphic[UI_Herald_ArrowLeftHighlightLarge][HOUSE_HARKONNEN] = Scaler::defaultDoubleSurface(uiGraphic[UI_Herald_ArrowLeftHighlight][HOUSE_HARKONNEN], false);
+    uiGraphic[UI_Herald_ArrowLeftHighlightLarge][HOUSE_HARKONNEN] = Scaler::defaultDoubleSurface(uiGraphic[UI_Herald_ArrowLeftHighlight][HOUSE_HARKONNEN].get(), false);
     uiGraphic[UI_Herald_ArrowRight][HOUSE_HARKONNEN] = LoadPNG_RW(pFileManager->openFile("ArrowRight.png"),true);
-    uiGraphic[UI_Herald_ArrowRightLarge][HOUSE_HARKONNEN] = Scaler::defaultDoubleSurface(uiGraphic[UI_Herald_ArrowRight][HOUSE_HARKONNEN], false);
+    uiGraphic[UI_Herald_ArrowRightLarge][HOUSE_HARKONNEN] = Scaler::defaultDoubleSurface(uiGraphic[UI_Herald_ArrowRight][HOUSE_HARKONNEN].get(), false);
     uiGraphic[UI_Herald_ArrowRightHighlight][HOUSE_HARKONNEN] = LoadPNG_RW(pFileManager->openFile("ArrowRightHighlight.png"),true);
-    uiGraphic[UI_Herald_ArrowRightHighlightLarge][HOUSE_HARKONNEN] = Scaler::defaultDoubleSurface(uiGraphic[UI_Herald_ArrowRightHighlight][HOUSE_HARKONNEN], false);
+    uiGraphic[UI_Herald_ArrowRightHighlightLarge][HOUSE_HARKONNEN] = Scaler::defaultDoubleSurface(uiGraphic[UI_Herald_ArrowRightHighlight][HOUSE_HARKONNEN].get(), false);
 
     uiGraphic[UI_MapChoiceScreen][HOUSE_HARKONNEN] = PicFactory->createMapChoiceScreen(HOUSE_HARKONNEN);
     uiGraphic[UI_MapChoiceScreen][HOUSE_ATREIDES] = PicFactory->createMapChoiceScreen(HOUSE_ATREIDES);
@@ -635,179 +636,179 @@ GFXManager::GFXManager() {
     uiGraphic[UI_MapChoiceScreen][HOUSE_FREMEN] = PicFactory->createMapChoiceScreen(HOUSE_FREMEN);
     uiGraphic[UI_MapChoiceScreen][HOUSE_SARDAUKAR] = PicFactory->createMapChoiceScreen(HOUSE_SARDAUKAR);
     uiGraphic[UI_MapChoiceScreen][HOUSE_MERCENARY] = PicFactory->createMapChoiceScreen(HOUSE_MERCENARY);
-    uiGraphic[UI_MapChoicePlanet][HOUSE_HARKONNEN] = Scaler::doubleSurfaceNN(LoadCPS_RW(pFileManager->openFile("PLANET.CPS"),true));
-    SDL_SetColorKey(uiGraphic[UI_MapChoicePlanet][HOUSE_HARKONNEN], SDL_TRUE, 0);
-    uiGraphic[UI_MapChoiceMapOnly][HOUSE_HARKONNEN] = Scaler::doubleSurfaceNN(LoadCPS_RW(pFileManager->openFile("DUNEMAP.CPS"),true));
-    SDL_SetColorKey(uiGraphic[UI_MapChoiceMapOnly][HOUSE_HARKONNEN], SDL_TRUE, 0);
-    uiGraphic[UI_MapChoiceMap][HOUSE_HARKONNEN] = Scaler::doubleSurfaceNN(LoadCPS_RW(pFileManager->openFile("DUNERGN.CPS"),true));
-    SDL_SetColorKey(uiGraphic[UI_MapChoiceMap][HOUSE_HARKONNEN], SDL_TRUE, 0);
+    uiGraphic[UI_MapChoicePlanet][HOUSE_HARKONNEN] = Scaler::doubleSurfaceNN(LoadCPS_RW(pFileManager->openFile("PLANET.CPS"),true).release());
+    SDL_SetColorKey(uiGraphic[UI_MapChoicePlanet][HOUSE_HARKONNEN].get(), SDL_TRUE, 0);
+    uiGraphic[UI_MapChoiceMapOnly][HOUSE_HARKONNEN] = Scaler::doubleSurfaceNN(LoadCPS_RW(pFileManager->openFile("DUNEMAP.CPS"),true).release());
+    SDL_SetColorKey(uiGraphic[UI_MapChoiceMapOnly][HOUSE_HARKONNEN].get(), SDL_TRUE, 0);
+    uiGraphic[UI_MapChoiceMap][HOUSE_HARKONNEN] = Scaler::doubleSurfaceNN(LoadCPS_RW(pFileManager->openFile("DUNERGN.CPS"),true).release());
+    SDL_SetColorKey(uiGraphic[UI_MapChoiceMap][HOUSE_HARKONNEN].get(), SDL_TRUE, 0);
 
     // make black lines inside the map non-transparent
-    if(!SDL_MUSTLOCK(uiGraphic[UI_MapChoiceMap][HOUSE_HARKONNEN]) || (SDL_LockSurface(uiGraphic[UI_MapChoiceMap][HOUSE_HARKONNEN]) == 0)) {
-        for(int y = 48; y < 48+240; y++) {
-            for(int x = 16; x < 16 + 608; x++) {
-                if(getPixel(uiGraphic[UI_MapChoiceMap][HOUSE_HARKONNEN], x, y) == 0) {
-                    putPixel(uiGraphic[UI_MapChoiceMap][HOUSE_HARKONNEN], x, y, PALCOLOR_BLACK);
+    {
+        const auto surface = uiGraphic[UI_MapChoiceMap][HOUSE_HARKONNEN].get();
+
+        sdl2::surface_lock lock{ surface };
+
+        for(auto y = 48; y < 48+240; y++) {
+            for(auto x = 16; x < 16 + 608; x++) {
+                if(getPixel(surface, x, y) == 0) {
+                    putPixel(surface, x, y, PALCOLOR_BLACK);
                 }
             }
         }
-
-        if(SDL_MUSTLOCK(uiGraphic[UI_MapChoiceMap][HOUSE_HARKONNEN])) {
-            SDL_UnlockSurface(uiGraphic[UI_MapChoiceMap][HOUSE_HARKONNEN]);
-        }
     }
 
-    uiGraphic[UI_MapChoiceClickMap][HOUSE_HARKONNEN] = Scaler::doubleSurfaceNN(LoadCPS_RW(pFileManager->openFile("RGNCLK.CPS"),true));
-    uiGraphic[UI_MapChoiceArrow_None][HOUSE_HARKONNEN] = Scaler::defaultDoubleSurface(arrows->getPicture(0),true);
-    SDL_SetColorKey(uiGraphic[UI_MapChoiceArrow_None][HOUSE_HARKONNEN], SDL_TRUE, 0);
-    uiGraphic[UI_MapChoiceArrow_LeftUp][HOUSE_HARKONNEN] = Scaler::defaultDoubleSurface(arrows->getPicture(1),true);
-    SDL_SetColorKey(uiGraphic[UI_MapChoiceArrow_LeftUp][HOUSE_HARKONNEN], SDL_TRUE, 0);
-    uiGraphic[UI_MapChoiceArrow_Up][HOUSE_HARKONNEN] = Scaler::defaultDoubleSurface(arrows->getPicture(2),true);
-    SDL_SetColorKey(uiGraphic[UI_MapChoiceArrow_Up][HOUSE_HARKONNEN], SDL_TRUE, 0);
-    uiGraphic[UI_MapChoiceArrow_RightUp][HOUSE_HARKONNEN] = Scaler::defaultDoubleSurface(arrows->getPicture(3),true);
-    SDL_SetColorKey(uiGraphic[UI_MapChoiceArrow_RightUp][HOUSE_HARKONNEN], SDL_TRUE, 0);
-    uiGraphic[UI_MapChoiceArrow_Right][HOUSE_HARKONNEN] = Scaler::defaultDoubleSurface(arrows->getPicture(4),true);
-    SDL_SetColorKey(uiGraphic[UI_MapChoiceArrow_Right][HOUSE_HARKONNEN], SDL_TRUE, 0);
-    uiGraphic[UI_MapChoiceArrow_RightDown][HOUSE_HARKONNEN] = Scaler::defaultDoubleSurface(arrows->getPicture(5),true);
-    SDL_SetColorKey(uiGraphic[UI_MapChoiceArrow_RightDown][HOUSE_HARKONNEN], SDL_TRUE, 0);
-    uiGraphic[UI_MapChoiceArrow_Down][HOUSE_HARKONNEN] = Scaler::defaultDoubleSurface(arrows->getPicture(6),true);
-    SDL_SetColorKey(uiGraphic[UI_MapChoiceArrow_Down][HOUSE_HARKONNEN], SDL_TRUE, 0);
-    uiGraphic[UI_MapChoiceArrow_LeftDown][HOUSE_HARKONNEN] = Scaler::defaultDoubleSurface(arrows->getPicture(7),true);
-    SDL_SetColorKey(uiGraphic[UI_MapChoiceArrow_LeftDown][HOUSE_HARKONNEN], SDL_TRUE, 0);
-    uiGraphic[UI_MapChoiceArrow_Left][HOUSE_HARKONNEN] = Scaler::defaultDoubleSurface(arrows->getPicture(8),true);
-    SDL_SetColorKey(uiGraphic[UI_MapChoiceArrow_Left][HOUSE_HARKONNEN], SDL_TRUE, 0);
+    uiGraphic[UI_MapChoiceClickMap][HOUSE_HARKONNEN] = Scaler::doubleSurfaceNN(LoadCPS_RW(pFileManager->openFile("RGNCLK.CPS"),true).release());
+    uiGraphic[UI_MapChoiceArrow_None][HOUSE_HARKONNEN] = Scaler::defaultDoubleSurface(arrows->getPicture(0).release(),true);
+    SDL_SetColorKey(uiGraphic[UI_MapChoiceArrow_None][HOUSE_HARKONNEN].get(), SDL_TRUE, 0);
+    uiGraphic[UI_MapChoiceArrow_LeftUp][HOUSE_HARKONNEN] = Scaler::defaultDoubleSurface(arrows->getPicture(1).release(),true);
+    SDL_SetColorKey(uiGraphic[UI_MapChoiceArrow_LeftUp][HOUSE_HARKONNEN].get(), SDL_TRUE, 0);
+    uiGraphic[UI_MapChoiceArrow_Up][HOUSE_HARKONNEN] = Scaler::defaultDoubleSurface(arrows->getPicture(2).release(),true);
+    SDL_SetColorKey(uiGraphic[UI_MapChoiceArrow_Up][HOUSE_HARKONNEN].get(), SDL_TRUE, 0);
+    uiGraphic[UI_MapChoiceArrow_RightUp][HOUSE_HARKONNEN] = Scaler::defaultDoubleSurface(arrows->getPicture(3).release(),true);
+    SDL_SetColorKey(uiGraphic[UI_MapChoiceArrow_RightUp][HOUSE_HARKONNEN].get(), SDL_TRUE, 0);
+    uiGraphic[UI_MapChoiceArrow_Right][HOUSE_HARKONNEN] = Scaler::defaultDoubleSurface(arrows->getPicture(4).release(),true);
+    SDL_SetColorKey(uiGraphic[UI_MapChoiceArrow_Right][HOUSE_HARKONNEN].get(), SDL_TRUE, 0);
+    uiGraphic[UI_MapChoiceArrow_RightDown][HOUSE_HARKONNEN] = Scaler::defaultDoubleSurface(arrows->getPicture(5).release(),true);
+    SDL_SetColorKey(uiGraphic[UI_MapChoiceArrow_RightDown][HOUSE_HARKONNEN].get(), SDL_TRUE, 0);
+    uiGraphic[UI_MapChoiceArrow_Down][HOUSE_HARKONNEN] = Scaler::defaultDoubleSurface(arrows->getPicture(6).release(),true);
+    SDL_SetColorKey(uiGraphic[UI_MapChoiceArrow_Down][HOUSE_HARKONNEN].get(), SDL_TRUE, 0);
+    uiGraphic[UI_MapChoiceArrow_LeftDown][HOUSE_HARKONNEN] = Scaler::defaultDoubleSurface(arrows->getPicture(7).release(),true);
+    SDL_SetColorKey(uiGraphic[UI_MapChoiceArrow_LeftDown][HOUSE_HARKONNEN].get(), SDL_TRUE, 0);
+    uiGraphic[UI_MapChoiceArrow_Left][HOUSE_HARKONNEN] = Scaler::defaultDoubleSurface(arrows->getPicture(8).release(),true);
+    SDL_SetColorKey(uiGraphic[UI_MapChoiceArrow_Left][HOUSE_HARKONNEN].get(), SDL_TRUE, 0);
 
     uiGraphic[UI_StructureSizeLattice][HOUSE_HARKONNEN] = LoadPNG_RW(pFileManager->openFile("StructureSizeLattice.png"),true);
-    SDL_SetColorKey(uiGraphic[UI_StructureSizeLattice][HOUSE_HARKONNEN], SDL_TRUE, 0);
+    SDL_SetColorKey(uiGraphic[UI_StructureSizeLattice][HOUSE_HARKONNEN].get(), SDL_TRUE, 0);
     uiGraphic[UI_StructureSizeConcrete][HOUSE_HARKONNEN] = LoadPNG_RW(pFileManager->openFile("StructureSizeConcrete.png"),true);
-    SDL_SetColorKey(uiGraphic[UI_StructureSizeConcrete][HOUSE_HARKONNEN], SDL_TRUE, 0);
+    SDL_SetColorKey(uiGraphic[UI_StructureSizeConcrete][HOUSE_HARKONNEN].get(), SDL_TRUE, 0);
 
     uiGraphic[UI_MapEditor_SideBar][HOUSE_HARKONNEN] = PicFactory->createSideBar(true);
     uiGraphic[UI_MapEditor_BottomBar][HOUSE_HARKONNEN] = PicFactory->createBottomBar();
 
     uiGraphic[UI_MapEditor_ExitIcon][HOUSE_HARKONNEN] = LoadPNG_RW(pFileManager->openFile("MapEditorExitIcon.png"),true);
-    SDL_SetColorKey(uiGraphic[UI_MapEditor_ExitIcon][HOUSE_HARKONNEN], SDL_TRUE, 0);
+    SDL_SetColorKey(uiGraphic[UI_MapEditor_ExitIcon][HOUSE_HARKONNEN].get(), SDL_TRUE, 0);
     uiGraphic[UI_MapEditor_NewIcon][HOUSE_HARKONNEN] = LoadPNG_RW(pFileManager->openFile("MapEditorNewIcon.png"),true);
-    SDL_SetColorKey(uiGraphic[UI_MapEditor_NewIcon][HOUSE_HARKONNEN], SDL_TRUE, 0);
+    SDL_SetColorKey(uiGraphic[UI_MapEditor_NewIcon][HOUSE_HARKONNEN].get(), SDL_TRUE, 0);
     uiGraphic[UI_MapEditor_LoadIcon][HOUSE_HARKONNEN] = LoadPNG_RW(pFileManager->openFile("MapEditorLoadIcon.png"),true);
-    SDL_SetColorKey(uiGraphic[UI_MapEditor_LoadIcon][HOUSE_HARKONNEN], SDL_TRUE, 0);
+    SDL_SetColorKey(uiGraphic[UI_MapEditor_LoadIcon][HOUSE_HARKONNEN].get(), SDL_TRUE, 0);
     uiGraphic[UI_MapEditor_SaveIcon][HOUSE_HARKONNEN] = LoadPNG_RW(pFileManager->openFile("MapEditorSaveIcon.png"),true);
-    SDL_SetColorKey(uiGraphic[UI_MapEditor_SaveIcon][HOUSE_HARKONNEN], SDL_TRUE, 0);
+    SDL_SetColorKey(uiGraphic[UI_MapEditor_SaveIcon][HOUSE_HARKONNEN].get(), SDL_TRUE, 0);
     uiGraphic[UI_MapEditor_UndoIcon][HOUSE_HARKONNEN] = LoadPNG_RW(pFileManager->openFile("MapEditorUndoIcon.png"),true);
-    SDL_SetColorKey(uiGraphic[UI_MapEditor_UndoIcon][HOUSE_HARKONNEN], SDL_TRUE, 0);
+    SDL_SetColorKey(uiGraphic[UI_MapEditor_UndoIcon][HOUSE_HARKONNEN].get(), SDL_TRUE, 0);
     uiGraphic[UI_MapEditor_RedoIcon][HOUSE_HARKONNEN] = LoadPNG_RW(pFileManager->openFile("MapEditorRedoIcon.png"),true);
-    SDL_SetColorKey(uiGraphic[UI_MapEditor_RedoIcon][HOUSE_HARKONNEN], SDL_TRUE, 0);
+    SDL_SetColorKey(uiGraphic[UI_MapEditor_RedoIcon][HOUSE_HARKONNEN].get(), SDL_TRUE, 0);
     uiGraphic[UI_MapEditor_PlayerIcon][HOUSE_HARKONNEN] = LoadPNG_RW(pFileManager->openFile("MapEditorPlayerIcon.png"),true);
-    SDL_SetColorKey(uiGraphic[UI_MapEditor_PlayerIcon][HOUSE_HARKONNEN], SDL_TRUE, 0);
+    SDL_SetColorKey(uiGraphic[UI_MapEditor_PlayerIcon][HOUSE_HARKONNEN].get(), SDL_TRUE, 0);
     uiGraphic[UI_MapEditor_MapSettingsIcon][HOUSE_HARKONNEN] = LoadPNG_RW(pFileManager->openFile("MapEditorMapSettingsIcon.png"),true);
-    SDL_SetColorKey(uiGraphic[UI_MapEditor_MapSettingsIcon][HOUSE_HARKONNEN], SDL_TRUE, 0);
-    uiGraphic[UI_MapEditor_ChoamIcon][HOUSE_HARKONNEN] = scaleSurface(getSubFrame(objPic[ObjPic_Frigate][HOUSE_HARKONNEN][0],1,0,8,1), 0.5);
-    SDL_SetColorKey(uiGraphic[UI_MapEditor_ChoamIcon][HOUSE_HARKONNEN], SDL_TRUE, 0);
-    uiGraphic[UI_MapEditor_ReinforcementsIcon][HOUSE_HARKONNEN] = scaleSurface(getSubFrame(objPic[ObjPic_Carryall][HOUSE_HARKONNEN][0],1,0,8,2), 0.66667);
-    SDL_SetColorKey(uiGraphic[UI_MapEditor_ReinforcementsIcon][HOUSE_HARKONNEN], SDL_TRUE, 0);
-    uiGraphic[UI_MapEditor_TeamsIcon][HOUSE_HARKONNEN] = getSubFrame(objPic[ObjPic_Troopers][HOUSE_HARKONNEN][0],0,0,4,4);
-    SDL_SetColorKey(uiGraphic[UI_MapEditor_TeamsIcon][HOUSE_HARKONNEN], SDL_TRUE, 0);
+    SDL_SetColorKey(uiGraphic[UI_MapEditor_MapSettingsIcon][HOUSE_HARKONNEN].get(), SDL_TRUE, 0);
+    uiGraphic[UI_MapEditor_ChoamIcon][HOUSE_HARKONNEN] = scaleSurface(getSubFrame(objPic[ObjPic_Frigate][HOUSE_HARKONNEN][0].get(),1,0,8,1).release(), 0.5);
+    SDL_SetColorKey(uiGraphic[UI_MapEditor_ChoamIcon][HOUSE_HARKONNEN].get(), SDL_TRUE, 0);
+    uiGraphic[UI_MapEditor_ReinforcementsIcon][HOUSE_HARKONNEN] = scaleSurface(getSubFrame(objPic[ObjPic_Carryall][HOUSE_HARKONNEN][0].get(),1,0,8,2).release(), 0.66667);
+    SDL_SetColorKey(uiGraphic[UI_MapEditor_ReinforcementsIcon][HOUSE_HARKONNEN].get(), SDL_TRUE, 0);
+    uiGraphic[UI_MapEditor_TeamsIcon][HOUSE_HARKONNEN] = getSubFrame(objPic[ObjPic_Troopers][HOUSE_HARKONNEN][0].get(),0,0,4,4);
+    SDL_SetColorKey(uiGraphic[UI_MapEditor_TeamsIcon][HOUSE_HARKONNEN].get(), SDL_TRUE, 0);
     uiGraphic[UI_MapEditor_MirrorNoneIcon][HOUSE_HARKONNEN] = LoadPNG_RW(pFileManager->openFile("MapEditorMirrorNone.png"),true);
-    SDL_SetColorKey(uiGraphic[UI_MapEditor_MirrorNoneIcon][HOUSE_HARKONNEN], SDL_TRUE, 0);
+    SDL_SetColorKey(uiGraphic[UI_MapEditor_MirrorNoneIcon][HOUSE_HARKONNEN].get(), SDL_TRUE, 0);
     uiGraphic[UI_MapEditor_MirrorHorizontalIcon][HOUSE_HARKONNEN] = LoadPNG_RW(pFileManager->openFile("MapEditorMirrorHorizontal.png"),true);
-    SDL_SetColorKey(uiGraphic[UI_MapEditor_MirrorHorizontalIcon][HOUSE_HARKONNEN], SDL_TRUE, 0);
+    SDL_SetColorKey(uiGraphic[UI_MapEditor_MirrorHorizontalIcon][HOUSE_HARKONNEN].get(), SDL_TRUE, 0);
     uiGraphic[UI_MapEditor_MirrorVerticalIcon][HOUSE_HARKONNEN] = LoadPNG_RW(pFileManager->openFile("MapEditorMirrorVertical.png"),true);
-    SDL_SetColorKey(uiGraphic[UI_MapEditor_MirrorVerticalIcon][HOUSE_HARKONNEN], SDL_TRUE, 0);
+    SDL_SetColorKey(uiGraphic[UI_MapEditor_MirrorVerticalIcon][HOUSE_HARKONNEN].get(), SDL_TRUE, 0);
     uiGraphic[UI_MapEditor_MirrorBothIcon][HOUSE_HARKONNEN] = LoadPNG_RW(pFileManager->openFile("MapEditorMirrorBoth.png"),true);
-    SDL_SetColorKey(uiGraphic[UI_MapEditor_MirrorBothIcon][HOUSE_HARKONNEN], SDL_TRUE, 0);
+    SDL_SetColorKey(uiGraphic[UI_MapEditor_MirrorBothIcon][HOUSE_HARKONNEN].get(), SDL_TRUE, 0);
     uiGraphic[UI_MapEditor_MirrorPointIcon][HOUSE_HARKONNEN] = LoadPNG_RW(pFileManager->openFile("MapEditorMirrorPoint.png"),true);
-    SDL_SetColorKey(uiGraphic[UI_MapEditor_MirrorPointIcon][HOUSE_HARKONNEN], SDL_TRUE, 0);
+    SDL_SetColorKey(uiGraphic[UI_MapEditor_MirrorPointIcon][HOUSE_HARKONNEN].get(), SDL_TRUE, 0);
     uiGraphic[UI_MapEditor_ArrowUp][HOUSE_HARKONNEN] = LoadPNG_RW(pFileManager->openFile("MapEditorArrowUp.png"),true);
-    SDL_SetColorKey(uiGraphic[UI_MapEditor_ArrowUp][HOUSE_HARKONNEN], SDL_TRUE, 0);
-    uiGraphic[UI_MapEditor_ArrowUp_Active][HOUSE_HARKONNEN] = mapSurfaceColorRange(uiGraphic[UI_MapEditor_ArrowUp][HOUSE_HARKONNEN], PALCOLOR_HARKONNEN, PALCOLOR_HARKONNEN-3);
+    SDL_SetColorKey(uiGraphic[UI_MapEditor_ArrowUp][HOUSE_HARKONNEN].get(), SDL_TRUE, 0);
+    uiGraphic[UI_MapEditor_ArrowUp_Active][HOUSE_HARKONNEN] = mapSurfaceColorRange(uiGraphic[UI_MapEditor_ArrowUp][HOUSE_HARKONNEN].get(), PALCOLOR_HARKONNEN, PALCOLOR_HARKONNEN-3);
     uiGraphic[UI_MapEditor_ArrowDown][HOUSE_HARKONNEN] = LoadPNG_RW(pFileManager->openFile("MapEditorArrowDown.png"),true);
-    SDL_SetColorKey(uiGraphic[UI_MapEditor_ArrowDown][HOUSE_HARKONNEN], SDL_TRUE, 0);
-    uiGraphic[UI_MapEditor_ArrowDown_Active][HOUSE_HARKONNEN] = mapSurfaceColorRange(uiGraphic[UI_MapEditor_ArrowDown][HOUSE_HARKONNEN], PALCOLOR_HARKONNEN, PALCOLOR_HARKONNEN-3);
+    SDL_SetColorKey(uiGraphic[UI_MapEditor_ArrowDown][HOUSE_HARKONNEN].get(), SDL_TRUE, 0);
+    uiGraphic[UI_MapEditor_ArrowDown_Active][HOUSE_HARKONNEN] = mapSurfaceColorRange(uiGraphic[UI_MapEditor_ArrowDown][HOUSE_HARKONNEN].get(), PALCOLOR_HARKONNEN, PALCOLOR_HARKONNEN-3);
     uiGraphic[UI_MapEditor_Plus][HOUSE_HARKONNEN] = LoadPNG_RW(pFileManager->openFile("MapEditorPlus.png"),true);
-    SDL_SetColorKey(uiGraphic[UI_MapEditor_Plus][HOUSE_HARKONNEN], SDL_TRUE, 0);
-    uiGraphic[UI_MapEditor_Plus_Active][HOUSE_HARKONNEN] = mapSurfaceColorRange(uiGraphic[UI_MapEditor_Plus][HOUSE_HARKONNEN], PALCOLOR_HARKONNEN, PALCOLOR_HARKONNEN-3);
+    SDL_SetColorKey(uiGraphic[UI_MapEditor_Plus][HOUSE_HARKONNEN].get(), SDL_TRUE, 0);
+    uiGraphic[UI_MapEditor_Plus_Active][HOUSE_HARKONNEN] = mapSurfaceColorRange(uiGraphic[UI_MapEditor_Plus][HOUSE_HARKONNEN].get(), PALCOLOR_HARKONNEN, PALCOLOR_HARKONNEN-3);
     uiGraphic[UI_MapEditor_Minus][HOUSE_HARKONNEN] = LoadPNG_RW(pFileManager->openFile("MapEditorMinus.png"),true);
-    SDL_SetColorKey(uiGraphic[UI_MapEditor_Minus][HOUSE_HARKONNEN], SDL_TRUE, 0);
-    uiGraphic[UI_MapEditor_Minus_Active][HOUSE_HARKONNEN] = mapSurfaceColorRange(uiGraphic[UI_MapEditor_Minus][HOUSE_HARKONNEN], PALCOLOR_HARKONNEN, PALCOLOR_HARKONNEN-3);
+    SDL_SetColorKey(uiGraphic[UI_MapEditor_Minus][HOUSE_HARKONNEN].get(), SDL_TRUE, 0);
+    uiGraphic[UI_MapEditor_Minus_Active][HOUSE_HARKONNEN] = mapSurfaceColorRange(uiGraphic[UI_MapEditor_Minus][HOUSE_HARKONNEN].get(), PALCOLOR_HARKONNEN, PALCOLOR_HARKONNEN-3);
     uiGraphic[UI_MapEditor_RotateLeftIcon][HOUSE_HARKONNEN] = LoadPNG_RW(pFileManager->openFile("MapEditorRotateLeft.png"),true);
-    SDL_SetColorKey(uiGraphic[UI_MapEditor_RotateLeftIcon][HOUSE_HARKONNEN], SDL_TRUE, 0);
-    uiGraphic[UI_MapEditor_RotateLeftHighlightIcon][HOUSE_HARKONNEN] = mapSurfaceColorRange(uiGraphic[UI_MapEditor_RotateLeftIcon][HOUSE_HARKONNEN], PALCOLOR_HARKONNEN, PALCOLOR_HARKONNEN-3);
-    SDL_SetColorKey(uiGraphic[UI_MapEditor_RotateLeftHighlightIcon][HOUSE_HARKONNEN], SDL_TRUE, 0);
+    SDL_SetColorKey(uiGraphic[UI_MapEditor_RotateLeftIcon][HOUSE_HARKONNEN].get(), SDL_TRUE, 0);
+    uiGraphic[UI_MapEditor_RotateLeftHighlightIcon][HOUSE_HARKONNEN] = mapSurfaceColorRange(uiGraphic[UI_MapEditor_RotateLeftIcon][HOUSE_HARKONNEN].get(), PALCOLOR_HARKONNEN, PALCOLOR_HARKONNEN-3);
+    SDL_SetColorKey(uiGraphic[UI_MapEditor_RotateLeftHighlightIcon][HOUSE_HARKONNEN].get(), SDL_TRUE, 0);
     uiGraphic[UI_MapEditor_RotateRightIcon][HOUSE_HARKONNEN] = LoadPNG_RW(pFileManager->openFile("MapEditorRotateRight.png"),true);
-    SDL_SetColorKey(uiGraphic[UI_MapEditor_RotateRightIcon][HOUSE_HARKONNEN], SDL_TRUE, 0);
-    uiGraphic[UI_MapEditor_RotateRightHighlightIcon][HOUSE_HARKONNEN] = mapSurfaceColorRange(uiGraphic[UI_MapEditor_RotateRightIcon][HOUSE_HARKONNEN], PALCOLOR_HARKONNEN, PALCOLOR_HARKONNEN-3);
-    SDL_SetColorKey(uiGraphic[UI_MapEditor_RotateRightHighlightIcon][HOUSE_HARKONNEN], SDL_TRUE, 0);
+    SDL_SetColorKey(uiGraphic[UI_MapEditor_RotateRightIcon][HOUSE_HARKONNEN].get(), SDL_TRUE, 0);
+    uiGraphic[UI_MapEditor_RotateRightHighlightIcon][HOUSE_HARKONNEN] = mapSurfaceColorRange(uiGraphic[UI_MapEditor_RotateRightIcon][HOUSE_HARKONNEN].get(), PALCOLOR_HARKONNEN, PALCOLOR_HARKONNEN-3);
+    SDL_SetColorKey(uiGraphic[UI_MapEditor_RotateRightHighlightIcon][HOUSE_HARKONNEN].get(), SDL_TRUE, 0);
 
-    uiGraphic[UI_MapEditor_Sand][HOUSE_HARKONNEN] = Scaler::defaultDoubleSurface(icon->getPicture(127),true);
-    uiGraphic[UI_MapEditor_Dunes][HOUSE_HARKONNEN] = Scaler::defaultDoubleSurface(icon->getPicture(159),true);
-    uiGraphic[UI_MapEditor_SpecialBloom][HOUSE_HARKONNEN] = Scaler::defaultDoubleSurface(icon->getPicture(209),true);
-    uiGraphic[UI_MapEditor_Spice][HOUSE_HARKONNEN] = Scaler::defaultDoubleSurface(icon->getPicture(191),true);
-    uiGraphic[UI_MapEditor_ThickSpice][HOUSE_HARKONNEN] = Scaler::defaultDoubleSurface(icon->getPicture(207),true);
-    uiGraphic[UI_MapEditor_SpiceBloom][HOUSE_HARKONNEN] = Scaler::defaultDoubleSurface(icon->getPicture(208),true);
-    uiGraphic[UI_MapEditor_Slab][HOUSE_HARKONNEN] = Scaler::defaultDoubleSurface(icon->getPicture(126),true);
-    uiGraphic[UI_MapEditor_Rock][HOUSE_HARKONNEN] = Scaler::defaultDoubleSurface(icon->getPicture(143),true);
-    uiGraphic[UI_MapEditor_Mountain][HOUSE_HARKONNEN] = Scaler::defaultDoubleSurface(icon->getPicture(175),true);
+    uiGraphic[UI_MapEditor_Sand][HOUSE_HARKONNEN] = Scaler::defaultDoubleSurface(icon->getPicture(127).release(),true);
+    uiGraphic[UI_MapEditor_Dunes][HOUSE_HARKONNEN] = Scaler::defaultDoubleSurface(icon->getPicture(159).release(),true);
+    uiGraphic[UI_MapEditor_SpecialBloom][HOUSE_HARKONNEN] = Scaler::defaultDoubleSurface(icon->getPicture(209).release(),true);
+    uiGraphic[UI_MapEditor_Spice][HOUSE_HARKONNEN] = Scaler::defaultDoubleSurface(icon->getPicture(191).release(),true);
+    uiGraphic[UI_MapEditor_ThickSpice][HOUSE_HARKONNEN] = Scaler::defaultDoubleSurface(icon->getPicture(207).release(),true);
+    uiGraphic[UI_MapEditor_SpiceBloom][HOUSE_HARKONNEN] = Scaler::defaultDoubleSurface(icon->getPicture(208).release(),true);
+    uiGraphic[UI_MapEditor_Slab][HOUSE_HARKONNEN] = Scaler::defaultDoubleSurface(icon->getPicture(126).release(),true);
+    uiGraphic[UI_MapEditor_Rock][HOUSE_HARKONNEN] = Scaler::defaultDoubleSurface(icon->getPicture(143).release(),true);
+    uiGraphic[UI_MapEditor_Mountain][HOUSE_HARKONNEN] = Scaler::defaultDoubleSurface(icon->getPicture(175).release(),true);
 
     uiGraphic[UI_MapEditor_Slab1][HOUSE_HARKONNEN] = icon->getPicture(126);
-    uiGraphic[UI_MapEditor_Wall][HOUSE_HARKONNEN] = getSubPicture(objPic[ObjPic_Wall][HOUSE_HARKONNEN][0],2*D2_TILESIZE,0,D2_TILESIZE,D2_TILESIZE);
-    uiGraphic[UI_MapEditor_GunTurret][HOUSE_HARKONNEN] = getSubPicture(objPic[ObjPic_GunTurret][HOUSE_HARKONNEN][0],2*D2_TILESIZE,0,D2_TILESIZE,D2_TILESIZE);
-    uiGraphic[UI_MapEditor_RocketTurret][HOUSE_HARKONNEN] = getSubPicture(objPic[ObjPic_RocketTurret][HOUSE_HARKONNEN][0],2*D2_TILESIZE,0,D2_TILESIZE,D2_TILESIZE);
-    uiGraphic[UI_MapEditor_ConstructionYard][HOUSE_HARKONNEN] = getSubPicture(objPic[ObjPic_ConstructionYard][HOUSE_HARKONNEN][0],2*2*D2_TILESIZE,0,2*D2_TILESIZE,2*D2_TILESIZE);
-    uiGraphic[UI_MapEditor_Windtrap][HOUSE_HARKONNEN] = getSubPicture(objPic[ObjPic_Windtrap][HOUSE_HARKONNEN][0],2*2*D2_TILESIZE,0,2*D2_TILESIZE,2*D2_TILESIZE);
+    uiGraphic[UI_MapEditor_Wall][HOUSE_HARKONNEN] = getSubPicture(objPic[ObjPic_Wall][HOUSE_HARKONNEN][0].get(),2*D2_TILESIZE,0,D2_TILESIZE,D2_TILESIZE);
+    uiGraphic[UI_MapEditor_GunTurret][HOUSE_HARKONNEN] = getSubPicture(objPic[ObjPic_GunTurret][HOUSE_HARKONNEN][0].get(),2*D2_TILESIZE,0,D2_TILESIZE,D2_TILESIZE);
+    uiGraphic[UI_MapEditor_RocketTurret][HOUSE_HARKONNEN] = getSubPicture(objPic[ObjPic_RocketTurret][HOUSE_HARKONNEN][0].get(),2*D2_TILESIZE,0,D2_TILESIZE,D2_TILESIZE);
+    uiGraphic[UI_MapEditor_ConstructionYard][HOUSE_HARKONNEN] = getSubPicture(objPic[ObjPic_ConstructionYard][HOUSE_HARKONNEN][0].get(),2*2*D2_TILESIZE,0,2*D2_TILESIZE,2*D2_TILESIZE);
+    uiGraphic[UI_MapEditor_Windtrap][HOUSE_HARKONNEN] = getSubPicture(objPic[ObjPic_Windtrap][HOUSE_HARKONNEN][0].get(),2*2*D2_TILESIZE,0,2*D2_TILESIZE,2*D2_TILESIZE);
     SDL_Color windtrapColor = { 70, 70, 70, 255};
     SDL_SetPaletteColors(uiGraphic[UI_MapEditor_Windtrap][HOUSE_HARKONNEN]->format->palette, &windtrapColor, PALCOLOR_WINDTRAP_COLORCYCLE, 1);
-    uiGraphic[UI_MapEditor_Radar][HOUSE_HARKONNEN] = getSubPicture(objPic[ObjPic_Radar][HOUSE_HARKONNEN][0],2*2*D2_TILESIZE,0,2*D2_TILESIZE,2*D2_TILESIZE);
-    uiGraphic[UI_MapEditor_Silo][HOUSE_HARKONNEN] = getSubPicture(objPic[ObjPic_Silo][HOUSE_HARKONNEN][0],2*2*D2_TILESIZE,0,2*D2_TILESIZE,2*D2_TILESIZE);
-    uiGraphic[UI_MapEditor_IX][HOUSE_HARKONNEN] = getSubPicture(objPic[ObjPic_IX][HOUSE_HARKONNEN][0],2*2*D2_TILESIZE,0,2*D2_TILESIZE,2*D2_TILESIZE);
-    uiGraphic[UI_MapEditor_Barracks][HOUSE_HARKONNEN] = getSubPicture(objPic[ObjPic_Barracks][HOUSE_HARKONNEN][0],2*2*D2_TILESIZE,0,2*D2_TILESIZE,2*D2_TILESIZE);
-    uiGraphic[UI_MapEditor_WOR][HOUSE_HARKONNEN] = getSubPicture(objPic[ObjPic_WOR][HOUSE_HARKONNEN][0],2*2*D2_TILESIZE,0,2*D2_TILESIZE,2*D2_TILESIZE);
-    uiGraphic[UI_MapEditor_LightFactory][HOUSE_HARKONNEN] = getSubPicture(objPic[ObjPic_LightFactory][HOUSE_HARKONNEN][0],2*2*D2_TILESIZE,0,2*D2_TILESIZE,2*D2_TILESIZE);
-    uiGraphic[UI_MapEditor_Refinery][HOUSE_HARKONNEN] = getSubPicture(objPic[ObjPic_Refinery][HOUSE_HARKONNEN][0],2*3*D2_TILESIZE,0,3*D2_TILESIZE,2*D2_TILESIZE);
-    uiGraphic[UI_MapEditor_HighTechFactory][HOUSE_HARKONNEN] = getSubPicture(objPic[ObjPic_HighTechFactory][HOUSE_HARKONNEN][0],2*3*D2_TILESIZE,0,3*D2_TILESIZE,2*D2_TILESIZE);
-    uiGraphic[UI_MapEditor_HeavyFactory][HOUSE_HARKONNEN] = getSubPicture(objPic[ObjPic_HeavyFactory][HOUSE_HARKONNEN][0],2*3*D2_TILESIZE,0,3*D2_TILESIZE,2*D2_TILESIZE);
-    uiGraphic[UI_MapEditor_RepairYard][HOUSE_HARKONNEN] = getSubPicture(objPic[ObjPic_RepairYard][HOUSE_HARKONNEN][0],2*3*D2_TILESIZE,0,3*D2_TILESIZE,2*D2_TILESIZE);
-    uiGraphic[UI_MapEditor_Starport][HOUSE_HARKONNEN] = getSubPicture(objPic[ObjPic_Starport][HOUSE_HARKONNEN][0],2*3*D2_TILESIZE,0,3*D2_TILESIZE,3*D2_TILESIZE);
-    uiGraphic[UI_MapEditor_Palace][HOUSE_HARKONNEN] = getSubPicture(objPic[ObjPic_Palace][HOUSE_HARKONNEN][0],2*3*D2_TILESIZE,0,3*D2_TILESIZE,3*D2_TILESIZE);
+    uiGraphic[UI_MapEditor_Radar][HOUSE_HARKONNEN] = getSubPicture(objPic[ObjPic_Radar][HOUSE_HARKONNEN][0].get(),2*2*D2_TILESIZE,0,2*D2_TILESIZE,2*D2_TILESIZE);
+    uiGraphic[UI_MapEditor_Silo][HOUSE_HARKONNEN] = getSubPicture(objPic[ObjPic_Silo][HOUSE_HARKONNEN][0].get(),2*2*D2_TILESIZE,0,2*D2_TILESIZE,2*D2_TILESIZE);
+    uiGraphic[UI_MapEditor_IX][HOUSE_HARKONNEN] = getSubPicture(objPic[ObjPic_IX][HOUSE_HARKONNEN][0].get(),2*2*D2_TILESIZE,0,2*D2_TILESIZE,2*D2_TILESIZE);
+    uiGraphic[UI_MapEditor_Barracks][HOUSE_HARKONNEN] = getSubPicture(objPic[ObjPic_Barracks][HOUSE_HARKONNEN][0].get(),2*2*D2_TILESIZE,0,2*D2_TILESIZE,2*D2_TILESIZE);
+    uiGraphic[UI_MapEditor_WOR][HOUSE_HARKONNEN] = getSubPicture(objPic[ObjPic_WOR][HOUSE_HARKONNEN][0].get(),2*2*D2_TILESIZE,0,2*D2_TILESIZE,2*D2_TILESIZE);
+    uiGraphic[UI_MapEditor_LightFactory][HOUSE_HARKONNEN] = getSubPicture(objPic[ObjPic_LightFactory][HOUSE_HARKONNEN][0].get(),2*2*D2_TILESIZE,0,2*D2_TILESIZE,2*D2_TILESIZE);
+    uiGraphic[UI_MapEditor_Refinery][HOUSE_HARKONNEN] = getSubPicture(objPic[ObjPic_Refinery][HOUSE_HARKONNEN][0].get(),2*3*D2_TILESIZE,0,3*D2_TILESIZE,2*D2_TILESIZE);
+    uiGraphic[UI_MapEditor_HighTechFactory][HOUSE_HARKONNEN] = getSubPicture(objPic[ObjPic_HighTechFactory][HOUSE_HARKONNEN][0].get(),2*3*D2_TILESIZE,0,3*D2_TILESIZE,2*D2_TILESIZE);
+    uiGraphic[UI_MapEditor_HeavyFactory][HOUSE_HARKONNEN] = getSubPicture(objPic[ObjPic_HeavyFactory][HOUSE_HARKONNEN][0].get(),2*3*D2_TILESIZE,0,3*D2_TILESIZE,2*D2_TILESIZE);
+    uiGraphic[UI_MapEditor_RepairYard][HOUSE_HARKONNEN] = getSubPicture(objPic[ObjPic_RepairYard][HOUSE_HARKONNEN][0].get(),2*3*D2_TILESIZE,0,3*D2_TILESIZE,2*D2_TILESIZE);
+    uiGraphic[UI_MapEditor_Starport][HOUSE_HARKONNEN] = getSubPicture(objPic[ObjPic_Starport][HOUSE_HARKONNEN][0].get(),2*3*D2_TILESIZE,0,3*D2_TILESIZE,3*D2_TILESIZE);
+    uiGraphic[UI_MapEditor_Palace][HOUSE_HARKONNEN] = getSubPicture(objPic[ObjPic_Palace][HOUSE_HARKONNEN][0].get(),2*3*D2_TILESIZE,0,3*D2_TILESIZE,3*D2_TILESIZE);
 
-    uiGraphic[UI_MapEditor_Soldier][HOUSE_HARKONNEN] = getSubFrame(objPic[ObjPic_Soldier][HOUSE_HARKONNEN][0],0,0,4,3);
-    uiGraphic[UI_MapEditor_Trooper][HOUSE_HARKONNEN] = getSubFrame(objPic[ObjPic_Trooper][HOUSE_HARKONNEN][0],0,0,4,3);
-    uiGraphic[UI_MapEditor_Harvester][HOUSE_HARKONNEN] = getSubFrame(objPic[ObjPic_Harvester][HOUSE_HARKONNEN][0],0,0,8,1);
-    uiGraphic[UI_MapEditor_Infantry][HOUSE_HARKONNEN] = getSubFrame(objPic[ObjPic_Infantry][HOUSE_HARKONNEN][0],0,0,4,4);
-    uiGraphic[UI_MapEditor_Troopers][HOUSE_HARKONNEN] = getSubFrame(objPic[ObjPic_Troopers][HOUSE_HARKONNEN][0],0,0,4,4);
-    uiGraphic[UI_MapEditor_MCV][HOUSE_HARKONNEN] = getSubFrame(objPic[ObjPic_MCV][HOUSE_HARKONNEN][0],0,0,8,1);
-    uiGraphic[UI_MapEditor_Trike][HOUSE_HARKONNEN] = getSubFrame(objPic[ObjPic_Trike][HOUSE_HARKONNEN][0],0,0,8,1);
-    uiGraphic[UI_MapEditor_Raider][HOUSE_HARKONNEN] = getSubFrame(objPic[ObjPic_Trike][HOUSE_HARKONNEN][0],0,0,8,1);
-    uiGraphic[UI_MapEditor_Raider][HOUSE_HARKONNEN] = combinePictures(uiGraphic[UI_MapEditor_Raider][HOUSE_HARKONNEN], objPic[ObjPic_Star][HOUSE_HARKONNEN][1],
+    uiGraphic[UI_MapEditor_Soldier][HOUSE_HARKONNEN] = getSubFrame(objPic[ObjPic_Soldier][HOUSE_HARKONNEN][0].get(),0,0,4,3);
+    uiGraphic[UI_MapEditor_Trooper][HOUSE_HARKONNEN] = getSubFrame(objPic[ObjPic_Trooper][HOUSE_HARKONNEN][0].get(),0,0,4,3);
+    uiGraphic[UI_MapEditor_Harvester][HOUSE_HARKONNEN] = getSubFrame(objPic[ObjPic_Harvester][HOUSE_HARKONNEN][0].get(),0,0,8,1);
+    uiGraphic[UI_MapEditor_Infantry][HOUSE_HARKONNEN] = getSubFrame(objPic[ObjPic_Infantry][HOUSE_HARKONNEN][0].get(),0,0,4,4);
+    uiGraphic[UI_MapEditor_Troopers][HOUSE_HARKONNEN] = getSubFrame(objPic[ObjPic_Troopers][HOUSE_HARKONNEN][0].get(),0,0,4,4);
+    uiGraphic[UI_MapEditor_MCV][HOUSE_HARKONNEN] = getSubFrame(objPic[ObjPic_MCV][HOUSE_HARKONNEN][0].get(),0,0,8,1);
+    uiGraphic[UI_MapEditor_Trike][HOUSE_HARKONNEN] = getSubFrame(objPic[ObjPic_Trike][HOUSE_HARKONNEN][0].get(),0,0,8,1);
+    uiGraphic[UI_MapEditor_Raider][HOUSE_HARKONNEN] = getSubFrame(objPic[ObjPic_Trike][HOUSE_HARKONNEN][0].get(),0,0,8,1);
+    uiGraphic[UI_MapEditor_Raider][HOUSE_HARKONNEN] = combinePictures(uiGraphic[UI_MapEditor_Raider][HOUSE_HARKONNEN].get(), objPic[ObjPic_Star][HOUSE_HARKONNEN][1].get(),
                                                                       uiGraphic[UI_MapEditor_Raider][HOUSE_HARKONNEN]->w - objPic[ObjPic_Star][HOUSE_HARKONNEN][1]->w,
                                                                       uiGraphic[UI_MapEditor_Raider][HOUSE_HARKONNEN]->h - objPic[ObjPic_Star][HOUSE_HARKONNEN][1]->h,
-                                                                      true, false);
-    uiGraphic[UI_MapEditor_Quad][HOUSE_HARKONNEN] = getSubFrame(objPic[ObjPic_Quad][HOUSE_HARKONNEN][0],0,0,8,1);
-    uiGraphic[UI_MapEditor_Tank][HOUSE_HARKONNEN] = combinePictures(getSubFrame(objPic[ObjPic_Tank_Base][HOUSE_HARKONNEN][0],0,0,8,1), getSubFrame(objPic[ObjPic_Tank_Gun][HOUSE_HARKONNEN][0],0,0,8,1), 0, 0);
-    uiGraphic[UI_MapEditor_SiegeTank][HOUSE_HARKONNEN] = combinePictures(getSubFrame(objPic[ObjPic_Siegetank_Base][HOUSE_HARKONNEN][0],0,0,8,1), getSubFrame(objPic[ObjPic_Siegetank_Gun][HOUSE_HARKONNEN][0],0,0,8,1), 2, -4);
-    uiGraphic[UI_MapEditor_Launcher][HOUSE_HARKONNEN] = combinePictures(getSubFrame(objPic[ObjPic_Tank_Base][HOUSE_HARKONNEN][0],0,0,8,1), getSubFrame(objPic[ObjPic_Launcher_Gun][HOUSE_HARKONNEN][0],0,0,8,1), 3, 0);
-    uiGraphic[UI_MapEditor_Devastator][HOUSE_HARKONNEN] = combinePictures(getSubFrame(objPic[ObjPic_Devastator_Base][HOUSE_HARKONNEN][0],0,0,8,1), getSubFrame(objPic[ObjPic_Devastator_Gun][HOUSE_HARKONNEN][0],0,0,8,1), 2, -4);
-    uiGraphic[UI_MapEditor_SonicTank][HOUSE_HARKONNEN] = combinePictures(getSubFrame(objPic[ObjPic_Tank_Base][HOUSE_HARKONNEN][0],0,0,8,1), getSubFrame(objPic[ObjPic_Sonictank_Gun][HOUSE_HARKONNEN][0],0,0,8,1), 3, 1);
-    uiGraphic[UI_MapEditor_Deviator][HOUSE_HARKONNEN] = combinePictures(getSubFrame(objPic[ObjPic_Tank_Base][HOUSE_HARKONNEN][0],0,0,8,1), getSubFrame(objPic[ObjPic_Launcher_Gun][HOUSE_HARKONNEN][0],0,0,8,1), 3, 0);
-    uiGraphic[UI_MapEditor_Deviator][HOUSE_HARKONNEN] = combinePictures(uiGraphic[UI_MapEditor_Deviator][HOUSE_HARKONNEN], objPic[ObjPic_Star][HOUSE_HARKONNEN][1],
+                                                                      false, false);
+    uiGraphic[UI_MapEditor_Quad][HOUSE_HARKONNEN] = getSubFrame(objPic[ObjPic_Quad][HOUSE_HARKONNEN][0].get(),0,0,8,1);
+    uiGraphic[UI_MapEditor_Tank][HOUSE_HARKONNEN] = combinePictures(getSubFrame(objPic[ObjPic_Tank_Base][HOUSE_HARKONNEN][0].get(),0,0,8,1).release(), getSubFrame(objPic[ObjPic_Tank_Gun][HOUSE_HARKONNEN][0].get(),0,0,8,1).release(), 0, 0);
+    uiGraphic[UI_MapEditor_SiegeTank][HOUSE_HARKONNEN] = combinePictures(getSubFrame(objPic[ObjPic_Siegetank_Base][HOUSE_HARKONNEN][0].get(),0,0,8,1).release(), getSubFrame(objPic[ObjPic_Siegetank_Gun][HOUSE_HARKONNEN][0].get(),0,0,8,1).release(), 2, -4);
+    uiGraphic[UI_MapEditor_Launcher][HOUSE_HARKONNEN] = combinePictures(getSubFrame(objPic[ObjPic_Tank_Base][HOUSE_HARKONNEN][0].get(),0,0,8,1).release(), getSubFrame(objPic[ObjPic_Launcher_Gun][HOUSE_HARKONNEN][0].get(),0,0,8,1).release(), 3, 0);
+    uiGraphic[UI_MapEditor_Devastator][HOUSE_HARKONNEN] = combinePictures(getSubFrame(objPic[ObjPic_Devastator_Base][HOUSE_HARKONNEN][0].get(),0,0,8,1).release(), getSubFrame(objPic[ObjPic_Devastator_Gun][HOUSE_HARKONNEN][0].get(),0,0,8,1).release(), 2, -4);
+    uiGraphic[UI_MapEditor_SonicTank][HOUSE_HARKONNEN] = combinePictures(getSubFrame(objPic[ObjPic_Tank_Base][HOUSE_HARKONNEN][0].get(),0,0,8,1).release(), getSubFrame(objPic[ObjPic_Sonictank_Gun][HOUSE_HARKONNEN][0].get(),0,0,8,1).release(), 3, 1);
+    uiGraphic[UI_MapEditor_Deviator][HOUSE_HARKONNEN] = combinePictures(getSubFrame(objPic[ObjPic_Tank_Base][HOUSE_HARKONNEN][0].get(),0,0,8,1).release(), getSubFrame(objPic[ObjPic_Launcher_Gun][HOUSE_HARKONNEN][0].get(),0,0,8,1).release(), 3, 0);
+    uiGraphic[UI_MapEditor_Deviator][HOUSE_HARKONNEN] = combinePictures(uiGraphic[UI_MapEditor_Deviator][HOUSE_HARKONNEN].get(), objPic[ObjPic_Star][HOUSE_HARKONNEN][1].get(),
                                                                   uiGraphic[UI_MapEditor_Deviator][HOUSE_HARKONNEN]->w - objPic[ObjPic_Star][HOUSE_HARKONNEN][1]->w,
                                                                   uiGraphic[UI_MapEditor_Deviator][HOUSE_HARKONNEN]->h - objPic[ObjPic_Star][HOUSE_HARKONNEN][1]->h,
-                                                                  true, false);
-    uiGraphic[UI_MapEditor_Saboteur][HOUSE_HARKONNEN] = getSubFrame(objPic[ObjPic_Saboteur][HOUSE_HARKONNEN][0],0,0,4,3);
-    uiGraphic[UI_MapEditor_Sandworm][HOUSE_HARKONNEN] = getSubFrame(objPic[ObjPic_Sandworm][HOUSE_HARKONNEN][0],0,5,1,9);
-    uiGraphic[UI_MapEditor_SpecialUnit][HOUSE_HARKONNEN] = combinePictures(getSubFrame(objPic[ObjPic_Devastator_Base][HOUSE_HARKONNEN][0],0,0,8,1), getSubFrame(objPic[ObjPic_Devastator_Gun][HOUSE_HARKONNEN][0],0,0,8,1), 2, -4);
-    uiGraphic[UI_MapEditor_SpecialUnit][HOUSE_HARKONNEN] = combinePictures(uiGraphic[UI_MapEditor_SpecialUnit][HOUSE_HARKONNEN], objPic[ObjPic_Star][HOUSE_HARKONNEN][1],
+                                                                  false, false);
+    uiGraphic[UI_MapEditor_Saboteur][HOUSE_HARKONNEN] = getSubFrame(objPic[ObjPic_Saboteur][HOUSE_HARKONNEN][0].get(),0,0,4,3);
+    uiGraphic[UI_MapEditor_Sandworm][HOUSE_HARKONNEN] = getSubFrame(objPic[ObjPic_Sandworm][HOUSE_HARKONNEN][0].get(),0,5,1,9);
+    uiGraphic[UI_MapEditor_SpecialUnit][HOUSE_HARKONNEN] = combinePictures(getSubFrame(objPic[ObjPic_Devastator_Base][HOUSE_HARKONNEN][0].get(),0,0,8,1).release(), getSubFrame(objPic[ObjPic_Devastator_Gun][HOUSE_HARKONNEN][0].get(),0,0,8,1).release(), 2, -4);
+    uiGraphic[UI_MapEditor_SpecialUnit][HOUSE_HARKONNEN] = combinePictures(uiGraphic[UI_MapEditor_SpecialUnit][HOUSE_HARKONNEN].get(), objPic[ObjPic_Star][HOUSE_HARKONNEN][1].get(),
                                                                   uiGraphic[UI_MapEditor_SpecialUnit][HOUSE_HARKONNEN]->w - objPic[ObjPic_Star][HOUSE_HARKONNEN][1]->w,
                                                                   uiGraphic[UI_MapEditor_SpecialUnit][HOUSE_HARKONNEN]->h - objPic[ObjPic_Star][HOUSE_HARKONNEN][1]->h,
-                                                                  true, false);
-    uiGraphic[UI_MapEditor_Carryall][HOUSE_HARKONNEN] = getSubFrame(objPic[ObjPic_Carryall][HOUSE_HARKONNEN][0],0,0,8,2);
-    uiGraphic[UI_MapEditor_Ornithopter][HOUSE_HARKONNEN] = getSubFrame(objPic[ObjPic_Ornithopter][HOUSE_HARKONNEN][0],0,0,8,3);
+                                                                  false, false);
+    uiGraphic[UI_MapEditor_Carryall][HOUSE_HARKONNEN] = getSubFrame(objPic[ObjPic_Carryall][HOUSE_HARKONNEN][0].get(),0,0,8,2);
+    uiGraphic[UI_MapEditor_Ornithopter][HOUSE_HARKONNEN] = getSubFrame(objPic[ObjPic_Ornithopter][HOUSE_HARKONNEN][0].get(),0,0,8,3);
 
     uiGraphic[UI_MapEditor_Pen1x1][HOUSE_HARKONNEN] = LoadPNG_RW(pFileManager->openFile("MapEditorPen1x1.png"),true);
-    SDL_SetColorKey(uiGraphic[UI_MapEditor_Pen1x1][HOUSE_HARKONNEN], SDL_TRUE, 0);
+    SDL_SetColorKey(uiGraphic[UI_MapEditor_Pen1x1][HOUSE_HARKONNEN].get(), SDL_TRUE, 0);
     uiGraphic[UI_MapEditor_Pen3x3][HOUSE_HARKONNEN] = LoadPNG_RW(pFileManager->openFile("MapEditorPen3x3.png"),true);
-    SDL_SetColorKey(uiGraphic[UI_MapEditor_Pen3x3][HOUSE_HARKONNEN], SDL_TRUE, 0);
+    SDL_SetColorKey(uiGraphic[UI_MapEditor_Pen3x3][HOUSE_HARKONNEN].get(), SDL_TRUE, 0);
     uiGraphic[UI_MapEditor_Pen5x5][HOUSE_HARKONNEN] = LoadPNG_RW(pFileManager->openFile("MapEditorPen5x5.png"),true);
-    SDL_SetColorKey(uiGraphic[UI_MapEditor_Pen5x5][HOUSE_HARKONNEN], SDL_TRUE, 0);
+    SDL_SetColorKey(uiGraphic[UI_MapEditor_Pen5x5][HOUSE_HARKONNEN].get(), SDL_TRUE, 0);
 
 
 
@@ -862,78 +863,21 @@ GFXManager::GFXManager() {
 
     // load map choice pieces
     for(int i = 0; i < NUM_MAPCHOICEPIECES; i++) {
-        mapChoicePieces[i][HOUSE_HARKONNEN] = Scaler::doubleSurfaceNN(pieces->getPicture(i));
-        SDL_SetColorKey(mapChoicePieces[i][HOUSE_HARKONNEN], SDL_TRUE, 0);
+        mapChoicePieces[i][HOUSE_HARKONNEN] = Scaler::doubleSurfaceNN(pieces->getPicture(i).release());
+        SDL_SetColorKey(mapChoicePieces[i][HOUSE_HARKONNEN].get(), SDL_TRUE, 0);
     }
 
     // pBackgroundSurface is separate as we never draw it but use it to construct other sprites
-    pBackgroundSurface = convertSurfaceToDisplayFormat(PicFactory->createBackground(), true);
+    pBackgroundSurface = convertSurfaceToDisplayFormat(PicFactory->createBackground().release(), true);
 }
 
 GFXManager::~GFXManager() {
-    for(int i = 0; i < NUM_OBJPICS; i++) {
-        for(int j = 0; j < (int) NUM_HOUSES; j++) {
-            for(int z = 0; z < NUM_ZOOMLEVEL; z++) {
-                if(objPic[i][j][z] != nullptr) {
-                    SDL_FreeSurface(objPic[i][j][z]);
-                    objPic[i][j][z] = nullptr;
-                }
-                if(objPicTex[i][j][z] != nullptr) {
-                    SDL_DestroyTexture(objPicTex[i][j][z]);
-                    objPicTex[i][j][z] = nullptr;
-                }
-            }
+    for(auto & a : animation) {
+        if(a != nullptr) {
+            delete a;
+            a = nullptr;
         }
     }
-
-    for(int i = 0; i < NUM_SMALLDETAILPICS; i++) {
-        if(smallDetailPicTex[i] != nullptr) {
-            SDL_DestroyTexture(smallDetailPicTex[i]);
-            smallDetailPicTex[i] = nullptr;
-        }
-    }
-
-    for(int i = 0; i < NUM_TINYPICTURE; i++) {
-        if(tinyPictureTex[i] != nullptr) {
-            SDL_DestroyTexture(tinyPictureTex[i]);
-            tinyPictureTex[i] = nullptr;
-        }
-    }
-
-    for(int i = 0; i < NUM_UIGRAPHICS; i++) {
-        for(int j = 0; j < (int) NUM_HOUSES; j++) {
-            if(uiGraphic[i][j] != nullptr) {
-                SDL_FreeSurface(uiGraphic[i][j]);
-                uiGraphic[i][j] = nullptr;
-            }
-            if(uiGraphicTex[i][j] != nullptr) {
-                SDL_DestroyTexture(uiGraphicTex[i][j]);
-                uiGraphicTex[i][j] = nullptr;
-            }
-        }
-    }
-
-    for(int i = 0; i < NUM_MAPCHOICEPIECES; i++) {
-        for(int j = 0; j < (int) NUM_HOUSES; j++) {
-            if(mapChoicePieces[i][j] != nullptr) {
-                SDL_FreeSurface(mapChoicePieces[i][j]);
-                mapChoicePieces[i][j] = nullptr;
-            }
-            if(mapChoicePiecesTex[i][j] != nullptr) {
-                SDL_DestroyTexture(mapChoicePiecesTex[i][j]);
-                mapChoicePiecesTex[i][j] = nullptr;
-            }
-        }
-    }
-
-    for(int i = 0; i < NUM_ANIMATION; i++) {
-        if(animation[i] != nullptr) {
-            delete animation[i];
-            animation[i] = nullptr;
-        }
-    }
-
-    SDL_FreeSurface(pBackgroundSurface);
 }
 
 SDL_Texture* GFXManager::getZoomedObjPic(unsigned int id, int house, unsigned int z) {
@@ -947,40 +891,40 @@ SDL_Texture* GFXManager::getZoomedObjPic(unsigned int id, int house, unsigned in
             THROW(std::runtime_error, "GFXManager::getZoomedObjPic(): Unit Picture with ID %u is not loaded!", id);
         }
 
-        objPic[id][house][z] = mapSurfaceColorRange(objPic[id][HOUSE_HARKONNEN][z], PALCOLOR_HARKONNEN, houseToPaletteIndex[house]);
+        objPic[id][house][z] = mapSurfaceColorRange(objPic[id][HOUSE_HARKONNEN][z].get(), PALCOLOR_HARKONNEN, houseToPaletteIndex[house]);
     }
 
     if(objPicTex[id][house][z] == nullptr) {
         // now convert to display format
         if(id == ObjPic_Windtrap) {
             // Windtrap uses palette animation on PALCOLOR_WINDTRAP_COLORCYCLE; fake this
-            objPicTex[id][house][z] = convertSurfaceToTexture(generateWindtrapAnimationFrames(objPic[id][house][z]), true);
+            objPicTex[id][house][z] = convertSurfaceToTexture(generateWindtrapAnimationFrames(objPic[id][house][z].get()));
         } else if(id == ObjPic_Terrain_HiddenFog) {
-            SDL_Surface* pHiddenFog = convertSurfaceToDisplayFormat(objPic[id][house][z], false);
-            replaceColor(pHiddenFog, COLOR_BLACK, COLOR_FOG_TRANSPARENT);
-            objPicTex[id][house][z] = convertSurfaceToTexture(pHiddenFog, true);
+            sdl2::surface_ptr pHiddenFog = convertSurfaceToDisplayFormat(objPic[id][house][z].get(), false);
+            replaceColor(pHiddenFog.get(), COLOR_BLACK, COLOR_FOG_TRANSPARENT);
+            objPicTex[id][house][z] = convertSurfaceToTexture(std::move(pHiddenFog));
         } else if(id == ObjPic_CarryallShadow) {
-            SDL_Surface* pShadow = convertSurfaceToDisplayFormat(objPic[id][house][z], false);
-            replaceColor(pShadow, COLOR_BLACK, COLOR_SHADOW_TRANSPARENT);
-            objPicTex[id][house][z] = convertSurfaceToTexture(pShadow, true);
+            sdl2::surface_ptr pShadow = convertSurfaceToDisplayFormat(objPic[id][house][z].get(), false);
+            replaceColor(pShadow.get(), COLOR_BLACK, COLOR_SHADOW_TRANSPARENT);
+            objPicTex[id][house][z] = convertSurfaceToTexture(std::move(pShadow));
         } else if(id == ObjPic_FrigateShadow) {
-            SDL_Surface* pShadow = convertSurfaceToDisplayFormat(objPic[id][house][z], false);
-            replaceColor(pShadow, COLOR_BLACK, COLOR_SHADOW_TRANSPARENT);
-            objPicTex[id][house][z] = convertSurfaceToTexture(pShadow, true);
+            sdl2::surface_ptr pShadow = convertSurfaceToDisplayFormat(objPic[id][house][z].get(), false);
+            replaceColor(pShadow.get(), COLOR_BLACK, COLOR_SHADOW_TRANSPARENT);
+            objPicTex[id][house][z] = convertSurfaceToTexture(std::move(pShadow));
         } else if(id == ObjPic_OrnithopterShadow) {
-            SDL_Surface* pShadow = convertSurfaceToDisplayFormat(objPic[id][house][z], false);
-            replaceColor(pShadow, COLOR_BLACK, COLOR_SHADOW_TRANSPARENT);
-            objPicTex[id][house][z] = convertSurfaceToTexture(pShadow, true);
+            sdl2::surface_ptr pShadow = convertSurfaceToDisplayFormat(objPic[id][house][z].get(), false);
+            replaceColor(pShadow.get(), COLOR_BLACK, COLOR_SHADOW_TRANSPARENT);
+            objPicTex[id][house][z] = convertSurfaceToTexture(std::move(pShadow));
         } else if(id == ObjPic_Bullet_SonicTemp) {
-            objPicTex[id][house][z] = SDL_CreateTexture(renderer, SCREEN_FORMAT, SDL_TEXTUREACCESS_TARGET, objPic[id][house][z]->w, objPic[id][house][z]->h);
+            objPicTex[id][house][z] = sdl2::texture_ptr{ SDL_CreateTexture(renderer, SCREEN_FORMAT, SDL_TEXTUREACCESS_TARGET, objPic[id][house][z]->w, objPic[id][house][z]->h) };
         } else if(id == ObjPic_SandwormShimmerTemp) {
-            objPicTex[id][house][z] = SDL_CreateTexture(renderer, SCREEN_FORMAT, SDL_TEXTUREACCESS_TARGET, objPic[id][house][z]->w, objPic[id][house][z]->h);
+            objPicTex[id][house][z] = sdl2::texture_ptr{ SDL_CreateTexture(renderer, SCREEN_FORMAT, SDL_TEXTUREACCESS_TARGET, objPic[id][house][z]->w, objPic[id][house][z]->h) };
         } else {
-            objPicTex[id][house][z] = convertSurfaceToTexture(objPic[id][house][z], false);
+            objPicTex[id][house][z] = convertSurfaceToTexture(objPic[id][house][z].get(), false);
         }
     }
 
-    return objPicTex[id][house][z];
+    return objPicTex[id][house][z].get();
 }
 
 zoomable_texture GFXManager::getObjPic(unsigned int id, int house) {
@@ -994,7 +938,7 @@ zoomable_texture GFXManager::getObjPic(unsigned int id, int house) {
         }
     }
 
-    return zoomable_texture{ objPicTex[id][house][0], objPicTex[id][house][1], objPicTex[id][house][2] };
+    return zoomable_texture{ objPicTex[id][house][0].get(), objPicTex[id][house][1].get(), objPicTex[id][house][2].get() };
 }
 
 
@@ -1002,7 +946,7 @@ SDL_Texture* GFXManager::getSmallDetailPic(unsigned int id) {
     if(id >= NUM_SMALLDETAILPICS) {
         return nullptr;
     }
-    return smallDetailPicTex[id];
+    return smallDetailPicTex[id].get();
 }
 
 
@@ -1010,7 +954,7 @@ SDL_Texture* GFXManager::getTinyPicture(unsigned int id) {
     if(id >= NUM_TINYPICTURE) {
         return nullptr;
     }
-    return tinyPictureTex[id];
+    return tinyPictureTex[id].get();
 }
 
 
@@ -1025,10 +969,10 @@ SDL_Surface* GFXManager::getUIGraphicSurface(unsigned int id, int house) {
             THROW(std::runtime_error, "GFXManager::getUIGraphicSurface(): UI Graphic with ID %u is not loaded!", id);
         }
 
-        uiGraphic[id][house] = mapSurfaceColorRange(uiGraphic[id][HOUSE_HARKONNEN], PALCOLOR_HARKONNEN, houseToPaletteIndex[house]);
+        uiGraphic[id][house] = mapSurfaceColorRange(uiGraphic[id][HOUSE_HARKONNEN].get(), PALCOLOR_HARKONNEN, houseToPaletteIndex[house]);
     }
 
-    return uiGraphic[id][house];
+    return uiGraphic[id][house].get();
 }
 
 SDL_Texture* GFXManager::getUIGraphic(unsigned int id, int house) {
@@ -1040,17 +984,17 @@ SDL_Texture* GFXManager::getUIGraphic(unsigned int id, int house) {
         SDL_Surface* pSurface = getUIGraphicSurface(id, house);
 
         if(id >= UI_MapChoiceArrow_None && id <= UI_MapChoiceArrow_Left) {
-            uiGraphicTex[id][house] = convertSurfaceToTexture(generateMapChoiceArrowFrames(pSurface, house), true);
+            uiGraphicTex[id][house] = convertSurfaceToTexture(generateMapChoiceArrowFrames(pSurface, house));
         } else if(id == UI_Indicator) {
-            SDL_Surface* pIndicator = convertSurfaceToDisplayFormat(pSurface, false);
-            replaceColor(pIndicator, COLOR_WHITE, COLOR_INDICATOR_TRANSPARENT);
-            uiGraphicTex[UI_Indicator][house] = convertSurfaceToTexture(pIndicator, true);
+            sdl2::surface_ptr pIndicator = convertSurfaceToDisplayFormat(pSurface, false);
+            replaceColor(pIndicator.get(), COLOR_WHITE, COLOR_INDICATOR_TRANSPARENT);
+            uiGraphicTex[UI_Indicator][house] = convertSurfaceToTexture(std::move(pIndicator));
         } else {
             uiGraphicTex[id][house] = convertSurfaceToTexture(pSurface, false);
         }
     }
 
-    return uiGraphicTex[id][house];
+    return uiGraphicTex[id][house].get();
 }
 
 SDL_Surface* GFXManager::getMapChoicePieceSurface(unsigned int num, int house) {
@@ -1064,10 +1008,10 @@ SDL_Surface* GFXManager::getMapChoicePieceSurface(unsigned int num, int house) {
             THROW(std::runtime_error, "GFXManager::getMapChoicePieceSurface(): Map Piece with number %u is not loaded!", num);
         }
 
-        mapChoicePieces[num][house] = mapSurfaceColorRange(mapChoicePieces[num][HOUSE_HARKONNEN], PALCOLOR_HARKONNEN, houseToPaletteIndex[house]);
+        mapChoicePieces[num][house] = mapSurfaceColorRange(mapChoicePieces[num][HOUSE_HARKONNEN].get(), PALCOLOR_HARKONNEN, houseToPaletteIndex[house]);
     }
 
-    return mapChoicePieces[num][house];
+    return mapChoicePieces[num][house].get();
 }
 
 SDL_Texture* GFXManager::getMapChoicePiece(unsigned int num, int house) {
@@ -1079,7 +1023,7 @@ SDL_Texture* GFXManager::getMapChoicePiece(unsigned int num, int house) {
         mapChoicePiecesTex[num][house] = convertSurfaceToTexture(getMapChoicePieceSurface(num, house), false);
     }
 
-    return mapChoicePiecesTex[num][house];
+    return mapChoicePiecesTex[num][house].get();
 }
 
 Animation* GFXManager::getAnimation(unsigned int id) {
@@ -1105,17 +1049,17 @@ Animation* GFXManager::getAnimation(unsigned int id) {
             } break;
 
             case Anim_FremenPlanet: {
-                animation[Anim_FremenPlanet] = PictureFactory::createFremenPlanet(uiGraphic[UI_Herald_ColoredLarge][HOUSE_FREMEN]);
+                animation[Anim_FremenPlanet] = PictureFactory::createFremenPlanet(uiGraphic[UI_Herald_ColoredLarge][HOUSE_FREMEN].get());
                 animation[Anim_FremenPlanet]->setFrameRate(10);
             } break;
 
             case Anim_SardaukarPlanet: {
-                animation[Anim_SardaukarPlanet] = PictureFactory::createSardaukarPlanet(getAnimation(Anim_OrdosPlanet), uiGraphic[UI_Herald_ColoredLarge][HOUSE_SARDAUKAR]);
+                animation[Anim_SardaukarPlanet] = PictureFactory::createSardaukarPlanet(getAnimation(Anim_OrdosPlanet), uiGraphic[UI_Herald_ColoredLarge][HOUSE_SARDAUKAR].get());
                 animation[Anim_SardaukarPlanet]->setFrameRate(10);
             } break;
 
             case Anim_MercenaryPlanet: {
-                animation[Anim_MercenaryPlanet] = PictureFactory::createMercenaryPlanet(getAnimation(Anim_AtreidesPlanet), uiGraphic[UI_Herald_ColoredLarge][HOUSE_MERCENARY]);
+                animation[Anim_MercenaryPlanet] = PictureFactory::createMercenaryPlanet(getAnimation(Anim_AtreidesPlanet), uiGraphic[UI_Herald_ColoredLarge][HOUSE_MERCENARY].get());
                 animation[Anim_MercenaryPlanet]->setFrameRate(10);
             } break;
 
@@ -1185,74 +1129,66 @@ Animation* GFXManager::getAnimation(unsigned int id) {
     return animation[id];
 }
 
-shared_ptr<Shpfile> GFXManager::loadShpfile(const std::string& filename) {
+std::unique_ptr<Shpfile> GFXManager::loadShpfile(const std::string& filename) const {
     try {
-        return std::make_shared<Shpfile>(pFileManager->openFile(filename), true);
+        return std::make_unique<Shpfile>(pFileManager->openFile(filename), true);
     } catch (std::exception &e) {
         THROW(std::runtime_error, "Error in file \"" + filename + "\":" + e.what());
     }
 }
 
-shared_ptr<Wsafile> GFXManager::loadWsafile(const std::string& filename) {
-    SDL_RWops* file_wsa = nullptr;
-    std::shared_ptr<Wsafile> wsafile;
+std::unique_ptr<Wsafile> GFXManager::loadWsafile(const std::string& filename) const {
     try {
-        file_wsa = pFileManager->openFile(filename);
-        wsafile = std::make_shared<Wsafile>(file_wsa);
-        SDL_RWclose(file_wsa);
-        return wsafile;
+        sdl2::RWop_ptr file_wsa{ pFileManager->openFile(filename) };
+        return std::make_unique<Wsafile>(file_wsa.get());
     } catch (std::exception &e) {
-        if(file_wsa != nullptr) {
-            SDL_RWclose(file_wsa);
-        }
         THROW(std::runtime_error, std::string("Error in file \"" + filename + "\":") + e.what());
     }
 }
 
-SDL_Texture* GFXManager::extractSmallDetailPic(const std::string& filename) {
-    SDL_RWops* myFile = pFileManager->openFile(filename);
-
-    Wsafile* myWsafile = new Wsafile(myFile);
-
-    SDL_Surface* tmp;
-    if((tmp = myWsafile->getPicture(0)) == nullptr) {
-        THROW(std::runtime_error, "Cannot decode first frame in file '%s'!", filename);
-    }
-
-    if((tmp->w != 184) || (tmp->h != 112)) {
-        THROW(std::runtime_error, "Picture '%s' is not of size 184x112!", filename);
-    }
-
-    SDL_Surface* pSurface;
+sdl2::texture_ptr GFXManager::extractSmallDetailPic(const std::string& filename) const
+{
+    sdl2::surface_ptr pSurface{ SDL_CreateRGBSurface(0, 91, 55, 8, 0, 0, 0, 0) };
 
     // create new picture surface
-    if((pSurface = SDL_CreateRGBSurface(0, 91, 55, 8, 0, 0, 0, 0)) == nullptr) {
+    if (pSurface == nullptr) {
         THROW(sdl_error, "Cannot create new surface: %s!", SDL_GetError());
     }
 
-    palette.applyToSurface(pSurface);
-    SDL_LockSurface(pSurface);
-    SDL_LockSurface(tmp);
+    { // Scope
+        sdl2::RWop_ptr myFile{ pFileManager->openFile(filename) };
 
-    //Now we can copy pixel by pixel
-    for(int y = 0; y < 55;y++) {
-        for(int x = 0; x < 91; x++) {
-            *( ((char*) (pSurface->pixels)) + y*pSurface->pitch + x)
-                = *( ((char*) (tmp->pixels)) + ((y*2)+1)*tmp->pitch + (x*2)+1);
+        auto myWsafile = std::make_unique<Wsafile>(myFile.get());
+
+        sdl2::surface_ptr tmp{ myWsafile->getPicture(0) };
+        if(tmp == nullptr) {
+            THROW(std::runtime_error, "Cannot decode first frame in file '%s'!", filename);
+        }
+
+        if((tmp->w != 184) || (tmp->h != 112)) {
+            THROW(std::runtime_error, "Picture '%s' is not of size 184x112!", filename);
+        }
+
+        palette.applyToSurface(pSurface.get());
+
+        sdl2::surface_lock lock_out{ pSurface.get() };
+        sdl2::surface_lock lock_in{ tmp.get() };
+
+        char * RESTRICT const out = static_cast<char*>(lock_out.pixels());
+        const char * RESTRICT const in = static_cast<const char*>(lock_in.pixels());
+
+        //Now we can copy pixel by pixel
+        for (auto y = 0; y < 55; y++) {
+            for (auto x = 0; x < 91; x++) {
+                out[y*pSurface->pitch + x] = in[((y * 2) + 1)*tmp->pitch + (x * 2) + 1];
+            }
         }
     }
 
-    SDL_UnlockSurface(tmp);
-    SDL_UnlockSurface(pSurface);
-
-    SDL_FreeSurface(tmp);
-    delete myWsafile;
-    SDL_RWclose(myFile);
-
-    return convertSurfaceToTexture(pSurface, true);
+    return convertSurfaceToTexture(pSurface.get(), false);
 }
 
-Animation* GFXManager::loadAnimationFromWsa(const std::string& filename) {
+Animation* GFXManager::loadAnimationFromWsa(const std::string& filename) const {
     SDL_RWops* file = pFileManager->openFile(filename);
     Wsafile* wsafile = new Wsafile(file);
     Animation* ret = wsafile->getAnimation(0,wsafile->getNumFrames() - 1,true,false);
@@ -1261,18 +1197,18 @@ Animation* GFXManager::loadAnimationFromWsa(const std::string& filename) {
     return ret;
 }
 
-SDL_Surface* GFXManager::generateWindtrapAnimationFrames(SDL_Surface* windtrapPic) {
+sdl2::surface_ptr GFXManager::generateWindtrapAnimationFrames(SDL_Surface* windtrapPic) const {
     int windtrapColorQuantizizer = 255/((NUM_WINDTRAP_ANIMATIONS/2)-2);
     int windtrapSize = windtrapPic->h;
     int sizeX = NUM_WINDTRAP_ANIMATIONS_PER_ROW*windtrapSize;
     int sizeY = ((2+NUM_WINDTRAP_ANIMATIONS+NUM_WINDTRAP_ANIMATIONS_PER_ROW-1)/NUM_WINDTRAP_ANIMATIONS_PER_ROW)*windtrapSize;
-    SDL_Surface* returnPic = SDL_CreateRGBSurface(0, sizeX, sizeY, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK);
-    SDL_SetSurfaceBlendMode(returnPic, SDL_BLENDMODE_NONE);
+    sdl2::surface_ptr returnPic{ SDL_CreateRGBSurface(0, sizeX, sizeY, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK) };
+    SDL_SetSurfaceBlendMode(returnPic.get(), SDL_BLENDMODE_NONE);
 
     // copy building phase
     SDL_Rect src = { 0, 0, 2*windtrapSize, windtrapSize};
     SDL_Rect dest = src;
-    SDL_BlitSurface(windtrapPic, &src, returnPic, &dest);
+    SDL_BlitSurface(windtrapPic, &src, returnPic.get(), &dest);
 
     src.w = windtrapSize;
     dest.x += dest.w;
@@ -1297,7 +1233,7 @@ SDL_Surface* GFXManager::generateWindtrapAnimationFrames(SDL_Surface* windtrapPi
         }
         SDL_SetPaletteColors(windtrapPic->format->palette, &windtrapColor, PALCOLOR_WINDTRAP_COLORCYCLE, 1);
 
-        SDL_BlitSurface(windtrapPic, &src, returnPic, &dest);
+        SDL_BlitSurface(windtrapPic, &src, returnPic.get(), &dest);
 
         dest.x += dest.w;
         dest.y = dest.y + dest.h * (dest.x / sizeX);
@@ -1312,8 +1248,8 @@ SDL_Surface* GFXManager::generateWindtrapAnimationFrames(SDL_Surface* windtrapPi
 }
 
 
-SDL_Surface* GFXManager::generateMapChoiceArrowFrames(SDL_Surface* arrowPic, int house) {
-    SDL_Surface* returnPic = SDL_CreateRGBSurface(0, arrowPic->w*4, arrowPic->h, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK);
+sdl2::surface_ptr GFXManager::generateMapChoiceArrowFrames(SDL_Surface* arrowPic, int house) const {
+    sdl2::surface_ptr returnPic{ SDL_CreateRGBSurface(0, arrowPic->w * 4, arrowPic->h, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK) };
 
     SDL_Rect dest = {0, 0, arrowPic->w, arrowPic->h};
 
@@ -1322,37 +1258,35 @@ SDL_Surface* GFXManager::generateMapChoiceArrowFrames(SDL_Surface* arrowPic, int
             SDL_SetPaletteColors(arrowPic->format->palette, &palette[houseToPaletteIndex[house]+((i+k)%4)], 251+k, 1);
         }
 
-        SDL_BlitSurface(arrowPic, nullptr, returnPic, &dest);
+        SDL_BlitSurface(arrowPic, nullptr, returnPic.get(), &dest);
         dest.x += dest.w;
     }
 
     return returnPic;
 }
 
-SDL_Surface* GFXManager::generateDoubledObjPic(unsigned int id, int h) {
-    SDL_Surface* pSurface = nullptr;
-    std::string filename = std::string("Mask_2x_") + ObjPicNames.at(id) + std::string(".png");
+sdl2::surface_ptr GFXManager::generateDoubledObjPic(unsigned int id, int h) const {
+    sdl2::surface_ptr pSurface;
+    std::string filename = "Mask_2x_" + ObjPicNames.at(id) + ".png";
     if(settings.video.scaler == "ScaleHD") {
         if(pFileManager->exists(filename)) {
-            pSurface = Scaler::doubleTiledSurfaceNN(objPic[id][h][0], objPicTiles[id].x, objPicTiles[id].y, false);
+            pSurface = sdl2::surface_ptr{ Scaler::doubleTiledSurfaceNN(objPic[id][h][0].get(), objPicTiles[id].x, objPicTiles[id].y, false) };
 
-            SDL_Surface* pOverlay = LoadPNG_RW(pFileManager->openFile(filename), true);
-            SDL_SetColorKey(pOverlay, SDL_TRUE, PALCOLOR_UI_COLORCYCLE);
+            sdl2::surface_ptr pOverlay = LoadPNG_RW(pFileManager->openFile(filename), true);
+            SDL_SetColorKey(pOverlay.get(), SDL_TRUE, PALCOLOR_UI_COLORCYCLE);
 
             // SDL_BlitSurface will silently map PALCOLOR_BLACK to PALCOLOR_TRANSPARENT as both are RGB(0,0,0,255), so make them temporarily different
             pOverlay->format->palette->colors[PALCOLOR_BLACK].g = 1;
             pSurface->format->palette->colors[PALCOLOR_BLACK].g = 1;
-            SDL_BlitSurface(pOverlay, NULL, pSurface, NULL);
+            SDL_BlitSurface(pOverlay.get(), NULL, pSurface.get(), NULL);
             pOverlay->format->palette->colors[PALCOLOR_BLACK].g = 0;
             pSurface->format->palette->colors[PALCOLOR_BLACK].g = 0;
-
-            SDL_FreeSurface(pOverlay);
         } else {
             SDL_Log("Warning: No HD sprite sheet for '%s' in zoom level 1!", ObjPicNames.at(id).c_str());
-            pSurface = Scaler::defaultDoubleTiledSurface(objPic[id][h][0], objPicTiles[id].x, objPicTiles[id].y, false);
+            pSurface = sdl2::surface_ptr{ Scaler::defaultDoubleTiledSurface(objPic[id][h][0].get(), objPicTiles[id].x, objPicTiles[id].y, false) };
         }
     } else {
-        pSurface = Scaler::defaultDoubleTiledSurface(objPic[id][h][0], objPicTiles[id].x, objPicTiles[id].y, false);
+        pSurface = sdl2::surface_ptr{ Scaler::defaultDoubleTiledSurface(objPic[id][h][0].get(), objPicTiles[id].x, objPicTiles[id].y, false) };
     }
 
     if((pSurface->w > 2048) || (pSurface->h > 2048)) {
@@ -1362,30 +1296,28 @@ SDL_Surface* GFXManager::generateDoubledObjPic(unsigned int id, int h) {
     return pSurface;
 }
 
-SDL_Surface* GFXManager::generateTripledObjPic(unsigned int id, int h) {
-    SDL_Surface* pSurface = nullptr;
-    std::string filename = std::string("Mask_3x_") + ObjPicNames.at(id) + std::string(".png");
+sdl2::surface_ptr GFXManager::generateTripledObjPic(unsigned int id, int h) const {
+    sdl2::surface_ptr pSurface;
+    const std::string filename = "Mask_3x_" + ObjPicNames.at(id) + ".png";
     if(settings.video.scaler == "ScaleHD") {
         if(pFileManager->exists(filename)) {
-            pSurface = Scaler::tripleTiledSurfaceNN(objPic[id][h][0], objPicTiles[id].x, objPicTiles[id].y, false);
+            pSurface = sdl2::surface_ptr{ Scaler::tripleTiledSurfaceNN(objPic[id][h][0].get(), objPicTiles[id].x, objPicTiles[id].y, false) };
 
-            SDL_Surface* pOverlay = LoadPNG_RW(pFileManager->openFile(filename), true);
-            SDL_SetColorKey(pOverlay, SDL_TRUE, PALCOLOR_UI_COLORCYCLE);
+            sdl2::surface_ptr pOverlay = LoadPNG_RW(pFileManager->openFile(filename), true);
+            SDL_SetColorKey(pOverlay.get(), SDL_TRUE, PALCOLOR_UI_COLORCYCLE);
 
             // SDL_BlitSurface will silently map PALCOLOR_BLACK to PALCOLOR_TRANSPARENT as both are RGB(0,0,0,255), so make them temporarily different
             pOverlay->format->palette->colors[PALCOLOR_BLACK].g = 1;
             pSurface->format->palette->colors[PALCOLOR_BLACK].g = 1;
-            SDL_BlitSurface(pOverlay, NULL, pSurface, NULL);
+            SDL_BlitSurface(pOverlay.get(), NULL, pSurface.get(), NULL);
             pOverlay->format->palette->colors[PALCOLOR_BLACK].g = 0;
             pSurface->format->palette->colors[PALCOLOR_BLACK].g = 0;
-
-            SDL_FreeSurface(pOverlay);
         } else {
             SDL_Log("Warning: No HD sprite sheet for '%s' in zoom level 2!", ObjPicNames.at(id).c_str());
-            pSurface = Scaler::defaultTripleTiledSurface(objPic[id][h][0], objPicTiles[id].x, objPicTiles[id].y, false);
+            pSurface = sdl2::surface_ptr{ Scaler::defaultTripleTiledSurface(objPic[id][h][0].get(), objPicTiles[id].x, objPicTiles[id].y, false) };
         }
     } else {
-        pSurface = Scaler::defaultTripleTiledSurface(objPic[id][h][0], objPicTiles[id].x, objPicTiles[id].y, false);
+        pSurface = sdl2::surface_ptr{ Scaler::defaultTripleTiledSurface(objPic[id][h][0].get(), objPicTiles[id].x, objPicTiles[id].y, false) };
     }
 
 

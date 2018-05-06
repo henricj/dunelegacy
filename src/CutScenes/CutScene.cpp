@@ -20,11 +20,10 @@
 #include <FileClasses/Palfile.h>
 #include <FileClasses/FileManager.h>
 #include <FileClasses/music/MusicPlayer.h>
+#include <misc/SDL2pp.h>
 
 #include <globals.h>
 #include <sand.h>
-
-#include <SDL2/SDL.h>
 
 CutScene::CutScene()
 {
@@ -51,9 +50,9 @@ void CutScene::run()
 
     while (!quiting)
     {
-        int frameStart = SDL_GetTicks();
+        const int frameStart = SDL_GetTicks();
 
-        int nextFrameTime = draw();
+        const int nextFrameTime = draw();
 
         while(SDL_PollEvent(&event)) {
 
@@ -73,7 +72,7 @@ void CutScene::run()
             }
         }
 
-        int frameTime = SDL_GetTicks() - frameStart;
+        const int frameTime = SDL_GetTicks() - frameStart;
         if(frameTime < nextFrameTime) {
             SDL_Delay(nextFrameTime - frameTime);
         }
@@ -134,4 +133,28 @@ int CutScene::draw()
     }
 
     return nextFrameTime;
+}
+
+std::unique_ptr<Wsafile> CutScene::create_wsafile(const char* name1)
+{
+    auto file1 = sdl2::RWop_ptr{pFileManager->openFile(name1)};
+
+    return std::make_unique<Wsafile>(file1.get());
+}
+
+std::unique_ptr<Wsafile> CutScene::create_wsafile(const char* name1, const char* name2)
+{
+    auto file1 = sdl2::RWop_ptr{pFileManager->openFile(name1)};
+    auto file2 = sdl2::RWop_ptr{pFileManager->openFile(name2)};
+
+    return std::make_unique<Wsafile>(file1.get(), file2.get());
+}
+
+std::unique_ptr<Wsafile> CutScene::create_wsafile(const char* name1, const char* name2, const char* name3)
+{
+    auto file1 = sdl2::RWop_ptr{pFileManager->openFile(name1)};
+    auto file2 = sdl2::RWop_ptr{pFileManager->openFile(name2)};
+    auto file3 = sdl2::RWop_ptr{pFileManager->openFile(name3)};
+
+    return std::make_unique<Wsafile>(file1.get(), file2.get(), file3.get());
 }

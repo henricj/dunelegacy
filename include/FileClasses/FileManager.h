@@ -19,9 +19,8 @@
 #define FILEMANAGER_H
 
 #include "Pakfile.h"
+#include <misc/SDL2pp.h>
 
-#include <SDL2/SDL_rwops.h>
-#include <SDL2/SDL.h>
 #include <string>
 #include <vector>
 #include <memory>

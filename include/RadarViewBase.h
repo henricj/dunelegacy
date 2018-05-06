@@ -22,7 +22,8 @@
 
 #include <DataTypes.h>
 
-#include <SDL2/SDL.h>
+#include <misc/SDL2pp.h>
+
 #include <functional>
 
 

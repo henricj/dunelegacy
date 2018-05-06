@@ -173,24 +173,22 @@ bool LoadSaveWindow::handleKeyPress(SDL_KeyboardEvent& key) {
 
 void LoadSaveWindow::onChildWindowClose(Window* pChildWindow) {
     QstBox* pQstBox = dynamic_cast<QstBox*>(pChildWindow);
-    if(pQstBox != nullptr) {
-        if(pQstBox->getPressedButtonID() == QSTBOX_BUTTON2) {
-            int index = fileList.getSelectedIndex();
-            if(index >= 0) {
-                std::string file2delete = directories[currentDirectoryIndex] + fileList.getEntry(index) + "." + extension;
+    if(pQstBox == nullptr || pQstBox->getPressedButtonID() != QSTBOX_BUTTON2) return;
 
-                if(remove(file2delete.c_str()) == 0) {
-                    // remove was successful => delete from list
-                    fileList.removeEntry(index);
-                    if(fileList.getNumEntries() > 0) {
-                        if(index >= fileList.getNumEntries()) {
-                            fileList.setSelectedItem(fileList.getNumEntries() - 1);
-                        } else {
-                            fileList.setSelectedItem(index);
-                        }
-                    }
-                }
-            }
+    int index = fileList.getSelectedIndex();
+    if(index < 0) return;
+
+    const auto file2delete = directories[currentDirectoryIndex] + fileList.getEntry(index) + "." + extension;
+
+    if(remove(file2delete.c_str()) != 0) return;
+
+    // remove was successful => delete from list
+    fileList.removeEntry(index);
+    if(fileList.getNumEntries() > 0) {
+        if(index >= fileList.getNumEntries()) {
+            fileList.setSelectedItem(fileList.getNumEntries() - 1);
+        } else {
+            fileList.setSelectedItem(index);
         }
     }
 }
@@ -240,11 +238,11 @@ void LoadSaveWindow::onDirectoryChange(int i) {
 }
 
 void LoadSaveWindow::onSelectionChange(bool bInteractive) {
-    if(bSaveWindow == true) {
-        int index = fileList.getSelectedIndex();
-        if(index >= 0) {
-            saveName.setText(fileList.getEntry(index));
-        }
+    if(bSaveWindow != true) return;
+
+    int index = fileList.getSelectedIndex();
+    if(index >= 0) {
+        saveName.setText(fileList.getEntry(index));
     }
 }
 

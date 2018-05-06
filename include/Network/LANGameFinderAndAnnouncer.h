@@ -19,10 +19,9 @@
 #define LANGAMEFINDERANDANNOUNCER_H
 
 #include <Network/GameServerInfo.h>
-
+#include <misc/SDL2pp.h>
 
 #include <enet/enet.h>
-#include <SDL2/SDL.h>
 #include <string>
 #include <list>
 #include <functional>

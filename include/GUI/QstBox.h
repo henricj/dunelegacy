@@ -26,8 +26,7 @@
 #include "Widget.h"
 #include "VBox.h"
 #include "HBox.h"
-
-#include <SDL2/SDL.h>
+#include <misc/SDL2pp.h>
 
 #include <iostream>
 

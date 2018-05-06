@@ -20,9 +20,11 @@
 
 #include "Widget.h"
 #include <misc/draw_util.h>
+#include <misc/SDL2pp.h>
 
 #include <string>
-#include <SDL2/SDL.h>
+
+#include <GUI/GUIStyle.h>
 
 #include <cmath>
 
@@ -32,7 +34,7 @@ class ProgressBar : public Widget {
 public:
 
     /// default constructor
-    ProgressBar() : Widget() {
+    ProgressBar() {
         percent = 0.0;
         color = COLOR_DEFAULT;
         bDrawShadow = false;
@@ -44,12 +46,16 @@ public:
 
     /// destructor
     virtual ~ProgressBar() {
-        if((bFreeBackground == true) && (pBackground != nullptr)) {
-            SDL_DestroyTexture(pBackground);
-        }
+        if (!bFreeBackground)
+            pBackground.release();
 
         invalidateTextures();
     }
+
+    ProgressBar(const ProgressBar&) = delete;
+    ProgressBar(ProgressBar &&) = delete;
+    ProgressBar& operator=(const ProgressBar &) = delete;
+    ProgressBar& operator=(ProgressBar &&) = delete;
 
     /**
         Sets the progress of this progress bar.
@@ -72,7 +78,7 @@ public:
         Return the current progress.
         \return the current progress in percent
     */
-    double getProgress() {
+    double getProgress() const noexcept {
         return percent;
     }
 
@@ -80,7 +86,7 @@ public:
         Sets the color of the progress bar overlay
         \param  color   the new color (COLOR_DEFAULT = default)
     */
-    inline void setColor(Uint32 color = COLOR_DEFAULT) {
+    void setColor(Uint32 color = COLOR_DEFAULT) {
         this->color = color;
         invalidateTextures();
     }
@@ -89,7 +95,7 @@ public:
         Specifies if a shadow is drawn or not.
         \param  bDrawShadow if true, a shadow is drawn
     */
-    inline void setDrawShadow(bool bDrawShadow) {
+    void setDrawShadow(bool bDrawShadow) {
         this->bDrawShadow = bDrawShadow;
     }
 
@@ -129,18 +135,18 @@ public:
         updateTextures();
 
         if(pBackground != nullptr) {
-            SDL_Rect dest = calcDrawingRect(pBackground, position.x, position.y);
-            SDL_RenderCopy(renderer, pBackground, nullptr, &dest);
+            auto dest = calcDrawingRect(pBackground.get(), position.x, position.y);
+            SDL_RenderCopy(renderer, pBackground.get(), nullptr, &dest);
         }
 
         if(pForeground != nullptr) {
-            SDL_Rect dest = calcDrawingRect(pForeground, position.x, position.y);
+            auto dest = calcDrawingRect(pForeground.get(), position.x, position.y);
             if(bDrawShadow) {
                 SDL_Rect dest2 = { position.x + 2, position.y + 2, (int) lround(percent*(dest.w/100.0)), dest.h };
                 renderFillRect(renderer, &dest2, COLOR_BLACK);
             }
 
-            SDL_RenderCopy(renderer, pForeground, nullptr, &dest);
+            SDL_RenderCopy(renderer, pForeground.get(), nullptr, &dest);
         }
     }
 
@@ -162,15 +168,12 @@ protected:
     */
     void invalidateTextures() override
     {
-        if(pForeground != nullptr) {
-            SDL_DestroyTexture(pForeground);
-            pForeground = nullptr;
-        }
+        pForeground.reset();
     }
 
-    SDL_Texture*    pBackground;
-    bool            bFreeBackground;
-    SDL_Texture*    pForeground;
+    sdl2::texture_ptr   pBackground;
+    bool                bFreeBackground;
+    sdl2::texture_ptr   pForeground;
 
     double percent;             ///< Percent from 0.0 to 100.0
     Uint32 color;               ///< The color of the progress overlay
@@ -179,18 +182,22 @@ protected:
 
 class TextProgressBar : public ProgressBar {
 public:
-    TextProgressBar() : ProgressBar() {
+    TextProgressBar() {
         bFreeBackground = true;
     }
 
-    virtual ~TextProgressBar() { ; };
+    virtual ~TextProgressBar() = default;
 
+    TextProgressBar(const TextProgressBar &) = delete;
+    TextProgressBar(TextProgressBar &&) = delete;
+    TextProgressBar& operator=(const TextProgressBar &) = delete;
+    TextProgressBar& operator=(TextProgressBar &&) = delete;
     /**
         This method sets a new text for this progress bar and resizes it
         to fit this text.
         \param  text The new text for this progress bar
     */
-    virtual inline void setText(const std::string& text) {
+    virtual void setText(const std::string& text) {
         if(this->text != text) {
             this->text = text;
             resizeAll();
@@ -201,14 +208,14 @@ public:
         Get the text of this progress bar.
         \return the text of this button
     */
-    inline const std::string& getText() const { return text; };
+    const std::string& getText() const noexcept { return text; };
 
     /**
         Sets the text color for this progress bar.
         \param  textcolor       the color of the text (COLOR_DEFAULT = default color)
         \param  textshadowcolor the color of the shadow of the text (COLOR_DEFAULT = default color)
     */
-    virtual inline void setTextColor(Uint32 textcolor, Uint32 textshadowcolor = COLOR_DEFAULT) {
+    virtual void setTextColor(Uint32 textcolor, Uint32 textshadowcolor = COLOR_DEFAULT) {
         this->textcolor = textcolor;
         this->textshadowcolor = textshadowcolor;
         invalidateTextures();
@@ -221,7 +228,7 @@ public:
     */
     Point getMinimumSize() const override
     {
-        if(text == "") {
+        if(text.empty()) {
             return Point(4,4);
         } else {
             return GUIStyle::getInstance().getMinimumButtonSize(text);
@@ -250,10 +257,7 @@ protected:
     {
         ProgressBar::invalidateTextures();
 
-        if(pBackground != nullptr) {
-            SDL_DestroyTexture(pBackground);
-            pBackground = nullptr;
-        }
+        pBackground.reset();
     }
 
     std::string text = "";           ///< Text of this progress bar
@@ -264,26 +268,34 @@ protected:
 
 class PictureProgressBar: public ProgressBar {
 public:
-    PictureProgressBar() : ProgressBar() {
-        enableResizing(false,false);
+    PictureProgressBar() {
+        Widget::enableResizing(false,false);
     }
 
-    virtual ~PictureProgressBar() { ; }
+    virtual ~PictureProgressBar() = default;
+
+    PictureProgressBar(const PictureProgressBar &) = delete;
+    PictureProgressBar(PictureProgressBar &&) = delete;
+    PictureProgressBar& operator=(const PictureProgressBar &) = delete;
+    PictureProgressBar& operator=(PictureProgressBar &&) = delete;
 
     void setSurface(SDL_Surface* pBackground, bool bFreeBackground) {
-        setTexture(convertSurfaceToTexture(pBackground, bFreeBackground), true);
+        setTexture(convertSurfaceToTexture(pBackground, bFreeBackground));
     }
 
-    void setTexture(SDL_Texture* pBackground, bool bFreeBackground) {
-        if((this->bFreeBackground == true) && (this->pBackground != nullptr)) {
-            SDL_DestroyTexture(this->pBackground);
-        }
+    void setTexture(SDL_Texture* pBackground, bool bFreeBackground = false) {
+        setTexture(sdl2::texture_ptr{ pBackground }, bFreeBackground);
+    }
 
-        this->pBackground = pBackground;
+    void setTexture(sdl2::texture_ptr pBackground, bool bFreeBackground = true) {
+        if (!this->bFreeBackground)
+            this->pBackground.release();
+
         this->bFreeBackground = bFreeBackground;
+        this->pBackground = std::move(pBackground);
 
         if(this->pBackground != nullptr) {
-            resize(getTextureSize(pBackground));
+            resize(getTextureSize(this->pBackground.get()));
         } else {
             resize(4,4);
         }
@@ -322,7 +334,7 @@ public:
         if(pBackground == nullptr) {
             return Point(4,4);
         } else {
-            return getTextureSize(pBackground);
+            return getTextureSize(pBackground.get());
         }
     }
 };

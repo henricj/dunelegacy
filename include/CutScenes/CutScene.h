@@ -20,8 +20,9 @@
 
 #include <CutScenes/Scene.h>
 #include <FileClasses/Palette.h>
+#include <FileClasses/Wsafile.h>
+#include <misc/SDL2pp.h>
 
-#include <SDL2/SDL.h>
 #include <queue>
 
 /// A base class for running Dune 2 Cutscenes.
@@ -89,6 +90,10 @@ protected:
         \return the milliseconds until the next frame shall be drawn.
     */
     int draw();
+
+    static std::unique_ptr<Wsafile> create_wsafile(const char* name1);
+    static std::unique_ptr<Wsafile> create_wsafile(const char* name1, const char* name2);
+    static std::unique_ptr<Wsafile> create_wsafile(const char* name1, const char* name2, const char* name3);
 
 private:
     std::queue<Scene*> scenes;      ///< List of all scenes

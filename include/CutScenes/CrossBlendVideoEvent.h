@@ -20,7 +20,7 @@
 
 #include <CutScenes/VideoEvent.h>
 #include <misc/BlendBlitter.h>
-#include <SDL2/SDL.h>
+#include <misc/SDL2pp.h>
 
 /**
     This VideoEvent blends between two pictures. The blending is done in 30 steps revealing more and more pixels
@@ -55,10 +55,10 @@ public:
 
 private:
     int currentFrame;               ///< the current frame number relative to the start of this CrossBlendVideoEvent
-    BlendBlitter* pBlendBlitter;    ///< the used blend blitter
-    SDL_Surface* pSourceSurface;    ///< the picture to blend from
-    SDL_Surface* pDestSurface;      ///< the picture to blend to
-    SDL_Texture* pStreamingTexture; ///< the texture used for rendering from
+    std::unique_ptr<BlendBlitter> pBlendBlitter;    ///< the used blend blitter
+    sdl2::surface_ptr pSourceSurface;    ///< the picture to blend from
+    sdl2::surface_ptr pDestSurface;      ///< the picture to blend to
+    sdl2::texture_ptr pStreamingTexture; ///< the texture used for rendering from
     bool bCenterVertical;           ///< true = center the surfaces vertically on the screen, false = blit the surfaces at the top of the screen
 };
 

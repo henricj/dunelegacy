@@ -40,46 +40,40 @@
 
 #include <string>
 
-Finale::Finale(int house)
- : CutScene(), pPalace1(nullptr), pPalace2(nullptr), pImperator(nullptr), pImperatorShocked(nullptr),
-   lizard(nullptr),glass(nullptr),click(nullptr),blaster(nullptr),blowup(nullptr) {
+Finale::Finale(int house) {
 
     switch(house) {
         case HOUSE_HARKONNEN: {
-            SDL_RWops* hfinala_wsa = pFileManager->openFile("HFINALA.WSA");
-            pPalace1 = new Wsafile(hfinala_wsa);
-            SDL_RWclose(hfinala_wsa);
+            {
+                sdl2::RWop_ptr hfinala_wsa{ pFileManager->openFile("HFINALA.WSA") };
+                pPalace1 = std::make_unique<Wsafile>(hfinala_wsa.get());
+            }
 
-            SDL_RWops* hfinalb_wsa = pFileManager->openFile("HFINALB.WSA");
-            SDL_RWops* hfinalc_wsa = pFileManager->openFile("HFINALC.WSA");
-            pPalace2 = new Wsafile(hfinalb_wsa, hfinalc_wsa);
-            SDL_RWclose(hfinalb_wsa);
-            SDL_RWclose(hfinalc_wsa);
+            sdl2::RWop_ptr hfinalb_wsa{ pFileManager->openFile("HFINALB.WSA") };
+            sdl2::RWop_ptr hfinalc_wsa{ pFileManager->openFile("HFINALC.WSA") };
+            pPalace2 = std::make_unique<Wsafile>(hfinalb_wsa.get(), hfinalc_wsa.get());
         } break;
 
         case HOUSE_ATREIDES: {
-            SDL_RWops* afinala_wsa = pFileManager->openFile("AFINALA.WSA");
-            pPalace1 = new Wsafile(afinala_wsa);
-            SDL_RWclose(afinala_wsa);
+            {
+                sdl2::RWop_ptr afinala_wsa{ pFileManager->openFile("AFINALA.WSA") };
+                pPalace1 = std::make_unique<Wsafile>(afinala_wsa.get());
+            }
 
-            SDL_RWops* afinalb_wsa = pFileManager->openFile("AFINALB.WSA");
-            pPalace2 = new Wsafile(afinalb_wsa);
-            SDL_RWclose(afinalb_wsa);
+            sdl2::RWop_ptr afinalb_wsa{ pFileManager->openFile("AFINALB.WSA") };
+            pPalace2 = std::make_unique<Wsafile>(afinalb_wsa.get());
         } break;
 
         case HOUSE_ORDOS: {
-            SDL_RWops* ofinala_wsa = pFileManager->openFile("OFINALA.WSA");
-            SDL_RWops* ofinalb_wsa = pFileManager->openFile("OFINALB.WSA");
-            SDL_RWops* ofinalc_wsa = pFileManager->openFile("OFINALC.WSA");
-            pPalace1 = new Wsafile(ofinala_wsa, ofinalb_wsa, ofinalc_wsa);
-            SDL_RWclose(ofinala_wsa);
-            SDL_RWclose(ofinalb_wsa);
-            SDL_RWclose(ofinalc_wsa);
+            {
+                sdl2::RWop_ptr ofinala_wsa{ pFileManager->openFile("OFINALA.WSA") };
+                sdl2::RWop_ptr ofinalb_wsa{ pFileManager->openFile("OFINALB.WSA") };
+                sdl2::RWop_ptr ofinalc_wsa{ pFileManager->openFile("OFINALC.WSA") };
+                pPalace1 = std::make_unique<Wsafile>(ofinala_wsa.get(), ofinalb_wsa.get(), ofinalc_wsa.get());
+            }
 
-            SDL_RWops* ofinald_wsa = pFileManager->openFile("OFINALD.WSA");
-            pPalace2 = new Wsafile(ofinald_wsa);
-            SDL_RWclose(ofinald_wsa);
-
+            sdl2::RWop_ptr ofinald_wsa{ pFileManager->openFile("OFINALD.WSA") };
+            pPalace2 = std::make_unique<Wsafile>(ofinald_wsa.get());
         } break;
 
         default: {
@@ -88,26 +82,26 @@ Finale::Finale(int house)
     }
 
     if(house == HOUSE_HARKONNEN || house == HOUSE_ATREIDES || house == HOUSE_ORDOS) {
-        SDL_RWops* efinala_wsa = pFileManager->openFile("EFINALA.WSA");
-        pImperator = new Wsafile(efinala_wsa);
-        SDL_RWclose(efinala_wsa);
-
-        SDL_RWops* efinalb_wsa = pFileManager->openFile("EFINALB.WSA");
-        pImperatorShocked = new Wsafile(efinalb_wsa);
-        SDL_RWclose(efinalb_wsa);
+        {
+            sdl2::RWop_ptr efinala_wsa{ pFileManager->openFile("EFINALA.WSA") };
+            pImperator = std::make_unique<Wsafile>(efinala_wsa.get());
+        }
+        {
+            sdl2::RWop_ptr efinalb_wsa{ pFileManager->openFile("EFINALB.WSA") };
+            pImperatorShocked = std::make_unique<Wsafile>(efinalb_wsa.get());
+        }
     }
 
-    SDL_Surface* pPlanetDuneNormalSurface;
-    if((pPlanetDuneNormalSurface = LoadCPS_RW(pFileManager->openFile("BIGPLAN.CPS"),true)) == nullptr) {
+    auto pPlanetDuneNormalSurface = LoadCPS_RW(pFileManager->openFile("BIGPLAN.CPS"), true);
+    if(pPlanetDuneNormalSurface == nullptr) {
         THROW(std::runtime_error, "Finale::Finale(): Cannot open BIGPLAN.CPS!");
     }
 
-    SDL_Surface* pTempSurface;
-    if((pTempSurface = LoadCPS_RW(pFileManager->openFile("MAPPLAN.CPS"),true)) == nullptr) {
+    auto pPlanetDuneInHouseColorSurface = LoadCPS_RW(pFileManager->openFile("MAPPLAN.CPS"), true);
+    if(pPlanetDuneInHouseColorSurface == nullptr) {
         THROW(std::runtime_error, "Finale::Finale(): Cannot open MAPPLAN.CPS!");
     }
-    SDL_Surface* pPlanetDuneInHouseColorSurface = mapSurfaceColorRange(pTempSurface, houseToPaletteIndex[HOUSE_HARKONNEN], houseToPaletteIndex[house]);
-    SDL_FreeSurface(pTempSurface);
+    pPlanetDuneInHouseColorSurface = mapSurfaceColorRange(pPlanetDuneInHouseColorSurface.get(), houseToPaletteIndex[HOUSE_HARKONNEN], houseToPaletteIndex[house]);
 
     if(house == HOUSE_HARKONNEN || house == HOUSE_ATREIDES || house == HOUSE_ORDOS) {
         lizard = getChunkFromFile("LIZARD1.VOC");
@@ -117,51 +111,51 @@ Finale::Finale(int house)
         blowup = getChunkFromFile("BLOWUP1.VOC");
     }
 
-    SDL_RWops* intro_lng = pFileManager->openFile("INTRO." + _("LanguageFileExtension"));
-    IndexedTextFile* pIntroText = new IndexedTextFile(intro_lng);
-    SDL_RWclose(intro_lng);
+    sdl2::RWop_ptr intro_lng{ pFileManager->openFile("INTRO." + _("LanguageFileExtension")) };
+    const auto pIntroText = std::make_unique<IndexedTextFile>(intro_lng.get());
+    intro_lng.reset();
 
-    Uint32 color = SDL2RGB(palette[houseToPaletteIndex[house]+1]);
-    Uint32 sardaukarColor = SDL2RGB(palette[PALCOLOR_SARDAUKAR+1]);
+    const Uint32 color = SDL2RGB(palette[houseToPaletteIndex[house]+1]);
+    const Uint32 sardaukarColor = SDL2RGB(palette[PALCOLOR_SARDAUKAR+1]);
 
     switch(house) {
         case HOUSE_HARKONNEN: {
             startNewScene();
 
-            addVideoEvent(new FadeInVideoEvent(pPalace1->getPicture(0), 20, true));
-            addVideoEvent(new HoldPictureVideoEvent(pPalace1->getPicture(0), 25, true));
-            addVideoEvent(new WSAVideoEvent(pPalace1));
-            addVideoEvent(new HoldPictureVideoEvent(pPalace1->getPicture(0), 52, true));
-            addVideoEvent(new WSAVideoEvent(pPalace1));
-            addVideoEvent(new HoldPictureVideoEvent(pPalace1->getPicture(0), 23, true));
+            addVideoEvent(new FadeInVideoEvent(pPalace1->getPicture(0).release(), 20, true));
+            addVideoEvent(new HoldPictureVideoEvent(pPalace1->getPicture(0).release(), 25, true));
+            addVideoEvent(new WSAVideoEvent(pPalace1.get()));
+            addVideoEvent(new HoldPictureVideoEvent(pPalace1->getPicture(0).release(), 52, true));
+            addVideoEvent(new WSAVideoEvent(pPalace1.get()));
+            addVideoEvent(new HoldPictureVideoEvent(pPalace1->getPicture(0).release(), 23, true));
             addTextEvent(new TextEvent(pIntroText->getString(FinaleText_You_are_indeed_not_entirely),color,22,47,false,true,false));
             addTextEvent(new TextEvent(pIntroText->getString(FinaleText_You_have_lied_to_us),color,70,60,true,true,false));
             addTrigger(new CutSceneMusicTrigger(0,MUSIC_FINALE_H));
 
             startNewScene();
 
-            addVideoEvent(new WSAVideoEvent(pImperator));
-            addVideoEvent(new HoldPictureVideoEvent(pImperator->getPicture(pImperator->getNumFrames()-1), 3, true));
+            addVideoEvent(new WSAVideoEvent(pImperator.get()));
+            addVideoEvent(new HoldPictureVideoEvent(pImperator->getPicture(pImperator->getNumFrames()-1).release(), 3, true));
             addTextEvent(new TextEvent(pIntroText->getString(FinaleText_What_lies_What_are),sardaukarColor,2,100,false,true,false));
 
             startNewScene();
 
-            addVideoEvent(new HoldPictureVideoEvent(pPalace1->getPicture(0), 50, true));
+            addVideoEvent(new HoldPictureVideoEvent(pPalace1->getPicture(0).release(), 50, true));
             addTextEvent(new TextEvent(pIntroText->getString(FinaleText_Your_lies_of_loyalty),color,0,50,true,true,false));
 
             startNewScene();
 
-            addVideoEvent(new HoldPictureVideoEvent(pImperatorShocked->getPicture(0), 45, true));
-            addVideoEvent(new HoldPictureVideoEvent(pImperatorShocked->getPicture(1), 15, true));
+            addVideoEvent(new HoldPictureVideoEvent(pImperatorShocked->getPicture(0).release(), 45, true));
+            addVideoEvent(new HoldPictureVideoEvent(pImperatorShocked->getPicture(1).release(), 15, true));
             addTextEvent(new TextEvent(pIntroText->getString(FinaleText_A_crime_for_which_you),color,2,38,true,false,false));
             addTextEvent(new TextEvent(pIntroText->getString(FinaleText_with_your_life),color,42,100,false,false,false));
 
             startNewScene();
 
-            addVideoEvent(new HoldPictureVideoEvent(pPalace2->getPicture(0), 5, true));
-            addVideoEvent(new WSAVideoEvent(pPalace2));
-            addVideoEvent(new HoldPictureVideoEvent(pPalace2->getPicture(pPalace2->getNumFrames()-1), 15, true));
-            addVideoEvent(new FadeOutVideoEvent(pPalace2->getPicture(pPalace2->getNumFrames()-1), 20, true));
+            addVideoEvent(new HoldPictureVideoEvent(pPalace2->getPicture(0).release(), 5, true));
+            addVideoEvent(new WSAVideoEvent(pPalace2.get()));
+            addVideoEvent(new HoldPictureVideoEvent(pPalace2->getPicture(pPalace2->getNumFrames()-1).release(), 15, true));
+            addVideoEvent(new FadeOutVideoEvent(pPalace2->getPicture(pPalace2->getNumFrames()-1).release(), 20, true));
             addTextEvent(new TextEvent(pIntroText->getString(FinaleText_NO_NO_NOOO),sardaukarColor,10,30,false,true,false));
             addTrigger(new CutSceneSoundTrigger(10,click.get()));
             addTrigger(new CutSceneSoundTrigger(15,blaster.get()));
@@ -176,35 +170,35 @@ Finale::Finale(int house)
         case HOUSE_ATREIDES: {
             startNewScene();
 
-            addVideoEvent(new FadeInVideoEvent(pPalace1->getPicture(0), 20, true));
-            addVideoEvent(new HoldPictureVideoEvent(pPalace1->getPicture(0), 50, true));
+            addVideoEvent(new FadeInVideoEvent(pPalace1->getPicture(0).release(), 20, true));
+            addVideoEvent(new HoldPictureVideoEvent(pPalace1->getPicture(0).release(), 50, true));
             addTextEvent(new TextEvent(pIntroText->getString(FinaleText_Greetings_Emperor),color,15,48,false,true,false));
             addTrigger(new CutSceneMusicTrigger(0,MUSIC_FINALE_A));
 
             startNewScene();
 
-            addVideoEvent(new WSAVideoEvent(pImperator));
-            addVideoEvent(new HoldPictureVideoEvent(pImperator->getPicture(pImperator->getNumFrames()-1), 3, true));
+            addVideoEvent(new WSAVideoEvent(pImperator.get()));
+            addVideoEvent(new HoldPictureVideoEvent(pImperator->getPicture(pImperator->getNumFrames()-1).release(), 3, true));
             addTextEvent(new TextEvent(pIntroText->getString(FinaleText_What_is_the_meaning),sardaukarColor,2,100,false,false,false));
 
             startNewScene();
 
-            addVideoEvent(new WSAVideoEvent(pPalace1));
-            addVideoEvent(new HoldPictureVideoEvent(pPalace1->getPicture(pPalace1->getNumFrames()-1), 25, true));
+            addVideoEvent(new WSAVideoEvent(pPalace1.get()));
+            addVideoEvent(new HoldPictureVideoEvent(pPalace1->getPicture(pPalace1->getNumFrames()-1).release(), 25, true));
             addTextEvent(new TextEvent(pIntroText->getString(FinaleText_You_are_formally_charged),color,0,105,true,false,false));
 
             startNewScene();
 
-            addVideoEvent(new HoldPictureVideoEvent(pImperatorShocked->getPicture(0), 34, true));
-            addVideoEvent(new HoldPictureVideoEvent(pImperatorShocked->getPicture(1), 20, true));
+            addVideoEvent(new HoldPictureVideoEvent(pImperatorShocked->getPicture(0).release(), 34, true));
+            addVideoEvent(new HoldPictureVideoEvent(pImperatorShocked->getPicture(1).release(), 20, true));
             addTextEvent(new TextEvent(pIntroText->getString(FinaleText_The_House_shall_determine),color,2,40,false,false,false));
 
             startNewScene();
 
-            addVideoEvent(new HoldPictureVideoEvent(pPalace2->getPicture(0), 15, true));
-            addVideoEvent(new WSAVideoEvent(pPalace2));
-            addVideoEvent(new HoldPictureVideoEvent(pPalace2->getPicture(pPalace2->getNumFrames()-1), 30, true));
-            addVideoEvent(new FadeOutVideoEvent(pPalace2->getPicture(pPalace2->getNumFrames()-1), 20, true));
+            addVideoEvent(new HoldPictureVideoEvent(pPalace2->getPicture(0).release(), 15, true));
+            addVideoEvent(new WSAVideoEvent(pPalace2.get()));
+            addVideoEvent(new HoldPictureVideoEvent(pPalace2->getPicture(pPalace2->getNumFrames()-1).release(), 30, true));
+            addVideoEvent(new FadeOutVideoEvent(pPalace2->getPicture(pPalace2->getNumFrames()-1).release(), 20, true));
             addTextEvent(new TextEvent(pIntroText->getString(FinaleText_Until_then_you_shall_no),color,2,48,false,true,false));
 
         } break;
@@ -212,22 +206,22 @@ Finale::Finale(int house)
         case HOUSE_ORDOS: {
             startNewScene();
 
-            addVideoEvent(new FadeInVideoEvent(pPalace1->getPicture(0), 20, true));
-            addVideoEvent(new HoldPictureVideoEvent(pPalace1->getPicture(0), 50, true));
+            addVideoEvent(new FadeInVideoEvent(pPalace1->getPicture(0).release(), 20, true));
+            addVideoEvent(new HoldPictureVideoEvent(pPalace1->getPicture(0).release(), 50, true));
             addTextEvent(new TextEvent(pIntroText->getString(FinaleText_You_are_aware_Emperor),color,22,46,false,true,false));
             addTrigger(new CutSceneMusicTrigger(0,MUSIC_FINALE_O));
 
             startNewScene();
 
-            addVideoEvent(new WSAVideoEvent(pImperator));
-            addVideoEvent(new HoldPictureVideoEvent(pImperator->getPicture(pImperator->getNumFrames()-1), 3, true));
+            addVideoEvent(new WSAVideoEvent(pImperator.get()));
+            addVideoEvent(new HoldPictureVideoEvent(pImperator->getPicture(pImperator->getNumFrames()-1).release(), 3, true));
             addTextEvent(new TextEvent(pIntroText->getString(FinaleText_What_games_What_are_you),sardaukarColor,2,100,false,true,false));
 
             startNewScene();
 
-            addVideoEvent(new HoldPictureVideoEvent(pPalace1->getPicture(0), 40, true));
-            addVideoEvent(new WSAVideoEvent(pPalace1));
-            addVideoEvent(new HoldPictureVideoEvent(pPalace1->getPicture(pPalace1->getNumFrames()-1), 65, true));
+            addVideoEvent(new HoldPictureVideoEvent(pPalace1->getPicture(0).release(), 40, true));
+            addVideoEvent(new WSAVideoEvent(pPalace1.get()));
+            addVideoEvent(new HoldPictureVideoEvent(pPalace1->getPicture(pPalace1->getNumFrames()-1).release(), 65, true));
             addTextEvent(new TextEvent(pIntroText->getString(FinaleText_I_am_referring_to_your_game),color,2,35,false,true,false));
             addTextEvent(new TextEvent(pIntroText->getString(FinaleText_We_were_your_pawns_and_Dune),color,40,45,true,true,false));
             addTextEvent(new TextEvent(pIntroText->getString(FinaleText_We_have_decided_to_take),color,88,105,true,false,false));
@@ -236,15 +230,15 @@ Finale::Finale(int house)
 
             startNewScene();
 
-            addVideoEvent(new HoldPictureVideoEvent(pImperatorShocked->getPicture(0), 29, true));
-            addVideoEvent(new HoldPictureVideoEvent(pImperatorShocked->getPicture(1), 20, true));
+            addVideoEvent(new HoldPictureVideoEvent(pImperatorShocked->getPicture(0).release(), 29, true));
+            addVideoEvent(new HoldPictureVideoEvent(pImperatorShocked->getPicture(1).release(), 20, true));
             addTextEvent(new TextEvent(pIntroText->getString(FinaleText_You_are_to_be_our_pawn),color,2,47,false,true,false));
 
             startNewScene();
 
-            addVideoEvent(new WSAVideoEvent(pPalace2));
-            addVideoEvent(new HoldPictureVideoEvent(pPalace2->getPicture(pPalace2->getNumFrames()-1), 15, true));
-            addVideoEvent(new FadeOutVideoEvent(pPalace2->getPicture(pPalace2->getNumFrames()-1), 20, true));
+            addVideoEvent(new WSAVideoEvent(pPalace2.get()));
+            addVideoEvent(new HoldPictureVideoEvent(pPalace2->getPicture(pPalace2->getNumFrames()-1).release(), 15, true));
+            addVideoEvent(new FadeOutVideoEvent(pPalace2->getPicture(pPalace2->getNumFrames()-1).release(), 20, true));
 
         } break;
 
@@ -253,22 +247,13 @@ Finale::Finale(int house)
         } break;
     }
 
-    addVideoEvent(new FadeInVideoEvent(pPlanetDuneNormalSurface, 20, false));
-    addVideoEvent(new HoldPictureVideoEvent(pPlanetDuneNormalSurface, 10, false));
-    addVideoEvent(new CrossBlendVideoEvent(pPlanetDuneNormalSurface, pPlanetDuneInHouseColorSurface, false));
-    addVideoEvent(new HoldPictureVideoEvent(pPlanetDuneInHouseColorSurface, 50, false));
-    addVideoEvent(new FadeOutVideoEvent(pPlanetDuneInHouseColorSurface, 20, false));
+    addVideoEvent(new FadeInVideoEvent(pPlanetDuneNormalSurface.get(), 20, false));
+    addVideoEvent(new HoldPictureVideoEvent(pPlanetDuneNormalSurface.get(), 10, false));
+    addVideoEvent(new CrossBlendVideoEvent(pPlanetDuneNormalSurface.get(), pPlanetDuneInHouseColorSurface.get(), false));
+    addVideoEvent(new HoldPictureVideoEvent(pPlanetDuneInHouseColorSurface.get(), 50, false));
+    addVideoEvent(new FadeOutVideoEvent(pPlanetDuneInHouseColorSurface.get(), 20, false));
     addVideoEvent(new HoldPictureVideoEvent(nullptr, 10, false));
-
-    delete pIntroText;
-
-    SDL_FreeSurface(pPlanetDuneNormalSurface);
-    SDL_FreeSurface(pPlanetDuneInHouseColorSurface);
 }
 
-Finale::~Finale() {
-    delete pPalace1;
-    delete pPalace2;
-    delete pImperator;
-    delete pImperatorShocked;
-}
+Finale::~Finale() = default;
+

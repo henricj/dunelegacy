@@ -18,13 +18,13 @@
 #ifndef LOADSAVEPNG_H
 #define LOADSAVEPNG_H
 
-#include <SDL2/SDL.h>
+#include <misc/SDL2pp.h>
 
 #define LoadPNG(file) SDL_LoadPNG_RW(SDL_RWFromFile(file, "rb"), 1)
 #define SavePNG(surface, file) SavePNG_RW(surface, SDL_RWFromFile(file, "wb"), 1)
 
 
-SDL_Surface* LoadPNG_RW(SDL_RWops* RWop, int freesrc);
+sdl2::surface_ptr LoadPNG_RW(SDL_RWops* RWop, int freesrc);
 
 int SavePNG_RW(SDL_Surface* surface, SDL_RWops* RWop, int freedst);
 

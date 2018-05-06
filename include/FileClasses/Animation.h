@@ -19,8 +19,8 @@
 #define ANIMATION_H
 
 #include <FileClasses/Palette.h>
+#include <misc/SDL2pp.h>
 
-#include <SDL2/SDL.h>
 #include <vector>
 
 #define INVALID_FRAME ((unsigned int) -1)
@@ -41,7 +41,7 @@ public:
 
     SDL_Texture* getFrameTexture();
 
-    const std::vector<SDL_Surface*>& getFrames() { return frames; };
+    const std::vector<sdl2::surface_ptr>& getFrames() { return frames; };
 
     void setFrameRate(double FrameRate) {
         if(FrameRate == 0.0) {
@@ -92,8 +92,8 @@ private:
     int loopsLeft;
     unsigned int curFrame;
     unsigned int curFrameOverride;
-    std::vector<SDL_Surface*> frames;
-    std::vector<SDL_Texture*> frameTextures;
+    std::vector<sdl2::surface_ptr> frames;
+    std::vector<sdl2::texture_ptr> frameTextures;
 };
 
 #endif // ANIMATION_H

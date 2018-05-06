@@ -19,8 +19,7 @@
 #define WIDGET_H
 
 #include <misc/DrawingRectHelper.h>
-
-#include <SDL2/SDL.h>
+#include <misc/SDL2pp.h>
 
 #include <functional>
 #include <iostream>
@@ -140,6 +139,11 @@ public:
             parent->removeChildWidget(this);
         }
     }
+
+    Widget(const Widget &) = default;
+    Widget(Widget &&) = default;
+    Widget& operator=(const Widget &) = delete;
+    Widget& operator=(Widget &&) = default;
 
     /**
         Sets the parent of this widget.

@@ -45,8 +45,7 @@
 #include <GUI/QstBox.h>
 
 #include <misc/draw_util.h>
-
-#include <SDL2/SDL.h>
+#include <misc/SDL2pp.h>
 
 
 MapEditorInterface::MapEditorInterface(MapEditor* pMapEditor)

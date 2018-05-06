@@ -22,7 +22,7 @@
 
 #include <Definitions.h>
 
-#include <SDL2/SDL.h>
+#include <misc/SDL2pp.h>
 
 // forward declarations
 class UnitBase;

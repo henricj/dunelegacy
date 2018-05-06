@@ -35,12 +35,7 @@ NewsTicker::NewsTicker() : Widget() {
     resize(getTextureSize(pBackground));
 }
 
-NewsTicker::~NewsTicker() {
-    if(pCurrentMessageTexture != nullptr) {
-        SDL_DestroyTexture(pCurrentMessageTexture);
-        pCurrentMessageTexture = nullptr;
-    }
-}
+NewsTicker::~NewsTicker() = default;
 
 void NewsTicker::addMessage(const std::string& msg)
 {
@@ -103,10 +98,6 @@ void NewsTicker::draw(Point position) {
         }
 
         if(currentMessage != messages.front()) {
-            if(pCurrentMessageTexture != nullptr) {
-                SDL_DestroyTexture(pCurrentMessageTexture);
-                pCurrentMessageTexture = nullptr;
-            }
             currentMessage = messages.front();
             pCurrentMessageTexture = pFontManager->createTextureWithText(currentMessage, COLOR_BLACK, FONT_STD10);
         }
@@ -118,9 +109,9 @@ void NewsTicker::draw(Point position) {
                 cut.y = 3*SLOWDOWN;
             }
 
-            textLocation.w = cut.w = getWidth(pCurrentMessageTexture);
-            textLocation.h = cut.h = getHeight(pCurrentMessageTexture) - cut.y;
-            SDL_RenderCopy(renderer, pCurrentMessageTexture, &cut, &textLocation);
+            textLocation.w = cut.w = getWidth(pCurrentMessageTexture.get());
+            textLocation.h = cut.h = getHeight(pCurrentMessageTexture.get()) - cut.y;
+            SDL_RenderCopy(renderer, pCurrentMessageTexture.get(), &cut, &textLocation);
         }
     };
 }

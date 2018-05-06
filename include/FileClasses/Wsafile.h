@@ -19,8 +19,8 @@
 #define WSAFILE_H
 
 #include "Animation.h"
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_rwops.h>
+#include <misc/SDL2pp.h>
+
 #include <stdarg.h>
 
 /// A class for loading a *.WSA-File.
@@ -36,45 +36,47 @@ public:
     Wsafile(SDL_RWops* rwop0, SDL_RWops* rwop1, SDL_RWops* rwop2, SDL_RWops* rwop3);
     Wsafile(int num,...);
     Wsafile(const Wsafile& wsafile) = delete;
+    Wsafile(Wsafile&& wsafile) = delete;
     Wsafile& operator=(const Wsafile& wsafile) = delete;
+    Wsafile& operator=(Wsafile&& wsafile) = delete;
     virtual ~Wsafile();
 
-    SDL_Surface * getPicture(Uint32 FrameNumber);
-    SDL_Surface * getAnimationAsPictureRow(int numFramesX = std::numeric_limits<int>::max());
-    Animation* getAnimation(unsigned int startindex, unsigned int endindex, bool bDoublePic=true, bool bSetColorKey=true);
+    sdl2::surface_ptr getPicture(Uint32 FrameNumber) const;
+    sdl2::surface_ptr getAnimationAsPictureRow(int numFramesX = std::numeric_limits<int>::max()) const;
+    Animation* getAnimation(unsigned int startindex, unsigned int endindex, bool bDoublePic=true, bool bSetColorKey=true) const;
 
     /// Returns the number of frames
     /**
         This method returns the number of frames in this animation
         \return Number of frames.
     */
-    inline int getNumFrames() const { return (int) numFrames; };
+    int getNumFrames() const noexcept { return static_cast<int>(numFrames); };
 
     /**
         Get the width of this video
         \return the width in pixels
     */
-    inline Uint16 getWidth() const { return sizeX; };
+    Uint16 getWidth() const noexcept { return sizeX; };
 
     /**
         Get the height of this video
         \return the height in pixels
     */
-    inline Uint16 getHeight() const { return sizeY; };
+    Uint16 getHeight() const noexcept { return sizeY; };
 
     /// Returns whether the animation is looped or not.
     /**
         This method returns whether this animation is looped or not.
         \return true if looped, false if not
     */
-    inline bool isAnimationLooped() const { return looped; };
+    bool isAnimationLooped() const noexcept { return looped; };
 
 private:
-    void decodeFrames(unsigned char* pFiledata, Uint32* index, int numberOfFrames, unsigned char* pDecodedFrames, int x, int y);
-    unsigned char* readfile(SDL_RWops* rwop, int* filesize);
+    void decodeFrames(const unsigned char* pFiledata, Uint32* index, int numberOfFrames, unsigned char* pDecodedFrames, int x, int y) const;
+    std::unique_ptr<unsigned char[]> readfile(SDL_RWops* rwop, int* filesize) const;
     void readdata(int numFiles, ...);
     void readdata(int numFiles, va_list args);
-    unsigned char *decodedFrames = nullptr;
+    std::vector<unsigned char> decodedFrames;
 
     Uint16 numFrames = 0;
     Uint16 sizeX = 0;
@@ -90,6 +92,6 @@ private:
     \param  freesrc A non-zero value means it will automatically close/free the rwop for you.
     \return Picture in this WSA-File
 */
-SDL_Surface * LoadWSA_RW(SDL_RWops* RWop, Uint32 FrameNumber, int freesrc);
+sdl2::surface_ptr LoadWSA_RW(SDL_RWops* RWop, Uint32 FrameNumber, int freesrc);
 
 #endif // WSAFILE_H

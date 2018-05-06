@@ -23,14 +23,13 @@
 #include <Definitions.h>
 #include <DataTypes.h>
 #include <fixmath/FixPoint.h>
+#include <misc/SDL2pp.h>
 #include <mmath.h>
 
 #include <globals.h>
 
 #include <algorithm>
 #include <bitset>
-
-#include <SDL2/SDL.h>
 
 // forward declarations
 class House;
@@ -232,9 +231,9 @@ protected:
     bool     badlyDamaged;           ///< Is the health below 50%?
 
     zoomable_texture graphic{};      ///< The graphic for this object
-    int         graphicID;           ///< The id of the graphic (needed if we want to reload the graphic, e.g. when a unit is deviated)
-    int         numImagesX;          ///< The number of images in x direction
-    int         numImagesY;          ///< The number of images in y direction
+    int         graphicID = -1;      ///< The id of the graphic (needed if we want to reload the graphic, e.g. when a unit is deviated)
+    int         numImagesX = 0;      ///< The number of images in x direction
+    int         numImagesY = 0;      ///< The number of images in y direction
 
 private:
     FixPoint health;                 ///< The health of this object

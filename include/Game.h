@@ -31,10 +31,10 @@
 #include <Trigger/TriggerManager.h>
 #include <players/Player.h>
 #include <players/HumanPlayer.h>
+#include <misc/SDL2pp.h>
 
 #include <DataTypes.h>
 
-#include <SDL2/SDL.h>
 #include <stdarg.h>
 #include <string>
 #include <map>

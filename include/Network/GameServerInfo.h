@@ -18,8 +18,8 @@
 #ifndef GAMESERVERINFO_H
 #define GAMESERVERINFO_H
 
+#include <misc/SDL2pp.h>
 #include <enet/enet.h>
-#include <SDL2/SDL.h>
 #include <string>
 
 class GameServerInfo {

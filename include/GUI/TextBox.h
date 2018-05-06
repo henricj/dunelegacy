@@ -21,8 +21,8 @@
 #include "Widget.h"
 #include <misc/draw_util.h>
 #include <misc/string_util.h>
+#include <misc/SDL2pp.h>
 #include <string>
-#include <SDL2/SDL.h>
 
 #include <stdio.h>
 
@@ -209,20 +209,20 @@ public:
             return;
         }
 
-        SDL_Rect dest = calcDrawingRect(pTextureWithoutCarret, position.x, position.y);
+        SDL_Rect dest = calcDrawingRect(pTextureWithoutCarret.get(), position.x, position.y);
 
         if(isActive()) {
             if((SDL_GetTicks() - lastCarretTime) < 500) {
-                SDL_RenderCopy(renderer, pTextureWithCarret, nullptr, &dest);
+                SDL_RenderCopy(renderer, pTextureWithCarret.get(), nullptr, &dest);
             } else {
-                SDL_RenderCopy(renderer, pTextureWithoutCarret, nullptr, &dest);
+                SDL_RenderCopy(renderer, pTextureWithoutCarret.get(), nullptr, &dest);
             }
 
             if(SDL_GetTicks() - lastCarretTime >= 1000) {
                 lastCarretTime = SDL_GetTicks();
             }
         } else {
-            SDL_RenderCopy(renderer, pTextureWithoutCarret, nullptr, &dest);
+            SDL_RenderCopy(renderer, pTextureWithoutCarret.get(), nullptr, &dest);
         }
     }
 
@@ -290,7 +290,7 @@ public:
         \param  textInput the text input that was performed.
         \return true = text input was processed by the widget, false = text input was not processed by the widget
     */
-    inline bool handleTextInput(SDL_TextInputEvent& textInput) override
+    bool handleTextInput(SDL_TextInputEvent& textInput) override
     {
         if((isVisible() == false) || (isEnabled() == false) || (isActive() == false)) {
             return true;
@@ -335,15 +335,8 @@ protected:
     */
     void invalidateTextures() override
     {
-        if(pTextureWithoutCarret != nullptr) {
-            SDL_DestroyTexture(pTextureWithoutCarret);
-            pTextureWithoutCarret = nullptr;
-        }
-
-        if(pTextureWithCarret != nullptr) {
-            SDL_DestroyTexture(pTextureWithCarret);
-            pTextureWithCarret = nullptr;
-        }
+        pTextureWithoutCarret.reset();
+        pTextureWithCarret.reset();
     }
 
 private:
@@ -361,8 +354,8 @@ private:
     std::function<void (bool)> pOnTextChange;   ///< function that is called when the text of this text box changes
     std::function<void ()> pOnReturn;           ///< function that is called when return is pressed
 
-    SDL_Texture* pTextureWithoutCarret;         ///< Texture with carret off
-    SDL_Texture* pTextureWithCarret;            ///< Texture with carret on
+    sdl2::texture_ptr pTextureWithoutCarret;         ///< Texture with carret off
+    sdl2::texture_ptr pTextureWithCarret;            ///< Texture with carret on
 };
 
 #endif // TEXTBOX_H

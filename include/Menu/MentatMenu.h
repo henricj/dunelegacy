@@ -25,10 +25,9 @@
 #include <GUI/Label.h>
 
 #include <misc/string_util.h>
+#include <misc/SDL2pp.h>
 
 #include <stdio.h>
-
-#include <SDL2/SDL.h>
 #include <string>
 
 class MentatMenu : public MenuBase {

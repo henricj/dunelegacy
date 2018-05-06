@@ -18,13 +18,12 @@
 #ifndef GFXMANAGER_H
 #define GFXMANAGER_H
 
-#include <SDL2/SDL.h>
 #include "Animation.h"
 #include "Shpfile.h"
 #include "Wsafile.h"
 #include <DataTypes.h>
 
-#include "misc/sdl_support.h"
+#include <misc/SDL2pp.h>
 
 #include <string>
 #include <array>
@@ -516,6 +515,11 @@ public:
     GFXManager();
     ~GFXManager();
 
+    GFXManager(const GFXManager &) = delete;
+    GFXManager(GFXManager &&) = default;
+    GFXManager& operator=(const GFXManager &) = default;
+    GFXManager& operator=(GFXManager &&) = default;
+
     SDL_Texture*     getZoomedObjPic(unsigned int id, int house, unsigned int z);
     SDL_Texture*     getZoomedObjPic(unsigned int id, unsigned int z) { return getZoomedObjPic(id, HOUSE_HARKONNEN, z); };
     zoomable_texture getObjPic(unsigned int id, int house=HOUSE_HARKONNEN);
@@ -528,38 +532,39 @@ public:
     SDL_Surface*     getUIGraphicSurface(unsigned int id, int house=HOUSE_HARKONNEN);
     SDL_Surface*     getMapChoicePieceSurface(unsigned int num, int house);
 
-    SDL_Surface*     getBackgroundSurface() { return pBackgroundSurface; };
+    SDL_Surface*     getBackgroundSurface() { return pBackgroundSurface.get(); };
 
     Animation*       getAnimation(unsigned int id);
 
 private:
-    Animation*      loadAnimationFromWsa(const std::string& filename);
-    SDL_Surface*    generateWindtrapAnimationFrames(SDL_Surface* windtrapPic);
-    SDL_Surface*    generateMapChoiceArrowFrames(SDL_Surface* arrowPic, int house=HOUSE_HARKONNEN);
+    Animation*          loadAnimationFromWsa(const std::string& filename) const;
+    sdl2::surface_ptr   generateWindtrapAnimationFrames(SDL_Surface* windtrapPic) const;
+    sdl2::surface_ptr   generateMapChoiceArrowFrames(SDL_Surface* arrowPic, int house=HOUSE_HARKONNEN) const;
 
-    std::shared_ptr<Shpfile>  loadShpfile(const std::string& filename);
-    std::shared_ptr<Wsafile>  loadWsafile(const std::string& filename);
+    std::unique_ptr<Shpfile>  loadShpfile(const std::string& filename) const;
+    std::unique_ptr<Wsafile>  loadWsafile(const std::string& filename) const;
 
-    SDL_Texture*    extractSmallDetailPic(const std::string& filename);
+    sdl2::texture_ptr   extractSmallDetailPic(const std::string& filename) const;
 
-    SDL_Surface*    generateDoubledObjPic(unsigned int id, int h);
-    SDL_Surface*    generateTripledObjPic(unsigned int id, int h);
+
+    sdl2::surface_ptr   generateDoubledObjPic(unsigned int id, int h) const;
+    sdl2::surface_ptr   generateTripledObjPic(unsigned int id, int h) const;
 
     // 8-bit surfaces kept in main memory for processing as needed, e.g. color remapping
-    SDL_Surface*    objPic[NUM_OBJPICS][(int) NUM_HOUSES][NUM_ZOOMLEVEL];
-    SDL_Surface*    uiGraphic[NUM_UIGRAPHICS][(int) NUM_HOUSES];
-    SDL_Surface*    mapChoicePieces[NUM_MAPCHOICEPIECES][(int) NUM_HOUSES];
-    Animation*      animation[NUM_ANIMATION];
+    std::array<std::array<std::array<sdl2::surface_ptr, NUM_ZOOMLEVEL>, NUM_HOUSES>, NUM_OBJPICS> objPic;
+    std::array<std::array<sdl2::surface_ptr, NUM_HOUSES>, NUM_UIGRAPHICS> uiGraphic;
+    std::array<std::array<sdl2::surface_ptr, NUM_HOUSES>, NUM_MAPCHOICEPIECES> mapChoicePieces;
+    std::array<Animation *, NUM_ANIMATION> animation{};
 
     // 32-bit surfaces
-    SDL_Surface*    pBackgroundSurface;
+    sdl2::surface_ptr    pBackgroundSurface;
 
     // Textures
-    SDL_Texture*    objPicTex[NUM_OBJPICS][(int) NUM_HOUSES][NUM_ZOOMLEVEL];
-    SDL_Texture*    smallDetailPicTex[NUM_SMALLDETAILPICS];
-    SDL_Texture*    tinyPictureTex[NUM_TINYPICTURE];
-    SDL_Texture*    uiGraphicTex[NUM_UIGRAPHICS][(int) NUM_HOUSES];
-    SDL_Texture*    mapChoicePiecesTex[NUM_MAPCHOICEPIECES][(int) NUM_HOUSES];
+    std::array<std::array<std::array<sdl2::texture_ptr, NUM_ZOOMLEVEL>, NUM_HOUSES>, NUM_OBJPICS> objPicTex;
+    std::array<sdl2::texture_ptr, NUM_SMALLDETAILPICS> smallDetailPicTex;
+    std::array<sdl2::texture_ptr, NUM_TINYPICTURE> tinyPictureTex;
+    std::array<std::array<sdl2::texture_ptr, NUM_HOUSES>, NUM_UIGRAPHICS> uiGraphicTex;
+    std::array<std::array<sdl2::texture_ptr, NUM_HOUSES>, NUM_MAPCHOICEPIECES> mapChoicePiecesTex;
 };
 
 #endif // GFXMANAGER_H

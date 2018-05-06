@@ -29,12 +29,17 @@
 class TextButton : public Button {
 public:
     /// Default contructor
-    TextButton() : Button() {
+    TextButton() {
         textcolor = COLOR_DEFAULT;
         textshadowcolor = COLOR_DEFAULT;
 
         enableResizing(true,true);
     }
+
+    TextButton(const TextButton &) = default;
+    TextButton(TextButton &&) = default;
+    TextButton& operator=(const TextButton &) = default;
+    TextButton& operator=(TextButton &&) = default;
 
     /// destructor
     virtual ~TextButton() = default;
@@ -44,7 +49,7 @@ public:
         to fit this text.
         \param  text The new text for this button
     */
-    virtual inline void setText(const std::string& text) {
+    virtual void setText(const std::string& text) {
         this->text = text;
         resizeAll();
     }
@@ -53,14 +58,14 @@ public:
         Get the text of this button.
         \return the text of this button
     */
-    inline const std::string& getText() { return text; };
+    const std::string& getText() const noexcept { return text; };
 
     /**
         Sets the text color for this button.
         \param  textcolor       the color of the text (COLOR_DEFAULT = default color)
         \param  textshadowcolor the color of the shadow of the text (COLOR_DEFAULT = default color)
     */
-    virtual inline void setTextColor(Uint32 textcolor, Uint32 textshadowcolor = COLOR_DEFAULT) {
+    virtual void setTextColor(Uint32 textcolor, Uint32 textshadowcolor = COLOR_DEFAULT) {
         this->textcolor = textcolor;
         this->textshadowcolor = textshadowcolor;
         invalidateTextures();

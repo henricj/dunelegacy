@@ -18,7 +18,8 @@
 #ifndef POFILE_H
 #define POFILE_H
 
-#include <SDL2/SDL.h>
+#include <misc/SDL2pp.h>
+
 #include <map>
 #include <string>
 

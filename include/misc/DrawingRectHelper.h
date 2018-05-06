@@ -18,7 +18,7 @@
 #ifndef DRAWINGRECTHELPER_H
 #define DRAWINGRECTHELPER_H
 
-#include <SDL2/SDL.h>
+#include <misc/SDL2pp.h>
 
 extern SDL_Renderer* renderer;
 

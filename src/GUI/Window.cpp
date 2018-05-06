@@ -20,7 +20,7 @@
 #include <misc/draw_util.h>
 #include <globals.h>
 
-Window::Window(Uint32 x, Uint32 y, Uint32 w, Uint32 h) : Widget(), position(x,y) {
+Window::Window(Uint32 x, Uint32 y, Uint32 w, Uint32 h) : position(x,y) {
     closeChildWindowCounter = 0;
     pChildWindow = nullptr;
     pChildWindowAlreadyClosed = false;
@@ -31,7 +31,7 @@ Window::Window(Uint32 x, Uint32 y, Uint32 w, Uint32 h) : Widget(), position(x,y)
     bFreeBackground = false;
     bSelfGeneratedBackground = true;
 
-    Widget::resize(w,h);
+    resize(w,h);
 }
 
 Window::~Window() {
@@ -44,10 +44,8 @@ Window::~Window() {
         pWindowWidget->destroy();
     }
 
-    if(((bSelfGeneratedBackground == true) || (bFreeBackground == true)) && (pBackground != nullptr)) {
-        SDL_DestroyTexture(pBackground);
-        pBackground = nullptr;
-    }
+    if (!bSelfGeneratedBackground && !bFreeBackground)
+        pBackground.release();
 }
 
 void Window::openWindow(Window* pChildWindow) {
@@ -250,8 +248,8 @@ void Window::draw(Point position) {
 
             if(pBackground != nullptr) {
                 // Draw background
-                SDL_Rect dest = calcDrawingRect(pBackground, getPosition().x + getSize().x/2, getPosition().y + getSize().y/2, HAlign::Center, VAlign::Center);
-                SDL_RenderCopy(renderer, pBackground, nullptr, &dest);
+                SDL_Rect dest = calcDrawingRect(pBackground.get(), getPosition().x + getSize().x/2, getPosition().y + getSize().y/2, HAlign::Center, VAlign::Center);
+                SDL_RenderCopy(renderer, pBackground.get(), nullptr, &dest);
             }
         }
 
@@ -280,10 +278,7 @@ void Window::resize(Uint32 width, Uint32 height) {
     }
 
     if(bSelfGeneratedBackground == true) {
-        if(pBackground != nullptr) {
-            SDL_DestroyTexture(pBackground);
-            pBackground = nullptr;
-        }
+        pBackground.reset();
 
         // the new background is created when the window is drawn next time
     }
@@ -291,16 +286,15 @@ void Window::resize(Uint32 width, Uint32 height) {
 
 void Window::setBackground(SDL_Surface* pBackground, bool bFreeBackground) {
     if(pBackground == nullptr) {
-        setBackground((SDL_Texture*) nullptr);
+        setBackground(static_cast<SDL_Texture*>(nullptr));
     } else {
-        setBackground(convertSurfaceToTexture(pBackground, bFreeBackground), true);
+        setBackground(convertSurfaceToTexture(pBackground, bFreeBackground));
     }
 }
 
 void Window::setBackground(SDL_Texture* pBackground, bool bFreeBackground) {
     if(((bSelfGeneratedBackground == true) || (this->bFreeBackground == true)) && (this->pBackground != nullptr)) {
-        SDL_DestroyTexture(this->pBackground);
-        this->pBackground = nullptr;
+        this->pBackground.reset();
     }
 
     if(pBackground == nullptr) {
@@ -309,9 +303,13 @@ void Window::setBackground(SDL_Texture* pBackground, bool bFreeBackground) {
         this->pBackground = nullptr;
     } else {
         bSelfGeneratedBackground = false;
-        this->pBackground = pBackground;
+        this->pBackground = sdl2::texture_ptr{ pBackground };
         this->bFreeBackground = bFreeBackground;
     }
+}
+
+void Window::setBackground(sdl2::texture_ptr pBackground) {
+    setBackground(pBackground.release(), true);
 }
 
 void Window::setTransparentBackground(bool bTransparent) {

@@ -19,9 +19,9 @@
 #define DATATYPES_H
 
 #include <Definitions.h>
+#include <misc/SDL2pp.h>
 
 // Libraries
-#include <SDL2/SDL.h>
 #include <string>
 #include <array>
 

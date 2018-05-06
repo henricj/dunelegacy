@@ -19,8 +19,8 @@
 #define PALETTE_H
 
 #include <misc/exceptions.h>
+#include <misc/SDL2pp.h>
 
-#include <SDL2/SDL.h>
 #include <string.h>
 
 class Palette

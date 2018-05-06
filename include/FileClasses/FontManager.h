@@ -18,7 +18,7 @@
 #ifndef FONTMANAGER_H
 #define FONTMANAGER_H
 
-#include <SDL2/SDL.h>
+#include <misc/SDL2pp.h>
 #include "Font.h"
 
 #include <memory>
@@ -42,12 +42,12 @@ public:
     ~FontManager();
 
     void drawTextOnSurface(SDL_Surface* pSurface, const std::string& text, Uint32 color, unsigned int fontNum);
-    int getTextWidth(const std::string& text, unsigned int fontNum);
-    int getTextHeight(unsigned int fontNum);
-    SDL_Surface* createSurfaceWithText(const std::string& text, Uint32 color, unsigned int fontNum);
-    SDL_Texture* createTextureWithText(const std::string& text, Uint32 color, unsigned int fontNum);
-    SDL_Surface* createSurfaceWithMultilineText(const std::string& text, Uint32 color, unsigned int fontNum, bool bCentered = false);
-    SDL_Texture* createTextureWithMultilineText(const std::string& text, Uint32 color, unsigned int fontNum, bool bCentered = false);
+    int getTextWidth(const std::string& text, unsigned int fontNum) const;
+    int getTextHeight(unsigned int fontNum) const;
+    sdl2::surface_ptr createSurfaceWithText(const std::string& text, Uint32 color, unsigned int fontNum);
+    sdl2::texture_ptr createTextureWithText(const std::string& text, Uint32 color, unsigned int fontNum);
+    sdl2::surface_ptr createSurfaceWithMultilineText(const std::string& text, Uint32 color, unsigned int fontNum, bool bCentered = false);
+    sdl2::texture_ptr createTextureWithMultilineText(const std::string& text, Uint32 color, unsigned int fontNum, bool bCentered = false);
 private:
     std::shared_ptr<Font> fonts[NUM_FONTS];
 

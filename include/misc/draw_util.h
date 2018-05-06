@@ -19,7 +19,7 @@
 #define DRAW_UTIL_H
 
 #include <Colors.h>
-#include <SDL2/SDL.h>
+#include <misc/SDL2pp.h>
 
 /**
     Return the pixel value at (x, y) in surface
@@ -80,34 +80,34 @@ inline void renderFillRect(SDL_Renderer* renderer, int x1, int y1, int x2, int y
     renderFillRect(renderer, &rect, color);
 }
 
-SDL_Surface* renderReadSurface(SDL_Renderer* renderer);
+sdl2::surface_ptr renderReadSurface(SDL_Renderer* renderer);
 
 void replaceColor(SDL_Surface *surface, Uint32 oldColor, Uint32 newColor);
 void mapColor(SDL_Surface *surface, Uint8 colorMap[256]);
 
-SDL_Surface*    copySurface(SDL_Surface* inSurface);
+sdl2::surface_ptr    copySurface(SDL_Surface* inSurface);
 
-SDL_Surface*    convertSurfaceToDisplayFormat(SDL_Surface* inSurface, bool freeSrcSurface = true);
+sdl2::surface_ptr   convertSurfaceToDisplayFormat(SDL_Surface* inSurface, bool freeSrcSurface = true);
 
-SDL_Texture*    convertSurfaceToTexture(SDL_Surface* inSurface, bool freeSrcSurface = true);
+sdl2::texture_ptr   convertSurfaceToTexture(SDL_Surface* inSurface, bool freeSrcSurface);
+sdl2::texture_ptr   convertSurfaceToTexture(sdl2::surface_ptr inSurface);
 
-SDL_Surface*    scaleSurface(SDL_Surface *surf, double ratio, bool freeSrcSurface = true);
+sdl2::surface_ptr   scaleSurface(SDL_Surface *surf, double ratio, bool freeSrcSurface = true);
 
-SDL_Surface*    getSubPicture(SDL_Surface* Pic, int left, int top, int width, int height);
+sdl2::surface_ptr   getSubPicture(SDL_Surface* Pic, int left, int top, int width, int height);
 
-SDL_Surface*    getSubFrame(SDL_Surface* Pic, int i, int j, int numX, int numY);
+sdl2::surface_ptr   getSubFrame(SDL_Surface* Pic, int i, int j, int numX, int numY);
 
-SDL_Surface*    combinePictures(SDL_Surface* basePicture, SDL_Surface* topPicture, int x = 0, int y = 0, bool bFreeBasePicture = true, bool bFreeTopPicture = true);
+sdl2::surface_ptr   combinePictures(SDL_Surface* basePicture, SDL_Surface* topPicture, int x = 0, int y = 0, bool bFreeBasePicture = true, bool bFreeTopPicture = true);
 
-SDL_Surface*    rotateSurfaceLeft(SDL_Surface* inputPic, bool bFreeInputPic = true);
-SDL_Surface*    rotateSurfaceRight(SDL_Surface* inputPic, bool bFreeInputPic = true);
+sdl2::surface_ptr    rotateSurfaceLeft(SDL_Surface* inputPic, bool bFreeInputPic = true);
+sdl2::surface_ptr    rotateSurfaceRight(SDL_Surface* inputPic, bool bFreeInputPic = true);
 
-SDL_Surface*    flipHSurface(SDL_Surface* inputPic, bool bFreeInputPic = true);
-SDL_Surface*    flipVSurface(SDL_Surface* inputPic, bool bFreeInputPic = true);
+sdl2::surface_ptr    flipHSurface(SDL_Surface* inputPic, bool bFreeInputPic = true);
+sdl2::surface_ptr    flipVSurface(SDL_Surface* inputPic, bool bFreeInputPic = true);
 
 
-
-SDL_Surface*    createShadowSurface(SDL_Surface* source);
+sdl2::surface_ptr    createShadowSurface(SDL_Surface* source);
 
 /**
     This function maps all the colors in source which are between srcColor and srcColor+7 to colors between destColor and destColor+7. This is
@@ -117,6 +117,6 @@ SDL_Surface*    createShadowSurface(SDL_Surface* source);
     \param  destColor   Color range to change to = [destColor;destColor+7]
     \return The mapped surface
 */
-SDL_Surface*    mapSurfaceColorRange(SDL_Surface* source, int srcColor, int destColor, bool bFreeSource = false);
+sdl2::surface_ptr    mapSurfaceColorRange(SDL_Surface* source, int srcColor, int destColor, bool bFreeSource = false);
 
 #endif // DRAW_UTIL_H

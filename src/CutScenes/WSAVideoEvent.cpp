@@ -21,30 +21,25 @@
 #include <misc/draw_util.h>
 #include <globals.h>
 
-WSAVideoEvent::WSAVideoEvent(Wsafile* pWsafile, bool bCenterVertical) : VideoEvent()
+WSAVideoEvent::WSAVideoEvent(Wsafile* pWsafile, bool bCenterVertical)
 {
     this->pWsafile = pWsafile;
     this->bCenterVertical = bCenterVertical;
     currentFrame = 0;
-    pStreamingTexture = SDL_CreateTexture(renderer, SCREEN_FORMAT, SDL_TEXTUREACCESS_STREAMING, 2*pWsafile->getWidth(), 2*pWsafile->getHeight());
+    pStreamingTexture = sdl2::texture_ptr{ SDL_CreateTexture(renderer, SCREEN_FORMAT, SDL_TEXTUREACCESS_STREAMING, 2 * pWsafile->getWidth(), 2 * pWsafile->getHeight()) };
 }
 
-WSAVideoEvent::~WSAVideoEvent()
-{
-    SDL_DestroyTexture(pStreamingTexture);
-}
+WSAVideoEvent::~WSAVideoEvent() = default;
 
 int WSAVideoEvent::draw()
 {
-    SDL_Surface* pSurface = convertSurfaceToDisplayFormat(Scaler::defaultDoubleSurface(pWsafile->getPicture(currentFrame), true), true);
+    sdl2::surface_ptr pSurface = convertSurfaceToDisplayFormat(Scaler::defaultDoubleSurface(pWsafile->getPicture(currentFrame).release(), true).release(), true);
 
-    SDL_UpdateTexture(pStreamingTexture, nullptr, pSurface->pixels, pSurface->pitch);
+    SDL_UpdateTexture(pStreamingTexture.get(), nullptr, pSurface->pixels, pSurface->pitch);
 
-    SDL_Rect dest = calcAlignedDrawingRect(pStreamingTexture, HAlign::Center, bCenterVertical ? VAlign::Center : VAlign::Top);
+    SDL_Rect dest = calcAlignedDrawingRect(pStreamingTexture.get(), HAlign::Center, bCenterVertical ? VAlign::Center : VAlign::Top);
 
-    SDL_RenderCopy(renderer, pStreamingTexture, nullptr, &dest);
-
-    SDL_FreeSurface(pSurface);
+    SDL_RenderCopy(renderer, pStreamingTexture.get(), nullptr, &dest);
 
     currentFrame++;
 

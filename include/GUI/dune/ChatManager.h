@@ -19,8 +19,7 @@
 #define CHATMANAGER_H
 
 #include <GUI/Widget.h>
-
-#include <SDL2/SDL.h>
+#include <misc/SDL2pp.h>
 
 #include <memory>
 #include <string>
@@ -64,22 +63,22 @@ private:
 
     struct ChatMessage {
 
-        ChatMessage(std::shared_ptr<SDL_Texture>& _pMessageTexture, Uint32 _messageTime, MessageType _messageType)
-         : pMessageTexture(_pMessageTexture), messageTime(_messageTime), messageType(_messageType) {
+        ChatMessage(sdl2::texture_ptr _pMessageTexture, Uint32 _messageTime, MessageType _messageType)
+         : pMessageTexture(std::move(_pMessageTexture)), messageTime(_messageTime), messageType(_messageType) {
         }
 
-        ChatMessage(std::shared_ptr<SDL_Texture>& _pTimeTexture, std::shared_ptr<SDL_Texture>& _pUsernameTexture,
-                    std::shared_ptr<SDL_Texture>& _pMessageTexture, Uint32 _messageTime, MessageType _messageType)
-         : pTimeTexture(_pTimeTexture), pUsernameOrPictureTexture(_pUsernameTexture), pMessageTexture(_pMessageTexture), messageTime(_messageTime), messageType(_messageType) {
+        ChatMessage(sdl2::texture_ptr _pTimeTexture, sdl2::texture_ptr _pUsernameTexture,
+                    sdl2::texture_ptr _pMessageTexture, Uint32 _messageTime, MessageType _messageType)
+         : pTimeTexture(std::move(_pTimeTexture)), pUsernameOrPictureTexture(std::move(_pUsernameTexture)), pMessageTexture(std::move(_pMessageTexture)), messageTime(_messageTime), messageType(_messageType) {
         }
 
-        ChatMessage(std::shared_ptr<SDL_Texture>& _pMessageTexture, std::shared_ptr<SDL_Texture>& _pPictureTexture, Uint32 _messageTime, MessageType _messageType)
-         : pUsernameOrPictureTexture(_pPictureTexture), pMessageTexture(_pMessageTexture), messageTime(_messageTime), messageType(_messageType) {
+        ChatMessage(sdl2::texture_ptr _pMessageTexture, sdl2::texture_ptr _pPictureTexture, Uint32 _messageTime, MessageType _messageType)
+         : pUsernameOrPictureTexture(std::move(_pPictureTexture)), pMessageTexture(std::move(_pMessageTexture)), messageTime(_messageTime), messageType(_messageType) {
         }
 
-        std::shared_ptr<SDL_Texture>    pTimeTexture;
-        std::shared_ptr<SDL_Texture>    pUsernameOrPictureTexture;
-        std::shared_ptr<SDL_Texture>    pMessageTexture;
+        sdl2::texture_ptr    pTimeTexture;
+        sdl2::texture_ptr    pUsernameOrPictureTexture;
+        sdl2::texture_ptr    pMessageTexture;
 
         Uint32      messageTime;
         MessageType messageType;

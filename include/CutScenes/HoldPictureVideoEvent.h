@@ -19,7 +19,7 @@
 #define HOLDPICTUREVIDEOEVENT_H
 
 #include <CutScenes/VideoEvent.h>
-#include <SDL2/SDL.h>
+#include <misc/SDL2pp.h>
 
 /**
     This VideoEvent statical shows a picture for a number of frames.
@@ -54,7 +54,7 @@ public:
 private:
     int currentFrame;       ///< the current frame number relative to the start of this HoldPictureVideoEvent
     int numFrames2Hold;     ///< the number of frames the picture should be shown
-    SDL_Texture* pTexture;  ///< the picture to show
+    sdl2::texture_ptr pTexture;  ///< the picture to show
     bool bCenterVertical;   ///< true = center the surface vertically on the screen, false = blit the surface at the top of the screen
 };
 

@@ -18,9 +18,12 @@
 #ifndef INTRO_H
 #define INTRO_H
 
+#include <array>
 #include <string>
 #include <SDL2/SDL_mixer.h>
+
 #include <misc/sound_util.h>
+#include <misc/SDL2pp.h>
 
 #include <CutScenes/CutScene.h>
 #include <FileClasses/Wsafile.h>
@@ -130,17 +133,17 @@ private:
 
     sdl2::mix_chunk_ptr  voice[Voice_NUM_ENTRIES];          ///< All the loaded voices
 
-    Wsafile* pDuneText;         ///< 1. video sequence showing the dune text
-    Wsafile* pPlanet;           ///< 2. video sequence showing the planet
-    Wsafile* pSandstorm;        ///< 3. video sequence showing the sandstorm
-    Wsafile* pHarvesters;       ///< 4. video sequence showing two harvesters
-    Wsafile* pPalace;           ///< 5. video sequence showing the palace of the imperator
-    Wsafile* pImperator;        ///< 6. video sequence showing the imperator talking
-    Wsafile* pStarport;         ///< 7. video sequence showing the armies arriving at the starport
-    Wsafile* pOrdos;            ///< 8. video sequence showing two ordos launchers/deviators
-    Wsafile* pAtreides;         ///< 9. video sequence showing two atreides ornithopters
-    Wsafile* pHarkonnen;        ///< 10. video sequence showing two harkonnen troopers under attack
-    Wsafile* pDestroyedTank;    ///< 11. video sequence showing destroyed tanks
+    std::unique_ptr<Wsafile> pDuneText;         ///< 1. video sequence showing the dune text
+    std::unique_ptr<Wsafile> pPlanet;           ///< 2. video sequence showing the planet
+    std::unique_ptr<Wsafile> pSandstorm;        ///< 3. video sequence showing the sandstorm
+    std::unique_ptr<Wsafile> pHarvesters;       ///< 4. video sequence showing two harvesters
+    std::unique_ptr<Wsafile> pPalace;           ///< 5. video sequence showing the palace of the imperator
+    std::unique_ptr<Wsafile> pImperator;        ///< 6. video sequence showing the imperator talking
+    std::unique_ptr<Wsafile> pStarport;         ///< 7. video sequence showing the armies arriving at the starport
+    std::unique_ptr<Wsafile> pOrdos;            ///< 8. video sequence showing two ordos launchers/deviators
+    std::unique_ptr<Wsafile> pAtreides;         ///< 9. video sequence showing two atreides ornithopters
+    std::unique_ptr<Wsafile> pHarkonnen;        ///< 10. video sequence showing two harkonnen troopers under attack
+    std::unique_ptr<Wsafile> pDestroyedTank;    ///< 11. video sequence showing destroyed tanks
 
     sdl2::mix_chunk_ptr  wind;               ///< SFX: wind blowing
     sdl2::mix_chunk_ptr  carryallLanding;    ///< SFX: carryall loading a harvester

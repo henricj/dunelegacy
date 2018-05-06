@@ -21,9 +21,8 @@
 #include "Widget.h"
 #include "PictureButton.h"
 #include "ListBox.h"
+#include <misc/SDL2pp.h>
 
-
-#include <SDL2/SDL.h>
 #include <vector>
 #include <string>
 #include <functional>
@@ -442,9 +441,9 @@ private:
     bool bAutocloseListBoxOnSelectionChange;        ///< This is a small hack to allow the list box to be open while selection with up/down keys
     bool bOnClickEnabled;                           ///< Is the onClick event enabled for this widget?
 
-    SDL_Texture* pBackground;
-    SDL_Texture* pForeground;
-    SDL_Texture* pActiveForeground;                 ///< Ís shown while the mouse cursor is over this drop down box
+    sdl2::texture_ptr pBackground;
+    sdl2::texture_ptr pForeground;
+    sdl2::texture_ptr pActiveForeground;                 ///< Ís shown while the mouse cursor is over this drop down box
 
     PictureButton openListBoxButton;
     ListBox listBox;

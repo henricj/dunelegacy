@@ -20,10 +20,10 @@
 
 #include <misc/InputStream.h>
 #include <misc/OutputStream.h>
+#include <misc/SDL2pp.h>
 
 #include <Command.h>
 
-#include <SDL2/SDL.h>
 #include <vector>
 
 class CommandList {

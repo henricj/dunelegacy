@@ -21,8 +21,7 @@
 #include <DataTypes.h>
 #include <misc/InputStream.h>
 #include <misc/OutputStream.h>
-
-#include <SDL2/SDL.h>
+#include <misc/SDL2pp.h>
 
 class Explosion
 {
@@ -45,7 +44,7 @@ private:
     Coord position;
     int house;
     zoomable_texture graphic{};
-    int numFrames;
+    int numFrames = 0;
     int currentFrame;
     int frameTimer;
 };

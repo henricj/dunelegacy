@@ -24,19 +24,15 @@ extern FontManager* pFontManager;
 TextEvent::TextEvent(const std::string& text, Uint32 color, int startFrame, int lengthInFrames, bool bFadeIn, bool bFadeOut, bool bCenterVertical)
  : text(text), startFrame(startFrame), lengthInFrames(lengthInFrames), bFadeIn(bFadeIn), bFadeOut(bFadeOut), bCenterVertical(bCenterVertical)
 {
-    SDL_Surface *pSurface = pFontManager->createSurfaceWithMultilineText(text, color, FONT_STD24, true);
-    pTexture = SDL_CreateTextureFromSurface(renderer, pSurface);
-    SDL_FreeSurface(pSurface);
+    sdl2::surface_ptr pSurface = pFontManager->createSurfaceWithMultilineText(text, color, FONT_STD24, true);
+    pTexture = sdl2::texture_ptr{ SDL_CreateTextureFromSurface(renderer, pSurface.get()) };
 
-    SDL_SetTextureBlendMode(pTexture, SDL_BLENDMODE_BLEND);
+    SDL_SetTextureBlendMode(pTexture.get(), SDL_BLENDMODE_BLEND);
 }
 
-TextEvent::~TextEvent()
-{
-    SDL_DestroyTexture(pTexture);
-}
+TextEvent::~TextEvent() = default;
 
-void TextEvent::draw(int currentFrameNumber)
+void TextEvent::draw(int currentFrameNumber) const
 {
     if(currentFrameNumber < startFrame || currentFrameNumber > startFrame + lengthInFrames) {
         return;
@@ -51,11 +47,11 @@ void TextEvent::draw(int currentFrameNumber)
         alpha = (((startFrame + lengthInFrames) - currentFrameNumber)*255)/TEXT_FADE_TIME;
     }
 
-    SDL_Rect dest = calcAlignedDrawingRect(pTexture, HAlign::Center, VAlign::Center);
+    SDL_Rect dest = calcAlignedDrawingRect(pTexture.get(), HAlign::Center, VAlign::Center);
     if(bCenterVertical == false) {
         dest.y = getRendererHeight()/2 + 480/2 - 5*pFontManager->getTextHeight(FONT_STD24)/2;
     }
 
-    SDL_SetTextureAlphaMod(pTexture, alpha);
-    SDL_RenderCopy(renderer, pTexture, nullptr, &dest);
+    SDL_SetTextureAlphaMod(pTexture.get(), alpha);
+    SDL_RenderCopy(renderer, pTexture.get(), nullptr, &dest);
 }

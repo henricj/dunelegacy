@@ -24,12 +24,10 @@
 TextView::TextView() : Widget() {
     enableResizing(true,true);
 
-    resize(getMinimumSize().x,getMinimumSize().y);
+    resize(TextView::getMinimumSize().x, TextView::getMinimumSize().y);
 }
 
-TextView::~TextView() {
-    invalidateTextures();
-}
+TextView::~TextView() = default;
 
 void TextView::handleMouseMovement(Sint32 x, Sint32 y, bool insideOverlay) {
     scrollbar.handleMouseMovement(x - getSize().x + scrollbar.getSize().x,y,insideOverlay);
@@ -59,8 +57,8 @@ void TextView::draw(Point position) {
     updateTextures();
 
     if(pBackground != nullptr) {
-        SDL_Rect dest = calcDrawingRect(pBackground, position.x, position.y);
-        SDL_RenderCopy(renderer, pBackground, nullptr, &dest);
+        SDL_Rect dest = calcDrawingRect(pBackground.get(), position.x, position.y);
+        SDL_RenderCopy(renderer, pBackground.get(), nullptr, &dest);
     }
 
     if(pForeground != nullptr) {
@@ -68,14 +66,14 @@ void TextView::draw(Point position) {
 
         SDL_Rect src = {    0,
                             scrollbar.getCurrentValue() * lineHeight,
-                            getWidth(pForeground),
-                            std::min(getHeight(pForeground), getSize().y - 2) };
+                            getWidth(pForeground.get()),
+                            std::min(getHeight(pForeground.get()), getSize().y - 2) };
 
         SDL_Rect dest = {   position.x + 2,
                             position.y + 1,
-                            getWidth(pForeground),
-                            std::min(getHeight(pForeground), getSize().y - 2) };
-        SDL_RenderCopy(renderer, pForeground, &src, &dest);
+                            getWidth(pForeground.get()),
+                            std::min(getHeight(pForeground.get()), getSize().y - 2) };
+        SDL_RenderCopy(renderer, pForeground.get(), &src, &dest);
     }
 
     Point scrollBarPos = position;

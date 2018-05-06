@@ -20,8 +20,8 @@
 
 #include "Widget.h"
 #include "ScrollBar.h"
+#include <misc/SDL2pp.h>
 
-#include <SDL2/SDL.h>
 #include <vector>
 #include <string>
 
@@ -38,7 +38,7 @@ public:
         Sets a font for this label. Default font of a label is FONT_STD12
         \param  fontID      the ID of the new font
     */
-    virtual inline void setTextFont(int fontID) {
+    virtual void setTextFont(int fontID) {
         this->fontID = fontID;
         resize(getSize().x, getSize().y);
     }
@@ -47,7 +47,7 @@ public:
         Gets the font of this label. Default font of a label is FONT_STD12
         \return the font ID of this label
     */
-    virtual inline int getTextFont() const {
+    virtual int getTextFont() const {
        return fontID;
     }
 
@@ -57,7 +57,7 @@ public:
         \param  textshadowcolor the color of the shadow of the text (COLOR_DEFAULT = default color)
         \param  backgroundcolor the color of the label background (COLOR_TRANSPARENT = transparent)
     */
-    virtual inline void setTextColor(Uint32 textcolor, Uint32 textshadowcolor = COLOR_DEFAULT, Uint32 backgroundcolor = COLOR_TRANSPARENT) {
+    virtual void setTextColor(Uint32 textcolor, Uint32 textshadowcolor = COLOR_DEFAULT, Uint32 backgroundcolor = COLOR_TRANSPARENT) {
         this->textcolor = textcolor;
         this->textshadowcolor = textshadowcolor;
         this->backgroundcolor = backgroundcolor;
@@ -68,7 +68,7 @@ public:
         Sets the alignment of the text in this label.
         \param alignment Combination of (Alignment_HCenter, Alignment_Left or Alignment_Right) and (Alignment_VCenter, Alignment_Top or Alignment_Bottom)
     */
-    virtual inline void setAlignment(Alignment_Enum alignment) {
+    virtual void setAlignment(Alignment_Enum alignment) {
         this->alignment = alignment;
         invalidateTextures();
     }
@@ -86,7 +86,7 @@ public:
         to fit this text.
         \param  text The new text for this button
     */
-    virtual inline void setText(const std::string& text) {
+    virtual void setText(const std::string& text) {
         this->text = text;
         resizeAll();
     }
@@ -95,7 +95,7 @@ public:
         Get the text of this label.
         \return the text of this button
     */
-    inline const std::string& getText() const { return text; };
+    const std::string& getText() const noexcept { return text; };
 
     /**
         Handles a mouse movement. This method is for example needed for the tooltip.
@@ -214,15 +214,8 @@ protected:
     */
     void invalidateTextures() override
     {
-        if(pBackground != nullptr) {
-            SDL_DestroyTexture(pBackground);
-            pBackground = nullptr;
-        }
-
-        if(pForeground != nullptr) {
-            SDL_DestroyTexture(pForeground);
-            pForeground = nullptr;
-        }
+        pBackground.reset();
+        pForeground.reset();
     }
 
 private:
@@ -233,10 +226,10 @@ private:
     Uint32 backgroundcolor = COLOR_TRANSPARENT; ///< the color of the label background
     std::string text;                           ///< the text of this label
 
-    Alignment_Enum alignment = (Alignment_Enum) (Alignment_Left | Alignment_Top);   ///< the alignment of this label
+    Alignment_Enum alignment = static_cast<Alignment_Enum>(Alignment_Left | Alignment_Top);   ///< the alignment of this label
 
-    SDL_Texture* pBackground = nullptr;
-    SDL_Texture* pForeground = nullptr;
+    sdl2::texture_ptr pBackground = nullptr;
+    sdl2::texture_ptr pForeground = nullptr;
     ScrollBar scrollbar;
 
     bool bAutohideScrollbar = true;     ///< hide the scrollbar if not needed (default = true)

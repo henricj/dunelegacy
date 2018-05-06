@@ -19,9 +19,9 @@
 #define PICTUREFONT_H
 
 #include "Font.h"
+#include <misc/SDL2pp.h>
 
 #include <vector>
-#include <SDL2/SDL.h>
 
 /// A class for loading a font from a surface.
 /**

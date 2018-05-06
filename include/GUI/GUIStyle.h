@@ -22,11 +22,10 @@
 #include <Colors.h>
 
 #include <misc/exceptions.h>
+#include <misc/SDL2pp.h>
 
 #include <stdlib.h>
 #include <stdio.h>
-
-#include <SDL2/SDL.h>
 #include <string>
 
 #include "Widget.h"

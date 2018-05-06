@@ -28,8 +28,7 @@
 #include <GUI/ObjectInterfaces/MultiUnitInterface.h>
 
 #include <misc/draw_util.h>
-
-#include <SDL2/SDL.h>
+#include <misc/SDL2pp.h>
 
 GameInterface::GameInterface() : Window(0,0,0,0) {
     pObjectContainer = nullptr;

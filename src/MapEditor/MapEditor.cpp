@@ -2016,9 +2016,8 @@ void MapEditor::saveMapshot() {
 
     drawMap(&tmpScreenborder, true);
 
-    SDL_Surface* pMapshotSurface = renderReadSurface(renderer);
-    SavePNG(pMapshotSurface, mapshotFilename.c_str());
-    SDL_FreeSurface(pMapshotSurface);
+    sdl2::surface_ptr pMapshotSurface = renderReadSurface(renderer);
+    SavePNG(pMapshotSurface.get(), mapshotFilename.c_str());
 
     SDL_SetRenderTarget(renderer, oldRenderTarget);
     SDL_DestroyTexture(renderTarget);

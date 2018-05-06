@@ -100,10 +100,7 @@ Wsafile::Wsafile(int num,...) {
 /**
     Frees all memory.
 */
-Wsafile::~Wsafile()
-{
-    free(decodedFrames);
-}
+Wsafile::~Wsafile() = default;
 
 /// Returns a picture in this wsa-File
 /**
@@ -112,29 +109,28 @@ Wsafile::~Wsafile()
     \param  frameNumber specifies which frame to return (zero based)
     \return nth frame in this animation
 */
-SDL_Surface * Wsafile::getPicture(Uint32 frameNumber)
-{
+sdl2::surface_ptr Wsafile::getPicture(Uint32 frameNumber) const {
     if(frameNumber >= numFrames) {
         return nullptr;
     }
 
-    SDL_Surface * pic;
-    unsigned char * pImage = decodedFrames + (frameNumber * sizeX * sizeY);
-
     // create new picture surface
-    if((pic = SDL_CreateRGBSurface(0,sizeX,sizeY,8,0,0,0,0))== nullptr) {
+    auto pic = sdl2::surface_ptr{ SDL_CreateRGBSurface(0,sizeX,sizeY,8,0,0,0,0) };
+    if(pic== nullptr)
         return nullptr;
-    }
 
-    palette.applyToSurface(pic);
-    SDL_LockSurface(pic);
+    palette.applyToSurface(pic.get());
+
+    const unsigned char* const RESTRICT pImage = &decodedFrames[frameNumber * sizeX * sizeY];
+    unsigned char* const RESTRICT pixels = static_cast<unsigned char*>(pic->pixels);
+
+    sdl2::surface_lock lock{ pic.get() };
 
     //Now we can copy line by line
-    for(int y = 0; y < sizeY;y++) {
-        memcpy( ((char*) (pic->pixels)) + y * pic->pitch , pImage + y * sizeX, sizeX);
+    for(int y = 0; y < sizeY; ++y) {
+        memcpy( pixels + y * pic->pitch, pImage + y * sizeX, sizeX);
     }
 
-    SDL_UnlockSurface(pic);
     return pic;
 }
 
@@ -145,38 +141,38 @@ SDL_Surface * Wsafile::getPicture(Uint32 frameNumber)
     \param  numFramesX  the maximum number of frames in X direction
     \return the complete animation
 */
-SDL_Surface * Wsafile::getAnimationAsPictureRow(int numFramesX) {
-    SDL_Surface * pic;
+sdl2::surface_ptr Wsafile::getAnimationAsPictureRow(int numFramesX) const {
 
-    numFramesX = std::min(numFramesX, (int) numFrames);
+    numFramesX = std::min(numFramesX, static_cast<int>(numFrames));
     int numFramesY = (numFrames + numFramesX -1) / numFramesX;
 
     // create new picture surface
-    if((pic = SDL_CreateRGBSurface(0,sizeX*numFramesX,sizeY*numFramesY,8,0,0,0,0))== nullptr) {
+    auto pic = sdl2::surface_ptr{ SDL_CreateRGBSurface(0,sizeX*numFramesX,sizeY*numFramesY,8,0,0,0,0) };
+    if(pic == nullptr)
         return nullptr;
-    }
 
-    palette.applyToSurface(pic);
-    SDL_LockSurface(pic);
+    palette.applyToSurface(pic.get());
+
+    char* const RESTRICT pixels = static_cast<char*>(pic->pixels);
+
+    sdl2::surface_lock lock{ pic.get() };
 
     for(int y = 0; y < numFramesY; y++) {
         for(int x = 0; x < numFramesX; x++) {
             int i = y*numFramesX + x;
             if(i >= numFrames) {
-                SDL_UnlockSurface(pic);
                 return pic;
             }
 
-            unsigned char * pImage = decodedFrames + (i * sizeX * sizeY);
+            const unsigned char * const RESTRICT pImage = &decodedFrames[i * sizeX * sizeY];
 
             //Now we can copy this frame line by line
-            for(int line = 0; line < sizeY;line++) {
-                memcpy( ((char*) (pic->pixels)) + (y*sizeY + line) * pic->pitch + x*sizeX, pImage + line * sizeX, sizeX);
+            for(int line = 0; line < sizeY; ++line) {
+                memcpy( pixels + (y*sizeY + line) * pic->pitch + x*sizeX, pImage + line * sizeX, sizeX);
             }
         }
     }
 
-    SDL_UnlockSurface(pic);
     return pic;
 }
 
@@ -191,21 +187,19 @@ SDL_Surface * Wsafile::getAnimationAsPictureRow(int numFramesX) {
     \param  bSetColorKey    if true, black is set as transparency
     \return a new animation object or nullptr on error
 */
-Animation* Wsafile::getAnimation(unsigned int startindex, unsigned int endindex, bool bDoublePic, bool bSetColorKey)
+Animation* Wsafile::getAnimation(unsigned int startindex, unsigned int endindex, bool bDoublePic, bool bSetColorKey) const
 {
-
-
-    Animation* tmpAnimation = new Animation();
+    auto animation = std::make_unique<Animation>();
 
     for(unsigned int i = startindex; i <= endindex; i++) {
-        SDL_Surface* tmp = getPicture(i);
+        auto tmp = getPicture(i);
         if(tmp == nullptr) {
-            delete tmpAnimation;
             return nullptr;
         }
-        tmpAnimation->addFrame(tmp,bDoublePic,bSetColorKey);
+        animation->addFrame(tmp.release(),bDoublePic,bSetColorKey);
     }
-    return tmpAnimation;
+
+    return animation.release();
 }
 
 /// Helper method to decode one frame
@@ -218,20 +212,16 @@ Animation* Wsafile::getAnimation(unsigned int startindex, unsigned int endindex,
     \param  x               x-dimension of one frame
     \param  y               y-dimension of one frame
 */
-void Wsafile::decodeFrames(unsigned char* pFiledata, Uint32* index, int numberOfFrames, unsigned char* pDecodedFrames, int x, int y)
+void Wsafile::decodeFrames(const unsigned char* pFiledata, Uint32* index, int numberOfFrames, unsigned char* pDecodedFrames, int x, int y) const
 {
-    for(int i=0;i<numberOfFrames;i++) {
-        unsigned char *dec80 = (unsigned char*) malloc(x*y*2);
-        if(dec80 == nullptr) {
-            SDL_Log("Error: Unable to allocate memory for decoded WSA-Frames!");
-            exit(EXIT_FAILURE);
-        }
+    for(int i = 0; i < numberOfFrames; ++i) {
+        auto dec80 = std::make_unique<unsigned char[]>(x * y * 2);
 
-        decode80(pFiledata + SDL_SwapLE32(index[i]), dec80, 0);
+        decode80(pFiledata + SDL_SwapLE32(index[i]), dec80.get(), 0);
 
-        decode40(dec80, pDecodedFrames + i * x*y);
+        decode40(dec80.get(), pDecodedFrames + i * x*y);
 
-        free(dec80);
+        dec80.reset();
 
         if (i < numberOfFrames - 1) {
             memcpy(pDecodedFrames + (i+1) * x*y, pDecodedFrames + i * x*y,x*y);
@@ -245,9 +235,7 @@ void Wsafile::decodeFrames(unsigned char* pFiledata, Uint32* index, int numberOf
     should be freed with free when no longer needed.
 
 */
-unsigned char* Wsafile::readfile(SDL_RWops* rwop, int* filesize) {
-    unsigned char* pFiledata;
-
+std::unique_ptr<unsigned char[]> Wsafile::readfile(SDL_RWops* rwop, int* filesize) const {
     if(filesize == nullptr) {
         SDL_Log("Wsafile: filesize == nullptr!");
         exit(EXIT_FAILURE);
@@ -270,12 +258,9 @@ unsigned char* Wsafile::readfile(SDL_RWops* rwop, int* filesize) {
         exit(EXIT_FAILURE);
     }
 
-    if( (pFiledata = (unsigned char*) malloc(wsaFilesize)) == nullptr) {
-        SDL_Log("Wsafile: Allocating memory failed!");
-        exit(EXIT_FAILURE);
-    }
+    auto pFiledata = std::make_unique<unsigned char[]>(wsaFilesize);
 
-    if(SDL_RWread(rwop, pFiledata, wsaFilesize, 1) != 1) {
+    if(SDL_RWread(rwop, pFiledata.get(), wsaFilesize, 1) != 1) {
         SDL_Log("Wsafile: Reading this *.wsa-File failed!");
         exit(EXIT_FAILURE);
     }
@@ -307,56 +292,35 @@ void Wsafile::readdata(int numFiles, ...) {
     \param  args        SDL_RWops for each wsa-File should be in this va_list. (can be readonly)
 */
 void Wsafile::readdata(int numFiles, va_list args) {
-    unsigned char** pFiledata;
-    Uint32** index;
-    Uint16* numberOfFrames;
-    bool* extended;
-
-    if((pFiledata = (unsigned char**) malloc(sizeof(unsigned char*) * numFiles)) == nullptr) {
-        SDL_Log("Wsafile::readdata(): Unable to allocate memory!");
-        exit(EXIT_FAILURE);
-    }
-
-    if((index = (Uint32**) malloc(sizeof(Uint32*) * numFiles)) == nullptr) {
-        SDL_Log("Wsafile::readdata(): Unable to allocate memory!");
-        exit(EXIT_FAILURE);
-    }
-
-    if((numberOfFrames = (Uint16*) malloc(sizeof(Uint16) * numFiles)) == nullptr) {
-        SDL_Log("Wsafile::readdata(): Unable to allocate memory!");
-        exit(EXIT_FAILURE);
-    }
-
-    if((extended = (bool*) malloc(sizeof(bool) * numFiles)) == nullptr) {
-        SDL_Log("Wsafile::readdata(): Unable to allocate memory!");
-        exit(EXIT_FAILURE);
-    }
+    std::vector<std::unique_ptr<unsigned char[]>> pFiledata(numFiles);
+    std::vector<Uint32*> index(numFiles);
+    std::vector<Uint16> numberOfFrames(numFiles);
+    std::vector<bool> extended(numFiles);
 
     numFrames = 0;
     looped = false;
 
     for(int i = 0; i < numFiles; i++) {
-        SDL_RWops* rwop;
         int wsaFilesize;
-        rwop = va_arg(args,SDL_RWops*);
+        const auto rwop = va_arg(args,SDL_RWops*);
         pFiledata[i] = readfile(rwop,&wsaFilesize);
-        numberOfFrames[i] = SDL_SwapLE16(*((Uint16*) pFiledata[i]) );
+        numberOfFrames[i] = SDL_SwapLE16(*(reinterpret_cast<Uint16*>(pFiledata[i].get())) );
 
         if(i == 0) {
-            sizeX = SDL_SwapLE16(*((Uint16*) (pFiledata[0] + 2)) );
-            sizeY = SDL_SwapLE16(*((Uint16*) (pFiledata[0] + 4)) );
+            sizeX = SDL_SwapLE16(*(reinterpret_cast<Uint16*>(pFiledata[0].get()+ 2)) );
+            sizeY = SDL_SwapLE16(*(reinterpret_cast<Uint16*>(pFiledata[0].get() + 4)) );
         } else {
-            if( (sizeX != (SDL_SwapLE16(*((Uint16*) (pFiledata[i] + 2)) )))
-                || (sizeY != (SDL_SwapLE16(*((Uint16*) (pFiledata[i] + 4)) )))) {
+            if( (sizeX != (SDL_SwapLE16(*(reinterpret_cast<Uint16*>(pFiledata[i].get()+ 2)) )))
+                || (sizeY != (SDL_SwapLE16(*(reinterpret_cast<Uint16*>(pFiledata[i].get()+ 4)) )))) {
                 SDL_Log("Wsafile: The wsa-files have different picture dimensions. Cannot concatenate them!");
                 exit(EXIT_FAILURE);
             }
         }
 
-        if( ((unsigned short *) pFiledata[i])[6] == 0) {
-            index[i] = (Uint32 *) (pFiledata[i] + 10);
+        if( reinterpret_cast<unsigned short *>(pFiledata[i].get())[6] == 0) {
+            index[i] = reinterpret_cast<Uint32 *>(pFiledata[i].get() + 10);
         } else {
-            index[i] = (Uint32 *) (pFiledata[i] + 8);
+            index[i] = reinterpret_cast<Uint32 *>(pFiledata[i].get() + 8);
         }
 
         if(index[i][0] == 0) {
@@ -384,7 +348,7 @@ void Wsafile::readdata(int numFiles, va_list args) {
             }
         }
 
-        if(pFiledata[i] + wsaFilesize < (((unsigned char *) index[i]) + sizeof(Uint32) * numberOfFrames[i])) {
+        if(pFiledata[i].get() + wsaFilesize < (reinterpret_cast<unsigned char *>(index[i]) + sizeof(Uint32) * numberOfFrames[i])) {
             SDL_Log("Wsafile: No valid WSA-File: File too small!");
             exit(EXIT_FAILURE);
         }
@@ -393,41 +357,34 @@ void Wsafile::readdata(int numFiles, va_list args) {
     }
 
 
-    if( (decodedFrames = (unsigned char*) calloc(1,sizeX*sizeY*numFrames)) == nullptr) {
-        SDL_Log("Wsafile: Unable to allocate memory for decoded WSA-Frames!");
-        exit(EXIT_FAILURE);
-    }
+    decodedFrames.clear();
+    decodedFrames.resize(sizeX * sizeY * numFrames);
 
-    decodeFrames(pFiledata[0],index[0],numberOfFrames[0],decodedFrames,sizeX,sizeY);
-    unsigned char* nextFreeFrame = decodedFrames + (numberOfFrames[0] * sizeX * sizeY);
-    free(pFiledata[0]);
+    assert(decodedFrames.size() >= sizeX * sizeY);
+    decodeFrames(pFiledata[0].get(),index[0],numberOfFrames[0],&decodedFrames[0],sizeX,sizeY);
+    pFiledata[0].reset();
 
-    for(int i = 1 ; i < numFiles; i++) {
-        if(extended[i]) {
-            // copy last frame
-            memcpy(nextFreeFrame,nextFreeFrame - (sizeX*sizeY),sizeX*sizeY);
+    if (numFiles > 1) {
+        auto nextFreeFrame = &decodedFrames[(numberOfFrames[0] * sizeX * sizeY)];
+
+        for (int i = 1; i < numFiles; i++) {
+            if (extended[i]) {
+                // copy last frame
+                memcpy(nextFreeFrame, nextFreeFrame - (sizeX*sizeY), sizeX*sizeY);
+            }
+            assert(nextFreeFrame + sizeX * sizeY <= &decodedFrames[decodedFrames.size() - 1]);
+            decodeFrames(pFiledata[i].get(), index[i], numberOfFrames[i], nextFreeFrame, sizeX, sizeY);
+            nextFreeFrame += numberOfFrames[i] * sizeX * sizeY;
+            pFiledata[i].reset();
         }
-        decodeFrames(pFiledata[i],index[i],numberOfFrames[i],nextFreeFrame,sizeX,sizeY);
-        nextFreeFrame += numberOfFrames[i] * sizeX * sizeY;
-        free(pFiledata[i]);
     }
-
-    free(pFiledata);
-    free(numberOfFrames);
-    free(index);
-    free(extended);
 }
 
-SDL_Surface * LoadWSA_RW(SDL_RWops* RWop, Uint32 FrameNumber, int freesrc) {
-    Wsafile* wsafile = new Wsafile(RWop);
+sdl2::surface_ptr LoadWSA_RW(SDL_RWops* RWop, Uint32 FrameNumber, int freesrc) {
 
-    SDL_Surface* pPic = wsafile->getPicture(FrameNumber);
+    sdl2::RWop_ptr op_handle{ freesrc ? RWop : nullptr };
 
-    delete wsafile;
-
-    if(freesrc) {
-        SDL_RWclose(RWop);
-    }
+    auto pPic = Wsafile(RWop).getPicture(FrameNumber);
 
     return pPic;
 }

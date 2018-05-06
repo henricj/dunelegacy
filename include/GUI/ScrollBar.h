@@ -30,6 +30,11 @@ public:
     /// default constructor
     ScrollBar();
 
+    ScrollBar(const ScrollBar &) = delete;
+    ScrollBar(ScrollBar &&) = delete;
+    ScrollBar& operator=(const ScrollBar &) = delete;
+    ScrollBar& operator=(ScrollBar &&) = delete;
+
     /// destructor
     virtual ~ScrollBar();
 
@@ -77,7 +82,7 @@ public:
     /**
         This method resizes the scroll bar. This method should only
         called if the new size is a valid size for this scroll bar (See getMinumumSize).
-        \param  size    the new size of this scroll bar
+        \param  newSize    the new size of this scroll bar
     */
     inline void resize(Point newSize) override
     {
@@ -107,7 +112,7 @@ public:
     /**
         Sets the range of this ScrollBar.
         \param  minValue    the minimum value
-        \param  MaxValue    the maximum value
+        \param  maxValue    the maximum value
     */
     void setRange(int minValue, int maxValue) {
         if(minValue > maxValue) {
@@ -130,13 +135,13 @@ public:
         Gets the range start of this ScrollBar.
         \return the start value of the range
     */
-    int getRangeMin() const { return minValue; }
+    int getRangeMin() const noexcept { return minValue; }
 
     /**
         Gets the range end of this ScrollBar.
         \return the end value of the range
     */
-    int getRangeMax() const { return maxValue; }
+    int getRangeMax() const noexcept { return maxValue; }
 
     /**
         Sets the big step size that is used when clicking between the arrows and the slider.
@@ -152,7 +157,7 @@ public:
         Returns the current position
         \return the current value
     */
-    int getCurrentValue() {
+    int getCurrentValue() const noexcept {
         return currentValue;
     }
 
@@ -179,7 +184,7 @@ public:
         Sets the function that should be called when this scroll bar changes its position.
         \param  pOnChange   A function to be called on change
     */
-    inline void setOnChange(std::function<void ()> pOnChange) {
+    void setOnChange(std::function<void ()> pOnChange) {
         this->pOnChange = pOnChange;
     }
 
@@ -187,7 +192,7 @@ public:
         Sets the color for this scrollbar.
         \param  color   the color (COLOR_DEFAULT = default color)
     */
-    virtual inline void setColor(Uint32 color) {
+    virtual void setColor(Uint32 color) {
         this->color = color;
         updateArrowButtonSurface();
     }
@@ -212,10 +217,7 @@ protected:
     */
     void invalidateTextures() override
     {
-        if(pBackground != nullptr) {
-            SDL_DestroyTexture(pBackground);
-            pBackground = nullptr;
-        }
+        pBackground.reset();
     }
 private:
     void updateSliderButton();
@@ -230,7 +232,7 @@ private:
         setCurrentValue(currentValue+1);
     }
 
-    SDL_Texture* pBackground;
+    sdl2::texture_ptr pBackground;
     PictureButton arrow1;
     PictureButton arrow2;
     TextButton sliderButton;

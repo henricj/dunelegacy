@@ -16,45 +16,36 @@
  */
 
 #include <CutScenes/CrossBlendVideoEvent.h>
+#include <misc/SDL2pp.h>
 #include <misc/Scaler.h>
 #include <globals.h>
 
-CrossBlendVideoEvent::CrossBlendVideoEvent(SDL_Surface* pSourceSurface, SDL_Surface* pDestSurface, bool bFreeSurfaces, bool bCenterVertical) : VideoEvent()
+CrossBlendVideoEvent::CrossBlendVideoEvent(SDL_Surface* pSourceSurface, SDL_Surface* pDestSurface, bool bFreeSurfaces, bool bCenterVertical)
 {
-    this->pSourceSurface = convertSurfaceToDisplayFormat(Scaler::defaultDoubleTiledSurface(pSourceSurface, 1, 1, bFreeSurfaces), true);
-    this->pDestSurface = convertSurfaceToDisplayFormat(Scaler::defaultDoubleTiledSurface(pDestSurface, 1, 1, bFreeSurfaces), true);
+    this->pSourceSurface = convertSurfaceToDisplayFormat(Scaler::defaultDoubleTiledSurface(pSourceSurface, 1, 1, bFreeSurfaces).release(), true);
+    this->pDestSurface = convertSurfaceToDisplayFormat(Scaler::defaultDoubleTiledSurface(pDestSurface, 1, 1, bFreeSurfaces).release(), true);
     this->bCenterVertical = bCenterVertical;
     currentFrame = 0;
 
-    pStreamingTexture = SDL_CreateTexture(renderer, SCREEN_FORMAT, SDL_TEXTUREACCESS_STREAMING, this->pSourceSurface->w, this->pSourceSurface->h);
+    pStreamingTexture = sdl2::texture_ptr{ SDL_CreateTexture(renderer, SCREEN_FORMAT, SDL_TEXTUREACCESS_STREAMING, this->pSourceSurface->w, this->pSourceSurface->h) };
 
-    SDL_Rect dest = {   0,0, getWidth(this->pSourceSurface), getHeight(this->pSourceSurface)};
-    pBlendBlitter = new BlendBlitter(this->pDestSurface, false, this->pSourceSurface, dest, 30);
+    const SDL_Rect dest = { 0,0, getWidth(this->pSourceSurface.get()), getHeight(this->pSourceSurface.get()) };
+    pBlendBlitter = std::make_unique<BlendBlitter>(this->pDestSurface.get(), false, this->pSourceSurface.get(), dest, 30);
 }
 
-CrossBlendVideoEvent::~CrossBlendVideoEvent()
-{
-    SDL_FreeSurface(pSourceSurface);
-    SDL_FreeSurface(pDestSurface);
-
-    SDL_DestroyTexture(pStreamingTexture);
-
-    delete pBlendBlitter;
-    pBlendBlitter = nullptr;
-}
+CrossBlendVideoEvent::~CrossBlendVideoEvent() = default;
 
 int CrossBlendVideoEvent::draw()
 {
     if(pBlendBlitter->nextStep() == 0) {
-        delete pBlendBlitter;
-        pBlendBlitter = nullptr;
+        pBlendBlitter.reset();
     }
 
-    SDL_UpdateTexture(pStreamingTexture, nullptr, pSourceSurface->pixels, pSourceSurface->pitch);
+    SDL_UpdateTexture(pStreamingTexture.get(), nullptr, pSourceSurface->pixels, pSourceSurface->pitch);
 
-    SDL_Rect dest = calcAlignedDrawingRect(pStreamingTexture, HAlign::Center, bCenterVertical ? VAlign::Center : VAlign::Top);
+    auto dest = calcAlignedDrawingRect(pStreamingTexture.get(), HAlign::Center, bCenterVertical ? VAlign::Center : VAlign::Top);
 
-    SDL_RenderCopy(renderer, pStreamingTexture, nullptr, &dest);
+    SDL_RenderCopy(renderer, pStreamingTexture.get(), nullptr, &dest);
 
     currentFrame++;
 

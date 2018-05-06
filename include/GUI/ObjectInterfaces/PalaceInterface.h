@@ -30,7 +30,7 @@
 class PalaceInterface : public DefaultStructureInterface {
 public:
     static PalaceInterface* create(int objectID) {
-        PalaceInterface* tmp = new PalaceInterface(objectID);
+        const auto tmp = new PalaceInterface(objectID);
         tmp->pAllocated = true;
         return tmp;
     }
@@ -44,16 +44,15 @@ protected:
 
         weaponBox.addWidget(&weaponSelectButton, Point((SIDEBARWIDTH - 25 - getWidth(pTexture))/2,5), getTextureSize(pTexture));
 
-        SDL_Surface* pText = pFontManager->createSurfaceWithText(_("READY"), COLOR_WHITE, FONT_STD10);
+        sdl2::surface_ptr pText{ pFontManager->createSurfaceWithText(_("READY"), COLOR_WHITE, FONT_STD10) };
 
-        SDL_Surface* pReady = SDL_CreateRGBSurface(0, getWidth(pTexture), getHeight(pTexture), SCREEN_BPP, RMASK, GMASK, BMASK, AMASK);
-        SDL_FillRect(pReady, nullptr, COLOR_TRANSPARENT);
+        sdl2::surface_ptr pReady{ SDL_CreateRGBSurface(0, getWidth(pTexture), getHeight(pTexture), SCREEN_BPP, RMASK, GMASK, BMASK, AMASK) };
+        SDL_FillRect(pReady.get(), nullptr, COLOR_TRANSPARENT);
 
-        SDL_Rect dest = calcAlignedDrawingRect(pText, pReady);
-        SDL_BlitSurface(pText, nullptr, pReady, &dest);
+        SDL_Rect dest = calcAlignedDrawingRect(pText.get(), pReady.get());
+        SDL_BlitSurface(pText.get(), nullptr, pReady.get(), &dest);
 
-        SDL_FreeSurface(pText);
-        weaponSelectButton.setTextures(convertSurfaceToTexture(pReady, true),true);
+        weaponSelectButton.setTextures(convertSurfaceToTexture(pReady.get(), false).release(),true);
         weaponSelectButton.setVisible(false);
 
         weaponSelectButton.setOnClick(std::bind(&PalaceInterface::onSpecial, this));

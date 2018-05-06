@@ -20,6 +20,7 @@
 
 #include <Network/MetaServerCommands.h>
 #include <Network/GameServerInfo.h>
+#include <misc/SDL2pp.h>
 
 #include <memory>
 #include <functional>
@@ -27,7 +28,6 @@
 #include <enet/enet.h>
 #include <string>
 #include <list>
-#include <SDL2/SDL.h>
 
 #define SERVERLIST_UPDATE_INTERVAL  (8*1000)
 #define GAMESERVER_UPDATE_INTERVAL  (10*1000)

@@ -24,7 +24,7 @@
 #define MESSAGETIME (16*13)
 #define SLOWDOWN timer/16
 
-MessageTicker::MessageTicker() : Widget() {
+MessageTicker::MessageTicker() {
     enableResizing(false,false);
 
     timer = -MESSAGETIME/2;
@@ -36,45 +36,44 @@ MessageTicker::~MessageTicker() = default;
 
 void MessageTicker::addMessage(const std::string& msg)
 {
-    messageTextures.push(std::shared_ptr<SDL_Texture>(pFontManager->createTextureWithText(msg, COLOR_BLACK, FONT_STD12), SDL_DestroyTexture));
+    messageTextures.emplace(pFontManager->createTextureWithText(msg, COLOR_BLACK, FONT_STD12));
 }
 
 void MessageTicker::draw(Point position) {
-    if(isVisible() == false) {
+    if(isVisible() == false)
         return;
-    }
 
     // draw message
-    if(!messageTextures.empty()) {
-        if(timer++ == (MESSAGETIME/3)) {
+    if(messageTextures.empty()) return;
+
+    if(timer++ == (MESSAGETIME/3)) {
+        timer = -MESSAGETIME/2;
+        // delete first message
+        messageTextures.pop();
+
+        // if no more messages leave
+        if(messageTextures.empty()) {
             timer = -MESSAGETIME/2;
-            // delete first message
-            messageTextures.pop();
-
-            // if no more messages leave
-            if(messageTextures.empty()) {
-                timer = -MESSAGETIME/2;
-                return;
-            };
-        };
-
-        //draw text
-        SDL_Rect textLocation = { position.x + 21, position.y + 15, 0, 0 };
-
-        if(timer>0) {
-            textLocation.y -= SLOWDOWN;
+            return;
         }
+    }
 
-        SDL_Texture *tex = messageTextures.front().get();
+    //draw text
+    SDL_Rect textLocation = { position.x + 21, position.y + 15, 0, 0 };
 
-        SDL_Rect cut = { 0, 0, 0, 0 };
+    if(timer>0) {
+        textLocation.y -= SLOWDOWN;
+    }
 
-        if(timer>0) {
-            cut.y = 3*SLOWDOWN;
-        }
+    SDL_Texture *tex = messageTextures.front().get();
 
-        textLocation.w = cut.w = getWidth(tex);
-        textLocation.h = cut.h = getHeight(tex) - cut.y;
-        SDL_RenderCopy(renderer, tex, &cut, &textLocation);
-    };
+    SDL_Rect cut = { 0, 0, 0, 0 };
+
+    if(timer>0) {
+        cut.y = 3*SLOWDOWN;
+    }
+
+    textLocation.w = cut.w = getWidth(tex);
+    textLocation.h = cut.h = getHeight(tex) - cut.y;
+    SDL_RenderCopy(renderer, tex, &cut, &textLocation);
 }

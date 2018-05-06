@@ -28,14 +28,13 @@
 #include <MapEditor/MapEditorInterface.h>
 #include <MapEditor/MapEditorOperation.h>
 
-
 #include <INIMap/INIMapEditorLoader.h>
 
 #include <ScreenBorder.h>
+#include <misc/SDL2pp.h>
 
 #include <DataTypes.h>
 
-#include <SDL2/SDL.h>
 #include <string>
 #include <vector>
 #include <stack>

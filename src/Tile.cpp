@@ -375,43 +375,43 @@ void Tile::blitDeadUnits(int xPos, int yPos) {
         SDL_Rect source = { 0, 0, zoomed_tile, zoomed_tile };
         SDL_Texture* pTexture = nullptr;
         switch (deadUnit.type) {
-        case DeadUnit_Infantry: {
-            pTexture = pGFXManager->getZoomedObjPic(ObjPic_DeadInfantry, deadUnit.house, currentZoomlevel);
-            source.x = (deadUnit.timer < 1000 && deadUnit.onSand) ? zoomed_tile : 0;
-        } break;
+            case DeadUnit_Infantry: {
+                pTexture = pGFXManager->getZoomedObjPic(ObjPic_DeadInfantry, deadUnit.house, currentZoomlevel);
+                source.x = (deadUnit.timer < 1000 && deadUnit.onSand) ? zoomed_tile : 0;
+            } break;
 
-        case DeadUnit_Infantry_Squashed1: {
-            pTexture = pGFXManager->getZoomedObjPic(ObjPic_DeadInfantry, deadUnit.house, currentZoomlevel);
-            source.x = 4 * zoomed_tile;
-        } break;
+            case DeadUnit_Infantry_Squashed1: {
+                pTexture = pGFXManager->getZoomedObjPic(ObjPic_DeadInfantry, deadUnit.house, currentZoomlevel);
+                source.x = 4 * zoomed_tile;
+            } break;
 
-        case DeadUnit_Infantry_Squashed2: {
-            pTexture = pGFXManager->getZoomedObjPic(ObjPic_DeadInfantry, deadUnit.house, currentZoomlevel);
-            source.x = 5 * zoomed_tile;
-        } break;
+            case DeadUnit_Infantry_Squashed2: {
+                pTexture = pGFXManager->getZoomedObjPic(ObjPic_DeadInfantry, deadUnit.house, currentZoomlevel);
+                source.x = 5 * zoomed_tile;
+            } break;
 
-        case DeadUnit_Carrall: {
-            pTexture = pGFXManager->getZoomedObjPic(ObjPic_DeadAirUnit, deadUnit.house, currentZoomlevel);
-            if (deadUnit.onSand) {
-                source.x = (deadUnit.timer < 1000) ? 5 * zoomed_tile : 4 * zoomed_tile;
-            }
-            else {
-                source.x = 3 * zoomed_tile;
-            }
-        } break;
+            case DeadUnit_Carrall: {
+                pTexture = pGFXManager->getZoomedObjPic(ObjPic_DeadAirUnit, deadUnit.house, currentZoomlevel);
+                if (deadUnit.onSand) {
+                    source.x = (deadUnit.timer < 1000) ? 5 * zoomed_tile : 4 * zoomed_tile;
+                }
+                else {
+                    source.x = 3 * zoomed_tile;
+                }
+            } break;
 
-        case DeadUnit_Ornithopter: {
-            pTexture = pGFXManager->getZoomedObjPic(ObjPic_DeadAirUnit, deadUnit.house, currentZoomlevel);
-            if (deadUnit.onSand) {
-                source.x = (deadUnit.timer < 1000) ? 2 * zoomed_tile : zoomed_tile;
-            }
-            else {
-                source.x = 0;
-            }
-        } break;
+            case DeadUnit_Ornithopter: {
+                pTexture = pGFXManager->getZoomedObjPic(ObjPic_DeadAirUnit, deadUnit.house, currentZoomlevel);
+                if (deadUnit.onSand) {
+                    source.x = (deadUnit.timer < 1000) ? 2 * zoomed_tile : zoomed_tile;
+                }
+                else {
+                    source.x = 0;
+                }
+            } break;
 
-        default:
-            break;
+            default:
+                break;
         }
 
         if (pTexture != nullptr) {
@@ -1095,7 +1095,6 @@ int Tile::getTerrainTile() const {
 }
 
 int Tile::getHideTile(int houseID) const {
-
     // are all surrounding tiles explored?
     if (((currentGameMap->tileExists(location.x, location.y - 1) == false) || (currentGameMap->getTile(location.x, location.y - 1)->isExplored(houseID) == true))
         && ((currentGameMap->tileExists(location.x + 1, location.y) == false) || (currentGameMap->getTile(location.x + 1, location.y)->isExplored(houseID) == true))
@@ -1114,7 +1113,6 @@ int Tile::getHideTile(int houseID) const {
 }
 
 int Tile::getFogTile(int houseID) const {
-
     // are all surrounding tiles fogged?
     if (((currentGameMap->tileExists(location.x, location.y - 1) == false) || (currentGameMap->getTile(location.x, location.y - 1)->isFogged(houseID) == false))
         && ((currentGameMap->tileExists(location.x + 1, location.y) == false) || (currentGameMap->getTile(location.x + 1, location.y)->isFogged(houseID) == false))

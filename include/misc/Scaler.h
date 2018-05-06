@@ -18,12 +18,13 @@
 #ifndef SCALER_H
 #define SCALER_H
 
-#include <SDL2/SDL.h>
+#include <misc/SDL2pp.h>
 
 #include <string>
 
-typedef SDL_Surface* DoubleSurfaceFunction(SDL_Surface*, bool);
-typedef SDL_Surface* DoubleTiledSurfaceFunction(SDL_Surface*, int, int, bool);
+typedef sdl2::surface_ptr DoubleSurfaceFunction(SDL_Surface*, bool);
+typedef sdl2::surface_ptr DoubleTiledSurfaceFunction(SDL_Surface*, int, int, bool);
+
 
 class Scaler {
 public:
@@ -68,19 +69,19 @@ public:
 
 
     // nearest neighbor scaling
-    static SDL_Surface* doubleSurfaceNN(SDL_Surface* src, bool freeSrcSurface = true);
-    static SDL_Surface* doubleTiledSurfaceNN(SDL_Surface* src, int tilesX = 1, int tilesY = 1, bool freeSrcSurface = true);
+    static sdl2::surface_ptr doubleSurfaceNN(SDL_Surface* src, bool freeSrcSurface = true);
+    static sdl2::surface_ptr doubleTiledSurfaceNN(SDL_Surface* src, int tilesX = 1, int tilesY = 1, bool freeSrcSurface = true);
 
-    static SDL_Surface* tripleSurfaceNN(SDL_Surface* src, bool freeSrcSurface = true);
-    static SDL_Surface* tripleTiledSurfaceNN(SDL_Surface* src, int tilesX = 1, int tilesY = 1, bool freeSrcSurface = true);
+    static sdl2::surface_ptr tripleSurfaceNN(SDL_Surface* src, bool freeSrcSurface = true);
+    static sdl2::surface_ptr tripleTiledSurfaceNN(SDL_Surface* src, int tilesX = 1, int tilesY = 1, bool freeSrcSurface = true);
 
 
     // scale2x and scale3x algorithms (see http://scale2x.sourceforge.net/algorithm.html)
-    static SDL_Surface* doubleSurfaceScale2x(SDL_Surface* src, bool freeSrcSurface = true);
-    static SDL_Surface* doubleTiledSurfaceScale2x(SDL_Surface* src, int tilesX = 1, int tilesY = 1, bool freeSrcSurface = true);
+    static sdl2::surface_ptr doubleSurfaceScale2x(SDL_Surface* src, bool freeSrcSurface = true);
+    static sdl2::surface_ptr doubleTiledSurfaceScale2x(SDL_Surface* src, int tilesX = 1, int tilesY = 1, bool freeSrcSurface = true);
 
-    static SDL_Surface* tripleSurfaceScale3x(SDL_Surface* src, bool freeSrcSurface = true);
-    static SDL_Surface* tripleTiledSurfaceScale3x(SDL_Surface* src, int tilesX = 1, int tilesY = 1, bool freeSrcSurface = true);
+    static sdl2::surface_ptr tripleSurfaceScale3x(SDL_Surface* src, bool freeSrcSurface = true);
+    static sdl2::surface_ptr tripleTiledSurfaceScale3x(SDL_Surface* src, int tilesX = 1, int tilesY = 1, bool freeSrcSurface = true);
 
 };
 

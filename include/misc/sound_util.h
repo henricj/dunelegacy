@@ -18,9 +18,9 @@
 #ifndef SOUND_UTIL_H
 #define SOUND_UTIL_H
 
+#include <misc/SDL2pp.h>
 #include <string>
 #include <SDL2/SDL_mixer.h>
-#include <misc/sdl_support.h>
 
 namespace sdl2
 {

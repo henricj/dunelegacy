@@ -37,6 +37,7 @@
 #include <misc/md5.h>
 #include <misc/exceptions.h>
 #include <misc/format.h>
+#include <misc/SDL2pp.h>
 
 #include <players/HumanPlayer.h>
 
@@ -67,7 +68,6 @@
 #include <algorithm>
 #include <sstream>
 #include <iomanip>
-#include <SDL2/SDL.h>
 
 Game::Game() {
     currentZoomlevel = settings.video.preferredZoomLevel;
@@ -515,30 +515,27 @@ void Game::drawScreen()
 
     // draw chat message currently typed
     if(chatMode) {
-        SDL_Texture* pChatTexture = pFontManager->createTextureWithText("Chat: " + typingChatMessage + (((SDL_GetTicks() / 150) % 2 == 0) ? "_" : ""), COLOR_WHITE, FONT_STD12);
-        SDL_Rect drawLocation = calcDrawingRect(pChatTexture, 20, getRendererHeight() - 40);
-        SDL_RenderCopy(renderer, pChatTexture, nullptr, &drawLocation);
-        SDL_DestroyTexture(pChatTexture);
+        sdl2::texture_ptr pChatTexture = pFontManager->createTextureWithText("Chat: " + typingChatMessage + (((SDL_GetTicks() / 150) % 2 == 0) ? "_" : ""), COLOR_WHITE, FONT_STD12);
+        SDL_Rect drawLocation = calcDrawingRect(pChatTexture.get(), 20, getRendererHeight() - 40);
+        SDL_RenderCopy(renderer, pChatTexture.get(), nullptr, &drawLocation);
     }
 
     if(bShowFPS) {
         std::string strFPS = fmt::sprintf("fps: %.1f ", 1000.0f/averageFrameTime);
 
-        SDL_Texture* pFPSTexture = pFontManager->createTextureWithText(strFPS, COLOR_WHITE, FONT_STD12);
-        SDL_Rect drawLocation = calcDrawingRect(pFPSTexture,sideBarPos.x - strFPS.length()*8, 60);
-        SDL_RenderCopy(renderer, pFPSTexture, nullptr, &drawLocation);
-        SDL_DestroyTexture(pFPSTexture);
+        sdl2::texture_ptr pFPSTexture = pFontManager->createTextureWithText(strFPS, COLOR_WHITE, FONT_STD12);
+        SDL_Rect drawLocation = calcDrawingRect(pFPSTexture.get(),sideBarPos.x - strFPS.length()*8, 60);
+        SDL_RenderCopy(renderer, pFPSTexture.get(), nullptr, &drawLocation);
     }
 
     if(bShowTime) {
         int seconds = getGameTime() / 1000;
         std::string strTime = fmt::sprintf(" %.2d:%.2d:%.2d", seconds / 3600, (seconds % 3600)/60, (seconds % 60) );
 
-        SDL_Texture* pTimeTexture = pFontManager->createTextureWithText(strTime, COLOR_WHITE, FONT_STD12);
-        SDL_Rect drawLocation = calcAlignedDrawingRect(pTimeTexture, HAlign::Left, VAlign::Bottom);
+        sdl2::texture_ptr pTimeTexture = pFontManager->createTextureWithText(strTime, COLOR_WHITE, FONT_STD12);
+        SDL_Rect drawLocation = calcAlignedDrawingRect(pTimeTexture.get(), HAlign::Left, VAlign::Bottom);
         drawLocation.y++;
-        SDL_RenderCopy(renderer, pTimeTexture, nullptr, &drawLocation);
-        SDL_DestroyTexture(pTimeTexture);
+        SDL_RenderCopy(renderer, pTimeTexture.get(), nullptr, &drawLocation);
     }
 
     if(finished) {
@@ -550,10 +547,9 @@ void Game::drawScreen()
             message = _("You Have Failed Your Mission.");
         }
 
-        SDL_Texture* pFinishMessageTexture = pFontManager->createTextureWithText(message.c_str(), COLOR_WHITE, FONT_STD24);
-        SDL_Rect drawLocation = calcDrawingRect(pFinishMessageTexture, sideBarPos.x/2, topBarPos.h + (getRendererHeight()-topBarPos.h)/2, HAlign::Center, VAlign::Center);
-        SDL_RenderCopy(renderer, pFinishMessageTexture, nullptr, &drawLocation);
-        SDL_DestroyTexture(pFinishMessageTexture);
+        sdl2::texture_ptr pFinishMessageTexture = pFontManager->createTextureWithText(message.c_str(), COLOR_WHITE, FONT_STD24);
+        SDL_Rect drawLocation = calcDrawingRect(pFinishMessageTexture.get(), sideBarPos.x/2, topBarPos.h + (getRendererHeight()-topBarPos.h)/2, HAlign::Center, VAlign::Center);
+        SDL_RenderCopy(renderer, pFinishMessageTexture.get(), nullptr, &drawLocation);
     }
 
     if(pWaitingForOtherPlayers != nullptr) {
@@ -1129,7 +1125,7 @@ void Game::runMainLoop() {
         SDL_RenderCopy(renderer, screenTexture, nullptr, nullptr);
         SDL_RenderPresent(renderer);
 
-        int frameEnd = SDL_GetTicks();
+        const int frameEnd = SDL_GetTicks();
 
         if(frameEnd == frameStart) {
             SDL_Delay(1);
@@ -2486,10 +2482,9 @@ void Game::takeScreenshot() const {
         i++;
     } while(existsFile(screenshotFilename) == true);
 
-    SDL_Surface* pCurrentScreen = renderReadSurface(renderer);
-    SavePNG(pCurrentScreen, screenshotFilename.c_str());
+    sdl2::surface_ptr pCurrentScreen = renderReadSurface(renderer);
+    SavePNG(pCurrentScreen.get(), screenshotFilename.c_str());
     currentGame->addToNewsTicker(_("Screenshot saved") + ": '" + screenshotFilename + "'");
-    SDL_FreeSurface(pCurrentScreen);
 }
 
 

@@ -59,16 +59,16 @@ void Scaler::setDefaultScaler(Scaler::ScalerType scaler) {
     \param  freeSrcSurface  true = free the source surface after scaling
     \return the scaled surface (caller must free it with SDL_FreeSurface when finished)
 */
-SDL_Surface* Scaler::doubleSurfaceNN(SDL_Surface* src, bool freeSrcSurface) {
+sdl2::surface_ptr Scaler::doubleSurfaceNN(SDL_Surface* src, bool freeSrcSurface) {
     if(src == nullptr) {
         return nullptr;
     }
 
-    SDL_Surface *returnPic;
+    sdl2::surface_ptr src_handle{ freeSrcSurface ? src : nullptr };
 
     // create new picture surface
-    if((returnPic = SDL_CreateRGBSurface(0,src->w * 2,src->h * 2,8,0,0,0,0)) == nullptr) {
-        if(freeSrcSurface) SDL_FreeSurface(src);
+    auto returnPic = sdl2::surface_ptr{ SDL_CreateRGBSurface(0, src->w * 2, src->h * 2, 8, 0, 0, 0, 0) };
+    if (returnPic == nullptr) {
         return nullptr;
     }
 
@@ -76,14 +76,14 @@ SDL_Surface* Scaler::doubleSurfaceNN(SDL_Surface* src, bool freeSrcSurface) {
     Uint32 ckey;
     bool has_ckey = !SDL_GetColorKey(src, &ckey);
     if (has_ckey) {
-        SDL_SetColorKey(returnPic, SDL_TRUE, ckey);
+        SDL_SetColorKey(returnPic.get(), SDL_TRUE, ckey);
     }
     if (src->flags & SDL_RLEACCEL) {
-        SDL_SetSurfaceRLE(returnPic, SDL_TRUE);
+        SDL_SetSurfaceRLE(returnPic.get(), SDL_TRUE);
     }
 
-    SDL_LockSurface(returnPic);
-    SDL_LockSurface(src);
+    sdl2::surface_lock return_lock{ returnPic.get() };
+    sdl2::surface_lock src_lock{ src };
 
     //Now we can copy pixel by pixel
     for(int y = 0; y < src->h;y++) {
@@ -95,11 +95,6 @@ SDL_Surface* Scaler::doubleSurfaceNN(SDL_Surface* src, bool freeSrcSurface) {
             *( ((char*) (returnPic->pixels)) + (2*y+1)*returnPic->pitch + 2*x+1) = val;
         }
     }
-
-    SDL_UnlockSurface(src);
-    SDL_UnlockSurface(returnPic);
-
-    if(freeSrcSurface) SDL_FreeSurface(src);
 
     return returnPic;
 }
@@ -113,7 +108,7 @@ SDL_Surface* Scaler::doubleSurfaceNN(SDL_Surface* src, bool freeSrcSurface) {
     \param  freeSrcSurface  true = free the source surface after scaling
     \return the scaled surface (caller must free it with SDL_FreeSurface when finished)
 */
-SDL_Surface* Scaler::doubleTiledSurfaceNN(SDL_Surface* src, int tilesX, int tilesY, bool freeSrcSurface) {
+sdl2::surface_ptr Scaler::doubleTiledSurfaceNN(SDL_Surface* src, int tilesX, int tilesY, bool freeSrcSurface) {
     return doubleSurfaceNN(src, freeSrcSurface);
 }
 
@@ -124,16 +119,16 @@ SDL_Surface* Scaler::doubleTiledSurfaceNN(SDL_Surface* src, int tilesX, int tile
     \param  freeSrcSurface  true = free the source surface after scaling
     \return the scaled surface (caller must free it with SDL_FreeSurface when finished)
 */
-SDL_Surface* Scaler::tripleSurfaceNN(SDL_Surface* src, bool freeSrcSurface) {
+sdl2::surface_ptr Scaler::tripleSurfaceNN(SDL_Surface* src, bool freeSrcSurface) {
     if(src == nullptr) {
         return nullptr;
     }
 
-    SDL_Surface *returnPic;
+    sdl2::surface_ptr src_handle{ freeSrcSurface ? src : nullptr };
 
     // create new picture surface
-    if((returnPic = SDL_CreateRGBSurface(0,src->w * 3,src->h * 3,8,0,0,0,0)) == nullptr) {
-        if(freeSrcSurface) SDL_FreeSurface(src);
+    auto returnPic = sdl2::surface_ptr{ SDL_CreateRGBSurface(0, src->w * 3, src->h * 3, 8, 0, 0, 0, 0) };
+    if (returnPic == nullptr) {
         return nullptr;
     }
 
@@ -141,14 +136,14 @@ SDL_Surface* Scaler::tripleSurfaceNN(SDL_Surface* src, bool freeSrcSurface) {
     Uint32 ckey;
     bool has_ckey = !SDL_GetColorKey(src, &ckey);
     if (has_ckey) {
-        SDL_SetColorKey(returnPic, SDL_TRUE, ckey);
+        SDL_SetColorKey(returnPic.get(), SDL_TRUE, ckey);
     }
-//    if (src->flags & SDL_RLEACCEL) {
-//        SDL_SetSurfaceRLE(returnPic, SDL_TRUE);
-//    }
+    if (src->flags & SDL_RLEACCEL) {
+        SDL_SetSurfaceRLE(returnPic.get(), SDL_TRUE);
+    }
 
-    SDL_LockSurface(returnPic);
-    SDL_LockSurface(src);
+    sdl2::surface_lock return_lock{ returnPic.get() };
+    sdl2::surface_lock src_lock{ src };
 
     //Now we can copy pixel by pixel
     for(int y = 0; y < src->h;y++) {
@@ -166,11 +161,6 @@ SDL_Surface* Scaler::tripleSurfaceNN(SDL_Surface* src, bool freeSrcSurface) {
         }
     }
 
-    SDL_UnlockSurface(src);
-    SDL_UnlockSurface(returnPic);
-
-    if(freeSrcSurface) SDL_FreeSurface(src);
-
     return returnPic;
 }
 
@@ -183,7 +173,7 @@ SDL_Surface* Scaler::tripleSurfaceNN(SDL_Surface* src, bool freeSrcSurface) {
     \param  freeSrcSurface  true = free the source surface after scaling
     \return the scaled surface (caller must free it with SDL_FreeSurface when finished)
 */
-SDL_Surface* Scaler::tripleTiledSurfaceNN(SDL_Surface* src, int tilesX, int tilesY, bool freeSrcSurface) {
+sdl2::surface_ptr Scaler::tripleTiledSurfaceNN(SDL_Surface* src, int tilesX, int tilesY, bool freeSrcSurface) {
     return tripleSurfaceNN(src, freeSrcSurface);
 }
 
@@ -197,7 +187,7 @@ SDL_Surface* Scaler::tripleTiledSurfaceNN(SDL_Surface* src, int tilesX, int tile
     \param  freeSrcSurface  true = free the source surface after scaling
     \return the scaled surface (caller must free it with SDL_FreeSurface when finished)
 */
-SDL_Surface* Scaler::doubleSurfaceScale2x(SDL_Surface* src, bool freeSrcSurface) {
+sdl2::surface_ptr Scaler::doubleSurfaceScale2x(SDL_Surface* src, bool freeSrcSurface) {
     return doubleTiledSurfaceScale2x(src, 1, 1, freeSrcSurface);
 }
 
@@ -210,34 +200,40 @@ SDL_Surface* Scaler::doubleSurfaceScale2x(SDL_Surface* src, bool freeSrcSurface)
     \param  freeSrcSurface  true = free the source surface after scaling
     \return the scaled surface (caller must free it with SDL_FreeSurface when finished)
 */
-SDL_Surface* Scaler::doubleTiledSurfaceScale2x(SDL_Surface* src, int tilesX, int tilesY, bool freeSrcSurface) {
-    if(src == nullptr) {
+sdl2::surface_ptr Scaler::doubleTiledSurfaceScale2x(SDL_Surface* src, int tilesX, int tilesY, bool freeSrcSurface) {
+    if (src == nullptr) {
         return nullptr;
     }
 
     int srcWidth = src->w;
     int srcHeight = src->h;
 
-    SDL_Surface* dest = SDL_CreateRGBSurface(0, srcWidth*2, srcHeight*2, 8, 0, 0, 0, 0);
-    if(dest == nullptr) {
-        if(freeSrcSurface) SDL_FreeSurface(src);
+    sdl2::surface_ptr src_handle{ freeSrcSurface ? src : nullptr };
+
+    // create new picture surface
+    auto returnPic = sdl2::surface_ptr{ SDL_CreateRGBSurface(0, srcWidth*2, srcHeight*2, 8, 0, 0, 0, 0) };
+    if (returnPic == nullptr) {
         return nullptr;
     }
-    SDL_SetPaletteColors(dest->format->palette, src->format->palette->colors, 0, src->format->palette->ncolors);
+
+    SDL_SetPaletteColors(returnPic->format->palette, src->format->palette->colors, 0, src->format->palette->ncolors);
     Uint32 ckey;
     bool has_ckey = !SDL_GetColorKey(src, &ckey);
     if (has_ckey) {
-        SDL_SetColorKey(dest, SDL_TRUE, ckey);
+        SDL_SetColorKey(returnPic.get(), SDL_TRUE, ckey);
     }
     if (src->flags & SDL_RLEACCEL) {
-        SDL_SetSurfaceRLE(dest, SDL_TRUE);
+        SDL_SetSurfaceRLE(returnPic.get(), SDL_TRUE);
     }
 
     Uint8* srcPixels = (Uint8*) src->pixels;
-    Uint8* destPixels = (Uint8*) dest->pixels;
+    Uint8* destPixels = (Uint8*) returnPic->pixels;
 
     int tileWidth = srcWidth / tilesX;
     int tileHeight = srcHeight / tilesY;
+
+    sdl2::surface_lock return_lock{ returnPic.get() };
+    sdl2::surface_lock src_lock{ src };
 
     for(int j=0;j<tilesY;++j) {
         for(int i=0;i<tilesX;++i) {
@@ -281,21 +277,17 @@ SDL_Surface* Scaler::doubleTiledSurfaceScale2x(SDL_Surface* src, int tilesX, int
                         E3 = E;
                     }
 
-                    *(destPixels + (j*tileHeight+y)*2*dest->pitch + (i*tileWidth+x)*2) = E0;
-                    *(destPixels + (j*tileHeight+y)*2*dest->pitch + (i*tileWidth+x)*2 + 1) = E1;
-                    *(destPixels + ((j*tileHeight+y)*2+1)*dest->pitch + (i*tileWidth+x)*2) = E2;
-                    *(destPixels + ((j*tileHeight+y)*2+1)*dest->pitch + (i*tileWidth+x)*2 + 1) = E3;
+                    *(destPixels + (j*tileHeight+y)*2*returnPic->pitch + (i*tileWidth+x)*2) = E0;
+                    *(destPixels + (j*tileHeight+y)*2*returnPic->pitch + (i*tileWidth+x)*2 + 1) = E1;
+                    *(destPixels + ((j*tileHeight+y)*2+1)*returnPic->pitch + (i*tileWidth+x)*2) = E2;
+                    *(destPixels + ((j*tileHeight+y)*2+1)*returnPic->pitch + (i*tileWidth+x)*2 + 1) = E3;
                 }
             }
 
         }
     }
 
-    if(freeSrcSurface) {
-        SDL_FreeSurface(src);
-    }
-
-    return dest;
+    return returnPic;
 }
 
 
@@ -305,7 +297,7 @@ SDL_Surface* Scaler::doubleTiledSurfaceScale2x(SDL_Surface* src, int tilesX, int
     \param  freeSrcSurface  true = free the source surface after scaling
     \return the scaled surface (caller must free it with SDL_FreeSurface when finished)
 */
-SDL_Surface* Scaler::tripleSurfaceScale3x(SDL_Surface* src, bool freeSrcSurface) {
+sdl2::surface_ptr Scaler::tripleSurfaceScale3x(SDL_Surface* src, bool freeSrcSurface) {
     return tripleTiledSurfaceScale3x(src, 1, 1, freeSrcSurface);
 }
 
@@ -318,34 +310,40 @@ SDL_Surface* Scaler::tripleSurfaceScale3x(SDL_Surface* src, bool freeSrcSurface)
     \param  freeSrcSurface  true = free the source surface after scaling
     \return the scaled surface (caller must free it with SDL_FreeSurface when finished)
 */
-SDL_Surface* Scaler::tripleTiledSurfaceScale3x(SDL_Surface* src, int tilesX, int tilesY, bool freeSrcSurface) {
-    if(src == nullptr) {
+sdl2::surface_ptr Scaler::tripleTiledSurfaceScale3x(SDL_Surface* src, int tilesX, int tilesY, bool freeSrcSurface) {
+    if (src == nullptr) {
         return nullptr;
     }
 
     int srcWidth = src->w;
     int srcHeight = src->h;
 
-    SDL_Surface* dest = SDL_CreateRGBSurface(0, srcWidth*3, srcHeight*3, 8, 0, 0, 0, 0);
-    if(dest == nullptr) {
-        if(freeSrcSurface) SDL_FreeSurface(src);
+    sdl2::surface_ptr src_handle{ freeSrcSurface ? src : nullptr };
+
+    // create new picture surface
+    auto returnPic = sdl2::surface_ptr{ SDL_CreateRGBSurface(0, srcWidth*3, srcHeight*3, 8, 0, 0, 0, 0) };
+    if (returnPic == nullptr) {
         return nullptr;
     }
-    SDL_SetPaletteColors(dest->format->palette, src->format->palette->colors, 0, src->format->palette->ncolors);
+
+    SDL_SetPaletteColors(returnPic->format->palette, src->format->palette->colors, 0, src->format->palette->ncolors);
     Uint32 ckey;
     bool has_ckey = !SDL_GetColorKey(src, &ckey);
     if (has_ckey) {
-        SDL_SetColorKey(dest, SDL_TRUE, ckey);
+        SDL_SetColorKey(returnPic.get(), SDL_TRUE, ckey);
     }
     if (src->flags & SDL_RLEACCEL) {
-        SDL_SetSurfaceRLE(dest, SDL_TRUE);
+        SDL_SetSurfaceRLE(returnPic.get(), SDL_TRUE);
     }
 
     Uint8* srcPixels = (Uint8*) src->pixels;
-    Uint8* destPixels = (Uint8*) dest->pixels;
+    Uint8* destPixels = (Uint8*) returnPic->pixels;
 
     int tileWidth = srcWidth / tilesX;
     int tileHeight = srcHeight / tilesY;
+
+    sdl2::surface_lock return_lock{ returnPic.get() };
+    sdl2::surface_lock src_lock{ src };
 
     for(int j=0;j<tilesY;++j) {
         for(int i=0;i<tilesX;++i) {
@@ -403,26 +401,22 @@ SDL_Surface* Scaler::tripleTiledSurfaceScale3x(SDL_Surface* src, int tilesX, int
                         E8 = E;
                     }
 
-                    *(destPixels + (j*tileHeight+y)*3*dest->pitch + (i*tileWidth+x)*3) = E0;
-                    *(destPixels + (j*tileHeight+y)*3*dest->pitch + (i*tileWidth+x)*3 + 1) = E1;
-                    *(destPixels + (j*tileHeight+y)*3*dest->pitch + (i*tileWidth+x)*3 + 2) = E2;
-                    *(destPixels + ((j*tileHeight+y)*3+1)*dest->pitch + (i*tileWidth+x)*3) = E3;
-                    *(destPixels + ((j*tileHeight+y)*3+1)*dest->pitch + (i*tileWidth+x)*3 + 1) = E4;
-                    *(destPixels + ((j*tileHeight+y)*3+1)*dest->pitch + (i*tileWidth+x)*3 + 2) = E5;
-                    *(destPixels + ((j*tileHeight+y)*3+2)*dest->pitch + (i*tileWidth+x)*3) = E6;
-                    *(destPixels + ((j*tileHeight+y)*3+2)*dest->pitch + (i*tileWidth+x)*3 + 1) = E7;
-                    *(destPixels + ((j*tileHeight+y)*3+2)*dest->pitch + (i*tileWidth+x)*3 + 2) = E8;
+                    *(destPixels + (j*tileHeight+y)*3*returnPic->pitch + (i*tileWidth+x)*3) = E0;
+                    *(destPixels + (j*tileHeight+y)*3*returnPic->pitch + (i*tileWidth+x)*3 + 1) = E1;
+                    *(destPixels + (j*tileHeight+y)*3*returnPic->pitch + (i*tileWidth+x)*3 + 2) = E2;
+                    *(destPixels + ((j*tileHeight+y)*3+1)*returnPic->pitch + (i*tileWidth+x)*3) = E3;
+                    *(destPixels + ((j*tileHeight+y)*3+1)*returnPic->pitch + (i*tileWidth+x)*3 + 1) = E4;
+                    *(destPixels + ((j*tileHeight+y)*3+1)*returnPic->pitch + (i*tileWidth+x)*3 + 2) = E5;
+                    *(destPixels + ((j*tileHeight+y)*3+2)*returnPic->pitch + (i*tileWidth+x)*3) = E6;
+                    *(destPixels + ((j*tileHeight+y)*3+2)*returnPic->pitch + (i*tileWidth+x)*3 + 1) = E7;
+                    *(destPixels + ((j*tileHeight+y)*3+2)*returnPic->pitch + (i*tileWidth+x)*3 + 2) = E8;
                 }
             }
 
         }
     }
 
-    if(freeSrcSurface) {
-        SDL_FreeSurface(src);
-    }
-
-    return dest;
+    return returnPic;
 }
 
 

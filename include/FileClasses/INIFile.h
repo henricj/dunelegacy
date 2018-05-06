@@ -18,11 +18,11 @@
 #ifndef INIFILE_H
 #define INIFILE_H
 
+#include <misc/SDL2pp.h>
+
 #include <string>
 #include <list>
 #include <algorithm>
-#include <SDL2/SDL_rwops.h>
-#include <SDL2/SDL.h>
 
 #define INVALID_LINE (-1)
 

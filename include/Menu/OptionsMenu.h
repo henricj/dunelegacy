@@ -27,8 +27,8 @@
 #include <GUI/Checkbox.h>
 #include <GUI/DropDownBox.h>
 #include <DataTypes.h>
+#include <misc/SDL2pp.h>
 
-#include <SDL2/SDL.h>
 #include <vector>
 
 

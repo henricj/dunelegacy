@@ -30,18 +30,17 @@ extern GFXManager*  pGFXManager;
 extern FontManager* pFontManager;
 
 
-SDL_Surface* DuneStyle::createSurfaceWithText(const std::string& text, Uint32 color, unsigned int fontsize) {
+sdl2::surface_ptr DuneStyle::createSurfaceWithText(const std::string& text, Uint32 color, unsigned int fontsize) {
     if(pFontManager != nullptr) {
         return pFontManager->createSurfaceWithText(text, color, fontsize);
     } else {
         // create dummy surface
-        SDL_Surface* surface;
-
-        if((surface = SDL_CreateRGBSurface(0, text.length()*10, 12, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK)) == nullptr) {
+        auto surface = sdl2::surface_ptr{ SDL_CreateRGBSurface(0, text.length() * 10, 12, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK) };
+        if(surface == nullptr) {
             return nullptr;
         }
 
-        SDL_FillRect(surface, nullptr, COLOR_TRANSPARENT);
+        SDL_FillRect(surface.get(), nullptr, COLOR_TRANSPARENT);
 
         return surface;
     }
@@ -69,25 +68,17 @@ Point DuneStyle::getMinimumLabelSize(const std::string& text, int fontID) {
 }
 
 SDL_Surface* DuneStyle::createLabelSurface(Uint32 width, Uint32 height, const std::vector<std::string>& textLines, int fontID, Alignment_Enum alignment, Uint32 textcolor, Uint32 textshadowcolor, Uint32 backgroundcolor) {
-    SDL_Surface* surface;
 
     // create surfaces
-    if((surface = SDL_CreateRGBSurface(0, width, height, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK)) == nullptr) {
+    sdl2::surface_ptr surface = sdl2::surface_ptr{ SDL_CreateRGBSurface(0, width, height, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK) };
+    if(surface == nullptr) {
         return nullptr;
     }
 
-    SDL_FillRect(surface, nullptr, backgroundcolor);
+    SDL_FillRect(surface.get(), nullptr, backgroundcolor);
 
     if(textcolor == COLOR_DEFAULT) textcolor = defaultForegroundColor;
     if(textshadowcolor == COLOR_DEFAULT) textshadowcolor = defaultShadowColor;
-
-    std::vector<SDL_Surface*> textSurfaces;
-    for(const std::string& textLine : textLines) {
-        // create text background
-        textSurfaces.push_back(createSurfaceWithText(textLine, textshadowcolor, fontID));
-        // create text foreground
-        textSurfaces.push_back(createSurfaceWithText(textLine, textcolor, fontID));
-    }
 
     int fontheight = getTextHeight(fontID);
     int spacing = 2;
@@ -105,15 +96,12 @@ SDL_Surface* DuneStyle::createLabelSurface(Uint32 width, Uint32 height, const st
         textpos_y = spacing;
     }
 
-    std::vector<SDL_Surface*>::const_iterator surfIter = textSurfaces.begin();
-    while(surfIter != textSurfaces.end()) {
-        SDL_Surface* textSurface1 = *surfIter;
-        ++surfIter;
-        SDL_Surface* textSurface2 = *surfIter;
-        ++surfIter;
+    for (const std::string& textLine : textLines) {
+        sdl2::surface_ptr textSurface1 = createSurfaceWithText(textLine, textshadowcolor, fontID);
+        sdl2::surface_ptr textSurface2 = createSurfaceWithText(textLine, textcolor, fontID);
 
-        SDL_Rect textRect1 = calcDrawingRect(textSurface1, 0, textpos_y + 3);
-        SDL_Rect textRect2 = calcDrawingRect(textSurface2, 0, textpos_y + 2);
+        SDL_Rect textRect1 = calcDrawingRect(textSurface1.get(), 0, textpos_y + 3);
+        SDL_Rect textRect2 = calcDrawingRect(textSurface2.get(), 0, textpos_y + 2);
         if(alignment & Alignment_Left) {
             textRect1.x = 4;
             textRect2.x = 3;
@@ -126,16 +114,14 @@ SDL_Surface* DuneStyle::createLabelSurface(Uint32 width, Uint32 height, const st
             textRect2.x = ((surface->w - textSurface2->w) / 2)+2;
         }
 
-        SDL_BlitSurface(textSurface1,nullptr,surface,&textRect1);
-        SDL_FreeSurface(textSurface1);
+        SDL_BlitSurface(textSurface1.get(),nullptr,surface.get(),&textRect1);
 
-        SDL_BlitSurface(textSurface2,nullptr,surface,&textRect2);
-        SDL_FreeSurface(textSurface2);
+        SDL_BlitSurface(textSurface2.get(),nullptr,surface.get(),&textRect2);
 
         textpos_y += fontheight + spacing;
     }
 
-    return surface;
+    return surface.release();
 }
 
 
@@ -143,7 +129,7 @@ SDL_Surface* DuneStyle::createLabelSurface(Uint32 width, Uint32 height, const st
 
 
 Point DuneStyle::getMinimumCheckboxSize(const std::string& text) {
-    return Point(getTextWidth(text.c_str(),FONT_STD12) + 20 + 17,getTextHeight(FONT_STD12) + 8);
+    return Point(getTextWidth(text,FONT_STD12) + 20 + 17,getTextHeight(FONT_STD12) + 8);
 }
 
 SDL_Surface* DuneStyle::createCheckboxSurface(Uint32 width, Uint32 height, const std::string& text, bool checked, bool activated, Uint32 textcolor, Uint32 textshadowcolor, Uint32 backgroundcolor) {
@@ -188,23 +174,16 @@ SDL_Surface* DuneStyle::createCheckboxSurface(Uint32 width, Uint32 height, const
         }
     }
 
+    sdl2::surface_ptr textSurface1 = createSurfaceWithText(text, textshadowcolor, FONT_STD12);
+    SDL_Rect textRect1 = calcDrawingRect(textSurface1.get(), 10 + 2 + 17, surface->h / 2 + 3, HAlign::Left, VAlign::Center);
+    SDL_BlitSurface(textSurface1.get(), nullptr, surface, &textRect1);
 
-    SDL_Surface* textSurface1 = createSurfaceWithText(text, textshadowcolor, FONT_STD12);
-    SDL_Rect textRect1 = calcDrawingRect(textSurface1,  10+2 + 17, surface->h/2 + 3, HAlign::Left, VAlign::Center);
-    SDL_BlitSurface(textSurface1,nullptr,surface,&textRect1);
-    SDL_FreeSurface(textSurface1);
-
-    SDL_Surface* textSurface2 = createSurfaceWithText(text, textcolor, FONT_STD12);
-    SDL_Rect textRect2 = calcDrawingRect(textSurface2,  10+1 + 17, surface->h/2 + 2, HAlign::Left, VAlign::Center);
-    SDL_BlitSurface(textSurface2,nullptr,surface,&textRect2);
-    SDL_FreeSurface(textSurface2);
+    sdl2::surface_ptr textSurface2 = createSurfaceWithText(text, textcolor, FONT_STD12);
+    SDL_Rect textRect2 = calcDrawingRect(textSurface2.get(), 10 + 1 + 17, surface->h / 2 + 2, HAlign::Left, VAlign::Center);
+    SDL_BlitSurface(textSurface2.get(), nullptr, surface, &textRect2);
 
     return surface;
 }
-
-
-
-
 
 Point DuneStyle::getMinimumRadioButtonSize(const std::string& text) {
     return Point(getTextWidth(text,FONT_STD12) + 16 + 15,getTextHeight(FONT_STD12) + 8);
@@ -259,16 +238,13 @@ SDL_Surface* DuneStyle::createRadioButtonSurface(Uint32 width, Uint32 height, co
         drawHLineNoLock(surface, 9, 16, 12, textcolor);
     }
 
+    sdl2::surface_ptr textSurface1 = createSurfaceWithText(text, textshadowcolor, FONT_STD12);
+    SDL_Rect textRect1 = calcDrawingRect(textSurface1.get(), 8 + 2 + 15, surface->h / 2 + 3, HAlign::Left, VAlign::Center);
+    SDL_BlitSurface(textSurface1.get(), nullptr, surface, &textRect1);
 
-    SDL_Surface* textSurface1 = createSurfaceWithText(text, textshadowcolor, FONT_STD12);
-    SDL_Rect textRect1 = calcDrawingRect(textSurface1, 8+2 + 15, surface->h/2 + 3, HAlign::Left, VAlign::Center);
-    SDL_BlitSurface(textSurface1,nullptr,surface,&textRect1);
-    SDL_FreeSurface(textSurface1);
-
-    SDL_Surface* textSurface2 = createSurfaceWithText(text, textcolor, FONT_STD12);
-    SDL_Rect textRect2 = calcDrawingRect(textSurface2, 8+1 + 15, surface->h/2 + 2, HAlign::Left, VAlign::Center);
-    SDL_BlitSurface(textSurface2,nullptr,surface,&textRect2);
-    SDL_FreeSurface(textSurface2);
+    sdl2::surface_ptr textSurface2 = createSurfaceWithText(text, textcolor, FONT_STD12);
+    SDL_Rect textRect2 = calcDrawingRect(textSurface2.get(), 8 + 1 + 15, surface->h / 2 + 2, HAlign::Left, VAlign::Center);
+    SDL_BlitSurface(textSurface2.get(), nullptr, surface, &textRect2);
 
     return surface;
 }
@@ -364,15 +340,13 @@ SDL_Surface* DuneStyle::createButtonSurface(Uint32 width, Uint32 height, const s
     if(textcolor == COLOR_DEFAULT) textcolor = defaultForegroundColor;
     if(textshadowcolor == COLOR_DEFAULT) textshadowcolor = defaultShadowColor;
 
-    SDL_Surface* textSurface1 = createSurfaceWithText(text, textshadowcolor, fontsize);
-    SDL_Rect textRect1 = calcDrawingRect(textSurface1, surface->w/2 + 2 + (pressed ? 1 : 0), surface->h/2 + 3 + (pressed ? 1 : 0), HAlign::Center, VAlign::Center);
-    SDL_BlitSurface(textSurface1,nullptr,surface,&textRect1);
-    SDL_FreeSurface(textSurface1);
+    sdl2::surface_ptr textSurface1 = createSurfaceWithText(text, textshadowcolor, fontsize);
+    SDL_Rect textRect1 = calcDrawingRect(textSurface1.get(), surface->w / 2 + 2 + (pressed ? 1 : 0), surface->h / 2 + 3 + (pressed ? 1 : 0), HAlign::Center, VAlign::Center);
+    SDL_BlitSurface(textSurface1.get(), nullptr, surface, &textRect1);
 
-    SDL_Surface* textSurface2 = createSurfaceWithText(text, (activated == true) ? brightenUp(textcolor) : textcolor, fontsize);
-    SDL_Rect textRect2 = calcDrawingRect(textSurface2, surface->w/2 + 1 + (pressed ? 1 : 0), surface->h/2 + 2 + (pressed ? 1 : 0), HAlign::Center, VAlign::Center);
-    SDL_BlitSurface(textSurface2,nullptr,surface,&textRect2);
-    SDL_FreeSurface(textSurface2);
+    sdl2::surface_ptr textSurface2 = createSurfaceWithText(text, (activated == true) ? brightenUp(textcolor) : textcolor, fontsize);
+    SDL_Rect textRect2 = calcDrawingRect(textSurface2.get(), surface->w / 2 + 1 + (pressed ? 1 : 0), surface->h / 2 + 2 + (pressed ? 1 : 0), HAlign::Center, VAlign::Center);
+    SDL_BlitSurface(textSurface2.get(), nullptr, surface, &textRect2);
 
     return surface;
 }
@@ -409,10 +383,10 @@ SDL_Surface* DuneStyle::createTextBoxSurface(Uint32 width, Uint32 height, const 
 
     // create text in this text box
     if(text.size() != 0) {
-        SDL_Surface* textSurface1 = createSurfaceWithText(text, textshadowcolor, fontID);
-        SDL_Surface* textSurface2 = createSurfaceWithText(text, textcolor, fontID);
-        SDL_Rect textRect1 = calcDrawingRect(textSurface1, 0, surface->h/2 + 3, HAlign::Left, VAlign::Center);
-        SDL_Rect textRect2 = calcDrawingRect(textSurface2, 0, surface->h/2 + 2, HAlign::Left, VAlign::Center);
+        auto textSurface1 = createSurfaceWithText(text, textshadowcolor, fontID);
+        auto textSurface2 = createSurfaceWithText(text, textcolor, fontID);
+        SDL_Rect textRect1 = calcDrawingRect(textSurface1.get(), 0, surface->h/2 + 3, HAlign::Left, VAlign::Center);
+        SDL_Rect textRect2 = calcDrawingRect(textSurface2.get(), 0, surface->h/2 + 2, HAlign::Left, VAlign::Center);
 
         if(alignment & Alignment_Left) {
             textRect1.x = 6;
@@ -433,11 +407,9 @@ SDL_Surface* DuneStyle::createTextBoxSurface(Uint32 width, Uint32 height, const 
 
         cursorPos.x = textRect2.x + textSurface2->w + 2;
 
-        SDL_BlitSurface(textSurface1,nullptr,surface,&textRect1);
-        SDL_FreeSurface(textSurface1);
+        SDL_BlitSurface(textSurface1.get(),nullptr,surface,&textRect1);
 
-        SDL_BlitSurface(textSurface2,nullptr,surface,&textRect2);
-        SDL_FreeSurface(textSurface2);
+        SDL_BlitSurface(textSurface2.get(),nullptr,surface,&textRect2);
 
         cursorPos.w = 1;
     } else {
@@ -545,11 +517,9 @@ SDL_Surface* DuneStyle::createListBoxEntry(Uint32 width, const std::string& text
         SDL_FillRect(surface, nullptr, COLOR_TRANSPARENT);
     }
 
-    SDL_Surface* textSurface;
-    textSurface = createSurfaceWithText(text, color, FONT_STD10);
-    SDL_Rect textRect = calcDrawingRect(textSurface, 3, surface->h/2 + 1, HAlign::Left, VAlign::Center);
-    SDL_BlitSurface(textSurface,nullptr,surface,&textRect);
-    SDL_FreeSurface(textSurface);
+    sdl2::surface_ptr textSurface = createSurfaceWithText(text, color, FONT_STD10);
+    SDL_Rect textRect = calcDrawingRect(textSurface.get(), 3, surface->h/2 + 1, HAlign::Left, VAlign::Center);
+    SDL_BlitSurface(textSurface.get(),nullptr,surface,&textRect);
 
     return surface;
 }
@@ -593,33 +563,31 @@ SDL_Surface* DuneStyle::createProgressBarOverlay(Uint32 width, Uint32 height, do
 
 
 SDL_Surface* DuneStyle::createToolTip(const std::string& text) {
-    SDL_Surface* surface;
-    SDL_Surface* helpTextSurface;
-
-    if((helpTextSurface = createSurfaceWithText(text, COLOR_YELLOW, FONT_STD10)) == nullptr) {
+    sdl2::surface_ptr helpTextSurface = createSurfaceWithText(text, COLOR_YELLOW, FONT_STD10);
+    if(helpTextSurface == nullptr) {
         return nullptr;
     }
 
     // create surfaces
-    if((surface = SDL_CreateRGBSurface(0, helpTextSurface->w + 4, helpTextSurface->h + 2, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK)) == nullptr) {
+    sdl2::surface_ptr surface = sdl2::surface_ptr{ SDL_CreateRGBSurface(0, helpTextSurface->w + 4, helpTextSurface->h + 2, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK) };
+    if(surface == nullptr) {
         return nullptr;
     }
 
-    SDL_FillRect(surface, nullptr, COLOR_HALF_TRANSPARENT);
+    SDL_FillRect(surface.get(), nullptr, COLOR_HALF_TRANSPARENT);
 
-    drawRect(surface, 0, 0, helpTextSurface->w + 4 - 1, helpTextSurface->h + 2 - 1, COLOR_YELLOW);
+    drawRect(surface.get(), 0, 0, helpTextSurface->w + 4 - 1, helpTextSurface->h + 2 - 1, COLOR_YELLOW);
 
-    SDL_Rect textRect = calcDrawingRect(helpTextSurface, 3, 3);
-    SDL_BlitSurface(helpTextSurface, nullptr, surface, &textRect);
+    SDL_Rect textRect = calcDrawingRect(helpTextSurface.get(), 3, 3);
+    SDL_BlitSurface(helpTextSurface.get(), nullptr, surface.get(), &textRect);
 
-    SDL_FreeSurface(helpTextSurface);
-    return surface;
+    return surface.release();
 }
 
 
 
 SDL_Surface* DuneStyle::createBackground(Uint32 width, Uint32 height) {
-    SDL_Surface* pSurface;
+    sdl2::surface_ptr pSurface;
     if(pGFXManager != nullptr) {
         pSurface = getSubPicture(pGFXManager->getBackgroundSurface(), 0, 0, width, height);
         if(pSurface == nullptr) {
@@ -627,24 +595,25 @@ SDL_Surface* DuneStyle::createBackground(Uint32 width, Uint32 height) {
         }
     } else {
         // data manager not yet loaded
-        if((pSurface = SDL_CreateRGBSurface(0, width, height, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK)) == nullptr) {
+        pSurface = sdl2::surface_ptr{ SDL_CreateRGBSurface(0, width, height, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK) };
+        if (pSurface == nullptr) {
             return nullptr;
         }
-        SDL_FillRect(pSurface, nullptr, buttonBackgroundColor);
+        SDL_FillRect(pSurface.get(), nullptr, buttonBackgroundColor);
     }
 
 
-    drawRect(pSurface, 0, 0, pSurface->w-1, pSurface->h-1, buttonBorderColor);
-    drawHLine(pSurface, 1, 1, pSurface->w-2, buttonEdgeTopLeftColor);
-    drawHLine(pSurface, 2, 2, pSurface->w-3, buttonEdgeTopLeftColor);
-    drawVLine(pSurface, 1, 1, pSurface->h-2, buttonEdgeTopLeftColor);
-    drawVLine(pSurface, 2, 2, pSurface->h-3, buttonEdgeTopLeftColor);
-    drawHLine(pSurface, 1, pSurface->h-2, pSurface->w-2, buttonEdgeBottomRightColor);
-    drawHLine(pSurface, 2, pSurface->h-3, pSurface->w-3, buttonEdgeBottomRightColor);
-    drawVLine(pSurface, pSurface->w-2, 1, pSurface->h-2, buttonEdgeBottomRightColor);
-    drawVLine(pSurface, pSurface->w-3, 2, pSurface->h-3, buttonEdgeBottomRightColor);
+    drawRect(pSurface.get(), 0, 0, pSurface->w-1, pSurface->h-1, buttonBorderColor);
+    drawHLine(pSurface.get(), 1, 1, pSurface->w-2, buttonEdgeTopLeftColor);
+    drawHLine(pSurface.get(), 2, 2, pSurface->w-3, buttonEdgeTopLeftColor);
+    drawVLine(pSurface.get(), 1, 1, pSurface->h-2, buttonEdgeTopLeftColor);
+    drawVLine(pSurface.get(), 2, 2, pSurface->h-3, buttonEdgeTopLeftColor);
+    drawHLine(pSurface.get(), 1, pSurface->h-2, pSurface->w-2, buttonEdgeBottomRightColor);
+    drawHLine(pSurface.get(), 2, pSurface->h-3, pSurface->w-3, buttonEdgeBottomRightColor);
+    drawVLine(pSurface.get(), pSurface->w-2, 1, pSurface->h-2, buttonEdgeBottomRightColor);
+    drawVLine(pSurface.get(), pSurface->w-3, 2, pSurface->h-3, buttonEdgeBottomRightColor);
 
-    return pSurface;
+    return pSurface.release();
 }
 
 SDL_Surface* DuneStyle::createWidgetBackground(Uint32 width, Uint32 height) {

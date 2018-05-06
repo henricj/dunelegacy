@@ -19,7 +19,7 @@
 #define FADEOUTVIDEOEVENT_H
 
 #include <CutScenes/VideoEvent.h>
-#include <SDL2/SDL.h>
+#include <misc/SDL2pp.h>
 
 /**
     This VideoEvent is used for fading out a picture
@@ -55,7 +55,7 @@ public:
 private:
     int currentFrame;           ///< the current frame number relative to the start of this FadeOutVideoEvent
     int numFrames2FadeOut;      ///< the number of frames the fading should take
-    SDL_Texture* pTexture;      ///< the picture to fade out
+    sdl2::texture_ptr pTexture; ///< the picture to fade out
     bool bCenterVertical;       ///< true = center the surface vertically on the screen, false = blit the surface at the top of the screen
     bool bFadeWhite;            ///< true = fade to white, false = fade to black
 };

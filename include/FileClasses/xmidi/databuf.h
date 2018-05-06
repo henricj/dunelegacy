@@ -22,10 +22,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define DATABUF_H
 
 #include <misc/exceptions.h>
+#include <misc/SDL2pp.h>
 
 #include <stdio.h>
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_rwops.h>
 
 typedef char * charptr;
 

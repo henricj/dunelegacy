@@ -18,13 +18,11 @@
 #include <FileClasses/Decode.h>
 
 #include <misc/exceptions.h>
+#include <misc/SDL2pp.h>
 
-#include <SDL2/SDL_endian.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-
-#include <SDL2/SDL.h>
 
 
 void memcpy_overlap(unsigned char *dst, const unsigned char *src, unsigned cnt)

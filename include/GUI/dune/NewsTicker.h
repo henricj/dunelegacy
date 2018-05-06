@@ -19,11 +19,10 @@
 #define NEWSTICKER_H
 
 #include <GUI/Widget.h>
+#include <misc/SDL2pp.h>
 
 #include <string>
 #include <queue>
-
-#include <SDL2/SDL.h>
 
 class NewsTicker : public Widget {
 public:
@@ -58,7 +57,7 @@ private:
     SDL_Texture* pBackground;
     std::queue<std::string> messages;
     std::string currentMessage;
-    SDL_Texture* pCurrentMessageTexture;
+    sdl2::texture_ptr pCurrentMessageTexture;
     int timer;
 };
 

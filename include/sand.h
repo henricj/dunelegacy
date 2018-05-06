@@ -18,10 +18,10 @@
 #ifndef SAND_H
 #define SAND_H
 
-#include <SDL2/SDL.h>
-
+#include <misc/SDL2pp.h>
 #include <fixmath/FixPoint.h>
 #include <DataTypes.h>
+
 #include <string>
 
 // forward declarations

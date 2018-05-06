@@ -27,7 +27,7 @@
 class Checkbox : public Button {
 public:
     /// Default constructor
-    Checkbox() : Button() {
+    Checkbox() {
         textcolor = COLOR_DEFAULT;
         textshadowcolor = COLOR_DEFAULT;
 
@@ -45,9 +45,9 @@ public:
     /**
         This method sets a new text for this checkbox and resizes it
         to fit this text.
-        \param  Text The new text for this checkbox
+        \param  text The new text for this checkbox
     */
-    virtual inline void setText(const std::string& text) {
+    virtual void setText(const std::string& text) {
         this->text = text;
         resizeAll();
     }
@@ -56,14 +56,14 @@ public:
         Get the text of this checkbox.
         \return the text of this checkbox
     */
-    inline const std::string& getText() { return text; };
+    const std::string& getText() const noexcept { return text; };
 
     /**
         Sets the text color for this checkbox.
         \param  textcolor       the color of the text (COLOR_DEFAULT = default color)
         \param  textshadowcolor the color of the shadow of the text (COLOR_DEFAULT = default color)
     */
-    virtual inline void setTextColor(Uint32 textcolor, Uint32 textshadowcolor = COLOR_DEFAULT) {
+    virtual void setTextColor(Uint32 textcolor, Uint32 textshadowcolor = COLOR_DEFAULT) {
         this->textcolor = textcolor;
         this->textshadowcolor = textshadowcolor;
         invalidateTextures();
@@ -73,7 +73,7 @@ public:
         This method sets this checkbox to checked or unchecked. It does the same as setToggleState().
         \param bChecked true = checked, false = unchecked
     */
-    inline void setChecked(bool bChecked) {
+    void setChecked(bool bChecked) {
         setToggleState(bChecked);
     }
 
@@ -81,7 +81,7 @@ public:
         This method returns whether this checkbox is checked. It is the same as getToggleState().
         \return true = checked, false = unchecked
     */
-    inline bool isChecked() {
+    bool isChecked() const noexcept {
         return getToggleState();
     }
 
@@ -100,15 +100,15 @@ public:
         SDL_Texture* tex;
         if(isChecked()) {
             if((isActive() || bHover) && pCheckedActiveTexture != nullptr) {
-                tex = pCheckedActiveTexture;
+                tex = pCheckedActiveTexture.get();
             } else {
-                tex = pPressedTexture;
+                tex = pPressedTexture.get();
             }
         } else {
             if((isActive() || bHover) && pActiveTexture != nullptr) {
-                tex = pActiveTexture;
+                tex = pActiveTexture.get();
             } else {
-                tex = pUnpressedTexture;
+                tex = pUnpressedTexture.get();
             }
         }
 
@@ -181,18 +181,22 @@ protected:
     {
         Button::invalidateTextures();
 
-        if((bFreeCheckedActiveTexture == true) && (pCheckedActiveTexture != nullptr)) {
-            SDL_DestroyTexture(pCheckedActiveTexture);
+        if (!pCheckedActiveTexture)
+            return;
+
+        if(bFreeCheckedActiveTexture) {
             bFreeCheckedActiveTexture = false;
+            pCheckedActiveTexture.reset();
+        } else {
+            pCheckedActiveTexture.release();
         }
-        pCheckedActiveTexture = nullptr;
     }
 
 private:
     Uint32 textcolor;                       ///< Text color
     Uint32 textshadowcolor;                 ///< Text shadow color
     std::string text;                       ///< Text of this checkbox
-    SDL_Texture* pCheckedActiveTexture;     ///< Texture that is shown when the checkbox is activated by keyboard or by mouse hover
+    sdl2::texture_ptr pCheckedActiveTexture;     ///< Texture that is shown when the checkbox is activated by keyboard or by mouse hover
     bool bFreeCheckedActiveTexture;         ///< Should pActiveTexture be freed if this button is destroyed?
 };
 

@@ -18,8 +18,9 @@
 #ifndef MAIN_H
 #define MAIN_H
 
+#include <misc/SDL2pp.h>
+
 #include <string>
-#include <SDL2/SDL.h>
 
 
 /**

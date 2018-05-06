@@ -19,12 +19,10 @@
 #define WINDOW_H
 
 #include "Widget.h"
-
+#include <misc/SDL2pp.h>
 
 #include <iostream>
 #include <queue>
-
-#include <SDL2/SDL.h>
 
 /// A class representing a window
 class Window : public Widget {
@@ -245,6 +243,7 @@ public:
         \param  bFreeBackground should this background be automatically be freed
     */
     virtual void setBackground(SDL_Texture* pBackground, bool bFreeBackground = true);
+    virtual void setBackground(sdl2::texture_ptr pBackground);
 
     /**
         This method sets a transparent background for this window.
@@ -265,7 +264,7 @@ protected:
     bool bTransparentBackground;                ///< true = no background is drawn
     bool bSelfGeneratedBackground;              ///< true = background is created by this window, false = created by someone else
     bool bFreeBackground;                       ///< true = background should be automatically be freed
-    SDL_Texture* pBackground;                   ///< background texture
+    sdl2::texture_ptr pBackground;              ///< background texture
 };
 
 #endif //WINDOW_H

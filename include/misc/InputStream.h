@@ -19,8 +19,8 @@
 #define INPUTSTREAM_H
 
 #include <fixmath/FixPoint.h>
+#include <misc/SDL2pp.h>
 
-#include <SDL2/SDL.h>
 #include <string>
 #include <list>
 #include <vector>

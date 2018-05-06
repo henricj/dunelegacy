@@ -1,7 +1,7 @@
 #ifndef BLENDBLITTER_H
 #define BLENDBLITTER_H
 
-#include <SDL2/SDL.h>
+#include <misc/SDL2pp.h>
 #include <misc/draw_util.h>
 #include <misc/exceptions.h>
 #include <mmath.h>
