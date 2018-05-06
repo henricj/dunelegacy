@@ -1512,16 +1512,16 @@ bool Game::loadSaveGame(InputStream& stream) {
                         if(playerInfo.playerClass == HUMANPLAYERCLASS) {
                             while(playerIter != players.cend()) {
 
-                                const auto& humanPlayer = std::dynamic_pointer_cast<HumanPlayer>(*playerIter);
-                                if(humanPlayer) {
+                                const auto pHumanPlayer = dynamic_cast<HumanPlayer*>(playerIter->get());
+                                if(pHumanPlayer) {
                                     // we have actually found a human player and now assign the first unused name to it
-                                    unregisterPlayer(humanPlayer.get());
-                                    humanPlayer->setPlayername(playerInfo.playerName);
-                                    registerPlayer(humanPlayer.get());
+                                    unregisterPlayer(pHumanPlayer);
+                                    pHumanPlayer->setPlayername(playerInfo.playerName);
+                                    registerPlayer(pHumanPlayer);
 
                                     if(playerInfo.playerName == getLocalPlayerName()) {
                                         pLocalHouse = house[i];
-                                        pLocalPlayer = humanPlayer.get();
+                                        pLocalPlayer = pHumanPlayer;
                                     }
 
                                     ++playerIter;

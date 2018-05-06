@@ -33,9 +33,19 @@
 
 
 class INIMap {
+private:
+    typedef std::unique_ptr<INIFile, void (*)(INIFile*)> inifile_ptr;
+
+    static void INIFile_deleter(INIFile* pINIFile) {
+        delete pINIFile;
+    }
+
+    static void INIFile_noop_deleter(INIFile* pINIFile) {
+    }
+
 public:
-    explicit INIMap(std::shared_ptr<INIFile>& pINIFile)
-     : inifile(pINIFile), version(0), sizeX(0), sizeY(0), logicalSizeX(0), logicalSizeY(0), logicalOffsetX(0), logicalOffsetY(0) {
+    explicit INIMap(INIFile* pINIFile)
+     : inifile(inifile_ptr(pINIFile, INIFile_noop_deleter)), version(0), sizeX(0), sizeY(0), logicalSizeX(0), logicalSizeY(0), logicalOffsetX(0), logicalOffsetY(0) {
 
     }
 
@@ -47,7 +57,7 @@ public:
             try {
 
                 mapiniFile = pFileManager->openFile(this->mapname);
-                inifile = std::shared_ptr<INIFile>(new INIFile(mapiniFile));
+                inifile = inifile_ptr(new INIFile(mapiniFile), INIFile_deleter);
                 SDL_RWclose(mapiniFile);
             } catch (...) {
                 if(mapiniFile != nullptr) {
@@ -57,10 +67,10 @@ public:
             }
         } else if(gameType == GameType::CustomGame || gameType == GameType::CustomMultiplayer) {
             SDL_RWops* RWops = SDL_RWFromConstMem(mapdata.c_str(), mapdata.size());
-            inifile = std::shared_ptr<INIFile>(new INIFile(RWops));
+            inifile = inifile_ptr(new INIFile(RWops), INIFile_deleter);
             SDL_RWclose(RWops);
         } else {
-            inifile = std::shared_ptr<INIFile>(new INIFile(mapname));
+            inifile = inifile_ptr(new INIFile(mapname), INIFile_deleter);
         }
     }
 
@@ -129,7 +139,7 @@ protected:
     inline int getYPos(int pos) const { return (pos / logicalSizeX) - logicalOffsetY; };
 
     std::string mapname;
-    std::shared_ptr<INIFile> inifile;
+    inifile_ptr inifile = inifile_ptr(nullptr, INIFile_deleter);
 
     int version;
 

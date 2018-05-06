@@ -161,7 +161,7 @@ public:
 
     void setMirrorMode(MirrorMode newMirrorMode);
 
-    std::shared_ptr<MapMirror> getMapMirror() { return mapMirror; }
+    const MapMirror* getMapMirror() { return mapMirror.get(); }
 
     MapInfo& getMapInfo() { return mapInfo; };
 
@@ -257,8 +257,8 @@ public:
 
     void startOperation();
 
-    void addUndoOperation(std::shared_ptr<MapEditorOperation> op) {
-        undoOperationStack.push(op);
+    void addUndoOperation(std::unique_ptr<MapEditorOperation> op) {
+        undoOperationStack.push(std::move(op));
         bChangedSinceLastSave = true;
     }
 
@@ -309,7 +309,7 @@ private:
     EditorMode                      currentEditorMode;
 
     MirrorMode                      currentMirrorMode;
-    std::shared_ptr<MapMirror>      mapMirror;
+    std::unique_ptr<MapMirror>      mapMirror;
 
     bool                            bLeftMousePressed;
     int                             lastTerrainEditPosX;
@@ -322,7 +322,7 @@ private:
 
 
     std::string                     lastSaveName;
-    std::shared_ptr<INIFile>        loadedINIFile;
+    std::unique_ptr<INIFile>        loadedINIFile;
 
     std::vector<Player>             players;
 
@@ -344,8 +344,8 @@ private:
     std::vector<Structure>          structures;
 
 
-    std::stack<std::shared_ptr<MapEditorOperation> > undoOperationStack;
-    std::stack<std::shared_ptr<MapEditorOperation> > redoOperationStack;
+    std::stack<std::unique_ptr<MapEditorOperation> > undoOperationStack;
+    std::stack<std::unique_ptr<MapEditorOperation> > redoOperationStack;
 };
 
 #endif // MAPEDITOR_H

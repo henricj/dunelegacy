@@ -288,14 +288,14 @@ void CustomGameMenu::onMapListSelectionChange(bool bInteractive)
     std::string mapFilename = currentMapDirectory + mapList.getSelectedEntry() + ".ini";
     getCaseInsensitiveFilename(mapFilename);
 
-    std::shared_ptr<INIFile> pMap(new INIFile(mapFilename));
+    INIFile inimap(mapFilename);
 
     int sizeX = 0;
     int sizeY = 0;
 
-    if(pMap->hasKey("MAP","Seed")) {
+    if(inimap.hasKey("MAP","Seed")) {
         // old map format with seed value
-        int mapscale = pMap->getIntValue("BASIC", "MapScale", -1);
+        int mapscale = inimap.getIntValue("BASIC", "MapScale", -1);
 
         switch(mapscale) {
             case 0: {
@@ -320,15 +320,15 @@ void CustomGameMenu::onMapListSelectionChange(bool bInteractive)
         }
     } else {
         // new map format with saved map
-        sizeX = pMap->getIntValue("MAP","SizeX", 0);
-        sizeY = pMap->getIntValue("MAP","SizeY", 0);
+        sizeX = inimap.getIntValue("MAP","SizeX", 0);
+        sizeY = inimap.getIntValue("MAP","SizeY", 0);
     }
 
     mapPropertySize.setText(stringify(sizeX) + " x " + stringify(sizeY));
 
     SDL_Surface* pMapSurface = nullptr;
     try {
-        INIMapPreviewCreator mapPreviewCreator(pMap);
+        INIMapPreviewCreator mapPreviewCreator(&inimap);
         pMapSurface = mapPreviewCreator.createMinimapImageOfMap(1, DuneStyle::buttonBorderColor);
     } catch(...) {
         pMapSurface = GUIStyle::getInstance().createButtonSurface(130, 130, "Error", true, false);
@@ -337,30 +337,30 @@ void CustomGameMenu::onMapListSelectionChange(bool bInteractive)
     minimap.setSurface(pMapSurface, true);
 
     int numPlayers = 0;
-    if(pMap->hasSection("Atreides")) numPlayers++;
-    if(pMap->hasSection("Ordos")) numPlayers++;
-    if(pMap->hasSection("Harkonnen")) numPlayers++;
-    if(pMap->hasSection("Fremen")) numPlayers++;
-    if(pMap->hasSection("Mercenary")) numPlayers++;
-    if(pMap->hasSection("Sardaukar")) numPlayers++;
-    if(pMap->hasSection("Player1")) numPlayers++;
-    if(pMap->hasSection("Player2")) numPlayers++;
-    if(pMap->hasSection("Player3")) numPlayers++;
-    if(pMap->hasSection("Player4")) numPlayers++;
-    if(pMap->hasSection("Player5")) numPlayers++;
-    if(pMap->hasSection("Player6")) numPlayers++;
+    if(inimap.hasSection("Atreides")) numPlayers++;
+    if(inimap.hasSection("Ordos")) numPlayers++;
+    if(inimap.hasSection("Harkonnen")) numPlayers++;
+    if(inimap.hasSection("Fremen")) numPlayers++;
+    if(inimap.hasSection("Mercenary")) numPlayers++;
+    if(inimap.hasSection("Sardaukar")) numPlayers++;
+    if(inimap.hasSection("Player1")) numPlayers++;
+    if(inimap.hasSection("Player2")) numPlayers++;
+    if(inimap.hasSection("Player3")) numPlayers++;
+    if(inimap.hasSection("Player4")) numPlayers++;
+    if(inimap.hasSection("Player5")) numPlayers++;
+    if(inimap.hasSection("Player6")) numPlayers++;
 
     mapPropertyPlayers.setText(stringify(numPlayers));
 
 
 
-    std::string authors = pMap->getStringValue("BASIC","Author", "-");
+    std::string authors = inimap.getStringValue("BASIC","Author", "-");
     if(authors.size() > 11) {
         authors = authors.substr(0,9) + "...";
     }
     mapPropertyAuthors.setText(authors);
 
 
-    mapPropertyLicense.setText(pMap->getStringValue("BASIC","License", "-"));
+    mapPropertyLicense.setText(inimap.getStringValue("BASIC","License", "-"));
 
 }

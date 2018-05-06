@@ -6,13 +6,13 @@
 #include <algorithm>
 
 
-std::shared_ptr<MapEditorOperation> MapEditorStartOperation::perform(MapEditor *pMapEditor) {
-    return std::shared_ptr<MapEditorOperation>(new MapEditorStartOperation());
+std::unique_ptr<MapEditorOperation> MapEditorStartOperation::perform(MapEditor *pMapEditor) {
+    return std::make_unique<MapEditorStartOperation>();
 }
 
 
 
-std::shared_ptr<MapEditorOperation> MapEditorTerrainEditOperation::perform(MapEditor *pMapEditor) {
+std::unique_ptr<MapEditorOperation> MapEditorTerrainEditOperation::perform(MapEditor *pMapEditor) {
 
     MapData& map = pMapEditor->getMap();
 
@@ -20,26 +20,26 @@ std::shared_ptr<MapEditorOperation> MapEditorTerrainEditOperation::perform(MapEd
 
     map(x,y) = terrainType;
 
-    return std::shared_ptr<MapEditorOperation>(new MapEditorTerrainEditOperation(x, y, oldTerrainType));
+    return std::make_unique<MapEditorTerrainEditOperation>(x, y, oldTerrainType);
 }
 
 
 
 
-std::shared_ptr<MapEditorOperation> MapEditorTerrainAddSpiceBloomOperation::perform(MapEditor *pMapEditor) {
+std::unique_ptr<MapEditorOperation> MapEditorTerrainAddSpiceBloomOperation::perform(MapEditor *pMapEditor) {
 
     std::vector<Coord>& spiceBlooms = pMapEditor->getSpiceBlooms();
 
     if(std::find(spiceBlooms.begin(), spiceBlooms.end(), Coord(x,y)) != spiceBlooms.end()) {
-        return std::shared_ptr<MapEditorOperation>(new MapEditorNoOperation());
+        return std::make_unique<MapEditorNoOperation>();
     } else {
         spiceBlooms.emplace_back(x,y);
-        return std::shared_ptr<MapEditorOperation>(new MapEditorTerrainRemoveSpiceBloomOperation(x, y));
+        return std::make_unique<MapEditorTerrainRemoveSpiceBloomOperation>(x, y);
     }
 }
 
 
-std::shared_ptr<MapEditorOperation> MapEditorTerrainRemoveSpiceBloomOperation::perform(MapEditor *pMapEditor) {
+std::unique_ptr<MapEditorOperation> MapEditorTerrainRemoveSpiceBloomOperation::perform(MapEditor *pMapEditor) {
 
     std::vector<Coord>& spiceBlooms = pMapEditor->getSpiceBlooms();
 
@@ -47,28 +47,28 @@ std::shared_ptr<MapEditorOperation> MapEditorTerrainRemoveSpiceBloomOperation::p
 
     if(iter != spiceBlooms.end()) {
         spiceBlooms.erase(iter);
-        return std::shared_ptr<MapEditorOperation>(new MapEditorTerrainAddSpiceBloomOperation(x, y));
+        return std::make_unique<MapEditorTerrainAddSpiceBloomOperation>(x, y);
     } else {
-        return std::shared_ptr<MapEditorOperation>(new MapEditorNoOperation());
+        return std::make_unique<MapEditorNoOperation>();
     }
 }
 
 
 
-std::shared_ptr<MapEditorOperation> MapEditorTerrainAddSpecialBloomOperation::perform(MapEditor *pMapEditor) {
+std::unique_ptr<MapEditorOperation> MapEditorTerrainAddSpecialBloomOperation::perform(MapEditor *pMapEditor) {
 
     std::vector<Coord>& specialBlooms = pMapEditor->getSpecialBlooms();
 
     if(std::find(specialBlooms.begin(), specialBlooms.end(), Coord(x,y)) != specialBlooms.end()) {
-        return std::shared_ptr<MapEditorOperation>(new MapEditorNoOperation());
+        return std::make_unique<MapEditorNoOperation>();
     } else {
         specialBlooms.emplace_back(x,y);
-        return std::shared_ptr<MapEditorOperation>(new MapEditorTerrainRemoveSpecialBloomOperation(x, y));
+        return std::make_unique<MapEditorTerrainRemoveSpecialBloomOperation>(x, y);
     }
 }
 
 
-std::shared_ptr<MapEditorOperation> MapEditorTerrainRemoveSpecialBloomOperation::perform(MapEditor *pMapEditor) {
+std::unique_ptr<MapEditorOperation> MapEditorTerrainRemoveSpecialBloomOperation::perform(MapEditor *pMapEditor) {
 
     std::vector<Coord>& specialBlooms = pMapEditor->getSpecialBlooms();
 
@@ -76,28 +76,28 @@ std::shared_ptr<MapEditorOperation> MapEditorTerrainRemoveSpecialBloomOperation:
 
     if(iter != specialBlooms.end()) {
         specialBlooms.erase(iter);
-        return std::shared_ptr<MapEditorOperation>(new MapEditorTerrainAddSpecialBloomOperation(x, y));
+        return std::make_unique<MapEditorTerrainAddSpecialBloomOperation>(x, y);
     } else {
-        return std::shared_ptr<MapEditorOperation>(new MapEditorNoOperation());
+        return std::make_unique<MapEditorNoOperation>();
     }
 }
 
 
 
-std::shared_ptr<MapEditorOperation> MapEditorTerrainAddSpiceFieldOperation::perform(MapEditor *pMapEditor) {
+std::unique_ptr<MapEditorOperation> MapEditorTerrainAddSpiceFieldOperation::perform(MapEditor *pMapEditor) {
 
     std::vector<Coord>& spiceFields = pMapEditor->getSpiceFields();
 
     if(std::find(spiceFields.begin(), spiceFields.end(), Coord(x,y)) != spiceFields.end()) {
-        return std::shared_ptr<MapEditorOperation>(new MapEditorNoOperation());
+        return std::make_unique<MapEditorNoOperation>();
     } else {
         spiceFields.emplace_back(x,y);
-        return std::shared_ptr<MapEditorOperation>(new MapEditorTerrainRemoveSpiceFieldOperation(x, y));
+        return std::make_unique<MapEditorTerrainRemoveSpiceFieldOperation>(x, y);
     }
 }
 
 
-std::shared_ptr<MapEditorOperation> MapEditorTerrainRemoveSpiceFieldOperation::perform(MapEditor *pMapEditor) {
+std::unique_ptr<MapEditorOperation> MapEditorTerrainRemoveSpiceFieldOperation::perform(MapEditor *pMapEditor) {
 
     std::vector<Coord>& spiceFields = pMapEditor->getSpiceFields();
 
@@ -105,25 +105,25 @@ std::shared_ptr<MapEditorOperation> MapEditorTerrainRemoveSpiceFieldOperation::p
 
     if(iter != spiceFields.end()) {
         spiceFields.erase(iter);
-        return std::shared_ptr<MapEditorOperation>(new MapEditorTerrainAddSpiceFieldOperation(x, y));
+        return std::make_unique<MapEditorTerrainAddSpiceFieldOperation>(x, y);
     } else {
-        return std::shared_ptr<MapEditorOperation>(new MapEditorNoOperation());
+        return std::make_unique<MapEditorNoOperation>();
     }
 }
 
 
 
-std::shared_ptr<MapEditorOperation> MapEditorSetTacticalPositionOperation::perform(MapEditor *pMapEditor) {
+std::unique_ptr<MapEditorOperation> MapEditorSetTacticalPositionOperation::perform(MapEditor *pMapEditor) {
     Coord currentTacticalPos = pMapEditor->getMapInfo().tacticalPos;
 
     pMapEditor->getMapInfo().tacticalPos = Coord(x,y);
 
-    return std::shared_ptr<MapEditorOperation>(new MapEditorSetTacticalPositionOperation(currentTacticalPos.x, currentTacticalPos.y));
+    return std::make_unique<MapEditorSetTacticalPositionOperation>(currentTacticalPos.x, currentTacticalPos.y);
 }
 
 
 
-std::shared_ptr<MapEditorOperation> MapEditorStructurePlaceOperation::perform(MapEditor *pMapEditor) {
+std::unique_ptr<MapEditorOperation> MapEditorStructurePlaceOperation::perform(MapEditor *pMapEditor) {
 
     std::vector<MapEditor::Structure>& structures = pMapEditor->getStructureList();
 
@@ -142,31 +142,31 @@ std::shared_ptr<MapEditorOperation> MapEditorStructurePlaceOperation::perform(Ma
 
     structures.emplace_back(newID, house, itemID, health, position);
 
-    return std::shared_ptr<MapEditorOperation>(new MapEditorRemoveStructureOperation(newID));
+    return std::make_unique<MapEditorRemoveStructureOperation>(newID);
 }
 
 
 
-std::shared_ptr<MapEditorOperation> MapEditorRemoveStructureOperation::perform(MapEditor *pMapEditor) {
+std::unique_ptr<MapEditorOperation> MapEditorRemoveStructureOperation::perform(MapEditor *pMapEditor) {
 
     std::vector<MapEditor::Structure>& structures = pMapEditor->getStructureList();
 
     for(auto iter = structures.begin(); iter != structures.end(); ++iter) {
         if(iter->id == id) {
-            std::shared_ptr<MapEditorOperation> redoOperation(new MapEditorStructurePlaceOperation(iter->id, iter->position, iter->house, iter->itemID, iter->health));
+            auto redoOperation = std::make_unique<MapEditorStructurePlaceOperation>(iter->id, iter->position, iter->house, iter->itemID, iter->health);
 
             structures.erase(iter);
 
-            return redoOperation;
+            return std::move(redoOperation);
         }
     }
 
-    return std::shared_ptr<MapEditorOperation>(new MapEditorNoOperation());
+    return std::make_unique<MapEditorNoOperation>();
 }
 
 
 
-std::shared_ptr<MapEditorOperation> MapEditorUnitPlaceOperation::perform(MapEditor *pMapEditor) {
+std::unique_ptr<MapEditorOperation> MapEditorUnitPlaceOperation::perform(MapEditor *pMapEditor) {
 
     std::vector<MapEditor::Unit>& units = pMapEditor->getUnitList();
 
@@ -179,18 +179,18 @@ std::shared_ptr<MapEditorOperation> MapEditorUnitPlaceOperation::perform(MapEdit
 
     units.emplace_back(newID, house, itemID, health, position, angle, attackmode);
 
-    return std::shared_ptr<MapEditorOperation>(new MapEditorRemoveUnitOperation(newID));
+    return std::make_unique<MapEditorRemoveUnitOperation>(newID);
 }
 
 
 
-std::shared_ptr<MapEditorOperation> MapEditorRemoveUnitOperation::perform(MapEditor *pMapEditor) {
+std::unique_ptr<MapEditorOperation> MapEditorRemoveUnitOperation::perform(MapEditor *pMapEditor) {
 
     std::vector<MapEditor::Unit>& units = pMapEditor->getUnitList();
 
     for(auto iter = units.begin(); iter != units.end(); ++iter) {
         if(iter->id == id) {
-            std::shared_ptr<MapEditorOperation> redoOperation(new MapEditorUnitPlaceOperation(iter->id, iter->position, iter->house, iter->itemID, iter->health, iter->angle, iter->attackmode));
+            auto redoOperation = std::make_unique<MapEditorUnitPlaceOperation>(iter->id, iter->position, iter->house, iter->itemID, iter->health, iter->angle, iter->attackmode);
 
             units.erase(iter);
 
@@ -198,12 +198,12 @@ std::shared_ptr<MapEditorOperation> MapEditorRemoveUnitOperation::perform(MapEdi
         }
     }
 
-    return std::shared_ptr<MapEditorOperation>(new MapEditorNoOperation());
+    return std::make_unique<MapEditorNoOperation>();
 }
 
 
 
-std::shared_ptr<MapEditorOperation> MapEditorEditStructureOperation::perform(MapEditor *pMapEditor) {
+std::unique_ptr<MapEditorOperation> MapEditorEditStructureOperation::perform(MapEditor *pMapEditor) {
 
     MapEditor::Structure* pStructure = pMapEditor->getStructure(id);
 
@@ -211,12 +211,12 @@ std::shared_ptr<MapEditorOperation> MapEditorEditStructureOperation::perform(Map
 
     pStructure->health = health;
 
-    return std::shared_ptr<MapEditorOperation>(new MapEditorEditStructureOperation(id, oldHealth));
+    return std::make_unique<MapEditorEditStructureOperation>(id, oldHealth);
 }
 
 
 
-std::shared_ptr<MapEditorOperation> MapEditorEditUnitOperation::perform(MapEditor *pMapEditor) {
+std::unique_ptr<MapEditorOperation> MapEditorEditUnitOperation::perform(MapEditor *pMapEditor) {
 
     MapEditor::Unit* pUnit = pMapEditor->getUnit(id);
 
@@ -228,12 +228,12 @@ std::shared_ptr<MapEditorOperation> MapEditorEditUnitOperation::perform(MapEdito
     pUnit->angle = angle;
     pUnit->attackmode = attackmode;
 
-    return std::shared_ptr<MapEditorOperation>(new MapEditorEditUnitOperation(id, oldHealth, oldAngle, oldAttackmode));
+    return std::make_unique<MapEditorEditUnitOperation>(id, oldHealth, oldAngle, oldAttackmode);
 }
 
 
 
-std::shared_ptr<MapEditorOperation> MapEditorChangePlayer::perform(MapEditor *pMapEditor) {
+std::unique_ptr<MapEditorOperation> MapEditorChangePlayer::perform(MapEditor *pMapEditor) {
 
     MapEditor::Player& player = pMapEditor->getPlayers()[playerNum];
 
@@ -253,12 +253,12 @@ std::shared_ptr<MapEditorOperation> MapEditorChangePlayer::perform(MapEditor *pM
 
     pMapEditor->informPlayersChanged();
 
-    return std::shared_ptr<MapEditorOperation>(new MapEditorChangePlayer(playerNum, bOldActive, bOldAnyHouse, oldCredits, oldBrain, oldQuota, oldMaxunit));
+    return std::make_unique<MapEditorChangePlayer>(playerNum, bOldActive, bOldAnyHouse, oldCredits, oldBrain, oldQuota, oldMaxunit);
 }
 
 
 
-std::shared_ptr<MapEditorOperation> MapEditorChangeChoam::perform(MapEditor *pMapEditor) {
+std::unique_ptr<MapEditorOperation> MapEditorChangeChoam::perform(MapEditor *pMapEditor) {
 
     std::map<int,int>& choam = pMapEditor->getChoam();
 
@@ -272,38 +272,38 @@ std::shared_ptr<MapEditorOperation> MapEditorChangeChoam::perform(MapEditor *pMa
         choam.erase(itemID);
     }
 
-    return std::shared_ptr<MapEditorOperation>(new MapEditorChangeChoam(itemID, oldAmount));
+    return std::make_unique<MapEditorChangeChoam>(itemID, oldAmount);
 }
 
 
 
-std::shared_ptr<MapEditorOperation> MapEditorChangeReinforcements::perform(MapEditor *pMapEditor) {
+std::unique_ptr<MapEditorOperation> MapEditorChangeReinforcements::perform(MapEditor *pMapEditor) {
 
     std::vector<ReinforcementInfo>  oldReinforcements = pMapEditor->getReinforcements();
 
     pMapEditor->setReinforcements(reinforcements);
 
-    return std::shared_ptr<MapEditorOperation>(new MapEditorChangeReinforcements(oldReinforcements));
+    return std::make_unique<MapEditorChangeReinforcements>(oldReinforcements);
 }
 
 
 
-std::shared_ptr<MapEditorOperation> MapEditorChangeTeams::perform(MapEditor *pMapEditor) {
+std::unique_ptr<MapEditorOperation> MapEditorChangeTeams::perform(MapEditor *pMapEditor) {
 
     std::vector<TeamInfo>  oldTeams = pMapEditor->getTeams();
 
     pMapEditor->setTeams(teams);
 
-    return std::shared_ptr<MapEditorOperation>(new MapEditorChangeTeams(oldTeams));
+    return std::make_unique<MapEditorChangeTeams>(oldTeams);
 }
 
 
 
-std::shared_ptr<MapEditorOperation> MapEditorChangeMapInfo::perform(MapEditor *pMapEditor) {
+std::unique_ptr<MapEditorOperation> MapEditorChangeMapInfo::perform(MapEditor *pMapEditor) {
 
     MapInfo  oldMapInfo = pMapEditor->getMapInfo();
 
     pMapEditor->setMapInfo(mapInfo);
 
-    return std::shared_ptr<MapEditorOperation>(new MapEditorChangeMapInfo(oldMapInfo));
+    return std::make_unique<MapEditorChangeMapInfo>(oldMapInfo);
 }

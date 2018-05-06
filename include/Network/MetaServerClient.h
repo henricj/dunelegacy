@@ -81,13 +81,13 @@ private:
         Enqueues a new command in the command queue for processing by the metaserver connection thread.
         \param  metaServerCommand   a shared pointer to a command
     */
-    void enqueueMetaServerCommand(std::shared_ptr<MetaServerCommand> metaServerCommand);
+    void enqueueMetaServerCommand(std::unique_ptr<MetaServerCommand> metaServerCommand);
 
     /**
         Dequeues a command from the command queue. This method shall only be called from the metaserver connection thread.
         \return a shared pointer to the first command in the queue
     */
-    std::shared_ptr<MetaServerCommand> dequeueMetaServerCommand();
+    std::unique_ptr<MetaServerCommand> dequeueMetaServerCommand();
 
 
     /**
@@ -106,7 +106,7 @@ private:
 
     // Shared data (used by main thread and connection thread):
 
-    std::list<std::shared_ptr<MetaServerCommand> > metaServerCommandList;       ///< The command queue for the metaserver connection thread (shared between main thread and metaserver connection thread, \see sharedDataMutex)
+    std::list<std::unique_ptr<MetaServerCommand> > metaServerCommandList;       ///< The command queue for the metaserver connection thread (shared between main thread and metaserver connection thread, \see sharedDataMutex)
     SDL_sem*    availableMetaServerCommandsSemaphore;                           ///< This semaphore counts how many commands are available in the metaServerCommandList
 
     int metaserverErrorCause = 0;                                               ///< Set to 0 in case of no error, else the id of the command sent to the metaserver

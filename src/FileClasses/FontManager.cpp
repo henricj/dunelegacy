@@ -28,9 +28,9 @@
 #include <list>
 
 FontManager::FontManager() {
-    fonts[FONT_STD10] = std::static_pointer_cast<Font>(std::make_shared<PictureFont>(LoadPNG_RW(pFileManager->openFile("Font10.png"), true).release(), true));
-    fonts[FONT_STD12] = std::static_pointer_cast<Font>(std::make_shared<PictureFont>(LoadPNG_RW(pFileManager->openFile("Font12.png"), true).release(), true));
-    fonts[FONT_STD24] = std::static_pointer_cast<Font>(std::make_shared<PictureFont>(LoadPNG_RW(pFileManager->openFile("Font24.png"), true).release(), true));
+    fonts[FONT_STD10] = std::make_unique<PictureFont>(LoadPNG_RW(pFileManager->openFile("Font10.png"), true).release(), true);
+    fonts[FONT_STD12] = std::make_unique<PictureFont>(LoadPNG_RW(pFileManager->openFile("Font12.png"), true).release(), true);
+    fonts[FONT_STD24] = std::make_unique<PictureFont>(LoadPNG_RW(pFileManager->openFile("Font24.png"), true).release(), true);
 }
 
 FontManager::~FontManager() = default;

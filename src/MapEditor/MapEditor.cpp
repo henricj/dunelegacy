@@ -116,7 +116,7 @@ std::string MapEditor::generateMapname() const {
 void MapEditor::setMirrorMode(MirrorMode newMirrorMode) {
     currentMirrorMode = newMirrorMode;
 
-    mapMirror = std::shared_ptr<MapMirror>(MapMirror::createMapMirror(currentMirrorMode,map.getSizeX(), map.getSizeY()));
+    mapMirror = MapMirror::createMapMirror(currentMirrorMode,map.getSizeX(), map.getSizeY());
 }
 
 void MapEditor::RunEditor() {
@@ -301,16 +301,16 @@ void MapEditor::setEditorMode(const EditorMode& newEditorMode) {
 }
 
 void MapEditor::startOperation() {
-    if(undoOperationStack.empty() || !std::dynamic_pointer_cast<MapEditorStartOperation>( undoOperationStack.top() )) {
-        addUndoOperation(std::shared_ptr<MapEditorOperation>(new MapEditorStartOperation()));
+    if(undoOperationStack.empty() || !dynamic_cast<MapEditorStartOperation*>( undoOperationStack.top().get() )) {
+        addUndoOperation(std::make_unique<MapEditorStartOperation>());
     }
 }
 
 void MapEditor::undoLastOperation() {
     if(!undoOperationStack.empty()) {
-        redoOperationStack.push(std::shared_ptr<MapEditorOperation>(new MapEditorStartOperation()));
+        redoOperationStack.push(std::make_unique<MapEditorStartOperation>());
 
-        while((!undoOperationStack.empty()) && !std::dynamic_pointer_cast<MapEditorStartOperation>( undoOperationStack.top() )) {
+        while((!undoOperationStack.empty()) && !dynamic_cast<MapEditorStartOperation*>( undoOperationStack.top().get() )) {
             redoOperationStack.push(undoOperationStack.top()->perform(this));
             undoOperationStack.pop();
         }
@@ -323,9 +323,9 @@ void MapEditor::undoLastOperation() {
 
 void MapEditor::redoLastOperation() {
     if(!redoOperationStack.empty()) {
-        undoOperationStack.push(std::shared_ptr<MapEditorOperation>(new MapEditorStartOperation()));
+        undoOperationStack.push(std::make_unique<MapEditorStartOperation>());
 
-        while((!redoOperationStack.empty()) && !std::dynamic_pointer_cast<MapEditorStartOperation>( redoOperationStack.top() )) {
+        while((!redoOperationStack.empty()) && !dynamic_cast<MapEditorStartOperation*>( redoOperationStack.top().get() )) {
             undoOperationStack.push(redoOperationStack.top()->perform(this));
             redoOperationStack.pop();
         }
@@ -372,11 +372,11 @@ void MapEditor::loadMap(const std::string& filepath) {
     players.push_back(Player(getHouseNameByNumber(HOUSE_MERCENARY),HOUSE_MERCENARY,HOUSE_MERCENARY,false,false,"Team6"));
 
     // load map
-    loadedINIFile = std::shared_ptr<INIFile>(new INIFile(filepath, false));
+    loadedINIFile = std::make_unique<INIFile>(filepath, false);
     lastSaveName = filepath;
 
-    INIMapEditorLoader* pINIMapEditorLoader = new INIMapEditorLoader(this, loadedINIFile);
-    delete pINIMapEditorLoader;
+    // do the actual loading
+    INIMapEditorLoader INIMapEditorLoader(this, loadedINIFile.get());
 
     // update interface
     if(pInterface != nullptr) {
@@ -392,7 +392,7 @@ void MapEditor::loadMap(const std::string& filepath) {
 void MapEditor::saveMap(const std::string& filepath) {
     if(!loadedINIFile) {
         std::string comment = "Created with Dune Legacy " + std::string(VERSION) + " Map Editor.";
-        loadedINIFile = std::shared_ptr<INIFile>(new INIFile(false, comment));
+        loadedINIFile = std::make_unique<INIFile>(false, comment);
     }
 
     int version = (mapInfo.mapSeed == INVALID) ? 2 : 1;

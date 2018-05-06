@@ -44,7 +44,7 @@ public:
     virtual ~House();
     virtual void save(OutputStream& stream) const;
 
-    void addPlayer(std::shared_ptr<Player> newPlayer);
+    void addPlayer(std::unique_ptr<Player> newPlayer);
 
     inline int getHouseID() const { return houseID; }
     inline int getTeam() const { return team; }
@@ -170,12 +170,12 @@ public:
 
     Coord getStrongestUnitPosition() const;
 
-    const std::list<std::shared_ptr<Player> >& getPlayerList() const { return players; };
+    const std::list<std::unique_ptr<Player> >& getPlayerList() const { return players; };
 
 protected:
     void decrementHarvesters();
 
-    std::list<std::shared_ptr<Player> > players;        ///< List of associated players that control this house
+    std::list<std::unique_ptr<Player> > players;        ///< List of associated players that control this house
 
     bool    ai;             ///< Is this an ai player?
 

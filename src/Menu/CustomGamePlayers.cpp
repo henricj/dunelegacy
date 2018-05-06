@@ -88,8 +88,8 @@ CustomGamePlayers::CustomGamePlayers(const GameInitSettings& newGameInitSettings
     if(gameInitSettings.getGameType() == GameType::CustomGame || gameInitSettings.getGameType() == GameType::CustomMultiplayer) {
         SDL_RWops* RWops = SDL_RWFromConstMem(gameInitSettings.getFiledata().c_str(), gameInitSettings.getFiledata().size());
 
-        std::shared_ptr<INIFile> map(new INIFile(RWops));
-        extractMapInfo(map);
+        INIFile inimap(RWops);
+        extractMapInfo(&inimap);
 
         SDL_RWclose(RWops);
     } else if(gameInitSettings.getGameType() == GameType::LoadMultiplayer) {
@@ -117,8 +117,8 @@ CustomGamePlayers::CustomGamePlayers(const GameInitSettings& newGameInitSettings
 
         SDL_RWops* RWops = SDL_RWFromConstMem(tmpGameInitSettings.getFiledata().c_str(), tmpGameInitSettings.getFiledata().size());
 
-        std::shared_ptr<INIFile> map(new INIFile(RWops));
-        extractMapInfo(map);
+        INIFile inimap(RWops);
+        extractMapInfo(&inimap);
 
         SDL_RWclose(RWops);
 
@@ -128,8 +128,8 @@ CustomGamePlayers::CustomGamePlayers(const GameInitSettings& newGameInitSettings
         // adjust numHouses to the actually used houses (which might be smaller than the houses on the map)
         numHouses = houseInfoListSetup.size();
     } else {
-        std::shared_ptr<INIFile> map(new INIFile(gameInitSettings.getFilename()));
-        extractMapInfo(map);
+        INIFile inimap(gameInitSettings.getFilename());
+        extractMapInfo(&inimap);
     }
 
     rightVBox.addWidget(VSpacer::create(10));
@@ -798,7 +798,7 @@ void CustomGamePlayers::addChatMessage(const std::string& name, const std::strin
     chatTextView.scrollToEnd();
 }
 
-void CustomGamePlayers::extractMapInfo(std::shared_ptr<INIFile>& pMap)
+void CustomGamePlayers::extractMapInfo(INIFile* pMap)
 {
     int sizeX = 0;
     int sizeY = 0;

@@ -45,7 +45,7 @@ ReinforcementTrigger::ReinforcementTrigger(InputStream& stream) : Trigger(stream
 
 ReinforcementTrigger::~ReinforcementTrigger() = default;
 
-void ReinforcementTrigger::save(OutputStream& stream)
+void ReinforcementTrigger::save(OutputStream& stream) const
 {
     Trigger::save(stream);
 

@@ -25,14 +25,14 @@ MapMirror::MapMirror(int mapsizeX, int mapsizeY)
 
 MapMirror::~MapMirror() = default;
 
-MapMirror* MapMirror::createMapMirror(MirrorMode mirrorMode, int mapsizeX, int mapsizeY) {
+std::unique_ptr<MapMirror> MapMirror::createMapMirror(MirrorMode mirrorMode, int mapsizeX, int mapsizeY) {
     switch(mirrorMode) {
-        case MirrorModeNone:        return new MapMirrorNone(mapsizeX, mapsizeY);          break;
-        case MirrorModeHorizontal:  return new MapMirrorHorizontal(mapsizeX, mapsizeY);    break;
-        case MirrorModeVertical:    return new MapMirrorVertical(mapsizeX, mapsizeY);      break;
-        case MirrorModeBoth:        return new MapMirrorBoth(mapsizeX, mapsizeY);          break;
-        case MirrorModePoint:       return new MapMirrorPoint(mapsizeX, mapsizeY);         break;
-        default:                    return nullptr;
+        case MirrorModeNone:        return std::make_unique<MapMirrorNone>(mapsizeX, mapsizeY);          break;
+        case MirrorModeHorizontal:  return std::make_unique<MapMirrorHorizontal>(mapsizeX, mapsizeY);    break;
+        case MirrorModeVertical:    return std::make_unique<MapMirrorVertical>(mapsizeX, mapsizeY);      break;
+        case MirrorModeBoth:        return std::make_unique<MapMirrorBoth>(mapsizeX, mapsizeY);          break;
+        case MirrorModePoint:       return std::make_unique<MapMirrorPoint>(mapsizeX, mapsizeY);         break;
+        default:                    return std::unique_ptr<MapMirror>();
     }
 }
 

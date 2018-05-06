@@ -54,7 +54,7 @@ public:
         This method saves this trigger to a stream.
         \param  stream  the stream to save to
     */
-    virtual void save(OutputStream& stream) {
+    virtual void save(OutputStream& stream) const {
         stream.writeUint32(cycleNumber);
     }
 

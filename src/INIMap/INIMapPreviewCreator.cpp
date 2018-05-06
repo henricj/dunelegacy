@@ -15,7 +15,7 @@
 
 #include <algorithm>
 
-INIMapPreviewCreator::INIMapPreviewCreator(std::shared_ptr<INIFile>& pINIFile)
+INIMapPreviewCreator::INIMapPreviewCreator(INIFile* pINIFile)
  : INIMap(pINIFile)
 {
 

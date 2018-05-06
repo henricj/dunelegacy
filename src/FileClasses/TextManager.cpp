@@ -62,7 +62,7 @@ void TextManager::loadData() {
     mentat_lng[HOUSE_ORDOS] = pFileManager->openFile("MENTATO." + _("LanguageFileExtension"));
 
     for(int i=0;i<3;i++) {
-        mentatStrings[i] = std::shared_ptr<MentatTextFile>(new MentatTextFile(mentat_lng[i]));
+        mentatStrings[i] = std::make_unique<MentatTextFile>(mentat_lng[i]);
         SDL_RWclose(mentat_lng[i]);
     }
 }
@@ -540,9 +540,9 @@ const std::string& TextManager::postProcessString(const std::string& unprocessed
     if(commands.size() < 2 || !parseString(commands[1], index)) {
         return unprocessedString;
     } else {
-        std::map<std::string,std::shared_ptr<IndexedTextFile> >::const_iterator iter = origDuneText.find(commands[0]);
+        auto iter = origDuneText.find(commands[0]);
         if(iter != origDuneText.end()) {
-            std::shared_ptr<IndexedTextFile> pIndexedTextFile = iter->second;
+            IndexedTextFile* pIndexedTextFile = iter->second.get();
 
             if(commands[0].compare(0,5,"DUNE.") && (index >= 281) && pIndexedTextFile->getNumStrings() == 335) {
                 // Dune II 1.0 has 2 titles less
@@ -570,7 +570,7 @@ const std::string& TextManager::postProcessString(const std::string& unprocessed
 void TextManager::addOrigDuneText(const std::string& filename, bool bDecode) {
     SDL_RWops* rwop = pFileManager->openFile(filename);
 
-    origDuneText[filename] = std::shared_ptr<IndexedTextFile>(new IndexedTextFile(rwop, bDecode));
+    origDuneText[filename] = std::make_unique<IndexedTextFile>(rwop, bDecode);
 
     SDL_RWclose(rwop);
 }

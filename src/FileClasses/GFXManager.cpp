@@ -33,8 +33,6 @@
 #include <misc/Scaler.h>
 #include <misc/exceptions.h>
 
-using std::shared_ptr;
-
 /**
     Number of columns and rows each obj pic has
 */
@@ -161,17 +159,17 @@ GFXManager::GFXManager() {
     }
 
     // open all shp files
-    shared_ptr<Shpfile> units = loadShpfile("UNITS.SHP");
-    shared_ptr<Shpfile> units1 = loadShpfile("UNITS1.SHP");
-    shared_ptr<Shpfile> units2 = loadShpfile("UNITS2.SHP");
-    shared_ptr<Shpfile> mouse = loadShpfile("MOUSE.SHP");
-    shared_ptr<Shpfile> shapes = loadShpfile("SHAPES.SHP");
-    shared_ptr<Shpfile> menshpa = loadShpfile("MENSHPA.SHP");
-    shared_ptr<Shpfile> menshph = loadShpfile("MENSHPH.SHP");
-    shared_ptr<Shpfile> menshpo = loadShpfile("MENSHPO.SHP");
-    shared_ptr<Shpfile> menshpm = loadShpfile("MENSHPM.SHP");
+    std::unique_ptr<Shpfile> units = loadShpfile("UNITS.SHP");
+    std::unique_ptr<Shpfile> units1 = loadShpfile("UNITS1.SHP");
+    std::unique_ptr<Shpfile> units2 = loadShpfile("UNITS2.SHP");
+    std::unique_ptr<Shpfile> mouse = loadShpfile("MOUSE.SHP");
+    std::unique_ptr<Shpfile> shapes = loadShpfile("SHAPES.SHP");
+    std::unique_ptr<Shpfile> menshpa = loadShpfile("MENSHPA.SHP");
+    std::unique_ptr<Shpfile> menshph = loadShpfile("MENSHPH.SHP");
+    std::unique_ptr<Shpfile> menshpo = loadShpfile("MENSHPO.SHP");
+    std::unique_ptr<Shpfile> menshpm = loadShpfile("MENSHPM.SHP");
 
-    shared_ptr<Shpfile> choam;
+    std::unique_ptr<Shpfile> choam;
     if(pFileManager->exists("CHOAM." + _("LanguageFileExtension"))) {
         choam = loadShpfile("CHOAM." + _("LanguageFileExtension"));
     } else if(pFileManager->exists("CHOAMSHP.SHP")) {
@@ -180,7 +178,7 @@ GFXManager::GFXManager() {
         THROW(std::runtime_error, "GFXManager::GFXManager(): Cannot open CHOAMSHP.SHP or CHOAM."+_("LanguageFileExtension")+"!");
     }
 
-    shared_ptr<Shpfile> bttn;
+    std::unique_ptr<Shpfile> bttn;
     if(pFileManager->exists("BTTN." + _("LanguageFileExtension"))) {
         bttn = loadShpfile("BTTN." + _("LanguageFileExtension"));
     } else {
@@ -188,28 +186,28 @@ GFXManager::GFXManager() {
         // => bttn == nullptr
     }
 
-    shared_ptr<Shpfile> mentat;
+    std::unique_ptr<Shpfile> mentat;
     if(pFileManager->exists("MENTAT." + _("LanguageFileExtension"))) {
         mentat = loadShpfile("MENTAT." + _("LanguageFileExtension"));
     } else {
         mentat = loadShpfile("MENTAT.SHP");
     }
 
-    shared_ptr<Shpfile> pieces = loadShpfile("PIECES.SHP");
-    shared_ptr<Shpfile> arrows = loadShpfile("ARROWS.SHP");
+    std::unique_ptr<Shpfile> pieces = loadShpfile("PIECES.SHP");
+    std::unique_ptr<Shpfile> arrows = loadShpfile("ARROWS.SHP");
 
     // Load icon file
-    shared_ptr<Icnfile> icon = std::make_shared<Icnfile>(pFileManager->openFile("ICON.ICN"),
-                                                         pFileManager->openFile("ICON.MAP"), true);
+    std::unique_ptr<Icnfile> icon = std::make_unique<Icnfile>(  pFileManager->openFile("ICON.ICN"),
+                                                                pFileManager->openFile("ICON.MAP"), true);
 
     // Load radar static
-    shared_ptr<Wsafile> radar = loadWsafile("STATIC.WSA");
+    std::unique_ptr<Wsafile> radar = loadWsafile("STATIC.WSA");
 
     // open bene palette
     Palette benePalette = LoadPalette_RW(pFileManager->openFile("BENE.PAL"), true);
 
     //create PictureFactory
-    shared_ptr<PictureFactory> PicFactory = std::make_shared<PictureFactory>();
+    std::unique_ptr<PictureFactory> PicFactory = std::make_unique<PictureFactory>();
 
 
 

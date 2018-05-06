@@ -112,7 +112,7 @@ House::House(InputStream& stream) : choam(this) {
         if(pPlayerData == nullptr) {
             SDL_Log("Warning: Cannot load player '%s'", playerclass.c_str());
         } else {
-            addPlayer(std::shared_ptr<Player>(pPlayerData->load(stream,this)));
+            addPlayer(pPlayerData->load(stream,this));
         }
     }
 }
@@ -171,7 +171,7 @@ void House::save(OutputStream& stream) const {
     choam.save(stream);
 
     stream.writeUint32(players.size());
-    for(const std::shared_ptr<Player>& pPlayer : players) {
+    for(const auto& pPlayer : players) {
         stream.writeString(pPlayer->getPlayerclass());
         pPlayer->save(stream);
     }
@@ -180,19 +180,21 @@ void House::save(OutputStream& stream) const {
 
 
 
-void House::addPlayer(std::shared_ptr<Player> newPlayer) {
-    if(dynamic_cast<HumanPlayer*>(newPlayer.get()) != nullptr && players.empty()) {
+void House::addPlayer(std::unique_ptr<Player> newPlayer) {
+    Player* pNewPlayer = newPlayer.get();
+
+    if(dynamic_cast<HumanPlayer*>(pNewPlayer) != nullptr && players.empty()) {
         ai = false;
     } else {
         ai = true;
     }
 
-    players.push_back(newPlayer);
+    players.push_back(std::move(newPlayer));
 
     Uint8 newPlayerID = static_cast<Uint8>((houseID << 4) | players.size());
-    newPlayer->playerID = newPlayerID;
+    pNewPlayer->playerID = newPlayerID;
 
-    currentGame->registerPlayer(newPlayer.get());
+    currentGame->registerPlayer(pNewPlayer);
 }
 
 
@@ -326,7 +328,7 @@ void House::update() {
 
     choam.update();
 
-    for(std::shared_ptr<Player>& pPlayer : players) {
+    for(auto& pPlayer : players) {
         pPlayer->update();
     }
 }
@@ -362,7 +364,7 @@ void House::decrementUnits(int itemID) {
         numItem[itemID]--;
     }
 
-    for(std::shared_ptr<Player>& pPlayer : players) {
+    for(auto& pPlayer : players) {
         pPlayer->onDecrementUnits(itemID);
     }
 
@@ -403,7 +405,7 @@ void House::incrementStructures(int itemID) {
         updateBuildLists();
     }
 
-    for(std::shared_ptr<Player>& pPlayer : players) {
+    for(auto& pPlayer : players) {
         pPlayer->onIncrementStructures(itemID);
     }
 }
@@ -433,7 +435,7 @@ void House::decrementStructures(int itemID, const Coord& location) {
     if (!isAlive())
         lose();
 
-    for(std::shared_ptr<Player>& pPlayer : players) {
+    for(auto& pPlayer : players) {
         pPlayer->onDecrementStructures(itemID, location);
     }
 }
@@ -442,7 +444,7 @@ void House::decrementStructures(int itemID, const Coord& location) {
 
 
 void House::noteDamageLocation(ObjectBase* pObject, int damage, Uint32 damagerID) {
-    for(std::shared_ptr<Player>& pPlayer : players) {
+    for(auto& pPlayer : players) {
         pPlayer->onDamage(pObject, damage, damagerID);
     }
 }
@@ -493,7 +495,7 @@ void House::informHasKilled(Uint32 itemID) {
     numItemKills[itemID]++;
 
 
-    for(std::shared_ptr<Player>& pPlayer : players) {
+    for(auto& pPlayer : players) {
         pPlayer->onIncrementUnitKills(itemID);
     }
 }

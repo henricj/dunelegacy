@@ -47,7 +47,7 @@ public:
         This method saves this trigger to a stream.
         \param  stream  the stream to save to
     */
-    void save(OutputStream& stream) override;
+    void save(OutputStream& stream) const override;
 
     /**
         Trigger this trigger. Shall only be called when getCycleNumber() is equal to the current game cycle

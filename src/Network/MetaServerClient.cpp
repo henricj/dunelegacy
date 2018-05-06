@@ -53,7 +53,7 @@ MetaServerClient::~MetaServerClient() {
 
     stopAnnounce();
 
-    enqueueMetaServerCommand(std::static_pointer_cast<MetaServerCommand>(std::make_shared<MetaServerExit>()));
+    enqueueMetaServerCommand(std::make_unique<MetaServerExit>());
 
     SDL_WaitThread(connectionThread, nullptr);
 
@@ -74,7 +74,7 @@ void MetaServerClient::startAnnounce(const std::string& serverName, int serverPo
     this->numPlayers = numPlayers;
     this->maxPlayers = maxPlayers;
 
-    enqueueMetaServerCommand(std::static_pointer_cast<MetaServerCommand>(std::make_shared<MetaServerAdd>(serverName, serverPort, secret, mapName, numPlayers, maxPlayers)));
+    enqueueMetaServerCommand(std::make_unique<MetaServerAdd>(serverName, serverPort, secret, mapName, numPlayers, maxPlayers));
     lastAnnounceUpdate = SDL_GetTicks();
 }
 
@@ -82,7 +82,7 @@ void MetaServerClient::startAnnounce(const std::string& serverName, int serverPo
 void MetaServerClient::updateAnnounce(Uint8 numPlayers) {
     if(serverPort > 0) {
         this->numPlayers = numPlayers;
-        enqueueMetaServerCommand(std::static_pointer_cast<MetaServerCommand>(std::make_shared<MetaServerUpdate>(serverName, serverPort, secret, mapName, numPlayers, maxPlayers)));
+        enqueueMetaServerCommand(std::make_unique<MetaServerUpdate>(serverName, serverPort, secret, mapName, numPlayers, maxPlayers));
         lastAnnounceUpdate = SDL_GetTicks();
     }
 }
@@ -91,7 +91,7 @@ void MetaServerClient::updateAnnounce(Uint8 numPlayers) {
 void MetaServerClient::stopAnnounce() {
     if(serverPort != 0) {
 
-        enqueueMetaServerCommand(std::static_pointer_cast<MetaServerCommand>(std::make_shared<MetaServerRemove>(serverPort, secret)));
+        enqueueMetaServerCommand(std::make_unique<MetaServerRemove>(serverPort, secret));
 
         serverName = "";
         serverPort = 0;
@@ -109,7 +109,7 @@ void MetaServerClient::update() {
         // someone is waiting for the list
 
         if(SDL_GetTicks() - lastServerInfoListUpdate > SERVERLIST_UPDATE_INTERVAL) {
-            enqueueMetaServerCommand(std::static_pointer_cast<MetaServerCommand>(std::make_shared<MetaServerList>()));
+            enqueueMetaServerCommand(std::make_unique<MetaServerList>());
             lastServerInfoListUpdate = SDL_GetTicks();
         }
 
@@ -117,7 +117,7 @@ void MetaServerClient::update() {
 
     if(serverPort != 0) {
         if(SDL_GetTicks() - lastAnnounceUpdate > GAMESERVER_UPDATE_INTERVAL) {
-            enqueueMetaServerCommand(std::static_pointer_cast<MetaServerCommand>(std::make_shared<MetaServerUpdate>(serverName, serverPort, secret, mapName, numPlayers, maxPlayers)));
+            enqueueMetaServerCommand(std::make_unique<MetaServerUpdate>(serverName, serverPort, secret, mapName, numPlayers, maxPlayers));
             lastAnnounceUpdate = SDL_GetTicks();
         }
     }
@@ -155,13 +155,13 @@ void MetaServerClient::update() {
 }
 
 
-void MetaServerClient::enqueueMetaServerCommand(std::shared_ptr<MetaServerCommand> metaServerCommand) {
+void MetaServerClient::enqueueMetaServerCommand(std::unique_ptr<MetaServerCommand> metaServerCommand) {
 
     SDL_LockMutex(sharedDataMutex);
 
     bool bInsert = true;
 
-    for(const std::shared_ptr<MetaServerCommand> pMetaServerCommand : metaServerCommandList) {
+    for(const auto& pMetaServerCommand : metaServerCommandList) {
         if(*pMetaServerCommand == *metaServerCommand) {
             bInsert = false;
             break;
@@ -169,7 +169,7 @@ void MetaServerClient::enqueueMetaServerCommand(std::shared_ptr<MetaServerComman
     }
 
     if(bInsert == true) {
-        metaServerCommandList.push_back(metaServerCommand);
+        metaServerCommandList.push_back(std::move(metaServerCommand));
     }
 
     SDL_UnlockMutex(sharedDataMutex);
@@ -180,7 +180,7 @@ void MetaServerClient::enqueueMetaServerCommand(std::shared_ptr<MetaServerComman
 }
 
 
-std::shared_ptr<MetaServerCommand> MetaServerClient::dequeueMetaServerCommand() {
+std::unique_ptr<MetaServerCommand> MetaServerClient::dequeueMetaServerCommand() {
 
     while(SDL_SemWait(availableMetaServerCommandsSemaphore) != 0) {
         ;   // try again in case of error
@@ -188,12 +188,12 @@ std::shared_ptr<MetaServerCommand> MetaServerClient::dequeueMetaServerCommand() 
 
     SDL_LockMutex(sharedDataMutex);
 
-    std::shared_ptr<MetaServerCommand> nextMetaServerCommand = metaServerCommandList.front();
+    std::unique_ptr<MetaServerCommand> nextMetaServerCommand = std::move(metaServerCommandList.front());
     metaServerCommandList.pop_front();
 
     SDL_UnlockMutex(sharedDataMutex);
 
-    return nextMetaServerCommand;
+    return std::move(nextMetaServerCommand);
 }
 
 
@@ -223,13 +223,13 @@ int MetaServerClient::connectionThreadMain(void* data) {
     MetaServerClient* pMetaServerClient = static_cast<MetaServerClient*>(data);
 
     while(true) {
-        const std::shared_ptr<MetaServerCommand> nextMetaServerCommand = pMetaServerClient->dequeueMetaServerCommand();
+        std::unique_ptr<MetaServerCommand> nextMetaServerCommand = pMetaServerClient->dequeueMetaServerCommand();
 
         switch(nextMetaServerCommand->type) {
 
             case METASERVERCOMMAND_ADD: {
 
-                const std::shared_ptr<MetaServerAdd> pMetaServerAdd = std::dynamic_pointer_cast<MetaServerAdd>(nextMetaServerCommand);
+                MetaServerAdd* pMetaServerAdd = dynamic_cast<MetaServerAdd*>(nextMetaServerCommand.get());
 
                 std::map<std::string, std::string> parameters;
 
@@ -262,7 +262,7 @@ int MetaServerClient::connectionThreadMain(void* data) {
             } break;
 
             case METASERVERCOMMAND_UPDATE: {
-                const std::shared_ptr<MetaServerUpdate> pMetaServerUpdate = std::dynamic_pointer_cast<MetaServerUpdate>(nextMetaServerCommand);
+                MetaServerUpdate* pMetaServerUpdate = dynamic_cast<MetaServerUpdate*>(nextMetaServerCommand.get());
 
                 std::map<std::string, std::string> parameters;
 
@@ -317,7 +317,7 @@ int MetaServerClient::connectionThreadMain(void* data) {
             } break;
 
             case METASERVERCOMMAND_REMOVE: {
-                const std::shared_ptr<MetaServerRemove> pMetaServerRemove = std::dynamic_pointer_cast<MetaServerRemove>(nextMetaServerCommand);
+                MetaServerRemove* pMetaServerRemove = dynamic_cast<MetaServerRemove*>(nextMetaServerCommand.get());
 
                 std::map<std::string, std::string> parameters;
 

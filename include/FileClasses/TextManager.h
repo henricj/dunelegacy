@@ -70,7 +70,7 @@ public:
 
     /**
         This method returns a localized version of unlocalizedString
-        \param  unlocalizedString   the string in english
+        \param  unlocalizedString   the string in English
         \return the localized version of unlocalizedString
     */
     const std::string& getLocalized(const std::string& unlocalizedString) const {
@@ -118,11 +118,11 @@ private:
     void addOrigDuneText(const std::string& filename, bool bDecode = false);
 
 
-    std::shared_ptr<MentatTextFile> mentatStrings[3];                       ///< The MENTAT?.<EXTENSION> mentat menu texts
+    std::array<std::unique_ptr<MentatTextFile>,3> mentatStrings;            ///< The MENTAT?.<EXTENSION> mentat menu texts
 
-    std::map<std::string,std::shared_ptr<IndexedTextFile> > origDuneText;   ///< This map contains all the loaded original Dune II (indexed) text files
+    std::map<std::string,std::unique_ptr<IndexedTextFile> > origDuneText;   ///< This map contains all the loaded original Dune II (indexed) text files
 
-    mutable std::map<std::string, std::string> localizedString;            ///< The mapping between English text and localized text
+    mutable std::map<std::string, std::string> localizedString;             ///< The mapping between English text and localized text
 };
 
 #endif //TEXTMANAGER_H

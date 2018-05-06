@@ -31,7 +31,7 @@ typedef enum {
 class MapMirror {
 public:
     MapMirror(int mapsizeX, int mapsizeY);
-    
+
     virtual ~MapMirror();
 
     virtual int getSize() const = 0;
@@ -42,7 +42,7 @@ public:
 
     virtual int getAngle(int angle, int i) const = 0;
 
-    static MapMirror* createMapMirror(MirrorMode mirrorMode, int mapsizeX, int mapsizeY);
+    static std::unique_ptr<MapMirror> createMapMirror(MirrorMode mirrorMode, int mapsizeX, int mapsizeY);
 
 protected:
     int mapsizeX;

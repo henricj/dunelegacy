@@ -63,7 +63,7 @@ private:
     void onReceiveChatMessage(const std::string& name, const std::string& message);
     void onPeerDisconnected(const std::string& playername, bool bHost, int cause);
 
-    void extractMapInfo(std::shared_ptr<INIFile>& pMap);
+    void extractMapInfo(INIFile* pMap);
 
     void setPlayer2Slot(const std::string& playername, int slot);
 

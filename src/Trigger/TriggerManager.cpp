@@ -27,8 +27,8 @@ TriggerManager::~TriggerManager() = default;
 
 void TriggerManager::save(OutputStream& stream) const {
     stream.writeUint32(triggers.size());
-    for(const std::shared_ptr<Trigger>& pTrigger : triggers) {
-        saveTrigger(stream, pTrigger);
+    for(const auto& pTrigger : triggers) {
+        saveTrigger(stream, pTrigger.get());
     }
 }
 
@@ -43,46 +43,46 @@ void TriggerManager::load(InputStream& stream) {
 void TriggerManager::trigger(Uint32 CycleNumber)
 {
     while((triggers.empty() == false) && (triggers.front()->getCycleNumber() == CycleNumber)) {
-        std::shared_ptr<Trigger> pCurrentTrigger = triggers.front();
+        std::unique_ptr<Trigger> pCurrentTrigger = std::move(triggers.front());
         triggers.pop_front();
         pCurrentTrigger->trigger();
     }
 }
 
-void TriggerManager::addTrigger(std::shared_ptr<Trigger> newTrigger)
+void TriggerManager::addTrigger(std::unique_ptr<Trigger> newTrigger)
 {
     for(auto iter = triggers.begin(); iter != triggers.end(); ++iter) {
         if((*iter)->getCycleNumber() > newTrigger->getCycleNumber()) {
-            triggers.insert(iter, newTrigger);
+            triggers.insert(iter, std::move(newTrigger));
             return;
         }
     }
 
-    triggers.push_back(newTrigger);
+    triggers.push_back(std::move(newTrigger));
 }
 
-void TriggerManager::saveTrigger(OutputStream& stream, const std::shared_ptr<Trigger>& t) const
+void TriggerManager::saveTrigger(OutputStream& stream, const Trigger* t) const
 {
-    if(dynamic_cast<ReinforcementTrigger*>(t.get())) {
+    if(dynamic_cast<const ReinforcementTrigger*>(t)) {
         stream.writeUint32(TriggerManager::Type_ReinforcementTrigger);
         t->save(stream);
-    } else if(dynamic_cast<TimeoutTrigger*>(t.get())) {
+    } else if(dynamic_cast<const TimeoutTrigger*>(t)) {
         stream.writeUint32(TriggerManager::Type_TimeoutTrigger);
         t->save(stream);
     }
 }
 
-std::shared_ptr<Trigger> TriggerManager::loadTrigger(InputStream& stream)
+std::unique_ptr<Trigger> TriggerManager::loadTrigger(InputStream& stream)
 {
     Uint32 type = stream.readUint32();
 
     switch(type) {
         case TriggerManager::Type_ReinforcementTrigger: {
-            return std::shared_ptr<Trigger>(new ReinforcementTrigger(stream));
+            return std::make_unique<ReinforcementTrigger>(stream);
         } break;
 
         case TriggerManager::Type_TimeoutTrigger: {
-            return std::shared_ptr<Trigger>(new TimeoutTrigger(stream));
+            return std::make_unique<TimeoutTrigger>(stream);
         } break;
 
         default: {

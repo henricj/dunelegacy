@@ -32,7 +32,7 @@ TimeoutTrigger::TimeoutTrigger(InputStream& stream) : Trigger(stream)
 
 TimeoutTrigger::~TimeoutTrigger() = default;
 
-void TimeoutTrigger::save(OutputStream& stream)
+void TimeoutTrigger::save(OutputStream& stream) const
 {
     Trigger::save(stream);
 }

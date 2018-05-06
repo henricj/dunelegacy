@@ -17,7 +17,7 @@
 
 #include <algorithm>
 
-INIMapEditorLoader::INIMapEditorLoader(MapEditor* pMapEditor, std::shared_ptr<INIFile>& pINIFile)
+INIMapEditorLoader::INIMapEditorLoader(MapEditor* pMapEditor, INIFile* pINIFile)
  : INIMap(pINIFile), pMapEditor(pMapEditor)
 {
     load();

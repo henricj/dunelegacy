@@ -70,8 +70,7 @@ void INIMapLoader::loadMap() {
     int timeout = inifile->getIntValue("BASIC","TIMEOUT",0);
 
     if((timeout != 0) && ((pGame->winFlags & WINLOSEFLAGS_TIMEOUT) != 0)) {
-        std::shared_ptr<Trigger> newTrigger = std::shared_ptr<Trigger>(new TimeoutTrigger(MILLI2CYCLES(timeout * 60 * 1000)));
-        pGame->getTriggerManager().addTrigger(newTrigger);
+        pGame->getTriggerManager().addTrigger(std::make_unique<TimeoutTrigger>(MILLI2CYCLES(timeout * 60 * 1000)));
     }
 
     if(version < 2) {
@@ -796,7 +795,7 @@ void INIMapLoader::loadReinforcements()
             // check if there is a similar trigger at the same time
 
             bool bInserted = false;
-            for(const std::shared_ptr<Trigger>& pTrigger : pGame->getTriggerManager().getTriggers()) {
+            for(const auto& pTrigger : pGame->getTriggerManager().getTriggers()) {
                 ReinforcementTrigger* pReinforcementTrigger = dynamic_cast<ReinforcementTrigger*>(pTrigger.get());
 
                 if(pReinforcementTrigger != nullptr
@@ -814,8 +813,7 @@ void INIMapLoader::loadReinforcements()
 
             if(bInserted == false) {
                 getOrCreateHouse(houseID);  // create house if not yet available
-                std::shared_ptr<Trigger> newTrigger = std::shared_ptr<Trigger>(new ReinforcementTrigger(houseID, itemID, dropLocation, bRepeat, dropCycle));
-                pGame->getTriggerManager().addTrigger(newTrigger);
+                pGame->getTriggerManager().addTrigger(std::make_unique<ReinforcementTrigger>(houseID, itemID, dropLocation, bRepeat, dropCycle));
             }
         }
     }
@@ -897,7 +895,7 @@ House* INIMapLoader::getOrCreateHouse(int houseID) {
         if(pNewHouse->getPlayerList().empty()) {
             const PlayerFactory::PlayerData* pPlayerData = PlayerFactory::getByPlayerClass(DEFAULTAIPLAYERCLASS);
             Player* pPlayer = pPlayerData->create(pNewHouse, getHouseNameByNumber((HOUSETYPE) pNewHouse->getHouseID()));
-            pNewHouse->addPlayer(std::shared_ptr<Player>(pPlayer));
+            pNewHouse->addPlayer(std::unique_ptr<Player>(pPlayer));
         }
         */
 
