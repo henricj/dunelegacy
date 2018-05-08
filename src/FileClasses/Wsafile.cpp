@@ -186,7 +186,7 @@ sdl2::surface_ptr Wsafile::getAnimationAsPictureRow(int numFramesX) const {
     \param  bSetColorKey    if true, black is set as transparency
     \return a new animation object or nullptr on error
 */
-Animation* Wsafile::getAnimation(unsigned int startindex, unsigned int endindex, bool bDoublePic, bool bSetColorKey) const
+animation_ptr Wsafile::getAnimation(unsigned int startindex, unsigned int endindex, bool bDoublePic, bool bSetColorKey) const
 {
     auto animation = std::make_unique<Animation>();
 
@@ -198,7 +198,7 @@ Animation* Wsafile::getAnimation(unsigned int startindex, unsigned int endindex,
         animation->addFrame(tmp.release(),bDoublePic,bSetColorKey);
     }
 
-    return animation.release();
+    return animation;
 }
 
 /// Helper method to decode one frame

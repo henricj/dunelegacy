@@ -835,17 +835,17 @@ GFXManager::GFXManager() {
     animation[Anim_OrdosRing] = menshpo->getAnimation(11,14,true,true,true);
     animation[Anim_OrdosRing]->setNumLoops(1);
     animation[Anim_OrdosRing]->setFrameRate(6.0);
-    animation[Anim_FremenEyes] = PictureFactory::mapMentatAnimationToFremen(animation[Anim_AtreidesEyes]);
-    animation[Anim_FremenMouth] = PictureFactory::mapMentatAnimationToFremen(animation[Anim_AtreidesMouth]);
-    animation[Anim_FremenShoulder] = PictureFactory::mapMentatAnimationToFremen(animation[Anim_AtreidesShoulder]);
-    animation[Anim_FremenBook] = PictureFactory::mapMentatAnimationToFremen(animation[Anim_AtreidesBook]);
-    animation[Anim_SardaukarEyes] = PictureFactory::mapMentatAnimationToSardaukar(animation[Anim_HarkonnenEyes]);
-    animation[Anim_SardaukarMouth] = PictureFactory::mapMentatAnimationToSardaukar(animation[Anim_HarkonnenMouth]);
-    animation[Anim_SardaukarShoulder] = PictureFactory::mapMentatAnimationToSardaukar(animation[Anim_HarkonnenShoulder]);
-    animation[Anim_MercenaryEyes] = PictureFactory::mapMentatAnimationToMercenary(animation[Anim_OrdosEyes]);
-    animation[Anim_MercenaryMouth] = PictureFactory::mapMentatAnimationToMercenary(animation[Anim_OrdosMouth]);
-    animation[Anim_MercenaryShoulder] = PictureFactory::mapMentatAnimationToMercenary(animation[Anim_OrdosShoulder]);
-    animation[Anim_MercenaryRing] = PictureFactory::mapMentatAnimationToMercenary(animation[Anim_OrdosRing]);
+    animation[Anim_FremenEyes] = PictureFactory::mapMentatAnimationToFremen(animation[Anim_AtreidesEyes].get());
+    animation[Anim_FremenMouth] = PictureFactory::mapMentatAnimationToFremen(animation[Anim_AtreidesMouth].get());
+    animation[Anim_FremenShoulder] = PictureFactory::mapMentatAnimationToFremen(animation[Anim_AtreidesShoulder].get());
+    animation[Anim_FremenBook] = PictureFactory::mapMentatAnimationToFremen(animation[Anim_AtreidesBook].get());
+    animation[Anim_SardaukarEyes] = PictureFactory::mapMentatAnimationToSardaukar(animation[Anim_HarkonnenEyes].get());
+    animation[Anim_SardaukarMouth] = PictureFactory::mapMentatAnimationToSardaukar(animation[Anim_HarkonnenMouth].get());
+    animation[Anim_SardaukarShoulder] = PictureFactory::mapMentatAnimationToSardaukar(animation[Anim_HarkonnenShoulder].get());
+    animation[Anim_MercenaryEyes] = PictureFactory::mapMentatAnimationToMercenary(animation[Anim_OrdosEyes].get());
+    animation[Anim_MercenaryMouth] = PictureFactory::mapMentatAnimationToMercenary(animation[Anim_OrdosMouth].get());
+    animation[Anim_MercenaryShoulder] = PictureFactory::mapMentatAnimationToMercenary(animation[Anim_OrdosShoulder].get());
+    animation[Anim_MercenaryRing] = PictureFactory::mapMentatAnimationToMercenary(animation[Anim_OrdosRing].get());
 
     animation[Anim_BeneEyes] = menshpm->getAnimation(0,4,true,true);
     if(animation[Anim_BeneEyes] != nullptr) {
@@ -869,14 +869,7 @@ GFXManager::GFXManager() {
     pBackgroundSurface = convertSurfaceToDisplayFormat(PicFactory->createBackground().release(), true);
 }
 
-GFXManager::~GFXManager() {
-    for(auto & a : animation) {
-        if(a != nullptr) {
-            delete a;
-            a = nullptr;
-        }
-    }
-}
+GFXManager::~GFXManager() = default;
 
 SDL_Texture* GFXManager::getZoomedObjPic(unsigned int id, int house, unsigned int z) {
     if(id >= NUM_OBJPICS) {
@@ -1124,7 +1117,7 @@ Animation* GFXManager::getAnimation(unsigned int id) {
         }
     }
 
-    return animation[id];
+    return animation[id].get();
 }
 
 std::unique_ptr<Shpfile> GFXManager::loadShpfile(const std::string& filename) const {
@@ -1186,13 +1179,12 @@ sdl2::texture_ptr GFXManager::extractSmallDetailPic(const std::string& filename)
     return convertSurfaceToTexture(pSurface.get(), false);
 }
 
-Animation* GFXManager::loadAnimationFromWsa(const std::string& filename) const {
+animation_ptr GFXManager::loadAnimationFromWsa(const std::string& filename) const {
     SDL_RWops* file = pFileManager->openFile(filename);
-    Wsafile* wsafile = new Wsafile(file);
-    Animation* ret = wsafile->getAnimation(0,wsafile->getNumFrames() - 1,true,false);
-    delete wsafile;
+    auto wsafile = std::make_unique<Wsafile>(file);
+    auto animation = wsafile->getAnimation(0,wsafile->getNumFrames() - 1,true,false);
     SDL_RWclose(file);
-    return ret;
+    return animation;
 }
 
 sdl2::surface_ptr GFXManager::generateWindtrapAnimationFrames(SDL_Surface* windtrapPic) const {

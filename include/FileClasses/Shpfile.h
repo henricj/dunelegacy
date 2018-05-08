@@ -56,7 +56,7 @@ public:
 
     sdl2::surface_ptr getPicture(Uint32 indexOfFile);
     sdl2::surface_ptr getPictureArray(unsigned int tilesX, unsigned int tilesY, ...);
-    Animation* getAnimation(unsigned int startindex, unsigned int endindex, bool bDoublePic=true, bool bSetColorKey=true, bool bLoopRewindBackwards=false);
+    animation_ptr getAnimation(unsigned int startindex, unsigned int endindex, bool bDoublePic=true, bool bSetColorKey=true, bool bLoopRewindBackwards=false);
 
     /// Returns the number of contained pictures
     /**
