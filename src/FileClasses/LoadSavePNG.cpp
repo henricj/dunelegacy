@@ -32,12 +32,10 @@ struct free_deleter
 typedef std::unique_ptr<unsigned char, free_deleter> lodepng_ptr;
 
 
-sdl2::surface_ptr LoadPNG_RW(SDL_RWops* RWop, int freesrc) {
+sdl2::surface_ptr LoadPNG_RW(SDL_RWops* RWop) {
     if(RWop == nullptr) {
         return nullptr;
     }
-
-    sdl2::RWop_ptr free_RWop{ freesrc ? RWop : nullptr };
 
     unsigned int width = 0;
     unsigned int height = 0;
@@ -156,11 +154,8 @@ sdl2::surface_ptr LoadPNG_RW(SDL_RWops* RWop, int freesrc) {
     }
 }
 
-int SavePNG_RW(SDL_Surface* surface, SDL_RWops* RWop, int freedst) {
+int SavePNG_RW(SDL_Surface* surface, SDL_RWops* RWop) {
     if(surface == nullptr) {
-        if(freedst) {
-            SDL_RWclose(RWop);
-        }
         return -1;
     }
 
@@ -191,24 +186,14 @@ int SavePNG_RW(SDL_Surface* surface, SDL_RWops* RWop, int freedst) {
     free(pImage);
     if(error != 0) {
         SDL_Log("%s", lodepng_error_text(error));
-        if(freedst) {
-            SDL_RWclose(RWop);
-        }
         return -1;
     }
 
     if(SDL_RWwrite(RWop, ppngFile, 1, pngFileSize) != pngFileSize) {
         SDL_Log("%s", SDL_GetError());
-        if(freedst) {
-            SDL_RWclose(RWop);
-        }
         return -1;
     }
 
     free(ppngFile);
-
-    if(freedst) {
-        SDL_RWclose(RWop);
-    }
     return 0;
 }

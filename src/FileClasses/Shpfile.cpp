@@ -28,12 +28,11 @@ extern Palette palette;
 
 /// Constructor
 /**
-    The constructor reads from the rwop all data and saves them internal. The SDL_RWops can be readonly but must support
-    seeking. Immediately after the Shpfile-Object is constructed RWops can be closed. All data is saved in the class.
+    The constructor reads from the rwop all data and saves them internally. The SDL_RWops can be readonly but must support
+    seeking.
     \param  rwop    SDL_RWops to the shp-File. (can be readonly)
-    \param  freesrc A non-zero value means it will automatically close/free the rwop for you.
 */
-Shpfile::Shpfile(SDL_RWops* rwop, bool freesrc)
+Shpfile::Shpfile(SDL_RWops* rwop)
 {
     if(rwop == nullptr) {
         THROW(std::invalid_argument, "Shpfile::Shpfile(): rwop == nullptr!");
@@ -51,15 +50,7 @@ Shpfile::Shpfile(SDL_RWops* rwop, bool freesrc)
         THROW(std::runtime_error, "Shpfile::Shpfile(): Reading this *.shp-File failed!");
     }
 
-    if (freesrc) {
-        SDL_RWclose(rwop);
-    }
-
-    try {
-        readIndex();
-    } catch (std::exception&) {
-        throw;
-    }
+    readIndex();
 }
 
 /// Destructor

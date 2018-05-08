@@ -30,13 +30,11 @@
 
 extern Palette palette;
 
-sdl2::surface_ptr LoadCPS_RW(SDL_RWops* RWop, int freesrc)
+sdl2::surface_ptr LoadCPS_RW(SDL_RWops* RWop)
 {
     if(RWop == nullptr) {
         return nullptr;
     }
-
-    sdl2::RWop_ptr src_handle{ freesrc ? RWop : nullptr };
 
     Sint64 endOffset = SDL_RWsize(RWop);
     if(endOffset <= 0) {

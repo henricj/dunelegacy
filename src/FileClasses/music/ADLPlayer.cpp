@@ -197,12 +197,10 @@ void ADLPlayer::changeMusic(MUSICTYPE musicType)
         Mix_HookMusic(nullptr, nullptr);
         delete pSoundAdlibPC;
 
-        SDL_RWops* rwop = pFileManager->openFile(filename);
+        sdl2::RWops_ptr rwop = pFileManager->openFile(filename);
 
-        pSoundAdlibPC = new SoundAdlibPC(rwop);
+        pSoundAdlibPC = new SoundAdlibPC(rwop.get());
         pSoundAdlibPC->setVolume(musicVolume);
-
-        SDL_RWclose(rwop);
 
         pSoundAdlibPC->playTrack(musicNum);
 

@@ -31,18 +31,13 @@ extern Palette palette;
 
 /// Constructor
 /**
-    The constructor reads from icnRWop and mapRWop all data and saves them internal. The SDL_RWops can be readonly but
-    must support seeking. Immediately after the Icnfile-Object is constructed both RWops can be closed. All data is saved
-    in the class.
+    The constructor reads from icnRWop and mapRWop all data and saves them internally. The SDL_RWops can be readonly but
+    must support seeking.
     \param  icnRWop SDL_RWops to the icn-File. (can be readonly)
     \param  mapRWop SDL_RWops to the map-File. (can be readonly)
-    \param  freesrc A non-zero value means it will automatically close/free the icnRWop and mapRWop for you.
 */
-Icnfile::Icnfile(SDL_RWops* icnRWop, SDL_RWops* mapRWop, int freesrc)
+Icnfile::Icnfile(SDL_RWops* icnRWop, SDL_RWops* mapRWop)
 {
-    sdl2::RWop_ptr rw_handle1{ freesrc ? icnRWop : nullptr };
-    sdl2::RWop_ptr rw_handle2{ freesrc ? mapRWop : nullptr };
-
     if(icnRWop == nullptr) {
         THROW(std::invalid_argument, "Icnfile::Icnfile(): icnRWop == nullptr!");
     } else if(mapRWop == nullptr) {

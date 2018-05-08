@@ -44,36 +44,18 @@ Finale::Finale(int house) {
 
     switch(house) {
         case HOUSE_HARKONNEN: {
-            {
-                sdl2::RWop_ptr hfinala_wsa{ pFileManager->openFile("HFINALA.WSA") };
-                pPalace1 = std::make_unique<Wsafile>(hfinala_wsa.get());
-            }
-
-            sdl2::RWop_ptr hfinalb_wsa{ pFileManager->openFile("HFINALB.WSA") };
-            sdl2::RWop_ptr hfinalc_wsa{ pFileManager->openFile("HFINALC.WSA") };
-            pPalace2 = std::make_unique<Wsafile>(hfinalb_wsa.get(), hfinalc_wsa.get());
+            pPalace1 = std::make_unique<Wsafile>(pFileManager->openFile("HFINALA.WSA").get());
+            pPalace2 = std::make_unique<Wsafile>(pFileManager->openFile("HFINALB.WSA").get(), pFileManager->openFile("HFINALC.WSA").get());
         } break;
 
         case HOUSE_ATREIDES: {
-            {
-                sdl2::RWop_ptr afinala_wsa{ pFileManager->openFile("AFINALA.WSA") };
-                pPalace1 = std::make_unique<Wsafile>(afinala_wsa.get());
-            }
-
-            sdl2::RWop_ptr afinalb_wsa{ pFileManager->openFile("AFINALB.WSA") };
-            pPalace2 = std::make_unique<Wsafile>(afinalb_wsa.get());
+            pPalace1 = std::make_unique<Wsafile>(pFileManager->openFile("AFINALA.WSA").get());
+            pPalace2 = std::make_unique<Wsafile>(pFileManager->openFile("AFINALB.WSA").get());
         } break;
 
         case HOUSE_ORDOS: {
-            {
-                sdl2::RWop_ptr ofinala_wsa{ pFileManager->openFile("OFINALA.WSA") };
-                sdl2::RWop_ptr ofinalb_wsa{ pFileManager->openFile("OFINALB.WSA") };
-                sdl2::RWop_ptr ofinalc_wsa{ pFileManager->openFile("OFINALC.WSA") };
-                pPalace1 = std::make_unique<Wsafile>(ofinala_wsa.get(), ofinalb_wsa.get(), ofinalc_wsa.get());
-            }
-
-            sdl2::RWop_ptr ofinald_wsa{ pFileManager->openFile("OFINALD.WSA") };
-            pPalace2 = std::make_unique<Wsafile>(ofinald_wsa.get());
+            pPalace1 = std::make_unique<Wsafile>(pFileManager->openFile("OFINALA.WSA").get(), pFileManager->openFile("OFINALB.WSA").get(), pFileManager->openFile("OFINALC.WSA").get());
+            pPalace2 = std::make_unique<Wsafile>(pFileManager->openFile("OFINALD.WSA").get());
         } break;
 
         default: {
@@ -82,22 +64,16 @@ Finale::Finale(int house) {
     }
 
     if(house == HOUSE_HARKONNEN || house == HOUSE_ATREIDES || house == HOUSE_ORDOS) {
-        {
-            sdl2::RWop_ptr efinala_wsa{ pFileManager->openFile("EFINALA.WSA") };
-            pImperator = std::make_unique<Wsafile>(efinala_wsa.get());
-        }
-        {
-            sdl2::RWop_ptr efinalb_wsa{ pFileManager->openFile("EFINALB.WSA") };
-            pImperatorShocked = std::make_unique<Wsafile>(efinalb_wsa.get());
-        }
+        pImperator = std::make_unique<Wsafile>(pFileManager->openFile("EFINALA.WSA").get());
+        pImperatorShocked = std::make_unique<Wsafile>(pFileManager->openFile("EFINALB.WSA").get());
     }
 
-    auto pPlanetDuneNormalSurface = LoadCPS_RW(pFileManager->openFile("BIGPLAN.CPS"), true);
+    auto pPlanetDuneNormalSurface = LoadCPS_RW(pFileManager->openFile("BIGPLAN.CPS").get());
     if(pPlanetDuneNormalSurface == nullptr) {
         THROW(std::runtime_error, "Finale::Finale(): Cannot open BIGPLAN.CPS!");
     }
 
-    auto pPlanetDuneInHouseColorSurface = LoadCPS_RW(pFileManager->openFile("MAPPLAN.CPS"), true);
+    auto pPlanetDuneInHouseColorSurface = LoadCPS_RW(pFileManager->openFile("MAPPLAN.CPS").get());
     if(pPlanetDuneInHouseColorSurface == nullptr) {
         THROW(std::runtime_error, "Finale::Finale(): Cannot open MAPPLAN.CPS!");
     }
@@ -111,9 +87,7 @@ Finale::Finale(int house) {
         blowup = getChunkFromFile("BLOWUP1.VOC");
     }
 
-    sdl2::RWop_ptr intro_lng{ pFileManager->openFile("INTRO." + _("LanguageFileExtension")) };
-    const auto pIntroText = std::make_unique<IndexedTextFile>(intro_lng.get());
-    intro_lng.reset();
+    const auto pIntroText = std::make_unique<IndexedTextFile>(pFileManager->openFile("INTRO." + _("LanguageFileExtension")).get());
 
     const Uint32 color = SDL2RGB(palette[houseToPaletteIndex[house]+1]);
     const Uint32 sardaukarColor = SDL2RGB(palette[PALCOLOR_SARDAUKAR+1]);

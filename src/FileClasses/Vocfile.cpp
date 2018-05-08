@@ -312,7 +312,7 @@ inline Sint16 Float2Sint16(float x) {
     return (Sint16) val;
 }
 
-Mix_Chunk* LoadVOC_RW(SDL_RWops* rwop, int freesrc) {
+Mix_Chunk* LoadVOC_RW(SDL_RWops* rwop) {
 
     if(rwop == nullptr) {
         return nullptr;
@@ -323,9 +323,6 @@ Mix_Chunk* LoadVOC_RW(SDL_RWops* rwop, int freesrc) {
     Uint32 RawData_Samples;
     Uint8* RawDataUint8 = LoadVOC_RW(rwop, RawData_Samples, RawData_Frequency);
     if(RawDataUint8 == nullptr) {
-        if(freesrc) {
-            SDL_RWclose(rwop);
-        }
         return nullptr;
     }
 
@@ -357,9 +354,6 @@ Mix_Chunk* LoadVOC_RW(SDL_RWops* rwop, int freesrc) {
     float* RawDataFloat;
     if((RawDataFloat = (float*) SDL_malloc((RawData_Samples+2*NUM_SAMPLES_OF_SILENCE)*sizeof(float))) == nullptr) {
         SDL_free(RawDataUint8);
-        if(freesrc) {
-            SDL_RWclose(rwop);
-        }
         return nullptr;
     }
 
@@ -388,9 +382,6 @@ Mix_Chunk* LoadVOC_RW(SDL_RWops* rwop, int freesrc) {
     if(Mix_QuerySpec(&TargetFrequency, &TargetFormat, &channels) == 0) {
         SDL_free(RawDataUint8);
         SDL_free(RawDataFloat);
-        if(freesrc) {
-            SDL_RWclose(rwop);
-        }
         return nullptr;
     }
 
@@ -400,9 +391,6 @@ Mix_Chunk* LoadVOC_RW(SDL_RWops* rwop, int freesrc) {
     float* TargetDataFloat;
     if((TargetDataFloat = (float*) SDL_malloc(TargetDataFloat_Samples*sizeof(float))) == nullptr) {
         SDL_free(RawDataFloat);
-        if(freesrc) {
-            SDL_RWclose(rwop);
-        }
         return nullptr;
     }
 
@@ -439,9 +427,6 @@ Mix_Chunk* LoadVOC_RW(SDL_RWops* rwop, int freesrc) {
     Mix_Chunk* myChunk;
     if((myChunk = (Mix_Chunk*) SDL_calloc(sizeof(Mix_Chunk),1)) == nullptr) {
         SDL_free(TargetDataFloat);
-        if(freesrc) {
-            SDL_RWclose(rwop);
-        }
         return nullptr;
     }
 
@@ -456,9 +441,6 @@ Mix_Chunk* LoadVOC_RW(SDL_RWops* rwop, int freesrc) {
             if((TargetData = (Uint8*) SDL_malloc(TargetData_Samples * SizeOfTargetSample)) == nullptr) {
                 SDL_free(TargetDataFloat);
                 SDL_free(myChunk);
-                if(freesrc) {
-                    SDL_RWclose(rwop);
-                }
                 return nullptr;
             }
 
@@ -484,9 +466,6 @@ Mix_Chunk* LoadVOC_RW(SDL_RWops* rwop, int freesrc) {
             if((TargetData = (Sint8*) SDL_malloc(TargetData_Samples * SizeOfTargetSample)) == nullptr) {
                 SDL_free(TargetDataFloat);
                 SDL_free(myChunk);
-                if(freesrc) {
-                    SDL_RWclose(rwop);
-                }
                 return nullptr;
             }
 
@@ -512,9 +491,6 @@ Mix_Chunk* LoadVOC_RW(SDL_RWops* rwop, int freesrc) {
             if((TargetData = (Uint16*) SDL_malloc(TargetData_Samples * SizeOfTargetSample)) == nullptr) {
                 SDL_free(TargetDataFloat);
                 SDL_free(myChunk);
-                if(freesrc) {
-                    SDL_RWclose(rwop);
-                }
                 return nullptr;
             }
 
@@ -540,9 +516,6 @@ Mix_Chunk* LoadVOC_RW(SDL_RWops* rwop, int freesrc) {
             if((TargetData = (Sint16*) SDL_malloc(TargetData_Samples * SizeOfTargetSample)) == nullptr) {
                 SDL_free(TargetDataFloat);
                 SDL_free(myChunk);
-                if(freesrc) {
-                    SDL_RWclose(rwop);
-                }
                 return nullptr;
             }
 
@@ -568,9 +541,6 @@ Mix_Chunk* LoadVOC_RW(SDL_RWops* rwop, int freesrc) {
             if((TargetData = (Uint16*) SDL_malloc(TargetData_Samples * SizeOfTargetSample)) == nullptr) {
                 SDL_free(TargetDataFloat);
                 SDL_free(myChunk);
-                if(freesrc) {
-                    SDL_RWclose(rwop);
-                }
                 return nullptr;
             }
 
@@ -596,9 +566,6 @@ Mix_Chunk* LoadVOC_RW(SDL_RWops* rwop, int freesrc) {
             if((TargetData = (Sint16*) SDL_malloc(TargetData_Samples * SizeOfTargetSample)) == nullptr) {
                 SDL_free(TargetDataFloat);
                 SDL_free(myChunk);
-                if(freesrc) {
-                    SDL_RWclose(rwop);
-                }
                 return nullptr;
             }
 
@@ -621,15 +588,10 @@ Mix_Chunk* LoadVOC_RW(SDL_RWops* rwop, int freesrc) {
         {
             SDL_free(TargetDataFloat);
             SDL_free(myChunk);
-            if(freesrc) {
-                SDL_RWclose(rwop);
-            }
+
             return nullptr;
         } break;
     }
 
-    if(freesrc) {
-        SDL_RWclose(rwop);
-    }
     return myChunk;
 }

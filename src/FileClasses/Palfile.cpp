@@ -20,7 +20,7 @@
 
 #include <stdio.h>
 
-Palette LoadPalette_RW(SDL_RWops* rwop, int freesrc)
+Palette LoadPalette_RW(SDL_RWops* rwop)
 {
     if(rwop == nullptr) {
         THROW(std::invalid_argument, "Palfile::Palfile(): rwop == nullptr!");
@@ -28,14 +28,12 @@ Palette LoadPalette_RW(SDL_RWops* rwop, int freesrc)
 
     Sint64 endOffset = SDL_RWsize(rwop);
     if(endOffset < 0) {
-        if(freesrc) SDL_RWclose(rwop);
         THROW(std::runtime_error, "Palfile::Palfile(): Cannot determine size of this *.pal-File!");
     }
 
     size_t filesize = static_cast<size_t>(endOffset);
 
     if(filesize % 3 != 0) {
-        if(freesrc) SDL_RWclose(rwop);
         THROW(std::runtime_error, "Palfile::Palfile(): Filesize must be multiple of 3!");
     }
 
@@ -46,29 +44,21 @@ Palette LoadPalette_RW(SDL_RWops* rwop, int freesrc)
     for (int i=0; i < palette.getNumColors(); i++)
     {
         if(SDL_RWread(rwop,&buf,1,1) != 1) {
-            if(freesrc) SDL_RWclose(rwop);
-
             THROW(std::runtime_error, "Palfile::Palfile(): SDL_RWread failed!");
         }
         palette[i].r = (char) (((double) buf)*255.0/63.0);
 
         if(SDL_RWread(rwop,&buf,1,1) != 1) {
-            if(freesrc) SDL_RWclose(rwop);
-
             THROW(std::runtime_error, "Palfile::Palfile(): SDL_RWread failed!");
         }
         palette[i].g = (char) (((double) buf)*255.0/63.0);
 
         if(SDL_RWread(rwop,&buf,1,1) != 1) {
-            if(freesrc) SDL_RWclose(rwop);
-
             THROW(std::runtime_error, "Palfile::Palfile(): SDL_RWread failed!");
         }
         palette[i].b = (char) (((double) buf)*255.0/63.0);
         palette[i].a = 0xFF;
     }
-
-    if(freesrc) SDL_RWclose(rwop);
 
     return palette;
 }

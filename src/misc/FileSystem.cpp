@@ -317,40 +317,34 @@ bool getCaseInsensitiveFilename(std::string& filepath) {
 
 bool existsFile(const std::string& path) {
     // try opening the file
-    SDL_RWops* RWopsFile = SDL_RWFromFile(path.c_str(),"r");
+    auto RWopsFile = sdl2::RWops_ptr{ SDL_RWFromFile(path.c_str(),"r") };
 
-    if(RWopsFile == nullptr) {
+    if(!RWopsFile) {
         return false;
-    }
-
-    SDL_RWclose(RWopsFile);
+    };
 
     return true;
 }
 
 std::string readCompleteFile(const std::string& filename) {
-    SDL_RWops* RWopsFile = SDL_RWFromFile(filename.c_str(),"r");
+    auto RWopsFile = sdl2::RWops_ptr{ SDL_RWFromFile(filename.c_str(),"r") };
 
-    if(RWopsFile == nullptr) {
+    if(!RWopsFile) {
         return "";
     }
 
-    const Sint64 filesize = SDL_RWsize(RWopsFile);
+    const Sint64 filesize = SDL_RWsize(RWopsFile.get());
     if(filesize < 0) {
-        SDL_RWclose(RWopsFile);
         return "";
     }
 
     std::unique_ptr<char[]> filedata = std::make_unique<char[]>((size_t) filesize);
 
-    if(SDL_RWread(RWopsFile, filedata.get(), (size_t) filesize, 1) != 1) {
-        SDL_RWclose(RWopsFile);
+    if(SDL_RWread(RWopsFile.get(), filedata.get(), (size_t) filesize, 1) != 1) {
         return "";
     }
 
     std::string retValue(filedata.get(), (size_t) filesize);
-
-    SDL_RWclose(RWopsFile);
 
     return retValue;
 }

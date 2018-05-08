@@ -25,9 +25,8 @@
 /**
     This method can be used to read PAL-Files. PAL-Files are palette files used by Dune2. The read palette is returned.
     \param  rwop    SDL_RWops to the PAL-File. (can be readonly)
-    \param  freesrc A non-zero value means it will automatically close/free the src for you.
     \return The Palette in this PAL-File
 */
-Palette LoadPalette_RW(SDL_RWops* rwop, int freesrc);
+Palette LoadPalette_RW(SDL_RWops* rwop);
 
 #endif // PALFILE_H

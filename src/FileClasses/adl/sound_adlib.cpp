@@ -2457,7 +2457,7 @@ void SoundAdlibPC::internalLoadFile(SDL_RWops* rwop) {
   }
 
   uint8 *file_data = 0;
-    const Sint64 endOffset = SDL_RWsize(rwop);
+  const Sint64 endOffset = SDL_RWsize(rwop);
   if(endOffset <= 0) {
     SDL_Log("SoundAdlibPC::internalLoadFile(): Cannot determine size of SDL_RWop!");
     return;

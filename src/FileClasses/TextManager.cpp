@@ -56,15 +56,9 @@ void TextManager::loadData() {
     addOrigDuneText("MESSAGE." + _("LanguageFileExtension"));
 
     // load all mentat texts
-    SDL_RWops* mentat_lng[3];
-    mentat_lng[HOUSE_HARKONNEN] = pFileManager->openFile("MENTATH." + _("LanguageFileExtension"));
-    mentat_lng[HOUSE_ATREIDES] = pFileManager->openFile("MENTATA." + _("LanguageFileExtension"));
-    mentat_lng[HOUSE_ORDOS] = pFileManager->openFile("MENTATO." + _("LanguageFileExtension"));
-
-    for(int i=0;i<3;i++) {
-        mentatStrings[i] = std::make_unique<MentatTextFile>(mentat_lng[i]);
-        SDL_RWclose(mentat_lng[i]);
-    }
+    mentatStrings[HOUSE_HARKONNEN] = std::make_unique<MentatTextFile>(pFileManager->openFile("MENTATH." + _("LanguageFileExtension")).get());
+    mentatStrings[HOUSE_ATREIDES] = std::make_unique<MentatTextFile>(pFileManager->openFile("MENTATA." + _("LanguageFileExtension")).get());
+    mentatStrings[HOUSE_ORDOS] = std::make_unique<MentatTextFile>(pFileManager->openFile("MENTATO." + _("LanguageFileExtension")).get());
 }
 
 std::string TextManager::getBriefingText(unsigned int mission, unsigned int texttype, int house) const {
@@ -568,10 +562,6 @@ const std::string& TextManager::postProcessString(const std::string& unprocessed
 }
 
 void TextManager::addOrigDuneText(const std::string& filename, bool bDecode) {
-    SDL_RWops* rwop = pFileManager->openFile(filename);
-
-    origDuneText[filename] = std::make_unique<IndexedTextFile>(rwop, bDecode);
-
-    SDL_RWclose(rwop);
+    origDuneText[filename] = std::make_unique<IndexedTextFile>(pFileManager->openFile(filename).get(), bDecode);
 }
 

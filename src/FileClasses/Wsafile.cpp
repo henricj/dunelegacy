@@ -378,12 +378,3 @@ void Wsafile::readdata(int numFiles, va_list args) {
         }
     }
 }
-
-sdl2::surface_ptr LoadWSA_RW(SDL_RWops* RWop, Uint32 FrameNumber, int freesrc) {
-
-    sdl2::RWop_ptr op_handle{ freesrc ? RWop : nullptr };
-
-    auto pPic = Wsafile(RWop).getPicture(FrameNumber);
-
-    return pPic;
-}

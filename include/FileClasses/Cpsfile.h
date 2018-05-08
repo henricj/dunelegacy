@@ -21,16 +21,11 @@
 #include <misc/SDL2pp.h>
 
 /**
-    This function reads a cps-File from a SDL_RWop and returns it as a SDL_Surface. The SDL_RWops can be readonly but must support
-    seeking. The returned SDL_Surface should be freed with SDL_FreeSurface() if no longer needed.
+    This function reads a cps-File from a SDL_RWop and returns it as a std::unique_ptr<SDL_Surface>. The SDL_RWops can be readonly but must support
+    seeking.
     \param  RWop    SDL_RWops to the cps-File. (can be readonly)
-    \param  freesrc A non-zero value means it will automatically close/free the rwop for you.
     \return Picture in this CPS-File
 */
-sdl2::surface_ptr LoadCPS_RW(SDL_RWops* RWop, int freesrc);
-
-//  unsigned char* Filedata;
-//  Uint32 CpsFilesize;
-
+sdl2::surface_ptr LoadCPS_RW(SDL_RWops* RWop);
 
 #endif // CPSFILE_H

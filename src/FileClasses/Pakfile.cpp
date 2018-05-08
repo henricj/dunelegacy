@@ -170,7 +170,7 @@ void Pakfile::addFile(SDL_RWops* rwop, const std::string& filename) {
     \param  filename    The name of this file
     \return SDL_RWops for this file
 */
-SDL_RWops* Pakfile::openFile(const std::string& filename) {
+sdl2::RWops_ptr Pakfile::openFile(const std::string& filename) {
     if(write == true) {
         // reading files is not allowed
         return nullptr;
@@ -210,7 +210,7 @@ SDL_RWops* Pakfile::openFile(const std::string& filename) {
     pRWop->close = Pakfile::CloseFile;
     pRWop->hidden.unknown.data1 = (void*) pRWopData;
 
-    return pRWop;
+    return sdl2::RWops_ptr{ pRWop };
 }
 
 bool Pakfile::exists(const std::string& filename) const {

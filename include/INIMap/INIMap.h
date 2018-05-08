@@ -53,18 +53,7 @@ public:
 
         if(gameType == GameType::Campaign || gameType == GameType::Skirmish) {
             // load from PAK-File
-            SDL_RWops* mapiniFile = nullptr;
-            try {
-
-                mapiniFile = pFileManager->openFile(this->mapname);
-                inifile = inifile_ptr(new INIFile(mapiniFile), INIFile_deleter);
-                SDL_RWclose(mapiniFile);
-            } catch (...) {
-                if(mapiniFile != nullptr) {
-                    SDL_RWclose(mapiniFile);
-                }
-                throw;
-            }
+            inifile = inifile_ptr(new INIFile(pFileManager->openFile(this->mapname).get()), INIFile_deleter);
         } else if(gameType == GameType::CustomGame || gameType == GameType::CustomMultiplayer) {
             SDL_RWops* RWops = SDL_RWFromConstMem(mapdata.c_str(), mapdata.size());
             inifile = inifile_ptr(new INIFile(RWops), INIFile_deleter);

@@ -84,14 +84,4 @@ private:
     bool looped = false;
 };
 
-/**
-    This function reads a wsa-File from a SDL_RWop and returns the nth frame as a SDL_Surface. The SDL_RWops can be readonly but must support
-    seeking. The returned SDL_Surface should be freed with SDL_FreeSurface() if no longer needed.
-    \param  RWop    SDL_RWops to the wsa-File. (can be readonly)
-    \param  FrameNumber the frame to retrieve (zero-based index)
-    \param  freesrc A non-zero value means it will automatically close/free the rwop for you.
-    \return Picture in this WSA-File
-*/
-sdl2::surface_ptr LoadWSA_RW(SDL_RWops* RWop, Uint32 FrameNumber, int freesrc);
-
 #endif // WSAFILE_H

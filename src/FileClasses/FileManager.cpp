@@ -127,15 +127,16 @@ std::vector<std::string> FileManager::getMissingFiles() {
     return MissingFiles;
 }
 
-SDL_RWops* FileManager::openFile(const std::string& filename) {
-    SDL_RWops* ret;
+sdl2::RWops_ptr FileManager::openFile(const std::string& filename) {
+    sdl2::RWops_ptr ret;
 
     // try loading external file
     for(const auto& searchPath : getSearchPath()) {
         auto externalFilename = searchPath + "/";
         externalFilename += filename;
         if(getCaseInsensitiveFilename(externalFilename)) {
-            if((ret = SDL_RWFromFile(externalFilename.c_str(), "rb")) != nullptr) {
+            ret = sdl2::RWops_ptr{SDL_RWFromFile(externalFilename.c_str(), "rb")};
+            if(ret) {
                 return ret;
             }
         }
@@ -144,7 +145,7 @@ SDL_RWops* FileManager::openFile(const std::string& filename) {
     // now try loading from pak file
     for(const auto& pPakFile : pakFiles) {
         ret = pPakFile->openFile(filename);
-        if(ret != nullptr) {
+        if(ret) {
             return ret;
         }
     }

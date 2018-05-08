@@ -26,10 +26,9 @@
  It is the callers responsibility to deallocate that data again later on
  with Mix_FreeChunk()!
     \param  rwop    The source SDL_RWops as a pointer. The sample is loaded from this VOC-File.
-    \param  freesrc A non-zero value means it will automatically close/free the src for you.
     \return a pointer to the sample as a Mix_Chunk. nullptr is returned on errors.
  */
-extern Mix_Chunk* LoadVOC_RW(SDL_RWops* rwop, int freesrc);
+extern Mix_Chunk* LoadVOC_RW(SDL_RWops* rwop);
 
 #endif // VOCFILE_H
 

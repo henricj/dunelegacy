@@ -35,17 +35,17 @@
 #include <memory>
 
 PictureFactory::PictureFactory() {
-    auto ScreenPic = LoadCPS_RW(pFileManager->openFile("SCREEN.CPS"),true);
+    auto ScreenPic = LoadCPS_RW(pFileManager->openFile("SCREEN.CPS").get());
     if(ScreenPic == nullptr) {
         THROW(std::runtime_error, "PictureFactory::PictureFactory(): Cannot read SCREEN.CPS!");
     }
 
-    auto FamePic = LoadCPS_RW(pFileManager->openFile("FAME.CPS"),true);
+    auto FamePic = LoadCPS_RW(pFileManager->openFile("FAME.CPS").get());
     if(FamePic == nullptr) {
         THROW(std::runtime_error, "PictureFactory::PictureFactory(): Cannot read FAME.CPS!");
     }
 
-    auto ChoamPic = LoadCPS_RW(pFileManager->openFile("CHOAM.CPS"),true);
+    auto ChoamPic = LoadCPS_RW(pFileManager->openFile("CHOAM.CPS").get());
     if(ChoamPic == nullptr) {
         THROW(std::runtime_error, "PictureFactory::PictureFactory(): Cannot read CHOAM.CPS!");
     }
@@ -197,9 +197,9 @@ PictureFactory::PictureFactory() {
     messageBoxBorder = getSubPicture(ScreenPic.get(),0,17,320,22);
 
     if(pFileManager->exists("MISC." + _("LanguageFileExtension"))) {
-        mentatHouseChoiceQuestionSurface = Scaler::defaultDoubleSurface(LoadCPS_RW(pFileManager->openFile("MISC." + _("LanguageFileExtension")), true).release(), true);
+        mentatHouseChoiceQuestionSurface = Scaler::defaultDoubleSurface(LoadCPS_RW(pFileManager->openFile("MISC." + _("LanguageFileExtension")).get()).release(), true);
     } else {
-        mentatHouseChoiceQuestionSurface = Scaler::defaultDoubleSurface(LoadCPS_RW(pFileManager->openFile("MISC.CPS"), true).release(), true);
+        mentatHouseChoiceQuestionSurface = Scaler::defaultDoubleSurface(LoadCPS_RW(pFileManager->openFile("MISC.CPS").get()).release(), true);
     }
 
 
@@ -592,7 +592,7 @@ sdl2::surface_ptr PictureFactory::createMenu(SDL_Surface* CaptionPic,int y) cons
 }
 
 sdl2::surface_ptr PictureFactory::createOptionsMenu() const {
-    auto tmp = LoadPNG_RW(pFileManager->openFile("UI_OptionsMenu.png"), true);
+    auto tmp = LoadPNG_RW(pFileManager->openFile("UI_OptionsMenu.png").get());
     if(tmp == nullptr) {
         THROW(std::runtime_error, "Cannot load 'UI_OptionsMenu.png'!");
     }
@@ -664,7 +664,7 @@ sdl2::surface_ptr PictureFactory::createGreyHouseChoice(SDL_Surface* HouseChoice
 
 
 sdl2::surface_ptr PictureFactory::createMapChoiceScreen(int House) const {
-    sdl2::surface_ptr pMapChoiceScreen{ LoadCPS_RW(pFileManager->openFile("MAPMACH.CPS"),true) };
+    sdl2::surface_ptr pMapChoiceScreen{ LoadCPS_RW(pFileManager->openFile("MAPMACH.CPS").get()) };
     if(pMapChoiceScreen == nullptr) {
         THROW(std::runtime_error, "Cannot load 'MAPMACH.CPS'!");
     }
@@ -740,9 +740,9 @@ sdl2::surface_ptr PictureFactory::createMentatHouseChoiceQuestion(int House, Pal
         case HOUSE_HARKONNEN:   pQuestionPart2 = getSubPicture(mentatHouseChoiceQuestionSurface.get(),0, 48, 208, 48);   break;
         case HOUSE_ATREIDES:    pQuestionPart2 = getSubPicture(mentatHouseChoiceQuestionSurface.get(),0, 96, 208, 48);   break;
         case HOUSE_ORDOS:       pQuestionPart2 = getSubPicture(mentatHouseChoiceQuestionSurface.get(),0, 144, 208, 48);  break;
-        case HOUSE_FREMEN:      pQuestionPart2 = Scaler::defaultDoubleSurface(LoadPNG_RW(pFileManager->openFile("Fremen.png"), true).release(), true);      break;
-        case HOUSE_SARDAUKAR:   pQuestionPart2 = Scaler::defaultDoubleSurface(LoadPNG_RW(pFileManager->openFile("Sardaukar.png"), true).release(), true);   break;
-        case HOUSE_MERCENARY:   pQuestionPart2 = Scaler::defaultDoubleSurface(LoadPNG_RW(pFileManager->openFile("Mercenary.png"), true).release(), true);   break;
+        case HOUSE_FREMEN:      pQuestionPart2 = Scaler::defaultDoubleSurface(LoadPNG_RW(pFileManager->openFile("Fremen.png").get()).release(), true);      break;
+        case HOUSE_SARDAUKAR:   pQuestionPart2 = Scaler::defaultDoubleSurface(LoadPNG_RW(pFileManager->openFile("Sardaukar.png").get()).release(), true);   break;
+        case HOUSE_MERCENARY:   pQuestionPart2 = Scaler::defaultDoubleSurface(LoadPNG_RW(pFileManager->openFile("Mercenary.png").get()).release(), true);   break;
         default:    break;
     }
 
@@ -774,11 +774,11 @@ sdl2::surface_ptr PictureFactory::createHeraldFre(SDL_Surface* heraldHark) const
     replaceColor(pBlueReplaced.get(), 170, 194);
     replaceColor(pBlueReplaced.get(), 173, 195);
 
-    auto pTmp1 = scaleSurface(LoadWSA_RW(pFileManager->openFile("WORM.WSA"), 0, true).release(), 0.5, true);
+    auto pTmp1 = scaleSurface(Wsafile(pFileManager->openFile("WORM.WSA").get()).getPicture(0).release(), 0.5, true);
     auto pSandworm = getSubPicture(pTmp1.get(), 40-18, 6-12, 83, 91);
     pTmp1.reset();
 
-    auto pMask = LoadPNG_RW(pFileManager->openFile("HeraldFreMask.png"), true);
+    auto pMask = LoadPNG_RW(pFileManager->openFile("HeraldFreMask.png").get());
     SDL_SetColorKey(pMask.get(), SDL_TRUE, 0);
 
     SDL_BlitSurface(pMask.get(), nullptr, pBlueReplaced.get(), nullptr);
@@ -801,7 +801,7 @@ sdl2::surface_ptr PictureFactory::createHeraldSard(SDL_Surface* heraldOrd, SDL_S
 
     auto pFrameAndCurtain = combinePictures(pGreenReplaced.release(), pCurtain.release(), 7, 7);
 
-    auto pMask = sdl2::surface_ptr{ LoadPNG_RW(pFileManager->openFile("HeraldSardMask.png"), true) };
+    auto pMask = sdl2::surface_ptr{ LoadPNG_RW(pFileManager->openFile("HeraldSardMask.png").get()) };
     SDL_SetColorKey(pMask.get(), SDL_TRUE, 0);
 
     SDL_BlitSurface(pMask.get(), nullptr, pFrameAndCurtain.get(), nullptr);
@@ -820,10 +820,10 @@ sdl2::surface_ptr PictureFactory::createHeraldMerc(SDL_Surface* heraldAtre, SDL_
 
     auto pFrameAndCurtain = combinePictures(pRedReplaced.release(), pCurtain.release(), 7, 7);
 
-    auto pSoldier = LoadWSA_RW(pFileManager->openFile("INFANTRY.WSA"), 0, true);
+    auto pSoldier = Wsafile(pFileManager->openFile("INFANTRY.WSA").get()).getPicture(0);
     pSoldier = getSubPicture(pSoldier.get(), 49, 17, 83, 91);
 
-    auto pMask = LoadPNG_RW(pFileManager->openFile("HeraldMercMask.png"), true);
+    auto pMask = LoadPNG_RW(pFileManager->openFile("HeraldMercMask.png").get());
     SDL_SetColorKey(pMask.get(), SDL_TRUE, 0);
 
     SDL_BlitSurface(pMask.get(), nullptr, pFrameAndCurtain.get(), nullptr);
@@ -839,7 +839,7 @@ sdl2::surface_ptr PictureFactory::createHeraldMerc(SDL_Surface* heraldAtre, SDL_
 std::unique_ptr<Animation> PictureFactory::createFremenPlanet(SDL_Surface* heraldFre) {
     auto newAnimation = std::make_unique<Animation>();
 
-    auto newFrame = sdl2::surface_ptr{ LoadCPS_RW(pFileManager->openFile("BIGPLAN.CPS"), true) };
+    auto newFrame = sdl2::surface_ptr{ LoadCPS_RW(pFileManager->openFile("BIGPLAN.CPS").get()) };
     newFrame = getSubPicture(newFrame.get(), -68, -34, 368, 224);
 
     SDL_Rect src =  {0, 0, getWidth(heraldFre) - 2, 126};
@@ -855,7 +855,7 @@ std::unique_ptr<Animation> PictureFactory::createFremenPlanet(SDL_Surface* heral
 
 std::unique_ptr<Animation> PictureFactory::createSardaukarPlanet(Animation* ordosPlanetAnimation, SDL_Surface* heraldSard) {
 
-    sdl2::surface_ptr maskSurface{ Scaler::defaultDoubleSurface(LoadPNG_RW(pFileManager->openFile("PlanetMask.png"), true).release(), true) };
+    sdl2::surface_ptr maskSurface{ Scaler::defaultDoubleSurface(LoadPNG_RW(pFileManager->openFile("PlanetMask.png").get()).release(), true) };
     SDL_SetColorKey(maskSurface.get(), SDL_TRUE, 0);
 
     auto newAnimation = std::make_unique<Animation>();

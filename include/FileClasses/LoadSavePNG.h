@@ -20,12 +20,12 @@
 
 #include <misc/SDL2pp.h>
 
-#define LoadPNG(file) SDL_LoadPNG_RW(SDL_RWFromFile(file, "rb"), 1)
-#define SavePNG(surface, file) SavePNG_RW(surface, SDL_RWFromFile(file, "wb"), 1)
+#define LoadPNG(file) SDL_LoadPNG_RW(sdl2::RWops_ptr{SDL_RWFromFile(file, "rb")}.get())
+#define SavePNG(surface, file) SavePNG_RW(surface, sdl2::RWops_ptr{SDL_RWFromFile(file, "wb")}.get())
 
 
-sdl2::surface_ptr LoadPNG_RW(SDL_RWops* RWop, int freesrc);
+sdl2::surface_ptr LoadPNG_RW(SDL_RWops* RWop);
 
-int SavePNG_RW(SDL_Surface* surface, SDL_RWops* RWop, int freedst);
+int SavePNG_RW(SDL_Surface* surface, SDL_RWops* RWop);
 
 #endif // LOADSAVEPNG_H

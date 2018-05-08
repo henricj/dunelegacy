@@ -206,8 +206,8 @@ void createDefaultConfigFile(const std::string& configfilepath, const std::strin
     SDL_Log("Creating config file '%s'", configfilepath.c_str());
 
 
-    SDL_RWops* file = SDL_RWFromFile(configfilepath.c_str(), "w");
-    if(file == nullptr) {
+    auto file = sdl2::RWops_ptr{ SDL_RWFromFile(configfilepath.c_str(), "w") };
+    if(!file) {
         THROW(sdl_error, "Opening config file failed: %s!", SDL_GetError());
     }
 
@@ -282,11 +282,9 @@ void createDefaultConfigFile(const std::string& configfilepath, const std::strin
     // replace player name, language, server port and metaserver
     std::string strConfigfile = fmt::sprintf(configfile, playername, language, DEFAULT_PORT, DEFAULT_METASERVER);
 
-    if(SDL_RWwrite(file, strConfigfile.c_str(), 1, strConfigfile.length()) == 0) {
+    if(SDL_RWwrite(file.get(), strConfigfile.c_str(), 1, strConfigfile.length()) == 0) {
         THROW(sdl_error, "Writing config file failed: %s!", SDL_GetError());
     }
-
-    SDL_RWclose(file);
 }
 
 void logOutputFunction(void *userdata, int category, SDL_LogPriority priority, const char *message) {
@@ -624,7 +622,7 @@ int main(int argc, char *argv[]) {
             // now we can finish loading texts
             pTextManager->loadData();
 
-            palette = LoadPalette_RW(pFileManager->openFile("IBM.PAL"), true);
+            palette = LoadPalette_RW(pFileManager->openFile("IBM.PAL").get());
 
             SDL_Log("Setting video mode...");
             setVideoMode(currentDisplayIndex);

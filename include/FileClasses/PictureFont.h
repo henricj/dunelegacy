@@ -38,7 +38,7 @@ private:
     };
 
 public:
-    PictureFont(SDL_Surface* pic, int freesrc);
+    PictureFont(SDL_Surface* pic);
     virtual ~PictureFont();
 
     void drawTextOnSurface(SDL_Surface* pSurface, const std::string& text, Uint32 baseColor = 0xFFFFFFFF) override;

@@ -96,9 +96,7 @@ Intro::Intro() {
     pHarkonnen = create_wsafile("INTRO8A.WSA", "INTRO8B.WSA", "INTRO8C.WSA");
     pDestroyedTank = create_wsafile("INTRO5.WSA");
 
-    auto intro_lng = sdl2::RWop_ptr{ pFileManager->openFile("INTRO." + _("LanguageFileExtension")) };
-    IndexedTextFile intro_text{ intro_lng.get() };
-    intro_lng.reset();
+    IndexedTextFile intro_text{ pFileManager->openFile("INTRO." + _("LanguageFileExtension")).get() };
 
 
     wind = getChunkFromFile("WIND2BP.VOC");

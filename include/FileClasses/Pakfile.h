@@ -18,8 +18,9 @@
 #ifndef PAKFILE_H
 #define PAKFILE_H
 
+#include <misc/SDL2pp.h>
+
 #include <stdio.h>
-#include <SDL2/SDL_rwops.h>
 #include <string>
 #include <vector>
 #include <inttypes.h>
@@ -62,7 +63,7 @@ public:
     */
     inline int getNumFiles() const { return fileEntries.size(); };
 
-    SDL_RWops* openFile(const std::string& filename);
+    sdl2::RWops_ptr openFile(const std::string& filename);
 
     bool exists(const std::string& filename) const;
 

@@ -86,12 +86,10 @@ CustomGamePlayers::CustomGamePlayers(const GameInitSettings& newGameInitSettings
     rightVBox.addWidget(&minimap);
 
     if(gameInitSettings.getGameType() == GameType::CustomGame || gameInitSettings.getGameType() == GameType::CustomMultiplayer) {
-        SDL_RWops* RWops = SDL_RWFromConstMem(gameInitSettings.getFiledata().c_str(), gameInitSettings.getFiledata().size());
+        auto RWops = sdl2::RWops_ptr{ SDL_RWFromConstMem(gameInitSettings.getFiledata().c_str(), gameInitSettings.getFiledata().size()) };
 
-        INIFile inimap(RWops);
+        INIFile inimap(RWops.get());
         extractMapInfo(&inimap);
-
-        SDL_RWclose(RWops);
     } else if(gameInitSettings.getGameType() == GameType::LoadMultiplayer) {
         IMemoryStream memStream(gameInitSettings.getFiledata().c_str(), gameInitSettings.getFiledata().size());
 
@@ -115,12 +113,10 @@ CustomGamePlayers::CustomGamePlayers(const GameInitSettings& newGameInitSettings
             houseInfoListSetup.push_back(GameInitSettings::HouseInfo(memStream));
         }
 
-        SDL_RWops* RWops = SDL_RWFromConstMem(tmpGameInitSettings.getFiledata().c_str(), tmpGameInitSettings.getFiledata().size());
+        auto RWops = sdl2::RWops_ptr{ SDL_RWFromConstMem(tmpGameInitSettings.getFiledata().c_str(), tmpGameInitSettings.getFiledata().size()) };
 
-        INIFile inimap(RWops);
+        INIFile inimap(RWops.get());
         extractMapInfo(&inimap);
-
-        SDL_RWclose(RWops);
 
         // adjust multiple players per house as this was not known before actually loading the saved game
         gameInitSettings.setMultiplePlayersPerHouse(tmpGameInitSettings.isMultiplePlayersPerHouse());

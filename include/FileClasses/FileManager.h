@@ -56,7 +56,7 @@ public:
         \return a rwop to read the content of the specified file. Use SDL_RWclose() to close the file after usage.
 
     */
-    SDL_RWops* openFile(const std::string& filename);
+    sdl2::RWops_ptr openFile(const std::string& filename);
 
     bool exists(const std::string& filename) const;
 private:

@@ -366,10 +366,7 @@ void MapChoice::createMapSurfaceWithPieces(unsigned int scenario) {
 void MapChoice::loadINI() {
     const std::string filename = fmt::sprintf("REGION%c.INI", houseChar[house]);
 
-    sdl2::RWop_ptr file{ pFileManager->openFile(filename) };
-    INIFile RegionINI(file.get());
-    file.reset();
-
+    INIFile RegionINI(pFileManager->openFile(filename).get());
 
     piecePosition[0].x = 0;
     piecePosition[0].y = 0;

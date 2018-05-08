@@ -44,9 +44,7 @@ Meanwhile::Meanwhile(int house, bool firstMeanwhile) {
     pMeanwhile = create_wsafile("MEANWHIL.WSA");
     pImperator = create_wsafile("EFINALA.WSA");
 
-    auto dune_lng = sdl2::RWop_ptr{ pFileManager->openFile("DUNE." + _("LanguageFileExtension")) };
-    IndexedTextFile dune_text{ dune_lng.get() };
-    dune_lng.reset();
+    IndexedTextFile dune_text{ pFileManager->openFile("DUNE." + _("LanguageFileExtension")).get() };
 
     int textBaseIndex = MeanwhileText_Base + ((house+2)%3) * MeanwhileText_NumTextsPerHouse;
 

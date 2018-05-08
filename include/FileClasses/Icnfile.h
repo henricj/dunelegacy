@@ -40,7 +40,7 @@ private:
     };
 
 public:
-    Icnfile(SDL_RWops* icnRWop, SDL_RWops* mapRWop, int freesrc);
+    Icnfile(SDL_RWops* icnRWop, SDL_RWops* mapRWop);
     Icnfile(const Icnfile& o) = delete;
     ~Icnfile();
 

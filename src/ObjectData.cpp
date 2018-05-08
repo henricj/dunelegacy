@@ -55,9 +55,7 @@ ObjectData::~ObjectData() = default;
 
 void ObjectData::loadFromINIFile(const std::string& filename)
 {
-    SDL_RWops *file = pFileManager->openFile(filename);
-    INIFile objectDataFile(file);
-    SDL_RWclose(file);
+    INIFile objectDataFile(pFileManager->openFile(filename).get());
 
     // load default structure values
     ObjectDataStruct structureDefaultData[NUM_HOUSES];

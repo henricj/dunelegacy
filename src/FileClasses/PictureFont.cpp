@@ -20,60 +20,49 @@
 
 /// Constructor
 /**
-    The constructor reads from the surface all data and saves them internal. Immediately after the PictureFont-Object is
+    The constructor reads from the surface all data and saves them internally. Immediately after the PictureFont-Object is
     constructed pic can be freed. All data is saved in the class.
     \param  pic The picture which contains the font
-    \param  freesrc A non-zero value means it will automatically close/free the src for you.
 */
-PictureFont::PictureFont(SDL_Surface* pic, int freesrc)
+PictureFont::PictureFont(SDL_Surface* pic)
 {
     if(pic == nullptr) {
-        if(freesrc) SDL_FreeSurface(pic);
         THROW(std::invalid_argument, "PictureFont::PictureFont(): pic == nullptr!");
     }
 
-    SDL_LockSurface(pic);
+    sdl2::surface_lock{ pic };
 
-    try {
-        characterHeight = pic->h - 2;
+    characterHeight = pic->h - 2;
 
-        int curXPos = 1;
-        int oldXPos = curXPos;
-        char* secondLine = ((char*) pic->pixels) + pic->pitch;
-        for(int i = 0; i < 256; i++) {
-            while((curXPos < pic->w) && (*(secondLine + curXPos) != 14)) {
-                curXPos++;
-            }
-
-            if(curXPos >= pic->w) {
-                THROW(std::runtime_error, "PictureFont::PictureFont(): No valid surface for loading font!");
-            }
-
-            character[i].width = curXPos - oldXPos;
-            character[i].data.resize(character[i].width * characterHeight);
-
-            int mempos = 0;
-            for(int y = 1; y < pic->h - 1; y++) {
-                for(int x = oldXPos; x < curXPos; x++) {
-                    unsigned char col = *(((unsigned char*) pic->pixels) + y*pic->pitch + x);
-                    if(col != 0) {
-                        col = 1;
-                    }
-
-                    character[i].data[mempos] = col;
-                    mempos++;
-                }
-            }
+    int curXPos = 1;
+    int oldXPos = curXPos;
+    char* secondLine = ((char*) pic->pixels) + pic->pitch;
+    for(int i = 0; i < 256; i++) {
+        while((curXPos < pic->w) && (*(secondLine + curXPos) != 14)) {
             curXPos++;
-            oldXPos = curXPos;
         }
 
-        SDL_UnlockSurface(pic);
-        if(freesrc) SDL_FreeSurface(pic);
+        if(curXPos >= pic->w) {
+            THROW(std::runtime_error, "PictureFont::PictureFont(): No valid surface for loading font!");
+        }
 
-    } catch (std::exception&) {
-        SDL_UnlockSurface(pic);
-        if(freesrc) SDL_FreeSurface(pic);
+        character[i].width = curXPos - oldXPos;
+        character[i].data.resize(character[i].width * characterHeight);
+
+        int mempos = 0;
+        for(int y = 1; y < pic->h - 1; y++) {
+            for(int x = oldXPos; x < curXPos; x++) {
+                unsigned char col = *(((unsigned char*) pic->pixels) + y*pic->pitch + x);
+                if(col != 0) {
+                    col = 1;
+                }
+
+                character[i].data[mempos] = col;
+                mempos++;
+            }
+        }
+        curXPos++;
+        oldXPos = curXPos;
     }
 }
 

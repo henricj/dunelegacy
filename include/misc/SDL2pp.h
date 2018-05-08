@@ -154,9 +154,9 @@ namespace sdl2
         template<typename T, typename TArg, void(*Delete)(TArg*)>
         using unique_ptr_arg_deleter = std::unique_ptr<T, arg_deleter<T, TArg, Delete>>;
 
-        struct RWop_deleter
+        struct RWops_deleter
         {
-            void operator()(SDL_RWops *RWop) const { if (RWop) { SDL_RWclose(RWop); } }
+            void operator()(SDL_RWops *RWops) const { if (RWops) { SDL_RWclose(RWops); } }
         };
     }
 
@@ -168,7 +168,7 @@ namespace sdl2
     typedef implementation::unique_ptr_deleter<SDL_Palette, SDL_FreePalette> palette_ptr;
     typedef implementation::unique_ptr_deleter<SDL_PixelFormat, SDL_FreeFormat> pixel_format_ptr;
     typedef implementation::unique_ptr_deleter<SDL_Renderer, SDL_DestroyRenderer> renderer_ptr;
-    typedef std::unique_ptr<SDL_RWops, implementation::RWop_deleter> RWop_ptr;
+    typedef std::unique_ptr<SDL_RWops, implementation::RWops_deleter> RWops_ptr;
 }
 
 #ifndef RESTRICT

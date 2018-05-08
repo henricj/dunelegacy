@@ -137,24 +137,15 @@ int CutScene::draw()
 
 std::unique_ptr<Wsafile> CutScene::create_wsafile(const char* name1)
 {
-    auto file1 = sdl2::RWop_ptr{pFileManager->openFile(name1)};
-
-    return std::make_unique<Wsafile>(file1.get());
+    return std::make_unique<Wsafile>(pFileManager->openFile(name1).get());
 }
 
 std::unique_ptr<Wsafile> CutScene::create_wsafile(const char* name1, const char* name2)
 {
-    auto file1 = sdl2::RWop_ptr{pFileManager->openFile(name1)};
-    auto file2 = sdl2::RWop_ptr{pFileManager->openFile(name2)};
-
-    return std::make_unique<Wsafile>(file1.get(), file2.get());
+    return std::make_unique<Wsafile>(pFileManager->openFile(name1).get(), pFileManager->openFile(name2).get());
 }
 
 std::unique_ptr<Wsafile> CutScene::create_wsafile(const char* name1, const char* name2, const char* name3)
 {
-    auto file1 = sdl2::RWop_ptr{pFileManager->openFile(name1)};
-    auto file2 = sdl2::RWop_ptr{pFileManager->openFile(name2)};
-    auto file3 = sdl2::RWop_ptr{pFileManager->openFile(name3)};
-
-    return std::make_unique<Wsafile>(file1.get(), file2.get(), file3.get());
+    return std::make_unique<Wsafile>(pFileManager->openFile(name1).get(), pFileManager->openFile(name2).get(), pFileManager->openFile(name3).get());
 }
