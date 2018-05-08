@@ -836,7 +836,7 @@ sdl2::surface_ptr PictureFactory::createHeraldMerc(SDL_Surface* heraldAtre, SDL_
     return pSoldier;
 }
 
-animation_ptr PictureFactory::createFremenPlanet(SDL_Surface* heraldFre) {
+std::unique_ptr<Animation> PictureFactory::createFremenPlanet(SDL_Surface* heraldFre) {
     auto newAnimation = std::make_unique<Animation>();
 
     auto newFrame = sdl2::surface_ptr{ LoadCPS_RW(pFileManager->openFile("BIGPLAN.CPS"), true) };
@@ -853,7 +853,7 @@ animation_ptr PictureFactory::createFremenPlanet(SDL_Surface* heraldFre) {
     return newAnimation;
 }
 
-animation_ptr PictureFactory::createSardaukarPlanet(Animation* ordosPlanetAnimation, SDL_Surface* heraldSard) {
+std::unique_ptr<Animation> PictureFactory::createSardaukarPlanet(Animation* ordosPlanetAnimation, SDL_Surface* heraldSard) {
 
     sdl2::surface_ptr maskSurface{ Scaler::defaultDoubleSurface(LoadPNG_RW(pFileManager->openFile("PlanetMask.png"), true).release(), true) };
     SDL_SetColorKey(maskSurface.get(), SDL_TRUE, 0);
@@ -899,7 +899,7 @@ animation_ptr PictureFactory::createSardaukarPlanet(Animation* ordosPlanetAnimat
     return newAnimation;
 }
 
-animation_ptr PictureFactory::createMercenaryPlanet(Animation* atreidesPlanetAnimation, SDL_Surface* heraldMerc) {
+std::unique_ptr<Animation> PictureFactory::createMercenaryPlanet(Animation* atreidesPlanetAnimation, SDL_Surface* heraldMerc) {
 
     auto newAnimation = std::make_unique<Animation>();
 
@@ -955,7 +955,7 @@ sdl2::surface_ptr PictureFactory::mapMentatSurfaceToMercenary(SDL_Surface* ordos
     return mappedSurface;
 }
 
-animation_ptr PictureFactory::mapMentatAnimationToFremen(Animation* fremenAnimation) {
+std::unique_ptr<Animation> PictureFactory::mapMentatAnimationToFremen(Animation* fremenAnimation) {
     auto newAnimation = std::make_unique<Animation>();
 
     for(const sdl2::surface_ptr& pSurface : fremenAnimation->getFrames()) {
@@ -991,7 +991,7 @@ sdl2::surface_ptr PictureFactory::mapMentatSurfaceToSardaukar(SDL_Surface* harko
     return mappedSurface;
 }
 
-animation_ptr PictureFactory::mapMentatAnimationToSardaukar(Animation* harkonnenAnimation) {
+std::unique_ptr<Animation> PictureFactory::mapMentatAnimationToSardaukar(Animation* harkonnenAnimation) {
     auto newAnimation = std::make_unique<Animation>();
 
     for(const sdl2::surface_ptr& pSurface : harkonnenAnimation->getFrames()) {
@@ -1004,7 +1004,7 @@ animation_ptr PictureFactory::mapMentatAnimationToSardaukar(Animation* harkonnen
     return newAnimation;
 }
 
-animation_ptr PictureFactory::mapMentatAnimationToMercenary(Animation* ordosAnimation) {
+std::unique_ptr<Animation> PictureFactory::mapMentatAnimationToMercenary(Animation* ordosAnimation) {
     auto newAnimation = std::make_unique<Animation>();
 
     for(const sdl2::surface_ptr& pSurface : ordosAnimation->getFrames()) {

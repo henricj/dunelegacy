@@ -117,47 +117,6 @@ static const Coord objPicTiles[] {
 
 GFXManager::GFXManager() {
 
-    // init whole objPic and objPicTex arrays
-    for(int i = 0; i < NUM_OBJPICS; i++) {
-        for(int j = 0; j < (int) NUM_HOUSES; j++) {
-            for(int z=0; z < NUM_ZOOMLEVEL; z++) {
-                objPic[i][j][z] = nullptr;
-                objPicTex[i][j][z] = nullptr;
-            }
-        }
-    }
-
-    // init whole smallDetailPicTex array
-    for(int i = 0; i < NUM_SMALLDETAILPICS; i++) {
-        smallDetailPicTex[i] = nullptr;
-    }
-
-    // init whole tinyPictureTex array
-    for(int i = 0; i < NUM_SMALLDETAILPICS; i++) {
-        tinyPictureTex[i] = nullptr;
-    }
-
-    // init whole UIGraphic array
-    for(int i = 0; i < NUM_UIGRAPHICS; i++) {
-        for(int j = 0; j < (int) NUM_HOUSES; j++) {
-            uiGraphic[i][j] = nullptr;
-            uiGraphicTex[i][j] = nullptr;
-        }
-    }
-
-    // init whole mapChoicePieces and mapChoicePiecesTex array
-    for(int i = 0; i < NUM_MAPCHOICEPIECES; i++) {
-        for(int j = 0; j < (int) NUM_HOUSES; j++) {
-            mapChoicePieces[i][j] = nullptr;
-            mapChoicePiecesTex[i][j] = nullptr;
-        }
-    }
-
-    // init whole Anim array
-    for(int i = 0; i < NUM_ANIMATION; i++) {
-        animation[i] = nullptr;
-    }
-
     // open all shp files
     std::unique_ptr<Shpfile> units = loadShpfile("UNITS.SHP");
     std::unique_ptr<Shpfile> units1 = loadShpfile("UNITS1.SHP");
@@ -1179,7 +1138,7 @@ sdl2::texture_ptr GFXManager::extractSmallDetailPic(const std::string& filename)
     return convertSurfaceToTexture(pSurface.get(), false);
 }
 
-animation_ptr GFXManager::loadAnimationFromWsa(const std::string& filename) const {
+std::unique_ptr<Animation> GFXManager::loadAnimationFromWsa(const std::string& filename) const {
     SDL_RWops* file = pFileManager->openFile(filename);
     auto wsafile = std::make_unique<Wsafile>(file);
     auto animation = wsafile->getAnimation(0,wsafile->getNumFrames() - 1,true,false);

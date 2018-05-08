@@ -96,6 +96,4 @@ private:
     std::vector<sdl2::texture_ptr> frameTextures;
 };
 
-typedef std::unique_ptr<Animation> animation_ptr;
-
 #endif // ANIMATION_H

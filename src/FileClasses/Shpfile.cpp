@@ -352,7 +352,7 @@ sdl2::surface_ptr Shpfile::getPictureArray(unsigned int tilesX, unsigned int til
     \param  bLoopRewindBackwards if true, the animation is played forward and then backwards, if false, it is only played forward
     \return a new animation object or nullptr on error
 */
-animation_ptr Shpfile::getAnimation(unsigned int startindex,unsigned int endindex, bool bDoublePic, bool bSetColorKey, bool bLoopRewindBackwards)
+std::unique_ptr<Animation> Shpfile::getAnimation(unsigned int startindex,unsigned int endindex, bool bDoublePic, bool bSetColorKey, bool bLoopRewindBackwards)
 {
     auto animation = std::make_unique<Animation>();
 

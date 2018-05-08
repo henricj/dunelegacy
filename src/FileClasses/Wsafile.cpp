@@ -186,7 +186,7 @@ sdl2::surface_ptr Wsafile::getAnimationAsPictureRow(int numFramesX) const {
     \param  bSetColorKey    if true, black is set as transparency
     \return a new animation object or nullptr on error
 */
-animation_ptr Wsafile::getAnimation(unsigned int startindex, unsigned int endindex, bool bDoublePic, bool bSetColorKey) const
+std::unique_ptr<Animation> Wsafile::getAnimation(unsigned int startindex, unsigned int endindex, bool bDoublePic, bool bSetColorKey) const
 {
     auto animation = std::make_unique<Animation>();
 

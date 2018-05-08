@@ -43,7 +43,7 @@ public:
 
     sdl2::surface_ptr getPicture(Uint32 FrameNumber) const;
     sdl2::surface_ptr getAnimationAsPictureRow(int numFramesX = std::numeric_limits<int>::max()) const;
-    animation_ptr getAnimation(unsigned int startindex, unsigned int endindex, bool bDoublePic=true, bool bSetColorKey=true) const;
+    std::unique_ptr<Animation> getAnimation(unsigned int startindex, unsigned int endindex, bool bDoublePic=true, bool bSetColorKey=true) const;
 
     /// Returns the number of frames
     /**
