@@ -22,6 +22,8 @@
 
 #include <misc/SDL2pp.h>
 
+#include <initializer_list>
+
 /// A class for generating random numbers (there are better algorithms but this one is quite fast)
 class Random final {
 public:
@@ -147,23 +149,11 @@ public:
 
     /**
         This method returns randomly one of the given parameters.
-        \param  numParam    the number of parameters.
-        \return one of the parameters, e.g. getRandOf(3,13,17,19) returns 13, 17 or 19
+        \return one of the parameters, e.g. getRandOf({13,17,19}) returns 13, 17 or 19
     */
-    int getRandOf(int numParam, ...) {
-        int nthParam = rand(0,numParam-1);
-
-        va_list arg_ptr;
-        va_start(arg_ptr, numParam);
-
-        int ret = va_arg(arg_ptr, int);
-
-        for(int i = 1; i <= nthParam; i++) {
-            ret = va_arg(arg_ptr, int);
-        }
-        va_end(arg_ptr);
-
-        return ret;
+    template<typename T>
+    T getRandOf(std::initializer_list<T> initlist) {
+        return initlist.begin()[rand(0,initlist.size()-1)];
     }
 
 private:

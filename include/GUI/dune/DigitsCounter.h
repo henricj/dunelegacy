@@ -23,8 +23,9 @@
 #include <FileClasses/GFXManager.h>
 
 #include <algorithm>
+#include <memory>
 
-extern GFXManager* pGFXManager;
+extern std::unique_ptr<GFXManager> pGFXManager;
 
 
 /// A widget for showing digits (like the credits in dune are shown)

@@ -97,10 +97,10 @@ private:
 
     StaticContainer     windowWidget;           ///< The main widget of this interface
 
-    HBox                topBarHBox;            ///< The container for the top bar containing newsticker, options button and mentat button
+    HBox                topBarHBox;             ///< The container for the top bar containing newsticker, options button and mentat button
     NewsTicker          newsticker;             ///< The newsticker showing news on the game (e.g. new starport prices, harvester fill level, etc.)
-    PictureButton       optionsButton;         ///< Button for accessing the ingame menu
-    PictureButton       mentatButton;          ///< Button for accessing the mentat menu
+    PictureButton       optionsButton;          ///< Button for accessing the ingame menu
+    PictureButton       mentatButton;           ///< Button for accessing the mentat menu
     PictureLabel        topBar;                 ///< The background of the top bar
 
     PictureLabel        sideBar;                ///< The background of the side bar

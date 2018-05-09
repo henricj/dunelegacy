@@ -28,6 +28,8 @@
 
 #include <misc/SDL2pp.h>
 
+#include <memory>
+
 #define _(msgid) pTextManager->getLocalized(msgid)
 
 // forward declarations
@@ -69,15 +71,15 @@ EXTERN int                  currentZoomlevel;           ///< 0 = the smallest zo
 
 
 // abstraction layers
-EXTERN SoundPlayer*         soundPlayer;                ///< manager for playing sfx and voice
-EXTERN MusicPlayer*         musicPlayer;                ///< manager for playing background music
+EXTERN std::unique_ptr<SoundPlayer>         soundPlayer;                ///< manager for playing sfx and voice
+EXTERN std::unique_ptr<MusicPlayer>         musicPlayer;                ///< manager for playing background music
 
-EXTERN FileManager*         pFileManager;               ///< manager for loading files from PAKs
-EXTERN GFXManager*          pGFXManager;                ///< manager for loading and managing graphics
-EXTERN SFXManager*          pSFXManager;                ///< manager for loading and managing sounds
-EXTERN FontManager*         pFontManager;               ///< manager for loading and managing fonts
-EXTERN TextManager*         pTextManager;               ///< manager for loading and managing texts and providing localization
-EXTERN NetworkManager*      pNetworkManager;            ///< manager for all network events (nullptr if not in multiplayer game)
+EXTERN std::unique_ptr<FileManager>         pFileManager;               ///< manager for loading files from PAKs
+EXTERN std::unique_ptr<GFXManager>          pGFXManager;                ///< manager for loading and managing graphics
+EXTERN std::unique_ptr<SFXManager>          pSFXManager;                ///< manager for loading and managing sounds
+EXTERN std::unique_ptr<FontManager>         pFontManager;               ///< manager for loading and managing fonts
+EXTERN std::unique_ptr<TextManager>         pTextManager;               ///< manager for loading and managing texts and providing localization
+EXTERN std::unique_ptr<NetworkManager>      pNetworkManager;            ///< manager for all network events (nullptr if not in multiplayer game)
 
 // game stuff
 EXTERN Game*                currentGame;                ///< the current running game

@@ -146,7 +146,7 @@ void GroundUnit::checkPos() {
 
 
 void GroundUnit::playConfirmSound() {
-    soundPlayer->playVoice((Voice_enum) getRandomOf(2,Acknowledged,Affirmative), getOwner()->getHouseID());
+    soundPlayer->playVoice(getRandomOf({Acknowledged,Affirmative}), getOwner()->getHouseID());
 }
 
 void GroundUnit::playSelectSound() {

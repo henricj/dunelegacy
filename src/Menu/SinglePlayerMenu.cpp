@@ -106,9 +106,7 @@ SinglePlayerMenu::SinglePlayerMenu() : MenuBase() {
 SinglePlayerMenu::~SinglePlayerMenu() = default;
 
 void SinglePlayerMenu::onCampaign() {
-    HouseChoiceMenu* pHouseChoiceMenu = new HouseChoiceMenu();
-    int player = pHouseChoiceMenu->showMenu();
-    delete pHouseChoiceMenu;
+    int player = HouseChoiceMenu().showMenu();
 
     if(player < 0) {
         return;
@@ -134,15 +132,11 @@ void SinglePlayerMenu::onCampaign() {
 }
 
 void SinglePlayerMenu::onCustom() {
-    CustomGameMenu* pCustomGameMenu = new CustomGameMenu(false);
-    pCustomGameMenu->showMenu();
-    delete pCustomGameMenu;
+    CustomGameMenu(false).showMenu();
 }
 
 void SinglePlayerMenu::onSkirmish() {
-    SinglePlayerSkirmishMenu* pSinglePlayerSkirmishMenu = new SinglePlayerSkirmishMenu();
-    pSinglePlayerSkirmishMenu->showMenu();
-    delete pSinglePlayerSkirmishMenu;
+    SinglePlayerSkirmishMenu().showMenu();
 }
 
 void SinglePlayerMenu::onLoadSavegame() {

@@ -26,40 +26,21 @@ Scene::Scene()
     currentFrameNumber = 0;
 }
 
-Scene::~Scene()
+Scene::~Scene() = default;
+
+void Scene::addVideoEvent(std::unique_ptr<VideoEvent> newVideoEvent)
 {
-    while(videoEvents.empty() == false) {
-        VideoEvent* pVideoEvent = videoEvents.front();
-        videoEvents.pop();
-        delete pVideoEvent;
-    }
-
-    for(TextEvent* pTextEvent : textEvents) {
-        delete pTextEvent;
-    }
-    textEvents.clear();
-
-    for(CutSceneTrigger* pCutSceneTrigger : triggerList) {
-        delete pCutSceneTrigger;
-    }
-    triggerList.clear();
-
+    videoEvents.push(std::move(newVideoEvent));
 }
 
-void Scene::addVideoEvent(VideoEvent* newVideoEvent)
+void Scene::addTextEvent(std::unique_ptr<TextEvent> newTextEvent)
 {
-    videoEvents.push(newVideoEvent);
+    textEvents.push_back(std::move(newTextEvent));
 }
 
-void Scene::addTextEvent(TextEvent* newTextEvent)
+void Scene::addTrigger(std::unique_ptr<CutSceneTrigger> newTrigger)
 {
-    textEvents.push_back(newTextEvent);
-}
-
-void Scene::addTrigger(CutSceneTrigger* newTrigger)
-{
-    std::list<CutSceneTrigger*>::iterator iter = triggerList.begin();
-
+    auto iter = triggerList.begin();
     while(iter != triggerList.end()) {
         if((*iter)->getTriggerFrameNumber() > newTrigger->getTriggerFrameNumber()) {
             break;
@@ -68,7 +49,7 @@ void Scene::addTrigger(CutSceneTrigger* newTrigger)
         ++iter;
     }
 
-    triggerList.insert(iter, newTrigger);
+    triggerList.insert(iter, std::move(newTrigger));
 }
 
 int Scene::draw()
@@ -81,19 +62,16 @@ int Scene::draw()
 
     // 2.: Draw everything on the screen
     while(videoEvents.empty() == false) {
-        VideoEvent* pVideoEvent = videoEvents.front();
-
-        if(pVideoEvent->isFinished() == true) {
-            delete pVideoEvent;
+        if(videoEvents.front()->isFinished() == true) {
             videoEvents.pop();
             continue;
         } else {
-            nextFrameTime = pVideoEvent->draw();
+            nextFrameTime = videoEvents.front()->draw();
             break;
         }
     }
 
-    for(TextEvent* pTextEvent : textEvents) {
+    for(auto& pTextEvent : textEvents) {
         pTextEvent->draw(currentFrameNumber);
     }
 
@@ -102,7 +80,7 @@ int Scene::draw()
 
     // 4.: Process Triggers
     while(triggerList.empty() == false) {
-        CutSceneTrigger* pTrigger = triggerList.front();
+        auto& pTrigger = triggerList.front();
 
         if(pTrigger->getTriggerFrameNumber() > currentFrameNumber) {
             break;
@@ -113,7 +91,6 @@ int Scene::draw()
         }
 
         triggerList.pop_front();
-        delete pTrigger;
     }
 
     currentFrameNumber++;

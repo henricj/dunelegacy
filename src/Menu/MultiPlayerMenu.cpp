@@ -108,7 +108,7 @@ MultiPlayerMenu::MultiPlayerMenu() : MenuBase() {
 
     // Start Network Manager
     SDL_Log("Starting network...");
-    pNetworkManager = new NetworkManager(settings.network.serverPort, settings.network.metaServer);
+    pNetworkManager = std::make_unique<NetworkManager>(settings.network.serverPort, settings.network.metaServer);
     LANGameFinderAndAnnouncer* pLANGFAA = pNetworkManager->getLANGameFinderAndAnnouncer();
     pLANGFAA->setOnNewServer(std::bind(&MultiPlayerMenu::onNewLANServer, this, std::placeholders::_1));
     pLANGFAA->setOnUpdateServer(std::bind(&MultiPlayerMenu::onUpdateLANServer, this, std::placeholders::_1));
@@ -121,8 +121,7 @@ MultiPlayerMenu::MultiPlayerMenu() : MenuBase() {
 
 MultiPlayerMenu::~MultiPlayerMenu() {
     SDL_Log("Stopping network...");
-    delete pNetworkManager;
-    pNetworkManager = nullptr;
+    pNetworkManager.reset();
 }
 
 
@@ -137,16 +136,12 @@ void MultiPlayerMenu::onChildWindowClose(Window* pChildWindow) {
 }
 
 void MultiPlayerMenu::onCreateLANGame() {
-    CustomGameMenu* pCustomGameMenu = new CustomGameMenu(true, true);
-    pCustomGameMenu->showMenu();
-    delete pCustomGameMenu;
+    CustomGameMenu(true, true).showMenu();
 }
 
 
 void MultiPlayerMenu::onCreateInternetGame() {
-    CustomGameMenu* pCustomGameMenu = new CustomGameMenu(true, false);
-    pCustomGameMenu->showMenu();
-    delete pCustomGameMenu;
+    CustomGameMenu(true, false).showMenu();
 }
 
 
@@ -349,10 +344,11 @@ void MultiPlayerMenu::onReceiveGameInfo(const GameInitSettings& gameInitSettings
 
     pNetworkManager->setOnPeerDisconnected(std::function<void (const std::string&, bool, int)>());
 
-    CustomGamePlayers* pCustomGamePlayers = new CustomGamePlayers(gameInitSettings, false);
+    auto pCustomGamePlayers = std::make_unique<CustomGamePlayers>(gameInitSettings, false);
     pCustomGamePlayers->onReceiveChangeEventList(changeEventList);
     int ret = pCustomGamePlayers->showMenu();
-    delete pCustomGamePlayers;
+    pCustomGamePlayers.reset();
+
     switch(ret) {
         case MENU_QUIT_DEFAULT: {
             // nothing

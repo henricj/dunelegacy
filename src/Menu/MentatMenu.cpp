@@ -240,7 +240,7 @@ void MentatMenu::update() {
     if(bPressed) {
         if((abs(mouseMouthPos.x) <= mouthSize.x/2) && (abs(mouseMouthPos.y) <= mouthSize.y/2)) {
             if(mouthAnim.getAnimation()->getCurrentFrameOverride() == INVALID_FRAME) {
-                mouthAnim.getAnimation()->setFrameOverride(getRandomOf(4, MentatMouthOpen1, MentatMouthOpen2, MentatMouthOpen3, MentatMouthOpen4));
+                mouthAnim.getAnimation()->setFrameOverride(getRandomOf({MentatMouthOpen1, MentatMouthOpen2, MentatMouthOpen3, MentatMouthOpen4}));
             }
         } else {
             mouthAnim.getAnimation()->resetFrameOverride();

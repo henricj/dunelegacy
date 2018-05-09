@@ -176,9 +176,7 @@ void CustomGameMenu::onChildWindowClose(Window* pChildWindow) {
             std::string servername = settings.general.playerName + "'s Game";
             GameInitSettings gameInitSettings(getBasename(filename, true), savegamedata, servername);
 
-            CustomGamePlayers* pCustomGamePlayers = new CustomGamePlayers(gameInitSettings, true, bLANServer);
-            int ret = pCustomGamePlayers->showMenu();
-            delete pCustomGamePlayers;
+            int ret = CustomGamePlayers(gameInitSettings, true, bLANServer).showMenu();
             if(ret != MENU_QUIT_DEFAULT) {
                 quit(ret);
             }
@@ -208,9 +206,7 @@ void CustomGameMenu::onNext()
         gameInitSettings = GameInitSettings(getBasename(mapFilename, true), readCompleteFile(mapFilename), multiplePlayersPerHouseCheckbox.isChecked(), currentGameOptions);
     }
 
-    CustomGamePlayers* pCustomGamePlayers = new CustomGamePlayers(gameInitSettings, true, bLANServer);
-    int ret = pCustomGamePlayers->showMenu();
-    delete pCustomGamePlayers;
+    int ret = CustomGamePlayers(gameInitSettings, true, bLANServer).showMenu();
     if(ret != MENU_QUIT_DEFAULT) {
         quit(ret);
     }

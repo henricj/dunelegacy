@@ -146,7 +146,7 @@ public:
         \return the house with id houseID
     */
     House* getHouse(int houseID) {
-        return house[houseID];
+        return house[houseID].get();
     }
 
     /**
@@ -589,22 +589,22 @@ private:
     Uint32  finishedLevelTime = 0;              ///< The time in milliseconds when the level was finished (won or lost)
     bool    finishedLevel = false;              ///< Set, when the game is really finished and the end message was shown
 
-    GameInterface*          pInterface = nullptr;                   ///< This is the whole interface (top bar and side bar)
-    InGameMenu*             pInGameMenu = nullptr;                  ///< This is the menu that is opened by the option button
-    MentatHelp*             pInGameMentat = nullptr;                ///< This is the mentat dialog opened by the mentat button
-    WaitingForOtherPlayers* pWaitingForOtherPlayers = nullptr;      ///< This is the dialog that pops up when we are waiting for other players during network hangs
-    Uint32                  startWaitingForOtherPlayersTime = 0;    ///< The time in milliseconds when we started waiting for other players
+    std::unique_ptr<GameInterface>          pInterface;                             ///< This is the whole interface (top bar and side bar)
+    std::unique_ptr<InGameMenu>             pInGameMenu;                            ///< This is the menu that is opened by the option button
+    std::unique_ptr<MentatHelp>             pInGameMentat;                          ///< This is the mentat dialog opened by the mentat button
+    std::unique_ptr<WaitingForOtherPlayers> pWaitingForOtherPlayers;                ///< This is the dialog that pops up when we are waiting for other players during network hangs
+    Uint32                                  startWaitingForOtherPlayersTime = 0;    ///< The time in milliseconds when we started waiting for other players
 
     bool    bSelectionChanged = false;                  ///< Has the selected list changed (and must be retransmitted to other plays in multiplayer games)
     std::set<Uint32> selectedList;                      ///< A set of all selected units/structures
     std::set<Uint32> selectedByOtherPlayerList;         ///< This is only used in multiplayer games where two players control one house
     RobustList<Explosion*> explosionList;               ///< A list containing all the explosions that must be drawn
 
-    std::vector<House*> house;                          ///< All the houses of this game, index by their houseID; has the size NUM_HOUSES; unused houses are nullptr
-
     std::string localPlayerName;                            ///< the name of the local player
     std::multimap<std::string, Player*> playerName2Player;  ///< mapping player names to players (one entry per player)
     std::map<Uint8, Player*> playerID2Player;               ///< mapping player ids to players (one entry per player)
+
+    std::array<std::unique_ptr<House>, NUM_HOUSES> house;   ///< All the houses of this game, index by their houseID; has the size NUM_HOUSES; unused houses are nullptr
 };
 
 #endif // GAME_H

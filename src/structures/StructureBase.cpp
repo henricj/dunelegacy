@@ -464,7 +464,7 @@ void StructureBase::destroy() {
                 pTile->setDestroyedStructureTile(pDestroyedStructureTiles[DestroyedStructureTilesSizeY*j + i]);
 
                 Coord position((location.x+i)*TILESIZE + TILESIZE/2, (location.y+j)*TILESIZE + TILESIZE/2);
-                Uint32 explosionID = currentGame->randomGen.getRandOf(2,Explosion_Large1,Explosion_Large2);
+                Uint32 explosionID = currentGame->randomGen.getRandOf({Explosion_Large1,Explosion_Large2});
                 currentGame->getExplosionList().push_back(new Explosion(explosionID, position, owner->getHouseID()) );
 
                 if(currentGame->randomGen.rand(1,100) <= getInfSpawnProp()) {

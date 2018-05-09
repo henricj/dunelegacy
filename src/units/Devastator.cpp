@@ -127,7 +127,7 @@ void Devastator::destroy()
 
                 currentGameMap->damage(objectID, owner, realPos, itemID, 150, 16, false);
 
-                Uint32 explosionID = currentGame->randomGen.getRandOf(2,Explosion_Large1, Explosion_Large2);
+                Uint32 explosionID = currentGame->randomGen.getRandOf({Explosion_Large1, Explosion_Large2});
                 currentGame->getExplosionList().push_back(new Explosion(explosionID, realPos, owner->getHouseID()));
             }
         }

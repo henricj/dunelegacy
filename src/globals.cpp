@@ -15,6 +15,15 @@
  *  along with Dune Legacy.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <SoundPlayer.h>
+#include <FileClasses/music/MusicPlayer.h>
+
+#include <FileClasses/FileManager.h>
+#include <FileClasses/GFXManager.h>
+#include <FileClasses/SFXManager.h>
+#include <FileClasses/FontManager.h>
+#include <FileClasses/TextManager.h>
+#include <Network/NetworkManager.h>
 
 #define SKIP_EXTERN_DEFINITION
  #include <globals.h>

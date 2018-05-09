@@ -78,8 +78,6 @@ Game::Game() {
     structureList.clear();  //all the structures
     bulletList.clear();
 
-    house.resize(NUM_HOUSES);
-
     sideBarPos = calcAlignedDrawingRect(pGFXManager->getUIGraphic(UI_SideBar), HAlign::Right, VAlign::Top);
     topBarPos = calcAlignedDrawingRect(pGFXManager->getUIGraphic(UI_TopBar), HAlign::Left, VAlign::Top);
 
@@ -106,15 +104,6 @@ Game::~Game() {
         pNetworkManager->setOnPeerDisconnected(std::function<void (const std::string&, bool, int)>());
     }
 
-    delete pInGameMenu;
-    pInGameMenu = nullptr;
-
-    delete pInterface;
-    pInterface = nullptr;
-
-    delete pWaitingForOtherPlayers;
-    pWaitingForOtherPlayers = nullptr;
-
     for(StructureBase* pStructure : structureList) {
         delete pStructure;
     }
@@ -134,11 +123,6 @@ Game::~Game() {
         delete pExplosion;
     }
     explosionList.clear();
-
-    for(int i=0;i<NUM_HOUSES;i++) {
-        delete house[i];
-        house[i] = nullptr;
-    }
 
     delete currentGameMap;
     currentGameMap = nullptr;
@@ -178,16 +162,12 @@ void Game::initGame(const GameInitSettings& newGameInitSettings) {
                 techLevel = ((gameInitSettings.getMission() + 1)/3) + 1 ;
             }
 
-            INIMapLoader* pINIMapLoader = new INIMapLoader(this, gameInitSettings.getFilename(), gameInitSettings.getFiledata());
-            delete pINIMapLoader;
-
+            INIMapLoader(this, gameInitSettings.getFilename(), gameInitSettings.getFiledata());
 
             if(bReplay == false && gameInitSettings.getGameType() != GameType::CustomGame && gameInitSettings.getGameType() != GameType::CustomMultiplayer) {
                 /* do briefing */
                 SDL_Log("Briefing...");
-                BriefingMenu* pBriefing = new BriefingMenu(gameInitSettings.getHouseID(), gameInitSettings.getMission(),BRIEFING);
-                pBriefing->showMenu();
-                delete pBriefing;
+                BriefingMenu(gameInitSettings.getHouseID(), gameInitSettings.getMission(),BRIEFING).showMenu();
             }
         } break;
 
@@ -583,24 +563,21 @@ void Game::doInput()
             pInGameMenu->handleInput(event);
 
             if(bMenu == false) {
-                delete pInGameMenu;
-                pInGameMenu = nullptr;
+                pInGameMenu.reset();
             }
 
         } else if(pInGameMentat != nullptr) {
             pInGameMentat->doInput(event);
 
             if(bMenu == false) {
-                delete pInGameMentat;
-                pInGameMentat = nullptr;
+                pInGameMentat.reset();
             }
 
         } else if(pWaitingForOtherPlayers != nullptr) {
             pWaitingForOtherPlayers->handleInput(event);
 
             if(bMenu == false) {
-                delete pWaitingForOtherPlayers;
-                pWaitingForOtherPlayers = nullptr;
+                pWaitingForOtherPlayers.reset();
             }
 
         } else {
@@ -1031,7 +1008,7 @@ void Game::runMainLoop() {
 
     // add interface
     if(pInterface == nullptr) {
-        pInterface = new GameInterface();
+        pInterface = std::make_unique<GameInterface>();
         if(gameState == GameState::Loading) {
             // when loading a save game we set radar directly
             pInterface->getRadarView().setRadarMode(pLocalHouse->hasRadarOn());
@@ -1078,7 +1055,7 @@ void Game::runMainLoop() {
             pStream->flush();
 
             // now all new commands might be added
-            cmdManager.setStream(pStream.release());
+            cmdManager.setStream(std::move(pStream));
         }
         else
         {
@@ -1185,7 +1162,7 @@ void Game::runMainLoop() {
                             // we waited for more than one second
 
                             if(pWaitingForOtherPlayers == nullptr) {
-                                pWaitingForOtherPlayers = new WaitingForOtherPlayers();
+                                pWaitingForOtherPlayers = std::make_unique<WaitingForOtherPlayers>();
                                 bMenu = true;
                             }
                         }
@@ -1194,8 +1171,7 @@ void Game::runMainLoop() {
                     SDL_Delay(10);
                 } else {
                     startWaitingForOtherPlayersTime = 0;
-                    delete pWaitingForOtherPlayers;
-                    pWaitingForOtherPlayers = nullptr;
+                    pWaitingForOtherPlayers.reset();
                 }
             }
 
@@ -1278,12 +1254,11 @@ void Game::runMainLoop() {
         fnkdat(std::string("replay/" + mapnameBase + ".rpl").c_str(), tmp, FILENAME_MAX, FNKDAT_USER | FNKDAT_CREAT);
         std::string replayname(tmp);
 
-        OFileStream* pStream = new OFileStream();
-        pStream->open(replayname);
-        pStream->writeString(getLocalPlayerName());
-        gameInitSettings.save(*pStream);
-        cmdManager.save(*pStream);
-        delete pStream;
+        OFileStream replystream;
+        replystream.open(replayname);
+        replystream.writeString(getLocalPlayerName());
+        gameInitSettings.save(replystream);
+        cmdManager.save(replystream);
     }
 
     if(pNetworkManager != nullptr) {
@@ -1311,7 +1286,7 @@ void Game::onOptions()
         quitGame();
     } else {
         Uint32 color = SDL2RGB(palette[houseToPaletteIndex[pLocalHouse->getHouseID()] + 3]);
-        pInGameMenu = new InGameMenu((gameType == GameType::CustomMultiplayer), color);
+        pInGameMenu = std::make_unique<InGameMenu>((gameType == GameType::CustomMultiplayer), color);
         bMenu = true;
         pauseGame();
     }
@@ -1320,7 +1295,7 @@ void Game::onOptions()
 
 void Game::onMentat()
 {
-    pInGameMentat = new MentatHelp(pLocalHouse->getHouseID(), techLevel, gameInitSettings.getMission());
+    pInGameMentat = std::make_unique<MentatHelp>(pLocalHouse->getHouseID(), techLevel, gameInitSettings.getMission());
     bMenu = true;
     pauseGame();
 }
@@ -1344,11 +1319,10 @@ GameInitSettings Game::getNextGameInitSettings()
             if(currentMission >= -1) {
                 // do map choice
                 SDL_Log("Map Choice...");
-                MapChoice* pMapChoice = new MapChoice(gameInitSettings.getHouseID(), currentMission, alreadyPlayedRegions);
-                pMapChoice->showMenu();
-                nextMission = pMapChoice->getSelectedMission();
-                alreadyPlayedRegions = pMapChoice->getAlreadyPlayedRegions();
-                delete pMapChoice;
+                MapChoice mapChoice(gameInitSettings.getHouseID(), currentMission, alreadyPlayedRegions);
+                mapChoice.showMenu();
+                nextMission = mapChoice.getSelectedMission();
+                alreadyPlayedRegions = mapChoice.getAlreadyPlayedRegions();
             }
 
             Uint32 alreadyShownTutorialHints = won ? pLocalPlayer->getAlreadyShownTutorialHints() : gameInitSettings.getAlreadyShownTutorialHints();
@@ -1493,7 +1467,7 @@ bool Game::loadSaveGame(InputStream& stream) {
     for(int i=0; i<NUM_HOUSES; i++) {
         if (stream.readBool() == true) {
             //house in game
-            house[i] = new House(stream);
+            house[i] = std::make_unique<House>(stream);
         }
     }
 
@@ -1520,7 +1494,7 @@ bool Game::loadSaveGame(InputStream& stream) {
                                     registerPlayer(pHumanPlayer);
 
                                     if(playerInfo.playerName == getLocalPlayerName()) {
-                                        pLocalHouse = house[i];
+                                        pLocalHouse = house[i].get();
                                         pLocalPlayer = pHumanPlayer;
                                     }
 
@@ -1539,7 +1513,7 @@ bool Game::loadSaveGame(InputStream& stream) {
         // it is stored in the savegame, so set it up
         Uint8 localPlayerID = stream.readUint8();
         pLocalPlayer = dynamic_cast<HumanPlayer*>(getPlayerByID(localPlayerID));
-        pLocalHouse = house[pLocalPlayer->getHouse()->getHouseID()];
+        pLocalHouse = house[pLocalPlayer->getHouse()->getHouseID()].get();
     }
 
     debug = stream.readBool();

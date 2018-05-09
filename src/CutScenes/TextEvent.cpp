@@ -19,8 +19,6 @@
 #include <FileClasses/FontManager.h>
 #include <globals.h>
 
-extern FontManager* pFontManager;
-
 TextEvent::TextEvent(const std::string& text, Uint32 color, int startFrame, int lengthInFrames, bool bFadeIn, bool bFadeOut, bool bCenterVertical)
  : text(text), startFrame(startFrame), lengthInFrames(lengthInFrames), bFadeIn(bFadeIn), bFadeOut(bFadeOut), bCenterVertical(bCenterVertical)
 {

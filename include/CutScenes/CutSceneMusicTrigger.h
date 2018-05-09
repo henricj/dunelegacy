@@ -20,7 +20,6 @@
 
 #include <FileClasses/music/MusicPlayer.h>
 
-extern MusicPlayer* musicPlayer;
 
 /**
     This class is used for triggering a music change

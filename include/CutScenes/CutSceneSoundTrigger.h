@@ -22,7 +22,6 @@
 
 #include <SoundPlayer.h>
 
-extern SoundPlayer* soundPlayer;
 
 /**
     This class is used for triggering sound effects and voices

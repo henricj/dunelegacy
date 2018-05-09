@@ -447,7 +447,7 @@ void Bullet::destroy()
 
                         currentGameMap->damage(shooterID, owner, position, bulletID, damage, damageRadius, airAttack);
 
-                        Uint32 explosionID = currentGame->randomGen.getRandOf(2,Explosion_Large1,Explosion_Large2);
+                        Uint32 explosionID = currentGame->randomGen.getRandOf({Explosion_Large1,Explosion_Large2});
                         currentGame->getExplosionList().push_back(new Explosion(explosionID,position,houseID));
                         screenborder->shakeScreen(22);
                     }

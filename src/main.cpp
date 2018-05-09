@@ -531,7 +531,7 @@ int main(int argc, char *argv[]) {
             settings.gameOptions.manualCarryallDrops = myINIFile.getBoolValue("Game Options","Manual Carryall Drops",false);
             settings.gameOptions.maximumNumberOfUnitsOverride = myINIFile.getIntValue("Game Options","Maximum Number of Units Override",-1);
 
-            pTextManager = new TextManager();
+            pTextManager = std::make_unique<TextManager>();
 
             missingFiles = FileManager::getMissingFiles();
             if(!missingFiles.empty()) {
@@ -550,8 +550,7 @@ int main(int argc, char *argv[]) {
                 myINIFile.saveChangesTo(configfilepath);
 
                 // reinit text manager
-                delete pTextManager;
-                pTextManager = new TextManager();
+                pTextManager = std::make_unique<TextManager>();
             }
 
             for(int i=1; i < argc; i++) {
@@ -617,7 +616,7 @@ int main(int argc, char *argv[]) {
                 }
             }
 
-            pFileManager = new FileManager();
+            pFileManager = std::make_unique<FileManager>();
 
             // now we can finish loading texts
             pTextManager->loadData();
@@ -632,37 +631,37 @@ int main(int argc, char *argv[]) {
 
 
             SDL_Log("Loading fonts...");
-            pFontManager = new FontManager();
+            pFontManager = std::make_unique<FontManager>();
 
             SDL_Log("Loading graphics and sounds...");
 
 #ifdef HAS_ASYNC
-            auto gfxManagerFut = std::async(std::launch::async, []() { return new GFXManager(); } );
-            auto sfxManagerFut = std::async(std::launch::async, []() { return new SFXManager(); } );
+            auto gfxManagerFut = std::async(std::launch::async, []() { return std::make_unique<GFXManager>(); } );
+            auto sfxManagerFut = std::async(std::launch::async, []() { return std::make_unique<SFXManager>(); } );
 
             pGFXManager = gfxManagerFut.get();
             pSFXManager = sfxManagerFut.get();
 #else
             // g++ does not provide std::launch::async on all platforms
-            pGFXManager = new GFXManager();
-            pSFXManager = new SFXManager();
+            pGFXManager = std::make_unique<GFXManager>();
+            pSFXManager = std::make_unique<SFXManager>();
 #endif
 
-            GUIStyle::setGUIStyle(new DuneStyle);
+            GUIStyle::setGUIStyle(std::make_unique<DuneStyle>());
 
             if(bFirstInit == true) {
                 SDL_Log("Starting sound player...");
-                soundPlayer = new SoundPlayer();
+                soundPlayer = std::make_unique<SoundPlayer>();
 
                 if(settings.audio.musicType == "directory") {
                     SDL_Log("Starting directory music player...");
-                    musicPlayer = new DirectoryPlayer();
+                    musicPlayer = std::make_unique<DirectoryPlayer>();
                 } else if(settings.audio.musicType == "adl") {
                     SDL_Log("Starting ADL music player...");
-                    musicPlayer = new ADLPlayer();
+                    musicPlayer = std::make_unique<ADLPlayer>();
                 } else if(settings.audio.musicType == "xmi") {
                     SDL_Log("Starting XMI music player...");
-                    musicPlayer = new XMIPlayer();
+                    musicPlayer = std::make_unique<XMIPlayer>();
                 } else {
                     THROW(std::runtime_error, "Invalid music type: '%'", settings.audio.musicType);
                 }
@@ -673,17 +672,14 @@ int main(int argc, char *argv[]) {
             // Playing intro
             if(((bFirstGamestart == true) || (settings.general.playIntro == true)) && (bFirstInit==true)) {
                 SDL_Log("Playing intro...");
-                Intro* pIntro = new Intro();
-                pIntro->run();
-                delete pIntro;
+                Intro().run();
             }
 
             bFirstInit = false;
 
             SDL_Log("Starting main menu...");
             { // Scope
-                MainMenu myMenu;
-                if (myMenu.showMenu() == MENU_QUIT_DEFAULT) {
+                if (MainMenu().showMenu() == MENU_QUIT_DEFAULT) {
                     bExitGame = true;
                 }
             }
@@ -694,8 +690,8 @@ int main(int argc, char *argv[]) {
 
             // clear everything
             if(bExitGame == true) {
-                delete musicPlayer;
-                delete soundPlayer;
+                musicPlayer.reset();
+                soundPlayer.reset();
                 Mix_HaltMusic();
                 Mix_CloseAudio();
             } else {
@@ -703,11 +699,11 @@ int main(int argc, char *argv[]) {
                 currentDisplayIndex = SDL_GetWindowDisplayIndex(window);
             }
 
-            delete pTextManager;
-            delete pSFXManager;
-            delete pGFXManager;
-            delete pFontManager;
-            delete pFileManager;
+            pTextManager.reset();
+            pSFXManager.reset();
+            pGFXManager.reset();
+            pFontManager.reset();
+            pFileManager.reset();
 
             SDL_DestroyTexture(screenTexture);
             SDL_DestroyRenderer(renderer);

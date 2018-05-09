@@ -35,14 +35,12 @@ bool splitString(const std::string& parseString, unsigned int numStringPointers,
     va_list arg_ptr;
     va_start(arg_ptr, numStringPointers);
 
-    std::string** pStr;
-
     if(numStringPointers == 0) {
         va_end(arg_ptr);
         return false;
     }
 
-    pStr = new std::string*[numStringPointers];
+    std::vector<std::string*> pStr(numStringPointers);
 
     for(unsigned int i = 0; i < numStringPointers; i++) {
         pStr[i] = va_arg(arg_ptr, std::string* );
@@ -58,14 +56,12 @@ bool splitString(const std::string& parseString, unsigned int numStringPointers,
             startpos = i + 1;
             index++;
             if(index >= numStringPointers) {
-                delete [] pStr;
                 return false;
             }
         }
     }
 
     *(pStr[index]) = parseString.substr(startpos,parseString.size()-startpos);
-    delete [] pStr;
     return true;
 }
 

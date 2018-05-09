@@ -43,7 +43,7 @@ public:
         Scene gets destroyed.
         \param newVideoEvent the new video event to be played at the end of this scene (must be created with new)
     */
-    void addVideoEvent(VideoEvent* newVideoEvent);
+    void addVideoEvent(std::unique_ptr<VideoEvent> newVideoEvent);
 
     /**
         This method adds a new text event to this scene.
@@ -51,7 +51,7 @@ public:
         Scene gets destroyed.
         \param newTextEvent the new text event to be played in this scene (must be created with new)
     */
-    void addTextEvent(TextEvent* newTextEvent);
+    void addTextEvent(std::unique_ptr<TextEvent> newTextEvent);
 
     /**
         This method adds a new trigger to this scene.
@@ -59,7 +59,7 @@ public:
         Scene gets destroyed.
         \param newTrigger the new trigger to be triggered in this scene (must be created with new)
     */
-    void addTrigger(CutSceneTrigger* newTrigger);
+    void addTrigger(std::unique_ptr<CutSceneTrigger> newTrigger);
 
     /**
         This method checks if there is something to draw in the next frame
@@ -84,9 +84,9 @@ public:
 private:
     int currentFrameNumber;                     ///< current frame number in this frame
 
-    std::queue<VideoEvent*> videoEvents;        ///< queue of all VideoEvents in this scene
-    std::list<TextEvent*> textEvents;           ///< list of all TextEvents in this scene
-    std::list<CutSceneTrigger*> triggerList;    ///< list of all CutSceneTriggers in this scene
+    std::queue< std::unique_ptr<VideoEvent> > videoEvents;        ///< queue of all VideoEvents in this scene
+    std::list< std::unique_ptr<TextEvent> > textEvents;           ///< list of all TextEvents in this scene
+    std::list< std::unique_ptr<CutSceneTrigger> > triggerList;    ///< list of all CutSceneTriggers in this scene
 };
 
 #endif // SCENE_H

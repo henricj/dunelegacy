@@ -17,7 +17,7 @@
 
 #include <GUI/GUIStyle.h>
 
-GUIStyle* GUIStyle::currentGUIStyle = nullptr;
+std::unique_ptr<GUIStyle> GUIStyle::currentGUIStyle;
 
 GUIStyle::GUIStyle() {
     ;

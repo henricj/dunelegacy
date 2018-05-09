@@ -33,10 +33,7 @@ CommandManager::CommandManager() {
     networkCycleBuffer = 0;
 }
 
-CommandManager::~CommandManager() {
-    delete pStream;
-    pStream = nullptr;
-}
+CommandManager::~CommandManager() = default;
 
 void CommandManager::addCommand(const Command& cmd) {
     Uint32 CycleNumber = currentGame->getGameCycleCount();

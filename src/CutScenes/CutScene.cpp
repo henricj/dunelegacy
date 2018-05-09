@@ -36,12 +36,6 @@ CutScene::~CutScene()
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
     SDL_RenderClear(renderer);
     SDL_RenderPresent(renderer);
-
-    while(scenes.empty() == false) {
-        Scene* pScene = scenes.front();
-        scenes.pop();
-        delete pScene;
-    }
 }
 
 void CutScene::run()
@@ -80,34 +74,34 @@ void CutScene::run()
 }
 
 void CutScene::startNewScene() {
-    scenes.push(new Scene());
+    scenes.push(std::make_unique<Scene>());
 }
 
-void CutScene::addVideoEvent(VideoEvent* newVideoEvent)
+void CutScene::addVideoEvent(std::unique_ptr<VideoEvent> newVideoEvent)
 {
     if(scenes.empty()) {
-        scenes.push(new Scene());
+        scenes.push(std::make_unique<Scene>());
     }
 
-    scenes.back()->addVideoEvent(newVideoEvent);
+    scenes.back()->addVideoEvent(std::move(newVideoEvent));
 }
 
-void CutScene::addTextEvent(TextEvent* newTextEvent)
+void CutScene::addTextEvent(std::unique_ptr<TextEvent> newTextEvent)
 {
     if(scenes.empty()) {
-        scenes.push(new Scene());
+        scenes.push(std::make_unique<Scene>());
     }
 
-    scenes.back()->addTextEvent(newTextEvent);
+    scenes.back()->addTextEvent(std::move(newTextEvent));
 }
 
-void CutScene::addTrigger(CutSceneTrigger* newTrigger)
+void CutScene::addTrigger(std::unique_ptr<CutSceneTrigger> newTrigger)
 {
     if(scenes.empty()) {
-        scenes.push(new Scene());
+        scenes.push(std::make_unique<Scene>());
     }
 
-    scenes.back()->addTrigger(newTrigger);
+    scenes.back()->addTrigger(std::move(newTrigger));
 }
 
 int CutScene::draw()
@@ -115,15 +109,11 @@ int CutScene::draw()
     int nextFrameTime = 0;
 
     while(scenes.empty() == false) {
-
-        Scene* pScene = scenes.front();
-
-        if(pScene->isFinished() == true) {
-            delete pScene;
+        if(scenes.front()->isFinished() == true) {
             scenes.pop();
             continue;
         } else {
-            nextFrameTime = pScene->draw();
+            nextFrameTime = scenes.front()->draw();
             break;
         }
     }

@@ -64,27 +64,27 @@ Meanwhile::Meanwhile(int house, bool firstMeanwhile) {
 
         startNewScene();
 
-        addVideoEvent(new HoldPictureVideoEvent(nullptr, 45, true));
-        addTextEvent(new TextEvent(dune_text.getString(textBaseIndex+MeanwhileText_At_the_Emperor_s_Palace),color,0,42,true,true,true));
-        addTrigger(new CutSceneMusicTrigger(0,MUSIC_MEANWHILE));
+        addVideoEvent(std::make_unique<HoldPictureVideoEvent>(nullptr, 45, true));
+        addTextEvent(std::make_unique<TextEvent>(dune_text.getString(textBaseIndex+MeanwhileText_At_the_Emperor_s_Palace),color,0,42,true,true,true));
+        addTrigger(std::make_unique<CutSceneMusicTrigger>(0,MUSIC_MEANWHILE));
 
         startNewScene();
 
-        addVideoEvent(new HoldPictureVideoEvent(pMeanwhile->getPicture(meanwhileFrame[house]).release(), 75, true));
-        addTextEvent(new TextEvent(dune_text.getString(textBaseIndex+MeanwhileText_You_of_all_people),sardaukarColor,0,45,true,true,false));
-        addTextEvent(new TextEvent(dune_text.getString(textBaseIndex+MeanwhileText_Yes_your_excellency_I),visitorColor,45,30,true,false,false));
+        addVideoEvent(std::make_unique<HoldPictureVideoEvent>(pMeanwhile->getPicture(meanwhileFrame[house]).release(), 75, true));
+        addTextEvent(std::make_unique<TextEvent>(dune_text.getString(textBaseIndex+MeanwhileText_You_of_all_people),sardaukarColor,0,45,true,true,false));
+        addTextEvent(std::make_unique<TextEvent>(dune_text.getString(textBaseIndex+MeanwhileText_Yes_your_excellency_I),visitorColor,45,30,true,false,false));
 
         startNewScene();
 
-        addVideoEvent(new WSAVideoEvent(pImperator.get()));
-        addVideoEvent(new HoldPictureVideoEvent(pImperator->getPicture(pImperator->getNumFrames()-1).release(), 3, true));
-        addTextEvent(new TextEvent(dune_text.getString(textBaseIndex+MeanwhileText_You_let_the),sardaukarColor,3,100,false,false,false));
+        addVideoEvent(std::make_unique<WSAVideoEvent>(pImperator.get()));
+        addVideoEvent(std::make_unique<HoldPictureVideoEvent>(pImperator->getPicture(pImperator->getNumFrames()-1).release(), 3, true));
+        addTextEvent(std::make_unique<TextEvent>(dune_text.getString(textBaseIndex+MeanwhileText_You_let_the),sardaukarColor,3,100,false,false,false));
 
         startNewScene();
-        addVideoEvent(new HoldPictureVideoEvent(pMeanwhile->getPicture(meanwhileFrame[house]).release(), 75, true));
-        addVideoEvent(new FadeOutVideoEvent(pMeanwhile->getPicture(meanwhileFrame[house]).release(), 20, true));
-        addTextEvent(new TextEvent(dune_text.getString(textBaseIndex+MeanwhileText_I_did_not_let),visitorColor,0,35,true,false,false));
-        addTextEvent(new TextEvent(dune_text.getString(textBaseIndex+MeanwhileText_I_will_not_allow),sardaukarColor,37,38,false,true,false));
+        addVideoEvent(std::make_unique<HoldPictureVideoEvent>(pMeanwhile->getPicture(meanwhileFrame[house]).release(), 75, true));
+        addVideoEvent(std::make_unique<FadeOutVideoEvent>(pMeanwhile->getPicture(meanwhileFrame[house]).release(), 20, true));
+        addTextEvent(std::make_unique<TextEvent>(dune_text.getString(textBaseIndex+MeanwhileText_I_did_not_let),visitorColor,0,35,true,false,false));
+        addTextEvent(std::make_unique<TextEvent>(dune_text.getString(textBaseIndex+MeanwhileText_I_will_not_allow),sardaukarColor,37,38,false,true,false));
 
     } else {
         // Meanwhile after level 8
@@ -92,39 +92,39 @@ Meanwhile::Meanwhile(int house, bool firstMeanwhile) {
 
         startNewScene();
 
-        addVideoEvent(new HoldPictureVideoEvent(nullptr, 45, true));
-        addTextEvent(new TextEvent(dune_text.getString(textBaseIndex+MeanwhileText_At_the_Emperor_s_Palace_on_Dune),color,0,42,true,true,true));
-        addTrigger(new CutSceneMusicTrigger(0,MUSIC_MEANWHILE));
+        addVideoEvent(std::make_unique<HoldPictureVideoEvent>(nullptr, 45, true));
+        addTextEvent(std::make_unique<TextEvent>(dune_text.getString(textBaseIndex+MeanwhileText_At_the_Emperor_s_Palace_on_Dune),color,0,42,true,true,true));
+        addTrigger(std::make_unique<CutSceneMusicTrigger>(0,MUSIC_MEANWHILE));
 
         if(house == HOUSE_ATREIDES) {
             startNewScene();
 
-            addVideoEvent(new HoldPictureVideoEvent(pMeanwhile->getPicture(meanwhileFrame[house]).release(), 130, true));
-            addTextEvent(new TextEvent(dune_text.getString(textBaseIndex+MeanwhileText_Fools),sardaukarColor,0,45,true,false,false));
-            addTextEvent(new TextEvent(dune_text.getString(textBaseIndex+MeanwhileText_And_still_you_fail),sardaukarColor,50,45,false,false,false));
-            addTextEvent(new TextEvent(dune_text.getString(textBaseIndex+MeanwhileText_But_excell),visitorColor,100,30,true,false,false));
+            addVideoEvent(std::make_unique<HoldPictureVideoEvent>(pMeanwhile->getPicture(meanwhileFrame[house]).release(), 130, true));
+            addTextEvent(std::make_unique<TextEvent>(dune_text.getString(textBaseIndex+MeanwhileText_Fools),sardaukarColor,0,45,true,false,false));
+            addTextEvent(std::make_unique<TextEvent>(dune_text.getString(textBaseIndex+MeanwhileText_And_still_you_fail),sardaukarColor,50,45,false,false,false));
+            addTextEvent(std::make_unique<TextEvent>(dune_text.getString(textBaseIndex+MeanwhileText_But_excell),visitorColor,100,30,true,false,false));
 
             startNewScene();
 
-            addVideoEvent(new WSAVideoEvent(pImperator.get()));
-            addVideoEvent(new HoldPictureVideoEvent(pImperator->getPicture(pImperator->getNumFrames()-1).release(), 3, true));
-            addVideoEvent(new FadeOutVideoEvent(pImperator->getPicture(pImperator->getNumFrames()-1).release(), 20, true));
-            addTextEvent(new TextEvent(dune_text.getString(textBaseIndex+MeanwhileText_Enough_Together_we_must),sardaukarColor,3,42,false,true,false));
+            addVideoEvent(std::make_unique<WSAVideoEvent>(pImperator.get()));
+            addVideoEvent(std::make_unique<HoldPictureVideoEvent>(pImperator->getPicture(pImperator->getNumFrames()-1).release(), 3, true));
+            addVideoEvent(std::make_unique<FadeOutVideoEvent>(pImperator->getPicture(pImperator->getNumFrames()-1).release(), 20, true));
+            addTextEvent(std::make_unique<TextEvent>(dune_text.getString(textBaseIndex+MeanwhileText_Enough_Together_we_must),sardaukarColor,3,42,false,true,false));
         } else {
             startNewScene();
 
-            addVideoEvent(new HoldPictureVideoEvent(pMeanwhile->getPicture(meanwhileFrame[house]).release(), 80, true));
-            addTextEvent(new TextEvent(dune_text.getString(textBaseIndex+MeanwhileText_The_Ordos_were_not_supposed),sardaukarColor,0,45,true,true,false));
-            addTextEvent(new TextEvent(dune_text.getString(textBaseIndex+MeanwhileText_Your_highness),visitorColor,46,35,true,false,false));
+            addVideoEvent(std::make_unique<HoldPictureVideoEvent>(pMeanwhile->getPicture(meanwhileFrame[house]).release(), 80, true));
+            addTextEvent(std::make_unique<TextEvent>(dune_text.getString(textBaseIndex+MeanwhileText_The_Ordos_were_not_supposed),sardaukarColor,0,45,true,true,false));
+            addTextEvent(std::make_unique<TextEvent>(dune_text.getString(textBaseIndex+MeanwhileText_Your_highness),visitorColor,46,35,true,false,false));
 
             startNewScene();
 
-            addVideoEvent(new WSAVideoEvent(pImperator.get()));
-            addVideoEvent(new WSAVideoEvent(pImperator.get()));
-            addVideoEvent(new FadeOutVideoEvent(pImperator->getPicture(pImperator->getNumFrames()-1).release(), 20, true));
+            addVideoEvent(std::make_unique<WSAVideoEvent>(pImperator.get()));
+            addVideoEvent(std::make_unique<WSAVideoEvent>(pImperator.get()));
+            addVideoEvent(std::make_unique<FadeOutVideoEvent>(pImperator->getPicture(pImperator->getNumFrames()-1).release(), 20, true));
 
-            addTextEvent(new TextEvent(dune_text.getString(textBaseIndex+MeanwhileText_No_more_explanations),sardaukarColor,3, (house == HOUSE_ORDOS) ? 21 : 11,false,false,false));
-            addTextEvent(new TextEvent(dune_text.getString(textBaseIndex+MeanwhileText_Only_together_will_we),sardaukarColor,(house == HOUSE_ORDOS) ? 28 : 18,(house == HOUSE_ORDOS) ? 39 : 49,false,true,false));
+            addTextEvent(std::make_unique<TextEvent>(dune_text.getString(textBaseIndex+MeanwhileText_No_more_explanations),sardaukarColor,3, (house == HOUSE_ORDOS) ? 21 : 11,false,false,false));
+            addTextEvent(std::make_unique<TextEvent>(dune_text.getString(textBaseIndex+MeanwhileText_Only_together_will_we),sardaukarColor,(house == HOUSE_ORDOS) ? 28 : 18,(house == HOUSE_ORDOS) ? 39 : 49,false,true,false));
         }
     }
 }

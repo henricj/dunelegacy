@@ -50,16 +50,9 @@ NetworkManager::NetworkManager(int port, const std::string& metaserver) {
     }
 
     try {
-        pLANGameFinderAndAnnouncer = new LANGameFinderAndAnnouncer();
+        pLANGameFinderAndAnnouncer = std::make_unique<LANGameFinderAndAnnouncer>();
+        pMetaServerClient = std::make_unique<MetaServerClient>(metaserver);
     } catch (...) {
-        enet_deinitialize();
-        throw;
-    }
-
-    try {
-        pMetaServerClient = new MetaServerClient(metaserver);
-    } catch (...) {
-        delete pLANGameFinderAndAnnouncer;
         enet_deinitialize();
         throw;
     }
@@ -67,8 +60,8 @@ NetworkManager::NetworkManager(int port, const std::string& metaserver) {
 
 
 NetworkManager::~NetworkManager() {
-    delete pMetaServerClient;
-    delete pLANGameFinderAndAnnouncer;
+    pMetaServerClient.reset();
+    pLANGameFinderAndAnnouncer.reset();
     enet_host_destroy(host);
     enet_deinitialize();
 }

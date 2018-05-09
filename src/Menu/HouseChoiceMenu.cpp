@@ -83,13 +83,8 @@ void HouseChoiceMenu::onHouseButton(int button) {
 
     }
 
-    HouseChoiceInfoMenu* myHouseChoiceInfoMenu = new HouseChoiceInfoMenu(selectedHouse);
-    if(myHouseChoiceInfoMenu->showMenu() == MENU_QUIT_DEFAULT) {
-        quit(MENU_QUIT_DEFAULT);
-    } else {
-        quit(selectedHouse);
-    }
-    delete myHouseChoiceInfoMenu;
+    int ret = HouseChoiceInfoMenu(selectedHouse).showMenu();
+    quit(ret == MENU_QUIT_DEFAULT ? MENU_QUIT_DEFAULT : selectedHouse);
 }
 
 

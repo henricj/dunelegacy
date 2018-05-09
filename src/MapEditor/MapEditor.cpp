@@ -91,14 +91,12 @@ MapEditor::MapEditor() : pInterface(nullptr) {
     setMap(MapData(128,128,Terrain_Sand), MapInfo());
     setMirrorMode(MirrorModeNone);
 
-    pInterface = new MapEditorInterface(this);
+    pInterface = std::make_unique<MapEditorInterface>(this);
 
     pInterface->onNew();
 }
 
 MapEditor::~MapEditor() {
-    delete pInterface;
-
     delete screenborder;
     screenborder = nullptr;
 }

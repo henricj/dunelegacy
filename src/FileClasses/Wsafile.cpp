@@ -178,8 +178,7 @@ sdl2::surface_ptr Wsafile::getAnimationAsPictureRow(int numFramesX) const {
 /// Returns an animation
 /**
     This method returns a new animation object with all pictures from startindex to endindex
-    in it. The returned pointer should be freed with delete if no longer needed. If an error
-    occured, nullptr is returned.
+    in it. If an error occured, nullptr is returned.
     \param  startindex  index of the first picture
     \param  endindex    index of the last picture
     \param  bDoublePic  if true, the picture is scaled up by a factor of 2

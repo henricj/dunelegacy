@@ -682,7 +682,7 @@ StructureBase* House::placeStructure(Uint32 builderID, int itemID, int xPos, int
             ObjectBase* newObject = ObjectBase::createObject(itemID,this);
             StructureBase* newStructure = dynamic_cast<StructureBase*>(newObject);
             if(newStructure == nullptr) {
-                delete newStructure;
+                delete newObject;
                 THROW(std::runtime_error, "Cannot create structure with itemID %d!", itemID);
             }
 
@@ -691,7 +691,7 @@ StructureBase* House::placeStructure(Uint32 builderID, int itemID, int xPos, int
                 for(int i=0;i<newStructure->getStructureSizeX();i++) {
                     for(int j=0;j<newStructure->getStructureSizeY();j++) {
                         if((currentGameMap->tileExists(xPos+i, yPos+j) == false) || (currentGameMap->getTile(xPos+i, yPos+j)->hasAGroundObject() == true)) {
-                            delete newStructure;
+                            delete newObject;
                             return nullptr;
                         }
                     }

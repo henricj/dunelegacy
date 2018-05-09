@@ -42,39 +42,28 @@ IndexedTextFile::IndexedTextFile(SDL_RWops* rwop, bool bDecode) {
         THROW(std::runtime_error, "IndexedTextFile:IndexedTextFile(): No valid indexed textfile: File too small!");
     }
 
-    unsigned char* pFiledata;
-    if( (pFiledata = (unsigned char*) malloc(indexedTextFilesize)) == nullptr) {
-        throw std::bad_alloc();
-    }
+    std::vector<unsigned char> filedata(indexedTextFilesize);
 
-    if(SDL_RWread(rwop, pFiledata, indexedTextFilesize, 1) != 1) {
-        free(pFiledata);
+    if(SDL_RWread(rwop, filedata.data(), indexedTextFilesize, 1) != 1) {
         THROW(std::runtime_error, "IndexedTextFile:IndexedTextFile(): Reading this indexed textfile failed!");
     }
 
-    int numIndexedStrings = (SDL_SwapLE16(((Uint16*) pFiledata)[0]))/2 - 1;
+    int numIndexedStrings = (SDL_SwapLE16(((Uint16*) filedata.data())[0]))/2 - 1;
 
-    Uint16* pIndex = (Uint16*) pFiledata;
+    Uint16* pIndex = (Uint16*) filedata.data();
     for(int i=0; i <= numIndexedStrings; i++) {
         pIndex[i] = SDL_SwapLE16(pIndex[i]);
     }
 
-    try {
-        for(int i=0; i < numIndexedStrings; i++) {
-            std::string text((const char*) (pFiledata+pIndex[i]));
+    for(int i=0; i < numIndexedStrings; i++) {
+        std::string text((const char*) (filedata.data()+pIndex[i]));
 
-            if(bDecode) {
-                indexedStrings.push_back(convertCP850ToISO8859_1(decodeString(text)));
-            } else {
-                indexedStrings.push_back( convertCP850ToISO8859_1(text) );
-            }
+        if(bDecode) {
+            indexedStrings.push_back(convertCP850ToISO8859_1(decodeString(text)));
+        } else {
+            indexedStrings.push_back( convertCP850ToISO8859_1(text) );
         }
-    } catch(std::exception&) {
-        delete [] pFiledata;
-        throw;
     }
-
-    free(pFiledata);
 }
 
 IndexedTextFile::~IndexedTextFile() = default;

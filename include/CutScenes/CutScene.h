@@ -60,27 +60,21 @@ public:
 
     /**
         This method adds a new video event at the end of this cutscene (to the last started scene)
-        IMPORTANT: The video event has to be created by new and will be automatically destroyed when this
-        CutScene gets destroyed.
-        \param newVideoEvent the new video event to be played at the end of this scene (must be created with new)
+        \param newVideoEvent the new video event to be played at the end of this scene
     */
-    void addVideoEvent(VideoEvent* newVideoEvent);
+    void addVideoEvent(std::unique_ptr<VideoEvent> newVideoEvent);
 
     /**
         This method adds a new text event to the current this scene.
-        IMPORTANT: The text event has to be created by new and will be automatically destroyed when this
-        Scene gets destroyed.
-        \param newTextEvent the new text event to be played in the current scene (must be created with new)
+        \param newTextEvent the new text event to be played in the current scene
     */
-    void addTextEvent(TextEvent* newTextEvent);
+    void addTextEvent(std::unique_ptr<TextEvent> newTextEvent);
 
     /**
         This method adds a new trigger to the current this scene.
-        IMPORTANT: The trigger event has to be created by new and will be automatically destroyed when this
-        Scene gets destroyed.
-        \param newTrigger the new trigger to be triggered in the current scene (must be created with new)
+        \param newTrigger the new trigger to be triggered in the current scene
     */
-    void addTrigger(CutSceneTrigger* newTrigger);
+    void addTrigger(std::unique_ptr<CutSceneTrigger> newTrigger);
 
 protected:
     /**
@@ -96,8 +90,8 @@ protected:
     static std::unique_ptr<Wsafile> create_wsafile(const char* name1, const char* name2, const char* name3);
 
 private:
-    std::queue<Scene*> scenes;      ///< List of all scenes
-    bool quiting;                   ///< Quit the cutscene?
+    std::queue<std::unique_ptr<Scene>> scenes;  ///< List of all scenes
+    bool quiting;                               ///< Quit the cutscene?
 };
 
 #endif // CUTSCENE_H

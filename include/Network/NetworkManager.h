@@ -101,11 +101,11 @@ public:
     int getMaxPeerRoundTripTime();
 
     LANGameFinderAndAnnouncer* getLANGameFinderAndAnnouncer() {
-        return pLANGameFinderAndAnnouncer;
+        return pLANGameFinderAndAnnouncer.get();
     };
 
     MetaServerClient* getMetaServerClient() {
-        return pMetaServerClient;
+        return pMetaServerClient.get();
     };
 
     /**
@@ -234,8 +234,8 @@ private:
     std::function<void (const std::string&, const CommandList&)>            pOnReceiveCommandList;
     std::function<void (const std::string&, const std::set<Uint32>&, int)>  pOnReceiveSelectionList;
 
-    LANGameFinderAndAnnouncer*  pLANGameFinderAndAnnouncer = nullptr;
-    MetaServerClient*           pMetaServerClient = nullptr;
+    std::unique_ptr<LANGameFinderAndAnnouncer>  pLANGameFinderAndAnnouncer = nullptr;
+    std::unique_ptr<MetaServerClient>           pMetaServerClient = nullptr;
 };
 
 #endif // NETWORKMANAGER_H

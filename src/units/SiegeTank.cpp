@@ -92,7 +92,7 @@ void SiegeTank::blitToScreen() {
 void SiegeTank::destroy() {
     if(currentGameMap->tileExists(location) && isVisible()) {
         Coord realPos(lround(realX), lround(realY));
-        Uint32 explosionID = currentGame->randomGen.getRandOf(2,Explosion_Medium1, Explosion_Medium2);
+        Uint32 explosionID = currentGame->randomGen.getRandOf({Explosion_Medium1, Explosion_Medium2});
         currentGame->getExplosionList().push_back(new Explosion(explosionID, realPos, owner->getHouseID()));
 
         if(isVisible(getOwner()->getTeam())) {

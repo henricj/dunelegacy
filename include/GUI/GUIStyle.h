@@ -49,13 +49,12 @@ public:
     /// destructor
     virtual ~GUIStyle();
 
-    static void setGUIStyle(GUIStyle* newGUIStyle) {
-        currentGUIStyle = newGUIStyle;
+    static void setGUIStyle(std::unique_ptr<GUIStyle> newGUIStyle) {
+        currentGUIStyle = std::move(newGUIStyle);
     }
 
     static void destroyGUIStyle() {
-        delete currentGUIStyle;
-        currentGUIStyle = nullptr;
+        currentGUIStyle.reset();
     }
 
     static GUIStyle& getInstance() {
@@ -296,7 +295,7 @@ public:
     virtual unsigned int getTextWidth(const std::string& text, unsigned int FontNum) = 0;
 
 private:
-    static GUIStyle* currentGUIStyle;
+    static std::unique_ptr<GUIStyle> currentGUIStyle;
 };
 
 #endif //GUISTYLE_H

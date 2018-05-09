@@ -288,7 +288,7 @@ private:
     void saveMapshot();
 
 private:
-    MapEditorInterface*             pInterface;     ///< This is the whole interface (top bar and side bar)
+    std::unique_ptr<MapEditorInterface> pInterface;     ///< This is the whole interface (top bar and side bar)
 
 
     SDL_Rect                        sideBarPos;

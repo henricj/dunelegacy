@@ -134,175 +134,175 @@ Intro::Intro() {
 
     startNewScene();
 
-    addVideoEvent(new WSAVideoEvent(pDuneText.get(), false));
-    addVideoEvent(new HoldPictureVideoEvent(pDuneText->getPicture(pDuneText->getNumFrames() - 1).release(), 30, true, false));
-    addVideoEvent(new FadeOutVideoEvent(pDuneText->getPicture(pDuneText->getNumFrames() - 1).release(), 20, true, false));
-    addTextEvent(new TextEvent(intro_text.getString(IntroText_The_Battle_for_Arrakis),color,48,40,true,true,true));
-    addTextEvent(new TextEvent("The remake is called Dune Legacy!",color,48,40,true));
-    if(bEnableVoice) addTrigger(new CutSceneSoundTrigger(52,voice[Voice_The_building].get()));
-    if(bEnableVoice) addTrigger(new CutSceneSoundTrigger(64,voice[Voice_of_a_Dynasty].get()));
+    addVideoEvent(std::make_unique<WSAVideoEvent>(pDuneText.get(), false));
+    addVideoEvent(std::make_unique<HoldPictureVideoEvent>(pDuneText->getPicture(pDuneText->getNumFrames() - 1).release(), 30, true, false));
+    addVideoEvent(std::make_unique<FadeOutVideoEvent>(pDuneText->getPicture(pDuneText->getNumFrames() - 1).release(), 20, true, false));
+    addTextEvent(std::make_unique<TextEvent>(intro_text.getString(IntroText_The_Battle_for_Arrakis),color,48,40,true,true,true));
+    addTextEvent(std::make_unique<TextEvent>("The remake is called Dune Legacy!",color,48,40,true));
+    if(bEnableVoice) addTrigger(std::make_unique<CutSceneSoundTrigger>(52,voice[Voice_The_building].get()));
+    if(bEnableVoice) addTrigger(std::make_unique<CutSceneSoundTrigger>(64,voice[Voice_of_a_Dynasty].get()));
 
     startNewScene();
 
-    addVideoEvent(new FadeInVideoEvent(pPlanet->getPicture(0).release(), 20, true));
-    addVideoEvent(new WSAVideoEvent(pPlanet.get()));
-    addVideoEvent(new HoldPictureVideoEvent(pPlanet->getPicture(pPlanet->getNumFrames() - 1).release(), 20, true));
-    addVideoEvent(new FadeOutVideoEvent(pPlanet->getPicture(pPlanet->getNumFrames() - 1).release(), 20, true));
-    addTextEvent(new TextEvent(intro_text.getString(IntroText_The_planet_Arrakis),color,20,60,true,true,false));
-    addTrigger(new CutSceneMusicTrigger(25,MUSIC_INTRO));
-    if(bEnableVoice) addTrigger(new CutSceneSoundTrigger(25,voice[Voice_The_Planet_Arrakis].get()));
-    if(bEnableVoice) addTrigger(new CutSceneSoundTrigger(38,voice[Voice_Known_As_Dune].get()));
+    addVideoEvent(std::make_unique<FadeInVideoEvent>(pPlanet->getPicture(0).release(), 20, true));
+    addVideoEvent(std::make_unique<WSAVideoEvent>(pPlanet.get()));
+    addVideoEvent(std::make_unique<HoldPictureVideoEvent>(pPlanet->getPicture(pPlanet->getNumFrames() - 1).release(), 20, true));
+    addVideoEvent(std::make_unique<FadeOutVideoEvent>(pPlanet->getPicture(pPlanet->getNumFrames() - 1).release(), 20, true));
+    addTextEvent(std::make_unique<TextEvent>(intro_text.getString(IntroText_The_planet_Arrakis),color,20,60,true,true,false));
+    addTrigger(std::make_unique<CutSceneMusicTrigger>(25,MUSIC_INTRO));
+    if(bEnableVoice) addTrigger(std::make_unique<CutSceneSoundTrigger>(25,voice[Voice_The_Planet_Arrakis].get()));
+    if(bEnableVoice) addTrigger(std::make_unique<CutSceneSoundTrigger>(38,voice[Voice_Known_As_Dune].get()));
 
     startNewScene();
 
-    addVideoEvent(new FadeInVideoEvent(pSandstorm->getPicture(0).release(), 20, true));
-    addVideoEvent(new WSAVideoEvent(pSandstorm.get()));
-    addVideoEvent(new HoldPictureVideoEvent(pSandstorm->getPicture(pSandstorm->getNumFrames() - 1).release(), 50, true));
-    addTextEvent(new TextEvent(intro_text.getString(IntroText_Land_of_sand),color,20,40,true,true));
-    addTextEvent(new TextEvent(intro_text.getString(IntroText_Home_of_the_Spice_Melange),color,61,45,true,true,false));
-    addTrigger(new CutSceneSoundTrigger(25,wind.get()));
-    if(bEnableVoice) addTrigger(new CutSceneSoundTrigger(15,voice[Voice_Land_of_sand].get()));
-    if(bEnableVoice) addTrigger(new CutSceneSoundTrigger(70,voice[Voice_Home].get()));
-    if(bEnableVoice) addTrigger(new CutSceneSoundTrigger(78,voice[Voice_of_the_spice].get()));
-    if(bEnableVoice) addTrigger(new CutSceneSoundTrigger(92,voice[Voice_Melange].get()));
+    addVideoEvent(std::make_unique<FadeInVideoEvent>(pSandstorm->getPicture(0).release(), 20, true));
+    addVideoEvent(std::make_unique<WSAVideoEvent>(pSandstorm.get()));
+    addVideoEvent(std::make_unique<HoldPictureVideoEvent>(pSandstorm->getPicture(pSandstorm->getNumFrames() - 1).release(), 50, true));
+    addTextEvent(std::make_unique<TextEvent>(intro_text.getString(IntroText_Land_of_sand),color,20,40,true,true));
+    addTextEvent(std::make_unique<TextEvent>(intro_text.getString(IntroText_Home_of_the_Spice_Melange),color,61,45,true,true,false));
+    addTrigger(std::make_unique<CutSceneSoundTrigger>(25,wind.get()));
+    if(bEnableVoice) addTrigger(std::make_unique<CutSceneSoundTrigger>(15,voice[Voice_Land_of_sand].get()));
+    if(bEnableVoice) addTrigger(std::make_unique<CutSceneSoundTrigger>(70,voice[Voice_Home].get()));
+    if(bEnableVoice) addTrigger(std::make_unique<CutSceneSoundTrigger>(78,voice[Voice_of_the_spice].get()));
+    if(bEnableVoice) addTrigger(std::make_unique<CutSceneSoundTrigger>(92,voice[Voice_Melange].get()));
 
     startNewScene();
 
-    addVideoEvent(new CrossBlendVideoEvent(pSandstorm->getPicture(pSandstorm->getNumFrames() - 1).release(), pHarvesters->getPicture(0).release(), true));
-    addVideoEvent(new WSAVideoEvent(pHarvesters.get()));
-    addVideoEvent(new HoldPictureVideoEvent(pHarvesters->getPicture(pHarvesters->getNumFrames() - 1).release(), 22, true));
-    addVideoEvent(new FadeOutVideoEvent(pHarvesters->getPicture(pHarvesters->getNumFrames() - 1).release(), 20, true));
-    addTextEvent(new TextEvent(intro_text.getString(IntroText_Spice_controls_the_Empire),color,25,40,true,true,false));
-    addTextEvent(new TextEvent(intro_text.getString(IntroText_Whoever_controls_Dune),color,66,55,true,true,false));
-    addTrigger(new CutSceneSoundTrigger(45,carryallLanding.get()));
-    addTrigger(new CutSceneSoundTrigger(79,harvester.get()));
-    if(bEnableVoice) addTrigger(new CutSceneSoundTrigger(40,voice[Voice_The_spice].get()));
-    if(bEnableVoice) addTrigger(new CutSceneSoundTrigger(47,voice[Voice_controls].get()));
-    if(bEnableVoice) addTrigger(new CutSceneSoundTrigger(53,voice[Voice_the_Empire].get()));
-    if(bEnableVoice) addTrigger(new CutSceneSoundTrigger(90,voice[Voice_Whoever].get()));
-    if(bEnableVoice) addTrigger(new CutSceneSoundTrigger(96,voice[Voice_controls_dune].get()));
-    if(bEnableVoice) addTrigger(new CutSceneSoundTrigger(108,voice[Voice_controls_the_spice].get()));
+    addVideoEvent(std::make_unique<CrossBlendVideoEvent>(pSandstorm->getPicture(pSandstorm->getNumFrames() - 1).release(), pHarvesters->getPicture(0).release(), true));
+    addVideoEvent(std::make_unique<WSAVideoEvent>(pHarvesters.get()));
+    addVideoEvent(std::make_unique<HoldPictureVideoEvent>(pHarvesters->getPicture(pHarvesters->getNumFrames() - 1).release(), 22, true));
+    addVideoEvent(std::make_unique<FadeOutVideoEvent>(pHarvesters->getPicture(pHarvesters->getNumFrames() - 1).release(), 20, true));
+    addTextEvent(std::make_unique<TextEvent>(intro_text.getString(IntroText_Spice_controls_the_Empire),color,25,40,true,true,false));
+    addTextEvent(std::make_unique<TextEvent>(intro_text.getString(IntroText_Whoever_controls_Dune),color,66,55,true,true,false));
+    addTrigger(std::make_unique<CutSceneSoundTrigger>(45,carryallLanding.get()));
+    addTrigger(std::make_unique<CutSceneSoundTrigger>(79,harvester.get()));
+    if(bEnableVoice) addTrigger(std::make_unique<CutSceneSoundTrigger>(40,voice[Voice_The_spice].get()));
+    if(bEnableVoice) addTrigger(std::make_unique<CutSceneSoundTrigger>(47,voice[Voice_controls].get()));
+    if(bEnableVoice) addTrigger(std::make_unique<CutSceneSoundTrigger>(53,voice[Voice_the_Empire].get()));
+    if(bEnableVoice) addTrigger(std::make_unique<CutSceneSoundTrigger>(90,voice[Voice_Whoever].get()));
+    if(bEnableVoice) addTrigger(std::make_unique<CutSceneSoundTrigger>(96,voice[Voice_controls_dune].get()));
+    if(bEnableVoice) addTrigger(std::make_unique<CutSceneSoundTrigger>(108,voice[Voice_controls_the_spice].get()));
 
     startNewScene();
 
-    addVideoEvent(new FadeInVideoEvent(pPalace->getPicture(0).release(), 20, true));
-    addVideoEvent(new HoldPictureVideoEvent(pPalace->getPicture(0).release(), 50, true));
-    addTextEvent(new TextEvent(intro_text.getString(IntroText_The_Emperor_has_proposed),color,20,48,true,true,false));
-    if(bEnableVoice) addTrigger(new CutSceneSoundTrigger(22,voice[Voice_The_Emperor].get()));
-    if(bEnableVoice) addTrigger(new CutSceneSoundTrigger(31,voice[Voice_has_proposed].get()));
-    if(bEnableVoice) addTrigger(new CutSceneSoundTrigger(49,voice[Voice_to_each_of_the_houses].get()));
+    addVideoEvent(std::make_unique<FadeInVideoEvent>(pPalace->getPicture(0).release(), 20, true));
+    addVideoEvent(std::make_unique<HoldPictureVideoEvent>(pPalace->getPicture(0).release(), 50, true));
+    addTextEvent(std::make_unique<TextEvent>(intro_text.getString(IntroText_The_Emperor_has_proposed),color,20,48,true,true,false));
+    if(bEnableVoice) addTrigger(std::make_unique<CutSceneSoundTrigger>(22,voice[Voice_The_Emperor].get()));
+    if(bEnableVoice) addTrigger(std::make_unique<CutSceneSoundTrigger>(31,voice[Voice_has_proposed].get()));
+    if(bEnableVoice) addTrigger(std::make_unique<CutSceneSoundTrigger>(49,voice[Voice_to_each_of_the_houses].get()));
 
     startNewScene();
 
-    addVideoEvent(new WSAVideoEvent(pImperator.get()));
-    addVideoEvent(new HoldPictureVideoEvent(pImperator->getPicture(pImperator->getNumFrames() - 1).release(), 30, true));
-    addVideoEvent(new WSAVideoEvent(pImperator.get()));
-    addVideoEvent(new HoldPictureVideoEvent(pImperator->getPicture(pImperator->getNumFrames() - 1).release(), 15, true));
-    addVideoEvent(new FadeOutVideoEvent(pImperator->getPicture(pImperator->getNumFrames() - 1).release(), 20, true));
-    addTextEvent(new TextEvent(intro_text.getString(IntroText_The_House_that_produces),sardaukarColor,0,52,true,true,false));
-    addTextEvent(new TextEvent(intro_text.getString(IntroText_There_are_no_set_territories),sardaukarColor,68,30,true,true,false));
-    addTextEvent(new TextEvent(intro_text.getString(IntroText_And_no_rules_of_engagement),sardaukarColor,99,30,true,true,false));
-    if(bEnableVoice) addTrigger(new CutSceneSoundTrigger(8,voice[Voice_The_House].get()));
-    if(bEnableVoice) addTrigger(new CutSceneSoundTrigger(14,voice[Voice_that_produces].get()));
-    if(bEnableVoice) addTrigger(new CutSceneSoundTrigger(20,voice[Voice_the_most_spice].get()));
-    if(bEnableVoice) addTrigger(new CutSceneSoundTrigger(30,voice[Voice_will_control_dune].get()));
-    if(bEnableVoice) addTrigger(new CutSceneSoundTrigger(81,voice[Voice_There_are_no_set].get()));
-    if(bEnableVoice) addTrigger(new CutSceneSoundTrigger(89,voice[Voice_territories].get()));
-    if(bEnableVoice) addTrigger(new CutSceneSoundTrigger(98,voice[Voice_and_no].get()));
-    if(bEnableVoice) addTrigger(new CutSceneSoundTrigger(102,voice[Voice_rules_of_engagment].get()));
+    addVideoEvent(std::make_unique<WSAVideoEvent>(pImperator.get()));
+    addVideoEvent(std::make_unique<HoldPictureVideoEvent>(pImperator->getPicture(pImperator->getNumFrames() - 1).release(), 30, true));
+    addVideoEvent(std::make_unique<WSAVideoEvent>(pImperator.get()));
+    addVideoEvent(std::make_unique<HoldPictureVideoEvent>(pImperator->getPicture(pImperator->getNumFrames() - 1).release(), 15, true));
+    addVideoEvent(std::make_unique<FadeOutVideoEvent>(pImperator->getPicture(pImperator->getNumFrames() - 1).release(), 20, true));
+    addTextEvent(std::make_unique<TextEvent>(intro_text.getString(IntroText_The_House_that_produces),sardaukarColor,0,52,true,true,false));
+    addTextEvent(std::make_unique<TextEvent>(intro_text.getString(IntroText_There_are_no_set_territories),sardaukarColor,68,30,true,true,false));
+    addTextEvent(std::make_unique<TextEvent>(intro_text.getString(IntroText_And_no_rules_of_engagement),sardaukarColor,99,30,true,true,false));
+    if(bEnableVoice) addTrigger(std::make_unique<CutSceneSoundTrigger>(8,voice[Voice_The_House].get()));
+    if(bEnableVoice) addTrigger(std::make_unique<CutSceneSoundTrigger>(14,voice[Voice_that_produces].get()));
+    if(bEnableVoice) addTrigger(std::make_unique<CutSceneSoundTrigger>(20,voice[Voice_the_most_spice].get()));
+    if(bEnableVoice) addTrigger(std::make_unique<CutSceneSoundTrigger>(30,voice[Voice_will_control_dune].get()));
+    if(bEnableVoice) addTrigger(std::make_unique<CutSceneSoundTrigger>(81,voice[Voice_There_are_no_set].get()));
+    if(bEnableVoice) addTrigger(std::make_unique<CutSceneSoundTrigger>(89,voice[Voice_territories].get()));
+    if(bEnableVoice) addTrigger(std::make_unique<CutSceneSoundTrigger>(98,voice[Voice_and_no].get()));
+    if(bEnableVoice) addTrigger(std::make_unique<CutSceneSoundTrigger>(102,voice[Voice_rules_of_engagment].get()));
 
     startNewScene();
 
-    addVideoEvent(new FadeInVideoEvent(pStarport->getPicture(0).release(), 20, true));
-    addVideoEvent(new WSAVideoEvent(pStarport.get()));
-    addVideoEvent(new HoldPictureVideoEvent(pStarport->getPicture(pStarport->getNumFrames() - 1).release(), 20, true));
-    addVideoEvent(new FadeOutVideoEvent(pStarport->getPicture(pStarport->getNumFrames() - 1).release(), 20, true));
-    addTextEvent(new TextEvent(intro_text.getString(IntroText_Vast_armies_have_arrived),color,25,60,true,true,false));
-    addTrigger(new CutSceneSoundTrigger(57,carryallLanding.get()));
-    if(bEnableVoice) addTrigger(new CutSceneSoundTrigger(30,voice[Voice_Vast_armies].get()));
-    if(bEnableVoice) addTrigger(new CutSceneSoundTrigger(37,voice[Voice_have_arrived].get()));
+    addVideoEvent(std::make_unique<FadeInVideoEvent>(pStarport->getPicture(0).release(), 20, true));
+    addVideoEvent(std::make_unique<WSAVideoEvent>(pStarport.get()));
+    addVideoEvent(std::make_unique<HoldPictureVideoEvent>(pStarport->getPicture(pStarport->getNumFrames() - 1).release(), 20, true));
+    addVideoEvent(std::make_unique<FadeOutVideoEvent>(pStarport->getPicture(pStarport->getNumFrames() - 1).release(), 20, true));
+    addTextEvent(std::make_unique<TextEvent>(intro_text.getString(IntroText_Vast_armies_have_arrived),color,25,60,true,true,false));
+    addTrigger(std::make_unique<CutSceneSoundTrigger>(57,carryallLanding.get()));
+    if(bEnableVoice) addTrigger(std::make_unique<CutSceneSoundTrigger>(30,voice[Voice_Vast_armies].get()));
+    if(bEnableVoice) addTrigger(std::make_unique<CutSceneSoundTrigger>(37,voice[Voice_have_arrived].get()));
 
     startNewScene();
 
-    addVideoEvent(new HoldPictureVideoEvent(nullptr, 80, true));
-    addTextEvent(new TextEvent(intro_text.getString(IntroText_Now_three_houses_fight),color,0,80,true,false,true));
-    if(bEnableVoice) addTrigger(new CutSceneSoundTrigger(10,voice[Voice_Now].get()));
-    if(bEnableVoice) addTrigger(new CutSceneSoundTrigger(17,voice[Voice_three_Houses_fight].get()));
-    if(bEnableVoice) addTrigger(new CutSceneSoundTrigger(34,voice[Voice_for_control].get()));
-    if(bEnableVoice) addTrigger(new CutSceneSoundTrigger(46,voice[Voice_of_Dune].get()));
+    addVideoEvent(std::make_unique<HoldPictureVideoEvent>(nullptr, 80, true));
+    addTextEvent(std::make_unique<TextEvent>(intro_text.getString(IntroText_Now_three_houses_fight),color,0,80,true,false,true));
+    if(bEnableVoice) addTrigger(std::make_unique<CutSceneSoundTrigger>(10,voice[Voice_Now].get()));
+    if(bEnableVoice) addTrigger(std::make_unique<CutSceneSoundTrigger>(17,voice[Voice_three_Houses_fight].get()));
+    if(bEnableVoice) addTrigger(std::make_unique<CutSceneSoundTrigger>(34,voice[Voice_for_control].get()));
+    if(bEnableVoice) addTrigger(std::make_unique<CutSceneSoundTrigger>(46,voice[Voice_of_Dune].get()));
 
     startNewScene();
 
-    addVideoEvent(new WSAVideoEvent(pAtreides.get()));
-    addVideoEvent(new HoldPictureVideoEvent(pAtreides->getPicture(pAtreides->getNumFrames()-1).release(), 8, true));
-    addTextEvent(new TextEvent(intro_text.getString(IntroText_The_noble_Atreides),color,25,58,true,true,false));
-    addTrigger(new CutSceneSoundTrigger(21,gunshot.get()));
-    addTrigger(new CutSceneSoundTrigger(31,glass.get()));
-    addTrigger(new CutSceneSoundTrigger(32,glass.get()));
-    addTrigger(new CutSceneSoundTrigger(33,glass.get()));
-    addTrigger(new CutSceneSoundTrigger(51,gunshot.get()));
-    addTrigger(new CutSceneSoundTrigger(61,glass.get()));
-    addTrigger(new CutSceneSoundTrigger(62,glass.get()));
-    addTrigger(new CutSceneSoundTrigger(63,glass.get()));
-    if(bEnableVoice) addTrigger(new CutSceneSoundTrigger(36,voice[Voice_The_noble_Atreides].get()));
+    addVideoEvent(std::make_unique<WSAVideoEvent>(pAtreides.get()));
+    addVideoEvent(std::make_unique<HoldPictureVideoEvent>(pAtreides->getPicture(pAtreides->getNumFrames()-1).release(), 8, true));
+    addTextEvent(std::make_unique<TextEvent>(intro_text.getString(IntroText_The_noble_Atreides),color,25,58,true,true,false));
+    addTrigger(std::make_unique<CutSceneSoundTrigger>(21,gunshot.get()));
+    addTrigger(std::make_unique<CutSceneSoundTrigger>(31,glass.get()));
+    addTrigger(std::make_unique<CutSceneSoundTrigger>(32,glass.get()));
+    addTrigger(std::make_unique<CutSceneSoundTrigger>(33,glass.get()));
+    addTrigger(std::make_unique<CutSceneSoundTrigger>(51,gunshot.get()));
+    addTrigger(std::make_unique<CutSceneSoundTrigger>(61,glass.get()));
+    addTrigger(std::make_unique<CutSceneSoundTrigger>(62,glass.get()));
+    addTrigger(std::make_unique<CutSceneSoundTrigger>(63,glass.get()));
+    if(bEnableVoice) addTrigger(std::make_unique<CutSceneSoundTrigger>(36,voice[Voice_The_noble_Atreides].get()));
 
 
     startNewScene();
 
-    addVideoEvent(new WSAVideoEvent(pOrdos.get()));
-    addTextEvent(new TextEvent(intro_text.getString(IntroText_The_insidious_Ordos),color,-2,47,true,true,false));
-    addTrigger(new CutSceneSoundTrigger(3,missle.get()));
-    addTrigger(new CutSceneSoundTrigger(8,missle.get()));
-    addTrigger(new CutSceneSoundTrigger(28,missle.get()));
-    addTrigger(new CutSceneSoundTrigger(38,missle.get()));
-    if(bEnableVoice) addTrigger(new CutSceneSoundTrigger(12,voice[Voice_The_insidious].get()));
-    if(bEnableVoice) addTrigger(new CutSceneSoundTrigger(20,voice[Voice_Ordos].get()));
+    addVideoEvent(std::make_unique<WSAVideoEvent>(pOrdos.get()));
+    addTextEvent(std::make_unique<TextEvent>(intro_text.getString(IntroText_The_insidious_Ordos),color,-2,47,true,true,false));
+    addTrigger(std::make_unique<CutSceneSoundTrigger>(3,missle.get()));
+    addTrigger(std::make_unique<CutSceneSoundTrigger>(8,missle.get()));
+    addTrigger(std::make_unique<CutSceneSoundTrigger>(28,missle.get()));
+    addTrigger(std::make_unique<CutSceneSoundTrigger>(38,missle.get()));
+    if(bEnableVoice) addTrigger(std::make_unique<CutSceneSoundTrigger>(12,voice[Voice_The_insidious].get()));
+    if(bEnableVoice) addTrigger(std::make_unique<CutSceneSoundTrigger>(20,voice[Voice_Ordos].get()));
 
     startNewScene();
 
-    addVideoEvent(new WSAVideoEvent(pHarkonnen.get()));
-    addVideoEvent(new FadeOutVideoEvent(pHarkonnen->getPicture(pHarkonnen->getNumFrames() - 1).release(), 15, true, true, true));
-    addTextEvent(new TextEvent(intro_text.getString(IntroText_And_the_evil_Harkonnen),color,-2,45,true,true,false));
-    addTrigger(new CutSceneSoundTrigger(0,gunshot.get()));
-    addTrigger(new CutSceneSoundTrigger(5,blaster.get()));
-    addTrigger(new CutSceneSoundTrigger(7,blaster.get()));
-    addTrigger(new CutSceneSoundTrigger(17,gunshot.get()));
-    addTrigger(new CutSceneSoundTrigger(21,blaster.get()));
-    addTrigger(new CutSceneSoundTrigger(28,gunshot.get()));
-    addTrigger(new CutSceneSoundTrigger(37,gunshot.get()));
-    addTrigger(new CutSceneSoundTrigger(50,blowup1.get()));
-    addTrigger(new CutSceneSoundTrigger(60,blowup2.get()));
-    if(bEnableVoice) addTrigger(new CutSceneSoundTrigger(4,voice[Voice_And_the].get()));
-    if(bEnableVoice) addTrigger(new CutSceneSoundTrigger(10,voice[Voice_evil_Harkonnen].get()));
+    addVideoEvent(std::make_unique<WSAVideoEvent>(pHarkonnen.get()));
+    addVideoEvent(std::make_unique<FadeOutVideoEvent>(pHarkonnen->getPicture(pHarkonnen->getNumFrames() - 1).release(), 15, true, true, true));
+    addTextEvent(std::make_unique<TextEvent>(intro_text.getString(IntroText_And_the_evil_Harkonnen),color,-2,45,true,true,false));
+    addTrigger(std::make_unique<CutSceneSoundTrigger>(0,gunshot.get()));
+    addTrigger(std::make_unique<CutSceneSoundTrigger>(5,blaster.get()));
+    addTrigger(std::make_unique<CutSceneSoundTrigger>(7,blaster.get()));
+    addTrigger(std::make_unique<CutSceneSoundTrigger>(17,gunshot.get()));
+    addTrigger(std::make_unique<CutSceneSoundTrigger>(21,blaster.get()));
+    addTrigger(std::make_unique<CutSceneSoundTrigger>(28,gunshot.get()));
+    addTrigger(std::make_unique<CutSceneSoundTrigger>(37,gunshot.get()));
+    addTrigger(std::make_unique<CutSceneSoundTrigger>(50,blowup1.get()));
+    addTrigger(std::make_unique<CutSceneSoundTrigger>(60,blowup2.get()));
+    if(bEnableVoice) addTrigger(std::make_unique<CutSceneSoundTrigger>(4,voice[Voice_And_the].get()));
+    if(bEnableVoice) addTrigger(std::make_unique<CutSceneSoundTrigger>(10,voice[Voice_evil_Harkonnen].get()));
 
     startNewScene();
 
-    addVideoEvent(new FadeInVideoEvent(pDestroyedTank->getPicture(0).release(), 15, true, true, true));
-    addVideoEvent(new WSAVideoEvent(pDestroyedTank.get()));
-    addVideoEvent(new WSAVideoEvent(pDestroyedTank.get()));
-    addVideoEvent(new WSAVideoEvent(pDestroyedTank.get()));
-    addVideoEvent(new WSAVideoEvent(pDestroyedTank.get()));
-    addVideoEvent(new WSAVideoEvent(pDestroyedTank.get()));
-    addVideoEvent(new WSAVideoEvent(pDestroyedTank.get()));
-    addVideoEvent(new WSAVideoEvent(pDestroyedTank.get()));
-    addVideoEvent(new WSAVideoEvent(pDestroyedTank.get()));
-    addVideoEvent(new WSAVideoEvent(pDestroyedTank.get()));
-    addVideoEvent(new WSAVideoEvent(pDestroyedTank.get()));
-    addVideoEvent(new FadeOutVideoEvent(pDestroyedTank->getPicture(pDestroyedTank->getNumFrames() - 1).release(), 15, true));
-    addTextEvent(new TextEvent(intro_text.getString(IntroText_Only_one_House_will_prevail),color,18,35,true,true,false));
-    if(bEnableVoice) addTrigger(new CutSceneSoundTrigger(21,voice[Voice_Only_one_house].get()));
-    if(bEnableVoice) addTrigger(new CutSceneSoundTrigger(30,voice[Voice_will_prevail].get()));
+    addVideoEvent(std::make_unique<FadeInVideoEvent>(pDestroyedTank->getPicture(0).release(), 15, true, true, true));
+    addVideoEvent(std::make_unique<WSAVideoEvent>(pDestroyedTank.get()));
+    addVideoEvent(std::make_unique<WSAVideoEvent>(pDestroyedTank.get()));
+    addVideoEvent(std::make_unique<WSAVideoEvent>(pDestroyedTank.get()));
+    addVideoEvent(std::make_unique<WSAVideoEvent>(pDestroyedTank.get()));
+    addVideoEvent(std::make_unique<WSAVideoEvent>(pDestroyedTank.get()));
+    addVideoEvent(std::make_unique<WSAVideoEvent>(pDestroyedTank.get()));
+    addVideoEvent(std::make_unique<WSAVideoEvent>(pDestroyedTank.get()));
+    addVideoEvent(std::make_unique<WSAVideoEvent>(pDestroyedTank.get()));
+    addVideoEvent(std::make_unique<WSAVideoEvent>(pDestroyedTank.get()));
+    addVideoEvent(std::make_unique<WSAVideoEvent>(pDestroyedTank.get()));
+    addVideoEvent(std::make_unique<FadeOutVideoEvent>(pDestroyedTank->getPicture(pDestroyedTank->getNumFrames() - 1).release(), 15, true));
+    addTextEvent(std::make_unique<TextEvent>(intro_text.getString(IntroText_Only_one_House_will_prevail),color,18,35,true,true,false));
+    if(bEnableVoice) addTrigger(std::make_unique<CutSceneSoundTrigger>(21,voice[Voice_Only_one_house].get()));
+    if(bEnableVoice) addTrigger(std::make_unique<CutSceneSoundTrigger>(30,voice[Voice_will_prevail].get()));
 
     startNewScene();
 
-    addVideoEvent(new HoldPictureVideoEvent(nullptr, 184, true));
-    addTextEvent(new TextEvent(intro_text.getString(IntroText_Your_battle_for_Dune_begins),color,20,45,true,false,true));
-    addTextEvent(new TextEvent(intro_text.getString(IntroText_NOW),color,68,83,false,true,true));
-//    addTextEvent(new TextEvent("",COLOR_BLACK,115,10,false,false,true));    // padding to give music time to complete
-    if(bEnableVoice) addTrigger(new CutSceneSoundTrigger(30,voice[Voice_Your].get()));
-    if(bEnableVoice) addTrigger(new CutSceneSoundTrigger(36,voice[Voice_battle_for_Dune].get()));
-    if(bEnableVoice) addTrigger(new CutSceneSoundTrigger(48,voice[Voice_begins].get()));
-    if(bEnableVoice) addTrigger(new CutSceneSoundTrigger(68,voice[Voice_Now_Now].get()));
+    addVideoEvent(std::make_unique<HoldPictureVideoEvent>(nullptr, 184, true));
+    addTextEvent(std::make_unique<TextEvent>(intro_text.getString(IntroText_Your_battle_for_Dune_begins),color,20,45,true,false,true));
+    addTextEvent(std::make_unique<TextEvent>(intro_text.getString(IntroText_NOW),color,68,83,false,true,true));
+//    addTextEvent(std::make_unique<TextEvent>("",COLOR_BLACK,115,10,false,false,true));    // padding to give music time to complete
+    if(bEnableVoice) addTrigger(std::make_unique<CutSceneSoundTrigger>(30,voice[Voice_Your].get()));
+    if(bEnableVoice) addTrigger(std::make_unique<CutSceneSoundTrigger>(36,voice[Voice_battle_for_Dune].get()));
+    if(bEnableVoice) addTrigger(std::make_unique<CutSceneSoundTrigger>(48,voice[Voice_begins].get()));
+    if(bEnableVoice) addTrigger(std::make_unique<CutSceneSoundTrigger>(68,voice[Voice_Now_Now].get()));
 }
 
 Intro::~Intro() = default;
