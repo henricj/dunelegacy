@@ -19,8 +19,10 @@
 #include <FileClasses/Decode.h>
 #include <FileClasses/Palette.h>
 #include <misc/exceptions.h>
-#include <misc/SDL2pp.h>
 
+#include <Definitions.h>
+
+#include <misc/SDL2pp.h>
 #include <cstdlib>
 #include <cstdio>
 

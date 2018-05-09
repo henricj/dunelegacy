@@ -171,16 +171,5 @@ namespace sdl2
     typedef std::unique_ptr<SDL_RWops, implementation::RWops_deleter> RWops_ptr;
 }
 
-#ifndef RESTRICT
-#if _MSC_VER
-#define RESTRICT __restrict
-#elif 0
-// TODO: Version check for GCC and clang is needed..?
-#define RESTRICT __restrict__
-#else
-#define RESTRICT
-#endif
-#endif // RESTRICT
-
 #endif // SDL2PP_H
 

@@ -21,6 +21,8 @@
 
 #include <misc/exceptions.h>
 
+#include <Definitions.h>
+
 #include <cstdlib>
 #include <cstdio>
 #include <cstring>

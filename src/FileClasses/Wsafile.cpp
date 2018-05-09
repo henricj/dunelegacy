@@ -19,6 +19,8 @@
 #include <FileClasses/Decode.h>
 #include <FileClasses/Palette.h>
 
+#include <Definitions.h>
+
 #include <SDL2/SDL_endian.h>
 #include <stdlib.h>
 #include <stdio.h>
