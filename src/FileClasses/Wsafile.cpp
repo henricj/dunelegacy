@@ -111,13 +111,14 @@ Wsafile::~Wsafile() = default;
 */
 sdl2::surface_ptr Wsafile::getPicture(Uint32 frameNumber) const {
     if(frameNumber >= numFrames) {
-        return nullptr;
+        THROW(std::invalid_argument, "Wsafile::getPicture(): Requested frame number is %ud but the file contains only %ud frames!", frameNumber, numFrames);
     }
 
     // create new picture surface
     auto pic = sdl2::surface_ptr{ SDL_CreateRGBSurface(0,sizeX,sizeY,8,0,0,0,0) };
-    if(pic== nullptr)
-        return nullptr;
+    if(pic== nullptr) {
+        THROW(std::runtime_error, "Wsafile::getPicture(): Cannot create surface!");
+    }
 
     palette.applyToSurface(pic.get());
 
@@ -147,8 +148,9 @@ sdl2::surface_ptr Wsafile::getAnimationAsPictureRow(int numFramesX) const {
 
     // create new picture surface
     auto pic = sdl2::surface_ptr{ SDL_CreateRGBSurface(0,sizeX*numFramesX,sizeY*numFramesY,8,0,0,0,0) };
-    if(pic == nullptr)
-        return nullptr;
+    if(pic == nullptr) {
+        THROW(std::runtime_error, "Wsafile::getAnimationAsPictureRow(): Cannot create surface!");
+    }
 
     palette.applyToSurface(pic.get());
 
@@ -178,12 +180,12 @@ sdl2::surface_ptr Wsafile::getAnimationAsPictureRow(int numFramesX) const {
 /// Returns an animation
 /**
     This method returns a new animation object with all pictures from startindex to endindex
-    in it. If an error occured, nullptr is returned.
+    in it.
     \param  startindex  index of the first picture
     \param  endindex    index of the last picture
     \param  bDoublePic  if true, the picture is scaled up by a factor of 2
     \param  bSetColorKey    if true, black is set as transparency
-    \return a new animation object or nullptr on error
+    \return a new animation object
 */
 std::unique_ptr<Animation> Wsafile::getAnimation(unsigned int startindex, unsigned int endindex, bool bDoublePic, bool bSetColorKey) const
 {
@@ -231,32 +233,27 @@ void Wsafile::decodeFrames(const unsigned char* pFiledata, Uint32* index, int nu
 */
 std::unique_ptr<unsigned char[]> Wsafile::readfile(SDL_RWops* rwop, int* filesize) const {
     if(filesize == nullptr) {
-        SDL_Log("Wsafile: filesize == nullptr!");
-        exit(EXIT_FAILURE);
+        THROW(std::runtime_error, "Wsafile::readfile(): filesize == nullptr!");
     }
 
     if(rwop == nullptr) {
-        SDL_Log("Wsafile: rwop == nullptr!");
-        exit(EXIT_FAILURE);
+        THROW(std::runtime_error, "Wsafile::readfile(): rwop == nullptr!");
     }
 
     Sint64 endOffset = SDL_RWsize(rwop);
     if(endOffset < 0) {
-        SDL_Log("Wsafile: Cannot determine size of this *.wsa-File!");
-        exit(EXIT_FAILURE);
+        THROW(std::runtime_error, "Wsafile::readfile(): Cannot determine size of this *.wsa-File!");
     }
     size_t wsaFilesize = static_cast<size_t>(endOffset);
 
     if(wsaFilesize < 10) {
-        SDL_Log("Wsafile: No valid WSA-File: File too small!");
-        exit(EXIT_FAILURE);
+        THROW(std::runtime_error, "Wsafile::readfile(): No valid WSA-File: File too small!");
     }
 
     auto pFiledata = std::make_unique<unsigned char[]>(wsaFilesize);
 
     if(SDL_RWread(rwop, pFiledata.get(), wsaFilesize, 1) != 1) {
-        SDL_Log("Wsafile: Reading this *.wsa-File failed!");
-        exit(EXIT_FAILURE);
+        THROW(std::runtime_error, "Wsafile::readfile(): Reading this *.wsa-File failed!");
     }
 
     *filesize = wsaFilesize;
@@ -306,8 +303,7 @@ void Wsafile::readdata(int numFiles, va_list args) {
         } else {
             if( (sizeX != (SDL_SwapLE16(*(reinterpret_cast<Uint16*>(pFiledata[i].get()+ 2)) )))
                 || (sizeY != (SDL_SwapLE16(*(reinterpret_cast<Uint16*>(pFiledata[i].get()+ 4)) )))) {
-                SDL_Log("Wsafile: The wsa-files have different picture dimensions. Cannot concatenate them!");
-                exit(EXIT_FAILURE);
+                THROW(std::runtime_error, "Wsafile::readdata(): The wsa-files have different image dimensions. Cannot concatenate them!");
             }
         }
 
@@ -343,8 +339,7 @@ void Wsafile::readdata(int numFiles, va_list args) {
         }
 
         if(pFiledata[i].get() + wsaFilesize < (reinterpret_cast<unsigned char *>(index[i]) + sizeof(Uint32) * numberOfFrames[i])) {
-            SDL_Log("Wsafile: No valid WSA-File: File too small!");
-            exit(EXIT_FAILURE);
+            THROW(std::runtime_error, "Wsafile::readdata(): No valid WSA-File: File too small!");
         }
 
         numFrames += numberOfFrames[i];

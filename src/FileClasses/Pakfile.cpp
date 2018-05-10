@@ -164,7 +164,7 @@ void Pakfile::addFile(SDL_RWops* rwop, const std::string& filename) {
 /**
     This method opens the file specified by filename. It is only allowed if the Pakfile is opened for reading.
     The returned SDL_RWops-structure can be used readonly with SDL_RWread, SDL_RWsize, SDL_RWseek and SDL_RWclose. No writing
-    is supported. If the Pakfile is opened for writing this method returns nullptr.<br>
+    is supported.<br>
     NOTICE: The returned SDL_RWops-Structure is only valid as long as this Pakfile-Object exists. It gets
     invalid as soon as Pakfile:~Pakfile() is executed.
     \param  filename    The name of this file
@@ -172,8 +172,7 @@ void Pakfile::addFile(SDL_RWops* rwop, const std::string& filename) {
 */
 sdl2::RWops_ptr Pakfile::openFile(const std::string& filename) {
     if(write == true) {
-        // reading files is not allowed
-        return nullptr;
+        THROW(std::runtime_error, "Pakfile::openFile(): Writing files is not supported!");
     }
 
     // find file
@@ -186,13 +185,13 @@ sdl2::RWops_ptr Pakfile::openFile(const std::string& filename) {
     }
 
     if(index == -1) {
-        return nullptr;
+        THROW(io_error, "Pakfile::openFile(): Cannot find file with name '%s' in this PAK file!", filename.c_str());
     }
 
     // alloc RWop
     SDL_RWops *pRWop;
     if((pRWop = SDL_AllocRW()) == nullptr) {
-        return nullptr;
+        throw std::bad_alloc();
     }
 
     // alloc RWopData

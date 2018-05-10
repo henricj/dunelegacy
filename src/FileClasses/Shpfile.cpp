@@ -70,7 +70,7 @@ Shpfile::~Shpfile() = default;
 sdl2::surface_ptr Shpfile::getPicture(Uint32 indexOfFile)
 {
     if(indexOfFile >= shpfileEntries.size()) {
-        return nullptr;
+        THROW(std::invalid_argument, "Shpfile::getPicture(): Requested index %ud is invalid for a shp file with %ud entries!", indexOfFile, shpfileEntries.size());
     }
 
     const unsigned char * Fileheader = pFiledata.get() + shpfileEntries[indexOfFile].startOffset;
@@ -130,15 +130,14 @@ sdl2::surface_ptr Shpfile::getPicture(Uint32 indexOfFile)
 
         default:
         {
-            SDL_Log("Error: Type %d in SHP-Files not supported!",type);
-            return nullptr;
+            THROW(std::runtime_error, "Shpfile::getPicture(): Type %d in SHP-Files not supported!", type);
         }
     }
 
     // create new picture surface
     sdl2::surface_ptr pic{ SDL_CreateRGBSurface(0, sizeX, sizeY, 8, 0, 0, 0, 0) };
     if(pic == nullptr) {
-        return nullptr;
+        THROW(std::runtime_error, "Shpfile::getPicture(): Cannot create surface!");
     }
 
     palette.applyToSurface(pic.get());
@@ -179,7 +178,7 @@ sdl2::surface_ptr Shpfile::getPictureArray(unsigned int tilesX, unsigned int til
     std::vector<Uint32> tiles;
 
     if((tilesX == 0) || (tilesY == 0)) {
-        return nullptr;
+        THROW(std::invalid_argument, "Shpfile::getPictureArray(): Number of requested image rows or columns must not be 0!");
     }
 
     tiles.resize(tilesX * tilesY);
@@ -190,9 +189,8 @@ sdl2::surface_ptr Shpfile::getPictureArray(unsigned int tilesX, unsigned int til
     for(unsigned int i = 0u; i < tilesX*tilesY; i++) {
         tiles[i] = va_arg( arg_ptr, int );
         if(TILE_GETINDEX(tiles[i]) >= shpfileEntries.size()) {
-            SDL_Log("Shpfile::getPictureArray(): There exist only %d files in this *.shp!", static_cast<int>(shpfileEntries.size()));
             va_end(arg_ptr);
-            return nullptr;
+            THROW(std::invalid_argument, "Shpfile::getPictureArray(): Cannot read image %ud as there are only %ud images in this *.shp!", TILE_GETINDEX(tiles[i]), shpfileEntries.size());
         }
     }
 
@@ -206,8 +204,7 @@ sdl2::surface_ptr Shpfile::getPictureArray(unsigned int tilesX, unsigned int til
     for(unsigned int i = 1u; i < tilesX*tilesY; i++) {
         if(((pData + shpfileEntries[TILE_GETINDEX(tiles[i])].startOffset)[2] != sizeY)
          || ((pData + shpfileEntries[TILE_GETINDEX(tiles[i])].startOffset)[3] != sizeX)) {
-            SDL_Log("Shpfile::getPictureArray(): Not all pictures have the same size!");
-            return nullptr;
+            THROW(std::runtime_error, "Shpfile::getPictureArray(): Not all pictures have the same size!");
          }
     }
 
@@ -217,8 +214,7 @@ sdl2::surface_ptr Shpfile::getPictureArray(unsigned int tilesX, unsigned int til
     // create new picture surface
     sdl2::surface_ptr pic{ SDL_CreateRGBSurface(0, sizeX*tilesX, sizeY*tilesY, 8, 0, 0, 0, 0) };
     if(pic == nullptr) {
-        SDL_Log("Shpfile::getPictureArray(): Cannot create Surface.");
-        return nullptr;
+        THROW(std::runtime_error, "Shpfile::getPictureArray(): Cannot create Surface!");
     }
 
     palette.applyToSurface(pic.get());
@@ -276,8 +272,7 @@ sdl2::surface_ptr Shpfile::getPictureArray(unsigned int tilesX, unsigned int til
 
                 default:
                 {
-                    SDL_Log("Shpfile: Type %d in SHP-Files not supported!",type);
-                    return nullptr;
+                    THROW(std::runtime_error, "Shpfile::getPictureArray(): Type %d in SHP-Files not supported!", type);
                 }
             }
 
@@ -321,8 +316,7 @@ sdl2::surface_ptr Shpfile::getPictureArray(unsigned int tilesX, unsigned int til
 
                 default:
                 {
-                    SDL_Log("Shpfile: Invalid type for this parameter. Must be one of TILE_NORMAL, TILE_FLIPH, TILE_FLIPV or TILE_ROTATE!");
-                    return nullptr;
+                    THROW(std::invalid_argument, "Shpfile::getPictureArray(): Invalid tile type %ud; must be one of TILE_NORMAL, TILE_FLIPH, TILE_FLIPV or TILE_ROTATE!", TILE_GETTYPE(tiles[i]));
                 } break;
             }
         }
@@ -334,13 +328,13 @@ sdl2::surface_ptr Shpfile::getPictureArray(unsigned int tilesX, unsigned int til
 /// Returns an animation
 /**
     This method returns a new animation object with all pictures from startindex to endindex
-    in it. If an error occured, nullptr is returned.
+    in it.
     \param  startindex  index of the first picture
     \param  endindex    index of the last picture
     \param  bDoublePic  if true, the picture is scaled up by a factor of 2
     \param  bSetColorKey    if true, black is set as transparency
     \param  bLoopRewindBackwards if true, the animation is played forward and then backwards, if false, it is only played forward
-    \return a new animation object or nullptr on error
+    \return a new animation object
 */
 std::unique_ptr<Animation> Shpfile::getAnimation(unsigned int startindex,unsigned int endindex, bool bDoublePic, bool bSetColorKey, bool bLoopRewindBackwards)
 {

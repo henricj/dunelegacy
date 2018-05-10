@@ -140,9 +140,9 @@ sdl2::mix_chunk_ptr createSilenceChunk(int length)
 }
 
 sdl2::mix_chunk_ptr getChunkFromFile(const std::string& filename) {
-    auto returnChunk = sdl2::mix_chunk_ptr{ LoadVOC_RW(pFileManager->openFile(filename).get()) };
+    auto returnChunk = LoadVOC_RW(pFileManager->openFile(filename).get());
     if(returnChunk == nullptr) {
-        THROW(io_error, "Cannot load '%s' !", filename);
+        THROW(io_error, "Cannot load '%s'!", filename);
     }
 
     return returnChunk;

@@ -69,76 +69,66 @@ static Uint32 getSampleRateFromVOCRate(Uint8 vocSR) {
 }
 
 /**
-    This method decodes a voc-file and returns a pointer the decoded data. This memory is
-    allocated with SDL_malloc() and should be freed with SDL_free(). The size of the decoded data is
-    returned through the parameter size and the sampling rate of this voc-file is returned
-    through the parameter rate.
+    This method decodes a voc-file and returns a pointer the decoded data. The size of the
+    decoded data is returned through the parameter size and the sampling rate of this voc-file
+    is returned through the parameter rate.
     The kind of voc-files that this function can decode is very restricted. Only voc-files
     with 8-bit unsigned sound samples, with no loops, no silence blocks, no extended blocks
     and no markers are supported.
     \param  rwop    An SDL_RWop that contains the voc-file
-    \param  size    The size of the decoded data in bytes
+    \param  decsize The size of the decoded data in bytes
     \param  rate    The sampling rate of the voc-file
-    \return A pointer to a memory block that contains the data. (Free it with SDL_free() when no longer needed)
+    \return A pointer to a memory block that contains the data.
 */
-static Uint8 *LoadVOC_RW(SDL_RWops* rwop, Uint32 &size, Uint32 &rate) {
+static sdl2::sdl_ptr<Uint8[]> LoadVOC_RW(SDL_RWops* rwop, Uint32 &decsize, Uint32 &rate) {
     Uint8 description[20];
     Uint16 offset;
     Uint16 version;
     Uint16 id;
 
     if(SDL_RWread(rwop,(char*) description,20,1) != 1) {
-        SDL_Log("loadVOCFromStream: Invalid header!");
-        return nullptr;
+        THROW(std::runtime_error, "LoadVOC_RW(): Invalid header!");
     }
 
     if (memcmp(description, "Creative Voice File", 19) != 0) {
-        SDL_Log("loadVOCFromStream: Invalid header!");
-        return nullptr;
+        THROW(std::runtime_error, "LoadVOC_RW(): Invalid header!");
     }
 
     if (description[19] != 0x1A) {
-        SDL_Log("loadVOCFromStream: Invalid header!");
-        return nullptr;
+        THROW(std::runtime_error, "LoadVOC_RW(): Invalid header!");
     }
 
     if(SDL_RWread(rwop,&offset,sizeof(offset),1) != 1) {
-        SDL_Log("loadVOCFromStream: Invalid header!");
-        return nullptr;
+        THROW(std::runtime_error, "LoadVOC_RW(): Invalid header!");
     }
     offset = SDL_SwapLE16(offset);
 
     if(SDL_RWread(rwop,&version,sizeof(version),1) != 1) {
-        SDL_Log("loadVOCFromStream: Invalid header!");
-        return nullptr;
+        THROW(std::runtime_error, "LoadVOC_RW(): Invalid header!");
     }
     version = SDL_SwapLE16(version);
 
     if(SDL_RWread(rwop,&id,sizeof(id),1) != 1) {
-        SDL_Log("loadVOCFromStream: Invalid header!");
-        return nullptr;
+        THROW(std::runtime_error, "LoadVOC_RW(): Invalid header!");
     }
     id = SDL_SwapLE16(id);
 
     if(offset != sizeof(description) + sizeof(offset) + sizeof(version) + sizeof(id)) {
-        SDL_Log("loadVOCFromStream: Invalid datablock offset in header!");
-        return nullptr;
+        THROW(std::runtime_error, "LoadVOC_RW(): Invalid datablock offset in header!");
     }
 
     // 0x100 is an invalid VOC version used by German version of DOTT (Disk) and
     // French version of Simon the Sorcerer 2 (CD)
     if(!(version == 0x010A || version == 0x0114 || version == 0x0100)) {
-        SDL_Log("loadVOCFromStream: Invalid version (0x%X) in header!",version);
-        return nullptr;
+        THROW(std::runtime_error, "LoadVOC_RW(): Invalid version (0x%X) in header!", version);
     }
 
     if(id != (~version + 0x1234)) {
-        SDL_Log("loadVOCFromStream: Invalid id in header!");
-        return nullptr;
+        THROW(std::runtime_error, "LoadVOC_RW(): Invalid id in header!");
     }
 
-    Uint8 *ret_sound = nullptr;
-    size = 0;
+    sdl2::sdl_ptr<Uint8[]> ret_sound = nullptr;
+    decsize = 0;
 
     Uint8 code;
     rate = 0;
@@ -149,8 +139,7 @@ static Uint8 *LoadVOC_RW(SDL_RWops* rwop, Uint32 &size, Uint32 &rate) {
 
         Uint8 tmp[3];
         if(SDL_RWread(rwop,tmp,1,3) != 3) {
-            SDL_Log("loadVOCFromStream: Invalid block length!");
-            return ret_sound;
+            THROW(std::runtime_error, "LoadVOC_RW(): Invalid block length!");
         }
         size_t len = tmp[0];
         len |= tmp[1] << 8;
@@ -160,14 +149,12 @@ static Uint8 *LoadVOC_RW(SDL_RWops* rwop, Uint32 &size, Uint32 &rate) {
             case VOC_CODE_DATA: {
                 Uint8 time_constant;
                 if(SDL_RWread(rwop,&time_constant,sizeof(Uint8),1) != 1) {
-                    SDL_Log("loadVOCFromStream: Cannot read time constant!");
-                    return ret_sound;
+                    THROW(std::runtime_error, "LoadVOC_RW(): Cannot read time constant!");
                 }
 
                 Uint8 packing;
                 if(SDL_RWread(rwop,&packing,sizeof(Uint8),1) != 1) {
-                    SDL_Log("loadVOCFromStream: Cannot read packing!");
-                    return ret_sound;
+                    THROW(std::runtime_error, "LoadVOC_RW(): Cannot read packing!");
                 }
                 len -= 2;
                 Uint32 tmp_rate = getSampleRateFromVOCRate(time_constant);
@@ -179,45 +166,33 @@ static Uint8 *LoadVOC_RW(SDL_RWops* rwop, Uint32 &size, Uint32 &rate) {
                 //SDL_Log("VOC Data Block: Rate: %d, Packing: %d, Length: %d", rate, packing, len);
 
                 if (packing == 0) {
-                    if (size) {
-                        Uint8* tmp = (Uint8 *)SDL_realloc(ret_sound, size + len);
-                        if(tmp == nullptr) {
-                            SDL_Log("loadVOCFromStream: %s", strerror(errno));
-                            SDL_free(ret_sound);
-                            return nullptr;
-                        } else {
-                            ret_sound = tmp;
-                        }
+                    Uint8* tmp = (Uint8 *) SDL_realloc(ret_sound.get(), decsize + len);
+                    if(tmp == nullptr) {
+                        THROW(std::runtime_error, "LoadVOC_RW(): %s", strerror(errno));
                     } else {
-                        if((ret_sound = (Uint8 *)SDL_malloc(len)) == nullptr) {
-                            SDL_Log("loadVOCFromStream: %s", strerror(errno));
-                            return nullptr;
-                        }
+                        ret_sound = sdl2::sdl_ptr<Uint8[]> { tmp };
                     }
 
-                    if(SDL_RWread(rwop,ret_sound + size,1,len) != len) {
-                        SDL_Log("loadVOCFromStream: Cannot read data!");
-                        return ret_sound;
+                    if(SDL_RWread(rwop,ret_sound.get() + decsize,1,len) != len) {
+                        THROW(std::runtime_error, "LoadVOC_RW(): Cannot read data!");
                     }
 
-                    size += len;
+                    decsize += len;
                 } else {
-                    SDL_Log("VOC file packing %d unsupported!", packing);
+                    THROW(std::runtime_error, "LoadVOC_RW(): VOC file packing %d unsupported!", packing);
                 }
             } break;
 
             case VOC_CODE_SILENCE: {
                 Uint16 SilenceLength;
                 if(SDL_RWread(rwop,&SilenceLength,sizeof(Uint16),1) != 1) {
-                    SDL_Log("loadVOCFromStream: Cannot read silence length!");
-                    return ret_sound;
+                    THROW(std::runtime_error, "LoadVOC_RW(): Cannot read silence length!");
                 }
                 SilenceLength = SDL_SwapLE16(SilenceLength);
 
                 Uint8 time_constant;
                 if(SDL_RWread(rwop,&time_constant,sizeof(Uint8),1) != 1) {
-                    SDL_Log("loadVOCFromStream: Cannot read time constant!");
-                    return ret_sound;
+                    THROW(std::runtime_error, "LoadVOC_RW(): Cannot read time constant!");
                 }
 
                 Uint32 SilenceRate = getSampleRateFromVOCRate(time_constant);
@@ -227,29 +202,20 @@ static Uint8 *LoadVOC_RW(SDL_RWops* rwop, Uint32 &size, Uint32 &rate) {
                 if(rate != 0) {
                     length = (Uint32) ((((double) SilenceRate)/((double) rate)) * SilenceLength) + 1;
                 } else {
-                    SDL_Log("The silence in this voc-file is right at the beginning. Therefore it is not possible to adjust the silence sample rate to the sample rate of the other sound data in this file!");
+                    THROW(std::runtime_error, "LoadVOC_RW(): The silence in this voc-file is right at the beginning. Therefore it is not possible to adjust the silence sample rate to the sample rate of the other sound data in this file!");
                     length = SilenceLength;
                 }
 
-                if (size) {
-                    Uint8* tmp = (Uint8 *)SDL_realloc(ret_sound, size + length);
-                    if(tmp == nullptr) {
-                        SDL_Log("loadVOCFromStream: %s", strerror(errno));
-                        SDL_free(ret_sound);
-                        return nullptr;
-                    } else {
-                        ret_sound = tmp;
-                    }
+                Uint8* tmp = (Uint8 *) SDL_realloc(ret_sound.get(), decsize + length);
+                if(tmp == nullptr) {
+                    THROW(std::runtime_error, "LoadVOC_RW(): %s", strerror(errno));
                 } else {
-                    if((ret_sound = (Uint8 *)SDL_malloc(length)) == nullptr) {
-                        SDL_Log("loadVOCFromStream: %s", strerror(errno));
-                        return nullptr;
-                    }
+                    ret_sound = sdl2::sdl_ptr<Uint8[]> { tmp };
                 }
 
-                memset(ret_sound + size,0x80,length);
+                memset(ret_sound.get() + decsize,0x80,length);
 
-                size += length;
+                decsize += length;
 
             } break;
 
@@ -261,8 +227,7 @@ static Uint8 *LoadVOC_RW(SDL_RWops* rwop, Uint32 &size, Uint32 &rate) {
             case VOC_CODE_EXTENDED:
             case VOC_CODE_DATA_16:
             default:
-                SDL_Log("Unhandled code in VOC file : %d", code);
-                return ret_sound;
+                THROW(std::runtime_error, "LoadVOC_RW(): Unsupported code in VOC file : %d", code);
         }
     }
     return ret_sound;
@@ -312,20 +277,19 @@ inline Sint16 Float2Sint16(float x) {
     return (Sint16) val;
 }
 
-Mix_Chunk* LoadVOC_RW(SDL_RWops* rwop) {
+sdl2::mix_chunk_ptr LoadVOC_RW(SDL_RWops* rwop) {
 
     if(rwop == nullptr) {
-        return nullptr;
+        THROW(std::invalid_argument, "LoadVOC_RW(): rwop == nullptr!");
     }
 
     // Read voc file
     Uint32 RawData_Frequency;
     Uint32 RawData_Samples;
-    Uint8* RawDataUint8 = LoadVOC_RW(rwop, RawData_Samples, RawData_Frequency);
+    sdl2::sdl_ptr<Uint8[]> RawDataUint8 = LoadVOC_RW(rwop, RawData_Samples, RawData_Frequency);
     if(RawDataUint8 == nullptr) {
-        return nullptr;
+        THROW(std::runtime_error, "LoadVOC_RW(): Cannot read raw data!");
     }
-
 
     // shift level so that the last sample is 128
     int minValue = 255;
@@ -351,11 +315,7 @@ Mix_Chunk* LoadVOC_RW(SDL_RWops* rwop) {
     }
 
     // Convert to floats
-    float* RawDataFloat;
-    if((RawDataFloat = (float*) SDL_malloc((RawData_Samples+2*NUM_SAMPLES_OF_SILENCE)*sizeof(float))) == nullptr) {
-        SDL_free(RawDataUint8);
-        return nullptr;
-    }
+    std::vector<float> RawDataFloat(RawData_Samples+2*NUM_SAMPLES_OF_SILENCE);
 
     for(Uint32 i=0; i < NUM_SAMPLES_OF_SILENCE; i++) {
         RawDataFloat[i] = 0.0;
@@ -369,7 +329,7 @@ Mix_Chunk* LoadVOC_RW(SDL_RWops* rwop) {
         RawDataFloat[i] = 0.0;
     }
 
-    SDL_free(RawDataUint8);
+    RawDataUint8.reset();
 
     RawData_Samples += 2*NUM_SAMPLES_OF_SILENCE;
 
@@ -380,19 +340,13 @@ Mix_Chunk* LoadVOC_RW(SDL_RWops* rwop) {
     int TargetFrequency, channels;
     Uint16 TargetFormat;
     if(Mix_QuerySpec(&TargetFrequency, &TargetFormat, &channels) == 0) {
-        SDL_free(RawDataUint8);
-        SDL_free(RawDataFloat);
-        return nullptr;
+        THROW(std::runtime_error, "LoadVOC_RW(): Mix_QuerySpec failed!");
     }
 
     // Convert to audio device frequency
     float ConversionRatio = ((float) TargetFrequency) / ((float) RawData_Frequency);
     Uint32 TargetDataFloat_Samples = (Uint32) ((float) RawData_Samples * ConversionRatio);
-    float* TargetDataFloat;
-    if((TargetDataFloat = (float*) SDL_malloc(TargetDataFloat_Samples*sizeof(float))) == nullptr) {
-        SDL_free(RawDataFloat);
-        return nullptr;
-    }
+    std::vector<float> TargetDataFloat(TargetDataFloat_Samples);
 
     for(Uint32 x=0;x<TargetDataFloat_Samples;x++) {
         float pos = x/ConversionRatio;
@@ -401,7 +355,8 @@ Mix_Chunk* LoadVOC_RW(SDL_RWops* rwop) {
     }
 
     Uint32 TargetData_Samples = TargetDataFloat_Samples;
-    SDL_free(RawDataFloat);
+
+    RawDataFloat.clear();
 
 
     // Equalize if neccessary
@@ -424,76 +379,55 @@ Mix_Chunk* LoadVOC_RW(SDL_RWops* rwop) {
     int ThreeQuaterSilenceLength = (int) ((NUM_SAMPLES_OF_SILENCE * ConversionRatio)*(3.0f/4.0f));
     TargetData_Samples -= 2*ThreeQuaterSilenceLength;
 
-    Mix_Chunk* myChunk;
-    if((myChunk = (Mix_Chunk*) SDL_calloc(sizeof(Mix_Chunk),1)) == nullptr) {
-        SDL_free(TargetDataFloat);
-        return nullptr;
+    auto myChunk = sdl2::mix_chunk_ptr{ (Mix_Chunk*) SDL_calloc(sizeof(Mix_Chunk),1) };
+    if(myChunk == nullptr) {
+        throw std::bad_alloc();
     }
 
-    myChunk->volume = 128;
     myChunk->allocated = 1;
+    myChunk->volume = 128;
+
+    int SizeOfTargetSample;
+    switch(TargetFormat) {
+        case AUDIO_U8:      SizeOfTargetSample = sizeof(Uint8) * channels;      break;
+        case AUDIO_S8:      SizeOfTargetSample = sizeof(Sint8) * channels;      break;
+        case AUDIO_U16LSB:  SizeOfTargetSample = sizeof(Uint16) * channels;     break;
+        case AUDIO_S16LSB:  SizeOfTargetSample = sizeof(Sint16) * channels;     break;
+        case AUDIO_U16MSB:  SizeOfTargetSample = sizeof(Uint16) * channels;     break;
+        case AUDIO_S16MSB:  SizeOfTargetSample = sizeof(Sint16) * channels;     break;
+        default: {
+            THROW(std::runtime_error, "LoadVOC_RW(): Invalid target sample format!");
+        } break;
+    }
+
+    if((myChunk->abuf = (Uint8*) SDL_malloc(TargetData_Samples * SizeOfTargetSample)) == nullptr) {
+        throw std::bad_alloc();
+    }
+    myChunk->alen = TargetData_Samples * SizeOfTargetSample;
 
     switch(TargetFormat) {
-        case AUDIO_U8:
-        {
-            Uint8* TargetData;
-            int SizeOfTargetSample = sizeof(Uint8) * channels;
-            if((TargetData = (Uint8*) SDL_malloc(TargetData_Samples * SizeOfTargetSample)) == nullptr) {
-                SDL_free(TargetDataFloat);
-                SDL_free(myChunk);
-                return nullptr;
-            }
-
+        case AUDIO_U8: {
+            Uint8* TargetData = reinterpret_cast<Uint8*>(myChunk->abuf);
             for(Uint32 i=0; i < TargetData_Samples*channels; i+=channels) {
                 TargetData[i] = Float2Uint8(TargetDataFloat[(i/channels)+ThreeQuaterSilenceLength]);
                 for(int j = 1; j < channels; j++) {
                     TargetData[i+j] = TargetData[i];
                 }
-
             }
-
-            SDL_free(TargetDataFloat);
-
-            myChunk->abuf = (Uint8*) TargetData;
-            myChunk->alen = TargetData_Samples * SizeOfTargetSample;
-
         } break;
 
-        case AUDIO_S8:
-        {
-            Sint8* TargetData;
-            int SizeOfTargetSample = sizeof(Sint8) * channels;
-            if((TargetData = (Sint8*) SDL_malloc(TargetData_Samples * SizeOfTargetSample)) == nullptr) {
-                SDL_free(TargetDataFloat);
-                SDL_free(myChunk);
-                return nullptr;
-            }
-
+        case AUDIO_S8: {
+            Sint8* TargetData = reinterpret_cast<Sint8*>(myChunk->abuf);
             for(Uint32 i=0; i < TargetData_Samples*channels; i+=channels) {
                 TargetData[i] = Float2Sint8(TargetDataFloat[(i/channels)+ThreeQuaterSilenceLength]);
                 for(int j = 1; j < channels; j++) {
                     TargetData[i+j] = TargetData[i];
                 }
-
             }
-
-            SDL_free(TargetDataFloat);
-
-            myChunk->abuf = (Uint8*) TargetData;
-            myChunk->alen = TargetData_Samples * SizeOfTargetSample;
-
         } break;
 
-        case AUDIO_U16LSB:
-        {
-            Uint16* TargetData;
-            int SizeOfTargetSample = sizeof(Uint16) * channels;
-            if((TargetData = (Uint16*) SDL_malloc(TargetData_Samples * SizeOfTargetSample)) == nullptr) {
-                SDL_free(TargetDataFloat);
-                SDL_free(myChunk);
-                return nullptr;
-            }
-
+        case AUDIO_U16LSB: {
+            Uint16* TargetData = reinterpret_cast<Uint16*>(myChunk->abuf);
             for(Uint32 i=0; i < TargetData_Samples*channels; i+=channels) {
                 TargetData[i] = SDL_SwapLE16(Float2Uint16(TargetDataFloat[(i/channels)+ThreeQuaterSilenceLength]));
                 for(int j = 1; j < channels; j++) {
@@ -501,49 +435,20 @@ Mix_Chunk* LoadVOC_RW(SDL_RWops* rwop) {
                 }
 
             }
-
-            SDL_free(TargetDataFloat);
-
-            myChunk->abuf = (Uint8*) TargetData;
-            myChunk->alen = TargetData_Samples * SizeOfTargetSample;
-
         } break;
 
-        case AUDIO_S16LSB:
-        {
-            Sint16* TargetData;
-            int SizeOfTargetSample = sizeof(Sint16) * channels;
-            if((TargetData = (Sint16*) SDL_malloc(TargetData_Samples * SizeOfTargetSample)) == nullptr) {
-                SDL_free(TargetDataFloat);
-                SDL_free(myChunk);
-                return nullptr;
-            }
-
+        case AUDIO_S16LSB: {
+            Sint16* TargetData = reinterpret_cast<Sint16*>(myChunk->abuf);
             for(Uint32 i=0; i < TargetData_Samples*channels; i+=channels) {
                 TargetData[i] = SDL_SwapLE16(Float2Sint16(TargetDataFloat[(i/channels)+ThreeQuaterSilenceLength]));
                 for(int j = 1; j < channels; j++) {
                     TargetData[i+j] = TargetData[i];
                 }
-
             }
-
-            SDL_free(TargetDataFloat);
-
-            myChunk->abuf = (Uint8*) TargetData;
-            myChunk->alen = TargetData_Samples * SizeOfTargetSample;
-
         } break;
 
-        case AUDIO_U16MSB:
-        {
-            Uint16* TargetData;
-            int SizeOfTargetSample = sizeof(Uint16) * channels;
-            if((TargetData = (Uint16*) SDL_malloc(TargetData_Samples * SizeOfTargetSample)) == nullptr) {
-                SDL_free(TargetDataFloat);
-                SDL_free(myChunk);
-                return nullptr;
-            }
-
+        case AUDIO_U16MSB: {
+            Uint16* TargetData = reinterpret_cast<Uint16*>(myChunk->abuf);
             for(Uint32 i=0; i < TargetData_Samples*channels; i+=channels) {
                 TargetData[i] = SDL_SwapBE16(Float2Uint16(TargetDataFloat[(i/channels)+ThreeQuaterSilenceLength]));
                 for(int j = 1; j < channels; j++) {
@@ -551,45 +456,20 @@ Mix_Chunk* LoadVOC_RW(SDL_RWops* rwop) {
                 }
 
             }
-
-            SDL_free(TargetDataFloat);
-
-            myChunk->abuf = (Uint8*) TargetData;
-            myChunk->alen = TargetData_Samples * SizeOfTargetSample;
-
         } break;
 
-        case AUDIO_S16MSB:
-        {
-            Sint16* TargetData;
-            int SizeOfTargetSample = sizeof(Sint16) * channels;
-            if((TargetData = (Sint16*) SDL_malloc(TargetData_Samples * SizeOfTargetSample)) == nullptr) {
-                SDL_free(TargetDataFloat);
-                SDL_free(myChunk);
-                return nullptr;
-            }
-
+        case AUDIO_S16MSB: {
+            Sint16* TargetData = reinterpret_cast<Sint16*>(myChunk->abuf);
             for(Uint32 i=0; i < TargetData_Samples*channels; i+=channels) {
                 TargetData[i] = SDL_SwapBE16(Float2Sint16(TargetDataFloat[(i/channels)+ThreeQuaterSilenceLength]));
                 for(int j = 1; j < channels; j++) {
                     TargetData[i+j] = TargetData[i];
                 }
-
             }
-
-            SDL_free(TargetDataFloat);
-
-            myChunk->abuf = (Uint8*) TargetData;
-            myChunk->alen = TargetData_Samples * SizeOfTargetSample;
-
         } break;
 
-        default:
-        {
-            SDL_free(TargetDataFloat);
-            SDL_free(myChunk);
-
-            return nullptr;
+        default: {
+            THROW(std::runtime_error, "LoadVOC_RW(): Invalid target sample format!");
         } break;
     }
 

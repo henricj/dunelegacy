@@ -144,9 +144,8 @@ sdl2::RWops_ptr FileManager::openFile(const std::string& filename) {
 
     // now try loading from pak file
     for(const auto& pPakFile : pakFiles) {
-        ret = pPakFile->openFile(filename);
-        if(ret) {
-            return ret;
+        if(pPakFile->exists(filename)) {
+            return pPakFile->openFile(filename);
         }
     }
 

@@ -24,6 +24,7 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_endian.h>
 #include <SDL2/SDL_rwops.h>
+#include <SDL2/SDL_mixer.h>
 
 namespace sdl2
 {
@@ -169,6 +170,8 @@ namespace sdl2
     typedef implementation::unique_ptr_deleter<SDL_PixelFormat, SDL_FreeFormat> pixel_format_ptr;
     typedef implementation::unique_ptr_deleter<SDL_Renderer, SDL_DestroyRenderer> renderer_ptr;
     typedef std::unique_ptr<SDL_RWops, implementation::RWops_deleter> RWops_ptr;
+
+    typedef implementation::unique_ptr_deleter<Mix_Chunk, Mix_FreeChunk> mix_chunk_ptr;
 }
 
 #endif // SDL2PP_H
