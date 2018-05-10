@@ -12,9 +12,8 @@
 // Step by step one more pixel of the source image is blitted to the destination image
 class BlendBlitter {
 public:
-    BlendBlitter(SDL_Surface* SrcPic, bool bFreeSrc, SDL_Surface* DestPic, SDL_Rect DestPicRect, int numSteps = 50) {
-        src = SrcPic;
-        this->bFreeSrc = bFreeSrc;
+    BlendBlitter(sdl2::surface_ptr SrcPic, SDL_Surface* DestPic, SDL_Rect DestPicRect, int numSteps = 50) {
+        src = std::move(SrcPic);
         dest = DestPic;
         destRect = DestPicRect;
         this->numSteps = numSteps;
@@ -38,11 +37,7 @@ public:
         StepsLeft = numSteps;
     }
 
-    ~BlendBlitter() {
-        if(bFreeSrc) {
-            SDL_FreeSurface(src);
-        }
-    }
+    ~BlendBlitter() = default;
 
     Uint64 getNextValue() {
         do {
@@ -62,13 +57,8 @@ public:
         }
         StepsLeft--;
 
-        if(SDL_LockSurface(dest) != 0) {
-            THROW(std::runtime_error, "BlendBlitter::nextStep(): Cannot lock image!");
-        }
-
-        if(SDL_LockSurface(src) != 0) {
-            THROW(std::runtime_error, "BlendBlitter::nextStep(): Cannot lock image!");
-        }
+        sdl2::surface_lock lock_dest{ dest };
+        sdl2::surface_lock lock_src{ src.get() };
 
         Uint64 numPixelsPerStep = (N / numSteps) + 1;
         for(Uint64 i=0;i<numPixelsPerStep;i++) {
@@ -77,7 +67,7 @@ public:
             int x = (int) (cur % src->w);
             int y = (int) (cur / src->w);
 
-            Uint32 color = getPixel(src, x, y);
+            Uint32 color = getPixel(src.get(), x, y);
 
             if(color != 0) {
 
@@ -92,15 +82,12 @@ public:
             }
         }
 
-        SDL_UnlockSurface(src);
-        SDL_UnlockSurface(dest);
         return StepsLeft;
     }
 
 
 private:
-    SDL_Surface* src;
-    bool bFreeSrc;
+    sdl2::surface_ptr src;
     SDL_Surface* dest;
     SDL_Rect    destRect;
     int numSteps;

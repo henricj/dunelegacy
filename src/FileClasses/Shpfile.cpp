@@ -64,7 +64,6 @@ Shpfile::~Shpfile() = default;
 /// Returns one picture in this shp-File
 /**
     This method returns a SDL_Surface containing the nth picture in this shp-File.
-    The returned SDL_Surface should be freed with SDL_FreeSurface() if no longer needed.
     \param  indexOfFile specifies which picture to return (zero based)
     \return nth picture in this shp-File
 */
@@ -171,7 +170,6 @@ sdl2::surface_ptr Shpfile::getPicture(Uint32 indexOfFile)
     \endcode
     This example would create a surface with four pictures in it. From the left to the right there are
     picture 20,23,67 and 68. picture 23 is mirrored horizontally, 67 is rotated.<br><br>
-    The returned SDL_Surface should be freed with SDL_FreeSurface() if no longer needed.
     \param  tilesX  how many pictures in one row
     \param  tilesY  how many pictures in one column
     \param ...
@@ -349,20 +347,12 @@ std::unique_ptr<Animation> Shpfile::getAnimation(unsigned int startindex,unsigne
     auto animation = std::make_unique<Animation>();
 
     for(unsigned int i = startindex; i <= endindex; ++i) {
-        auto tmp = getPicture(i);
-        if(tmp == nullptr) {
-            return nullptr;
-        }
-        animation->addFrame(tmp.release(),bDoublePic,bSetColorKey);
+        animation->addFrame(getPicture(i),bDoublePic,bSetColorKey);
     }
 
     if(bLoopRewindBackwards) {
         for(unsigned int i = endindex - 1; i >= startindex; --i) {
-            auto tmp = getPicture(i);
-            if(tmp == nullptr) {
-                return nullptr;
-            }
-            animation->addFrame(tmp.release(),bDoublePic,bSetColorKey);
+            animation->addFrame(getPicture(i),bDoublePic,bSetColorKey);
         }
     }
 

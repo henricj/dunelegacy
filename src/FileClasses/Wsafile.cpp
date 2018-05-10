@@ -106,7 +106,6 @@ Wsafile::~Wsafile() = default;
 /// Returns a picture in this wsa-File
 /**
     This method returns a SDL_Surface containing the nth frame of this animation.
-    The returned SDL_Surface should be freed with SDL_FreeSurface() if no longer needed.
     \param  frameNumber specifies which frame to return (zero based)
     \return nth frame in this animation
 */
@@ -138,7 +137,6 @@ sdl2::surface_ptr Wsafile::getPicture(Uint32 frameNumber) const {
 /// Returns a picture-row
 /**
     This method returns a SDL_Surface containing the complete animation.
-    The returned SDL_Surface should be freed with SDL_FreeSurface() if no longer needed.
     \param  numFramesX  the maximum number of frames in X direction
     \return the complete animation
 */
@@ -192,11 +190,7 @@ std::unique_ptr<Animation> Wsafile::getAnimation(unsigned int startindex, unsign
     auto animation = std::make_unique<Animation>();
 
     for(unsigned int i = startindex; i <= endindex; i++) {
-        auto tmp = getPicture(i);
-        if(tmp == nullptr) {
-            return nullptr;
-        }
-        animation->addFrame(tmp.release(),bDoublePic,bSetColorKey);
+        animation->addFrame(getPicture(i),bDoublePic,bSetColorKey);
     }
 
     return animation;

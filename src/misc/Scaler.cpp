@@ -56,15 +56,12 @@ void Scaler::setDefaultScaler(Scaler::ScalerType scaler) {
 /**
     This function doubles a surface by making 4 same-colored pixels out of one.
     \param  src             the source image
-    \param  freeSrcSurface  true = free the source surface after scaling
-    \return the scaled surface (caller must free it with SDL_FreeSurface when finished)
+    \return the scaled surface
 */
-sdl2::surface_ptr Scaler::doubleSurfaceNN(SDL_Surface* src, bool freeSrcSurface) {
+sdl2::surface_ptr Scaler::doubleSurfaceNN(SDL_Surface* src) {
     if(src == nullptr) {
         return nullptr;
     }
-
-    sdl2::surface_ptr src_handle{ freeSrcSurface ? src : nullptr };
 
     // create new picture surface
     auto returnPic = sdl2::surface_ptr{ SDL_CreateRGBSurface(0, src->w * 2, src->h * 2, 8, 0, 0, 0, 0) };
@@ -105,26 +102,22 @@ sdl2::surface_ptr Scaler::doubleSurfaceNN(SDL_Surface* src, bool freeSrcSurface)
     \param  src             the source image
     \param  tilesX          ignored
     \param  tilesY          ignored
-    \param  freeSrcSurface  true = free the source surface after scaling
-    \return the scaled surface (caller must free it with SDL_FreeSurface when finished)
+    \return the scaled surface
 */
-sdl2::surface_ptr Scaler::doubleTiledSurfaceNN(SDL_Surface* src, int tilesX, int tilesY, bool freeSrcSurface) {
-    return doubleSurfaceNN(src, freeSrcSurface);
+sdl2::surface_ptr Scaler::doubleTiledSurfaceNN(SDL_Surface* src, int tilesX, int tilesY) {
+    return doubleSurfaceNN(src);
 }
 
 
 /**
     This function triples a surface by making 9 same-colored pixels out of one.
     \param  src             the source image
-    \param  freeSrcSurface  true = free the source surface after scaling
-    \return the scaled surface (caller must free it with SDL_FreeSurface when finished)
+    \return the scaled surface
 */
-sdl2::surface_ptr Scaler::tripleSurfaceNN(SDL_Surface* src, bool freeSrcSurface) {
+sdl2::surface_ptr Scaler::tripleSurfaceNN(SDL_Surface* src) {
     if(src == nullptr) {
         return nullptr;
     }
-
-    sdl2::surface_ptr src_handle{ freeSrcSurface ? src : nullptr };
 
     // create new picture surface
     auto returnPic = sdl2::surface_ptr{ SDL_CreateRGBSurface(0, src->w * 3, src->h * 3, 8, 0, 0, 0, 0) };
@@ -170,11 +163,10 @@ sdl2::surface_ptr Scaler::tripleSurfaceNN(SDL_Surface* src, bool freeSrcSurface)
     \param  src             the source image
     \param  tilesX          ignored
     \param  tilesY          ignored
-    \param  freeSrcSurface  true = free the source surface after scaling
-    \return the scaled surface (caller must free it with SDL_FreeSurface when finished)
+    \return the scaled surface
 */
-sdl2::surface_ptr Scaler::tripleTiledSurfaceNN(SDL_Surface* src, int tilesX, int tilesY, bool freeSrcSurface) {
-    return tripleSurfaceNN(src, freeSrcSurface);
+sdl2::surface_ptr Scaler::tripleTiledSurfaceNN(SDL_Surface* src, int tilesX, int tilesY) {
+    return tripleSurfaceNN(src);
 }
 
 
@@ -184,11 +176,10 @@ sdl2::surface_ptr Scaler::tripleTiledSurfaceNN(SDL_Surface* src, int tilesX, int
 /**
     This function doubles a surface while smoothing edges (see http://scale2x.sourceforge.net/algorithm.html ).
     \param  src             the source image
-    \param  freeSrcSurface  true = free the source surface after scaling
-    \return the scaled surface (caller must free it with SDL_FreeSurface when finished)
+    \return the scaled surface
 */
-sdl2::surface_ptr Scaler::doubleSurfaceScale2x(SDL_Surface* src, bool freeSrcSurface) {
-    return doubleTiledSurfaceScale2x(src, 1, 1, freeSrcSurface);
+sdl2::surface_ptr Scaler::doubleSurfaceScale2x(SDL_Surface* src) {
+    return doubleTiledSurfaceScale2x(src, 1, 1);
 }
 
 
@@ -197,18 +188,15 @@ sdl2::surface_ptr Scaler::doubleSurfaceScale2x(SDL_Surface* src, bool freeSrcSur
     \param  src             the source image
     \param  tilesX          number of subimages in x direction
     \param  tilesY          number of subimages in y direction
-    \param  freeSrcSurface  true = free the source surface after scaling
-    \return the scaled surface (caller must free it with SDL_FreeSurface when finished)
+    \return the scaled surface
 */
-sdl2::surface_ptr Scaler::doubleTiledSurfaceScale2x(SDL_Surface* src, int tilesX, int tilesY, bool freeSrcSurface) {
+sdl2::surface_ptr Scaler::doubleTiledSurfaceScale2x(SDL_Surface* src, int tilesX, int tilesY) {
     if (src == nullptr) {
         return nullptr;
     }
 
     int srcWidth = src->w;
     int srcHeight = src->h;
-
-    sdl2::surface_ptr src_handle{ freeSrcSurface ? src : nullptr };
 
     // create new picture surface
     auto returnPic = sdl2::surface_ptr{ SDL_CreateRGBSurface(0, srcWidth*2, srcHeight*2, 8, 0, 0, 0, 0) };
@@ -294,11 +282,10 @@ sdl2::surface_ptr Scaler::doubleTiledSurfaceScale2x(SDL_Surface* src, int tilesX
 /**
     This function triples a surface while smoothing edges (see http://scale2x.sourceforge.net/algorithm.html ).
     \param  src             the source image
-    \param  freeSrcSurface  true = free the source surface after scaling
-    \return the scaled surface (caller must free it with SDL_FreeSurface when finished)
+    \return the scaled surface
 */
-sdl2::surface_ptr Scaler::tripleSurfaceScale3x(SDL_Surface* src, bool freeSrcSurface) {
-    return tripleTiledSurfaceScale3x(src, 1, 1, freeSrcSurface);
+sdl2::surface_ptr Scaler::tripleSurfaceScale3x(SDL_Surface* src) {
+    return tripleTiledSurfaceScale3x(src, 1, 1);
 }
 
 
@@ -307,18 +294,15 @@ sdl2::surface_ptr Scaler::tripleSurfaceScale3x(SDL_Surface* src, bool freeSrcSur
     \param  src             the source image
     \param  tilesX          number of subimages in x direction
     \param  tilesY          number of subimages in y direction
-    \param  freeSrcSurface  true = free the source surface after scaling
-    \return the scaled surface (caller must free it with SDL_FreeSurface when finished)
+    \return the scaled surface
 */
-sdl2::surface_ptr Scaler::tripleTiledSurfaceScale3x(SDL_Surface* src, int tilesX, int tilesY, bool freeSrcSurface) {
+sdl2::surface_ptr Scaler::tripleTiledSurfaceScale3x(SDL_Surface* src, int tilesX, int tilesY) {
     if (src == nullptr) {
         return nullptr;
     }
 
     int srcWidth = src->w;
     int srcHeight = src->h;
-
-    sdl2::surface_ptr src_handle{ freeSrcSurface ? src : nullptr };
 
     // create new picture surface
     auto returnPic = sdl2::surface_ptr{ SDL_CreateRGBSurface(0, srcWidth*3, srcHeight*3, 8, 0, 0, 0, 0) };

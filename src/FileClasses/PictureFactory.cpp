@@ -60,9 +60,9 @@ PictureFactory::PictureFactory() {
     palette.applyToSurface(background.get());
 
     auto PatternNormal = getSubPicture(FamePic.get(),0,1,63,67);
-    auto PatternHFlipped = flipHSurface(getSubPicture(FamePic.get(),0,1,63,67).release());
-    auto PatternVFlipped = flipVSurface(getSubPicture(FamePic.get(),0,1,63,67).release());
-    auto PatternHVFlipped = flipHSurface(flipVSurface(getSubPicture(FamePic.get(),0,1,63,67).release()).release());
+    auto PatternHFlipped = flipHSurface(getSubPicture(FamePic.get(),0,1,63,67).get());
+    auto PatternVFlipped = flipVSurface(getSubPicture(FamePic.get(),0,1,63,67).get());
+    auto PatternHVFlipped = flipHSurface(flipVSurface(getSubPicture(FamePic.get(),0,1,63,67).get()).get());
 
     SDL_Rect dest;
     dest.w = 63;
@@ -88,9 +88,9 @@ PictureFactory::PictureFactory() {
     // decoration border
     decorationBorder.ball = getSubPicture(ScreenPic.get(),241,124,12,11);
     decorationBorder.vspacer = getSubPicture(ScreenPic.get(),241,118,12,5);
-    decorationBorder.hspacer =  rotateSurfaceRight(copySurface(decorationBorder.vspacer.get() ).release());
+    decorationBorder.hspacer =  rotateSurfaceRight(decorationBorder.vspacer.get());
     decorationBorder.vborder =  getSubPicture(ScreenPic.get(),241,71,12,13);
-    decorationBorder.hborder =  rotateSurfaceRight(copySurface(decorationBorder.vborder.get() ).release());
+    decorationBorder.hborder =  rotateSurfaceRight(decorationBorder.vborder.get());
 
     // simple Frame
     frame[SimpleFrame].leftUpperCorner =  getSubPicture(ChoamPic.get(),120,17,8,8);
@@ -182,7 +182,7 @@ PictureFactory::PictureFactory() {
     gameStatsBackground = copySurface(background.get());
 
     {
-        auto FamePic2 = Scaler::defaultDoubleSurface(FamePic.get(), false);
+        auto FamePic2 = Scaler::defaultDoubleSurface(FamePic.get());
         auto pSurface = getSubPicture(FamePic2.get(), 16, 160, 610, 74);
         SDL_Rect dest2 = calcDrawingRect(pSurface.get(), 16, 234);
         SDL_BlitSurface(pSurface.get(), nullptr, FamePic2.get(), &dest2);
@@ -197,9 +197,9 @@ PictureFactory::PictureFactory() {
     messageBoxBorder = getSubPicture(ScreenPic.get(),0,17,320,22);
 
     if(pFileManager->exists("MISC." + _("LanguageFileExtension"))) {
-        mentatHouseChoiceQuestionSurface = Scaler::defaultDoubleSurface(LoadCPS_RW(pFileManager->openFile("MISC." + _("LanguageFileExtension")).get()).release(), true);
+        mentatHouseChoiceQuestionSurface = Scaler::defaultDoubleSurface(LoadCPS_RW(pFileManager->openFile("MISC." + _("LanguageFileExtension")).get()).get());
     } else {
-        mentatHouseChoiceQuestionSurface = Scaler::defaultDoubleSurface(LoadCPS_RW(pFileManager->openFile("MISC.CPS").get()).release(), true);
+        mentatHouseChoiceQuestionSurface = Scaler::defaultDoubleSurface(LoadCPS_RW(pFileManager->openFile("MISC.CPS").get()).get());
     }
 
 
@@ -549,7 +549,7 @@ sdl2::surface_ptr PictureFactory::createGameStatsBackground(int House) const {
             THROW(std::invalid_argument, "PictureFactory::createGameStatsBackground(): Unknown house %d!", House);
     }
 
-    pLogo = Scaler::defaultDoubleSurface(pLogo.get(), false);
+    pLogo = Scaler::defaultDoubleSurface(pLogo.get());
 
     auto dest1 = calcDrawingRect(pLogo.get(), getWidth(gameStatsBackground.get())/2 - 320 + 2, getHeight(gameStatsBackground.get())/2 - 200 + 16);
     SDL_BlitSurface(pLogo.get(), nullptr, pSurface.get(), &dest1);
@@ -714,7 +714,7 @@ sdl2::surface_ptr PictureFactory::createMapChoiceScreen(int House) const {
     SDL_Rect clearRect = {8,24,304,119};
     SDL_FillRect(pMapChoiceScreen.get(),&clearRect,PALCOLOR_TRANSPARENT);
 
-    pMapChoiceScreen = Scaler::defaultDoubleSurface(mapSurfaceColorRange(pMapChoiceScreen.get(), PALCOLOR_HARKONNEN, houseToPaletteIndex[House]).release(), true);
+    pMapChoiceScreen = Scaler::defaultDoubleSurface(mapSurfaceColorRange(pMapChoiceScreen.get(), PALCOLOR_HARKONNEN, houseToPaletteIndex[House]).get());
     auto pFullMapChoiceScreen = copySurface(background.get());
 
     SDL_Rect dest = calcAlignedDrawingRect(pMapChoiceScreen.get(), pFullMapChoiceScreen.get());
@@ -740,9 +740,9 @@ sdl2::surface_ptr PictureFactory::createMentatHouseChoiceQuestion(int House, Pal
         case HOUSE_HARKONNEN:   pQuestionPart2 = getSubPicture(mentatHouseChoiceQuestionSurface.get(),0, 48, 208, 48);   break;
         case HOUSE_ATREIDES:    pQuestionPart2 = getSubPicture(mentatHouseChoiceQuestionSurface.get(),0, 96, 208, 48);   break;
         case HOUSE_ORDOS:       pQuestionPart2 = getSubPicture(mentatHouseChoiceQuestionSurface.get(),0, 144, 208, 48);  break;
-        case HOUSE_FREMEN:      pQuestionPart2 = Scaler::defaultDoubleSurface(LoadPNG_RW(pFileManager->openFile("Fremen.png").get()).release(), true);      break;
-        case HOUSE_SARDAUKAR:   pQuestionPart2 = Scaler::defaultDoubleSurface(LoadPNG_RW(pFileManager->openFile("Sardaukar.png").get()).release(), true);   break;
-        case HOUSE_MERCENARY:   pQuestionPart2 = Scaler::defaultDoubleSurface(LoadPNG_RW(pFileManager->openFile("Mercenary.png").get()).release(), true);   break;
+        case HOUSE_FREMEN:      pQuestionPart2 = Scaler::defaultDoubleSurface(LoadPNG_RW(pFileManager->openFile("Fremen.png").get()).get());      break;
+        case HOUSE_SARDAUKAR:   pQuestionPart2 = Scaler::defaultDoubleSurface(LoadPNG_RW(pFileManager->openFile("Sardaukar.png").get()).get());   break;
+        case HOUSE_MERCENARY:   pQuestionPart2 = Scaler::defaultDoubleSurface(LoadPNG_RW(pFileManager->openFile("Mercenary.png").get()).get());   break;
         default:    break;
     }
 
@@ -774,7 +774,7 @@ sdl2::surface_ptr PictureFactory::createHeraldFre(SDL_Surface* heraldHark) const
     replaceColor(pBlueReplaced.get(), 170, 194);
     replaceColor(pBlueReplaced.get(), 173, 195);
 
-    auto pTmp1 = scaleSurface(Wsafile(pFileManager->openFile("WORM.WSA").get()).getPicture(0).release(), 0.5, true);
+    auto pTmp1 = scaleSurface(Wsafile(pFileManager->openFile("WORM.WSA").get()).getPicture(0).get(), 0.5);
     auto pSandworm = getSubPicture(pTmp1.get(), 40-18, 6-12, 83, 91);
     pTmp1.reset();
 
@@ -799,7 +799,7 @@ sdl2::surface_ptr PictureFactory::createHeraldSard(SDL_Surface* heraldOrd, SDL_S
     auto pCurtain = mapSurfaceColorRange(heraldAtre, PALCOLOR_ATREIDES, PALCOLOR_SARDAUKAR);
     pCurtain = getSubPicture(pCurtain.get(), 7, 7, 69, 49);
 
-    auto pFrameAndCurtain = combinePictures(pGreenReplaced.release(), pCurtain.release(), 7, 7);
+    auto pFrameAndCurtain = combinePictures(pGreenReplaced.get(), pCurtain.get(), 7, 7);
 
     auto pMask = sdl2::surface_ptr{ LoadPNG_RW(pFileManager->openFile("HeraldSardMask.png").get()) };
     SDL_SetColorKey(pMask.get(), SDL_TRUE, 0);
@@ -818,7 +818,7 @@ sdl2::surface_ptr PictureFactory::createHeraldMerc(SDL_Surface* heraldAtre, SDL_
     auto pCurtain = mapSurfaceColorRange(heraldOrd, PALCOLOR_ORDOS, PALCOLOR_MERCENARY);
     pCurtain = getSubPicture(pCurtain.get(), 7, 7, 69, 49);
 
-    auto pFrameAndCurtain = combinePictures(pRedReplaced.release(), pCurtain.release(), 7, 7);
+    auto pFrameAndCurtain = combinePictures(pRedReplaced.get(), pCurtain.get(), 7, 7);
 
     auto pSoldier = Wsafile(pFileManager->openFile("INFANTRY.WSA").get()).getPicture(0);
     pSoldier = getSubPicture(pSoldier.get(), 49, 17, 83, 91);
@@ -848,14 +848,14 @@ std::unique_ptr<Animation> PictureFactory::createFremenPlanet(SDL_Surface* heral
 
     drawRect(newFrame.get(), 0, 0, newFrame->w - 1, newFrame->h - 1, PALCOLOR_WHITE);
 
-    newAnimation->addFrame(newFrame.release());
+    newAnimation->addFrame(std::move(newFrame));
 
     return newAnimation;
 }
 
 std::unique_ptr<Animation> PictureFactory::createSardaukarPlanet(Animation* ordosPlanetAnimation, SDL_Surface* heraldSard) {
 
-    sdl2::surface_ptr maskSurface{ Scaler::defaultDoubleSurface(LoadPNG_RW(pFileManager->openFile("PlanetMask.png").get()).release(), true) };
+    sdl2::surface_ptr maskSurface{ Scaler::defaultDoubleSurface(LoadPNG_RW(pFileManager->openFile("PlanetMask.png").get()).get()) };
     SDL_SetColorKey(maskSurface.get(), SDL_TRUE, 0);
 
     auto newAnimation = std::make_unique<Animation>();
@@ -893,7 +893,7 @@ std::unique_ptr<Animation> PictureFactory::createSardaukarPlanet(Animation* ordo
         SDL_Rect dest = calcDrawingRect(heraldSard, 12, 66);
         SDL_BlitSurface(heraldSard,&src,newFrame.get(),&dest);
 
-        newAnimation->addFrame(newFrame.release());
+        newAnimation->addFrame(std::move(newFrame));
     }
 
     return newAnimation;
@@ -933,7 +933,7 @@ std::unique_ptr<Animation> PictureFactory::createMercenaryPlanet(Animation* atre
         SDL_Rect dest = calcDrawingRect(heraldMerc, 12, 66);
         SDL_BlitSurface(heraldMerc,&src,newFrame.get(),&dest);
 
-        newAnimation->addFrame(newFrame.release());
+        newAnimation->addFrame(std::move(newFrame));
     }
 
     return newAnimation;
@@ -959,7 +959,7 @@ std::unique_ptr<Animation> PictureFactory::mapMentatAnimationToFremen(Animation*
     auto newAnimation = std::make_unique<Animation>();
 
     for(const sdl2::surface_ptr& pSurface : fremenAnimation->getFrames()) {
-        newAnimation->addFrame(mapMentatSurfaceToFremen(pSurface.get()).release());
+        newAnimation->addFrame(mapMentatSurfaceToFremen(pSurface.get()));
     }
 
     newAnimation->setFrameDurationTime(fremenAnimation->getFrameDurationTime());
@@ -995,7 +995,7 @@ std::unique_ptr<Animation> PictureFactory::mapMentatAnimationToSardaukar(Animati
     auto newAnimation = std::make_unique<Animation>();
 
     for(const sdl2::surface_ptr& pSurface : harkonnenAnimation->getFrames()) {
-        newAnimation->addFrame(mapMentatSurfaceToSardaukar(pSurface.get()).release());
+        newAnimation->addFrame(mapMentatSurfaceToSardaukar(pSurface.get()));
     }
 
     newAnimation->setFrameDurationTime(harkonnenAnimation->getFrameDurationTime());
@@ -1008,7 +1008,7 @@ std::unique_ptr<Animation> PictureFactory::mapMentatAnimationToMercenary(Animati
     auto newAnimation = std::make_unique<Animation>();
 
     for(const sdl2::surface_ptr& pSurface : ordosAnimation->getFrames()) {
-        newAnimation->addFrame(mapMentatSurfaceToMercenary(pSurface.get()).release());
+        newAnimation->addFrame(mapMentatSurfaceToMercenary(pSurface.get()));
     }
 
     newAnimation->setFrameDurationTime(ordosAnimation->getFrameDurationTime());

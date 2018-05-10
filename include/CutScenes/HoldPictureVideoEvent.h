@@ -31,10 +31,9 @@ public:
         Constructor
         \param  pSurface            The picture to show
         \param  numFrames2Hold      The number of frames the picture should be shown
-        \param  bFreeSurface        true = SDL_FreeSurface(pSurface) after this VideoEvent in is done, false = pSurface is not freed
         \param  bCenterVertical     true = center the surface vertically on the screen, false = blit the surface at the top of the screen (default is true)
     */
-    HoldPictureVideoEvent(SDL_Surface* pSurface, int numFrames2Hold, bool bFreeSurface, bool bCenterVertical = true);
+    HoldPictureVideoEvent(SDL_Surface* pSurface, int numFrames2Hold, bool bCenterVertical = true);
 
     /// destructor
     virtual ~HoldPictureVideoEvent();

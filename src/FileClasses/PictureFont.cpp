@@ -30,7 +30,7 @@ PictureFont::PictureFont(SDL_Surface* pic)
         THROW(std::invalid_argument, "PictureFont::PictureFont(): pic == nullptr!");
     }
 
-    sdl2::surface_lock{ pic };
+    sdl2::surface_lock lock{ pic };
 
     characterHeight = pic->h - 2;
 

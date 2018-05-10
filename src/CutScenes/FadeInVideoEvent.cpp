@@ -23,9 +23,9 @@
 
 #include <algorithm>
 
-FadeInVideoEvent::FadeInVideoEvent(SDL_Surface* pSurface, int numFrames2FadeIn, bool bFreeSurface, bool bCenterVertical, bool bFadeWhite)
+FadeInVideoEvent::FadeInVideoEvent(SDL_Surface* pSurface, int numFrames2FadeIn, bool bCenterVertical, bool bFadeWhite)
 {
-    sdl2::surface_ptr pTmp = convertSurfaceToDisplayFormat(Scaler::defaultDoubleSurface(pSurface, bFreeSurface).release(), true);
+    sdl2::surface_ptr pTmp = convertSurfaceToDisplayFormat(Scaler::defaultDoubleSurface(pSurface).get());
     pTexture = sdl2::texture_ptr{ SDL_CreateTextureFromSurface(renderer, pTmp.get()) };
 
     SDL_SetTextureBlendMode(pTexture.get(), SDL_BLENDMODE_BLEND);

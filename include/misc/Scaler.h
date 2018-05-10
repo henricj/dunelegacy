@@ -22,8 +22,8 @@
 
 #include <string>
 
-typedef sdl2::surface_ptr DoubleSurfaceFunction(SDL_Surface*, bool);
-typedef sdl2::surface_ptr DoubleTiledSurfaceFunction(SDL_Surface*, int, int, bool);
+typedef sdl2::surface_ptr DoubleSurfaceFunction(SDL_Surface*);
+typedef sdl2::surface_ptr DoubleTiledSurfaceFunction(SDL_Surface*, int, int);
 
 
 class Scaler {
@@ -69,19 +69,19 @@ public:
 
 
     // nearest neighbor scaling
-    static sdl2::surface_ptr doubleSurfaceNN(SDL_Surface* src, bool freeSrcSurface = true);
-    static sdl2::surface_ptr doubleTiledSurfaceNN(SDL_Surface* src, int tilesX = 1, int tilesY = 1, bool freeSrcSurface = true);
+    static sdl2::surface_ptr doubleSurfaceNN(SDL_Surface* src);
+    static sdl2::surface_ptr doubleTiledSurfaceNN(SDL_Surface* src, int tilesX = 1, int tilesY = 1);
 
-    static sdl2::surface_ptr tripleSurfaceNN(SDL_Surface* src, bool freeSrcSurface = true);
-    static sdl2::surface_ptr tripleTiledSurfaceNN(SDL_Surface* src, int tilesX = 1, int tilesY = 1, bool freeSrcSurface = true);
+    static sdl2::surface_ptr tripleSurfaceNN(SDL_Surface* src);
+    static sdl2::surface_ptr tripleTiledSurfaceNN(SDL_Surface* src, int tilesX = 1, int tilesY = 1);
 
 
     // scale2x and scale3x algorithms (see http://scale2x.sourceforge.net/algorithm.html)
-    static sdl2::surface_ptr doubleSurfaceScale2x(SDL_Surface* src, bool freeSrcSurface = true);
-    static sdl2::surface_ptr doubleTiledSurfaceScale2x(SDL_Surface* src, int tilesX = 1, int tilesY = 1, bool freeSrcSurface = true);
+    static sdl2::surface_ptr doubleSurfaceScale2x(SDL_Surface* src);
+    static sdl2::surface_ptr doubleTiledSurfaceScale2x(SDL_Surface* src, int tilesX = 1, int tilesY = 1);
 
-    static sdl2::surface_ptr tripleSurfaceScale3x(SDL_Surface* src, bool freeSrcSurface = true);
-    static sdl2::surface_ptr tripleTiledSurfaceScale3x(SDL_Surface* src, int tilesX = 1, int tilesY = 1, bool freeSrcSurface = true);
+    static sdl2::surface_ptr tripleSurfaceScale3x(SDL_Surface* src);
+    static sdl2::surface_ptr tripleTiledSurfaceScale3x(SDL_Surface* src, int tilesX = 1, int tilesY = 1);
 
 };
 

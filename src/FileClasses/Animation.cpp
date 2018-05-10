@@ -84,16 +84,16 @@ SDL_Texture* Animation::getFrameTexture() {
     return frameTextures[index].get();
 }
 
-void Animation::addFrame(SDL_Surface* newFrame, bool bDoublePic, bool bSetColorKey) {
+void Animation::addFrame(sdl2::surface_ptr newFrame, bool bDoublePic, bool bSetColorKey) {
     if(bDoublePic == true) {
-        newFrame = Scaler::defaultDoubleSurface(newFrame,true).release();
+        newFrame = Scaler::defaultDoubleSurface(newFrame.get());
     }
 
     if(bSetColorKey == true) {
-        SDL_SetColorKey(newFrame, SDL_TRUE, 0);
+        SDL_SetColorKey(newFrame.get(), SDL_TRUE, 0);
     }
 
-    frames.emplace_back(newFrame);
+    frames.emplace_back(std::move(newFrame));
 }
 
 void Animation::setPalette(const Palette& newPalette) {

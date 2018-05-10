@@ -31,11 +31,10 @@ public:
         Constructor
         \param  pSurface            The picture to fade out
         \param  numFrames2FadeOut   The number of frames the fading should take
-        \param  bFreeSurface        true = SDL_FreeSurface(pSurface) after fading out is done, false = pSurface is not freed
         \param  bCenterVertical     true = center the surface vertically on the screen, false = blit the surface at the top of the screen (default is true)
         \param  bFadeWhite          true = fade to white, false = fade to black (default is false)
     */
-    FadeOutVideoEvent(SDL_Surface* pSurface, int numFrames2FadeOut, bool bFreeSurface, bool bCenterVertical = true, bool bFadeWhite = false);
+    FadeOutVideoEvent(SDL_Surface* pSurface, int numFrames2FadeOut, bool bCenterVertical = true, bool bFadeWhite = false);
 
     /// destructor
     virtual ~FadeOutVideoEvent();

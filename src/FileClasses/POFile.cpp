@@ -50,7 +50,7 @@ static std::string extractString(const std::string& str, const std::string& file
     return convertUTF8ToISO8859_1(unescapeString(str.substr(firstQuote+1, lastQuote-firstQuote-1)));
 }
 
-std::map<std::string, std::string> loadPOFile(SDL_RWops* rwop, bool freesrc, const std::string& filename) {
+std::map<std::string, std::string> loadPOFile(SDL_RWops* rwop, const std::string& filename) {
 
     std::map<std::string, std::string> mapping;
 
@@ -127,11 +127,6 @@ std::map<std::string, std::string> loadPOFile(SDL_RWops* rwop, bool freesrc, con
         // we have a last translation to finish
         mapping[msgid] = msgstr;
     }
-
-    if(freesrc) {
-        SDL_RWclose(rwop);
-    }
-
 
     return mapping;
 }

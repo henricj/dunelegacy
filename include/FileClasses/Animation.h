@@ -59,7 +59,7 @@ public:
         return frameDurationTime;
     }
 
-    void addFrame(SDL_Surface* newFrame, bool bDoublePic = false, bool bSetColorKey = false);
+    void addFrame(sdl2::surface_ptr newFrame, bool bDoublePic = false, bool bSetColorKey = false);
 
     void setPalette(const Palette& newPalette);
 

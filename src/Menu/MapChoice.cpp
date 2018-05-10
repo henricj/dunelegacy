@@ -82,7 +82,7 @@ MapChoice::MapChoice(int newHouse, unsigned int lastMission, Uint32 oldAlreadyPl
             // first time we're on the map choice screen
 
             // create black rectangle
-            mapSurface = convertSurfaceToDisplayFormat(copySurface(pGFXManager->getUIGraphicSurface(UI_MapChoicePlanet)).release(), true);
+            mapSurface = convertSurfaceToDisplayFormat(pGFXManager->getUIGraphicSurface(UI_MapChoicePlanet));
             SDL_Rect dest = { 16, 48, 608, 240 };
             SDL_FillRect(mapSurface.get(), &dest, COLOR_BLACK);
             mapTexture = sdl2::texture_ptr{ SDL_CreateTexture(renderer, SCREEN_FORMAT, SDL_TEXTUREACCESS_STREAMING, mapSurface->w, mapSurface->h) };
@@ -129,9 +129,9 @@ void MapChoice::drawSpecificStuff() {
 
         case MAPCHOICESTATE_FADEINPLANET: {
             if(curBlendBlitter == nullptr) {
-                sdl2::surface_ptr pSurface = convertSurfaceToDisplayFormat(pGFXManager->getUIGraphicSurface(UI_MapChoicePlanet), false);
+                sdl2::surface_ptr pSurface = convertSurfaceToDisplayFormat(pGFXManager->getUIGraphicSurface(UI_MapChoicePlanet));
                 SDL_Rect dest = { 0, 0, getWidth(pSurface.get()), getHeight(pSurface.get()) };
-                curBlendBlitter = std::make_unique<BlendBlitter>(pSurface.release(), true, mapSurface.get(), dest);
+                curBlendBlitter = std::make_unique<BlendBlitter>(std::move(pSurface), mapSurface.get(), dest);
             }
 
             if(curBlendBlitter != nullptr) {
@@ -157,9 +157,9 @@ void MapChoice::drawSpecificStuff() {
 
         case MAPCHOICESTATE_BLENDPLANET: {
             if(curBlendBlitter == nullptr) {
-                sdl2::surface_ptr pSurface = convertSurfaceToDisplayFormat(pGFXManager->getUIGraphicSurface(UI_MapChoiceMapOnly), false);
+                sdl2::surface_ptr pSurface = convertSurfaceToDisplayFormat(pGFXManager->getUIGraphicSurface(UI_MapChoiceMapOnly));
                 SDL_Rect dest = { 0, 0, getWidth(pSurface.get()), getHeight(pSurface.get()) };
-                curBlendBlitter = std::make_unique< BlendBlitter>(pSurface.release(), true, mapSurface.get(), dest);
+                curBlendBlitter = std::make_unique< BlendBlitter>(std::move(pSurface), mapSurface.get(), dest);
             }
 
             if(curBlendBlitter != nullptr) {
@@ -185,9 +185,9 @@ void MapChoice::drawSpecificStuff() {
 
         case MAPCHOICESTATE_BLENDMAP: {
             if(curBlendBlitter == nullptr) {
-                sdl2::surface_ptr pSurface = convertSurfaceToDisplayFormat(pGFXManager->getUIGraphicSurface(UI_MapChoiceMap), false);
+                sdl2::surface_ptr pSurface = convertSurfaceToDisplayFormat(pGFXManager->getUIGraphicSurface(UI_MapChoiceMap));
                 SDL_Rect dest = { 0, 0, getWidth(pSurface.get()), getHeight(pSurface.get()) };
-                curBlendBlitter = std::make_unique<BlendBlitter>(pSurface.release(), true, mapSurface.get(), dest);
+                curBlendBlitter = std::make_unique<BlendBlitter>(std::move(pSurface), mapSurface.get(), dest);
             }
 
             if(curBlendBlitter != nullptr) {
@@ -216,9 +216,9 @@ void MapChoice::drawSpecificStuff() {
                 if((curHouse2Blit < NUM_HOUSES)&&(curRegion2Blit < group[lastScenario].newRegion[(curHouse2Blit + house) % NUM_HOUSES].size())) {
                     // there is still some region to blend in
                     const int pieceNum = (group[lastScenario].newRegion[(curHouse2Blit + house) % NUM_HOUSES])[curRegion2Blit];
-                    sdl2::surface_ptr pPieceSurface = convertSurfaceToDisplayFormat(pGFXManager->getMapChoicePieceSurface(pieceNum,(curHouse2Blit + house) % NUM_HOUSES), false);
+                    sdl2::surface_ptr pPieceSurface = convertSurfaceToDisplayFormat(pGFXManager->getMapChoicePieceSurface(pieceNum,(curHouse2Blit + house) % NUM_HOUSES));
                     SDL_Rect dest = calcDrawingRect(pPieceSurface.get(), piecePosition[pieceNum].x, piecePosition[pieceNum].y);
-                    curBlendBlitter = std::make_unique<BlendBlitter>(pPieceSurface.release(), true, mapSurface.get(), dest);
+                    curBlendBlitter = std::make_unique<BlendBlitter>(std::move(pPieceSurface), mapSurface.get(), dest);
                     curRegion2Blit++;
 
                     // have to show some text?
@@ -344,7 +344,7 @@ bool MapChoice::doInput(SDL_Event &event) {
 
 void MapChoice::createMapSurfaceWithPieces(unsigned int scenario) {
     // Load map surface
-    mapSurface = convertSurfaceToDisplayFormat(copySurface(pGFXManager->getUIGraphicSurface(UI_MapChoiceMap)).release(), true);
+    mapSurface = convertSurfaceToDisplayFormat(pGFXManager->getUIGraphicSurface(UI_MapChoiceMap));
     mapTexture = sdl2::texture_ptr{ SDL_CreateTexture(renderer, SCREEN_FORMAT, SDL_TEXTUREACCESS_STREAMING, mapSurface->w, mapSurface->h) };
     SDL_SetTextureBlendMode(mapTexture.get(), SDL_BLENDMODE_BLEND);
 

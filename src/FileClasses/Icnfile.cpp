@@ -184,7 +184,6 @@ Icnfile::~Icnfile() = default;
 /// Returns one tile in the icn-File
 /**
     This method returns a SDL_Surface containing the nth tile/picture in the icn-File.
-    The returned SDL_Surface should be freed with SDL_FreeSurface() if no longer needed.
     \param  indexOfFile specifies which tile/picture to return (zero based)
     \return nth tile/picture in this icn-File
 */
@@ -248,7 +247,6 @@ sdl2::surface_ptr Icnfile::getPicture(Uint32 indexOfFile) const {
      12 13 16 17 20 21
     \endcode
     <br>
-    The returned SDL_Surface should be freed with SDL_FreeSurface() if no longer needed.
     \param  mapfileIndex    specifies which tileset to use (zero based)
     \param  tilesX          how many tiles in x direction
     \param  tilesY          how many tiles in y direction
@@ -363,7 +361,6 @@ sdl2::surface_ptr Icnfile::getPictureArray(Uint32 mapfileIndex, int tilesX, int 
 /**
     This method returns a SDL_Surface containing multiple tiles/pictures. The returned surface contains all
     tiles from startIndex to endIndex.
-    The returned SDL_Surface should be freed with SDL_FreeSurface() if no longer needed.
     \param  startIndex      The first tile to use
     \param  endIndex        The last tile to use
     \param  maxRowLength    Used to limit the number of tiles per row and put the remaining tiles on the following rows (0 equals no row limitation)
@@ -423,8 +420,7 @@ sdl2::surface_ptr Icnfile::getPictureRow(Uint32 startIndex, Uint32 endIndex, Uin
 /// Returns a row of pictures in the icn-File
 /**
     This method returns a SDL_Surface containing multiple tiles/pictures. The returned surface contains all
-    tiles specified be the parameters
-    The returned SDL_Surface should be freed with SDL_FreeSurface() if no longer needed.
+    tiles specified be the parameters.
     \param  numTiles    the number of tiles that should be extrated.
     \return the result surface with all specified tiles in a row. nullptr on errors.
 */

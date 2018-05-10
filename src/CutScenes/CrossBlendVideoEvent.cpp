@@ -20,17 +20,17 @@
 #include <misc/Scaler.h>
 #include <globals.h>
 
-CrossBlendVideoEvent::CrossBlendVideoEvent(SDL_Surface* pSourceSurface, SDL_Surface* pDestSurface, bool bFreeSurfaces, bool bCenterVertical)
+CrossBlendVideoEvent::CrossBlendVideoEvent(SDL_Surface* pStartSurface, SDL_Surface* pEndSurface, bool bCenterVertical)
 {
-    this->pSourceSurface = convertSurfaceToDisplayFormat(Scaler::defaultDoubleTiledSurface(pSourceSurface, 1, 1, bFreeSurfaces).release(), true);
-    this->pDestSurface = convertSurfaceToDisplayFormat(Scaler::defaultDoubleTiledSurface(pDestSurface, 1, 1, bFreeSurfaces).release(), true);
+    pBlendBlitterTargetSurface = convertSurfaceToDisplayFormat(Scaler::defaultDoubleTiledSurface(pStartSurface, 1, 1).get());
     this->bCenterVertical = bCenterVertical;
     currentFrame = 0;
 
-    pStreamingTexture = sdl2::texture_ptr{ SDL_CreateTexture(renderer, SCREEN_FORMAT, SDL_TEXTUREACCESS_STREAMING, this->pSourceSurface->w, this->pSourceSurface->h) };
+    pStreamingTexture = sdl2::texture_ptr{ SDL_CreateTexture(renderer, SCREEN_FORMAT, SDL_TEXTUREACCESS_STREAMING, pBlendBlitterTargetSurface->w, pBlendBlitterTargetSurface->h) };
 
-    const SDL_Rect dest = { 0,0, getWidth(this->pSourceSurface.get()), getHeight(this->pSourceSurface.get()) };
-    pBlendBlitter = std::make_unique<BlendBlitter>(this->pDestSurface.get(), false, this->pSourceSurface.get(), dest, 30);
+    const SDL_Rect dest = { 0,0, getWidth(pBlendBlitterTargetSurface.get()), getHeight(pBlendBlitterTargetSurface.get()) };
+    auto pBlendBlitterSourceSurface = convertSurfaceToDisplayFormat(Scaler::defaultDoubleTiledSurface(pEndSurface, 1, 1).get());
+    pBlendBlitter = std::make_unique<BlendBlitter>(std::move(pBlendBlitterSourceSurface), pBlendBlitterTargetSurface.get(), dest, 30);
 }
 
 CrossBlendVideoEvent::~CrossBlendVideoEvent() = default;
@@ -41,7 +41,7 @@ int CrossBlendVideoEvent::draw()
         pBlendBlitter.reset();
     }
 
-    SDL_UpdateTexture(pStreamingTexture.get(), nullptr, pSourceSurface->pixels, pSourceSurface->pitch);
+    SDL_UpdateTexture(pStreamingTexture.get(), nullptr, pBlendBlitterTargetSurface->pixels, pBlendBlitterTargetSurface->pitch);
 
     auto dest = calcAlignedDrawingRect(pStreamingTexture.get(), HAlign::Center, bCenterVertical ? VAlign::Center : VAlign::Top);
 

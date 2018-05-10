@@ -33,7 +33,7 @@ WSAVideoEvent::~WSAVideoEvent() = default;
 
 int WSAVideoEvent::draw()
 {
-    sdl2::surface_ptr pSurface = convertSurfaceToDisplayFormat(Scaler::defaultDoubleSurface(pWsafile->getPicture(currentFrame).release(), true).release(), true);
+    sdl2::surface_ptr pSurface = convertSurfaceToDisplayFormat(Scaler::defaultDoubleSurface(pWsafile->getPicture(currentFrame).get()).get());
 
     SDL_UpdateTexture(pStreamingTexture.get(), nullptr, pSurface->pixels, pSurface->pitch);
 
