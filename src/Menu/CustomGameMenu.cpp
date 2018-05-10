@@ -322,15 +322,15 @@ void CustomGameMenu::onMapListSelectionChange(bool bInteractive)
 
     mapPropertySize.setText(stringify(sizeX) + " x " + stringify(sizeY));
 
-    SDL_Surface* pMapSurface = nullptr;
+    sdl2::surface_ptr pMapSurface = nullptr;
     try {
         INIMapPreviewCreator mapPreviewCreator(&inimap);
         pMapSurface = mapPreviewCreator.createMinimapImageOfMap(1, DuneStyle::buttonBorderColor);
     } catch(...) {
-        pMapSurface = GUIStyle::getInstance().createButtonSurface(130, 130, "Error", true, false);
+        pMapSurface = sdl2::surface_ptr{ GUIStyle::getInstance().createButtonSurface(130, 130, "Error", true, false) };
         loadButton.setEnabled(false);
     }
-    minimap.setSurface(pMapSurface, true);
+    minimap.setSurface(pMapSurface.release(), true);
 
     int numPlayers = 0;
     if(inimap.hasSection("Atreides")) numPlayers++;

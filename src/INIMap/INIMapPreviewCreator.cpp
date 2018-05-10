@@ -30,17 +30,16 @@ INIMapPreviewCreator::~INIMapPreviewCreator() = default;
     \param  borderColor the color of the border
     \return the minimap of size (128+2*borderWidth)x(128+2*borderWidth)
 */
-SDL_Surface* INIMapPreviewCreator::createMinimapImageOfMap(int borderWidth, Uint32 borderColor) {
+sdl2::surface_ptr INIMapPreviewCreator::createMinimapImageOfMap(int borderWidth, Uint32 borderColor) {
     checkFeatures();
 
-    SDL_Surface* pMinimap;
-    // create surface
-    if((pMinimap = SDL_CreateRGBSurface(0, 128+2*borderWidth, 128+2*borderWidth, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK)) == nullptr) {
+    auto pMinimap = sdl2::surface_ptr{ SDL_CreateRGBSurface(0, 128+2*borderWidth, 128+2*borderWidth, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK) };
+    if(pMinimap == nullptr) {
         return nullptr;
     }
-    SDL_FillRect(pMinimap, nullptr, borderColor);
+    SDL_FillRect(pMinimap.get(), nullptr, borderColor);
     SDL_Rect dest = { borderWidth, borderWidth, pMinimap->w - 2*borderWidth, pMinimap->h - 2*borderWidth};
-    SDL_FillRect(pMinimap, &dest, COLOR_BLACK);
+    SDL_FillRect(pMinimap.get(), &dest, COLOR_BLACK);
 
     int version = inifile->getIntValue("BASIC", "Version", 1);
 
@@ -59,7 +58,6 @@ SDL_Surface* INIMapPreviewCreator::createMinimapImageOfMap(int borderWidth, Uint
         int SeedNum = inifile->getIntValue("MAP","Seed",-1);
 
         if(SeedNum == -1) {
-            SDL_FreeSurface(pMinimap);
             logError("Cannot read Seed in this map!");
         }
 
@@ -95,7 +93,6 @@ SDL_Surface* INIMapPreviewCreator::createMinimapImageOfMap(int borderWidth, Uint
             } break;
 
             default: {
-                SDL_FreeSurface(pMinimap);
                 logError("Unknown MapScale!");
             } break;
         }
@@ -135,7 +132,6 @@ SDL_Surface* INIMapPreviewCreator::createMinimapImageOfMap(int borderWidth, Uint
                     }
 
                 } else {
-                    SDL_FreeSurface(pMinimap);
                     logError(inifile->getKey("MAP", "Field")->getLineNumber(), "Invalid value for key Field: " + FieldString);
                 }
             }
@@ -181,7 +177,7 @@ SDL_Surface* INIMapPreviewCreator::createMinimapImageOfMap(int borderWidth, Uint
 
                 for(int i=0;i<scale;i++) {
                     for(int j=0;j<scale;j++) {
-                        putPixel(pMinimap, x*scale + i + offsetX, y*scale + j + offsetY, color);
+                        putPixel(pMinimap.get(), x*scale + i + offsetX, y*scale + j + offsetY, color);
                     }
                 }
             }
@@ -201,12 +197,11 @@ SDL_Surface* INIMapPreviewCreator::createMinimapImageOfMap(int borderWidth, Uint
                     if(xpos >= 0 && xpos < sizeX && ypos >= 0 && ypos < sizeY) {
                         for(int i=0;i<scale;i++) {
                             for(int j=0;j<scale;j++) {
-                                putPixel(pMinimap, xpos*scale + i + offsetX, ypos*scale + j + offsetY, COLOR_BLOOM);
+                                putPixel(pMinimap.get(), xpos*scale + i + offsetX, ypos*scale + j + offsetY, COLOR_BLOOM);
                             }
                         }
                     }
                 } else {
-                    SDL_FreeSurface(pMinimap);
                     logError(inifile->getKey("MAP", "Bloom")->getLineNumber(), "Invalid value for key Bloom: " + BloomString);
                 }
             }
@@ -226,12 +221,11 @@ SDL_Surface* INIMapPreviewCreator::createMinimapImageOfMap(int borderWidth, Uint
                     if(xpos >= 0 && xpos < sizeX && ypos >= 0 && ypos < sizeY) {
                         for(int i=0;i<scale;i++) {
                             for(int j=0;j<scale;j++) {
-                                putPixel(pMinimap, xpos*scale + i + offsetX, ypos*scale + j + offsetY, COLOR_BLOOM);
+                                putPixel(pMinimap.get(), xpos*scale + i + offsetX, ypos*scale + j + offsetY, COLOR_BLOOM);
                             }
                         }
                     }
                 } else {
-                    SDL_FreeSurface(pMinimap);
                     logError(inifile->getKey("MAP", "Special")->getLineNumber(), "Invalid value for key Special: " + SpecialString);
                 }
             }
@@ -242,7 +236,6 @@ SDL_Surface* INIMapPreviewCreator::createMinimapImageOfMap(int borderWidth, Uint
         // new map format with saved map
 
         if((inifile->hasKey("MAP","SizeX") == false) || (inifile->hasKey("MAP","SizeY") == false)) {
-            SDL_FreeSurface(pMinimap);
             logError("SizeX and SizeY must be specified!");
         }
 
@@ -261,7 +254,6 @@ SDL_Surface* INIMapPreviewCreator::createMinimapImageOfMap(int borderWidth, Uint
             std::string rowKey = fmt::sprintf("%.3d", y);
 
             if(inifile->hasKey("MAP", rowKey) == false) {
-                SDL_FreeSurface(pMinimap);
                 logError(inifile->getSection("MAP").getLineNumber(), "Map row " + stringify(y) + " does not exist!");
             }
 
@@ -306,14 +298,13 @@ SDL_Surface* INIMapPreviewCreator::createMinimapImageOfMap(int borderWidth, Uint
                     } break;
 
                     default: {
-                        SDL_FreeSurface(pMinimap);
                         logError(inifile->getKey("MAP", rowKey)->getLineNumber(), std::string("Unknown map tile type '") + rowString.at(x) + "' in map tile (" + stringify(x) + ", " + stringify(y) + ")!");
                     } break;
                 }
 
                 for(int i=0;i<scale;i++) {
                     for(int j=0;j<scale;j++) {
-                        putPixel(pMinimap, x*scale + i + offsetX, y*scale + j + offsetY, color);
+                        putPixel(pMinimap.get(), x*scale + i + offsetX, y*scale + j + offsetY, color);
                     }
                 }
             }
@@ -352,7 +343,6 @@ SDL_Surface* INIMapPreviewCreator::createMinimapImageOfMap(int borderWidth, Uint
                             color = COLOR_RGB(val, val, val);
                         }
                     } else {
-                        SDL_FreeSurface(pMinimap);
                         logError(key.getLineNumber(), "Invalid house string: '" + HouseStr + "'!");
                     }
                 }
@@ -366,7 +356,7 @@ SDL_Surface* INIMapPreviewCreator::createMinimapImageOfMap(int borderWidth, Uint
                     if(x >= 0 && x < sizeX && y >= 0 && y < sizeY) {
                         for(int i=0;i<scale;i++) {
                             for(int j=0;j<scale;j++) {
-                                putPixel(pMinimap, x*scale + i + offsetX, y*scale + j + offsetY, color);
+                                putPixel(pMinimap.get(), x*scale + i + offsetX, y*scale + j + offsetY, color);
                             }
                         }
                     }
@@ -395,7 +385,6 @@ SDL_Surface* INIMapPreviewCreator::createMinimapImageOfMap(int borderWidth, Uint
                             color = COLOR_RGB(val, val, val);
                         }
                     } else {
-                        SDL_FreeSurface(pMinimap);
                         logError(key.getLineNumber(), "Invalid house string: '" + HouseStr + "'!");
                     }
                 }
@@ -409,7 +398,7 @@ SDL_Surface* INIMapPreviewCreator::createMinimapImageOfMap(int borderWidth, Uint
                         if(x >= 0 && x < sizeX && y >= 0 && y < sizeY) {
                             for(int i=0;i<scale;i++) {
                                 for(int j=0;j<scale;j++) {
-                                    putPixel(pMinimap, x*scale + i + offsetX, y*scale + j + offsetY, color);
+                                    putPixel(pMinimap.get(), x*scale + i + offsetX, y*scale + j + offsetY, color);
                                 }
                             }
                         }

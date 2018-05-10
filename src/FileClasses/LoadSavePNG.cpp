@@ -162,28 +162,26 @@ int SavePNG_RW(SDL_Surface* surface, SDL_RWops* RWop) {
     unsigned int width = surface->w;
     unsigned int height = surface->h;
 
-    unsigned char* pImage = (unsigned char*) malloc(width*height*4);
+    std::vector<unsigned char> image(width*height*4);
 
-    SDL_LockSurface(surface);
+    {
+        sdl2::surface_lock lock{ surface };
 
-    // Now we can copy pixel by pixel
-    for(unsigned int y = 0; y < height; y++) {
-        unsigned char* out = pImage + y * 4*width;
-        for(unsigned int x = 0; x < width; x++) {
-            Uint32 pixel = getPixel(surface, x, y);
-            SDL_GetRGBA(pixel, surface->format, &out[0], &out[1], &out[2], &out[3]);
-            out += 4;
+        // Now we can copy pixel by pixel
+        for(unsigned int y = 0; y < height; y++) {
+            unsigned char* out = image.data() + y * 4*width;
+            for(unsigned int x = 0; x < width; x++) {
+                Uint32 pixel = getPixel(surface, x, y);
+                SDL_GetRGBA(pixel, surface->format, &out[0], &out[1], &out[2], &out[3]);
+                out += 4;
+            }
         }
     }
-
-    SDL_UnlockSurface(surface);
-
 
     unsigned char* ppngFile;
     size_t pngFileSize;
 
-    unsigned int error = lodepng_encode32(&ppngFile, &pngFileSize, pImage, width, height);
-    free(pImage);
+    unsigned int error = lodepng_encode32(&ppngFile, &pngFileSize, image.data(), width, height);
     if(error != 0) {
         SDL_Log("%s", lodepng_error_text(error));
         return -1;

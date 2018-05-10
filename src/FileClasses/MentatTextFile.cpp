@@ -26,8 +26,6 @@
 #include <algorithm>
 
 MentatTextFile::MentatTextFile(SDL_RWops* rwop) {
-    unsigned char* pFiledata;
-
     if(rwop == nullptr) {
         THROW(std::invalid_argument, "MentatTextFile:MentatTextFile(): rwop == nullptr!");
     }
@@ -43,35 +41,30 @@ MentatTextFile::MentatTextFile(SDL_RWops* rwop) {
         THROW(std::runtime_error, "MentatTextFile:MentatTextFile(): No valid mentat textfile: File too small!");
     }
 
-    if( (pFiledata = (unsigned char*) malloc(mentatTextFilesize)) == nullptr) {
-        throw std::bad_alloc();
-    }
+    std::vector<unsigned char> filedata(mentatTextFilesize);
 
-    if(SDL_RWread(rwop, pFiledata, mentatTextFilesize, 1) != 1) {
-        free(pFiledata);
+    if(SDL_RWread(rwop, filedata.data(), mentatTextFilesize, 1) != 1) {
         THROW(std::runtime_error, "MentatTextFile:MentatTextFile(): Reading this mentat textfile failed!");
     }
 
-    if((pFiledata[0] != 'F') || (pFiledata[1] != 'O') || (pFiledata[2] != 'R') || (pFiledata[3] != 'M')) {
-        free(pFiledata);
+    if(memcmp(&filedata[0], "FORM", 4) != 0) {
         THROW(std::runtime_error, "MentatTextFile:MentatTextFile(): Invalid mentat textfile! Must start with 'FORM'");
     }
 
-    Uint32 formSectionSize = SDL_SwapBE32(*((Uint32*) (pFiledata+4)));
+    Uint32 formSectionSize = SDL_SwapBE32(*((Uint32*) (filedata.data()+4)));
 
     if(formSectionSize + 8 != mentatTextFilesize) {
-        free(pFiledata);
         THROW(std::runtime_error, "MentatTextFile:MentatTextFile(): Invalid mentat textfile!");
     }
 
-    if((pFiledata[8] != 'M') || (pFiledata[9] != 'E') || (pFiledata[10] != 'N') || (pFiledata[11] != 'T') || (pFiledata[12] != 'N') || (pFiledata[13] != 'A') || (pFiledata[14] != 'M') || (pFiledata[15] != 'E')) {
-        free(pFiledata);
+    // MENTNAME
+    if(memcmp(&filedata[8], "MENTNAME", 8) != 0) {
         THROW(std::runtime_error, "MentatTextFile:MentatTextFile(): Invalid mentat textfile!");
     }
 
-    Uint32 mentnameSectionSize = SDL_SwapBE32(*((Uint32*) (pFiledata+16)));
+    Uint32 mentnameSectionSize = SDL_SwapBE32(*((Uint32*) (filedata.data()+16)));
 
-    unsigned char* pMentNameSection = pFiledata + 20;
+    unsigned char* pMentNameSection = filedata.data() + 20;
 
     unsigned char* pCurrentPos = pMentNameSection;
     unsigned char* pMentNameSectionEnd = pMentNameSection + mentnameSectionSize;
@@ -87,11 +80,10 @@ MentatTextFile::MentatTextFile(SDL_RWops* rwop) {
         int techLevel = *((char*) pCurrentPos + entryLength - 1);
 
         if(entryContentOffset >= mentatTextFilesize) {
-            free(pFiledata);
             THROW(std::runtime_error, "MentatTextFile:MentatTextFile(): Entry offset 0x%X beyond file end!", entryContentOffset);
         }
 
-        std::string compressedEntryContent((char*) pFiledata + entryContentOffset);
+        std::string compressedEntryContent((char*) filedata.data() + entryContentOffset);
 
         std::string entryContent = convertCP850ToISO8859_1(decodeString(compressedEntryContent));
 
@@ -107,8 +99,6 @@ MentatTextFile::MentatTextFile(SDL_RWops* rwop) {
 
         pCurrentPos += entryLength;
     }
-
-    free(pFiledata);
 }
 
 MentatTextFile::~MentatTextFile() = default;

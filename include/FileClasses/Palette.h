@@ -31,7 +31,7 @@ class Palette
         }
 
         explicit Palette(int numPaletteEntries) : pSDLPalette(nullptr) {
-            pSDLPalette = SDL_AllocPalette(numPaletteEntries);
+            pSDLPalette = sdl2::palette_ptr{ SDL_AllocPalette(numPaletteEntries) };
             if (!pSDLPalette) {
                 throw;
             }
@@ -45,16 +45,14 @@ class Palette
             *this = palette;
         }
 
-        virtual ~Palette() {
-            deleteSDLPalette();
-        }
+        virtual ~Palette() = default;
 
         Palette& operator=(const Palette& palette) {
             if(this == &palette) {
                 return *this;
             }
 
-            this->setSDLPalette(palette.pSDLPalette);
+            this->setSDLPalette(palette.pSDLPalette.get());
 
             return *this;
         }
@@ -76,22 +74,18 @@ class Palette
         }
 
         inline SDL_Palette* getSDLPalette() const {
-            return pSDLPalette;
+            return pSDLPalette.get();
         }
 
         void setSDLPalette(const SDL_Palette* pSDLPalette) {
             if(!pSDLPalette) {
-                this->pSDLPalette = nullptr;
+                this->pSDLPalette.reset();
                 return;
             }
-            SDL_Palette* pNewSDLPalette = SDL_AllocPalette(pSDLPalette->ncolors);
-            if(!pNewSDLPalette) {
-                throw;
-            }
+            auto pNewSDLPalette = sdl2::palette_ptr{ SDL_AllocPalette(pSDLPalette->ncolors) };
             memcpy(pNewSDLPalette->colors, pSDLPalette->colors, pSDLPalette->ncolors * sizeof(SDL_Color));
 
-            deleteSDLPalette();
-            this->pSDLPalette = pNewSDLPalette;
+            this->pSDLPalette = std::move(pNewSDLPalette);
         }
 
         inline int getNumColors() const {
@@ -127,15 +121,7 @@ class Palette
         }
 
     private:
-
-        void deleteSDLPalette() {
-            if (pSDLPalette != nullptr) {
-                SDL_FreePalette(pSDLPalette);
-            }
-            pSDLPalette = nullptr;
-        }
-
-        SDL_Palette* pSDLPalette;
+        sdl2::palette_ptr pSDLPalette;
 };
 
 #endif // PALETTE_H

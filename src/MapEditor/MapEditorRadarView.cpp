@@ -32,20 +32,14 @@
 MapEditorRadarView::MapEditorRadarView(MapEditor* pMapEditor)
  : RadarViewBase(), pMapEditor(pMapEditor)
 {
-    radarSurface = SDL_CreateRGBSurface(0, RADARWIDTH, RADARHEIGHT, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK);
-    SDL_FillRect(radarSurface, nullptr, COLOR_BLACK);
+    radarSurface = sdl2::surface_ptr{ SDL_CreateRGBSurface(0, RADARWIDTH, RADARHEIGHT, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK) };
+    SDL_FillRect(radarSurface.get(), nullptr, COLOR_BLACK);
 
-    radarTexture = SDL_CreateTexture(renderer, SCREEN_FORMAT, SDL_TEXTUREACCESS_STREAMING, RADARWIDTH, RADARHEIGHT);
+    radarTexture = sdl2::texture_ptr{ SDL_CreateTexture(renderer, SCREEN_FORMAT, SDL_TEXTUREACCESS_STREAMING, RADARWIDTH, RADARHEIGHT) };
 }
 
 
-MapEditorRadarView::~MapEditorRadarView()
-{
-    if(radarSurface != nullptr) {
-        SDL_FreeSurface(radarSurface);
-    }
-    SDL_DestroyTexture(radarTexture);
-}
+MapEditorRadarView::~MapEditorRadarView() = default;
 
 int MapEditorRadarView::getMapSizeX() const {
     return pMapEditor->getMap().getSizeX();
@@ -69,9 +63,9 @@ void MapEditorRadarView::draw(Point position)
 
     updateRadarSurface(map, scale, offsetX, offsetY);
 
-    SDL_UpdateTexture(radarTexture, nullptr, radarSurface->pixels, radarSurface->pitch);
+    SDL_UpdateTexture(radarTexture.get(), nullptr, radarSurface->pixels, radarSurface->pitch);
 
-    SDL_RenderCopy(renderer, radarTexture, nullptr, &radarPosition);
+    SDL_RenderCopy(renderer, radarTexture.get(), nullptr, &radarPosition);
 
     // draw viewport rect on radar
     SDL_Rect radarRect;
@@ -111,100 +105,97 @@ void MapEditorRadarView::draw(Point position)
 
 void MapEditorRadarView::updateRadarSurface(const MapData& map, int scale, int offsetX, int offsetY) {
 
-    SDL_FillRect(radarSurface, nullptr, COLOR_BLACK);
+    SDL_FillRect(radarSurface.get(), nullptr, COLOR_BLACK);
 
-    // Lock the surface for direct access to the pixels
-    if(!SDL_MUSTLOCK(radarSurface) || (SDL_LockSurface(radarSurface) == 0)) {
-        for(int y = 0; y <  map.getSizeY(); y++) {
-            for(int x = 0; x <  map.getSizeX(); x++) {
+    sdl2::surface_lock lock{radarSurface.get()};
 
-                Uint32 color = getColorByTerrainType(map(x,y));
+    for(int y = 0; y <  map.getSizeY(); y++) {
+        for(int x = 0; x <  map.getSizeX(); x++) {
 
-                if(map(x,y) == Terrain_Sand) {
-                    std::vector<Coord>& spiceFields = pMapEditor->getSpiceFields();
+            Uint32 color = getColorByTerrainType(map(x,y));
 
-                    for(size_t i = 0; i < spiceFields.size(); i++) {
-                        if(spiceFields[i].x == x && spiceFields[i].y == y) {
-                            color = COLOR_THICKSPICE;
-                            break;
-                        } else if(distanceFrom(spiceFields[i], Coord(x,y)) <= 5) {
-                            color = COLOR_SPICE;
-                            break;
-                        }
-                    }
-                }
+            if(map(x,y) == Terrain_Sand) {
+                std::vector<Coord>& spiceFields = pMapEditor->getSpiceFields();
 
-                // check for classic map items (spice blooms, special blooms)
-                std::vector<Coord>& spiceBlooms = pMapEditor->getSpiceBlooms();
-                for(size_t i = 0; i < spiceBlooms.size(); i++) {
-                    if(spiceBlooms[i].x == x && spiceBlooms[i].y == y) {
-                        color = COLOR_BLOOM;
+                for(size_t i = 0; i < spiceFields.size(); i++) {
+                    if(spiceFields[i].x == x && spiceFields[i].y == y) {
+                        color = COLOR_THICKSPICE;
+                        break;
+                    } else if(distanceFrom(spiceFields[i], Coord(x,y)) <= 5) {
+                        color = COLOR_SPICE;
                         break;
                     }
                 }
+            }
 
-
-
-                std::vector<Coord>& specialBlooms = pMapEditor->getSpecialBlooms();
-                for(size_t i = 0; i < specialBlooms.size(); i++) {
-                    if(specialBlooms[i].x == x && specialBlooms[i].y == y) {
-                        color = COLOR_BLOOM;
-                        break;
-                    }
+            // check for classic map items (spice blooms, special blooms)
+            std::vector<Coord>& spiceBlooms = pMapEditor->getSpiceBlooms();
+            for(size_t i = 0; i < spiceBlooms.size(); i++) {
+                if(spiceBlooms[i].x == x && spiceBlooms[i].y == y) {
+                    color = COLOR_BLOOM;
+                    break;
                 }
+            }
 
-                color = MapRGBA(radarSurface->format, color);
 
-                for(int j = 0; j < scale; j++) {
-                    Uint32* p = ((Uint32*) ((Uint8 *) radarSurface->pixels + (offsetY + scale*y + j) * radarSurface->pitch)) + (offsetX + scale*x);
 
-                    for(int i = 0; i < scale; i++, p++) {
-                        // Do not use putPixel here to avoid overhead
-                        *p = color;
-                    }
+            std::vector<Coord>& specialBlooms = pMapEditor->getSpecialBlooms();
+            for(size_t i = 0; i < specialBlooms.size(); i++) {
+                if(specialBlooms[i].x == x && specialBlooms[i].y == y) {
+                    color = COLOR_BLOOM;
+                    break;
+                }
+            }
+
+            color = MapRGBA(radarSurface->format, color);
+
+            for(int j = 0; j < scale; j++) {
+                Uint32* p = ((Uint32*) ((Uint8 *) radarSurface->pixels + (offsetY + scale*y + j) * radarSurface->pitch)) + (offsetX + scale*x);
+
+                for(int i = 0; i < scale; i++, p++) {
+                    // Do not use putPixel here to avoid overhead
+                    *p = color;
                 }
             }
         }
-
-        for(const MapEditor::Unit& unit : pMapEditor->getUnitList()) {
-
-            if(unit.position.x >= 0 && unit.position.x < map.getSizeX()
-                && unit.position.y >= 0 && unit.position.y < map.getSizeY()) {
-
-                for(int i = 0; i < scale; i++) {
-                    for(int j = 0; j < scale; j++) {
-                        putPixel(   radarSurface,
-                                    offsetX + scale*unit.position.x + i,
-                                    offsetY + scale*unit.position.y + j,
-                                    SDL2RGB(palette[houseToPaletteIndex[unit.house]]));
-                    }
-                }
-            }
-        }
-
-        for(const MapEditor::Structure& structure : pMapEditor->getStructureList()) {
-            Coord structureSize = getStructureSize(structure.itemID);
-
-            for(int y = 0; y < structureSize.y; y++) {
-                for(int x = 0; x < structureSize.x; x++) {
-
-                    if(x >= 0 && x < map.getSizeX()
-                        && y >= 0 && y < map.getSizeY()) {
-
-                        for(int i = 0; i < scale; i++) {
-                            for(int j = 0; j < scale; j++) {
-                                putPixel(   radarSurface,
-                                            offsetX + scale*(structure.position.x+x) + i,
-                                            offsetY + scale*(structure.position.y+y) + j,
-                                            SDL2RGB(palette[houseToPaletteIndex[structure.house]]));
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        if (SDL_MUSTLOCK(radarSurface))
-            SDL_UnlockSurface(radarSurface);
     }
+
+    for(const MapEditor::Unit& unit : pMapEditor->getUnitList()) {
+
+        if(unit.position.x >= 0 && unit.position.x < map.getSizeX()
+            && unit.position.y >= 0 && unit.position.y < map.getSizeY()) {
+
+            for(int i = 0; i < scale; i++) {
+                for(int j = 0; j < scale; j++) {
+                    putPixel(   radarSurface.get(),
+                                offsetX + scale*unit.position.x + i,
+                                offsetY + scale*unit.position.y + j,
+                                SDL2RGB(palette[houseToPaletteIndex[unit.house]]));
+                }
+            }
+        }
+    }
+
+    for(const MapEditor::Structure& structure : pMapEditor->getStructureList()) {
+        Coord structureSize = getStructureSize(structure.itemID);
+
+        for(int y = 0; y < structureSize.y; y++) {
+            for(int x = 0; x < structureSize.x; x++) {
+
+                if(x >= 0 && x < map.getSizeX()
+                    && y >= 0 && y < map.getSizeY()) {
+
+                    for(int i = 0; i < scale; i++) {
+                        for(int j = 0; j < scale; j++) {
+                            putPixel(   radarSurface.get(),
+                                        offsetX + scale*(structure.position.x+x) + i,
+                                        offsetY + scale*(structure.position.y+y) + j,
+                                        SDL2RGB(palette[houseToPaletteIndex[structure.house]]));
+                        }
+                    }
+                }
+            }
+        }
+    }
+
 }

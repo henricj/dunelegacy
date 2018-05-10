@@ -1993,7 +1993,7 @@ void MapEditor::saveMapshot() {
     ScreenBorder tmpScreenborder(board);
     tmpScreenborder.adjustScreenBorderToMapsize(map.getSizeX(), map.getSizeY());
 
-    SDL_Texture* renderTarget = SDL_CreateTexture(renderer, SCREEN_FORMAT, SDL_TEXTUREACCESS_TARGET, sizeX, sizeY);
+    auto renderTarget = sdl2::texture_ptr{ SDL_CreateTexture(renderer, SCREEN_FORMAT, SDL_TEXTUREACCESS_TARGET, sizeX, sizeY) };
     if(renderTarget == nullptr) {
         SDL_Log("SDL_CreateTexture() failed: %s", SDL_GetError());
         currentZoomlevel = oldCurrentZoomlevel;
@@ -2001,10 +2001,9 @@ void MapEditor::saveMapshot() {
     }
 
     SDL_Texture* oldRenderTarget = SDL_GetRenderTarget(renderer);
-    if(SDL_SetRenderTarget(renderer, renderTarget) != 0) {
+    if(SDL_SetRenderTarget(renderer, renderTarget.get()) != 0) {
         SDL_Log("SDL_SetRenderTarget() failed: %s", SDL_GetError());
         SDL_SetRenderTarget(renderer, oldRenderTarget);
-        SDL_DestroyTexture(renderTarget);
         currentZoomlevel = oldCurrentZoomlevel;
         return;
     }
@@ -2018,7 +2017,6 @@ void MapEditor::saveMapshot() {
     SavePNG(pMapshotSurface.get(), mapshotFilename.c_str());
 
     SDL_SetRenderTarget(renderer, oldRenderTarget);
-    SDL_DestroyTexture(renderTarget);
 
     currentZoomlevel = oldCurrentZoomlevel;
 }
