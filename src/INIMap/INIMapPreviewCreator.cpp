@@ -15,8 +15,8 @@
 
 #include <algorithm>
 
-INIMapPreviewCreator::INIMapPreviewCreator(INIFile* pINIFile)
- : INIMap(pINIFile)
+INIMapPreviewCreator::INIMapPreviewCreator(INIMap::inifile_ptr pINIFile)
+ : INIMap(std::move(pINIFile))
 {
 
 }

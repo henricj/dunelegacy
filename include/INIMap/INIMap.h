@@ -33,19 +33,11 @@
 
 
 class INIMap {
-private:
-    typedef std::unique_ptr<INIFile, void (*)(INIFile*)> inifile_ptr;
-
-    static void INIFile_deleter(INIFile* pINIFile) {
-        delete pINIFile;
-    }
-
-    static void INIFile_noop_deleter(INIFile* pINIFile) {
-    }
-
 public:
-    explicit INIMap(INIFile* pINIFile)
-     : inifile(inifile_ptr(pINIFile, INIFile_noop_deleter)), version(0), sizeX(0), sizeY(0), logicalSizeX(0), logicalSizeY(0), logicalOffsetX(0), logicalOffsetY(0) {
+    typedef unique_or_nonowning_ptr<INIFile> inifile_ptr;
+
+    explicit INIMap(inifile_ptr pINIFile)
+     : inifile(std::move(pINIFile)) {
 
     }
 
@@ -53,13 +45,13 @@ public:
 
         if(gameType == GameType::Campaign || gameType == GameType::Skirmish) {
             // load from PAK-File
-            inifile = inifile_ptr(new INIFile(pFileManager->openFile(this->mapname).get()), INIFile_deleter);
+            inifile = std::make_unique<INIFile>(pFileManager->openFile(this->mapname).get());
         } else if(gameType == GameType::CustomGame || gameType == GameType::CustomMultiplayer) {
             SDL_RWops* RWops = SDL_RWFromConstMem(mapdata.c_str(), mapdata.size());
-            inifile = inifile_ptr(new INIFile(RWops), INIFile_deleter);
+            inifile = std::make_unique<INIFile>(RWops);
             SDL_RWclose(RWops);
         } else {
-            inifile = inifile_ptr(new INIFile(mapname), INIFile_deleter);
+            inifile = std::make_unique<INIFile>(mapname);
         }
     }
 
@@ -128,16 +120,16 @@ protected:
     inline int getYPos(int pos) const { return (pos / logicalSizeX) - logicalOffsetY; };
 
     std::string mapname;
-    inifile_ptr inifile = inifile_ptr(nullptr, INIFile_deleter);
+    inifile_ptr inifile;
 
-    int version;
+    int version = 0;
 
-    int sizeX;
-    int sizeY;
-    int logicalSizeX;
-    int logicalSizeY;
-    int logicalOffsetX;
-    int logicalOffsetY;
+    int sizeX = 0;
+    int sizeY = 0;
+    int logicalSizeX = 0;
+    int logicalSizeY = 0;
+    int logicalOffsetX = 0;
+    int logicalOffsetY = 0;
 };
 
 #endif //INIMAP_H
