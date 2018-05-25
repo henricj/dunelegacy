@@ -284,7 +284,7 @@ void Window::setBackground(sdl2::surface_unique_or_nonowning_ptr pBackground) {
     if(!pBackground) {
         setBackground(sdl2::texture_unique_or_nonowning_ptr(nullptr));
     } else {
-        setBackground(convertSurfaceToTexture(pBackground.get(), false));
+        setBackground(convertSurfaceToTexture(pBackground.get()));
     }
 }
 

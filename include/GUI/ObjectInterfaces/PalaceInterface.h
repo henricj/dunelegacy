@@ -52,7 +52,7 @@ protected:
         SDL_Rect dest = calcAlignedDrawingRect(pText.get(), pReady.get());
         SDL_BlitSurface(pText.get(), nullptr, pReady.get(), &dest);
 
-        weaponSelectButton.setTextures(convertSurfaceToTexture(pReady.get(), false));
+        weaponSelectButton.setTextures(convertSurfaceToTexture(pReady.get()));
         weaponSelectButton.setVisible(false);
 
         weaponSelectButton.setOnClick(std::bind(&PalaceInterface::onSpecial, this));

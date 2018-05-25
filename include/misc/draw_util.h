@@ -85,12 +85,14 @@ sdl2::surface_ptr renderReadSurface(SDL_Renderer* renderer);
 void replaceColor(SDL_Surface *surface, Uint32 oldColor, Uint32 newColor);
 void mapColor(SDL_Surface *surface, Uint8 colorMap[256]);
 
-sdl2::surface_ptr    copySurface(SDL_Surface* inSurface);
+sdl2::surface_ptr   copySurface(SDL_Surface* inSurface);
 
 sdl2::surface_ptr   convertSurfaceToDisplayFormat(SDL_Surface* inSurface);
 
-sdl2::texture_ptr   convertSurfaceToTexture(SDL_Surface* inSurface, bool freeSrcSurface);
-sdl2::texture_ptr   convertSurfaceToTexture(sdl2::surface_ptr inSurface);
+sdl2::texture_ptr   convertSurfaceToTexture(SDL_Surface* inSurface);
+inline sdl2::texture_ptr convertSurfaceToTexture(sdl2::surface_ptr inSurface) {
+    return convertSurfaceToTexture(inSurface.get());
+}
 
 sdl2::surface_ptr   scaleSurface(SDL_Surface *surf, double ratio);
 

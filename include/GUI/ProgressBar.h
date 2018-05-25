@@ -273,7 +273,7 @@ public:
     PictureProgressBar& operator=(PictureProgressBar &&) = delete;
 
     void setSurface(sdl2::surface_unique_or_nonowning_ptr pBackground) {
-        setTexture(convertSurfaceToTexture(pBackground.get(), false));
+        setTexture(convertSurfaceToTexture(pBackground.get()));
     }
 
     void setTexture(sdl2::texture_unique_or_nonowning_ptr pBackground) {

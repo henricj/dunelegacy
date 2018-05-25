@@ -39,7 +39,7 @@ public:
         \param  pSurface    This surface is shown
     */
     virtual void setSurface(sdl2::surface_unique_or_nonowning_ptr pSurface) {
-        setTexture(convertSurfaceToTexture(pSurface.get(), false));
+        setTexture(convertSurfaceToTexture(pSurface.get()));
     }
 
     /**

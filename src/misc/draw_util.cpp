@@ -264,12 +264,10 @@ sdl2::surface_ptr convertSurfaceToDisplayFormat(SDL_Surface* inSurface) {
 }
 
 
-sdl2::texture_ptr convertSurfaceToTexture(SDL_Surface* inSurface, bool freeSrcSurface) {
+sdl2::texture_ptr convertSurfaceToTexture(SDL_Surface* inSurface) {
     if(inSurface == nullptr) {
         return nullptr;
     }
-
-    sdl2::surface_ptr surface_handle{ freeSrcSurface ? inSurface : nullptr };
 
     if(inSurface->w <= 0 || inSurface->h <= 0) {
         return nullptr;
@@ -286,11 +284,6 @@ sdl2::texture_ptr convertSurfaceToTexture(SDL_Surface* inSurface, bool freeSrcSu
     }
 
     return pTexture;
-}
-
-
-sdl2::texture_ptr convertSurfaceToTexture(sdl2::surface_ptr inSurface) {
-    return convertSurfaceToTexture(inSurface.get(), false);
 }
 
 

@@ -78,7 +78,7 @@ SDL_Texture* Animation::getFrameTexture() {
     }
 
     if(frameTextures[index] == nullptr) {
-        frameTextures[index] = convertSurfaceToTexture(frames[index].get(), false);
+        frameTextures[index] = convertSurfaceToTexture(frames[index].get());
     }
 
     return frameTextures[index].get();

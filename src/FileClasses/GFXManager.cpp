@@ -867,7 +867,7 @@ SDL_Texture* GFXManager::getZoomedObjPic(unsigned int id, int house, unsigned in
         } else if(id == ObjPic_SandwormShimmerTemp) {
             objPicTex[id][house][z] = sdl2::texture_ptr{ SDL_CreateTexture(renderer, SCREEN_FORMAT, SDL_TEXTUREACCESS_TARGET, objPic[id][house][z]->w, objPic[id][house][z]->h) };
         } else {
-            objPicTex[id][house][z] = convertSurfaceToTexture(objPic[id][house][z].get(), false);
+            objPicTex[id][house][z] = convertSurfaceToTexture(objPic[id][house][z].get());
         }
     }
 
@@ -937,7 +937,7 @@ SDL_Texture* GFXManager::getUIGraphic(unsigned int id, int house) {
             replaceColor(pIndicator.get(), COLOR_WHITE, COLOR_INDICATOR_TRANSPARENT);
             uiGraphicTex[UI_Indicator][house] = convertSurfaceToTexture(std::move(pIndicator));
         } else {
-            uiGraphicTex[id][house] = convertSurfaceToTexture(pSurface, false);
+            uiGraphicTex[id][house] = convertSurfaceToTexture(pSurface);
         }
     }
 
@@ -967,7 +967,7 @@ SDL_Texture* GFXManager::getMapChoicePiece(unsigned int num, int house) {
     }
 
     if(mapChoicePiecesTex[num][house] == nullptr) {
-        mapChoicePiecesTex[num][house] = convertSurfaceToTexture(getMapChoicePieceSurface(num, house), false);
+        mapChoicePiecesTex[num][house] = convertSurfaceToTexture(getMapChoicePieceSurface(num, house));
     }
 
     return mapChoicePiecesTex[num][house].get();
@@ -1129,7 +1129,7 @@ sdl2::texture_ptr GFXManager::extractSmallDetailPic(const std::string& filename)
         }
     }
 
-    return convertSurfaceToTexture(pSurface.get(), false);
+    return convertSurfaceToTexture(pSurface.get());
 }
 
 std::unique_ptr<Animation> GFXManager::loadAnimationFromWsa(const std::string& filename) const {

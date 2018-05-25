@@ -190,9 +190,9 @@ void Button::setSurfaces(   sdl2::surface_unique_or_nonowning_ptr pUnpressedSurf
                             sdl2::surface_unique_or_nonowning_ptr pPressedSurface,
                             sdl2::surface_unique_or_nonowning_ptr pActiveSurface) {
 
-    setTextures(    convertSurfaceToTexture(pUnpressedSurface.get(), false),
-                    convertSurfaceToTexture(pPressedSurface.get(), false),
-                    convertSurfaceToTexture(pActiveSurface.get(), false) );
+    setTextures(    convertSurfaceToTexture(pUnpressedSurface.get()),
+                    convertSurfaceToTexture(pPressedSurface.get()),
+                    convertSurfaceToTexture(pActiveSurface.get()) );
 }
 
 void Button::setTextures(   sdl2::texture_unique_or_nonowning_ptr pUnpressedTexture,
