@@ -205,7 +205,7 @@ protected:
     {
         Widget::updateTextures();
 
-        if(pTexture == nullptr) {
+        if(!pTexture) {
             int fontID = this->fontID;
             std::vector<std::string> textLines = greedyWordWrap(text,
                                                                 getSize().x,
@@ -213,7 +213,7 @@ protected:
                                                                     return GUIStyle::getInstance().getMinimumLabelSize(tmp, fontID).x - 4;
                                                                 });
 
-            pTexture = convertSurfaceToTexture(GUIStyle::getInstance().createLabelSurface(getSize().x,getSize().y,textLines,fontID,alignment,textcolor,textshadowcolor,backgroundcolor), true);
+            pTexture = convertSurfaceToTexture(GUIStyle::getInstance().createLabelSurface(getSize().x,getSize().y,textLines,fontID,alignment,textcolor,textshadowcolor,backgroundcolor));
         }
     }
 

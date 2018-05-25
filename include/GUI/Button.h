@@ -71,7 +71,7 @@ public:
             tooltipTexture.reset();
 
         if(!tooltipText.empty()) {
-            tooltipTexture = convertSurfaceToTexture(GUIStyle::getInstance().createToolTip(tooltipText), true);
+            tooltipTexture = convertSurfaceToTexture(GUIStyle::getInstance().createToolTip(tooltipText));
         }
     }
 
@@ -167,44 +167,30 @@ protected:
     /**
         This method is used for setting the different surfaces for this button.
         \param  pUnpressedSurface       This surface is normally shown
-        \param  bFreeUnpressedSurface   Should pUnpressedSurface be freed if this button is destroyed?
         \param  pPressedSurface         This surface is shown when the button is pressed
-        \param  bFreePressedSurface     Should pPressedSurface be freed if this button is destroyed?
         \param  pActiveSurface          This surface is shown when the button is activated by keyboard or by mouse hover
-        \param  bFreeActiveSurface      Should pActiveSurface be freed if this button is destroyed?
     */
-    virtual void setSurfaces(   SDL_Surface* pUnpressedSurface,bool bFreeUnpressedSurface,
-                                SDL_Surface* pPressedSurface,bool bFreePressedSurface,
-                                SDL_Surface* pActiveSurface = nullptr,bool bFreeActiveSurface = false);
+    virtual void setSurfaces(   sdl2::surface_unique_or_nonowning_ptr pUnpressedSurface,
+                                sdl2::surface_unique_or_nonowning_ptr pPressedSurface,
+                                sdl2::surface_unique_or_nonowning_ptr pActiveSurface = nullptr);
 
     /**
         This method is used for setting the different textures for this button.
         \param  pUnpressedTexture       This texture is normally shown
-        \param  bFreeUnpressedTexture   Should pUnpressedTexture be freed if this button is destroyed?
         \param  pPressedTexture         This texture is shown when the button is pressed
-        \param  bFreePressedTexture     Should pPressedTexture be freed if this button is destroyed?
         \param  pActiveTexture          This texture is shown when the button is activated by keyboard or by mouse hover
-        \param  bFreeActiveTexture      Should pActiveTexture be freed if this button is destroyed?
     */
-    virtual void setTextures(   SDL_Texture* pUnpressedTexture,bool bFreeUnpressedTexture,
-                                SDL_Texture* pPressedTexture,bool bFreePressedTexture,
-                                SDL_Texture* pActiveTexture = nullptr,bool bFreeActiveTexture = false);
+    virtual void setTextures(   sdl2::texture_unique_or_nonowning_ptr pUnpressedTexture,
+                                sdl2::texture_unique_or_nonowning_ptr pPressedTexture,
+                                sdl2::texture_unique_or_nonowning_ptr pActiveTexture = nullptr);
 
-    sdl2::texture_ptr pUnpressedTexture;     ///< Texture that is normally shown
-    sdl2::texture_ptr pPressedTexture;       ///< Texture that is shown when the button is pressed
-    sdl2::texture_ptr pActiveTexture;        ///< Texture that is shown when the button is activated by keyboard or by mouse hover
-    bool bFreeUnpressedTexture;         ///< Should pUnpressedTexture be freed if this button is destroyed?
-    bool bFreePressedTexture;           ///< Should pPressedTexture be freed if this button is destroyed?
-    bool bFreeActiveTexture;            ///< Should pActiveTexture be freed if this button is destroyed?
+    sdl2::texture_unique_or_nonowning_ptr pUnpressedTexture;     ///< Texture that is normally shown
+    sdl2::texture_unique_or_nonowning_ptr pPressedTexture;       ///< Texture that is shown when the button is pressed
+    sdl2::texture_unique_or_nonowning_ptr pActiveTexture;        ///< Texture that is shown when the button is activated by keyboard or by mouse hover
 
-    /**
-        This method frees all textures that are used by this button
-    */
-    void invalidateTextures() override;
-
-    std::string tooltipText = "";          ///< the tooltip text
-    sdl2::texture_ptr tooltipTexture; ///< the tooltip texture
-    Uint32 tooltipLastMouseMotion = 0;     ///< the last time the mouse was moved
+    std::string tooltipText = "";           ///< the tooltip text
+    sdl2::texture_ptr tooltipTexture;       ///< the tooltip texture
+    Uint32 tooltipLastMouseMotion = 0;      ///< the last time the mouse was moved
 
     std::function<void ()> pOnClick;    ///< function that is called when this button is clicked
     bool bPressed;                      ///< true = currently pressed, false = currently unpressed

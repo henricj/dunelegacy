@@ -185,12 +185,11 @@ void ListBox::setSelectedItem(int index, bool bInteractive) {
 void ListBox::updateTextures() {
     Widget::updateTextures();
 
-    if (pBackground == nullptr) {
-        pBackground = convertSurfaceToTexture(GUIStyle::getInstance().createWidgetBackground(getSize().x, getSize().y),
-                                              true);
+    if (!pBackground) {
+        pBackground = convertSurfaceToTexture(GUIStyle::getInstance().createWidgetBackground(getSize().x, getSize().y));
     }
 
-    if (pForeground == nullptr) {
+    if (!pForeground) {
         // create surfaces
         int surfaceHeight = getSize().y - 2;
         if (surfaceHeight < 0) {
@@ -211,7 +210,7 @@ void ListBox::updateTextures() {
             SDL_Rect dest = calcDrawingRect(pSurface.get(), 0, (i - firstVisibleElement) * static_cast<int>(GUIStyle::getInstance().getListBoxEntryHeight()));
             SDL_BlitSurface(pSurface.get(), nullptr, pForegroundSurface.get(), &dest);
         }
-        pForeground = convertSurfaceToTexture(pForegroundSurface.get(), false);
+        pForeground = convertSurfaceToTexture(std::move(pForegroundSurface));
     }
 }
 

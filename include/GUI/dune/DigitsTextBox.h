@@ -219,13 +219,13 @@ private:
 
 
     void updateSurfaces() {
-        plusButton.setTextures( pGFXManager->getUIGraphic(UI_Plus, house), false,
-                                pGFXManager->getUIGraphic(UI_Plus_Pressed, house), false,
-                                pGFXManager->getUIGraphic(UI_Plus_Active, house), false);
+        plusButton.setTextures( pGFXManager->getUIGraphic(UI_Plus, house),
+                                pGFXManager->getUIGraphic(UI_Plus_Pressed, house),
+                                pGFXManager->getUIGraphic(UI_Plus_Active, house));
 
-        minusButton.setTextures(pGFXManager->getUIGraphic(UI_Minus, house), false,
-                                pGFXManager->getUIGraphic(UI_Minus_Pressed, house), false,
-                                pGFXManager->getUIGraphic(UI_Minus_Active, house), false);
+        minusButton.setTextures(pGFXManager->getUIGraphic(UI_Minus, house),
+                                pGFXManager->getUIGraphic(UI_Minus_Pressed, house),
+                                pGFXManager->getUIGraphic(UI_Minus_Active, house));
     }
 
 

@@ -233,17 +233,14 @@ public:
     /**
         Set the background of this window.
         \param  pBackground the new background of this window. nullptr=default background
-        \param  bFreeBackground should this background be automatically be freed
     */
-    virtual void setBackground(SDL_Surface* pBackground, bool bFreeBackground = true);
+    virtual void setBackground(sdl2::surface_unique_or_nonowning_ptr);
 
     /**
         Set the background of this window.
         \param  pBackground the new background of this window. nullptr=default background
-        \param  bFreeBackground should this background be automatically be freed
     */
-    virtual void setBackground(SDL_Texture* pBackground, bool bFreeBackground = true);
-    virtual void setBackground(sdl2::texture_ptr pBackground);
+    virtual void setBackground(sdl2::texture_unique_or_nonowning_ptr pBackground);
 
     /**
         This method sets a transparent background for this window.
@@ -255,16 +252,15 @@ protected:
 
     bool processChildWindowOpenCloses();
 
-    int    closeChildWindowCounter;             ///< Close the child window after processing all input?
-    Window* pChildWindow;                       ///< The current child window
-    bool pChildWindowAlreadyClosed;             /// Is the child window already closed?
-    std::queue<Window*> queuedChildWindows;     ///< We cannot close child windows while they are processed. Queue any newly opened windows here until we close the current child window
-    Widget* pWindowWidget;                      ///< The current window widget
-    Point position;                             ///< The left top corner of this window
-    bool bTransparentBackground;                ///< true = no background is drawn
-    bool bSelfGeneratedBackground;              ///< true = background is created by this window, false = created by someone else
-    bool bFreeBackground;                       ///< true = background should be automatically be freed
-    sdl2::texture_ptr pBackground;              ///< background texture
+    int    closeChildWindowCounter;                     ///< Close the child window after processing all input?
+    Window* pChildWindow;                               ///< The current child window
+    bool pChildWindowAlreadyClosed;                     /// Is the child window already closed?
+    std::queue<Window*> queuedChildWindows;             ///< We cannot close child windows while they are processed. Queue any newly opened windows here until we close the current child window
+    Widget* pWindowWidget;                              ///< The current window widget
+    Point position;                                     ///< The left top corner of this window
+    bool bTransparentBackground;                        ///< true = no background is drawn
+    bool bSelfGeneratedBackground;                      ///< true = background is created by this window, false = created by someone else
+    sdl2::texture_unique_or_nonowning_ptr pBackground;  ///< background texture
 };
 
 #endif //WINDOW_H

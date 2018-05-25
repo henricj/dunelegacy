@@ -35,20 +35,20 @@ SinglePlayerSkirmishMenu::SinglePlayerSkirmishMenu() : MenuBase()
 
     // set up window
     SDL_Texture *pBackground = pGFXManager->getUIGraphic(UI_MenuBackground);
-    setBackground(pBackground, false);
+    setBackground(pBackground);
     resize(getTextureSize(pBackground));
 
     setWindowWidget(&windowWidget);
 
     // set up pictures in the background
     SDL_Texture* pDuneLegacy = pGFXManager->getUIGraphic(UI_DuneLegacy);
-    duneLegacy.setTexture(pDuneLegacy, false);
+    duneLegacy.setTexture(pDuneLegacy);
     SDL_Rect dest1 = calcAlignedDrawingRect(pDuneLegacy);
     dest1.y = dest1.y + getHeight(pDuneLegacy)/2 + 28;
     windowWidget.addWidget(&duneLegacy, dest1);
 
     SDL_Texture* pMenuButtonBorder = pGFXManager->getUIGraphic(UI_MenuButtonBorder);
-    buttonBorder.setTexture(pMenuButtonBorder, false);
+    buttonBorder.setTexture(pMenuButtonBorder);
     SDL_Rect dest2 = calcAlignedDrawingRect(pMenuButtonBorder);
     dest2.y = dest2.y + getHeight(pMenuButtonBorder)/2 + 59;
     windowWidget.addWidget(&buttonBorder, dest2);
@@ -74,7 +74,7 @@ SinglePlayerSkirmishMenu::SinglePlayerSkirmishMenu() : MenuBase()
     dest.y = dest.y - getHeight(pHouseSelect)/2 + 10;
     windowWidget.addWidget(&houseChoiceContainer, dest);
 
-    heraldPicture.setTexture(pHouseSelect, false);
+    heraldPicture.setTexture(pHouseSelect);
     houseChoiceContainer.addWidget( &heraldPicture, Point(0,0), getTextureSize(pHouseSelect));
 
 
@@ -101,14 +101,14 @@ SinglePlayerSkirmishMenu::SinglePlayerSkirmishMenu() : MenuBase()
 
     SDL_Texture *pArrowLeft = pGFXManager->getUIGraphic(UI_Herald_ArrowLeft);
     SDL_Texture *pArrowLeftHighlight = pGFXManager->getUIGraphic(UI_Herald_ArrowLeftHighlight);
-    houseLeftButton.setTextures(pArrowLeft, false, pArrowLeft, false, pArrowLeftHighlight, false);
+    houseLeftButton.setTextures(pArrowLeft, pArrowLeft, pArrowLeftHighlight);
     houseLeftButton.setOnClick(std::bind(&SinglePlayerSkirmishMenu::onHouseLeft, this));
     houseLeftButton.setVisible(false);
     houseChoiceContainer.addWidget( &houseLeftButton, Point(houseChoiceContainer.getSize().x/2 - getWidth(pArrowLeft) - 85, 160), getTextureSize(pArrowLeft));
 
     SDL_Texture *pArrowRight = pGFXManager->getUIGraphic(UI_Herald_ArrowRight);
     SDL_Texture *pArrowRightHighlight = pGFXManager->getUIGraphic(UI_Herald_ArrowRightHighlight);
-    houseRightButton.setTextures(pArrowRight, false, pArrowRight, false, pArrowRightHighlight, false);
+    houseRightButton.setTextures(pArrowRight, pArrowRight, pArrowRightHighlight);
     houseRightButton.setOnClick(std::bind(&SinglePlayerSkirmishMenu::onHouseRight, this));
     houseChoiceContainer.addWidget( &houseRightButton, Point(houseChoiceContainer.getSize().x/2 + 85, 160), getTextureSize(pArrowRight));
 
@@ -128,7 +128,7 @@ SinglePlayerSkirmishMenu::SinglePlayerSkirmishMenu() : MenuBase()
 
     SDL_Texture* pPlus = pGFXManager->getUIGraphic(UI_Plus);
     SDL_Texture* pPlusPressed = pGFXManager->getUIGraphic(UI_Plus_Pressed);
-    missionPlusButton.setTextures(pPlus, false, pPlusPressed, false);
+    missionPlusButton.setTextures(pPlus, pPlusPressed);
     missionPlusButton.setOnClick(std::bind(&SinglePlayerSkirmishMenu::onMissionIncrement, this));
     windowWidget.addWidget( &missionPlusButton,
                             Point(((getRendererWidth()/4)*3 + 160/4) - getWidth(pPlus)/2 + 72,getRendererHeight()/2 + 96),
@@ -137,7 +137,7 @@ SinglePlayerSkirmishMenu::SinglePlayerSkirmishMenu() : MenuBase()
 
     SDL_Texture* pMinus = pGFXManager->getUIGraphic(UI_Minus);
     SDL_Texture* pMinusPressed = pGFXManager->getUIGraphic(UI_Minus_Pressed);
-    missionMinusButton.setTextures(pMinus, false, pMinusPressed, false);
+    missionMinusButton.setTextures(pMinus, pMinusPressed);
     missionMinusButton.setOnClick(std::bind(&SinglePlayerSkirmishMenu::onMissionDecrement, this));
     windowWidget.addWidget( &missionMinusButton,
                             Point(((getRendererWidth()/4)*3 + 160/4) - getWidth(pMinus)/2 + 72,getRendererHeight()/2 + 109),
@@ -242,14 +242,14 @@ void SinglePlayerSkirmishMenu::onMissionDecrement()
 void SinglePlayerSkirmishMenu::updateHouseChoice()
 {
     // House1 button
-    house1Picture.setTexture(pGFXManager->getUIGraphic(UI_Herald_Grey, houseOrder[currentHouseChoiceScrollPos+0]),false);
-    house1SelectedPicture.setTexture(pGFXManager->getUIGraphic(UI_Herald_Colored, houseOrder[currentHouseChoiceScrollPos+0]),false);
+    house1Picture.setTexture(pGFXManager->getUIGraphic(UI_Herald_Grey, houseOrder[currentHouseChoiceScrollPos+0]));
+    house1SelectedPicture.setTexture(pGFXManager->getUIGraphic(UI_Herald_Colored, houseOrder[currentHouseChoiceScrollPos+0]));
 
     // House2 button
-    house2Picture.setTexture(pGFXManager->getUIGraphic(UI_Herald_Grey, houseOrder[currentHouseChoiceScrollPos+1]),false);
-    house2SelectedPicture.setTexture(pGFXManager->getUIGraphic(UI_Herald_Colored, houseOrder[currentHouseChoiceScrollPos+1]),false);
+    house2Picture.setTexture(pGFXManager->getUIGraphic(UI_Herald_Grey, houseOrder[currentHouseChoiceScrollPos+1]));
+    house2SelectedPicture.setTexture(pGFXManager->getUIGraphic(UI_Herald_Colored, houseOrder[currentHouseChoiceScrollPos+1]));
 
     // House3 button
-    house3Picture.setTexture(pGFXManager->getUIGraphic(UI_Herald_Grey, houseOrder[currentHouseChoiceScrollPos+2]),false);
-    house3SelectedPicture.setTexture(pGFXManager->getUIGraphic(UI_Herald_Colored, houseOrder[currentHouseChoiceScrollPos+2]),false);
+    house3Picture.setTexture(pGFXManager->getUIGraphic(UI_Herald_Grey, houseOrder[currentHouseChoiceScrollPos+2]));
+    house3SelectedPicture.setTexture(pGFXManager->getUIGraphic(UI_Herald_Colored, houseOrder[currentHouseChoiceScrollPos+2]));
 }

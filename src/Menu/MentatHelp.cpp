@@ -76,7 +76,7 @@ MentatHelp::MentatHelp(int newHouse, int techLevel, int mission) : MentatMenu(ne
 
     SDL_Texture* pMentatExit = pGFXManager->getUIGraphic(UI_MentatExit);
     SDL_Texture* pMentatExitPressed = pGFXManager->getUIGraphic(UI_MentatExit_Pressed);
-    exitButton.setTextures(pMentatExit, false, pMentatExitPressed, false);
+    exitButton.setTextures(pMentatExit, pMentatExitPressed);
 
     exitButton.setOnClick(std::bind(&MentatHelp::onExit, this));
     windowWidget.addWidget(&exitButton,Point(370,340), getTextureSize(pMentatExit));

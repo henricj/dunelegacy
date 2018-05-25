@@ -48,9 +48,9 @@ public:
         \param  textcolor       the color of the text (COLOR_DEFAULT = default color for this style)
         \param  textshadowcolor the color of the shadow under the text (COLOR_DEFAULT = default color for this style)
         \param  backgroundcolor the background color (default is transparent)
-        \return the new surface (has to be freed by the caller)
+        \return the new surface
     */
-    SDL_Surface* createLabelSurface(Uint32 width, Uint32 height, const std::vector<std::string>& textLines, int fontID, Alignment_Enum alignment = Alignment_HCenter, Uint32 textcolor = COLOR_DEFAULT, Uint32 textshadowcolor = COLOR_DEFAULT, Uint32 backgroundcolor = COLOR_TRANSPARENT) override;
+    sdl2::surface_ptr createLabelSurface(Uint32 width, Uint32 height, const std::vector<std::string>& textLines, int fontID, Alignment_Enum alignment = Alignment_HCenter, Uint32 textcolor = COLOR_DEFAULT, Uint32 textshadowcolor = COLOR_DEFAULT, Uint32 backgroundcolor = COLOR_TRANSPARENT) override;
 
 
 
@@ -72,9 +72,9 @@ public:
         \param  textcolor       the color of the text (COLOR_DEFAULT = default color for this style)
         \param  textshadowcolor the color of the shadow under the text (COLOR_DEFAULT = default color for this style)
         \param  backgroundcolor the background color (default is transparent)
-        \return the new surface (has to be freed by the caller)
+        \return the new surface
     */
-    SDL_Surface* createCheckboxSurface(Uint32 width, Uint32 height, const std::string& text, bool checked, bool activated, Uint32 textcolor = COLOR_DEFAULT, Uint32 textshadowcolor = COLOR_DEFAULT, Uint32 backgroundcolor = COLOR_TRANSPARENT) override;
+    sdl2::surface_ptr createCheckboxSurface(Uint32 width, Uint32 height, const std::string& text, bool checked, bool activated, Uint32 textcolor = COLOR_DEFAULT, Uint32 textshadowcolor = COLOR_DEFAULT, Uint32 backgroundcolor = COLOR_TRANSPARENT) override;
 
 
 
@@ -96,9 +96,9 @@ public:
         \param  textcolor       the color of the text (COLOR_DEFAULT = default color for this style)
         \param  textshadowcolor the color of the shadow under the text (COLOR_DEFAULT = default color for this style)
         \param  backgroundcolor the background color (default is transparent)
-        \return the new surface (has to be freed by the caller)
+        \return the new surface
     */
-    SDL_Surface* createRadioButtonSurface(Uint32 width, Uint32 height, const std::string& text, bool checked, bool activated, Uint32 textcolor = COLOR_DEFAULT, Uint32 textshadowcolor = COLOR_DEFAULT, Uint32 backgroundcolor = COLOR_TRANSPARENT) override;
+    sdl2::surface_ptr createRadioButtonSurface(Uint32 width, Uint32 height, const std::string& text, bool checked, bool activated, Uint32 textcolor = COLOR_DEFAULT, Uint32 textshadowcolor = COLOR_DEFAULT, Uint32 backgroundcolor = COLOR_TRANSPARENT) override;
 
 
 
@@ -109,9 +109,9 @@ public:
         \param  pressed     true if the button should be pressed
         \param  activated   true if the button is activated (e.g. mouse hover)
         \param  color       the color of the text (COLOR_DEFAULT = default color for this style)
-        \return the new surface (has to be freed by the caller)
+        \return the new surface
     */
-    SDL_Surface* createDropDownBoxButton(Uint32 size, bool pressed, bool activated, Uint32 color = COLOR_DEFAULT) override;
+    sdl2::surface_ptr createDropDownBoxButton(Uint32 size, bool pressed, bool activated, Uint32 color = COLOR_DEFAULT) override;
 
 
 
@@ -132,9 +132,9 @@ public:
         \param  activated       true if the button is activated (e.g. mouse hover)
         \param  textcolor       the color of the text (COLOR_DEFAULT = default color for this style)
         \param  textshadowcolor the color of the shadow under the text (COLOR_DEFAULT = default color for this style)
-        \return the new surface (has to be freed by the caller)
+        \return the new surface
     */
-    SDL_Surface* createButtonSurface(Uint32 width, Uint32 height, const std::string& text, bool pressed, bool activated, Uint32 textcolor = COLOR_DEFAULT, Uint32 textshadowcolor = COLOR_DEFAULT) override;
+    sdl2::surface_ptr createButtonSurface(Uint32 width, Uint32 height, const std::string& text, bool pressed, bool activated, Uint32 textcolor = COLOR_DEFAULT, Uint32 textshadowcolor = COLOR_DEFAULT) override;
 
 
 
@@ -156,9 +156,9 @@ public:
         \param  alignment       the alignment for this text box
         \param  textcolor       the color of the text (COLOR_DEFAULT = default color for this style)
         \param  textshadowcolor the color of the shadow under the text (COLOR_DEFAULT = default color for this style)
-        \return the new surface (has to be freed by the caller)
+        \return the new surface
     */
-    SDL_Surface* createTextBoxSurface(Uint32 width, Uint32 height, const std::string& text, bool carret, int fontID, Alignment_Enum alignment = Alignment_Left, Uint32 textcolor = COLOR_DEFAULT, Uint32 textshadowcolor = COLOR_DEFAULT) override;
+    sdl2::surface_ptr createTextBoxSurface(Uint32 width, Uint32 height, const std::string& text, bool carret, int fontID, Alignment_Enum alignment = Alignment_Left, Uint32 textcolor = COLOR_DEFAULT, Uint32 textshadowcolor = COLOR_DEFAULT) override;
 
 
 
@@ -175,9 +175,9 @@ public:
         \param  pressed     true if the button should be pressed
         \param  activated   true if the button is activated (e.g. mouse hover)
         \param  color       the color of the text (COLOR_DEFAULT = default color for this style)
-        \return the new surface (has to be freed by the caller)
+        \return the new surface
     */
-    SDL_Surface* createScrollBarArrowButton(bool down, bool pressed, bool activated, Uint32 color = COLOR_DEFAULT) override;
+    sdl2::surface_ptr createScrollBarArrowButton(bool down, bool pressed, bool activated, Uint32 color = COLOR_DEFAULT) override;
 
 
 
@@ -194,9 +194,9 @@ public:
         \param  text        the text for this entry
         \param  selected    true if a entry should be highlighted
         \param  color       the color of the text (COLOR_DEFAULT = default color for this style)
-        \return the new surface (has to be freed by the caller)
+        \return the new surface
     */
-    SDL_Surface* createListBoxEntry(Uint32 width, const std::string& text, bool selected, Uint32 color = COLOR_DEFAULT) override;
+    sdl2::surface_ptr createListBoxEntry(Uint32 width, const std::string& text, bool selected, Uint32 color = COLOR_DEFAULT) override;
 
 
 
@@ -208,33 +208,33 @@ public:
         \param  height      the height of the progress bar
         \param  percent     a value between 0.0 and 100.0
         \param  color       the color of the overlay (COLOR_DEFAULT = default color for this style)
-        \return the new surface (has to be freed by the caller)
+        \return the new surface
     */
-    SDL_Surface* createProgressBarOverlay(Uint32 width, Uint32 height, double percent, Uint32 color = COLOR_DEFAULT) override;
+    sdl2::surface_ptr createProgressBarOverlay(Uint32 width, Uint32 height, double percent, Uint32 color = COLOR_DEFAULT) override;
 
 
     /**
         Creates a tool tip surface.
         \param  text        the tool tip text
-        \return the new surface (has to be freed by the caller)
+        \return the new surface
     */
-    SDL_Surface* createToolTip(const std::string& text) override;
+    sdl2::surface_ptr createToolTip(const std::string& text) override;
 
     /**
         Creates a simple background for e.g. a window
         \param  width       the width of the surface
         \param  height      the height of the surface
-        \return the new surface (has to be freed by the caller)
+        \return the new surface
     */
-    SDL_Surface* createBackground(Uint32 width, Uint32 height) override;
+    sdl2::surface_ptr createBackground(Uint32 width, Uint32 height) override;
 
     /**
         Creates a simple background for widgets
         \param  width       the width of the surface
         \param  height      the height of the surface
-        \return the new surface (has to be freed by the caller)
+        \return the new surface
     */
-    SDL_Surface* createWidgetBackground(Uint32 width, Uint32 height) override;
+    sdl2::surface_ptr createWidgetBackground(Uint32 width, Uint32 height) override;
 
     /**
         Get the height of the font specified by fontnum

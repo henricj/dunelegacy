@@ -36,7 +36,6 @@ public:
         enableResizing(true,false);
         setToggleButton(true);
         pCheckedActiveTexture = nullptr;
-        bFreeCheckedActiveTexture = false;
 
         pRadioButtonManager = nullptr;
     }
@@ -146,13 +145,13 @@ public:
 
         SDL_Texture* tex;
         if(isChecked()) {
-            if((isActive() || bHover) && pCheckedActiveTexture != nullptr) {
+            if((isActive() || bHover) && pCheckedActiveTexture) {
                 tex = pCheckedActiveTexture.get();
             } else {
                 tex = pPressedTexture.get();
             }
         } else {
-            if((isActive() || bHover) && pActiveTexture != nullptr) {
+            if((isActive() || bHover) && pActiveTexture) {
                 tex = pActiveTexture.get();
             } else {
                 tex = pUnpressedTexture.get();
@@ -208,15 +207,14 @@ protected:
     {
         Button::updateTextures();
 
-        if(pUnpressedTexture == nullptr) {
+        if(!pUnpressedTexture) {
             invalidateTextures();
 
-            setSurfaces(GUIStyle::getInstance().createRadioButtonSurface(getSize().x, getSize().y, text, false, false, textcolor, textshadowcolor),true,
-                        GUIStyle::getInstance().createRadioButtonSurface(getSize().x, getSize().y, text, true, false, textcolor, textshadowcolor),true,
-                        GUIStyle::getInstance().createRadioButtonSurface(getSize().x, getSize().y, text, false, true, textcolor, textshadowcolor),true);
+            setSurfaces(GUIStyle::getInstance().createRadioButtonSurface(getSize().x, getSize().y, text, false, false, textcolor, textshadowcolor),
+                        GUIStyle::getInstance().createRadioButtonSurface(getSize().x, getSize().y, text, true, false, textcolor, textshadowcolor),
+                        GUIStyle::getInstance().createRadioButtonSurface(getSize().x, getSize().y, text, false, true, textcolor, textshadowcolor));
 
-            pCheckedActiveTexture = convertSurfaceToTexture(GUIStyle::getInstance().createRadioButtonSurface(getSize().x, getSize().y, text, true, true, textcolor, textshadowcolor), true);
-            bFreeCheckedActiveTexture = true;
+            pCheckedActiveTexture = convertSurfaceToTexture(GUIStyle::getInstance().createRadioButtonSurface(getSize().x, getSize().y, text, true, true, textcolor, textshadowcolor));
         }
     }
 
@@ -227,22 +225,14 @@ protected:
     {
         Button::invalidateTextures();
 
-        if (pCheckedActiveTexture != nullptr) {
-            if (bFreeCheckedActiveTexture) {
-                pCheckedActiveTexture.reset();
-                bFreeCheckedActiveTexture = false;
-            } else {
-                pCheckedActiveTexture.release();
-            }
-        }
+        pCheckedActiveTexture.reset();
     }
 
 private:
-    Uint32 textcolor;                       ///< Text color
-    Uint32 textshadowcolor;                 ///< Text shadow color
-    std::string text;                       ///< Text of this radio button
-    sdl2::texture_ptr pCheckedActiveTexture;     ///< Texture that is shown when the radio button is activated by keyboard or by mouse hover
-    bool bFreeCheckedActiveTexture;         ///< Should pActiveSurface be freed if this button is destroyed?
+    Uint32 textcolor;                           ///< Text color
+    Uint32 textshadowcolor;                     ///< Text shadow color
+    std::string text;                           ///< Text of this radio button
+    sdl2::texture_ptr pCheckedActiveTexture;    ///< Texture that is shown when the radio button is activated by keyboard or by mouse hover
 
     RadioButtonManager* pRadioButtonManager;///< The Manager for managing the toggle states
 };

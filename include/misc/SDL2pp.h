@@ -21,6 +21,7 @@
 #include <memory>
 #include <assert.h>
 #include <misc/exceptions.h>
+#include <misc/unique_or_nonowning_ptr.h>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_endian.h>
 #include <SDL2/SDL_rwops.h>
@@ -146,6 +147,9 @@ namespace sdl2
         template<typename T, void(*Delete)(T*)>
         using unique_ptr_deleter = std::unique_ptr<T, deleter<T, Delete>>;
 
+        template<typename T, void(*Delete)(T*)>
+        using unique_or_nonowning_ptr_deleter = unique_or_nonowning_ptr<T, deleter<T, Delete>>;
+
         template<typename T, typename TArg, void(*Delete)(TArg*)>
         struct arg_deleter
         {
@@ -154,6 +158,9 @@ namespace sdl2
 
         template<typename T, typename TArg, void(*Delete)(TArg*)>
         using unique_ptr_arg_deleter = std::unique_ptr<T, arg_deleter<T, TArg, Delete>>;
+
+        template<typename T, typename TArg, void(*Delete)(TArg*)>
+        using unique_or_nonowning_ptr_arg_deleter = unique_or_nonowning_ptr<T, arg_deleter<T, TArg, Delete>>;
 
         struct RWops_deleter
         {
@@ -165,7 +172,9 @@ namespace sdl2
     using sdl_ptr = implementation::unique_ptr_arg_deleter<T, void, SDL_free>;
 
     typedef implementation::unique_ptr_deleter<SDL_Surface, SDL_FreeSurface> surface_ptr;
+    typedef implementation::unique_or_nonowning_ptr_deleter<SDL_Surface, SDL_FreeSurface> surface_unique_or_nonowning_ptr;
     typedef implementation::unique_ptr_deleter<SDL_Texture, SDL_DestroyTexture> texture_ptr;
+    typedef implementation::unique_or_nonowning_ptr_deleter<SDL_Texture, SDL_DestroyTexture> texture_unique_or_nonowning_ptr;
     typedef implementation::unique_ptr_deleter<SDL_Palette, SDL_FreePalette> palette_ptr;
     typedef implementation::unique_ptr_deleter<SDL_PixelFormat, SDL_FreeFormat> pixel_format_ptr;
     typedef implementation::unique_ptr_deleter<SDL_Renderer, SDL_DestroyRenderer> renderer_ptr;

@@ -62,7 +62,7 @@ protected:
         topBoxHBox.addWidget(Spacer::create());
         topBoxHBox.addWidget(&objPicture);
 
-        objPicture.setTexture(resolveItemPicture(itemID, (HOUSETYPE) pObject->getOriginalHouseID()),false);
+        objPicture.setTexture(resolveItemPicture(itemID, (HOUSETYPE) pObject->getOriginalHouseID()));
 
         topBoxHBox.addWidget(Spacer::create());
     };

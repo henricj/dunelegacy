@@ -35,22 +35,18 @@ public:
     /**
         This method is used for setting the different surfaces for this button.
         \param  pUnpressedSurface       This surface is normally shown
-        \param  bFreeUnpressedSurface   Should pUnpressedSurface be freed if this button is destroyed?
         \param  pPressedSurface         This surface is shown when the button is pressed
-        \param  bFreePressedSurface     Should pPressedSurface be freed if this button is destroyed?
         \param  pActiveSurface          This surface is shown when the button is activated by keyboard or by mouse hover
-        \param  bFreeActiveSurface      Should pActiveSurface be freed if this button is destroyed?
     */
-    void setSurfaces(   SDL_Surface* pUnpressedSurface,bool bFreeUnpressedSurface,
-                                SDL_Surface* pPressedSurface = nullptr,bool bFreePressedSurface = false,
-                                SDL_Surface* pActiveSurface = nullptr,bool bFreeActiveSurface = false) override
+    virtual void setSurfaces(   sdl2::surface_unique_or_nonowning_ptr pUnpressedSurface,
+                                sdl2::surface_unique_or_nonowning_ptr pPressedSurface = nullptr,
+                                sdl2::surface_unique_or_nonowning_ptr pActiveSurface = nullptr) override
     {
-        Button::setSurfaces(pUnpressedSurface,bFreeUnpressedSurface,
-                            pPressedSurface,bFreePressedSurface,
-                            pActiveSurface,bFreeActiveSurface);
 
-        if(pUnpressedSurface != nullptr) {
-            resize(getTextureSize(pUnpressedTexture.get()));
+        Button::setSurfaces(std::move(pUnpressedSurface), std::move(pPressedSurface), std::move(pActiveSurface));
+
+        if(this->pUnpressedTexture) {
+            resize(getTextureSize(this->pUnpressedTexture.get()));
         } else {
             resize(0,0);
         }
@@ -59,22 +55,17 @@ public:
     /**
         This method is used for setting the different textures for this button.
         \param  pUnpressedTexture       This texture is normally shown
-        \param  bFreeUnpressedTexture   Should pUnpressedTexture be freed if this button is destroyed?
         \param  pPressedTexture         This texture is shown when the button is pressed
-        \param  bFreePressedTexture     Should pPressedTexture be freed if this button is destroyed?
         \param  pActiveTexture          This texture is shown when the button is activated by keyboard or by mouse hover
-        \param  bFreeActiveTexture      Should pActiveTexture be freed if this button is destroyed?
     */
-    void setTextures(   SDL_Texture* pUnpressedTexture,bool bFreeUnpressedTexture,
-                                SDL_Texture* pPressedTexture = nullptr,bool bFreePressedTexture = false,
-                                SDL_Texture* pActiveTexture = nullptr,bool bFreeActiveTexture = false) override
+    void setTextures(   sdl2::texture_unique_or_nonowning_ptr pUnpressedTexture,
+                        sdl2::texture_unique_or_nonowning_ptr pPressedTexture = nullptr,
+                        sdl2::texture_unique_or_nonowning_ptr pActiveTexture = nullptr) override
     {
-        Button::setTextures(pUnpressedTexture,bFreeUnpressedTexture,
-                            pPressedTexture,bFreePressedTexture,
-                            pActiveTexture,bFreeActiveTexture);
+        Button::setTextures(std::move(pUnpressedTexture), std::move(pPressedTexture), std::move(pActiveTexture));
 
-        if(pUnpressedTexture != nullptr) {
-            resize(getTextureSize(pUnpressedTexture));
+        if(this->pUnpressedTexture) {
+            resize(getTextureSize(this->pUnpressedTexture.get()));
         } else {
             resize(0,0);
         }
@@ -87,7 +78,7 @@ public:
     */
     Point getMinimumSize() const override
     {
-        if(pUnpressedTexture != nullptr) {
+        if(pUnpressedTexture) {
             return getTextureSize(pUnpressedTexture.get());
         } else {
             return Point(0,0);

@@ -39,7 +39,7 @@ ReinforcementsWindow::ReinforcementsWindow(MapEditor* pMapEditor, HOUSETYPE curr
 
     // set up window
     SDL_Texture *pBackground = pGFXManager->getUIGraphic(UI_NewMapWindow);
-    setBackground(pBackground, false);
+    setBackground(pBackground);
 
     setCurrentPosition(calcAlignedDrawingRect(pBackground, HAlign::Center, VAlign::Center));
 
@@ -74,28 +74,28 @@ ReinforcementsWindow::ReinforcementsWindow(MapEditor* pMapEditor, HOUSETYPE curr
 
     hBox1.addWidget(HSpacer::create(3));
 
-    listEntryUpButton.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_ArrowUp, house), false,
-                                pGFXManager->getUIGraphicSurface(UI_MapEditor_ArrowUp_Active, house), false);
+    listEntryUpButton.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_ArrowUp, house),
+                                pGFXManager->getUIGraphicSurface(UI_MapEditor_ArrowUp_Active, house));
     listEntryUpButton.setTooltipText(_("Move up"));
     listEntryUpButton.setOnClick(std::bind(&ReinforcementsWindow::onUp, this));
     listControlVBox.addWidget(&listEntryUpButton, 25);
     listControlVBox.addWidget(VSpacer::create(3));
-    listEntryDownButton.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_ArrowDown, house), false,
-                                  pGFXManager->getUIGraphicSurface(UI_MapEditor_ArrowDown_Active, house), false);
+    listEntryDownButton.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_ArrowDown, house),
+                                  pGFXManager->getUIGraphicSurface(UI_MapEditor_ArrowDown_Active, house));
     listEntryDownButton.setTooltipText(_("Move down"));
     listEntryDownButton.setOnClick(std::bind(&ReinforcementsWindow::onDown, this));
     listControlVBox.addWidget(&listEntryDownButton, 25);
 
     listControlVBox.addWidget(Spacer::create(), 6.0);
 
-    addListEntryButton.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_Plus, house), false,
-                                 pGFXManager->getUIGraphicSurface(UI_MapEditor_Plus_Active, house), false);
+    addListEntryButton.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_Plus, house),
+                                 pGFXManager->getUIGraphicSurface(UI_MapEditor_Plus_Active, house));
     addListEntryButton.setTooltipText(_("Add"));
     addListEntryButton.setOnClick(std::bind(&ReinforcementsWindow::onAdd, this));
     listControlVBox.addWidget(&addListEntryButton, 25);
     listControlVBox.addWidget(VSpacer::create(3));
-    removeListEntryButton.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_Minus, house), false,
-                                    pGFXManager->getUIGraphicSurface(UI_MapEditor_Minus_Active, house), false);
+    removeListEntryButton.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_Minus, house),
+                                    pGFXManager->getUIGraphicSurface(UI_MapEditor_Minus_Active, house));
     removeListEntryButton.setTooltipText(_("Remove"));
     removeListEntryButton.setOnClick(std::bind(&ReinforcementsWindow::onRemove, this));
     listControlVBox.addWidget(&removeListEntryButton, 25);

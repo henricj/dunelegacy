@@ -38,11 +38,11 @@ BuilderList::BuilderList(Uint32 builderObjectID) {
     enableResizing(false,true);
     this->builderObjectID = builderObjectID;
 
-    upButton.setTextures(   pGFXManager->getUIGraphic(UI_ButtonUp,pLocalHouse->getHouseID()), false,
-                            pGFXManager->getUIGraphic(UI_ButtonUp_Pressed,pLocalHouse->getHouseID()), false);
+    upButton.setTextures(   pGFXManager->getUIGraphic(UI_ButtonUp,pLocalHouse->getHouseID()),
+                            pGFXManager->getUIGraphic(UI_ButtonUp_Pressed,pLocalHouse->getHouseID()));
 
-    downButton.setTextures( pGFXManager->getUIGraphic(UI_ButtonDown,pLocalHouse->getHouseID()), false,
-                            pGFXManager->getUIGraphic(UI_ButtonDown_Pressed,pLocalHouse->getHouseID()), false);
+    downButton.setTextures( pGFXManager->getUIGraphic(UI_ButtonDown,pLocalHouse->getHouseID()),
+                            pGFXManager->getUIGraphic(UI_ButtonDown_Pressed,pLocalHouse->getHouseID()));
 
     addWidget(&upButton,Point( (WIDGET_WIDTH - ARROWBTN_WIDTH)/2,0),upButton.getSize());
     upButton.setOnClick(std::bind(&BuilderList::onUp, this));
@@ -333,7 +333,7 @@ void BuilderList::drawOverlay(Point position) {
         }
 
         if(pLastTooltip == nullptr) {
-            pLastTooltip = convertSurfaceToTexture(GUIStyle::getInstance().createToolTip(text), true);
+            pLastTooltip = convertSurfaceToTexture(GUIStyle::getInstance().createToolTip(text));
             tooltipText = text;
         }
 

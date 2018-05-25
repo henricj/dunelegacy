@@ -41,7 +41,7 @@ HouseChoiceMenu::HouseChoiceMenu() : MenuBase()
     setWindowWidget(&windowWidget);
 
 
-    selectYourHouseLabel.setTexture(pGFXManager->getUIGraphic(UI_SelectYourHouseLarge), false);
+    selectYourHouseLabel.setTexture(pGFXManager->getUIGraphic(UI_SelectYourHouseLarge));
     windowWidget.addWidget(&selectYourHouseLabel, Point(0,0), Point(100, 640));
 
     // set up buttons
@@ -56,14 +56,14 @@ HouseChoiceMenu::HouseChoiceMenu() : MenuBase()
 
     SDL_Texture *pArrowLeft = pGFXManager->getUIGraphic(UI_Herald_ArrowLeftLarge);
     SDL_Texture *pArrowLeftHighlight = pGFXManager->getUIGraphic(UI_Herald_ArrowLeftHighlightLarge);
-    houseLeftButton.setTextures(pArrowLeft, false, pArrowLeft, false, pArrowLeftHighlight, false);
+    houseLeftButton.setTextures(pArrowLeft, pArrowLeft, pArrowLeftHighlight);
     houseLeftButton.setOnClick(std::bind(&HouseChoiceMenu::onHouseLeft, this));
     houseLeftButton.setVisible(false);
     windowWidget.addWidget( &houseLeftButton, Point(320 - getWidth(pArrowLeft) - 85, 360), getTextureSize(pArrowLeft));
 
     SDL_Texture *pArrowRight = pGFXManager->getUIGraphic(UI_Herald_ArrowRightLarge);
     SDL_Texture *pArrowRightHighlight = pGFXManager->getUIGraphic(UI_Herald_ArrowRightHighlightLarge);
-    houseRightButton.setTextures(pArrowRight, false, pArrowRight, false, pArrowRightHighlight, false);
+    houseRightButton.setTextures(pArrowRight, pArrowRight, pArrowRightHighlight);
     houseRightButton.setOnClick(std::bind(&HouseChoiceMenu::onHouseRight, this));
     windowWidget.addWidget( &houseRightButton, Point(320 + 85, 360), getTextureSize(pArrowRight));
 
@@ -90,13 +90,13 @@ void HouseChoiceMenu::onHouseButton(int button) {
 
 void HouseChoiceMenu::updateHouseChoice() {
     // House1 button
-    house1Button.setTextures(pGFXManager->getUIGraphic(UI_Herald_ColoredLarge, houseOrder[currentHouseChoiceScrollPos+0]),false);
+    house1Button.setTextures(pGFXManager->getUIGraphic(UI_Herald_ColoredLarge, houseOrder[currentHouseChoiceScrollPos+0]));
 
     // House2 button
-    house2Button.setTextures(pGFXManager->getUIGraphic(UI_Herald_ColoredLarge, houseOrder[currentHouseChoiceScrollPos+1]),false);
+    house2Button.setTextures(pGFXManager->getUIGraphic(UI_Herald_ColoredLarge, houseOrder[currentHouseChoiceScrollPos+1]));
 
     // House3 button
-    house3Button.setTextures(pGFXManager->getUIGraphic(UI_Herald_ColoredLarge, houseOrder[currentHouseChoiceScrollPos+2]),false);
+    house3Button.setTextures(pGFXManager->getUIGraphic(UI_Herald_ColoredLarge, houseOrder[currentHouseChoiceScrollPos+2]));
 }
 
 void HouseChoiceMenu::onHouseLeft()

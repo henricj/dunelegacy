@@ -36,7 +36,7 @@ LoadSaveWindow::LoadSaveWindow(bool bSave, const std::string& caption, const std
 
     // set up window
     SDL_Texture *pBackground = pGFXManager->getUIGraphic(UI_LoadSaveWindow);
-    setBackground(pBackground, false);
+    setBackground(pBackground);
 
     setCurrentPosition(calcAlignedDrawingRect(pBackground, HAlign::Center, VAlign::Center));
 

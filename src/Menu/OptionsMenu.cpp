@@ -52,7 +52,7 @@ OptionsMenu::OptionsMenu() : MenuBase()
 
     // set up window
     SDL_Texture *pBackground = pGFXManager->getUIGraphic(UI_MenuBackground);
-    setBackground(pBackground, false);
+    setBackground(pBackground);
     resize(getTextureSize(pBackground));
 
     setWindowWidget(&windowWidget);

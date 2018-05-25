@@ -45,7 +45,7 @@ MapChoice::MapChoice(int newHouse, unsigned int lastMission, Uint32 oldAlreadyPl
 
     // set up window
     SDL_Texture *pBackground = pGFXManager->getUIGraphic(UI_MapChoiceScreen, house);
-    setBackground(pBackground, false);
+    setBackground(pBackground);
     resize(getTextureSize(pBackground));
 
     centerAreaRect.x = getRendererWidth()/2 - 320;

@@ -52,7 +52,7 @@ CustomGamePlayers::CustomGamePlayers(const GameInitSettings& newGameInitSettings
 
     // set up window
     SDL_Texture *pBackground = pGFXManager->getUIGraphic(UI_MenuBackground);
-    setBackground(pBackground, false);
+    setBackground(pBackground);
     resize(getTextureSize(pBackground));
 
     setWindowWidget(&windowWidget);
@@ -82,7 +82,7 @@ CustomGamePlayers::CustomGamePlayers(const GameInitSettings& newGameInitSettings
 
     mainHBox.addWidget(&rightVBox, 180);
     mainHBox.addWidget(Spacer::create(), 0.05);
-    minimap.setSurface( GUIStyle::getInstance().createButtonSurface(130,130,_("Choose map"), true, false), true);
+    minimap.setSurface( GUIStyle::getInstance().createButtonSurface(130,130,_("Choose map"), true, false) );
     rightVBox.addWidget(&minimap);
 
     if(gameInitSettings.getGameType() == GameType::CustomGame || gameInitSettings.getGameType() == GameType::CustomMultiplayer) {
@@ -248,7 +248,7 @@ CustomGamePlayers::CustomGamePlayers(const GameInitSettings& newGameInitSettings
         curHouseInfo.houseInfoVBox.addWidget(&curHouseInfo.houseHBox);
 
         // add 1. player
-        curHouseInfo.player1ArrowLabel.setTexture(pGFXManager->getUIGraphic(UI_CustomGamePlayersArrowNeutral), false);
+        curHouseInfo.player1ArrowLabel.setTexture(pGFXManager->getUIGraphic(UI_CustomGamePlayersArrowNeutral));
         curHouseInfo.playerHBox.addWidget(&curHouseInfo.player1ArrowLabel);
         curHouseInfo.player1Label.setText(_("Player") + (gameInitSettings.isMultiplePlayersPerHouse() ? " 1" : ""));
         curHouseInfo.player1Label.setTextFont(FONT_STD10);
@@ -840,7 +840,7 @@ void CustomGamePlayers::extractMapInfo(INIFile* pMap)
         pMapSurface = sdl2::surface_ptr{ GUIStyle::getInstance().createButtonSurface(130, 130, "Error", true, false) };
         nextButton.setEnabled(false);
     }
-    minimap.setSurface(pMapSurface.release(), true);
+    minimap.setSurface(std::move(pMapSurface));
 
 
     boundHousesOnMap.clear();
@@ -968,9 +968,9 @@ void CustomGamePlayers::onChangeHousesDropDownBoxes(bool bInteractive, int house
             curHouseInfo.player2DropDown.setColor(color);
 
             if(house == HOUSE_INVALID) {
-                curHouseInfo.player1ArrowLabel.setTexture(pGFXManager->getUIGraphic(UI_CustomGamePlayersArrowNeutral), false);
+                curHouseInfo.player1ArrowLabel.setTexture(pGFXManager->getUIGraphic(UI_CustomGamePlayersArrowNeutral));
             } else {
-                curHouseInfo.player1ArrowLabel.setTexture(pGFXManager->getUIGraphic(UI_CustomGamePlayersArrow, house), false);
+                curHouseInfo.player1ArrowLabel.setTexture(pGFXManager->getUIGraphic(UI_CustomGamePlayersArrow, house));
             }
         }
 

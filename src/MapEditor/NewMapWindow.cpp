@@ -41,7 +41,7 @@ NewMapWindow::NewMapWindow(HOUSETYPE currentHouse) : Window(0,0,0,0), house(curr
 
     // set up window
     SDL_Texture *pBackground = pGFXManager->getUIGraphic(UI_NewMapWindow);
-    setBackground(pBackground, false);
+    setBackground(pBackground);
 
     setCurrentPosition(calcAlignedDrawingRect(pBackground, HAlign::Center, VAlign::Center));
 
@@ -61,7 +61,7 @@ NewMapWindow::NewMapWindow(HOUSETYPE currentHouse) : Window(0,0,0,0), house(curr
     mainVBox.addWidget(&centralVBox, 360);
 
     basicMapPropertiesHBox.addWidget(&basicMapPropertiesVBox);
-    minimap.setSurface( GUIStyle::getInstance().createButtonSurface(130,130,"", true, false), true);
+    minimap.setSurface( GUIStyle::getInstance().createButtonSurface(130,130,"", true, false) );
     basicMapPropertiesHBox.addWidget(&minimap);
 
 
@@ -323,18 +323,17 @@ void NewMapWindow::onMapPropertiesChanged() {
         mapdata = createMapWithSeed(seed, scale);
     }
 
-    minimap.setSurface(createMinimapPicture(mapdata, 1, DuneStyle::buttonBorderColor), true);
+    minimap.setSurface(createMinimapPicture(mapdata, 1, DuneStyle::buttonBorderColor));
 }
 
-SDL_Surface* NewMapWindow::createMinimapPicture(MapData& mapdata, int borderWidth, Uint32 borderColor) {
-    SDL_Surface* pMinimap;
-    // create surface
-    if((pMinimap = SDL_CreateRGBSurface(0, 128+2*borderWidth, 128+2*borderWidth, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK)) == nullptr) {
+sdl2::surface_ptr NewMapWindow::createMinimapPicture(MapData& mapdata, int borderWidth, Uint32 borderColor) {
+    sdl2::surface_ptr pMinimap = sdl2::surface_ptr{ SDL_CreateRGBSurface(0, 128+2*borderWidth, 128+2*borderWidth, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK) };
+    if(!pMinimap) {
         return nullptr;
     }
-    SDL_FillRect(pMinimap, nullptr, borderColor);
+    SDL_FillRect(pMinimap.get(), nullptr, borderColor);
     SDL_Rect dest = { borderWidth, borderWidth, pMinimap->w - 2*borderWidth, pMinimap->h - 2*borderWidth};
-    SDL_FillRect(pMinimap, &dest, COLOR_BLACK);
+    SDL_FillRect(pMinimap.get(), &dest, COLOR_BLACK);
 
     int scale = 1;
     int offsetX;
@@ -354,7 +353,7 @@ SDL_Surface* NewMapWindow::createMinimapPicture(MapData& mapdata, int borderWidt
 
             for(int i=0;i<scale;i++) {
                 for(int j=0;j<scale;j++) {
-                    putPixel(pMinimap, x*scale + i + offsetX, y*scale + j + offsetY, color);
+                    putPixel(pMinimap.get(), x*scale + i + offsetX, y*scale + j + offsetY, color);
                 }
             }
         }

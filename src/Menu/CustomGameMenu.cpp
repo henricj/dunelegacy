@@ -45,7 +45,7 @@ CustomGameMenu::CustomGameMenu(bool multiplayer, bool LANServer)
  : MenuBase(), bMultiplayer(multiplayer), bLANServer(LANServer), currentGameOptions(settings.gameOptions) {
     // set up window
     SDL_Texture *pBackground = pGFXManager->getUIGraphic(UI_MenuBackground);
-    setBackground(pBackground, false);
+    setBackground(pBackground);
     resize(getTextureSize(pBackground));
 
     setWindowWidget(&windowWidget);
@@ -111,7 +111,7 @@ CustomGameMenu::CustomGameMenu(bool multiplayer, bool LANServer)
 
     mainHBox.addWidget(&rightVBox, 180);
     mainHBox.addWidget(Spacer::create(), 0.05);
-    minimap.setSurface( GUIStyle::getInstance().createButtonSurface(130,130,_("Choose map"), true, false), true);
+    minimap.setSurface( GUIStyle::getInstance().createButtonSurface(130,130,_("Choose map"), true, false) );
     rightVBox.addWidget(&minimap);
 
     rightVBox.addWidget(VSpacer::create(10));
@@ -265,7 +265,7 @@ void CustomGameMenu::onMapTypeChange(int buttonID)
     if(mapList.getNumEntries() > 0) {
         mapList.setSelectedItem(0);
     } else {
-        minimap.setSurface( GUIStyle::getInstance().createButtonSurface(130,130,_("No map available"), true, false), true);
+        minimap.setSurface( GUIStyle::getInstance().createButtonSurface(130,130,_("No map available"), true, false) );
         mapPropertySize.setText("");
         mapPropertyPlayers.setText("");
         mapPropertyAuthors.setText("");
@@ -330,7 +330,7 @@ void CustomGameMenu::onMapListSelectionChange(bool bInteractive)
         pMapSurface = sdl2::surface_ptr{ GUIStyle::getInstance().createButtonSurface(130, 130, "Error", true, false) };
         loadButton.setEnabled(false);
     }
-    minimap.setSurface(pMapSurface.release(), true);
+    minimap.setSurface(std::move(pMapSurface) );
 
     int numPlayers = 0;
     if(inimap.hasSection("Atreides")) numPlayers++;

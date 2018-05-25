@@ -31,7 +31,7 @@ BriefingMenu::BriefingMenu(int newHouse,int mission,int type) : MentatMenu(newHo
 
     SDL_Texture* pMentatProcceed = pGFXManager->getUIGraphic(UI_MentatProcced);
     SDL_Texture* pMentatProcceedPressed = pGFXManager->getUIGraphic(UI_MentatProcced_Pressed);
-    proccedButton.setTextures(pMentatProcceed, false, pMentatProcceedPressed, false);
+    proccedButton.setTextures(pMentatProcceed, pMentatProcceedPressed);
     proccedButton.setEnabled(false);
     proccedButton.setVisible(false);
     proccedButton.setOnClick(std::bind(&BriefingMenu::onProcced, this));
@@ -39,7 +39,7 @@ BriefingMenu::BriefingMenu(int newHouse,int mission,int type) : MentatMenu(newHo
 
     SDL_Texture* pMentatRepeat = pGFXManager->getUIGraphic(UI_MentatRepeat);
     SDL_Texture* pMentatRepeatPressed = pGFXManager->getUIGraphic(UI_MentatRepeat_Pressed);
-    repeatButton.setTextures(pMentatRepeat, false, pMentatRepeatPressed, false);
+    repeatButton.setTextures(pMentatRepeat, pMentatRepeatPressed);
     repeatButton.setEnabled(false);
     repeatButton.setVisible(false);
     repeatButton.setOnClick(std::bind(&BriefingMenu::onRepeat, this));

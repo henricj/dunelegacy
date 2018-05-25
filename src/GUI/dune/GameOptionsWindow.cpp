@@ -118,7 +118,7 @@ GameOptionsWindow::GameOptionsWindow(SettingsClass::GameOptionsClass& initialGam
     vboxRight.addWidget(&onlyOnePalaceCheckbox);
     vboxRight.addWidget(VSpacer::create(6));
 
-    gameSpeedMinus.setTextures(pGFXManager->getUIGraphic(UI_Minus), false, pGFXManager->getUIGraphic(UI_Minus_Pressed), false);
+    gameSpeedMinus.setTextures(pGFXManager->getUIGraphic(UI_Minus), pGFXManager->getUIGraphic(UI_Minus_Pressed));
     gameSpeedMinus.setOnClick(std::bind(&GameOptionsWindow::onGameSpeedMinus, this));
     gameSpeedHBox.addWidget(HSpacer::create(4));
     gameSpeedHBox.addWidget(&gameSpeedMinus);
@@ -128,7 +128,7 @@ GameOptionsWindow::GameOptionsWindow(SettingsClass::GameOptionsClass& initialGam
     gameSpeedHBox.addWidget(&gameSpeedBar);
     currentGameSpeed = gameOptions.gameSpeed;
     updateGameSpeedBar();
-    gameSpeedPlus.setTextures(pGFXManager->getUIGraphic(UI_Plus), false, pGFXManager->getUIGraphic(UI_Plus_Pressed), false);
+    gameSpeedPlus.setTextures(pGFXManager->getUIGraphic(UI_Plus), pGFXManager->getUIGraphic(UI_Plus_Pressed));
     gameSpeedPlus.setOnClick(std::bind(&GameOptionsWindow::onGameSpeedPlus, this));
     gameSpeedHBox.addWidget(HSpacer::create(2));
     gameSpeedHBox.addWidget(&gameSpeedPlus);

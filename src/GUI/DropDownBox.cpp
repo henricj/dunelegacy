@@ -283,9 +283,9 @@ void DropDownBox::onSelectionChange(bool bInteractive) {
 }
 
 void DropDownBox::updateButtonSurface() {
-    openListBoxButton.setSurfaces(  GUIStyle::getInstance().createDropDownBoxButton(17,false,false,color), true,
-                                    GUIStyle::getInstance().createDropDownBoxButton(17,true,true,color), true,
-                                    GUIStyle::getInstance().createDropDownBoxButton(17,false,true,color), true);
+    openListBoxButton.setSurfaces(  GUIStyle::getInstance().createDropDownBoxButton(17,false,false,color),
+                                    GUIStyle::getInstance().createDropDownBoxButton(17,true,true,color),
+                                    GUIStyle::getInstance().createDropDownBoxButton(17,false,true,color));
 }
 
 void DropDownBox::invalidateForeground() {
@@ -294,10 +294,10 @@ void DropDownBox::invalidateForeground() {
 }
 
 void DropDownBox::updateForeground() {
-    if(pForeground == nullptr && pActiveForeground == nullptr) {
+    if(!pForeground && !pActiveForeground) {
         if(listBox.getSelectedIndex() >= 0) {
-            pForeground = convertSurfaceToTexture(GUIStyle::getInstance().createListBoxEntry(getSize().x - 17, listBox.getEntry(listBox.getSelectedIndex()), false, color), true);
-            pActiveForeground = convertSurfaceToTexture(GUIStyle::getInstance().createListBoxEntry(getSize().x - 17, listBox.getEntry(listBox.getSelectedIndex()), true, color), true);
+            pForeground = convertSurfaceToTexture(GUIStyle::getInstance().createListBoxEntry(getSize().x - 17, listBox.getEntry(listBox.getSelectedIndex()), false, color));
+            pActiveForeground = convertSurfaceToTexture(GUIStyle::getInstance().createListBoxEntry(getSize().x - 17, listBox.getEntry(listBox.getSelectedIndex()), true, color));
         }
     }
 }
@@ -307,7 +307,7 @@ void DropDownBox::invalidateBackground() {
 }
 
 void DropDownBox::updateBackground() {
-    if(pBackground == nullptr) {
-        pBackground = convertSurfaceToTexture(GUIStyle::getInstance().createWidgetBackground(getSize().x, getSize().y), true);
+    if(!pBackground) {
+        pBackground = convertSurfaceToTexture(GUIStyle::getInstance().createWidgetBackground(getSize().x, getSize().y));
     }
 }

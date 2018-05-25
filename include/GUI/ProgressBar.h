@@ -40,15 +40,11 @@ public:
         bDrawShadow = false;
         pBackground = nullptr;
         pForeground = nullptr;
-        bFreeBackground = true;
         enableResizing(true,true);
     }
 
     /// destructor
     virtual ~ProgressBar() {
-        if (!bFreeBackground)
-            pBackground.release();
-
         invalidateTextures();
     }
 
@@ -134,12 +130,12 @@ public:
 
         updateTextures();
 
-        if(pBackground != nullptr) {
+        if(pBackground) {
             auto dest = calcDrawingRect(pBackground.get(), position.x, position.y);
             SDL_RenderCopy(renderer, pBackground.get(), nullptr, &dest);
         }
 
-        if(pForeground != nullptr) {
+        if(pForeground) {
             auto dest = calcDrawingRect(pForeground.get(), position.x, position.y);
             if(bDrawShadow) {
                 SDL_Rect dest2 = { position.x + 2, position.y + 2, (int) lround(percent*(dest.w/100.0)), dest.h };
@@ -158,8 +154,8 @@ protected:
     */
     void updateTextures() override
     {
-        if(pForeground == nullptr) {
-            pForeground = convertSurfaceToTexture(GUIStyle::getInstance().createProgressBarOverlay(getSize().x, getSize().y, percent, color), true);
+        if(!pForeground) {
+            pForeground = convertSurfaceToTexture(GUIStyle::getInstance().createProgressBarOverlay(getSize().x, getSize().y, percent, color));
         }
     }
 
@@ -171,9 +167,8 @@ protected:
         pForeground.reset();
     }
 
-    sdl2::texture_ptr   pBackground;
-    bool                bFreeBackground;
-    sdl2::texture_ptr   pForeground;
+    sdl2::texture_unique_or_nonowning_ptr   pBackground;
+    sdl2::texture_ptr                       pForeground;
 
     double percent;             ///< Percent from 0.0 to 100.0
     Uint32 color;               ///< The color of the progress overlay
@@ -182,9 +177,7 @@ protected:
 
 class TextProgressBar : public ProgressBar {
 public:
-    TextProgressBar() {
-        bFreeBackground = true;
-    }
+    TextProgressBar() = default;
 
     virtual ~TextProgressBar() = default;
 
@@ -245,8 +238,8 @@ protected:
     {
         ProgressBar::updateTextures();
 
-        if(pBackground == nullptr) {
-            pBackground = convertSurfaceToTexture(GUIStyle::getInstance().createButtonSurface(getSize().x, getSize().y, text, true, false, textcolor, textshadowcolor), true);
+        if(!pBackground) {
+            pBackground = convertSurfaceToTexture(GUIStyle::getInstance().createButtonSurface(getSize().x, getSize().y, text, true, false, textcolor, textshadowcolor));
         }
     }
 
@@ -279,22 +272,14 @@ public:
     PictureProgressBar& operator=(const PictureProgressBar &) = delete;
     PictureProgressBar& operator=(PictureProgressBar &&) = delete;
 
-    void setSurface(SDL_Surface* pBackground, bool bFreeBackground) {
-        setTexture(convertSurfaceToTexture(pBackground, bFreeBackground));
+    void setSurface(sdl2::surface_unique_or_nonowning_ptr pBackground) {
+        setTexture(convertSurfaceToTexture(pBackground.get(), false));
     }
 
-    void setTexture(SDL_Texture* pBackground, bool bFreeBackground = false) {
-        setTexture(sdl2::texture_ptr{ pBackground }, bFreeBackground);
-    }
-
-    void setTexture(sdl2::texture_ptr pBackground, bool bFreeBackground = true) {
-        if (!this->bFreeBackground)
-            this->pBackground.release();
-
-        this->bFreeBackground = bFreeBackground;
+    void setTexture(sdl2::texture_unique_or_nonowning_ptr pBackground) {
         this->pBackground = std::move(pBackground);
 
-        if(this->pBackground != nullptr) {
+        if(this->pBackground) {
             resize(getTextureSize(this->pBackground.get()));
         } else {
             resize(4,4);
@@ -331,7 +316,7 @@ public:
     */
     Point getMinimumSize() const override
     {
-        if(pBackground == nullptr) {
+        if(!pBackground) {
             return Point(4,4);
         } else {
             return getTextureSize(pBackground.get());

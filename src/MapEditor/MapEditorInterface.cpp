@@ -66,17 +66,17 @@ MapEditorInterface::MapEditorInterface(MapEditor* pMapEditor)
 
     // top bar
     SDL_Texture* pTopBarTexture = pGFXManager->getUIGraphic(UI_TopBar, HOUSE_HARKONNEN);
-    topBar.setTexture(pTopBarTexture, false);
+    topBar.setTexture(pTopBarTexture);
     windowWidget.addWidget(&topBar, calcAlignedDrawingRect(pTopBarTexture, HAlign::Left, VAlign::Top));
 
     // side bar
     SDL_Texture* pSideBarTexture = pGFXManager->getUIGraphic(UI_MapEditor_SideBar, HOUSE_HARKONNEN);
-    sideBar.setTexture(pSideBarTexture, false);
+    sideBar.setTexture(pSideBarTexture);
     windowWidget.addWidget(&sideBar, calcAlignedDrawingRect(pSideBarTexture, HAlign::Right, VAlign::Top));
 
     // bottom bar
     SDL_Texture* pBottomBarTexture = pGFXManager->getUIGraphic(UI_MapEditor_BottomBar, HOUSE_HARKONNEN);
-    bottomBar.setTexture(pBottomBarTexture, false);
+    bottomBar.setTexture(pBottomBarTexture);
     windowWidget.addWidget(&bottomBar, calcAlignedDrawingRect(pBottomBarTexture, HAlign::Left, VAlign::Bottom));
 
 
@@ -89,77 +89,77 @@ MapEditorInterface::MapEditorInterface(MapEditor* pMapEditor)
 
     topBarHBox.addWidget(HSpacer::create(3));
 
-    exitButton.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_ExitIcon), false);
+    exitButton.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_ExitIcon));
     exitButton.setTooltipText(_("Leave Mapeditor"));
     exitButton.setOnClick(std::bind(&MapEditorInterface::onQuit, this));
     topBarHBox.addWidget(&exitButton,24);
 
     topBarHBox.addWidget(HSpacer::create(10));
 
-    newButton.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_NewIcon), false);
+    newButton.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_NewIcon));
     newButton.setTooltipText(_("New Map"));
     newButton.setOnClick(std::bind(&MapEditorInterface::onNew, this));
     topBarHBox.addWidget(&newButton,24);
 
     topBarHBox.addWidget(HSpacer::create(1));
 
-    loadButton.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_LoadIcon), false);
+    loadButton.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_LoadIcon));
     loadButton.setTooltipText(_("Load Map"));
     loadButton.setOnClick(std::bind(&MapEditorInterface::onLoad, this));
     topBarHBox.addWidget(&loadButton,24);
 
     topBarHBox.addWidget(HSpacer::create(1));
 
-    saveButton.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_SaveIcon), false);
+    saveButton.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_SaveIcon));
     saveButton.setTooltipText(_("Save Map"));
     saveButton.setOnClick(std::bind(&MapEditorInterface::onSave, this));
     topBarHBox.addWidget(&saveButton,24);
 
     topBarHBox.addWidget(HSpacer::create(10));
 
-    undoButton.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_UndoIcon), false);
+    undoButton.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_UndoIcon));
     undoButton.setTooltipText(_("Undo"));
     undoButton.setOnClick(std::bind(&MapEditorInterface::onUndo, this));
     topBarHBox.addWidget(&undoButton,24);
 
     topBarHBox.addWidget(HSpacer::create(1));
 
-    redoButton.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_RedoIcon), false);
+    redoButton.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_RedoIcon));
     redoButton.setTooltipText(_("Redo"));
     redoButton.setOnClick(std::bind(&MapEditorInterface::onRedo, this));
     topBarHBox.addWidget(&redoButton,24);
 
     topBarHBox.addWidget(HSpacer::create(10));
 
-    playersButton.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_PlayerIcon), false);
+    playersButton.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_PlayerIcon));
     playersButton.setTooltipText(_("Player Settings"));
     playersButton.setOnClick(std::bind(&MapEditorInterface::onPlayers, this));
     topBarHBox.addWidget(&playersButton,24);
 
     topBarHBox.addWidget(HSpacer::create(1));
 
-    mapSettingsButton.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_MapSettingsIcon), false);
+    mapSettingsButton.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_MapSettingsIcon));
     mapSettingsButton.setTooltipText(_("Map Settings"));
     mapSettingsButton.setOnClick(std::bind(&MapEditorInterface::onMapSettings, this));
     topBarHBox.addWidget(&mapSettingsButton,24);
 
     topBarHBox.addWidget(HSpacer::create(10));
 
-    choamButton.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_ChoamIcon), false);
+    choamButton.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_ChoamIcon));
     choamButton.setTooltipText(_("Choam"));
     choamButton.setOnClick(std::bind(&MapEditorInterface::onChoam, this));
     topBarHBox.addWidget(&choamButton,24);
 
     topBarHBox.addWidget(HSpacer::create(1));
 
-    reinforcementsButton.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_ReinforcementsIcon), false);
+    reinforcementsButton.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_ReinforcementsIcon));
     reinforcementsButton.setTooltipText(_("Reinforcements"));
     reinforcementsButton.setOnClick(std::bind(&MapEditorInterface::onReinforcements, this));
     topBarHBox.addWidget(&reinforcementsButton,24);
 
     topBarHBox.addWidget(HSpacer::create(1));
 
-    teamsButton.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_TeamsIcon), false);
+    teamsButton.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_TeamsIcon));
     teamsButton.setTooltipText(_("Teams"));
     teamsButton.setOnClick(std::bind(&MapEditorInterface::onTeams, this));
     teamsButton.setVisible( (pMapEditor->getMapVersion() < 2) );
@@ -167,7 +167,7 @@ MapEditorInterface::MapEditorInterface(MapEditor* pMapEditor)
 
     topBarHBox.addWidget(HSpacer::create(10));
 
-    mirrorModeNoneButton.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_MirrorNoneIcon), false);
+    mirrorModeNoneButton.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_MirrorNoneIcon));
     mirrorModeNoneButton.setToggleButton(true);
     mirrorModeNoneButton.setTooltipText(_("Mirror mode") + ": " + _("Off"));
     mirrorModeNoneButton.setOnClick(std::bind(&MapEditorInterface::onMirrorModeButton, this, MirrorModeNone));
@@ -176,7 +176,7 @@ MapEditorInterface::MapEditorInterface(MapEditor* pMapEditor)
 
     topBarHBox.addWidget(HSpacer::create(1));
 
-    mirrorModeHorizontalButton.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_MirrorHorizontalIcon), false);
+    mirrorModeHorizontalButton.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_MirrorHorizontalIcon));
     mirrorModeHorizontalButton.setToggleButton(true);
     mirrorModeHorizontalButton.setTooltipText(_("Mirror mode") + ": " + _("Horizontal"));
     mirrorModeHorizontalButton.setOnClick(std::bind(&MapEditorInterface::onMirrorModeButton, this, MirrorModeHorizontal));
@@ -185,7 +185,7 @@ MapEditorInterface::MapEditorInterface(MapEditor* pMapEditor)
 
     topBarHBox.addWidget(HSpacer::create(1));
 
-    mirrorModeVerticalButton.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_MirrorVerticalIcon), false);
+    mirrorModeVerticalButton.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_MirrorVerticalIcon));
     mirrorModeVerticalButton.setToggleButton(true);
     mirrorModeVerticalButton.setTooltipText(_("Mirror mode") + ": " + _("Vertical"));
     mirrorModeVerticalButton.setOnClick(std::bind(&MapEditorInterface::onMirrorModeButton, this, MirrorModeVertical));
@@ -194,7 +194,7 @@ MapEditorInterface::MapEditorInterface(MapEditor* pMapEditor)
 
     topBarHBox.addWidget(HSpacer::create(1));
 
-    mirrorModeBothButton.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_MirrorBothIcon), false);
+    mirrorModeBothButton.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_MirrorBothIcon));
     mirrorModeBothButton.setToggleButton(true);
     mirrorModeBothButton.setTooltipText(_("Mirror mode") + ": " + _("Horizontal and vertical"));
     mirrorModeBothButton.setOnClick(std::bind(&MapEditorInterface::onMirrorModeButton, this, MirrorModeBoth));
@@ -203,7 +203,7 @@ MapEditorInterface::MapEditorInterface(MapEditor* pMapEditor)
 
     topBarHBox.addWidget(HSpacer::create(1));
 
-    mirrorModePointButton.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_MirrorPointIcon), false);
+    mirrorModePointButton.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_MirrorPointIcon));
     mirrorModePointButton.setToggleButton(true);
     mirrorModePointButton.setTooltipText(_("Mirror mode") + ": " + _("Inverse"));
     mirrorModePointButton.setOnClick(std::bind(&MapEditorInterface::onMirrorModeButton, this, MirrorModePoint));
@@ -1260,72 +1260,72 @@ void MapEditorInterface::changeInterfaceColor(HOUSETYPE newHouse) {
 
     // top bar
     SDL_Texture* pTopBarTexture = pGFXManager->getUIGraphic(UI_TopBar, newHouse);
-    topBar.setTexture(pTopBarTexture, false);
+    topBar.setTexture(pTopBarTexture);
     // side bar
     SDL_Texture* pSideBarTexture = pGFXManager->getUIGraphic(UI_MapEditor_SideBar, newHouse);
-    sideBar.setTexture(pSideBarTexture, false);
+    sideBar.setTexture(pSideBarTexture);
 
     // bottom bar
     SDL_Texture* pBottomBarTexture = pGFXManager->getUIGraphic(UI_MapEditor_BottomBar, newHouse);
-    bottomBar.setTexture(pBottomBarTexture, false);
+    bottomBar.setTexture(pBottomBarTexture);
 
-    editorModeTerrain_Sand.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_Sand, newHouse), false);
-    editorModeTerrain_Dunes.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_Dunes, newHouse), false);
-    editorModeTerrain_SpecialBloom.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_SpecialBloom, newHouse), false);
-    editorModeTerrain_Spice.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_Spice, newHouse), false);
-    editorModeTerrain_ThickSpice.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_ThickSpice, newHouse), false);
-    editorModeTerrain_SpiceBloom.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_SpiceBloom, newHouse), false);
-    editorModeTerrain_Rock.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_Rock, newHouse), false);
-    editorModeTerrain_Mountain.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_Mountain, newHouse), false);
+    editorModeTerrain_Sand.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_Sand, newHouse));
+    editorModeTerrain_Dunes.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_Dunes, newHouse));
+    editorModeTerrain_SpecialBloom.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_SpecialBloom, newHouse));
+    editorModeTerrain_Spice.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_Spice, newHouse));
+    editorModeTerrain_ThickSpice.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_ThickSpice, newHouse));
+    editorModeTerrain_SpiceBloom.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_SpiceBloom, newHouse));
+    editorModeTerrain_Rock.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_Rock, newHouse));
+    editorModeTerrain_Mountain.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_Mountain, newHouse));
 
-    editorModeTerrain_Pen1x1.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_Pen1x1, newHouse), false);
-    editorModeTerrain_Pen3x3.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_Pen3x3, newHouse), false);
-    editorModeTerrain_Pen5x5.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_Pen5x5, newHouse), false);
+    editorModeTerrain_Pen1x1.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_Pen1x1, newHouse));
+    editorModeTerrain_Pen3x3.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_Pen3x3, newHouse));
+    editorModeTerrain_Pen5x5.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_Pen5x5, newHouse));
 
-    editorModeClassicTerrain_SpiceBloom.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_SpiceBloom, newHouse), false);
-    editorModeClassicTerrain_SpecialBloom.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_SpecialBloom, newHouse), false);
-    editorModeClassicTerrain_SpiceField.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_Spice, newHouse), false);
+    editorModeClassicTerrain_SpiceBloom.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_SpiceBloom, newHouse));
+    editorModeClassicTerrain_SpecialBloom.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_SpecialBloom, newHouse));
+    editorModeClassicTerrain_SpiceField.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_Spice, newHouse));
     editorModeClassicTerrain_SetTacticalPos.setTextColor(color);
 
-    editorModeStructs_Slab1.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_Slab1, newHouse), false);
-    editorModeStructs_Wall.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_Wall, newHouse), false);
-    editorModeStructs_GunTurret.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_GunTurret, newHouse), false);
-    editorModeStructs_RocketTurret.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_RocketTurret, newHouse), false);
-    editorModeStructs_ConstructionYard.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_ConstructionYard, newHouse), false);
-    editorModeStructs_Windtrap.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_Windtrap, newHouse), false);
-    editorModeStructs_Radar.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_Radar, newHouse), false);
-    editorModeStructs_Silo.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_Silo, newHouse), false);
-    editorModeStructs_IX.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_IX, newHouse), false);
-    editorModeStructs_Barracks.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_Barracks, newHouse), false);
-    editorModeStructs_WOR.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_WOR, newHouse), false);
-    editorModeStructs_LightFactory.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_LightFactory, newHouse), false);
-    editorModeStructs_Refinery.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_Refinery, newHouse), false);
-    editorModeStructs_HighTechFactory.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_HighTechFactory, newHouse), false);
-    editorModeStructs_HeavyFactory.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_HeavyFactory, newHouse), false);
-    editorModeStructs_RepairYard.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_RepairYard, newHouse), false);
-    editorModeStructs_Starport.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_Starport, newHouse), false);
-    editorModeStructs_Palace.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_Palace, newHouse), false);
+    editorModeStructs_Slab1.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_Slab1, newHouse));
+    editorModeStructs_Wall.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_Wall, newHouse));
+    editorModeStructs_GunTurret.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_GunTurret, newHouse));
+    editorModeStructs_RocketTurret.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_RocketTurret, newHouse));
+    editorModeStructs_ConstructionYard.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_ConstructionYard, newHouse));
+    editorModeStructs_Windtrap.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_Windtrap, newHouse));
+    editorModeStructs_Radar.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_Radar, newHouse));
+    editorModeStructs_Silo.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_Silo, newHouse));
+    editorModeStructs_IX.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_IX, newHouse));
+    editorModeStructs_Barracks.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_Barracks, newHouse));
+    editorModeStructs_WOR.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_WOR, newHouse));
+    editorModeStructs_LightFactory.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_LightFactory, newHouse));
+    editorModeStructs_Refinery.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_Refinery, newHouse));
+    editorModeStructs_HighTechFactory.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_HighTechFactory, newHouse));
+    editorModeStructs_HeavyFactory.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_HeavyFactory, newHouse));
+    editorModeStructs_RepairYard.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_RepairYard, newHouse));
+    editorModeStructs_Starport.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_Starport, newHouse));
+    editorModeStructs_Palace.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_Palace, newHouse));
 
-    editorModeUnits_Soldier.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_Soldier, newHouse), false);
-    editorModeUnits_Trooper.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_Trooper, newHouse), false);
-    editorModeUnits_Harvester.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_Harvester, newHouse), false);
-    editorModeUnits_Infantry.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_Infantry, newHouse), false);
-    editorModeUnits_Troopers.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_Troopers, newHouse), false);
-    editorModeUnits_MCV.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_MCV, newHouse), false);
-    editorModeUnits_Trike.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_Trike, newHouse), false);
-    editorModeUnits_Raider.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_Raider, newHouse), false);
-    editorModeUnits_Quad.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_Quad, newHouse), false);
-    editorModeUnits_Tank.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_Tank, newHouse), false);
-    editorModeUnits_SiegeTank.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_SiegeTank, newHouse), false);
-    editorModeUnits_Launcher.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_Launcher, newHouse), false);
-    editorModeUnits_Devastator.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_Devastator, newHouse), false);
-    editorModeUnits_SonicTank.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_SonicTank, newHouse), false);
-    editorModeUnits_Deviator.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_Deviator, newHouse), false);
-    editorModeUnits_Saboteur.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_Saboteur, newHouse), false);
-    editorModeUnits_Sandworm.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_Sandworm, newHouse), false);
-    editorModeUnits_SpecialUnit.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_SpecialUnit, newHouse), false);
-    editorModeUnits_Carryall.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_Carryall, newHouse), false);
-    editorModeUnits_Ornithopter.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_Ornithopter, newHouse), false);
+    editorModeUnits_Soldier.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_Soldier, newHouse));
+    editorModeUnits_Trooper.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_Trooper, newHouse));
+    editorModeUnits_Harvester.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_Harvester, newHouse));
+    editorModeUnits_Infantry.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_Infantry, newHouse));
+    editorModeUnits_Troopers.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_Troopers, newHouse));
+    editorModeUnits_MCV.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_MCV, newHouse));
+    editorModeUnits_Trike.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_Trike, newHouse));
+    editorModeUnits_Raider.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_Raider, newHouse));
+    editorModeUnits_Quad.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_Quad, newHouse));
+    editorModeUnits_Tank.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_Tank, newHouse));
+    editorModeUnits_SiegeTank.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_SiegeTank, newHouse));
+    editorModeUnits_Launcher.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_Launcher, newHouse));
+    editorModeUnits_Devastator.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_Devastator, newHouse));
+    editorModeUnits_SonicTank.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_SonicTank, newHouse));
+    editorModeUnits_Deviator.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_Deviator, newHouse));
+    editorModeUnits_Saboteur.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_Saboteur, newHouse));
+    editorModeUnits_Sandworm.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_Sandworm, newHouse));
+    editorModeUnits_SpecialUnit.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_SpecialUnit, newHouse));
+    editorModeUnits_Carryall.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_Carryall, newHouse));
+    editorModeUnits_Ornithopter.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_Ornithopter, newHouse));
 
 
     structureDetailsHealthLabel.setTextColor(color);
@@ -1337,10 +1337,10 @@ void MapEditorInterface::changeInterfaceColor(HOUSETYPE newHouse) {
     unitDetailsAttackModeLabel.setTextColor(color);
     unitDetailsAttackModeDropDownBox.setColor(color);
 
-    unitDetailsRotateLeftButton.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_RotateLeftIcon, newHouse), false,
-                                            pGFXManager->getUIGraphicSurface(UI_MapEditor_RotateLeftHighlightIcon, newHouse), false);
-    unitDetailsRotateRightButton.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_RotateRightIcon, newHouse), false,
-                                             pGFXManager->getUIGraphicSurface(UI_MapEditor_RotateRightHighlightIcon, newHouse), false);
+    unitDetailsRotateLeftButton.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_RotateLeftIcon, newHouse),
+                                            pGFXManager->getUIGraphicSurface(UI_MapEditor_RotateLeftHighlightIcon, newHouse));
+    unitDetailsRotateRightButton.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_RotateRightIcon, newHouse),
+                                             pGFXManager->getUIGraphicSurface(UI_MapEditor_RotateRightHighlightIcon, newHouse));
 }
 
 void MapEditorInterface::onMirrorModeButton(int mode) {

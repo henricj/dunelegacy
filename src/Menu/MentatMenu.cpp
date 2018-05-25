@@ -43,7 +43,7 @@ MentatMenu::MentatMenu(int newHouse)
         pBackground = pGFXManager->getUIGraphic(UI_MentatBackground,house);
     }
 
-    setBackground(pBackground, false);
+    setBackground(pBackground);
 
     setCurrentPosition(calcAlignedDrawingRect(pBackground, HAlign::Center, VAlign::Center));
 

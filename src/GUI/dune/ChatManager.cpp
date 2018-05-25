@@ -147,7 +147,7 @@ void ChatManager::addHintMessage(const std::string& message, SDL_Texture* pTextu
     int height = lines.size() * DuneStyle::getInstance().getTextHeight(FONT_STD10) + 4;
 
 
-    sdl2::texture_ptr pMessageTexture = convertSurfaceToTexture(DuneStyle::getInstance().createLabelSurface( width, height, lines, FONT_STD10, Alignment_Left, COLOR_WHITE, COLOR_TRANSPARENT), true);
+    sdl2::texture_ptr pMessageTexture = convertSurfaceToTexture(DuneStyle::getInstance().createLabelSurface( width, height, lines, FONT_STD10, Alignment_Left, COLOR_WHITE, COLOR_TRANSPARENT));
     sdl2::texture_ptr pPictureTexture = sdl2::texture_ptr(pTexture);
 
     chatMessages.emplace_back(std::move(pMessageTexture), std::move(pPictureTexture), SDL_GetTicks(), MSGTYPE_PICTURE );

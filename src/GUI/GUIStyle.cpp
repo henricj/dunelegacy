@@ -27,14 +27,14 @@ GUIStyle::~GUIStyle() {
     ;
 }
 
-SDL_Surface* GUIStyle::createEmptySurface(Uint32 width, Uint32 height, bool transparent)  {
-    SDL_Surface* pSurface;
+sdl2::surface_ptr GUIStyle::createEmptySurface(Uint32 width, Uint32 height, bool transparent)  {
+    sdl2::surface_ptr pSurface = sdl2::surface_ptr{ SDL_CreateRGBSurface(0, width, height, 32, RMASK, GMASK, BMASK, AMASK) };
 
-    if((pSurface = SDL_CreateRGBSurface(0, width, height, 32, RMASK, GMASK, BMASK, AMASK)) == nullptr) {
+    if(!pSurface) {
         return nullptr;
     }
-    SDL_FillRect(pSurface,nullptr, COLOR_TRANSPARENT);
-    SDL_SetColorKey(pSurface, SDL_TRUE, COLOR_TRANSPARENT);
+    SDL_FillRect(pSurface.get(), nullptr, COLOR_TRANSPARENT);
+    SDL_SetColorKey(pSurface.get(), SDL_TRUE, COLOR_TRANSPARENT);
 
     return pSurface;
 }

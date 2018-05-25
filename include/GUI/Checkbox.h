@@ -34,7 +34,6 @@ public:
         enableResizing(true,false);
         setToggleButton(true);
         pCheckedActiveTexture = nullptr;
-        bFreeCheckedActiveTexture = false;
     }
 
     /// destructor
@@ -99,13 +98,13 @@ public:
 
         SDL_Texture* tex;
         if(isChecked()) {
-            if((isActive() || bHover) && pCheckedActiveTexture != nullptr) {
+            if((isActive() || bHover) && pCheckedActiveTexture) {
                 tex = pCheckedActiveTexture.get();
             } else {
                 tex = pPressedTexture.get();
             }
         } else {
-            if((isActive() || bHover) && pActiveTexture != nullptr) {
+            if((isActive() || bHover) && pActiveTexture) {
                 tex = pActiveTexture.get();
             } else {
                 tex = pUnpressedTexture.get();
@@ -162,15 +161,14 @@ protected:
     {
         Button::updateTextures();
 
-        if(pUnpressedTexture == nullptr) {
+        if(!pUnpressedTexture) {
             invalidateTextures();
 
-            setSurfaces(GUIStyle::getInstance().createCheckboxSurface(getSize().x, getSize().y, text, false, false, textcolor, textshadowcolor),true,
-                        GUIStyle::getInstance().createCheckboxSurface(getSize().x, getSize().y, text, true, false, textcolor, textshadowcolor),true,
-                        GUIStyle::getInstance().createCheckboxSurface(getSize().x, getSize().y, text, false, true, textcolor, textshadowcolor),true);
+            setSurfaces(GUIStyle::getInstance().createCheckboxSurface(getSize().x, getSize().y, text, false, false, textcolor, textshadowcolor),
+                        GUIStyle::getInstance().createCheckboxSurface(getSize().x, getSize().y, text, true, false, textcolor, textshadowcolor),
+                        GUIStyle::getInstance().createCheckboxSurface(getSize().x, getSize().y, text, false, true, textcolor, textshadowcolor));
 
-            pCheckedActiveTexture = convertSurfaceToTexture(GUIStyle::getInstance().createCheckboxSurface(getSize().x, getSize().y, text, true, true, textcolor, textshadowcolor), true);
-            bFreeCheckedActiveTexture = true;
+            pCheckedActiveTexture = convertSurfaceToTexture(GUIStyle::getInstance().createCheckboxSurface(getSize().x, getSize().y, text, true, true, textcolor, textshadowcolor));
         }
     }
 
@@ -181,23 +179,14 @@ protected:
     {
         Button::invalidateTextures();
 
-        if (!pCheckedActiveTexture)
-            return;
-
-        if(bFreeCheckedActiveTexture) {
-            bFreeCheckedActiveTexture = false;
-            pCheckedActiveTexture.reset();
-        } else {
-            pCheckedActiveTexture.release();
-        }
+        pCheckedActiveTexture.reset();
     }
 
 private:
-    Uint32 textcolor;                       ///< Text color
-    Uint32 textshadowcolor;                 ///< Text shadow color
-    std::string text;                       ///< Text of this checkbox
-    sdl2::texture_ptr pCheckedActiveTexture;     ///< Texture that is shown when the checkbox is activated by keyboard or by mouse hover
-    bool bFreeCheckedActiveTexture;         ///< Should pActiveTexture be freed if this button is destroyed?
+    Uint32 textcolor;                           ///< Text color
+    Uint32 textshadowcolor;                     ///< Text shadow color
+    std::string text;                           ///< Text of this checkbox
+    sdl2::texture_ptr pCheckedActiveTexture;    ///< Texture that is shown when the checkbox is activated by keyboard or by mouse hover
 };
 
 #endif // CHECKBOX_H

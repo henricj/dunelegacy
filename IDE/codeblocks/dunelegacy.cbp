@@ -273,6 +273,7 @@
 		<Unit filename="../../include/misc/md5.h" />
 		<Unit filename="../../include/misc/sound_util.h" />
 		<Unit filename="../../include/misc/string_util.h" />
+		<Unit filename="../../include/misc/unique_or_nonowning_ptr.h" />
 		<Unit filename="../../include/mmath.h" />
 		<Unit filename="../../include/players/AIPlayer.h" />
 		<Unit filename="../../include/players/HumanPlayer.h" />

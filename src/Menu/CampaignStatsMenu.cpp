@@ -47,7 +47,7 @@ CampaignStatsMenu::CampaignStatsMenu(int level) : MenuBase()
 
     // set up window
     SDL_Texture *pBackground = pGFXManager->getUIGraphic(UI_GameStatsBackground);
-    setBackground(pBackground, false);
+    setBackground(pBackground);
     resize(getTextureSize(pBackground));
 
     setWindowWidget(&windowWidget);

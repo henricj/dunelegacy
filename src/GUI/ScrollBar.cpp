@@ -156,13 +156,13 @@ void ScrollBar::updateSliderButton() {
 }
 
 void ScrollBar::updateArrowButtonSurface() {
-    arrow1.setSurfaces( GUIStyle::getInstance().createScrollBarArrowButton(false,false,false,color), true,
-                        GUIStyle::getInstance().createScrollBarArrowButton(false,true,true,color), true,
-                        GUIStyle::getInstance().createScrollBarArrowButton(false,false,true,color), true);
+    arrow1.setSurfaces( GUIStyle::getInstance().createScrollBarArrowButton(false,false,false,color),
+                        GUIStyle::getInstance().createScrollBarArrowButton(false,true,true,color),
+                        GUIStyle::getInstance().createScrollBarArrowButton(false,false,true,color));
 
-    arrow2.setSurfaces( GUIStyle::getInstance().createScrollBarArrowButton(true,false,false,color), true,
-                        GUIStyle::getInstance().createScrollBarArrowButton(true,true,true,color), true,
-                        GUIStyle::getInstance().createScrollBarArrowButton(true,false,true,color), true);
+    arrow2.setSurfaces( GUIStyle::getInstance().createScrollBarArrowButton(true,false,false,color),
+                        GUIStyle::getInstance().createScrollBarArrowButton(true,true,true,color),
+                        GUIStyle::getInstance().createScrollBarArrowButton(true,false,true,color));
 }
 
 

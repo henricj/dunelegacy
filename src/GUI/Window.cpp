@@ -28,7 +28,6 @@ Window::Window(Uint32 x, Uint32 y, Uint32 w, Uint32 h) : position(x,y) {
 
     bTransparentBackground = false;
     pBackground = nullptr;
-    bFreeBackground = false;
     bSelfGeneratedBackground = true;
 
     resize(w,h);
@@ -43,9 +42,6 @@ Window::~Window() {
     if(pWindowWidget != nullptr) {
         pWindowWidget->destroy();
     }
-
-    if (!bSelfGeneratedBackground && !bFreeBackground)
-        pBackground.release();
 }
 
 void Window::openWindow(Window* pChildWindow) {
@@ -242,11 +238,11 @@ void Window::draw(Point position) {
     if(isVisible()) {
         if(bTransparentBackground == false) {
 
-            if((bSelfGeneratedBackground == true) && (pBackground == nullptr)) {
-                pBackground = convertSurfaceToTexture(GUIStyle::getInstance().createBackground(getSize().x,getSize().y), true);
+            if(bSelfGeneratedBackground && !pBackground) {
+                pBackground = convertSurfaceToTexture(GUIStyle::getInstance().createBackground(getSize().x,getSize().y));
             }
 
-            if(pBackground != nullptr) {
+            if(pBackground) {
                 // Draw background
                 SDL_Rect dest = calcDrawingRect(pBackground.get(), getPosition().x + getSize().x/2, getPosition().y + getSize().y/2, HAlign::Center, VAlign::Center);
                 SDL_RenderCopy(renderer, pBackground.get(), nullptr, &dest);
@@ -284,32 +280,22 @@ void Window::resize(Uint32 width, Uint32 height) {
     }
 }
 
-void Window::setBackground(SDL_Surface* pBackground, bool bFreeBackground) {
-    if(pBackground == nullptr) {
-        setBackground(static_cast<SDL_Texture*>(nullptr));
+void Window::setBackground(sdl2::surface_unique_or_nonowning_ptr pBackground) {
+    if(!pBackground) {
+        setBackground(sdl2::texture_unique_or_nonowning_ptr(nullptr));
     } else {
-        setBackground(convertSurfaceToTexture(pBackground, bFreeBackground));
+        setBackground(convertSurfaceToTexture(pBackground.get(), false));
     }
 }
 
-void Window::setBackground(SDL_Texture* pBackground, bool bFreeBackground) {
-    if(((bSelfGeneratedBackground == true) || (this->bFreeBackground == true)) && (this->pBackground != nullptr)) {
-        this->pBackground.reset();
-    }
-
-    if(pBackground == nullptr) {
+void Window::setBackground(sdl2::texture_unique_or_nonowning_ptr pBackground) {
+    if(!pBackground) {
         bSelfGeneratedBackground = true;
-        this->bFreeBackground = false;
         this->pBackground = nullptr;
     } else {
         bSelfGeneratedBackground = false;
-        this->pBackground = sdl2::texture_ptr{ pBackground };
-        this->bFreeBackground = bFreeBackground;
+        this->pBackground = std::move(pBackground);
     }
-}
-
-void Window::setBackground(sdl2::texture_ptr pBackground) {
-    setBackground(pBackground.release(), true);
 }
 
 void Window::setTransparentBackground(bool bTransparent) {

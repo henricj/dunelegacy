@@ -42,12 +42,12 @@ GameInterface::GameInterface() : Window(0,0,0,0) {
 
     // top bar
     SDL_Texture* pTopBarTex = pGFXManager->getUIGraphic(UI_TopBar, pLocalHouse->getHouseID());
-    topBar.setTexture(pTopBarTex,false);
+    topBar.setTexture(pTopBarTex);
     windowWidget.addWidget(&topBar,Point(0,0),Point(getWidth(pTopBarTex),getHeight(pTopBarTex) - 12));
 
     // side bar
     SDL_Texture* pSideBarTex = pGFXManager->getUIGraphic(UI_SideBar, pLocalHouse->getHouseID());
-    sideBar.setTexture(pSideBarTex,false);
+    sideBar.setTexture(pSideBarTex);
     SDL_Rect dest = calcAlignedDrawingRect(pSideBarTex, HAlign::Right, VAlign::Top);
     windowWidget.addWidget(&sideBar, dest);
 
@@ -59,15 +59,15 @@ GameInterface::GameInterface() : Window(0,0,0,0) {
 
     topBarHBox.addWidget(Spacer::create());
 
-    optionsButton.setTextures(  pGFXManager->getUIGraphic(UI_Options, pLocalHouse->getHouseID()), false,
-                                pGFXManager->getUIGraphic(UI_Options_Pressed, pLocalHouse->getHouseID()), false);
+    optionsButton.setTextures(  pGFXManager->getUIGraphic(UI_Options, pLocalHouse->getHouseID()),
+                                pGFXManager->getUIGraphic(UI_Options_Pressed, pLocalHouse->getHouseID()));
     optionsButton.setOnClick(std::bind(&Game::onOptions, currentGame));
     topBarHBox.addWidget(&optionsButton);
 
     topBarHBox.addWidget(Spacer::create());
 
-    mentatButton.setTextures(   pGFXManager->getUIGraphic(UI_Mentat, pLocalHouse->getHouseID()), false,
-                                pGFXManager->getUIGraphic(UI_Mentat_Pressed, pLocalHouse->getHouseID()), false);
+    mentatButton.setTextures(   pGFXManager->getUIGraphic(UI_Mentat, pLocalHouse->getHouseID()),
+                                pGFXManager->getUIGraphic(UI_Mentat_Pressed, pLocalHouse->getHouseID()));
     mentatButton.setOnClick(std::bind(&Game::onMentat, currentGame));
     topBarHBox.addWidget(&mentatButton);
 

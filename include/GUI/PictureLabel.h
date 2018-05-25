@@ -28,46 +28,32 @@ public:
 
     /// default constructor
     PictureLabel() {
-        bFreeTexture = false;
     }
 
     /// destructor
     virtual ~PictureLabel() {
-        if (!bFreeTexture)
-            pTexture.release();
     }
 
     /**
         This method sets the surface for this picture label.
         \param  pSurface    This surface is shown
-        \param  bFreeSurface    Should pSurface be freed if this picture label is destroyed?
     */
-    virtual void setSurface(SDL_Surface* pSurface, bool bFreeSurface) {
-        setTexture(convertSurfaceToTexture(pSurface, bFreeSurface));
+    virtual void setSurface(sdl2::surface_unique_or_nonowning_ptr pSurface) {
+        setTexture(convertSurfaceToTexture(pSurface.get(), false));
     }
 
     /**
         This method sets the texture for this picture label.
         \param  pTexture        This texture is shown
-        \param  bFreeTexture    Should pTexture be freed if this picture label is destroyed?
     */
-    virtual void setTexture(SDL_Texture* pTexture, bool bFreeTexture) {
-        if ((this->bFreeTexture == false)) {
-            this->pTexture.release();
-        }
+    virtual void setTexture(sdl2::texture_unique_or_nonowning_ptr pTexture) {
+        this->pTexture = std::move(pTexture);
 
-        this->bFreeTexture = bFreeTexture;
-        this->pTexture = sdl2::texture_ptr{ pTexture };
-
-        if(this->pTexture != nullptr) {
+        if(this->pTexture) {
             resize(getTextureSize(this->pTexture.get()));
         } else {
             resize(0,0);
         }
-    }
-
-    void setTexture(sdl2::texture_ptr&& texture) {
-        setTexture(texture.release(), true);
     }
 
     /**
@@ -77,7 +63,7 @@ public:
     */
     Point getMinimumSize() const override
     {
-        if(pTexture != nullptr) {
+        if(pTexture) {
             return getTextureSize(pTexture.get());
         } else {
             return Point(0,0);
@@ -94,7 +80,7 @@ public:
             return;
         }
 
-        if(pTexture == nullptr) {
+        if(!pTexture) {
             return;
         }
 
@@ -104,8 +90,7 @@ public:
 
 
 private:
-    sdl2::texture_ptr pTexture;  ///< The texture that is shown
-    bool bFreeTexture;      ///< Should pTexture be freed if this picture label is destroyed?
+    sdl2::texture_unique_or_nonowning_ptr pTexture;  ///< The texture that is shown
 };
 
 #endif // PICTURELABEL_H

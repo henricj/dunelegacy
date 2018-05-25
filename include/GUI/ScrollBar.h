@@ -207,8 +207,8 @@ protected:
     {
         Widget::updateTextures();
 
-        if(pBackground == nullptr) {
-            pBackground = convertSurfaceToTexture(GUIStyle::getInstance().createWidgetBackground(getSize().x, getSize().y), true);
+        if(!pBackground) {
+            pBackground = convertSurfaceToTexture(GUIStyle::getInstance().createWidgetBackground(getSize().x, getSize().y));
         }
     }
 

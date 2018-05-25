@@ -40,7 +40,7 @@ protected:
         SDL_Texture* pUIRepair = pGFXManager->getUIGraphic(UI_Repair);
         SDL_Texture* pUIRepairPressed = pGFXManager->getUIGraphic(UI_Repair_Pressed);
 
-        repairButton.setTextures(pUIRepair, false, pUIRepairPressed,false);
+        repairButton.setTextures(pUIRepair, pUIRepairPressed);
         repairButton.setToggleButton(true);
         repairButton.setVisible(false);
         repairButton.setTooltipText(_("Repair this structure (Hotkey: R)"));
