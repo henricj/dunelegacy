@@ -306,7 +306,7 @@ void OptionsMenu::onOptionsOK() {
     const PlayerFactory::PlayerData* pPlayerData = PlayerFactory::getByIndex(aiDropDownBox.getSelectedEntryIntData());
     settings.ai.campaignAI = ((pPlayerData != nullptr) ? pPlayerData->getPlayerClass() : DEFAULTAIPLAYERCLASS);
 
-    int selectedResolution = resolutionDropDownBox.getSelectedEntryIntData();
+    unsigned int selectedResolution = static_cast<unsigned int>(resolutionDropDownBox.getSelectedEntryIntData());
     settings.video.physicalWidth = availScreenRes[selectedResolution].x;
     settings.video.physicalHeight = availScreenRes[selectedResolution].y;
     int factor = getLogicalToPhysicalResolutionFactor(settings.video.physicalWidth, settings.video.physicalHeight);
