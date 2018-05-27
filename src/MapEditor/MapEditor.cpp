@@ -1106,7 +1106,7 @@ void MapEditor::processInput() {
                                     } else {
                                         iter = std::find(spiceFields.begin(), spiceFields.end(), selectedMapItemCoord);
 
-                                        if(iter != spiceBlooms.end()) {
+                                        if(iter != spiceFields.end()) {
                                             clearRedoOperations();
                                             startOperation();
                                             MapEditorTerrainRemoveSpiceFieldOperation removeOperation(iter->x, iter->y);

@@ -213,7 +213,9 @@ void Wsafile::decodeFrames(const unsigned char* pFiledata, Uint32* index, int nu
     for(int i = 0; i < numberOfFrames; ++i) {
         auto dec80 = std::make_unique<unsigned char[]>(x * y * 2);
 
-        decode80(pFiledata + SDL_SwapLE32(index[i]), dec80.get(), 0);
+        if(decode80(pFiledata + SDL_SwapLE32(index[i]), dec80.get(), 0) == -1) {
+            SDL_Log("Warning: Checksum-Error in Wsa-File!");
+        }
 
         decode40(dec80.get(), pDecodedFrames + i * x*y);
 

@@ -64,8 +64,9 @@ void Frigate::init()
 
 Frigate::~Frigate()
 {
-    if(target.getObjPointer() != nullptr && target.getObjPointer()->getItemID() == Structure_StarPort) {
-        dynamic_cast<StarPort*>(target.getStructurePointer())->informFrigateDestroyed();
+    StarPort* pStarPort = dynamic_cast<StarPort*>(target.getObjPointer());
+    if(pStarPort) {
+        pStarPort->informFrigateDestroyed();
     }
 }
 

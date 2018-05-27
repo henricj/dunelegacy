@@ -47,7 +47,7 @@ PictureFont::PictureFont(SDL_Surface* pic)
         }
 
         character[i].width = curXPos - oldXPos;
-        character[i].data.resize(character[i].width * characterHeight);
+        character[i].data.resize(static_cast<size_t>(character[i].width) * characterHeight);
 
         int mempos = 0;
         for(int y = 1; y < pic->h - 1; y++) {

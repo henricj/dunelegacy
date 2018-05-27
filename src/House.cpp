@@ -824,7 +824,11 @@ Coord House::getCenterOfMainBase() const {
         }
     }
 
-    return center / numStructures;
+    if(numStructures == 0) {
+        return Coord::Invalid();
+    } else {
+        return center / numStructures;
+    }
 }
 
 

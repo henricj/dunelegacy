@@ -202,7 +202,7 @@ static sdl2::sdl_ptr<Uint8[]> LoadVOC_RW(SDL_RWops* rwop, Uint32 &decsize, Uint3
                 if(rate != 0) {
                     length = (Uint32) ((((double) SilenceRate)/((double) rate)) * SilenceLength) + 1;
                 } else {
-                    THROW(std::runtime_error, "LoadVOC_RW(): The silence in this voc-file is right at the beginning. Therefore it is not possible to adjust the silence sample rate to the sample rate of the other sound data in this file!");
+                    SDL_Log("LoadVOC_RW(): The silence in this voc-file is right at the beginning. Therefore it is not possible to adjust the silence sample rate to the sample rate of the other sound data in this file!");
                     length = SilenceLength;
                 }
 

@@ -67,8 +67,8 @@ public:
         }
 
         EventType   eventType;
-        Uint32      slot;
-        Uint32      newValue;
+        Uint32      slot = 0;
+        Uint32      newValue = 0;
         std::string newStringValue;
     };
 

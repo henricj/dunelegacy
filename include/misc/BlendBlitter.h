@@ -18,7 +18,7 @@ public:
         destRect = DestPicRect;
         this->numSteps = numSteps;
 
-        N = src->w*src->h;
+        N = static_cast<Uint64>(src->w)*static_cast<Uint64>(src->h);
         // compute next greater 2^x value
         m = N;
         m |= (m >> 1);

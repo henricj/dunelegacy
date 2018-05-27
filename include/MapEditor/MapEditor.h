@@ -165,7 +165,7 @@ public:
 
     MapInfo& getMapInfo() { return mapInfo; };
 
-    void setMapInfo(MapInfo newMapInfo) { mapInfo = newMapInfo; };
+    void setMapInfo(const MapInfo& newMapInfo) { mapInfo = newMapInfo; };
 
     int getMapVersion() const {
         if(mapInfo.mapSeed != INVALID) {

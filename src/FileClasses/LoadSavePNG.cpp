@@ -184,11 +184,13 @@ int SavePNG_RW(SDL_Surface* surface, SDL_RWops* RWop) {
     unsigned int error = lodepng_encode32(&ppngFile, &pngFileSize, image.data(), width, height);
     if(error != 0) {
         SDL_Log("%s", lodepng_error_text(error));
+        free(ppngFile);
         return -1;
     }
 
     if(SDL_RWwrite(RWop, ppngFile, 1, pngFileSize) != pngFileSize) {
         SDL_Log("%s", SDL_GetError());
+        free(ppngFile);
         return -1;
     }
 

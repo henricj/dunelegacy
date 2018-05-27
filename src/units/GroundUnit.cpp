@@ -265,11 +265,8 @@ void GroundUnit::doRepair() {
         }
 
         if(pBestRepairYard) {
-            if(requestCarryall()) {
-                doMove2Object(pBestRepairYard);
-            } else {
-                doMove2Object(pBestRepairYard);
-            }
+            requestCarryall();
+            doMove2Object(pBestRepairYard);
         }
     }
 }

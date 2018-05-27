@@ -421,7 +421,11 @@ CustomGamePlayers::~CustomGamePlayers()
         pNetworkManager->setOnStartGame(std::function<void (unsigned int)>());
 
         if(bServer) {
-            pNetworkManager->stopServer();
+            try {
+                pNetworkManager->stopServer();
+            } catch(std::exception& e) {
+                SDL_Log("CustomGamePlayers::~CustomGamePlayers(): %s", e.what());
+            }
         }
     }
 }
