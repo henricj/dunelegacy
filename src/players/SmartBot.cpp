@@ -134,11 +134,10 @@ void SmartBot::onDamage(const ObjectBase* pObject, int damage, Uint32 damagerID)
         scrambleUnitsAndDefend(pDamager);
 
         if((pDamager != nullptr) && pDamager->isInfantry()) {
-            const UnitBase* pUnit = dynamic_cast<const UnitBase*>(pObject);
-            doAttackObject(pUnit, pDamager, false);
+            doAttackObject(static_cast<const Harvester*>(pObject), pDamager, false);
         }
     } else if(pObject->isAUnit() && pObject->canAttack(pDamager)) {
-        const UnitBase* pUnit = dynamic_cast<const UnitBase*>(pObject);
+        const UnitBase* pUnit = static_cast<const UnitBase*>(pObject);
 
         // if it is a rocket launcher and the distance is under 5 then run away!!
         if(pUnit->getItemID() == Unit_Launcher){
@@ -170,16 +169,13 @@ void SmartBot::scrambleUnitsAndDefend(const ObjectBase* pIntruder) {
                     } else {
                         doMove2Pos(pUnit, pIntruder->getLocation().x, pIntruder->getLocation().y, false);
 
-                        if(pUnit->isVisible()
-                            && blockDistance(pUnit->getLocation(), pUnit->getDestination()) >= 10
+                        if(getGameInitSettings().getGameOptions().manualCarryallDrops
                             && pUnit->isAGroundUnit()
-                            && pUnit->getHealth() / pUnit->getMaxHealth() > BADLYDAMAGEDRATIO) {
+                            && pUnit->isVisible()
+                            && (blockDistance(pUnit->getLocation(), pUnit->getDestination()) >= 10)
+                            && (pUnit->getHealth() / pUnit->getMaxHealth() > BADLYDAMAGEDRATIO)) {
 
-                            const GroundUnit* pGroundUnit = dynamic_cast<const GroundUnit*>(pUnit);
-
-                            if(getGameInitSettings().getGameOptions().manualCarryallDrops){
-                                doRequestCarryallDrop(pGroundUnit);
-                            }
+                            doRequestCarryallDrop(static_cast<const GroundUnit*>(pUnit));
                         }
                     }
                 }
@@ -384,7 +380,7 @@ void SmartBot::build() {
 
     for(const StructureBase* pStructure : getStructureList()) {
         if(pStructure->getOwner() == getHouse() && pStructure->isABuilder()) {
-            const BuilderBase* pBuilder = dynamic_cast<const BuilderBase*>(pStructure);
+            const BuilderBase* pBuilder = static_cast<const BuilderBase*>(pStructure);
             if(pBuilder->getBuildListSize() > 0){
                 buildQueue[pBuilder->getCurrentProducedItem()]++;
             }
@@ -400,10 +396,10 @@ void SmartBot::build() {
                 doRepair(pStructure);
             }
 
-            const BuilderBase* pBuilder = dynamic_cast<const BuilderBase*>(pStructure);
-            if(pBuilder != nullptr) {
+            if(pStructure->isABuilder()) {
+                const BuilderBase* pBuilder = static_cast<const BuilderBase*>(pStructure);
 
-                switch (pStructure->getItemID()) {
+                switch (pBuilder->getItemID()) {
 
                     case Structure_HeavyFactory: {
 
@@ -491,7 +487,7 @@ void SmartBot::build() {
                     } break;
 
                    case Structure_StarPort: {
-                        const StarPort* pStarPort = dynamic_cast<const StarPort*>(pBuilder);
+                        const StarPort* pStarPort = static_cast<const StarPort*>(pBuilder);
                         if(pStarPort->okToOrder())  {
                             const Choam& choam = getHouse()->getChoam();
 
@@ -740,7 +736,7 @@ void SmartBot::build() {
                             //see if there is already a spot to put it stored
                             if(!placeLocations.empty()) {
                                 Coord location = placeLocations.front();
-                                const ConstructionYard* pConstYard = dynamic_cast<const ConstructionYard*>(pBuilder);
+                                const ConstructionYard* pConstYard = static_cast<const ConstructionYard*>(pBuilder);
                                 if(getMap().okayToPlaceStructure(location.x, location.y, itemsize.x, itemsize.y, false, pConstYard->getOwner())
                                    && getMap().isAStructureGap(location.x, location.y, itemsize.x, itemsize.y)) {
                                     doPlaceStructure(pConstYard, location.x, location.y);
@@ -808,9 +804,8 @@ void SmartBot::checkAllUnits() {
         if(pUnit->getItemID() == Unit_Sandworm) {
                 for(const UnitBase* pUnit2 : getUnitList()) {
                     if(pUnit2->getOwner() == getHouse() && pUnit2->getItemID() == Unit_Harvester) {
-                        const Harvester* pHarvester = dynamic_cast<const Harvester*>(pUnit2);
-                        if( pHarvester != nullptr
-                            && getMap().tileExists(pHarvester->getLocation())
+                        const Harvester* pHarvester = static_cast<const Harvester*>(pUnit2);
+                        if( getMap().tileExists(pHarvester->getLocation())
                             && !getMap().getTile(pHarvester->getLocation())->isRock()
                             && blockDistance(pUnit->getLocation(), pHarvester->getLocation()) <= 5) {
                             doReturn(pHarvester);
@@ -827,7 +822,7 @@ void SmartBot::checkAllUnits() {
 
         switch(pUnit->getItemID()) {
             case Unit_MCV: {
-                const MCV* pMCV = dynamic_cast<const MCV*>(pUnit);
+                const MCV* pMCV = static_cast<const MCV*>(pUnit);
                 if(!pMCV->isMoving()) {
                     if(pMCV->canDeploy()) {
                         doDeploy(pMCV);
@@ -839,7 +834,7 @@ void SmartBot::checkAllUnits() {
             } break;
 
             case Unit_Harvester: {
-                const Harvester* pHarvester = dynamic_cast<const Harvester*>(pUnit);
+                const Harvester* pHarvester = static_cast<const Harvester*>(pUnit);
                 if(getHouse()->getCredits() < 1000 && pHarvester->getAmountOfSpice() >= HARVESTERMAXSPICE/2) {
                     doReturn(pHarvester);
                 }

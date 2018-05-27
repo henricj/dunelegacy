@@ -177,9 +177,7 @@ void Map::damage(Uint32 damagerID, House* damagerOwner, const Coord& realPos, Ui
                 const auto pObject = currentGame->getObjectManager().getObject(objectID);
 
                 if(pObject && pObject->isAStructure()) {
-                    auto pStructure = dynamic_cast<StructureBase*>(pObject);
-
-                    assert(pStructure);
+                    auto pStructure = static_cast<StructureBase*>(pObject);
 
                     const auto topLeftCorner = pStructure->getLocation()*TILESIZE;
                     const auto bottomRightCorner = topLeftCorner + pStructure->getStructureSize()*TILESIZE;
@@ -195,9 +193,7 @@ void Map::damage(Uint32 damagerID, House* damagerOwner, const Coord& realPos, Ui
                         }
                     }
                 } else if(pObject->isAUnit()) {
-                    const auto pUnit = dynamic_cast<UnitBase*>(pObject);
-
-                    assert(pUnit);
+                    const auto pUnit = static_cast<UnitBase*>(pObject);
 
                     const auto centerPoint = pUnit->getCenterPoint();
                     const auto distance = lround(distanceFrom(centerPoint, realPos));

@@ -54,7 +54,6 @@ protected:
         }
 
         RepairYard* pRepairYard = dynamic_cast<RepairYard*>(pObject);
-
         if(pRepairYard != nullptr) {
             UnitBase* pUnit = pRepairYard->getRepairUnit();
 

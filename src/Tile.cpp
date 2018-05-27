@@ -325,25 +325,23 @@ void Tile::blitStructures(int xPos, int yPos) const {
     if (!hasANonInfantryGroundObject())
         return;
 
-    const auto object = getNonInfantryGroundObject();
-    if (!object->isAStructure())
+    ObjectBase* pObject = getNonInfantryGroundObject();
+    if (!pObject->isAStructure())
         return;
 
     //if got a structure, draw the structure, and dont draw any terrain because wont be seen
-    auto structure = dynamic_cast<StructureBase*>(object);
+    StructureBase* pStructure = static_cast<StructureBase*>(pObject);
 
-    assert(structure);  // Why not use static_cast<> if we "know" dynamic_cast will work?
-
-    for (auto i = structure->getX(); i < structure->getX() + structure->getStructureSizeX(); i++) {
-        for (auto j = structure->getY(); j < structure->getY() + structure->getStructureSizeY(); j++) {
+    for (auto i = pStructure->getX(); i < pStructure->getX() + pStructure->getStructureSizeX(); i++) {
+        for (auto j = pStructure->getY(); j < pStructure->getY() + pStructure->getStructureSizeY(); j++) {
             if (screenborder->isTileInsideScreen(Coord(i, j))
                 && currentGameMap->tileExists(i, j) && (currentGameMap->getTile(i, j)->isExplored(pLocalHouse->getHouseID()) || debug))
             {
-                structure->setFogged(isFogged(pLocalHouse->getHouseID()));
+                pStructure->setFogged(isFogged(pLocalHouse->getHouseID()));
 
                 if ((i == location.x) && (j == location.y)) {
                     //only this tile will draw it, so will be drawn only once
-                    structure->blitToScreen();
+                    pStructure->blitToScreen();
                 }
 
                 return;

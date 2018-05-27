@@ -83,9 +83,11 @@ bool TrackedUnit::canPass(int xPos, int yPos) const
             // are we entering a repair yard?
             if(goingToRepairYard && (pObject->getItemID() == Structure_RepairYard)) {
                 return static_cast<const RepairYard*>(pObject)->isFree();
+            } else if(getItemID() == Unit_Harvester) {
+                const Harvester* pHarvester = static_cast<const Harvester*>(this);
+                return (pHarvester->isReturning() && (pObject->getItemID() == Structure_Refinery) && static_cast<const Refinery*>(pObject)->isFree());
             } else {
-                const Harvester* pHarvester = dynamic_cast<const Harvester*>(this);
-                return ((pHarvester != nullptr) && pHarvester->isReturning() && (pObject->getItemID() == Structure_Refinery) && static_cast<const Refinery*>(pObject)->isFree());
+                return false;
             }
         } else {
             if (!pTile->hasANonInfantryGroundObject() && (pTile->getInfantryTeam() != getOwner()->getTeam())) {

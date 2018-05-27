@@ -392,58 +392,58 @@ void Game::drawScreen()
             int xPos = screenborder->screen2MapX(drawnMouseX);
             int yPos = screenborder->screen2MapY(drawnMouseY);
 
-            BuilderBase* builder = nullptr;
             if(selectedList.size() == 1) {
-                builder = dynamic_cast<BuilderBase*>(objectManager.getObject(*selectedList.begin()));
+                auto pBuilder = dynamic_cast<BuilderBase*>(objectManager.getObject(*selectedList.begin()));
+                if(pBuilder) {
+                    int placeItem = pBuilder->getCurrentProducedItem();
+                    Coord structuresize = getStructureSize(placeItem);
 
-                int placeItem = builder->getCurrentProducedItem();
-                Coord structuresize = getStructureSize(placeItem);
-
-                bool withinRange = false;
-                for (int i = xPos; i < (xPos + structuresize.x); i++) {
-                    for (int j = yPos; j < (yPos + structuresize.y); j++) {
-                        if (currentGameMap->isWithinBuildRange(i, j, builder->getOwner())) {
-                            withinRange = true;         //find out if the structure is close enough to other buildings
+                    bool withinRange = false;
+                    for (int i = xPos; i < (xPos + structuresize.x); i++) {
+                        for (int j = yPos; j < (yPos + structuresize.y); j++) {
+                            if (currentGameMap->isWithinBuildRange(i, j, pBuilder->getOwner())) {
+                                withinRange = true;         //find out if the structure is close enough to other buildings
+                            }
                         }
                     }
-                }
 
-                SDL_Texture* validPlace = nullptr;
-                SDL_Texture* invalidPlace = nullptr;
+                    SDL_Texture* validPlace = nullptr;
+                    SDL_Texture* invalidPlace = nullptr;
 
-                switch(currentZoomlevel) {
-                    case 0: {
-                        validPlace = pGFXManager->getUIGraphic(UI_ValidPlace_Zoomlevel0);
-                        invalidPlace = pGFXManager->getUIGraphic(UI_InvalidPlace_Zoomlevel0);
-                    } break;
+                    switch(currentZoomlevel) {
+                        case 0: {
+                            validPlace = pGFXManager->getUIGraphic(UI_ValidPlace_Zoomlevel0);
+                            invalidPlace = pGFXManager->getUIGraphic(UI_InvalidPlace_Zoomlevel0);
+                        } break;
 
-                    case 1: {
-                        validPlace = pGFXManager->getUIGraphic(UI_ValidPlace_Zoomlevel1);
-                        invalidPlace = pGFXManager->getUIGraphic(UI_InvalidPlace_Zoomlevel1);
-                    } break;
+                        case 1: {
+                            validPlace = pGFXManager->getUIGraphic(UI_ValidPlace_Zoomlevel1);
+                            invalidPlace = pGFXManager->getUIGraphic(UI_InvalidPlace_Zoomlevel1);
+                        } break;
 
-                    case 2:
-                    default: {
-                        validPlace = pGFXManager->getUIGraphic(UI_ValidPlace_Zoomlevel2);
-                        invalidPlace = pGFXManager->getUIGraphic(UI_InvalidPlace_Zoomlevel2);
-                    } break;
+                        case 2:
+                        default: {
+                            validPlace = pGFXManager->getUIGraphic(UI_ValidPlace_Zoomlevel2);
+                            invalidPlace = pGFXManager->getUIGraphic(UI_InvalidPlace_Zoomlevel2);
+                        } break;
 
-                }
+                    }
 
-                for(int i = xPos; i < (xPos + structuresize.x); i++) {
-                    for(int j = yPos; j < (yPos + structuresize.y); j++) {
-                        SDL_Texture* image;
+                    for(int i = xPos; i < (xPos + structuresize.x); i++) {
+                        for(int j = yPos; j < (yPos + structuresize.y); j++) {
+                            SDL_Texture* image;
 
-                        if(!withinRange || !currentGameMap->tileExists(i,j) || !currentGameMap->getTile(i,j)->isRock()
-                            || currentGameMap->getTile(i,j)->isMountain() || currentGameMap->getTile(i,j)->hasAGroundObject()
-                            || (((placeItem == Structure_Slab1) || (placeItem == Structure_Slab4)) && currentGameMap->getTile(i,j)->isConcrete())) {
-                            image = invalidPlace;
-                        } else {
-                            image = validPlace;
+                            if(!withinRange || !currentGameMap->tileExists(i,j) || !currentGameMap->getTile(i,j)->isRock()
+                                || currentGameMap->getTile(i,j)->isMountain() || currentGameMap->getTile(i,j)->hasAGroundObject()
+                                || (((placeItem == Structure_Slab1) || (placeItem == Structure_Slab4)) && currentGameMap->getTile(i,j)->isConcrete())) {
+                                image = invalidPlace;
+                            } else {
+                                image = validPlace;
+                            }
+
+                            SDL_Rect drawLocation = calcDrawingRect(image, screenborder->world2screenX(i*TILESIZE), screenborder->world2screenY(j*TILESIZE));
+                            SDL_RenderCopy(renderer, image, nullptr, &drawLocation);
                         }
-
-                        SDL_Rect drawLocation = calcDrawingRect(image, screenborder->world2screenX(i*TILESIZE), screenborder->world2screenY(j*TILESIZE));
-                        SDL_RenderCopy(renderer, image, nullptr, &drawLocation);
                     }
                 }
             }
@@ -2178,7 +2178,7 @@ void Game::handleKeyInput(SDL_KeyboardEvent& keyboardEvent) {
             for(Uint32 objectID : selectedList) {
                 ObjectBase* pObject = objectManager.getObject(objectID);
                 if(pObject->isABuilder()) {
-                    BuilderBase* pBuilder = dynamic_cast<BuilderBase*>(pObject);
+                    BuilderBase* pBuilder = static_cast<BuilderBase*>(pObject);
                     if(pBuilder->getHealth() >= pBuilder->getMaxHealth() && pBuilder->isAllowedToUpgrade()) {
                         pBuilder->handleUpgradeClick();
                     }
@@ -2224,6 +2224,10 @@ bool Game::handlePlacementClick(int xPos, int yPos) {
 
     if(selectedList.size() == 1) {
         pBuilder = dynamic_cast<BuilderBase*>(objectManager.getObject(*selectedList.begin()));
+    }
+
+    if(!pBuilder) {
+        return false;
     }
 
     int placeItem = pBuilder->getCurrentProducedItem();
@@ -2290,7 +2294,7 @@ bool Game::handlePlacementClick(int xPos, int yPos) {
                         if(pTile->hasANonInfantryGroundObject()) {
                             ObjectBase* pObject = pTile->getNonInfantryGroundObject();
                             if(pObject->isAUnit() && pObject->getOwner() == pBuilder->getOwner()) {
-                                UnitBase* pUnit = dynamic_cast<UnitBase*>(pObject);
+                                UnitBase* pUnit = static_cast<UnitBase*>(pObject);
                                 Coord newDestination = currentGameMap->findDeploySpot(pUnit, Coord(xPos, yPos), tempRandomGen, pUnit->getLocation(), structuresize);
                                 pUnit->handleMoveClick(newDestination.x, newDestination.y);
                             }
@@ -2400,7 +2404,6 @@ bool Game::handleSelectedObjectsCaptureClick(int xPos, int yPos) {
     }
 
     StructureBase* pStructure = dynamic_cast<StructureBase*>(pTile->getGroundObject());
-
     if((pStructure != nullptr) && (pStructure->canBeCaptured()) && (pStructure->getOwner()->getTeam() != pLocalHouse->getTeam())) {
         InfantryBase* pResponder = nullptr;
 

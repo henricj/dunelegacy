@@ -122,11 +122,10 @@ void AIPlayer::onDamage(const ObjectBase* pObject, int damage, Uint32 damagerID)
         scrambleUnitsAndDefend(pDamager);
 
         if((pDamager != nullptr) && pDamager->isInfantry()) {
-            const UnitBase* pUnit = dynamic_cast<const UnitBase*>(pObject);
-            doAttackObject(pUnit, pDamager, false);
+            doAttackObject(static_cast<const Harvester*>(pObject), pDamager, false);
         }
     } else if(pObject->isAUnit() && pObject->canAttack(pDamager)) {
-        const UnitBase* pUnit = dynamic_cast<const UnitBase*>(pObject);
+        const UnitBase* pUnit = static_cast<const UnitBase*>(pObject);
 
         if(pUnit->getAttackMode() == GUARD || pUnit->getAttackMode() == AMBUSH) {
             doSetAttackMode(pUnit, HUNT);
@@ -344,8 +343,8 @@ void AIPlayer::build() {
                 doRepair(pStructure);
             }
 
-            const BuilderBase* pBuilder = dynamic_cast<const BuilderBase*>(pStructure);
-            if(pBuilder != nullptr) {
+            if(pStructure->isABuilder()) {
+                const BuilderBase* pBuilder = static_cast<const BuilderBase*>(pStructure);
 
                 if((getHouse()->getCredits() > 2000) && (pBuilder->getHealth() >= pBuilder->getMaxHealth()) && (pBuilder->isUpgrading() == false) && (pBuilder->getCurrentUpgradeLevel() < pBuilder->getMaxUpgradeLevel())) {
                     doUpgrade(pBuilder);
@@ -418,7 +417,7 @@ void AIPlayer::build() {
                     } break;
 
                     case Structure_StarPort: {
-                        const StarPort* pStarPort = dynamic_cast<const StarPort*>(pBuilder);
+                        const StarPort* pStarPort = static_cast<const StarPort*>(pBuilder);
                         if(isAllowedToArm() && pStarPort->okToOrder())  {
                             const Choam& choam = getHouse()->getChoam();
 
@@ -585,7 +584,7 @@ void AIPlayer::build() {
                             //see if there is already a spot to put it stored
                             if(!placeLocations.empty()) {
                                 Coord location = placeLocations.front();
-                                const ConstructionYard* pConstYard = dynamic_cast<const ConstructionYard*>(pBuilder);
+                                const ConstructionYard* pConstYard = static_cast<const ConstructionYard*>(pBuilder);
                                 if(getMap().okayToPlaceStructure(location.x, location.y, itemsize.x, itemsize.y, false, pConstYard->getOwner())) {
                                     doPlaceStructure(pConstYard, location.x, location.y);
                                     placeLocations.pop_front();
@@ -666,9 +665,8 @@ void AIPlayer::checkAllUnits() {
         if(pUnit->getItemID() == Unit_Sandworm) {
                 for(const UnitBase* pUnit2 : getUnitList()) {
                     if(pUnit2->getOwner() == getHouse() && pUnit2->getItemID() == Unit_Harvester) {
-                        const Harvester* pHarvester = dynamic_cast<const Harvester*>(pUnit2);
-                        if( pHarvester != nullptr
-                            && getMap().tileExists(pHarvester->getLocation())
+                        const Harvester* pHarvester = static_cast<const Harvester*>(pUnit2);
+                        if( getMap().tileExists(pHarvester->getLocation())
                             && !getMap().getTile(pHarvester->getLocation())->isRock()
                             && blockDistance(pUnit->getLocation(), pHarvester->getLocation()) <= 5) {
                             doReturn(pHarvester);
@@ -684,7 +682,7 @@ void AIPlayer::checkAllUnits() {
 
         switch(pUnit->getItemID()) {
             case Unit_MCV: {
-                const MCV* pMCV = dynamic_cast<const MCV*>(pUnit);
+                const MCV* pMCV = static_cast<const MCV*>(pUnit);
                 if(!pMCV->isMoving()) {
                     if(pMCV->canDeploy()) {
                         doDeploy(pMCV);
@@ -696,7 +694,7 @@ void AIPlayer::checkAllUnits() {
             } break;
 
             case Unit_Harvester: {
-                const Harvester* pHarvester = dynamic_cast<const Harvester*>(pUnit);
+                const Harvester* pHarvester = static_cast<const Harvester*>(pUnit);
                 if(getHouse()->getNumItems(Unit_Harvester) < 3 && pHarvester->getAmountOfSpice() >= HARVESTERMAXSPICE/2) {
                     doReturn(pHarvester);
                 }

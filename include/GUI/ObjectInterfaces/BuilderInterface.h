@@ -61,12 +61,14 @@ protected:
 
         ObjectBase* pObject = currentGame->getObjectManager().getObject(objectID);
         BuilderBase* pBuilder = dynamic_cast<BuilderBase*>(pObject);
-        pBuilderList = BuilderList::create(pBuilder->getObjectID());
-        mainHBox.addWidget(pBuilderList);
+        if(pBuilder) {
+            pBuilderList = BuilderList::create(pBuilder->getObjectID());
+            mainHBox.addWidget(pBuilderList);
+        }
 
         mainHBox.addWidget(Spacer::create());
 
-        StarPort* pStarport = dynamic_cast<StarPort*>(pBuilder);
+        StarPort* pStarport = dynamic_cast<StarPort*>(pObject);
         if(pStarport != nullptr) {
             starportTimerLabel.setTextFont(FONT_STD24);
             starportTimerLabel.setTextColor(COLOR_WHITE, COLOR_TRANSPARENT);

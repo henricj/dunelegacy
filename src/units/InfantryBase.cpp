@@ -227,7 +227,7 @@ void InfantryBase::checkPos() {
                         containedUnitID = pContainedUnit->getItemID();
                         containedUnitHealth = pContainedUnit->getHealth();
                         if(containedUnitID == Unit_Harvester) {
-                            containedHarvesterSpice = dynamic_cast<Harvester*>(pContainedUnit)->getAmountOfSpice();
+                            containedHarvesterSpice = static_cast<Harvester*>(pContainedUnit)->getAmountOfSpice();
                         }
 
                         // will be destroyed by the captured structure
@@ -283,15 +283,15 @@ void InfantryBase::checkPos() {
                         pNewUnit->setHealth(containedUnitHealth);
 
                         if(pNewUnit->getItemID() == Unit_Harvester) {
-                            dynamic_cast<Harvester*>(pNewUnit)->setAmountOfSpice(containedHarvesterSpice);
+                            static_cast<Harvester*>(pNewUnit)->setAmountOfSpice(containedHarvesterSpice);
                         }
 
                         if(pNewStructure->getItemID() == Structure_Refinery) {
-                            Refinery* pRefinery = dynamic_cast<Refinery*>(pNewStructure);
+                            Refinery* pRefinery = static_cast<Refinery*>(pNewStructure);
                             pRefinery->book();
-                            pRefinery->assignHarvester(dynamic_cast<Harvester*>(pNewUnit));
+                            pRefinery->assignHarvester(static_cast<Harvester*>(pNewUnit));
                         } else if(pNewStructure->getItemID() == Structure_RepairYard) {
-                            RepairYard* pRepairYard = dynamic_cast<RepairYard*>(pNewStructure);
+                            RepairYard* pRepairYard = static_cast<RepairYard*>(pNewStructure);
                             pRepairYard->book();
                             pRepairYard->assignUnit(pNewUnit);
                         }

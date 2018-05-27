@@ -457,31 +457,27 @@ void QuantBot::onDamage(const ObjectBase* pObject, int damage, Uint32 damagerID)
             scrambleUnitsAndDefend(pDamager, numStructureDefenders);
         }
 
-    } else if(pObject->isAGroundUnit()){
-        Coord squadCenterLocation = findSquadCenter(pObject->getOwner()->getHouseID());
+    } else if(pObject->isAGroundUnit()) {
+        const GroundUnit* pGroundUnit = static_cast<const GroundUnit*>(pObject);
 
-        const GroundUnit* pUnit = dynamic_cast<const GroundUnit*>(pObject);
+        Coord squadCenterLocation = findSquadCenter(pGroundUnit->getOwner()->getHouseID());
 
-        if(pUnit == nullptr) {
-            return;
-        }
-
-        if(pUnit->isAwaitingPickup()) {
+        if(pGroundUnit->isAwaitingPickup()) {
             return;
         }
 
         // Stop him dead in his tracks if he's going to rally point
-        if(pUnit->wasForced() && (pUnit->getItemID() != Unit_Harvester)) {
-            doMove2Pos(pUnit,
-                       pUnit->getCenterPoint().x,
-                       pUnit->getCenterPoint().y,
+        if(pGroundUnit->wasForced() && (pGroundUnit->getItemID() != Unit_Harvester)) {
+            doMove2Pos(pGroundUnit,
+                       pGroundUnit->getCenterPoint().x,
+                       pGroundUnit->getCenterPoint().y,
                        false);
         }
 
-        if (pUnit->getItemID() == Unit_Harvester) {
+        if (pGroundUnit->getItemID() == Unit_Harvester) {
             // Always keep Harvesters away from harm
             // Defend the harvester!
-            const Harvester* pHarvester = dynamic_cast<const Harvester*>(pUnit);
+            const Harvester* pHarvester = static_cast<const Harvester*>(pGroundUnit);
             if(pHarvester->isActive() && (!pHarvester->isReturning()) && pHarvester->getAmountOfSpice() > 0) {
                 int numHarvesterDefenders = 0;
                 switch(difficulty) {
@@ -494,26 +490,26 @@ void QuantBot::onDamage(const ObjectBase* pObject, int damage, Uint32 damagerID)
                 scrambleUnitsAndDefend(pDamager, numHarvesterDefenders);
                 doReturn(pHarvester);
             }
-        } else if ((pUnit->getItemID() == Unit_Launcher || pUnit->getItemID() == Unit_Deviator)
+        } else if ((pGroundUnit->getItemID() == Unit_Launcher || pGroundUnit->getItemID() == Unit_Deviator)
                     && (difficulty == Difficulty::Hard || difficulty == Difficulty::Brutal) ) {
             // Always keep Launchers away from harm
 
-            doSetAttackMode(pUnit, AREAGUARD);
-            doMove2Pos(pUnit, squadCenterLocation.x, squadCenterLocation.y, true);
+            doSetAttackMode(pGroundUnit, AREAGUARD);
+            doMove2Pos(pGroundUnit, squadCenterLocation.x, squadCenterLocation.y, true);
 
         } else if(  (currentGame->techLevel > 3)
-                    && (pUnit->getItemID() == Unit_Quad)
+                    && (pGroundUnit->getItemID() == Unit_Quad)
                     && !pDamager->isInfantry()
                     && (pDamager->getItemID() != Unit_RaiderTrike)
                     && (pDamager->getItemID() != Unit_Trike)
                     && (pDamager->getItemID() != Unit_Quad)) {
             // We want out quads as raiders
             // Quads flee from every unit except trikes, infantry and other quads (but only if quads are not our main vehicle for that techlevel)
-            doSetAttackMode(pUnit, AREAGUARD);
-            doMove2Pos(pUnit, squadCenterLocation.x, squadCenterLocation.y, true);
+            doSetAttackMode(pGroundUnit, AREAGUARD);
+            doMove2Pos(pGroundUnit, squadCenterLocation.x, squadCenterLocation.y, true);
         } else if(  (currentGame->techLevel > 3)
-                    && (pUnit->getItemID() == Unit_RaiderTrike)
-                    && (pUnit->getItemID() == Unit_Trike)
+                    && (pGroundUnit->getItemID() == Unit_RaiderTrike)
+                    && (pGroundUnit->getItemID() == Unit_Trike)
                     && !pDamager->isInfantry()
                     && (pDamager->getItemID() != Unit_RaiderTrike)
                     && (pDamager->getItemID() != Unit_Trike)) {
@@ -522,22 +518,22 @@ void QuantBot::onDamage(const ObjectBase* pObject, int damage, Uint32 damagerID)
             // This means they are free to engage other light military units
             // but should run away from tanks
 
-            doSetAttackMode(pUnit, AREAGUARD);
-            doMove2Pos(pUnit, squadCenterLocation.x, squadCenterLocation.y, true);
+            doSetAttackMode(pGroundUnit, AREAGUARD);
+            doMove2Pos(pGroundUnit, squadCenterLocation.x, squadCenterLocation.y, true);
 
         }
 
         // If the unit is at 60% health or less and is not being forced to move anywhere
         // repair them, if they are eligible to be repaired
         if(difficulty == Difficulty::Brutal) {
-            if((pUnit->getHealth() * 100) / pUnit->getMaxHealth() < 60
-                && !pUnit->isInfantry()
-                && pUnit->isVisible()) {
+            if((pGroundUnit->getHealth() * 100) / pGroundUnit->getMaxHealth() < 60
+                && !pGroundUnit->isInfantry()
+                && pGroundUnit->isVisible()) {
 
                 if(getHouse()->hasRepairYard()){
-                    doRepair(pUnit);
-                } else if(gameMode == GameMode::Custom && pUnit->getItemID() != Unit_Devastator && squadRetreatLocation.isValid()){
-                    doSetAttackMode(pUnit, RETREAT);
+                    doRepair(pGroundUnit);
+                } else if(gameMode == GameMode::Custom && pGroundUnit->getItemID() != Unit_Devastator && squadRetreatLocation.isValid()){
+                    doSetAttackMode(pGroundUnit, RETREAT);
                 }
             }
         }
@@ -725,7 +721,7 @@ void QuantBot::build(int militaryValue) {
     for(const StructureBase* pStructure : getStructureList()) {
         if(pStructure->getOwner() == getHouse()) {
             if(pStructure->isABuilder()) {
-                const BuilderBase* pBuilder = dynamic_cast<const BuilderBase*>(pStructure);
+                const BuilderBase* pBuilder = static_cast<const BuilderBase*>(pStructure);
                 if(pBuilder->getProductionQueueSize() > 0){
                     itemCount[pBuilder->getCurrentProducedItem()]++;
                     if(pBuilder->getItemID() == Structure_HeavyFactory){
@@ -733,7 +729,7 @@ void QuantBot::build(int militaryValue) {
                     }
                 }
             } else if(pStructure->getItemID() == Structure_RepairYard) {
-                const RepairYard* pRepairYard= dynamic_cast<const RepairYard*>(pStructure);
+                const RepairYard* pRepairYard= static_cast<const RepairYard*>(pStructure);
                 if(!pRepairYard->isFree()) {
                     activeRepairYardCount++;
                 }
@@ -888,30 +884,27 @@ void QuantBot::build(int militaryValue) {
             // Special weapon launch logic
             if(pStructure->getItemID() == Structure_Palace) {
 
-                const Palace* pPalace = dynamic_cast<const Palace*>(pStructure);
+                const Palace* pPalace = static_cast<const Palace*>(pStructure);
+                if(pPalace->isSpecialWeaponReady()){
 
-                if(pPalace != nullptr){
-                    if(pPalace->isSpecialWeaponReady()){
+                    if(houseID != HOUSE_HARKONNEN && houseID != HOUSE_SARDAUKAR) {
+                        doSpecialWeapon(pPalace);
+                    } else {
+                        int enemyHouseID = -1;
+                        int enemyHouseBuildingCount = 0;
 
-                        if(houseID != HOUSE_HARKONNEN && houseID != HOUSE_SARDAUKAR) {
-                            doSpecialWeapon(pPalace);
-                        } else {
-                            int enemyHouseID = -1;
-                            int enemyHouseBuildingCount = 0;
-
-                            for(int i = 0; i < NUM_HOUSES; i++) {
-                                if(getHouse(i) != nullptr) {
-                                    if(getHouse(i)->getTeam() != getHouse()->getTeam() && getHouse(i)->getNumStructures() > enemyHouseBuildingCount) {
-                                        enemyHouseBuildingCount = getHouse(i)->getNumStructures();
-                                        enemyHouseID = i;
-                                    }
+                        for(int i = 0; i < NUM_HOUSES; i++) {
+                            if(getHouse(i) != nullptr) {
+                                if(getHouse(i)->getTeam() != getHouse()->getTeam() && getHouse(i)->getNumStructures() > enemyHouseBuildingCount) {
+                                    enemyHouseBuildingCount = getHouse(i)->getNumStructures();
+                                    enemyHouseID = i;
                                 }
                             }
+                        }
 
-                            if((enemyHouseID != -1) && (houseID == HOUSE_HARKONNEN || houseID == HOUSE_SARDAUKAR)) {
-                                Coord target = findBaseCentre(enemyHouseID);
-                                doLaunchDeathhand(pPalace, target.x, target.y);
-                            }
+                        if((enemyHouseID != -1) && (houseID == HOUSE_HARKONNEN || houseID == HOUSE_SARDAUKAR)) {
+                            Coord target = findBaseCentre(enemyHouseID);
+                            doLaunchDeathhand(pPalace, target.x, target.y);
                         }
                     }
                 }
@@ -985,8 +978,8 @@ void QuantBot::build(int militaryValue) {
 
             // End of unit ratio optimisation algorithm
 
-            const BuilderBase* pBuilder = dynamic_cast<const BuilderBase*>(pStructure);
-            if(pBuilder != nullptr) {
+            if(pStructure->isABuilder()) {
+                const BuilderBase* pBuilder = static_cast<const BuilderBase*>(pStructure);
                 switch (pStructure->getItemID()) {
 
                     case Structure_LightFactory: {
@@ -1181,7 +1174,7 @@ void QuantBot::build(int militaryValue) {
                     } break;
 
                     case Structure_StarPort: {
-                        const StarPort* pStarPort = dynamic_cast<const StarPort*>(pBuilder);
+                        const StarPort* pStarPort = static_cast<const StarPort*>(pBuilder);
                         if(pStarPort->okToOrder())  {
                             const Choam& choam = getHouse()->getChoam();
 
@@ -1279,7 +1272,7 @@ void QuantBot::build(int militaryValue) {
                             rocketTurretValue = 1000000; // If rocket turrets need power we don't want to build them
                         }
 
-                        const ConstructionYard* pConstYard = dynamic_cast<const ConstructionYard*>(pBuilder);
+                        const ConstructionYard* pConstYard = static_cast<const ConstructionYard*>(pBuilder);
 
                         if(!pBuilder->isUpgrading() && getHouse()->getCredits() > 100 && (pBuilder->getProductionQueueSize() < 1) && pBuilder->getBuildListSize()) {
 
@@ -1495,16 +1488,15 @@ void QuantBot::scrambleUnitsAndDefend(const ObjectBase* pIntruder, int numUnits)
                         doAttackObject(pUnit, pIntruder, true);
                     }
 
-                    if(pUnit->isVisible()
-                        && blockDistance(pUnit->getLocation(), pUnit->getDestination()) >= 10
+                    if(getGameInitSettings().getGameOptions().manualCarryallDrops
+                        && pUnit->isVisible()
                         && pUnit->isAGroundUnit()
-                        && pUnit->getHealth() / pUnit->getMaxHealth() > BADLYDAMAGEDRATIO) {
+                        && (pUnit->getItemID() != Unit_Deviator)
+                        && (pUnit->getItemID() != Unit_Launcher)
+                        && (blockDistance(pUnit->getLocation(), pUnit->getDestination()) >= 10)
+                        && (pUnit->getHealth() / pUnit->getMaxHealth() > BADLYDAMAGEDRATIO)) {
 
-                        const GroundUnit* pGroundUnit = dynamic_cast<const GroundUnit*>(pUnit);
-
-                        if(getGameInitSettings().getGameOptions().manualCarryallDrops && pGroundUnit->getItemID() != Unit_Deviator && pGroundUnit->getItemID() != Unit_Launcher) {
-                            doRequestCarryallDrop(pGroundUnit); //do request carryall to defend unit
-                        }
+                        doRequestCarryallDrop(static_cast<const GroundUnit*>(pUnit)); //do request carryall to defend unit
                     }
 
                     if(--numUnits == 0) {
@@ -1776,7 +1768,7 @@ void QuantBot::checkAllUnits() {
         if(pUnit->getOwner() == getHouse()) {
             switch(pUnit->getItemID()) {
                 case Unit_MCV: {
-                    const MCV* pMCV = dynamic_cast<const MCV*>(pUnit);
+                    const MCV* pMCV = static_cast<const MCV*>(pUnit);
                     if(pMCV != nullptr) {
                         //logDebug("MCV: forced: %d  moving: %d  canDeploy: %d",
                         //pMCV->wasForced(), pMCV->isMoving(), pMCV->canDeploy());
@@ -1796,7 +1788,7 @@ void QuantBot::checkAllUnits() {
                 } break;
 
                 case Unit_Harvester: {
-                    const Harvester* pHarvester = dynamic_cast<const Harvester*>(pUnit);
+                    const Harvester* pHarvester = static_cast<const Harvester*>(pUnit);
                     if(getHouse()->getCredits() < 1000 && pHarvester != nullptr && pHarvester->isActive()
                         && (pHarvester->getAmountOfSpice() >= HARVESTERMAXSPICE/2) && getHouse()->getNumItems(Structure_HeavyFactory) == 0) {
                         doReturn(pHarvester);
@@ -1824,19 +1816,16 @@ void QuantBot::checkAllUnits() {
                     if(pUnit->getOwner()->getHouseID() != pUnit->getOriginalHouseID()) {
                         // If its a devastator and its not ours, blow it up!!
                         if(pUnit->getItemID() == Unit_Devastator){
-                            const Devastator* pDevastator = dynamic_cast<const Devastator*>(pUnit);
-                            if(pDevastator != nullptr) {
-
-                                doStartDevastate(pDevastator);
-                                doSetAttackMode(pDevastator, HUNT);
-                            }
+                            const Devastator* pDevastator = static_cast<const Devastator*>(pUnit);
+                            doStartDevastate(pDevastator);
+                            doSetAttackMode(pDevastator, HUNT);
                         } else if(pUnit->getItemID() == Unit_Ornithopter) {
                             if(pUnit->getAttackMode() != HUNT){
                                 doSetAttackMode(pUnit, HUNT);
                             }
                         } else if(pUnit->getItemID() == Unit_Harvester) {
-                            const Harvester* pHarvester = dynamic_cast<const Harvester*>(pUnit);
-                            if(pHarvester != nullptr && pHarvester->getAmountOfSpice() >= HARVESTERMAXSPICE/5) {
+                            const Harvester* pHarvester = static_cast<const Harvester*>(pUnit);
+                            if(pHarvester->getAmountOfSpice() >= HARVESTERMAXSPICE/5) {
                                 doReturn(pHarvester);
                             } else {
                                 doMove2Pos(pUnit, squadCenterLocation.x, squadCenterLocation.y, true );

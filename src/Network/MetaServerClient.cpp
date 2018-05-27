@@ -230,6 +230,9 @@ int MetaServerClient::connectionThreadMain(void* data) {
             case METASERVERCOMMAND_ADD: {
 
                 MetaServerAdd* pMetaServerAdd = dynamic_cast<MetaServerAdd*>(nextMetaServerCommand.get());
+                if(!pMetaServerAdd) {
+                    break;
+                }
 
                 std::map<std::string, std::string> parameters;
 
@@ -263,6 +266,9 @@ int MetaServerClient::connectionThreadMain(void* data) {
 
             case METASERVERCOMMAND_UPDATE: {
                 MetaServerUpdate* pMetaServerUpdate = dynamic_cast<MetaServerUpdate*>(nextMetaServerCommand.get());
+                if(!pMetaServerUpdate) {
+                    break;
+                }
 
                 std::map<std::string, std::string> parameters;
 
@@ -318,6 +324,9 @@ int MetaServerClient::connectionThreadMain(void* data) {
 
             case METASERVERCOMMAND_REMOVE: {
                 MetaServerRemove* pMetaServerRemove = dynamic_cast<MetaServerRemove*>(nextMetaServerCommand.get());
+                if(!pMetaServerRemove) {
+                    break;
+                }
 
                 std::map<std::string, std::string> parameters;
 

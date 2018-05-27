@@ -386,7 +386,7 @@ void Carryall::pickupTarget()
     ObjectBase* pTarget = target.getObjPointer();
 
     if(pTarget->isAGroundUnit()) {
-        GroundUnit* pGroundUnitTarget = dynamic_cast<GroundUnit*>(pTarget);
+        GroundUnit* pGroundUnitTarget = static_cast<GroundUnit*>(pTarget);
 
         if(pTarget->getHealth() <= 0) {
             // unit died just in the moment we tried to pick it up => carryall also crushes
@@ -394,11 +394,11 @@ void Carryall::pickupTarget()
             return;
         }
 
-        if (  pTarget->hasATarget()
-            || ( pGroundUnitTarget->getDestination() != pTarget->getLocation())
+        if (  pGroundUnitTarget->hasATarget()
+            || ( pGroundUnitTarget->getDestination() != pGroundUnitTarget->getLocation())
             || pGroundUnitTarget->isBadlyDamaged()) {
 
-            if(pGroundUnitTarget->isBadlyDamaged() || (pTarget->hasATarget() == false && pTarget->getItemID() != Unit_Harvester))   {
+            if(pGroundUnitTarget->isBadlyDamaged() || (pGroundUnitTarget->hasATarget() == false && pGroundUnitTarget->getItemID() != Unit_Harvester))   {
                 pGroundUnitTarget->doRepair();
             }
 
