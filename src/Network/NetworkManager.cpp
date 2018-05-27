@@ -325,40 +325,42 @@ void NetworkManager::update()
 
                 debugNetwork("NetworkManager: %s:%u (%s) disconnected (%d).\n", Address2String(peer->address).c_str(), peer->address.port, (peerData != nullptr) ? peerData->name.c_str() : "unknown", disconnectCause);
 
-                if(std::find(awaitingConnectionList.begin(), awaitingConnectionList.end(), peer) != awaitingConnectionList.end()) {
-                    if(peerData->peerState == PeerData::PeerState::WaitingForOtherPeersToConnect) {
+                if(peerData != nullptr) {
+                    if(std::find(awaitingConnectionList.begin(), awaitingConnectionList.end(), peer) != awaitingConnectionList.end()) {
+                        if(peerData->peerState == PeerData::PeerState::WaitingForOtherPeersToConnect) {
+                            ENetPacketOStream packetStream(ENET_PACKET_FLAG_RELIABLE);
+                            packetStream.writeUint32(NETWORKPACKET_DISCONNECT);
+                            packetStream.writeUint32(SDL_SwapBE32(peer->address.host));
+                            packetStream.writeUint16(peer->address.port);
+
+                            sendPacketToAllConnectedPeers(packetStream);
+                        }
+
+                        debugNetwork("Removing '%s' from awaiting connection list\n", peerData->name.c_str());
+                        awaitingConnectionList.remove(peer);
+                    }
+
+
+                    if(std::find(peerList.begin(), peerList.end(), peer) != peerList.end()) {
+                        debugNetwork("Removing '%s' from peer list\n", peerData->name.c_str());
+                        peerList.remove(peer);
+
                         ENetPacketOStream packetStream(ENET_PACKET_FLAG_RELIABLE);
                         packetStream.writeUint32(NETWORKPACKET_DISCONNECT);
                         packetStream.writeUint32(SDL_SwapBE32(peer->address.host));
                         packetStream.writeUint16(peer->address.port);
 
                         sendPacketToAllConnectedPeers(packetStream);
-                    }
 
-                    debugNetwork("Removing '%s' from awaiting connection list\n", peerData->name.c_str());
-                    awaitingConnectionList.remove(peer);
-                }
-
-
-                if(std::find(peerList.begin(), peerList.end(), peer) != peerList.end()) {
-                    debugNetwork("Removing '%s' from peer list\n", peerData->name.c_str());
-                    peerList.remove(peer);
-
-                    ENetPacketOStream packetStream(ENET_PACKET_FLAG_RELIABLE);
-                    packetStream.writeUint32(NETWORKPACKET_DISCONNECT);
-                    packetStream.writeUint32(SDL_SwapBE32(peer->address.host));
-                    packetStream.writeUint16(peer->address.port);
-
-                    sendPacketToAllConnectedPeers(packetStream);
-
-                    if(pOnPeerDisconnected) {
-                        pOnPeerDisconnected(peerData->name, (peer == connectPeer), disconnectCause);
-                    }
-                } else {
-                    if(peer == connectPeer) {
-                        // host disconnected while establishing connection
                         if(pOnPeerDisconnected) {
-                            pOnPeerDisconnected(peerData->name, true, disconnectCause);
+                            pOnPeerDisconnected(peerData->name, (peer == connectPeer), disconnectCause);
+                        }
+                    } else {
+                        if(peer == connectPeer) {
+                            // host disconnected while establishing connection
+                            if(pOnPeerDisconnected) {
+                                pOnPeerDisconnected(peerData->name, true, disconnectCause);
+                            }
                         }
                     }
                 }
