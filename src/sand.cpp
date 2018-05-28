@@ -645,15 +645,22 @@ FixPoint getDeviateWeakness(HOUSETYPE house) {
 */
 void startReplay(const std::string& filename) {
     SDL_Log("Initializing replay...");
-    currentGame = new Game();
-    currentGame->initReplay(filename);
+    try {
+        currentGame = new Game();
+        currentGame->initReplay(filename);
 
-    currentGame->runMainLoop();
+        currentGame->runMainLoop();
 
-    delete currentGame;
+        delete currentGame;
+        currentGame = nullptr;
 
-    // Change music to menu music
-    musicPlayer->changeMusic(MUSIC_MENU);
+        // Change music to menu music
+        musicPlayer->changeMusic(MUSIC_MENU);
+    } catch(...) {
+        delete currentGame;
+        currentGame = nullptr;
+        throw;
+    }
 }
 
 
@@ -668,82 +675,88 @@ void startSinglePlayerGame(const GameInitSettings& init)
 
     while(1) {
 
-        SDL_Log("Initializing game...");
-        auto game = std::make_unique<Game>();
-        currentGame = game.get();
-        game->initGame(currentGameInitInfo);
+        try {
 
-        // get init settings from game as it might have changed (through loading the game)
-        currentGameInitInfo = game->getGameInitSettings();
+            SDL_Log("Initializing game...");
+            currentGame = new Game();
+            currentGame->initGame(currentGameInitInfo);
 
-        game->runMainLoop();
+            // get init settings from game as it might have changed (through loading the game)
+            currentGameInitInfo = currentGame->getGameInitSettings();
 
-        bool bGetNext = true;
-        while(bGetNext) {
-            switch(game->whatNext()) {
-                case GAME_DEBRIEFING_WIN: {
-                    SDL_Log("Debriefing...");
-                    {
-                        BriefingMenu briefing(currentGameInitInfo.getHouseID(), currentGameInitInfo.getMission(), DEBRIEFING_WIN);
-                        briefing.showMenu();
-                    }
+            currentGame->runMainLoop();
 
-                    SDL_Log("Game statistics...");
-                    {
-                        CampaignStatsMenu campaignStats(missionNumberToLevelNumber(currentGameInitInfo.getMission()));
-                        campaignStats.showMenu();
-                    }
-
-                    const int houseID = currentGameInitInfo.getHouseID();
-
-                    if(currentGameInitInfo.getGameType() == GameType::Campaign) {
-                        const int level = missionNumberToLevelNumber(currentGameInitInfo.getMission());
-
-                        if(level == 4 && (houseID == HOUSE_HARKONNEN || houseID == HOUSE_ATREIDES || houseID == HOUSE_ORDOS)) {
-                            SDL_Log("Playing meanwhile...");
-                            Meanwhile meanwhile(houseID,true);
-                            meanwhile.run();
-                        } else if(level == 8 && (houseID == HOUSE_HARKONNEN || houseID == HOUSE_ATREIDES || houseID == HOUSE_ORDOS)) {
-                            SDL_Log("Playing meanwhile...");
-                            Meanwhile meanwhile(houseID,false);
-                            meanwhile.run();
-                        } else if(level == 9) {
-                            SDL_Log("Playing finale.....");
-                            Finale finale(houseID);
-                            finale.run();
+            bool bGetNext = true;
+            while(bGetNext) {
+                switch(currentGame->whatNext()) {
+                    case GAME_DEBRIEFING_WIN: {
+                        SDL_Log("Debriefing...");
+                        {
+                            BriefingMenu briefing(currentGameInitInfo.getHouseID(), currentGameInitInfo.getMission(), DEBRIEFING_WIN);
+                            briefing.showMenu();
                         }
-                    }
-                } break;
 
-                case GAME_DEBRIEFING_LOST: {
-                    SDL_Log("Debriefing...");
-                    BriefingMenu briefing(currentGameInitInfo.getHouseID(), currentGameInitInfo.getMission(), DEBRIEFING_LOST);
-                    briefing.showMenu();
-                } break;
+                        SDL_Log("Game statistics...");
+                        {
+                            CampaignStatsMenu campaignStats(missionNumberToLevelNumber(currentGameInitInfo.getMission()));
+                            campaignStats.showMenu();
+                        }
 
-                case GAME_CUSTOM_GAME_STATS: {
-                    SDL_Log("Game statistics...");
-                    CustomGameStatsMenu stats;
-                    stats.showMenu();
-                } break;
+                        const int houseID = currentGameInitInfo.getHouseID();
 
-                case GAME_LOAD:
-                case GAME_NEXTMISSION: {
-                    currentGameInitInfo = game->getNextGameInitSettings();
-                    bGetNext = false;
-                } break;
+                        if(currentGameInitInfo.getGameType() == GameType::Campaign) {
+                            const int level = missionNumberToLevelNumber(currentGameInitInfo.getMission());
 
-                case GAME_RETURN_TO_MENU:
-                default: {
-                    game.reset();
-                    currentGame = nullptr;
+                            if(level == 4 && (houseID == HOUSE_HARKONNEN || houseID == HOUSE_ATREIDES || houseID == HOUSE_ORDOS)) {
+                                SDL_Log("Playing meanwhile...");
+                                Meanwhile meanwhile(houseID,true);
+                                meanwhile.run();
+                            } else if(level == 8 && (houseID == HOUSE_HARKONNEN || houseID == HOUSE_ATREIDES || houseID == HOUSE_ORDOS)) {
+                                SDL_Log("Playing meanwhile...");
+                                Meanwhile meanwhile(houseID,false);
+                                meanwhile.run();
+                            } else if(level == 9) {
+                                SDL_Log("Playing finale.....");
+                                Finale finale(houseID);
+                                finale.run();
+                            }
+                        }
+                    } break;
 
-                    // Change music to menu music
-                    musicPlayer->changeMusic(MUSIC_MENU);
+                    case GAME_DEBRIEFING_LOST: {
+                        SDL_Log("Debriefing...");
+                        BriefingMenu briefing(currentGameInitInfo.getHouseID(), currentGameInitInfo.getMission(), DEBRIEFING_LOST);
+                        briefing.showMenu();
+                    } break;
 
-                    return;
-                } break;
+                    case GAME_CUSTOM_GAME_STATS: {
+                        SDL_Log("Game statistics...");
+                        CustomGameStatsMenu stats;
+                        stats.showMenu();
+                    } break;
+
+                    case GAME_LOAD:
+                    case GAME_NEXTMISSION: {
+                        currentGameInitInfo = currentGame->getNextGameInitSettings();
+                        bGetNext = false;
+                    } break;
+
+                    case GAME_RETURN_TO_MENU:
+                    default: {
+                        delete currentGame;
+                        currentGame = nullptr;
+
+                        // Change music to menu music
+                        musicPlayer->changeMusic(MUSIC_MENU);
+
+                        return;
+                    } break;
+                }
             }
+        } catch(...) {
+            delete currentGame;
+            currentGame = nullptr;
+            throw;
         }
     }
 }
@@ -757,20 +770,26 @@ void startMultiPlayerGame(const GameInitSettings& init)
     GameInitSettings currentGameInitInfo = init;
 
     SDL_Log("Initializing game...");
-    auto game = std::make_unique<Game>();
-    currentGame = game.get();
-    game->initGame(currentGameInitInfo);
+    try {
+        currentGame = new Game();
+        currentGame->initGame(currentGameInitInfo);
 
-    // get init settings from game as it might have changed (through loading the game)
-    currentGameInitInfo = game->getGameInitSettings();
+        // get init settings from game as it might have changed (through loading the game)
+        currentGameInitInfo = currentGame->getGameInitSettings();
 
-    game->runMainLoop();
+        currentGame->runMainLoop();
 
-    if(currentGame->whatNext() == GAME_CUSTOM_GAME_STATS) {
-        SDL_Log("Game statistics...");
-        CustomGameStatsMenu stats;
-        stats.showMenu();
+        if(currentGame->whatNext() == GAME_CUSTOM_GAME_STATS) {
+            SDL_Log("Game statistics...");
+            CustomGameStatsMenu stats;
+            stats.showMenu();
+        }
+
+        delete currentGame;
+        currentGame = nullptr;
+    } catch(...) {
+        delete currentGame;
+        currentGame = nullptr;
+        throw;
     }
-
-    currentGame = nullptr;
 }
