@@ -165,7 +165,7 @@ sdl2::surface_ptr Wsafile::getAnimationAsPictureRow(int numFramesX) const {
                 return pic;
             }
 
-            const unsigned char * const RESTRICT pImage = &decodedFrames[i * sizeX * sizeY];
+            const unsigned char * const RESTRICT pImage = &decodedFrames[i * static_cast<size_t>(sizeX) * static_cast<size_t>(sizeY)];
 
             //Now we can copy this frame line by line
             for(int line = 0; line < sizeY; ++line) {
@@ -349,7 +349,7 @@ void Wsafile::readdata(int numFiles, va_list args) {
 
 
     decodedFrames.clear();
-    decodedFrames.resize(sizeX * sizeY * numFrames);
+    decodedFrames.resize(static_cast<size_t>(sizeX) * static_cast<size_t>(sizeY) * numFrames);
 
     assert(decodedFrames.size() >= sizeX * sizeY);
     decodeFrames(pFiledata[0].get(),index[0],numberOfFrames[0],&decodedFrames[0],sizeX,sizeY);
@@ -361,7 +361,7 @@ void Wsafile::readdata(int numFiles, va_list args) {
         for (int i = 1; i < numFiles; i++) {
             if (extended[i]) {
                 // copy last frame
-                memcpy(nextFreeFrame, nextFreeFrame - (sizeX*sizeY), sizeX*sizeY);
+                memcpy(nextFreeFrame, nextFreeFrame - static_cast<size_t>(sizeX) * static_cast<size_t>(sizeY), static_cast<size_t>(sizeX) * static_cast<size_t>(sizeY));
             }
             assert(nextFreeFrame + sizeX * sizeY <= &decodedFrames[decodedFrames.size() - 1]);
             decodeFrames(pFiledata[i].get(), index[i], numberOfFrames[i], nextFreeFrame, sizeX, sizeY);
