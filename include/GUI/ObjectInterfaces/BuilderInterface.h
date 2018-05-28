@@ -64,6 +64,8 @@ protected:
         if(pBuilder) {
             pBuilderList = BuilderList::create(pBuilder->getObjectID());
             mainHBox.addWidget(pBuilderList);
+        } else {
+            pBuilderList = nullptr;
         }
 
         mainHBox.addWidget(Spacer::create());

@@ -209,12 +209,12 @@ void InfantryBase::checkPos() {
                         capturedSpice = currentGame->objectData.data[Structure_Silo][originalHouseID].capacity * (pOwner->getStoredCredits() / pOwner->getCapacity());
                     } else if(pCapturedStructure->getItemID() == Structure_Refinery) {
                         capturedSpice = currentGame->objectData.data[Structure_Silo][originalHouseID].capacity * (pOwner->getStoredCredits() / pOwner->getCapacity());
-                        Refinery* pRefinery = dynamic_cast<Refinery*>(pCapturedStructure);
+                        Refinery* pRefinery = static_cast<Refinery*>(pCapturedStructure);
                         if(pRefinery->isFree() == false) {
                             pContainedUnit = pRefinery->getHarvester();
                         }
                     } else if(pCapturedStructure->getItemID() == Structure_RepairYard) {
-                        RepairYard* pRepairYard = dynamic_cast<RepairYard*>(pCapturedStructure);
+                        RepairYard* pRepairYard = static_cast<RepairYard*>(pCapturedStructure);
                         if(pRepairYard->isFree() == false) {
                             pContainedUnit = pRepairYard->getRepairUnit();
                         }

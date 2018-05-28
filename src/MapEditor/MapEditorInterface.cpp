@@ -951,7 +951,12 @@ void MapEditorInterface::onRedo() {
 }
 
 void MapEditorInterface::onHouseDropDownChanged(bool bInteractive) {
-    changeInterfaceColor(static_cast<HOUSETYPE>(houseDropDownBox.getSelectedEntryIntData()));
+    int index = houseDropDownBox.getSelectedEntryIntData();
+    if(index < 0) {
+        return;
+    }
+
+    changeInterfaceColor(static_cast<HOUSETYPE>(index));
 
     if(bInteractive) {
         pMapEditor->setEditorMode(MapEditor::EditorMode());

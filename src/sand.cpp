@@ -226,8 +226,6 @@ Coord getStructureSize(int itemID) {
         case Structure_WOR:                 return Coord(2,2); break;
         default:                            return Coord(0,0); break;
     }
-
-    return Coord(0,0);
 }
 
 /**

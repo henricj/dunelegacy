@@ -192,7 +192,7 @@ void Map::damage(Uint32 damagerID, House* damagerOwner, const Coord& realPos, Ui
                             }
                         }
                     }
-                } else if(pObject->isAUnit()) {
+                } else if(pObject && pObject->isAUnit()) {
                     const auto pUnit = static_cast<UnitBase*>(pObject);
 
                     const auto centerPoint = pUnit->getCenterPoint();

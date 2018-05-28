@@ -334,7 +334,12 @@ int MetaServerClient::connectionThreadMain(void* data) {
                 parameters["port"] = stringify<int>(pMetaServerRemove->serverPort);
                 parameters["secret"] = pMetaServerRemove->secret;
 
-                loadFromHttp(pMetaServerClient->metaServerURL, parameters);
+                try {
+                    loadFromHttp(pMetaServerClient->metaServerURL, parameters);
+                } catch(std::exception& e) {
+                    pMetaServerClient->setErrorMessage(METASERVERCOMMAND_REMOVE, e.what());
+                    break;
+                }
             } break;
 
             case METASERVERCOMMAND_LIST: {

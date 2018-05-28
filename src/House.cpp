@@ -523,7 +523,11 @@ void House::win() {
 
 void House::lose(bool bSilent) {
     if(!bSilent) {
-        currentGame->addToNewsTicker(fmt::sprintf(_("House '%s' has been defeated."), getHouseNameByNumber( (HOUSETYPE) getHouseID())));
+        try {
+            currentGame->addToNewsTicker(fmt::sprintf(_("House '%s' has been defeated."), getHouseNameByNumber( (HOUSETYPE) getHouseID())));
+        } catch (std::exception& e) {
+            SDL_Log("House::lose(): %s", e.what());
+        }
     }
 
     if((getTeam() == pLocalHouse->getTeam()) && ((currentGame->winFlags & WINLOSEFLAGS_HUMAN_HAS_BUILDINGS) != 0)) {

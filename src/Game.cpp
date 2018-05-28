@@ -1334,8 +1334,6 @@ GameInitSettings Game::getNextGameInitSettings()
             return GameInitSettings();
         } break;
     }
-
-    return GameInitSettings();
 }
 
 

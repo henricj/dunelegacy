@@ -125,10 +125,7 @@ protected:
 
 private:
     sdl2::surface_unique_or_nonowning_ptr pSymbolSurface;
-    bool bFreeSymbolSurface;
-
     sdl2::surface_unique_or_nonowning_ptr pActiveSymbolSurface;
-    bool bFreeActiveSymbolSurface;
 
 };
 

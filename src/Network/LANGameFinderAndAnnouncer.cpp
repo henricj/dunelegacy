@@ -104,7 +104,11 @@ LANGameFinderAndAnnouncer::LANGameFinderAndAnnouncer()
 
 LANGameFinderAndAnnouncer::~LANGameFinderAndAnnouncer() {
     if(serverPort > 0) {
-        stopAnnounce();
+        try {
+            stopAnnounce();
+        } catch (std::exception& e) {
+            SDL_Log("LANGameFinderAndAnnouncer::~LANGameFinderAndAnnouncer(): %s", e.what());
+        }
     }
     enet_socket_destroy(announceSocket);
 }
