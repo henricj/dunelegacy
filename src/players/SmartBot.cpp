@@ -53,7 +53,6 @@ SmartBot::SmartBot(InputStream& stream, House* associatedHouse) : Player(stream,
     difficulty = static_cast<Difficulty>(stream.readUint8());
     attackTimer = stream.readSint32();
     buildTimer = stream.readSint32();
-    AIStrategy = stream.readSint32();
 
     Uint32 NumPlaceLocations = stream.readUint32();
     for(Uint32 i = 0; i < NumPlaceLocations; i++) {
@@ -79,7 +78,6 @@ void SmartBot::save(OutputStream& stream) const {
     stream.writeUint8(static_cast<Uint8>(difficulty));
     stream.writeSint32(attackTimer);
     stream.writeSint32(buildTimer);
-    stream.writeSint32(AIStrategy);
 
     stream.writeUint32(placeLocations.size());
     for(const Coord& placeLocation : placeLocations) {

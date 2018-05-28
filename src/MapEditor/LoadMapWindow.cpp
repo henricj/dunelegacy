@@ -36,7 +36,7 @@
 #include <globals.h>
 
 
-LoadMapWindow::LoadMapWindow(Uint32 color) : Window(0,0,0,0), color(color) {
+LoadMapWindow::LoadMapWindow(Uint32 color) : Window(0,0,0,0), color(color), loadMapSingleplayer(false) {
 
     // set up window
     SDL_Texture *pBackground = pGFXManager->getUIGraphic(UI_NewMapWindow);

@@ -101,12 +101,12 @@ private:
     void sendRemoveGameAnnouncement();
 
     std::string serverName;
-    int serverPort;
+    int serverPort = 0;
     std::string mapName;
-    Uint8 numPlayers;
-    Uint8 maxPlayers;
+    Uint8 numPlayers = 0;
+    Uint8 maxPlayers = 0;
 
-    Uint32 lastAnnounce;
+    Uint32 lastAnnounce = 0;
     ENetSocket announceSocket;
 
     std::list<GameServerInfo> gameServerInfoList;

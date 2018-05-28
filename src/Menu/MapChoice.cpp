@@ -34,6 +34,8 @@
 MapChoice::MapChoice(int newHouse, unsigned int lastMission, Uint32 oldAlreadyPlayedRegions) : MenuBase() {
     disableQuiting(true);
     selectedRegion = -1;
+    selectionTime = 0;
+    stateSwitchTime = 0;
 
     bFastBlending = false;
     curHouse2Blit = 0;

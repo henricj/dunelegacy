@@ -65,7 +65,7 @@ void StructureBase::init() {
 
     justPlacedTimer = 0;
 
-    lastVisibleFrame = curAnimFrame = 2;
+    lastVisibleFrame = firstAnimFrame = lastAnimFrame = curAnimFrame = 2;
     animationCounter = 0;
 
     structureList.push_back(this);

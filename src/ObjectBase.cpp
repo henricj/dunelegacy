@@ -102,6 +102,7 @@ ObjectBase::ObjectBase(House* newOwner) : originalHouseID(newOwner->getHouseID()
 }
 
 ObjectBase::ObjectBase(InputStream& stream) {
+    objectID = NONE_ID; // has to be set after loading
     originalHouseID = stream.readUint32();
     owner = currentGame->getHouse(stream.readUint32());
 

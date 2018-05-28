@@ -50,6 +50,8 @@
 
 MapEditorInterface::MapEditorInterface(MapEditor* pMapEditor)
  : Window(0,0,0,0), pMapEditor(pMapEditor), radarView(pMapEditor) {
+    house = HOUSE_HARKONNEN;
+    color = SDL2RGB(palette[houseToPaletteIndex[house] + 3]);
 
     currentTerrainType = -1;
     currentTerrainPenSize = -1;

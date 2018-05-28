@@ -69,8 +69,7 @@ struct PACKEDDATASTRUCTURE NetworkPacket_RequestGame {
 
 
 
-LANGameFinderAndAnnouncer::LANGameFinderAndAnnouncer()
- : serverPort(0), lastAnnounce(0) {
+LANGameFinderAndAnnouncer::LANGameFinderAndAnnouncer() {
 
     announceSocket = enet_socket_create(ENET_SOCKET_TYPE_DATAGRAM);
     if(announceSocket == ENET_SOCKET_NULL) {

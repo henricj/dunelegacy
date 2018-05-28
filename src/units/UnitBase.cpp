@@ -125,6 +125,7 @@ void UnitBase::init() {
     tracked = false;
     turreted = false;
     numWeapons = 0;
+    bulletType = Bullet_DRocket;
 
     drawnFrame = 0;
 

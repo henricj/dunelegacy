@@ -201,20 +201,20 @@ private:
     static void checkSaveGame(InputStream& stream);
 
 
-    GameType        gameType;
+    GameType        gameType = GameType::Invalid;
 
-    HOUSETYPE       houseID;
-    int             mission;
-    Uint32          alreadyPlayedRegions;
-    Uint32          alreadyShownTutorialHints;
+    HOUSETYPE       houseID = HOUSE_INVALID;
+    int             mission = 0;
+    Uint32          alreadyPlayedRegions = 0;
+    Uint32          alreadyShownTutorialHints = 0xFFFFFFFF;
 
     std::string     filename;
     std::string     filedata;
     std::string     servername;
 
-    Uint32          randomSeed;
+    Uint32          randomSeed = 0;
 
-    bool            multiplePlayersPerHouse;
+    bool            multiplePlayersPerHouse = false;
 
     SettingsClass::GameOptionsClass gameOptions;
 
