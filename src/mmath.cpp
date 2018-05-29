@@ -18,9 +18,17 @@
 #include <mmath.h>
 
 #include <algorithm>
+#include <random>
 #include <limits>
 
 extern int currentZoomlevel;
+
+int getRandomInt() {
+    static std::random_device randdev;
+    static std::minstd_rand randgen(randdev());
+
+    return randgen() - randgen.min();
+}
 
 int world2zoomedWorld(int x) {
     if(x<0) {

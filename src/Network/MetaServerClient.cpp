@@ -21,6 +21,7 @@
 
 #include <misc/string_util.h>
 #include <misc/exceptions.h>
+#include <mmath.h>
 
 #include <config.h>
 
@@ -69,7 +70,7 @@ void MetaServerClient::startAnnounce(const std::string& serverName, int serverPo
 
     this->serverName = serverName;
     this->serverPort = serverPort;
-    this->secret = std::to_string(rand()) + std::to_string(rand());
+    this->secret = std::to_string(getRandomInt()) + std::to_string(getRandomInt());
     this->mapName = mapName;
     this->numPlayers = numPlayers;
     this->maxPlayers = maxPlayers;

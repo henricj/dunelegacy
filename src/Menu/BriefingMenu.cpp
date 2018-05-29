@@ -19,6 +19,8 @@
 
 #include <globals.h>
 
+#include <mmath.h>
+
 #include <FileClasses/GFXManager.h>
 #include <FileClasses/TextManager.h>
 #include <FileClasses/music/MusicPlayer.h>
@@ -54,11 +56,11 @@ BriefingMenu::BriefingMenu(int newHouse,int mission,int type) : MentatMenu(newHo
 
     switch(type) {
         case DEBRIEFING_WIN: {
-            anim = pGFXManager->getAnimation((rand() % 2 == 0) ? Anim_Win1 : Anim_Win2);
+            anim = pGFXManager->getAnimation(getRandomBool() ? Anim_Win1 : Anim_Win2);
             text = pTextManager->getBriefingText(missionnumber,MISSION_WIN,house);
         } break;
         case DEBRIEFING_LOST: {
-            anim = pGFXManager->getAnimation((rand() % 2 == 0) ? Anim_Lose1 : Anim_Lose2);
+            anim = pGFXManager->getAnimation(getRandomBool() ? Anim_Lose1 : Anim_Lose2);
             text = pTextManager->getBriefingText(missionnumber,MISSION_LOSE,house);
         } break;
         default:

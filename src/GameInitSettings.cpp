@@ -21,17 +21,18 @@
 #include <misc/IMemoryStream.h>
 #include <misc/string_util.h>
 #include <misc/exceptions.h>
+#include <mmath.h>
 
 #include <globals.h>
 
 GameInitSettings::GameInitSettings() {
-    randomSeed = rand();
+    randomSeed = getRandomInt();
 }
 
 GameInitSettings::GameInitSettings(HOUSETYPE newHouseID, const SettingsClass::GameOptionsClass& gameOptions)
  : gameType(GameType::Campaign), houseID(newHouseID), mission(1), alreadyShownTutorialHints(0), gameOptions(gameOptions) {
     filename = getScenarioFilename(houseID, mission);
-    randomSeed = rand();
+    randomSeed = getRandomInt();
 }
 
 GameInitSettings::GameInitSettings(const GameInitSettings& prevGameInitInfoClass, int nextMission, Uint32 alreadyPlayedRegions, Uint32 alreadyShownTutorialHints) {
@@ -40,23 +41,23 @@ GameInitSettings::GameInitSettings(const GameInitSettings& prevGameInitInfoClass
     this->alreadyPlayedRegions = alreadyPlayedRegions;
     this->alreadyShownTutorialHints = alreadyShownTutorialHints;
     filename = getScenarioFilename(houseID, mission);
-    randomSeed = rand();
+    randomSeed = getRandomInt();
 }
 
 GameInitSettings::GameInitSettings(HOUSETYPE newHouseID, int newMission, const SettingsClass::GameOptionsClass& gameOptions)
  : gameType(GameType::Skirmish), houseID(newHouseID), mission(newMission), gameOptions(gameOptions) {
     filename = getScenarioFilename(houseID, mission);
-    randomSeed = rand();
+    randomSeed = getRandomInt();
 }
 
 GameInitSettings::GameInitSettings(const std::string& mapfile, const std::string& filedata, bool multiplePlayersPerHouse, const SettingsClass::GameOptionsClass& gameOptions)
  : gameType(GameType::CustomGame), filename(mapfile), filedata(filedata), multiplePlayersPerHouse(multiplePlayersPerHouse), gameOptions(gameOptions) {
-    randomSeed = rand();
+    randomSeed = getRandomInt();
 }
 
 GameInitSettings::GameInitSettings(const std::string& mapfile, const std::string& filedata, const std::string& serverName, bool multiplePlayersPerHouse, const SettingsClass::GameOptionsClass& gameOptions)
  : gameType(GameType::CustomMultiplayer), filename(mapfile), filedata(filedata), servername(serverName), multiplePlayersPerHouse(multiplePlayersPerHouse), gameOptions(gameOptions) {
-    randomSeed = rand();
+    randomSeed = getRandomInt();
 }
 
 GameInitSettings::GameInitSettings(const std::string& savegame)

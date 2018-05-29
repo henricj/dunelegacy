@@ -26,10 +26,16 @@ class Coord;
 #include <cmath>
 #include <algorithm>
 
-inline int getRandomInt(int min, int max)
-{
+int getRandomInt();
+
+inline bool getRandomBool() {
+    return getRandomInt() % 2;
+}
+
+
+inline int getRandomInt(int min, int max) {
     max++;
-    return ((rand() % (max-min)) + min);
+    return ((getRandomInt() % (max-min)) + min);
 }
 
 /**

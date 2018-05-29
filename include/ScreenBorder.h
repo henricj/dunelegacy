@@ -352,8 +352,8 @@ public:
         if(numShakingCycles > 0) {
             int offsetMax = std::min(TILESIZE-1,numShakingCycles);
 
-            shakingOffset.x = (rand() % offsetMax) - offsetMax/2;
-            shakingOffset.y = (rand() % offsetMax) - offsetMax/2;
+            shakingOffset.x = getRandomInt(-offsetMax/2, offsetMax/2);
+            shakingOffset.y = getRandomInt(-offsetMax/2, offsetMax/2);
 
             numShakingCycles--;
         }

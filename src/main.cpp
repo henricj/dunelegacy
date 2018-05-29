@@ -476,6 +476,7 @@ int main(int argc, char *argv[]) {
         int currentDisplayIndex = SCREEN_DEFAULT_DISPLAYINDEX;
 
         do {
+            // we do not use rand() but maybe some library does; thus we shall initialize it
             unsigned int seed = (unsigned int) time(nullptr);
             srand(seed);
 
