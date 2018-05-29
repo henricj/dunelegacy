@@ -354,7 +354,7 @@ void Wsafile::readdata(int numFiles, va_list args) {
     pFiledata[0].reset();
 
     if (numFiles > 1) {
-        auto nextFreeFrame = &decodedFrames[(numberOfFrames[0] * sizeX * sizeY)];
+        auto nextFreeFrame = &decodedFrames[(numberOfFrames[0] * static_cast<size_t>(sizeX) * static_cast<size_t>(sizeY))];
 
         for (int i = 1; i < numFiles; i++) {
             if (extended[i]) {

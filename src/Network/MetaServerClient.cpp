@@ -223,218 +223,222 @@ int MetaServerClient::connectionThreadMain(void* data) {
     MetaServerClient* pMetaServerClient = static_cast<MetaServerClient*>(data);
 
     while(true) {
-        std::unique_ptr<MetaServerCommand> nextMetaServerCommand = pMetaServerClient->dequeueMetaServerCommand();
+        try {
+            std::unique_ptr<MetaServerCommand> nextMetaServerCommand = pMetaServerClient->dequeueMetaServerCommand();
 
-        switch(nextMetaServerCommand->type) {
+            switch(nextMetaServerCommand->type) {
 
-            case METASERVERCOMMAND_ADD: {
+                case METASERVERCOMMAND_ADD: {
 
-                MetaServerAdd* pMetaServerAdd = dynamic_cast<MetaServerAdd*>(nextMetaServerCommand.get());
-                if(!pMetaServerAdd) {
-                    break;
-                }
-
-                std::map<std::string, std::string> parameters;
-
-                parameters["command"] = "add";
-                parameters["port"] = stringify<int>(pMetaServerAdd->serverPort);
-                parameters["secret"] = pMetaServerAdd->secret;
-                parameters["gamename"] = pMetaServerAdd->serverName;
-                parameters["gameversion"] = VERSION;
-                parameters["mapname"] = pMetaServerAdd->mapName;
-                parameters["numplayers"] = stringify<int>(pMetaServerAdd->numPlayers);
-                parameters["maxplayers"] = stringify<int>(pMetaServerAdd->maxPlayers);
-                parameters["pwdprotected"] = "false";
-
-                std::string result;
-
-                try {
-                    result = loadFromHttp(pMetaServerClient->metaServerURL, parameters);
-                } catch(std::exception& e) {
-                    pMetaServerClient->setErrorMessage(METASERVERCOMMAND_ADD, e.what());
-                    break;
-                }
-
-                if(result.substr(0,2) != "OK") {
-                    const std::string errorMsg = result.substr(result.find_first_not_of("\x0D\x0A",5), std::string::npos);
-
-                    pMetaServerClient->setErrorMessage(METASERVERCOMMAND_ADD, errorMsg);
-                }
-
-
-            } break;
-
-            case METASERVERCOMMAND_UPDATE: {
-                MetaServerUpdate* pMetaServerUpdate = dynamic_cast<MetaServerUpdate*>(nextMetaServerCommand.get());
-                if(!pMetaServerUpdate) {
-                    break;
-                }
-
-                std::map<std::string, std::string> parameters;
-
-                parameters["command"] = "update";
-                parameters["port"] = stringify<int>(pMetaServerUpdate->serverPort);
-                parameters["secret"] = pMetaServerUpdate->secret;
-                parameters["numplayers"] = stringify<int>(pMetaServerUpdate->numPlayers);
-
-                std::string result1;
-
-                try {
-                    result1 = loadFromHttp(pMetaServerClient->metaServerURL, parameters);
-                } catch(std::exception& e) {
-                    pMetaServerClient->setErrorMessage(METASERVERCOMMAND_UPDATE, e.what());
-                    break;
-                }
-
-
-                if(result1.substr(0,2) != "OK") {
-                    // try adding the game again
-
-                    parameters["command"] = "add";
-                    parameters["gamename"] = pMetaServerUpdate->serverName;
-                    parameters["gameversion"] = VERSION;
-                    parameters["mapname"] = pMetaServerUpdate->mapName;
-                    parameters["maxplayers"] = stringify<int>(pMetaServerUpdate->maxPlayers);
-                    parameters["pwdprotected"] = "false";
-
-                    std::string result2;
-
-                    try {
-                        result2 = loadFromHttp(pMetaServerClient->metaServerURL, parameters);
-                    } catch(std::exception&) {
-                        // adding the game again did not work => report updating error
-
-                        const std::string errorMsg = result1.substr(result1.find_first_not_of("\x0D\x0A",5), std::string::npos);
-
-                        pMetaServerClient->setErrorMessage(METASERVERCOMMAND_UPDATE, errorMsg);
-
+                    MetaServerAdd* pMetaServerAdd = dynamic_cast<MetaServerAdd*>(nextMetaServerCommand.get());
+                    if(!pMetaServerAdd) {
                         break;
                     }
 
-                    if(result2.substr(0,2) != "OK") {
-                        // adding the game again did not work => report updating error
+                    std::map<std::string, std::string> parameters;
 
-                        const std::string errorMsg = result1.substr(result1.find_first_not_of("\x0D\x0A",5), std::string::npos);
+                    parameters["command"] = "add";
+                    parameters["port"] = stringify<int>(pMetaServerAdd->serverPort);
+                    parameters["secret"] = pMetaServerAdd->secret;
+                    parameters["gamename"] = pMetaServerAdd->serverName;
+                    parameters["gameversion"] = VERSION;
+                    parameters["mapname"] = pMetaServerAdd->mapName;
+                    parameters["numplayers"] = stringify<int>(pMetaServerAdd->numPlayers);
+                    parameters["maxplayers"] = stringify<int>(pMetaServerAdd->maxPlayers);
+                    parameters["pwdprotected"] = "false";
 
-                        pMetaServerClient->setErrorMessage(METASERVERCOMMAND_UPDATE, errorMsg);
-                    }
-                }
+                    std::string result;
 
-            } break;
-
-            case METASERVERCOMMAND_REMOVE: {
-                MetaServerRemove* pMetaServerRemove = dynamic_cast<MetaServerRemove*>(nextMetaServerCommand.get());
-                if(!pMetaServerRemove) {
-                    break;
-                }
-
-                std::map<std::string, std::string> parameters;
-
-                parameters["command"] = "remove";
-                parameters["port"] = stringify<int>(pMetaServerRemove->serverPort);
-                parameters["secret"] = pMetaServerRemove->secret;
-
-                try {
-                    loadFromHttp(pMetaServerClient->metaServerURL, parameters);
-                } catch(std::exception& e) {
-                    pMetaServerClient->setErrorMessage(METASERVERCOMMAND_REMOVE, e.what());
-                    break;
-                }
-            } break;
-
-            case METASERVERCOMMAND_LIST: {
-                std::map<std::string, std::string> parameters;
-
-                parameters["command"] = "list";
-                parameters["gameversion"] = VERSION;
-
-                std::string result;
-
-                try {
-                    result = loadFromHttp(pMetaServerClient->metaServerURL, parameters);
-                } catch(std::exception& e) {
-                    pMetaServerClient->setErrorMessage(METASERVERCOMMAND_LIST, e.what());
-                    break;
-                }
-
-                std::istringstream resultstream(result);
-
-                std::string status;
-
-                resultstream >> status;
-
-                if(status == "OK") {
-
-                    // skip all newlines
-                    resultstream >> std::ws;
-
-                    std::list<GameServerInfo> newGameServerInfoList;
-
-                    while(true) {
-
-                        std::string completeLine;
-                        getline(resultstream, completeLine);
-
-                        std::vector<std::string> parts = splitString(completeLine, std::string("\t"));
-
-                        if(parts.size() != 9) {
-                            break;
-                        }
-
-                        GameServerInfo gameServerInfo;
-
-                        enet_address_set_host(&gameServerInfo.serverAddress, parts[0].c_str());
-
-                        int port;
-                        if(!parseString(parts[1], port) || port <= 0 || port > 65535) {
-                            break;
-                        }
-
-                        gameServerInfo.serverAddress.port = static_cast<Uint16>(port);
-
-                        gameServerInfo.serverName = parts[2];
-                        gameServerInfo.serverVersion = parts[3];
-                        gameServerInfo.mapName = parts[4];
-                        if(!parseString(parts[6], gameServerInfo.maxPlayers) || (gameServerInfo.maxPlayers < 1) || (gameServerInfo.maxPlayers > 12)) {
-                            continue;
-                        }
-
-                        if(!parseString(parts[5], gameServerInfo.numPlayers) || (gameServerInfo.numPlayers < 0) || (gameServerInfo.numPlayers > gameServerInfo.maxPlayers)) {
-                            continue;
-                        }
-
-                        gameServerInfo.bPasswordProtected = (parts[7] == "true");
-
-                        if(!parseString(parts[8], gameServerInfo.lastUpdate)) {
-                            continue;
-                        }
-
-                        if(resultstream.good() == false) {
-                            break;
-                        }
-
-                        newGameServerInfoList.push_back(gameServerInfo);
-
+                    try {
+                        result = loadFromHttp(pMetaServerClient->metaServerURL, parameters);
+                    } catch(std::exception& e) {
+                        pMetaServerClient->setErrorMessage(METASERVERCOMMAND_ADD, e.what());
+                        break;
                     }
 
-                    pMetaServerClient->setNewGameServerInfoList(newGameServerInfoList);
+                    if(result.substr(0,2) != "OK") {
+                        const std::string errorMsg = result.substr(result.find_first_not_of("\x0D\x0A",5), std::string::npos);
 
-                } else {
-                    const std::string errorMsg = result.substr(result.find_first_not_of("\x0D\x0A",5), std::string::npos);
+                        pMetaServerClient->setErrorMessage(METASERVERCOMMAND_ADD, errorMsg);
+                    }
 
-                    pMetaServerClient->setErrorMessage(METASERVERCOMMAND_LIST, errorMsg);
-                }
 
-            } break;
+                } break;
 
-            case METASERVERCOMMAND_EXIT: {
-                return 0;
-            } break;
+                case METASERVERCOMMAND_UPDATE: {
+                    MetaServerUpdate* pMetaServerUpdate = dynamic_cast<MetaServerUpdate*>(nextMetaServerCommand.get());
+                    if(!pMetaServerUpdate) {
+                        break;
+                    }
 
-            default: {
-                // ignore
-            } break;
+                    std::map<std::string, std::string> parameters;
 
+                    parameters["command"] = "update";
+                    parameters["port"] = stringify<int>(pMetaServerUpdate->serverPort);
+                    parameters["secret"] = pMetaServerUpdate->secret;
+                    parameters["numplayers"] = stringify<int>(pMetaServerUpdate->numPlayers);
+
+                    std::string result1;
+
+                    try {
+                        result1 = loadFromHttp(pMetaServerClient->metaServerURL, parameters);
+                    } catch(std::exception& e) {
+                        pMetaServerClient->setErrorMessage(METASERVERCOMMAND_UPDATE, e.what());
+                        break;
+                    }
+
+
+                    if(result1.substr(0,2) != "OK") {
+                        // try adding the game again
+
+                        parameters["command"] = "add";
+                        parameters["gamename"] = pMetaServerUpdate->serverName;
+                        parameters["gameversion"] = VERSION;
+                        parameters["mapname"] = pMetaServerUpdate->mapName;
+                        parameters["maxplayers"] = stringify<int>(pMetaServerUpdate->maxPlayers);
+                        parameters["pwdprotected"] = "false";
+
+                        std::string result2;
+
+                        try {
+                            result2 = loadFromHttp(pMetaServerClient->metaServerURL, parameters);
+                        } catch(std::exception&) {
+                            // adding the game again did not work => report updating error
+
+                            const std::string errorMsg = result1.substr(result1.find_first_not_of("\x0D\x0A",5), std::string::npos);
+
+                            pMetaServerClient->setErrorMessage(METASERVERCOMMAND_UPDATE, errorMsg);
+
+                            break;
+                        }
+
+                        if(result2.substr(0,2) != "OK") {
+                            // adding the game again did not work => report updating error
+
+                            const std::string errorMsg = result1.substr(result1.find_first_not_of("\x0D\x0A",5), std::string::npos);
+
+                            pMetaServerClient->setErrorMessage(METASERVERCOMMAND_UPDATE, errorMsg);
+                        }
+                    }
+
+                } break;
+
+                case METASERVERCOMMAND_REMOVE: {
+                    MetaServerRemove* pMetaServerRemove = dynamic_cast<MetaServerRemove*>(nextMetaServerCommand.get());
+                    if(!pMetaServerRemove) {
+                        break;
+                    }
+
+                    std::map<std::string, std::string> parameters;
+
+                    parameters["command"] = "remove";
+                    parameters["port"] = stringify<int>(pMetaServerRemove->serverPort);
+                    parameters["secret"] = pMetaServerRemove->secret;
+
+                    try {
+                        loadFromHttp(pMetaServerClient->metaServerURL, parameters);
+                    } catch(std::exception& e) {
+                        pMetaServerClient->setErrorMessage(METASERVERCOMMAND_REMOVE, e.what());
+                        break;
+                    }
+                } break;
+
+                case METASERVERCOMMAND_LIST: {
+                    std::map<std::string, std::string> parameters;
+
+                    parameters["command"] = "list";
+                    parameters["gameversion"] = VERSION;
+
+                    std::string result;
+
+                    try {
+                        result = loadFromHttp(pMetaServerClient->metaServerURL, parameters);
+                    } catch(std::exception& e) {
+                        pMetaServerClient->setErrorMessage(METASERVERCOMMAND_LIST, e.what());
+                        break;
+                    }
+
+                    std::istringstream resultstream(result);
+
+                    std::string status;
+
+                    resultstream >> status;
+
+                    if(status == "OK") {
+
+                        // skip all newlines
+                        resultstream >> std::ws;
+
+                        std::list<GameServerInfo> newGameServerInfoList;
+
+                        while(true) {
+
+                            std::string completeLine;
+                            getline(resultstream, completeLine);
+
+                            std::vector<std::string> parts = splitString(completeLine, std::string("\t"));
+
+                            if(parts.size() != 9) {
+                                break;
+                            }
+
+                            GameServerInfo gameServerInfo;
+
+                            enet_address_set_host(&gameServerInfo.serverAddress, parts[0].c_str());
+
+                            int port;
+                            if(!parseString(parts[1], port) || port <= 0 || port > 65535) {
+                                break;
+                            }
+
+                            gameServerInfo.serverAddress.port = static_cast<Uint16>(port);
+
+                            gameServerInfo.serverName = parts[2];
+                            gameServerInfo.serverVersion = parts[3];
+                            gameServerInfo.mapName = parts[4];
+                            if(!parseString(parts[6], gameServerInfo.maxPlayers) || (gameServerInfo.maxPlayers < 1) || (gameServerInfo.maxPlayers > 12)) {
+                                continue;
+                            }
+
+                            if(!parseString(parts[5], gameServerInfo.numPlayers) || (gameServerInfo.numPlayers < 0) || (gameServerInfo.numPlayers > gameServerInfo.maxPlayers)) {
+                                continue;
+                            }
+
+                            gameServerInfo.bPasswordProtected = (parts[7] == "true");
+
+                            if(!parseString(parts[8], gameServerInfo.lastUpdate)) {
+                                continue;
+                            }
+
+                            if(resultstream.good() == false) {
+                                break;
+                            }
+
+                            newGameServerInfoList.push_back(gameServerInfo);
+
+                        }
+
+                        pMetaServerClient->setNewGameServerInfoList(newGameServerInfoList);
+
+                    } else {
+                        const std::string errorMsg = result.substr(result.find_first_not_of("\x0D\x0A",5), std::string::npos);
+
+                        pMetaServerClient->setErrorMessage(METASERVERCOMMAND_LIST, errorMsg);
+                    }
+
+                } break;
+
+                case METASERVERCOMMAND_EXIT: {
+                    return 0;
+                } break;
+
+                default: {
+                    // ignore
+                } break;
+
+            }
+        } catch(std::exception& e) {
+            SDL_Log("MetaServerClient::connectionThreadMain(): %s", e.what());
         }
     }
 }

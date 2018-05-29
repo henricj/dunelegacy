@@ -720,7 +720,7 @@ int main(int argc, char *argv[]) {
             THROW(std::runtime_error, "Cannot uninitialize fnkdat!");
         }
     } catch(const std::exception& e) {
-        std::string message = fmt::sprintf("An unhandled exception of type '%s' was thrown:\n\n%s\n\nDune Legacy will now be terminated!", demangleSymbol(typeid(e).name()), e.what());
+        std::string message = std::string("An unhandled exception of type \'") + demangleSymbol(typeid(e).name()) + std::string("\' was thrown:\n\n") + e.what() + std::string("\n\nDune Legacy will now be terminated!");
         SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Dune Legacy: Unrecoverable error", message.c_str(), nullptr);
 
         return EXIT_FAILURE;

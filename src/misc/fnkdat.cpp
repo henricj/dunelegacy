@@ -411,8 +411,17 @@ static int fnkdat_mkdirs(_TCHAR* buffer, int rlevel);
 int fnkdat(const char* target, char* buffer, int len, int flags) {
    int total, rawflags;
 
-   if (buffer && len)
-      buffer[0] = '\0';
+   /* nothing to do */
+   if (flags == FNKDAT_INIT
+       || flags == FNKDAT_UNINIT) {
+      return 0;
+   }
+
+   if(!buffer || len <= 0) {
+      return -1;
+   }
+
+   buffer[0] = '\0';
 
    /* save room for the null term char
     */
@@ -424,12 +433,6 @@ int fnkdat(const char* target, char* buffer, int len, int flags) {
    /* when we've got an absolute path we simply return it */
    if (target && target[0] == '/') {
       strncpy(buffer, target, len);
-      return 0;
-   }
-
-   /* nothing to do */
-   if (flags == FNKDAT_INIT
-       || flags == FNKDAT_UNINIT) {
       return 0;
    }
 
@@ -548,7 +551,8 @@ static int fnkdat_mkdirs(_TCHAR* buffer, int rlevel) {
          if (fnkdat_mkdirs(buffer, rlevel) < 0)
             return -1;
 
-         pos[0] = FNKDAT_FILE_SEPARATOR;
+         if (pos)
+            pos[0] = FNKDAT_FILE_SEPARATOR;
 
          if (_tmkdir(buffer) < 0)
             return -1;

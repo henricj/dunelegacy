@@ -842,93 +842,95 @@ void Tile::triggerSpecialBloom(House* pTrigger) {
     setType(Terrain_Sand);
 
     switch (currentGame->randomGen.rand(0, 3)) {
-    case 0: {
-        // the player gets an randomly choosen amount of credits between 150 and 400
-        pTrigger->addCredits(currentGame->randomGen.rand(150, 400), false);
-    } break;
+        case 0: {
+            // the player gets an randomly choosen amount of credits between 150 and 400
+            pTrigger->addCredits(currentGame->randomGen.rand(150, 400), false);
+        } break;
 
-    case 1: {
-        // The house gets a Trike for free. It spawns beside the special bloom.
-        auto pNewUnit = pTrigger->createUnit(Unit_Trike);
-        if (pNewUnit != nullptr) {
-            const auto spot = currentGameMap->findDeploySpot(pNewUnit, location, currentGame->randomGen);
-            pNewUnit->deploy(spot);
-        }
-    } break;
-
-    case 2: {
-        // One of the AI players on the map (one that has at least one unit) gets a Trike for free. It spawns beside the special bloom.
-        int numCandidates = 0;
-        for (int i = 0; i < NUM_HOUSES; i++) {
-            const auto pHouse = currentGame->getHouse(i);
-            if (pHouse != nullptr && pHouse->getTeam() != pTrigger->getTeam() && pHouse->getNumUnits() > 0) {
-                numCandidates++;
-            }
-        }
-
-        if (numCandidates == 0) {
-            break;
-        }
-
-        int candidate = currentGame->randomGen.rand(0, numCandidates - 1);
-
-        House* pEnemyHouse = nullptr;
-        for (int i = 0; i < NUM_HOUSES; i++) {
-            const auto pHouse = currentGame->getHouse(i);
-            if (pHouse != nullptr && pHouse->getTeam() != pTrigger->getTeam() && pHouse->getNumUnits() > 0) {
-                if (candidate == 0) {
-                    pEnemyHouse = pHouse;
-                    break;
-                }
-                candidate--;
-            }
-        }
-
-        const auto pNewUnit = pEnemyHouse->createUnit(Unit_Trike);
-        if (pNewUnit != nullptr) {
-            const auto spot = currentGameMap->findDeploySpot(pNewUnit, location, currentGame->randomGen);
-            pNewUnit->deploy(spot);
-        }
-
-    } break;
-
-    case 3:
-    default: {
-        // One of the AI players on the map (one that has at least one unit) gets an Infantry unit (3 Soldiers) for free. The spawn beside the special bloom.
-        int numCandidates = 0;
-        for (int i = 0; i < NUM_HOUSES; i++) {
-            const auto pHouse = currentGame->getHouse(i);
-            if (pHouse != nullptr && pHouse->getTeam() != pTrigger->getTeam() && pHouse->getNumUnits() > 0) {
-                numCandidates++;
-            }
-        }
-
-        if (numCandidates == 0) {
-            break;
-        }
-
-        int candidate = currentGame->randomGen.rand(0, numCandidates - 1);
-
-        House* pEnemyHouse = nullptr;
-        for (int i = 0; i < NUM_HOUSES; i++) {
-            const auto pHouse = currentGame->getHouse(i);
-            if (pHouse != nullptr && pHouse->getTeam() != pTrigger->getTeam() && pHouse->getNumUnits() > 0) {
-                if (candidate == 0) {
-                    pEnemyHouse = pHouse;
-                    break;
-                }
-                candidate--;
-            }
-        }
-
-        for (int i = 0; i < 3; i++) {
-            const auto pNewUnit = pEnemyHouse->createUnit(Unit_Soldier);
+        case 1: {
+            // The house gets a Trike for free. It spawns beside the special bloom.
+            auto pNewUnit = pTrigger->createUnit(Unit_Trike);
             if (pNewUnit != nullptr) {
                 const auto spot = currentGameMap->findDeploySpot(pNewUnit, location, currentGame->randomGen);
                 pNewUnit->deploy(spot);
             }
-        }
-    } break;
+        } break;
+
+        case 2: {
+            // One of the AI players on the map (one that has at least one unit) gets a Trike for free. It spawns beside the special bloom.
+            int numCandidates = 0;
+            for (int i = 0; i < NUM_HOUSES; i++) {
+                const auto pHouse = currentGame->getHouse(i);
+                if (pHouse != nullptr && pHouse->getTeam() != pTrigger->getTeam() && pHouse->getNumUnits() > 0) {
+                    numCandidates++;
+                }
+            }
+
+            if (numCandidates == 0) {
+                break;
+            }
+
+            int candidate = currentGame->randomGen.rand(0, numCandidates - 1);
+
+            House* pEnemyHouse = nullptr;
+            for (int i = 0; i < NUM_HOUSES; i++) {
+                const auto pHouse = currentGame->getHouse(i);
+                if (pHouse != nullptr && pHouse->getTeam() != pTrigger->getTeam() && pHouse->getNumUnits() > 0) {
+                    if (candidate == 0) {
+                        pEnemyHouse = pHouse;
+                        break;
+                    }
+                    candidate--;
+                }
+            }
+
+            const auto pNewUnit = pEnemyHouse->createUnit(Unit_Trike);
+            if (pNewUnit != nullptr) {
+                const auto spot = currentGameMap->findDeploySpot(pNewUnit, location, currentGame->randomGen);
+                pNewUnit->deploy(spot);
+            }
+
+        } break;
+
+        case 3:
+        default: {
+            // One of the AI players on the map (one that has at least one unit) gets an Infantry unit (3 Soldiers) for free. The spawn beside the special bloom.
+            int numCandidates = 0;
+            for (int i = 0; i < NUM_HOUSES; i++) {
+                const auto pHouse = currentGame->getHouse(i);
+                if (pHouse != nullptr && pHouse->getTeam() != pTrigger->getTeam() && pHouse->getNumUnits() > 0) {
+                    numCandidates++;
+                }
+            }
+
+            if (numCandidates == 0) {
+                break;
+            }
+
+            int candidate = currentGame->randomGen.rand(0, numCandidates - 1);
+
+            House* pEnemyHouse = nullptr;
+            for (int i = 0; i < NUM_HOUSES; i++) {
+                const auto pHouse = currentGame->getHouse(i);
+                if (pHouse != nullptr && pHouse->getTeam() != pTrigger->getTeam() && pHouse->getNumUnits() > 0) {
+                    if (candidate == 0) {
+                        pEnemyHouse = pHouse;
+                        break;
+                    }
+                    candidate--;
+                }
+            }
+
+            if(pEnemyHouse) {
+                for (int i = 0; i < 3; i++) {
+                    const auto pNewUnit = pEnemyHouse->createUnit(Unit_Soldier);
+                    if (pNewUnit != nullptr) {
+                        const auto spot = currentGameMap->findDeploySpot(pNewUnit, location, currentGame->randomGen);
+                        pNewUnit->deploy(spot);
+                    }
+                }
+            }
+        } break;
     }
 }
 

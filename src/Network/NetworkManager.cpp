@@ -446,6 +446,9 @@ void NetworkManager::handlePacket(ENetPeer* peer, ENetPacketIStream& packetStrea
                     if(awaitingConnectionList.empty() == false) {
                         ENetPeer* pCurrentPeer = awaitingConnectionList.front();
                         PeerData* peerData = static_cast<PeerData*>(pCurrentPeer->data);
+                        if(!peerData) {
+                            break;
+                        }
 
                         if((pCurrentPeer->address.host == address.host) && (pCurrentPeer->address.port == address.port)) {
 
@@ -487,6 +490,9 @@ void NetworkManager::handlePacket(ENetPeer* peer, ENetPacketIStream& packetStrea
 
                         if((pCurrentPeer->address.host == address.host) && (pCurrentPeer->address.port == address.port)) {
                             PeerData* peerData = static_cast<PeerData*>(pCurrentPeer->data);
+                            if(!peerData) {
+                                continue;
+                            }
                             debugNetwork("Moving '%s' from awaiting connection list to peer list\n", peerData->name.c_str());
                             peerList.push_back(pCurrentPeer);
                             peerData->peerState = PeerData::PeerState::Connected;
@@ -501,6 +507,9 @@ void NetworkManager::handlePacket(ENetPeer* peer, ENetPacketIStream& packetStrea
 
             case NETWORKPACKET_SENDGAMEINFO: {
                 PeerData* peerData = static_cast<PeerData*>(connectPeer->data);
+                if(!peerData) {
+                    break;
+                }
 
                 peerList = awaitingConnectionList;
                 peerData->peerState = PeerData::PeerState::Connected;
@@ -517,6 +526,9 @@ void NetworkManager::handlePacket(ENetPeer* peer, ENetPacketIStream& packetStrea
 
             case NETWORKPACKET_SENDNAME: {
                 PeerData* peerData = static_cast<PeerData*>(peer->data);
+                if(!peerData) {
+                    break;
+                }
 
                 std::string newName = packetStream.readString();
                 bool bFoundName = false;
@@ -531,6 +543,9 @@ void NetworkManager::handlePacket(ENetPeer* peer, ENetPacketIStream& packetStrea
                     if(bFoundName == false) {
                         for(ENetPeer* pCurrentPeer : peerList) {
                             PeerData* pCurrentPeerData = static_cast<PeerData*>(pCurrentPeer->data);
+                            if(!pCurrentPeerData) {
+                                continue;
+                            }
                             if(pCurrentPeerData->name == newName) {
                                 enet_peer_disconnect_later(peer, NETWORKDISCONNECT_PLAYER_EXISTS);
                                 bFoundName = true;
@@ -542,7 +557,7 @@ void NetworkManager::handlePacket(ENetPeer* peer, ENetPacketIStream& packetStrea
                     if(bFoundName == false) {
                         for(ENetPeer* pAwaitingConnectionPeer : awaitingConnectionList) {
                             PeerData* pAwaitingConnectionPeerData = static_cast<PeerData*>(pAwaitingConnectionPeer->data);
-                            if(pAwaitingConnectionPeerData->name == newName) {
+                            if(pAwaitingConnectionPeerData && (pAwaitingConnectionPeerData->name == newName)) {
                                 enet_peer_disconnect_later(peer, NETWORKDISCONNECT_PLAYER_EXISTS);
                                 bFoundName = true;
                                 break;
@@ -562,6 +577,9 @@ void NetworkManager::handlePacket(ENetPeer* peer, ENetPacketIStream& packetStrea
 
             case NETWORKPACKET_CHATMESSAGE: {
                 PeerData* peerData = static_cast<PeerData*>(peer->data);
+                if(!peerData) {
+                    break;
+                }
 
                 std::string message = packetStream.readString();
                 if(pOnReceiveChatMessage) {
@@ -587,6 +605,9 @@ void NetworkManager::handlePacket(ENetPeer* peer, ENetPacketIStream& packetStrea
 
             case NETWORKPACKET_COMMANDLIST: {
                 PeerData* peerData = static_cast<PeerData*>(peer->data);
+                if(!peerData) {
+                    break;
+                }
 
                 CommandList commandList(packetStream);
 
@@ -597,6 +618,9 @@ void NetworkManager::handlePacket(ENetPeer* peer, ENetPacketIStream& packetStrea
 
             case NETWORKPACKET_SELECTIONLIST: {
                 PeerData* peerData = static_cast<PeerData*>(peer->data);
+                if(!peerData) {
+                    break;
+                }
 
                 int groupListIndex = packetStream.readSint32();
                 std::set<Uint32> selectedList = packetStream.readUint32Set();

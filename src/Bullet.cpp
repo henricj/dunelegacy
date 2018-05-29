@@ -39,12 +39,7 @@ Bullet::Bullet(Uint32 shooterID, Coord* newRealLocation, Coord* newRealDestinati
 
     this->shooterID = shooterID;
 
-    ObjectBase* pShooter = currentGame->getObjectManager().getObject(shooterID);
-    if(pShooter == nullptr) {
-        owner = nullptr;
-    } else {
-        owner = pShooter->getOwner();
-    }
+    this->owner = currentGame->getObjectManager().getObject(shooterID)->getOwner();
 
     this->bulletID = bulletID;
 
@@ -58,7 +53,7 @@ Bullet::Bullet(Uint32 shooterID, Coord* newRealLocation, Coord* newRealDestinati
         int diffX = destination.x - newRealLocation->x;
         int diffY = destination.y - newRealLocation->y;
 
-        int weaponrange = currentGame->objectData.data[Unit_SonicTank][(owner == nullptr) ? HOUSE_ATREIDES : owner->getHouseID()].weaponrange;
+        int weaponrange = currentGame->objectData.data[Unit_SonicTank][owner->getHouseID()].weaponrange;
 
         if((diffX == 0) && (diffY == 0)) {
             diffY = weaponrange*TILESIZE;
@@ -134,7 +129,7 @@ void Bullet::init()
 {
     explodesAtGroundObjects = false;
 
-    int houseID = (owner == nullptr) ? HOUSE_HARKONNEN : owner->getHouseID();
+    int houseID = owner->getHouseID();
 
     switch(bulletID) {
         case Bullet_DRocket: {
@@ -380,7 +375,7 @@ void Bullet::update()
                 return;
             }
 
-            FixPoint weaponDamage = currentGame->objectData.data[Unit_SonicTank][(owner == nullptr) ? HOUSE_ATREIDES : owner->getHouseID()].weapondamage;
+            FixPoint weaponDamage = currentGame->objectData.data[Unit_SonicTank][owner->getHouseID()].weapondamage;
 
             FixPoint startDamage = (weaponDamage / 4 + 1) / 4.5_fix;
             FixPoint endDamage = ((weaponDamage-9) / 4 + 1) / 4.5_fix;
@@ -427,7 +422,7 @@ void Bullet::destroy()
 {
     Coord position = Coord(lround(realX), lround(realY));
 
-    int houseID = (owner == nullptr) ? HOUSE_HARKONNEN : owner->getHouseID();
+    int houseID = owner->getHouseID();
 
     switch(bulletID) {
         case Bullet_DRocket: {

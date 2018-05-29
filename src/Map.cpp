@@ -68,7 +68,7 @@ void Map::save(OutputStream& stream) const {
 void Map::init_tile_location() {
     for (auto i = 0; i < sizeX; ++i) {
         for (auto j = 0; j < sizeY; ++j) {
-            getTile_internal(i, j)->location = Coord(i, j);
+            tiles[tile_index(i, j)].location = Coord(i, j);
         }
     }
 }

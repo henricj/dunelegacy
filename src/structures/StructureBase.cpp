@@ -72,15 +72,19 @@ void StructureBase::init() {
 }
 
 StructureBase::~StructureBase() {
-    currentGameMap->removeObjectFromMap(getObjectID()); //no map point will reference now
-    currentGame->getObjectManager().removeObject(getObjectID());
-    structureList.remove(this);
-    owner->decrementStructures(itemID, location);
+    try {
+        currentGameMap->removeObjectFromMap(getObjectID()); //no map point will reference now
+        currentGame->getObjectManager().removeObject(getObjectID());
+        structureList.remove(this);
+        owner->decrementStructures(itemID, location);
 
-    removeFromSelectionLists();
+        removeFromSelectionLists();
 
-    for(int i=0; i < NUMSELECTEDLISTS; i++) {
-        pLocalPlayer->getGroupList(i).erase(getObjectID());
+        for(int i=0; i < NUMSELECTEDLISTS; i++) {
+            pLocalPlayer->getGroupList(i).erase(getObjectID());
+        }
+    } catch(std::exception& e) {
+        SDL_Log("StructureBase::~StructureBase(): %s", e.what());
     }
 }
 

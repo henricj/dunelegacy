@@ -65,7 +65,7 @@ struct midi_event
 
     midi_event  *next;
 
-    midi_event() : len(0), buffer(nullptr), next(nullptr)
+    midi_event() : time(0), status(0), len(0), buffer(nullptr), next(nullptr)
     {
     }
 
