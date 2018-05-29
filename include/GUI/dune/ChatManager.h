@@ -63,22 +63,22 @@ private:
 
     struct ChatMessage {
 
-        ChatMessage(sdl2::texture_ptr _pMessageTexture, Uint32 _messageTime, MessageType _messageType)
+        ChatMessage(sdl2::texture_unique_or_nonowning_ptr _pMessageTexture, Uint32 _messageTime, MessageType _messageType)
          : pMessageTexture(std::move(_pMessageTexture)), messageTime(_messageTime), messageType(_messageType) {
         }
 
-        ChatMessage(sdl2::texture_ptr _pTimeTexture, sdl2::texture_ptr _pUsernameTexture,
-                    sdl2::texture_ptr _pMessageTexture, Uint32 _messageTime, MessageType _messageType)
+        ChatMessage(sdl2::texture_unique_or_nonowning_ptr _pTimeTexture, sdl2::texture_unique_or_nonowning_ptr _pUsernameTexture,
+                    sdl2::texture_unique_or_nonowning_ptr _pMessageTexture, Uint32 _messageTime, MessageType _messageType)
          : pTimeTexture(std::move(_pTimeTexture)), pUsernameOrPictureTexture(std::move(_pUsernameTexture)), pMessageTexture(std::move(_pMessageTexture)), messageTime(_messageTime), messageType(_messageType) {
         }
 
-        ChatMessage(sdl2::texture_ptr _pMessageTexture, sdl2::texture_ptr _pPictureTexture, Uint32 _messageTime, MessageType _messageType)
+        ChatMessage(sdl2::texture_unique_or_nonowning_ptr _pMessageTexture, sdl2::texture_unique_or_nonowning_ptr _pPictureTexture, Uint32 _messageTime, MessageType _messageType)
          : pUsernameOrPictureTexture(std::move(_pPictureTexture)), pMessageTexture(std::move(_pMessageTexture)), messageTime(_messageTime), messageType(_messageType) {
         }
 
-        sdl2::texture_ptr    pTimeTexture;
-        sdl2::texture_ptr    pUsernameOrPictureTexture;
-        sdl2::texture_ptr    pMessageTexture;
+        sdl2::texture_unique_or_nonowning_ptr    pTimeTexture;
+        sdl2::texture_unique_or_nonowning_ptr    pUsernameOrPictureTexture;
+        sdl2::texture_unique_or_nonowning_ptr    pMessageTexture;
 
         Uint32      messageTime;
         MessageType messageType;
