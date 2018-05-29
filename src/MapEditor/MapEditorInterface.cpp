@@ -666,7 +666,7 @@ MapEditorInterface::MapEditorInterface(MapEditor* pMapEditor)
     structureDetailsHBox.addWidget(&structureDetailsHealthLabel, 0.1);
 
     for(int i=1;i<=256;i++) {
-        structureDetailsHealthDropDownBox.addEntry(stringify((i*100)/256) + "% (" + stringify(i) + "/256)", i);
+        structureDetailsHealthDropDownBox.addEntry(std::to_string((i*100)/256) + "% (" + std::to_string(i) + "/256)", i);
     }
 
     structureDetailsHealthDropDownBox.setOnSelectionChange(std::bind(&MapEditorInterface::onStructureHealthDropDown, this, std::placeholders::_1));
@@ -681,7 +681,7 @@ MapEditorInterface::MapEditorInterface(MapEditor* pMapEditor)
     unitDetailsHBox.addWidget(&unitDetailsHealthLabel, 0.1);
 
     for(int i=1;i<=256;i++) {
-        unitDetailsHealthDropDownBox.addEntry(stringify((i*100)/256) + "% (" + stringify(i) + "/256)", i);
+        unitDetailsHealthDropDownBox.addEntry(std::to_string((i*100)/256) + "% (" + std::to_string(i) + "/256)", i);
     }
 
     unitDetailsHealthDropDownBox.setOnSelectionChange(std::bind(&MapEditorInterface::onUnitHealthDropDown, this, std::placeholders::_1));
@@ -742,7 +742,7 @@ void MapEditorInterface::onHouseChanges() {
     int currentIndex = 0;
     int currentPlayerNum = 1;
     for(const MapEditor::Player& player : pMapEditor->getPlayers()) {
-        std::string entryName = player.bActive ? (player.bAnyHouse ? (_("Player") + " " + stringify(currentPlayerNum++)) : player.name) : ("(" + player.name + ")");
+        std::string entryName = player.bActive ? (player.bAnyHouse ? (_("Player") + " " + std::to_string(currentPlayerNum++)) : player.name) : ("(" + player.name + ")");
 
         houseDropDownBox.addEntry(entryName, player.house);
 

@@ -45,15 +45,6 @@ std::string replaceAll(const std::string& str, const std::map<std::string, std::
 
 
 template<typename T>
-inline std::string stringify(T x)
-{
-    std::ostringstream os;
-    if (!(os << x))
-        THROW(std::runtime_error, "stringify() failed!");
-    return os.str();
-}
-
-template<typename T>
 inline bool parseString(const std::string& str, T& t) {
     std::istringstream is(str);
     is >> t;

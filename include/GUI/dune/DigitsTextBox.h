@@ -91,7 +91,7 @@ public:
             setValue(maxValue, false);
         }
 
-        textBox.setMaximumTextLength(stringify(maxValue).length() + (((minValue < 0) && (maxValue >= 0)) ? 1 : 0));
+        textBox.setMaximumTextLength(std::to_string(maxValue).length() + (((minValue < 0) && (maxValue >= 0)) ? 1 : 0));
 
         resizeAll();
     }
@@ -172,7 +172,7 @@ public:
 
 protected:
     void setValue(int newValue, bool bInteractive) {
-        textBox.setText(stringify(newValue));
+        textBox.setText(std::to_string(newValue));
         if(bInteractive && pOnValueChange) {
             pOnValueChange(true);
         }

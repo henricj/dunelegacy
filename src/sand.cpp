@@ -131,7 +131,7 @@ SDL_Texture* resolveItemPicture(int itemID, HOUSETYPE house) {
         } break;
 
         default:
-            THROW(std::invalid_argument, "resolveItemPicture(): Invalid item ID " + stringify(itemID) + "!");
+            THROW(std::invalid_argument, "resolveItemPicture(): Invalid item ID " + std::to_string(itemID) + "!");
         break;
     }
 

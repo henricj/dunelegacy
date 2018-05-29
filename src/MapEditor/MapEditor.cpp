@@ -108,7 +108,7 @@ std::string MapEditor::generateMapname() const {
                                         return player.bActive;
                                     });
 
-    return stringify(numPlayers) + "P - " + stringify(map.getSizeX()) + "x" + stringify(map.getSizeY()) + " - " + _("New Map");
+    return std::to_string(numPlayers) + "P - " + std::to_string(map.getSizeX()) + "x" + std::to_string(map.getSizeY()) + " - " + _("New Map");
 }
 
 void MapEditor::setMirrorMode(MirrorMode newMirrorMode) {
@@ -462,7 +462,7 @@ void MapEditor::saveMap(const std::string& filepath) {
             }
 
             int position = (logicalOffsetY+spiceBlooms[i].y) * logicalSizeX + (logicalOffsetX+spiceBlooms[i].x);
-            strSpiceBloom += stringify(position);
+            strSpiceBloom += std::to_string(position);
         }
 
         if(!strSpiceBloom.empty()) {
@@ -479,7 +479,7 @@ void MapEditor::saveMap(const std::string& filepath) {
             }
 
             int position = (logicalOffsetY+specialBlooms[i].y) * logicalSizeX + (logicalOffsetX+specialBlooms[i].x);
-            strSpecialBloom += stringify(position);
+            strSpecialBloom += std::to_string(position);
         }
 
         if(!strSpecialBloom.empty()) {
@@ -496,7 +496,7 @@ void MapEditor::saveMap(const std::string& filepath) {
             }
 
             int position = (logicalOffsetY+spiceFields[i].y) * logicalSizeX + (logicalOffsetX+spiceFields[i].x);
-            strFieldBloom += stringify(position);
+            strFieldBloom += std::to_string(position);
         }
 
         if(!strFieldBloom.empty()) {
@@ -572,7 +572,7 @@ void MapEditor::saveMap(const std::string& filepath) {
 
 
     for(int i=1;i<=NUM_HOUSES;i++) {
-        loadedINIFile->removeSection("player" + stringify(i));
+        loadedINIFile->removeSection("player" + std::to_string(i));
     }
 
     std::string house2housename[NUM_HOUSES];
@@ -580,7 +580,7 @@ void MapEditor::saveMap(const std::string& filepath) {
     int i = 0;
     for(const Player& player : players) {
         if(player.bAnyHouse) {
-            house2housename[i] =  "Player" + stringify(currentAnyHouseNumber);
+            house2housename[i] =  "Player" + std::to_string(currentAnyHouseNumber);
         } else {
             house2housename[i] =  player.name;
         }
@@ -619,7 +619,7 @@ void MapEditor::saveMap(const std::string& filepath) {
 
     // remove players that are leftovers
     for(int i=currentAnyHouseNumber;i<NUM_HOUSES;i++) {
-        loadedINIFile->removeSection("Player" + stringify(i));
+        loadedINIFile->removeSection("Player" + std::to_string(i));
     }
 
 
@@ -648,8 +648,8 @@ void MapEditor::saveMap(const std::string& filepath) {
         // we start at 0 for version 1 maps if we have 16 entries to not overflow the table
         int currentIndex = ((getMapVersion() < 2) && (teams.size() >= 16)) ? 0 : 1;
         for(const TeamInfo& teamInfo : teams) {
-            std::string value = house2housename[teamInfo.houseID] + "," + getTeamBehaviorNameByID(teamInfo.teamBehavior) + "," + getTeamTypeNameByID(teamInfo.teamType) + "," + stringify(teamInfo.minUnits) + "," + stringify(teamInfo.maxUnits);
-            loadedINIFile->setStringValue("TEAMS", stringify(currentIndex), value, false);
+            std::string value = house2housename[teamInfo.houseID] + "," + getTeamBehaviorNameByID(teamInfo.teamBehavior) + "," + getTeamTypeNameByID(teamInfo.teamType) + "," + std::to_string(teamInfo.minUnits) + "," + std::to_string(teamInfo.maxUnits);
+            loadedINIFile->setStringValue("TEAMS", std::to_string(currentIndex), value, false);
             currentIndex++;
         }
     }
@@ -665,8 +665,8 @@ void MapEditor::saveMap(const std::string& filepath) {
 
         angle = (((NUM_ANGLES - angle) + 2) % NUM_ANGLES) * 32;
 
-        std::string unitValue = house2housename[unit.house] + "," + getItemNameByID(unit.itemID) + "," + stringify(unit.health)
-                                + "," + stringify(position) + "," + stringify(angle) + "," + getAttackModeNameByMode(unit.attackmode);
+        std::string unitValue = house2housename[unit.house] + "," + getItemNameByID(unit.itemID) + "," + std::to_string(unit.health)
+                                + "," + std::to_string(position) + "," + std::to_string(angle) + "," + getAttackModeNameByMode(unit.attackmode);
 
         loadedINIFile->setStringValue("UNITS", unitKey, unitValue, false);
     }
@@ -686,7 +686,7 @@ void MapEditor::saveMap(const std::string& filepath) {
 
             std::string structureKey = fmt::sprintf("ID%.3d", structure.id);
 
-            std::string structureValue = house2housename[structure.house] + "," + getItemNameByID(structure.itemID) + "," + stringify(structure.health) + "," + stringify(position);
+            std::string structureValue = house2housename[structure.house] + "," + getItemNameByID(structure.itemID) + "," + std::to_string(structure.health) + "," + std::to_string(position);
 
             loadedINIFile->setStringValue("STRUCTURES", structureKey, structureValue, false);
         }
@@ -700,11 +700,11 @@ void MapEditor::saveMap(const std::string& filepath) {
         // we start at 0 for version 1 maps if we have 16 entries to not overflow the table
         int currentIndex = ((getMapVersion() < 2) && (reinforcements.size() >= 16)) ? 0 : 1;
         for(const ReinforcementInfo& reinforcement : reinforcements) {
-            std::string value = house2housename[reinforcement.houseID] + "," + getItemNameByID(reinforcement.unitID) + "," + getDropLocationNameByID(reinforcement.dropLocation) + "," + stringify(reinforcement.droptime);
+            std::string value = house2housename[reinforcement.houseID] + "," + getItemNameByID(reinforcement.unitID) + "," + getDropLocationNameByID(reinforcement.dropLocation) + "," + std::to_string(reinforcement.droptime);
             if(reinforcement.bRepeat) {
                 value += ",+";
             }
-            loadedINIFile->setStringValue("REINFORCEMENTS", stringify(currentIndex), value, false);
+            loadedINIFile->setStringValue("REINFORCEMENTS", std::to_string(currentIndex), value, false);
             currentIndex++;
         }
     }

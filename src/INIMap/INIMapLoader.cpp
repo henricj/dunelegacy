@@ -109,7 +109,7 @@ void INIMapLoader::loadMap() {
             } break;
 
             default: {
-                 logError(inifile->getKey("BASIC", "MapScale")->getLineNumber(), "Unknown MapScale '" + stringify(mapscale) + "'!");
+                 logError(inifile->getKey("BASIC", "MapScale")->getLineNumber(), "Unknown MapScale '" + std::to_string(mapscale) + "'!");
             } break;
         }
 
@@ -154,7 +154,7 @@ void INIMapLoader::loadMap() {
                         break;
 
                     default:
-                        logWarning(inifile->getKey("MAP", "Seed")->getLineNumber(), "Unknown map type '" + stringify(seedmaptype) + "' for tile (" + stringify(i) + ", " + stringify(j) + ")!");
+                        logWarning(inifile->getKey("MAP", "Seed")->getLineNumber(), "Unknown map type '" + std::to_string(seedmaptype) + "' for tile (" + std::to_string(i) + ", " + std::to_string(j) + ")!");
                         type = Terrain_Sand;
                         break;
                 }
@@ -240,11 +240,11 @@ void INIMapLoader::loadMap() {
         sizeY = inifile->getIntValue("MAP","SizeY", 0);
 
         if(sizeX <= 0) {
-            logError(inifile->getKey("MAP", "SizeX")->getLineNumber(), "Invalid map size: " + stringify(sizeX) + "x" + stringify(sizeY) + "!");
+            logError(inifile->getKey("MAP", "SizeX")->getLineNumber(), "Invalid map size: " + std::to_string(sizeX) + "x" + std::to_string(sizeY) + "!");
         }
 
         if(sizeY <= 0) {
-            logError(inifile->getKey("MAP", "SizeY")->getLineNumber(), "Invalid map size: " + stringify(sizeX) + "x" + stringify(sizeY) + "!");
+            logError(inifile->getKey("MAP", "SizeY")->getLineNumber(), "Invalid map size: " + std::to_string(sizeX) + "x" + std::to_string(sizeY) + "!");
         }
 
         logicalSizeX = sizeX;
@@ -258,7 +258,7 @@ void INIMapLoader::loadMap() {
             std::string rowKey = fmt::sprintf("%.3d", y);
 
             if(inifile->hasKey("MAP", rowKey) == false) {
-                logWarning(inifile->getSection("MAP").getLineNumber(), "Map row " + stringify(y) + " does not exist!");
+                logWarning(inifile->getSection("MAP").getLineNumber(), "Map row " + std::to_string(y) + " does not exist!");
                 continue;
             }
 
@@ -267,9 +267,9 @@ void INIMapLoader::loadMap() {
             int rowLength = rowString.size();
 
             if(rowLength < sizeX) {
-                logWarning(inifile->getKey("MAP", rowKey)->getLineNumber(), "Map row " + stringify(y) + " is not long enough!");
+                logWarning(inifile->getKey("MAP", rowKey)->getLineNumber(), "Map row " + std::to_string(y) + " is not long enough!");
             } else if(rowLength > sizeX) {
-                logWarning(inifile->getKey("MAP", rowKey)->getLineNumber(), "Map row " + stringify(y) + " is too long!");
+                logWarning(inifile->getKey("MAP", rowKey)->getLineNumber(), "Map row " + std::to_string(y) + " is too long!");
                 rowLength = sizeX;
             }
 
@@ -318,7 +318,7 @@ void INIMapLoader::loadMap() {
                     } break;
 
                     default: {
-                        logWarning(inifile->getKey("MAP", rowKey)->getLineNumber(), std::string("Unknown map tile type '") + rowString.at(x) + "' in map tile (" + stringify(x) + ", " + stringify(y) + ")!");
+                        logWarning(inifile->getKey("MAP", rowKey)->getLineNumber(), std::string("Unknown map tile type '") + rowString.at(x) + "' in map tile (" + std::to_string(x) + ", " + std::to_string(y) + ")!");
                         type = Terrain_Sand;
                     } break;
                 }
@@ -343,7 +343,7 @@ void INIMapLoader::loadHouses()
     // find "player?" sections
     std::vector<std::string> playerSectionsOnMap;
     for(int i=1;i<=NUM_HOUSES;i++) {
-        std::string sectionname = "player" + stringify(i);
+        std::string sectionname = "player" + std::to_string(i);
         if(inifile->hasSection(sectionname)) {
             playerSectionsOnMap.push_back(sectionname);
         }
@@ -608,7 +608,7 @@ void INIMapLoader::loadUnits()
             for(int i = 0; i < Num2Place; i++) {
                 UnitBase* newUnit = getOrCreateHouse(houseID)->placeUnit(itemID, getXPos(pos), getYPos(pos));
                 if(newUnit == nullptr) {
-                    logWarning(key.getLineNumber(), "Invalid or occupied position for '" + UnitStr + "': '" + stringify(pos) + "'!");
+                    logWarning(key.getLineNumber(), "Invalid or occupied position for '" + UnitStr + "': '" + std::to_string(pos) + "'!");
                     continue;
                 } else {
                     newUnit->setHealth((newUnit->getMaxHealth() * percentHealth));
@@ -829,7 +829,7 @@ void INIMapLoader::loadView()
         Coord tacticalPos(getXPos(tacticalPosInt), getYPos(tacticalPosInt));
 
         if(tacticalPos.x < 0 || tacticalPos.x >= sizeX || tacticalPos.y < 0 || tacticalPos.y >= sizeY) {
-            logWarning(inifile->getKey("BASIC", "TacticalPos")->getLineNumber(), "Invalid TacticalPos: '" + stringify(tacticalPosInt) + "'!");
+            logWarning(inifile->getKey("BASIC", "TacticalPos")->getLineNumber(), "Invalid TacticalPos: '" + std::to_string(tacticalPosInt) + "'!");
             pGame->setupView();
         } else {
             screenborder->setNewScreenCenter(tacticalPos*TILESIZE);

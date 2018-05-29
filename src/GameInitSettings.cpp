@@ -142,11 +142,11 @@ void GameInitSettings::save(OutputStream& stream) const {
 
 std::string GameInitSettings::getScenarioFilename(HOUSETYPE newHouse, int mission) {
     if( (newHouse < 0) || (newHouse >= NUM_HOUSES)) {
-        THROW(std::invalid_argument, "GameInitSettings::getScenarioFilename(): Invalid house id " + stringify(newHouse) + ".");
+        THROW(std::invalid_argument, "GameInitSettings::getScenarioFilename(): Invalid house id " + std::to_string(newHouse) + ".");
     }
 
     if( (mission < 0) || (mission > 22)) {
-        THROW(std::invalid_argument, "GameInitSettings::getScenarioFilename(): There is no mission number " + stringify(mission) + ".");
+        THROW(std::invalid_argument, "GameInitSettings::getScenarioFilename(): There is no mission number " + std::to_string(mission) + ".");
     }
 
     std::string name = "SCEN?0??.INI";

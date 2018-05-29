@@ -136,7 +136,7 @@ bool MenuBase::doInput(SDL_Event &event) {
                     std::string screenshotFilename;
                     int i = 1;
                     do {
-                        screenshotFilename = "Screenshot" + stringify(i) + ".png";
+                        screenshotFilename = "Screenshot" + std::to_string(i) + ".png";
                         i++;
                     } while(existsFile(screenshotFilename) == true);
 

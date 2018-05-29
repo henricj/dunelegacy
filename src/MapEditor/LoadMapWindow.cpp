@@ -299,7 +299,7 @@ void LoadMapWindow::onMapListSelectionChange(bool bInteractive)
         sizeY = inimap.getIntValue("MAP","SizeY", 0);
     }
 
-    mapPropertySize.setText(stringify(sizeX) + " x " + stringify(sizeY));
+    mapPropertySize.setText(std::to_string(sizeX) + " x " + std::to_string(sizeY));
 
     sdl2::surface_ptr pMapSurface;
     try {
@@ -325,7 +325,7 @@ void LoadMapWindow::onMapListSelectionChange(bool bInteractive)
     if(inimap.hasSection("Player5")) numPlayers++;
     if(inimap.hasSection("Player6")) numPlayers++;
 
-    mapPropertyPlayers.setText(stringify(numPlayers));
+    mapPropertyPlayers.setText(std::to_string(numPlayers));
 
 
 

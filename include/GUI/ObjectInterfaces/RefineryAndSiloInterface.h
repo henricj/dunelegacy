@@ -67,8 +67,8 @@ protected:
 
         House* pOwner = pObject->getOwner();
 
-        capacityLabel.setText(" " + _("Capacity") + ": " + stringify(pOwner->getCapacity()));
-        storedCreditsLabel.setText(" " + _("Stored") + ": " + stringify(lround(pOwner->getStoredCredits())));
+        capacityLabel.setText(" " + _("Capacity") + ": " + std::to_string(pOwner->getCapacity()));
+        storedCreditsLabel.setText(" " + _("Stored") + ": " + std::to_string(lround(pOwner->getStoredCredits())));
 
         return DefaultStructureInterface::update();
     }

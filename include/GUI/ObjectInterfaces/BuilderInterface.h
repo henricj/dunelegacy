@@ -107,7 +107,7 @@ protected:
                 int arrivalTimer = pStarport->getArrivalTimer();
                 if(arrivalTimer > 0) {
                     int seconds = ((arrivalTimer*10)/(MILLI2CYCLES(30*1000))) + 1;
-                    starportTimerLabel.setText(stringify<int>(seconds));
+                    starportTimerLabel.setText(std::to_string(seconds));
                 } else {
                     starportTimerLabel.setText("");
                 }

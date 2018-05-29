@@ -67,8 +67,8 @@ protected:
 
         House* pOwner = pObject->getOwner();
 
-        requiredEnergyLabel.setText(" " + _("Required") + ": " + stringify(pOwner->getPowerRequirement()));
-        producedEnergyLabel.setText(" " + _("Produced") + ": " + stringify(pOwner->getProducedPower()));
+        requiredEnergyLabel.setText(" " + _("Required") + ": " + std::to_string(pOwner->getPowerRequirement()));
+        producedEnergyLabel.setText(" " + _("Produced") + ": " + std::to_string(pOwner->getProducedPower()));
 
         return DefaultStructureInterface::update();
     }

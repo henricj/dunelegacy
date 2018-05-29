@@ -337,7 +337,7 @@ std::string ReinforcementsWindow::getDescribingString(const ReinforcementInfo& r
     return getPlayerName((HOUSETYPE) reinforcementInfo.houseID) + ", "
             + resolveItemName(reinforcementInfo.unitID) + ", "
             + resolveDropLocationName(reinforcementInfo.dropLocation) + ", "
-            + stringify(reinforcementInfo.droptime) + " min"
+            + std::to_string(reinforcementInfo.droptime) + " min"
             + (reinforcementInfo.bRepeat ? ", +" : "");
 }
 

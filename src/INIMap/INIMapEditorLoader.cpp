@@ -102,7 +102,7 @@ void INIMapEditorLoader::loadMap() {
             } break;
 
             default: {
-                 logError(inifile->getKey("BASIC", "MapScale")->getLineNumber(), "Unknown MapScale '" + stringify(mapscale) + "'!");
+                 logError(inifile->getKey("BASIC", "MapScale")->getLineNumber(), "Unknown MapScale '" + std::to_string(mapscale) + "'!");
             } break;
         }
 
@@ -197,7 +197,7 @@ void INIMapEditorLoader::loadMap() {
             std::string rowKey = fmt::sprintf("%.3d", y);
 
             if(inifile->hasKey("MAP", rowKey) == false) {
-                logWarning(inifile->getSection("MAP").getLineNumber(), "Map row " + stringify(y) + " does not exist!");
+                logWarning(inifile->getSection("MAP").getLineNumber(), "Map row " + std::to_string(y) + " does not exist!");
                 continue;
             }
 
@@ -206,9 +206,9 @@ void INIMapEditorLoader::loadMap() {
             int rowLength = rowString.size();
 
             if(rowLength < sizeX) {
-                logWarning(inifile->getKey("MAP", rowKey)->getLineNumber(), "Map row " + stringify(y) + " is not long enough!");
+                logWarning(inifile->getKey("MAP", rowKey)->getLineNumber(), "Map row " + std::to_string(y) + " is not long enough!");
             } else if(rowLength > sizeX) {
-                logWarning(inifile->getKey("MAP", rowKey)->getLineNumber(), "Map row " + stringify(y) + " is too long!");
+                logWarning(inifile->getKey("MAP", rowKey)->getLineNumber(), "Map row " + std::to_string(y) + " is too long!");
                 rowLength = sizeX;
             }
 
@@ -257,7 +257,7 @@ void INIMapEditorLoader::loadMap() {
                     } break;
 
                     default: {
-                        logWarning(inifile->getKey("MAP", rowKey)->getLineNumber(), std::string("Unknown map tile type '") + rowString.at(x) + "' in map tile (" + stringify(x) + ", " + stringify(y) + ")!");
+                        logWarning(inifile->getKey("MAP", rowKey)->getLineNumber(), std::string("Unknown map tile type '") + rowString.at(x) + "' in map tile (" + std::to_string(x) + ", " + std::to_string(y) + ")!");
                         type = Terrain_Sand;
                     } break;
                 }
@@ -296,7 +296,7 @@ void INIMapEditorLoader::loadHouses()
     }
 
     for(int i=1;i<=NUM_HOUSES;i++) {
-        std::string sectionname = "player" + stringify(i);
+        std::string sectionname = "player" + std::to_string(i);
         if(inifile->hasSection(sectionname)) {
             for(int houseID = 0; houseID < NUM_HOUSES; houseID++) {
                 MapEditor::Player& player = pMapEditor->getPlayers()[houseID];

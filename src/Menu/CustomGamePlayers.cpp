@@ -229,14 +229,14 @@ CustomGamePlayers::CustomGamePlayers(const GameInitSettings& newGameInitSettings
             if(i < (int) houseInfoListSetup.size()) {
                 GameInitSettings::HouseInfo gisHouseInfo = houseInfoListSetup.at(i);
 
-                curHouseInfo.teamDropDown.addEntry(_("Team") + " " + stringify(gisHouseInfo.team), gisHouseInfo.team);
+                curHouseInfo.teamDropDown.addEntry(_("Team") + " " + std::to_string(gisHouseInfo.team), gisHouseInfo.team);
                 curHouseInfo.teamDropDown.setSelectedItem(0);
             }
             curHouseInfo.teamDropDown.setEnabled(false);
             curHouseInfo.teamDropDown.setOnClickEnabled(false);
         } else {
             for(int team = 0 ; team<numHouses ; team++) {
-                curHouseInfo.teamDropDown.addEntry(_("Team") + " " + stringify(team+1), team+1);
+                curHouseInfo.teamDropDown.addEntry(_("Team") + " " + std::to_string(team+1), team+1);
             }
             curHouseInfo.teamDropDown.setSelectedItem(slotToTeam[i]);
             curHouseInfo.teamDropDown.setEnabled(bServer);
@@ -454,7 +454,7 @@ void CustomGamePlayers::update() {
             Uint32 secondsLeft = ((startGameTime - SDL_GetTicks())/1000) + 1;
             if(lastSecondLeft != secondsLeft) {
                 lastSecondLeft = secondsLeft;
-                addInfoMessage("Starting game in " + stringify(secondsLeft) + "...");
+                addInfoMessage("Starting game in " + std::to_string(secondsLeft) + "...");
             }
         }
     }
@@ -834,7 +834,7 @@ void CustomGamePlayers::extractMapInfo(INIFile* pMap)
         sizeY = pMap->getIntValue("MAP","SizeY", 0);
     }
 
-    mapPropertySize.setText(stringify(sizeX) + " x " + stringify(sizeY));
+    mapPropertySize.setText(std::to_string(sizeX) + " x " + std::to_string(sizeY));
 
     sdl2::surface_ptr pMapSurface = nullptr;
     try {
@@ -863,7 +863,7 @@ void CustomGamePlayers::extractMapInfo(INIFile* pMap)
     if(pMap->hasSection("Player5"))   numHouses++;
     if(pMap->hasSection("Player6"))   numHouses++;
 
-    mapPropertyPlayers.setText(stringify(numHouses));
+    mapPropertyPlayers.setText(std::to_string(numHouses));
 
     std::string authors = pMap->getStringValue("BASIC","Author", "-");
     if(authors.size() > 11) {
@@ -887,7 +887,7 @@ void CustomGamePlayers::extractMapInfo(INIFile* pMap)
     int currentTeam = 0;
     std::vector<std::string> teamNames;
     for(const HOUSETYPE& houseType : boundHousesOnMap) {
-        std::string teamName = strToUpper(pMap->getStringValue(getHouseNameByNumber(houseType),"Brain","Team " + stringify(currentIndex+1)));
+        std::string teamName = strToUpper(pMap->getStringValue(getHouseNameByNumber(houseType),"Brain","Team " + std::to_string(currentIndex+1)));
         teamNames.push_back(teamName);
         slotToTeam[currentIndex] = currentTeam;
         currentTeam++;
@@ -905,8 +905,8 @@ void CustomGamePlayers::extractMapInfo(INIFile* pMap)
     }
 
     for(int p = 0; (p < NUM_HOUSES) && (currentIndex < NUM_HOUSES); p++) {
-        if(pMap->hasSection("Player" + stringify(p+1))) {
-            std::string teamName = strToUpper(pMap->getStringValue("Player" + stringify(p+1),"Brain","Team " + stringify(currentIndex+p+1)));
+        if(pMap->hasSection("Player" + std::to_string(p+1))) {
+            std::string teamName = strToUpper(pMap->getStringValue("Player" + std::to_string(p+1),"Brain","Team " + std::to_string(currentIndex+p+1)));
             teamNames.push_back(teamName);
             slotToTeam[currentIndex] = currentTeam;
             currentTeam++;

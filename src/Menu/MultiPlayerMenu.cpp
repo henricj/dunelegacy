@@ -35,7 +35,7 @@ MultiPlayerMenu::MultiPlayerMenu() : MenuBase() {
     connectHBox.addWidget(&connectHostTextBox);
     connectHBox.addWidget(HSpacer::create(20));
     connectHBox.addWidget(Label::create("Port:"), 50);
-    connectPortTextBox.setText(stringify(DEFAULT_PORT));
+    connectPortTextBox.setText(std::to_string(DEFAULT_PORT));
     connectHBox.addWidget(&connectPortTextBox, 90);
     connectHBox.addWidget(HSpacer::create(20));
     connectButton.setText(_("Connect"));
@@ -197,8 +197,8 @@ void MultiPlayerMenu::onGameTypeChange(int buttonID) {
         InternetGameList.clear();
 
         for(GameServerInfo& gameServerInfo : LANGameList) {
-            std::string description = gameServerInfo.serverName + " (" + Address2String(gameServerInfo.serverAddress) + " : " + stringify(gameServerInfo.serverAddress.port) + ") - "
-                                        + gameServerInfo.mapName + " (" + stringify(gameServerInfo.numPlayers) + "/" + stringify(gameServerInfo.maxPlayers) + ")";
+            std::string description = gameServerInfo.serverName + " (" + Address2String(gameServerInfo.serverAddress) + " : " + std::to_string(gameServerInfo.serverAddress.port) + ") - "
+                                        + gameServerInfo.mapName + " (" + std::to_string(gameServerInfo.numPlayers) + "/" + std::to_string(gameServerInfo.maxPlayers) + ")";
             gameList.addEntry(description, &gameServerInfo);
         }
 
@@ -228,8 +228,8 @@ void MultiPlayerMenu::onGameListSelectionChange(bool bInteractive) {
 
 void MultiPlayerMenu::onNewLANServer(GameServerInfo gameServerInfo) {
     LANGameList.push_back(gameServerInfo);
-    std::string description = gameServerInfo.serverName + " (" + Address2String(gameServerInfo.serverAddress) + " : " + stringify(gameServerInfo.serverAddress.port) + ") - "
-                                + gameServerInfo.mapName + " (" + stringify(gameServerInfo.numPlayers) + "/" + stringify(gameServerInfo.maxPlayers) + ")";
+    std::string description = gameServerInfo.serverName + " (" + Address2String(gameServerInfo.serverAddress) + " : " + std::to_string(gameServerInfo.serverAddress.port) + ") - "
+                                + gameServerInfo.mapName + " (" + std::to_string(gameServerInfo.numPlayers) + "/" + std::to_string(gameServerInfo.maxPlayers) + ")";
     gameList.addEntry(description, &LANGameList.back());
 }
 
@@ -245,8 +245,8 @@ void MultiPlayerMenu::onUpdateLANServer(GameServerInfo gameServerInfo) {
     }
 
     if(index < LANGameList.size()) {
-        std::string description = gameServerInfo.serverName + " (" + Address2String(gameServerInfo.serverAddress) + " : " + stringify(gameServerInfo.serverAddress.port) + ") - "
-                                    + gameServerInfo.mapName + " (" + stringify(gameServerInfo.numPlayers) + "/" + stringify(gameServerInfo.maxPlayers) + ")";
+        std::string description = gameServerInfo.serverName + " (" + Address2String(gameServerInfo.serverAddress) + " : " + std::to_string(gameServerInfo.serverAddress.port) + ") - "
+                                    + gameServerInfo.mapName + " (" + std::to_string(gameServerInfo.numPlayers) + "/" + std::to_string(gameServerInfo.maxPlayers) + ")";
 
         gameList.setEntry(index, description);
     }
@@ -300,13 +300,13 @@ void MultiPlayerMenu::onGameServerInfoList(const std::list<GameServerInfo>& game
         if(oldListIndex >= InternetGameList.size()) {
             // not found => add at the end
             InternetGameList.push_back(gameServerInfo);
-            std::string description = gameServerInfo.serverName + " (" + Address2String(gameServerInfo.serverAddress) + " : " + stringify(gameServerInfo.serverAddress.port) + ") - "
-                                + gameServerInfo.mapName + " (" + stringify(gameServerInfo.numPlayers) + "/" + stringify(gameServerInfo.maxPlayers) + ")";
+            std::string description = gameServerInfo.serverName + " (" + Address2String(gameServerInfo.serverAddress) + " : " + std::to_string(gameServerInfo.serverAddress.port) + ") - "
+                                + gameServerInfo.mapName + " (" + std::to_string(gameServerInfo.numPlayers) + "/" + std::to_string(gameServerInfo.maxPlayers) + ")";
             gameList.addEntry(description, &InternetGameList.back());
         } else {
             // found => update
-            std::string description = gameServerInfo.serverName + " (" + Address2String(gameServerInfo.serverAddress) + " : " + stringify(gameServerInfo.serverAddress.port) + ") - "
-                                    + gameServerInfo.mapName + " (" + stringify(gameServerInfo.numPlayers) + "/" + stringify(gameServerInfo.maxPlayers) + ")";
+            std::string description = gameServerInfo.serverName + " (" + Address2String(gameServerInfo.serverAddress) + " : " + std::to_string(gameServerInfo.serverAddress.port) + ") - "
+                                    + gameServerInfo.mapName + " (" + std::to_string(gameServerInfo.numPlayers) + "/" + std::to_string(gameServerInfo.maxPlayers) + ")";
 
             gameList.setEntry(oldListIndex, description);
         }

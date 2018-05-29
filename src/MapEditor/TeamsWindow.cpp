@@ -355,8 +355,8 @@ std::string TeamsWindow::getDescribingString(const TeamInfo& teamInfo) {
     return getPlayerName((HOUSETYPE) teamInfo.houseID) + ", "
             + getTeamBehaviorNameByID(teamInfo.teamBehavior) + ", "
             + getTeamTypeNameByID(teamInfo.teamType) + ", "
-            + stringify(teamInfo.minUnits) + ", "
-            + stringify(teamInfo.maxUnits);
+            + std::to_string(teamInfo.minUnits) + ", "
+            + std::to_string(teamInfo.maxUnits);
 }
 
 std::string TeamsWindow::getPlayerName(HOUSETYPE house) {

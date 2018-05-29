@@ -69,7 +69,7 @@ void MetaServerClient::startAnnounce(const std::string& serverName, int serverPo
 
     this->serverName = serverName;
     this->serverPort = serverPort;
-    this->secret = stringify<int>(rand()) + stringify<int>(rand());
+    this->secret = std::to_string(rand()) + std::to_string(rand());
     this->mapName = mapName;
     this->numPlayers = numPlayers;
     this->maxPlayers = maxPlayers;
@@ -238,13 +238,13 @@ int MetaServerClient::connectionThreadMain(void* data) {
                     std::map<std::string, std::string> parameters;
 
                     parameters["command"] = "add";
-                    parameters["port"] = stringify<int>(pMetaServerAdd->serverPort);
+                    parameters["port"] = std::to_string(pMetaServerAdd->serverPort);
                     parameters["secret"] = pMetaServerAdd->secret;
                     parameters["gamename"] = pMetaServerAdd->serverName;
                     parameters["gameversion"] = VERSION;
                     parameters["mapname"] = pMetaServerAdd->mapName;
-                    parameters["numplayers"] = stringify<int>(pMetaServerAdd->numPlayers);
-                    parameters["maxplayers"] = stringify<int>(pMetaServerAdd->maxPlayers);
+                    parameters["numplayers"] = std::to_string(pMetaServerAdd->numPlayers);
+                    parameters["maxplayers"] = std::to_string(pMetaServerAdd->maxPlayers);
                     parameters["pwdprotected"] = "false";
 
                     std::string result;
@@ -274,9 +274,9 @@ int MetaServerClient::connectionThreadMain(void* data) {
                     std::map<std::string, std::string> parameters;
 
                     parameters["command"] = "update";
-                    parameters["port"] = stringify<int>(pMetaServerUpdate->serverPort);
+                    parameters["port"] = std::to_string(pMetaServerUpdate->serverPort);
                     parameters["secret"] = pMetaServerUpdate->secret;
-                    parameters["numplayers"] = stringify<int>(pMetaServerUpdate->numPlayers);
+                    parameters["numplayers"] = std::to_string(pMetaServerUpdate->numPlayers);
 
                     std::string result1;
 
@@ -295,7 +295,7 @@ int MetaServerClient::connectionThreadMain(void* data) {
                         parameters["gamename"] = pMetaServerUpdate->serverName;
                         parameters["gameversion"] = VERSION;
                         parameters["mapname"] = pMetaServerUpdate->mapName;
-                        parameters["maxplayers"] = stringify<int>(pMetaServerUpdate->maxPlayers);
+                        parameters["maxplayers"] = std::to_string(pMetaServerUpdate->maxPlayers);
                         parameters["pwdprotected"] = "false";
 
                         std::string result2;
@@ -332,7 +332,7 @@ int MetaServerClient::connectionThreadMain(void* data) {
                     std::map<std::string, std::string> parameters;
 
                     parameters["command"] = "remove";
-                    parameters["port"] = stringify<int>(pMetaServerRemove->serverPort);
+                    parameters["port"] = std::to_string(pMetaServerRemove->serverPort);
                     parameters["secret"] = pMetaServerRemove->secret;
 
                     try {

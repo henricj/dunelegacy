@@ -202,7 +202,7 @@ OptionsMenu::OptionsMenu() : MenuBase()
     portTextBox.setAllowedChars("0123456789");
     portTextBox.setOnTextChange(std::bind(&OptionsMenu::onChangeOption, this, std::placeholders::_1));
     networkPortHBox.addWidget(&portTextBox, 100);
-    portTextBox.setText(stringify<int>(settings.network.serverPort));
+    portTextBox.setText(std::to_string(settings.network.serverPort));
     networkPortHBox.addWidget(Spacer::create(), 190);
     networkPortHBox.addWidget(Spacer::create(), 0.5);
     mainVBox.addWidget(&networkPortHBox, 0.01);

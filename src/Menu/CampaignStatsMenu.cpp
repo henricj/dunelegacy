@@ -242,11 +242,11 @@ void CampaignStatsMenu::doState(int elapsedTime)
             float Human_PercentSpiceComplete;
             if(SpiceComplete < spiceHarvestedByHuman / MaxSpiceHarvested) {
                 Human_PercentSpiceComplete = SpiceComplete * 100.0f;
-                spiceYouLabel.setText( stringify( (int) (SpiceComplete*MaxSpiceHarvested)));
+                spiceYouLabel.setText( std::to_string( (int) (SpiceComplete*MaxSpiceHarvested)));
                 soundPlayer->playSound(Sound_CreditsTick);
             } else {
                 Human_PercentSpiceComplete = spiceHarvestedByHuman * 100.0f / MaxSpiceHarvested;
-                spiceYouLabel.setText(stringify( (int) spiceHarvestedByHuman));
+                spiceYouLabel.setText(std::to_string( (int) spiceHarvestedByHuman));
                 soundPlayer->playSound(Sound_Tick);
                 currentState = State_Between_HumanSpice_and_AISpice;
                 currentStateStartTime = SDL_GetTicks();
@@ -274,11 +274,11 @@ void CampaignStatsMenu::doState(int elapsedTime)
             float AI_PercentSpiceComplete;
             if(SpiceComplete < spiceHarvestedByAI / MaxSpiceHarvested) {
                 AI_PercentSpiceComplete = SpiceComplete * 100.0f;
-                spiceEnemyLabel.setText( stringify( (int) (SpiceComplete*MaxSpiceHarvested)));
+                spiceEnemyLabel.setText( std::to_string( (int) (SpiceComplete*MaxSpiceHarvested)));
                 soundPlayer->playSound(Sound_CreditsTick);
             } else {
                 AI_PercentSpiceComplete = spiceHarvestedByAI * 100.0f / MaxSpiceHarvested;
-                spiceEnemyLabel.setText(stringify( (int) spiceHarvestedByAI));
+                spiceEnemyLabel.setText(std::to_string( (int) spiceHarvestedByAI));
                 soundPlayer->playSound(Sound_Tick);
                 currentState = State_Between_AISpice_and_HumanUnits;
                 currentStateStartTime = SDL_GetTicks();
@@ -304,11 +304,11 @@ void CampaignStatsMenu::doState(int elapsedTime)
             float Human_PercentUnitsComplete;
             if(UnitsComplete < unitsDestroyedByHuman / MaxUnitsDestroyed) {
                 Human_PercentUnitsComplete = UnitsComplete * 100.0f;
-                unitsYouLabel.setText( stringify( (int) (UnitsComplete*MaxUnitsDestroyed)));
+                unitsYouLabel.setText( std::to_string( (int) (UnitsComplete*MaxUnitsDestroyed)));
                 soundPlayer->playSound(Sound_CreditsTick);
             } else {
                 Human_PercentUnitsComplete = unitsDestroyedByHuman * 100.0f / MaxUnitsDestroyed;
-                unitsYouLabel.setText( stringify(unitsDestroyedByHuman));
+                unitsYouLabel.setText( std::to_string(unitsDestroyedByHuman));
                 soundPlayer->playSound(Sound_Tick);
                 currentState = State_Between_HumanUnits_and_AIUnits;
                 currentStateStartTime = SDL_GetTicks();
@@ -334,11 +334,11 @@ void CampaignStatsMenu::doState(int elapsedTime)
             float AI_PercentUnitsComplete;
             if(UnitsComplete < unitsDestroyedByAI / MaxUnitsDestroyed) {
                 AI_PercentUnitsComplete = UnitsComplete * 100.0f;
-                unitsEnemyLabel.setText( stringify( (int) (UnitsComplete*MaxUnitsDestroyed)));
+                unitsEnemyLabel.setText( std::to_string( (int) (UnitsComplete*MaxUnitsDestroyed)));
                 soundPlayer->playSound(Sound_CreditsTick);
             } else {
                 AI_PercentUnitsComplete = unitsDestroyedByAI * 100.0f / MaxUnitsDestroyed;
-                unitsEnemyLabel.setText( stringify(unitsDestroyedByAI));
+                unitsEnemyLabel.setText( std::to_string(unitsDestroyedByAI));
                 soundPlayer->playSound(Sound_Tick);
                 currentState = State_Between_AIUnits_and_HumanBuildings;
                 currentStateStartTime = SDL_GetTicks();
@@ -364,11 +364,11 @@ void CampaignStatsMenu::doState(int elapsedTime)
             float Human_PercentBuildingsComplete;
             if(BuildingsComplete < structuresDestroyedByHuman / MaxBuildingsDestroyed) {
                 Human_PercentBuildingsComplete = BuildingsComplete * 100.0f;
-                buildingsYouLabel.setText( stringify( (int) (BuildingsComplete*MaxBuildingsDestroyed)));
+                buildingsYouLabel.setText( std::to_string( (int) (BuildingsComplete*MaxBuildingsDestroyed)));
                 soundPlayer->playSound(Sound_CreditsTick);
             } else {
                 Human_PercentBuildingsComplete = structuresDestroyedByHuman * 100.0f / MaxBuildingsDestroyed;
-                buildingsYouLabel.setText( stringify(structuresDestroyedByHuman));
+                buildingsYouLabel.setText( std::to_string(structuresDestroyedByHuman));
                 soundPlayer->playSound(Sound_Tick);
                 currentState = State_Between_HumanBuildings_and_AIBuildings;
                 currentStateStartTime = SDL_GetTicks();
@@ -394,11 +394,11 @@ void CampaignStatsMenu::doState(int elapsedTime)
             float AI_PercentBuildingsComplete;
             if(BuildingsComplete < structuresDestroyedByAI / MaxBuildingsDestroyed) {
                 AI_PercentBuildingsComplete = BuildingsComplete * 100.0f;
-                buildingsEnemyLabel.setText( stringify( (int) (BuildingsComplete*MaxBuildingsDestroyed)));
+                buildingsEnemyLabel.setText( std::to_string( (int) (BuildingsComplete*MaxBuildingsDestroyed)));
                 soundPlayer->playSound(Sound_CreditsTick);
             } else {
                 AI_PercentBuildingsComplete = structuresDestroyedByAI * 100.0f / MaxBuildingsDestroyed;
-                buildingsEnemyLabel.setText( stringify(structuresDestroyedByAI));
+                buildingsEnemyLabel.setText( std::to_string(structuresDestroyedByAI));
                 soundPlayer->playSound(Sound_Tick);
                 currentState = State_Finished;
                 currentStateStartTime = SDL_GetTicks();
