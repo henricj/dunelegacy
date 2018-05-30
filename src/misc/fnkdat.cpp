@@ -531,7 +531,8 @@ static int fnkdat_mkdirs(_TCHAR* buffer, int rlevel) {
       if (fnkdat_mkdirs(buffer, rlevel) < 0)
          return -1;
 
-      pos[0] = FNKDAT_FILE_SEPARATOR;
+      if (pos)
+         pos[0] = FNKDAT_FILE_SEPARATOR;
 
       return 0;
    }

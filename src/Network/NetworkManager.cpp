@@ -506,6 +506,10 @@ void NetworkManager::handlePacket(ENetPeer* peer, ENetPacketIStream& packetStrea
             } break;
 
             case NETWORKPACKET_SENDGAMEINFO: {
+                if(!connectPeer) {
+                    break;
+                }
+
                 PeerData* peerData = static_cast<PeerData*>(connectPeer->data);
                 if(!peerData) {
                     break;

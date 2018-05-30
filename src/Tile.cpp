@@ -884,10 +884,12 @@ void Tile::triggerSpecialBloom(House* pTrigger) {
                 }
             }
 
-            const auto pNewUnit = pEnemyHouse->createUnit(Unit_Trike);
-            if (pNewUnit != nullptr) {
-                const auto spot = currentGameMap->findDeploySpot(pNewUnit, location, currentGame->randomGen);
-                pNewUnit->deploy(spot);
+            if(pEnemyHouse) {
+                const auto pNewUnit = pEnemyHouse->createUnit(Unit_Trike);
+                if (pNewUnit != nullptr) {
+                    const auto spot = currentGameMap->findDeploySpot(pNewUnit, location, currentGame->randomGen);
+                    pNewUnit->deploy(spot);
+                }
             }
 
         } break;
