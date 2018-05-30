@@ -643,12 +643,13 @@ int AdlibDriver::snd_unkOpcode3(va_list &list) {
 int AdlibDriver::snd_readByte(va_list &list) {
     int a = va_arg(list, int);
     int b = va_arg(list, int);
-    const uint8 *ptr = getProgram(a) + b;
+    const uint8 *ptr = getProgram(a);
     if(ptr == NULL) {
         warning("AdlibDriver::snd_readByte(): ptr == NULL!");
         return -1;
     }
-    return *ptr;
+    const uint8 *ptr2 = ptr + b;
+    return *ptr2;
 }
 
 int AdlibDriver::snd_writeByte(va_list &list) {
@@ -818,7 +819,9 @@ void AdlibDriver::executePrograms() {
             continue;
 
         Channel &channel = _channels[_curChannel];
-        _curRegOffset = _regOffset[_curChannel];
+        if (_curChannel != 9) {
+            _curRegOffset = _regOffset[_curChannel];
+        }
 
         if (channel.tempoReset)
             channel.tempo = _tempo;
