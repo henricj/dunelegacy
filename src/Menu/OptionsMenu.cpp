@@ -358,6 +358,7 @@ void OptionsMenu::saveConfiguration2File() {
     myINIFile.setBoolValue("Video","Fullscreen",settings.video.fullscreen);
     myINIFile.setIntValue("Video","Preferred Zoom Level",settings.video.preferredZoomLevel);
     myINIFile.setStringValue("Video","Scaler",settings.video.scaler);
+    myINIFile.setBoolValue("Video","RotateUnitGraphics",settings.video.rotateUnitGraphics);
 
     myINIFile.setStringValue("General","Player Name",settings.general.playerName);
     myINIFile.setStringValue("General","Language",settings.general.language);

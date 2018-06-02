@@ -212,7 +212,7 @@ protected:
     FixPoint realX;                  ///< The x-coordinate of this object in world coordinates
     FixPoint realY;                  ///< The y-coordinate of this object in world coordinates
 
-    FixPoint angle;                  ///< The current angle of this unit/structure
+    FixPoint angle;                  ///< The current angle of this unit/structure (8 = 360°)
     Sint8    drawnAngle;             ///< The angle this unit/structure is drawn with. (e.g. 0 to 7)
 
     bool     active;                 ///< Is this unit/structure active?

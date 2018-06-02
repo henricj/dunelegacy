@@ -177,6 +177,7 @@ public:
         bool        frameLimit;
         int         preferredZoomLevel;
         std::string scaler;
+        bool        rotateUnitGraphics;
     } video;
 
     class AudioClass {
