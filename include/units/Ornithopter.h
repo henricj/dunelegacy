@@ -28,6 +28,8 @@ public:
     void init();
     virtual ~Ornithopter();
 
+    void save(OutputStream& stream) const override;
+
     void checkPos() override;
     bool canAttack(const ObjectBase* object) const override;
 
@@ -36,6 +38,14 @@ public:
     void destroy() override;
 
     void playAttackSound() override;
+
+protected:
+    virtual FixPoint getDestinationAngle() const override;
+
+    virtual bool attack();
+
+private:
+    Uint32 timeLastShot;
 };
 
 #endif //ORNITHOPTER_H

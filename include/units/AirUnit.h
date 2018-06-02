@@ -46,6 +46,8 @@ public:
     }
 
 protected:
+    virtual FixPoint getDestinationAngle() const;
+
     virtual void navigate();
     virtual void move();
     virtual void turn();

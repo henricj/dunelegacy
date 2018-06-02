@@ -33,7 +33,7 @@
 #include <algorithm>
 
 
-Bullet::Bullet(Uint32 shooterID, Coord* newRealLocation, Coord* newRealDestination, Uint32 bulletID, int damage, bool air)
+Bullet::Bullet(Uint32 shooterID, Coord* newRealLocation, Coord* newRealDestination, Uint32 bulletID, int damage, bool air, const ObjectBase* pTarget)
 {
     airAttack = air;
 
@@ -44,6 +44,8 @@ Bullet::Bullet(Uint32 shooterID, Coord* newRealLocation, Coord* newRealDestinati
     this->bulletID = bulletID;
 
     this->damage = damage;
+
+    target.pointTo(pTarget);
 
     Bullet::init();
 
@@ -95,6 +97,7 @@ Bullet::Bullet(InputStream& stream)
     bulletID = stream.readUint32();
 
     airAttack = stream.readBool();
+    target.load(stream);
     damage = stream.readSint32();
 
     shooterID = stream.readUint32();
@@ -224,11 +227,6 @@ void Bullet::init()
             THROW(std::domain_error, "Unknown Bullet type %d!", bulletID);
         } break;
     }
-
-    if(airAttack) {
-        // double radius to hit fast-moving air units
-        damageRadius *= 2;
-    }
 }
 
 
@@ -239,6 +237,7 @@ void Bullet::save(OutputStream& stream) const
     stream.writeUint32(bulletID);
 
     stream.writeBool(airAttack);
+    target.save(stream);
     stream.writeSint32(damage);
 
     stream.writeUint32(shooterID);
@@ -314,7 +313,12 @@ void Bullet::blitToScreen() const
 
 void Bullet::update()
 {
-    if(bulletID == Bullet_Rocket || bulletID == Bullet_DRocket) {
+    if(bulletID == Bullet_Rocket || bulletID == Bullet_DRocket || bulletID == Bullet_TurretRocket) {
+
+        ObjectBase* pTarget = target.getObjPointer();
+        if(pTarget && pTarget->isAFlyingUnit()) {
+            destination = pTarget->getCenterPoint();
+        }
 
         FixPoint angleToDestinationRad = destinationAngleRad(Coord(lround(realX), lround(realY)), destination);
         FixPoint angleToDestination = RadToDeg256(angleToDestinationRad);

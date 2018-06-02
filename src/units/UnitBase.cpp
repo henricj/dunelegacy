@@ -182,81 +182,86 @@ void UnitBase::save(OutputStream& stream) const {
     stream.writeSint32(deviationTimer);
 }
 
-void UnitBase::attack() {
+bool UnitBase::attack() {
 
     if(numWeapons) {
-        Coord targetCenterPoint;
-        Coord centerPoint = getCenterPoint();
-        bool bAirBullet;
+        if((primaryWeaponTimer == 0) || ((numWeapons == 2) && (secondaryWeaponTimer == 0) && (isBadlyDamaged() == false))) {
 
-        ObjectBase* pObject = target.getObjPointer();
-        if(pObject != nullptr) {
-            targetCenterPoint = pObject->getClosestCenterPoint(location);
-            bAirBullet = pObject->isAFlyingUnit();
-        } else {
-            targetCenterPoint = currentGameMap->getTile(attackPos)->getCenterPoint();
-            bAirBullet = false;
-        }
+            Coord targetCenterPoint;
+            Coord centerPoint = getCenterPoint();
+            bool bAirBullet;
 
-        int currentBulletType = bulletType;
-        Sint32 currentWeaponDamage = currentGame->objectData.data[itemID][originalHouseID].weapondamage;
-
-        if(getItemID() == Unit_Trooper && !bAirBullet) {
-            // Troopers change weapon type depending on distance
-
-            FixPoint distance = distanceFrom(centerPoint, targetCenterPoint);
-            if(distance <= 2*TILESIZE) {
-                currentBulletType = Bullet_ShellSmall;
-                currentWeaponDamage--;
-            }
-        } else if(getItemID() == Unit_Launcher && bAirBullet){
-            // Launchers change weapon type when targeting flying units
-            currentBulletType = Bullet_TurretRocket;
-
-        }
-
-        if(primaryWeaponTimer == 0) {
-            bulletList.push_back( new Bullet( objectID, &centerPoint, &targetCenterPoint, currentBulletType, currentWeaponDamage, bAirBullet) );
+            ObjectBase* pObject = target.getObjPointer();
             if(pObject != nullptr) {
-                currentGameMap->viewMap(pObject->getOwner()->getTeam(), location, 2);
-            }
-            playAttackSound();
-            primaryWeaponTimer = getWeaponReloadTime();
-
-            secondaryWeaponTimer = 15;
-
-            if(attackPos && getItemID() != Unit_SonicTank && currentGameMap->getTile(attackPos)->isSpiceBloom()) {
-                setDestination(location);
-                forced = false;
-                attackPos.invalidate();
+                targetCenterPoint = pObject->getClosestCenterPoint(location);
+                bAirBullet = pObject->isAFlyingUnit();
+            } else {
+                targetCenterPoint = currentGameMap->getTile(attackPos)->getCenterPoint();
+                bAirBullet = false;
             }
 
-            // shorten deviation time
-            if(deviationTimer > 0) {
-                deviationTimer = std::max(0,deviationTimer - MILLI2CYCLES(20*1000));
-            }
-        }
+            int currentBulletType = bulletType;
+            Sint32 currentWeaponDamage = currentGame->objectData.data[itemID][originalHouseID].weapondamage;
 
-        if((numWeapons == 2) && (secondaryWeaponTimer == 0) && (isBadlyDamaged() == false)) {
-            bulletList.push_back( new Bullet( objectID, &centerPoint, &targetCenterPoint, currentBulletType, currentWeaponDamage, bAirBullet) );
-            if(pObject != nullptr) {
-                currentGameMap->viewMap(pObject->getOwner()->getTeam(), location, 2);
-            }
-            playAttackSound();
-            secondaryWeaponTimer = -1;
+            if(getItemID() == Unit_Trooper && !bAirBullet) {
+                // Troopers change weapon type depending on distance
 
-            if(attackPos && getItemID() != Unit_SonicTank && currentGameMap->getTile(attackPos)->isSpiceBloom()) {
-                setDestination(location);
-                forced = false;
-                attackPos.invalidate();
+                FixPoint distance = distanceFrom(centerPoint, targetCenterPoint);
+                if(distance <= 2*TILESIZE) {
+                    currentBulletType = Bullet_ShellSmall;
+                    currentWeaponDamage -= currentWeaponDamage/4;
+                }
+            } else if(getItemID() == Unit_Launcher && bAirBullet){
+                // Launchers change weapon type when targeting flying units
+                currentBulletType = Bullet_TurretRocket;
             }
 
-            // shorten deviation time
-            if(deviationTimer > 0) {
-                deviationTimer = std::max(0,deviationTimer - MILLI2CYCLES(20*1000));
+            if(primaryWeaponTimer == 0) {
+                bulletList.push_back( new Bullet( objectID, &centerPoint, &targetCenterPoint, currentBulletType, currentWeaponDamage, bAirBullet, pObject) );
+                if(pObject != nullptr) {
+                    currentGameMap->viewMap(pObject->getOwner()->getTeam(), location, 2);
+                }
+                playAttackSound();
+                primaryWeaponTimer = getWeaponReloadTime();
+
+                secondaryWeaponTimer = 15;
+
+                if(attackPos && getItemID() != Unit_SonicTank && currentGameMap->getTile(attackPos)->isSpiceBloom()) {
+                    setDestination(location);
+                    forced = false;
+                    attackPos.invalidate();
+                }
+
+                // shorten deviation time
+                if(deviationTimer > 0) {
+                    deviationTimer = std::max(0,deviationTimer - MILLI2CYCLES(20*1000));
+                }
             }
+
+            if((numWeapons == 2) && (secondaryWeaponTimer == 0) && (isBadlyDamaged() == false)) {
+                bulletList.push_back( new Bullet( objectID, &centerPoint, &targetCenterPoint, currentBulletType, currentWeaponDamage, bAirBullet, pObject) );
+                if(pObject != nullptr) {
+                    currentGameMap->viewMap(pObject->getOwner()->getTeam(), location, 2);
+                }
+                playAttackSound();
+                secondaryWeaponTimer = -1;
+
+                if(attackPos && getItemID() != Unit_SonicTank && currentGameMap->getTile(attackPos)->isSpiceBloom()) {
+                    setDestination(location);
+                    forced = false;
+                    attackPos.invalidate();
+                }
+
+                // shorten deviation time
+                if(deviationTimer > 0) {
+                    deviationTimer = std::max(0,deviationTimer - MILLI2CYCLES(20*1000));
+                }
+            }
+
+            return true;
         }
     }
+    return false;
 }
 
 void UnitBase::blitToScreen() {
@@ -509,7 +514,7 @@ void UnitBase::engageTarget() {
             // we squash the infantry unit because we are forced to
             setDestination(targetLocation);
             targetAngle = INVALID;
-        } else {
+        } else if(!isAFlyingUnit()) {
             // we decide to fire on the target thus we can stop moving
             setDestination(location);
             targetAngle = newTargetAngle;
@@ -527,9 +532,11 @@ void UnitBase::engageTarget() {
         Sint8 newTargetAngle = destinationDrawnAngle(location, attackPos);
 
         if(targetDistance <= getWeaponRange()) {
+            if(!isAFlyingUnit()) {
             // we are in weapon range thus we can stop moving
-            setDestination(location);
-            targetAngle = newTargetAngle;
+                setDestination(location);
+                targetAngle = newTargetAngle;
+            }
 
             if(getCurrentAttackAngle() == newTargetAngle) {
                 attack();

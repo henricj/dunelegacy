@@ -107,15 +107,17 @@ void Sandworm::assignToMap(const Coord& pos) {
     }
 }
 
-void Sandworm::attack() {
+bool Sandworm::attack() {
     if(primaryWeaponTimer == 0) {
         if(target) {
             soundPlayer->playSoundAt(Sound_WormAttack, location);
             drawnFrame = 0;
             attackFrameTimer = SANDWORM_ATTACKFRAMETIME;
             primaryWeaponTimer = getWeaponReloadTime();
+            return true;
         }
     }
+    return false;
 }
 
 void Sandworm::deploy(const Coord& newLocation) {

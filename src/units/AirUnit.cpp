@@ -134,9 +134,13 @@ void AirUnit::move() {
     checkPos();
 }
 
+FixPoint AirUnit::getDestinationAngle() const {
+    return destinationAngleRad(realX, realY, destination.x*TILESIZE + TILESIZE/2, destination.y*TILESIZE + TILESIZE/2)*8 / (FixPt_PI << 1);;
+}
+
 void AirUnit::turn() {
-    if(destination.isValid() && (primaryWeaponTimer <= getWeaponReloadTime()/3)) {
-        FixPoint destinationAngle = destinationAngleRad(realX, realY, destination.x*TILESIZE + TILESIZE/2, destination.y*TILESIZE + TILESIZE/2)*8 / (FixPt_PI << 1);
+    if(destination.isValid()) {
+        FixPoint destinationAngle = getDestinationAngle();
 
         FixPoint angleLeft = 0;
         FixPoint angleRight = 0;

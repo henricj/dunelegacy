@@ -35,7 +35,7 @@ public:
     void deploy(const Coord& newLocation) override;
 
     void assignToMap(const Coord& pos) override;
-    void attack() override;
+    bool attack() override;
     void blitToScreen() override;
     void checkPos() override;
 

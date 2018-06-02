@@ -241,7 +241,7 @@ public:
 
 protected:
 
-    virtual void attack();
+    virtual bool attack();
 
     virtual void releaseTarget();
     virtual void engageTarget();

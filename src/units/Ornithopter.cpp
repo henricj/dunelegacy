@@ -32,10 +32,14 @@ Ornithopter::Ornithopter(House* newOwner) : AirUnit(newOwner) {
     Ornithopter::init();
 
     setHealth(getMaxHealth());
+
+    timeLastShot = 0;
 }
 
 Ornithopter::Ornithopter(InputStream& stream) : AirUnit(stream) {
     Ornithopter::init();
+
+    timeLastShot = stream.readUint32();
 }
 
 void Ornithopter::init() {
@@ -56,6 +60,13 @@ void Ornithopter::init() {
 }
 
 Ornithopter::~Ornithopter() = default;
+
+void Ornithopter::save(OutputStream& stream) const
+{
+    AirUnit::save(stream);
+
+    stream.writeUint32(timeLastShot);
+}
 
 void Ornithopter::checkPos() {
     AirUnit::checkPos();
@@ -100,5 +111,25 @@ void Ornithopter::playAttackSound() {
 
 bool Ornithopter::canPass(int xPos, int yPos) const {
     return (currentGameMap->tileExists(xPos, yPos) && (!currentGameMap->getTile(xPos, yPos)->hasAnAirUnit()));
+}
+
+
+
+FixPoint Ornithopter::getDestinationAngle() const {
+    if(timeLastShot > 0 && (currentGame->getGameCycleCount() - timeLastShot) < MILLI2CYCLES(1000)) {
+        // we already shot at target and now want to fly in the opposite direction
+        return destinationAngleRad(destination.x*TILESIZE + TILESIZE/2, destination.y*TILESIZE + TILESIZE/2, realX, realY)*8 / (FixPt_PI << 1);
+    } else {
+        return destinationAngleRad(realX, realY, destination.x*TILESIZE + TILESIZE/2, destination.y*TILESIZE + TILESIZE/2)*8 / (FixPt_PI << 1);
+    }
+}
+
+bool Ornithopter::attack() {
+    bool bAttacked = AirUnit::attack();
+
+    if(bAttacked) {
+        timeLastShot = currentGame->getGameCycleCount();
+    }
+    return bAttacked;
 }
 

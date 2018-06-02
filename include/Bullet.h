@@ -20,6 +20,7 @@
 
 #include <globals.h>
 
+#include <ObjectPointer.h>
 #include <DataTypes.h>
 #include <ScreenBorder.h>
 #include <misc/InputStream.h>
@@ -33,7 +34,7 @@ class House;
 class Bullet
 {
 public:
-    Bullet(Uint32 shooterID, Coord* newRealLocation, Coord* newRealDestination, Uint32 bulletID, int damage, bool air);
+    Bullet(Uint32 shooterID, Coord* newRealLocation, Coord* newRealDestination, Uint32 bulletID, int damage, bool air, const ObjectBase* pTarget);
     explicit Bullet(InputStream& stream);
     void init();
     ~Bullet();
@@ -82,6 +83,7 @@ private:
     Sint8    drawnAngle;                 ///< the drawn angle of the bullet
 
     bool     airAttack;                  ///< Is this an air attack?
+    ObjectPointer target;                ///< The target to hit
 
     // drawing information
     zoomable_texture graphic{};          ///< The graphic of the bullet

@@ -79,18 +79,23 @@ void RocketTurret::attack() {
 
         if(distanceFrom(centerPoint, targetCenterPoint) < 3 * TILESIZE) {
             // we are just shooting a bullet as a gun turret would do
-            bulletList.push_back( new Bullet( objectID, &centerPoint, &targetCenterPoint, Bullet_ShellTurret,
-                                                   currentGame->objectData.data[Structure_GunTurret][originalHouseID].weapondamage,
-                                                   pObject->isAFlyingUnit() ) );
+            // for air units do nothing
+            if(!pObject->isAFlyingUnit()) {
+                bulletList.push_back( new Bullet( objectID, &centerPoint, &targetCenterPoint, Bullet_ShellTurret,
+                                                       currentGame->objectData.data[Structure_GunTurret][originalHouseID].weapondamage,
+                                                       pObject->isAFlyingUnit(),
+                                                       pObject ) );
 
-            currentGameMap->viewMap(pObject->getOwner()->getTeam(), location, 2);
-            soundPlayer->playSoundAt(Sound_ExplosionSmall, location);
-            weaponTimer = currentGame->objectData.data[Structure_GunTurret][originalHouseID].weaponreloadtime;
+                currentGameMap->viewMap(pObject->getOwner()->getTeam(), location, 2);
+                soundPlayer->playSoundAt(Sound_ExplosionSmall, location);
+                weaponTimer = currentGame->objectData.data[Structure_GunTurret][originalHouseID].weaponreloadtime;
+            }
         } else {
             // we are in normal shooting mode
             bulletList.push_back( new Bullet( objectID, &centerPoint, &targetCenterPoint, bulletType,
                                                    currentGame->objectData.data[itemID][originalHouseID].weapondamage,
-                                                   pObject->isAFlyingUnit() ) );
+                                                   pObject->isAFlyingUnit(),
+                                                   pObject ) );
 
             currentGameMap->viewMap(pObject->getOwner()->getTeam(), location, 2);
             soundPlayer->playSoundAt(attackSound, location);
