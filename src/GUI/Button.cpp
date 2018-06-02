@@ -186,6 +186,12 @@ void Button::drawOverlay(Point position) {
     SDL_RenderCopy(renderer, tooltipTexture.get(), nullptr, &dest);
 }
 
+void Button::invalidateTextures() {
+    pUnpressedTexture.reset();
+    pPressedTexture.reset();
+    pActiveTexture.reset();
+}
+
 void Button::setSurfaces(   sdl2::surface_unique_or_nonowning_ptr pUnpressedSurface,
                             sdl2::surface_unique_or_nonowning_ptr pPressedSurface,
                             sdl2::surface_unique_or_nonowning_ptr pActiveSurface) {

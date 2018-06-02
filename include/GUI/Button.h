@@ -188,6 +188,11 @@ protected:
     sdl2::texture_unique_or_nonowning_ptr pPressedTexture;       ///< Texture that is shown when the button is pressed
     sdl2::texture_unique_or_nonowning_ptr pActiveTexture;        ///< Texture that is shown when the button is activated by keyboard or by mouse hover
 
+    /**
+        This method frees all textures that are used by this button
+    */
+    void invalidateTextures() override;
+
     std::string tooltipText = "";           ///< the tooltip text
     sdl2::texture_ptr tooltipTexture;       ///< the tooltip texture
     Uint32 tooltipLastMouseMotion = 0;      ///< the last time the mouse was moved
