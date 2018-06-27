@@ -38,7 +38,7 @@ INIFile::Key::Key(const std::string& completeLine, int lineNumber, int keystring
 
 INIFile::Key::Key(const std::string& keyname, const std::string& value, bool bEscapeIfNeeded, bool bWhitespace)
  :  INIFileLine(keyname + (bWhitespace ? " = " : "=") + (bEscapeIfNeeded ? escapeValue(value) : value), INVALID_LINE), keyStringBegin(0), keyStringLength(keyname.size()),
-    valueStringBegin(keyname.size() + (bWhitespace ? 3 : 1) + (escapingValueNeeded(value) ? 1 : 0)), valueStringLength(value.size()),
+    valueStringBegin(keyname.size() + (bWhitespace ? 3 : 1) + ((bEscapeIfNeeded && escapingValueNeeded(value)) ? 1 : 0)), valueStringLength(value.size()),
     nextKey(nullptr), prevKey(nullptr) {
 }
 
