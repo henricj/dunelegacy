@@ -24,10 +24,6 @@
 
 #include <algorithm>
 
-extern GFXManager*  pGFXManager;
-extern FontManager* pFontManager;
-
-
 sdl2::surface_ptr DuneStyle::createSurfaceWithText(const std::string& text, Uint32 color, unsigned int fontsize) {
     if(pFontManager != nullptr) {
         return pFontManager->createSurfaceWithText(text, color, fontsize);
