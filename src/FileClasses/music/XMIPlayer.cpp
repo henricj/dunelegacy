@@ -27,10 +27,15 @@
 
 #include <iostream>
 
+// MIX_INIT_FLUIDSYNTH was renamed to MIX_INIT_MOD in SDL mixer 2.0.2
+#if !SDL_MIXER_VERSION_ATLEAST(2, 0, 2)
+ #define MIX_INIT_MOD MIX_INIT_FLUIDSYNTH
+#endif
+
 XMIPlayer::XMIPlayer() : MusicPlayer(settings.audio.playMusic, settings.audio.musicVolume) {
     music = nullptr;
 
-    if((Mix_Init(MIX_INIT_FLUIDSYNTH) & MIX_INIT_FLUIDSYNTH) == 0) {
+    if((Mix_Init(MIX_INIT_MOD) & MIX_INIT_MOD) == 0) {
         SDL_Log("XMIPlayer: Failed to init required midi support: %s", SDL_GetError());
     }
 }
