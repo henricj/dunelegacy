@@ -23,6 +23,11 @@
 #include <misc/fnkdat.h>
 #include <mmath.h>
 
+// MIX_INIT_FLUIDSYNTH was renamed to MIX_INIT_MOD in SDL mixer 2.0.2
+#if !SDL_MIXER_VERSION_ATLEAST(2, 0, 2)
+ #define MIX_INIT_MOD MIX_INIT_FLUIDSYNTH
+#endif
+
 DirectoryPlayer::DirectoryPlayer() : MusicPlayer(settings.audio.playMusic, settings.audio.musicVolume) {
     // determine path to config file
     char tmp[FILENAME_MAX];
@@ -59,7 +64,7 @@ DirectoryPlayer::DirectoryPlayer() : MusicPlayer(settings.audio.playMusic, setti
 
     music = nullptr;
 
-    Mix_Init(MIX_INIT_FLUIDSYNTH | MIX_INIT_FLAC | MIX_INIT_MP3 | MIX_INIT_OGG);
+    Mix_Init(MIX_INIT_MOD | MIX_INIT_FLAC | MIX_INIT_MP3 | MIX_INIT_OGG);
 }
 
 DirectoryPlayer::~DirectoryPlayer() {
