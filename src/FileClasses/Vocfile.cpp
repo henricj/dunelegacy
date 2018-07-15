@@ -170,6 +170,7 @@ static sdl2::sdl_ptr<Uint8[]> LoadVOC_RW(SDL_RWops* rwop, Uint32 &decsize, Uint3
                     if(tmp == nullptr) {
                         THROW(std::runtime_error, "LoadVOC_RW(): %s", strerror(errno));
                     } else {
+                        ret_sound.release();
                         ret_sound = sdl2::sdl_ptr<Uint8[]> { tmp };
                     }
 
@@ -210,6 +211,7 @@ static sdl2::sdl_ptr<Uint8[]> LoadVOC_RW(SDL_RWops* rwop, Uint32 &decsize, Uint3
                 if(tmp == nullptr) {
                     THROW(std::runtime_error, "LoadVOC_RW(): %s", strerror(errno));
                 } else {
+                    ret_sound.release();
                     ret_sound = sdl2::sdl_ptr<Uint8[]> { tmp };
                 }
 
