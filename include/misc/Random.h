@@ -153,7 +153,7 @@ public:
     */
     template<typename T>
     T getRandOf(std::initializer_list<T> initlist) {
-        return initlist.begin()[rand(0,initlist.size()-1)];
+        return initlist.begin()[rand(0, static_cast<Sint32>(initlist.size()-1))];
     }
 
 private:
