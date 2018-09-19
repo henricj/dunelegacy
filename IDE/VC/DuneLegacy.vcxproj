@@ -329,6 +329,11 @@ IF %ERRORLEVEL% LSS 8 exit 0</Command>
     <ClInclude Include="..\..\include\fixmath\FixPoint16.h" />
     <ClInclude Include="..\..\include\fixmath\FixPoint32.h" />
     <ClInclude Include="..\..\include\fixmath\int64.h" />
+    <ClInclude Include="..\..\include\fmt\core.h" />
+    <ClInclude Include="..\..\include\fmt\format-inl.h" />
+    <ClInclude Include="..\..\include\fmt\format.h" />
+    <ClInclude Include="..\..\include\fmt\ostream.h" />
+    <ClInclude Include="..\..\include\fmt\printf.h" />
     <ClInclude Include="..\..\include\Game.h" />
     <ClInclude Include="..\..\include\GameInitSettings.h" />
     <ClInclude Include="..\..\include\GameInterface.h" />
@@ -431,7 +436,6 @@ IF %ERRORLEVEL% LSS 8 exit 0</Command>
     <ClInclude Include="..\..\include\misc\exceptions.h" />
     <ClInclude Include="..\..\include\misc\FileSystem.h" />
     <ClInclude Include="..\..\include\misc\fnkdat.h" />
-    <ClInclude Include="..\..\include\misc\format.h" />
     <ClInclude Include="..\..\include\misc\generator.h" />
     <ClInclude Include="..\..\include\misc\IFileStream.h" />
     <ClInclude Include="..\..\include\misc\IMemoryStream.h" />

@@ -124,6 +124,9 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="include\fmt">
+      <UniqueIdentifier>{27f78505-7ccf-420b-87d7-a4116c367e7a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\include\AStarSearch.h">
@@ -930,9 +933,6 @@
     <ClInclude Include="..\..\include\misc\exceptions.h">
       <Filter>include\misc</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\misc\format.h">
-      <Filter>include\misc</Filter>
-    </ClInclude>
     <ClInclude Include="stdafx.h">
       <Filter>include</Filter>
     </ClInclude>
@@ -970,6 +970,21 @@
     </ClInclude>
     <ClInclude Include="..\..\include\misc\reverse.h">
       <Filter>include\misc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\fmt\core.h">
+      <Filter>include\fmt</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\fmt\format.h">
+      <Filter>include\fmt</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\fmt\format-inl.h">
+      <Filter>include\fmt</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\fmt\printf.h">
+      <Filter>include\fmt</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\fmt\ostream.h">
+      <Filter>include\fmt</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

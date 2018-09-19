@@ -20,7 +20,8 @@
 
 #include <exception>
 #include <stdexcept>
-#include <misc/format.h>
+#include <fmt/format.h>
+#include <fmt/printf.h>
 
 #define THROW(TException, ...) throw TException(fmt::sprintf("%s:%d: %s", __FILE__, __LINE__, fmt::sprintf(__VA_ARGS__)))
 

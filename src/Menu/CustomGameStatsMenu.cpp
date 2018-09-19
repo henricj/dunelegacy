@@ -20,7 +20,7 @@
 #include <globals.h>
 
 #include <misc/FileSystem.h>
-#include <misc/format.h>
+#include <fmt/printf.h>
 
 #include <FileClasses/GFXManager.h>
 #include <FileClasses/TextManager.h>

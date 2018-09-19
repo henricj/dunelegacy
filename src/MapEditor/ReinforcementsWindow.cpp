@@ -23,7 +23,7 @@
 #include <globals.h>
 
 #include <misc/draw_util.h>
-#include <misc/format.h>
+#include <fmt/printf.h>
 
 #include <sand.h>
 

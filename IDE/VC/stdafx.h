@@ -42,7 +42,8 @@
 #include <misc/sdl_support.h>
 #include <misc/string_util.h>
 #include <misc/exceptions.h>
-#include <misc/format.h>
+#include <fmt/format.h>
+#include <fmt/printf.h>
 #include <misc/Random.h>
 
 #include <SoundPlayer.h>

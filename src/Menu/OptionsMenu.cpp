@@ -37,7 +37,7 @@
 
 #include <misc/Scaler.h>
 #include <misc/FileSystem.h>
-#include <misc/format.h>
+#include <fmt/printf.h>
 
 #include <algorithm>
 
