@@ -21,7 +21,7 @@
 #include <Trigger/ReinforcementTrigger.h>
 #include <Trigger/TimeoutTrigger.h>
 
-#include <misc/format.h>
+#include <fmt/printf.h>
 #include <misc/exceptions.h>
 
 #include <sand.h>

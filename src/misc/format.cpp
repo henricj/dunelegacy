@@ -1,8 +1,11 @@
-/*
- Formatting library for C++
+// Formatting library for C++
+//
+// Copyright (c) 2012 - 2016, Victor Zverovich
+// All rights reserved.
+//
+// For the license information refer to format.h.
 
- Copyright (c) 2012 - 2016, Victor Zverovich
- All rights reserved.
+#include "fmt/format-inl.h"
 
  Redistribution and use in source and binary forms, with or without
  modification, are permitted provided that the following conditions are met:
@@ -907,9 +910,9 @@ template struct fmt::internal::BasicData<void>;
 
 // Explicit instantiations for char.
 
-template void fmt::internal::FixedBuffer<char>::grow(std::size_t);
+template FMT_API char internal::thousands_sep(locale_provider *lp);
 
-template void fmt::internal::ArgMap<char>::init(const fmt::ArgList &args);
+template void basic_fixed_buffer<char>::grow(std::size_t);
 
 template FMT_API void fmt::internal::PrintfFormatter<char>::format(
   BasicWriter<char> &writer, CStringRef format);
@@ -924,23 +927,18 @@ template FMT_API int fmt::internal::CharTraits<char>::format_float(
 
 // Explicit instantiations for wchar_t.
 
-template void fmt::internal::FixedBuffer<wchar_t>::grow(std::size_t);
+template FMT_API wchar_t internal::thousands_sep(locale_provider *lp);
 
-template void fmt::internal::ArgMap<wchar_t>::init(const fmt::ArgList &args);
+template void basic_fixed_buffer<wchar_t>::grow(std::size_t);
 
 template FMT_API void fmt::internal::PrintfFormatter<wchar_t>::format(
     BasicWriter<wchar_t> &writer, WCStringRef format);
 
 template FMT_API int fmt::internal::CharTraits<wchar_t>::format_float(
     wchar_t *buffer, std::size_t size, const wchar_t *format,
-    unsigned width, int precision, double value);
+    int precision, double value);
 
 template int FMT_API fmt::internal::CharTraits<wchar_t>::format_float(
     wchar_t *buffer, std::size_t size, const wchar_t *format,
-    unsigned width, int precision, long double value);
-
-#endif  // FMT_HEADER_ONLY
-
-#ifdef _MSC_VER
-# pragma warning(pop)
-#endif
+    int precision, long double value);
+FMT_END_NAMESPACE
