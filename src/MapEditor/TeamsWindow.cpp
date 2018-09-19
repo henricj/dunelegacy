@@ -24,7 +24,7 @@
 
 #include <sand.h>
 
-#include <misc/format.h>
+#include <fmt/printf.h>
 
 #include <MapEditor/MapEditor.h>
 
