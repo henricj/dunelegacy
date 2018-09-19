@@ -27,7 +27,7 @@
 
 #include <misc/string_util.h>
 #include <misc/exceptions.h>
-#include <misc/format.h>
+#include <fmt/printf.h>
 
 #include <sand.h>
 

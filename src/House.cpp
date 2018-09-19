@@ -41,7 +41,7 @@
 #include <units/Harvester.h>
 
 #include <misc/exceptions.h>
-#include <misc/format.h>
+#include <fmt/printf.h>
 
 #include <algorithm>
 #include <numeric>

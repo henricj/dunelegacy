@@ -9,7 +9,7 @@
 #include <MapSeed.h>
 #include <ScreenBorder.h>
 
-#include <misc/format.h>
+#include <fmt/printf.h>
 #include <misc/exceptions.h>
 
 #include <sand.h>

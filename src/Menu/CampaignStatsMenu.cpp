@@ -22,7 +22,7 @@
 #include <FileClasses/GFXManager.h>
 #include <FileClasses/TextManager.h>
 #include <FileClasses/music/MusicPlayer.h>
-#include <misc/format.h>
+#include <fmt/printf.h>
 #include <House.h>
 #include <SoundPlayer.h>
 #include <Game.h>

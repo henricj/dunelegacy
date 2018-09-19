@@ -27,7 +27,7 @@
 #include <GUI/QstBox.h>
 #include <GUI/MsgBox.h>
 
-#include <misc/format.h>
+#include <fmt/printf.h>
 
 #include <cstdio>
 #include <utility>
