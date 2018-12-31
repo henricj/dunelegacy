@@ -945,6 +945,9 @@
     <ClInclude Include="..\..\..\SDL2\include\SDL2\close_code.h">
       <Filter>include</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\fixmath\fix32_support.h">
+      <Filter>include</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\AStarSearch.cpp">
