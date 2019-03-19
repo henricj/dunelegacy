@@ -193,26 +193,31 @@ void RadarView::switchRadarMode(bool bOn) {
     }
 }
 
-void RadarView::updateRadarSurface(int mapSizeX, int mapSizeY, int scale, int offsetX, int offsetY) {
+void RadarView::updateRadarSurface(int scale, int offsetX, int offsetY) {
+
+    // Lock radarSurface for direct access to the pixels
     sdl2::surface_lock lock{ radarSurface.get() };
-    for(int x = 0; x <  mapSizeX; x++) {
-        for(int y = 0; y <  mapSizeY; y++) {
 
-            Tile* pTile = currentGameMap->getTile(x,y);
+    auto map = currentGameMap;
 
-            /* Selecting the right color is handled in Tile::getRadarColor() */
-            Uint32 color = pTile->getRadarColor(pLocalHouse, ((currentRadarMode == RadarMode::RadarOn) || (currentRadarMode == RadarMode::AnimationRadarOff)));
-            color = MapRGBA(radarSurface->format, color);
+    auto radar_on = ((currentRadarMode == RadarMode::RadarOn) || (currentRadarMode == RadarMode::AnimationRadarOff));
 
-            for(int j = 0; j < scale; j++) {
-                Uint32* p = ((Uint32*) ((Uint8 *) radarSurface->pixels + (offsetY + scale*y + j) * radarSurface->pitch)) + (offsetX + scale*x);
+    map->for_all([&](Tile& t)
+    {
+        auto color = t.getRadarColor(pLocalHouse, radar_on);
+        color = MapRGBA(radarSurface->format, color);
 
-                for(int i = 0; i < scale; i++, p++) {
-                    // Do not use putPixel here to avoid overhead
-                    *p = color;
-                }
+        Uint8* const RESTRICT out = static_cast<Uint8 *>(radarSurface->pixels)
+            + (offsetY + scale * t.getLocation().y) * radarSurface->pitch;
+        const auto offset = (offsetX + scale * t.getLocation().x);
+
+        for (auto j = 0; j < scale; j++) {
+            auto p = reinterpret_cast<Uint32*>(out + j * radarSurface->pitch) + offset;
+
+            for (auto i = 0; i < scale; ++i, ++p) {
+                // Do not use putPixel here to avoid overhead
+                *p = color;
             }
         }
-    }
-#endif // 0
+    });
 }

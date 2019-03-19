@@ -296,7 +296,7 @@ void Harvester::destroy()
 
         Coord realPos(lround(realX), lround(realY));
         Uint32 explosionID = currentGame->randomGen.getRandOf({Explosion_Medium1, Explosion_Medium2});
-        currentGame->getExplosionList().push_back(new Explosion(explosionID, realPos, owner->getHouseID()));
+        currentGame->addExplosion(explosionID, realPos, owner->getHouseID());
 
         if(isVisible(getOwner()->getTeamID())) {
             screenborder->shakeScreen(18);

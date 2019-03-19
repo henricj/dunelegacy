@@ -358,8 +358,8 @@ public:
     void update() {
         if(numShakingCycles <= 0) return;
 
-            shakingOffset.x = getRandomInt(-offsetMax/2, offsetMax/2);
-            shakingOffset.y = getRandomInt(-offsetMax/2, offsetMax/2);
+        const auto offsetMax = std::min(TILESIZE - 1, numShakingCycles);
+        std::uniform_int_distribution<> uniform{ -offsetMax / 2, offsetMax / 2 };
 
         shakingOffset.x = uniform(generator_);
         shakingOffset.y = uniform(generator_);

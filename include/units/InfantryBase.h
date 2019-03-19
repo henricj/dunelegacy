@@ -80,7 +80,7 @@ protected:
     Sint8   oldTilePosition;    ///< The previous tile position (0 to 4)
 
     // drawing information
-    int     walkFrame;          ///< What frame to draw
+    int     walkFrame{};        ///< What frame to draw
 };
 
 #endif // INFANTRYBASE_H

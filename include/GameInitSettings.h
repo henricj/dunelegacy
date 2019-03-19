@@ -126,7 +126,7 @@ public:
         \param  multiplePlayersPerHouse     allow multiple players per house
         \param  gameOptions         the options for this game
     */
-    GameInitSettings(std::string mapfile, const std::string filedata, bool multiplePlayersPerHouse, const SettingsClass::GameOptionsClass& gameOptions);
+    GameInitSettings(std::string&& mapfile, std::string&& filedata, bool multiplePlayersPerHouse, const SettingsClass::GameOptionsClass& gameOptions);
 
     /**
         Constructor for specifying the start of a multiplayer custom map
@@ -136,14 +136,14 @@ public:
         \param  multiplePlayersPerHouse     allow multiple players per house
         \param  gameOptions         the options for this game
     */
-    GameInitSettings(std::string mapfile, std::string filedata, const std::string serverName, bool multiplePlayersPerHouse, const SettingsClass::GameOptionsClass& gameOptions);
+    GameInitSettings(std::string&& mapfile, std::string&& filedata, std::string&& serverName, bool multiplePlayersPerHouse, const SettingsClass::GameOptionsClass& gameOptions);
 
     /**
         Constructor for specifying the loading of a savegame. If the given filename contains no valid savegame
         an exception is thrown.
         \param  savegame    the name of the savegame
     */
-    explicit GameInitSettings(const std::string& savegame);
+    explicit GameInitSettings(std::string&& savegame);
 
     /**
         Constructor for specifying the loading of a network savegame. If the given filename contains no valid savegame
@@ -152,7 +152,7 @@ public:
         \param  filedata    the data of the savegame file
         \param  serverName  the name of the game server
     */
-    GameInitSettings(std::string savegame, std::string filedata, std::string serverName);
+    GameInitSettings(std::string&& savegame, std::string&& filedata, std::string&& serverName);
 
     /**
         Load the game init info from a stream

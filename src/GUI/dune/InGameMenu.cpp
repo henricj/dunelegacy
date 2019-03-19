@@ -135,11 +135,11 @@ void InGameMenu::onChildWindowClose(Window* pChildWindow) {
         std::string FileName = pLoadSaveWindow->getFilename();
         bool bSave = pLoadSaveWindow->isSaveWindow();
 
-        if(FileName != "") {
+        if(!FileName.empty()) {
             if(bSave == false) {
                 // load window
                 try {
-                    currentGame->setNextGameInitSettings(GameInitSettings(FileName));
+                    currentGame->setNextGameInitSettings(GameInitSettings(std::move(FileName)));
                 } catch (std::exception& e) {
                     // most probably the savegame file is not valid or from a different dune legacy version
                     openWindow(MsgBox::create(e.what()));
@@ -156,7 +156,7 @@ void InGameMenu::onChildWindowClose(Window* pChildWindow) {
             }
         }
     } else {
-        QstBox* pQstBox = dynamic_cast<QstBox*>(pChildWindow);
+        const auto pQstBox = dynamic_cast<QstBox*>(pChildWindow);
         if(pQstBox != nullptr) {
             if(pQstBox->getPressedButtonID() == QSTBOX_BUTTON1) {
                 if(pQstBox->getText() == _("Do you really want to quit this game?")) {

@@ -170,7 +170,7 @@ void SinglePlayerMenu::onChildWindowClose(Window* pChildWindow) {
         if(extension == "dls") {
 
             try {
-                startSinglePlayerGame( GameInitSettings(filename) );
+                startSinglePlayerGame( GameInitSettings(std::move(filename)) );
             } catch (std::exception& e) {
                 // most probably the savegame file is not valid or from a different dune legacy version
                 openWindow(MsgBox::create(e.what()));

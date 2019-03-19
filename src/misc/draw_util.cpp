@@ -130,6 +130,11 @@ void drawVLine(SDL_Surface *surface, int x, int y1, int y2, Uint32 color) {
     drawVLineNoLock(surface, x, y1, y2, color);
 }
 
+void drawRect(SDL_Surface *surface, int x1, int y1, int x2, int y2, Uint32 color) {
+    sdl2::surface_lock lock{ surface };
+
+    drawRectNoLock(surface, x1, y1, x2, y2, color);
+}
 
 void drawRectNoLock(SDL_Surface *surface, int x1, int y1, int x2, int y2, Uint32 color) {
     int min = x1;
@@ -165,21 +170,28 @@ sdl2::surface_ptr renderReadSurface(SDL_Renderer* renderer) {
         return nullptr;
     }
 
+    // Fix bug in SDL2 OpenGL Backend (SDL bug #2740 and #3350) in SDL version <= 2.0.4
+
     static bool need_workaround;
     static std::once_flag  flag;
     std::call_once(flag,
         [&]() {
             need_workaround = false;
 
-    if((version.major <= 2) && (version.minor <= 0) && (version.patch <= 4)) {
-        // Fix bug in SDL2 OpenGL Backend (SDL bug #2740 and #3350) in SDL version <= 2.0.4
-        SDL_RendererInfo rendererInfo;
-        SDL_GetRendererInfo(renderer, &rendererInfo);
-        if(strcmp(rendererInfo.name, "opengl") == 0) {
-            if(SDL_GetRenderTarget(renderer) != nullptr) {
-                return flipHSurface(pScreen.get());
-            }
-        }
+            SDL_version version;
+            SDL_GetVersion(&version);
+
+            if (version.major > 2 || version.minor > 0 || version.patch > 4)
+                return;
+
+            SDL_RendererInfo rendererInfo;
+            SDL_GetRendererInfo(renderer, &rendererInfo);
+            need_workaround = 0 == strcmp(rendererInfo.name, "opengl");
+        });
+
+    if(need_workaround) {
+        if (SDL_GetRenderTarget(renderer) != nullptr)
+            return flipHSurface(pScreen.get());
     }
 
     return pScreen;
@@ -242,8 +254,6 @@ sdl2::texture_ptr convertSurfaceToTexture(SDL_Surface* inSurface) {
         return nullptr;
     }
 
-    sdl2::surface_ptr surface_handle{ freeSrcSurface ? inSurface : nullptr };
-
     if(inSurface->w <= 0 || inSurface->h <= 0) {
         return nullptr;
     }
@@ -259,10 +269,6 @@ sdl2::texture_ptr convertSurfaceToTexture(SDL_Surface* inSurface) {
     }
 
     return pTexture;
-}
-
-sdl2::texture_ptr convertSurfaceToTexture(sdl2::surface_ptr inSurface) {
-    return convertSurfaceToTexture(inSurface.get(), false);
 }
 
 sdl2::surface_ptr scaleSurface(SDL_Surface *surf, double ratio) {
@@ -467,12 +473,11 @@ sdl2::surface_ptr flipHSurface(SDL_Surface* inputPic) {
     sdl2::surface_lock lock_input{ inputPic };
 
     //Now we can copy pixel by pixel
-    for(int y = 0; y < inputPic->h;y++) {
-        for(int x = 0; x < inputPic->w; x++) {
+    for(auto y = 0; y < inputPic->h;y++) {
+        for(auto x = 0; x < inputPic->w; x++) {
             putPixel(returnPic.get(), x, inputPic->h - y - 1, getPixel(inputPic, x, y));
         }
     }
-}
 
     return returnPic;
 }
@@ -489,7 +494,7 @@ sdl2::surface_ptr flipVSurface(SDL_Surface* inputPic) {
     if (inputPic->format->BitsPerPixel == 8) {
         returnPic = sdl2::surface_ptr{ SDL_CreateRGBSurface(0, inputPic->w, inputPic->h, 8, 0, 0, 0, 0) };
         if (returnPic == nullptr) {
-            THROW(std::runtime_error, "flipHSurface(): Cannot create new Picture!");
+            THROW(std::runtime_error, "flipVSurface(): Cannot create new Picture!");
         }
         SDL_SetPaletteColors(returnPic->format->palette, inputPic->format->palette->colors, 0, inputPic->format->palette->ncolors);
         Uint32 ckey;
@@ -504,15 +509,16 @@ sdl2::surface_ptr flipVSurface(SDL_Surface* inputPic) {
     else {
         returnPic = sdl2::surface_ptr{ SDL_CreateRGBSurface(0, inputPic->w, inputPic->h, 32, RMASK, GMASK, BMASK, AMASK) };
         if (returnPic == nullptr) {
-            THROW(std::runtime_error, "flipHSurface(): Cannot create new Picture!");
+            THROW(std::runtime_error, "flipVSurface(): Cannot create new Picture!");
         }
+    }
 
     sdl2::surface_lock lock_pic{ returnPic.get() };
     sdl2::surface_lock lock_input{ inputPic };
 
     //Now we can copy pixel by pixel
-    for(int y = 0; y < inputPic->h;y++) {
-        for(int x = 0; x < inputPic->w; x++) {
+    for(auto y = 0; y < inputPic->h;y++) {
+        for(auto x = 0; x < inputPic->w; x++) {
             putPixel(returnPic.get(), inputPic->w - x - 1, y, getPixel(inputPic, x, y));
         }
     }

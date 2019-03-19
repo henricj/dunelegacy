@@ -111,7 +111,9 @@ bool Ornithopter::canPass(int xPos, int yPos) const {
     return currentGameMap->tileExists(xPos, yPos) && canPassTile(currentGameMap->getTile(xPos, yPos));
 }
 
-
+bool Ornithopter::canPassTile(const Tile* pTile) const {
+    return pTile && (!pTile->hasAnAirUnit());
+}
 
 FixPoint Ornithopter::getDestinationAngle() const {
     if(timeLastShot > 0 && (currentGame->getGameCycleCount() - timeLastShot) < MILLI2CYCLES(1000)) {
@@ -130,4 +132,3 @@ bool Ornithopter::attack() {
     }
     return bAttacked;
 }
-

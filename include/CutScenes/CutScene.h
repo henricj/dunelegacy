@@ -89,10 +89,6 @@ protected:
     static std::unique_ptr<Wsafile> create_wsafile(const char* name1, const char* name2);
     static std::unique_ptr<Wsafile> create_wsafile(const char* name1, const char* name2, const char* name3);
 
-    static std::unique_ptr<Wsafile> create_wsafile(const char* name1);
-    static std::unique_ptr<Wsafile> create_wsafile(const char* name1, const char* name2);
-    static std::unique_ptr<Wsafile> create_wsafile(const char* name1, const char* name2, const char* name3);
-
 private:
     std::queue<std::unique_ptr<Scene>> scenes;  ///< List of all scenes
     bool quiting;                               ///< Quit the cutscene?

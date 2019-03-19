@@ -23,13 +23,12 @@
 #include <Definitions.h>
 #include <DataTypes.h>
 #include <fixmath/FixPoint.h>
-#include <misc/SDL2pp.h>
-#include <mmath.h>
 
 #include <globals.h>
 
-#include <algorithm>
 #include <bitset>
+
+#include <SDL2/SDL.h>
 
 // forward declarations
 class House;
@@ -189,17 +188,17 @@ protected:
 
     // constant for all objects of the same type
     Uint32   itemID = ItemID_Invalid; ///< The ItemID of this object.
-    int      radius = TILESIZE/2;     ///< The radius of this object
+    int      radius = TILESIZE/2;    ///< The radius of this object
 
-    bool     aStructure{};             ///< Is this a structure?
-    bool     aBuilder{};               ///< Is this a builder?
+    bool     aStructure{};           ///< Is this a structure?
+    bool     aBuilder{};             ///< Is this a builder?
 
-    bool     aUnit{};                  ///< Is this a unit?
-    bool     aFlyingUnit{};            ///< Is this a flying unit?
-    bool     aGroundUnit{};            ///< Is this a ground unit?
-    bool     infantry{};               ///< Is this an infantry unit?
+    bool     aUnit{};                ///< Is this a unit?
+    bool     aFlyingUnit{};          ///< Is this a flying unit?
+    bool     aGroundUnit{};          ///< Is this a ground unit?
+    bool     infantry{};             ///< Is this an infantry unit?
 
-    bool     canAttackStuff{};         ///< Can this unit/structure attack?
+    bool     canAttackStuff{};       ///< Can this unit/structure attack?
 
     // object state/properties
     Uint32   objectID;               ///< The unique object ID of this object
@@ -238,6 +237,7 @@ protected:
 
 private:
     FixPoint health;                 ///< The health of this object
+    void init();
 };
 
 

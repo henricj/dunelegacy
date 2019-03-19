@@ -133,19 +133,19 @@ void Tile::load(InputStream& stream) {
     }
 
     if (bHasAirUnits) {
-        assignedAirUnitList = stream.readUint32List();
+        stream.readUint32Vector(assignedAirUnitList);
     }
 
     if (bHasInfantry) {
-        assignedInfantryList = stream.readUint32List();
+        stream.readUint32Vector(assignedInfantryList);
     }
 
     if (bHasUndergroundUnits) {
-        assignedUndergroundUnitList = stream.readUint32List();
+        stream.readUint32Vector(assignedUndergroundUnitList);
     }
 
     if (bHasNonInfantryGroundObjects) {
-        assignedNonInfantryGroundObjectList = stream.readUint32List();
+        stream.readUint32Vector(assignedNonInfantryGroundObjectList);
     }
 }
 
@@ -210,19 +210,19 @@ void Tile::save(OutputStream& stream) const {
     }
 
     if (!assignedAirUnitList.empty()) {
-        stream.writeUint32List(assignedAirUnitList);
+        stream.writeUint32Vector(assignedAirUnitList);
     }
 
     if (!assignedInfantryList.empty()) {
-        stream.writeUint32List(assignedInfantryList);
+        stream.writeUint32Vector(assignedInfantryList);
     }
 
     if (!assignedUndergroundUnitList.empty()) {
-        stream.writeUint32List(assignedUndergroundUnitList);
+        stream.writeUint32Vector(assignedUndergroundUnitList);
     }
 
     if (!assignedNonInfantryGroundObjectList.empty()) {
-        stream.writeUint32List(assignedNonInfantryGroundObjectList);
+        stream.writeUint32Vector(assignedNonInfantryGroundObjectList);
     }
 }
 
@@ -482,13 +482,11 @@ void Tile::blitSelectionRects(int xPos, int yPos) const {
     if (isFoggedByTeam(pLocalHouse->getTeamID()))
         return;
 
-    const auto blitObjectSelectionRect =
-        [&](Uint32 objectID) {
+    forEachUnit([](Uint32 objectID) {
         auto pObject = currentGame->getObjectManager().getObject(objectID);
         if (pObject == nullptr) {
             return;
         }
-
         // possibly draw selection rectangle multiple times, e.g. for structures
         if (pObject->isVisible(pLocalHouse->getTeamID())) {
             if (pObject->isSelected()) {
@@ -499,26 +497,7 @@ void Tile::blitSelectionRects(int xPos, int yPos) const {
                 pObject->drawOtherPlayerSelectionBox();
             }
         }
-    };
-
-#if __cpp_coroutines
-    // draw underground selection rectangles
-
-    std::for_each(  assignedUndergroundUnitList.begin(),
-                    assignedUndergroundUnitList.end(),
-                    blitObjectSelectionRect);
-
-    std::for_each(  assignedInfantryList.begin(),
-                    assignedInfantryList.end(),
-                    blitObjectSelectionRect);
-
-    std::for_each(  assignedNonInfantryGroundObjectList.begin(),
-                    assignedNonInfantryGroundObjectList.end(),
-                    blitObjectSelectionRect);
-
-    std::for_each(  assignedAirUnitList.begin(),
-                    assignedAirUnitList.end(),
-                    blitObjectSelectionRect);
+    });
 }
 
 void Tile::update_impl()
@@ -556,6 +535,11 @@ void Tile::selectAllPlayersUnits(int houseID, ObjectBase** lastCheckedObject, Ob
 void Tile::selectAllPlayersUnitsOfType(int houseID, int itemID, ObjectBase** lastCheckedObject, ObjectBase** lastSelectedObject) {
     selectFilter(houseID, lastCheckedObject, lastSelectedObject,
         [=](ObjectBase* obj) { return  obj->getItemID() == itemID; });
+}
+
+template<typename Container, typename Val>
+static void erase_remove(Container& c, Val val) {
+    c.erase(std::remove(std::begin(c), std::end(c), val), std::end(c));
 }
 
 void Tile::unassignAirUnit(Uint32 objectID) {
@@ -605,24 +589,20 @@ void Tile::setType(int newType) {
 
             sandRegion = NONE_ID;
             if (hasAnUndergroundUnit()) {
-                auto iter = assignedUndergroundUnitList.begin();
-
                 auto units = std::move(assignedUndergroundUnitList);
                 assignedUndergroundUnitList.clear();
 
                 for (const auto object_id : units)
                 {
-                    const auto object = currentGame->getObjectManager().getObject(object_id);
+                    const auto current = currentGame->getObjectManager().getObject(object_id);
 
                     unassignUndergroundUnit(current->getObjectID());
                     current->destroy();
-                } while(iter != assignedUndergroundUnitList.end());
+                }
             }
 
             if (type == Terrain_Mountain) {
                 if (hasANonInfantryGroundObject()) {
-                    auto iter = assignedNonInfantryGroundObjectList.begin();
-
                     auto units = std::move(assignedNonInfantryGroundObjectList);
                     assignedNonInfantryGroundObjectList.clear();
 
@@ -656,16 +636,14 @@ void Tile::setType(int newType) {
 void Tile::squash() const {
     if (!hasInfantry()) return;
 
-    auto iter = assignedInfantryList.begin();
-    do {
-        InfantryBase* current = static_cast<InfantryBase*>(currentGame->getObjectManager().getObject(*iter));
-        ++iter;
+    for (const auto object_id : assignedInfantryList) {
+        auto current = static_cast<InfantryBase*>(currentGame->getObjectManager().getObject(object_id));
 
         if(current == nullptr)
             continue;
 
         current->squash();
-    } while(iter != assignedInfantryList.end());
+    }
 }
 
 
@@ -826,7 +804,6 @@ ObjectBase* Tile::getObjectWithID(Uint32 objectID) const {
     }
 
     return nullptr;
-#endif
 }
 
 void Tile::triggerSpiceBloom(House* pTrigger) {
@@ -1136,6 +1113,12 @@ Tile::TERRAINTILETYPE Tile::getTerrainTileImpl() const {
 }
 
 int Tile::getHideTile(int teamID) const {
+
+    const auto x = location.x;
+    const auto y = location.y;
+
+    const auto map = currentGameMap;
+
     // are all surrounding tiles explored?
 
     if (((map->tileExists(x, y - 1) == false) || (map->getTile(x, y - 1)->isExploredByTeam(teamID) == true))
@@ -1151,23 +1134,15 @@ int Tile::getHideTile(int teamID) const {
     bool down = (map->tileExists(x, y + 1) == false) || (map->getTile(x, y + 1)->isExploredByTeam(teamID) == false);
     bool left = (map->tileExists(x - 1, y) == false) || (map->getTile(x - 1, y)->isExploredByTeam(teamID) == false);
 
-    if (obj)
-        *lastCheckedObject = obj;
-
-    if (last_selected)
-        *lastSelectedObject = last_selected;
+    return (((int)up) | (right << 1) | (down << 2) | (left << 3));
 }
-#else
-template<typename Pred>
-void Tile::selectFilter(int houseID, ObjectBase** lastCheckedObject, ObjectBase** lastSelectedObject, Pred&& predicate)
-{
-    ConcatIterator<Uint32> iterator;
-    iterator.addList(assignedInfantryList);
-    iterator.addList(assignedNonInfantryGroundObjectList);
-    iterator.addList(assignedUndergroundUnitList);
-    iterator.addList(assignedAirUnitList);
 
 int Tile::getFogTile(int teamID) const {
+    const auto x = location.x;
+    const auto y = location.y;
+
+    const auto map = currentGameMap;
+
     // are all surrounding tiles fogged?
     if (((map->tileExists(x, y - 1) == false) || (map->getTile(x, y - 1)->isFoggedByTeam(teamID) == false))
         && ((map->tileExists(x + 1, y) == false) || (map->getTile(x + 1, y)->isFoggedByTeam(teamID) == false))
@@ -1182,11 +1157,7 @@ int Tile::getFogTile(int teamID) const {
     bool down = (map->tileExists(x, y + 1) == false) || (map->getTile(x, y + 1)->isFoggedByTeam(teamID) == true);
     bool left = (map->tileExists(x - 1, y) == false) || (map->getTile(x - 1, y)->isFoggedByTeam(teamID) == true);
 
-    if (obj)
-        *lastCheckedObject = obj;
-
-    if (last_selected)
-        *lastSelectedObject = last_selected;
+    return (((int)up) | (right << 1) | (down << 2) | (left << 3));
 }
 
 template<typename Pred>
@@ -1237,4 +1208,20 @@ void Tile::selectFilter(int houseID, ObjectBase** lastCheckedObject, ObjectBase*
 
     if (last_selected)
         *lastSelectedObject = last_selected;
+}
+
+template<typename Visitor>
+void Tile::forEachUnit(Visitor&& visitor) const
+{
+    for (auto i : assignedInfantryList)
+        visitor(i);
+
+    for (auto i : assignedNonInfantryGroundObjectList)
+        visitor(i);
+
+    for (auto i : assignedUndergroundUnitList)
+        visitor(i);
+
+    for (auto i : assignedAirUnitList)
+        visitor(i);
 }

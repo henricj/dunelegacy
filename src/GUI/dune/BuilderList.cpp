@@ -409,7 +409,7 @@ void BuilderList::onDown() {
     }
 }
 
-void BuilderList::onOrder() {
+void BuilderList::onOrder() const {
     StarPort* pStarport = dynamic_cast<StarPort*>(currentGame->getObjectManager().getObject(builderObjectID));
     if(pStarport) {
         pStarport->handlePlaceOrderClick();
@@ -432,7 +432,7 @@ Point BuilderList::getButtonPosition(int BtnNumber) const {
 
 }
 
-int BuilderList::getButton(int x, int y) {
+int BuilderList::getButton(int x, int y) const {
     BuilderBase* pBuilder = dynamic_cast<BuilderBase*>(currentGame->getObjectManager().getObject(builderObjectID));
 
     if(pBuilder) {

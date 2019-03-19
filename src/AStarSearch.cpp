@@ -27,11 +27,8 @@
 
 #define MAX_NODES_CHECKED   (128*128)
 
-AStarSearch::AStarSearch(Map* pMap, UnitBase* pUnit, Coord start, Coord destination) {
-    FixPoint rotationSpeed = 1.0_fix/(currentGame->objectData.data[pUnit->getItemID()][pUnit->getOriginalHouseID()].turnspeed * TILESIZE);
-
-    sizeX = pMap->getSizeX();
-    sizeY = pMap->getSizeY();
+AStarSearch::AStarSearch(Map* pMap)
+    : sizeX(pMap->getSizeX()), sizeY(pMap->getSizeY()), bestCoord{} { //, heap_compare_(mapData) {
 
     mapData.resize(sizeX * sizeY);
 
@@ -59,7 +56,8 @@ void AStarSearch::Search(Map* pMap, UnitBase* pUnit, Coord start, Coord destinat
     bestCoord = nullptr;
 
     //if the unit is not directly next to its destination or it is and the destination is unblocked
-    if ((heuristic > 1.5_fix) || (pUnit->canPass(destination.x, destination.y) == true)) {
+    if (heuristic <= 1.5_fix && pUnit->canPassTile(destinationTile) != true)
+        return;
 
     putOnOpenListIfBetter(pMap->getKey(start.x, start.y), start, nullptr, 0 , heuristic);
 

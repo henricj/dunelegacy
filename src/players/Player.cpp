@@ -80,11 +80,11 @@ void Player::logWarn(const char* fmt, ...) const {
     fprintf(stderr, "\n");
 }
 
-Random& Player::getRandomGen() {
+Random& Player::getRandomGen() const {
     return currentGame->randomGen;
 }
 
-const GameInitSettings& Player::getGameInitSettings() {
+const GameInitSettings& Player::getGameInitSettings() const {
     return currentGame->getGameInitSettings();
 }
 
