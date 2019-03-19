@@ -139,16 +139,16 @@ void Palace::doLaunchDeathhand(int x, int y) {
         return;
     }
 
-    FixPoint randAngle = 2 * FixPt_PI * currentGame->randomGen.randFixPoint();
+    const auto randAngle = 2 * FixPt_PI * currentGame->randomGen.randFixPoint();
     const auto radius = currentGame->randomGen.rand(0,10*TILESIZE);
     const auto deathOffX = lround(FixPoint::sin(randAngle) * radius);
     const auto deathOffY = lround(FixPoint::cos(randAngle) * radius);
 
-    auto centerPoint = getCenterPoint();
-    Coord dest( x * TILESIZE + TILESIZE/2 + deathOffX,
+    const auto centerPoint = getCenterPoint();
+    const Coord dest( x * TILESIZE + TILESIZE/2 + deathOffX,
                 y * TILESIZE + TILESIZE/2 + deathOffY);
 
-    bulletList.push_back(new Bullet(objectID, &centerPoint, &dest, Bullet_LargeRocket, PALACE_DEATHHAND_WEAPONDAMAGE, false, nullptr));
+    currentGameMap->add_bullet(objectID, &centerPoint, &dest, Bullet_LargeRocket, PALACE_DEATHHAND_WEAPONDAMAGE, false, nullptr);
     soundPlayer->playSoundAt(Sound_Rocket, getLocation());
 
     if(getOwner() != pLocalHouse) {

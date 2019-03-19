@@ -30,16 +30,12 @@
 #include <misc/draw_util.h>
 #include <misc/SDL2pp.h>
 
-GameInterface::GameInterface() : Window(0,0,0,0) {
-    objectID = NONE_ID;
-
+GameInterface::GameInterface() : Window(0,0,0,0), objectID(NONE_ID) {
     Window::setTransparentBackground(true);
 
     Window::setCurrentPosition(0,0,getRendererWidth(),getRendererHeight());
 
     Window::setWindowWidget(&windowWidget);
-
-    const auto gfx = pGFXManager;
 
     // top bar
     SDL_Texture* pTopBarTex = pGFXManager->getUIGraphic(UI_TopBar, pLocalHouse->getHouseID());

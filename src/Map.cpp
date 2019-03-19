@@ -644,3 +644,45 @@ void Map::createSpiceField(Coord location, int radius, bool centerIsThickSpice) 
         });
 }
 
+Map::BoxOffsets::BoxOffsets(int size, Coord box)
+{
+    if (size > static_cast<int>(box_sets_.size()))
+        box_sets_.resize(size);
+
+    for (auto depth = 1; depth <= size; ++depth) {
+
+        auto& set = box_sets_[depth - 1];
+
+        if (!set.empty())
+            return;
+
+        const auto border_length = 2 * (2 * depth + box.x - 1 + 2 * depth + box.y - 1);
+        set.reserve(border_length);
+
+        for (auto i = -depth; i < depth + box.y; ++i)
+        {
+            set.emplace_back(-depth, i); // Left
+            set.emplace_back(depth + box.x - 1, i); // Right
+        }
+
+        // We skip the corners since they were already handled above.
+        for (auto i = -depth + 1; i < depth + box.x - 1; ++i)
+        {
+            set.emplace_back(i, -depth); // Top
+            set.emplace_back(i, depth + box.y - 1); // Bottom
+        }
+
+        assert(border_length == set.size());
+    }
+}
+
+void Map::init_box_sets()
+{
+    auto size = std::max(sizeX, sizeY);
+
+    offsets_ = std::make_unique<BoxOffsets>(size);
+    offsets_2x2_ = std::make_unique<BoxOffsets>(size, Coord(2, 2));
+    offsets_2x3_ = std::make_unique<BoxOffsets>(size, Coord(2, 3));
+    offsets_3x2_ = std::make_unique<BoxOffsets>(size, Coord(3, 2));
+    offsets_3x3_ = std::make_unique<BoxOffsets>(size, Coord(3, 3));
+}

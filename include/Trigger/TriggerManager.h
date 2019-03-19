@@ -65,10 +65,11 @@ public:
         This method returns a list of all the managed triggers.
         \return a list of all the triggers
     */
-    const std::list<std::unique_ptr<Trigger> >& getTriggers() const { return triggers; }
+    const std::deque<std::unique_ptr<Trigger>>& getTriggers() const { return triggers; }
 
 private:
-    std::list<std::unique_ptr<Trigger> > triggers;  ///< list of all triggers. sorted by the time when they shall be triggered.
+    std::deque<std::unique_ptr<Trigger>> triggers;  ///< list of all triggers. sorted by the time when they shall be triggered.
+    std::vector<std::unique_ptr<Trigger>> active_trigger;
 
     typedef enum {
         Type_ReinforcementTrigger = 1,      ///< the trigger is of type ReinforcementTrigger
@@ -78,16 +79,16 @@ private:
     /**
         Helper method for saving one trigger.
         \param  stream      the stream to save to
-        \param  t           pointer to the trigger to save
+        \param  t           shared pointer to the trigger to save
     */
-    void saveTrigger(OutputStream& stream, const Trigger* t) const;
+    static void saveTrigger(OutputStream& stream, const Trigger* t);
 
     /**
         Helper method for loading one trigger
         \param  stream  stream to load from
         \return a shared pointer to the loaded trigger
     */
-    std::unique_ptr<Trigger> loadTrigger(InputStream& stream);
+    std::unique_ptr<Trigger> loadTrigger(InputStream& stream) const;
 };
 
 #endif // TRIGGERMANAGER_H

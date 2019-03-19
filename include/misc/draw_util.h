@@ -40,6 +40,7 @@ void drawVLineNoLock(SDL_Surface *surface, int x, int y1, int y2, Uint32 color);
 void drawHLine(SDL_Surface *surface, int x1, int y, int x2, Uint32 color);
 void drawVLine(SDL_Surface *surface, int x, int y1, int y2, Uint32 color);
 
+void drawRectNoLock(SDL_Surface *surface, int x1, int y1, int x2, int y2, Uint32 color);
 void drawRect(SDL_Surface *surface, int x1, int y1, int x2, int y2, Uint32 color);
 
 inline void setRenderDrawColor(SDL_Renderer* renderer, Uint32 color) {

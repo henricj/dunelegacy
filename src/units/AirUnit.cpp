@@ -34,19 +34,19 @@
 
 AirUnit::AirUnit(House* newOwner) : UnitBase(newOwner)
 {
-    AirUnit::init();
+    AirUnit::initAirUnit();
 
     currentMaxSpeed = 2;
 }
 
 AirUnit::AirUnit(InputStream& stream) : UnitBase(stream)
 {
-    AirUnit::init();
+    AirUnit::initAirUnit();
 
     currentMaxSpeed = stream.readFixPoint();
 }
 
-void AirUnit::init()
+void AirUnit::initAirUnit()
 {
     aFlyingUnit = true;
 }

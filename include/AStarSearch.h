@@ -26,7 +26,7 @@
 class UnitBase;
 class Map;
 
-class AStarSearch {
+class AStarSearch final {
 public:
     AStarSearch(Map* pMap);
     ~AStarSearch();
@@ -36,10 +36,9 @@ public:
     AStarSearch& operator=(const AStarSearch &) = delete;
     AStarSearch& operator=(AStarSearch &&) = delete;
 
-    std::list<Coord> getFoundPath() {
-        std::list<Coord> path;
+    void Search(Map * pMap, UnitBase * pUnit, Coord start, Coord destination);
 
-    bool getFoundPath(Map * pMap, std::vector<Coord>& path) const;;
+    bool getFoundPath(Map * pMap, std::vector<Coord>& path) const;
 
 private:
     struct TileData {

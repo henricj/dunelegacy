@@ -25,30 +25,40 @@ TriggerManager::TriggerManager() = default;
 
 TriggerManager::~TriggerManager() = default;
 
-void TriggerManager::save(OutputStream& stream) const
-{
+void TriggerManager::save(OutputStream& stream) const {
     stream.writeUint32(triggers.size());
     for(const auto& pTrigger : triggers) {
         saveTrigger(stream, pTrigger.get());
     }
 }
 
-void TriggerManager::load(InputStream& stream)
-{
+void TriggerManager::load(InputStream& stream) {
     const auto numTriggers = stream.readUint32();
 
-    for (auto i = 0u; i < numTriggers; i++)
-    {
+    for (auto i = 0u; i < numTriggers; i++) {
         triggers.push_back(loadTrigger(stream));
     }
 }
 
 void TriggerManager::trigger(Uint32 CycleNumber)
 {
-    while((triggers.empty() == false) && (triggers.front()->getCycleNumber() == CycleNumber)) {
-        std::unique_ptr<Trigger> pCurrentTrigger = std::move(triggers.front());
-        triggers.pop_front();
-        pCurrentTrigger->trigger();
+    if (triggers.empty()) return;
+
+    auto clear = true;
+
+    for (auto it = std::begin(triggers); it != std::end(triggers); ++it)
+    {
+        if ((*it)->getCycleNumber() != CycleNumber)
+        {
+            if (it != std::begin(triggers))
+                triggers.erase(std::begin(triggers), it);
+
+            clear = false;
+
+            break;
+        }
+
+        active_trigger.push_back(std::move(*it));
     }
 
     if (clear)
@@ -72,7 +82,7 @@ void TriggerManager::addTrigger(std::unique_ptr<Trigger> newTrigger)
     triggers.push_back(std::move(newTrigger));
 }
 
-void TriggerManager::saveTrigger(OutputStream& stream, const Trigger* t) const
+void TriggerManager::saveTrigger(OutputStream& stream, const Trigger* t)
 {
     if(dynamic_cast<const ReinforcementTrigger*>(t)) {
         stream.writeUint32(TriggerManager::Type_ReinforcementTrigger);
@@ -83,7 +93,7 @@ void TriggerManager::saveTrigger(OutputStream& stream, const Trigger* t) const
     }
 }
 
-std::unique_ptr<Trigger> TriggerManager::loadTrigger(InputStream& stream)
+std::unique_ptr<Trigger> TriggerManager::loadTrigger(InputStream& stream) const
 {
     const auto type = stream.readUint32();
 

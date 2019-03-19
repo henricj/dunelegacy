@@ -66,7 +66,8 @@ public:
             default:                    return 1.0_fix;
         }
 #endif // 0
-        }
+private:
+    static const FixPoint terrain_difficulty[Terrain_SpecialBloom + 1];   // TODO:: get better constant...
 };
 
 #endif // TRACKEDUNIT_H

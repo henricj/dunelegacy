@@ -47,7 +47,7 @@ void ChatManager::draw(Point position)
     int maxTimeSizeY = 0;
     for(const auto& chatMessage : chatMessages) {
         if(chatMessage.messageType == MSGTYPE_NORMAL) {
-            maxUsernameSizeY = std::max(maxUsernameSizeY, getWidth(chatMessage.pUsernameOrPictureTexture));
+            maxUsernameSizeY = std::max(maxUsernameSizeY, getWidth(chatMessage.pUsernameOrPictureTexture.get()));
             maxTimeSizeY = std::max(maxTimeSizeY, getWidth(chatMessage.pTimeTexture.get()));
         }
     }
@@ -63,11 +63,11 @@ void ChatManager::draw(Point position)
             SDL_Rect tmpDest1 = timeDest;
             SDL_RenderCopy(renderer, chatMessage.pTimeTexture.get(), nullptr, &tmpDest1);
 
-            usernameOrPictureDest.w = getWidth(chatMessage.pUsernameOrPictureTexture);
-            usernameOrPictureDest.h = getHeight(chatMessage.pUsernameOrPictureTexture);
-            usernameOrPictureDest.x = position.x + LEFT_BORDER_WIDTH + maxUsernameSizeY - getWidth(chatMessage.pUsernameOrPictureTexture);
+            usernameOrPictureDest.w = getWidth(chatMessage.pUsernameOrPictureTexture.get());
+            usernameOrPictureDest.h = getHeight(chatMessage.pUsernameOrPictureTexture.get());
+            usernameOrPictureDest.x = position.x + LEFT_BORDER_WIDTH + maxUsernameSizeY - getWidth(chatMessage.pUsernameOrPictureTexture.get());
             SDL_Rect tmpDest2 = usernameOrPictureDest;
-            SDL_RenderCopy(renderer, chatMessage.pUsernameOrPictureTexture, nullptr, &tmpDest2);
+            SDL_RenderCopy(renderer, chatMessage.pUsernameOrPictureTexture.get(), nullptr, &tmpDest2);
 
             messageDest.w = getWidth(chatMessage.pMessageTexture.get());
             messageDest.h = getHeight(chatMessage.pMessageTexture.get());
@@ -82,14 +82,14 @@ void ChatManager::draw(Point position)
             messageDest.h = getHeight(chatMessage.pMessageTexture.get());
         } else {
             // MSGTYPE_PICTURE
-            SDL_Rect pictureDest = calcDrawingRect(chatMessage.pUsernameOrPictureTexture, position.x + LEFT_BORDER_WIDTH - 30, messageDest.y, HAlign::Right);
+            SDL_Rect pictureDest = calcDrawingRect(chatMessage.pUsernameOrPictureTexture.get(), position.x + LEFT_BORDER_WIDTH - 30, messageDest.y, HAlign::Right);
             SDL_Rect infoDest = calcDrawingRect(chatMessage.pMessageTexture.get(), position.x + LEFT_BORDER_WIDTH - 20, messageDest.y);
             int maxHeight = std::max(pictureDest.h, infoDest.h);
 
             pictureDest.y = pictureDest.y + (maxHeight - pictureDest.h)/2;
             infoDest.y = infoDest.y + (maxHeight - infoDest.h)/2;
 
-            SDL_RenderCopy(renderer, chatMessage.pUsernameOrPictureTexture, nullptr, &pictureDest);
+            SDL_RenderCopy(renderer, chatMessage.pUsernameOrPictureTexture.get(), nullptr, &pictureDest);
             SDL_RenderCopy(renderer, chatMessage.pMessageTexture.get(), nullptr, &infoDest);
 
             messageDest.h = maxHeight + 10;
@@ -167,14 +167,37 @@ void ChatManager::addHintMessage(const std::string& message, SDL_Texture* pTextu
 
     int height = lines.size() * DuneStyle::getInstance().getTextHeight(12) + 4;
 
-    auto pMessageTexture = convertSurfaceToTexture(DuneStyle::getInstance().createLabelSurface( width, height, lines, FONT_STD10, Alignment_Left, COLOR_WHITE, COLOR_TRANSPARENT), true);
 
-    sdl2::texture_ptr pMessageTexture = convertSurfaceToTexture(DuneStyle::getInstance().createLabelSurface( width, height, lines, 12, Alignment_Left, COLOR_WHITE, COLOR_TRANSPARENT));
+    const auto pMessageTexture = convertSurfaceToTexture(DuneStyle::getInstance().createLabelSurface( width, height, lines, 12, Alignment_Left, COLOR_WHITE, COLOR_TRANSPARENT));
 
     chatMessages.emplace_back(std::move(pMessageTexture), pTexture, SDL_GetTicks(), MSGTYPE_PICTURE );
 
     // delete old messages if there are too many messages on the screen
     while(chatMessages.size() > MAX_NUMBEROFMESSAGES) {
+        chatMessages.pop_front();
+    }
+}
+
+SDL_Texture* ChatManager::getUserTexture(std::string username)
+{
+    const auto iterator = user_textures.find(username);
+
+    if (iterator != std::end(user_textures))
+        return (*iterator).second.get();
+
+    auto pUsernameTexture = pFontManager->createTextureWithText(username + ": ", COLOR_WHITE, FONT_STD10);
+
+    const auto texture = pUsernameTexture.get();
+
+    user_textures.emplace_hint(iterator, std::move(username), std::move(pUsernameTexture));
+
+    return texture;
+}
+
+void ChatManager::prune_messages()
+{
+    // delete old messages if there are too many messages on the screen
+    while (chatMessages.size() >= MAX_NUMBEROFMESSAGES) {
         chatMessages.pop_front();
     }
 }

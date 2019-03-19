@@ -567,10 +567,4 @@ private:
     std::array<std::array<sdl2::texture_ptr, NUM_HOUSES>, NUM_MAPCHOICEPIECES> mapChoicePiecesTex;
 };
 
-inline bool operator==(const GFXManager::Zoomable& z, nullptr_t) { return z.empty(); }
-inline bool operator==(nullptr_t, const GFXManager::Zoomable& z) { return z.empty(); }
-inline bool operator!=(const GFXManager::Zoomable& z, nullptr_t) { return !z.empty(); }
-inline bool operator!=(nullptr_t, const GFXManager::Zoomable& z) { return !z.empty(); }
-
-
 #endif // GFXMANAGER_H

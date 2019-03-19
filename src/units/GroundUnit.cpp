@@ -245,7 +245,7 @@ void GroundUnit::handleSendToRepairClick() {
 
 void GroundUnit::doRepair() noexcept {
     if(getHealth() >= getMaxHealth()) return;
-    
+
     //find a repair yard to return to
 
     FixPoint closestLeastBookedRepairYardDistance = 1000000;
@@ -265,9 +265,8 @@ void GroundUnit::doRepair() noexcept {
         }
     }
 
-        if(pBestRepairYard) {
-            requestCarryall();
-            doMove2Object(pBestRepairYard);
-        }
+    if (pBestRepairYard) {
+        requestCarryall();
+        doMove2Object(pBestRepairYard);
     }
 }

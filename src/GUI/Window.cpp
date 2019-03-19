@@ -298,10 +298,6 @@ void Window::setBackground(sdl2::texture_unique_or_nonowning_ptr pBackground) {
     }
 }
 
-void Window::setBackground(sdl2::texture_ptr pBackground) {
-    setBackground(pBackground.release(), true);
-}
-
 void Window::setTransparentBackground(bool bTransparent) {
     bTransparentBackground = bTransparent;
 }
