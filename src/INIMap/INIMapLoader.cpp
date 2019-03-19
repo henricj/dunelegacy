@@ -434,7 +434,7 @@ void INIMapLoader::loadHouses()
         int quota = inifile->getIntValue(houseName,"Quota",0);
 
         pGame->house[houseID] = std::make_unique<House>(houseID, startingCredits, maxUnits, houseInfo.team, quota);
-        House* pNewHouse = pGame->house[houseID].get();
+        const auto pNewHouse = pGame->house[houseID].get();
 
         // add players
         for(const auto& playerInfo : houseInfo.playerInfoList) {
@@ -452,7 +452,7 @@ void INIMapLoader::loadHouses()
 
             if( ((pGame->getGameInitSettings().getGameType() != GameType::CustomMultiplayer) && (dynamic_cast<HumanPlayer*>(pPlayer.get()) != nullptr))
                 || (playerInfo.playerName == pGame->getLocalPlayerName())) {
-                pLocalHouse = pNewHouse.get();
+                pLocalHouse = pNewHouse;
                 pLocalPlayer = dynamic_cast<HumanPlayer*>(pPlayer.get());
             }
 
@@ -903,46 +903,38 @@ void INIMapLoader::loadView()
     \return the house specified by house
 */
 House* INIMapLoader::getOrCreateHouse(int houseID) {
-    if(pGame->house[houseID]) {
-        return pGame->house[houseID].get();
+    auto& pHouse = pGame->house[houseID];
+
+    if(pHouse)
+        return pHouse.get();
+
+    Uint8 team = 0;
+    if(pGame->gameType == GameType::Campaign || pGame->gameType == GameType::Skirmish) {
+        // in campaign all "other" units are in the same team as the AI
+        team = 2;
+    }
+
+    int maxUnits = 0;
+    if(currentGame->getGameInitSettings().getGameOptions().maximumNumberOfUnitsOverride >= 0) {
+        maxUnits = currentGame->getGameInitSettings().getGameOptions().maximumNumberOfUnitsOverride;
     } else {
-        Uint8 team = 0;
-        if(pGame->gameType == GameType::Campaign || pGame->gameType == GameType::Skirmish) {
-            // in campaign all "other" units are in the same team as the AI
-            team = 2;
-        }
+        maxUnits = std::max(25, 25*(currentGameMap->getSizeX()*currentGameMap->getSizeY())/(64*64));
+    }
+    auto pNewHouse = std::make_unique<House>(houseID, 0, maxUnits, team, 0);
 
-        int maxUnits = 0;
-        if(currentGame->getGameInitSettings().getGameOptions().maximumNumberOfUnitsOverride >= 0) {
-            maxUnits = currentGame->getGameInitSettings().getGameOptions().maximumNumberOfUnitsOverride;
-        } else {
-            maxUnits = std::max(25, 25*(currentGameMap->getSizeX()*currentGameMap->getSizeY())/(64*64));
-        }
-        auto pNewHouse = std::make_unique<House>(houseID, 0, maxUnits, team, 0);
+    const auto& houseInfoList = pGame->getGameInitSettings().getHouseInfoList();
 
-        const GameInitSettings::HouseInfoList& houseInfoList = pGame->getGameInitSettings().getHouseInfoList();
+    for(const auto& houseInfo : houseInfoList) {
+        if(houseInfo.houseID != houseID) continue;
 
-        for(const GameInitSettings::HouseInfo& houseInfo : houseInfoList) {
-            if(houseInfo.houseID == houseID) {
-                for(const GameInitSettings::PlayerInfo& playerInfo : houseInfo.playerInfoList) {
-                    const PlayerFactory::PlayerData* pPlayerData = PlayerFactory::getByPlayerClass(playerInfo.playerClass);
-                    if(pPlayerData == nullptr) {
-                        logWarning("Cannot load '" + playerInfo.playerClass + "', using default AI player!");
-                        pPlayerData = PlayerFactory::getByPlayerClass(DEFAULTAIPLAYERCLASS);
-                        if(pPlayerData == nullptr) {
-                            logWarning("Cannot load default AI player!");
-                            continue;
-                        }
-                    }
-
-                    auto pPlayer = pPlayerData->create(pNewHouse.get(), playerInfo.playerName);
-
-                    if(playerInfo.playerName == pGame->getLocalPlayerName()) {
-                        pLocalHouse = pNewHouse.get();
-                        pLocalPlayer = dynamic_cast<HumanPlayer*>(pPlayer.get());
-                    }
-
-                    pNewHouse->addPlayer(std::move(pPlayer));
+        for(const auto& playerInfo : houseInfo.playerInfoList) {
+            auto pPlayerData = PlayerFactory::getByPlayerClass(playerInfo.playerClass);
+            if(pPlayerData == nullptr) {
+                logWarning("Cannot load '" + playerInfo.playerClass + "', using default AI player!");
+                pPlayerData = PlayerFactory::getByPlayerClass(DEFAULTAIPLAYERCLASS);
+                if(pPlayerData == nullptr) {
+                    logWarning("Cannot load default AI player!");
+                    continue;
                 }
             }
 
@@ -955,6 +947,7 @@ House* INIMapLoader::getOrCreateHouse(int houseID) {
 
             pNewHouse->addPlayer(std::move(pPlayer));
         }
+
         break;
     }
 
@@ -967,9 +960,9 @@ House* INIMapLoader::getOrCreateHouse(int houseID) {
         }
         */
 
-        pGame->house[houseID] = std::move(pNewHouse);
-        return pGame->house[houseID].get();
-    }
+    pHouse = std::move(pNewHouse);
+
+    return pHouse.get();
 }
 
 HOUSETYPE INIMapLoader::getHouseID(const std::string& name) {

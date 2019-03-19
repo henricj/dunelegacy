@@ -21,7 +21,7 @@
 
 
 #include <FileClasses/Vocfile.h>
-#include <misc/sdl_support.h>
+#include <misc/SDL2pp.h>
 
 #include <string>
 #include <SDL2/SDL_mixer.h>
@@ -285,8 +285,6 @@ sdl2::mix_chunk_ptr LoadVOC_RW(SDL_RWops* rwop) {
     if(rwop == nullptr) {
         THROW(std::invalid_argument, "LoadVOC_RW(): rwop == nullptr!");
     }
-
-    sdl2::RWop_ptr cleanup_rwop{ freesrc ? rwop : nullptr };
 
     // Read voc file
     Uint32 RawData_Frequency;

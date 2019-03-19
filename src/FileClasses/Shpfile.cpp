@@ -82,8 +82,6 @@ sdl2::surface_ptr Shpfile::getPicture(Uint32 indexOfFile)
 
     std::vector<unsigned char> DecodeDestination;
 
-    std::vector<unsigned char> DecodeDestination;
-
     /* size and also checksum */
     Uint16 size = SDL_SwapLE16(*reinterpret_cast<const Uint16 *>(Fileheader + 8));
 
@@ -145,11 +143,12 @@ sdl2::surface_ptr Shpfile::getPicture(Uint32 indexOfFile)
     palette.applyToSurface(pic.get());
     sdl2::surface_lock lock{ pic.get() };
 
-    char* const RESTRICT out = static_cast<char*>(pic->pixels);
+    const unsigned char * RESTRICT const in = ImageOut.get();
+    char * const RESTRICT out = static_cast<char*>(pic->pixels);
 
     //Now we can copy line by line
-    for(unsigned int y = 0u; y < sizeY; ++y) {
-        memcpy( static_cast<char*>(pic->pixels) + y * pic->pitch , ImageOut.get() + y * sizeX, sizeX);
+    for(auto y = 0u; y < sizeY; ++y) {
+        memcpy( out + y * pic->pitch , in + y * sizeX, sizeX);
     }
 
     return pic;
@@ -354,7 +353,7 @@ std::unique_ptr<Animation> Shpfile::getAnimation(unsigned int startindex,unsigne
         }
     }
 
-    return animation.release();
+    return animation;
 }
 
 /// Helper method for reading the index

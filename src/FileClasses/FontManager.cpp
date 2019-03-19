@@ -43,20 +43,16 @@ int FontManager::getTextHeight(unsigned int fontSize) {
 }
 
 sdl2::surface_ptr FontManager::createSurfaceWithText(const std::string& text, Uint32 color, unsigned int fontSize) {
-    Font* pFont = getFont(fontSize);
+    const auto pFont = getFont(fontSize);
 
-    int width = pFont->getTextWidth(text);
-    int height = pFont->getTextHeight();
+    const auto width = pFont->getTextWidth(text);
+    const auto height = pFont->getTextHeight();
     sdl2::surface_ptr pic = sdl2::surface_ptr{ SDL_CreateRGBSurface(0, width, height, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK) };
 
     SDL_SetSurfaceBlendMode(pic.get(), SDL_BLENDMODE_BLEND);
     SDL_FillRect(pic.get(), nullptr, SDL_MapRGBA(pic->format, 0, 0, 0, 0));
 
-<<<<<<< HEAD
     pFont->drawTextOnSurface(pic.get(),text,color);
-=======
-    font->drawTextOnSurface(pic.get(),text, color);
->>>>>>> Use unique_ptr<> instead of shard_ptr<> for FontManager::fonts.
 
     return pic;
 }
@@ -81,9 +77,9 @@ sdl2::surface_ptr FontManager::createSurfaceWithMultilineText(const std::string&
 
     const auto pFont = getFont(fontSize);
 
-    int lineHeight = pFont->getTextHeight();
-    int width = pFont->getTextWidth(text);
-    int height = lineHeight * textLines.size() + (lineHeight * (textLines.size()-1))/2;
+    const auto lineHeight = pFont->getTextHeight();
+    const auto width = pFont->getTextWidth(text);
+    const int height = lineHeight * textLines.size() + (lineHeight * (textLines.size()-1))/2;
 
     // create new picture surface
     auto pic = sdl2::surface_ptr{ SDL_CreateRGBSurfaceWithFormat(0, width, height, SCREEN_BPP, SCREEN_FORMAT) };
@@ -94,11 +90,11 @@ sdl2::surface_ptr FontManager::createSurfaceWithMultilineText(const std::string&
     SDL_SetSurfaceBlendMode(pic.get(), SDL_BLENDMODE_BLEND);
     SDL_FillRect(pic.get(), nullptr, SDL_MapRGBA(pic->format, 0, 0, 0, 0));
 
-    int currentLineNum = 0;
-    for(const std::string& textLine : textLines) {
+    auto currentLineNum = 0;
+    for(const auto& textLine : textLines) {
         auto tmpSurface = createSurfaceWithText(textLine, color, fontSize);
 
-        SDL_Rect dest = calcDrawingRect(tmpSurface.get(), bCentered ? width/2 : 0, currentLineNum*lineHeight, bCentered ? HAlign::Center : HAlign::Left, VAlign::Top);
+        auto dest = calcDrawingRect(tmpSurface.get(), bCentered ? width/2 : 0, currentLineNum*lineHeight, bCentered ? HAlign::Center : HAlign::Left, VAlign::Top);
         SDL_BlitSurface(tmpSurface.get(),nullptr,pic.get(),&dest);
 
         currentLineNum++;

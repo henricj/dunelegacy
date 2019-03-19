@@ -50,23 +50,23 @@ GameInitSettings::GameInitSettings(HOUSETYPE newHouseID, int newMission, const S
     randomSeed = getRandomInt();
 }
 
-GameInitSettings::GameInitSettings(const std::string& mapfile, const std::string& filedata, bool multiplePlayersPerHouse, const SettingsClass::GameOptionsClass& gameOptions)
- : gameType(GameType::CustomGame), filename(mapfile), filedata(filedata), multiplePlayersPerHouse(multiplePlayersPerHouse), gameOptions(gameOptions) {
+GameInitSettings::GameInitSettings(std::string&& mapfile, std::string&& filedata, bool multiplePlayersPerHouse, const SettingsClass::GameOptionsClass& gameOptions)
+ : gameType(GameType::CustomGame), filename(std::move(mapfile)), filedata(std::move(filedata)), multiplePlayersPerHouse(multiplePlayersPerHouse), gameOptions(gameOptions) {
     randomSeed = getRandomInt();
 }
 
-GameInitSettings::GameInitSettings(const std::string& mapfile, const std::string& filedata, const std::string& serverName, bool multiplePlayersPerHouse, const SettingsClass::GameOptionsClass& gameOptions)
- : gameType(GameType::CustomMultiplayer), filename(mapfile), filedata(filedata), servername(serverName), multiplePlayersPerHouse(multiplePlayersPerHouse), gameOptions(gameOptions) {
+GameInitSettings::GameInitSettings(std::string&& mapfile, std::string&& filedata, std::string&& serverName, bool multiplePlayersPerHouse, const SettingsClass::GameOptionsClass& gameOptions)
+ : gameType(GameType::CustomMultiplayer), filename(std::move(mapfile)), filedata(std::move(filedata)), servername(std::move(serverName)), multiplePlayersPerHouse(multiplePlayersPerHouse), gameOptions(gameOptions) {
     randomSeed = getRandomInt();
 }
 
-GameInitSettings::GameInitSettings(const std::string& savegame)
+GameInitSettings::GameInitSettings(std::string&& savegame)
  : gameType(GameType::LoadSavegame) {
     checkSaveGame(savegame);
-    filename = savegame;
+    filename = std::move(savegame);
 }
 
-GameInitSettings::GameInitSettings(const std::string& savegame, const std::string& filedata, const std::string& serverName)
+GameInitSettings::GameInitSettings(std::string&& savegame, std::string&& filedata, std::string&& serverName)
  : gameType(GameType::LoadMultiplayer), filename(savegame), filedata(filedata), servername(serverName) {
     IMemoryStream memStream(filedata.c_str(), filedata.size());
     checkSaveGame(memStream);

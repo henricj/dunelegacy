@@ -135,8 +135,8 @@ bool Saboteur::canAttack(const ObjectBase* object) const {
 void Saboteur::destroy()
 {
     Coord realPos(lround(realX), lround(realY));
-    Uint32 explosionID = currentGame->randomGen.getRandOf({Explosion_Medium1, Explosion_Medium2});
-    currentGame->getExplosionList().push_back(new Explosion(explosionID, realPos, owner->getHouseID()));
+    const auto explosionID = currentGame->randomGen.getRandOf({Explosion_Medium1, Explosion_Medium2});
+    currentGame->addExplosion(explosionID, realPos, owner->getHouseID());
 
     if(isVisible(getOwner()->getTeamID())) {
         soundPlayer->playSoundAt(Sound_ExplosionLarge,location);

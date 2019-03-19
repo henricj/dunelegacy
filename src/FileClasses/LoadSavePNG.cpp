@@ -22,20 +22,6 @@
 #include <Colors.h>
 #include <globals.h>
 
-#include <misc/sdl_support.h>
-
-#include <cstdio>
-
-
-struct free_deleter
-{
-    void operator()(void* p) const { std::free(p); }
-};
-
-typedef std::unique_ptr<unsigned char, free_deleter> lodepng_ptr;
-
-// TODO: Whis is this code using lodepng's C API, instead of the C++ API?
-
 struct free_deleter
 {
     void operator()(void* p) const { std::free(p); }
@@ -63,7 +49,7 @@ sdl2::surface_ptr LoadPNG_RW(SDL_RWops* RWop) {
             THROW(std::runtime_error, "LoadPNG_RW(): Cannot determine size of this *.png-File!");
         }
 
-        size_t filesize = static_cast<size_t>(endOffset);
+        const auto filesize = static_cast<size_t>(endOffset);
         auto pFiledata = std::make_unique<unsigned char[]>(filesize);
 
         if(SDL_RWread(RWop, pFiledata.get(), filesize, 1) != 1) {
@@ -71,7 +57,7 @@ sdl2::surface_ptr LoadPNG_RW(SDL_RWops* RWop) {
         }
 
 
-        unsigned int error = lodepng_inspect(&width, &height, &lodePNGState, pFiledata.get(), filesize);
+        auto error = lodepng_inspect(&width, &height, &lodePNGState, pFiledata.get(), filesize);
         if(error != 0) {
             THROW(std::runtime_error, "LoadPNG_RW(): Inspecting this *.png-File failed: " + std::string(lodepng_error_text(error)));
         }
@@ -110,14 +96,12 @@ sdl2::surface_ptr LoadPNG_RW(SDL_RWops* RWop) {
             // Now we can copy pixel by pixel
             if (pic->pitch == static_cast<int>(width)) {
                 memcpy(pic_surface, image_out, height * width);
-            } else {
-                for(unsigned int y = 0; y < height; y++) {
-                    const unsigned char* in = image_out + y * width;
-                    unsigned char* out = pic_surface + y * pic->pitch;
+            } else for(unsigned int y = 0; y < height; y++) {
+                const auto in = image_out + y * width;
+                const auto out = pic_surface + y * pic->pitch;
 
-                    //std::copy_n(in, width, out);
-                    memcpy(out, in, width);
-                }
+                //std::copy_n(in, width, out);
+                memcpy(out, in, width);
             }
 
         } else {
@@ -138,18 +122,21 @@ sdl2::surface_ptr LoadPNG_RW(SDL_RWops* RWop) {
 
             sdl2::surface_lock pic_lock{pic.get()};
 
-            const unsigned char * RESTRICT const image_out = reinterpret_cast<const unsigned char *>(pImageOut.get());  // NOLINT
+            const Uint32 * RESTRICT const image_out = reinterpret_cast<const Uint32 *>(pImageOut.get());  // NOLINT
             unsigned char * RESTRICT const pic_surface = static_cast<unsigned char *>(pic_lock.pixels()); // NOLINT
 
             // Now we can copy pixel by pixel
-            for(unsigned int y = 0; y < height; y++) {
-                const unsigned char* in = image_out + y * 4*width;
-                unsigned char* out = pic_surface + y * pic->pitch;
-                for(unsigned int x = 0; x < width; x++) {
-                    *((Uint32*) out) = SDL_SwapLE32(*((Uint32*) in));
-                    in += 4;
-                    out += 4;
+            if (static_cast<int>(sizeof(Uint32) * width) == pic->pitch) {
+                auto in = image_out;
+                auto out = reinterpret_cast<Uint32*>(pic_surface);
+                for (auto x = 0u; x < height * width; ++x) {
+                    *out++ = SDL_SwapLE32(*in++);
                 }
+            } else for(auto y = 0u; y < height; y++) {
+                auto in = image_out + y * width;
+                auto out = reinterpret_cast<Uint32*>(pic_surface + y * pic->pitch);
+                for(auto x = 0u; x < width; ++x)
+                    *out++ = SDL_SwapLE32(*in++);
             }
 
         }
@@ -174,18 +161,16 @@ int SavePNG_RW(SDL_Surface* surface, SDL_RWops* RWop) {
     const unsigned int width = surface->w;
     const unsigned int height = surface->h;
 
-    std::vector<unsigned char> image(width*height*4);
+    std::vector<unsigned char> image(width*height * 4);
 
     {
         sdl2::surface_lock lock{ surface };
 
-        unsigned char * RESTRICT out = pImage.get();
-
         // Now we can copy pixel by pixel
-        for(unsigned int y = 0; y < height; y++) {
-            unsigned char* out = image.data() + y * 4*width;
-            for(unsigned int x = 0; x < width; x++) {
-                Uint32 pixel = getPixel(surface, x, y);
+        for(auto y = 0u; y < height; y++) {
+            auto * RESTRICT out = image.data() + y * 4*width;
+            for(auto x = 0u; x < width; x++) {
+                const auto pixel = getPixel(surface, x, y);
                 SDL_GetRGBA(pixel, surface->format, &out[0], &out[1], &out[2], &out[3]);
                 out += 4;
             }
@@ -195,21 +180,19 @@ int SavePNG_RW(SDL_Surface* surface, SDL_RWops* RWop) {
     unsigned char* ppngFile;
     size_t pngFileSize;
 
-    unsigned int error = lodepng_encode32(&ppngFile, &pngFileSize, image.data(), width, height);
+    const auto error = lodepng_encode32(&ppngFile, &pngFileSize, image.data(), width, height);
     if(error != 0) {
         SDL_Log("%s", lodepng_error_text(error));
         free(ppngFile);
         return -1;
     }
 
-    lodepng_ptr ppngFile{ lode_out };
+    lodepng_ptr ppngFile_ptr{ ppngFile };
 
-    if(SDL_RWwrite(RWop, ppngFile.get(), 1, pngFileSize) != pngFileSize) {
+    if(SDL_RWwrite(RWop, ppngFile_ptr.get(), 1, pngFileSize) != pngFileSize) {
         SDL_Log("%s", SDL_GetError());
-        free(ppngFile);
         return -1;
     }
 
-    free(ppngFile);
     return 0;
 }

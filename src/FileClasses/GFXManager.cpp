@@ -886,7 +886,7 @@ SDL_Texture* GFXManager::getSmallDetailPic(unsigned int id) {
 }
 
 
-SDL_Texture* GFXManager::getTinyPicture(unsigned int id) const {
+SDL_Texture* GFXManager::getTinyPicture(unsigned int id) {
     if(id >= NUM_TINYPICTURE) {
         return nullptr;
     }

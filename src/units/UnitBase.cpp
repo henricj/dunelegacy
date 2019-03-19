@@ -213,7 +213,7 @@ bool UnitBase::attack() {
             } 
 
             if(primaryWeaponTimer == 0) {
-                bulletList.push_back( new Bullet( objectID, &centerPoint, &targetCenterPoint, currentBulletType, currentWeaponDamage, bAirBullet, pObject) );
+                bulletList.emplace_back(std::make_unique<Bullet>(objectID, &centerPoint, &targetCenterPoint, currentBulletType, currentWeaponDamage, bAirBullet, pObject));
                 if(pObject != nullptr) {
                     currentGameMap->viewMap(pObject->getOwner()->getHouseID(), location, 2);
                 }
@@ -235,7 +235,7 @@ bool UnitBase::attack() {
             }
 
             if((numWeapons == 2) && (secondaryWeaponTimer == 0) && (isBadlyDamaged() == false)) {
-                bulletList.push_back( new Bullet( objectID, &centerPoint, &targetCenterPoint, currentBulletType, currentWeaponDamage, bAirBullet, pObject) );
+                bulletList.emplace_back(std::make_unique<Bullet>(objectID, &centerPoint, &targetCenterPoint, currentBulletType, currentWeaponDamage, bAirBullet, pObject));
                 if(pObject != nullptr) {
                     currentGameMap->viewMap(pObject->getOwner()->getHouseID(), location, 2);
                 }

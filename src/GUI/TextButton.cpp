@@ -6,11 +6,11 @@ void TextButton::updateTextures()
 {
     Button::updateTextures();
 
-    if (pUnpressedTexture == nullptr) {
+    if (!pUnpressedTexture) {
         invalidateTextures();
 
-        setSurfaces(GUIStyle::getInstance().createButtonSurface(getSize().x, getSize().y, text, false, false, textcolor, textshadowcolor), true,
-            GUIStyle::getInstance().createButtonSurface(getSize().x, getSize().y, text, true, true, textcolor, textshadowcolor), true,
-            GUIStyle::getInstance().createButtonSurface(getSize().x, getSize().y, text, false, true, textcolor, textshadowcolor), true);
+        setSurfaces(GUIStyle::getInstance().createButtonSurface(getSize().x, getSize().y, text, false, false, textcolor, textshadowcolor),
+            GUIStyle::getInstance().createButtonSurface(getSize().x, getSize().y, text, true, true, textcolor, textshadowcolor),
+            GUIStyle::getInstance().createButtonSurface(getSize().x, getSize().y, text, false, true, textcolor, textshadowcolor));
     }
 }
