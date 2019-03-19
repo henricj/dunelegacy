@@ -174,7 +174,7 @@ void CustomGameMenu::onChildWindowClose(Window* pChildWindow) {
             std::string savegamedata = readCompleteFile(filename);
 
             std::string servername = settings.general.playerName + "'s Game";
-            GameInitSettings gameInitSettings(getBasename(filename, true), savegamedata, servername);
+            GameInitSettings gameInitSettings(getBasename(filename, true), std::move(savegamedata), std::move(servername));
 
             int ret = CustomGamePlayers(gameInitSettings, true, bLANServer).showMenu();
             if(ret != MENU_QUIT_DEFAULT) {
@@ -183,7 +183,7 @@ void CustomGameMenu::onChildWindowClose(Window* pChildWindow) {
         }
     }
 
-    GameOptionsWindow* pGameOptionsWindow = dynamic_cast<GameOptionsWindow*>(pChildWindow);
+    const auto pGameOptionsWindow = dynamic_cast<GameOptionsWindow*>(pChildWindow);
     if(pGameOptionsWindow != nullptr) {
         currentGameOptions = pGameOptionsWindow->getGameOptions();
     }
@@ -201,7 +201,7 @@ void CustomGameMenu::onNext()
     GameInitSettings gameInitSettings;
     if(bMultiplayer) {
         std::string servername = settings.general.playerName + "'s Game";
-        gameInitSettings = GameInitSettings(getBasename(mapFilename, true), readCompleteFile(mapFilename), servername, multiplePlayersPerHouseCheckbox.isChecked(), currentGameOptions);
+        gameInitSettings = GameInitSettings(getBasename(mapFilename, true), readCompleteFile(mapFilename), std::move(servername), multiplePlayersPerHouseCheckbox.isChecked(), currentGameOptions);
     } else {
         gameInitSettings = GameInitSettings(getBasename(mapFilename, true), readCompleteFile(mapFilename), multiplePlayersPerHouseCheckbox.isChecked(), currentGameOptions);
     }

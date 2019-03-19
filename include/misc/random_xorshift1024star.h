@@ -1,7 +1,7 @@
 #ifndef RANDOM_XORSHIFT1024STAR_H
 #define RANDOM_XORSHIFT1024STAR_H
 
-#include <stdint.h>
+#include <cstdint>
 #include <array>
 #include <random>
 

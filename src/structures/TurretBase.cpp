@@ -165,7 +165,7 @@ void TurretBase::attack() {
         currentGameMap->add_bullet(objectID, &centerPoint, &targetCenterPoint,bulletType,
                                                currentGame->objectData.data[itemID][originalHouseID].weapondamage,
                                                pObject->isAFlyingUnit(),
-                                               pObject) );
+                                               pObject);
 
         currentGameMap->viewMap(pObject->getOwner()->getHouseID(), location, 2);
         soundPlayer->playSoundAt(attackSound, location);

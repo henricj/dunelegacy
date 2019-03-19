@@ -115,7 +115,7 @@ public:
         \param  groupListIndex     which list should be set
         \param  newGroupList        the new list to set
     */
-    void setGroupList(int groupListIndex, const std::set<Uint32>& newGroupList);
+    void setGroupList(int groupListIndex, const Dune::selected_set_type& newGroupList);
 public:
     Uint32 nextExpectedCommandsCycle;                       ///< The next cycle we expect commands for (using for network games)
 

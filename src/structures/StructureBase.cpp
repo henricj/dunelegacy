@@ -164,9 +164,6 @@ void StructureBase::blitToScreen() {
             smokeSource.x = smokeFrame * smokeSource.w;
             SDL_RenderCopy(renderer, pSmokeTex, &smokeSource, &smokeDest);
         }
-
-        smokeSource.x = smokeFrame * smokeSource.w;
-        SDL_RenderCopy(renderer, pSmokeSurface[currentZoomlevel], &smokeSource, &smokeDest);
     }
 }
 
@@ -411,17 +408,17 @@ bool StructureBase::update() {
 }
 
 void StructureBase::destroy() {
-    int*    pDestroyedStructureTiles = nullptr;
+    const int* pDestroyedStructureTiles = nullptr;
     int     DestroyedStructureTilesSizeY = 0;
-    static int DestroyedStructureTilesWall[] = { DestroyedStructure_Wall };
-    static int DestroyedStructureTiles1x1[] = { Destroyed1x1Structure };
-    static int DestroyedStructureTiles2x2[] = { Destroyed2x2Structure_TopLeft, Destroyed2x2Structure_TopRight,
-                                                Destroyed2x2Structure_BottomLeft, Destroyed2x2Structure_BottomRight };
-    static int DestroyedStructureTiles3x2[] = { Destroyed3x2Structure_TopLeft, Destroyed3x2Structure_TopCenter, Destroyed3x2Structure_TopRight,
-                                                Destroyed3x2Structure_BottomLeft, Destroyed3x2Structure_BottomCenter, Destroyed3x2Structure_BottomRight};
-    static int DestroyedStructureTiles3x3[] = { Destroyed3x3Structure_TopLeft, Destroyed3x3Structure_TopCenter, Destroyed3x3Structure_TopRight,
-                                                Destroyed3x3Structure_CenterLeft, Destroyed3x3Structure_CenterCenter, Destroyed3x3Structure_CenterRight,
-                                                Destroyed3x3Structure_BottomLeft, Destroyed3x3Structure_BottomCenter, Destroyed3x3Structure_BottomRight};
+    static const int DestroyedStructureTilesWall[] = { DestroyedStructure_Wall };
+    static const int DestroyedStructureTiles1x1[] = { Destroyed1x1Structure };
+    static const int DestroyedStructureTiles2x2[] = { Destroyed2x2Structure_TopLeft, Destroyed2x2Structure_TopRight,
+                                                      Destroyed2x2Structure_BottomLeft, Destroyed2x2Structure_BottomRight };
+    static const int DestroyedStructureTiles3x2[] = { Destroyed3x2Structure_TopLeft, Destroyed3x2Structure_TopCenter, Destroyed3x2Structure_TopRight,
+                                                      Destroyed3x2Structure_BottomLeft, Destroyed3x2Structure_BottomCenter, Destroyed3x2Structure_BottomRight};
+    static const int DestroyedStructureTiles3x3[] = { Destroyed3x3Structure_TopLeft, Destroyed3x3Structure_TopCenter, Destroyed3x3Structure_TopRight,
+                                                      Destroyed3x3Structure_CenterLeft, Destroyed3x3Structure_CenterCenter, Destroyed3x3Structure_CenterRight,
+                                                      Destroyed3x3Structure_BottomLeft, Destroyed3x3Structure_BottomCenter, Destroyed3x3Structure_BottomRight};
 
 
     if(itemID == Structure_Wall) {
@@ -465,7 +462,7 @@ void StructureBase::destroy() {
 
                 Coord position((location.x+i)*TILESIZE + TILESIZE/2, (location.y+j)*TILESIZE + TILESIZE/2);
                 Uint32 explosionID = currentGame->randomGen.getRandOf({Explosion_Large1,Explosion_Large2});
-                currentGame->getExplosionList().push_back(new Explosion(explosionID, position, owner->getHouseID()) );
+                currentGame->addExplosion(explosionID, position, owner->getHouseID());
 
                 if(currentGame->randomGen.rand(1,100) <= getInfSpawnProp()) {
                     auto pNewUnit = owner->createUnit(Unit_Soldier);

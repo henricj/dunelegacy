@@ -136,18 +136,7 @@ void Carryall::checkPos()
 {
     AirUnit::checkPos();
 
-    if (active) {
-        if (hasCargo()) {
-            if((location == destination) && (currentMaxSpeed <= 0.5_fix) ) {
-                // drop up to 3 infantry units at once or one other unit
-                int droppedUnits = 0;
-                do {
-                    const auto unitID = pickedUpUnitList.front();
-                    const auto pUnit = static_cast<UnitBase*>(currentGame->getObjectManager().getObject(unitID));
-
-                    if(pUnit == nullptr) {
-                        return;
-                    }
+    if (!active) return;
 
     if (hasCargo()) {
         if((location == destination) && (currentMaxSpeed <= 0.5_fix) ) {
@@ -205,7 +194,6 @@ void Carryall::checkPos()
             }
         }
     }
-
 }
 
 void Carryall::pre_deployUnits()

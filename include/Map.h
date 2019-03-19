@@ -19,12 +19,10 @@
 #define MAP_H
 
 #include <Tile.h>
+#include <AStarSearch.h>
 #include <misc/InputStream.h>
 #include <misc/OutputStream.h>
-#include <misc/Random.h>
 #include <misc/exceptions.h>
-
-#include "AStarSearch.h"
 
 class Map final
 {

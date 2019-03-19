@@ -507,10 +507,10 @@ private:
     std::vector<DAMAGETYPE>         damage;                         ///< damage positions
     std::vector<DEADUNITTYPE>       deadUnits;                      ///< dead units
 
-    std::list<Uint32>   assignedAirUnitList;                      ///< all the air units on this tile
-    std::list<Uint32>   assignedInfantryList;                     ///< all infantry units on this tile
-    std::list<Uint32>   assignedUndergroundUnitList;              ///< all underground units on this tile
-    std::list<Uint32>   assignedNonInfantryGroundObjectList;      ///< all structures/vehicles on this tile
+    std::vector<Uint32>   assignedAirUnitList;                      ///< all the air units on this tile
+    std::vector<Uint32>   assignedInfantryList;                     ///< all infantry units on this tile
+    std::vector<Uint32>   assignedUndergroundUnitList;              ///< all underground units on this tile
+    std::vector<Uint32>   assignedNonInfantryGroundObjectList;      ///< all structures/vehicles on this tile
 
     std::array<Uint32, NUM_TEAMS>   lastAccess{};                   ///< contains for every team when this tile was seen last by this house
     std::array<bool, NUM_TEAMS>     explored{};                     ///< contains for every team if this tile is explored
@@ -519,6 +519,11 @@ private:
 
     template<typename Pred>
     void selectFilter(int houseID, ObjectBase** lastCheckedObject, ObjectBase** lastSelectedObject, Pred&& predicate);
+
+    template<typename Visitor>
+    void forEachUnit(Visitor&& visitor) const;
+
+    TERRAINTILETYPE getTerrainTileImpl() const;
 };
 
 

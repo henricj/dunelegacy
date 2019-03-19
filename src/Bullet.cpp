@@ -33,7 +33,7 @@
 #include <algorithm>
 
 
-Bullet::Bullet(Uint32 shooterID, Coord* newRealLocation, Coord* newRealDestination, Uint32 bulletID, int damage, bool air, const ObjectBase* pTarget)
+Bullet::Bullet(Uint32 shooterID, const Coord* newRealLocation, const Coord* newRealDestination, Uint32 bulletID, int damage, bool air, const ObjectBase* pTarget)
 {
     airAttack = air;
 
@@ -449,7 +449,7 @@ void Bullet::destroy() const
                         currentGameMap->damage(shooterID, owner, position, bulletID, damage, damageRadius, airAttack);
 
                         Uint32 explosionID = currentGame->randomGen.getRandOf({Explosion_Large1,Explosion_Large2});
-                        currentGame->getExplosionList().push_back(new Explosion(explosionID,position,houseID));
+                        currentGame->addExplosion(explosionID,position,houseID);
                         screenborder->shakeScreen(22);
                     }
                 }

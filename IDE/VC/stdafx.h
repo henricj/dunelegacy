@@ -39,6 +39,7 @@
 #include <misc/fnkdat.h>
 #include <misc/FileSystem.h>
 #include <misc/Scaler.h>
+#include <misc/SDL2pp.h>
 #include <misc/sdl_support.h>
 #include <misc/string_util.h>
 #include <misc/exceptions.h>
@@ -72,6 +73,7 @@
 #include <map>
 #include <memory>
 #include <mutex>
+#include <numeric>
 #include <queue>
 #include <random>
 #include <set>

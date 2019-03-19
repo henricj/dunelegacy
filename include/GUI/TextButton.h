@@ -108,18 +108,7 @@ protected:
         should be overwritten by subclasses if they like to defer texture creation as long as possible.
         This method should first check whether a renewal of the textures is necessary.
     */
-    void updateTextures() override
-    {
-        Button::updateTextures();
-
-        if(!pUnpressedTexture) {
-            invalidateTextures();
-
-            setSurfaces(    GUIStyle::getInstance().createButtonSurface(getSize().x, getSize().y, text, false, false, textcolor, textshadowcolor),
-                            GUIStyle::getInstance().createButtonSurface(getSize().x, getSize().y, text, true, true, textcolor, textshadowcolor),
-                            GUIStyle::getInstance().createButtonSurface(getSize().x, getSize().y, text, false, true, textcolor, textshadowcolor));
-        }
-    }
+    void updateTextures() override;
 
 private:
     Uint32 textcolor;
