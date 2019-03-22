@@ -59,7 +59,7 @@ DirectoryPlayer::DirectoryPlayer() : MusicPlayer(settings.audio.playMusic, setti
 
     music = nullptr;
 
-    Mix_Init(MIX_INIT_FLUIDSYNTH | MIX_INIT_FLAC | MIX_INIT_MP3 | MIX_INIT_OGG);
+    Mix_Init(MIX_INIT_MID | MIX_INIT_FLAC | MIX_INIT_MP3 | MIX_INIT_OGG);
 }
 
 DirectoryPlayer::~DirectoryPlayer() {
