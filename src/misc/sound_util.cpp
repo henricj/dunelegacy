@@ -9,8 +9,6 @@
 
 #include <SDL2/SDL_mixer.h>
 
-extern FileManager* pFileManager;
-
 sdl2::mix_chunk_ptr create_chunk()
 {
     return sdl2::mix_chunk_ptr{ static_cast<Mix_Chunk*>(SDL_malloc(sizeof(Mix_Chunk))) };

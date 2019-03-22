@@ -24,12 +24,9 @@
 
 #include <algorithm>
 
-extern GFXManager*  pGFXManager;
-extern FontManager* pFontManager;
-
 
 sdl2::surface_ptr DuneStyle::createSurfaceWithText(const std::string& text, Uint32 color, unsigned int fontsize) {
-    if(pFontManager != nullptr) {
+    if(pFontManager) {
         return pFontManager->createSurfaceWithText(text, color, fontsize);
     } else {
         // create dummy surface
@@ -572,7 +569,7 @@ sdl2::surface_ptr DuneStyle::createToolTip(const std::string& text) {
 
 sdl2::surface_ptr DuneStyle::createBackground(Uint32 width, Uint32 height) {
     sdl2::surface_ptr pSurface;
-    if(pGFXManager != nullptr) {
+    if(pGFXManager) {
         pSurface = getSubPicture(pGFXManager->getBackgroundSurface(), 0, 0, width, height);
         if(!pSurface) {
             return nullptr;
