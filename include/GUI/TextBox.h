@@ -32,7 +32,7 @@ public:
 
     /// default constructor
     TextBox() : Widget() {
-        fontID = FONT_STD12;
+        fontID = FONT_STD14;
         textcolor = COLOR_DEFAULT;
         textshadowcolor = COLOR_DEFAULT;
         maxTextLength = -1;
@@ -69,7 +69,7 @@ public:
     inline const std::string& getText() const { return text; };
 
     /**
-        Sets a font for this text box. Default font of a text box is FONT_STD12
+        Sets a font for this text box. Default font of a text box is FONT_STD14
         \param  fontID      the ID of the new font
     */
     virtual inline void setTextFont(int fontID) {
@@ -78,7 +78,7 @@ public:
     }
 
     /**
-        Gets the font of this text box. Default font of a text box is FONT_STD12
+        Gets the font of this text box. Default font of a text box is FONT_STD14
         \return the font ID of this text box
     */
     virtual inline int getTextFont() const {

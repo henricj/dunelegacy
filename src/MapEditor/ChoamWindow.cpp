@@ -63,7 +63,7 @@ ChoamWindow::ChoamWindow(MapEditor* pMapEditor, HOUSETYPE currentHouse) : Window
     mainVBox.addWidget(&centralVBox, 360);
 
     Label_Explanation.setTextColor(color);
-    Label_Explanation.setTextFont(FONT_STD10);
+    Label_Explanation.setTextFont(FONT_STD12);
     Label_Explanation.setText(_("These units are available at the starport. The given amount of these units is available at the start of the game and every 30s one unit is added."));
     centralVBox.addWidget(&Label_Explanation);
 

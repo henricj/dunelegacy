@@ -64,11 +64,11 @@ BuilderList::BuilderList(Uint32 builderObjectID) {
     mouseLeftButton = -1;
     mouseRightButton = -1;
 
-    pSoldOutTextTexture = pFontManager->createTextureWithMultilineText(_("SOLD OUT"), COLOR_WHITE, FONT_STD10, true);
-    pAlreadyBuiltTextTexture = pFontManager->createTextureWithMultilineText(_("ALREADY\nBUILT"), COLOR_WHITE, FONT_STD10, true);
-    pPlaceItTextTexture = pFontManager->createTextureWithMultilineText(_("PLACE IT"), COLOR_WHITE, FONT_STD10, true);
-    pOnHoldTextTexture = pFontManager->createTextureWithMultilineText(_("ON HOLD"), COLOR_WHITE, FONT_STD10, true);
-    pUnitLimitReachedTextTexture = pFontManager->createTextureWithMultilineText(_("UNIT LIMIT\nREACHED"), COLOR_WHITE, FONT_STD10, true);
+    pSoldOutTextTexture = pFontManager->createTextureWithMultilineText(_("SOLD OUT"), COLOR_WHITE, FONT_STD12, true);
+    pAlreadyBuiltTextTexture = pFontManager->createTextureWithMultilineText(_("ALREADY\nBUILT"), COLOR_WHITE, FONT_STD12, true);
+    pPlaceItTextTexture = pFontManager->createTextureWithMultilineText(_("PLACE IT"), COLOR_WHITE, FONT_STD12, true);
+    pOnHoldTextTexture = pFontManager->createTextureWithMultilineText(_("ON HOLD"), COLOR_WHITE, FONT_STD12, true);
+    pUnitLimitReachedTextTexture = pFontManager->createTextureWithMultilineText(_("UNIT LIMIT\nREACHED"), COLOR_WHITE, FONT_STD12, true);
 
     pLastTooltip = nullptr;
     tooltipText = "";
@@ -249,7 +249,7 @@ void BuilderList::draw(Point position) {
                 }
 
                 // draw price
-                sdl2::texture_ptr pPriceTexture = pFontManager->createTextureWithText(fmt::sprintf("%d", buildItem.price), COLOR_WHITE, FONT_STD10);
+                sdl2::texture_ptr pPriceTexture = pFontManager->createTextureWithText(fmt::sprintf("%d", buildItem.price), COLOR_WHITE, FONT_STD12);
                 SDL_Rect drawLocation = calcDrawingRect(pPriceTexture.get(), dest.x + 2, dest.y + BUILDERBTN_HEIGHT - getHeight(pPriceTexture.get()) + 3);
                 SDL_RenderCopy(renderer, pPriceTexture.get(), nullptr, &drawLocation);
 
@@ -295,7 +295,7 @@ void BuilderList::draw(Point position) {
 
                 if(buildItem.num > 0) {
                     // draw number of this in build list
-                    sdl2::texture_ptr pNumberTexture = pFontManager->createTextureWithText(fmt::sprintf("%d", buildItem.num), COLOR_RED, FONT_STD10);
+                    sdl2::texture_ptr pNumberTexture = pFontManager->createTextureWithText(fmt::sprintf("%d", buildItem.num), COLOR_RED, FONT_STD12);
                     SDL_Rect drawLocation = calcDrawingRect(pNumberTexture.get(), dest.x + BUILDERBTN_WIDTH - 3, dest.y + BUILDERBTN_HEIGHT + 2, HAlign::Right, VAlign::Bottom);
                     SDL_RenderCopy(renderer, pNumberTexture.get(), nullptr, &drawLocation);
                 }

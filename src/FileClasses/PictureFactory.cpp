@@ -510,7 +510,7 @@ sdl2::surface_ptr PictureFactory::createMainBackground() const {
 
     sdl2::surface_ptr Version{ getSubPicture(background.get(),0,0,75,32) };
 
-    sdl2::surface_ptr VersionText{ pFontManager->createSurfaceWithText(std::string(VERSION), PALCOLOR_BLACK, FONT_STD12) };
+    sdl2::surface_ptr VersionText{ pFontManager->createSurfaceWithText(std::string(VERSION), PALCOLOR_BLACK, FONT_STD14) };
 
     SDL_Rect dest4 = calcDrawingRect(VersionText.get(), getWidth(Version.get())/2, getHeight(Version.get())/2 + 2, HAlign::Center, VAlign::Center);
     SDL_BlitSurface(VersionText.get(),nullptr,Version.get(),&dest4);

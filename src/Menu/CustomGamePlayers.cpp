@@ -157,10 +157,10 @@ CustomGamePlayers::CustomGamePlayers(const GameInitSettings& newGameInitSettings
 
     buttonHBox.addWidget(Spacer::create(), 0.0625);
 
-    chatTextView.setTextFont(FONT_STD10);
+    chatTextView.setTextFont(FONT_STD12);
     chatVBox.addWidget(&chatTextView, 0.77);
     if(getRendererHeight() <= 600) {
-        chatTextBox.setTextFont(FONT_STD10);
+        chatTextBox.setTextFont(FONT_STD12);
     }
     chatTextBox.setOnReturn(std::bind(&CustomGamePlayers::onSendChatMessage, this));
     chatVBox.addWidget(&chatTextBox, 0.2);
@@ -251,7 +251,7 @@ CustomGamePlayers::CustomGamePlayers(const GameInitSettings& newGameInitSettings
         curHouseInfo.player1ArrowLabel.setTexture(pGFXManager->getUIGraphic(UI_CustomGamePlayersArrowNeutral));
         curHouseInfo.playerHBox.addWidget(&curHouseInfo.player1ArrowLabel);
         curHouseInfo.player1Label.setText(_("Player") + (gameInitSettings.isMultiplePlayersPerHouse() ? " 1" : ""));
-        curHouseInfo.player1Label.setTextFont(FONT_STD10);
+        curHouseInfo.player1Label.setTextFont(FONT_STD12);
         curHouseInfo.playerHBox.addWidget(&curHouseInfo.player1Label, 68);
 
         if(bLoadMultiplayer) {
@@ -308,7 +308,7 @@ CustomGamePlayers::CustomGamePlayers(const GameInitSettings& newGameInitSettings
 
         // add 2. player
         curHouseInfo.player2Label.setText(_("Player") + " 2");
-        curHouseInfo.player2Label.setTextFont(FONT_STD10);
+        curHouseInfo.player2Label.setTextFont(FONT_STD12);
         curHouseInfo.playerHBox.addWidget(&curHouseInfo.player2Label, 68);
 
         if(bLoadMultiplayer) {

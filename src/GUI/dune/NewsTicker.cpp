@@ -94,7 +94,7 @@ void NewsTicker::draw(Point position) {
         //draw text
         if(currentMessage != messages.front()) {
             currentMessage = messages.front();
-            pCurrentMessageTexture = pFontManager->createTextureWithText(currentMessage, COLOR_BLACK, FONT_STD10);
+            pCurrentMessageTexture = pFontManager->createTextureWithText(currentMessage, COLOR_BLACK, FONT_STD12);
         }
 
         if(pCurrentMessageTexture != nullptr) {

@@ -35,7 +35,7 @@ public:
     virtual ~TextView();
 
     /**
-        Sets a font for this label. Default font of a label is FONT_STD12
+        Sets a font for this label. Default font of a label is FONT_STD14
         \param  fontID      the ID of the new font
     */
     virtual void setTextFont(int fontID) {
@@ -44,7 +44,7 @@ public:
     }
 
     /**
-        Gets the font of this label. Default font of a label is FONT_STD12
+        Gets the font of this label. Default font of a label is FONT_STD14
         \return the font ID of this label
     */
     virtual int getTextFont() const {
@@ -220,7 +220,7 @@ protected:
 
 private:
 
-    int fontID = FONT_STD12;                    ///< the ID of the font to use
+    int fontID = FONT_STD14;                    ///< the ID of the font to use
     Uint32 textcolor = COLOR_DEFAULT;           ///< the text color
     Uint32 textshadowcolor = COLOR_DEFAULT;     ///< the color of the shadow of the text
     Uint32 backgroundcolor = COLOR_TRANSPARENT; ///< the color of the label background

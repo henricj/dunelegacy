@@ -25,9 +25,9 @@
 #include <string>
 
 typedef enum {
-    FONT_STD10,
     FONT_STD12,
-    FONT_STD24,
+    FONT_STD14,
+    FONT_STD28,
     NUM_FONTS
 } Fonts_enum;
 

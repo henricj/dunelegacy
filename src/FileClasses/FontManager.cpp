@@ -29,9 +29,9 @@
 #include <list>
 
 FontManager::FontManager() {
-    fonts[FONT_STD10] = std::make_unique<TTFFont>( pFileManager->openFile("Philosopher-Bold.ttf"), 12 );
-    fonts[FONT_STD12] = std::make_unique<TTFFont>( pFileManager->openFile("Philosopher-Bold.ttf"), 14 );
-    fonts[FONT_STD24] = std::make_unique<TTFFont>( pFileManager->openFile("Philosopher-Bold.ttf"), 28 );
+    fonts[FONT_STD12] = std::make_unique<TTFFont>( pFileManager->openFile("Philosopher-Bold.ttf"), 12 );
+    fonts[FONT_STD14] = std::make_unique<TTFFont>( pFileManager->openFile("Philosopher-Bold.ttf"), 14 );
+    fonts[FONT_STD28] = std::make_unique<TTFFont>( pFileManager->openFile("Philosopher-Bold.ttf"), 28 );
 }
 
 FontManager::~FontManager() = default;

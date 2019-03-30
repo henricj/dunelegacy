@@ -22,7 +22,7 @@
 TextEvent::TextEvent(const std::string& text, Uint32 color, int startFrame, int lengthInFrames, bool bFadeIn, bool bFadeOut, bool bCenterVertical)
  : text(text), startFrame(startFrame), lengthInFrames(lengthInFrames), bFadeIn(bFadeIn), bFadeOut(bFadeOut), bCenterVertical(bCenterVertical)
 {
-    sdl2::surface_ptr pSurface = pFontManager->createSurfaceWithMultilineText(text, color, FONT_STD24, true);
+    sdl2::surface_ptr pSurface = pFontManager->createSurfaceWithMultilineText(text, color, FONT_STD28, true);
     pTexture = sdl2::texture_ptr{ SDL_CreateTextureFromSurface(renderer, pSurface.get()) };
 
     SDL_SetTextureBlendMode(pTexture.get(), SDL_BLENDMODE_BLEND);
@@ -47,7 +47,7 @@ void TextEvent::draw(int currentFrameNumber) const
 
     SDL_Rect dest = calcAlignedDrawingRect(pTexture.get(), HAlign::Center, VAlign::Center);
     if(bCenterVertical == false) {
-        dest.y = getRendererHeight()/2 + 480/2 - 5*pFontManager->getTextHeight(FONT_STD24)/2;
+        dest.y = getRendererHeight()/2 + 480/2 - 5*pFontManager->getTextHeight(FONT_STD28)/2;
     }
 
     SDL_SetTextureAlphaMod(pTexture.get(), alpha);

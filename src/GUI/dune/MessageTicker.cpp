@@ -37,7 +37,7 @@ MessageTicker::~MessageTicker() = default;
 
 void MessageTicker::addMessage(const std::string& msg)
 {
-    messageTextures.emplace(pFontManager->createTextureWithText(msg, COLOR_BLACK, FONT_STD12));
+    messageTextures.emplace(pFontManager->createTextureWithText(msg, COLOR_BLACK, FONT_STD14));
 }
 
 void MessageTicker::draw(Point position) {

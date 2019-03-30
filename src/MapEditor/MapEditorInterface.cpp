@@ -661,7 +661,7 @@ MapEditorInterface::MapEditorInterface(MapEditor* pMapEditor)
 
     // bottom bar (structure edit)
     structureDetailsHBox.addWidget(HSpacer::create(4));
-    structureDetailsHealthLabel.setTextFont(FONT_STD10);
+    structureDetailsHealthLabel.setTextFont(FONT_STD12);
     structureDetailsHealthLabel.setText("Health:");
     structureDetailsHBox.addWidget(&structureDetailsHealthLabel, 0.1);
 
@@ -676,7 +676,7 @@ MapEditorInterface::MapEditorInterface(MapEditor* pMapEditor)
 
     // bottom bar (unit edit)
     unitDetailsHBox.addWidget(HSpacer::create(5));
-    unitDetailsHealthLabel.setTextFont(FONT_STD10);
+    unitDetailsHealthLabel.setTextFont(FONT_STD12);
     unitDetailsHealthLabel.setText(_("Health") + ":");
     unitDetailsHBox.addWidget(&unitDetailsHealthLabel, 0.1);
 
@@ -689,7 +689,7 @@ MapEditorInterface::MapEditorInterface(MapEditor* pMapEditor)
     unitDetailsHBox.addWidget(&unitDetailsHealthDropDownBox, 115);
 
     unitDetailsHBox.addWidget(HSpacer::create(4));
-    unitDetailsAttackModeLabel.setTextFont(FONT_STD10);
+    unitDetailsAttackModeLabel.setTextFont(FONT_STD12);
     unitDetailsAttackModeLabel.setText(_("Attack mode") + ":");
     unitDetailsHBox.addWidget(&unitDetailsAttackModeLabel, 0.1);
 

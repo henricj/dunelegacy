@@ -72,7 +72,7 @@ protected:
 
         StarPort* pStarport = dynamic_cast<StarPort*>(pObject);
         if(pStarport != nullptr) {
-            starportTimerLabel.setTextFont(FONT_STD24);
+            starportTimerLabel.setTextFont(FONT_STD28);
             starportTimerLabel.setTextColor(COLOR_WHITE, COLOR_TRANSPARENT);
             starportTimerLabel.setAlignment((Alignment_Enum) (Alignment_HCenter | Alignment_VCenter));
             topBox.addWidget(&starportTimerLabel, topBox.getWidgetPosition(&topBoxHBox) + topBoxHBox.getWidgetPosition(&objPicture) + Point(0, 4), objPicture.getSize());
