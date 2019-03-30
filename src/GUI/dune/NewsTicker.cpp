@@ -22,13 +22,14 @@
 #include <FileClasses/GFXManager.h>
 #include <FileClasses/FontManager.h>
 
-#define MESSAGETIME 440
-#define SLOWDOWN timer/55
+#define MESSAGESCROLLSPEED  16
+#define MESSAGESCROLLTIME   (16*MESSAGESCROLLSPEED)
+#define MESSAGETIME         (16*MESSAGESCROLLSPEED)
 
 NewsTicker::NewsTicker() : Widget() {
     enableResizing(false,false);
 
-    timer = -MESSAGETIME/2;
+    timer = -MESSAGETIME;
     pBackground = pGFXManager->getUIGraphic(UI_MessageBox);
     pCurrentMessageTexture = nullptr;
 
@@ -79,34 +80,35 @@ void NewsTicker::draw(Point position) {
 
     // draw message
     if(!messages.empty()) {
-        if(timer++ == (MESSAGETIME/3)) {
-            timer = -MESSAGETIME/2;
+        if(timer++ == MESSAGESCROLLTIME) {
+            timer = -MESSAGETIME;
             // delete first message
             messages.pop();
 
             // if no more messages leave
             if(messages.empty()) {
-                timer = -MESSAGETIME/2;
                 return;
             };
         };
 
         //draw text
-        SDL_Rect textLocation = { position.x + 10, position.y + 5, 0, 0 };
-        if(timer>0) {
-            textLocation.y -= SLOWDOWN;
-        }
-
         if(currentMessage != messages.front()) {
             currentMessage = messages.front();
             pCurrentMessageTexture = pFontManager->createTextureWithText(currentMessage, COLOR_BLACK, FONT_STD10);
         }
 
         if(pCurrentMessageTexture != nullptr) {
-
+            SDL_Rect textLocation = { position.x + 10, position.y + 6, 0, 0 };
             SDL_Rect cut = { 0, 0, 0, 0 };
+
             if(timer>0) {
-                cut.y = 3*SLOWDOWN;
+                // start scrolling the text
+                int newsTickerInnerEdgeY = position.y + 4;
+                textLocation.y -= (timer / MESSAGESCROLLSPEED);
+                if(textLocation.y < newsTickerInnerEdgeY) {
+                    cut.y = newsTickerInnerEdgeY - textLocation.y;
+                    textLocation.y = newsTickerInnerEdgeY;
+                }
             }
 
             textLocation.w = cut.w = getWidth(pCurrentMessageTexture.get());

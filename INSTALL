@@ -68,7 +68,7 @@ This creates dunelegacy-?.tar.bz2. You might want to add a "src" to the name to 
 
 
 Debian/Ubuntu:
-Make sure you have the following packages installed: build-essential, debhelper, autoconf, libsdl2-dev and libsdl2-mixer-dev
+Make sure you have the following packages installed: build-essential, debhelper, autoconf, libsdl2-dev, libsdl2-mixer-dev and libsdl2-ttf-dev
 Extract the source code from the bz2 file and change inside the source root directory (which contains configure). From there you run the following command:
 
 dpkg-buildpackage -rfakeroot

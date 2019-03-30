@@ -116,7 +116,7 @@ dunelegacy_SOURCES =	AStarSearch.cpp\
 						FileClasses/IndexedTextFile.cpp\
 						FileClasses/MentatTextFile.cpp\
 						FileClasses/PictureFactory.cpp\
-						FileClasses/PictureFont.cpp\
+						FileClasses/TTFFont.cpp\
 						FileClasses/POFile.cpp\
 						FileClasses/adl/sound_adlib.cpp\
 						FileClasses/adl/surroundopl.cpp\

@@ -53,6 +53,13 @@ AC_CHECK_LIB(SDL2_mixer,
        AC_MSG_ERROR([*** SDL2_mixer library not found!])
 )
 
+dnl Check for SDL2_ttf library.
+AC_CHECK_LIB(SDL2_ttf, 
+       TTF_Init, 
+       LIBS="$LIBS -lSDL2_ttf", 
+       AC_MSG_ERROR([*** SDL2_ttf library not found!])
+)
+
 dnl enet defines
 AC_CHECK_FUNC(gethostbyaddr_r, [AC_DEFINE(HAS_GETHOSTBYADDR_R)])
 AC_CHECK_FUNC(gethostbyname_r, [AC_DEFINE(HAS_GETHOSTBYNAME_R)])

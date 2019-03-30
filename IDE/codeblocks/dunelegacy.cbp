@@ -36,7 +36,7 @@
 				</Compiler>
 				<Linker>
 					<Add option="-static-libgcc" />
-					<Add option="-lSDL2_mixer" />
+					<Add option="-lSDL2_mixer -lSDL2_ttf" />
 				</Linker>
 			</Target>
 		</Build>
@@ -96,9 +96,9 @@
 		<Unit filename="../../include/FileClasses/Palette.h" />
 		<Unit filename="../../include/FileClasses/Palfile.h" />
 		<Unit filename="../../include/FileClasses/PictureFactory.h" />
-		<Unit filename="../../include/FileClasses/PictureFont.h" />
 		<Unit filename="../../include/FileClasses/SFXManager.h" />
 		<Unit filename="../../include/FileClasses/Shpfile.h" />
+		<Unit filename="../../include/FileClasses/TTFFont.h" />
 		<Unit filename="../../include/FileClasses/TextManager.h" />
 		<Unit filename="../../include/FileClasses/Vocfile.h" />
 		<Unit filename="../../include/FileClasses/Wsafile.h" />
@@ -363,9 +363,9 @@
 		<Unit filename="../../src/FileClasses/Pakfile.cpp" />
 		<Unit filename="../../src/FileClasses/Palfile.cpp" />
 		<Unit filename="../../src/FileClasses/PictureFactory.cpp" />
-		<Unit filename="../../src/FileClasses/PictureFont.cpp" />
 		<Unit filename="../../src/FileClasses/SFXManager.cpp" />
 		<Unit filename="../../src/FileClasses/Shpfile.cpp" />
+		<Unit filename="../../src/FileClasses/TTFFont.cpp" />
 		<Unit filename="../../src/FileClasses/TextManager.cpp" />
 		<Unit filename="../../src/FileClasses/Vocfile.cpp" />
 		<Unit filename="../../src/FileClasses/Wsafile.cpp" />

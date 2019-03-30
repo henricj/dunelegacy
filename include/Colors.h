@@ -47,6 +47,7 @@
 #define MapRGBA(fmt, color) SDL_MapRGBA(fmt, (color & RMASK) >> RSHIFT, (color & GMASK) >> GSHIFT, (color & BMASK) >> BSHIFT, (color & AMASK) >> ASHIFT)
 
 #define SDL2RGB(sdl_color) COLOR_RGB(sdl_color.r, sdl_color.g, sdl_color.b)
+#define RGBA2SDL(color) SDL_Color { static_cast<Uint8>((color & RMASK) >> RSHIFT), static_cast<Uint8>((color & GMASK) >> GSHIFT), static_cast<Uint8>((color & BMASK) >> BSHIFT), static_cast<Uint8>((color & AMASK) >> ASHIFT) }
 
 // Palette color indices
 #define PALCOLOR_TRANSPARENT 0

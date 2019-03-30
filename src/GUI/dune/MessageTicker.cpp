@@ -21,13 +21,14 @@
 
 #include <FileClasses/FontManager.h>
 
-#define MESSAGETIME (16*13)
-#define SLOWDOWN timer/16
+#define MESSAGESCROLLSPEED  5
+#define MESSAGESCROLLTIME   (20*MESSAGESCROLLSPEED)
+#define MESSAGETIME         (15*MESSAGESCROLLSPEED)
 
 MessageTicker::MessageTicker() {
     enableResizing(false,false);
 
-    timer = -MESSAGETIME/2;
+    timer = -MESSAGETIME;
 
     resize(0,0);
 }
@@ -46,31 +47,31 @@ void MessageTicker::draw(Point position) {
     // draw message
     if(messageTextures.empty()) return;
 
-    if(timer++ == (MESSAGETIME/3)) {
-        timer = -MESSAGETIME/2;
+    if(timer++ == MESSAGESCROLLTIME) {
+        timer = -MESSAGETIME;
         // delete first message
         messageTextures.pop();
 
         // if no more messages leave
         if(messageTextures.empty()) {
-            timer = -MESSAGETIME/2;
             return;
         }
     }
 
-    //draw text
-    SDL_Rect textLocation = { position.x + 21, position.y + 15, 0, 0 };
-
-    if(timer>0) {
-        textLocation.y -= SLOWDOWN;
-    }
-
     SDL_Texture *tex = messageTextures.front().get();
 
+    //draw text
+    SDL_Rect textLocation = { position.x + 21, position.y + 17, 0, 0 };
     SDL_Rect cut = { 0, 0, 0, 0 };
 
     if(timer>0) {
-        cut.y = 3*SLOWDOWN;
+        // start scrolling the text
+        int newsTickerInnerEdgeY = position.y + 10;
+        textLocation.y -= (timer / MESSAGESCROLLSPEED);
+        if(textLocation.y < newsTickerInnerEdgeY) {
+            cut.y = newsTickerInnerEdgeY - textLocation.y;
+            textLocation.y = newsTickerInnerEdgeY;
+        }
     }
 
     textLocation.w = cut.w = getWidth(tex);

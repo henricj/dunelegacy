@@ -447,6 +447,11 @@ void MapChoice::loadINI() {
         for(int j = 1; j < 28; j++) {
             std::string key = _("LanguageFileExtension") + "TXT" + std::to_string(j);
 
+            if(!RegionINI.hasKey(strSection, key)) {
+                // Workaround for bug in REGIONO.INI / GROUP1 / GERTXT 6: Add space after TXT
+                key = _("LanguageFileExtension") + "TXT " + std::to_string(j);
+            }
+
             std::string str = convertCP850ToISO8859_1(RegionINI.getStringValue(strSection,key));
             if(!str.empty()) {
                 TGroup::TText tmp;

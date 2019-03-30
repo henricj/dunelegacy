@@ -51,6 +51,8 @@
 
 #include <CutScenes/Intro.h>
 
+#include <SDL_ttf.h>
+
 #include <iostream>
 #include <typeinfo>
 #include <future>
@@ -585,6 +587,15 @@ int main(int argc, char *argv[]) {
                 SDL_Log("SDL runtime v%d.%d.%d", linkedVersion.major, linkedVersion.minor, linkedVersion.patch);
                 SDL_Log("SDL compile-time v%d.%d.%d", compiledVersion.major, compiledVersion.minor, compiledVersion.patch);
 
+                if(TTF_Init() < 0) {
+                    THROW(sdl_error, "Couldn't initialize SDL2_ttf: %s!", TTF_GetError());
+                }
+
+                SDL_version TTFCompiledVersion;
+                SDL_TTF_VERSION(&TTFCompiledVersion);
+                const SDL_version* pTTFLinkedVersion = TTF_Linked_Version();
+                SDL_Log("SDL2_ttf runtime v%d.%d.%d", pTTFLinkedVersion->major, pTTFLinkedVersion->minor, pTTFLinkedVersion->patch);
+                SDL_Log("SDL2_ttf compile-time v%d.%d.%d", TTFCompiledVersion.major, TTFCompiledVersion.minor, TTFCompiledVersion.patch);
             }
 
             if(bFirstGamestart == true && bFirstInit == true) {
@@ -713,6 +724,7 @@ int main(int argc, char *argv[]) {
             SDL_DestroyWindow(window);
 
             if(bExitGame == true) {
+                TTF_Quit();
                 SDL_Quit();
             }
             SDL_Log("Deinitialization finished!");

@@ -20,17 +20,18 @@
 #include <globals.h>
 
 #include <misc/draw_util.h>
+#include <misc/FileSystem.h>
 
 #include <FileClasses/FileManager.h>
-#include <FileClasses/PictureFont.h>
+#include <FileClasses/TTFFont.h>
 #include <FileClasses/LoadSavePNG.h>
 
 #include <list>
 
 FontManager::FontManager() {
-    fonts[FONT_STD10] = std::make_unique<PictureFont>( LoadPNG_RW( pFileManager->openFile("Font10.png").get() ).get() );
-    fonts[FONT_STD12] = std::make_unique<PictureFont>( LoadPNG_RW( pFileManager->openFile("Font12.png").get() ).get() );
-    fonts[FONT_STD24] = std::make_unique<PictureFont>( LoadPNG_RW( pFileManager->openFile("Font24.png").get() ).get() );
+    fonts[FONT_STD10] = std::make_unique<TTFFont>( pFileManager->openFile("Philosopher-Bold.ttf"), 12 );
+    fonts[FONT_STD12] = std::make_unique<TTFFont>( pFileManager->openFile("Philosopher-Bold.ttf"), 14 );
+    fonts[FONT_STD24] = std::make_unique<TTFFont>( pFileManager->openFile("Philosopher-Bold.ttf"), 28 );
 }
 
 FontManager::~FontManager() = default;

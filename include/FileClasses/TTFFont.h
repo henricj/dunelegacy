@@ -15,31 +15,27 @@
  *  along with Dune Legacy.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef PICTUREFONT_H
-#define PICTUREFONT_H
+#ifndef TTFFONT_H
+#define TTFFONT_H
 
 #include "Font.h"
 #include <misc/SDL2pp.h>
 
+#include <SDL_ttf.h>
+
 #include <vector>
 
-/// A class for loading a font from a surface.
-/**
-    This class can read a font from a surface.
-*/
-class PictureFont : public Font
-{
-private:
-    // Internal structure used for storing the character data
-    struct FontCharacter
-    {
-        int width;
-        std::vector<char> data;
-    };
+typedef sdl2::implementation::unique_ptr_deleter<TTF_Font, TTF_CloseFont> font_ptr;
 
+/// A class for loading a ttf font.
+/**
+    This class can read a ttf font.
+*/
+class TTFFont : public Font
+{
 public:
-    PictureFont(SDL_Surface* pic);
-    virtual ~PictureFont();
+    TTFFont(sdl2::RWops_ptr pRWOP, int fontsize);
+    virtual ~TTFFont();
 
     void drawTextOnSurface(SDL_Surface* pSurface, const std::string& text, Uint32 baseColor = 0xFFFFFFFF) override;
 
@@ -53,8 +49,8 @@ public:
     inline int getTextHeight() const override { return characterHeight; };
 
 private:
-    FontCharacter character[256];
-    Uint8 characterHeight;
+    font_ptr pTTFFont;
+    int characterHeight;
 };
 
-#endif //PICTUREFONT_H
+#endif //TTFFONT_H
