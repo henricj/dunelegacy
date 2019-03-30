@@ -26,7 +26,7 @@
     \param  rwop    The source SDL_RWops as a pointer. The sample is loaded from this VOC-File.
     \return a pointer to the sample as a Mix_Chunk. nullptr is returned on errors.
  */
-extern sdl2::mix_chunk_ptr LoadVOC_RW(SDL_RWops* rwop);
+sdl2::mix_chunk_ptr LoadVOC_RW(SDL_RWops* rwop);
 
 #endif // VOCFILE_H
 
