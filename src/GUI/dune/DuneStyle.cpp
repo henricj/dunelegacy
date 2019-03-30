@@ -22,11 +22,9 @@
 #include <FileClasses/GFXManager.h>
 #include <FileClasses/FontManager.h>
 
+#include <globals.h>
+
 #include <algorithm>
-
-extern GFXManager*  pGFXManager;
-extern FontManager* pFontManager;
-
 
 sdl2::surface_ptr DuneStyle::createSurfaceWithText(const std::string& text, Uint32 color, unsigned int fontsize) {
     if(pFontManager != nullptr) {

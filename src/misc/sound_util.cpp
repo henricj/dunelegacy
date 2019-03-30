@@ -7,9 +7,9 @@
 #include <misc/exceptions.h>
 #include <misc/SDL2pp.h>
 
-#include <SDL2/SDL_mixer.h>
+#include <globals.h>
 
-extern FileManager* pFileManager;
+#include <SDL2/SDL_mixer.h>
 
 sdl2::mix_chunk_ptr create_chunk()
 {

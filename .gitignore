@@ -21,3 +21,4 @@ UserInterfaceState.xcuserstate
 xcuserdata/
 IDE/VC/obj
 *.user
+IDE/VC/*.out?
