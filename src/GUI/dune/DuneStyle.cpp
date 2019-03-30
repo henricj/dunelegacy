@@ -27,7 +27,7 @@
 #include <algorithm>
 
 sdl2::surface_ptr DuneStyle::createSurfaceWithText(const std::string& text, Uint32 color, unsigned int fontsize) {
-    if(pFontManager != nullptr) {
+    if(pFontManager) {
         return pFontManager->createSurfaceWithText(text, color, fontsize);
     } else {
         // create dummy surface
@@ -43,7 +43,7 @@ sdl2::surface_ptr DuneStyle::createSurfaceWithText(const std::string& text, Uint
 }
 
 unsigned int DuneStyle::getTextHeight(unsigned int FontNum) {
-    if(pFontManager != nullptr) {
+    if(pFontManager) {
         return pFontManager->getTextHeight(FontNum);
     } else {
         return 12;
@@ -51,7 +51,7 @@ unsigned int DuneStyle::getTextHeight(unsigned int FontNum) {
 }
 
 unsigned int DuneStyle::getTextWidth(const std::string& text, unsigned int FontNum)  {
-    if(pFontManager != nullptr) {
+    if(pFontManager) {
         return pFontManager->getTextWidth(text,FontNum);
     } else {
         return text.length()*10;
@@ -570,7 +570,7 @@ sdl2::surface_ptr DuneStyle::createToolTip(const std::string& text) {
 
 sdl2::surface_ptr DuneStyle::createBackground(Uint32 width, Uint32 height) {
     sdl2::surface_ptr pSurface;
-    if(pGFXManager != nullptr) {
+    if(pGFXManager) {
         pSurface = getSubPicture(pGFXManager->getBackgroundSurface(), 0, 0, width, height);
         if(!pSurface) {
             return nullptr;
