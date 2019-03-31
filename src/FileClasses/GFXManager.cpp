@@ -118,15 +118,15 @@ static const Coord objPicTiles[] {
 GFXManager::GFXManager() {
 
     // open all shp files
-    std::unique_ptr<Shpfile> units = loadShpfile("UNITS.SHP");
-    std::unique_ptr<Shpfile> units1 = loadShpfile("UNITS1.SHP");
-    std::unique_ptr<Shpfile> units2 = loadShpfile("UNITS2.SHP");
-    std::unique_ptr<Shpfile> mouse = loadShpfile("MOUSE.SHP");
-    std::unique_ptr<Shpfile> shapes = loadShpfile("SHAPES.SHP");
-    std::unique_ptr<Shpfile> menshpa = loadShpfile("MENSHPA.SHP");
-    std::unique_ptr<Shpfile> menshph = loadShpfile("MENSHPH.SHP");
-    std::unique_ptr<Shpfile> menshpo = loadShpfile("MENSHPO.SHP");
-    std::unique_ptr<Shpfile> menshpm = loadShpfile("MENSHPM.SHP");
+    auto units = loadShpfile("UNITS.SHP");
+    auto units1 = loadShpfile("UNITS1.SHP");
+    auto units2 = loadShpfile("UNITS2.SHP");
+    auto mouse = loadShpfile("MOUSE.SHP");
+    auto shapes = loadShpfile("SHAPES.SHP");
+    auto menshpa = loadShpfile("MENSHPA.SHP");
+    auto menshph = loadShpfile("MENSHPH.SHP");
+    auto menshpo = loadShpfile("MENSHPO.SHP");
+    auto menshpm = loadShpfile("MENSHPM.SHP");
 
     std::unique_ptr<Shpfile> choam;
     if(pFileManager->exists("CHOAM." + _("LanguageFileExtension"))) {
@@ -152,21 +152,21 @@ GFXManager::GFXManager() {
         mentat = loadShpfile("MENTAT.SHP");
     }
 
-    std::unique_ptr<Shpfile> pieces = loadShpfile("PIECES.SHP");
-    std::unique_ptr<Shpfile> arrows = loadShpfile("ARROWS.SHP");
+    auto pieces = loadShpfile("PIECES.SHP");
+    auto arrows = loadShpfile("ARROWS.SHP");
 
     // Load icon file
-    std::unique_ptr<Icnfile> icon = std::make_unique<Icnfile>(  pFileManager->openFile("ICON.ICN").get(),
+    auto icon = std::make_unique<Icnfile>(  pFileManager->openFile("ICON.ICN").get(),
                                                                 pFileManager->openFile("ICON.MAP").get());
 
     // Load radar static
-    std::unique_ptr<Wsafile> radar = loadWsafile("STATIC.WSA");
+    auto radar = loadWsafile("STATIC.WSA");
 
     // open bene palette
     Palette benePalette = LoadPalette_RW(pFileManager->openFile("BENE.PAL").get());
 
     //create PictureFactory
-    std::unique_ptr<PictureFactory> PicFactory = std::make_unique<PictureFactory>();
+    auto PicFactory = std::make_unique<PictureFactory>();
 
 
 
