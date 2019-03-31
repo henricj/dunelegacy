@@ -208,7 +208,7 @@ void Carryall::deployUnit(Uint32 unitID)
 {
     const auto iter = std::find(pickedUpUnitList.cbegin(), pickedUpUnitList.cend(), unitID);
 
-    if (pickedUpUnitList.end() == iter)
+    if (pickedUpUnitList.cend() == iter)
         return;
 
     pickedUpUnitList.erase(iter);
@@ -257,6 +257,20 @@ void Carryall::deployUnit(Tile* tile, UnitBase* pUnit)
                 }
             }
         }
+    }
+
+    pUnit->setAngle(drawnAngle);
+    const auto deployPos = currentGameMap->findDeploySpot(pUnit, location, currentGame->randomGen);
+    pUnit->setForced(false); // Stop units being forced if they are deployed
+    pUnit->deploy(deployPos);
+    if (pUnit->getItemID() == Unit_Saboteur) {
+        pUnit->doSetAttackMode(HUNT);
+    }
+    else if (pUnit->getItemID() != Unit_Harvester) {
+        pUnit->doSetAttackMode(AREAGUARD);
+    }
+    else {
+        pUnit->doSetAttackMode(HARVEST);
     }
 }
 
