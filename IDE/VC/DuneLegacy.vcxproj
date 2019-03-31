@@ -1,5 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildThisFileDirectory)\vcpkg\vcpkg\scripts\buildsystems\msbuild\vcpkg.targets" Condition="Exists('$(MSBuildThisFileDirectory)\vcpkg\vcpkg\scripts\buildsystems\msbuild\vcpkg.targets')" />
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
@@ -21,7 +22,7 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>{3AE5E6EA-C372-486A-A79E-8F7EEAED5832}</ProjectGuid>
     <RootNamespace>DuneLegacy</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -34,6 +35,7 @@
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v141</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
+    <VcpkgTriplet>x86-windows-ltcg</VcpkgTriplet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
@@ -45,6 +47,7 @@
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v141</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
+    <VcpkgTriplet>x64-windows-ltcg</VcpkgTriplet>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -96,7 +99,7 @@
       <MinimalRebuild>false</MinimalRebuild>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>SDL2maind.lib;ws2_32.lib;winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SDL2maind.lib;imm32.lib;version.lib;ws2_32.lib;winmm.lib;pathcch.lib;shlwapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Windows</SubSystem>
     </Link>
     <PostBuildEvent>
@@ -120,7 +123,7 @@ IF %ERRORLEVEL% LSS 8 exit 0</Command>
       <MinimalRebuild>false</MinimalRebuild>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>SDL2maind.lib;ws2_32.lib;winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SDL2maind.lib;imm32.lib;version.lib;ws2_32.lib;winmm.lib;pathcch.lib;shlwapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Windows</SubSystem>
     </Link>
     <PostBuildEvent />
@@ -145,11 +148,13 @@ IF %ERRORLEVEL% LSS 8 exit 0</Command>
       </WarningVersion>
       <DisableSpecificWarnings>4267</DisableSpecificWarnings>
       <ForcedIncludeFiles>stdafx.h</ForcedIncludeFiles>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>SDL2main.lib;imm32.lib;version.lib;ws2_32.lib;winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SDL2main.lib;imm32.lib;version.lib;ws2_32.lib;winmm.lib;pathcch.lib;shlwapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Windows</SubSystem>
     </Link>
     <PostBuildEvent>
@@ -173,11 +178,13 @@ IF %ERRORLEVEL% LSS 8 exit 0</Command>
       </WarningVersion>
       <DisableSpecificWarnings>4267</DisableSpecificWarnings>
       <ForcedIncludeFiles>stdafx.h</ForcedIncludeFiles>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>SDL2main.lib;imm32.lib;version.lib;ws2_32.lib;winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SDL2main.lib;imm32.lib;version.lib;ws2_32.lib;winmm.lib;pathcch.lib;shlwapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Windows</SubSystem>
     </Link>
     <PostBuildEvent />
@@ -249,11 +256,11 @@ IF %ERRORLEVEL% LSS 8 exit 0</Command>
     <ClInclude Include="..\..\include\FileClasses\Palette.h" />
     <ClInclude Include="..\..\include\FileClasses\Palfile.h" />
     <ClInclude Include="..\..\include\FileClasses\PictureFactory.h" />
-    <ClInclude Include="..\..\include\FileClasses\PictureFont.h" />
     <ClInclude Include="..\..\include\FileClasses\POFile.h" />
     <ClInclude Include="..\..\include\FileClasses\SFXManager.h" />
     <ClInclude Include="..\..\include\FileClasses\Shpfile.h" />
     <ClInclude Include="..\..\include\FileClasses\TextManager.h" />
+    <ClInclude Include="..\..\include\FileClasses\TTFFont.h" />
     <ClInclude Include="..\..\include\FileClasses\Vocfile.h" />
     <ClInclude Include="..\..\include\FileClasses\Wsafile.h" />
     <ClInclude Include="..\..\include\FileClasses\xmidi\databuf.h" />
@@ -459,6 +466,8 @@ IF %ERRORLEVEL% LSS 8 exit 0</Command>
     <ClInclude Include="..\..\include\units\Trike.h" />
     <ClInclude Include="..\..\include\units\Trooper.h" />
     <ClInclude Include="..\..\include\units\UnitBase.h" />
+    <ClCompile Include="..\..\src\FileClasses\SaveTextureAsBmp.cpp" />
+    <ClCompile Include="..\..\src\FileClasses\TTFFont.cpp" />
     <ClInclude Include="stdafx.h" />
   </ItemGroup>
   <ItemGroup>
@@ -628,7 +637,6 @@ IF %ERRORLEVEL% LSS 8 exit 0</Command>
     <ClCompile Include="..\..\src\FileClasses\Pakfile.cpp" />
     <ClCompile Include="..\..\src\FileClasses\Palfile.cpp" />
     <ClCompile Include="..\..\src\FileClasses\PictureFactory.cpp" />
-    <ClCompile Include="..\..\src\FileClasses\PictureFont.cpp" />
     <ClCompile Include="..\..\src\FileClasses\POFile.cpp" />
     <ClCompile Include="..\..\src\FileClasses\SFXManager.cpp" />
     <ClCompile Include="..\..\src\FileClasses\Shpfile.cpp" />
@@ -944,6 +952,11 @@ IF %ERRORLEVEL% LSS 8 exit 0</Command>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="..\..\resource.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <VcpkgPackage Include="sdl2" />
+    <VcpkgPackage Include="sdl2-mixer" />
+    <VcpkgPackage Include="sdl2-ttf" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
