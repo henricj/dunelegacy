@@ -93,42 +93,43 @@ void AirUnit::checkPos()
 
 void AirUnit::blitToScreen()
 {
-    if(settings.video.rotateUnitGraphics) {
-        double rotationAngleDeg = -angle.toDouble()*360.0/8.0;
+    const auto shadow = shadowGraphic[currentZoomlevel];
+    const auto pUnitGraphic = graphic[currentZoomlevel];
 
-        if(shadowGraphic[currentZoomlevel] != nullptr) {
+    if(settings.video.rotateUnitGraphics) {
+        const auto rotationAngleDeg = -angle.toDouble()*360.0/8.0;
+
+        if(shadow != nullptr) {
             int x = screenborder->world2screenX(realX + 4);
             int y = screenborder->world2screenY(realY + 12);
 
-            SDL_Rect source = calcSpriteSourceRect(shadowGraphic[currentZoomlevel], RIGHT, numImagesX, drawnFrame, numImagesY);
-            SDL_Rect dest = calcSpriteDrawingRect(shadowGraphic[currentZoomlevel], x, y, numImagesX, numImagesY, HAlign::Center, VAlign::Center);
+            SDL_Rect source = calcSpriteSourceRect(shadow, RIGHT, numImagesX, drawnFrame, numImagesY);
+            SDL_Rect dest = calcSpriteDrawingRect(shadow, x, y, numImagesX, numImagesY, HAlign::Center, VAlign::Center);
 
-            SDL_RenderCopyEx(renderer, shadowGraphic[currentZoomlevel], &source, &dest, rotationAngleDeg, nullptr, SDL_FLIP_NONE);
+            SDL_RenderCopyEx(renderer, shadow, &source, &dest, rotationAngleDeg, nullptr, SDL_FLIP_NONE);
         }
 
         int x = screenborder->world2screenX(realX);
         int y = screenborder->world2screenY(realY);
 
-        SDL_Texture* pUnitGraphic = graphic[currentZoomlevel];
         SDL_Rect source = calcSpriteSourceRect(pUnitGraphic, RIGHT, numImagesX, drawnFrame, numImagesY);
         SDL_Rect dest = calcSpriteDrawingRect( pUnitGraphic, x, y, numImagesX, numImagesY, HAlign::Center, VAlign::Center);
 
         SDL_RenderCopyEx(renderer, pUnitGraphic, &source, &dest, rotationAngleDeg, nullptr, SDL_FLIP_NONE);
     } else {
-        if(shadowGraphic[currentZoomlevel] != nullptr) {
+        if(shadow != nullptr) {
             int x = screenborder->world2screenX(realX + 4);
             int y = screenborder->world2screenY(realY + 12);
 
-            SDL_Rect source = calcSpriteSourceRect(shadowGraphic[currentZoomlevel], drawnAngle, numImagesX, drawnFrame, numImagesY);
-            SDL_Rect dest = calcSpriteDrawingRect(shadowGraphic[currentZoomlevel], x, y, numImagesX, numImagesY, HAlign::Center, VAlign::Center);
+            SDL_Rect source = calcSpriteSourceRect(shadow, drawnAngle, numImagesX, drawnFrame, numImagesY);
+            SDL_Rect dest = calcSpriteDrawingRect(shadow, x, y, numImagesX, numImagesY, HAlign::Center, VAlign::Center);
 
-            SDL_RenderCopy(renderer, shadowGraphic[currentZoomlevel], &source, &dest);
+            SDL_RenderCopy(renderer, shadow, &source, &dest);
         }
 
         int x = screenborder->world2screenX(realX);
         int y = screenborder->world2screenY(realY);
 
-        SDL_Texture* pUnitGraphic = graphic[currentZoomlevel];
         SDL_Rect source = calcSpriteSourceRect(pUnitGraphic, drawnAngle, numImagesX, drawnFrame, numImagesY);
         SDL_Rect dest = calcSpriteDrawingRect( pUnitGraphic, x, y, numImagesX, numImagesY, HAlign::Center, VAlign::Center);
 
