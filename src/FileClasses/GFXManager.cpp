@@ -851,6 +851,32 @@ SDL_Texture* GFXManager::getZoomedObjPic(unsigned int id, int house, unsigned in
         if(id == ObjPic_Windtrap) {
             // Windtrap uses palette animation on PALCOLOR_WINDTRAP_COLORCYCLE; fake this
             objPicTex[id][house][z] = convertSurfaceToTexture(generateWindtrapAnimationFrames(objPic[id][house][z].get()));
+#if 0
+        } else if(id == ObjPic_Terrain_HiddenFog) {
+            sdl2::surface_ptr pHiddenFog = convertSurfaceToDisplayFormat(objPic[id][house][z].get());
+            replaceColor(pHiddenFog.get(), COLOR_BLACK, COLOR_FOG_TRANSPARENT);
+            if (SDL_SetSurfaceBlendMode(pHiddenFog.get(), SDL_BLENDMODE_BLEND))
+                THROW(std::runtime_error, std::string("getObjPic(): SDL_SetSurfaceBlendMode() failed: ") + std::string(SDL_GetError()));
+            objPicTex[id][house][z] = convertSurfaceToTexture(std::move(pHiddenFog));
+        } else if(id == ObjPic_CarryallShadow) {
+            sdl2::surface_ptr pShadow = convertSurfaceToDisplayFormat(objPic[id][house][z].get());
+            replaceColor(pShadow.get(), COLOR_BLACK, COLOR_SHADOW_TRANSPARENT);
+            if (SDL_SetSurfaceBlendMode(pShadow.get(), SDL_BLENDMODE_BLEND))
+                THROW(std::runtime_error, std::string("getObjPic(): SDL_SetSurfaceBlendMode() failed: ") + std::string(SDL_GetError()));
+            objPicTex[id][house][z] = convertSurfaceToTexture(std::move(pShadow));
+        } else if(id == ObjPic_FrigateShadow) {
+            sdl2::surface_ptr pShadow = convertSurfaceToDisplayFormat(objPic[id][house][z].get());
+            replaceColor(pShadow.get(), COLOR_BLACK, COLOR_SHADOW_TRANSPARENT);
+            if (SDL_SetSurfaceBlendMode(pShadow.get(), SDL_BLENDMODE_BLEND))
+                THROW(std::runtime_error, std::string("getObjPic(): SDL_SetSurfaceBlendMode() failed: ") + std::string(SDL_GetError()));
+            objPicTex[id][house][z] = convertSurfaceToTexture(std::move(pShadow));
+        } else if(id == ObjPic_OrnithopterShadow) {
+            sdl2::surface_ptr pShadow = convertSurfaceToDisplayFormat(objPic[id][house][z].get());
+            replaceColor(pShadow.get(), COLOR_BLACK, COLOR_SHADOW_TRANSPARENT);
+            if (SDL_SetSurfaceBlendMode(pShadow.get(), SDL_BLENDMODE_BLEND))
+                THROW(std::runtime_error, std::string("getObjPic(): SDL_SetSurfaceBlendMode() failed: ") + std::string(SDL_GetError()));
+            objPicTex[id][house][z] = convertSurfaceToTexture(std::move(pShadow));
+#endif // 0
         } else if(id == ObjPic_Bullet_SonicTemp) {
             objPicTex[id][house][z] = sdl2::texture_ptr{ SDL_CreateTexture(renderer, SCREEN_FORMAT, SDL_TEXTUREACCESS_TARGET, objPic[id][house][z]->w, objPic[id][house][z]->h) };
         } else if(id == ObjPic_SandwormShimmerTemp) {
