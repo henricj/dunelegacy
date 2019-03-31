@@ -26,8 +26,6 @@
 #include <cstdlib>
 #include <cstdio>
 
-extern Palette palette;
-
 /// Constructor
 /**
     The constructor reads from the rwop all data and saves them internally. The SDL_RWops can be readonly but must support
@@ -83,7 +81,7 @@ sdl2::surface_ptr Shpfile::getPicture(Uint32 indexOfFile)
     std::vector<unsigned char> DecodeDestination;
 
     /* size and also checksum */
-    Uint16 size = SDL_SwapLE16(*reinterpret_cast<const Uint16 *>(Fileheader + 8));
+    const auto size = SDL_SwapLE16(*reinterpret_cast<const Uint16 *>(Fileheader + 8));
 
     auto ImageOut = std::make_unique<unsigned char[]>(sizeX * sizeY);
 
@@ -189,7 +187,7 @@ sdl2::surface_ptr Shpfile::getPictureArray(unsigned int tilesX, unsigned int til
     va_list arg_ptr;
     va_start(arg_ptr, tilesY);
 
-    for(unsigned int i = 0u; i < tilesX*tilesY; i++) {
+    for(auto i = 0u; i < tilesX*tilesY; i++) {
         tiles[i] = va_arg( arg_ptr, int );
         if(TILE_GETINDEX(tiles[i]) >= shpfileEntries.size()) {
             va_end(arg_ptr);
@@ -199,12 +197,12 @@ sdl2::surface_ptr Shpfile::getPictureArray(unsigned int tilesX, unsigned int til
 
     va_end(arg_ptr);
 
-    unsigned char* pData = pFiledata.get();
+    const auto pData = pFiledata.get();
 
-    unsigned char sizeY = (pData + shpfileEntries[TILE_GETINDEX(tiles[0])].startOffset)[2];
-    unsigned char sizeX = (pData + shpfileEntries[TILE_GETINDEX(tiles[0])].startOffset)[3];
+    const auto sizeY = (pData + shpfileEntries[TILE_GETINDEX(tiles[0])].startOffset)[2];
+    const auto sizeX = (pData + shpfileEntries[TILE_GETINDEX(tiles[0])].startOffset)[3];
 
-    for(unsigned int i = 1u; i < tilesX*tilesY; i++) {
+    for(auto i = 1u; i < tilesX*tilesY; i++) {
         if(((pData + shpfileEntries[TILE_GETINDEX(tiles[i])].startOffset)[2] != sizeY)
          || ((pData + shpfileEntries[TILE_GETINDEX(tiles[i])].startOffset)[3] != sizeX)) {
             THROW(std::runtime_error, "Shpfile::getPictureArray(): Not all pictures have the same size!");
@@ -223,8 +221,8 @@ sdl2::surface_ptr Shpfile::getPictureArray(unsigned int tilesX, unsigned int til
     palette.applyToSurface(pic.get());
     sdl2::surface_lock lock{ pic.get() };
 
-    for(unsigned int j = 0u; j < tilesY; j++) {
-        for(unsigned int i = 0u; i < tilesX; i++) {
+    for(auto j = 0u; j < tilesY; j++) {
+        for(auto i = 0u; i < tilesX; i++) {
 
             const unsigned char * Fileheader = pData + shpfileEntries[TILE_GETINDEX(tiles[j*tilesX+i])].startOffset;
             unsigned char type = Fileheader[0];
