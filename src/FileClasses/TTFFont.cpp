@@ -50,9 +50,9 @@ TTFFont::~TTFFont() = default;
 void TTFFont::drawTextOnSurface(SDL_Surface* pSurface, const std::string& text, Uint32 baseColor) {
 
     if(!text.empty()) {
-        sdl2::surface_ptr pTextSurface { TTF_RenderText_Solid(pTTFFont.get(), text.c_str(), RGBA2SDL(baseColor)) };
+        sdl2::surface_ptr pTextSurface { TTF_RenderUTF8_Solid(pTTFFont.get(), text.c_str(), RGBA2SDL(baseColor)) };
         if(!pTextSurface) {
-            THROW(std::invalid_argument, "TTFFont::drawTextOnSurface(): TTF_RenderText_Solid() failed: %s!", TTF_GetError());
+            THROW(std::invalid_argument, "TTFFont::drawTextOnSurface(): TTF_RenderUTF8_Solid() failed: %s!", TTF_GetError());
         }
 
         SDL_Rect dest { 0, -2, pTextSurface->w, pTextSurface->h };
@@ -69,7 +69,7 @@ void TTFFont::drawTextOnSurface(SDL_Surface* pSurface, const std::string& text, 
 int TTFFont::getTextWidth(const std::string& text) const {
 
     int width = 0;
-    if(TTF_SizeText(pTTFFont.get(), text.c_str(), &width, nullptr) < 0) {
+    if(TTF_SizeUTF8(pTTFFont.get(), text.c_str(), &width, nullptr) < 0) {
         THROW(std::invalid_argument, "TTFFont::getTextWidth(): TTF_SizeText() failed: %s!", TTF_GetError());
     }
 

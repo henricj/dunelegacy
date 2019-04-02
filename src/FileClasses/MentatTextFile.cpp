@@ -85,7 +85,7 @@ MentatTextFile::MentatTextFile(SDL_RWops* rwop) {
 
         std::string compressedEntryContent((char*) filedata.data() + entryContentOffset);
 
-        std::string entryContent = convertCP850ToISO8859_1(decodeString(compressedEntryContent));
+        std::string entryContent = convertCP850ToUTF8(decodeString(compressedEntryContent));
 
         size_t delimPos = entryContent.find_first_of('*');
         std::string filename = entryContent.substr(0,delimPos);
@@ -95,7 +95,7 @@ MentatTextFile::MentatTextFile(SDL_RWops* rwop) {
         std::string name = nameAndContent.substr(0,delimPos2);
         std::string content = (delimPos2 == std::string::npos) ? "" : nameAndContent.substr(delimPos2 + 2);
 
-        mentatEntries.emplace_back( convertCP850ToISO8859_1(entryTitle), numMenuEntry, menuLevel, techLevel, filename, name, content );
+        mentatEntries.emplace_back( convertCP850ToUTF8(entryTitle), numMenuEntry, menuLevel, techLevel, filename, name, content );
 
         pCurrentPos += entryLength;
     }

@@ -594,8 +594,8 @@ void Game::doInput()
 
                 case SDL_TEXTINPUT: {
                     if(chatMode) {
-                        std::string newText = convertUTF8ToISO8859_1(event.text.text);
-                        if(typingChatMessage.length() + newText.length() <= 60) {
+                        std::string newText = event.text.text;
+                        if(utf8Length(typingChatMessage) + utf8Length(newText) <= 60) {
                             typingChatMessage += newText;
                         }
                     }
@@ -1866,7 +1866,7 @@ void Game::handleChatInput(SDL_KeyboardEvent& keyboardEvent) {
         chatMode = false;
     } else if(keyboardEvent.keysym.sym == SDLK_BACKSPACE) {
         if(typingChatMessage.length() > 0) {
-            typingChatMessage.resize(typingChatMessage.length() - 1);
+            typingChatMessage = utf8Substr(typingChatMessage, 0, utf8Length(typingChatMessage) - 1);
         }
     }
 }

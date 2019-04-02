@@ -268,7 +268,7 @@ public:
 
         if(key.keysym.sym == SDLK_BACKSPACE) {
             if(text.size() != 0) {
-                text.erase(text.size() - 1);
+                text = utf8Substr(text, 0, utf8Length(text)-1);
                 if(pOnTextChange) {
                     pOnTextChange(true);
                 }
@@ -296,11 +296,11 @@ public:
             return true;
         }
 
-        std::string newText = convertUTF8ToISO8859_1(textInput.text);
+        std::string newText = textInput.text;
 
         bool bChanged = false;
         for(char c : newText) {
-            if(((maxTextLength < 0) || ((int) text.length() < maxTextLength))
+            if(((maxTextLength < 0) || ((int) utf8Length(text) < maxTextLength))
                 && (allowedChars.empty() || allowedChars.find(c) != std::string::npos)
                 && (forbiddenChars.find(c) == std::string::npos)) {
                 text += c;

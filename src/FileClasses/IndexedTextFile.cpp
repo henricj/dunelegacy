@@ -59,9 +59,9 @@ IndexedTextFile::IndexedTextFile(SDL_RWops* rwop, bool bDecode) {
         std::string text((const char*) (filedata.data()+pIndex[i]));
 
         if(bDecode) {
-            indexedStrings.push_back(convertCP850ToISO8859_1(decodeString(text)));
+            indexedStrings.push_back( convertCP850ToUTF8(decodeString(text)) );
         } else {
-            indexedStrings.push_back( convertCP850ToISO8859_1(text) );
+            indexedStrings.push_back( convertCP850ToUTF8(text) );
         }
     }
 }

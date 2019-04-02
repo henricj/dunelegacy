@@ -452,7 +452,7 @@ void MapChoice::loadINI() {
                 key = _("LanguageFileExtension") + "TXT " + std::to_string(j);
             }
 
-            std::string str = convertCP850ToISO8859_1(RegionINI.getStringValue(strSection,key));
+            std::string str = convertCP850ToUTF8(RegionINI.getStringValue(strSection,key));
             if(!str.empty()) {
                 TGroup::TText tmp;
                 tmp.message = str;
@@ -462,7 +462,7 @@ void MapChoice::loadINI() {
                 // try TXT? without leading language
                 std::string key = std::string("TXT") + std::to_string(j);
 
-                std::string str = convertCP850ToISO8859_1(RegionINI.getStringValue(strSection,key));
+                std::string str = convertCP850ToUTF8(RegionINI.getStringValue(strSection,key));
                 if(!str.empty()) {
                     TGroup::TText tmp;
                     tmp.message = str;

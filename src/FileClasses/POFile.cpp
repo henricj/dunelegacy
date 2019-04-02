@@ -47,7 +47,7 @@ static std::string extractString(const std::string& str, const std::string& file
         return "";
     }
 
-    return convertUTF8ToISO8859_1(unescapeString(str.substr(firstQuote+1, lastQuote-firstQuote-1)));
+    return unescapeString(str.substr(firstQuote+1, lastQuote-firstQuote-1));
 }
 
 std::map<std::string, std::string> loadPOFile(SDL_RWops* rwop, const std::string& filename) {

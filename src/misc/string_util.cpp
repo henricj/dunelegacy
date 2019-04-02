@@ -139,6 +139,70 @@ std::string replaceAll(const std::string& str, const std::map<std::string, std::
     return result;
 }
 
+std::string utf8Substr(const std::string& str, size_t pos, size_t len) {
+    std::string result;
+    size_t estimatedLength = (len == std::string::npos) ? (str.length() - pos) : len;
+    result.reserve(estimatedLength);
+
+    auto iter = str.cbegin();
+
+    size_t currentPos = 0;
+    while( (iter < str.cend()) && (currentPos != pos) ) {
+        unsigned char c = static_cast<unsigned char>( *iter );
+
+        if( (c & 0x80) == 0) {
+            // 1 byte: 0xxxxxxx
+            iter += 1;
+        } else if( (c & 0xE0) == 0xC0) {
+            // 2 bvte: 110xxxxx 10xxxxxx
+            iter += 2;
+        } else if( (c & 0xF0) == 0xE0) {
+            // 3 byte: 1110xxxx 10xxxxxx 10xxxxxx
+            iter += 3;
+        } else if( (c & 0xF8) == 0xF0) {
+            // 4 byte: 11110xxx 10xxxxxx 10xxxxxx 10xxxxxx
+            iter += 4;
+        } else {
+            // invalid => skip
+            iter += 1;
+        }
+        currentPos++;
+    }
+
+    size_t resultLen = 0;
+    while( (iter < str.cend()) && (resultLen != len) ) {
+        unsigned char c = static_cast<unsigned char>( *iter );
+
+        size_t numBytes = 0;
+        if( (c & 0x80) == 0) {
+            // 1 byte: 0xxxxxxx
+            numBytes = 1;
+        } else if( (c & 0xE0) == 0xC0) {
+            // 2 bvte: 110xxxxx 10xxxxxx
+            numBytes = 2;
+        } else if( (c & 0xF0) == 0xE0) {
+            // 3 byte: 1110xxxx 10xxxxxx 10xxxxxx
+            numBytes= 3;
+        } else if( (c & 0xF8) == 0xF0) {
+            // 4 byte: 11110xxx 10xxxxxx 10xxxxxx 10xxxxxx
+            numBytes = 4;
+        } else {
+            // invalid => skip
+            numBytes = 1;
+        }
+
+        while((iter < str.cend()) && (numBytes > 0)) {
+            result += *iter;
+            numBytes--;
+            iter++;
+        }
+
+        resultLen += 1;
+    }
+
+    return result;
+}
+
 
 std::vector<std::string> greedyWordWrap(const std::string& text, int linewidth, std::function<int (const std::string&)> pGetTextWidth) {
     //split text into single lines at every '\n'
@@ -206,9 +270,11 @@ std::vector<std::string> greedyWordWrap(const std::string& text, int linewidth, 
                         oldwarppos = warppos;
                     }
 
-                    warppos++;
+                    do {
+                        warppos++;
+                    } while((warppos < hardLine.length()) && !utf8IsStartByte(hardLine[warppos]));
 
-                    if(warppos > hardLine.length()) {
+                    if(warppos >= hardLine.length()) {
                         oldwarppos = hardLine.length();
                         break;
                     }
@@ -234,8 +300,7 @@ std::vector<std::string> greedyWordWrap(const std::string& text, int linewidth, 
 }
 
 
-
-std::string convertCP850ToISO8859_1(const std::string& text)
+std::string convertCP850ToUTF8(const std::string& text)
 {
     // contains the upper half of cp850 (128 - 255)
     static const unsigned char cp850toISO8859_1[] = {
@@ -250,6 +315,7 @@ std::string convertCP850ToISO8859_1(const std::string& text)
     };
 
     std::string result;
+    result.reserve(text.length());
     for(unsigned int i = 0; i < text.size(); i++) {
         unsigned char c = (unsigned char) text[i];
         if(c == 0x0D) {
@@ -257,53 +323,14 @@ std::string convertCP850ToISO8859_1(const std::string& text)
         } else if(c < 128) {
             result += c;
         } else {
-            result += cp850toISO8859_1[c-128];
+            c = cp850toISO8859_1[c-128];
+            result += (0xC0 | (c >> 6));
+            result += (0x80 | (c & 0x3F));
         }
     }
     return result;
 }
 
-std::string convertUTF8ToISO8859_1(const std::string& text)
-{
-    unsigned char savedChar = 0;
-
-    std::string result;
-    for(unsigned int i = 0; i < text.size(); i++) {
-        unsigned char c = (unsigned char) text[i];
-
-        if(savedChar != 0) {
-            unsigned char newChar = ((savedChar & 0x1F) << 6) | (c & 0x3F);
-            result += newChar;
-            savedChar = 0;
-        } else {
-
-            if(c < 128) {
-                // 1 byte
-                result += c;
-            } else if( (c & 0xE0) == 0xC0) {
-                // 2 byte
-                savedChar = c;
-            } else if( (c & 0xF0) == 0xE0) {
-                // 3 byte
-                result += 0x01; // cannot handle this
-                i += 2;
-            } else if( (c & 0xF8) == 0xF0) {
-                // 4 byte
-                result += 0x01; // cannot handle this
-                i += 3;
-            } else if( (c & 0xFC) == 0xF8) {
-                // 5 byte
-                result += 0x01; // cannot handle this
-                i += 4;
-            } else if( (c & 0xFE) == 0xFC) {
-                // 6 byte
-                result += 0x01; // cannot handle this
-                i += 5;
-            }
-        }
-    }
-    return result;
-}
 
 std::string decodeString(const std::string& text) {
     std::string out = "";
