@@ -67,7 +67,7 @@ protected:
     void engageTarget() override;
     void pickupTarget();
     void targeting() override;
-    virtual void turn();
+    virtual void turn() override;
 
     // unit state/properties
     std::list<Uint32>   pickedUpUnitList;   ///< What units does this carryall carry?

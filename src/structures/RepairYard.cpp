@@ -153,7 +153,7 @@ void RepairYard::updateStructureSpecificStuff() {
             if(pCarryall != nullptr) {
                 pCarryall->setTarget(this);
                 pCarryall->clearPath();
-                ((GroundUnit*)pRepairUnit)->bookCarrier(pCarryall);
+                static_cast<GroundUnit*>(pRepairUnit)->bookCarrier(pCarryall);
                 pRepairUnit->setTarget(nullptr);
                 pRepairUnit->setDestination(pRepairUnit->getGuardPoint());
             } else {

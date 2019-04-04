@@ -188,10 +188,10 @@ sdl2::surface_ptr INIMapPreviewCreator::createMinimapImageOfMap(int borderWidth,
         if(BloomString != "") {
             std::vector<std::string> BloomPositions  = splitString(BloomString);
 
-            for(unsigned int i=0; i < BloomPositions.size();i++) {
+            for(const std::string& strBloomPos : BloomPositions) {
                 // set bloom
                 int BloomPos;
-                if(parseString(BloomPositions[i], BloomPos)) {
+                if(parseString(strBloomPos, BloomPos)) {
                     int xpos = BloomPos % logicalSizeX - logicalOffsetX;
                     int ypos = BloomPos / logicalSizeX - logicalOffsetY;
                     if(xpos >= 0 && xpos < sizeX && ypos >= 0 && ypos < sizeY) {
@@ -212,10 +212,10 @@ sdl2::surface_ptr INIMapPreviewCreator::createMinimapImageOfMap(int borderWidth,
         if(SpecialString != "") {
             std::vector<std::string> SpecialPositions  = splitString(SpecialString);
 
-            for(unsigned int i=0; i < SpecialPositions.size();i++) {
+            for(const std::string& strSpecialPos : SpecialPositions) {
                 // set bloom
                 int SpecialPos;
-                if(parseString(SpecialPositions[i], SpecialPos)) {
+                if(parseString(strSpecialPos, SpecialPos)) {
                     int xpos = SpecialPos % logicalSizeX - logicalOffsetX;
                     int ypos = SpecialPos / logicalSizeX - logicalOffsetY;
                     if(xpos >= 0 && xpos < sizeX && ypos >= 0 && ypos < sizeY) {

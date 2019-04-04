@@ -187,7 +187,7 @@ void StarPort::doCancelItem(Uint32 itemID, bool multipleMode) {
 
 void StarPort::doPlaceOrder() {
 
-    if (currentProductionQueue.size() > 0) {
+    if (!currentProductionQueue.empty()) {
 
         if(currentGame->getGameInitSettings().getGameOptions().instantBuild == true) {
             arrivalTimer = 1;

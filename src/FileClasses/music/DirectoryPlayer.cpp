@@ -51,9 +51,9 @@ DirectoryPlayer::DirectoryPlayer() : MusicPlayer(settings.audio.playMusic, setti
                                                                     };
 
     for(int i=0;i<MUSIC_NUM_MUSIC_TYPES;i++) {
-        char tmp[FILENAME_MAX];
+        char tmp2[FILENAME_MAX];
         const char* dirName =  musicDirectoryNames[i] + 1; // skip '/' at the beginning
-        fnkdat(dirName, tmp, FILENAME_MAX, FNKDAT_USER | FNKDAT_CREAT);
+        fnkdat(dirName, tmp2, FILENAME_MAX, FNKDAT_USER | FNKDAT_CREAT);
         musicFileList[i] = getMusicFileNames(configfilepath + musicDirectoryNames[i]);
     }
 

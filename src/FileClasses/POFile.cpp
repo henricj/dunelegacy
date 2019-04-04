@@ -99,7 +99,6 @@ std::map<std::string, std::string> loadPOFile(SDL_RWops* rwop, const std::string
             } else if(msgstrMode == true) {
                 // we have finished the previous translation
                 mapping[msgid] = msgstr;
-                msgid = "";
                 msgstr = "";
 
                 msgstrMode = false;

@@ -508,8 +508,7 @@ void QuantBot::onDamage(const ObjectBase* pObject, int damage, Uint32 damagerID)
             doSetAttackMode(pGroundUnit, AREAGUARD);
             doMove2Pos(pGroundUnit, squadCenterLocation.x, squadCenterLocation.y, true);
         } else if(  (currentGame->techLevel > 3)
-                    && (pGroundUnit->getItemID() == Unit_RaiderTrike)
-                    && (pGroundUnit->getItemID() == Unit_Trike)
+                    && ((pGroundUnit->getItemID() == Unit_RaiderTrike) || (pGroundUnit->getItemID() == Unit_Trike))
                     && !pDamager->isInfantry()
                     && (pDamager->getItemID() != Unit_RaiderTrike)
                     && (pDamager->getItemID() != Unit_Trike)) {
@@ -1033,7 +1032,7 @@ void QuantBot::build(int militaryValue) {
                            && pBuilder->isAvailableToBuild(Unit_Soldier)
                            && gameMode == GameMode::Campaign
                            && ((itemCount[Structure_HeavyFactory] == 0) || militaryValue < militaryValueLimit * 0.30_fix)
-                           && itemCount[Structure_WOR == 0]
+                           && itemCount[Structure_WOR] == 0
                            && money > 1000
                            && pBuilder->getProductionQueueSize() < 1
                            && pBuilder->getBuildListSize() > 0

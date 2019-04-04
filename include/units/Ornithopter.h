@@ -42,7 +42,7 @@ public:
 protected:
     virtual FixPoint getDestinationAngle() const override;
 
-    virtual bool attack();
+    virtual bool attack() override;
 
 private:
     Uint32 timeLastShot;

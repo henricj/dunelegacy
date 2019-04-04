@@ -74,13 +74,13 @@ public:
         \return the localized version of unlocalizedString
     */
     const std::string& getLocalized(const std::string& unlocalizedString) const {
-        const std::string& localizedString = getLocalizedRaw(unlocalizedString);
+        const std::string& localizedStringRaw = getLocalizedRaw(unlocalizedString);
 
-        if(!localizedString.empty() && localizedString[0] == '@') {
+        if(!localizedStringRaw.empty() && localizedStringRaw[0] == '@') {
             // post-process
-            return postProcessString(localizedString);
+            return postProcessString(localizedStringRaw);
         } else {
-            return localizedString;
+            return localizedStringRaw;
         }
     }
 

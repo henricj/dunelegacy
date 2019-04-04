@@ -41,16 +41,16 @@ public:
     void checkPos() override;
     bool canPass(int xPos, int yPos) const override;
 
-    virtual FixPoint getMaxSpeed() const {
+    virtual FixPoint getMaxSpeed() const override {
         return currentMaxSpeed;
     }
 
 protected:
     virtual FixPoint getDestinationAngle() const;
 
-    virtual void navigate();
-    virtual void move();
-    virtual void turn();
+    virtual void navigate() override;
+    virtual void move() override;
+    virtual void turn() override;
 
     FixPoint currentMaxSpeed;               ///< The current maximum allowed speed
 

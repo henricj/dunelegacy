@@ -166,12 +166,11 @@ static sdl2::sdl_ptr<Uint8[]> LoadVOC_RW(SDL_RWops* rwop, Uint32 &decsize, Uint3
                 //SDL_Log("VOC Data Block: Rate: %d, Packing: %d, Length: %d", rate, packing, len);
 
                 if (packing == 0) {
-                    Uint8* tmp = (Uint8 *) SDL_realloc(ret_sound.release(), decsize + len);
-                    if(tmp == nullptr) {
+                    Uint8* tmp_ret_sound = (Uint8 *) SDL_realloc(ret_sound.release(), decsize + len);
+                    if(tmp_ret_sound == nullptr) {
                         THROW(std::runtime_error, "LoadVOC_RW(): %s", strerror(errno));
                     } else {
-                        ret_sound.release();
-                        ret_sound = sdl2::sdl_ptr<Uint8[]> { tmp };
+                        ret_sound = sdl2::sdl_ptr<Uint8[]> { tmp_ret_sound };
                     }
 
                     if(SDL_RWread(rwop,ret_sound.get() + decsize,1,len) != len) {
@@ -207,12 +206,11 @@ static sdl2::sdl_ptr<Uint8[]> LoadVOC_RW(SDL_RWops* rwop, Uint32 &decsize, Uint3
                     length = SilenceLength;
                 }
 
-                Uint8* tmp = (Uint8 *) SDL_realloc(ret_sound.release(), decsize + length);
-                if(tmp == nullptr) {
+                Uint8* tmp_ret_sound = (Uint8 *) SDL_realloc(ret_sound.release(), decsize + length);
+                if(tmp_ret_sound == nullptr) {
                     THROW(std::runtime_error, "LoadVOC_RW(): %s", strerror(errno));
                 } else {
-                    ret_sound.release();
-                    ret_sound = sdl2::sdl_ptr<Uint8[]> { tmp };
+                    ret_sound = sdl2::sdl_ptr<Uint8[]> { tmp_ret_sound };
                 }
 
                 memset(ret_sound.get() + decsize,0x80,length);

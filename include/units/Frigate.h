@@ -43,7 +43,7 @@ public:
     void deploy(const Coord& newLocation) override;
 
 protected:
-    virtual void turn();
+    virtual void turn() override;
 
 private:
     bool    droppedOffCargo;    ///< Is the cargo already dropped off?

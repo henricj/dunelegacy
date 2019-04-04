@@ -323,22 +323,22 @@ void Bullet::update()
         FixPoint angleToDestinationRad = destinationAngleRad(Coord(lround(realX), lround(realY)), destination);
         FixPoint angleToDestination = RadToDeg256(angleToDestinationRad);
 
-        FixPoint angleDiff = angleToDestination - angle;
-        if(angleDiff > 128) {
-            angleDiff -= 256;
-        } else if(angleDiff < -128) {
-            angleDiff += 256;
+        FixPoint angleDifference = angleToDestination - angle;
+        if(angleDifference > 128) {
+            angleDifference -= 256;
+        } else if(angleDifference < -128) {
+            angleDifference += 256;
         }
 
         static const FixPoint turnSpeed = 4.5_fix;
 
-        if(angleDiff >= turnSpeed) {
-            angleDiff = turnSpeed;
-        } else if(angleDiff <= -turnSpeed) {
-            angleDiff = -turnSpeed;
+        if(angleDifference >= turnSpeed) {
+            angleDifference = turnSpeed;
+        } else if(angleDifference <= -turnSpeed) {
+            angleDifference = -turnSpeed;
         }
 
-        angle += angleDiff;
+        angle += angleDifference;
 
         if(angle < 0) {
             angle += 256;

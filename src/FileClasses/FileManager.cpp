@@ -107,7 +107,6 @@ std::vector<std::string> FileManager::getNeededFiles() {
 
 std::vector<std::string> FileManager::getMissingFiles() {
     std::vector<std::string> MissingFiles;
-    std::vector<std::string> searchPath = getSearchPath();
 
     for(const std::string& fileName : getNeededFiles()) {
         bool bFound = false;

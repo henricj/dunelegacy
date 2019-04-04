@@ -364,6 +364,7 @@ void Pakfile::readIndex()
 
         //pak-files are always little endian encoded
         newEntry.startOffset = SDL_SwapLE32(newEntry.startOffset);
+        newEntry.endOffset = 0;
 
         if(newEntry.startOffset == 0) {
             break;

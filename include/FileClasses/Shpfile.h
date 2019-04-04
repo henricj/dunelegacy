@@ -47,7 +47,7 @@ private:
     };
 
 public:
-    Shpfile(SDL_RWops* rwop);
+    explicit Shpfile(SDL_RWops* rwop);
     Shpfile(const Shpfile& o) = delete;
     Shpfile(Shpfile &&) = delete;
     Shpfile& operator=(const Shpfile &) = delete;
