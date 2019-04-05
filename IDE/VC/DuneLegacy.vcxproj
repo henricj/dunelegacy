@@ -879,6 +879,7 @@ IF %ERRORLEVEL% LSS 8 exit 0</Command>
     <ClCompile Include="..\..\src\GUI\ListBox.cpp" />
     <ClCompile Include="..\..\src\GUI\RadioButtonManager.cpp" />
     <ClCompile Include="..\..\src\GUI\ScrollBar.cpp" />
+    <ClCompile Include="..\..\src\GUI\TextButton.cpp" />
     <ClCompile Include="..\..\src\GUI\TextView.cpp" />
     <ClCompile Include="..\..\src\GUI\Widget.cpp" />
     <ClCompile Include="..\..\src\GUI\Window.cpp" />
