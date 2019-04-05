@@ -36,7 +36,7 @@
 #include <misc/draw_util.h>
 #include <misc/md5.h>
 #include <misc/exceptions.h>
-#include <misc/format.h>
+#include <fmt/format.h>
 #include <misc/SDL2pp.h>
 
 #include <players/HumanPlayer.h>
@@ -116,9 +116,6 @@ Game::~Game() {
 
     bulletList.clear();
 
-    for(Explosion* pExplosion : explosionList) {
-        delete pExplosion;
-    }
     explosionList.clear();
 
     delete currentGameMap;
@@ -234,11 +231,6 @@ void Game::drawScreen()
     BottomRightTile.x = std::min(currentGameMap->getSizeX() - 1, BottomRightTile.x + 1);
     BottomRightTile.y = std::min(currentGameMap->getSizeY() - 1, BottomRightTile.y + 1);
 
-    const auto x1 = TopLeftTile.x;
-    const auto y1 = TopLeftTile.y;
-    const auto x2 = BottomRightTile.x + 1;
-    const auto y2 = BottomRightTile.y + 1;
-
     const auto tiles = currentGameMap;
 
     const auto x1 = TopLeftTile.x;
@@ -338,15 +330,15 @@ void Game::drawScreen()
 //////////////////////////////draw unexplored/shade
 
     if(debug == false) {
-        SDL_Texture* hiddenTexZoomed = pGFXManager->getZoomedObjPic(ObjPic_Terrain_Hidden, currentZoomlevel);
-        SDL_Texture* hiddenFogTexZoomed = pGFXManager->getZoomedObjPic(ObjPic_Terrain_HiddenFog, currentZoomlevel);
+        const auto hiddenTexZoomed = pGFXManager->getZoomedObjPic(ObjPic_Terrain_Hidden, currentZoomlevel);
+        const auto hiddenFogTexZoomed = pGFXManager->getZoomedObjPic(ObjPic_Terrain_HiddenFog, currentZoomlevel);
         int zoomedTileSize = world2zoomedWorld(TILESIZE);
 
         const auto fogOfWar = gameInitSettings.getGameOptions().fogOfWar;
         const auto zoomedTileSize = world2zoomedWorld(TILESIZE);
         const auto hideTile = pTile->getHideTile(pLocalHouse->getTeamID());
 
-        tiles->for_each(top_left.x - 1, top_left.y - 1, bottom_right.x + 2, bottom_right.y + 1,
+        tiles->for_each(top_left.x - 1, top_left.y - 1, bottom_right.x + 1, bottom_right.y + 1,
             [=](Tile& t) {
                 const auto x = t.getLocation().x;
                 const auto y = t.getLocation().y;
@@ -366,37 +358,35 @@ void Game::drawScreen()
                             if(pTile->isFoggedByTeam(pLocalHouse->getTeamID()) == true) {
                                 fogTile = Terrain_HiddenFull;
                             }
+                const auto pTile = &t;
 
-                            if(fogTile != 0) {
-                                SDL_Rect source = { fogTile*zoomedTileSize, 0,
-                                                    zoomedTileSize, zoomedTileSize };
-                        SDL_RenderCopy(renderer, hiddenTex, &source, &drawLocation);
+                const auto border = screenborder;
+                const auto house_id = pLocalHouse->getHouseID();
+
+                SDL_Rect drawLocation = { border->world2screenX(x*TILESIZE), border->world2screenY(y*TILESIZE),
+                                            zoomedTileSize, zoomedTileSize };
+
+                if (t.isExplored(house_id)) {
+                    const auto hideTile = t.getHideTile(house_id);
+
+                    if (hideTile != 0) {
+                        SDL_Rect source = { hideTile*zoomedTileSize, 0, zoomedTileSize, zoomedTileSize };
+                        SDL_RenderCopy(renderer, hiddenTexZoomed, &source, &drawLocation);
                     }
 
-                                SDL_RenderCopy(renderer, hiddenFogTexZoomed, &source, &drawLocation);
-                            }
-                        }
-                    } else {
-                        if(!debug) {
-                            SDL_Rect source = { zoomedTileSize*15, 0, zoomedTileSize, zoomedTileSize };
-                            SDL_Rect drawLocation = {   screenborder->world2screenX(x*TILESIZE), screenborder->world2screenY(y*TILESIZE),
-                                                        zoomedTileSize, zoomedTileSize };
+                    if (fogOfWar) {
+                        const auto fogTile = pTile->isFogged(house_id) ? Terrain_HiddenFull : pTile->getFogTile(house_id);
+
+                        if (fogTile != 0) {
+                            SDL_Rect source = { fogTile*zoomedTileSize, 0,
+                                                zoomedTileSize, zoomedTileSize };
                             SDL_RenderCopy(renderer, hiddenTexZoomed, &source, &drawLocation);
                         }
                     }
                 } else {
-                    // we are outside the map => draw complete hidden
-                    SDL_Rect source = { zoomedTileSize*15, 0, zoomedTileSize, zoomedTileSize };
-                    SDL_Rect drawLocation = {   screenborder->world2screenX(x*TILESIZE), screenborder->world2screenY(y*TILESIZE),
-                                                zoomedTileSize, zoomedTileSize };
-                    SDL_RenderCopy(renderer, hiddenTexZoomed, &source, &drawLocation);
-                }
-                else {
                     if (!debug) {
-                        const SDL_Rect source = { zoomedTileSize * 15, 0, zoomedTileSize, zoomedTileSize };
-                        const SDL_Rect drawLocation = { border->world2screenX(x*TILESIZE), border->world2screenY(y*TILESIZE),
-                                                    zoomedTileSize, zoomedTileSize };
-                        SDL_RenderCopy(renderer, hiddenTex, &source, &drawLocation);
+                        SDL_Rect source = { zoomedTileSize * 15, 0, zoomedTileSize, zoomedTileSize };
+                        SDL_RenderCopy(renderer, hiddenTexZoomed, &source, &drawLocation);
                     }
                 }
             });
@@ -2260,6 +2250,15 @@ bool Game::handlePlacementClick(int xPos, int yPos) {
 
     if(!pBuilder) {
         return false;
+    }
+
+    const auto placeItem = pBuilder->getCurrentProducedItem();
+    if (placeItem == ItemID_Invalid) {
+        // We lost a race with another team member
+        currentGame->addToNewsTicker(_("There is no item to place."));
+        soundPlayer->playSound(Sound_InvalidAction);    //can't place noise
+        currentCursorMode = CursorMode_Normal;
+        return true;
     }
 
     const auto structuresize = getStructureSize(placeItem);
