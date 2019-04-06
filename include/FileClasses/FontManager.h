@@ -23,12 +23,12 @@
 
 #include <memory>
 #include <string>
+#include <map>
 
 typedef enum {
-    FONT_STD12,
-    FONT_STD14,
-    FONT_STD28,
-    NUM_FONTS
+    FONT_STD12 = 12,
+    FONT_STD14 = 14,
+    FONT_STD28 = 28
 } Fonts_enum;
 
 /// A class for managing fonts.
@@ -41,15 +41,27 @@ public:
     FontManager();
     ~FontManager();
 
-    void drawTextOnSurface(SDL_Surface* pSurface, const std::string& text, Uint32 color, unsigned int fontNum);
-    int getTextWidth(const std::string& text, unsigned int fontNum) const;
-    int getTextHeight(unsigned int fontNum) const;
-    sdl2::surface_ptr createSurfaceWithText(const std::string& text, Uint32 color, unsigned int fontNum);
-    sdl2::texture_ptr createTextureWithText(const std::string& text, Uint32 color, unsigned int fontNum);
-    sdl2::surface_ptr createSurfaceWithMultilineText(const std::string& text, Uint32 color, unsigned int fontNum, bool bCentered = false);
-    sdl2::texture_ptr createTextureWithMultilineText(const std::string& text, Uint32 color, unsigned int fontNum, bool bCentered = false);
+    void drawTextOnSurface(SDL_Surface* pSurface, const std::string& text, Uint32 color, unsigned int fontSize);
+    int getTextWidth(const std::string& text, unsigned int fontSize);
+    int getTextHeight(unsigned int fontSize);
+    sdl2::surface_ptr createSurfaceWithText(const std::string& text, Uint32 color, unsigned int fontSize);
+    sdl2::texture_ptr createTextureWithText(const std::string& text, Uint32 color, unsigned int fontSize);
+    sdl2::surface_ptr createSurfaceWithMultilineText(const std::string& text, Uint32 color, unsigned int fontSize, bool bCentered = false);
+    sdl2::texture_ptr createTextureWithMultilineText(const std::string& text, Uint32 color, unsigned int fontSize, bool bCentered = false);
 private:
-    std::array<std::unique_ptr<Font>, NUM_FONTS> fonts;
+    inline Font* getFont(unsigned int fontSize) {
+        auto iter = fonts.find(fontSize);
+        if(iter != fonts.end()) {
+            return iter->second.get();
+        } else {
+            fonts[fontSize] = loadFont(fontSize);
+            return fonts[fontSize].get();
+        }
+    }
+
+    std::unique_ptr<Font> loadFont(unsigned int fontSize);
+
+    std::map<unsigned int, std::unique_ptr<Font>> fonts;
 
 };
 

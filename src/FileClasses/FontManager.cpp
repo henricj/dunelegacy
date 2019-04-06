@@ -28,65 +28,43 @@
 
 #include <list>
 
-FontManager::FontManager() {
-    fonts[FONT_STD12] = std::make_unique<TTFFont>( pFileManager->openFile("Philosopher-Bold.ttf"), 12 );
-    fonts[FONT_STD14] = std::make_unique<TTFFont>( pFileManager->openFile("Philosopher-Bold.ttf"), 14 );
-    fonts[FONT_STD28] = std::make_unique<TTFFont>( pFileManager->openFile("Philosopher-Bold.ttf"), 28 );
-}
+FontManager::FontManager() = default;
 
 FontManager::~FontManager() = default;
 
-void FontManager::drawTextOnSurface(SDL_Surface* pSurface, const std::string& text, Uint32 color, unsigned int fontNum) {
-    if(fontNum >= NUM_FONTS) {
-        return;
-    }
-
-    fonts[fontNum]->drawTextOnSurface(pSurface,text,color);
+void FontManager::drawTextOnSurface(SDL_Surface* pSurface, const std::string& text, Uint32 color, unsigned int fontSize) {
+    return getFont(fontSize)->drawTextOnSurface(pSurface,text,color);
 }
 
-int FontManager::getTextWidth(const std::string& text, unsigned int fontNum) const {
-    if(fontNum >= NUM_FONTS) {
-        return 0;
-    }
-
-    return fonts[fontNum]->getTextWidth(text);
+int FontManager::getTextWidth(const std::string& text, unsigned int fontSize) {
+    return getFont(fontSize)->getTextWidth(text);
 }
 
-int FontManager::getTextHeight(unsigned int fontNum) const {
-    if(fontNum >= NUM_FONTS) {
-        return 0;
-    }
-
-    return fonts[fontNum]->getTextHeight();
+int FontManager::getTextHeight(unsigned int fontSize) {
+    return getFont(fontSize)->getTextHeight();
 }
 
-sdl2::surface_ptr FontManager::createSurfaceWithText(const std::string& text, Uint32 color, unsigned int fontNum) {
-    if(fontNum >= NUM_FONTS) {
-        return nullptr;
-    }
+sdl2::surface_ptr FontManager::createSurfaceWithText(const std::string& text, Uint32 color, unsigned int fontSize) {
+    Font* pFont = getFont(fontSize);
 
-    int width = fonts[fontNum]->getTextWidth(text);
-    int height = fonts[fontNum]->getTextHeight();
+    int width = pFont->getTextWidth(text);
+    int height = pFont->getTextHeight();
     sdl2::surface_ptr pic = sdl2::surface_ptr{ SDL_CreateRGBSurface(0, width, height, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK) };
 
     SDL_SetSurfaceBlendMode(pic.get(), SDL_BLENDMODE_NONE);
     SDL_FillRect(pic.get(), nullptr, COLOR_INVALID);
     SDL_SetColorKey(pic.get(), SDL_TRUE, COLOR_INVALID);
 
-    fonts[fontNum]->drawTextOnSurface(pic.get(),text,color);
+    pFont->drawTextOnSurface(pic.get(),text,color);
 
     return pic;
 }
 
-sdl2::texture_ptr FontManager::createTextureWithText(const std::string& text, Uint32 color, unsigned int fontNum) {
-    return convertSurfaceToTexture(createSurfaceWithText(text, color, fontNum));
+sdl2::texture_ptr FontManager::createTextureWithText(const std::string& text, Uint32 color, unsigned int fontSize) {
+    return convertSurfaceToTexture(createSurfaceWithText(text, color, fontSize));
 }
 
-sdl2::surface_ptr FontManager::createSurfaceWithMultilineText(const std::string& text, Uint32 color, unsigned int fontNum, bool bCentered) {
-    if(fontNum >= NUM_FONTS) {
-        return 0;
-    }
-
+sdl2::surface_ptr FontManager::createSurfaceWithMultilineText(const std::string& text, Uint32 color, unsigned int fontSize, bool bCentered) {
     size_t startpos = 0;
     size_t nextpos;
     std::list<std::string> textLines;
@@ -100,10 +78,10 @@ sdl2::surface_ptr FontManager::createSurfaceWithMultilineText(const std::string&
         }
     } while(nextpos != std::string::npos);
 
-    const auto& font = fonts[fontNum];
+    Font* pFont = getFont(fontSize);
 
-    int lineHeight = font->getTextHeight();
-    int width = font->getTextWidth(text);
+    int lineHeight = pFont->getTextHeight();
+    int width = pFont->getTextWidth(text);
     int height = lineHeight * textLines.size() + (lineHeight * (textLines.size()-1))/2;
 
     // create new picture surface
@@ -118,7 +96,7 @@ sdl2::surface_ptr FontManager::createSurfaceWithMultilineText(const std::string&
 
     int currentLineNum = 0;
     for(const std::string& textLine : textLines) {
-        auto tmpSurface = createSurfaceWithText(textLine, color, fontNum);
+        auto tmpSurface = createSurfaceWithText(textLine, color, fontSize);
 
         SDL_Rect dest = calcDrawingRect(tmpSurface.get(), bCentered ? width/2 : 0, currentLineNum*lineHeight, bCentered ? HAlign::Center : HAlign::Left, VAlign::Top);
         SDL_BlitSurface(tmpSurface.get(),nullptr,pic.get(),&dest);
@@ -129,6 +107,10 @@ sdl2::surface_ptr FontManager::createSurfaceWithMultilineText(const std::string&
     return pic;
 }
 
-sdl2::texture_ptr FontManager::createTextureWithMultilineText(const std::string& text, Uint32 color, unsigned int fontNum, bool bCentered) {
-    return convertSurfaceToTexture(createSurfaceWithMultilineText(text, color, fontNum, bCentered));
+sdl2::texture_ptr FontManager::createTextureWithMultilineText(const std::string& text, Uint32 color, unsigned int fontSize, bool bCentered) {
+    return convertSurfaceToTexture(createSurfaceWithMultilineText(text, color, fontSize, bCentered));
+}
+
+std::unique_ptr<Font> FontManager::loadFont(unsigned int fontSize) {
+    return std::make_unique<TTFFont>( pFileManager->openFile("Philosopher-Bold.ttf"), fontSize );
 }
