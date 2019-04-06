@@ -166,7 +166,7 @@ public:
 
         std::string testString(std::max(1,textBox.getMaximumTextLength()), '9');
 
-        return Point(   textBoxMinimumSize.x + buttonVBoxMinimumSize.x + GUIStyle::getInstance().getTextWidth(testString.c_str(), textBox.getTextFont()),
+        return Point(   textBoxMinimumSize.x + buttonVBoxMinimumSize.x + GUIStyle::getInstance().getTextWidth(testString.c_str(), textBox.getTextFontSize()),
                         std::max(textBoxMinimumSize.y,buttonVBoxMinimumSize.y) );
     }
 

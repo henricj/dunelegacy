@@ -25,12 +25,6 @@
 #include <string>
 #include <map>
 
-typedef enum {
-    FONT_STD12 = 12,
-    FONT_STD14 = 14,
-    FONT_STD28 = 28
-} Fonts_enum;
-
 /// A class for managing fonts.
 /**
     This class manages all fonts used in Dune Legacy and provides methods for rendering texts with a specific font.

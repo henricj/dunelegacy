@@ -32,7 +32,7 @@ public:
 
     /// default constructor
     TextBox() : Widget() {
-        fontID = FONT_STD14;
+        fontSize = 14;
         textcolor = COLOR_DEFAULT;
         textshadowcolor = COLOR_DEFAULT;
         maxTextLength = -1;
@@ -69,20 +69,20 @@ public:
     inline const std::string& getText() const { return text; };
 
     /**
-        Sets a font for this text box. Default font of a text box is FONT_STD14
-        \param  fontID      the ID of the new font
+        Sets a font size for this text box. Default font size of a text box is 14
+        \param  fontSize      the size of the new font
     */
-    virtual inline void setTextFont(int fontID) {
-        this->fontID = fontID;
+    virtual inline void setTextFontSize(int fontSize) {
+        this->fontSize = fontSize;
         resize(getSize().x, getSize().y);
     }
 
     /**
-        Gets the font of this text box. Default font of a text box is FONT_STD14
-        \return the font ID of this text box
+        Gets the font size of this text box. Default font size of a text box is 14
+        \return the font size of this text box
     */
-    virtual inline int getTextFont() const {
-       return fontID;
+    virtual inline int getTextFontSize() const {
+       return fontSize;
     }
 
     /**
@@ -153,7 +153,7 @@ public:
     */
     Point getMinimumSize() const override
     {
-        return GUIStyle::getInstance().getMinimumTextBoxSize(fontID);
+        return GUIStyle::getInstance().getMinimumTextBoxSize(fontSize);
     }
 
     /**
@@ -188,8 +188,8 @@ public:
         if(pTextureWithoutCarret == nullptr || pTextureWithCarret == nullptr) {
             invalidateTextures();
 
-            pTextureWithoutCarret = convertSurfaceToTexture(GUIStyle::getInstance().createTextBoxSurface(getSize().x, getSize().y, text, false, fontID,  Alignment_Left, textcolor, textshadowcolor));
-            pTextureWithCarret = convertSurfaceToTexture(GUIStyle::getInstance().createTextBoxSurface(getSize().x, getSize().y, text, true, fontID, Alignment_Left, textcolor, textshadowcolor));
+            pTextureWithoutCarret = convertSurfaceToTexture(GUIStyle::getInstance().createTextBoxSurface(getSize().x, getSize().y, text, false, fontSize,  Alignment_Left, textcolor, textshadowcolor));
+            pTextureWithCarret = convertSurfaceToTexture(GUIStyle::getInstance().createTextBoxSurface(getSize().x, getSize().y, text, true, fontSize, Alignment_Left, textcolor, textshadowcolor));
         }
     }
 
@@ -340,7 +340,7 @@ protected:
     }
 
 private:
-    int fontID;                                 ///< the ID of the font to use
+    int fontSize;                               ///< the size of the font to use
     Uint32 textcolor;                           ///< Text color
     Uint32 textshadowcolor;                     ///< Text shadow color
     std::string text;                           ///< text in this text box

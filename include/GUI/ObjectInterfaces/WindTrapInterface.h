@@ -44,10 +44,10 @@ protected:
 
         mainHBox.addWidget(&textVBox);
 
-        requiredEnergyLabel.setTextFont(FONT_STD12);
+        requiredEnergyLabel.setTextFontSize(12);
         requiredEnergyLabel.setTextColor(color);
         textVBox.addWidget(&requiredEnergyLabel, 0.005);
-        producedEnergyLabel.setTextFont(FONT_STD12);
+        producedEnergyLabel.setTextFontSize(12);
         producedEnergyLabel.setTextColor(color);
         textVBox.addWidget(&producedEnergyLabel, 0.005);
         textVBox.addWidget(Spacer::create(),0.99);

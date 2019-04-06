@@ -59,7 +59,7 @@ ReinforcementsWindow::ReinforcementsWindow(MapEditor* pMapEditor, HOUSETYPE curr
     mainVBox.addWidget(&centralVBox, 360);
 
     Label_Explanation.setTextColor(color);
-    Label_Explanation.setTextFont(FONT_STD12);
+    Label_Explanation.setTextFontSize(12);
     Label_Explanation.setText(_("Reinforcements are brought by a carryall. Multiple reinforcements at the same time are combined."));
     centralVBox.addWidget(&Label_Explanation);
 

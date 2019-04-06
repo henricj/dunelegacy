@@ -40,20 +40,20 @@ public:
     virtual ~Label() = default;
 
     /**
-        Sets a font for this label. Default font of a label is FONT_STD14
-        \param  fontID      the ID of the new font
+        Sets a font size for this label. Default font size of a label is 14
+        \param  fontSize      the font size of the new font
     */
-    virtual void setTextFont(int fontID) {
-        this->fontID = fontID;
+    virtual void setTextFontSize(int fontSize) {
+        this->fontSize = fontSize;
         resizeAll();
     }
 
     /**
-        Gets the font of this label. Default font of a label is FONT_STD14
-        \return the font ID of this label
+        Gets the font size of this label. Default font size of a label is 14
+        \return the font size of this label
     */
-    virtual int getTextFont() const {
-       return fontID;
+    virtual int getTextFontSize() const {
+       return fontSize;
     }
 
     /**
@@ -150,7 +150,7 @@ public:
         } while(nextpos != std::string::npos);
 
         for(const std::string& hardLine : hardLines) {
-            Point minLabelSize = GUIStyle::getInstance().getMinimumLabelSize(hardLine, fontID);
+            Point minLabelSize = GUIStyle::getInstance().getMinimumLabelSize(hardLine, fontSize);
             p.x = std::max(p.x, minLabelSize.x);
             p.y += minLabelSize.y;
         }
@@ -208,11 +208,11 @@ protected:
         if(!pTexture) {
             std::vector<std::string> textLines = greedyWordWrap(text,
                                                                 getSize().x,
-                                                                [font = fontID](const std::string& tmp) {
+                                                                [font = fontSize](const std::string& tmp) {
                                                                     return GUIStyle::getInstance().getMinimumLabelSize(tmp, font).x - 4;
                                                                 });
 
-            pTexture = convertSurfaceToTexture(GUIStyle::getInstance().createLabelSurface(getSize().x,getSize().y,textLines,fontID,alignment,textcolor,textshadowcolor,backgroundcolor));
+            pTexture = convertSurfaceToTexture(GUIStyle::getInstance().createLabelSurface(getSize().x,getSize().y,textLines,fontSize,alignment,textcolor,textshadowcolor,backgroundcolor));
         }
     }
 
@@ -225,7 +225,7 @@ protected:
     }
 
 private:
-    int fontID = FONT_STD14;                    ///< the ID of the font to use
+    int fontSize = 14;                  ///< the size of the font to use
     Uint32 textcolor = COLOR_DEFAULT;           ///< the text color
     Uint32 textshadowcolor = COLOR_DEFAULT;     ///< the color of the shadow of the text
     Uint32 backgroundcolor = COLOR_TRANSPARENT; ///< the color of the label background

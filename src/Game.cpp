@@ -495,7 +495,7 @@ void Game::drawScreen()
 
     // draw chat message currently typed
     if(chatMode) {
-        sdl2::texture_ptr pChatTexture = pFontManager->createTextureWithText("Chat: " + typingChatMessage + (((SDL_GetTicks() / 150) % 2 == 0) ? "_" : ""), COLOR_WHITE, FONT_STD14);
+        sdl2::texture_ptr pChatTexture = pFontManager->createTextureWithText("Chat: " + typingChatMessage + (((SDL_GetTicks() / 150) % 2 == 0) ? "_" : ""), COLOR_WHITE, 14);
         SDL_Rect drawLocation = calcDrawingRect(pChatTexture.get(), 20, getRendererHeight() - 40);
         SDL_RenderCopy(renderer, pChatTexture.get(), nullptr, &drawLocation);
     }
@@ -503,7 +503,7 @@ void Game::drawScreen()
     if(bShowFPS) {
         std::string strFPS = fmt::sprintf("fps: %.1f ", 1000.0f/averageFrameTime);
 
-        sdl2::texture_ptr pFPSTexture = pFontManager->createTextureWithText(strFPS, COLOR_WHITE, FONT_STD14);
+        sdl2::texture_ptr pFPSTexture = pFontManager->createTextureWithText(strFPS, COLOR_WHITE, 14);
         SDL_Rect drawLocation = calcDrawingRect(pFPSTexture.get(),sideBarPos.x - strFPS.length()*8, 60);
         SDL_RenderCopy(renderer, pFPSTexture.get(), nullptr, &drawLocation);
     }
@@ -512,7 +512,7 @@ void Game::drawScreen()
         int seconds = getGameTime() / 1000;
         std::string strTime = fmt::sprintf(" %.2d:%.2d:%.2d", seconds / 3600, (seconds % 3600)/60, (seconds % 60) );
 
-        sdl2::texture_ptr pTimeTexture = pFontManager->createTextureWithText(strTime, COLOR_WHITE, FONT_STD14);
+        sdl2::texture_ptr pTimeTexture = pFontManager->createTextureWithText(strTime, COLOR_WHITE, 14);
         SDL_Rect drawLocation = calcAlignedDrawingRect(pTimeTexture.get(), HAlign::Left, VAlign::Bottom);
         drawLocation.y++;
         SDL_RenderCopy(renderer, pTimeTexture.get(), nullptr, &drawLocation);
@@ -527,7 +527,7 @@ void Game::drawScreen()
             message = _("You Have Failed Your Mission.");
         }
 
-        sdl2::texture_ptr pFinishMessageTexture = pFontManager->createTextureWithText(message.c_str(), COLOR_WHITE, FONT_STD28);
+        sdl2::texture_ptr pFinishMessageTexture = pFontManager->createTextureWithText(message.c_str(), COLOR_WHITE, 28);
         SDL_Rect drawLocation = calcDrawingRect(pFinishMessageTexture.get(), sideBarPos.x/2, topBarPos.h + (getRendererHeight()-topBarPos.h)/2, HAlign::Center, VAlign::Center);
         SDL_RenderCopy(renderer, pFinishMessageTexture.get(), nullptr, &drawLocation);
     }

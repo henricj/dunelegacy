@@ -44,10 +44,10 @@ protected:
 
         mainHBox.addWidget(&textVBox);
 
-        capacityLabel.setTextFont(FONT_STD12);
+        capacityLabel.setTextFontSize(12);
         capacityLabel.setTextColor(color);
         textVBox.addWidget(&capacityLabel, 0.005);
-        storedCreditsLabel.setTextFont(FONT_STD12);
+        storedCreditsLabel.setTextFontSize(12);
         storedCreditsLabel.setTextColor(color);
         textVBox.addWidget(&storedCreditsLabel, 0.005);
         textVBox.addWidget(Spacer::create(), 0.99);

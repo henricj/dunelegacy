@@ -110,9 +110,9 @@ void ChatManager::addChatMessage(const std::string& username, const std::string&
     timeinfo = localtime( &unixtime );
     strftime(timestring, 80, "(%H:%M:%S)", timeinfo);
 
-    sdl2::texture_ptr pTimeTexture = pFontManager->createTextureWithText( timestring, COLOR_WHITE, FONT_STD12);
-    sdl2::texture_ptr pUsernameTexture = pFontManager->createTextureWithText( username + ": ", COLOR_WHITE, FONT_STD12);
-    sdl2::texture_ptr pMessageTexture = pFontManager->createTextureWithText( message, COLOR_WHITE, FONT_STD12);
+    sdl2::texture_ptr pTimeTexture = pFontManager->createTextureWithText( timestring, COLOR_WHITE, 12);
+    sdl2::texture_ptr pUsernameTexture = pFontManager->createTextureWithText( username + ": ", COLOR_WHITE, 12);
+    sdl2::texture_ptr pMessageTexture = pFontManager->createTextureWithText( message, COLOR_WHITE, 12);
 
     chatMessages.emplace_back(std::move(pTimeTexture), std::move(pUsernameTexture), std::move(pMessageTexture), SDL_GetTicks(), MSGTYPE_NORMAL );
 
@@ -124,7 +124,7 @@ void ChatManager::addChatMessage(const std::string& username, const std::string&
 
 void ChatManager::addInfoMessage(const std::string& message)
 {
-    sdl2::texture_ptr pMessageTexture = pFontManager->createTextureWithText( "*  " + message, COLOR_GREEN, FONT_STD12);
+    sdl2::texture_ptr pMessageTexture = pFontManager->createTextureWithText( "*  " + message, COLOR_GREEN, 12);
 
     chatMessages.emplace_back(std::move(pMessageTexture), SDL_GetTicks(), MSGTYPE_INFO );
 
@@ -141,13 +141,13 @@ void ChatManager::addHintMessage(const std::string& message, SDL_Texture* pTextu
     std::vector<std::string> lines = greedyWordWrap(message,
                                                     width,
                                                     [](const std::string& tmp) {
-                                                        return DuneStyle::getInstance().getTextWidth(tmp, FONT_STD12);
+                                                        return DuneStyle::getInstance().getTextWidth(tmp, 12);
                                                     });
 
-    int height = lines.size() * DuneStyle::getInstance().getTextHeight(FONT_STD12) + 4;
+    int height = lines.size() * DuneStyle::getInstance().getTextHeight(12) + 4;
 
 
-    sdl2::texture_ptr pMessageTexture = convertSurfaceToTexture(DuneStyle::getInstance().createLabelSurface( width, height, lines, FONT_STD12, Alignment_Left, COLOR_WHITE, COLOR_TRANSPARENT));
+    sdl2::texture_ptr pMessageTexture = convertSurfaceToTexture(DuneStyle::getInstance().createLabelSurface( width, height, lines, 12, Alignment_Left, COLOR_WHITE, COLOR_TRANSPARENT));
 
     chatMessages.emplace_back(std::move(pMessageTexture), pTexture, SDL_GetTicks(), MSGTYPE_PICTURE );
 

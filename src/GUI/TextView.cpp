@@ -62,7 +62,7 @@ void TextView::draw(Point position) {
     }
 
     if(pForeground != nullptr) {
-        int lineHeight = GUIStyle::getInstance().getTextHeight(fontID) + 2;
+        int lineHeight = GUIStyle::getInstance().getTextHeight(fontSize) + 2;
 
         SDL_Rect src = {    0,
                             scrollbar.getCurrentValue() * lineHeight,
@@ -89,14 +89,14 @@ void TextView::resize(Uint32 width, Uint32 height) {
 
     scrollbar.resize(scrollbar.getMinimumSize().x,height);
 
-    int fontID = this->fontID;
+    int fontSize = this->fontSize;
     std::vector<std::string> textLines = greedyWordWrap(text,
                                                         getSize().x - scrollbar.getSize().x - 4,
-                                                        [fontID](const std::string& tmp) {
-                                                            return GUIStyle::getInstance().getMinimumLabelSize(tmp, fontID).x - 4;
+                                                        [fontSize](const std::string& tmp) {
+                                                            return GUIStyle::getInstance().getMinimumLabelSize(tmp, fontSize).x - 4;
                                                         });
 
-    int lineHeight = GUIStyle::getInstance().getTextHeight(fontID) + 2;
+    int lineHeight = GUIStyle::getInstance().getTextHeight(fontSize) + 2;
 
     int numVisibleLines = height/lineHeight;
     scrollbar.setRange(0,std::max(0, ((int) textLines.size()) - numVisibleLines));
@@ -111,15 +111,15 @@ void TextView::updateTextures() {
     }
 
     if(pForeground == nullptr) {
-        int fontID = this->fontID;
+        int fontSize = this->fontSize;
         std::vector<std::string> textLines = greedyWordWrap(text,
                                                             getSize().x - scrollbar.getSize().x - 4,
-                                                            [fontID](const std::string& tmp) {
-                                                                return GUIStyle::getInstance().getMinimumLabelSize(tmp, fontID).x - 4;
+                                                            [fontSize](const std::string& tmp) {
+                                                                return GUIStyle::getInstance().getMinimumLabelSize(tmp, fontSize).x - 4;
                                                             });
 
-        int lineHeight = GUIStyle::getInstance().getTextHeight(fontID) + 2;
+        int lineHeight = GUIStyle::getInstance().getTextHeight(fontSize) + 2;
         int labelHeight = lineHeight * textLines.size() + 2;
-        pForeground = convertSurfaceToTexture(GUIStyle::getInstance().createLabelSurface(getSize().x-4,labelHeight,textLines,fontID,alignment,textcolor,textshadowcolor,backgroundcolor));
+        pForeground = convertSurfaceToTexture(GUIStyle::getInstance().createLabelSurface(getSize().x-4,labelHeight,textLines,fontSize,alignment,textcolor,textshadowcolor,backgroundcolor));
     }
 }

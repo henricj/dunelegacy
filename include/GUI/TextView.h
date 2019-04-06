@@ -35,20 +35,20 @@ public:
     virtual ~TextView();
 
     /**
-        Sets a font for this label. Default font of a label is FONT_STD14
-        \param  fontID      the ID of the new font
+        Sets a font size for this text view. Default font size of a text view is 14
+        \param  fontSize      the size of the new font
     */
-    virtual void setTextFont(int fontID) {
-        this->fontID = fontID;
+    virtual void setTextFontSize(int fontSize) {
+        this->fontSize = fontSize;
         resize(getSize().x, getSize().y);
     }
 
     /**
-        Gets the font of this label. Default font of a label is FONT_STD14
-        \return the font ID of this label
+        Gets the font size of this text view. Default font size of a text view is 14
+        \return the font size of this text view
     */
-    virtual int getTextFont() const {
-       return fontID;
+    virtual int getTextFontSize() const {
+       return fontSize;
     }
 
     /**
@@ -220,7 +220,7 @@ protected:
 
 private:
 
-    int fontID = FONT_STD14;                    ///< the ID of the font to use
+    int fontSize = 14;                  ///< the size of the font to use
     Uint32 textcolor = COLOR_DEFAULT;           ///< the text color
     Uint32 textshadowcolor = COLOR_DEFAULT;     ///< the color of the shadow of the text
     Uint32 backgroundcolor = COLOR_TRANSPARENT; ///< the color of the label background

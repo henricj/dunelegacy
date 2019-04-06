@@ -70,24 +70,24 @@ public:
     /**
         Returns the minimum size of a label with this text
         \param  text    The text for the label
-        \param  fontID  The ID of the font to use
+        \param  fontSize  The size of the font to use
         \return the mimimum size of this label
     */
-    virtual Point getMinimumLabelSize(const std::string& text, int fontID) = 0;
+    virtual Point getMinimumLabelSize(const std::string& text, int fontSize) = 0;
 
     /**
         Creates the surface for a label with TextLines as content.
         \param  width           the width of the label
         \param  height          the height of the label
         \param  textLines       a vector of text lines for this label
-        \param  fontID          the ID of the font to use
+        \param  fontSize        the size of the font to use
         \param  alignment       the alignment for this label
         \param  textcolor       the color of the text (COLOR_DEFAULT = default color for this style)
         \param  textshadowcolor the color of the shadow under the text (COLOR_DEFAULT = default color for this style)
         \param  backgroundcolor the background color (default is transparent)
         \return the new surface
     */
-    virtual sdl2::surface_ptr createLabelSurface(Uint32 width, Uint32 height, const std::vector<std::string>& textLines, int fontID, Alignment_Enum alignment = Alignment_HCenter, Uint32 textcolor = COLOR_DEFAULT, Uint32 textshadowcolor = COLOR_DEFAULT, Uint32 backgroundcolor = COLOR_TRANSPARENT) = 0;
+    virtual sdl2::surface_ptr createLabelSurface(Uint32 width, Uint32 height, const std::vector<std::string>& textLines, int fontSize, Alignment_Enum alignment = Alignment_HCenter, Uint32 textcolor = COLOR_DEFAULT, Uint32 textshadowcolor = COLOR_DEFAULT, Uint32 backgroundcolor = COLOR_TRANSPARENT) = 0;
 
 
 
@@ -175,10 +175,10 @@ public:
 
     /**
         Returns the minumum size of a text box
-        \param  fontID  The ID of the font to use
+        \param  fontSize  The size of the font to use
         \return the mimimum size of a text box
     */
-    virtual Point getMinimumTextBoxSize(int fontID) = 0;
+    virtual Point getMinimumTextBoxSize(int fontSize) = 0;
 
     /**
         Creates the surface for a text box with text as content.
@@ -186,13 +186,13 @@ public:
         \param  height          the height of the text box
         \param  text            the text for this text box
         \param  carret          true if a carret should be shown
-        \param  fontID          the ID of the font to use
+        \param  fontSize        the size of the font to use
         \param  alignment       the alignment for this text box
         \param  textcolor       the color of the text (COLOR_DEFAULT = default color for this style)
         \param  textshadowcolor the color of the shadow under the text (COLOR_DEFAULT = default color for this style)
         \return the new surface
     */
-    virtual sdl2::surface_ptr createTextBoxSurface(Uint32 width, Uint32 height, const std::string& text, bool carret, int fontID, Alignment_Enum alignment = Alignment_Left, Uint32 textcolor = COLOR_DEFAULT, Uint32 textshadowcolor = COLOR_DEFAULT) = 0;
+    virtual sdl2::surface_ptr createTextBoxSurface(Uint32 width, Uint32 height, const std::string& text, bool carret, int fontSize, Alignment_Enum alignment = Alignment_Left, Uint32 textcolor = COLOR_DEFAULT, Uint32 textshadowcolor = COLOR_DEFAULT) = 0;
 
 
 

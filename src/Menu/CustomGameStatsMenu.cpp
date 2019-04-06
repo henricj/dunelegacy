@@ -107,7 +107,7 @@ CustomGameStatsMenu::CustomGameStatsMenu() : MenuBase()
             curHouseStat.houseHBox.addWidget(Spacer::create(), 5);
 
             curHouseStat.value1.setText( std::to_string(pHouse->getBuiltValue()));
-            curHouseStat.value1.setTextFont(FONT_STD12);
+            curHouseStat.value1.setTextFontSize(12);
             curHouseStat.value1.setAlignment(Alignment_Right);
             curHouseStat.value1.setTextColor(textcolor);
             curHouseStat.houseHBox.addWidget(&curHouseStat.value1, 50);
@@ -123,7 +123,7 @@ CustomGameStatsMenu::CustomGameStatsMenu() : MenuBase()
             curHouseStat.houseHBox.addWidget(Spacer::create(), 25);
 
             curHouseStat.value2.setText( std::to_string(pHouse->getDestroyedValue()*100));
-            curHouseStat.value2.setTextFont(FONT_STD12);
+            curHouseStat.value2.setTextFontSize(12);
             curHouseStat.value2.setAlignment(Alignment_Right);
             curHouseStat.value2.setTextColor(textcolor);
             curHouseStat.houseHBox.addWidget(&curHouseStat.value2, 50);
@@ -139,7 +139,7 @@ CustomGameStatsMenu::CustomGameStatsMenu() : MenuBase()
             curHouseStat.houseHBox.addWidget(Spacer::create(), 25);
 
             curHouseStat.value3.setText( std::to_string(lround(pHouse->getHarvestedSpice())));
-            curHouseStat.value3.setTextFont(FONT_STD12);
+            curHouseStat.value3.setTextFontSize(12);
             curHouseStat.value3.setAlignment(Alignment_Right);
             curHouseStat.value3.setTextColor(textcolor);
             curHouseStat.houseHBox.addWidget(&curHouseStat.value3, 50);
