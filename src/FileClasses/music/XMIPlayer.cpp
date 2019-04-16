@@ -30,7 +30,7 @@
 XMIPlayer::XMIPlayer() : MusicPlayer(settings.audio.playMusic, settings.audio.musicVolume) {
     music = nullptr;
 
-#if SDL_VERSIONNUM(SDL_MIXER_MAJOR_VERSION, SDL_MIXER_MINOR_VERSION, SDL_MIXER_PATCHLEVEL) >= SDL_VERSIONNUM(2,0,4)
+#if SDL_VERSIONNUM(SDL_MIXER_MAJOR_VERSION, SDL_MIXER_MINOR_VERSION, SDL_MIXER_PATCHLEVEL) >= SDL_VERSIONNUM(2,0,2)
     if((Mix_Init(MIX_INIT_MID) & MIX_INIT_MID) == 0) {
         SDL_Log("XMIPlayer: Failed to init required midi support: %s", SDL_GetError());
     }
