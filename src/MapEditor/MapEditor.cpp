@@ -52,7 +52,7 @@ public:
     }
 
     bool operator()(Coord& coord) {
-        return distanceFrom(centerCoord, coord) <= 5;
+        return distanceFrom(centerCoord, coord) <= distance;
     }
 
 private:

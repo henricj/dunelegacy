@@ -194,7 +194,7 @@ std::unique_ptr<MetaServerCommand> MetaServerClient::dequeueMetaServerCommand() 
 
     SDL_UnlockMutex(sharedDataMutex);
 
-    return std::move(nextMetaServerCommand);
+    return nextMetaServerCommand;
 }
 
 

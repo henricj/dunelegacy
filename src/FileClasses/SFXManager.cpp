@@ -383,7 +383,7 @@ void SFXManager::loadNonEnglishVoice(const std::string& languagePrefix) {
 }
 
 Mix_Chunk* SFXManager::getNonEnglishVoice(Voice_enum id, int house) const {
-    if(static_cast<int>(id) >= lngVoice.size())
+    if(static_cast<size_t>(id) >= lngVoice.size())
         return nullptr;
 
     return lngVoice[id].get();
