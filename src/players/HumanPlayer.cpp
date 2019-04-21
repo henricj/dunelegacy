@@ -23,6 +23,7 @@
 
 #include <Game.h>
 #include <Map.h>
+#include <SoundPlayer.h>
 
 #include <structures/StructureBase.h>
 #include <units/UnitBase.h>
@@ -32,9 +33,12 @@
 
 #include <Network/NetworkManager.h>
 
+#define ATTACKNOTIFICATIONTIME MILLI2CYCLES(2*60*1000)
+
 HumanPlayer::HumanPlayer(House* associatedHouse, const std::string& playername) : Player(associatedHouse, playername) {
     HumanPlayer::init();
     alreadyShownTutorialHints = currentGame->getGameInitSettings().getAlreadyShownTutorialHints();
+    lastAttackNotificationCycle = INVALID_GAMECYCLE;
 }
 
 HumanPlayer::HumanPlayer(InputStream& stream, House* associatedHouse) : Player(stream, associatedHouse) {
@@ -45,6 +49,7 @@ HumanPlayer::HumanPlayer(InputStream& stream, House* associatedHouse) : Player(s
     }
 
     alreadyShownTutorialHints = stream.readUint32();
+    lastAttackNotificationCycle = stream.readUint32();
 }
 
 void HumanPlayer::init() {
@@ -62,9 +67,22 @@ void HumanPlayer::save(OutputStream& stream) const {
     }
 
     stream.writeUint32(alreadyShownTutorialHints);
+    stream.writeUint32(lastAttackNotificationCycle);
 }
 
 void HumanPlayer::update() {
+}
+
+void HumanPlayer::onDamage(const ObjectBase* pObject, int damage, Uint32 damagerID) {
+    if((lastAttackNotificationCycle != INVALID_GAMECYCLE)
+        && (getGameCycleCount() - lastAttackNotificationCycle < ATTACKNOTIFICATIONTIME)) {
+        return;
+    }
+
+    if(pObject->isAStructure() && pObject->getOwner() == getHouse()) {
+        soundPlayer->playVoice(BaseIsUnderAttack, getHouse()->getHouseID());
+        lastAttackNotificationCycle = getGameCycleCount();
+    }
 }
 
 void HumanPlayer::onProduceItem(Uint32 itemID) {

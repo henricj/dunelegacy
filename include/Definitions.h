@@ -30,7 +30,7 @@
 #define DEFAULT_METASERVER  "http://dunelegacy.sourceforge.net/metaserver/metaserver.php"
 
 #define SAVEMAGIC           8675309
-#define SAVEGAMEVERSION     9700
+#define SAVEGAMEVERSION     9701
 
 #define MAX_PLAYERNAMELENGHT    24
 
@@ -70,9 +70,10 @@
 #define SIDEBARWIDTH 144
 #define SIDEBAR_COLUMN_WIDTH 12
 
-#define NONE_ID ((Uint32) -1)          // unsigned -1
+#define NONE_ID (static_cast<Uint32>(-1))          // unsigned -1
 #define INVALID_POS (-1)
 #define INVALID (-1)
+#define INVALID_GAMECYCLE (static_cast<Uint32>(-1))
 
 #define NUM_TEAMS 7
 

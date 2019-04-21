@@ -66,6 +66,14 @@ public:
 
     void update() override;
 
+    /**
+        An object was hit by something or damaged somehow else.
+        \param  pObject     the object that was damaged
+        \param  damage      the damage taken
+        \param  damagerID   the shooter of the bullet, rocket, etc. if known; NONE_ID otherwise
+    */
+    virtual void onDamage(const ObjectBase* pObject, int damage, Uint32 damagerID) override;
+
     Uint32 getAlreadyShownTutorialHints() const {
         return alreadyShownTutorialHints;
     }
@@ -120,6 +128,8 @@ private:
 
     bool hasConcreteOfSize(const Coord& concreteSize) const;
     bool hasConcreteAtPositionOfSize(const Coord& pos, const Coord& concreteSize) const;
+
+    Uint32 lastAttackNotificationCycle;                     ///< When was the last time that the player was informed about an attack
 };
 
 
