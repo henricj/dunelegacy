@@ -37,6 +37,8 @@ TTFFont::TTFFont(sdl2::RWops_ptr pRWOP, int fontsize)
         THROW(std::invalid_argument, "TTFFont::TTFFont(): TTF_OpenFontRW() failed: %s!", TTF_GetError());
     }
 
+    TTF_SetFontHinting(pTTFFont.get(), TTF_HINTING_MONO);
+
     characterHeight = TTF_FontHeight(pTTFFont.get());
 }
 
