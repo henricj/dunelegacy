@@ -86,7 +86,7 @@ void HumanPlayer::onDamage(const ObjectBase* pObject, int damage, Uint32 damager
 }
 
 void HumanPlayer::onProduceItem(Uint32 itemID) {
-    if(settings.general.showTutorialHints == false) {
+    if(!settings.general.showTutorialHints || (currentGame->gameState != GameState::Running)) {
         return;
     }
 
@@ -111,7 +111,7 @@ void HumanPlayer::onProduceItem(Uint32 itemID) {
 }
 
 void HumanPlayer::onPlaceStructure(const StructureBase* pStructure) {
-    if(settings.general.showTutorialHints == false) {
+    if(!settings.general.showTutorialHints || (currentGame->gameState != GameState::Running)) {
         return;
     }
 
@@ -121,7 +121,7 @@ void HumanPlayer::onPlaceStructure(const StructureBase* pStructure) {
 }
 
 void HumanPlayer::onUnitDeployed(const UnitBase* pUnit) {
-    if(settings.general.showTutorialHints == false) {
+    if(!settings.general.showTutorialHints || (currentGame->gameState != GameState::Running)) {
         return;
     }
 
@@ -139,7 +139,7 @@ void HumanPlayer::onUnitDeployed(const UnitBase* pUnit) {
 }
 
 void HumanPlayer::onSelectionChanged(const std::set<Uint32>& selectedObjectIDs) {
-    if(settings.general.showTutorialHints == false) {
+    if(!settings.general.showTutorialHints || (currentGame->gameState != GameState::Running)) {
         return;
     }
 
