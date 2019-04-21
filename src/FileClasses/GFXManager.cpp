@@ -254,6 +254,9 @@ GFXManager::GFXManager() {
     objPic[ObjPic_Star][HOUSE_HARKONNEN][1] = LoadPNG_RW(pFileManager->openFile("Star7x7.png").get());
     objPic[ObjPic_Star][HOUSE_HARKONNEN][2] = LoadPNG_RW(pFileManager->openFile("Star11x11.png").get());
 
+    SDL_Color fogTransparent = { 0, 0, 0, 96};
+    SDL_SetPaletteColors(objPic[ObjPic_Terrain_HiddenFog][HOUSE_HARKONNEN][0]->format->palette, &fogTransparent, PALCOLOR_BLACK, 1);
+
     // scale obj pics and apply color key
     for(int id = 0; id < NUM_OBJPICS; id++) {
         for(int h = 0; h < (int) NUM_HOUSES; h++) {
@@ -435,6 +438,8 @@ GFXManager::GFXManager() {
     uiGraphic[UI_SideBar][HOUSE_HARKONNEN] = PicFactory->createSideBar(false);
     uiGraphic[UI_Indicator][HOUSE_HARKONNEN] = units1->getPictureArray(3,1,8|TILE_NORMAL,9|TILE_NORMAL,10|TILE_NORMAL);
     SDL_SetColorKey(uiGraphic[UI_Indicator][HOUSE_HARKONNEN].get(), SDL_TRUE, 0);
+    SDL_Color indicatorTransparent = { 255, 255, 255, 48 };
+    SDL_SetPaletteColors(uiGraphic[UI_Indicator][HOUSE_HARKONNEN]->format->palette, &indicatorTransparent, PALCOLOR_WHITE, 1);
     uiGraphic[UI_InvalidPlace_Zoomlevel0][HOUSE_HARKONNEN] = PicFactory->createPlacingGrid(16, PALCOLOR_LIGHTRED);
     uiGraphic[UI_InvalidPlace_Zoomlevel1][HOUSE_HARKONNEN] = PicFactory->createPlacingGrid(32, PALCOLOR_LIGHTRED);
     uiGraphic[UI_InvalidPlace_Zoomlevel2][HOUSE_HARKONNEN] = PicFactory->createPlacingGrid(48, PALCOLOR_LIGHTRED);
@@ -846,22 +851,6 @@ SDL_Texture* GFXManager::getZoomedObjPic(unsigned int id, int house, unsigned in
         if(id == ObjPic_Windtrap) {
             // Windtrap uses palette animation on PALCOLOR_WINDTRAP_COLORCYCLE; fake this
             objPicTex[id][house][z] = convertSurfaceToTexture(generateWindtrapAnimationFrames(objPic[id][house][z].get()));
-        } else if(id == ObjPic_Terrain_HiddenFog) {
-            sdl2::surface_ptr pHiddenFog = convertSurfaceToDisplayFormat(objPic[id][house][z].get());
-            replaceColor(pHiddenFog.get(), COLOR_BLACK, COLOR_FOG_TRANSPARENT);
-            objPicTex[id][house][z] = convertSurfaceToTexture(std::move(pHiddenFog));
-        } else if(id == ObjPic_CarryallShadow) {
-            sdl2::surface_ptr pShadow = convertSurfaceToDisplayFormat(objPic[id][house][z].get());
-            replaceColor(pShadow.get(), COLOR_BLACK, COLOR_SHADOW_TRANSPARENT);
-            objPicTex[id][house][z] = convertSurfaceToTexture(std::move(pShadow));
-        } else if(id == ObjPic_FrigateShadow) {
-            sdl2::surface_ptr pShadow = convertSurfaceToDisplayFormat(objPic[id][house][z].get());
-            replaceColor(pShadow.get(), COLOR_BLACK, COLOR_SHADOW_TRANSPARENT);
-            objPicTex[id][house][z] = convertSurfaceToTexture(std::move(pShadow));
-        } else if(id == ObjPic_OrnithopterShadow) {
-            sdl2::surface_ptr pShadow = convertSurfaceToDisplayFormat(objPic[id][house][z].get());
-            replaceColor(pShadow.get(), COLOR_BLACK, COLOR_SHADOW_TRANSPARENT);
-            objPicTex[id][house][z] = convertSurfaceToTexture(std::move(pShadow));
         } else if(id == ObjPic_Bullet_SonicTemp) {
             objPicTex[id][house][z] = sdl2::texture_ptr{ SDL_CreateTexture(renderer, SCREEN_FORMAT, SDL_TEXTUREACCESS_TARGET, objPic[id][house][z]->w, objPic[id][house][z]->h) };
         } else if(id == ObjPic_SandwormShimmerTemp) {
@@ -932,10 +921,6 @@ SDL_Texture* GFXManager::getUIGraphic(unsigned int id, int house) {
 
         if(id >= UI_MapChoiceArrow_None && id <= UI_MapChoiceArrow_Left) {
             uiGraphicTex[id][house] = convertSurfaceToTexture(generateMapChoiceArrowFrames(pSurface, house));
-        } else if(id == UI_Indicator) {
-            sdl2::surface_ptr pIndicator = convertSurfaceToDisplayFormat(pSurface);
-            replaceColor(pIndicator.get(), COLOR_WHITE, COLOR_INDICATOR_TRANSPARENT);
-            uiGraphicTex[UI_Indicator][house] = convertSurfaceToTexture(std::move(pIndicator));
         } else {
             uiGraphicTex[id][house] = convertSurfaceToTexture(pSurface);
         }
