@@ -19,6 +19,7 @@
 
 #include <players/HumanPlayer.h>
 #include <players/AIPlayer.h>
+#include <players/CampaignAIPlayer.h>
 #include <players/SmartBot.h>
 #include <players/QuantBot.h>
 
@@ -30,8 +31,6 @@ void PlayerFactory::registerAllPlayers() {
                                             "Human Player",
                                             [](House* house,const std::string& playername) { return std::make_unique<HumanPlayer>(house, playername); },
                                             [](InputStream& inputStream, House* house) { return std::make_unique<HumanPlayer>(inputStream, house); } );
-
-
 
     playerDataList.emplace_back(  "qBotVeryEasy",
                                             "qBotVeryEasy",
@@ -77,5 +76,10 @@ void PlayerFactory::registerAllPlayers() {
                                             "AI Player (hard)",
         [](House* house, const std::string& playername) { return std::make_unique<AIPlayer>(house, playername, AIPlayer::Difficulty::Hard); },
         [](InputStream& inputStream, House* house) { return std::make_unique<AIPlayer>(inputStream, house); });
+
+    playerDataList.emplace_back(  "CampaignAIPlayer",
+                                            "CampaignAIPlayer",
+        [](House* house, const std::string& playername) { return std::make_unique<CampaignAIPlayer>(house, playername); },
+        [](InputStream& inputStream, House* house) { return std::make_unique<CampaignAIPlayer>(inputStream, house); } );
 
 }

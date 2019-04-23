@@ -53,6 +53,8 @@ BuilderBase::BuilderBase(House* newOwner) : StructureBase(newOwner) {
     bCurrentItemOnHold = false;
     productionProgress = 0;
     deployTimer = 0;
+
+    buildSpeedLimit = 1.0_fix;
 }
 
 BuilderBase::BuilderBase(InputStream& stream) : StructureBase(stream) {
@@ -66,6 +68,8 @@ BuilderBase::BuilderBase(InputStream& stream) : StructureBase(stream) {
     currentProducedItem = stream.readUint32();
     productionProgress = stream.readFixPoint();
     deployTimer = stream.readUint32();
+
+    buildSpeedLimit = stream.readFixPoint();
 
     int numProductionQueueItem = stream.readUint32();
     for(int i=0;i<numProductionQueueItem;i++) {
@@ -100,6 +104,8 @@ void BuilderBase::save(OutputStream& stream) const {
     stream.writeUint32(currentProducedItem);
     stream.writeFixPoint(productionProgress);
     stream.writeUint32(deployTimer);
+
+    stream.writeFixPoint(buildSpeedLimit);
 
     stream.writeUint32(currentProductionQueue.size());
     for(const ProductionQueueItem& queueItem : currentProductionQueue) {
@@ -217,7 +223,7 @@ void BuilderBase::updateProductionProgress() {
                 productionProgress += owner->takeCredits(buildCosts);
             } else {
 
-                FixPoint buildSpeed = getHealth() / getMaxHealth();
+                FixPoint buildSpeed = std::min( getHealth() / getMaxHealth(), buildSpeedLimit);
                 FixPoint totalBuildCosts = currentGame->objectData.data[currentProducedItem][originalHouseID].price;
                 FixPoint totalBuildGameTicks = currentGame->objectData.data[currentProducedItem][originalHouseID].buildtime*15;
                 FixPoint buildCosts = totalBuildCosts / totalBuildGameTicks;

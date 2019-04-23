@@ -91,6 +91,10 @@ Uint32 Player::getGameCycleCount() const {
     return currentGame->getGameCycleCount();
 }
 
+int Player::getTechLevel() const {
+    return currentGame->techLevel;
+}
+
 const Map& Player::getMap() const {
     return *currentGameMap;
 }
@@ -160,6 +164,14 @@ void Player::doSetOnHold(const BuilderBase* pBuilder, bool bOnHold) const {
         const_cast<BuilderBase*>(pBuilder)->doSetOnHold(bOnHold);
     } else {
         logWarn("The player '%s' tries to hold/resume production in a structure he doesn't own or that is inactive!\n", playername.c_str());
+    }
+}
+
+void Player::doSetBuildSpeedLimit(const BuilderBase* pBuilder, FixPoint buildSpeedLimit) const {
+    if(pBuilder->getOwner() == getHouse() && pBuilder->isActive()) {
+        const_cast<BuilderBase*>(pBuilder)->doSetBuildSpeedLimit(buildSpeedLimit);
+    } else {
+        logWarn("The player '%s' tries to limit the build speed of a structure he doesn't own or that is inactive!\n", playername.c_str());
     }
 }
 

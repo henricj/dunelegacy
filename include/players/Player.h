@@ -119,6 +119,7 @@ protected:
     Random& getRandomGen() const;
     const GameInitSettings& getGameInitSettings() const;
     Uint32 getGameCycleCount() const;
+    int getTechLevel() const;
 
     const Map& getMap() const;
     const ObjectBase* getObject(Uint32 objectID) const;
@@ -170,6 +171,13 @@ protected:
         \param  bOnHold         true = hold production; false = resume production
     */
     void doSetOnHold(const BuilderBase* pBuilder, bool bOnHold) const;
+
+    /**
+        Limit the build speed of the specified builder.
+        \param  pBuilder        the structure to limit the build speed of
+        \param  buildSpeedLimit the new build speed limit if that builder; must be between 0.0 and 1.0
+    */
+    void doSetBuildSpeedLimit(const BuilderBase* pBuilder, FixPoint buildSpeedLimit) const;
 
     /**
         Start building a random item in pBuilder. If pBuilder is a Starport a random item is

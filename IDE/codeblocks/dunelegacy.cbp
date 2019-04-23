@@ -276,6 +276,7 @@
 		<Unit filename="../../include/misc/unique_or_nonowning_ptr.h" />
 		<Unit filename="../../include/mmath.h" />
 		<Unit filename="../../include/players/AIPlayer.h" />
+		<Unit filename="../../include/players/CampaignAIPlayer.h" />
 		<Unit filename="../../include/players/HumanPlayer.h" />
 		<Unit filename="../../include/players/Player.h" />
 		<Unit filename="../../include/players/PlayerFactory.h" />
@@ -522,6 +523,7 @@
 		<Unit filename="../../src/misc/string_util.cpp" />
 		<Unit filename="../../src/mmath.cpp" />
 		<Unit filename="../../src/players/AIPlayer.cpp" />
+		<Unit filename="../../src/players/CampaignAIPlayer.cpp" />
 		<Unit filename="../../src/players/HumanPlayer.cpp" />
 		<Unit filename="../../src/players/Player.cpp" />
 		<Unit filename="../../src/players/PlayerFactory.cpp" />

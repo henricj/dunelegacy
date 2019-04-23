@@ -171,6 +171,13 @@ public:
     */
     virtual void doBuildRandom();
 
+    /**
+        Limit the build speed of this builder to the given argument. The build speed can be limited by the AI
+        to make it weaker, e.g. the campaign AI adjusts the build speed to the mission number
+        \param newBuildSpeedLimit   the new limit; must be between 0 and 1
+    */
+    void doSetBuildSpeedLimit(FixPoint newBuildSpeedLimit) { buildSpeedLimit = std::max(0.0_fix, std::min(1.0_fix, newBuildSpeedLimit)); }
+
 
 
     inline bool isUpgrading() const { return upgrading; }
@@ -189,6 +196,12 @@ public:
     virtual inline bool isAvailableToBuild(Uint32 itemID) const {
         return (getBuildItem(itemID) != nullptr);
     }
+
+    /**
+        Get the current build speed limit.
+        \return the current build speed limit
+    */
+    FixPoint getBuildSpeedLimit() const { return buildSpeedLimit; }
 
 protected:
     virtual void updateProductionProgress();
@@ -231,6 +244,8 @@ protected:
     Uint32   currentProducedItem;    ///< The ItemID of the currently produced item
     FixPoint productionProgress;     ///< The current state of the production progress (measured in money spent)
     Uint32   deployTimer;            ///< Timer for deploying a unit
+
+    FixPoint buildSpeedLimit;        ///< Limit the build speed to that percentage [0;1]. This may be used by the AI to make it weaker.
 
     std::list<ProductionQueueItem>  currentProductionQueue;     ///< This list is the production queue (It contains the item IDs of the units/structures to produce)
     std::list<BuildItem>            buildList;                  ///< This list contains all the things that can be produced by this builder
