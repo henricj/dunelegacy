@@ -23,6 +23,7 @@
 #include <misc/Random.h>
 
 #include <structures/ConstructionYard.h>
+#include <structures/Palace.h>
 
 #define AIUPDATEINTERVAL 50
 
@@ -102,6 +103,38 @@ void CampaignAIPlayer::updateStructures() {
     for(const StructureBase* pStructure : getStructureList()) {
         if(pStructure->getOwner() != getHouse()) {
             continue;
+        }
+
+        if( pStructure->getItemID() == Structure_Palace) {
+            const Palace* pPalace = static_cast<const Palace*>(pStructure);
+            if(pPalace->isSpecialWeaponReady()){
+
+                if(getHouse()->getHouseID() != HOUSE_HARKONNEN && getHouse()->getHouseID() != HOUSE_SARDAUKAR) {
+                    doSpecialWeapon(pPalace);
+                } else {
+                    const House* pBestHouse = nullptr;
+
+                    for(int i = 0; i < NUM_HOUSES; i++) {
+                        const House* pHouse = getHouse(i);
+                        if(!pHouse || pHouse->getTeam() == getHouse()->getTeam()) {
+                            continue;
+                        }
+
+                        if(!pBestHouse) {
+                            pBestHouse = pHouse;
+                        } else if(pHouse->getNumStructures() > pBestHouse->getNumStructures()) {
+                            pBestHouse = pHouse;
+                        } else if(pBestHouse->getNumStructures() == 0 && (pHouse->getNumUnits() > pBestHouse->getNumUnits())) {
+                            pBestHouse = pHouse;
+                        }
+                    }
+
+                    if(pBestHouse) {
+                        Coord target = pBestHouse->getNumStructures() > 0 ? pBestHouse->getCenterOfMainBase() : pBestHouse->getStrongestUnitPosition();
+                        doLaunchDeathhand(pPalace, target.x, target.y);
+                    }
+                }
+            }
         }
 
         if( pStructure->getHealth() < pStructure->getMaxHealth()/2 ) {
