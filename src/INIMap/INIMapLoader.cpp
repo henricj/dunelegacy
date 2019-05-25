@@ -762,10 +762,6 @@ void INIMapLoader::loadReinforcements()
             continue;
         }
 
-        if(!pGame->objectData.data[itemID][houseID].enabled) {
-            continue;
-        }
-
         if(itemID == Unit_Infantry) {
             // make three
             itemID = Unit_Soldier;
@@ -774,6 +770,10 @@ void INIMapLoader::loadReinforcements()
             // make three
             itemID = Unit_Trooper;
             Num2Drop = 3;
+        }
+
+        if(!pGame->objectData.data[itemID][houseID].enabled) {
+            continue;
         }
 
         DropLocation dropLocation = getDropLocationByName(strDropLocation);
