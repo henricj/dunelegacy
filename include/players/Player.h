@@ -60,10 +60,10 @@ public:
     virtual void update() = 0;
 
     /**
-        Notifies that a structure of type itemID was built.
-        \param  itemID  the structure that was built
+        Notifies that a structure or unit was built.
+        \param  pObject  the object that was built
     */
-    virtual void onIncrementStructures(int itemID) { }
+    virtual void onObjectWasBuilt(const ObjectBase* pObject) { }
 
     /**
         Notifies that a structure of type itemID was destroyed at the specified location.

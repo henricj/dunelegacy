@@ -404,10 +404,6 @@ void House::incrementStructures(int itemID) {
         // do not check selection lists if we are loading
         updateBuildLists();
     }
-
-    for(auto& pPlayer : players) {
-        pPlayer->onIncrementStructures(itemID);
-    }
 }
 
 
@@ -452,10 +448,11 @@ void House::noteDamageLocation(ObjectBase* pObject, int damage, Uint32 damagerID
 
 /**
     This method informs this house that a new unit or structure was built
-    \param itemID   the ID of the enemy unit or structure
+    \param pObject   the object that was built
 */
-void House::informWasBuilt(Uint32 itemID) {
-    if(isStructure(itemID)) {
+void House::informWasBuilt(ObjectBase* pObject) {
+    int itemID = pObject->getItemID();
+    if(pObject->isAStructure()) {
         structureBuiltValue += currentGame->objectData.data[itemID][houseID].price;
         numBuiltStructures++;
     } else {
@@ -464,6 +461,10 @@ void House::informWasBuilt(Uint32 itemID) {
     }
 
     numItemBuilt[itemID]++;
+
+    for(auto& pPlayer : players) {
+        pPlayer->onObjectWasBuilt(pObject);
+    }
 }
 
 
@@ -615,7 +616,7 @@ void House::freeHarvester(int xPos, int yPos) {
 
 
 
-StructureBase* House::placeStructure(Uint32 builderID, int itemID, int xPos, int yPos, bool bForcePlacing) {
+StructureBase* House::placeStructure(Uint32 builderID, int itemID, int xPos, int yPos, bool byScenario, bool bForcePlacing) {
     if(!currentGameMap->tileExists(xPos,yPos)) {
         return nullptr;
     }
@@ -683,7 +684,7 @@ StructureBase* House::placeStructure(Uint32 builderID, int itemID, int xPos, int
         } break;
 
         default: {
-            ObjectBase* newObject = ObjectBase::createObject(itemID,this);
+            ObjectBase* newObject = ObjectBase::createObject(itemID,this,byScenario);
             StructureBase* newStructure = dynamic_cast<StructureBase*>(newObject);
             if(newStructure == nullptr) {
                 delete newObject;
@@ -746,7 +747,7 @@ StructureBase* House::placeStructure(Uint32 builderID, int itemID, int xPos, int
 
                 // only if we were constructed by construction yard
                 // => inform house of the building
-                pBuilder->getOwner()->informWasBuilt(itemID);
+                pBuilder->getOwner()->informWasBuilt(newObject);
             }
 
             if(newStructure->isABuilder()) {
@@ -764,8 +765,8 @@ StructureBase* House::placeStructure(Uint32 builderID, int itemID, int xPos, int
 
 
 
-UnitBase* House::createUnit(int itemID) {
-    ObjectBase* newObject = ObjectBase::createObject(itemID,this);
+UnitBase* House::createUnit(int itemID, bool byScenario) {
+    ObjectBase* newObject = ObjectBase::createObject(itemID,this,byScenario);
     UnitBase* newUnit = dynamic_cast<UnitBase*>(newObject);
 
     if(newUnit == nullptr) {
@@ -779,7 +780,7 @@ UnitBase* House::createUnit(int itemID) {
 
 
 
-UnitBase* House::placeUnit(int itemID, int xPos, int yPos) {
+UnitBase* House::placeUnit(int itemID, int xPos, int yPos, bool byScenario) {
     UnitBase* newUnit = nullptr;
     if(currentGameMap->tileExists(xPos, yPos) == true) {
         Tile* pTile = currentGameMap->getTile(xPos,yPos);
@@ -796,7 +797,7 @@ UnitBase* House::placeUnit(int itemID, int xPos, int yPos) {
             }
         }
 
-        newUnit = createUnit(itemID);
+        newUnit = createUnit(itemID, byScenario);
     }
 
     if (newUnit) {

@@ -90,6 +90,7 @@ ObjectBase::ObjectBase(House* newOwner) : originalHouseID(newOwner->getHouseID()
 
     active = false;
     respondable = true;
+    byScenario = false;
     selected = false;
     selectedByOtherPlayer = false;
 
@@ -125,6 +126,7 @@ ObjectBase::ObjectBase(InputStream& stream) {
 
     active = stream.readBool();
     respondable = stream.readBool();
+    byScenario = stream.readBool();
 
     if(currentGame->getGameInitSettings().getGameType() != GameType::CustomMultiplayer) {
         selected = stream.readBool();
@@ -190,6 +192,7 @@ void ObjectBase::save(OutputStream& stream) const {
 
     stream.writeBool(active);
     stream.writeBool(respondable);
+    stream.writeBool(byScenario);
 
     if(currentGame->getGameInitSettings().getGameType() != GameType::CustomMultiplayer) {
         stream.writeBool(selected);
@@ -525,7 +528,7 @@ int ObjectBase::getInfSpawnProp() const {
     return currentGame->objectData.data[itemID][originalHouseID].infspawnprop;
 }
 
-ObjectBase* ObjectBase::createObject(int itemID, House* Owner, Uint32 objectID) {
+ObjectBase* ObjectBase::createObject(int itemID, House* Owner, bool byScenario) {
 
     ObjectBase* newObject = nullptr;
     switch(itemID) {
@@ -592,12 +595,10 @@ ObjectBase* ObjectBase::createObject(int itemID, House* Owner, Uint32 objectID) 
         return nullptr;
     }
 
-    if(objectID == NONE_ID) {
-        objectID = currentGame->getObjectManager().addObject(newObject);
-        newObject->setObjectID(objectID);
-    } else {
-        newObject->setObjectID(objectID);
-    }
+    newObject->byScenario = byScenario;
+
+    Uint32 objectID = currentGame->getObjectManager().addObject(newObject);
+    newObject->setObjectID(objectID);
 
     return newObject;
 }

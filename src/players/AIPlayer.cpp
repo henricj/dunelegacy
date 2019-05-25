@@ -101,7 +101,7 @@ void AIPlayer::update() {
     }
 }
 
-void AIPlayer::onIncrementStructures(int itemID) {
+void AIPlayer::onObjectWasBuilt(const ObjectBase* pObject) {
 }
 
 void AIPlayer::onDecrementStructures(int itemID, const Coord& location) {

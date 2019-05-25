@@ -405,7 +405,7 @@ void QuantBot::update() {
 }
 
 
-void QuantBot::onIncrementStructures(int itemID) {
+void QuantBot::onObjectWasBuilt(const ObjectBase* pObject) {
 }
 
 

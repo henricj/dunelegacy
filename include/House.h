@@ -153,7 +153,7 @@ public:
     */
     void noteDamageLocation(ObjectBase* pObject, int damage, Uint32 damagerID);
 
-    void informWasBuilt(Uint32 itemID);
+    void informWasBuilt(ObjectBase* pObject);
     void informHasKilled(Uint32 itemID);
     void informHasDamaged(Uint32 itemID, Uint32 damage);
 
@@ -162,9 +162,9 @@ public:
 
     void freeHarvester(int xPos, int yPos);
     void freeHarvester(const Coord& coord) { freeHarvester(coord.x, coord.y); };
-    StructureBase* placeStructure(Uint32 builderID, int itemID, int xPos, int yPos, bool bForcePlacing = false);
-    UnitBase* createUnit(int itemID);
-    UnitBase* placeUnit(int itemID, int xPos, int yPos);
+    StructureBase* placeStructure(Uint32 builderID, int itemID, int xPos, int yPos, bool byScenario = false, bool bForcePlacing = false);
+    UnitBase* createUnit(int itemID, bool byScenario = false);
+    UnitBase* placeUnit(int itemID, int xPos, int yPos, bool byScenario = false);
 
     Coord getCenterOfMainBase() const;
 

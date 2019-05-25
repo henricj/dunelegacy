@@ -148,6 +148,7 @@ public:
     inline bool isInfantry() const { return infantry; }
     inline bool isAUnit() const { return aUnit; }
     inline bool isRespondable() const { return respondable; }
+    inline bool isByScenario() const { return byScenario; }
     inline bool isSelected() const { return selected; }
     inline bool isSelectedByOtherPlayer() const { return selectedByOtherPlayer; }
     inline bool isBadlyDamaged() const { return badlyDamaged; };
@@ -181,7 +182,7 @@ public:
 
     inline void setOwner(House* no) { owner = no; }
 
-    static ObjectBase* createObject(int itemID,House* Owner, Uint32 objectID = NONE_ID);
+    static ObjectBase* createObject(int itemID, House* Owner, bool byScenario);
     static ObjectBase* loadObject(InputStream& stream, int itemID, Uint32 objectID);
 
 protected:
@@ -217,6 +218,7 @@ protected:
 
     bool     active;                 ///< Is this unit/structure active?
     bool     respondable;            ///< Is this unit/structure respondable to commands?
+    bool     byScenario;             ///< Did this unit/structure either already exist at the start of the map or is a reinforcement?
     bool     selected;               ///< Is this object currently selected?
     bool     selectedByOtherPlayer;  ///< This is only used in multiplayer games where two players control one house
 

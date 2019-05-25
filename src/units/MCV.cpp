@@ -72,7 +72,7 @@ bool MCV::doDeploy() {
         // first place construction yard and then destroy MCV, otherwise a player with only MCV left will lose
 
         // place construction yard (force placing to place on still existing MCV)
-        if(pOwner->placeStructure(NONE_ID, Structure_ConstructionYard, newLocation.x, newLocation.y, true) != nullptr) {
+        if(pOwner->placeStructure(NONE_ID, Structure_ConstructionYard, newLocation.x, newLocation.y, false, true) != nullptr) {
             // we hide the MVC so we don't get a soldier on destroy
             setVisible(VIS_ALL, false);
 

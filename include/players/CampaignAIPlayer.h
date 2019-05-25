@@ -27,7 +27,8 @@
     - Build speed is dependent on mission number (slower in earlier missions)
     - Wait for the human player to find the AI player before becoming active and doing the following things:
      - Units are build when builders are idle
-     - Teams are waiting till they reach a minimum number of units
+     - Built units are send out to attack the structure/unit with the highest priority
+     - Teams are waiting till they reach a minimum number of units before attacking
      - Structures are only build when they were destroyed before (queue of at most 5 structures)
      - Special weapons are launched as soon as they get ready
 */
@@ -42,7 +43,7 @@ public:
 
     void update() override;
 
-    void onIncrementStructures(int itemID) override;
+    void onObjectWasBuilt(const ObjectBase* pObject) override;
     void onDecrementStructures(int itemID, const Coord& location) override;
     void onDamage(const ObjectBase* pObject, int damage, Uint32 damagerID) override;
 
@@ -70,6 +71,9 @@ private:
     };
 
     void updateStructures();
+    void updateUnits();
+
+    int calculateTargetPriority(const UnitBase* pUnit, const ObjectBase* pObject);
 
     std::vector<StructureInfo> structureQueue;    ///< Last destroyed structures and their location
 };

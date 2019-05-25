@@ -24,6 +24,7 @@
 
 #include <structures/ConstructionYard.h>
 #include <structures/Palace.h>
+#include <units/UnitBase.h>
 
 #define AIUPDATEINTERVAL 50
 
@@ -47,6 +48,49 @@ static std::map<Uint32, int> buildPriorityMap = {
     { Unit_Harvester, 1 },
     { Unit_MCV, 1 }
 };
+
+static std::map<Uint32, int> targetPriorityMap = {
+    { Unit_Carryall, 36 },
+    { Unit_Ornithopter, 105 },
+    { Unit_Infantry, 40 },
+    { Unit_Troopers, 100 },
+    { Unit_Soldier, 20 },
+    { Unit_Trooper, 50 },
+    { Unit_Saboteur, 700 },
+    { Unit_Launcher, 250 },
+    { Unit_Deviator, 225 },
+    { Unit_Tank, 180 },
+    { Unit_SiegeTank, 280 },
+    { Unit_Devastator, 355 },
+    { Unit_SonicTank, 190 },
+    { Unit_Trike, 100 },
+    { Unit_RaiderTrike, 115 },
+    { Unit_Quad, 120 },
+    { Unit_Harvester, 160 },
+    { Unit_MCV, 160 },
+    { Unit_Frigate, 0 },
+    { Unit_Sandworm, 0 },
+    { Structure_Slab1, 5 },
+    { Structure_Slab4, 10 },
+    { Structure_Palace, 400 },
+    { Structure_LightFactory, 200 },
+    { Structure_HeavyFactory, 600 },
+    { Structure_HighTechFactory, 200 },
+    { Structure_IX, 100 },
+    { Structure_WOR, 175 },
+    { Structure_ConstructionYard, 300 },
+    { Structure_WindTrap, 300 },
+    { Structure_Barracks, 100 },
+    { Structure_StarPort, 250 },
+    { Structure_Refinery, 300 },
+    { Structure_RepairYard, 600 },
+    { Structure_Wall, 30 },
+    { Structure_GunTurret, 225 },
+    { Structure_RocketTurret, 175 },
+    { Structure_Silo, 150 },
+    { Structure_Radar, 275 }
+};
+
 
 CampaignAIPlayer::CampaignAIPlayer(House* associatedHouse, const std::string& playername)
  : Player(associatedHouse, playername) {
@@ -85,9 +129,10 @@ void CampaignAIPlayer::update() {
     }
 
     updateStructures();
+    updateUnits();
 }
 
-void CampaignAIPlayer::onIncrementStructures(int itemID) {
+void CampaignAIPlayer::onObjectWasBuilt(const ObjectBase* pObject) {
 }
 
 void CampaignAIPlayer::onDecrementStructures(int itemID, const Coord& location) {
@@ -97,6 +142,29 @@ void CampaignAIPlayer::onDecrementStructures(int itemID, const Coord& location) 
 }
 
 void CampaignAIPlayer::onDamage(const ObjectBase* pObject, int damage, Uint32 damagerID) {
+    if(!pObject->isAUnit() || !pObject->isRespondable()) {
+        return;
+    }
+    const UnitBase* pUnit = static_cast<const UnitBase*>(pObject);
+
+    const ObjectBase* pDamager = getObject(damagerID);
+    if(!pDamager) {
+        return;
+    }
+
+    if(pDamager->getOwner()->getTeam() == pUnit->getOwner()->getTeam()) {
+        // do not respond to friendly fire
+        return;
+    }
+
+    if(!pUnit->canAttack(pDamager)) {
+        return;
+    }
+
+    if(!pUnit->hasATarget() || pUnit->getTarget()->getTarget() != pUnit) {
+        // the unit has no target or the target is not targeting the unit
+        doAttackObject(pUnit, pDamager, true);
+    }
 }
 
 void CampaignAIPlayer::updateStructures() {
@@ -233,4 +301,57 @@ void CampaignAIPlayer::updateStructures() {
             }
         }
     }
+}
+
+void CampaignAIPlayer::updateUnits() {
+    for(const UnitBase* pUnit : getUnitList()) {
+        if(pUnit->getOwner() != getHouse() || pUnit->wasForced() || !pUnit->isRespondable() || pUnit->isByScenario() || pUnit->hasATarget()) {
+            continue;
+        }
+
+        if((pUnit->getItemID() == Unit_Harvester) || (pUnit->getItemID() == Unit_MCV) || (pUnit->getItemID() == Unit_Carryall) || (pUnit->getItemID() == Unit_Frigate)) {
+            continue;
+        }
+
+        const ObjectBase* pBestCandidate = nullptr;
+        int bestCandidatePriority = -1;
+        for(const StructureBase* pCandidate : getStructureList()) {
+            if(!pUnit->canAttack(pCandidate)) {
+                continue;
+            }
+
+            int priority = calculateTargetPriority(pUnit, pCandidate);
+            if(priority > bestCandidatePriority) {
+                bestCandidatePriority = priority;
+                pBestCandidate = pCandidate;
+            }
+        }
+
+        for(const UnitBase* pCandidate : getUnitList()) {
+            if(!pUnit->canAttack(pCandidate)) {
+                continue;
+            }
+
+            int priority = calculateTargetPriority(pUnit, pCandidate);
+            if(priority > bestCandidatePriority) {
+                bestCandidatePriority = priority;
+                pBestCandidate = pCandidate;
+            }
+        }
+
+        if(pBestCandidate) {
+            doAttackObject(pUnit, pBestCandidate, true);
+        }
+    }
+}
+
+int CampaignAIPlayer::calculateTargetPriority(const UnitBase* pUnit, const ObjectBase* pObject) {
+    if (pUnit->getLocation().isInvalid() || pObject->getLocation().isInvalid()) {
+        return 0;
+    }
+
+    int priority = targetPriorityMap[pObject->getItemID()];
+    int distance = blockDistanceApprox(pUnit->getLocation(), pObject->getLocation());
+
+    return (distance > 0) ? ( (priority / distance) + 1 ) : priority;
 }

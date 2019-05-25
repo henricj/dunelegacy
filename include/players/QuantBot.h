@@ -47,7 +47,7 @@ public:
 
     void update() override;
 
-    void onIncrementStructures(int itemID) override;
+    void onObjectWasBuilt(const ObjectBase* pObject) override;
     void onDecrementStructures(int itemID, const Coord& location) override;
     void onDecrementUnits(int itemID) override;
     void onIncrementUnitKills(int itemID) override;

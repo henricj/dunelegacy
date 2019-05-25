@@ -39,7 +39,7 @@ public:
 
     void update() override;
 
-    void onIncrementStructures(int itemID) override;
+    void onObjectWasBuilt(const ObjectBase* pObject) override;
     void onDecrementStructures(int itemID, const Coord& location) override;
     void onDamage(const ObjectBase* pObject, int damage, Uint32 damagerID) override;
 

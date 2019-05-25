@@ -401,7 +401,7 @@ bool BuilderBase::update() {
                     }
 
                     // inform owner of its new unit
-                    newUnit->getOwner()->informWasBuilt(finishedItemID);
+                    newUnit->getOwner()->informWasBuilt(newUnit);
                 }
             }
         }

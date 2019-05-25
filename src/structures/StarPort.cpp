@@ -317,7 +317,7 @@ void StarPort::updateStructureSpecificStuff() {
                         }
 
                         // inform owner of its new unit
-                        newUnit->getOwner()->informWasBuilt(newUnitItemID);
+                        newUnit->getOwner()->informWasBuilt(newUnit);
                     }
                 }
 

@@ -259,7 +259,7 @@ void InfantryBase::checkPos() {
                     delete pCapturedStructure;
 
                     // ... and create a new one
-                    StructureBase* pNewStructure = owner->placeStructure(NONE_ID, targetID, posX, posY, true);
+                    StructureBase* pNewStructure = owner->placeStructure(NONE_ID, targetID, posX, posY, false, true);
 
                     pNewStructure->setOriginalHouseID(origHouse);
                     pNewStructure->setHealth(oldHealth);

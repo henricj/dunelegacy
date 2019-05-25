@@ -109,7 +109,7 @@ void SmartBot::update() {
 }
 
 
-void SmartBot::onIncrementStructures(int itemID) {
+void SmartBot::onObjectWasBuilt(const ObjectBase* pObject) {
 }
 
 
