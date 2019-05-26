@@ -632,24 +632,23 @@ bool Map::findSpice(Coord& destination, const Coord& origin) const {
 */
 void Map::spiceRemoved(const Coord& coord) {
 
-    auto tile = getTile_internal(coord.x , coord.y);
+    auto pCenterTile = getTile_internal(coord.x , coord.y);
 
-    //this is the center tile
-    if(!tile || tile->getType() != Terrain_Sand) return;
+    if(!pCenterTile || pCenterTile->getType() != Terrain_Sand) return;
 
     //thickspice tiles can't handle non-(thick)spice tiles next to them, if this happens after changes, make it non thick
     for(auto i = coord.x-1; i <= coord.x+1; i++) {
         for(auto j = coord.y-1; j <= coord.y+1; j++) {
-            if (((i == coord.x) && (j != coord.y)) || ((i != coord.x) && (j == coord.y)))
+            if ((i != coord.x) && (j != coord.y)) {
+                // skip diagonal
                 continue;
+            }
 
-            tile = getTile_internal(i, j);
+            auto pTile = getTile_internal(i, j);
 
-            if (!tile) continue;
-
-            if (tile->isThickSpice()) {
+            if (pTile && pTile->isThickSpice()) {
                 //only check tile right, up, left and down of this one
-                tile->setType(Terrain_Spice);
+                pTile->setType(Terrain_Spice);
             }
         }
     }
