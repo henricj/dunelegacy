@@ -128,6 +128,11 @@ void CampaignAIPlayer::update() {
         return;
     }
 
+    if(!getHouse()->hadContactWithEnemy()) {
+        // we are not doing anything until we had contact with the enemy
+        return;
+    }
+
     updateStructures();
     updateUnits();
 }
