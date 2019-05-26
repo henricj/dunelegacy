@@ -241,6 +241,8 @@ public:
 
 protected:
 
+    void updateVisibleUnits();
+
     virtual bool attack();
 
     virtual void releaseTarget();

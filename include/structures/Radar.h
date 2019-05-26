@@ -28,6 +28,8 @@ public:
     void init();
     virtual ~Radar();
 
+    ObjectInterface* getInterfaceContainer() override;
+
     /**
         Can this structure be captured by infantry units?
         \return true, if this structure can be captured, false otherwise

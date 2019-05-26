@@ -59,6 +59,8 @@ House::House(int newHouse, int newCredits, int maxUnits, Uint8 team, int quota) 
     this->maxUnits = maxUnits;
     this->quota = quota;
 
+    bHadContactWithEnemy = false;
+
     unitBuiltValue = 0;
     structureBuiltValue = 0;
     militaryValue = 0;
@@ -88,6 +90,8 @@ House::House(InputStream& stream) : choam(this) {
     oldCredits = lround(storedCredits+startingCredits);
     maxUnits = stream.readSint32();
     quota = stream.readSint32();
+
+    bHadContactWithEnemy = stream.readBool();
 
     unitBuiltValue = stream.readUint32();
     structureBuiltValue = stream.readUint32();
@@ -135,6 +139,9 @@ void House::init() {
 
     capacity = 0;
     powerRequirement = 0;
+
+    numVisibleEnemyUnits = 0;
+    numVisibleFriendlyUnits = 0;
 }
 
 
@@ -153,6 +160,8 @@ void House::save(OutputStream& stream) const {
     stream.writeFixPoint(startingCredits);
     stream.writeSint32(maxUnits);
     stream.writeSint32(quota);
+
+    stream.writeBool(bHadContactWithEnemy);
 
     stream.writeUint32(unitBuiltValue);
     stream.writeUint32(structureBuiltValue);
@@ -302,6 +311,9 @@ void House::updateBuildLists() {
 
 
 void House::update() {
+    numVisibleEnemyUnits = 0;
+    numVisibleFriendlyUnits = 0;
+
     if (oldCredits != getCredits()) {
         if((this == pLocalHouse) && (getCredits() > 0)) {
             soundPlayer->playSound(Sound_CreditsTick);

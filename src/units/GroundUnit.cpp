@@ -66,8 +66,9 @@ void GroundUnit::assignToMap(const Coord& pos) {
 }
 
 void GroundUnit::checkPos() {
+    auto* pTile = currentGameMap->getTile(location);
     if(!moving && !justStoppedMoving && !isInfantry()) {
-        currentGameMap->getTile(location.x,location.y)->setTrack(drawnAngle);
+        pTile->setTrack(drawnAngle);
     }
 
     if(justStoppedMoving)
@@ -76,12 +77,12 @@ void GroundUnit::checkPos() {
         realY = location.y*TILESIZE + TILESIZE/2;
         //findTargetTimer = 0;  //allow a scan for new targets now
 
-        if(currentGameMap->getTile(location)->isSpiceBloom()) {
+        if(pTile->isSpiceBloom()) {
             setHealth(0);
             setVisible(VIS_ALL, false);
-            currentGameMap->getTile(location)->triggerSpiceBloom(getOwner());
-        } else if(currentGameMap->getTile(location)->isSpecialBloom()){
-            currentGameMap->getTile(location)->triggerSpecialBloom(getOwner());
+            pTile->triggerSpiceBloom(getOwner());
+        } else if(pTile->isSpecialBloom()){
+            pTile->triggerSpecialBloom(getOwner());
         }
     }
 
@@ -110,7 +111,6 @@ void GroundUnit::checkPos() {
 
             clearPath();
         } else {
-            Tile* pTile = currentGameMap->getTile(location);
             ObjectBase *pObject = pTile->getGroundObject();
 
             if( justStoppedMoving

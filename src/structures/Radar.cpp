@@ -22,6 +22,8 @@
 #include <FileClasses/GFXManager.h>
 #include <House.h>
 
+#include <GUI/ObjectInterfaces/RadarInterface.h>
+
 Radar::Radar(House* newOwner) : StructureBase(newOwner) {
     Radar::init();
 
@@ -49,6 +51,13 @@ void Radar::init() {
 
 Radar::~Radar() = default;
 
+ObjectInterface* Radar::getInterfaceContainer() {
+    if((pLocalHouse == owner) || (debug == true)) {
+        return RadarInterface::create(objectID);
+    } else {
+        return DefaultObjectInterface::create(objectID);
+    }
+}
 
 void Radar::destroy() {
     StructureBase::destroy();

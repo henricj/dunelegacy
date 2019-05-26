@@ -93,9 +93,22 @@ public:
     inline int getNumLostItems(int itemID) const { return numItemLosses[itemID]; }
     inline Sint32 getNumItemDamageInflicted(int itemID) const { return numItemDamageInflicted[itemID]; }
     inline FixPoint getHarvestedSpice() const { return harvestedSpice; }
+    inline int getNumVisibleEnemyUnits() const { return numVisibleEnemyUnits; }
+    inline int getNumVisibleFriendlyUnits() const { return numVisibleFriendlyUnits; }
 
     inline int getQuota() const { return quota; };
     inline int getMaxUnits() const { return maxUnits; };
+
+    inline bool hadContactWithEnemy() const { return bHadContactWithEnemy; };
+
+    inline void informVisibleEnemyUnit() {
+        numVisibleEnemyUnits++;
+        bHadContactWithEnemy = true;
+    }
+
+    inline void informVisibleFriendlyUnit() {
+        numVisibleFriendlyUnits++;
+    }
 
     /**
         This function checks if the limit for ground units is already reached. Infantry units are only counted as 1/3.
@@ -204,6 +217,11 @@ protected:
     Choam   choam;            ///< the things that are deliverable at the starport
 
     int powerUsageTimer;      ///< every N ticks you have to pay for your power usage
+
+    bool bHadContactWithEnemy;///< did this house already have contact with an enemy
+
+    int numVisibleEnemyUnits;   ///< the number of enemy units visible; will be reset to 0 each cycle
+    int numVisibleFriendlyUnits;///< the number of visible units from the same team; will be reset to 0 each cycle
 
     // statistic
     int unitBuiltValue;

@@ -131,6 +131,7 @@
 		<Unit filename="../../include/GUI/ObjectInterfaces/MultiUnitInterface.h" />
 		<Unit filename="../../include/GUI/ObjectInterfaces/ObjectInterface.h" />
 		<Unit filename="../../include/GUI/ObjectInterfaces/PalaceInterface.h" />
+		<Unit filename="../../include/GUI/ObjectInterfaces/RadarInterface.h" />
 		<Unit filename="../../include/GUI/ObjectInterfaces/RefineryAndSiloInterface.h" />
 		<Unit filename="../../include/GUI/ObjectInterfaces/RepairYardInterface.h" />
 		<Unit filename="../../include/GUI/ObjectInterfaces/UnitInterface.h" />

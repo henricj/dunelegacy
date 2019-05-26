@@ -1336,6 +1336,7 @@ bool UnitBase::update() {
         move();
         if(active) {
             turn();
+            updateVisibleUnits();
         }
     }
 
@@ -1343,9 +1344,6 @@ bool UnitBase::update() {
         destroy();
         return false;
     }
-
-
-
 
     if(recalculatePathTimer > 0) recalculatePathTimer--;
     if(findTargetTimer > 0) findTargetTimer--;
@@ -1358,6 +1356,27 @@ bool UnitBase::update() {
     }
 
     return true;
+}
+
+void UnitBase::updateVisibleUnits() {
+    if(!currentGameMap->tileExists(location)) {
+        return;
+    }
+
+    auto* pTile = currentGameMap->getTile(location);
+    for (auto h = 0; h < NUM_HOUSES; h++) {
+        if(!pTile->isExplored(h)) {
+            continue;
+        }
+        auto* pHouse = currentGame->getHouse(h);
+        if (pHouse) {
+            if(pHouse->getTeam() == getOwner()->getTeam()) {
+                pHouse->informVisibleFriendlyUnit();
+            } else {
+                pHouse->informVisibleEnemyUnit();
+            }
+        }
+    }
 }
 
 bool UnitBase::canPass(int xPos, int yPos) const {

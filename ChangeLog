@@ -4,6 +4,7 @@ version 0.97.0
 	* Use truetype font for all texts
 	* Option: Rotate air unit graphics smoothly (option is off by default)
 	* Update fmt library to version 3.0.2
+	* Radar shows number of visible enemy units and visible friendly units
 	* Bugfix (Bug #77) Window moves to primary screen on resolution change (Reported by Urs Enke)
 	* Bugfix (Bug #81) Wrong "Built Object" stats (Reported by Urs Enke)
 	* Bugfix (Bug #82) Deviator effectlessly targets Sandworms (Reported by Urs Enke)
