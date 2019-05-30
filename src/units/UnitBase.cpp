@@ -1358,6 +1358,10 @@ bool UnitBase::update() {
 }
 
 void UnitBase::updateVisibleUnits() {
+    if(isAFlyingUnit()) {
+        return;
+    }
+
     if(!currentGameMap->tileExists(location)) {
         return;
     }
@@ -1371,6 +1375,7 @@ void UnitBase::updateVisibleUnits() {
 
         if(pTile->isExploredByHouse(h) && (pHouse->getTeamID() != getOwner()->getTeamID()) && (pHouse != getOwner())) {
             pHouse->informDirectContactWithEnemy();
+            getOwner()->informDirectContactWithEnemy();
         }
 
         if(pTile->isExploredByTeam(pHouse->getTeamID())) {
@@ -1379,6 +1384,7 @@ void UnitBase::updateVisibleUnits() {
             } else {
                 pHouse->informVisibleEnemyUnit();
                 pHouse->informContactWithEnemy();
+                getOwner()->informContactWithEnemy();
             }
         }
     }

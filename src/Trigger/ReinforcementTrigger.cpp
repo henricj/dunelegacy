@@ -218,11 +218,11 @@ void ReinforcementTrigger::trigger()
                 if(currentGameMap->tileExists(dropCoord) && currentGameMap->getTile(dropCoord)->hasAGroundObject() == false) {
                     // found the an empty drop location => drop here
 
-                    Carryall* carryall = static_cast<Carryall*>(dropHouse->createUnit(Unit_Carryall, true));
+                    Carryall* carryall = static_cast<Carryall*>(dropHouse->createUnit(Unit_Carryall));
                     carryall->setOwned(false);
 
                     for(Uint32 itemID2Drop : droppedUnits) {
-                        UnitBase* pUnit2Drop = dropHouse->createUnit(itemID2Drop, true);
+                        UnitBase* pUnit2Drop = dropHouse->createUnit(itemID2Drop);
                         pUnit2Drop->setActive(false);
                         carryall->giveCargo(pUnit2Drop);
                     }
