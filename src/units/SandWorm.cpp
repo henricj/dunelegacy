@@ -210,11 +210,11 @@ void Sandworm::engageTarget() {
         } else {
             switch(attackMode) {
                 case GUARD:
-                case AREAGUARD:
                 case AMBUSH: {
                     maxDistance = getViewRange();
                 } break;
 
+                case AREAGUARD:
                 case HUNT: {
                     maxDistance = FixPt_MAX;
                 } break;
@@ -407,7 +407,7 @@ const ObjectBase* Sandworm::findTarget() const {
 
     const ObjectBase* closestTarget = nullptr;
 
-    if(attackMode == HUNT) {
+    if((attackMode == HUNT) || (attackMode == AREAGUARD)) {
         FixPoint closestDistance = FixPt_MAX;
 
         for(UnitBase* pUnit : unitList) {

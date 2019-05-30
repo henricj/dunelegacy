@@ -128,7 +128,7 @@ void CampaignAIPlayer::update() {
         return;
     }
 
-    if(!getHouse()->hadContactWithEnemy()) {
+    if(!getHouse()->hadDirectContactWithEnemy()) {
         // we are not doing anything until we had contact with the enemy
         return;
     }

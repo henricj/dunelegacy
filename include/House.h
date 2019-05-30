@@ -99,11 +99,13 @@ public:
     inline int getQuota() const { return quota; };
     inline int getMaxUnits() const { return maxUnits; };
 
+    inline void informContactWithEnemy() { bHadContactWithEnemy = true; };
     inline bool hadContactWithEnemy() const { return bHadContactWithEnemy; };
+    inline void informDirectContactWithEnemy() { bHadDirectContactWithEnemy = true; };
+    inline bool hadDirectContactWithEnemy() const { return bHadDirectContactWithEnemy; };
 
     inline void informVisibleEnemyUnit() {
         numVisibleEnemyUnits++;
-        bHadContactWithEnemy = true;
     }
 
     inline void informVisibleFriendlyUnit() {
@@ -218,7 +220,8 @@ protected:
 
     int powerUsageTimer;      ///< every N ticks you have to pay for your power usage
 
-    bool bHadContactWithEnemy;///< did this house already have contact with an enemy
+    bool bHadContactWithEnemy;      ///< did this house already have contact with an enemy (= tiles with enemy units were explored by this house or allied houses)
+    bool bHadDirectContactWithEnemy;///< did this house already have direct contact with an enemy (= tiles with enemy units were explored by this house)
 
     int numVisibleEnemyUnits;   ///< the number of enemy units visible; will be reset to 0 each cycle
     int numVisibleFriendlyUnits;///< the number of visible units from the same team; will be reset to 0 each cycle

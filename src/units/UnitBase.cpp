@@ -981,10 +981,13 @@ bool UnitBase::isInGuardRange(const ObjectBase* pObject) const  {
     int checkRange;
     switch(attackMode) {
         case GUARD: {
-            checkRange = getWeaponRange();
+            checkRange = (getItemID() == Unit_Sandworm) ? getViewRange() : getWeaponRange();
         } break;
 
         case AREAGUARD: {
+            if(getItemID() == Unit_Sandworm) {
+                return true;
+            }
             checkRange = getAreaGuardRange();
         } break;
 
@@ -1008,10 +1011,6 @@ bool UnitBase::isInGuardRange(const ObjectBase* pObject) const  {
         default: {
             return false;
         } break;
-    }
-
-    if(getItemID() == Unit_Sandworm) {
-        checkRange = getViewRange();
     }
 
     return (blockDistance(guardPoint*TILESIZE + Coord(TILESIZE/2, TILESIZE/2), pObject->getCenterPoint()) <= checkRange*TILESIZE);
@@ -1365,15 +1364,21 @@ void UnitBase::updateVisibleUnits() {
 
     auto* pTile = currentGameMap->getTile(location);
     for (auto h = 0; h < NUM_HOUSES; h++) {
-        if(!pTile->isExploredByHouse(h)) {
+        auto* pHouse = currentGame->getHouse(h);
+        if(!pHouse) {
             continue;
         }
-        auto* pHouse = currentGame->getHouse(h);
-        if (pHouse) {
+
+        if(pTile->isExploredByHouse(h) && (pHouse->getTeamID() != getOwner()->getTeamID()) && (pHouse != getOwner())) {
+            pHouse->informDirectContactWithEnemy();
+        }
+
+        if(pTile->isExploredByTeam(pHouse->getTeamID())) {
             if(pHouse->getTeamID() == getOwner()->getTeamID()) {
                 pHouse->informVisibleFriendlyUnit();
             } else {
                 pHouse->informVisibleEnemyUnit();
+                pHouse->informContactWithEnemy();
             }
         }
     }

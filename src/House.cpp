@@ -60,6 +60,7 @@ House::House(int newHouse, int newCredits, int maxUnits, Uint8 teamID, int quota
     this->quota = quota;
 
     bHadContactWithEnemy = false;
+    bHadDirectContactWithEnemy = false;
 
     unitBuiltValue = 0;
     structureBuiltValue = 0;
@@ -91,7 +92,7 @@ House::House(InputStream& stream) : choam(this) {
     maxUnits = stream.readSint32();
     quota = stream.readSint32();
 
-    bHadContactWithEnemy = stream.readBool();
+    stream.readBools(&bHadContactWithEnemy, &bHadDirectContactWithEnemy);
 
     unitBuiltValue = stream.readUint32();
     structureBuiltValue = stream.readUint32();
@@ -161,7 +162,7 @@ void House::save(OutputStream& stream) const {
     stream.writeSint32(maxUnits);
     stream.writeSint32(quota);
 
-    stream.writeBool(bHadContactWithEnemy);
+    stream.writeBools(bHadContactWithEnemy, bHadDirectContactWithEnemy);
 
     stream.writeUint32(unitBuiltValue);
     stream.writeUint32(structureBuiltValue);
