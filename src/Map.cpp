@@ -504,7 +504,7 @@ void Map::removeObjectFromMap(Uint32 objectID) {
         tile.unassignObject(objectID);
 }
 
-void Map::selectObjects(int houseID, int x1, int y1, int x2, int y2, int realX, int realY, bool objectARGMode) {
+void Map::selectObjects(const House* pHouse, int x1, int y1, int x2, int y2, int realX, int realY, bool objectARGMode) {
 
     ObjectBase *lastCheckedObject = nullptr;
     ObjectBase *lastSelectedObject = nullptr;
@@ -522,20 +522,20 @@ void Map::selectObjects(int houseID, int x1, int y1, int x2, int y2, int realX, 
         if (!tile_center)
             return;
 
-        if(tile_center->isExplored(houseID) || debug) {
+        if(tile_center->isExploredByTeam(pHouse->getTeam()) || debug) {
             lastCheckedObject = tile_center->getObjectAt(realX, realY);
         } else {
             lastCheckedObject = nullptr;
         }
 
-        if((lastCheckedObject != nullptr) && (lastCheckedObject->getOwner()->getHouseID() == houseID)) {
+        if((lastCheckedObject != nullptr) && (lastCheckedObject->getOwner() == pHouse)) {
             if((lastCheckedObject == lastSinglySelectedObject) && ( !lastCheckedObject->isAStructure())) {
                 for(auto i = screenborder->getTopLeftTile().x; i <= screenborder->getBottomRightTile().x; i++) {
                     for(auto j = screenborder->getTopLeftTile().y; j <= screenborder->getBottomRightTile().y; j++) {
                         const auto tile = getTile_internal(i, j);
 
                         if (tile && tile->hasAnObject()) {
-                            tile->selectAllPlayersUnitsOfType(houseID, lastSinglySelectedObject->getItemID(), &lastCheckedObject, &lastSelectedObject);
+                            tile->selectAllPlayersUnitsOfType(pHouse->getHouseID(), lastSinglySelectedObject->getItemID(), &lastCheckedObject, &lastSelectedObject);
                         }
                     }
                 }
@@ -566,8 +566,8 @@ void Map::selectObjects(int houseID, int x1, int y1, int x2, int y2, int realX, 
             for(auto j = std::min(y1, y2); j <= std::max(y1, y2); j++) {
                 const auto tile = getTile_internal(i, j);
 
-                if (tile && tile->hasAnObject() && tile->isExplored(houseID) && !tile->isFogged(houseID)) {
-                    tile->selectAllPlayersUnits(houseID, &lastCheckedObject, &lastSelectedObject);
+                if (tile && tile->hasAnObject() && tile->isExploredByTeam(pHouse->getTeam()) && !tile->isFoggedByTeam(pHouse->getTeam())) {
+                    tile->selectAllPlayersUnits(pHouse->getHouseID(), &lastCheckedObject, &lastSelectedObject);
                 }
             }
         }
@@ -654,7 +654,7 @@ void Map::spiceRemoved(const Coord& coord) {
     }
 }
 
-void Map::viewMap(const int playerTeam, const Coord& location, const int maxViewRange) {
+void Map::viewMap(int houseID, const Coord& location, const int maxViewRange) {
 
 //makes map viewable in an area like as shown below
 //
@@ -665,18 +665,6 @@ void Map::viewMap(const int playerTeam, const Coord& location, const int maxView
 //                  *****
 //                  *****
 //                    *
-
-    std::vector<int> houses;
-
-    for (auto i = 0; i < NUM_HOUSES; i++) {
-        const auto pHouse = currentGame->getHouse(i);
-        if ((pHouse != nullptr) && (pHouse->getTeam() == playerTeam)) {
-            houses.push_back(i);
-        }
-    }
-
-    if (houses.empty())
-        return;
 
     const auto cycle_count = currentGame->getGameCycleCount();
 
@@ -690,16 +678,17 @@ void Map::viewMap(const int playerTeam, const Coord& location, const int maxView
     for (coord.x = startX; coord.x <= endX; coord.x++) {
         for(coord.y = startY; coord.y <= endY; coord.y++) {
             const auto distance = maxViewRange <= 1 ? maximumDistance(location, coord) : blockDistanceApprox(location, coord);
-            if(distance > maxViewRange)
+            if(distance > maxViewRange) {
                 continue;
+            }
 
             const auto tile = getTile_internal(coord.x, coord.y);
 
-            if (!tile)
+            if (!tile) {
                 continue;
+            }
 
-            for (auto house : houses)
-                tile->setExplored(house, cycle_count);
+            tile->setExplored(houseID, cycle_count);
         }
     }
 }

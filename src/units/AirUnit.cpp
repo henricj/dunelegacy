@@ -82,7 +82,7 @@ void AirUnit::assignToMap(const Coord& pos)
 
         currentGameMap->getTile(pos)->assignAirUnit(getObjectID());
         // do not reveal map for air units
-        // currentGameMap->viewMap(owner->getTeam(), location, getViewRange());
+        // currentGameMap->viewMap(owner->getHouseID(), location, getViewRange());
     }
 }
 

@@ -317,7 +317,7 @@ void Game::drawScreen()
     /* draw selection rectangles */
     currentGameMap->for_each(x1, y1, x2, y2,
         [](Tile& t) {
-            if (debug || t.isExplored(pLocalHouse->getHouseID())) {
+            if (debug || t.isExploredByTeam(pLocalHouse->getTeam())) {
                 t.blitSelectionRects(screenborder->world2screenX(t.getLocation().x*TILESIZE),
                     screenborder->world2screenY(t.getLocation().y*TILESIZE));
             }
@@ -336,8 +336,8 @@ void Game::drawScreen()
                 if((x >= 0) && (x < currentGameMap->getSizeX()) && (y >= 0) && (y < currentGameMap->getSizeY())) {
                     Tile* pTile = currentGameMap->getTile(x, y);
 
-                    if(pTile->isExplored(pLocalHouse->getHouseID())) {
-                        int hideTile = pTile->getHideTile(pLocalHouse->getHouseID());
+                    if(pTile->isExploredByTeam(pLocalHouse->getTeam())) {
+                        int hideTile = pTile->getHideTile(pLocalHouse->getTeam());
 
                         if(hideTile != 0) {
                             SDL_Rect source = { hideTile*zoomedTileSize, 0, zoomedTileSize, zoomedTileSize };
@@ -347,9 +347,9 @@ void Game::drawScreen()
                         }
 
                         if(gameInitSettings.getGameOptions().fogOfWar == true) {
-                            int fogTile = pTile->getFogTile(pLocalHouse->getHouseID());
+                            int fogTile = pTile->getFogTile(pLocalHouse->getTeam());
 
-                            if(pTile->isFogged(pLocalHouse->getHouseID()) == true) {
+                            if(pTile->isFoggedByTeam(pLocalHouse->getTeam()) == true) {
                                 fogTile = Terrain_HiddenFull;
                             }
 
@@ -750,7 +750,7 @@ void Game::doInput()
                         int rectStartX = selectionRect.x/TILESIZE;
                         int rectStartY = selectionRect.y/TILESIZE;
 
-                        currentGameMap->selectObjects(  pLocalHouse->getHouseID(),
+                        currentGameMap->selectObjects(  pLocalHouse,
                                                         rectStartX, rectStartY, rectFinishX, rectFinishY,
                                                         screenborder->screen2worldX(finalMouseX),
                                                         screenborder->screen2worldY(finalMouseY),
@@ -932,7 +932,7 @@ void Game::drawCursor() const
 
                         Tile* pTile = currentGameMap->getTile(xPos, yPos);
 
-                        if(pTile->isExplored(pLocalHouse->getHouseID())) {
+                        if(pTile->isExploredByTeam(pLocalHouse->getTeam())) {
 
                             StructureBase* pStructure = dynamic_cast<StructureBase*>(pTile->getGroundObject());
 

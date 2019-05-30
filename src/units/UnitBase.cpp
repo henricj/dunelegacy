@@ -219,7 +219,7 @@ bool UnitBase::attack() {
             if(primaryWeaponTimer == 0) {
                 bulletList.push_back( new Bullet( objectID, &centerPoint, &targetCenterPoint, currentBulletType, currentWeaponDamage, bAirBullet, pObject) );
                 if(pObject != nullptr) {
-                    currentGameMap->viewMap(pObject->getOwner()->getTeam(), location, 2);
+                    currentGameMap->viewMap(pObject->getOwner()->getHouseID(), location, 2);
                 }
                 playAttackSound();
                 primaryWeaponTimer = getWeaponReloadTime();
@@ -241,7 +241,7 @@ bool UnitBase::attack() {
             if((numWeapons == 2) && (secondaryWeaponTimer == 0) && (isBadlyDamaged() == false)) {
                 bulletList.push_back( new Bullet( objectID, &centerPoint, &targetCenterPoint, currentBulletType, currentWeaponDamage, bAirBullet, pObject) );
                 if(pObject != nullptr) {
-                    currentGameMap->viewMap(pObject->getOwner()->getTeam(), location, 2);
+                    currentGameMap->viewMap(pObject->getOwner()->getHouseID(), location, 2);
                 }
                 playAttackSound();
                 secondaryWeaponTimer = -1;
@@ -578,7 +578,7 @@ void UnitBase::move() {
                 location = nextSpot;
 
                 if(isAFlyingUnit() == false && itemID != Unit_Sandworm) {
-                    currentGameMap->viewMap(owner->getTeam(), location, getViewRange());
+                    currentGameMap->viewMap(owner->getHouseID(), location, getViewRange());
                 }
             }
 
@@ -1365,7 +1365,7 @@ void UnitBase::updateVisibleUnits() {
 
     auto* pTile = currentGameMap->getTile(location);
     for (auto h = 0; h < NUM_HOUSES; h++) {
-        if(!pTile->isExplored(h)) {
+        if(!pTile->isExploredByHouse(h)) {
             continue;
         }
         auto* pHouse = currentGame->getHouse(h);

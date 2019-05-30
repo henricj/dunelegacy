@@ -86,7 +86,7 @@ void RocketTurret::attack() {
                                                        pObject->isAFlyingUnit(),
                                                        pObject ) );
 
-                currentGameMap->viewMap(pObject->getOwner()->getTeam(), location, 2);
+                currentGameMap->viewMap(pObject->getOwner()->getHouseID(), location, 2);
                 soundPlayer->playSoundAt(Sound_ExplosionSmall, location);
                 weaponTimer = currentGame->objectData.data[Structure_GunTurret][originalHouseID].weaponreloadtime;
             }
@@ -97,7 +97,7 @@ void RocketTurret::attack() {
                                                    pObject->isAFlyingUnit(),
                                                    pObject ) );
 
-            currentGameMap->viewMap(pObject->getOwner()->getTeam(), location, 2);
+            currentGameMap->viewMap(pObject->getOwner()->getHouseID(), location, 2);
             soundPlayer->playSoundAt(attackSound, location);
             weaponTimer = getWeaponReloadTime();
         }

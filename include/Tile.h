@@ -417,9 +417,11 @@ public:
     bool hasSpice() const noexcept { return (spice > 0); }
     bool infantryNotFull() const noexcept { return (assignedInfantryList.size() < NUM_INFANTRY_PER_TILE); }
     bool isConcrete() const noexcept { return (type == Terrain_Slab); }
-    bool isExplored(int houseID) const { return explored[houseID]; }
+    bool isExploredByHouse(int houseID) const { return explored[houseID]; }
+    bool isExploredByTeam(int teamID) const;
 
-    bool isFogged(int houseID) const noexcept;
+    bool isFoggedByHouse(int houseID) const noexcept;
+    bool isFoggedByTeam(int teamID) const noexcept;
     bool isMountain() const noexcept { return (type == Terrain_Mountain); }
     bool isRock() const noexcept { return ((type == Terrain_Rock) || (type == Terrain_Slab) || (type == Terrain_Mountain)); }
 
@@ -441,8 +443,8 @@ public:
 
     Uint32 getRadarColor(House* pHouse, bool radar);
     int getTerrainTile() const;
-    int getHideTile(int houseID) const;
-    int getFogTile(int houseID) const;
+    int getHideTile(int teamID) const;
+    int getFogTile(int teamID) const;
     int getDestroyedStructureTile() const noexcept { return  destroyedStructureTile; };
 
     bool isBlocked() const noexcept {

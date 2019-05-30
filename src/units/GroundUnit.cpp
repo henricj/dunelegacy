@@ -61,7 +61,7 @@ void GroundUnit::save(OutputStream& stream) const {
 void GroundUnit::assignToMap(const Coord& pos) {
     if (currentGameMap->tileExists(pos)) {
         currentGameMap->getTile(pos)->assignNonInfantryGroundObject(getObjectID());
-        currentGameMap->viewMap(owner->getTeam(), pos, getViewRange());
+        currentGameMap->viewMap(owner->getHouseID(), pos, getViewRange());
     }
 }
 
@@ -224,7 +224,7 @@ const UnitBase* GroundUnit::getCarrier() const {
 
 void GroundUnit::move() {
     if(!moving && !justStoppedMoving && (((currentGame->getGameCycleCount() + getObjectID()) % 512) == 0)) {
-        currentGameMap->viewMap(owner->getTeam(), location, getViewRange());
+        currentGameMap->viewMap(owner->getHouseID(), location, getViewRange());
     }
 
     UnitBase::move();

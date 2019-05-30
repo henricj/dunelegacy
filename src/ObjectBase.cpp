@@ -489,8 +489,8 @@ const ObjectBase* ObjectBase::findTarget() const {
             const auto targetDistance = blockDistance(location, coord);
             if(targetDistance <= checkRange) {
                 Tile* pTile = currentGameMap->getTile(coord);
-                if( pTile->isExplored(getOwner()->getHouseID())
-                    && !pTile->isFogged(getOwner()->getHouseID())
+                if( pTile->isExploredByTeam(getOwner()->getTeam())
+                    && !pTile->isFoggedByTeam(getOwner()->getTeam())
                     && pTile->hasAnObject()) {
 
                     const auto pNewTarget = pTile->getObject();

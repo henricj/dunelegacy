@@ -33,6 +33,8 @@
 #include <units/InfantryBase.h>
 #include <units/AirUnit.h>
 
+#define FOGTIME MILLI2CYCLES(10 * 1000)
+
 Tile::Tile() {
     type = Terrain_Sand;
 
@@ -290,7 +292,7 @@ void Tile::blitGround(int xPos, int yPos) {
         SDL_RenderCopy(renderer, pDestroyedStructureTex, &source2, &drawLocation);
     }
 
-    if (isFogged(pLocalHouse->getHouseID()))
+    if (isFoggedByTeam(pLocalHouse->getTeam()))
         return;
 
     // tracks
@@ -335,9 +337,9 @@ void Tile::blitStructures(int xPos, int yPos) const {
     for (auto i = pStructure->getX(); i < pStructure->getX() + pStructure->getStructureSizeX(); i++) {
         for (auto j = pStructure->getY(); j < pStructure->getY() + pStructure->getStructureSizeY(); j++) {
             if (screenborder->isTileInsideScreen(Coord(i, j))
-                && currentGameMap->tileExists(i, j) && (currentGameMap->getTile(i, j)->isExplored(pLocalHouse->getHouseID()) || debug))
+                && currentGameMap->tileExists(i, j) && (currentGameMap->getTile(i, j)->isExploredByTeam(pLocalHouse->getTeam()) || debug))
             {
-                pStructure->setFogged(isFogged(pLocalHouse->getHouseID()));
+                pStructure->setFogged(isFoggedByTeam(pLocalHouse->getTeam()));
 
                 if ((i == location.x) && (j == location.y)) {
                     //only this tile will draw it, so will be drawn only once
@@ -351,7 +353,7 @@ void Tile::blitStructures(int xPos, int yPos) const {
 }
 
 void Tile::blitUndergroundUnits(int xPos, int yPos) const {
-    if (!hasAnUndergroundUnit() || isFogged(pLocalHouse->getHouseID()))
+    if (!hasAnUndergroundUnit() || isFoggedByTeam(pLocalHouse->getTeam()))
         return;
 
     auto current = getUndergroundUnit();
@@ -364,7 +366,7 @@ void Tile::blitUndergroundUnits(int xPos, int yPos) const {
 }
 
 void Tile::blitDeadUnits(int xPos, int yPos) {
-    if (isFogged(pLocalHouse->getHouseID()))
+    if (isFoggedByTeam(pLocalHouse->getTeam()))
         return;
 
     const auto zoomed_tile = world2zoomedWorld(TILESIZE);
@@ -423,7 +425,7 @@ void Tile::blitDeadUnits(int xPos, int yPos) {
 }
 
 void Tile::blitInfantry(int xPos, int yPos) {
-    if (isFogged(pLocalHouse->getHouseID()))
+    if (isFoggedByTeam(pLocalHouse->getTeam()))
         return;
 
     for (auto objectID : assignedInfantryList) {
@@ -441,7 +443,7 @@ void Tile::blitInfantry(int xPos, int yPos) {
 }
 
 void Tile::blitNonInfantryGroundUnits(int xPos, int yPos) {
-    if (isFogged(pLocalHouse->getHouseID()))
+    if (isFoggedByTeam(pLocalHouse->getTeam()))
         return;
 
     for (auto objectID : assignedNonInfantryGroundObjectList) {
@@ -463,7 +465,7 @@ void Tile::blitAirUnits(int xPos, int yPos) {
             continue;
         }
 
-        if (!isFogged(pLocalHouse->getHouseID()) || (pAirUnit->getOwner() == pLocalHouse)) {
+        if (!isFoggedByTeam(pLocalHouse->getTeam()) || (pAirUnit->getOwner() == pLocalHouse)) {
             if (pAirUnit->isVisible(pLocalHouse->getTeam())) {
                 if (location == pAirUnit->getLocation()) {
                     pAirUnit->blitToScreen();
@@ -474,7 +476,7 @@ void Tile::blitAirUnits(int xPos, int yPos) {
 }
 
 void Tile::blitSelectionRects(int xPos, int yPos) const {
-    if (isFogged(pLocalHouse->getHouseID()))
+    if (isFoggedByTeam(pLocalHouse->getTeam()))
         return;
 
     const auto blitObjectSelectionRect =
@@ -942,7 +944,19 @@ bool Tile::hasAStructure() const {
     return ((pObject != nullptr) && pObject->isAStructure());
 }
 
-bool Tile::isFogged(int houseID) const noexcept {
+bool Tile::isExploredByTeam(int teamID) const {
+    for (auto h = 0; h < NUM_HOUSES; h++) {
+        const auto* pHouse = currentGame->getHouse(h);
+        if ((pHouse != nullptr) && (pHouse->getTeam() == teamID)) {
+            if(isExploredByHouse(h)) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+bool Tile::isFoggedByHouse(int houseID) const noexcept {
     if (debug)
         return false;
 
@@ -950,15 +964,35 @@ bool Tile::isFogged(int houseID) const noexcept {
         return false;
     }
 
-    return (currentGame->getGameCycleCount() - lastAccess[houseID]) >= MILLI2CYCLES(10 * 1000);
+    return (currentGame->getGameCycleCount() - lastAccess[houseID]) >= FOGTIME;
+}
+
+bool Tile::isFoggedByTeam(int teamID) const noexcept {
+    if (debug)
+        return false;
+
+    if (currentGame->getGameInitSettings().getGameOptions().fogOfWar == false) {
+        return false;
+    }
+
+    for (auto h = 0; h < NUM_HOUSES; h++) {
+        const auto* pHouse = currentGame->getHouse(h);
+        if ((pHouse != nullptr) && (pHouse->getTeam() == teamID)) {
+            if((currentGame->getGameCycleCount() - lastAccess[h]) < FOGTIME) {
+                return false;
+            }
+        }
+    }
+
+    return true;
 }
 
 Uint32 Tile::getRadarColor(House* pHouse, bool radar) {
-    if (!isExplored(pHouse->getHouseID()) && !debug) {
+    if (!isExploredByTeam(pHouse->getTeam()) && !debug) {
         return COLOR_BLACK;
     }
 
-    if (isFogged(pHouse->getHouseID()) && radar) {
+    if (isFoggedByTeam(pHouse->getTeam()) && radar) {
         return fogColor;
     }
 
@@ -1093,38 +1127,38 @@ int Tile::getTerrainTile() const {
     }
 }
 
-int Tile::getHideTile(int houseID) const {
+int Tile::getHideTile(int teamID) const {
     // are all surrounding tiles explored?
-    if (((currentGameMap->tileExists(location.x, location.y - 1) == false) || (currentGameMap->getTile(location.x, location.y - 1)->isExplored(houseID) == true))
-        && ((currentGameMap->tileExists(location.x + 1, location.y) == false) || (currentGameMap->getTile(location.x + 1, location.y)->isExplored(houseID) == true))
-        && ((currentGameMap->tileExists(location.x, location.y + 1) == false) || (currentGameMap->getTile(location.x, location.y + 1)->isExplored(houseID) == true))
-        && ((currentGameMap->tileExists(location.x - 1, location.y) == false) || (currentGameMap->getTile(location.x - 1, location.y)->isExplored(houseID) == true))) {
+    if (((currentGameMap->tileExists(location.x, location.y - 1) == false) || (currentGameMap->getTile(location.x, location.y - 1)->isExploredByTeam(teamID) == true))
+        && ((currentGameMap->tileExists(location.x + 1, location.y) == false) || (currentGameMap->getTile(location.x + 1, location.y)->isExploredByTeam(teamID) == true))
+        && ((currentGameMap->tileExists(location.x, location.y + 1) == false) || (currentGameMap->getTile(location.x, location.y + 1)->isExploredByTeam(teamID) == true))
+        && ((currentGameMap->tileExists(location.x - 1, location.y) == false) || (currentGameMap->getTile(location.x - 1, location.y)->isExploredByTeam(teamID) == true))) {
         return 0;
     }
 
     // determine what tiles are unexplored
-    bool up = (currentGameMap->tileExists(location.x, location.y - 1) == false) || (currentGameMap->getTile(location.x, location.y - 1)->isExplored(houseID) == false);
-    bool right = (currentGameMap->tileExists(location.x + 1, location.y) == false) || (currentGameMap->getTile(location.x + 1, location.y)->isExplored(houseID) == false);
-    bool down = (currentGameMap->tileExists(location.x, location.y + 1) == false) || (currentGameMap->getTile(location.x, location.y + 1)->isExplored(houseID) == false);
-    bool left = (currentGameMap->tileExists(location.x - 1, location.y) == false) || (currentGameMap->getTile(location.x - 1, location.y)->isExplored(houseID) == false);
+    bool up = (currentGameMap->tileExists(location.x, location.y - 1) == false) || (currentGameMap->getTile(location.x, location.y - 1)->isExploredByTeam(teamID) == false);
+    bool right = (currentGameMap->tileExists(location.x + 1, location.y) == false) || (currentGameMap->getTile(location.x + 1, location.y)->isExploredByTeam(teamID) == false);
+    bool down = (currentGameMap->tileExists(location.x, location.y + 1) == false) || (currentGameMap->getTile(location.x, location.y + 1)->isExploredByTeam(teamID) == false);
+    bool left = (currentGameMap->tileExists(location.x - 1, location.y) == false) || (currentGameMap->getTile(location.x - 1, location.y)->isExploredByTeam(teamID) == false);
 
     return (((int)up) | (right << 1) | (down << 2) | (left << 3));
 }
 
-int Tile::getFogTile(int houseID) const {
+int Tile::getFogTile(int teamID) const {
     // are all surrounding tiles fogged?
-    if (((currentGameMap->tileExists(location.x, location.y - 1) == false) || (currentGameMap->getTile(location.x, location.y - 1)->isFogged(houseID) == false))
-        && ((currentGameMap->tileExists(location.x + 1, location.y) == false) || (currentGameMap->getTile(location.x + 1, location.y)->isFogged(houseID) == false))
-        && ((currentGameMap->tileExists(location.x, location.y + 1) == false) || (currentGameMap->getTile(location.x, location.y + 1)->isFogged(houseID) == false))
-        && ((currentGameMap->tileExists(location.x - 1, location.y) == false) || (currentGameMap->getTile(location.x - 1, location.y)->isFogged(houseID) == false))) {
+    if (((currentGameMap->tileExists(location.x, location.y - 1) == false) || (currentGameMap->getTile(location.x, location.y - 1)->isFoggedByTeam(teamID) == false))
+        && ((currentGameMap->tileExists(location.x + 1, location.y) == false) || (currentGameMap->getTile(location.x + 1, location.y)->isFoggedByTeam(teamID) == false))
+        && ((currentGameMap->tileExists(location.x, location.y + 1) == false) || (currentGameMap->getTile(location.x, location.y + 1)->isFoggedByTeam(teamID) == false))
+        && ((currentGameMap->tileExists(location.x - 1, location.y) == false) || (currentGameMap->getTile(location.x - 1, location.y)->isFoggedByTeam(teamID) == false))) {
         return 0;
     }
 
     // determine what tiles are fogged
-    bool up = (currentGameMap->tileExists(location.x, location.y - 1) == false) || (currentGameMap->getTile(location.x, location.y - 1)->isFogged(houseID) == true);
-    bool right = (currentGameMap->tileExists(location.x + 1, location.y) == false) || (currentGameMap->getTile(location.x + 1, location.y)->isFogged(houseID) == true);
-    bool down = (currentGameMap->tileExists(location.x, location.y + 1) == false) || (currentGameMap->getTile(location.x, location.y + 1)->isFogged(houseID) == true);
-    bool left = (currentGameMap->tileExists(location.x - 1, location.y) == false) || (currentGameMap->getTile(location.x - 1, location.y)->isFogged(houseID) == true);
+    bool up = (currentGameMap->tileExists(location.x, location.y - 1) == false) || (currentGameMap->getTile(location.x, location.y - 1)->isFoggedByTeam(teamID) == true);
+    bool right = (currentGameMap->tileExists(location.x + 1, location.y) == false) || (currentGameMap->getTile(location.x + 1, location.y)->isFoggedByTeam(teamID) == true);
+    bool down = (currentGameMap->tileExists(location.x, location.y + 1) == false) || (currentGameMap->getTile(location.x, location.y + 1)->isFoggedByTeam(teamID) == true);
+    bool left = (currentGameMap->tileExists(location.x - 1, location.y) == false) || (currentGameMap->getTile(location.x - 1, location.y)->isFoggedByTeam(teamID) == true);
 
     return (((int)up) | (right << 1) | (down << 2) | (left << 3));
 }

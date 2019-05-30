@@ -647,7 +647,7 @@ StructureBase* House::placeStructure(Uint32 builderID, int itemID, int xPos, int
             // Slabs are no normal buildings
             currentGameMap->getTile(xPos, yPos)->setType(Terrain_Slab);
             currentGameMap->getTile(xPos, yPos)->setOwner(getHouseID());
-            currentGameMap->viewMap(getTeam(), xPos, yPos, currentGame->objectData.data[Structure_Slab1][houseID].viewrange);
+            currentGameMap->viewMap(getHouseID(), xPos, yPos, currentGame->objectData.data[Structure_Slab1][houseID].viewrange);
     //      currentGameMap->getTile(xPos, yPos)->clearTerrain();
 
             if(pBuilder != nullptr) {
@@ -675,7 +675,7 @@ StructureBase* House::placeStructure(Uint32 builderID, int itemID, int xPos, int
 
                     t.setType(Terrain_Slab);
                     t.setOwner(houseID);
-                    currentGameMap->viewMap(team, t.getLocation().x, t.getLocation().y, currentGame->objectData.data[Structure_Slab4][houseID].viewrange);
+                    currentGameMap->viewMap(getHouseID(), t.getLocation().x, t.getLocation().y, currentGame->objectData.data[Structure_Slab4][houseID].viewrange);
                     //pTile->clearTerrain();
                 });
 

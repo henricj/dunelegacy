@@ -129,7 +129,7 @@ void StructureBase::assignToMap(const Coord& pos) {
         }
     }
 
-    currentGameMap->viewMap(getOwner()->getTeam(), pos, getViewRange());
+    currentGameMap->viewMap(getOwner()->getHouseID(), pos, getViewRange());
 
     if(!bFoundNonConcreteTile && !currentGame->getGameInitSettings().getGameOptions().structuresDegradeOnConcrete) {
         degradeTimer = -1;
@@ -327,7 +327,7 @@ void StructureBase::setJustPlaced() {
 
 bool StructureBase::update() {
     if(((currentGame->getGameCycleCount() + getObjectID()) % 512) == 0) {
-        currentGameMap->viewMap(owner->getTeam(), location, getViewRange());
+        currentGameMap->viewMap(owner->getHouseID(), location, getViewRange());
     }
 
     if(!fogged) {

@@ -104,7 +104,7 @@ void InfantryBase::assignToMap(const Coord& pos) {
     if(currentGameMap->tileExists(pos)) {
         oldTilePosition = tilePosition;
         tilePosition = currentGameMap->getTile(pos)->assignInfantry(getObjectID());
-        currentGameMap->viewMap(owner->getTeam(), pos, getViewRange());
+        currentGameMap->viewMap(owner->getHouseID(), pos, getViewRange());
     }
 }
 
@@ -360,7 +360,7 @@ void InfantryBase::destroy() {
 
 void InfantryBase::move() {
     if(!moving && !justStoppedMoving && (((currentGame->getGameCycleCount() + getObjectID()) % 512) == 0)) {
-        currentGameMap->viewMap(owner->getTeam(), location, getViewRange());
+        currentGameMap->viewMap(owner->getHouseID(), location, getViewRange());
     }
 
     if(moving && !justStoppedMoving) {
@@ -392,7 +392,7 @@ void InfantryBase::move() {
                 oldLocation = location;
                 location = nextSpot;
 
-                currentGameMap->viewMap(owner->getTeam(), location, getViewRange());
+                currentGameMap->viewMap(owner->getHouseID(), location, getViewRange());
             }
 
         } else {

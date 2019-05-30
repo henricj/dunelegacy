@@ -48,11 +48,11 @@ public:
     static Coord getMapPos(int angle, const Coord& source);
     void removeObjectFromMap(Uint32 objectID);
     void spiceRemoved(const Coord& coord);
-    void selectObjects(int houseID, int x1, int y1, int x2, int y2, int realX, int realY, bool objectARGMode);
+    void selectObjects(const House* pHouse, int x1, int y1, int x2, int y2, int realX, int realY, bool objectARGMode);
 
-    void viewMap(const int playerTeam, const Coord& location, const int maxViewRange);
-    void viewMap(const int playerTeam, int x, int y, const int maxViewRange) {
-        viewMap(playerTeam, Coord(x, y), maxViewRange);
+    void viewMap(int houseID, const Coord& location, const int maxViewRange);
+    void viewMap(int houseID, int x, int y, const int maxViewRange) {
+        viewMap(houseID, Coord(x, y), maxViewRange);
     }
 
     bool findSpice(Coord& destination, const Coord& origin) const;

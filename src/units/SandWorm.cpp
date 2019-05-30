@@ -103,7 +103,7 @@ void Sandworm::assignToMap(const Coord& pos) {
     if(currentGameMap->tileExists(pos)) {
         currentGameMap->getTile(pos)->assignUndergroundUnit(getObjectID());
         // do not unhide map cause this would give Fremen players an advantage
-        // currentGameMap->viewMap(owner->getTeam(), location, getViewRange());
+        // currentGameMap->viewMap(owner->getHouseID(), location, getViewRange());
     }
 }
 
