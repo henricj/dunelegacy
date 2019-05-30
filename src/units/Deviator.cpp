@@ -99,7 +99,7 @@ void Deviator::destroy() {
         Uint32 explosionID = currentGame->randomGen.getRandOf({Explosion_Medium1, Explosion_Medium2,Explosion_Flames});
         currentGame->getExplosionList().push_back(new Explosion(explosionID, realPos, owner->getHouseID()));
 
-        if(isVisible(getOwner()->getTeam()))
+        if(isVisible(getOwner()->getTeamID()))
             soundPlayer->playSoundAt(Sound_ExplosionMedium,location);
     }
 
@@ -109,8 +109,8 @@ void Deviator::destroy() {
 bool Deviator::canAttack(const ObjectBase* object) const
 {
     if ((object != nullptr) && !object->isAStructure() && !object->isAFlyingUnit()
-        && (object->getOwner()->getTeam() != owner->getTeam())
-        && object->isVisible(getOwner()->getTeam()))
+        && (object->getOwner()->getTeamID() != owner->getTeamID())
+        && object->isVisible(getOwner()->getTeamID()))
         return true;
     else
         return false;

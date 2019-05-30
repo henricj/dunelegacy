@@ -157,7 +157,7 @@ void ReinforcementTrigger::trigger()
                 case Drop_Enemybase: {
                     for(int i=0;i<NUM_HOUSES;i++) {
                         House* pHouse = currentGame->getHouse(i);
-                        if(pHouse != nullptr && pHouse->getNumStructures() != 0 && pHouse->getTeam() != 0 && pHouse->getTeam() != dropHouse->getTeam()) {
+                        if(pHouse != nullptr && pHouse->getNumStructures() != 0 && pHouse->getTeamID() != 0 && pHouse->getTeamID() != dropHouse->getTeamID()) {
                             dropCoord = pHouse->getCenterOfMainBase();
                             break;
                         }
@@ -167,7 +167,7 @@ void ReinforcementTrigger::trigger()
                         // no house with structures found => search for units
                         for(int i=0;i<NUM_HOUSES;i++) {
                             House* pHouse = currentGame->getHouse(i);
-                            if(pHouse != nullptr && pHouse->getNumUnits() != 0 && pHouse->getTeam() != 0 && pHouse->getTeam() != dropHouse->getTeam()) {
+                            if(pHouse != nullptr && pHouse->getNumUnits() != 0 && pHouse->getTeamID() != 0 && pHouse->getTeamID() != dropHouse->getTeamID()) {
                                 dropCoord = pHouse->getStrongestUnitPosition();
                                 break;
                             }

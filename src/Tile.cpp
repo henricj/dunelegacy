@@ -292,7 +292,7 @@ void Tile::blitGround(int xPos, int yPos) {
         SDL_RenderCopy(renderer, pDestroyedStructureTex, &source2, &drawLocation);
     }
 
-    if (isFoggedByTeam(pLocalHouse->getTeam()))
+    if (isFoggedByTeam(pLocalHouse->getTeamID()))
         return;
 
     // tracks
@@ -337,9 +337,9 @@ void Tile::blitStructures(int xPos, int yPos) const {
     for (auto i = pStructure->getX(); i < pStructure->getX() + pStructure->getStructureSizeX(); i++) {
         for (auto j = pStructure->getY(); j < pStructure->getY() + pStructure->getStructureSizeY(); j++) {
             if (screenborder->isTileInsideScreen(Coord(i, j))
-                && currentGameMap->tileExists(i, j) && (currentGameMap->getTile(i, j)->isExploredByTeam(pLocalHouse->getTeam()) || debug))
+                && currentGameMap->tileExists(i, j) && (currentGameMap->getTile(i, j)->isExploredByTeam(pLocalHouse->getTeamID()) || debug))
             {
-                pStructure->setFogged(isFoggedByTeam(pLocalHouse->getTeam()));
+                pStructure->setFogged(isFoggedByTeam(pLocalHouse->getTeamID()));
 
                 if ((i == location.x) && (j == location.y)) {
                     //only this tile will draw it, so will be drawn only once
@@ -353,12 +353,12 @@ void Tile::blitStructures(int xPos, int yPos) const {
 }
 
 void Tile::blitUndergroundUnits(int xPos, int yPos) const {
-    if (!hasAnUndergroundUnit() || isFoggedByTeam(pLocalHouse->getTeam()))
+    if (!hasAnUndergroundUnit() || isFoggedByTeam(pLocalHouse->getTeamID()))
         return;
 
     auto current = getUndergroundUnit();
 
-    if (current->isVisible(pLocalHouse->getTeam())) {
+    if (current->isVisible(pLocalHouse->getTeamID())) {
         if (location == current->getLocation()) {
             current->blitToScreen();
         }
@@ -366,7 +366,7 @@ void Tile::blitUndergroundUnits(int xPos, int yPos) const {
 }
 
 void Tile::blitDeadUnits(int xPos, int yPos) {
-    if (isFoggedByTeam(pLocalHouse->getTeam()))
+    if (isFoggedByTeam(pLocalHouse->getTeamID()))
         return;
 
     const auto zoomed_tile = world2zoomedWorld(TILESIZE);
@@ -425,7 +425,7 @@ void Tile::blitDeadUnits(int xPos, int yPos) {
 }
 
 void Tile::blitInfantry(int xPos, int yPos) {
-    if (isFoggedByTeam(pLocalHouse->getTeam()))
+    if (isFoggedByTeam(pLocalHouse->getTeamID()))
         return;
 
     for (auto objectID : assignedInfantryList) {
@@ -434,7 +434,7 @@ void Tile::blitInfantry(int xPos, int yPos) {
             continue;
         }
 
-        if (pInfantry->isVisible(pLocalHouse->getTeam())) {
+        if (pInfantry->isVisible(pLocalHouse->getTeamID())) {
             if (location == pInfantry->getLocation()) {
                 pInfantry->blitToScreen();
             }
@@ -443,13 +443,13 @@ void Tile::blitInfantry(int xPos, int yPos) {
 }
 
 void Tile::blitNonInfantryGroundUnits(int xPos, int yPos) {
-    if (isFoggedByTeam(pLocalHouse->getTeam()))
+    if (isFoggedByTeam(pLocalHouse->getTeamID()))
         return;
 
     for (auto objectID : assignedNonInfantryGroundObjectList) {
         auto pObject = currentGame->getObjectManager().getObject(objectID);
 
-        if (pObject->isAUnit() && pObject->isVisible(pLocalHouse->getTeam())) {
+        if (pObject->isAUnit() && pObject->isVisible(pLocalHouse->getTeamID())) {
             if (location == pObject->getLocation()) {
                 pObject->blitToScreen();
             }
@@ -465,8 +465,8 @@ void Tile::blitAirUnits(int xPos, int yPos) {
             continue;
         }
 
-        if (!isFoggedByTeam(pLocalHouse->getTeam()) || (pAirUnit->getOwner() == pLocalHouse)) {
-            if (pAirUnit->isVisible(pLocalHouse->getTeam())) {
+        if (!isFoggedByTeam(pLocalHouse->getTeamID()) || (pAirUnit->getOwner() == pLocalHouse)) {
+            if (pAirUnit->isVisible(pLocalHouse->getTeamID())) {
                 if (location == pAirUnit->getLocation()) {
                     pAirUnit->blitToScreen();
                 }
@@ -476,7 +476,7 @@ void Tile::blitAirUnits(int xPos, int yPos) {
 }
 
 void Tile::blitSelectionRects(int xPos, int yPos) const {
-    if (isFoggedByTeam(pLocalHouse->getTeam()))
+    if (isFoggedByTeam(pLocalHouse->getTeamID()))
         return;
 
     const auto blitObjectSelectionRect =
@@ -487,7 +487,7 @@ void Tile::blitSelectionRects(int xPos, int yPos) const {
         }
 
         // possibly draw selection rectangle multiple times, e.g. for structures
-        if (pObject->isVisible(pLocalHouse->getTeam())) {
+        if (pObject->isVisible(pLocalHouse->getTeamID())) {
             if (pObject->isSelected()) {
                 pObject->drawSelectionBox();
             }
@@ -652,7 +652,7 @@ void Tile::squash() const {
 int Tile::getInfantryTeam() const {
     int team = INVALID;
     if (hasInfantry())
-        team = getInfantry()->getOwner()->getTeam();
+        team = getInfantry()->getOwner()->getTeamID();
     return team;
 }
 
@@ -860,7 +860,7 @@ void Tile::triggerSpecialBloom(House* pTrigger) {
             int numCandidates = 0;
             for (int i = 0; i < NUM_HOUSES; i++) {
                 const auto pHouse = currentGame->getHouse(i);
-                if (pHouse != nullptr && pHouse->getTeam() != pTrigger->getTeam() && pHouse->getNumUnits() > 0) {
+                if (pHouse != nullptr && pHouse->getTeamID() != pTrigger->getTeamID() && pHouse->getNumUnits() > 0) {
                     numCandidates++;
                 }
             }
@@ -874,7 +874,7 @@ void Tile::triggerSpecialBloom(House* pTrigger) {
             House* pEnemyHouse = nullptr;
             for (int i = 0; i < NUM_HOUSES; i++) {
                 const auto pHouse = currentGame->getHouse(i);
-                if (pHouse != nullptr && pHouse->getTeam() != pTrigger->getTeam() && pHouse->getNumUnits() > 0) {
+                if (pHouse != nullptr && pHouse->getTeamID() != pTrigger->getTeamID() && pHouse->getNumUnits() > 0) {
                     if (candidate == 0) {
                         pEnemyHouse = pHouse;
                         break;
@@ -899,7 +899,7 @@ void Tile::triggerSpecialBloom(House* pTrigger) {
             int numCandidates = 0;
             for (int i = 0; i < NUM_HOUSES; i++) {
                 const auto pHouse = currentGame->getHouse(i);
-                if (pHouse != nullptr && pHouse->getTeam() != pTrigger->getTeam() && pHouse->getNumUnits() > 0) {
+                if (pHouse != nullptr && pHouse->getTeamID() != pTrigger->getTeamID() && pHouse->getNumUnits() > 0) {
                     numCandidates++;
                 }
             }
@@ -913,7 +913,7 @@ void Tile::triggerSpecialBloom(House* pTrigger) {
             House* pEnemyHouse = nullptr;
             for (int i = 0; i < NUM_HOUSES; i++) {
                 const auto pHouse = currentGame->getHouse(i);
-                if (pHouse != nullptr && pHouse->getTeam() != pTrigger->getTeam() && pHouse->getNumUnits() > 0) {
+                if (pHouse != nullptr && pHouse->getTeamID() != pTrigger->getTeamID() && pHouse->getNumUnits() > 0) {
                     if (candidate == 0) {
                         pEnemyHouse = pHouse;
                         break;
@@ -947,7 +947,7 @@ bool Tile::hasAStructure() const {
 bool Tile::isExploredByTeam(int teamID) const {
     for (auto h = 0; h < NUM_HOUSES; h++) {
         const auto* pHouse = currentGame->getHouse(h);
-        if ((pHouse != nullptr) && (pHouse->getTeam() == teamID)) {
+        if ((pHouse != nullptr) && (pHouse->getTeamID() == teamID)) {
             if(isExploredByHouse(h)) {
                 return true;
             }
@@ -977,7 +977,7 @@ bool Tile::isFoggedByTeam(int teamID) const noexcept {
 
     for (auto h = 0; h < NUM_HOUSES; h++) {
         const auto* pHouse = currentGame->getHouse(h);
-        if ((pHouse != nullptr) && (pHouse->getTeam() == teamID)) {
+        if ((pHouse != nullptr) && (pHouse->getTeamID() == teamID)) {
             if((currentGame->getGameCycleCount() - lastAccess[h]) < FOGTIME) {
                 return false;
             }
@@ -988,11 +988,11 @@ bool Tile::isFoggedByTeam(int teamID) const noexcept {
 }
 
 Uint32 Tile::getRadarColor(House* pHouse, bool radar) {
-    if (!isExploredByTeam(pHouse->getTeam()) && !debug) {
+    if (!isExploredByTeam(pHouse->getTeamID()) && !debug) {
         return COLOR_BLACK;
     }
 
-    if (isFoggedByTeam(pHouse->getTeam()) && radar) {
+    if (isFoggedByTeam(pHouse->getTeamID()) && radar) {
         return fogColor;
     }
 
@@ -1023,7 +1023,7 @@ Uint32 Tile::getRadarColor(House* pHouse, bool radar) {
         }
 
         // units and structures of the enemy are not visible if no radar
-        if (!radar && !debug && (pObject->getOwner()->getTeam() != pHouse->getTeam())) {
+        if (!radar && !debug && (pObject->getOwner()->getTeamID() != pHouse->getTeamID())) {
             return COLOR_BLACK;
         }
 

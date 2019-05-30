@@ -91,7 +91,7 @@ void InfantryBase::doCaptureStructure(Uint32 targetStructureID) {
 
 void InfantryBase::doCaptureStructure(const StructureBase* pStructure) {
 
-    if((pStructure == nullptr) || (pStructure->canBeCaptured() == false) || (pStructure->getOwner()->getTeam() == getOwner()->getTeam())) {
+    if((pStructure == nullptr) || (pStructure->canBeCaptured() == false) || (pStructure->getOwner()->getTeamID() == getOwner()->getTeamID())) {
         // does not exist anymore, cannot be captured or is a friendly building
         return;
     }
@@ -150,13 +150,13 @@ bool InfantryBase::canPass(int xPos, int yPos) const {
 
             if((object != nullptr) && (object->getObjectID() == target.getObjectID())
                 && object->isAStructure()
-                && (object->getOwner()->getTeam() != owner->getTeam())
-                && object->isVisible(getOwner()->getTeam())) {
+                && (object->getOwner()->getTeamID() != owner->getTeamID())
+                && object->isVisible(getOwner()->getTeamID())) {
                 passable = true;
             } else {
                 passable = (!pTile->hasANonInfantryGroundObject()
                             && (pTile->infantryNotFull()
-                            && (pTile->getInfantryTeam() == getOwner()->getTeam())));
+                            && (pTile->getInfantryTeam() == getOwner()->getTeamID())));
             }
         }
     }
@@ -183,7 +183,7 @@ void InfantryBase::checkPos() {
         //check to see if close enough to blow up target
         if(target.getObjPointer() != nullptr
             && target.getObjPointer()->isAStructure()
-            && (getOwner()->getTeam() != target.getObjPointer()->getOwner()->getTeam()))
+            && (getOwner()->getTeamID() != target.getObjPointer()->getOwner()->getTeamID()))
         {
             Coord   closestPoint;
 
@@ -336,7 +336,7 @@ void InfantryBase::destroy() {
                                             owner->getHouseID(),
                                             Coord(lround(realX), lround(realY)) );
 
-                if(isVisible(getOwner()->getTeam())) {
+                if(isVisible(getOwner()->getTeamID())) {
                     soundPlayer->playSoundAt(Sound_Squashed,location);
                 }
             } else {
@@ -349,7 +349,7 @@ void InfantryBase::destroy() {
                                         owner->getHouseID(),
                                         Coord(lround(realX), lround(realY)));
 
-            if(isVisible(getOwner()->getTeam())) {
+            if(isVisible(getOwner()->getTeamID())) {
                 soundPlayer->playSoundAt(getRandomOf({Sound_Scream1,Sound_Scream2,Sound_Scream3,Sound_Scream4,Sound_Scream5,Sound_Trumpet}),location);
             }
         }

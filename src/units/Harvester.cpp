@@ -298,7 +298,7 @@ void Harvester::destroy()
         Uint32 explosionID = currentGame->randomGen.getRandOf({Explosion_Medium1, Explosion_Medium2});
         currentGame->getExplosionList().push_back(new Explosion(explosionID, realPos, owner->getHouseID()));
 
-        if(isVisible(getOwner()->getTeam())) {
+        if(isVisible(getOwner()->getTeamID())) {
             screenborder->shakeScreen(18);
             soundPlayer->playSoundAt(Sound_ExplosionLarge,location);
         }
@@ -465,8 +465,8 @@ bool Harvester::canAttack(const ObjectBase* object) const
 {
     return((object != nullptr)
             && object->isInfantry()
-            && (object->getOwner()->getTeam() != owner->getTeam())
-            && object->isVisible(getOwner()->getTeam()));
+            && (object->getOwner()->getTeamID() != owner->getTeamID())
+            && object->isVisible(getOwner()->getTeamID()));
 }
 
 FixPoint Harvester::extractSpice(FixPoint extractionSpeed)

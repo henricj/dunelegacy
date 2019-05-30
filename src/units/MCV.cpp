@@ -93,8 +93,8 @@ bool MCV::doDeploy() {
 bool MCV::canAttack(const ObjectBase* object) const {
     return((object != nullptr)
             && object->isInfantry()
-            && (object->getOwner()->getTeam() != owner->getTeam())
-            && object->isVisible(getOwner()->getTeam()));
+            && (object->getOwner()->getTeamID() != owner->getTeamID())
+            && object->isVisible(getOwner()->getTeamID()));
 }
 
 void MCV::destroy() {
@@ -102,7 +102,7 @@ void MCV::destroy() {
         Coord realPos(lround(realX), lround(realY));
         currentGame->getExplosionList().push_back(new Explosion(Explosion_SmallUnit, realPos, owner->getHouseID()));
 
-        if(isVisible(getOwner()->getTeam()))
+        if(isVisible(getOwner()->getTeamID()))
             soundPlayer->playSoundAt(Sound_ExplosionSmall,location);
     }
 

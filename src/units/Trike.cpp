@@ -57,7 +57,7 @@ void Trike::destroy() {
         Coord realPos(lround(realX), lround(realY));
         currentGame->getExplosionList().push_back(new Explosion(Explosion_SmallUnit, realPos, owner->getHouseID()));
 
-        if(isVisible(getOwner()->getTeam()))
+        if(isVisible(getOwner()->getTeamID()))
             soundPlayer->playSoundAt(Sound_ExplosionSmall,location);
     }
 

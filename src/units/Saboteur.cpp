@@ -35,7 +35,7 @@ Saboteur::Saboteur(House* newOwner) : InfantryBase(newOwner)
     setHealth(getMaxHealth());
 
     setVisible(VIS_ALL, false);
-    setVisible(getOwner()->getTeam(), true);
+    setVisible(getOwner()->getTeamID(), true);
     attackMode = GUARD;
 }
 
@@ -74,7 +74,7 @@ void Saboteur::checkPos()
         for(int x = location.x - 2; (x <= location.x + 2); x++) {
             for(int y = location.y - 2; (y <= location.y + 2); y++) {
                 if(currentGameMap->tileExists(x, y) && currentGameMap->getTile(x, y)->hasAnObject()) {
-                    canBeSeen[currentGameMap->getTile(x, y)->getObject()->getOwner()->getTeam()] = true;
+                    canBeSeen[currentGameMap->getTile(x, y)->getObject()->getOwner()->getTeamID()] = true;
                 }
             }
         }
@@ -83,8 +83,8 @@ void Saboteur::checkPos()
             setVisible(i, canBeSeen[i]);
         }
 
-        setVisible(getOwner()->getTeam(), true);    //owner team can always see it
-        //setVisible(pLocalHouse->getTeam(), true);
+        setVisible(getOwner()->getTeamID(), true);    //owner team can always see it
+        //setVisible(pLocalHouse->getTeamID(), true);
     }
 }
 
@@ -93,14 +93,14 @@ bool Saboteur::update() {
         if(!moving) {
             //check to see if close enough to blow up target
             if(target.getObjPointer() != nullptr){ //&& target.getObjPointer()->isAStructure()
-                if(getOwner()->getTeam() != target.getObjPointer()->getOwner()->getTeam())
+                if(getOwner()->getTeamID() != target.getObjPointer()->getOwner()->getTeamID())
                 {
                     Coord   closestPoint;
                     closestPoint = target.getObjPointer()->getClosestPoint(location);
 
 
                     if(blockDistance(location, closestPoint) <= 1.5_fix) {
-                        if(isVisible(getOwner()->getTeam())) {
+                        if(isVisible(getOwner()->getTeamID())) {
                             screenborder->shakeScreen(18);
                         }
 
@@ -122,15 +122,15 @@ void Saboteur::deploy(const Coord& newLocation) {
     UnitBase::deploy(newLocation);
 
     setVisible(VIS_ALL, false);
-    setVisible(getOwner()->getTeam(), true);
+    setVisible(getOwner()->getTeamID(), true);
 }
 
 
 bool Saboteur::canAttack(const ObjectBase* object) const {
     if(object != nullptr){
         if((object->isAStructure() || (object->isAGroundUnit() && !object->isInfantry() && object->getItemID() != Unit_Sandworm)) /* allow attack tanks*/
-            && (object->getOwner()->getTeam() != owner->getTeam())
-            && object->isVisible(getOwner()->getTeam())){
+            && (object->getOwner()->getTeamID() != owner->getTeamID())
+            && object->isVisible(getOwner()->getTeamID())){
 
             return true;
         }
@@ -148,7 +148,7 @@ void Saboteur::destroy()
     Uint32 explosionID = currentGame->randomGen.getRandOf({Explosion_Medium1, Explosion_Medium2});
     currentGame->getExplosionList().push_back(new Explosion(explosionID, realPos, owner->getHouseID()));
 
-    if(isVisible(getOwner()->getTeam())) {
+    if(isVisible(getOwner()->getTeamID())) {
         soundPlayer->playSoundAt(Sound_ExplosionLarge,location);
     }
 

@@ -110,7 +110,7 @@ void AIPlayer::onDecrementStructures(int itemID, const Coord& location) {
 void AIPlayer::onDamage(const ObjectBase* pObject, int damage, Uint32 damagerID) {
     const ObjectBase* pDamager = getObject(damagerID);
 
-    if(pDamager == nullptr || pDamager->getOwner()->getTeam() == getHouse()->getTeam()) {
+    if(pDamager == nullptr || pDamager->getOwner()->getTeamID() == getHouse()->getTeamID()) {
         return;
     }
 
@@ -263,7 +263,7 @@ Coord AIPlayer::findPlaceLocation(Uint32 itemID) {
                     // place towards enemy
                     FixPoint nearestEnemy = 10000000;
                     for(const StructureBase* pStructure : getStructureList()) {
-                        if(pStructure->getOwner()->getTeam() != getHouse()->getTeam()) {
+                        if(pStructure->getOwner()->getTeamID() != getHouse()->getTeamID()) {
                             FixPoint distance = blockDistance(pos, pStructure->getLocation());
                             if(distance < nearestEnemy) {
                                 nearestEnemy = distance;
@@ -284,7 +284,7 @@ Coord AIPlayer::findPlaceLocation(Uint32 itemID) {
                     // place at a save place
                     FixPoint nearestEnemy = 10000000;
                     for(const StructureBase* pStructure : getStructureList()) {
-                        if(pStructure->getOwner()->getTeam() != getHouse()->getTeam()) {
+                        if(pStructure->getOwner()->getTeamID() != getHouse()->getTeamID()) {
                             FixPoint distance = blockDistance(pos, pStructure->getLocation());
                             if(distance < nearestEnemy) {
                                 nearestEnemy = distance;
@@ -717,15 +717,15 @@ bool AIPlayer::isAllowedToArm() const {
     for(int i = 0; i < NUM_HOUSES; i++) {
         const House* pHouse = getHouse(i);
         if(pHouse != nullptr) {
-            teamScore[pHouse->getTeam()] += pHouse->getUnitBuiltValue();
+            teamScore[pHouse->getTeamID()] += pHouse->getUnitBuiltValue();
 
-            if(pHouse->getTeam() != getHouse()->getTeam()) {
-                maxTeamScore = std::max(maxTeamScore, teamScore[pHouse->getTeam()]);
+            if(pHouse->getTeamID() != getHouse()->getTeamID()) {
+                maxTeamScore = std::max(maxTeamScore, teamScore[pHouse->getTeamID()]);
             }
         }
     }
 
-    int ownTeamScore = teamScore[getHouse()->getTeam()];
+    int ownTeamScore = teamScore[getHouse()->getTeamID()];
 
     switch(difficulty) {
         case Difficulty::Easy: {

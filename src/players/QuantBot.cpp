@@ -894,7 +894,7 @@ void QuantBot::build(int militaryValue) {
 
                         for(int i = 0; i < NUM_HOUSES; i++) {
                             if(getHouse(i) != nullptr) {
-                                if(getHouse(i)->getTeam() != getHouse()->getTeam() && getHouse(i)->getNumStructures() > enemyHouseBuildingCount) {
+                                if(getHouse(i)->getTeamID() != getHouse()->getTeamID() && getHouse(i)->getNumStructures() > enemyHouseBuildingCount) {
                                     enemyHouseBuildingCount = getHouse(i)->getNumStructures();
                                     enemyHouseID = i;
                                 }
@@ -1614,7 +1614,7 @@ Coord QuantBot::findSquadRallyLocation() {
             buildingCount++;
             totalX += pCurrentStructure->getX();
             totalY += pCurrentStructure->getY();
-        } else if(pCurrentStructure->getOwner()->getTeam() != getHouse()->getTeam()) {
+        } else if(pCurrentStructure->getOwner()->getTeamID() != getHouse()->getTeamID()) {
             enemyBuildingCount++;
             enemyTotalX += pCurrentStructure->getX();
             enemyTotalY += pCurrentStructure->getY();

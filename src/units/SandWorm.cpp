@@ -336,11 +336,11 @@ bool Sandworm::update() {
                     if(drawnFrame == 1) {
                         // the close mouth bit of graphic is currently shown => eat unit
                         if(target && target.getObjPointer() != nullptr) {
-                            bool wasAlive = target.getObjPointer()->isVisible(getOwner()->getTeam());  //see if unit was alive before attack
+                            bool wasAlive = target.getObjPointer()->isVisible(getOwner()->getTeamID());  //see if unit was alive before attack
                             Coord realPos = Coord(lround(realX), lround(realY));
                             currentGameMap->damage(objectID, getOwner(), realPos, Bullet_Sandworm, 5000, NONE_ID, false);
 
-                            if(wasAlive && target && (target.getObjPointer()->isVisible(getOwner()->getTeam()) == false)) {
+                            if(wasAlive && target && (target.getObjPointer()->isVisible(getOwner()->getTeamID()) == false)) {
                                 kills++;
                             }
                         }
@@ -382,8 +382,8 @@ bool Sandworm::canAttack(const ObjectBase* object) const {
     if((object != nullptr)
         && object->isAGroundUnit()
         && (object->getItemID() != Unit_Sandworm)   //wont kill other sandworms
-        //&& object->isVisible(getOwner()->getTeam())
-        //&& (object->getOwner()->getTeam() != owner->getTeam())
+        //&& object->isVisible(getOwner()->getTeamID())
+        //&& (object->getOwner()->getTeamID() != owner->getTeamID())
         && currentGameMap->tileExists(object->getLocation())
         && canPass(object->getLocation().x, object->getLocation().y)
         && (currentGameMap->getTile(object->getLocation())->getSandRegion() == currentGameMap->getTile(location)->getSandRegion())) {

@@ -101,7 +101,7 @@ public:
     void setObjectID(int newObjectID);
 
     virtual void setTarget(const ObjectBase* newTarget);
-    void setVisible(int team, bool status);
+    void setVisible(int teamID, bool status);
 
     /**
         Updates this object.
@@ -112,7 +112,7 @@ public:
     void unassignFromMap(const Coord& location) const;
 
     bool isOnScreen() const;
-    bool isVisible(int team) const;
+    bool isVisible(int teamID) const;
     bool isVisible() const;
     Uint32 getHealthColor() const;
 

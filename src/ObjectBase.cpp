@@ -296,20 +296,20 @@ void ObjectBase::setObjectID(int newObjectID) {
     }
 }
 
-void ObjectBase::setVisible(int team, bool status) {
-    if(team == VIS_ALL) {
+void ObjectBase::setVisible(int teamID, bool status) {
+    if(teamID == VIS_ALL) {
         if (status)
             visible.set();
         else
             visible.reset();
-    } else if ((team >= 0) && (team < NUM_TEAMS)) {
-        visible[team] = status;
+    } else if ((teamID >= 0) && (teamID < NUM_TEAMS)) {
+        visible[teamID] = status;
     }
 }
 
 void ObjectBase::setTarget(const ObjectBase* newTarget) {
     target.pointTo(const_cast<ObjectBase*>(newTarget));
-    targetFriendly = (target && (target.getObjPointer()->getOwner()->getTeam() == owner->getTeam()) && (getItemID() != Unit_Sandworm) && (target.getObjPointer()->getItemID() != Unit_Sandworm));
+    targetFriendly = (target && (target.getObjPointer()->getOwner()->getTeamID() == owner->getTeamID()) && (getItemID() != Unit_Sandworm) && (target.getObjPointer()->getItemID() != Unit_Sandworm));
 }
 
 void ObjectBase::unassignFromMap(const Coord& location) const {
@@ -323,7 +323,7 @@ bool ObjectBase::canAttack(const ObjectBase* object) const {
     return canAttack()
         && (object != nullptr)
         && (object->isAStructure() || !object->isAFlyingUnit())
-        && (((object->getOwner()->getTeam() != owner->getTeam()) && object->isVisible(getOwner()->getTeam())) || (object->getItemID() == Unit_Sandworm));
+        && (((object->getOwner()->getTeamID() != owner->getTeamID()) && object->isVisible(getOwner()->getTeamID())) || (object->getItemID() == Unit_Sandworm));
 }
 
 bool ObjectBase::isOnScreen() const {
@@ -333,9 +333,9 @@ bool ObjectBase::isOnScreen() const {
     return screenborder->isInsideScreen(position,size);
 }
 
-bool ObjectBase::isVisible(int team) const {
-    if((team >= 0) && (team < NUM_TEAMS)) {
-        return visible[team];
+bool ObjectBase::isVisible(int teamID) const {
+    if((teamID >= 0) && (teamID < NUM_TEAMS)) {
+        return visible[teamID];
     } else {
         return false;
     }
@@ -489,8 +489,8 @@ const ObjectBase* ObjectBase::findTarget() const {
             const auto targetDistance = blockDistance(location, coord);
             if(targetDistance <= checkRange) {
                 Tile* pTile = currentGameMap->getTile(coord);
-                if( pTile->isExploredByTeam(getOwner()->getTeam())
-                    && !pTile->isFoggedByTeam(getOwner()->getTeam())
+                if( pTile->isExploredByTeam(getOwner()->getTeamID())
+                    && !pTile->isFoggedByTeam(getOwner()->getTeamID())
                     && pTile->hasAnObject()) {
 
                     const auto pNewTarget = pTile->getObject();

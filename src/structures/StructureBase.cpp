@@ -480,7 +480,7 @@ void StructureBase::destroy() {
         }
     }
 
-    if(isVisible(pLocalHouse->getTeam()))
+    if(isVisible(pLocalHouse->getTeamID()))
         soundPlayer->playSoundAt(Sound_ExplosionStructure, location);
 
 

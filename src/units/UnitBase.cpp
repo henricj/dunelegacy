@@ -757,7 +757,7 @@ void UnitBase::handleActionClick(int xPos, int yPos) {
                 // attack unit/structure or move to structure
                 ObjectBase* tempTarget = currentGameMap->getTile(xPos,yPos)->getObject();
 
-                if(tempTarget->getOwner()->getTeam() != getOwner()->getTeam()) {
+                if(tempTarget->getOwner()->getTeamID() != getOwner()->getTeamID()) {
                     // attack
                     currentGame->getCommandManager().addCommand(Command(pLocalPlayer->getPlayerID(), CMD_UNIT_ATTACKOBJECT,objectID,tempTarget->getObjectID()));
                 } else {
@@ -1370,7 +1370,7 @@ void UnitBase::updateVisibleUnits() {
         }
         auto* pHouse = currentGame->getHouse(h);
         if (pHouse) {
-            if(pHouse->getTeam() == getOwner()->getTeam()) {
+            if(pHouse->getTeamID() == getOwner()->getTeamID()) {
                 pHouse->informVisibleFriendlyUnit();
             } else {
                 pHouse->informVisibleEnemyUnit();
@@ -1397,8 +1397,8 @@ bool UnitBase::canPass(int xPos, int yPos) const {
             && (pObject->getObjectID() == target.getObjectID())
             && targetFriendly
             && pObject->isAStructure()
-            && (pObject->getOwner()->getTeam() == owner->getTeam())
-            && pObject->isVisible(getOwner()->getTeam()))
+            && (pObject->getOwner()->getTeamID() == owner->getTeamID())
+            && pObject->isVisible(getOwner()->getTeamID()))
         {
             // are we entering a repair yard?
             return (goingToRepairYard && (pObject->getItemID() == Structure_RepairYard) && static_cast<const RepairYard*>(pObject)->isFree());

@@ -66,7 +66,7 @@ void AirUnit::destroy()
         Coord position(lround(realX), lround(realY));
         currentGame->getExplosionList().push_back(new Explosion(Explosion_Medium2, position, owner->getHouseID()));
 
-        if(isVisible(getOwner()->getTeam()))
+        if(isVisible(getOwner()->getTeamID()))
             soundPlayer->playSoundAt(Sound_ExplosionMedium,location);
     }
 

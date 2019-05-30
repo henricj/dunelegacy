@@ -53,9 +53,9 @@ bool Soldier::canAttack(const ObjectBase* object) const {
     if ((object != nullptr)
         && (object->isAStructure()
             || !object->isAFlyingUnit())
-        && ((object->getOwner()->getTeam() != owner->getTeam())
+        && ((object->getOwner()->getTeamID() != owner->getTeamID())
             || object->getItemID() == Unit_Sandworm)
-        && object->isVisible(getOwner()->getTeam()))
+        && object->isVisible(getOwner()->getTeamID()))
     {
         return true;
     }

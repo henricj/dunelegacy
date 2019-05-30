@@ -317,7 +317,7 @@ void Game::drawScreen()
     /* draw selection rectangles */
     currentGameMap->for_each(x1, y1, x2, y2,
         [](Tile& t) {
-            if (debug || t.isExploredByTeam(pLocalHouse->getTeam())) {
+            if (debug || t.isExploredByTeam(pLocalHouse->getTeamID())) {
                 t.blitSelectionRects(screenborder->world2screenX(t.getLocation().x*TILESIZE),
                     screenborder->world2screenY(t.getLocation().y*TILESIZE));
             }
@@ -336,8 +336,8 @@ void Game::drawScreen()
                 if((x >= 0) && (x < currentGameMap->getSizeX()) && (y >= 0) && (y < currentGameMap->getSizeY())) {
                     Tile* pTile = currentGameMap->getTile(x, y);
 
-                    if(pTile->isExploredByTeam(pLocalHouse->getTeam())) {
-                        int hideTile = pTile->getHideTile(pLocalHouse->getTeam());
+                    if(pTile->isExploredByTeam(pLocalHouse->getTeamID())) {
+                        int hideTile = pTile->getHideTile(pLocalHouse->getTeamID());
 
                         if(hideTile != 0) {
                             SDL_Rect source = { hideTile*zoomedTileSize, 0, zoomedTileSize, zoomedTileSize };
@@ -347,9 +347,9 @@ void Game::drawScreen()
                         }
 
                         if(gameInitSettings.getGameOptions().fogOfWar == true) {
-                            int fogTile = pTile->getFogTile(pLocalHouse->getTeam());
+                            int fogTile = pTile->getFogTile(pLocalHouse->getTeamID());
 
-                            if(pTile->isFoggedByTeam(pLocalHouse->getTeam()) == true) {
+                            if(pTile->isFoggedByTeam(pLocalHouse->getTeamID()) == true) {
                                 fogTile = Terrain_HiddenFull;
                             }
 
@@ -932,11 +932,11 @@ void Game::drawCursor() const
 
                         Tile* pTile = currentGameMap->getTile(xPos, yPos);
 
-                        if(pTile->isExploredByTeam(pLocalHouse->getTeam())) {
+                        if(pTile->isExploredByTeam(pLocalHouse->getTeamID())) {
 
                             StructureBase* pStructure = dynamic_cast<StructureBase*>(pTile->getGroundObject());
 
-                            if((pStructure != nullptr) && (pStructure->canBeCaptured()) && (pStructure->getOwner()->getTeam() != pLocalHouse->getTeam())) {
+                            if((pStructure != nullptr) && (pStructure->canBeCaptured()) && (pStructure->getOwner()->getTeamID() != pLocalHouse->getTeamID())) {
                                 dest.y += ((getGameCycleCount() / 10) % 5);
                             }
                         }
@@ -2402,7 +2402,7 @@ bool Game::handleSelectedObjectsCaptureClick(int xPos, int yPos) {
     }
 
     StructureBase* pStructure = dynamic_cast<StructureBase*>(pTile->getGroundObject());
-    if((pStructure != nullptr) && (pStructure->canBeCaptured()) && (pStructure->getOwner()->getTeam() != pLocalHouse->getTeam())) {
+    if((pStructure != nullptr) && (pStructure->canBeCaptured()) && (pStructure->getOwner()->getTeamID() != pLocalHouse->getTeamID())) {
         InfantryBase* pResponder = nullptr;
 
         for(Uint32 objectID : selectedList) {

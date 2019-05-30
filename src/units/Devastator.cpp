@@ -132,7 +132,7 @@ void Devastator::destroy()
             }
         }
 
-        if(isVisible(getOwner()->getTeam())) {
+        if(isVisible(getOwner()->getTeamID())) {
             screenborder->shakeScreen(18);
             soundPlayer->playSoundAt(Sound_ExplosionLarge,location);
         }

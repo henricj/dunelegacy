@@ -95,7 +95,7 @@ void SiegeTank::destroy() {
         Uint32 explosionID = currentGame->randomGen.getRandOf({Explosion_Medium1, Explosion_Medium2});
         currentGame->getExplosionList().push_back(new Explosion(explosionID, realPos, owner->getHouseID()));
 
-        if(isVisible(getOwner()->getTeam())) {
+        if(isVisible(getOwner()->getTeamID())) {
             screenborder->shakeScreen(18);
             soundPlayer->playSoundAt(Sound_ExplosionLarge,location);
         }

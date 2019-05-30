@@ -46,11 +46,11 @@
 #include <algorithm>
 
 
-House::House(int newHouse, int newCredits, int maxUnits, Uint8 team, int quota) : choam(this) {
+House::House(int newHouse, int newCredits, int maxUnits, Uint8 teamID, int quota) : choam(this) {
     House::init();
 
     houseID = ((newHouse >= 0) && (newHouse < NUM_HOUSES)) ? newHouse :  0;
-    this->team = team;
+    this->teamID = teamID;
 
     storedCredits = 0;
     startingCredits = newCredits;
@@ -83,7 +83,7 @@ House::House(InputStream& stream) : choam(this) {
     House::init();
 
     houseID = stream.readUint8();
-    team = stream.readUint8();
+    teamID = stream.readUint8();
 
     storedCredits = stream.readFixPoint();
     startingCredits = stream.readFixPoint();
@@ -154,7 +154,7 @@ House::~House() = default;
 
 void House::save(OutputStream& stream) const {
     stream.writeUint8(houseID);
-    stream.writeUint8(team);
+    stream.writeUint8(teamID);
 
     stream.writeFixPoint(storedCredits);
     stream.writeFixPoint(startingCredits);
@@ -524,7 +524,7 @@ void House::informHasDamaged(Uint32 itemID, Uint32 damage) {
 
 
 void House::win() {
-    if(getTeam() == pLocalHouse->getTeam()) {
+    if(getTeamID() == pLocalHouse->getTeamID()) {
         currentGame->setGameWon();
     } else {
         currentGame->setGameLost();
@@ -543,13 +543,13 @@ void House::lose(bool bSilent) {
         }
     }
 
-    if((getTeam() == pLocalHouse->getTeam()) && ((currentGame->winFlags & WINLOSEFLAGS_HUMAN_HAS_BUILDINGS) != 0)) {
+    if((getTeamID() == pLocalHouse->getTeamID()) && ((currentGame->winFlags & WINLOSEFLAGS_HUMAN_HAS_BUILDINGS) != 0)) {
 
         bool finished = true;
 
         for(int i=0; i < NUM_HOUSES; i++) {
             House* pHouse = currentGame->getHouse(i);
-            if(pHouse != nullptr && pHouse->isAlive() && pHouse->getTeam() == pLocalHouse->getTeam()) {
+            if(pHouse != nullptr && pHouse->isAlive() && pHouse->getTeamID() == pLocalHouse->getTeamID()) {
                 finished = false;
                 break;
             }
@@ -572,7 +572,7 @@ void House::lose(bool bSilent) {
 
         for(int i=0; i < NUM_HOUSES; i++) {
             House* pHouse = currentGame->getHouse(i);
-            if(pHouse != nullptr && pHouse->isAlive() && pHouse->getTeam() != 0 && pHouse->getTeam() != pLocalHouse->getTeam()) {
+            if(pHouse != nullptr && pHouse->isAlive() && pHouse->getTeamID() != 0 && pHouse->getTeamID() != pLocalHouse->getTeamID()) {
                 finished = false;
                 break;
             }

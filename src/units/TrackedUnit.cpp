@@ -77,8 +77,8 @@ bool TrackedUnit::canPass(int xPos, int yPos) const
             && (pObject->getObjectID() == target.getObjectID())
             && targetFriendly
             && pObject->isAStructure()
-            && (pObject->getOwner()->getTeam() == owner->getTeam())
-            && pObject->isVisible(getOwner()->getTeam()))
+            && (pObject->getOwner()->getTeamID() == owner->getTeamID())
+            && pObject->isVisible(getOwner()->getTeamID()))
         {
             // are we entering a repair yard?
             if(goingToRepairYard && (pObject->getItemID() == Structure_RepairYard)) {
@@ -90,7 +90,7 @@ bool TrackedUnit::canPass(int xPos, int yPos) const
                 return false;
             }
         } else {
-            if (!pTile->hasANonInfantryGroundObject() && (pTile->getInfantryTeam() != getOwner()->getTeam())) {
+            if (!pTile->hasANonInfantryGroundObject() && (pTile->getInfantryTeam() != getOwner()->getTeamID())) {
                 // possibly squashing this unit
                 return true;
             } else {

@@ -299,7 +299,7 @@ Coord SmartBot::findPlaceLocation(Uint32 itemID) {
                     FixPoint nearestEnemy = 10000000;
 
                     for(const StructureBase* pStructure : getStructureList()) {
-                        if(pStructure->getOwner()->getTeam() != getHouse()->getTeam()) {
+                        if(pStructure->getOwner()->getTeamID() != getHouse()->getTeamID()) {
                             FixPoint dist = blockDistance(pos, pStructure->getLocation());
                             if(dist < nearestEnemy) {
                                 nearestEnemy = dist;
@@ -322,7 +322,7 @@ Coord SmartBot::findPlaceLocation(Uint32 itemID) {
                     FixPoint nearestEnemy = 10000000;
 
                     for(const StructureBase* pStructure : getStructureList()) {
-                        if(pStructure->getOwner()->getTeam() != getHouse()->getTeam()) {
+                        if(pStructure->getOwner()->getTeamID() != getHouse()->getTeamID()) {
                             FixPoint dist = blockDistance(pos, pStructure->getLocation());
                             if(dist < nearestEnemy) {
                                 nearestEnemy = dist;

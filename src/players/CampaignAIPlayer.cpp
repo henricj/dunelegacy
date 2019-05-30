@@ -157,7 +157,7 @@ void CampaignAIPlayer::onDamage(const ObjectBase* pObject, int damage, Uint32 da
         return;
     }
 
-    if(pDamager->getOwner()->getTeam() == pUnit->getOwner()->getTeam()) {
+    if(pDamager->getOwner()->getTeamID() == pUnit->getOwner()->getTeamID()) {
         // do not respond to friendly fire
         return;
     }
@@ -189,7 +189,7 @@ void CampaignAIPlayer::updateStructures() {
 
                     for(int i = 0; i < NUM_HOUSES; i++) {
                         const House* pHouse = getHouse(i);
-                        if(!pHouse || pHouse->getTeam() == getHouse()->getTeam()) {
+                        if(!pHouse || pHouse->getTeamID() == getHouse()->getTeamID()) {
                             continue;
                         }
 

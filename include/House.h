@@ -38,7 +38,7 @@ class HumanPlayer;
 class House
 {
 public:
-    House(int newHouse, int newCredits, int maxUnits, Uint8 team = 0, int quota = 0);
+    House(int newHouse, int newCredits, int maxUnits, Uint8 teamID = 0, int quota = 0);
     explicit House(InputStream& stream);
     void init();
     virtual ~House();
@@ -47,10 +47,10 @@ public:
     void addPlayer(std::unique_ptr<Player> newPlayer);
 
     inline int getHouseID() const { return houseID; }
-    inline int getTeam() const { return team; }
+    inline int getTeamID() const { return teamID; }
 
     inline bool isAI() const { return ai; }
-    inline bool isAlive() const { return (team == 0) || !(((numStructures - numItem[Structure_Wall]) <= 0) && (((numUnits - numItem[Unit_Carryall] - numItem[Unit_Harvester] - numItem[Unit_Frigate] - numItem[Unit_Sandworm]) <= 0))); }
+    inline bool isAlive() const { return (teamID == 0) || !(((numStructures - numItem[Structure_Wall]) <= 0) && (((numUnits - numItem[Unit_Carryall] - numItem[Unit_Harvester] - numItem[Unit_Frigate] - numItem[Unit_Sandworm]) <= 0))); }
 
     inline bool hasCarryalls() const { return (numItem[Unit_Carryall] > 0); }
     inline bool hasBarracks() const { return (numItem[Structure_Barracks] > 0); }
@@ -193,7 +193,7 @@ protected:
     bool    ai;             ///< Is this an ai player?
 
     Uint8   houseID;        ///< The house number
-    Uint8   team;           ///< The team number
+    Uint8   teamID;         ///< The team number
 
     int numStructures;          ///< How many structures does this player have?
     int numUnits;               ///< How many units does this player have?

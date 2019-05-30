@@ -327,7 +327,7 @@ void Carryall::engageTarget()
         return;
     }
 
-    if(target && (target.getObjPointer()->getOwner()->getTeam() != owner->getTeam())) {
+    if(target && (target.getObjPointer()->getOwner()->getTeamID() != owner->getTeamID())) {
         // the target changed its owner (e.g. was deviated)
         releaseTarget();
         return;

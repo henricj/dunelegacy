@@ -522,7 +522,7 @@ void Map::selectObjects(const House* pHouse, int x1, int y1, int x2, int y2, int
         if (!tile_center)
             return;
 
-        if(tile_center->isExploredByTeam(pHouse->getTeam()) || debug) {
+        if(tile_center->isExploredByTeam(pHouse->getTeamID()) || debug) {
             lastCheckedObject = tile_center->getObjectAt(realX, realY);
         } else {
             lastCheckedObject = nullptr;
@@ -566,7 +566,7 @@ void Map::selectObjects(const House* pHouse, int x1, int y1, int x2, int y2, int
             for(auto j = std::min(y1, y2); j <= std::max(y1, y2); j++) {
                 const auto tile = getTile_internal(i, j);
 
-                if (tile && tile->hasAnObject() && tile->isExploredByTeam(pHouse->getTeam()) && !tile->isFoggedByTeam(pHouse->getTeam())) {
+                if (tile && tile->hasAnObject() && tile->isExploredByTeam(pHouse->getTeamID()) && !tile->isFoggedByTeam(pHouse->getTeamID())) {
                     tile->selectAllPlayersUnits(pHouse->getHouseID(), &lastCheckedObject, &lastSelectedObject);
                 }
             }
