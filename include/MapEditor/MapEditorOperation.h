@@ -21,9 +21,9 @@
 #include <data.h>
 
 #include <DataTypes.h>
+#include <AITeamInfo.h>
 
 #include <MapEditor/ReinforcementInfo.h>
-#include <MapEditor/TeamInfo.h>
 #include <MapEditor/MapInfo.h>
 
 #include <vector>
@@ -354,15 +354,15 @@ public:
 class MapEditorChangeTeams : public MapEditorOperation {
 public:
 
-    explicit MapEditorChangeTeams(std::vector<TeamInfo>& teams)
-     : teams(teams) {
+    explicit MapEditorChangeTeams(std::vector<AITeamInfo>& aiteams)
+     : aiteams(aiteams) {
     }
 
     virtual ~MapEditorChangeTeams() = default;
 
     std::unique_ptr<MapEditorOperation> perform(MapEditor *pMapEditor) override;
 
-    std::vector<TeamInfo>  teams;
+    std::vector<AITeamInfo>  aiteams;
 };
 
 class MapEditorChangeMapInfo : public MapEditorOperation {

@@ -32,7 +32,7 @@
 #include <FileClasses/TextManager.h>
 
 TeamsWindow::TeamsWindow(MapEditor* pMapEditor, HOUSETYPE currentHouse)
- : Window(0,0,0,0), pMapEditor(pMapEditor), house(currentHouse), teams(pMapEditor->getTeams()) {
+ : Window(0,0,0,0), pMapEditor(pMapEditor), house(currentHouse), aiteams(pMapEditor->getAITeams()) {
 
     color = SDL2RGB(palette[houseToPaletteIndex[house]+3]);
 
@@ -187,11 +187,11 @@ TeamsWindow::TeamsWindow(MapEditor* pMapEditor, HOUSETYPE currentHouse)
     mainVBox.addWidget(VSpacer::create(10));
 
     // setup teams listbox
-    for(const TeamInfo& teamInfo : teams) {
-        teamsListBox.addEntry(getDescribingString(teamInfo));
+    for(const AITeamInfo& aiteamInfo : aiteams) {
+        teamsListBox.addEntry(getDescribingString(aiteamInfo));
     }
 
-    if(teams.empty() == false) {
+    if(aiteams.empty() == false) {
         teamsListBox.setSelectedItem(0);
         onSelectionChange(true);
     }
@@ -208,7 +208,7 @@ void TeamsWindow::onCancel() {
 void TeamsWindow::onOK() {
     pMapEditor->startOperation();
 
-    MapEditorChangeTeams changeTeamsOperation(teams);
+    MapEditorChangeTeams changeTeamsOperation(aiteams);
 
     pMapEditor->addUndoOperation(changeTeamsOperation.perform(pMapEditor));
 
@@ -222,12 +222,12 @@ void TeamsWindow::onUp() {
     int index = teamsListBox.getSelectedIndex();
 
     if(index >= 1) {
-        TeamInfo teamInfo = teams.at(index);
-        teams.erase(teams.begin()+index);
+        AITeamInfo aiteamInfo = aiteams.at(index);
+        aiteams.erase(aiteams.begin()+index);
         teamsListBox.removeEntry(index);
 
-        teams.insert(teams.begin()+index-1,teamInfo);
-        teamsListBox.insertEntry(index-1, getDescribingString(teamInfo));
+        aiteams.insert(aiteams.begin()+index-1,aiteamInfo);
+        teamsListBox.insertEntry(index-1, getDescribingString(aiteamInfo));
         teamsListBox.setSelectedItem(index-1);
     }
 }
@@ -236,12 +236,12 @@ void TeamsWindow::onDown() {
     int index = teamsListBox.getSelectedIndex();
 
     if((index >= 0) && (index < teamsListBox.getNumEntries()-1)) {
-        TeamInfo teamInfo = teams.at(index);
-        teams.erase(teams.begin()+index);
+        AITeamInfo aiteamInfo = aiteams.at(index);
+        aiteams.erase(aiteams.begin()+index);
         teamsListBox.removeEntry(index);
 
-        teams.insert(teams.begin()+index+1,teamInfo);
-        teamsListBox.insertEntry(index+1, getDescribingString(teamInfo));
+        aiteams.insert(aiteams.begin()+index+1,aiteamInfo);
+        teamsListBox.insertEntry(index+1, getDescribingString(aiteamInfo));
         teamsListBox.setSelectedItem(index+1);
     }
 }
@@ -256,13 +256,13 @@ void TeamsWindow::onAdd() {
 
     int index = teamsListBox.getSelectedIndex();
 
-    TeamInfo teamInfo(  playerDropDownBox.getSelectedEntryIntData(),
-                        (TeamBehavior) teamBehaviorDropDownBox.getSelectedEntryIntData(),
-                        (TeamType) teamTypeDropDownBox.getSelectedEntryIntData(),
-                        minUnitsTextBox.getValue(),
-                        maxUnitsTextBox.getValue());
-    teams.insert(teams.begin()+index+1,teamInfo);
-    teamsListBox.insertEntry(index+1, getDescribingString(teamInfo));
+    AITeamInfo aiteamInfo(playerDropDownBox.getSelectedEntryIntData(),
+                          (TeamBehavior) teamBehaviorDropDownBox.getSelectedEntryIntData(),
+                          (TeamType) teamTypeDropDownBox.getSelectedEntryIntData(),
+                          minUnitsTextBox.getValue(),
+                          maxUnitsTextBox.getValue());
+    aiteams.insert(aiteams.begin()+index+1,aiteamInfo);
+    teamsListBox.insertEntry(index+1, getDescribingString(aiteamInfo));
     teamsListBox.setSelectedItem(index+1);
 }
 
@@ -270,7 +270,7 @@ void TeamsWindow::onRemove() {
     int index = teamsListBox.getSelectedIndex();
 
     if(index >= 0) {
-        teams.erase(teams.begin()+index);
+        aiteams.erase(aiteams.begin()+index);
         teamsListBox.removeEntry(index);
         teamsListBox.setSelectedItem(index < teamsListBox.getNumEntries() ? index : (teamsListBox.getNumEntries()-1) );
     }
@@ -280,31 +280,31 @@ void TeamsWindow::onSelectionChange(bool bInteractive) {
     int index = teamsListBox.getSelectedIndex();
 
     if(index >= 0) {
-        TeamInfo& teamInfo = teams.at(index);
+        AITeamInfo& aiteamInfo = aiteams.at(index);
 
         for(int i=0;i<playerDropDownBox.getNumEntries();i++) {
-            if(playerDropDownBox.getEntryIntData(i) == teamInfo.houseID) {
+            if(playerDropDownBox.getEntryIntData(i) == aiteamInfo.houseID) {
                 playerDropDownBox.setSelectedItem(i);
                 break;
             }
         }
 
         for(int i=0;i<teamBehaviorDropDownBox.getNumEntries();i++) {
-            if(teamBehaviorDropDownBox.getEntryIntData(i) == teamInfo.teamBehavior) {
+            if(teamBehaviorDropDownBox.getEntryIntData(i) == aiteamInfo.teamBehavior) {
                 teamBehaviorDropDownBox.setSelectedItem(i);
                 break;
             }
         }
 
         for(int i=0;i<teamTypeDropDownBox.getNumEntries();i++) {
-            if(teamTypeDropDownBox.getEntryIntData(i) == teamInfo.teamType) {
+            if(teamTypeDropDownBox.getEntryIntData(i) == aiteamInfo.teamType) {
                 teamTypeDropDownBox.setSelectedItem(i);
                 break;
             }
         }
 
-        minUnitsTextBox.setValue(teamInfo.minUnits);
-        maxUnitsTextBox.setValue(teamInfo.maxUnits);
+        minUnitsTextBox.setValue(aiteamInfo.minUnits);
+        maxUnitsTextBox.setValue(aiteamInfo.maxUnits);
     }
 }
 
@@ -339,24 +339,24 @@ void TeamsWindow::onEntryChange(bool bInteractive) {
         int index = teamsListBox.getSelectedIndex();
 
         if(index >= 0) {
-            TeamInfo& teamInfo = teams.at(index);
-            teamInfo.houseID = playerDropDownBox.getSelectedEntryIntData();
-            teamInfo.teamBehavior = (TeamBehavior) teamBehaviorDropDownBox.getSelectedEntryIntData();
-            teamInfo.teamType = (TeamType) teamTypeDropDownBox.getSelectedEntryIntData();
-            teamInfo.minUnits = minUnitsTextBox.getValue();
-            teamInfo.maxUnits = maxUnitsTextBox.getValue();
-            teamsListBox.setEntry(index, getDescribingString(teamInfo));
+            AITeamInfo& aiteamInfo = aiteams.at(index);
+            aiteamInfo.houseID = playerDropDownBox.getSelectedEntryIntData();
+            aiteamInfo.teamBehavior = (TeamBehavior) teamBehaviorDropDownBox.getSelectedEntryIntData();
+            aiteamInfo.teamType = (TeamType) teamTypeDropDownBox.getSelectedEntryIntData();
+            aiteamInfo.minUnits = minUnitsTextBox.getValue();
+            aiteamInfo.maxUnits = maxUnitsTextBox.getValue();
+            teamsListBox.setEntry(index, getDescribingString(aiteamInfo));
         }
     }
 }
 
-std::string TeamsWindow::getDescribingString(const TeamInfo& teamInfo) {
+std::string TeamsWindow::getDescribingString(const AITeamInfo& aiteamInfo) {
 
-    return getPlayerName((HOUSETYPE) teamInfo.houseID) + ", "
-            + getTeamBehaviorNameByID(teamInfo.teamBehavior) + ", "
-            + getTeamTypeNameByID(teamInfo.teamType) + ", "
-            + std::to_string(teamInfo.minUnits) + ", "
-            + std::to_string(teamInfo.maxUnits);
+    return getPlayerName((HOUSETYPE) aiteamInfo.houseID) + ", "
+            + getTeamBehaviorNameByID(aiteamInfo.teamBehavior) + ", "
+            + getTeamTypeNameByID(aiteamInfo.teamType) + ", "
+            + std::to_string(aiteamInfo.minUnits) + ", "
+            + std::to_string(aiteamInfo.maxUnits);
 }
 
 std::string TeamsWindow::getPlayerName(HOUSETYPE house) {

@@ -290,11 +290,11 @@ std::unique_ptr<MapEditorOperation> MapEditorChangeReinforcements::perform(MapEd
 
 std::unique_ptr<MapEditorOperation> MapEditorChangeTeams::perform(MapEditor *pMapEditor) {
 
-    std::vector<TeamInfo>  oldTeams = pMapEditor->getTeams();
+    std::vector<AITeamInfo>  oldAITeams = pMapEditor->getAITeams();
 
-    pMapEditor->setTeams(teams);
+    pMapEditor->setAITeams(aiteams);
 
-    return std::make_unique<MapEditorChangeTeams>(oldTeams);
+    return std::make_unique<MapEditorChangeTeams>(oldAITeams);
 }
 
 

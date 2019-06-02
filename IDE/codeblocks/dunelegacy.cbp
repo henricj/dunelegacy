@@ -55,6 +55,7 @@
 		<Linker>
 			<Add option="`sdl2-config --libs`" />
 		</Linker>
+		<Unit filename="../../include/AITeamInfo.h" />
 		<Unit filename="../../include/AStarSearch.h" />
 		<Unit filename="../../include/Bullet.h" />
 		<Unit filename="../../include/Choam.h" />
@@ -189,7 +190,6 @@
 		<Unit filename="../../include/MapEditor/PlayerSettingsWindow.h" />
 		<Unit filename="../../include/MapEditor/ReinforcementInfo.h" />
 		<Unit filename="../../include/MapEditor/ReinforcementsWindow.h" />
-		<Unit filename="../../include/MapEditor/TeamInfo.h" />
 		<Unit filename="../../include/MapEditor/TeamsWindow.h" />
 		<Unit filename="../../include/MapSeed.h" />
 		<Unit filename="../../include/Menu/AboutMenu.h" />

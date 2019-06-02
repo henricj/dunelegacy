@@ -43,7 +43,7 @@ private:
     void loadUnits();
     void loadStructures();
     void loadReinforcements();
-    void loadTeams();
+    void loadAITeams();
 
     HOUSETYPE getHouseID(const std::string& name);
 

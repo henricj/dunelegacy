@@ -166,7 +166,7 @@ void MapEditor::setMap(const MapData& mapdata, const MapInfo& newMapInfo) {
     spiceFields.clear();
     choam.clear();
     reinforcements.clear();
-    teams.clear();
+    aiteams.clear();
     structures.clear();
     units.clear();
     players.clear();
@@ -357,7 +357,7 @@ void MapEditor::loadMap(const std::string& filepath) {
     spiceFields.clear();
     choam.clear();
     reinforcements.clear();
-    teams.clear();
+    aiteams.clear();
     structures.clear();
     units.clear();
     players.clear();
@@ -640,15 +640,15 @@ void MapEditor::saveMap(const std::string& filepath) {
         }
     }
 
-    if(teams.empty()) {
+    if(aiteams.empty()) {
         loadedINIFile->removeSection("TEAMS");
     } else {
         loadedINIFile->clearSection("TEAMS");
 
         // we start at 0 for version 1 maps if we have 16 entries to not overflow the table
-        int currentIndex = ((getMapVersion() < 2) && (teams.size() >= 16)) ? 0 : 1;
-        for(const TeamInfo& teamInfo : teams) {
-            std::string value = house2housename[teamInfo.houseID] + "," + getTeamBehaviorNameByID(teamInfo.teamBehavior) + "," + getTeamTypeNameByID(teamInfo.teamType) + "," + std::to_string(teamInfo.minUnits) + "," + std::to_string(teamInfo.maxUnits);
+        int currentIndex = ((getMapVersion() < 2) && (aiteams.size() >= 16)) ? 0 : 1;
+        for(const AITeamInfo& aiteamInfo : aiteams) {
+            std::string value = house2housename[aiteamInfo.houseID] + "," + getTeamBehaviorNameByID(aiteamInfo.teamBehavior) + "," + getTeamTypeNameByID(aiteamInfo.teamType) + "," + std::to_string(aiteamInfo.minUnits) + "," + std::to_string(aiteamInfo.maxUnits);
             loadedINIFile->setStringValue("TEAMS", std::to_string(currentIndex), value, false);
             currentIndex++;
         }

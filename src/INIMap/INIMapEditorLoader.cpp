@@ -4,7 +4,7 @@
 
 #include <MapEditor/MapEditor.h>
 #include <MapEditor/ReinforcementInfo.h>
-#include <MapEditor/TeamInfo.h>
+#include <AITeamInfo.h>
 
 #include <MapSeed.h>
 #include <ScreenBorder.h>
@@ -38,7 +38,7 @@ void INIMapEditorLoader::load() {
     loadStructures();
     loadReinforcements();
     loadChoam();
-    loadTeams();
+    loadAITeams();
 
     pMapEditor->informPlayersChanged();
 }
@@ -583,9 +583,9 @@ void INIMapEditorLoader::loadReinforcements()
 }
 
 /**
-    This method loads the teams from the [TEAMS] section.
+    This method loads the AI teams from the [TEAMS] section.
 */
-void INIMapEditorLoader::loadTeams()
+void INIMapEditorLoader::loadAITeams()
 {
     if(!inifile->hasSection("TEAMS")) {
         return;
@@ -636,7 +636,7 @@ void INIMapEditorLoader::loadTeams()
             continue;
         }
 
-        pMapEditor->getTeams().emplace_back(houseID, teamBehavior, teamType, minUnits, maxUnits);
+        pMapEditor->getAITeams().emplace_back(houseID, teamBehavior, teamType, minUnits, maxUnits);
     }
 }
 

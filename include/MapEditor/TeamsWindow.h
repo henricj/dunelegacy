@@ -19,7 +19,7 @@
 #define TEAMSWINDOW_H
 
 #include <MapEditor/MapData.h>
-#include <MapEditor/TeamInfo.h>
+#include <AITeamInfo.h>
 
 #include <GUI/Window.h>
 #include <GUI/HBox.h>
@@ -78,7 +78,7 @@ private:
 
     void onMaxUnitsChange(bool bInteractive);
 
-    std::string getDescribingString(const TeamInfo& teamInfo);
+    std::string getDescribingString(const AITeamInfo& aiteamInfo);
 
     std::string getPlayerName(HOUSETYPE house);
 
@@ -120,7 +120,7 @@ private:
     HOUSETYPE       house;
     Uint32          color;
 
-    std::vector<TeamInfo>  teams;
+    std::vector<AITeamInfo>  aiteams;
 };
 
 

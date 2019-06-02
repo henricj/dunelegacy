@@ -15,14 +15,14 @@
  *  along with Dune Legacy.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef TEAMINFO_H
-#define TEAMINFO_H
+#ifndef AITEAMINFO_H
+#define AITEAMINFO_H
 
 #include <DataTypes.h>
 
-class TeamInfo {
+class AITeamInfo {
 public:
-    TeamInfo(int houseID, TeamBehavior teamBehavior, TeamType teamType, int minUnits, int maxUnits)
+    AITeamInfo(int houseID, TeamBehavior teamBehavior, TeamType teamType, int minUnits, int maxUnits)
      : houseID(houseID), teamBehavior(teamBehavior), teamType(teamType), minUnits(minUnits), maxUnits(maxUnits) {
     }
 
@@ -33,4 +33,4 @@ public:
     int          maxUnits;
 };
 
-#endif // TEAMINFO_H
+#endif // AITEAMINFO_H

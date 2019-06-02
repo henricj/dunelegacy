@@ -22,7 +22,6 @@
 
 #include <MapEditor/MapData.h>
 #include <MapEditor/ReinforcementInfo.h>
-#include <MapEditor/TeamInfo.h>
 #include <MapEditor/MapInfo.h>
 #include <MapEditor/MapMirror.h>
 #include <MapEditor/MapEditorInterface.h>
@@ -34,6 +33,7 @@
 #include <misc/SDL2pp.h>
 
 #include <DataTypes.h>
+#include <AITeamInfo.h>
 
 #include <string>
 #include <vector>
@@ -196,10 +196,10 @@ public:
         reinforcements = newReinforcements;
     }
 
-    std::vector<TeamInfo>& getTeams() { return teams; };
+    std::vector<AITeamInfo>& getAITeams() { return aiteams; };
 
-    void setTeams(const std::vector<TeamInfo>& newTeams) {
-        teams = newTeams;
+    void setAITeams(const std::vector<AITeamInfo>& newAITeams) {
+        aiteams = newAITeams;
     }
 
     std::vector<Structure>& getStructureList() {
@@ -338,7 +338,7 @@ private:
 
     std::vector<ReinforcementInfo>  reinforcements;
 
-    std::vector<TeamInfo>           teams;
+    std::vector<AITeamInfo>         aiteams;
 
     std::vector<Unit>               units;
     std::vector<Structure>          structures;
