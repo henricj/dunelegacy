@@ -46,6 +46,7 @@ private:
     void loadUnits();
     void loadStructures();
     void loadReinforcements();
+    void loadAITeams();
     void loadView();
 
     House* getOrCreateHouse(int house);

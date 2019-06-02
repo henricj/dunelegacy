@@ -30,7 +30,7 @@
 #define DEFAULT_METASERVER  "http://dunelegacy.sourceforge.net/metaserver/metaserver.php"
 
 #define SAVEMAGIC           8675309
-#define SAVEGAMEVERSION     9703
+#define SAVEGAMEVERSION     9704
 
 #define MAX_PLAYERNAMELENGHT    24
 

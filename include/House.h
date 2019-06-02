@@ -22,6 +22,7 @@
 #include <misc/OutputStream.h>
 #include <Definitions.h>
 #include <DataTypes.h>
+#include <AITeamInfo.h>
 #include <data.h>
 #include <Choam.h>
 
@@ -185,6 +186,11 @@ public:
 
     Coord getStrongestUnitPosition() const;
 
+    const std::vector<AITeamInfo> getAITeams() const { return aiteams; };
+    void addAITeam(TeamBehavior teamBehavior, TeamType teamType, int minUnits, int maxUnits) {
+        aiteams.emplace_back(houseID, teamBehavior, teamType, minUnits, maxUnits);
+    }
+
     const std::list<std::unique_ptr<Player> >& getPlayerList() const { return players; };
 
 protected:
@@ -217,6 +223,8 @@ protected:
     int quota;                ///< number of credits to win
 
     Choam   choam;            ///< the things that are deliverable at the starport
+
+    std::vector<AITeamInfo> aiteams;    ///< the ai teams that were loaded from the map
 
     int powerUsageTimer;      ///< every N ticks you have to pay for your power usage
 

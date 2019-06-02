@@ -50,6 +50,7 @@ void INIMapLoader::load() {
     loadUnits();
     loadStructures();
     loadReinforcements();
+    loadAITeams();
     loadView();
     loadChoam();
 }
@@ -816,6 +817,64 @@ void INIMapLoader::loadReinforcements()
                 pGame->getTriggerManager().addTrigger(std::make_unique<ReinforcementTrigger>(houseID, itemID, dropLocation, bRepeat, dropCycle));
             }
         }
+    }
+}
+
+/**
+    This method loads the AI teams from the [TEAMS] section.
+*/
+void INIMapLoader::loadAITeams()
+{
+    if(!inifile->hasSection("TEAMS")) {
+        return;
+    }
+
+    for(const INIFile::Key& key : inifile->getSection("TEAMS")) {
+        std::string strHouseName;
+        std::string strTeamBehavior;
+        std::string strTeamType;
+        std::string strMinUnits;
+        std::string strMaxUnits;
+
+        if(splitString(key.getStringValue(), 5, &strHouseName, &strTeamBehavior, &strTeamType, &strMinUnits, &strMaxUnits) == false) {
+            logWarning(key.getLineNumber(), "Invalid teams string: " + key.getKeyName() + " = " + key.getStringValue());
+            continue;
+        }
+
+        int houseID = getHouseID(strHouseName);
+        if(houseID == HOUSE_UNUSED) {
+            // skip reinforcement for unused house
+            continue;
+        } else if(houseID == HOUSE_INVALID) {
+            logWarning(key.getLineNumber(), "Invalid house string: '" + strHouseName + "'!");
+            continue;
+        }
+
+        TeamBehavior teamBehavior = getTeamBehaviorByName(strTeamBehavior);
+        if(teamBehavior == TeamBehavior_Invalid) {
+            logWarning(key.getLineNumber(), "Invalid team behavior string: '" + strTeamBehavior + "'!");
+            teamBehavior = TeamBehavior_Normal;
+        }
+
+        TeamType teamType = getTeamTypeByName(strTeamType);
+        if(teamType == TeamType_Invalid) {
+            logWarning(key.getLineNumber(), "Invalid team type string: '" + strTeamType + "'!");
+            teamType = TeamType_Foot;
+        }
+
+        int minUnits;
+        if(!parseString(strMinUnits, minUnits)) {
+            logWarning(key.getLineNumber(), "Invalid min units string: '" + strMinUnits + "'!");
+            continue;
+        }
+
+        int maxUnits;
+        if(!parseString(strMaxUnits, maxUnits)) {
+            logWarning(key.getLineNumber(), "Invalid max units string: '" + strMaxUnits + "'!");
+            continue;
+        }
+
+        getOrCreateHouse(houseID)->addAITeam(teamBehavior, teamType, minUnits, maxUnits);
     }
 }
 

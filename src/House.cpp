@@ -110,6 +110,11 @@ House::House(InputStream& stream) : choam(this) {
 
     choam.load(stream);
 
+    Uint32 numAITeams = stream.readUint32();
+    for(Uint32 i = 0; i < numAITeams; i++) {
+        aiteams.emplace_back(stream);
+    }
+
     Uint32 numPlayers = stream.readUint32();
     for(Uint32 i = 0; i < numPlayers; i++) {
         std::string playerclass = stream.readString();
@@ -179,6 +184,11 @@ void House::save(OutputStream& stream) const {
     stream.writeSint32(powerUsageTimer);
 
     choam.save(stream);
+
+    stream.writeUint32(aiteams.size());
+    for(const auto& aiteam : aiteams) {
+        aiteam.save(stream);
+    }
 
     stream.writeUint32(players.size());
     for(const auto& pPlayer : players) {
