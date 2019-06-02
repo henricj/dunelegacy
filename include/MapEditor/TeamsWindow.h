@@ -98,12 +98,12 @@ private:
     HBox            hBox2;
     Label           playerLabel;
     DropDownBox     playerDropDownBox;
-    Label           teamBehaviorLabel;
-    DropDownBox     teamBehaviorDropDownBox;
+    Label           aiTeamBehaviorLabel;
+    DropDownBox     aiTeamBehaviorDropDownBox;
 
     HBox            hBox3;
-    Label           teamTypeLabel;
-    DropDownBox     teamTypeDropDownBox;
+    Label           aiTeamTypeLabel;
+    DropDownBox     aiTeamTypeDropDownBox;
     Label           minUnitsLabel;
     DigitsTextBox   minUnitsTextBox;
     Label           maxUnitsLabel;

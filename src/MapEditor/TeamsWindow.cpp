@@ -114,37 +114,37 @@ TeamsWindow::TeamsWindow(MapEditor* pMapEditor, HOUSETYPE currentHouse)
     playerDropDownBox.setSelectedItem(0);
     hBox2.addWidget(&playerDropDownBox, 120);
     hBox2.addWidget(Spacer::create(), 5.0);
-    teamBehaviorLabel.setText(_("Team Behavior") + ":");
-    teamBehaviorLabel.setTextColor(color);
-    hBox2.addWidget(&teamBehaviorLabel, 120);
-    teamBehaviorDropDownBox.setColor(color);
-    teamBehaviorDropDownBox.setOnSelectionChange(std::bind(&TeamsWindow::onEntryChange, this, std::placeholders::_1));
+    aiTeamBehaviorLabel.setText(_("Team Behavior") + ":");
+    aiTeamBehaviorLabel.setTextColor(color);
+    hBox2.addWidget(&aiTeamBehaviorLabel, 120);
+    aiTeamBehaviorDropDownBox.setColor(color);
+    aiTeamBehaviorDropDownBox.setOnSelectionChange(std::bind(&TeamsWindow::onEntryChange, this, std::placeholders::_1));
 
-    teamBehaviorDropDownBox.addEntry(getTeamBehaviorNameByID(TeamBehavior_Normal), TeamBehavior_Normal);
-    teamBehaviorDropDownBox.addEntry(getTeamBehaviorNameByID(TeamBehavior_Guard), TeamBehavior_Guard);
-    teamBehaviorDropDownBox.addEntry(getTeamBehaviorNameByID(TeamBehavior_Kamikaze), TeamBehavior_Kamikaze);
-    teamBehaviorDropDownBox.addEntry(getTeamBehaviorNameByID(TeamBehavior_Staging), TeamBehavior_Staging);
-    teamBehaviorDropDownBox.addEntry(getTeamBehaviorNameByID(TeamBehavior_Flee), TeamBehavior_Flee);
-    teamBehaviorDropDownBox.setSelectedItem(0);
-    hBox2.addWidget(&teamBehaviorDropDownBox, 90);
+    aiTeamBehaviorDropDownBox.addEntry(getAITeamBehaviorNameByID(AITeamBehavior_Normal), AITeamBehavior_Normal);
+    aiTeamBehaviorDropDownBox.addEntry(getAITeamBehaviorNameByID(AITeamBehavior_Guard), AITeamBehavior_Guard);
+    aiTeamBehaviorDropDownBox.addEntry(getAITeamBehaviorNameByID(AITeamBehavior_Kamikaze), AITeamBehavior_Kamikaze);
+    aiTeamBehaviorDropDownBox.addEntry(getAITeamBehaviorNameByID(AITeamBehavior_Staging), AITeamBehavior_Staging);
+    aiTeamBehaviorDropDownBox.addEntry(getAITeamBehaviorNameByID(AITeamBehavior_Flee), AITeamBehavior_Flee);
+    aiTeamBehaviorDropDownBox.setSelectedItem(0);
+    hBox2.addWidget(&aiTeamBehaviorDropDownBox, 90);
 
     centralVBox.addWidget(VSpacer::create(3));
 
     centralVBox.addWidget(&hBox3);
 
-    teamTypeLabel.setText(_("Team Type") + ":");
-    teamTypeLabel.setTextColor(color);
-    hBox3.addWidget(&teamTypeLabel, 95);
-    teamTypeDropDownBox.setColor(color);
-    teamTypeDropDownBox.setOnSelectionChange(std::bind(&TeamsWindow::onEntryChange, this, std::placeholders::_1));
-    teamTypeDropDownBox.addEntry(_("Foot (Infantry, Troopers)"), TeamType_Foot);
-    teamTypeDropDownBox.addEntry(_("Wheeled (Trike, Raider, Quad)"), TeamType_Wheeled);
-    teamTypeDropDownBox.addEntry(_("Tracked (Tank, Launcher, Siege Tank,...)"), TeamType_Tracked);
-    teamTypeDropDownBox.addEntry(_("Winged (Carryall, Ornithopter, Frigate)"), TeamType_Winged);
-    teamTypeDropDownBox.addEntry(_("Slither (Sandworm)"), TeamType_Slither);
-    teamTypeDropDownBox.addEntry(_("Harvester (Harvester)"), TeamType_Harvester);
-    teamTypeDropDownBox.setSelectedItem(0);
-    hBox3.addWidget(&teamTypeDropDownBox, 260);
+    aiTeamTypeLabel.setText(_("Team Type") + ":");
+    aiTeamTypeLabel.setTextColor(color);
+    hBox3.addWidget(&aiTeamTypeLabel, 95);
+    aiTeamTypeDropDownBox.setColor(color);
+    aiTeamTypeDropDownBox.setOnSelectionChange(std::bind(&TeamsWindow::onEntryChange, this, std::placeholders::_1));
+    aiTeamTypeDropDownBox.addEntry(_("Foot (Infantry, Troopers)"), AITeamType_Foot);
+    aiTeamTypeDropDownBox.addEntry(_("Wheeled (Trike, Raider, Quad)"), AITeamType_Wheeled);
+    aiTeamTypeDropDownBox.addEntry(_("Tracked (Tank, Launcher, Siege Tank,...)"), AITeamType_Tracked);
+    aiTeamTypeDropDownBox.addEntry(_("Winged (Carryall, Ornithopter, Frigate)"), AITeamType_Winged);
+    aiTeamTypeDropDownBox.addEntry(_("Slither (Sandworm)"), AITeamType_Slither);
+    aiTeamTypeDropDownBox.addEntry(_("Harvester (Harvester)"), AITeamType_Harvester);
+    aiTeamTypeDropDownBox.setSelectedItem(0);
+    hBox3.addWidget(&aiTeamTypeDropDownBox, 260);
     hBox3.addWidget(Spacer::create(), 5.0);
     minUnitsLabel.setText(_("Units") + ":");
     minUnitsLabel.setTextColor(color);
@@ -257,8 +257,8 @@ void TeamsWindow::onAdd() {
     int index = teamsListBox.getSelectedIndex();
 
     AITeamInfo aiteamInfo(playerDropDownBox.getSelectedEntryIntData(),
-                          (TeamBehavior) teamBehaviorDropDownBox.getSelectedEntryIntData(),
-                          (TeamType) teamTypeDropDownBox.getSelectedEntryIntData(),
+                          (AITeamBehavior) aiTeamBehaviorDropDownBox.getSelectedEntryIntData(),
+                          (AITeamType) aiTeamTypeDropDownBox.getSelectedEntryIntData(),
                           minUnitsTextBox.getValue(),
                           maxUnitsTextBox.getValue());
     aiteams.insert(aiteams.begin()+index+1,aiteamInfo);
@@ -289,16 +289,16 @@ void TeamsWindow::onSelectionChange(bool bInteractive) {
             }
         }
 
-        for(int i=0;i<teamBehaviorDropDownBox.getNumEntries();i++) {
-            if(teamBehaviorDropDownBox.getEntryIntData(i) == aiteamInfo.teamBehavior) {
-                teamBehaviorDropDownBox.setSelectedItem(i);
+        for(int i=0;i<aiTeamBehaviorDropDownBox.getNumEntries();i++) {
+            if(aiTeamBehaviorDropDownBox.getEntryIntData(i) == aiteamInfo.aiTeamBehavior) {
+                aiTeamBehaviorDropDownBox.setSelectedItem(i);
                 break;
             }
         }
 
-        for(int i=0;i<teamTypeDropDownBox.getNumEntries();i++) {
-            if(teamTypeDropDownBox.getEntryIntData(i) == aiteamInfo.teamType) {
-                teamTypeDropDownBox.setSelectedItem(i);
+        for(int i=0;i<aiTeamTypeDropDownBox.getNumEntries();i++) {
+            if(aiTeamTypeDropDownBox.getEntryIntData(i) == aiteamInfo.aiTeamType) {
+                aiTeamTypeDropDownBox.setSelectedItem(i);
                 break;
             }
         }
@@ -341,8 +341,8 @@ void TeamsWindow::onEntryChange(bool bInteractive) {
         if(index >= 0) {
             AITeamInfo& aiteamInfo = aiteams.at(index);
             aiteamInfo.houseID = playerDropDownBox.getSelectedEntryIntData();
-            aiteamInfo.teamBehavior = (TeamBehavior) teamBehaviorDropDownBox.getSelectedEntryIntData();
-            aiteamInfo.teamType = (TeamType) teamTypeDropDownBox.getSelectedEntryIntData();
+            aiteamInfo.aiTeamBehavior = (AITeamBehavior) aiTeamBehaviorDropDownBox.getSelectedEntryIntData();
+            aiteamInfo.aiTeamType = (AITeamType) aiTeamTypeDropDownBox.getSelectedEntryIntData();
             aiteamInfo.minUnits = minUnitsTextBox.getValue();
             aiteamInfo.maxUnits = maxUnitsTextBox.getValue();
             teamsListBox.setEntry(index, getDescribingString(aiteamInfo));
@@ -353,8 +353,8 @@ void TeamsWindow::onEntryChange(bool bInteractive) {
 std::string TeamsWindow::getDescribingString(const AITeamInfo& aiteamInfo) {
 
     return getPlayerName((HOUSETYPE) aiteamInfo.houseID) + ", "
-            + getTeamBehaviorNameByID(aiteamInfo.teamBehavior) + ", "
-            + getTeamTypeNameByID(aiteamInfo.teamType) + ", "
+            + getAITeamBehaviorNameByID(aiteamInfo.aiTeamBehavior) + ", "
+            + getAITeamTypeNameByID(aiteamInfo.aiTeamType) + ", "
             + std::to_string(aiteamInfo.minUnits) + ", "
             + std::to_string(aiteamInfo.maxUnits);
 }

@@ -187,8 +187,8 @@ public:
     Coord getStrongestUnitPosition() const;
 
     const std::vector<AITeamInfo> getAITeams() const { return aiteams; };
-    void addAITeam(TeamBehavior teamBehavior, TeamType teamType, int minUnits, int maxUnits) {
-        aiteams.emplace_back(houseID, teamBehavior, teamType, minUnits, maxUnits);
+    void addAITeam(AITeamBehavior aiTeamBehavior, AITeamType aiTeamType, int minUnits, int maxUnits) {
+        aiteams.emplace_back(houseID, aiTeamBehavior, aiTeamType, minUnits, maxUnits);
     }
 
     const std::list<std::unique_ptr<Player> >& getPlayerList() const { return players; };

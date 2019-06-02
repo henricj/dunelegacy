@@ -593,12 +593,12 @@ void INIMapEditorLoader::loadAITeams()
 
     for(const INIFile::Key& key : inifile->getSection("TEAMS")) {
         std::string strHouseName;
-        std::string strTeamBehavior;
-        std::string strTeamType;
+        std::string strAITeamBehavior;
+        std::string strAITeamType;
         std::string strMinUnits;
         std::string strMaxUnits;
 
-        if(splitString(key.getStringValue(), 5, &strHouseName, &strTeamBehavior, &strTeamType, &strMinUnits, &strMaxUnits) == false) {
+        if(splitString(key.getStringValue(), 5, &strHouseName, &strAITeamBehavior, &strAITeamType, &strMinUnits, &strMaxUnits) == false) {
             logWarning(key.getLineNumber(), "Invalid teams string: " + key.getKeyName() + " = " + key.getStringValue());
             continue;
         }
@@ -612,16 +612,16 @@ void INIMapEditorLoader::loadAITeams()
             continue;
         }
 
-        TeamBehavior teamBehavior = getTeamBehaviorByName(strTeamBehavior);
-        if(teamBehavior == TeamBehavior_Invalid) {
-            logWarning(key.getLineNumber(), "Invalid team behavior string: '" + strTeamBehavior + "'!");
-            teamBehavior = TeamBehavior_Normal;
+        AITeamBehavior aiTeamBehavior = getAITeamBehaviorByName(strAITeamBehavior);
+        if(aiTeamBehavior == AITeamBehavior_Invalid) {
+            logWarning(key.getLineNumber(), "Invalid team behavior string: '" + strAITeamBehavior + "'!");
+            aiTeamBehavior = AITeamBehavior_Normal;
         }
 
-        TeamType teamType = getTeamTypeByName(strTeamType);
-        if(teamType == TeamType_Invalid) {
-            logWarning(key.getLineNumber(), "Invalid team type string: '" + strTeamType + "'!");
-            teamType = TeamType_Foot;
+        AITeamType aiTeamType = getAITeamTypeByName(strAITeamType);
+        if(aiTeamType == AITeamType_Invalid) {
+            logWarning(key.getLineNumber(), "Invalid team type string: '" + strAITeamType + "'!");
+            aiTeamType = AITeamType_Foot;
         }
 
         int minUnits;
@@ -636,7 +636,7 @@ void INIMapEditorLoader::loadAITeams()
             continue;
         }
 
-        pMapEditor->getAITeams().emplace_back(houseID, teamBehavior, teamType, minUnits, maxUnits);
+        pMapEditor->getAITeams().emplace_back(houseID, aiTeamBehavior, aiTeamType, minUnits, maxUnits);
     }
 }
 

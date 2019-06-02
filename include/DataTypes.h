@@ -282,22 +282,22 @@ typedef enum  {
 } DropLocation;
 
 typedef enum {
-    TeamBehavior_Invalid = -1,
-    TeamBehavior_Normal,            ///< Attack units and/or structures when building up the team is complete
-    TeamBehavior_Guard,             ///< Same as TeamBehavior_Normal
-    TeamBehavior_Kamikaze,          ///< Directly attack structures when building up the team is complete
-    TeamBehavior_Staging,           ///< A team in the process of being built up
-    TeamBehavior_Flee               ///< Do nothing (Unimplemented in Dune II?)
-} TeamBehavior;
+    AITeamBehavior_Invalid = -1,
+    AITeamBehavior_Normal,            ///< Attack units and/or structures when building up the team is complete
+    AITeamBehavior_Guard,             ///< Same as AITeamBehavior_Normal
+    AITeamBehavior_Kamikaze,          ///< Directly attack structures when building up the team is complete
+    AITeamBehavior_Staging,           ///< A team in the process of being built up
+    AITeamBehavior_Flee               ///< Do nothing (Unimplemented in Dune II?)
+} AITeamBehavior;
 
 typedef enum {
-    TeamType_Invalid = -1,
-    TeamType_Foot,
-    TeamType_Wheeled,
-    TeamType_Tracked,
-    TeamType_Winged,
-    TeamType_Slither,
-    TeamType_Harvester
-} TeamType;
+    AITeamType_Invalid = -1,
+    AITeamType_Foot,
+    AITeamType_Wheeled,
+    AITeamType_Tracked,
+    AITeamType_Winged,
+    AITeamType_Slither,
+    AITeamType_Harvester
+} AITeamType;
 
 #endif //DATATYPES_H

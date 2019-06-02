@@ -52,11 +52,11 @@ std::string     getDropLocationNameByID(DropLocation dropLocation);
 std::string     resolveDropLocationName(DropLocation dropLocation);
 
 
-TeamBehavior    getTeamBehaviorByName(const std::string& name);
-std::string     getTeamBehaviorNameByID(TeamBehavior teamBehavior);
+AITeamBehavior    getAITeamBehaviorByName(const std::string& name);
+std::string     getAITeamBehaviorNameByID(AITeamBehavior aiTeamBehavior);
 
-TeamType        getTeamTypeByName(const std::string& name);
-std::string     getTeamTypeNameByID(TeamType teamType);
+AITeamType        getAITeamTypeByName(const std::string& name);
+std::string     getAITeamTypeNameByID(AITeamType aiTeamType);
 
 
 Uint32          getColorByTerrainType(int terrainType);

@@ -543,70 +543,70 @@ std::string resolveDropLocationName(DropLocation dropLocation) {
     }
 }
 
-TeamBehavior getTeamBehaviorByName(const std::string& name) {
+AITeamBehavior getAITeamBehaviorByName(const std::string& name) {
     const std::string lowerName = strToLower(name);
 
     if(lowerName == "normal") {
-        return TeamBehavior_Normal;
+        return AITeamBehavior_Normal;
     } else if(lowerName == "guard") {
-        return TeamBehavior_Guard;
+        return AITeamBehavior_Guard;
     } else if(lowerName == "kamikaze") {
-        return TeamBehavior_Kamikaze;
+        return AITeamBehavior_Kamikaze;
     } else if(lowerName == "staging") {
-        return TeamBehavior_Staging;
+        return AITeamBehavior_Staging;
     } else if(lowerName == "flee") {
-        return TeamBehavior_Flee;
+        return AITeamBehavior_Flee;
     } else {
-        return TeamBehavior_Invalid;
+        return AITeamBehavior_Invalid;
     }
 }
 
 
-std::string getTeamBehaviorNameByID(TeamBehavior teamBehavior) {
-    switch(teamBehavior) {
-        case TeamBehavior_Normal:     return "Normal";     break;
-        case TeamBehavior_Guard:      return "Guard";      break;
-        case TeamBehavior_Kamikaze:   return "Kamikaze";   break;
-        case TeamBehavior_Staging:    return "Staging";    break;
-        case TeamBehavior_Flee:       return "Flee";       break;
+std::string getAITeamBehaviorNameByID(AITeamBehavior aiTeamBehavior) {
+    switch(aiTeamBehavior) {
+        case AITeamBehavior_Normal:     return "Normal";     break;
+        case AITeamBehavior_Guard:      return "Guard";      break;
+        case AITeamBehavior_Kamikaze:   return "Kamikaze";   break;
+        case AITeamBehavior_Staging:    return "Staging";    break;
+        case AITeamBehavior_Flee:       return "Flee";       break;
         default:
-            THROW(std::invalid_argument, "getTeamBehaviorNameByID(): Invalid team behavior!");
+            THROW(std::invalid_argument, "getAITeamBehaviorNameByID(): Invalid team behavior!");
         break;
     }
 }
 
 
-TeamType getTeamTypeByName(const std::string& name) {
+AITeamType getAITeamTypeByName(const std::string& name) {
     const std::string lowerName = strToLower(name);
 
     if(lowerName == "foot") {
-        return TeamType_Foot;
+        return AITeamType_Foot;
     } else if(lowerName == "wheel" || lowerName == "wheeled") {
-        return TeamType_Wheeled;
+        return AITeamType_Wheeled;
     } else if(lowerName == "track" || lowerName == "tracked") {
-        return TeamType_Tracked;
+        return AITeamType_Tracked;
     } else if(lowerName == "winged") {
-        return TeamType_Winged;
+        return AITeamType_Winged;
     } else if(lowerName == "slither") {
-        return TeamType_Slither;
+        return AITeamType_Slither;
     } else if(lowerName == "harvester") {
-        return TeamType_Harvester;
+        return AITeamType_Harvester;
     } else {
-        return TeamType_Invalid;
+        return AITeamType_Invalid;
     }
 }
 
 
-std::string getTeamTypeNameByID(TeamType teamType) {
-    switch(teamType) {
-        case TeamType_Foot:      return "Foot";      break;
-        case TeamType_Wheeled:   return "Wheeled";   break;
-        case TeamType_Tracked:   return "Tracked";   break;
-        case TeamType_Winged:    return "Winged";    break;
-        case TeamType_Slither:   return "Slither";   break;
-        case TeamType_Harvester: return "Harvester"; break;
+std::string getAITeamTypeNameByID(AITeamType aiTeamType) {
+    switch(aiTeamType) {
+        case AITeamType_Foot:      return "Foot";      break;
+        case AITeamType_Wheeled:   return "Wheeled";   break;
+        case AITeamType_Tracked:   return "Tracked";   break;
+        case AITeamType_Winged:    return "Winged";    break;
+        case AITeamType_Slither:   return "Slither";   break;
+        case AITeamType_Harvester: return "Harvester"; break;
         default:
-            THROW(std::invalid_argument, "getTeamTypeNameByID(): Invalid team type!");
+            THROW(std::invalid_argument, "getAITeamTypeNameByID(): Invalid team type!");
         break;
     }
 }
