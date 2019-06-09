@@ -40,7 +40,7 @@ public:
     SoundPlayer(const SoundPlayer &) = delete;
     SoundPlayer(SoundPlayer &&) = delete;
     SoundPlayer& operator=(const SoundPlayer &) = delete;
-    SoundPlayer& operator=(const SoundPlayer &&) = delete;
+    SoundPlayer& operator=(SoundPlayer &&) = delete;
     /*!
         plays a certain sound at certain coordinates.
         the volume of sound depends on the difference between
