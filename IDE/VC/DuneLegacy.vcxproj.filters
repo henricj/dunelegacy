@@ -214,6 +214,7 @@
     <ClCompile Include="..\..\src\units\UnitBase.cpp" />
     <ClCompile Include="stdafx.cpp" />
     <ClCompile Include="..\..\src\GUI\TextButton.cpp" />
+    <ClCompile Include="..\..\src\players\CampaignAIPlayer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\include\AStarSearch.h" />
@@ -499,6 +500,7 @@
     <ClInclude Include="..\..\include\units\Trooper.h" />
     <ClInclude Include="..\..\include\units\UnitBase.h" />
     <ClInclude Include="stdafx.h" />
+    <ClInclude Include="..\..\include\players\CampaignAIPlayer.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="..\..\resource.rc" />

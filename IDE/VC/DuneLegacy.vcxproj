@@ -469,6 +469,7 @@ IF %ERRORLEVEL% LSS 8 exit 0</Command>
     <ClInclude Include="..\..\include\ObjectManager.h" />
     <ClInclude Include="..\..\include\ObjectPointer.h" />
     <ClInclude Include="..\..\include\players\AIPlayer.h" />
+    <ClInclude Include="..\..\include\players\CampaignAIPlayer.h" />
     <ClInclude Include="..\..\include\players\HumanPlayer.h" />
     <ClInclude Include="..\..\include\players\Player.h" />
     <ClInclude Include="..\..\include\players\PlayerFactory.h" />
@@ -943,6 +944,7 @@ IF %ERRORLEVEL% LSS 8 exit 0</Command>
     <ClCompile Include="..\..\src\ObjectManager.cpp" />
     <ClCompile Include="..\..\src\ObjectPointer.cpp" />
     <ClCompile Include="..\..\src\players\AIPlayer.cpp" />
+    <ClCompile Include="..\..\src\players\CampaignAIPlayer.cpp" />
     <ClCompile Include="..\..\src\players\HumanPlayer.cpp" />
     <ClCompile Include="..\..\src\players\Player.cpp" />
     <ClCompile Include="..\..\src\players\PlayerFactory.cpp" />
