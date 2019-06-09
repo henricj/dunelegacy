@@ -619,8 +619,7 @@ void Map::viewMap(int houseID, const Coord& location, const int maxViewRange) {
             return distance <= maxViewRange;
         },
         [&](Tile& t) {
-            for (auto house : houses)
-                t.setExplored(house, cycle_count);
+            t.setExplored(houseID, cycle_count);
         });
 }
 

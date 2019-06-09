@@ -332,42 +332,24 @@ void Game::drawScreen()
     if(debug == false) {
         const auto hiddenTexZoomed = pGFXManager->getZoomedObjPic(ObjPic_Terrain_Hidden, currentZoomlevel);
         const auto hiddenFogTexZoomed = pGFXManager->getZoomedObjPic(ObjPic_Terrain_HiddenFog, currentZoomlevel);
-        int zoomedTileSize = world2zoomedWorld(TILESIZE);
 
         const auto fogOfWar = gameInitSettings.getGameOptions().fogOfWar;
-        const auto zoomedTileSize = world2zoomedWorld(TILESIZE);
-        const auto hideTile = pTile->getHideTile(pLocalHouse->getTeamID());
 
         tiles->for_each(top_left.x - 1, top_left.y - 1, bottom_right.x + 1, bottom_right.y + 1,
             [=](Tile& t) {
                 const auto x = t.getLocation().x;
                 const auto y = t.getLocation().y;
 
-                 if(pTile->isExploredByTeam(pLocalHouse->getTeamID())) {
-
-                        if(hideTile != 0) {
-                            SDL_Rect source = { hideTile*zoomedTileSize, 0, zoomedTileSize, zoomedTileSize };
-                            SDL_Rect drawLocation = {   screenborder->world2screenX(x*TILESIZE), screenborder->world2screenY(y*TILESIZE),
-                                                        zoomedTileSize, zoomedTileSize };
-                            SDL_RenderCopy(renderer, hiddenTexZoomed, &source, &drawLocation);
-                        }
-
-                        if(gameInitSettings.getGameOptions().fogOfWar == true) {
-                            int fogTile = pTile->getFogTile(pLocalHouse->getTeamID());
-
-                            if(pTile->isFoggedByTeam(pLocalHouse->getTeamID()) == true) {
-                                fogTile = Terrain_HiddenFull;
-                            }
                 const auto pTile = &t;
 
                 const auto border = screenborder;
-                const auto house_id = pLocalHouse->getHouseID();
+                const auto team_id = pLocalHouse->getTeamID();
 
                 SDL_Rect drawLocation = { border->world2screenX(x*TILESIZE), border->world2screenY(y*TILESIZE),
                                             zoomedTileSize, zoomedTileSize };
 
-                if (t.isExplored(house_id)) {
-                    const auto hideTile = t.getHideTile(house_id);
+                if (pTile->isExploredByTeam(team_id)) {
+                    const auto hideTile = t.getHideTile(team_id);
 
                     if (hideTile != 0) {
                         SDL_Rect source = { hideTile*zoomedTileSize, 0, zoomedTileSize, zoomedTileSize };
@@ -375,7 +357,7 @@ void Game::drawScreen()
                     }
 
                     if (fogOfWar) {
-                        const auto fogTile = pTile->isFogged(house_id) ? Terrain_HiddenFull : pTile->getFogTile(house_id);
+                        const auto fogTile = pTile->isFoggedByTeam(team_id) ? Terrain_HiddenFull : pTile->getFogTile(team_id);
 
                         if (fogTile != 0) {
                             SDL_Rect source = { fogTile*zoomedTileSize, 0,

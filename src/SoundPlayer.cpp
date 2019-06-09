@@ -71,7 +71,7 @@ void SoundPlayer::playVoice(Voice_enum id, int houseID) const {
     }
 }
 
-void SoundPlayer::playSoundAt(Sound_enum soundID, const Coord& location)
+void SoundPlayer::playSoundAt(Sound_enum soundID, const Coord& location) const
 {
     if(!soundOn) return;
 
