@@ -65,24 +65,29 @@ bool TrackedUnit::canPassTile(const Tile* pTile) const {
 
     if(!pTile->isMountain()) return false;
 
-    if(!pTile->hasAGroundObject()) return true;
+    const auto ground_object_result = pTile->getGroundObjectID();
 
-    const auto pObject = pTile->getGroundObject();
+    if (!ground_object_result.first) return true;
 
-    if( (pObject != nullptr)
-            && (pObject->getObjectID() == target.getObjectID())
+    if (ground_object_result.second == target.getObjectID()) {
+        const auto pObject = currentGame->getObjectManager().getObject(ground_object_result.second);
+
+        if ((pObject != nullptr)
             && targetFriendly
             && pObject->isAStructure()
             && (pObject->getOwner()->getTeamID() == owner->getTeamID())
             && pObject->isVisible(getOwner()->getTeamID()))
-    {
-        // are we entering a repair yard?
-        if(goingToRepairYard && (pObject->getItemID() == Structure_RepairYard)) {
-            return static_cast<const RepairYard*>(pObject)->isFree();
-        } else if(getItemID() == Unit_Harvester) {
-            const auto pHarvester = static_cast<const Harvester*>(this);
-            return (pHarvester->isReturning() && (pObject->getItemID() == Structure_Refinery) && static_cast<const Refinery*>(pObject)->isFree());
-        } else {
+        {
+            // are we entering a repair yard?
+            if (goingToRepairYard && (pObject->getItemID() == Structure_RepairYard)) {
+                return static_cast<const RepairYard*>(pObject)->isFree();
+            }
+            
+            if (getItemID() == Unit_Harvester) {
+                const auto pHarvester = static_cast<const Harvester*>(this);
+                return (pHarvester->isReturning() && (pObject->getItemID() == Structure_Refinery) && static_cast<const Refinery*>(pObject)->isFree());
+            }
+            
             return false;
         }
     }
