@@ -131,15 +131,15 @@ void ChatManager::addHintMessage(const std::string& message, SDL_Texture* pTextu
 {
     const auto width = settings.video.width - SIDEBARWIDTH - LEFT_BORDER_WIDTH - 20;
 
-    auto lines = greedyWordWrap(message,
+    const auto lines = greedyWordWrap(message,
                                 width,
                                 [](const std::string& tmp) {
                                     return DuneStyle::getInstance().getTextWidth(tmp, 12);
                                 });
 
-    int height = lines.size() * DuneStyle::getInstance().getTextHeight(12) + 4;
+    const int height = lines.size() * DuneStyle::getInstance().getTextHeight(12) + 4;
 
-    const auto pMessageTexture = convertSurfaceToTexture(DuneStyle::getInstance().createLabelSurface( width, height, lines, 12, Alignment_Left, COLOR_WHITE, COLOR_TRANSPARENT));
+    auto pMessageTexture = convertSurfaceToTexture(DuneStyle::getInstance().createLabelSurface( width, height, lines, 12, Alignment_Left, COLOR_WHITE, COLOR_TRANSPARENT));
 
     chatMessages.emplace_back(std::move(pMessageTexture), pTexture, SDL_GetTicks(), MSGTYPE_PICTURE );
 
