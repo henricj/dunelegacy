@@ -84,6 +84,11 @@ private:
          : pUsernameOrPictureTexture(std::move(_pPictureTexture)), pMessageTexture(std::move(_pMessageTexture)), messageTime(_messageTime), messageType(_messageType) {
         }
 
+        ChatMessage(const ChatMessage&) = delete;
+        ChatMessage(ChatMessage&&) = default;
+        ChatMessage& operator=(const ChatMessage&) = delete;
+        ChatMessage& operator=(ChatMessage&&) = default;
+
         sdl2::texture_unique_or_nonowning_ptr    pTimeTexture;
         sdl2::texture_unique_or_nonowning_ptr    pUsernameOrPictureTexture;
         sdl2::texture_unique_or_nonowning_ptr    pMessageTexture;
