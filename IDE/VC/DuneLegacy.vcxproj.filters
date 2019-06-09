@@ -4,8 +4,6 @@
     <Manifest Include="DuneLegacy.exe.manifest" />
   </ItemGroup>
   <ItemGroup>
-  </ItemGroup>
-  <ItemGroup>
     <ClCompile Include="..\..\src\AStarSearch.cpp">
       <Filter>src</Filter>
     </ClCompile>
@@ -924,6 +922,7 @@
     <ClInclude Include="..\..\include\units\Trooper.h" />
     <ClInclude Include="..\..\include\units\UnitBase.h" />
     <ClInclude Include="stdafx.h" />
+    <ClInclude Include="..\..\include\players\CampaignAIPlayer.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="..\..\resource.rc" />

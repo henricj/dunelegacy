@@ -467,6 +467,7 @@ IF %ERRORLEVEL% LSS 8 exit 0</Command>
     <ClInclude Include="..\..\include\ObjectManager.h" />
     <ClInclude Include="..\..\include\ObjectPointer.h" />
     <ClInclude Include="..\..\include\players\AIPlayer.h" />
+    <ClInclude Include="..\..\include\players\CampaignAIPlayer.h" />
     <ClInclude Include="..\..\include\players\HumanPlayer.h" />
     <ClInclude Include="..\..\include\players\Player.h" />
     <ClInclude Include="..\..\include\players\PlayerFactory.h" />
