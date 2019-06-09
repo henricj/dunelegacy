@@ -1154,7 +1154,7 @@ int Tile::getFogTile(int teamID) const {
     }
 
     // determine what tiles are fogged
-    bool up = (map->tileExists(x, y - 1) == false) || (map->getTile(x, y - 1)->isFoggedByTeam(houseID) == true);
+    bool up = (map->tileExists(x, y - 1) == false) || (map->getTile(x, y - 1)->isFoggedByTeam(teamID) == true);
     bool right = (map->tileExists(x + 1, y) == false) || (map->getTile(x + 1, y)->isFoggedByTeam(teamID) == true);
     bool down = (map->tileExists(x, y + 1) == false) || (map->getTile(x, y + 1)->isFoggedByTeam(teamID) == true);
     bool left = (map->tileExists(x - 1, y) == false) || (map->getTile(x - 1, y)->isFoggedByTeam(teamID) == true);

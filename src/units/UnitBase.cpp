@@ -970,7 +970,7 @@ void UnitBase::handleDamage(int damage, Uint32 damagerID, House* damagerOwner) {
     }
 }
 
-bool UnitBase::isInGuardRange(const ObjectBase* object) const {
+bool UnitBase::isInGuardRange(const ObjectBase* pObject) const {
     int checkRange;
     switch(attackMode) {
         case GUARD: {
@@ -1399,7 +1399,7 @@ bool UnitBase::canPassTile(const Tile* pTile) const
             && targetFriendly
             && pObject->isAStructure()
             && (pObject->getOwner()->getTeamID() == owner->getTeamID())
-            && pObject->isVisible(getOwner()->getTeam()))
+            && pObject->isVisible(getOwner()->getTeamID()))
         {
             // are we entering a repair yard?
             return (goingToRepairYard && (pObject->getItemID() == Structure_RepairYard) && static_cast<const RepairYard*>(pObject)->isFree());

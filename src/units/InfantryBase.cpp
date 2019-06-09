@@ -154,7 +154,7 @@ bool InfantryBase::canPassTile(const Tile* pTile) const {
         } else {
             passable = (!pTile->hasANonInfantryGroundObject()
                         && (pTile->infantryNotFull()
-                        && (pTile->getInfantryTeam() == getOwner()->getTeam())));
+                        && (pTile->getInfantryTeam() == getOwner()->getTeamID())));
         }
     }
 
