@@ -67,52 +67,12 @@ public:
     */
     Command(Uint8 playerID, CMDTYPE id) : playerID{ playerID }, commandID{ id } { }
 
-    // Both the MSVC in VS2017 15.5.6 and daily 14.13.26209-Pre fail to find the
-    // variadic template ctor if type check is a template parameter.
-    template<typename... Parameters> //, std::enable_if_t<(std::is_convertible_v<Parameters, Uint32> && ...)>>
+    template<typename... Parameters, typename = std::enable_if_t<(std::is_convertible_v<Parameters, Uint32> && ...)>>
     Command(Uint8 playerID, CMDTYPE id, Parameters&&... parameters) : playerID{playerID}, commandID{ id } {
-        static_assert((std::is_convertible_v<decltype(parameters), Uint32> && ...));
-
         // Pilfered from https://stackoverflow.com/a/39659128
         parameter.reserve(sizeof...(parameters));
         (parameter.push_back(parameters), ...);
     }
-
-#if 0
-    /**
-        Construct a command with CMDTYPE id and one parameter.
-        \param  id          the id of the command
-        \param  parameter1  the first parameter
-    */
-    Command(Uint8 playerID, CMDTYPE id, Uint32 parameter1);
-
-    /**
-        Construct a command with CMDTYPE id and two parameters.
-        \param  id          the id of the command
-        \param  parameter1  the first parameter
-        \param  parameter2  the second parameter
-    */
-    Command(Uint8 playerID, CMDTYPE id, Uint32 parameter1, Uint32 parameter2);
-
-    /**
-        Construct a command with CMDTYPE id and three parameters.
-        \param  id          the id of the command
-        \param  parameter1  the first parameter
-        \param  parameter2  the second parameter
-        \param  parameter3  the third parameter
-    */
-    Command(Uint8 playerID, CMDTYPE id, Uint32 parameter1, Uint32 parameter2, Uint32 parameter3);
-
-    /**
-        Construct a command with CMDTYPE id and four parameters.
-        \param  id          the id of the command
-        \param  parameter1  the first parameter
-        \param  parameter2  the second parameter
-        \param  parameter3  the third parameter
-        \param  parameter4  the forth parameter
-    */
-    Command(Uint8 playerID, CMDTYPE id, Uint32 parameter1, Uint32 parameter2, Uint32 parameter3, Uint32 parameter4);
-#endif // 0
 
     /**
         Construct a command from raw memory.

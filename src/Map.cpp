@@ -129,7 +129,7 @@ void Map::damage(Uint32 damagerID, House* damagerOwner, const Coord& realPos, Ui
 #if  0
     for(auto i = location.x-2; i <= location.x+2; i++) {
         for(auto j = location.y-2; j <= location.y+2; j++) {
-            const auto pTile = getTile_internal(i,j);
+            const auto pTile = tryGetTile(i,j);
 
             if (!pTile)
                 continue;
@@ -226,7 +226,7 @@ void Map::damage(Uint32 damagerID, House* damagerOwner, const Coord& realPos, Ui
                 }
             }
 
-            const auto pTile = getTile_internal(location.x, location.y);
+            const auto pTile = tryGetTile(location.x, location.y);
 
             if(pTile
                 && ((bulletID == Bullet_Rocket) || (bulletID == Bullet_TurretRocket) || (bulletID == Bullet_SmallRocket) || (bulletID == Bullet_LargeRocket))
@@ -255,7 +255,7 @@ void Map::damage(Uint32 damagerID, House* damagerOwner, const Coord& realPos, Ui
     }
 
     if ((bulletID != Bullet_Sonic) && (bulletID != Bullet_Sandworm)) {
-        const auto tile = getTile_internal(location.x, location.y);
+        const auto tile = tryGetTile(location.x, location.y);
 
         if (tile && tile->isSpiceBloom()) {
             tile->triggerSpiceBloom(damagerOwner);
@@ -290,16 +290,16 @@ bool Map::isAStructureGap(int x, int y, int buildingSizeX, int buildingSizeY) co
 
     // Vertical lines
     for (auto j = yMin; j < yMax; ++j) {
-        if (predicate(getTile_internal(xMin, j)))
+        if (predicate(tryGetTile(xMin, j)))
             return false;
-        if (predicate(getTile_internal(xMax, j)))
+        if (predicate(tryGetTile(xMax, j)))
             return false;
     }
     // Horizontal lines, but skipping the corners we already checked.
     for (auto i = xMin + 1; i < xMax - 1; ++i) {
-        if (predicate(getTile_internal(i, yMin)))
+        if (predicate(tryGetTile(i, yMin)))
             return false;
-        if (predicate(getTile_internal(i, yMax)))
+        if (predicate(tryGetTile(i, yMax)))
             return false;
     }
 
@@ -312,7 +312,7 @@ bool Map::okayToPlaceStructure(int x, int y, int buildingSizeX, int buildingSize
     for(auto i = x; i < x + buildingSizeX; i++) {
         for(auto j = y; j < y + buildingSizeY; j++) {
 
-            const auto pTile = getTile_internal(i,j);
+            const auto pTile = tryGetTile(i,j);
 
             if (!pTile)
                 return false;
@@ -333,7 +333,7 @@ bool Map::okayToPlaceStructure(int x, int y, int buildingSizeX, int buildingSize
 bool Map::isWithinBuildRange(int x, int y, const House* pHouse) const {
     for (auto i = x - BUILDRANGE; i <= x + BUILDRANGE; i++) {
         for (auto j = y - BUILDRANGE; j <= y + BUILDRANGE; j++) {
-            const auto tile = getTile_internal(i, j);
+            const auto tile = tryGetTile(i, j);
 
             if (tile && tile->getOwner() == pHouse->getHouseID())
                 return true;
@@ -498,7 +498,7 @@ void Map::selectObjects(const House* pHouse, int x1, int y1, int x2, int y2, int
     }
 
     if((x1 == x2) && (y1 == y2)) {
-        const auto tile_center = getTile_internal(x1, y1);
+        const auto tile_center = tryGetTile(x1, y1);
 
         if (!tile_center)
             return;
@@ -513,7 +513,7 @@ void Map::selectObjects(const House* pHouse, int x1, int y1, int x2, int y2, int
             if((lastCheckedObject == lastSinglySelectedObject) && ( !lastCheckedObject->isAStructure())) {
                 for(auto i = screenborder->getTopLeftTile().x; i <= screenborder->getBottomRightTile().x; i++) {
                     for(auto j = screenborder->getTopLeftTile().y; j <= screenborder->getBottomRightTile().y; j++) {
-                        const auto tile = getTile_internal(i, j);
+                        const auto tile = tryGetTile(i, j);
 
                         if (tile && tile->hasAnObject()) {
                             tile->selectAllPlayersUnitsOfType(pHouse->getHouseID(), lastSinglySelectedObject->getItemID(), &lastCheckedObject, &lastSelectedObject);
@@ -545,7 +545,7 @@ void Map::selectObjects(const House* pHouse, int x1, int y1, int x2, int y2, int
         lastSinglySelectedObject = nullptr;
         for(auto i = std::min(x1, x2); i <= std::max(x1, x2); i++) {
             for(auto j = std::min(y1, y2); j <= std::max(y1, y2); j++) {
-                const auto tile = getTile_internal(i, j);
+                const auto tile = tryGetTile(i, j);
 
                 if (tile && tile->hasAnObject() && tile->isExploredByTeam(pHouse->getTeamID()) && !tile->isFoggedByTeam(pHouse->getTeamID())) {
                     tile->selectAllPlayersUnits(pHouse->getHouseID(), &lastCheckedObject, &lastSelectedObject);
@@ -584,7 +584,7 @@ bool Map::findSpice(Coord& destination, const Coord& origin) const {
 */
 void Map::spiceRemoved(const Coord& coord) {
 
-    const auto pCenterTile = getTile_internal(coord.x , coord.y);
+    const auto pCenterTile = tryGetTile(coord.x , coord.y);
 
     if(!pCenterTile || pCenterTile->getType() != Terrain_Sand) return;
 

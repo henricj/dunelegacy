@@ -226,7 +226,7 @@ void House::setProducedPower(int newPower) {
 
 void House::addCredits(FixPoint newCredits, bool wasRefined) {
     if(newCredits <= 0) return;
-    
+
     if(wasRefined == true) {
         harvestedSpice += newCredits;
     }
