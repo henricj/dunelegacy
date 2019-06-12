@@ -28,7 +28,6 @@
 #include <sstream>
 #include <iostream>
 #include <map>
-#include <random>
 #include <utility>
 
 MetaServerClient::MetaServerClient(std::string metaServerURL)
@@ -68,8 +67,6 @@ MetaServerClient::~MetaServerClient() {
 void MetaServerClient::startAnnounce(const std::string& serverName, int serverPort, const std::string& mapName, Uint8 numPlayers, Uint8 maxPlayers) {
 
     stopAnnounce();
-
-    std::random_device rd;
 
     this->serverName = serverName;
     this->serverPort = serverPort;

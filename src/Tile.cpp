@@ -986,11 +986,11 @@ bool Tile::isFoggedByTeam(int teamID) const noexcept {
 }
 
 Uint32 Tile::getRadarColor(House* pHouse, bool radar) {
-    if (!isExploredByTeam(pHouse->getTeamID()) && !debug) {
+    if (!debug && !isExploredByTeam(pHouse->getTeamID())) {
         return COLOR_BLACK;
     }
 
-    if (isFoggedByTeam(pHouse->getTeamID()) && radar) {
+    if (radar && isFoggedByTeam(pHouse->getTeamID())) {
         return fogColor;
     }
 
@@ -1028,11 +1028,11 @@ Uint32 Tile::getRadarColor(House* pHouse, bool radar) {
         return color;
     }
 
-    fogColor = getColorByTerrainType(getType());
-
     if (!radar && !debug) {
         return COLOR_BLACK;
     }
+
+    fogColor = getColorByTerrainType(getType());
 
     return fogColor;
 }

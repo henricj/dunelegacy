@@ -80,7 +80,7 @@ public:
         if(iter == objectMap.end()) {
             return nullptr;
         }
-  
+
         return iter->second;
     }
 
