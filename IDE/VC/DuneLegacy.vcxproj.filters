@@ -501,6 +501,7 @@
     <ClInclude Include="..\..\include\units\UnitBase.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="..\..\include\players\CampaignAIPlayer.h" />
+    <ClInclude Include="..\..\include\misc\random_xoshiro256starstar.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="..\..\resource.rc" />
