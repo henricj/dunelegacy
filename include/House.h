@@ -216,7 +216,7 @@ protected:
     Sint32 numItemDamageInflicted[Num_ItemID]; /// Amount of damage inflicted by a specific unit type owned by the player
 
     int capacity;             ///< Total spice capacity
-    int producedPower;        ///< Power prodoced by this player
+    int producedPower;        ///< Power produced by this player
     int powerRequirement;     ///< How much power does this player use?
 
     FixPoint storedCredits;   ///< current number of credits that are stored in refineries/silos
