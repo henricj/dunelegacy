@@ -851,7 +851,7 @@ SDL_Texture* GFXManager::getZoomedObjPic(unsigned int id, int house, unsigned in
         if(id == ObjPic_Windtrap) {
             // Windtrap uses palette animation on PALCOLOR_WINDTRAP_COLORCYCLE; fake this
             objPicTex[id][house][z] = convertSurfaceToTexture(generateWindtrapAnimationFrames(objPic[id][house][z].get()));
-#if 0
+#if 1
         } else if(id == ObjPic_Terrain_HiddenFog) {
             sdl2::surface_ptr pHiddenFog = convertSurfaceToDisplayFormat(objPic[id][house][z].get());
             replaceColor(pHiddenFog.get(), COLOR_BLACK, COLOR_FOG_TRANSPARENT);

@@ -33,7 +33,6 @@ public:
     void checkPos() override;
     bool canAttack(const ObjectBase* object) const override;
 
-    bool canPass(int xPos, int yPos) const override;
     bool canPassTile(const Tile* pTile) const override;
 
     void destroy() override;

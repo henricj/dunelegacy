@@ -1215,7 +1215,7 @@ void Game::runMainLoop() {
                 }
 #endif
 
-                std::for_each(house.begin(), house.end(), [](std::unique_ptr<House>& h) { if (h) h->update(); });
+                std::for_each(house.begin(), house.end(), [](auto& h) { if (h) h->update(); });
 
                 screenborder->update();
 

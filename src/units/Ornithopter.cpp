@@ -107,10 +107,6 @@ void Ornithopter::playAttackSound() {
     soundPlayer->playSoundAt(Sound_Rocket,location);
 }
 
-bool Ornithopter::canPass(int xPos, int yPos) const {
-    return currentGameMap->tileExists(xPos, yPos) && canPassTile(currentGameMap->getTile(xPos, yPos));
-}
-
 bool Ornithopter::canPassTile(const Tile* pTile) const {
     return pTile && (!pTile->hasAnAirUnit());
 }

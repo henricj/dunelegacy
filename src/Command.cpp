@@ -37,42 +37,6 @@
 #include <structures/StarPort.h>
 #include <structures/ConstructionYard.h>
 
-#if 0
-Command::Command(Uint8 playerID, CMDTYPE id)
- : playerID(playerID), commandID(id)
-{
-}
-
-Command::Command(Uint8 playerID, CMDTYPE id, Uint32 parameter1)
- : playerID(playerID), commandID(id)
-{
-    parameter.push_back(parameter1);
-}
-
-Command::Command(Uint8 playerID, CMDTYPE id, Uint32 parameter1, Uint32 parameter2)
- : playerID(playerID), commandID(id)
-{
-    parameter.push_back(parameter1);
-    parameter.push_back(parameter2);
-}
-
-Command::Command(Uint8 playerID, CMDTYPE id, Uint32 parameter1, Uint32 parameter2, Uint32 parameter3)
- : playerID(playerID), commandID(id)
-{
-    parameter.push_back(parameter1);
-    parameter.push_back(parameter2);
-    parameter.push_back(parameter3);
-}
-
-Command::Command(Uint8 playerID, CMDTYPE id, Uint32 parameter1, Uint32 parameter2, Uint32 parameter3, Uint32 parameter4)
- : playerID(playerID), commandID(id)
-{
-    parameter.push_back(parameter1);
-    parameter.push_back(parameter2);
-    parameter.push_back(parameter3);
-    parameter.push_back(parameter4);
-}
-#endif // 0
 
 Command::Command(Uint8 playerID, Uint8* data, Uint32 length)
  : playerID(playerID)

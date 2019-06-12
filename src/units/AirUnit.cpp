@@ -137,11 +137,6 @@ void AirUnit::blitToScreen()
     }
 }
 
-bool AirUnit::canPass(int xPos, int yPos) const
-{
-    return true;
-}
-
 void AirUnit::navigate() {
     moving = true;
     justStoppedMoving = false;

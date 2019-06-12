@@ -155,32 +155,33 @@ void StarPort::doCancelItem(Uint32 itemID, bool multipleMode) {
     auto& choam = owner->getChoam();
 
     for(auto& buildItem : buildList) {
-        if(buildItem.itemID == itemID) {
-            for(int i = 0; i < (multipleMode ? 5 : 1); i++) {
-                if(buildItem.num > 0) {
-                    buildItem.num--;
-                    choam.setNumAvailable(itemID, choam.getNumAvailable(itemID) + 1);
+        if(buildItem.itemID != itemID) continue;
 
-                    // find the most expensive item to cancel
-                    auto iterMostExpensiveItem = currentProductionQueue.end();
-                    Uint32 mostExpensiveItemPrice = 0;
-                    for(auto iter = currentProductionQueue.begin(); iter != currentProductionQueue.end(); ++iter) {
-                        if(iter->itemID == itemID) {
-                            if(iter->price > mostExpensiveItemPrice) {
-                                iterMostExpensiveItem = iter;
-                                mostExpensiveItemPrice = iter->price;
-                            }
+        for(int i = 0; i < (multipleMode ? 5 : 1); i++) {
+            if(buildItem.num > 0) {
+                buildItem.num--;
+                choam.setNumAvailable(itemID, choam.getNumAvailable(itemID) + 1);
+
+                // find the most expensive item to cancel
+                auto iterMostExpensiveItem = currentProductionQueue.end();
+                Uint32 mostExpensiveItemPrice = 0;
+                for(auto iter = currentProductionQueue.begin(); iter != currentProductionQueue.end(); ++iter) {
+                    if(iter->itemID == itemID) {
+                        if(iter->price > mostExpensiveItemPrice) {
+                            iterMostExpensiveItem = iter;
+                            mostExpensiveItemPrice = iter->price;
                         }
                     }
+                }
 
-                    // Cancel the best found item if any was found
-                    if(iterMostExpensiveItem != currentProductionQueue.end()) {
-                        owner->returnCredits(iterMostExpensiveItem->price);
-                        currentProductionQueue.erase(iterMostExpensiveItem);
-                    }
+                // Cancel the best found item if any was found
+                if(iterMostExpensiveItem != currentProductionQueue.end()) {
+                    owner->returnCredits(iterMostExpensiveItem->price);
+                    currentProductionQueue.erase(iterMostExpensiveItem);
                 }
             }
         }
+
         break;
     }
 }

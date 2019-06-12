@@ -88,8 +88,22 @@ public:
         return tileExists(pos.x, pos.y);
     }
 
+    Tile* tryGetTile(int xPos, int yPos) noexcept {
+        if (!tileExists(xPos, yPos))
+            return nullptr;
+
+        return &tiles[tile_index(xPos, yPos)];
+    }
+
+    const Tile* tryGetTile(int xPos, int yPos) const noexcept {
+        if (!tileExists(xPos, yPos))
+            return nullptr;
+
+        return &tiles[tile_index(xPos, yPos)];
+    }
+
     const Tile* getTile(int xPos, int yPos) const {
-        const auto tile = getTile_internal(xPos, yPos);
+        const auto tile = tryGetTile(xPos, yPos);
 
         if (!tile)
             THROW(std::out_of_range, "Tile (%d, %d) does not exist!", xPos, yPos);
@@ -98,7 +112,7 @@ public:
     }
 
     Tile* getTile(int xPos, int yPos) {
-        const auto tile = getTile_internal(xPos, yPos);
+        const auto tile = tryGetTile(xPos, yPos);
 
         if (!tile)
             THROW(std::out_of_range, "Tile (%d, %d) does not exist!", xPos, yPos);
@@ -224,7 +238,7 @@ protected:
             const auto ranX = x + offsets[i].first;
             const auto ranY = y + offsets[i].second;
 
-            const auto tile = getTile_internal(ranX, ranY);
+            const auto tile = tryGetTile(ranX, ranY);
 
             if (!tile)
                 continue;;
@@ -245,7 +259,7 @@ protected:
     SearchResult search_box_edge(int x, int y, int depth, BoxOffsets* offsets, Generator&& generator, Predicate&& predicate) const {
 
         if (0 == depth) {
-            const auto tile = getTile_internal(x, y);
+            const auto tile = tryGetTile(x, y);
             if (!tile)
                 return SearchResult::NotDone;
 
@@ -402,20 +416,6 @@ private:
     int tile_index(int xPos, int yPos) const noexcept
     {
         return xPos * sizeY + yPos;
-    }
-
-    Tile* getTile_internal(int xPos, int yPos) noexcept {
-        if (!tileExists(xPos, yPos))
-            return nullptr;
-
-        return &tiles[tile_index(xPos, yPos)];
-    }
-
-    const Tile* getTile_internal(int xPos, int yPos) const noexcept {
-        if (!tileExists(xPos, yPos))
-            return nullptr;
-
-        return &tiles[tile_index(xPos, yPos)];
     }
 
     AStarSearch pathfinder_;
