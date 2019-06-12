@@ -63,8 +63,6 @@ bool TrackedUnit::canPassTile(const Tile* pTile) const {
         return false;
     }
 
-    if(!pTile->isMountain()) return false;
-
     const auto ground_object_result = pTile->getGroundObjectID();
 
     if (!ground_object_result.first) return true;
@@ -82,12 +80,12 @@ bool TrackedUnit::canPassTile(const Tile* pTile) const {
             if (goingToRepairYard && (pObject->getItemID() == Structure_RepairYard)) {
                 return static_cast<const RepairYard*>(pObject)->isFree();
             }
-            
+
             if (getItemID() == Unit_Harvester) {
                 const auto pHarvester = static_cast<const Harvester*>(this);
                 return (pHarvester->isReturning() && (pObject->getItemID() == Structure_Refinery) && static_cast<const Refinery*>(pObject)->isFree());
             }
-            
+
             return false;
         }
     }
@@ -105,7 +103,7 @@ bool TrackedUnit::canPassTile(const Tile* pTile) const {
         }
     }
 
-    return true;
+    return false;
 }
 
 const FixPoint TrackedUnit::terrain_difficulty[] = {
