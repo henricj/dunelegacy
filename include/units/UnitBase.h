@@ -199,15 +199,10 @@ public:
     */
     bool update() override;
 
-    virtual bool canPass(int xPos, int yPos) const {
-        const auto map = currentGameMap;
+    bool canPass(int xPos, int yPos) const {
+        const auto pTile = currentGameMap->tryGetTile(xPos, yPos);
 
-        if (!map->tileExists(xPos, yPos))
-            return false;
-
-        const auto pTile = map->getTile(xPos, yPos);
-
-        return canPassTile(pTile);
+        return pTile ? canPassTile(pTile) : false;
     }
 
     virtual bool canPassTile(const Tile* pTile) const;

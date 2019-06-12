@@ -86,15 +86,13 @@ private:
     template<typename F>
     void removeUnits(F&& predicate) {
         auto& units = pickedUpUnitList;
+        const auto& objectManager = currentGame->getObjectManager();
 
         units.erase(std::remove_if(units.begin(), units.end(),
             [](Uint32 unit_id) {
-                const auto unit = static_cast<UnitBase*>(currentGame->getObjectManager().getObject(unit_id));
+                const auto unit = static_cast<UnitBase*>(objectManager.getObject(unit_id));
 
-                if (!unit)
-                    return true;
-
-                return F(unit);
+                return unit ? F(unit) : true;
             }),
             units.end());
     }
