@@ -1107,7 +1107,7 @@ void Game::runMainLoop() {
         SDL_RenderCopy(renderer, screenTexture, nullptr, nullptr);
         SDL_RenderPresent(renderer);
 
-        const int frameEnd = SDL_GetTicks();
+        const int frameEnd = static_cast<int>(SDL_GetTicks());
 
         if(frameEnd == frameStart) {
             SDL_Delay(1);
@@ -1123,7 +1123,7 @@ void Game::runMainLoop() {
         }
 
         if(settings.video.frameLimit == true) {
-            if(frameTime < 32) {
+            if(frameTime >= 0 && frameTime < 32) {
                 SDL_Delay(32 - frameTime);
             }
         }
