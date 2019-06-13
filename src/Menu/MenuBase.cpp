@@ -79,9 +79,9 @@ int MenuBase::showMenu() {
             }
         }
 
-        int frameTime = SDL_GetTicks() - frameStart;
+        const int frameTime = static_cast<int>(SDL_GetTicks()) - frameStart;
         if(settings.video.frameLimit == true) {
-            if(frameTime < 32) {
+            if(frameTime >= 0 && frameTime < 32) {
                 SDL_Delay(32 - frameTime);
             }
         }

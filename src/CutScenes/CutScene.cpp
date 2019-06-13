@@ -44,7 +44,7 @@ void CutScene::run()
 
     while (!quiting)
     {
-        const int frameStart = SDL_GetTicks();
+        const int frameStart = static_cast<int>(SDL_GetTicks());
 
         const int nextFrameTime = draw();
 
@@ -66,9 +66,10 @@ void CutScene::run()
             }
         }
 
-        const int frameTime = SDL_GetTicks() - frameStart;
-        if(frameTime < nextFrameTime) {
-            SDL_Delay(nextFrameTime - frameTime);
+        const int frameTime = static_cast<int>(SDL_GetTicks()) - frameStart;
+        const int delay = nextFrameTime - frameTime;
+        if(delay >= 0) {
+            SDL_Delay(delay);
         }
     }
 }
