@@ -64,7 +64,13 @@ int MenuBase::showMenu() {
             return retVal;
         }
 
+        if(bClearScreen == true) {
+            SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+            SDL_RenderClear(renderer);
+        }
         draw();
+        drawCursor();
+        SDL_RenderPresent(renderer);
 
         while(SDL_PollEvent(&event)) {
             //check the events
@@ -85,20 +91,11 @@ int MenuBase::showMenu() {
 }
 
 void MenuBase::draw() {
-    if(bClearScreen == true) {
-        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-        SDL_RenderClear(renderer);
-    }
-
     Window::draw();
 
     drawSpecificStuff();
 
     Window::drawOverlay();
-
-    drawCursor();
-
-    SDL_RenderPresent(renderer);
 }
 
 void MenuBase::drawSpecificStuff() {
