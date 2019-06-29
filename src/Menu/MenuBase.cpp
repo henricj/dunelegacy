@@ -91,11 +91,16 @@ int MenuBase::showMenu() {
 }
 
 void MenuBase::draw() {
+    SDL_Rect clipRect { getPosition().x, getPosition().y, getSize().x, getSize().y };
+    SDL_RenderSetClipRect(renderer, &clipRect);
+
     Window::draw();
 
     drawSpecificStuff();
 
     Window::drawOverlay();
+
+    SDL_RenderSetClipRect(renderer, nullptr);
 }
 
 void MenuBase::drawSpecificStuff() {
