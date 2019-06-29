@@ -39,7 +39,7 @@
 
 bool splitString(const std::string& parseString, unsigned int numStringPointers,...);
 
-std::vector<std::string> splitString(const std::string& parseString, const std::string& delim = ",", bool keepDelim = false);
+std::vector<std::string> splitString(const std::string& parseString, const std::string& delim = ",");
 
 std::string replaceAll(const std::string& str, const std::map<std::string, std::string>& replacementMap);
 

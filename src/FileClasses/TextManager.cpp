@@ -530,7 +530,7 @@ const std::string& TextManager::postProcessString(const std::string& unprocessed
 
     std::string commandString = unprocessedString.substr(1, commentStart-1);
 
-    std::vector<std::string> commands = splitString(commandString, "|", false);
+    std::vector<std::string> commands = splitString(commandString, "\\|");
 
     int index = -1;
     if(commands.size() < 2 || !parseString(commands[1], index)) {

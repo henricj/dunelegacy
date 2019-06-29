@@ -35,6 +35,8 @@ public:
     explicit MentatMenu(int newHouse);
     virtual ~MentatMenu();
 
+    void setText(const std::string& text);
+
     void drawSpecificStuff() override;
 
     void update() override;
@@ -46,18 +48,6 @@ public:
         }
 
         return MenuBase::doInput(event);
-    }
-
-    void setText(const std::string& text) {
-        mentatTexts = splitString(text, ". ", true);
-
-        mouthAnim.getAnimation()->setNumLoops(mentatTexts[0].empty() ? 0 : mentatTexts[0].length()/25 + 1);
-        textLabel.setText(mentatTexts[0]);
-        textLabel.setVisible(true);
-        textLabel.resize(620,240);
-
-        currentMentatTextIndex = 0;
-        nextMentatTextSwitch = SDL_GetTicks() + mentatTexts[0].length() * 75 + 1000;
     }
 
     void showNextMentatText() {

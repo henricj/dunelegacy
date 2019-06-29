@@ -20,6 +20,7 @@
 #include <stdarg.h>
 #include <stdio.h>
 #include <vector>
+#include <regex>
 #include <algorithm>
 
 /**
@@ -68,28 +69,9 @@ bool splitString(const std::string& parseString, unsigned int numStringPointers,
 /*
     Splits a string into several substrings. This strings are separated with ',' by default.
 */
-std::vector<std::string> splitString(const std::string& parseString, const std::string& delim, bool keepDelim) {
-    std::vector<std::string> retVector;
-    if(delim.empty()) {
-        retVector.push_back(parseString);
-        return retVector;
-    }
-
-    std::string::const_iterator iter = parseString.begin();
-
-    while(true) {
-        std::string::const_iterator foundPos = std::search(iter, parseString.end(), delim.begin(), delim.end());
-        std::string part(iter, (foundPos == parseString.end()) ? foundPos : foundPos + (keepDelim ? delim.length() : 0));
-        retVector.push_back(part);
-
-        if(foundPos == parseString.end()) {
-            break;
-        }
-
-        iter = foundPos + delim.length();
-    }
-
-    return retVector;
+std::vector<std::string> splitString(const std::string& parseString, const std::string& delimRegex) {
+    std::regex rgx(delimRegex);
+    return std::vector<std::string>(std::sregex_token_iterator(parseString.begin(), parseString.end(), rgx, -1), std::sregex_token_iterator());
 }
 
 /**

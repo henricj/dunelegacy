@@ -24,6 +24,7 @@
 #include <mmath.h>
 
 #include <algorithm>
+#include <regex>
 
 MentatMenu::MentatMenu(int newHouse)
  : MenuBase(), currentMentatTextIndex(-1), nextMentatTextSwitch(0)
@@ -170,6 +171,22 @@ MentatMenu::MentatMenu(int newHouse)
 }
 
 MentatMenu::~MentatMenu() = default;
+
+void MentatMenu::setText(const std::string& text) {
+    std::regex rgx("[^\\.\\!\\?]*[\\.\\!\\?]\\s?");
+    mentatTexts = std::vector<std::string>(std::sregex_token_iterator(text.begin(), text.end(), rgx), std::sregex_token_iterator());
+    if(mentatTexts.empty()) {
+        mentatTexts.push_back(text);
+    }
+
+    mouthAnim.getAnimation()->setNumLoops(mentatTexts[0].empty() ? 0 : mentatTexts[0].length()/25 + 1);
+    textLabel.setText(mentatTexts[0]);
+    textLabel.setVisible(true);
+    textLabel.resize(620,240);
+
+    currentMentatTextIndex = 0;
+    nextMentatTextSwitch = SDL_GetTicks() + mentatTexts[0].length() * 75 + 1000;
+}
 
 void MentatMenu::update() {
     // speedup blink of the eye
