@@ -23,53 +23,7 @@
 #include <regex>
 #include <algorithm>
 
-/**
-    Splits a string into several substrings. This strings are separated with ','.
-        Example:<br>
-        String first, second;<br>
-        SplitString("abc,xyz",2,&first, &second);<br>
-    \param parseString  the string to parse
-    \param numStringPointers    the number of pointers to strings following after this parameter
-    \return true if successful, false otherwise.
-*/
-bool splitString(const std::string& parseString, unsigned int numStringPointers, ...) {
-    va_list arg_ptr;
-    va_start(arg_ptr, numStringPointers);
-
-    if(numStringPointers == 0) {
-        va_end(arg_ptr);
-        return false;
-    }
-
-    std::vector<std::string*> pStr(numStringPointers);
-
-    for(unsigned int i = 0; i < numStringPointers; i++) {
-        pStr[i] = va_arg(arg_ptr, std::string* );
-    }
-    va_end(arg_ptr);
-
-    int startpos = 0;
-    unsigned int index = 0;
-
-    for(unsigned int i = 0; i < parseString.size(); i++) {
-        if(parseString[i] == ',') {
-            *(pStr[index]) = parseString.substr(startpos,i-startpos);
-            startpos = i + 1;
-            index++;
-            if(index >= numStringPointers) {
-                return false;
-            }
-        }
-    }
-
-    *(pStr[index]) = parseString.substr(startpos,parseString.size()-startpos);
-    return true;
-}
-
-/*
-    Splits a string into several substrings. This strings are separated with ',' by default.
-*/
-std::vector<std::string> splitString(const std::string& parseString, const std::string& delimRegex) {
+std::vector<std::string> splitStringToStringVector(const std::string& parseString, const std::string& delimRegex) {
     std::regex rgx(delimRegex);
     return std::vector<std::string>(std::sregex_token_iterator(parseString.begin(), parseString.end(), rgx, -1), std::sregex_token_iterator());
 }

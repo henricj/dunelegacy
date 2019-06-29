@@ -377,7 +377,7 @@ int MetaServerClient::connectionThreadMain(void* data) {
                             std::string completeLine;
                             getline(resultstream, completeLine);
 
-                            std::vector<std::string> parts = splitString(completeLine, "\\t");
+                            std::vector<std::string> parts = splitStringToStringVector(completeLine, "\\t");
 
                             if(parts.size() != 9) {
                                 break;

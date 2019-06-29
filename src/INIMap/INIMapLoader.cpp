@@ -169,7 +169,7 @@ void INIMapLoader::loadMap() {
 
         std::string BloomString = inifile->getStringValue("MAP","Bloom");
         if(BloomString != "") {
-            std::vector<std::string> BloomPositions  = splitString(BloomString);
+            std::vector<std::string> BloomPositions  = splitStringToStringVector(BloomString);
 
             for(unsigned int i=0; i < BloomPositions.size();i++) {
                 // set bloom
@@ -191,7 +191,7 @@ void INIMapLoader::loadMap() {
 
         std::string SpecialString = inifile->getStringValue("MAP","Special");
         if(SpecialString != "") {
-            std::vector<std::string> SpecialPositions  = splitString(SpecialString);
+            std::vector<std::string> SpecialPositions  = splitStringToStringVector(SpecialString);
 
             for(unsigned int i=0; i < SpecialPositions.size();i++) {
                 // set special
@@ -213,7 +213,7 @@ void INIMapLoader::loadMap() {
 
         std::string FieldString = inifile->getStringValue("MAP","Field");
         if(FieldString != "") {
-            std::vector<std::string> FieldPositions  = splitString(FieldString);
+            std::vector<std::string> FieldPositions  = splitStringToStringVector(FieldString);
 
             for(unsigned int i=0; i < FieldPositions.size();i++) {
                 // set bloom
@@ -514,7 +514,7 @@ void INIMapLoader::loadUnits()
     for(const INIFile::Key& key : inifile->getSection("UNITS")) {
         if(key.getKeyName().find("ID") == 0) {
             std::string HouseStr, UnitStr, health, PosStr, rotation, mode;
-            splitString(key.getStringValue(),6,&HouseStr,&UnitStr,&health,&PosStr,&rotation,&mode);
+            splitString(key.getStringValue(), HouseStr, UnitStr, health, PosStr, rotation, mode);
 
             int houseID = getHouseID(HouseStr);
             if(houseID == HOUSE_UNUSED) {
@@ -652,7 +652,7 @@ void INIMapLoader::loadStructures()
             }
 
             std::string HouseStr, BuildingStr;
-            splitString(tmp,2,&HouseStr,&BuildingStr);
+            splitString(tmp, HouseStr, BuildingStr);
 
             int houseID = getHouseID(HouseStr);
             if(houseID == HOUSE_UNUSED) {
@@ -677,7 +677,7 @@ void INIMapLoader::loadStructures()
         } else if(tmpkey.compare(0,2,"ID") == 0) {
             // other structure
             std::string HouseStr, BuildingStr, health, PosStr;
-            splitString(tmp,6,&HouseStr,&BuildingStr,&health,&PosStr);
+            splitString(tmp, HouseStr, BuildingStr, health, PosStr);
 
             int pos;
             if(!parseString(PosStr, pos) || (pos < 0)) {
@@ -740,8 +740,8 @@ void INIMapLoader::loadReinforcements()
         std::string strTime;
         std::string strPlus;
 
-        if(splitString(key.getStringValue(), 4, &strHouseName, &strUnitName, &strDropLocation, &strTime) == false) {
-            if(splitString(key.getStringValue(), 5, &strHouseName, &strUnitName, &strDropLocation, &strTime, &strPlus) == false) {
+        if(splitString(key.getStringValue(), strHouseName, strUnitName, strDropLocation, strTime) == false) {
+            if(splitString(key.getStringValue(), strHouseName, strUnitName, strDropLocation, strTime, strPlus) == false) {
                 logWarning(key.getLineNumber(), "Invalid reinforcement string: " + key.getKeyName() + " = " + key.getStringValue());
                 continue;
             }
@@ -836,7 +836,7 @@ void INIMapLoader::loadAITeams()
         std::string strMinUnits;
         std::string strMaxUnits;
 
-        if(splitString(key.getStringValue(), 5, &strHouseName, &strAITeamBehavior, &strAITeamType, &strMinUnits, &strMaxUnits) == false) {
+        if(splitString(key.getStringValue(), strHouseName, strAITeamBehavior, strAITeamType, strMinUnits, strMaxUnits) == false) {
             logWarning(key.getLineNumber(), "Invalid teams string: " + key.getKeyName() + " = " + key.getStringValue());
             continue;
         }

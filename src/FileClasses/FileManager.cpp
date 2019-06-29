@@ -97,7 +97,7 @@ std::vector<std::string> FileManager::getNeededFiles() {
         LanguagePakFiles = "ENGLISH.PAK,HARK.PAK,ATRE.PAK,ORDOS.PAK";
     }
 
-    std::vector<std::string> additionalPakFiles = splitString(LanguagePakFiles);
+    std::vector<std::string> additionalPakFiles = splitStringToStringVector(LanguagePakFiles);
     fileList.insert(std::end(fileList), std::begin(additionalPakFiles), std::end(additionalPakFiles));
 
     std::sort(fileList.begin(), fileList.end());

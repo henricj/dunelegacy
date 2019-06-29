@@ -37,9 +37,39 @@
 #define PRINTF_VARARG_FUNC( fmtargnumber ) __attribute__ (( format( __printf__, fmtargnumber, fmtargnumber+1 )))
 #endif
 
-bool splitString(const std::string& parseString, unsigned int numStringPointers,...);
+/**
+    Splits a string into several substrings. These strings are separated with ','.
+        Example:<br>
+        std::string first, second;<br>
+        SplitString("abc,xyz",first, second);<br>
+    \param parseString  the string to parse
+    \return true if successful, false otherwise (e.g. a mismatch between the number of args and the number of delimited substrings).
+*/
+template<class ...Args>
+bool splitString(const std::string& parseString, Args & ... args) {
+    std::vector<std::string*> pStrings = { &args... };
 
-std::vector<std::string> splitString(const std::string& parseString, const std::string& delim = ",");
+	std::istringstream iss(parseString);
+	for(std::string* pString : pStrings) {
+		if(!std::getline(iss, *pString, ',')) {
+			return false;
+		}
+	}
+
+	if(!iss.eof()) {
+		return false;
+	}
+
+    return true;
+}
+
+/**
+    Splits a string into several substrings.
+    \param parseString  the string to parse
+    \param delim  regular expression to find the delimiter; default is ','
+    \return a vector of the splitted parseString
+*/
+std::vector<std::string> splitStringToStringVector(const std::string& parseString, const std::string& delim = ",");
 
 std::string replaceAll(const std::string& str, const std::map<std::string, std::string>& replacementMap);
 

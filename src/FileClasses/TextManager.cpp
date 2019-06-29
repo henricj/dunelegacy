@@ -530,7 +530,7 @@ const std::string& TextManager::postProcessString(const std::string& unprocessed
 
     std::string commandString = unprocessedString.substr(1, commentStart-1);
 
-    std::vector<std::string> commands = splitString(commandString, "\\|");
+    std::vector<std::string> commands = splitStringToStringVector(commandString, "\\|");
 
     int index = -1;
     if(commands.size() < 2 || !parseString(commands[1], index)) {
@@ -548,7 +548,7 @@ const std::string& TextManager::postProcessString(const std::string& unprocessed
 
             std::map<std::string, std::string> mapping;
             for(unsigned int i=2;i<commands.size();i++) {
-                std::vector<std::string> parts = splitString(commands[i], "->");
+                std::vector<std::string> parts = splitStringToStringVector(commands[i], "->");
                 mapping[parts[0]] = parts[1];
             }
 

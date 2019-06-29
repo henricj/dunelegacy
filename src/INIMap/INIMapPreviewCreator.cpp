@@ -109,7 +109,7 @@ sdl2::surface_ptr INIMapPreviewCreator::createMinimapImageOfMap(int borderWidth,
         // "draw" spice fields into SeedMap
         std::string FieldString = inifile->getStringValue("MAP","Field");
         if(FieldString != "") {
-            std::vector<std::string> FieldPositions  = splitString(FieldString);
+            std::vector<std::string> FieldPositions  = splitStringToStringVector(FieldString);
 
             for(unsigned int i=0; i < FieldPositions.size();i++) {
                 // set bloom
@@ -186,7 +186,7 @@ sdl2::surface_ptr INIMapPreviewCreator::createMinimapImageOfMap(int borderWidth,
         // draw spice blooms
         std::string BloomString = inifile->getStringValue("MAP","Bloom");
         if(BloomString != "") {
-            std::vector<std::string> BloomPositions  = splitString(BloomString);
+            std::vector<std::string> BloomPositions  = splitStringToStringVector(BloomString);
 
             for(const std::string& strBloomPos : BloomPositions) {
                 // set bloom
@@ -210,7 +210,7 @@ sdl2::surface_ptr INIMapPreviewCreator::createMinimapImageOfMap(int borderWidth,
         // draw special blooms
         std::string SpecialString = inifile->getStringValue("MAP","Special");
         if(SpecialString != "") {
-            std::vector<std::string> SpecialPositions  = splitString(SpecialString);
+            std::vector<std::string> SpecialPositions  = splitStringToStringVector(SpecialString);
 
             for(const std::string& strSpecialPos : SpecialPositions) {
                 // set bloom
@@ -327,7 +327,7 @@ sdl2::surface_ptr INIMapPreviewCreator::createMinimapImageOfMap(int borderWidth,
                 }
 
                 std::string HouseStr, BuildingStr;
-                splitString(tmp,2,&HouseStr,&BuildingStr);
+                splitString(tmp, HouseStr, BuildingStr);
 
                 int house = getHouseByName(HouseStr);
                 Uint32 color = COLOR_WHITE;
@@ -364,7 +364,7 @@ sdl2::surface_ptr INIMapPreviewCreator::createMinimapImageOfMap(int borderWidth,
             } else if(key.getKeyName().find("ID") == 0) {
                 // other structure
                 std::string HouseStr, BuildingStr, health, PosStr;
-                splitString(tmp,6,&HouseStr,&BuildingStr,&health,&PosStr);
+                splitString(tmp, HouseStr, BuildingStr, health, PosStr);
 
                 int pos;
                 if(!parseString(PosStr, pos)) {

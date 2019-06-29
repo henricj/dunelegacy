@@ -268,7 +268,7 @@ std::bitset<Structure_LastID + 1> ObjectData::loadPrerequisiteStructuresSet(cons
         return resultSet;
     }
 
-    std::vector<std::string> strItemList = splitString(strList);
+    std::vector<std::string> strItemList = splitStringToStringVector(strList);
 
     for(const std::string& strItem : strItemList) {
         std::string strItem2 = trim(strItem);

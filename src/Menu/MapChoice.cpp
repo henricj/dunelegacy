@@ -380,7 +380,7 @@ void MapChoice::loadINI() {
         std::string strXPos;
         std::string strYPos;
 
-        if(splitString(entry,2,&strXPos,&strYPos) == false) {
+        if(splitString(entry, strXPos, strYPos) == false) {
             THROW(std::runtime_error, "File '%s' contains invalid value for key '%d'", filename, i);
         }
 
@@ -409,7 +409,7 @@ void MapChoice::loadINI() {
 
             std::string strValue = RegionINI.getStringValue(strSection,key);
             if(strValue != "") {
-                std::vector<std::string> strRegions = splitString(strValue);
+                std::vector<std::string> strRegions = splitStringToStringVector(strValue);
 
                 for(unsigned int r = 0; r < strRegions.size(); r++) {
                     group[i].newRegion[h].push_back(atol(strRegions[r].c_str()));
@@ -428,7 +428,7 @@ void MapChoice::loadINI() {
                 group[i].attackRegion[a].arrowPosition.x = 0;
                 group[i].attackRegion[a].arrowPosition.y = 0;
             } else {
-                std::vector<std::string> strAttackRegion = splitString(tmp);
+                std::vector<std::string> strAttackRegion = splitStringToStringVector(tmp);
 
                 if(strAttackRegion.size() < 4) {
                     THROW(std::runtime_error, "File '%s' contains invalid value for key [%s]/%s; it has to consist of 4 numbers!", filename, strSection, strKey);
