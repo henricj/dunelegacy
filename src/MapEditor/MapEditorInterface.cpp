@@ -848,7 +848,7 @@ void MapEditorInterface::onChildWindowClose(Window* pChildWindow) {
     }
 
     QstBox* pQstBox = dynamic_cast<QstBox*>(pChildWindow);
-    if(pQstBox != nullptr && pQstBox->getPressedButtonID() == QSTBOX_BUTTON2) {
+    if(pQstBox != nullptr && pQstBox->getPressedButtonID() == QSTBOX_BUTTON1) {
         pMapEditor->onQuit();
     }
 }
@@ -866,7 +866,7 @@ bool MapEditorInterface::onRadarClick(Coord worldPosition, bool bRightMouseButto
 
 void MapEditorInterface::onQuit() {
     if(pMapEditor->hasChangeSinceLastSave()) {
-        QstBox* pQstBox = QstBox::create(_("Do you really want to quit and lose unsaved changes to this map?"), _("No"), _("Yes"));
+        QstBox* pQstBox = QstBox::create(_("Do you really want to quit and lose unsaved changes to this map?"), _("Yes"), _("No"));
         pQstBox->setTextColor(color);
         openWindow(pQstBox);
     } else {

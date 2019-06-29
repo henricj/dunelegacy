@@ -152,9 +152,9 @@ bool LoadSaveWindow::handleKeyPress(SDL_KeyboardEvent& key) {
             int index = fileList.getSelectedIndex();
             if(index >= 0) {
                 QstBox* pQstBox = QstBox::create(   fmt::sprintf(_("Do you really want to delete '%s' ?"), fileList.getEntry(index).c_str()),
-                                                    _("No"),
                                                     _("Yes"),
-                                                    QSTBOX_BUTTON2);
+                                                    _("No"),
+                                                    QSTBOX_BUTTON1);
 
                 pQstBox->setTextColor(color);
 
@@ -173,7 +173,7 @@ bool LoadSaveWindow::handleKeyPress(SDL_KeyboardEvent& key) {
 
 void LoadSaveWindow::onChildWindowClose(Window* pChildWindow) {
     QstBox* pQstBox = dynamic_cast<QstBox*>(pChildWindow);
-    if(pQstBox == nullptr || pQstBox->getPressedButtonID() != QSTBOX_BUTTON2) return;
+    if(pQstBox == nullptr || pQstBox->getPressedButtonID() != QSTBOX_BUTTON1) return;
 
     int index = fileList.getSelectedIndex();
     if(index < 0) return;

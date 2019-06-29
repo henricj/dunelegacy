@@ -151,9 +151,9 @@ bool LoadMapWindow::handleKeyPress(SDL_KeyboardEvent& key) {
             int index = mapList.getSelectedIndex();
             if(index >= 0) {
                 QstBox* pQstBox = QstBox::create(   fmt::sprintf(_("Do you really want to delete '%s' ?"), mapList.getEntry(index).c_str()),
-                                                    _("No"),
                                                     _("Yes"),
-                                                    QSTBOX_BUTTON2);
+                                                    _("No"),
+                                                    QSTBOX_BUTTON1);
 
                 pQstBox->setTextColor(color);
 
@@ -173,7 +173,7 @@ bool LoadMapWindow::handleKeyPress(SDL_KeyboardEvent& key) {
 void LoadMapWindow::onChildWindowClose(Window* pChildWindow) {
     QstBox* pQstBox = dynamic_cast<QstBox*>(pChildWindow);
     if(pQstBox != nullptr) {
-        if(pQstBox->getPressedButtonID() == QSTBOX_BUTTON2) {
+        if(pQstBox->getPressedButtonID() == QSTBOX_BUTTON1) {
             int index = mapList.getSelectedIndex();
             if(index >= 0) {
                 std::string file2delete = currentMapDirectory + mapList.getSelectedEntry() + ".ini";

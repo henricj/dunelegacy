@@ -158,7 +158,7 @@ void InGameMenu::onChildWindowClose(Window* pChildWindow) {
     } else {
         QstBox* pQstBox = dynamic_cast<QstBox*>(pChildWindow);
         if(pQstBox != nullptr) {
-            if(pQstBox->getPressedButtonID() == QSTBOX_BUTTON2) {
+            if(pQstBox->getPressedButtonID() == QSTBOX_BUTTON1) {
                 if(pQstBox->getText() == _("Do you really want to quit this game?")) {
                     // quit
                     currentGame->quitGame();
@@ -205,9 +205,9 @@ void InGameMenu::onLoad()
 void InGameMenu::onRestart()
 {
     QstBox* pQstBox = QstBox::create(   _("Do you really want to restart this game?"),
-                                        _("No"),
                                         _("Yes"),
-                                        QSTBOX_BUTTON1);
+                                        _("No"),
+                                        QSTBOX_BUTTON2);
 
     pQstBox->setTextColor(color);
 
@@ -217,9 +217,9 @@ void InGameMenu::onRestart()
 void InGameMenu::onQuit()
 {
     QstBox* pQstBox = QstBox::create(   _("Do you really want to quit this game?"),
-                                        _("No"),
                                         _("Yes"),
-                                        QSTBOX_BUTTON1);
+                                        _("No"),
+                                        QSTBOX_BUTTON2);
 
     pQstBox->setTextColor(color);
 

@@ -123,7 +123,7 @@ public:
         \param  defaultFocus    Button which gets the focus on showing the question box
         \return The new question box (will be automatically destroyed when it's closed)
     */
-    static QstBox* create(const std::string& text, const std::string& button1Text = "No", const std::string& button2Text = "Yes", int defaultFocus = QSTBOX_BUTTON_INVALID) {
+    static QstBox* create(const std::string& text, const std::string& button1Text = "Yes", const std::string& button2Text = "No", int defaultFocus = QSTBOX_BUTTON_INVALID) {
         QstBox* qstbox = new QstBox(text, button1Text, button2Text, defaultFocus);
         qstbox->pAllocated = true;
         return qstbox;
