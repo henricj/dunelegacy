@@ -57,15 +57,6 @@ HouseChoiceInfoMenu::HouseChoiceInfoMenu(int newHouse) : MentatMenu(HOUSE_INVALI
     int linebreak = desc.find("\n",0) + 1;
     setText(desc.substr(linebreak,desc.length()-linebreak));
 
-    SDL_Texture* pMentatNo = pGFXManager->getUIGraphic(UI_MentatNo);
-    SDL_Texture* pMentatNoPressed = pGFXManager->getUIGraphic(UI_MentatNo_Pressed);
-
-    noButton.setTextures(pMentatNo, pMentatNoPressed);
-    noButton.setEnabled(false);
-    noButton.setVisible(false);
-    noButton.setOnClick(std::bind(&HouseChoiceInfoMenu::onNo, this));
-    windowWidget.addWidget(&noButton,Point(370,340), getTextureSize(pMentatNo));
-
     SDL_Texture* pMentatYes = pGFXManager->getUIGraphic(UI_MentatYes);
     SDL_Texture* pMentatYesPressed = pGFXManager->getUIGraphic(UI_MentatYes_Pressed);
 
@@ -73,7 +64,16 @@ HouseChoiceInfoMenu::HouseChoiceInfoMenu(int newHouse) : MentatMenu(HOUSE_INVALI
     yesButton.setEnabled(false);
     yesButton.setVisible(false);
     yesButton.setOnClick(std::bind(&HouseChoiceInfoMenu::onYes, this));
-    windowWidget.addWidget(&yesButton,Point(480,340), getTextureSize(pMentatYes));
+    windowWidget.addWidget(&yesButton,Point(370,340), getTextureSize(pMentatYes));
+
+    SDL_Texture* pMentatNo = pGFXManager->getUIGraphic(UI_MentatNo);
+    SDL_Texture* pMentatNoPressed = pGFXManager->getUIGraphic(UI_MentatNo_Pressed);
+
+    noButton.setTextures(pMentatNo, pMentatNoPressed);
+    noButton.setEnabled(false);
+    noButton.setVisible(false);
+    noButton.setOnClick(std::bind(&HouseChoiceInfoMenu::onNo, this));
+    windowWidget.addWidget(&noButton,Point(480,340), getTextureSize(pMentatNo));
 }
 
 HouseChoiceInfoMenu::~HouseChoiceInfoMenu() = default;

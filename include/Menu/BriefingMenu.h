@@ -43,8 +43,8 @@ private:
     void onProcced();
     int mission;
     int type;
-    PictureButton   repeatButton;
     PictureButton   proccedButton;
+    PictureButton   repeatButton;
     AnimationLabel  animation;
 };
 

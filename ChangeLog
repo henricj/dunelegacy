@@ -2,6 +2,7 @@ version 0.97.0
 	* Completely reworked air units (much more similar to the original game)
 	* Air unit limit increases with (ground) unit limit
 	* Use truetype font for all texts
+	* Swap button order for question boxes and mentat screens (same as in the original game)
 	* Option: Rotate air unit graphics smoothly (option is off by default)
 	* Update fmt library to version 3.0.2
 	* Radar shows number of visible enemy units and visible friendly units
