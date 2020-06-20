@@ -36,6 +36,8 @@
 #include <FileClasses/GFXManager.h>
 #include <FileClasses/TextManager.h>
 
+#include <random>
+
 NewMapWindow::NewMapWindow(HOUSETYPE currentHouse) : Window(0,0,0,0), house(currentHouse), mapSeed(INVALID), loadMapSingleplayer(false) {
 
     color = SDL2RGB(palette[houseToPaletteIndex[house]+3]);
