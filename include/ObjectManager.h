@@ -22,7 +22,7 @@
 #include <misc/OutputStream.h>
 #include <misc/SDL2pp.h>
 
-#include <map>
+#include <unordered_map>
 
 // forward declarations
 class ObjectBase;

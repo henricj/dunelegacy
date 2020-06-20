@@ -30,6 +30,7 @@
 #include <cstdio>
 #include <cmath>
 #include <cerrno>
+#include <vector>
 
 #define VOC_CODE_TERM       0
 #define VOC_CODE_DATA       1

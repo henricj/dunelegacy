@@ -1,5 +1,6 @@
 #include <SDL2/SDL.h>
 #include <misc/sdl_support.h>
+#include "misc/SDL2pp.h"
 
 namespace
 {
