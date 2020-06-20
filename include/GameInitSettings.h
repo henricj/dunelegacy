@@ -23,6 +23,7 @@
 #include <misc/InputStream.h>
 #include <misc/OutputStream.h>
 
+#include <filesystem>
 #include <string>
 #include <utility>
 
@@ -126,7 +127,7 @@ public:
         \param  multiplePlayersPerHouse     allow multiple players per house
         \param  gameOptions         the options for this game
     */
-    GameInitSettings(std::string&& mapfile, std::string&& filedata, bool multiplePlayersPerHouse, const SettingsClass::GameOptionsClass& gameOptions);
+    GameInitSettings(std::filesystem::path&& mapfile, std::string&& filedata, bool multiplePlayersPerHouse, const SettingsClass::GameOptionsClass& gameOptions);
 
     /**
         Constructor for specifying the start of a multiplayer custom map
@@ -136,14 +137,14 @@ public:
         \param  multiplePlayersPerHouse     allow multiple players per house
         \param  gameOptions         the options for this game
     */
-    GameInitSettings(std::string&& mapfile, std::string&& filedata, std::string&& serverName, bool multiplePlayersPerHouse, const SettingsClass::GameOptionsClass& gameOptions);
+    GameInitSettings(std::filesystem::path&& mapfile, std::string&& filedata, std::string&& serverName, bool multiplePlayersPerHouse, const SettingsClass::GameOptionsClass& gameOptions);
 
     /**
         Constructor for specifying the loading of a savegame. If the given filename contains no valid savegame
         an exception is thrown.
         \param  savegame    the name of the savegame
     */
-    explicit GameInitSettings(std::string&& savegame);
+    explicit GameInitSettings(std::filesystem::path&& savegame);
 
     /**
         Constructor for specifying the loading of a network savegame. If the given filename contains no valid savegame
@@ -152,7 +153,7 @@ public:
         \param  filedata    the data of the savegame file
         \param  serverName  the name of the game server
     */
-    GameInitSettings(std::string&& savegame, std::string&& filedata, std::string&& serverName);
+    GameInitSettings(std::filesystem::path&& savegame, std::string&& filedata, std::string&& serverName);
 
     /**
         Load the game init info from a stream
@@ -169,7 +170,7 @@ public:
     int getMission() const noexcept { return mission; };
     Uint32 getAlreadyPlayedRegions() const noexcept { return alreadyPlayedRegions; };
     Uint32 getAlreadyShownTutorialHints() const noexcept { return alreadyShownTutorialHints; };
-    const std::string& getFilename() const noexcept { return filename; };
+    const std::filesystem::path& getFilename() const noexcept { return filename; };
     const std::string& getFiledata() const noexcept { return filedata; };
     const std::string& getServername() const noexcept { return servername; };
     Uint32 getRandomSeed() const noexcept { return randomSeed; };
@@ -192,7 +193,7 @@ private:
         This method checks if it is possible to load a savegame and if the magic number is correct. If there is an error an exception is thrown.
         \param savegame the name of the file to check
     */
-    static void checkSaveGame(const std::string& savegame);
+    static void checkSaveGame(const std::filesystem::path& savegame);
 
 
     /**
@@ -209,7 +210,7 @@ private:
     Uint32          alreadyPlayedRegions = 0;
     Uint32          alreadyShownTutorialHints = 0xFFFFFFFF;
 
-    std::string     filename;
+    std::filesystem::path     filename;
     std::string     filedata;
     std::string     servername;
 

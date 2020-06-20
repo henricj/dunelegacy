@@ -35,42 +35,23 @@ IFileStream::~IFileStream()
     close();
 }
 
-bool IFileStream::open(const char* filename)
+bool IFileStream::open(const std::filesystem::path& filename)
 {
-    if(fp != nullptr) {
-        fclose(fp);
-    }
+    close();
 
-    const char* pFilename = filename;
+    const auto normal = std::filesystem::canonical(filename);
 
-    #ifdef _WIN32
+#ifdef _WIN32
+    fp = _wfsopen(normal.c_str(), L"rbS", _SH_DENYWR);
+#else
+    fp = fopen(normal.c_str(), "rb");
+#endif
 
-    // on win32 we need an ansi-encoded filepath
-    WCHAR szwPath[MAX_PATH];
-    char szPath[MAX_PATH];
-
-    if(MultiByteToWideChar(CP_UTF8, 0, filename, -1, szwPath, MAX_PATH) == 0) {
-        return false;
-    }
-
-    if(WideCharToMultiByte(CP_ACP, 0, szwPath, -1, szPath, MAX_PATH, nullptr, nullptr) == 0) {
-        return false;
-    }
-
-    pFilename = szPath;
-
-    #endif
-
-    if( (fp = fopen(pFilename,"rb")) == nullptr) {
+    if( fp == nullptr) {
         return false;
     } else {
         return true;
     }
-}
-
-bool IFileStream::open(const std::string& filename)
-{
-    return open(filename.c_str());
 }
 
 void IFileStream::close()

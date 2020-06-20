@@ -19,6 +19,7 @@
 #define FILESYSTEM_H
 
 #include <cstdint>
+#include <filesystem>
 #include <string>
 #include <list>
 #include <utility>
@@ -27,13 +28,13 @@
 
 class FileInfo {
 public:
-    FileInfo(std::string  name, uint32_t size, uint64_t modifydate)
+    FileInfo(std::filesystem::path name, uintmax_t size, std::filesystem::file_time_type modifydate)
         : name(std::move(name)), size(size), modifydate(modifydate) {
     }
 
-    std::string name;
-    uint32_t size;
-    uint64_t modifydate;
+    std::filesystem::path name;
+    uintmax_t size;
+    std::filesystem::file_time_type  modifydate;
 };
 
 enum FileListOrder {
@@ -56,7 +57,7 @@ enum FileListOrder {
     \param  bIgnoreCase true = extension comparison is case insensitive
     \return a list of all the files with the specified extension
 */
-std::list<std::string> getFileNamesList(const std::string& directory, const std::string& extension, bool bIgnoreCase = false, FileListOrder fileListOrder = FileListOrder_Unsorted);
+std::vector<std::filesystem::path> getFileNamesList(const std::filesystem::path& directory, const std::string& extension, bool bIgnoreCase = false, FileListOrder fileListOrder = FileListOrder_Unsorted);
 
 
 /**
@@ -67,7 +68,7 @@ std::list<std::string> getFileNamesList(const std::string& directory, const std:
     \param  IgnoreCase  true = extension comparison is case insensitive
     \return a list of all the files with the specified extension
 */
-std::list<FileInfo> getFileList(const std::string& directory, const std::string& extension, bool IgnoreCase = false, FileListOrder fileListOrder = FileListOrder_Unsorted);
+std::vector<FileInfo> getFileList(const std::filesystem::path& directory, const std::string& extension, bool IgnoreCase = false, FileListOrder fileListOrder = FileListOrder_Unsorted);
 
 /**
     This function is used to determine a case insensitive filename. The parameter filepath specifies the complete path to the file (relative or absolute).
@@ -77,20 +78,20 @@ std::list<FileInfo> getFileList(const std::string& directory, const std::string&
     \param  filepath    the path to the file to look for. This string is changed if there is a file found with the same name (case insensitive compared)
     \return true if a file was found and filepath was changed accordingly. false if there was no file found or the directory was not found
 */
-bool getCaseInsensitiveFilename(std::string& filepath);
+bool getCaseInsensitiveFilename(std::filesystem::path& filepath);
 
 /**
     This function tests if a file exists
     \param path path to the file
     \return true if it exists, false if not
 */
-bool existsFile(const std::string& path);
+bool existsFile(const std::filesystem::path& path);
 
 
 /**
     Reads a complete file into a string. Caution: If the file contains 0-bytes they will also be contained in the returned string
 */
-std::string readCompleteFile(const std::string& filename);
+std::string readCompleteFile(const std::filesystem::path& filename);
 
 
 /**
@@ -100,7 +101,7 @@ std::string readCompleteFile(const std::string& filename);
     \param  bStripExtension if true, the last extension is removed
     \return the name of the file
 */
-std::string getBasename(const std::string& filepath, bool bStripExtension = false);
+std::filesystem::path getBasename(const std::filesystem::path& filepath, bool bStripExtension = false);
 
 /**
     Returns the path of a file without the trailing filename and any trailing slashes.
@@ -108,12 +109,12 @@ std::string getBasename(const std::string& filepath, bool bStripExtension = fals
     \param  filepath        the pathname of the file
     \return the full path without filename
 */
-std::string getDirname(const std::string& filepath);
+std::filesystem::path getDirname(const std::filesystem::path& filepath);
 
 /**
     Returns the dune legacy data directory, e.g. the installation directory
     \return the data directory
 */
-std::string getDuneLegacyDataDir();
+std::filesystem::path getDuneLegacyDataDir();
 
 #endif //FILESYSTEM_H

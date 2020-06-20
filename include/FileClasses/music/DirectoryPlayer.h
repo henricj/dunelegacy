@@ -21,6 +21,7 @@
 
 #include <FileClasses/music/MusicPlayer.h>
 
+#include <filesystem>
 #include <vector>
 #include <string>
 #include <SDL2/SDL_mixer.h>
@@ -70,9 +71,9 @@ private:
         @param dir the directory to get the files from
         @return the path to all the music files in this directory
     */
-    std::vector<std::string> getMusicFileNames(const std::string& dir);
+    std::vector<std::filesystem::path> getMusicFileNames(const std::filesystem::path& dir);
 
-    std::vector<std::string> musicFileList[MUSIC_NUM_MUSIC_TYPES];
+    std::vector<std::filesystem::path> musicFileList[MUSIC_NUM_MUSIC_TYPES];
 
     Mix_Music*      music;
 };

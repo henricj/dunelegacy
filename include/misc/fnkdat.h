@@ -60,8 +60,14 @@
 #define FNKDAT_VERSION "0.0.8"
 
 #ifdef __cplusplus
+
+#include <filesystem>
+
+std::tuple<bool, std::filesystem::path> fnkdat(int flags);
+std::tuple<bool, std::filesystem::path> fnkdat(const std::filesystem::path& target, int flags);
+
 extern "C" {
-#endif
+#endif // __cplusplus
 
 
 #ifdef _WIN32
@@ -69,12 +75,12 @@ extern "C" {
 /*
  * Include UNICODE crap
  */
-#include <tchar.h>
+//#include <tchar.h>
 
 /*
  * define in a UNICODE compatible way
  */
-int fnkdat(const _TCHAR* target, _TCHAR* buffer, int len, int flags);
+//int fnkdat(const _TCHAR* target, _TCHAR* buffer, int len, int flags);
 
 #else
 

@@ -45,7 +45,7 @@ CustomGameStatsMenu::CustomGameStatsMenu() : MenuBase()
 
     windowWidget.addWidget(&mainVBox, Point(24,23), Point(getRendererWidth() - 48, getRendererHeight() - 32));
 
-    captionLabel.setText(getBasename(currentGame->getGameInitSettings().getFilename(), true));
+    captionLabel.setText(getBasename(currentGame->getGameInitSettings().getFilename(), true).u8string());
     captionLabel.setTextColor(localHouseColor);
     captionLabel.setAlignment(Alignment_HCenter);
     mainVBox.addWidget(&captionLabel, 24);

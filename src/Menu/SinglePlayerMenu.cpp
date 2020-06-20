@@ -140,16 +140,12 @@ void SinglePlayerMenu::onSkirmish() {
 }
 
 void SinglePlayerMenu::onLoadSavegame() {
-    char tmp[FILENAME_MAX];
-    fnkdat("save/", tmp, FILENAME_MAX, FNKDAT_USER | FNKDAT_CREAT);
-    std::string savepath(tmp);
+    auto [ok, savepath] = fnkdat("save/", FNKDAT_USER | FNKDAT_CREAT);
     openWindow(LoadSaveWindow::create(false, _("Load Game"), savepath, "dls"));
 }
 
 void SinglePlayerMenu::onLoadReplay() {
-    char tmp[FILENAME_MAX];
-    fnkdat("replay/", tmp, FILENAME_MAX, FNKDAT_USER | FNKDAT_CREAT);
-    std::string replaypath(tmp);
+    auto [ok, replaypath] = fnkdat("replay/", FNKDAT_USER | FNKDAT_CREAT);
     openWindow(LoadSaveWindow::create(false, _("Load Replay"), replaypath, "rpl"));
 }
 
@@ -158,7 +154,7 @@ void SinglePlayerMenu::onCancel() {
 }
 
 void SinglePlayerMenu::onChildWindowClose(Window* pChildWindow) {
-    std::string filename = "";
+    std::filesystem::path filename;
     std::string extension = "";
     LoadSaveWindow* pLoadSaveWindow = dynamic_cast<LoadSaveWindow*>(pChildWindow);
     if(pLoadSaveWindow != nullptr) {

@@ -45,20 +45,20 @@ void toogleFullscreen();
     This function returns the configfile path
     \return the full path to the config file
 */
-std::string getConfigFilepath();
+std::filesystem::path getConfigFilepath();
 
 /**
     This function returns the logfile path
     \return the full path to the logfile
 */
-std::string getLogFilepath();
+std::filesystem::path getLogFilepath();
 
 /**
     This function creates a new default config file.
     \param configfilepath the path to the config file
     \param language the language to use as default (e.g. en, de, fr)
 */
-void createDefaultConfigFile(const std::string& configfilepath, const std::string& language);
+void createDefaultConfigFile(const std::filesystem::path& configfilepath, const std::string& language);
 
 /**
     This function is used by SDL to write out log messages

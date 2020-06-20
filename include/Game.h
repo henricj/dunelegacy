@@ -39,6 +39,7 @@
 #include <string>
 
 #include <array>
+#include <filesystem>
 #include <map>
 #include <utility>
 #include <unordered_set>
@@ -95,7 +96,7 @@ public:
         Initializes a replay from the specified filename
         \param  filename    the file containing the replay
     */
-    void initReplay(const std::string& filename);
+    void initReplay(const std::filesystem::path& filename);
 
 
 
@@ -190,7 +191,7 @@ public:
         \param filename the name of the file to load from
         \return true on success, false on failure
     */
-    bool loadSaveGame(const std::string& filename);
+    bool loadSaveGame(const std::filesystem::path& filename);
 
     /**
         This method loads a previously saved game.
@@ -204,7 +205,7 @@ public:
         \param filename the name of the file to save to
         \return true on success, false on failure
     */
-    bool saveGame(const std::string& filename);
+    bool saveGame(const std::filesystem::path& filename);
 
     /**
         This method starts the game. Will return when the game is finished or aborted.
