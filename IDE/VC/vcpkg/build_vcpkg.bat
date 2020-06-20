@@ -1,4 +1,4 @@
-SET Packages=cppunit sdl2 sdl2-mixer sdl2-ttf
+SET Packages=cppunit sdl2 sdl2-mixer sdl2-ttf fmt
 
 copy "%~dp0triplets\*.*" "%~dp0vcpkg\triplets\"
 
