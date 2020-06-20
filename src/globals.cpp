@@ -25,7 +25,45 @@
 #include <FileClasses/TextManager.h>
 #include <Network/NetworkManager.h>
 
-#define SKIP_EXTERN_DEFINITION
 #include <Bullet.h>
 #include <globals.h>
-#undef SKIP_EXTERN_DEFINITION
+
+
+ // SDL stuff
+SDL_Window* window;                     ///< the window
+SDL_Renderer* renderer;                   ///< the renderer
+SDL_Texture* screenTexture;              ///< the texture
+Palette              palette;                    ///< the palette for the screen
+int                  drawnMouseX;                ///< the current mouse position (x coordinate)
+int                  drawnMouseY;                ///< the current mouse position (y coordinate)
+int                  cursorFrame;                ///< the current mouse cursor
+int                  currentZoomlevel;           ///< 0 = the smallest zoom level, 1 = medium zoom level, 2 = maximum zoom level
+
+
+// abstraction layers
+std::unique_ptr<SoundPlayer>         soundPlayer;                ///< manager for playing sfx and voice
+std::unique_ptr<MusicPlayer>         musicPlayer;                ///< manager for playing background music
+
+std::unique_ptr<FileManager>         pFileManager;               ///< manager for loading files from PAKs
+std::unique_ptr<GFXManager>          pGFXManager;                ///< manager for loading and managing graphics
+std::unique_ptr<SFXManager>          pSFXManager;                ///< manager for loading and managing sounds
+std::unique_ptr<FontManager>         pFontManager;               ///< manager for loading and managing fonts
+std::unique_ptr<TextManager>         pTextManager;               ///< manager for loading and managing texts and providing localization
+std::unique_ptr<NetworkManager>      pNetworkManager;            ///< manager for all network events (nullptr if not in multiplayer game)
+
+// game stuff
+Game* currentGame;                ///< the current running game
+ScreenBorder* screenborder;               ///< the screen border for the current running game
+Map* currentGameMap;             ///< the map for the current running game
+House* pLocalHouse;                ///< the house of the human player that is playing the current running game on this computer
+HumanPlayer* pLocalPlayer;               ///< the player that is playing the current running game on this computer
+
+RobustList<UnitBase*>       unitList;            ///< the list of all units
+RobustList<StructureBase*>  structureList;       ///< the list of all structures
+std::vector<std::unique_ptr<Bullet>>         bulletList;          ///< the list of all bullets
+
+
+// misc
+SettingsClass    settings;                       ///< the settings read from the settings file
+
+bool debug;                                      ///< is set for debugging purposes
