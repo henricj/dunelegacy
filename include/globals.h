@@ -52,51 +52,44 @@ class UnitBase;
 class StructureBase;
 class Bullet;
 
-#ifndef SKIP_EXTERN_DEFINITION
- #define EXTERN extern
-#else
- #define EXTERN
-#endif
-
-
 // SDL stuff
-EXTERN SDL_Window*          window;                     ///< the window
-EXTERN SDL_Renderer*        renderer;                   ///< the renderer
-EXTERN SDL_Texture*         screenTexture;              ///< the texture
-EXTERN Palette              palette;                    ///< the palette for the screen
-EXTERN int                  drawnMouseX;                ///< the current mouse position (x coordinate)
-EXTERN int                  drawnMouseY;                ///< the current mouse position (y coordinate)
-EXTERN int                  cursorFrame;                ///< the current mouse cursor
-EXTERN int                  currentZoomlevel;           ///< 0 = the smallest zoom level, 1 = medium zoom level, 2 = maximum zoom level
+extern SDL_Window*          window;                     ///< the window
+extern SDL_Renderer*        renderer;                   ///< the renderer
+extern SDL_Texture*         screenTexture;              ///< the texture
+extern Palette              palette;                    ///< the palette for the screen
+extern int                  drawnMouseX;                ///< the current mouse position (x coordinate)
+extern int                  drawnMouseY;                ///< the current mouse position (y coordinate)
+extern int                  cursorFrame;                ///< the current mouse cursor
+extern int                  currentZoomlevel;           ///< 0 = the smallest zoom level, 1 = medium zoom level, 2 = maximum zoom level
 
 
 // abstraction layers
-EXTERN std::unique_ptr<SoundPlayer>         soundPlayer;                ///< manager for playing sfx and voice
-EXTERN std::unique_ptr<MusicPlayer>         musicPlayer;                ///< manager for playing background music
+extern std::unique_ptr<SoundPlayer>         soundPlayer;                ///< manager for playing sfx and voice
+extern std::unique_ptr<MusicPlayer>         musicPlayer;                ///< manager for playing background music
 
-EXTERN std::unique_ptr<FileManager>         pFileManager;               ///< manager for loading files from PAKs
-EXTERN std::unique_ptr<GFXManager>          pGFXManager;                ///< manager for loading and managing graphics
-EXTERN std::unique_ptr<SFXManager>          pSFXManager;                ///< manager for loading and managing sounds
-EXTERN std::unique_ptr<FontManager>         pFontManager;               ///< manager for loading and managing fonts
-EXTERN std::unique_ptr<TextManager>         pTextManager;               ///< manager for loading and managing texts and providing localization
-EXTERN std::unique_ptr<NetworkManager>      pNetworkManager;            ///< manager for all network events (nullptr if not in multiplayer game)
+extern std::unique_ptr<FileManager>         pFileManager;               ///< manager for loading files from PAKs
+extern std::unique_ptr<GFXManager>          pGFXManager;                ///< manager for loading and managing graphics
+extern std::unique_ptr<SFXManager>          pSFXManager;                ///< manager for loading and managing sounds
+extern std::unique_ptr<FontManager>         pFontManager;               ///< manager for loading and managing fonts
+extern std::unique_ptr<TextManager>         pTextManager;               ///< manager for loading and managing texts and providing localization
+extern std::unique_ptr<NetworkManager>      pNetworkManager;            ///< manager for all network events (nullptr if not in multiplayer game)
 
 // game stuff
-EXTERN Game*                currentGame;                ///< the current running game
-EXTERN ScreenBorder*        screenborder;               ///< the screen border for the current running game
-EXTERN Map*                 currentGameMap;             ///< the map for the current running game
-EXTERN House*               pLocalHouse;                ///< the house of the human player that is playing the current running game on this computer
-EXTERN HumanPlayer*         pLocalPlayer;               ///< the player that is playing the current running game on this computer
+extern Game*                currentGame;                ///< the current running game
+extern ScreenBorder*        screenborder;               ///< the screen border for the current running game
+extern Map*                 currentGameMap;             ///< the map for the current running game
+extern House*               pLocalHouse;                ///< the house of the human player that is playing the current running game on this computer
+extern HumanPlayer*         pLocalPlayer;               ///< the player that is playing the current running game on this computer
 
-EXTERN RobustList<UnitBase*>       unitList;            ///< the list of all units
-EXTERN RobustList<StructureBase*>  structureList;       ///< the list of all structures
-EXTERN std::vector<std::unique_ptr<Bullet>>         bulletList;          ///< the list of all bullets
+extern RobustList<UnitBase*>       unitList;            ///< the list of all units
+extern RobustList<StructureBase*>  structureList;       ///< the list of all structures
+extern std::vector<std::unique_ptr<Bullet>>         bulletList;          ///< the list of all bullets
 
 
 // misc
-EXTERN SettingsClass    settings;                       ///< the settings read from the settings file
+extern SettingsClass    settings;                       ///< the settings read from the settings file
 
-EXTERN bool debug;                                      ///< is set for debugging purposes
+extern bool debug;                                      ///< is set for debugging purposes
 
 
 // constants
