@@ -26,6 +26,8 @@
 #include <cstdlib>
 #include <cstdio>
 
+#include "globals.h"
+
 /// Constructor
 /**
     The constructor reads from the rwop all data and saves them internally. The SDL_RWops can be readonly but must support
