@@ -48,10 +48,11 @@
 #include <cassert>
 #include <cerrno>
 #include <cstring>
+#include <filesystem>
+#include <misc/fnkdat.h>
+#include <string>
 #include <sys/stat.h>
 #include <sys/types.h>
-#include <misc/fnkdat.h>
-#include <algorithm>
 
 /* version is automatically generated
    #define FNKDAT_VERSION "0.0.8"
@@ -62,15 +63,15 @@
 #include "config.h"
 
 #ifndef PACKAGE
-#   error PACKAGE is not defined
+#    error PACKAGE is not defined
 #endif
 
 #ifndef FNKDAT_PKGDATADIR
-#  define FNKDAT_PKGDATADIR "/usr/share/" PACKAGE
+#    define FNKDAT_PKGDATADIR "/usr/share/" PACKAGE
 #endif
 
 #ifndef FNKDAT_GAMESUBDIR
-#  define FNKDAT_GAMESUBDIR "games/"
+#    define FNKDAT_GAMESUBDIR "games/"
 #endif
 
 /*
@@ -78,489 +79,265 @@
  * as opposed to /var/lib/games
  */
 #ifndef FNKDAT_PKGLIBDIR
-#  ifdef __FreeBSD__
-#     ifndef FNKDAT_GAMESUBDIR
-#        define FNKDAT_GAMESUBDIR "lib/"
-#     endif /* GAMESUBDIR */
-#     define FNKDAT_PKGLIBDIR "/var/" FNKDAT_GAMESUBDIR PACKAGE
-#  else
-#     define FNKDAT_PKGLIBDIR "/var/lib/" FNKDAT_GAMESUBDIR PACKAGE
-#  endif /* __FreeBSD__ */
-#endif /* FNKDAT_PKGLIBDIR */
+#    ifdef __FreeBSD__
+#        ifndef FNKDAT_GAMESUBDIR
+#            define FNKDAT_GAMESUBDIR "lib/"
+#        endif /* GAMESUBDIR */
+#        define FNKDAT_PKGLIBDIR "/var/" FNKDAT_GAMESUBDIR PACKAGE
+#    else
+#        define FNKDAT_PKGLIBDIR "/var/lib/" FNKDAT_GAMESUBDIR PACKAGE
+#    endif /* __FreeBSD__ */
+#endif     /* FNKDAT_PKGLIBDIR */
 
 #ifndef FNKDAT_SYSCONFDIR
-#  define FNKDAT_SYSCONFDIR "/etc"
+#    define FNKDAT_SYSCONFDIR "/etc"
 #endif
-
-/*
- * Used to make sure we don't append past the end of a buffer
- */
-#define FNKDAT_S(op)                                \
-   if ((len = total - (int) _tcslen(buffer)) <= 0) {    \
-      errno = ENOMEM;                               \
-      return -1;                                    \
-   }                                                \
-   op;
-
 
 /*
  * do the mkdir(s), if asked to
  */
 #define FNKDAT_MKDIRS
 
+std::tuple<bool, std::filesystem::path> fnkdat(int flags) {
+    /* Initialize, if requested to.  Note that initialize must be called
+     * from a single thread before anything else.  Other then that,
+     * there are no concurrency issues (as far as I know).
+     */
+    if(flags == FNKDAT_INIT) { return {true, std::filesystem::path{}}; }
 
+    /* Uninitialize, if requested to -- probably not necessary but what
+     * the hell, why not?
+     */
+    if(flags == FNKDAT_UNINIT) { return {true, std::filesystem::path{}}; }
 
+    return {false, std::filesystem::path{}};
+}
 
 /************************
  * WIN32 IMPLEMENTATION *
  ************************/
 #ifdef _WIN32
 
-#define WIN32_LEAN_AND_MEAN
-#ifndef STRICT
-#define STRICT
-#endif
-#include <windows.h>
-#include <direct.h>
-#include <Shlobj.h>
-#include <Shlwapi.h>
-#include <cctype>
+#    ifndef WIN32_LEAN_AND_MEAN
+#        define WIN32_LEAN_AND_MEAN
+#    endif
+#    ifndef STRICT
+#        define STRICT
+#    endif
+#    include <Shlobj.h>
+#    include <Shlwapi.h>
+#    include <cctype>
+#    include <direct.h>
+#    include <windows.h>
 
 /*
  * Constants passed to the silly-ass MS function
  */
-#define CSIDL_APPDATA         0x001a
-#define CSIDL_FLAG_CREATE     0x8000
-#define CSIDL_COMMON_APPDATA  0x0023
-#define SHGFP_TYPE_CURRENT    0
+#    define CSIDL_APPDATA        0x001a
+#    define CSIDL_FLAG_CREATE    0x8000
+#    define CSIDL_COMMON_APPDATA 0x0023
+#    define SHGFP_TYPE_CURRENT   0
+#else // _WIN32
+#    include <cstdlib>
+#    include <pwd.h>
+#    include <unistd.h>
 
-/* these are used by the common functions defined below */
-#define FNKDAT_FILE_SEPARATOR _T('\\')
-#define stat _stat
+#    ifdef __APPLE__
+#        include <MacFunctions.h>
+#    endif
+#endif // _WIN32
 
-#if defined(_UNICODE) || defined(UNICODE)
-#  define FNKDAT_U   "W"
-#else
-#  define FNKDAT_U   "A"
-#endif
-
-/* defined below */
-static int fnkdat_mkdirs(_TCHAR* buffer, int rlevel);
-
-/* pointer to function types*/
-typedef BOOL (WINAPI *LPGETUSERNAME) (LPTSTR,LPDWORD);
-typedef HRESULT (WINAPI *LPSHGETFOLDERPATH) (HWND,int,HANDLE,DWORD,LPTSTR);
 /*
  * Get the requested info
  */
-int fnkdat(const _TCHAR* target, _TCHAR* buffer0, int len, int flags) {
 
-   /* Initialize, if requested to.  Note that initialize must be called
-    * from a single thread before anything else.  Other then that,
-    * there are no concurrency issues (as far as I know).
-    */
-   if (flags == FNKDAT_INIT) {
-      return 0;
-   }
+std::tuple<bool, std::filesystem::path> fnkdat(const std::filesystem::path& target, int flags) {
 
-   /* Uninitialize, if requested to -- probably not necessary but what
-    * the hell, why not?
-    */
-   if (flags == FNKDAT_UNINIT) {
-      return 0;
-   }
+    /* Initialize, if requested to.  Note that initialize must be called
+     * from a single thread before anything else.  Other then that,
+     * there are no concurrency issues (as far as I know).
+     */
+    if(flags == FNKDAT_INIT) { return {true, std::filesystem::path{}}; }
 
-   if (!buffer0)
-       return -1;
+    /* Uninitialize, if requested to -- probably not necessary but what
+     * the hell, why not?
+     */
+    if(flags == FNKDAT_UNINIT) { return {true, std::filesystem::path{}}; }
 
-   /* if target is absolute then simply return it
-    */
-   if (target) {
-      if (!PathIsRelative(target)) {
+    /* if target is absolute then simply return it
+     */
+    if(!target.empty()) {
+        if(target.is_absolute()) return {true, target.lexically_normal().make_preferred()};
+    }
 
-         _TCHAR target_buffer[MAX_PATH];
+    const int rawflags = flags & (0xFFFFFFFF ^ FNKDAT_CREAT);
 
-         if (!PathCanonicalize(target_buffer, target))
-            return -1;
+    std::filesystem::path output_path;
 
-         if (_tcsncpy_s(buffer0, len, target, len))
-            return -1;
+#ifdef _WIN32
+    std::array<wchar_t, MAX_PATH> szPath;
+    std::array<wchar_t, MAX_PATH> buffer;
 
-         return 0;
-      }
-   }
+    /* save room for the null term char
+     */
+    HRESULT hresult = S_OK;
+    DWORD   dwFlags = 0;
 
-   wchar_t szPath[MAX_PATH];
-   wchar_t buffer[MAX_PATH];
+    if(rawflags == FNKDAT_USER) dwFlags = CSIDL_APPDATA;
+    else if(rawflags == (FNKDAT_VAR | FNKDAT_DATA))
+        dwFlags = CSIDL_COMMON_APPDATA;
 
-   if (len)
-      buffer0[0] = _T('\0');
+    /* Get the user conf directory using the silly-ass function if it
+       is available.
+     */
+    if(dwFlags && SUCCEEDED(hresult = SHGetFolderPathW(NULL, dwFlags | ((flags & FNKDAT_CREAT) ? CSIDL_FLAG_CREATE : 0),
+                                                       NULL, SHGFP_TYPE_CURRENT, &szPath[0]))) {
 
-   /* save room for the null term char
-   */
-   const int total = len - 1;
+        output_path = &szPath[0];
+        output_path /= L"" PACKAGE;
 
-   HRESULT hresult = S_OK;
-   DWORD dwFlags = 0;
+        /* We always compute the system conf and data directories
+           relative to argv[0]
 
-   const int rawflags = flags & (0xFFFFFFFF ^ FNKDAT_CREAT);
-
-   if (rawflags == FNKDAT_USER)
-      dwFlags = CSIDL_APPDATA;
-   else if (rawflags == (FNKDAT_VAR | FNKDAT_DATA))
-      dwFlags = CSIDL_COMMON_APPDATA;
-
-
-   /* Get the user conf directory using the silly-ass function if it
-      is available.
-    */
-   if (dwFlags
-       && SUCCEEDED(hresult = SHGetFolderPathW(
-         NULL,
-         dwFlags | ((flags & FNKDAT_CREAT) ? CSIDL_FLAG_CREATE : 0),
-         NULL,
-         SHGFP_TYPE_CURRENT,
-         szPath))) {
-
-      if (!PathAppendW(szPath, L"" PACKAGE)) {
-         errno = ENOMEM;
-         return -1;
-      }
-
-   /* We always compute the system conf and data directories
-      relative to argv[0]
-
-      Why not use SHGetFolderPath(...)
-      for system conf??  Here's why.  I'm using this as the win32
-      supplement for /etc/. If I used CSIDL_COMMON_APPDATA then
-      it would only be available when that function is available
-      which means I'd have to fallback to something different when
-      it's not.  This would make app installation a royal pain
-      because this system conf directory would vary depending on whether
-      or not SHFOLDER.DLL happens to be installed.  I intend for this path
-      to contain read-only "system" configuration data that is
-      installed when the software is.  So, I'm saying it's relative
-      to the executable, as that's what most existing software seems
-      to do.
-    */
-   }
-   else if ((flags == FNKDAT_CONF)
-      || (flags == FNKDAT_USER)
-      || (flags == FNKDAT_DATA)
-      || (flags == (FNKDAT_VAR | FNKDAT_DATA))) {
-      const wchar_t * szCommandLine = GetCommandLineW();
-
-      const wchar_t * command_end;
-
-      /* argv[0] may be quoted -- if so, skip the quote
-         and whack everything after the end quote
-       */
-      if (szCommandLine[0] == L'"') {
-         ++szCommandLine;
-
-         command_end = wcschr(szCommandLine, L'"');
-
-         if (!command_end)
-            return -1;
-
-           //szCommandLine++;
-           //_tcsncpy(buffer, szCommandLine, len);
-           //szTmp = buffer;
-
-           //while(szTmp[0] && szTmp[0] != _T('"'))
-           //   szTmp++;
-
-           //szTmp[0] = _T('\0');
-
-        /* otherwise, whack everything after the first
-           space character
+           Why not use SHGetFolderPath(...)
+           for system conf??  Here's why.  I'm using this as the win32
+           supplement for /etc/. If I used CSIDL_COMMON_APPDATA then
+           it would only be available when that function is available
+           which means I'd have to fallback to something different when
+           it's not.  This would make app installation a royal pain
+           because this system conf directory would vary depending on whether
+           or not SHFOLDER.DLL happens to be installed.  I intend for this path
+           to contain read-only "system" configuration data that is
+           installed when the software is.  So, I'm saying it's relative
+           to the executable, as that's what most existing software seems
+           to do.
          */
-      } else {
-          for (command_end = szCommandLine; *command_end && !iswspace(*command_end); ++command_end)
-          { }
+    } else if((flags == FNKDAT_CONF) || (flags == FNKDAT_USER) || (flags == FNKDAT_DATA) ||
+              (flags == (FNKDAT_VAR | FNKDAT_DATA))) {
+        const wchar_t* szCommandLine = GetCommandLineW();
 
-          //_tcsncpy(buffer, szCommandLine, len);
-          //szTmp = buffer;
+        const wchar_t* command_end;
 
-          //while(szTmp[0] && !_istspace(szTmp[0]))
-          //   szTmp++;
+        /* argv[0] may be quoted -- if so, skip the quote
+           and whack everything after the end quote
+         */
+        if(szCommandLine[0] == L'"') {
+            ++szCommandLine;
 
-          //szTmp[0] = _T('\0');
-       }
+            command_end = wcschr(szCommandLine, L'"');
 
-      if (command_end == szCommandLine)
-         wcscpy(szPath, L".\\");
-      else {
-         const auto command_length = command_end - szCommandLine;
+            if(!command_end) return {false, std::filesystem::path{}};
 
-         assert(command_length > 0);
+            /* otherwise, whack everything after the first
+               space character
+             */
+        } else {
+            for(command_end = szCommandLine; *command_end && !iswspace(*command_end); ++command_end) { }
+        }
 
-         if (command_length >= MAX_PATH - 1)
-            return -1;
+        if(command_end == szCommandLine) output_path = "./";
+        else {
+            const auto command_length = command_end - szCommandLine;
 
-         memcpy(szPath, szCommandLine, sizeof(wchar_t) * command_length);
+            assert(command_length > 0);
 
-         szPath[command_length] = L'\0';
-      }
+            if(command_length >= MAX_PATH - 1) return {false, std::filesystem::path{}};
 
-      /* this only happens when we don't have the silly-ass function */
-      if (flags & FNKDAT_USER) {
-          PathAppendW(szPath, L"users");
+            output_path = std::wstring(szCommandLine, command_length);
+        }
 
-         DWORD dwSize = MAX_PATH;
+        /* this only happens when we don't have the silly-ass function */
+        if(flags & FNKDAT_USER) {
+            output_path /= L"users";
 
-         /* Grab what windows thinks is the current user name */
-         if (GetUserNameW(buffer, &dwSize) == TRUE) {
-            PathAppendW(szPath, buffer);
+            DWORD dwSize = buffer.size();
 
-         /* if that fails, make something up */
-         } else {
-             PathAppendW(szPath, L"default");
-         }
-      }
+            /* Grab what windows thinks is the current user name */
+            if(GetUserNameW(&buffer[0], &dwSize) == TRUE) {
+                output_path /= &buffer[0];
 
+                /* if that fails, make something up */
+            } else {
+                output_path /= L"default";
+            }
+        }
 
-   /* If we get here the user gave a bad flag
-      or !SUCCEEDED(hresult)
-    */
-   } else {
-      errno = EINVAL;
-      return -1;
-   }
+        /* If we get here the user gave a bad flag
+           or !SUCCEEDED(hresult)
+         */
+    } else {
+        errno = EINVAL;
+        return {false, std::filesystem::path{}};
+    }
+#else // _WIN32
+    /************************
+     * UNIX IMPLEMENTATION  *
+     ************************/
 
-   /* append any given filename */
-   if (target) {
-       if (!MultiByteToWideChar(CP_UTF8, 0, target, -1, buffer, MAX_PATH))
-           return -1;
+    if(rawflags == FNKDAT_USER) {
 
-       PathAppendW(szPath, buffer);
-   }
+        std::array<char, 1536> buffer;
 
-   /* replace unix path characters w/ windows path chars
-   so that the fnk_mkdirs funtion works
-   */
-   for (int i = 0; szPath[i]; i++) {
-       if (szPath[i] == L'/')
-           szPath[i] = FNKDAT_FILE_SEPARATOR;
-   }
+#    ifdef __APPLE__
+        {
+            getMacApplicationSupportFolder(&buffer[0], buffer.size());
 
-   /* do the mkdir(s), if asked to */
-   if ((flags & FNKDAT_CREAT)) {
-       const auto last_separator = wcsrchr(szPath, FNKDAT_FILE_SEPARATOR);
+            output_path = buffer;
+            output_path /= "Dune Legacy";
+#    else
+        {
+            const char* xdg_config = getenv("XDG_CONFIG_HOME");
 
-       if (last_separator && last_separator > szPath) {
-           const auto count = last_separator - szPath;
+            if(xdg_config == nullptr) {
+                const struct passwd* pwent = getpwuid(getuid());
 
-           assert(count > 0);
+                if(!pwent) return {false, std::filesystem::path{}};
 
-           if (wcsncpy_s(buffer, MAX_PATH, szPath, count))
-               return -1;
+                output_path = pwent->pw_dir;
+                output_path /= ".config";
+            } else {
+                output_path = xdg_config;
+            }
+            output_path /= PACKAGE;
+        }
+#    endif
+        }
+        else if(rawflags == FNKDAT_CONF) {
+            output_path = FNKDAT_SYSCONFDIR;
+            output_path /= PACKAGE;
+        }
+        else if(rawflags == (FNKDAT_VAR | FNKDAT_DATA)) {
+            output_path = FNKDAT_PKGLIBDIR;
+        }
+        else if(rawflags == FNKDAT_DATA) {
+            output_path = FNKDAT_PKGDATADIR;
+        }
+        else {
+            errno = EINVAL;
+            return {false, std::filesystem::path{}};
+        }
+#endif // _WIN32
 
-           const auto ret = SHCreateDirectoryExW(nullptr, buffer, nullptr);
+    /* append any given filename */
+    if(!target.empty()) { output_path /= target; }
 
-           if (ret != ERROR_SUCCESS && ret != ERROR_ALREADY_EXISTS)
-               return -1;
-       }
-   }
+    output_path = output_path.lexically_normal().make_preferred();
 
-   if(WideCharToMultiByte(CP_UTF8, 0, szPath, -1, buffer0, len, nullptr, nullptr) == 0) {
-       return -1;
-   }
+    /* do the mkdir(s), if asked to */
+    if((flags & FNKDAT_CREAT)) {
+        const auto parent = output_path.parent_path();
 
-   return 0;
+        if(!parent.empty()) {
+            std::error_code ec;
+            if(!std::filesystem::create_directories(parent, ec) && ec) return {false, std::filesystem::path{}};
+
+            std::filesystem::permissions(parent,
+                                         std::filesystem::perms::owner_all | std::filesystem::perms::group_all |
+                                             std::filesystem::perms::others_exec | std::filesystem::perms::others_read,
+                                         std::filesystem::perm_options::replace, ec);
+            if(ec) { return {false, std::filesystem::path{}}; }
+        }
+    }
+
+    return {true, output_path};
 }
-
-
-/************************
- * UNIX IMPLEMENTATION  *
- ************************/
-#else
-
-#include <pwd.h>
-#include <unistd.h>
-#include <cstdlib>
-
-#ifdef __APPLE__
-#include <MacFunctions.h>
-#endif
-
-#ifndef FNKDAT_DIRMODE
-#   define FNKDAT_DIRMODE 0775
-#endif
-
-
-/* these are used by the common functions defined below */
-#define _TCHAR char
-#define _T(s)  s
-#define FNKDAT_FILE_SEPARATOR '/'
-#define _tmkdir(d) mkdir(d, (mode_t)FNKDAT_DIRMODE)
-#define _tcsrchr strrchr
-#define _tcslen strlen
-#define _tstat stat
-
-/* defined below */
-static int fnkdat_mkdirs(_TCHAR* buffer, int rlevel);
-
-
-int fnkdat(const char* target, char* buffer, int len, int flags) {
-   int total, rawflags;
-
-   /* nothing to do */
-   if (flags == FNKDAT_INIT
-       || flags == FNKDAT_UNINIT) {
-      return 0;
-   }
-
-   if(!buffer || len <= 0) {
-      return -1;
-   }
-
-   buffer[0] = '\0';
-
-   /* save room for the null term char
-    */
-   total = len - 1;
-
-   rawflags = flags & (0xFFFFFFFF ^ FNKDAT_CREAT);
-
-
-   /* when we've got an absolute path we simply return it */
-   if (target && target[0] == '/') {
-      strncpy(buffer, target, len);
-      return 0;
-   }
-
-   if (rawflags == FNKDAT_USER) {
-
-#ifdef __APPLE__
-      getMacApplicationSupportFolder(buffer, len);
-      FNKDAT_S(strncat(buffer, "/Dune Legacy", len));
-#else
-      {
-         char* xdg_config = getenv("XDG_CONFIG_HOME");
-
-         if(xdg_config == NULL) {
-            struct passwd* pwent = getpwuid(getuid());
-
-            if (!pwent)
-               return -1;
-
-            strncpy(buffer, pwent->pw_dir, len);
-            FNKDAT_S(strncat(buffer, "/.config/" PACKAGE, len));
-         } else {
-            FNKDAT_S(strncpy(buffer, xdg_config, len));
-            FNKDAT_S(strncat(buffer, "/" PACKAGE, len));
-         }
-      }
-#endif
-
-   } else if (rawflags == FNKDAT_CONF) {
-      strncpy(buffer, FNKDAT_SYSCONFDIR, len);
-      FNKDAT_S(strncat(buffer, "/" PACKAGE, len));
-
-   } else if (rawflags == (FNKDAT_VAR | FNKDAT_DATA)) {
-      strncpy(buffer, FNKDAT_PKGLIBDIR, len);
-
-   } else if (rawflags == FNKDAT_DATA) {
-      strncpy(buffer, FNKDAT_PKGDATADIR, len);
-
-   } else {
-      errno = EINVAL;
-      return -1;
-   }
-
-   FNKDAT_S(strncat(buffer, "/", len));
-
-   if (target) {
-      FNKDAT_S(strncat(buffer, target, len));
-   }
-
-
-   /* do the mkdir(s), if asked to */
-   if ((flags & FNKDAT_CREAT)
-       && fnkdat_mkdirs(buffer, -1) < 0) {
-
-      return -1;
-   }
-
-   return 0;
-}
-
-#endif /* _WIN32 */
-
-
-/********************
- * COMMON FUNCTIONS *
- ********************/
-
-/*
- * This will make the requested directory, along with
- * any necessary parent directory.
- */
-static int fnkdat_mkdirs(_TCHAR* buffer, int rlevel) {
-
-   _TCHAR* pos;
-   struct stat statbuf;
-
-   rlevel++;
-
-   /* if this is the first time that we call this function,
-      we want to skip past any filename that happens to
-      be sitting there, and start working on directories
-    */
-   if (rlevel == 0) {
-
-      /* if target has a file on the end, we don't
-         want to make a directory w/ its name.  So
-         we skip everything after the last FNKDAT_FILE_SEPARATOR.
-       */
-      pos = _tcsrchr(buffer, FNKDAT_FILE_SEPARATOR);
-      if (pos)
-         pos[0] = _T('\0');
-
-      /* make the necessary directories.  If this fails,
-         errno will already be set, so we simply return
-         with an error
-      */
-      if (fnkdat_mkdirs(buffer, rlevel) < 0)
-         return -1;
-
-      if (pos)
-         pos[0] = FNKDAT_FILE_SEPARATOR;
-
-      return 0;
-   }
-
-
-   /* if the directory exists, then we have nothing to do */
-   if (_tstat(buffer, &statbuf) == 0)
-      return 0;
-
-   switch (errno) {
-
-      case ENOENT:
-         pos = _tcsrchr(buffer, FNKDAT_FILE_SEPARATOR);
-         if (pos)
-            pos[0] = _T('\0');
-
-         if (fnkdat_mkdirs(buffer, rlevel) < 0)
-            return -1;
-
-         if (pos)
-            pos[0] = FNKDAT_FILE_SEPARATOR;
-
-         if (_tmkdir(buffer) < 0)
-            return -1;
-
-         break;
-
-      default:
-         return -1;
-   }
-
-
-   return 0;
-}
-
-/* vi: set sw=3 ts=3 tw=78 et sts: */
-

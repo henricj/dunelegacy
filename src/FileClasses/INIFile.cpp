@@ -338,7 +338,7 @@ INIFile::INIFile(bool bWhitespace, const std::string& firstLineComment)
     \param  filename        The file to be opened.
     \param  bWhitespace   Insert whitespace between key an value when creating a new entry
 */
-INIFile::INIFile(const std::string& filename, bool bWhitespace)
+INIFile::INIFile(const std::filesystem::path& filename, bool bWhitespace)
  : firstLine(nullptr), sectionRoot(nullptr), bWhitespace(bWhitespace) {
 
     firstLine = nullptr;
@@ -346,7 +346,7 @@ INIFile::INIFile(const std::string& filename, bool bWhitespace)
     SDL_RWops * file;
 
     // open file
-    if((file = SDL_RWFromFile(filename.c_str(),"r")) != nullptr) {
+    if((file = SDL_RWFromFile(filename.u8string().c_str(), "r")) != nullptr) {
         readfile(file);
         SDL_RWclose(file);
     } else {
@@ -803,15 +803,14 @@ INIFile::KeyIterator INIFile::end(const std::string& section) const {
     \param  bDOSLineEnding     Use dos line ending
     \return true on success otherwise false.
 */
-bool INIFile::saveChangesTo(const std::string& filename, bool bDOSLineEnding) const {
-    SDL_RWops * file;
-    if((file = SDL_RWFromFile(filename.c_str(),"wb")) == nullptr) {
+bool INIFile::saveChangesTo(const std::filesystem::path& filename, bool bDOSLineEnding) const {
+    sdl2::RWops_ptr file{ SDL_RWFromFile(filename.u8string().c_str(), "wb") };
+
+    if (!file) {
         return false;
     }
 
-    bool ret = saveChangesTo(file, bDOSLineEnding);
-    SDL_RWclose(file);
-    return ret;
+    return saveChangesTo(file.get(), bDOSLineEnding);
 }
 
 /// Saves the changes made in the INI-File to a RWop.

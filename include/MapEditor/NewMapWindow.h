@@ -57,8 +57,8 @@ public:
     std::string getAuthor() const { return authorTextBox.getText(); };
     std::string getLicense() const { return licenseTextBox.getText(); };
 
-    const std::string& getLoadMapFilepath() const { return loadMapFilepath; };
-    const std::string& getLoadMapname() const { return loadMapname; };
+    const auto& getLoadMapFilepath() const { return loadMapFilepath; };
+    const auto& getLoadMapname() const { return loadMapname; };
     bool isLoadMapSingleplayer() const { return loadMapSingleplayer; };
 
     const MapData& getMapData() const { return mapdata; };
@@ -141,7 +141,7 @@ private:
 
     int         mapSeed;
     MapData     mapdata;
-    std::string loadMapFilepath;
+    std::filesystem::path loadMapFilepath;
     std::string loadMapname;
     bool        loadMapSingleplayer;
 };

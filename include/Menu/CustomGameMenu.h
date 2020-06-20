@@ -57,7 +57,7 @@ private:
     bool bMultiplayer;
     bool bLANServer;
 
-    std::string currentMapDirectory;
+    std::filesystem::path currentMapDirectory;
 
     SettingsClass::GameOptionsClass currentGameOptions;
 

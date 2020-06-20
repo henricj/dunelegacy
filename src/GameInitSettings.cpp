@@ -50,23 +50,23 @@ GameInitSettings::GameInitSettings(HOUSETYPE newHouseID, int newMission, const S
     randomSeed = getRandomInt();
 }
 
-GameInitSettings::GameInitSettings(std::string&& mapfile, std::string&& filedata, bool multiplePlayersPerHouse, const SettingsClass::GameOptionsClass& gameOptions)
+GameInitSettings::GameInitSettings(std::filesystem::path&& mapfile, std::string&& filedata, bool multiplePlayersPerHouse, const SettingsClass::GameOptionsClass& gameOptions)
  : gameType(GameType::CustomGame), filename(std::move(mapfile)), filedata(std::move(filedata)), multiplePlayersPerHouse(multiplePlayersPerHouse), gameOptions(gameOptions) {
     randomSeed = getRandomInt();
 }
 
-GameInitSettings::GameInitSettings(std::string&& mapfile, std::string&& filedata, std::string&& serverName, bool multiplePlayersPerHouse, const SettingsClass::GameOptionsClass& gameOptions)
+GameInitSettings::GameInitSettings(std::filesystem::path&& mapfile, std::string&& filedata, std::string&& serverName, bool multiplePlayersPerHouse, const SettingsClass::GameOptionsClass& gameOptions)
  : gameType(GameType::CustomMultiplayer), filename(std::move(mapfile)), filedata(std::move(filedata)), servername(std::move(serverName)), multiplePlayersPerHouse(multiplePlayersPerHouse), gameOptions(gameOptions) {
     randomSeed = getRandomInt();
 }
 
-GameInitSettings::GameInitSettings(std::string&& savegame)
+GameInitSettings::GameInitSettings(std::filesystem::path&& savegame)
  : gameType(GameType::LoadSavegame) {
     checkSaveGame(savegame);
     filename = std::move(savegame);
 }
 
-GameInitSettings::GameInitSettings(std::string&& savegame, std::string&& filedata, std::string&& serverName)
+GameInitSettings::GameInitSettings(std::filesystem::path&& savegame, std::string&& filedata, std::string&& serverName)
  : gameType(GameType::LoadMultiplayer), filename(savegame), filedata(filedata), servername(serverName) {
     IMemoryStream memStream(filedata.c_str(), filedata.size());
     checkSaveGame(memStream);
@@ -110,7 +110,7 @@ void GameInitSettings::save(OutputStream& stream) const {
     stream.writeSint8(static_cast<Sint8>(gameType));
     stream.writeSint8(houseID);
 
-    stream.writeString(filename);
+    stream.writeString(filename.u8string());
     stream.writeString(filedata);
 
     stream.writeUint8(mission);
@@ -158,7 +158,7 @@ std::string GameInitSettings::getScenarioFilename(HOUSETYPE newHouse, int missio
     return name;
 }
 
-void GameInitSettings::checkSaveGame(const std::string& savegame) {
+void GameInitSettings::checkSaveGame(const std::filesystem::path& savegame) {
     IFileStream fs;
 
     if(fs.open(savegame) == false) {

@@ -168,12 +168,12 @@ CustomGameMenu::~CustomGameMenu()
 void CustomGameMenu::onChildWindowClose(Window* pChildWindow) {
     LoadSaveWindow* pLoadSaveWindow = dynamic_cast<LoadSaveWindow*>(pChildWindow);
     if(pLoadSaveWindow != nullptr) {
-        std::string filename = pLoadSaveWindow->getFilename();
+        auto filename = pLoadSaveWindow->getFilename();
 
         if(filename != "") {
-            std::string savegamedata = readCompleteFile(filename);
+            auto savegamedata = readCompleteFile(filename);
 
-            std::string servername = settings.general.playerName + "'s Game";
+            auto servername = settings.general.playerName + "'s Game";
             GameInitSettings gameInitSettings(getBasename(filename, true), std::move(savegamedata), std::move(servername));
 
             int ret = CustomGamePlayers(gameInitSettings, true, bLANServer).showMenu();
@@ -195,7 +195,7 @@ void CustomGameMenu::onNext()
         return;
     }
 
-    std::string mapFilename = currentMapDirectory + mapList.getSelectedEntry() + ".ini";
+    auto mapFilename = (currentMapDirectory / mapList.getSelectedEntry()).replace_extension(".ini");
     getCaseInsensitiveFilename(mapFilename);
 
     GameInitSettings gameInitSettings;
@@ -219,9 +219,7 @@ void CustomGameMenu::onCancel()
 
 void CustomGameMenu::onLoad()
 {
-    char tmp[FILENAME_MAX];
-    fnkdat("mpsave/", tmp, FILENAME_MAX, FNKDAT_USER | FNKDAT_CREAT);
-    std::string savepath(tmp);
+    auto [ok, savepath] = fnkdat("mpsave/", FNKDAT_USER | FNKDAT_CREAT);
     openWindow(LoadSaveWindow::create(false, _("Load Game"), savepath, "dls"));
 }
 
@@ -239,27 +237,27 @@ void CustomGameMenu::onMapTypeChange(int buttonID)
 
     switch(buttonID) {
         case 0: {
-            currentMapDirectory = getDuneLegacyDataDir() + "/maps/singleplayer/";
+            currentMapDirectory = getDuneLegacyDataDir() / "maps/singleplayer/";
         } break;
         case 1: {
-            char tmp[FILENAME_MAX];
-            fnkdat("maps/singleplayer/", tmp, FILENAME_MAX, FNKDAT_USER | FNKDAT_CREAT);
+            auto [ok, tmp] = fnkdat("maps/singleplayer/", FNKDAT_USER | FNKDAT_CREAT);
             currentMapDirectory = tmp;
         } break;
         case 2: {
-            currentMapDirectory = getDuneLegacyDataDir() + "/maps/multiplayer/";
+            currentMapDirectory = getDuneLegacyDataDir() / "maps/multiplayer/";
         } break;
         case 3: {
-            char tmp[FILENAME_MAX];
-            fnkdat("maps/multiplayer/", tmp, FILENAME_MAX, FNKDAT_USER | FNKDAT_CREAT);
+            auto [ok, tmp] = fnkdat("maps/multiplayer/", FNKDAT_USER | FNKDAT_CREAT);
             currentMapDirectory = tmp;
         } break;
     }
 
+    currentMapDirectory = currentMapDirectory.lexically_normal().make_preferred();
+
     mapList.clearAllEntries();
 
-    for(const std::string& file : getFileNamesList(currentMapDirectory, "ini", true, FileListOrder_Name_CaseInsensitive_Asc)) {
-        mapList.addEntry(file.substr(0, file.length() - 4));
+    for(const auto& file : getFileNamesList(currentMapDirectory, "ini", true, FileListOrder_Name_CaseInsensitive_Asc)) {
+        mapList.addEntry(file.stem().u8string());
     }
 
     if(mapList.getNumEntries() > 0) {
@@ -281,7 +279,7 @@ void CustomGameMenu::onMapListSelectionChange(bool bInteractive)
         return;
     }
 
-    std::string mapFilename = currentMapDirectory + mapList.getSelectedEntry() + ".ini";
+    auto mapFilename = (currentMapDirectory / mapList.getSelectedEntry()).replace_extension(".ini");
     getCaseInsensitiveFilename(mapFilename);
 
     INIFile inimap(mapFilename);

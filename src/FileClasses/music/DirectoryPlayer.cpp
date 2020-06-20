@@ -23,11 +23,11 @@
 #include <misc/fnkdat.h>
 #include <mmath.h>
 
+#include <filesystem>
+
 DirectoryPlayer::DirectoryPlayer() : MusicPlayer(settings.audio.playMusic, settings.audio.musicVolume) {
     // determine path to config file
-    char tmp[FILENAME_MAX];
-    fnkdat(nullptr, tmp, FILENAME_MAX, FNKDAT_USER | FNKDAT_CREAT);
-    std::string configfilepath(tmp);
+    auto [ok, configfilepath] = fnkdat(FNKDAT_USER | FNKDAT_CREAT);
 
     static const char* const musicDirectoryNames[MUSIC_NUM_MUSIC_TYPES] = { "/music/attack/",
                                                                         "/music/peace/",
@@ -51,10 +51,9 @@ DirectoryPlayer::DirectoryPlayer() : MusicPlayer(settings.audio.playMusic, setti
                                                                     };
 
     for(int i=0;i<MUSIC_NUM_MUSIC_TYPES;i++) {
-        char tmp2[FILENAME_MAX];
         const char* dirName =  musicDirectoryNames[i] + 1; // skip '/' at the beginning
-        fnkdat(dirName, tmp2, FILENAME_MAX, FNKDAT_USER | FNKDAT_CREAT);
-        musicFileList[i] = getMusicFileNames(configfilepath + musicDirectoryNames[i]);
+        fnkdat(dirName, FNKDAT_USER | FNKDAT_CREAT);
+        musicFileList[i] = getMusicFileNames(configfilepath / musicDirectoryNames[i]);
     }
 
     music = nullptr;
@@ -78,7 +77,7 @@ DirectoryPlayer::~DirectoryPlayer() {
 void DirectoryPlayer::changeMusic(MUSICTYPE musicType)
 {
     int musicNum = -1;
-    std::string filename = "";
+    std::filesystem::path filename = "";
 
     if(currentMusicType == musicType && Mix_PlayingMusic()) {
         return;
@@ -116,7 +115,7 @@ void DirectoryPlayer::changeMusic(MUSICTYPE musicType)
             music = nullptr;
         }
 
-        music = Mix_LoadMUS(filename.c_str());
+        music = Mix_LoadMUS(filename.u8string().c_str());
         if(music != nullptr) {
             SDL_Log("Now playing %s!",filename.c_str());
             Mix_PlayMusic(music, -1);
@@ -155,27 +154,27 @@ void DirectoryPlayer::setMusic(bool value) {
     }
 }
 
-std::vector<std::string> DirectoryPlayer::getMusicFileNames(const std::string& dir) {
-    std::vector<std::string> files;
+std::vector<std::filesystem::path> DirectoryPlayer::getMusicFileNames(const std::filesystem::path& dir) {
+    std::vector<std::filesystem::path> files;
 
-    for(const std::string& filename : getFileNamesList(dir,"mp3",true)) {
-        files.push_back(dir + filename);
+    for(const auto& filename : getFileNamesList(dir,"mp3",true)) {
+        files.push_back((dir / filename).lexically_normal());
     }
 
-    for(const std::string& filename : getFileNamesList(dir,"ogg",true)) {
-        files.push_back(dir + filename);
+    for(const auto& filename : getFileNamesList(dir,"ogg",true)) {
+        files.push_back((dir / filename).lexically_normal());
     }
 
-    for(const std::string& filename : getFileNamesList(dir,"wav",true)) {
-        files.push_back(dir + filename);
+    for(const auto& filename : getFileNamesList(dir,"wav",true)) {
+        files.push_back((dir / filename).lexically_normal());
     }
 
-    for(const std::string& filename : getFileNamesList(dir,"flac",true)) {
-        files.push_back(dir + filename);
+    for(const auto& filename : getFileNamesList(dir,"flac",true)) {
+        files.push_back((dir / filename).lexically_normal());
     }
 
-    for(const std::string& filename : getFileNamesList(dir,"mid",true)) {
-        files.push_back(dir + filename);
+    for(const auto& filename : getFileNamesList(dir,"mid",true)) {
+        files.push_back((dir / filename).lexically_normal());
     }
 
     return files;

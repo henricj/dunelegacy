@@ -641,7 +641,7 @@ FixPoint getDeviateWeakness(HOUSETYPE house) {
     Starts a game replay
     \param  filename    the filename of the replay file
 */
-void startReplay(const std::string& filename) {
+void startReplay(const std::filesystem::path& filename) {
     SDL_Log("Initializing replay...");
     try {
         currentGame = new Game();

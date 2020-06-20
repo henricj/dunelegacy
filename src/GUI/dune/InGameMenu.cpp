@@ -132,7 +132,7 @@ bool InGameMenu::handleKeyPress(SDL_KeyboardEvent& key) {
 void InGameMenu::onChildWindowClose(Window* pChildWindow) {
     LoadSaveWindow* pLoadSaveWindow = dynamic_cast<LoadSaveWindow*>(pChildWindow);
     if(pLoadSaveWindow != nullptr) {
-        std::string FileName = pLoadSaveWindow->getFilename();
+        auto FileName = pLoadSaveWindow->getFilename();
         bool bSave = pLoadSaveWindow->isSaveWindow();
 
         if(!FileName.empty()) {
@@ -188,17 +188,13 @@ void InGameMenu::onSettings()
 
 void InGameMenu::onSave()
 {
-    char tmp[FILENAME_MAX];
-    fnkdat(bMultiplayer ? "mpsave/" : "save/", tmp, FILENAME_MAX, FNKDAT_USER | FNKDAT_CREAT);
-    std::string savepath(tmp);
+    auto [ok, savepath] = fnkdat(bMultiplayer ? "mpsave/" : "save/", FNKDAT_USER | FNKDAT_CREAT);
     openWindow(LoadSaveWindow::create(true, _("Save Game"), savepath, "dls", "", color));
 }
 
 void InGameMenu::onLoad()
 {
-    char tmp[FILENAME_MAX];
-    fnkdat("save/", tmp, FILENAME_MAX, FNKDAT_USER | FNKDAT_CREAT);
-    std::string savepath(tmp);
+    auto [ok, savepath] = fnkdat("save/", FNKDAT_USER | FNKDAT_CREAT);
     openWindow(LoadSaveWindow::create(false, _("Load Game"), savepath, "dls", "", color));
 }
 

@@ -333,7 +333,7 @@ void MapEditor::redoLastOperation() {
     }
 }
 
-void MapEditor::loadMap(const std::string& filepath) {
+void MapEditor::loadMap(const std::filesystem::path& filepath) {
     // reset tools
     selectedUnitID = INVALID;
     selectedStructureID = INVALID;
@@ -386,7 +386,7 @@ void MapEditor::loadMap(const std::string& filepath) {
     bChangedSinceLastSave = false;
 }
 
-void MapEditor::saveMap(const std::string& filepath) {
+void MapEditor::saveMap(const std::filesystem::path& filepath) {
     if(!loadedINIFile) {
         std::string comment = "Created with Dune Legacy " + std::string(VERSION) + " Map Editor.";
         loadedINIFile = std::make_unique<INIFile>(false, comment);
@@ -1982,7 +1982,7 @@ void MapEditor::saveMapshot() {
     const int oldCurrentZoomlevel = currentZoomlevel;
     currentZoomlevel = 0;
 
-    auto mapshotFilename = (lastSaveName.empty() ? generateMapname() : getBasename(lastSaveName, true)) + ".png";
+    auto mapshotFilename = (lastSaveName.empty() ? std::filesystem::path{ generateMapname() } : getBasename(lastSaveName, true)).replace_extension(".png");
 
     const auto sizeX = world2zoomedWorld(map.getSizeX()*TILESIZE);
     const auto sizeY = world2zoomedWorld(map.getSizeY()*TILESIZE);
@@ -2013,7 +2013,7 @@ void MapEditor::saveMapshot() {
     drawMap(&tmpScreenborder, true);
 
     sdl2::surface_ptr pMapshotSurface = renderReadSurface(renderer);
-    SavePNG(pMapshotSurface.get(), mapshotFilename.c_str());
+    SavePNG(pMapshotSurface.get(), mapshotFilename.u8string().c_str());
 
     SDL_SetRenderTarget(renderer, oldRenderTarget);
 

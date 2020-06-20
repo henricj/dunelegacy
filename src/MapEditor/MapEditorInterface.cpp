@@ -819,9 +819,9 @@ void MapEditorInterface::onObjectSelected() {
 void MapEditorInterface::onChildWindowClose(Window* pChildWindow) {
     NewMapWindow* pNewMapWindow = dynamic_cast<NewMapWindow*>(pChildWindow);
     if(pNewMapWindow != nullptr) {
-        std::string loadMapFilepath = pNewMapWindow->getLoadMapFilepath();
+        auto loadMapFilepath = pNewMapWindow->getLoadMapFilepath();
 
-        if(loadMapFilepath != "") {
+        if(!loadMapFilepath.empty()) {
             pMapEditor->loadMap(loadMapFilepath);
         } else {
             const MapData& mapdata = pNewMapWindow->getMapData();
@@ -835,9 +835,9 @@ void MapEditorInterface::onChildWindowClose(Window* pChildWindow) {
 
     LoadMapWindow* pLoadMapWindow = dynamic_cast<LoadMapWindow*>(pChildWindow);
     if(pLoadMapWindow != nullptr) {
-        std::string loadMapFilepath = pLoadMapWindow->getLoadMapFilepath();
+        auto loadMapFilepath = pLoadMapWindow->getLoadMapFilepath();
 
-        if(loadMapFilepath != "") {
+        if(!loadMapFilepath.empty()) {
             pMapEditor->loadMap(loadMapFilepath);
         }
     }
@@ -876,27 +876,26 @@ void MapEditorInterface::onQuit() {
 
 void MapEditorInterface::onSave() {
 
-    std::vector<std::string> mapDirectories;
+    std::vector<std::filesystem::path> mapDirectories;
     std::vector<std::string> directoryTitles;
 
-    char tmp[FILENAME_MAX];
-    fnkdat("maps/singleplayer/", tmp, FILENAME_MAX, FNKDAT_USER | FNKDAT_CREAT);
+    auto [ok, tmp] = fnkdat("maps/singleplayer/", FNKDAT_USER | FNKDAT_CREAT);
     mapDirectories.emplace_back(tmp);
     directoryTitles.push_back(_("SP Maps"));
 
-    fnkdat("maps/multiplayer/", tmp, FILENAME_MAX, FNKDAT_USER | FNKDAT_CREAT);
-    mapDirectories.emplace_back(tmp);
+    auto [ok2, tmp2] = fnkdat("maps/multiplayer/",  FNKDAT_USER | FNKDAT_CREAT);
+    mapDirectories.emplace_back(tmp2);
     directoryTitles.push_back(_("MP Maps"));
 
-    const std::string& lastSaveName = pMapEditor->getLastSaveName();
-    std::string mapname;
+    const auto& lastSaveName = pMapEditor->getLastSaveName();
+    std::filesystem::path mapname;
     int lastSaveDirectoryIndex = 0;
     if(lastSaveName.empty()) {
         mapname = pMapEditor->generateMapname();
     } else {
         mapname = getBasename(lastSaveName, true);
 
-        std::string pathName = getBasename(getDirname(lastSaveName));
+        auto pathName = getBasename(getDirname(lastSaveName));
 
         for(int i = 0; i < (int) mapDirectories.size(); i++) {
             if(getBasename(mapDirectories[i]) == pathName) {
@@ -906,7 +905,7 @@ void MapEditorInterface::onSave() {
         }
     }
 
-    openWindow(LoadSaveWindow::create(true, _("Save Map"), mapDirectories, directoryTitles, pMapEditor->getMapVersion() < 2 ? "INI" : "ini", lastSaveDirectoryIndex , mapname, color));
+    openWindow(LoadSaveWindow::create(true, _("Save Map"), mapDirectories, directoryTitles, pMapEditor->getMapVersion() < 2 ? "INI" : "ini", lastSaveDirectoryIndex , mapname.u8string(), color));
 }
 
 

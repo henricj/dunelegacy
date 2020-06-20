@@ -23,6 +23,7 @@
 #include <string>
 #include <list>
 #include <algorithm>
+#include <filesystem>
 
 #define INVALID_LINE (-1)
 
@@ -226,7 +227,7 @@ public:
 public:
 
     INIFile(bool bWhitespace, const std::string& firstLineComment);
-    INIFile(const std::string& filename, bool bWhitespace = true);
+    INIFile(const std::filesystem::path& filename, bool bWhitespace = true);
     INIFile(SDL_RWops * RWopsFile, bool bWhitespace = true);
     INIFile(const INIFile& o) = delete;
     ~INIFile();
@@ -256,7 +257,7 @@ public:
     KeyIterator begin(const std::string& section) const;
     KeyIterator end(const std::string& section) const;
 
-    bool saveChangesTo(const std::string& filename, bool bDOSLineEnding = false) const;
+    bool saveChangesTo(const std::filesystem::path& filename, bool bDOSLineEnding = false) const;
     bool saveChangesTo(SDL_RWops * file, bool bDOSLineEnding = false) const;
 
 private:
