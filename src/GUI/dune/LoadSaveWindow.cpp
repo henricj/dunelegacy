@@ -32,7 +32,7 @@
 #include <cstdio>
 #include <utility>
 
-LoadSaveWindow::LoadSaveWindow(bool bSave, const std::string& caption, const std::vector<std::string>& directories, const std::vector<std::string>& directoryTitles, std::string extension, int preselectedDirectoryIndex, const std::string& preselectedFile, Uint32 color)
+LoadSaveWindow::LoadSaveWindow(bool bSave, const std::string& caption, const std::vector<std::filesystem::path>& directories, const std::vector<std::string>& directoryTitles, std::string extension, int preselectedDirectoryIndex, const std::string& preselectedFile, Uint32 color)
  : Window(0,0,0,0), bSaveWindow(bSave), directories(directories), directoryTitles(directoryTitles), extension(std::move(extension)), currentDirectoryIndex(preselectedDirectoryIndex), preselectedFile(preselectedFile), color(color) {
 
     // set up window
@@ -130,7 +130,7 @@ void LoadSaveWindow::updateEntries() {
 
     int preselectedFileIndex = -1;
     for(const auto& fileName : getFileNamesList(directories[currentDirectoryIndex], extension, true, FileListOrder_ModifyDate_Dsc)) {
-        const auto entryName = fileName.substr(0, fileName.length() - extension.length() - 1);
+        const auto entryName = fileName.stem().u8string();
         fileList.addEntry(entryName);
 
         if(entryName == preselectedFile) {
@@ -183,9 +183,9 @@ void LoadSaveWindow::onChildWindowClose(Window* pChildWindow) {
     int index = fileList.getSelectedIndex();
     if(index < 0) return;
 
-    const auto file2delete = directories[currentDirectoryIndex] + fileList.getEntry(index) + "." + extension;
+    const auto file2delete = (directories[currentDirectoryIndex] / fileList.getEntry(index)).replace_extension(extension);
 
-    if(remove(file2delete.c_str()) != 0) return;
+    if(std::filesystem::remove(file2delete) != 0) return;
 
     // remove was successful => delete from list
     fileList.removeEntry(index);
@@ -203,7 +203,7 @@ void LoadSaveWindow::onOK() {
     if(bSaveWindow == false) {
         const auto index = fileList.getSelectedIndex();
         if(index >= 0) {
-            filename = directories[currentDirectoryIndex] + fileList.getEntry(index) + "." + extension;
+            filename = (directories[currentDirectoryIndex] / fileList.getEntry(index)).replace_extension(extension);
 
             const auto pParentWindow = dynamic_cast<Window*>(getParent());
             if(pParentWindow != nullptr) {
@@ -214,7 +214,7 @@ void LoadSaveWindow::onOK() {
         auto savename = saveName.getText();
 
         if(!savename.empty() && savename.find_first_of("\\/") == std::string::npos) {
-            filename = directories[currentDirectoryIndex] + saveName.getText() + "." + extension;
+            filename = (directories[currentDirectoryIndex] / saveName.getText()).replace_extension(extension);
 
             const auto pParentWindow = dynamic_cast<Window*>(getParent());
             if(pParentWindow != nullptr) {

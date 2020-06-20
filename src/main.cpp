@@ -59,7 +59,9 @@
 #include <fcntl.h>
 
 #ifdef _WIN32
-    #define WIN32_LEAN_AND_MEAN
+    #ifndef WIN32_LEAN_AND_MEAN
+        #define WIN32_LEAN_AND_MEAN
+    #endif
     #include <windows.h>
     #include <cstdio>
     #include <io.h>
@@ -205,31 +207,31 @@ void toogleFullscreen()
     SDL_Delay(100);
 }
 
-std::string getConfigFilepath()
+std::filesystem::path getConfigFilepath()
 {
     // determine path to config file
-    char tmp[FILENAME_MAX];
-    fnkdat(CONFIGFILENAME, tmp, FILENAME_MAX, FNKDAT_USER | FNKDAT_CREAT);
+    auto [ok, tmp] = fnkdat(CONFIGFILENAME, FNKDAT_USER | FNKDAT_CREAT);
 
-    return std::string(tmp);
+    return tmp;
 }
 
-std::string getLogFilepath()
+std::filesystem::path getLogFilepath()
 {
     // determine path to config file
-    char tmp[FILENAME_MAX];
-    if(fnkdat(LOGFILENAME, tmp, FILENAME_MAX, FNKDAT_USER | FNKDAT_CREAT) < 0) {
+    auto [ok, tmp] = fnkdat(LOGFILENAME, FNKDAT_USER | FNKDAT_CREAT);
+
+    if(!ok) {
         THROW(std::runtime_error, "fnkdat() failed!");
     }
 
-    return std::string(tmp);
+    return tmp;
 }
 
-void createDefaultConfigFile(const std::string& configfilepath, const std::string& language) {
+void createDefaultConfigFile(const std::filesystem::path& configfilepath, const std::string& language) {
     SDL_Log("Creating config file '%s'", configfilepath.c_str());
 
 
-    auto file = sdl2::RWops_ptr{ SDL_RWFromFile(configfilepath.c_str(), "w") };
+    auto file = sdl2::RWops_ptr{ SDL_RWFromFile(configfilepath.u8string().c_str(), "w") };
     if(!file) {
         THROW(sdl_error, "Opening config file failed: %s!", SDL_GetError());
     }
@@ -333,13 +335,13 @@ void showMissingFilesMessageBox() {
 
     std::string instruction = "Dune Legacy uses the data files from original Dune II. The following files are missing:\n";
 
-    for(const std::string& missingFile : FileManager::getMissingFiles()) {
-        instruction += " " + missingFile + "\n";
+    for(const auto& missingFile : FileManager::getMissingFiles()) {
+        instruction += " " + missingFile.u8string() + "\n";
     }
 
     instruction += "\nPut them in one of the following directories and restart Dune Legacy:\n";
-    for(const std::string& searchPath : FileManager::getSearchPath()) {
-        instruction += " " + searchPath + "\n";
+    for(const auto& searchPath : FileManager::getSearchPath()) {
+        instruction += " " + searchPath.u8string() + "\n";
     }
 
     instruction += "\nYou may want to add GERMAN.PAK or FRENCH.PAK for playing in these languages.";
@@ -401,7 +403,8 @@ int main(int argc, char *argv[]) {
     try {
 
         // init fnkdat
-        if(fnkdat(nullptr, nullptr, 0, FNKDAT_INIT) < 0) {
+        auto [ok, tmp] = fnkdat(FNKDAT_INIT);
+        if(!ok) {
             THROW(std::runtime_error, "Cannot initialize fnkdat!");
         }
 
@@ -424,33 +427,20 @@ int main(int argc, char *argv[]) {
 
         if(bShowDebugLog == false) {
             // get utf8-encoded log file path
-            std::string logfilePath = getLogFilepath();
-            char* pLogfilePath = (char*) logfilePath.c_str();
+            auto logfilePath = getLogFilepath();
 
             #ifdef _WIN32
 
-            // on win32 we need an ansi-encoded filepath
-            WCHAR szwLogPath[MAX_PATH];
-            char szLogPath[MAX_PATH];
+            const auto wLogFilePath = logfilePath.wstring();
 
-            if(MultiByteToWideChar(CP_UTF8, 0, pLogfilePath, -1, szwLogPath, MAX_PATH) == 0) {
-                THROW(std::runtime_error, "Conversion of logfile path from utf-8 to utf-16 failed!");
-            }
-
-            if(WideCharToMultiByte(CP_ACP, 0, szwLogPath, -1, szLogPath, MAX_PATH, nullptr, nullptr) == 0) {
-                THROW(std::runtime_error, "Conversion of logfile path from utf-16 to ansi failed!");
-            }
-
-            pLogfilePath = szLogPath;
-
-            if(freopen(pLogfilePath, "w", stdout) == NULL) {
-                THROW(io_error, "Reopening logfile '%s' as stdout failed!", pLogfilePath);
+            if(_wfreopen(wLogFilePath.c_str(), L"wS", stdout) == NULL) {
+                THROW(io_error, "Reopening logfile '%s' as stdout failed!", logfilePath.string().c_str());
             }
             setbuf(stdout, nullptr);   // No buffering
 
-            if(freopen(pLogfilePath, "w", stderr) == NULL) {
+            if(_wfreopen(wLogFilePath.c_str(), L"wS", stderr) == NULL) {
                 // use stdout in this error case as stderr is not yet ready
-                THROW(io_error, "Reopening logfile '%s' as stderr failed!", pLogfilePath);
+                THROW(io_error, "Reopening logfile '%s' as stderr failed!", logfilePath.string().c_str());
             }
             setbuf(stderr, nullptr);   // No buffering
 
@@ -459,6 +449,8 @@ int main(int argc, char *argv[]) {
             }
 
             #else
+
+            char* pLogfilePath = (char*)logfilePath.c_str();
 
             int d = open(pLogfilePath, O_WRONLY | O_CREAT | O_TRUNC, 0644);
             if(d < 0) {
@@ -480,12 +472,11 @@ int main(int argc, char *argv[]) {
         SDL_Log("Starting Dune Legacy %s on %s", VERSION, SDL_GetPlatform());
 
         // First check for missing files
-        std::vector<std::string> missingFiles = FileManager::getMissingFiles();
+        auto missingFiles = FileManager::getMissingFiles();
 
         if(!missingFiles.empty()) {
             // create data directory inside config directory
-            char tmp[FILENAME_MAX];
-            fnkdat("data/", tmp, FILENAME_MAX, FNKDAT_USER | FNKDAT_CREAT);
+            auto [ok, tmp] = fnkdat("data", FNKDAT_USER | FNKDAT_CREAT);
 
             showMissingFilesMessageBox();
 
@@ -507,7 +498,7 @@ int main(int argc, char *argv[]) {
             srand(seed);
 
             // check if configfile exists
-            std::string configfilepath = getConfigFilepath();
+            auto configfilepath = getConfigFilepath();
             if(existsFile(configfilepath) == false) {
                 std::string userLanguage = getUserLanguage();
                 if(userLanguage.empty()) {
@@ -564,9 +555,9 @@ int main(int argc, char *argv[]) {
             missingFiles = FileManager::getMissingFiles();
             if(!missingFiles.empty()) {
                 // set back to English
-                std::string setBackToEnglishWarning = fmt::sprintf("The following files are missing for language \"%s\":\n",_("LanguageFileExtension"));
-                for(const std::string& filename : missingFiles) {
-                    setBackToEnglishWarning += filename + "\n";
+                auto setBackToEnglishWarning = fmt::sprintf("The following files are missing for language \"%s\":\n",_("LanguageFileExtension"));
+                for(const auto& filename : missingFiles) {
+                    setBackToEnglishWarning += filename.u8string() + "\n";
                 }
                 setBackToEnglishWarning += "\nLanguage is changed to English!";
                 SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_WARNING, "Dune Legacy", setBackToEnglishWarning.c_str(), NULL);
@@ -781,7 +772,8 @@ int main(int argc, char *argv[]) {
         } while(bExitGame == false);
 
         // deinit fnkdat
-        if(fnkdat(nullptr, nullptr, 0, FNKDAT_UNINIT) < 0) {
+        auto [ok2, tmp2] = fnkdat(FNKDAT_UNINIT);
+        if(!ok2) {
             THROW(std::runtime_error, "Cannot uninitialize fnkdat!");
         }
     } catch(const std::exception& e) {

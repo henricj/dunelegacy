@@ -28,8 +28,7 @@ public:
     IFileStream();
     ~IFileStream();
 
-    bool open(const char* filename);
-    bool open(const std::string& filename);
+    bool open(const std::filesystem::path& filename);
     void close();
 
     std::string readString() override;

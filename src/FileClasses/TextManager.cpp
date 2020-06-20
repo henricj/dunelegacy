@@ -32,35 +32,50 @@
 #endif
 #define _(msgid) getLocalized(msgid)
 
-TextManager::TextManager() {
-    std::list<std::string> languagesList = getFileNamesList(getDuneLegacyDataDir() + "/locale", settings.general.language + ".po", true, FileListOrder_Name_Asc);
+namespace {
+struct FilePtrCloser { void operator()(FILE* fp) const { fclose(fp); } };
+}
 
-    if(languagesList.empty()) {
-        std::string filepath = getDuneLegacyDataDir() + "/locale/English.en.po";
-        SDL_Log("Loading localization from '%s'...", filepath.c_str());
-        auto rwops = sdl2::RWops_ptr{ SDL_RWFromFile(filepath.c_str(), "r") };
-        localizedString = loadPOFile(rwops.get(), "English.en.po");
-    } else {
-        std::string filepath = getDuneLegacyDataDir() + "/locale/" + languagesList.front();
-        SDL_Log("Loading localization from '%s'...", filepath.c_str());
-        auto rwops = sdl2::RWops_ptr{ SDL_RWFromFile(filepath.c_str(), "r") };
-        localizedString = loadPOFile(rwops.get(), languagesList.front());
-    }
+using file_ptr = std::unique_ptr<FILE*, FilePtrCloser>;
+
+sdl2::RWops_ptr openReadOnlyRWops(const std::filesystem::path& path)
+{
+    const auto normal = path.lexically_normal();
+
+    const auto rwops = SDL_RWFromFile(normal.u8string().c_str(), "r");
+
+    if (!rwops)
+        THROW(sdl_error, "Opening file '%s' failed: %s!", normal.u8string().c_str(), SDL_GetError());
+
+    return sdl2::RWops_ptr{ rwops };
+}
+
+TextManager::TextManager() {
+    auto languagesList = getFileNamesList(getDuneLegacyDataDir() / "locale", settings.general.language + ".po", true, FileListOrder_Name_Asc);
+
+    const auto language = languagesList.empty() ? std::filesystem::path{ "English.en.po" } : languagesList.front();
+
+    auto filepath = getDuneLegacyDataDir() / "locale" / language;
+    SDL_Log("Loading localization from '%s'...", filepath.u8string().c_str());
+    auto rwops = openReadOnlyRWops(filepath);
+    localizedString = loadPOFile(rwops.get(), language.u8string());
 }
 
 TextManager::~TextManager() = default;
 
 void TextManager::loadData() {
-    addOrigDuneText("TEXTH." + _("LanguageFileExtension"), true);
-    addOrigDuneText("TEXTA." + _("LanguageFileExtension"), true);
-    addOrigDuneText("TEXTO." + _("LanguageFileExtension"), true);
-    addOrigDuneText("DUNE." + _("LanguageFileExtension"));
-    addOrigDuneText("MESSAGE." + _("LanguageFileExtension"));
+    const auto ext = _("LanguageFileExtension");
+
+    addOrigDuneText("TEXTH." + ext, true);
+    addOrigDuneText("TEXTA." + ext, true);
+    addOrigDuneText("TEXTO." + ext, true);
+    addOrigDuneText("DUNE." + ext);
+    addOrigDuneText("MESSAGE." + ext);
 
     // load all mentat texts
-    mentatStrings[HOUSE_HARKONNEN] = std::make_unique<MentatTextFile>(pFileManager->openFile("MENTATH." + _("LanguageFileExtension")).get());
-    mentatStrings[HOUSE_ATREIDES] = std::make_unique<MentatTextFile>(pFileManager->openFile("MENTATA." + _("LanguageFileExtension")).get());
-    mentatStrings[HOUSE_ORDOS] = std::make_unique<MentatTextFile>(pFileManager->openFile("MENTATO." + _("LanguageFileExtension")).get());
+    mentatStrings[HOUSE_HARKONNEN] = std::make_unique<MentatTextFile>(pFileManager->openFile("MENTATH." + ext).get());
+    mentatStrings[HOUSE_ATREIDES] = std::make_unique<MentatTextFile>(pFileManager->openFile("MENTATA." + ext).get());
+    mentatStrings[HOUSE_ORDOS] = std::make_unique<MentatTextFile>(pFileManager->openFile("MENTATO." + ext).get());
 }
 
 std::string TextManager::getBriefingText(unsigned int mission, unsigned int texttype, int house) const {

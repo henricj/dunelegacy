@@ -71,7 +71,7 @@ inline int missionNumberToLevelNumber(int missionNumber) {
     }
 }
 
-void startReplay(const std::string& filename);
+void startReplay(const std::filesystem::path& filename);
 void startSinglePlayerGame(const GameInitSettings& init);
 void startMultiPlayerGame(const GameInitSettings& init);
 

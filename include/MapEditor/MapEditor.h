@@ -148,7 +148,7 @@ public:
         bQuitEditor = true;
     }
 
-    const std::string& getLastSaveName() const { return lastSaveName; };
+    const std::filesystem::path& getLastSaveName() const { return lastSaveName; };
 
     bool hasChangeSinceLastSave() const { return bChangedSinceLastSave; };
 
@@ -273,8 +273,8 @@ public:
         }
     }
 
-    void saveMap(const std::string& filepath);
-    void loadMap(const std::string& filepath);
+    void saveMap(const std::filesystem::path& filepath);
+    void loadMap(const std::filesystem::path& filepath);
 
 private:
     void performMapEdit(int xpos, int ypos, bool bRepeated);
@@ -322,7 +322,7 @@ private:
 
 
 
-    std::string                     lastSaveName;
+    std::filesystem::path           lastSaveName;
     std::unique_ptr<INIFile>        loadedINIFile;
 
     std::vector<Player>             players;

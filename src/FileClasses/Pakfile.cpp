@@ -31,13 +31,13 @@
     \param pakfilename  Filename of the *.pak-File.
     \param write        Specified if the PAK-File is opened for reading or writing (default is false).
 */
-Pakfile::Pakfile(const std::string& pakfilename, bool write)
+Pakfile::Pakfile(const std::filesystem::path& pakfilename, bool write)
  : write(write), fPakFile(nullptr), filename(pakfilename), writeOutData(nullptr), numWriteOutData(0) {
 
     if(write == false) {
         // Open for reading
-        if( (fPakFile = SDL_RWFromFile(filename.c_str(), "rb")) == nullptr) {
-            THROW(std::invalid_argument, "Pakfile::Pakfile(): Cannot open " + pakfilename + "!");
+        if( (fPakFile = SDL_RWFromFile(filename.u8string().c_str(), "rb")) == nullptr) {
+            THROW(std::invalid_argument, "Pakfile::Pakfile(): Cannot open " + pakfilename.string() + "!");
         }
 
         try {
@@ -48,8 +48,8 @@ Pakfile::Pakfile(const std::string& pakfilename, bool write)
         }
     } else {
         // Open for writing
-        if( (fPakFile = SDL_RWFromFile(filename.c_str(), "wb")) == nullptr) {
-            THROW(std::invalid_argument, "Pakfile::Pakfile(): Cannot open " + pakfilename + "!");
+        if( (fPakFile = SDL_RWFromFile(filename.u8string().c_str(), "wb")) == nullptr) {
+            THROW(std::invalid_argument, "Pakfile::Pakfile(): Cannot open " + pakfilename.string() + "!");
         }
     }
 }
@@ -65,7 +65,7 @@ Pakfile::~Pakfile()
         int headersize = 0;
         for(unsigned int i = 0; i < fileEntries.size(); i++) {
             headersize += 4;
-            headersize += fileEntries[i].filename.length() + 1;
+            headersize += fileEntries[i].filename.u8string().length() + 1;
         }
         headersize += 4;
 
@@ -77,7 +77,7 @@ Pakfile::~Pakfile()
             Uint32 startoffset = fileEntries[i].startOffset + headersize;
             #endif
             SDL_RWwrite(fPakFile,(char*) &startoffset,sizeof(Uint32),1);
-            SDL_RWwrite(fPakFile,fileEntries[i].filename.c_str(), fileEntries[i].filename.length() + 1,1);
+            SDL_RWwrite(fPakFile,fileEntries[i].filename.u8string().c_str(), fileEntries[i].filename.u8string().length() + 1,1);
         }
         Uint32 tmp = 0;
         SDL_RWwrite(fPakFile,(char*) &tmp, sizeof(Uint32), 1);
@@ -103,7 +103,7 @@ Pakfile::~Pakfile()
     \param  index   Index in pak-File
     \return name of the file specified by index
 */
-const std::string& Pakfile::getFilename(unsigned int index) const {
+const std::filesystem::path& Pakfile::getFilename(unsigned int index) const {
     if(index >= fileEntries.size()) {
         THROW(std::invalid_argument, "Pakfile::getFilename(%ud): This Pakfile has only %ud entries!", index, fileEntries.size());
     }
@@ -170,7 +170,7 @@ void Pakfile::addFile(SDL_RWops* rwop, const std::string& filename) {
     \param  filename    The name of this file
     \return SDL_RWops for this file
 */
-sdl2::RWops_ptr Pakfile::openFile(const std::string& filename) {
+sdl2::RWops_ptr Pakfile::openFile(const std::filesystem::path& filename) {
     if(write == true) {
         THROW(std::runtime_error, "Pakfile::openFile(): Writing files is not supported!");
     }
@@ -185,7 +185,7 @@ sdl2::RWops_ptr Pakfile::openFile(const std::string& filename) {
     }
 
     if(index == -1) {
-        THROW(io_error, "Pakfile::openFile(): Cannot find file with name '%s' in this PAK file!", filename.c_str());
+        THROW(io_error, "Pakfile::openFile(): Cannot find file with name '%s' in this PAK file!", filename.string().c_str());
     }
 
     // alloc RWop
@@ -212,7 +212,7 @@ sdl2::RWops_ptr Pakfile::openFile(const std::string& filename) {
     return sdl2::RWops_ptr{ pRWop };
 }
 
-bool Pakfile::exists(const std::string& filename) const {
+bool Pakfile::exists(const std::filesystem::path& filename) const {
     for(unsigned int i=0;i<fileEntries.size();i++) {
         if(filename == fileEntries[i].filename) {
             return true;

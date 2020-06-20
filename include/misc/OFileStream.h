@@ -19,6 +19,7 @@
 #define OFILESTREAM_H
 
 #include "OutputStream.h"
+#include <filesystem>
 #include <stdlib.h>
 #include <string>
 
@@ -28,8 +29,7 @@ public:
     OFileStream();
     ~OFileStream();
 
-    bool open(const char* filename);
-    bool open(const std::string& filename);
+    bool open(const std::filesystem::path& filename);
     void close();
 
     void flush() override;

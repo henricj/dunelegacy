@@ -59,7 +59,7 @@ CustomGamePlayers::CustomGamePlayers(const GameInitSettings& newGameInitSettings
 
     windowWidget.addWidget(&mainVBox, Point(24,23), Point(getRendererWidth() - 48, getRendererHeight() - 32));
 
-    captionLabel.setText(getBasename(gameInitSettings.getFilename(), true));
+    captionLabel.setText(getBasename(gameInitSettings.getFilename(), true).u8string());
     captionLabel.setAlignment(Alignment_HCenter);
     mainVBox.addWidget(&captionLabel, 24);
     mainVBox.addWidget(VSpacer::create(24));

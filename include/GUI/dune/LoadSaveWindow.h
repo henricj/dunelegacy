@@ -33,7 +33,7 @@
 class LoadSaveWindow : public Window
 {
 public:
-    LoadSaveWindow(bool bSave, const std::string& caption, const std::vector<std::string>& directories, const std::vector<std::string>& directoryTitles, std::string extension, int preselectedDirectoryIndex = 0, const std::string& preselectedFile = "", Uint32 color = COLOR_DEFAULT);
+    LoadSaveWindow(bool bSave, const std::string& caption, const std::vector<std::filesystem::path>& directories, const std::vector<std::string>& directoryTitles, std::string extension, int preselectedDirectoryIndex = 0, const std::string& preselectedFile = "", Uint32 color = COLOR_DEFAULT);
     virtual ~LoadSaveWindow();
 
     LoadSaveWindow(const LoadSaveWindow &) = delete;
@@ -42,11 +42,11 @@ public:
     LoadSaveWindow& operator=(LoadSaveWindow &&) = delete;
 
     void updateEntries();
-    std::string getFilename() const noexcept { return filename; };
+    std::filesystem::path getFilename() const noexcept { return filename; };
 
     bool isSaveWindow() const noexcept { return bSaveWindow; };
 
-    const std::string& getDirectory() const { return directories[currentDirectoryIndex]; };
+    const std::filesystem::path& getDirectory() const { return directories[currentDirectoryIndex]; };
 
     int getCurrentDirectoryIndex() const { return currentDirectoryIndex; };
 
@@ -76,8 +76,8 @@ public:
         \param  color       the color of the new dialog
         \return The new dialog box (will be automatically destroyed when it's closed)
     */
-    static LoadSaveWindow* create(bool bSave, const std::string& caption, const std::string& directory, const std::string& extension, const std::string& preselectedFile = "", Uint32 color = COLOR_DEFAULT) {
-        std::vector<std::string> directories;
+    static LoadSaveWindow* create(bool bSave, const std::string& caption, const std::filesystem::path& directory, const std::string& extension, const std::string& preselectedFile = "", Uint32 color = COLOR_DEFAULT) {
+        std::vector<std::filesystem::path> directories;
         directories.push_back(directory);
         std::vector<std::string> directoryTitles;
         directoryTitles.emplace_back("");
@@ -101,7 +101,7 @@ public:
         \param  color       the color of the new dialog
         \return The new dialog box (will be automatically destroyed when it's closed)
     */
-    static LoadSaveWindow* create(bool bSave, const std::string& caption, const std::vector<std::string>& directories, const std::vector<std::string>& directoryTitles, const std::string& extension, int preselectedDirectoryIndex = 0, const std::string& preselectedFile = "", Uint32 color = COLOR_DEFAULT) {
+    static LoadSaveWindow* create(bool bSave, const std::string& caption, const std::vector<std::filesystem::path>& directories, const std::vector<std::string>& directoryTitles, const std::string& extension, int preselectedDirectoryIndex = 0, const std::string& preselectedFile = "", Uint32 color = COLOR_DEFAULT) {
         LoadSaveWindow* dlg = new LoadSaveWindow(bSave, caption, directories, directoryTitles, extension, preselectedDirectoryIndex, preselectedFile, color);
         dlg->pAllocated = true;
         return dlg;
@@ -131,8 +131,8 @@ private:
     TextBox     saveName;
 
     bool        bSaveWindow;
-    std::string filename;
-    std::vector<std::string> directories;
+    std::filesystem::path filename;
+    std::vector<std::filesystem::path> directories;
     std::vector<std::string> directoryTitles;
     std::string extension;
     int currentDirectoryIndex;

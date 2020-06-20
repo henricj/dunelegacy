@@ -176,9 +176,10 @@ void LoadMapWindow::onChildWindowClose(Window* pChildWindow) {
         if(pQstBox->getPressedButtonID() == QSTBOX_BUTTON1) {
             int index = mapList.getSelectedIndex();
             if(index >= 0) {
-                std::string file2delete = currentMapDirectory + mapList.getSelectedEntry() + ".ini";
+                const auto file2delete = (currentMapDirectory / mapList.getSelectedEntry()).replace_extension(".ini");
 
-                if(remove(file2delete.c_str()) == 0) {
+                std::error_code ec;
+                if(std::filesystem::remove(file2delete, ec)) {
                     // remove was successful => delete from list
                     mapList.removeEntry(index);
                     if(mapList.getNumEntries() > 0) {
@@ -207,7 +208,7 @@ void LoadMapWindow::onLoad() {
     }
 
     loadMapname = mapList.getSelectedEntry();
-    loadMapFilepath = currentMapDirectory + loadMapname + ".ini";
+    loadMapFilepath = (currentMapDirectory / loadMapname).replace_extension(".ini");
     loadMapSingleplayer = singleplayerUserMapsButton.getToggleState();
     getCaseInsensitiveFilename(loadMapFilepath);
 
@@ -224,21 +225,19 @@ void LoadMapWindow::onMapTypeChange(int buttonID)
 
     switch(buttonID) {
         case 0: {
-            char tmp[FILENAME_MAX];
-            fnkdat("maps/singleplayer/", tmp, FILENAME_MAX, FNKDAT_USER | FNKDAT_CREAT);
+            auto [ok, tmp] = fnkdat("maps/singleplayer/", FNKDAT_USER | FNKDAT_CREAT);
             currentMapDirectory = tmp;
         } break;
         case 1: {
-            char tmp[FILENAME_MAX];
-            fnkdat("maps/multiplayer/", tmp, FILENAME_MAX, FNKDAT_USER | FNKDAT_CREAT);
+            auto [ok, tmp] = fnkdat("maps/multiplayer/", FNKDAT_USER | FNKDAT_CREAT);
             currentMapDirectory = tmp;
         } break;
     }
 
     mapList.clearAllEntries();
 
-    for(const std::string& filename : getFileNamesList(currentMapDirectory, "ini", true, FileListOrder_Name_CaseInsensitive_Asc)) {
-        mapList.addEntry(filename.substr(0, filename.length() - 4));
+    for(const auto& filename : getFileNamesList(currentMapDirectory, "ini", true, FileListOrder_Name_CaseInsensitive_Asc)) {
+        mapList.addEntry(filename.stem().u8string());
     }
 
     if(mapList.getNumEntries() > 0) {
@@ -260,7 +259,7 @@ void LoadMapWindow::onMapListSelectionChange(bool bInteractive)
         return;
     }
 
-    std::string mapFilename = currentMapDirectory + mapList.getSelectedEntry() + ".ini";
+    auto mapFilename = (currentMapDirectory / mapList.getSelectedEntry()).replace_extension(".ini");
     getCaseInsensitiveFilename(mapFilename);
 
     INIFile inimap(mapFilename);

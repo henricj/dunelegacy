@@ -170,7 +170,7 @@ void Game::initGame(const GameInitSettings& newGameInitSettings) {
     }
 }
 
-void Game::initReplay(const std::string& filename) {
+void Game::initReplay(const std::filesystem::path& filename) {
     bReplay = true;
 
     IFileStream fs;
@@ -1040,9 +1040,7 @@ void Game::runMainLoop() {
     if(bReplay) {
         cmdManager.setReadOnly(true);
     } else {
-        char tmp[FILENAME_MAX];
-        fnkdat("replay/auto.rpl", tmp, FILENAME_MAX, FNKDAT_USER | FNKDAT_CREAT);
-        const std::string replayname(tmp);
+        const auto [ok, replayname] = fnkdat("replay/auto.rpl", FNKDAT_USER | FNKDAT_CREAT);
 
         auto pStream = std::make_unique<OFileStream>();
 
@@ -1253,11 +1251,10 @@ void Game::runMainLoop() {
 
     if(bReplay == false && currentGame->won == true) {
         // save replay
-        char tmp[FILENAME_MAX];
 
-        std::string mapnameBase = getBasename(gameInitSettings.getFilename(), true);
-        fnkdat(std::string("replay/" + mapnameBase + ".rpl").c_str(), tmp, FILENAME_MAX, FNKDAT_USER | FNKDAT_CREAT);
-        std::string replayname(tmp);
+        auto mapnameBase = getBasename(gameInitSettings.getFilename(), true);
+        auto rplName = (std::filesystem::path{ "replay" } / mapnameBase).replace_extension(".rpl");
+        auto [ok, replayname] = fnkdat(rplName, FNKDAT_USER | FNKDAT_CREAT);
 
         OFileStream replystream;
         replystream.open(replayname);
@@ -1404,7 +1401,7 @@ int Game::whatNext()
 }
 
 
-bool Game::loadSaveGame(const std::string& filename) {
+bool Game::loadSaveGame(const std::filesystem::path& filename) {
     IFileStream fs;
 
     if(fs.open(filename) == false) {
@@ -1569,13 +1566,13 @@ bool Game::loadSaveGame(InputStream& stream) {
 }
 
 
-bool Game::saveGame(const std::string& filename)
+bool Game::saveGame(const std::filesystem::path& filename)
 {
     OFileStream fs;
 
     if(fs.open(filename) == false) {
         SDL_Log("Game::saveGame(): %s", strerror(errno));
-        currentGame->addToNewsTicker(std::string("Game NOT saved: Cannot open \"") + filename + "\".");
+        currentGame->addToNewsTicker(std::string("Game NOT saved: Cannot open \"") + filename.u8string() + "\".");
         return false;
     }
 

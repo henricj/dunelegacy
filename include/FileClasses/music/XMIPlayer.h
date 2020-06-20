@@ -70,7 +70,7 @@ public:
 
 private:
 
-    std::string getTmpFileName();
+    std::filesystem::path getTmpFileName();
 
 
     Mix_Music*      music;

@@ -24,6 +24,7 @@
 #include <INIMap/INIMap.h>
 #include <misc/SDL2pp.h>
 
+#include <filesystem>
 #include <string>
 #include <map>
 #include <memory>
@@ -35,7 +36,7 @@ class House;
 
 class INIMapLoader : public INIMap {
 public:
-    INIMapLoader(Game* pGame, const std::string& mapname, const std::string& mapdata = "");
+    INIMapLoader(Game* pGame, const std::filesystem::path& mapname, const std::string& mapdata = "");
     ~INIMapLoader();
 
 private:

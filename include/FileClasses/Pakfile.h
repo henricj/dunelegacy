@@ -21,6 +21,7 @@
 #include <misc/SDL2pp.h>
 
 #include <stdio.h>
+#include <filesystem>
 #include <string>
 #include <vector>
 #include <inttypes.h>
@@ -40,7 +41,7 @@ private:
     struct PakFileEntry final {
         uint32_t startOffset;
         uint32_t endOffset;
-        std::string filename;
+        std::filesystem::path filename;
     };
 
     /// Internal structure used by opened SDL_RWop
@@ -51,10 +52,10 @@ private:
     };
 
 public:
-    Pakfile(const std::string& pakfilename, bool write = false);
+    Pakfile(const std::filesystem::path& pakfilename, bool write = false);
     ~Pakfile();
 
-    const std::string& getFilename(unsigned int index) const;
+    const std::filesystem::path& getFilename(unsigned int index) const;
 
     /// Number of files in this pak-File.
     /**
@@ -63,9 +64,9 @@ public:
     */
     inline int getNumFiles() const { return fileEntries.size(); };
 
-    sdl2::RWops_ptr openFile(const std::string& filename);
+    sdl2::RWops_ptr openFile(const std::filesystem::path& filename);
 
-    bool exists(const std::string& filename) const;
+    bool exists(const std::filesystem::path& filename) const;
 
     void addFile(SDL_RWops* rwop, const std::string& filename);
 
@@ -80,7 +81,7 @@ private:
 
     bool write;
     SDL_RWops * fPakFile;
-    std::string filename;
+    std::filesystem::path filename;
 
     char* writeOutData;
     int numWriteOutData;

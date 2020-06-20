@@ -21,6 +21,7 @@
 #include "Pakfile.h"
 #include <misc/SDL2pp.h>
 
+#include <filesystem>
 #include <string>
 #include <memory>
 #include <vector>
@@ -45,9 +46,9 @@ public:
     FileManager& operator=(const FileManager& fileManager) = delete;
     FileManager& operator=(FileManager&& fileManager) = delete;
 
-    static const std::vector<std::string>& getSearchPath();
-    static std::vector<std::string> getNeededFiles();
-    static std::vector<std::string> getMissingFiles();
+    static const std::vector<std::filesystem::path>& getSearchPath();
+    static std::vector<std::filesystem::path> getNeededFiles();
+    static std::vector<std::filesystem::path> getMissingFiles();
 
     /**
         Opens the file specified via filename. This method first tries to open the file in one of the
@@ -57,11 +58,11 @@ public:
         \return a rwop to read the content of the specified file. Use SDL_RWclose() to close the file after usage.
 
     */
-    sdl2::RWops_ptr openFile(const std::string& filename);
+    sdl2::RWops_ptr openFile(const std::filesystem::path& filename);
 
-    bool exists(const std::string& filename) const;
+    bool exists(const std::filesystem::path& filename) const;
 private:
-    std::string md5FromFilename(const std::string& filename) const;
+    std::string md5FromFilename(const std::filesystem::path& filename) const;
 
     std::vector<std::unique_ptr<Pakfile>> pakFiles;
 };

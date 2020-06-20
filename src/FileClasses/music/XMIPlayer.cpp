@@ -47,7 +47,7 @@ XMIPlayer::~XMIPlayer() {
         music = nullptr;
     }
 
-    remove(getTmpFileName().c_str());
+    std::filesystem::remove(getTmpFileName());
 
     Mix_Quit();
 }
@@ -212,12 +212,12 @@ void XMIPlayer::changeMusic(MUSICTYPE musicType)
     currentMusicType = musicType;
 
     if((musicOn == true) && (filename != "")) {
-        sdl2::RWops_ptr inputrwop = pFileManager->openFile(filename);
+        sdl2::RWops_ptr inputrwop = pFileManager->openFile(std::filesystem::u8path(filename));
         SDLDataSource input(inputrwop.release(),1);
 
-        std::string tmpFilename = getTmpFileName();
+        auto tmpFilename = getTmpFileName();
 
-        SDL_RWops* outputrwop = SDL_RWFromFile(tmpFilename.c_str(),"wb");
+        SDL_RWops* outputrwop = SDL_RWFromFile(tmpFilename.u8string().c_str(),"wb");
         if(outputrwop == nullptr) {
             std::cerr << "Cannot open file " << tmpFilename << "!" << std::endl;
             return;
@@ -236,7 +236,7 @@ void XMIPlayer::changeMusic(MUSICTYPE musicType)
             music = nullptr;
         }
 
-        music = Mix_LoadMUS(tmpFilename.c_str());
+        music = Mix_LoadMUS(tmpFilename.u8string().c_str());
         if(music != nullptr) {
             if(Mix_PlayMusic(music, -1) == -1) {
                 SDL_Log("XMIPlayer: Playing music failed: %s", SDL_GetError());
@@ -279,9 +279,8 @@ void XMIPlayer::setMusic(bool value) {
     }
 }
 
-std::string XMIPlayer::getTmpFileName() {
+std::filesystem::path XMIPlayer::getTmpFileName() {
     // determine path to config file
-    char tmp[FILENAME_MAX];
-    fnkdat("tmp.mid", tmp, FILENAME_MAX, FNKDAT_USER | FNKDAT_CREAT);
-    return std::string(tmp);
+    auto [ok, tmp] = fnkdat("tmp.mid", FNKDAT_USER | FNKDAT_CREAT);
+    return tmp;
 }

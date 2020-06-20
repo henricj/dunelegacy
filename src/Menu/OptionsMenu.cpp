@@ -45,8 +45,12 @@ OptionsMenu::OptionsMenu() : MenuBase()
 {
     determineAvailableScreenResolutions();
 
-    std::list<std::string> languagesList = getFileNamesList(getDuneLegacyDataDir() + "/locale", "po", true, FileListOrder_Name_Asc);
-    availLanguages = std::vector<std::string>(languagesList.begin(), languagesList.end());
+    auto languagesList = getFileNamesList(getDuneLegacyDataDir() / "locale", "po", true, FileListOrder_Name_Asc);
+    std::vector<std::string> availLanguages;
+    availLanguages.reserve(languagesList.size());
+
+    for (const auto& ll : languagesList)
+        availLanguages.emplace_back(ll.u8string());
 
     currentGameOptions = settings.gameOptions;
 
@@ -91,7 +95,7 @@ OptionsMenu::OptionsMenu() : MenuBase()
     languageHBox.addWidget(Spacer::create(), 0.5);
     languageHBox.addWidget(Label::create(_("Language")), 190);
 
-    for(size_t i = 0; i < availLanguages.size(); i++) {
+    for (auto i = decltype(availLanguages.size()){0}; i < availLanguages.size(); i++) {
         languageDropDownBox.addEntry(availLanguages[i].substr(0, availLanguages[i].size()-6), i);
         if(availLanguages[i].substr(availLanguages[i].size()-5,2) == settings.general.language) {
             languageDropDownBox.setSelectedItem(i);

@@ -41,7 +41,7 @@ public:
 
     }
 
-    INIMap(GameType gameType, const std::string& mapname, const std::string& mapdata = "") : mapname(mapname) {
+    INIMap(GameType gameType, const std::filesystem::path& mapname, const std::string& mapdata = "") : mapname(mapname.u8string()) {
 
         if(gameType == GameType::Campaign || gameType == GameType::Skirmish) {
             // load from PAK-File

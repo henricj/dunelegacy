@@ -29,6 +29,7 @@
 #include <misc/exceptions.h>
 
 #include <algorithm>
+#include <filesystem>
 #include <sstream>
 #include <iomanip>
 #include <mutex>
@@ -41,8 +42,7 @@ FileManager::FileManager() {
 
     for(const auto& filename : getNeededFiles()) {
         for(const auto& sp : search_path) {
-            auto filepath = sp + "/";
-            filepath += filename;
+            auto filepath = sp / filename;
             if(getCaseInsensitiveFilename(filepath)) {
                 try {
                     SDL_Log("%s  %s", md5FromFilename(filepath).c_str(), filepath.c_str());
@@ -65,22 +65,21 @@ FileManager::FileManager() {
 
 FileManager::~FileManager() = default;
 
-const std::vector<std::string>& FileManager::getSearchPath() {
-    static std::vector<std::string> search_path;
+const std::vector<std::filesystem::path>& FileManager::getSearchPath() {
+    static std::vector<std::filesystem::path> search_path;
     static std::once_flag flag;
 
     std::call_once(flag, [] {
         search_path.push_back(getDuneLegacyDataDir());
-        char tmp[FILENAME_MAX];
-        fnkdat("data", tmp, FILENAME_MAX, FNKDAT_USER | FNKDAT_CREAT);
-        search_path.emplace_back(tmp);
+        auto [ok, tmp] = fnkdat("data/", FNKDAT_USER | FNKDAT_CREAT);
+        if(ok) search_path.push_back(tmp);
         });
 
     return search_path;
 }
 
-std::vector<std::string> FileManager::getNeededFiles() {
-    std::vector<std::string> fileList = {
+std::vector<std::filesystem::path> FileManager::getNeededFiles() {
+    std::vector<std::filesystem::path> fileList = {
         "LEGACY.PAK",
         "OPENSD2.PAK",
         "GFXHD.PAK",
@@ -109,15 +108,14 @@ std::vector<std::string> FileManager::getNeededFiles() {
     return fileList;
 }
 
-std::vector<std::string> FileManager::getMissingFiles() {
-    std::vector<std::string> MissingFiles;
+std::vector<std::filesystem::path> FileManager::getMissingFiles() {
+    std::vector<std::filesystem::path> MissingFiles;
     const auto searchPath = getSearchPath();
 
     for(const auto& fileName : getNeededFiles()) {
         auto bFound = false;
         for(const auto& sp : searchPath) {
-            auto filepath = sp + "/";
-            filepath += fileName;
+            auto filepath = sp / fileName;
             if(getCaseInsensitiveFilename(filepath)) {
                 bFound = true;
                 break;
@@ -132,15 +130,14 @@ std::vector<std::string> FileManager::getMissingFiles() {
     return MissingFiles;
 }
 
-sdl2::RWops_ptr FileManager::openFile(const std::string& filename) {
+sdl2::RWops_ptr FileManager::openFile(const std::filesystem::path& filename) {
     sdl2::RWops_ptr ret;
 
     // try loading external file
     for(const auto& searchPath : getSearchPath()) {
-        auto externalFilename = searchPath + "/";
-        externalFilename += filename;
+        auto externalFilename = searchPath / filename;
         if(getCaseInsensitiveFilename(externalFilename)) {
-            ret = sdl2::RWops_ptr{SDL_RWFromFile(externalFilename.c_str(), "rb")};
+            ret = sdl2::RWops_ptr{SDL_RWFromFile(externalFilename.u8string().c_str(), "rb")};
             if(ret) {
                 return ret;
             }
@@ -157,12 +154,11 @@ sdl2::RWops_ptr FileManager::openFile(const std::string& filename) {
     THROW(io_error, "Cannot find '%s'!", filename);
 }
 
-bool FileManager::exists(const std::string& filename) const {
+bool FileManager::exists(const std::filesystem::path& filename) const {
 
     // try finding external file
-    for(const std::string& searchPath : getSearchPath()) {
-        auto externalFilename = searchPath + "/";
-        externalFilename += filename;
+    for(const auto& searchPath : getSearchPath()) {
+        auto externalFilename = searchPath / filename;
         if(getCaseInsensitiveFilename(externalFilename)) {
             return true;
         }
@@ -179,10 +175,10 @@ bool FileManager::exists(const std::string& filename) const {
 }
 
 
-std::string FileManager::md5FromFilename(const std::string& filename) const {
+std::string FileManager::md5FromFilename(const std::filesystem::path& filename) const {
     unsigned char md5sum[16];
 
-    if(md5_file(filename.c_str(), md5sum) != 0) {
+    if(md5_file(filename.u8string().c_str(), md5sum) != 0) {
         THROW(io_error, "Cannot open or read '%s'!", filename);
     } else {
 

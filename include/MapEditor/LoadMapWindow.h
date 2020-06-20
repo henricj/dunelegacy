@@ -35,8 +35,8 @@ public:
 
     explicit LoadMapWindow(Uint32 color = COLOR_DEFAULT);
 
-    const std::string& getLoadMapFilepath() const { return loadMapFilepath; };
-    const std::string& getLoadMapname() const { return loadMapname; };
+    const auto& getLoadMapFilepath() const { return loadMapFilepath; };
+    const auto& getLoadMapname() const { return loadMapname; };
     bool isLoadMapSingleplayer() const { return loadMapSingleplayer; };
 
     bool handleKeyPress(SDL_KeyboardEvent& key) override;
@@ -97,10 +97,10 @@ private:
 
     Uint32      color;
 
-    std::string loadMapFilepath;
+    std::filesystem::path loadMapFilepath;
     std::string loadMapname;
     bool        loadMapSingleplayer;
-    std::string currentMapDirectory;
+    std::filesystem::path currentMapDirectory;
 };
 
 
