@@ -23,3 +23,5 @@ IDE/VC/obj
 *.user
 IDE/VC/*.out?
 *.TMP
+/out/
+/.vs/
