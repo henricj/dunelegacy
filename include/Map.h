@@ -23,6 +23,7 @@
 #include <misc/InputStream.h>
 #include <misc/OutputStream.h>
 #include <misc/exceptions.h>
+#include "misc/Random.h"
 
 class Map final
 {
@@ -197,7 +198,7 @@ protected:
             return box_sets_[depth - 1];
         }
 
-        auto max_depth() const noexcept { return box_sets_.size(); }
+        size_t max_depth() const noexcept { return box_sets_.size(); }
     };
 public:
 

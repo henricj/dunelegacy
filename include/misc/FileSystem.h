@@ -18,6 +18,7 @@
 #ifndef FILESYSTEM_H
 #define FILESYSTEM_H
 
+#include <cstdint>
 #include <string>
 #include <list>
 #include <utility>
