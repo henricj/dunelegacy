@@ -72,6 +72,7 @@ if(MSVC)
     string( APPEND CMAKE_CXX_FLAGS ${DUNELEGACY_MSVC_FLAGS} )
 endif()
 
+add_subdirectory(external)
 add_subdirectory(src)
 
 message(STATUS "          CMAKE_C_FLAGS: ${CMAKE_C_FLAGS}")
