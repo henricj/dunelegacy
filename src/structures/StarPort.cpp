@@ -116,11 +116,12 @@ void StarPort::handleProduceItemClick(Uint32 itemID, bool multipleMode) {
 }
 
 void StarPort::handlePlaceOrderClick() {
-    currentGame->getCommandManager().addCommand(Command(pLocalPlayer->getPlayerID(), CMD_STARPORT_PLACEORDER, objectID));
+    currentGame->getCommandManager().addCommand(Command(pLocalPlayer->getPlayerID(), CMDTYPE::CMD_STARPORT_PLACEORDER, objectID));
 }
 
 void StarPort::handleCancelOrderClick() {
-    currentGame->getCommandManager().addCommand(Command(pLocalPlayer->getPlayerID(), CMD_STARPORT_CANCELORDER, objectID));
+    currentGame->getCommandManager().addCommand(
+        Command(pLocalPlayer->getPlayerID(), CMDTYPE::CMD_STARPORT_CANCELORDER, objectID));
 }
 
 void StarPort::doProduceItem(Uint32 itemID, bool multipleMode) {
@@ -219,7 +220,7 @@ void StarPort::updateBuildList() {
 
     for(auto i = 0; itemOrder[i] != ItemID_Invalid; ++i) {
 
-        const auto& objData = currentGame->objectData.data[itemOrder[i]][originalHouseID];
+        const auto& objData = currentGame->objectData.data[itemOrder[i]][static_cast<int>(originalHouseID)];
 
         if(objData.enabled && (choam.getNumAvailable(itemOrder[i]) != INVALID)) {
             insertItem(buildList, iter, itemOrder[i], choam.getPrice(itemOrder[i]));
@@ -243,13 +244,13 @@ void StarPort::updateStructureSpecificStuff() {
             frigate->setDestination(closestPoint);
 
             if (pos.x == 0)
-                frigate->setAngle(RIGHT);
+                frigate->setAngle(ANGLETYPE::RIGHT);
             else if (pos.x == currentGameMap->getSizeX()-1)
-                frigate->setAngle(LEFT);
+                frigate->setAngle(ANGLETYPE::LEFT);
             else if (pos.y == 0)
-                frigate->setAngle(DOWN);
+                frigate->setAngle(ANGLETYPE::DOWN);
             else if (pos.y == currentGameMap->getSizeY()-1)
-                frigate->setAngle(UP);
+                frigate->setAngle(ANGLETYPE::UP);
 
             deployTimer = MILLI2CYCLES(2000);
 

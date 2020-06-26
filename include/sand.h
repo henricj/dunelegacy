@@ -39,7 +39,7 @@ Coord           getStructureSize(int itemID);
 
 Uint32          getItemIDByName(const std::string& name);
 std::string     getItemNameByID(Uint32 itemID);
-SDL_Texture*    resolveItemPicture(int itemID, HOUSETYPE house = HOUSE_HARKONNEN);
+SDL_Texture*    resolveItemPicture(int itemID, HOUSETYPE house = HOUSETYPE::HOUSE_HARKONNEN);
 
 HOUSETYPE       getHouseByName(const std::string& name);
 std::string     getHouseNameByNumber(HOUSETYPE house);
@@ -59,7 +59,7 @@ AITeamType        getAITeamTypeByName(const std::string& name);
 std::string     getAITeamTypeNameByID(AITeamType aiTeamType);
 
 
-Uint32          getColorByTerrainType(int terrainType);
+Uint32 getColorByTerrainType(TERRAINTYPE terrainType);
 
 FixPoint        getDeviateWeakness(HOUSETYPE house);
 

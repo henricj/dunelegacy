@@ -34,7 +34,7 @@
 
 PlayerSettingsWindow::PlayerSettingsWindow(MapEditor* pMapEditor, HOUSETYPE currentHouse) : Window(0,0,0,0), pMapEditor(pMapEditor), house(currentHouse) {
 
-    color = SDL2RGB(palette[houseToPaletteIndex[house]+3]);
+    color = SDL2RGB(palette[houseToPaletteIndex[static_cast<int>(house)]+3]);
 
     // set up window
     SDL_Texture *pBackground = pGFXManager->getUIGraphic(UI_NewMapWindow);
@@ -57,11 +57,12 @@ PlayerSettingsWindow::PlayerSettingsWindow(MapEditor* pMapEditor, HOUSETYPE curr
 
     mainVBox.addWidget(&centralVBox, 360);
 
-    for(int i=0;i<NUM_HOUSES;i++) {
+    auto& players = pMapEditor->getPlayers();
+    for(int i = 0; i < players.size(); i++) {
 
-        MapEditor::Player& playerInfo = pMapEditor->getPlayers()[i];
+        const auto& playerInfo = players[i];
 
-        Uint32 currentColor = SDL2RGB(palette[houseToPaletteIndex[playerInfo.colorOfHouse] + 3]);
+        Uint32 currentColor = SDL2RGB(palette[houseToPaletteIndex[static_cast<int>(playerInfo.colorOfHouse)] + 3]);
 
         centralVBox.addWidget(VSpacer::create(15));
 
@@ -205,37 +206,37 @@ void PlayerSettingsWindow::onAdvancedBasicToggle() {
     if(advancedBasicToggle.getText() == _("Advanced...")) {
         advancedBasicToggle.setText(_("Basic..."));
 
-        for(int i=0;i<NUM_HOUSES;i++) {
-            playerWidgets[i].playerHBox.removeChildWidget(&playerWidgets[i].creditsLabel);
-            playerWidgets[i].playerHBox.removeChildWidget(&playerWidgets[i].creditsTextBox);
-            playerWidgets[i].playerHBox.removeChildWidget(&playerWidgets[i].spacer);
-            playerWidgets[i].playerHBox.removeChildWidget(&playerWidgets[i].teamLabel);
-            playerWidgets[i].playerHBox.removeChildWidget(&playerWidgets[i].teamDropDownBox);
+        for(auto& playerWidget : playerWidgets) {
+            playerWidget.playerHBox.removeChildWidget(&playerWidget.creditsLabel);
+            playerWidget.playerHBox.removeChildWidget(&playerWidget.creditsTextBox);
+            playerWidget.playerHBox.removeChildWidget(&playerWidget.spacer);
+            playerWidget.playerHBox.removeChildWidget(&playerWidget.teamLabel);
+            playerWidget.playerHBox.removeChildWidget(&playerWidget.teamDropDownBox);
 
 
-            playerWidgets[i].playerHBox.addWidget(&playerWidgets[i].spiceQuotaLabel);
-            playerWidgets[i].playerHBox.addWidget(&playerWidgets[i].spiceQuotaTextBox, 75);
-            playerWidgets[i].playerHBox.addWidget(&playerWidgets[i].spacer, 5.0);
-            playerWidgets[i].playerHBox.addWidget(&playerWidgets[i].maxUnitsLabel);
-            playerWidgets[i].playerHBox.addWidget(&playerWidgets[i].maxUnitsTextBox, 50);
+            playerWidget.playerHBox.addWidget(&playerWidget.spiceQuotaLabel);
+            playerWidget.playerHBox.addWidget(&playerWidget.spiceQuotaTextBox, 75);
+            playerWidget.playerHBox.addWidget(&playerWidget.spacer, 5.0);
+            playerWidget.playerHBox.addWidget(&playerWidget.maxUnitsLabel);
+            playerWidget.playerHBox.addWidget(&playerWidget.maxUnitsTextBox, 50);
         }
 
     } else {
         advancedBasicToggle.setText(_("Advanced..."));
 
-        for(int i=0;i<NUM_HOUSES;i++) {
-            playerWidgets[i].playerHBox.removeChildWidget(&playerWidgets[i].spiceQuotaLabel);
-            playerWidgets[i].playerHBox.removeChildWidget(&playerWidgets[i].spiceQuotaTextBox);
-            playerWidgets[i].playerHBox.removeChildWidget(&playerWidgets[i].spacer);
-            playerWidgets[i].playerHBox.removeChildWidget(&playerWidgets[i].maxUnitsLabel);
-            playerWidgets[i].playerHBox.removeChildWidget(&playerWidgets[i].maxUnitsTextBox);
+        for(auto& playerWidget : playerWidgets) {
+            playerWidget.playerHBox.removeChildWidget(&playerWidget.spiceQuotaLabel);
+            playerWidget.playerHBox.removeChildWidget(&playerWidget.spiceQuotaTextBox);
+            playerWidget.playerHBox.removeChildWidget(&playerWidget.spacer);
+            playerWidget.playerHBox.removeChildWidget(&playerWidget.maxUnitsLabel);
+            playerWidget.playerHBox.removeChildWidget(&playerWidget.maxUnitsTextBox);
 
 
-            playerWidgets[i].playerHBox.addWidget(&playerWidgets[i].creditsLabel);
-            playerWidgets[i].playerHBox.addWidget(&playerWidgets[i].creditsTextBox, 80);
-            playerWidgets[i].playerHBox.addWidget(&playerWidgets[i].spacer, 5.0);
-            playerWidgets[i].playerHBox.addWidget(&playerWidgets[i].teamLabel);
-            playerWidgets[i].playerHBox.addWidget(&playerWidgets[i].teamDropDownBox, 65);
+            playerWidget.playerHBox.addWidget(&playerWidget.creditsLabel);
+            playerWidget.playerHBox.addWidget(&playerWidget.creditsTextBox, 80);
+            playerWidget.playerHBox.addWidget(&playerWidget.spacer, 5.0);
+            playerWidget.playerHBox.addWidget(&playerWidget.teamLabel);
+            playerWidget.playerHBox.addWidget(&playerWidget.teamDropDownBox, 65);
         }
     }
 }
@@ -244,7 +245,7 @@ void PlayerSettingsWindow::onOK() {
 
     pMapEditor->startOperation();
 
-    for(int i=0;i<NUM_HOUSES;i++) {
+    for(int i = 0; i < playerWidgets.size(); i++) {
         bool bActive = playerWidgets[i].playerCheckbox.isChecked();
         bool bAnyHouse = pMapEditor->getMapVersion() < 2 ? false : playerWidgets[i].anyHouseRadioButton.isChecked();
         int credits = playerWidgets[i].creditsTextBox.getValue();

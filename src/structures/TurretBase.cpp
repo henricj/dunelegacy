@@ -32,7 +32,7 @@ TurretBase::TurretBase(House* newOwner) : StructureBase(newOwner)
     TurretBase::init();
 
     angle = currentGame->randomGen.rand(0, 7);
-    drawnAngle = lround(angle);
+    drawnAngle = static_cast<ANGLETYPE>(lround(angle));
 
     findTargetTimer = 0;
     weaponTimer = 0;
@@ -71,20 +71,21 @@ void TurretBase::updateStructureSpecificStuff() {
             setTarget(nullptr);
         } else if(targetInWeaponRange()) {
             Coord closestPoint = target.getObjPointer()->getClosestPoint(location);
-            int wantedAngle = destinationDrawnAngle(location, closestPoint);
+            const auto wantedAngle = destinationDrawnAngle(location, closestPoint);
 
-            if(angle != wantedAngle) {
+            if(angle != static_cast<int>(wantedAngle)) {
                 // turn
                 FixPoint  angleLeft = 0;
                 FixPoint  angleRight = 0;
 
-                if(angle > wantedAngle) {
-                    angleRight = angle - wantedAngle;
-                    angleLeft = FixPoint::abs(NUM_ANGLES-angle)+wantedAngle;
+                if(angle > static_cast<int>(wantedAngle)) {
+                    angleRight = angle - static_cast<int>(wantedAngle);
+                    angleLeft =                         FixPoint::abs(static_cast<int>(ANGLETYPE::NUM_ANGLES) - angle) + static_cast<int>(wantedAngle);
                 }
-                else if(angle < wantedAngle) {
-                    angleRight = FixPoint::abs(NUM_ANGLES-wantedAngle) + angle;
-                    angleLeft = wantedAngle - angle;
+                else if(angle < static_cast<int>(wantedAngle)) {
+                    angleRight =
+                        FixPoint::abs(static_cast<int>(ANGLETYPE::NUM_ANGLES) - static_cast<int>(wantedAngle)) + angle;
+                    angleLeft = static_cast<int>(wantedAngle) - angle;
                 }
 
                 if(angleLeft <= angleRight) {
@@ -118,7 +119,7 @@ void TurretBase::updateStructureSpecificStuff() {
 void TurretBase::handleActionCommand(int xPos, int yPos) {
     if(currentGameMap->tileExists(xPos, yPos)) {
         ObjectBase* tempTarget = currentGameMap->getTile(xPos, yPos)->getObject();
-        currentGame->getCommandManager().addCommand(Command(pLocalPlayer->getPlayerID(), CMD_TURRET_ATTACKOBJECT,objectID,tempTarget->getObjectID()));
+        currentGame->getCommandManager().addCommand(Command(pLocalPlayer->getPlayerID(), CMDTYPE::CMD_TURRET_ATTACKOBJECT,objectID,tempTarget->getObjectID()));
 
     }
 }
@@ -139,21 +140,21 @@ void TurretBase::doAttackObject(const ObjectBase* pObject) {
 }
 
 void TurretBase::turnLeft() {
-    angle += currentGame->objectData.data[itemID][originalHouseID].turnspeed;
+    angle += currentGame->objectData.data[itemID][static_cast<int>(originalHouseID)].turnspeed;
     if (angle >= 7.5_fix)    //must keep drawnangle between 0 and 7
         angle -= 8;
-    drawnAngle = lround(angle);
-    curAnimFrame = firstAnimFrame = lastAnimFrame = ((10-drawnAngle) % 8) + 2;
+    drawnAngle = static_cast<ANGLETYPE>(lround(angle));
+    curAnimFrame = firstAnimFrame = lastAnimFrame = ((10-static_cast<int>(drawnAngle)) % 8) + 2;
 }
 
 void TurretBase::turnRight() {
-    angle -= currentGame->objectData.data[itemID][originalHouseID].turnspeed;
+    angle -= currentGame->objectData.data[itemID][static_cast<int>(originalHouseID)].turnspeed;
     if(angle < -0.5_fix) {
         //must keep angle between 0 and 7
         angle += 8;
     }
-    drawnAngle = lround(angle);
-    curAnimFrame = firstAnimFrame = lastAnimFrame = ((10-drawnAngle) % 8) + 2;
+    drawnAngle = static_cast<ANGLETYPE>(lround(angle));
+    curAnimFrame = firstAnimFrame = lastAnimFrame = ((10-static_cast<int>(drawnAngle)) % 8) + 2;
 }
 
 void TurretBase::attack() {
@@ -162,10 +163,9 @@ void TurretBase::attack() {
         const auto pObject = target.getObjPointer();
         const auto targetCenterPoint = pObject->getClosestCenterPoint(location);
 
-        currentGameMap->add_bullet(objectID, &centerPoint, &targetCenterPoint,bulletType,
-                                               currentGame->objectData.data[itemID][originalHouseID].weapondamage,
-                                               pObject->isAFlyingUnit(),
-                                               pObject);
+        currentGameMap->add_bullet(objectID, &centerPoint, &targetCenterPoint, bulletType,
+                                   currentGame->objectData.data[itemID][static_cast<int>(originalHouseID)].weapondamage,
+                                   pObject->isAFlyingUnit(), pObject);
 
         currentGameMap->viewMap(pObject->getOwner()->getHouseID(), location, 2);
         soundPlayer->playSoundAt(attackSound, location);

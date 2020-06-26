@@ -125,7 +125,7 @@ void BuilderBase::insertItem(std::list<BuildItem>& buildItemList, std::list<Buil
     }
 
     if(price == -1) {
-        price = currentGame->objectData.data[itemID][originalHouseID].price;
+        price = currentGame->objectData.data[itemID][static_cast<int>(originalHouseID)].price;
     }
 
     buildItemList.insert(iter, BuildItem(itemID, price));
@@ -203,15 +203,16 @@ void BuilderBase::updateProductionProgress() {
         const FixPoint oldProgress = productionProgress;
 
         if(currentGame->getGameInitSettings().getGameOptions().instantBuild == true) {
-            const FixPoint totalBuildCosts = currentGame->objectData.data[currentProducedItem][originalHouseID].price;
+            const FixPoint totalBuildCosts = currentGame->objectData.data[currentProducedItem][static_cast<int>(originalHouseID)].price;
             const auto buildCosts = totalBuildCosts - productionProgress;
 
             productionProgress += owner->takeCredits(buildCosts);
         } else {
 
             const auto buildSpeed = std::min( getHealth() / getMaxHealth(), buildSpeedLimit);
-            const auto totalBuildCosts = currentGame->objectData.data[currentProducedItem][originalHouseID].price;
-            auto totalBuildGameTicks = currentGame->objectData.data[currentProducedItem][originalHouseID].buildtime*15;
+            const FixPoint totalBuildCosts =
+                currentGame->objectData.data[currentProducedItem][static_cast<int>(originalHouseID)].price;
+            auto totalBuildGameTicks = currentGame->objectData.data[currentProducedItem][static_cast<int>(originalHouseID)].buildtime*15;
             const auto buildCosts = totalBuildCosts / totalBuildGameTicks;
 
             productionProgress += owner->takeCredits(buildCosts*buildSpeed);
@@ -258,7 +259,7 @@ int BuilderBase::getMaxUpgradeLevel() const {
     auto upgradeLevel = 0;
 
     for(int i = ItemID_FirstID; i <= ItemID_LastID; ++i) {
-        const auto& objData = currentGame->objectData.data[i][originalHouseID];
+        const auto& objData = currentGame->objectData.data[i][static_cast<int>(originalHouseID)];
 
         if(objData.enabled && (objData.builder == static_cast<int>(itemID)) && (objData.techLevel <= currentGame->techLevel)) {
             upgradeLevel = std::max(upgradeLevel, static_cast<int>(objData.upgradeLevel));
@@ -276,7 +277,7 @@ void BuilderBase::updateBuildList()
 
         const auto itemID2Add = itemOrder[i];
 
-        const auto& objData = currentGame->objectData.data[itemID2Add][originalHouseID];
+        const auto& objData = currentGame->objectData.data[itemID2Add][static_cast<int>(originalHouseID)];
 
         if(!objData.enabled || (objData.builder != static_cast<int>(itemID)) || (objData.upgradeLevel > curUpgradeLev) || (objData.techLevel > currentGame->techLevel)) {
             // first simple checks have rejected this item as being available for built in this builder
@@ -333,7 +334,7 @@ void BuilderBase::unSetWaitingToPlace() {
 }
 
 int BuilderBase::getUpgradeCost() const {
-    return currentGame->objectData.data[itemID][originalHouseID].price / 2;
+    return currentGame->objectData.data[itemID][static_cast<int>(originalHouseID)].price / 2;
 }
 
 
@@ -443,11 +444,12 @@ void BuilderBase::removeBuiltItemFromProductionQueue() {
 }
 
 void BuilderBase::handleUpgradeClick() {
-    currentGame->getCommandManager().addCommand(Command(pLocalPlayer->getPlayerID(), CMD_BUILDER_UPGRADE, objectID));
+    currentGame->getCommandManager().addCommand(
+        Command(pLocalPlayer->getPlayerID(), CMDTYPE::CMD_BUILDER_UPGRADE, objectID));
 }
 
 void BuilderBase::handleProduceItemClick(Uint32 itemID, bool multipleMode) {
-    for(const BuildItem& buildItem : buildList) {
+    for(const auto& buildItem : buildList) {
         if(buildItem.itemID == itemID) {
             if( currentGame->getGameInitSettings().getGameOptions().onlyOnePalace
                 && (itemID == Structure_Palace)
@@ -459,15 +461,17 @@ void BuilderBase::handleProduceItemClick(Uint32 itemID, bool multipleMode) {
         }
     }
 
-    currentGame->getCommandManager().addCommand(Command(pLocalPlayer->getPlayerID(), CMD_BUILDER_PRODUCEITEM, objectID, itemID, (Uint32) multipleMode));
+    currentGame->getCommandManager().addCommand(Command(pLocalPlayer->getPlayerID(), CMDTYPE::CMD_BUILDER_PRODUCEITEM, objectID, itemID, (Uint32) multipleMode));
 }
 
 void BuilderBase::handleCancelItemClick(Uint32 itemID, bool multipleMode) {
-    currentGame->getCommandManager().addCommand(Command(pLocalPlayer->getPlayerID(), CMD_BUILDER_CANCELITEM, objectID, itemID, (Uint32) multipleMode));
+    currentGame->getCommandManager().addCommand(
+        Command(pLocalPlayer->getPlayerID(), CMDTYPE::CMD_BUILDER_CANCELITEM, objectID, itemID, (Uint32)multipleMode));
 }
 
 void BuilderBase::handleSetOnHoldClick(bool OnHold) {
-    currentGame->getCommandManager().addCommand(Command(pLocalPlayer->getPlayerID(), CMD_BUILDER_SETONHOLD, objectID, (Uint32) OnHold));
+    currentGame->getCommandManager().addCommand(
+        Command(pLocalPlayer->getPlayerID(), CMDTYPE::CMD_BUILDER_SETONHOLD, objectID, (Uint32)OnHold));
 }
 
 

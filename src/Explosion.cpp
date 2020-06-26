@@ -27,13 +27,13 @@
 #define CYCLES_PER_FRAME    5
 
 Explosion::Explosion()
- : explosionID(NONE_ID), house(HOUSE_HARKONNEN)
+ : explosionID(NONE_ID), house(HOUSETYPE::HOUSE_HARKONNEN)
 {
     frameTimer = CYCLES_PER_FRAME;
     currentFrame = 0;
 }
 
-Explosion::Explosion(Uint32 explosionID, const Coord& position, int house)
+Explosion::Explosion(Uint32 explosionID, const Coord& position, HOUSETYPE  house)
  : explosionID(explosionID), position(position) , house(house)
 {
     init();
@@ -47,7 +47,7 @@ Explosion::Explosion(InputStream& stream)
     explosionID = stream.readUint32();
     position.x = stream.readSint16();
     position.y = stream.readSint16();
-    house = stream.readUint32();
+    house = static_cast<HOUSETYPE>(stream.readUint32());
     frameTimer = stream.readSint32();
     currentFrame = stream.readSint32();
 
@@ -130,7 +130,7 @@ void Explosion::save(OutputStream& stream) const
     stream.writeUint32(explosionID);
     stream.writeSint16(position.x);
     stream.writeSint16(position.y);
-    stream.writeUint32(house);
+    stream.writeUint32(static_cast<Uint32>(house));
     stream.writeSint32(frameTimer);
     stream.writeSint32(currentFrame);
 }

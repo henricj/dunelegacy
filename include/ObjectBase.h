@@ -174,8 +174,8 @@ public:
     ObjectBase* getTarget() noexcept { return target.getObjPointer(); }
     const ObjectBase* getTarget() const noexcept { return target.getObjPointer(); }
 
-    int getOriginalHouseID() const noexcept { return originalHouseID; }
-    virtual void setOriginalHouseID(int i) { originalHouseID = i; }
+    HOUSETYPE getOriginalHouseID() const noexcept { return originalHouseID; }
+    virtual void setOriginalHouseID(HOUSETYPE i) { originalHouseID = i; }
     House* getOwner() const noexcept { return owner; }
 
     void setOwner(House* no) noexcept { owner = no; }
@@ -202,7 +202,7 @@ protected:
 
     // object state/properties
     Uint32   objectID;               ///< The unique object ID of this object
-    int      originalHouseID;        ///< for takeover/deviation, we still want to keep track of what the original house was
+    HOUSETYPE      originalHouseID;  ///< for takeover/deviation, we still want to keep track of what the original house was
     House    *owner;                 ///< The owner of this object
 
     Coord    location;               ///< The current position of this object in tile coordinates
@@ -212,7 +212,7 @@ protected:
     FixPoint realY;                  ///< The y-coordinate of this object in world coordinates
 
     FixPoint angle;                  ///< The current angle of this unit/structure (8 = 360°)
-    Sint8    drawnAngle;             ///< The angle this unit/structure is drawn with. (e.g. 0 to 7)
+    ANGLETYPE drawnAngle;           ///< The angle this unit/structure is drawn with. (e.g. 0 to 7)
 
     bool     active;                 ///< Is this unit/structure active?
     bool     respondable;            ///< Is this unit/structure respondable to commands?

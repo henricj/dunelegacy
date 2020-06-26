@@ -55,7 +55,7 @@ public:
     bool canPassTile(const Tile* pTile) const override;
     int getSleepTimer() const noexcept { return sleepTimer; }
 
-    int getCurrentAttackAngle() const override;
+    ANGLETYPE getCurrentAttackAngle() const override;
 
     void playAttackSound() override;
 

@@ -35,9 +35,9 @@
 
 #include <string>
 
-Meanwhile::Meanwhile(int house, bool firstMeanwhile) {
+Meanwhile::Meanwhile(HOUSETYPE house, bool firstMeanwhile) {
 
-    if(house != HOUSE_HARKONNEN && house != HOUSE_ATREIDES && house != HOUSE_ORDOS) {
+    if(house != HOUSETYPE::HOUSE_HARKONNEN && house != HOUSETYPE::HOUSE_ATREIDES && house != HOUSETYPE::HOUSE_ORDOS) {
         THROW(std::invalid_argument, "Invalid house number %d!", house);
     }
 
@@ -46,15 +46,15 @@ Meanwhile::Meanwhile(int house, bool firstMeanwhile) {
 
     IndexedTextFile dune_text{ pFileManager->openFile("DUNE." + _("LanguageFileExtension")).get() };
 
-    int textBaseIndex = MeanwhileText_Base + ((house+2)%3) * MeanwhileText_NumTextsPerHouse;
+    int textBaseIndex = MeanwhileText_Base + ((static_cast<int>(house) + 2) % 3) * MeanwhileText_NumTextsPerHouse;
 
     if(dune_text.getNumStrings() == 335) {
         // Dune II 1.0 has 2 ranks less
         textBaseIndex -= 2;
     }
 
-    const auto houseOfVisitor = (house+2)%3;
-    const auto color = SDL2RGB(palette[houseToPaletteIndex[house]+1]);
+    const auto houseOfVisitor = (static_cast<int>(house) + 2) % 3;
+    const auto color = SDL2RGB(palette[houseToPaletteIndex[static_cast<int>(house)]+1]);
     const auto sardaukarColor = SDL2RGB(palette[PALCOLOR_SARDAUKAR+1]);
     const auto visitorColor = SDL2RGB(palette[houseToPaletteIndex[houseOfVisitor]+1]);
 
@@ -70,7 +70,7 @@ Meanwhile::Meanwhile(int house, bool firstMeanwhile) {
 
         startNewScene();
 
-        addVideoEvent(std::make_unique<HoldPictureVideoEvent>(pMeanwhile->getPicture(meanwhileFrame[house]).get(), 75));
+        addVideoEvent(std::make_unique<HoldPictureVideoEvent>(pMeanwhile->getPicture(meanwhileFrame[static_cast<int>(house)]).get(), 75));
         addTextEvent(std::make_unique<TextEvent>(dune_text.getString(textBaseIndex+MeanwhileText_You_of_all_people),sardaukarColor,0,45,true,true,false));
         addTextEvent(std::make_unique<TextEvent>(dune_text.getString(textBaseIndex+MeanwhileText_Yes_your_excellency_I),visitorColor,45,30,true,false,false));
 
@@ -81,8 +81,8 @@ Meanwhile::Meanwhile(int house, bool firstMeanwhile) {
         addTextEvent(std::make_unique<TextEvent>(dune_text.getString(textBaseIndex+MeanwhileText_You_let_the),sardaukarColor,3,100,false,false,false));
 
         startNewScene();
-        addVideoEvent(std::make_unique<HoldPictureVideoEvent>(pMeanwhile->getPicture(meanwhileFrame[house]).get(), 75));
-        addVideoEvent(std::make_unique<FadeOutVideoEvent>(pMeanwhile->getPicture(meanwhileFrame[house]).get(), 20));
+        addVideoEvent(std::make_unique<HoldPictureVideoEvent>(pMeanwhile->getPicture(meanwhileFrame[static_cast<int>(house)]).get(), 75));
+        addVideoEvent(std::make_unique<FadeOutVideoEvent>(pMeanwhile->getPicture(meanwhileFrame[static_cast<int>(house)]).get(), 20));
         addTextEvent(std::make_unique<TextEvent>(dune_text.getString(textBaseIndex+MeanwhileText_I_did_not_let),visitorColor,0,35,true,false,false));
         addTextEvent(std::make_unique<TextEvent>(dune_text.getString(textBaseIndex+MeanwhileText_I_will_not_allow),sardaukarColor,37,38,false,true,false));
 
@@ -96,10 +96,10 @@ Meanwhile::Meanwhile(int house, bool firstMeanwhile) {
         addTextEvent(std::make_unique<TextEvent>(dune_text.getString(textBaseIndex+MeanwhileText_At_the_Emperor_s_Palace_on_Dune),color,0,42,true,true,true));
         addTrigger(std::make_unique<CutSceneMusicTrigger>(0,MUSIC_MEANWHILE));
 
-        if(house == HOUSE_ATREIDES) {
+        if(house == HOUSETYPE::HOUSE_ATREIDES) {
             startNewScene();
 
-            addVideoEvent(std::make_unique<HoldPictureVideoEvent>(pMeanwhile->getPicture(meanwhileFrame[house]).get(), 130));
+            addVideoEvent(std::make_unique<HoldPictureVideoEvent>(pMeanwhile->getPicture(meanwhileFrame[static_cast<int>(house)]).get(), 130));
             addTextEvent(std::make_unique<TextEvent>(dune_text.getString(textBaseIndex+MeanwhileText_Fools),sardaukarColor,0,45,true,false,false));
             addTextEvent(std::make_unique<TextEvent>(dune_text.getString(textBaseIndex+MeanwhileText_And_still_you_fail),sardaukarColor,50,45,false,false,false));
             addTextEvent(std::make_unique<TextEvent>(dune_text.getString(textBaseIndex+MeanwhileText_But_excell),visitorColor,100,30,true,false,false));
@@ -113,7 +113,7 @@ Meanwhile::Meanwhile(int house, bool firstMeanwhile) {
         } else {
             startNewScene();
 
-            addVideoEvent(std::make_unique<HoldPictureVideoEvent>(pMeanwhile->getPicture(meanwhileFrame[house]).get(), 80));
+            addVideoEvent(std::make_unique<HoldPictureVideoEvent>(pMeanwhile->getPicture(meanwhileFrame[static_cast<int>(house)]).get(), 80));
             addTextEvent(std::make_unique<TextEvent>(dune_text.getString(textBaseIndex+MeanwhileText_The_Ordos_were_not_supposed),sardaukarColor,0,45,true,true,false));
             addTextEvent(std::make_unique<TextEvent>(dune_text.getString(textBaseIndex+MeanwhileText_Your_highness),visitorColor,46,35,true,false,false));
 
@@ -123,8 +123,8 @@ Meanwhile::Meanwhile(int house, bool firstMeanwhile) {
             addVideoEvent(std::make_unique<WSAVideoEvent>(pImperator.get()));
             addVideoEvent(std::make_unique<FadeOutVideoEvent>(pImperator->getPicture(pImperator->getNumFrames()-1).get(), 20));
 
-            addTextEvent(std::make_unique<TextEvent>(dune_text.getString(textBaseIndex+MeanwhileText_No_more_explanations),sardaukarColor,3, (house == HOUSE_ORDOS) ? 21 : 11,false,false,false));
-            addTextEvent(std::make_unique<TextEvent>(dune_text.getString(textBaseIndex+MeanwhileText_Only_together_will_we),sardaukarColor,(house == HOUSE_ORDOS) ? 28 : 18,(house == HOUSE_ORDOS) ? 39 : 49,false,true,false));
+            addTextEvent(std::make_unique<TextEvent>(dune_text.getString(textBaseIndex+MeanwhileText_No_more_explanations),sardaukarColor,3, (house == HOUSETYPE::HOUSE_ORDOS) ? 21 : 11,false,false,false));
+            addTextEvent(std::make_unique<TextEvent>(dune_text.getString(textBaseIndex+MeanwhileText_Only_together_will_we),sardaukarColor,(house == HOUSETYPE::HOUSE_ORDOS) ? 28 : 18,(house == HOUSETYPE::HOUSE_ORDOS) ? 39 : 49,false,true,false));
         }
     }
 }

@@ -46,7 +46,7 @@ void ChatManager::draw(Point position)
     int maxUsernameSizeY = 0;
     int maxTimeSizeY = 0;
     for(const auto& chatMessage : chatMessages) {
-        if(chatMessage.messageType == MSGTYPE_NORMAL) {
+        if(chatMessage.messageType == MessageType::MSGTYPE_NORMAL) {
             maxUsernameSizeY = std::max(maxUsernameSizeY, getWidth(chatMessage.pUsernameOrPictureTexture.get()));
             maxTimeSizeY = std::max(maxTimeSizeY, getWidth(chatMessage.pTimeTexture.get()));
         }
@@ -57,7 +57,7 @@ void ChatManager::draw(Point position)
     SDL_Rect messageDest = { position.x + LEFT_BORDER_WIDTH + maxUsernameSizeY, position.y, 0, 0};
     for(const auto& chatMessage : chatMessages) {
 
-        if(chatMessage.messageType == MSGTYPE_NORMAL) {
+        if(chatMessage.messageType == MessageType::MSGTYPE_NORMAL) {
             timeDest.w = getWidth(chatMessage.pTimeTexture.get());
             timeDest.h = getHeight(chatMessage.pTimeTexture.get());
             SDL_Rect tmpDest1 = timeDest;
@@ -75,7 +75,7 @@ void ChatManager::draw(Point position)
             SDL_RenderCopy(renderer, chatMessage.pMessageTexture.get(), nullptr, &tmpDest3);
 
 
-        } else if(chatMessage.messageType == MSGTYPE_INFO) {
+        } else if(chatMessage.messageType == MessageType::MSGTYPE_INFO) {
             SDL_Rect infoDest = calcDrawingRect(chatMessage.pMessageTexture.get(), position.x + LEFT_BORDER_WIDTH - 20, messageDest.y);
             SDL_RenderCopy(renderer, chatMessage.pMessageTexture.get(), nullptr, &infoDest);
 
@@ -113,7 +113,8 @@ void ChatManager::addChatMessage(const std::string& username, const std::string&
     auto pUsernameTexture = pFontManager->createTextureWithText( username + ": ", COLOR_WHITE, 12);
     auto pMessageTexture =  pFontManager->createTextureWithText( message, COLOR_WHITE, 12);
 
-    chatMessages.emplace_back(std::move(pTimeTexture), std::move(pUsernameTexture), std::move(pMessageTexture), SDL_GetTicks(), MSGTYPE_NORMAL );
+    chatMessages.emplace_back(std::move(pTimeTexture), std::move(pUsernameTexture), std::move(pMessageTexture),
+                              SDL_GetTicks(), MessageType::MSGTYPE_NORMAL);
 
     prune_messages();
 }
@@ -122,7 +123,7 @@ void ChatManager::addInfoMessage(const std::string& message)
 {
     sdl2::texture_ptr pMessageTexture = pFontManager->createTextureWithText( "*  " + message, COLOR_GREEN, 12);
 
-    chatMessages.emplace_back(std::move(pMessageTexture), SDL_GetTicks(), MSGTYPE_INFO );
+    chatMessages.emplace_back(std::move(pMessageTexture), SDL_GetTicks(), MessageType::MSGTYPE_INFO);
 
     prune_messages();
 }
@@ -141,7 +142,7 @@ void ChatManager::addHintMessage(const std::string& message, SDL_Texture* pTextu
 
     auto pMessageTexture = convertSurfaceToTexture(DuneStyle::getInstance().createLabelSurface( width, height, lines, 12, Alignment_Left, COLOR_WHITE, COLOR_TRANSPARENT));
 
-    chatMessages.emplace_back(std::move(pMessageTexture), pTexture, SDL_GetTicks(), MSGTYPE_PICTURE );
+    chatMessages.emplace_back(std::move(pMessageTexture), pTexture, SDL_GetTicks(), MessageType::MSGTYPE_PICTURE);
 
     prune_messages();
 }

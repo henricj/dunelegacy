@@ -234,21 +234,28 @@ void Map::damage(Uint32 damagerID, House* damagerOwner, const Coord& realPos, Ui
             {
                 const auto type = pTile->getType();
 
-                if(((type == Terrain_Rock) && (pTile->getTerrainTile() == Tile::TerrainTile_RockFull)) || (type == Terrain_Slab)) {
-                    if(type == Terrain_Slab) {
-                        pTile->setType(Terrain_Rock);
+                if(((type == TERRAINTYPE::Terrain_Rock) && (pTile->getTerrainTile() == Tile::TERRAINTILETYPE::TerrainTile_RockFull)) ||
+                   (type == TERRAINTYPE::Terrain_Slab)) {
+                    if(type == TERRAINTYPE::Terrain_Slab) {
+                        pTile->setType(TERRAINTYPE::Terrain_Rock);
                         pTile->setDestroyedStructureTile(Destroyed1x1Structure);
-                        pTile->setOwner(NONE_ID);
+                        pTile->setOwner(static_cast<HOUSETYPE>(NONE_ID));
                     }
 
-                    pTile->addDamage(Tile::Terrain_RockDamage, (bulletID==Bullet_SmallRocket) ? Tile::RockDamage1 : Tile::RockDamage2, realPos);
+                    const auto damage = (bulletID == BulletID_enum::Bullet_SmallRocket)
+                                            ? Tile::ROCKDAMAGETYPE::RockDamage1
+                                            : Tile::ROCKDAMAGETYPE::RockDamage2;
 
-                } else if((type == Terrain_Sand) || (type == Terrain_Spice)) {
-                    const auto damage_tile = bulletID == Bullet_SmallRocket
-                        ? currentGame->randomGen.rand(Tile::SandDamage1, Tile::SandDamage2)
-                        : currentGame->randomGen.rand(Tile::SandDamage3, Tile::SandDamage4);
+                    pTile->addDamage(Tile::TerrainDamage_enum::Terrain_RockDamage, static_cast<int>(damage), realPos);
 
-                    pTile->addDamage(Tile::Terrain_SandDamage, damage_tile, realPos);
+                } else if((type == TERRAINTYPE::Terrain_Sand) || (type == TERRAINTYPE::Terrain_Spice)) {
+                    const auto damage_tile = bulletID == BulletID_enum::Bullet_SmallRocket
+                                                 ? currentGame->randomGen.rand(static_cast<int>(Tile::SANDDAMAGETYPE::SandDamage1),
+                                                                               static_cast<int>(Tile::SANDDAMAGETYPE::SandDamage2))
+                                                 : currentGame->randomGen.rand(static_cast<int>(Tile::SANDDAMAGETYPE::SandDamage3),
+                                                                               static_cast<int>(Tile::SANDDAMAGETYPE::SandDamage4));
+
+                    pTile->addDamage(Tile::TerrainDamage_enum::Terrain_SandDamage, damage_tile, realPos);
                 }
             }
         }
@@ -349,30 +356,30 @@ bool Map::isWithinBuildRange(int x, int y, const House* pHouse) const {
     \param  pos     the destination
     \return one of RIGHT, RIGHTUP, UP, LEFTUP, LEFT, LEFTDOWN, DOWN, RIGHTDOWN or INVALID
 */
-int Map::getPosAngle(const Coord& source, const Coord& pos) {
+ANGLETYPE Map::getPosAngle(const Coord& source, const Coord& pos) {
     if(pos.x > source.x) {
         if(pos.y > source.y) {
-            return RIGHTDOWN;
+            return ANGLETYPE::RIGHTDOWN;
         } else if(pos.y < source.y) {
-            return RIGHTUP;
+            return ANGLETYPE::RIGHTUP;
         } else {
-            return RIGHT;
+            return ANGLETYPE::RIGHT;
         }
     } else if(pos.x < source.x) {
         if(pos.y > source.y) {
-            return LEFTDOWN;
+            return ANGLETYPE::LEFTDOWN;
         } else if(pos.y < source.y) {
-            return LEFTUP;
+            return ANGLETYPE::LEFTUP;
         } else {
-            return LEFT;
+            return ANGLETYPE::LEFT;
         }
     } else {
         if(pos.y > source.y) {
-            return DOWN;
+            return ANGLETYPE::DOWN;
         } else if(pos.y < source.y) {
-            return UP;
+            return ANGLETYPE::UP;
         } else {
-            return INVALID;
+            THROW(std::runtime_error, "Map::getPosAngle(): Impossible angle!");
         }
     }
 }
@@ -382,19 +389,21 @@ int Map::getPosAngle(const Coord& source, const Coord& pos) {
     \param  angle   one of RIGHT, RIGHTUP, UP, LEFTUP, LEFT, LEFTDOWN, DOWN, RIGHTDOWN
     \param  source  the tile to calculate neighbor tiles from
 */
-Coord Map::getMapPos(int angle, const Coord& source) {
+Coord Map::getMapPos(ANGLETYPE angle, const Coord& source) {
+    // clang-format off
     switch (angle)
     {
-        case (RIGHT):       return Coord(source.x + 1 , source.y);       break;
-        case (RIGHTUP):     return Coord(source.x + 1 , source.y - 1);   break;
-        case (UP):          return Coord(source.x     , source.y - 1);   break;
-        case (LEFTUP):      return Coord(source.x - 1 , source.y - 1);   break;
-        case (LEFT):        return Coord(source.x - 1 , source.y);       break;
-        case (LEFTDOWN):    return Coord(source.x - 1 , source.y + 1);   break;
-        case (DOWN):        return Coord(source.x     , source.y + 1);   break;
-        case (RIGHTDOWN):   return Coord(source.x + 1 , source.y + 1);   break;
-        default:            return Coord(source.x     , source.y);       break;
+        case ANGLETYPE::RIGHT:      return Coord(source.x + 1 , source.y    );  break;
+        case ANGLETYPE::RIGHTUP:    return Coord(source.x + 1 , source.y - 1);  break;
+        case ANGLETYPE::UP:         return Coord(source.x     , source.y - 1);  break;
+        case ANGLETYPE::LEFTUP:     return Coord(source.x - 1 , source.y - 1);  break;
+        case ANGLETYPE::LEFT:       return Coord(source.x - 1 , source.y    );  break;
+        case ANGLETYPE::LEFTDOWN:   return Coord(source.x - 1 , source.y + 1);  break;
+        case ANGLETYPE::DOWN:       return Coord(source.x     , source.y + 1);  break;
+        case ANGLETYPE::RIGHTDOWN:  return Coord(source.x + 1 , source.y + 1);  break;
+        default:                    return Coord(source.x     , source.y    );  break;
     }
+    // clang-format on
 }
 
 //building size is num squares
@@ -596,7 +605,7 @@ void Map::spiceRemoved(const Coord& coord) {
     });
 }
 
-void Map::viewMap(int houseID, const Coord& location, const int maxViewRange) {
+void Map::viewMap(HOUSETYPE houseID, const Coord& location, const int maxViewRange) {
 
 //makes map viewable in an area like as shown below
 //

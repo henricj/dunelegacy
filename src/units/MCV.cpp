@@ -52,14 +52,14 @@ void MCV::init() {
     graphicID = ObjPic_MCV;
     graphic = pGFXManager->getObjPic(graphicID,getOwner()->getHouseID());
 
-    numImagesX = NUM_ANGLES;
+    numImagesX = static_cast<int>(ANGLETYPE::NUM_ANGLES);
     numImagesY = 1;
 }
 
 MCV::~MCV() = default;
 
 void MCV::handleDeployClick() {
-    currentGame->getCommandManager().addCommand(Command(pLocalPlayer->getPlayerID(), CMD_MCV_DEPLOY,objectID));
+    currentGame->getCommandManager().addCommand(Command(pLocalPlayer->getPlayerID(), CMDTYPE::CMD_MCV_DEPLOY,objectID));
 }
 
 bool MCV::doDeploy() {

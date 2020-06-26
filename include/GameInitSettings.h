@@ -69,7 +69,7 @@ public:
         }
 
         void save(OutputStream& stream) const {
-            stream.writeSint32(houseID);
+            stream.writeSint32(static_cast<Sint32>(houseID));
             stream.writeSint32(team);
 
             stream.writeUint32(playerInfoList.size());
@@ -205,7 +205,7 @@ private:
 
     GameType        gameType = GameType::Invalid;
 
-    HOUSETYPE       houseID = HOUSE_INVALID;
+    HOUSETYPE       houseID = HOUSETYPE::HOUSE_INVALID;
     int             mission = 0;
     Uint32          alreadyPlayedRegions = 0;
     Uint32          alreadyShownTutorialHints = 0xFFFFFFFF;

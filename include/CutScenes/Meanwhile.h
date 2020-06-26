@@ -32,7 +32,7 @@ public:
         \param  house           the house for which the video is shown
         \param  firstMeanwhile  true = video after mission 4, false = video after mission 8
     */
-    Meanwhile(int house, bool firstMeanwhile);
+    Meanwhile(HOUSETYPE house, bool firstMeanwhile);
 
     /// destructor
     virtual ~Meanwhile();

@@ -44,13 +44,13 @@ public:
 
     void createSandRegions();
     void damage(Uint32 damagerID, House* damagerOwner, const Coord& realPos, Uint32 bulletID, FixPoint damage, int damageRadius, bool air);
-    static Coord getMapPos(int angle, const Coord& source);
+    static Coord getMapPos(ANGLETYPE angle, const Coord& source);
     void removeObjectFromMap(Uint32 objectID);
     void spiceRemoved(const Coord& coord);
     void selectObjects(const House* pHouse, int x1, int y1, int x2, int y2, int realX, int realY, bool objectARGMode);
 
-    void viewMap(int houseID, const Coord& location, const int maxViewRange);
-    void viewMap(int houseID, int x, int y, const int maxViewRange) {
+    void viewMap(HOUSETYPE houseID, const Coord& location, const int maxViewRange);
+    void viewMap(HOUSETYPE houseID, int x, int y, const int maxViewRange) {
         viewMap(houseID, Coord(x, y), maxViewRange);
     }
 
@@ -58,7 +58,7 @@ public:
     bool okayToPlaceStructure(int x, int y, int buildingSizeX, int buildingSizeY, bool tilesRequired, const House* pHouse, bool bIgnoreUnits = false) const;
     bool isAStructureGap(int x, int y, int buildingSizeX, int buildingSizeY) const; // Allows AI to check to see if a gap exists between the current structure
     bool isWithinBuildRange(int x, int y, const House* pHouse) const;
-    static int getPosAngle(const Coord& source, const Coord& pos);
+    static ANGLETYPE getPosAngle(const Coord& source, const Coord& pos);
     Coord findClosestEdgePoint(const Coord& origin, const Coord& buildingSize) const;
     Coord findDeploySpot(UnitBase* pUnit, const Coord& origin, Random& randomGen, const Coord& gatherPoint = Coord::Invalid(), const Coord& buildingSize = Coord(0, 0)) const; //building size is num squares
 
@@ -329,16 +329,16 @@ protected:
     void index_for_each_angle(int x, int y, F&& f)
     {
         if (x >= 1) {
-            if (tileExists(x - 1, y - 1)) f(LEFTUP, tile_index(x - 1, y - 1));
-            if (tileExists(x - 1, y)) f(LEFT, tile_index(x - 1, y));
-            if (tileExists(x - 1, y + 1)) f(LEFTDOWN, tile_index(x - 1, y + 1));
+            if (tileExists(x - 1, y - 1)) f(ANGLETYPE::LEFTUP, tile_index(x - 1, y - 1));
+            if (tileExists(x - 1, y)) f(ANGLETYPE::LEFT, tile_index(x - 1, y));
+            if (tileExists(x - 1, y + 1)) f(ANGLETYPE::LEFTDOWN, tile_index(x - 1, y + 1));
         }
-        if (tileExists(x    , y - 1)) f(UP       , tile_index(x    , y - 1));
-        if (tileExists(x    , y + 1)) f(DOWN     , tile_index(x    , y + 1));
+        if (tileExists(x    , y - 1)) f(ANGLETYPE::UP       , tile_index(x    , y - 1));
+        if (tileExists(x    , y + 1)) f(ANGLETYPE::DOWN     , tile_index(x    , y + 1));
         if (x + 1 < sizeX) {
-            if (tileExists(x + 1, y - 1)) f(RIGHTUP, tile_index(x + 1, y - 1));
-            if (tileExists(x + 1, y)) f(RIGHT, tile_index(x + 1, y));
-            if (tileExists(x + 1, y + 1)) f(RIGHTDOWN, tile_index(x + 1, y + 1));
+            if (tileExists(x + 1, y - 1)) f(ANGLETYPE::RIGHTUP, tile_index(x + 1, y - 1));
+            if (tileExists(x + 1, y)) f(ANGLETYPE::RIGHT, tile_index(x + 1, y));
+            if (tileExists(x + 1, y + 1)) f(ANGLETYPE::RIGHTDOWN, tile_index(x + 1, y + 1));
         }
     }
 public:

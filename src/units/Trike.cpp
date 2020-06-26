@@ -46,7 +46,7 @@ void Trike::init() {
     graphicID = ObjPic_Trike;
     graphic = pGFXManager->getObjPic(graphicID,getOwner()->getHouseID());
 
-    numImagesX = NUM_ANGLES;
+    numImagesX = static_cast<int>(ANGLETYPE::NUM_ANGLES);
     numImagesY = 1;
 }
 

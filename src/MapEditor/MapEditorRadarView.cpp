@@ -170,7 +170,7 @@ void MapEditorRadarView::updateRadarSurface(const MapData& map, int scale, int o
                     putPixel(   radarSurface.get(),
                                 offsetX + scale*unit.position.x + i,
                                 offsetY + scale*unit.position.y + j,
-                                SDL2RGB(palette[houseToPaletteIndex[unit.house]]));
+                                SDL2RGB(palette[houseToPaletteIndex[static_cast<int>(unit.house)]]));
                 }
             }
         }
@@ -190,7 +190,7 @@ void MapEditorRadarView::updateRadarSurface(const MapData& map, int scale, int o
                             putPixel(   radarSurface.get(),
                                         offsetX + scale*(structure.position.x+x) + i,
                                         offsetY + scale*(structure.position.y+y) + j,
-                                        SDL2RGB(palette[houseToPaletteIndex[structure.house]]));
+                                        SDL2RGB(palette[houseToPaletteIndex[static_cast<int>(structure.house)]]));
                         }
                     }
                 }

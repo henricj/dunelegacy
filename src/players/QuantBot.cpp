@@ -261,7 +261,7 @@ void QuantBot::update() {
         for(Uint32 i = Unit_FirstID; i <= Unit_LastID; i++){
             if(i != Unit_Carryall && i != Unit_Harvester){
                 // Used for campaign mode.
-                initialMilitaryValue += initialItemCount[i] * currentGame->objectData.data[i][getHouse()->getHouseID()].price;
+                initialMilitaryValue += initialItemCount[i] * currentGame->objectData.data[i][static_cast<int>(getHouse()->getHouseID())].price;
             }
         }
 
@@ -367,7 +367,7 @@ void QuantBot::update() {
     }
 
 
-    if((getGameCycleCount() + getHouse()->getHouseID()) % AIUPDATEINTERVAL != 0) {
+    if((getGameCycleCount() + static_cast<int>(getHouse()->getHouseID())) % AIUPDATEINTERVAL != 0) {
         // we are not updating this AI player this cycle
         return;
     }
@@ -376,7 +376,7 @@ void QuantBot::update() {
     int militaryValue = 0;
     for(Uint32 i = Unit_FirstID; i <= Unit_LastID; i++){
         if(i != Unit_Carryall && i != Unit_Harvester){
-            militaryValue += getHouse()->getNumItems(i) * currentGame->objectData.data[i][getHouse()->getHouseID()].price;
+            militaryValue += getHouse()->getNumItems(i) * currentGame->objectData.data[i][static_cast<int>(getHouse()->getHouseID())].price;
         }
     }
     //logDebug("Military Value %d  Initial Military Value %d", militaryValue, initialMilitaryValue);
@@ -416,7 +416,7 @@ void QuantBot::onDecrementStructures(int itemID, const Coord& location) {
 /// When we take losses we should hold off from attacking for longer...
 void QuantBot::onDecrementUnits(int itemID) {
     if(itemID != Unit_Trooper && itemID != Unit_Infantry) {
-        attackTimer += MILLI2CYCLES(currentGame->objectData.data[itemID][getHouse()->getHouseID()].price * 30 / (static_cast<Uint8>(difficulty)+1) );
+        attackTimer += MILLI2CYCLES(currentGame->objectData.data[itemID][static_cast<int>(getHouse()->getHouseID())].price * 30 / (static_cast<Uint8>(difficulty)+1) );
         //logDebug("loss ");
     }
 }
@@ -425,7 +425,7 @@ void QuantBot::onDecrementUnits(int itemID) {
 /// When we get kills we should re-attack sooner...
 void QuantBot::onIncrementUnitKills(int itemID) {
     if(itemID != Unit_Trooper && itemID != Unit_Infantry) {
-        attackTimer -= MILLI2CYCLES(currentGame->objectData.data[itemID][getHouse()->getHouseID()].price * 15);
+        attackTimer -= MILLI2CYCLES(currentGame->objectData.data[itemID][static_cast<int>(getHouse()->getHouseID())].price * 15);
         //logDebug("kill ");
     }
 }
@@ -439,7 +439,7 @@ void QuantBot::onDamage(const ObjectBase* pObject, int damage, Uint32 damagerID)
 
     // If the human has attacked us then its time to start fighting back... unless its an attack on a special unit
     // Don't trigger with fremen or saboteur
-    bool bPossiblyOwnFremen = (pObject->getOwner()->getHouseID() == HOUSE_ATREIDES) && (pObject->getItemID() == Unit_Trooper) && (currentGame->techLevel > 7);
+    bool bPossiblyOwnFremen = (pObject->getOwner()->getHouseID() == HOUSETYPE::HOUSE_ATREIDES) && (pObject->getItemID() == Unit_Trooper) && (currentGame->techLevel > 7);
     if(gameMode == GameMode::Campaign && !pDamager->getOwner()->isAI() && !campaignAIAttackFlag && !bPossiblyOwnFremen && (pObject->getItemID() != Unit_Saboteur)) {
         campaignAIAttackFlag = true;
     } else if (pObject->isAStructure()) {
@@ -695,7 +695,7 @@ Coord QuantBot::findPlaceLocation(Uint32 itemID) {
 
 
 void QuantBot::build(int militaryValue) {
-    int houseID = getHouse()->getHouseID();
+    const auto houseID = getHouse()->getHouseID();
     auto& data = currentGame->objectData.data;
 
     int itemCount[Num_ItemID];
@@ -762,16 +762,16 @@ void QuantBot::build(int militaryValue) {
     // This algorithm calculates damage dealt over units lost value for each unit type
     // referred to as damage loss ratio (dlr)
     // It then prioritises the build of units with a higher dlr
-    FixPoint dlrTank = getHouse()->getNumItemDamageInflicted(Unit_Tank) / FixPoint((1 + getHouse()->getNumLostItems(Unit_Tank)) * data[Unit_Tank][houseID].price);
-    FixPoint dlrSiege = getHouse()->getNumItemDamageInflicted(Unit_SiegeTank) / FixPoint((1 + getHouse()->getNumLostItems(Unit_SiegeTank)) * data[Unit_SiegeTank][houseID].price);
+    FixPoint dlrTank = getHouse()->getNumItemDamageInflicted(Unit_Tank) / FixPoint((1 + getHouse()->getNumLostItems(Unit_Tank)) * data[Unit_Tank][static_cast<int>(houseID)].price);
+    FixPoint dlrSiege = getHouse()->getNumItemDamageInflicted(Unit_SiegeTank) / FixPoint((1 + getHouse()->getNumLostItems(Unit_SiegeTank)) * data[Unit_SiegeTank][static_cast<int>(houseID)].price);
     int numSpecialUnitsDamageInflicted = getHouse()->getNumItemDamageInflicted(Unit_Devastator) + getHouse()->getNumItemDamageInflicted(Unit_SonicTank) + getHouse()->getNumItemDamageInflicted(Unit_Deviator);
-    int weightedNumLostSpecialUnits = (getHouse()->getNumLostItems(Unit_Devastator) * data[Unit_Devastator][houseID].price)
-                                        + (getHouse()->getNumLostItems(Unit_SonicTank) * data[Unit_SonicTank][houseID].price)
-                                        + (getHouse()->getNumLostItems(Unit_Deviator) * data[Unit_Deviator][houseID].price)
+    int weightedNumLostSpecialUnits = (getHouse()->getNumLostItems(Unit_Devastator) * data[Unit_Devastator][static_cast<int>(houseID)].price)
+                                        + (getHouse()->getNumLostItems(Unit_SonicTank) * data[Unit_SonicTank][static_cast<int>(houseID)].price)
+                                        + (getHouse()->getNumLostItems(Unit_Deviator) * data[Unit_Deviator][static_cast<int>(houseID)].price)
                                         + 700; // middle ground 1 for special units
     FixPoint dlrSpecial = FixPoint(numSpecialUnitsDamageInflicted) / FixPoint(weightedNumLostSpecialUnits);
-    FixPoint dlrLauncher = getHouse()->getNumItemDamageInflicted(Unit_Launcher) / FixPoint((1 + getHouse()->getNumLostItems(Unit_Launcher)) * data[Unit_Launcher][houseID].price);
-    FixPoint dlrOrnithopter = getHouse()->getNumItemDamageInflicted(Unit_Ornithopter) / FixPoint((1 + getHouse()->getNumLostItems(Unit_Ornithopter)) * data[Unit_Ornithopter][houseID].price);
+    FixPoint dlrLauncher = getHouse()->getNumItemDamageInflicted(Unit_Launcher) / FixPoint((1 + getHouse()->getNumLostItems(Unit_Launcher)) * data[Unit_Launcher][static_cast<int>(houseID)].price);
+    FixPoint dlrOrnithopter = getHouse()->getNumItemDamageInflicted(Unit_Ornithopter) / FixPoint((1 + getHouse()->getNumLostItems(Unit_Ornithopter)) * data[Unit_Ornithopter][static_cast<int>(houseID)].price);
 
     Sint32 totalDamage =    getHouse()->getNumItemDamageInflicted(Unit_Tank)
                             + getHouse()->getNumItemDamageInflicted(Unit_SiegeTank)
@@ -780,12 +780,12 @@ void QuantBot::build(int militaryValue) {
                             + getHouse()->getNumItemDamageInflicted(Unit_Ornithopter);
 
     // Harkonnen can't build ornithopers
-    if(houseID == HOUSE_HARKONNEN){
+    if(houseID == HOUSETYPE::HOUSE_HARKONNEN){
         dlrOrnithopter = 0;
     }
 
     // Ordos can't build Launchers
-    if(houseID == HOUSE_ORDOS){
+    if(houseID == HOUSETYPE::HOUSE_ORDOS){
         dlrLauncher = 0;
     }
 
@@ -814,14 +814,14 @@ void QuantBot::build(int militaryValue) {
     // Which units perform. By and large launchers and siege tanks have the best damage to loss ratio
     if(totalDamage < 3000){
         switch (houseID) {
-            case HOUSE_HARKONNEN:
+            case HOUSETYPE::HOUSE_HARKONNEN:
                 launcherPercent = 0.5_fix;
                 specialPercent = 0.15_fix;
                 siegePercent = 0.35_fix;
                 ornithopterPercent = 0.0_fix;
                 break;
 
-            case HOUSE_ORDOS:
+            case HOUSETYPE::HOUSE_ORDOS:
                 launcherPercent = 0.0_fix; // Don't have these
                 specialPercent = 0.25_fix;
                 siegePercent = 0.75_fix;
@@ -847,7 +847,7 @@ void QuantBot::build(int militaryValue) {
                 getHouse()->getNumLostItems(Unit_SonicTank) * 600 + getHouse()->getNumLostItems(Unit_Devastator) * 800 + getHouse()->getNumLostItems(Unit_Deviator) * 750,
                 specialPercent.toDouble(),
                 getHouse()->getNumItemDamageInflicted(Unit_Launcher), getHouse()->getNumLostItems(Unit_Launcher) * 450, launcherPercent.toDouble(),
-                getHouse()->getNumItemDamageInflicted(Unit_Ornithopter), getHouse()->getNumLostItems(Unit_Ornithopter) * data[Unit_Ornithopter][houseID].price, ornithopterPercent.toDouble()
+                getHouse()->getNumItemDamageInflicted(Unit_Ornithopter), getHouse()->getNumLostItems(Unit_Ornithopter) * data[Unit_Ornithopter][static_cast<int>(houseID)].price, ornithopterPercent.toDouble()
             );
 
 
@@ -886,22 +886,21 @@ void QuantBot::build(int militaryValue) {
                 const Palace* pPalace = static_cast<const Palace*>(pStructure);
                 if(pPalace->isSpecialWeaponReady()){
 
-                    if(houseID != HOUSE_HARKONNEN && houseID != HOUSE_SARDAUKAR) {
+                    if(houseID != HOUSETYPE::HOUSE_HARKONNEN && houseID != HOUSETYPE::HOUSE_SARDAUKAR) {
                         doSpecialWeapon(pPalace);
                     } else {
-                        int enemyHouseID = -1;
+                        auto enemyHouseID = HOUSETYPE::HOUSE_INVALID;
                         int enemyHouseBuildingCount = 0;
 
-                        for(int i = 0; i < NUM_HOUSES; i++) {
-                            if(getHouse(i) != nullptr) {
-                                if(getHouse(i)->getTeamID() != getHouse()->getTeamID() && getHouse(i)->getNumStructures() > enemyHouseBuildingCount) {
-                                    enemyHouseBuildingCount = getHouse(i)->getNumStructures();
-                                    enemyHouseID = i;
+                        currentGame->forAllHouses([&](const auto& house) {
+                                if(house.getTeamID() != getHouse()->getTeamID() && house.getNumStructures() > enemyHouseBuildingCount) {
+                                    enemyHouseBuildingCount = house.getNumStructures();
+                                    enemyHouseID = house.getHouseID();
                                 }
-                            }
-                        }
+                        });
 
-                        if((enemyHouseID != -1) && (houseID == HOUSE_HARKONNEN || houseID == HOUSE_SARDAUKAR)) {
+                        if((enemyHouseID != HOUSETYPE::HOUSE_INVALID) &&
+                           (houseID == HOUSETYPE::HOUSE_HARKONNEN || houseID == HOUSETYPE::HOUSE_SARDAUKAR)) {
                             Coord target = findBaseCentre(enemyHouseID);
                             doLaunchDeathhand(pPalace, target.x, target.y);
                         }
@@ -1045,7 +1044,7 @@ void QuantBot::build(int militaryValue) {
                     } break;
 
                     case Structure_HighTechFactory: {
-                        int ornithopterValue = data[Unit_Ornithopter][houseID].price * itemCount[Unit_Ornithopter];
+                        int ornithopterValue = data[Unit_Ornithopter][static_cast<int>(houseID)].price * itemCount[Unit_Ornithopter];
 
                         if(pBuilder->isAvailableToBuild(Unit_Carryall)
                            && itemCount[Unit_Carryall] < (militaryValue + itemCount[Unit_Harvester] * 500) / 3000
@@ -1069,8 +1068,8 @@ void QuantBot::build(int militaryValue) {
                             // whether to build an additional unit.
                             doProduceItem(pBuilder, Unit_Ornithopter);
                             itemCount[Unit_Ornithopter]++;
-                            money -= data[Unit_Ornithopter][houseID].price;
-                            militaryValue += data[Unit_Ornithopter][houseID].price;
+                            money -= data[Unit_Ornithopter][static_cast<int>(houseID)].price;
+                            militaryValue += data[Unit_Ornithopter][static_cast<int>(houseID)].price;
                         }
                     } break;
 
@@ -1126,11 +1125,11 @@ void QuantBot::build(int militaryValue) {
                                 // Limit enemy military units based on difficulty
 
                                 // Calculate current value of units
-                                int launcherValue = data[Unit_Launcher][houseID].price * itemCount[Unit_Launcher];
-                                int specialValue = data[Unit_Devastator][houseID].price * itemCount[Unit_Devastator]
-                                                    + data[Unit_Deviator][houseID].price * itemCount[Unit_Deviator]
-                                                    + data[Unit_SonicTank][houseID].price * itemCount[Unit_SonicTank];
-                                int siegeValue = data[Unit_SiegeTank][houseID].price * itemCount[Unit_SiegeTank];
+                                int launcherValue = data[Unit_Launcher][static_cast<int>(houseID)].price * itemCount[Unit_Launcher];
+                                int specialValue = data[Unit_Devastator][static_cast<int>(houseID)].price * itemCount[Unit_Devastator]
+                                                    + data[Unit_Deviator][static_cast<int>(houseID)].price * itemCount[Unit_Deviator]
+                                                    + data[Unit_SonicTank][static_cast<int>(houseID)].price * itemCount[Unit_SonicTank];
+                                int siegeValue = data[Unit_SiegeTank][static_cast<int>(houseID)].price * itemCount[Unit_SiegeTank];
 
 
                                 /// Use current value and what percentage of military we want to determine
@@ -1138,34 +1137,34 @@ void QuantBot::build(int militaryValue) {
                                 if( pBuilder->isAvailableToBuild(Unit_Launcher) && (militaryValue * launcherPercent > launcherValue)) {
                                     doProduceItem(pBuilder, Unit_Launcher);
                                     itemCount[Unit_Launcher]++;
-                                    money -= data[Unit_Launcher][houseID].price;
-                                    militaryValue += data[Unit_Launcher][houseID].price;
+                                    money -= data[Unit_Launcher][static_cast<int>(houseID)].price;
+                                    militaryValue += data[Unit_Launcher][static_cast<int>(houseID)].price;
                                 } else if( pBuilder->isAvailableToBuild(Unit_Devastator) && (militaryValue * specialPercent > specialValue)) {
                                     doProduceItem(pBuilder, Unit_Devastator);
                                     itemCount[Unit_Devastator]++;
-                                    money -= data[Unit_Devastator][houseID].price;
-                                    militaryValue += data[Unit_Devastator][houseID].price;
+                                    money -= data[Unit_Devastator][static_cast<int>(houseID)].price;
+                                    militaryValue += data[Unit_Devastator][static_cast<int>(houseID)].price;
                                 } else if( pBuilder->isAvailableToBuild(Unit_SonicTank) && (militaryValue * specialPercent > specialValue)) {
                                     doProduceItem(pBuilder, Unit_SonicTank);
                                     itemCount[Unit_SonicTank]++;
-                                    money -= data[Unit_SonicTank][houseID].price;
-                                    militaryValue += data[Unit_SonicTank][houseID].price;
+                                    money -= data[Unit_SonicTank][static_cast<int>(houseID)].price;
+                                    militaryValue += data[Unit_SonicTank][static_cast<int>(houseID)].price;
                                 } else if( pBuilder->isAvailableToBuild(Unit_Deviator) && (militaryValue * specialPercent > specialValue)) {
                                     doProduceItem(pBuilder, Unit_Deviator);
                                     itemCount[Unit_Deviator]++;
-                                    money -= data[Unit_Deviator][houseID].price;
-                                    militaryValue += data[Unit_Deviator][houseID].price;
+                                    money -= data[Unit_Deviator][static_cast<int>(houseID)].price;
+                                    militaryValue += data[Unit_Deviator][static_cast<int>(houseID)].price;
                                 } else if( pBuilder->isAvailableToBuild(Unit_SiegeTank) && (militaryValue * siegePercent > siegeValue)) {
                                     doProduceItem(pBuilder, Unit_SiegeTank);
                                     itemCount[Unit_SiegeTank]++;
-                                    money -= data[Unit_Tank][houseID].price;
-                                    militaryValue += data[Unit_SiegeTank][houseID].price;
+                                    money -= data[Unit_Tank][static_cast<int>(houseID)].price;
+                                    militaryValue += data[Unit_SiegeTank][static_cast<int>(houseID)].price;
                                 } else if(pBuilder->isAvailableToBuild(Unit_Tank)) {
                                     // Tanks for all else
                                     doProduceItem(pBuilder, Unit_Tank);
                                     itemCount[Unit_Tank]++;
-                                    money -= data[Unit_Tank][houseID].price;
-                                    militaryValue += data[Unit_Tank][houseID].price;
+                                    money -= data[Unit_Tank][static_cast<int>(houseID)].price;
+                                    militaryValue += data[Unit_Tank][static_cast<int>(houseID)].price;
                                 }
                             }
                         }
@@ -1221,7 +1220,7 @@ void QuantBot::build(int militaryValue) {
                                     doProduceItem(pBuilder, Unit_SiegeTank);
                                     itemCount[Unit_SiegeTank]++;
                                     money = money - choam.getPrice(Unit_SiegeTank);
-                                    militaryValue += data[Unit_SiegeTank][houseID].price;
+                                    militaryValue += data[Unit_SiegeTank][static_cast<int>(houseID)].price;
                                 }
 
                                 while (money > choam.getPrice(Unit_Tank) && choam.getNumAvailable(Unit_Tank) > 0
@@ -1229,7 +1228,7 @@ void QuantBot::build(int militaryValue) {
                                     doProduceItem(pBuilder, Unit_Tank);
                                     itemCount[Unit_Tank]++;
                                     money = money - choam.getPrice(Unit_Tank);
-                                    militaryValue += data[Unit_Tank][houseID].price;
+                                    militaryValue += data[Unit_Tank][static_cast<int>(houseID)].price;
                                 }
 
                                 while (money > choam.getPrice(Unit_Launcher) && choam.getNumAvailable(Unit_Launcher) > 0
@@ -1237,7 +1236,7 @@ void QuantBot::build(int militaryValue) {
                                     doProduceItem(pBuilder, Unit_Launcher);
                                     itemCount[Unit_Launcher]++;
                                     money = money - choam.getPrice(Unit_Launcher);
-                                    militaryValue += data[Unit_Launcher][houseID].price;
+                                    militaryValue += data[Unit_Launcher][static_cast<int>(houseID)].price;
                                 }
 
                                 while (money > choam.getPrice(Unit_Quad) && choam.getNumAvailable(Unit_Quad) > 0
@@ -1245,7 +1244,7 @@ void QuantBot::build(int militaryValue) {
                                     doProduceItem(pBuilder, Unit_Quad);
                                     itemCount[Unit_Quad]++;
                                     money = money - choam.getPrice(Unit_Quad);
-                                    militaryValue += data[Unit_Quad][houseID].price;
+                                    militaryValue += data[Unit_Quad][static_cast<int>(houseID)].price;
                                 }
 
                                 while (money > choam.getPrice(Unit_Trike) && choam.getNumAvailable(Unit_Trike) > 0
@@ -1253,7 +1252,7 @@ void QuantBot::build(int militaryValue) {
                                     doProduceItem(pBuilder, Unit_Trike);
                                     itemCount[Unit_Trike]++;
                                     money = money - choam.getPrice(Unit_Trike);
-                                    militaryValue += data[Unit_Trike][houseID].price;
+                                    militaryValue += data[Unit_Trike][static_cast<int>(houseID)].price;
                                 }
                             }
 
@@ -1589,7 +1588,7 @@ void QuantBot::attack(int militaryValue) {
                                                                                          - getHouse()->getNumItems(Unit_MCV)) + 6)
         {
             doSetAttackMode(pUnit, HUNT);
-            militaryValueToAttackWith -= currentGame->objectData.data[pUnit->getItemID()][getHouse()->getHouseID()].price;
+            militaryValueToAttackWith -= currentGame->objectData.data[pUnit->getItemID()][static_cast<int>(getHouse()->getHouseID())].price;
             if(militaryValueToAttackWith < 0) {
                 break;
             }
@@ -1652,7 +1651,7 @@ Coord QuantBot::findSquadRetreatLocation() {
     return newSquadRetreatLocation;
 }
 
-Coord QuantBot::findBaseCentre(int houseID) {
+Coord QuantBot::findBaseCentre(HOUSETYPE houseID) {
     int buildingCount = 0;
     int totalX = 0;
     int totalY = 0;
@@ -1677,7 +1676,7 @@ Coord QuantBot::findBaseCentre(int houseID) {
 }
 
 
-Coord QuantBot::findSquadCenter(int houseID) {
+Coord QuantBot::findSquadCenter(HOUSETYPE houseID) {
     int squadSize = 0;
 
     int totalX = 0;

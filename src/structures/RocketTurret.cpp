@@ -49,7 +49,7 @@ void RocketTurret::init() {
     graphic = pGFXManager->getObjPic(graphicID,getOwner()->getHouseID());
     numImagesX = 10;
     numImagesY = 1;
-    curAnimFrame = firstAnimFrame = lastAnimFrame = ((10-drawnAngle) % 8) + 2;
+    curAnimFrame = firstAnimFrame = lastAnimFrame = ((10 - static_cast<int>(drawnAngle)) % 8) + 2;
 }
 
 RocketTurret::~RocketTurret() = default;
@@ -81,23 +81,23 @@ void RocketTurret::attack() {
         // we are just shooting a bullet as a gun turret would do
         // for air units do nothing
         if (!pObject->isAFlyingUnit()) {
-            const auto& turret_data = game->objectData.data[Structure_GunTurret][originalHouseID];
+            const auto& turret_data = game->objectData.data[Structure_GunTurret][static_cast<int>(originalHouseID)];
 
 
             map->add_bullet(objectID, &centerPoint, &targetCenterPoint, Bullet_ShellTurret,
                 turret_data.weapondamage, false, pObject);
 
-            map->viewMap(pObject->getOwner()->getTeamID(), location, 2);
+            map->viewMap(static_cast<HOUSETYPE>(pObject->getOwner()->getTeamID()), location, 2);
             soundPlayer->playSoundAt(Sound_ExplosionSmall, location);
             weaponTimer = turret_data.weaponreloadtime;
         }
     } else {
         // we are in normal shooting mode
         map->add_bullet(objectID, &centerPoint, &targetCenterPoint, bulletType,
-                                          game->objectData.data[itemID][originalHouseID].weapondamage,
+                                          game->objectData.data[itemID][static_cast<int>(originalHouseID)].weapondamage,
                                           pObject->isAFlyingUnit(), nullptr);
 
-        map->viewMap(pObject->getOwner()->getTeamID(), location, 2);
+        map->viewMap(static_cast<HOUSETYPE>(pObject->getOwner()->getTeamID()), location, 2);
         soundPlayer->playSoundAt(attackSound, location);
         weaponTimer = getWeaponReloadTime();
     }

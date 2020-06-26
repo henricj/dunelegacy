@@ -32,8 +32,8 @@ namespace sdl2
     class texture_lock final
     {
         SDL_Texture * const texture_;
-        void* pixels_;
-        int pitch_;
+        void* pixels_{};
+        int pitch_{};
     public:
         explicit texture_lock(SDL_Texture* texture) : texture_(texture)
         {

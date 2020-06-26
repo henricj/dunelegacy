@@ -88,12 +88,12 @@ ObjectInterface* Palace::getInterfaceContainer() {
 }
 
 void Palace::handleSpecialClick() {
-    currentGame->getCommandManager().addCommand(Command(pLocalPlayer->getPlayerID(), CMD_PALACE_SPECIALWEAPON,objectID));
+    currentGame->getCommandManager().addCommand(Command(pLocalPlayer->getPlayerID(), CMDTYPE::CMD_PALACE_SPECIALWEAPON,objectID));
 }
 
 void Palace::handleDeathhandClick(int xPos, int yPos) {
     if (currentGameMap->tileExists(xPos, yPos)) {
-        currentGame->getCommandManager().addCommand(Command(pLocalPlayer->getPlayerID(), CMD_PALACE_DEATHHAND,objectID, (Uint32) xPos, (Uint32) yPos));
+        currentGame->getCommandManager().addCommand(Command(pLocalPlayer->getPlayerID(), CMDTYPE::CMD_PALACE_DEATHHAND,objectID, (Uint32) xPos, (Uint32) yPos));
     }
 }
 
@@ -103,21 +103,21 @@ void Palace::doSpecialWeapon() {
     }
 
     switch (originalHouseID) {
-        case HOUSE_HARKONNEN:
-        case HOUSE_SARDAUKAR: {
+        case HOUSETYPE::HOUSE_HARKONNEN:
+        case HOUSETYPE::HOUSE_SARDAUKAR: {
             // wrong house (see DoLaunchDeathhand)
             return;
         } break;
 
-        case HOUSE_ATREIDES:
-        case HOUSE_FREMEN: {
+        case HOUSETYPE::HOUSE_ATREIDES:
+        case HOUSETYPE::HOUSE_FREMEN: {
             if(callFremen()) {
                 specialWeaponTimer = getMaxSpecialWeaponTimer();
             }
         } break;
 
-        case HOUSE_ORDOS:
-        case HOUSE_MERCENARY: {
+        case HOUSETYPE::HOUSE_ORDOS:
+        case HOUSETYPE::HOUSE_MERCENARY: {
             if(spawnSaboteur()) {
                 specialWeaponTimer = getMaxSpecialWeaponTimer();
             }
@@ -134,7 +134,7 @@ void Palace::doLaunchDeathhand(int x, int y) {
         return;
     }
 
-    if((originalHouseID != HOUSE_HARKONNEN) && (originalHouseID != HOUSE_SARDAUKAR)) {
+    if((originalHouseID != HOUSETYPE::HOUSE_HARKONNEN) && (originalHouseID != HOUSETYPE::HOUSE_SARDAUKAR)) {
         // wrong house (see DoSpecialWeapon)
         return;
     }
@@ -170,7 +170,7 @@ void Palace::updateStructureSpecificStuff() {
                 currentGame->addToNewsTicker(_("Palace is ready"));
             } else if(getOwner()->isAI()) {
 
-                if((originalHouseID == HOUSE_HARKONNEN) || (originalHouseID == HOUSE_SARDAUKAR)) {
+                if((originalHouseID == HOUSETYPE::HOUSE_HARKONNEN) || (originalHouseID == HOUSETYPE::HOUSE_SARDAUKAR)) {
                     // Harkonnen and Sardaukar
 
                     //old tergetting logic used by default AI

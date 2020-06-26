@@ -84,16 +84,16 @@ inline FixPoint Deg256ToRad(FixPoint angle) { return (angle*FixPt_PI) >> 7; }   
     \param  angle2  the second angle
     \return the angle between angle1 and angle2.
 */
-inline int angleDiff(int angle1, int angle2) {
-    int diff = abs(angle1 - angle2);
-    return std::min(diff, NUM_ANGLES - diff);
+inline int angleDiff(ANGLETYPE angle1, ANGLETYPE angle2) {
+    int diff = std::abs(static_cast<int>(angle1) - static_cast<int>(angle2));
+    return std::min(diff, static_cast<int>(ANGLETYPE::NUM_ANGLES) - diff);
 }
 
-inline int angleToDrawnAngle(FixPoint angle) {
-    return lround(angle >> 5) & 0x7;  //  lround(angle*NUM_ANGLES/256) % NUM_ANGLES;
+inline ANGLETYPE angleToDrawnAngle(FixPoint angle) {
+    return static_cast<ANGLETYPE>(lround(angle >> 5) & 0x7);  //  lround(angle*NUM_ANGLES/256) % NUM_ANGLES;
 }
 
-inline int destinationDrawnAngle(const Coord& p1, const Coord& p2) {
+inline ANGLETYPE destinationDrawnAngle(const Coord& p1, const Coord& p2) {
     return angleToDrawnAngle(RadToDeg256(destinationAngleRad(p1, p2)));
 }
 
@@ -161,34 +161,58 @@ inline int blockDistanceApprox(const Coord& p1, const Coord& p2) {
     }
 }
 
-inline int mirrorAngleHorizontal(int angle) {
-    switch(angle % NUM_ANGLES) {
-        case RIGHT:     return LEFT;
-        case RIGHTUP:   return LEFTUP;
-        case UP:        return UP;
-        case LEFTUP:    return RIGHTUP;
-        case LEFT:      return RIGHT;
-        case LEFTDOWN:  return RIGHTDOWN;
-        case DOWN:      return DOWN;
-        case RIGHTDOWN: return LEFTDOWN;
-        default:        return angle;
+inline ANGLETYPE normalizeAngle(ANGLETYPE angle) {
+    auto int_angle = static_cast<int>(angle);
+
+    if (int_angle >= 0 && int_angle < static_cast<int>(ANGLETYPE::NUM_ANGLES))
+        return angle;
+
+    auto mod_angle = int_angle % static_cast<int>(ANGLETYPE::NUM_ANGLES);
+    if (int_angle < 0) mod_angle += static_cast<int>(ANGLETYPE::NUM_ANGLES);
+
+    return static_cast<ANGLETYPE>(mod_angle);
+}
+
+inline ANGLETYPE mirrorAngleHorizontal(ANGLETYPE angle) {
+    angle = normalizeAngle(angle);
+
+    // clang-format off
+    switch(angle) {
+        case ANGLETYPE::RIGHT:     return ANGLETYPE::LEFT;
+        case ANGLETYPE::RIGHTUP:   return ANGLETYPE::LEFTUP;
+        case ANGLETYPE::UP:        return ANGLETYPE::UP;
+        case ANGLETYPE::LEFTUP:    return ANGLETYPE::RIGHTUP;
+        case ANGLETYPE::LEFT:      return ANGLETYPE::RIGHT;
+        case ANGLETYPE::LEFTDOWN:  return ANGLETYPE::RIGHTDOWN;
+        case ANGLETYPE::DOWN:      return ANGLETYPE::DOWN;
+        case ANGLETYPE::RIGHTDOWN: return ANGLETYPE::LEFTDOWN;
+        default:
+            assert(false);
+            return angle;
     }
+    // clang-format on
 }
 
 
 
-inline int mirrorAngleVertical(int angle) {
-    switch(angle % NUM_ANGLES) {
-        case RIGHT:     return RIGHT;
-        case RIGHTUP:   return RIGHTDOWN;
-        case UP:        return DOWN;
-        case LEFTUP:    return LEFTDOWN;
-        case LEFT:      return LEFT;
-        case LEFTDOWN:  return LEFTUP;
-        case DOWN:      return UP;
-        case RIGHTDOWN: return RIGHTUP;
-        default:        return angle;
+inline ANGLETYPE mirrorAngleVertical(ANGLETYPE angle) {
+    angle = normalizeAngle(angle);
+
+    // clang-format off
+    switch(angle) {
+        case ANGLETYPE::RIGHT:     return ANGLETYPE::RIGHT;
+        case ANGLETYPE::RIGHTUP:   return ANGLETYPE::RIGHTDOWN;
+        case ANGLETYPE::UP:        return ANGLETYPE::DOWN;
+        case ANGLETYPE::LEFTUP:    return ANGLETYPE::LEFTDOWN;
+        case ANGLETYPE::LEFT:      return ANGLETYPE::LEFT;
+        case ANGLETYPE::LEFTDOWN:  return ANGLETYPE::LEFTUP;
+        case ANGLETYPE::DOWN:      return ANGLETYPE::UP;
+        case ANGLETYPE::RIGHTDOWN: return ANGLETYPE::RIGHTUP;
+        default:
+            assert(false);
+            return angle;
     }
+    // clang-format on
 }
 
 /**

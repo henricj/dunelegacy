@@ -221,7 +221,7 @@ std::unique_ptr<MapEditorOperation> MapEditorEditUnitOperation::perform(MapEdito
     MapEditor::Unit* pUnit = pMapEditor->getUnit(id);
 
     int oldHealth = pUnit->health;
-    unsigned char oldAngle = pUnit->angle;
+    ANGLETYPE oldAngle = pUnit->angle;
     ATTACKMODE oldAttackmode = pUnit->attackmode;
 
     pUnit->health = health;
@@ -235,7 +235,7 @@ std::unique_ptr<MapEditorOperation> MapEditorEditUnitOperation::perform(MapEdito
 
 std::unique_ptr<MapEditorOperation> MapEditorChangePlayer::perform(MapEditor *pMapEditor) {
 
-    MapEditor::Player& player = pMapEditor->getPlayers()[playerNum];
+    auto& player = pMapEditor->getPlayers()[playerNum];
 
     bool bOldActive = player.bActive;
     bool bOldAnyHouse = player.bAnyHouse;

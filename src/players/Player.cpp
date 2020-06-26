@@ -112,8 +112,8 @@ const RobustList<const UnitBase*>& Player::getUnitList() {
     return reinterpret_cast<const RobustList<const UnitBase*>&>(unitList);
 }
 
-const House* Player::getHouse(int houseID) {
-    if(houseID < 0 || houseID >= NUM_HOUSES) {
+const House* Player::getHouse(HOUSETYPE houseID) {
+    if(static_cast<int>(houseID) < 0 || houseID >= HOUSETYPE::NUM_HOUSES) {
         return nullptr;
     }
     return currentGame->getHouse(houseID);

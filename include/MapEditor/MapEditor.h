@@ -85,7 +85,7 @@ public:
          : mode(EditorMode_Structure), house(house), itemID(itemID), health(health) {
         }
 
-        EditorMode(HOUSETYPE house, int itemID, int health, unsigned char angle, ATTACKMODE attackmode)
+        EditorMode(HOUSETYPE house, int itemID, int health, ANGLETYPE angle, ATTACKMODE attackmode)
          : mode(EditorMode_Unit), house(house), itemID(itemID), health(health), angle(angle), attackmode(attackmode) {
         }
 
@@ -99,10 +99,10 @@ public:
 
         TERRAINTYPE     terrainType = Terrain_Sand;
         int             pensize = 0;
-        HOUSETYPE       house = HOUSE_HARKONNEN;
-        int             itemID = 0;
+        HOUSETYPE       house = HOUSETYPE::HOUSE_HARKONNEN;
+        ANGLETYPE       angle       = static_cast<ANGLETYPE>(0);
+        int             itemID      = 0;
         int             health = 0;
-        unsigned char   angle = 0;
         ATTACKMODE      attackmode = ATTACKMODE_INVALID;
     };
 
@@ -122,17 +122,17 @@ public:
 
     class Unit {
     public:
-        Unit(int id, HOUSETYPE house, int itemID, int health, Coord position, unsigned char angle, ATTACKMODE attackmode)
+        Unit(int id, HOUSETYPE house, int itemID, int health, Coord position, ANGLETYPE angle, ATTACKMODE attackmode)
          : id(id), house(house), itemID(itemID), health(health), position(position), angle(angle), attackmode(attackmode) {
 
         }
 
         int             id;
         HOUSETYPE       house;
+        ANGLETYPE       angle;
         int             itemID;
         int             health;
         Coord           position;
-        unsigned char   angle;
         ATTACKMODE      attackmode;
     };
 

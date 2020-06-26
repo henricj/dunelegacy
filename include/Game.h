@@ -150,19 +150,30 @@ public:
         explosionList.emplace_back(std::make_unique<Explosion>(std::forward<Args>(args)...));
     }
 
+    int getHouseIndex(HOUSETYPE houseID) {
+        const auto int_house = static_cast<int>(houseID);
+
+        if(int_house < 0 || int_house >= house.size())
+            THROW(std::invalid_argument, "Invalid house index %d!", int_house);
+
+        return int_house;
+    }
+
     /**
         Returns the house with the id houseID
         \param  houseID the id of the house to return
         \return the house with id houseID
     */
-    House* getHouse(int houseID) {
-        return house[houseID].get();
+    House* getHouse(HOUSETYPE houseID) {
+        const auto int_house = getHouseIndex(houseID);
+
+        return house[int_house].get();
     }
 
     template<typename F>
     void forAllHouses(F&& f) const {
         for (auto& h : house) {
-            if (h) f(h.get());
+            if (h) f(*h.get());
         }
     }
 
@@ -622,7 +633,7 @@ private:
     std::unordered_multimap<std::string, Player*> playerName2Player;  ///< mapping player names to players (one entry per player)
     std::unordered_map<Uint8, Player*> playerID2Player;               ///< mapping player ids to players (one entry per player)
 
-    std::array<std::unique_ptr<House>, NUM_HOUSES> house;   ///< All the houses of this game, index by their houseID; has the size NUM_HOUSES; unused houses are nullptr
+    std::array<std::unique_ptr<House>, static_cast<size_t>(HOUSETYPE::NUM_HOUSES)> house;   ///< All the houses of this game, index by their houseID; has the size NUM_HOUSES; unused houses are nullptr
 };
 
 #endif // GAME_H

@@ -34,7 +34,7 @@
 MapSettingsWindow::MapSettingsWindow(MapEditor* pMapEditor, HOUSETYPE currentHouse)
  : Window(0,0,0,0), pMapEditor(pMapEditor), house(currentHouse) {
 
-    color = SDL2RGB(palette[houseToPaletteIndex[house]+3]);
+    color = SDL2RGB(palette[houseToPaletteIndex[static_cast<int>(house)] + 3]);
 
     MapInfo& mapInfo = pMapEditor->getMapInfo();
 

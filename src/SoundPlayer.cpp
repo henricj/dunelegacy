@@ -40,6 +40,7 @@ SoundPlayer::SoundPlayer() {
 
     Mix_ReserveChannels(24);  //Reserve a channel for voice over
 
+    // clang-format off
     Mix_GroupChannels( 0,  1, static_cast<int>(ChannelGroup::Voice));
     Mix_GroupChannels( 2,  3, static_cast<int>(ChannelGroup::UI));
     Mix_GroupChannels( 4,  5, static_cast<int>(ChannelGroup::Credits));
@@ -50,13 +51,14 @@ SoundPlayer::SoundPlayer() {
     Mix_GroupChannels(17, 18, static_cast<int>(ChannelGroup::Scream));
     Mix_GroupChannels(19, 21, static_cast<int>(ChannelGroup::Sonic));
     Mix_GroupChannels(22, 23, static_cast<int>(ChannelGroup::Other));
+    // clang-format on
 
     soundOn = settings.audio.playSFX;
 }
 
 SoundPlayer::~SoundPlayer() = default;
 
-void SoundPlayer::playVoice(Voice_enum id, int houseID) const {
+void SoundPlayer::playVoice(Voice_enum id, HOUSETYPE houseID) const {
     if(!soundOn || !pSFXManager) return;
 
     Mix_Chunk* tmp;

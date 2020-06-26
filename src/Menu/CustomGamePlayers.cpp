@@ -189,12 +189,12 @@ CustomGamePlayers::CustomGamePlayers(const GameInitSettings& newGameInitSettings
 
     buttonHBox.addWidget(HSpacer::create(90));
 
-    std::list<HOUSETYPE>  tmpBoundHousesOnMap = boundHousesOnMap;
+    auto boundHousesIt = boundHousesOnMap.begin();
 
     bool thisPlayerPlaced = false;
 
-    for(int i=0;i<NUM_HOUSES;i++) {
-        HouseInfo& curHouseInfo = houseInfo[i];
+    for(int i = 0; i < houseInfo.size(); i++) {
+        auto& curHouseInfo = houseInfo[i];
 
         // set up header row with Label "House", DropDown for house selection and DropDown for team selection
         curHouseInfo.houseLabel.setText(_("House"));
@@ -204,22 +204,22 @@ CustomGamePlayers::CustomGamePlayers(const GameInitSettings& newGameInitSettings
             if(i < (int) houseInfoListSetup.size()) {
                 GameInitSettings::HouseInfo gisHouseInfo = houseInfoListSetup.at(i);
 
-                if(gisHouseInfo.houseID == HOUSE_INVALID) {
-                    addToHouseDropDown(curHouseInfo.houseDropDown, HOUSE_INVALID, true);
+                if(gisHouseInfo.houseID == HOUSETYPE::HOUSE_INVALID) {
+                    addToHouseDropDown(curHouseInfo.houseDropDown, HOUSETYPE::HOUSE_INVALID, true);
                 } else {
                     addToHouseDropDown(curHouseInfo.houseDropDown, gisHouseInfo.houseID, true);
                 }
             }
 
             curHouseInfo.houseDropDown.setEnabled(false);
-        } else if(tmpBoundHousesOnMap.empty() == false) {
-            HOUSETYPE housetype = tmpBoundHousesOnMap.front();
-            tmpBoundHousesOnMap.pop_front();
+        } else if(boundHousesIt != boundHousesOnMap.end()) {
+            const auto housetype = *boundHousesIt;
+            ++boundHousesIt;
 
             addToHouseDropDown(curHouseInfo.houseDropDown, housetype, true);
             curHouseInfo.houseDropDown.setEnabled(bServer);
         } else {
-            addToHouseDropDown(curHouseInfo.houseDropDown, HOUSE_INVALID, true);
+            addToHouseDropDown(curHouseInfo.houseDropDown, HOUSETYPE::HOUSE_INVALID, true);
             curHouseInfo.houseDropDown.setEnabled(bServer);
         }
         curHouseInfo.houseDropDown.setOnSelectionChange(std::bind(&CustomGamePlayers::onChangeHousesDropDownBoxes, this, std::placeholders::_1, i));
@@ -258,7 +258,7 @@ CustomGamePlayers::CustomGamePlayers(const GameInitSettings& newGameInitSettings
             if(i < (int) houseInfoListSetup.size()) {
                 GameInitSettings::HouseInfo gisHouseInfo = houseInfoListSetup.at(i);
 
-                if(gisHouseInfo.houseID == HOUSE_UNUSED) {
+                if(gisHouseInfo.houseID == HOUSETYPE::HOUSE_UNUSED) {
                     curHouseInfo.player1DropDown.addEntry(_("closed"), PLAYER_CLOSED);
                 } else if(gisHouseInfo.playerInfoList.empty() == false) {
                     GameInitSettings::PlayerInfo playerInfo = gisHouseInfo.playerInfoList.front();
@@ -315,7 +315,7 @@ CustomGamePlayers::CustomGamePlayers(const GameInitSettings& newGameInitSettings
             if(i < (int) houseInfoListSetup.size()) {
                 GameInitSettings::HouseInfo gisHouseInfo = houseInfoListSetup.at(i);
 
-                if(gisHouseInfo.houseID == HOUSE_UNUSED) {
+                if(gisHouseInfo.houseID == HOUSETYPE::HOUSE_UNUSED) {
                     curHouseInfo.player2DropDown.addEntry(_("closed"), PLAYER_CLOSED);
                 } else if(gisHouseInfo.playerInfoList.size() >= 2) {
                     GameInitSettings::PlayerInfo playerInfo = *(++gisHouseInfo.playerInfoList.begin());
@@ -462,16 +462,16 @@ void CustomGamePlayers::update() {
 
 void CustomGamePlayers::onReceiveChangeEventList(const ChangeEventList& changeEventList)
 {
-    for(const ChangeEventList::ChangeEvent& changeEvent : changeEventList.changeEventList) {
+    for(const auto& changeEvent : changeEventList.changeEventList) {
 
         switch(changeEvent.eventType) {
             case ChangeEventList::ChangeEvent::EventType::ChangeHouse: {
-                HOUSETYPE houseType = (HOUSETYPE) changeEvent.newValue;
+                auto houseType = (HOUSETYPE) changeEvent.newValue;
 
                 HouseInfo& curHouseInfo = houseInfo[changeEvent.slot];
 
                 for(int i=0;i<curHouseInfo.houseDropDown.getNumEntries();i++) {
-                    if(curHouseInfo.houseDropDown.getEntryIntData(i) == houseType) {
+                    if(curHouseInfo.houseDropDown.getEntryIntData(i) == static_cast<int>(houseType)) {
                         curHouseInfo.houseDropDown.setSelectedItem(i);
                         break;
                     }
@@ -540,8 +540,8 @@ ChangeEventList CustomGamePlayers::getChangeEventList()
 {
     ChangeEventList changeEventList;
 
-    for(int i=0;i<NUM_HOUSES;i++) {
-        HouseInfo& curHouseInfo = houseInfo[i];
+    for(int i = 0; i < houseInfo.size(); i++) {
+        auto& curHouseInfo = houseInfo[i];
 
         int houseID = curHouseInfo.houseDropDown.getSelectedEntryIntData();
         int team = curHouseInfo.teamDropDown.getSelectedEntryIntData();
@@ -645,8 +645,8 @@ void CustomGamePlayers::onNext()
     // check if we have at least two houses on the map and if we have more than one team
     int numUsedHouses = 0;
     int numTeams = 0;
-    for(int i=0;i<NUM_HOUSES;i++) {
-        HouseInfo& curHouseInfo = houseInfo[i];
+    for(int i = 0; i < houseInfo.size(); i++) {
+        auto& curHouseInfo = houseInfo[i];
 
         int currentPlayer1 = curHouseInfo.player1DropDown.getSelectedEntryIntData();
         int currentPlayer2 = curHouseInfo.player2DropDown.getSelectedEntryIntData();
@@ -704,8 +704,7 @@ void CustomGamePlayers::addAllPlayersToGameInitSettings()
 {
     gameInitSettings.clearHouseInfo();
 
-    for(int i=0;i<NUM_HOUSES;i++) {
-        HouseInfo& curHouseInfo = houseInfo[i];
+    for(auto& curHouseInfo : houseInfo) {
 
         int houseID = curHouseInfo.houseDropDown.getSelectedEntryIntData();
         int team = curHouseInfo.teamDropDown.getSelectedEntryIntData();
@@ -731,7 +730,7 @@ bool CustomGamePlayers::addPlayerToHouseInfo(GameInitSettings::HouseInfo& newHou
     std::string playerName;
     std::string playerClass;
 
-    HOUSETYPE houseID = newHouseInfo.houseID;
+    const auto houseID = newHouseInfo.houseID;
 
     switch(player) {
         case PLAYER_HUMAN: {
@@ -752,7 +751,7 @@ bool CustomGamePlayers::addPlayerToHouseInfo(GameInitSettings::HouseInfo& newHou
                 return false;
             }
 
-            playerName = (houseID == HOUSE_INVALID) ? pPlayerData->getName() : getHouseNameByNumber(houseID);
+            playerName = (houseID == HOUSETYPE::HOUSE_INVALID) ? pPlayerData->getName() : getHouseNameByNumber(houseID);
             playerClass = pPlayerData->getPlayerClass();
 
         } break;
@@ -846,14 +845,15 @@ void CustomGamePlayers::extractMapInfo(INIFile* pMap)
     }
     minimap.setSurface(std::move(pMapSurface));
 
-
+    // clang-format off
     boundHousesOnMap.clear();
-    if(pMap->hasSection("Harkonnen")) boundHousesOnMap.push_back(HOUSE_HARKONNEN);
-    if(pMap->hasSection("Atreides"))  boundHousesOnMap.push_back(HOUSE_ATREIDES);
-    if(pMap->hasSection("Ordos"))     boundHousesOnMap.push_back(HOUSE_ORDOS);
-    if(pMap->hasSection("Fremen"))    boundHousesOnMap.push_back(HOUSE_FREMEN);
-    if(pMap->hasSection("Sardaukar")) boundHousesOnMap.push_back(HOUSE_SARDAUKAR);
-    if(pMap->hasSection("Mercenary")) boundHousesOnMap.push_back(HOUSE_MERCENARY);
+    if(pMap->hasSection("Harkonnen"))   boundHousesOnMap.push_back(HOUSETYPE::HOUSE_HARKONNEN);
+    if(pMap->hasSection("Atreides"))    boundHousesOnMap.push_back(HOUSETYPE::HOUSE_ATREIDES);
+    if(pMap->hasSection("Ordos"))       boundHousesOnMap.push_back(HOUSETYPE::HOUSE_ORDOS);
+    if(pMap->hasSection("Fremen"))      boundHousesOnMap.push_back(HOUSETYPE::HOUSE_FREMEN);
+    if(pMap->hasSection("Sardaukar"))   boundHousesOnMap.push_back(HOUSETYPE::HOUSE_SARDAUKAR);
+    if(pMap->hasSection("Mercenary"))   boundHousesOnMap.push_back(HOUSETYPE::HOUSE_MERCENARY);
+    // clang-format on
 
     numHouses = boundHousesOnMap.size();
     if(pMap->hasSection("Player1"))   numHouses++;
@@ -876,7 +876,7 @@ void CustomGamePlayers::extractMapInfo(INIFile* pMap)
 
     // find Brain=Human
     int currentIndex = 0;
-    for(const HOUSETYPE& houseType : boundHousesOnMap) {
+    for(const auto& houseType : boundHousesOnMap) {
         if(strToUpper(pMap->getStringValue(getHouseNameByNumber(houseType),"Brain","")) == "HUMAN") {
             brainEqHumanSlot = currentIndex;
         }
@@ -886,47 +886,39 @@ void CustomGamePlayers::extractMapInfo(INIFile* pMap)
     currentIndex = 0;
     int currentTeam = 0;
     std::vector<std::string> teamNames;
-    for(const HOUSETYPE& houseType : boundHousesOnMap) {
+    for(const auto& houseType : boundHousesOnMap) {
         std::string teamName = strToUpper(pMap->getStringValue(getHouseNameByNumber(houseType),"Brain","Team " + std::to_string(currentIndex+1)));
-        teamNames.push_back(teamName);
-        slotToTeam[currentIndex] = currentTeam;
-        currentTeam++;
 
-        // let's see if we can reuse an old team number
-        for(unsigned int i = 0; i < teamNames.size()-1; i++) {
-            if(teamNames[i] == teamName) {
-                slotToTeam[currentIndex] = slotToTeam[i];
-                currentTeam--;
-                break;
-            }
+        const auto it = std::find(teamNames.begin(), teamNames.end(), teamName);
+        if (it == teamNames.end()) {
+            teamNames.push_back(teamName);
+            slotToTeam[currentIndex] = currentTeam;
+            currentTeam++;
+        } else {
+            slotToTeam[currentIndex] = slotToTeam[it - teamNames.begin()];
         }
 
         currentIndex++;
     }
 
-    for(int p = 0; (p < NUM_HOUSES) && (currentIndex < NUM_HOUSES); p++) {
+    for(int p = 0; (p < static_cast<int>(HOUSETYPE::NUM_HOUSES)) && (currentIndex < static_cast<int>(HOUSETYPE::NUM_HOUSES)); p++) {
         if(pMap->hasSection("Player" + std::to_string(p+1))) {
             std::string teamName = strToUpper(pMap->getStringValue("Player" + std::to_string(p+1),"Brain","Team " + std::to_string(currentIndex+p+1)));
-            teamNames.push_back(teamName);
-            slotToTeam[currentIndex] = currentTeam;
-            currentTeam++;
 
-            // let's see if we can reuse an old team number
-            for(unsigned int i = 0; i < teamNames.size()-1; i++) {
-                if(teamNames[i] == teamName) {
-                    slotToTeam[currentIndex] = slotToTeam[i];
-                    currentTeam--;
-                    break;
-                }
+            const auto it = std::find(teamNames.begin(), teamNames.end(), teamName);
+            if(it == teamNames.end()) {
+                teamNames.push_back(teamName);
+                slotToTeam[currentIndex] = currentTeam;
+                currentTeam++;
+            } else {
+                slotToTeam[currentIndex] = slotToTeam[it - teamNames.begin()];
             }
 
             currentIndex++;
         }
     }
 
-    for(;currentIndex < NUM_HOUSES; currentIndex++) {
-        slotToTeam[currentIndex] = -1;
-    }
+    std::fill(slotToTeam.begin() + currentIndex, slotToTeam.end(), -1);
 }
 
 void CustomGamePlayers::onChangeHousesDropDownBoxes(bool bInteractive, int houseInfoNum) {
@@ -943,12 +935,12 @@ void CustomGamePlayers::onChangeHousesDropDownBoxes(bool bInteractive, int house
     int numUsedBoundHouses = 0;
     int numUsedRandomHouses = 0;
     for(int i=0;i<numHouses;i++) {
-        int selectedHouseID = houseInfo[i].houseDropDown.getSelectedEntryIntData();
+        const auto selectedHouseID = static_cast<HOUSETYPE>(houseInfo[i].houseDropDown.getSelectedEntryIntData());
 
-        if(selectedHouseID == HOUSE_INVALID) {
+        if(selectedHouseID == HOUSETYPE::HOUSE_INVALID) {
             numUsedRandomHouses++;
         } else {
-            if(isBoundedHouseOnMap((HOUSETYPE) selectedHouseID)) {
+            if(isBoundedHouseOnMap(selectedHouseID)) {
                 numUsedBoundHouses++;
             }
         }
@@ -958,11 +950,11 @@ void CustomGamePlayers::onChangeHousesDropDownBoxes(bool bInteractive, int house
     for(int i=0;i<numHouses;i++) {
         HouseInfo& curHouseInfo = houseInfo[i];
 
-        int house = curHouseInfo.houseDropDown.getSelectedEntryIntData();
+        const auto house = static_cast<HOUSETYPE>(curHouseInfo.houseDropDown.getSelectedEntryIntData());
 
         if(houseInfoNum == -1 || houseInfoNum == i) {
 
-            Uint32 color = (house == HOUSE_INVALID) ? COLOR_RGB(20,20,40) : SDL2RGB(palette[houseToPaletteIndex[house] + 3]);
+            Uint32 color = (house == HOUSETYPE::HOUSE_INVALID) ? COLOR_RGB(20,20,40) : SDL2RGB(palette[houseToPaletteIndex[static_cast<int>(house)] + 3]);
             curHouseInfo.houseLabel.setTextColor(color);
             curHouseInfo.houseDropDown.setColor(color);
             curHouseInfo.teamDropDown.setColor(color);
@@ -971,7 +963,7 @@ void CustomGamePlayers::onChangeHousesDropDownBoxes(bool bInteractive, int house
             curHouseInfo.player2Label.setTextColor(color);
             curHouseInfo.player2DropDown.setColor(color);
 
-            if(house == HOUSE_INVALID) {
+            if(house == HOUSETYPE::HOUSE_INVALID) {
                 curHouseInfo.player1ArrowLabel.setTexture(pGFXManager->getUIGraphic(UI_CustomGamePlayersArrowNeutral));
             } else {
                 curHouseInfo.player1ArrowLabel.setTexture(pGFXManager->getUIGraphic(UI_CustomGamePlayersArrow, house));
@@ -983,14 +975,14 @@ void CustomGamePlayers::onChangeHousesDropDownBoxes(bool bInteractive, int house
             continue;
         }
 
-        addToHouseDropDown(curHouseInfo.houseDropDown, HOUSE_INVALID);
+        addToHouseDropDown(curHouseInfo.houseDropDown, HOUSETYPE::HOUSE_INVALID);
 
-        for(int h=0;h<NUM_HOUSES;h++) {
+        for(int h = 0; h < static_cast<int>(HOUSETYPE::NUM_HOUSES); h++) {
             bool bAddHouse;
 
             bool bCheck;
 
-            if((house == HOUSE_INVALID) || (isBoundedHouseOnMap((HOUSETYPE) house))) {
+            if((house == HOUSETYPE::HOUSE_INVALID) || (isBoundedHouseOnMap(house))) {
                 if(numUsedBoundHouses + numUsedRandomHouses - 1 >= numBoundHouses) {
                     bCheck = true;
                 } else {
@@ -1016,9 +1008,9 @@ void CustomGamePlayers::onChangeHousesDropDownBoxes(bool bInteractive, int house
                     }
                 }
             } else {
-                bAddHouse = (h == house);
+                bAddHouse = (h == static_cast<int>(house));
 
-                if(((house == HOUSE_INVALID) || (isBoundedHouseOnMap((HOUSETYPE) house))) && isBoundedHouseOnMap((HOUSETYPE) h)) {
+                if(((house == HOUSETYPE::HOUSE_INVALID) || (isBoundedHouseOnMap(house))) && isBoundedHouseOnMap((HOUSETYPE) h)) {
                     // check if this entry is random or a bounded house but is needed for a bounded house
                     bAddHouse = true;
                     for(int j = 0; j < numHouses; j++) {
@@ -1034,9 +1026,9 @@ void CustomGamePlayers::onChangeHousesDropDownBoxes(bool bInteractive, int house
             }
 
             if(bAddHouse == true) {
-                addToHouseDropDown(curHouseInfo.houseDropDown, h);
+                addToHouseDropDown(curHouseInfo.houseDropDown, static_cast<HOUSETYPE>(h));
             } else {
-                removeFromHouseDropDown(curHouseInfo.houseDropDown, h);
+                removeFromHouseDropDown(curHouseInfo.houseDropDown, static_cast<HOUSETYPE>(h));
             }
         }
     }
@@ -1272,13 +1264,13 @@ void CustomGamePlayers::checkPlayerBoxes() {
 }
 
 
-void CustomGamePlayers::addToHouseDropDown(DropDownBox& houseDropDownBox, int house, bool bSelect) {
+void CustomGamePlayers::addToHouseDropDown(DropDownBox& houseDropDownBox, HOUSETYPE house, bool bSelect) {
 
     if(houseDropDownBox.getNumEntries() == 0) {
-        if(house == HOUSE_INVALID) {
-            houseDropDownBox.addEntry(_("Random"), HOUSE_INVALID);
+        if(house == HOUSETYPE::HOUSE_INVALID) {
+            houseDropDownBox.addEntry(_("Random"), static_cast<int>(HOUSETYPE::HOUSE_INVALID));
         } else {
-            houseDropDownBox.addEntry(getHouseNameByNumber((HOUSETYPE) house), house);
+            houseDropDownBox.addEntry(getHouseNameByNumber(house), static_cast<int>(house));
         }
 
         if(bSelect) {
@@ -1286,9 +1278,9 @@ void CustomGamePlayers::addToHouseDropDown(DropDownBox& houseDropDownBox, int ho
         }
     } else {
 
-        if(house == HOUSE_INVALID) {
-            if(houseDropDownBox.getEntryIntData(0) != HOUSE_INVALID) {
-                houseDropDownBox.insertEntry(0, _("Random"), HOUSE_INVALID);
+        if(house == HOUSETYPE::HOUSE_INVALID) {
+            if(houseDropDownBox.getEntryIntData(0) != static_cast<int>(HOUSETYPE::HOUSE_INVALID)) {
+                houseDropDownBox.insertEntry(0, _("Random"), static_cast<int>(HOUSETYPE::HOUSE_INVALID));
             }
 
             if(bSelect) {
@@ -1296,11 +1288,11 @@ void CustomGamePlayers::addToHouseDropDown(DropDownBox& houseDropDownBox, int ho
             }
         } else {
 
-            int currentItemIndex = (houseDropDownBox.getEntryIntData(0) == HOUSE_INVALID) ? 1 : 0;
+            int currentItemIndex = (houseDropDownBox.getEntryIntData(0) == static_cast<int>(HOUSETYPE::HOUSE_INVALID)) ? 1 : 0;
 
-            for(int h = 0; h < NUM_HOUSES; h++) {
+            for(int h = 0; h < static_cast<int>(HOUSETYPE::NUM_HOUSES); h++) {
                 if(currentItemIndex < houseDropDownBox.getNumEntries() && houseDropDownBox.getEntryIntData(currentItemIndex) == h) {
-                    if(h == house) {
+                    if(h == static_cast<int>(house)) {
                         if(bSelect) {
                             houseDropDownBox.setSelectedItem(currentItemIndex);
                         }
@@ -1309,7 +1301,7 @@ void CustomGamePlayers::addToHouseDropDown(DropDownBox& houseDropDownBox, int ho
 
                     currentItemIndex++;
                 } else {
-                    if(h == house) {
+                    if(h == static_cast<int>(house)) {
                         houseDropDownBox.insertEntry(currentItemIndex, getHouseNameByNumber((HOUSETYPE) h), h);
 
                         if(bSelect) {
@@ -1325,10 +1317,10 @@ void CustomGamePlayers::addToHouseDropDown(DropDownBox& houseDropDownBox, int ho
     }
 }
 
-void CustomGamePlayers::removeFromHouseDropDown(DropDownBox& houseDropDownBox, int house) {
+void CustomGamePlayers::removeFromHouseDropDown(DropDownBox& houseDropDownBox, HOUSETYPE house) {
 
     for(int i=0;i<houseDropDownBox.getNumEntries(); i++) {
-        if(houseDropDownBox.getEntryIntData(i) == house) {
+        if(houseDropDownBox.getEntryIntData(i) == static_cast<int>(house)) {
             houseDropDownBox.removeEntry(i);
             break;
         }
@@ -1336,13 +1328,11 @@ void CustomGamePlayers::removeFromHouseDropDown(DropDownBox& houseDropDownBox, i
 }
 
 bool CustomGamePlayers::isBoundedHouseOnMap(HOUSETYPE houseID) {
-    return (std::find(boundHousesOnMap.begin(), boundHousesOnMap.end(), houseID) != boundHousesOnMap.end());
+    return std::find(boundHousesOnMap.begin(), boundHousesOnMap.end(), houseID) != boundHousesOnMap.end();
 }
 
 void CustomGamePlayers::disableAllDropDownBoxes() {
-    for(int i=0;i<NUM_HOUSES;i++) {
-        HouseInfo& curHouseInfo = houseInfo[i];
-
+    for(auto& curHouseInfo : houseInfo) {
         curHouseInfo.houseDropDown.setEnabled(false);
         curHouseInfo.houseDropDown.setOnClickEnabled(false);
         curHouseInfo.teamDropDown.setEnabled(false);

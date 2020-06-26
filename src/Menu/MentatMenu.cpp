@@ -26,7 +26,7 @@
 #include <algorithm>
 #include <regex>
 
-MentatMenu::MentatMenu(int newHouse)
+MentatMenu::MentatMenu(HOUSETYPE newHouse)
  : MenuBase(), currentMentatTextIndex(-1), nextMentatTextSwitch(0)
 {
     nextSpecialAnimation = SDL_GetTicks() + getRandomInt(8000, 20000);
@@ -38,7 +38,7 @@ MentatMenu::MentatMenu(int newHouse)
 
     // set up window
     SDL_Texture *pBackground;
-    if(house == HOUSE_INVALID) {
+    if(house == HOUSETYPE::HOUSE_INVALID) {
         pBackground = pGFXManager->getUIGraphic(UI_MentatBackgroundBene);
     } else {
         pBackground = pGFXManager->getUIGraphic(UI_MentatBackground,house);
@@ -51,7 +51,7 @@ MentatMenu::MentatMenu(int newHouse)
     setWindowWidget(&windowWidget);
 
     switch(house) {
-        case HOUSE_HARKONNEN: {
+        case HOUSETYPE::HOUSE_HARKONNEN: {
             anim = pGFXManager->getAnimation(Anim_HarkonnenEyes);
             eyesAnim.setAnimation(anim);
             windowWidget.addWidget(&eyesAnim,Point(64,176),eyesAnim.getMinimumSize());
@@ -65,7 +65,7 @@ MentatMenu::MentatMenu(int newHouse)
             // don't add shoulderAnim, draw it in DrawSpecificStuff
         } break;
 
-        case HOUSE_ATREIDES: {
+        case HOUSETYPE::HOUSE_ATREIDES: {
             anim = pGFXManager->getAnimation(Anim_AtreidesEyes);
             eyesAnim.setAnimation(anim);
             windowWidget.addWidget(&eyesAnim,Point(80,160),eyesAnim.getMinimumSize());
@@ -83,7 +83,7 @@ MentatMenu::MentatMenu(int newHouse)
             // don't add shoulderAnim, draw it in DrawSpecificStuff
         } break;
 
-        case HOUSE_ORDOS: {
+        case HOUSETYPE::HOUSE_ORDOS: {
             anim = pGFXManager->getAnimation(Anim_OrdosEyes);
             eyesAnim.setAnimation(anim);
             windowWidget.addWidget(&eyesAnim,Point(32,160),eyesAnim.getMinimumSize());
@@ -102,7 +102,7 @@ MentatMenu::MentatMenu(int newHouse)
             // don't add shoulderAnim, draw it in DrawSpecificStuff
         } break;
 
-        case HOUSE_FREMEN: {
+        case HOUSETYPE::HOUSE_FREMEN: {
             anim = pGFXManager->getAnimation(Anim_FremenEyes);
             eyesAnim.setAnimation(anim);
             windowWidget.addWidget(&eyesAnim,Point(80,160),eyesAnim.getMinimumSize());
@@ -120,7 +120,7 @@ MentatMenu::MentatMenu(int newHouse)
             // don't add shoulderAnim, draw it in DrawSpecificStuff
         } break;
 
-        case HOUSE_SARDAUKAR: {
+        case HOUSETYPE::HOUSE_SARDAUKAR: {
             anim = pGFXManager->getAnimation(Anim_SardaukarEyes);
             eyesAnim.setAnimation(anim);
             windowWidget.addWidget(&eyesAnim,Point(64,176),eyesAnim.getMinimumSize());
@@ -134,7 +134,7 @@ MentatMenu::MentatMenu(int newHouse)
             // don't add shoulderAnim, draw it in DrawSpecificStuff
         } break;
 
-        case HOUSE_MERCENARY: {
+        case HOUSETYPE::HOUSE_MERCENARY: {
             anim = pGFXManager->getAnimation(Anim_MercenaryEyes);
             eyesAnim.setAnimation(anim);
             windowWidget.addWidget(&eyesAnim,Point(32,160),eyesAnim.getMinimumSize());
@@ -270,18 +270,18 @@ void MentatMenu::update() {
 void MentatMenu::drawSpecificStuff() {
     Point shoulderPos;
     switch(house) {
-        case HOUSE_HARKONNEN:
-        case HOUSE_SARDAUKAR: {
+        case HOUSETYPE::HOUSE_HARKONNEN:
+        case HOUSETYPE::HOUSE_SARDAUKAR: {
             shoulderPos = Point(256,209) + getPosition();
         } break;
 
-        case HOUSE_ATREIDES:
-        case HOUSE_FREMEN: {
+        case HOUSETYPE::HOUSE_ATREIDES:
+        case HOUSETYPE::HOUSE_FREMEN: {
             shoulderPos = Point(256,257) + getPosition();
         } break;
 
-        case HOUSE_ORDOS:
-        case HOUSE_MERCENARY: {
+        case HOUSETYPE::HOUSE_ORDOS:
+        case HOUSETYPE::HOUSE_MERCENARY: {
             shoulderPos = Point(256,257) + getPosition();
         } break;
 
