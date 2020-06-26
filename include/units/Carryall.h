@@ -89,7 +89,7 @@ private:
         const auto& objectManager = currentGame->getObjectManager();
 
         units.erase(std::remove_if(units.begin(), units.end(),
-            [](Uint32 unit_id) {
+            [&](Uint32 unit_id) {
                 const auto unit = static_cast<UnitBase*>(objectManager.getObject(unit_id));
 
                 return unit ? F(unit) : true;
