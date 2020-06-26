@@ -127,13 +127,13 @@ std::vector<FileInfo> getFileList(const std::filesystem::path& directory, const 
             const auto size = std::filesystem::file_size(fullpath, ec);
 
             if (ec) {
-                SDL_Log("Getting size of %s failed with %s", fullpath.u8string(), strerror(ec.value()));
+                SDL_Log("Getting size of %s failed with %s", fullpath.u8string().c_str(), strerror(ec.value()));
                 continue;
             }
 
             const auto modified = std::filesystem::last_write_time(fullpath, ec);
             if (ec) {
-                SDL_Log("Getting last modified time of %s failed with %s", fullpath.u8string(), strerror(ec.value()));
+                SDL_Log("Getting last modified time of %s failed with %s", fullpath.u8string().c_str(), strerror(ec.value()));
                 continue;
             }
 
