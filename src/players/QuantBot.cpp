@@ -1474,7 +1474,7 @@ void QuantBot::attack(int militaryValue) {
     }
 
     logDebug(   "Attack: house: %d  dif: %d  mStr: %d  mLim: %d  attackTimer: %d",
-                getHouse()->getHouseID(), static_cast<Uint8>(difficulty), militaryValue, militaryValueLimit, attackTimer);
+                static_cast<int>(getHouse()->getHouseID()), static_cast<Uint8>(difficulty), militaryValue, militaryValueLimit, attackTimer);
 
     // overwriting existing logic for the time being
     attackTimer = MILLI2CYCLES(40000);
