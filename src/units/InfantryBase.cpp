@@ -76,7 +76,8 @@ void InfantryBase::handleCaptureClick(int xPos, int yPos) {
                 // capture structure
                 ObjectBase* tempTarget = currentGameMap->getTile(xPos,yPos)->getObject();
 
-                currentGame->getCommandManager().addCommand(Command(pLocalPlayer->getPlayerID(), CMD_INFANTRY_CAPTURE,objectID,tempTarget->getObjectID()));
+                currentGame->getCommandManager().addCommand(Command(
+                    pLocalPlayer->getPlayerID(), CMDTYPE::CMD_INFANTRY_CAPTURE, objectID, tempTarget->getObjectID()));
             }
         }
     }
@@ -114,19 +115,18 @@ void InfantryBase::blitToScreen() {
                                             numImagesX, numImagesY,
                                             HAlign::Center, VAlign::Center);
 
-    int temp = drawnAngle;
-    if(temp == UP) {
-        temp = 1;
-    } else if (temp == DOWN) {
-        temp = 3;
-    } else if (temp == LEFTUP || temp == LEFTDOWN || temp == LEFT) {
-        temp = 2;
+    auto temp = drawnAngle;
+    if(temp == ANGLETYPE::UP) {
+        temp = ANGLETYPE::RIGHTUP;
+    } else if(temp == ANGLETYPE::DOWN) {
+        temp = ANGLETYPE::LEFTUP;
+    } else if(temp == ANGLETYPE::LEFTUP || temp == ANGLETYPE::LEFTDOWN || temp == ANGLETYPE::LEFT) {
+        temp = ANGLETYPE::UP;
     } else {
-        //RIGHT
-        temp = 0;
+        temp = ANGLETYPE::RIGHT;
     }
 
-    SDL_Rect source = calcSpriteSourceRect(graphic[currentZoomlevel], temp, numImagesX, (walkFrame/10 == 3) ? 1 : walkFrame/10, numImagesY);
+    SDL_Rect source = calcSpriteSourceRect(graphic[currentZoomlevel], static_cast<int>(temp), numImagesX, (walkFrame/10 == 3) ? 1 : walkFrame/10, numImagesY);
 
     SDL_RenderCopy(renderer, graphic[currentZoomlevel], &source, &dest);
 }
@@ -196,7 +196,7 @@ void InfantryBase::checkPos() {
                 int targetID = pCapturedStructure->getItemID();
                 int posX = pCapturedStructure->getX();
                 int posY = pCapturedStructure->getY();
-                int origHouse = pCapturedStructure->getOriginalHouseID();
+                const auto origHouse = pCapturedStructure->getOriginalHouseID();
                 int oldHealth = lround(pCapturedStructure->getHealth());
                 bool isSelected = pCapturedStructure->isSelected();
                 bool isSelectedByOtherPlayer = pCapturedStructure->isSelectedByOtherPlayer();
@@ -206,10 +206,10 @@ void InfantryBase::checkPos() {
                 UnitBase* pContainedUnit = nullptr;
 
                 if (pCapturedStructure->getItemID() == Structure_Silo) {
-                    capturedSpice = currentGame->objectData.data[Structure_Silo][originalHouseID].capacity * (pOwner->getStoredCredits() / pOwner->getCapacity());
+                    capturedSpice = currentGame->objectData.data[Structure_Silo][static_cast<int>(originalHouseID)].capacity * (pOwner->getStoredCredits() / pOwner->getCapacity());
                 }
                 else if (pCapturedStructure->getItemID() == Structure_Refinery) {
-                    capturedSpice = currentGame->objectData.data[Structure_Silo][originalHouseID].capacity * (pOwner->getStoredCredits() / pOwner->getCapacity());
+                    capturedSpice = currentGame->objectData.data[Structure_Silo][static_cast<int>(originalHouseID)].capacity * (pOwner->getStoredCredits() / pOwner->getCapacity());
                     Refinery* pRefinery = static_cast<Refinery*>(pCapturedStructure);
                     if (pRefinery->isFree() == false) {
                         pContainedUnit = pRefinery->getHarvester();
@@ -466,16 +466,18 @@ void InfantryBase::setSpeeds() {
 
         int dx = 0;
         int dy = 0;
+        // clang-format off
         switch(drawnAngle) {
-            case RIGHT:     dx += TILESIZE;                 break;
-            case RIGHTUP:   dx += TILESIZE; dy -= TILESIZE; break;
-            case UP:                        dy -= TILESIZE; break;
-            case LEFTUP:    dx -= TILESIZE; dy -= TILESIZE; break;
-            case LEFT:      dx -= TILESIZE;                 break;
-            case LEFTDOWN:  dx -= TILESIZE; dy += TILESIZE; break;
-            case DOWN:                      dy += TILESIZE; break;
-            case RIGHTDOWN: dx += TILESIZE; dy += TILESIZE; break;
+            case ANGLETYPE::RIGHT:     dx += TILESIZE;                 break;
+            case ANGLETYPE::RIGHTUP:   dx += TILESIZE; dy -= TILESIZE; break;
+            case ANGLETYPE::UP:                        dy -= TILESIZE; break;
+            case ANGLETYPE::LEFTUP:    dx -= TILESIZE; dy -= TILESIZE; break;
+            case ANGLETYPE::LEFT:      dx -= TILESIZE;                 break;
+            case ANGLETYPE::LEFTDOWN:  dx -= TILESIZE; dy += TILESIZE; break;
+            case ANGLETYPE::DOWN:                      dy += TILESIZE; break;
+            case ANGLETYPE::RIGHTDOWN: dx += TILESIZE; dy += TILESIZE; break;
         }
+        // clang-format on
 
         if(tilePosition != INVALID_POS) {
             dx += tilePositionOffset[tilePosition].x;
@@ -485,7 +487,7 @@ void InfantryBase::setSpeeds() {
         dx -= sx;
         dy -= sy;
 
-        FixPoint scale = currentGame->objectData.data[itemID][originalHouseID].maxspeed/FixPoint::sqrt((dx*dx + dy*dy));
+        FixPoint scale = currentGame->objectData.data[itemID][static_cast<int>(originalHouseID)].maxspeed/FixPoint::sqrt((dx*dx + dy*dy));
         xSpeed = dx*scale;
         ySpeed = dy*scale;
     }

@@ -50,19 +50,12 @@ enum deadUnitEnum {
     DeadUnit_Ornithopter = 5
 };
 
-struct DAMAGETYPE
-{
-    Uint32 damageType;
-    int tile;
-    Coord realPos;
-} ;
-
 struct DEADUNITTYPE
 {
     Coord   realPos;
     Sint16  timer;
     Uint8   type;
-    Uint8   house;
+    HOUSETYPE house;
     bool    onSand;
 };
 
@@ -99,24 +92,24 @@ class Tile final
 {
 public:
 
-    enum TerrainDamage_enum {
+    enum class TerrainDamage_enum {
         Terrain_RockDamage,
         Terrain_SandDamage
     };
 
-    enum SANDDAMAGETYPE {
+    enum class SANDDAMAGETYPE {
         SandDamage1 = 0,
         SandDamage2 = 1,
         SandDamage3 = 2,
         SandDamage4 = 3
     };
 
-    enum ROCKDAMAGETYPE {
+    enum class ROCKDAMAGETYPE {
         RockDamage1 = 0,
         RockDamage2 = 1
     };
 
-    enum TERRAINTILETYPE {
+    enum class TERRAINTILETYPE {
         TerrainTile_SlabHalfDestroyed = 0x00,
         TerrainTile_SlabDestroyed = 0x01,
         TerrainTile_Slab = 0x02,
@@ -219,6 +212,11 @@ public:
         TerrainTile_Invalid = ~0
     };
 
+    struct DAMAGETYPE {
+        TerrainDamage_enum damageType;
+        int                      tile;
+        Coord                    realPos;
+    };
 
     /**
         Default constructor. Creates a tile of type Terrain_Sand.
@@ -235,7 +233,7 @@ public:
     void save(OutputStream& stream) const;
 
     void assignAirUnit(Uint32 newObjectID);
-    void assignDeadUnit(Uint8 type, Uint8 house, const Coord& position) {
+    void assignDeadUnit(Uint8 type, HOUSETYPE house, const Coord& position) {
         DEADUNITTYPE newDeadUnit;
         newDeadUnit.type = type;
         newDeadUnit.house = house;
@@ -316,16 +314,16 @@ public:
 
     void clearTerrain();
 
-    void setTrack(Uint8 direction);
+    void setTrack(ANGLETYPE direction);
 
-    void selectAllPlayersUnits(int houseID, ObjectBase** lastCheckedObject, ObjectBase** lastSelectedObject);
-    void selectAllPlayersUnitsOfType(int houseID, int itemID, ObjectBase** lastCheckedObject, ObjectBase** lastSelectedObject);
+    void selectAllPlayersUnits(HOUSETYPE houseID, ObjectBase** lastCheckedObject, ObjectBase** lastSelectedObject);
+    void selectAllPlayersUnitsOfType(HOUSETYPE houseID, int itemID, ObjectBase** lastCheckedObject, ObjectBase** lastSelectedObject);
     void unassignAirUnit(Uint32 objectID);
     void unassignNonInfantryGroundObject(Uint32 objectID);
     void unassignObject(Uint32 objectID);
     void unassignInfantry(Uint32 objectID, int currentPosition);
     void unassignUndergroundUnit(Uint32 objectID);
-    void setType(int newType);
+    void setType(TERRAINTYPE newType);
     void squash() const;
     int getInfantryTeam() const;
     FixPoint harvestSpice();
@@ -415,12 +413,12 @@ public:
         \param  houseID the house this tile should be explored for
         \param  cycle   the cycle this happens (normally the current game cycle)
     */
-    void setExplored(int houseID, Uint32 cycle) {
-        lastAccess[houseID] = cycle;
-        explored[houseID] = true;
+    void setExplored(HOUSETYPE houseID, Uint32 cycle) {
+        lastAccess[static_cast<int>(houseID)] = cycle;
+        explored[static_cast<int>(houseID)] = true;
     }
 
-    void setOwner(int newOwner) noexcept { owner = newOwner; }
+    void setOwner(HOUSETYPE newOwner) noexcept { owner = newOwner; }
     void setSandRegion(Uint32 newSandRegion) noexcept { sandRegion = newSandRegion; }
     void setDestroyedStructureTile(int newDestroyedStructureTile) noexcept { destroyedStructureTile = newDestroyedStructureTile; };
 
@@ -434,25 +432,30 @@ public:
 
     bool hasSpice() const noexcept { return (spice > 0); }
     bool infantryNotFull() const noexcept { return (assignedInfantryList.size() < NUM_INFANTRY_PER_TILE); }
-    bool isConcrete() const noexcept { return (type == Terrain_Slab); }
-    bool isExploredByHouse(int houseID) const { return explored[houseID]; }
+    bool isConcrete() const noexcept { return (type == TERRAINTYPE::Terrain_Slab); }
+    bool isExploredByHouse(HOUSETYPE houseID) const { return explored[static_cast<int>(houseID)]; }
     bool isExploredByTeam(int teamID) const;
 
-    bool isFoggedByHouse(int houseID) const noexcept;
+    bool isFoggedByHouse(HOUSETYPE houseID) const noexcept;
     bool isFoggedByTeam(int teamID) const noexcept;
-    bool isMountain() const noexcept { return (type == Terrain_Mountain); }
-    bool isRock() const noexcept { return ((type == Terrain_Rock) || (type == Terrain_Slab) || (type == Terrain_Mountain)); }
+    bool isMountain() const noexcept { return (type == TERRAINTYPE::Terrain_Mountain); }
+    bool isRock() const noexcept {
+        return ((type == TERRAINTYPE::Terrain_Rock) || (type == TERRAINTYPE::Terrain_Slab) ||
+                (type == TERRAINTYPE::Terrain_Mountain));
+    }
 
-    bool isSand() const noexcept { return (type == Terrain_Sand); }
-    bool isDunes() const noexcept { return (type == Terrain_Dunes); }
-    bool isSpiceBloom() const noexcept { return (type == Terrain_SpiceBloom); }
-    bool isSpecialBloom() const noexcept { return (type == Terrain_SpecialBloom); }
-    bool isSpice() const noexcept { return ((type == Terrain_Spice) || (type == Terrain_ThickSpice)); }
-    bool isThickSpice() const noexcept { return (type == Terrain_ThickSpice); }
+    bool isSand() const noexcept { return (type == TERRAINTYPE::Terrain_Sand); }
+    bool isDunes() const noexcept { return (type == TERRAINTYPE::Terrain_Dunes); }
+    bool isSpiceBloom() const noexcept { return (type == TERRAINTYPE::Terrain_SpiceBloom); }
+    bool isSpecialBloom() const noexcept { return (type == TERRAINTYPE::Terrain_SpecialBloom); }
+    bool isSpice() const noexcept {
+        return ((type == TERRAINTYPE::Terrain_Spice) || (type == TERRAINTYPE::Terrain_ThickSpice));
+    }
+    bool isThickSpice() const noexcept { return (type == TERRAINTYPE::Terrain_ThickSpice); }
 
     Uint32 getSandRegion() const noexcept { return sandRegion; }
-    int getOwner() const noexcept { return owner; }
-    int getType() const noexcept { return type; }
+    HOUSETYPE getOwner() const noexcept { return owner; }
+    TERRAINTYPE getType() const noexcept { return type; }
     FixPoint getSpice() const noexcept { return spice; }
 
     FixPoint getSpiceRemaining() const noexcept { return spice; }
@@ -460,8 +463,8 @@ public:
     const Coord& getLocation() const noexcept { return location; }
 
     Uint32 getRadarColor(House* pHouse, bool radar);
-    int getTerrainTile() const {
-        if (terrainTile == TerrainTile_Invalid)
+    TERRAINTILETYPE getTerrainTile() const {
+        if (terrainTile == TERRAINTILETYPE::TerrainTile_Invalid)
             terrainTile = getTerrainTileImpl();
 
         return terrainTile;
@@ -475,7 +478,7 @@ public:
     }
 
 
-    void addDamage(Uint32 damageType, int tile, Coord realPos) {
+    void addDamage(Tile::TerrainDamage_enum damageType, int tile, Coord realPos) {
         if (damage.size() >= DAMAGE_PER_TILE) return;
 
         DAMAGETYPE newDamage;
@@ -490,11 +493,11 @@ public:
 
 private:
 
-    Uint32      type;           ///< the type of the tile (Terrain_Sand, Terrain_Rock, ...)
+    TERRAINTYPE type;           ///< the type of the tile (Terrain_Sand, Terrain_Rock, ...)
 
     Uint32      fogColor;       ///< remember last color (radar)
 
-    Sint32      owner;          ///< house ID of the owner of this tile
+    HOUSETYPE   owner;          ///< house ID of the owner of this tile
     Uint32      sandRegion;     ///< used by sandworms to check if can get to a unit
 
     FixPoint    spice;          ///< how much spice on this particular tile is left
@@ -502,8 +505,8 @@ private:
     zoomable_texture sprite{};  ///< the graphic to draw
 
     Sint32                          destroyedStructureTile;         ///< the tile drawn for a destroyed structure
-    mutable TERRAINTILETYPE         terrainTile{TerrainTile_Invalid};
-    std::array<Uint32, NUM_ANGLES>  tracksCreationTime{};           ///< Contains the game cycle the tracks on sand appeared
+    mutable TERRAINTILETYPE         terrainTile{TERRAINTILETYPE::TerrainTile_Invalid};
+    std::array < Uint32, static_cast<int>(ANGLETYPE::NUM_ANGLES)> tracksCreationTime{};           ///< Contains the game cycle the tracks on sand appeared
     std::vector<DAMAGETYPE>         damage;                         ///< damage positions
     std::vector<DEADUNITTYPE>       deadUnits;                      ///< dead units
 
@@ -518,7 +521,7 @@ private:
     void update_impl();
 
     template<typename Pred>
-    void selectFilter(int houseID, ObjectBase** lastCheckedObject, ObjectBase** lastSelectedObject, Pred&& predicate);
+    void selectFilter(HOUSETYPE houseID, ObjectBase** lastCheckedObject, ObjectBase** lastSelectedObject, Pred&& predicate);
 
     template<typename Visitor>
     void forEachUnit(Visitor&& visitor) const;

@@ -38,7 +38,8 @@ public:
         \param  bRepeat             true = repeat the dropping (every triggerCycleNumber game cycles), false = do not repeat
         \param  triggerCycleNumber  the game cycle this trigger shall be triggered (must be >0 if bRepeat == true)
     */
-    ReinforcementTrigger(int houseID, Uint32 itemID, DropLocation location, bool bRepeat, Uint32 triggerCycleNumber);
+    ReinforcementTrigger(HOUSETYPE houseID, Uint32 itemID, DropLocation location, bool bRepeat,
+                         Uint32 triggerCycleNumber);
     ReinforcementTrigger(const ReinforcementTrigger &) = default;
     ReinforcementTrigger(ReinforcementTrigger &&) = default;
 
@@ -64,7 +65,7 @@ public:
         Get the house of the unit to be dropped.
         \return the house of the owner
     */
-    int getHouseID() const { return houseID; }
+    HOUSETYPE getHouseID() const { return houseID; }
 
     /**
         Get the type of drop.
@@ -98,7 +99,7 @@ public:
 private:
     std::vector<Uint32> droppedUnits;   ///< a vector of the itemIDs of the to be dropped units
     DropLocation        dropLocation;   ///< the kind of drop
-    int                 houseID;        ///< the owner of the new unit
+    HOUSETYPE           houseID;        ///< the owner of the new unit
     Uint32              repeatCycle;    ///< the interval in game cycles between two drops. Will be equal to triggerCycleNumber at the beginning of the game. repeatCycle = 0 if there is no repeat
 };
 

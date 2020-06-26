@@ -40,7 +40,7 @@ public:
 
     virtual Coord getCoord(Coord originalCoord, int i, Coord objectSize = Coord(1,1)) const = 0;
 
-    virtual int getAngle(int angle, int i) const = 0;
+    virtual ANGLETYPE getAngle(ANGLETYPE angle, int i) const = 0;
 
     static std::unique_ptr<MapMirror> createMapMirror(MirrorMode mirrorMode, int mapsizeX, int mapsizeY);
 
@@ -64,7 +64,7 @@ public:
 
     Coord getCoord(Coord originalCoord, int i, Coord objectSize = Coord(1,1)) const override;
 
-    int getAngle(int angle, int i) const override;
+    ANGLETYPE getAngle(ANGLETYPE angle, int i) const override;
 };
 
 
@@ -82,7 +82,7 @@ public:
 
     Coord getCoord(Coord originalCoord, int i, Coord objectSize = Coord(1,1)) const override;
 
-    int getAngle(int angle, int i) const override;
+    ANGLETYPE getAngle(ANGLETYPE angle, int i) const override;
 };
 
 
@@ -100,7 +100,7 @@ public:
 
     Coord getCoord(Coord originalCoord, int i, Coord objectSize = Coord(1,1)) const override;
 
-    int getAngle(int angle, int i) const override;
+    ANGLETYPE getAngle(ANGLETYPE angle, int i) const override;
 };
 
 
@@ -118,7 +118,7 @@ public:
 
     Coord getCoord(Coord originalCoord, int i, Coord objectSize = Coord(1,1)) const override;
 
-    int getAngle(int angle, int i) const override;
+    ANGLETYPE getAngle(ANGLETYPE angle, int i) const override;
 };
 
 
@@ -136,7 +136,7 @@ public:
 
     Coord getCoord(Coord originalCoord, int i, Coord objectSize = Coord(1,1)) const override;
 
-    int getAngle(int angle, int i) const override;
+    ANGLETYPE getAngle(ANGLETYPE angle, int i) const override;
 };
 
 

@@ -45,7 +45,7 @@ void Launcher::init() {
     graphic = pGFXManager->getObjPic(graphicID,getOwner()->getHouseID());
     turretGraphic = pGFXManager->getObjPic(gunGraphicID,getOwner()->getHouseID());
 
-    numImagesX = NUM_ANGLES;
+    numImagesX = static_cast<int>(ANGLETYPE::NUM_ANGLES);
     numImagesY = 1;
 
     numWeapons = 2;
@@ -59,7 +59,7 @@ void Launcher::blitToScreen() {
     int y1 = screenborder->world2screenY(realY);
 
     SDL_Texture* pUnitGraphic = graphic[currentZoomlevel];
-    SDL_Rect source1 = calcSpriteSourceRect(pUnitGraphic, drawnAngle, numImagesX);
+    SDL_Rect     source1      = calcSpriteSourceRect(pUnitGraphic, static_cast<int>(drawnAngle), numImagesX);
     SDL_Rect dest1 = calcSpriteDrawingRect( pUnitGraphic, x1, y1, numImagesX, 1, HAlign::Center, VAlign::Center);
 
     SDL_RenderCopy(renderer, pUnitGraphic, &source1, &dest1);
@@ -75,10 +75,9 @@ void Launcher::blitToScreen() {
                                             };
 
     SDL_Texture* pTurretGraphic = turretGraphic[currentZoomlevel];
-    SDL_Rect source2 = calcSpriteSourceRect(pTurretGraphic, drawnAngle, numImagesX);
-    SDL_Rect dest2 = calcSpriteDrawingRect( pTurretGraphic,
-                                            screenborder->world2screenX(realX + launcherTurretOffset[drawnAngle].x),
-                                            screenborder->world2screenY(realY + launcherTurretOffset[drawnAngle].y),
+    SDL_Rect source2 = calcSpriteSourceRect(pTurretGraphic, static_cast<int>(drawnAngle), numImagesX);
+    SDL_Rect dest2 = calcSpriteDrawingRect( pTurretGraphic, screenborder->world2screenX(realX + launcherTurretOffset[static_cast<int>(drawnAngle)].x),
+        screenborder->world2screenY(realY + launcherTurretOffset[static_cast<int>(drawnAngle)].y),
                                             numImagesX, 1, HAlign::Center, VAlign::Center);
 
     SDL_RenderCopy(renderer, pTurretGraphic, &source2, &dest2);

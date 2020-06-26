@@ -59,7 +59,7 @@ public:
         \param  house       the house to get the text from (only HOUSE_ATREIDES, HOUSE_ORDOS and HOUSE_HARKONNEN)
         \return the briefing text
     */
-    std::string getBriefingText(unsigned int mission, unsigned int texttype, int house) const;
+    std::string getBriefingText(unsigned int mission, unsigned int texttype, HOUSETYPE house) const;
 
     /**
         This method returns all mentat entries for a specific house and up to the specified tech level.
@@ -67,7 +67,7 @@ public:
         \param  techLevel   the tech level (1 to 8)
         \return a vector of mentat texts
     */
-    std::vector<MentatTextFile::MentatEntry> getAllMentatEntries(int house, unsigned int techLevel) const;
+    std::vector<MentatTextFile::MentatEntry> getAllMentatEntries(HOUSETYPE house, unsigned int techLevel) const;
 
     /**
         This method returns a localized version of unlocalizedString

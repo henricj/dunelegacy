@@ -103,7 +103,7 @@ void AirUnit::blitToScreen()
             int x = screenborder->world2screenX(realX + 4);
             int y = screenborder->world2screenY(realY + 12);
 
-            SDL_Rect source = calcSpriteSourceRect(shadow, RIGHT, numImagesX, drawnFrame, numImagesY);
+            SDL_Rect source = calcSpriteSourceRect(shadow, static_cast<int>(ANGLETYPE::RIGHT), numImagesX, drawnFrame, numImagesY);
             SDL_Rect dest = calcSpriteDrawingRect(shadow, x, y, numImagesX, numImagesY, HAlign::Center, VAlign::Center);
 
             SDL_RenderCopyEx(renderer, shadow, &source, &dest, rotationAngleDeg, nullptr, SDL_FLIP_NONE);
@@ -112,7 +112,7 @@ void AirUnit::blitToScreen()
         int x = screenborder->world2screenX(realX);
         int y = screenborder->world2screenY(realY);
 
-        SDL_Rect source = calcSpriteSourceRect(pUnitGraphic, RIGHT, numImagesX, drawnFrame, numImagesY);
+        SDL_Rect source = calcSpriteSourceRect(pUnitGraphic, static_cast<int>(ANGLETYPE::RIGHT), numImagesX, drawnFrame, numImagesY);
         SDL_Rect dest = calcSpriteDrawingRect( pUnitGraphic, x, y, numImagesX, numImagesY, HAlign::Center, VAlign::Center);
 
         SDL_RenderCopyEx(renderer, pUnitGraphic, &source, &dest, rotationAngleDeg, nullptr, SDL_FLIP_NONE);
@@ -121,7 +121,7 @@ void AirUnit::blitToScreen()
             int x = screenborder->world2screenX(realX + 4);
             int y = screenborder->world2screenY(realY + 12);
 
-            SDL_Rect source = calcSpriteSourceRect(shadow, drawnAngle, numImagesX, drawnFrame, numImagesY);
+            SDL_Rect source = calcSpriteSourceRect(shadow, static_cast<int>(drawnAngle), numImagesX, drawnFrame, numImagesY);
             SDL_Rect dest = calcSpriteDrawingRect(shadow, x, y, numImagesX, numImagesY, HAlign::Center, VAlign::Center);
 
             SDL_RenderCopy(renderer, shadow, &source, &dest);
@@ -130,7 +130,7 @@ void AirUnit::blitToScreen()
         int x = screenborder->world2screenX(realX);
         int y = screenborder->world2screenY(realY);
 
-        SDL_Rect source = calcSpriteSourceRect(pUnitGraphic, drawnAngle, numImagesX, drawnFrame, numImagesY);
+        SDL_Rect source = calcSpriteSourceRect(pUnitGraphic, static_cast<int>(drawnAngle), numImagesX, drawnFrame, numImagesY);
         SDL_Rect dest = calcSpriteDrawingRect( pUnitGraphic, x, y, numImagesX, numImagesY, HAlign::Center, VAlign::Center);
 
         SDL_RenderCopy(renderer, pUnitGraphic, &source, &dest);
@@ -168,36 +168,32 @@ void AirUnit::turn() {
     if(destination.isValid()) {
         FixPoint destinationAngle = getDestinationAngle();
 
-        FixPoint angleLeft = 0;
+        FixPoint angleLeft  = 0;
         FixPoint angleRight = 0;
 
         if(angle > destinationAngle) {
             angleRight = angle - destinationAngle;
-            angleLeft = FixPoint::abs(NUM_ANGLES-angle)+destinationAngle;
-        } else if (angle < destinationAngle) {
-            angleRight = FixPoint::abs(NUM_ANGLES-destinationAngle) + angle;
-            angleLeft = destinationAngle - angle;
+            angleLeft  = FixPoint::abs(static_cast<int>(ANGLETYPE::NUM_ANGLES) - angle) + destinationAngle;
+        } else if(angle < destinationAngle) {
+            angleRight = FixPoint::abs(static_cast<int>(ANGLETYPE::NUM_ANGLES) - destinationAngle) + angle;
+            angleLeft  = destinationAngle - angle;
         }
 
         if(angleLeft <= angleRight) {
-            angle += std::min(currentGame->objectData.data[itemID][originalHouseID].turnspeed, angleLeft);
-            if(angle >= NUM_ANGLES) {
-                angle -= NUM_ANGLES;
-            }
-            drawnAngle = lround(angle) % NUM_ANGLES;
+            angle +=
+                std::min(currentGame->objectData.data[itemID][static_cast<int>(originalHouseID)].turnspeed, angleLeft);
+            if(angle > static_cast<int>(ANGLETYPE::NUM_ANGLES)) { angle -= static_cast<int>(ANGLETYPE::NUM_ANGLES); }
+            drawnAngle = normalizeAngle(static_cast<ANGLETYPE>(lround(angle)));
         } else {
-            angle -= std::min(currentGame->objectData.data[itemID][originalHouseID].turnspeed, angleRight);
-            if(angle < 0) {
-                angle += NUM_ANGLES;
-            }
-            drawnAngle = lround(angle) % NUM_ANGLES;
+            angle -=
+                std::min(currentGame->objectData.data[itemID][static_cast<int>(originalHouseID)].turnspeed, angleRight);
+            if(angle < 0) { angle += static_cast<int>(ANGLETYPE::NUM_ANGLES); }
+            drawnAngle = normalizeAngle(static_cast<ANGLETYPE>(lround(angle)));
         }
     } else {
-        angle -= currentGame->objectData.data[itemID][originalHouseID].turnspeed / 8;
-        if(angle < 0) {
-            angle += NUM_ANGLES;
-        }
-        drawnAngle = lround(angle) % NUM_ANGLES;
+        angle -= currentGame->objectData.data[itemID][static_cast<int>(originalHouseID)].turnspeed / 8;
+        if(angle < 0) { angle += static_cast<int>(ANGLETYPE::NUM_ANGLES); }
+        drawnAngle = normalizeAngle(static_cast<ANGLETYPE>(lround(angle)));
     }
 }
 

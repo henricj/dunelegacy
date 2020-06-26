@@ -45,7 +45,7 @@ Tile::Tile() {
 
     fogColor = COLOR_BLACK;
 
-    owner = INVALID;
+    owner = HOUSETYPE::HOUSE_INVALID;
     sandRegion = NONE_ID;
 
     spice = 0;
@@ -66,7 +66,7 @@ Tile::Tile() {
 Tile::~Tile() = default;
 
 void Tile::load(InputStream& stream) {
-    type = stream.readUint32();
+    type = static_cast<TERRAINTYPE>(stream.readUint32());
 
     stream.readBools(&explored[0], &explored[1], &explored[2], &explored[3], &explored[4], &explored[5], &explored[6]);
 
@@ -81,7 +81,7 @@ void Tile::load(InputStream& stream) {
 
     fogColor = stream.readUint32();
 
-    owner = stream.readSint32();
+    owner = static_cast<HOUSETYPE>(stream.readSint32());
     sandRegion = stream.readUint32();
 
     spice = stream.readFixPoint();
@@ -95,7 +95,7 @@ void Tile::load(InputStream& stream) {
         damage.reserve(numDamage);
         for (Uint32 i = 0; i < numDamage; i++) {
             DAMAGETYPE newDamage;
-            newDamage.damageType = stream.readUint32();
+            newDamage.damageType = static_cast<TerrainDamage_enum>(stream.readUint32());
             newDamage.tile = stream.readSint32();
             newDamage.realPos.x = stream.readSint32();
             newDamage.realPos.y = stream.readSint32();
@@ -111,7 +111,7 @@ void Tile::load(InputStream& stream) {
         for (Uint32 i = 0; i < numDeadUnits; i++) {
             DEADUNITTYPE newDeadUnit;
             newDeadUnit.type = stream.readUint8();
-            newDeadUnit.house = stream.readUint8();
+            newDeadUnit.house = static_cast<HOUSETYPE>(stream.readUint8());
             newDeadUnit.onSand = stream.readBool();
             newDeadUnit.realPos.x = stream.readSint32();
             newDeadUnit.realPos.y = stream.readSint32();
@@ -123,10 +123,10 @@ void Tile::load(InputStream& stream) {
 
     destroyedStructureTile = stream.readSint32();
 
-    bool bTrackCounter[NUM_ANGLES];
+    bool bTrackCounter[static_cast<int>(ANGLETYPE::NUM_ANGLES)];
     stream.readBools(&bTrackCounter[0], &bTrackCounter[1], &bTrackCounter[2], &bTrackCounter[3], &bTrackCounter[4], &bTrackCounter[5], &bTrackCounter[6], &bTrackCounter[7]);
 
-    for (int i = 0; i < NUM_ANGLES; i++) {
+    for (int i = 0; i < static_cast<int>(ANGLETYPE::NUM_ANGLES); i++) {
         if (bTrackCounter[i] == true) {
             tracksCreationTime[i] = stream.readUint32();
         }
@@ -163,7 +163,7 @@ void Tile::save(OutputStream& stream) const {
 
     stream.writeUint32(fogColor);
 
-    stream.writeUint32(owner);
+    stream.writeUint32(static_cast<Uint32>(owner));
     stream.writeUint32(sandRegion);
 
     stream.writeFixPoint(spice);
@@ -174,7 +174,7 @@ void Tile::save(OutputStream& stream) const {
     if (!damage.empty()) {
         stream.writeUint32(damage.size());
         for (const auto& damageItem : damage) {
-            stream.writeUint32(damageItem.damageType);
+            stream.writeUint32(static_cast<Uint32>(damageItem.damageType));
             stream.writeSint32(damageItem.tile);
             stream.writeSint32(damageItem.realPos.x);
             stream.writeSint32(damageItem.realPos.y);
@@ -185,7 +185,7 @@ void Tile::save(OutputStream& stream) const {
         stream.writeUint32(deadUnits.size());
         for (const auto& deadUnit : deadUnits) {
             stream.writeUint8(deadUnit.type);
-            stream.writeUint8(deadUnit.house);
+            stream.writeUint8(static_cast<Uint8>(deadUnit.house));
             stream.writeBool(deadUnit.onSand);
             stream.writeSint32(deadUnit.realPos.x);
             stream.writeSint32(deadUnit.realPos.y);
@@ -196,8 +196,8 @@ void Tile::save(OutputStream& stream) const {
     stream.writeSint32(destroyedStructureTile);
 
     // clean-up tracksCreationTime to save space in the save game
-    Uint32 tracksCreationTimeToSave[NUM_ANGLES];
-    for (int i = 0; i < NUM_ANGLES; i++) {
+    std::array<Uint32, static_cast<int>(ANGLETYPE::NUM_ANGLES)> tracksCreationTimeToSave;
+    for(int i = 0; i < tracksCreationTimeToSave.size(); i++) {
         tracksCreationTimeToSave[i] = (tracksCreationTime[i] + TRACKSTIME < currentGame->getGameCycleCount()) ? 0 : tracksCreationTime[i];
     }
 
@@ -274,7 +274,7 @@ void Tile::blitGround(int xPos, int yPos) {
     if (hasANonInfantryGroundObject() && getNonInfantryGroundObject()->isAStructure())
         return;
 
-    const auto tileIndex = getTerrainTile();
+    const auto tileIndex = static_cast<int>(getTerrainTile());
     const auto indexX = tileIndex % NUM_TERRAIN_TILES_X;
     const auto indexY = tileIndex / NUM_TERRAIN_TILES_X;
     const auto zoomed_tilesize = world2zoomedWorld(TILESIZE);
@@ -299,7 +299,7 @@ void Tile::blitGround(int xPos, int yPos) {
 
     // tracks
     SDL_Texture* pTracks = pGFXManager->getZoomedObjPic(ObjPic_Terrain_Tracks, currentZoomlevel);
-    for (auto i = 0; i < NUM_ANGLES; i++) {
+    for (auto i = 0; i < static_cast<int>(ANGLETYPE::NUM_ANGLES); i++) {
         const auto tracktime = static_cast<int>(currentGame->getGameCycleCount() - tracksCreationTime[i]);
         if ((tracksCreationTime[i] != 0) && (tracktime < TRACKSTIME)) {
             source.x = ((10 - i) % 8)*zoomed_tilesize;
@@ -316,7 +316,7 @@ void Tile::blitGround(int xPos, int yPos) {
             zoomed_tilesize,
             zoomed_tilesize };
 
-        if (damageItem.damageType == Terrain_RockDamage) {
+        if (damageItem.damageType == Tile::TerrainDamage_enum::Terrain_RockDamage) {
             SDL_RenderCopy(renderer, pGFXManager->getZoomedObjPic(ObjPic_RockDamage, currentZoomlevel), &source, &dest);
         }
         else {
@@ -522,19 +522,19 @@ void Tile::clearTerrain() {
     deadUnits.clear();
 }
 
-void Tile::setTrack(Uint8 direction) {
+void Tile::setTrack(ANGLETYPE direction) {
     if (type == Terrain_Sand || type == Terrain_Dunes || type == Terrain_Spice || type == Terrain_ThickSpice) {
-        tracksCreationTime[direction] = currentGame->getGameCycleCount();
+        tracksCreationTime[static_cast<int>(direction)] = currentGame->getGameCycleCount();
     }
 }
 
-void Tile::selectAllPlayersUnits(int houseID, ObjectBase** lastCheckedObject, ObjectBase** lastSelectedObject) {
+void Tile::selectAllPlayersUnits(HOUSETYPE houseID, ObjectBase** lastCheckedObject, ObjectBase** lastSelectedObject) {
     selectFilter(houseID, lastCheckedObject, lastSelectedObject,
         [](ObjectBase* obj) { return  obj->isAUnit() && obj->isRespondable(); });
 }
 
 
-void Tile::selectAllPlayersUnitsOfType(int houseID, int itemID, ObjectBase** lastCheckedObject, ObjectBase** lastSelectedObject) {
+void Tile::selectAllPlayersUnitsOfType(HOUSETYPE houseID, int itemID, ObjectBase** lastCheckedObject, ObjectBase** lastSelectedObject) {
     selectFilter(houseID, lastCheckedObject, lastSelectedObject,
         [=](ObjectBase* obj) { return  obj->getItemID() == itemID; });
 }
@@ -568,12 +568,13 @@ void Tile::unassignObject(Uint32 objectID) {
 }
 
 
-void Tile::setType(int newType) {
+void Tile::setType(TERRAINTYPE newType) {
     type = newType;
     destroyedStructureTile = DestroyedStructure_None;
 
-    terrainTile = TerrainTile_Invalid;
-    currentGameMap->for_each_neighbor(location.x, location.y, [](Tile& t) { t.terrainTile = TerrainTile_Invalid; });
+    terrainTile = TERRAINTILETYPE::TerrainTile_Invalid;
+    currentGameMap->for_each_neighbor(location.x, location.y,
+                                      [](Tile& t) { t.terrainTile = TERRAINTILETYPE::TerrainTile_Invalid; });
 
     if (type == Terrain_Spice) {
         spice = currentGame->randomGen.rand(RANDOMSPICEMIN, RANDOMSPICEMAX);
@@ -825,8 +826,8 @@ void Tile::triggerSpiceBloom(House* pTrigger) {
 
     if (damage.size() < DAMAGE_PER_TILE) {
         DAMAGETYPE newDamage;
-        newDamage.tile = SandDamage1;
-        newDamage.damageType = Terrain_SandDamage;
+        newDamage.tile = static_cast<int>(SANDDAMAGETYPE::SandDamage1);
+        newDamage.damageType = TerrainDamage_enum::Terrain_SandDamage;
         newDamage.realPos = realLocation;
 
         damage.push_back(newDamage);
@@ -858,8 +859,8 @@ void Tile::triggerSpecialBloom(House* pTrigger) {
         case 2: {
             // One of the AI players on the map (one that has at least one unit) gets a Trike for free. It spawns beside the special bloom.
             int numCandidates = 0;
-            for (int i = 0; i < NUM_HOUSES; i++) {
-                const auto pHouse = currentGame->getHouse(i);
+            for (int i = 0; i < static_cast<int>(HOUSETYPE::NUM_HOUSES); i++) {
+                const auto pHouse = currentGame->getHouse(static_cast<HOUSETYPE>(i));
                 if (pHouse != nullptr && pHouse->getTeamID() != pTrigger->getTeamID() && pHouse->getNumUnits() > 0) {
                     numCandidates++;
                 }
@@ -872,8 +873,8 @@ void Tile::triggerSpecialBloom(House* pTrigger) {
             int candidate = currentGame->randomGen.rand(0, numCandidates - 1);
 
             House* pEnemyHouse = nullptr;
-            for (int i = 0; i < NUM_HOUSES; i++) {
-                const auto pHouse = currentGame->getHouse(i);
+            for (int i = 0; i < static_cast<int>(HOUSETYPE::NUM_HOUSES); i++) {
+                const auto pHouse = currentGame->getHouse(static_cast<HOUSETYPE>(i));
                 if (pHouse != nullptr && pHouse->getTeamID() != pTrigger->getTeamID() && pHouse->getNumUnits() > 0) {
                     if (candidate == 0) {
                         pEnemyHouse = pHouse;
@@ -897,8 +898,8 @@ void Tile::triggerSpecialBloom(House* pTrigger) {
         default: {
             // One of the AI players on the map (one that has at least one unit) gets an Infantry unit (3 Soldiers) for free. The spawn beside the special bloom.
             int numCandidates = 0;
-            for (int i = 0; i < NUM_HOUSES; i++) {
-                const auto pHouse = currentGame->getHouse(i);
+            for (int i = 0; i < static_cast<int>(HOUSETYPE::NUM_HOUSES); i++) {
+                const auto pHouse = currentGame->getHouse(static_cast<HOUSETYPE>(i));
                 if (pHouse != nullptr && pHouse->getTeamID() != pTrigger->getTeamID() && pHouse->getNumUnits() > 0) {
                     numCandidates++;
                 }
@@ -911,8 +912,8 @@ void Tile::triggerSpecialBloom(House* pTrigger) {
             int candidate = currentGame->randomGen.rand(0, numCandidates - 1);
 
             House* pEnemyHouse = nullptr;
-            for (int i = 0; i < NUM_HOUSES; i++) {
-                const auto pHouse = currentGame->getHouse(i);
+            for(int i = 0; i < static_cast<int>(HOUSETYPE::NUM_HOUSES); i++) {
+                const auto pHouse = currentGame->getHouse(static_cast<HOUSETYPE>(i));
                 if (pHouse != nullptr && pHouse->getTeamID() != pTrigger->getTeamID() && pHouse->getNumUnits() > 0) {
                     if (candidate == 0) {
                         pEnemyHouse = pHouse;
@@ -945,10 +946,10 @@ bool Tile::hasAStructure() const {
 }
 
 bool Tile::isExploredByTeam(int teamID) const {
-    for (auto h = 0; h < NUM_HOUSES; h++) {
-        const auto* pHouse = currentGame->getHouse(h);
+    for(auto h = 0; h < static_cast<int>(HOUSETYPE::NUM_HOUSES); h++) {
+        const auto* pHouse = currentGame->getHouse(static_cast<HOUSETYPE>(h));
         if ((pHouse != nullptr) && (pHouse->getTeamID() == teamID)) {
-            if(isExploredByHouse(h)) {
+            if(isExploredByHouse(static_cast<HOUSETYPE>(h))) {
                 return true;
             }
         }
@@ -956,7 +957,7 @@ bool Tile::isExploredByTeam(int teamID) const {
     return false;
 }
 
-bool Tile::isFoggedByHouse(int houseID) const noexcept {
+bool Tile::isFoggedByHouse(HOUSETYPE houseID) const noexcept {
     if (debug)
         return false;
 
@@ -964,7 +965,7 @@ bool Tile::isFoggedByHouse(int houseID) const noexcept {
         return false;
     }
 
-    return (currentGame->getGameCycleCount() - lastAccess[houseID]) >= FOGTIME;
+    return (currentGame->getGameCycleCount() - lastAccess[static_cast<int>(houseID)]) >= FOGTIME;
 }
 
 bool Tile::isFoggedByTeam(int teamID) const noexcept {
@@ -975,8 +976,8 @@ bool Tile::isFoggedByTeam(int teamID) const noexcept {
         return false;
     }
 
-    for (auto h = 0; h < NUM_HOUSES; h++) {
-        const auto* pHouse = currentGame->getHouse(h);
+    for (auto h = 0; h < static_cast<int>(HOUSETYPE::NUM_HOUSES); h++) {
+        const auto* pHouse = currentGame->getHouse(static_cast<HOUSETYPE>(h));
         if ((pHouse != nullptr) && (pHouse->getTeamID() == teamID)) {
             if((currentGame->getGameCycleCount() - lastAccess[h]) < FOGTIME) {
                 return false;
@@ -1004,15 +1005,17 @@ Uint32 Tile::getRadarColor(House* pHouse, bool radar) {
             color = COLOR_WHITE;
         }
         else {
+            // clang-format off
             switch (pObject->getOwner()->getHouseID()) {
-            case HOUSE_HARKONNEN:   color = SDL2RGB(palette[PALCOLOR_HARKONNEN]);  break;
-            case HOUSE_ATREIDES:    color = SDL2RGB(palette[PALCOLOR_ATREIDES]);   break;
-            case HOUSE_ORDOS:       color = SDL2RGB(palette[PALCOLOR_ORDOS]);      break;
-            case HOUSE_FREMEN:      color = SDL2RGB(palette[PALCOLOR_FREMEN]);     break;
-            case HOUSE_SARDAUKAR:   color = SDL2RGB(palette[PALCOLOR_SARDAUKAR]);  break;
-            case HOUSE_MERCENARY:   color = SDL2RGB(palette[PALCOLOR_MERCENARY]);  break;
+            case HOUSETYPE::HOUSE_HARKONNEN:   color = SDL2RGB(palette[PALCOLOR_HARKONNEN]);  break;
+            case HOUSETYPE::HOUSE_ATREIDES:    color = SDL2RGB(palette[PALCOLOR_ATREIDES]);   break;
+            case HOUSETYPE::HOUSE_ORDOS:       color = SDL2RGB(palette[PALCOLOR_ORDOS]);      break;
+            case HOUSETYPE::HOUSE_FREMEN:      color = SDL2RGB(palette[PALCOLOR_FREMEN]);     break;
+            case HOUSETYPE::HOUSE_SARDAUKAR:   color = SDL2RGB(palette[PALCOLOR_SARDAUKAR]);  break;
+            case HOUSETYPE::HOUSE_MERCENARY:   color = SDL2RGB(palette[PALCOLOR_MERCENARY]);  break;
             default:                color = COLOR_BLACK;                           break;
             }
+            // clang-format on
         }
 
         if (pObject->isAUnit()) {
@@ -1053,60 +1056,60 @@ Tile::TERRAINTILETYPE Tile::getTerrainTileImpl() const {
 
         if (0x0f != mask) {
             // to avoid graphical glitches (there is no tile for thick spice next to a non-spice tile) we draw this tile as normal spice
-            return static_cast<TERRAINTILETYPE>(TerrainTile_Spice + mask);
+            return static_cast<TERRAINTILETYPE>(static_cast<int>(TERRAINTILETYPE::TerrainTile_Spice) + mask);
         }
     }
 
     switch (terrainType) {
-    case Terrain_Slab: {
-        return TerrainTile_Slab;
+    case TERRAINTYPE::Terrain_Slab: {
+        return TERRAINTILETYPE::TerrainTile_Slab;
     } break;
 
-    case Terrain_Sand: {
-        return TerrainTile_Sand;
+    case TERRAINTYPE::Terrain_Sand: {
+        return TERRAINTILETYPE::TerrainTile_Sand;
     } break;
 
     case Terrain_Rock: {
         // determine which surrounding tiles are rock
         const auto mask = map->get_neighbor_mask(x, y, [](const Tile& t) { return t.isRock(); });
 
-        return static_cast<TERRAINTILETYPE>(TerrainTile_Rock + mask);
+        return static_cast<TERRAINTILETYPE>(static_cast<int>(TERRAINTILETYPE::TerrainTile_Rock) + mask);
       }
 
-    case Terrain_Dunes: {
+    case TERRAINTYPE::Terrain_Dunes: {
         // determine which surrounding tiles are dunes
-        const auto mask = map->get_neighbor_mask(x, y, [](const Tile& t) { return t.getType() == Terrain_Dunes; });
+        const auto mask = map->get_neighbor_mask(x, y, [](const Tile& t) { return t.getType() == TERRAINTYPE::Terrain_Dunes; });
 
-        return static_cast<TERRAINTILETYPE>(TerrainTile_Dunes + mask);
+        return static_cast<TERRAINTILETYPE>(static_cast<int>(TERRAINTILETYPE::TerrainTile_Dunes) + mask);
     }
 
-    case Terrain_Mountain: {
+    case TERRAINTYPE::Terrain_Mountain: {
         // determine which surrounding tiles are mountains
         const auto mask = map->get_neighbor_mask(x, y, [](const Tile& t) { return t.isMountain(); });
 
-        return static_cast<TERRAINTILETYPE>(TerrainTile_Mountain + mask);
+        return static_cast<TERRAINTILETYPE>(static_cast<int>(TERRAINTILETYPE::TerrainTile_Mountain) + mask);
     }
 
-    case Terrain_Spice: {
+    case TERRAINTYPE::Terrain_Spice: {
         // determine which surrounding tiles are spice
         const auto mask = map->get_neighbor_mask(x, y, [](const Tile& t) { return t.isSpice(); });
 
-        return static_cast<TERRAINTILETYPE>(TerrainTile_Spice + mask);
+        return static_cast<TERRAINTILETYPE>(static_cast<int>(TERRAINTILETYPE::TerrainTile_Spice) + mask);
     }
 
-    case Terrain_ThickSpice: {
+    case TERRAINTYPE::Terrain_ThickSpice: {
         // determine which surrounding tiles are thick spice
         const auto mask = map->get_neighbor_mask(x, y, [](const Tile& t) { return t.getType() == Terrain_ThickSpice; });
 
-        return static_cast<TERRAINTILETYPE>(TerrainTile_ThickSpice + mask);
+        return static_cast<TERRAINTILETYPE>(static_cast<int>(TERRAINTILETYPE::TerrainTile_ThickSpice) + mask);
     }
 
-    case Terrain_SpiceBloom: {
-        return TerrainTile_SpiceBloom;
+    case TERRAINTYPE::Terrain_SpiceBloom: {
+        return TERRAINTILETYPE::TerrainTile_SpiceBloom;
     } break;
 
-    case Terrain_SpecialBloom: {
-        return TerrainTile_SpecialBloom;
+    case TERRAINTYPE::Terrain_SpecialBloom: {
+        return TERRAINTILETYPE::TerrainTile_SpecialBloom;
     } break;
 
     default:
@@ -1163,7 +1166,7 @@ int Tile::getFogTile(int teamID) const {
 }
 
 template<typename Pred>
-void Tile::selectFilter(int houseID, ObjectBase** lastCheckedObject, ObjectBase** lastSelectedObject, Pred&& predicate)
+void Tile::selectFilter(HOUSETYPE houseID, ObjectBase** lastCheckedObject, ObjectBase** lastSelectedObject, Pred&& predicate)
 {
     auto changed = false;
     ObjectBase* obj = nullptr;

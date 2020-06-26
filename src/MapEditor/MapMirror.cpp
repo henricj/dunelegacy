@@ -26,6 +26,7 @@ MapMirror::MapMirror(int mapsizeX, int mapsizeY)
 MapMirror::~MapMirror() = default;
 
 std::unique_ptr<MapMirror> MapMirror::createMapMirror(MirrorMode mirrorMode, int mapsizeX, int mapsizeY) {
+    // clang-format off
     switch(mirrorMode) {
         case MirrorModeNone:        return std::make_unique<MapMirrorNone>(mapsizeX, mapsizeY);          break;
         case MirrorModeHorizontal:  return std::make_unique<MapMirrorHorizontal>(mapsizeX, mapsizeY);    break;
@@ -34,6 +35,7 @@ std::unique_ptr<MapMirror> MapMirror::createMapMirror(MirrorMode mirrorMode, int
         case MirrorModePoint:       return std::make_unique<MapMirrorPoint>(mapsizeX, mapsizeY);         break;
         default:                    return std::unique_ptr<MapMirror>();
     }
+    // clang-format off
 }
 
 
@@ -46,7 +48,7 @@ Coord MapMirrorNone::getCoord(Coord originalCoord, int i, Coord objectSize) cons
     return originalCoord;
 }
 
-int MapMirrorNone::getAngle(int angle, int i) const {
+ANGLETYPE MapMirrorNone::getAngle(ANGLETYPE angle, int i) const {
     return angle;
 }
 
@@ -64,7 +66,7 @@ Coord MapMirrorHorizontal::getCoord(Coord originalCoord, int i, Coord objectSize
     }
 }
 
-int MapMirrorHorizontal::getAngle(int angle, int i) const {
+ANGLETYPE MapMirrorHorizontal::getAngle(ANGLETYPE angle, int i) const {
     switch(i%2) {
         case 0:     return angle;
         case 1:     return mirrorAngleHorizontal(angle);
@@ -86,7 +88,7 @@ Coord MapMirrorVertical::getCoord(Coord originalCoord, int i, Coord objectSize) 
     }
 }
 
-int MapMirrorVertical::getAngle(int angle, int i) const {
+ANGLETYPE MapMirrorVertical::getAngle(ANGLETYPE angle, int i) const {
     switch(i%2) {
         case 0:     return angle;
         case 1:     return mirrorAngleVertical(angle);
@@ -110,7 +112,7 @@ Coord MapMirrorBoth::getCoord(Coord originalCoord, int i, Coord objectSize) cons
     }
 }
 
-int MapMirrorBoth::getAngle(int angle, int i) const {
+ANGLETYPE MapMirrorBoth::getAngle(ANGLETYPE angle, int i) const {
     switch(i%4) {
         case 0:     return angle;
         case 1:     return mirrorAngleHorizontal(angle);
@@ -134,10 +136,14 @@ Coord MapMirrorPoint::getCoord(Coord originalCoord, int i, Coord objectSize) con
     }
 }
 
-int MapMirrorPoint::getAngle(int angle, int i) const {
+ANGLETYPE MapMirrorPoint::getAngle(ANGLETYPE angle, int i) const {
     switch(i%2) {
         case 0:     return angle;
-        case 1:     return ((angle + NUM_ANGLES/2) % NUM_ANGLES);
+        case 1: {
+            auto int_angle = static_cast<int>(angle) + static_cast<int>(ANGLETYPE::NUM_ANGLES) / 2;
+
+            return normalizeAngle(static_cast<ANGLETYPE>(int_angle));
+        }
         default:    return angle;
     }
 }

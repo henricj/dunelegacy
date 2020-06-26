@@ -76,7 +76,7 @@ extern std::unique_ptr<NetworkManager>      pNetworkManager;            ///< man
 
 // game stuff
 extern Game*                currentGame;                ///< the current running game
-extern ScreenBorder*        screenborder;               ///< the screen border for the current running game
+extern std::unique_ptr<ScreenBorder> screenborder;               ///< the screen border for the current running game
 extern Map*                 currentGameMap;             ///< the map for the current running game
 extern House*               pLocalHouse;                ///< the house of the human player that is playing the current running game on this computer
 extern HumanPlayer*         pLocalPlayer;               ///< the player that is playing the current running game on this computer
@@ -93,7 +93,7 @@ extern bool debug;                                      ///< is set for debuggin
 
 
 // constants
-inline static const int houseToPaletteIndex[NUM_HOUSES] = { PALCOLOR_HARKONNEN, PALCOLOR_ATREIDES, PALCOLOR_ORDOS, PALCOLOR_FREMEN, PALCOLOR_SARDAUKAR, PALCOLOR_MERCENARY };    ///< the base colors for the different houses
+inline static const int houseToPaletteIndex[static_cast<int>(HOUSETYPE::NUM_HOUSES)] = { PALCOLOR_HARKONNEN, PALCOLOR_ATREIDES, PALCOLOR_ORDOS, PALCOLOR_FREMEN, PALCOLOR_SARDAUKAR, PALCOLOR_MERCENARY };    ///< the base colors for the different houses
 inline static const char houseChar[] = { 'H', 'A', 'O', 'F', 'S', 'M' };   ///< character for each house
 
 #endif //GLOBALS_H

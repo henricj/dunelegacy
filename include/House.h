@@ -39,7 +39,7 @@ class HumanPlayer;
 class House
 {
 public:
-    House(int newHouse, int newCredits, int maxUnits, Uint8 teamID = 0, int quota = 0);
+    House(HOUSETYPE newHouse, int newCredits, int maxUnits, Uint8 teamID = 0, int quota = 0);
     explicit House(InputStream& stream);
     House(const House &) = delete;
     House(House &&) = delete;
@@ -51,7 +51,7 @@ public:
 
     void addPlayer(std::unique_ptr<Player> newPlayer);
 
-    int getHouseID() const noexcept { return houseID; }
+    HOUSETYPE getHouseID() const noexcept { return houseID; }
     int getTeamID() const noexcept { return teamID; }
 
     bool isAI() const noexcept { return ai; }
@@ -204,7 +204,7 @@ protected:
 
     bool    ai;             ///< Is this an ai player?
 
-    Uint8   houseID;        ///< The house number
+    HOUSETYPE   houseID;        ///< The house number
     Uint8   teamID;         ///< The team number
 
     int numStructures;          ///< How many structures does this player have?

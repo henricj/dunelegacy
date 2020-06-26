@@ -124,7 +124,7 @@ void INIMapLoader::loadMap() {
 
         for (int j = 0; j < currentGameMap->getSizeY(); j++) {
             for (int i = 0; i < currentGameMap->getSizeX(); i++) {
-                int type = Terrain_Sand;
+                auto type = Terrain_Sand;
                 unsigned char seedmaptype = SeedMap[(j+logicalOffsetY)*64+i+logicalOffsetX] >> 4;
                 switch(seedmaptype) {
 
@@ -274,7 +274,7 @@ void INIMapLoader::loadMap() {
             }
 
             for(int x=0;x<rowLength;x++) {
-                int type = Terrain_Sand;
+                auto type = Terrain_Sand;
 
                 switch(rowString.at(x)) {
                     case '-': {
@@ -342,7 +342,7 @@ void INIMapLoader::loadHouses()
 
     // find "player?" sections
     std::vector<std::string> playerSectionsOnMap;
-    for(int i=1;i<=NUM_HOUSES;i++) {
+    for(int i = 1; i <= static_cast<int>(HOUSETYPE::NUM_HOUSES); i++) {
         std::string sectionname = "player" + std::to_string(i);
         if(inifile->hasSection(sectionname)) {
             playerSectionsOnMap.push_back(sectionname);
@@ -352,7 +352,7 @@ void INIMapLoader::loadHouses()
     // find unbounded houses
     std::vector<HOUSETYPE> unboundedHouses;
 
-    for(int h=0;h<NUM_HOUSES;h++) {
+    for(int h = 0; h < static_cast<int>(HOUSETYPE::NUM_HOUSES); h++) {
         bool bFound = false;
         for(const auto& houseInfo : houseInfoList) {
             if(houseInfo.houseID == static_cast<HOUSETYPE>(h)) {
@@ -368,18 +368,18 @@ void INIMapLoader::loadHouses()
     }
 
     // init housename2house mapping with every house section marked as unused
-    for(int i=0;i<NUM_HOUSES;i++) {
-        std::string houseName = getHouseNameByNumber(static_cast<HOUSETYPE>(i));
+    for(int i = 0; i < static_cast<int>(HOUSETYPE::NUM_HOUSES); i++) {
+        auto houseName = getHouseNameByNumber(static_cast<HOUSETYPE>(i));
         convertToLower(houseName);
 
         if(inifile->hasSection(houseName)) {
-            housename2house[houseName] = HOUSE_UNUSED;
+            housename2house[houseName] = HOUSETYPE::HOUSE_UNUSED;
         }
     }
 
     // init housename2house mapping with every player section on map marked as unused
-    for(const std::string& playSection : playerSectionsOnMap) {
-        housename2house[playSection] = HOUSE_UNUSED;
+    for(const auto& playSection : playerSectionsOnMap) {
+        housename2house[playSection] = HOUSETYPE::HOUSE_UNUSED;
     }
 
     // now set up all the houses
@@ -388,7 +388,7 @@ void INIMapLoader::loadHouses()
 
         pGame->houseInfoListSetup.push_back(houseInfo);
 
-        if(houseInfo.houseID == HOUSE_INVALID) {
+        if(houseInfo.houseID == HOUSETYPE::HOUSE_INVALID) {
             // random house => select one unbound house
             if(unboundedHouses.empty()) {
                 // skip this house
@@ -433,8 +433,8 @@ void INIMapLoader::loadHouses()
 
         int quota = inifile->getIntValue(houseName,"Quota",0);
 
-        pGame->house[houseID] = std::make_unique<House>(houseID, startingCredits, maxUnits, houseInfo.team, quota);
-        const auto pNewHouse = pGame->house[houseID].get();
+        pGame->house[static_cast<int>(houseID)] = std::make_unique<House>(houseID, startingCredits, maxUnits, houseInfo.team, quota);
+        const auto pNewHouse = pGame->getHouse(houseID);
 
         // add players
         for(const auto& playerInfo : houseInfo.playerInfoList) {
@@ -488,11 +488,7 @@ void INIMapLoader::loadChoam()
             num = 0;
         }
 
-        for(int i=0;i<NUM_HOUSES;i++) {
-            if(pGame->house[i] != nullptr) {
-                pGame->house[i]->getChoam().addItem(unitID, num);
-            }
-        }
+        pGame->forAllHouses([=](auto& house) { house.getChoam().addItem(unitID, num); });
     }
 }
 
@@ -505,21 +501,19 @@ void INIMapLoader::loadUnits()
         return;
     }
 
-    bool nextSpecialUnitIsSonicTank[NUM_HOUSES];
-    for(int i=0;i<NUM_HOUSES;i++) {
-        nextSpecialUnitIsSonicTank[i] = true;
-    }
+    std::array<bool, static_cast<int>(HOUSETYPE::NUM_HOUSES)> nextSpecialUnitIsSonicTank;
+    std::fill(nextSpecialUnitIsSonicTank.begin(), nextSpecialUnitIsSonicTank.end(), true);
 
     for(const INIFile::Key& key : inifile->getSection("UNITS")) {
         if(key.getKeyName().find("ID") == 0) {
             std::string HouseStr, UnitStr, health, PosStr, rotation, mode;
             splitString(key.getStringValue(), HouseStr, UnitStr, health, PosStr, rotation, mode);
 
-            int houseID = getHouseID(HouseStr);
-            if(houseID == HOUSE_UNUSED) {
+            const auto houseID = getHouseID(HouseStr);
+            if(houseID == HOUSETYPE::HOUSE_UNUSED) {
                 // skip unit for unused house
                 continue;
-            } else if(houseID == HOUSE_INVALID) {
+            } else if(houseID == HOUSETYPE::HOUSE_INVALID) {
                 logWarning(key.getLineNumber(), "Invalid house string for '" + UnitStr + "': '" + HouseStr + "'!");
                 continue;
             }
@@ -530,13 +524,14 @@ void INIMapLoader::loadUnits()
                 continue;
             }
 
-            int angle;
-            if(!parseString(rotation, angle) || (angle < 0) || (angle > 255)) {
+            int int_angle;
+            if(!parseString(rotation, int_angle) || (int_angle < 0) || (int_angle > 255)) {
                 logWarning(key.getLineNumber(), "Invalid rotation string: '" + rotation + "'!");
-                angle = 64;
+                int_angle = 64;
             }
-            angle = (angle+16)/32;
-            angle = ((NUM_ANGLES - angle) + 2) % NUM_ANGLES;
+            int_angle = (int_angle+16)/32;
+            int_angle = static_cast<int>(ANGLETYPE::NUM_ANGLES) - int_angle + 2;
+            const auto angle = normalizeAngle(static_cast<ANGLETYPE>(int_angle));
 
 
             int Num2Place = 1;
@@ -557,26 +552,28 @@ void INIMapLoader::loadUnits()
             } else if(itemID == Unit_Special) {
                 switch(houseID) {
 
-                    case HOUSE_HARKONNEN: {
+                    case HOUSETYPE::HOUSE_HARKONNEN: {
                         itemID = Unit_Devastator;
                     } break;
-                    case HOUSE_ATREIDES: {
+                    case HOUSETYPE::HOUSE_ATREIDES: {
                         itemID = Unit_SonicTank;
                     } break;
 
-                    case HOUSE_ORDOS: {
+                    case HOUSETYPE::HOUSE_ORDOS: {
                         itemID = Unit_Deviator;
                     } break;
 
-                    case HOUSE_FREMEN:
-                    case HOUSE_SARDAUKAR:
-                    case HOUSE_MERCENARY: {
-                        if(nextSpecialUnitIsSonicTank[houseID] == true && pGame->objectData.data[Unit_SonicTank][houseID].enabled) {
+                    case HOUSETYPE::HOUSE_FREMEN:
+                    case HOUSETYPE::HOUSE_SARDAUKAR:
+                    case HOUSETYPE::HOUSE_MERCENARY: {
+                        if(nextSpecialUnitIsSonicTank[static_cast<int>(houseID)] == true &&
+                           pGame->objectData.data[Unit_SonicTank][static_cast<int>(houseID)].enabled) {
                             itemID = Unit_SonicTank;
-                            nextSpecialUnitIsSonicTank[houseID] = !pGame->objectData.data[Unit_Devastator][houseID].enabled;
+                            nextSpecialUnitIsSonicTank[static_cast<int>(houseID)] =
+                                !pGame->objectData.data[Unit_Devastator][static_cast<int>(houseID)].enabled;
                         } else {
-                            itemID = Unit_Devastator;
-                            nextSpecialUnitIsSonicTank[houseID] = true;
+                            itemID                                                = Unit_Devastator;
+                            nextSpecialUnitIsSonicTank[static_cast<int>(houseID)] = true;
                         }
                     } break;
 
@@ -587,7 +584,7 @@ void INIMapLoader::loadUnits()
                 }
             }
 
-            if(!pGame->objectData.data[itemID][houseID].enabled) {
+            if(!pGame->objectData.data[itemID][static_cast<int>(houseID)].enabled) {
                 continue;
             }
 
@@ -597,7 +594,7 @@ void INIMapLoader::loadUnits()
                 iHealth = 256;
             }
 
-            FixPoint percentHealth = std::min(FixPoint(iHealth) / 256, FixPoint(1));
+            const auto percentHealth = std::min(FixPoint(iHealth) / 256, FixPoint(1));
 
             ATTACKMODE attackmode = getAttackModeByName(mode);
             if(attackmode == ATTACKMODE_INVALID) {
@@ -606,7 +603,7 @@ void INIMapLoader::loadUnits()
             }
 
             for(int i = 0; i < Num2Place; i++) {
-                UnitBase* newUnit = getOrCreateHouse(houseID)->placeUnit(itemID, getXPos(pos), getYPos(pos), true);
+                auto* newUnit = getOrCreateHouse(houseID)->placeUnit(itemID, getXPos(pos), getYPos(pos), true);
                 if(newUnit == nullptr) {
                     logWarning(key.getLineNumber(), "Invalid or occupied position for '" + UnitStr + "': '" + std::to_string(pos) + "'!");
                     continue;
@@ -653,18 +650,18 @@ void INIMapLoader::loadStructures()
             std::string HouseStr, BuildingStr;
             splitString(tmp, HouseStr, BuildingStr);
 
-            int houseID = getHouseID(HouseStr);
-            if(houseID == HOUSE_UNUSED) {
+            const auto houseID = getHouseID(HouseStr);
+            if(houseID == HOUSETYPE::HOUSE_UNUSED) {
                 // skip structure for unused house
                 continue;
-            } else if(houseID == HOUSE_INVALID) {
+            } else if(houseID == HOUSETYPE::HOUSE_INVALID) {
                 logWarning(key.getLineNumber(), "Invalid house string for '" + BuildingStr + "': '" + HouseStr + "'!");
                 continue;
             }
 
-            if(BuildingStr == "Concrete" && pGame->objectData.data[Structure_Slab1][houseID].enabled) {
+            if(BuildingStr == "Concrete" && pGame->objectData.data[Structure_Slab1][static_cast<int>(houseID)].enabled) {
                 getOrCreateHouse(houseID)->placeStructure(NONE_ID, Structure_Slab1, getXPos(pos), getYPos(pos), true);
-            } else if(BuildingStr == "Wall" && pGame->objectData.data[Structure_Wall][houseID].enabled) {
+            } else if(BuildingStr == "Wall" && pGame->objectData.data[Structure_Wall][static_cast<int>(houseID)].enabled) {
                 if(getOrCreateHouse(houseID)->placeStructure(NONE_ID, Structure_Wall, getXPos(pos), getYPos(pos), true) == nullptr) {
                     logWarning(key.getLineNumber(), "Invalid or occupied position for '" + BuildingStr + "': '" + PosStr + "'!");
                     continue;
@@ -684,11 +681,11 @@ void INIMapLoader::loadStructures()
                 continue;
             }
 
-            int houseID = getHouseID(HouseStr);
-            if(houseID == HOUSE_UNUSED) {
+            const auto houseID = getHouseID(HouseStr);
+            if(houseID == HOUSETYPE::HOUSE_UNUSED) {
                 // skip structure for unused house
                 continue;
-            } else if(houseID == HOUSE_INVALID) {
+            } else if(houseID == HOUSETYPE::HOUSE_INVALID) {
                 logWarning(key.getLineNumber(), "Invalid house string for '" + BuildingStr + "': '" + HouseStr + "'!");
                 continue;
             }
@@ -707,7 +704,7 @@ void INIMapLoader::loadStructures()
                 continue;
             }
 
-            if (itemID != 0 && pGame->objectData.data[itemID][houseID].enabled) {
+            if (itemID != 0 && pGame->objectData.data[itemID][static_cast<int>(houseID)].enabled) {
                 ObjectBase* newStructure = getOrCreateHouse(houseID)->placeStructure(NONE_ID, itemID, getXPos(pos), getYPos(pos), true);
                 if(newStructure == nullptr) {
                     logWarning(key.getLineNumber(), "Invalid or occupied position for '" + BuildingStr + "': '" + PosStr + "'!");
@@ -747,10 +744,10 @@ void INIMapLoader::loadReinforcements()
         }
 
         const auto houseID = getHouseID(strHouseName);
-        if(houseID == HOUSE_UNUSED) {
+        if(houseID == HOUSETYPE::HOUSE_UNUSED) {
             // skip reinforcement for unused house
             continue;
-        } else if(houseID == HOUSE_INVALID) {
+        } else if(houseID == HOUSETYPE::HOUSE_INVALID) {
             logWarning(key.getLineNumber(), "Invalid house string: '" + strHouseName + "'!");
             continue;
         }
@@ -772,14 +769,14 @@ void INIMapLoader::loadReinforcements()
             Num2Drop = 3;
         }
 
-        if(!pGame->objectData.data[itemID][houseID].enabled) {
+        if(!pGame->objectData.data[itemID][static_cast<int>(houseID)].enabled) {
             continue;
         }
 
         auto dropLocation = getDropLocationByName(strDropLocation);
-        if(dropLocation == Drop_Invalid) {
+        if(dropLocation == DropLocation::Drop_Invalid) {
             logWarning(key.getLineNumber(), "Invalid drop location string: '" + strDropLocation + "'!");
-            dropLocation = Drop_Homebase;
+            dropLocation = DropLocation::Drop_Homebase;
         }
 
         Uint32 droptime;
@@ -840,25 +837,25 @@ void INIMapLoader::loadAITeams()
             continue;
         }
 
-        int houseID = getHouseID(strHouseName);
-        if(houseID == HOUSE_UNUSED) {
+        const auto houseID = getHouseID(strHouseName);
+        if(houseID == HOUSETYPE::HOUSE_UNUSED) {
             // skip reinforcement for unused house
             continue;
-        } else if(houseID == HOUSE_INVALID) {
+        } else if(houseID == HOUSETYPE::HOUSE_INVALID) {
             logWarning(key.getLineNumber(), "Invalid house string: '" + strHouseName + "'!");
             continue;
         }
 
         AITeamBehavior aiTeamBehavior = getAITeamBehaviorByName(strAITeamBehavior);
-        if(aiTeamBehavior == AITeamBehavior_Invalid) {
+        if(aiTeamBehavior == AITeamBehavior::AITeamBehavior_Invalid) {
             logWarning(key.getLineNumber(), "Invalid team behavior string: '" + strAITeamBehavior + "'!");
-            aiTeamBehavior = AITeamBehavior_Normal;
+            aiTeamBehavior = AITeamBehavior::AITeamBehavior_Normal;
         }
 
         AITeamType aiTeamType = getAITeamTypeByName(strAITeamType);
-        if(aiTeamType == AITeamType_Invalid) {
+        if(aiTeamType == AITeamType::AITeamType_Invalid) {
             logWarning(key.getLineNumber(), "Invalid team type string: '" + strAITeamType + "'!");
-            aiTeamType = AITeamType_Foot;
+            aiTeamType = AITeamType::AITeamType_Foot;
         }
 
         int minUnits;
@@ -902,8 +899,8 @@ void INIMapLoader::loadView()
     \param houseID the house to return or create
     \return the house specified by house
 */
-House* INIMapLoader::getOrCreateHouse(int houseID) {
-    auto& pHouse = pGame->house[houseID];
+House* INIMapLoader::getOrCreateHouse(HOUSETYPE houseID) {
+    auto& pHouse = pGame->house[pGame->getHouseIndex(houseID)];
 
     if(pHouse)
         return pHouse.get();

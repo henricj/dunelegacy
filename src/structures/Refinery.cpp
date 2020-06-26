@@ -107,7 +107,7 @@ ObjectInterface* Refinery::getInterfaceContainer() {
 void Refinery::assignHarvester(Harvester* newHarvester) {
     extractingSpice = true;
     harvester.pointTo(newHarvester);
-    drawnAngle = 1;
+    drawnAngle = static_cast<ANGLETYPE>(1);
     firstAnimFrame = 8;
     lastAnimFrame = 9;
     curAnimFrame = 8;
@@ -115,7 +115,7 @@ void Refinery::assignHarvester(Harvester* newHarvester) {
 
 void Refinery::deployHarvester(Carryall* pCarryall) {
     unBook();
-    drawnAngle = 0;
+    drawnAngle = static_cast<ANGLETYPE>(0);
     extractingSpice = false;
 
     if(firstRun) {

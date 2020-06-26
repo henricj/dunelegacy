@@ -51,7 +51,7 @@ Command::Command(Uint8 playerID, Uint8* data, Uint32 length)
 
     commandID = static_cast<CMDTYPE>(*reinterpret_cast<Uint32*>(data));
 
-    if(commandID >= CMD_MAX) {
+    if(commandID >= CMDTYPE::CMD_MAX) {
         THROW(std::invalid_argument, "Command::Command(): CommandID unknown!");
     }
 
@@ -84,7 +84,7 @@ void Command::save(OutputStream& stream) const {
 void Command::executeCommand() const {
     switch(commandID) {
 
-        case CMD_PLACE_STRUCTURE: {
+        case CMDTYPE::CMD_PLACE_STRUCTURE: {
             if(parameter.size() != 3) {
                 THROW(std::invalid_argument, "Command::executeCommand(): CMD_PLACE_STRUCTURE needs 3 Parameters!");
             }
@@ -96,7 +96,7 @@ void Command::executeCommand() const {
         } break;
 
 
-        case CMD_UNIT_MOVE2POS: {
+        case CMDTYPE::CMD_UNIT_MOVE2POS: {
             if(parameter.size() != 4) {
                 THROW(std::invalid_argument, "Command::executeCommand(): CMD_UNIT_MOVE2POS needs 4 Parameters!");
             }
@@ -107,7 +107,7 @@ void Command::executeCommand() const {
             unit->doMove2Pos(static_cast<int>(parameter[1]), static_cast<int>(parameter[2]), static_cast<bool>(parameter[3]));
         } break;
 
-        case CMD_UNIT_MOVE2OBJECT: {
+        case CMDTYPE::CMD_UNIT_MOVE2OBJECT: {
             if(parameter.size() != 2) {
                 THROW(std::invalid_argument, "Command::executeCommand(): CMD_UNIT_MOVE2OBJECT needs 2 Parameters!");
             }
@@ -118,7 +118,7 @@ void Command::executeCommand() const {
             unit->doMove2Object(static_cast<int>(parameter[1]));
         } break;
 
-        case CMD_UNIT_ATTACKPOS: {
+        case CMDTYPE::CMD_UNIT_ATTACKPOS: {
             if(parameter.size() != 4) {
                 THROW(std::invalid_argument, "Command::executeCommand(): CMD_UNIT_ATTACKPOS needs 4 Parameters!");
             }
@@ -129,7 +129,7 @@ void Command::executeCommand() const {
             unit->doAttackPos(static_cast<int>(parameter[1]), static_cast<int>(parameter[2]), static_cast<bool>(parameter[3]));
         } break;
 
-        case CMD_UNIT_ATTACKOBJECT: {
+        case CMDTYPE::CMD_UNIT_ATTACKOBJECT: {
             if(parameter.size() != 2) {
                 THROW(std::invalid_argument, "Command::executeCommand(): CMD_UNIT_ATTACKOBJECT needs 2 Parameters!");
             }
@@ -140,7 +140,7 @@ void Command::executeCommand() const {
             pUnit->doAttackObject(static_cast<int>(parameter[1]), true);
         } break;
 
-        case CMD_INFANTRY_CAPTURE: {
+        case CMDTYPE::CMD_INFANTRY_CAPTURE: {
             if(parameter.size() != 2) {
                 THROW(std::invalid_argument, "Command::executeCommand(): CMD_INFANTRY_CAPTURE needs 2 Parameters!");
             }
@@ -151,7 +151,7 @@ void Command::executeCommand() const {
             pInfantry->doCaptureStructure(static_cast<int>(parameter[1]));
         } break;
 
-        case CMD_UNIT_REQUESTCARRYALLDROP: {
+        case CMDTYPE::CMD_UNIT_REQUESTCARRYALLDROP: {
             if(parameter.size() != 3) {
                 THROW(std::invalid_argument, "Command::executeCommand(): CMD_UNIT_REQUESTCARRYALLDROP needs 3 Parameters!");
             }
@@ -162,7 +162,7 @@ void Command::executeCommand() const {
             pGroundUnit->doRequestCarryallDrop(static_cast<int>(parameter[1]), static_cast<int>(parameter[2]));
         } break;
 
-        case CMD_UNIT_SENDTOREPAIR: {
+        case CMDTYPE::CMD_UNIT_SENDTOREPAIR: {
             if(parameter.size() != 1) {
                 THROW(std::invalid_argument, "Command::executeCommand(): CMD_UNIT_SENDTOREPAIR needs 1 Parameter!");
             }
@@ -173,7 +173,7 @@ void Command::executeCommand() const {
             pGroundUnit->doRepair();
         } break;
 
-        case CMD_UNIT_SETMODE: {
+        case CMDTYPE::CMD_UNIT_SETMODE: {
             if(parameter.size() != 2) {
                 THROW(std::invalid_argument, "Command::executeCommand(): CMD_UNIT_SETMODE needs 2 Parameter!");
             }
@@ -184,7 +184,7 @@ void Command::executeCommand() const {
             pUnit->doSetAttackMode(static_cast<ATTACKMODE>(parameter[1]));
         } break;
 
-        case CMD_DEVASTATOR_STARTDEVASTATE: {
+        case CMDTYPE::CMD_DEVASTATOR_STARTDEVASTATE: {
             if(parameter.size() != 1) {
                 THROW(std::invalid_argument, "Command::executeCommand(): CMD_DEVASTATOR_STARTDEVASTATE needs 1 Parameter!");
             }
@@ -195,7 +195,7 @@ void Command::executeCommand() const {
             pDevastator->doStartDevastate();
         } break;
 
-        case CMD_MCV_DEPLOY: {
+        case CMDTYPE::CMD_MCV_DEPLOY: {
             if(parameter.size() != 1) {
                 THROW(std::invalid_argument, "Command::executeCommand(): CMD_MCV_DEPLOY needs 1 Parameter!");
             }
@@ -206,7 +206,7 @@ void Command::executeCommand() const {
             pMCV->doDeploy();
         } break;
 
-        case CMD_HARVESTER_RETURN: {
+        case CMDTYPE::CMD_HARVESTER_RETURN: {
             if(parameter.size() != 1) {
                 THROW(std::invalid_argument, "Command::executeCommand(): CMD_HARVESTER_RETURN needs 1 Parameter!");
             }
@@ -217,7 +217,7 @@ void Command::executeCommand() const {
             pHarvester->doReturn();
         } break;
 
-        case CMD_STRUCTURE_SETDEPLOYPOSITION: {
+        case CMDTYPE::CMD_STRUCTURE_SETDEPLOYPOSITION: {
             if(parameter.size() != 3) {
                 THROW(std::invalid_argument, "Command::executeCommand(): CMD_STRUCTURE_SETDEPLOYPOSITION needs 3 Parameters!");
             }
@@ -228,7 +228,7 @@ void Command::executeCommand() const {
             pStructure->doSetDeployPosition(static_cast<int>(parameter[1]),static_cast<int>(parameter[2]));
         } break;
 
-        case CMD_STRUCTURE_REPAIR: {
+        case CMDTYPE::CMD_STRUCTURE_REPAIR: {
             if(parameter.size() != 1) {
                 THROW(std::invalid_argument, "Command::executeCommand(): CMD_STRUCTURE_REPAIR needs 1 Parameter!");
             }
@@ -239,7 +239,7 @@ void Command::executeCommand() const {
             pStructure->doRepair();
         } break;
 
-        case CMD_BUILDER_UPGRADE: {
+        case CMDTYPE::CMD_BUILDER_UPGRADE: {
             if(parameter.size() != 1) {
                 THROW(std::invalid_argument, "Command::executeCommand(): CMD_BUILDER_UPGRADE needs 1 Parameter!");
             }
@@ -250,7 +250,7 @@ void Command::executeCommand() const {
             pBuilder->doUpgrade();
         } break;
 
-        case CMD_BUILDER_PRODUCEITEM: {
+        case CMDTYPE::CMD_BUILDER_PRODUCEITEM: {
             if(parameter.size() != 3) {
                 THROW(std::invalid_argument, "Command::executeCommand(): CMD_BUILDER_PRODUCEITEM needs 3 Parameter!");
             }
@@ -261,7 +261,7 @@ void Command::executeCommand() const {
             pBuilder->doProduceItem(parameter[1],static_cast<bool>(parameter[2]));
         } break;
 
-        case CMD_BUILDER_CANCELITEM: {
+        case CMDTYPE::CMD_BUILDER_CANCELITEM: {
             if(parameter.size() != 3) {
                 THROW(std::invalid_argument, "Command::executeCommand(): CMD_BUILDER_CANCELITEM needs 3 Parameter!");
             }
@@ -272,7 +272,7 @@ void Command::executeCommand() const {
             pBuilder->doCancelItem(parameter[1],static_cast<bool>(parameter[2]));
         } break;
 
-        case CMD_BUILDER_SETONHOLD: {
+        case CMDTYPE::CMD_BUILDER_SETONHOLD: {
             if(parameter.size() != 2) {
                 THROW(std::invalid_argument, "Command::executeCommand(): CMD_BUILDER_SETONHOLD needs 2 Parameters!");
             }
@@ -283,7 +283,7 @@ void Command::executeCommand() const {
             pBuilder->doSetOnHold(static_cast<bool>(parameter[1]));
         } break;
 
-        case CMD_PALACE_SPECIALWEAPON: {
+        case CMDTYPE::CMD_PALACE_SPECIALWEAPON: {
             if(parameter.size() != 1) {
                 THROW(std::invalid_argument, "Command::executeCommand(): CMD_PALACE_SPECIALWEAPON needs 1 Parameter!");
             }
@@ -294,7 +294,7 @@ void Command::executeCommand() const {
             palace->doSpecialWeapon();
         } break;
 
-        case CMD_PALACE_DEATHHAND: {
+        case CMDTYPE::CMD_PALACE_DEATHHAND: {
             if(parameter.size() != 3) {
                 THROW(std::invalid_argument, "Command::executeCommand(): CMD_PALACE_DEATHHAND needs 3 Parameter!");
             }
@@ -305,7 +305,7 @@ void Command::executeCommand() const {
             palace->doLaunchDeathhand(static_cast<int>(parameter[1]), static_cast<int>(parameter[2]));
         } break;
 
-        case CMD_STARPORT_PLACEORDER: {
+        case CMDTYPE::CMD_STARPORT_PLACEORDER: {
             if(parameter.size() != 1) {
                 THROW(std::invalid_argument, "Command::executeCommand(): CMD_STARPORT_PLACEORDER needs 1 Parameter!");
             }
@@ -316,7 +316,7 @@ void Command::executeCommand() const {
             pStarport->doPlaceOrder();
         } break;
 
-        case CMD_STARPORT_CANCELORDER: {
+        case CMDTYPE::CMD_STARPORT_CANCELORDER: {
             if(parameter.size() != 1) {
                 THROW(std::invalid_argument, "Command::executeCommand(): CMD_STARPORT_CANCELORDER needs 1 Parameter!");
             }
@@ -327,7 +327,7 @@ void Command::executeCommand() const {
             pStarport->doCancelOrder();
         } break;
 
-        case CMD_TURRET_ATTACKOBJECT: {
+        case CMDTYPE::CMD_TURRET_ATTACKOBJECT: {
             if(parameter.size() != 2) {
                 THROW(std::invalid_argument, "Command::executeCommand(): CMD_TURRET_ATTACKOBJECT needs 2 Parameters!");
             }
@@ -338,7 +338,7 @@ void Command::executeCommand() const {
             pTurret->doAttackObject(static_cast<int>(parameter[1]));
         } break;
 
-        case CMD_TEST_SYNC: {
+        case CMDTYPE::CMD_TEST_SYNC: {
             if(parameter.size() != 1) {
                 THROW(std::invalid_argument, "Command::executeCommand(): CMD_TEST_SYNC needs 1 Parameters!");
             }

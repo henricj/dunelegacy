@@ -86,7 +86,7 @@ MapEditor::MapEditor() : pInterface(nullptr) {
     bottomBarPos = calcAlignedDrawingRect(pGFXManager->getUIGraphic(UI_MapEditor_BottomBar), HAlign::Left, VAlign::Bottom);
 
     SDL_Rect gameBoardRect = { 0, topBarPos.h, sideBarPos.x, getRendererHeight() - topBarPos.h - bottomBarPos.h };
-    screenborder = new ScreenBorder(gameBoardRect);
+    screenborder = std::make_unique<ScreenBorder>(gameBoardRect);
 
     setMap(MapData(128,128,Terrain_Sand), MapInfo());
     setMirrorMode(MirrorModeNone);
@@ -96,19 +96,14 @@ MapEditor::MapEditor() : pInterface(nullptr) {
     pInterface->onNew();
 }
 
-MapEditor::~MapEditor() {
-    delete screenborder;
-    screenborder = nullptr;
-}
+MapEditor::~MapEditor() { screenborder.reset(); }
 
 std::string MapEditor::generateMapname() const {
-    const auto numPlayers = std::count_if( players.begin(),
-                                    players.end(),
-                                    [](const MapEditor::Player& player) {
-                                        return player.bActive;
-                                    });
+    const auto numPlayers =
+        std::count_if(players.begin(), players.end(), [](const MapEditor::Player& player) { return player.bActive; });
 
-    return std::to_string(numPlayers) + "P - " + std::to_string(map.getSizeX()) + "x" + std::to_string(map.getSizeY()) + " - " + _("New Map");
+    return std::to_string(numPlayers) + "P - " + std::to_string(map.getSizeX()) + "x" + std::to_string(map.getSizeY()) +
+           " - " + _("New Map");
 }
 
 void MapEditor::setMirrorMode(MirrorMode newMirrorMode) {
@@ -172,19 +167,19 @@ void MapEditor::setMap(const MapData& mapdata, const MapInfo& newMapInfo) {
 
     // setup default players
     if(getMapVersion() < 2) {
-        players.push_back(Player(getHouseNameByNumber(HOUSE_HARKONNEN),HOUSE_HARKONNEN,HOUSE_HARKONNEN,true,false,"Human",25));
-        players.push_back(Player(getHouseNameByNumber(HOUSE_ATREIDES),HOUSE_ATREIDES,HOUSE_ATREIDES,true,false,"CPU",25));
-        players.push_back(Player(getHouseNameByNumber(HOUSE_ORDOS),HOUSE_ORDOS,HOUSE_ORDOS,true,false,"CPU",25));
-        players.push_back(Player(getHouseNameByNumber(HOUSE_FREMEN),HOUSE_FREMEN,HOUSE_FREMEN,false,false,"CPU",25));
-        players.emplace_back(getHouseNameByNumber(HOUSE_SARDAUKAR),HOUSE_SARDAUKAR,HOUSE_SARDAUKAR,true,false,"CPU",25);
-        players.push_back(Player(getHouseNameByNumber(HOUSE_MERCENARY),HOUSE_MERCENARY,HOUSE_MERCENARY,false,false,"CPU",25));
+        players.emplace_back(getHouseNameByNumber(HOUSETYPE::HOUSE_HARKONNEN),HOUSETYPE::HOUSE_HARKONNEN,HOUSETYPE::HOUSE_HARKONNEN,true,false,"Human",25);
+        players.emplace_back(getHouseNameByNumber(HOUSETYPE::HOUSE_ATREIDES),HOUSETYPE::HOUSE_ATREIDES,HOUSETYPE::HOUSE_ATREIDES,true,false,"CPU",25);
+        players.emplace_back(getHouseNameByNumber(HOUSETYPE::HOUSE_ORDOS),HOUSETYPE::HOUSE_ORDOS,HOUSETYPE::HOUSE_ORDOS,true,false,"CPU",25);
+        players.emplace_back(getHouseNameByNumber(HOUSETYPE::HOUSE_FREMEN),HOUSETYPE::HOUSE_FREMEN,HOUSETYPE::HOUSE_FREMEN,false,false,"CPU",25);
+        players.emplace_back(getHouseNameByNumber(HOUSETYPE::HOUSE_SARDAUKAR),HOUSETYPE::HOUSE_SARDAUKAR,HOUSETYPE::HOUSE_SARDAUKAR,true,false,"CPU",25);
+        players.emplace_back(getHouseNameByNumber(HOUSETYPE::HOUSE_MERCENARY),HOUSETYPE::HOUSE_MERCENARY,HOUSETYPE::HOUSE_MERCENARY,false,false,"CPU",25);
     } else {
-        players.push_back(Player(getHouseNameByNumber(HOUSE_HARKONNEN),HOUSE_HARKONNEN,HOUSE_HARKONNEN,true,true,"Team1"));
-        players.push_back(Player(getHouseNameByNumber(HOUSE_ATREIDES),HOUSE_ATREIDES,HOUSE_ATREIDES,true,true,"Team2"));
-        players.push_back(Player(getHouseNameByNumber(HOUSE_ORDOS),HOUSE_ORDOS,HOUSE_ORDOS,true,true,"Team3"));
-        players.push_back(Player(getHouseNameByNumber(HOUSE_FREMEN),HOUSE_FREMEN,HOUSE_FREMEN,false,false,"Team4"));
-        players.push_back(Player(getHouseNameByNumber(HOUSE_SARDAUKAR),HOUSE_SARDAUKAR,HOUSE_SARDAUKAR,true,true,"Team5"));
-        players.push_back(Player(getHouseNameByNumber(HOUSE_MERCENARY),HOUSE_MERCENARY,HOUSE_MERCENARY,false,false,"Team6"));
+        players.emplace_back(getHouseNameByNumber(HOUSETYPE::HOUSE_HARKONNEN),HOUSETYPE::HOUSE_HARKONNEN,HOUSETYPE::HOUSE_HARKONNEN,true,true,"Team1");
+        players.emplace_back(getHouseNameByNumber(HOUSETYPE::HOUSE_ATREIDES),HOUSETYPE::HOUSE_ATREIDES,HOUSETYPE::HOUSE_ATREIDES,true,true,"Team2");
+        players.emplace_back(getHouseNameByNumber(HOUSETYPE::HOUSE_ORDOS),HOUSETYPE::HOUSE_ORDOS,HOUSETYPE::HOUSE_ORDOS,true,true,"Team3");
+        players.emplace_back(getHouseNameByNumber(HOUSETYPE::HOUSE_FREMEN),HOUSETYPE::HOUSE_FREMEN,HOUSETYPE::HOUSE_FREMEN,false,false,"Team4");
+        players.emplace_back(getHouseNameByNumber(HOUSETYPE::HOUSE_SARDAUKAR),HOUSETYPE::HOUSE_SARDAUKAR,HOUSETYPE::HOUSE_SARDAUKAR,true,true,"Team5");
+        players.emplace_back(getHouseNameByNumber(HOUSETYPE::HOUSE_MERCENARY),HOUSETYPE::HOUSE_MERCENARY,HOUSETYPE::HOUSE_MERCENARY,false,false,"Team6");
     }
 
     // setup default choam
@@ -361,12 +356,12 @@ void MapEditor::loadMap(const std::filesystem::path& filepath) {
     units.clear();
     players.clear();
 
-    players.emplace_back(getHouseNameByNumber(HOUSE_HARKONNEN),HOUSE_HARKONNEN,HOUSE_HARKONNEN,false,true,"Team1");
-    players.push_back(Player(getHouseNameByNumber(HOUSE_ATREIDES),HOUSE_ATREIDES,HOUSE_ATREIDES,false,true,"Team2"));
-    players.push_back(Player(getHouseNameByNumber(HOUSE_ORDOS),HOUSE_ORDOS,HOUSE_ORDOS,false,true,"Team3"));
-    players.push_back(Player(getHouseNameByNumber(HOUSE_FREMEN),HOUSE_FREMEN,HOUSE_FREMEN,false,false,"Team4"));
-    players.push_back(Player(getHouseNameByNumber(HOUSE_SARDAUKAR),HOUSE_SARDAUKAR,HOUSE_SARDAUKAR,false,false,"Team5"));
-    players.push_back(Player(getHouseNameByNumber(HOUSE_MERCENARY),HOUSE_MERCENARY,HOUSE_MERCENARY,false,false,"Team6"));
+    players.emplace_back(getHouseNameByNumber(HOUSETYPE::HOUSE_HARKONNEN),HOUSETYPE::HOUSE_HARKONNEN,HOUSETYPE::HOUSE_HARKONNEN,false,true,"Team1");
+    players.emplace_back(getHouseNameByNumber(HOUSETYPE::HOUSE_ATREIDES),HOUSETYPE::HOUSE_ATREIDES,HOUSETYPE::HOUSE_ATREIDES,false,true,"Team2");
+    players.emplace_back(getHouseNameByNumber(HOUSETYPE::HOUSE_ORDOS),HOUSETYPE::HOUSE_ORDOS,HOUSETYPE::HOUSE_ORDOS,false,true,"Team3");
+    players.emplace_back(getHouseNameByNumber(HOUSETYPE::HOUSE_FREMEN),HOUSETYPE::HOUSE_FREMEN,HOUSETYPE::HOUSE_FREMEN,false,false,"Team4");
+    players.emplace_back(getHouseNameByNumber(HOUSETYPE::HOUSE_SARDAUKAR),HOUSETYPE::HOUSE_SARDAUKAR,HOUSETYPE::HOUSE_SARDAUKAR,false,false,"Team5");
+    players.emplace_back(getHouseNameByNumber(HOUSETYPE::HOUSE_MERCENARY),HOUSETYPE::HOUSE_MERCENARY,HOUSETYPE::HOUSE_MERCENARY,false,false,"Team6");
 
     // load map
     loadedINIFile = std::make_unique<INIFile>(filepath, false);
@@ -570,34 +565,36 @@ void MapEditor::saveMap(const std::filesystem::path& filepath) {
     }
 
 
-    for(int i=1;i<=NUM_HOUSES;i++) {
+    for(int i = 1; i <= static_cast<int>(HOUSETYPE::NUM_HOUSES); i++) {
         loadedINIFile->removeSection("player" + std::to_string(i));
     }
 
-    std::string house2housename[NUM_HOUSES];
+    std::vector<std::string> house2housename;
+    house2housename.reserve(players.size());
+
     int currentAnyHouseNumber = 1;
-    int i = 0;
     for(const Player& player : players) {
         if(player.bAnyHouse) {
-            house2housename[i] =  "Player" + std::to_string(currentAnyHouseNumber);
+            house2housename.emplace_back("Player" + std::to_string(currentAnyHouseNumber));
         } else {
-            house2housename[i] =  player.name;
+            house2housename.emplace_back(player.name);
         }
 
         if(player.bActive) {
+            const auto& h2h = house2housename.back();
             if(version < 2) {
-                loadedINIFile->setIntValue(house2housename[i], "Quota", player.quota);
-                loadedINIFile->setIntValue(house2housename[i], "Credits", player.credits);
-                loadedINIFile->setStringValue(house2housename[i], "Brain", player.brain, false);
-                loadedINIFile->setIntValue(house2housename[i], "MaxUnit", player.maxunit);
+                loadedINIFile->setIntValue(h2h, "Quota", player.quota);
+                loadedINIFile->setIntValue(h2h, "Credits", player.credits);
+                loadedINIFile->setStringValue(h2h, "Brain", player.brain, false);
+                loadedINIFile->setIntValue(h2h, "MaxUnit", player.maxunit);
             } else {
                 if(player.quota > 0) {
-                    loadedINIFile->setIntValue(house2housename[i], "Quota", player.quota);
+                    loadedINIFile->setIntValue(h2h, "Quota", player.quota);
                 } else {
-                    loadedINIFile->removeKey(house2housename[i], "Quota");
+                    loadedINIFile->removeKey(h2h, "Quota");
                 }
-                loadedINIFile->setIntValue(house2housename[i], "Credits", player.credits);
-                loadedINIFile->setStringValue(house2housename[i], "Brain", player.brain, false);
+                loadedINIFile->setIntValue(h2h, "Credits", player.credits);
+                loadedINIFile->setStringValue(h2h, "Brain", player.brain, false);
 
                 if(player.bAnyHouse) {
                     currentAnyHouseNumber++;
@@ -613,11 +610,10 @@ void MapEditor::saveMap(const std::filesystem::path& filepath) {
             // remove corresponding house name
             loadedINIFile->removeSection(player.name);
         }
-        i++;
     }
 
     // remove players that are leftovers
-    for(int i=currentAnyHouseNumber;i<NUM_HOUSES;i++) {
+    for(int i = currentAnyHouseNumber; i < static_cast<int>(HOUSETYPE::NUM_HOUSES); i++) {
         loadedINIFile->removeSection("Player" + std::to_string(i));
     }
 
@@ -647,7 +643,10 @@ void MapEditor::saveMap(const std::filesystem::path& filepath) {
         // we start at 0 for version 1 maps if we have 16 entries to not overflow the table
         int currentIndex = ((getMapVersion() < 2) && (aiteams.size() >= 16)) ? 0 : 1;
         for(const AITeamInfo& aiteamInfo : aiteams) {
-            std::string value = house2housename[aiteamInfo.houseID] + "," + getAITeamBehaviorNameByID(aiteamInfo.aiTeamBehavior) + "," + getAITeamTypeNameByID(aiteamInfo.aiTeamType) + "," + std::to_string(aiteamInfo.minUnits) + "," + std::to_string(aiteamInfo.maxUnits);
+            std::string value = house2housename[static_cast<int>(aiteamInfo.houseID)] + "," +
+                                getAITeamBehaviorNameByID(aiteamInfo.aiTeamBehavior) + "," +
+                                getAITeamTypeNameByID(aiteamInfo.aiTeamType) + "," +
+                                std::to_string(aiteamInfo.minUnits) + "," + std::to_string(aiteamInfo.maxUnits);
             loadedINIFile->setStringValue("TEAMS", std::to_string(currentIndex), value, false);
             currentIndex++;
         }
@@ -662,9 +661,9 @@ void MapEditor::saveMap(const std::filesystem::path& filepath) {
 
         int angle = (int) unit.angle;
 
-        angle = (((NUM_ANGLES - angle) + 2) % NUM_ANGLES) * 32;
+        angle = (((static_cast<int>(ANGLETYPE::NUM_ANGLES) - angle) + 2) % static_cast<int>(ANGLETYPE::NUM_ANGLES)) * 32;
 
-        std::string unitValue = house2housename[unit.house] + "," + getItemNameByID(unit.itemID) + "," + std::to_string(unit.health)
+        std::string unitValue = house2housename[static_cast<int>(unit.house)] + "," + getItemNameByID(unit.itemID) + "," + std::to_string(unit.health)
                                 + "," + std::to_string(position) + "," + std::to_string(angle) + "," + getAttackModeNameByMode(unit.attackmode);
 
         loadedINIFile->setStringValue("UNITS", unitKey, unitValue, false);
@@ -677,7 +676,7 @@ void MapEditor::saveMap(const std::filesystem::path& filepath) {
         if((structure.itemID == Structure_Slab1) || (structure.itemID == Structure_Slab4) || (structure.itemID == Structure_Wall)) {
             std::string structureKey = fmt::sprintf("GEN%.3d", position);
 
-            std::string structureValue = house2housename[structure.house] + "," + getItemNameByID(structure.itemID);
+            std::string structureValue = house2housename[static_cast<int>(structure.house)] + "," + getItemNameByID(structure.itemID);
 
             loadedINIFile->setStringValue("STRUCTURES", structureKey, structureValue, false);
 
@@ -685,7 +684,7 @@ void MapEditor::saveMap(const std::filesystem::path& filepath) {
 
             std::string structureKey = fmt::sprintf("ID%.3d", structure.id);
 
-            std::string structureValue = house2housename[structure.house] + "," + getItemNameByID(structure.itemID) + "," + std::to_string(structure.health) + "," + std::to_string(position);
+            std::string structureValue = house2housename[static_cast<int>(structure.house)] + "," + getItemNameByID(structure.itemID) + "," + std::to_string(structure.health) + "," + std::to_string(position);
 
             loadedINIFile->setStringValue("STRUCTURES", structureKey, structureValue, false);
         }
@@ -699,7 +698,7 @@ void MapEditor::saveMap(const std::filesystem::path& filepath) {
         // we start at 0 for version 1 maps if we have 16 entries to not overflow the table
         int currentIndex = ((getMapVersion() < 2) && (reinforcements.size() >= 16)) ? 0 : 1;
         for(const ReinforcementInfo& reinforcement : reinforcements) {
-            std::string value = house2housename[reinforcement.houseID] + "," + getItemNameByID(reinforcement.unitID) + "," + getDropLocationNameByID(reinforcement.dropLocation) + "," + std::to_string(reinforcement.droptime);
+            std::string value = house2housename[static_cast<int>(reinforcement.houseID)] + "," + getItemNameByID(reinforcement.unitID) + "," + getDropLocationNameByID(reinforcement.dropLocation) + "," + std::to_string(reinforcement.droptime);
             if(reinforcement.bRepeat) {
                 value += ",+";
             }
@@ -798,26 +797,26 @@ void MapEditor::performMapEdit(int xpos, int ypos, bool bRepeated) {
                     startOperation();
                 }
 
-                int currentHouse = currentEditorMode.house;
-                bool bHouseIsActive = players[currentHouse].bActive;
+                auto currentHouse = currentEditorMode.house;
+                bool bHouseIsActive = players[static_cast<int>(currentHouse)].bActive;
                 for(int i=0;i<mapMirror->getSize();i++) {
 
-                    int nextHouse = HOUSE_INVALID;
-                    for(int k = currentHouse; k < currentHouse+NUM_HOUSES;k++) {
-                        if(players[k%NUM_HOUSES].bActive == bHouseIsActive) {
-                            nextHouse = k;
+                    auto nextHouse = HOUSETYPE::HOUSE_INVALID;
+                    for(int k = static_cast<int>(currentHouse); k < static_cast<int>(currentHouse) + static_cast<int>(HOUSETYPE::NUM_HOUSES); k++) {
+                        if(players[k % static_cast<int>(HOUSETYPE::NUM_HOUSES)].bActive == bHouseIsActive) {
+                            nextHouse = static_cast<HOUSETYPE>(k % static_cast<int>(HOUSETYPE::NUM_HOUSES));
                             break;
                         }
                     }
 
-                    if(nextHouse != HOUSE_INVALID) {
+                    if(nextHouse != HOUSETYPE::HOUSE_INVALID) {
                         Coord position = mapMirror->getCoord( Coord(xpos, ypos), i, structureSize);
 
-                        MapEditorStructurePlaceOperation placeOperation(position, (HOUSETYPE) (nextHouse%NUM_HOUSES), currentEditorMode.itemID, currentEditorMode.health);
+                        MapEditorStructurePlaceOperation placeOperation(position, nextHouse, currentEditorMode.itemID, currentEditorMode.health);
 
                         addUndoOperation(placeOperation.perform(this));
 
-                        currentHouse = nextHouse + 1;
+                        currentHouse = static_cast<HOUSETYPE>((static_cast<int>(nextHouse) + 1) % static_cast<int>(HOUSETYPE::NUM_HOUSES));
                     }
                 }
             }
@@ -840,27 +839,28 @@ void MapEditor::performMapEdit(int xpos, int ypos, bool bRepeated) {
                 startOperation();
 
 
-                int currentHouse = currentEditorMode.house;
-                bool bHouseIsActive = players[currentHouse].bActive;
+                auto currentHouse = currentEditorMode.house;
+                bool bHouseIsActive = players[static_cast<int>(currentHouse)].bActive;
                 for(int i=0;i<mapMirror->getSize();i++) {
 
-                    int nextHouse = HOUSE_INVALID;
-                    for(int k = currentHouse; k < currentHouse+NUM_HOUSES;k++) {
-                        if(players[k%NUM_HOUSES].bActive == bHouseIsActive) {
-                            nextHouse = k;
+                    auto nextHouse = HOUSETYPE::HOUSE_INVALID;
+                    for(int k = static_cast<int>(currentHouse);
+                        k < static_cast<int>(currentHouse) + static_cast<int>(HOUSETYPE::NUM_HOUSES); k++) {
+                        if(players[k % static_cast<int>(HOUSETYPE::NUM_HOUSES)].bActive == bHouseIsActive) {
+                            nextHouse = static_cast<HOUSETYPE>(k % static_cast<int>(HOUSETYPE::NUM_HOUSES));
                             break;
                         }
                     }
 
-                    if(nextHouse != HOUSE_INVALID) {
+                    if(nextHouse != HOUSETYPE::HOUSE_INVALID) {
                         Coord position = mapMirror->getCoord( Coord(xpos, ypos), i);
 
-                        int angle =  mapMirror->getAngle(currentEditorMode.angle, i);
+                        const auto angle =  mapMirror->getAngle(currentEditorMode.angle, i);
 
-                        MapEditorUnitPlaceOperation placeOperation(position, (HOUSETYPE) (nextHouse%NUM_HOUSES), currentEditorMode.itemID, currentEditorMode.health, angle, currentEditorMode.attackmode);
+                        MapEditorUnitPlaceOperation placeOperation(position, nextHouse, currentEditorMode.itemID, currentEditorMode.health, angle, currentEditorMode.attackmode);
 
                         addUndoOperation(placeOperation.perform(this));
-                        currentHouse = nextHouse + 1;
+                        currentHouse = static_cast<HOUSETYPE>((static_cast<int>(nextHouse) + 1) % static_cast<int>(HOUSETYPE::NUM_HOUSES));
                     }
                 }
             }
@@ -950,7 +950,7 @@ void MapEditor::drawScreen() {
     SDL_RenderClear(renderer);
 
     //the actuall map
-    drawMap(screenborder, false);
+    drawMap(screenborder.get(), false);
 
     pInterface->draw(Point(0,0));
     pInterface->drawOverlay(Point(0,0));
@@ -1416,11 +1416,11 @@ void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) {
 
             switch(getTerrain(x,y)) {
                 case Terrain_Slab: {
-                    tile = Tile::TerrainTile_Slab;
+                    tile = static_cast<int>(Tile::TERRAINTILETYPE::TerrainTile_Slab);
                 } break;
 
                 case Terrain_Sand: {
-                    tile = Tile::TerrainTile_Sand;
+                    tile = static_cast<int>(Tile::TERRAINTILETYPE::TerrainTile_Sand);
                 } break;
 
                 case Terrain_Rock: {
@@ -1430,7 +1430,7 @@ void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) {
                     const int down = (y+1 >= map.getSizeY()) || (getTerrain(x, y+1) == Terrain_Rock) || (getTerrain(x, y+1) == Terrain_Slab) || (getTerrain(x, y+1) == Terrain_Mountain);
                     const int left = (x-1 < 0) || (getTerrain(x-1, y) == Terrain_Rock) || (getTerrain(x-1, y) == Terrain_Slab) || (getTerrain(x-1, y) == Terrain_Mountain);
 
-                    tile = Tile::TerrainTile_Rock + (up | (right << 1) | (down << 2) | (left << 3));
+                    tile = static_cast<int>(Tile::TERRAINTILETYPE::TerrainTile_Rock) + (up | (right << 1) | (down << 2) | (left << 3));
                 } break;
 
                 case Terrain_Dunes: {
@@ -1440,7 +1440,7 @@ void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) {
                     const int down = (y+1 >= map.getSizeY()) || (getTerrain(x, y+1) == Terrain_Dunes);
                     const int left = (x-1 < 0) || (getTerrain(x-1, y) == Terrain_Dunes);
 
-                    tile = Tile::TerrainTile_Dunes + (up | (right << 1) | (down << 2) | (left << 3));
+                    tile = static_cast<int>(Tile::TERRAINTILETYPE::TerrainTile_Dunes) + (up | (right << 1) | (down << 2) | (left << 3));
                 } break;
 
                 case Terrain_Mountain: {
@@ -1450,7 +1450,8 @@ void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) {
                     const int down = (y+1 >= map.getSizeY()) || (getTerrain(x, y+1) == Terrain_Mountain);
                     const int left = (x-1 < 0) || (getTerrain(x-1, y) == Terrain_Mountain);
 
-                    tile = Tile::TerrainTile_Mountain + (up | (right << 1) | (down << 2) | (left << 3));
+                    tile =
+                        static_cast<int>(Tile::TERRAINTILETYPE::TerrainTile_Mountain) + (up | (right << 1) | (down << 2) | (left << 3));
                 } break;
 
                 case Terrain_Spice: {
@@ -1460,7 +1461,7 @@ void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) {
                     const int down = (y+1 >= map.getSizeY()) || (getTerrain(x, y+1) == Terrain_Spice) || (getTerrain(x, y+1) == Terrain_ThickSpice);
                     const int left = (x-1 < 0) || (getTerrain(x-1, y) == Terrain_Spice) || (getTerrain(x-1, y) == Terrain_ThickSpice);
 
-                    tile = Tile::TerrainTile_Spice + (up | (right << 1) | (down << 2) | (left << 3));
+                    tile = static_cast<int>(Tile::TERRAINTILETYPE::TerrainTile_Spice) + (up | (right << 1) | (down << 2) | (left << 3));
                 } break;
 
                 case Terrain_ThickSpice: {
@@ -1470,15 +1471,16 @@ void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) {
                     const int down = (y+1 >= map.getSizeY()) || (getTerrain(x, y+1) == Terrain_ThickSpice);
                     const int left = (x-1 < 0) || (getTerrain(x-1, y) == Terrain_ThickSpice);
 
-                    tile = Tile::TerrainTile_ThickSpice + (up | (right << 1) | (down << 2) | (left << 3));
+                    tile = static_cast<int>(Tile::TERRAINTILETYPE::TerrainTile_ThickSpice) +
+                           (up | (right << 1) | (down << 2) | (left << 3));
                 } break;
 
                 case Terrain_SpiceBloom: {
-                    tile = Tile::TerrainTile_SpiceBloom;
+                    tile = static_cast<int>(Tile::TERRAINTILETYPE::TerrainTile_SpiceBloom);
                 } break;
 
                 case Terrain_SpecialBloom: {
-                    tile = Tile::TerrainTile_SpecialBloom;
+                    tile = static_cast<int>(Tile::TERRAINTILETYPE::TerrainTile_SpecialBloom);
                 } break;
 
                 default: {
@@ -1507,7 +1509,8 @@ void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) {
             // Load Terrain sprite
             SDL_Texture* TerrainSprite = pGFXManager->getZoomedObjPic(ObjPic_Terrain, currentZoomlevel);
 
-            SDL_Rect source = { Tile::TerrainTile_Slab * zoomedTilesize, 0, zoomedTilesize, zoomedTilesize };
+            SDL_Rect source = {static_cast<int>(Tile::TERRAINTILETYPE::TerrainTile_Slab) * zoomedTilesize, 0, zoomedTilesize,
+                               zoomedTilesize};
             SDL_Rect dest = { pScreenborder->world2screenX(position.x*TILESIZE), pScreenborder->world2screenY(position.y*TILESIZE), zoomedTilesize, zoomedTilesize };
 
             SDL_RenderCopy(renderer, TerrainSprite, &source, &dest);
@@ -1519,7 +1522,8 @@ void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) {
 
             for(int y = position.y; y < position.y+2; y++) {
                 for(int x = position.x; x < position.x+2; x++) {
-                    SDL_Rect source = { Tile::TerrainTile_Slab * zoomedTilesize, 0, zoomedTilesize, zoomedTilesize };
+                    SDL_Rect source = {static_cast<int>(Tile::TERRAINTILETYPE::TerrainTile_Slab) * zoomedTilesize, 0, zoomedTilesize,
+                                       zoomedTilesize};
                     SDL_Rect dest = { pScreenborder->world2screenX(x*TILESIZE), pScreenborder->world2screenY(y*TILESIZE), zoomedTilesize, zoomedTilesize };
 
                     SDL_RenderCopy(renderer, TerrainSprite, &source, &dest);
@@ -1713,7 +1717,7 @@ void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) {
 
 
         int objectPicBase = 0;
-        int framesX = NUM_ANGLES;
+        int framesX = static_cast<int>(ANGLETYPE::NUM_ANGLES);
         int framesY = 1;
         int objectPicGun = -1;
         const Coord* gunOffset = nullptr;
@@ -1744,7 +1748,7 @@ void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) {
 
         SDL_Texture* pObjectSprite = pGFXManager->getZoomedObjPic(objectPicBase, unit.house, currentZoomlevel);
 
-        int angle = unit.angle / (NUM_ANGLES/framesX);
+        int angle = static_cast<int>(unit.angle) / (static_cast<int>(ANGLETYPE::NUM_ANGLES)/framesX);
 
         int frame = (unit.itemID == Unit_Sandworm) ? 5 : 0;
 
@@ -1761,11 +1765,14 @@ void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) {
         if(objectPicGun >= 0) {
             SDL_Texture* pGunSprite = pGFXManager->getZoomedObjPic(objectPicGun, unit.house, currentZoomlevel);
 
-            SDL_Rect source2 = calcSpriteSourceRect(pGunSprite, unit.angle, NUM_ANGLES);
-            SDL_Rect drawLocation2 = calcSpriteDrawingRect( pGunSprite,
-                                                            pScreenborder->world2screenX((position.x*TILESIZE)+(TILESIZE/2)+gunOffset[unit.angle].x),
-                                                            pScreenborder->world2screenY((position.y*TILESIZE)+(TILESIZE/2)+gunOffset[unit.angle].y),
-                                                            NUM_ANGLES, 1, HAlign::Center, VAlign::Center);
+            SDL_Rect source2 = calcSpriteSourceRect(pGunSprite, static_cast<int>(unit.angle), static_cast<int>(ANGLETYPE::NUM_ANGLES));
+
+            const auto& gun = gunOffset[static_cast<int>(unit.angle)];
+            const auto  sx  = pScreenborder->world2screenX((position.x * TILESIZE) + (TILESIZE / 2) + gun.x);
+            const auto  sy  = pScreenborder->world2screenY((position.y * TILESIZE) + (TILESIZE / 2) + gun.y);
+
+            SDL_Rect drawLocation2 = calcSpriteDrawingRect(pGunSprite, sx, sy, static_cast<int>(ANGLETYPE::NUM_ANGLES), 1,
+                                                           HAlign::Center, VAlign::Center);
 
             SDL_RenderCopy(renderer, pGunSprite, &source2, &drawLocation2);
         }

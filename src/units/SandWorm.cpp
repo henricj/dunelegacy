@@ -282,9 +282,9 @@ void Sandworm::setTarget(const ObjectBase* newTarget) {
     GroundUnit::setTarget(newTarget);
 
     if( (newTarget != nullptr) && (newTarget->getOwner() == pLocalHouse)
-        && ((warningWormSignPlayedFlags & (1 << pLocalHouse->getHouseID())) == 0) ) {
+        && ((warningWormSignPlayedFlags & (1 << static_cast<int>(pLocalHouse->getHouseID()))) == 0) ) {
         soundPlayer->playVoice(WarningWormSign, pLocalHouse->getHouseID());
-        warningWormSignPlayedFlags |= (1 << pLocalHouse->getHouseID());
+        warningWormSignPlayedFlags |= (1 << static_cast<int>(pLocalHouse->getHouseID()));
     }
 }
 
@@ -424,7 +424,7 @@ const ObjectBase* Sandworm::findTarget() const {
     return closestTarget;
 }
 
-int Sandworm::getCurrentAttackAngle() const {
+ANGLETYPE Sandworm::getCurrentAttackAngle() const {
     // we can always attack an target
     return targetAngle;
 }

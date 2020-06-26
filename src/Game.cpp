@@ -89,7 +89,7 @@ Game::Game() {
     musicPlayer->changeMusic(MUSIC_PEACE);
     //////////////////////////////////////////////////////////////////////////
     const SDL_Rect gameBoardRect = { 0, topBarPos.h, sideBarPos.x, getRendererHeight() - topBarPos.h };
-    screenborder = new ScreenBorder(gameBoardRect);
+    screenborder = std::make_unique<ScreenBorder>(gameBoardRect);
 }
 
 
@@ -120,8 +120,7 @@ Game::~Game() {
 
     delete currentGameMap;
     currentGameMap = nullptr;
-    delete screenborder;
-    screenborder = nullptr;
+    screenborder.reset();
 }
 
 
@@ -342,7 +341,7 @@ void Game::drawScreen()
 
                 const auto pTile = &t;
 
-                const auto border = screenborder;
+                const auto& border = screenborder;
                 const auto team_id = pLocalHouse->getTeamID();
 
                 SDL_Rect drawLocation = { border->world2screenX(x*TILESIZE), border->world2screenY(y*TILESIZE),
@@ -1287,7 +1286,7 @@ void Game::onOptions()
         // don't show menu
         quitGame();
     } else {
-        Uint32 color = SDL2RGB(palette[houseToPaletteIndex[pLocalHouse->getHouseID()] + 3]);
+        Uint32 color = SDL2RGB(palette[houseToPaletteIndex[static_cast<int>(pLocalHouse->getHouseID())] + 3]);
         pInGameMenu = std::make_unique<InGameMenu>((gameType == GameType::CustomMultiplayer), color);
         bMenu = true;
         pauseGame();
@@ -1465,7 +1464,7 @@ bool Game::loadSaveGame(InputStream& stream) {
     objectData.load(stream);
 
     //load the house(s) info
-    for(auto i=0; i<NUM_HOUSES; i++) {
+    for(auto i=0; i<static_cast<int>(HOUSETYPE::NUM_HOUSES); i++) {
         if (stream.readBool() == true) {
             //house in game
             house[i] = std::make_unique<House>(stream);
@@ -1478,7 +1477,7 @@ bool Game::loadSaveGame(InputStream& stream) {
         for(const auto& houseInfo : oldHouseInfoList) {
 
             // find the right house
-            for(int i=0;i<NUM_HOUSES;i++) {
+            for(int i=0;i<static_cast<int>(HOUSETYPE::NUM_HOUSES);i++) {
                 if((house[i] != nullptr) && (house[i]->getHouseID() == houseInfo.houseID)) {
                     // iterate over all players
                     auto& players = house[i]->getPlayerList();
@@ -1514,7 +1513,7 @@ bool Game::loadSaveGame(InputStream& stream) {
         // it is stored in the savegame, so set it up
         const auto localPlayerID = stream.readUint8();
         pLocalPlayer = dynamic_cast<HumanPlayer*>(getPlayerByID(localPlayerID));
-        pLocalHouse = house[pLocalPlayer->getHouse()->getHouseID()].get();
+        pLocalHouse = house[static_cast<int>(pLocalPlayer->getHouse()->getHouseID())].get();
     }
 
     debug = stream.readBool();
@@ -1606,7 +1605,7 @@ bool Game::saveGame(const std::filesystem::path& filename)
     objectData.save(fs);
 
     //write the house(s) info
-    for(int i=0; i<NUM_HOUSES; i++) {
+    for(int i=0; i< static_cast<int>(HOUSETYPE::NUM_HOUSES); i++) {
         fs.writeBool(house[i] != nullptr);
 
         if(house[i] != nullptr) {
@@ -2007,7 +2006,7 @@ void Game::handleKeyInput(SDL_KeyboardEvent& keyboardEvent) {
                     if(pObject->isAUnit() && (pOwner == pLocalHouse) && pObject->isRespondable() && pObject->canAttack()) {
                         currentCursorMode = CursorMode_Attack;
                         break;
-                    } else if((pObject->getItemID() == Structure_Palace) && ((pOwner->getHouseID() == HOUSE_HARKONNEN) || (pOwner->getHouseID() == HOUSE_SARDAUKAR))) {
+                    } else if((pObject->getItemID() == Structure_Palace) && ((pOwner->getHouseID() == HOUSETYPE::HOUSE_HARKONNEN) || (pOwner->getHouseID() == HOUSETYPE::HOUSE_SARDAUKAR))) {
                         if(static_cast<Palace*>(pObject)->isSpecialWeaponReady()) {
                             currentCursorMode = CursorMode_Attack;
                             break;
@@ -2246,7 +2245,7 @@ bool Game::handlePlacementClick(int xPos, int yPos) {
         if((currentGameMap->isWithinBuildRange(xPos, yPos, pBuilder->getOwner()))
             && (currentGameMap->okayToPlaceStructure(xPos, yPos, 1, 1, false, pBuilder->getOwner()))
             && (currentGameMap->getTile(xPos, yPos)->isConcrete() == false)) {
-            getCommandManager().addCommand(Command(pLocalPlayer->getPlayerID(), CMD_PLACE_STRUCTURE,pBuilder->getObjectID(), xPos, yPos));
+            getCommandManager().addCommand(Command(pLocalPlayer->getPlayerID(), CMDTYPE::CMD_PLACE_STRUCTURE,pBuilder->getObjectID(), xPos, yPos));
             //the user has tried to place and has been successful
             soundPlayer->playSound(Sound_PlaceStructure);
             currentCursorMode = CursorMode_Normal;
@@ -2267,7 +2266,7 @@ bool Game::handlePlacementClick(int xPos, int yPos) {
             && ((currentGameMap->getTile(xPos, yPos)->isConcrete() == false) || (currentGameMap->getTile(xPos+1, yPos)->isConcrete() == false)
                 || (currentGameMap->getTile(xPos, yPos+1)->isConcrete() == false) || (currentGameMap->getTile(xPos+1, yPos+1)->isConcrete() == false)) ) {
 
-            getCommandManager().addCommand(Command(pLocalPlayer->getPlayerID(), CMD_PLACE_STRUCTURE,pBuilder->getObjectID(), xPos, yPos));
+            getCommandManager().addCommand(Command(pLocalPlayer->getPlayerID(), CMDTYPE::CMD_PLACE_STRUCTURE,pBuilder->getObjectID(), xPos, yPos));
             //the user has tried to place and has been successful
             soundPlayer->playSound(Sound_PlaceStructure);
             currentCursorMode = CursorMode_Normal;
@@ -2280,7 +2279,7 @@ bool Game::handlePlacementClick(int xPos, int yPos) {
         }
     } else {
         if(currentGameMap->okayToPlaceStructure(xPos, yPos, structuresize.x, structuresize.y, false, pBuilder->getOwner())) {
-            getCommandManager().addCommand(Command(pLocalPlayer->getPlayerID(), CMD_PLACE_STRUCTURE,pBuilder->getObjectID(), xPos, yPos));
+            getCommandManager().addCommand(Command(pLocalPlayer->getPlayerID(), CMDTYPE::CMD_PLACE_STRUCTURE,pBuilder->getObjectID(), xPos, yPos));
             //the user has tried to place and has been successful
             soundPlayer->playSound(Sound_PlaceStructure);
             currentCursorMode = CursorMode_Normal;
@@ -2334,7 +2333,7 @@ bool Game::handleSelectedObjectsAttackClick(int xPos, int yPos) {
         if(pObject->isAUnit() && (pOwner == pLocalHouse) && pObject->isRespondable()) {
             pResponder = static_cast<UnitBase*>(pObject);
             pResponder->handleAttackClick(xPos,yPos);
-        } else if((pObject->getItemID() == Structure_Palace) && ((pOwner->getHouseID() == HOUSE_HARKONNEN) || (pOwner->getHouseID() == HOUSE_SARDAUKAR))) {
+        } else if((pObject->getItemID() == Structure_Palace) && ((pOwner->getHouseID() == HOUSETYPE::HOUSE_HARKONNEN) || (pOwner->getHouseID() == HOUSETYPE::HOUSE_SARDAUKAR))) {
             Palace* pPalace = static_cast<Palace*>(pObject);
             if(pPalace->isSpecialWeaponReady()) {
                 pPalace->handleDeathhandClick(xPos, yPos);

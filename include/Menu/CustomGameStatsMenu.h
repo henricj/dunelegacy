@@ -37,6 +37,17 @@ public:
 private:
     void onOK();
 
+    template<typename F>
+    void for_each_stat(Game* pGame, F&& f) {
+        for (auto i = 0; i < houseStat.size(); ++i) {
+            auto pHouse = pGame->getHouse(static_cast<HOUSETYPE>(i));
+
+            if(!pHouse) continue;
+
+            f(i, *pHouse, houseStat[i]);
+        }
+    }
+
     StaticContainer windowWidget;
 
     VBox            mainVBox;
@@ -70,7 +81,7 @@ private:
         ProgressBar     progressBar3;
     };
 
-    HouseStat               houseStat[NUM_HOUSES];
+    std::array<HouseStat, static_cast<int>(HOUSETYPE::NUM_HOUSES)> houseStat;
 
     // bottom row of buttons
     HBox            buttonHBox;

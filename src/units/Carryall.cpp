@@ -67,7 +67,7 @@ void Carryall::init()
     graphic = pGFXManager->getObjPic(graphicID,getOwner()->getHouseID());
     shadowGraphic = pGFXManager->getObjPic(ObjPic_CarryallShadow,getOwner()->getHouseID());
 
-    numImagesX = NUM_ANGLES;
+    numImagesX = static_cast<int>(ANGLETYPE::NUM_ANGLES);
     numImagesY = 2;
 }
 
@@ -83,7 +83,7 @@ void Carryall::save(OutputStream& stream) const
 }
 
 bool Carryall::update() {
-    const auto& maxSpeed = currentGame->objectData.data[itemID][originalHouseID].maxspeed;
+    const auto& maxSpeed = currentGame->objectData.data[itemID][static_cast<int>(originalHouseID)].maxspeed;
 
     FixPoint dist = -1;
     const auto pTarget = target.getObjPointer();

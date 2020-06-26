@@ -82,7 +82,7 @@ void Harvester::init()
     graphicID = ObjPic_Harvester;
     graphic = pGFXManager->getObjPic(graphicID,getOwner()->getHouseID());
 
-    numImagesX = NUM_ANGLES;
+    numImagesX = static_cast<int>(ANGLETYPE::NUM_ANGLES);
     numImagesY = 1;
 }
 
@@ -103,7 +103,7 @@ void Harvester::blitToScreen()
     int y = screenborder->world2screenY(realY);
 
     auto pUnitGraphic = graphic[currentZoomlevel];
-    SDL_Rect source = calcSpriteSourceRect(pUnitGraphic, drawnAngle, numImagesX);
+    SDL_Rect source = calcSpriteSourceRect(pUnitGraphic, static_cast<int>(drawnAngle), numImagesX);
     SDL_Rect dest = calcSpriteDrawingRect( pUnitGraphic, x, y, numImagesX, 1, HAlign::Center, VAlign::Center);
 
     SDL_RenderCopy(renderer, pUnitGraphic, &source, &dest);
@@ -127,11 +127,11 @@ void Harvester::blitToScreen()
             frame -= LASTSANDFRAME;
         }
 
-        SDL_Rect sandSource = calcSpriteSourceRect(pSandGraphic, drawnAngle, NUM_ANGLES, frame, LASTSANDFRAME+1);
+        SDL_Rect sandSource = calcSpriteSourceRect(pSandGraphic, static_cast<int>(drawnAngle), static_cast<int>(ANGLETYPE::NUM_ANGLES), frame, LASTSANDFRAME+1);
         SDL_Rect sandDest = calcSpriteDrawingRect(  pSandGraphic,
-                                                    screenborder->world2screenX(realX + harvesterSandOffset[drawnAngle].x),
-                                                    screenborder->world2screenY(realY + harvesterSandOffset[drawnAngle].y),
-                                                    NUM_ANGLES, LASTSANDFRAME+1,
+                                                    screenborder->world2screenX(realX + harvesterSandOffset[static_cast<int>(drawnAngle)].x),
+                                                    screenborder->world2screenY(realY + harvesterSandOffset[static_cast<int>(drawnAngle)].y),
+                                                    static_cast<int>(ANGLETYPE::NUM_ANGLES), LASTSANDFRAME+1,
                                                     HAlign::Center, VAlign::Center);
 
         SDL_RenderCopy(renderer, pSandGraphic, &sandSource, &sandDest);
@@ -344,7 +344,7 @@ void Harvester::handleDamage(int damage, Uint32 damagerID, House* damagerOwner)
 }
 
 void Harvester::handleReturnClick() {
-    currentGame->getCommandManager().addCommand(Command(pLocalPlayer->getPlayerID(), CMD_HARVESTER_RETURN,objectID));
+    currentGame->getCommandManager().addCommand(Command(pLocalPlayer->getPlayerID(), CMDTYPE::CMD_HARVESTER_RETURN,objectID));
 }
 
 void Harvester::doReturn()
@@ -493,14 +493,16 @@ void Harvester::setSpeeds()
     FixPoint percentFull = spice/HARVESTERMAXSPICE;
     speed = speed * (1 - MAXIMUMHARVESTERSLOWDOWN*percentFull);
 
+    // clang-format off
     switch(drawnAngle){
-        case LEFT:      xSpeed = -speed;                    ySpeed = 0;         break;
-        case LEFTUP:    xSpeed = -speed*DIAGONALSPEEDCONST; ySpeed = xSpeed;    break;
-        case UP:        xSpeed = 0;                         ySpeed = -speed;    break;
-        case RIGHTUP:   xSpeed = speed*DIAGONALSPEEDCONST;  ySpeed = -xSpeed;   break;
-        case RIGHT:     xSpeed = speed;                     ySpeed = 0;         break;
-        case RIGHTDOWN: xSpeed = speed*DIAGONALSPEEDCONST;  ySpeed = xSpeed;    break;
-        case DOWN:      xSpeed = 0;                         ySpeed = speed;     break;
-        case LEFTDOWN:  xSpeed = -speed*DIAGONALSPEEDCONST; ySpeed = -xSpeed;   break;
+        case ANGLETYPE::LEFT:      xSpeed = -speed;                    ySpeed = 0;         break;
+        case ANGLETYPE::LEFTUP:    xSpeed = -speed*DIAGONALSPEEDCONST; ySpeed = xSpeed;    break;
+        case ANGLETYPE::UP:        xSpeed = 0;                         ySpeed = -speed;    break;
+        case ANGLETYPE::RIGHTUP:   xSpeed = speed*DIAGONALSPEEDCONST;  ySpeed = -xSpeed;   break;
+        case ANGLETYPE::RIGHT:     xSpeed = speed;                     ySpeed = 0;         break;
+        case ANGLETYPE::RIGHTDOWN: xSpeed = speed*DIAGONALSPEEDCONST;  ySpeed = xSpeed;    break;
+        case ANGLETYPE::DOWN:      xSpeed = 0;                         ySpeed = speed;     break;
+        case ANGLETYPE::LEFTDOWN:  xSpeed = -speed*DIAGONALSPEEDCONST; ySpeed = -xSpeed;   break;
     }
+    // clang-format off
 }

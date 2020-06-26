@@ -55,7 +55,7 @@ Bullet::Bullet(Uint32 shooterID, const Coord* newRealLocation, const Coord* newR
         const auto diffX = destination.x - newRealLocation->x;
         auto diffY = destination.y - newRealLocation->y;
 
-        int weaponrange = currentGame->objectData.data[Unit_SonicTank][owner->getHouseID()].weaponrange;
+        int weaponrange = currentGame->objectData.data[Unit_SonicTank][static_cast<int>(owner->getHouseID())].weaponrange;
 
         if((diffX == 0) && (diffY == 0)) {
             diffY = weaponrange*TILESIZE;
@@ -102,10 +102,10 @@ Bullet::Bullet(InputStream& stream)
 
     shooterID = stream.readUint32();
     Uint32 x = stream.readUint32();
-    if(x < NUM_HOUSES) {
-        owner = currentGame->getHouse(x);
+    if(x < static_cast<Uint32>(HOUSETYPE::NUM_HOUSES)) {
+        owner = currentGame->getHouse(static_cast<HOUSETYPE>(x));
     } else {
-        owner = currentGame->getHouse(0);
+        owner = currentGame->getHouse(static_cast<HOUSETYPE>(0));
     }
 
     source.x = stream.readSint32();
@@ -132,7 +132,7 @@ void Bullet::init()
 {
     explodesAtGroundObjects = false;
 
-    int houseID = owner->getHouseID();
+    const auto houseID = owner->getHouseID();
 
     switch(bulletID) {
         case Bullet_DRocket: {
@@ -216,7 +216,7 @@ void Bullet::init()
             speed = 6;  // For Sonic bullets this is only half the actual speed; see Bullet::update()
             numFrames = 1;
             detonationTimer = 45;
-            graphic = pGFXManager->getObjPic(ObjPic_Bullet_Sonic, HOUSE_HARKONNEN);    // no color remapping
+            graphic = pGFXManager->getObjPic(ObjPic_Bullet_Sonic, HOUSETYPE::HOUSE_HARKONNEN);    // no color remapping
         } break;
 
         case Bullet_Sandworm: {
@@ -241,7 +241,7 @@ void Bullet::save(OutputStream& stream) const
     stream.writeSint32(damage);
 
     stream.writeUint32(shooterID);
-    stream.writeUint32(owner->getHouseID());
+    stream.writeUint32(static_cast<Uint32>(owner->getHouseID()));
 
     stream.writeSint32(source.x);
     stream.writeSint32(source.y);
@@ -379,7 +379,7 @@ bool Bullet::update()
                 return true;
             }
 
-            FixPoint weaponDamage = currentGame->objectData.data[Unit_SonicTank][owner->getHouseID()].weapondamage;
+            FixPoint weaponDamage = currentGame->objectData.data[Unit_SonicTank][static_cast<int>(owner->getHouseID())].weapondamage;
 
             FixPoint startDamage = (weaponDamage / 4 + 1) / 4.5_fix;
             FixPoint endDamage = ((weaponDamage-9) / 4 + 1) / 4.5_fix;
@@ -428,7 +428,7 @@ void Bullet::destroy() const
 {
     auto position = Coord(lround(realX), lround(realY));
 
-    int houseID = owner->getHouseID();
+    const auto houseID = owner->getHouseID();
 
     switch(bulletID) {
         case Bullet_DRocket: {

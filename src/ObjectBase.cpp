@@ -84,8 +84,8 @@ ObjectBase::ObjectBase(House* newOwner) : originalHouseID(newOwner->getHouseID()
     realX = 0;
     realY = 0;
 
-    drawnAngle = 0;
-    angle = drawnAngle;
+    drawnAngle = static_cast<ANGLETYPE>(0);
+    angle = static_cast<int>(drawnAngle);
 
     active = false;
     respondable = true;
@@ -103,8 +103,8 @@ ObjectBase::ObjectBase(House* newOwner) : originalHouseID(newOwner->getHouseID()
 
 ObjectBase::ObjectBase(InputStream& stream) {
     objectID = NONE_ID; // has to be set after loading
-    originalHouseID = stream.readUint32();
-    owner = currentGame->getHouse(stream.readUint32());
+    originalHouseID = static_cast<HOUSETYPE>(stream.readUint32());
+    owner = currentGame->getHouse(static_cast<HOUSETYPE>(stream.readUint32()));
 
     health = stream.readFixPoint();
     badlyDamaged = stream.readBool();
@@ -119,7 +119,7 @@ ObjectBase::ObjectBase(InputStream& stream) {
     realY = stream.readFixPoint();
 
     angle = stream.readFixPoint();
-    drawnAngle = stream.readSint8();
+    drawnAngle = static_cast<ANGLETYPE>(stream.readSint8());
 
     active = stream.readBool();
     respondable = stream.readBool();
@@ -169,8 +169,8 @@ void ObjectBase::init() {
 ObjectBase::~ObjectBase() = default;
 
 void ObjectBase::save(OutputStream& stream) const {
-    stream.writeUint32(originalHouseID);
-    stream.writeUint32(owner->getHouseID());
+    stream.writeUint32(static_cast<Uint32>(originalHouseID));
+    stream.writeUint32(static_cast<Uint32>(owner->getHouseID()));
 
     stream.writeFixPoint(health);
     stream.writeBool(badlyDamaged);
@@ -185,7 +185,7 @@ void ObjectBase::save(OutputStream& stream) const {
     stream.writeFixPoint(realY);
 
     stream.writeFixPoint(angle);
-    stream.writeSint8(drawnAngle);
+    stream.writeSint8(static_cast<Sint8>(drawnAngle));
 
     stream.writeBool(active);
     stream.writeBool(respondable);
@@ -219,7 +219,7 @@ Coord ObjectBase::getClosestCenterPoint(const Coord& objectLocation) const {
 
 
 int ObjectBase::getMaxHealth() const {
-    return currentGame->objectData.data[itemID][originalHouseID].hitpoints;
+    return currentGame->objectData.data[itemID][static_cast<int>(originalHouseID)].hitpoints;
 }
 
 void ObjectBase::handleDamage(int damage, Uint32 damagerID, House* damagerOwner) {
@@ -508,7 +508,7 @@ const ObjectBase* ObjectBase::findTarget() const {
 }
 
 int ObjectBase::getViewRange() const {
-    return currentGame->objectData.data[itemID][originalHouseID].viewrange;
+    return currentGame->objectData.data[itemID][static_cast<int>(originalHouseID)].viewrange;
 }
 
 int ObjectBase::getAreaGuardRange() const {
@@ -516,21 +516,22 @@ int ObjectBase::getAreaGuardRange() const {
 }
 
 int ObjectBase::getWeaponRange() const {
-    return currentGame->objectData.data[itemID][originalHouseID].weaponrange;
+    return currentGame->objectData.data[itemID][static_cast<int>(originalHouseID)].weaponrange;
 }
 
 int ObjectBase::getWeaponReloadTime() const {
-    return currentGame->objectData.data[itemID][originalHouseID].weaponreloadtime;
+    return currentGame->objectData.data[itemID][static_cast<int>(originalHouseID)].weaponreloadtime;
 }
 
 int ObjectBase::getInfSpawnProp() const {
-    return currentGame->objectData.data[itemID][originalHouseID].infspawnprop;
+    return currentGame->objectData.data[itemID][static_cast<int>(originalHouseID)].infspawnprop;
 }
 
 ObjectBase* ObjectBase::createObject(int itemID, House* Owner, bool byScenario) {
 
     ObjectBase* newObject = nullptr;
     switch(itemID) {
+        // clang-format off
         case Structure_Barracks:            newObject = new Barracks(Owner); break;
         case Structure_ConstructionYard:    newObject = new ConstructionYard(Owner); break;
         case Structure_GunTurret:           newObject = new GunTurret(Owner); break;
@@ -569,12 +570,12 @@ ObjectBase* ObjectBase::createObject(int itemID, House* Owner, bool byScenario) 
         case Unit_Trooper:                  newObject = new Trooper(Owner); break;
         case Unit_Special: {
             switch(Owner->getHouseID()) {
-                case HOUSE_HARKONNEN:       newObject = new Devastator(Owner); break;
-                case HOUSE_ATREIDES:        newObject = new SonicTank(Owner); break;
-                case HOUSE_ORDOS:           newObject = new Deviator(Owner); break;
-                case HOUSE_FREMEN:
-                case HOUSE_SARDAUKAR:
-                case HOUSE_MERCENARY: {
+                case HOUSETYPE::HOUSE_HARKONNEN:       newObject = new Devastator(Owner); break;
+                case HOUSETYPE::HOUSE_ATREIDES:        newObject = new SonicTank(Owner); break;
+                case HOUSETYPE::HOUSE_ORDOS:           newObject = new Deviator(Owner); break;
+                case HOUSETYPE::HOUSE_FREMEN:
+                case HOUSETYPE::HOUSE_SARDAUKAR:
+                case HOUSETYPE::HOUSE_MERCENARY: {
                     if(currentGame->randomGen.randBool()) {
                          newObject = new SonicTank(Owner);
                     } else {
@@ -588,6 +589,7 @@ ObjectBase* ObjectBase::createObject(int itemID, House* Owner, bool byScenario) 
         default:                            newObject = nullptr;
                                             SDL_Log("ObjectBase::createObject(): %d is no valid ItemID!",itemID);
                                             break;
+                                            // clang-format on
     }
 
     if(newObject == nullptr) {
@@ -660,5 +662,5 @@ bool ObjectBase::targetInWeaponRange() const {
     Coord coord = (target.getObjPointer())->getClosestPoint(location);
     FixPoint dist = blockDistance(location,coord);
 
-    return ( dist <= currentGame->objectData.data[itemID][originalHouseID].weaponrange);
+    return ( dist <= currentGame->objectData.data[itemID][static_cast<int>(originalHouseID)].weaponrange);
 }

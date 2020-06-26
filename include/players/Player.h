@@ -127,7 +127,7 @@ protected:
     static const RobustList<const StructureBase*>& getStructureList();
     static const RobustList<const UnitBase*>& getUnitList();
 
-    static const House* getHouse(int houseID);
+    static const House* getHouse(HOUSETYPE houseID);
 
     /**
         Start repairing the structure pObject or sending the unit pObject to the rapair yard.

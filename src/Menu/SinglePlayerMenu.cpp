@@ -114,17 +114,17 @@ void SinglePlayerMenu::onCampaign() {
 
     GameInitSettings init((HOUSETYPE) player, settings.gameOptions);
 
-    for(int houseID = 0; houseID < NUM_HOUSES; houseID++) {
-        if(houseID == player) {
+    for_each_housetype([&](const auto houseID) {
+        if(houseID == static_cast<HOUSETYPE>(player)) {
             GameInitSettings::HouseInfo humanHouseInfo((HOUSETYPE) player, 1);
             humanHouseInfo.addPlayerInfo( GameInitSettings::PlayerInfo(settings.general.playerName, HUMANPLAYERCLASS) );
             init.addHouseInfo(humanHouseInfo);
         } else {
-            GameInitSettings::HouseInfo aiHouseInfo((HOUSETYPE) houseID, 2);
-            aiHouseInfo.addPlayerInfo( GameInitSettings::PlayerInfo(getHouseNameByNumber( (HOUSETYPE) houseID), settings.ai.campaignAI) );
+            GameInitSettings::HouseInfo aiHouseInfo(houseID, 2);
+            aiHouseInfo.addPlayerInfo( GameInitSettings::PlayerInfo(getHouseNameByNumber(houseID), settings.ai.campaignAI) );
             init.addHouseInfo(aiHouseInfo);
         }
-    }
+    });
 
     startSinglePlayerGame(init);
 

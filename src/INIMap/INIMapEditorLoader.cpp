@@ -52,7 +52,7 @@ void INIMapEditorLoader::loadMap() {
 
     if(version < 2) {
         // we have all houses fixed
-        for(MapEditor::Player& player : pMapEditor->getPlayers()) {
+        for(auto& player : pMapEditor->getPlayers()) {
             player.bAnyHouse = false;
         }
     }
@@ -276,11 +276,11 @@ void INIMapEditorLoader::loadMap() {
 */
 void INIMapEditorLoader::loadHouses()
 {
-    for(int houseID = 0; houseID < NUM_HOUSES; houseID++) {
+    for(int houseID = 0; houseID < static_cast<int>(HOUSETYPE::NUM_HOUSES); houseID++) {
         std::string houseName = getHouseNameByNumber((HOUSETYPE) houseID);
 
         if(inifile->hasSection(houseName)) {
-            MapEditor::Player& player = pMapEditor->getPlayers()[houseID];
+            auto& player = pMapEditor->getPlayers()[houseID];
 
             player.bActive = true;
             player.bAnyHouse = false;
@@ -295,11 +295,11 @@ void INIMapEditorLoader::loadHouses()
         }
     }
 
-    for(int i=1;i<=NUM_HOUSES;i++) {
+    for(int i=1;i<=static_cast<int>(HOUSETYPE::NUM_HOUSES);i++) {
         std::string sectionname = "player" + std::to_string(i);
         if(inifile->hasSection(sectionname)) {
-            for(int houseID = 0; houseID < NUM_HOUSES; houseID++) {
-                MapEditor::Player& player = pMapEditor->getPlayers()[houseID];
+            for(int houseID = 0; houseID < static_cast<int>(HOUSETYPE::NUM_HOUSES); houseID++) {
+                auto& player = pMapEditor->getPlayers()[houseID];
 
                 if(player.bActive == false) {
                     convertToLower(sectionname);
@@ -374,10 +374,10 @@ void INIMapEditorLoader::loadUnits()
             splitString(key.getStringValue(), HouseStr, UnitStr, health, PosStr, rotation, mode);
 
             HOUSETYPE houseID = getHouseID(HouseStr);
-            if(houseID == HOUSE_UNUSED) {
+            if(houseID == HOUSETYPE::HOUSE_UNUSED) {
                 // skip unit for unused house
                 continue;
-            } else if(houseID == HOUSE_INVALID) {
+            } else if(houseID == HOUSETYPE::HOUSE_INVALID) {
                 logWarning(key.getLineNumber(), "Invalid house string for '" + UnitStr + "': '" + HouseStr + "'!");
                 continue;
             }
@@ -388,13 +388,14 @@ void INIMapEditorLoader::loadUnits()
                 continue;
             }
 
-            int angle;
-            if(!parseString(rotation, angle) || (angle < 0) || (angle > 255)) {
+            int int_angle;
+            if(!parseString(rotation, int_angle) || (int_angle < 0) || (int_angle > 255)) {
                 logWarning(key.getLineNumber(), "Invalid rotation string: '" + rotation + "'!");
-                angle = 64;
+                int_angle = 64;
             }
-            angle = (angle+16)/32;
-            angle = ((NUM_ANGLES - angle) + 2) % NUM_ANGLES;
+            int_angle = (int_angle+16)/32;
+            int_angle = static_cast<int>(ANGLETYPE::NUM_ANGLES) - int_angle + 2;
+            auto angle = normalizeAngle(static_cast<ANGLETYPE>(int_angle));
 
 
             int itemID = getItemIDByName(UnitStr);
@@ -416,18 +417,18 @@ void INIMapEditorLoader::loadUnits()
             }
 
             if(itemID == Unit_Soldier || itemID == Unit_Saboteur || itemID == Unit_Trooper || itemID == Unit_Infantry || itemID == Unit_Troopers) {
-                if(angle == UP) {
-                    angle = UP;
-                } else if (angle == DOWN) {
-                    angle = DOWN;
-                } else if (angle == LEFTUP || angle == LEFTDOWN || angle == LEFT) {
-                    angle = LEFT;
-                } else /*(angle == RIGHT)*/ {
-                    angle = RIGHT;
+                if(angle == ANGLETYPE::UP) {
+                    angle = ANGLETYPE::UP;
+                } else if(angle == ANGLETYPE::DOWN) {
+                    angle = ANGLETYPE::DOWN;
+                } else if(angle == ANGLETYPE::LEFTUP || angle == ANGLETYPE::LEFTDOWN || angle == ANGLETYPE::LEFT) {
+                    angle = ANGLETYPE::LEFT;
+                } else /*(angle == ANGLETYPE::RIGHT)*/ {
+                    angle = ANGLETYPE::RIGHT;
                 }
             }
 
-            pMapEditor->units.emplace_back(unitID, houseID, itemID, iHealth, Coord(getXPos(pos),getYPos(pos)), (unsigned char) angle, attackmode);
+            pMapEditor->units.emplace_back(unitID, houseID, itemID, iHealth, Coord(getXPos(pos),getYPos(pos)), angle, attackmode);
 
         } else {
             logWarning(key.getLineNumber(), "Invalid unit key: '" + key.getKeyName() + "'!");
@@ -464,10 +465,10 @@ void INIMapEditorLoader::loadStructures()
             splitString(tmp, HouseStr, BuildingStr);
 
             HOUSETYPE houseID = getHouseID(HouseStr);
-            if(houseID == HOUSE_UNUSED) {
+            if(houseID == HOUSETYPE::HOUSE_UNUSED) {
                 // skip structure for unused house
                 continue;
-            } else if(houseID == HOUSE_INVALID) {
+            } else if(houseID == HOUSETYPE::HOUSE_INVALID) {
                 logWarning(key.getLineNumber(), "Invalid house string for '" + BuildingStr + "': '" + HouseStr + "'!");
                 continue;
             }
@@ -497,10 +498,10 @@ void INIMapEditorLoader::loadStructures()
             }
 
             HOUSETYPE houseID = getHouseID(HouseStr);
-            if(houseID == HOUSE_UNUSED) {
+            if(houseID == HOUSETYPE::HOUSE_UNUSED) {
                 // skip structure for unused house
                 continue;
-            } else if(houseID == HOUSE_INVALID) {
+            } else if(houseID == HOUSETYPE::HOUSE_INVALID) {
                 logWarning(key.getLineNumber(), "Invalid house string for '" + BuildingStr + "': '" + HouseStr + "'!");
                 continue;
             }
@@ -549,11 +550,11 @@ void INIMapEditorLoader::loadReinforcements()
             }
         }
 
-        int houseID = getHouseID(strHouseName);
-        if(houseID == HOUSE_UNUSED) {
+        const auto houseID = getHouseID(strHouseName);
+        if(houseID == HOUSETYPE::HOUSE_UNUSED) {
             // skip reinforcement for unused house
             continue;
-        } else if(houseID == HOUSE_INVALID) {
+        } else if(houseID == HOUSETYPE::HOUSE_INVALID) {
             logWarning(key.getLineNumber(), "Invalid house string: '" + strHouseName + "'!");
             continue;
         }
@@ -564,10 +565,10 @@ void INIMapEditorLoader::loadReinforcements()
             continue;
         }
 
-        DropLocation dropLocation = getDropLocationByName(strDropLocation);
-        if(dropLocation == Drop_Invalid) {
+        auto dropLocation = getDropLocationByName(strDropLocation);
+        if(dropLocation == DropLocation::Drop_Invalid) {
             logWarning(key.getLineNumber(), "Invalid drop location string: '" + strDropLocation + "'!");
-            dropLocation = Drop_Homebase;
+            dropLocation = DropLocation::Drop_Homebase;
         }
 
         Uint32 droptime;
@@ -603,25 +604,25 @@ void INIMapEditorLoader::loadAITeams()
             continue;
         }
 
-        int houseID = getHouseID(strHouseName);
-        if(houseID == HOUSE_UNUSED) {
+        const auto houseID = getHouseID(strHouseName);
+        if(houseID == HOUSETYPE::HOUSE_UNUSED) {
             // skip reinforcement for unused house
             continue;
-        } else if(houseID == HOUSE_INVALID) {
+        } else if(houseID == HOUSETYPE::HOUSE_INVALID) {
             logWarning(key.getLineNumber(), "Invalid house string: '" + strHouseName + "'!");
             continue;
         }
 
         AITeamBehavior aiTeamBehavior = getAITeamBehaviorByName(strAITeamBehavior);
-        if(aiTeamBehavior == AITeamBehavior_Invalid) {
+        if(aiTeamBehavior == AITeamBehavior::AITeamBehavior_Invalid) {
             logWarning(key.getLineNumber(), "Invalid team behavior string: '" + strAITeamBehavior + "'!");
-            aiTeamBehavior = AITeamBehavior_Normal;
+            aiTeamBehavior = AITeamBehavior::AITeamBehavior_Normal;
         }
 
         AITeamType aiTeamType = getAITeamTypeByName(strAITeamType);
-        if(aiTeamType == AITeamType_Invalid) {
+        if(aiTeamType == AITeamType::AITeamType_Invalid) {
             logWarning(key.getLineNumber(), "Invalid team type string: '" + strAITeamType + "'!");
-            aiTeamType = AITeamType_Foot;
+            aiTeamType = AITeamType::AITeamType_Foot;
         }
 
         int minUnits;

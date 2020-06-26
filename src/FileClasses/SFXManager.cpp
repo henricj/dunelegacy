@@ -53,7 +53,7 @@ SFXManager::SFXManager() {
 
 SFXManager::~SFXManager() = default;
 
-Mix_Chunk* SFXManager::getVoice(Voice_enum id, int house) {
+Mix_Chunk* SFXManager::getVoice(Voice_enum id, HOUSETYPE house) {
     if(settings.general.language == "de" || settings.general.language == "fr") {
         return getNonEnglishVoice(id,house);
     } else {
@@ -80,36 +80,36 @@ sdl2::mix_chunk_ptr SFXManager::loadMixFromADL(const std::string& adlFile, int i
 
 void SFXManager::loadEnglishVoice() {
     lngVoice.clear();
-    lngVoice.resize(NUM_VOICE*NUM_HOUSES);
+    lngVoice.resize(NUM_VOICE*static_cast<int>(HOUSETYPE::NUM_HOUSES));
 
     // now we can load
-    for(auto house = 0; house < NUM_HOUSES; house++) {
+    for(auto house = 0; house < static_cast<int>(HOUSETYPE::NUM_HOUSES); house++) {
         sdl2::mix_chunk_ptr HouseNameChunk;
 
         std::string HouseString;
         const int VoiceNum = house;
-        switch(house) {
-            case HOUSE_HARKONNEN:
+        switch(static_cast<HOUSETYPE>(house)) {
+            case HOUSETYPE::HOUSE_HARKONNEN:
                 HouseString = "H";
                 HouseNameChunk = getChunkFromFile(HouseString + "HARK.VOC");
                 break;
-            case HOUSE_ATREIDES:
+            case HOUSETYPE::HOUSE_ATREIDES:
                 HouseString = "A";
                 HouseNameChunk = getChunkFromFile(HouseString + "ATRE.VOC");
                 break;
-            case HOUSE_ORDOS:
+            case HOUSETYPE::HOUSE_ORDOS:
                 HouseString = "O";
                 HouseNameChunk = getChunkFromFile(HouseString + "ORDOS.VOC");
                 break;
-            case HOUSE_FREMEN:
+            case HOUSETYPE::HOUSE_FREMEN:
                 HouseString = "A";
                 HouseNameChunk = getChunkFromFile(HouseString + "FREMEN.VOC");
                 break;
-            case HOUSE_SARDAUKAR:
+            case HOUSETYPE::HOUSE_SARDAUKAR:
                 HouseString = "H";
                 HouseNameChunk = getChunkFromFile(HouseString + "SARD.VOC");
                 break;
-            case HOUSE_MERCENARY:
+            case HOUSETYPE::HOUSE_MERCENARY:
                 HouseString = "O";
                 HouseNameChunk = getChunkFromFile(HouseString + "MERC.VOC");
                 break;
@@ -123,100 +123,122 @@ void SFXManager::loadEnglishVoice() {
             auto Unit = getChunkFromFile(HouseString + "UNIT.VOC");
             auto Deployed = getChunkFromFile(HouseString + "DEPLOY.VOC");
             auto Launched = getChunkFromFile(HouseString + "LAUNCH.VOC");
-            lngVoice[HarvesterDeployed*NUM_HOUSES + VoiceNum] = concat3Chunks(HouseNameChunk.get(), Harvester.get(), Deployed.get());
-            lngVoice[UnitDeployed*NUM_HOUSES + VoiceNum] = concat3Chunks(HouseNameChunk.get(), Unit.get(), Deployed.get());
-            lngVoice[UnitLaunched*NUM_HOUSES + VoiceNum] = concat3Chunks(HouseNameChunk.get(), Unit.get(), Launched.get());
+            lngVoice[HarvesterDeployed * static_cast<int>(HOUSETYPE::NUM_HOUSES) + VoiceNum] =
+                concat3Chunks(HouseNameChunk.get(), Harvester.get(), Deployed.get());
+            lngVoice[UnitDeployed * static_cast<int>(HOUSETYPE::NUM_HOUSES) + VoiceNum] =
+                concat3Chunks(HouseNameChunk.get(), Unit.get(), Deployed.get());
+            lngVoice[UnitLaunched * static_cast<int>(HOUSETYPE::NUM_HOUSES) + VoiceNum] =
+                concat3Chunks(HouseNameChunk.get(), Unit.get(), Launched.get());
         }
 
         // "Contruction complete"
-        lngVoice[ConstructionComplete*NUM_HOUSES+VoiceNum] = getChunkFromFile(HouseString + "CONST.VOC");
+        lngVoice[ConstructionComplete * static_cast<int>(HOUSETYPE::NUM_HOUSES) + VoiceNum] =
+            getChunkFromFile(HouseString + "CONST.VOC");
 
         { // Scope
           // "Vehicle repaired"
             auto Vehicle = getChunkFromFile(HouseString + "VEHICLE.VOC");
             auto Repaired = getChunkFromFile(HouseString + "REPAIR.VOC");
-            lngVoice[VehicleRepaired*NUM_HOUSES + VoiceNum] = concat2Chunks(Vehicle.get(), Repaired.get());
+            lngVoice[VehicleRepaired * static_cast<int>(HOUSETYPE::NUM_HOUSES) + VoiceNum] =
+                concat2Chunks(Vehicle.get(), Repaired.get());
         }
 
         { // Scope
           // "Frigate has arrived"
             auto FrigateChunk = getChunkFromFile(HouseString + "FRIGATE.VOC");
             auto HasArrivedChunk = getChunkFromFile(HouseString + "ARRIVE.VOC");
-            lngVoice[FrigateHasArrived*NUM_HOUSES + VoiceNum] = concat2Chunks(FrigateChunk.get(), HasArrivedChunk.get());
+            lngVoice[FrigateHasArrived * static_cast<int>(HOUSETYPE::NUM_HOUSES) + VoiceNum] =
+                concat2Chunks(FrigateChunk.get(), HasArrivedChunk.get());
         }
 
         // "Your mission is complete"
-        lngVoice[YourMissionIsComplete*NUM_HOUSES+VoiceNum] = getChunkFromFile(HouseString + "WIN.VOC");
+        lngVoice[YourMissionIsComplete * static_cast<int>(HOUSETYPE::NUM_HOUSES) + VoiceNum] =
+            getChunkFromFile(HouseString + "WIN.VOC");
 
         // "You have failed your mission"
-        lngVoice[YouHaveFailedYourMission*NUM_HOUSES+VoiceNum] = getChunkFromFile(HouseString + "LOSE.VOC");
+        lngVoice[YouHaveFailedYourMission * static_cast<int>(HOUSETYPE::NUM_HOUSES) + VoiceNum] =
+            getChunkFromFile(HouseString + "LOSE.VOC");
 
         { // Scope
           // "Radar activated"/"Radar deactivated"
             auto RadarChunk = getChunkFromFile(HouseString + "RADAR.VOC");
             auto RadarActivatedChunk = getChunkFromFile(HouseString + "ON.VOC");
             auto RadarDeactivatedChunk = getChunkFromFile(HouseString + "OFF.VOC");
-            lngVoice[RadarActivated*NUM_HOUSES + VoiceNum] = concat2Chunks(RadarChunk.get(), RadarActivatedChunk.get());
-            lngVoice[RadarDeactivated*NUM_HOUSES + VoiceNum] = concat2Chunks(RadarChunk.get(), RadarDeactivatedChunk.get());
+            lngVoice[RadarActivated * static_cast<int>(HOUSETYPE::NUM_HOUSES) + VoiceNum] =
+                concat2Chunks(RadarChunk.get(), RadarActivatedChunk.get());
+            lngVoice[RadarDeactivated * static_cast<int>(HOUSETYPE::NUM_HOUSES) + VoiceNum] =
+                concat2Chunks(RadarChunk.get(), RadarDeactivatedChunk.get());
         }
 
         { // Scope
           // "Bloom located"
             auto Bloom = getChunkFromFile(HouseString + "BLOOM.VOC");
             auto Located = getChunkFromFile(HouseString + "LOCATED.VOC");
-            lngVoice[BloomLocated*NUM_HOUSES + VoiceNum] = concat2Chunks(Bloom.get(), Located.get());
+            lngVoice[BloomLocated * static_cast<int>(HOUSETYPE::NUM_HOUSES) + VoiceNum] =
+                concat2Chunks(Bloom.get(), Located.get());
         }
 
         { // Scope
           // "Warning Wormsign"
             auto WarningChunk = getChunkFromFile(HouseString + "WARNING.VOC");
             auto WormSignChunk = getChunkFromFile(HouseString + "WORMY.VOC");
-            lngVoice[WarningWormSign*NUM_HOUSES + VoiceNum] = concat2Chunks(WarningChunk.get(), WormSignChunk.get());
+            lngVoice[WarningWormSign * static_cast<int>(HOUSETYPE::NUM_HOUSES) + VoiceNum] =
+                concat2Chunks(WarningChunk.get(), WormSignChunk.get());
         }
 
         // "Our base is under attack"
-        lngVoice[BaseIsUnderAttack*NUM_HOUSES+VoiceNum] = getChunkFromFile(HouseString + "ATTACK.VOC");
+        lngVoice[BaseIsUnderAttack * static_cast<int>(HOUSETYPE::NUM_HOUSES) + VoiceNum] =
+            getChunkFromFile(HouseString + "ATTACK.VOC");
 
         { // Scope
           // "Saboteur approaching" and "Missile approaching"
             auto SabotChunk = getChunkFromFile(HouseString + "SABOT.VOC");
             auto MissileChunk = getChunkFromFile(HouseString + "MISSILE.VOC");
             auto ApproachingChunk = getChunkFromFile(HouseString + "APPRCH.VOC");
-            lngVoice[SaboteurApproaching*NUM_HOUSES + VoiceNum] = concat2Chunks(SabotChunk.get(), ApproachingChunk.get());
-            lngVoice[MissileApproaching*NUM_HOUSES + VoiceNum] = concat2Chunks(MissileChunk.get(), ApproachingChunk.get());
+            lngVoice[SaboteurApproaching * static_cast<int>(HOUSETYPE::NUM_HOUSES) + VoiceNum] =
+                concat2Chunks(SabotChunk.get(), ApproachingChunk.get());
+            lngVoice[MissileApproaching * static_cast<int>(HOUSETYPE::NUM_HOUSES) + VoiceNum] =
+                concat2Chunks(MissileChunk.get(), ApproachingChunk.get());
         }
 
         HouseNameChunk.reset();
 
         // "Yes Sir"
-        lngVoice[YesSir*NUM_HOUSES+VoiceNum] = getChunkFromFile("ZREPORT1.VOC", "REPORT1.VOC");
+        lngVoice[YesSir * static_cast<int>(HOUSETYPE::NUM_HOUSES) + VoiceNum] =
+            getChunkFromFile("ZREPORT1.VOC", "REPORT1.VOC");
 
         // "Reporting"
-        lngVoice[Reporting*NUM_HOUSES+VoiceNum] = getChunkFromFile("ZREPORT2.VOC", "REPORT2.VOC");
+        lngVoice[Reporting * static_cast<int>(HOUSETYPE::NUM_HOUSES) + VoiceNum] =
+            getChunkFromFile("ZREPORT2.VOC", "REPORT2.VOC");
 
         // "Acknowledged"
-        lngVoice[Acknowledged*NUM_HOUSES+VoiceNum] = getChunkFromFile("ZREPORT3.VOC", "REPORT3.VOC");
+        lngVoice[Acknowledged * static_cast<int>(HOUSETYPE::NUM_HOUSES) + VoiceNum] =
+            getChunkFromFile("ZREPORT3.VOC", "REPORT3.VOC");
 
         // "Affirmative"
-        lngVoice[Affirmative*NUM_HOUSES+VoiceNum] = getChunkFromFile("ZAFFIRM.VOC", "AFFIRM.VOC");
+        lngVoice[Affirmative * static_cast<int>(HOUSETYPE::NUM_HOUSES) + VoiceNum] =
+            getChunkFromFile("ZAFFIRM.VOC", "AFFIRM.VOC");
 
         // "Moving out"
-        lngVoice[MovingOut*NUM_HOUSES+VoiceNum] = getChunkFromFile("ZMOVEOUT.VOC", "MOVEOUT.VOC");
+        lngVoice[MovingOut * static_cast<int>(HOUSETYPE::NUM_HOUSES) + VoiceNum] =
+            getChunkFromFile("ZMOVEOUT.VOC", "MOVEOUT.VOC");
 
         // "Infantry out"
-        lngVoice[InfantryOut*NUM_HOUSES+VoiceNum] = getChunkFromFile("ZOVEROUT.VOC", "OVEROUT.VOC");
+        lngVoice[InfantryOut * static_cast<int>(HOUSETYPE::NUM_HOUSES) + VoiceNum] =
+            getChunkFromFile("ZOVEROUT.VOC", "OVEROUT.VOC");
 
         // "Somthing's under the sand"
-        lngVoice[SomethingUnderTheSand*NUM_HOUSES+VoiceNum] = getChunkFromFile("SANDBUG.VOC");
+        lngVoice[SomethingUnderTheSand * static_cast<int>(HOUSETYPE::NUM_HOUSES) + VoiceNum] =
+            getChunkFromFile("SANDBUG.VOC");
 
         // "House Harkonnen"
-        lngVoice[HouseHarkonnen*NUM_HOUSES+VoiceNum] = getChunkFromFile("MHARK.VOC");
+        lngVoice[HouseHarkonnen * static_cast<int>(HOUSETYPE::NUM_HOUSES) + VoiceNum] = getChunkFromFile("MHARK.VOC");
 
         // "House Atreides"
-        lngVoice[HouseAtreides*NUM_HOUSES+VoiceNum] = getChunkFromFile("MATRE.VOC");
+        lngVoice[HouseAtreides * static_cast<int>(HOUSETYPE::NUM_HOUSES) + VoiceNum] = getChunkFromFile("MATRE.VOC");
 
         // "House Ordos"
-        lngVoice[HouseOrdos*NUM_HOUSES+VoiceNum] = getChunkFromFile("MORDOS.VOC");
+        lngVoice[HouseOrdos * static_cast<int>(HOUSETYPE::NUM_HOUSES) + VoiceNum] = getChunkFromFile("MORDOS.VOC");
     }
 
     const auto bad_voice = std::find(lngVoice.cbegin(), lngVoice.cend(), nullptr);
@@ -256,11 +278,11 @@ void SFXManager::loadEnglishVoice() {
 }
 
 
-Mix_Chunk* SFXManager::getEnglishVoice(Voice_enum id, int house) const {
+Mix_Chunk* SFXManager::getEnglishVoice(Voice_enum id, HOUSETYPE house) const {
     if(static_cast<size_t>(id) >= lngVoice.size())
         return nullptr;
 
-    return lngVoice[id*NUM_HOUSES + house].get();
+    return lngVoice[id * static_cast<int>(HOUSETYPE::NUM_HOUSES) + static_cast<int>(house)].get();
 }
 
 void SFXManager::loadNonEnglishVoice(const std::string& languagePrefix) {
@@ -382,7 +404,7 @@ void SFXManager::loadNonEnglishVoice(const std::string& languagePrefix) {
     soundChunk[Sound_RocketSmall] = getChunkFromFile("MISLTINP.VOC");
 }
 
-Mix_Chunk* SFXManager::getNonEnglishVoice(Voice_enum id, int house) const {
+Mix_Chunk* SFXManager::getNonEnglishVoice(Voice_enum id, HOUSETYPE house) const {
     if(static_cast<size_t>(id) >= lngVoice.size())
         return nullptr;
 

@@ -169,7 +169,7 @@ public:
     */
     bool isInWeaponRange(const ObjectBase* object) const;
 
-    void setAngle(int newAngle);
+    void setAngle(ANGLETYPE newAngle);
 
     void setTarget(const ObjectBase* newTarget) override;
 
@@ -216,7 +216,7 @@ public:
     */
     virtual FixPoint getTerrainDifficulty(TERRAINTYPE terrainType) const { return 1; }
 
-    virtual int getCurrentAttackAngle() const;
+    virtual ANGLETYPE getCurrentAttackAngle() const;
 
     virtual FixPoint getMaxSpeed() const;
 
@@ -224,7 +224,7 @@ public:
         pathList.clear();
         nextSpotFound = false;
         recalculatePathTimer = 0;
-        nextSpotAngle = INVALID;
+        nextSpotAngle = ANGLETYPE::INVALID_ANGLE;;
         noCloserPointCount = 0;
     }
 
@@ -236,7 +236,7 @@ public:
 
      bool wasDeviated() const noexcept { return (owner->getHouseID() != originalHouseID); }
 
-     int getAngle() const noexcept { return drawnAngle; }
+     ANGLETYPE getAngle() const noexcept { return drawnAngle; }
 
      ATTACKMODE getAttackMode() const noexcept { return attackMode; }
 
@@ -300,15 +300,15 @@ protected:
     FixPoint bumpyOffsetY;           ///< The bumpy offset in y direction which is already included in realY
 
     FixPoint targetDistance;         ///< Distance to the destination
-    Sint8    targetAngle;            ///< Angle to the destination
+    ANGLETYPE targetAngle;           ///< Angle to the destination
 
     // path finding
     Uint8    noCloserPointCount;     ///< How often have we tried to dinf a path?
     bool     nextSpotFound;          ///< Is the next spot to move to already found?
-    Sint8    nextSpotAngle;          ///< The angle to get to the next spot
+    ANGLETYPE nextSpotAngle;         ///< The angle to get to the next spot
     Sint32   recalculatePathTimer;   ///< This timer is for recalculating the best path after x ticks
     Coord    nextSpot;               ///< The next spot to move to
-    std::vector<Coord> pathList;      ///< The path to the destination found so far
+    std::vector<Coord> pathList;     ///< The path to the destination found so far
 
     Sint32  findTargetTimer;         ///< When to look for the next target?
     Sint32  primaryWeaponTimer;      ///< When can the primary weapon shot again?

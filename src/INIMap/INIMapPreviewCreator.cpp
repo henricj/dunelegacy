@@ -329,10 +329,10 @@ sdl2::surface_ptr INIMapPreviewCreator::createMinimapImageOfMap(int borderWidth,
                 std::string HouseStr, BuildingStr;
                 splitString(tmp, HouseStr, BuildingStr);
 
-                int house = getHouseByName(HouseStr);
+                const auto house = getHouseByName(HouseStr);
                 Uint32 color = COLOR_WHITE;
-                if(house != HOUSE_INVALID) {
-                    color = SDL2RGB(palette[houseToPaletteIndex[house]]);
+                if(house != HOUSETYPE::HOUSE_INVALID) {
+                    color = SDL2RGB(palette[houseToPaletteIndex[static_cast<int>(house)]]);
                 } else {
                     convertToLower(HouseStr);
                     if(HouseStr.length() == 7 && HouseStr.substr(0,6) == "player") {
@@ -371,10 +371,10 @@ sdl2::surface_ptr INIMapPreviewCreator::createMinimapImageOfMap(int borderWidth,
                     continue;
                 }
 
-                int house = getHouseByName(HouseStr);
+                const auto house = getHouseByName(HouseStr);
                 Uint32 color = COLOR_WHITE;
-                if(house != HOUSE_INVALID) {
-                    color = SDL2RGB(palette[houseToPaletteIndex[house]]);
+                if(house != HOUSETYPE::HOUSE_INVALID) {
+                    color = SDL2RGB(palette[houseToPaletteIndex[static_cast<int>(house)]]);
                 } else {
                     convertToLower(HouseStr);
                     if(HouseStr.length() == 7 && HouseStr.substr(0,6) == "player") {

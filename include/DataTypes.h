@@ -123,7 +123,7 @@ public:
     int y;
 };
 
-typedef enum {
+typedef enum : Sint8 {
     ATTACKMODE_INVALID = -1,
     GUARD = 0,      ///< The unit will attack enemy units but will not move or follow enemy units.
     AREAGUARD = 1,  ///< Area Guard is the most common command for pre-placed AI units. They will scan for targets in a relatively large radius, and return to their original position after their target was either destroyed or left the immediate area.
@@ -245,7 +245,7 @@ public:
     } gameOptions;
 };
 
-typedef enum
+enum class HOUSETYPE : Sint8
 {
     HOUSE_UNUSED    = -2,
     HOUSE_INVALID   = -1,
@@ -256,9 +256,15 @@ typedef enum
     HOUSE_SARDAUKAR =  4,
     HOUSE_MERCENARY =  5,
     NUM_HOUSES
-} HOUSETYPE;
+};
 
-typedef enum {
+template<typename F>
+inline void for_each_housetype(F&& f) {
+    for(auto i = 0; i < static_cast<int>(HOUSETYPE::NUM_HOUSES); ++i)
+        f(static_cast<HOUSETYPE>(i));
+}
+
+enum class ANGLETYPE : Sint8 {
     RIGHT,
     RIGHTUP,
     UP,
@@ -267,10 +273,11 @@ typedef enum {
     LEFTDOWN,
     DOWN,
     RIGHTDOWN,
-    NUM_ANGLES
-} ANGLETYPE;
+    NUM_ANGLES,
+    INVALID_ANGLE = INVALID
+};
 
-typedef enum  {
+enum class DropLocation : Sint8 {
     Drop_Invalid = -1,
     Drop_North,         ///< unit will appear at a random position at the top of the map
     Drop_East,          ///< unit will appear at a random position on the right side of the map
@@ -280,18 +287,18 @@ typedef enum  {
     Drop_Visible,       ///< unit will be dropped at a random position in the middle of the map
     Drop_Enemybase,     ///< unit will be dropped near the enemy base
     Drop_Homebase       ///< unit will be dropped near the base of the owner of the new unit
-} DropLocation;
+};
 
-typedef enum {
+enum class AITeamBehavior {
     AITeamBehavior_Invalid = -1,
     AITeamBehavior_Normal,            ///< Attack units and/or structures when building up the team is complete
     AITeamBehavior_Guard,             ///< Same as AITeamBehavior_Normal
     AITeamBehavior_Kamikaze,          ///< Directly attack structures when building up the team is complete
     AITeamBehavior_Staging,           ///< A team in the process of being built up
     AITeamBehavior_Flee               ///< Do nothing (Unimplemented in Dune II?)
-} AITeamBehavior;
+};
 
-typedef enum {
+enum class AITeamType {
     AITeamType_Invalid = -1,
     AITeamType_Foot,
     AITeamType_Wheeled,
@@ -299,7 +306,7 @@ typedef enum {
     AITeamType_Winged,
     AITeamType_Slither,
     AITeamType_Harvester
-} AITeamType;
+};
 
 
 namespace Dune {

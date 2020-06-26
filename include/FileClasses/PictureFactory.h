@@ -41,7 +41,7 @@ public:
     void drawFrame(SDL_Surface* Pic, unsigned int DecorationType, SDL_Rect* dest=nullptr) const;
     sdl2::surface_ptr createBackground() const;
     sdl2::surface_ptr createMainBackground() const;
-    sdl2::surface_ptr createGameStatsBackground(int House) const;
+    sdl2::surface_ptr createGameStatsBackground(HOUSETYPE House) const;
     sdl2::surface_ptr createFrame(unsigned int DecorationType,int width, int height,bool UseBackground) const;
     sdl2::surface_ptr createMenu(int x,int y) const;
     sdl2::surface_ptr createMenu(SDL_Surface* CaptionPic,int y) const;
@@ -49,8 +49,8 @@ public:
     sdl2::surface_ptr createMessageBoxBorder() const;
     sdl2::surface_ptr createHouseSelect(SDL_Surface* HouseChoice) const;
     sdl2::surface_ptr createGreyHouseChoice(SDL_Surface* HouseChoice) const;
-    sdl2::surface_ptr createMapChoiceScreen(int House) const;
-    sdl2::surface_ptr createMentatHouseChoiceQuestion(int House, Palette& benePalette) const;
+    sdl2::surface_ptr createMapChoiceScreen(HOUSETYPE House) const;
+    sdl2::surface_ptr createMentatHouseChoiceQuestion(HOUSETYPE House, Palette& benePalette) const;
     sdl2::surface_ptr createBuilderListUpperCap() const;
     sdl2::surface_ptr createBuilderListLowerCap() const;
 

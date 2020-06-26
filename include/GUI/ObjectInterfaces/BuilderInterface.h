@@ -43,7 +43,7 @@ public:
 
 protected:
     explicit BuilderInterface(int objectID) : DefaultStructureInterface(objectID) {
-        const auto color = SDL2RGB(palette[houseToPaletteIndex[pLocalHouse->getHouseID()]+3]);
+        const auto color = SDL2RGB(palette[houseToPaletteIndex[static_cast<int>(pLocalHouse->getHouseID())]+3]);
 
         upgradeButton.setText(_("Upgrade"));
         upgradeButton.setTextColor(color);

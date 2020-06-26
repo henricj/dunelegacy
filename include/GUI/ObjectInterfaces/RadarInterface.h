@@ -40,7 +40,7 @@ public:
 
 protected:
     explicit RadarInterface(int objectID) : DefaultStructureInterface(objectID) {
-        Uint32 color = SDL2RGB(palette[houseToPaletteIndex[pLocalHouse->getHouseID()]+3]);
+        Uint32 color = SDL2RGB(palette[houseToPaletteIndex[static_cast<int>(pLocalHouse->getHouseID())]+3]);
 
         mainHBox.addWidget(&textVBox);
 

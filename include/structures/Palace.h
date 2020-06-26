@@ -62,7 +62,7 @@ public:
     inline bool isSpecialWeaponReady() const { return (specialWeaponTimer == 0); }
     inline int getSpecialWeaponTimer() const { return specialWeaponTimer; }
     inline int getMaxSpecialWeaponTimer() const {
-        if(originalHouseID == HOUSE_HARKONNEN || originalHouseID == HOUSE_SARDAUKAR) {
+        if(originalHouseID == HOUSETYPE::HOUSE_HARKONNEN || originalHouseID == HOUSETYPE::HOUSE_SARDAUKAR) {
             // 10 min
             return MILLI2CYCLES(10*60*1000);
         } else {

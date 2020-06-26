@@ -81,7 +81,7 @@ void WindTrap::setHealth(FixPoint newHealth) {
 }
 
 int WindTrap::getProducedPower() const {
-    int windTrapProducedPower = abs(currentGame->objectData.data[Structure_WindTrap][originalHouseID].power);
+    int windTrapProducedPower = abs(currentGame->objectData.data[Structure_WindTrap][static_cast<int>(originalHouseID)].power);
 
     FixPoint ratio = getHealth() / getMaxHealth();
     return lround(ratio * windTrapProducedPower);

@@ -35,7 +35,7 @@
 ReinforcementsWindow::ReinforcementsWindow(MapEditor* pMapEditor, HOUSETYPE currentHouse)
  : Window(0,0,0,0), pMapEditor(pMapEditor), house(currentHouse), reinforcements(pMapEditor->getReinforcements()) {
 
-    color = SDL2RGB(palette[houseToPaletteIndex[house]+3]);
+    color = SDL2RGB(palette[houseToPaletteIndex[static_cast<int>(house)] + 3]);
 
     // set up window
     SDL_Texture *pBackground = pGFXManager->getUIGraphic(UI_NewMapWindow);
@@ -113,10 +113,10 @@ ReinforcementsWindow::ReinforcementsWindow(MapEditor* pMapEditor, HOUSETYPE curr
     playerDropDownBox.setOnSelectionChange(std::bind(&ReinforcementsWindow::onEntryChange, this, std::placeholders::_1));
 
     int currentPlayerNum = 1;
-    for(const MapEditor::Player& player : pMapEditor->getPlayers()) {
+    for(const auto& player : pMapEditor->getPlayers()) {
         std::string entryName = player.bActive ? (player.bAnyHouse ? fmt::sprintf(_("Player %d"), currentPlayerNum++)
                                                     : player.name) : ("(" + player.name + ")");
-        playerDropDownBox.addEntry(entryName, player.house);
+        playerDropDownBox.addEntry(entryName, static_cast<int>(player.house));
     }
     playerDropDownBox.setSelectedItem(0);
     hBox2.addWidget(&playerDropDownBox, 120);
@@ -144,14 +144,14 @@ ReinforcementsWindow::ReinforcementsWindow(MapEditor* pMapEditor, HOUSETYPE curr
     hBox3.addWidget(&dropLocationLabel, 120);
     dropLocationDropDownBox.setColor(color);
     dropLocationDropDownBox.setOnSelectionChange(std::bind(&ReinforcementsWindow::onEntryChange, this, std::placeholders::_1));
-    dropLocationDropDownBox.addEntry(resolveDropLocationName(Drop_North), Drop_North);
-    dropLocationDropDownBox.addEntry(resolveDropLocationName(Drop_East), Drop_East);
-    dropLocationDropDownBox.addEntry(resolveDropLocationName(Drop_South), Drop_South);
-    dropLocationDropDownBox.addEntry(resolveDropLocationName(Drop_West), Drop_West);
-    dropLocationDropDownBox.addEntry(resolveDropLocationName(Drop_Air), Drop_Air);
-    dropLocationDropDownBox.addEntry(resolveDropLocationName(Drop_Visible), Drop_Visible);
-    dropLocationDropDownBox.addEntry(resolveDropLocationName(Drop_Enemybase), Drop_Enemybase);
-    dropLocationDropDownBox.addEntry(resolveDropLocationName(Drop_Homebase), Drop_Homebase);
+    dropLocationDropDownBox.addEntry(resolveDropLocationName(DropLocation::Drop_North), static_cast<int>(DropLocation::Drop_North));
+    dropLocationDropDownBox.addEntry(resolveDropLocationName(DropLocation::Drop_East), static_cast<int>(DropLocation::Drop_East));
+    dropLocationDropDownBox.addEntry(resolveDropLocationName(DropLocation::Drop_South), static_cast<int>(DropLocation::Drop_South));
+    dropLocationDropDownBox.addEntry(resolveDropLocationName(DropLocation::Drop_West), static_cast<int>(DropLocation::Drop_West));
+    dropLocationDropDownBox.addEntry(resolveDropLocationName(DropLocation::Drop_Air), static_cast<int>(DropLocation::Drop_Air));
+    dropLocationDropDownBox.addEntry(resolveDropLocationName(DropLocation::Drop_Visible), static_cast<int>(DropLocation::Drop_Visible));
+    dropLocationDropDownBox.addEntry(resolveDropLocationName(DropLocation::Drop_Enemybase), static_cast<int>(DropLocation::Drop_Enemybase));
+    dropLocationDropDownBox.addEntry(resolveDropLocationName(DropLocation::Drop_Homebase), static_cast<int>(DropLocation::Drop_Homebase));
     dropLocationDropDownBox.setSelectedItem(7);
     hBox3.addWidget(&dropLocationDropDownBox, 120);
     hBox3.addWidget(HSpacer::create(15));
@@ -263,7 +263,7 @@ void ReinforcementsWindow::onAdd() {
 
     int index = reinforcementsListBox.getSelectedIndex();
 
-    ReinforcementInfo reinforcementInfo(playerDropDownBox.getSelectedEntryIntData(),
+    ReinforcementInfo reinforcementInfo(static_cast<HOUSETYPE>(playerDropDownBox.getSelectedEntryIntData()),
                                         unitDropDownBox.getSelectedEntryIntData(),
                                         (DropLocation) dropLocationDropDownBox.getSelectedEntryIntData(),
                                         timeTextBox.getValue(),
@@ -290,21 +290,21 @@ void ReinforcementsWindow::onSelectionChange(bool bInteractive) {
         ReinforcementInfo& reinforcementInfo = reinforcements.at(index);
 
         for(int i=0;i<playerDropDownBox.getNumEntries();i++) {
-            if(playerDropDownBox.getEntryIntData(i) == reinforcementInfo.houseID) {
+            if(playerDropDownBox.getEntryIntData(i) == static_cast<int>(reinforcementInfo.houseID)) {
                 playerDropDownBox.setSelectedItem(i);
                 break;
             }
         }
 
         for(int i=0;i<unitDropDownBox.getNumEntries();i++) {
-            if(unitDropDownBox.getEntryIntData(i) == reinforcementInfo.unitID) {
+            if(unitDropDownBox.getEntryIntData(i) == static_cast<int>(reinforcementInfo.unitID)) {
                 unitDropDownBox.setSelectedItem(i);
                 break;
             }
         }
 
         for(int i=0;i<dropLocationDropDownBox.getNumEntries();i++) {
-            if(dropLocationDropDownBox.getEntryIntData(i) == reinforcementInfo.dropLocation) {
+            if(dropLocationDropDownBox.getEntryIntData(i) == static_cast<int>(reinforcementInfo.dropLocation)) {
                 dropLocationDropDownBox.setSelectedItem(i);
                 break;
             }
@@ -322,7 +322,7 @@ void ReinforcementsWindow::onEntryChange(bool bInteractive) {
 
         if(index >= 0) {
             ReinforcementInfo& reinforcementInfo = reinforcements.at(index);
-            reinforcementInfo.houseID = playerDropDownBox.getSelectedEntryIntData();
+            reinforcementInfo.houseID = static_cast<HOUSETYPE>(playerDropDownBox.getSelectedEntryIntData());
             reinforcementInfo.unitID = unitDropDownBox.getSelectedEntryIntData();
             reinforcementInfo.dropLocation = (DropLocation) dropLocationDropDownBox.getSelectedEntryIntData();
             reinforcementInfo.droptime = timeTextBox.getValue();
@@ -343,7 +343,7 @@ std::string ReinforcementsWindow::getDescribingString(const ReinforcementInfo& r
 
 std::string ReinforcementsWindow::getPlayerName(HOUSETYPE house) {
     int currentPlayerNum = 1;
-    for(const MapEditor::Player& player : pMapEditor->getPlayers()) {
+    for(const auto& player : pMapEditor->getPlayers()) {
         if(player.house == house) {
             return player.bAnyHouse ? fmt::sprintf(_("Player %d"), currentPlayerNum)
                                           : (_("House") + " " + player.name);

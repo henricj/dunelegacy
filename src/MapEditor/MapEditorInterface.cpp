@@ -50,8 +50,8 @@
 
 MapEditorInterface::MapEditorInterface(MapEditor* pMapEditor)
  : Window(0,0,0,0), pMapEditor(pMapEditor), radarView(pMapEditor) {
-    house = HOUSE_HARKONNEN;
-    color = SDL2RGB(palette[houseToPaletteIndex[house] + 3]);
+    house = HOUSETYPE::HOUSE_HARKONNEN;
+    color = SDL2RGB(palette[houseToPaletteIndex[static_cast<int>(house)] + 3]);
 
     currentTerrainType = -1;
     currentTerrainPenSize = -1;
@@ -67,17 +67,17 @@ MapEditorInterface::MapEditorInterface(MapEditor* pMapEditor)
     setWindowWidget(&windowWidget);
 
     // top bar
-    SDL_Texture* pTopBarTexture = pGFXManager->getUIGraphic(UI_TopBar, HOUSE_HARKONNEN);
+    SDL_Texture* pTopBarTexture = pGFXManager->getUIGraphic(UI_TopBar, HOUSETYPE::HOUSE_HARKONNEN);
     topBar.setTexture(pTopBarTexture);
     windowWidget.addWidget(&topBar, calcAlignedDrawingRect(pTopBarTexture, HAlign::Left, VAlign::Top));
 
     // side bar
-    SDL_Texture* pSideBarTexture = pGFXManager->getUIGraphic(UI_MapEditor_SideBar, HOUSE_HARKONNEN);
+    SDL_Texture* pSideBarTexture = pGFXManager->getUIGraphic(UI_MapEditor_SideBar, HOUSETYPE::HOUSE_HARKONNEN);
     sideBar.setTexture(pSideBarTexture);
     windowWidget.addWidget(&sideBar, calcAlignedDrawingRect(pSideBarTexture, HAlign::Right, VAlign::Top));
 
     // bottom bar
-    SDL_Texture* pBottomBarTexture = pGFXManager->getUIGraphic(UI_MapEditor_BottomBar, HOUSE_HARKONNEN);
+    SDL_Texture* pBottomBarTexture = pGFXManager->getUIGraphic(UI_MapEditor_BottomBar, HOUSETYPE::HOUSE_HARKONNEN);
     bottomBar.setTexture(pBottomBarTexture);
     windowWidget.addWidget(&bottomBar, calcAlignedDrawingRect(pBottomBarTexture, HAlign::Left, VAlign::Bottom));
 
@@ -741,12 +741,12 @@ void MapEditorInterface::onHouseChanges() {
 
     int currentIndex = 0;
     int currentPlayerNum = 1;
-    for(const MapEditor::Player& player : pMapEditor->getPlayers()) {
+    for(const auto& player : pMapEditor->getPlayers()) {
         std::string entryName = player.bActive ? (player.bAnyHouse ? (_("Player") + " " + std::to_string(currentPlayerNum++)) : player.name) : ("(" + player.name + ")");
 
-        houseDropDownBox.addEntry(entryName, player.house);
+        houseDropDownBox.addEntry(entryName, static_cast<int>(player.house));
 
-        if(player.house == currentSelection) {
+        if(static_cast<int>(player.house) == currentSelection) {
             houseDropDownBox.setSelectedItem(currentIndex);
         }
         currentIndex++;
@@ -1102,7 +1102,7 @@ void MapEditorInterface::onUnitButton(int unitType) {
 
     if(unitType >= 0) {
         HOUSETYPE house = (HOUSETYPE) houseDropDownBox.getSelectedEntryIntData();
-        pMapEditor->setEditorMode(MapEditor::EditorMode(house, unitType, 256, 0, AREAGUARD));
+        pMapEditor->setEditorMode(MapEditor::EditorMode(house, unitType, 256, static_cast<ANGLETYPE>(0), AREAGUARD));
     }
 }
 
@@ -1165,16 +1165,15 @@ void MapEditorInterface::onUnitRotateLeft(int unitID) {
 
         MapEditor::Unit* pMirrorUnit = pMapEditor->getUnit(mirrorUnits[i]);
 
-        int currentAngle = pMirrorUnit->angle;
+        auto currentAngle = pMirrorUnit->angle;
         currentAngle = pMapEditor->getMapMirror()->getAngle(currentAngle, i);
         if(pMirrorUnit->itemID == Unit_Soldier || pMirrorUnit->itemID == Unit_Saboteur || pMirrorUnit->itemID == Unit_Trooper || pMirrorUnit->itemID == Unit_Infantry || pMirrorUnit->itemID == Unit_Troopers) {
-            currentAngle += 2;
+            currentAngle = static_cast<ANGLETYPE>(static_cast<int>(currentAngle) + 2);
         } else {
-            currentAngle++;
+            currentAngle = static_cast<ANGLETYPE>(static_cast<int>(currentAngle) + 1);
         }
-        if(currentAngle >= NUM_ANGLES) {
-            currentAngle = 0;
-        }
+
+        currentAngle = normalizeAngle(currentAngle);
         currentAngle = pMapEditor->getMapMirror()->getAngle(currentAngle, i);
 
         MapEditorEditUnitOperation editUnitOperation(pMirrorUnit->id, pMirrorUnit->health, currentAngle, pMirrorUnit->attackmode);
@@ -1204,16 +1203,14 @@ void MapEditorInterface::onUnitRotateRight(int unitID) {
 
         MapEditor::Unit* pMirrorUnit = pMapEditor->getUnit(mirrorUnits[i]);
 
-        int currentAngle = pMirrorUnit->angle;
+        auto currentAngle = pMirrorUnit->angle;
         currentAngle = pMapEditor->getMapMirror()->getAngle(currentAngle, i);
         if(pMirrorUnit->itemID == Unit_Soldier || pMirrorUnit->itemID == Unit_Saboteur || pMirrorUnit->itemID == Unit_Trooper || pMirrorUnit->itemID == Unit_Infantry || pMirrorUnit->itemID == Unit_Troopers) {
-            currentAngle -= 2;
+            currentAngle = static_cast<ANGLETYPE>(static_cast<int>(currentAngle) - 2);
         } else {
-            currentAngle--;
+            currentAngle = static_cast<ANGLETYPE>(static_cast<int>(currentAngle) - 1);
         }
-        if(currentAngle < 0) {
-            currentAngle = NUM_ANGLES-1;
-        }
+        currentAngle = normalizeAngle(currentAngle);
         currentAngle = pMapEditor->getMapMirror()->getAngle(currentAngle, i);
 
         MapEditorEditUnitOperation editUnitOperation(pMirrorUnit->id, pMirrorUnit->health, currentAngle, pMirrorUnit->attackmode);
@@ -1256,7 +1253,7 @@ void MapEditorInterface::changeHouseDropDown(HOUSETYPE newHouse) {
 
 void MapEditorInterface::changeInterfaceColor(HOUSETYPE newHouse) {
     house = newHouse;
-    color = SDL2RGB(palette[houseToPaletteIndex[newHouse] + 3]);
+    color = SDL2RGB(palette[houseToPaletteIndex[static_cast<int>(newHouse)] + 3]);
 
     terrainButton.setTextColor(color);
     structuresButton.setTextColor(color);

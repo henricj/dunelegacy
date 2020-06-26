@@ -37,11 +37,11 @@ public:
 
     void navigate() override;
 
-    inline int getTurretAngle() const { return lround(turretAngle); }
+    inline ANGLETYPE getTurretAngle() const { return static_cast<ANGLETYPE>(lround(turretAngle)); }
 
-    void setTurretAngle(int newAngle);
+    void setTurretAngle(ANGLETYPE newAngle);
 
-    int getCurrentAttackAngle() const override;
+    ANGLETYPE getCurrentAttackAngle() const override;
 
 protected:
     void engageTarget() override;
@@ -61,7 +61,7 @@ protected:
 
     // tank state
     FixPoint turretAngle;            ///< The angle of the turret
-    Sint8    drawnTurretAngle;       ///< The drawn angle of the turret
+    ANGLETYPE drawnTurretAngle;       ///< The drawn angle of the turret
 
     ObjectPointer   closeTarget;     ///< a enemy target that can be shot at while moving
 

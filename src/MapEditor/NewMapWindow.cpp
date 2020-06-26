@@ -40,7 +40,7 @@
 
 NewMapWindow::NewMapWindow(HOUSETYPE currentHouse) : Window(0,0,0,0), house(currentHouse), mapSeed(INVALID), loadMapSingleplayer(false) {
 
-    color = SDL2RGB(palette[houseToPaletteIndex[house]+3]);
+    color = SDL2RGB(palette[houseToPaletteIndex[static_cast<int>(house)]+3]);
 
     // set up window
     SDL_Texture *pBackground = pGFXManager->getUIGraphic(UI_NewMapWindow);

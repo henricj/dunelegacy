@@ -29,7 +29,7 @@
 class BriefingMenu : public MentatMenu
 {
 public:
-    BriefingMenu(int newHouse,int mission, int type);
+    BriefingMenu(HOUSETYPE newHouse,int mission, int type);
     virtual ~BriefingMenu();
 
     void onMentatTextFinished() override;

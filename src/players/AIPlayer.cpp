@@ -82,7 +82,7 @@ void AIPlayer::save(OutputStream& stream) const {
 
 
 void AIPlayer::update() {
-    if( (getGameCycleCount() + getHouse()->getHouseID()) % AIUPDATEINTERVAL != 0) {
+    if( (getGameCycleCount() + static_cast<int>(getHouse()->getHouseID())) % AIUPDATEINTERVAL != 0) {
         // we are not updating this AI player this cycle
         return;
     }
@@ -711,16 +711,13 @@ bool AIPlayer::isAllowedToArm() const {
     std::array<int, NUM_TEAMS> teamScore{};
 
     int maxTeamScore = 0;
-    for(int i = 0; i < NUM_HOUSES; i++) {
-        const House* pHouse = getHouse(i);
-        if(pHouse != nullptr) {
-            teamScore[pHouse->getTeamID()] += pHouse->getUnitBuiltValue();
+    currentGame->forAllHouses([&](const auto& house) {
+        teamScore[house.getTeamID()] += house.getUnitBuiltValue();
 
-            if(pHouse->getTeamID() != getHouse()->getTeamID()) {
-                maxTeamScore = std::max(maxTeamScore, teamScore[pHouse->getTeamID()]);
-            }
+        if(house.getTeamID() != getHouse()->getTeamID()) {
+            maxTeamScore = std::max(maxTeamScore, teamScore[house.getTeamID()]);
         }
-    }
+    });
 
     int ownTeamScore = teamScore[getHouse()->getTeamID()];
 

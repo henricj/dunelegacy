@@ -30,11 +30,11 @@
 
 #include <Game.h>
 
-MentatHelp::MentatHelp(int newHouse, int techLevel, int mission) : MentatMenu(newHouse), mission(mission) {
+MentatHelp::MentatHelp(HOUSETYPE newHouse, int techLevel, int mission) : MentatMenu(newHouse), mission(mission) {
 
     mentatEntries = pTextManager->getAllMentatEntries(newHouse, techLevel);
 
-    Uint32 color = SDL2RGB(palette[houseToPaletteIndex[newHouse]+3]);
+    Uint32 color = SDL2RGB(palette[houseToPaletteIndex[static_cast<int>(newHouse)]+3]);
 
     if(mission == 0) {
         std::vector<MentatTextFile::MentatEntry>::iterator iter = mentatEntries.begin();

@@ -45,8 +45,8 @@ UnitBase::UnitBase(House* newOwner) : ObjectBase(newOwner) {
 
     UnitBase::init();
 
-    drawnAngle = currentGame->randomGen.rand(0, 7);
-    angle = drawnAngle;
+    drawnAngle = static_cast<ANGLETYPE>(currentGame->randomGen.rand(0, 7));
+    angle      = static_cast<int>(drawnAngle);
 
     goingToRepairYard = false;
     pickedUp = false;
@@ -63,7 +63,7 @@ UnitBase::UnitBase(House* newOwner) : ObjectBase(newOwner) {
     bumpyOffsetY = 0;
 
     targetDistance = 0;
-    targetAngle = INVALID;
+    targetAngle = ANGLETYPE::INVALID_ANGLE;
 
     noCloserPointCount = 0;
     nextSpotFound = false;
@@ -95,11 +95,11 @@ UnitBase::UnitBase(InputStream& stream) : ObjectBase(stream) {
     bumpyOffsetY = stream.readFixPoint();
 
     targetDistance = stream.readFixPoint();
-    targetAngle = stream.readSint8();
+    targetAngle = static_cast<ANGLETYPE>(stream.readSint8());
 
     noCloserPointCount = stream.readUint8();
     nextSpotFound = stream.readBool();
-    nextSpotAngle = stream.readSint8();
+    nextSpotAngle = static_cast<ANGLETYPE>(stream.readSint8());
     recalculatePathTimer = stream.readSint32();
     nextSpot.x = stream.readSint32();
     nextSpot.y = stream.readSint32();
@@ -160,11 +160,11 @@ void UnitBase::save(OutputStream& stream) const {
     stream.writeFixPoint(bumpyOffsetY);
 
     stream.writeFixPoint(targetDistance);
-    stream.writeSint8(targetAngle);
+    stream.writeSint8(static_cast<Sint8>(targetAngle));
 
     stream.writeUint8(noCloserPointCount);
     stream.writeBool(nextSpotFound);
-    stream.writeSint8(nextSpotAngle);
+    stream.writeSint8(static_cast<Sint8>(nextSpotAngle));
     stream.writeSint32(recalculatePathTimer);
     stream.writeSint32(nextSpot.x);
     stream.writeSint32(nextSpot.y);
@@ -200,7 +200,7 @@ bool UnitBase::attack() {
             }
 
             int currentBulletType = bulletType;
-            Sint32 currentWeaponDamage = currentGame->objectData.data[itemID][originalHouseID].weapondamage;
+            Sint32 currentWeaponDamage = currentGame->objectData.data[itemID][static_cast<int>(originalHouseID)].weapondamage;
 
             if(getItemID() == Unit_Trooper && !bAirBullet) {
                 // Troopers change weapon type depending on distance
@@ -265,7 +265,7 @@ void UnitBase::blitToScreen() {
     const auto y = screenborder->world2screenY(realY);
 
     const auto pUnitGraphic = graphic[currentZoomlevel];
-    const auto source = calcSpriteSourceRect(pUnitGraphic, drawnAngle, numImagesX, drawnFrame, numImagesY);
+    const auto source = calcSpriteSourceRect(pUnitGraphic, static_cast<int>(drawnAngle), numImagesX, drawnFrame, numImagesY);
     const auto dest = calcSpriteDrawingRect( pUnitGraphic, x, y, numImagesX, numImagesY, HAlign::Center, VAlign::Center);
 
     SDL_RenderCopy(renderer, pUnitGraphic, &source, &dest);
@@ -283,7 +283,7 @@ ObjectInterface* UnitBase::getInterfaceContainer() {
     }
 }
 
-int UnitBase::getCurrentAttackAngle() const {
+ANGLETYPE UnitBase::getCurrentAttackAngle() const {
     return drawnAngle;
 }
 
@@ -375,9 +375,9 @@ void UnitBase::deviate(House* newOwner) {
     // should be... going in with a 25% of the units value unless its a devastator which we can destruct or an ornithoper
     // which is likely to get killed
     if(getItemID() == Unit_Devastator || getItemID() == Unit_Ornithopter){
-        newOwner->informHasDamaged(Unit_Deviator, currentGame->objectData.data[getItemID()][newOwner->getHouseID()].price);
+        newOwner->informHasDamaged(Unit_Deviator, currentGame->objectData.data[getItemID()][static_cast<int>(newOwner->getHouseID())].price);
     } else{
-        newOwner->informHasDamaged(Unit_Deviator, currentGame->objectData.data[getItemID()][newOwner->getHouseID()].price / 5);
+        newOwner->informHasDamaged(Unit_Deviator, currentGame->objectData.data[getItemID()][static_cast<int>(newOwner->getHouseID())].price / 5);
     }
 
 
@@ -470,7 +470,7 @@ void UnitBase::engageTarget() {
 
         targetDistance = blockDistance(location, targetLocation);
 
-        Sint8 newTargetAngle = destinationDrawnAngle(location, targetLocation);
+        const auto newTargetAngle = destinationDrawnAngle(location, targetLocation);
 
         if(bFollow) {
             // we are following someone
@@ -501,15 +501,15 @@ void UnitBase::engageTarget() {
         if(goingToRepairYard) {
             // we are going to the repair yard
             // => we do not need to change the destination
-            targetAngle = INVALID;
+            targetAngle = ANGLETYPE::INVALID_ANGLE;
         } else if(attackMode == CAPTURE) {
             // we want to capture the target building
             setDestination(targetLocation);
-            targetAngle = INVALID;
+            targetAngle = ANGLETYPE::INVALID_ANGLE;
         } else if(isTracked() && target.getObjPointer()->isInfantry() && !targetFriendly && currentGameMap->tileExists(targetLocation) && !currentGameMap->getTile(targetLocation)->isMountain() && forced) {
             // we squash the infantry unit because we are forced to
             setDestination(targetLocation);
-            targetAngle = INVALID;
+            targetAngle = ANGLETYPE::INVALID_ANGLE;
         } else if(!isAFlyingUnit()) {
             // we decide to fire on the target thus we can stop moving
             setDestination(location);
@@ -525,7 +525,7 @@ void UnitBase::engageTarget() {
 
         targetDistance = blockDistance(location, attackPos);
 
-        Sint8 newTargetAngle = destinationDrawnAngle(location, attackPos);
+        const auto newTargetAngle = destinationDrawnAngle(location, attackPos);
 
         if(targetDistance <= getWeaponRange()) {
             if(!isAFlyingUnit()) {
@@ -538,7 +538,7 @@ void UnitBase::engageTarget() {
                 attack();
             }
         } else {
-            targetAngle = INVALID;
+            targetAngle = ANGLETYPE::INVALID_ANGLE;
         }
     }
 }
@@ -710,7 +710,7 @@ void UnitBase::navigate() {
             }
         } else {
             const auto tempAngle = currentGameMap->getPosAngle(location, nextSpot);
-            if(tempAngle != INVALID) {
+            if(tempAngle != ANGLETYPE::INVALID_ANGLE) {
                 nextSpotAngle = tempAngle;
             }
 
@@ -722,7 +722,7 @@ void UnitBase::navigate() {
                     nextSpotFound = false;
 
                     assignToMap(nextSpot);
-                    angle = drawnAngle;
+                    angle = static_cast<int>(drawnAngle);
                     setSpeeds();
                 }
             }
@@ -740,7 +740,7 @@ void UnitBase::idleAction() {
         // we might turn this cycle with 20% chance
         if(currentGame->randomGen.rand(0, 4) == 0) {
             // choose a random one of the eight possible angles
-            nextSpotAngle = currentGame->randomGen.rand(0, 7);
+            nextSpotAngle = static_cast<ANGLETYPE>(currentGame->randomGen.rand(0, 7));
         }
     }
 }
@@ -756,12 +756,14 @@ void UnitBase::handleActionClick(int xPos, int yPos) {
         const auto tempTarget = tile->getObject();
 
         const auto is_owner = tempTarget->getOwner()->getTeamID() == getOwner()->getTeamID();
-        const auto cmd_type = is_owner ? CMD_UNIT_MOVE2OBJECT : CMD_UNIT_ATTACKOBJECT;
+        const auto cmd_type = is_owner ? CMDTYPE::CMD_UNIT_MOVE2OBJECT : CMDTYPE::CMD_UNIT_ATTACKOBJECT;
 
         game->getCommandManager().addCommand(Command{ pLocalPlayer->getPlayerID(), cmd_type, objectID, tempTarget->getObjectID() });
     } else {
         // move this unit
-        game->getCommandManager().addCommand(Command{ pLocalPlayer->getPlayerID(), CMD_UNIT_MOVE2POS,objectID,static_cast<Uint32>(xPos), static_cast<Uint32>(yPos), static_cast<Uint32>(true) });
+        game->getCommandManager().addCommand(Command{pLocalPlayer->getPlayerID(), CMDTYPE::CMD_UNIT_MOVE2POS, objectID,
+                                                     static_cast<Uint32>(xPos), static_cast<Uint32>(yPos),
+                                                     static_cast<Uint32>(true)});
     }
 }
 
@@ -772,10 +774,13 @@ void UnitBase::handleAttackClick(int xPos, int yPos) {
                 // attack unit/structure or move to structure
                 ObjectBase* tempTarget = currentGameMap->getTile(xPos,yPos)->getObject();
 
-                currentGame->getCommandManager().addCommand(Command(pLocalPlayer->getPlayerID(), CMD_UNIT_ATTACKOBJECT,objectID,tempTarget->getObjectID()));
+                currentGame->getCommandManager().addCommand(Command(
+                    pLocalPlayer->getPlayerID(), CMDTYPE::CMD_UNIT_ATTACKOBJECT, objectID, tempTarget->getObjectID()));
             } else {
                 // attack pos
-                currentGame->getCommandManager().addCommand(Command(pLocalPlayer->getPlayerID(), CMD_UNIT_ATTACKPOS,objectID,(Uint32) xPos, (Uint32) yPos, (Uint32) true));
+                currentGame->getCommandManager().addCommand(Command(pLocalPlayer->getPlayerID(),
+                                                                    CMDTYPE::CMD_UNIT_ATTACKPOS, objectID, (Uint32)xPos,
+                                                                    (Uint32)yPos, (Uint32) true));
             }
         }
     }
@@ -786,13 +791,14 @@ void UnitBase::handleMoveClick(int xPos, int yPos) {
     if(respondable) {
         if(currentGameMap->tileExists(xPos, yPos)) {
             // move to pos
-            currentGame->getCommandManager().addCommand(Command(pLocalPlayer->getPlayerID(), CMD_UNIT_MOVE2POS,objectID,(Uint32) xPos, (Uint32) yPos, (Uint32) true));
+            currentGame->getCommandManager().addCommand(Command(pLocalPlayer->getPlayerID(), CMDTYPE::CMD_UNIT_MOVE2POS,
+                                                                objectID, (Uint32)xPos, (Uint32)yPos, (Uint32) true));
         }
     }
 }
 
 void UnitBase::handleSetAttackModeClick(ATTACKMODE newAttackMode) {
-    currentGame->getCommandManager().addCommand(Command(pLocalPlayer->getPlayerID(), CMD_UNIT_SETMODE,objectID,(Uint32) newAttackMode));
+    currentGame->getCommandManager().addCommand(Command(pLocalPlayer->getPlayerID(), CMDTYPE::CMD_UNIT_SETMODE,objectID,(Uint32) newAttackMode));
 }
 
 /**
@@ -802,7 +808,7 @@ void UnitBase::handleSetAttackModeClick(ATTACKMODE newAttackMode) {
 void UnitBase::handleRequestCarryallDropClick(int xPos, int yPos) {
     if(respondable) {
         if(currentGameMap->tileExists(xPos, yPos)) {
-            currentGame->getCommandManager().addCommand(Command(pLocalPlayer->getPlayerID(), CMD_UNIT_REQUESTCARRYALLDROP, objectID, (Uint32) xPos, (Uint32) yPos));
+            currentGame->getCommandManager().addCommand(Command(pLocalPlayer->getPlayerID(), CMDTYPE::CMD_UNIT_REQUESTCARRYALLDROP, objectID, (Uint32) xPos, (Uint32) yPos));
         }
     }
 }
@@ -1060,10 +1066,11 @@ bool UnitBase::isInWeaponRange(const ObjectBase* object) const {
 }
 
 
-void UnitBase::setAngle(int newAngle) {
+void UnitBase::setAngle(ANGLETYPE newAngle) {
     if(!moving && !justStoppedMoving) {
-        newAngle = newAngle % NUM_ANGLES;
-        angle = drawnAngle = newAngle;
+        newAngle = normalizeAngle(newAngle);
+        drawnAngle = newAngle;
+        angle = static_cast<int>(newAngle);
         clearPath();
     }
 }
@@ -1087,7 +1094,7 @@ void UnitBase::setGettingRepaired() {
         setTarget(nullptr);
         //setLocation(INVALID_POS, INVALID_POS);
         setDestination(location);
-        nextSpotAngle = DOWN;
+        nextSpotAngle = ANGLETYPE::DOWN;
     }
 }
 
@@ -1161,7 +1168,7 @@ void UnitBase::setPickedUp(UnitBase* newCarrier) {
 }
 
 FixPoint UnitBase::getMaxSpeed() const {
-    return currentGame->objectData.data[itemID][originalHouseID].maxspeed;
+    return currentGame->objectData.data[itemID][static_cast<int>(originalHouseID)].maxspeed;
 }
 
 void UnitBase::setSpeeds() {
@@ -1174,22 +1181,24 @@ void UnitBase::setSpeeds() {
         }
     }
 
+    // clang-format off
     switch(drawnAngle){
-        case LEFT:      xSpeed = -speed;                    ySpeed = 0;         break;
-        case LEFTUP:    xSpeed = -speed*DIAGONALSPEEDCONST; ySpeed = xSpeed;    break;
-        case UP:        xSpeed = 0;                         ySpeed = -speed;    break;
-        case RIGHTUP:   xSpeed = speed*DIAGONALSPEEDCONST;  ySpeed = -xSpeed;   break;
-        case RIGHT:     xSpeed = speed;                     ySpeed = 0;         break;
-        case RIGHTDOWN: xSpeed = speed*DIAGONALSPEEDCONST;  ySpeed = xSpeed;    break;
-        case DOWN:      xSpeed = 0;                         ySpeed = speed;     break;
-        case LEFTDOWN:  xSpeed = -speed*DIAGONALSPEEDCONST; ySpeed = -xSpeed;   break;
+        case ANGLETYPE::LEFT:      xSpeed = -speed;                    ySpeed = 0;         break;
+        case ANGLETYPE::LEFTUP:    xSpeed = -speed*DIAGONALSPEEDCONST; ySpeed = xSpeed;    break;
+        case ANGLETYPE::UP:        xSpeed = 0;                         ySpeed = -speed;    break;
+        case ANGLETYPE::RIGHTUP:   xSpeed = speed*DIAGONALSPEEDCONST;  ySpeed = -xSpeed;   break;
+        case ANGLETYPE::RIGHT:     xSpeed = speed;                     ySpeed = 0;         break;
+        case ANGLETYPE::RIGHTDOWN: xSpeed = speed*DIAGONALSPEEDCONST;  ySpeed = xSpeed;    break;
+        case ANGLETYPE::DOWN:      xSpeed = 0;                         ySpeed = speed;     break;
+        case ANGLETYPE::LEFTDOWN:  xSpeed = -speed*DIAGONALSPEEDCONST; ySpeed = -xSpeed;   break;
     }
+    // clang-format on
 }
 
 void UnitBase::setTarget(const ObjectBase* newTarget) {
     attackPos.invalidate();
     bFollow = false;
-    targetAngle = INVALID;
+    targetAngle = ANGLETYPE::INVALID_ANGLE;
 
     if(goingToRepairYard && target && (target.getObjPointer()->getItemID() == Structure_RepairYard)) {
         static_cast<RepairYard*>(target.getObjPointer())->unBook();
@@ -1258,25 +1267,25 @@ void UnitBase::targeting() {
 
 void UnitBase::turn() {
     if(!moving && !justStoppedMoving) {
-        int wantedAngle = INVALID;
+        auto wantedAngle = ANGLETYPE::INVALID_ANGLE;
 
         // if we have to decide between moving and shooting we opt for moving
-        if(nextSpotAngle != INVALID) {
+        if(nextSpotAngle != ANGLETYPE::INVALID_ANGLE) {
             wantedAngle = nextSpotAngle;
-        } else if(targetAngle != INVALID) {
+        } else if(targetAngle != ANGLETYPE::INVALID_ANGLE) {
             wantedAngle = targetAngle;
         }
 
-        if(wantedAngle != INVALID) {
+        if(wantedAngle != ANGLETYPE::INVALID_ANGLE) {
             FixPoint angleLeft = 0;
             FixPoint angleRight = 0;
 
-            if(angle > wantedAngle) {
-                angleRight = angle - wantedAngle;
-                angleLeft = FixPoint::abs(8-angle)+wantedAngle;
-            } else if (angle < wantedAngle) {
-                angleRight = FixPoint::abs(8-wantedAngle) + angle;
-                angleLeft = wantedAngle - angle;
+            if(angle > static_cast<int>(wantedAngle)) {
+                angleRight = angle - static_cast<int>(wantedAngle);
+                angleLeft = FixPoint::abs(8-angle)+static_cast<int>(wantedAngle);
+            } else if (angle < static_cast<int>(wantedAngle)) {
+                angleRight = FixPoint::abs(8-static_cast<int>(wantedAngle)) + angle;
+                angleLeft = static_cast<int>(wantedAngle) - angle;
             }
 
             if(angleLeft <= angleRight) {
@@ -1289,23 +1298,15 @@ void UnitBase::turn() {
 }
 
 void UnitBase::turnLeft() {
-    angle += currentGame->objectData.data[itemID][originalHouseID].turnspeed;
-    if(angle >= 7.5_fix) {
-        drawnAngle = lround(angle) - NUM_ANGLES;
-        angle -= NUM_ANGLES;
-    } else {
-        drawnAngle = lround(angle);
-    }
+    angle += currentGame->objectData.data[itemID][static_cast<int>(originalHouseID)].turnspeed;
+    if(angle >= 7.5_fix) { angle -= static_cast<int>(ANGLETYPE::NUM_ANGLES); }
+    drawnAngle = normalizeAngle(static_cast<ANGLETYPE>(lround(angle)));
 }
 
 void UnitBase::turnRight() {
-    angle -= currentGame->objectData.data[itemID][originalHouseID].turnspeed;
-    if(angle <= -0.5_fix) {
-        drawnAngle = lround(angle) + NUM_ANGLES;
-        angle += NUM_ANGLES;
-    } else {
-        drawnAngle = lround(angle);
-    }
+    angle -= currentGame->objectData.data[itemID][static_cast<int>(originalHouseID)].turnspeed;
+    if(angle <= -0.5_fix) { angle += static_cast<int>(ANGLETYPE::NUM_ANGLES); }
+    drawnAngle = normalizeAngle(static_cast<ANGLETYPE>(lround(angle)));
 }
 
 void UnitBase::quitDeviation() {
@@ -1360,27 +1361,22 @@ void UnitBase::updateVisibleUnits() {
     }
 
     auto* pTile = currentGameMap->getTile(location);
-    for (auto h = 0; h < NUM_HOUSES; h++) {
-        auto* pHouse = currentGame->getHouse(h);
-        if(!pHouse) {
-            continue;
-        }
-
-        if(pTile->isExploredByHouse(h) && (pHouse->getTeamID() != getOwner()->getTeamID()) && (pHouse != getOwner())) {
-            pHouse->informDirectContactWithEnemy();
+    currentGame->forAllHouses([&](auto& house) {
+        if(pTile->isExploredByHouse(house.getHouseID()) && (house.getTeamID() != getOwner()->getTeamID()) && (&house != getOwner())) {
+            house.informDirectContactWithEnemy();
             getOwner()->informDirectContactWithEnemy();
         }
 
-        if(pTile->isExploredByTeam(pHouse->getTeamID())) {
-            if(pHouse->getTeamID() == getOwner()->getTeamID()) {
-                pHouse->informVisibleFriendlyUnit();
+        if(pTile->isExploredByTeam(house.getTeamID())) {
+            if(house.getTeamID() == getOwner()->getTeamID()) {
+                house.informVisibleFriendlyUnit();
             } else {
-                pHouse->informVisibleEnemyUnit();
-                pHouse->informContactWithEnemy();
+                house.informVisibleEnemyUnit();
+                house.informContactWithEnemy();
                 getOwner()->informContactWithEnemy();
             }
         }
-    }
+    });
 }
 
 bool UnitBase::canPassTile(const Tile* pTile) const

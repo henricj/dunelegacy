@@ -41,7 +41,7 @@ CustomGameStatsMenu::CustomGameStatsMenu() : MenuBase()
 
     setWindowWidget(&windowWidget);
 
-    Uint32 localHouseColor = SDL2RGB(palette[houseToPaletteIndex[pLocalHouse->getHouseID()]+3]);
+    Uint32 localHouseColor = SDL2RGB(palette[houseToPaletteIndex[static_cast<int>(pLocalHouse->getHouseID())]+3]);
 
     windowWidget.addWidget(&mainVBox, Point(24,23), Point(getRendererWidth() - 48, getRendererHeight() - 32));
 
@@ -83,80 +83,75 @@ CustomGameStatsMenu::CustomGameStatsMenu() : MenuBase()
     int maxDestroyedValue = 0;
     float maxSpiceHarvested = 0.0;
 
-    for(int i=0;i<NUM_HOUSES;i++) {
-        House* pHouse = currentGame->getHouse(i);
 
-        if(pHouse != nullptr) {
-            maxBuiltValue = std::max(maxBuiltValue, pHouse->getBuiltValue());
-            maxDestroyedValue = std::max(maxDestroyedValue, pHouse->getDestroyedValue());
-            maxSpiceHarvested = std::max(maxSpiceHarvested, pHouse->getHarvestedSpice().toFloat());
-        }
-    }
+    currentGame->forAllHouses([&](auto& house) {
+        maxBuiltValue     = std::max(maxBuiltValue, house.getBuiltValue());
+        maxDestroyedValue = std::max(maxDestroyedValue, house.getDestroyedValue());
+        maxSpiceHarvested = std::max(maxSpiceHarvested, house.getHarvestedSpice().toFloat());
+    });
 
-    for(int i=0;i<NUM_HOUSES;i++) {
-        HouseStat& curHouseStat = houseStat[i];
-        House* pHouse = currentGame->getHouse(i);
+    for_each_stat(currentGame, [&](const auto i, auto& house, auto& curHouseStat) {
+        Uint32 textcolor     = SDL2RGB(palette[houseToPaletteIndex[i] + 3]);
+        Uint32 progresscolor = SDL2RGB(palette[houseToPaletteIndex[i] + 1]);
 
-        if(pHouse != nullptr) {
-            Uint32 textcolor = SDL2RGB(palette[houseToPaletteIndex[i]+3]);
-            Uint32 progresscolor = SDL2RGB(palette[houseToPaletteIndex[i]+1]);
+        curHouseStat.houseName.setText(_("House") + " " + getHouseNameByNumber((HOUSETYPE)i));
+        curHouseStat.houseName.setTextColor(textcolor);
+        curHouseStat.houseHBox.addWidget(&curHouseStat.houseName, 145);
+        curHouseStat.houseHBox.addWidget(Spacer::create(), 5);
 
-            curHouseStat.houseName.setText(_("House") + " " + getHouseNameByNumber((HOUSETYPE) i));
-            curHouseStat.houseName.setTextColor(textcolor);
-            curHouseStat.houseHBox.addWidget(&curHouseStat.houseName, 145);
-            curHouseStat.houseHBox.addWidget(Spacer::create(), 5);
+        curHouseStat.value1.setText(std::to_string(house.getBuiltValue()));
+        curHouseStat.value1.setTextFontSize(12);
+        curHouseStat.value1.setAlignment(Alignment_Right);
+        curHouseStat.value1.setTextColor(textcolor);
+        curHouseStat.houseHBox.addWidget(&curHouseStat.value1, 50);
+        curHouseStat.houseHBox.addWidget(HSpacer::create(2));
+        curHouseStat.progressBar1.setProgress(
+            (maxBuiltValue == 0) ? 0.0f : (house.getBuiltValue() * 100.0f / maxBuiltValue));
+        curHouseStat.progressBar1.setDrawShadow(true);
+        curHouseStat.progressBar1.setColor(progresscolor);
+        curHouseStat.vBox1.addWidget(Spacer::create(), 0.5);
+        curHouseStat.vBox1.addWidget(&curHouseStat.progressBar1, 12);
+        curHouseStat.vBox1.addWidget(Spacer::create(), 0.5);
+        curHouseStat.houseHBox.addWidget(&curHouseStat.vBox1, 80);
 
-            curHouseStat.value1.setText( std::to_string(pHouse->getBuiltValue()));
-            curHouseStat.value1.setTextFontSize(12);
-            curHouseStat.value1.setAlignment(Alignment_Right);
-            curHouseStat.value1.setTextColor(textcolor);
-            curHouseStat.houseHBox.addWidget(&curHouseStat.value1, 50);
-            curHouseStat.houseHBox.addWidget(HSpacer::create(2));
-            curHouseStat.progressBar1.setProgress( (maxBuiltValue == 0) ? 0.0f : (pHouse->getBuiltValue() * 100.0f / maxBuiltValue));
-            curHouseStat.progressBar1.setDrawShadow(true);
-            curHouseStat.progressBar1.setColor(progresscolor);
-            curHouseStat.vBox1.addWidget(Spacer::create(), 0.5);
-            curHouseStat.vBox1.addWidget(&curHouseStat.progressBar1, 12);
-            curHouseStat.vBox1.addWidget(Spacer::create(), 0.5);
-            curHouseStat.houseHBox.addWidget(&curHouseStat.vBox1, 80);
+        curHouseStat.houseHBox.addWidget(Spacer::create(), 25);
 
-            curHouseStat.houseHBox.addWidget(Spacer::create(), 25);
+        curHouseStat.value2.setText(std::to_string(house.getDestroyedValue() * 100));
+        curHouseStat.value2.setTextFontSize(12);
+        curHouseStat.value2.setAlignment(Alignment_Right);
+        curHouseStat.value2.setTextColor(textcolor);
+        curHouseStat.houseHBox.addWidget(&curHouseStat.value2, 50);
+        curHouseStat.houseHBox.addWidget(HSpacer::create(2));
+        curHouseStat.progressBar2.setProgress(
+            (maxDestroyedValue == 0) ? 0.0f : (house.getDestroyedValue() * 100.0f / maxDestroyedValue));
+        curHouseStat.progressBar2.setDrawShadow(true);
+        curHouseStat.progressBar2.setColor(progresscolor);
+        curHouseStat.vBox2.addWidget(Spacer::create(), 0.5);
+        curHouseStat.vBox2.addWidget(&curHouseStat.progressBar2, 12);
+        curHouseStat.vBox2.addWidget(Spacer::create(), 0.5);
+        curHouseStat.houseHBox.addWidget(&curHouseStat.vBox2, 80);
 
-            curHouseStat.value2.setText( std::to_string(pHouse->getDestroyedValue()*100));
-            curHouseStat.value2.setTextFontSize(12);
-            curHouseStat.value2.setAlignment(Alignment_Right);
-            curHouseStat.value2.setTextColor(textcolor);
-            curHouseStat.houseHBox.addWidget(&curHouseStat.value2, 50);
-            curHouseStat.houseHBox.addWidget(HSpacer::create(2));
-            curHouseStat.progressBar2.setProgress( (maxDestroyedValue == 0) ? 0.0f : (pHouse->getDestroyedValue() * 100.0f / maxDestroyedValue));
-            curHouseStat.progressBar2.setDrawShadow(true);
-            curHouseStat.progressBar2.setColor(progresscolor);
-            curHouseStat.vBox2.addWidget(Spacer::create(), 0.5);
-            curHouseStat.vBox2.addWidget(&curHouseStat.progressBar2, 12);
-            curHouseStat.vBox2.addWidget(Spacer::create(), 0.5);
-            curHouseStat.houseHBox.addWidget(&curHouseStat.vBox2, 80);
+        curHouseStat.houseHBox.addWidget(Spacer::create(), 25);
 
-            curHouseStat.houseHBox.addWidget(Spacer::create(), 25);
+        curHouseStat.value3.setText(std::to_string(lround(house.getHarvestedSpice())));
+        curHouseStat.value3.setTextFontSize(12);
+        curHouseStat.value3.setAlignment(Alignment_Right);
+        curHouseStat.value3.setTextColor(textcolor);
+        curHouseStat.houseHBox.addWidget(&curHouseStat.value3, 50);
+        curHouseStat.houseHBox.addWidget(HSpacer::create(2));
+        curHouseStat.progressBar3.setProgress(
+            (maxSpiceHarvested == 0.0f) ? 0.0f : (house.getHarvestedSpice().toFloat() * 100.0f / maxSpiceHarvested));
+        curHouseStat.progressBar3.setDrawShadow(true);
+        curHouseStat.progressBar3.setColor(progresscolor);
+        curHouseStat.vBox3.addWidget(Spacer::create(), 0.5);
+        curHouseStat.vBox3.addWidget(&curHouseStat.progressBar3, 12);
+        curHouseStat.vBox3.addWidget(Spacer::create(), 0.5);
+        curHouseStat.houseHBox.addWidget(&curHouseStat.vBox3, 80);
 
-            curHouseStat.value3.setText( std::to_string(lround(pHouse->getHarvestedSpice())));
-            curHouseStat.value3.setTextFontSize(12);
-            curHouseStat.value3.setAlignment(Alignment_Right);
-            curHouseStat.value3.setTextColor(textcolor);
-            curHouseStat.houseHBox.addWidget(&curHouseStat.value3, 50);
-            curHouseStat.houseHBox.addWidget(HSpacer::create(2));
-            curHouseStat.progressBar3.setProgress( (maxSpiceHarvested == 0.0f) ? 0.0f : (pHouse->getHarvestedSpice().toFloat() * 100.0f / maxSpiceHarvested));
-            curHouseStat.progressBar3.setDrawShadow(true);
-            curHouseStat.progressBar3.setColor(progresscolor);
-            curHouseStat.vBox3.addWidget(Spacer::create(), 0.5);
-            curHouseStat.vBox3.addWidget(&curHouseStat.progressBar3, 12);
-            curHouseStat.vBox3.addWidget(Spacer::create(), 0.5);
-            curHouseStat.houseHBox.addWidget(&curHouseStat.vBox3, 80);
+        playerStatListVBox.addWidget(&curHouseStat.houseHBox, 20);
 
-            playerStatListVBox.addWidget(&curHouseStat.houseHBox, 20);
-
-            playerStatListVBox.addWidget(VSpacer::create(15));
-        }
-    }
+        playerStatListVBox.addWidget(VSpacer::create(15));
+    });
 
     mainHBox.addWidget(Spacer::create(), 0.4);
 
@@ -183,10 +178,7 @@ CustomGameStatsMenu::CustomGameStatsMenu() : MenuBase()
     buttonHBox.addWidget(HSpacer::create(90));
 }
 
-CustomGameStatsMenu::~CustomGameStatsMenu()
-{
-    ;
-}
+CustomGameStatsMenu::~CustomGameStatsMenu() = default;
 
 void CustomGameStatsMenu::onOK()
 {

@@ -42,7 +42,7 @@ CampaignStatsMenu::CampaignStatsMenu(int level) : MenuBase()
 {
     calculateScore(level);
 
-    Uint32 colorYou = SDL2RGB(palette[houseToPaletteIndex[pLocalHouse->getHouseID()] + 1]);
+    Uint32 colorYou = SDL2RGB(palette[houseToPaletteIndex[static_cast<int>(pLocalHouse->getHouseID())] + 1]);
     Uint32 colorEnemy = SDL2RGB(palette[PALCOLOR_SARDAUKAR + 1]);
 
     // set up window
@@ -433,32 +433,29 @@ void CampaignStatsMenu::calculateScore(int level)
     totalScore = level*45;
 
     float totalHumanCredits = 0.0f;
-    for(int i=0; i < NUM_HOUSES; i++) {
-        House* pHouse = currentGame->getHouse(i);
-        if(pHouse != nullptr) {
-            if(pHouse->isAI() == true) {
-                unitsDestroyedByAI += pHouse->getNumDestroyedUnits();
-                structuresDestroyedByAI += pHouse->getNumDestroyedStructures();
-                spiceHarvestedByAI += pHouse->getHarvestedSpice().toFloat();
+    currentGame->forAllHouses([&](auto& house) {
+        if(house.isAI() == true) {
+            unitsDestroyedByAI += house.getNumDestroyedUnits();
+            structuresDestroyedByAI += house.getNumDestroyedStructures();
+            spiceHarvestedByAI += house.getHarvestedSpice().toFloat();
 
-                totalScore -= pHouse->getDestroyedValue();
-            } else {
-                unitsDestroyedByHuman += pHouse->getNumDestroyedUnits();
-                structuresDestroyedByHuman += pHouse->getNumDestroyedStructures();
-                spiceHarvestedByHuman += pHouse->getHarvestedSpice().toFloat();
+            totalScore -= house.getDestroyedValue();
+        } else {
+            unitsDestroyedByHuman += house.getNumDestroyedUnits();
+            structuresDestroyedByHuman += house.getNumDestroyedStructures();
+            spiceHarvestedByHuman += house.getHarvestedSpice().toFloat();
 
-                totalHumanCredits += pHouse->getCredits();
+            totalHumanCredits += house.getCredits();
 
-                totalScore += pHouse->getDestroyedValue();
-            }
+            totalScore += house.getDestroyedValue();
         }
-    }
+    });
 
     totalScore += ((int) totalHumanCredits) / 100;
 
     for(const StructureBase* pStructure : structureList) {
         if(pStructure->getOwner()->isAI() == false) {
-            totalScore += currentGame->objectData.data[pStructure->getItemID()][pStructure->getOriginalHouseID()].price / 100;
+            totalScore += currentGame->objectData.data[pStructure->getItemID()][static_cast<int>(pStructure->getOriginalHouseID())].price / 100;
         }
     }
 

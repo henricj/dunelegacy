@@ -53,7 +53,7 @@ std::unique_ptr<NetworkManager>      pNetworkManager;            ///< manager fo
 
 // game stuff
 Game* currentGame;                ///< the current running game
-ScreenBorder* screenborder;               ///< the screen border for the current running game
+std::unique_ptr<ScreenBorder> screenborder;               ///< the screen border for the current running game
 Map* currentGameMap;             ///< the map for the current running game
 House* pLocalHouse;                ///< the house of the human player that is playing the current running game on this computer
 HumanPlayer* pLocalPlayer;               ///< the player that is playing the current running game on this computer

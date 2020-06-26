@@ -31,14 +31,14 @@
 
 #include <sand.h>
 
-MapChoice::MapChoice(int newHouse, unsigned int lastMission, Uint32 oldAlreadyPlayedRegions) : MenuBase() {
+MapChoice::MapChoice(HOUSETYPE newHouse, unsigned int lastMission, Uint32 oldAlreadyPlayedRegions) : MenuBase() {
     disableQuiting(true);
     selectedRegion = -1;
     selectionTime = 0;
     stateSwitchTime = 0;
 
     bFastBlending = false;
-    curHouse2Blit = 0;
+    curHouse2Blit = static_cast<HOUSETYPE>(0);
     curRegion2Blit = 0;
     curBlendBlitter = nullptr;
     lastScenario = (lastMission + 1)/3 + 1;
@@ -209,22 +209,30 @@ void MapChoice::drawSpecificStuff() {
 
         case MAPCHOICESTATE_BLENDING: {
             if(curBlendBlitter == nullptr) {
-                while(  (curHouse2Blit < NUM_HOUSES) &&
-                        (curRegion2Blit >= group[lastScenario].newRegion[(curHouse2Blit + house) % NUM_HOUSES].size())) {
-                        curRegion2Blit = 0;
-                        curHouse2Blit++;
+                const auto int_house = static_cast<int>(house);
+                const auto num_houses = static_cast<int>(HOUSETYPE::NUM_HOUSES);
+
+                const auto blitThreshold = [&]() {
+                    return group[lastScenario].newRegion[(static_cast<int>(curHouse2Blit) + int_house) % num_houses].size();
+                };
+
+                while(curHouse2Blit < HOUSETYPE::NUM_HOUSES && curRegion2Blit >= blitThreshold()) {
+                    curRegion2Blit = 0;
+                    curHouse2Blit  = static_cast<HOUSETYPE>((static_cast<int>(curHouse2Blit) + 1) % num_houses);
                 }
 
-                if((curHouse2Blit < NUM_HOUSES)&&(curRegion2Blit < group[lastScenario].newRegion[(curHouse2Blit + house) % NUM_HOUSES].size())) {
+                if(curHouse2Blit < HOUSETYPE::NUM_HOUSES && curRegion2Blit < blitThreshold()) {
                     // there is still some region to blend in
-                    const int pieceNum = (group[lastScenario].newRegion[(curHouse2Blit + house) % NUM_HOUSES])[curRegion2Blit];
-                    sdl2::surface_ptr pPieceSurface = convertSurfaceToDisplayFormat(pGFXManager->getMapChoicePieceSurface(pieceNum,(curHouse2Blit + house) % NUM_HOUSES));
+                    const int pieceNum =
+                        (group[lastScenario].newRegion[(static_cast<int>(curHouse2Blit) + int_house) % num_houses])[curRegion2Blit];
+                    sdl2::surface_ptr pPieceSurface = convertSurfaceToDisplayFormat(
+                        pGFXManager->getMapChoicePieceSurface(pieceNum, static_cast<HOUSETYPE>((static_cast<int>(curHouse2Blit) + int_house) % num_houses)));
                     SDL_Rect dest = calcDrawingRect(pPieceSurface.get(), piecePosition[pieceNum].x, piecePosition[pieceNum].y);
                     curBlendBlitter = std::make_unique<BlendBlitter>(std::move(pPieceSurface), mapSurface.get(), dest);
                     curRegion2Blit++;
 
                     // have to show some text?
-                    for(const TGroup::TText& ttext : group[lastScenario].text) {
+                    for(const auto& ttext : group[lastScenario].text) {
                         if(ttext.region == pieceNum) {
                             msgticker.addMessage(ttext.message);
                         }
@@ -355,18 +363,19 @@ void MapChoice::createMapSurfaceWithPieces(unsigned int scenario) {
 
     for(unsigned int s = 1; s < scenario; s++) {
         auto g = group[s];
-        for(unsigned int h = 0; h < g.newRegion.size(); h++) {
-            for (int pieceNum : g.newRegion[h]) {
+
+        for_each_housetype([&](const auto h) {
+            for (int pieceNum : g.newRegion[static_cast<int>(h)]) {
                 SDL_Surface* pieceSurface = pGFXManager->getMapChoicePieceSurface(pieceNum, h);
                 SDL_Rect dest = calcDrawingRect(pieceSurface, piecePosition[pieceNum].x, piecePosition[pieceNum].y);
                 SDL_BlitSurface(pieceSurface,nullptr,mapSurface.get(),&dest);
             }
-        }
+        });
     }
 }
 
 void MapChoice::loadINI() {
-    const std::string filename = fmt::sprintf("REGION%c.INI", houseChar[house]);
+    const std::string filename = fmt::sprintf("REGION%c.INI", houseChar[static_cast<int>(house)]);
 
     INIFile RegionINI(pFileManager->openFile(filename).get());
 
@@ -396,26 +405,28 @@ void MapChoice::loadINI() {
         std::string strSection = "GROUP" + std::to_string(i);
 
         // read new regions
-        for(int h = 0; h < NUM_HOUSES; h++) {
+        for_each_housetype([&](const auto h) {
             std::string key;
+            // clang-format off
             switch(h) {
-                case HOUSE_HARKONNEN:   key = "HAR"; break;
-                case HOUSE_ATREIDES:    key = "ATR"; break;
-                case HOUSE_ORDOS:       key = "ORD"; break;
-                case HOUSE_FREMEN:      key = "FRE"; break;
-                case HOUSE_SARDAUKAR:   key = "SAR"; break;
-                case HOUSE_MERCENARY:   key = "MER"; break;
+                case HOUSETYPE::HOUSE_HARKONNEN:   key = "HAR"; break;
+                case HOUSETYPE::HOUSE_ATREIDES:    key = "ATR"; break;
+                case HOUSETYPE::HOUSE_ORDOS:       key = "ORD"; break;
+                case HOUSETYPE::HOUSE_FREMEN:      key = "FRE"; break;
+                case HOUSETYPE::HOUSE_SARDAUKAR:   key = "SAR"; break;
+                case HOUSETYPE::HOUSE_MERCENARY:   key = "MER"; break;
             }
+            // clang-format on
 
-            std::string strValue = RegionINI.getStringValue(strSection,key);
-            if(strValue != "") {
+            std::string strValue = RegionINI.getStringValue(strSection, key);
+            if(!strValue.empty()) {
                 std::vector<std::string> strRegions = splitStringToStringVector(strValue);
 
                 for(unsigned int r = 0; r < strRegions.size(); r++) {
-                    group[i].newRegion[h].push_back(atol(strRegions[r].c_str()));
+                    group[i].newRegion[static_cast<int>(h)].push_back(atol(strRegions[r].c_str()));
                 }
             }
-        }
+        });
 
         // read attackRegion (REG1, REG2, REG3)
         for(int a = 0; a < 4; a++) {

@@ -240,7 +240,7 @@ void GroundUnit::navigate() {
 }
 
 void GroundUnit::handleSendToRepairClick() {
-    currentGame->getCommandManager().addCommand(Command(pLocalPlayer->getPlayerID(), CMD_UNIT_SENDTOREPAIR,objectID));
+    currentGame->getCommandManager().addCommand(Command(pLocalPlayer->getPlayerID(), CMDTYPE::CMD_UNIT_SENDTOREPAIR,objectID));
 }
 
 void GroundUnit::doRepair() noexcept {

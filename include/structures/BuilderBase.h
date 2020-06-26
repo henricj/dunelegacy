@@ -110,7 +110,7 @@ public:
 
     void setOwner(House *no);
 
-    void setOriginalHouseID(int i) override
+    void setOriginalHouseID(HOUSETYPE i) override
     {
         StructureBase::setOriginalHouseID(i);
         updateBuildList();

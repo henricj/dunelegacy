@@ -36,7 +36,7 @@
 class DigitsTextBox : public HBox {
 
 public:
-    DigitsTextBox() : house(HOUSE_HARKONNEN) {
+    DigitsTextBox() : house(HOUSETYPE::HOUSE_HARKONNEN) {
         minValue = std::numeric_limits<int>::min();
         maxValue = std::numeric_limits<int>::max();
 

@@ -25,7 +25,7 @@
 #include <vector>
 #include <misc/SDL2pp.h>
 
-enum CMDTYPE {
+enum class CMDTYPE {
     CMD_NONE,
     CMD_PLACE_STRUCTURE,                ///< PLACE_STRUCTURE(BUILDER_ID, X, Y)
     CMD_UNIT_MOVE2POS,                  ///< UNIT_MOVE2POS(OBJECT_ID,X,Y,BFORCED)

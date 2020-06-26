@@ -58,7 +58,7 @@ void Frigate::init()
     graphic = pGFXManager->getObjPic(graphicID,getOwner()->getHouseID());
     shadowGraphic = pGFXManager->getObjPic(ObjPic_FrigateShadow,getOwner()->getHouseID());
 
-    numImagesX = NUM_ANGLES;
+    numImagesX = static_cast<int>(ANGLETYPE::NUM_ANGLES);
     numImagesY = 1;
 }
 
@@ -95,7 +95,7 @@ void Frigate::checkPos()
 }
 
 bool Frigate::update() {
-    const FixPoint& maxSpeed = currentGame->objectData.data[itemID][originalHouseID].maxspeed;
+    const FixPoint& maxSpeed = currentGame->objectData.data[itemID][static_cast<int>(originalHouseID)].maxspeed;
 
     FixPoint dist = -1;
     ObjectBase* pTarget = target.getObjPointer();

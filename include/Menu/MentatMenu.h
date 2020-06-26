@@ -32,7 +32,7 @@
 
 class MentatMenu : public MenuBase {
 public:
-    explicit MentatMenu(int newHouse);
+    explicit MentatMenu(HOUSETYPE newHouse);
     virtual ~MentatMenu();
 
     void setText(const std::string& text);
@@ -81,7 +81,7 @@ protected:
     std::vector<std::string> mentatTexts;
     int currentMentatTextIndex;
     Uint32 nextMentatTextSwitch;
-    int house;
+    HOUSETYPE house;
 
     StaticContainer windowWidget;
     AnimationLabel  eyesAnim;

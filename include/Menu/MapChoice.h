@@ -41,7 +41,7 @@
 class MapChoice : public MenuBase
 {
 public:
-    MapChoice(int newHouse, unsigned int lastMission, Uint32 alreadyPlayedRegions);
+    MapChoice(HOUSETYPE newHouse, unsigned int lastMission, Uint32 alreadyPlayedRegions);
     virtual ~MapChoice();
 
     int showMenu() override;
@@ -76,7 +76,7 @@ private:
 
 private:
     struct TGroup {
-        std::array<std::vector<int>, NUM_HOUSES> newRegion;
+        std::array<std::vector<int>, static_cast<int>(HOUSETYPE::NUM_HOUSES)> newRegion;
 
         struct TAttackRegion {
             int regionNum;
@@ -96,14 +96,14 @@ private:
 
     std::array<TGroup, 9> group;
 
-    int house;
+    HOUSETYPE house;
     unsigned int lastScenario;
     Uint32 alreadyPlayedRegions;
     sdl2::surface_ptr mapSurface;
     sdl2::texture_ptr mapTexture;
     std::array<Coord, 28> piecePosition;
     std::unique_ptr<BlendBlitter> curBlendBlitter;
-    unsigned int curHouse2Blit;
+    HOUSETYPE curHouse2Blit;
     unsigned int curRegion2Blit;
     bool bFastBlending;
     int mapChoiceState;
