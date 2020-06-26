@@ -186,77 +186,42 @@ std::vector<FileInfo> getFileList(const std::filesystem::path& directory, const 
 }
 
 bool getCaseInsensitiveFilename(std::filesystem::path& filepath) {
+    std::error_code ec;
+    const auto      cpath = std::filesystem::canonical(filepath, ec);
 
-#ifdef _WIN32
-    return existsFile(filepath);
-
-#else
-
-
-    std::string filename;
-    std::string path;
-    size_t separatorPos = filepath.rfind('/');
-    if(separatorPos == std::string::npos) {
-        // There is no '/' in the filepath => only filename in current working directory specified
-        filename = filepath;
-        path = ".";
-    } else if(separatorPos == filepath.length()-1) {
-        // filepath has an '/' at the end => no filename specified
-        return false;
-    } else {
-        filename = filepath.substr(separatorPos+1, std::string::npos);
-        path = filepath.substr(0,separatorPos+1); // path with tailing '/'
+    if(!ec) {
+        filepath = cpath;
+        return true;
     }
 
-    DIR* directory = opendir(path.c_str());
-    if(directory == nullptr) {
-        return false;
+    const auto has_parent = filepath.has_parent_path();
+    const auto parent     = has_parent ? filepath.parent_path() : std::filesystem::current_path();
+    const auto wanted     = filepath.filename();
+    const auto wanted_u8  = wanted.u8string();
+
+    for(const auto& p : std::filesystem::directory_iterator(parent)) {
+        if(!p.is_regular_file()) continue;
+
+        const auto filename = p.path().filename();
+
+        if(wanted != filename) {
+            const auto filename_u8 = filename.u8string();
+
+            if(wanted_u8.length() != filename_u8.length()) continue;
+
+            const auto match =
+                std::equal(wanted_u8.begin(), wanted_u8.end(), filename_u8.begin(), filename_u8.end(),
+                           [](const auto a, const auto b) { return a == b || std::toupper(a) == std::toupper(b); });
+
+            if(!match) continue;
+        }
+
+        filepath = has_parent ? p.path() : filename;
+
+        return true;
     }
 
-    while(true) {
-        errno = 0;
-        dirent* directory_entry = readdir(directory);
-        if(directory_entry == nullptr) {
-            if (errno != 0) {
-                closedir(directory);
-                return false;
-            } else {
-                // EOF
-                break;
-            }
-        }
-
-        bool entry_OK = true;
-        const char* pEntryName = directory_entry->d_name;
-        const char* pFilename = filename.c_str();
-        while(true) {
-            if((*pEntryName == '\0') && (*pFilename == '\0')) {
-                break;
-            }
-
-            if(tolower(*pEntryName) != tolower(*pFilename)) {
-                entry_OK = false;
-                break;
-            }
-            pEntryName++;
-            pFilename++;
-        }
-
-        if(entry_OK == true) {
-            if(path == ".") {
-                filepath = directory_entry->d_name;
-            } else {
-                filepath = path + directory_entry->d_name;
-            }
-            closedir(directory);
-            return true;
-        }
-    }
-    closedir(directory);
     return false;
-
-#endif
-
 }
 
 
