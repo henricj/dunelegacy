@@ -24,7 +24,7 @@
 #include <FileClasses/TextManager.h>
 #include <FileClasses/Palfile.h>
 
-HouseChoiceInfoMenu::HouseChoiceInfoMenu(int newHouse) : MentatMenu(HOUSE_INVALID)
+HouseChoiceInfoMenu::HouseChoiceInfoMenu(HOUSETYPE newHouse) : MentatMenu(HOUSETYPE::HOUSE_INVALID)
 {
     disableQuiting(true);
 
@@ -32,17 +32,19 @@ HouseChoiceInfoMenu::HouseChoiceInfoMenu(int newHouse) : MentatMenu(HOUSE_INVALI
 
     Animation* anim = nullptr;
 
+    // clang-format off
     switch(house) {
-        case HOUSE_HARKONNEN:   anim = pGFXManager->getAnimation(Anim_HarkonnenPlanet); break;
-        case HOUSE_ATREIDES:    anim = pGFXManager->getAnimation(Anim_AtreidesPlanet);  break;
-        case HOUSE_ORDOS:       anim = pGFXManager->getAnimation(Anim_OrdosPlanet);     break;
-        case HOUSE_FREMEN:      anim = pGFXManager->getAnimation(Anim_FremenPlanet);    break;
-        case HOUSE_SARDAUKAR:   anim = pGFXManager->getAnimation(Anim_SardaukarPlanet); break;
-        case HOUSE_MERCENARY:   anim = pGFXManager->getAnimation(Anim_MercenaryPlanet); break;
+        case HOUSETYPE::HOUSE_HARKONNEN:    anim = pGFXManager->getAnimation(Anim_HarkonnenPlanet); break;
+        case HOUSETYPE::HOUSE_ATREIDES:     anim = pGFXManager->getAnimation(Anim_AtreidesPlanet);  break;
+        case HOUSETYPE::HOUSE_ORDOS:        anim = pGFXManager->getAnimation(Anim_OrdosPlanet);     break;
+        case HOUSETYPE::HOUSE_FREMEN:       anim = pGFXManager->getAnimation(Anim_FremenPlanet);    break;
+        case HOUSETYPE::HOUSE_SARDAUKAR:    anim = pGFXManager->getAnimation(Anim_SardaukarPlanet); break;
+        case HOUSETYPE::HOUSE_MERCENARY:    anim = pGFXManager->getAnimation(Anim_MercenaryPlanet); break;
         default: {
             THROW(std::invalid_argument, "HouseChoiceInfoMenu::HouseChoiceInfoMenu(): Invalid house id '%d'.", newHouse);
         } break;
     }
+    // clang-format on
 
     planetAnimation.setAnimation(anim);
     windowWidget.addWidget(&planetAnimation, Point(256,96), planetAnimation.getMinimumSize());

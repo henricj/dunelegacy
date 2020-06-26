@@ -25,7 +25,7 @@
 #include <FileClasses/TextManager.h>
 #include <FileClasses/music/MusicPlayer.h>
 
-BriefingMenu::BriefingMenu(int newHouse,int mission,int type) : MentatMenu(newHouse) {
+BriefingMenu::BriefingMenu(HOUSETYPE newHouse,int mission,int type) : MentatMenu(newHouse) {
     this->mission = mission;
     this->type = type;
 
@@ -89,18 +89,18 @@ int BriefingMenu::showMenu()
         case DEBRIEFING_WIN:
         {
             switch(house) {
-                case HOUSE_HARKONNEN:
-                case HOUSE_SARDAUKAR: {
+                case HOUSETYPE::HOUSE_HARKONNEN:
+                case HOUSETYPE::HOUSE_SARDAUKAR: {
                     musicPlayer->changeMusic(MUSIC_WIN_H);
                 } break;
 
-                case HOUSE_ATREIDES:
-                case HOUSE_FREMEN: {
+                case HOUSETYPE::HOUSE_ATREIDES:
+                case HOUSETYPE::HOUSE_FREMEN: {
                     musicPlayer->changeMusic(MUSIC_WIN_A);
                 } break;
 
-                case HOUSE_ORDOS:
-                case HOUSE_MERCENARY: {
+                case HOUSETYPE::HOUSE_ORDOS:
+                case HOUSETYPE::HOUSE_MERCENARY: {
                     musicPlayer->changeMusic(MUSIC_WIN_O);
                 } break;
             }
@@ -109,18 +109,18 @@ int BriefingMenu::showMenu()
         case DEBRIEFING_LOST:
         {
             switch(house) {
-                case HOUSE_HARKONNEN:
-                case HOUSE_SARDAUKAR: {
+                case HOUSETYPE::HOUSE_HARKONNEN:
+                case HOUSETYPE::HOUSE_SARDAUKAR: {
                     musicPlayer->changeMusic(MUSIC_LOSE_H);
                 } break;
 
-                case HOUSE_ATREIDES:
-                case HOUSE_FREMEN: {
+                case HOUSETYPE::HOUSE_ATREIDES:
+                case HOUSETYPE::HOUSE_FREMEN: {
                     musicPlayer->changeMusic(MUSIC_LOSE_A);
                 } break;
 
-                case HOUSE_ORDOS:
-                case HOUSE_MERCENARY: {
+                case HOUSETYPE::HOUSE_ORDOS:
+                case HOUSETYPE::HOUSE_MERCENARY: {
                     musicPlayer->changeMusic(MUSIC_LOSE_O);
                 } break;
             }
@@ -129,18 +129,18 @@ int BriefingMenu::showMenu()
         case BRIEFING:
         {
             switch(house) {
-                case HOUSE_HARKONNEN:
-                case HOUSE_SARDAUKAR: {
+                case HOUSETYPE::HOUSE_HARKONNEN:
+                case HOUSETYPE::HOUSE_SARDAUKAR: {
                     musicPlayer->changeMusic(MUSIC_BRIEFING_H);
                 } break;
 
-                case HOUSE_ATREIDES:
-                case HOUSE_FREMEN: {
+                case HOUSETYPE::HOUSE_ATREIDES:
+                case HOUSETYPE::HOUSE_FREMEN: {
                     musicPlayer->changeMusic(MUSIC_BRIEFING_A);
                 } break;
 
-                case HOUSE_ORDOS:
-                case HOUSE_MERCENARY: {
+                case HOUSETYPE::HOUSE_ORDOS:
+                case HOUSETYPE::HOUSE_MERCENARY: {
                     musicPlayer->changeMusic(MUSIC_BRIEFING_O);
                 } break;
             }

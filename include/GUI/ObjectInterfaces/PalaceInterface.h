@@ -75,18 +75,18 @@ protected:
             int picID;
 
             switch(pPalace->getOwner()->getHouseID()) {
-                case HOUSE_HARKONNEN:
-                case HOUSE_SARDAUKAR: {
+                case HOUSETYPE::HOUSE_HARKONNEN:
+                case HOUSETYPE::HOUSE_SARDAUKAR: {
                     picID = Picture_DeathHand;
                 } break;
 
-                case HOUSE_ATREIDES:
-                case HOUSE_FREMEN: {
+                case HOUSETYPE::HOUSE_ATREIDES:
+                case HOUSETYPE::HOUSE_FREMEN: {
                     picID = Picture_Fremen;
                 } break;
 
-                case HOUSE_ORDOS:
-                case HOUSE_MERCENARY: {
+                case HOUSETYPE::HOUSE_ORDOS:
+                case HOUSETYPE::HOUSE_MERCENARY: {
                     picID = Picture_Saboteur;
                 } break;
 
@@ -113,7 +113,7 @@ private:
 
         Palace* pPalace = dynamic_cast<Palace*>(pObject);
         if(pPalace != nullptr) {
-            if((pPalace->getOriginalHouseID() == HOUSE_HARKONNEN) || (pPalace->getOriginalHouseID() == HOUSE_SARDAUKAR)) {
+            if((pPalace->getOriginalHouseID() == HOUSETYPE::HOUSE_HARKONNEN) || (pPalace->getOriginalHouseID() == HOUSETYPE::HOUSE_SARDAUKAR)) {
                 currentGame->currentCursorMode = Game::CursorMode_Attack;
             } else {
                 pPalace->handleSpecialClick();

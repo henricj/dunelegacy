@@ -61,7 +61,7 @@ public:
     */
     void setSound(bool value) noexcept;
 
-    void playVoice(Voice_enum id, int houseID) const;
+    void playVoice(Voice_enum id, HOUSETYPE houseID) const;
 
     void playSound(Mix_Chunk* sound) const;
 

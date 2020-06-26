@@ -29,7 +29,7 @@ ObjectData::ObjectData()
 {
     // set default values
     for(int i=0;i<Num_ItemID;i++) {
-        for(int h=0;h<NUM_HOUSES;h++) {
+        for(int h=0;h<static_cast<int>(HOUSETYPE::NUM_HOUSES);h++) {
             data[i][h].enabled = false;
             data[i][h].hitpoints = 0;
             data[i][h].price = 0;
@@ -58,8 +58,8 @@ void ObjectData::loadFromINIFile(const std::string& filename)
     INIFile objectDataFile(pFileManager->openFile(filename).get());
 
     // load default structure values
-    ObjectDataStruct structureDefaultData[NUM_HOUSES];
-    for(int h=0;h<NUM_HOUSES;h++) {
+    ObjectDataStruct structureDefaultData[static_cast<int>(HOUSETYPE::NUM_HOUSES)];
+    for(int h=0;h<static_cast<int>(HOUSETYPE::NUM_HOUSES);h++) {
         structureDefaultData[h].enabled = loadBoolValue(objectDataFile, "default structure", "Enabled", houseChar[h]);
         structureDefaultData[h].hitpoints = loadIntValue(objectDataFile, "default structure", "HitPoints", houseChar[h]);
         structureDefaultData[h].price = loadIntValue(objectDataFile, "default structure", "Price", houseChar[h]);
@@ -80,8 +80,8 @@ void ObjectData::loadFromINIFile(const std::string& filename)
     }
 
     // load default unit values
-    ObjectDataStruct unitDefaultData[NUM_HOUSES];
-    for(int h=0;h<NUM_HOUSES;h++) {
+    ObjectDataStruct unitDefaultData[static_cast<int>(HOUSETYPE::NUM_HOUSES)];
+    for(int h=0;h<static_cast<int>(HOUSETYPE::NUM_HOUSES);h++) {
         unitDefaultData[h].enabled = loadBoolValue(objectDataFile, "default unit", "Enabled", houseChar[h]);
         unitDefaultData[h].hitpoints = loadIntValue(objectDataFile, "default unit", "HitPoints", houseChar[h]);
         unitDefaultData[h].price = loadIntValue(objectDataFile, "default unit", "Price", houseChar[h]);
@@ -103,7 +103,7 @@ void ObjectData::loadFromINIFile(const std::string& filename)
 
     // set default values
     for(int i=0;i<Num_ItemID;i++) {
-        for(int h=0;h<NUM_HOUSES;h++) {
+        for(int h=0;h<static_cast<int>(HOUSETYPE::NUM_HOUSES);h++) {
             if(isStructure(i)) {
                 data[i][h] = structureDefaultData[h];
             } else {
@@ -126,7 +126,7 @@ void ObjectData::loadFromINIFile(const std::string& filename)
             continue;
         }
 
-        for(int h=0;h<NUM_HOUSES;h++) {
+        for(int h=0;h<static_cast<int>(HOUSETYPE::NUM_HOUSES);h++) {
 
             ObjectDataStruct& defaultData = isStructure(itemID) ? structureDefaultData[h] : unitDefaultData[h];
 
@@ -154,7 +154,7 @@ void ObjectData::loadFromINIFile(const std::string& filename)
 void ObjectData::save(OutputStream& stream) const
 {
     for(int i=0;i<Num_ItemID;i++) {
-        for(int h=0;h<NUM_HOUSES;h++) {
+        for(int h=0;h<static_cast<int>(HOUSETYPE::NUM_HOUSES);h++) {
             stream.writeBool(data[i][h].enabled);
             stream.writeSint32(data[i][h].hitpoints);
             stream.writeSint32(data[i][h].price);
@@ -179,7 +179,7 @@ void ObjectData::save(OutputStream& stream) const
 void ObjectData::load(InputStream& stream)
 {
     for(int i=0;i<Num_ItemID;i++) {
-        for(int h=0;h<NUM_HOUSES;h++) {
+        for(int h=0;h<static_cast<int>(HOUSETYPE::NUM_HOUSES);h++) {
             data[i][h].enabled = stream.readBool();
             data[i][h].hitpoints = stream.readSint32();
             data[i][h].price = stream.readSint32();

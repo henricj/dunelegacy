@@ -50,7 +50,7 @@ void Tank::init() {
     gunGraphicID = ObjPic_Tank_Gun;
     turretGraphic = pGFXManager->getObjPic(gunGraphicID,getOwner()->getHouseID());
 
-    numImagesX = NUM_ANGLES;
+    numImagesX = static_cast<int>(ANGLETYPE::NUM_ANGLES);
     numImagesY = 1;
 }
 
@@ -62,14 +62,15 @@ void Tank::blitToScreen() {
     int y = screenborder->world2screenY(realY);
 
     SDL_Texture* pUnitGraphic = graphic[currentZoomlevel];
-    SDL_Rect source1 = calcSpriteSourceRect(pUnitGraphic, drawnAngle, numImagesX);
+    SDL_Rect source1 = calcSpriteSourceRect(pUnitGraphic, static_cast<int>(drawnAngle), numImagesX);
     SDL_Rect dest1 = calcSpriteDrawingRect( pUnitGraphic, x, y, numImagesX, 1, HAlign::Center, VAlign::Center);
 
     SDL_RenderCopy(renderer, pUnitGraphic, &source1, &dest1);
 
     SDL_Texture* pTurretGraphic = turretGraphic[currentZoomlevel];
-    SDL_Rect source2 = calcSpriteSourceRect(pTurretGraphic, drawnTurretAngle, NUM_ANGLES);
-    SDL_Rect dest2 = calcSpriteDrawingRect( pTurretGraphic, x, y, NUM_ANGLES, 1, HAlign::Center, VAlign::Center);
+    SDL_Rect source2 = calcSpriteSourceRect(pTurretGraphic, static_cast<int>(drawnTurretAngle), static_cast<int>(ANGLETYPE::NUM_ANGLES));
+    SDL_Rect dest2   = calcSpriteDrawingRect(pTurretGraphic, x, y, static_cast<int>(ANGLETYPE::NUM_ANGLES), 1,
+                                           HAlign::Center, VAlign::Center);
 
     SDL_RenderCopy(renderer, pTurretGraphic, &source2, &dest2);
 

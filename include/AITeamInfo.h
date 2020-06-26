@@ -24,12 +24,12 @@
 
 class AITeamInfo {
 public:
-    AITeamInfo(int houseID, AITeamBehavior aiTeamBehavior, AITeamType aiTeamType, int minUnits, int maxUnits)
+    AITeamInfo(HOUSETYPE houseID, AITeamBehavior aiTeamBehavior, AITeamType aiTeamType, int minUnits, int maxUnits)
      : houseID(houseID), aiTeamBehavior(aiTeamBehavior), aiTeamType(aiTeamType), minUnits(minUnits), maxUnits(maxUnits) {
     }
 
     explicit AITeamInfo(InputStream& stream) {
-        houseID = stream.readUint32();
+        houseID = static_cast<HOUSETYPE>(stream.readUint32());
         aiTeamBehavior = static_cast<AITeamBehavior>(stream.readUint32());
         aiTeamType = static_cast<AITeamType>(stream.readUint32());
         minUnits = stream.readUint32();
@@ -37,14 +37,14 @@ public:
     }
 
     void save(OutputStream& stream) const {
-        stream.writeUint32(houseID);
-        stream.writeUint32(aiTeamBehavior);
-        stream.writeUint32(aiTeamType);
+        stream.writeUint32(static_cast<Uint32>(houseID));
+        stream.writeUint32(static_cast<Uint32>(aiTeamBehavior));
+        stream.writeUint32(static_cast<Uint32>(aiTeamType));
         stream.writeUint32(minUnits);
         stream.writeUint32(maxUnits);
     }
 
-    int          houseID;
+    HOUSETYPE          houseID;
     AITeamBehavior aiTeamBehavior;
     AITeamType     aiTeamType;
     int          minUnits;

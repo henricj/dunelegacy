@@ -75,6 +75,7 @@ void drawCursor() {
 SDL_Texture* resolveItemPicture(int itemID, HOUSETYPE house) {
     int newPicID;
 
+    // clang-format off
     switch(itemID) {
         case Structure_Barracks:            newPicID = Picture_Barracks;            break;
         case Structure_ConstructionYard:    newPicID = Picture_ConstructionYard;    break;
@@ -115,8 +116,8 @@ SDL_Texture* resolveItemPicture(int itemID, HOUSETYPE house) {
         case Unit_Soldier:                  newPicID = Picture_Soldier;             break;
         case Unit_Trooper: {
             switch(house) {
-                case HOUSE_SARDAUKAR:       newPicID = Picture_Sardaukar;           break;
-                case HOUSE_FREMEN:          newPicID = Picture_Fremen;              break;
+                case HOUSETYPE::HOUSE_SARDAUKAR: newPicID = Picture_Sardaukar; break;
+                case HOUSETYPE::HOUSE_FREMEN: newPicID = Picture_Fremen; break;
                 default:                    newPicID = Picture_Trooper;             break;
             }
         } break;
@@ -124,8 +125,8 @@ SDL_Texture* resolveItemPicture(int itemID, HOUSETYPE house) {
         case Unit_Infantry:                 newPicID = Picture_Soldier;             break;
         case Unit_Troopers: {
             switch(house) {
-                case HOUSE_SARDAUKAR:       newPicID = Picture_Sardaukar;           break;
-                case HOUSE_FREMEN:          newPicID = Picture_Fremen;              break;
+                case HOUSETYPE::HOUSE_SARDAUKAR: newPicID = Picture_Sardaukar; break;
+                case HOUSETYPE::HOUSE_FREMEN: newPicID = Picture_Fremen; break;
                 default:                    newPicID = Picture_Trooper;             break;
             }
         } break;
@@ -134,6 +135,7 @@ SDL_Texture* resolveItemPicture(int itemID, HOUSETYPE house) {
             THROW(std::invalid_argument, "resolveItemPicture(): Invalid item ID " + std::to_string(itemID) + "!");
         break;
     }
+    // clang-format on
 
     return pGFXManager->getSmallDetailPic(newPicID);
 }
@@ -289,6 +291,7 @@ Uint32  getItemIDByName(const std::string& name) {
     \return the name of the item (e.g. "Sandworm").
 */
 std::string getItemNameByID(Uint32 itemID) {
+    // clang-format off
     switch(itemID) {
         case Structure_Barracks:            return "Barracks";          break;
         case Structure_ConstructionYard:    return "Const Yard";        break;
@@ -303,8 +306,8 @@ std::string getItemNameByID(Uint32 itemID) {
         case Structure_RepairYard:          return "Repair";            break;
         case Structure_RocketTurret:        return "R-Turret";          break;
         case Structure_Silo:                return "Spice Silo";        break;
-        case Structure_Slab1:               return "Concrete";         break;
-        case Structure_Slab4:               return "Slab4";         break;
+        case Structure_Slab1:               return "Concrete";          break;
+        case Structure_Slab4:               return "Slab4";             break;
         case Structure_StarPort:            return "Starport";          break;
         case Structure_Wall:                return "Wall";              break;
         case Structure_WindTrap:            return "Windtrap";          break;
@@ -313,8 +316,8 @@ std::string getItemNameByID(Uint32 itemID) {
         case Unit_Carryall:                 return "Carryall";          break;
         case Unit_Devastator:               return "Devastator";        break;
         case Unit_Deviator:                 return "Deviator";          break;
-        case Unit_Frigate:                  return "Frigate";          break;
-        case Unit_Harvester:                return "Harvester";     break;
+        case Unit_Frigate:                  return "Frigate";           break;
+        case Unit_Harvester:                return "Harvester";         break;
         case Unit_Launcher:                 return "Launcher";          break;
         case Unit_MCV:                      return "MCV";               break;
         case Unit_Ornithopter:              return "'Thopter";          break;
@@ -323,7 +326,7 @@ std::string getItemNameByID(Uint32 itemID) {
         case Unit_SiegeTank:                return "Siege Tank";        break;
         case Unit_SonicTank:                return "Sonic Tank";        break;
         case Unit_Tank:                     return "Tank";              break;
-        case Unit_Trike:                    return "Trike";         break;
+        case Unit_Trike:                    return "Trike";             break;
         case Unit_Saboteur:                 return "Saboteur";          break;
         case Unit_Sandworm:                 return "Sandworm";          break;
         case Unit_Soldier:                  return "Soldier";           break;
@@ -336,6 +339,7 @@ std::string getItemNameByID(Uint32 itemID) {
             THROW(std::invalid_argument, "getItemNameByID(): Invalid item ID!");
         break;
     }
+    // clang-format on
 }
 
 
@@ -345,6 +349,7 @@ std::string getItemNameByID(Uint32 itemID) {
     \return the string corresponding.
 */
 std::string resolveItemName(int itemID) {
+    // clang-format off
     switch(itemID) {
         case Structure_Barracks:            return _("@DUNE.ENG|253#Barracks");            break;
         case Structure_ConstructionYard:    return _("@DUNE.ENG|249#Construction Yard");   break;
@@ -392,6 +397,7 @@ std::string resolveItemName(int itemID) {
             THROW(std::invalid_argument, "resolveItemName(): Invalid item ID!");
         break;
     }
+    // clang-format on
 }
 
 
@@ -404,13 +410,15 @@ std::string resolveItemName(int itemID) {
 HOUSETYPE getHouseByName(const std::string& name) {
     const std::string lowerName = strToLower(name);
 
-    if(lowerName == "harkonnen")         return HOUSE_HARKONNEN;
-    else if(lowerName == "atreides")     return HOUSE_ATREIDES;
-    else if(lowerName == "ordos")        return HOUSE_ORDOS;
-    else if(lowerName == "fremen")       return HOUSE_FREMEN;
-    else if(lowerName == "sardaukar")    return HOUSE_SARDAUKAR;
-    else if(lowerName == "mercenary")    return HOUSE_MERCENARY;
-    else                                return HOUSE_INVALID;
+    // clang-format off
+    if(lowerName == "harkonnen")         return HOUSETYPE::HOUSE_HARKONNEN;
+    else if(lowerName == "atreides")     return HOUSETYPE::HOUSE_ATREIDES;
+    else if(lowerName == "ordos")        return HOUSETYPE::HOUSE_ORDOS;
+    else if(lowerName == "fremen")       return HOUSETYPE::HOUSE_FREMEN;
+    else if(lowerName == "sardaukar")    return HOUSETYPE::HOUSE_SARDAUKAR;
+    else if(lowerName == "mercenary")    return HOUSETYPE::HOUSE_MERCENARY;
+    else                                return HOUSETYPE::HOUSE_INVALID;
+    // clang-format on
 }
 
 /**
@@ -419,15 +427,10 @@ HOUSETYPE getHouseByName(const std::string& name) {
     \return the name of the house (e.g. "Atreides").
 */
 std::string getHouseNameByNumber(HOUSETYPE house) {
-    if(house >= 0 && house < NUM_HOUSES) {
-        static const char* const houseName[NUM_HOUSES] = {  "Harkonnen",
-                                                            "Atreides",
-                                                            "Ordos",
-                                                            "Fremen",
-                                                            "Sardaukar",
-                                                            "Mercenary"
-                                                   };
-        return houseName[house];
+    if(static_cast<int>(house) >= 0 && house < HOUSETYPE::NUM_HOUSES) {
+        static const char* const houseName[static_cast<int>(HOUSETYPE::NUM_HOUSES)] = {
+            "Harkonnen", "Atreides", "Ordos", "Fremen", "Sardaukar", "Mercenary"};
+        return houseName[static_cast<int>(house)];
     } else {
         THROW(std::invalid_argument, "Invalid house number %d!", house);
     }
@@ -436,50 +439,56 @@ std::string getHouseNameByNumber(HOUSETYPE house) {
 ATTACKMODE getAttackModeByName(const std::string& name) {
     const std::string lowerName = strToLower(name);
 
-    if(lowerName == "guard")                                    return GUARD;
-    else if(lowerName == "area guard")                          return AREAGUARD;
-    else if(lowerName == "ambush")                              return AMBUSH;
-    else if((lowerName == "hunt") || (lowerName == "attack"))   return HUNT;
-    else if(lowerName == "harvest")                             return HARVEST;
-    else if(lowerName == "sabotage")                            return SABOTAGE;
-    else if(lowerName == "stop")                                return STOP;
-    else if(lowerName == "capture")                             return CAPTURE;
-    else if(lowerName == "retreat")                             return RETREAT;
-    else                                                        return ATTACKMODE_INVALID;
+    // clang-format off
+    if(lowerName == "guard")                                    return ATTACKMODE::GUARD;
+    else if(lowerName == "area guard")                          return ATTACKMODE::AREAGUARD;
+    else if(lowerName == "ambush")                              return ATTACKMODE::AMBUSH;
+    else if((lowerName == "hunt") || (lowerName == "attack"))   return ATTACKMODE::HUNT;
+    else if(lowerName == "harvest")                             return ATTACKMODE::HARVEST;
+    else if(lowerName == "sabotage")                            return ATTACKMODE::SABOTAGE;
+    else if(lowerName == "stop")                                return ATTACKMODE::STOP;
+    else if(lowerName == "capture")                             return ATTACKMODE::CAPTURE;
+    else if(lowerName == "retreat")                             return ATTACKMODE::RETREAT;
+    else                                                        return ATTACKMODE::ATTACKMODE_INVALID;
+    // clang-format on
 }
 
 
 std::string getAttackModeNameByMode(ATTACKMODE attackMode) {
+    // clang-format off
     switch(attackMode) {
-        case GUARD:     return "Guard";         break;
-        case AREAGUARD: return "Area Guard";    break;
-        case AMBUSH:    return "Ambush";        break;
-        case HUNT:      return "Hunt";          break;
-        case HARVEST:   return "Harvest";       break;
-        case SABOTAGE:  return "Sabotage";      break;
-        case STOP:      return "Stop";          break;
-        case CAPTURE:   return "Capture";          break;
+        case ATTACKMODE::GUARD:     return "Guard";         break;
+        case ATTACKMODE::AREAGUARD: return "Area Guard";    break;
+        case ATTACKMODE::AMBUSH:    return "Ambush";        break;
+        case ATTACKMODE::HUNT:      return "Hunt";          break;
+        case ATTACKMODE::HARVEST:   return "Harvest";       break;
+        case ATTACKMODE::SABOTAGE:  return "Sabotage";      break;
+        case ATTACKMODE::STOP:      return "Stop";          break;
+        case ATTACKMODE::CAPTURE:   return "Capture";       break;
         default:
             THROW(std::invalid_argument, "getAttackModeNameByMode(): Invalid attack mode!");
         break;
     }
+    // clang-format on
 }
 
 
-Uint32 getColorByTerrainType(int terrainType) {
+Uint32 getColorByTerrainType(TERRAINTYPE terrainType) {
     Uint32 color = COLOR_BLACK;
+    // clang-format off
     switch (terrainType) {
-        case Terrain_Dunes:         color = COLOR_DESERTSAND;  break;
-        case Terrain_Mountain:      color = COLOR_MOUNTAIN;    break;
-        case Terrain_Rock:          color = COLOR_ROCK;        break;
-        case Terrain_Sand:          color = COLOR_DESERTSAND;  break;
-        case Terrain_Spice:         color = COLOR_SPICE;       break;
-        case Terrain_ThickSpice:    color = COLOR_THICKSPICE;  break;
-        case Terrain_SpiceBloom:    color = COLOR_BLOOM;       break;
-        case Terrain_SpecialBloom:  color = COLOR_BLOOM;       break;
-        case Terrain_Slab:          color = COLOR_ROCK;        break;
-        default:                    color = COLOR_ROCK;        break;
+        case TERRAINTYPE::Terrain_Dunes:         color = COLOR_DESERTSAND;  break;
+        case TERRAINTYPE::Terrain_Mountain:      color = COLOR_MOUNTAIN;    break;
+        case TERRAINTYPE::Terrain_Rock:          color = COLOR_ROCK;        break;
+        case TERRAINTYPE::Terrain_Sand:          color = COLOR_DESERTSAND;  break;
+        case TERRAINTYPE::Terrain_Spice:         color = COLOR_SPICE;       break;
+        case TERRAINTYPE::Terrain_ThickSpice:    color = COLOR_THICKSPICE;  break;
+        case TERRAINTYPE::Terrain_SpiceBloom:    color = COLOR_BLOOM;       break;
+        case TERRAINTYPE::Terrain_SpecialBloom:  color = COLOR_BLOOM;       break;
+        case TERRAINTYPE::Terrain_Slab:          color = COLOR_ROCK;        break;
+        default:                                 color = COLOR_ROCK;        break;
     }
+    // clang-format on
 
     return color;
 }
@@ -490,85 +499,89 @@ DropLocation getDropLocationByName(const std::string& name) {
     const std::string lowerName = strToLower(name);
 
     if(lowerName == "north") {
-        return Drop_North;
+        return DropLocation::Drop_North;
     } else if(lowerName == "east") {
-        return Drop_East;
+        return DropLocation::Drop_East;
     } else if(lowerName == "south") {
-        return Drop_South;
+        return DropLocation::Drop_South;
     } else if(lowerName == "west") {
-        return Drop_West;
+        return DropLocation::Drop_West;
     } else if(lowerName == "air") {
-        return Drop_Air;
+        return DropLocation::Drop_Air;
     } else if(lowerName == "visible") {
-        return Drop_Visible;
+        return DropLocation::Drop_Visible;
     } else if(lowerName == "enemybase") {
-        return Drop_Enemybase;
+        return DropLocation::Drop_Enemybase;
     } else if(lowerName == "homebase") {
-        return Drop_Homebase;
+        return DropLocation::Drop_Homebase;
     } else {
-        return Drop_Invalid;
+        return DropLocation::Drop_Invalid;
     }
 }
 
 
 std::string getDropLocationNameByID(DropLocation dropLocation) {
+    // clang-format off
     switch(dropLocation) {
-        case Drop_North:     return "North";     break;
-        case Drop_East:      return "East";      break;
-        case Drop_South:     return "South";     break;
-        case Drop_West:      return "West";      break;
-        case Drop_Air:       return "Air";       break;
-        case Drop_Visible:   return "Visible";   break;
-        case Drop_Enemybase: return "Enemybase"; break;
-        case Drop_Homebase:  return "Homebase";  break;
+        case DropLocation::Drop_North:     return "North";     break;
+        case DropLocation::Drop_East:      return "East";      break;
+        case DropLocation::Drop_South:     return "South";     break;
+        case DropLocation::Drop_West:      return "West";      break;
+        case DropLocation::Drop_Air:       return "Air";       break;
+        case DropLocation::Drop_Visible:   return "Visible";   break;
+        case DropLocation::Drop_Enemybase: return "Enemybase"; break;
+        case DropLocation::Drop_Homebase:  return "Homebase";  break;
         default:
             THROW(std::invalid_argument, "getDropLocationNameByID(): Invalid drop location!");
         break;
     }
+    // clang-format on
 }
 
 std::string resolveDropLocationName(DropLocation dropLocation) {
+    // clang-format off
     switch(dropLocation) {
-        case Drop_North:     return _("top edge");     break;
-        case Drop_East:      return _("right edge");   break;
-        case Drop_South:     return _("bottom edge");  break;
-        case Drop_West:      return _("left edge");    break;
-        case Drop_Air:       return _("random");       break;
-        case Drop_Visible:   return _("middle");       break;
-        case Drop_Enemybase: return _("enemy base");   break;
-        case Drop_Homebase:  return _("home base");    break;
+        case DropLocation::Drop_North:     return _("top edge"); break;
+        case DropLocation::Drop_East:      return _("right edge"); break;
+        case DropLocation::Drop_South:     return _("bottom edge"); break;
+        case DropLocation::Drop_West:      return _("left edge"); break;
+        case DropLocation::Drop_Air:       return _("random"); break;
+        case DropLocation::Drop_Visible:   return _("middle"); break;
+        case DropLocation::Drop_Enemybase: return _("enemy base"); break;
+        case DropLocation::Drop_Homebase:  return _("home base"); break;
         default:
             THROW(std::invalid_argument, "resolveDropLocationName(): Invalid drop location!");
         break;
     }
+    // clang-format on
 }
 
 AITeamBehavior getAITeamBehaviorByName(const std::string& name) {
     const std::string lowerName = strToLower(name);
 
     if(lowerName == "normal") {
-        return AITeamBehavior_Normal;
+        return AITeamBehavior::AITeamBehavior_Normal;
     } else if(lowerName == "guard") {
-        return AITeamBehavior_Guard;
+        return AITeamBehavior::AITeamBehavior_Guard;
     } else if(lowerName == "kamikaze") {
-        return AITeamBehavior_Kamikaze;
+        return AITeamBehavior::AITeamBehavior_Kamikaze;
     } else if(lowerName == "staging") {
-        return AITeamBehavior_Staging;
+        return AITeamBehavior::AITeamBehavior_Staging;
     } else if(lowerName == "flee") {
-        return AITeamBehavior_Flee;
+        return AITeamBehavior::AITeamBehavior_Flee;
     } else {
-        return AITeamBehavior_Invalid;
+        return AITeamBehavior::AITeamBehavior_Invalid;
     }
 }
 
 
 std::string getAITeamBehaviorNameByID(AITeamBehavior aiTeamBehavior) {
     switch(aiTeamBehavior) {
-        case AITeamBehavior_Normal:     return "Normal";     break;
-        case AITeamBehavior_Guard:      return "Guard";      break;
-        case AITeamBehavior_Kamikaze:   return "Kamikaze";   break;
-        case AITeamBehavior_Staging:    return "Staging";    break;
-        case AITeamBehavior_Flee:       return "Flee";       break;
+        case AITeamBehavior::AITeamBehavior_Normal:     return "Normal";     break;
+        case AITeamBehavior::AITeamBehavior_Guard:      return "Guard";      break;
+        case AITeamBehavior::AITeamBehavior_Kamikaze: return "Kamikaze"; break;
+        case AITeamBehavior::AITeamBehavior_Staging: return "Staging"; break;
+        case AITeamBehavior::AITeamBehavior_Flee: return "Flee"; break;
         default:
             THROW(std::invalid_argument, "getAITeamBehaviorNameByID(): Invalid team behavior!");
         break;
@@ -580,31 +593,31 @@ AITeamType getAITeamTypeByName(const std::string& name) {
     const std::string lowerName = strToLower(name);
 
     if(lowerName == "foot") {
-        return AITeamType_Foot;
+        return AITeamType::AITeamType_Foot;
     } else if(lowerName == "wheel" || lowerName == "wheeled") {
-        return AITeamType_Wheeled;
+        return AITeamType::AITeamType_Wheeled;
     } else if(lowerName == "track" || lowerName == "tracked") {
-        return AITeamType_Tracked;
+        return AITeamType::AITeamType_Tracked;
     } else if(lowerName == "winged") {
-        return AITeamType_Winged;
+        return AITeamType::AITeamType_Winged;
     } else if(lowerName == "slither") {
-        return AITeamType_Slither;
+        return AITeamType::AITeamType_Slither;
     } else if(lowerName == "harvester") {
-        return AITeamType_Harvester;
+        return AITeamType::AITeamType_Harvester;
     } else {
-        return AITeamType_Invalid;
+        return AITeamType::AITeamType_Invalid;
     }
 }
 
 
 std::string getAITeamTypeNameByID(AITeamType aiTeamType) {
     switch(aiTeamType) {
-        case AITeamType_Foot:      return "Foot";      break;
-        case AITeamType_Wheeled:   return "Wheeled";   break;
-        case AITeamType_Tracked:   return "Tracked";   break;
-        case AITeamType_Winged:    return "Winged";    break;
-        case AITeamType_Slither:   return "Slither";   break;
-        case AITeamType_Harvester: return "Harvester"; break;
+        case AITeamType::AITeamType_Foot: return "Foot"; break;
+        case AITeamType::AITeamType_Wheeled: return "Wheeled"; break;
+        case AITeamType::AITeamType_Tracked: return "Tracked"; break;
+        case AITeamType::AITeamType_Winged: return "Winged"; break;
+        case AITeamType::AITeamType_Slither: return "Slither"; break;
+        case AITeamType::AITeamType_Harvester: return "Harvester"; break;
         default:
             THROW(std::invalid_argument, "getAITeamTypeNameByID(): Invalid team type!");
         break;
@@ -624,12 +637,12 @@ FixPoint getDeviateWeakness(HOUSETYPE house) {
         return 1.00_fix;
     } else {
         switch(house) {
-            case HOUSE_HARKONNEN:   return 0.78_fix;
-            case HOUSE_ATREIDES:    return 0.30_fix;
-            case HOUSE_ORDOS:       return 0.50_fix;
-            case HOUSE_FREMEN:      return 0.08_fix;
-            case HOUSE_SARDAUKAR:   return 0.04_fix;
-            case HOUSE_MERCENARY:   return 0.50_fix;
+            case HOUSETYPE::HOUSE_HARKONNEN: return 0.78_fix;
+            case HOUSETYPE::HOUSE_ATREIDES: return 0.30_fix;
+            case HOUSETYPE::HOUSE_ORDOS: return 0.50_fix;
+            case HOUSETYPE::HOUSE_FREMEN: return 0.08_fix;
+            case HOUSETYPE::HOUSE_SARDAUKAR: return 0.04_fix;
+            case HOUSETYPE::HOUSE_MERCENARY: return 0.50_fix;
             default:                return 0.00_fix;
         }
     }
@@ -700,16 +713,18 @@ void startSinglePlayerGame(const GameInitSettings& init)
                             campaignStats.showMenu();
                         }
 
-                        const int houseID = currentGameInitInfo.getHouseID();
+                        const auto houseID = currentGameInitInfo.getHouseID();
 
                         if(currentGameInitInfo.getGameType() == GameType::Campaign) {
                             const int level = missionNumberToLevelNumber(currentGameInitInfo.getMission());
 
-                            if(level == 4 && (houseID == HOUSE_HARKONNEN || houseID == HOUSE_ATREIDES || houseID == HOUSE_ORDOS)) {
+                            if(level == 4 && (houseID == HOUSETYPE::HOUSE_HARKONNEN || houseID == HOUSETYPE::HOUSE_ATREIDES || houseID == HOUSETYPE::HOUSE_ORDOS)) {
                                 SDL_Log("Playing meanwhile...");
                                 Meanwhile meanwhile(houseID,true);
                                 meanwhile.run();
-                            } else if(level == 8 && (houseID == HOUSE_HARKONNEN || houseID == HOUSE_ATREIDES || houseID == HOUSE_ORDOS)) {
+                            } else if(level == 8 &&
+                                      (houseID == HOUSETYPE::HOUSE_HARKONNEN || houseID == HOUSETYPE::HOUSE_ATREIDES ||
+                                                     houseID == HOUSETYPE::HOUSE_ORDOS)) {
                                 SDL_Log("Playing meanwhile...");
                                 Meanwhile meanwhile(houseID,false);
                                 meanwhile.run();

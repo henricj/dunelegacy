@@ -73,14 +73,15 @@ void TextManager::loadData() {
     addOrigDuneText("MESSAGE." + ext);
 
     // load all mentat texts
-    mentatStrings[HOUSE_HARKONNEN] = std::make_unique<MentatTextFile>(pFileManager->openFile("MENTATH." + ext).get());
-    mentatStrings[HOUSE_ATREIDES] = std::make_unique<MentatTextFile>(pFileManager->openFile("MENTATA." + ext).get());
-    mentatStrings[HOUSE_ORDOS] = std::make_unique<MentatTextFile>(pFileManager->openFile("MENTATO." + ext).get());
+    mentatStrings[static_cast<int>(HOUSETYPE::HOUSE_HARKONNEN)] = std::make_unique<MentatTextFile>(pFileManager->openFile("MENTATH." + ext).get());
+    mentatStrings[static_cast<int>(HOUSETYPE::HOUSE_ATREIDES)] = std::make_unique<MentatTextFile>(pFileManager->openFile("MENTATA." + ext).get());
+    mentatStrings[static_cast<int>(HOUSETYPE::HOUSE_ORDOS)] = std::make_unique<MentatTextFile>(pFileManager->openFile("MENTATO." + ext).get());
 }
 
-std::string TextManager::getBriefingText(unsigned int mission, unsigned int texttype, int house) const {
+std::string TextManager::getBriefingText(unsigned int mission, unsigned int texttype, HOUSETYPE house) const {
+    // clang-format off
     switch(house) {
-        case HOUSE_HARKONNEN: {
+        case HOUSETYPE::HOUSE_HARKONNEN: {
             switch(texttype) {
                 case MISSION_DESCRIPTION: {
                     switch(mission) {
@@ -149,7 +150,7 @@ std::string TextManager::getBriefingText(unsigned int mission, unsigned int text
             }
         } break;
 
-        case HOUSE_ATREIDES: {
+        case HOUSETYPE::HOUSE_ATREIDES: {
             switch(texttype) {
                 case MISSION_DESCRIPTION: {
                     switch(mission) {
@@ -218,7 +219,7 @@ std::string TextManager::getBriefingText(unsigned int mission, unsigned int text
             }
         } break;
 
-        case HOUSE_ORDOS: {
+        case HOUSETYPE::HOUSE_ORDOS: {
             switch(texttype) {
                 case MISSION_DESCRIPTION: {
                     switch(mission) {
@@ -287,7 +288,7 @@ std::string TextManager::getBriefingText(unsigned int mission, unsigned int text
             }
         } break;
 
-        case HOUSE_FREMEN: {
+        case HOUSETYPE::HOUSE_FREMEN: {
             switch(texttype) {
                 case MISSION_DESCRIPTION: {
                     switch(mission) {
@@ -356,7 +357,7 @@ std::string TextManager::getBriefingText(unsigned int mission, unsigned int text
             }
         } break;
 
-        case HOUSE_SARDAUKAR: {
+        case HOUSETYPE::HOUSE_SARDAUKAR: {
             switch(texttype) {
                 case MISSION_DESCRIPTION: {
                     switch(mission) {
@@ -425,7 +426,7 @@ std::string TextManager::getBriefingText(unsigned int mission, unsigned int text
             }
         } break;
 
-        case HOUSE_MERCENARY:
+        case HOUSETYPE::HOUSE_MERCENARY:
         default: {
             switch(texttype) {
                 case MISSION_DESCRIPTION: {
@@ -497,36 +498,37 @@ std::string TextManager::getBriefingText(unsigned int mission, unsigned int text
         } break;
 
     }
+    // clang-format on
 }
 
-std::vector<MentatTextFile::MentatEntry> TextManager::getAllMentatEntries(int house, unsigned int techLevel) const {
+std::vector<MentatTextFile::MentatEntry> TextManager::getAllMentatEntries(HOUSETYPE house, unsigned int techLevel) const {
     std::vector<MentatTextFile::MentatEntry> mentatEntries;
 
     switch(house) {
-        case HOUSE_HARKONNEN:
-        case HOUSE_SARDAUKAR:
+        case HOUSETYPE::HOUSE_HARKONNEN:
+        case HOUSETYPE::HOUSE_SARDAUKAR:
         default: {
-            for(unsigned int i = 0; i <  mentatStrings[HOUSE_HARKONNEN]->getNumEntries(); i++) {
-                if(mentatStrings[HOUSE_HARKONNEN]->getMentatEntry(i).techLevel <= techLevel) {
-                    mentatEntries.push_back(mentatStrings[HOUSE_HARKONNEN]->getMentatEntry(i));
+            for(unsigned int i = 0; i <  mentatStrings[static_cast<int>(HOUSETYPE::HOUSE_HARKONNEN)]->getNumEntries(); i++) {
+                if(mentatStrings[static_cast<int>(HOUSETYPE::HOUSE_HARKONNEN)]->getMentatEntry(i).techLevel <= techLevel) {
+                    mentatEntries.push_back(mentatStrings[static_cast<int>(HOUSETYPE::HOUSE_HARKONNEN)]->getMentatEntry(i));
                 }
             }
         } break;
 
-        case HOUSE_ATREIDES:
-        case HOUSE_FREMEN: {
-            for(unsigned int i = 0; i <  mentatStrings[HOUSE_ATREIDES]->getNumEntries(); i++) {
-                if(mentatStrings[HOUSE_ATREIDES]->getMentatEntry(i).techLevel <= techLevel) {
-                    mentatEntries.push_back(mentatStrings[HOUSE_ATREIDES]->getMentatEntry(i));
+        case HOUSETYPE::HOUSE_ATREIDES:
+        case HOUSETYPE::HOUSE_FREMEN: {
+            for(unsigned int i = 0; i <  mentatStrings[static_cast<int>(HOUSETYPE::HOUSE_ATREIDES)]->getNumEntries(); i++) {
+                if(mentatStrings[static_cast<int>(HOUSETYPE::HOUSE_ATREIDES)]->getMentatEntry(i).techLevel <= techLevel) {
+                    mentatEntries.push_back(mentatStrings[static_cast<int>(HOUSETYPE::HOUSE_ATREIDES)]->getMentatEntry(i));
                 }
             }
         } break;
 
-        case HOUSE_ORDOS:
-        case HOUSE_MERCENARY: {
-            for(unsigned int i = 0; i <  mentatStrings[HOUSE_ORDOS]->getNumEntries(); i++) {
-                if(mentatStrings[HOUSE_ORDOS]->getMentatEntry(i).techLevel <= techLevel) {
-                    mentatEntries.push_back(mentatStrings[HOUSE_ORDOS]->getMentatEntry(i));
+        case HOUSETYPE::HOUSE_ORDOS:
+        case HOUSETYPE::HOUSE_MERCENARY: {
+            for(unsigned int i = 0; i <  mentatStrings[static_cast<int>(HOUSETYPE::HOUSE_ORDOS)]->getNumEntries(); i++) {
+                if(mentatStrings[static_cast<int>(HOUSETYPE::HOUSE_ORDOS)]->getMentatEntry(i).techLevel <= techLevel) {
+                    mentatEntries.push_back(mentatStrings[static_cast<int>(HOUSETYPE::HOUSE_ORDOS)]->getMentatEntry(i));
                 }
             }
         } break;

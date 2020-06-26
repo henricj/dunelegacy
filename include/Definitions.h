@@ -70,10 +70,10 @@
 #define SIDEBARWIDTH 144
 #define SIDEBAR_COLUMN_WIDTH 12
 
-#define NONE_ID (static_cast<Uint32>(-1))          // unsigned -1
+#define NONE_ID (~0U)          // unsigned -1
 #define INVALID_POS (-1)
 #define INVALID (-1)
-#define INVALID_GAMECYCLE (static_cast<Uint32>(-1))
+#define INVALID_GAMECYCLE (~0U)
 
 #define NUM_TEAMS 7
 

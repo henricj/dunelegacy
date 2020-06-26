@@ -288,15 +288,21 @@ Coord StructureBase::getClosestCenterPoint(const Coord& objectLocation) const {
 }
 
 void StructureBase::handleActionClick(int xPos, int yPos) {
-    if ((xPos < location.x) || (xPos >= (location.x + structureSize.x)) || (yPos < location.y) || (yPos >= (location.y + structureSize.y))) {
-        currentGame->getCommandManager().addCommand(Command(pLocalPlayer->getPlayerID(), CMD_STRUCTURE_SETDEPLOYPOSITION,objectID, (Uint32) xPos, (Uint32) yPos));
+    if((xPos < location.x) || (xPos >= (location.x + structureSize.x)) || (yPos < location.y) ||
+       (yPos >= (location.y + structureSize.y))) {
+        currentGame->getCommandManager().addCommand(Command(pLocalPlayer->getPlayerID(),
+                                                            CMDTYPE::CMD_STRUCTURE_SETDEPLOYPOSITION, objectID,
+                                                            (Uint32)xPos, (Uint32)yPos));
     } else {
-        currentGame->getCommandManager().addCommand(Command(pLocalPlayer->getPlayerID(), CMD_STRUCTURE_SETDEPLOYPOSITION,objectID, (Uint32) NONE_ID, (Uint32) NONE_ID));
+        currentGame->getCommandManager().addCommand(Command(pLocalPlayer->getPlayerID(),
+                                                            CMDTYPE::CMD_STRUCTURE_SETDEPLOYPOSITION, objectID,
+                                                            (Uint32)NONE_ID, (Uint32)NONE_ID));
     }
 }
 
 void StructureBase::handleRepairClick() {
-    currentGame->getCommandManager().addCommand(Command(pLocalPlayer->getPlayerID(), CMD_STRUCTURE_REPAIR,objectID));
+    currentGame->getCommandManager().addCommand(
+        Command(pLocalPlayer->getPlayerID(), CMDTYPE::CMD_STRUCTURE_REPAIR, objectID));
 }
 
 void StructureBase::doSetDeployPosition(int xPos, int yPos) {
@@ -339,11 +345,11 @@ bool StructureBase::update() {
             degradeTimer = MILLI2CYCLES(15*1000);
 
             int damageMultiplyer = 1;
-            if(owner->getHouseID() == HOUSE_HARKONNEN || owner->getHouseID() == HOUSE_SARDAUKAR) {
+            if(owner->getHouseID() == HOUSETYPE::HOUSE_HARKONNEN || owner->getHouseID() == HOUSETYPE::HOUSE_SARDAUKAR) {
                 damageMultiplyer = 3;
-            } else if(owner->getHouseID() == HOUSE_ORDOS) {
+            } else if(owner->getHouseID() == HOUSETYPE::HOUSE_ORDOS) {
                 damageMultiplyer = 2;
-            } else if(owner->getHouseID() == HOUSE_MERCENARY) {
+            } else if(owner->getHouseID() == HOUSETYPE::HOUSE_MERCENARY) {
                 damageMultiplyer = 5;
             }
 
@@ -365,7 +371,7 @@ bool StructureBase::update() {
             // Original dune 2 is doing the repair calculation with fix-point math (multiply everything with 256).
             // It is calculating what fraction 2 hitpoints of the maximum health would be.
             const auto fraction = (2*256)/getMaxHealth();
-            const FixPoint repairprice = FixPoint(fraction * currentGame->objectData.data[itemID][originalHouseID].price) / 256;
+            const FixPoint repairprice = FixPoint(fraction * currentGame->objectData.data[itemID][static_cast<int>(originalHouseID)].price) / 256;
 
             // Original dune is always repairing 5 hitpoints (for the costs of 2) but we are only repairing 1/30th of that
             const auto repairHealth = 5_fix/30_fix;

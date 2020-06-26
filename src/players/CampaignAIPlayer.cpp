@@ -123,7 +123,7 @@ void CampaignAIPlayer::save(OutputStream& stream) const {
 
 
 void CampaignAIPlayer::update() {
-    if( (getGameCycleCount() + getHouse()->getHouseID()) % AIUPDATEINTERVAL != 0) {
+    if( (getGameCycleCount() + static_cast<int>(getHouse()->getHouseID())) % AIUPDATEINTERVAL != 0) {
         // we are not updating this AI player this cycle
         return;
     }
@@ -182,25 +182,23 @@ void CampaignAIPlayer::updateStructures() {
             const Palace* pPalace = static_cast<const Palace*>(pStructure);
             if(pPalace->isSpecialWeaponReady()){
 
-                if(getHouse()->getHouseID() != HOUSE_HARKONNEN && getHouse()->getHouseID() != HOUSE_SARDAUKAR) {
+                if(getHouse()->getHouseID() != HOUSETYPE::HOUSE_HARKONNEN && getHouse()->getHouseID() != HOUSETYPE::HOUSE_SARDAUKAR) {
                     doSpecialWeapon(pPalace);
                 } else {
                     const House* pBestHouse = nullptr;
 
-                    for(int i = 0; i < NUM_HOUSES; i++) {
-                        const House* pHouse = getHouse(i);
-                        if(!pHouse || pHouse->getTeamID() == getHouse()->getTeamID()) {
-                            continue;
-                        }
+                    currentGame->forAllHouses([&](const auto& house) {
+                        if(house.getTeamID() != getHouse()->getTeamID()) return;
 
                         if(!pBestHouse) {
-                            pBestHouse = pHouse;
-                        } else if(pHouse->getNumStructures() > pBestHouse->getNumStructures()) {
-                            pBestHouse = pHouse;
-                        } else if(pBestHouse->getNumStructures() == 0 && (pHouse->getNumUnits() > pBestHouse->getNumUnits())) {
-                            pBestHouse = pHouse;
+                            pBestHouse = &house;
+                        } else if(house.getNumStructures() > pBestHouse->getNumStructures()) {
+                            pBestHouse = &house;
+                        } else if(pBestHouse->getNumStructures() == 0 &&
+                                  (house.getNumUnits() > pBestHouse->getNumUnits())) {
+                            pBestHouse = &house;
                         }
-                    }
+                    });
 
                     if(pBestHouse) {
                         Coord target = pBestHouse->getNumStructures() > 0 ? pBestHouse->getCenterOfMainBase() : pBestHouse->getStrongestUnitPosition();

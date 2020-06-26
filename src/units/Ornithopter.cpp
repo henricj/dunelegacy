@@ -50,13 +50,13 @@ void Ornithopter::init() {
     graphic = pGFXManager->getObjPic(graphicID,getOwner()->getHouseID());
     shadowGraphic = pGFXManager->getObjPic(ObjPic_OrnithopterShadow,getOwner()->getHouseID());
 
-    numImagesX = NUM_ANGLES;
+    numImagesX = static_cast<int>(ANGLETYPE::NUM_ANGLES);
     numImagesY = 3;
 
     numWeapons = 1;
     bulletType = Bullet_SmallRocket;
 
-    currentMaxSpeed = currentGame->objectData.data[itemID][originalHouseID].maxspeed;
+    currentMaxSpeed = currentGame->objectData.data[itemID][static_cast<int>(originalHouseID)].maxspeed;
 }
 
 Ornithopter::~Ornithopter() = default;

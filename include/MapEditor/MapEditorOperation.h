@@ -231,11 +231,11 @@ public:
 class MapEditorUnitPlaceOperation : public MapEditorOperation {
 public:
 
-    MapEditorUnitPlaceOperation(int preferredID, Coord position, HOUSETYPE house, int itemID, int health, unsigned char angle, ATTACKMODE attackmode)
+    MapEditorUnitPlaceOperation(int preferredID, Coord position, HOUSETYPE house, int itemID, int health, ANGLETYPE angle, ATTACKMODE attackmode)
      : MapEditorOperation(), preferredID(preferredID), position(position), house(house), itemID(itemID), health(health), angle(angle), attackmode(attackmode) {
     }
 
-    MapEditorUnitPlaceOperation(Coord position, HOUSETYPE house, int itemID, int health, unsigned char angle, ATTACKMODE attackmode)
+    MapEditorUnitPlaceOperation(Coord position, HOUSETYPE house, int itemID, int health, ANGLETYPE angle, ATTACKMODE attackmode)
      : MapEditorOperation(), preferredID(INVALID), position(position), house(house), itemID(itemID), health(health), angle(angle), attackmode(attackmode) {
     }
 
@@ -246,9 +246,9 @@ public:
     int             preferredID;
     Coord           position;
     HOUSETYPE       house;
+    ANGLETYPE       angle;
     int             itemID;
     int             health;
-    unsigned char   angle;
     ATTACKMODE      attackmode;
 };
 
@@ -286,7 +286,7 @@ public:
 class MapEditorEditUnitOperation : public MapEditorOperation {
 public:
 
-    MapEditorEditUnitOperation(int id, int health, unsigned char angle, ATTACKMODE attackmode)
+    MapEditorEditUnitOperation(int id, int health, ANGLETYPE angle, ATTACKMODE attackmode)
      : MapEditorOperation(), id(id), health(health), angle(angle), attackmode(attackmode) {
     }
 
@@ -296,7 +296,7 @@ public:
 
     int             id;
     int             health;
-    unsigned char  angle;
+    ANGLETYPE       angle;
     ATTACKMODE      attackmode;
 };
 

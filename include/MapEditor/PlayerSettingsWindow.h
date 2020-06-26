@@ -91,7 +91,7 @@ private:
         DigitsTextBox       maxUnitsTextBox;
     };
 
-    PlayerWidgets   playerWidgets[NUM_HOUSES];
+    std::array<PlayerWidgets, static_cast<int>(HOUSETYPE::NUM_HOUSES)> playerWidgets;
 
 
     HBox        buttonHBox;

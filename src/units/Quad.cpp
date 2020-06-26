@@ -46,7 +46,7 @@ void Quad::init() {
     graphicID = ObjPic_Quad;
     graphic = pGFXManager->getObjPic(graphicID,getOwner()->getHouseID());
 
-    numImagesX = NUM_ANGLES;
+    numImagesX = static_cast<int>(ANGLETYPE::NUM_ANGLES);
     numImagesY = 1;
 }
 

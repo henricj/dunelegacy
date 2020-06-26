@@ -40,20 +40,20 @@
 
 #include <string>
 
-Finale::Finale(int house) {
+Finale::Finale(HOUSETYPE house) {
 
     switch(house) {
-        case HOUSE_HARKONNEN: {
+        case HOUSETYPE::HOUSE_HARKONNEN: {
             pPalace1 = std::make_unique<Wsafile>(pFileManager->openFile("HFINALA.WSA").get());
             pPalace2 = std::make_unique<Wsafile>(pFileManager->openFile("HFINALB.WSA").get(), pFileManager->openFile("HFINALC.WSA").get());
         } break;
 
-        case HOUSE_ATREIDES: {
+        case HOUSETYPE::HOUSE_ATREIDES: {
             pPalace1 = std::make_unique<Wsafile>(pFileManager->openFile("AFINALA.WSA").get());
             pPalace2 = std::make_unique<Wsafile>(pFileManager->openFile("AFINALB.WSA").get());
         } break;
 
-        case HOUSE_ORDOS: {
+        case HOUSETYPE::HOUSE_ORDOS: {
             pPalace1 = std::make_unique<Wsafile>(pFileManager->openFile("OFINALA.WSA").get(), pFileManager->openFile("OFINALB.WSA").get(), pFileManager->openFile("OFINALC.WSA").get());
             pPalace2 = std::make_unique<Wsafile>(pFileManager->openFile("OFINALD.WSA").get());
         } break;
@@ -63,7 +63,7 @@ Finale::Finale(int house) {
         } break;
     }
 
-    if(house == HOUSE_HARKONNEN || house == HOUSE_ATREIDES || house == HOUSE_ORDOS) {
+    if(house == HOUSETYPE::HOUSE_HARKONNEN || house == HOUSETYPE::HOUSE_ATREIDES || house == HOUSETYPE::HOUSE_ORDOS) {
         pImperator = std::make_unique<Wsafile>(pFileManager->openFile("EFINALA.WSA").get());
         pImperatorShocked = std::make_unique<Wsafile>(pFileManager->openFile("EFINALB.WSA").get());
     }
@@ -77,9 +77,9 @@ Finale::Finale(int house) {
     if(pPlanetDuneInHouseColorSurface == nullptr) {
         THROW(std::runtime_error, "Finale::Finale(): Cannot open MAPPLAN.CPS!");
     }
-    pPlanetDuneInHouseColorSurface = mapSurfaceColorRange(pPlanetDuneInHouseColorSurface.get(), houseToPaletteIndex[HOUSE_HARKONNEN], houseToPaletteIndex[house]);
+    pPlanetDuneInHouseColorSurface = mapSurfaceColorRange(pPlanetDuneInHouseColorSurface.get(), houseToPaletteIndex[static_cast<int>(HOUSETYPE::HOUSE_HARKONNEN)], houseToPaletteIndex[static_cast<int>(house)]);
 
-    if(house == HOUSE_HARKONNEN || house == HOUSE_ATREIDES || house == HOUSE_ORDOS) {
+    if(house == HOUSETYPE::HOUSE_HARKONNEN || house == HOUSETYPE::HOUSE_ATREIDES || house == HOUSETYPE::HOUSE_ORDOS) {
         lizard = getChunkFromFile("LIZARD1.VOC");
         glass = getChunkFromFile("GLASS6.VOC");
         click = getChunkFromFile("CLICK.VOC");
@@ -89,11 +89,11 @@ Finale::Finale(int house) {
 
     const auto pIntroText = std::make_unique<IndexedTextFile>(pFileManager->openFile("INTRO." + _("LanguageFileExtension")).get());
 
-    const Uint32 color = SDL2RGB(palette[houseToPaletteIndex[house]+1]);
+    const Uint32 color = SDL2RGB(palette[houseToPaletteIndex[static_cast<int>(house)]+1]);
     const Uint32 sardaukarColor = SDL2RGB(palette[PALCOLOR_SARDAUKAR+1]);
 
     switch(house) {
-        case HOUSE_HARKONNEN: {
+        case HOUSETYPE::HOUSE_HARKONNEN: {
             startNewScene();
 
             addVideoEvent(std::make_unique<FadeInVideoEvent>(pPalace1->getPicture(0).get(), 20));
@@ -141,7 +141,7 @@ Finale::Finale(int house) {
 
         } break;
 
-        case HOUSE_ATREIDES: {
+        case HOUSETYPE::HOUSE_ATREIDES: {
             startNewScene();
 
             addVideoEvent(std::make_unique<FadeInVideoEvent>(pPalace1->getPicture(0).get(), 20));
@@ -177,7 +177,7 @@ Finale::Finale(int house) {
 
         } break;
 
-        case HOUSE_ORDOS: {
+        case HOUSETYPE::HOUSE_ORDOS: {
             startNewScene();
 
             addVideoEvent(std::make_unique<FadeInVideoEvent>(pPalace1->getPicture(0).get(), 20));

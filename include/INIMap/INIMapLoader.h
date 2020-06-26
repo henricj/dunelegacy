@@ -50,7 +50,7 @@ private:
     void loadAITeams();
     void loadView();
 
-    House* getOrCreateHouse(int house);
+    House*    getOrCreateHouse(HOUSETYPE house);
     HOUSETYPE getHouseID(const std::string& name);
 
     Game* pGame;

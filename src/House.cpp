@@ -47,10 +47,10 @@
 #include <numeric>
 
 
-House::House(int newHouse, int newCredits, int maxUnits, Uint8 teamID, int quota) : choam(this) {
+House::House(HOUSETYPE newHouse, int newCredits, int maxUnits, Uint8 teamID, int quota) : choam(this) {
     House::init();
 
-    houseID = ((newHouse >= 0) && (newHouse < NUM_HOUSES)) ? newHouse :  0;
+    houseID = ((static_cast<int>(newHouse) >= 0) && (newHouse < HOUSETYPE::NUM_HOUSES)) ? newHouse :  static_cast<HOUSETYPE>(0);
     this->teamID = teamID;
 
     storedCredits = 0;
@@ -84,7 +84,7 @@ House::House(int newHouse, int newCredits, int maxUnits, Uint8 teamID, int quota
 House::House(InputStream& stream) : choam(this) {
     House::init();
 
-    houseID = stream.readUint8();
+    houseID = static_cast<HOUSETYPE>(stream.readUint8());
     teamID = stream.readUint8();
 
     storedCredits = stream.readFixPoint();
@@ -160,7 +160,7 @@ House::~House() = default;
 
 
 void House::save(OutputStream& stream) const {
-    stream.writeUint8(houseID);
+    stream.writeUint8(static_cast<Uint8>(houseID));
     stream.writeUint8(teamID);
 
     stream.writeFixPoint(storedCredits);
@@ -212,7 +212,7 @@ void House::addPlayer(std::unique_ptr<Player> newPlayer) {
 
     players.push_back(std::move(newPlayer));
 
-    Uint8 newPlayerID = static_cast<Uint8>((houseID << 4) | players.size());
+    Uint8 newPlayerID = static_cast<Uint8>((static_cast<Uint8>(houseID) << 4) | players.size());
     pNewPlayer->playerID = newPlayerID;
 
     currentGame->registerPlayer(pNewPlayer);
@@ -374,7 +374,7 @@ void House::incrementUnits(int itemID) {
        && itemID != Unit_Harvester
        && itemID != Unit_Sandworm) {
 
-            militaryValue += currentGame->objectData.data[itemID][houseID].price;
+            militaryValue += currentGame->objectData.data[itemID][static_cast<int>(houseID)].price;
     }
 
 }
@@ -405,7 +405,7 @@ void House::decrementUnits(int itemID) {
        && itemID != Unit_Harvester
        && itemID != Unit_Sandworm) {
 
-            lossValue += currentGame->objectData.data[itemID][houseID].price;
+            lossValue += currentGame->objectData.data[itemID][static_cast<int>(houseID)].price;
     }
 
     if (!isAlive())
@@ -424,13 +424,13 @@ void House::incrementStructures(int itemID) {
     assert(numUnits + numStructures == std::accumulate(std::begin(numItem), std::end(numItem), 0));
 
     // change power requirements
-    int currentItemPower = currentGame->objectData.data[itemID][houseID].power;
+    int currentItemPower = currentGame->objectData.data[itemID][static_cast<int>(houseID)].power;
     if(currentItemPower >= 0) {
         powerRequirement += currentItemPower;
     }
 
     // change spice capacity
-    capacity += currentGame->objectData.data[itemID][houseID].capacity;
+    capacity += currentGame->objectData.data[itemID][static_cast<int>(houseID)].capacity;
 
     if(currentGame->gameState != GameState::Loading) {
         // do not check selection lists if we are loading
@@ -452,13 +452,13 @@ void House::decrementStructures(int itemID, const Coord& location) {
     assert(numUnits + numStructures == std::accumulate(std::begin(numItem), std::end(numItem), 0));
 
     // change power requirements
-    const auto currentItemPower = currentGame->objectData.data[itemID][houseID].power;
+    const auto currentItemPower = currentGame->objectData.data[itemID][static_cast<int>(houseID)].power;
     if(currentItemPower >= 0) {
         powerRequirement -= currentItemPower;
     }
 
     // change spice capacity
-    capacity -= currentGame->objectData.data[itemID][houseID].capacity;
+    capacity -= currentGame->objectData.data[itemID][static_cast<int>(houseID)].capacity;
 
     if(currentGame->gameState != GameState::Loading) {
         // do not check selection lists if we are loading
@@ -490,10 +490,10 @@ void House::noteDamageLocation(ObjectBase* pObject, int damage, Uint32 damagerID
 void House::informWasBuilt(ObjectBase* pObject) {
     int itemID = pObject->getItemID();
     if(pObject->isAStructure()) {
-        structureBuiltValue += currentGame->objectData.data[itemID][houseID].price;
+        structureBuiltValue += currentGame->objectData.data[itemID][static_cast<int>(houseID)].price;
         numBuiltStructures++;
     } else {
-        unitBuiltValue += currentGame->objectData.data[itemID][houseID].price;
+        unitBuiltValue += currentGame->objectData.data[itemID][static_cast<int>(houseID)].price;
         numBuiltUnits++;
     }
 
@@ -511,7 +511,7 @@ void House::informWasBuilt(ObjectBase* pObject) {
     \param itemID   the ID of the enemy unit or structure
 */
 void House::informHasKilled(Uint32 itemID) {
-    destroyedValue += std::max(currentGame->objectData.data[itemID][houseID].price/100, 1);
+    destroyedValue += std::max(currentGame->objectData.data[itemID][static_cast<int>(houseID)].price/100, 1);
     if(isStructure(itemID)) {
         numDestroyedStructures++;
     } else {
@@ -524,7 +524,7 @@ void House::informHasKilled(Uint32 itemID) {
            && itemID != Unit_Harvester
            && itemID != Unit_Sandworm) {
 
-                killValue += currentGame->objectData.data[itemID][houseID].price;
+                killValue += currentGame->objectData.data[itemID][static_cast<int>(houseID)].price;
 
         }
 
@@ -562,7 +562,7 @@ void House::win() {
 void House::lose(bool bSilent) const {
     if(!bSilent) {
         try {
-            currentGame->addToNewsTicker(fmt::sprintf(_("House '%s' has been defeated."), getHouseNameByNumber( (HOUSETYPE) getHouseID())));
+            currentGame->addToNewsTicker(fmt::sprintf(_("House '%s' has been defeated."), getHouseNameByNumber(getHouseID())));
         } catch (std::exception& e) {
             SDL_Log("House::lose(): %s", e.what());
         }
@@ -572,8 +572,8 @@ void House::lose(bool bSilent) const {
 
         bool finished = true;
 
-        for(auto i=0; i < NUM_HOUSES; i++) {
-            const auto pHouse = currentGame->getHouse(i);
+        for(auto i=0; i < static_cast<int>(HOUSETYPE::NUM_HOUSES); i++) {
+            const auto pHouse = currentGame->getHouse(static_cast<HOUSETYPE>(i));
             if(pHouse != nullptr && pHouse->isAlive() && pHouse->getTeamID() == pLocalHouse->getTeamID()) {
                 finished = false;
                 break;
@@ -595,8 +595,8 @@ void House::lose(bool bSilent) const {
         //if the only players left are on the thisPlayers team, pLocalHouse has won
         auto finished = true;
 
-        for(auto i=0; i < NUM_HOUSES; i++) {
-            const auto pHouse = currentGame->getHouse(i);
+        for(auto i=0; i < static_cast<int>(HOUSETYPE::NUM_HOUSES); i++) {
+            const auto pHouse = currentGame->getHouse(static_cast<HOUSETYPE>(i));
             if(pHouse != nullptr && pHouse->isAlive() && pHouse->getTeamID() != 0 && pHouse->getTeamID() != pLocalHouse->getTeamID()) {
                 finished = false;
                 break;
@@ -640,13 +640,13 @@ void House::freeHarvester(int xPos, int yPos) {
     carryall->setDropOfferer(true);
 
     if (closestPos.x == 0)
-        carryall->setAngle(RIGHT);
+        carryall->setAngle(ANGLETYPE::RIGHT);
     else if (closestPos.x == currentGameMap->getSizeX()-1)
-        carryall->setAngle(LEFT);
+        carryall->setAngle(ANGLETYPE::LEFT);
     else if (closestPos.y == 0)
-        carryall->setAngle(DOWN);
+        carryall->setAngle(ANGLETYPE::DOWN);
     else if (closestPos.y == currentGameMap->getSizeY()-1)
-        carryall->setAngle(UP);
+        carryall->setAngle(ANGLETYPE::UP);
 
     harvester->setTarget(refinery);
     harvester->setActive(false);
@@ -677,7 +677,7 @@ StructureBase* House::placeStructure(Uint32 builderID, int itemID, int xPos, int
             // Slabs are no normal buildings
             tile->setType(Terrain_Slab);
             tile->setOwner(getHouseID());
-            currentGameMap->viewMap(getHouseID(), xPos, yPos, currentGame->objectData.data[Structure_Slab1][houseID].viewrange);
+            currentGameMap->viewMap(getHouseID(), xPos, yPos, currentGame->objectData.data[Structure_Slab1][static_cast<int>(houseID)].viewrange);
     //      currentGameMap->getTile(xPos, yPos)->clearTerrain();
 
             if(pBuilder != nullptr) {
@@ -705,7 +705,7 @@ StructureBase* House::placeStructure(Uint32 builderID, int itemID, int xPos, int
 
                     t.setType(Terrain_Slab);
                     t.setOwner(houseID);
-                    currentGameMap->viewMap(getHouseID(), t.getLocation().x, t.getLocation().y, currentGame->objectData.data[Structure_Slab4][houseID].viewrange);
+                    currentGameMap->viewMap(getHouseID(), t.getLocation().x, t.getLocation().y, currentGame->objectData.data[Structure_Slab4][static_cast<int>(houseID)].viewrange);
                     //pTile->clearTerrain();
                 });
 
@@ -888,7 +888,7 @@ Coord House::getStrongestUnitPosition() const {
     Sint32 strongestUnitCost = 0;
     for(const UnitBase* pUnit : unitList) {
         if(pUnit->getOwner() == this) {
-            Sint32 currentCost = currentGame->objectData.data[pUnit->getItemID()][houseID].price;
+            Sint32 currentCost = currentGame->objectData.data[pUnit->getItemID()][static_cast<int>(houseID)].price;
 
             if(currentCost > strongestUnitCost) {
                 strongestUnitPosition = pUnit->getLocation();

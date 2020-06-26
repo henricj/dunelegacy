@@ -525,23 +525,23 @@ sdl2::surface_ptr PictureFactory::createMainBackground() const {
     return Pic;
 }
 
-sdl2::surface_ptr PictureFactory::createGameStatsBackground(int House) const {
+sdl2::surface_ptr PictureFactory::createGameStatsBackground(HOUSETYPE House) const {
     auto pSurface = copySurface(gameStatsBackground.get());
 
     sdl2::surface_ptr pLogo;
     switch(House) {
-        case HOUSE_HARKONNEN:
-        case HOUSE_SARDAUKAR: {
+        case HOUSETYPE::HOUSE_HARKONNEN:
+        case HOUSETYPE::HOUSE_SARDAUKAR: {
             pLogo = copySurface(harkonnenLogo.get());
         } break;
 
-        case HOUSE_ATREIDES:
-        case HOUSE_FREMEN: {
+        case HOUSETYPE::HOUSE_ATREIDES:
+        case HOUSETYPE::HOUSE_FREMEN: {
             pLogo = copySurface(atreidesLogo.get());
         } break;
 
-        case HOUSE_ORDOS:
-        case HOUSE_MERCENARY: {
+        case HOUSETYPE::HOUSE_ORDOS:
+        case HOUSETYPE::HOUSE_MERCENARY: {
             pLogo = copySurface(ordosLogo.get());
         } break;
 
@@ -663,7 +663,7 @@ sdl2::surface_ptr PictureFactory::createGreyHouseChoice(SDL_Surface* HouseChoice
 }
 
 
-sdl2::surface_ptr PictureFactory::createMapChoiceScreen(int House) const {
+sdl2::surface_ptr PictureFactory::createMapChoiceScreen(HOUSETYPE House) const {
     sdl2::surface_ptr pMapChoiceScreen{ LoadCPS_RW(pFileManager->openFile("MAPMACH.CPS").get()) };
     if(pMapChoiceScreen == nullptr) {
         THROW(std::runtime_error, "Cannot load 'MAPMACH.CPS'!");
@@ -673,20 +673,20 @@ sdl2::surface_ptr PictureFactory::createMapChoiceScreen(int House) const {
     auto RightLogo = calcDrawingRect(harkonnenLogo.get(),266,145);
 
     switch(House) {
-        case HOUSE_HARKONNEN:
-        case HOUSE_SARDAUKAR: {
+        case HOUSETYPE::HOUSE_HARKONNEN:
+        case HOUSETYPE::HOUSE_SARDAUKAR: {
             SDL_BlitSurface(harkonnenLogo.get(),nullptr,pMapChoiceScreen.get(),&LeftLogo);
             SDL_BlitSurface(harkonnenLogo.get(),nullptr,pMapChoiceScreen.get(),&RightLogo);
         } break;
 
-        case HOUSE_ATREIDES:
-        case HOUSE_FREMEN: {
+        case HOUSETYPE::HOUSE_ATREIDES:
+        case HOUSETYPE::HOUSE_FREMEN: {
             SDL_BlitSurface(atreidesLogo.get(),nullptr,pMapChoiceScreen.get(),&LeftLogo);
             SDL_BlitSurface(atreidesLogo.get(),nullptr,pMapChoiceScreen.get(),&RightLogo);
         } break;
 
-        case HOUSE_ORDOS:
-        case HOUSE_MERCENARY: {
+        case HOUSETYPE::HOUSE_ORDOS:
+        case HOUSETYPE::HOUSE_MERCENARY: {
             SDL_BlitSurface(ordosLogo.get(),nullptr,pMapChoiceScreen.get(),&LeftLogo);
             SDL_BlitSurface(ordosLogo.get(),nullptr,pMapChoiceScreen.get(),&RightLogo);
         } break;
@@ -714,7 +714,7 @@ sdl2::surface_ptr PictureFactory::createMapChoiceScreen(int House) const {
     SDL_Rect clearRect = {8,24,304,119};
     SDL_FillRect(pMapChoiceScreen.get(),&clearRect,PALCOLOR_TRANSPARENT);
 
-    pMapChoiceScreen = Scaler::defaultDoubleSurface(mapSurfaceColorRange(pMapChoiceScreen.get(), PALCOLOR_HARKONNEN, houseToPaletteIndex[House]).get());
+    pMapChoiceScreen = Scaler::defaultDoubleSurface(mapSurfaceColorRange(pMapChoiceScreen.get(), PALCOLOR_HARKONNEN, houseToPaletteIndex[static_cast<int>(House)]).get());
     auto pFullMapChoiceScreen = copySurface(background.get());
 
     SDL_Rect dest = calcAlignedDrawingRect(pMapChoiceScreen.get(), pFullMapChoiceScreen.get());
@@ -723,7 +723,7 @@ sdl2::surface_ptr PictureFactory::createMapChoiceScreen(int House) const {
     return pFullMapChoiceScreen;
 }
 
-sdl2::surface_ptr PictureFactory::createMentatHouseChoiceQuestion(int House, Palette& benePalette) const {
+sdl2::surface_ptr PictureFactory::createMentatHouseChoiceQuestion(HOUSETYPE House, Palette& benePalette) const {
     sdl2::surface_ptr pSurface{ SDL_CreateRGBSurface(0, 416 + 208, 48, 8, 0, 0, 0, 0) };
     if(pSurface == nullptr) {
         THROW(sdl_error, "Cannot create new surface: %s!", SDL_GetError());
@@ -736,15 +736,17 @@ sdl2::surface_ptr PictureFactory::createMentatHouseChoiceQuestion(int House, Pal
 
     sdl2::surface_ptr pQuestionPart2 = nullptr;
 
+    // clang-format off
     switch(House) {
-        case HOUSE_HARKONNEN:   pQuestionPart2 = getSubPicture(mentatHouseChoiceQuestionSurface.get(),0, 48, 208, 48);   break;
-        case HOUSE_ATREIDES:    pQuestionPart2 = getSubPicture(mentatHouseChoiceQuestionSurface.get(),0, 96, 208, 48);   break;
-        case HOUSE_ORDOS:       pQuestionPart2 = getSubPicture(mentatHouseChoiceQuestionSurface.get(),0, 144, 208, 48);  break;
-        case HOUSE_FREMEN:      pQuestionPart2 = Scaler::defaultDoubleSurface(LoadPNG_RW(pFileManager->openFile("Fremen.png").get()).get());      break;
-        case HOUSE_SARDAUKAR:   pQuestionPart2 = Scaler::defaultDoubleSurface(LoadPNG_RW(pFileManager->openFile("Sardaukar.png").get()).get());   break;
-        case HOUSE_MERCENARY:   pQuestionPart2 = Scaler::defaultDoubleSurface(LoadPNG_RW(pFileManager->openFile("Mercenary.png").get()).get());   break;
+        case HOUSETYPE::HOUSE_HARKONNEN:   pQuestionPart2 = getSubPicture(mentatHouseChoiceQuestionSurface.get(),0, 48, 208, 48);   break;
+        case HOUSETYPE::HOUSE_ATREIDES:    pQuestionPart2 = getSubPicture(mentatHouseChoiceQuestionSurface.get(),0, 96, 208, 48);   break;
+        case HOUSETYPE::HOUSE_ORDOS:       pQuestionPart2 = getSubPicture(mentatHouseChoiceQuestionSurface.get(),0, 144, 208, 48);  break;
+        case HOUSETYPE::HOUSE_FREMEN:      pQuestionPart2 = Scaler::defaultDoubleSurface(LoadPNG_RW(pFileManager->openFile("Fremen.png").get()).get());      break;
+        case HOUSETYPE::HOUSE_SARDAUKAR:   pQuestionPart2 = Scaler::defaultDoubleSurface(LoadPNG_RW(pFileManager->openFile("Sardaukar.png").get()).get());   break;
+        case HOUSETYPE::HOUSE_MERCENARY:   pQuestionPart2 = Scaler::defaultDoubleSurface(LoadPNG_RW(pFileManager->openFile("Mercenary.png").get()).get());   break;
         default:    break;
     }
+    // clang-format on
 
     SDL_SetColorKey(pQuestionPart2.get(), SDL_TRUE, 0);
 

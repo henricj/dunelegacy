@@ -108,7 +108,7 @@ GameInitSettings::~GameInitSettings() = default;
 
 void GameInitSettings::save(OutputStream& stream) const {
     stream.writeSint8(static_cast<Sint8>(gameType));
-    stream.writeSint8(houseID);
+    stream.writeSint8(static_cast<Sint8>(houseID));
 
     stream.writeString(filename.u8string());
     stream.writeString(filedata);
@@ -141,8 +141,8 @@ void GameInitSettings::save(OutputStream& stream) const {
 
 
 std::string GameInitSettings::getScenarioFilename(HOUSETYPE newHouse, int mission) {
-    if( (newHouse < 0) || (newHouse >= NUM_HOUSES)) {
-        THROW(std::invalid_argument, "GameInitSettings::getScenarioFilename(): Invalid house id " + std::to_string(newHouse) + ".");
+    if( (static_cast<int>(newHouse) < 0) || (newHouse >= HOUSETYPE::NUM_HOUSES)) {
+        THROW(std::invalid_argument, "GameInitSettings::getScenarioFilename(): Invalid house id " + std::to_string(static_cast<int>(newHouse)) + ".");
     }
 
     if( (mission < 0) || (mission > 22)) {
@@ -150,7 +150,7 @@ std::string GameInitSettings::getScenarioFilename(HOUSETYPE newHouse, int missio
     }
 
     std::string name = "SCEN?0??.INI";
-    name[4] = houseChar[newHouse];
+    name[4] = houseChar[static_cast<int>(newHouse)];
 
     name[6] = '0' + (mission / 10);
     name[7] = '0' + (mission % 10);

@@ -24,7 +24,8 @@
 #include <SoundPlayer.h>
 
 
-static const int houseOrder[] = { HOUSE_ATREIDES, HOUSE_ORDOS, HOUSE_HARKONNEN, HOUSE_MERCENARY, HOUSE_FREMEN, HOUSE_SARDAUKAR };
+static const HOUSETYPE houseOrder[] = {HOUSETYPE::HOUSE_ATREIDES,  HOUSETYPE::HOUSE_ORDOS,  HOUSETYPE::HOUSE_HARKONNEN,
+                                       HOUSETYPE::HOUSE_MERCENARY, HOUSETYPE::HOUSE_FREMEN, HOUSETYPE::HOUSE_SARDAUKAR};
 
 HouseChoiceMenu::HouseChoiceMenu() : MenuBase()
 {
@@ -73,18 +74,19 @@ HouseChoiceMenu::HouseChoiceMenu() : MenuBase()
 HouseChoiceMenu::~HouseChoiceMenu() = default;
 
 void HouseChoiceMenu::onHouseButton(int button) {
-    int selectedHouse = houseOrder[currentHouseChoiceScrollPos+button];
+    const auto selectedHouse = houseOrder[currentHouseChoiceScrollPos+button];
 
+    // clang-format off
     switch(selectedHouse) {
-        case HOUSE_HARKONNEN:   soundPlayer->playVoice(HouseHarkonnen, selectedHouse);     break;
-        case HOUSE_ATREIDES:    soundPlayer->playVoice(HouseAtreides, selectedHouse);      break;
-        case HOUSE_ORDOS:       soundPlayer->playVoice(HouseOrdos, selectedHouse);         break;
+        case HOUSETYPE::HOUSE_HARKONNEN:    soundPlayer->playVoice(HouseHarkonnen, selectedHouse); break;
+        case HOUSETYPE::HOUSE_ATREIDES:     soundPlayer->playVoice(HouseAtreides, selectedHouse); break;
+        case HOUSETYPE::HOUSE_ORDOS:        soundPlayer->playVoice(HouseOrdos, selectedHouse); break;
         default:                /* no sounds for the other houses avail.*/  break;
-
     }
+    // clang-format on
 
     int ret = HouseChoiceInfoMenu(selectedHouse).showMenu();
-    quit(ret == MENU_QUIT_DEFAULT ? MENU_QUIT_DEFAULT : selectedHouse);
+    quit(ret == MENU_QUIT_DEFAULT ? MENU_QUIT_DEFAULT : static_cast<int>(selectedHouse));
 }
 
 

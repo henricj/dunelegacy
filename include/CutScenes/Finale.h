@@ -34,7 +34,7 @@ public:
         Constructor
         \param  house           the house for which the video is shown
     */
-    explicit Finale(int house);
+    explicit Finale(HOUSETYPE house);
 
     /// destructor
     virtual ~Finale();

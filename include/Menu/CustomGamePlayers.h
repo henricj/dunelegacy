@@ -72,8 +72,8 @@ private:
     void onChangePlayerDropDownBoxes(bool bInteractive, int boxnum);
     void onClickPlayerDropDownBox(int boxnum);
     void onStartGame(unsigned int timeLeft);
-    void addToHouseDropDown(DropDownBox& houseDropDownBox, int house, bool bSelect = false);
-    void removeFromHouseDropDown(DropDownBox& houseDropDownBox, int house);
+    void addToHouseDropDown(DropDownBox& houseDropDownBox, HOUSETYPE house, bool bSelect = false);
+    void removeFromHouseDropDown(DropDownBox& houseDropDownBox, HOUSETYPE house);
 
     bool isBoundedHouseOnMap(HOUSETYPE houseID);
 
@@ -143,12 +143,12 @@ private:
 
     bool                    bServer;
     bool                    bLANServer;
-    HouseInfo               houseInfo[NUM_HOUSES];
+    std::array<HouseInfo, static_cast<int>(HOUSETYPE::NUM_HOUSES)> houseInfo;
     int                     numHouses;
-    std::list<HOUSETYPE>    boundHousesOnMap;
+    std::vector<HOUSETYPE>    boundHousesOnMap;
     Uint32                  startGameTime;
     int                     brainEqHumanSlot;           ///< If we have an old map with Brain=Human and Brain=CPU, store index of Brain=Human here
-    int                     slotToTeam[NUM_HOUSES];     ///< Maps the slot number to a team number (both zero-based indices)
+    std::array<int, static_cast<int>(HOUSETYPE::NUM_HOUSES)> slotToTeam;     ///< Maps the slot number to a team number (both zero-based indices)
 };
 
 #endif //CUSTOMGAMEPLAYERS_H

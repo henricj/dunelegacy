@@ -25,7 +25,9 @@
 #include <GameInitSettings.h>
 #include <sand.h>
 
-static const int houseOrder[] = { HOUSE_ATREIDES, HOUSE_ORDOS, HOUSE_HARKONNEN, HOUSE_MERCENARY, HOUSE_FREMEN, HOUSE_SARDAUKAR };
+static const std::array<HOUSETYPE, static_cast<int>(HOUSETYPE::NUM_HOUSES)> houseOrder = {
+    HOUSETYPE::HOUSE_ATREIDES,  HOUSETYPE::HOUSE_ORDOS,  HOUSETYPE::HOUSE_HARKONNEN,
+    HOUSETYPE::HOUSE_MERCENARY, HOUSETYPE::HOUSE_FREMEN, HOUSETYPE::HOUSE_SARDAUKAR};
 
 SinglePlayerSkirmishMenu::SinglePlayerSkirmishMenu() : MenuBase()
 {
@@ -145,19 +147,16 @@ SinglePlayerSkirmishMenu::SinglePlayerSkirmishMenu() : MenuBase()
 
 }
 
-SinglePlayerSkirmishMenu::~SinglePlayerSkirmishMenu()
-{
-    ;
-}
+SinglePlayerSkirmishMenu::~SinglePlayerSkirmishMenu() = default;
 
 void SinglePlayerSkirmishMenu::onStart()
 {
-    HOUSETYPE houseChoice = (HOUSETYPE) houseOrder[currentHouseChoiceScrollPos + selectedButton];
+    HOUSETYPE houseChoice = houseOrder[(currentHouseChoiceScrollPos + selectedButton) % houseOrder.size()];
 
     GameInitSettings init(houseChoice, mission, settings.gameOptions);
 
-    for(int houseID = 0; houseID < NUM_HOUSES; houseID++) {
-        if(houseID == houseChoice) {
+    for(int houseID = 0; houseID < houseOrder.size(); houseID++) {
+        if(houseID == static_cast<int>(houseChoice)) {
             GameInitSettings::HouseInfo humanHouseInfo(houseChoice, 1);
             humanHouseInfo.addPlayerInfo( GameInitSettings::PlayerInfo(settings.general.playerName, HUMANPLAYERCLASS) );
             init.addHouseInfo(humanHouseInfo);
