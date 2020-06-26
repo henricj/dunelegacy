@@ -243,10 +243,7 @@ OptionsMenu::OptionsMenu() : MenuBase()
     mainVBox.addWidget(Spacer::create(), 0.1);
 }
 
-OptionsMenu::~OptionsMenu()
-{
-    ;
-}
+OptionsMenu::~OptionsMenu() = default;
 
 void OptionsMenu::onChangeOption(bool bInteractive) {
     bool bChanged = false;
