@@ -1,0 +1,19 @@
+---
+Checks:          '*,-fuchsia-*,-google-readability-todo,-readability-implicit-bool-conversion,-modernize-use-trailing-return-type'
+WarningsAsErrors: ''
+#HeaderFilterRegex: '(include/audacity|src)/.*'
+AnalyzeTemporaryDtors: false
+FormatStyle:     none
+CheckOptions:
+  - key:             cppcoreguidelines-macro-usage.AllowedRegexp
+    value:           '^(DEBUG|USE|HAVE|WX)_*'
+  - key:             readability-braces-around-statements.ShortStatementLines
+    value:           '2'
+  - key:             google-readability-braces-around-statements.ShortStatementLines
+    value:           '2'
+  - key:             google-runtime-int.TypeSuffix
+    value:           '_t'
+  - key:             hicpp-braces-around-statements.ShortStatementLines
+    value:           '2'
+...
+
