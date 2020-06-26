@@ -143,17 +143,6 @@ set(TRIGGER_SOURCES
 	Trigger/TimeoutTrigger.cpp
 	Trigger/TriggerManager.cpp)
 
-set(ENET_SOURCES
-	enet/callbacks.c
-	enet/compress.c
-	enet/host.c
-	enet/list.c
-	enet/packet.c
-	enet/peer.c
-	enet/protocol.c
-	enet/unix.c
-	enet/win32.c)
-
 set(FIX_MATH_SOURCES
 	fixmath/fix16.c
 	fixmath/fix16_exp.c
@@ -264,15 +253,6 @@ set(HEADERS
 ../include/data.h
 ../include/DataTypes.h
 ../include/Definitions.h
-../include/enet/callbacks.h
-../include/enet/enet.h
-../include/enet/enettime.h
-../include/enet/list.h
-../include/enet/protocol.h
-../include/enet/types.h
-../include/enet/unix.h
-../include/enet/utility.h
-../include/enet/win32.h
 ../include/Explosion.h
 ../include/FileClasses/adl/opl.h
 ../include/FileClasses/adl/sound_adlib.h
@@ -539,7 +519,6 @@ set(SOURCES
 	${MENU_SOURCES}
 	${NETWORK_SOURCES}
 	${TRIGGER_SOURCES}
-	${ENET_SOURCES}
 	${FIX_MATH_SOURCES}
 	${MISC_SOURCES}
 	${PLAYERS_SOURCES}
@@ -555,16 +534,16 @@ set(LIBS
 	SDL2::SDL2 SDL2::SDL2main
 	SDL2::SDL2_mixer
 	SDL2::SDL2_ttf
-	fmt::fmt fmt::fmt-header-only)
+	fmt::fmt)
 
 if(WIN32)
-	list(APPEND LIBS shlwapi ws2_32)
+	list(APPEND LIBS enet shlwapi ws2_32)
 	list(APPEND SOURCES ../IDE/VC/DuneLegacy.exe.manifest ../resource.rc)
 endif()
 
 
 add_executable(dunelegacy ${SOURCES})
-target_include_directories(dunelegacy PRIVATE ../include)
+target_include_directories(dunelegacy PRIVATE ../include ../external/enet/include)
 target_link_libraries(dunelegacy PRIVATE ${LIBS})
 
 target_precompile_headers(dunelegacy PRIVATE ../IDE/VC/stdafx.h)
