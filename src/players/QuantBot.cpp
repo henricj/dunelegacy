@@ -1564,7 +1564,7 @@ void QuantBot::attack(int militaryValue) {
     }
 
     logDebug(   "Attack: house: %d  dif: %d  mStr: %d  mLim: %d  attackTimer: %d",
-                getHouse()->getHouseID(), static_cast<Uint8>(difficulty), militaryValue, militaryValueLimit, attackTimer);
+                static_cast<int>(getHouse()->getHouseID()), static_cast<Uint8>(difficulty), militaryValue, militaryValueLimit, attackTimer);
 
     Coord squadCenterLocation = findSquadCenter(getHouse()->getHouseID());
 
