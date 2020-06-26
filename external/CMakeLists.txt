@@ -1,0 +1,1 @@
+add_subdirectory(enet EXCLUDE_FROM_ALL)
