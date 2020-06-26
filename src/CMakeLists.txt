@@ -559,6 +559,7 @@ set(LIBS
 
 if(WIN32)
 	list(APPEND LIBS shlwapi ws2_32)
+	list(APPEND SOURCES ../IDE/VC/DuneLegacy.exe.manifest ../resource.rc)
 endif()
 
 
@@ -567,3 +568,19 @@ target_include_directories(dunelegacy PRIVATE ../include)
 target_link_libraries(dunelegacy PRIVATE ${LIBS})
 
 target_precompile_headers(dunelegacy PRIVATE ../IDE/VC/stdafx.h)
+
+add_custom_command(
+        TARGET dunelegacy POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_directory
+                ${CMAKE_SOURCE_DIR}/data/locale
+                ${CMAKE_CURRENT_BINARY_DIR}/locale)
+
+add_custom_command(
+        TARGET dunelegacy POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_directory
+                ${CMAKE_SOURCE_DIR}/data/maps
+                ${CMAKE_CURRENT_BINARY_DIR}/maps)
+
+if(WIN32)
+   set_target_properties(dunelegacy PROPERTIES WIN32_EXECUTABLE ON)
+endif()
