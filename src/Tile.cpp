@@ -709,13 +709,15 @@ AirUnit* Tile::getAirUnit() const {
 ObjectBase* Tile::getGroundObject() const {
     if (hasANonInfantryGroundObject())
         return getNonInfantryGroundObject();
-    if (hasInfantry())
+    if (hasInfantry()) {
 
         return getInfantry();
 
-    else
+    } else {
 
         return nullptr;
+
+}
 }
 
 InfantryBase* Tile::getInfantry() const {
@@ -747,11 +749,13 @@ UnitBase* Tile::getUndergroundUnit() const {
 
 ObjectBase* Tile::getObject() const {
     ObjectBase* temp = nullptr;
-    if (hasAnAirUnit())
+    if (hasAnAirUnit()) {
         temp = getAirUnit();
-    else if (hasANonInfantryGroundObject())
+    } else if (hasANonInfantryGroundObject()) {
         temp = getNonInfantryGroundObject();
-    else if (hasInfantry())
+    } else { if 
+
+}(hasInfantry())
         temp = getInfantry();
     else if (hasAnUndergroundUnit())
         temp = getUndergroundUnit();
