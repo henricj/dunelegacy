@@ -32,8 +32,7 @@ Button::Button() {
     pActiveTexture = nullptr;
 }
 
-Button::~Button() {
-}
+Button::~Button() = default;
 
 void Button::handleMouseMovement(Sint32 x, Sint32 y, bool insideOverlay) {
     if((x < 0) || (x >= getSize().x) || (y < 0) || (y >= getSize().y)) {
