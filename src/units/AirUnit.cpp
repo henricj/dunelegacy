@@ -93,8 +93,8 @@ void AirUnit::checkPos()
 
 void AirUnit::blitToScreen()
 {
-    const auto shadow = shadowGraphic[currentZoomlevel];
-    const auto pUnitGraphic = graphic[currentZoomlevel];
+    auto *const shadow = shadowGraphic[currentZoomlevel];
+    auto *const pUnitGraphic = graphic[currentZoomlevel];
 
     if(settings.video.rotateUnitGraphics) {
         const auto rotationAngleDeg = -angle.toDouble()*360.0/8.0;

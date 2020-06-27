@@ -492,7 +492,7 @@ const ObjectBase* ObjectBase::findTarget() const {
                     && !pTile->isFoggedByTeam(getOwner()->getTeamID())
                     && pTile->hasAnObject()) {
 
-                    const auto pNewTarget = pTile->getObject();
+                    auto *const pNewTarget = pTile->getObject();
                     if(((pNewTarget->getItemID() != Structure_Wall && pNewTarget->getItemID() != Unit_Carryall) || pClosestTarget == nullptr) && canAttack(pNewTarget)) {
                         if(targetDistance < closestTargetDistance) {
                             pClosestTarget = pNewTarget;

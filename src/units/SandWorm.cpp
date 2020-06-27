@@ -382,12 +382,12 @@ bool Sandworm::canAttack(const ObjectBase* object) const {
     if (!object || !object->isAGroundUnit() || object->getItemID() == Unit_Sandworm)
         return false;
 
-    auto map = currentGameMap;
+    auto *map = currentGameMap;
 
     if (!map->tileExists(object->getLocation()))
         return false;
 
-    const auto pTile = map->getTile(object->getLocation());
+    auto *const pTile = map->getTile(object->getLocation());
 
     if (!canPassTile(pTile))
         return false;
@@ -410,7 +410,7 @@ const ObjectBase* Sandworm::findTarget() const {
     if((attackMode == HUNT) || (attackMode == AREAGUARD)) {
         auto closestDistance = FixPt_MAX;
 
-        for(auto pUnit : unitList) {
+        for(auto *pUnit : unitList) {
             if (canAttack(pUnit)
                 && (blockDistance(location, pUnit->getLocation()) < closestDistance)) {
                 closestTarget = pUnit;

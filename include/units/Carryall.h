@@ -90,7 +90,7 @@ private:
 
         units.erase(std::remove_if(units.begin(), units.end(),
             [&](Uint32 unit_id) {
-                const auto unit = static_cast<UnitBase*>(objectManager.getObject(unit_id));
+                auto *const unit = static_cast<UnitBase*>(objectManager.getObject(unit_id));
 
                 return unit ? F(unit) : true;
             }),
@@ -105,7 +105,7 @@ private:
     void deployUnits(F&& predicate) {
         pre_deployUnits();
 
-        const auto tile = currentGameMap->getTile(location);
+        auto *const tile = currentGameMap->getTile(location);
 
         removeUnits([=](UnitBase* unit)
                     {

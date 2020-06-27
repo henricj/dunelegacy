@@ -159,7 +159,7 @@ void GameInterface::draw(Point position) {
     const auto credits = pLocalHouse->getCredits();
     const auto CreditsBuffer = std::to_string((credits < 0) ? 0 : credits);
     const auto NumDigits = CreditsBuffer.length();
-    const auto digitsTex = pGFXManager->getUIGraphic(UI_CreditsDigits);
+    auto *const digitsTex = pGFXManager->getUIGraphic(UI_CreditsDigits);
 
     for(int i=NumDigits-1; i>=0; i--) {
         auto source = calcSpriteSourceRect(digitsTex, CreditsBuffer[i] - '0', 10);
@@ -172,7 +172,7 @@ void GameInterface::updateObjectInterface() {
     auto& selected = currentGame->getSelectedList();
     const auto size = selected.size();
     if(size == 1) {
-        auto pObject = currentGame->getObjectManager().getObject( *(selected.begin()));
+        auto *pObject = currentGame->getObjectManager().getObject( *(selected.begin()));
         const auto newObjectID = pObject->getObjectID();
 
         if(newObjectID != objectID) {

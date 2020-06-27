@@ -43,7 +43,7 @@ int FontManager::getTextHeight(unsigned int fontSize) {
 }
 
 sdl2::surface_ptr FontManager::createSurfaceWithText(const std::string& text, Uint32 color, unsigned int fontSize) {
-    const auto pFont = getFont(fontSize);
+    auto *const pFont = getFont(fontSize);
 
     const auto width = pFont->getTextWidth(text);
     const auto height = pFont->getTextHeight();
@@ -75,7 +75,7 @@ sdl2::surface_ptr FontManager::createSurfaceWithMultilineText(const std::string&
         }
     } while(nextpos != std::string::npos);
 
-    const auto pFont = getFont(fontSize);
+    auto *const pFont = getFont(fontSize);
 
     const auto lineHeight = pFont->getTextHeight();
     const auto width = pFont->getTextWidth(text);

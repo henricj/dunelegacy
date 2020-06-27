@@ -236,7 +236,7 @@ void StarPort::updateStructureSpecificStuff() {
     if (arrivalTimer > 0) {
         if (--arrivalTimer == 0) {
             //make a frigate with all the cargo
-            const auto frigate = static_cast<Frigate*>(owner->createUnit(Unit_Frigate));
+            auto *const frigate = static_cast<Frigate*>(owner->createUnit(Unit_Frigate));
             const auto pos = currentGameMap->findClosestEdgePoint(getLocation() + Coord(1,1), Coord(1,1));
             frigate->deploy(pos);
             frigate->setTarget(this);
@@ -282,7 +282,7 @@ void StarPort::updateStructureSpecificStuff() {
                 }
 
                 for(auto i = 0; i < num2Place; i++) {
-                    auto newUnit = getOwner()->createUnit(newUnitItemID);
+                    auto *newUnit = getOwner()->createUnit(newUnitItemID);
                     if (newUnit != nullptr) {
                         Coord unitDestination;
                         if( getOwner()->isAI()

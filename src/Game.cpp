@@ -109,7 +109,7 @@ Game::~Game() {
     }
     structureList.clear();
 
-    for(auto pUnit : unitList) {
+    for(auto *pUnit : unitList) {
         delete pUnit;
     }
     unitList.clear();
@@ -196,7 +196,7 @@ void Game::processObjects()
     // update all tiles
     currentGameMap->for_all([](Tile& t) { t.update(); });
 
-    for(auto pStructure : structureList) {
+    for(auto *pStructure : structureList) {
         pStructure->update();
     }
 
@@ -204,7 +204,7 @@ void Game::processObjects()
         currentCursorMode = CursorMode_Normal;
     }
 
-    for(auto pUnit : unitList) {
+    for(auto *pUnit : unitList) {
         pUnit->update();
     }
 
@@ -230,7 +230,7 @@ void Game::drawScreen()
     BottomRightTile.x = std::min(currentGameMap->getSizeX() - 1, BottomRightTile.x + 1);
     BottomRightTile.y = std::min(currentGameMap->getSizeY() - 1, BottomRightTile.y + 1);
 
-    const auto tiles = currentGameMap;
+    auto *const tiles = currentGameMap;
 
     const auto x1 = TopLeftTile.x;
     const auto y1 = TopLeftTile.y;
@@ -310,7 +310,7 @@ void Game::drawScreen()
 
     // draw the gathering point line if a structure is selected
     if (selectedList.size() == 1) {
-        const auto pStructure = dynamic_cast<StructureBase*>(getObjectManager().getObject(*selectedList.begin()));
+        auto *const pStructure = dynamic_cast<StructureBase*>(getObjectManager().getObject(*selectedList.begin()));
         if (pStructure != nullptr) {
             pStructure->drawGatheringPointLine();
         }
@@ -329,8 +329,8 @@ void Game::drawScreen()
 //////////////////////////////draw unexplored/shade
 
     if(!debug) {
-        const auto hiddenTexZoomed = pGFXManager->getZoomedObjPic(ObjPic_Terrain_Hidden, currentZoomlevel);
-        const auto hiddenFogTexZoomed = pGFXManager->getZoomedObjPic(ObjPic_Terrain_HiddenFog, currentZoomlevel);
+        auto *const hiddenTexZoomed = pGFXManager->getZoomedObjPic(ObjPic_Terrain_Hidden, currentZoomlevel);
+        auto *const hiddenFogTexZoomed = pGFXManager->getZoomedObjPic(ObjPic_Terrain_HiddenFog, currentZoomlevel);
 
         const auto fogOfWar = gameInitSettings.getGameOptions().fogOfWar;
 
@@ -339,7 +339,7 @@ void Game::drawScreen()
                 const auto x = t.getLocation().x;
                 const auto y = t.getLocation().y;
 
-                const auto pTile = &t;
+                auto *const pTile = &t;
 
                 const auto& border = screenborder;
                 const auto team_id = pLocalHouse->getTeamID();
@@ -387,7 +387,7 @@ void Game::drawScreen()
             const int yPos = screenborder->screen2MapY(drawnMouseY);
 
             if(selectedList.size() == 1) {
-                auto pBuilder = dynamic_cast<BuilderBase*>(objectManager.getObject(*selectedList.begin()));
+                auto *pBuilder = dynamic_cast<BuilderBase*>(objectManager.getObject(*selectedList.begin()));
                 if(pBuilder) {
                     int placeItem = pBuilder->getCurrentProducedItem();
                     Coord structuresize = getStructureSize(placeItem);
@@ -472,7 +472,7 @@ void Game::drawScreen()
 ///////////draw action indicator
 
     if((indicatorFrame != NONE_ID) && (screenborder->isInsideScreen(indicatorPosition, Coord(TILESIZE,TILESIZE)))) {
-        const auto pUIIndicator = pGFXManager->getUIGraphic(UI_Indicator);
+        auto *const pUIIndicator = pGFXManager->getUIGraphic(UI_Indicator);
         auto source = calcSpriteSourceRect(pUIIndicator, indicatorFrame, 3);
         auto drawLocation = calcSpriteDrawingRect(  pUIIndicator,
                                                         screenborder->world2screenX(indicatorPosition.x),
@@ -590,7 +590,7 @@ void Game::doInput()
 
                 case SDL_TEXTINPUT: {
                     if(chatMode) {
-                        const auto newText = event.text.text;
+                        auto *const newText = event.text.text;
                         if(utf8Length(typingChatMessage) + utf8Length(newText) <= 60) {
                             typingChatMessage += newText;
                         }
@@ -604,7 +604,7 @@ void Game::doInput()
                 } break;
 
                 case SDL_MOUSEBUTTONDOWN: {
-                    const auto mouse = &event.button;
+                    auto *const mouse = &event.button;
 
                     switch(mouse->button) {
                         case SDL_BUTTON_LEFT: {
@@ -709,13 +709,13 @@ void Game::doInput()
                 } break;
 
                 case SDL_MOUSEMOTION: {
-                    const auto mouse = &event.motion;
+                    auto *const mouse = &event.motion;
 
                     pInterface->handleMouseMovement(mouse->x,mouse->y);
                 } break;
 
                 case SDL_MOUSEBUTTONUP: {
-                    const auto mouse = &event.button;
+                    auto *const mouse = &event.button;
 
                     switch(mouse->button) {
                         case SDL_BUTTON_LEFT: {
@@ -760,9 +760,9 @@ void Game::doInput()
                                                         SDL_GetModState() & KMOD_SHIFT);
 
                         if(selectedList.size() == 1) {
-                            auto pObject = objectManager.getObject( *selectedList.begin());
+                            auto *pObject = objectManager.getObject( *selectedList.begin());
                             if(pObject != nullptr && pObject->getOwner() == pLocalHouse && pObject->getItemID() == Unit_Harvester) {
-                                auto pHarvester = static_cast<Harvester*>(pObject);
+                                auto *pHarvester = static_cast<Harvester*>(pObject);
 
                                 auto harvesterMessage = _("@DUNE.ENG|226#Harvester");
 
@@ -813,7 +813,7 @@ void Game::doInput()
 
     if((pInGameMenu == nullptr) && (pInGameMentat == nullptr) && (pWaitingForOtherPlayers == nullptr) && (SDL_GetWindowFlags(window) & SDL_WINDOW_MOUSE_FOCUS)) {
 
-        auto keystate = SDL_GetKeyboardState(nullptr);
+        const auto *keystate = SDL_GetKeyboardState(nullptr);
         scrollDownMode =  (drawnMouseY >= getRendererHeight()-1-SCROLLBORDER) || keystate[SDL_SCANCODE_DOWN];
         scrollLeftMode = (drawnMouseX <= SCROLLBORDER) || keystate[SDL_SCANCODE_LEFT];
         scrollRightMode = (drawnMouseX >= getRendererWidth()-1-SCROLLBORDER) || keystate[SDL_SCANCODE_RIGHT];
@@ -936,11 +936,11 @@ void Game::drawCursor(const SDL_Rect& map_rect) const
                     }
 
                     if((xPos != INVALID_POS) && (yPos != INVALID_POS)) {
-                        const auto pTile = currentGameMap->getTile(xPos, yPos);
+                        auto *const pTile = currentGameMap->getTile(xPos, yPos);
 
                         if(pTile->isExploredByTeam(pLocalHouse->getTeamID())) {
 
-                            const auto pStructure = dynamic_cast<StructureBase*>(pTile->getGroundObject());
+                            auto *const pStructure = dynamic_cast<StructureBase*>(pTile->getGroundObject());
 
                             if((pStructure != nullptr) && (pStructure->canBeCaptured()) && (pStructure->getOwner()->getTeamID() != pLocalHouse->getTeamID())) {
                                 dest.y += ((getGameCycleCount() / 10) % 5);
@@ -1146,7 +1146,7 @@ void Game::runMainLoop() {
 
                 // test if we need to wait for data to arrive
                 for(const auto& playername : pNetworkManager->getConnectedPeers()) {
-                    const auto pPlayer = dynamic_cast<HumanPlayer*>(getPlayerByName(playername));
+                    auto *const pPlayer = dynamic_cast<HumanPlayer*>(getPlayerByName(playername));
                     if(pPlayer != nullptr) {
                         if(pPlayer->nextExpectedCommandsCycle <= gameCycleCount) {
                             //SDL_Log("Cycle %d: Waiting for player '%s' to send data for cycle %d...", GameCycleCount, pPlayer->getPlayername().c_str(), pPlayer->nextExpectedCommandsCycle);
@@ -1480,13 +1480,13 @@ bool Game::loadSaveGame(InputStream& stream) {
             for(int i=0;i<static_cast<int>(HOUSETYPE::NUM_HOUSES);i++) {
                 if((house[i] != nullptr) && (house[i]->getHouseID() == houseInfo.houseID)) {
                     // iterate over all players
-                    auto& players = house[i]->getPlayerList();
+                    const auto & players = house[i]->getPlayerList();
                     auto playerIter = players.cbegin();
                     for(const auto& playerInfo : houseInfo.playerInfoList) {
                         if(playerInfo.playerClass == HUMANPLAYERCLASS) {
                             while(playerIter != players.cend()) {
 
-                                const auto pHumanPlayer = dynamic_cast<HumanPlayer*>(playerIter->get());
+                                auto *const pHumanPlayer = dynamic_cast<HumanPlayer*>(playerIter->get());
                                 if(pHumanPlayer) {
                                     // we have actually found a human player and now assign the first unused name to it
                                     unregisterPlayer(pHumanPlayer);
@@ -1674,7 +1674,7 @@ ObjectBase* Game::loadObject(InputStream& stream, Uint32 objectID) const
 {
     const auto itemID = stream.readUint32();
 
-    const auto newObject = ObjectBase::loadObject(stream, itemID, objectID);
+    auto *const newObject = ObjectBase::loadObject(stream, itemID, objectID);
     if(newObject == nullptr) {
         THROW(std::runtime_error, "Error while loading an object!");
     }
@@ -1700,7 +1700,7 @@ void Game::unselectAll(const Dune::selected_set_type& aList) const
 
 void Game::onReceiveSelectionList(const std::string& name, const Dune::selected_set_type& newSelectionList, int groupListIndex)
 {
-    auto pHumanPlayer = dynamic_cast<HumanPlayer*>(getPlayerByName(name));
+    auto *pHumanPlayer = dynamic_cast<HumanPlayer*>(getPlayerByName(name));
 
     if(pHumanPlayer == nullptr) {
         return;
@@ -1714,7 +1714,7 @@ void Game::onReceiveSelectionList(const std::string& name, const Dune::selected_
         }
 
         for(auto objectID : selectedByOtherPlayerList) {
-            auto pObject = objectManager.getObject(objectID);
+            auto *pObject = objectManager.getObject(objectID);
             if(pObject != nullptr) {
                 pObject->setSelectedByOtherPlayer(false);
             }
@@ -1924,7 +1924,7 @@ void Game::handleKeyInput(SDL_KeyboardEvent& keyboardEvent) {
                 bool bEverythingWasSelected = (selectedList.size() == groupList.size());
                 Coord averagePosition;
                 for(auto objectID : groupList) {
-                    auto pObject = objectManager.getObject(objectID);
+                    auto *pObject = objectManager.getObject(objectID);
                     bEverythingWasSelected = bEverythingWasSelected && pObject->isSelected();
                     averagePosition += pObject->getLocation();
                 }
@@ -1945,7 +1945,7 @@ void Game::handleKeyInput(SDL_KeyboardEvent& keyboardEvent) {
 
                 // now we add the selected items
                 for(auto objectID : groupList) {
-                    auto pObject = objectManager.getObject(objectID);
+                    auto *pObject = objectManager.getObject(objectID);
                     if(pObject->getOwner() == pLocalHouse) {
                         pObject->setSelected(true);
                         selectedList.insert(pObject->getObjectID());
@@ -2082,7 +2082,7 @@ void Game::handleKeyInput(SDL_KeyboardEvent& keyboardEvent) {
             //set object to move
             if(currentCursorMode != CursorMode_Move) {
                 for(const auto objectID : selectedList) {
-                    const auto pObject = objectManager.getObject(objectID);
+                    auto *const pObject = objectManager.getObject(objectID);
                     if(pObject->isAUnit() && (pObject->getOwner() == pLocalHouse) && pObject->isRespondable()) {
                         currentCursorMode = CursorMode_Move;
                         break;
@@ -2298,9 +2298,9 @@ bool Game::handlePlacementClick(int xPos, int yPos) {
 
                 for(int y = yPos; y < yPos + structuresize.y; y++) {
                     for(int x = xPos; x < xPos + structuresize.x; x++) {
-                        const auto pTile = currentGameMap->getTile(x,y);
+                        auto *const pTile = currentGameMap->getTile(x,y);
                         if(pTile->hasANonInfantryGroundObject()) {
-                            const auto pObject = pTile->getNonInfantryGroundObject();
+                            auto *const pObject = pTile->getNonInfantryGroundObject();
                             if(pObject->isAUnit() && pObject->getOwner() == pBuilder->getOwner()) {
                                 auto* pUnit = static_cast<UnitBase*>(pObject);
                                 Coord newDestination = currentGameMap->findDeploySpot(pUnit, Coord(xPos, yPos), tempRandomGen, pUnit->getLocation(), structuresize);
@@ -2308,7 +2308,7 @@ bool Game::handlePlacementClick(int xPos, int yPos) {
                             }
                         } else if(pTile->hasInfantry()) {
                             for(auto objectID : pTile->getInfantryList()) {
-                                auto pInfantry = dynamic_cast<InfantryBase*>(getObjectManager().getObject(objectID));
+                                auto *pInfantry = dynamic_cast<InfantryBase*>(getObjectManager().getObject(objectID));
                                 if((pInfantry != nullptr) && (pInfantry->getOwner() == pBuilder->getOwner())) {
                                     const auto newDestination = currentGameMap->findDeploySpot(pInfantry, Coord(xPos, yPos), tempRandomGen, pInfantry->getLocation(), structuresize);
                                     pInfantry->handleMoveClick(newDestination.x, newDestination.y);
@@ -2477,7 +2477,7 @@ void Game::selectNextStructureOfType(const Dune::selected_set_type& itemIDs) {
     bool bSelectNext = true;
 
     if(selectedList.size() == 1) {
-        const auto pObject = getObjectManager().getObject(*selectedList.begin());
+        auto *const pObject = getObjectManager().getObject(*selectedList.begin());
         if((pObject != nullptr) && (itemIDs.count(pObject->getItemID()) == 1)) {
             bSelectNext = false;
         }
@@ -2485,7 +2485,7 @@ void Game::selectNextStructureOfType(const Dune::selected_set_type& itemIDs) {
 
     StructureBase* pStructure2Select = nullptr;
 
-    for(const auto pStructure : structureList) {
+    for(auto *const pStructure : structureList) {
         if(bSelectNext) {
             if( (itemIDs.count(pStructure->getItemID()) == 1) && (pStructure->getOwner() == pLocalHouse) ) {
                 pStructure2Select = pStructure;
@@ -2500,7 +2500,7 @@ void Game::selectNextStructureOfType(const Dune::selected_set_type& itemIDs) {
 
     if(pStructure2Select == nullptr) {
         // start over at the beginning
-        for(auto pStructure : structureList) {
+        for(auto *pStructure : structureList) {
             if( (itemIDs.count(pStructure->getItemID()) == 1) && (pStructure->getOwner() == pLocalHouse) && !pStructure->isSelected() ) {
                 pStructure2Select = pStructure;
                 break;

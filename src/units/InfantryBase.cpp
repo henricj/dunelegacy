@@ -144,7 +144,7 @@ bool InfantryBase::canPassTile(const Tile* pTile) const {
             }
         }
     } else {
-        const auto object = pTile->getGroundObject();
+        auto *const object = pTile->getGroundObject();
 
         if((object != nullptr) && (object->getObjectID() == target.getObjectID())
             && object->isAStructure()
@@ -180,7 +180,7 @@ void InfantryBase::checkPos() {
         currentGameMap->getTile(location)->triggerSpecialBloom(getOwner());
     }
 
-    const auto object = target.getObjPointer();
+    auto *const object = target.getObjPointer();
 
     if (!object || !object->isAStructure())
         return;
@@ -246,14 +246,14 @@ void InfantryBase::checkPos() {
                         std::vector<ObjectBase *> killObjects;
                         for (const auto infantryID : infantry_copy) {
                             if (infantryID != getObjectID()) {
-                                const auto pObject = currentGame->getObjectManager().getObject(infantryID);
+                                auto *const pObject = currentGame->getObjectManager().getObject(infantryID);
                                 if (pObject->getLocation() == Coord(i, j)) {
                                     killObjects.push_back(pObject);
                                 }
                             }
                         }
 
-                        for (auto pObject : killObjects) {
+                        for (auto *pObject : killObjects) {
                             pObject->destroy();
                         }
                     }
@@ -293,12 +293,12 @@ void InfantryBase::checkPos() {
                     }
 
                     if (pNewStructure->getItemID() == Structure_Refinery) {
-                        auto pRefinery = static_cast<Refinery*>(pNewStructure);
+                        auto *pRefinery = static_cast<Refinery*>(pNewStructure);
                         pRefinery->book();
                         pRefinery->assignHarvester(static_cast<Harvester*>(pNewUnit));
                     }
                     else if (pNewStructure->getItemID() == Structure_RepairYard) {
-                        auto pRepairYard = static_cast<RepairYard*>(pNewStructure);
+                        auto *pRepairYard = static_cast<RepairYard*>(pNewStructure);
                         pRepairYard->book();
                         pRepairYard->assignUnit(pNewUnit);
                     }
@@ -335,7 +335,7 @@ void InfantryBase::checkPos() {
 
 void InfantryBase::destroy() {
     if(currentGameMap->tileExists(location) && isVisible()) {
-        auto pTile = currentGameMap->getTile(location);
+        auto *pTile = currentGameMap->getTile(location);
 
         if(pTile->hasANonInfantryGroundObject()) {
             if(pTile->getNonInfantryGroundObject()->isAUnit()) {

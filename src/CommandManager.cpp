@@ -92,7 +92,7 @@ void CommandManager::update() {
 }
 
 void CommandManager::addCommandList(const std::string& playername, const CommandList& commandList) {
-    const auto pPlayer = dynamic_cast<HumanPlayer*>(currentGame->getPlayerByName(playername));
+    auto *const pPlayer = dynamic_cast<HumanPlayer*>(currentGame->getPlayerByName(playername));
     if(pPlayer == nullptr) {
         return;
     }

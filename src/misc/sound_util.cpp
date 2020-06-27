@@ -32,7 +32,7 @@ sdl2::mix_chunk_ptr concat2Chunks(Mix_Chunk* sound1, Mix_Chunk* sound2)
         return nullptr;
     }
 
-    auto p = buffer.get();
+    auto *p = buffer.get();
 
     memcpy(p, sound1->abuf, sound1->alen);
     p += sound1->alen;
@@ -59,7 +59,7 @@ sdl2::mix_chunk_ptr concat3Chunks(Mix_Chunk* sound1, Mix_Chunk* sound2, Mix_Chun
         return nullptr;
     }
 
-    auto p = buffer.get();
+    auto *p = buffer.get();
 
     memcpy(p, sound1->abuf, sound1->alen);
     p += sound1->alen;
@@ -88,7 +88,7 @@ sdl2::mix_chunk_ptr concat4Chunks(Mix_Chunk* sound1, Mix_Chunk* sound2, Mix_Chun
         return nullptr;
     }
 
-    auto p = buffer.get();
+    auto *p = buffer.get();
 
     memcpy(p, sound1->abuf, sound1->alen);
     p += sound1->alen;
