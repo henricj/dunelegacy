@@ -21,9 +21,9 @@
 #include <misc/exceptions.h>
 
 #include <SDL2/SDL_endian.h>
-#include <stdio.h>
-#include <string>
 #include <algorithm>
+#include <cstdio>
+#include <string>
 
 MentatTextFile::MentatTextFile(SDL_RWops* rwop) {
     if(rwop == nullptr) {

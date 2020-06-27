@@ -30,8 +30,8 @@
 
 #include <misc/md5.h>
 
-#include <string.h>
-#include <stdio.h>
+#include <cstdio>
+#include <cstring>
 
 #include <SDL2/SDL_rwops.h>
 

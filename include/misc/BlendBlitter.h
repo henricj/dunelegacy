@@ -6,8 +6,8 @@
 #include <misc/exceptions.h>
 #include <mmath.h>
 
-#include <stdio.h>
-#include <stdlib.h>
+#include <cstdio>
+#include <cstdlib>
 
 // Step by step one more pixel of the source image is blitted to the destination image
 class BlendBlitter {

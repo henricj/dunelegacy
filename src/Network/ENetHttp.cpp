@@ -22,7 +22,7 @@
 #include <misc/exceptions.h>
 
 #include <algorithm>
-#include <stdio.h>
+#include <cstdio>
 #include <enet/enet.h>
 
 std::string getDomainFromURL(const std::string& url) {

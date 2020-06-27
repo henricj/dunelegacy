@@ -17,11 +17,11 @@
 
 #include <misc/string_util.h>
 
-#include <stdarg.h>
-#include <stdio.h>
-#include <vector>
-#include <regex>
 #include <algorithm>
+#include <cstdarg>
+#include <cstdio>
+#include <regex>
+#include <vector>
 
 std::vector<std::string> splitStringToStringVector(const std::string& parseString, const std::string& delimRegex) {
     std::regex rgx(delimRegex);
