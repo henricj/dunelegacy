@@ -215,7 +215,7 @@ void LoadSaveWindow::onChildWindowClose(Window* pChildWindow) {
 }
 
 
-void LoadSaveWindow::onOK() {
+void LoadSaveWindow::onOK() const {
     if(!bSaveWindow) {
         const auto index = fileList.getSelectedIndex();
         if(index >= 0) {
@@ -258,7 +258,7 @@ void LoadSaveWindow::onDirectoryChange(int i) {
     updateEntries();
 }
 
-void LoadSaveWindow::onSelectionChange(bool bInteractive) {
+void LoadSaveWindow::onSelectionChange(bool bInteractive) const {
     if(!bSaveWindow) return;
 
     int index = fileList.getSelectedIndex();

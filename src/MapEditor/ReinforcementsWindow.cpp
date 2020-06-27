@@ -253,7 +253,7 @@ void ReinforcementsWindow::onDown() {
     }
 }
 
-void ReinforcementsWindow::onAdd() {
+void ReinforcementsWindow::onAdd() const {
     if(pMapEditor->getMapVersion() < 2 && reinforcementsListBox.getNumEntries() >= 16) {
         MsgBox* pMsgBox = MsgBox::create(_("Dune2-compatible maps support only up to 16 entries!"));
         pMsgBox->setTextColor(color);

@@ -189,7 +189,7 @@ void CustomGameMenu::onChildWindowClose(Window* pChildWindow) {
     }
 }
 
-void CustomGameMenu::onNext()
+void CustomGameMenu::onNext() const
 {
     if(mapList.getSelectedIndex() < 0) {
         return;
