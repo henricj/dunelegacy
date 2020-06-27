@@ -299,7 +299,7 @@ int md5_file( const char *path, unsigned char output[16] )
     md5_context ctx;
     unsigned char buf[4*1024];
 
-    if( ( rwops = SDL_RWFromFile(path, "rb") ) == NULL )
+    if( ( rwops = SDL_RWFromFile(path, "rb") ) == nullptr )
         return( 1 );
 
     md5_starts( &ctx );

@@ -1245,7 +1245,7 @@ sdl2::surface_ptr GFXManager::generateDoubledObjPic(unsigned int id, int h) cons
             // SDL_BlitSurface will silently map PALCOLOR_BLACK to PALCOLOR_TRANSPARENT as both are RGB(0,0,0,255), so make them temporarily different
             pOverlay->format->palette->colors[PALCOLOR_BLACK].g = 1;
             pSurface->format->palette->colors[PALCOLOR_BLACK].g = 1;
-            SDL_BlitSurface(pOverlay.get(), NULL, pSurface.get(), NULL);
+            SDL_BlitSurface(pOverlay.get(), nullptr, pSurface.get(), nullptr);
             pOverlay->format->palette->colors[PALCOLOR_BLACK].g = 0;
             pSurface->format->palette->colors[PALCOLOR_BLACK].g = 0;
         } else {
@@ -1276,7 +1276,7 @@ sdl2::surface_ptr GFXManager::generateTripledObjPic(unsigned int id, int h) cons
             // SDL_BlitSurface will silently map PALCOLOR_BLACK to PALCOLOR_TRANSPARENT as both are RGB(0,0,0,255), so make them temporarily different
             pOverlay->format->palette->colors[PALCOLOR_BLACK].g = 1;
             pSurface->format->palette->colors[PALCOLOR_BLACK].g = 1;
-            SDL_BlitSurface(pOverlay.get(), NULL, pSurface.get(), NULL);
+            SDL_BlitSurface(pOverlay.get(), nullptr, pSurface.get(), nullptr);
             pOverlay->format->palette->colors[PALCOLOR_BLACK].g = 0;
             pSurface->format->palette->colors[PALCOLOR_BLACK].g = 0;
         } else {

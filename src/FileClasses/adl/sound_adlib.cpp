@@ -631,7 +631,7 @@ int AdlibDriver::snd_unkOpcode3(va_list &list) {
         _curChannel = value;
         Channel &channel = _channels[_curChannel];
         channel.priority = 0;
-        channel.dataptr = 0;
+        channel.dataptr = nullptr;
         if (value != 9)
             noteOff(channel);
         ++value;
@@ -644,7 +644,7 @@ int AdlibDriver::snd_readByte(va_list &list) {
     int a = va_arg(list, int);
     int b = va_arg(list, int);
     const uint8 *ptr = getProgram(a);
-    if(ptr == NULL) {
+    if(ptr == nullptr) {
         warning("AdlibDriver::snd_readByte(): ptr == NULL!");
         return -1;
     }
@@ -1077,7 +1077,7 @@ void AdlibDriver::setupNote(uint8 rawNote, Channel &channel, bool flag) {
 void AdlibDriver::setupInstrument(uint8 regOffset, uint8 *dataptr, Channel &channel) {
     debugC(9, "setupInstrument(%d, %p, %lu)", regOffset, (const void *)dataptr, (long)(&channel - _channels));
 
-    if(dataptr == NULL) {
+    if(dataptr == nullptr) {
         return;
     }
 
@@ -1426,7 +1426,7 @@ int AdlibDriver::update_stopChannel(uint8 *&dataptr, Channel &channel, uint8 val
     channel.priority = 0;
     if (_curChannel != 9)
         noteOff(channel);
-    dataptr = 0;
+    dataptr = nullptr;
     return 2;
 }
 
@@ -1467,7 +1467,7 @@ int AdlibDriver::update_stopOtherChannel(uint8 *&dataptr, Channel &channel, uint
     Channel &channel2 = _channels[value];
     channel2.duration = 0;
     channel2.priority = 0;
-    channel2.dataptr = 0;
+    channel2.dataptr = nullptr;
     return 0;
 }
 
@@ -1498,7 +1498,7 @@ int AdlibDriver::update_setupPrimaryEffect1(uint8 *&dataptr, Channel &channel, u
 
 int AdlibDriver::update_removePrimaryEffect1(uint8 *&dataptr, Channel &channel, uint8 value) {
     --dataptr;
-    channel.primaryEffect = 0;
+    channel.primaryEffect = nullptr;
     channel.unk30 = 0;
     return 0;
 }
@@ -1577,7 +1577,7 @@ int AdlibDriver::update_setTempo(uint8 *&dataptr, Channel &channel, uint8 value)
 
 int AdlibDriver::update_removeSecondaryEffect1(uint8 *&dataptr, Channel &channel, uint8 value) {
     --dataptr;
-    channel.secondaryEffect = 0;
+    channel.secondaryEffect = nullptr;
     return 0;
 }
 
@@ -1650,7 +1650,7 @@ int AdlibDriver::updateCallback38(uint8 *&dataptr, Channel &channel, uint8 value
     _curChannel = value;
     Channel &channel2 = _channels[value];
     channel2.duration = channel2.priority = 0;
-    channel2.dataptr = 0;
+    channel2.dataptr = nullptr;
     channel2.opExtraLevel2 = 0;
 
     if (value != 9) {
@@ -1693,7 +1693,7 @@ int AdlibDriver::updateCallback39(uint8 *&dataptr, Channel &channel, uint8 value
 
 int AdlibDriver::update_removePrimaryEffect2(uint8 *&dataptr, Channel &channel, uint8 value) {
     --dataptr;
-    channel.primaryEffect = 0;
+    channel.primaryEffect = nullptr;
     return 0;
 }
 
@@ -2288,7 +2288,7 @@ const uint8 AdlibDriver::_unkTables[][32] = {
 //#pragma mark -
 
 
-SoundAdlibPC::SoundAdlibPC(SDL_RWops* rwop) : _driver(0), _trackEntries(), _soundDataPtr(nullptr), volume(MIX_MAX_VOLUME/2) {
+SoundAdlibPC::SoundAdlibPC(SDL_RWops* rwop) : _driver(nullptr), _trackEntries(), _soundDataPtr(nullptr), volume(MIX_MAX_VOLUME/2) {
     memset(_trackEntries, 0, sizeof(_trackEntries));
 
     Mix_QuerySpec(&m_freq, &m_format, &m_channels);
@@ -2299,7 +2299,7 @@ SoundAdlibPC::SoundAdlibPC(SDL_RWops* rwop) : _driver(0), _trackEntries(), _soun
     _sfxPlayingSound = -1;
 
     // TODO: Figure out if Kyra 2 uses sound triggers at all.
-    _soundTriggers = 0;
+    _soundTriggers = nullptr;
     _numSoundTriggers = 0;
 
     bJustStartedPlaying = false;
@@ -2321,7 +2321,7 @@ SoundAdlibPC::SoundAdlibPC(SDL_RWops* rwop, int freq) : _driver(nullptr), _track
     _sfxPlayingSound = -1;
 
     // TODO: Figure out if Kyra 2 uses sound triggers at all.
-    _soundTriggers = 0;
+    _soundTriggers = nullptr;
     _numSoundTriggers = 0;
 
     bJustStartedPlaying = false;
@@ -2465,7 +2465,7 @@ void SoundAdlibPC::internalLoadFile(SDL_RWops* rwop) {
     return;
   }
 
-  uint8 *file_data = 0;
+  uint8 *file_data = nullptr;
   const Sint64 endOffset = SDL_RWsize(rwop);
   if(endOffset <= 0) {
     SDL_Log("SoundAdlibPC::internalLoadFile(): Cannot determine size of SDL_RWop!");
@@ -2499,7 +2499,7 @@ void SoundAdlibPC::internalLoadFile(SDL_RWops* rwop) {
   memcpy(_soundDataPtr, p, soundDataSize*sizeof(uint8));
 
   delete [] file_data;
-  file_data = p = 0;
+  file_data = p = nullptr;
   file_size = 0;
 
   _driver->callback(4, _soundDataPtr);

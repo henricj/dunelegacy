@@ -236,7 +236,7 @@ public:
         if(index < entries.size()) {
             return entries.at(index).data.ptrData;
         } else {
-            return 0;
+            return nullptr;
         }
     }
 

@@ -560,7 +560,7 @@ int main(int argc, char *argv[]) {
                     setBackToEnglishWarning += filename.u8string() + "\n";
                 }
                 setBackToEnglishWarning += "\nLanguage is changed to English!";
-                SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_WARNING, "Dune Legacy", setBackToEnglishWarning.c_str(), NULL);
+                SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_WARNING, "Dune Legacy", setBackToEnglishWarning.c_str(), nullptr);
 
                 SDL_Log("Warning: Language is changed to English!");
 
