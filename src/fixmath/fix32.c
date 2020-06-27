@@ -10,7 +10,9 @@ fix32_t fix32_add(fix32_t a, fix32_t b)
 {
 	// Use unsigned integers because overflow with signed integers is
 	// an undefined operation (http://www.airs.com/blog/archives/120).
-	uint64_t _a = a, _b = b;
+	uint64_t _a = a;
+
+	uint64_t _b = b;
 	uint64_t sum = _a + _b;
 
 	// Overflow can only happen if sign of a == sign of b, and then
@@ -23,7 +25,9 @@ fix32_t fix32_add(fix32_t a, fix32_t b)
 
 fix32_t fix32_sub(fix32_t a, fix32_t b)
 {
-	uint64_t _a = a, _b = b;
+	uint64_t _a = a;
+
+	uint64_t _b = b;
 	uint64_t diff = _a - _b;
 
 	// Overflow can only happen if sign of a != sign of b, and then
@@ -72,8 +76,12 @@ fix32_t fix32_mul(fix32_t inArg0, fix32_t inArg1)
 	//				 AD
 	//				AC
 	//			 |----| 128 bit product
-	int64_t A = (inArg0 >> 32), C = (inArg1 >> 32);
-	uint64_t B = (inArg0 & 0xFFFFFFFF), D = (inArg1 & 0xFFFFFFFF);
+	int64_t A = (inArg0 >> 32);
+
+	int64_t C = (inArg1 >> 32);
+	uint64_t B = (inArg0 & 0xFFFFFFFF);
+
+	uint64_t D = (inArg1 & 0xFFFFFFFF);
 
 	int64_t AC = A*C;
 	int64_t AD_CB = A*D + C*B;
@@ -175,8 +183,12 @@ fix32_t fix32_div(fix32_t a, fix32_t b)
 
 		// Implement this:		remainder -= ((uint128_t)quotient * divider) >> 33;
 
-		int64_t A = (quotient >> 32), C = (divider >> 32);
-		uint64_t B = (quotient & 0xFFFFFFFF), D = (divider & 0xFFFFFFFF);
+		int64_t A = (quotient >> 32);
+
+		int64_t C = (divider >> 32);
+		uint64_t B = (quotient & 0xFFFFFFFF);
+
+		uint64_t D = (divider & 0xFFFFFFFF);
 
 		int64_t AC = A*C;
 		int64_t AD_CB = A*D + C*B;

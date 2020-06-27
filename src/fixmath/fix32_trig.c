@@ -14,7 +14,11 @@ static fix32_t _fix32_atan_cache_value[4096] = { 0 };
 
 fix32_t fix32_sin_parabola(fix32_t inAngle)
 {
-	fix32_t abs_inAngle = 0, abs_retval = 0, retval = 0;
+	fix32_t abs_inAngle = 0;
+
+	fix32_t abs_retval = 0;
+
+	fix32_t retval = 0;
 	fix32_t mask = 0;
 
 	/* Absolute function */
@@ -110,7 +114,15 @@ fix32_t fix32_acos(fix32_t x)
 
 fix32_t fix32_atan2(fix32_t inY , fix32_t inX)
 {
-	fix32_t abs_inY = 0, mask = 0, angle = 0, r = 0, r_3 = 0;
+	fix32_t abs_inY = 0;
+
+	fix32_t mask = 0;
+
+	fix32_t angle = 0;
+
+	fix32_t r = 0;
+
+	fix32_t r_3 = 0;
 
 	#ifndef FIXMATH_NO_CACHE
 	uintptr_t hash = (inX ^ inY);

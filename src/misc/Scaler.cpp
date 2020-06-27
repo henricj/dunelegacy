@@ -286,7 +286,13 @@ sdl2::surface_ptr Scaler::doubleTiledSurfaceScale2x(SDL_Surface* src, int tilesX
                     Uint8 D = *( srcPixels + (j*tileHeight+y)*src->pitch + (i*tileWidth+std::max(0,x-1)) );
                     Uint8 F = *( srcPixels + (j*tileHeight+y)*src->pitch + (i*tileWidth+std::min(tileWidth-1,x+1)) );
 
-                    Uint8 E0 = 0, E1 = 0, E2 = 0, E3 = 0;
+                    Uint8 E0 = 0;
+
+                    Uint8 E1 = 0;
+
+                    Uint8 E2 = 0;
+
+                    Uint8 E3 = 0;
 
                     if(B != H && D != F) {
                         E0 = (D == B) ? D : E;
@@ -396,7 +402,23 @@ sdl2::surface_ptr Scaler::tripleTiledSurfaceScale3x(SDL_Surface* src, int tilesX
                     Uint8 H = *( srcPixels + (j*tileHeight+std::min(tileHeight-1,y+1))*src->pitch + (i*tileWidth+x) );
                     Uint8 I = *( srcPixels + (j*tileHeight+std::min(tileHeight-1,y+1))*src->pitch + (i*tileWidth+std::min(tileWidth-1,x+1)) );
 
-                    Uint8 E0 = 0, E1 = 0, E2 = 0, E3 = 0, E4 = 0, E5 = 0, E6 = 0, E7 = 0, E8 = 0;
+                    Uint8 E0 = 0;
+
+                    Uint8 E1 = 0;
+
+                    Uint8 E2 = 0;
+
+                    Uint8 E3 = 0;
+
+                    Uint8 E4 = 0;
+
+                    Uint8 E5 = 0;
+
+                    Uint8 E6 = 0;
+
+                    Uint8 E7 = 0;
+
+                    Uint8 E8 = 0;
 
                     if(B != H && D != F) {
                         E0 = (D == B) ? D : E;
