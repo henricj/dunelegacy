@@ -243,7 +243,7 @@ void PlayerSettingsWindow::onAdvancedBasicToggle() {
 
 void PlayerSettingsWindow::onOK() {
 
-    pMapEditor->startOperation();
+    MapEditor::startOperation();
 
     for(int i = 0; i < playerWidgets.size(); i++) {
         bool bActive = playerWidgets[i].playerCheckbox.isChecked();

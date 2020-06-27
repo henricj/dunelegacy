@@ -891,7 +891,7 @@ void MapEditorInterface::onSave() {
     std::filesystem::path mapname;
     int lastSaveDirectoryIndex = 0;
     if(lastSaveName.empty()) {
-        mapname = pMapEditor->generateMapname();
+        mapname = MapEditor::generateMapname();
     } else {
         mapname = getBasename(lastSaveName, true);
 
@@ -934,7 +934,7 @@ void MapEditorInterface::onTeams() {
 }
 
 void MapEditorInterface::onUndo() {
-    pMapEditor->undoLastOperation();
+    MapEditor::undoLastOperation();
 
     currentEditUnitID = INVALID;
     currentEditStructureID = INVALID;
@@ -943,7 +943,7 @@ void MapEditorInterface::onUndo() {
 }
 
 void MapEditorInterface::onRedo() {
-    pMapEditor->redoLastOperation();
+    MapEditor::redoLastOperation();
 
     currentEditUnitID = INVALID;
     currentEditStructureID = INVALID;
@@ -1112,7 +1112,7 @@ void MapEditorInterface::onStructureHealthDropDown(bool bInteractive) {
         currentEditUnitID = INVALID;
 
         if(pMapEditor->getSelectedStructureID() != currentEditStructureID) {
-            pMapEditor->startOperation();
+            MapEditor::startOperation();
             currentEditStructureID = pMapEditor->getSelectedStructureID();
         }
 
@@ -1131,7 +1131,7 @@ void MapEditorInterface::onUnitHealthDropDown(bool bInteractive) {
         currentEditStructureID = INVALID;
 
         if(pMapEditor->getSelectedUnitID() != currentEditUnitID) {
-            pMapEditor->startOperation();
+            MapEditor::startOperation();
             currentEditUnitID = pMapEditor->getSelectedUnitID();
         }
 
@@ -1153,7 +1153,7 @@ void MapEditorInterface::onUnitRotateLeft(int unitID) {
     currentEditStructureID = INVALID;
 
     if(unitID != currentEditUnitID) {
-        pMapEditor->startOperation();
+        MapEditor::startOperation();
         currentEditUnitID = unitID;
     }
 
@@ -1191,7 +1191,7 @@ void MapEditorInterface::onUnitRotateRight(int unitID) {
     currentEditStructureID = INVALID;
 
     if(unitID != currentEditUnitID) {
-        pMapEditor->startOperation();
+        MapEditor::startOperation();
         currentEditUnitID = unitID;
     }
 
@@ -1227,7 +1227,7 @@ void MapEditorInterface::onUnitAttackModeDropDown(bool bInteractive) {
         currentEditStructureID = INVALID;
 
         if(pMapEditor->getSelectedUnitID() != currentEditUnitID) {
-            pMapEditor->startOperation();
+            MapEditor::startOperation();
             currentEditUnitID = pMapEditor->getSelectedUnitID();
         }
 

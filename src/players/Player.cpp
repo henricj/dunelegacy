@@ -315,7 +315,7 @@ bool Player::doDeploy(const MCV* pMCV) const {
 
 bool Player::doRequestCarryallDrop(const GroundUnit* pGroundUnit) const {
     if(pGroundUnit->getOwner() == getHouse() && pGroundUnit->isActive()) {
-        return const_cast<GroundUnit*>(pGroundUnit)->requestCarryall();
+        return GroundUnit::requestCarryall();
     }         logWarn("The player '%s' tries request a carryall for a ground unit he doesn't own or that is inactive!\n", playername.c_str());
 
         return false;

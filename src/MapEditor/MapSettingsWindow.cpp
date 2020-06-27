@@ -311,7 +311,7 @@ void MapSettingsWindow::onOK() {
     mapInfo.author = authorTextBox.getText();
     mapInfo.license = licenseTextBox.getText();
 
-    pMapEditor->startOperation();
+    MapEditor::startOperation();
 
     MapEditorChangeMapInfo changeMapInfoOperation(mapInfo);
 

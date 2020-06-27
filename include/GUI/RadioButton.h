@@ -52,7 +52,7 @@ public:
         if(pNewRadioButtonManager != pRadioButtonManager) {
             unregisterFromRadioButtonManager();
             pRadioButtonManager = pNewRadioButtonManager;
-            if(!pRadioButtonManager->isRegistered(this)) {
+            if(!RadioButtonManager::isRegistered(this)) {
                 pRadioButtonManager->registerRadioButton(this);
             }
         }
@@ -62,8 +62,8 @@ public:
         if(pRadioButtonManager != nullptr) {
             RadioButtonManager* pOldRadioButtonManager = pRadioButtonManager;
             pRadioButtonManager = nullptr;
-            if(pOldRadioButtonManager->isRegistered(this)) {
-                pOldRadioButtonManager->unregisterRadioButton(this);
+            if(RadioButtonManager::isRegistered(this)) {
+                RadioButtonManager::unregisterRadioButton(this);
             }
         }
     }

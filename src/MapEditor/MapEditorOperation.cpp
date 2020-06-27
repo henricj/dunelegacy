@@ -205,7 +205,7 @@ std::unique_ptr<MapEditorOperation> MapEditorRemoveUnitOperation::perform(MapEdi
 
 std::unique_ptr<MapEditorOperation> MapEditorEditStructureOperation::perform(MapEditor *pMapEditor) {
 
-    MapEditor::Structure* pStructure = pMapEditor->getStructure(id);
+    MapEditor::Structure* pStructure = MapEditor::getStructure(id);
 
     int oldHealth = pStructure->health;
 
@@ -218,7 +218,7 @@ std::unique_ptr<MapEditorOperation> MapEditorEditStructureOperation::perform(Map
 
 std::unique_ptr<MapEditorOperation> MapEditorEditUnitOperation::perform(MapEditor *pMapEditor) {
 
-    MapEditor::Unit* pUnit = pMapEditor->getUnit(id);
+    MapEditor::Unit* pUnit = MapEditor::getUnit(id);
 
     int oldHealth = pUnit->health;
     ANGLETYPE oldAngle = pUnit->angle;

@@ -211,7 +211,7 @@ void TeamsWindow::onCancel() {
 
 
 void TeamsWindow::onOK() {
-    pMapEditor->startOperation();
+    MapEditor::startOperation();
 
     MapEditorChangeTeams changeTeamsOperation(aiteams);
 
