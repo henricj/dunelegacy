@@ -45,13 +45,13 @@ public:
         Get the map size in x direction
         \return map width
     */
-    int getMapSizeX() const override;
+    [[nodiscard]] int getMapSizeX() const override;
 
     /**
         Get the map size in y direction
         \return map height
     */
-    int getMapSizeY() const override;
+    [[nodiscard]] int getMapSizeY() const override;
 
     /**
         Draws the radar to screen. This method is called before drawOverlay().

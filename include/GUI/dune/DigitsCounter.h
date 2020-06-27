@@ -84,7 +84,7 @@ public:
         be resized to a size smaller than this.
         \return the minimum size of this digits counter
     */
-    Point getMinimumSize() const override
+    [[nodiscard]] Point getMinimumSize() const override
     {
         SDL_Texture* tex = pGFXManager->getUIGraphic(UI_MissionSelect);
         if(tex != nullptr) {

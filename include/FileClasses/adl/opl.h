@@ -48,7 +48,7 @@ class Copl
     currChip = n;
     }
 
-  virtual int getchip() const noexcept            // returns current OPL chip
+  [[nodiscard]] virtual int getchip() const noexcept            // returns current OPL chip
     {
       return currChip;
     }
@@ -56,7 +56,7 @@ class Copl
   virtual void init(void) = 0;          // reinitialize OPL chip(s)
 
   // return this OPL chip's type
-  ChipType gettype() const noexcept
+  [[nodiscard]] ChipType gettype() const noexcept
     {
       return currType;
     }

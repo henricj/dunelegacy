@@ -55,7 +55,7 @@ public:
         Get the text of this checkbox.
         \return the text of this checkbox
     */
-    const std::string& getText() const noexcept { return text; };
+    [[nodiscard]] const std::string& getText() const noexcept { return text; };
 
     /**
         Sets the text color for this checkbox.
@@ -80,7 +80,7 @@ public:
         This method returns whether this checkbox is checked. It is the same as getToggleState().
         \return true = checked, false = unchecked
     */
-    bool isChecked() const noexcept {
+    [[nodiscard]] bool isChecked() const noexcept {
         return getToggleState();
     }
 
@@ -146,7 +146,7 @@ public:
         resized to a size smaller than this.
         \return the minimum size of this button
     */
-    Point getMinimumSize() const override
+    [[nodiscard]] Point getMinimumSize() const override
     {
         return GUIStyle::getInstance().getMinimumCheckboxSize(text);
     }

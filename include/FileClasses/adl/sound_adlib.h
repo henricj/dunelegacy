@@ -79,7 +79,7 @@ public:
     void playTrack(uint8_t track);
     void haltTrack();
 
-    bool isPlaying() const;
+    [[nodiscard]] bool isPlaying() const;
 
     void playSoundEffect(uint8_t track);
 
@@ -91,7 +91,7 @@ public:
         volume = newVolume;
     }
 
-    int getVolume() const noexcept {
+    [[nodiscard]] int getVolume() const noexcept {
         return volume;
     }
 
@@ -115,7 +115,7 @@ private:
     int _numSoundTriggers;
     const int *_soundTriggers;
 
-    unsigned char getsampsize() const noexcept {
+    [[nodiscard]] unsigned char getsampsize() const noexcept {
         return m_channels * (m_format == AUDIO_U8 || m_format == AUDIO_S8 ? 1 : 2);
     }
 

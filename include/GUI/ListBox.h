@@ -101,7 +101,7 @@ public:
         resized to a size smaller than this.
         \return the minimum size of this scroll bar
     */
-    Point getMinimumSize() const override
+    [[nodiscard]] Point getMinimumSize() const override
     {
         Point tmp = scrollbar.getMinimumSize();
         tmp.x += 30;
@@ -118,7 +118,7 @@ public:
         Returns whether this widget can be set active.
         \return true = activatable, false = not activatable
     */
-    inline bool isActivatable() const override { return isEnabled(); };
+    [[nodiscard]] inline bool isActivatable() const override { return isEnabled(); };
 
     /**
         Adds a new entry to this list box
@@ -170,7 +170,7 @@ public:
         Returns the number of entries in this list box
         \return number of entries
     */
-    int getNumEntries() const {
+    [[nodiscard]] int getNumEntries() const {
         return entries.size();
     }
 
@@ -179,7 +179,7 @@ public:
         \param  index   the zero-based index of the entry
         \return the text of the entry
     */
-    std::string getEntry(unsigned int index) const {
+    [[nodiscard]] std::string getEntry(unsigned int index) const {
         if(index < entries.size()) {
             return entries.at(index).text;
         } else {
@@ -206,7 +206,7 @@ public:
         \param  index   the zero-based index of the entry
         \return the data of the entry
     */
-    int getEntryIntData(unsigned int index) const {
+    [[nodiscard]] int getEntryIntData(unsigned int index) const {
         if(index < entries.size()) {
             return entries.at(index).data.intData;
         } else {
@@ -232,7 +232,7 @@ public:
         \param  index   the zero-based index of the entry
         \return the data of the entry
     */
-    void* getEntryPtrData(unsigned int index) const {
+    [[nodiscard]] void* getEntryPtrData(unsigned int index) const {
         if(index < entries.size()) {
             return entries.at(index).data.ptrData;
         } else {
@@ -257,7 +257,7 @@ public:
         Returns the text of the selected entr.
         \return the text of the entry ("" if non is selected)
     */
-    std::string getSelectedEntry() const {
+    [[nodiscard]] std::string getSelectedEntry() const {
         return ((selectedElement >= 0) ? getEntry(selectedElement) : "");
     }
 
@@ -265,7 +265,7 @@ public:
         Returns the data assigned to the selected entry.
         \return the data of the entry (-1 if non is selected)
     */
-    int getSelectedEntryIntData() const {
+    [[nodiscard]] int getSelectedEntryIntData() const {
         return ((selectedElement >= 0) ? getEntryIntData(selectedElement) : -1);
     }
 
@@ -273,7 +273,7 @@ public:
         Returns the data assigned to the selected entry.
         \return the data of the entry (nullptr if non is selected)
     */
-    void* getSelectedEntryPtrData() const {
+    [[nodiscard]] void* getSelectedEntryPtrData() const {
         return ((selectedElement >= 0) ? getEntryPtrData(selectedElement) : nullptr);
     }
 
@@ -281,7 +281,7 @@ public:
         Returns the zero-based index of the current selected entry.
         \return the index of the selected element (-1 if none is selected)
     */
-    int getSelectedIndex() const {
+    [[nodiscard]] int getSelectedIndex() const {
         return selectedElement;
     }
 
@@ -359,7 +359,7 @@ public:
         Is the scrollbar always shown or is it hidden if not needed?
         \return true if scrollbar is hidden if not needed
     */
-    bool getAutohideScrollbar() const { return bAutohideScrollbar; }
+    [[nodiscard]] bool getAutohideScrollbar() const { return bAutohideScrollbar; }
 
     /**
         Set if the scrollbar shall be hidden if not needed
@@ -373,7 +373,7 @@ public:
         Checks if the scrollbar is currently visible.
         \return true, if visible, false otherwise
     */
-    bool isScrollbarVisible() const {
+    [[nodiscard]] bool isScrollbarVisible() const {
         return (!bAutohideScrollbar || (scrollbar.getRangeMin() != scrollbar.getRangeMax()));
     }
 
@@ -381,7 +381,7 @@ public:
         Is the selected element highlighted?
         \return true if the selected element is highlighted
     */
-    bool getHighlightSelectedElement() const { return bHighlightSelectedElement; }
+    [[nodiscard]] bool getHighlightSelectedElement() const { return bHighlightSelectedElement; }
 
     /**
         Set if the selected element shall be highlighted

@@ -77,7 +77,7 @@ public:
         resized to a size smaller than this.
         \return the minimum size of this button
     */
-    Point getMinimumSize() const override
+    [[nodiscard]] Point getMinimumSize() const override
     {
         if(pSymbolSurface) {
             return Point((Sint32) pSymbolSurface->w + 5, (Sint32) pSymbolSurface->h + 5);

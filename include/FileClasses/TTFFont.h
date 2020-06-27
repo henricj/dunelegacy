@@ -39,14 +39,14 @@ public:
 
     void drawTextOnSurface(SDL_Surface* pSurface, const std::string& text, Uint32 baseColor = 0xFFFFFFFF) override;
 
-    int getTextWidth(const std::string& text) const override;
+    [[nodiscard]] int getTextWidth(const std::string& text) const override;
 
     /// Returns the number of pixels this font needs in y-direction.
     /**
         This methods returns the height of this font.
         \return Number of pixels needed
     */
-    inline int getTextHeight() const override { return characterHeight; };
+    [[nodiscard]] inline int getTextHeight() const override { return characterHeight; };
 
 private:
     font_ptr pTTFFont;
