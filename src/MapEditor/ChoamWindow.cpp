@@ -147,7 +147,7 @@ void ChoamWindow::onCancel() {
 
 void ChoamWindow::onOK() {
 
-    pMapEditor->startOperation();
+    MapEditor::startOperation();
 
     for(unsigned int i = 0; i < sizeof(choamUnits)/sizeof(choamUnits[0]); i++) {
         int rowNum = i/2;

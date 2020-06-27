@@ -159,7 +159,7 @@ void Command::executeCommand() const {
             if(pGroundUnit == nullptr) {
                 return;
             }
-            pGroundUnit->doRequestCarryallDrop(static_cast<int>(parameter[1]), static_cast<int>(parameter[2]));
+            GroundUnit::doRequestCarryallDrop(static_cast<int>(parameter[1]), static_cast<int>(parameter[2]));
         } break;
 
         case CMDTYPE::CMD_UNIT_SENDTOREPAIR: {
