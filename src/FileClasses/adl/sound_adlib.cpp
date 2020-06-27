@@ -146,9 +146,9 @@ public:
         return numSamples;
     }
 
-    bool isStereo() const { return false; }
-    bool endOfData() const { return false; }
-    int getRate() const { return _rate; }
+    [[nodiscard]] bool isStereo() const { return false; }
+    [[nodiscard]] bool endOfData() const { return false; }
+    [[nodiscard]] int getRate() const { return _rate; }
 
     void setSyncJumpMask(uint16 mask) { _syncJumpMask = mask; }
 
@@ -292,7 +292,7 @@ private:
     // * One for programs, starting at offset 0.
     // * One for instruments, starting at offset 500.
 
-    uint8 *getProgram(int progId) const {
+    [[nodiscard]] uint8 *getProgram(int progId) const {
         const uint16 offset = READ_LE_uint16(_soundData + 2 * progId);
         //TODO: Check in LoL CD Adlib driver
         if (offset == 0xFFFF)
@@ -300,7 +300,7 @@ private:
         return _soundData + READ_LE_uint16(_soundData + 2 * progId);
     }
 
-    uint8 *getInstrument(int instrumentId) const {
+    [[nodiscard]] uint8 *getInstrument(int instrumentId) const {
         const unsigned short tmp = READ_LE_uint16(_soundData + (_v2 ? 1000 : 500) + 2 * instrumentId);
         if(tmp == 0xFFFF) {
            return nullptr;

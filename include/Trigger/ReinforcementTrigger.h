@@ -65,25 +65,25 @@ public:
         Get the house of the unit to be dropped.
         \return the house of the owner
     */
-    HOUSETYPE getHouseID() const { return houseID; }
+    [[nodiscard]] HOUSETYPE getHouseID() const { return houseID; }
 
     /**
         Get the type of drop.
         \return the type of the drop
     */
-    DropLocation getDropLocation() const { return dropLocation; }
+    [[nodiscard]] DropLocation getDropLocation() const { return dropLocation; }
 
     /**
         Return if this Reinforcment is repeated.
         \return true = is repeated, false = not repeated
     */
-    bool isRepeat() const { return (repeatCycle != 0); }
+    [[nodiscard]] bool isRepeat() const { return (repeatCycle != 0); }
 
     /**
         Get a vector of all the itemIDs of the to be dropped units (that will be dropped by one carryall)
         \return a vector of the itemIDs of the to be dropped units.
     */
-    const std::vector<Uint32>& getDroppedUnits() const { return droppedUnits; }
+    [[nodiscard]] const std::vector<Uint32>& getDroppedUnits() const { return droppedUnits; }
 
     /**
         Adds another unit to this delivery.

@@ -132,7 +132,7 @@ public:
         resized to a size smaller than this.
         \return the minimum size of this scroll bar
     */
-    Point getMinimumSize() const override
+    [[nodiscard]] Point getMinimumSize() const override
     {
         return Point(listBox.getMinimumSize().x,openListBoxButton.getSize().y+2);
     }
@@ -141,7 +141,7 @@ public:
         Returns whether this widget can be set active.
         \return true = activatable, false = not activatable
     */
-    inline bool isActivatable() const override { return isEnabled(); };
+    [[nodiscard]] inline bool isActivatable() const override { return isEnabled(); };
 
     /**
         Adds a new entry to this dropdown box
@@ -189,7 +189,7 @@ public:
         Returns the number of entries in this dropdown box
         \return number of entries
     */
-    int getNumEntries() const {
+    [[nodiscard]] int getNumEntries() const {
         return listBox.getNumEntries();
     }
 
@@ -198,7 +198,7 @@ public:
         \param  index   the zero-based index of the entry
         \return the text of the entry
     */
-    std::string getEntry(unsigned int index) const {
+    [[nodiscard]] std::string getEntry(unsigned int index) const {
         return listBox.getEntry(index);
     }
 
@@ -218,7 +218,7 @@ public:
         \param  index   the zero-based index of the entry
         \return the data of the entry
     */
-    int getEntryIntData(unsigned int index) const {
+    [[nodiscard]] int getEntryIntData(unsigned int index) const {
         return listBox.getEntryIntData(index);
     }
 
@@ -236,7 +236,7 @@ public:
         \param  index   the zero-based index of the entry
         \return the data of the entry
     */
-    void* getEntryPtrData(unsigned int index) const {
+    [[nodiscard]] void* getEntryPtrData(unsigned int index) const {
         return listBox.getEntryPtrData(index);
     }
 
@@ -253,7 +253,7 @@ public:
         Returns the text of the selected entry.
         \return the text of the entry ("" if non is selected)
     */
-    std::string getSelectedEntry() const {
+    [[nodiscard]] std::string getSelectedEntry() const {
         return listBox.getSelectedEntry();
     }
 
@@ -261,7 +261,7 @@ public:
         Returns the data assigned to the selected entry.
         \return the data of the entry (-1 if non is selected)
     */
-    int getSelectedEntryIntData() const {
+    [[nodiscard]] int getSelectedEntryIntData() const {
         return listBox.getSelectedEntryIntData();
     }
 
@@ -269,7 +269,7 @@ public:
         Returns the data assigned to the selected entry.
         \return the data of the entry (nullptr if non is selected)
     */
-    void* getSelectedEntryPtrData() const {
+    [[nodiscard]] void* getSelectedEntryPtrData() const {
         return listBox.getSelectedEntryPtrData();
     }
 
@@ -277,7 +277,7 @@ public:
         Returns the zero-based index of the current selected entry.
         \return the index of the selected element (-1 if none is selected)
     */
-    int getSelectedIndex() const {
+    [[nodiscard]] int getSelectedIndex() const {
         return listBox.getSelectedIndex();
     }
 
@@ -383,7 +383,7 @@ public:
         Returns whether the onClick event for this dropdownbox is enabled.
         \return true = onClick event is enabled, false = onClick event is disabled
     */
-    inline bool isOnClickEnabled() const { return bOnClickEnabled; };
+    [[nodiscard]] inline bool isOnClickEnabled() const { return bOnClickEnabled; };
 
     /**
         This static method creates a dynamic dropdown box object.

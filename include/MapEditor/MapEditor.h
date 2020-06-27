@@ -148,11 +148,11 @@ public:
         bQuitEditor = true;
     }
 
-    const std::filesystem::path& getLastSaveName() const { return lastSaveName; };
+    [[nodiscard]] const std::filesystem::path& getLastSaveName() const { return lastSaveName; };
 
-    bool hasChangeSinceLastSave() const { return bChangedSinceLastSave; };
+    [[nodiscard]] bool hasChangeSinceLastSave() const { return bChangedSinceLastSave; };
 
-    std::string generateMapname() const;
+    [[nodiscard]] std::string generateMapname() const;
 
     std::vector<Player>& getPlayers() {
         return players;
@@ -168,7 +168,7 @@ public:
 
     void setMapInfo(const MapInfo& newMapInfo) { mapInfo = newMapInfo; };
 
-    int getMapVersion() const {
+    [[nodiscard]] int getMapVersion() const {
         if(mapInfo.mapSeed != INVALID) {
             return 1;
         } else {
@@ -219,7 +219,7 @@ public:
 
     std::vector<int> getMirrorStructures(int unitID);
 
-    int getSelectedStructureID() const {
+    [[nodiscard]] int getSelectedStructureID() const {
         return selectedStructureID;
     }
 
@@ -244,7 +244,7 @@ public:
 
     std::vector<int> getMirrorUnits(int unitID, bool bAddMissingAsInvalid = false);
 
-    int getSelectedUnitID() const {
+    [[nodiscard]] int getSelectedUnitID() const {
         return selectedUnitID;
     }
 
@@ -252,7 +252,7 @@ public:
         return getUnit(selectedUnitID);
     }
 
-    bool isTileBlocked(int x, int y, bool bSlabIsBlocking, bool bUnitsAreBlocking) const;
+    [[nodiscard]] bool isTileBlocked(int x, int y, bool bSlabIsBlocking, bool bUnitsAreBlocking) const;
 
     void setEditorMode(const EditorMode& newEditorMode);
 

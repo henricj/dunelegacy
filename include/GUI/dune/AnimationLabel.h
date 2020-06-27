@@ -47,7 +47,7 @@ public:
         This method returns the stored animation.
         \return the stored animation
     */
-    Animation* getAnimation() const { return pAnim; };
+    [[nodiscard]] Animation* getAnimation() const { return pAnim; };
 
     /**
         Draws this widget to screen. This method is called before drawOverlay().
@@ -72,7 +72,7 @@ public:
         be resized to a size smaller than this.
         \return the minimum size of this animation label
     */
-    Point getMinimumSize() const override
+    [[nodiscard]] Point getMinimumSize() const override
     {
         SDL_Surface* surface = pAnim->getFrame();
         if(surface != nullptr) {

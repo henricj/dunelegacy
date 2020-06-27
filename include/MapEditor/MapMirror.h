@@ -34,13 +34,13 @@ public:
 
     virtual ~MapMirror();
 
-    virtual int getSize() const = 0;
+    [[nodiscard]] virtual int getSize() const = 0;
 
-    virtual bool mirroringPossible(Coord coord, Coord objectSize = Coord(1,1)) const = 0;
+    [[nodiscard]] virtual bool mirroringPossible(Coord coord, Coord objectSize = Coord(1,1)) const = 0;
 
-    virtual Coord getCoord(Coord originalCoord, int i, Coord objectSize = Coord(1,1)) const = 0;
+    [[nodiscard]] virtual Coord getCoord(Coord originalCoord, int i, Coord objectSize = Coord(1,1)) const = 0;
 
-    virtual ANGLETYPE getAngle(ANGLETYPE angle, int i) const = 0;
+    [[nodiscard]] virtual ANGLETYPE getAngle(ANGLETYPE angle, int i) const = 0;
 
     static std::unique_ptr<MapMirror> createMapMirror(MirrorMode mirrorMode, int mapsizeX, int mapsizeY);
 
@@ -55,16 +55,16 @@ class MapMirrorNone : public MapMirror {
 public:
     MapMirrorNone(int mapsizeX, int mapsizeY);
 
-    int getSize() const override { return 1; };
+    [[nodiscard]] int getSize() const override { return 1; };
 
-    bool mirroringPossible(Coord coord, Coord objectSize = Coord(1,1)) const override
+    [[nodiscard]] bool mirroringPossible(Coord coord, Coord objectSize = Coord(1,1)) const override
     {
         return true;
     }
 
-    Coord getCoord(Coord originalCoord, int i, Coord objectSize = Coord(1,1)) const override;
+    [[nodiscard]] Coord getCoord(Coord originalCoord, int i, Coord objectSize = Coord(1,1)) const override;
 
-    ANGLETYPE getAngle(ANGLETYPE angle, int i) const override;
+    [[nodiscard]] ANGLETYPE getAngle(ANGLETYPE angle, int i) const override;
 };
 
 
@@ -73,16 +73,16 @@ class MapMirrorHorizontal : public MapMirror {
 public:
     MapMirrorHorizontal(int mapsizeX, int mapsizeY);
 
-    int getSize() const override { return 2; };
+    [[nodiscard]] int getSize() const override { return 2; };
 
-    bool mirroringPossible(Coord coord, Coord objectSize = Coord(1,1)) const override
+    [[nodiscard]] bool mirroringPossible(Coord coord, Coord objectSize = Coord(1,1)) const override
     {
         return !(coord.x < mapsizeX/2 && coord.x + objectSize.x - 1 >= mapsizeX/2);
     }
 
-    Coord getCoord(Coord originalCoord, int i, Coord objectSize = Coord(1,1)) const override;
+    [[nodiscard]] Coord getCoord(Coord originalCoord, int i, Coord objectSize = Coord(1,1)) const override;
 
-    ANGLETYPE getAngle(ANGLETYPE angle, int i) const override;
+    [[nodiscard]] ANGLETYPE getAngle(ANGLETYPE angle, int i) const override;
 };
 
 
@@ -91,16 +91,16 @@ class MapMirrorVertical : public MapMirror {
 public:
     MapMirrorVertical(int mapsizeX, int mapsizeY);
 
-    int getSize() const override { return 2; };
+    [[nodiscard]] int getSize() const override { return 2; };
 
-    bool mirroringPossible(Coord coord, Coord objectSize = Coord(1,1)) const override
+    [[nodiscard]] bool mirroringPossible(Coord coord, Coord objectSize = Coord(1,1)) const override
     {
         return !(coord.y < mapsizeY/2 && coord.y + objectSize.y - 1 >= mapsizeY/2);
     }
 
-    Coord getCoord(Coord originalCoord, int i, Coord objectSize = Coord(1,1)) const override;
+    [[nodiscard]] Coord getCoord(Coord originalCoord, int i, Coord objectSize = Coord(1,1)) const override;
 
-    ANGLETYPE getAngle(ANGLETYPE angle, int i) const override;
+    [[nodiscard]] ANGLETYPE getAngle(ANGLETYPE angle, int i) const override;
 };
 
 
@@ -109,16 +109,16 @@ class MapMirrorBoth : public MapMirror {
 public:
     MapMirrorBoth(int mapsizeX, int mapsizeY);
 
-    int getSize() const override { return 4; };
+    [[nodiscard]] int getSize() const override { return 4; };
 
-    bool mirroringPossible(Coord coord, Coord objectSize = Coord(1,1)) const override
+    [[nodiscard]] bool mirroringPossible(Coord coord, Coord objectSize = Coord(1,1)) const override
     {
         return !((coord.x < mapsizeX/2 && coord.x + objectSize.x - 1 >= mapsizeX/2) || (coord.y < mapsizeY/2 && coord.y + objectSize.y - 1 >= mapsizeY/2));
     }
 
-    Coord getCoord(Coord originalCoord, int i, Coord objectSize = Coord(1,1)) const override;
+    [[nodiscard]] Coord getCoord(Coord originalCoord, int i, Coord objectSize = Coord(1,1)) const override;
 
-    ANGLETYPE getAngle(ANGLETYPE angle, int i) const override;
+    [[nodiscard]] ANGLETYPE getAngle(ANGLETYPE angle, int i) const override;
 };
 
 
@@ -127,16 +127,16 @@ class MapMirrorPoint : public MapMirror {
 public:
     MapMirrorPoint(int mapsizeX, int mapsizeY);
 
-    int getSize() const override { return 2; };
+    [[nodiscard]] int getSize() const override { return 2; };
 
-    bool mirroringPossible(Coord coord, Coord objectSize = Coord(1,1)) const override
+    [[nodiscard]] bool mirroringPossible(Coord coord, Coord objectSize = Coord(1,1)) const override
     {
         return !((coord.x < mapsizeX/2 && coord.x + objectSize.x - 1 >= mapsizeX/2) && (coord.y < mapsizeY/2 && coord.y + objectSize.y - 1 >= mapsizeY/2));
     }
 
-    Coord getCoord(Coord originalCoord, int i, Coord objectSize = Coord(1,1)) const override;
+    [[nodiscard]] Coord getCoord(Coord originalCoord, int i, Coord objectSize = Coord(1,1)) const override;
 
-    ANGLETYPE getAngle(ANGLETYPE angle, int i) const override;
+    [[nodiscard]] ANGLETYPE getAngle(ANGLETYPE angle, int i) const override;
 };
 
 

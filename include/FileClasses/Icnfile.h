@@ -47,9 +47,9 @@ public:
     Icnfile(Icnfile&& o) = delete;
     ~Icnfile();
 
-    sdl2::surface_ptr getPicture(Uint32 indexOfFile) const;
+    [[nodiscard]] sdl2::surface_ptr getPicture(Uint32 indexOfFile) const;
     sdl2::surface_ptr getPictureArray(Uint32 mapfileIndex, int tilesX = 0, int tilesY = 0, int tilesN = 0);
-    sdl2::surface_ptr getPictureRow(Uint32 startIndex,Uint32 endIndex, Uint32 maxRowLength = 0) const;
+    [[nodiscard]] sdl2::surface_ptr getPictureRow(Uint32 startIndex,Uint32 endIndex, Uint32 maxRowLength = 0) const;
     sdl2::surface_ptr getPictureRow2(unsigned int numTiles, ...) const;
 
     /// Returns the number of tiles
@@ -57,14 +57,14 @@ public:
         Returns the number of tiles in the icn-File.
         \return Number of tiles
     */
-    int getNumFiles() const noexcept { return numFiles; };
+    [[nodiscard]] int getNumFiles() const noexcept { return numFiles; };
 
     /// Returns the number of tilesets
     /**
         Returns the number of tilesets in the map-File.
         \return Number of tilesets
     */
-    int getNumTilesets() const noexcept { return tilesets.size(); };
+    [[nodiscard]] int getNumTilesets() const noexcept { return tilesets.size(); };
 
 private:
     std::unique_ptr<uint8_t[]> pIcnFiledata;

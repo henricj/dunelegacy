@@ -56,9 +56,9 @@ private:
     void build();
     void attack();
 
-    bool isAllowedToArm() const;
+    [[nodiscard]] bool isAllowedToArm() const;
 
-    int getMaxHarvester() const;
+    [[nodiscard]] int getMaxHarvester() const;
 
     Difficulty difficulty;  ///< difficulty level
     Sint32  attackTimer;    ///< When to attack?

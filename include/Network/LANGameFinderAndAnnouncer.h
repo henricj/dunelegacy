@@ -67,7 +67,7 @@ public:
 
     void refreshServerList() const;
 
-    const std::list<GameServerInfo>& getServerInfoList() const {
+    [[nodiscard]] const std::list<GameServerInfo>& getServerInfoList() const {
         return gameServerInfoList;
     }
 

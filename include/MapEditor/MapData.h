@@ -44,15 +44,15 @@ public:
         return data.at(y*sizeX+x);
     }
 
-    int getSizeX() const {
+    [[nodiscard]] int getSizeX() const {
         return sizeX;
     }
 
-    int getSizeY() const {
+    [[nodiscard]] int getSizeY() const {
         return sizeY;
     }
 
-    bool isInsideMap(int x, int y) const {
+    [[nodiscard]] bool isInsideMap(int x, int y) const {
         return ( (x >= 0) && (x < sizeX) && (y >= 0) && (y < sizeY) );
     }
 

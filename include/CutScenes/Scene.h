@@ -65,7 +65,7 @@ public:
         This method checks if there is something to draw in the next frame
         \return true, if there are no more VideoEvents in the queue
     */
-    bool isFinished() const {
+    [[nodiscard]] bool isFinished() const {
         if(videoEvents.empty()) {
             return true;
         } else if(videoEvents.size() == 1) {

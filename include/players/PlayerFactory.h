@@ -33,11 +33,11 @@ public:
          : playerclass(playerclass), name(name), pCreate(pCreate), pLoad(pLoad) {
         }
 
-        const std::string& getPlayerClass() const {
+        [[nodiscard]] const std::string& getPlayerClass() const {
             return playerclass;
         }
 
-        const std::string& getName() const {
+        [[nodiscard]] const std::string& getName() const {
             return name;
         }
 
