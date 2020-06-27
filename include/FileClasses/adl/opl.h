@@ -31,8 +31,7 @@ class Copl
 
   Copl() noexcept
      
-    {
-    }
+    = default;
 
   Copl(const Copl &) = delete;
   Copl(Copl &&) = delete;
