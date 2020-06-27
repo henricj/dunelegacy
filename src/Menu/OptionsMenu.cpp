@@ -250,7 +250,7 @@ void OptionsMenu::onChangeOption(bool bInteractive) {
 
     bChanged |= (settings.general.playerName != nameTextBox.getText());
     int languageIndex = languageDropDownBox.getSelectedEntryIntData();
-    if(languageIndex >= 0) {
+    if(languageIndex >= 0 && languageIndex < availLanguages.size()) {
         std::string languageFilename = availLanguages[languageIndex];
         bChanged |= (settings.general.language != languageFilename.substr(languageFilename.size()-5,2));
     }
@@ -299,7 +299,8 @@ void OptionsMenu::onOptionsOK() {
     }
 
     settings.general.playerName = playername;
-    std::string languageFilename = (languageDropDownBox.getSelectedEntryIntData() < 0) ? "English.en.po" : availLanguages[languageDropDownBox.getSelectedEntryIntData()];
+    const auto selectedLanguage = languageDropDownBox.getSelectedEntryIntData();
+    std::string languageFilename = (selectedLanguage < 0 || selectedLanguage >= availLanguages.size()) ? "English.en.po" : availLanguages[selectedLanguage];
     settings.general.language = languageFilename.substr(languageFilename.size()-5,2);
     settings.general.playIntro = introCheckbox.isChecked();
     settings.general.showTutorialHints = showTutorialHintsCheckbox.isChecked();
