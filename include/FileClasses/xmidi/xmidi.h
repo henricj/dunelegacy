@@ -66,8 +66,7 @@ struct midi_event
     midi_event  *next{nullptr};
 
     midi_event()  
-    {
-    }
+    = default;
 
     ~midi_event()
     {

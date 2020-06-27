@@ -70,8 +70,7 @@ public:
     public:
 
         EditorMode()
-          {
-        }
+          = default;
 
         explicit EditorMode(bool dummy)
          : mode(EditorMode_TacticalPos) {
