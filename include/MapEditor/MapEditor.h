@@ -70,7 +70,7 @@ public:
     public:
 
         EditorMode()
-         : mode(EditorMode_Selection) {
+          {
         }
 
         explicit EditorMode(bool dummy)
@@ -95,7 +95,7 @@ public:
             EditorMode_Structure,
             EditorMode_Unit,
             EditorMode_TacticalPos
-        } mode;
+        } mode{EditorMode_Selection};
 
         TERRAINTYPE     terrainType = Terrain_Sand;
         int             pensize = 0;

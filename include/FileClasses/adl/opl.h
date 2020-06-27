@@ -30,7 +30,7 @@ class Copl
   } ChipType;
 
   Copl() noexcept
-    : currChip(0), currType(TYPE_OPL2)
+     
     {
     }
 
@@ -65,8 +65,8 @@ class Copl
   virtual void update(short *buf, int samples) {}
 
  protected:
-  int       currChip;       // currently selected OPL chip number
-  ChipType  currType;       // this OPL chip's type
+  int       currChip{0};       // currently selected OPL chip number
+  ChipType  currType{TYPE_OPL2};       // this OPL chip's type
 };
 
 #endif

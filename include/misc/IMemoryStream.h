@@ -30,12 +30,12 @@ class IMemoryStream : public InputStream
 {
 public:
     IMemoryStream()
-     : currentPos(0), bufferSize(0), pBuffer(nullptr) {
+      {
         ;
     }
 
     IMemoryStream(const char* data, int length)
-     : currentPos(0), bufferSize(length), pBuffer(data) {
+     :  bufferSize(length), pBuffer(data) {
         ;
     }
 
@@ -118,9 +118,9 @@ public:
     }
 
 private:
-    size_t      currentPos;
-    size_t      bufferSize;
-    const char* pBuffer;
+    size_t      currentPos{0};
+    size_t      bufferSize{0};
+    const char* pBuffer{nullptr};
 };
 
 #endif // IMEMORYSTREAM_H
