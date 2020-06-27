@@ -145,9 +145,11 @@ static void SmoothNeighbourhood(Sint16 index, Uint32* pMapArray) {
                 if(BoolArray[pMapArray[Pos]] == 1) {
                     pMapArray[index] = 8;
                     continue;
-                }                     if(pMapArray[Pos] == 9)
+                }                     if(pMapArray[Pos] == 9) {
 
                         continue;
+
+}
 
 
 

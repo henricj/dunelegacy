@@ -295,10 +295,12 @@ void ObjectBase::setObjectID(int newObjectID) {
 
 void ObjectBase::setVisible(int teamID, bool status) {
     if(teamID == VIS_ALL) {
-        if (status)
+        if (status) {
             visible.set();
-        else
+        } else {
             visible.reset();
+
+}
     } else if ((teamID >= 0) && (teamID < NUM_TEAMS)) {
         visible[teamID] = status;
     }

@@ -1194,9 +1194,11 @@ static unsigned lodepng_inflatev(ucvector* out,
         BTYPE += 2u * readBitFromStream(&bp, in);
 
         if (BTYPE == 3) return 20; /*error: invalid BTYPE*/
-        if (BTYPE == 0) error = inflateNoCompression(out, in, &bp, &pos, insize); /*no compression*/
+        if (BTYPE == 0) { error = inflateNoCompression(out, in, &bp, &pos, insize); /*no compression*/
 
-        else error = inflateHuffmanBlock(out, in, &bp, &pos, insize, BTYPE); /*compression, BTYPE 01 or 10*/
+        } else { error = inflateHuffmanBlock(out, in, &bp, &pos, insize, BTYPE); /*compression, BTYPE 01 or 10*/
+
+}
 
         if (error) return error;
     }
@@ -1918,11 +1920,11 @@ static unsigned lodepng_deflatev(ucvector* out, const unsigned char* in, size_t 
     Hash hash;
 
     if (settings->btype > 2) return 61;
-    if (settings->btype == 0) return deflateNoCompression(out, in, insize);
+    if (settings->btype == 0) { return deflateNoCompression(out, in, insize);
 
-    else if (settings->btype == 1) blocksize = insize;
+    } else if (settings->btype == 1) { blocksize = insize;
 
-    else /*if(settings->btype == 2)*/ {
+    } else /*if(settings->btype == 2)*/ {
 
         /*on PNGs, deflate blocks of 65-262k seem to give most dense encoding*/
 
@@ -3192,10 +3194,12 @@ static void getPixelColorsRGBA8(unsigned char* buffer, size_t numpixels,
                 buffer[0] = in[i * 6 + 0];
                 buffer[1] = in[i * 6 + 2];
                 buffer[2] = in[i * 6 + 4];
-                if (has_alpha) buffer[3] = mode->key_defined
+                if (has_alpha) { buffer[3] = mode->key_defined
                     && 256U * in[i * 6 + 0] + in[i * 6 + 1] == mode->key_r
                     && 256U * in[i * 6 + 2] + in[i * 6 + 3] == mode->key_g
                     && 256U * in[i * 6 + 4] + in[i * 6 + 5] == mode->key_b ? 0 : 255;
+
+}
             }
         }
     }
@@ -3783,9 +3787,11 @@ static unsigned char paethPredictor(short a, short b, short c) {
     short pc = abs(a + b - c - c);
 
     if (pc < pa && pc < pb) return (unsigned char)c;
-    if (pb < pa) return (unsigned char)b;
+    if (pb < pa) { return (unsigned char)b;
 
-    else return (unsigned char)a;
+    } else { return (unsigned char)a;
+
+}
 }
 
 /*shared values used by multiple Adam7 related functions*/
@@ -4029,7 +4035,7 @@ static void Adam7_deinterlace(unsigned char* out, const unsigned char* in, unsig
 
             unsigned b = 0;
             size_t bytewidth = bpp / 8;
-            for (y = 0; y < passh[i]; ++y)
+            for (y = 0; y < passh[i]; ++y) {
                 for (x = 0; x < passw[i]; ++x) {
                     size_t pixelinstart = passstart[i] + (y * passw[i] + x) * bytewidth;
                     size_t pixeloutstart = ((ADAM7_IY[i] + y * ADAM7_DY[i]) * w + ADAM7_IX[i] + x * ADAM7_DX[i]) * bytewidth;
@@ -4037,6 +4043,8 @@ static void Adam7_deinterlace(unsigned char* out, const unsigned char* in, unsig
                         out[pixeloutstart + b] = in[pixelinstart + b];
                     }
                 }
+
+}
         }
     }
     else /*bpp < 8: Adam7 with pixels < 8 bit is a bit trickier: with bit pointers*/ {
@@ -4051,7 +4059,7 @@ static void Adam7_deinterlace(unsigned char* out, const unsigned char* in, unsig
             size_t obp = 0;
 
             size_t ibp = 0; /*bit pointers (for out and in buffer)*/
-            for (y = 0; y < passh[i]; ++y)
+            for (y = 0; y < passh[i]; ++y) {
                 for (x = 0; x < passw[i]; ++x) {
                     ibp = (8 * passstart[i]) + (y * ilinebits + x * bpp);
                     obp = (ADAM7_IY[i] + y * ADAM7_DY[i]) * olinebits + (ADAM7_IX[i] + x * ADAM7_DX[i]) * bpp;
@@ -4061,6 +4069,8 @@ static void Adam7_deinterlace(unsigned char* out, const unsigned char* in, unsig
                         setBitOfReversedStream0(&obp, out, bit);
                     }
                 }
+
+}
         }
     }
 }
@@ -5558,7 +5568,7 @@ static void Adam7_interlace(unsigned char* out, const unsigned char* in, unsigne
 
             unsigned b = 0;
             size_t bytewidth = bpp / 8;
-            for (y = 0; y < passh[i]; ++y)
+            for (y = 0; y < passh[i]; ++y) {
                 for (x = 0; x < passw[i]; ++x) {
                     size_t pixelinstart = ((ADAM7_IY[i] + y * ADAM7_DY[i]) * w + ADAM7_IX[i] + x * ADAM7_DX[i]) * bytewidth;
                     size_t pixeloutstart = passstart[i] + (y * passw[i] + x) * bytewidth;
@@ -5566,6 +5576,8 @@ static void Adam7_interlace(unsigned char* out, const unsigned char* in, unsigne
                         out[pixeloutstart + b] = in[pixelinstart + b];
                     }
                 }
+
+}
         }
     }
     else /*bpp < 8: Adam7 with pixels < 8 bit is a bit trickier: with bit pointers*/ {
@@ -5580,7 +5592,7 @@ static void Adam7_interlace(unsigned char* out, const unsigned char* in, unsigne
             size_t obp = 0;
 
             size_t ibp = 0; /*bit pointers (for out and in buffer)*/
-            for (y = 0; y < passh[i]; ++y)
+            for (y = 0; y < passh[i]; ++y) {
                 for (x = 0; x < passw[i]; ++x) {
                     ibp = (ADAM7_IY[i] + y * ADAM7_DY[i]) * olinebits + (ADAM7_IX[i] + x * ADAM7_DX[i]) * bpp;
                     obp = (8 * passstart[i]) + (y * ilinebits + x * bpp);
@@ -5589,6 +5601,8 @@ static void Adam7_interlace(unsigned char* out, const unsigned char* in, unsigne
                         setBitOfReversedStream(&obp, out, bit);
                     }
                 }
+
+}
         }
     }
 }
@@ -5697,9 +5711,11 @@ static unsigned getPaletteTranslucency(const unsigned char* palette, size_t pale
             key = 1;
             i = (size_t)(-1); /*restart from beginning, to detect earlier opaque colors with key's value*/
         }
-        else if (palette[4 * i + 3] != 255) return 2;
+        else if (palette[4 * i + 3] != 255) { return 2;
         /*when key, no opaque RGB may have key's RGB*/
-        else if (key && r == palette[i * 4 + 0] && g == palette[i * 4 + 1] && b == palette[i * 4 + 2]) return 2;
+        } else if (key && r == palette[i * 4 + 0] && g == palette[i * 4 + 1] && b == palette[i * 4 + 2]) { return 2;
+
+}
     }
     return key;
 }
