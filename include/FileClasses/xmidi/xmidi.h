@@ -55,17 +55,17 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 struct midi_event
 {
-    int     time;
-    unsigned char   status;
+    int     time{0};
+    unsigned char   status{0};
 
     unsigned char   data[2];
 
-    unsigned int    len;
-    unsigned char   *buffer;
+    unsigned int    len{0};
+    unsigned char   *buffer{nullptr};
 
-    midi_event  *next;
+    midi_event  *next{nullptr};
 
-    midi_event() : time(0), status(0), len(0), buffer(nullptr), next(nullptr)
+    midi_event()  
     {
     }
 
