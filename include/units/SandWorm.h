@@ -28,7 +28,7 @@ public:
     explicit Sandworm(House* newOwner);
     explicit Sandworm(InputStream& stream);
     void init();
-    virtual ~Sandworm();
+    ~Sandworm() override;
 
     void save(OutputStream& stream) const override;
 

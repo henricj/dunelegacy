@@ -33,7 +33,7 @@
 class MentatMenu : public MenuBase {
 public:
     explicit MentatMenu(HOUSETYPE newHouse);
-    virtual ~MentatMenu();
+    ~MentatMenu() override;
 
     void setText(const std::string& text);
 

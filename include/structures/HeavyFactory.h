@@ -26,7 +26,7 @@ public:
     explicit HeavyFactory(House* newOwner);
     explicit HeavyFactory(InputStream& stream);
     void init();
-    virtual ~HeavyFactory();
+    ~HeavyFactory() override;
 
     void doBuildRandom() override;
 

@@ -35,7 +35,7 @@ class TTFFont : public Font
 {
 public:
     TTFFont(sdl2::RWops_ptr pRWOP, int fontsize);
-    virtual ~TTFFont();
+    ~TTFFont() override;
 
     void drawTextOnSurface(SDL_Surface* pSurface, const std::string& text, Uint32 baseColor = 0xFFFFFFFF) override;
 

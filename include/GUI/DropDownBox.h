@@ -34,7 +34,7 @@ public:
     DropDownBox();
 
     /// destructor
-    virtual ~DropDownBox();
+    ~DropDownBox() override;
 
     /**
         Handles a mouse movement. This method is for example needed for the tooltip.

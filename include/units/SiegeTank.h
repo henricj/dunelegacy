@@ -26,7 +26,7 @@ public:
     explicit SiegeTank(House* newOwner);
     explicit SiegeTank(InputStream& stream);
     void init();
-    virtual ~SiegeTank();
+    ~SiegeTank() override;
 
     void blitToScreen() override;
 

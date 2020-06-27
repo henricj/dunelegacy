@@ -34,7 +34,7 @@ public:
     SmartBot(House* associatedHouse, const std::string& playername, Difficulty difficulty);
     SmartBot(InputStream& stream, House* associatedHouse);
     void init();
-    ~SmartBot();
+    ~SmartBot() override;
     void save(OutputStream& stream) const override;
 
     void update() override;

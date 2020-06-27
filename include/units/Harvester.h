@@ -27,7 +27,7 @@ public:
     explicit Harvester(House* newOwner);
     explicit Harvester(InputStream& stream);
     void init();
-    virtual ~Harvester();
+    ~Harvester() override;
 
     void save(OutputStream& stream) const override;
 

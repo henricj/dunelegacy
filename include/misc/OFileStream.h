@@ -27,7 +27,7 @@ class OFileStream : public OutputStream
 {
 public:
     OFileStream();
-    ~OFileStream();
+    ~OFileStream() override;
 
     bool open(const std::filesystem::path& filename);
     void close();

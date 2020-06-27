@@ -66,7 +66,7 @@ public:
         size = len;
     };
 
-    virtual ~BufferDataSource() = default;
+    ~BufferDataSource() override = default;
 
     unsigned int read1() override
     {
@@ -173,7 +173,7 @@ public:
         this->freesrc = freesrc;
     };
 
-    virtual ~SDLDataSource() {
+    ~SDLDataSource() override {
         close();
     };
 

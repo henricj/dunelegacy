@@ -32,7 +32,7 @@ public:
     }
 
     /// destructor
-    virtual ~SymbolButton() = default;
+    ~SymbolButton() override = default;
 
     /**
         This method is used for setting the symbol for this button.

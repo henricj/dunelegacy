@@ -26,7 +26,7 @@ public:
     explicit IX(House* newOwner);
     explicit IX(InputStream& stream);
     void init();
-    virtual ~IX();
+    ~IX() override;
 
     /**
         Can this structure be captured by infantry units?

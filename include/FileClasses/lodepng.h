@@ -959,7 +959,7 @@ namespace lodepng {
     public:
         State();
         State(const State& other);
-        virtual ~State();
+        ~State() override;
         State& operator=(const State& other);
     };
 

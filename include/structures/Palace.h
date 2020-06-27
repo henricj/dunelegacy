@@ -26,7 +26,7 @@ public:
     explicit Palace(House* newOwner);
     explicit Palace(InputStream& stream);
     void init();
-    virtual ~Palace();
+    ~Palace() override;
 
     void save(OutputStream& stream) const override;
 

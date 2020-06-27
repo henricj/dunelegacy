@@ -26,7 +26,7 @@ public:
     explicit TankBase(House* newOwner);
     explicit TankBase(InputStream& stream);
     void init();
-    virtual ~TankBase();
+    ~TankBase() override;
 
     TankBase(const TankBase &) = delete;
     TankBase(TankBase &&) = delete;

@@ -26,7 +26,7 @@ public:
     explicit Ornithopter(House* newOwner);
     explicit Ornithopter(InputStream& stream);
     void init();
-    virtual ~Ornithopter();
+    ~Ornithopter() override;
 
     void save(OutputStream& stream) const override;
 
@@ -40,9 +40,9 @@ public:
     void playAttackSound() override;
 
 protected:
-    virtual FixPoint getDestinationAngle() const override;
+    FixPoint getDestinationAngle() const override;
 
-    virtual bool attack() override;
+    bool attack() override;
 
 private:
     Uint32 timeLastShot;

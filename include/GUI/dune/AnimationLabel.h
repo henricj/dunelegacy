@@ -33,7 +33,7 @@ public:
     }
 
     /// destructor
-    virtual ~AnimationLabel() { ; };
+    ~AnimationLabel() override { ; };
 
     /**
         Set the current animation that should be shown in this widget.

@@ -29,7 +29,7 @@ class InGameSettingsMenu : public Window
 {
 public:
     InGameSettingsMenu();
-    virtual ~InGameSettingsMenu();
+    ~InGameSettingsMenu() override;
 
     void init();
 

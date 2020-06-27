@@ -37,7 +37,7 @@ class GameOptionsWindow : public Window
 {
 public:
     explicit GameOptionsWindow(SettingsClass::GameOptionsClass& initialGameOptions);
-    virtual ~GameOptionsWindow();
+    ~GameOptionsWindow() override;
 
     void onOK();
 

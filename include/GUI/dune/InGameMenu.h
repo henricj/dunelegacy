@@ -28,7 +28,7 @@ class InGameMenu : public Window
 {
 public:
     InGameMenu(bool bMultiplayer, int color);
-    virtual ~InGameMenu();
+    ~InGameMenu() override;
 
     /**
         Handles a key stroke.

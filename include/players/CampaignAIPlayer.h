@@ -38,7 +38,7 @@ public:
     CampaignAIPlayer(House* associatedHouse, const std::string& playername);
     CampaignAIPlayer(InputStream& stream, House* associatedHouse);
     void init();
-    ~CampaignAIPlayer();
+    ~CampaignAIPlayer() override;
     void save(OutputStream& stream) const override;
 
     void update() override;

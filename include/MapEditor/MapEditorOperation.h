@@ -47,7 +47,7 @@ public:
 
     MapEditorNoOperation() = default;
 
-    virtual ~MapEditorNoOperation() = default;
+    ~MapEditorNoOperation() override = default;
 
     std::unique_ptr<MapEditorOperation> perform(MapEditor *pMapEditor) override
     {
@@ -61,7 +61,7 @@ public:
     MapEditorStartOperation() : MapEditorOperation() {
     }
 
-    virtual ~MapEditorStartOperation() = default;
+    ~MapEditorStartOperation() override = default;
 
     std::unique_ptr<MapEditorOperation> perform(MapEditor *pMapEditor) override;
 };
@@ -73,7 +73,7 @@ public:
      : MapEditorOperation(), x(x), y(y), terrainType(terrainType) {
     }
 
-    virtual ~MapEditorTerrainEditOperation() = default;
+    ~MapEditorTerrainEditOperation() override = default;
 
     std::unique_ptr<MapEditorOperation> perform(MapEditor *pMapEditor) override;
 
@@ -89,7 +89,7 @@ public:
      : MapEditorOperation(), x(x), y(y) {
     }
 
-    virtual ~MapEditorTerrainAddSpiceBloomOperation() = default;
+    ~MapEditorTerrainAddSpiceBloomOperation() override = default;
 
     std::unique_ptr<MapEditorOperation> perform(MapEditor *pMapEditor) override;
 
@@ -104,7 +104,7 @@ public:
      : MapEditorOperation(), x(x), y(y) {
     }
 
-    virtual ~MapEditorTerrainRemoveSpiceBloomOperation() = default;
+    ~MapEditorTerrainRemoveSpiceBloomOperation() override = default;
 
     std::unique_ptr<MapEditorOperation> perform(MapEditor *pMapEditor) override;
 
@@ -119,7 +119,7 @@ public:
      : MapEditorOperation(), x(x), y(y) {
     }
 
-    virtual ~MapEditorTerrainAddSpecialBloomOperation() = default;
+    ~MapEditorTerrainAddSpecialBloomOperation() override = default;
 
     std::unique_ptr<MapEditorOperation> perform(MapEditor *pMapEditor) override;
 
@@ -134,7 +134,7 @@ public:
      : MapEditorOperation(), x(x), y(y) {
     }
 
-    virtual ~MapEditorTerrainRemoveSpecialBloomOperation() = default;
+    ~MapEditorTerrainRemoveSpecialBloomOperation() override = default;
 
     std::unique_ptr<MapEditorOperation> perform(MapEditor *pMapEditor) override;
 
@@ -149,7 +149,7 @@ public:
      : MapEditorOperation(), x(x), y(y) {
     }
 
-    virtual ~MapEditorTerrainAddSpiceFieldOperation() {
+    ~MapEditorTerrainAddSpiceFieldOperation() override {
     }
 
     std::unique_ptr<MapEditorOperation> perform(MapEditor *pMapEditor) override;
@@ -165,7 +165,7 @@ public:
      : MapEditorOperation(), x(x), y(y) {
     }
 
-    virtual ~MapEditorTerrainRemoveSpiceFieldOperation() = default;
+    ~MapEditorTerrainRemoveSpiceFieldOperation() override = default;
 
     std::unique_ptr<MapEditorOperation> perform(MapEditor *pMapEditor) override;
 
@@ -182,7 +182,7 @@ public:
      : MapEditorOperation(), x(x), y(y) {
     }
 
-    virtual ~MapEditorSetTacticalPositionOperation() = default;
+    ~MapEditorSetTacticalPositionOperation() override = default;
 
     std::unique_ptr<MapEditorOperation> perform(MapEditor *pMapEditor) override;
 
@@ -203,7 +203,7 @@ public:
      : MapEditorOperation(), preferredID(INVALID), position(position), house(house), itemID(itemID), health(health) {
     }
 
-    virtual ~MapEditorStructurePlaceOperation() = default;
+    ~MapEditorStructurePlaceOperation() override = default;
 
     std::unique_ptr<MapEditorOperation> perform(MapEditor *pMapEditor) override;
 
@@ -221,7 +221,7 @@ public:
      : MapEditorOperation(), id(id) {
     }
 
-    virtual ~MapEditorRemoveStructureOperation() = default;
+    ~MapEditorRemoveStructureOperation() override = default;
 
     std::unique_ptr<MapEditorOperation> perform(MapEditor *pMapEditor) override;
 
@@ -239,7 +239,7 @@ public:
      : MapEditorOperation(), preferredID(INVALID), position(position), house(house), itemID(itemID), health(health), angle(angle), attackmode(attackmode) {
     }
 
-    virtual ~MapEditorUnitPlaceOperation() = default;
+    ~MapEditorUnitPlaceOperation() override = default;
 
     std::unique_ptr<MapEditorOperation> perform(MapEditor *pMapEditor) override;
 
@@ -259,7 +259,7 @@ public:
      : MapEditorOperation(), id(id) {
     }
 
-    virtual ~MapEditorRemoveUnitOperation() = default;
+    ~MapEditorRemoveUnitOperation() override = default;
 
     std::unique_ptr<MapEditorOperation> perform(MapEditor *pMapEditor) override;
 
@@ -274,7 +274,7 @@ public:
      : MapEditorOperation(), id(id), health(health) {
     }
 
-    virtual ~MapEditorEditStructureOperation() = default;
+    ~MapEditorEditStructureOperation() override = default;
 
     std::unique_ptr<MapEditorOperation> perform(MapEditor *pMapEditor) override;
 
@@ -290,7 +290,7 @@ public:
      : MapEditorOperation(), id(id), health(health), angle(angle), attackmode(attackmode) {
     }
 
-    virtual ~MapEditorEditUnitOperation() = default;
+    ~MapEditorEditUnitOperation() override = default;
 
     std::unique_ptr<MapEditorOperation> perform(MapEditor *pMapEditor) override;
 
@@ -307,7 +307,7 @@ public:
      : playerNum(playerNum), bActive(bActive), bAnyHouse(bAnyHouse), credits(credits), brain(std::move(brain)), quota(quota), maxunit(maxunit) {
     }
 
-    virtual ~MapEditorChangePlayer() {
+    ~MapEditorChangePlayer() override {
     }
 
     std::unique_ptr<MapEditorOperation> perform(MapEditor *pMapEditor) override;
@@ -329,7 +329,7 @@ public:
      : itemID(itemID), amount(amount) {
     }
 
-    virtual ~MapEditorChangeChoam() = default;
+    ~MapEditorChangeChoam() override = default;
 
     std::unique_ptr<MapEditorOperation> perform(MapEditor *pMapEditor) override;
 
@@ -345,7 +345,7 @@ public:
      : reinforcements(reinforcements) {
     }
 
-    virtual ~MapEditorChangeReinforcements() = default;
+    ~MapEditorChangeReinforcements() override = default;
 
     std::unique_ptr<MapEditorOperation> perform(MapEditor *pMapEditor) override;
 
@@ -359,7 +359,7 @@ public:
      : aiteams(aiteams) {
     }
 
-    virtual ~MapEditorChangeTeams() = default;
+    ~MapEditorChangeTeams() override = default;
 
     std::unique_ptr<MapEditorOperation> perform(MapEditor *pMapEditor) override;
 
@@ -373,7 +373,7 @@ public:
      : mapInfo(mapInfo) {
     }
 
-    virtual ~MapEditorChangeMapInfo() = default;
+    ~MapEditorChangeMapInfo() override = default;
 
     std::unique_ptr<MapEditorOperation> perform(MapEditor *pMapEditor) override;
 

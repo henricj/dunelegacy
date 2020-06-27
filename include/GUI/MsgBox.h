@@ -122,7 +122,7 @@ protected:
     }
 
     /// destructor
-    virtual ~MsgBox() {
+    ~MsgBox() override {
     }
 
 private:

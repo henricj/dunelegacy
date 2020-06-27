@@ -46,7 +46,7 @@ public:
     Intro& operator=(Intro &&) = delete;
 
     /// destructor
-    virtual ~Intro();
+    ~Intro() override;
 
 private:
 

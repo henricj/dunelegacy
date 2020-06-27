@@ -26,7 +26,7 @@ public:
     explicit HighTechFactory(House* newOwner);
     explicit HighTechFactory(InputStream& stream);
     void init();
-    virtual ~HighTechFactory();
+    ~HighTechFactory() override;
 };
 
 #endif //HIGHTECHFACTORY_H

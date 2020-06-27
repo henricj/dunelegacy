@@ -30,7 +30,7 @@ class SinglePlayerMenu : public MenuBase
 {
 public:
     SinglePlayerMenu();
-    virtual ~SinglePlayerMenu();
+    ~SinglePlayerMenu() override;
 
     /**
         This method is called, when the child window is about to be closed.

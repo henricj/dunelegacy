@@ -37,7 +37,7 @@ class CustomGameMenu : public MenuBase
 {
 public:
     CustomGameMenu(bool multiplayer, bool LANServer = true);
-    virtual ~CustomGameMenu();
+    ~CustomGameMenu() override;
 
     /**
         This method is called, when the child window is about to be closed.

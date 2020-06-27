@@ -31,7 +31,7 @@ public:
     }
 
     /// destructor
-    virtual ~ClickMap() = default;
+    ~ClickMap() override = default;
 
     /**
         Sets the function that should be called when this click map is clicked on.

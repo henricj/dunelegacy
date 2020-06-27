@@ -142,7 +142,7 @@ protected:
     }
 
     /// destructor
-    virtual ~QstBox() {
+    ~QstBox() override {
     }
 
 private:

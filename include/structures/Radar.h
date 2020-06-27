@@ -26,7 +26,7 @@ public:
     explicit Radar(House* newOwner);
     explicit Radar(InputStream& stream);
     void init();
-    virtual ~Radar();
+    ~Radar() override;
 
     ObjectInterface* getInterfaceContainer() override;
 

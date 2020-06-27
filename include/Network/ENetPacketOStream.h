@@ -40,7 +40,7 @@ public:
         *this = p;
     }
 
-    ~ENetPacketOStream() {
+    ~ENetPacketOStream() override {
         if(packet != nullptr) {
             enet_packet_destroy(packet);
         }

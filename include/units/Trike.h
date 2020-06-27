@@ -26,7 +26,7 @@ public:
     explicit Trike(House* newOwner);
     explicit Trike(InputStream& stream);
     void init();
-    virtual ~Trike();
+    ~Trike() override;
 
     void destroy() override;
 

@@ -44,7 +44,7 @@ public:
     }
 
     /// destructor
-    virtual ~TextBox() {
+    ~TextBox() override {
         invalidateTextures();
     }
 

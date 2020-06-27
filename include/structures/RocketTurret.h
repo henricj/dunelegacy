@@ -26,7 +26,7 @@ public:
     explicit RocketTurret(House* newOwner);
     explicit RocketTurret(InputStream& stream);
     void init();
-    virtual ~RocketTurret();
+    ~RocketTurret() override;
 
     bool canAttack(const ObjectBase* object) const override;
 

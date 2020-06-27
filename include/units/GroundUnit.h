@@ -29,7 +29,7 @@ public:
     explicit GroundUnit(House* newOwner);
     explicit GroundUnit(InputStream& stream);
     void init();
-    virtual ~GroundUnit();
+    ~GroundUnit() override;
 
     GroundUnit(const GroundUnit &) = delete;
     GroundUnit(GroundUnit &&) = delete;

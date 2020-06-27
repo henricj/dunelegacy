@@ -135,7 +135,7 @@ public:
     BuilderList& operator=(BuilderList &&) = delete;
 private:
     explicit BuilderList(Uint32 builderObjectID);
-    virtual ~BuilderList();
+    ~BuilderList() override;
 
     static int getRealHeight(int height);
     int getNumButtons(int height) const;

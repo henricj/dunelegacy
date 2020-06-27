@@ -31,7 +31,7 @@ class MentatHelp : public MentatMenu
 {
 public:
     MentatHelp(HOUSETYPE newHouse, int techLevel, int mission);
-    virtual ~MentatHelp();
+    ~MentatHelp() override;
 
     void drawSpecificStuff() override;
 

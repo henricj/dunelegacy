@@ -31,7 +31,7 @@ class WaitingForOtherPlayers : public Window
 {
 public:
     WaitingForOtherPlayers();
-    virtual ~WaitingForOtherPlayers();
+    ~WaitingForOtherPlayers() override;
 
     void onRemove();
 

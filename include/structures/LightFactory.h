@@ -26,7 +26,7 @@ public:
     explicit LightFactory(House* newOwner);
     explicit LightFactory(InputStream& stream);
     void init();
-    virtual ~LightFactory();
+    ~LightFactory() override;
 
 protected:
     /**

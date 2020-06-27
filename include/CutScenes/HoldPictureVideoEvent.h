@@ -36,7 +36,7 @@ public:
     HoldPictureVideoEvent(SDL_Surface* pSurface, int numFrames2Hold, bool bCenterVertical = true);
 
     /// destructor
-    virtual ~HoldPictureVideoEvent();
+    ~HoldPictureVideoEvent() override;
 
     /**
         This method draws the video effect.
