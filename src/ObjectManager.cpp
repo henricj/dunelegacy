@@ -39,7 +39,7 @@ void ObjectManager::load(InputStream& stream) {
     for (auto i = decltype(numObjects){0}; i < numObjects; i++) {
         auto objectID = stream.readUint32();
 
-        const auto pObject = currentGame->loadObject(stream,objectID);
+        auto *const pObject = currentGame->loadObject(stream,objectID);
         if(objectID != pObject->getObjectID()) {
             SDL_Log("ObjectManager::load(): The loaded object has a different ID than expected (%d!=%d)!",objectID,pObject->getObjectID());
         }

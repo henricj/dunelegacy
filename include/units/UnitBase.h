@@ -200,7 +200,7 @@ public:
     bool update() override;
 
     bool canPass(int xPos, int yPos) const {
-        const auto pTile = currentGameMap->tryGetTile(xPos, yPos);
+        auto *const pTile = currentGameMap->tryGetTile(xPos, yPos);
 
         return pTile ? canPassTile(pTile) : false;
     }

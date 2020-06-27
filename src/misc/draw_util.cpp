@@ -26,7 +26,7 @@
 Uint32 getPixel(SDL_Surface *surface, int x, int y) {
     const int bpp = surface->format->BytesPerPixel;
     /* Here p is the address to the pixel we want to retrieve */
-    const auto p = static_cast<Uint8 *>(surface->pixels) + (y * surface->pitch) + (x * bpp);
+    auto *const p = static_cast<Uint8 *>(surface->pixels) + (y * surface->pitch) + (x * bpp);
 
     switch(bpp) {
     case 1:
@@ -58,7 +58,7 @@ void putPixel(SDL_Surface *surface, int x, int y, Uint32 color) {
 
     const int bpp = surface->format->BytesPerPixel;
     /* Here p is the address to the pixel want to set */
-    const auto p = static_cast<Uint8 *>(surface->pixels) + y * surface->pitch + x * bpp;
+    auto *const p = static_cast<Uint8 *>(surface->pixels) + y * surface->pitch + x * bpp;
 
     switch(bpp) {
     case 1:

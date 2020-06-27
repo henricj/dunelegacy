@@ -81,8 +81,8 @@ protected:
 
 
     void onUpgrade() const {
-        const auto pObject = currentGame->getObjectManager().getObject(objectID);
-        const auto pBuilder = dynamic_cast<BuilderBase*>(pObject);
+        auto *const pObject = currentGame->getObjectManager().getObject(objectID);
+        auto *const pBuilder = dynamic_cast<BuilderBase*>(pObject);
         if(pBuilder != nullptr && !pBuilder->isUpgrading()) {
             pBuilder->handleUpgradeClick();
         }
@@ -95,14 +95,14 @@ protected:
     */
     bool update() override
     {
-        const auto pObject = currentGame->getObjectManager().getObject(objectID);
+        auto *const pObject = currentGame->getObjectManager().getObject(objectID);
         if(pObject == nullptr) {
             return false;
         }
 
-        const auto pBuilder = dynamic_cast<BuilderBase*>(pObject);
+        auto *const pBuilder = dynamic_cast<BuilderBase*>(pObject);
         if(pBuilder != nullptr) {
-            const auto pStarport = dynamic_cast<StarPort*>(pBuilder);
+            auto *const pStarport = dynamic_cast<StarPort*>(pBuilder);
             if(pStarport != nullptr) {
                 const auto arrivalTimer = pStarport->getArrivalTimer();
                 if(arrivalTimer > 0) {

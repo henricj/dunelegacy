@@ -293,7 +293,7 @@ void Wsafile::readdata(int numFiles, va_list args) {
 
     for(int i = 0; i < numFiles; i++) {
         int wsaFilesize = 0;
-        const auto rwop = va_arg(args,SDL_RWops*);
+        auto *const rwop = va_arg(args,SDL_RWops*);
         pFiledata[i] = readfile(rwop,&wsaFilesize);
         numberOfFrames[i] = SDL_SwapLE16(*(reinterpret_cast<Uint16*>(pFiledata[i].get())) );
 
@@ -354,7 +354,7 @@ void Wsafile::readdata(int numFiles, va_list args) {
     pFiledata[0].reset();
 
     if (numFiles > 1) {
-        auto nextFreeFrame = &decodedFrames[(numberOfFrames[0] * static_cast<size_t>(sizeX) * static_cast<size_t>(sizeY))];
+        auto *nextFreeFrame = &decodedFrames[(numberOfFrames[0] * static_cast<size_t>(sizeX) * static_cast<size_t>(sizeY))];
 
         for (int i = 1; i < numFiles; i++) {
             if (extended[i]) {

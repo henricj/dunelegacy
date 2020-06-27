@@ -434,11 +434,11 @@ void INIMapLoader::loadHouses()
         int quota = inifile->getIntValue(houseName,"Quota",0);
 
         pGame->house[static_cast<int>(houseID)] = std::make_unique<House>(houseID, startingCredits, maxUnits, houseInfo.team, quota);
-        const auto pNewHouse = pGame->getHouse(houseID);
+        auto *const pNewHouse = pGame->getHouse(houseID);
 
         // add players
         for(const auto& playerInfo : houseInfo.playerInfoList) {
-            auto pPlayerData = PlayerFactory::getByPlayerClass(playerInfo.playerClass);
+            const auto *pPlayerData = PlayerFactory::getByPlayerClass(playerInfo.playerClass);
             if(pPlayerData == nullptr) {
                 logWarning("Cannot load '" + playerInfo.playerClass + "', using default AI player!");
                 pPlayerData = PlayerFactory::getByPlayerClass(DEFAULTAIPLAYERCLASS);
@@ -925,7 +925,7 @@ House* INIMapLoader::getOrCreateHouse(HOUSETYPE houseID) {
         if(houseInfo.houseID != houseID) continue;
 
         for(const auto& playerInfo : houseInfo.playerInfoList) {
-            auto pPlayerData = PlayerFactory::getByPlayerClass(playerInfo.playerClass);
+            const auto *pPlayerData = PlayerFactory::getByPlayerClass(playerInfo.playerClass);
             if(pPlayerData == nullptr) {
                 logWarning("Cannot load '" + playerInfo.playerClass + "', using default AI player!");
                 pPlayerData = PlayerFactory::getByPlayerClass(DEFAULTAIPLAYERCLASS);

@@ -156,7 +156,7 @@ bool LoadSaveWindow::handleKeyPress(SDL_KeyboardEvent& key) {
         } else if(key.keysym.sym == SDLK_DELETE) {
             const auto index = fileList.getSelectedIndex();
             if(index >= 0) {
-                auto pQstBox = QstBox::create(   fmt::sprintf(_("Do you really want to delete '%s' ?"), fileList.getEntry(index).c_str()),
+                auto *pQstBox = QstBox::create(   fmt::sprintf(_("Do you really want to delete '%s' ?"), fileList.getEntry(index).c_str()),
                                                     _("Yes"),
                                                     _("No"),
                                                     QSTBOX_BUTTON1);
@@ -205,7 +205,7 @@ void LoadSaveWindow::onOK() {
         if(index >= 0) {
             filename = (directories[currentDirectoryIndex] / fileList.getEntry(index)).replace_extension(extension);
 
-            const auto pParentWindow = dynamic_cast<Window*>(getParent());
+            auto *const pParentWindow = dynamic_cast<Window*>(getParent());
             if(pParentWindow != nullptr) {
                 pParentWindow->closeChildWindow();
             }
@@ -216,7 +216,7 @@ void LoadSaveWindow::onOK() {
         if(!savename.empty() && savename.find_first_of("\\/") == std::string::npos) {
             filename = (directories[currentDirectoryIndex] / saveName.getText()).replace_extension(extension);
 
-            const auto pParentWindow = dynamic_cast<Window*>(getParent());
+            auto *const pParentWindow = dynamic_cast<Window*>(getParent());
             if(pParentWindow != nullptr) {
                 pParentWindow->closeChildWindow();
             }
@@ -227,7 +227,7 @@ void LoadSaveWindow::onOK() {
 }
 
 void LoadSaveWindow::onCancel() const {
-    const auto pParentWindow = dynamic_cast<Window*>(getParent());
+    auto *const pParentWindow = dynamic_cast<Window*>(getParent());
     if(pParentWindow != nullptr) {
         pParentWindow->closeChildWindow();
     }

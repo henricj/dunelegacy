@@ -198,7 +198,7 @@ void RadarView::updateRadarSurface(int scale, int offsetX, int offsetY) {
     // Lock radarSurface for direct access to the pixels
     sdl2::surface_lock lock{ radarSurface.get() };
 
-    auto map = currentGameMap;
+    auto *map = currentGameMap;
 
     auto radar_on = ((currentRadarMode == RadarMode::RadarOn) || (currentRadarMode == RadarMode::AnimationRadarOff));
 
@@ -212,7 +212,7 @@ void RadarView::updateRadarSurface(int scale, int offsetX, int offsetY) {
         const auto offset = (offsetX + scale * t.getLocation().x);
 
         for (auto j = 0; j < scale; j++) {
-            auto p = reinterpret_cast<Uint32*>(out + j * radarSurface->pitch) + offset;
+            auto *p = reinterpret_cast<Uint32*>(out + j * radarSurface->pitch) + offset;
 
             for (auto i = 0; i < scale; ++i, ++p) {
                 // Do not use putPixel here to avoid overhead

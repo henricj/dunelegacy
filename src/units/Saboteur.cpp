@@ -104,7 +104,7 @@ bool Saboteur::update() {
                         return false;
                     }
 
-                    auto pObject = target.getObjPointer();
+                    auto *pObject = target.getObjPointer();
                     destroy();
                     pObject->setHealth(0);
                     pObject->destroy();

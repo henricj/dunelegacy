@@ -106,7 +106,7 @@ void ChatManager::addChatMessage(const std::string& username, const std::string&
     char timestring[80];
     auto unixtime = time(nullptr);
 
-    const auto timeinfo = localtime( &unixtime );
+    auto *const timeinfo = localtime( &unixtime );
     strftime(timestring, 80, "(%H:%M:%S)", timeinfo);
 
     auto pTimeTexture = pFontManager->createTextureWithText( timestring, COLOR_WHITE, 12);

@@ -398,11 +398,11 @@ void NetworkManager::handlePacket(ENetPeer* peer, ENetPacketIStream& packetStrea
 
                     debugNetwork("Connecting to %s:%d\n", Address2String(address).c_str(), address.port);
 
-                    auto newPeer = enet_host_connect(host, &address, 2, 0);
+                    auto *newPeer = enet_host_connect(host, &address, 2, 0);
                     if(newPeer == nullptr) {
                         debugNetwork("NetworkManager: No available peers for initiating a connection.");
                     } else {
-                        auto peerData = new PeerData(newPeer, PeerData::PeerState::WaitingForOtherPeersToConnect);
+                        auto *peerData = new PeerData(newPeer, PeerData::PeerState::WaitingForOtherPeersToConnect);
                         peerData->name = packetStream.readString();
 
                         newPeer->data = peerData;
@@ -418,14 +418,14 @@ void NetworkManager::handlePacket(ENetPeer* peer, ENetPacketIStream& packetStrea
                 address.host = SDL_SwapBE32(packetStream.readUint32());
                 address.port = packetStream.readUint16();
 
-                for(const auto pCurrentPeer : peerList) {
+                for(auto *const pCurrentPeer : peerList) {
                     if((pCurrentPeer->address.host == address.host) && (pCurrentPeer->address.port == address.port)) {
                         enet_peer_disconnect_later(pCurrentPeer, NETWORKDISCONNECT_QUIT);
                         break;
                     }
                 }
 
-                for(const auto pAwaitingConnectionPeer : awaitingConnectionList) {
+                for(auto *const pAwaitingConnectionPeer : awaitingConnectionList) {
                     if((pAwaitingConnectionPeer->address.host == address.host) && (pAwaitingConnectionPeer->address.port == address.port)) {
                         enet_peer_disconnect_later(pAwaitingConnectionPeer, NETWORKDISCONNECT_QUIT);
                         break;
@@ -486,7 +486,7 @@ void NetworkManager::handlePacket(ENetPeer* peer, ENetPacketIStream& packetStrea
                     }
                 } else {
                     for(auto iter = awaitingConnectionList.begin(); iter != awaitingConnectionList.end(); ++iter) {
-                        const auto pCurrentPeer = *iter;
+                        auto *const pCurrentPeer = *iter;
 
                         if((pCurrentPeer->address.host == address.host) && (pCurrentPeer->address.port == address.port)) {
                             auto* peerData = static_cast<PeerData*>(pCurrentPeer->data);
@@ -713,7 +713,7 @@ void NetworkManager::sendChangeEventList(const ChangeEventList& changeEventList)
 }
 
 void NetworkManager::sendStartGame(unsigned int timeLeft) {
-    for(auto pCurrentPeer : peerList) {
+    for(auto *pCurrentPeer : peerList) {
         ENetPacketOStream packetStream(ENET_PACKET_FLAG_RELIABLE);
         packetStream.writeUint32(NETWORKPACKET_STARTGAME);
 

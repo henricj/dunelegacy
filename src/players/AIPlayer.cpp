@@ -109,7 +109,7 @@ void AIPlayer::onDecrementStructures(int itemID, const Coord& location) {
 }
 
 void AIPlayer::onDamage(const ObjectBase* pObject, int damage, Uint32 damagerID) {
-    auto pDamager = getObject(damagerID);
+    const auto *pDamager = getObject(damagerID);
 
     if(pDamager == nullptr || pDamager->getOwner()->getTeamID() == getHouse()->getTeamID()) {
         return;
@@ -138,7 +138,7 @@ void AIPlayer::onDamage(const ObjectBase* pObject, int damage, Uint32 damagerID)
 }
 
 void AIPlayer::scrambleUnitsAndDefend(const ObjectBase* pIntruder) {
-    for(auto pUnit : getUnitList()) {
+    for(const auto *pUnit : getUnitList()) {
         if(pUnit->isRespondable() && (pUnit->getOwner() == getHouse())) {
             if((pUnit->getAttackMode() != HUNT) && !pUnit->hasATarget()) {
                 const auto itemID = pUnit->getItemID();
@@ -167,7 +167,7 @@ Coord AIPlayer::findPlaceLocation(Uint32 itemID) {
         maxX = getMap().getSizeX() - 1;
         maxY = getMap().getSizeY() - 1;
     } else {
-        for(auto pStructure : getStructureList()) {
+        for(const auto *pStructure : getStructureList()) {
             if (pStructure->getOwner() == getHouse()) {
                 if (pStructure->getX() < minX)
                     minX = pStructure->getX();
@@ -223,7 +223,7 @@ Coord AIPlayer::findPlaceLocation(Uint32 itemID) {
 
                 case Structure_ConstructionYard: {
                     FixPoint nearestUnit = 10000000;
-                    for(auto pUnit : getUnitList()) {
+                    for(const auto *pUnit : getUnitList()) {
                         if(pUnit->getOwner() == getHouse()) {
                             const auto distance = blockDistance(pos, pUnit->getLocation());
                             if(distance < nearestUnit) {
@@ -263,7 +263,7 @@ Coord AIPlayer::findPlaceLocation(Uint32 itemID) {
                 case Structure_RocketTurret: {
                     // place towards enemy
                     FixPoint nearestEnemy = 10000000;
-                    for(const auto pStructure : getStructureList()) {
+                    for(const auto *const pStructure : getStructureList()) {
                         if(pStructure->getOwner()->getTeamID() != getHouse()->getTeamID()) {
                             const auto distance = blockDistance(pos, pStructure->getLocation());
                             if(distance < nearestEnemy) {
@@ -284,7 +284,7 @@ Coord AIPlayer::findPlaceLocation(Uint32 itemID) {
                 default: {
                     // place at a save place
                     FixPoint nearestEnemy = 10000000;
-                    for(const auto pStructure : getStructureList()) {
+                    for(const auto *const pStructure : getStructureList()) {
                         if(pStructure->getOwner()->getTeamID() != getHouse()->getTeamID()) {
                             const auto distance = blockDistance(pos, pStructure->getLocation());
                             if(distance < nearestEnemy) {
@@ -622,7 +622,7 @@ void AIPlayer::build() {
 void AIPlayer::attack() {
     Coord destination;
     const UnitBase* pLeaderUnit = nullptr;
-    for(auto pUnit : getUnitList()) {
+    for(const auto *pUnit : getUnitList()) {
         if (pUnit->isRespondable()
             && (pUnit->getOwner() == getHouse())
             && pUnit->isActive()
@@ -640,11 +640,11 @@ void AIPlayer::attack() {
                 destination.x = pLeaderUnit->getX();
                 destination.y = pLeaderUnit->getY();
 
-                const auto closestStructure = pLeaderUnit->findClosestTargetStructure();
+                const auto *const closestStructure = pLeaderUnit->findClosestTargetStructure();
                 if(closestStructure) {
                     destination = closestStructure->getClosestPoint(pLeaderUnit->getLocation());
                 } else {
-                    auto closestUnit = pLeaderUnit->findClosestTargetUnit();
+                    const auto *closestUnit = pLeaderUnit->findClosestTargetUnit();
                     if(closestUnit) {
                         destination.x = closestUnit->getX();
                         destination.y = closestUnit->getY();
@@ -662,9 +662,9 @@ void AIPlayer::attack() {
 }
 
 void AIPlayer::checkAllUnits() {
-    for(auto pUnit : getUnitList()) {
+    for(const auto *pUnit : getUnitList()) {
         if(pUnit->getItemID() == Unit_Sandworm) {
-                for(auto pUnit2 : getUnitList()) {
+                for(const auto *pUnit2 : getUnitList()) {
                     if(pUnit2->getOwner() == getHouse() && pUnit2->getItemID() == Unit_Harvester) {
                         const auto* pHarvester = static_cast<const Harvester*>(pUnit2);
                         if( getMap().tileExists(pHarvester->getLocation())

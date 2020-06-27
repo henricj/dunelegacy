@@ -104,7 +104,7 @@ void StructureBase::save(OutputStream& stream) const {
 }
 
 void StructureBase::assignToMap(const Coord& pos) {
-    auto map = currentGameMap;
+    auto *map = currentGameMap;
 
     auto bFoundNonConcreteTile = false;
 
@@ -261,7 +261,7 @@ void StructureBase::drawGatheringPointLine() {
                     COLOR_HALF_TRANSPARENT);
 
 
-    const auto pUIIndicator = pGFXManager->getUIGraphic(UI_Indicator);
+    auto *const pUIIndicator = pGFXManager->getUIGraphic(UI_Indicator);
     const auto source = calcSpriteSourceRect(pUIIndicator, 0, 3);
     const auto drawLocation = calcSpriteDrawingRect( pUIIndicator,
                                                      screenborder->world2screenX(indicatorPosition.x),
@@ -463,7 +463,7 @@ void StructureBase::destroy() {
     if(itemID != Structure_Wall) {
         for(int j = 0; j < structureSize.y; j++) {
             for(int i = 0; i < structureSize.x; i++) {
-                auto pTile = currentGameMap->getTile(location.x + i, location.y + j);
+                auto *pTile = currentGameMap->getTile(location.x + i, location.y + j);
                 pTile->setDestroyedStructureTile(pDestroyedStructureTiles[DestroyedStructureTilesSizeY*j + i]);
 
                 Coord position((location.x+i)*TILESIZE + TILESIZE/2, (location.y+j)*TILESIZE + TILESIZE/2);
@@ -471,7 +471,7 @@ void StructureBase::destroy() {
                 currentGame->addExplosion(explosionID, position, owner->getHouseID());
 
                 if(currentGame->randomGen.rand(1,100) <= getInfSpawnProp()) {
-                    auto pNewUnit = owner->createUnit(Unit_Soldier);
+                    auto *pNewUnit = owner->createUnit(Unit_Soldier);
                     pNewUnit->setHealth(pNewUnit->getMaxHealth()/2);
                     pNewUnit->deploy(location + Coord(i,j));
                 }

@@ -193,9 +193,9 @@ void BuilderList::draw(Point position) {
                                 getSize().x, getRealHeight(getSize().y) - 2*(ARROWBTN_HEIGHT + BUILDERBTN_SPACING) - BUILDERBTN_SPACING - ORDERBTN_HEIGHT };
     renderFillRect(renderer, &blackRectDest, COLOR_BLACK);
 
-    const auto pBuilder = dynamic_cast<BuilderBase*>(currentGame->getObjectManager().getObject(builderObjectID));
+    auto *const pBuilder = dynamic_cast<BuilderBase*>(currentGame->getObjectManager().getObject(builderObjectID));
     if(pBuilder != nullptr) {
-        const auto pStarport = dynamic_cast<StarPort*>(pBuilder);
+        auto *const pStarport = dynamic_cast<StarPort*>(pBuilder);
 
         if(pStarport != nullptr) {
             orderButton.setVisible(true);
@@ -228,7 +228,7 @@ void BuilderList::draw(Point position) {
         for(const auto& buildItem : pBuilder->getBuildList()) {
 
             if((i >= currentListPos) && (i < currentListPos+getNumButtons(getSize().y) )) {
-                auto pTexture = resolveItemPicture(buildItem.itemID);
+                auto *pTexture = resolveItemPicture(buildItem.itemID);
 
                 const SDL_Rect dest = calcDrawingRect(pTexture, position.x + getButtonPosition(i - currentListPos).x, position.y + getButtonPosition(i - currentListPos).y);
 
@@ -238,11 +238,11 @@ void BuilderList::draw(Point position) {
                 }
 
                 if(isStructure(buildItem.itemID)) {
-                    const auto pLattice = pGFXManager->getUIGraphic(UI_StructureSizeLattice);
+                    auto *const pLattice = pGFXManager->getUIGraphic(UI_StructureSizeLattice);
                     SDL_Rect destLattice = calcDrawingRect(pLattice, dest.x + 2, dest.y + 2);
                     SDL_RenderCopy(renderer, pLattice, nullptr, &destLattice);
 
-                    const auto pConcrete = pGFXManager->getUIGraphic(UI_StructureSizeConcrete);
+                    auto *const pConcrete = pGFXManager->getUIGraphic(UI_StructureSizeConcrete);
                     SDL_Rect srcConcrete = { 0, 0, 1 + getStructureSize(buildItem.itemID).x*6, 1 + getStructureSize(buildItem.itemID).y*6 };
                     SDL_Rect destConcrete = { dest.x + 2, dest.y + 2, srcConcrete.w, srcConcrete.h };
                     SDL_RenderCopy(renderer, pConcrete, &srcConcrete, &destConcrete);
@@ -368,7 +368,7 @@ void BuilderList::resize(Uint32 width, Uint32 height) {
     // move list to show currently produced item
     auto* pBuilder = dynamic_cast<BuilderBase*>(currentGame->getObjectManager().getObject(builderObjectID));
     if(pBuilder != nullptr) {
-        auto& buildList = pBuilder->getBuildList();
+        const auto & buildList = pBuilder->getBuildList();
         const auto currentProducedItemIter = std::find_if(buildList.begin(),
                                                     buildList.end(),
                                                     [pBuilder](const BuildItem& buildItem) {
@@ -455,7 +455,7 @@ int BuilderList::getButton(int x, int y) const {
 int BuilderList::getItemIDFromIndex(int i) const {
 
     if (i >= 0) {
-        const auto pBuilder = dynamic_cast<BuilderBase*>(currentGame->getObjectManager().getObject(builderObjectID));
+        auto *const pBuilder = dynamic_cast<BuilderBase*>(currentGame->getObjectManager().getObject(builderObjectID));
 
         if (pBuilder != nullptr) {
             const auto buildItemIter = std::next(pBuilder->getBuildList().begin(), i);

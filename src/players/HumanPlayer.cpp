@@ -148,7 +148,7 @@ void HumanPlayer::onSelectionChanged(const Dune::selected_set_type& selectedObje
     }
 
     for(auto objectID : selectedObjectIDs) {
-        auto pObject = currentGame->getObjectManager().getObject(objectID);
+        auto *pObject = currentGame->getObjectManager().getObject(objectID);
         if(pObject->getOwner() != getHouse()) {
             continue;
         }

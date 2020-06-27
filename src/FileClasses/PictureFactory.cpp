@@ -390,7 +390,7 @@ sdl2::surface_ptr PictureFactory::createPlacingGrid(int size, int color) const {
     sdl2::surface_lock lock{ placingGrid.get() };
 
     for(auto y = 0; y < size; y++) {
-        const auto out = static_cast<Uint8 *>(placingGrid->pixels) + y * placingGrid->pitch;
+        auto *const out = static_cast<Uint8 *>(placingGrid->pixels) + y * placingGrid->pitch;
         for(auto x = 0; x < size; x++) {
             if(x%2 == y%2) {
                 out[x] = color;

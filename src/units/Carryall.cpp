@@ -86,7 +86,7 @@ bool Carryall::update() {
     const auto& maxSpeed = currentGame->objectData.data[itemID][static_cast<int>(originalHouseID)].maxspeed;
 
     FixPoint dist = -1;
-    const auto pTarget = target.getObjPointer();
+    auto *const pTarget = target.getObjPointer();
     if(pTarget != nullptr && pTarget->isAUnit()) {
         dist = distanceFrom(realX, realY, pTarget->getRealX(), pTarget->getRealY());
     } else if((pTarget != nullptr) || hasCargo()) {
@@ -144,7 +144,7 @@ void Carryall::checkPos()
             auto droppedUnits = 0;
             do {
                 const auto unitID = pickedUpUnitList.front();
-                const auto pUnit = static_cast<UnitBase*>(currentGame->getObjectManager().getObject(unitID));
+                auto *const pUnit = static_cast<UnitBase*>(currentGame->getObjectManager().getObject(unitID));
 
                 if(pUnit == nullptr) {
                     return;
@@ -213,14 +213,14 @@ void Carryall::deployUnit(Uint32 unitID)
 
     pickedUpUnitList.erase(iter);
 
-    const auto pUnit = static_cast<UnitBase*>(currentGame->getObjectManager().getObject(unitID));
+    auto *const pUnit = static_cast<UnitBase*>(currentGame->getObjectManager().getObject(unitID));
 
     if(pUnit == nullptr)
         return;
 
     pre_deployUnits();
 
-    const auto tile = currentGameMap->getTile(location);
+    auto *const tile = currentGameMap->getTile(location);
 
     deployUnit(tile, pUnit);
 
@@ -230,10 +230,10 @@ void Carryall::deployUnit(Uint32 unitID)
 void Carryall::deployUnit(Tile* tile, UnitBase* pUnit)
 {
     if (tile->hasANonInfantryGroundObject()) {
-        const auto object = tile->getNonInfantryGroundObject();
+        auto *const object = tile->getNonInfantryGroundObject();
         if (object->getOwner() == getOwner()) {
             if (object->getItemID() == Structure_RepairYard) {
-                auto repair_yard = static_cast<RepairYard*>(object);
+                auto *repair_yard = static_cast<RepairYard*>(object);
 
                 if (repair_yard->isFree()) {
                     pUnit->setTarget(object);   // unit books repair yard again
@@ -248,7 +248,7 @@ void Carryall::deployUnit(Tile* tile, UnitBase* pUnit)
             }
             else if ((object->getItemID() == Structure_Refinery) && (pUnit->getItemID() == Unit_Harvester)) {
                 if (static_cast<Refinery*>(object)->isFree()) {
-                    auto harvester = static_cast<Harvester*>(pUnit);
+                    auto *harvester = static_cast<Harvester*>(pUnit);
                     harvester->setTarget(object);
                     harvester->setReturned();
                     goingToRepairYard = false;
@@ -291,7 +291,7 @@ void Carryall::destroy()
 {
     // destroy cargo
     for(const auto pickedUpUnitID : pickedUpUnitList) {
-        auto pPickedUpUnit = static_cast<UnitBase*>(currentGame->getObjectManager().getObject(pickedUpUnitID));
+        auto *pPickedUpUnit = static_cast<UnitBase*>(currentGame->getObjectManager().getObject(pickedUpUnitID));
         if(pPickedUpUnit != nullptr) {
             pPickedUpUnit->destroy();
         }
@@ -300,7 +300,7 @@ void Carryall::destroy()
 
     // place wreck
     if(isVisible() && currentGameMap->tileExists(location)) {
-        auto pTile = currentGameMap->getTile(location);
+        auto *pTile = currentGameMap->getTile(location);
         pTile->assignDeadUnit(DeadUnit_Carrall, owner->getHouseID(), Coord(lround(realX), lround(realY)));
     }
 
@@ -410,7 +410,7 @@ void Carryall::pickupTarget()
                 pGroundUnitTarget->doRepair();
             }
 
-            auto newTarget = pGroundUnitTarget->hasATarget() ? pGroundUnitTarget->getTarget() : nullptr;
+            auto *newTarget = pGroundUnitTarget->hasATarget() ? pGroundUnitTarget->getTarget() : nullptr;
 
             pickedUpUnitList.push_back(target.getObjectID());
             pGroundUnitTarget->setPickedUp(this);

@@ -615,7 +615,7 @@ GFXManager::GFXManager() {
 
     // make black lines inside the map non-transparent
     {
-        const auto surface = uiGraphic[UI_MapChoiceMap][static_cast<int>(HOUSETYPE::HOUSE_HARKONNEN)].get();
+        auto *const surface = uiGraphic[UI_MapChoiceMap][static_cast<int>(HOUSETYPE::HOUSE_HARKONNEN)].get();
 
         sdl2::surface_lock lock{ surface };
 
@@ -956,7 +956,7 @@ SDL_Texture* GFXManager::getUIGraphic(unsigned int id, HOUSETYPE house) {
     }
 
     if(uiGraphicTex[id][static_cast<int>(house)] == nullptr) {
-        const auto pSurface = getUIGraphicSurface(id, house);
+        auto *const pSurface = getUIGraphicSurface(id, house);
 
         if(id >= UI_MapChoiceArrow_None && id <= UI_MapChoiceArrow_Left) {
             uiGraphicTex[id][static_cast<int>(house)] =

@@ -68,7 +68,7 @@ bool TrackedUnit::canPassTile(const Tile* pTile) const {
     if (!ground_object_result.first) return true;
 
     if (ground_object_result.second == target.getObjectID()) {
-        const auto pObject = currentGame->getObjectManager().getObject(ground_object_result.second);
+        auto *const pObject = currentGame->getObjectManager().getObject(ground_object_result.second);
 
         if ((pObject != nullptr)
             && targetFriendly
@@ -82,7 +82,7 @@ bool TrackedUnit::canPassTile(const Tile* pTile) const {
             }
 
             if (getItemID() == Unit_Harvester) {
-                const auto pHarvester = static_cast<const Harvester*>(this);
+                const auto *const pHarvester = static_cast<const Harvester*>(this);
                 return (pHarvester->isReturning() && (pObject->getItemID() == Structure_Refinery) && static_cast<const Refinery*>(pObject)->isFree());
             }
 
@@ -94,7 +94,7 @@ bool TrackedUnit::canPassTile(const Tile* pTile) const {
         // The tile does not have a non-infantry ground object, therefore the ground object ID must
         // be for an infantry unit.  We have complicated this function since profiling puts it in
         // the hotpath...
-        const auto pObject = currentGame->getObjectManager().getObject(ground_object_result.second);
+        auto *const pObject = currentGame->getObjectManager().getObject(ground_object_result.second);
         if (pObject->getOwner()->getTeamID() != getOwner()->getTeamID()) {
             // possibly squashing this unit
             return true;

@@ -281,7 +281,7 @@ void Bullet::blitToScreen() const
         SDL_Texture* shimmerMaskTex = pGFXManager->getZoomedObjPic(ObjPic_Bullet_Sonic, currentZoomlevel);
 
         // switch to texture 'shimmerTex' for rendering
-        const auto oldRenderTarget = SDL_GetRenderTarget(renderer);
+        auto *const oldRenderTarget = SDL_GetRenderTarget(renderer);
         SDL_SetRenderTarget(renderer, shimmerTex);
 
         // copy complete mask

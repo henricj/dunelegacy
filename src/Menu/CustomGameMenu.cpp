@@ -183,7 +183,7 @@ void CustomGameMenu::onChildWindowClose(Window* pChildWindow) {
         }
     }
 
-    const auto pGameOptionsWindow = dynamic_cast<GameOptionsWindow*>(pChildWindow);
+    auto *const pGameOptionsWindow = dynamic_cast<GameOptionsWindow*>(pChildWindow);
     if(pGameOptionsWindow != nullptr) {
         currentGameOptions = pGameOptionsWindow->getGameOptions();
     }
