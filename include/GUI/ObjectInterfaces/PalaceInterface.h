@@ -72,7 +72,7 @@ protected:
 
         auto* pPalace = dynamic_cast<Palace*>(pObject);
         if(pPalace != nullptr) {
-            int picID;
+            int picID = 0;
 
             switch(pPalace->getOwner()->getHouseID()) {
                 case HOUSETYPE::HOUSE_HARKONNEN:

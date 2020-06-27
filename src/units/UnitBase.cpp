@@ -188,7 +188,7 @@ bool UnitBase::attack() {
 
             Coord targetCenterPoint;
             Coord centerPoint = getCenterPoint();
-            bool bAirBullet;
+            bool bAirBullet = 0;
 
             ObjectBase* pObject = target.getObjPointer();
             if(pObject != nullptr) {
@@ -977,7 +977,7 @@ void UnitBase::handleDamage(int damage, Uint32 damagerID, House* damagerOwner) {
 }
 
 bool UnitBase::isInGuardRange(const ObjectBase* pObject) const {
-    int checkRange;
+    int checkRange = 0;
     switch(attackMode) {
         case GUARD: {
             checkRange = (getItemID() == Unit_Sandworm) ? getViewRange() : getWeaponRange();
@@ -1016,7 +1016,7 @@ bool UnitBase::isInGuardRange(const ObjectBase* pObject) const {
 }
 
 bool UnitBase::isInAttackRange(const ObjectBase* object) const {
-    int checkRange;
+    int checkRange = 0;
     switch(attackMode) {
         case GUARD: {
             checkRange = getWeaponRange();

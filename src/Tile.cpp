@@ -86,7 +86,7 @@ void Tile::load(InputStream& stream) {
 
     spice = stream.readFixPoint();
 
-    bool bHasDamage, bHasDeadUnits, bHasAirUnits, bHasInfantry, bHasUndergroundUnits, bHasNonInfantryGroundObjects;
+    bool bHasDamage = 0, bHasDeadUnits = 0, bHasAirUnits = 0, bHasInfantry = 0, bHasUndergroundUnits = 0, bHasNonInfantryGroundObjects = 0;
     stream.readBools(&bHasDamage, &bHasDeadUnits, &bHasAirUnits, &bHasInfantry, &bHasUndergroundUnits, &bHasNonInfantryGroundObjects);
 
     if (bHasDamage) {
@@ -999,7 +999,7 @@ Uint32 Tile::getRadarColor(House* pHouse, bool radar) {
 
     const auto pObject = getObject();
     if (pObject != nullptr) {
-        Uint32 color;
+        Uint32 color = 0;
 
         if (pObject->getItemID() == Unit_Sandworm) {
             color = COLOR_WHITE;

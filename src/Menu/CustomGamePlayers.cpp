@@ -978,9 +978,9 @@ void CustomGamePlayers::onChangeHousesDropDownBoxes(bool bInteractive, int house
         addToHouseDropDown(curHouseInfo.houseDropDown, HOUSETYPE::HOUSE_INVALID);
 
         for(int h = 0; h < static_cast<int>(HOUSETYPE::NUM_HOUSES); h++) {
-            bool bAddHouse;
+            bool bAddHouse = 0;
 
-            bool bCheck;
+            bool bCheck = 0;
 
             if((house == HOUSETYPE::HOUSE_INVALID) || (isBoundedHouseOnMap(house))) {
                 if(numUsedBoundHouses + numUsedRandomHouses - 1 >= numBoundHouses) {

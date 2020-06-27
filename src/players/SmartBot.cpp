@@ -678,10 +678,10 @@ void SmartBot::build() {
                                 if(location.isValid()) {
                                     Coord placeLocation = location;
                                     if(getGameInitSettings().getGameOptions().concreteRequired) {
-                                        int incI;
-                                        int incJ;
-                                        int startI;
-                                        int startJ;
+                                        int incI = 0;
+                                        int incJ = 0;
+                                        int startI = 0;
+                                        int startJ = 0;
 
                                         if(getMap().isWithinBuildRange(location.x, location.y, getHouse())) {
                                             startI = location.x; startJ = location.y; incI = 1; incJ = 1;

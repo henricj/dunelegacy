@@ -143,7 +143,7 @@ public:
 
         updateTextures();
 
-        SDL_Texture* tex;
+        SDL_Texture* tex = nullptr;
         if(isChecked()) {
             if((isActive() || bHover) && pCheckedActiveTexture) {
                 tex = pCheckedActiveTexture.get();

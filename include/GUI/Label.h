@@ -137,7 +137,7 @@ public:
 
         //split text into single lines at every '\n'
         size_t startpos = 0;
-        size_t nextpos;
+        size_t nextpos = 0;
         std::vector<std::string> hardLines;
         do {
             nextpos = text.find('\n',startpos);

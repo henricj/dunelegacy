@@ -156,7 +156,7 @@ void MentatHelp::onListBoxClick() {
         return;
     }
 
-    int animID;
+    int animID = 0;
     std::string text;
     std::string name;
 
