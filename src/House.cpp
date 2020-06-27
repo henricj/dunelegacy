@@ -212,7 +212,7 @@ void House::addPlayer(std::unique_ptr<Player> newPlayer) {
 
     players.push_back(std::move(newPlayer));
 
-    Uint8 newPlayerID = static_cast<Uint8>((static_cast<Uint8>(houseID) << 4) | players.size());
+    auto newPlayerID = static_cast<Uint8>((static_cast<Uint8>(houseID) << 4) | players.size());
     pNewPlayer->playerID = newPlayerID;
 
     currentGame->registerPlayer(pNewPlayer);
@@ -772,7 +772,7 @@ StructureBase* House::placeStructure(Uint32 builderID, int itemID, int xPos, int
                     // cancel all other palaces
                     for(StructureBase* pStructure : structureList) {
                         if(pStructure->getOwner() == this && pStructure->getItemID() == Structure_ConstructionYard) {
-                            ConstructionYard* pConstructionYard = static_cast<ConstructionYard*>(pStructure);
+                            auto* pConstructionYard = static_cast<ConstructionYard*>(pStructure);
                             if(pBuilder != pConstructionYard) {
                                 pConstructionYard->doCancelItem(Structure_Palace, false);
                             }
@@ -809,7 +809,7 @@ StructureBase* House::placeStructure(Uint32 builderID, int itemID, int xPos, int
 
 UnitBase* House::createUnit(int itemID, bool byScenario) {
     ObjectBase* newObject = ObjectBase::createObject(itemID,this,byScenario);
-    UnitBase* newUnit = dynamic_cast<UnitBase*>(newObject);
+    auto* newUnit = dynamic_cast<UnitBase*>(newObject);
 
     if(newUnit == nullptr) {
         delete newObject;

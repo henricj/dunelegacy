@@ -38,7 +38,7 @@
 class UnitInterface : public DefaultObjectInterface {
 public:
     static UnitInterface* create(int objectID) {
-        UnitInterface* tmp = new UnitInterface(objectID);
+        auto* tmp = new UnitInterface(objectID);
         tmp->pAllocated = true;
         return tmp;
     }
@@ -199,7 +199,7 @@ protected:
 
     void OnSendToRepair() {
         ObjectBase* pObject = currentGame->getObjectManager().getObject(objectID);
-        GroundUnit* pGroundUnit = dynamic_cast<GroundUnit*>(pObject);
+        auto* pGroundUnit = dynamic_cast<GroundUnit*>(pObject);
         if((pGroundUnit != nullptr) && (pGroundUnit->getHealth() < pGroundUnit->getMaxHealth())) {
             pGroundUnit->handleSendToRepairClick();
         }
@@ -207,7 +207,7 @@ protected:
 
     void onReturn() {
         ObjectBase* pObject = currentGame->getObjectManager().getObject(objectID);
-        Harvester* pHarvester = dynamic_cast<Harvester*>(pObject);
+        auto* pHarvester = dynamic_cast<Harvester*>(pObject);
         if(pHarvester != nullptr) {
             pHarvester->handleReturnClick();
         }
@@ -223,7 +223,7 @@ protected:
 
     void onDestruct() {
         ObjectBase* pObject = currentGame->getObjectManager().getObject(objectID);
-        Devastator* pDevastator = dynamic_cast<Devastator*>(pObject);
+        auto* pDevastator = dynamic_cast<Devastator*>(pObject);
         if(pDevastator != nullptr) {
             pDevastator->handleStartDevastateClick();
         }
@@ -255,7 +255,7 @@ protected:
 
     void setAttackMode(ATTACKMODE newAttackMode) {
         ObjectBase* pObject = currentGame->getObjectManager().getObject(objectID);
-        UnitBase* pUnit = dynamic_cast<UnitBase*>(pObject);
+        auto* pUnit = dynamic_cast<UnitBase*>(pObject);
 
         if(pUnit != nullptr) {
             pUnit->handleSetAttackModeClick(newAttackMode);
@@ -286,7 +286,7 @@ protected:
         carryallDropButton.setVisible(currentGame->getGameInitSettings().getGameOptions().manualCarryallDrops && pObject->getOwner()->hasCarryalls());
         sendToRepairButton.setVisible(pObject->getHealth() < pObject->getMaxHealth());
 
-        UnitBase* pUnit = dynamic_cast<UnitBase*>(pObject);
+        auto* pUnit = dynamic_cast<UnitBase*>(pObject);
         if(pUnit != nullptr) {
             ATTACKMODE AttackMode = pUnit->getAttackMode();
 

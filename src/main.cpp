@@ -494,7 +494,7 @@ int main(int argc, char *argv[]) {
 
         do {
             // we do not use rand() but maybe some library does; thus we shall initialize it
-            unsigned int seed = (unsigned int) time(nullptr);
+            auto seed = (unsigned int) time(nullptr);
             srand(seed);
 
             // check if configfile exists

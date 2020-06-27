@@ -65,7 +65,7 @@ void WaitingForOtherPlayers::update() {
 
     // test if we need to wait for data to arrive
     for(const std::string& playername : pNetworkManager->getConnectedPeers()) {
-        HumanPlayer* pPlayer = dynamic_cast<HumanPlayer*>(currentGame->getPlayerByName(playername));
+        auto* pPlayer = dynamic_cast<HumanPlayer*>(currentGame->getPlayerByName(playername));
         if(pPlayer != nullptr) {
             if(pPlayer->nextExpectedCommandsCycle <= currentGame->getGameCycleCount()) {
                 text += "\n" + pPlayer->getPlayername();

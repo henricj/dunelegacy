@@ -817,7 +817,7 @@ void MapEditorInterface::onObjectSelected() {
 }
 
 void MapEditorInterface::onChildWindowClose(Window* pChildWindow) {
-    NewMapWindow* pNewMapWindow = dynamic_cast<NewMapWindow*>(pChildWindow);
+    auto* pNewMapWindow = dynamic_cast<NewMapWindow*>(pChildWindow);
     if(pNewMapWindow != nullptr) {
         auto loadMapFilepath = pNewMapWindow->getLoadMapFilepath();
 
@@ -833,7 +833,7 @@ void MapEditorInterface::onChildWindowClose(Window* pChildWindow) {
         }
     }
 
-    LoadMapWindow* pLoadMapWindow = dynamic_cast<LoadMapWindow*>(pChildWindow);
+    auto* pLoadMapWindow = dynamic_cast<LoadMapWindow*>(pChildWindow);
     if(pLoadMapWindow != nullptr) {
         auto loadMapFilepath = pLoadMapWindow->getLoadMapFilepath();
 
@@ -842,12 +842,12 @@ void MapEditorInterface::onChildWindowClose(Window* pChildWindow) {
         }
     }
 
-    LoadSaveWindow* pLoadSaveWindow = dynamic_cast<LoadSaveWindow*>(pChildWindow);
+    auto* pLoadSaveWindow = dynamic_cast<LoadSaveWindow*>(pChildWindow);
     if(pLoadSaveWindow != nullptr && pLoadSaveWindow->getFilename() != "") {
         pMapEditor->saveMap(pLoadSaveWindow->getFilename());
     }
 
-    QstBox* pQstBox = dynamic_cast<QstBox*>(pChildWindow);
+    auto* pQstBox = dynamic_cast<QstBox*>(pChildWindow);
     if(pQstBox != nullptr && pQstBox->getPressedButtonID() == QSTBOX_BUTTON1) {
         pMapEditor->onQuit();
     }
@@ -1073,7 +1073,7 @@ void MapEditorInterface::onStructButton(int structType) {
     editorModeStructs_Palace.setToggleState( (structType == Structure_Palace) );
 
     if(structType >= 0) {
-        HOUSETYPE house = (HOUSETYPE) houseDropDownBox.getSelectedEntryIntData();
+        auto house = (HOUSETYPE) houseDropDownBox.getSelectedEntryIntData();
         pMapEditor->setEditorMode(MapEditor::EditorMode(house, structType, 256));
     }
 }
@@ -1101,7 +1101,7 @@ void MapEditorInterface::onUnitButton(int unitType) {
     editorModeUnits_Ornithopter.setToggleState( (unitType == Unit_Ornithopter) );
 
     if(unitType >= 0) {
-        HOUSETYPE house = (HOUSETYPE) houseDropDownBox.getSelectedEntryIntData();
+        auto house = (HOUSETYPE) houseDropDownBox.getSelectedEntryIntData();
         pMapEditor->setEditorMode(MapEditor::EditorMode(house, unitType, 256, static_cast<ANGLETYPE>(0), AREAGUARD));
     }
 }

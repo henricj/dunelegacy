@@ -163,7 +163,7 @@ void NetworkManager::update()
         // Check for timeout of one client
         if(awaitingConnectionList.empty() == false) {
             ENetPeer* pCurrentPeer = awaitingConnectionList.front();
-            PeerData* peerData = static_cast<PeerData*>(pCurrentPeer->data);
+            auto* peerData = static_cast<PeerData*>(pCurrentPeer->data);
 
             if(peerData->peerState == PeerData::PeerState::ReadyForOtherPeersToConnect) {
                 if(numPlayers >= maxPlayers) {
@@ -250,7 +250,7 @@ void NetworkManager::update()
                     // Server
                     debugNetwork("NetworkManager: %s:%u connected.\n", Address2String(peer->address).c_str(), peer->address.port);
 
-                    PeerData* newPeerData = new PeerData(peer, PeerData::PeerState::WaitingForName);
+                    auto* newPeerData = new PeerData(peer, PeerData::PeerState::WaitingForName);
                     newPeerData->timeout = SDL_GetTicks() + AWAITING_CONNECTION_TIMEOUT;
                     peer->data = newPeerData;
 
@@ -265,7 +265,7 @@ void NetworkManager::update()
                     sendPacketToPeer(peer, packetStream);
                 } else if(connectPeer != nullptr) {
                     // Client
-                    PeerData* peerData = static_cast<PeerData*>(peer->data);
+                    auto* peerData = static_cast<PeerData*>(peer->data);
 
                     if(peer == connectPeer) {
                         ENetPacketOStream packetStream(ENET_PACKET_FLAG_RELIABLE);
@@ -279,7 +279,7 @@ void NetworkManager::update()
                     } else {
                         debugNetwork("NetworkManager: %s:%u connected.\n", Address2String(peer->address).c_str(), peer->address.port);
 
-                        PeerData* pConnectPeerData = static_cast<PeerData*>(connectPeer->data);
+                        auto* pConnectPeerData = static_cast<PeerData*>(connectPeer->data);
 
                         if(pConnectPeerData->peerState == PeerData::PeerState::WaitingForOtherPeersToConnect) {
                             if(peerData == nullptr) {
@@ -319,7 +319,7 @@ void NetworkManager::update()
             } break;
 
             case ENET_EVENT_TYPE_DISCONNECT: {
-                PeerData* peerData = static_cast<PeerData*>(peer->data);
+                auto* peerData = static_cast<PeerData*>(peer->data);
 
                 int disconnectCause = event.data;
 
@@ -445,7 +445,7 @@ void NetworkManager::handlePacket(ENetPeer* peer, ENetPacketIStream& packetStrea
 
                     if(awaitingConnectionList.empty() == false) {
                         ENetPeer* pCurrentPeer = awaitingConnectionList.front();
-                        PeerData* peerData = static_cast<PeerData*>(pCurrentPeer->data);
+                        auto* peerData = static_cast<PeerData*>(pCurrentPeer->data);
                         if(!peerData) {
                             break;
                         }
@@ -489,7 +489,7 @@ void NetworkManager::handlePacket(ENetPeer* peer, ENetPacketIStream& packetStrea
                         const auto pCurrentPeer = *iter;
 
                         if((pCurrentPeer->address.host == address.host) && (pCurrentPeer->address.port == address.port)) {
-                            PeerData* peerData = static_cast<PeerData*>(pCurrentPeer->data);
+                            auto* peerData = static_cast<PeerData*>(pCurrentPeer->data);
                             if(!peerData) {
                                 continue;
                             }
@@ -510,7 +510,7 @@ void NetworkManager::handlePacket(ENetPeer* peer, ENetPacketIStream& packetStrea
                     break;
                 }
 
-                PeerData* peerData = static_cast<PeerData*>(connectPeer->data);
+                auto* peerData = static_cast<PeerData*>(connectPeer->data);
                 if(!peerData) {
                     break;
                 }
@@ -529,7 +529,7 @@ void NetworkManager::handlePacket(ENetPeer* peer, ENetPacketIStream& packetStrea
             } break;
 
             case NETWORKPACKET_SENDNAME: {
-                PeerData* peerData = static_cast<PeerData*>(peer->data);
+                auto* peerData = static_cast<PeerData*>(peer->data);
                 if(!peerData) {
                     break;
                 }
@@ -546,7 +546,7 @@ void NetworkManager::handlePacket(ENetPeer* peer, ENetPacketIStream& packetStrea
 
                     if(bFoundName == false) {
                         for(ENetPeer* pCurrentPeer : peerList) {
-                            PeerData* pCurrentPeerData = static_cast<PeerData*>(pCurrentPeer->data);
+                            auto* pCurrentPeerData = static_cast<PeerData*>(pCurrentPeer->data);
                             if(!pCurrentPeerData) {
                                 continue;
                             }
@@ -560,7 +560,7 @@ void NetworkManager::handlePacket(ENetPeer* peer, ENetPacketIStream& packetStrea
 
                     if(bFoundName == false) {
                         for(ENetPeer* pAwaitingConnectionPeer : awaitingConnectionList) {
-                            PeerData* pAwaitingConnectionPeerData = static_cast<PeerData*>(pAwaitingConnectionPeer->data);
+                            auto* pAwaitingConnectionPeerData = static_cast<PeerData*>(pAwaitingConnectionPeer->data);
                             if(pAwaitingConnectionPeerData && (pAwaitingConnectionPeerData->name == newName)) {
                                 enet_peer_disconnect_later(peer, NETWORKDISCONNECT_PLAYER_EXISTS);
                                 bFoundName = true;
@@ -580,7 +580,7 @@ void NetworkManager::handlePacket(ENetPeer* peer, ENetPacketIStream& packetStrea
             } break;
 
             case NETWORKPACKET_CHATMESSAGE: {
-                PeerData* peerData = static_cast<PeerData*>(peer->data);
+                auto* peerData = static_cast<PeerData*>(peer->data);
                 if(!peerData) {
                     break;
                 }
@@ -608,7 +608,7 @@ void NetworkManager::handlePacket(ENetPeer* peer, ENetPacketIStream& packetStrea
             } break;
 
             case NETWORKPACKET_COMMANDLIST: {
-                PeerData* peerData = static_cast<PeerData*>(peer->data);
+                auto* peerData = static_cast<PeerData*>(peer->data);
                 if(!peerData) {
                     break;
                 }
@@ -621,7 +621,7 @@ void NetworkManager::handlePacket(ENetPeer* peer, ENetPacketIStream& packetStrea
             } break;
 
             case NETWORKPACKET_SELECTIONLIST: {
-                PeerData* peerData = static_cast<PeerData*>(peer->data);
+                auto* peerData = static_cast<PeerData*>(peer->data);
                 if(!peerData) {
                     break;
                 }

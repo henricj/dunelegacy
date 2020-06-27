@@ -124,7 +124,7 @@ public:
         \return The new question box (will be automatically destroyed when it's closed)
     */
     static QstBox* create(const std::string& text, const std::string& button1Text = "Yes", const std::string& button2Text = "No", int defaultFocus = QSTBOX_BUTTON_INVALID) {
-        QstBox* qstbox = new QstBox(text, button1Text, button2Text, defaultFocus);
+        auto* qstbox = new QstBox(text, button1Text, button2Text, defaultFocus);
         qstbox->pAllocated = true;
         return qstbox;
     }
@@ -189,7 +189,7 @@ private:
     virtual void onButton(int btnID) {
         pressedButtonID = btnID;
 
-        Window* pParentWindow = dynamic_cast<Window*>(getParent());
+        auto* pParentWindow = dynamic_cast<Window*>(getParent());
         if(pParentWindow != nullptr) {
             pParentWindow->closeChildWindow();
         }

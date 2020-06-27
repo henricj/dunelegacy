@@ -401,7 +401,7 @@ static void addBitsToStreamReversed(size_t* bitpointer, ucvector* bitstream, uns
 #define READBIT(bitpointer, bitstream) ((bitstream[bitpointer >> 3] >> (bitpointer & 0x7)) & (unsigned char)1)
 
 static unsigned char readBitFromStream(size_t* bitpointer, const unsigned char* bitstream) {
-    unsigned char result = (unsigned char)(READBIT(*bitpointer, bitstream));
+    auto result = (unsigned char)(READBIT(*bitpointer, bitstream));
     ++(*bitpointer);
     return result;
 }
@@ -515,7 +515,7 @@ static unsigned HuffmanTree_make2DTree(HuffmanTree* tree) {
 
     for (n = 0; n < tree->numcodes; ++n) /*the codes*/ {
         for (i = 0; i != tree->lengths[n]; ++i) /*the bits for this code*/ {
-            unsigned char bit = (unsigned char)((tree->tree1d[n] >> (tree->lengths[n] - i - 1)) & 1);
+            auto bit = (unsigned char)((tree->tree1d[n] >> (tree->lengths[n] - i - 1)) & 1);
             /*oversubscribed, see comment in lodepng_error_text*/
             if (treepos > 2147483647 || treepos + 2 > tree->numcodes) return 55;
             if (tree->tree2d[2 * treepos + bit] == 32767) /*not yet filled in*/ {
@@ -658,7 +658,7 @@ static BPMNode* bpmnode_create(BPMLists* lists, int weight, unsigned index, BPMN
 
 /*sort the leaves with stable mergesort*/
 static void bpmnode_sort(BPMNode* leaves, size_t num) {
-    BPMNode* mem = (BPMNode*)lodepng_malloc(sizeof(*leaves) * num);
+    auto* mem = (BPMNode*)lodepng_malloc(sizeof(*leaves) * num);
     size_t width, counter = 0;
     for (width = 1; width < num; width *= 2) {
         BPMNode* a = (counter & 1) ? mem : leaves;
@@ -815,7 +815,7 @@ static unsigned HuffmanTree_getLength(const HuffmanTree* tree, unsigned index) {
 /*get the literal and length code tree of a deflated block with fixed tree, as per the deflate specification*/
 static unsigned generateFixedLitLenTree(HuffmanTree* tree) {
     unsigned i, error = 0;
-    unsigned* bitlen = (unsigned*)lodepng_malloc(NUM_DEFLATE_CODE_SYMBOLS * sizeof(unsigned));
+    auto* bitlen = (unsigned*)lodepng_malloc(NUM_DEFLATE_CODE_SYMBOLS * sizeof(unsigned));
     if (!bitlen) return 83; /*alloc fail*/
 
     /*288 possible codes: 0-255=literals, 256=endcode, 257-285=lengthcodes, 286-287=unused*/
@@ -833,7 +833,7 @@ static unsigned generateFixedLitLenTree(HuffmanTree* tree) {
 /*get the distance code tree of a deflated block with fixed tree, as specified in the deflate specification*/
 static unsigned generateFixedDistanceTree(HuffmanTree* tree) {
     unsigned i, error = 0;
-    unsigned* bitlen = (unsigned*)lodepng_malloc(NUM_DISTANCE_SYMBOLS * sizeof(unsigned));
+    auto* bitlen = (unsigned*)lodepng_malloc(NUM_DISTANCE_SYMBOLS * sizeof(unsigned));
     if (!bitlen) return 83; /*alloc fail*/
 
     /*there are 32 distance codes, but 30-31 are unused*/
@@ -1220,10 +1220,10 @@ static void addLengthDistance(uivector* values, size_t length, size_t distance) 
     257-285: length/distance pair (length code, followed by extra length bits, distance code, extra distance bits)
     286-287: invalid*/
 
-    unsigned length_code = (unsigned)searchCodeIndex(LENGTHBASE, 29, length);
-    unsigned extra_length = (unsigned)(length - LENGTHBASE[length_code]);
-    unsigned dist_code = (unsigned)searchCodeIndex(DISTANCEBASE, 30, distance);
-    unsigned extra_distance = (unsigned)(distance - DISTANCEBASE[dist_code]);
+    auto length_code = (unsigned)searchCodeIndex(LENGTHBASE, 29, length);
+    auto extra_length = (unsigned)(length - LENGTHBASE[length_code]);
+    auto dist_code = (unsigned)searchCodeIndex(DISTANCEBASE, 30, distance);
+    auto extra_distance = (unsigned)(distance - DISTANCEBASE[dist_code]);
 
     uivector_push_back(values, length_code + FIRST_LENGTH_CODE_INDEX);
     uivector_push_back(values, extra_length);
@@ -2160,7 +2160,7 @@ unsigned lodepng_crc32(const unsigned char* data, size_t length);
 /* ////////////////////////////////////////////////////////////////////////// */
 
 static unsigned char readBitFromReversedStream(size_t* bitpointer, const unsigned char* bitstream) {
-    unsigned char result = (unsigned char)((bitstream[(*bitpointer) >> 3] >> (7 - ((*bitpointer) & 0x7))) & 1);
+    auto result = (unsigned char)((bitstream[(*bitpointer) >> 3] >> (7 - ((*bitpointer) & 0x7))) & 1);
     ++(*bitpointer);
     return result;
 }
@@ -4963,7 +4963,7 @@ static unsigned addChunk_bKGD(ucvector* out, const LodePNGInfo* info) {
 
 static unsigned addChunk_tIME(ucvector* out, const LodePNGTime* time) {
     unsigned error = 0;
-    unsigned char* data = (unsigned char*)lodepng_malloc(7);
+    auto* data = (unsigned char*)lodepng_malloc(7);
     if (!data) return 83; /*alloc fail*/
     data[0] = (unsigned char)(time->year >> 8);
     data[1] = (unsigned char)(time->year & 255);
@@ -5281,7 +5281,7 @@ static unsigned filter(unsigned char* out, const unsigned char* in, unsigned w, 
         }
         for (y = 0; y != h; ++y) /*try the 5 filter types*/ {
             for (type = 0; type != 5; ++type) {
-                unsigned testsize = (unsigned)linebytes;
+                auto testsize = (unsigned)linebytes;
                 /*if(testsize > 8) testsize /= 8;*/ /*it already works good enough by testing a part of the row*/
 
                 filterScanline(attempt[type], &in[y * linebytes], prevline, linebytes, bytewidth, type);
@@ -5397,7 +5397,7 @@ static unsigned preProcessScanlines(unsigned char** out, size_t* outsize, const 
         if (!error) {
             /*non multiple of 8 bits per scanline, padding bits needed per scanline*/
             if (bpp < 8 && w * bpp != ((w * bpp + 7) / 8) * 8) {
-                unsigned char* padded = (unsigned char*)lodepng_malloc(h * ((w * bpp + 7) / 8));
+                auto* padded = (unsigned char*)lodepng_malloc(h * ((w * bpp + 7) / 8));
                 if (!padded) error = 83; /*alloc fail*/
                 if (!error) {
                     addPaddingBits(padded, in, ((w * bpp + 7) / 8) * 8, w * bpp, h);
@@ -5431,7 +5431,7 @@ static unsigned preProcessScanlines(unsigned char** out, size_t* outsize, const 
             Adam7_interlace(adam7, in, w, h, bpp);
             for (i = 0; i != 7; ++i) {
                 if (bpp < 8) {
-                    unsigned char* padded = (unsigned char*)lodepng_malloc(padded_passstart[i + 1] - padded_passstart[i]);
+                    auto* padded = (unsigned char*)lodepng_malloc(padded_passstart[i + 1] - padded_passstart[i]);
                     if (!padded) ERROR_BREAK(83); /*alloc fail*/
                     addPaddingBits(padded, &adam7[passstart[i]],
                         ((passw[i] * bpp + 7) / 8) * 8, passw[i] * bpp, passh[i]);

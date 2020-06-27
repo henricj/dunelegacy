@@ -188,7 +188,7 @@ public:
         \return The new created label (will be automatically destroyed when it's parent widget is destroyed)
     */
     static Label* create(const std::string& text, Uint32 textcolor = COLOR_DEFAULT, Uint32 textshadowcolor = COLOR_DEFAULT, Uint32 backgroundcolor = COLOR_TRANSPARENT) {
-        Label* label = new Label();
+        auto* label = new Label();
         label->setText(text);
         label->setTextColor(textcolor, textshadowcolor, backgroundcolor);
         label->pAllocated = true;

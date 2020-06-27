@@ -38,7 +38,7 @@
 class DefaultObjectInterface : public ObjectInterface {
 public:
     static DefaultObjectInterface* create(int objectID) {
-        DefaultObjectInterface* tmp = new DefaultObjectInterface(objectID);
+        auto* tmp = new DefaultObjectInterface(objectID);
         tmp->pAllocated = true;
         return tmp;
     }

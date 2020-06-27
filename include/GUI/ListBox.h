@@ -299,7 +299,7 @@ public:
         \param  index   the zero-based index of the element to remove
     */
     void removeEntry(int index) {
-        std::vector<ListEntry>::iterator iter = entries.begin() + index;
+        auto iter = entries.begin() + index;
         entries.erase(iter);
         if(index == selectedElement) {
             selectedElement = -1;

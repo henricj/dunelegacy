@@ -107,7 +107,7 @@ public:
         \return The new message box (will be automatically destroyed when it's closed)
     */
     static MsgBox* create(const std::string& text) {
-        MsgBox* msgbox = new MsgBox(text);
+        auto* msgbox = new MsgBox(text);
         msgbox->pAllocated = true;
         return msgbox;
     }
@@ -154,7 +154,7 @@ private:
         This method is called when the OK button is pressed.
     */
     virtual void onOK() {
-        Window* pParentWindow = dynamic_cast<Window*>(getParent());
+        auto* pParentWindow = dynamic_cast<Window*>(getParent());
         if(pParentWindow != nullptr) {
             pParentWindow->closeChildWindow();
         }

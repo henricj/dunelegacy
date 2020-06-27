@@ -128,9 +128,9 @@ void ScrollBar::resize(Uint32 width, Uint32 height) {
 }
 
 void ScrollBar::updateSliderButton() {
-    double Range = static_cast<double>(maxValue - minValue + 1);
+    auto Range = static_cast<double>(maxValue - minValue + 1);
     int ArrowHeight = GUIStyle::getInstance().getMinimumScrollBarArrowButtonSize().y;
-    double SliderAreaHeight = static_cast<double>(getSize().y - 2 * ArrowHeight);
+    auto SliderAreaHeight = static_cast<double>(getSize().y - 2 * ArrowHeight);
 
     if(SliderAreaHeight < 0.0) {
         SliderAreaHeight = GUIStyle::getInstance().getMinimumScrollBarArrowButtonSize().y;
