@@ -29,24 +29,24 @@ ObjectData::ObjectData()
 {
     // set default values
     for(auto & i : data) {
-        for(int h=0;h<static_cast<int>(HOUSETYPE::NUM_HOUSES);h++) {
-            i[h].enabled = false;
-            i[h].hitpoints = 0;
-            i[h].price = 0;
-            i[h].power = 0;
-            i[h].viewrange = 0;
-            i[h].capacity = 0;
-            i[h].weapondamage = 0;
-            i[h].weaponrange = 0;
-            i[h].weaponreloadtime = 0;
-            i[h].maxspeed = 0;
-            i[h].turnspeed = 0;
-            i[h].buildtime = 0;
-            i[h].infspawnprop = 0;
-            i[h].builder = ItemID_Invalid;
-            i[h].prerequisiteStructuresSet.reset();
-            i[h].techLevel = -1;
-            i[h].upgradeLevel = 0;
+        for(auto & h : i) {
+            h.enabled = false;
+            h.hitpoints = 0;
+            h.price = 0;
+            h.power = 0;
+            h.viewrange = 0;
+            h.capacity = 0;
+            h.weapondamage = 0;
+            h.weaponrange = 0;
+            h.weaponreloadtime = 0;
+            h.maxspeed = 0;
+            h.turnspeed = 0;
+            h.buildtime = 0;
+            h.infspawnprop = 0;
+            h.builder = ItemID_Invalid;
+            h.prerequisiteStructuresSet.reset();
+            h.techLevel = -1;
+            h.upgradeLevel = 0;
         }
     }
 }
@@ -154,24 +154,24 @@ void ObjectData::loadFromINIFile(const std::string& filename)
 void ObjectData::save(OutputStream& stream) const
 {
     for(const auto & i : data) {
-        for(int h=0;h<static_cast<int>(HOUSETYPE::NUM_HOUSES);h++) {
-            stream.writeBool(i[h].enabled);
-            stream.writeSint32(i[h].hitpoints);
-            stream.writeSint32(i[h].price);
-            stream.writeSint32(i[h].power);
-            stream.writeSint32(i[h].viewrange);
-            stream.writeSint32(i[h].capacity);
-            stream.writeSint32(i[h].weapondamage);
-            stream.writeSint32(i[h].weaponrange);
-            stream.writeSint32(i[h].weaponreloadtime);
-            stream.writeFixPoint(i[h].maxspeed);
-            stream.writeFixPoint(i[h].turnspeed);
-            stream.writeSint32(i[h].buildtime);
-            stream.writeSint32(i[h].infspawnprop);
-            stream.writeSint32(i[h].builder);
-            stream.writeUint32((Uint32) i[h].prerequisiteStructuresSet.to_ulong());
-            stream.writeSint8(i[h].techLevel);
-            stream.writeSint8(i[h].upgradeLevel);
+        for(const auto & h : i) {
+            stream.writeBool(h.enabled);
+            stream.writeSint32(h.hitpoints);
+            stream.writeSint32(h.price);
+            stream.writeSint32(h.power);
+            stream.writeSint32(h.viewrange);
+            stream.writeSint32(h.capacity);
+            stream.writeSint32(h.weapondamage);
+            stream.writeSint32(h.weaponrange);
+            stream.writeSint32(h.weaponreloadtime);
+            stream.writeFixPoint(h.maxspeed);
+            stream.writeFixPoint(h.turnspeed);
+            stream.writeSint32(h.buildtime);
+            stream.writeSint32(h.infspawnprop);
+            stream.writeSint32(h.builder);
+            stream.writeUint32((Uint32) h.prerequisiteStructuresSet.to_ulong());
+            stream.writeSint8(h.techLevel);
+            stream.writeSint8(h.upgradeLevel);
         }
     }
 }
@@ -179,24 +179,24 @@ void ObjectData::save(OutputStream& stream) const
 void ObjectData::load(InputStream& stream)
 {
     for(auto & i : data) {
-        for(int h=0;h<static_cast<int>(HOUSETYPE::NUM_HOUSES);h++) {
-            i[h].enabled = stream.readBool();
-            i[h].hitpoints = stream.readSint32();
-            i[h].price = stream.readSint32();
-            i[h].power = stream.readSint32();
-            i[h].viewrange = stream.readSint32();
-            i[h].capacity = stream.readSint32();
-            i[h].weapondamage = stream.readSint32();
-            i[h].weaponrange = stream.readSint32();
-            i[h].weaponreloadtime = stream.readSint32();
-            i[h].maxspeed = stream.readFixPoint();
-            i[h].turnspeed = stream.readFixPoint();
-            i[h].buildtime = stream.readSint32();
-            i[h].infspawnprop = stream.readSint32();
-            i[h].builder = stream.readSint32();
-            i[h].prerequisiteStructuresSet = std::bitset<Structure_LastID + 1>( (unsigned long) stream.readUint32());
-            i[h].techLevel = stream.readSint8();
-            i[h].upgradeLevel = stream.readSint8();
+        for(auto & h : i) {
+            h.enabled = stream.readBool();
+            h.hitpoints = stream.readSint32();
+            h.price = stream.readSint32();
+            h.power = stream.readSint32();
+            h.viewrange = stream.readSint32();
+            h.capacity = stream.readSint32();
+            h.weapondamage = stream.readSint32();
+            h.weaponrange = stream.readSint32();
+            h.weaponreloadtime = stream.readSint32();
+            h.maxspeed = stream.readFixPoint();
+            h.turnspeed = stream.readFixPoint();
+            h.buildtime = stream.readSint32();
+            h.infspawnprop = stream.readSint32();
+            h.builder = stream.readSint32();
+            h.prerequisiteStructuresSet = std::bitset<Structure_LastID + 1>( (unsigned long) stream.readUint32());
+            h.techLevel = stream.readSint8();
+            h.upgradeLevel = stream.readSint8();
         }
     }
 }
