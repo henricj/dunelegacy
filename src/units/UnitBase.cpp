@@ -278,9 +278,9 @@ void UnitBase::blitToScreen() {
 ObjectInterface* UnitBase::getInterfaceContainer() {
     if((pLocalHouse == owner && isRespondable()) || (debug)) {
         return UnitInterface::create(objectID);
-    } else {
-        return DefaultObjectInterface::create(objectID);
-    }
+    }         return DefaultObjectInterface::create(objectID);
+
+   
 }
 
 ANGLETYPE UnitBase::getCurrentAttackAngle() const {
@@ -484,11 +484,13 @@ void UnitBase::engageTarget() {
                 // we are not following this air unit
                 releaseTarget();
                 return;
-            } else {
-                // follow the target
+            }                 // follow the target
+
                 setDestination(targetLocation);
+
                 return;
-            }
+
+           
         }
 
         // we are in attack range
@@ -1432,9 +1434,9 @@ bool UnitBase::SearchPathWithAStar() {
     if(pathList.empty()) {
         nextSpotFound = false;
         return false;
-    } else {
-        return true;
-    }
+    }         return true;
+
+   
 }
 
 void UnitBase::drawSmoke(int x, int y) const {

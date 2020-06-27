@@ -110,10 +110,14 @@ static void printUsage() {
 int getLogicalToPhysicalResolutionFactor(int physicalWidth, int physicalHeight) {
     if(physicalWidth >= 1280*3 && physicalHeight >= 720*3) {
         return 3;
-    } else if(physicalWidth >= 640*2 && physicalHeight >= 480*2) {
+    } if(physicalWidth >= 640*2 && physicalHeight >= 480*2) {
+
         return 2;
+
     } else {
+
         return 1;
+
     }
 }
 

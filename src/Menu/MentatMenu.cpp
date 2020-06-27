@@ -311,7 +311,7 @@ int MentatMenu::getMissionSpecificAnim(int missionnumber) const {
 
     if(missionnumber < 0 || missionnumber > 9) {
         return missionnumber2AnimID[0];
-    } else {
-        return missionnumber2AnimID[missionnumber];
-    }
+    }         return missionnumber2AnimID[missionnumber];
+
+   
 }

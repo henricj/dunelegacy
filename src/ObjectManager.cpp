@@ -54,7 +54,7 @@ Uint32 ObjectManager::addObject(ObjectBase* pObject) {
     if(!insertPosition.second) {
         // there is already such an object in the list
         return NONE_ID;
-    } else {
-        return nextFreeObjectID++;  // Caution: Old value is returned but value is incremented afterwards
-    }
+    }         return nextFreeObjectID++;  // Caution: Old value is returned but value is incremented afterwards
+
+   
 }

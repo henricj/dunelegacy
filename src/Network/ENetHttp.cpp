@@ -70,9 +70,9 @@ int getPortFromURL(const std::string& url) {
         }
 
         return port;
-    } else {
-        return 0;
-    }
+    }         return 0;
+
+   
 }
 
 std::string percentEncode(const std::string & s) {

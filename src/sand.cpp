@@ -150,52 +150,98 @@ int getAnimByFilename(const std::string& filename) {
     const std::string lowerFilename = strToLower(filename);
 
     if(lowerFilename == "fartr.wsa")            return Anim_AtreidesPlanet;
-    else if(lowerFilename == "fhark.wsa")       return Anim_HarkonnenPlanet;
+    if(lowerFilename == "fhark.wsa")       return Anim_HarkonnenPlanet;
+
     else if(lowerFilename == "fordos.wsa")      return Anim_OrdosPlanet;
+
     else if(lowerFilename == "win1.wsa")        return Anim_Win1;
+
     else if(lowerFilename == "win2.wsa")        return Anim_Win2;
+
     else if(lowerFilename == "lostbild.wsa")    return Anim_Lose1;
+
     else if(lowerFilename == "lostvehc.wsa")    return Anim_Lose2;
+
     else if(lowerFilename == "barrac.wsa")      return Anim_Barracks;
+
     else if(lowerFilename == "carryall.wsa")    return Anim_Carryall;
+
     else if(lowerFilename == "construc.wsa")    return Anim_ConstructionYard;
+
     else if(lowerFilename == "fremen.wsa")      return Anim_Fremen;
+
     else if(lowerFilename == "gold-bb.wsa")     return Anim_DeathHand;
+
     else if(lowerFilename == "harktank.wsa")    return Anim_Devastator;
+
     else if(lowerFilename == "harvest.wsa")     return Anim_Harvester;
+
     else if(lowerFilename == "headqrts.wsa")    return Anim_Radar;
+
     else if(lowerFilename == "hitcftry.wsa")    return Anim_HighTechFactory;
+
     else if(lowerFilename == "htank.wsa")       return Anim_SiegeTank;
+
     else if(lowerFilename == "hvyftry.wsa")     return Anim_HeavyFactory;
+
     else if(lowerFilename == "hyinfy.wsa")      return Anim_Trooper;
+
     else if(lowerFilename == "infantry.wsa")    return Anim_Infantry;
+
     else if(lowerFilename == "ix.wsa")          return Anim_IX;
+
     else if(lowerFilename == "liteftry.wsa")    return Anim_LightFactory;
+
     else if(lowerFilename == "ltank.wsa")       return Anim_Tank;
+
     else if(lowerFilename == "mcv.wsa")         return Anim_MCV;
+
     else if(lowerFilename == "ordrtank.wsa")    return Anim_Deviator;
+
     else if(lowerFilename == "orni.wsa")        return Anim_Ornithopter;
+
     else if(lowerFilename == "otrike.wsa")      return Anim_Raider;
+
     else if(lowerFilename == "palace.wsa")      return Anim_Palace;
+
     else if(lowerFilename == "quad.wsa")        return Anim_Quad;
+
     else if(lowerFilename == "refinery.wsa")    return Anim_Refinery;
+
     else if(lowerFilename == "repair.wsa")      return Anim_RepairYard;
+
     else if(lowerFilename == "rtank.wsa")       return Anim_Launcher;
+
     else if(lowerFilename == "rturret.wsa")     return Anim_RocketTurret;
+
     else if(lowerFilename == "saboture.wsa")    return Anim_Saboteur;
+
     else if(lowerFilename == "slab.wsa")        return Anim_Slab1;
+
     else if(lowerFilename == "stank.wsa")       return Anim_SonicTank;
+
     else if(lowerFilename == "starport.wsa")    return Anim_StarPort;
+
     else if(lowerFilename == "storage.wsa")     return Anim_Silo;
+
     else if(lowerFilename == "trike.wsa")       return Anim_Trike;
+
     else if(lowerFilename == "turret.wsa")      return Anim_GunTurret;
+
     else if(lowerFilename == "wall.wsa")        return Anim_Wall;
+
     else if(lowerFilename == "windtrap.wsa")    return Anim_WindTrap;
+
     else if(lowerFilename == "wor.wsa")         return Anim_WOR;
+
     else if(lowerFilename == "worm.wsa")        return Anim_Sandworm;
+
     else if(lowerFilename == "sardukar.wsa")    return Anim_Sardaukar;
+
     else if(lowerFilename == "frigate.wsa")     return Anim_Frigate;
+
     else if(lowerFilename == "4slab.wsa")       return Anim_Slab4;
+
     else                                        return 0;
 }
 
@@ -240,47 +286,88 @@ Uint32  getItemIDByName(const std::string& name) {
     const std::string lowerName = strToLower(name);
 
     if(lowerName == "barracks")                                                 return Structure_Barracks;
-    else if((lowerName == "const yard") || (lowerName == "construction yard"))  return Structure_ConstructionYard;
+    if((lowerName == "const yard") || (lowerName == "construction yard"))  return Structure_ConstructionYard;
+
     else if((lowerName == "r-turret") || (lowerName == "rocket-turret"))        return Structure_RocketTurret;
+
     else if((lowerName == "turret") || (lowerName == "gun-turret"))             return Structure_GunTurret;
+
     else if((lowerName == "heavy fctry") || (lowerName == "heavy factory"))     return Structure_HeavyFactory;
+
     else if((lowerName == "hi-tech") || (lowerName == "hightech factory"))      return Structure_HighTechFactory;
+
     else if((lowerName == "ix") || (lowerName == "house ix"))                   return Structure_IX;
+
     else if((lowerName == "light fctry") || (lowerName == "light factory"))     return Structure_LightFactory;
+
     else if(lowerName == "palace")                                              return Structure_Palace;
+
     else if((lowerName == "outpost") || (lowerName == "radar"))                 return Structure_Radar;
+
     else if(lowerName == "refinery")                                            return Structure_Refinery;
+
     else if((lowerName == "repair") || (lowerName == "repair yard"))            return Structure_RepairYard;
+
     else if((lowerName == "spice silo") || (lowerName == "silo"))               return Structure_Silo;
+
     else if((lowerName == "concrete") || (lowerName == "slab1"))                return Structure_Slab1;
+
     else if(lowerName == "slab4")                                               return Structure_Slab4;
+
     else if((lowerName == "star port") || (lowerName == "starport"))            return Structure_StarPort;
+
     else if(lowerName == "wall")                                                return Structure_Wall;
+
     else if(lowerName == "windtrap")                                            return Structure_WindTrap;
+
     else if(lowerName == "wor")                                                 return Structure_WOR;
+
     else if((lowerName == "carryall") || (lowerName == "carry-all"))            return Unit_Carryall;
+
     else if((lowerName == "devastator") || (lowerName == "devistator"))         return Unit_Devastator;
+
     else if(lowerName == "deviator")                                            return Unit_Deviator;
+
     else if(lowerName == "frigate")                                             return Unit_Frigate;
+
     else if(lowerName == "harvester")                                           return Unit_Harvester;
+
     else if(lowerName == "soldier")                                             return Unit_Soldier;
+
     else if(lowerName == "launcher")                                            return Unit_Launcher;
+
     else if(lowerName == "mcv")                                                 return Unit_MCV;
+
     else if((lowerName == "thopters") || (lowerName == "'thopters")
+
             || (lowerName == "thopter") || (lowerName == "'thopter")
+
             || (lowerName == "ornithopter"))                                    return Unit_Ornithopter;
+
     else if(lowerName == "quad")                                                return Unit_Quad;
+
     else if(lowerName == "saboteur")                                            return Unit_Saboteur;
+
     else if(lowerName == "sandworm")                                            return Unit_Sandworm;
+
     else if(lowerName == "siege tank")                                          return Unit_SiegeTank;
+
     else if((lowerName == "sonic tank") || (lowerName == "sonictank"))          return Unit_SonicTank;
+
     else if(lowerName == "tank")                                                return Unit_Tank;
+
     else if(lowerName == "trike")                                               return Unit_Trike;
+
     else if((lowerName == "raider trike") || (lowerName == "raider"))           return Unit_RaiderTrike;
+
     else if(lowerName == "trooper")                                             return Unit_Trooper;
+
     else if(lowerName == "special")                                             return Unit_Special;
+
     else if(lowerName == "infantry")                                            return Unit_Infantry;
+
     else if(lowerName == "troopers")                                            return Unit_Troopers;
+
     else                                                                        return ItemID_Invalid;
 }
 
@@ -412,11 +499,16 @@ HOUSETYPE getHouseByName(const std::string& name) {
 
     // clang-format off
     if(lowerName == "harkonnen")         return HOUSETYPE::HOUSE_HARKONNEN;
-    else if(lowerName == "atreides")     return HOUSETYPE::HOUSE_ATREIDES;
+    if(lowerName == "atreides")     return HOUSETYPE::HOUSE_ATREIDES;
+
     else if(lowerName == "ordos")        return HOUSETYPE::HOUSE_ORDOS;
+
     else if(lowerName == "fremen")       return HOUSETYPE::HOUSE_FREMEN;
+
     else if(lowerName == "sardaukar")    return HOUSETYPE::HOUSE_SARDAUKAR;
+
     else if(lowerName == "mercenary")    return HOUSETYPE::HOUSE_MERCENARY;
+
     else                                return HOUSETYPE::HOUSE_INVALID;
     // clang-format on
 }
@@ -441,14 +533,22 @@ ATTACKMODE getAttackModeByName(const std::string& name) {
 
     // clang-format off
     if(lowerName == "guard")                                    return ATTACKMODE::GUARD;
-    else if(lowerName == "area guard")                          return ATTACKMODE::AREAGUARD;
+    if(lowerName == "area guard")                          return ATTACKMODE::AREAGUARD;
+
     else if(lowerName == "ambush")                              return ATTACKMODE::AMBUSH;
+
     else if((lowerName == "hunt") || (lowerName == "attack"))   return ATTACKMODE::HUNT;
+
     else if(lowerName == "harvest")                             return ATTACKMODE::HARVEST;
+
     else if(lowerName == "sabotage")                            return ATTACKMODE::SABOTAGE;
+
     else if(lowerName == "stop")                                return ATTACKMODE::STOP;
+
     else if(lowerName == "capture")                             return ATTACKMODE::CAPTURE;
+
     else if(lowerName == "retreat")                             return ATTACKMODE::RETREAT;
+
     else                                                        return ATTACKMODE::ATTACKMODE_INVALID;
     // clang-format on
 }
@@ -500,22 +600,38 @@ DropLocation getDropLocationByName(const std::string& name) {
 
     if(lowerName == "north") {
         return DropLocation::Drop_North;
-    } else if(lowerName == "east") {
+    } if(lowerName == "east") {
+
         return DropLocation::Drop_East;
+
     } else if(lowerName == "south") {
+
         return DropLocation::Drop_South;
+
     } else if(lowerName == "west") {
+
         return DropLocation::Drop_West;
+
     } else if(lowerName == "air") {
+
         return DropLocation::Drop_Air;
+
     } else if(lowerName == "visible") {
+
         return DropLocation::Drop_Visible;
+
     } else if(lowerName == "enemybase") {
+
         return DropLocation::Drop_Enemybase;
+
     } else if(lowerName == "homebase") {
+
         return DropLocation::Drop_Homebase;
+
     } else {
+
         return DropLocation::Drop_Invalid;
+
     }
 }
 
@@ -561,16 +677,26 @@ AITeamBehavior getAITeamBehaviorByName(const std::string& name) {
 
     if(lowerName == "normal") {
         return AITeamBehavior::AITeamBehavior_Normal;
-    } else if(lowerName == "guard") {
+    } if(lowerName == "guard") {
+
         return AITeamBehavior::AITeamBehavior_Guard;
+
     } else if(lowerName == "kamikaze") {
+
         return AITeamBehavior::AITeamBehavior_Kamikaze;
+
     } else if(lowerName == "staging") {
+
         return AITeamBehavior::AITeamBehavior_Staging;
+
     } else if(lowerName == "flee") {
+
         return AITeamBehavior::AITeamBehavior_Flee;
+
     } else {
+
         return AITeamBehavior::AITeamBehavior_Invalid;
+
     }
 }
 
@@ -594,18 +720,30 @@ AITeamType getAITeamTypeByName(const std::string& name) {
 
     if(lowerName == "foot") {
         return AITeamType::AITeamType_Foot;
-    } else if(lowerName == "wheel" || lowerName == "wheeled") {
+    } if(lowerName == "wheel" || lowerName == "wheeled") {
+
         return AITeamType::AITeamType_Wheeled;
+
     } else if(lowerName == "track" || lowerName == "tracked") {
+
         return AITeamType::AITeamType_Tracked;
+
     } else if(lowerName == "winged") {
+
         return AITeamType::AITeamType_Winged;
+
     } else if(lowerName == "slither") {
+
         return AITeamType::AITeamType_Slither;
+
     } else if(lowerName == "harvester") {
+
         return AITeamType::AITeamType_Harvester;
+
     } else {
+
         return AITeamType::AITeamType_Invalid;
+
     }
 }
 

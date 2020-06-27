@@ -581,7 +581,7 @@ static unsigned HuffmanTree_makeFromLengths2(HuffmanTree* tree) {
     uivector_cleanup(&nextcode);
 
     if (!error) return HuffmanTree_make2DTree(tree);
-    else return error;
+    return error;
 }
 
 /*
@@ -862,7 +862,7 @@ static unsigned huffmanDecodeSymbol(const unsigned char* in, size_t* bp,
         ct = codetree->tree2d[(treepos << 1) + READBIT(*bp, in)];
         ++(*bp);
         if (ct < codetree->numcodes) return ct; /*the symbol is decoded, return it*/
-        else treepos = ct - codetree->numcodes; /*symbol not yet decoded, instead move tree position*/
+        treepos = ct - codetree->numcodes; /*symbol not yet decoded, instead move tree position*/
 
         if (treepos >= codetree->numcodes) return (unsigned)(-1); /*error: it appeared outside the codetree*/
     }
@@ -1150,7 +1150,8 @@ static unsigned lodepng_inflatev(ucvector* out,
         BTYPE += 2u * readBitFromStream(&bp, in);
 
         if (BTYPE == 3) return 20; /*error: invalid BTYPE*/
-        else if (BTYPE == 0) error = inflateNoCompression(out, in, &bp, &pos, insize); /*no compression*/
+        if (BTYPE == 0) error = inflateNoCompression(out, in, &bp, &pos, insize); /*no compression*/
+
         else error = inflateHuffmanBlock(out, in, &bp, &pos, insize, BTYPE); /*compression, BTYPE 01 or 10*/
 
         if (error) return error;
@@ -1177,9 +1178,9 @@ static unsigned inflate(unsigned char** out, size_t* outsize,
     if (settings->custom_inflate) {
         return settings->custom_inflate(out, outsize, in, insize, settings);
     }
-    else {
-        return lodepng_inflate(out, outsize, in, insize, settings);
-    }
+            return lodepng_inflate(out, outsize, in, insize, settings);
+
+   
 }
 
 #endif /*LODEPNG_COMPILE_DECODER*/
@@ -1837,13 +1838,20 @@ static unsigned lodepng_deflatev(ucvector* out, const unsigned char* in, size_t 
     Hash hash;
 
     if (settings->btype > 2) return 61;
-    else if (settings->btype == 0) return deflateNoCompression(out, in, insize);
+    if (settings->btype == 0) return deflateNoCompression(out, in, insize);
+
     else if (settings->btype == 1) blocksize = insize;
+
     else /*if(settings->btype == 2)*/ {
+
         /*on PNGs, deflate blocks of 65-262k seem to give most dense encoding*/
+
         blocksize = insize / 8 + 8;
+
         if (blocksize < 65536) blocksize = 65536;
+
         if (blocksize > 262144) blocksize = 262144;
+
     }
 
     numdeflateblocks = (insize + blocksize - 1) / blocksize;
@@ -1885,9 +1893,9 @@ static unsigned deflate(unsigned char** out, size_t* outsize,
     if (settings->custom_deflate) {
         return settings->custom_deflate(out, outsize, in, insize, settings);
     }
-    else {
-        return lodepng_deflate(out, outsize, in, insize, settings);
-    }
+            return lodepng_deflate(out, outsize, in, insize, settings);
+
+   
 }
 
 #endif /*LODEPNG_COMPILE_DECODER*/
@@ -1972,9 +1980,9 @@ static unsigned zlib_decompress(unsigned char** out, size_t* outsize, const unsi
     if (settings->custom_zlib) {
         return settings->custom_zlib(out, outsize, in, insize, settings);
     }
-    else {
-        return lodepng_zlib_decompress(out, outsize, in, insize, settings);
-    }
+            return lodepng_zlib_decompress(out, outsize, in, insize, settings);
+
+   
 }
 
 #endif /*LODEPNG_COMPILE_DECODER*/
@@ -2026,9 +2034,9 @@ static unsigned zlib_compress(unsigned char** out, size_t* outsize, const unsign
     if (settings->custom_zlib) {
         return settings->custom_zlib(out, outsize, in, insize, settings);
     }
-    else {
-        return lodepng_zlib_compress(out, outsize, in, insize, settings);
-    }
+            return lodepng_zlib_compress(out, outsize, in, insize, settings);
+
+   
 }
 
 #endif /*LODEPNG_COMPILE_ENCODER*/
@@ -2238,7 +2246,7 @@ unsigned lodepng_chunk_check_crc(const unsigned char* chunk) {
     /*the CRC is taken of the data and the 4 chunk type letters, not the length*/
     unsigned checksum = lodepng_crc32(&chunk[4], length + 4);
     if (CRC != checksum) return 1;
-    else return 0;
+    return 0;
 }
 
 void lodepng_chunk_generate_crc(unsigned char* chunk) {
@@ -2253,10 +2261,11 @@ unsigned char* lodepng_chunk_next(unsigned char* chunk) {
         /* Is PNG magic header at start of PNG file. Jump to first actual chunk. */
         return chunk + 8;
     }
-    else {
-        unsigned total_chunk_length = lodepng_chunk_length(chunk) + 12;
+            unsigned total_chunk_length = lodepng_chunk_length(chunk) + 12;
+
         return chunk + total_chunk_length;
-    }
+
+   
 }
 
 const unsigned char* lodepng_chunk_next_const(const unsigned char* chunk) {
@@ -2265,10 +2274,11 @@ const unsigned char* lodepng_chunk_next_const(const unsigned char* chunk) {
         /* Is PNG magic header at start of PNG file. Jump to first actual chunk. */
         return chunk + 8;
     }
-    else {
-        unsigned total_chunk_length = lodepng_chunk_length(chunk) + 12;
+            unsigned total_chunk_length = lodepng_chunk_length(chunk) + 12;
+
         return chunk + total_chunk_length;
-    }
+
+   
 }
 
 unsigned char* lodepng_chunk_find(unsigned char* chunk, const unsigned char* end, const char type[5]) {
@@ -2435,7 +2445,7 @@ unsigned lodepng_palette_add(LodePNGColorMode* info,
         /*room for 256 colors with 4 bytes each*/
         data = (unsigned char*)lodepng_realloc(info->palette, 1024);
         if (!data) return 83; /*alloc fail*/
-        else info->palette = data;
+        info->palette = data;
     }
     info->palette[4 * info->palettesize + 0] = r;
     info->palette[4 * info->palettesize + 1] = g;
@@ -2832,7 +2842,7 @@ static int color_tree_get(ColorTree* tree, unsigned char r, unsigned char g, uns
     for (bit = 0; bit < 8; ++bit) {
         int i = 8 * ((r >> bit) & 1) + 4 * ((g >> bit) & 1) + 2 * ((b >> bit) & 1) + 1 * ((a >> bit) & 1);
         if (!tree->children[i]) return -1;
-        else tree = tree->children[i];
+        tree = tree->children[i];
     }
     return tree ? tree->index : -1;
 }
@@ -3645,7 +3655,8 @@ static unsigned char paethPredictor(short a, short b, short c) {
     short pc = abs(a + b - c - c);
 
     if (pc < pa && pc < pb) return (unsigned char)c;
-    else if (pb < pa) return (unsigned char)b;
+    if (pb < pa) return (unsigned char)b;
+
     else return (unsigned char)a;
 }
 

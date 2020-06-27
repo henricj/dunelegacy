@@ -115,9 +115,9 @@ FixPoint Ornithopter::getDestinationAngle() const {
     if(timeLastShot > 0 && (currentGame->getGameCycleCount() - timeLastShot) < MILLI2CYCLES(1000)) {
         // we already shot at target and now want to fly in the opposite direction
         return destinationAngleRad(destination.x*TILESIZE + TILESIZE/2, destination.y*TILESIZE + TILESIZE/2, realX, realY)*8 / (FixPt_PI << 1);
-    } else {
-        return destinationAngleRad(realX, realY, destination.x*TILESIZE + TILESIZE/2, destination.y*TILESIZE + TILESIZE/2)*8 / (FixPt_PI << 1);
-    }
+    }         return destinationAngleRad(realX, realY, destination.x*TILESIZE + TILESIZE/2, destination.y*TILESIZE + TILESIZE/2)*8 / (FixPt_PI << 1);
+
+   
 }
 
 bool Ornithopter::attack() {

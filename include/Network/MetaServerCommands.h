@@ -65,15 +65,21 @@ public:
         const auto* pMetaServerAdd = dynamic_cast<const MetaServerAdd*>(&metaServerCommand);
         if(pMetaServerAdd == nullptr) {
             return false;
-        } else {
+        } 
 
             return ((serverName == pMetaServerAdd->serverName)
+
                      && (serverPort == pMetaServerAdd->serverPort)
+
                      && (secret == pMetaServerAdd->secret)
+
                      && (mapName == pMetaServerAdd->mapName)
+
                      && (numPlayers == pMetaServerAdd->numPlayers)
+
                      && (maxPlayers == pMetaServerAdd->maxPlayers));
-        }
+
+       
     }
 
     std::string serverName;
@@ -96,15 +102,21 @@ public:
         const auto* pMetaServerUpdate = dynamic_cast<const MetaServerUpdate*>(&metaServerCommand);
         if(pMetaServerUpdate == nullptr) {
             return false;
-        } else {
+        } 
 
             return ((serverName == pMetaServerUpdate->serverName)
+
                      && (serverPort == pMetaServerUpdate->serverPort)
+
                      && (secret == pMetaServerUpdate->secret)
+
                      && (mapName == pMetaServerUpdate->mapName)
+
                      && (numPlayers == pMetaServerUpdate->numPlayers)
+
                      && (maxPlayers == pMetaServerUpdate->maxPlayers));
-        }
+
+       
     }
 
     std::string serverName;
@@ -126,11 +138,13 @@ public:
         const auto* pMetaServerRemove = dynamic_cast<const MetaServerRemove*>(&metaServerCommand);
         if(pMetaServerRemove == nullptr) {
             return false;
-        } else {
+        } 
 
             return ((serverPort == pMetaServerRemove->serverPort)
+
                      && (secret == pMetaServerRemove->secret));
-        }
+
+       
     }
 
     int serverPort;

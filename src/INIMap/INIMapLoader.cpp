@@ -967,7 +967,7 @@ HOUSETYPE INIMapLoader::getHouseID(const std::string& name) {
 
     if(housename2house.count(lowerName) > 0) {
         return housename2house[lowerName];
-    } else {
-        return getHouseByName(lowerName);
-    }
+    }         return getHouseByName(lowerName);
+
+   
 }

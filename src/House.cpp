@@ -869,9 +869,9 @@ Coord House::getCenterOfMainBase() const {
 
     if(numStructures == 0) {
         return Coord::Invalid();
-    } else {
-        return center / numStructures;
-    }
+    }         return center / numStructures;
+
+   
 }
 
 
