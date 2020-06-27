@@ -23,7 +23,7 @@
 
 #include "misc/RngSupport.h"
 
-extern int currentZoomlevel;
+
 
 int getRandomInt() {
     static std::random_device randdev;

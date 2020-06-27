@@ -42,7 +42,7 @@
 #include <typeinfo>
 #include <algorithm>
 
-extern int currentZoomlevel;
+
 
 // functor for std::find_if
 class CoordDistance {
