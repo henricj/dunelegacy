@@ -21,7 +21,7 @@
 #include "math.h"
 
 
-ScrollBar::ScrollBar() : Widget() {
+ScrollBar::ScrollBar()  {
     color = COLOR_DEFAULT;
     minValue = 1;
     maxValue = 1;

@@ -27,7 +27,7 @@
 static const HOUSETYPE houseOrder[] = {HOUSETYPE::HOUSE_ATREIDES,  HOUSETYPE::HOUSE_ORDOS,  HOUSETYPE::HOUSE_HARKONNEN,
                                        HOUSETYPE::HOUSE_MERCENARY, HOUSETYPE::HOUSE_FREMEN, HOUSETYPE::HOUSE_SARDAUKAR};
 
-HouseChoiceMenu::HouseChoiceMenu() : MenuBase()
+HouseChoiceMenu::HouseChoiceMenu()  
 {
     currentHouseChoiceScrollPos = 0;
 

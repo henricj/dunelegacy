@@ -41,7 +41,7 @@
 
 #include <algorithm>
 
-OptionsMenu::OptionsMenu() : MenuBase()
+OptionsMenu::OptionsMenu()  
 {
     determineAvailableScreenResolutions();
 

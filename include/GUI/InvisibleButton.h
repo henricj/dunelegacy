@@ -24,7 +24,7 @@
 class InvisibleButton : public Button {
 public:
     /// Default contructor
-    InvisibleButton() : Button() {
+    InvisibleButton()  {
         enableResizing(true,true);
     }
 

@@ -15,7 +15,7 @@
 
 #include <misc/string_util.h>
 
-MultiPlayerMenu::MultiPlayerMenu() : MenuBase() {
+MultiPlayerMenu::MultiPlayerMenu()  {
     // set up window
     SDL_Texture *pBackground = pGFXManager->getUIGraphic(UI_MenuBackground);
     setBackground(pBackground);
