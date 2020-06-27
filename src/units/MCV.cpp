@@ -109,7 +109,7 @@ void MCV::destroy() {
     GroundUnit::destroy();
 }
 
-bool MCV::canDeploy(int x, int y) const {
+bool MCV::canDeploy(int x, int y) {
     for(int i = 0; i < getStructureSize(Structure_ConstructionYard).x; i++) {
         for(int j = 0; j < getStructureSize(Structure_ConstructionYard).y; j++) {
             if(!currentGameMap->tileExists(x+i, y+j)) {

@@ -73,7 +73,7 @@ private:
     void updateStructures();
     void updateUnits();
 
-    int calculateTargetPriority(const UnitBase* pUnit, const ObjectBase* pObject);
+    static int calculateTargetPriority(const UnitBase* pUnit, const ObjectBase* pObject);
 
     std::vector<StructureInfo> structureQueue;    ///< Last destroyed structures and their location
 };

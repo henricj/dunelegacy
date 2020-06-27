@@ -56,7 +56,7 @@ public:
 
     virtual void onMentatTextFinished() { }
 
-    int getMissionSpecificAnim(int missionnumber) const;
+    static int getMissionSpecificAnim(int missionnumber) ;
 
 protected:
     enum MentatEyes {

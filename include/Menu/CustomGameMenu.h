@@ -49,7 +49,7 @@ public:
 private:
     void onNext();
     void onCancel();
-    void onLoad();
+    static void onLoad();
     void onGameOptions();
     void onMapTypeChange(int buttonID);
     void onMapListSelectionChange(bool bInteractive);

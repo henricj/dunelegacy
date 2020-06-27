@@ -44,10 +44,10 @@ public:
     */
     void onChildWindowClose(Window* pChildWindow) override;
 
-    void onResume();
+    static void onResume();
     void onSettings();
-    void onLoad();
-    void onSave();
+    static void onLoad();
+    static void onSave();
     void onRestart();
     void onQuit();
 

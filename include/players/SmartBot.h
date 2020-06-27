@@ -46,13 +46,13 @@ public:
 private:
     void scrambleUnitsAndDefend(const ObjectBase* pIntruder);
 
-    Coord findPlaceLocation(Uint32 itemID);
+    static Coord findPlaceLocation(Uint32 itemID);
 
-    int getNumAdjacentStructureTiles(Coord pos, int structureSizeX, int structureSizeY);
+    static int getNumAdjacentStructureTiles(Coord pos, int structureSizeX, int structureSizeY);
 
     void checkAllUnits();
-    void build();
-    void attack();
+    static void build();
+    static void attack();
 
     [[nodiscard]] bool isAllowedToArm() const;
 

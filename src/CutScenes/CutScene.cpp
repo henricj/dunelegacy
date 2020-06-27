@@ -78,7 +78,7 @@ void CutScene::startNewScene() {
     scenes.push(std::make_unique<Scene>());
 }
 
-void CutScene::addVideoEvent(std::unique_ptr<VideoEvent> newVideoEvent)
+static void CutScene::addVideoEvent(std::unique_ptr<VideoEvent> newVideoEvent)
 {
     if(scenes.empty()) {
         scenes.push(std::make_unique<Scene>());
@@ -87,7 +87,7 @@ void CutScene::addVideoEvent(std::unique_ptr<VideoEvent> newVideoEvent)
     scenes.back()->addVideoEvent(std::move(newVideoEvent));
 }
 
-void CutScene::addTextEvent(std::unique_ptr<TextEvent> newTextEvent)
+static void CutScene::addTextEvent(std::unique_ptr<TextEvent> newTextEvent)
 {
     if(scenes.empty()) {
         scenes.push(std::make_unique<Scene>());
@@ -96,7 +96,7 @@ void CutScene::addTextEvent(std::unique_ptr<TextEvent> newTextEvent)
     scenes.back()->addTextEvent(std::move(newTextEvent));
 }
 
-void CutScene::addTrigger(std::unique_ptr<CutSceneTrigger> newTrigger)
+static void CutScene::addTrigger(std::unique_ptr<CutSceneTrigger> newTrigger)
 {
     if(scenes.empty()) {
         scenes.push(std::make_unique<Scene>());

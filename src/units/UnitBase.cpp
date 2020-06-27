@@ -1442,7 +1442,7 @@ bool UnitBase::SearchPathWithAStar() {
    
 }
 
-void UnitBase::drawSmoke(int x, int y) const {
+void UnitBase::drawSmoke(int x, int y) {
     int frame = ((currentGame->getGameCycleCount() + (getObjectID() * 10)) / SMOKEDELAY) % (2*2);
     if(frame == 3) {
         frame = 1;

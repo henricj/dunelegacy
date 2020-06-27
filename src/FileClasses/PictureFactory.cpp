@@ -380,7 +380,7 @@ sdl2::surface_ptr PictureFactory::createBottomBar() const {
     return BottomBar;
 }
 
-sdl2::surface_ptr PictureFactory::createPlacingGrid(int size, int color) const {
+sdl2::surface_ptr PictureFactory::createPlacingGrid(int size, int color) {
     sdl2::surface_ptr placingGrid{ SDL_CreateRGBSurface(0,size,size,8,0,0,0,0) };
     if(placingGrid == nullptr) {
         THROW(sdl_error, "Cannot create new surface: %s!", SDL_GetError());
@@ -471,7 +471,7 @@ void PictureFactory::drawFrame(SDL_Surface* Pic, unsigned int DecorationType, SD
 
 }
 
-sdl2::surface_ptr PictureFactory::createFrame(unsigned int DecorationType,int width, int height,bool UseBackground) const {
+sdl2::surface_ptr PictureFactory::createFrame(unsigned int DecorationType,int width, int height,bool UseBackground) {
     sdl2::surface_ptr Pic;
     if(UseBackground) {
         Pic = getSubPicture(background.get(),0,0,width,height);
@@ -591,7 +591,7 @@ sdl2::surface_ptr PictureFactory::createMenu(SDL_Surface* CaptionPic,int y) cons
     return Pic;
 }
 
-sdl2::surface_ptr PictureFactory::createOptionsMenu() const {
+sdl2::surface_ptr PictureFactory::createOptionsMenu() {
     auto tmp = LoadPNG_RW(pFileManager->openFile("UI_OptionsMenu.png").get());
     if(tmp == nullptr) {
         THROW(std::runtime_error, "Cannot load 'UI_OptionsMenu.png'!");
@@ -628,7 +628,7 @@ sdl2::surface_ptr PictureFactory::createHouseSelect(SDL_Surface* HouseChoice) co
 }
 
 
-sdl2::surface_ptr PictureFactory::createGreyHouseChoice(SDL_Surface* HouseChoice) const {
+sdl2::surface_ptr PictureFactory::createGreyHouseChoice(SDL_Surface* HouseChoice) {
     static const unsigned char index2greyindex[] = {
         0, 0, 0, 13, 233, 127, 0, 131, 0, 0, 0, 0, 0, 13, 14, 15,
         15, 127, 127, 14, 14, 14, 14, 130, 24, 131, 131, 13, 13, 29, 30, 31,
@@ -767,7 +767,7 @@ sdl2::surface_ptr PictureFactory::createBuilderListLowerCap() const {
     return copySurface(builderListLowerCap.get());
 }
 
-sdl2::surface_ptr PictureFactory::createHeraldFre(SDL_Surface* heraldHark) const {
+sdl2::surface_ptr PictureFactory::createHeraldFre(SDL_Surface* heraldHark) {
     auto pRedReplaced = mapSurfaceColorRange(heraldHark, PALCOLOR_HARKONNEN, PALCOLOR_FREMEN);
 
     auto pBlueReplaced = mapSurfaceColorRange(pRedReplaced.get(), PALCOLOR_ATREIDES, PALCOLOR_FREMEN+1);
@@ -793,7 +793,7 @@ sdl2::surface_ptr PictureFactory::createHeraldFre(SDL_Surface* heraldHark) const
     return pSandworm;
 }
 
-sdl2::surface_ptr PictureFactory::createHeraldSard(SDL_Surface* heraldOrd, SDL_Surface* heraldAtre) const {
+sdl2::surface_ptr PictureFactory::createHeraldSard(SDL_Surface* heraldOrd, SDL_Surface* heraldAtre) {
     auto pGreenReplaced = mapSurfaceColorRange(heraldOrd, PALCOLOR_ORDOS, PALCOLOR_SARDAUKAR-1);
 
     replaceColor(pGreenReplaced.get(), 3, 209);
@@ -811,7 +811,7 @@ sdl2::surface_ptr PictureFactory::createHeraldSard(SDL_Surface* heraldOrd, SDL_S
     return pFrameAndCurtain;
 }
 
-sdl2::surface_ptr PictureFactory::createHeraldMerc(SDL_Surface* heraldAtre, SDL_Surface* heraldOrd) const {
+sdl2::surface_ptr PictureFactory::createHeraldMerc(SDL_Surface* heraldAtre, SDL_Surface* heraldOrd) {
     auto pBlueReplaced = mapSurfaceColorRange(heraldAtre, PALCOLOR_ATREIDES, PALCOLOR_MERCENARY);
 
     auto pRedReplaced = mapSurfaceColorRange(pBlueReplaced.get(), PALCOLOR_HARKONNEN, PALCOLOR_ATREIDES);

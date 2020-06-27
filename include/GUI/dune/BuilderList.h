@@ -138,8 +138,8 @@ private:
     ~BuilderList() override;
 
     static int getRealHeight(int height);
-    int getNumButtons(int height) const;
-    Point getButtonPosition(int BtnNumber) const;
+    static int getNumButtons(int height) ;
+    static Point getButtonPosition(int BtnNumber) ;
     int getButton(int x, int y) const;
     int getItemIDFromIndex(int i) const;
 
