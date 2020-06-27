@@ -149,8 +149,7 @@ public:
      : MapEditorOperation(), x(x), y(y) {
     }
 
-    ~MapEditorTerrainAddSpiceFieldOperation() override {
-    }
+    ~MapEditorTerrainAddSpiceFieldOperation() override = default;
 
     std::unique_ptr<MapEditorOperation> perform(MapEditor *pMapEditor) override;
 
@@ -307,8 +306,7 @@ public:
      : playerNum(playerNum), bActive(bActive), bAnyHouse(bAnyHouse), credits(credits), brain(std::move(brain)), quota(quota), maxunit(maxunit) {
     }
 
-    ~MapEditorChangePlayer() override {
-    }
+    ~MapEditorChangePlayer() override = default;
 
     std::unique_ptr<MapEditorOperation> perform(MapEditor *pMapEditor) override;
 

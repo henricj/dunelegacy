@@ -142,8 +142,7 @@ protected:
     }
 
     /// destructor
-    ~QstBox() override {
-    }
+    ~QstBox() override = default;
 
 private:
     /**
