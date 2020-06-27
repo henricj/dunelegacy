@@ -213,7 +213,7 @@ void ReinforcementsWindow::onCancel() {
 
 
 void ReinforcementsWindow::onOK() {
-    pMapEditor->startOperation();
+    MapEditor::startOperation();
 
     MapEditorChangeReinforcements changeReinforcementsOperation(reinforcements);
 

@@ -692,7 +692,7 @@ void UnitBase::navigate() {
                         && this->isAGroundUnit()
                         && (currentGame->getGameInitSettings().getGameOptions().manualCarryallDrops || getOwner()->isAI())
                         && blockDistance(location, destination) >= MIN_CARRYALL_LIFT_DISTANCE ) {
-                        static_cast<GroundUnit*>(this)->requestCarryall();
+                        GroundUnit::requestCarryall();
                     } else if(  getOwner()->isAI()
                         && (getItemID() == Unit_Harvester)
                         && !static_cast<Harvester*>(this)->isReturning()
@@ -714,7 +714,7 @@ void UnitBase::navigate() {
                 noCloserPointCount = 0;
             }
         } else {
-            const auto tempAngle = currentGameMap->getPosAngle(location, nextSpot);
+            const auto tempAngle = Map::getPosAngle(location, nextSpot);
             if(tempAngle != ANGLETYPE::INVALID_ANGLE) {
                 nextSpotAngle = tempAngle;
             }

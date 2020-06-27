@@ -204,7 +204,7 @@ void ADLPlayer::changeMusic(MUSICTYPE musicType)
 
         pSoundAdlibPC->playTrack(musicNum);
 
-        Mix_HookMusic(pSoundAdlibPC->callback, pSoundAdlibPC);
+        Mix_HookMusic(SoundAdlibPC::callback, pSoundAdlibPC);
 
         SDL_Log("Now playing %s!",filename.c_str());
     }
