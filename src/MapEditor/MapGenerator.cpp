@@ -92,7 +92,7 @@ public:
 
 private:
 
-    bool fixTileCoordinate(int& x, int& y) {
+    static bool fixTileCoordinate(int& x, int& y) {
         bool error = false;
 
         if(x < 0) {
@@ -121,7 +121,7 @@ private:
         \param type  the tile type to check
         \return true if of tile type, false otherwise
     */
-    bool onLeft(int x, int y, TERRAINTYPE type) {
+    static bool onLeft(int x, int y, TERRAINTYPE type) {
         x--;
         fixTileCoordinate(x, y);
 
@@ -135,7 +135,7 @@ private:
         \param type  the tile type to check
         \return true if of tile type, false otherwise
     */
-    bool onRight(int x, int y, TERRAINTYPE type) {
+    static bool onRight(int x, int y, TERRAINTYPE type) {
         x++;
         fixTileCoordinate(x, y);
 
@@ -149,7 +149,7 @@ private:
         \param type  the tile type to check
         \return true if of tile type, false otherwise
     */
-    bool onUp(int x, int y, TERRAINTYPE type) {
+    static bool onUp(int x, int y, TERRAINTYPE type) {
         y--;
         fixTileCoordinate(x, y);
 
@@ -163,7 +163,7 @@ private:
         \param type  the tile type to check
         \return true if of tile type, false otherwise
     */
-    bool onDown(int x, int y, TERRAINTYPE type) {
+    static bool onDown(int x, int y, TERRAINTYPE type) {
         y++;
         fixTileCoordinate(x, y);
 
@@ -177,7 +177,7 @@ private:
         \param type  the tile type to check
         \return number of surounding tiles of tile type (0 to 4)
     */
-    int side4(int x, int y, TERRAINTYPE type) {
+    static int side4(int x, int y, TERRAINTYPE type) {
         // Check at 4 sides for 'tile'
         int flag = 0;
 
@@ -318,7 +318,7 @@ private:
         Adds amount number of rock tiles to the map
         \param amount the number of rock tiles to add
     */
-    void addRockBits(int amount) {
+    static void addRockBits(int amount) {
         int done = 0;
         for(int j = 0; (done < amount) && (j < 1000) ; j++) {
             int spotX = randGen.rand(0, map.getSizeX()-1);
@@ -338,7 +338,7 @@ private:
         Adds amount number of spice blooms to the map
         \param amount the number of spice blooms to add
     */
-    void addSpiceBlooms(int amount) {
+    static void addSpiceBlooms(int amount) {
         int done = 0;
         for(int j = 0; (done < amount) && (j < 1000) ; j++) {
             int spotX = randGen.rand(0, map.getSizeX()-1);

@@ -43,9 +43,9 @@ private:
 
     void onCampaign();
     void onCustom();
-    void onSkirmish();
-    void onLoadSavegame();
-    void onLoadReplay();
+    static void onSkirmish();
+    static void onLoadSavegame();
+    static void onLoadReplay();
     void onCancel();
 
     StaticContainer windowWidget;

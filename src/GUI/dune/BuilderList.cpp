@@ -416,7 +416,7 @@ void BuilderList::onOrder() const {
     }
 }
 
-int BuilderList::getNumButtons(int height) const {
+int BuilderList::getNumButtons(int height) {
     int tmp = height;
     tmp -= (ARROWBTN_HEIGHT + BUILDERBTN_SPACING)*2;
     tmp -= BUILDERBTN_SPACING;
@@ -425,7 +425,7 @@ int BuilderList::getNumButtons(int height) const {
     return tmp / (BUILDERBTN_HEIGHT + BUILDERBTN_SPACING);
 }
 
-Point BuilderList::getButtonPosition(int BtnNumber) const {
+Point BuilderList::getButtonPosition(int BtnNumber) {
     return Point(BUILDERBTN_SPACING,
                     ARROWBTN_HEIGHT+2*BUILDERBTN_SPACING
                     + BtnNumber*(BUILDERBTN_HEIGHT+BUILDERBTN_SPACING));

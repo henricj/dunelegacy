@@ -72,7 +72,7 @@ public:
 
 private:
     void createMapSurfaceWithPieces(unsigned int scenario);
-    void loadINI();
+    static void loadINI();
 
 private:
     struct TGroup {

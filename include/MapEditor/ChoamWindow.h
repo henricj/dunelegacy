@@ -59,10 +59,10 @@ public:
 
 private:
 
-    void onCancel();
+    static void onCancel();
     void onOK();
 
-    void onUnitCheckbox(int itemID);
+    static void onUnitCheckbox(int itemID);
 
 
     HBox    mainHBox;

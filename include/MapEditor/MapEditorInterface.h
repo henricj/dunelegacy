@@ -44,7 +44,7 @@ public:
     /// destructor
     ~MapEditorInterface() override;
 
-    void onHouseChanges();
+    static void onHouseChanges();
 
     void onNewMap();
 
@@ -82,7 +82,7 @@ private:
         \param  bDrag               true = the mouse was moved while being pressed, e.g. dragging
         \return true if dragging should start or continue
     */
-    bool onRadarClick(Coord worldPosition, bool bRightMouseButton, bool bDrag);
+    static bool onRadarClick(Coord worldPosition, bool bRightMouseButton, bool bDrag);
 
     void onSave();
 

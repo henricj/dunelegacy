@@ -296,7 +296,7 @@ void MentatMenu::drawSpecificStuff() {
 
 
 
-int MentatMenu::getMissionSpecificAnim(int missionnumber) const {
+int MentatMenu::getMissionSpecificAnim(int missionnumber) {
 
     static const int missionnumber2AnimID[] = { Anim_ConstructionYard,
                                                 Anim_Harvester,

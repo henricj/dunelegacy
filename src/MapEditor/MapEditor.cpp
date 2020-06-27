@@ -98,7 +98,7 @@ MapEditor::MapEditor() : pInterface(nullptr) {
 
 MapEditor::~MapEditor() { screenborder.reset(); }
 
-std::string MapEditor::generateMapname() const {
+std::string MapEditor::generateMapname() {
     const auto numPlayers =
         std::count_if(players.begin(), players.end(), [](const MapEditor::Player& player) { return player.bActive; });
 
@@ -203,7 +203,7 @@ void MapEditor::setMap(const MapData& mapdata, const MapInfo& newMapInfo) {
     bChangedSinceLastSave = true;
 }
 
-bool MapEditor::isTileBlocked(int x, int y, bool bSlabIsBlocking, bool bUnitsAreBlocking) const {
+bool MapEditor::isTileBlocked(int x, int y, bool bSlabIsBlocking, bool bUnitsAreBlocking) {
     for(const Structure& structure : structures) {
         if(!bSlabIsBlocking && ((structure.itemID == Structure_Slab1) || (structure.itemID == Structure_Slab4)) ) {
             continue;
