@@ -21,9 +21,9 @@
 #include <misc/exceptions.h>
 
 #include <SDL2/SDL_endian.h>
-#include <stdio.h>
-#include <string>
 #include <algorithm>
+#include <cstdio>
+#include <string>
 
 IndexedTextFile::IndexedTextFile(SDL_RWops* rwop, bool bDecode) {
 

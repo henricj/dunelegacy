@@ -19,7 +19,7 @@
 #include <misc/exceptions.h>
 #include <misc/SDL2pp.h>
 
-#include <stdlib.h>
+#include <cstdlib>
 #include <string>
 
 

@@ -22,7 +22,7 @@
 
 #include <misc/exceptions.h>
 
-#include <stdlib.h>
+#include <cstdlib>
 #include <memory.h>
 #include <string>
 

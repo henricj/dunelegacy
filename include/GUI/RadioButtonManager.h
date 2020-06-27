@@ -18,7 +18,7 @@
 #ifndef RADIOBUTTONMANAGER_H
 #define RADIOBUTTONMANAGER_H
 
-#include <stdarg.h>
+#include <cstdarg>
 #include <vector>
 
 class RadioButton;

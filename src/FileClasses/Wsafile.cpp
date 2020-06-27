@@ -22,9 +22,9 @@
 #include <Definitions.h>
 
 #include <SDL2/SDL_endian.h>
-#include <stdlib.h>
-#include <stdio.h>
 #include <algorithm>
+#include <cstdio>
+#include <cstdlib>
 
 extern Palette palette;
 

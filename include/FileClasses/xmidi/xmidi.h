@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #ifndef RANDGEN_XMIDI_H
 #define RANDGEN_XMIDI_H
 
-#include <string.h>
+#include <cstring>
 //#include <windows.h>
 #include "databuf.h"
 

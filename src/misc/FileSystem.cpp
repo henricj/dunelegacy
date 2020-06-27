@@ -20,10 +20,10 @@
 #include <misc/exceptions.h>
 #include <misc/SDL2pp.h>
 
-#include <cstdio>
 #include <algorithm>
+#include <cctype>
+#include <cstdio>
 #include <filesystem>
-#include <ctype.h>
 
 #include <SDL2/SDL_filesystem.h>
 

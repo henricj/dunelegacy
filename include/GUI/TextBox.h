@@ -24,7 +24,7 @@
 #include <misc/SDL2pp.h>
 #include <string>
 
-#include <stdio.h>
+#include <cstdio>
 
 /// A class for a text box
 class TextBox : public Widget {
