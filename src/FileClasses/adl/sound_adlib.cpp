@@ -1179,7 +1179,7 @@ void AdlibDriver::primaryEffect1(Channel &channel) {
     // that it won't be affected by any of the calculations below.
     uint16 unk2 = ((channel.regBx & 0x20) << 8) | (channel.regBx & 0x1C);
 
-    int16 unk3 = (int16)channel.unk30;
+    auto unk3 = (int16)channel.unk30;
 
     if (unk3 >= 0) {
         unk1 += unk3;
@@ -2398,11 +2398,11 @@ void SoundAdlibPC::playSoundEffect(uint8 track) {
 
 void SoundAdlibPC::callback(void *userdata, Uint8 *audiobuf, int len)
 {
-    SoundAdlibPC *self = static_cast<SoundAdlibPC*>(userdata);
+    auto *self = static_cast<SoundAdlibPC*>(userdata);
 
     self->process();
 
-    int16* buf = reinterpret_cast<int16*>(audiobuf);
+    auto* buf = reinterpret_cast<int16*>(audiobuf);
     int samples = self->_driver->readBuffer(buf, len / self->getsampsize());
 
     int volume = self->getVolume();
@@ -2471,7 +2471,7 @@ void SoundAdlibPC::internalLoadFile(SDL_RWops* rwop) {
     SDL_Log("SoundAdlibPC::internalLoadFile(): Cannot determine size of SDL_RWop!");
     return;
   }
-  size_t file_size = static_cast<size_t>(endOffset);
+  auto file_size = static_cast<size_t>(endOffset);
 
   unk2();
   unk1();

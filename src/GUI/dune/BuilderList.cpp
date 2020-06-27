@@ -95,12 +95,12 @@ void BuilderList::handleMouseMovement(Sint32 x, Sint32 y, bool insideOverlay) {
 bool BuilderList::handleMouseLeft(Sint32 x, Sint32 y, bool pressed) {
     StaticContainer::handleMouseLeft(x,y,pressed);
 
-    BuilderBase* pBuilder = dynamic_cast<BuilderBase*>(currentGame->getObjectManager().getObject(builderObjectID));
+    auto* pBuilder = dynamic_cast<BuilderBase*>(currentGame->getObjectManager().getObject(builderObjectID));
     if(!pBuilder) {
         return false;
     }
 
-    StarPort* pStarport = dynamic_cast<StarPort*>(pBuilder);
+    auto* pStarport = dynamic_cast<StarPort*>(pBuilder);
     if(pStarport && (pStarport->okToOrder() == false)) {
         return false;
     }
@@ -138,12 +138,12 @@ bool BuilderList::handleMouseLeft(Sint32 x, Sint32 y, bool pressed) {
 bool BuilderList::handleMouseRight(Sint32 x, Sint32 y, bool pressed) {
     StaticContainer::handleMouseRight(x,y,pressed);
 
-    BuilderBase* pBuilder = dynamic_cast<BuilderBase*>(currentGame->getObjectManager().getObject(builderObjectID));
+    auto* pBuilder = dynamic_cast<BuilderBase*>(currentGame->getObjectManager().getObject(builderObjectID));
     if(!pBuilder) {
         return false;
     }
 
-    StarPort* pStarport = dynamic_cast<StarPort*>(pBuilder);
+    auto* pStarport = dynamic_cast<StarPort*>(pBuilder);
     if(pStarport && (pStarport->okToOrder() == false)) {
         return false;
     }
@@ -324,7 +324,7 @@ void BuilderList::drawOverlay(Point position) {
     // Draw tooltip
     int btn = getButton(lastMousePos.x,lastMousePos.y);
     if(btn != -1) {
-        BuilderBase* pBuilder = dynamic_cast<BuilderBase*>(currentGame->getObjectManager().getObject(builderObjectID));
+        auto* pBuilder = dynamic_cast<BuilderBase*>(currentGame->getObjectManager().getObject(builderObjectID));
         if(!pBuilder) {
             return;
         }
@@ -366,7 +366,7 @@ void BuilderList::resize(Uint32 width, Uint32 height) {
 
 
     // move list to show currently produced item
-    BuilderBase* pBuilder = dynamic_cast<BuilderBase*>(currentGame->getObjectManager().getObject(builderObjectID));
+    auto* pBuilder = dynamic_cast<BuilderBase*>(currentGame->getObjectManager().getObject(builderObjectID));
     if(pBuilder != nullptr) {
         auto& buildList = pBuilder->getBuildList();
         const auto currentProducedItemIter = std::find_if(buildList.begin(),
@@ -402,7 +402,7 @@ void BuilderList::onUp() {
 }
 
 void BuilderList::onDown() {
-    BuilderBase* pBuilder = dynamic_cast<BuilderBase*>(currentGame->getObjectManager().getObject(builderObjectID));
+    auto* pBuilder = dynamic_cast<BuilderBase*>(currentGame->getObjectManager().getObject(builderObjectID));
 
     if(pBuilder && (currentListPos < ((int)pBuilder->getBuildList().size()) - getNumButtons(getSize().y))) {
         currentListPos++;
@@ -410,7 +410,7 @@ void BuilderList::onDown() {
 }
 
 void BuilderList::onOrder() const {
-    StarPort* pStarport = dynamic_cast<StarPort*>(currentGame->getObjectManager().getObject(builderObjectID));
+    auto* pStarport = dynamic_cast<StarPort*>(currentGame->getObjectManager().getObject(builderObjectID));
     if(pStarport) {
         pStarport->handlePlaceOrderClick();
     }
@@ -433,7 +433,7 @@ Point BuilderList::getButtonPosition(int BtnNumber) const {
 }
 
 int BuilderList::getButton(int x, int y) const {
-    BuilderBase* pBuilder = dynamic_cast<BuilderBase*>(currentGame->getObjectManager().getObject(builderObjectID));
+    auto* pBuilder = dynamic_cast<BuilderBase*>(currentGame->getObjectManager().getObject(builderObjectID));
 
     if(pBuilder) {
         for(int i = 0; i < (int) pBuilder->getBuildList().size(); i++) {

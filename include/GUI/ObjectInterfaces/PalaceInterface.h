@@ -70,7 +70,7 @@ protected:
             return false;
         }
 
-        Palace* pPalace = dynamic_cast<Palace*>(pObject);
+        auto* pPalace = dynamic_cast<Palace*>(pObject);
         if(pPalace != nullptr) {
             int picID;
 
@@ -111,7 +111,7 @@ private:
             return;
         }
 
-        Palace* pPalace = dynamic_cast<Palace*>(pObject);
+        auto* pPalace = dynamic_cast<Palace*>(pObject);
         if(pPalace != nullptr) {
             if((pPalace->getOriginalHouseID() == HOUSETYPE::HOUSE_HARKONNEN) || (pPalace->getOriginalHouseID() == HOUSETYPE::HOUSE_SARDAUKAR)) {
                 currentGame->currentCursorMode = Game::CursorMode_Attack;

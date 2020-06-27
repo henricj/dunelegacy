@@ -314,7 +314,7 @@ cftype_fptr cfuncs[6] = {
 void OPLChipClass::change_attackrate(Bitu regbase, celltype *c) {
     Bits attackrate = adlibreg[ARC_ATTR_DECR+regbase]>>4;
     if (attackrate) {
-        fltype f = (fltype)(pow(FL2,(fltype)attackrate+(c->toff>>2)-1)*attackconst[c->toff&3]*recipsamp);
+        auto f = (fltype)(pow(FL2,(fltype)attackrate+(c->toff>>2)-1)*attackconst[c->toff&3]*recipsamp);
         // attack rate coefficients
         c->a0 = (fltype)(0.0377*f);
         c->a1 = (fltype)(10.73*f+1);
@@ -343,7 +343,7 @@ void OPLChipClass::change_decayrate(Bitu regbase, celltype *c) {
     Bits decayrate = adlibreg[ARC_ATTR_DECR+regbase]&15;
     // decaymul should be 1.0 when decayrate==0
     if (decayrate) {
-        fltype f = (fltype)(-7.4493*decrelconst[c->toff&3]*recipsamp);
+        auto f = (fltype)(-7.4493*decrelconst[c->toff&3]*recipsamp);
         c->decaymul = (fltype)(pow(FL2,f*pow(FL2,(fltype)(decayrate+(c->toff>>2)))));
         Bits steps = (decayrate*4 + c->toff) >> 2;
         c->env_step_d = (1<<(steps<=12?12-steps:0))-1;
@@ -357,7 +357,7 @@ void OPLChipClass::change_releaserate(Bitu regbase, celltype *c) {
     Bits releaserate = adlibreg[ARC_SUSL_RELR+regbase]&15;
     // releasemul should be 1.0 when releaserate==0
     if (releaserate) {
-        fltype f = (fltype)(-7.4493*decrelconst[c->toff&3]*recipsamp);
+        auto f = (fltype)(-7.4493*decrelconst[c->toff&3]*recipsamp);
         c->releasemul = (fltype)(pow(FL2,f*pow(FL2,(fltype)(releaserate+(c->toff>>2)))));
         Bits steps = (releaserate*4 + c->toff) >> 2;
         c->env_step_r = (1<<(steps<=12?12-steps:0))-1;
@@ -427,7 +427,7 @@ void OPLChipClass::change_cellfreq(Bitu chanbase, Bitu regbase, celltype *c) {
     // 20+a0+b0:
     c->tinc = (fltype)(frn<<oct)*nfrqmul[adlibreg[ARC_TVS_KSR_MUL+regbase]&15];
     // 40+a0+b0:
-    fltype vol_in = (fltype)((fltype)(adlibreg[ARC_KSL_OUTLEV+regbase]&63) +
+    auto vol_in = (fltype)((fltype)(adlibreg[ARC_KSL_OUTLEV+regbase]&63) +
                 (fltype)kslmul[adlibreg[ARC_KSL_OUTLEV+regbase]>>6]*ksl[oct][frn>>6]);
     c->vol = (fltype)(pow(FL2,(fltype)(vol_in * -0.125 - 14)));
 

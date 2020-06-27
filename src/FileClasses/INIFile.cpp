@@ -324,7 +324,7 @@ INIFile::INIFile(bool bWhitespace, const std::string& firstLineComment)
     sectionRoot = new Section("", INVALID_LINE, 0, 0, bWhitespace);
     if(!firstLineComment.empty()) {
         firstLine = new INIFileLine("; " + firstLineComment, 0);
-        INIFileLine* blankLine = new INIFileLine("",1);
+        auto* blankLine = new INIFileLine("",1);
         firstLine->nextLine = blankLine;
         blankLine->prevLine = firstLine;
     }
@@ -421,7 +421,7 @@ const INIFile::Section& INIFile::getSection(const std::string& sectionname) cons
 bool INIFile::removeSection(const std::string& sectionname) {
     clearSection(sectionname, false);
 
-    INIFile::Section* curSection = const_cast<Section*>(getSectionInternal(sectionname));
+    auto* curSection = const_cast<Section*>(getSectionInternal(sectionname));
     if(curSection == nullptr) {
         return false;
     }
@@ -466,7 +466,7 @@ bool INIFile::removeSection(const std::string& sectionname) {
     \return true on success
 */
 bool INIFile::clearSection(const std::string& sectionname, bool bBlankLineAtSectionEnd) {
-    INIFile::Section* curSection = const_cast<Section*>(getSectionInternal(sectionname));
+    auto* curSection = const_cast<Section*>(getSectionInternal(sectionname));
     if(curSection == nullptr) {
         return false;
     }
@@ -494,7 +494,7 @@ bool INIFile::clearSection(const std::string& sectionname, bool bBlankLineAtSect
 
     // now we add one blank line if not last section
     if(bBlankLineAtSectionEnd && (curSection->nextSection != nullptr)) {
-        INIFileLine* blankLine = new INIFileLine("",INVALID_LINE);
+        auto* blankLine = new INIFileLine("",INVALID_LINE);
         if(curSection->nextLine != nullptr) {
             curSection->nextLine->prevLine = blankLine;
             blankLine->nextLine = curSection->nextLine;
@@ -547,7 +547,7 @@ const INIFile::Key* INIFile::getKey(const std::string& sectionname, const std::s
     \return true if removing was successful
 */
 bool INIFile::removeKey(const std::string& sectionname, const std::string& keyname) {
-    INIFile::Section* curSection = const_cast<Section*>(getSectionInternal(sectionname));
+    auto* curSection = const_cast<Section*>(getSectionInternal(sectionname));
     if(curSection == nullptr) {
         return false;
     }
@@ -891,7 +891,7 @@ void INIFile::readfile(SDL_RWops * file) {
             }
         }
 
-        const unsigned char* line = (const unsigned char*) completeLine.c_str();
+        const auto* line = (const unsigned char*) completeLine.c_str();
         bool bSyntaxError = false;
 
         int ret = getNextChar(line,0);
@@ -1061,7 +1061,7 @@ const INIFile::Section* INIFile::getSectionInternal(const std::string& sectionna
 
 
 INIFile::Section* INIFile::getSectionOrCreate(const std::string& sectionname) {
-    Section* curSection = const_cast<Section*>(getSectionInternal(sectionname));
+    auto* curSection = const_cast<Section*>(getSectionInternal(sectionname));
 
     if(curSection == nullptr) {
         // create new section
@@ -1084,7 +1084,7 @@ INIFile::Section* INIFile::getSectionOrCreate(const std::string& sectionname) {
 
             if(!curLine->completeLine.empty()) {
                 // previous line is not a blank line => add one blank line
-                INIFileLine* blankLine = new INIFileLine("",INVALID_LINE);
+                auto* blankLine = new INIFileLine("",INVALID_LINE);
                 curLine->nextLine = blankLine;
                 blankLine->prevLine = curLine;
 

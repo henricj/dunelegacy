@@ -1083,7 +1083,7 @@ void MapEditor::processInput() {
 
                                 pInterface->deselectAll();
                             } else if(selectedMapItemCoord.isValid()) {
-                                std::vector<Coord>::iterator iter = std::find(specialBlooms.begin(), specialBlooms.end(), selectedMapItemCoord);
+                                auto iter = std::find(specialBlooms.begin(), specialBlooms.end(), selectedMapItemCoord);
 
                                 if(iter != specialBlooms.end()) {
                                     clearRedoOperations();

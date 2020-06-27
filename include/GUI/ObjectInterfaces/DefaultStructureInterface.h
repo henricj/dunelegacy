@@ -30,7 +30,7 @@
 class DefaultStructureInterface : public DefaultObjectInterface {
 public:
     static DefaultStructureInterface* create(int objectID) {
-        DefaultStructureInterface* tmp = new DefaultStructureInterface(objectID);
+        auto* tmp = new DefaultStructureInterface(objectID);
         tmp->pAllocated = true;
         return tmp;
     }
@@ -51,7 +51,7 @@ protected:
 
     void OnRepair() {
         ObjectBase* pObject = currentGame->getObjectManager().getObject(objectID);
-        StructureBase* pStructure = dynamic_cast<StructureBase*>(pObject);
+        auto* pStructure = dynamic_cast<StructureBase*>(pObject);
         if(pStructure != nullptr) {
             pStructure->handleRepairClick();
         }
@@ -69,7 +69,7 @@ protected:
             return false;
         }
 
-        StructureBase* pStructure = dynamic_cast<StructureBase*>(pObject);
+        auto* pStructure = dynamic_cast<StructureBase*>(pObject);
         if(pStructure != nullptr) {
             if(pStructure->getHealth() >= pStructure->getMaxHealth()) {
                 repairButton.setVisible(false);

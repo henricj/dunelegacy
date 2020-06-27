@@ -458,7 +458,7 @@ void QuantBot::onDamage(const ObjectBase* pObject, int damage, Uint32 damagerID)
         }
 
     } else if(pObject->isAGroundUnit()) {
-        const GroundUnit* pGroundUnit = static_cast<const GroundUnit*>(pObject);
+        const auto* pGroundUnit = static_cast<const GroundUnit*>(pObject);
 
         Coord squadCenterLocation = findSquadCenter(pGroundUnit->getOwner()->getHouseID());
 
@@ -477,7 +477,7 @@ void QuantBot::onDamage(const ObjectBase* pObject, int damage, Uint32 damagerID)
         if (pGroundUnit->getItemID() == Unit_Harvester) {
             // Always keep Harvesters away from harm
             // Defend the harvester!
-            const Harvester* pHarvester = static_cast<const Harvester*>(pGroundUnit);
+            const auto* pHarvester = static_cast<const Harvester*>(pGroundUnit);
             if(pHarvester->isActive() && (!pHarvester->isReturning()) && pHarvester->getAmountOfSpice() > 0) {
                 int numHarvesterDefenders = 0;
                 switch(difficulty) {
@@ -720,7 +720,7 @@ void QuantBot::build(int militaryValue) {
     for(const StructureBase* pStructure : getStructureList()) {
         if(pStructure->getOwner() == getHouse()) {
             if(pStructure->isABuilder()) {
-                const BuilderBase* pBuilder = static_cast<const BuilderBase*>(pStructure);
+                const auto* pBuilder = static_cast<const BuilderBase*>(pStructure);
                 if(pBuilder->getProductionQueueSize() > 0){
                     itemCount[pBuilder->getCurrentProducedItem()]++;
                     if(pBuilder->getItemID() == Structure_HeavyFactory){
@@ -728,7 +728,7 @@ void QuantBot::build(int militaryValue) {
                     }
                 }
             } else if(pStructure->getItemID() == Structure_RepairYard) {
-                const RepairYard* pRepairYard= static_cast<const RepairYard*>(pStructure);
+                const auto* pRepairYard= static_cast<const RepairYard*>(pStructure);
                 if(!pRepairYard->isFree()) {
                     activeRepairYardCount++;
                 }
@@ -883,7 +883,7 @@ void QuantBot::build(int militaryValue) {
             // Special weapon launch logic
             if(pStructure->getItemID() == Structure_Palace) {
 
-                const Palace* pPalace = static_cast<const Palace*>(pStructure);
+                const auto* pPalace = static_cast<const Palace*>(pStructure);
                 if(pPalace->isSpecialWeaponReady()){
 
                     if(houseID != HOUSETYPE::HOUSE_HARKONNEN && houseID != HOUSETYPE::HOUSE_SARDAUKAR) {
@@ -977,7 +977,7 @@ void QuantBot::build(int militaryValue) {
             // End of unit ratio optimisation algorithm
 
             if(pStructure->isABuilder()) {
-                const BuilderBase* pBuilder = static_cast<const BuilderBase*>(pStructure);
+                const auto* pBuilder = static_cast<const BuilderBase*>(pStructure);
                 switch (pStructure->getItemID()) {
 
                     case Structure_LightFactory: {
@@ -1172,7 +1172,7 @@ void QuantBot::build(int militaryValue) {
                     } break;
 
                     case Structure_StarPort: {
-                        const StarPort* pStarPort = static_cast<const StarPort*>(pBuilder);
+                        const auto* pStarPort = static_cast<const StarPort*>(pBuilder);
                         if(pStarPort->okToOrder())  {
                             const Choam& choam = getHouse()->getChoam();
 
@@ -1270,7 +1270,7 @@ void QuantBot::build(int militaryValue) {
                             rocketTurretValue = 1000000; // If rocket turrets need power we don't want to build them
                         }
 
-                        const ConstructionYard* pConstYard = static_cast<const ConstructionYard*>(pBuilder);
+                        const auto* pConstYard = static_cast<const ConstructionYard*>(pBuilder);
 
                         if(!pBuilder->isUpgrading() && getHouse()->getCredits() > 100 && (pBuilder->getProductionQueueSize() < 1) && pBuilder->getBuildListSize()) {
 
@@ -1786,7 +1786,7 @@ void QuantBot::checkAllUnits() {
                 } break;
 
                 case Unit_Harvester: {
-                    const Harvester* pHarvester = static_cast<const Harvester*>(pUnit);
+                    const auto* pHarvester = static_cast<const Harvester*>(pUnit);
                     if(getHouse()->getCredits() < 1000 && pHarvester != nullptr && pHarvester->isActive()
                         && (pHarvester->getAmountOfSpice() >= HARVESTERMAXSPICE/2) && getHouse()->getNumItems(Structure_HeavyFactory) == 0) {
                         doReturn(pHarvester);
@@ -1814,7 +1814,7 @@ void QuantBot::checkAllUnits() {
                     if(pUnit->getOwner()->getHouseID() != pUnit->getOriginalHouseID()) {
                         // If its a devastator and its not ours, blow it up!!
                         if(pUnit->getItemID() == Unit_Devastator){
-                            const Devastator* pDevastator = static_cast<const Devastator*>(pUnit);
+                            const auto* pDevastator = static_cast<const Devastator*>(pUnit);
                             doStartDevastate(pDevastator);
                             doSetAttackMode(pDevastator, HUNT);
                         } else if(pUnit->getItemID() == Unit_Ornithopter) {
@@ -1822,7 +1822,7 @@ void QuantBot::checkAllUnits() {
                                 doSetAttackMode(pUnit, HUNT);
                             }
                         } else if(pUnit->getItemID() == Unit_Harvester) {
-                            const Harvester* pHarvester = static_cast<const Harvester*>(pUnit);
+                            const auto* pHarvester = static_cast<const Harvester*>(pUnit);
                             if(pHarvester->getAmountOfSpice() >= HARVESTERMAXSPICE/5) {
                                 doReturn(pHarvester);
                             } else {

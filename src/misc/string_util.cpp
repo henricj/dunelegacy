@@ -84,7 +84,7 @@ std::string utf8Substr(const std::string& str, size_t pos, size_t len) {
 
     size_t currentPos = 0;
     while( (iter < str.cend()) && (currentPos != pos) ) {
-        unsigned char c = static_cast<unsigned char>( *iter );
+        auto c = static_cast<unsigned char>( *iter );
 
         if( (c & 0x80) == 0) {
             // 1 byte: 0xxxxxxx
@@ -107,7 +107,7 @@ std::string utf8Substr(const std::string& str, size_t pos, size_t len) {
 
     size_t resultLen = 0;
     while( (iter < str.cend()) && (resultLen != len) ) {
-        unsigned char c = static_cast<unsigned char>( *iter );
+        auto c = static_cast<unsigned char>( *iter );
 
         size_t numBytes = 0;
         if( (c & 0x80) == 0) {
@@ -253,7 +253,7 @@ std::string convertCP850ToUTF8(const std::string& text)
     std::string result;
     result.reserve(text.length());
     for(unsigned int i = 0; i < text.size(); i++) {
-        unsigned char c = (unsigned char) text[i];
+        auto c = (unsigned char) text[i];
         if(c == 0x0D) {
             result += "\n";
         } else if(c < 128) {

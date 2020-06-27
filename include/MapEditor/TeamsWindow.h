@@ -53,7 +53,7 @@ public:
         \return The new dialog box (will be automatically destroyed when it's closed)
     */
     static TeamsWindow* create(MapEditor* pMapEditor, HOUSETYPE house) {
-        TeamsWindow* dlg = new TeamsWindow(pMapEditor, house);
+        auto* dlg = new TeamsWindow(pMapEditor, house);
         dlg->pAllocated = true;
         return dlg;
     }

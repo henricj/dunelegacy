@@ -441,7 +441,7 @@ void XMIDI::CreateNewEvent (int time)
 
     if (time < 0)
     {
-        midi_event *event = new midi_event;
+        auto *event = new midi_event;
         event->next = list;
         list = current = event;
         current->time = 0;
@@ -457,7 +457,7 @@ void XMIDI::CreateNewEvent (int time)
     {
         if (current->next->time > time)
         {
-            midi_event *event = new midi_event;
+            auto *event = new midi_event;
 
             event->next = current->next;
             current->next = event;

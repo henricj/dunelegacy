@@ -171,7 +171,7 @@ bool LoadMapWindow::handleKeyPress(SDL_KeyboardEvent& key) {
 
 
 void LoadMapWindow::onChildWindowClose(Window* pChildWindow) {
-    QstBox* pQstBox = dynamic_cast<QstBox*>(pChildWindow);
+    auto* pQstBox = dynamic_cast<QstBox*>(pChildWindow);
     if(pQstBox != nullptr) {
         if(pQstBox->getPressedButtonID() == QSTBOX_BUTTON1) {
             int index = mapList.getSelectedIndex();
@@ -196,7 +196,7 @@ void LoadMapWindow::onChildWindowClose(Window* pChildWindow) {
 }
 
 void LoadMapWindow::onCancel() {
-    Window* pParentWindow = dynamic_cast<Window*>(getParent());
+    auto* pParentWindow = dynamic_cast<Window*>(getParent());
     if(pParentWindow != nullptr) {
         pParentWindow->closeChildWindow();
     }
@@ -212,7 +212,7 @@ void LoadMapWindow::onLoad() {
     loadMapSingleplayer = singleplayerUserMapsButton.getToggleState();
     getCaseInsensitiveFilename(loadMapFilepath);
 
-    Window* pParentWindow = dynamic_cast<Window*>(getParent());
+    auto* pParentWindow = dynamic_cast<Window*>(getParent());
     if(pParentWindow != nullptr) {
         pParentWindow->closeChildWindow();
     }

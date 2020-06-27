@@ -236,7 +236,7 @@ NewMapWindow::NewMapWindow(HOUSETYPE currentHouse) : Window(0,0,0,0), house(curr
 void NewMapWindow::onCancel() {
     mapdata = MapData(0,0);
 
-    Window* pParentWindow = dynamic_cast<Window*>(getParent());
+    auto* pParentWindow = dynamic_cast<Window*>(getParent());
     if(pParentWindow != nullptr) {
         pParentWindow->closeChildWindow();
     }
@@ -247,21 +247,21 @@ void NewMapWindow::onLoad() {
 }
 
 void NewMapWindow::onCreate() {
-    Window* pParentWindow = dynamic_cast<Window*>(getParent());
+    auto* pParentWindow = dynamic_cast<Window*>(getParent());
     if(pParentWindow != nullptr) {
         pParentWindow->closeChildWindow();
     }
 }
 
 void NewMapWindow::onChildWindowClose(Window* pChildWindow) {
-    LoadMapWindow* pLoadMapWindow = dynamic_cast<LoadMapWindow*>(pChildWindow);
+    auto* pLoadMapWindow = dynamic_cast<LoadMapWindow*>(pChildWindow);
     if(pLoadMapWindow != nullptr) {
         loadMapFilepath = pLoadMapWindow->getLoadMapFilepath();
         loadMapname = pLoadMapWindow->getLoadMapname();
         loadMapSingleplayer = pLoadMapWindow->isLoadMapSingleplayer();
 
         if(loadMapFilepath != "") {
-            Window* pParentWindow = dynamic_cast<Window*>(getParent());
+            auto* pParentWindow = dynamic_cast<Window*>(getParent());
             if(pParentWindow != nullptr) {
                 pParentWindow->closeChildWindow();
             }
@@ -316,7 +316,7 @@ void NewMapWindow::onMapPropertiesChanged() {
         int rock = rockDigitsTextBox.getValue();
         int spice = spiceDigitsTextBox.getValue();
 
-        MirrorMode mirrorMode = (MirrorMode) mirrorModeDropDownBox.getSelectedEntryIntData();
+        auto mirrorMode = (MirrorMode) mirrorModeDropDownBox.getSelectedEntryIntData();
 
         mapSeed = INVALID;
         mapdata = generateRandomMap(sizeX, sizeY, seed, rock, spice, mirrorMode);

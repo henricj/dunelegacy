@@ -150,7 +150,7 @@ void CampaignAIPlayer::onDamage(const ObjectBase* pObject, int damage, Uint32 da
     if(!pObject->isAUnit() || !pObject->isRespondable()) {
         return;
     }
-    const UnitBase* pUnit = static_cast<const UnitBase*>(pObject);
+    const auto* pUnit = static_cast<const UnitBase*>(pObject);
 
     const ObjectBase* pDamager = getObject(damagerID);
     if(!pDamager) {
@@ -179,7 +179,7 @@ void CampaignAIPlayer::updateStructures() {
         }
 
         if( pStructure->getItemID() == Structure_Palace) {
-            const Palace* pPalace = static_cast<const Palace*>(pStructure);
+            const auto* pPalace = static_cast<const Palace*>(pStructure);
             if(pPalace->isSpecialWeaponReady()){
 
                 if(getHouse()->getHouseID() != HOUSETYPE::HOUSE_HARKONNEN && getHouse()->getHouseID() != HOUSETYPE::HOUSE_SARDAUKAR) {
@@ -216,7 +216,7 @@ void CampaignAIPlayer::updateStructures() {
         }
 
         if(pStructure->isABuilder()) {
-            const BuilderBase* pBuilder = static_cast<const BuilderBase*>(pStructure);
+            const auto* pBuilder = static_cast<const BuilderBase*>(pStructure);
             if( pBuilder->getCurrentUpgradeLevel() < pBuilder->getMaxUpgradeLevel()) {
                 if(!pStructure->isRepairing() && !pBuilder->isUpgrading()) {
                     doUpgrade(pBuilder);

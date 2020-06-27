@@ -210,13 +210,13 @@ void InfantryBase::checkPos() {
                 }
                 else if (pCapturedStructure->getItemID() == Structure_Refinery) {
                     capturedSpice = currentGame->objectData.data[Structure_Silo][static_cast<int>(originalHouseID)].capacity * (pOwner->getStoredCredits() / pOwner->getCapacity());
-                    Refinery* pRefinery = static_cast<Refinery*>(pCapturedStructure);
+                    auto* pRefinery = static_cast<Refinery*>(pCapturedStructure);
                     if (pRefinery->isFree() == false) {
                         pContainedUnit = pRefinery->getHarvester();
                     }
                 }
                 else if (pCapturedStructure->getItemID() == Structure_RepairYard) {
-                    RepairYard* pRepairYard = static_cast<RepairYard*>(pCapturedStructure);
+                    auto* pRepairYard = static_cast<RepairYard*>(pCapturedStructure);
                     if (pRepairYard->isFree() == false) {
                         pContainedUnit = pRepairYard->getRepairUnit();
                     }

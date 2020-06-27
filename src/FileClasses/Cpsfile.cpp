@@ -43,7 +43,7 @@ sdl2::surface_ptr LoadCPS_RW(SDL_RWops* RWop)
         THROW(std::runtime_error, "LoadCPS_RW(): Cannot determine size of this *.cps-File!");
     }
 
-    size_t cpsFilesize = static_cast<size_t>(endOffset);
+    auto cpsFilesize = static_cast<size_t>(endOffset);
     auto pFiledata = std::make_unique<uint8_t[]>(cpsFilesize);
 
     if(SDL_RWread(RWop, pFiledata.get(), cpsFilesize, 1) != 1) {

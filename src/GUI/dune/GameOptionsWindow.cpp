@@ -170,7 +170,7 @@ void GameOptionsWindow::onOK() {
     gameOptions.manualCarryallDrops = manualCarryallDropsCheckbox.isChecked();
     gameOptions.maximumNumberOfUnitsOverride = maxUnitsOverrideCheckbox.isChecked() ? maxUnitsOverrideTextBox.getValue() : -1;
 
-    Window* pParentWindow = dynamic_cast<Window*>(getParent());
+    auto* pParentWindow = dynamic_cast<Window*>(getParent());
     if(pParentWindow != nullptr) {
         pParentWindow->closeChildWindow();
     }

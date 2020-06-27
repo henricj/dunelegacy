@@ -37,7 +37,7 @@ MentatHelp::MentatHelp(HOUSETYPE newHouse, int techLevel, int mission) : MentatM
     Uint32 color = SDL2RGB(palette[houseToPaletteIndex[static_cast<int>(newHouse)]+3]);
 
     if(mission == 0) {
-        std::vector<MentatTextFile::MentatEntry>::iterator iter = mentatEntries.begin();
+        auto iter = mentatEntries.begin();
         while(iter != mentatEntries.end()) {
             if(iter->numMenuEntry == 0) {
                 iter = mentatEntries.erase(iter);

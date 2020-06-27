@@ -126,7 +126,7 @@ void Refinery::deployHarvester(Carryall* pCarryall) {
 
     firstRun = false;
 
-    Harvester* pHarvester = static_cast<Harvester*>(harvester.getObjPointer());
+    auto* pHarvester = static_cast<Harvester*>(harvester.getObjPointer());
     if((pCarryall != nullptr) && pHarvester->getGuardPoint().isValid()) {
         pCarryall->giveCargo(pHarvester);
         pCarryall->setTarget(nullptr);
@@ -161,7 +161,7 @@ void Refinery::stopAnimate() {
 
 void Refinery::updateStructureSpecificStuff() {
     if(extractingSpice) {
-        Harvester* pHarvester = static_cast<Harvester*>(harvester.getObjPointer());
+        auto* pHarvester = static_cast<Harvester*>(harvester.getObjPointer());
 
         if(pHarvester->getAmountOfSpice() > 0) {
             FixPoint extractionSpeed = MAXIMUMHARVESTEREXTRACTSPEED;
@@ -181,7 +181,7 @@ void Refinery::updateStructureSpecificStuff() {
             if((pHarvester->getGuardPoint().isValid()) && getOwner()->hasCarryalls())   {
                 for(UnitBase* pUnit : unitList) {
                     if ((pUnit->getOwner() == owner) && (pUnit->getItemID() == Unit_Carryall)) {
-                        Carryall* pTmpCarryall = static_cast<Carryall*>(pUnit);
+                        auto* pTmpCarryall = static_cast<Carryall*>(pUnit);
                         if (!pTmpCarryall->isBooked()) {
                             pCarryall = pTmpCarryall;
                             break;
