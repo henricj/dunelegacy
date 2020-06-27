@@ -26,8 +26,8 @@
 #ifndef H_ADPLUG_SURROUNDOPL
 #define H_ADPLUG_SURROUNDOPL
 
-#include <stdint.h> // for uintxx_t
 #include "opl.h"
+#include <cstdint> // for uintxx_t
 
 // The right-channel is increased in frequency by itself divided by this amount.
 // The right value should not noticeably change the pitch, but it should provide

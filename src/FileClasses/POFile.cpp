@@ -19,7 +19,7 @@
 
 #include <misc/string_util.h>
 
-#include <stdio.h>
+#include <cstdio>
 
 
 static std::string unescapeString(const std::string& str) {

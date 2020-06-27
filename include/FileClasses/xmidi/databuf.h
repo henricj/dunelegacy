@@ -24,7 +24,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <misc/exceptions.h>
 #include <misc/SDL2pp.h>
 
-#include <stdio.h>
+#include <cstdio>
 
 typedef char * charptr;
 

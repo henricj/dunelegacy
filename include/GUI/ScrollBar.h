@@ -36,7 +36,7 @@ public:
     ScrollBar& operator=(ScrollBar &&) = delete;
 
     /// destructor
-    ~ScrollBar() override override;
+    ~ScrollBar() override ;
 
     /**
         Handles a mouse movement. This method is for example needed for the tooltip.

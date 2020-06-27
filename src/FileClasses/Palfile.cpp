@@ -18,7 +18,7 @@
 #include <FileClasses/Palfile.h>
 #include <misc/exceptions.h>
 
-#include <stdio.h>
+#include <cstdio>
 
 Palette LoadPalette_RW(SDL_RWops* rwop)
 {

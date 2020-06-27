@@ -23,13 +23,13 @@
 #include <FileClasses/Vocfile.h>
 #include <misc/SDL2pp.h>
 
-#include <string>
 #include <SDL2/SDL_mixer.h>
-#include <stdlib.h>
 #include <algorithm>
-#include <cstdio>
-#include <cmath>
 #include <cerrno>
+#include <cmath>
+#include <cstdio>
+#include <cstdlib>
+#include <string>
 #include <vector>
 
 #define VOC_CODE_TERM       0

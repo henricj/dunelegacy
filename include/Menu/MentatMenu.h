@@ -27,7 +27,7 @@
 #include <misc/string_util.h>
 #include <misc/SDL2pp.h>
 
-#include <stdio.h>
+#include <cstdio>
 #include <string>
 
 class MentatMenu : public MenuBase {

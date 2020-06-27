@@ -19,8 +19,8 @@
 #define OFILESTREAM_H
 
 #include "OutputStream.h"
+#include <cstdlib>
 #include <filesystem>
-#include <stdlib.h>
 #include <string>
 
 class OFileStream : public OutputStream

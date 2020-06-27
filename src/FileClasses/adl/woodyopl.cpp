@@ -74,9 +74,9 @@ Bugs/missing features:
 */
 
 
-#include <math.h>
-#include <string.h>
 #include <FileClasses/adl/woodyopl.h>
+#include <cmath>
+#include <cstring>
 
 
 static fltype recipsamp;    // inverse of sampling rate

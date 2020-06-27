@@ -25,8 +25,8 @@
 
 #include <globals.h>
 
-#include <stdio.h>
 #include <algorithm>
+#include <cstdio>
 
 NetworkManager::NetworkManager(int port, const std::string& metaserver) {
 

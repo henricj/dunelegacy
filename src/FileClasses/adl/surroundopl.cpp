@@ -23,9 +23,9 @@
  * Please give credit if you use this algorithm elsewhere :-)
  */
 
-#include <math.h> // for pow()
-#include <string.h> // for memset()
 #include <FileClasses/adl/surroundopl.h>
+#include <cmath> // for pow()
+#include <cstring> // for memset()
 //#include "debug.h"
 
 CSurroundopl::CSurroundopl(Copl *a, Copl *b, bool use16bit)
