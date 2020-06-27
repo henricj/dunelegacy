@@ -31,7 +31,7 @@ public:
     explicit Refinery(House* newOwner);
     explicit Refinery(InputStream& stream);
     void init();
-    virtual ~Refinery();
+    ~Refinery() override;
 
     void save(OutputStream& stream) const override;
 

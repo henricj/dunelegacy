@@ -32,7 +32,7 @@ class CustomGameStatsMenu : public MenuBase
 {
 public:
     CustomGameStatsMenu();
-    virtual ~CustomGameStatsMenu();
+    ~CustomGameStatsMenu() override;
 
 private:
     void onOK();

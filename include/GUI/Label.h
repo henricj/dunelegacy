@@ -37,7 +37,7 @@ public:
     }
 
     /// destructor
-    virtual ~Label() = default;
+    ~Label() override = default;
 
     /**
         Sets a font size for this label. Default font size of a label is 14

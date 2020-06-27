@@ -26,7 +26,7 @@ public:
     explicit WOR(House* newOwner);
     explicit WOR(InputStream& stream);
     void init();
-    virtual ~WOR();
+    ~WOR() override;
 
     /**
         Can this structure be captured by infantry units?

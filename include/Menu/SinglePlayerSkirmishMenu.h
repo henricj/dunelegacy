@@ -35,7 +35,7 @@ class SinglePlayerSkirmishMenu : public MenuBase
 {
 public:
     SinglePlayerSkirmishMenu();
-    virtual ~SinglePlayerSkirmishMenu();
+    ~SinglePlayerSkirmishMenu() override;
 
 private:
 

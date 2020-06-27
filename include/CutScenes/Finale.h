@@ -37,7 +37,7 @@ public:
     explicit Finale(HOUSETYPE house);
 
     /// destructor
-    virtual ~Finale();
+    ~Finale() override;
 
 private:
 

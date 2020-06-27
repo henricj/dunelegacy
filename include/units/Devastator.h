@@ -27,7 +27,7 @@ public:
     explicit Devastator(House* newOwner);
     explicit Devastator(InputStream& stream);
     void init();
-    virtual ~Devastator();
+    ~Devastator() override;
 
     void save(OutputStream& stream) const override;
 

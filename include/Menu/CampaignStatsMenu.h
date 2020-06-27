@@ -29,7 +29,7 @@
 class CampaignStatsMenu : public MenuBase {
 public:
     explicit CampaignStatsMenu(int level);
-    virtual ~CampaignStatsMenu();
+    ~CampaignStatsMenu() override;
 
     int showMenu() override;
 

@@ -34,7 +34,7 @@ class LoadSaveWindow : public Window
 {
 public:
     LoadSaveWindow(bool bSave, const std::string& caption, const std::vector<std::filesystem::path>& directories, const std::vector<std::string>& directoryTitles, std::string extension, int preselectedDirectoryIndex = 0, const std::string& preselectedFile = "", Uint32 color = COLOR_DEFAULT);
-    virtual ~LoadSaveWindow();
+    ~LoadSaveWindow() override;
 
     LoadSaveWindow(const LoadSaveWindow &) = delete;
     LoadSaveWindow(LoadSaveWindow &&) = delete;

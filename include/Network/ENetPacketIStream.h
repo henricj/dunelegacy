@@ -38,7 +38,7 @@ public:
         *this = p;
     }
 
-    ~ENetPacketIStream() {
+    ~ENetPacketIStream() override {
         if(packet != nullptr) {
             enet_packet_destroy(packet);
         }

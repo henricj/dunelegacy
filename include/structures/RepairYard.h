@@ -29,7 +29,7 @@ public:
     explicit RepairYard(House* newOwner);
     explicit RepairYard(InputStream& stream);
     void init();
-    virtual ~RepairYard();
+    ~RepairYard() override;
 
     void save(OutputStream& stream) const override;
 

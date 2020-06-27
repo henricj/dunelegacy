@@ -29,7 +29,7 @@
 class MultiPlayerMenu : public MenuBase {
 public:
     MultiPlayerMenu();
-    ~MultiPlayerMenu();
+    ~MultiPlayerMenu() override;
 
     /**
         This method is called, when the child window is about to be closed.

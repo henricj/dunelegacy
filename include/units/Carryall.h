@@ -28,7 +28,7 @@ public:
     explicit Carryall(House* newOwner);
     explicit Carryall(InputStream& stream);
     void init();
-    virtual ~Carryall();
+    ~Carryall() override;
 
     Carryall(const Carryall &) = delete;
     Carryall(Carryall &&) = delete;
@@ -72,7 +72,7 @@ private:
     void engageTarget() override;
     void pickupTarget();
     void targeting() override;
-    virtual void turn() override;
+    void turn() override;
 
     // unit state/properties
     std::vector<Uint32>   pickedUpUnitList;   ///< What units does this carryall carry?

@@ -27,7 +27,7 @@ public:
     explicit Launcher(House* newOwner);
     explicit Launcher(InputStream& stream);
     void init();
-    virtual ~Launcher();
+    ~Launcher() override;
 
     void blitToScreen() override;
     void destroy() override;

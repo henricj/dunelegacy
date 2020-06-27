@@ -29,7 +29,7 @@ public:
     }
 
     /// destructor
-    virtual ~InvisibleButton() = default;
+    ~InvisibleButton() override = default;
 
     /**
         This method draws nothing to screen. This method is called before drawOverlay().

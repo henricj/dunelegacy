@@ -26,7 +26,7 @@ class ObjectInterface : public StaticContainer {
 public:
         ObjectInterface() : StaticContainer() { ; };
 
-        virtual ~ObjectInterface() { ; };
+        ~ObjectInterface() override { ; };
 
         /**
             This method updates the object interface.

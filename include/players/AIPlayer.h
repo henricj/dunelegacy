@@ -36,7 +36,7 @@ public:
     AIPlayer(House* associatedHouse, const std::string& playername, Difficulty difficulty);
     AIPlayer(InputStream& stream, House* associatedHouse);
     void init();
-    ~AIPlayer();
+    ~AIPlayer() override;
     void save(OutputStream& stream) const override;
 
     void update() override;

@@ -25,7 +25,7 @@ class WindTrap final : public StructureBase
 public:
     explicit WindTrap(House* newOwner);
     explicit WindTrap(InputStream& stream);
-    virtual ~WindTrap();
+    ~WindTrap() override;
 
     ObjectInterface* getInterfaceContainer() override;
 

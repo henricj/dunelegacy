@@ -26,7 +26,7 @@
 class HouseChoiceMenu : public MenuBase {
 public:
     HouseChoiceMenu();
-    virtual ~HouseChoiceMenu();
+    ~HouseChoiceMenu() override;
 
 private:
     void onHouseButton(int button);

@@ -26,7 +26,7 @@ public:
     explicit Saboteur(House* newOwner);
     explicit Saboteur(InputStream& stream);
     void init();
-    virtual ~Saboteur();
+    ~Saboteur() override;
 
     void checkPos() override;
 

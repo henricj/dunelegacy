@@ -42,7 +42,7 @@ class MapChoice : public MenuBase
 {
 public:
     MapChoice(HOUSETYPE newHouse, unsigned int lastMission, Uint32 alreadyPlayedRegions);
-    virtual ~MapChoice();
+    ~MapChoice() override;
 
     int showMenu() override;
 

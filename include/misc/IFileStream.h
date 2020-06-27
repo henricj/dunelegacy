@@ -26,7 +26,7 @@ class IFileStream : public InputStream
 {
 public:
     IFileStream();
-    ~IFileStream();
+    ~IFileStream() override;
 
     bool open(const std::filesystem::path& filename);
     void close();

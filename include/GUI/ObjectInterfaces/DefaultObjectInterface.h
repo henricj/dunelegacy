@@ -67,7 +67,7 @@ protected:
         topBoxHBox.addWidget(Spacer::create());
     };
 
-    virtual ~DefaultObjectInterface() { ; };
+    ~DefaultObjectInterface() override { ; };
 
     /**
         This method updates the object interface.

@@ -53,7 +53,7 @@ public:
     explicit ReinforcementTrigger(InputStream& stream);
 
     /// destructor
-    ~ReinforcementTrigger();
+    ~ReinforcementTrigger() override;
 
     /**
         This method saves this trigger to a stream.

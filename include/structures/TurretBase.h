@@ -28,7 +28,7 @@ public:
     explicit TurretBase(House* newOwner);
     explicit TurretBase(InputStream& stream);
     void init();
-    virtual ~TurretBase();
+    ~TurretBase() override;
 
     TurretBase(const TurretBase &) = delete;
     TurretBase(TurretBase &&) = delete;

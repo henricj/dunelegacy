@@ -26,7 +26,7 @@ public:
     explicit SonicTank(House* newOwner);
     explicit SonicTank(InputStream& stream);
     void init();
-    virtual ~SonicTank();
+    ~SonicTank() override;
 
     void blitToScreen() override;
 

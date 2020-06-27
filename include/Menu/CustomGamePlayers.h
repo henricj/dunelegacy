@@ -49,7 +49,7 @@ class CustomGamePlayers : public MenuBase
 {
 public:
     CustomGamePlayers(const GameInitSettings& newGameInitSettings, bool server = true, bool LANServer = true);
-    virtual ~CustomGamePlayers();
+    ~CustomGamePlayers() override;
 
     void onReceiveChangeEventList(const ChangeEventList& changeEventList);
 

@@ -37,7 +37,7 @@ public:
     }
 
     /// destructor
-    virtual ~Checkbox() {
+    ~Checkbox() override {
         Checkbox::invalidateTextures();
     }
 

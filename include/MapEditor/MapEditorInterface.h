@@ -42,7 +42,7 @@ public:
     explicit MapEditorInterface(MapEditor* pMapEditor);
 
     /// destructor
-    virtual ~MapEditorInterface();
+    ~MapEditorInterface() override;
 
     void onHouseChanges();
 

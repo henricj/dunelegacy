@@ -26,7 +26,7 @@ public:
     explicit MCV(House* newOwner);
     explicit MCV(InputStream& stream);
     void init();
-    virtual ~MCV();
+    ~MCV() override;
 
     void handleDeployClick();
 
