@@ -77,9 +77,9 @@ public:
         SDL_Surface* surface = pAnim->getFrame();
         if(surface != nullptr) {
             return Point((Sint32) surface->w, (Sint32) surface->h);
-        } else {
-            return Point(0,0);
-        }
+        }             return Point(0,0);
+
+       
     }
 
 private:

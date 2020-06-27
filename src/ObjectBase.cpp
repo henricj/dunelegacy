@@ -335,9 +335,9 @@ bool ObjectBase::isVisible(int teamID) const {
 
     if((teamID >= 0) && (teamID < NUM_TEAMS)) {
         return visible[teamID];
-    } else {
-        return false;
-    }
+    }         return false;
+
+   
 }
 
 bool ObjectBase::isVisible() const {
@@ -349,10 +349,14 @@ Uint32 ObjectBase::getHealthColor() const {
 
     if(healthPercent >= BADLYDAMAGEDRATIO) {
         return COLOR_LIGHTGREEN;
-    } else if(healthPercent >= HEAVILYDAMAGEDRATIO) {
+    } if(healthPercent >= HEAVILYDAMAGEDRATIO) {
+
         return COLOR_YELLOW;
+
     } else {
+
         return COLOR_RED;
+
     }
 }
 

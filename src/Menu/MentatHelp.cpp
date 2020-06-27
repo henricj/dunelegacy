@@ -116,9 +116,9 @@ bool MentatHelp::doInput(SDL_Event &event)
     if((!mentatTopicsList.isVisible()) && (event.type == SDL_MOUSEBUTTONDOWN)) {
         showNextMentatText();
         return true;
-    } else {
-        return MentatMenu::doInput(event);
-    }
+    }         return MentatMenu::doInput(event);
+
+   
 }
 
 void MentatHelp::onMentatTextFinished() {

@@ -108,9 +108,9 @@ public:
         int x = 0;
         if(parseString(textBox.getText(), x)) {
             return x;
-        } else {
-            return 0;
-        }
+        }             return 0;
+
+       
     }
 
     /**
@@ -143,9 +143,9 @@ public:
             }
 
             return true;
-        } else {
-            return true;
-        }
+        }             return true;
+
+       
     }
 
     /**

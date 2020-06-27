@@ -99,9 +99,9 @@ void Refinery::save(OutputStream& stream) const {
 ObjectInterface* Refinery::getInterfaceContainer() {
     if((pLocalHouse == owner) || (debug)) {
         return RefineryAndSiloInterface::create(objectID);
-    } else {
-        return DefaultObjectInterface::create(objectID);
-    }
+    }         return DefaultObjectInterface::create(objectID);
+
+   
 }
 
 void Refinery::assignHarvester(Harvester* newHarvester) {

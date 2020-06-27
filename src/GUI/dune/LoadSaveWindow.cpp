@@ -153,22 +153,38 @@ bool LoadSaveWindow::handleKeyPress(SDL_KeyboardEvent& key) {
         if(key.keysym.sym == SDLK_RETURN) {
             onOK();
             return true;
-        } else if(key.keysym.sym == SDLK_DELETE) {
+        } if(key.keysym.sym == SDLK_DELETE) {
+
             const auto index = fileList.getSelectedIndex();
+
             if(index >= 0) {
+
                 auto *pQstBox = QstBox::create(   fmt::sprintf(_("Do you really want to delete '%s' ?"), fileList.getEntry(index).c_str()),
+
                                                     _("Yes"),
+
                                                     _("No"),
+
                                                     QSTBOX_BUTTON1);
+
+
 
                 pQstBox->setTextColor(color);
 
+
+
                 openWindow(pQstBox);
+
             }
 
+
+
             return true;
+
         } else {
+
             return pWindowWidget->handleKeyPress(key);
+
         }
     } else {
         return false;

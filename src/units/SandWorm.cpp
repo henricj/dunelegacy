@@ -272,10 +272,11 @@ bool Sandworm::sleepOrDie() {
     if(currentGame->getGameInitSettings().getGameOptions().sandwormsRespawn) {
         sleep();
         return true;
-    } else {
-        destroy();
+    }         destroy();
+
         return false;
-    }
+
+   
 }
 
 void Sandworm::setTarget(const ObjectBase* newTarget) {

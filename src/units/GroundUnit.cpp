@@ -213,9 +213,9 @@ void GroundUnit::bookCarrier(UnitBase* newCarrier) {
 bool GroundUnit::hasBookedCarrier() const {
     if(bookedCarrier == NONE_ID) {
         return false;
-    } else {
-        return (currentGame->getObjectManager().getObject(bookedCarrier) != nullptr);
-    }
+    }         return (currentGame->getObjectManager().getObject(bookedCarrier) != nullptr);
+
+   
 }
 
 const UnitBase* GroundUnit::getCarrier() const {

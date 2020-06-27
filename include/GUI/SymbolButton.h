@@ -81,9 +81,9 @@ public:
     {
         if(pSymbolSurface) {
             return Point((Sint32) pSymbolSurface->w + 5, (Sint32) pSymbolSurface->h + 5);
-        } else {
-            return Point(0,0);
-        }
+        }             return Point(0,0);
+
+       
     }
 
 protected:

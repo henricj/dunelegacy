@@ -147,22 +147,38 @@ bool LoadMapWindow::handleKeyPress(SDL_KeyboardEvent& key) {
         if(key.keysym.sym == SDLK_RETURN) {
             onLoad();
             return true;
-        } else if(key.keysym.sym == SDLK_DELETE) {
+        } if(key.keysym.sym == SDLK_DELETE) {
+
             int index = mapList.getSelectedIndex();
+
             if(index >= 0) {
+
                 QstBox* pQstBox = QstBox::create(   fmt::sprintf(_("Do you really want to delete '%s' ?"), mapList.getEntry(index).c_str()),
+
                                                     _("Yes"),
+
                                                     _("No"),
+
                                                     QSTBOX_BUTTON1);
+
+
 
                 pQstBox->setTextColor(color);
 
+
+
                 openWindow(pQstBox);
+
             }
 
+
+
             return true;
+
         } else {
+
             return pWindowWidget->handleKeyPress(key);
+
         }
     } else {
         return false;

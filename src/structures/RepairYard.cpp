@@ -80,9 +80,9 @@ void RepairYard::save(OutputStream& stream) const {
 ObjectInterface* RepairYard::getInterfaceContainer() {
     if((pLocalHouse == owner) || (debug)) {
         return RepairYardInterface::create(objectID);
-    } else {
-        return DefaultObjectInterface::create(objectID);
-    }
+    }         return DefaultObjectInterface::create(objectID);
+
+   
 }
 
 void RepairYard::deployRepairUnit(Carryall* pCarryall) {

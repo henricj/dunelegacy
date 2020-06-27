@@ -552,32 +552,55 @@ const std::string& TextManager::postProcessString(const std::string& unprocessed
     int index = -1;
     if(commands.size() < 2 || !parseString(commands[1], index)) {
         return unprocessedString;
-    } else {
-        auto iter = origDuneText.find(commands[0]);
+    }         auto iter = origDuneText.find(commands[0]);
+
         if(iter != origDuneText.end()) {
+
             IndexedTextFile* pIndexedTextFile = iter->second.get();
 
+
+
             if(commands[0].compare(0,5,"DUNE.") && (index >= 281) && pIndexedTextFile->getNumStrings() == 335) {
+
                 // Dune II 1.0 has 2 titles less
+
                 index = std::max((int) 281, index - 2);
+
             }
+
+
+
 
 
             std::map<std::string, std::string> mapping;
+
             for(unsigned int i=2;i<commands.size();i++) {
+
                 std::vector<std::string> parts = splitStringToStringVector(commands[i], "->");
+
                 mapping[parts[0]] = parts[1];
+
             }
+
+
 
             localizedString[unprocessedString] = replaceAll(pIndexedTextFile->getString(index), mapping);
 
+
+
             return localizedString[unprocessedString];
+
         } else {
+
             return unprocessedString;
+
         }
 
+
+
         return unprocessedString;
-    }
+
+   
 }
 
 void TextManager::addOrigDuneText(const std::string& filename, bool bDecode) {

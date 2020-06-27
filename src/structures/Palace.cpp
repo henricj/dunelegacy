@@ -82,9 +82,9 @@ void Palace::save(OutputStream& stream) const {
 ObjectInterface* Palace::getInterfaceContainer() {
     if((pLocalHouse == owner) || (debug)) {
         return PalaceInterface::create(objectID);
-    } else {
-        return DefaultObjectInterface::create(objectID);
-    }
+    }         return DefaultObjectInterface::create(objectID);
+
+   
 }
 
 void Palace::handleSpecialClick() {
@@ -243,13 +243,17 @@ bool Palace::callFremen() {
         }
 
         return true;
-    } else {
-        if(getOwner() == pLocalHouse) {
+    }         if(getOwner() == pLocalHouse) {
+
             currentGame->addToNewsTicker(_("Unable to spawn Fremen"));
+
         }
 
+
+
         return false;
-    }
+
+   
 }
 
 bool Palace::spawnSaboteur() {

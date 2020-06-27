@@ -179,9 +179,9 @@ bool Window::handleMouseLeft(Sint32 x, Sint32 y, bool pressed) {
             pWindowWidget->setActive(true);
         }
         return bProcessed;
-    } else {
-        return false;
-    }
+    }         return false;
+
+   
 }
 
 bool Window::handleMouseRight(Sint32 x, Sint32 y, bool pressed) {
@@ -192,9 +192,9 @@ bool Window::handleMouseRight(Sint32 x, Sint32 y, bool pressed) {
     if(isEnabled() && (pWindowWidget != nullptr)) {
         return pWindowWidget->handleMouseRightOverlay(x - getPosition().x, y - getPosition().y, pressed)
                 || pWindowWidget->handleMouseRight(x - getPosition().x, y - getPosition().y, pressed);
-    } else {
-        return false;
-    }
+    }         return false;
+
+   
 }
 
 bool Window::handleMouseWheel(Sint32 x, Sint32 y, bool up)  {
@@ -205,9 +205,9 @@ bool Window::handleMouseWheel(Sint32 x, Sint32 y, bool up)  {
     if(isEnabled() && (pWindowWidget != nullptr)) {
         return pWindowWidget->handleMouseWheelOverlay(x - getPosition().x, y - getPosition().y, up)
                 || pWindowWidget->handleMouseWheel(x - getPosition().x, y - getPosition().y, up);
-    } else {
-        return false;
-    }
+    }         return false;
+
+   
 }
 
 bool Window::handleKeyPress(SDL_KeyboardEvent& key) {
@@ -217,9 +217,9 @@ bool Window::handleKeyPress(SDL_KeyboardEvent& key) {
 
     if(isEnabled() && (pWindowWidget != nullptr)) {
         return pWindowWidget->handleKeyPressOverlay(key) || pWindowWidget->handleKeyPress(key);
-    } else {
-        return false;
-    }
+    }         return false;
+
+   
 }
 
 bool Window::handleTextInput(SDL_TextInputEvent& textInput) {
@@ -229,9 +229,9 @@ bool Window::handleTextInput(SDL_TextInputEvent& textInput) {
 
     if(isEnabled() && (pWindowWidget != nullptr)) {
         return pWindowWidget->handleTextInputOverlay(textInput) || pWindowWidget->handleTextInput(textInput);
-    } else {
-        return false;
-    }
+    }         return false;
+
+   
 }
 
 void Window::draw(Point position) {

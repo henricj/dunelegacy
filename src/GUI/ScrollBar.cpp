@@ -66,22 +66,35 @@ bool ScrollBar::handleMouseLeft(Sint32 x, Sint32 y, bool pressed) {
         if(arrow1.handleMouseLeft(x, y, pressed) || arrow2.handleMouseLeft(x, y - getSize().y + arrow2.getSize().y, pressed)) {
             // one of the arrow buttons clicked
             return true;
-        } else {
-            if(pressed) {
+        }             if(pressed) {
+
                 if(y < sliderPosition.y) {
+
                     // between up arrow and slider
+
                     setCurrentValue(currentValue-bigStepSize);
+
                 } else if(y > sliderPosition.y + sliderButton.getSize().y) {
+
                     // between slider and down button
+
                     setCurrentValue(currentValue+bigStepSize);
+
                 } else {
+
                     // slider button
+
                     bDragSlider = true;
+
                     dragPositionFromSliderTop = y - sliderPosition.y;
+
                 }
+
             }
+
             return true;
-        }
+
+       
     } else {
         return false;
     }
@@ -95,9 +108,9 @@ bool ScrollBar::handleMouseWheel(Sint32 x, Sint32 y, bool up)  {
             setCurrentValue(currentValue+1);
         }
         return true;
-    } else {
-        return false;
-    }
+    }         return false;
+
+   
 }
 
 bool ScrollBar::handleKeyPress(SDL_KeyboardEvent& key) {

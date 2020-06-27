@@ -304,9 +304,9 @@ private:
         const unsigned short tmp = READ_LE_uint16(_soundData + (_v2 ? 1000 : 500) + 2 * instrumentId);
         if(tmp == 0xFFFF) {
            return nullptr;
-        } else {
-           return _soundData + tmp;
-        }
+        }            return _soundData + tmp;
+
+       
     }
 
     void setupPrograms();

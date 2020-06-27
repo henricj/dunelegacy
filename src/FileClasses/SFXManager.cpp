@@ -56,9 +56,9 @@ SFXManager::~SFXManager() = default;
 Mix_Chunk* SFXManager::getVoice(Voice_enum id, HOUSETYPE house) {
     if(settings.general.language == "de" || settings.general.language == "fr") {
         return getNonEnglishVoice(id,house);
-    } else {
-        return getEnglishVoice(id,house);
-    }
+    }         return getEnglishVoice(id,house);
+
+   
 }
 
 Mix_Chunk* SFXManager::getSound(Sound_enum id) {

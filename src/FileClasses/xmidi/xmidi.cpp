@@ -1319,91 +1319,176 @@ int XMIDI::ExtractTracks (DataSource *source)
         return 1;
 
     }// Definately a Midi
-    else if (!memcmp (buf, "MThd", 4))
+    if (!memcmp (buf, "MThd", 4))
+
     {
+
         // Simple read length of header
+
         len = source->read4high();
 
+
+
         if (len < 6)
+
         {
+
             cerr << "Not a valid MIDI" << endl;
+
             return 0;
+
         }
+
+
 
         info.type = source->read2high();
 
+
+
         info.tracks = source->read2high();
 
+
+
         events = new midi_event *[info.tracks];
+
         timing = new short[info.tracks];
+
         fixed = new BOOL[info.tracks];
+
         timing[0] = source->read2high();
+
         for (i = 0; i < info.tracks; i++)
+
         {
+
             timing[i] = timing[0];
+
             events[i] = nullptr;
+
             fixed[i] = FALSE;
+
         }
+
+
 
         count = ExtractTracksFromMid (source);
 
+
+
         if (count != info.tracks)
+
         {
+
             cerr << "Error: unable to extract all (" << info.tracks << ") tracks specified from MIDI. Only ("<< count << ")" << endl;
 
+
+
             for (i = 0; i < info.tracks; i++)
+
                 DeleteEventList (events[i]);
 
+
+
             delete [] events;
+
             delete [] timing;
+
+
 
             return 0;
 
+
+
         }
+
+
 
         return 1;
 
+
+
     }// A RIFF Midi, just pass the source back to this function at the start of the midi file
+
     else if (!memcmp (buf, "RIFF", 4))
+
     {
+
         // Read len
+
         len = source->read4();
 
+
+
         // Read 4 bytes of type
+
         source->read (buf, 4);
 
+
+
         // Not an RMID
+
         if (memcmp (buf, "RMID", 4))
+
         {
+
             cerr << "Invalid RMID" << endl;
+
             return 0;
+
         }
+
+
 
         // Is a RMID
 
+
+
         for (i = 4; i < len; i++)
+
         {
+
             // Read 4 bytes of type
+
             source->read (buf, 4);
+
+
 
             chunk_len = source->read4();
 
+
+
             i+=8;
 
+
+
             if (memcmp (buf, "data", 4))
+
             {
+
                 // Must allign
+
                 source->skip ((chunk_len+1)&~1);
+
                 i+= (chunk_len+1)&~1;
+
                 continue;
+
             }
+
+
 
             return ExtractTracks (source);
 
+
+
         }
 
+
+
         cerr << "Failed to find midi data in RIFF Midi" << endl;
+
         return 0;
+
     }
 
     return 0;

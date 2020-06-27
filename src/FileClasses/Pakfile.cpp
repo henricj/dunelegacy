@@ -133,9 +133,9 @@ void Pakfile::addFile(SDL_RWops* rwop, const std::string& filename) {
     char* extendedBuffer = nullptr;
     if((extendedBuffer = (char*) realloc(writeOutData,numWriteOutData+filelength)) == nullptr) {
         throw std::bad_alloc();
-    } else {
-        writeOutData = extendedBuffer;
-    }
+    }         writeOutData = extendedBuffer;
+
+   
 
     if(SDL_RWread(rwop,writeOutData + numWriteOutData,1,filelength) != filelength) {
         // revert the buffer to the original size
@@ -378,9 +378,9 @@ void Pakfile::readIndex()
 
             if(tmp == '\0') {
                 break;
-            } else {
-                newEntry.filename += tmp;
-            }
+            }                 newEntry.filename += tmp;
+
+           
         }
 
         if(!fileEntries.empty()) {

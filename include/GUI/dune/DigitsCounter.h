@@ -89,9 +89,9 @@ public:
         SDL_Texture* tex = pGFXManager->getUIGraphic(UI_MissionSelect);
         if(tex != nullptr) {
             return getTextureSize(tex);
-        } else {
-            return Point(0,0);
-        }
+        }             return Point(0,0);
+
+       
     }
 
 private:

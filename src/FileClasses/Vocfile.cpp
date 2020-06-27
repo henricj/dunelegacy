@@ -59,14 +59,22 @@
 static Uint32 getSampleRateFromVOCRate(Uint8 vocSR) {
     if (vocSR == 0xa5 || vocSR == 0xa6) {
         return 11025;
-    } else if (vocSR == 0xd2 || vocSR == 0xd3) {
+    } if (vocSR == 0xd2 || vocSR == 0xd3) {
+
         return 22050;
+
     } else {
+
         const auto sr = 1000000L / (256L - vocSR);
+
         // inexact sampling rates occur e.g. in the kitchen in Monkey Island,
+
         // very easy to reach right from the start of the game.
+
         //warning("inexact sample rate used: %i (0x%x)", sr, vocSR);
+
         return sr;
+
     }
 }
 

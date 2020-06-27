@@ -179,9 +179,9 @@ bool BuilderList::handleMouseWheel(Sint32 x, Sint32 y, bool up) {
             onDown();
         }
         return true;
-    } else {
-        return false;
-    }
+    }         return false;
+
+   
 }
 
 bool BuilderList::handleKeyPress(SDL_KeyboardEvent& key) {

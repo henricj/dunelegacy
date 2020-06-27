@@ -65,9 +65,9 @@ bool ScreenBorder::scrollLeft() {
         topLeftCorner.x -= scrollAmount;
         bottomRightCorner.x -= scrollAmount;
         return true;
-    } else {
-        return false;
-    }
+    }         return false;
+
+   
 }
 
 bool ScreenBorder::scrollRight() {
@@ -76,9 +76,9 @@ bool ScreenBorder::scrollRight() {
         topLeftCorner.x += scrollAmount;
         bottomRightCorner.x += scrollAmount;
         return true;
-    } else {
-        return false;
-    }
+    }         return false;
+
+   
 }
 
 bool ScreenBorder::scrollUp() {
@@ -87,9 +87,9 @@ bool ScreenBorder::scrollUp() {
         topLeftCorner.y -= scrollAmount;
         bottomRightCorner.y -= scrollAmount;
         return true;
-    } else {
-        return false;
-    }
+    }         return false;
+
+   
 }
 
 bool ScreenBorder::scrollDown() {
@@ -98,9 +98,9 @@ bool ScreenBorder::scrollDown() {
         topLeftCorner.y += scrollAmount;
         bottomRightCorner.y += scrollAmount;
         return true;
-    } else {
-        return false;
-    }
+    }         return false;
+
+   
 }
 
 void ScreenBorder::adjustScreenBorderToMapsize(int newMapSizeX, int newMapSizeY) {

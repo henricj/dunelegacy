@@ -108,8 +108,7 @@ public:
     {
         if (info.type != 1)
             return info.tracks;
-        else
-            return 1;
+                    return 1;
     };
 
     // Retrieve it to a data source

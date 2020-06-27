@@ -701,9 +701,12 @@ AirUnit* Tile::getAirUnit() const {
 ObjectBase* Tile::getGroundObject() const {
     if (hasANonInfantryGroundObject())
         return getNonInfantryGroundObject();
-    else if (hasInfantry())
+    if (hasInfantry())
+
         return getInfantry();
+
     else
+
         return nullptr;
 }
 

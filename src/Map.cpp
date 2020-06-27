@@ -360,26 +360,38 @@ ANGLETYPE Map::getPosAngle(const Coord& source, const Coord& pos) {
     if(pos.x > source.x) {
         if(pos.y > source.y) {
             return ANGLETYPE::RIGHTDOWN;
-        } else if(pos.y < source.y) {
+        } if(pos.y < source.y) {
+
             return ANGLETYPE::RIGHTUP;
+
         } else {
+
             return ANGLETYPE::RIGHT;
+
         }
     } else if(pos.x < source.x) {
         if(pos.y > source.y) {
             return ANGLETYPE::LEFTDOWN;
-        } else if(pos.y < source.y) {
+        } if(pos.y < source.y) {
+
             return ANGLETYPE::LEFTUP;
+
         } else {
+
             return ANGLETYPE::LEFT;
+
         }
     } else {
         if(pos.y > source.y) {
             return ANGLETYPE::DOWN;
-        } else if(pos.y < source.y) {
+        } if(pos.y < source.y) {
+
             return ANGLETYPE::UP;
+
         } else {
+
             THROW(std::runtime_error, "Map::getPosAngle(): Impossible angle!");
+
         }
     }
 }

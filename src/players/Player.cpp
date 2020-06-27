@@ -138,10 +138,11 @@ void Player::doSetDeployPosition(const StructureBase* pStructure, int x, int y) 
 bool Player::doUpgrade(const BuilderBase* pBuilder) const {
     if(pBuilder->getOwner() == getHouse() && pBuilder->isActive()) {
         return const_cast<BuilderBase*>(pBuilder)->doUpgrade();
-    } else {
-        logWarn("The player '%s' tries to upgrade a structure he doesn't own or that is inactive!\n", playername.c_str());
+    }         logWarn("The player '%s' tries to upgrade a structure he doesn't own or that is inactive!\n", playername.c_str());
+
         return false;
-    }
+
+   
 }
 
 void Player::doProduceItem(const BuilderBase* pBuilder, Uint32 itemID) const {
@@ -195,10 +196,11 @@ void Player::doPlaceOrder(const StarPort* pStarport) const {
 bool Player::doPlaceStructure(const ConstructionYard* pConstYard, int x, int y) const {
     if(pConstYard->getOwner() == getHouse() && pConstYard->isActive()) {
         return const_cast<ConstructionYard*>(pConstYard)->doPlaceStructure(x, y);
-    } else {
-        logWarn("The player '%s' tries to place a structure he hasn't produced (or the construction yard is inactive)!\n", playername.c_str());
+    }         logWarn("The player '%s' tries to place a structure he hasn't produced (or the construction yard is inactive)!\n", playername.c_str());
+
         return false;
-    }
+
+   
 }
 
 void Player::doSpecialWeapon(const Palace* pPalace) const {
@@ -303,19 +305,21 @@ void Player::doCaptureStructure(const InfantryBase* pInfantry, const StructureBa
 bool Player::doDeploy(const MCV* pMCV) const {
     if(pMCV->getOwner() == getHouse() && pMCV->isActive()) {
         return const_cast<MCV*>(pMCV)->doDeploy();
-    } else {
-        logWarn("The player '%s' tries to deploy a MCV he doesn't own or that is inactive!\n", playername.c_str());
+    }         logWarn("The player '%s' tries to deploy a MCV he doesn't own or that is inactive!\n", playername.c_str());
+
         return false;
-    }
+
+   
 }
 
 
 bool Player::doRequestCarryallDrop(const GroundUnit* pGroundUnit) const {
     if(pGroundUnit->getOwner() == getHouse() && pGroundUnit->isActive()) {
         return const_cast<GroundUnit*>(pGroundUnit)->requestCarryall();
-    } else {
-        logWarn("The player '%s' tries request a carryall for a ground unit he doesn't own or that is inactive!\n", playername.c_str());
+    }         logWarn("The player '%s' tries request a carryall for a ground unit he doesn't own or that is inactive!\n", playername.c_str());
+
         return false;
-    }
+
+   
 }
 
