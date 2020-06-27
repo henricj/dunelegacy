@@ -1118,8 +1118,8 @@ void MapEditorInterface::onStructureHealthDropDown(bool bInteractive) {
 
         std::vector<int> selectedStructures = pMapEditor->getMirrorStructures(currentEditStructureID);
 
-        for(size_t i = 0; i < selectedStructures.size(); i++) {
-            MapEditorEditStructureOperation editStructureOperation(selectedStructures[i], structureDetailsHealthDropDownBox.getSelectedEntryIntData());
+        for(int selectedStructure : selectedStructures) {
+            MapEditorEditStructureOperation editStructureOperation(selectedStructure, structureDetailsHealthDropDownBox.getSelectedEntryIntData());
             pMapEditor->addUndoOperation(editStructureOperation.perform(pMapEditor));
         }
     }
@@ -1137,8 +1137,8 @@ void MapEditorInterface::onUnitHealthDropDown(bool bInteractive) {
 
         std::vector<int> selectedUnits = pMapEditor->getMirrorUnits(currentEditUnitID);
 
-        for(size_t i = 0; i < selectedUnits.size(); i++) {
-            MapEditor::Unit* pUnit = pMapEditor->getUnit(selectedUnits[i]);
+        for(int selectedUnit : selectedUnits) {
+            MapEditor::Unit* pUnit = pMapEditor->getUnit(selectedUnit);
             MapEditorEditUnitOperation editUnitOperation(pUnit->id, unitDetailsHealthDropDownBox.getSelectedEntryIntData(), pUnit->angle, pUnit->attackmode);
             pMapEditor->addUndoOperation(editUnitOperation.perform(pMapEditor));
         }
@@ -1233,8 +1233,8 @@ void MapEditorInterface::onUnitAttackModeDropDown(bool bInteractive) {
 
         std::vector<int> selectedUnits = pMapEditor->getMirrorUnits(currentEditUnitID);
 
-        for(size_t i = 0; i < selectedUnits.size(); i++) {
-            MapEditor::Unit* pUnit = pMapEditor->getUnit(selectedUnits[i]);
+        for(int selectedUnit : selectedUnits) {
+            MapEditor::Unit* pUnit = pMapEditor->getUnit(selectedUnit);
             MapEditorEditUnitOperation editUnitOperation(pUnit->id, pUnit->health, pUnit->angle, (ATTACKMODE) unitDetailsAttackModeDropDownBox.getSelectedEntryIntData());
             pMapEditor->addUndoOperation(editUnitOperation.perform(pMapEditor));
         }

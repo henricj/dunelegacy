@@ -143,8 +143,8 @@ bool INIFile::Key::escapingValueNeeded(const std::string& value) {
         return true;
     } else {
         // test for non normal char
-        for(unsigned int i = 0; i < value.size(); i++) {
-            if(!isNormalChar(value[i])) {
+        for(char i : value) {
+            if(!isNormalChar(i)) {
                 return true;
             }
         }
@@ -1113,8 +1113,8 @@ INIFile::Section* INIFile::getSectionOrCreate(const std::string& sectionname) {
 
 
 bool INIFile::isValidSectionName(const std::string& sectionname) {
-    for(unsigned int i = 0; i < sectionname.size(); i++) {
-        if( (!isNormalChar(sectionname[i])) && (!isWhitespace(sectionname[i])) ) {
+    for(char i : sectionname) {
+        if( (!isNormalChar(i)) && (!isWhitespace(i)) ) {
             return false;
         }
     }
@@ -1127,8 +1127,8 @@ bool INIFile::isValidSectionName(const std::string& sectionname) {
 }
 
 bool INIFile::isValidKeyName(const std::string& keyname) {
-    for(unsigned int i = 0; i < keyname.size(); i++) {
-        if( (!isNormalChar(keyname[i])) && (!isWhitespace(keyname[i])) ) {
+    for(char i : keyname) {
+        if( (!isNormalChar(i)) && (!isWhitespace(i)) ) {
             return false;
         }
     }

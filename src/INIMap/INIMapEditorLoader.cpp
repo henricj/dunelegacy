@@ -125,15 +125,15 @@ void INIMapEditorLoader::loadMap() {
         if(BloomString != "") {
             std::vector<std::string> BloomPositions  = splitStringToStringVector(BloomString);
 
-            for(unsigned int i=0; i < BloomPositions.size();i++) {
+            for(auto & BloomPosition : BloomPositions) {
                 // set bloom
                 int BloomPos;
-                if(parseString(BloomPositions[i], BloomPos)) {
+                if(parseString(BloomPosition, BloomPos)) {
                     int xpos = getXPos(BloomPos);
                     int ypos = getYPos(BloomPos);
                     pMapEditor->getSpiceBlooms().emplace_back(xpos,ypos);
                 } else {
-                    logWarning(inifile->getKey("MAP", "Bloom")->getLineNumber(), "Invalid spice bloom position: '" + BloomPositions[i] + "'");
+                    logWarning(inifile->getKey("MAP", "Bloom")->getLineNumber(), "Invalid spice bloom position: '" + BloomPosition + "'");
                 }
             }
 
@@ -143,15 +143,15 @@ void INIMapEditorLoader::loadMap() {
         if(SpecialString != "") {
             std::vector<std::string> SpecialPositions  = splitStringToStringVector(SpecialString);
 
-            for(unsigned int i=0; i < SpecialPositions.size();i++) {
+            for(auto & SpecialPosition : SpecialPositions) {
                 // set special
                 int SpecialPos;
-                if(parseString(SpecialPositions[i], SpecialPos)) {
+                if(parseString(SpecialPosition, SpecialPos)) {
                     int xpos = getXPos(SpecialPos);
                     int ypos = getYPos(SpecialPos);
                     pMapEditor->getSpecialBlooms().push_back(Coord(xpos,ypos));
                 } else {
-                    logWarning(inifile->getKey("MAP", "Special")->getLineNumber(), "Invalid special bloom position: '" + SpecialPositions[i] + "'");
+                    logWarning(inifile->getKey("MAP", "Special")->getLineNumber(), "Invalid special bloom position: '" + SpecialPosition + "'");
                 }
             }
 
@@ -161,15 +161,15 @@ void INIMapEditorLoader::loadMap() {
         if(FieldString != "") {
             std::vector<std::string> FieldPositions  = splitStringToStringVector(FieldString);
 
-            for(unsigned int i=0; i < FieldPositions.size();i++) {
+            for(auto & FieldPosition : FieldPositions) {
                 // set bloom
                 int FieldPos;
-                if(parseString(FieldPositions[i], FieldPos)) {
+                if(parseString(FieldPosition, FieldPos)) {
                     int xpos = getXPos(FieldPos);
                     int ypos = getYPos(FieldPos);
                     pMapEditor->getSpiceFields().emplace_back(xpos,ypos);
                 } else {
-                    logWarning(inifile->getKey("MAP", "Field")->getLineNumber(), "Invalid spice field position: '" + FieldPositions[i] + "'");
+                    logWarning(inifile->getKey("MAP", "Field")->getLineNumber(), "Invalid spice field position: '" + FieldPosition + "'");
                 }
             }
 

@@ -1061,8 +1061,8 @@ void MapEditor::processInput() {
 
                                 std::vector<int> selectedUnits = getMirrorUnits(selectedUnitID);
 
-                                for(size_t i=0;i<selectedUnits.size();i++) {
-                                    MapEditorRemoveUnitOperation removeOperation(selectedUnits[i]);
+                                for(int selectedUnit : selectedUnits) {
+                                    MapEditorRemoveUnitOperation removeOperation(selectedUnit);
                                     addUndoOperation(removeOperation.perform(this));
                                 }
                                 selectedUnitID = INVALID;
@@ -1075,8 +1075,8 @@ void MapEditor::processInput() {
 
                                 std::vector<int> selectedStructures = getMirrorStructures(selectedStructureID);
 
-                                for(size_t i=0;i<selectedStructures.size();i++) {
-                                    MapEditorRemoveStructureOperation removeOperation(selectedStructures[i]);
+                                for(int selectedStructure : selectedStructures) {
+                                    MapEditorRemoveStructureOperation removeOperation(selectedStructure);
                                     addUndoOperation(removeOperation.perform(this));
                                 }
                                 selectedStructureID = INVALID;

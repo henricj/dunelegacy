@@ -422,8 +422,8 @@ void MapChoice::loadINI() {
             if(!strValue.empty()) {
                 std::vector<std::string> strRegions = splitStringToStringVector(strValue);
 
-                for(unsigned int r = 0; r < strRegions.size(); r++) {
-                    group[i].newRegion[static_cast<int>(h)].push_back(atol(strRegions[r].c_str()));
+                for(auto & strRegion : strRegions) {
+                    group[i].newRegion[static_cast<int>(h)].push_back(atol(strRegion.c_str()));
                 }
             }
         });

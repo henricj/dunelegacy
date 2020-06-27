@@ -117,11 +117,11 @@ void MapEditorRadarView::updateRadarSurface(const MapData& map, int scale, int o
             if(map(x,y) == Terrain_Sand) {
                 std::vector<Coord>& spiceFields = pMapEditor->getSpiceFields();
 
-                for(size_t i = 0; i < spiceFields.size(); i++) {
-                    if(spiceFields[i].x == x && spiceFields[i].y == y) {
+                for(auto & spiceField : spiceFields) {
+                    if(spiceField.x == x && spiceField.y == y) {
                         color = COLOR_THICKSPICE;
                         break;
-                    } else if(distanceFrom(spiceFields[i], Coord(x,y)) <= 5) {
+                    } else if(distanceFrom(spiceField, Coord(x,y)) <= 5) {
                         color = COLOR_SPICE;
                         break;
                     }
@@ -130,8 +130,8 @@ void MapEditorRadarView::updateRadarSurface(const MapData& map, int scale, int o
 
             // check for classic map items (spice blooms, special blooms)
             std::vector<Coord>& spiceBlooms = pMapEditor->getSpiceBlooms();
-            for(size_t i = 0; i < spiceBlooms.size(); i++) {
-                if(spiceBlooms[i].x == x && spiceBlooms[i].y == y) {
+            for(auto & spiceBloom : spiceBlooms) {
+                if(spiceBloom.x == x && spiceBloom.y == y) {
                     color = COLOR_BLOOM;
                     break;
                 }
@@ -140,8 +140,8 @@ void MapEditorRadarView::updateRadarSurface(const MapData& map, int scale, int o
 
 
             std::vector<Coord>& specialBlooms = pMapEditor->getSpecialBlooms();
-            for(size_t i = 0; i < specialBlooms.size(); i++) {
-                if(specialBlooms[i].x == x && specialBlooms[i].y == y) {
+            for(auto & specialBloom : specialBlooms) {
+                if(specialBloom.x == x && specialBloom.y == y) {
                     color = COLOR_BLOOM;
                     break;
                 }
