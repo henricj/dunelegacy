@@ -66,7 +66,7 @@ public:
     NetworkManager& operator=(const NetworkManager &) = delete;
     NetworkManager& operator=(NetworkManager &&) = delete;
 
-    bool isServer() const noexcept { return bIsServer; };
+    [[nodiscard]] bool isServer() const noexcept { return bIsServer; };
 
     void startServer(bool bLANServer, const std::string& serverName, const std::string& playerName, GameInitSettings* pGameInitSettings, int numPlayers, int maxPlayers);
     void updateServer(int numPlayers);
@@ -89,7 +89,7 @@ public:
 
     void sendSelectedList(const Dune::selected_set_type& selectedList, int groupListIndex = -1);
 
-    std::list<std::string> getConnectedPeers() const {
+    [[nodiscard]] std::list<std::string> getConnectedPeers() const {
         std::list<std::string> peerNameList;
 
         for(const ENetPeer* pPeer : peerList) {

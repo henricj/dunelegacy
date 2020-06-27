@@ -52,7 +52,7 @@ public:
         Gets the font size of this label. Default font size of a label is 14
         \return the font size of this label
     */
-    virtual int getTextFontSize() const {
+    [[nodiscard]] virtual int getTextFontSize() const {
        return fontSize;
     }
 
@@ -82,7 +82,7 @@ public:
         Returns the alignment of the text in this label.
         \return Combination of (Alignment_HCenter, Alignment_Left or Alignment_Right) and (Alignment_VCenter, Alignment_Top or Alignment_Bottom)
     */
-    virtual Alignment_Enum getAlignment() const {
+    [[nodiscard]] virtual Alignment_Enum getAlignment() const {
         return alignment;
     }
 
@@ -102,7 +102,7 @@ public:
         Get the text of this label.
         \return the text of this button
     */
-    const std::string& getText() const { return text; };
+    [[nodiscard]] const std::string& getText() const { return text; };
 
     /**
         This method resizes the label. This method should only
@@ -131,7 +131,7 @@ public:
         resized to a size smaller than this.
         \return the minimum size of this label
     */
-    Point getMinimumSize() const override
+    [[nodiscard]] Point getMinimumSize() const override
     {
         Point p(0,0);
 

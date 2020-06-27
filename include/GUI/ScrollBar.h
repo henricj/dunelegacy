@@ -102,7 +102,7 @@ public:
         resized to a size smaller than this.
         \return the minimum size of this scroll bar
     */
-    Point getMinimumSize() const override
+    [[nodiscard]] [[nodiscard]] Point getMinimumSize() const override
     {
         auto tmp = GUIStyle::getInstance().getMinimumScrollBarArrowButtonSize();
         tmp.y = tmp.y * 3;
@@ -135,13 +135,13 @@ public:
         Gets the range start of this ScrollBar.
         \return the start value of the range
     */
-    int getRangeMin() const noexcept { return minValue; }
+    [[nodiscard]] [[nodiscard]] int getRangeMin() const noexcept { return minValue; }
 
     /**
         Gets the range end of this ScrollBar.
         \return the end value of the range
     */
-    int getRangeMax() const noexcept { return maxValue; }
+    [[nodiscard]] [[nodiscard]] int getRangeMax() const noexcept { return maxValue; }
 
     /**
         Sets the big step size that is used when clicking between the arrows and the slider.
@@ -157,7 +157,7 @@ public:
         Returns the current position
         \return the current value
     */
-    int getCurrentValue() const noexcept {
+    [[nodiscard]] [[nodiscard]] int getCurrentValue() const noexcept {
         return currentValue;
     }
 

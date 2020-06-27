@@ -47,7 +47,7 @@ public:
         Gets the font size of this text view. Default font size of a text view is 14
         \return the font size of this text view
     */
-    virtual int getTextFontSize() const {
+    [[nodiscard]] virtual int getTextFontSize() const {
        return fontSize;
     }
 
@@ -77,7 +77,7 @@ public:
         Returns the alignment of the text in this label.
         \return Combination of (Alignment_HCenter, Alignment_Left or Alignment_Right) and (Alignment_VCenter, Alignment_Top or Alignment_Bottom)
     */
-    virtual inline Alignment_Enum getAlignment() const {
+    [[nodiscard]] virtual inline Alignment_Enum getAlignment() const {
         return alignment;
     }
 
@@ -95,7 +95,7 @@ public:
         Get the text of this label.
         \return the text of this button
     */
-    const std::string& getText() const noexcept { return text; };
+    [[nodiscard]] const std::string& getText() const noexcept { return text; };
 
     /**
         Handles a mouse movement. This method is for example needed for the tooltip.
@@ -160,7 +160,7 @@ public:
         resized to a size smaller than this.
         \return the minimum size of this scroll bar
     */
-    Point getMinimumSize() const override
+    [[nodiscard]] Point getMinimumSize() const override
     {
         Point tmp = scrollbar.getMinimumSize();
         tmp.x += 30;
@@ -171,13 +171,13 @@ public:
         Returns whether this widget can be set active.
         \return true = activatable, false = not activatable
     */
-    inline bool isActivatable() const override { return isEnabled(); };
+    [[nodiscard]] inline bool isActivatable() const override { return isEnabled(); };
 
     /**
         Is the scrollbar always shown or is it hidden if not needed
         \return true if scrollbar is hidden if not needed
     */
-    bool getAutohideScrollbar() const { return bAutohideScrollbar; }
+    [[nodiscard]] bool getAutohideScrollbar() const { return bAutohideScrollbar; }
 
     /**
         Set if the scrollbar shall be hidden if not needed

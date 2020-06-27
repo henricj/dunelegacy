@@ -82,7 +82,7 @@ public:
         Get the text of this radio button.
         \return the text of this radio button
     */
-    const std::string& getText() const { return text; };
+    [[nodiscard]] const std::string& getText() const { return text; };
 
     /**
         Sets the text color for this radio button.
@@ -127,7 +127,7 @@ public:
         This method returns whether this radio button is checked. It is the same as getToggleState().
         \return true = checked, false = unchecked
     */
-    inline bool isChecked() const {
+    [[nodiscard]] inline bool isChecked() const {
         return getToggleState();
     }
 
@@ -193,7 +193,7 @@ public:
         resized to a size smaller than this.
         \return the minimum size of this button
     */
-    Point getMinimumSize() const override
+    [[nodiscard]] Point getMinimumSize() const override
     {
         return GUIStyle::getInstance().getMinimumRadioButtonSize(text);
     }

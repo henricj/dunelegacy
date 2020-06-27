@@ -159,7 +159,7 @@ public:
 
     unsigned int getPos() override { return static_cast<int>(buf_ptr-buf); };
 
-    unsigned char *getPtr() const noexcept { return buf_ptr; };
+    [[nodiscard]] unsigned char *getPtr() const noexcept { return buf_ptr; };
 };
 
 class SDLDataSource : public DataSource

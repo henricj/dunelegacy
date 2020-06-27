@@ -52,7 +52,7 @@ public:
         Returns true.
         \return true = activatable, false = not activatable
     */
-    inline bool isActivatable() const override { return isEnabled(); };
+    [[nodiscard]] inline bool isActivatable() const override { return isEnabled(); };
 
     /**
         This method sets a new text for this text box.
@@ -66,7 +66,7 @@ public:
         Get the text of this text box.
         \return the text of this text box
     */
-    inline const std::string& getText() const { return text; };
+    [[nodiscard]] inline const std::string& getText() const { return text; };
 
     /**
         Sets a font size for this text box. Default font size of a text box is 14
@@ -81,7 +81,7 @@ public:
         Gets the font size of this text box. Default font size of a text box is 14
         \return the font size of this text box
     */
-    virtual inline int getTextFontSize() const {
+    [[nodiscard]] virtual inline int getTextFontSize() const {
        return fontSize;
     }
 
@@ -107,7 +107,7 @@ public:
     /**
         Gets the maximum length of the typed text
     */
-    virtual inline int getMaximumTextLength() const {
+    [[nodiscard]] virtual inline int getMaximumTextLength() const {
         return maxTextLength;
     }
 
@@ -151,7 +151,7 @@ public:
         in a direction this method returns the size in that direction.
         \return the minimum size of this text box
     */
-    Point getMinimumSize() const override
+    [[nodiscard]] Point getMinimumSize() const override
     {
         return GUIStyle::getInstance().getMinimumTextBoxSize(fontSize);
     }
