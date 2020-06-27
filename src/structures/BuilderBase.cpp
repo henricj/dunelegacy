@@ -271,7 +271,7 @@ int BuilderBase::getMaxUpgradeLevel() const {
 
 void BuilderBase::updateBuildList()
 {
-    std::list<BuildItem>::iterator iter = buildList.begin();
+    auto iter = buildList.begin();
 
     for(int i = 0; itemOrder[i] != ItemID_Invalid; i++) {
 

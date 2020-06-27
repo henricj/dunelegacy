@@ -134,7 +134,7 @@ void InGameSettingsMenu::onCancel() {
     soundPlayer->setSfxVolume(previousVolume);
     musicPlayer->setMusicVolume(previousVolume);
 
-    Window* pParentWindow = dynamic_cast<Window*>(getParent());
+    auto* pParentWindow = dynamic_cast<Window*>(getParent());
     if(pParentWindow != nullptr) {
         pParentWindow->closeChildWindow();
     }
@@ -153,7 +153,7 @@ void InGameSettingsMenu::onOK() {
     myINIFile.setIntValue("Game Options","Game Speed", settings.gameOptions.gameSpeed);
     myINIFile.saveChangesTo(getConfigFilepath());
 
-    Window* pParentWindow = dynamic_cast<Window*>(getParent());
+    auto* pParentWindow = dynamic_cast<Window*>(getParent());
     if(pParentWindow != nullptr) {
         pParentWindow->closeChildWindow();
     }

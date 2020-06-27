@@ -33,7 +33,7 @@
 class RefineryAndSiloInterface : public DefaultStructureInterface {
 public:
     static RefineryAndSiloInterface* create(int objectID) {
-        RefineryAndSiloInterface* tmp = new RefineryAndSiloInterface(objectID);
+        auto* tmp = new RefineryAndSiloInterface(objectID);
         tmp->pAllocated = true;
         return tmp;
     }

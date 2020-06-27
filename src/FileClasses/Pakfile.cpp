@@ -128,7 +128,7 @@ void Pakfile::addFile(SDL_RWops* rwop, const std::string& filename) {
     }
 
 
-    size_t filelength = static_cast<size_t>(SDL_RWsize(rwop));
+    auto filelength = static_cast<size_t>(SDL_RWsize(rwop));
 
     char* extendedBuffer;
     if((extendedBuffer = (char*) realloc(writeOutData,numWriteOutData+filelength)) == nullptr) {
@@ -195,7 +195,7 @@ sdl2::RWops_ptr Pakfile::openFile(const std::filesystem::path& filename) {
     }
 
     // alloc RWopData
-    RWopData* pRWopData = new RWopData();
+    auto* pRWopData = new RWopData();
 
     pRWop->type = PAKFILE_RWOP_TYPE;
     pRWopData->curPakfile = this;
@@ -231,7 +231,7 @@ size_t Pakfile::ReadFile(SDL_RWops* pRWop, void *ptr, size_t size, size_t n) {
 
     int bytes2read = size*n;
 
-    RWopData* pRWopData = static_cast<RWopData*>(pRWop->hidden.unknown.data1);
+    auto* pRWopData = static_cast<RWopData*>(pRWop->hidden.unknown.data1);
     Pakfile* pPakfile = pRWopData->curPakfile;
     if(pPakfile == nullptr) {
         return 0;
@@ -279,7 +279,7 @@ Sint64 Pakfile::SizeFile(SDL_RWops *pRWop) {
         return -1;
     }
 
-    RWopData* pRWopData = static_cast<RWopData*>(pRWop->hidden.unknown.data1);
+    auto* pRWopData = static_cast<RWopData*>(pRWop->hidden.unknown.data1);
     Pakfile* pPakfile = pRWopData->curPakfile;
     if(pPakfile == nullptr) {
         return -1;
@@ -298,7 +298,7 @@ Sint64 Pakfile::SeekFile(SDL_RWops *pRWop, Sint64 offset, int whence) {
         return -1;
     }
 
-    RWopData* pRWopData = static_cast<RWopData*>(pRWop->hidden.unknown.data1);
+    auto* pRWopData = static_cast<RWopData*>(pRWop->hidden.unknown.data1);
     Pakfile* pPakfile = pRWopData->curPakfile;
     if(pPakfile == nullptr) {
         return -1;
@@ -346,7 +346,7 @@ int Pakfile::CloseFile(SDL_RWops *pRWop) {
         return -1;
     }
 
-    RWopData* pRWopData = static_cast<RWopData*>(pRWop->hidden.unknown.data1);
+    auto* pRWopData = static_cast<RWopData*>(pRWop->hidden.unknown.data1);
     delete pRWopData;
     pRWop->hidden.unknown.data1 = nullptr;
     SDL_FreeRW(pRWop);

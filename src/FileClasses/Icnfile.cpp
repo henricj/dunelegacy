@@ -53,7 +53,7 @@ Icnfile::Icnfile(SDL_RWops* icnRWop, SDL_RWops* mapRWop)
         THROW(std::runtime_error, "Icnfile::Icnfile(): Cannot determine size of this *.icn-File!");
     }
 
-    size_t icnFilesize = static_cast<size_t>(icnEndOffset);
+    auto icnFilesize = static_cast<size_t>(icnEndOffset);
     pIcnFiledata = std::make_unique<uint8_t[]>(icnFilesize);
 
     if(SDL_RWread(icnRWop, &pIcnFiledata[0], icnFilesize, 1) != 1) {
@@ -65,7 +65,7 @@ Icnfile::Icnfile(SDL_RWops* icnRWop, SDL_RWops* mapRWop)
         THROW(std::runtime_error, "Icnfile::Icnfile(): Cannot determine size of this *.map-File!");
     }
 
-    size_t mapFilesize = static_cast<size_t>(mapEndOffset);
+    auto mapFilesize = static_cast<size_t>(mapEndOffset);
     pMapFiledata = std::make_unique<uint8_t[]>(mapFilesize);
 
     if(SDL_RWread(mapRWop, &pMapFiledata[0], mapFilesize, 1) != 1) {
@@ -210,7 +210,7 @@ sdl2::surface_ptr Icnfile::getPicture(Uint32 indexOfFile) const {
     sdl2::surface_lock lock{ pic.get() };
 
     //Now we can copy to surface
-    unsigned char * RESTRICT dest = static_cast<unsigned char*>(pic->pixels);
+    auto * RESTRICT dest = static_cast<unsigned char*>(pic->pixels);
     for(int y = 0; y < SIZE_Y; ++y) {
         for(int x = 0; x < SIZE_X; x+=2) {
             unsigned char pixel = filestart[ (y*SIZE_X + x) / 2];

@@ -166,7 +166,7 @@ CustomGameMenu::~CustomGameMenu()
 
 
 void CustomGameMenu::onChildWindowClose(Window* pChildWindow) {
-    LoadSaveWindow* pLoadSaveWindow = dynamic_cast<LoadSaveWindow*>(pChildWindow);
+    auto* pLoadSaveWindow = dynamic_cast<LoadSaveWindow*>(pChildWindow);
     if(pLoadSaveWindow != nullptr) {
         auto filename = pLoadSaveWindow->getFilename();
 

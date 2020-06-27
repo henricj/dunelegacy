@@ -170,7 +170,7 @@ void MultiPlayerMenu::onPeerDisconnected(const std::string& playername, bool bHo
 void MultiPlayerMenu::onJoin() {
     int selectedEntry = gameList.getSelectedIndex();
     if(selectedEntry >= 0) {
-        GameServerInfo* pGameServerInfo = static_cast<GameServerInfo*>(gameList.getEntryPtrData(selectedEntry));
+        auto* pGameServerInfo = static_cast<GameServerInfo*>(gameList.getEntryPtrData(selectedEntry));
 
         pNetworkManager->setOnReceiveGameInfo(std::bind(&MultiPlayerMenu::onReceiveGameInfo, this, std::placeholders::_1, std::placeholders::_2));
         pNetworkManager->setOnPeerDisconnected(std::bind(&MultiPlayerMenu::onPeerDisconnected, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
@@ -254,7 +254,7 @@ void MultiPlayerMenu::onUpdateLANServer(GameServerInfo gameServerInfo) {
 
 void MultiPlayerMenu::onRemoveLANServer(GameServerInfo gameServerInfo) {
     for(int i=0;i<gameList.getNumEntries();i++) {
-        GameServerInfo* pGameServerInfo = static_cast<GameServerInfo*>(gameList.getEntryPtrData(i));
+        auto* pGameServerInfo = static_cast<GameServerInfo*>(gameList.getEntryPtrData(i));
         if(*pGameServerInfo == gameServerInfo) {
             gameList.removeEntry(i);
             break;
@@ -266,7 +266,7 @@ void MultiPlayerMenu::onRemoveLANServer(GameServerInfo gameServerInfo) {
 
 void MultiPlayerMenu::onGameServerInfoList(const std::list<GameServerInfo>& gameServerInfoList) {
     // remove all game servers from the list that are not included in the sent list
-    std::list<GameServerInfo>::iterator oldListIter = InternetGameList.begin();
+    auto oldListIter = InternetGameList.begin();
     int index = 0;
     while(oldListIter != InternetGameList.end()) {
         GameServerInfo& gameServerInfo = *oldListIter;

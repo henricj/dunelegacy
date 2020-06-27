@@ -334,7 +334,7 @@ void Tile::blitStructures(int xPos, int yPos) const {
         return;
 
     //if got a structure, draw the structure, and dont draw any terrain because wont be seen
-    StructureBase* pStructure = static_cast<StructureBase*>(pObject);
+    auto* pStructure = static_cast<StructureBase*>(pObject);
 
     for (auto i = pStructure->getX(); i < pStructure->getX() + pStructure->getStructureSizeX(); i++) {
         for (auto j = pStructure->getY(); j < pStructure->getY() + pStructure->getStructureSizeY(); j++) {

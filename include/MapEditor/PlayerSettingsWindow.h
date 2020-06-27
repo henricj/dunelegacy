@@ -53,7 +53,7 @@ public:
         \return The new dialog box (will be automatically destroyed when it's closed)
     */
     static PlayerSettingsWindow* create(MapEditor* pMapEditor, HOUSETYPE house) {
-        PlayerSettingsWindow* dlg = new PlayerSettingsWindow(pMapEditor, house);
+        auto* dlg = new PlayerSettingsWindow(pMapEditor, house);
         dlg->pAllocated = true;
         return dlg;
     }

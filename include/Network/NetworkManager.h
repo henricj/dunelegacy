@@ -93,7 +93,7 @@ public:
         std::list<std::string> peerNameList;
 
         for(const ENetPeer* pPeer : peerList) {
-            PeerData* peerData = static_cast<PeerData*>(pPeer->data);
+            auto* peerData = static_cast<PeerData*>(pPeer->data);
             if(peerData != nullptr) {
                 peerNameList.push_back(peerData->name);
             }

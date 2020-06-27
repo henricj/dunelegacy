@@ -221,7 +221,7 @@ void MetaServerClient::setNewGameServerInfoList(const std::list<GameServerInfo>&
 
 
 int MetaServerClient::connectionThreadMain(void* data) {
-    MetaServerClient* pMetaServerClient = static_cast<MetaServerClient*>(data);
+    auto* pMetaServerClient = static_cast<MetaServerClient*>(data);
 
     while(true) {
         try {
@@ -231,7 +231,7 @@ int MetaServerClient::connectionThreadMain(void* data) {
 
                 case METASERVERCOMMAND_ADD: {
 
-                    MetaServerAdd* pMetaServerAdd = dynamic_cast<MetaServerAdd*>(nextMetaServerCommand.get());
+                    auto* pMetaServerAdd = dynamic_cast<MetaServerAdd*>(nextMetaServerCommand.get());
                     if(!pMetaServerAdd) {
                         break;
                     }
@@ -267,7 +267,7 @@ int MetaServerClient::connectionThreadMain(void* data) {
                 } break;
 
                 case METASERVERCOMMAND_UPDATE: {
-                    MetaServerUpdate* pMetaServerUpdate = dynamic_cast<MetaServerUpdate*>(nextMetaServerCommand.get());
+                    auto* pMetaServerUpdate = dynamic_cast<MetaServerUpdate*>(nextMetaServerCommand.get());
                     if(!pMetaServerUpdate) {
                         break;
                     }
@@ -325,7 +325,7 @@ int MetaServerClient::connectionThreadMain(void* data) {
                 } break;
 
                 case METASERVERCOMMAND_REMOVE: {
-                    MetaServerRemove* pMetaServerRemove = dynamic_cast<MetaServerRemove*>(nextMetaServerCommand.get());
+                    auto* pMetaServerRemove = dynamic_cast<MetaServerRemove*>(nextMetaServerCommand.get());
                     if(!pMetaServerRemove) {
                         break;
                     }

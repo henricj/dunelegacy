@@ -249,8 +249,8 @@ sdl2::surface_ptr Scaler::doubleTiledSurfaceScale2x(SDL_Surface* src, int tilesX
         SDL_SetSurfaceRLE(returnPic.get(), SDL_TRUE);
     }
 
-    Uint8* srcPixels = (Uint8*) src->pixels;
-    Uint8* destPixels = (Uint8*) returnPic->pixels;
+    auto* srcPixels = (Uint8*) src->pixels;
+    auto* destPixels = (Uint8*) returnPic->pixels;
 
     int tileWidth = srcWidth / tilesX;
     int tileHeight = srcHeight / tilesY;
@@ -355,8 +355,8 @@ sdl2::surface_ptr Scaler::tripleTiledSurfaceScale3x(SDL_Surface* src, int tilesX
         SDL_SetSurfaceRLE(returnPic.get(), SDL_TRUE);
     }
 
-    Uint8* srcPixels = (Uint8*) src->pixels;
-    Uint8* destPixels = (Uint8*) returnPic->pixels;
+    auto* srcPixels = (Uint8*) src->pixels;
+    auto* destPixels = (Uint8*) returnPic->pixels;
 
     int tileWidth = srcWidth / tilesX;
     int tileHeight = srcHeight / tilesY;

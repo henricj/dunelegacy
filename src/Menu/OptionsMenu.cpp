@@ -447,7 +447,7 @@ void OptionsMenu::determineAvailableScreenResolutions() {
 }
 
 void OptionsMenu::onChildWindowClose(Window* pChildWindow) {
-    GameOptionsWindow* pGameOptionsWindow = dynamic_cast<GameOptionsWindow*>(pChildWindow);
+    auto* pGameOptionsWindow = dynamic_cast<GameOptionsWindow*>(pChildWindow);
     if(pGameOptionsWindow != nullptr) {
         currentGameOptions = pGameOptionsWindow->getGameOptions();
 

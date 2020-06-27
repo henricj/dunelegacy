@@ -2178,7 +2178,7 @@ void Game::handleKeyInput(SDL_KeyboardEvent& keyboardEvent) {
             for(Uint32 objectID : selectedList) {
                 ObjectBase* pObject = objectManager.getObject(objectID);
                 if(pObject->isABuilder()) {
-                    BuilderBase* pBuilder = static_cast<BuilderBase*>(pObject);
+                    auto* pBuilder = static_cast<BuilderBase*>(pObject);
                     if(pBuilder->getHealth() >= pBuilder->getMaxHealth() && pBuilder->isAllowedToUpgrade()) {
                         pBuilder->handleUpgradeClick();
                     }
@@ -2302,7 +2302,7 @@ bool Game::handlePlacementClick(int xPos, int yPos) {
                         if(pTile->hasANonInfantryGroundObject()) {
                             const auto pObject = pTile->getNonInfantryGroundObject();
                             if(pObject->isAUnit() && pObject->getOwner() == pBuilder->getOwner()) {
-                                UnitBase* pUnit = static_cast<UnitBase*>(pObject);
+                                auto* pUnit = static_cast<UnitBase*>(pObject);
                                 Coord newDestination = currentGameMap->findDeploySpot(pUnit, Coord(xPos, yPos), tempRandomGen, pUnit->getLocation(), structuresize);
                                 pUnit->handleMoveClick(newDestination.x, newDestination.y);
                             }
@@ -2334,7 +2334,7 @@ bool Game::handleSelectedObjectsAttackClick(int xPos, int yPos) {
             pResponder = static_cast<UnitBase*>(pObject);
             pResponder->handleAttackClick(xPos,yPos);
         } else if((pObject->getItemID() == Structure_Palace) && ((pOwner->getHouseID() == HOUSETYPE::HOUSE_HARKONNEN) || (pOwner->getHouseID() == HOUSETYPE::HOUSE_SARDAUKAR))) {
-            Palace* pPalace = static_cast<Palace*>(pObject);
+            auto* pPalace = static_cast<Palace*>(pObject);
             if(pPalace->isSpecialWeaponReady()) {
                 pPalace->handleDeathhandClick(xPos, yPos);
             }
@@ -2411,7 +2411,7 @@ bool Game::handleSelectedObjectsCaptureClick(int xPos, int yPos) {
         return false;
     }
 
-    StructureBase* pStructure = dynamic_cast<StructureBase*>(pTile->getGroundObject());
+    auto* pStructure = dynamic_cast<StructureBase*>(pTile->getGroundObject());
     if((pStructure != nullptr) && (pStructure->canBeCaptured()) && (pStructure->getOwner()->getTeamID() != pLocalHouse->getTeamID())) {
         InfantryBase* pResponder = nullptr;
 

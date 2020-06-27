@@ -612,7 +612,7 @@ void INIMapLoader::loadUnits()
                     newUnit->doSetAttackMode(attackmode);
                     newUnit->setAngle(angle);
 
-                    TankBase* pTankBase = dynamic_cast<TankBase*>(newUnit);
+                    auto* pTankBase = dynamic_cast<TankBase*>(newUnit);
                     if(pTankBase != nullptr) {
                         pTankBase->setTurretAngle(angle);
                     }
@@ -793,7 +793,7 @@ void INIMapLoader::loadReinforcements()
 
             bool bInserted = false;
             for(const auto& pTrigger : pGame->getTriggerManager().getTriggers()) {
-                ReinforcementTrigger* pReinforcementTrigger = dynamic_cast<ReinforcementTrigger*>(pTrigger.get());
+                auto* pReinforcementTrigger = dynamic_cast<ReinforcementTrigger*>(pTrigger.get());
 
                 if(pReinforcementTrigger != nullptr
                     && pReinforcementTrigger->getCycleNumber() == dropCycle

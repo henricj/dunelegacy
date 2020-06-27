@@ -118,7 +118,7 @@ void GroundUnit::checkPos() {
                 && (pObject->getObjectID() == target.getObjectID())
                 && (target.getObjPointer()->getItemID() == Structure_RepairYard))
             {
-                RepairYard* pRepairYard = static_cast<RepairYard*>(target.getObjPointer());
+                auto* pRepairYard = static_cast<RepairYard*>(target.getObjPointer());
                 if(pRepairYard->isFree()) {
                     setGettingRepaired();
                 } else {

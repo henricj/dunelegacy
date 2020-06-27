@@ -186,7 +186,7 @@ void Harvester::checkPos()
 
                 for(auto pStructure : structureList) {
                     if((pStructure->getItemID() == Structure_Refinery) && (pStructure->getOwner() == owner)) {
-                        Refinery* pRefinery = static_cast<Refinery*>(pStructure);
+                        auto* pRefinery = static_cast<Refinery*>(pStructure);
                         Coord closestPoint = pRefinery->getClosestPoint(location);
                         FixPoint refineryDistance = blockDistance(location, closestPoint);
 

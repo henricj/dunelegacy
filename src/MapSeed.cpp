@@ -171,7 +171,7 @@ static Uint16 SeedRand() {
 
     // little endian is more useful for this algorithm
     Seed = SDL_SwapLE32(Seed);
-    Uint8* pSeed = (Uint8*) &Seed;
+    auto* pSeed = (Uint8*) &Seed;
 
     // shift right
     a = pSeed[0];

@@ -129,7 +129,7 @@ void RepairYard::updateStructureSpecificStuff() {
     }
 
     if(repairingAUnit == true) {
-        GroundUnit* pRepairUnit = static_cast<GroundUnit*>(repairUnit.getUnitPointer());
+        auto* pRepairUnit = static_cast<GroundUnit*>(repairUnit.getUnitPointer());
 
         if (pRepairUnit->getHealth()*100/pRepairUnit->getMaxHealth() < 100) {
             if (owner->takeCredits(UNIT_REPAIRCOST) > 0) {
@@ -142,7 +142,7 @@ void RepairYard::updateStructureSpecificStuff() {
             if((pRepairUnit->getGuardPoint().isValid()) && getOwner()->hasCarryalls())  {
                 for(UnitBase* pUnit : unitList) {
                     if ((pUnit->getOwner() == owner) && (pUnit->getItemID() == Unit_Carryall)) {
-                        Carryall* pTmpCarryall = static_cast<Carryall*>(pUnit);
+                        auto* pTmpCarryall = static_cast<Carryall*>(pUnit);
                         if (!pTmpCarryall->isBooked()) {
                             pCarryall = pTmpCarryall;
                         }

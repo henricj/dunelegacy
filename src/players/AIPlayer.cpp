@@ -126,7 +126,7 @@ void AIPlayer::onDamage(const ObjectBase* pObject, int damage, Uint32 damagerID)
             doAttackObject(static_cast<const Harvester*>(pObject), pDamager, false);
         }
     } else if(pObject->isAUnit() && pObject->canAttack(pDamager)) {
-        const UnitBase* pUnit = static_cast<const UnitBase*>(pObject);
+        const auto* pUnit = static_cast<const UnitBase*>(pObject);
 
         if(pUnit->getAttackMode() == GUARD || pUnit->getAttackMode() == AMBUSH) {
             doSetAttackMode(pUnit, HUNT);
@@ -345,7 +345,7 @@ void AIPlayer::build() {
             }
 
             if(pStructure->isABuilder()) {
-                const BuilderBase* pBuilder = static_cast<const BuilderBase*>(pStructure);
+                const auto* pBuilder = static_cast<const BuilderBase*>(pStructure);
 
                 if((getHouse()->getCredits() > 2000) && (pBuilder->getHealth() >= pBuilder->getMaxHealth()) && (pBuilder->isUpgrading() == false) && (pBuilder->getCurrentUpgradeLevel() < pBuilder->getMaxUpgradeLevel())) {
                     doUpgrade(pBuilder);
@@ -418,7 +418,7 @@ void AIPlayer::build() {
                     } break;
 
                     case Structure_StarPort: {
-                        const StarPort* pStarPort = static_cast<const StarPort*>(pBuilder);
+                        const auto* pStarPort = static_cast<const StarPort*>(pBuilder);
                         if(isAllowedToArm() && pStarPort->okToOrder())  {
                             const auto& choam = getHouse()->getChoam();
 
@@ -585,7 +585,7 @@ void AIPlayer::build() {
                             //see if there is already a spot to put it stored
                             if(!placeLocations.empty()) {
                                 Coord location = placeLocations.front();
-                                const ConstructionYard* pConstYard = static_cast<const ConstructionYard*>(pBuilder);
+                                const auto* pConstYard = static_cast<const ConstructionYard*>(pBuilder);
                                 if(getMap().okayToPlaceStructure(location.x, location.y, itemsize.x, itemsize.y, false, pConstYard->getOwner())) {
                                     doPlaceStructure(pConstYard, location.x, location.y);
                                     placeLocations.pop_front();
@@ -666,7 +666,7 @@ void AIPlayer::checkAllUnits() {
         if(pUnit->getItemID() == Unit_Sandworm) {
                 for(auto pUnit2 : getUnitList()) {
                     if(pUnit2->getOwner() == getHouse() && pUnit2->getItemID() == Unit_Harvester) {
-                        const Harvester* pHarvester = static_cast<const Harvester*>(pUnit2);
+                        const auto* pHarvester = static_cast<const Harvester*>(pUnit2);
                         if( getMap().tileExists(pHarvester->getLocation())
                             && !getMap().getTile(pHarvester->getLocation())->isRock()
                             && blockDistance(pUnit->getLocation(), pHarvester->getLocation()) <= 5) {
@@ -695,7 +695,7 @@ void AIPlayer::checkAllUnits() {
             } break;
 
             case Unit_Harvester: {
-                const Harvester* pHarvester = static_cast<const Harvester*>(pUnit);
+                const auto* pHarvester = static_cast<const Harvester*>(pUnit);
                 if(getHouse()->getNumItems(Unit_Harvester) < 3 && pHarvester->getAmountOfSpice() >= HARVESTERMAXSPICE/2) {
                     doReturn(pHarvester);
                 }

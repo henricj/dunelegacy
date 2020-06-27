@@ -244,7 +244,7 @@ void LANGameFinderAndAnnouncer::receivePackets() {
 
             int serverPort = SDL_SwapLE16(announcePacket.serverPort);
 
-            std::list<GameServerInfo>::iterator iter = gameServerInfoList.begin();
+            auto iter = gameServerInfoList.begin();
             while(iter != gameServerInfoList.end()) {
                 if((iter->serverAddress.host == senderAddress.host)
                     && (iter->serverAddress.port == serverPort)) {
@@ -272,7 +272,7 @@ void LANGameFinderAndAnnouncer::receivePackets() {
 void LANGameFinderAndAnnouncer::updateServerInfoList() {
     Uint32 currentTime = SDL_GetTicks();
 
-    std::list<GameServerInfo>::iterator iter = gameServerInfoList.begin();
+    auto iter = gameServerInfoList.begin();
     while(iter != gameServerInfoList.end()) {
         if(iter->lastUpdate + 3 * LANGAME_ANNOUNCER_INTERVAL < currentTime) {
             if(pOnRemoveServer) {

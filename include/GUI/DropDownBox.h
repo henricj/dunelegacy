@@ -392,7 +392,7 @@ public:
         \return The new created dropdown box (will be automatically destroyed when it's parent widget is destroyed)
     */
     static DropDownBox* create() {
-        DropDownBox* dropDownBox = new DropDownBox();
+        auto* dropDownBox = new DropDownBox();
         dropDownBox->pAllocated = true;
         return dropDownBox;
     }

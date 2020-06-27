@@ -33,7 +33,7 @@
 class WindTrapInterface : public DefaultStructureInterface {
 public:
     static WindTrapInterface* create(int objectID) {
-        WindTrapInterface* tmp = new WindTrapInterface(objectID);
+        auto* tmp = new WindTrapInterface(objectID);
         tmp->pAllocated = true;
         return tmp;
     }

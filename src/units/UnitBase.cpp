@@ -1148,7 +1148,7 @@ void UnitBase::setPickedUp(UnitBase* newCarrier) {
     }
 
     if(getItemID() == Unit_Harvester) {
-        Harvester* harvester = static_cast<Harvester*>(this);
+        auto* harvester = static_cast<Harvester*>(this);
         if(harvester->isReturning() && target && (target.getObjPointer()!= nullptr) && (target.getObjPointer()->getItemID() == Structure_Refinery)) {
             static_cast<Refinery*>(target.getObjPointer())->unBook();
         }

@@ -40,7 +40,7 @@
 class MultiUnitInterface : public ObjectInterface {
 public:
     static MultiUnitInterface* create() {
-        MultiUnitInterface* tmp = new MultiUnitInterface();
+        auto* tmp = new MultiUnitInterface();
         tmp->pAllocated = true;
         return tmp;
     }
@@ -209,7 +209,7 @@ protected:
     void onReturn() {
         for(const Uint32 selectedUnitID : currentGame->getSelectedList()) {
             ObjectBase* pObject = currentGame->getObjectManager().getObject(selectedUnitID);
-            Harvester* pHarvester = dynamic_cast<Harvester*>(pObject);
+            auto* pHarvester = dynamic_cast<Harvester*>(pObject);
             if(pHarvester != nullptr) {
                 pHarvester->handleReturnClick();
             }
@@ -219,7 +219,7 @@ protected:
     void OnSendToRepair() {
         for(const Uint32 selectedUnitID : currentGame->getSelectedList()) {
             ObjectBase* pObject = currentGame->getObjectManager().getObject(selectedUnitID);
-            GroundUnit* pGroundUnit = dynamic_cast<GroundUnit*>(pObject);
+            auto* pGroundUnit = dynamic_cast<GroundUnit*>(pObject);
             if((pGroundUnit != nullptr) && (pGroundUnit->getHealth() < pGroundUnit->getMaxHealth())) {
                 pGroundUnit->handleSendToRepairClick();
             }
@@ -239,7 +239,7 @@ protected:
     void onDestruct() {
         for(const Uint32 selectedUnitID : currentGame->getSelectedList()) {
             ObjectBase* pObject = currentGame->getObjectManager().getObject(selectedUnitID);
-            Devastator* pDevastator = dynamic_cast<Devastator*>(pObject);
+            auto* pDevastator = dynamic_cast<Devastator*>(pObject);
             if(pDevastator != nullptr) {
                 pDevastator->handleStartDevastateClick();
             }
@@ -275,7 +275,7 @@ protected:
         UnitBase* pLastUnit = nullptr;
         for(const Uint32 selectedUnitID : currentGame->getSelectedList()) {
             ObjectBase* pObject = currentGame->getObjectManager().getObject(selectedUnitID);
-            UnitBase* pUnit = dynamic_cast<UnitBase*>(pObject);
+            auto* pUnit = dynamic_cast<UnitBase*>(pObject);
             if(pUnit != nullptr) {
                 pLastUnit = pUnit;
                 pUnit->handleSetAttackModeClick(newAttackMode);
@@ -321,7 +321,7 @@ protected:
 
         for(const Uint32 selectedUnitID : currentGame->getSelectedList()) {
             ObjectBase* pObject = currentGame->getObjectManager().getObject(selectedUnitID);
-            UnitBase* pUnit = dynamic_cast<UnitBase*>(pObject);
+            auto* pUnit = dynamic_cast<UnitBase*>(pObject);
             if(pUnit != nullptr) {
                 ATTACKMODE attackMode = pUnit->getAttackMode();
                 bGuard = bGuard && (attackMode == GUARD);

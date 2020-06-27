@@ -29,7 +29,7 @@
 class RepairYardInterface : public DefaultStructureInterface {
 public:
     static RepairYardInterface* create(int objectID) {
-        RepairYardInterface* tmp = new RepairYardInterface(objectID);
+        auto* tmp = new RepairYardInterface(objectID);
         tmp->pAllocated = true;
         return tmp;
     }
@@ -53,7 +53,7 @@ protected:
             return false;
         }
 
-        RepairYard* pRepairYard = dynamic_cast<RepairYard*>(pObject);
+        auto* pRepairYard = dynamic_cast<RepairYard*>(pObject);
         if(pRepairYard != nullptr) {
             UnitBase* pUnit = pRepairYard->getRepairUnit();
 

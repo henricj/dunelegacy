@@ -26,7 +26,7 @@ void RadioButtonManager::registerRadioButton(RadioButton* pRadioButton) {
 }
 
 void RadioButtonManager::unregisterRadioButton(RadioButton* pRadioButton) {
-    std::vector<RadioButton*>::iterator iter = radioButtonList.begin();
+    auto iter = radioButtonList.begin();
     while(iter != radioButtonList.end()) {
         if(*iter == pRadioButton) {
             radioButtonList.erase(iter);

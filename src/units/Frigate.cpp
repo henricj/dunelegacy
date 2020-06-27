@@ -64,7 +64,7 @@ void Frigate::init()
 
 Frigate::~Frigate()
 {
-    StarPort* pStarPort = dynamic_cast<StarPort*>(target.getObjPointer());
+    auto* pStarPort = dynamic_cast<StarPort*>(target.getObjPointer());
     if(pStarPort) {
         pStarPort->informFrigateDestroyed();
     }
@@ -82,7 +82,7 @@ void Frigate::checkPos()
     AirUnit::checkPos();
 
     if ((location == destination) && (distanceFrom(realX, realY, destination.x * TILESIZE + (TILESIZE/2), destination.y * TILESIZE + (TILESIZE/2)) < TILESIZE/8) ) {
-        StarPort* pStarport = dynamic_cast<StarPort*>(target.getStructurePointer());
+        auto* pStarport = dynamic_cast<StarPort*>(target.getStructurePointer());
 
         if(pStarport != nullptr) {
             pStarport->startDeploying();

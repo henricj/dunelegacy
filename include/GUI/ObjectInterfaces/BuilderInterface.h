@@ -36,7 +36,7 @@
 class BuilderInterface final : public DefaultStructureInterface {
 public:
     static BuilderInterface* create(int objectID) {
-        BuilderInterface* tmp = new BuilderInterface(objectID);
+        auto* tmp = new BuilderInterface(objectID);
         tmp->pAllocated = true;
         return tmp;
     }
@@ -60,7 +60,7 @@ protected:
         mainHBox.addWidget(Spacer::create());
 
         ObjectBase* pObject = currentGame->getObjectManager().getObject(objectID);
-        BuilderBase* pBuilder = dynamic_cast<BuilderBase*>(pObject);
+        auto* pBuilder = dynamic_cast<BuilderBase*>(pObject);
         if(pBuilder) {
             pBuilderList = BuilderList::create(pBuilder->getObjectID());
             mainHBox.addWidget(pBuilderList);
@@ -70,7 +70,7 @@ protected:
 
         mainHBox.addWidget(Spacer::create());
 
-        StarPort* pStarport = dynamic_cast<StarPort*>(pObject);
+        auto* pStarport = dynamic_cast<StarPort*>(pObject);
         if(pStarport != nullptr) {
             starportTimerLabel.setTextFontSize(28);
             starportTimerLabel.setTextColor(COLOR_WHITE, COLOR_TRANSPARENT);

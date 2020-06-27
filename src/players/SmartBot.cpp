@@ -135,7 +135,7 @@ void SmartBot::onDamage(const ObjectBase* pObject, int damage, Uint32 damagerID)
             doAttackObject(static_cast<const Harvester*>(pObject), pDamager, false);
         }
     } else if(pObject->isAUnit() && pObject->canAttack(pDamager)) {
-        const UnitBase* pUnit = static_cast<const UnitBase*>(pObject);
+        const auto* pUnit = static_cast<const UnitBase*>(pObject);
 
         // if it is a rocket launcher and the distance is under 5 then run away!!
         if(pUnit->getItemID() == Unit_Launcher){
@@ -378,7 +378,7 @@ void SmartBot::build() {
 
     for(const StructureBase* pStructure : getStructureList()) {
         if(pStructure->getOwner() == getHouse() && pStructure->isABuilder()) {
-            const BuilderBase* pBuilder = static_cast<const BuilderBase*>(pStructure);
+            const auto* pBuilder = static_cast<const BuilderBase*>(pStructure);
             if(pBuilder->getBuildListSize() > 0){
                 buildQueue[pBuilder->getCurrentProducedItem()]++;
             }
@@ -395,7 +395,7 @@ void SmartBot::build() {
             }
 
             if(pStructure->isABuilder()) {
-                const BuilderBase* pBuilder = static_cast<const BuilderBase*>(pStructure);
+                const auto* pBuilder = static_cast<const BuilderBase*>(pStructure);
 
                 switch (pBuilder->getItemID()) {
 
@@ -485,7 +485,7 @@ void SmartBot::build() {
                     } break;
 
                    case Structure_StarPort: {
-                        const StarPort* pStarPort = static_cast<const StarPort*>(pBuilder);
+                        const auto* pStarPort = static_cast<const StarPort*>(pBuilder);
                         if(pStarPort->okToOrder())  {
                             const Choam& choam = getHouse()->getChoam();
 
@@ -734,7 +734,7 @@ void SmartBot::build() {
                             //see if there is already a spot to put it stored
                             if(!placeLocations.empty()) {
                                 Coord location = placeLocations.front();
-                                const ConstructionYard* pConstYard = static_cast<const ConstructionYard*>(pBuilder);
+                                const auto* pConstYard = static_cast<const ConstructionYard*>(pBuilder);
                                 if(getMap().okayToPlaceStructure(location.x, location.y, itemsize.x, itemsize.y, false, pConstYard->getOwner())
                                    && getMap().isAStructureGap(location.x, location.y, itemsize.x, itemsize.y)) {
                                     doPlaceStructure(pConstYard, location.x, location.y);
@@ -802,7 +802,7 @@ void SmartBot::checkAllUnits() {
         if(pUnit->getItemID() == Unit_Sandworm) {
                 for(const UnitBase* pUnit2 : getUnitList()) {
                     if(pUnit2->getOwner() == getHouse() && pUnit2->getItemID() == Unit_Harvester) {
-                        const Harvester* pHarvester = static_cast<const Harvester*>(pUnit2);
+                        const auto* pHarvester = static_cast<const Harvester*>(pUnit2);
                         if( getMap().tileExists(pHarvester->getLocation())
                             && !getMap().getTile(pHarvester->getLocation())->isRock()
                             && blockDistance(pUnit->getLocation(), pHarvester->getLocation()) <= 5) {
@@ -832,7 +832,7 @@ void SmartBot::checkAllUnits() {
             } break;
 
             case Unit_Harvester: {
-                const Harvester* pHarvester = static_cast<const Harvester*>(pUnit);
+                const auto* pHarvester = static_cast<const Harvester*>(pUnit);
                 if(getHouse()->getCredits() < 1000 && pHarvester->getAmountOfSpice() >= HARVESTERMAXSPICE/2) {
                     doReturn(pHarvester);
                 }

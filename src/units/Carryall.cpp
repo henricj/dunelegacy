@@ -394,7 +394,7 @@ void Carryall::pickupTarget()
     ObjectBase* pTarget = target.getObjPointer();
 
     if(pTarget->isAGroundUnit()) {
-        GroundUnit* pGroundUnitTarget = static_cast<GroundUnit*>(pTarget);
+        auto* pGroundUnitTarget = static_cast<GroundUnit*>(pTarget);
 
         if(pTarget->getHealth() <= 0) {
             // unit died just in the moment we tried to pick it up => carryall also crushes

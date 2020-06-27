@@ -33,7 +33,7 @@
 class RadarInterface : public DefaultStructureInterface {
 public:
     static RadarInterface* create(int objectID) {
-        RadarInterface* tmp = new RadarInterface(objectID);
+        auto* tmp = new RadarInterface(objectID);
         tmp->pAllocated = true;
         return tmp;
     }

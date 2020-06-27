@@ -31,7 +31,7 @@ Palette LoadPalette_RW(SDL_RWops* rwop)
         THROW(std::runtime_error, "Palfile::Palfile(): Cannot determine size of this *.pal-File!");
     }
 
-    size_t filesize = static_cast<size_t>(endOffset);
+    auto filesize = static_cast<size_t>(endOffset);
 
     if(filesize % 3 != 0) {
         THROW(std::runtime_error, "Palfile::Palfile(): Filesize must be multiple of 3!");

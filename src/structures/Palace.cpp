@@ -214,7 +214,7 @@ bool Palace::callFremen() {
                 continue;
             }
 
-            Trooper *pFremen = static_cast<Trooper*>(getOwner()->createUnit(Unit_Trooper));
+            auto *pFremen = static_cast<Trooper*>(getOwner()->createUnit(Unit_Trooper));
 
             int i;
             int j;
