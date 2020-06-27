@@ -886,7 +886,7 @@ void INIFile::readfile(SDL_RWops * file) {
         completeLine = "";
         unsigned char tmp;
 
-        while(1) {
+        while(true) {
             size_t readbytes = SDL_RWread(file,&tmp,1,1);
             if(readbytes == 0) {
                 readfinished = true;

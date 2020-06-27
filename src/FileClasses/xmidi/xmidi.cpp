@@ -685,7 +685,7 @@ void XMIDI::DuplicateAndMerge (int num)
     current = list = nullptr;
 
 
-    while (1)
+    while (true)
     {
         int lowest = 1 << 30;
         int selected = -1;
