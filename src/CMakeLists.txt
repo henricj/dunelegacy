@@ -529,15 +529,18 @@ find_package(SDL2 CONFIG REQUIRED)
 find_package(sdl2-mixer CONFIG REQUIRED)
 find_package(sdl2-ttf CONFIG REQUIRED)
 find_package(fmt CONFIG REQUIRED)
+find_package(Microsoft.GSL CONFIG REQUIRED)
 
 set(LIBS
 	SDL2::SDL2 SDL2::SDL2main
 	SDL2::SDL2_mixer
 	SDL2::SDL2_ttf
-	fmt::fmt)
+	fmt::fmt
+	Microsoft.GSL::GSL
+	enet)
 
 if(WIN32)
-	list(APPEND LIBS enet shlwapi ws2_32)
+	list(APPEND LIBS shlwapi ws2_32)
 	list(APPEND SOURCES ../IDE/VC/DuneLegacy.exe.manifest ../resource.rc)
 endif()
 
