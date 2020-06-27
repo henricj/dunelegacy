@@ -102,7 +102,7 @@ void Harvester::blitToScreen()
     int x = screenborder->world2screenX(realX);
     int y = screenborder->world2screenY(realY);
 
-    auto pUnitGraphic = graphic[currentZoomlevel];
+    auto *pUnitGraphic = graphic[currentZoomlevel];
     SDL_Rect source = calcSpriteSourceRect(pUnitGraphic, static_cast<int>(drawnAngle), numImagesX);
     SDL_Rect dest = calcSpriteDrawingRect( pUnitGraphic, x, y, numImagesX, 1, HAlign::Center, VAlign::Center);
 
@@ -157,7 +157,7 @@ void Harvester::checkPos()
     if(active)  {
         if (returningToRefinery) {
             if (target && (target.getObjPointer() != nullptr) && (target.getObjPointer()->getItemID() == Structure_Refinery)) {
-                auto pRefinery = static_cast<Refinery*>(target.getObjPointer());
+                auto *pRefinery = static_cast<Refinery*>(target.getObjPointer());
                 Tile* pTile = currentGameMap->getTile(location);
                 ObjectBase *pObject = pTile->getGroundObject();
 
@@ -184,7 +184,7 @@ void Harvester::checkPos()
                 FixPoint closestLeastBookedRefineryDistance = FixPt32_MAX;
                 Refinery* pBestRefinery = nullptr;
 
-                for(auto pStructure : structureList) {
+                for(auto *pStructure : structureList) {
                     if((pStructure->getItemID() == Structure_Refinery) && (pStructure->getOwner() == owner)) {
                         auto* pRefinery = static_cast<Refinery*>(pStructure);
                         Coord closestPoint = pRefinery->getClosestPoint(location);
@@ -269,7 +269,7 @@ void Harvester::destroy()
                     if(currentGameMap->tileExists(xpos + i, ypos + j)
                         && (distanceFrom(xpos, ypos, xpos + i, ypos + j) + 0.0005_fix <= circleRadius))
                     {
-                        auto pTile = currentGameMap->getTile(xpos + i, ypos + j);
+                        auto *pTile = currentGameMap->getTile(xpos + i, ypos + j);
                         if((pTile != nullptr) & ((pTile->isSand()) || (pTile->isSpice()) )) {
                             availableSandPos++;
                         }

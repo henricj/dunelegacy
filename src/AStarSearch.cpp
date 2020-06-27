@@ -47,7 +47,7 @@ void AStarSearch::Search(Map* pMap, UnitBase* pUnit, Coord start, Coord destinat
     openList.clear();
     openList.reserve(2 * std::max(sizeX, sizeY));
 
-    const auto destinationTile = pMap->getTile(destination);
+    auto *const destinationTile = pMap->getTile(destination);
 
     const FixPoint rotationSpeed = 1_fix / (currentGame->objectData.data[pUnit->getItemID()][static_cast<int>(pUnit->getOriginalHouseID())].turnspeed * TILESIZE);
 
@@ -62,7 +62,7 @@ void AStarSearch::Search(Map* pMap, UnitBase* pUnit, Coord start, Coord destinat
     putOnOpenListIfBetter(pMap->getKey(start.x, start.y), start, nullptr, 0 , heuristic);
 
     int numNodesChecked = 0;
-    while(const auto currentTileData = extractMin()) {
+    while(auto *const currentTileData = extractMin()) {
         auto& map_data = *currentTileData; // getMapData(currentKey);
 
         const auto& currentCoord = map_data.coord;
@@ -211,7 +211,7 @@ bool AStarSearch::getFoundPath(Map * pMap, std::vector<Coord>& path) const
         return false;
     }
 
-    for (auto p = bestCoord; p->parentKey; p = p->parentKey) {
+    for (auto *p = bestCoord; p->parentKey; p = p->parentKey) {
         path.push_back(p->coord);
     }
 
@@ -246,7 +246,7 @@ void AStarSearch::putOnOpenListIfBetter(int key, const Coord& coord, TileData* p
 AStarSearch::TileData* AStarSearch::extractMin()
 {
     while (!openList.empty()) {
-        const auto ret = openList.front().key;
+        auto *const ret = openList.front().key;
 
         std::pop_heap(std::begin(openList), std::end(openList));
         openList.pop_back();

@@ -170,7 +170,7 @@ bool BuilderBase::isWaitingToPlace() const {
         return false;
     }
 
-    const auto tmp = getBuildItem(currentProducedItem);
+    const auto *const tmp = getBuildItem(currentProducedItem);
     if(tmp == nullptr) {
         return false;
     } else {
@@ -196,7 +196,7 @@ bool BuilderBase::isUnitLimitReached(Uint32 itemID) const {
 void BuilderBase::updateProductionProgress() {
     if(currentProducedItem == ItemID_Invalid) return;
 
-    const auto tmp = getBuildItem(currentProducedItem);
+    auto *const tmp = getBuildItem(currentProducedItem);
 
     if((productionProgress < tmp->price) && (!isOnHold()) && (!isUnitLimitReached(currentProducedItem)) && (owner->getCredits() > 0)) {
 
@@ -355,10 +355,10 @@ void BuilderBase::produce_item()
         num2Place = 3;
     }
 
-    auto game = currentGame;
+    auto *game = currentGame;
 
     for(auto i = 0; i < num2Place; i++) {
-        auto newUnit = getOwner()->createUnit(finishedItemID);
+        auto *newUnit = getOwner()->createUnit(finishedItemID);
 
         if(newUnit != nullptr) {
             Coord unitDestination;

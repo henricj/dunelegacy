@@ -241,7 +241,7 @@ int Tile::assignInfantry(Uint32 newObjectID, Sint8 currentPosition) {
         std::array<bool, NUM_INFANTRY_PER_TILE> used{};
 
         for (auto objectID : assignedInfantryList) {
-            const auto pInfantry = dynamic_cast<InfantryBase*>(currentGame->getObjectManager().getObject(objectID));
+            auto *const pInfantry = dynamic_cast<InfantryBase*>(currentGame->getObjectManager().getObject(objectID));
             if (pInfantry == nullptr) {
                 continue;
             }
@@ -356,7 +356,7 @@ void Tile::blitUndergroundUnits(int xPos, int yPos) const {
     if (!hasAnUndergroundUnit() || isFoggedByTeam(pLocalHouse->getTeamID()))
         return;
 
-    auto current = getUndergroundUnit();
+    auto *current = getUndergroundUnit();
 
     if (current->isVisible(pLocalHouse->getTeamID())) {
         if (location == current->getLocation()) {
@@ -429,7 +429,7 @@ void Tile::blitInfantry(int xPos, int yPos) {
         return;
 
     for (auto objectID : assignedInfantryList) {
-        auto pInfantry = static_cast<InfantryBase*>(currentGame->getObjectManager().getObject(objectID));
+        auto *pInfantry = static_cast<InfantryBase*>(currentGame->getObjectManager().getObject(objectID));
         if (pInfantry == nullptr) {
             continue;
         }
@@ -447,7 +447,7 @@ void Tile::blitNonInfantryGroundUnits(int xPos, int yPos) {
         return;
 
     for (auto objectID : assignedNonInfantryGroundObjectList) {
-        auto pObject = currentGame->getObjectManager().getObject(objectID);
+        auto *pObject = currentGame->getObjectManager().getObject(objectID);
 
         if (pObject->isAUnit() && pObject->isVisible(pLocalHouse->getTeamID())) {
             if (location == pObject->getLocation()) {
@@ -459,11 +459,11 @@ void Tile::blitNonInfantryGroundUnits(int xPos, int yPos) {
 
 
 void Tile::blitAirUnits(int xPos, int yPos) {
-    const auto player_house = pLocalHouse;
+    auto *const player_house = pLocalHouse;
     const auto is_fogged = isFoggedByTeam(player_house->getTeamID());
 
     for (auto objectID : assignedAirUnitList) {
-        auto pAirUnit = static_cast<AirUnit*>(currentGame->getObjectManager().getObject(objectID));
+        auto *pAirUnit = static_cast<AirUnit*>(currentGame->getObjectManager().getObject(objectID));
         if (pAirUnit == nullptr) {
             continue;
         }
@@ -483,7 +483,7 @@ void Tile::blitSelectionRects(int xPos, int yPos) const {
         return;
 
     forEachUnit([](Uint32 objectID) {
-        auto pObject = currentGame->getObjectManager().getObject(objectID);
+        auto *pObject = currentGame->getObjectManager().getObject(objectID);
         if (pObject == nullptr) {
             return;
         }
@@ -595,7 +595,7 @@ void Tile::setType(TERRAINTYPE newType) {
 
                 for (const auto object_id : units)
                 {
-                    const auto current = currentGame->getObjectManager().getObject(object_id);
+                    auto *const current = currentGame->getObjectManager().getObject(object_id);
 
                     unassignUndergroundUnit(current->getObjectID());
                     current->destroy();
@@ -609,7 +609,7 @@ void Tile::setType(TERRAINTYPE newType) {
 
                     for (const auto object_id : units)
                     {
-                        const auto object = currentGame->getObjectManager().getObject(object_id);
+                        auto *const object = currentGame->getObjectManager().getObject(object_id);
 
                         if (object)
                             pending_destroy.push_back(object);
@@ -638,7 +638,7 @@ void Tile::squash() const {
     if (!hasInfantry()) return;
 
     for (const auto object_id : assignedInfantryList) {
-        auto current = static_cast<InfantryBase*>(currentGame->getObjectManager().getObject(object_id));
+        auto *current = static_cast<InfantryBase*>(currentGame->getObjectManager().getObject(object_id));
 
         if(current == nullptr)
             continue;
@@ -759,7 +759,7 @@ ObjectBase* Tile::getObjectAt(int x, int y) const {
         const Coord atPos(x, y);
 
         for (const auto objectID : assignedInfantryList) {
-            const auto pInfantry = dynamic_cast<InfantryBase*>(currentGame->getObjectManager().getObject(objectID));
+            auto *const pInfantry = dynamic_cast<InfantryBase*>(currentGame->getObjectManager().getObject(objectID));
             if (pInfantry == nullptr) {
                 continue;
             }
@@ -847,7 +847,7 @@ void Tile::triggerSpecialBloom(House* pTrigger) {
 
         case 1: {
             // The house gets a Trike for free. It spawns beside the special bloom.
-            auto pNewUnit = pTrigger->createUnit(Unit_Trike);
+            auto *pNewUnit = pTrigger->createUnit(Unit_Trike);
             if (pNewUnit != nullptr) {
                 const auto spot = currentGameMap->findDeploySpot(pNewUnit, location, currentGame->randomGen);
                 pNewUnit->deploy(spot);
@@ -858,7 +858,7 @@ void Tile::triggerSpecialBloom(House* pTrigger) {
             // One of the AI players on the map (one that has at least one unit) gets a Trike for free. It spawns beside the special bloom.
             int numCandidates = 0;
             for (int i = 0; i < static_cast<int>(HOUSETYPE::NUM_HOUSES); i++) {
-                const auto pHouse = currentGame->getHouse(static_cast<HOUSETYPE>(i));
+                auto *const pHouse = currentGame->getHouse(static_cast<HOUSETYPE>(i));
                 if (pHouse != nullptr && pHouse->getTeamID() != pTrigger->getTeamID() && pHouse->getNumUnits() > 0) {
                     numCandidates++;
                 }
@@ -872,7 +872,7 @@ void Tile::triggerSpecialBloom(House* pTrigger) {
 
             House* pEnemyHouse = nullptr;
             for (int i = 0; i < static_cast<int>(HOUSETYPE::NUM_HOUSES); i++) {
-                const auto pHouse = currentGame->getHouse(static_cast<HOUSETYPE>(i));
+                auto *const pHouse = currentGame->getHouse(static_cast<HOUSETYPE>(i));
                 if (pHouse != nullptr && pHouse->getTeamID() != pTrigger->getTeamID() && pHouse->getNumUnits() > 0) {
                     if (candidate == 0) {
                         pEnemyHouse = pHouse;
@@ -883,7 +883,7 @@ void Tile::triggerSpecialBloom(House* pTrigger) {
             }
 
             if(pEnemyHouse) {
-                const auto pNewUnit = pEnemyHouse->createUnit(Unit_Trike);
+                auto *const pNewUnit = pEnemyHouse->createUnit(Unit_Trike);
                 if (pNewUnit != nullptr) {
                     const auto spot = currentGameMap->findDeploySpot(pNewUnit, location, currentGame->randomGen);
                     pNewUnit->deploy(spot);
@@ -897,7 +897,7 @@ void Tile::triggerSpecialBloom(House* pTrigger) {
             // One of the AI players on the map (one that has at least one unit) gets an Infantry unit (3 Soldiers) for free. The spawn beside the special bloom.
             int numCandidates = 0;
             for (int i = 0; i < static_cast<int>(HOUSETYPE::NUM_HOUSES); i++) {
-                const auto pHouse = currentGame->getHouse(static_cast<HOUSETYPE>(i));
+                auto *const pHouse = currentGame->getHouse(static_cast<HOUSETYPE>(i));
                 if (pHouse != nullptr && pHouse->getTeamID() != pTrigger->getTeamID() && pHouse->getNumUnits() > 0) {
                     numCandidates++;
                 }
@@ -911,7 +911,7 @@ void Tile::triggerSpecialBloom(House* pTrigger) {
 
             House* pEnemyHouse = nullptr;
             for(int i = 0; i < static_cast<int>(HOUSETYPE::NUM_HOUSES); i++) {
-                const auto pHouse = currentGame->getHouse(static_cast<HOUSETYPE>(i));
+                auto *const pHouse = currentGame->getHouse(static_cast<HOUSETYPE>(i));
                 if (pHouse != nullptr && pHouse->getTeamID() != pTrigger->getTeamID() && pHouse->getNumUnits() > 0) {
                     if (candidate == 0) {
                         pEnemyHouse = pHouse;
@@ -923,7 +923,7 @@ void Tile::triggerSpecialBloom(House* pTrigger) {
 
             if(pEnemyHouse) {
                 for (int i = 0; i < 3; i++) {
-                    const auto pNewUnit = pEnemyHouse->createUnit(Unit_Soldier);
+                    auto *const pNewUnit = pEnemyHouse->createUnit(Unit_Soldier);
                     if (pNewUnit != nullptr) {
                         const auto spot = currentGameMap->findDeploySpot(pNewUnit, location, currentGame->randomGen);
                         pNewUnit->deploy(spot);
@@ -939,7 +939,7 @@ bool Tile::hasAStructure() const {
         return false;
     }
 
-    const auto pObject = currentGame->getObjectManager().getObject(assignedNonInfantryGroundObjectList.front());
+    auto *const pObject = currentGame->getObjectManager().getObject(assignedNonInfantryGroundObjectList.front());
     return ((pObject != nullptr) && pObject->isAStructure());
 }
 
@@ -995,7 +995,7 @@ Uint32 Tile::getRadarColor(House* pHouse, bool radar) {
         return fogColor;
     }
 
-    const auto pObject = getObject();
+    auto *const pObject = getObject();
     if (pObject != nullptr) {
         Uint32 color = 0;
 
@@ -1043,7 +1043,7 @@ Uint32 Tile::getRadarColor(House* pHouse, bool radar) {
 
 Tile::TERRAINTILETYPE Tile::getTerrainTileImpl() const {
     const auto terrainType = type;
-    const auto map = currentGameMap;
+    auto *const map = currentGameMap;
 
     const auto x = location.x;
     const auto y = location.y;
@@ -1120,7 +1120,7 @@ int Tile::getHideTile(int teamID) const {
     const auto x = location.x;
     const auto y = location.y;
 
-    const auto map = currentGameMap;
+    auto *const map = currentGameMap;
 
     // are all surrounding tiles explored?
 
@@ -1144,7 +1144,7 @@ int Tile::getFogTile(int teamID) const {
     const auto x = location.x;
     const auto y = location.y;
 
-    const auto map = currentGameMap;
+    auto *const map = currentGameMap;
 
     // are all surrounding tiles fogged?
     if (((!map->tileExists(x, y - 1)) || (!map->getTile(x, y - 1)->isFoggedByTeam(teamID)))

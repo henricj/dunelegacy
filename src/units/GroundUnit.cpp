@@ -251,9 +251,9 @@ void GroundUnit::doRepair() noexcept {
     FixPoint closestLeastBookedRepairYardDistance = 1000000;
     RepairYard* pBestRepairYard = nullptr;
 
-    for(auto pStructure : structureList) {
+    for(auto *pStructure : structureList) {
         if ((pStructure->getItemID() == Structure_RepairYard) && (pStructure->getOwner() == owner)) {
-            const auto pRepairYard = static_cast<RepairYard*>(pStructure);
+            auto *const pRepairYard = static_cast<RepairYard*>(pStructure);
 
             if(pRepairYard->getNumBookings() == 0) {
                 const auto tempDistance = blockDistance(location, pRepairYard->getClosestPoint(location));

@@ -85,7 +85,7 @@ sdl2::surface_ptr LoadPNG_RW(SDL_RWops* RWop) {
                 THROW(std::runtime_error, "LoadPNG_RW(): SDL_CreateRGBSurface has failed!");
             }
 
-            const auto colors = reinterpret_cast<SDL_Color*>(lodePNGState.info_png.color.palette);
+            auto *const colors = reinterpret_cast<SDL_Color*>(lodePNGState.info_png.color.palette);
             SDL_SetPaletteColors(pic->format->palette, colors, 0, lodePNGState.info_png.color.palettesize);
 
             sdl2::surface_lock pic_lock{pic.get()};
@@ -97,8 +97,8 @@ sdl2::surface_ptr LoadPNG_RW(SDL_RWops* RWop) {
             if (pic->pitch == static_cast<int>(width)) {
                 memcpy(pic_surface, image_out, height * width);
             } else for(unsigned int y = 0; y < height; y++) {
-                const auto in = image_out + y * width;
-                const auto out = pic_surface + y * pic->pitch;
+                const auto *const in = image_out + y * width;
+                auto *const out = pic_surface + y * pic->pitch;
 
                 //std::copy_n(in, width, out);
                 memcpy(out, in, width);
@@ -127,14 +127,14 @@ sdl2::surface_ptr LoadPNG_RW(SDL_RWops* RWop) {
 
             // Now we can copy pixel by pixel
             if (static_cast<int>(sizeof(Uint32) * width) == pic->pitch) {
-                auto in = image_out;
-                auto out = reinterpret_cast<Uint32*>(pic_surface);
+                const auto *in = image_out;
+                auto *out = reinterpret_cast<Uint32*>(pic_surface);
                 for (auto x = 0u; x < height * width; ++x) {
                     *out++ = SDL_SwapLE32(*in++);
                 }
             } else for(auto y = 0u; y < height; y++) {
-                auto in = image_out + y * width;
-                auto out = reinterpret_cast<Uint32*>(pic_surface + y * pic->pitch);
+                const auto *in = image_out + y * width;
+                auto *out = reinterpret_cast<Uint32*>(pic_surface + y * pic->pitch);
                 for(auto x = 0u; x < width; ++x)
                     *out++ = SDL_SwapLE32(*in++);
             }

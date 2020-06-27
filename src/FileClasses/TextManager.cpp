@@ -42,7 +42,7 @@ sdl2::RWops_ptr openReadOnlyRWops(const std::filesystem::path& path)
 {
     const auto normal = path.lexically_normal();
 
-    const auto rwops = SDL_RWFromFile(normal.u8string().c_str(), "r");
+    auto *const rwops = SDL_RWFromFile(normal.u8string().c_str(), "r");
 
     if (!rwops)
         THROW(sdl_error, "Opening file '%s' failed: %s!", normal.u8string().c_str(), SDL_GetError());

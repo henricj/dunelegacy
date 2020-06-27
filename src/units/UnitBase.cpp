@@ -267,7 +267,7 @@ void UnitBase::blitToScreen() {
     const auto x = screenborder->world2screenX(realX);
     const auto y = screenborder->world2screenY(realY);
 
-    const auto pUnitGraphic = graphic[currentZoomlevel];
+    auto *const pUnitGraphic = graphic[currentZoomlevel];
     const auto source = calcSpriteSourceRect(pUnitGraphic, static_cast<int>(drawnAngle), numImagesX, drawnFrame, numImagesY);
     const auto dest = calcSpriteDrawingRect( pUnitGraphic, x, y, numImagesX, numImagesY, HAlign::Center, VAlign::Center);
 
@@ -341,7 +341,7 @@ void UnitBase::destroy() {
 
     if(isVisible()) {
         if(currentGame->randomGen.rand(1,100) <= getInfSpawnProp()) {
-            auto pNewUnit = currentGame->getHouse(originalHouseID)->createUnit(Unit_Soldier);
+            auto *pNewUnit = currentGame->getHouse(originalHouseID)->createUnit(Unit_Soldier);
             pNewUnit->setHealth(pNewUnit->getMaxHealth()/2);
             pNewUnit->deploy(location);
 
@@ -751,12 +751,12 @@ void UnitBase::idleAction() {
 void UnitBase::handleActionClick(int xPos, int yPos) {
     if(!respondable || !currentGameMap->tileExists(xPos, yPos)) return;
 
-    const auto tile = currentGameMap->getTile(xPos,yPos);
-    const auto game = currentGame;
+    auto *const tile = currentGameMap->getTile(xPos,yPos);
+    auto *const game = currentGame;
 
     if(tile->hasAnObject()) {
         // attack unit/structure or move to structure
-        const auto tempTarget = tile->getObject();
+        auto *const tempTarget = tile->getObject();
 
         const auto is_owner = tempTarget->getOwner()->getTeamID() == getOwner()->getTeamID();
         const auto cmd_type = is_owner ? CMDTYPE::CMD_UNIT_MOVE2OBJECT : CMDTYPE::CMD_UNIT_ATTACKOBJECT;
@@ -1391,7 +1391,7 @@ bool UnitBase::canPassTile(const Tile* pTile) const
     if (!ground_object_result.first) return true;
 
     if (ground_object_result.second == target.getObjectID()) {
-        const auto pObject = currentGame->getObjectManager().getObject(ground_object_result.second);
+        auto *const pObject = currentGame->getObjectManager().getObject(ground_object_result.second);
 
         if ((pObject != nullptr)
             && (pObject->getObjectID() == target.getObjectID())
@@ -1411,7 +1411,7 @@ bool UnitBase::SearchPathWithAStar() {
     Coord destinationCoord;
 
     if (target) {
-        const auto obj_pointer = target.getObjPointer();
+        auto *const obj_pointer = target.getObjPointer();
 
         if (obj_pointer != nullptr) {
             if (itemID == Unit_Carryall && obj_pointer->getItemID() == Structure_Refinery) {

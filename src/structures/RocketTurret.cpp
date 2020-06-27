@@ -71,11 +71,11 @@ void RocketTurret::attack() {
     if ((weaponTimer != 0) || (target.getObjPointer() == nullptr)) return;
 
     const auto centerPoint = getCenterPoint();
-    const auto pObject = target.getObjPointer();
+    auto *const pObject = target.getObjPointer();
     const auto targetCenterPoint = pObject->getClosestCenterPoint(location);
 
-    auto game = currentGame;
-    auto map = currentGameMap;
+    auto *game = currentGame;
+    auto *map = currentGameMap;
 
     if(distanceFrom(centerPoint, targetCenterPoint) < 3 * TILESIZE) {
         // we are just shooting a bullet as a gun turret would do

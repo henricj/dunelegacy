@@ -153,14 +153,14 @@ void setVideoMode(int displayIndex)
         if (0 == SDL_GetRendererInfo(renderer, &info)) {
             sdl2::SDL_LogRenderer(&info);
 
-            const auto end = info.texture_formats + info.num_texture_formats;
-            const auto sf_ptr = std::find(info.texture_formats, end, SCREEN_FORMAT);
+            auto *const end = info.texture_formats + info.num_texture_formats;
+            auto *const sf_ptr = std::find(info.texture_formats, end, SCREEN_FORMAT);
 
             if (sf_ptr == end)
                 SDL_LogWarn(SDL_LOG_CATEGORY_RENDER, "The SCREEN_FORMAT is not in the renderer's texture_formats");
         }
         else {
-            const auto error = SDL_GetError();
+            const auto *const error = SDL_GetError();
 
             SDL_LogError(SDL_LOG_CATEGORY_RENDER, "Unable to get render info: %s", error);
         }

@@ -73,7 +73,7 @@ sdl2::surface_ptr Shpfile::getPicture(Uint32 indexOfFile)
         THROW(std::invalid_argument, "Shpfile::getPicture(): Requested index %ud is invalid for a shp file with %ud entries!", indexOfFile, shpfileEntries.size());
     }
 
-    const auto Fileheader = pFiledata.get() + shpfileEntries[indexOfFile].startOffset;
+    auto *const Fileheader = pFiledata.get() + shpfileEntries[indexOfFile].startOffset;
 
     const auto type = Fileheader[0];
 
@@ -199,7 +199,7 @@ sdl2::surface_ptr Shpfile::getPictureArray(unsigned int tilesX, unsigned int til
 
     va_end(arg_ptr);
 
-    const auto pData = pFiledata.get();
+    auto *const pData = pFiledata.get();
 
     const auto sizeY = (pData + shpfileEntries[TILE_GETINDEX(tiles[0])].startOffset)[2];
     const auto sizeX = (pData + shpfileEntries[TILE_GETINDEX(tiles[0])].startOffset)[3];

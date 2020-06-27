@@ -160,7 +160,7 @@ void TurretBase::turnRight() {
 void TurretBase::attack() {
     if((weaponTimer == 0) && (target.getObjPointer() != nullptr)) {
         const auto centerPoint = getCenterPoint();
-        const auto pObject = target.getObjPointer();
+        auto *const pObject = target.getObjPointer();
         const auto targetCenterPoint = pObject->getClosestCenterPoint(location);
 
         currentGameMap->add_bullet(objectID, &centerPoint, &targetCenterPoint, bulletType,
