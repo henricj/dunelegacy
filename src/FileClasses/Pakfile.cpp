@@ -355,7 +355,7 @@ int Pakfile::CloseFile(SDL_RWops *pRWop) {
 
 void Pakfile::readIndex()
 {
-    while(1) {
+    while(true) {
         PakFileEntry newEntry;
 
         if(SDL_RWread(fPakFile,(void*) &newEntry.startOffset, sizeof(newEntry.startOffset), 1) != 1) {
@@ -370,7 +370,7 @@ void Pakfile::readIndex()
             break;
         }
 
-        while(1) {
+        while(true) {
             char tmp;
             if(SDL_RWread(fPakFile,&tmp,1,1) != 1) {
                 THROW(std::runtime_error, "Pakfile::readIndex(): SDL_RWread() failed!");

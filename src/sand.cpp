@@ -684,7 +684,7 @@ void startSinglePlayerGame(const GameInitSettings& init)
 {
     auto currentGameInitInfo = init;
 
-    while(1) {
+    while(true) {
 
         try {
 
