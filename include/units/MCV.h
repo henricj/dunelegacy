@@ -34,7 +34,7 @@ public:
         Deploy this MCV. If deploying was successful this unit does not exist anymore.
         \return true, if deploying was successful, false otherwise.
     */
-    bool doDeploy();
+    bool doDeploy() const;
 
     bool canAttack(const ObjectBase* object) const override;
 

@@ -179,7 +179,7 @@ public:
         \param  index   the zero-based index of the entry
         \return the text of the entry
     */
-    [[nodiscard]] std::string getEntry(unsigned int index) {
+    [[nodiscard]] std::string getEntry(unsigned int index) const {
         if(index < entries.size()) {
             return entries.at(index).text;
         } else {
@@ -206,7 +206,7 @@ public:
         \param  index   the zero-based index of the entry
         \return the data of the entry
     */
-    [[nodiscard]] int getEntryIntData(unsigned int index) {
+    [[nodiscard]] int getEntryIntData(unsigned int index) const {
         if(index < entries.size()) {
             return entries.at(index).data.intData;
         } else {
@@ -232,7 +232,7 @@ public:
         \param  index   the zero-based index of the entry
         \return the data of the entry
     */
-    [[nodiscard]] void* getEntryPtrData(unsigned int index) {
+    [[nodiscard]] void* getEntryPtrData(unsigned int index) const {
         if(index < entries.size()) {
             return entries.at(index).data.ptrData;
         } else {

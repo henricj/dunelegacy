@@ -180,7 +180,7 @@ protected:
 
 private:
 
-    void onTextBoxLostFocus() {
+    void onTextBoxLostFocus() const {
         int x = 0;
         if(parseString(textBox.getText(), x)) {
             if(x < minValue) {
@@ -193,7 +193,7 @@ private:
         }
     }
 
-    void onIncrement() {
+    void onIncrement() const {
         int currentValue = getValue();
         currentValue += incrementValue;
         if(currentValue < minValue) {
@@ -205,7 +205,7 @@ private:
         }
     }
 
-    void onDecrement() {
+    void onDecrement() const {
         int currentValue = getValue();
         currentValue -= incrementValue;
         if(currentValue > maxValue) {

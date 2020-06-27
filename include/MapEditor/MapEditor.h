@@ -222,7 +222,7 @@ public:
         return selectedStructureID;
     }
 
-    Structure* getSelectedStructure() {
+    Structure* getSelectedStructure() const {
         return getStructure(selectedStructureID);
     }
 
@@ -247,7 +247,7 @@ public:
         return selectedUnitID;
     }
 
-    Unit* getSelectedUnit() {
+    Unit* getSelectedUnit() const {
         return getUnit(selectedUnitID);
     }
 
@@ -283,7 +283,7 @@ private:
     void drawScreen();
     void processInput();
     void drawCursor();
-    void drawMap(ScreenBorder* pScreenborder, bool bCompleteMap);
+    void drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) const;
     static TERRAINTYPE getTerrain(int x, int y);
     void saveMapshot();
 

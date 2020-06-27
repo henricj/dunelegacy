@@ -68,7 +68,7 @@ private:
     static void onUp();
     static void onDown();
 
-    void onAdd();
+    void onAdd() const;
     static void onRemove();
 
     void onEntryChange(bool bInteractive);

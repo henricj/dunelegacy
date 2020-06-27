@@ -251,7 +251,7 @@ void TeamsWindow::onDown() {
     }
 }
 
-void TeamsWindow::onAdd() {
+void TeamsWindow::onAdd() const {
     if(pMapEditor->getMapVersion() < 2 && teamsListBox.getNumEntries() >= 16) {
         MsgBox* pMsgBox = MsgBox::create(_("Dune2-compatible maps support only up to 16 entries!"));
         pMsgBox->setTextColor(color);

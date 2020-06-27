@@ -108,12 +108,12 @@ public:
     }
 
 private:
-    void onOK();
+    void onOK() const;
     static void onCancel() ;
 
     void onDirectoryChange(int i);
 
-    void onSelectionChange(bool bInteractive);
+    void onSelectionChange(bool bInteractive) const;
 
     HBox    mainHBox;
     VBox    mainVBox;
