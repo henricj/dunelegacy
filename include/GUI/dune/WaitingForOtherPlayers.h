@@ -33,7 +33,7 @@ public:
     WaitingForOtherPlayers();
     ~WaitingForOtherPlayers() override;
 
-    void onRemove();
+    static void onRemove();
 
     void update();
 

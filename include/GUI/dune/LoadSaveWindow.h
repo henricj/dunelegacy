@@ -41,7 +41,7 @@ public:
     LoadSaveWindow& operator=(const LoadSaveWindow &) = delete;
     LoadSaveWindow& operator=(LoadSaveWindow &&) = delete;
 
-    void updateEntries();
+    static void updateEntries();
     std::filesystem::path getFilename() const noexcept { return filename; };
 
     bool isSaveWindow() const noexcept { return bSaveWindow; };
@@ -109,7 +109,7 @@ public:
 
 private:
     void onOK();
-    void onCancel() const;
+    static void onCancel() ;
 
     void onDirectoryChange(int i);
 

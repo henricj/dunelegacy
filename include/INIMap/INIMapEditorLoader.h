@@ -39,13 +39,13 @@ private:
     void load();
     void loadMap();
     void loadHouses();
-    void loadChoam();
-    void loadUnits();
-    void loadStructures();
-    void loadReinforcements();
-    void loadAITeams();
+    static void loadChoam();
+    static void loadUnits();
+    static void loadStructures();
+    static void loadReinforcements();
+    static void loadAITeams();
 
-    HOUSETYPE getHouseID(const std::string& name);
+    static HOUSETYPE getHouseID(const std::string& name);
 
     MapEditor* pMapEditor;
     std::map<std::string, HOUSETYPE> housename2house;

@@ -37,26 +37,26 @@ public:
     [[nodiscard]] sdl2::surface_ptr createTopBar() const;
     [[nodiscard]] sdl2::surface_ptr createSideBar(bool bEditor) const;
     [[nodiscard]] sdl2::surface_ptr createBottomBar() const;
-    [[nodiscard]] sdl2::surface_ptr createPlacingGrid(int size, int color) const;
+    [[nodiscard]] static sdl2::surface_ptr createPlacingGrid(int size, int color) ;
     void drawFrame(SDL_Surface* Pic, unsigned int DecorationType, SDL_Rect* dest=nullptr) const;
     [[nodiscard]] sdl2::surface_ptr createBackground() const;
     [[nodiscard]] sdl2::surface_ptr createMainBackground() const;
     [[nodiscard]] sdl2::surface_ptr createGameStatsBackground(HOUSETYPE House) const;
-    [[nodiscard]] sdl2::surface_ptr createFrame(unsigned int DecorationType,int width, int height,bool UseBackground) const;
+    [[nodiscard]] static sdl2::surface_ptr createFrame(unsigned int DecorationType,int width, int height,bool UseBackground) ;
     [[nodiscard]] sdl2::surface_ptr createMenu(int x,int y) const;
     sdl2::surface_ptr createMenu(SDL_Surface* CaptionPic,int y) const;
-    [[nodiscard]] sdl2::surface_ptr createOptionsMenu() const;
+    [[nodiscard]] static sdl2::surface_ptr createOptionsMenu() ;
     [[nodiscard]] sdl2::surface_ptr createMessageBoxBorder() const;
     sdl2::surface_ptr createHouseSelect(SDL_Surface* HouseChoice) const;
-    sdl2::surface_ptr createGreyHouseChoice(SDL_Surface* HouseChoice) const;
+    static sdl2::surface_ptr createGreyHouseChoice(SDL_Surface* HouseChoice) ;
     [[nodiscard]] sdl2::surface_ptr createMapChoiceScreen(HOUSETYPE House) const;
     sdl2::surface_ptr createMentatHouseChoiceQuestion(HOUSETYPE House, Palette& benePalette) const;
     [[nodiscard]] sdl2::surface_ptr createBuilderListUpperCap() const;
     [[nodiscard]] sdl2::surface_ptr createBuilderListLowerCap() const;
 
-    sdl2::surface_ptr createHeraldFre(SDL_Surface* heraldHark) const;
-    sdl2::surface_ptr createHeraldSard(SDL_Surface* heraldOrd, SDL_Surface* heraldAtre) const;
-    sdl2::surface_ptr createHeraldMerc(SDL_Surface* heraldAtre, SDL_Surface* heraldOrd) const;
+    static sdl2::surface_ptr createHeraldFre(SDL_Surface* heraldHark) ;
+    static sdl2::surface_ptr createHeraldSard(SDL_Surface* heraldOrd, SDL_Surface* heraldAtre) ;
+    static sdl2::surface_ptr createHeraldMerc(SDL_Surface* heraldAtre, SDL_Surface* heraldOrd) ;
 
     static std::unique_ptr<Animation> createFremenPlanet(SDL_Surface* heraldFre);
     static std::unique_ptr<Animation> createSardaukarPlanet(Animation* ordosPlanetAnimation, SDL_Surface* heraldSard);

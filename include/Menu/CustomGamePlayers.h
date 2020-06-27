@@ -51,14 +51,14 @@ public:
     CustomGamePlayers(const GameInitSettings& newGameInitSettings, bool server = true, bool LANServer = true);
     ~CustomGamePlayers() override;
 
-    void onReceiveChangeEventList(const ChangeEventList& changeEventList);
+    static void onReceiveChangeEventList(const ChangeEventList& changeEventList);
 
     ChangeEventList getChangeEventListForNewPlayer(const std::string& newPlayerName);
 
     void update() override;
 
 private:
-    ChangeEventList getChangeEventList();
+    static ChangeEventList getChangeEventList();
 
     void onReceiveChatMessage(const std::string& name, const std::string& message);
     void onPeerDisconnected(const std::string& playername, bool bHost, int cause);
@@ -68,18 +68,18 @@ private:
     void setPlayer2Slot(const std::string& playername, int slot);
 
     void onChangeHousesDropDownBoxes(bool bInteractive, int houseInfoNum = -1);
-    void onChangeTeamDropDownBoxes(bool bInteractive, int houseInfoNum = -1);
+    static void onChangeTeamDropDownBoxes(bool bInteractive, int houseInfoNum = -1);
     void onChangePlayerDropDownBoxes(bool bInteractive, int boxnum);
     void onClickPlayerDropDownBox(int boxnum);
     void onStartGame(unsigned int timeLeft);
-    void addToHouseDropDown(DropDownBox& houseDropDownBox, HOUSETYPE house, bool bSelect = false);
-    void removeFromHouseDropDown(DropDownBox& houseDropDownBox, HOUSETYPE house);
+    static void addToHouseDropDown(DropDownBox& houseDropDownBox, HOUSETYPE house, bool bSelect = false);
+    static void removeFromHouseDropDown(DropDownBox& houseDropDownBox, HOUSETYPE house);
 
     bool isBoundedHouseOnMap(HOUSETYPE houseID);
 
     void checkPlayerBoxes();
     void addAllPlayersToGameInitSettings();
-    bool addPlayerToHouseInfo(GameInitSettings::HouseInfo& newHouseInfo, int player, const std::string& playername);
+    static bool addPlayerToHouseInfo(GameInitSettings::HouseInfo& newHouseInfo, int player, const std::string& playername);
 
     void onNext();
     void onCancel();

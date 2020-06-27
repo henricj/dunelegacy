@@ -264,7 +264,7 @@ void MultiPlayerMenu::onRemoveLANServer(GameServerInfo gameServerInfo) {
     LANGameList.remove(gameServerInfo);
 }
 
-void MultiPlayerMenu::onGameServerInfoList(const std::list<GameServerInfo>& gameServerInfoList) {
+static void MultiPlayerMenu::onGameServerInfoList(const std::list<GameServerInfo>& gameServerInfoList) {
     // remove all game servers from the list that are not included in the sent list
     auto oldListIter = InternetGameList.begin();
     int index = 0;

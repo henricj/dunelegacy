@@ -275,7 +275,7 @@ protected:
 
     bool SearchPathWithAStar();
 
-    void drawSmoke(int x, int y) const;
+    static void drawSmoke(int x, int y) ;
 
     // constant for all units of the same type
     bool     tracked;                ///< Does this unit have tracks?

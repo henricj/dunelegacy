@@ -100,11 +100,11 @@ public:
         incrementValue = newIncrementValue;
     }
 
-    void setValue(int newValue) {
+    static void setValue(int newValue) {
         setValue(newValue, false);
     }
 
-    int getValue() const {
+    static int getValue() {
         int x = 0;
         if(parseString(textBox.getText(), x)) {
             return x;
@@ -171,7 +171,7 @@ public:
     }
 
 protected:
-    void setValue(int newValue, bool bInteractive) {
+    static void setValue(int newValue, bool bInteractive) {
         textBox.setText(std::to_string(newValue));
         if(bInteractive && pOnValueChange) {
             pOnValueChange(true);

@@ -47,7 +47,7 @@ private:
     void    onOptionsCancel();
     void    onGameOptions();
 
-    void    saveConfiguration2File();
+    static void    saveConfiguration2File();
 
     void onChildWindowClose(Window* pChildWindow) override;
 
@@ -56,7 +56,7 @@ private:
         If the system returns that any resolution is possible a reasonable
         set of resolutions is provided.
     */
-    void determineAvailableScreenResolutions();
+    static void determineAvailableScreenResolutions();
 
     std::vector<Coord> availScreenRes;
 

@@ -45,7 +45,7 @@ public:
     }
 
 private:
-    bool canDeploy(int x, int y) const;
+    static bool canDeploy(int x, int y) ;
 };
 
 #endif // MCV_H

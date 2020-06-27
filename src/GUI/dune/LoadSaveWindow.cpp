@@ -242,7 +242,7 @@ void LoadSaveWindow::onOK() {
     }
 }
 
-void LoadSaveWindow::onCancel() const {
+void LoadSaveWindow::onCancel() {
     auto *const pParentWindow = dynamic_cast<Window*>(getParent());
     if(pParentWindow != nullptr) {
         pParentWindow->closeChildWindow();

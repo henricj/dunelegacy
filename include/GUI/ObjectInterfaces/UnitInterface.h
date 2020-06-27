@@ -181,19 +181,19 @@ protected:
         update();
     }
 
-    void onMove() {
+    static void onMove() {
         currentGame->currentCursorMode = Game::CursorMode_Move;
     }
 
-    void onAttack() {
+    static void onAttack() {
         currentGame->currentCursorMode = Game::CursorMode_Attack;
     }
 
-    void onCapture() {
+    static void onCapture() {
         currentGame->currentCursorMode = Game::CursorMode_Capture;
     }
 
-    void onCarryallDrop() {
+    static void onCarryallDrop() {
         currentGame->currentCursorMode = Game::CursorMode_CarryallDrop;
     }
 

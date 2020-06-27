@@ -151,7 +151,7 @@ public:
 
     [[nodiscard]] bool hasChangeSinceLastSave() const { return bChangedSinceLastSave; };
 
-    [[nodiscard]] std::string generateMapname() const;
+    [[nodiscard]] static std::string generateMapname() ;
 
     std::vector<Player>& getPlayers() {
         return players;
@@ -251,20 +251,20 @@ public:
         return getUnit(selectedUnitID);
     }
 
-    [[nodiscard]] bool isTileBlocked(int x, int y, bool bSlabIsBlocking, bool bUnitsAreBlocking) const;
+    [[nodiscard]] static bool isTileBlocked(int x, int y, bool bSlabIsBlocking, bool bUnitsAreBlocking) ;
 
     void setEditorMode(const EditorMode& newEditorMode);
 
-    void startOperation();
+    static void startOperation();
 
     void addUndoOperation(std::unique_ptr<MapEditorOperation> op) {
         undoOperationStack.push(std::move(op));
         bChangedSinceLastSave = true;
     }
 
-    void undoLastOperation();
+    static void undoLastOperation();
 
-    void redoLastOperation();
+    static void redoLastOperation();
 
     inline void clearRedoOperations() {
         while(!redoOperationStack.empty()) {
@@ -284,7 +284,7 @@ private:
     void processInput();
     void drawCursor();
     void drawMap(ScreenBorder* pScreenborder, bool bCompleteMap);
-    TERRAINTYPE getTerrain(int x, int y);
+    static TERRAINTYPE getTerrain(int x, int y);
     void saveMapshot();
 
 private:

@@ -61,11 +61,11 @@ public:
 
 private:
 
-    void onCancel();
-    void onAdvancedBasicToggle();
+    static void onCancel();
+    static void onAdvancedBasicToggle();
     void onOK();
 
-    void onPlayerCheckbox(int i);
+    static void onPlayerCheckbox(int i);
 
 
     HBox    mainHBox;

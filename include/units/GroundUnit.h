@@ -46,8 +46,8 @@ public:
     void bookCarrier(UnitBase* newCarrier);
     void checkPos() override;
 
-    void doRequestCarryallDrop(int x, int y);
-    bool requestCarryall();
+    static void doRequestCarryallDrop(int x, int y);
+    static bool requestCarryall();
     void setPickedUp(UnitBase* newCarrier) override;
 
     /**

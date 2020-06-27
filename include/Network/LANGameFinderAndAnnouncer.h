@@ -97,7 +97,7 @@ public:
 
 private:
     void receivePackets();
-    void updateServerInfoList();
+    static void updateServerInfoList();
     void sendRemoveGameAnnouncement();
 
     std::string serverName;

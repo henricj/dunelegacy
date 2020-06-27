@@ -128,9 +128,9 @@ private:
     void CreateNewEvent (int time);
 
     // Variable length quantity
-    int GetVLQ (DataSource *source, unsigned int &quant);
-    int GetVLQ2 (DataSource *source, unsigned int &quant);
-    int PutVLQ(DataSource *dest, unsigned int value);
+    static int GetVLQ (DataSource *source, unsigned int &quant);
+    static int GetVLQ2 (DataSource *source, unsigned int &quant);
+    static int PutVLQ(DataSource *dest, unsigned int value);
 
     void MovePatchVolAndPan (int channel = -1);
     void DuplicateAndMerge (int num = 0);
@@ -139,7 +139,7 @@ private:
     int ConvertSystemMessage (const int time, const unsigned char status, DataSource *source);
 
     int ConvertFiletoList (DataSource *source, BOOL is_xmi);
-    unsigned int ConvertListToMTrk (DataSource *dest, midi_event *mlist);
+    static unsigned int ConvertListToMTrk (DataSource *dest, midi_event *mlist);
 
     int ExtractTracksFromXmi (DataSource *source);
     int ExtractTracksFromMid (DataSource *source);

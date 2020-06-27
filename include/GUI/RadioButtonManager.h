@@ -49,9 +49,9 @@ public:
         va_end(valist);
     }
 
-    void unregisterRadioButton(RadioButton* pRadioButton);
+    static void unregisterRadioButton(RadioButton* pRadioButton);
 
-    bool isRegistered(RadioButton* pRadioButton) const {
+    static bool isRegistered(RadioButton* pRadioButton) {
         for(const RadioButton* pTmpRadioButton : radioButtonList) {
             if(pTmpRadioButton == pRadioButton) {
                 return true;
