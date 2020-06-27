@@ -173,7 +173,7 @@ MentatMenu::MentatMenu(HOUSETYPE newHouse)
 MentatMenu::~MentatMenu() = default;
 
 void MentatMenu::setText(const std::string& text) {
-    std::regex rgx("[^\\.\\!\\?]*[\\.\\!\\?]\\s?");
+    std::regex rgx(R"([^\.\!\?]*[\.\!\?]\s?)");
     mentatTexts = std::vector<std::string>(std::sregex_token_iterator(text.begin(), text.end(), rgx), std::sregex_token_iterator());
     if(mentatTexts.empty()) {
         mentatTexts.push_back(text);
