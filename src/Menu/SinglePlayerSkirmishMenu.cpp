@@ -29,7 +29,7 @@ static const std::array<HOUSETYPE, static_cast<int>(HOUSETYPE::NUM_HOUSES)> hous
     HOUSETYPE::HOUSE_ATREIDES,  HOUSETYPE::HOUSE_ORDOS,  HOUSETYPE::HOUSE_HARKONNEN,
     HOUSETYPE::HOUSE_MERCENARY, HOUSETYPE::HOUSE_FREMEN, HOUSETYPE::HOUSE_SARDAUKAR};
 
-SinglePlayerSkirmishMenu::SinglePlayerSkirmishMenu() : MenuBase()
+SinglePlayerSkirmishMenu::SinglePlayerSkirmishMenu()  
 {
     currentHouseChoiceScrollPos = 0;
     selectedButton = 1;

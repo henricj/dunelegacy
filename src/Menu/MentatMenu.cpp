@@ -27,7 +27,7 @@
 #include <regex>
 
 MentatMenu::MentatMenu(HOUSETYPE newHouse)
- : MenuBase(), currentMentatTextIndex(-1), nextMentatTextSwitch(0)
+ :  currentMentatTextIndex(-1), nextMentatTextSwitch(0)
 {
     nextSpecialAnimation = SDL_GetTicks() + getRandomInt(8000, 20000);
 

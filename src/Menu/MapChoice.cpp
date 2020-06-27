@@ -31,7 +31,7 @@
 
 #include <sand.h>
 
-MapChoice::MapChoice(HOUSETYPE newHouse, unsigned int lastMission, Uint32 oldAlreadyPlayedRegions) : MenuBase() {
+MapChoice::MapChoice(HOUSETYPE newHouse, unsigned int lastMission, Uint32 oldAlreadyPlayedRegions)  {
     disableQuiting(true);
     selectedRegion = -1;
     selectionTime = 0;

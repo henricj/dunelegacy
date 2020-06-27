@@ -24,7 +24,7 @@
 
 class ObjectInterface : public StaticContainer {
 public:
-        ObjectInterface() : StaticContainer() { ; };
+        ObjectInterface()  { ; };
 
         ~ObjectInterface() override { ; };
 

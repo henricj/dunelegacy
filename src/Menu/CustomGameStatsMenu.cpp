@@ -32,7 +32,7 @@
 #include <algorithm>
 
 
-CustomGameStatsMenu::CustomGameStatsMenu() : MenuBase()
+CustomGameStatsMenu::CustomGameStatsMenu()  
 {
     // set up window
     SDL_Texture *pBackground = pGFXManager->getUIGraphic(UI_MenuBackground);
