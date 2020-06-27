@@ -149,7 +149,7 @@ void INIMapEditorLoader::loadMap() {
                 if(parseString(SpecialPosition, SpecialPos)) {
                     int xpos = getXPos(SpecialPos);
                     int ypos = getYPos(SpecialPos);
-                    pMapEditor->getSpecialBlooms().push_back(Coord(xpos,ypos));
+                    pMapEditor->getSpecialBlooms().emplace_back(xpos,ypos);
                 } else {
                     logWarning(inifile->getKey("MAP", "Special")->getLineNumber(), "Invalid special bloom position: '" + SpecialPosition + "'");
                 }

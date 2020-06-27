@@ -136,7 +136,7 @@ public:
         \param  data    an pointer value that is assigned to this entry (see getEntryPtrData)
     */
     void addEntry(const std::string& text, void* data) {
-        entries.push_back(ListEntry(text,data));
+        entries.emplace_back(text,data);
         updateList();
     }
 
