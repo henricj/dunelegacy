@@ -90,7 +90,7 @@ public:
     */
     void draw(Point position) override
     {
-        if(isVisible() == false) {
+        if(!isVisible()) {
             return;
         }
 

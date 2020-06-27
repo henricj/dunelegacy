@@ -108,12 +108,11 @@ void Deviator::destroy() {
 
 bool Deviator::canAttack(const ObjectBase* object) const
 {
-    if ((object != nullptr) && !object->isAStructure() && !object->isAFlyingUnit()
+    return (object != nullptr) && !object->isAStructure() && !object->isAFlyingUnit()
+
         && (object->getOwner()->getTeamID() != owner->getTeamID())
-        && object->isVisible(getOwner()->getTeamID()))
-        return true;
-    else
-        return false;
+
+        && object->isVisible(getOwner()->getTeamID());
 }
 
 void Deviator::playAttackSound() {

@@ -54,11 +54,11 @@ public:
             return false;
         }
 
-        if((isEnabled() == false) || (isVisible() == false)) {
+        if((!isEnabled()) || (!isVisible())) {
             return true;
         }
 
-        if(pressed == true && pOnClick) {
+        if(pressed && pOnClick) {
             pOnClick(x,y);
         }
 

@@ -97,7 +97,7 @@ void Refinery::save(OutputStream& stream) const {
 }
 
 ObjectInterface* Refinery::getInterfaceContainer() {
-    if((pLocalHouse == owner) || (debug == true)) {
+    if((pLocalHouse == owner) || (debug)) {
         return RefineryAndSiloInterface::create(objectID);
     } else {
         return DefaultObjectInterface::create(objectID);
@@ -144,7 +144,7 @@ void Refinery::deployHarvester(Carryall* pCarryall) {
 }
 
 void Refinery::startAnimate() {
-    if(extractingSpice == false) {
+    if(!extractingSpice) {
         firstAnimFrame = 2;
         lastAnimFrame = 7;
         curAnimFrame = 2;
@@ -175,7 +175,7 @@ void Refinery::updateStructureSpecificStuff() {
 
 
             owner->addCredits(pHarvester->extractSpice(extractionSpeed), true);
-        } else if((pHarvester->isAwaitingPickup() == false) && (pHarvester->getGuardPoint().isValid())) {
+        } else if((!pHarvester->isAwaitingPickup()) && (pHarvester->getGuardPoint().isValid())) {
             // find carryall
             Carryall* pCarryall = nullptr;
             if((pHarvester->getGuardPoint().isValid()) && getOwner()->hasCarryalls())   {

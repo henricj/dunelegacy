@@ -38,7 +38,7 @@ void ChatManager::draw(Point position)
 {
     // delete all old messages
     Uint32 currentTime = SDL_GetTicks();
-    while(chatMessages.empty() == false && chatMessages.front().messageTime + MAX_MESSAGESHOWTIME < currentTime) {
+    while(!chatMessages.empty() && chatMessages.front().messageTime + MAX_MESSAGESHOWTIME < currentTime) {
         chatMessages.pop_front();
     }
 

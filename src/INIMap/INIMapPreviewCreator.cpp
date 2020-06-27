@@ -235,7 +235,7 @@ sdl2::surface_ptr INIMapPreviewCreator::createMinimapImageOfMap(int borderWidth,
     } else {
         // new map format with saved map
 
-        if((inifile->hasKey("MAP","SizeX") == false) || (inifile->hasKey("MAP","SizeY") == false)) {
+        if((!inifile->hasKey("MAP","SizeX")) || (!inifile->hasKey("MAP","SizeY"))) {
             logError("SizeX and SizeY must be specified!");
         }
 
@@ -253,7 +253,7 @@ sdl2::surface_ptr INIMapPreviewCreator::createMinimapImageOfMap(int borderWidth,
         for(int y=0;y<sizeY;y++) {
             std::string rowKey = fmt::sprintf("%.3d", y);
 
-            if(inifile->hasKey("MAP", rowKey) == false) {
+            if(!inifile->hasKey("MAP", rowKey)) {
                 logError(inifile->getSection("MAP").getLineNumber(), "Map row " + std::to_string(y) + " does not exist!");
             }
 

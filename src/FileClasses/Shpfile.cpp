@@ -400,7 +400,7 @@ void Shpfile::readIndex()
                 ShpfileEntry newShpfileEntry;
                 newShpfileEntry.startOffset = SDL_SwapLE16(reinterpret_cast<const Uint16 *>(pFiledata.get() + 2)[i]);
 
-                if(shpfileEntries.empty() == false) {
+                if(!shpfileEntries.empty()) {
                     shpfileEntries.back().endOffset = newShpfileEntry.startOffset - 1;
 
                     if(newShpfileEntry.startOffset >= shpFilesize) {
@@ -425,7 +425,7 @@ void Shpfile::readIndex()
                 ShpfileEntry newShpfileEntry;
                 newShpfileEntry.startOffset = SDL_SwapLE32( (reinterpret_cast<const Uint32*>(pFiledata.get() + 2))[i]) + 2;
 
-                if (shpfileEntries.empty() == false) {
+                if (!shpfileEntries.empty()) {
                     shpfileEntries.back().endOffset = newShpfileEntry.startOffset - 1;
 
                     if(newShpfileEntry.startOffset >= shpFilesize) {

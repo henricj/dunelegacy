@@ -50,7 +50,7 @@ bool TextView::handleKeyPress(SDL_KeyboardEvent& key) {
 }
 
 void TextView::draw(Point position) {
-    if(isVisible() == false) {
+    if(!isVisible()) {
         return;
     }
 

@@ -64,7 +64,7 @@ int MenuBase::showMenu() {
             return retVal;
         }
 
-        if(bClearScreen == true) {
+        if(bClearScreen) {
             SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
             SDL_RenderClear(renderer);
         }
@@ -74,13 +74,13 @@ int MenuBase::showMenu() {
 
         while(SDL_PollEvent(&event)) {
             //check the events
-            if(doInput(event) == false) {
+            if(!doInput(event)) {
                 break;
             }
         }
 
         const int frameTime = static_cast<int>(SDL_GetTicks()) - frameStart;
-        if(settings.video.frameLimit == true) {
+        if(settings.video.frameLimit) {
             if(frameTime >= 0 && frameTime < 32) {
                 SDL_Delay(32 - frameTime);
             }
@@ -113,7 +113,7 @@ bool MenuBase::doInput(SDL_Event &event) {
             switch(event.key.keysym.sym) {
 
                 case SDLK_ESCAPE: {
-                    if((pChildWindow == nullptr) && (bAllowQuiting == true)) {
+                    if((pChildWindow == nullptr) && (bAllowQuiting)) {
                         quit();
                     }
                 } break;
@@ -140,7 +140,7 @@ bool MenuBase::doInput(SDL_Event &event) {
                     do {
                         screenshotFilename = "Screenshot" + std::to_string(i) + ".png";
                         i++;
-                    } while(existsFile(screenshotFilename) == true);
+                    } while(existsFile(screenshotFilename));
 
                     sdl2::surface_ptr pCurrentScreen = renderReadSurface(renderer);
                     SavePNG(pCurrentScreen.get(), screenshotFilename.c_str());
@@ -164,7 +164,7 @@ bool MenuBase::doInput(SDL_Event &event) {
         } break;
 
         case SDL_QUIT: {
-            if((pChildWindow == nullptr) && (bAllowQuiting == true)) {
+            if((pChildWindow == nullptr) && (bAllowQuiting)) {
                 quit();
             }
         } break;

@@ -909,7 +909,7 @@ void QuantBot::build(int militaryValue) {
 
     for(const auto pStructure : getStructureList()) {
         if(pStructure->getOwner() == getHouse()) {
-            if((pStructure->isRepairing() == false)
+            if((!pStructure->isRepairing())
                && (pStructure->getHealth() < pStructure->getMaxHealth())
                 && (!getGameInitSettings().getGameOptions().concreteRequired
                      || pStructure->getItemID() == Structure_Palace) // Palace repairs for free
@@ -923,7 +923,7 @@ void QuantBot::build(int militaryValue) {
                         && (pStructure->getHealth() < pStructure->getMaxHealth() * 0.40_fix)
                         && money > 1000) {
                 doRepair(pStructure);
-            } else if( (pStructure->isRepairing() == false) && money > 5000){
+            } else if( (!pStructure->isRepairing()) && money > 5000){
                 // Repair if we are rich
                 doRepair(pStructure);
             } else if(pStructure->getItemID() == Structure_RocketTurret) {
@@ -1037,7 +1037,7 @@ void QuantBot::build(int militaryValue) {
                            && !getHouse()->isAirUnitLimitReached()){
                             doProduceItem(pBuilder, Unit_Carryall);
                             itemCount[Unit_Carryall]++;
-                        } else if((money > 500) && (pBuilder->isUpgrading() == false) && (pBuilder->getCurrentUpgradeLevel() < pBuilder->getMaxUpgradeLevel())) {
+                        } else if((money > 500) && (!pBuilder->isUpgrading()) && (pBuilder->getCurrentUpgradeLevel() < pBuilder->getMaxUpgradeLevel())) {
                             if (pBuilder->getHealth() >= pBuilder->getMaxHealth()) {
                                 doUpgrade(pBuilder);
                             } else {
@@ -1059,7 +1059,7 @@ void QuantBot::build(int militaryValue) {
 
                     case Structure_HeavyFactory: {
                         // only if the factory isn't busy
-                        if((pBuilder->isUpgrading() == false) && (pBuilder->getProductionQueueSize() < 1) && (pBuilder->getBuildListSize() > 0)) {
+                        if((!pBuilder->isUpgrading()) && (pBuilder->getProductionQueueSize() < 1) && (pBuilder->getBuildListSize() > 0)) {
                             // we need a construction yard. Build an MCV if we don't have a starport
                             if( (difficulty == Difficulty::Hard || difficulty == Difficulty::Brutal)
                                 && itemCount[Unit_MCV] + itemCount[Structure_ConstructionYard] + itemCount[Structure_StarPort] < 1
@@ -1097,7 +1097,7 @@ void QuantBot::build(int militaryValue) {
                                 //itemCount[Unit_Harvester], harvesterLimit, money);
                                 doProduceItem(pBuilder, Unit_Harvester);
                                 itemCount[Unit_Harvester]++;
-                            } else if((money > 500) && (pBuilder->isUpgrading() == false) && (pBuilder->getCurrentUpgradeLevel() < pBuilder->getMaxUpgradeLevel())) {
+                            } else if((money > 500) && (!pBuilder->isUpgrading()) && (pBuilder->getCurrentUpgradeLevel() < pBuilder->getMaxUpgradeLevel())) {
                                 if (pBuilder->getHealth() >= pBuilder->getMaxHealth()){
                                     doUpgrade(pBuilder);
                                 } else {

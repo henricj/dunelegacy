@@ -67,7 +67,7 @@ NetworkManager::~NetworkManager() {
 }
 
 void NetworkManager::startServer(bool bLANServer, const std::string& serverName, const std::string& playerName, GameInitSettings* pGameInitSettings, int numPlayers, int maxPlayers) {
-    if(bLANServer == true) {
+    if(bLANServer) {
         if(pLANGameFinderAndAnnouncer != nullptr) {
             pLANGameFinderAndAnnouncer->startAnnounce(serverName, host->address.port, pGameInitSettings->getFilename().u8string(), numPlayers, maxPlayers);
         }
@@ -86,7 +86,7 @@ void NetworkManager::startServer(bool bLANServer, const std::string& serverName,
 }
 
 void NetworkManager::updateServer(int numPlayers) {
-    if(bLANServer == true) {
+    if(bLANServer) {
         if(pLANGameFinderAndAnnouncer != nullptr) {
             pLANGameFinderAndAnnouncer->updateAnnounce(numPlayers);
         }
@@ -100,7 +100,7 @@ void NetworkManager::updateServer(int numPlayers) {
 }
 
 void NetworkManager::stopServer() {
-    if(bLANServer == true) {
+    if(bLANServer) {
         if(pLANGameFinderAndAnnouncer != nullptr) {
             pLANGameFinderAndAnnouncer->stopAnnounce();
         }
@@ -161,7 +161,7 @@ void NetworkManager::update()
 
     if(bIsServer) {
         // Check for timeout of one client
-        if(awaitingConnectionList.empty() == false) {
+        if(!awaitingConnectionList.empty()) {
             ENetPeer* pCurrentPeer = awaitingConnectionList.front();
             auto* peerData = static_cast<PeerData*>(pCurrentPeer->data);
 
@@ -390,7 +390,7 @@ void NetworkManager::handlePacket(ENetPeer* peer, ENetPacketIStream& packetStrea
         switch(packetType) {
             case NETWORKPACKET_CONNECT: {
 
-                if(bIsServer == false) {
+                if(!bIsServer) {
                     ENetAddress address;
 
                     address.host = SDL_SwapBE32(packetStream.readUint32());
@@ -443,7 +443,7 @@ void NetworkManager::handlePacket(ENetPeer* peer, ENetPacketIStream& packetStrea
 
                 if(isServer()) {
 
-                    if(awaitingConnectionList.empty() == false) {
+                    if(!awaitingConnectionList.empty()) {
                         ENetPeer* pCurrentPeer = awaitingConnectionList.front();
                         auto* peerData = static_cast<PeerData*>(pCurrentPeer->data);
                         if(!peerData) {
@@ -544,7 +544,7 @@ void NetworkManager::handlePacket(ENetPeer* peer, ENetPacketIStream& packetStrea
                         bFoundName = true;
                     }
 
-                    if(bFoundName == false) {
+                    if(!bFoundName) {
                         for(ENetPeer* pCurrentPeer : peerList) {
                             auto* pCurrentPeerData = static_cast<PeerData*>(pCurrentPeer->data);
                             if(!pCurrentPeerData) {
@@ -558,7 +558,7 @@ void NetworkManager::handlePacket(ENetPeer* peer, ENetPacketIStream& packetStrea
                         }
                     }
 
-                    if(bFoundName == false) {
+                    if(!bFoundName) {
                         for(ENetPeer* pAwaitingConnectionPeer : awaitingConnectionList) {
                             auto* pAwaitingConnectionPeerData = static_cast<PeerData*>(pAwaitingConnectionPeer->data);
                             if(pAwaitingConnectionPeerData && (pAwaitingConnectionPeerData->name == newName)) {
@@ -570,7 +570,7 @@ void NetworkManager::handlePacket(ENetPeer* peer, ENetPacketIStream& packetStrea
                     }
                 }
 
-                if(bFoundName == false) {
+                if(!bFoundName) {
                     peerData->name = newName;
 
                     if(peerData->peerState == PeerData::PeerState::WaitingForName) {

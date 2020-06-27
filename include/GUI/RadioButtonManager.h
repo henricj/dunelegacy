@@ -31,7 +31,7 @@ public:
 
     /// destructor
     virtual ~RadioButtonManager() {
-        while(radioButtonList.empty() == false) {
+        while(!radioButtonList.empty()) {
             unregisterRadioButton(*radioButtonList.begin());
         }
     }

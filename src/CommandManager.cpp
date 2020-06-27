@@ -115,7 +115,7 @@ void CommandManager::addCommandList(const std::string& playername, const Command
 }
 
 void CommandManager::addCommand(const Command& cmd, Uint32 CycleNumber) {
-    if (bReadOnly != false) return;
+    if (bReadOnly) return;
 
     if (CycleNumber >= timeslot.size()) {
         timeslot.resize(CycleNumber + 1);
@@ -135,7 +135,7 @@ void CommandManager::addCommand(const Command& cmd, Uint32 CycleNumber) {
 }
 
 void CommandManager::addCommand(Command&& cmd, Uint32 CycleNumber) {
-    if (bReadOnly != false) return;
+    if (bReadOnly) return;
 
     if (CycleNumber >= timeslot.size()) {
         timeslot.resize(CycleNumber + 1);

@@ -296,7 +296,7 @@ protected:
     */
     bool update() override
     {
-        if(currentGame->getSelectedList().empty() == true) {
+        if(currentGame->getSelectedList().empty()) {
             return false;
         }
 

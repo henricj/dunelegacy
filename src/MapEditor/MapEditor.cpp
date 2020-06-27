@@ -120,7 +120,7 @@ void MapEditor::RunEditor() {
         drawScreen();
 
         const int frameTime = static_cast<int>(SDL_GetTicks()) - frameStart;
-        if(settings.video.frameLimit == true) {
+        if(settings.video.frameLimit) {
             if(frameTime >= 0 && frameTime < 32) {
                 SDL_Delay(32 - frameTime);
             }
@@ -774,7 +774,7 @@ void MapEditor::performMapEdit(int xpos, int ypos, bool bRepeated) {
 
                 Coord structureSize = getStructureSize(currentEditorMode.itemID);
 
-                if(mapMirror->mirroringPossible( Coord(xpos, ypos), structureSize) == false) {
+                if(!mapMirror->mirroringPossible( Coord(xpos, ypos), structureSize)) {
                     return;
                 }
 
@@ -1129,7 +1129,7 @@ void MapEditor::processInput() {
                     pInterface->handleMouseMovement(drawnMouseX,drawnMouseY);
 
                     if(bLeftMousePressed) {
-                        if(screenborder->isScreenCoordInsideMap(drawnMouseX, drawnMouseY) == true) {
+                        if(screenborder->isScreenCoordInsideMap(drawnMouseX, drawnMouseY)) {
                             //if mouse is not over side bar
 
                             int xpos = screenborder->screen2MapX(drawnMouseX);
@@ -1144,7 +1144,7 @@ void MapEditor::processInput() {
 
                 case SDL_MOUSEWHEEL: {
                     if (event.wheel.y != 0) {
-                        if(screenborder->isScreenCoordInsideMap(drawnMouseX, drawnMouseY) == true) {
+                        if(screenborder->isScreenCoordInsideMap(drawnMouseX, drawnMouseY)) {
                             //if mouse is not over side bar
                             int xpos = screenborder->screen2MapX(drawnMouseX);
                             int ypos = screenborder->screen2MapY(drawnMouseY);
@@ -1172,11 +1172,11 @@ void MapEditor::processInput() {
 
                     switch(mouse->button) {
                         case SDL_BUTTON_LEFT: {
-                            if(pInterface->handleMouseLeft(mouse->x, mouse->y, true) == false) {
+                            if(!pInterface->handleMouseLeft(mouse->x, mouse->y, true)) {
 
                                 bLeftMousePressed = true;
 
-                                if(screenborder->isScreenCoordInsideMap(mouse->x, mouse->y) == true) {
+                                if(screenborder->isScreenCoordInsideMap(mouse->x, mouse->y)) {
                                     //if mouse is not over side bar
 
                                     int xpos = screenborder->screen2MapX(mouse->x);
@@ -1189,9 +1189,9 @@ void MapEditor::processInput() {
                         } break;
 
                         case SDL_BUTTON_RIGHT: {
-                            if(pInterface->handleMouseRight(mouse->x, mouse->y, true) == false) {
+                            if(!pInterface->handleMouseRight(mouse->x, mouse->y, true)) {
 
-                                if(screenborder->isScreenCoordInsideMap(mouse->x, mouse->y) == true) {
+                                if(screenborder->isScreenCoordInsideMap(mouse->x, mouse->y)) {
                                     //if mouse is not over side bar
                                     setEditorMode(EditorMode());
                                     pInterface->deselectAll();
@@ -1218,7 +1218,7 @@ void MapEditor::processInput() {
                                 lastTerrainEditPosY = -1;
 
                                 if(currentEditorMode.mode == EditorMode::EditorMode_Selection) {
-                                    if(screenborder->isScreenCoordInsideMap(mouse->x, mouse->y) == true) {
+                                    if(screenborder->isScreenCoordInsideMap(mouse->x, mouse->y)) {
                                         //if mouse is not over side bar
 
                                         int xpos = screenborder->screen2MapX(mouse->x);
@@ -1288,7 +1288,7 @@ void MapEditor::processInput() {
         }
     }
 
-    if((pInterface->hasChildWindow() == false) && (SDL_GetWindowFlags(window) & SDL_WINDOW_MOUSE_FOCUS)) {
+    if((!pInterface->hasChildWindow()) && (SDL_GetWindowFlags(window) & SDL_WINDOW_MOUSE_FOCUS)) {
         const Uint8 *keystate = SDL_GetKeyboardState(nullptr);
         scrollDownMode =  (drawnMouseY >= getRendererHeight()-1-SCROLLBORDER) || keystate[SDL_SCANCODE_DOWN];
         scrollLeftMode = (drawnMouseX <= SCROLLBORDER) || keystate[SDL_SCANCODE_LEFT];
@@ -1351,7 +1351,7 @@ void MapEditor::drawCursor() {
         pCursor = pGFXManager->getUIGraphic(UI_CursorNormal);
         dest = calcDrawingRect(pCursor, drawnMouseX, drawnMouseY, HAlign::Left, VAlign::Top);
 
-        if((drawnMouseX < sideBarPos.x) && (drawnMouseY > topBarPos.h) && (currentMirrorMode != MirrorModeNone) && (pInterface->hasChildWindow() == false)) {
+        if((drawnMouseX < sideBarPos.x) && (drawnMouseY > topBarPos.h) && (currentMirrorMode != MirrorModeNone) && (!pInterface->hasChildWindow())) {
 
             SDL_Texture* pMirrorIcon = nullptr;
             switch(currentMirrorMode) {
@@ -1549,37 +1549,37 @@ void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) {
             }
 
             int maketile = 0;
-            if((left == true) && (right == true) && (up == true) && (down == true)) {
+            if((left) && (right) && (up) && (down)) {
                 maketile = Wall::Wall_Full; //solid wall
-            } else if((left == false) && (right == true) && (up == true) && (down == true)) {
+            } else if((!left) && (right) && (up) && (down)) {
                 maketile = Wall::Wall_UpDownRight; //missing left edge
-            } else if((left == true) && (right == false)&& (up == true) && (down == true)) {
+            } else if((left) && (!right)&& (up) && (down)) {
                 maketile = Wall::Wall_UpDownLeft; //missing right edge
-            } else if((left == true) && (right == true) && (up == false) && (down == true)) {
+            } else if((left) && (right) && (!up) && (down)) {
                 maketile = Wall::Wall_DownLeftRight; //missing top edge
-            } else if((left == true) && (right == true) && (up == true) && (down == false)) {
+            } else if((left) && (right) && (up) && (!down)) {
                 maketile = Wall::Wall_UpLeftRight; //missing bottom edge
-            } else if((left == false) && (right == true) && (up == false) && (down == true)) {
+            } else if((!left) && (right) && (!up) && (down)) {
                 maketile = Wall::Wall_DownRight; //missing top left edge
-            } else if((left == true) && (right == false) && (up == true) && (down == false)) {
+            } else if((left) && (!right) && (up) && (!down)) {
                 maketile = Wall::Wall_UpLeft; //missing bottom right edge
-            } else if((left == true) && (right == false) && (up == false) && (down == true)) {
+            } else if((left) && (!right) && (!up) && (down)) {
                 maketile = Wall::Wall_DownLeft; //missing top right edge
-            } else if((left == false) && (right == true) && (up == true) && (down == false)) {
+            } else if((!left) && (right) && (up) && (!down)) {
                 maketile = Wall::Wall_UpRight; //missing bottom left edge
-            } else if((left == true) && (right == false) && (up == false) && (down == false)) {
+            } else if((left) && (!right) && (!up) && (!down)) {
                 maketile = Wall::Wall_LeftRight; //missing above, right and below
-            } else if((left == false) && (right == true) && (up == false) && (down == false)) {
+            } else if((!left) && (right) && (!up) && (!down)) {
                 maketile = Wall::Wall_LeftRight; //missing above, left and below
-            } else if((left == false) && (right == false) && (up == true) && (down == false)) {
+            } else if((!left) && (!right) && (up) && (!down)) {
                 maketile = Wall::Wall_UpDown; //only up
-            } else if((left == false) && (right == false) && (up == false) && (down == true)) {
+            } else if((!left) && (!right) && (!up) && (down)) {
                 maketile = Wall::Wall_UpDown; //only down
-            } else if((left == true) && (right == true) && (up == false) && (down == false)) {
+            } else if((left) && (right) && (!up) && (!down)) {
                 maketile = Wall::Wall_LeftRight; //missing above and below
-            } else if((left == false) && (right == false) && (up == true) && (down == true)) {
+            } else if((!left) && (!right) && (up) && (down)) {
                 maketile = Wall::Wall_UpDown; //missing left and right
-            } else if((left == false) && (right == false) && (up == false) && (down == false)) {
+            } else if((!left) && (!right) && (!up) && (!down)) {
                 maketile = Wall::Wall_Standalone; //missing left and right
             }
 
@@ -1885,7 +1885,7 @@ void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) {
                         SDL_Texture* image = validPlace;
 
                         // check if mirroring of the original (!) position is possible
-                        if(mapMirror->mirroringPossible( Coord(xPos, yPos), structureSize) == false) {
+                        if(!mapMirror->mirroringPossible( Coord(xPos, yPos), structureSize)) {
                             image = invalidPlace;
                         }
 

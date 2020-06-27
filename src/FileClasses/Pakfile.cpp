@@ -34,7 +34,7 @@
 Pakfile::Pakfile(const std::filesystem::path& pakfilename, bool write)
  : write(write), fPakFile(nullptr), filename(pakfilename), writeOutData(nullptr), numWriteOutData(0) {
 
-    if(write == false) {
+    if(!write) {
         // Open for reading
         if( (fPakFile = SDL_RWFromFile(filename.u8string().c_str(), "rb")) == nullptr) {
             THROW(std::invalid_argument, "Pakfile::Pakfile(): Cannot open " + pakfilename.string() + "!");
@@ -60,7 +60,7 @@ Pakfile::Pakfile(const std::filesystem::path& pakfilename, bool write)
 */
 Pakfile::~Pakfile()
 {
-    if(write == true) {
+    if(write) {
         // calculate header size
         int headersize = 0;
         for(auto & fileEntrie : fileEntries) {
@@ -119,7 +119,7 @@ const std::filesystem::path& Pakfile::getFilename(unsigned int index) const {
     \param  filename    This is the filename the data is added with
 */
 void Pakfile::addFile(SDL_RWops* rwop, const std::string& filename) {
-    if(write == false) {
+    if(!write) {
         THROW(std::runtime_error, "Pakfile::addFile(): Pakfile is opened for read-only!");
     }
 
@@ -171,7 +171,7 @@ void Pakfile::addFile(SDL_RWops* rwop, const std::string& filename) {
     \return SDL_RWops for this file
 */
 sdl2::RWops_ptr Pakfile::openFile(const std::filesystem::path& filename) {
-    if(write == true) {
+    if(write) {
         THROW(std::runtime_error, "Pakfile::openFile(): Writing files is not supported!");
     }
 
@@ -383,7 +383,7 @@ void Pakfile::readIndex()
             }
         }
 
-        if(fileEntries.empty() == false) {
+        if(!fileEntries.empty()) {
             fileEntries.back().endOffset = newEntry.startOffset - 1;
         }
 
