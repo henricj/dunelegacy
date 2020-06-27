@@ -289,15 +289,15 @@ std::filesystem::path getDuneLegacyDataDir() {
 #endif
 
         if((dataDir.empty()) || (dataDir == ".") || (dataDir == "./") || (dataDir == ".\\")) {
-            auto basePath = sdl2::sdl_ptr<char>{ SDL_GetBasePath() };
+            const sdl2::sdl_ptr<char> basePath{ SDL_GetBasePath() };
 
-            if(basePath.get() == nullptr) {
+            if(basePath == nullptr) {
                 THROW(sdl_error, "SDL_GetBasePath() failed: %s!", SDL_GetError());
             }
             dataDir = basePath.get();
         }
 
-        duneLegacyDataDir = dataDir.lexically_normal();
+        duneLegacyDataDir = dataDir.lexically_normal().make_preferred();
     }
     return duneLegacyDataDir;
 }
