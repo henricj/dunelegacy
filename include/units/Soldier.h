@@ -27,7 +27,7 @@ public:
     explicit Soldier(House* newOwner);
     explicit Soldier(InputStream& stream);
     void init();
-    virtual ~Soldier();
+    ~Soldier() override;
 
     bool canAttack(const ObjectBase* object) const override;
 

@@ -26,7 +26,7 @@ public:
     explicit Quad(House* newOwner);
     explicit Quad(InputStream& stream);
     void init();
-    virtual ~Quad();
+    ~Quad() override;
 
     void playAttackSound() override;
 

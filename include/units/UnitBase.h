@@ -34,7 +34,7 @@ public:
     explicit UnitBase(House* newOwner);
     explicit UnitBase(InputStream& stream);
     void init();
-    virtual ~UnitBase() = 0;
+    ~UnitBase() override = 0;
 
     UnitBase(const UnitBase &) = delete;
     UnitBase(UnitBase &&) = delete;

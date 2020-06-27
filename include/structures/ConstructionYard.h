@@ -26,7 +26,7 @@ public:
     explicit ConstructionYard(House* newOwner);
     explicit ConstructionYard(InputStream& stream);
     void init();
-    virtual ~ConstructionYard();
+    ~ConstructionYard() override;
 
     /**
         Places the just produced structure at x,y.

@@ -41,7 +41,7 @@ public:
     explicit Wall(House* newOwner);
     explicit Wall(InputStream& stream);
     void init();
-    virtual ~Wall();
+    ~Wall() override;
 
     void save(OutputStream& stream) const override;
 

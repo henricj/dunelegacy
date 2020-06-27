@@ -26,7 +26,7 @@ public:
     explicit Trooper(House* newOwner);
     explicit Trooper(InputStream& stream);
     void init();
-    virtual ~Trooper();
+    ~Trooper() override;
 
     bool canAttack(const ObjectBase* object) const override;
 

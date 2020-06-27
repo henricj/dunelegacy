@@ -26,7 +26,7 @@ public:
     explicit Frigate(House* newOwner);
     explicit Frigate(InputStream& stream);
     void init();
-    virtual ~Frigate();
+    ~Frigate() override;
 
     void save(OutputStream& stream) const override;
 
@@ -41,7 +41,7 @@ public:
     void deploy(const Coord& newLocation) override;
 
 protected:
-    virtual void turn() override;
+    void turn() override;
 
 private:
     bool    droppedOffCargo;    ///< Is the cargo already dropped off?

@@ -26,7 +26,7 @@ public:
     explicit GunTurret(House* newOwner);
     explicit GunTurret(InputStream& stream);
     void init();
-    virtual ~GunTurret();
+    ~GunTurret() override;
 };
 
 #endif // GUNTURRET_H

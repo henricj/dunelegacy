@@ -27,7 +27,7 @@ public:
     explicit InfantryBase(House* newOwner);
     explicit InfantryBase(InputStream& stream);
     void init();
-    virtual ~InfantryBase();
+    ~InfantryBase() override;
 
     InfantryBase(const InfantryBase &) = delete;
     InfantryBase(InfantryBase &&) = delete;

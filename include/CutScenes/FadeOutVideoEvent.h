@@ -37,7 +37,7 @@ public:
     FadeOutVideoEvent(SDL_Surface* pSurface, int numFrames2FadeOut, bool bCenterVertical = true, bool bFadeWhite = false);
 
     /// destructor
-    virtual ~FadeOutVideoEvent();
+    ~FadeOutVideoEvent() override;
 
     /**
         This method draws the video effect.

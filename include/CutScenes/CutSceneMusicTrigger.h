@@ -43,7 +43,7 @@ public:
     CutSceneMusicTrigger& operator=(CutSceneMusicTrigger &&) = delete;
 
     /// destructor
-    ~CutSceneMusicTrigger() = default;
+    ~CutSceneMusicTrigger() override = default;
 
     /**
         Trigger this trigger. This method is only called if currentFrameNumber == getTriggerFrameNumber()

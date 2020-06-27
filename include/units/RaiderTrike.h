@@ -26,7 +26,7 @@ public:
     explicit RaiderTrike(House* newOwner);
     explicit RaiderTrike(InputStream& stream);
     void init();
-    virtual ~RaiderTrike();
+    ~RaiderTrike() override;
 
     void destroy() override;
 

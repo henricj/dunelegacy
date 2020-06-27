@@ -26,7 +26,7 @@ public:
     explicit Tank(House* newOwner);
     explicit Tank(InputStream& stream);
     void init();
-    virtual ~Tank();
+    ~Tank() override;
 
     void blitToScreen() override;
 

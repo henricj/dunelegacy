@@ -38,7 +38,7 @@ public:
     CrossBlendVideoEvent(SDL_Surface* pStartSurface, SDL_Surface* pEndSurface, bool bCenterVertical = true);
 
     /// destructor
-    virtual ~CrossBlendVideoEvent();
+    ~CrossBlendVideoEvent() override;
 
     /**
         This method draws the video effect.

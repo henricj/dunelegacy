@@ -37,7 +37,7 @@ public:
     ListBox();
 
     /// destructor
-    virtual ~ListBox();
+    ~ListBox() override;
 
     /**
         Handles a mouse movement. This method is for example needed for the tooltip.

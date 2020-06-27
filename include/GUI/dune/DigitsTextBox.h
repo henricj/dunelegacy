@@ -62,7 +62,7 @@ public:
         addWidget(&buttonVBox,0.0);
     }
 
-    virtual ~DigitsTextBox() {
+    ~DigitsTextBox() override {
         // we don't want to get notified because we are then already gone
         textBox.setOnLostFocus(std::function<void ()>());
     }

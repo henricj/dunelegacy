@@ -39,7 +39,7 @@ public:
         ;
     }
 
-    ~IMemoryStream() = default;
+    ~IMemoryStream() override = default;
 
     void open(const char* data, int length) {
         currentPos = 0;

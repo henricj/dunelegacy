@@ -26,7 +26,7 @@ class AirUnit : public UnitBase
 public:
     explicit AirUnit(House* newOwner);
     explicit AirUnit(InputStream& stream);
-    virtual ~AirUnit() = 0;
+    ~AirUnit() override = 0;
 
     AirUnit(const AirUnit &) = delete;
     AirUnit(AirUnit &&) = delete;
@@ -46,16 +46,16 @@ public:
     void checkPos() override;
     bool canPassTile(const Tile* pTile) const override;
 
-    virtual FixPoint getMaxSpeed() const override {
+    FixPoint getMaxSpeed() const override {
         return currentMaxSpeed;
     }
 
 protected:
     virtual FixPoint getDestinationAngle() const;
 
-    virtual void navigate() override;
-    virtual void move() override;
-    virtual void turn() override;
+    void navigate() override;
+    void move() override;
+    void turn() override;
 
     FixPoint currentMaxSpeed;               ///< The current maximum allowed speed
 

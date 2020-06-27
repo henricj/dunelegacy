@@ -28,7 +28,7 @@
 class MessageTicker : public Widget {
 public:
     MessageTicker();
-    virtual ~MessageTicker();
+    ~MessageTicker() override;
 
     void addMessage(const std::string& msg);
 

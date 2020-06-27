@@ -35,7 +35,7 @@ public:
     Meanwhile(HOUSETYPE house, bool firstMeanwhile);
 
     /// destructor
-    virtual ~Meanwhile();
+    ~Meanwhile() override;
 
 private:
     static const int MeanwhileText_Base = 287;              ///< the index of the first text in Dune.lng

@@ -26,7 +26,7 @@ public:
     explicit Barracks(House* newOwner);
     explicit Barracks(InputStream& stream);
     void init();
-    virtual ~Barracks();
+    ~Barracks() override;
 
     /**
         Can this structure be captured by infantry units?

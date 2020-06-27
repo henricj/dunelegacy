@@ -26,7 +26,7 @@ public:
     explicit Silo(House* newOwner);
     explicit Silo(InputStream& stream);
     void init();
-    virtual ~Silo();
+    ~Silo() override;
 
     ObjectInterface* getInterfaceContainer() override;
 

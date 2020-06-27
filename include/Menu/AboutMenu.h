@@ -27,7 +27,7 @@ class AboutMenu : public MenuBase
 {
 public:
     AboutMenu();
-    virtual ~AboutMenu();
+    ~AboutMenu() override;
 
     bool doInput(SDL_Event &event) override;
 

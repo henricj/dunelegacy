@@ -35,7 +35,7 @@ public:
     WSAVideoEvent(Wsafile* pWsafile, bool bCenterVertical = true);
 
     /// destructor
-    virtual ~WSAVideoEvent();
+    ~WSAVideoEvent() override;
 
     /**
         This method draws the video effect.

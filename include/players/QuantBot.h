@@ -42,7 +42,7 @@ public:
     QuantBot(House* associatedHouse, const std::string& playername, Difficulty difficulty);
     QuantBot(InputStream& stream, House* associatedHouse);
     void init();
-    ~QuantBot();
+    ~QuantBot() override;
     void save(OutputStream& stream) const override;
 
     void update() override;

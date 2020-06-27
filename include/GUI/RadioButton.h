@@ -41,7 +41,7 @@ public:
     }
 
     /// destructor
-    virtual ~RadioButton() {
+    ~RadioButton() override {
         RadioButton::invalidateTextures();
 
         unregisterFromRadioButtonManager();

@@ -39,7 +39,7 @@ class OptionsMenu : public MenuBase
 {
 public:
     OptionsMenu();
-    virtual ~OptionsMenu();
+    ~OptionsMenu() override;
 
 private:
     void    onChangeOption(bool bInteractive);

@@ -32,7 +32,7 @@ public:
     TextView();
 
     /// destructor
-    virtual ~TextView();
+    ~TextView() override;
 
     /**
         Sets a font size for this text view. Default font size of a text view is 14

@@ -41,7 +41,7 @@ public:
     explicit TimeoutTrigger(InputStream& stream);
 
     /// destructor
-    ~TimeoutTrigger();
+    ~TimeoutTrigger() override;
 
     /**
         This method saves this trigger to a stream.

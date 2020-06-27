@@ -26,7 +26,7 @@ public:
     explicit Deviator(House* newOwner);
     explicit Deviator(InputStream& stream);
     void init();
-    virtual ~Deviator();
+    ~Deviator() override;
 
     void blitToScreen() override;
     void destroy() override;

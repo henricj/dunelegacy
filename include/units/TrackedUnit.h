@@ -27,7 +27,7 @@ public:
     explicit TrackedUnit(House* newOwner);
     explicit TrackedUnit(InputStream& stream);
     void init();
-    virtual ~TrackedUnit();
+    ~TrackedUnit() override;
 
     TrackedUnit(const TrackedUnit &) = delete;
     TrackedUnit(TrackedUnit &&) = delete;
