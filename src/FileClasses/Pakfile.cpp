@@ -63,21 +63,21 @@ Pakfile::~Pakfile()
     if(write == true) {
         // calculate header size
         int headersize = 0;
-        for(unsigned int i = 0; i < fileEntries.size(); i++) {
+        for(auto & fileEntrie : fileEntries) {
             headersize += 4;
-            headersize += fileEntries[i].filename.u8string().length() + 1;
+            headersize += fileEntrie.filename.u8string().length() + 1;
         }
         headersize += 4;
 
         // write out header
-        for(unsigned int i = 0; i < fileEntries.size(); i++) {
+        for(auto & fileEntrie : fileEntries) {
             #if SDL_BYTEORDER == SDL_BIG_ENDIAN
             Uint32 startoffset = SDL_Swap32(fileEntries[i].startOffset + headersize);
             #else
-            Uint32 startoffset = fileEntries[i].startOffset + headersize;
+            Uint32 startoffset = fileEntrie.startOffset + headersize;
             #endif
             SDL_RWwrite(fPakFile,(char*) &startoffset,sizeof(Uint32),1);
-            SDL_RWwrite(fPakFile,fileEntries[i].filename.u8string().c_str(), fileEntries[i].filename.u8string().length() + 1,1);
+            SDL_RWwrite(fPakFile,fileEntrie.filename.u8string().c_str(), fileEntrie.filename.u8string().length() + 1,1);
         }
         Uint32 tmp = 0;
         SDL_RWwrite(fPakFile,(char*) &tmp, sizeof(Uint32), 1);
@@ -213,8 +213,8 @@ sdl2::RWops_ptr Pakfile::openFile(const std::filesystem::path& filename) {
 }
 
 bool Pakfile::exists(const std::filesystem::path& filename) const {
-    for(unsigned int i=0;i<fileEntries.size();i++) {
-        if(filename == fileEntries[i].filename) {
+    for(const auto & fileEntrie : fileEntries) {
+        if(filename == fileEntrie.filename) {
             return true;
         }
     }

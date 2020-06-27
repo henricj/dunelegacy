@@ -47,8 +47,8 @@ Sandworm::Sandworm(House* newOwner) : GroundUnit(newOwner) {
     warningWormSignPlayedFlags = 0;
     respondable = false;
 
-    for(int i = 0; i < SANDWORM_SEGMENTS; i++) {
-        lastLocs[i].invalidate();
+    for(auto & lastLoc : lastLocs) {
+        lastLoc.invalidate();
     }
     shimmerOffsetIndex = -1;
 }
@@ -62,9 +62,9 @@ Sandworm::Sandworm(InputStream& stream) : GroundUnit(stream) {
     sleepTimer = stream.readSint32();
     warningWormSignPlayedFlags = stream.readUint8();
     shimmerOffsetIndex = stream.readSint32();
-    for(int i = 0; i < SANDWORM_SEGMENTS; i++) {
-        lastLocs[i].x = stream.readSint32();
-        lastLocs[i].y = stream.readSint32();
+    for(auto & lastLoc : lastLocs) {
+        lastLoc.x = stream.readSint32();
+        lastLoc.y = stream.readSint32();
     }
 }
 
@@ -93,9 +93,9 @@ void Sandworm::save(OutputStream& stream) const {
     stream.writeSint32(sleepTimer);
     stream.writeUint8(warningWormSignPlayedFlags);
     stream.writeSint32(shimmerOffsetIndex);
-    for(int i = 0; i < SANDWORM_SEGMENTS; i++) {
-        stream.writeSint32(lastLocs[i].x);
-        stream.writeSint32(lastLocs[i].y);
+    for(auto lastLoc : lastLocs) {
+        stream.writeSint32(lastLoc.x);
+        stream.writeSint32(lastLoc.y);
     }
 }
 
@@ -257,8 +257,8 @@ void Sandworm::sleep() {
     drawnFrame = INVALID;
     attackFrameTimer = 0;
     shimmerOffsetIndex = -1;
-    for(int i = 0; i < SANDWORM_SEGMENTS; i++) {
-        lastLocs[i].invalidate();
+    for(auto & lastLoc : lastLocs) {
+        lastLoc.invalidate();
     }
 }
 
