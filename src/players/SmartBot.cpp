@@ -279,7 +279,7 @@ Coord SmartBot::findPlaceLocation(Uint32 itemID) {
                     FixPoint nearestSand = 10000000;
                     for(int y = 0 ; y < currentGameMap->getSizeY(); y++) {
                         for(int x = 0; x < currentGameMap->getSizeX(); x++) {
-                            if(currentGameMap->getTile(x,y)->isRock() == false) {
+                            if(!currentGameMap->getTile(x,y)->isRock()) {
                                 FixPoint tmp = blockDistance(pos, Coord(x,y));
                                 if(tmp < nearestSand) {
                                     nearestSand = tmp;
@@ -388,7 +388,7 @@ void SmartBot::build() {
     for(const StructureBase* pStructure : getStructureList()) {
         if(pStructure->getOwner() == getHouse()) {
 
-            if((pStructure->isRepairing() == false)
+            if((!pStructure->isRepairing())
                && (pStructure->getHealth() < pStructure->getMaxHealth()))
             {
                 doRepair(pStructure);
@@ -402,7 +402,7 @@ void SmartBot::build() {
                     case Structure_HeavyFactory: {
 
                         // only if the factory isn't busy
-                        if((pBuilder->isUpgrading() == false) && (pBuilder->getProductionQueueSize() < 1)){
+                        if((!pBuilder->isUpgrading()) && (pBuilder->getProductionQueueSize() < 1)){
 
                             // we need a construction yard. Build an MCV if we don't have a starport
                             // or if we are really rich
@@ -433,7 +433,7 @@ void SmartBot::build() {
 
                             if(focusMilitary()
                                && (pBuilder->getHealth() >= pBuilder->getMaxHealth())
-                               && (pBuilder->isUpgrading() == false)
+                               && (!pBuilder->isUpgrading())
                                && (pBuilder->getCurrentUpgradeLevel() < pBuilder->getMaxUpgradeLevel()))
                             {
                                 doUpgrade(pBuilder);
@@ -661,7 +661,7 @@ void SmartBot::build() {
                                 }
                             } else if( pBuilder->getCurrentUpgradeLevel()  < 2
                                         && pBuilder->getHealth() >= pBuilder->getMaxHealth()
-                                        && pBuilder->isUpgrading() == false
+                                        && !pBuilder->isUpgrading()
                                         && pBuilder->getCurrentUpgradeLevel() < pBuilder->getMaxUpgradeLevel()
                                         && pBuilder->getBuildListSize() < 1) {
                                 // Only upgrade to level 1 and only if concrete slabs are required

@@ -184,7 +184,7 @@ void UnitBase::save(OutputStream& stream) const {
 bool UnitBase::attack() {
 
     if(numWeapons) {
-        if((primaryWeaponTimer == 0) || ((numWeapons == 2) && (secondaryWeaponTimer == 0) && (isBadlyDamaged() == false))) {
+        if((primaryWeaponTimer == 0) || ((numWeapons == 2) && (secondaryWeaponTimer == 0) && (!isBadlyDamaged()))) {
 
             Coord targetCenterPoint;
             Coord centerPoint = getCenterPoint();
@@ -234,7 +234,7 @@ bool UnitBase::attack() {
                 }
             }
 
-            if((numWeapons == 2) && (secondaryWeaponTimer == 0) && (isBadlyDamaged() == false)) {
+            if((numWeapons == 2) && (secondaryWeaponTimer == 0) && (!isBadlyDamaged())) {
                 bulletList.emplace_back(std::make_unique<Bullet>(objectID, &centerPoint, &targetCenterPoint, currentBulletType, currentWeaponDamage, bAirBullet, pObject));
                 if(pObject != nullptr) {
                     currentGameMap->viewMap(pObject->getOwner()->getHouseID(), location, 2);
@@ -276,7 +276,7 @@ void UnitBase::blitToScreen() {
 }
 
 ObjectInterface* UnitBase::getInterfaceContainer() {
-    if((pLocalHouse == owner && isRespondable()) || (debug == true)) {
+    if((pLocalHouse == owner && isRespondable()) || (debug)) {
         return UnitInterface::create(objectID);
     } else {
         return DefaultObjectInterface::create(objectID);
@@ -421,7 +421,7 @@ void UnitBase::drawOtherPlayerSelectionBox() {
 
 
 void UnitBase::releaseTarget() {
-    if(forced == true) {
+    if(forced) {
         guardPoint = location;
     }
     setDestination(guardPoint);
@@ -439,7 +439,7 @@ void UnitBase::engageTarget() {
         return;
     }
 
-    if(target && (target.getObjPointer()->isActive() == false)) {
+    if(target && (!target.getObjPointer()->isActive())) {
         // the target changed its state to inactive
         releaseTarget();
         return;
@@ -546,7 +546,7 @@ void UnitBase::engageTarget() {
 void UnitBase::move() {
 
     if(moving && !justStoppedMoving) {
-        if((isBadlyDamaged() == false) || isAFlyingUnit()) {
+        if((!isBadlyDamaged()) || isAFlyingUnit()) {
             realX += xSpeed;
             realY += ySpeed;
         } else {
@@ -573,7 +573,7 @@ void UnitBase::move() {
                 oldLocation = location;
                 location = nextSpot;
 
-                if(isAFlyingUnit() == false && itemID != Unit_Sandworm) {
+                if(!isAFlyingUnit() && itemID != Unit_Sandworm) {
                     currentGameMap->viewMap(owner->getHouseID(), location, getViewRange());
                 }
             }
@@ -666,7 +666,7 @@ void UnitBase::navigate() {
     if(moving || justStoppedMoving) return;
 
     if(location != destination) {
-        if(nextSpotFound == false) {
+        if(!nextSpotFound) {
 
             if(pathList.empty() && (recalculatePathTimer == 0)) {
                 recalculatePathTimer = 100;
@@ -1429,7 +1429,7 @@ bool UnitBase::SearchPathWithAStar() {
 
     currentGameMap->find_path(this, location, destinationCoord, pathList);
 
-    if(pathList.empty() == true) {
+    if(pathList.empty()) {
         nextSpotFound = false;
         return false;
     } else {

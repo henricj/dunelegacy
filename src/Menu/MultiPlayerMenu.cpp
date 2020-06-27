@@ -190,7 +190,7 @@ void MultiPlayerMenu::onQuit() {
 
 void MultiPlayerMenu::onGameTypeChange(int buttonID) {
     MetaServerClient* pMetaServerClient = pNetworkManager->getMetaServerClient();
-    if((buttonID == 0) && internetGamesButton.getToggleState() == true) {
+    if((buttonID == 0) && internetGamesButton.getToggleState()) {
         // LAN Games
 
         gameList.clearAllEntries();
@@ -205,7 +205,7 @@ void MultiPlayerMenu::onGameTypeChange(int buttonID) {
         // stop listening on internet games
         pMetaServerClient->setOnGameServerInfoList(std::function<void (std::list<GameServerInfo>&)>());
         pMetaServerClient->setOnMetaServerError(std::function<void (int, const std::string&)>());
-    } else if((buttonID == 1) && (LANGamesButton.getToggleState() == true)) {
+    } else if((buttonID == 1) && (LANGamesButton.getToggleState())) {
         // Internet Games
 
         gameList.clearAllEntries();

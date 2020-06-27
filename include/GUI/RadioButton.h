@@ -52,7 +52,7 @@ public:
         if(pNewRadioButtonManager != pRadioButtonManager) {
             unregisterFromRadioButtonManager();
             pRadioButtonManager = pNewRadioButtonManager;
-            if(pRadioButtonManager->isRegistered(this) == false) {
+            if(!pRadioButtonManager->isRegistered(this)) {
                 pRadioButtonManager->registerRadioButton(this);
             }
         }
@@ -104,7 +104,7 @@ public:
     */
     void setToggleState(bool bToggleState) override
     {
-        if(bToggleState != true) {
+        if(!bToggleState) {
             return;
         }
 
@@ -137,7 +137,7 @@ public:
     */
     void draw(Point position) override
     {
-        if(isVisible() == false) {
+        if(!isVisible()) {
             return;
         }
 

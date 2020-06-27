@@ -163,7 +163,7 @@ public:
     */
     void draw(Point position) override
     {
-        if((isEnabled() == false) || (isVisible() == false)) {
+        if((!isEnabled()) || (!isVisible())) {
             return;
         }
 

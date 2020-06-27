@@ -41,7 +41,7 @@ void MessageTicker::addMessage(const std::string& msg)
 }
 
 void MessageTicker::draw(Point position) {
-    if(isVisible() == false)
+    if(!isVisible())
         return;
 
     // draw message

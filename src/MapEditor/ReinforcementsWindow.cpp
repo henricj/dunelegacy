@@ -198,7 +198,7 @@ ReinforcementsWindow::ReinforcementsWindow(MapEditor* pMapEditor, HOUSETYPE curr
         reinforcementsListBox.addEntry(getDescribingString(reinforcement));
     }
 
-    if(reinforcements.empty() == false) {
+    if(!reinforcements.empty()) {
         reinforcementsListBox.setSelectedItem(0);
         onSelectionChange(true);
     }

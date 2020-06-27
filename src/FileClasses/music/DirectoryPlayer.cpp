@@ -106,7 +106,7 @@ void DirectoryPlayer::changeMusic(MUSICTYPE musicType)
         }
     }
 
-    if((musicOn == true) && (!filename.empty())) {
+    if((musicOn) && (!filename.empty())) {
 
         Mix_HaltMusic();
 
@@ -127,7 +127,7 @@ void DirectoryPlayer::changeMusic(MUSICTYPE musicType)
 }
 
 void DirectoryPlayer::toggleSound() {
-    if(musicOn == false) {
+    if(!musicOn) {
         musicOn = true;
         changeMusic(MUSIC_PEACE);
     } else {

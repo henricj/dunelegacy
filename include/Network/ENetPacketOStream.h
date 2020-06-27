@@ -127,7 +127,7 @@ public:
 
     void writeBool(bool x) override
     {
-        writeUint8(x == true ? 1 : 0);
+        writeUint8(x ? 1 : 0);
     }
 
     void writeFloat(float x) override

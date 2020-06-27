@@ -297,11 +297,11 @@ void Sandworm::handleDamage(int damage, Uint32 damagerID, House* damagerOwner) {
 
 bool Sandworm::update() {
     if(getHealth() <= getMaxHealth()/2) {
-        if(sleepOrDie() == false) {
+        if(!sleepOrDie()) {
             return false;
         }
     } else {
-        if(GroundUnit::update() == false) {
+        if(!GroundUnit::update()) {
             return false;
         }
 
@@ -327,7 +327,7 @@ bool Sandworm::update() {
                 if(drawnFrame >= 9) {
                     drawnFrame = INVALID;
                     if(kills >= 3) {
-                        if(sleepOrDie() == false) {
+                        if(!sleepOrDie()) {
                             return false;
                         }
                     }
@@ -340,7 +340,7 @@ bool Sandworm::update() {
                             Coord realPos = Coord(lround(realX), lround(realY));
                             currentGameMap->damage(objectID, getOwner(), realPos, Bullet_Sandworm, 5000, NONE_ID, false);
 
-                            if(wasAlive && target && (target.getObjPointer()->isVisible(getOwner()->getTeamID()) == false)) {
+                            if(wasAlive && target && (!target.getObjPointer()->isVisible(getOwner()->getTeamID()))) {
                                 kills++;
                             }
                         }
@@ -365,9 +365,9 @@ bool Sandworm::update() {
                     }
                 }
 
-                if(isActive() == false) {
+                if(!isActive()) {
                     // no room for sandworm on map => take another nap
-                    if(sleepOrDie() == false) {
+                    if(!sleepOrDie()) {
                         return false;
                     }
                 }

@@ -118,7 +118,7 @@ Intro::Intro() {
 
 
     bool bEnableVoice = (settings.general.language == "en");
-    if(bEnableVoice == true) {
+    if(bEnableVoice) {
         // Load english voice
         for(int i=0;i<Voice_NUM_ENTRIES;i++) {
             voice[i] = getChunkFromFile(VoiceFileNames[i]);

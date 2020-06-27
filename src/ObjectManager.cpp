@@ -51,7 +51,7 @@ void ObjectManager::load(InputStream& stream) {
 Uint32 ObjectManager::addObject(ObjectBase* pObject) {
     const auto insertPosition = objectMap.insert( std::pair<Uint32,ObjectBase*>(nextFreeObjectID, pObject) );
 
-    if(insertPosition.second == false) {
+    if(!insertPosition.second) {
         // there is already such an object in the list
         return NONE_ID;
     } else {

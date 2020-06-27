@@ -204,11 +204,7 @@ void House::save(OutputStream& stream) const {
 void House::addPlayer(std::unique_ptr<Player> newPlayer) {
     Player* pNewPlayer = newPlayer.get();
 
-    if(dynamic_cast<HumanPlayer*>(pNewPlayer) != nullptr && players.empty()) {
-        ai = false;
-    } else {
-        ai = true;
-    }
+    ai = !(dynamic_cast<HumanPlayer*>(pNewPlayer) != nullptr && players.empty());
 
     players.push_back(std::move(newPlayer));
 
@@ -227,7 +223,7 @@ void House::setProducedPower(int newPower) {
 void House::addCredits(FixPoint newCredits, bool wasRefined) {
     if(newCredits <= 0) return;
 
-    if(wasRefined == true) {
+    if(wasRefined) {
         harvestedSpice += newCredits;
     }
 
@@ -733,11 +729,11 @@ StructureBase* House::placeStructure(Uint32 builderID, int itemID, int xPos, int
                 THROW(std::runtime_error, "Cannot create structure with itemID %d!", itemID);
             }
 
-            if(bForcePlacing == false) {
+            if(!bForcePlacing) {
                 // check if there is already something on this tile
                 for(int i=0;i<newStructure->getStructureSizeX();i++) {
                     for(int j=0;j<newStructure->getStructureSizeY();j++) {
-                        if((currentGameMap->tileExists(xPos+i, yPos+j) == false) || (currentGameMap->getTile(xPos+i, yPos+j)->hasAGroundObject() == true)) {
+                        if((!currentGameMap->tileExists(xPos+i, yPos+j)) || (currentGameMap->getTile(xPos+i, yPos+j)->hasAGroundObject())) {
                             delete newObject;
                             return nullptr;
                         }
@@ -824,16 +820,16 @@ UnitBase* House::createUnit(int itemID, bool byScenario) {
 
 UnitBase* House::placeUnit(int itemID, int xPos, int yPos, bool byScenario) {
     UnitBase* newUnit = nullptr;
-    if(currentGameMap->tileExists(xPos, yPos) == true) {
+    if(currentGameMap->tileExists(xPos, yPos)) {
         Tile* pTile = currentGameMap->getTile(xPos,yPos);
 
         if(itemID == Unit_Saboteur || itemID == Unit_Soldier || itemID == Unit_Trooper) {
-            if((pTile->hasANonInfantryGroundObject() == true) || (pTile->infantryNotFull() == false)) {
+            if((pTile->hasANonInfantryGroundObject()) || (!pTile->infantryNotFull())) {
                 // infantry units can not placed on non-infantry units or structures (or the tile is already full of infantry units)
                 return nullptr;
             }
         } else {
-            if(pTile->hasAGroundObject() == true) {
+            if(pTile->hasAGroundObject()) {
                 // non-infantry units can not placed on a tile where already some other unit or structure is placed on
                 return nullptr;
             }

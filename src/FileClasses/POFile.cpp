@@ -94,9 +94,9 @@ std::map<std::string, std::string> loadPOFile(SDL_RWops* rwop, const std::string
         }
 
         if(completeLine.substr(lineStart, 5) == "msgid") {
-            if(msgidMode == true) {
+            if(msgidMode) {
                 SDL_Log("%s:%d: Opening a new msgid without finishing the previous one!", filename.c_str(), lineNum);
-            } else if(msgstrMode == true) {
+            } else if(msgstrMode) {
                 // we have finished the previous translation
                 mapping[msgid] = msgstr;
                 msgstr = "";
@@ -122,7 +122,7 @@ std::map<std::string, std::string> loadPOFile(SDL_RWops* rwop, const std::string
         }
     }
 
-    if(msgstrMode == true) {
+    if(msgstrMode) {
         // we have a last translation to finish
         mapping[msgid] = msgstr;
     }

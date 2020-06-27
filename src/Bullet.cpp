@@ -267,7 +267,7 @@ void Bullet::blitToScreen() const
     const auto imageW = getWidth(graphic[currentZoomlevel])/numFrames;
     const auto imageH = getHeight(graphic[currentZoomlevel]);
 
-    if(screenborder->isInsideScreen( Coord(lround(realX), lround(realY)), Coord(imageW, imageH)) == false) {
+    if(!screenborder->isInsideScreen( Coord(lround(realX), lround(realY)), Coord(imageW, imageH))) {
         return;
     }
 

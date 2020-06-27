@@ -255,7 +255,7 @@ sdl2::surface_ptr DuneStyle::createDropDownBoxButton(Uint32 size, bool pressed, 
     }
 
     // create button background
-    if(pressed == false) {
+    if(!pressed) {
         // normal mode
         SDL_FillRect(surface.get(), nullptr, buttonBackgroundColor);
         drawRect(surface.get(), 0, 0, surface->w-1, surface->h-1, buttonBorderColor);
@@ -302,7 +302,7 @@ sdl2::surface_ptr DuneStyle::createButtonSurface(Uint32 width, Uint32 height, co
     }
 
     // create button background
-    if(pressed == false) {
+    if(!pressed) {
         // normal mode
         SDL_FillRect(surface.get(), nullptr, buttonBackgroundColor);
         drawRect(surface.get(), 0, 0, surface->w-1, surface->h-1, buttonBorderColor);
@@ -334,7 +334,7 @@ sdl2::surface_ptr DuneStyle::createButtonSurface(Uint32 width, Uint32 height, co
     SDL_Rect textRect1 = calcDrawingRect(textSurface1.get(), surface->w / 2 + 2 + (pressed ? 1 : 0), surface->h / 2 + 3 + (pressed ? 1 : 0), HAlign::Center, VAlign::Center);
     SDL_BlitSurface(textSurface1.get(), nullptr, surface.get(), &textRect1);
 
-    sdl2::surface_ptr textSurface2 = createSurfaceWithText(text, (activated == true) ? brightenUp(textcolor) : textcolor, fontsize);
+    sdl2::surface_ptr textSurface2 = createSurfaceWithText(text, (activated) ? brightenUp(textcolor) : textcolor, fontsize);
     SDL_Rect textRect2 = calcDrawingRect(textSurface2.get(), surface->w / 2 + 1 + (pressed ? 1 : 0), surface->h / 2 + 2 + (pressed ? 1 : 0), HAlign::Center, VAlign::Center);
     SDL_BlitSurface(textSurface2.get(), nullptr, surface.get(), &textRect2);
 
@@ -415,7 +415,7 @@ sdl2::surface_ptr DuneStyle::createTextBoxSurface(Uint32 width, Uint32 height, c
     cursorPos.y = surface->h / 2 - 8;
     cursorPos.h = 16;
 
-    if(carret == true) {
+    if(carret) {
         drawVLine(surface.get(),cursorPos.x-2,cursorPos.y,cursorPos.y+cursorPos.h,textcolor);
         drawVLine(surface.get(),cursorPos.x-1,cursorPos.y,cursorPos.y+cursorPos.h,textcolor);
     }
@@ -442,7 +442,7 @@ sdl2::surface_ptr DuneStyle::createScrollBarArrowButton(bool down, bool pressed,
     }
 
     // create button background
-    if(pressed == false) {
+    if(!pressed) {
         // normal mode
         SDL_FillRect(surface.get(), nullptr, buttonBackgroundColor);
         drawRect(surface.get(), 0, 0, surface->w-1, surface->h-1, buttonBorderColor);
@@ -460,7 +460,7 @@ sdl2::surface_ptr DuneStyle::createScrollBarArrowButton(bool down, bool pressed,
     int col = (pressed | activated) ? brightenUp(color) : color;
 
     // draw arrow
-    if(down == true) {
+    if(down) {
         // down arrow
         drawHLine(surface.get(),3,4,13,col);
         drawHLine(surface.get(),4,5,12,col);
@@ -499,7 +499,7 @@ sdl2::surface_ptr DuneStyle::createListBoxEntry(Uint32 width, const std::string&
         return nullptr;
     }
 
-    if(selected == true) {
+    if(selected) {
         SDL_FillRect(surface.get(), nullptr, buttonBackgroundColor);
     } else {
         SDL_FillRect(surface.get(), nullptr, COLOR_TRANSPARENT);

@@ -101,24 +101,24 @@ bool BuilderList::handleMouseLeft(Sint32 x, Sint32 y, bool pressed) {
     }
 
     auto* pStarport = dynamic_cast<StarPort*>(pBuilder);
-    if(pStarport && (pStarport->okToOrder() == false)) {
+    if(pStarport && (!pStarport->okToOrder())) {
         return false;
     }
 
-    if(pressed == true) {
+    if(pressed) {
         mouseLeftButton = getButton(x,y);
     } else {
         if(mouseLeftButton == getButton(x,y)) {
             // button released
             assert(pBuilder);
-            if((getItemIDFromIndex(mouseLeftButton) == static_cast<int>(pBuilder->getCurrentProducedItem())) && (pBuilder->isWaitingToPlace() == true)) {
+            if((getItemIDFromIndex(mouseLeftButton) == static_cast<int>(pBuilder->getCurrentProducedItem())) && (pBuilder->isWaitingToPlace())) {
                 soundPlayer->playSound(Sound_ButtonClick);
                 if(currentGame->currentCursorMode == Game::CursorMode_Placing) {
                     currentGame->currentCursorMode = Game::CursorMode_Normal;
                 } else {
                     currentGame->currentCursorMode = Game::CursorMode_Placing;
                 }
-            } else if((getItemIDFromIndex(mouseLeftButton) == static_cast<int>(pBuilder->getCurrentProducedItem())) && (pBuilder->isOnHold() == true)) {
+            } else if((getItemIDFromIndex(mouseLeftButton) == static_cast<int>(pBuilder->getCurrentProducedItem())) && (pBuilder->isOnHold())) {
                 soundPlayer->playSound(Sound_ButtonClick);
                 pBuilder->handleSetOnHoldClick(false);
             } else {
@@ -144,17 +144,17 @@ bool BuilderList::handleMouseRight(Sint32 x, Sint32 y, bool pressed) {
     }
 
     auto* pStarport = dynamic_cast<StarPort*>(pBuilder);
-    if(pStarport && (pStarport->okToOrder() == false)) {
+    if(pStarport && (!pStarport->okToOrder())) {
         return false;
     }
 
-    if(pressed == true) {
+    if(pressed) {
         mouseRightButton = getButton(x,y);
     } else {
         if(mouseRightButton == getButton(x,y)) {
             // button released
             assert(pBuilder);
-            if((getItemIDFromIndex(mouseRightButton) == (int) pBuilder->getCurrentProducedItem()) && (pBuilder->isOnHold() == false)) {
+            if((getItemIDFromIndex(mouseRightButton) == (int) pBuilder->getCurrentProducedItem()) && (!pBuilder->isOnHold())) {
                 soundPlayer->playSound(Sound_ButtonClick);
                 pBuilder->handleSetOnHoldClick(true);
             } else {

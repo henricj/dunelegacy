@@ -32,7 +32,7 @@
 
 ReinforcementTrigger::ReinforcementTrigger(HOUSETYPE houseID, Uint32 itemID, DropLocation location, bool bRepeat,
                                            Uint32 triggerCycleNumber)
- : Trigger(triggerCycleNumber), dropLocation(location), houseID(houseID), repeatCycle((bRepeat == true) ? triggerCycleNumber : 0) {
+ : Trigger(triggerCycleNumber), dropLocation(location), houseID(houseID), repeatCycle((bRepeat) ? triggerCycleNumber : 0) {
     droppedUnits.push_back(itemID);
 }
 
@@ -103,7 +103,7 @@ void ReinforcementTrigger::trigger()
 
             // try 30 times
             int r = 1;
-            while(units2Drop.empty() == false && ++r < 64) {
+            while(!units2Drop.empty() && ++r < 64) {
                 auto newCoord = placeCoord;
                 if(dropLocation == DropLocation::Drop_North || dropLocation == DropLocation::Drop_South) {
                     newCoord += Coord(currentGame->randomGen.rand(-r,r), 0);
@@ -112,7 +112,7 @@ void ReinforcementTrigger::trigger()
                 }
 
                 if(currentGameMap->tileExists(newCoord)
-                    && (currentGameMap->getTile(newCoord)->hasAGroundObject() == false)
+                    && (!currentGameMap->getTile(newCoord)->hasAGroundObject())
                     && ((units2Drop.front() != Unit_Sandworm) || (currentGameMap->getTile(newCoord)->isSand()))) {
                     auto pUnit2Drop = dropHouse->createUnit(units2Drop.front());
                     units2Drop.erase(units2Drop.begin());
@@ -215,7 +215,7 @@ void ReinforcementTrigger::trigger()
 
                 dropCoord += Coord( lround(r*FixPoint::sin(angle)), lround(-r*FixPoint::cos(angle)));
 
-                if(currentGameMap->tileExists(dropCoord) && currentGameMap->getTile(dropCoord)->hasAGroundObject() == false) {
+                if(currentGameMap->tileExists(dropCoord) && !currentGameMap->getTile(dropCoord)->hasAGroundObject()) {
                     // found the an empty drop location => drop here
 
                     auto carryall = static_cast<Carryall*>(dropHouse->createUnit(Unit_Carryall));

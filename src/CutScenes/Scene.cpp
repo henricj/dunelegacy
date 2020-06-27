@@ -58,8 +58,8 @@ int Scene::draw()
     SDL_RenderClear(renderer);
 
     // 2.: Draw everything on the screen
-    while(videoEvents.empty() == false) {
-        if(videoEvents.front()->isFinished() == true) {
+    while(!videoEvents.empty()) {
+        if(videoEvents.front()->isFinished()) {
             videoEvents.pop();
             continue;
         } else {
@@ -76,7 +76,7 @@ int Scene::draw()
     SDL_RenderPresent(renderer);
 
     // 4.: Process Triggers
-    while(triggerList.empty() == false) {
+    while(!triggerList.empty()) {
         auto& pTrigger = triggerList.front();
 
         if(pTrigger->getTriggerFrameNumber() > currentFrameNumber) {

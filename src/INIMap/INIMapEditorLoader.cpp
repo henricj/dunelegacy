@@ -196,7 +196,7 @@ void INIMapEditorLoader::loadMap() {
         for(int y=0;y<sizeY;y++) {
             std::string rowKey = fmt::sprintf("%.3d", y);
 
-            if(inifile->hasKey("MAP", rowKey) == false) {
+            if(!inifile->hasKey("MAP", rowKey)) {
                 logWarning(inifile->getSection("MAP").getLineNumber(), "Map row " + std::to_string(y) + " does not exist!");
                 continue;
             }
@@ -301,7 +301,7 @@ void INIMapEditorLoader::loadHouses()
             for(int houseID = 0; houseID < static_cast<int>(HOUSETYPE::NUM_HOUSES); houseID++) {
                 auto& player = pMapEditor->getPlayers()[houseID];
 
-                if(player.bActive == false) {
+                if(!player.bActive) {
                     convertToLower(sectionname);
                     housename2house[sectionname] = (HOUSETYPE) houseID;
 
@@ -543,8 +543,8 @@ void INIMapEditorLoader::loadReinforcements()
         std::string strTime;
         std::string strPlus;
 
-        if(splitString(key.getStringValue(), strHouseName, strUnitName, strDropLocation, strTime) == false) {
-            if(splitString(key.getStringValue(), strHouseName, strUnitName, strDropLocation, strTime, strPlus) == false) {
+        if(!splitString(key.getStringValue(), strHouseName, strUnitName, strDropLocation, strTime)) {
+            if(!splitString(key.getStringValue(), strHouseName, strUnitName, strDropLocation, strTime, strPlus)) {
                 logWarning(key.getLineNumber(), "Invalid reinforcement string: " + key.getKeyName() + " = " + key.getStringValue());
                 continue;
             }
@@ -599,7 +599,7 @@ void INIMapEditorLoader::loadAITeams()
         std::string strMinUnits;
         std::string strMaxUnits;
 
-        if(splitString(key.getStringValue(), strHouseName, strAITeamBehavior, strAITeamType, strMinUnits, strMaxUnits) == false) {
+        if(!splitString(key.getStringValue(), strHouseName, strAITeamBehavior, strAITeamType, strMinUnits, strMaxUnits)) {
             logWarning(key.getLineNumber(), "Invalid teams string: " + key.getKeyName() + " = " + key.getStringValue());
             continue;
         }

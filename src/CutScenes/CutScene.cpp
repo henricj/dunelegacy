@@ -109,8 +109,8 @@ int CutScene::draw()
 {
     int nextFrameTime = 0;
 
-    while(scenes.empty() == false) {
-        if(scenes.front()->isFinished() == true) {
+    while(!scenes.empty()) {
+        if(scenes.front()->isFinished()) {
             scenes.pop();
             continue;
         } else {
@@ -119,7 +119,7 @@ int CutScene::draw()
         }
     }
 
-    if(scenes.empty() == true && !musicPlayer->isMusicPlaying()) {
+    if(scenes.empty() && !musicPlayer->isMusicPlaying()) {
         quit();
     }
 

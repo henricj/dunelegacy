@@ -127,7 +127,7 @@ void INIFile::Key::setIntValue(int newValue) {
 }
 
 void INIFile::Key::setBoolValue(bool newValue) {
-    if(newValue == true) {
+    if(newValue) {
         setStringValue("true");
     } else {
         setStringValue("false");
@@ -228,7 +228,7 @@ void INIFile::Section::setStringValue(const std::string& key, const std::string&
         getKey(key)->setStringValue(newValue, bEscapeIfNeeded);
     } else {
         // create new key
-        if(isValidKeyName(key) == false) {
+        if(!isValidKeyName(key)) {
             std::cerr << "INIFile: Cannot create key with name " << key << "!" << std::endl;
             return;
         }
@@ -284,7 +284,7 @@ void INIFile::Section::setIntValue(const std::string& key, int newValue) {
 }
 
 void INIFile::Section::setBoolValue(const std::string& key, bool newValue) {
-    if(newValue == true) {
+    if(newValue) {
         setStringValue(key, "true", false);
     } else {
         setStringValue(key, "false", false);
@@ -738,7 +738,7 @@ void INIFile::setIntValue(const std::string& section, const std::string& key, in
     \param  value           value that should be set
 */
 void INIFile::setBoolValue(const std::string& section, const std::string& key, bool value) {
-    if(value == true) {
+    if(value) {
         setStringValue(section, key, "true", false);
     } else {
         setStringValue(section, key, "false", false);
@@ -1008,7 +1008,7 @@ void INIFile::readfile(SDL_RWops * file) {
             }
         }
 
-        if(bSyntaxError == true) {
+        if(bSyntaxError) {
             if(completeLine.size() < 100) {
                 // there are some buggy ini-files which have a lot of waste at the end of the file
                 // and it makes no sense to print all this stuff out. just skip it
@@ -1073,7 +1073,7 @@ INIFile::Section* INIFile::getSectionOrCreate(const std::string& sectionname) {
     if(curSection == nullptr) {
         // create new section
 
-        if(isValidSectionName(sectionname) == false) {
+        if(!isValidSectionName(sectionname)) {
             std::cerr << "INIFile: Cannot create section with name " << sectionname << "!" << std::endl;
             return nullptr;
         }
@@ -1119,11 +1119,7 @@ bool INIFile::isValidSectionName(const std::string& sectionname) {
         }
     }
 
-    if(isWhitespace(sectionname[0]) || isWhitespace(sectionname[sectionname.size()-1])) {
-        return false;
-    } else {
-        return true;
-    }
+    return !(isWhitespace(sectionname[0]) || isWhitespace(sectionname[sectionname.size()-1]));
 }
 
 bool INIFile::isValidKeyName(const std::string& keyname) {
@@ -1133,10 +1129,7 @@ bool INIFile::isValidKeyName(const std::string& keyname) {
         }
     }
 
-    if(isWhitespace(keyname[0]) || isWhitespace(keyname[keyname.size()-1])) {
-        return false;
-    }
-    return true;
+    return !(isWhitespace(keyname[0]) || isWhitespace(keyname[keyname.size()-1]));
 }
 
 int INIFile::getNextChar(const unsigned char* line, int startpos) {
@@ -1223,19 +1216,11 @@ int INIFile::getNextQuote(const unsigned char* line,int startpos) {
 }
 
 bool INIFile::isWhitespace(unsigned char s) {
-    if((s == ' ') || (s == '\t') || (s == '\n') || (s == '\r')) {
-        return true;
-    } else {
-        return false;
-    }
+    return (s == ' ') || (s == '\t') || (s == '\n') || (s == '\r');
 }
 
 bool INIFile::isNormalChar(unsigned char s) {
-    if((!isWhitespace(s)) && (s >= 33) && (s != '"') && (s != ';') && (s != '#') && (s != '[') && (s != ']') && (s != '=')) {
-        return true;
-    } else {
-        return false;
-    }
+    return (!isWhitespace(s)) && (s >= 33) && (s != '"') && (s != ';') && (s != '#') && (s != '[') && (s != ']') && (s != '=');
 }
 
 int INIFile::strncicmp(const char *s1, const char *s2, size_t n) {

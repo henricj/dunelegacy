@@ -245,7 +245,7 @@ Coord AIPlayer::findPlaceLocation(Uint32 itemID) {
                     FixPoint nearestSand = 10000000;
                     for(int y = 0 ; y < currentGameMap->getSizeY(); y++) {
                         for(int x = 0; x < currentGameMap->getSizeX(); x++) {
-                            if(currentGameMap->getTile(x,y)->isRock() == false) {
+                            if(!currentGameMap->getTile(x,y)->isRock()) {
                                 const auto distance = blockDistance(pos, Coord(x,y));
                                 if(distance < nearestSand) {
                                     nearestSand = distance;
@@ -340,14 +340,14 @@ void AIPlayer::build() {
         //if this players structure, and its a heavy factory, build something
         if(pStructure->getOwner() == getHouse()) {
 
-            if((pStructure->isRepairing() == false) && (pStructure->getHealth() < pStructure->getMaxHealth())) {
+            if((!pStructure->isRepairing()) && (pStructure->getHealth() < pStructure->getMaxHealth())) {
                 doRepair(pStructure);
             }
 
             if(pStructure->isABuilder()) {
                 const auto* pBuilder = static_cast<const BuilderBase*>(pStructure);
 
-                if((getHouse()->getCredits() > 2000) && (pBuilder->getHealth() >= pBuilder->getMaxHealth()) && (pBuilder->isUpgrading() == false) && (pBuilder->getCurrentUpgradeLevel() < pBuilder->getMaxUpgradeLevel())) {
+                if((getHouse()->getCredits() > 2000) && (pBuilder->getHealth() >= pBuilder->getMaxHealth()) && (!pBuilder->isUpgrading()) && (pBuilder->getCurrentUpgradeLevel() < pBuilder->getMaxUpgradeLevel())) {
                     doUpgrade(pBuilder);
                     continue;
                 }
@@ -355,7 +355,7 @@ void AIPlayer::build() {
                 switch (pStructure->getItemID()) {
 
                     case Structure_Barracks: {
-                        if(isAllowedToArm() && (getHouse()->hasLightFactory() == false) && (getHouse()->hasHeavyFactory() == false)) {
+                        if(isAllowedToArm() && (!getHouse()->hasLightFactory()) && (!getHouse()->hasHeavyFactory())) {
                             if((getHouse()->getCredits() > 1500) && (pBuilder->getProductionQueueSize() < 1) && (pBuilder->getBuildListSize() > 0)) {
                                 doBuildRandom(pBuilder);
                             }
@@ -363,7 +363,7 @@ void AIPlayer::build() {
                     } break;
 
                     case Structure_LightFactory: {
-                        if(isAllowedToArm() && getHouse()->hasHeavyFactory() == false) {
+                        if(isAllowedToArm() && !getHouse()->hasHeavyFactory()) {
                             if((getHouse()->getCredits() > 1500) && (pBuilder->getProductionQueueSize() < 1) && (pBuilder->getBuildListSize() > 0)) {
                                 doBuildRandom(pBuilder);
                             }
@@ -371,7 +371,7 @@ void AIPlayer::build() {
                     } break;
 
                     case Structure_WOR: {
-                        if(isAllowedToArm() && getHouse()->hasHeavyFactory() == false) {
+                        if(isAllowedToArm() && !getHouse()->hasHeavyFactory()) {
                             if((getHouse()->getCredits() > 1500) && (pBuilder->getProductionQueueSize() < 1) && (pBuilder->getBuildListSize() > 0)) {
                                 doBuildRandom(pBuilder);
                             }
@@ -460,12 +460,12 @@ void AIPlayer::build() {
                     case Structure_ConstructionYard: {
                         if((getHouse()->getCredits() > 900) && ((pBuilder->getCurrentUpgradeLevel() == 0) || (getHouse()->hasRadar()))
                             && (pBuilder->getHealth() >= pBuilder->getMaxHealth())
-                            && (pBuilder->isUpgrading() == false)
+                            && (!pBuilder->isUpgrading())
                             && (pBuilder->getCurrentUpgradeLevel() < pBuilder->getMaxUpgradeLevel()) ) {
                             auto upgrading = doUpgrade(pBuilder);
                         }
 
-                        if(bConstructionYardChecked == false && !pBuilder->isUpgrading()) {
+                        if(!bConstructionYardChecked && !pBuilder->isUpgrading()) {
                             bConstructionYardChecked = true;
                             if(getHouse()->getCredits() > 100) {
                                 if((pBuilder->getProductionQueueSize() < 1) && (pBuilder->getBuildListSize() > 0)) {
@@ -474,13 +474,13 @@ void AIPlayer::build() {
                                         itemID = Structure_WindTrap;
                                     } else if(getHouse()->getNumItems(Structure_Refinery) < 3 && pBuilder->isAvailableToBuild(Structure_Refinery)) {
                                         itemID = Structure_Refinery;
-                                    } else if((getHouse()->hasRadar() == false) && pBuilder->isAvailableToBuild(Structure_Radar)) {
+                                    } else if((!getHouse()->hasRadar()) && pBuilder->isAvailableToBuild(Structure_Radar)) {
                                         itemID = Structure_Radar;
                                     } else if((getHouse()->getNumItems(Structure_StarPort) <= 0) && pBuilder->isAvailableToBuild(Structure_StarPort)) {
                                         itemID = Structure_StarPort;
                                     } else if((getHouse()->getNumItems(Structure_RocketTurret) < 1) && pBuilder->isAvailableToBuild(Structure_RocketTurret)) {
                                         itemID = Structure_RocketTurret;
-                                    } else if((getHouse()->hasLightFactory() == false) && pBuilder->isAvailableToBuild(Structure_LightFactory)) {
+                                    } else if((!getHouse()->hasLightFactory()) && pBuilder->isAvailableToBuild(Structure_LightFactory)) {
                                         itemID = Structure_LightFactory;
                                     } else if((getHouse()->getNumItems(Structure_HeavyFactory) <= 0) && pBuilder->isAvailableToBuild(Structure_HeavyFactory)) {
                                         itemID = Structure_HeavyFactory;

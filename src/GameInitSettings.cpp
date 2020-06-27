@@ -161,7 +161,7 @@ std::string GameInitSettings::getScenarioFilename(HOUSETYPE newHouse, int missio
 void GameInitSettings::checkSaveGame(const std::filesystem::path& savegame) {
     IFileStream fs;
 
-    if(fs.open(savegame) == false) {
+    if(!fs.open(savegame)) {
         THROW(std::runtime_error, "Cannot open savegame. Make sure you have read access to this savegame!");
     }
 

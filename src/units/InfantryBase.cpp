@@ -91,7 +91,7 @@ void InfantryBase::doCaptureStructure(Uint32 targetStructureID) {
 
 void InfantryBase::doCaptureStructure(const StructureBase* pStructure) {
 
-    if((pStructure == nullptr) || (pStructure->canBeCaptured() == false) || (pStructure->getOwner()->getTeamID() == getOwner()->getTeamID())) {
+    if((pStructure == nullptr) || (!pStructure->canBeCaptured()) || (pStructure->getOwner()->getTeamID() == getOwner()->getTeamID())) {
         // does not exist anymore, cannot be captured or is a friendly building
         return;
     }
@@ -211,13 +211,13 @@ void InfantryBase::checkPos() {
                 else if (pCapturedStructure->getItemID() == Structure_Refinery) {
                     capturedSpice = currentGame->objectData.data[Structure_Silo][static_cast<int>(originalHouseID)].capacity * (pOwner->getStoredCredits() / pOwner->getCapacity());
                     auto* pRefinery = static_cast<Refinery*>(pCapturedStructure);
-                    if (pRefinery->isFree() == false) {
+                    if (!pRefinery->isFree()) {
                         pContainedUnit = pRefinery->getHarvester();
                     }
                 }
                 else if (pCapturedStructure->getItemID() == Structure_RepairYard) {
                     auto* pRepairYard = static_cast<RepairYard*>(pCapturedStructure);
-                    if (pRepairYard->isFree() == false) {
+                    if (!pRepairYard->isFree()) {
                         pContainedUnit = pRepairYard->getRepairUnit();
                     }
                 }
@@ -269,13 +269,13 @@ void InfantryBase::checkPos() {
 
                 pNewStructure->setOriginalHouseID(origHouse);
                 pNewStructure->setHealth(oldHealth);
-                if (isSelected == true) {
+                if (isSelected) {
                     pNewStructure->setSelected(true);
                     currentGame->getSelectedList().insert(pNewStructure->getObjectID());
                     currentGame->selectionChanged();
                 }
 
-                if (isSelectedByOtherPlayer == true) {
+                if (isSelectedByOtherPlayer) {
                     pNewStructure->setSelectedByOtherPlayer(true);
                     currentGame->getSelectedByOtherPlayerList().insert(pNewStructure->getObjectID());
                 }

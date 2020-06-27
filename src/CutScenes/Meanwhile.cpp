@@ -58,7 +58,7 @@ Meanwhile::Meanwhile(HOUSETYPE house, bool firstMeanwhile) {
     const auto sardaukarColor = SDL2RGB(palette[PALCOLOR_SARDAUKAR+1]);
     const auto visitorColor = SDL2RGB(palette[houseToPaletteIndex[houseOfVisitor]+1]);
 
-    if(firstMeanwhile == true) {
+    if(firstMeanwhile) {
         // Meanwhile after level 4
         static const int meanwhileFrame[] = { 1, 2, 0};
 

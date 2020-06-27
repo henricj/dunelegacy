@@ -108,7 +108,7 @@ void Harvester::blitToScreen()
 
     SDL_RenderCopy(renderer, pUnitGraphic, &source, &dest);
 
-    if(isHarvesting() == true) {
+    if(isHarvesting()) {
 
         const Coord harvesterSandOffset[] = {   Coord(-56, 4),
                                                 Coord(-28, 20),

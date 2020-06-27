@@ -181,7 +181,7 @@ CustomGamePlayers::CustomGamePlayers(const GameInitSettings& newGameInitSettings
     nextButton.setOnClick(std::bind(&CustomGamePlayers::onNext, this));
     nextButtonVBox.addWidget(&nextButton, 24);
     nextButtonVBox.addWidget(VSpacer::create(14));
-    if(bServer == false) {
+    if(!bServer) {
         nextButton.setEnabled(false);
         nextButton.setVisible(false);
     }
@@ -260,10 +260,10 @@ CustomGamePlayers::CustomGamePlayers(const GameInitSettings& newGameInitSettings
 
                 if(gisHouseInfo.houseID == HOUSETYPE::HOUSE_UNUSED) {
                     curHouseInfo.player1DropDown.addEntry(_("closed"), PLAYER_CLOSED);
-                } else if(gisHouseInfo.playerInfoList.empty() == false) {
+                } else if(!gisHouseInfo.playerInfoList.empty()) {
                     GameInitSettings::PlayerInfo playerInfo = gisHouseInfo.playerInfoList.front();
                     if(playerInfo.playerClass == HUMANPLAYERCLASS) {
-                        if(thisPlayerPlaced == false) {
+                        if(!thisPlayerPlaced) {
                             curHouseInfo.player1DropDown.addEntry(settings.general.playerName, PLAYER_HUMAN);
                             curHouseInfo.player1DropDown.setSelectedItem(0);
                             thisPlayerPlaced = true;
@@ -286,7 +286,7 @@ CustomGamePlayers::CustomGamePlayers(const GameInitSettings& newGameInitSettings
 
             }
 
-        } else if(bServer && (thisPlayerPlaced == false)) {
+        } else if(bServer && (!thisPlayerPlaced)) {
             curHouseInfo.player1DropDown.addEntry(settings.general.playerName, PLAYER_HUMAN);
             curHouseInfo.player1DropDown.setSelectedItem(0);
             curHouseInfo.player1DropDown.setEnabled(bServer);
@@ -320,7 +320,7 @@ CustomGamePlayers::CustomGamePlayers(const GameInitSettings& newGameInitSettings
                 } else if(gisHouseInfo.playerInfoList.size() >= 2) {
                     GameInitSettings::PlayerInfo playerInfo = *(++gisHouseInfo.playerInfoList.begin());
                     if(playerInfo.playerClass == HUMANPLAYERCLASS) {
-                        if(thisPlayerPlaced == false) {
+                        if(!thisPlayerPlaced) {
                             curHouseInfo.player2DropDown.addEntry(settings.general.playerName, PLAYER_HUMAN);
                             curHouseInfo.player2DropDown.setSelectedItem(0);
                             thisPlayerPlaced = true;
@@ -341,7 +341,7 @@ CustomGamePlayers::CustomGamePlayers(const GameInitSettings& newGameInitSettings
                     }
                 }
             }
-        } else if(bServer && (thisPlayerPlaced == false)) {
+        } else if(bServer && (!thisPlayerPlaced)) {
             curHouseInfo.player2DropDown.addEntry(settings.general.playerName, PLAYER_HUMAN);
             curHouseInfo.player2DropDown.setSelectedItem(0);
             curHouseInfo.player2DropDown.setEnabled(bServer);
@@ -669,7 +669,7 @@ void CustomGamePlayers::onNext()
                 }
             }
 
-            if(bTeamFound == false) {
+            if(!bTeamFound) {
                 numTeams++;
             }
         }
@@ -719,7 +719,7 @@ void CustomGamePlayers::addAllPlayersToGameInitSettings()
         bAdded |= addPlayerToHouseInfo(newHouseInfo, player1, player1name);
         bAdded |= addPlayerToHouseInfo(newHouseInfo, player2, player2name);
 
-        if(bAdded == true) {
+        if(bAdded) {
             gameInitSettings.addHouseInfo(newHouseInfo);
         }
     }
@@ -983,20 +983,12 @@ void CustomGamePlayers::onChangeHousesDropDownBoxes(bool bInteractive, int house
             bool bCheck = 0;
 
             if((house == HOUSETYPE::HOUSE_INVALID) || (isBoundedHouseOnMap(house))) {
-                if(numUsedBoundHouses + numUsedRandomHouses - 1 >= numBoundHouses) {
-                    bCheck = true;
-                } else {
-                    bCheck = false;
-                }
+                bCheck = numUsedBoundHouses + numUsedRandomHouses - 1 >= numBoundHouses;
             } else {
-                if(numUsedBoundHouses + numUsedRandomHouses >= numBoundHouses) {
-                    bCheck = true;
-                } else {
-                    bCheck = false;
-                }
+                bCheck = numUsedBoundHouses + numUsedRandomHouses >= numBoundHouses;
             }
 
-            if(bCheck == true) {
+            if(bCheck) {
                 bAddHouse = true;
                 for(int j = 0; j < numHouses; j++) {
                     if(i != j) {
@@ -1025,7 +1017,7 @@ void CustomGamePlayers::onChangeHousesDropDownBoxes(bool bInteractive, int house
                 }
             }
 
-            if(bAddHouse == true) {
+            if(bAddHouse) {
                 addToHouseDropDown(curHouseInfo.houseDropDown, static_cast<HOUSETYPE>(h));
             } else {
                 removeFromHouseDropDown(curHouseInfo.houseDropDown, static_cast<HOUSETYPE>(h));
@@ -1102,7 +1094,7 @@ void CustomGamePlayers::onPeerDisconnected(const std::string& playername, bool b
             }
         }
 
-        if(bServer == false) {
+        if(!bServer) {
             for(int i=0;i<numHouses;i++) {
                 bool bIsThisPlayer = false;
                 if(houseInfo[i].player1DropDown.getSelectedEntryIntData() == PLAYER_HUMAN) {
@@ -1180,7 +1172,7 @@ void CustomGamePlayers::setPlayer2Slot(const std::string& playername, int slot) 
     dropDownBox.addEntry(playername, PLAYER_HUMAN);
     dropDownBox.setSelectedItem(0);
 
-    if(bServer == false) {
+    if(!bServer) {
         for(int i=0;i<numHouses;i++) {
             bool bIsThisPlayer = false;
 
@@ -1225,7 +1217,7 @@ void CustomGamePlayers::checkPlayerBoxes() {
             numPlayers++;
         }
 
-        if((gameInitSettings.isMultiplePlayersPerHouse() == false) || (player1 == PLAYER_OPEN && player2 == PLAYER_OPEN) || (curHouseInfo.player2DropDown.getNumEntries() == 0)) {
+        if((!gameInitSettings.isMultiplePlayersPerHouse()) || (player1 == PLAYER_OPEN && player2 == PLAYER_OPEN) || (curHouseInfo.player2DropDown.getNumEntries() == 0)) {
             curHouseInfo.player2DropDown.setVisible(false);
             curHouseInfo.player2DropDown.setEnabled(false);
             curHouseInfo.player2Label.setVisible(false);
@@ -1233,7 +1225,7 @@ void CustomGamePlayers::checkPlayerBoxes() {
             curHouseInfo.player2DropDown.setVisible(true);
 
             bool bEnableDropDown2 = bServer;
-            if(bServer == false) {
+            if(!bServer) {
                 if(player1 == PLAYER_HUMAN) {
                     if(curHouseInfo.player1DropDown.getSelectedEntry() == settings.general.playerName) {
                         bEnableDropDown2 = true;

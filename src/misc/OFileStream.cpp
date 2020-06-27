@@ -47,12 +47,7 @@ bool OFileStream::open(const std::filesystem::path& filename)
     fp = fopen(normal.c_str(), "wb");
 #endif
 
-    if (fp == nullptr) {
-        return false;
-    }
-    else {
-        return true;
-    }
+    return fp != nullptr;
 }
 
 void OFileStream::close()
@@ -115,7 +110,7 @@ void OFileStream::writeUint64(Uint64 x)
 
 void OFileStream::writeBool(bool x)
 {
-    writeUint8(x == true ? 1 : 0);
+    writeUint8(x ? 1 : 0);
 }
 
 void OFileStream::writeFloat(float x)

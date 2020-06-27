@@ -167,7 +167,7 @@ std::vector<std::string> greedyWordWrap(const std::string& text, int linewidth, 
         size_t oldwarppos = 0;
         size_t lastwarp = 0;
 
-        while(bEndOfLine == false) {
+        while(!bEndOfLine) {
             while(true) {
                 warppos = hardLine.find(" ", oldwarppos);
                 std::string tmp;
@@ -184,7 +184,7 @@ std::vector<std::string> greedyWordWrap(const std::string& text, int linewidth, 
                     bEndOfLine = false;
                     break;
                 } else {
-                    if(bEndOfLine == true) {
+                    if(bEndOfLine) {
                         oldwarppos = warppos;
                         break;
                     } else {

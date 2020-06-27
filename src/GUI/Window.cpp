@@ -174,7 +174,7 @@ bool Window::handleMouseLeft(Sint32 x, Sint32 y, bool pressed) {
     if(isEnabled() && (pWindowWidget != nullptr)) {
         bool bProcessed = pWindowWidget->handleMouseLeftOverlay(x - getPosition().x, y - getPosition().y, pressed)
                             || pWindowWidget->handleMouseLeft(x - getPosition().x, y - getPosition().y, pressed);
-        if(pressed && (bProcessed == false)) {
+        if(pressed && (!bProcessed)) {
             pWindowWidget->setActive(false);
             pWindowWidget->setActive(true);
         }
@@ -236,7 +236,7 @@ bool Window::handleTextInput(SDL_TextInputEvent& textInput) {
 
 void Window::draw(Point position) {
     if(isVisible()) {
-        if(bTransparentBackground == false) {
+        if(!bTransparentBackground) {
 
             if(bSelfGeneratedBackground && !pBackground) {
                 pBackground = convertSurfaceToTexture(GUIStyle::getInstance().createBackground(getSize().x,getSize().y));
@@ -273,7 +273,7 @@ void Window::resize(Uint32 width, Uint32 height) {
         pWindowWidget->resize(width,height);
     }
 
-    if(bSelfGeneratedBackground == true) {
+    if(bSelfGeneratedBackground) {
         pBackground.reset();
 
         // the new background is created when the window is drawn next time

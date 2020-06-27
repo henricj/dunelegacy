@@ -54,7 +54,7 @@ void NewsTicker::addUrgentMessage(const std::string& msg)
 }
 
 void NewsTicker::draw(Point position) {
-    if(isVisible() == false) {
+    if(!isVisible()) {
         return;
     }
 

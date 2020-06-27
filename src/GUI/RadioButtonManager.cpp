@@ -19,7 +19,7 @@
 #include <GUI/RadioButton.h>
 
 void RadioButtonManager::registerRadioButton(RadioButton* pRadioButton) {
-    if(isRegistered(pRadioButton) == false) {
+    if(!isRegistered(pRadioButton)) {
         radioButtonList.push_back(pRadioButton);
     }
     pRadioButton->registerRadioButtonManager(this);

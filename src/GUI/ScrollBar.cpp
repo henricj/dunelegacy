@@ -58,7 +58,7 @@ void ScrollBar::handleMouseMovement(Sint32 x, Sint32 y, bool insideOverlay) {
 }
 
 bool ScrollBar::handleMouseLeft(Sint32 x, Sint32 y, bool pressed) {
-    if(pressed == false) {
+    if(!pressed) {
         bDragSlider = false;
     }
 
@@ -89,7 +89,7 @@ bool ScrollBar::handleMouseLeft(Sint32 x, Sint32 y, bool pressed) {
 
 bool ScrollBar::handleMouseWheel(Sint32 x, Sint32 y, bool up)  {
     if((x >= 0) && (x < getSize().x) && (y >= 0) && (y < getSize().y)) {
-        if(up == true) {
+        if(up) {
             setCurrentValue(currentValue-1);
         } else {
             setCurrentValue(currentValue+1);
@@ -105,7 +105,7 @@ bool ScrollBar::handleKeyPress(SDL_KeyboardEvent& key) {
 }
 
 void ScrollBar::draw(Point position) {
-    if(isVisible() == false) {
+    if(!isVisible()) {
         return;
     }
 

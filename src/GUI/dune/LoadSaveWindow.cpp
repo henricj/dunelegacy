@@ -81,7 +81,7 @@ LoadSaveWindow::LoadSaveWindow(bool bSave, const std::string& caption, const std
 
     mainVBox.addWidget(VSpacer::create(5));
 
-    if(bSave == true) {
+    if(bSave) {
         saveName.setTextColor(color);
         mainVBox.addWidget(&saveName);
         saveName.setMaximumTextLength(64);
@@ -200,7 +200,7 @@ void LoadSaveWindow::onChildWindowClose(Window* pChildWindow) {
 
 
 void LoadSaveWindow::onOK() {
-    if(bSaveWindow == false) {
+    if(!bSaveWindow) {
         const auto index = fileList.getSelectedIndex();
         if(index >= 0) {
             filename = (directories[currentDirectoryIndex] / fileList.getEntry(index)).replace_extension(extension);
@@ -243,7 +243,7 @@ void LoadSaveWindow::onDirectoryChange(int i) {
 }
 
 void LoadSaveWindow::onSelectionChange(bool bInteractive) {
-    if(bSaveWindow != true) return;
+    if(!bSaveWindow) return;
 
     int index = fileList.getSelectedIndex();
     if(index >= 0) {

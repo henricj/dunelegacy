@@ -458,7 +458,7 @@ void CampaignStatsMenu::calculateScore(int level)
     totalScore += ((int) totalHumanCredits) / 100;
 
     for(const StructureBase* pStructure : structureList) {
-        if(pStructure->getOwner()->isAI() == false) {
+        if(!pStructure->getOwner()->isAI()) {
             totalScore += currentGame->objectData.data[pStructure->getItemID()][static_cast<int>(pStructure->getOriginalHouseID())].price / 100;
         }
     }
@@ -468,7 +468,7 @@ void CampaignStatsMenu::calculateScore(int level)
     for(const UnitBase* pUnit : unitList) {
         if(pUnit->getItemID() == Unit_Harvester) {
             const auto* pHarvester = static_cast<const Harvester*>(pUnit);
-            if(pHarvester->getOwner()->isAI() == true) {
+            if(pHarvester->getOwner()->isAI()) {
                 spiceHarvestedByAI += pHarvester->getAmountOfSpice().toFloat();
             } else {
                 spiceHarvestedByHuman += pHarvester->getAmountOfSpice().toFloat();
@@ -476,7 +476,7 @@ void CampaignStatsMenu::calculateScore(int level)
         }
     }
 
-    if(currentGame->areCheatsEnabled() == true) {
+    if(currentGame->areCheatsEnabled()) {
         rank = "Cheater";
     } else {
 

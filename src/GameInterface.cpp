@@ -190,7 +190,7 @@ void GameInterface::updateObjectInterface() {
             }
 
         } else {
-            if(pObjectContainer->update() == false) {
+            if(!pObjectContainer->update()) {
                 removeOldContainer();
             }
         }
@@ -209,7 +209,7 @@ void GameInterface::updateObjectInterface() {
                                     Point(getRendererWidth() - sideBar.getSize().x + 24, 146),
                                     Point(sideBar.getSize().x - 25,getRendererHeight() - 148));
         } else {
-            if(pObjectContainer->update() == false) {
+            if(!pObjectContainer->update()) {
                 removeOldContainer();
             }
         }

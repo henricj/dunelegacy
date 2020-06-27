@@ -68,11 +68,11 @@ bool DropDownBox::handleMouseMovementOverlay(Sint32 x, Sint32 y) {
 }
 
 bool DropDownBox::handleMouseLeft(Sint32 x, Sint32 y, bool pressed) {
-    if((isEnabled() == false) || (isVisible() == false)) {
+    if((!isEnabled()) || (!isVisible())) {
         // onClick works even when widget is disabled
         if(bOnClickEnabled && isVisible() && pOnClick) {
             if((x>=0) && (x < getSize().x - openListBoxButton.getSize().x - 1)
-                && (y>=0) && (y < getSize().y) && (pressed == true)) {
+                && (y>=0) && (y < getSize().y) && (pressed)) {
                 pOnClick();
             }
         }
@@ -85,7 +85,7 @@ bool DropDownBox::handleMouseLeft(Sint32 x, Sint32 y, bool pressed) {
         return true;
     } else {
         if((x>=0) && (x < getSize().x - openListBoxButton.getSize().x - 1)
-            && (y>=0) && (y < getSize().y) && (pressed == true)) {
+            && (y>=0) && (y < getSize().y) && (pressed)) {
 
             if(bOnClickEnabled && pOnClick) {
                 pOnClick();
@@ -101,12 +101,12 @@ bool DropDownBox::handleMouseLeft(Sint32 x, Sint32 y, bool pressed) {
 }
 
 bool DropDownBox::handleMouseLeftOverlay(Sint32 x, Sint32 y, bool pressed) {
-    if((isEnabled() == false) || (isVisible() == false)) {
+    if((!isEnabled()) || (!isVisible())) {
         return false;
     }
 
     if(bShowListBox) {
-        if(listBox.handleMouseLeft(x, bListBoxAbove ? (y + listBox.getSize().y) : (y - getSize().y), pressed) == false) {
+        if(!listBox.handleMouseLeft(x, bListBoxAbove ? (y + listBox.getSize().y) : (y - getSize().y), pressed)) {
             if(x < 0 || x >= getSize().x || y < 0 || y >= getSize().y) {
                 // if not on drop down box => click is handled by closing drop down box
                 bShowListBox = false;
@@ -124,7 +124,7 @@ bool DropDownBox::handleMouseLeftOverlay(Sint32 x, Sint32 y, bool pressed) {
 }
 
 bool DropDownBox::handleMouseWheel(Sint32 x, Sint32 y, bool up) {
-    if((isEnabled() == false) || (isVisible() == false)) {
+    if((!isEnabled()) || (!isVisible())) {
         return false;
     }
 
@@ -150,7 +150,7 @@ bool DropDownBox::handleMouseWheel(Sint32 x, Sint32 y, bool up) {
 }
 
 bool DropDownBox::handleMouseWheelOverlay(Sint32 x, Sint32 y, bool up) {
-    if((isEnabled() == false) || (isVisible() == false)) {
+    if((!isEnabled()) || (!isVisible())) {
         return false;
     }
 
@@ -165,7 +165,7 @@ bool DropDownBox::handleMouseWheelOverlay(Sint32 x, Sint32 y, bool up) {
 }
 
 bool DropDownBox::handleKeyPress(SDL_KeyboardEvent& key) {
-    if((isEnabled() == false) || (isVisible() == false)) {
+    if((!isEnabled()) || (!isVisible())) {
         return false;
     }
 
@@ -213,7 +213,7 @@ bool DropDownBox::handleKeyPress(SDL_KeyboardEvent& key) {
 }
 
 void DropDownBox::draw(Point position) {
-    if(isVisible() == false) {
+    if(!isVisible()) {
         return;
     }
 
@@ -227,7 +227,7 @@ void DropDownBox::draw(Point position) {
     updateForeground();
 
     if(pForeground != nullptr && pActiveForeground != nullptr) {
-        if(((bHover == true) && pOnClick) || isActive()) {
+        if(((bHover) && pOnClick) || isActive()) {
             SDL_Rect dest = calcDrawingRect(pActiveForeground.get(), position.x + 2, position.y + 2);
             SDL_RenderCopy(renderer, pActiveForeground.get(), nullptr, &dest);
         } else {
@@ -261,7 +261,7 @@ void DropDownBox::resizeListBox() {
 }
 
 void DropDownBox::setActive(bool bActive) {
-    if(bActive == false) {
+    if(!bActive) {
         bShowListBox = false;
         openListBoxButton.setInactive();
     } else {

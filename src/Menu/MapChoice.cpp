@@ -389,7 +389,7 @@ void MapChoice::loadINI() {
         std::string strXPos;
         std::string strYPos;
 
-        if(splitString(entry, strXPos, strYPos) == false) {
+        if(!splitString(entry, strXPos, strYPos)) {
             THROW(std::runtime_error, "File '%s' contains invalid value for key '%d'", filename, i);
         }
 

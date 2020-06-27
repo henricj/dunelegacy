@@ -49,11 +49,11 @@ bool Button::handleMouseLeft(Sint32 x, Sint32 y, bool pressed) {
         return false;
     }
 
-    if((isEnabled() == false) || (isVisible() == false)) {
+    if((!isEnabled()) || (!isVisible())) {
         return true;
     }
 
-    if(pressed == true) {
+    if(pressed) {
         // button pressed
         bPressed = true;
         if(!bToggleButton) {
@@ -61,7 +61,7 @@ bool Button::handleMouseLeft(Sint32 x, Sint32 y, bool pressed) {
         }
     } else {
         // button released
-        if(bPressed == true) {
+        if(bPressed) {
             bPressed = false;
             if(bToggleButton) {
                 bool oldState = getToggleState();
@@ -80,7 +80,7 @@ bool Button::handleMouseLeft(Sint32 x, Sint32 y, bool pressed) {
 }
 
 bool Button::handleKeyPress(SDL_KeyboardEvent& key) {
-    if((isVisible() == false) || (isEnabled() == false) || (isActive() == false)) {
+    if((!isVisible()) || (!isEnabled()) || (!isActive())) {
         return true;
     }
 
@@ -105,7 +105,7 @@ bool Button::handleKeyPress(SDL_KeyboardEvent& key) {
         }
     }
 
-    if((bToggleButton == false) && (SDL_GetModState() == KMOD_NONE) && (key.keysym.sym == SDLK_RETURN)) {
+    if((!bToggleButton) && (SDL_GetModState() == KMOD_NONE) && (key.keysym.sym == SDLK_RETURN)) {
         soundPlayer->playSound(Sound_ButtonClick);
 
         if(pOnClick) {
@@ -117,14 +117,14 @@ bool Button::handleKeyPress(SDL_KeyboardEvent& key) {
 }
 
 void Button::draw(Point position) {
-    if(isVisible() == false) {
+    if(!isVisible()) {
         return;
     }
 
     updateTextures();
 
     SDL_Texture* tex = nullptr;
-    if(bToggleState == true) {
+    if(bToggleState) {
         if(pPressedTexture) {
             tex = pPressedTexture.get();
         } else {
@@ -135,7 +135,7 @@ void Button::draw(Point position) {
             }
         }
     } else {
-        if(bPressed == true) {
+        if(bPressed) {
             if(pPressedTexture) {
                 tex = pPressedTexture.get();
             } else {
@@ -163,7 +163,7 @@ void Button::draw(Point position) {
 }
 
 void Button::drawOverlay(Point position) {
-    if(!isVisible() || !isEnabled() || bHover != true || !tooltipTexture) return;
+    if(!isVisible() || !isEnabled() || !bHover || !tooltipTexture) return;
 
     if(SDL_GetTicks() - tooltipLastMouseMotion <= 750) return;
 

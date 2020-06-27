@@ -66,8 +66,8 @@ InGameMenu::InGameMenu(bool bMultiplayer, int color)
     loadGameButton.setText(_("Load Game"));
     loadGameButton.setTextColor(color);
     loadGameButton.setOnClick(std::bind(&InGameMenu::onLoad, this));
-    loadGameButton.setVisible(bMultiplayer == false);
-    loadGameButton.setEnabled(bMultiplayer == false);
+    loadGameButton.setVisible(!bMultiplayer);
+    loadGameButton.setEnabled(!bMultiplayer);
     mainVBox.addWidget(&loadGameButton);
 
     mainVBox.addWidget(VSpacer::create(3));
@@ -75,8 +75,8 @@ InGameMenu::InGameMenu(bool bMultiplayer, int color)
     gameSettingsButton.setText(_("Game Settings"));
     gameSettingsButton.setTextColor(color);
     gameSettingsButton.setOnClick(std::bind(&InGameMenu::onSettings, this));
-    gameSettingsButton.setVisible(bMultiplayer == false);
-    gameSettingsButton.setEnabled(bMultiplayer == false);
+    gameSettingsButton.setVisible(!bMultiplayer);
+    gameSettingsButton.setEnabled(!bMultiplayer);
     mainVBox.addWidget(&gameSettingsButton);
 
     mainVBox.addWidget(VSpacer::create(3));
@@ -84,8 +84,8 @@ InGameMenu::InGameMenu(bool bMultiplayer, int color)
     restartGameButton.setText(_("Restart Game"));
     restartGameButton.setTextColor(color);
     restartGameButton.setOnClick(std::bind(&InGameMenu::onRestart, this));
-    restartGameButton.setVisible(bMultiplayer == false);
-    restartGameButton.setEnabled(bMultiplayer == false);
+    restartGameButton.setVisible(!bMultiplayer);
+    restartGameButton.setEnabled(!bMultiplayer);
     mainVBox.addWidget(&restartGameButton);
 
     mainVBox.addWidget(VSpacer::create(3));
@@ -136,7 +136,7 @@ void InGameMenu::onChildWindowClose(Window* pChildWindow) {
         bool bSave = pLoadSaveWindow->isSaveWindow();
 
         if(!FileName.empty()) {
-            if(bSave == false) {
+            if(!bSave) {
                 // load window
                 try {
                     currentGame->setNextGameInitSettings(GameInitSettings(std::move(FileName)));

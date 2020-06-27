@@ -113,7 +113,7 @@ void MentatHelp::drawSpecificStuff()
 
 bool MentatHelp::doInput(SDL_Event &event)
 {
-    if((mentatTopicsList.isVisible() == false) && (event.type == SDL_MOUSEBUTTONDOWN)) {
+    if((!mentatTopicsList.isVisible()) && (event.type == SDL_MOUSEBUTTONDOWN)) {
         showNextMentatText();
         return true;
     } else {

@@ -196,7 +196,7 @@ TeamsWindow::TeamsWindow(MapEditor* pMapEditor, HOUSETYPE currentHouse)
         teamsListBox.addEntry(getDescribingString(aiteamInfo));
     }
 
-    if(aiteams.empty() == false) {
+    if(!aiteams.empty()) {
         teamsListBox.setSelectedItem(0);
         onSelectionChange(true);
     }
