@@ -47,7 +47,7 @@ public:
     void onChildWindowClose(Window* pChildWindow) override;
 
 private:
-    void onNext();
+    void onNext() const;
     void onCancel();
     static void onLoad();
     void onGameOptions();

@@ -104,7 +104,7 @@ public:
     XMIDI(DataSource *source, int pconvert);
     ~XMIDI();
 
-    int number_of_tracks()
+    int number_of_tracks() const
     {
         if (info.type != 1)
             return info.tracks;

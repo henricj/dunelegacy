@@ -1393,7 +1393,7 @@ TERRAINTYPE MapEditor::getTerrain(int x, int y) {
     return terrainType;
 }
 
-void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) {
+void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) const {
     int zoomedTilesize = world2zoomedWorld(TILESIZE);
 
     Coord TopLeftTile = pScreenborder->getTopLeftTile();
