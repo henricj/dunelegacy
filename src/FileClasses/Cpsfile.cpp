@@ -30,7 +30,7 @@
 #define SIZE_X  320
 #define SIZE_Y  200
 
-extern Palette palette;
+
 
 sdl2::surface_ptr LoadCPS_RW(SDL_RWops* RWop)
 {

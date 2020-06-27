@@ -29,7 +29,7 @@
 #define SIZE_X  16
 #define SIZE_Y  16
 
-extern Palette palette;
+
 
 /// Constructor
 /**
