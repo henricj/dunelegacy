@@ -452,7 +452,11 @@ void OPLChipClass::cellon(Bitu regbase, celltype *c) {
 }
 
 void OPLChipClass::adlib_init(Bits samplerate,bool highprec/*=false*/) {
-    Bits i = 0, j = 0, oct = 0;
+    Bits i = 0;
+
+    Bits j = 0;
+
+    Bits oct = 0;
 
     ext_samplerate = samplerate;
     int_samplerate = samplerate;
@@ -855,7 +859,11 @@ static void clipit16(fltype f, Bit16s* a) {
     outbufl[i] += chanval;
 
 void OPLChipClass::adlib_getsample(Bit16s* sndptr, Bits numsamples) {
-    Bits i = 0, j = 0, endsamples = 0;
+    Bits i = 0;
+
+    Bits j = 0;
+
+    Bits endsamples = 0;
     celltype* cptr = nullptr;
 
     fltype outbufl[FIFOSIZE];
@@ -987,7 +995,11 @@ void OPLChipClass::adlib_getsample(Bit16s* sndptr, Bits numsamples) {
                     Bits _snarek1 = _snarek&((WAVPREC>>1)-1);
                     Bits _snarek2 = _snarek&(WAVPREC-1);
                     Bits _snarek3 = _snarek&((WAVPREC>>3)-1);
-                    float snarek1 = NAN, snarek2 = NAN, snarek3 = NAN;
+                    float snarek1 = NAN;
+
+                    float snarek2 = NAN;
+
+                    float snarek3 = NAN;
                     memcpy(&snarek1, &_snarek1, sizeof(float));
                     memcpy(&snarek2, &_snarek2, sizeof(float));
                     memcpy(&snarek3, &_snarek3, sizeof(float));
