@@ -61,7 +61,7 @@ SoundPlayer::~SoundPlayer() = default;
 void SoundPlayer::playVoice(Voice_enum id, HOUSETYPE houseID) const {
     if(!soundOn || !pSFXManager) return;
 
-    Mix_Chunk* tmp;
+    Mix_Chunk* tmp = nullptr;
 
     if((tmp = pSFXManager->getVoice(id,houseID)) == nullptr) {
         THROW(std::invalid_argument, "There is no voice with ID %d!",id);
@@ -152,7 +152,7 @@ void SoundPlayer::playSound(Sound_enum soundID, int volume) const
         ChannelGroup::Rocket,               // Sound_RocketSmall
     };
 
-    Mix_Chunk* sound;
+    Mix_Chunk* sound = nullptr;
 
     if((sound = pSFXManager->getSound(soundID)) == nullptr) {
         THROW(std::invalid_argument, "There is no sound with ID %d!", soundID);

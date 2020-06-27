@@ -172,8 +172,8 @@ void GameInitSettings::checkSaveGame(const std::filesystem::path& savegame) {
 
 
 void GameInitSettings::checkSaveGame(InputStream& stream) {
-    Uint32 magicNum;
-    Uint32 savegameVersion;
+    Uint32 magicNum = 0;
+    Uint32 savegameVersion = 0;
     std::string duneVersion;
     try {
         magicNum = stream.readUint32();

@@ -63,7 +63,7 @@ sdl2::texture_ptr FontManager::createTextureWithText(const std::string& text, Ui
 
 sdl2::surface_ptr FontManager::createSurfaceWithMultilineText(const std::string& text, Uint32 color, unsigned int fontSize, bool bCentered) {
     size_t startpos = 0;
-    size_t nextpos;
+    size_t nextpos = 0;
     std::vector<std::string> textLines;
     do {
         nextpos = text.find('\n',startpos);

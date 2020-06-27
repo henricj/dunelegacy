@@ -1055,7 +1055,7 @@ void AdlibDriver::setupNote(uint8 rawNote, Channel &channel, bool flag) {
     // We adjust the frequency, even when channel.unk16 is 0.
 
     if (channel.unk16 || flag) {
-        const uint8 *table;
+        const uint8 *table = nullptr;
 
         if (channel.unk16 >= 0) {
             table = _unkTables[(channel.rawNote & 0x0F) + 2];
@@ -2546,7 +2546,7 @@ Mix_Chunk* SoundAdlibPC::getSubsong(int Num) {
 
     } while(isPlaying() || !bSilent);
 
-    Mix_Chunk* myChunk;
+    Mix_Chunk* myChunk = nullptr;
     if((myChunk = static_cast<Mix_Chunk*>(SDL_calloc(sizeof(Mix_Chunk), 1))) == nullptr) {
         return nullptr;
     }

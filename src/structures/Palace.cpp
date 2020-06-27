@@ -191,8 +191,8 @@ void Palace::updateStructureSpecificStuff() {
 
 bool Palace::callFremen() {
     int count = 0;
-    int x;
-    int y;
+    int x = 0;
+    int y = 0;
     do {
         x = currentGame->randomGen.rand(1, currentGameMap->getSizeX()-2);
         y = currentGame->randomGen.rand(1, currentGameMap->getSizeY()-2);
@@ -216,8 +216,8 @@ bool Palace::callFremen() {
 
             auto *pFremen = static_cast<Trooper*>(getOwner()->createUnit(Unit_Trooper));
 
-            int i;
-            int j;
+            int i = 0;
+            int j = 0;
             do {
                 i = currentGame->randomGen.rand(-1, 1);
                 j = currentGame->randomGen.rand(-1, 1);

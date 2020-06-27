@@ -69,7 +69,7 @@ namespace
         }
 
         SDL_SetPaletteColors(returnPic->format->palette, src->format->palette->colors, 0, src->format->palette->ncolors);
-        Uint32 ckey;
+        Uint32 ckey = 0;
         const auto has_ckey = !SDL_GetColorKey(src, &ckey);
         if (has_ckey) {
             SDL_SetColorKey(returnPic.get(), SDL_TRUE, ckey);
@@ -105,7 +105,7 @@ sdl2::surface_ptr Scaler::doubleSurfaceNN(SDL_Surface* src) {
     }
 
     SDL_SetPaletteColors(returnPic->format->palette, src->format->palette->colors, 0, src->format->palette->ncolors);
-    Uint32 ckey;
+    Uint32 ckey = 0;
     bool has_ckey = !SDL_GetColorKey(src, &ckey);
     if (has_ckey) {
         SDL_SetColorKey(returnPic.get(), SDL_TRUE, ckey);
@@ -161,7 +161,7 @@ sdl2::surface_ptr Scaler::tripleSurfaceNN(SDL_Surface* src) {
     }
 
     SDL_SetPaletteColors(returnPic->format->palette, src->format->palette->colors, 0, src->format->palette->ncolors);
-    Uint32 ckey;
+    Uint32 ckey = 0;
     bool has_ckey = !SDL_GetColorKey(src, &ckey);
     if (has_ckey) {
         SDL_SetColorKey(returnPic.get(), SDL_TRUE, ckey);
@@ -240,7 +240,7 @@ sdl2::surface_ptr Scaler::doubleTiledSurfaceScale2x(SDL_Surface* src, int tilesX
     }
 
     SDL_SetPaletteColors(returnPic->format->palette, src->format->palette->colors, 0, src->format->palette->ncolors);
-    Uint32 ckey;
+    Uint32 ckey = 0;
     bool has_ckey = !SDL_GetColorKey(src, &ckey);
     if (has_ckey) {
         SDL_SetColorKey(returnPic.get(), SDL_TRUE, ckey);
@@ -286,7 +286,7 @@ sdl2::surface_ptr Scaler::doubleTiledSurfaceScale2x(SDL_Surface* src, int tilesX
                     Uint8 D = *( srcPixels + (j*tileHeight+y)*src->pitch + (i*tileWidth+std::max(0,x-1)) );
                     Uint8 F = *( srcPixels + (j*tileHeight+y)*src->pitch + (i*tileWidth+std::min(tileWidth-1,x+1)) );
 
-                    Uint8 E0, E1, E2, E3;
+                    Uint8 E0 = 0, E1 = 0, E2 = 0, E3 = 0;
 
                     if(B != H && D != F) {
                         E0 = (D == B) ? D : E;
@@ -346,7 +346,7 @@ sdl2::surface_ptr Scaler::tripleTiledSurfaceScale3x(SDL_Surface* src, int tilesX
     }
 
     SDL_SetPaletteColors(returnPic->format->palette, src->format->palette->colors, 0, src->format->palette->ncolors);
-    Uint32 ckey;
+    Uint32 ckey = 0;
     bool has_ckey = !SDL_GetColorKey(src, &ckey);
     if (has_ckey) {
         SDL_SetColorKey(returnPic.get(), SDL_TRUE, ckey);
@@ -396,7 +396,7 @@ sdl2::surface_ptr Scaler::tripleTiledSurfaceScale3x(SDL_Surface* src, int tilesX
                     Uint8 H = *( srcPixels + (j*tileHeight+std::min(tileHeight-1,y+1))*src->pitch + (i*tileWidth+x) );
                     Uint8 I = *( srcPixels + (j*tileHeight+std::min(tileHeight-1,y+1))*src->pitch + (i*tileWidth+std::min(tileWidth-1,x+1)) );
 
-                    Uint8 E0, E1, E2, E3, E4, E5, E6, E7, E8;
+                    Uint8 E0 = 0, E1 = 0, E2 = 0, E3 = 0, E4 = 0, E5 = 0, E6 = 0, E7 = 0, E8 = 0;
 
                     if(B != H && D != F) {
                         E0 = (D == B) ? D : E;

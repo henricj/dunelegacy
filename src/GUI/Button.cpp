@@ -123,7 +123,7 @@ void Button::draw(Point position) {
 
     updateTextures();
 
-    SDL_Texture* tex;
+    SDL_Texture* tex = nullptr;
     if(bToggleState == true) {
         if(pPressedTexture) {
             tex = pPressedTexture.get();

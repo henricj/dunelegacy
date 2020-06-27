@@ -387,7 +387,7 @@ int MetaServerClient::connectionThreadMain(void* data) {
 
                             enet_address_set_host(&gameServerInfo.serverAddress, parts[0].c_str());
 
-                            int port;
+                            int port = 0;
                             if(!parseString(parts[1], port) || port <= 0 || port > 65535) {
                                 break;
                             }

@@ -414,10 +414,10 @@ void MapEditor::saveMap(const std::filesystem::path& filepath) {
 
     loadedINIFile->setIntValue("BASIC","TimeOut", mapInfo.timeout);
 
-    int logicalSizeX;
+    int logicalSizeX = 0;
     //int logicalSizeY;
-    int logicalOffsetX;
-    int logicalOffsetY;
+    int logicalOffsetX = 0;
+    int logicalOffsetY = 0;
 
     if(version < 2) {
         logicalSizeX = 64;
@@ -1412,7 +1412,7 @@ void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) {
     for(int y = TopLeftTile.y; y <= BottomRightTile.y; y++) {
         for(int x = TopLeftTile.x; x <= BottomRightTile.x; x++) {
 
-            int tile;
+            int tile = 0;
 
             switch(getTerrain(x,y)) {
                 case Terrain_Slab: {

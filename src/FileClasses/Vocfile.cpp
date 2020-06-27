@@ -84,9 +84,9 @@ static Uint32 getSampleRateFromVOCRate(Uint8 vocSR) {
 */
 static sdl2::sdl_ptr<Uint8[]> LoadVOC_RW(SDL_RWops* rwop, Uint32 &decsize, Uint32 &rate) {
     Uint8 description[20];
-    Uint16 offset;
-    Uint16 version;
-    Uint16 id;
+    Uint16 offset = 0;
+    Uint16 version = 0;
+    Uint16 id = 0;
 
     if(SDL_RWread(rwop,(char*) description,20,1) != 1) {
         THROW(std::runtime_error, "LoadVOC_RW(): Invalid header!");
@@ -132,7 +132,7 @@ static sdl2::sdl_ptr<Uint8[]> LoadVOC_RW(SDL_RWops* rwop, Uint32 &decsize, Uint3
     sdl2::sdl_ptr<Uint8[]> ret_sound = nullptr;
     decsize = 0;
 
-    Uint8 code;
+    Uint8 code = 0;
     rate = 0;
     while (SDL_RWread(rwop,&code,sizeof(Uint8),1) == 1) {
         if(code == VOC_CODE_TERM) {
@@ -149,12 +149,12 @@ static sdl2::sdl_ptr<Uint8[]> LoadVOC_RW(SDL_RWops* rwop, Uint32 &decsize, Uint3
 
         switch (code) {
             case VOC_CODE_DATA: {
-                Uint8 time_constant;
+                Uint8 time_constant = 0;
                 if(SDL_RWread(rwop,&time_constant,sizeof(Uint8),1) != 1) {
                     THROW(std::runtime_error, "LoadVOC_RW(): Cannot read time constant!");
                 }
 
-                Uint8 packing;
+                Uint8 packing = 0;
                 if(SDL_RWread(rwop,&packing,sizeof(Uint8),1) != 1) {
                     THROW(std::runtime_error, "LoadVOC_RW(): Cannot read packing!");
                 }
@@ -187,13 +187,13 @@ static sdl2::sdl_ptr<Uint8[]> LoadVOC_RW(SDL_RWops* rwop, Uint32 &decsize, Uint3
             } break;
 
             case VOC_CODE_SILENCE: {
-                Uint16 SilenceLength;
+                Uint16 SilenceLength = 0;
                 if(SDL_RWread(rwop,&SilenceLength,sizeof(Uint16),1) != 1) {
                     THROW(std::runtime_error, "LoadVOC_RW(): Cannot read silence length!");
                 }
                 SilenceLength = SDL_SwapLE16(SilenceLength);
 
-                Uint8 time_constant;
+                Uint8 time_constant = 0;
                 if(SDL_RWread(rwop,&time_constant,sizeof(Uint8),1) != 1) {
                     THROW(std::runtime_error, "LoadVOC_RW(): Cannot read time constant!");
                 }
@@ -288,8 +288,8 @@ sdl2::mix_chunk_ptr LoadVOC_RW(SDL_RWops* rwop) {
     }
 
     // Read voc file
-    Uint32 RawData_Frequency;
-    Uint32 RawData_Samples;
+    Uint32 RawData_Frequency = 0;
+    Uint32 RawData_Samples = 0;
     sdl2::sdl_ptr<Uint8[]> RawDataUint8 = LoadVOC_RW(rwop, RawData_Samples, RawData_Frequency);
     if(RawDataUint8 == nullptr) {
         THROW(std::runtime_error, "LoadVOC_RW(): Cannot read raw data!");
@@ -341,8 +341,8 @@ sdl2::mix_chunk_ptr LoadVOC_RW(SDL_RWops* rwop) {
     RawData_Samples--;
 
     // Get audio device specifications
-    int TargetFrequency, channels;
-    Uint16 TargetFormat;
+    int TargetFrequency = 0, channels = 0;
+    Uint16 TargetFormat = 0;
     if(Mix_QuerySpec(&TargetFrequency, &TargetFormat, &channels) == 0) {
         THROW(std::runtime_error, "LoadVOC_RW(): Mix_QuerySpec failed!");
     }
@@ -391,7 +391,7 @@ sdl2::mix_chunk_ptr LoadVOC_RW(SDL_RWops* rwop) {
     myChunk->allocated = 1;
     myChunk->volume = 128;
 
-    int SizeOfTargetSample;
+    int SizeOfTargetSample = 0;
     switch(TargetFormat) {
         case AUDIO_U8:      SizeOfTargetSample = sizeof(Uint8) * channels;      break;
         case AUDIO_S8:      SizeOfTargetSample = sizeof(Sint8) * channels;      break;

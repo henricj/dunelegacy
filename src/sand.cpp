@@ -73,7 +73,7 @@ void drawCursor() {
     \return the surface corresponding. This surface should not be freed or modified. nullptr on error.
 */
 SDL_Texture* resolveItemPicture(int itemID, HOUSETYPE house) {
-    int newPicID;
+    int newPicID = 0;
 
     // clang-format off
     switch(itemID) {

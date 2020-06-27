@@ -286,7 +286,7 @@ void OptionsMenu::onOptionsOK() {
         return;
     }
 
-    int serverport;
+    int serverport = 0;
     if(!parseString(portTextBox.getText(), serverport) || serverport <= 0 || serverport > 65535) {
         openWindow(MsgBox::create(fmt::sprintf(_("Server Port must be between 1 and 65535!\nDefault Server Port is %d!"), DEFAULT_PORT)));
         return;

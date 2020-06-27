@@ -501,7 +501,7 @@ fix16_t fix16_lerp16(fix16_t inArg0, fix16_t inArg1, uint16_t inFract)
 
 fix16_t fix16_lerp32(fix16_t inArg0, fix16_t inArg1, uint32_t inFract)
 {
-	int64_t tempOut;
+	int64_t tempOut = 0;
 	tempOut  = ((int64_t)inArg0 * (0 - inFract));
 	tempOut	+= ((int64_t)inArg1 * inFract);
 	tempOut >>= 32;

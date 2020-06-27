@@ -292,7 +292,7 @@ void Wsafile::readdata(int numFiles, va_list args) {
     looped = false;
 
     for(int i = 0; i < numFiles; i++) {
-        int wsaFilesize;
+        int wsaFilesize = 0;
         const auto rwop = va_arg(args,SDL_RWops*);
         pFiledata[i] = readfile(rwop,&wsaFilesize);
         numberOfFrames[i] = SDL_SwapLE16(*(reinterpret_cast<Uint16*>(pFiledata[i].get())) );

@@ -57,7 +57,7 @@ int INIFile::Key::getIntValue(int defaultValue) const {
         return defaultValue;
     }
 
-    long ret;
+    long ret = 0;
     if(value.at(0) == '-') {
         ret = -(atol(value.c_str()+1));
     } else if (value.at(0) == '+') {
@@ -343,7 +343,7 @@ INIFile::INIFile(const std::filesystem::path& filename, bool bWhitespace)
 
     firstLine = nullptr;
     sectionRoot = nullptr;
-    SDL_RWops * file;
+    SDL_RWops * file = nullptr;
 
     // open file
     if((file = SDL_RWFromFile(filename.u8string().c_str(), "r")) != nullptr) {
@@ -867,9 +867,9 @@ void INIFile::readfile(SDL_RWops * file) {
     std::string completeLine;
     int lineNum = 0;
     INIFileLine* curLine = nullptr;
-    INIFileLine* newINIFileLine;
-    Section* newSection;
-    Key* newKey;
+    INIFileLine* newINIFileLine = nullptr;
+    Section* newSection = nullptr;
+    Key* newKey = nullptr;
 
     bool readfinished = false;
 
@@ -877,7 +877,7 @@ void INIFile::readfile(SDL_RWops * file) {
         lineNum++;
 
         completeLine = "";
-        unsigned char tmp;
+        unsigned char tmp = 0;
 
         while(true) {
             size_t readbytes = SDL_RWread(file,&tmp,1,1);
