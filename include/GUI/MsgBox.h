@@ -122,8 +122,7 @@ protected:
     }
 
     /// destructor
-    ~MsgBox() override {
-    }
+    ~MsgBox() override = default;
 
 private:
     /**
