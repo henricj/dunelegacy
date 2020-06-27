@@ -26,7 +26,7 @@
 #include <cstdio>
 #include <cstdlib>
 
-extern Palette palette;
+
 
 /// Constructor
 /**
