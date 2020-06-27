@@ -68,7 +68,7 @@ OptionsMenu::OptionsMenu() : MenuBase()
     NameHBox.addWidget(Spacer::create(), 0.5);
     NameHBox.addWidget(Label::create(_("Player Name")), 190);
     nameTextBox.setMaximumTextLength(MAX_PLAYERNAMELENGTH);
-    nameTextBox.setOnTextChange(std::bind(&OptionsMenu::onChangeOption, this, std::placeholders::_1));
+    nameTextBox.setOnTextChange([this](auto interactive) { onChangeOption(interactive); });
     NameHBox.addWidget(&nameTextBox, 290);
     NameHBox.addWidget(Spacer::create(), 0.5);
     nameTextBox.setText(settings.general.playerName);
@@ -81,7 +81,7 @@ OptionsMenu::OptionsMenu() : MenuBase()
 
     gameOptionsHBox.addWidget(Label::create(_("Default Game Options")), 190);
     gameOptionsButton.setText(_("Change..."));
-    gameOptionsButton.setOnClick(std::bind(&OptionsMenu::onGameOptions, this));
+    gameOptionsButton.setOnClick([this]() { onGameOptions(); });;
     gameOptionsHBox.addWidget(&gameOptionsButton, 130);
 
     gameOptionsHBox.addWidget(Spacer::create(), 160);
@@ -102,7 +102,7 @@ OptionsMenu::OptionsMenu() : MenuBase()
         }
     }
 
-    languageDropDownBox.setOnSelectionChange(std::bind(&OptionsMenu::onChangeOption, this, std::placeholders::_1));
+    languageDropDownBox.setOnSelectionChange([this](auto interactive){ onChangeOption(interactive); });
     languageHBox.addWidget(&languageDropDownBox, 100);
     languageHBox.addWidget(Spacer::create(), 190);
     languageHBox.addWidget(Spacer::create(), 0.5);
@@ -117,12 +117,12 @@ OptionsMenu::OptionsMenu() : MenuBase()
         aiDropDownBox.addEntry(PlayerFactory::getByIndex(i)->getName(), i);
     }
     aiDropDownBox.setSelectedItem(PlayerFactory::getIndexByPlayerClass(settings.ai.campaignAI) - 1);
-    aiDropDownBox.setOnSelectionChange(std::bind(&OptionsMenu::onChangeOption, this, std::placeholders::_1));
+    aiDropDownBox.setOnSelectionChange([this](auto interactive) { onChangeOption(interactive); });
     generalHBox.addWidget(&aiDropDownBox, 140);
     generalHBox.addWidget(Spacer::create(), 20);
     introCheckbox.setText(_("Play Intro"));
     introCheckbox.setChecked(settings.general.playIntro);
-    introCheckbox.setOnClick(std::bind(&OptionsMenu::onChangeOption, this, true));
+    introCheckbox.setOnClick([this]() { onChangeOption(true); });
     generalHBox.addWidget(&introCheckbox, 130);
     generalHBox.addWidget(Spacer::create(), 0.5);
 
@@ -146,22 +146,22 @@ OptionsMenu::OptionsMenu() : MenuBase()
         }
         i++;
     }
-    resolutionDropDownBox.setOnSelectionChange(std::bind(&OptionsMenu::onChangeOption, this, std::placeholders::_1));
+    resolutionDropDownBox.setOnSelectionChange([this](auto interactive){ onChangeOption(interactive); });;
     resolutionHBox.addWidget(&resolutionDropDownBox, 130);
     resolutionHBox.addWidget(Spacer::create(), 5);
     zoomlevelDropDownBox.addEntry("Zoom 1x", 0);
     zoomlevelDropDownBox.addEntry("Zoom 2x", 1);
     zoomlevelDropDownBox.addEntry("Zoom 3x", 2);
     zoomlevelDropDownBox.setSelectedItem(settings.video.preferredZoomLevel);
-    zoomlevelDropDownBox.setOnSelectionChange(std::bind(&OptionsMenu::onChangeOption, this, std::placeholders::_1));
+    zoomlevelDropDownBox.setOnSelectionChange([this](auto interactive) { onChangeOption(interactive); });
     resolutionHBox.addWidget(&zoomlevelDropDownBox, 72);
     resolutionHBox.addWidget(Spacer::create(), 5);
-    for(int i = 0; i < Scaler::NumScaler; i++) {
-        scalerDropDownBox.addEntry(Scaler::getScalerName((Scaler::ScalerType) i));
+    for(int j = 0; j < Scaler::NumScaler; j++) {
+        scalerDropDownBox.addEntry(Scaler::getScalerName(static_cast<Scaler::ScalerType>(j)));
     }
-    Scaler::ScalerType currentScaler = Scaler::getScalerByName(settings.video.scaler);
+    const Scaler::ScalerType currentScaler = Scaler::getScalerByName(settings.video.scaler);
     scalerDropDownBox.setSelectedItem(currentScaler >= 0 ? currentScaler : Scaler::ScaleHD);
-    scalerDropDownBox.setOnSelectionChange(std::bind(&OptionsMenu::onChangeOption, this, std::placeholders::_1));
+    scalerDropDownBox.setOnSelectionChange([this](auto interactive) { onChangeOption(interactive); });
     resolutionHBox.addWidget(&scalerDropDownBox, 78);
 
     resolutionHBox.addWidget(Spacer::create(), 0.5);
@@ -173,11 +173,11 @@ OptionsMenu::OptionsMenu() : MenuBase()
     videoHBox.addWidget(Spacer::create(), 0.5);
     fullScreenCheckbox.setText(_("Full Screen"));
     fullScreenCheckbox.setChecked(settings.video.fullscreen);
-    fullScreenCheckbox.setOnClick(std::bind(&OptionsMenu::onChangeOption, this, true));
+    fullScreenCheckbox.setOnClick([this]() { onChangeOption(true); });
     videoHBox.addWidget(&fullScreenCheckbox, 240);
     showTutorialHintsCheckbox.setText(_("Show Tutorial Hints"));
     showTutorialHintsCheckbox.setChecked(settings.general.showTutorialHints);
-    showTutorialHintsCheckbox.setOnClick(std::bind(&OptionsMenu::onChangeOption, this, true));
+    showTutorialHintsCheckbox.setOnClick([this]() { onChangeOption(true); });
     videoHBox.addWidget(&showTutorialHintsCheckbox, 240);
     videoHBox.addWidget(Spacer::create(), 0.5);
 
@@ -188,11 +188,11 @@ OptionsMenu::OptionsMenu() : MenuBase()
     audioHBox.addWidget(Spacer::create(), 0.5);
     playSFXCheckbox.setText(_("Play SFX"));
     playSFXCheckbox.setChecked(settings.audio.playSFX);
-    playSFXCheckbox.setOnClick(std::bind(&OptionsMenu::onChangeOption, this, true));
+    playSFXCheckbox.setOnClick([this]() { onChangeOption(true); });
     audioHBox.addWidget(&playSFXCheckbox, 240);
     playMusicCheckbox.setText(_("Play Music"));
     playMusicCheckbox.setChecked(settings.audio.playMusic);
-    playMusicCheckbox.setOnClick(std::bind(&OptionsMenu::onChangeOption, this, true));
+    playMusicCheckbox.setOnClick([this]() { onChangeOption(true); });
     audioHBox.addWidget(&playMusicCheckbox, 240);
     audioHBox.addWidget(Spacer::create(), 0.5);
 
@@ -204,7 +204,7 @@ OptionsMenu::OptionsMenu() : MenuBase()
     networkPortHBox.addWidget(Label::create(_("Port")), 190);
     portTextBox.setMaximumTextLength(5);
     portTextBox.setAllowedChars("0123456789");
-    portTextBox.setOnTextChange(std::bind(&OptionsMenu::onChangeOption, this, std::placeholders::_1));
+    portTextBox.setOnTextChange([this](auto interactive){ onChangeOption(interactive); });
     networkPortHBox.addWidget(&portTextBox, 100);
     portTextBox.setText(std::to_string(settings.network.serverPort));
     networkPortHBox.addWidget(Spacer::create(), 190);
@@ -215,7 +215,7 @@ OptionsMenu::OptionsMenu() : MenuBase()
 
     networkMetaServerHBox.addWidget(Spacer::create(), 0.5);
     networkMetaServerHBox.addWidget(Label::create(_("MetaServer")), 190);
-    metaServerTextBox.setOnTextChange(std::bind(&OptionsMenu::onChangeOption, this, std::placeholders::_1));
+    metaServerTextBox.setOnTextChange([this](auto interactive) { onChangeOption(interactive); });
     networkMetaServerHBox.addWidget(&metaServerTextBox, 290);
     metaServerTextBox.setText(settings.network.metaServer);
     networkMetaServerHBox.addWidget(Spacer::create(), 0.5);
@@ -226,14 +226,14 @@ OptionsMenu::OptionsMenu() : MenuBase()
     okCancelHBox.addWidget(Spacer::create());
 
     backButton.setText(_("Back"));
-    backButton.setOnClick(std::bind(&OptionsMenu::onOptionsCancel, this));
+    backButton.setOnClick([this](){ onOptionsCancel(); });
     okCancelHBox.addWidget(&backButton);
 
     okCancelHBox.addWidget(Spacer::create());
 
     acceptButton.setText(_("Accept"));
     acceptButton.setVisible(false);
-    acceptButton.setOnClick(std::bind(&OptionsMenu::onOptionsOK, this));
+    acceptButton.setOnClick([this](){ onOptionsOK(); });
     okCancelHBox.addWidget(&acceptButton);
 
     okCancelHBox.addWidget(Spacer::create());
@@ -280,7 +280,7 @@ void OptionsMenu::onChangeOption(bool bInteractive) {
 }
 
 void OptionsMenu::onOptionsOK() {
-    std::string playername = nameTextBox.getText();
+    const std::string playername = nameTextBox.getText();
     if(playername.empty()) {
         openWindow(MsgBox::create(_("Please enter a Player Name.")));
         return;
@@ -292,7 +292,7 @@ void OptionsMenu::onOptionsOK() {
         return;
     }
 
-    std::string metaserver = metaServerTextBox.getText();
+    const std::string metaserver = metaServerTextBox.getText();
     if(metaserver.empty()) {
         openWindow(MsgBox::create(_("Please enter a MetaServer.")));
         return;
