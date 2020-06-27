@@ -108,14 +108,14 @@ bool Carryall::update() {
         currentMaxSpeed = std::min(currentMaxSpeed + 0.2_fix, maxSpeed);
     }
 
-    if(AirUnit::update() == false) {
+    if(!AirUnit::update()) {
         return false;
     }
 
     // check if this carryall has to be removed because it has just brought something
     // to the map (e.g. new harvester)
     if (active) {
-        if(aDropOfferer && droppedOffCargo && (hasCargo() == false)
+        if(aDropOfferer && droppedOffCargo && (!hasCargo())
             && ((getRealX() < -TILESIZE) || (getRealX() > (currentGameMap->getSizeX()+1)*TILESIZE)
                 || (getRealY() < -TILESIZE) || (getRealY() > (currentGameMap->getSizeY()+1)*TILESIZE))) {
             setVisible(VIS_ALL, false);
@@ -150,7 +150,7 @@ void Carryall::checkPos()
                     return;
                 }
 
-                if((pUnit != nullptr) && (pUnit->isInfantry() == false) && (droppedUnits > 0)) {
+                if((pUnit != nullptr) && (!pUnit->isInfantry()) && (droppedUnits > 0)) {
                     // we already dropped infantry and this is no infantry
                     // => do not drop this here
                     break;
@@ -159,21 +159,21 @@ void Carryall::checkPos()
                 deployUnit(unitID);
                 droppedUnits++;
 
-                if((pUnit != nullptr) && (pUnit->isInfantry() == false)) {
+                if((pUnit != nullptr) && (!pUnit->isInfantry())) {
                     // we dropped a non infantry unit
                     // => do not drop another unit
                     break;
                 }
             } while(hasCargo() && (droppedUnits < 3));
 
-            if(pickedUpUnitList.empty() == false) {
+            if(!pickedUpUnitList.empty()) {
                 // find next place to drop
                 for(auto i=8;i<18;i++) {
                     auto r = currentGame->randomGen.rand(3,i/2);
                     const auto angle = 2 * FixPt_PI * currentGame->randomGen.randFixPoint();
 
                     auto dropCoord = location + Coord( lround(r*FixPoint::sin(angle)), lround(-r*FixPoint::cos(angle)));
-                    if(currentGameMap->tileExists(dropCoord) && currentGameMap->getTile(dropCoord)->hasAGroundObject() == false) {
+                    if(currentGameMap->tileExists(dropCoord) && !currentGameMap->getTile(dropCoord)->hasAGroundObject()) {
                         setDestination(dropCoord);
                         break;
                     }
@@ -183,7 +183,7 @@ void Carryall::checkPos()
                 setDestination(guardPoint);
             }
         }
-    } else if(isBooked() == false) {
+    } else if(!isBooked()) {
         if(destination.isValid()) {
             if(blockDistance(location, destination) <= 2) {
                 destination.invalidate();
@@ -323,7 +323,7 @@ void Carryall::engageTarget()
         return;
     }
 
-    if(target && (target.getObjPointer()->isActive() == false)) {
+    if(target && (!target.getObjPointer()->isActive())) {
         // the target changed its state to inactive
         releaseTarget();
         return;
@@ -406,7 +406,7 @@ void Carryall::pickupTarget()
             || ( pGroundUnitTarget->getDestination() != pGroundUnitTarget->getLocation())
             || pGroundUnitTarget->isBadlyDamaged()) {
 
-            if(pGroundUnitTarget->isBadlyDamaged() || (pGroundUnitTarget->hasATarget() == false && pGroundUnitTarget->getItemID() != Unit_Harvester))   {
+            if(pGroundUnitTarget->isBadlyDamaged() || (!pGroundUnitTarget->hasATarget() && pGroundUnitTarget->getItemID() != Unit_Harvester))   {
                 pGroundUnitTarget->doRepair();
             }
 
@@ -483,7 +483,7 @@ void Carryall::targeting() {
 }
 
 void Carryall::turn() {
-    if (active && aDropOfferer && droppedOffCargo && (hasCargo() == false)
+    if (active && aDropOfferer && droppedOffCargo && (!hasCargo())
         && ((getRealX() < TILESIZE/2) || (getRealX() > currentGameMap->getSizeX()*TILESIZE - TILESIZE/2)
             || (getRealY() < TILESIZE/2) || (getRealY() > currentGameMap->getSizeY()*TILESIZE - TILESIZE/2))) {
         // already partially outside the map => do not turn

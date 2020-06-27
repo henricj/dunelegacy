@@ -70,7 +70,7 @@ void Wall::save(OutputStream& stream) const {
 
 void Wall::destroy() {
     // fix wall to the north
-    if(currentGameMap->tileExists(location.x, location.y-1) == true) {
+    if(currentGameMap->tileExists(location.x, location.y-1)) {
         ObjectBase* obj = currentGameMap->getTile(location.x, location.y-1)->getGroundObject();
         if((obj != nullptr) && (obj->getItemID() == Structure_Wall)) {
             Wall* pWall = static_cast<Wall*>(obj);
@@ -80,7 +80,7 @@ void Wall::destroy() {
     }
 
     // fix wall to the south
-    if(currentGameMap->tileExists(location.x, location.y+1) == true) {
+    if(currentGameMap->tileExists(location.x, location.y+1)) {
         ObjectBase* obj = currentGameMap->getTile(location.x, location.y+1)->getGroundObject();
         if((obj != nullptr) && (obj->getItemID() == Structure_Wall)) {
             Wall* pWall = static_cast<Wall*>(obj);
@@ -90,7 +90,7 @@ void Wall::destroy() {
     }
 
     // fix wall to the west
-    if(currentGameMap->tileExists(location.x-1, location.y) == true) {
+    if(currentGameMap->tileExists(location.x-1, location.y)) {
         ObjectBase* obj = currentGameMap->getTile(location.x-1, location.y)->getGroundObject();
         if((obj != nullptr) && (obj->getItemID() == Structure_Wall)) {
             Wall* pWall = static_cast<Wall*>(obj);
@@ -100,7 +100,7 @@ void Wall::destroy() {
     }
 
     // fix wall to the east
-    if(currentGameMap->tileExists(location.x+1, location.y) == true) {
+    if(currentGameMap->tileExists(location.x+1, location.y)) {
         ObjectBase* obj = currentGameMap->getTile(location.x+1, location.y)->getGroundObject();
         if((obj != nullptr) && (obj->getItemID() == Structure_Wall)) {
             Wall* pWall = static_cast<Wall*>(obj);
@@ -125,7 +125,7 @@ void Wall::setLocation(int xPos, int yPos) {
     fixWall();
 
     // fix wall to the north
-    if(currentGameMap->tileExists(location.x, location.y-1) == true) {
+    if(currentGameMap->tileExists(location.x, location.y-1)) {
         ObjectBase* obj = currentGameMap->getTile(location.x, location.y-1)->getGroundObject();
         if((obj != nullptr) && (obj->getItemID() == Structure_Wall)) {
             Wall* pWall = static_cast<Wall*>(obj);
@@ -135,7 +135,7 @@ void Wall::setLocation(int xPos, int yPos) {
     }
 
     // fix wall to the south
-    if(currentGameMap->tileExists(location.x, location.y+1) == true) {
+    if(currentGameMap->tileExists(location.x, location.y+1)) {
         ObjectBase* obj = currentGameMap->getTile(location.x, location.y+1)->getGroundObject();
         if((obj != nullptr) && (obj->getItemID() == Structure_Wall)) {
             Wall* pWall = static_cast<Wall*>(obj);
@@ -145,7 +145,7 @@ void Wall::setLocation(int xPos, int yPos) {
     }
 
     // fix wall to the west
-    if(currentGameMap->tileExists(location.x-1, location.y) == true) {
+    if(currentGameMap->tileExists(location.x-1, location.y)) {
         ObjectBase* obj = currentGameMap->getTile(location.x-1, location.y)->getGroundObject();
         if((obj != nullptr) && (obj->getItemID() == Structure_Wall)) {
             Wall* pWall = static_cast<Wall*>(obj);
@@ -155,7 +155,7 @@ void Wall::setLocation(int xPos, int yPos) {
     }
 
     // fix wall to the east
-    if(currentGameMap->tileExists(location.x+1, location.y) == true) {
+    if(currentGameMap->tileExists(location.x+1, location.y)) {
         ObjectBase* obj = currentGameMap->getTile(location.x+1, location.y)->getGroundObject();
         if((obj != nullptr) && (obj->getItemID() == Structure_Wall)) {
             Wall* pWall = static_cast<Wall*>(obj);
@@ -190,43 +190,43 @@ void Wall::fixWall() {
 
     // calculate destroyed tile index
     int destroyedTileIndex = 0;
-    if(left == true)    destroyedTileIndex = (destroyedTileIndex << 1) | ((int) bWallDestroyedLeft);
-    if(down == true)    destroyedTileIndex = (destroyedTileIndex << 1) | ((int) bWallDestroyedDown);
-    if(right == true)   destroyedTileIndex = (destroyedTileIndex << 1) | ((int) bWallDestroyedRight);
-    if(up == true)      destroyedTileIndex = (destroyedTileIndex << 1) | ((int) bWallDestroyedUp);
+    if(left)    destroyedTileIndex = (destroyedTileIndex << 1) | ((int) bWallDestroyedLeft);
+    if(down)    destroyedTileIndex = (destroyedTileIndex << 1) | ((int) bWallDestroyedDown);
+    if(right)   destroyedTileIndex = (destroyedTileIndex << 1) | ((int) bWallDestroyedRight);
+    if(up)      destroyedTileIndex = (destroyedTileIndex << 1) | ((int) bWallDestroyedUp);
 
     // Now perform the test
-    if ((left == true) && (right == true) && (up == true) && (down == true)) {
+    if ((left) && (right) && (up) && (down)) {
         maketile = (destroyedTileIndex == 0) ? Wall_Full : 59 + destroyedTileIndex; //solid wall
-    } else if ((left == false) && (right == true) && (up == true) && (down == true)) {
+    } else if ((!left) && (right) && (up) && (down)) {
         maketile = (destroyedTileIndex == 0) ? Wall_UpDownRight : 31 + destroyedTileIndex; //missing left edge
-    } else if ((left == true) && (right == false)&& (up == true) && (down == true)) {
+    } else if ((left) && (!right)&& (up) && (down)) {
         maketile = (destroyedTileIndex == 0) ? Wall_UpDownLeft : 45 + destroyedTileIndex; //missing right edge
-    } else if ((left == true) && (right == true) && (up == false) && (down == true)) {
+    } else if ((left) && (right) && (!up) && (down)) {
         maketile = (destroyedTileIndex == 0) ? Wall_DownLeftRight : 38 + destroyedTileIndex; //missing top edge
-    } else if ((left == true) && (right == true) && (up == true) && (down == false)) {
+    } else if ((left) && (right) && (up) && (!down)) {
         maketile = (destroyedTileIndex == 0) ? Wall_UpLeftRight : 52 + destroyedTileIndex; //missing bottom edge
-    } else if ((left == false) && (right == true) && (up == false) && (down == true)) {
+    } else if ((!left) && (right) && (!up) && (down)) {
         maketile = (destroyedTileIndex == 0) ? Wall_DownRight : 22 + destroyedTileIndex; //missing top left edge
-    } else if ((left == true) && (right == false) && (up == true) && (down == false)) {
+    } else if ((left) && (!right) && (up) && (!down)) {
         maketile = (destroyedTileIndex == 0) ? Wall_UpLeft : 28 + destroyedTileIndex; //missing bottom right edge
-    } else if ((left == true) && (right == false) && (up == false) && (down == true)) {
+    } else if ((left) && (!right) && (!up) && (down)) {
         maketile = (destroyedTileIndex == 0) ? Wall_DownLeft : 25 + destroyedTileIndex; //missing top right edge
-    } else if ((left == false) && (right == true) && (up == true) && (down == false)) {
+    } else if ((!left) && (right) && (up) && (!down)) {
         maketile = (destroyedTileIndex == 0) ? Wall_UpRight : 19 + destroyedTileIndex; //missing bottom left edge
-    } else if ((left == true) && (right == false) && (up == false) && (down == false)) {
+    } else if ((left) && (!right) && (!up) && (!down)) {
         maketile = (destroyedTileIndex == 0) ? Wall_LeftRight : 14 + destroyedTileIndex; //missing above, right and below
-    } else if ((left == false) && (right == true) && (up == false) && (down == false)) {
+    } else if ((!left) && (right) && (!up) && (!down)) {
         maketile = (destroyedTileIndex == 0) ? Wall_LeftRight : 13 + destroyedTileIndex; //missing above, left and below
-    } else if ((left == false) && (right == false) && (up == true) && (down == false)) {
+    } else if ((!left) && (!right) && (up) && (!down)) {
         maketile = (destroyedTileIndex == 0) ? Wall_UpDown : 16 + destroyedTileIndex; //only up
-    } else if ((left == false) && (right == false) && (up == false) && (down == true)) {
+    } else if ((!left) && (!right) && (!up) && (down)) {
         maketile = (destroyedTileIndex == 0) ? Wall_UpDown : 17 + destroyedTileIndex; //only down
-    } else if ((left == true) && (right == true) && (up == false) && (down == false)) {
+    } else if ((left) && (right) && (!up) && (!down)) {
         maketile = (destroyedTileIndex == 0) ? Wall_LeftRight : 13 + destroyedTileIndex; //missing above and below
-    } else if ((left == false) && (right == false) && (up == true) && (down == true)) {
+    } else if ((!left) && (!right) && (up) && (down)) {
         maketile = (destroyedTileIndex == 0) ? Wall_UpDown : 16 + destroyedTileIndex; //missing left and right
-    } else if ((left == false) && (right == false) && (up == false) && (down == false)) {
+    } else if ((!left) && (!right) && (!up) && (!down)) {
         maketile = (destroyedTileIndex == 0) ? Wall_Standalone : 12 + destroyedTileIndex; //missing left and right
     }
 

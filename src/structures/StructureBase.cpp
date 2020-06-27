@@ -168,7 +168,7 @@ void StructureBase::blitToScreen() {
 }
 
 ObjectInterface* StructureBase::getInterfaceContainer() {
-    if((pLocalHouse == owner) || (debug == true)) {
+    if((pLocalHouse == owner) || (debug)) {
         return DefaultStructureInterface::create(objectID);
     } else {
         return DefaultObjectInterface::create(objectID);

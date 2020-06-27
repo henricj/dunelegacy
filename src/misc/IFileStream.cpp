@@ -51,11 +51,7 @@ bool IFileStream::open(const std::filesystem::path& filename)
     fp = fopen(normal.c_str(), "rb");
 #endif
 
-    if( fp == nullptr) {
-        return false;
-    } else {
-        return true;
-    }
+    return fp != nullptr;
 }
 
 void IFileStream::close()
@@ -148,7 +144,7 @@ Uint64 IFileStream::readUint64()
 
 bool IFileStream::readBool()
 {
-    return (readUint8() == 1 ? true : false);
+    return (readUint8() == 1);
 }
 
 float IFileStream::readFloat()

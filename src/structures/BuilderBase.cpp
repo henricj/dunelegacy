@@ -106,7 +106,7 @@ void BuilderBase::save(OutputStream& stream) const {
 }
 
 ObjectInterface* BuilderBase::getInterfaceContainer() {
-    if((pLocalHouse == owner) || (debug == true)) {
+    if((pLocalHouse == owner) || (debug)) {
         return BuilderInterface::create(objectID);
     } else {
         return DefaultObjectInterface::create(objectID);
@@ -198,11 +198,11 @@ void BuilderBase::updateProductionProgress() {
 
     const auto tmp = getBuildItem(currentProducedItem);
 
-    if((productionProgress < tmp->price) && (isOnHold() == false) && (isUnitLimitReached(currentProducedItem) == false) && (owner->getCredits() > 0)) {
+    if((productionProgress < tmp->price) && (!isOnHold()) && (!isUnitLimitReached(currentProducedItem)) && (owner->getCredits() > 0)) {
 
         const FixPoint oldProgress = productionProgress;
 
-        if(currentGame->getGameInitSettings().getGameOptions().instantBuild == true) {
+        if(currentGame->getGameInitSettings().getGameOptions().instantBuild) {
             const FixPoint totalBuildCosts = currentGame->objectData.data[currentProducedItem][static_cast<int>(originalHouseID)].price;
             const auto buildCosts = totalBuildCosts - productionProgress;
 
@@ -245,7 +245,7 @@ void BuilderBase::doBuildRandom() {
 }
 
 void BuilderBase::produceNextAvailableItem() {
-    if(currentProductionQueue.empty() == true) {
+    if(currentProductionQueue.empty()) {
         currentProducedItem = ItemID_Invalid;
     } else {
         currentProducedItem = currentProductionQueue.front().itemID;
@@ -389,7 +389,7 @@ void BuilderBase::produce_item()
 }
 
 bool BuilderBase::update() {
-    if(StructureBase::update() == false) {
+    if(!StructureBase::update()) {
         return false;
     }
 
@@ -400,10 +400,10 @@ bool BuilderBase::update() {
         }
     }
 
-    if(upgrading == true) {
+    if(upgrading) {
         const FixPoint totalUpgradePrice = getUpgradeCost();
 
-        if(currentGame->getGameInitSettings().getGameOptions().instantBuild == true) {
+        if(currentGame->getGameInitSettings().getGameOptions().instantBuild) {
             const FixPoint upgradePriceLeft = totalUpgradePrice - upgradeProgress;
             upgradeProgress += owner->takeCredits(upgradePriceLeft);
         } else {

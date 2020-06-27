@@ -120,12 +120,12 @@ bool Frigate::update() {
         currentMaxSpeed = std::min(currentMaxSpeed + 0.2_fix, maxSpeed);
     }
 
-    if(AirUnit::update() == false) {
+    if(!AirUnit::update()) {
         return false;
     }
 
     // check if target is destroyed
-    if((droppedOffCargo == false) && target.getStructurePointer() == nullptr) {
+    if((!droppedOffCargo) && target.getStructurePointer() == nullptr) {
         setDestination(guardPoint);
         droppedOffCargo = true;
     }

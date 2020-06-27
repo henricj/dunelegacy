@@ -138,7 +138,7 @@ void MetaServerClient::update() {
         metaserverError = "";
     }
 
-    if(bUpdatedGameServerInfoList == true) {
+    if(bUpdatedGameServerInfoList) {
         tmpGameServerInfoList = gameServerInfoList;
         bTmpUpdatedGameServerInfoList = true;
         bUpdatedGameServerInfoList = false;
@@ -169,13 +169,13 @@ void MetaServerClient::enqueueMetaServerCommand(std::unique_ptr<MetaServerComman
         }
     }
 
-    if(bInsert == true) {
+    if(bInsert) {
         metaServerCommandList.push_back(std::move(metaServerCommand));
     }
 
     SDL_UnlockMutex(sharedDataMutex);
 
-    if(bInsert == true) {
+    if(bInsert) {
         SDL_SemPost(availableMetaServerCommandsSemaphore);
     }
 }
@@ -411,7 +411,7 @@ int MetaServerClient::connectionThreadMain(void* data) {
                                 continue;
                             }
 
-                            if(resultstream.good() == false) {
+                            if(!resultstream.good()) {
                                 break;
                             }
 

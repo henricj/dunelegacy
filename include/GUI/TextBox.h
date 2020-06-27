@@ -197,7 +197,7 @@ public:
     */
     void draw(Point position) override
     {
-        if(isVisible() == false) {
+        if(!isVisible()) {
             return;
         }
 
@@ -237,11 +237,11 @@ public:
             return false;
         }
 
-        if((isEnabled() == false) || (isVisible() == false)) {
+        if((!isEnabled()) || (!isVisible())) {
             return true;
         }
 
-        if(pressed == true) {
+        if(pressed) {
             setActive();
             lastCarretTime = SDL_GetTicks();
         }
@@ -255,7 +255,7 @@ public:
     */
     bool handleKeyPress(SDL_KeyboardEvent& key) override
     {
-        if((isVisible() == false) || (isEnabled() == false) || (isActive() == false)) {
+        if((!isVisible()) || (!isEnabled()) || (!isActive())) {
             return true;
         }
 
@@ -290,7 +290,7 @@ public:
     */
     bool handleTextInput(SDL_TextInputEvent& textInput) override
     {
-        if((isVisible() == false) || (isEnabled() == false) || (isActive() == false)) {
+        if((!isVisible()) || (!isEnabled()) || (!isActive())) {
             return true;
         }
 

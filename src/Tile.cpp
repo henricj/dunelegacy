@@ -74,7 +74,7 @@ void Tile::load(InputStream& stream) {
     stream.readBools(&bLastAccess[0], &bLastAccess[1], &bLastAccess[2], &bLastAccess[3], &bLastAccess[4], &bLastAccess[5], &bLastAccess[6]);
 
     for (int i = 0; i < NUM_TEAMS; i++) {
-        if (bLastAccess[i] == true) {
+        if (bLastAccess[i]) {
             lastAccess[i] = stream.readUint32();
         }
     }
@@ -127,7 +127,7 @@ void Tile::load(InputStream& stream) {
     stream.readBools(&bTrackCounter[0], &bTrackCounter[1], &bTrackCounter[2], &bTrackCounter[3], &bTrackCounter[4], &bTrackCounter[5], &bTrackCounter[6], &bTrackCounter[7]);
 
     for (int i = 0; i < static_cast<int>(ANGLETYPE::NUM_ANGLES); i++) {
-        if (bTrackCounter[i] == true) {
+        if (bTrackCounter[i]) {
             tracksCreationTime[i] = stream.readUint32();
         }
     }
@@ -253,7 +253,7 @@ int Tile::assignInfantry(Uint32 newObjectID, Sint8 currentPosition) {
         }
 
         for (newPosition = 0; newPosition < NUM_INFANTRY_PER_TILE; newPosition++) {
-            if (used[newPosition] == false) {
+            if (!used[newPosition]) {
                 break;
             }
         }
@@ -959,7 +959,7 @@ bool Tile::isFoggedByHouse(HOUSETYPE houseID) const noexcept {
     if (debug)
         return false;
 
-    if (currentGame->getGameInitSettings().getGameOptions().fogOfWar == false) {
+    if (!currentGame->getGameInitSettings().getGameOptions().fogOfWar) {
         return false;
     }
 
@@ -970,7 +970,7 @@ bool Tile::isFoggedByTeam(int teamID) const noexcept {
     if (debug)
         return false;
 
-    if (currentGame->getGameInitSettings().getGameOptions().fogOfWar == false) {
+    if (!currentGame->getGameInitSettings().getGameOptions().fogOfWar) {
         return false;
     }
 
@@ -1124,18 +1124,18 @@ int Tile::getHideTile(int teamID) const {
 
     // are all surrounding tiles explored?
 
-    if (((map->tileExists(x, y - 1) == false) || (map->getTile(x, y - 1)->isExploredByTeam(teamID) == true))
-        && ((map->tileExists(x + 1, y) == false) || (map->getTile(x + 1, y)->isExploredByTeam(teamID) == true))
-        && ((map->tileExists(x, y + 1) == false) || (map->getTile(x, y + 1)->isExploredByTeam(teamID) == true))
-        && ((map->tileExists(x - 1, y) == false) || (map->getTile(x - 1, y)->isExploredByTeam(teamID) == true))) {
+    if (((!map->tileExists(x, y - 1)) || (map->getTile(x, y - 1)->isExploredByTeam(teamID)))
+        && ((!map->tileExists(x + 1, y)) || (map->getTile(x + 1, y)->isExploredByTeam(teamID)))
+        && ((!map->tileExists(x, y + 1)) || (map->getTile(x, y + 1)->isExploredByTeam(teamID)))
+        && ((!map->tileExists(x - 1, y)) || (map->getTile(x - 1, y)->isExploredByTeam(teamID)))) {
         return 0;
     }
 
     // determine what tiles are unexplored
-    bool up = (map->tileExists(x, y - 1) == false) || (map->getTile(x, y - 1)->isExploredByTeam(teamID) == false);
-    bool right = (map->tileExists(x + 1, y) == false) || (map->getTile(x + 1, y)->isExploredByTeam(teamID) == false);
-    bool down = (map->tileExists(x, y + 1) == false) || (map->getTile(x, y + 1)->isExploredByTeam(teamID) == false);
-    bool left = (map->tileExists(x - 1, y) == false) || (map->getTile(x - 1, y)->isExploredByTeam(teamID) == false);
+    bool up = (!map->tileExists(x, y - 1)) || (!map->getTile(x, y - 1)->isExploredByTeam(teamID));
+    bool right = (!map->tileExists(x + 1, y)) || (!map->getTile(x + 1, y)->isExploredByTeam(teamID));
+    bool down = (!map->tileExists(x, y + 1)) || (!map->getTile(x, y + 1)->isExploredByTeam(teamID));
+    bool left = (!map->tileExists(x - 1, y)) || (!map->getTile(x - 1, y)->isExploredByTeam(teamID));
 
     return (((int)up) | (right << 1) | (down << 2) | (left << 3));
 }
@@ -1147,18 +1147,18 @@ int Tile::getFogTile(int teamID) const {
     const auto map = currentGameMap;
 
     // are all surrounding tiles fogged?
-    if (((map->tileExists(x, y - 1) == false) || (map->getTile(x, y - 1)->isFoggedByTeam(teamID) == false))
-        && ((map->tileExists(x + 1, y) == false) || (map->getTile(x + 1, y)->isFoggedByTeam(teamID) == false))
-        && ((map->tileExists(x, y + 1) == false) || (map->getTile(x, y + 1)->isFoggedByTeam(teamID) == false))
-        && ((map->tileExists(x - 1, y) == false) || (map->getTile(x - 1, y)->isFoggedByTeam(teamID) == false))) {
+    if (((!map->tileExists(x, y - 1)) || (!map->getTile(x, y - 1)->isFoggedByTeam(teamID)))
+        && ((!map->tileExists(x + 1, y)) || (!map->getTile(x + 1, y)->isFoggedByTeam(teamID)))
+        && ((!map->tileExists(x, y + 1)) || (!map->getTile(x, y + 1)->isFoggedByTeam(teamID)))
+        && ((!map->tileExists(x - 1, y)) || (!map->getTile(x - 1, y)->isFoggedByTeam(teamID)))) {
         return 0;
     }
 
     // determine what tiles are fogged
-    bool up = (map->tileExists(x, y - 1) == false) || (map->getTile(x, y - 1)->isFoggedByTeam(teamID) == true);
-    bool right = (map->tileExists(x + 1, y) == false) || (map->getTile(x + 1, y)->isFoggedByTeam(teamID) == true);
-    bool down = (map->tileExists(x, y + 1) == false) || (map->getTile(x, y + 1)->isFoggedByTeam(teamID) == true);
-    bool left = (map->tileExists(x - 1, y) == false) || (map->getTile(x - 1, y)->isFoggedByTeam(teamID) == true);
+    bool up = (!map->tileExists(x, y - 1)) || (map->getTile(x, y - 1)->isFoggedByTeam(teamID));
+    bool right = (!map->tileExists(x + 1, y)) || (map->getTile(x + 1, y)->isFoggedByTeam(teamID));
+    bool down = (!map->tileExists(x, y + 1)) || (map->getTile(x, y + 1)->isFoggedByTeam(teamID));
+    bool left = (!map->tileExists(x - 1, y)) || (map->getTile(x - 1, y)->isFoggedByTeam(teamID));
 
     return (((int)up) | (right << 1) | (down << 2) | (left << 3));
 }

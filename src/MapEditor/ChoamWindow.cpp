@@ -166,7 +166,7 @@ void ChoamWindow::onOK() {
                 amount = choamRows[rowNum].TextBox_Unit2.getValue();
             }
 
-            if(bChecked == false) {
+            if(!bChecked) {
                 // set amount to -1 as we want to remove this item from choam
                 // (THIS IS DIFFERENT TO -1 IN THE INI FILE WHERE -1 MEANS AN AMOUNT OF 0)
                 amount = -1;

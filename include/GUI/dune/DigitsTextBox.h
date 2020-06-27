@@ -131,7 +131,7 @@ public:
     */
     inline bool handleMouseWheel(Sint32 x, Sint32 y, bool up) override
     {
-        if((isEnabled() == false) || (isVisible() == false)) {
+        if((!isEnabled()) || (!isVisible())) {
             return true;
         }
 

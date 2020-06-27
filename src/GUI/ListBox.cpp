@@ -47,7 +47,7 @@ bool ListBox::handleMouseLeft(Sint32 x, Sint32 y, bool pressed) {
     if((x>=0) && (x < getSize().x - scrollbarWidth)
         && (y>=0) && (y < getSize().y)) {
 
-        if(pressed == true) {
+        if(pressed) {
             int index = ((y - 1) / GUIStyle::getInstance().getListBoxEntryHeight()) + firstVisibleElement;
             if((index >= 0) && (index < getNumEntries())) {
                 selectedElement = index;
@@ -109,7 +109,7 @@ bool ListBox::handleKeyPress(SDL_KeyboardEvent& key) {
 }
 
 void ListBox::draw(Point position) {
-    if(isVisible() == false) {
+    if(!isVisible()) {
         return;
     }
 

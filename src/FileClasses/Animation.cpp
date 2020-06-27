@@ -85,11 +85,11 @@ SDL_Texture* Animation::getFrameTexture() {
 }
 
 void Animation::addFrame(sdl2::surface_ptr newFrame, bool bDoublePic, bool bSetColorKey) {
-    if(bDoublePic == true) {
+    if(bDoublePic) {
         newFrame = Scaler::defaultDoubleSurface(newFrame.get());
     }
 
-    if(bSetColorKey == true) {
+    if(bSetColorKey) {
         SDL_SetColorKey(newFrame.get(), SDL_TRUE, 0);
     }
 

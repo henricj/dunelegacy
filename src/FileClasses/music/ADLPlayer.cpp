@@ -192,7 +192,7 @@ void ADLPlayer::changeMusic(MUSICTYPE musicType)
 
     currentMusicType = musicType;
 
-    if((musicOn == true) && (!filename.empty())) {
+    if((musicOn) && (!filename.empty())) {
 
         Mix_HookMusic(nullptr, nullptr);
         delete pSoundAdlibPC;
@@ -211,7 +211,7 @@ void ADLPlayer::changeMusic(MUSICTYPE musicType)
 }
 
 void ADLPlayer::toggleSound() {
-    if(musicOn == false) {
+    if(!musicOn) {
         musicOn = true;
         currentMusicType = MUSIC_RANDOM;
         changeMusic(MUSIC_PEACE);

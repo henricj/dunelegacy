@@ -114,7 +114,7 @@ std::vector<FileInfo> getFileList(const std::filesystem::path& directory, const 
 
         auto ext = filename.extension();
 
-        if (bIgnoreCase == true) {
+        if (bIgnoreCase) {
             auto tmp = ext.u8string();
             convertToLower(tmp);
             ext = std::filesystem::u8path(tmp);

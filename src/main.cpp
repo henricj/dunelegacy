@@ -425,7 +425,7 @@ int main(int argc, char *argv[]) {
             }
         }
 
-        if(bShowDebugLog == false) {
+        if(!bShowDebugLog) {
             // get utf8-encoded log file path
             auto logfilePath = getLogFilepath();
 
@@ -499,7 +499,7 @@ int main(int argc, char *argv[]) {
 
             // check if configfile exists
             auto configfilepath = getConfigFilepath();
-            if(existsFile(configfilepath) == false) {
+            if(!existsFile(configfilepath)) {
                 std::string userLanguage = getUserLanguage();
                 if(userLanguage.empty()) {
                     userLanguage = "en";
@@ -587,7 +587,7 @@ int main(int argc, char *argv[]) {
                 }
             }
 
-            if(bFirstInit == true) {
+            if(bFirstInit) {
                 SDL_Log("Initializing SDL...");
 
                 if(SDL_Init(SDL_INIT_TIMER | SDL_INIT_VIDEO) < 0) {
@@ -612,7 +612,7 @@ int main(int argc, char *argv[]) {
                 SDL_Log("SDL2_ttf compile-time v%d.%d.%d", TTFCompiledVersion.major, TTFCompiledVersion.minor, TTFCompiledVersion.patch);
             }
 
-            if(bFirstGamestart == true && bFirstInit == true) {
+            if(bFirstGamestart && bFirstInit) {
                 SDL_DisplayMode displayMode;
                 SDL_GetDesktopDisplayMode(currentDisplayIndex, &displayMode);
 
@@ -634,7 +634,7 @@ int main(int argc, char *argv[]) {
 
             Scaler::setDefaultScaler(Scaler::getScalerByName(settings.video.scaler));
 
-            if(bFirstInit == true) {
+            if(bFirstInit) {
                 SDL_Log("Initializing audio...");
                 if( Mix_OpenAudio(AUDIO_FREQUENCY, AUDIO_S16SYS, 2, 1024) < 0 ) {
                     //SDL_Quit();
@@ -704,7 +704,7 @@ int main(int argc, char *argv[]) {
 
             GUIStyle::setGUIStyle(std::make_unique<DuneStyle>());
 
-            if(bFirstInit == true) {
+            if(bFirstInit) {
                 SDL_Log("Starting sound player...");
                 soundPlayer = std::make_unique<SoundPlayer>();
 
@@ -725,7 +725,7 @@ int main(int argc, char *argv[]) {
             }
 
             // Playing intro
-            if(((bFirstGamestart == true) || (settings.general.playIntro == true)) && (bFirstInit==true)) {
+            if(((bFirstGamestart) || (settings.general.playIntro)) && (bFirstInit)) {
                 SDL_Log("Playing intro...");
                 Intro().run();
             }
@@ -744,7 +744,7 @@ int main(int argc, char *argv[]) {
             GUIStyle::destroyGUIStyle();
 
             // clear everything
-            if(bExitGame == true) {
+            if(bExitGame) {
                 musicPlayer.reset();
                 soundPlayer.reset();
                 Mix_HaltMusic();
@@ -764,12 +764,12 @@ int main(int argc, char *argv[]) {
             SDL_DestroyRenderer(renderer);
             SDL_DestroyWindow(window);
 
-            if(bExitGame == true) {
+            if(bExitGame) {
                 TTF_Quit();
                 SDL_Quit();
             }
             SDL_Log("Deinitialization finished!");
-        } while(bExitGame == false);
+        } while(!bExitGame);
 
         // deinit fnkdat
         auto [ok2, tmp2] = fnkdat(FNKDAT_UNINIT);

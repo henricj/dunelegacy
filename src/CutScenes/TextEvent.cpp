@@ -37,7 +37,7 @@ void TextEvent::draw(int currentFrameNumber) const
     }
 
     int alpha = 255;
-    if((bFadeIn == false) && (currentFrameNumber == startFrame)) {
+    if((!bFadeIn) && (currentFrameNumber == startFrame)) {
         alpha = 255;
     } else if(bFadeIn && (currentFrameNumber - startFrame <= TEXT_FADE_TIME)) {
         alpha = ((currentFrameNumber - startFrame)*255)/TEXT_FADE_TIME;
@@ -46,7 +46,7 @@ void TextEvent::draw(int currentFrameNumber) const
     }
 
     SDL_Rect dest = calcAlignedDrawingRect(pTexture.get(), HAlign::Center, VAlign::Center);
-    if(bCenterVertical == false) {
+    if(!bCenterVertical) {
         dest.y = getRendererHeight()/2 + 480/2 - 5*pFontManager->getTextHeight(28)/2;
     }
 

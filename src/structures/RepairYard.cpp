@@ -78,7 +78,7 @@ void RepairYard::save(OutputStream& stream) const {
 
 
 ObjectInterface* RepairYard::getInterfaceContainer() {
-    if((pLocalHouse == owner) || (debug == true)) {
+    if((pLocalHouse == owner) || (debug)) {
         return RepairYardInterface::create(objectID);
     } else {
         return DefaultObjectInterface::create(objectID);
@@ -128,7 +128,7 @@ void RepairYard::updateStructureSpecificStuff() {
         }
     }
 
-    if(repairingAUnit == true) {
+    if(repairingAUnit) {
         auto* pRepairUnit = static_cast<GroundUnit*>(repairUnit.getUnitPointer());
 
         if (pRepairUnit->getHealth()*100/pRepairUnit->getMaxHealth() < 100) {

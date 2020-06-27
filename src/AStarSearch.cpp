@@ -56,7 +56,7 @@ void AStarSearch::Search(Map* pMap, UnitBase* pUnit, Coord start, Coord destinat
     bestCoord = nullptr;
 
     //if the unit is not directly next to its destination or it is and the destination is unblocked
-    if (heuristic <= 1.5_fix && pUnit->canPassTile(destinationTile) != true)
+    if (heuristic <= 1.5_fix && !pUnit->canPassTile(destinationTile))
         return;
 
     putOnOpenListIfBetter(pMap->getKey(start.x, start.y), start, nullptr, 0 , heuristic);
@@ -112,7 +112,7 @@ void AStarSearch::Search(Map* pMap, UnitBase* pUnit, Coord start, Coord destinat
                                      }
 
                                      auto& next_map_data = getMapData(nextKey);
-                                     if (next_map_data.bClosed == false) {
+                                     if (!next_map_data.bClosed) {
                                          const auto h = blockDistance(nextCoord, destination);
 
                                          putOnOpenListIfBetter(nextKey, nextCoord, &map_data, g, h);
@@ -148,7 +148,7 @@ void AStarSearch::Search(Map* pMap, UnitBase* pUnit, Coord start, Coord destinat
 #endif // 0
         }
 
-        if (map_data.bClosed == false) {
+        if (!map_data.bClosed) {
             const int depth = std::max(abs(currentCoord.x - destination.x), abs(currentCoord.y - destination.y));
 
             if(depth < std::min(sizeX,sizeY)) {

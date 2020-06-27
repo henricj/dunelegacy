@@ -51,7 +51,7 @@ StarPort::StarPort(InputStream& stream) : BuilderBase(stream) {
     StarPort::init();
 
     arrivalTimer = stream.readSint32();
-    if(stream.readBool() == true) {
+    if(stream.readBool()) {
         startDeploying();
     } else {
         deploying = false;
@@ -142,7 +142,7 @@ void StarPort::doProduceItem(Uint32 itemID, bool multipleMode) {
                 currentProductionQueue.emplace_back(itemID,buildItem.price );
                 owner->takeCredits(buildItem.price);
 
-                if(choam.setNumAvailable(itemID, numAvailable - 1) == false) {
+                if(!choam.setNumAvailable(itemID, numAvailable - 1)) {
                     // sold out
                     break;
                 }
@@ -191,7 +191,7 @@ void StarPort::doPlaceOrder() {
 
     if (!currentProductionQueue.empty()) {
 
-        if(currentGame->getGameInitSettings().getGameOptions().instantBuild == true) {
+        if(currentGame->getGameInitSettings().getGameOptions().instantBuild) {
             arrivalTimer = 1;
         } else {
             arrivalTimer = STARPORT_ARRIVETIME;
@@ -204,7 +204,7 @@ void StarPort::doPlaceOrder() {
 
 void StarPort::doCancelOrder() {
     if (arrivalTimer == STARPORT_NO_ARRIVAL_AWAITED) {
-        while(currentProductionQueue.empty() == false) {
+        while(!currentProductionQueue.empty()) {
             doCancelItem(currentProductionQueue.back().itemID, false);
         }
 
@@ -262,11 +262,11 @@ void StarPort::updateStructureSpecificStuff() {
             }
 
         }
-    } else if(deploying == true) {
+    } else if(deploying) {
         deployTimer--;
         if(deployTimer == 0) {
 
-            if(currentProductionQueue.empty() == false) {
+            if(!currentProductionQueue.empty()) {
                 auto newUnitItemID = currentProductionQueue.front().itemID;
 
                 auto num2Place = 1;
@@ -330,7 +330,7 @@ void StarPort::updateStructureSpecificStuff() {
 
                 currentProductionQueue.pop_front();
 
-                if(currentProductionQueue.empty() == true) {
+                if(currentProductionQueue.empty()) {
                     arrivalTimer = STARPORT_NO_ARRIVAL_AWAITED;
                     deploying = false;
                     // Remove box from starport

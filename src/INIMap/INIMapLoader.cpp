@@ -74,13 +74,13 @@ void INIMapLoader::loadMap() {
     }
 
     if(version < 2) {
-        if(inifile->hasKey("MAP","Seed") == false) {
+        if(!inifile->hasKey("MAP","Seed")) {
             logError("Cannot find seed value for this map!");
         }
 
         // old map format with seed value
 
-        if(inifile->hasKey("BASIC","MapScale") == false) {
+        if(!inifile->hasKey("BASIC","MapScale")) {
             logError("Cannot find MapScale for this map!");
         }
 
@@ -232,7 +232,7 @@ void INIMapLoader::loadMap() {
     } else {
         // new map format with saved map
 
-        if((inifile->hasKey("MAP","SizeX") == false) || (inifile->hasKey("MAP","SizeY") == false)) {
+        if((!inifile->hasKey("MAP","SizeX")) || (!inifile->hasKey("MAP","SizeY"))) {
             logError("SizeX and SizeY must be specified!");
         }
 
@@ -257,7 +257,7 @@ void INIMapLoader::loadMap() {
         for(int y=0;y<sizeY;y++) {
             std::string rowKey = fmt::sprintf("%.3d", y);
 
-            if(inifile->hasKey("MAP", rowKey) == false) {
+            if(!inifile->hasKey("MAP", rowKey)) {
                 logWarning(inifile->getSection("MAP").getLineNumber(), "Map row " + std::to_string(y) + " does not exist!");
                 continue;
             }
@@ -362,7 +362,7 @@ void INIMapLoader::loadHouses()
         }
 
         const auto houseName = getHouseNameByNumber(static_cast<HOUSETYPE>(h));
-        if((bFound == false) && (inifile->hasSection(houseName) || (playerSectionsOnMap.empty() == false))) {
+        if((!bFound) && (inifile->hasSection(houseName) || (!playerSectionsOnMap.empty()))) {
             unboundedHouses.push_back(static_cast<HOUSETYPE>(h));
         }
     }
@@ -406,7 +406,7 @@ void INIMapLoader::loadHouses()
         std::string houseName = getHouseNameByNumber(houseID);
         convertToLower(houseName);
 
-        if(inifile->hasSection(houseName) == false) {
+        if(!inifile->hasSection(houseName)) {
             // select one of the Player sections
             if(playerSectionsOnMap.empty()) {
                 // skip this house
@@ -566,7 +566,7 @@ void INIMapLoader::loadUnits()
                     case HOUSETYPE::HOUSE_FREMEN:
                     case HOUSETYPE::HOUSE_SARDAUKAR:
                     case HOUSETYPE::HOUSE_MERCENARY: {
-                        if(nextSpecialUnitIsSonicTank[static_cast<int>(houseID)] == true &&
+                        if(nextSpecialUnitIsSonicTank[static_cast<int>(houseID)] &&
                            pGame->objectData.data[Unit_SonicTank][static_cast<int>(houseID)].enabled) {
                             itemID = Unit_SonicTank;
                             nextSpecialUnitIsSonicTank[static_cast<int>(houseID)] =
@@ -736,8 +736,8 @@ void INIMapLoader::loadReinforcements()
         std::string strTime;
         std::string strPlus;
 
-        if(splitString(key.getStringValue(), strHouseName, strUnitName, strDropLocation, strTime) == false) {
-            if(splitString(key.getStringValue(), strHouseName, strUnitName, strDropLocation, strTime, strPlus) == false) {
+        if(!splitString(key.getStringValue(), strHouseName, strUnitName, strDropLocation, strTime)) {
+            if(!splitString(key.getStringValue(), strHouseName, strUnitName, strDropLocation, strTime, strPlus)) {
                 logWarning(key.getLineNumber(), "Invalid reinforcement string: " + key.getKeyName() + " = " + key.getStringValue());
                 continue;
             }
@@ -808,7 +808,7 @@ void INIMapLoader::loadReinforcements()
                 }
             }
 
-            if(bInserted == false) {
+            if(!bInserted) {
                 getOrCreateHouse(houseID);  // create house if not yet available
                 pGame->getTriggerManager().addTrigger(std::make_unique<ReinforcementTrigger>(houseID, itemID, dropLocation, bRepeat, dropCycle));
             }
@@ -832,7 +832,7 @@ void INIMapLoader::loadAITeams()
         std::string strMinUnits;
         std::string strMaxUnits;
 
-        if(splitString(key.getStringValue(), strHouseName, strAITeamBehavior, strAITeamType, strMinUnits, strMaxUnits) == false) {
+        if(!splitString(key.getStringValue(), strHouseName, strAITeamBehavior, strAITeamType, strMinUnits, strMaxUnits)) {
             logWarning(key.getLineNumber(), "Invalid teams string: " + key.getKeyName() + " = " + key.getStringValue());
             continue;
         }
