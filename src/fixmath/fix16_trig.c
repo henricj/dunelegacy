@@ -68,10 +68,12 @@ fix16_t fix16_sin(fix16_t inAngle)
 		tempOut = (tempAngle >= _fix16_sin_lut_count ? fix16_one : _fix16_sin_lut[tempAngle]);
 	}
 	#else
-	if(tempAngle > fix16_pi)
+	if(tempAngle > fix16_pi) {
 		tempAngle -= (fix16_pi << 1);
-	else if(tempAngle < -fix16_pi)
+	} else if(tempAngle < -fix16_pi) {
 		tempAngle += (fix16_pi << 1);
+
+}
 
 	#ifndef FIXMATH_NO_CACHE
 	fix16_t tempIndex = ((inAngle >> 5) & 0x00000FFF);

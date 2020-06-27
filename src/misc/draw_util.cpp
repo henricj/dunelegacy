@@ -36,10 +36,12 @@ Uint32 getPixel(SDL_Surface *surface, int x, int y) {
         return *reinterpret_cast<Uint16 *>(p);
 
     case 3:
-        if(SDL_BYTEORDER == SDL_BIG_ENDIAN)
+        if(SDL_BYTEORDER == SDL_BIG_ENDIAN) {
             return p[0] << 16 | p[1] << 8 | p[2];
-        else
+        } else {
             return p[0] | p[1] << 8 | p[2] << 16;
+
+}
 
     case 4: {
         const auto value = *reinterpret_cast<Uint32 *>(p);

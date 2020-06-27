@@ -50,10 +50,12 @@ fix32_t fix32_sin(fix32_t inAngle)
 {
 	fix32_t tempAngle = inAngle % (fix32_pi << 1);
 
-	if(tempAngle > fix32_pi)
+	if(tempAngle > fix32_pi) {
 		tempAngle -= (fix32_pi << 1);
-	else if(tempAngle < -fix32_pi)
+	} else if(tempAngle < -fix32_pi) {
 		tempAngle += (fix32_pi << 1);
+
+}
 
 	#ifndef FIXMATH_NO_CACHE
 	fix32_t tempIndex = ((inAngle >> 5) & 0x00000FFF);

@@ -21,10 +21,12 @@ fix16_t fix16_sqrt(fix16_t inValue)
 	// this gives a good balance between time spent
 	// in if vs. time spent in the while loop
 	// when searching for the starting value.
-	if (num & 0xFFF00000)
+	if (num & 0xFFF00000) {
 		bit = (uint32_t)1 << 30;
-	else
+	} else {
 		bit = (uint32_t)1 << 18;
+
+}
 
 	while (bit > num) bit >>= 2;
 

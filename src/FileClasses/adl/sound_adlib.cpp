@@ -280,10 +280,12 @@ private:
     uint8 calculateOpLevel2(Channel &channel);
 
     static uint8 checkValue(int16 val) {
-        if (val < 0)
+        if (val < 0) {
             val = 0;
-        else if (val > 0x3F)
+        } else if (val > 0x3F) {
             val = 0x3F;
+
+}
         return static_cast<uint8>(val);
     }
 
@@ -803,9 +805,11 @@ void AdlibDriver::executePrograms() {
         }
 
         if (forceUnlock) {
-            for (_curChannel = 9; _curChannel >= 0; --_curChannel)
+            for (_curChannel = 9; _curChannel >= 0; --_curChannel) {
                 if (_syncJumpMask & (1 << _curChannel))
                     _channels[_curChannel].lock = false;
+
+}
         }
     }
 
@@ -1619,20 +1623,24 @@ int AdlibDriver::update_changeExtraLevel2(uint8 *&dataptr, Channel &channel, uin
 // modify _vibratoAndAMDepthBits.
 
 int AdlibDriver::update_setAMDepth(uint8 *&dataptr, Channel &channel, uint8 value) {
-    if (value & 1)
+    if (value & 1) {
         _vibratoAndAMDepthBits |= 0x80;
-    else
+    } else {
         _vibratoAndAMDepthBits &= 0x7F;
+
+}
 
     writeOPL(0xBD, _vibratoAndAMDepthBits);
     return 0;
 }
 
 int AdlibDriver::update_setVibratoDepth(uint8 *&dataptr, Channel &channel, uint8 value) {
-    if (value & 1)
+    if (value & 1) {
         _vibratoAndAMDepthBits |= 0x40;
-    else
+    } else {
         _vibratoAndAMDepthBits &= 0xBF;
+
+}
 
     writeOPL(0xBD, _vibratoAndAMDepthBits);
     return 0;
@@ -1722,10 +1730,12 @@ int AdlibDriver::update_setDurationRandomness(uint8 *&dataptr, Channel &channel,
 int AdlibDriver::update_changeChannelTempo(uint8 *&dataptr, Channel &channel, uint8 value) {
     int tempo = channel.tempo + (int8)value;
 
-    if (tempo <= 0)
+    if (tempo <= 0) {
         tempo = 1;
-    else if (tempo > 255)
+    } else if (tempo > 255) {
         tempo = 255;
+
+}
 
     channel.tempo = tempo;
     return 0;

@@ -430,10 +430,12 @@ void XMIDI::CreateNewEvent (int time)
     {
         list = current = new midi_event;
         current->next = nullptr;
-        if (time < 0)
+        if (time < 0) {
             current->time = 0;
-        else
+        } else {
             current->time = time;
+
+}
         current->buffer = nullptr;
         current->len = 0;
         return;
@@ -566,14 +568,16 @@ void XMIDI::MovePatchVolAndPan (int channel)
 
     for (current = list; current; )
     {
-        if (!patch && (current->status >> 4) == 0xC && (current->status & 0xF) == channel)
+        if (!patch && (current->status >> 4) == 0xC && (current->status & 0xF) == channel) {
             patch = current;
-        else if (!vol && (current->status >> 4) == 0xB && current->data[0] == 7 && (current->status & 0xF) == channel)
+        } else if (!vol && (current->status >> 4) == 0xB && current->data[0] == 7 && (current->status & 0xF) == channel) {
             vol = current;
-        else if (!pan && (current->status >> 4) == 0xB && current->data[0] == 10 && (current->status & 0xF) == channel)
+        } else if (!pan && (current->status >> 4) == 0xB && current->data[0] == 10 && (current->status & 0xF) == channel) {
             pan = current;
-        else if (!bank && (current->status >> 4) == 0xB && current->data[0] == 0 && (current->status & 0xF) == channel)
+        } else if (!bank && (current->status >> 4) == 0xB && current->data[0] == 0 && (current->status & 0xF) == channel) {
             bank = current;
+
+}
 
         if (pan && vol && patch) break;
 
@@ -606,10 +610,12 @@ void XMIDI::MovePatchVolAndPan (int channel)
     vol->len = 0;
     vol->buffer = nullptr;
 
-    if (!temp)
+    if (!temp) {
         vol->data[1] = 64;
-    else
+    } else {
         vol->data[1] = temp->data[1];
+
+}
 
 
     // Copy Bank
@@ -624,10 +630,12 @@ void XMIDI::MovePatchVolAndPan (int channel)
     bank->len = 0;
     bank->buffer = nullptr;
 
-    if (!temp)
+    if (!temp) {
         bank->data[1] = 0;
-    else
+    } else {
         bank->data[1] = temp->data[1];
+
+}
 
     // Copy Pan
     if (pan && (pan->time > patch->time+PATCH_VOL_PAN_BIAS || pan->time < patch->time-PATCH_VOL_PAN_BIAS))
@@ -640,10 +648,12 @@ void XMIDI::MovePatchVolAndPan (int channel)
     pan->len = 0;
     pan->buffer = nullptr;
 
-    if (!temp)
+    if (!temp) {
         pan->data[1] = 64;
-    else
+    } else {
         pan->data[1] = temp->data[1];
+
+}
 
 
     vol->time = 0;
@@ -957,9 +967,9 @@ int XMIDI::ConvertFiletoList (DataSource *source, const BOOL is_xmi)
                 int pos = source->getPos();
                 unsigned int    data = source->read1();
 
-                if (data == 0x2F) // End
+                if (data == 0x2F) { // End
                     end = 1;
-                else if (data == 0x51 && !tempo_set) // Tempo. Need it for PPQN
+                } else if (data == 0x51 && !tempo_set) // Tempo. Need it for PPQN
                 {
                     source->skip(1);
                     tempo = source->read1() << 16;
@@ -1383,9 +1393,11 @@ int XMIDI::ExtractTracks (DataSource *source)
 
 
 
-            for (i = 0; i < info.tracks; i++)
+            for (i = 0; i < info.tracks; i++) {
 
                 DeleteEventList (events[i]);
+
+}
 
 
 
