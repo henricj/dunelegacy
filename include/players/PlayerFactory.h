@@ -22,15 +22,17 @@
 
 #include <functional>
 #include <memory>
+#include <utility>
+
 
 class PlayerFactory {
 public:
     class PlayerData {
     public:
-        PlayerData( const std::string& playerclass, const std::string& name,
-                    const std::function<std::unique_ptr<Player> (House*, const std::string&)>& pCreate,
-                    const std::function<std::unique_ptr<Player> (InputStream&, House*)>& pLoad)
-         : playerclass(playerclass), name(name), pCreate(pCreate), pLoad(pLoad) {
+        PlayerData( std::string  playerclass, std::string  name,
+                    std::function<std::unique_ptr<Player> (House*, const std::string&)>  pCreate,
+                    std::function<std::unique_ptr<Player> (InputStream&, House*)>  pLoad)
+         : playerclass(std::move(playerclass)), name(std::move(name)), pCreate(std::move(pCreate)), pLoad(std::move(pLoad)) {
         }
 
         [[nodiscard]] const std::string& getPlayerClass() const {
