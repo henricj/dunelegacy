@@ -300,8 +300,8 @@ const char XMIDI::mt32asgs[256] = {
     121, 0  // 127  Jungle Tune set to Breath Noise
 };
 // Constructor
-XMIDI::XMIDI(DataSource *source, int pconvert) : events(NULL),timing(NULL),
-                        convert_type(pconvert),fixed(NULL)
+XMIDI::XMIDI(DataSource *source, int pconvert) : events(nullptr),timing(nullptr),
+                        convert_type(pconvert),fixed(nullptr)
 {
     int i = 16;
     while (i--) bank127[i] = 0;
@@ -366,7 +366,7 @@ int XMIDI::retrieve (unsigned int track, DataSource *dest)
     if (!dest)
     {
         // Header is 14 bytes long and add the rest as well
-        len = ConvertListToMTrk (NULL, events[track]);
+        len = ConvertListToMTrk (nullptr, events[track]);
         return 14 + len;
     }
 
@@ -429,12 +429,12 @@ void XMIDI::CreateNewEvent (int time)
     if (!list)
     {
         list = current = new midi_event;
-        current->next = NULL;
+        current->next = nullptr;
         if (time < 0)
             current->time = 0;
         else
             current->time = time;
-        current->buffer = NULL;
+        current->buffer = nullptr;
         current->len = 0;
         return;
     }
@@ -445,7 +445,7 @@ void XMIDI::CreateNewEvent (int time)
         event->next = list;
         list = current = event;
         current->time = 0;
-        current->buffer = NULL;
+        current->buffer = nullptr;
         current->len = 0;
         return;
     }
@@ -463,7 +463,7 @@ void XMIDI::CreateNewEvent (int time)
             current->next = event;
             current = event;
             current->time = time;
-            current->buffer = NULL;
+            current->buffer = nullptr;
             current->len = 0;
             return;
         }
@@ -473,9 +473,9 @@ void XMIDI::CreateNewEvent (int time)
 
     current->next = new midi_event;
     current = current->next;
-    current->next = NULL;
+    current->next = nullptr;
     current->time = time;
-    current->buffer = NULL;
+    current->buffer = nullptr;
     current->len = 0;
 }
 
@@ -558,10 +558,10 @@ void XMIDI::MovePatchVolAndPan (int channel)
         return;
     }
 
-    midi_event *patch = NULL;
-    midi_event *vol = NULL;
-    midi_event *pan = NULL;
-    midi_event *bank = NULL;
+    midi_event *patch = nullptr;
+    midi_event *vol = nullptr;
+    midi_event *pan = nullptr;
+    midi_event *bank = nullptr;
     midi_event *temp;
 
     for (current = list; current; )
@@ -591,20 +591,20 @@ void XMIDI::MovePatchVolAndPan (int channel)
     patch->time = temp->time;
     patch->status = channel + 0xC0;
     patch->len = 0;
-    patch->buffer = NULL;
+    patch->buffer = nullptr;
     patch->data[0] = temp->data[0];
 
 
     // Copy Volume
     if (vol && (vol->time > patch->time+PATCH_VOL_PAN_BIAS || vol->time < patch->time-PATCH_VOL_PAN_BIAS))
-        vol = NULL;
+        vol = nullptr;
 
     temp = vol;
     vol = new midi_event;
     vol->status = channel + 0xB0;
     vol->data[0] = 7;
     vol->len = 0;
-    vol->buffer = NULL;
+    vol->buffer = nullptr;
 
     if (!temp)
         vol->data[1] = 64;
@@ -614,7 +614,7 @@ void XMIDI::MovePatchVolAndPan (int channel)
 
     // Copy Bank
     if (bank && (bank->time > patch->time+PATCH_VOL_PAN_BIAS || bank->time < patch->time-PATCH_VOL_PAN_BIAS))
-        bank = NULL;
+        bank = nullptr;
 
     temp = bank;
 
@@ -622,7 +622,7 @@ void XMIDI::MovePatchVolAndPan (int channel)
     bank->status = channel + 0xB0;
     bank->data[0] = 0;
     bank->len = 0;
-    bank->buffer = NULL;
+    bank->buffer = nullptr;
 
     if (!temp)
         bank->data[1] = 0;
@@ -631,14 +631,14 @@ void XMIDI::MovePatchVolAndPan (int channel)
 
     // Copy Pan
     if (pan && (pan->time > patch->time+PATCH_VOL_PAN_BIAS || pan->time < patch->time-PATCH_VOL_PAN_BIAS))
-        pan = NULL;
+        pan = nullptr;
 
     temp = pan;
     pan = new midi_event;
     pan->status = channel + 0xB0;
     pan->data[0] = 10;
     pan->len = 0;
-    pan->buffer = NULL;
+    pan->buffer = nullptr;
 
     if (!temp)
         pan->data[1] = 64;
@@ -682,7 +682,7 @@ void XMIDI::DuplicateAndMerge (int num)
 
     for (i = 0; i < info.tracks; i++) track[i] = events[i];
 
-    current = list = NULL;
+    current = list = nullptr;
 
 
     while (1)
@@ -717,7 +717,7 @@ void XMIDI::DuplicateAndMerge (int num)
         // So take the last one and ignore the rest;
         if ((num_na != 1) && (track[i]->status == 0xff) && (track[i]->data[0] == 0x2f))
         {
-            track[i] = NULL;
+            track[i] = nullptr;
             continue;
         }
 
@@ -729,7 +729,7 @@ void XMIDI::DuplicateAndMerge (int num)
         else
             list = current = new midi_event;
 
-        current->next = NULL;
+        current->next = nullptr;
 
         time = track[i]->time;
         current->time = time;
@@ -746,7 +746,7 @@ void XMIDI::DuplicateAndMerge (int num)
             memcpy (current->buffer, track[i]->buffer, current->len);
         }
         else
-            current->buffer = NULL;
+            current->buffer = nullptr;
 
         track[i] = track[i]->next;
     }
@@ -1119,7 +1119,7 @@ int XMIDI::ExtractTracksFromXmi (DataSource *source)
             continue;
         }
 
-        list = NULL;
+        list = nullptr;
         int begin = source->getPos ();
 
         // Convert it
@@ -1161,7 +1161,7 @@ int XMIDI::ExtractTracksFromMid (DataSource *source)
             continue;
         }
 
-        list = NULL;
+        list = nullptr;
         int begin = source->getPos ();
 
         // Convert it
@@ -1295,7 +1295,7 @@ int XMIDI::ExtractTracks (DataSource *source)
 
         for (i = 0; i < info.tracks; i++)
         {
-            events[i] = NULL;
+            events[i] = nullptr;
             fixed[i] = FALSE;
         }
 
@@ -1341,7 +1341,7 @@ int XMIDI::ExtractTracks (DataSource *source)
         for (i = 0; i < info.tracks; i++)
         {
             timing[i] = timing[0];
-            events[i] = NULL;
+            events[i] = nullptr;
             fixed[i] = FALSE;
         }
 
