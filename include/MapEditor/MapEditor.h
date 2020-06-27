@@ -170,9 +170,9 @@ public:
     [[nodiscard]] int getMapVersion() const {
         if(mapInfo.mapSeed != INVALID) {
             return 1;
-        } else {
-            return 2;
-        }
+        }             return 2;
+
+       
     }
 
     void setMap(const MapData& mapdata, const MapInfo& newMapInfo);

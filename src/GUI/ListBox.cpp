@@ -72,9 +72,9 @@ bool ListBox::handleMouseLeft(Sint32 x, Sint32 y, bool pressed) {
 
         scrollbar.handleMouseLeft(x - getSize().x + scrollbar.getSize().x,y,pressed);
         return true;
-    } else {
-        return scrollbar.handleMouseLeft(x - getSize().x + scrollbar.getSize().x,y,pressed);
-    }
+    }         return scrollbar.handleMouseLeft(x - getSize().x + scrollbar.getSize().x,y,pressed);
+
+   
 }
 
 bool ListBox::handleMouseWheel(Sint32 x, Sint32 y, bool up)  {

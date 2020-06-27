@@ -260,8 +260,7 @@ fix16_t fix16_smul(fix16_t inArg0, fix16_t inArg1)
 	{
 		if ((inArg0 >= 0) == (inArg1 >= 0))
 			return fix16_maximum;
-		else
-			return fix16_minimum;
+					return fix16_minimum;
 	}
 
 	return result;
@@ -453,8 +452,7 @@ fix16_t fix16_sdiv(fix16_t inArg0, fix16_t inArg1)
 	{
 		if ((inArg0 >= 0) == (inArg1 >= 0))
 			return fix16_maximum;
-		else
-			return fix16_minimum;
+					return fix16_minimum;
 	}
 
 	return result;

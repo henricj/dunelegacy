@@ -80,10 +80,14 @@ std::map<std::string, std::string> loadPOFile(SDL_RWops* rwop, const std::string
             if(readbytes == 0) {
                 bFinished = true;
                 break;
-            } else if(tmp == '\n') {
+            } if(tmp == '\n') {
+
                 break;
+
             } else if(tmp != '\r') {
+
                 completeLine += tmp;
+
             }
         }
 

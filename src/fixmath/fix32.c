@@ -127,8 +127,7 @@ fix32_t fix32_smul(fix32_t inArg0, fix32_t inArg1)
 	{
 		if ((inArg0 >= 0) == (inArg1 >= 0))
 			return fix32_maximum;
-		else
-			return fix32_minimum;
+					return fix32_minimum;
 	}
 
 	return result;
@@ -253,8 +252,7 @@ fix32_t fix32_sdiv(fix32_t inArg0, fix32_t inArg1)
 	{
 		if ((inArg0 >= 0) == (inArg1 >= 0))
 			return fix32_maximum;
-		else
-			return fix32_minimum;
+					return fix32_minimum;
 	}
 
 	return result;

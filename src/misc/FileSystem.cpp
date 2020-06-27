@@ -60,8 +60,10 @@ static bool cmp_Name_CaseInsensitive_Asc(const FileInfo& a, const FileInfo& b) {
         if (tolower(a32[i]) < tolower(b32[i])) {
             return true;
         }
-        else if (tolower(a32[i]) > tolower(b32[i])) {
+        if (tolower(a32[i]) > tolower(b32[i])) {
+
             return false;
+
         }
         i++;
     }
@@ -79,8 +81,10 @@ static bool cmp_Name_CaseInsensitive_Dsc(const FileInfo& a, const FileInfo& b) {
         if (tolower(a32[i]) < tolower(b32[i])) {
             return false;
         }
-        else if (tolower(a32[i]) > tolower(b32[i])) {
+        if (tolower(a32[i]) > tolower(b32[i])) {
+
             return true;
+
         }
         i++;
     }

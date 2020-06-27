@@ -284,12 +284,18 @@ private:
                 if(map(x,y) == Terrain_Rock) {
                     // Do not place the spice spot, priority is ROCK!
                     continue;
-                } else if((map(x,y) == Terrain_Spice) && ((side4(x,y,Terrain_Spice)+side4(x,y,Terrain_ThickSpice)) >= 4)) {
+                } if((map(x,y) == Terrain_Spice) && ((side4(x,y,Terrain_Spice)+side4(x,y,Terrain_ThickSpice)) >= 4)) {
+
                     // "upgrade" spice to thick spice
+
                     type2Place = Terrain_ThickSpice;
+
                 } else if(map(x,y) == Terrain_ThickSpice) {
+
                     // do not "downgrade" thick spice to spice
+
                     type2Place = Terrain_ThickSpice;
+
                 }
             } else if(type == Terrain_Dunes) {
                 if(map(x,y) != Terrain_Sand) {

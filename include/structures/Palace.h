@@ -65,10 +65,11 @@ public:
         if(originalHouseID == HOUSETYPE::HOUSE_HARKONNEN || originalHouseID == HOUSETYPE::HOUSE_SARDAUKAR) {
             // 10 min
             return MILLI2CYCLES(10*60*1000);
-        } else {
-            // 5 min
+        }             // 5 min
+
             return MILLI2CYCLES(5*60*1000);
-        }
+
+       
     }
 
 protected:

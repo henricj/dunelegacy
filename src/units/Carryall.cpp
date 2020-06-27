@@ -241,10 +241,11 @@ void Carryall::deployUnit(Tile* tile, UnitBase* pUnit)
 
                     return;
                 }
-                else {
-                    // unit is still going to repair yard but was unbooked from repair yard at pickup => book now
+                                    // unit is still going to repair yard but was unbooked from repair yard at pickup => book now
+
                     repair_yard->book();
-                }
+
+               
             }
             else if ((object->getItemID() == Structure_Refinery) && (pUnit->getItemID() == Unit_Harvester)) {
                 if (static_cast<Refinery*>(object)->isFree()) {

@@ -98,9 +98,9 @@ bool TrackedUnit::canPassTile(const Tile* pTile) const {
         if (pObject->getOwner()->getTeamID() != getOwner()->getTeamID()) {
             // possibly squashing this unit
             return true;
-        } else {
-            return false;
-        }
+        }             return false;
+
+       
     }
 
     return false;

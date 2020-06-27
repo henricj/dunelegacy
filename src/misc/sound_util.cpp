@@ -151,10 +151,14 @@ sdl2::mix_chunk_ptr getChunkFromFile(const std::string& filename) {
 sdl2::mix_chunk_ptr getChunkFromFile(const std::string& filename, const std::string& alternativeFilename) {
     if(pFileManager->exists(filename)) {
         return getChunkFromFile(filename);
-    } else if(pFileManager->exists(alternativeFilename)) {
+    } if(pFileManager->exists(alternativeFilename)) {
+
         return getChunkFromFile(alternativeFilename);
+
     } else {
+
         THROW(io_error, "Cannot open '%s' or '%s'!", filename, alternativeFilename);
+
     }
     return nullptr;
 }

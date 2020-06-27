@@ -80,10 +80,14 @@ bool INIFile::Key::getBoolValue(bool defaultValue) const {
 
     if((value == "true") || (value == "enabled") || (value == "on") || (value == "1")) {
         return true;
-    } else if((value == "false") || (value == "disabled") || (value == "off") || (value == "0")) {
+    } if((value == "false") || (value == "disabled") || (value == "off") || (value == "0")) {
+
         return false;
+
     } else {
+
         return defaultValue;
+
     }
 }
 
@@ -136,15 +140,21 @@ void INIFile::Key::setDoubleValue(double newValue) {
 bool INIFile::Key::escapingValueNeeded(const std::string& value) {
     if(value.empty()) {
         return true;
-    } else {
-        // test for non normal char
+    }         // test for non normal char
+
         for(char i : value) {
+
             if(!isNormalChar(i)) {
+
                 return true;
+
             }
+
         }
+
         return false;
-    }
+
+   
 }
 
 std::string INIFile::Key::escapeValue(const std::string& value) {
@@ -518,9 +528,9 @@ bool INIFile::hasKey(const std::string& section, const std::string& key) const {
     const Section* curSection = getSectionInternal(section);
     if(curSection == nullptr) {
         return false;
-    } else {
-        return curSection->hasKey(key);
-    }
+    }         return curSection->hasKey(key);
+
+   
 }
 
 
@@ -603,9 +613,9 @@ std::string INIFile::getStringValue(const std::string& section, const std::strin
     const Key* curKey = getKey(section,key);
     if(curKey == nullptr) {
         return defaultValue;
-    } else {
-        return curKey->getStringValue();
-    }
+    }         return curKey->getStringValue();
+
+   
 }
 
 
@@ -623,9 +633,9 @@ int INIFile::getIntValue(const std::string& section, const std::string& key, int
     const Key* curKey = getKey(section,key);
     if(curKey == nullptr) {
         return defaultValue;
-    } else {
-        return curKey->getIntValue(defaultValue);
-    }
+    }         return curKey->getIntValue(defaultValue);
+
+   
 }
 
 /// Reads the boolean that is adressed by the section/key pair.
@@ -643,9 +653,9 @@ bool INIFile::getBoolValue(const std::string& section, const std::string& key, b
     const Key* curKey = getKey(section,key);
     if(curKey == nullptr) {
         return defaultValue;
-    } else {
-        return curKey->getBoolValue(defaultValue);
-    }
+    }         return curKey->getBoolValue(defaultValue);
+
+   
 }
 
 /// Reads the float that is adressed by the section/key pair.
@@ -662,9 +672,9 @@ float INIFile::getFloatValue(const std::string& section, const std::string& key,
     const Key* curKey = getKey(section,key);
     if(curKey == nullptr) {
         return defaultValue;
-    } else {
-        return curKey->getFloatValue(defaultValue);
-    }
+    }         return curKey->getFloatValue(defaultValue);
+
+   
 }
 
 
@@ -682,9 +692,9 @@ double INIFile::getDoubleValue(const std::string& section, const std::string& ke
     const Key* curKey = getKey(section,key);
     if(curKey == nullptr) {
         return defaultValue;
-    } else {
-        return curKey->getDoubleValue(defaultValue);
-    }
+    }         return curKey->getDoubleValue(defaultValue);
+
+   
 }
 
 /// Sets the string that is adressed by the section/key pair.
@@ -780,9 +790,9 @@ INIFile::KeyIterator INIFile::begin(const std::string& section) const {
     const Section* curSection = getSectionInternal(section);
     if(curSection == nullptr) {
         return KeyIterator(nullptr);
-    } else {
-        return KeyIterator(curSection->keyRoot);
-    }
+    }         return KeyIterator(curSection->keyRoot);
+
+   
 }
 
 /// Get a key iterator pointing past the end of the specified section
@@ -884,10 +894,14 @@ void INIFile::readfile(SDL_RWops * file) {
             if(readbytes == 0) {
                 readfinished = true;
                 break;
-            } else if(tmp == '\n') {
+            } if(tmp == '\n') {
+
                 break;
+
             } else if(tmp != '\r') {
+
                 completeLine += tmp;
+
             }
         }
 
@@ -1130,8 +1144,10 @@ int INIFile::getNextChar(const unsigned char* line, int startpos) {
         if((line[startpos] == ';') || (line[startpos] == '#')) {
             // comment
             return -1;
-        } else if(!isWhitespace(line[startpos])) {
+        } if(!isWhitespace(line[startpos])) {
+
             return startpos;
+
         }
         startpos++;
     }
@@ -1225,7 +1241,7 @@ int INIFile::strncicmp(const char *s1, const char *s2, size_t n) {
     }
     if(s1 + n == p1) {
         return 0;
-    } else {
-        return (toupper(*p1) - toupper(*p2));
-    }
+    }         return (toupper(*p1) - toupper(*p2));
+
+   
 }

@@ -611,9 +611,12 @@ ChangeEventList CustomGamePlayers::getChangeEventListForNewPlayer(const std::str
             if(player1 != PLAYER_HUMAN) {
                 newPlayerSlot = 2*i;
                 break;
-            } else if(gameInitSettings.isMultiplePlayersPerHouse() && (player2 != PLAYER_HUMAN)) {
+            } if(gameInitSettings.isMultiplePlayersPerHouse() && (player2 != PLAYER_HUMAN)) {
+
                 newPlayerSlot = 2*i + 1;
+
                 break;
+
             }
         }
     }

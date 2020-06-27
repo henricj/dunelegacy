@@ -66,9 +66,9 @@ FixPoint        getDeviateWeakness(HOUSETYPE house);
 inline int missionNumberToLevelNumber(int missionNumber) {
     if(missionNumber != 22) {
         return ((missionNumber+1)/3)+1;
-    } else {
-        return 9;
-    }
+    }         return 9;
+
+   
 }
 
 void startReplay(const std::filesystem::path& filename);

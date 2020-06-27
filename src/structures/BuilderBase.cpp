@@ -108,9 +108,9 @@ void BuilderBase::save(OutputStream& stream) const {
 ObjectInterface* BuilderBase::getInterfaceContainer() {
     if((pLocalHouse == owner) || (debug)) {
         return BuilderInterface::create(objectID);
-    } else {
-        return DefaultObjectInterface::create(objectID);
-    }
+    }         return DefaultObjectInterface::create(objectID);
+
+   
 }
 
 void BuilderBase::insertItem(std::list<BuildItem>& buildItemList, std::list<BuildItem>::iterator& iter, Uint32 itemID, int price) {
@@ -173,9 +173,9 @@ bool BuilderBase::isWaitingToPlace() const {
     const auto *const tmp = getBuildItem(currentProducedItem);
     if(tmp == nullptr) {
         return false;
-    } else {
-        return (productionProgress >= tmp->price);
-    }
+    }         return (productionProgress >= tmp->price);
+
+   
 }
 
 bool BuilderBase::isUnitLimitReached(Uint32 itemID) const {
@@ -185,10 +185,14 @@ bool BuilderBase::isUnitLimitReached(Uint32 itemID) const {
 
     if(isInfantryUnit(itemID)) {
         return getOwner()->isInfantryUnitLimitReached();
-    } else if(isFlyingUnit(itemID)) {
+    } if(isFlyingUnit(itemID)) {
+
         return getOwner()->isAirUnitLimitReached();
+
     } else {
+
         return getOwner()->isGroundUnitLimitReached();
+
     }
 }
 
@@ -478,12 +482,18 @@ void BuilderBase::handleSetOnHoldClick(bool OnHold) {
 bool BuilderBase::doUpgrade() {
     if(upgrading) {
         return false;
-    } else if(isAllowedToUpgrade() && (owner->getCredits() >= getUpgradeCost())) {
+    } if(isAllowedToUpgrade() && (owner->getCredits() >= getUpgradeCost())) {
+
         upgrading = true;
+
         upgradeProgress = 0;
+
         return true;
+
     } else {
+
         return false;
+
     }
 }
 

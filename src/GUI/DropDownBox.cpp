@@ -83,21 +83,33 @@ bool DropDownBox::handleMouseLeft(Sint32 x, Sint32 y, bool pressed) {
     if(openListBoxButton.handleMouseLeft(x - (getSize().x - openListBoxButton.getSize().x - 1), y - 1, pressed)) {
         setActive();
         return true;
-    } else {
-        if((x>=0) && (x < getSize().x - openListBoxButton.getSize().x - 1)
+    }         if((x>=0) && (x < getSize().x - openListBoxButton.getSize().x - 1)
+
             && (y>=0) && (y < getSize().y) && (pressed)) {
 
+
+
             if(bOnClickEnabled && pOnClick) {
+
                 pOnClick();
+
             } else {
+
                 setActive();
+
                 onOpenListBoxButton();
+
             }
+
             return true;
+
         } else {
+
             return false;
+
         }
-    }
+
+   
 }
 
 bool DropDownBox::handleMouseLeftOverlay(Sint32 x, Sint32 y, bool pressed) {
@@ -111,10 +123,11 @@ bool DropDownBox::handleMouseLeftOverlay(Sint32 x, Sint32 y, bool pressed) {
                 // if not on drop down box => click is handled by closing drop down box
                 bShowListBox = false;
                 return true;
-            } else {
-                // on drop down box we don't handle overlay click
+            }                 // on drop down box we don't handle overlay click
+
                 return false;
-            }
+
+           
         } else {
             return true;
         }
@@ -144,9 +157,9 @@ bool DropDownBox::handleMouseWheel(Sint32 x, Sint32 y, bool up) {
             }
         }
         return true;
-    } else {
-        return false;
-    }
+    }         return false;
+
+   
 }
 
 bool DropDownBox::handleMouseWheelOverlay(Sint32 x, Sint32 y, bool up) {
