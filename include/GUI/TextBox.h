@@ -24,8 +24,6 @@
 #include <misc/SDL2pp.h>
 #include <string>
 
-#include <cstdio>
-
 /// A class for a text box
 class TextBox : public Widget {
 public:
@@ -52,7 +50,7 @@ public:
         Returns true.
         \return true = activatable, false = not activatable
     */
-    [[nodiscard]] inline bool isActivatable() const override { return isEnabled(); };
+    [[nodiscard]] bool isActivatable() const override { return isEnabled(); };
 
     /**
         This method sets a new text for this text box.
@@ -66,13 +64,13 @@ public:
         Get the text of this text box.
         \return the text of this text box
     */
-    [[nodiscard]] inline const std::string& getText() const { return text; };
+    [[nodiscard]] const std::string& getText() const { return text; };
 
     /**
         Sets a font size for this text box. Default font size of a text box is 14
         \param  fontSize      the size of the new font
     */
-    virtual inline void setTextFontSize(int fontSize) {
+    virtual void setTextFontSize(int fontSize) {
         this->fontSize = fontSize;
         resize(getSize().x, getSize().y);
     }
@@ -81,7 +79,7 @@ public:
         Gets the font size of this text box. Default font size of a text box is 14
         \return the font size of this text box
     */
-    [[nodiscard]] virtual inline int getTextFontSize() const {
+    [[nodiscard]] virtual int getTextFontSize() const {
        return fontSize;
     }
 
@@ -90,7 +88,7 @@ public:
         \param  textcolor       the color of the text (COLOR_DEFAULT = default color)
         \param  textshadowcolor the color of the shadow of the text (COLOR_DEFAULT = default color)
     */
-    virtual inline void setTextColor(Uint32 textcolor, Uint32 textshadowcolor = COLOR_DEFAULT) {
+    virtual void setTextColor(Uint32 textcolor, Uint32 textshadowcolor = COLOR_DEFAULT) {
         this->textcolor = textcolor;
         this->textshadowcolor = textshadowcolor;
         invalidateTextures();
@@ -100,14 +98,14 @@ public:
         Sets the maximum length of the typed text
         \param  maxTextLength   the maximum length, -1 = unlimited
     */
-    virtual inline void setMaximumTextLength(int maxTextLength) {
+    virtual void setMaximumTextLength(int maxTextLength) {
         this->maxTextLength = maxTextLength;
     }
 
     /**
         Gets the maximum length of the typed text
     */
-    [[nodiscard]] virtual inline int getMaximumTextLength() const {
+    [[nodiscard]] virtual int getMaximumTextLength() const {
         return maxTextLength;
     }
 
@@ -115,7 +113,7 @@ public:
         Sets the set of allowed characters for this text box.
         \param  allowedChars    the set of allowed chars or an empty string if everything is allowed
     */
-    virtual inline void setAllowedChars(const std::string& allowedChars = "") {
+    virtual void setAllowedChars(const std::string& allowedChars = "") {
         this->allowedChars = allowedChars;
     }
 
@@ -123,7 +121,7 @@ public:
         Sets the set of forbidden characters for this text box.
         \param  forbiddenChars    the set of forbidden chars or an empty string if everything is allowed
     */
-    virtual inline void setForbiddenChars(const std::string& forbiddenChars = "") {
+    virtual void setForbiddenChars(const std::string& forbiddenChars = "") {
         this->forbiddenChars = forbiddenChars;
     }
 
@@ -131,7 +129,7 @@ public:
         Sets the function that should be called when the text of this text box changes.
         \param  pOnTextChange   A function to call on text change
     */
-    inline void setOnTextChange(std::function<void (bool)> pOnTextChange) {
+    void setOnTextChange(std::function<void (bool)> pOnTextChange) {
         this->pOnTextChange = pOnTextChange;
     }
 
@@ -140,7 +138,7 @@ public:
         Sets the method that should be called when return is pressed
         \param  pOnReturn   A function to call on pressing return
     */
-    inline void setOnReturn(std::function<void ()> pOnReturn) {
+    void setOnReturn(std::function<void ()> pOnReturn) {
         this->pOnReturn = pOnReturn;
     }
 
