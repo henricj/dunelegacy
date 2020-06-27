@@ -252,8 +252,8 @@ std::string convertCP850ToUTF8(const std::string& text)
 
     std::string result;
     result.reserve(text.length());
-    for(unsigned int i = 0; i < text.size(); i++) {
-        auto c = (unsigned char) text[i];
+    for(char i : text) {
+        auto c = (unsigned char) i;
         if(c == 0x0D) {
             result += "\n";
         } else if(c < 128) {

@@ -111,10 +111,10 @@ sdl2::surface_ptr INIMapPreviewCreator::createMinimapImageOfMap(int borderWidth,
         if(FieldString != "") {
             std::vector<std::string> FieldPositions  = splitStringToStringVector(FieldString);
 
-            for(unsigned int i=0; i < FieldPositions.size();i++) {
+            for(auto & FieldPosition : FieldPositions) {
                 // set bloom
                 int FieldPos;
-                if(parseString(FieldPositions[i], FieldPos)) {
+                if(parseString(FieldPosition, FieldPos)) {
                     int xpos = FieldPos % logicalSizeX;
                     int ypos = FieldPos / logicalSizeX;
 

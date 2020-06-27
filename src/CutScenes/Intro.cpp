@@ -124,8 +124,8 @@ Intro::Intro() {
             voice[i] = getChunkFromFile(VoiceFileNames[i]);
         }
     } else {
-        for(int i=0;i<Voice_NUM_ENTRIES;i++) {
-            voice[i] = nullptr;
+        for(auto & i : voice) {
+            i = nullptr;
         }
     }
 

@@ -44,8 +44,8 @@ HumanPlayer::HumanPlayer(House* associatedHouse, const std::string& playername) 
 HumanPlayer::HumanPlayer(InputStream& stream, House* associatedHouse) : Player(stream, associatedHouse) {
     HumanPlayer::init();
 
-    for(int i=0;i < NUMSELECTEDLISTS; i++) {
-        selectedLists[i] = stream.readUint32Set();
+    for(auto & selectedList : selectedLists) {
+        selectedList = stream.readUint32Set();
     }
 
     alreadyShownTutorialHints = stream.readUint32();
@@ -62,8 +62,8 @@ void HumanPlayer::save(OutputStream& stream) const {
     Player::save(stream);
 
     // write out selection groups (Key 1 to 9)
-    for(int i=0; i < NUMSELECTEDLISTS; i++) {
-        stream.writeUint32Set(selectedLists[i]);
+    for(const auto & selectedList : selectedLists) {
+        stream.writeUint32Set(selectedList);
     }
 
     stream.writeUint32(alreadyShownTutorialHints);
