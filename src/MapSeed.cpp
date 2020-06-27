@@ -233,7 +233,9 @@ void createMapWithSeed(Uint32 Para_Seed,Uint16 *pResultMap)
     Uint16 randNum2 = 0;
     Uint16 randNum3 = 0;
     Sint16 index = 0;
-    Sint16 i = 0,j = 0;
+    Sint16 i = 0;
+
+    Sint16 j = 0;
     Sint16 Xcoord = 0;
     Sint16 Ycoord = 0;
     Uint16 max = 0;

@@ -74,7 +74,15 @@ void md5_starts( md5_context *ctx )
 
 static void md5_process( md5_context *ctx, const unsigned char data[64] )
 {
-    unsigned long X[16], A = 0, B = 0, C = 0, D = 0;
+    unsigned long X[16];
+
+    unsigned long A = 0;
+
+    unsigned long B = 0;
+
+    unsigned long C = 0;
+
+    unsigned long D = 0;
 
     GET_ULONG_LE( X[ 0], data,  0 );
     GET_ULONG_LE( X[ 1], data,  4 );
@@ -252,8 +260,12 @@ static const unsigned char md5_padding[64] =
  */
 void md5_finish( md5_context *ctx, unsigned char output[16] )
 {
-    unsigned long last = 0, padn = 0;
-    unsigned long high = 0, low = 0;
+    unsigned long last = 0;
+
+    unsigned long padn = 0;
+    unsigned long high = 0;
+
+    unsigned long low = 0;
     unsigned char msglen[8];
 
     high = ( ctx->total[0] >> 29 )

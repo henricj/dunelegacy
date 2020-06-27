@@ -43,7 +43,13 @@ Uint32 getPixel(SDL_Surface *surface, int x, int y) {
 
     case 4: {
         const auto value = *reinterpret_cast<Uint32 *>(p);
-        Uint8 r = 0, g = 0, b = 0, a = 0;
+        Uint8 r = 0;
+
+        Uint8 g = 0;
+
+        Uint8 b = 0;
+
+        Uint8 a = 0;
         SDL_GetRGBA(value, surface->format, &r, &g, &b, &a);
         return COLOR_RGBA(r, g, b, a);
     }

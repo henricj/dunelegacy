@@ -94,7 +94,9 @@ void GameInterface::draw(Point position) {
     SDL_Rect spiceIndicatorPos = {  getRendererWidth() - sideBar.getSize().x + 20, 146, 4, getRendererHeight() - 146 - 2 };
     renderFillRect(renderer, &spiceIndicatorPos, COLOR_BLACK);
 
-    int xCount = 0, yCount = 0;
+    int xCount = 0;
+
+    int yCount = 0;
     int yCount2 = 0;
 
     //draw power level indicator

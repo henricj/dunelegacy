@@ -10,7 +10,9 @@ fix16_t fix16_add(fix16_t a, fix16_t b)
 {
 	// Use unsigned integers because overflow with signed integers is
 	// an undefined operation (http://www.airs.com/blog/archives/120).
-	uint32_t _a = a, _b = b;
+	uint32_t _a = a;
+
+	uint32_t _b = b;
 	uint32_t sum = _a + _b;
 
 	// Overflow can only happen if sign of a == sign of b, and then
@@ -23,7 +25,9 @@ fix16_t fix16_add(fix16_t a, fix16_t b)
 
 fix16_t fix16_sub(fix16_t a, fix16_t b)
 {
-	uint32_t _a = a, _b = b;
+	uint32_t _a = a;
+
+	uint32_t _b = b;
 	uint32_t diff = _a - _b;
 
 	// Overflow can only happen if sign of a != sign of b, and then
