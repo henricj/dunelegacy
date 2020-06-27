@@ -17,6 +17,10 @@
 
 #include <GUI/ScrollBar.h>
 
+
+#include "math.h"
+
+
 ScrollBar::ScrollBar() : Widget() {
     color = COLOR_DEFAULT;
     minValue = 1;
@@ -136,8 +140,8 @@ void ScrollBar::updateSliderButton() {
         SliderAreaHeight = GUIStyle::getInstance().getMinimumScrollBarArrowButtonSize().y;
     }
 
-    double SliderButtonHeight;
-    double OneTickHeight;
+    double SliderButtonHeight = NAN;
+    double OneTickHeight = NAN;
 
     if(Range <= 1) {
         SliderButtonHeight = SliderAreaHeight;

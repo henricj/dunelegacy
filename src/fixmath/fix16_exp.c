@@ -36,7 +36,7 @@ fix16_t fix16_exp(fix16_t inValue) {
 	fix16_t result = inValue + fix16_one;
 	fix16_t term = inValue;
 
-	uint_fast8_t i;
+	uint_fast8_t i = 0;
 	for (i = 2; i < 30; i++)
 	{
 		term = fix16_mul(term, fix16_div(inValue, fix16_from_int(i)));
@@ -61,7 +61,7 @@ fix16_t fix16_exp(fix16_t inValue) {
 fix16_t fix16_log(fix16_t inValue)
 {
 	fix16_t guess = fix16_from_int(2);
-	fix16_t delta;
+	fix16_t delta = 0;
 	int scaling = 0;
 	int count = 0;
 
@@ -131,7 +131,7 @@ static fix16_t fix16__log2_inner(fix16_t x)
 
 	if(x == 0) return (result << 16);
 
-	uint_fast8_t i;
+	uint_fast8_t i = 0;
 	for(i = 16; i > 0; i--)
 	{
 		x = fix16_mul(x, x);

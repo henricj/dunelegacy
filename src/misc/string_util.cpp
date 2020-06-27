@@ -143,7 +143,7 @@ std::string utf8Substr(const std::string& str, size_t pos, size_t len) {
 std::vector<std::string> greedyWordWrap(const std::string& text, int linewidth, std::function<int (const std::string&)> pGetTextWidth) {
     //split text into single lines at every '\n'
     size_t startpos = 0;
-    size_t nextpos;
+    size_t nextpos = 0;
     std::vector<std::string> hardLines;
     do {
         nextpos = text.find("\n",startpos);

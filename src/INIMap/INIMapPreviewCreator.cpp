@@ -113,7 +113,7 @@ sdl2::surface_ptr INIMapPreviewCreator::createMinimapImageOfMap(int borderWidth,
 
             for(auto & FieldPosition : FieldPositions) {
                 // set bloom
-                int FieldPos;
+                int FieldPos = 0;
                 if(parseString(FieldPosition, FieldPos)) {
                     int xpos = FieldPos % logicalSizeX;
                     int ypos = FieldPos / logicalSizeX;
@@ -190,7 +190,7 @@ sdl2::surface_ptr INIMapPreviewCreator::createMinimapImageOfMap(int borderWidth,
 
             for(const std::string& strBloomPos : BloomPositions) {
                 // set bloom
-                int BloomPos;
+                int BloomPos = 0;
                 if(parseString(strBloomPos, BloomPos)) {
                     int xpos = BloomPos % logicalSizeX - logicalOffsetX;
                     int ypos = BloomPos / logicalSizeX - logicalOffsetY;
@@ -214,7 +214,7 @@ sdl2::surface_ptr INIMapPreviewCreator::createMinimapImageOfMap(int borderWidth,
 
             for(const std::string& strSpecialPos : SpecialPositions) {
                 // set bloom
-                int SpecialPos;
+                int SpecialPos = 0;
                 if(parseString(strSpecialPos, SpecialPos)) {
                     int xpos = SpecialPos % logicalSizeX - logicalOffsetX;
                     int ypos = SpecialPos / logicalSizeX - logicalOffsetY;
@@ -321,7 +321,7 @@ sdl2::surface_ptr INIMapPreviewCreator::createMinimapImageOfMap(int borderWidth,
                 // Gen Object/Structure
 
                 std::string PosStr = tmpkey.substr(3,tmpkey.size()-3);
-                int pos;
+                int pos = 0;
                 if(!parseString(PosStr, pos)) {
                     continue;
                 }
@@ -366,7 +366,7 @@ sdl2::surface_ptr INIMapPreviewCreator::createMinimapImageOfMap(int borderWidth,
                 std::string HouseStr, BuildingStr, health, PosStr;
                 splitString(tmp, HouseStr, BuildingStr, health, PosStr);
 
-                int pos;
+                int pos = 0;
                 if(!parseString(PosStr, pos)) {
                     continue;
                 }

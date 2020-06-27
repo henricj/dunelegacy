@@ -70,14 +70,14 @@ public:
 
     unsigned int read1() override
     {
-        unsigned char b0;
+        unsigned char b0 = 0;
         b0 = (unsigned char)*buf_ptr++;
         return (b0);
     };
 
     unsigned int read2() override
     {
-        unsigned char b0, b1;
+        unsigned char b0 = 0, b1 = 0;
         b0 = (unsigned char)*buf_ptr++;
         b1 = (unsigned char)*buf_ptr++;
         return (b0 + (b1 << 8));
@@ -85,7 +85,7 @@ public:
 
     unsigned int read2high() override
     {
-        unsigned char b0, b1;
+        unsigned char b0 = 0, b1 = 0;
         b1 = (unsigned char)*buf_ptr++;
         b0 = (unsigned char)*buf_ptr++;
         return (b0 + (b1 << 8));
@@ -93,7 +93,7 @@ public:
 
     unsigned int read4() override
     {
-        unsigned char b0, b1, b2, b3;
+        unsigned char b0 = 0, b1 = 0, b2 = 0, b3 = 0;
         b0 = (unsigned char)*buf_ptr++;
         b1 = (unsigned char)*buf_ptr++;
         b2 = (unsigned char)*buf_ptr++;
@@ -103,7 +103,7 @@ public:
 
     unsigned int read4high() override
     {
-        unsigned char b0, b1, b2, b3;
+        unsigned char b0 = 0, b1 = 0, b2 = 0, b3 = 0;
         b3 = (unsigned char)*buf_ptr++;
         b2 = (unsigned char)*buf_ptr++;
         b1 = (unsigned char)*buf_ptr++;
@@ -186,14 +186,14 @@ public:
 
     unsigned int read1() override
     {
-        unsigned char b0;
+        unsigned char b0 = 0;
         SDL_RWread(rwop,&b0,sizeof(b0),1);
         return (b0);
     };
 
     unsigned int read2() override
     {
-        unsigned char b0, b1;
+        unsigned char b0 = 0, b1 = 0;
         SDL_RWread(rwop,&b0,sizeof(b0),1);
         SDL_RWread(rwop,&b1,sizeof(b1),1);
         return (b0 + (b1 << 8));
@@ -201,7 +201,7 @@ public:
 
     unsigned int read2high() override
     {
-        unsigned char b0, b1;
+        unsigned char b0 = 0, b1 = 0;
         SDL_RWread(rwop,&b1,sizeof(b1),1);
         SDL_RWread(rwop,&b0,sizeof(b0),1);
         return (b0 + (b1 << 8));
@@ -209,7 +209,7 @@ public:
 
     unsigned int read4() override
     {
-        unsigned char b0, b1, b2, b3;
+        unsigned char b0 = 0, b1 = 0, b2 = 0, b3 = 0;
         SDL_RWread(rwop,&b0,sizeof(b0),1);
         SDL_RWread(rwop,&b1,sizeof(b1),1);
         SDL_RWread(rwop,&b2,sizeof(b2),1);
@@ -219,7 +219,7 @@ public:
 
     unsigned int read4high() override
     {
-        unsigned char b0, b1, b2, b3;
+        unsigned char b0 = 0, b1 = 0, b2 = 0, b3 = 0;
         SDL_RWread(rwop,&b3,sizeof(b3),1);
         SDL_RWread(rwop,&b2,sizeof(b2),1);
         SDL_RWread(rwop,&b1,sizeof(b1),1);

@@ -47,14 +47,14 @@ public:
     int showMenu() override;
 
     [[nodiscard]] inline int getSelectedMission() const {
-        int regionIndex;
+        int regionIndex = 0;
         for(regionIndex = 0; regionIndex < 4; regionIndex++) {
             if(group[lastScenario].attackRegion[regionIndex].regionNum == selectedRegion) {
                 break;
             }
         }
 
-        int newMission;
+        int newMission = 0;
         if(lastScenario <= 7) {
             newMission = (lastScenario-1) * 3 + 2 + regionIndex;
         } else if(lastScenario == 8) {

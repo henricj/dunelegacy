@@ -123,10 +123,10 @@ static Sint16 MapArray2DToMapArray1D_OOB(Sint16 Xcoord,Sint16 Ycoord) {
     \return none
 */
 static void SmoothNeighbourhood(Sint16 index, Uint32* pMapArray) {
-    Sint16 TileType;
-    Sint16 Xcoord;
-    Sint16 Ycoord;
-    Sint16 Pos;
+    Sint16 TileType = 0;
+    Sint16 Xcoord = 0;
+    Sint16 Ycoord = 0;
+    Sint16 Pos = 0;
 
     TileType = (Sint16) pMapArray[index];
 
@@ -165,9 +165,9 @@ static void SmoothNeighbourhood(Sint16 index, Uint32* pMapArray) {
     \return The new random value
 */
 static Uint16 SeedRand() {
-    Uint8 a;
-    Uint8 carry;
-    Uint8 old_carry;
+    Uint8 a = 0;
+    Uint8 carry = 0;
+    Uint8 old_carry = 0;
 
     // little endian is more useful for this algorithm
     Seed = SDL_SwapLE32(Seed);
@@ -226,17 +226,17 @@ void createMapWithSeed(Uint32 Para_Seed,Uint16 *pResultMap)
     Uint8 Array4x4TerrainGrid[16*16+16+1];
     Uint32 MapArray[65*65];
     MapSeedPoint point;
-    Uint16 randNum;
-    Uint16 randNum2;
-    Uint16 randNum3;
-    Sint16 index;
-    Sint16 i,j;
-    Sint16 Xcoord;
-    Sint16 Ycoord;
-    Uint16 max;
-    Sint16 Point1;
-    Sint16 Point2;
-    Uint16 pos;
+    Uint16 randNum = 0;
+    Uint16 randNum2 = 0;
+    Uint16 randNum3 = 0;
+    Sint16 index = 0;
+    Sint16 i = 0,j = 0;
+    Sint16 Xcoord = 0;
+    Sint16 Ycoord = 0;
+    Uint16 max = 0;
+    Sint16 Point1 = 0;
+    Sint16 Point2 = 0;
+    Uint16 pos = 0;
 
     Uint16 curMapRow[0x80];
     Uint16 oldMapRow[0x80];

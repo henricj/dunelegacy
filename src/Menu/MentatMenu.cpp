@@ -31,13 +31,13 @@ MentatMenu::MentatMenu(HOUSETYPE newHouse)
 {
     nextSpecialAnimation = SDL_GetTicks() + getRandomInt(8000, 20000);
 
-    Animation* anim;
+    Animation* anim = nullptr;
 
     disableQuiting(true);
     house = newHouse;
 
     // set up window
-    SDL_Texture *pBackground;
+    SDL_Texture *pBackground = nullptr;
     if(house == HOUSETYPE::HOUSE_INVALID) {
         pBackground = pGFXManager->getUIGraphic(UI_MentatBackgroundBene);
     } else {

@@ -410,8 +410,8 @@ int XMIDI::retrieve (unsigned int track, midi_event **dest, int &ppqn)
 
 void XMIDI::DeleteEventList (midi_event *mlist)
 {
-    midi_event *event;
-    midi_event *next;
+    midi_event *event = nullptr;
+    midi_event *next = nullptr;
 
     next = mlist;
     event = mlist;
@@ -483,9 +483,9 @@ void XMIDI::CreateNewEvent (int time)
 // Conventional Variable Length Quantity
 int XMIDI::GetVLQ (DataSource *source, unsigned int &quant)
 {
-    int i;
+    int i = 0;
     quant = 0;
-    unsigned int data;
+    unsigned int data = 0;
 
     for (i = 0; i < 4; i++)
     {
@@ -506,7 +506,7 @@ int XMIDI::GetVLQ (DataSource *source, unsigned int &quant)
 // XMIDI Delta Variable Length Quantity
 int XMIDI::GetVLQ2 (DataSource *source, unsigned int &quant)
 {
-    int i;
+    int i = 0;
     quant = 0;
     int data = 0;
 
@@ -525,7 +525,7 @@ int XMIDI::GetVLQ2 (DataSource *source, unsigned int &quant)
 
 int XMIDI::PutVLQ(DataSource *dest, unsigned int value)
 {
-    int buffer;
+    int buffer = 0;
     int i = 1;
     buffer = value & 0x7F;
     while (value >>= 7)
@@ -562,7 +562,7 @@ void XMIDI::MovePatchVolAndPan (int channel)
     midi_event *vol = nullptr;
     midi_event *pan = nullptr;
     midi_event *bank = nullptr;
-    midi_event *temp;
+    midi_event *temp = nullptr;
 
     for (current = list; current; )
     {
@@ -661,8 +661,8 @@ void XMIDI::MovePatchVolAndPan (int channel)
 // DuplicateAndMerge
 void XMIDI::DuplicateAndMerge (int num)
 {
-    int     i;
-    midi_event  **track;
+    int     i = 0;
+    midi_event  **track = nullptr;
     int     time = 0;
     int     start = 0;
     int     end = 1;
@@ -765,7 +765,7 @@ void XMIDI::DuplicateAndMerge (int num)
 int XMIDI::ConvertEvent (const int time, const unsigned char status, DataSource *source, const int size)
 {
     unsigned int    delta = 0;
-    int data;
+    int data = 0;
 
     data = source->read1();
 
@@ -885,7 +885,7 @@ int XMIDI::ConvertSystemMessage (const int time, const unsigned char status, Dat
 int XMIDI::ConvertFiletoList (DataSource *source, const BOOL is_xmi)
 {
     int         time = 0;
-    unsigned int    data;
+    unsigned int    data = 0;
     int     end = 0;
     int     tempo = 500000;
     int     tempo_set = 0;
@@ -994,11 +994,11 @@ int XMIDI::ConvertFiletoList (DataSource *source, const BOOL is_xmi)
 unsigned int XMIDI::ConvertListToMTrk (DataSource *dest, midi_event *mlist)
 {
     int time = 0;
-    midi_event  *event;
-    unsigned int    delta;
+    midi_event  *event = nullptr;
+    unsigned int    delta = 0;
     unsigned char   last_status = 0;
     unsigned int    i = 8;
-    unsigned int    j;
+    unsigned int    j = 0;
     unsigned int    size_pos=0;
     BOOL end = FALSE;
 
@@ -1095,7 +1095,7 @@ unsigned int XMIDI::ConvertListToMTrk (DataSource *dest, midi_event *mlist)
 int XMIDI::ExtractTracksFromXmi (DataSource *source)
 {
     int     num = 0;
-    signed short    ppqn;
+    signed short    ppqn = 0;
     unsigned int        len = 0;
     char        buf[32];
 
@@ -1186,10 +1186,10 @@ int XMIDI::ExtractTracksFromMid (DataSource *source)
 int XMIDI::ExtractTracks (DataSource *source)
 {
     unsigned int        i = 0;
-    int     start;
-    unsigned int        len;
-    unsigned int        chunk_len;
-    int         count;
+    int     start = 0;
+    unsigned int        len = 0;
+    unsigned int        chunk_len = 0;
+    int         count = 0;
     char        buf[32];
 
     // Read first 4 bytes of header

@@ -19,8 +19,8 @@ void SaveTextureAsBmp(SDL_Renderer *renderer, SDL_Texture* texture, const char* 
 
     const int format = SDL_PIXELFORMAT_RGBA32;
 
-    int w;
-    int h;
+    int w = 0;
+    int h = 0;
 
     /* Get information about texture we want to save */
     if (SDL_QueryTexture(texture, nullptr, nullptr, &w, &h)) {

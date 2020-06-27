@@ -74,7 +74,7 @@ void md5_starts( md5_context *ctx )
 
 static void md5_process( md5_context *ctx, const unsigned char data[64] )
 {
-    unsigned long X[16], A, B, C, D;
+    unsigned long X[16], A = 0, B = 0, C = 0, D = 0;
 
     GET_ULONG_LE( X[ 0], data,  0 );
     GET_ULONG_LE( X[ 1], data,  4 );
@@ -200,8 +200,8 @@ static void md5_process( md5_context *ctx, const unsigned char data[64] )
  */
 void md5_update( md5_context *ctx, const unsigned char *input, int ilen )
 {
-    int fill;
-    unsigned long left;
+    int fill = 0;
+    unsigned long left = 0;
 
     if( ilen <= 0 )
         return;
@@ -252,8 +252,8 @@ static const unsigned char md5_padding[64] =
  */
 void md5_finish( md5_context *ctx, unsigned char output[16] )
 {
-    unsigned long last, padn;
-    unsigned long high, low;
+    unsigned long last = 0, padn = 0;
+    unsigned long high = 0, low = 0;
     unsigned char msglen[8];
 
     high = ( ctx->total[0] >> 29 )
@@ -294,8 +294,8 @@ void md5( const unsigned char *input, int ilen, unsigned char output[16] )
  */
 int md5_file( const char *path, unsigned char output[16] )
 {
-    SDL_RWops *rwops;
-    size_t n;
+    SDL_RWops *rwops = nullptr;
+    size_t n = 0;
     md5_context ctx;
     unsigned char buf[4*1024];
 
@@ -320,7 +320,7 @@ int md5_file( const char *path, unsigned char output[16] )
  */
 void md5_hmac_starts( md5_context *ctx, const unsigned char *key, int keylen )
 {
-    int i;
+    int i = 0;
     unsigned char sum[16];
 
     if( keylen > 64 )

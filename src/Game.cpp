@@ -425,7 +425,7 @@ void Game::drawScreen()
 
                     for(int i = xPos; i < (xPos + structuresize.x); i++) {
                         for(int j = yPos; j < (yPos + structuresize.y); j++) {
-                            SDL_Texture* image;
+                            SDL_Texture* image = nullptr;
 
                             if(!withinRange || !currentGameMap->tileExists(i,j) || !currentGameMap->getTile(i,j)->isRock()
                                 || currentGameMap->getTile(i,j)->isMountain() || currentGameMap->getTile(i,j)->hasAGroundObject()

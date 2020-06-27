@@ -25,6 +25,10 @@
 
 #include <string>
 
+
+#include "math.h"
+
+
 class ENetPacketIStream : public InputStream
 {
 public:
@@ -127,7 +131,7 @@ public:
     float readFloat() override
     {
         Uint32 tmp = readUint32();
-        float tmp2;
+        float tmp2 = NAN;
         memcpy(&tmp2,&tmp,sizeof(Uint32)); // workaround for a strange optimization in gcc 4.1
         return tmp2;
     }

@@ -130,7 +130,7 @@ void Pakfile::addFile(SDL_RWops* rwop, const std::string& filename) {
 
     auto filelength = static_cast<size_t>(SDL_RWsize(rwop));
 
-    char* extendedBuffer;
+    char* extendedBuffer = nullptr;
     if((extendedBuffer = (char*) realloc(writeOutData,numWriteOutData+filelength)) == nullptr) {
         throw std::bad_alloc();
     } else {
@@ -139,7 +139,7 @@ void Pakfile::addFile(SDL_RWops* rwop, const std::string& filename) {
 
     if(SDL_RWread(rwop,writeOutData + numWriteOutData,1,filelength) != filelength) {
         // revert the buffer to the original size
-        char* shrinkedBuffer;
+        char* shrinkedBuffer = nullptr;
         if((shrinkedBuffer = (char*) realloc(writeOutData,numWriteOutData)) == nullptr) {
             // shrinking the buffer should not fail
             THROW(std::runtime_error, "Pakfile::addFile(): realloc failed!");
@@ -189,7 +189,7 @@ sdl2::RWops_ptr Pakfile::openFile(const std::filesystem::path& filename) {
     }
 
     // alloc RWop
-    SDL_RWops *pRWop;
+    SDL_RWops *pRWop = nullptr;
     if((pRWop = SDL_AllocRW()) == nullptr) {
         throw std::bad_alloc();
     }
@@ -308,7 +308,7 @@ Sint64 Pakfile::SeekFile(SDL_RWops *pRWop, Sint64 offset, int whence) {
         return -1;
     }
 
-    Sint64 newOffset;
+    Sint64 newOffset = 0;
 
     switch(whence) {
         case SEEK_SET:
@@ -371,7 +371,7 @@ void Pakfile::readIndex()
         }
 
         while(true) {
-            char tmp;
+            char tmp = 0;
             if(SDL_RWread(fPakFile,&tmp,1,1) != 1) {
                 THROW(std::runtime_error, "Pakfile::readIndex(): SDL_RWread() failed!");
             }

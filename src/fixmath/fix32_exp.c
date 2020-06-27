@@ -36,7 +36,7 @@ fix32_t fix32_exp(fix32_t inValue) {
 	fix32_t result = inValue + fix32_one;
 	fix32_t term = inValue;
 
-	uint_fast8_t i;
+	uint_fast8_t i = 0;
 	for (i = 2; i < 60; i++)
 	{
 		term = fix32_mul(term, fix32_div(inValue, fix32_from_int(i)));
@@ -61,7 +61,7 @@ fix32_t fix32_exp(fix32_t inValue) {
 fix32_t fix32_log(fix32_t inValue)
 {
 	fix32_t guess = fix32_from_int(2);
-	fix32_t delta;
+	fix32_t delta = 0;
 	int scaling = 0;
 	int count = 0;
 
@@ -131,7 +131,7 @@ static fix32_t fix32__log2_inner(fix32_t x)
 
 	if(x == 0) return (result << 32);
 
-	uint_fast8_t i;
+	uint_fast8_t i = 0;
 	for(i = 32; i > 0; i--)
 	{
 		x = fix32_mul(x, x);

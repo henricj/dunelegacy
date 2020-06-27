@@ -33,6 +33,10 @@
 #include <climits>
 #include <algorithm>
 
+
+#include "math.h"
+
+
 #define max3(a,b,c) (std::max((a),std::max((b),(c))))
 
 #define PROGRESSBARTIME 4000.0f
@@ -239,7 +243,7 @@ void CampaignStatsMenu::doState(int elapsedTime)
             float MaxSpiceHarvested = max3(spiceHarvestedByHuman, spiceHarvestedByAI, 3000.0f);
             float SpiceComplete = std::min(elapsedTime / PROGRESSBARTIME, 1.0f);
 
-            float Human_PercentSpiceComplete;
+            float Human_PercentSpiceComplete = NAN;
             if(SpiceComplete < spiceHarvestedByHuman / MaxSpiceHarvested) {
                 Human_PercentSpiceComplete = SpiceComplete * 100.0f;
                 spiceYouLabel.setText( std::to_string( (int) (SpiceComplete*MaxSpiceHarvested)));
@@ -271,7 +275,7 @@ void CampaignStatsMenu::doState(int elapsedTime)
             float MaxSpiceHarvested = max3(spiceHarvestedByHuman, spiceHarvestedByAI, 3000.0f);
             float SpiceComplete = std::min(elapsedTime / PROGRESSBARTIME, 1.0f);
 
-            float AI_PercentSpiceComplete;
+            float AI_PercentSpiceComplete = NAN;
             if(SpiceComplete < spiceHarvestedByAI / MaxSpiceHarvested) {
                 AI_PercentSpiceComplete = SpiceComplete * 100.0f;
                 spiceEnemyLabel.setText( std::to_string( (int) (SpiceComplete*MaxSpiceHarvested)));
@@ -301,7 +305,7 @@ void CampaignStatsMenu::doState(int elapsedTime)
             float MaxUnitsDestroyed = (float) max3(unitsDestroyedByHuman, unitsDestroyedByAI, 200);
             float UnitsComplete = std::min(elapsedTime / PROGRESSBARTIME, 1.0f);
 
-            float Human_PercentUnitsComplete;
+            float Human_PercentUnitsComplete = NAN;
             if(UnitsComplete < unitsDestroyedByHuman / MaxUnitsDestroyed) {
                 Human_PercentUnitsComplete = UnitsComplete * 100.0f;
                 unitsYouLabel.setText( std::to_string( (int) (UnitsComplete*MaxUnitsDestroyed)));
@@ -331,7 +335,7 @@ void CampaignStatsMenu::doState(int elapsedTime)
             float MaxUnitsDestroyed = (float) max3(unitsDestroyedByHuman, unitsDestroyedByAI, 200);
             float UnitsComplete = std::min(elapsedTime / PROGRESSBARTIME, 1.0f);
 
-            float AI_PercentUnitsComplete;
+            float AI_PercentUnitsComplete = NAN;
             if(UnitsComplete < unitsDestroyedByAI / MaxUnitsDestroyed) {
                 AI_PercentUnitsComplete = UnitsComplete * 100.0f;
                 unitsEnemyLabel.setText( std::to_string( (int) (UnitsComplete*MaxUnitsDestroyed)));
@@ -361,7 +365,7 @@ void CampaignStatsMenu::doState(int elapsedTime)
             float MaxBuildingsDestroyed = (float) max3(structuresDestroyedByHuman, structuresDestroyedByAI, 200);
             float BuildingsComplete = std::min(elapsedTime / PROGRESSBARTIME, 1.0f);
 
-            float Human_PercentBuildingsComplete;
+            float Human_PercentBuildingsComplete = NAN;
             if(BuildingsComplete < structuresDestroyedByHuman / MaxBuildingsDestroyed) {
                 Human_PercentBuildingsComplete = BuildingsComplete * 100.0f;
                 buildingsYouLabel.setText( std::to_string( (int) (BuildingsComplete*MaxBuildingsDestroyed)));
@@ -391,7 +395,7 @@ void CampaignStatsMenu::doState(int elapsedTime)
             float MaxBuildingsDestroyed = (float) max3(structuresDestroyedByHuman, structuresDestroyedByAI, 200);
             float BuildingsComplete = std::min(elapsedTime / PROGRESSBARTIME, 1.0f);
 
-            float AI_PercentBuildingsComplete;
+            float AI_PercentBuildingsComplete = NAN;
             if(BuildingsComplete < structuresDestroyedByAI / MaxBuildingsDestroyed) {
                 AI_PercentBuildingsComplete = BuildingsComplete * 100.0f;
                 buildingsEnemyLabel.setText( std::to_string( (int) (BuildingsComplete*MaxBuildingsDestroyed)));

@@ -326,7 +326,7 @@ bool MapChoice::doInput(SDL_Event &event) {
             if((x > 0) && (x < centerAreaRect.w) && (y > 0) && (y < centerAreaRect.h)) {
                 SDL_Surface* clickmap = pGFXManager->getUIGraphicSurface(UI_MapChoiceClickMap);
 
-                Uint8 regionNum;
+                Uint8 regionNum = 0;
                 {
                     sdl2::surface_lock lock{ clickmap };
 

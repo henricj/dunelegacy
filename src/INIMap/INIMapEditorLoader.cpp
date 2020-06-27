@@ -127,7 +127,7 @@ void INIMapEditorLoader::loadMap() {
 
             for(auto & BloomPosition : BloomPositions) {
                 // set bloom
-                int BloomPos;
+                int BloomPos = 0;
                 if(parseString(BloomPosition, BloomPos)) {
                     int xpos = getXPos(BloomPos);
                     int ypos = getYPos(BloomPos);
@@ -145,7 +145,7 @@ void INIMapEditorLoader::loadMap() {
 
             for(auto & SpecialPosition : SpecialPositions) {
                 // set special
-                int SpecialPos;
+                int SpecialPos = 0;
                 if(parseString(SpecialPosition, SpecialPos)) {
                     int xpos = getXPos(SpecialPos);
                     int ypos = getYPos(SpecialPos);
@@ -163,7 +163,7 @@ void INIMapEditorLoader::loadMap() {
 
             for(auto & FieldPosition : FieldPositions) {
                 // set bloom
-                int FieldPos;
+                int FieldPos = 0;
                 if(parseString(FieldPosition, FieldPos)) {
                     int xpos = getXPos(FieldPos);
                     int ypos = getYPos(FieldPos);
@@ -382,13 +382,13 @@ void INIMapEditorLoader::loadUnits()
                 continue;
             }
 
-            int pos;
+            int pos = 0;
             if(!parseString(PosStr, pos) || (pos < 0)) {
                 logWarning(key.getLineNumber(), "Invalid position string for '" + UnitStr + "': '" + PosStr + "'!");
                 continue;
             }
 
-            int int_angle;
+            int int_angle = 0;
             if(!parseString(rotation, int_angle) || (int_angle < 0) || (int_angle > 255)) {
                 logWarning(key.getLineNumber(), "Invalid rotation string: '" + rotation + "'!");
                 int_angle = 64;
@@ -404,7 +404,7 @@ void INIMapEditorLoader::loadUnits()
                 continue;
             }
 
-            int iHealth;
+            int iHealth = 0;
             if(!parseString(health, iHealth) || (iHealth < 0) || (iHealth > 256)) {
                 logWarning(key.getLineNumber(), "Invalid health string: '" + health + "'!");
                 iHealth = 256;
@@ -455,7 +455,7 @@ void INIMapEditorLoader::loadStructures()
         if(tmpkey.compare(0,3,"GEN") == 0) {
             // Gen Object/Structure
             std::string PosStr = tmpkey.substr(3,tmpkey.size()-3);
-            int pos;
+            int pos = 0;
             if(!parseString(PosStr, pos) || (pos < 0)) {
                 logWarning(key.getLineNumber(), "Invalid position string: '" + PosStr + "'!");
                 continue;
@@ -491,7 +491,7 @@ void INIMapEditorLoader::loadStructures()
             std::string HouseStr, BuildingStr, health, PosStr;
             splitString(tmp, HouseStr, BuildingStr, health, PosStr);
 
-            int pos;
+            int pos = 0;
             if(!parseString(PosStr, pos) || (pos < 0)) {
                 logWarning(key.getLineNumber(), "Invalid position string for '" + BuildingStr + "': '" + PosStr + "'!");
                 continue;
@@ -506,7 +506,7 @@ void INIMapEditorLoader::loadStructures()
                 continue;
             }
 
-            int iHealth;
+            int iHealth = 0;
             if(!parseString(health, iHealth) || (iHealth < 0) || (iHealth > 256)) {
                 logWarning(key.getLineNumber(), "Invalid health string: '" + health + "'!");
                 iHealth = 256;
@@ -571,7 +571,7 @@ void INIMapEditorLoader::loadReinforcements()
             dropLocation = DropLocation::Drop_Homebase;
         }
 
-        Uint32 droptime;
+        Uint32 droptime = 0;
         if(!parseString(strTime, droptime)) {
             logWarning(key.getLineNumber(), "Invalid drop time string: '" + strTime + "'!");
             continue;
@@ -625,13 +625,13 @@ void INIMapEditorLoader::loadAITeams()
             aiTeamType = AITeamType::AITeamType_Foot;
         }
 
-        int minUnits;
+        int minUnits = 0;
         if(!parseString(strMinUnits, minUnits)) {
             logWarning(key.getLineNumber(), "Invalid min units string: '" + strMinUnits + "'!");
             continue;
         }
 
-        int maxUnits;
+        int maxUnits = 0;
         if(!parseString(strMaxUnits, maxUnits)) {
             logWarning(key.getLineNumber(), "Invalid max units string: '" + strMaxUnits + "'!");
             continue;

@@ -79,7 +79,7 @@ sdl2::surface_ptr DuneStyle::createLabelSurface(Uint32 width, Uint32 height, con
     int fontheight = getTextHeight(fontSize);
     int spacing = 2;
 
-    int textpos_y;
+    int textpos_y = 0;
 
     if(alignment & Alignment_VCenter) {
         int textheight = fontheight * textLines.size() + spacing * (textLines.size() - 1);
@@ -319,7 +319,7 @@ sdl2::surface_ptr DuneStyle::createButtonSurface(Uint32 width, Uint32 height, co
     }
 
     // create text on this button
-    int fontsize;
+    int fontsize = 0;
     if( (width < getTextWidth(text,14) + 12) ||
         (height < getTextHeight(14) + 2)) {
         fontsize = 12;

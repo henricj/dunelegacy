@@ -98,7 +98,7 @@ void CSurroundopl::write(int reg, int val)
         double dbOriginalFreq = 49716.0 * (double)iFNum * pow(2, iBlock - 20);
 
         uint8_t iNewBlock = iBlock;
-        uint16_t iNewFNum;
+        uint16_t iNewFNum = 0;
 
         // Adjust the frequency and calculate the new FNum
         //double dbNewFNum = (dbOriginalFreq+(dbOriginalFreq/FREQ_OFFSET)) / (50000.0 * pow(2, iNewBlock - 20));

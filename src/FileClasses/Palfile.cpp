@@ -39,7 +39,7 @@ Palette LoadPalette_RW(SDL_RWops* rwop)
 
     Palette palette(filesize / 3);
 
-    unsigned char buf;
+    unsigned char buf = 0;
 
     for (int i=0; i < palette.getNumColors(); i++)
     {

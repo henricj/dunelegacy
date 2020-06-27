@@ -120,7 +120,7 @@ void OFileStream::writeBool(bool x)
 
 void OFileStream::writeFloat(float x)
 {
-    Uint32 tmp;
+    Uint32 tmp = 0;
     memcpy(&tmp,&x,sizeof(Uint32)); // workaround for a strange optimization in gcc 4.1
     writeUint32(tmp);
 }

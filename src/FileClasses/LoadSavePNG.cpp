@@ -71,7 +71,7 @@ sdl2::surface_ptr LoadPNG_RW(SDL_RWops* RWop) {
 
             lodePNGState.decoder.color_convert = 0;     // do not perform any conversion
 
-            unsigned char *lode_out;
+            unsigned char *lode_out = nullptr;
             error = lodepng_decode(&lode_out, &width, &height, &lodePNGState, pFiledata.get(), filesize);
             if(error != 0) {
                 THROW(std::runtime_error, "LoadPNG_RW(): Decoding this palletized *.png-File failed: " + std::string(lodepng_error_text(error)));
@@ -106,7 +106,7 @@ sdl2::surface_ptr LoadPNG_RW(SDL_RWops* RWop) {
 
         } else {
             // decode to 32-bit RGBA raw image
-            unsigned char *lode_out;
+            unsigned char *lode_out = nullptr;
             error = lodepng_decode32(&lode_out, &width, &height, pFiledata.get(), filesize);
             if(error != 0) {
                 THROW(std::runtime_error, "LoadPNG_RW(): Decoding this *.png-File failed: " + std::string(lodepng_error_text(error)));
@@ -177,8 +177,8 @@ int SavePNG_RW(SDL_Surface* surface, SDL_RWops* RWop) {
         }
     }
 
-    unsigned char* ppngFile;
-    size_t pngFileSize;
+    unsigned char* ppngFile = nullptr;
+    size_t pngFileSize = 0;
 
     const auto error = lodepng_encode32(&ppngFile, &pngFileSize, image.data(), width, height);
     if(error != 0) {

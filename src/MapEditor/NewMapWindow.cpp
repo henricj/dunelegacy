@@ -342,8 +342,8 @@ sdl2::surface_ptr NewMapWindow::createMinimapPicture(MapData& mapdata, int borde
     SDL_FillRect(pMinimap.get(), &dest, COLOR_BLACK);
 
     int scale = 1;
-    int offsetX;
-    int offsetY;
+    int offsetX = 0;
+    int offsetY = 0;
 
     RadarViewBase::calculateScaleAndOffsets(mapdata.getSizeX(), mapdata.getSizeY(), scale, offsetX, offsetY);
 
