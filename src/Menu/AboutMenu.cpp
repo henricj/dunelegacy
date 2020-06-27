@@ -21,7 +21,7 @@
 
 #include <FileClasses/GFXManager.h>
 
-AboutMenu::AboutMenu() : MenuBase()
+AboutMenu::AboutMenu()  
 {
     // set up window
     SDL_Texture *pBackground = pGFXManager->getUIGraphic(UI_MenuBackground);

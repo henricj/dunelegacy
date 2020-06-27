@@ -30,7 +30,7 @@
 
 
 MapEditorRadarView::MapEditorRadarView(MapEditor* pMapEditor)
- : RadarViewBase(), pMapEditor(pMapEditor)
+ :  pMapEditor(pMapEditor)
 {
     radarSurface = sdl2::surface_ptr{ SDL_CreateRGBSurface(0, RADARWIDTH, RADARHEIGHT, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK) };
     SDL_FillRect(radarSurface.get(), nullptr, COLOR_BLACK);

@@ -42,7 +42,7 @@
 #define PROGRESSBARTIME 4000.0f
 #define WAITTIME 1000
 
-CampaignStatsMenu::CampaignStatsMenu(int level) : MenuBase()
+CampaignStatsMenu::CampaignStatsMenu(int level)  
 {
     calculateScore(level);
 

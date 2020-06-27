@@ -26,7 +26,7 @@
 class ClickMap : public Widget {
 public:
     /// default constructor
-    ClickMap() : Widget() {
+    ClickMap()  {
         enableResizing(true,true);
     }
 

@@ -48,7 +48,7 @@
 
 
 CustomGamePlayers::CustomGamePlayers(const GameInitSettings& newGameInitSettings, bool server, bool LANServer)
- : MenuBase(), gameInitSettings(newGameInitSettings), bServer(server), bLANServer(LANServer), startGameTime(0), brainEqHumanSlot(-1) {
+ :  gameInitSettings(newGameInitSettings), bServer(server), bLANServer(LANServer), startGameTime(0), brainEqHumanSlot(-1) {
 
     // set up window
     SDL_Texture *pBackground = pGFXManager->getUIGraphic(UI_MenuBackground);

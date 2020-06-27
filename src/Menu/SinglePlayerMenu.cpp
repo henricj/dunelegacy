@@ -37,7 +37,7 @@
 #include <GameInitSettings.h>
 #include <sand.h>
 
-SinglePlayerMenu::SinglePlayerMenu() : MenuBase() {
+SinglePlayerMenu::SinglePlayerMenu()  {
     // set up window
     SDL_Texture *pBackground = pGFXManager->getUIGraphic(UI_MenuBackground);
     setBackground(pBackground);

@@ -29,7 +29,7 @@ class TextBox : public Widget {
 public:
 
     /// default constructor
-    TextBox() : Widget() {
+    TextBox()  {
         fontSize = 14;
         textcolor = COLOR_DEFAULT;
         textshadowcolor = COLOR_DEFAULT;

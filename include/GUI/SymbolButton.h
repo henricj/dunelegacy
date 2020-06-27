@@ -25,7 +25,7 @@
 class SymbolButton : public Button {
 public:
     /// Default contructor
-    SymbolButton() : Button() {
+    SymbolButton()  {
         enableResizing(true,true);
         pSymbolSurface = nullptr;
         pActiveSymbolSurface = nullptr;

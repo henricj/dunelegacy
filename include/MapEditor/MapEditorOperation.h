@@ -58,7 +58,7 @@ public:
 class MapEditorStartOperation : public MapEditorOperation {
 public:
 
-    MapEditorStartOperation() : MapEditorOperation() {
+    MapEditorStartOperation()  {
     }
 
     ~MapEditorStartOperation() override = default;
@@ -70,7 +70,7 @@ class MapEditorTerrainEditOperation : public MapEditorOperation {
 public:
 
     MapEditorTerrainEditOperation(int x, int y, TERRAINTYPE terrainType)
-     : MapEditorOperation(), x(x), y(y), terrainType(terrainType) {
+     :  x(x), y(y), terrainType(terrainType) {
     }
 
     ~MapEditorTerrainEditOperation() override = default;
@@ -86,7 +86,7 @@ class MapEditorTerrainAddSpiceBloomOperation : public MapEditorOperation {
 public:
 
     MapEditorTerrainAddSpiceBloomOperation(int x, int y)
-     : MapEditorOperation(), x(x), y(y) {
+     :  x(x), y(y) {
     }
 
     ~MapEditorTerrainAddSpiceBloomOperation() override = default;
@@ -101,7 +101,7 @@ class MapEditorTerrainRemoveSpiceBloomOperation : public MapEditorOperation {
 public:
 
     MapEditorTerrainRemoveSpiceBloomOperation(int x, int y)
-     : MapEditorOperation(), x(x), y(y) {
+     :  x(x), y(y) {
     }
 
     ~MapEditorTerrainRemoveSpiceBloomOperation() override = default;
@@ -116,7 +116,7 @@ class MapEditorTerrainAddSpecialBloomOperation : public MapEditorOperation {
 public:
 
     MapEditorTerrainAddSpecialBloomOperation(int x, int y)
-     : MapEditorOperation(), x(x), y(y) {
+     :  x(x), y(y) {
     }
 
     ~MapEditorTerrainAddSpecialBloomOperation() override = default;
@@ -131,7 +131,7 @@ class MapEditorTerrainRemoveSpecialBloomOperation : public MapEditorOperation {
 public:
 
     MapEditorTerrainRemoveSpecialBloomOperation(int x, int y)
-     : MapEditorOperation(), x(x), y(y) {
+     :  x(x), y(y) {
     }
 
     ~MapEditorTerrainRemoveSpecialBloomOperation() override = default;
@@ -146,7 +146,7 @@ class MapEditorTerrainAddSpiceFieldOperation : public MapEditorOperation {
 public:
 
     MapEditorTerrainAddSpiceFieldOperation(int x, int y)
-     : MapEditorOperation(), x(x), y(y) {
+     :  x(x), y(y) {
     }
 
     ~MapEditorTerrainAddSpiceFieldOperation() override = default;
@@ -161,7 +161,7 @@ class MapEditorTerrainRemoveSpiceFieldOperation : public MapEditorOperation {
 public:
 
     MapEditorTerrainRemoveSpiceFieldOperation(int x, int y)
-     : MapEditorOperation(), x(x), y(y) {
+     :  x(x), y(y) {
     }
 
     ~MapEditorTerrainRemoveSpiceFieldOperation() override = default;
@@ -178,7 +178,7 @@ class MapEditorSetTacticalPositionOperation : public MapEditorOperation {
 public:
 
     MapEditorSetTacticalPositionOperation(int x, int y)
-     : MapEditorOperation(), x(x), y(y) {
+     :  x(x), y(y) {
     }
 
     ~MapEditorSetTacticalPositionOperation() override = default;
@@ -195,11 +195,11 @@ class MapEditorStructurePlaceOperation : public MapEditorOperation {
 public:
 
     MapEditorStructurePlaceOperation(int preferredID, Coord position, HOUSETYPE house, int itemID, int health)
-     : MapEditorOperation(), preferredID(preferredID), position(position), house(house), itemID(itemID), health(health) {
+     :  preferredID(preferredID), position(position), house(house), itemID(itemID), health(health) {
     }
 
     MapEditorStructurePlaceOperation(Coord position, HOUSETYPE house, int itemID, int health)
-     : MapEditorOperation(), preferredID(INVALID), position(position), house(house), itemID(itemID), health(health) {
+     :  preferredID(INVALID), position(position), house(house), itemID(itemID), health(health) {
     }
 
     ~MapEditorStructurePlaceOperation() override = default;
@@ -217,7 +217,7 @@ class MapEditorRemoveStructureOperation : public MapEditorOperation {
 public:
 
     explicit MapEditorRemoveStructureOperation(int id)
-     : MapEditorOperation(), id(id) {
+     :  id(id) {
     }
 
     ~MapEditorRemoveStructureOperation() override = default;
@@ -231,11 +231,11 @@ class MapEditorUnitPlaceOperation : public MapEditorOperation {
 public:
 
     MapEditorUnitPlaceOperation(int preferredID, Coord position, HOUSETYPE house, int itemID, int health, ANGLETYPE angle, ATTACKMODE attackmode)
-     : MapEditorOperation(), preferredID(preferredID), position(position), house(house), itemID(itemID), health(health), angle(angle), attackmode(attackmode) {
+     :  preferredID(preferredID), position(position), house(house), itemID(itemID), health(health), angle(angle), attackmode(attackmode) {
     }
 
     MapEditorUnitPlaceOperation(Coord position, HOUSETYPE house, int itemID, int health, ANGLETYPE angle, ATTACKMODE attackmode)
-     : MapEditorOperation(), preferredID(INVALID), position(position), house(house), itemID(itemID), health(health), angle(angle), attackmode(attackmode) {
+     :  preferredID(INVALID), position(position), house(house), itemID(itemID), health(health), angle(angle), attackmode(attackmode) {
     }
 
     ~MapEditorUnitPlaceOperation() override = default;
@@ -255,7 +255,7 @@ class MapEditorRemoveUnitOperation : public MapEditorOperation {
 public:
 
     explicit MapEditorRemoveUnitOperation(int id)
-     : MapEditorOperation(), id(id) {
+     :  id(id) {
     }
 
     ~MapEditorRemoveUnitOperation() override = default;
@@ -270,7 +270,7 @@ class MapEditorEditStructureOperation : public MapEditorOperation {
 public:
 
     MapEditorEditStructureOperation(int id, int health)
-     : MapEditorOperation(), id(id), health(health) {
+     :  id(id), health(health) {
     }
 
     ~MapEditorEditStructureOperation() override = default;
@@ -286,7 +286,7 @@ class MapEditorEditUnitOperation : public MapEditorOperation {
 public:
 
     MapEditorEditUnitOperation(int id, int health, ANGLETYPE angle, ATTACKMODE attackmode)
-     : MapEditorOperation(), id(id), health(health), angle(angle), attackmode(attackmode) {
+     :  id(id), health(health), angle(angle), attackmode(attackmode) {
     }
 
     ~MapEditorEditUnitOperation() override = default;
