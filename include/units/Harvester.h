@@ -59,8 +59,8 @@ public:
 
     FixPoint extractSpice(FixPoint extractionSpeed);
 
-    inline FixPoint getAmountOfSpice() const { return spice; }
-    inline bool isReturning() const { return returningToRefinery; }
+    FixPoint getAmountOfSpice() const { return spice; }
+    bool isReturning() const { return returningToRefinery; }
     bool isHarvesting() const;
 
 private:

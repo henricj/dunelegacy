@@ -42,10 +42,10 @@ public:
     [[nodiscard]] sdl2::surface_ptr createBackground() const;
     [[nodiscard]] sdl2::surface_ptr createMainBackground() const;
     [[nodiscard]] sdl2::surface_ptr createGameStatsBackground(HOUSETYPE House) const;
-    [[nodiscard]] static sdl2::surface_ptr createFrame(unsigned int DecorationType,int width, int height,bool UseBackground) ;
+    [[nodiscard]] sdl2::surface_ptr createFrame(unsigned int DecorationType,int width, int height,bool UseBackground) ;
     [[nodiscard]] sdl2::surface_ptr createMenu(int x,int y) const;
     sdl2::surface_ptr createMenu(SDL_Surface* CaptionPic,int y) const;
-    [[nodiscard]] static sdl2::surface_ptr createOptionsMenu() ;
+    [[nodiscard]] sdl2::surface_ptr createOptionsMenu() ;
     [[nodiscard]] sdl2::surface_ptr createMessageBoxBorder() const;
     sdl2::surface_ptr createHouseSelect(SDL_Surface* HouseChoice) const;
     static sdl2::surface_ptr createGreyHouseChoice(SDL_Surface* HouseChoice) ;

@@ -65,7 +65,7 @@ LoadSaveWindow::LoadSaveWindow(bool bSave, const std::string& caption, const std
             button.setText(title);
             button.setTextColor(color);
             button.setToggleButton(true);
-            button.setOnClick([=, i = static_cast<int>(directoryButtons.size() - 1)]() { onDirectoryChange(i); });
+            button.setOnClick([=, i = static_cast<int>(directoryButtons.size() - 1)] { onDirectoryChange(i); });
 
             directoryHBox.addWidget(&button);
         }
@@ -75,8 +75,8 @@ LoadSaveWindow::LoadSaveWindow(bool bSave, const std::string& caption, const std
 
     mainVBox.addWidget(&fileListHBox, (bSave ? 120 : 150) - (directories.size() > 1 ? 20 : 0));
     fileList.setColor(color);
-    fileList.setOnSelectionChange([=](bool bInteractive){ onSelectionChange(bInteractive); });
-    fileList.setOnDoubleClick([=](){ onOK(); });
+    fileList.setOnSelectionChange([this](bool bInteractive){ onSelectionChange(bInteractive); });
+    fileList.setOnDoubleClick([this]{ onOK(); });
     fileListHBox.addWidget(&fileList);
 
     mainVBox.addWidget(VSpacer::create(5));
@@ -93,7 +93,7 @@ LoadSaveWindow::LoadSaveWindow(bool bSave, const std::string& caption, const std
 
     okButton.setText(_(bSave ? "Save" : "Load"));
     okButton.setTextColor(color);
-    okButton.setOnClick([=]() { onOK(); });
+    okButton.setOnClick([this] { onOK(); });
 
     buttonHBox.addWidget(&okButton);
 
@@ -101,7 +101,7 @@ LoadSaveWindow::LoadSaveWindow(bool bSave, const std::string& caption, const std
 
     cancelButton.setText(_("Cancel"));
     cancelButton.setTextColor(color);
-    cancelButton.setOnClick([=]() { onCancel(); });
+    cancelButton.setOnClick([this] { onCancel(); });
 
     buttonHBox.addWidget(&cancelButton);
 
@@ -199,7 +199,7 @@ void LoadSaveWindow::onChildWindowClose(Window* pChildWindow) {
     int index = fileList.getSelectedIndex();
     if(index < 0) return;
 
-    const auto file2delete = (directories[currentDirectoryIndex] / fileList.getEntry(index)).replace_extension(extension);
+    const auto file2delete = directories[currentDirectoryIndex] / (fileList.getEntry(index) + "." + extension);
 
     if(std::filesystem::remove(file2delete) != 0) return;
 
@@ -215,11 +215,11 @@ void LoadSaveWindow::onChildWindowClose(Window* pChildWindow) {
 }
 
 
-void LoadSaveWindow::onOK() const {
+void LoadSaveWindow::onOK() {
     if(!bSaveWindow) {
         const auto index = fileList.getSelectedIndex();
         if(index >= 0) {
-            filename = (directories[currentDirectoryIndex] / fileList.getEntry(index)).replace_extension(extension);
+            filename = directories[currentDirectoryIndex] / (fileList.getEntry(index) + "." + extension);
 
             auto *const pParentWindow = dynamic_cast<Window*>(getParent());
             if(pParentWindow != nullptr) {
@@ -230,7 +230,7 @@ void LoadSaveWindow::onOK() const {
         auto savename = saveName.getText();
 
         if(!savename.empty() && savename.find_first_of("\\/") == std::string::npos) {
-            filename = (directories[currentDirectoryIndex] / saveName.getText()).replace_extension(extension);
+            filename = directories[currentDirectoryIndex] / (saveName.getText() + "." + extension);
 
             auto *const pParentWindow = dynamic_cast<Window*>(getParent());
             if(pParentWindow != nullptr) {
@@ -258,7 +258,7 @@ void LoadSaveWindow::onDirectoryChange(int i) {
     updateEntries();
 }
 
-void LoadSaveWindow::onSelectionChange(bool bInteractive) const {
+void LoadSaveWindow::onSelectionChange(bool bInteractive) {
     if(!bSaveWindow) return;
 
     int index = fileList.getSelectedIndex();

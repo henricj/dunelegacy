@@ -54,7 +54,7 @@ protected:
         moveButton.setSymbol(pGFXManager->getUIGraphicSurface(UI_CursorMove_Zoomlevel0));
         moveButton.setTooltipText(_("Move to a position (Hotkey: M)"));
         moveButton.setToggleButton(true);
-        moveButton.setOnClick(std::bind(&UnitInterface::onMove, this));
+        moveButton.setOnClick([]{ onMove(); });
         actionHBox.addWidget(&moveButton);
 
         actionHBox.addWidget(HSpacer::create(2));
@@ -62,7 +62,7 @@ protected:
         attackButton.setSymbol(pGFXManager->getUIGraphicSurface(UI_CursorAttack_Zoomlevel0));
         attackButton.setTooltipText(_("Attack a unit, structure or position (Hotkey: A)"));
         attackButton.setToggleButton(true);
-        attackButton.setOnClick(std::bind(&UnitInterface::onAttack, this));
+        attackButton.setOnClick([] { onAttack(); });
         actionHBox.addWidget(&attackButton);
 
         actionHBox.addWidget(HSpacer::create(2));
@@ -70,7 +70,7 @@ protected:
         carryallDropButton.setSymbol(pGFXManager->getUIGraphicSurface(UI_CursorCarryallDrop_Zoomlevel0));
         carryallDropButton.setTooltipText(_("Request Carryall drop to a position (Hotkey: D)"));
         carryallDropButton.setToggleButton(true);
-        carryallDropButton.setOnClick(std::bind(&UnitInterface::onCarryallDrop, this));
+        carryallDropButton.setOnClick([] { onCarryallDrop(); });
         actionHBox.addWidget(&carryallDropButton);
 
         actionHBox.addWidget(HSpacer::create(2));
@@ -79,7 +79,7 @@ protected:
         captureButton.setTooltipText(_("Capture a building (Hotkey: C)"));
         captureButton.setVisible((itemID == Unit_Soldier) || (itemID == Unit_Trooper));
         captureButton.setToggleButton(true);
-        captureButton.setOnClick(std::bind(&UnitInterface::onCapture, this));
+        captureButton.setOnClick([] { onCapture(); });
         actionHBox.addWidget(&captureButton);
 
         buttonVBox.addWidget(&actionHBox, 26);

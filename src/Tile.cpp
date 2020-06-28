@@ -755,9 +755,7 @@ ObjectBase* Tile::getObject() const {
         temp = getAirUnit();
     } else if (hasANonInfantryGroundObject()) {
         temp = getNonInfantryGroundObject();
-    } else { if 
-
-}(hasInfantry())
+    } else if (hasInfantry())
         temp = getInfantry();
     else if (hasAnUndergroundUnit())
         temp = getUndergroundUnit();

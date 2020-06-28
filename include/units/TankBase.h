@@ -37,7 +37,7 @@ public:
 
     void navigate() override;
 
-    inline ANGLETYPE getTurretAngle() const { return static_cast<ANGLETYPE>(lround(turretAngle)); }
+    ANGLETYPE getTurretAngle() const { return static_cast<ANGLETYPE>(lround(turretAngle)); }
 
     void setTurretAngle(ANGLETYPE newAngle);
 

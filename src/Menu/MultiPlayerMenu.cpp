@@ -39,7 +39,7 @@ MultiPlayerMenu::MultiPlayerMenu()  {
     connectHBox.addWidget(&connectPortTextBox, 90);
     connectHBox.addWidget(HSpacer::create(20));
     connectButton.setText(_("Connect"));
-    connectButton.setOnClick(std::bind(&MultiPlayerMenu::onConnect, this));
+    connectButton.setOnClick([this] { onConnect(); });
     connectHBox.addWidget(&connectButton, 100);
 
     mainVBox.addWidget(Spacer::create(), 0.05);
@@ -53,13 +53,13 @@ MultiPlayerMenu::MultiPlayerMenu()  {
     mainHBox.addWidget(&leftVBox, 180);
 
     createLANGameButton.setText(_("Create LAN Game"));
-    createLANGameButton.setOnClick(std::bind(&MultiPlayerMenu::onCreateLANGame, this));
+    createLANGameButton.setOnClick([this] { onCreateLANGame(); });
     leftVBox.addWidget(&createLANGameButton, 0.1);
 
     leftVBox.addWidget(VSpacer::create(8));
 
     createInternetGameButton.setText(_("Create Internet Game"));
-    createInternetGameButton.setOnClick(std::bind(&MultiPlayerMenu::onCreateInternetGame, this));
+    createInternetGameButton.setOnClick([this] { onCreateInternetGame(); });
     leftVBox.addWidget(&createInternetGameButton, 0.1);
 
     leftVBox.addWidget(Spacer::create(), 0.8);
@@ -71,19 +71,19 @@ MultiPlayerMenu::MultiPlayerMenu()  {
 
     LANGamesButton.setText(_("LAN Games"));
     LANGamesButton.setToggleButton(true);
-    LANGamesButton.setOnClick(std::bind(&MultiPlayerMenu::onGameTypeChange, this, 0));
+    LANGamesButton.setOnClick([this] { onGameTypeChange(0); });
     gameTypeButtonsHBox.addWidget(&LANGamesButton, 0.35);
 
     internetGamesButton.setText(_("Internet Games"));
     internetGamesButton.setToggleButton(true);
-    internetGamesButton.setOnClick(std::bind(&MultiPlayerMenu::onGameTypeChange, this, 1));
+    internetGamesButton.setOnClick([this] { onGameTypeChange(1); });
     gameTypeButtonsHBox.addWidget(&internetGamesButton, 0.35);
 
     gameTypeButtonsHBox.addWidget(Spacer::create(), 0.3);
 
     gameList.setAutohideScrollbar(false);
-    gameList.setOnSelectionChange(std::bind(&MultiPlayerMenu::onGameListSelectionChange, this, std::placeholders::_1));
-    gameList.setOnDoubleClick(std::bind(&MultiPlayerMenu::onJoin, this));
+    gameList.setOnSelectionChange([this](auto interactive) { onGameListSelectionChange(interactive); });
+    gameList.setOnDoubleClick([this] { onJoin(); });
     rightVBox.addWidget(&gameList, 0.95);
 
     mainHBox.addWidget(&rightVBox, 0.9);
@@ -96,13 +96,13 @@ MultiPlayerMenu::MultiPlayerMenu()  {
 
     buttonHBox.addWidget(HSpacer::create(70));
     backButton.setText(_("Back"));
-    backButton.setOnClick(std::bind(&MultiPlayerMenu::onQuit, this));
+    backButton.setOnClick([]{ onQuit(); });
     buttonHBox.addWidget(&backButton, 0.1);
 
     buttonHBox.addWidget(Spacer::create(), 0.8);
 
     joinButton.setText(_("Join"));
-    joinButton.setOnClick(std::bind(&MultiPlayerMenu::onJoin, this));
+    joinButton.setOnClick([this] { onJoin(); });
     buttonHBox.addWidget(&joinButton, 0.1);
     buttonHBox.addWidget(HSpacer::create(90));
 
@@ -110,9 +110,9 @@ MultiPlayerMenu::MultiPlayerMenu()  {
     SDL_Log("Starting network...");
     pNetworkManager = std::make_unique<NetworkManager>(settings.network.serverPort, settings.network.metaServer);
     LANGameFinderAndAnnouncer* pLANGFAA = pNetworkManager->getLANGameFinderAndAnnouncer();
-    pLANGFAA->setOnNewServer(std::bind(&MultiPlayerMenu::onNewLANServer, this, std::placeholders::_1));
-    pLANGFAA->setOnUpdateServer(std::bind(&MultiPlayerMenu::onUpdateLANServer, this, std::placeholders::_1));
-    pLANGFAA->setOnRemoveServer(std::bind(&MultiPlayerMenu::onRemoveLANServer, this, std::placeholders::_1));
+    pLANGFAA->setOnNewServer([this](auto interactive) { onNewLANServer(interactive); });
+    pLANGFAA->setOnUpdateServer([this](auto interactive) { onUpdateLANServer(interactive); });
+    pLANGFAA->setOnRemoveServer([this](auto interactive) { onRemoveLANServer(interactive); });
     pLANGFAA->refreshServerList();
 
     onGameTypeChange(0);
@@ -149,8 +149,10 @@ void MultiPlayerMenu::onConnect() {
     std::string hostname = connectHostTextBox.getText();
     int port = atol(connectPortTextBox.getText().c_str());
 
-    pNetworkManager->setOnReceiveGameInfo(std::bind(&MultiPlayerMenu::onReceiveGameInfo, this, std::placeholders::_1, std::placeholders::_2));
-    pNetworkManager->setOnPeerDisconnected(std::bind(&MultiPlayerMenu::onPeerDisconnected, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
+    pNetworkManager->setOnReceiveGameInfo(
+        [this](const auto& settings, const auto& events) { onReceiveGameInfo(settings, events); });
+    pNetworkManager->setOnPeerDisconnected(
+        [this](auto playername, auto host, auto cause) { onPeerDisconnected(playername, host, cause); });
     pNetworkManager->connect(hostname, port, settings.general.playerName);
 
     openWindow(MsgBox::create(_("Connecting...")));
@@ -172,8 +174,10 @@ void MultiPlayerMenu::onJoin() {
     if(selectedEntry >= 0) {
         auto* pGameServerInfo = static_cast<GameServerInfo*>(gameList.getEntryPtrData(selectedEntry));
 
-        pNetworkManager->setOnReceiveGameInfo(std::bind(&MultiPlayerMenu::onReceiveGameInfo, this, std::placeholders::_1, std::placeholders::_2));
-        pNetworkManager->setOnPeerDisconnected(std::bind(&MultiPlayerMenu::onPeerDisconnected, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
+        pNetworkManager->setOnReceiveGameInfo(
+            [this](const auto& settings, const auto& events) { onReceiveGameInfo(settings, events); });
+        pNetworkManager->setOnPeerDisconnected(
+            [this](auto playername, auto host, auto cause) { onPeerDisconnected(playername, host, cause); });
         pNetworkManager->connect(pGameServerInfo->serverAddress, settings.general.playerName);
 
         openWindow(MsgBox::create(_("Connecting...")));
@@ -212,8 +216,9 @@ void MultiPlayerMenu::onGameTypeChange(int buttonID) {
         InternetGameList.clear();
 
         // start listening on internet games
-        pMetaServerClient->setOnGameServerInfoList(std::bind(&MultiPlayerMenu::onGameServerInfoList, this, std::placeholders::_1));
-        pMetaServerClient->setOnMetaServerError(std::bind(&MultiPlayerMenu::onMetaServerError, this, std::placeholders::_1, std::placeholders::_2));
+        pMetaServerClient->setOnGameServerInfoList([this](const auto& list) { onGameServerInfoList(list); });
+        pMetaServerClient->setOnMetaServerError(
+            [this](auto cause, const auto& message) { onMetaServerError(cause, message); });
     }
 
     LANGamesButton.setToggleState(buttonID == 0);
@@ -264,7 +269,7 @@ void MultiPlayerMenu::onRemoveLANServer(GameServerInfo gameServerInfo) {
     LANGameList.remove(gameServerInfo);
 }
 
-static void MultiPlayerMenu::onGameServerInfoList(const std::list<GameServerInfo>& gameServerInfoList) {
+void MultiPlayerMenu::onGameServerInfoList(const std::list<GameServerInfo>& gameServerInfoList) {
     // remove all game servers from the list that are not included in the sent list
     auto oldListIter = InternetGameList.begin();
     int index = 0;

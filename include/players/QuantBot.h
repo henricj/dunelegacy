@@ -72,16 +72,16 @@ private:
     void scrambleUnitsAndDefend(const ObjectBase* pIntruder, int numUnits = std::numeric_limits<int>::max());
 
 
-    static Coord findMcvPlaceLocation(const MCV* pMCV);
-    static Coord findPlaceLocation(Uint32 itemID);
-    static Coord findSquadCenter(HOUSETYPE houseID);
-    static Coord findBaseCentre(HOUSETYPE houseID);
-    static Coord findSquadRallyLocation();
-    static Coord findSquadRetreatLocation();
+    Coord findMcvPlaceLocation(const MCV* pMCV);
+    Coord findPlaceLocation(Uint32 itemID);
+    Coord findSquadCenter(HOUSETYPE houseID);
+    Coord findBaseCentre(HOUSETYPE houseID);
+    Coord findSquadRallyLocation();
+    Coord findSquadRetreatLocation();
 
     std::list<Coord> placeLocations;    ///< Where to place structures
 
-    static void checkAllUnits();
+    void checkAllUnits();
     void retreatAllUnits();
     void build(int militaryValue);
     void attack(int militaryValue);

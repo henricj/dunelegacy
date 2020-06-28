@@ -61,26 +61,26 @@ public:
 
 private:
 
-    static void onCancel();
+    void onCancel();
     void onOK();
 
-    static void onUp();
-    static void onDown();
+    void onUp();
+    void onDown();
 
-    void onAdd() const;
-    static void onRemove();
+    void onAdd();
+    void onRemove();
 
-    static void onEntryChange(bool bInteractive);
+    void onEntryChange(bool bInteractive);
 
-    static void onSelectionChange(bool bInteractive);
+    void onSelectionChange(bool bInteractive);
 
-    static void onMinUnitsChange(bool bInteractive);
+    void onMinUnitsChange(bool bInteractive);
 
-    static void onMaxUnitsChange(bool bInteractive);
+    void onMaxUnitsChange(bool bInteractive);
 
     std::string getDescribingString(const AITeamInfo& aiteamInfo);
 
-    static std::string getPlayerName(HOUSETYPE house);
+    std::string getPlayerName(HOUSETYPE house) const;
 
 
     HBox            mainHBox;

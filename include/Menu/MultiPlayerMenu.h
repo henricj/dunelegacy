@@ -39,28 +39,28 @@ public:
     void onChildWindowClose(Window* pChildWindow) override;
 
 private:
-    static void showDisconnectMessageBox(int cause);
+    void showDisconnectMessageBox(int cause);
 
     void onCreateLANGame();
     void onCreateInternetGame();
-    static void onConnect();
-    static void onJoin();
+    void onConnect();
+    void onJoin();
     static void onQuit();
 
-    static void onPeerDisconnected(const std::string& playername, bool bHost, int cause);
+    void onPeerDisconnected(const std::string& playername, bool bHost, int cause);
 
     void onGameTypeChange(int buttonID);
     void onGameListSelectionChange(bool bInteractive);
 
-    static void onNewLANServer(GameServerInfo gameServerInfo);
-    static void onUpdateLANServer(GameServerInfo gameServerInfo);
+    void onNewLANServer(GameServerInfo gameServerInfo);
+    void onUpdateLANServer(GameServerInfo gameServerInfo);
     void onRemoveLANServer(GameServerInfo gameServerInfo);
 
     void onGameServerInfoList(const std::list<GameServerInfo>& gameServerInfoList);
-    static void onMetaServerError(int errorcause, const std::string& errorMessage);
+    void onMetaServerError(int errorcause, const std::string& errorMessage);
 
 
-    static void onReceiveGameInfo(const GameInitSettings& gameInitSettings, const ChangeEventList& changeEventList);
+    void onReceiveGameInfo(const GameInitSettings& gameInitSettings, const ChangeEventList& changeEventList);
 
     std::list<GameServerInfo> LANGameList;
     std::list<GameServerInfo> InternetGameList;

@@ -32,20 +32,20 @@ class MapEditor;
 
 class INIMapEditorLoader : public INIMap {
 public:
-    INIMapEditorLoader(MapEditor* pMapEditor, INIMap::inifile_ptr pINIFile);
+    INIMapEditorLoader(MapEditor* pMapEditor, inifile_ptr pINIFile);
     ~INIMapEditorLoader();
 
 private:
     void load();
     void loadMap();
     void loadHouses();
-    static void loadChoam();
-    static void loadUnits();
-    static void loadStructures();
-    static void loadReinforcements();
-    static void loadAITeams();
+    void loadChoam();
+    void loadUnits();
+    void loadStructures();
+    void loadReinforcements();
+    void loadAITeams();
 
-    static HOUSETYPE getHouseID(const std::string& name);
+    HOUSETYPE getHouseID(const std::string& name);
 
     MapEditor* pMapEditor;
     std::map<std::string, HOUSETYPE> housename2house;

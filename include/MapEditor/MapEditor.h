@@ -151,7 +151,7 @@ public:
 
     [[nodiscard]] bool hasChangeSinceLastSave() const { return bChangedSinceLastSave; };
 
-    [[nodiscard]] static std::string generateMapname() ;
+    [[nodiscard]] std::string generateMapname() ;
 
     std::vector<Player>& getPlayers() {
         return players;
@@ -206,65 +206,72 @@ public:
         return structures;
     }
 
-    Structure* getStructure(int structureID) {
-        for(Structure& structure : structures) {
-            if(structure.id == structureID) {
-                return &structure;
-            }
-        }
+    [[nodiscard]] Structure* getStructure(int structureID) {
+        const auto it =
+            std::find_if(structures.begin(), structures.end(), [=](const auto& s) { return s.id == structureID; });
 
-        return nullptr;
+        return it == structures.end() ? nullptr : &(*it);
     }
 
-    std::vector<int> getMirrorStructures(int unitID);
+    [[nodiscard]] const Structure* getStructure(int structureID) const {
+        const auto it =
+            std::find_if(structures.begin(), structures.end(), [=](const auto& s) { return s.id == structureID; });
 
-    [[nodiscard]] int getSelectedStructureID() const {
-        return selectedStructureID;
+        return it == structures.end() ? nullptr : &(*it);
     }
 
-    Structure* getSelectedStructure() const {
-        return getStructure(selectedStructureID);
-    }
+    std::vector<int> getMirrorStructures(int unitID) const;
+
+    [[nodiscard]] int getSelectedStructureID() const { return selectedStructureID; }
+
+    Structure* getSelectedStructure() { return getStructure(selectedStructureID); }
+    [[nodiscard]] const Structure* getSelectedStructure() const { return getStructure(selectedStructureID); }
 
     std::vector<Unit>& getUnitList() {
         return units;
     }
 
+    const Unit* getUnit(int unitID) const {
+        for(const auto& unit : units) {
+            if(unit.id == unitID) { return &unit; }
+        }
+
+        return nullptr;
+    }
+
     Unit* getUnit(int unitID) {
-        for(Unit& unit : units) {
-            if(unit.id == unitID) {
-                return &unit;
-            }
+        for(auto& unit : units) {
+            if(unit.id == unitID) { return &unit; }
         }
 
         return nullptr;
     }
 
 
-    std::vector<int> getMirrorUnits(int unitID, bool bAddMissingAsInvalid = false);
+    std::vector<int> getMirrorUnits(int unitID, bool bAddMissingAsInvalid = false) const;
 
     [[nodiscard]] int getSelectedUnitID() const {
         return selectedUnitID;
     }
 
-    Unit* getSelectedUnit() const {
-        return getUnit(selectedUnitID);
-    }
+    const Unit* getSelectedUnit() const { return getUnit(selectedUnitID); }
 
-    [[nodiscard]] static bool isTileBlocked(int x, int y, bool bSlabIsBlocking, bool bUnitsAreBlocking) ;
+    Unit* getSelectedUnit() { return getUnit(selectedUnitID); }
+
+    [[nodiscard]] bool isTileBlocked(int x, int y, bool bSlabIsBlocking, bool bUnitsAreBlocking) const;
 
     void setEditorMode(const EditorMode& newEditorMode);
 
-    static void startOperation();
+    void startOperation();
 
     void addUndoOperation(std::unique_ptr<MapEditorOperation> op) {
         undoOperationStack.push(std::move(op));
         bChangedSinceLastSave = true;
     }
 
-    static void undoLastOperation();
+    void undoLastOperation();
 
-    static void redoLastOperation();
+    void redoLastOperation();
 
     inline void clearRedoOperations() {
         while(!redoOperationStack.empty()) {
@@ -284,7 +291,7 @@ private:
     void processInput();
     void drawCursor();
     void drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) const;
-    static TERRAINTYPE getTerrain(int x, int y);
+    TERRAINTYPE getTerrain(int x, int y) const;
     void saveMapshot();
 
 private:

@@ -175,7 +175,8 @@ bool FileManager::exists(const std::filesystem::path& filename) const {
 }
 
 
-std::string FileManager::md5FromFilename(const std::filesystem::path& filename) const {
+std::string FileManager::md5FromFilename(const std::filesystem::path& filename)
+{
     unsigned char md5sum[16];
 
     if(md5_file(filename.u8string().c_str(), md5sum) != 0) {

@@ -62,7 +62,7 @@ public:
 
     bool exists(const std::filesystem::path& filename) const;
 private:
-    std::string md5FromFilename(const std::filesystem::path& filename) const;
+    static std::string md5FromFilename(const std::filesystem::path& filename);
 
     std::vector<std::unique_ptr<Pakfile>> pakFiles;
 };

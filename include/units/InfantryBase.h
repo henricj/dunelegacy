@@ -70,7 +70,7 @@ public:
 
     bool canPassTile(const Tile* pTile) const override;
 
-    inline int getTilePosition() const { return tilePosition; }
+    int getTilePosition() const { return tilePosition; }
 
 protected:
     void setSpeeds() override;

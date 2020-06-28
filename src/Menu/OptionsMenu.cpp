@@ -81,7 +81,7 @@ OptionsMenu::OptionsMenu()
 
     gameOptionsHBox.addWidget(Label::create(_("Default Game Options")), 190);
     gameOptionsButton.setText(_("Change..."));
-    gameOptionsButton.setOnClick([this]() { onGameOptions(); });;
+    gameOptionsButton.setOnClick([this] { onGameOptions(); });;
     gameOptionsHBox.addWidget(&gameOptionsButton, 130);
 
     gameOptionsHBox.addWidget(Spacer::create(), 160);
@@ -122,7 +122,7 @@ OptionsMenu::OptionsMenu()
     generalHBox.addWidget(Spacer::create(), 20);
     introCheckbox.setText(_("Play Intro"));
     introCheckbox.setChecked(settings.general.playIntro);
-    introCheckbox.setOnClick([this]() { onChangeOption(true); });
+    introCheckbox.setOnClick([this] { onChangeOption(true); });
     generalHBox.addWidget(&introCheckbox, 130);
     generalHBox.addWidget(Spacer::create(), 0.5);
 
@@ -173,11 +173,11 @@ OptionsMenu::OptionsMenu()
     videoHBox.addWidget(Spacer::create(), 0.5);
     fullScreenCheckbox.setText(_("Full Screen"));
     fullScreenCheckbox.setChecked(settings.video.fullscreen);
-    fullScreenCheckbox.setOnClick([this]() { onChangeOption(true); });
+    fullScreenCheckbox.setOnClick([this] { onChangeOption(true); });
     videoHBox.addWidget(&fullScreenCheckbox, 240);
     showTutorialHintsCheckbox.setText(_("Show Tutorial Hints"));
     showTutorialHintsCheckbox.setChecked(settings.general.showTutorialHints);
-    showTutorialHintsCheckbox.setOnClick([this]() { onChangeOption(true); });
+    showTutorialHintsCheckbox.setOnClick([this] { onChangeOption(true); });
     videoHBox.addWidget(&showTutorialHintsCheckbox, 240);
     videoHBox.addWidget(Spacer::create(), 0.5);
 
@@ -188,11 +188,11 @@ OptionsMenu::OptionsMenu()
     audioHBox.addWidget(Spacer::create(), 0.5);
     playSFXCheckbox.setText(_("Play SFX"));
     playSFXCheckbox.setChecked(settings.audio.playSFX);
-    playSFXCheckbox.setOnClick([this]() { onChangeOption(true); });
+    playSFXCheckbox.setOnClick([this] { onChangeOption(true); });
     audioHBox.addWidget(&playSFXCheckbox, 240);
     playMusicCheckbox.setText(_("Play Music"));
     playMusicCheckbox.setChecked(settings.audio.playMusic);
-    playMusicCheckbox.setOnClick([this]() { onChangeOption(true); });
+    playMusicCheckbox.setOnClick([this] { onChangeOption(true); });
     audioHBox.addWidget(&playMusicCheckbox, 240);
     audioHBox.addWidget(Spacer::create(), 0.5);
 
@@ -226,14 +226,14 @@ OptionsMenu::OptionsMenu()
     okCancelHBox.addWidget(Spacer::create());
 
     backButton.setText(_("Back"));
-    backButton.setOnClick([this](){ onOptionsCancel(); });
+    backButton.setOnClick([this]{ onOptionsCancel(); });
     okCancelHBox.addWidget(&backButton);
 
     okCancelHBox.addWidget(Spacer::create());
 
     acceptButton.setText(_("Accept"));
     acceptButton.setVisible(false);
-    acceptButton.setOnClick([this](){ onOptionsOK(); });
+    acceptButton.setOnClick([this]{ onOptionsOK(); });
     okCancelHBox.addWidget(&acceptButton);
 
     okCancelHBox.addWidget(Spacer::create());

@@ -62,14 +62,14 @@ public:
 
 private:
 
-    static void onCancel();
+    void onCancel();
     void onOK();
 
-    static void onUp();
-    static void onDown();
+    void onUp();
+    void onDown();
 
-    void onAdd() const;
-    static void onRemove();
+    void onAdd();
+    void onRemove();
 
     void onEntryChange(bool bInteractive);
 
@@ -77,7 +77,7 @@ private:
 
     std::string getDescribingString(const ReinforcementInfo& reinforcementInfo);
 
-    static std::string getPlayerName(HOUSETYPE house);
+    std::string getPlayerName(HOUSETYPE house);
 
     HBox            mainHBox;
     VBox            mainVBox;

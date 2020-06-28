@@ -172,7 +172,7 @@ PlayerSettingsWindow::PlayerSettingsWindow(MapEditor* pMapEditor, HOUSETYPE curr
 
     cancelButton.setText(_("Cancel"));
     cancelButton.setTextColor(color);
-    cancelButton.setOnClick(std::bind(&PlayerSettingsWindow::onCancel, this));
+    cancelButton.setOnClick([this]{ onCancel(); });
 
     buttonHBox.addWidget(&cancelButton);
 
@@ -180,7 +180,7 @@ PlayerSettingsWindow::PlayerSettingsWindow(MapEditor* pMapEditor, HOUSETYPE curr
 
     advancedBasicToggle.setText(_("Advanced..."));
     advancedBasicToggle.setTextColor(color);
-    advancedBasicToggle.setOnClick(std::bind(&PlayerSettingsWindow::onAdvancedBasicToggle, this));
+    advancedBasicToggle.setOnClick([this] { onAdvancedBasicToggle(); });
 
     buttonHBox.addWidget(&advancedBasicToggle);
 
@@ -243,7 +243,7 @@ void PlayerSettingsWindow::onAdvancedBasicToggle() {
 
 void PlayerSettingsWindow::onOK() {
 
-    MapEditor::startOperation();
+    pMapEditor->startOperation();
 
     for(int i = 0; i < playerWidgets.size(); i++) {
         bool bActive = playerWidgets[i].playerCheckbox.isChecked();

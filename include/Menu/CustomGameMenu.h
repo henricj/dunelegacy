@@ -47,9 +47,9 @@ public:
     void onChildWindowClose(Window* pChildWindow) override;
 
 private:
-    void onNext() const;
+    void onNext();
     void onCancel();
-    static void onLoad();
+    void onLoad();
     void onGameOptions();
     void onMapTypeChange(int buttonID);
     void onMapListSelectionChange(bool bInteractive);

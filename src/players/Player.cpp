@@ -108,7 +108,7 @@ const RobustList<const StructureBase*>& Player::getStructureList() {
     return reinterpret_cast<const RobustList<const StructureBase*>&>(structureList);
 }
 
-const RobustList<const UnitBase*>& Player::getUnitList() {
+const RobustList<const UnitBase*>& Player::getUnitList() const {
     return reinterpret_cast<const RobustList<const UnitBase*>&>(unitList);
 }
 
@@ -303,23 +303,20 @@ void Player::doCaptureStructure(const InfantryBase* pInfantry, const StructureBa
 }
 
 bool Player::doDeploy(const MCV* pMCV) const {
-    if(pMCV->getOwner() == getHouse() && pMCV->isActive()) {
-        return const_cast<MCV*>(pMCV)->doDeploy();
-    }         logWarn("The player '%s' tries to deploy a MCV he doesn't own or that is inactive!\n", playername.c_str());
+    if(pMCV->getOwner() == getHouse() && pMCV->isActive()) { return const_cast<MCV*>(pMCV)->doDeploy(); }
+    logWarn("The player '%s' tries to deploy a MCV he doesn't own or that is inactive!\n", playername.c_str());
 
-        return false;
-
-   
+    return false;
 }
 
 
 bool Player::doRequestCarryallDrop(const GroundUnit* pGroundUnit) const {
     if(pGroundUnit->getOwner() == getHouse() && pGroundUnit->isActive()) {
-        return GroundUnit::requestCarryall();
-    }         logWarn("The player '%s' tries request a carryall for a ground unit he doesn't own or that is inactive!\n", playername.c_str());
+        return const_cast<GroundUnit*>(pGroundUnit)->requestCarryall();
+    }
+    logWarn("The player '%s' tries request a carryall for a ground unit he doesn't own or that is inactive!\n",
+            playername.c_str());
 
-        return false;
-
-   
+    return false;
 }
 
