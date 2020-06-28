@@ -352,7 +352,11 @@ void logOutputFunction(void *userdata, int category, SDL_LogPriority priority, c
     };
     fprintf(stderr, "%s:   %s\n", priorityStrings[priority], message);
     */
-    fprintf(stderr, "%s\n", message);
+    const auto output = fmt::format("{}\n", message);
+#ifdef _WIN32
+    OutputDebugStringA(output.c_str());
+#endif
+    fmt::fprintf(stderr, output);
     fflush(stderr);
 }
 
