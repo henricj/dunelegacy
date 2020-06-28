@@ -303,7 +303,7 @@ void INIMapEditorLoader::loadHouses()
 
                 if(!player.bActive) {
                     convertToLower(sectionname);
-                    housename2house[sectionname] = (HOUSETYPE) houseID;
+                    housename2house[sectionname] = static_cast<HOUSETYPE>(houseID);
 
                     player.bActive = true;
                     player.bAnyHouse = true;
@@ -312,7 +312,7 @@ void INIMapEditorLoader::loadHouses()
                     player.maxunit = inifile->hasKey(sectionname, "MaxUnit") ? inifile->getIntValue(sectionname, "MaxUnit", 0) : inifile->getIntValue(sectionname, "MaxUnits", 0);
 
                     std::string brain = inifile->getStringValue(sectionname, "Brain", "");
-                    if(brain != "") {
+                    if(!brain.empty()) {
                         player.brain = brain;
                     }
 
@@ -642,11 +642,11 @@ void INIMapEditorLoader::loadAITeams()
 }
 
 HOUSETYPE INIMapEditorLoader::getHouseID(const std::string& name) {
-    std::string lowerName = strToLower(name);
+    const std::string lowerName = strToLower(name);
 
-    if(housename2house.count(lowerName) > 0) {
-        return housename2house[lowerName];
-    } else {
-        return getHouseByName(lowerName);
-    }
+    const auto it = housename2house.find(lowerName);
+
+    if(it != housename2house.end()) return it->second;
+
+    return getHouseByName(lowerName);
 }
