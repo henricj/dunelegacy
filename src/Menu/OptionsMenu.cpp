@@ -389,21 +389,27 @@ void OptionsMenu::saveConfiguration2File() {
     myINIFile.saveChangesTo(getConfigFilepath());
 }
 
+void OptionsMenu::addResolution(const Coord& screenRes) {
+    if(screenRes.x >= SCREEN_MIN_WIDTH && screenRes.y >= SCREEN_MIN_HEIGHT) {
+        if(std::find(availScreenRes.begin(), availScreenRes.end(), screenRes) == availScreenRes.end()) {
+            // not yet in the list (might happen if e.g. multiple refresh rates are reported)
+            availScreenRes.push_back(screenRes);
+        }
+    }
+}
+
 void OptionsMenu::determineAvailableScreenResolutions() {
     availScreenRes.clear();
+
+    // Make it possible to open a window on a RDP session that isn't
+    // full screen.
 
     SDL_DisplayMode displayMode;
     int displayIndex = SDL_GetWindowDisplayIndex(window);
     int numDisplayModes = SDL_GetNumDisplayModes(displayIndex);
     for(int i = numDisplayModes-1; i >=0; i--) {
         if(SDL_GetDisplayMode(displayIndex, i, &displayMode) == 0) {
-            Coord screenRes(displayMode.w, displayMode.h);
-            if(screenRes.x >= SCREEN_MIN_WIDTH && screenRes.y >= SCREEN_MIN_HEIGHT) {
-                if(std::find(availScreenRes.begin(), availScreenRes.end(), screenRes) == availScreenRes.end()) {
-                    // not yet in the list (might happen if e.g. multiple refresh rates are reported)
-                    availScreenRes.push_back(screenRes);
-                }
-            }
+            addResolution(Coord{displayMode.w, displayMode.h });
         }
     }
 
@@ -420,7 +426,7 @@ void OptionsMenu::determineAvailableScreenResolutions() {
         availScreenRes.emplace_back(1024, 640 );   // ? (16:10)
         availScreenRes.emplace_back(1024, 768 );   // XGA (4:3)
         availScreenRes.emplace_back(1152, 864 );   // XGA+ (4:3)
-        availScreenRes.emplace_back(1280, 720 );  // WXGA (16:9)
+        availScreenRes.emplace_back(1280, 720 );   // WXGA (16:9)
         availScreenRes.emplace_back(1280, 768 );   // WXGA (5:3)
         availScreenRes.emplace_back(1280, 800 );   // WXGA (16:10)
         availScreenRes.emplace_back(1280, 960 );   // SXGA- (4:3)
@@ -437,14 +443,31 @@ void OptionsMenu::determineAvailableScreenResolutions() {
         availScreenRes.emplace_back(2560, 1440 );  // WQHD (16:9)
         availScreenRes.emplace_back(2560, 1600 );  // WQXGA (16:10)
         availScreenRes.emplace_back(3840, 2160 );  // 2160p (16:9)
+    } else {
+        // We append a few more resolutions in case we only have on
+        // screen resolution but still want to run in a window.  Fo
+        // example, when running in an RDP session on Windows.
+
+        auto appendRes = [&](int x, int y) {
+            const auto can_fit = std::any_of(availScreenRes.begin(), availScreenRes.end(),
+                                             [&](const auto& screenRes) { return screenRes.x > x && screenRes.y > y; });
+
+            if(can_fit) addResolution(Coord{x, y});
+        };
+
+        appendRes(640, 480);
+        appendRes(800, 600);
+        appendRes(1024, 768);
+        appendRes(1280, 1024);
+        appendRes(1600, 900);
+        appendRes(1600, 1200);
+        appendRes(1920, 1080);
+        appendRes(1920, 1200);
     }
 
     Coord currentRes(settings.video.physicalWidth, settings.video.physicalHeight);
 
-    if(std::find(availScreenRes.begin(), availScreenRes.end(), currentRes) == availScreenRes.end()) {
-        // not yet in the list
-        availScreenRes.insert(availScreenRes.begin(), currentRes);
-    }
+    addResolution(currentRes);
 }
 
 void OptionsMenu::onChildWindowClose(Window* pChildWindow) {
