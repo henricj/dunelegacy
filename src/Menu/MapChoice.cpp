@@ -212,7 +212,7 @@ void MapChoice::drawSpecificStuff() {
                 const auto int_house = static_cast<int>(house);
                 const auto num_houses = static_cast<int>(HOUSETYPE::NUM_HOUSES);
 
-                const auto blitThreshold = [&]() {
+                const auto blitThreshold = [&] {
                     return group[lastScenario].newRegion[(static_cast<int>(curHouse2Blit) + int_house) % num_houses].size();
                 };
 

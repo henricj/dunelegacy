@@ -75,7 +75,7 @@ GameOptionsWindow::GameOptionsWindow(SettingsClass::GameOptionsClass& initialGam
     maxUnitsOverrideCheckbox.setText(_("Override max. number of units"));
     maxUnitsOverrideCheckbox.setTooltipText(_("If checked the maximum number of units per house can be overridden; otherwise it is map dependent."));
     maxUnitsOverrideCheckbox.setChecked(gameOptions.maximumNumberOfUnitsOverride >= 0);
-    maxUnitsOverrideCheckbox.setOnClick([this]() { maxUnitsOverrideTextBox.setVisible(maxUnitsOverrideCheckbox.isChecked()); });
+    maxUnitsOverrideCheckbox.setOnClick([this] { maxUnitsOverrideTextBox.setVisible(maxUnitsOverrideCheckbox.isChecked()); });
     maxUnitsOverrideHBox.addWidget(&maxUnitsOverrideCheckbox);
     maxUnitsOverrideTextBox.setMinMax(0,999);
     maxUnitsOverrideTextBox.setValue( (gameOptions.maximumNumberOfUnitsOverride < 0) ? 25 : gameOptions.maximumNumberOfUnitsOverride );
