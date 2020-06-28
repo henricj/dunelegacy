@@ -693,7 +693,7 @@ int main(int argc, char *argv[]) {
 
 #ifdef HAS_ASYNC
             auto gfxManagerFut = std::async(std::launch::async,
-                []() {
+                [] {
                 const auto start = std::chrono::steady_clock::now();
                 auto ret = std::make_unique<GFXManager>();
                 const auto elapsed = std::chrono::steady_clock::now() - start;
@@ -701,7 +701,7 @@ int main(int argc, char *argv[]) {
             });
 
             auto sfxManagerFut = std::async(std::launch::async,
-                []() {
+                [] {
                 const auto start = std::chrono::steady_clock::now();
                 auto ret = std::make_unique<SFXManager>();
                 const auto elapsed = std::chrono::steady_clock::now() - start;
