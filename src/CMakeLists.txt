@@ -531,6 +531,10 @@ find_package(sdl2-ttf CONFIG REQUIRED)
 find_package(fmt CONFIG REQUIRED)
 find_package(Microsoft.GSL CONFIG REQUIRED)
 
+# If we want to really support UTF-8...
+#find_path(ICU_INCLUDE_DIR unicode/unistr.h REQUIRED)
+#find_library(ICU_COMMON_LIBRARY lib/icuuc.lib REQUIRED)
+
 set(LIBS
 	SDL2::SDL2 SDL2::SDL2main
 	SDL2::SDL2_mixer
