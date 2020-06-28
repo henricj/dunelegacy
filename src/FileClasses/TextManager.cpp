@@ -51,13 +51,15 @@ sdl2::RWops_ptr openReadOnlyRWops(const std::filesystem::path& path)
 }
 
 TextManager::TextManager() {
-    auto languagesList = getFileNamesList(getDuneLegacyDataDir() / "locale", settings.general.language + ".po", true, FileListOrder_Name_Asc);
+    const auto locale_directory = getDuneLegacyDataDir() / "locale";
 
-    const auto language = languagesList.empty() ? std::filesystem::path{ "English.en.po" } : languagesList.front();
+    auto languages = getFileNamesList(locale_directory, settings.general.language + ".po", true, FileListOrder_Name_Asc);
 
-    auto filepath = getDuneLegacyDataDir() / "locale" / language;
-    SDL_Log("Loading localization from '%s'...", filepath.u8string().c_str());
-    auto rwops = openReadOnlyRWops(filepath);
+    const auto language = languages.empty() ? std::filesystem::path{ "English.en.po" } : languages.front();
+
+    const auto language_path = locale_directory / language;
+    SDL_Log("Loading localization from '%s'...", language_path.u8string().c_str());
+    auto rwops = openReadOnlyRWops(language_path.u8string());
     localizedString = loadPOFile(rwops.get(), language.u8string());
 }
 
