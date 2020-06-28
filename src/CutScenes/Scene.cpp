@@ -35,7 +35,7 @@ void Scene::addTextEvent(std::unique_ptr<TextEvent> newTextEvent)
     textEvents.push_back(std::move(newTextEvent));
 }
 
-static void Scene::addTrigger(std::unique_ptr<CutSceneTrigger> newTrigger)
+void Scene::addTrigger(std::unique_ptr<CutSceneTrigger> newTrigger)
 {
     auto iter = triggerList.begin();
     while(iter != triggerList.end()) {

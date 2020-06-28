@@ -203,7 +203,7 @@ void MapEditor::setMap(const MapData& mapdata, const MapInfo& newMapInfo) {
     bChangedSinceLastSave = true;
 }
 
-bool MapEditor::isTileBlocked(int x, int y, bool bSlabIsBlocking, bool bUnitsAreBlocking) {
+bool MapEditor::isTileBlocked(int x, int y, bool bSlabIsBlocking, bool bUnitsAreBlocking) const {
     for(const Structure& structure : structures) {
         if(!bSlabIsBlocking && ((structure.itemID == Structure_Slab1) || (structure.itemID == Structure_Slab4)) ) {
             continue;
@@ -227,16 +227,16 @@ bool MapEditor::isTileBlocked(int x, int y, bool bSlabIsBlocking, bool bUnitsAre
     return false;
 }
 
-std::vector<int> MapEditor::getMirrorStructures(int structureID) {
+std::vector<int> MapEditor::getMirrorStructures(int structureID) const {
     std::vector<int> mirrorStructures;
 
-    MapEditor::Structure* pStructure = getStructure(structureID);
+    const auto* pStructure = getStructure(structureID);
 
     if(pStructure == nullptr) {
         return mirrorStructures;
     }
 
-    Coord structureSize = getStructureSize(pStructure->itemID);
+    const Coord structureSize = getStructureSize(pStructure->itemID);
 
     for(int i=0;i<mapMirror->getSize();i++) {
         Coord position = mapMirror->getCoord( pStructure->position, i, structureSize);
@@ -252,10 +252,10 @@ std::vector<int> MapEditor::getMirrorStructures(int structureID) {
     return mirrorStructures;
 }
 
-std::vector<int> MapEditor::getMirrorUnits(int unitID, bool bAddMissingAsInvalid) {
+std::vector<int> MapEditor::getMirrorUnits(int unitID, bool bAddMissingAsInvalid) const {
     std::vector<int> mirrorUnits;
 
-    MapEditor::Unit* pUnit = getUnit(unitID);
+    const Unit* pUnit = getUnit(unitID);
 
     if(pUnit == nullptr) {
         return mirrorUnits;

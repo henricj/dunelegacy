@@ -80,7 +80,7 @@ ChoamWindow::ChoamWindow(MapEditor* pMapEditor, HOUSETYPE currentHouse) : Window
 
         choamRows[i].Checkbox_Unit1.setText(resolveItemName(unit1));
         choamRows[i].Checkbox_Unit1.setTextColor(color);
-        choamRows[i].Checkbox_Unit1.setOnClick(std::bind(&ChoamWindow::onUnitCheckbox, this, unit1));
+        choamRows[i].Checkbox_Unit1.setOnClick([=] { onUnitCheckbox(unit1); });
         choamRows[i].Checkbox_Unit1.setChecked(choam.count(unit1) > 0);
         choamRows[i].HBox_Unit.addWidget(&choamRows[i].Checkbox_Unit1, 180);
 
@@ -95,7 +95,7 @@ ChoamWindow::ChoamWindow(MapEditor* pMapEditor, HOUSETYPE currentHouse) : Window
         if(unit2 != ItemID_Invalid) {
             choamRows[i].Checkbox_Unit2.setText(resolveItemName(unit2));
             choamRows[i].Checkbox_Unit2.setTextColor(color);
-            choamRows[i].Checkbox_Unit2.setOnClick(std::bind(&ChoamWindow::onUnitCheckbox, this, unit2));
+            choamRows[i].Checkbox_Unit2.setOnClick([=] { onUnitCheckbox(unit2); });
             choamRows[i].Checkbox_Unit2.setChecked(choam.count(unit2) > 0);
             choamRows[i].HBox_Unit.addWidget(&choamRows[i].Checkbox_Unit2, 180);
 
@@ -118,7 +118,7 @@ ChoamWindow::ChoamWindow(MapEditor* pMapEditor, HOUSETYPE currentHouse) : Window
 
     cancelButton.setText(_("Cancel"));
     cancelButton.setTextColor(color);
-    cancelButton.setOnClick(std::bind(&ChoamWindow::onCancel, this));
+    cancelButton.setOnClick([this] { onCancel(); });
 
     buttonHBox.addWidget(&cancelButton);
 
@@ -130,7 +130,7 @@ ChoamWindow::ChoamWindow(MapEditor* pMapEditor, HOUSETYPE currentHouse) : Window
 
     okButton.setText(_("OK"));
     okButton.setTextColor(color);
-    okButton.setOnClick(std::bind(&ChoamWindow::onOK, this));
+    okButton.setOnClick([this] { onOK(); });
 
     buttonHBox.addWidget(&okButton);
 
@@ -147,7 +147,7 @@ void ChoamWindow::onCancel() {
 
 void ChoamWindow::onOK() {
 
-    MapEditor::startOperation();
+    pMapEditor->startOperation();
 
     for(unsigned int i = 0; i < sizeof(choamUnits)/sizeof(choamUnits[0]); i++) {
         int rowNum = i/2;

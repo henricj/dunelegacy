@@ -67,7 +67,7 @@ protected:
         moveButton.setSymbol(pGFXManager->getUIGraphicSurface(UI_CursorMove_Zoomlevel0));
         moveButton.setTooltipText(_("Move to a position (Hotkey: M)"));
         moveButton.setToggleButton(true);
-        moveButton.setOnClick(std::bind(&MultiUnitInterface::onMove, this));
+        moveButton.setOnClick([] { onMove(); });
         actionHBox.addWidget(&moveButton);
 
         actionHBox.addWidget(HSpacer::create(2));
@@ -75,7 +75,7 @@ protected:
         attackButton.setSymbol(pGFXManager->getUIGraphicSurface(UI_CursorAttack_Zoomlevel0));
         attackButton.setTooltipText(_("Attack a unit, structure or position (Hotkey: A)"));
         attackButton.setToggleButton(true);
-        attackButton.setOnClick(std::bind(&MultiUnitInterface::onAttack, this));
+        attackButton.setOnClick([] { onAttack(); });
         actionHBox.addWidget(&attackButton);
 
         actionHBox.addWidget(HSpacer::create(2));
@@ -83,7 +83,7 @@ protected:
         carryallDropButton.setSymbol(pGFXManager->getUIGraphicSurface(UI_CursorCarryallDrop_Zoomlevel0));
         carryallDropButton.setTooltipText(_("Request Carryall drop to a position (Hotkey: D)"));
         carryallDropButton.setToggleButton(true);
-        carryallDropButton.setOnClick(std::bind(&MultiUnitInterface::onCarryallDrop, this));
+        carryallDropButton.setOnClick([] { onCarryallDrop(); });
         actionHBox.addWidget(&carryallDropButton);
 
         actionHBox.addWidget(HSpacer::create(2));
@@ -91,7 +91,7 @@ protected:
         captureButton.setSymbol(pGFXManager->getUIGraphicSurface(UI_CursorCapture_Zoomlevel0));
         captureButton.setTooltipText(_("Capture a building (Hotkey: C)"));
         captureButton.setToggleButton(true);
-        captureButton.setOnClick(std::bind(&MultiUnitInterface::onCapture, this));
+        captureButton.setOnClick([]{ onCapture(); });
         actionHBox.addWidget(&captureButton);
 
         buttonVBox.addWidget(&actionHBox, 26);
@@ -100,28 +100,28 @@ protected:
 
         returnButton.setSymbol(pGFXManager->getUIGraphicSurface(UI_ReturnIcon));
         returnButton.setTooltipText(_("Return harvester to refinery (Hotkey: H)"));
-        returnButton.setOnClick(std::bind(&MultiUnitInterface::onReturn, this));
+        returnButton.setOnClick([this]{onReturn();});
         commandHBox.addWidget(&returnButton);
 
         commandHBox.addWidget(HSpacer::create(2));
 
         deployButton.setSymbol(pGFXManager->getUIGraphicSurface(UI_DeployIcon));
         deployButton.setTooltipText(_("Build a new construction yard"));
-        deployButton.setOnClick(std::bind(&MultiUnitInterface::onDeploy, this));
+        deployButton.setOnClick([this] { onDeploy(); });
         commandHBox.addWidget(&deployButton);
 
         commandHBox.addWidget(HSpacer::create(2));
 
         destructButton.setSymbol(pGFXManager->getUIGraphicSurface(UI_DestructIcon));
         destructButton.setTooltipText(_("Self-destruct this unit"));
-        destructButton.setOnClick(std::bind(&MultiUnitInterface::onDestruct, this));
+        destructButton.setOnClick([this] { onDestruct(); });
         commandHBox.addWidget(&destructButton);
 
         commandHBox.addWidget(HSpacer::create(2));
 
         sendToRepairButton.setSymbol(pGFXManager->getUIGraphicSurface(UI_SendToRepairIcon));
         sendToRepairButton.setTooltipText(_("Repair this unit (Hotkey: R)"));
-        sendToRepairButton.setOnClick(std::bind(&MultiUnitInterface::OnSendToRepair, this));
+        sendToRepairButton.setOnClick([this] { OnSendToRepair(); });
         commandHBox.addWidget(&sendToRepairButton);
 
         buttonVBox.addWidget(&commandHBox, 26);
@@ -132,7 +132,7 @@ protected:
         guardButton.setTextColor(color);
         guardButton.setTooltipText(_("Unit will not move from location"));
         guardButton.setToggleButton(true);
-        guardButton.setOnClick(std::bind(&MultiUnitInterface::onGuard, this));
+        guardButton.setOnClick([this] { onGuard(); });
         buttonVBox.addWidget(&guardButton, 26);
 
         buttonVBox.addWidget(VSpacer::create(6));
@@ -141,7 +141,7 @@ protected:
         areaGuardButton.setTextColor(color);
         areaGuardButton.setTooltipText(_("Unit will engage any unit within guard range"));
         areaGuardButton.setToggleButton(true);
-        areaGuardButton.setOnClick(std::bind(&MultiUnitInterface::onAreaGuard, this));
+        areaGuardButton.setOnClick([this] { onAreaGuard(); });
         buttonVBox.addWidget(&areaGuardButton, 26);
 
         buttonVBox.addWidget(VSpacer::create(6));
@@ -150,7 +150,7 @@ protected:
         stopButton.setTextColor(color);
         stopButton.setTooltipText(_("Unit will not move, nor attack"));
         stopButton.setToggleButton(true);
-        stopButton.setOnClick(std::bind(&MultiUnitInterface::onStop, this));
+        stopButton.setOnClick([this] { onStop(); });
         buttonVBox.addWidget(&stopButton, 26);
 
         buttonVBox.addWidget(VSpacer::create(6));
@@ -159,7 +159,7 @@ protected:
         ambushButton.setTextColor(color);
         ambushButton.setTooltipText(_("Unit will not move until enemy unit spotted"));
         ambushButton.setToggleButton(true);
-        ambushButton.setOnClick(std::bind(&MultiUnitInterface::onAmbush, this));
+        ambushButton.setOnClick([this] { onAmbush(); });
         buttonVBox.addWidget(&ambushButton, 26);
 
         buttonVBox.addWidget(VSpacer::create(6));
@@ -168,7 +168,7 @@ protected:
         huntButton.setTextColor(color);
         huntButton.setTooltipText(_("Unit will immediately start to engage an enemy unit"));
         huntButton.setToggleButton(true);
-        huntButton.setOnClick(std::bind(&MultiUnitInterface::onHunt, this));
+        huntButton.setOnClick([this] { onHunt(); });
         buttonVBox.addWidget(&huntButton, 26);
 
         buttonVBox.addWidget(VSpacer::create(6));
@@ -177,7 +177,7 @@ protected:
         retreatButton.setTextColor(color);
         retreatButton.setTooltipText(_("Unit will retreat back to base"));
         retreatButton.setToggleButton(true);
-        retreatButton.setOnClick(std::bind(&MultiUnitInterface::onRetreat, this));
+        retreatButton.setOnClick([this] { onRetreat(); });
         buttonVBox.addWidget(&retreatButton, 26);
 
         buttonVBox.addWidget(VSpacer::create(6));

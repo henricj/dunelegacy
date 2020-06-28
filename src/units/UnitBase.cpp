@@ -689,7 +689,7 @@ void UnitBase::navigate() {
                         && this->isAGroundUnit()
                         && (currentGame->getGameInitSettings().getGameOptions().manualCarryallDrops || getOwner()->isAI())
                         && blockDistance(location, destination) >= MIN_CARRYALL_LIFT_DISTANCE ) {
-                        GroundUnit::requestCarryall();
+                        static_cast<GroundUnit*>(this)->requestCarryall();
                     } else if(  getOwner()->isAI()
                         && (getItemID() == Unit_Harvester)
                         && !static_cast<Harvester*>(this)->isReturning()

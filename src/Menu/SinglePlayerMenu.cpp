@@ -81,25 +81,25 @@ SinglePlayerMenu::SinglePlayerMenu()  {
     menuButtonsVBox.addWidget(VSpacer::create(3));
 
     skirmishButton.setText(_("SKIRMISH"));
-    skirmishButton.setOnClick(std::bind(&SinglePlayerMenu::onSkirmish, this));
+    skirmishButton.setOnClick([] { onSkirmish(); });
     menuButtonsVBox.addWidget(&skirmishButton);
 
     menuButtonsVBox.addWidget(VSpacer::create(3));
 
     loadSavegameButton.setText(_("LOAD GAME"));
-    loadSavegameButton.setOnClick(std::bind(&SinglePlayerMenu::onLoadSavegame, this));
+    loadSavegameButton.setOnClick([this] { onLoadSavegame(); });
     menuButtonsVBox.addWidget(&loadSavegameButton);
 
     menuButtonsVBox.addWidget(VSpacer::create(3));
 
     loadReplayButton.setText(_("LOAD REPLAY"));
-    loadReplayButton.setOnClick(std::bind(&SinglePlayerMenu::onLoadReplay, this));
+    loadReplayButton.setOnClick([this] { onLoadReplay(); });
     menuButtonsVBox.addWidget(&loadReplayButton);
 
     menuButtonsVBox.addWidget(VSpacer::create(3));
 
     cancelButton.setText(_("BACK"));
-    cancelButton.setOnClick(std::bind(&SinglePlayerMenu::onCancel, this));
+    cancelButton.setOnClick([this]{ onCancel(); });
     menuButtonsVBox.addWidget(&cancelButton);
 }
 

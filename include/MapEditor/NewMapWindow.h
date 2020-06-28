@@ -75,9 +75,9 @@ private:
 
     static sdl2::surface_ptr createMinimapPicture(MapData& mapdata, int borderWidth, Uint32 borderColor);
 
-    static void onCancel();
+    void onCancel();
     void onLoad();
-    static void onCreate();
+    void onCreate();
 
 
     void onMapTypeChanged(int buttonID);

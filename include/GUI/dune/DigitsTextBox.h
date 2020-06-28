@@ -100,24 +100,21 @@ public:
         incrementValue = newIncrementValue;
     }
 
-    static void setValue(int newValue) {
+    void setValue(int newValue) {
         setValue(newValue, false);
     }
 
-    static int getValue() {
+    int getValue() const {
         int x = 0;
-        if(parseString(textBox.getText(), x)) {
-            return x;
-        }             return 0;
-
-       
+        if(parseString(textBox.getText(), x)) { return x; }
+        return 0;
     }
 
     /**
         Sets the function that should be called when the value of this digit text box changes.
         \param  pOnValueChange  A function to call on value change
     */
-    inline void setOnValueChange(std::function<void (bool)> pOnValueChange) {
+    void setOnValueChange(std::function<void (bool)> pOnValueChange) {
         textBox.setOnTextChange(pOnValueChange);
         this->pOnValueChange = pOnValueChange;
     }
@@ -171,7 +168,7 @@ public:
     }
 
 protected:
-    static void setValue(int newValue, bool bInteractive) {
+    void setValue(int newValue, bool bInteractive) {
         textBox.setText(std::to_string(newValue));
         if(bInteractive && pOnValueChange) {
             pOnValueChange(true);
@@ -180,7 +177,7 @@ protected:
 
 private:
 
-    void onTextBoxLostFocus() const {
+    void onTextBoxLostFocus() {
         int x = 0;
         if(parseString(textBox.getText(), x)) {
             if(x < minValue) {
@@ -193,7 +190,7 @@ private:
         }
     }
 
-    void onIncrement() const {
+    void onIncrement() {
         int currentValue = getValue();
         currentValue += incrementValue;
         if(currentValue < minValue) {
@@ -205,7 +202,7 @@ private:
         }
     }
 
-    void onDecrement() const {
+    void onDecrement() {
         int currentValue = getValue();
         currentValue -= incrementValue;
         if(currentValue > maxValue) {
