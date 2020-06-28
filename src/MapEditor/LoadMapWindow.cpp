@@ -192,7 +192,7 @@ void LoadMapWindow::onChildWindowClose(Window* pChildWindow) {
         if(pQstBox->getPressedButtonID() == QSTBOX_BUTTON1) {
             int index = mapList.getSelectedIndex();
             if(index >= 0) {
-                const auto file2delete = (currentMapDirectory / mapList.getSelectedEntry()).replace_extension(".ini");
+                const auto file2delete = currentMapDirectory / (mapList.getSelectedEntry() + ".ini");
 
                 std::error_code ec;
                 if(std::filesystem::remove(file2delete, ec)) {
@@ -224,7 +224,7 @@ void LoadMapWindow::onLoad() {
     }
 
     loadMapname = mapList.getSelectedEntry();
-    loadMapFilepath = (currentMapDirectory / loadMapname).replace_extension(".ini");
+    loadMapFilepath = currentMapDirectory / (loadMapname + ".ini");
     loadMapSingleplayer = singleplayerUserMapsButton.getToggleState();
     getCaseInsensitiveFilename(loadMapFilepath);
 
@@ -275,7 +275,7 @@ void LoadMapWindow::onMapListSelectionChange(bool bInteractive)
         return;
     }
 
-    auto mapFilename = (currentMapDirectory / mapList.getSelectedEntry()).replace_extension(".ini");
+    auto mapFilename = currentMapDirectory / (mapList.getSelectedEntry() + ".ini");
     getCaseInsensitiveFilename(mapFilename);
 
     INIFile inimap(mapFilename);
