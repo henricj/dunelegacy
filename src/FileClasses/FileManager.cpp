@@ -45,12 +45,12 @@ FileManager::FileManager() {
             auto filepath = sp / filename;
             if(getCaseInsensitiveFilename(filepath)) {
                 try {
-                    SDL_Log("%s  %s", md5FromFilename(filepath).c_str(), filepath.c_str());
+                    SDL_Log("%s  %s", md5FromFilename(filepath).c_str(), filepath.u8string().c_str());
                     pakFiles.push_back(std::make_unique<Pakfile>(filepath));
                 } catch (std::exception &e) {
                     pakFiles.clear();
 
-                    THROW(io_error, "Error while opening '%s': %s!", filepath, e.what());
+                    THROW(io_error, "Error while opening '%s': %s!", filepath.u8string().c_str(), e.what());
                 }
 
                 // break out of searchPath-loop because we have opened the file in one directory
