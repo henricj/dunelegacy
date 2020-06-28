@@ -100,6 +100,10 @@ inline std::string demangleSymbol(const char* symbolname) {
 }
 #endif
 
+namespace {
+int currentDisplayIndex = SCREEN_DEFAULT_DISPLAYINDEX;
+}
+
 void setVideoMode(int displayIndex);
 void realign_buttons();
 
@@ -132,20 +136,38 @@ void setVideoMode(int displayIndex)
     SDL_DisplayMode targetDisplayMode = { 0, settings.video.physicalWidth, settings.video.physicalHeight, 0, nullptr};
     SDL_DisplayMode closestDisplayMode;
 
-    if(SDL_GetClosestDisplayMode(displayIndex, &targetDisplayMode, &closestDisplayMode) == nullptr) {
-        SDL_Log("Warning: Falling back to a display resolution of 640x480!");
-        settings.video.physicalWidth = 640;
-        settings.video.physicalHeight = 480;
-        settings.video.width = 640;
-        settings.video.height = 480;
+    if(settings.video.fullscreen) {
+        if(SDL_GetClosestDisplayMode(displayIndex, &targetDisplayMode, &closestDisplayMode) == nullptr) {
+            SDL_Log("Warning: Falling back to a display resolution of 640x480!");
+            settings.video.physicalWidth  = 640;
+            settings.video.physicalHeight = 480;
+            settings.video.width          = 640;
+            settings.video.height         = 480;
+        } else {
+            settings.video.physicalWidth  = closestDisplayMode.w;
+            settings.video.physicalHeight = closestDisplayMode.h;
+            const auto factor =
+                getLogicalToPhysicalResolutionFactor(settings.video.physicalWidth, settings.video.physicalHeight);
+            settings.video.width  = settings.video.physicalWidth / factor;
+            settings.video.height = settings.video.physicalHeight / factor;
+        }
     } else {
-        settings.video.physicalWidth = closestDisplayMode.w;
-        settings.video.physicalHeight = closestDisplayMode.h;
-        const auto factor = getLogicalToPhysicalResolutionFactor(settings.video.physicalWidth, settings.video.physicalHeight);
-        settings.video.width = settings.video.physicalWidth / factor;
-        settings.video.height = settings.video.physicalHeight / factor;
+        SDL_DisplayMode displayMode;
+        SDL_GetDesktopDisplayMode(currentDisplayIndex, &displayMode);
 
+        if(settings.video.physicalWidth > displayMode.w || settings.video.physicalHeight > displayMode.h) {
+            settings.video.physicalWidth  = displayMode.w;
+            settings.video.physicalHeight = displayMode.h;
+        }
+
+        const auto factor =
+            getLogicalToPhysicalResolutionFactor(settings.video.physicalWidth, settings.video.physicalHeight);
+        settings.video.width  = settings.video.physicalWidth / factor;
+        settings.video.height = settings.video.physicalHeight / factor;
     }
+
+    SDL_Log("Creating %dx%d for %dx%d window with flags %08x", settings.video.physicalWidth, settings.video.physicalHeight,
+        settings.video.width, settings.video.height, videoFlags);
 
     window = SDL_CreateWindow("Dune Legacy",
                               SDL_WINDOWPOS_CENTERED_DISPLAY(displayIndex), SDL_WINDOWPOS_CENTERED_DISPLAY(displayIndex),
@@ -493,8 +515,6 @@ int main(int argc, char *argv[]) {
 
         debug = false;
         cursorFrame = UI_CursorNormal;
-
-        int currentDisplayIndex = SCREEN_DEFAULT_DISPLAYINDEX;
 
         do {
             // we do not use rand() but maybe some library does; thus we shall initialize it
