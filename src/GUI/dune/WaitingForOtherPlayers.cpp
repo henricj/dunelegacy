@@ -39,7 +39,7 @@ WaitingForOtherPlayers::WaitingForOtherPlayers() : Window(50,50,50,50)
     hbox.addWidget(&vbox2);
     vbox2.addWidget(VSpacer::create(4));
     removeButton.setText(_("Remove"));
-    removeButton.setOnClick(std::bind(&WaitingForOtherPlayers::onRemove, this));
+    removeButton.setOnClick([] { onRemove(); });
     removeButton.setVisible(false);
     removeButton.setEnabled(false);
     vbox2.addWidget(&removeButton);
@@ -55,10 +55,7 @@ WaitingForOtherPlayers::WaitingForOtherPlayers() : Window(50,50,50,50)
     setCurrentPosition(xpos,ypos,getSize().x,getSize().y);
 }
 
-WaitingForOtherPlayers::~WaitingForOtherPlayers()
-{
-    ;
-}
+WaitingForOtherPlayers::~WaitingForOtherPlayers() = default;
 
 void WaitingForOtherPlayers::update() {
     std::string text = _("Waiting for other players... ");

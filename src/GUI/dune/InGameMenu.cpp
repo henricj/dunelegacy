@@ -51,7 +51,7 @@ InGameMenu::InGameMenu(bool bMultiplayer, int color)
 
     resumeButton.setText(_("Resume Game"));
     resumeButton.setTextColor(color);
-    resumeButton.setOnClick(std::bind(&InGameMenu::onResume, this));
+    resumeButton.setOnClick([] { onResume(); });
     mainVBox.addWidget(&resumeButton);
 
     mainVBox.addWidget(VSpacer::create(3));
@@ -98,10 +98,7 @@ InGameMenu::InGameMenu(bool bMultiplayer, int color)
     mainVBox.addWidget(VSpacer::create(6));
 }
 
-InGameMenu::~InGameMenu()
-{
-    ;
-}
+InGameMenu::~InGameMenu() = default;
 
 bool InGameMenu::handleKeyPress(SDL_KeyboardEvent& key) {
     switch( key.keysym.sym ) {
