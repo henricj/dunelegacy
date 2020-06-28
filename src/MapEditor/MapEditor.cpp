@@ -44,23 +44,6 @@
 
 
 
-// functor for std::find_if
-class CoordDistance {
-public:
-    CoordDistance(Coord centerCoord, int distance)
-     : centerCoord(centerCoord), distance(distance) {
-    }
-
-    bool operator()(Coord& coord) {
-        return distanceFrom(centerCoord, coord) <= distance;
-    }
-
-private:
-    Coord centerCoord;
-    int distance;
-};
-
-
 MapEditor::MapEditor() : pInterface(nullptr) {
     bQuitEditor = false;
     scrollDownMode = false;
@@ -1370,13 +1353,14 @@ void MapEditor::drawCursor() {
     SDL_RenderCopy(renderer, pCursor, nullptr, &dest);
 }
 
-TERRAINTYPE MapEditor::getTerrain(int x, int y) {
+TERRAINTYPE MapEditor::getTerrain(int x, int y) const {
     TERRAINTYPE terrainType = map(x,y);
 
     if(map(x,y) == Terrain_Sand) {
         if(std::find(spiceFields.begin(), spiceFields.end(), Coord(x,y)) != spiceFields.end()) {
             terrainType = Terrain_ThickSpice;
-        } else if(std::find_if(spiceFields.begin(), spiceFields.end(), CoordDistance(Coord(x,y),5)) != spiceFields.end()) {
+        } else if(std::find_if(spiceFields.begin(), spiceFields.end(),
+            [center = Coord(x, y)](const auto& coord) { return distanceFrom(center, coord) < 5; }) != spiceFields.end()) {
             terrainType = Terrain_Spice;
         }
     }
