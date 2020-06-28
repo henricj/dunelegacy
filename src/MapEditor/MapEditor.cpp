@@ -271,7 +271,7 @@ std::vector<int> MapEditor::getMirrorUnits(int unitID, bool bAddMissingAsInvalid
             }
         }
 
-        if(bAddMissingAsInvalid && (mirrorUnits.size() < (unsigned int) (i+1) )) {
+        if(bAddMissingAsInvalid && (mirrorUnits.size() < static_cast<unsigned int>(i + 1) )) {
             mirrorUnits.push_back(INVALID);
         }
     }
