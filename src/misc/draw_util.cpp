@@ -184,7 +184,7 @@ sdl2::surface_ptr renderReadSurface(SDL_Renderer* renderer) {
     static bool need_workaround;
     static std::once_flag  flag;
     std::call_once(flag,
-        [&]() {
+        [&] {
             need_workaround = false;
 
             SDL_version version;
