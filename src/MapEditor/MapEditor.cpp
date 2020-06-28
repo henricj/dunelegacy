@@ -1989,7 +1989,10 @@ void MapEditor::saveMapshot() {
     const int oldCurrentZoomlevel = currentZoomlevel;
     currentZoomlevel = 0;
 
-    auto mapshotFilename = (lastSaveName.empty() ? std::filesystem::path{ generateMapname() } : getBasename(lastSaveName, true)).replace_extension(".png");
+    auto mapshotFilename =
+        (lastSaveName.empty() ? std::filesystem::path{generateMapname()} : getBasename(lastSaveName, true));
+
+    mapshotFilename += ".png";
 
     const auto sizeX = world2zoomedWorld(map.getSizeX()*TILESIZE);
     const auto sizeY = world2zoomedWorld(map.getSizeY()*TILESIZE);
