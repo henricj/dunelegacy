@@ -68,29 +68,29 @@ CustomGameMenu::CustomGameMenu(bool multiplayer, bool LANServer)
 
     singleplayerMapsButton.setText(_("SP Maps"));
     singleplayerMapsButton.setToggleButton(true);
-    singleplayerMapsButton.setOnClick(std::bind(&CustomGameMenu::onMapTypeChange, this, 0));
+    singleplayerMapsButton.setOnClick([this] { onMapTypeChange(0); });
     mapTypeButtonsHBox.addWidget(&singleplayerMapsButton);
 
     singleplayerUserMapsButton.setText(_("SP User Maps"));
     singleplayerUserMapsButton.setToggleButton(true);
-    singleplayerUserMapsButton.setOnClick(std::bind(&CustomGameMenu::onMapTypeChange, this, 1));
+    singleplayerUserMapsButton.setOnClick([this] { onMapTypeChange(1); });
     mapTypeButtonsHBox.addWidget(&singleplayerUserMapsButton);
 
     multiplayerMapsButton.setText(_("MP Maps"));
     multiplayerMapsButton.setToggleButton(true);
-    multiplayerMapsButton.setOnClick(std::bind(&CustomGameMenu::onMapTypeChange, this, 2));
+    multiplayerMapsButton.setOnClick([this] { onMapTypeChange(2); });
     mapTypeButtonsHBox.addWidget(&multiplayerMapsButton);
 
     multiplayerUserMapsButton.setText(_("MP User Maps"));
     multiplayerUserMapsButton.setToggleButton(true);
-    multiplayerUserMapsButton.setOnClick(std::bind(&CustomGameMenu::onMapTypeChange, this, 3));
+    multiplayerUserMapsButton.setOnClick([this] { onMapTypeChange(3); });
     mapTypeButtonsHBox.addWidget(&multiplayerUserMapsButton);
 
     dummyButton.setEnabled(false);
     mapTypeButtonsHBox.addWidget(&dummyButton, 17);
     mapList.setAutohideScrollbar(false);
-    mapList.setOnSelectionChange(std::bind(&CustomGameMenu::onMapListSelectionChange, this, std::placeholders::_1));
-    mapList.setOnDoubleClick(std::bind(&CustomGameMenu::onNext, this));
+    mapList.setOnSelectionChange([this](auto interactive) { onMapListSelectionChange(interactive); });
+    mapList.setOnDoubleClick([this] { onNext(); });
     leftVBox.addWidget(&mapList, 0.95);
 
     leftVBox.addWidget(VSpacer::create(10));
@@ -99,7 +99,7 @@ CustomGameMenu::CustomGameMenu(bool multiplayer, bool LANServer)
     optionsHBox.addWidget(&multiplePlayersPerHouseCheckbox);
     optionsHBox.addWidget(Spacer::create());
     gameOptionsButton.setText(_("Game Options..."));
-    gameOptionsButton.setOnClick(std::bind(&CustomGameMenu::onGameOptions, this));
+    gameOptionsButton.setOnClick([this] { onGameOptions(); });
     optionsHBox.addWidget(&gameOptionsButton, 140);
 
     leftVBox.addWidget(Spacer::create(), 0.05);
@@ -136,7 +136,7 @@ CustomGameMenu::CustomGameMenu(bool multiplayer, bool LANServer)
 
     buttonHBox.addWidget(HSpacer::create(70));
     cancelButton.setText(_("Back"));
-    cancelButton.setOnClick(std::bind(&CustomGameMenu::onCancel, this));
+    cancelButton.setOnClick([this] { onCancel(); });
     buttonHBox.addWidget(&cancelButton, 0.1);
 
     buttonHBox.addWidget(Spacer::create(), 0.0625);
@@ -145,24 +145,22 @@ CustomGameMenu::CustomGameMenu(bool multiplayer, bool LANServer)
     loadButton.setText(_("Load"));
     loadButton.setVisible(bMultiplayer);
     loadButton.setEnabled(bMultiplayer);
-    loadButton.setOnClick(std::bind(&CustomGameMenu::onLoad, this));
+    loadButton.setOnClick([this] { onLoad(); });
+;
     buttonHBox.addWidget(&loadButton, 0.175);
     buttonHBox.addWidget(Spacer::create(), 0.25);
 
     buttonHBox.addWidget(Spacer::create(), 0.0625);
 
     nextButton.setText(_("Next"));
-    nextButton.setOnClick(std::bind(&CustomGameMenu::onNext, this));
+    nextButton.setOnClick([this] { onNext(); });
     buttonHBox.addWidget(&nextButton, 0.1);
     buttonHBox.addWidget(HSpacer::create(90));
 
     onMapTypeChange(0);
 }
 
-CustomGameMenu::~CustomGameMenu()
-{
-    ;
-}
+CustomGameMenu::~CustomGameMenu() = default;
 
 
 void CustomGameMenu::onChildWindowClose(Window* pChildWindow) {
@@ -189,13 +187,14 @@ void CustomGameMenu::onChildWindowClose(Window* pChildWindow) {
     }
 }
 
-void CustomGameMenu::onNext() const
+void CustomGameMenu::onNext()
 {
     if(mapList.getSelectedIndex() < 0) {
         return;
     }
 
-    auto mapFilename = (currentMapDirectory / mapList.getSelectedEntry()).replace_extension(".ini");
+    auto mapFilename = currentMapDirectory / mapList.getSelectedEntry();
+    mapFilename += ".ini";
     getCaseInsensitiveFilename(mapFilename);
 
     GameInitSettings gameInitSettings;
@@ -279,7 +278,9 @@ void CustomGameMenu::onMapListSelectionChange(bool bInteractive)
         return;
     }
 
-    auto mapFilename = (currentMapDirectory / mapList.getSelectedEntry()).replace_extension(".ini");
+    auto mapFilename = currentMapDirectory / mapList.getSelectedEntry();
+    mapFilename += ".ini";
+
     getCaseInsensitiveFilename(mapFilename);
 
     INIFile inimap(mapFilename);

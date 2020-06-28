@@ -46,8 +46,8 @@ public:
 
     static void onResume();
     void onSettings();
-    static void onLoad();
-    static void onSave();
+    void onLoad();
+    void onSave();
     void onRestart();
     void onQuit();
 

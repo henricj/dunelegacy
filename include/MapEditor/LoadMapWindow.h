@@ -62,7 +62,7 @@ public:
 
 
 private:
-    static void onCancel();
+    void onCancel();
     void onLoad();
     void onMapTypeChange(int buttonID);
     void onMapListSelectionChange(bool bInteractive);

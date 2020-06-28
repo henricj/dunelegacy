@@ -50,7 +50,7 @@ ReinforcementsWindow::ReinforcementsWindow(MapEditor* pMapEditor, HOUSETYPE curr
     mainHBox.addWidget(HSpacer::create(16));
 
     titleLabel.setTextColor(COLOR_LIGHTYELLOW, COLOR_TRANSPARENT);
-    titleLabel.setAlignment((Alignment_Enum) (Alignment_HCenter | Alignment_VCenter));
+    titleLabel.setAlignment(static_cast<Alignment_Enum>(Alignment_HCenter | Alignment_VCenter));
     titleLabel.setText(_("Reinforcements"));
     mainVBox.addWidget(&titleLabel);
 
@@ -69,7 +69,7 @@ ReinforcementsWindow::ReinforcementsWindow(MapEditor* pMapEditor, HOUSETYPE curr
     centralVBox.addWidget(&hBox1, 6.0);
 
     reinforcementsListBox.setColor(color);
-    reinforcementsListBox.setOnSelectionChange(std::bind(&ReinforcementsWindow::onSelectionChange, this, std::placeholders::_1));
+    reinforcementsListBox.setOnSelectionChange([this](auto interactive) { onSelectionChange(interactive); });
     hBox1.addWidget(&reinforcementsListBox, 1.0);
 
     hBox1.addWidget(HSpacer::create(3));
@@ -77,13 +77,13 @@ ReinforcementsWindow::ReinforcementsWindow(MapEditor* pMapEditor, HOUSETYPE curr
     listEntryUpButton.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_ArrowUp, house),
                                 pGFXManager->getUIGraphicSurface(UI_MapEditor_ArrowUp_Active, house));
     listEntryUpButton.setTooltipText(_("Move up"));
-    listEntryUpButton.setOnClick(std::bind(&ReinforcementsWindow::onUp, this));
+    listEntryUpButton.setOnClick([this] { onUp(); });
     listControlVBox.addWidget(&listEntryUpButton, 25);
     listControlVBox.addWidget(VSpacer::create(3));
     listEntryDownButton.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_ArrowDown, house),
                                   pGFXManager->getUIGraphicSurface(UI_MapEditor_ArrowDown_Active, house));
     listEntryDownButton.setTooltipText(_("Move down"));
-    listEntryDownButton.setOnClick(std::bind(&ReinforcementsWindow::onDown, this));
+    listEntryDownButton.setOnClick([this] { onDown(); });
     listControlVBox.addWidget(&listEntryDownButton, 25);
 
     listControlVBox.addWidget(Spacer::create(), 6.0);
@@ -91,13 +91,13 @@ ReinforcementsWindow::ReinforcementsWindow(MapEditor* pMapEditor, HOUSETYPE curr
     addListEntryButton.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_Plus, house),
                                  pGFXManager->getUIGraphicSurface(UI_MapEditor_Plus_Active, house));
     addListEntryButton.setTooltipText(_("Add"));
-    addListEntryButton.setOnClick(std::bind(&ReinforcementsWindow::onAdd, this));
+    addListEntryButton.setOnClick([this] { onAdd(); });
     listControlVBox.addWidget(&addListEntryButton, 25);
     listControlVBox.addWidget(VSpacer::create(3));
     removeListEntryButton.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_Minus, house),
                                     pGFXManager->getUIGraphicSurface(UI_MapEditor_Minus_Active, house));
     removeListEntryButton.setTooltipText(_("Remove"));
-    removeListEntryButton.setOnClick(std::bind(&ReinforcementsWindow::onRemove, this));
+    removeListEntryButton.setOnClick([this] { onRemove(); });
     listControlVBox.addWidget(&removeListEntryButton, 25);
 
     hBox1.addWidget(&listControlVBox, 25);
@@ -110,7 +110,7 @@ ReinforcementsWindow::ReinforcementsWindow(MapEditor* pMapEditor, HOUSETYPE curr
     playerLabel.setTextColor(color);
     hBox2.addWidget(&playerLabel, 120);
     playerDropDownBox.setColor(color);
-    playerDropDownBox.setOnSelectionChange(std::bind(&ReinforcementsWindow::onEntryChange, this, std::placeholders::_1));
+    playerDropDownBox.setOnSelectionChange([this](auto interactive) { onEntryChange(interactive); });
 
     int currentPlayerNum = 1;
     for(const auto& player : pMapEditor->getPlayers()) {
@@ -125,7 +125,7 @@ ReinforcementsWindow::ReinforcementsWindow(MapEditor* pMapEditor, HOUSETYPE curr
     unitLabel.setTextColor(color);
     hBox2.addWidget(&unitLabel, 125);
     unitDropDownBox.setColor(color);
-    unitDropDownBox.setOnSelectionChange(std::bind(&ReinforcementsWindow::onEntryChange, this, std::placeholders::_1));
+    unitDropDownBox.setOnSelectionChange([this](auto interactive) { onEntryChange(interactive); });
     for(int itemID = Unit_FirstID; itemID <= Unit_LastID; ++itemID) {
         if(itemID == Unit_Carryall || itemID == Unit_Ornithopter || itemID == Unit_Frigate) {
             continue;
@@ -143,7 +143,7 @@ ReinforcementsWindow::ReinforcementsWindow(MapEditor* pMapEditor, HOUSETYPE curr
     dropLocationLabel.setTextColor(color);
     hBox3.addWidget(&dropLocationLabel, 120);
     dropLocationDropDownBox.setColor(color);
-    dropLocationDropDownBox.setOnSelectionChange(std::bind(&ReinforcementsWindow::onEntryChange, this, std::placeholders::_1));
+    dropLocationDropDownBox.setOnSelectionChange([this](auto interactive) { onEntryChange(interactive); });
     dropLocationDropDownBox.addEntry(resolveDropLocationName(DropLocation::Drop_North), static_cast<int>(DropLocation::Drop_North));
     dropLocationDropDownBox.addEntry(resolveDropLocationName(DropLocation::Drop_East), static_cast<int>(DropLocation::Drop_East));
     dropLocationDropDownBox.addEntry(resolveDropLocationName(DropLocation::Drop_South), static_cast<int>(DropLocation::Drop_South));
@@ -160,12 +160,12 @@ ReinforcementsWindow::ReinforcementsWindow(MapEditor* pMapEditor, HOUSETYPE curr
     hBox3.addWidget(&timeLabel, 125);
     timeTextBox.setColor(house, color);
     timeTextBox.setMinMax(0,999);
-    timeTextBox.setOnValueChange(std::bind(&ReinforcementsWindow::onEntryChange, this, std::placeholders::_1));
+    timeTextBox.setOnValueChange([this](auto interactive) { onEntryChange(interactive); });
     hBox3.addWidget(&timeTextBox, 50);
     hBox3.addWidget(HSpacer::create(12));
     repeatCheckbox.setText(_("Repeat"));
     repeatCheckbox.setTextColor(color);
-    repeatCheckbox.setOnClick(std::bind(&ReinforcementsWindow::onEntryChange, this, true));
+    repeatCheckbox.setOnClick([this] { onEntryChange(true); });
     hBox3.addWidget(&repeatCheckbox);
 
 
@@ -175,7 +175,7 @@ ReinforcementsWindow::ReinforcementsWindow(MapEditor* pMapEditor, HOUSETYPE curr
 
     cancelButton.setText(_("Cancel"));
     cancelButton.setTextColor(color);
-    cancelButton.setOnClick(std::bind(&ReinforcementsWindow::onCancel, this));
+    cancelButton.setOnClick([this] { onCancel(); });
 
     buttonHBox.addWidget(&cancelButton);
 
@@ -187,7 +187,7 @@ ReinforcementsWindow::ReinforcementsWindow(MapEditor* pMapEditor, HOUSETYPE curr
 
     okButton.setText(_("OK"));
     okButton.setTextColor(color);
-    okButton.setOnClick(std::bind(&ReinforcementsWindow::onOK, this));
+    okButton.setOnClick([this] { onOK(); });
 
     buttonHBox.addWidget(&okButton);
 
@@ -213,7 +213,7 @@ void ReinforcementsWindow::onCancel() {
 
 
 void ReinforcementsWindow::onOK() {
-    MapEditor::startOperation();
+    pMapEditor->startOperation();
 
     MapEditorChangeReinforcements changeReinforcementsOperation(reinforcements);
 
@@ -253,7 +253,7 @@ void ReinforcementsWindow::onDown() {
     }
 }
 
-void ReinforcementsWindow::onAdd() const {
+void ReinforcementsWindow::onAdd() {
     if(pMapEditor->getMapVersion() < 2 && reinforcementsListBox.getNumEntries() >= 16) {
         MsgBox* pMsgBox = MsgBox::create(_("Dune2-compatible maps support only up to 16 entries!"));
         pMsgBox->setTextColor(color);

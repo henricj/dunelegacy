@@ -62,7 +62,7 @@ void MCV::handleDeployClick() {
     currentGame->getCommandManager().addCommand(Command(pLocalPlayer->getPlayerID(), CMDTYPE::CMD_MCV_DEPLOY,objectID));
 }
 
-bool MCV::doDeploy() const {
+bool MCV::doDeploy() {
     // check if there is enough room for construction yard
     if(canDeploy()) {
         // save needed values

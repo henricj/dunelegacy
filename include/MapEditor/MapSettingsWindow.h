@@ -60,7 +60,7 @@ public:
 
 private:
 
-    static void onCancel();
+    void onCancel();
     void onOK();
 
 

@@ -49,7 +49,7 @@ TeamsWindow::TeamsWindow(MapEditor* pMapEditor, HOUSETYPE currentHouse)
     mainHBox.addWidget(HSpacer::create(16));
 
     titleLabel.setTextColor(COLOR_LIGHTYELLOW, COLOR_TRANSPARENT);
-    titleLabel.setAlignment((Alignment_Enum) (Alignment_HCenter | Alignment_VCenter));
+    titleLabel.setAlignment(static_cast<Alignment_Enum>(Alignment_HCenter | Alignment_VCenter));
     titleLabel.setText(_("Teams"));
     mainVBox.addWidget(&titleLabel);
 
@@ -61,7 +61,7 @@ TeamsWindow::TeamsWindow(MapEditor* pMapEditor, HOUSETYPE currentHouse)
     centralVBox.addWidget(&hBox1, 6.0);
 
     teamsListBox.setColor(color);
-    teamsListBox.setOnSelectionChange(std::bind(&TeamsWindow::onSelectionChange, this, std::placeholders::_1));
+    teamsListBox.setOnSelectionChange([this](auto interactive) { onSelectionChange(interactive); });
     hBox1.addWidget(&teamsListBox, 1.0);
 
     hBox1.addWidget(HSpacer::create(3));
@@ -69,13 +69,13 @@ TeamsWindow::TeamsWindow(MapEditor* pMapEditor, HOUSETYPE currentHouse)
     listEntryUpButton.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_ArrowUp, house),
                                 pGFXManager->getUIGraphicSurface(UI_MapEditor_ArrowUp_Active, house));
     listEntryUpButton.setTooltipText(_("Move up"));
-    listEntryUpButton.setOnClick(std::bind(&TeamsWindow::onUp, this));
+    listEntryUpButton.setOnClick([this] { onUp(); });
     listControlVBox.addWidget(&listEntryUpButton, 25);
     listControlVBox.addWidget(VSpacer::create(3));
     listEntryDownButton.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_ArrowDown, house),
                                   pGFXManager->getUIGraphicSurface(UI_MapEditor_ArrowDown_Active, house));
     listEntryDownButton.setTooltipText(_("Move down"));
-    listEntryDownButton.setOnClick(std::bind(&TeamsWindow::onDown, this));
+    listEntryDownButton.setOnClick([this] { onDown(); });
     listControlVBox.addWidget(&listEntryDownButton, 25);
 
     listControlVBox.addWidget(Spacer::create(), 6.0);
@@ -83,13 +83,13 @@ TeamsWindow::TeamsWindow(MapEditor* pMapEditor, HOUSETYPE currentHouse)
     addListEntryButton.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_Plus, house),
                                  pGFXManager->getUIGraphicSurface(UI_MapEditor_Plus_Active, house));
     addListEntryButton.setTooltipText(_("Add"));
-    addListEntryButton.setOnClick(std::bind(&TeamsWindow::onAdd, this));
+    addListEntryButton.setOnClick([this]{ onAdd(); });
     listControlVBox.addWidget(&addListEntryButton, 25);
     listControlVBox.addWidget(VSpacer::create(3));
     removeListEntryButton.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_Minus, house),
                                     pGFXManager->getUIGraphicSurface(UI_MapEditor_Minus_Active, house));
     removeListEntryButton.setTooltipText(_("Remove"));
-    removeListEntryButton.setOnClick(std::bind(&TeamsWindow::onRemove, this));
+    removeListEntryButton.setOnClick([this] { onRemove(); });
     listControlVBox.addWidget(&removeListEntryButton, 25);
 
     hBox1.addWidget(&listControlVBox, 25);
@@ -102,7 +102,7 @@ TeamsWindow::TeamsWindow(MapEditor* pMapEditor, HOUSETYPE currentHouse)
     playerLabel.setTextColor(color);
     hBox2.addWidget(&playerLabel, 95);
     playerDropDownBox.setColor(color);
-    playerDropDownBox.setOnSelectionChange(std::bind(&TeamsWindow::onEntryChange, this, std::placeholders::_1));
+    playerDropDownBox.setOnSelectionChange([this](auto interactive) { onEntryChange(interactive); });
 
     int currentPlayerNum = 1;
     for(const auto& player : pMapEditor->getPlayers()) {
@@ -118,7 +118,7 @@ TeamsWindow::TeamsWindow(MapEditor* pMapEditor, HOUSETYPE currentHouse)
     aiTeamBehaviorLabel.setTextColor(color);
     hBox2.addWidget(&aiTeamBehaviorLabel, 120);
     aiTeamBehaviorDropDownBox.setColor(color);
-    aiTeamBehaviorDropDownBox.setOnSelectionChange(std::bind(&TeamsWindow::onEntryChange, this, std::placeholders::_1));
+    aiTeamBehaviorDropDownBox.setOnSelectionChange([this](auto interactive) { onEntryChange(interactive); });
 
     aiTeamBehaviorDropDownBox.addEntry(getAITeamBehaviorNameByID(AITeamBehavior::AITeamBehavior_Normal),
                                        static_cast<int>(AITeamBehavior::AITeamBehavior_Normal));
@@ -141,7 +141,7 @@ TeamsWindow::TeamsWindow(MapEditor* pMapEditor, HOUSETYPE currentHouse)
     aiTeamTypeLabel.setTextColor(color);
     hBox3.addWidget(&aiTeamTypeLabel, 95);
     aiTeamTypeDropDownBox.setColor(color);
-    aiTeamTypeDropDownBox.setOnSelectionChange(std::bind(&TeamsWindow::onEntryChange, this, std::placeholders::_1));
+    aiTeamTypeDropDownBox.setOnSelectionChange([this](auto interactive) { onEntryChange(interactive); });
     aiTeamTypeDropDownBox.addEntry(_("Foot (Infantry, Troopers)"), static_cast<int>(AITeamType::AITeamType_Foot));
     aiTeamTypeDropDownBox.addEntry(_("Wheeled (Trike, Raider, Quad)"), static_cast<int>(AITeamType::AITeamType_Wheeled));
     aiTeamTypeDropDownBox.addEntry(_("Tracked (Tank, Launcher, Siege Tank,...)"), static_cast<int>(AITeamType::AITeamType_Tracked));
@@ -156,14 +156,14 @@ TeamsWindow::TeamsWindow(MapEditor* pMapEditor, HOUSETYPE currentHouse)
     hBox3.addWidget(&minUnitsLabel);
     minUnitsTextBox.setColor(house, color);
     minUnitsTextBox.setMinMax(0,99);
-    minUnitsTextBox.setOnValueChange(std::bind(&TeamsWindow::onMinUnitsChange, this, std::placeholders::_1));
+    minUnitsTextBox.setOnValueChange([this](auto interactive) { onMinUnitsChange(interactive); });
     hBox3.addWidget(&minUnitsTextBox, 47);
     maxUnitsLabel.setText(_("to"));
     maxUnitsLabel.setTextColor(color);
     hBox3.addWidget(&maxUnitsLabel, 30);
     maxUnitsTextBox.setColor(house, color);
     maxUnitsTextBox.setMinMax(0,99);
-    maxUnitsTextBox.setOnValueChange(std::bind(&TeamsWindow::onMaxUnitsChange, this, std::placeholders::_1));
+    maxUnitsTextBox.setOnValueChange([this](auto interactive) { onMaxUnitsChange(interactive); });
     hBox3.addWidget(&maxUnitsTextBox, 47);
 
 
@@ -173,7 +173,7 @@ TeamsWindow::TeamsWindow(MapEditor* pMapEditor, HOUSETYPE currentHouse)
 
     cancelButton.setText(_("Cancel"));
     cancelButton.setTextColor(color);
-    cancelButton.setOnClick(std::bind(&TeamsWindow::onCancel, this));
+    cancelButton.setOnClick([this] { onCancel(); });
 
     buttonHBox.addWidget(&cancelButton);
 
@@ -185,7 +185,7 @@ TeamsWindow::TeamsWindow(MapEditor* pMapEditor, HOUSETYPE currentHouse)
 
     okButton.setText(_("OK"));
     okButton.setTextColor(color);
-    okButton.setOnClick(std::bind(&TeamsWindow::onOK, this));
+    okButton.setOnClick([this] { onOK(); });
 
     buttonHBox.addWidget(&okButton);
 
@@ -211,7 +211,7 @@ void TeamsWindow::onCancel() {
 
 
 void TeamsWindow::onOK() {
-    MapEditor::startOperation();
+    pMapEditor->startOperation();
 
     MapEditorChangeTeams changeTeamsOperation(aiteams);
 
@@ -251,7 +251,7 @@ void TeamsWindow::onDown() {
     }
 }
 
-void TeamsWindow::onAdd() const {
+void TeamsWindow::onAdd() {
     if(pMapEditor->getMapVersion() < 2 && teamsListBox.getNumEntries() >= 16) {
         MsgBox* pMsgBox = MsgBox::create(_("Dune2-compatible maps support only up to 16 entries!"));
         pMsgBox->setTextColor(color);
@@ -364,7 +364,8 @@ std::string TeamsWindow::getDescribingString(const AITeamInfo& aiteamInfo) {
             + std::to_string(aiteamInfo.maxUnits);
 }
 
-std::string TeamsWindow::getPlayerName(HOUSETYPE house) {
+std::string TeamsWindow::getPlayerName(HOUSETYPE house) const
+{
     int currentPlayerNum = 1;
     for(const auto& player : pMapEditor->getPlayers()) {
         if(player.house == house) {

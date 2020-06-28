@@ -266,7 +266,7 @@ MapSettingsWindow::MapSettingsWindow(MapEditor* pMapEditor, HOUSETYPE currentHou
 
     cancelButton.setText(_("Cancel"));
     cancelButton.setTextColor(color);
-    cancelButton.setOnClick(std::bind(&MapSettingsWindow::onCancel, this));
+    cancelButton.setOnClick([this] { onCancel(); });
 
     buttonHBox.addWidget(&cancelButton);
 
@@ -278,7 +278,7 @@ MapSettingsWindow::MapSettingsWindow(MapEditor* pMapEditor, HOUSETYPE currentHou
 
     okButton.setText(_("OK"));
     okButton.setTextColor(color);
-    okButton.setOnClick(std::bind(&MapSettingsWindow::onOK, this));
+    okButton.setOnClick([this] { onOK(); });
 
     buttonHBox.addWidget(&okButton);
 
@@ -311,7 +311,7 @@ void MapSettingsWindow::onOK() {
     mapInfo.author = authorTextBox.getText();
     mapInfo.license = licenseTextBox.getText();
 
-    MapEditor::startOperation();
+    pMapEditor->startOperation();
 
     MapEditorChangeMapInfo changeMapInfoOperation(mapInfo);
 

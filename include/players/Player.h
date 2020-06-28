@@ -121,13 +121,13 @@ protected:
     Uint32 getGameCycleCount() const;
     int getTechLevel() const;
 
-    static const Map& getMap();
-    static const ObjectBase* getObject(Uint32 objectID);
+    const Map& getMap();
+    const ObjectBase* getObject(Uint32 objectID);
 
-    static const RobustList<const StructureBase*>& getStructureList();
-    static const RobustList<const UnitBase*>& getUnitList();
+    const RobustList<const StructureBase*>& getStructureList();
+    const RobustList<const UnitBase*>& getUnitList() const;
 
-    static const House* getHouse(HOUSETYPE houseID);
+    const House* getHouse(HOUSETYPE houseID);
 
     /**
         Start repairing the structure pObject or sending the unit pObject to the rapair yard.

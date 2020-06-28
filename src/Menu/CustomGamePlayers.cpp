@@ -1172,7 +1172,7 @@ void CustomGamePlayers::setPlayer2Slot(const std::string& playername, int slot) 
     }
 
     dropDownBox.clearAllEntries();
-    DropDownBox::addEntry(playername, PLAYER_HUMAN);
+    dropDownBox.addEntry(playername, PLAYER_HUMAN);
     dropDownBox.setSelectedItem(0);
 
     if(!bServer) {
@@ -1265,7 +1265,7 @@ void CustomGamePlayers::addToHouseDropDown(DropDownBox& houseDropDownBox, HOUSET
         if(house == HOUSETYPE::HOUSE_INVALID) {
             houseDropDownBox.addEntry(_("Random"), static_cast<int>(HOUSETYPE::HOUSE_INVALID));
         } else {
-            DropDownBox::addEntry(getHouseNameByNumber(house), static_cast<int>(house));
+            houseDropDownBox.addEntry(getHouseNameByNumber(house), static_cast<int>(house));
         }
 
         if(bSelect) {
@@ -1297,7 +1297,7 @@ void CustomGamePlayers::addToHouseDropDown(DropDownBox& houseDropDownBox, HOUSET
                     currentItemIndex++;
                 } else {
                     if(h == static_cast<int>(house)) {
-                        DropDownBox::insertEntry(currentItemIndex, getHouseNameByNumber((HOUSETYPE) h), h);
+                        houseDropDownBox.insertEntry(currentItemIndex, getHouseNameByNumber((HOUSETYPE)h), h);
 
                         if(bSelect) {
                             houseDropDownBox.setSelectedItem(currentItemIndex);

@@ -34,7 +34,7 @@ public:
 
     void handleSpecialClick();
 
-    static void handleDeathhandClick(int xPos, int yPos);
+    void handleDeathhandClick(int xPos, int yPos);
 
     /**
         Activate the special palace weapon Fremen or Saboteur. For the Deathhand see doLaunchDeathhand.

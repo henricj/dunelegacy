@@ -79,15 +79,15 @@ public:
 
     void update();
 
-    static void sendChatMessage(const std::string& message);
+    void sendChatMessage(const std::string& message);
 
     void sendChangeEventList(const ChangeEventList& changeEventList);
 
     void sendStartGame(unsigned int timeLeft);
 
-    static void sendCommandList(const CommandList& commandList);
+    void sendCommandList(const CommandList& commandList);
 
-    static void sendSelectedList(const Dune::selected_set_type& selectedList, int groupListIndex = -1);
+    void sendSelectedList(const Dune::selected_set_type& selectedList, int groupListIndex = -1);
 
     [[nodiscard]] std::list<std::string> getConnectedPeers() const {
         std::list<std::string> peerNameList;
@@ -102,7 +102,7 @@ public:
         return peerNameList;
     }
 
-    static int getMaxPeerRoundTripTime();
+    int getMaxPeerRoundTripTime();
 
     LANGameFinderAndAnnouncer* getLANGameFinderAndAnnouncer() {
         return pLANGameFinderAndAnnouncer.get();
@@ -185,7 +185,7 @@ private:
 
     static void sendPacketToPeer(ENetPeer* peer, ENetPacketOStream& packetStream, int channel = 0);
 
-    static void sendPacketToAllConnectedPeers(ENetPacketOStream& packetStream, int channel = 0);
+    void sendPacketToAllConnectedPeers(ENetPacketOStream& packetStream, int channel = 0);
 
     void handlePacket(ENetPeer* peer, ENetPacketIStream& packetStream);
 

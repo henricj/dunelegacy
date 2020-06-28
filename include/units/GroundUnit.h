@@ -46,8 +46,8 @@ public:
     void bookCarrier(UnitBase* newCarrier);
     void checkPos() override;
 
-    static void doRequestCarryallDrop(int x, int y);
-    static bool requestCarryall();
+    void doRequestCarryallDrop(int x, int y);
+    bool requestCarryall();
     void setPickedUp(UnitBase* newCarrier) override;
 
     /**
@@ -57,8 +57,8 @@ public:
 
     void doRepair() noexcept override;
 
-    inline void setAwaitingPickup(bool status) { awaitingPickup = status; }
-    inline bool isAwaitingPickup() const { return awaitingPickup; }
+    void setAwaitingPickup(bool status) { awaitingPickup = status; }
+    bool isAwaitingPickup() const { return awaitingPickup; }
     bool hasBookedCarrier() const;
     const UnitBase* getCarrier() const;
 

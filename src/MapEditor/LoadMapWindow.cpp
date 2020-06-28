@@ -116,7 +116,7 @@ LoadMapWindow::LoadMapWindow(Uint32 color) : Window(0,0,0,0), color(color) {
 
     cancelButton.setText(_("Cancel"));
     cancelButton.setTextColor(color);
-    cancelButton.setOnClick(std::bind(&LoadMapWindow::onCancel, this));
+    cancelButton.setOnClick([this] { onCancel(); });
 
     buttonHBox.addWidget(&cancelButton);
 
@@ -128,7 +128,7 @@ LoadMapWindow::LoadMapWindow(Uint32 color) : Window(0,0,0,0), color(color) {
 
     loadButton.setText(_("Load"));
     loadButton.setTextColor(color);
-    loadButton.setOnClick(std::bind(&LoadMapWindow::onLoad, this));
+    loadButton.setOnClick([this] { onLoad(); });
 
     buttonHBox.addWidget(&loadButton);
 

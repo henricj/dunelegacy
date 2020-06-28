@@ -93,7 +93,8 @@ void Palace::handleSpecialClick() {
 
 void Palace::handleDeathhandClick(int xPos, int yPos) {
     if (currentGameMap->tileExists(xPos, yPos)) {
-        currentGame->getCommandManager().addCommand(Command(pLocalPlayer->getPlayerID(), CMDTYPE::CMD_PALACE_DEATHHAND,objectID, (Uint32) xPos, (Uint32) yPos));
+        currentGame->getCommandManager().addCommand(
+            Command(pLocalPlayer->getPlayerID(), CMDTYPE::CMD_PALACE_DEATHHAND, objectID, (Uint32)xPos, (Uint32)yPos));
     }
 }
 

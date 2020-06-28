@@ -41,7 +41,7 @@ public:
     LoadSaveWindow& operator=(const LoadSaveWindow &) = delete;
     LoadSaveWindow& operator=(LoadSaveWindow &&) = delete;
 
-    static void updateEntries();
+    void updateEntries();
     std::filesystem::path getFilename() const noexcept { return filename; };
 
     bool isSaveWindow() const noexcept { return bSaveWindow; };
@@ -108,12 +108,12 @@ public:
     }
 
 private:
-    void onOK() const;
-    static void onCancel() ;
+    void onOK();
+    void onCancel() ;
 
     void onDirectoryChange(int i);
 
-    void onSelectionChange(bool bInteractive) const;
+    void onSelectionChange(bool bInteractive);
 
     HBox    mainHBox;
     VBox    mainVBox;
