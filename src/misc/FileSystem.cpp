@@ -39,9 +39,10 @@
 
 std::vector<std::filesystem::path> getFileNamesList(const std::filesystem::path& directory, const std::string& extension, bool IgnoreCase, FileListOrder fileListOrder)
 {
-    std::vector<FileInfo> files = getFileList(directory, extension, IgnoreCase, fileListOrder);
+    const auto files = getFileList(directory, extension, IgnoreCase, fileListOrder);
 
     std::vector<std::filesystem::path> fileNames;
+    fileNames.reserve(files.size());
 
     for(const auto& fileInfo : files) {
         fileNames.push_back(fileInfo.name);
@@ -50,25 +51,53 @@ std::vector<std::filesystem::path> getFileNamesList(const std::filesystem::path&
     return fileNames;
 }
 
+namespace {
+char32_t safe_tolower(char32_t c) {
+    // See here for why what this code isn't right:
+    //   https://stackoverflow.com/a/50407375
+    // However, short of bringing in ICU, this is probably about as
+    // good as we can make things. Note that "std::tolower()" is
+    // undefined for anything that can't be represented by "unsigned
+    // char" or is EOF.
+    // https://en.cppreference.com/w/cpp/string/byte/tolower
+    using nlw = std::numeric_limits<wchar_t>;
+
+    if(c < nlw::min() || c > nlw::max()) return c;
+
+    return towlower(static_cast<wchar_t>(c));
+}
+
+void safe_tolower_inplace(std::u32string& s32) {
+    std::transform(s32.begin(), s32.end(), s32.begin(), [](char32_t c) { return safe_tolower(c); });
+}
+
+std::string safe_tolower(std::string_view s) {
+    std::wstring_convert<std::codecvt<char32_t, char, mbstate_t>, char32_t> conv;
+
+    auto s32 = conv.from_bytes(s.data(), s.data() + s.size());
+
+    safe_tolower_inplace(s32);
+
+    return conv.to_bytes(s32);
+}
+
+
+} // namespace
+
 static bool cmp_Name_Asc(const FileInfo& a, const FileInfo& b) { return (a.name.compare(b.name) < 0); }
 static bool cmp_Name_CaseInsensitive_Asc(const FileInfo& a, const FileInfo& b) {
     const auto a32 = a.name.u32string();
     const auto b32 = b.name.u32string();
 
-    unsigned int i = 0;
-    while ((i < a32.length()) && (i < b32.length())) {
-        if (tolower(a32[i]) < tolower(b32[i])) {
-            return true;
-        }
-        if (tolower(a32[i]) > tolower(b32[i])) {
+    for(auto i = decltype(a32.length()){0}; i < a32.length() && i < b32.length(); ++i) {
+        const auto la = safe_tolower(a32[i]);
+        const auto lb = safe_tolower(b32[i]);
 
-            return false;
-
-        }
-        i++;
+        if(la < lb) return true;
+        if(la > lb) return false;
     }
 
-    return (a32.length() < b32.length());
+    return a32.length() < b32.length();
 }
 
 static bool cmp_Name_Dsc(const FileInfo& a, const FileInfo& b) { return (a.name.compare(b.name) > 0); }
@@ -76,20 +105,15 @@ static bool cmp_Name_CaseInsensitive_Dsc(const FileInfo& a, const FileInfo& b) {
     const auto a32 = a.name.u32string();
     const auto b32 = b.name.u32string();
 
-    unsigned int i = 0;
-    while ((i < a32.length()) && (i < b32.length())) {
-        if (tolower(a32[i]) < tolower(b32[i])) {
-            return false;
-        }
-        if (tolower(a32[i]) > tolower(b32[i])) {
+    for(auto i = decltype(a32.length()){0}; i < a32.length() && i < b32.length(); ++i) {
+        const auto la = safe_tolower(a32[i]);
+        const auto lb = safe_tolower(b32[i]);
 
-            return true;
-
-        }
-        i++;
+        if(la < lb) return false;
+        if(la > lb) return true;
     }
 
-    return (a32.length() > b32.length());
+    return a32.length() > b32.length();
 }
 
 static bool cmp_Size_Asc(const FileInfo& a, const FileInfo& b) { return a.size < b.size; }
@@ -98,85 +122,92 @@ static bool cmp_Size_Dsc(const FileInfo& a, const FileInfo& b) { return a.size >
 static bool cmp_ModifyDate_Asc(const FileInfo& a, const FileInfo& b) { return a.modifydate < b.modifydate; }
 static bool cmp_ModifyDate_Dsc(const FileInfo& a, const FileInfo& b) { return a.modifydate > b.modifydate; }
 
-std::vector<FileInfo> getFileList(const std::filesystem::path& directory, const std::string& extension, bool bIgnoreCase, FileListOrder fileListOrder)
-{
-    std::vector<FileInfo> Files;
-    std::filesystem::path lowerExtension;
+std::vector<FileInfo> getFileList(const std::filesystem::path& directory, const std::string& extension,
+                                  bool bIgnoreCase, FileListOrder fileListOrder) {
 
-    lowerExtension.replace_extension(bIgnoreCase ? strToLower(extension) : extension);
+    std::filesystem::path target_extension_path;
+
+    target_extension_path.replace_extension(extension);
+
+    auto target_extension = target_extension_path.u32string();
+
+    if(bIgnoreCase) safe_tolower_inplace(target_extension);
+
+    std::vector<FileInfo> files;
 
     std::error_code ec;
-
-    for (const auto& entry : std::filesystem::directory_iterator(directory, ec))
-    {
-        if (!entry.is_regular_file()) continue;
-
-        //const auto& status = entry.status();
-
-        const auto& path = entry.path();
-        const auto filename = path.filename();
-
-        auto ext = filename.extension();
-
-        if (bIgnoreCase) {
-            auto tmp = ext.u8string();
-            convertToLower(tmp);
-            ext = std::filesystem::u8path(tmp);
+    for(const auto& entry : std::filesystem::directory_iterator(directory, ec)) {
+        if(ec) {
+            SDL_Log("Scanning directory %s failed with %s", directory.u8string().c_str(), ec.message().c_str());
+            break;
         }
 
-        if (ext == lowerExtension) {
-            auto fullpath = std::filesystem::canonical(path);
+        if(!entry.is_regular_file()) continue;
 
-            std::error_code ec;
-            const auto size = std::filesystem::file_size(fullpath, ec);
+        const auto& path     = entry.path();
+        const auto  filename = path.filename().u32string();
 
-            if (ec) {
-                SDL_Log("Getting size of %s failed with %s", fullpath.u8string().c_str(), strerror(ec.value()));
+        // Make sure we have the extension, a dot, and a non-empty stem.
+        if(filename.length() < target_extension.length() + 1) continue;
+
+        const auto match = bIgnoreCase
+                               ? std::equal(target_extension.rbegin(), target_extension.rend(), filename.rbegin(),
+                                            [](auto a, auto b) { return a == safe_tolower(b); })
+                               : std::equal(target_extension.rbegin(), target_extension.rend(), filename.rbegin(),
+                                            [](auto a, auto b) { return a == b; });
+
+        if(match) {
+            const auto full_path = std::filesystem::canonical(path);
+
+            const auto size = std::filesystem::file_size(full_path, ec);
+
+            if(ec) {
+                SDL_Log("Getting size of %s failed with %s", full_path.u8string().c_str(), ec.message().c_str());
                 continue;
             }
 
-            const auto modified = std::filesystem::last_write_time(fullpath, ec);
-            if (ec) {
-                SDL_Log("Getting last modified time of %s failed with %s", fullpath.u8string().c_str(), strerror(ec.value()));
+            const auto modified = std::filesystem::last_write_time(full_path, ec);
+            if(ec) {
+                SDL_Log("Getting last modified time of %s failed with %s", full_path.u8string().c_str(),
+                        ec.message().c_str());
                 continue;
             }
 
-            Files.emplace_back(filename, size, modified);
+            files.emplace_back(full_path.filename().u8string(), size, modified);
         }
     }
 
-    if (!Files.empty())
     switch(fileListOrder) {
         case FileListOrder_Name_Asc: {
-            std::sort(Files.begin(), Files.end(), cmp_Name_Asc);
+            std::sort(files.begin(), files.end(), cmp_Name_Asc);
         } break;
 
         case FileListOrder_Name_CaseInsensitive_Asc: {
-            std::sort(Files.begin(), Files.end(), cmp_Name_CaseInsensitive_Asc);
+            std::sort(files.begin(), files.end(), cmp_Name_CaseInsensitive_Asc);
         } break;
 
         case FileListOrder_Name_Dsc: {
-            std::sort(Files.begin(), Files.end(), cmp_Name_Dsc);
+            std::sort(files.begin(), files.end(), cmp_Name_Dsc);
         } break;
 
         case FileListOrder_Name_CaseInsensitive_Dsc: {
-            std::sort(Files.begin(), Files.end(), cmp_Name_CaseInsensitive_Dsc);
+            std::sort(files.begin(), files.end(), cmp_Name_CaseInsensitive_Dsc);
         } break;
 
         case FileListOrder_Size_Asc: {
-            std::sort(Files.begin(), Files.end(), cmp_Size_Asc);
+            std::sort(files.begin(), files.end(), cmp_Size_Asc);
         } break;
 
         case FileListOrder_Size_Dsc: {
-            std::sort(Files.begin(), Files.end(), cmp_Size_Dsc);
+            std::sort(files.begin(), files.end(), cmp_Size_Dsc);
         } break;
 
         case FileListOrder_ModifyDate_Asc: {
-            std::sort(Files.begin(), Files.end(), cmp_ModifyDate_Asc);
+            std::sort(files.begin(), files.end(), cmp_ModifyDate_Asc);
         } break;
 
         case FileListOrder_ModifyDate_Dsc: {
-            std::sort(Files.begin(), Files.end(), cmp_ModifyDate_Dsc);
+            std::sort(files.begin(), files.end(), cmp_ModifyDate_Dsc);
         } break;
 
         case FileListOrder_Unsorted:
@@ -185,8 +216,7 @@ std::vector<FileInfo> getFileList(const std::filesystem::path& directory, const 
         } break;
     }
 
-    return Files;
-
+    return files;
 }
 
 bool getCaseInsensitiveFilename(std::filesystem::path& filepath) {
