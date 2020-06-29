@@ -22,13 +22,15 @@
 #include <Map.h>
 #include <misc/Random.h>
 
+#include <unordered_map>
+
 #include <structures/ConstructionYard.h>
 #include <structures/Palace.h>
 #include <units/UnitBase.h>
 
 #define AIUPDATEINTERVAL 50
 
-static std::map<Uint32, int> buildPriorityMap = {
+static const std::map<Uint32, int> buildPriorityMap = {
     { Unit_Carryall, 2 },
     { Unit_Ornithopter, 6 },
     { Unit_Infantry, 2 },
@@ -49,7 +51,7 @@ static std::map<Uint32, int> buildPriorityMap = {
     { Unit_MCV, 1 }
 };
 
-static std::map<Uint32, int> targetPriorityMap = {
+static const std::unordered_map<Uint32, int> targetPriorityMap = {
     { Unit_Carryall, 36 },
     { Unit_Ornithopter, 105 },
     { Unit_Infantry, 40 },
@@ -353,7 +355,9 @@ int CampaignAIPlayer::calculateTargetPriority(const UnitBase* pUnit, const Objec
         return 0;
     }
 
-    int priority = targetPriorityMap[pObject->getItemID()];
+    const auto it = targetPriorityMap.find(pObject->getItemID());
+
+    int priority = it == targetPriorityMap.end() ? 0 : it->second;
     int distance = blockDistanceApprox(pUnit->getLocation(), pObject->getLocation());
 
     return (distance > 0) ? ( (priority / distance) + 1 ) : priority;
