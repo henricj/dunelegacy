@@ -30,10 +30,11 @@ class Tile;
 
 class UnitBase : public ObjectBase
 {
-public:
+    void init();
+protected:
     explicit UnitBase(House* newOwner);
     explicit UnitBase(InputStream& stream);
-    void init();
+public:
     ~UnitBase() override = 0;
 
     UnitBase(const UnitBase &) = delete;

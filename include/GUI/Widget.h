@@ -18,7 +18,6 @@
 #ifndef WIDGET_H
 #define WIDGET_H
 
-#include <misc/DrawingRectHelper.h>
 #include <misc/SDL2pp.h>
 
 #include <functional>
@@ -119,20 +118,12 @@ public:
 
     /** The default constructor.
     */
-    Widget() {
-        parent = nullptr;
-        enabled = true;
-        visible = true;
-        active = false;
-        size.x = size.y = 0;
-        resizeX = resizeY = false;
-        pAllocated = false;
-    }
+    Widget() = default;
 
     /** Destructor
         Removes this widget from its parent.
     */
-    virtual ~Widget();
+    virtual ~Widget() = 0;
 
     Widget(const Widget &) = delete;
     Widget(Widget &&) = default;
@@ -490,13 +481,13 @@ protected:
     bool pAllocated;
 
 private:
-    bool visible;   ///< Is this widget visible?
-    bool enabled;   ///< Is this widget enabled?
-    bool active;    ///< Is this widget active?
-    bool resizeX;   ///< Is this widget resizable in X direction?
-    bool resizeY;   ///< Is this widget resizable in Y direction?
-    Point size;     ///< The size of this widget
-    Widget* parent; ///< The parent widget
+    bool    visible{true}; ///< Is this widget visible?
+    bool    enabled{true}; ///< Is this widget enabled?
+    bool    active{};      ///< Is this widget active?
+    bool    resizeX{};     ///< Is this widget resizable in X direction?
+    bool    resizeY{};     ///< Is this widget resizable in Y direction?
+    Point   size;          ///< The size of this widget
+    Widget* parent{};      ///< The parent widget
 
     std::function<void ()> pOnGainFocus;    ///< function that is called when this widget gains focus
     std::function<void ()> pOnLostFocus;    ///< function that is called when this widget loses focus
