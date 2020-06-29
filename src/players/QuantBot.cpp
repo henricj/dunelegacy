@@ -1050,7 +1050,8 @@ void QuantBot::build(int militaryValue) {
                            && itemCount[Unit_Carryall] < (militaryValue + itemCount[Unit_Harvester] * 500) / 3000
                            && (pBuilder->getProductionQueueSize() < 1)
                            && money > 1000
-                           && !getHouse()->isAirUnitLimitReached()){
+                           && !getHouse()->isAirUnitLimitReached()
+                           && itemCount[Unit_Carryall] * 5 < getHouse()->getMaxUnits()){
                             doProduceItem(pBuilder, Unit_Carryall);
                             itemCount[Unit_Carryall]++;
                         } else if((money > 500) && (!pBuilder->isUpgrading()) && (pBuilder->getCurrentUpgradeLevel() < pBuilder->getMaxUpgradeLevel())) {
@@ -1063,7 +1064,8 @@ void QuantBot::build(int militaryValue) {
                                 && (militaryValue * ornithopterPercent > ornithopterValue)
                                 && (pBuilder->getProductionQueueSize() < 1)
                                 && !getHouse()->isAirUnitLimitReached()
-                                && money > 1200){
+                                && itemCount[Unit_Carryall] * 5 < getHouse()->getMaxUnits()
+                                && money > 1200) {
                             // Current value and what percentage of military we want used to determine
                             // whether to build an additional unit.
                             doProduceItem(pBuilder, Unit_Ornithopter);
@@ -1080,7 +1082,9 @@ void QuantBot::build(int militaryValue) {
                             if( (difficulty == Difficulty::Hard || difficulty == Difficulty::Brutal)
                                 && itemCount[Unit_MCV] + itemCount[Structure_ConstructionYard] + itemCount[Structure_StarPort] < 1
                                 && pBuilder->isAvailableToBuild(Unit_MCV)
-                                && !getHouse()->isGroundUnitLimitReached()) {
+                                && !getHouse()->isGroundUnitLimitReached()
+                                && itemCount[Structure_ConstructionYard] + itemCount[Unit_MCV] < 15
+                                && itemCount[Unit_MCV] < 5) {
                                 doProduceItem(pBuilder, Unit_MCV);
                                 itemCount[Unit_MCV]++;
                             } else if(gameMode == GameMode::Custom && (itemCount[Structure_ConstructionYard] + itemCount[Unit_MCV] )*3500 < getHouse()->getCredits()
@@ -1094,6 +1098,7 @@ void QuantBot::build(int militaryValue) {
                             } else if(gameMode == GameMode::Custom
                                         && (itemCount[Structure_ConstructionYard] + itemCount[Unit_MCV] ) * 10000 < getHouse()->getCredits()
                                         && !getHouse()->isGroundUnitLimitReached()
+                                        && itemCount[Unit_MCV] < 5
                                         && pBuilder->isAvailableToBuild(Unit_MCV)) {
                                 // If we are kind of rich make a backup construction yard to spend the excess money
                                 doProduceItem(pBuilder, Unit_MCV);
