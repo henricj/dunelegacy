@@ -858,7 +858,7 @@ void Tile::triggerSpecialBloom(House* pTrigger) {
 
     switch (currentGame->randomGen.rand(0, 3)) {
         case 0: {
-            // the player gets an randomly choosen amount of credits between 150 and 400
+            // the player gets an randomly chosen amount of credits between 150 and 400
             pTrigger->addCredits(currentGame->randomGen.rand(150, 400), false);
         } break;
 

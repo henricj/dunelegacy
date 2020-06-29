@@ -23,13 +23,12 @@
 
 class GroundUnit : public UnitBase
 {
-
-public:
-
+    void init();
+protected:
     explicit GroundUnit(House* newOwner);
     explicit GroundUnit(InputStream& stream);
-    void init();
-    ~GroundUnit() override;
+public:
+    ~GroundUnit() override = 0;
 
     GroundUnit(const GroundUnit &) = delete;
     GroundUnit(GroundUnit &&) = delete;

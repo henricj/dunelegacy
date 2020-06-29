@@ -22,10 +22,10 @@
 
 class Trike final : public GroundUnit
 {
+    void init();
 public:
     explicit Trike(House* newOwner);
     explicit Trike(InputStream& stream);
-    void init();
     ~Trike() override;
 
     void destroy() override;

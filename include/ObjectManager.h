@@ -27,10 +27,10 @@
 // forward declarations
 class ObjectBase;
 
-typedef std::unordered_map<Uint32,ObjectBase*> ObjectMap;
+typedef std::unordered_map<Uint32, ObjectBase*> ObjectMap;
 
 /// This class holds all objects (structures and units) in the game.
-class ObjectManager {
+class ObjectManager final {
 public:
     /**
         Default constructor
@@ -63,7 +63,7 @@ public:
     void load(InputStream& stream);
 
     /**
-        This method adds one object. The ObjectID is choosen automatically.
+        This method adds one object. The ObjectID is chosen automatically.
         \param  pObject A pointer to the object.
         \return ObjectID of the added object.
     */
@@ -74,7 +74,7 @@ public:
         \param  objectID        ID of the object to search for
         \return Pointer to this object (nullptr if not found)
     */
-    ObjectBase* getObject(Uint32 objectID) const {
+    [[nodiscard]] ObjectBase* getObject(Uint32 objectID) const {
         const auto iter = objectMap.find(objectID);
 
         if(iter == objectMap.end()) {

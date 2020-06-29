@@ -21,7 +21,6 @@
 #include "Widget.h"
 #include <misc/SDL2pp.h>
 
-#include <iostream>
 #include <queue>
 
 /// A class representing a window
@@ -83,7 +82,7 @@ public:
         Get the current position of this window.
         \return current position of this window
     */
-    inline const Point& getPosition() { return position; };
+    const Point& getPosition() const noexcept { return position; };
 
     /**
         Sets the current window position and size.
@@ -179,7 +178,7 @@ public:
     /**
         This method draws the parts of this window that must be drawn after all the other
         widgets are drawn (e.g. tooltips). This method is called after draw().
-        \param  Position    Position to draw the window to. The position of the window is added to this.
+        \param  position    Position to draw the window to. The position of the window is added to this.
     */
     void drawOverlay(Point position) override;
 
@@ -188,7 +187,7 @@ public:
         The window itself can contain only one widget.
         \param  pWindowWidget   The only widget that this window contains
     */
-    virtual inline void setWindowWidget(Widget* pWindowWidget) {
+    virtual void setWindowWidget(Widget* pWindowWidget) {
         this->pWindowWidget = pWindowWidget;
         if(this->pWindowWidget != nullptr) {
             this->pWindowWidget->setParent(this);
@@ -201,13 +200,13 @@ public:
         Returns the current window widget.
         \return the current window widget
     */
-    virtual inline Widget* getWindowWidget() { return pWindowWidget; };
+    virtual Widget* getWindowWidget() { return pWindowWidget; };
 
     /**
         This method resizes the window.
         \param  newSize the new size of this widget
     */
-    inline void resize(Point newSize) override
+    void resize(Point newSize) override
     {
         resize(newSize.x, newSize.y);
     };
@@ -234,7 +233,7 @@ public:
         Set the background of this window.
         \param  pBackground the new background of this window. nullptr=default background
     */
-    virtual void setBackground(sdl2::surface_unique_or_nonowning_ptr);
+    virtual void setBackground(sdl2::surface_unique_or_nonowning_ptr pBackground);
 
     /**
         Set the background of this window.

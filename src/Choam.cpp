@@ -17,9 +17,7 @@
 Choam::Choam(House* pHouse) : house(pHouse) {
 }
 
-Choam::~Choam() {
-        ;
-}
+Choam::~Choam() = default;
 
 void Choam::save(OutputStream& stream) const {
     stream.writeUint32(availableItems.size());
