@@ -150,7 +150,7 @@ CustomGamePlayers::CustomGamePlayers(const GameInitSettings& newGameInitSettings
 
     backButtonVBox.addWidget(Spacer::create());
     backButton.setText(_("Back"));
-    backButton.setOnClick(std::bind(&CustomGamePlayers::onCancel, this));
+    backButton.setOnClick([this] { onCancel(); });
     backButtonVBox.addWidget(&backButton, 24);
     backButtonVBox.addWidget(VSpacer::create(14));
     buttonHBox.addWidget(&backButtonVBox, 0.1);
@@ -162,7 +162,7 @@ CustomGamePlayers::CustomGamePlayers(const GameInitSettings& newGameInitSettings
     if(getRendererHeight() <= 600) {
         chatTextBox.setTextFontSize(12);
     }
-    chatTextBox.setOnReturn(std::bind(&CustomGamePlayers::onSendChatMessage, this));
+    chatTextBox.setOnReturn([this] { onSendChatMessage(); });
     chatVBox.addWidget(&chatTextBox, 0.2);
     chatVBox.addWidget(Spacer::create(), 0.03);
     buttonHBox.addWidget(&chatVBox, 0.675);
@@ -178,7 +178,7 @@ CustomGamePlayers::CustomGamePlayers(const GameInitSettings& newGameInitSettings
 
     nextButtonVBox.addWidget(Spacer::create());
     nextButton.setText(_("Next"));
-    nextButton.setOnClick(std::bind(&CustomGamePlayers::onNext, this));
+    nextButton.setOnClick([this] { onNext(); });
     nextButtonVBox.addWidget(&nextButton, 24);
     nextButtonVBox.addWidget(VSpacer::create(14));
     if(!bServer) {
@@ -222,7 +222,8 @@ CustomGamePlayers::CustomGamePlayers(const GameInitSettings& newGameInitSettings
             addToHouseDropDown(curHouseInfo.houseDropDown, HOUSETYPE::HOUSE_INVALID, true);
             curHouseInfo.houseDropDown.setEnabled(bServer);
         }
-        curHouseInfo.houseDropDown.setOnSelectionChange(std::bind(&CustomGamePlayers::onChangeHousesDropDownBoxes, this, std::placeholders::_1, i));
+        curHouseInfo.houseDropDown.setOnSelectionChange(
+            [this, i](auto interactive) { onChangeHousesDropDownBoxes(interactive, i); });
         curHouseInfo.houseHBox.addWidget(&curHouseInfo.houseDropDown, 95);
 
         if(bLoadMultiplayer) {
@@ -241,7 +242,8 @@ CustomGamePlayers::CustomGamePlayers(const GameInitSettings& newGameInitSettings
             curHouseInfo.teamDropDown.setSelectedItem(slotToTeam[i]);
             curHouseInfo.teamDropDown.setEnabled(bServer);
         }
-        curHouseInfo.teamDropDown.setOnSelectionChange(std::bind(&CustomGamePlayers::onChangeTeamDropDownBoxes, this, std::placeholders::_1, i));
+        curHouseInfo.teamDropDown.setOnSelectionChange(
+            [this, i](auto interactive) { onChangeTeamDropDownBoxes(interactive, i); });
         curHouseInfo.houseHBox.addWidget(HSpacer::create(10));
         curHouseInfo.houseHBox.addWidget(&curHouseInfo.teamDropDown, 85);
 
@@ -300,8 +302,9 @@ CustomGamePlayers::CustomGamePlayers(const GameInitSettings& newGameInitSettings
             }
             curHouseInfo.player1DropDown.setEnabled(bServer);
         }
-        curHouseInfo.player1DropDown.setOnSelectionChange(std::bind(&CustomGamePlayers::onChangePlayerDropDownBoxes, this, std::placeholders::_1, 2*i));
-        curHouseInfo.player1DropDown.setOnClick(std::bind(&CustomGamePlayers::onClickPlayerDropDownBox, this, 2*i));
+        curHouseInfo.player1DropDown.setOnSelectionChange(
+            [this, boxnum = 2 * i](bool interactive) { onChangePlayerDropDownBoxes(interactive, boxnum); });
+        curHouseInfo.player1DropDown.setOnClick([this, capture0 = 2 * i] { onClickPlayerDropDownBox(capture0); });
         curHouseInfo.playerHBox.addWidget(&curHouseInfo.player1DropDown, 100);
 
         curHouseInfo.playerHBox.addWidget(HSpacer::create(10));
@@ -355,8 +358,9 @@ CustomGamePlayers::CustomGamePlayers(const GameInitSettings& newGameInitSettings
             }
             curHouseInfo.player2DropDown.setEnabled(bServer);
         }
-        curHouseInfo.player2DropDown.setOnSelectionChange(std::bind(&CustomGamePlayers::onChangePlayerDropDownBoxes, this, std::placeholders::_1, 2*i + 1));
-        curHouseInfo.player2DropDown.setOnClick(std::bind(&CustomGamePlayers::onClickPlayerDropDownBox, this, 2*i + 1));
+        curHouseInfo.player2DropDown.setOnSelectionChange(
+            [this, capture0 = 2 * i + 1](auto interactive) { onChangePlayerDropDownBoxes(interactive, capture0); });
+        curHouseInfo.player2DropDown.setOnClick([this, capture0 = 2 * i + 1] { onClickPlayerDropDownBox(capture0); });
         curHouseInfo.playerHBox.addWidget(&curHouseInfo.player2DropDown, 100);
 
         curHouseInfo.houseInfoVBox.addWidget(&curHouseInfo.playerHBox);
@@ -397,14 +401,17 @@ CustomGamePlayers::CustomGamePlayers(const GameInitSettings& newGameInitSettings
             pNetworkManager->startServer(bLANServer, gameInitSettings.getServername(), settings.general.playerName, &gameInitSettings, 1, gameInitSettings.isMultiplePlayersPerHouse() ? numHouses*2 : numHouses);
         }
 
-        pNetworkManager->setOnPeerDisconnected(std::bind(&CustomGamePlayers::onPeerDisconnected, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
-        pNetworkManager->setOnReceiveChangeEventList(std::bind(&CustomGamePlayers::onReceiveChangeEventList, this, std::placeholders::_1));
-        pNetworkManager->setOnReceiveChatMessage(std::bind(&CustomGamePlayers::onReceiveChatMessage, this, std::placeholders::_1, std::placeholders::_2));
+        pNetworkManager->setOnPeerDisconnected(
+            [this](const auto& playername, auto host, auto cause) { onPeerDisconnected(playername, host, cause); });
+        pNetworkManager->setOnReceiveChangeEventList([this](const auto& events) { onReceiveChangeEventList(events); });
+        pNetworkManager->setOnReceiveChatMessage(
+            [this](const auto& name, const auto& message) { onReceiveChatMessage(name, message); });
 
         if(bServer) {
-            pNetworkManager->setGetChangeEventListForNewPlayerCallback(std::bind(&CustomGamePlayers::getChangeEventListForNewPlayer, this, std::placeholders::_1));
+            pNetworkManager->setGetChangeEventListForNewPlayerCallback(
+                [this](const auto& newPlayerName) { return getChangeEventListForNewPlayer(newPlayerName); });
         } else {
-            pNetworkManager->setOnStartGame(std::bind(&CustomGamePlayers::onStartGame, this, std::placeholders::_1));
+            pNetworkManager->setOnStartGame([this](auto timeleft) { onStartGame(timeleft); });
         }
     }
 }
