@@ -1252,7 +1252,8 @@ void Game::runMainLoop() {
         // save replay
 
         auto mapnameBase = getBasename(gameInitSettings.getFilename(), true);
-        auto rplName = (std::filesystem::path{ "replay" } / mapnameBase).replace_extension(".rpl");
+        mapnameBase += ".rpl";
+        auto rplName = std::filesystem::path{ "replay" } / mapnameBase;
         auto [ok, replayname] = fnkdat(rplName, FNKDAT_USER | FNKDAT_CREAT);
 
         OFileStream replystream;
