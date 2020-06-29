@@ -52,26 +52,9 @@ std::string INIFile::Key::getKeyName() const {
     return completeLine.substr(keyStringBegin,keyStringLength);
 }
 
-std::string INIFile::Key::getStringValue() const {
-    return completeLine.substr(valueStringBegin,valueStringLength);
-}
-
-int INIFile::Key::getIntValue(int defaultValue) const {
-    std::string value = getStringValue();
-    if(value.empty()) {
-        return defaultValue;
-    }
-
-    long ret = 0;
-    if(value.at(0) == '-') {
-        ret = -(atol(value.c_str()+1));
-    } else if (value.at(0) == '+') {
-        ret = atol(value.c_str()+1);
-    } else {
-        ret = atol(value.c_str());
-    }
-
-    return ret;
+std::string_view INIFile::Key::getStringView() const
+{
+    return std::string_view{&completeLine[valueStringBegin], static_cast<size_t>(valueStringLength)};
 }
 
 bool INIFile::Key::getBoolValue(bool defaultValue) const {
@@ -96,70 +79,39 @@ bool INIFile::Key::getBoolValue(bool defaultValue) const {
     }
 }
 
-float INIFile::Key::getFloatValue(float defaultValue) const {
-    auto value = getStringValue();
-    if(value.empty()) {
-        return defaultValue;
+void INIFile::Key::setStringValue(const std::string_view newValue, bool bEscapeIfNeeded) {
+    const auto need_escape = bEscapeIfNeeded ? escapingValueNeeded(newValue) : false;
+    const auto is_escaped  = valueStringBegin > 0 ? completeLine[valueStringBegin - 1] == '"' : false;
+
+    if(need_escape == is_escaped) {
+        completeLine.replace(valueStringBegin, valueStringLength, newValue.data(), newValue.size());
+        valueStringLength = newValue.size();
+        return;
     }
 
-    const auto ret = strtof(value.c_str(), nullptr);
-
-    return ret;
-}
-
-double INIFile::Key::getDoubleValue(double defaultValue) const {
-    auto value = getStringValue();
-    if(value.empty()) {
-        return defaultValue;
+    if(is_escaped && !need_escape) {
+        completeLine.replace(valueStringBegin - 1, valueStringLength + 2, newValue.data(), newValue.size());
+        --valueStringBegin;
+        valueStringLength = newValue.size();
+        return;
     }
 
-    const auto ret = strtod(value.c_str(), nullptr);
-
-    return ret;
-}
-
-void INIFile::Key::setStringValue(const std::string& newValue, bool bEscapeIfNeeded) {
-    if(completeLine[valueStringBegin-1] == '"') {
-        completeLine.replace(valueStringBegin-1,valueStringLength+2, bEscapeIfNeeded ? escapeValue(newValue) : newValue);
-    } else {
-        completeLine.replace(valueStringBegin,valueStringLength, bEscapeIfNeeded ? escapeValue(newValue) : newValue);
-    }
-}
-
-void INIFile::Key::setIntValue(int newValue) {
-    setStringValue(std::to_string(newValue));
+    // We need to add quotes...
+    completeLine.replace(valueStringBegin, valueStringLength, "\"\"");
+    ++valueStringBegin;
+    valueStringLength = newValue.size();
+    completeLine.insert(valueStringBegin,newValue.data(), newValue.size());
 }
 
 void INIFile::Key::setBoolValue(bool newValue) {
-    if(newValue) {
-        setStringValue("true");
-    } else {
-        setStringValue("false");
-    }
+    setStringValue(newValue ? "true" : "false");
 }
 
-void INIFile::Key::setDoubleValue(double newValue) {
-    setStringValue(std::to_string(newValue));
-}
+bool INIFile::Key::escapingValueNeeded(const std::string_view value) {
+    // test for non normal char
+    if(value.empty()) return true;
 
-bool INIFile::Key::escapingValueNeeded(const std::string& value) {
-    if(value.empty()) {
-        return true;
-    }         // test for non normal char
-
-        for(char i : value) {
-
-            if(!isNormalChar(i)) {
-
-                return true;
-
-            }
-
-        }
-
-        return false;
-
-   
+    return std::any_of(value.begin(), value.end(), [](char c) { return !isNormalChar(c); });
 }
 
 std::string INIFile::Key::escapeValue(const std::string& value) {
@@ -617,12 +569,9 @@ bool INIFile::removeKey(const std::string& sectionname, const std::string& keyna
     \return The read value or default
 */
 std::string INIFile::getStringValue(const std::string& section, const std::string& key, const std::string& defaultValue) const {
-    const Key* curKey = getKey(section,key);
-    if(curKey == nullptr) {
-        return defaultValue;
-    }         return curKey->getStringValue();
-
-   
+    const Key* curKey = getKey(section, key);
+    if(curKey == nullptr) { return defaultValue; }
+    return curKey->getStringValue();
 }
 
 
@@ -637,12 +586,9 @@ std::string INIFile::getStringValue(const std::string& section, const std::strin
     \return The read number, defaultValue or 0
 */
 int INIFile::getIntValue(const std::string& section, const std::string& key, int defaultValue) const {
-    const Key* curKey = getKey(section,key);
-    if(curKey == nullptr) {
-        return defaultValue;
-    }         return curKey->getIntValue(defaultValue);
-
-   
+    const Key* curKey = getKey(section, key);
+    if(curKey == nullptr) { return defaultValue; }
+    return curKey->getIntValue(defaultValue);
 }
 
 /// Reads the boolean that is adressed by the section/key pair.
@@ -657,12 +603,9 @@ int INIFile::getIntValue(const std::string& section, const std::string& key, int
     \return true for "true", "enabled", "on" and "1"<br>false for "false", "disabled", "off" and "0"
 */
 bool INIFile::getBoolValue(const std::string& section, const std::string& key, bool defaultValue) const {
-    const Key* curKey = getKey(section,key);
-    if(curKey == nullptr) {
-        return defaultValue;
-    }         return curKey->getBoolValue(defaultValue);
-
-   
+    const Key* curKey = getKey(section, key);
+    if(curKey == nullptr) return defaultValue;
+    return curKey->getBoolValue(defaultValue);
 }
 
 /// Reads the float that is adressed by the section/key pair.
@@ -676,12 +619,9 @@ bool INIFile::getBoolValue(const std::string& section, const std::string& key, b
     \return The read number, defaultValue or 0.0f
 */
 float INIFile::getFloatValue(const std::string& section, const std::string& key, float defaultValue) const {
-    const Key* curKey = getKey(section,key);
-    if(curKey == nullptr) {
-        return defaultValue;
-    }         return curKey->getFloatValue(defaultValue);
-
-   
+    const Key* curKey = getKey(section, key);
+    if(curKey == nullptr) return defaultValue;
+    return curKey->getFloatValue(defaultValue);
 }
 
 
@@ -696,12 +636,9 @@ float INIFile::getFloatValue(const std::string& section, const std::string& key,
     \return The read number, defaultValue or 0.0
 */
 double INIFile::getDoubleValue(const std::string& section, const std::string& key, double defaultValue) const {
-    const Key* curKey = getKey(section,key);
-    if(curKey == nullptr) {
-        return defaultValue;
-    }         return curKey->getDoubleValue(defaultValue);
-
-   
+    const Key* curKey = getKey(section, key);
+    if(curKey == nullptr) return defaultValue;
+    return curKey->getDoubleValue(defaultValue);
 }
 
 /// Sets the string that is adressed by the section/key pair.
