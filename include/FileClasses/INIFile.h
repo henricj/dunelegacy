@@ -24,6 +24,7 @@
 #include <list>
 #include <algorithm>
 #include <filesystem>
+#include <charconv>
 
 #define INVALID_LINE (-1)
 
@@ -60,7 +61,7 @@ public:
     public:
         INIFileLine(std::string  completeLine, int lineNumber);
 
-        int getLineNumber() const noexcept { return line; };
+        [[nodiscard]] int getLineNumber() const noexcept { return line; };
 
         friend class INIFile;
         friend class INIFile::Section;
@@ -87,17 +88,41 @@ public:
         Key(std::string completeLine, int lineNumber, int keystringbegin, int keystringlength, int valuestringbegin, int valuestringlength);
         Key(const std::string& keyname, const std::string& value, bool bEscapeIfNeeded = true, bool bWhitespace = true);
 
-        std::string getKeyName() const;
-        std::string getStringValue() const;
-        int getIntValue(int defaultValue = 0) const;
-        bool getBoolValue(bool defaultValue = false) const;
-        float getFloatValue(float defaultValue = 0.0f) const;
-        double getDoubleValue(double defaultValue = 0.0) const;
+        [[nodiscard]] std::string      getKeyName() const;
+        [[nodiscard]] std::string      getStringValue() const { return std::string{getStringView()}; }
+        [[nodiscard]] std::string_view getStringView() const;
 
-        void setStringValue(const std::string& newValue, bool bEscapeIfNeeded = true);
-        void setIntValue(int newValue);
+        [[nodiscard]] bool getBoolValue(bool defaultValue = false) const;
+
+        template<typename T>
+        [[nodiscard]] auto getValue(T defaultValue = T{}) const noexcept -> T {
+            const auto value = getStringView();
+            if(value.empty()) return defaultValue;
+
+            auto ret = defaultValue;
+            std::from_chars(value.data(), value.data() + value.size(), ret);
+            return ret;
+        }
+
+        [[nodiscard]] int    getIntValue(int defaultValue = 0) const noexcept { return getValue(defaultValue); }
+        [[nodiscard]] float  getFloatValue(float defaultValue = 0.0f) const noexcept { return getValue(defaultValue); }
+        [[nodiscard]] double getDoubleValue(double defaultValue = 0.0) const noexcept { return getValue(defaultValue); }
+
+        void setStringValue(std::string_view newValue, bool bEscapeIfNeeded = true);
         void setBoolValue(bool newValue);
-        void setDoubleValue(double newValue);
+
+        template<typename T>
+        void setValue(T newValue)
+        {
+            std::array<char, 128> buffer;
+            const auto [ptr, ec] = std::to_chars(buffer.data(), buffer.data() + buffer.size(), newValue);
+
+            setStringValue(std::string_view{&buffer[0], static_cast<size_t>(ptr - &buffer[0])});
+        }
+
+        void setIntValue(int newValue) { setValue(newValue); }
+        void setDoubleValue(double newValue) { setValue(newValue); }
+
 
         friend class INIFile;
         friend class INIFile::KeyIterator;
@@ -105,7 +130,7 @@ public:
         friend class INIFile::SectionIterator;
 
     protected:
-        static bool escapingValueNeeded(const std::string& value);
+        static bool        escapingValueNeeded(std::string_view value);
         static std::string escapeValue(const std::string& value);
 
         int keyStringBegin;
@@ -159,12 +184,12 @@ public:
         Section(std::string completeLine, int lineNumber, int sectionstringbegin, int sectionstringlength, bool bWhitespace = true);
         Section(const std::string& sectionname, bool bWhitespace = true);
 
-        std::string getSectionName() const;
-        KeyIterator begin() const;
-        KeyIterator end() const;
+        [[nodiscard]] std::string getSectionName() const;
+        [[nodiscard]] KeyIterator begin() const;
+        [[nodiscard]] KeyIterator end() const;
 
-        bool hasKey(const std::string& key) const;
-        Key* getKey(const std::string& keyname) const;
+        [[nodiscard]] bool hasKey(const std::string& key) const;
+        [[nodiscard]] Key* getKey(const std::string& keyname) const;
 
         void setStringValue(const std::string& key, const std::string& newValue, bool bEscapeIfNeeded = true);
         void setIntValue(const std::string& key, int newValue);
@@ -232,32 +257,32 @@ public:
     INIFile(const INIFile& o) = delete;
     ~INIFile();
 
-    bool hasSection(const std::string& section) const;
-    const Section& getSection(const std::string& sectionname) const;
+    [[nodiscard]] bool hasSection(const std::string& section) const;
+    [[nodiscard]] const Section& getSection(const std::string& sectionname) const;
     bool removeSection(const std::string& sectionname);
     bool clearSection(const std::string& sectionname, bool bBlankLineAtSectionEnd = true);
-    bool hasKey(const std::string& section, const std::string& key) const;
-    const Key* getKey(const std::string& sectionname, const std::string& keyname) const;
+    [[nodiscard]] bool hasKey(const std::string& section, const std::string& key) const;
+    [[nodiscard]] const Key* getKey(const std::string& sectionname, const std::string& keyname) const;
     bool removeKey(const std::string& section, const std::string& key);
 
-    std::string getStringValue(const std::string& section, const std::string& key, const std::string& defaultValue = "") const;
-    int getIntValue(const std::string& section, const std::string& key, int defaultValue = 0) const;
-    bool getBoolValue(const std::string& section, const std::string& key, bool defaultValue = false) const;
-    float getFloatValue(const std::string& section, const std::string& key, float defaultValue = 0.0f) const;
-    double getDoubleValue(const std::string& section, const std::string& key, double defaultValue = 0.0) const;
+    [[nodiscard]] std::string getStringValue(const std::string& section, const std::string& key, const std::string& defaultValue = "") const;
+    [[nodiscard]] int getIntValue(const std::string& section, const std::string& key, int defaultValue = 0) const;
+    [[nodiscard]] bool getBoolValue(const std::string& section, const std::string& key, bool defaultValue = false) const;
+    [[nodiscard]] float getFloatValue(const std::string& section, const std::string& key, float defaultValue = 0.0f) const;
+    [[nodiscard]] double getDoubleValue(const std::string& section, const std::string& key, double defaultValue = 0.0) const;
 
     void setStringValue(const std::string& section, const std::string& key, const std::string& value, bool bEscapeIfNeeded = true);
     void setIntValue(const std::string& section, const std::string& key, int value);
     void setBoolValue(const std::string& section, const std::string& key, bool value);
     void setDoubleValue(const std::string& section, const std::string& key, double value);
 
-    SectionIterator begin() const;
-    SectionIterator end() const;
+    [[nodiscard]] SectionIterator begin() const;
+    [[nodiscard]] SectionIterator end() const;
 
-    KeyIterator begin(const std::string& section) const;
-    KeyIterator end(const std::string& section) const;
+    [[nodiscard]] KeyIterator begin(const std::string& section) const;
+    [[nodiscard]] KeyIterator end(const std::string& section) const;
 
-    bool saveChangesTo(const std::filesystem::path& filename, bool bDOSLineEnding = false) const;
+    [[nodiscard]] bool saveChangesTo(const std::filesystem::path& filename, bool bDOSLineEnding = false) const;
     bool saveChangesTo(SDL_RWops * file, bool bDOSLineEnding = false) const;
 
 private:
@@ -270,7 +295,7 @@ private:
 
     void insertSection(Section* newSection);
 
-    const Section* getSectionInternal(const std::string& sectionname) const;
+    [[nodiscard]] const Section* getSectionInternal(const std::string& sectionname) const;
     Section* getSectionOrCreate(const std::string& sectionname);
 
     static bool isValidSectionName(const std::string& sectionname);
