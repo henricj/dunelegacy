@@ -212,7 +212,7 @@ void Game::processObjects()
         [](auto& b) { return b->update(); }), std::end(bulletList));
 
     explosionList.erase(std::remove_if(std::begin(explosionList), std::end(explosionList),
-        [](std::unique_ptr<Explosion>& e) { return e->update(); }), std::end(explosionList));
+        [](auto& e) { return e->update(); }), std::end(explosionList));
 }
 
 
