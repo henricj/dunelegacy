@@ -82,7 +82,7 @@ public:
         The player just started to produce an item.
         \param  itemID  the item that is produced
     */
-    virtual void onProduceItem(Uint32 itemID);
+    virtual void onProduceItem(ItemID_enum itemID);
 
     /**
         The player just placed a structure.
@@ -124,7 +124,7 @@ public:
     Uint32 alreadyShownTutorialHints;                       ///< Contains flags for each tutorial hint (see enum TutorialHint)
 
 private:
-    void triggerStructureTutorialHint(Uint32 itemID);
+    void triggerStructureTutorialHint(ItemID_enum itemID);
 
     bool hasConcreteOfSize(const Coord& concreteSize) const;
     bool hasConcreteAtPositionOfSize(const Coord& pos, const Coord& concreteSize) const;

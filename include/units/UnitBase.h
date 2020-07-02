@@ -30,10 +30,10 @@ class Tile;
 
 class UnitBase : public ObjectBase
 {
-    void init();
 protected:
-    explicit UnitBase(House* newOwner);
-    explicit UnitBase(InputStream& stream);
+    UnitBase(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer);
+    UnitBase(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer);
+
 public:
     ~UnitBase() override = 0;
 
@@ -55,6 +55,8 @@ public:
     void deviate(House* newOwner);
 
     void drawSelectionBox() override;
+    void cleanup(Game* game, HumanPlayer* humanPlayer, Map* map) override;
+
     void drawOtherPlayerSelectionBox() override;
 
     /**
@@ -320,6 +322,9 @@ protected:
 
     // drawing information
     int drawnFrame;                  ///< Which row in the picture should be drawn
+
+private:
+    void init();
 };
 
 #endif //UNITBASE_H

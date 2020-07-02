@@ -30,8 +30,7 @@
 #include <players/HumanPlayer.h>
 
 
-Devastator::Devastator(House* newOwner) : TrackedUnit(newOwner)
-{
+Devastator::Devastator(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer) : TrackedUnit(itemID, objectID, initializer) {
     Devastator::init();
 
     ObjectBase::setHealth(getMaxHealth());
@@ -39,16 +38,18 @@ Devastator::Devastator(House* newOwner) : TrackedUnit(newOwner)
     devastateTimer = 0;
 }
 
-Devastator::Devastator(InputStream& stream) : TrackedUnit(stream)
-{
+Devastator::Devastator(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer)
+    : TrackedUnit(itemID, objectID, initializer) {
     Devastator::init();
+
+    auto& stream = initializer.Stream;
 
     devastateTimer = stream.readSint32();
 }
 
 void Devastator::init()
 {
-    itemID = Unit_Devastator;
+    assert(itemID == Unit_Devastator);
     owner->incrementUnits(itemID);
 
     numWeapons = 2;
@@ -127,7 +128,7 @@ void Devastator::destroy()
 
                 currentGameMap->damage(objectID, owner, realPos, itemID, 150, 16, false);
 
-                Uint32 explosionID = currentGame->randomGen.getRandOf({Explosion_Large1, Explosion_Large2});
+                Uint32 explosionID = currentGame->randomGen.getRandOf(Explosion_Large1, Explosion_Large2);
                 currentGame->addExplosion(explosionID, realPos, owner->getHouseID());
             }
         }

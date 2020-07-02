@@ -22,18 +22,18 @@
 #include <FileClasses/GFXManager.h>
 #include <House.h>
 
-IX::IX(House* newOwner) : StructureBase(newOwner) {
+IX::IX(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer) : StructureBase(itemID, objectID, initializer) {
     IX::init();
 
     setHealth(getMaxHealth());
 }
 
-IX::IX(InputStream& stream) : StructureBase(stream) {
+IX::IX(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer) : StructureBase(itemID, objectID, initializer) {
     IX::init();
 }
 
 void IX::init() {
-    itemID = Structure_IX;
+    assert(itemID == Structure_IX);
     owner->incrementStructures(itemID);
 
     structureSize.x = 2;

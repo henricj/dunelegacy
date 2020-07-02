@@ -26,18 +26,18 @@
 #include <Explosion.h>
 #include <SoundPlayer.h>
 
-RaiderTrike::RaiderTrike(House* newOwner) : GroundUnit(newOwner) {
+RaiderTrike::RaiderTrike(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer) : GroundUnit(itemID, objectID, initializer) {
     RaiderTrike::init();
 
     setHealth(getMaxHealth());
 }
 
-RaiderTrike::RaiderTrike(InputStream& stream) : GroundUnit(stream) {
+RaiderTrike::RaiderTrike(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer) : GroundUnit(itemID, objectID, initializer) {
     RaiderTrike::init();
 }
 
 void RaiderTrike::init() {
-    itemID = Unit_RaiderTrike;
+    assert(itemID == Unit_RaiderTrike);
     owner->incrementUnits(itemID);
 
     numWeapons = 2;

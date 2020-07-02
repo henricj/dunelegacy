@@ -84,13 +84,13 @@ CustomGameStatsMenu::CustomGameStatsMenu()
     float maxSpiceHarvested = 0.0;
 
 
-    currentGame->forAllHouses([&](auto& house) {
+    currentGame->for_each_house( [&](auto& house) {
         maxBuiltValue     = std::max(maxBuiltValue, house.getBuiltValue());
         maxDestroyedValue = std::max(maxDestroyedValue, house.getDestroyedValue());
         maxSpiceHarvested = std::max(maxSpiceHarvested, house.getHarvestedSpice().toFloat());
     });
 
-    for_each_stat(currentGame, [&](const auto i, auto& house, auto& curHouseStat) {
+    for_each_stat(currentGame.get(), [&](const auto i, auto& house, auto& curHouseStat) {
         Uint32 textcolor     = SDL2RGB(palette[houseToPaletteIndex[i] + 3]);
         Uint32 progresscolor = SDL2RGB(palette[houseToPaletteIndex[i] + 1]);
 

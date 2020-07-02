@@ -20,19 +20,18 @@
 
 #include <units/GroundUnit.h>
 
-class InfantryBase : public GroundUnit
-{
+class InfantryBase : public GroundUnit {
+protected:
+    InfantryBase(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer);
+    InfantryBase(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer);
 
 public:
-    explicit InfantryBase(House* newOwner);
-    explicit InfantryBase(InputStream& stream);
-    void init();
     ~InfantryBase() override;
 
-    InfantryBase(const InfantryBase &) = delete;
-    InfantryBase(InfantryBase &&) = delete;
-    InfantryBase& operator=(const InfantryBase &) = delete;
-    InfantryBase& operator=(InfantryBase &&) = delete;
+    InfantryBase(const InfantryBase&) = delete;
+    InfantryBase(InfantryBase&&)      = delete;
+    InfantryBase& operator=(const InfantryBase&) = delete;
+    InfantryBase& operator=(InfantryBase&&) = delete;
 
     void save(OutputStream& stream) const override;
 
@@ -76,11 +75,14 @@ protected:
     void setSpeeds() override;
 
     // infantry state
-    Sint8   tilePosition;       ///< The position in the current tile (0 to 4)
-    Sint8   oldTilePosition;    ///< The previous tile position (0 to 4)
+    Sint8 tilePosition;    ///< The position in the current tile (0 to 4)
+    Sint8 oldTilePosition; ///< The previous tile position (0 to 4)
 
     // drawing information
-    int     walkFrame{};        ///< What frame to draw
+    int walkFrame{}; ///< What frame to draw
+
+private:
+    void init();
 };
 
 #endif // INFANTRYBASE_H

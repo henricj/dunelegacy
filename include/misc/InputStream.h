@@ -147,11 +147,37 @@ public:
 
     /**
         Reads a vector of Uint32 written by writeUint32Vector().
+        \param vec operate in place (reduce heap thrashing)
+    */
+    template<typename T>
+    void readUint32Vector(std::vector<T>& vec) {
+        vec.clear();
+        const auto size = readUint32();
+        vec.reserve(size);
+        for(unsigned int i = 0; i < size; i++) {
+            vec.push_back(static_cast<T>(readUint32()));
+        }
+    }
+
+    /**
+        Reads a vector of Uint32 written by writeUint32Vector().
         \return the read vector
     */
     std::vector<Uint32> readUint32Vector() {
         std::vector<Uint32> vec;
         readUint32Vector(vec);
+
+        return vec;
+    }
+
+    /**
+        Reads a vector of Uint32 written by writeUint32Vector().
+        \return the read vector
+    */
+    template<typename T>
+    std::vector<T> readUint32Vector() {
+        std::vector<T> vec;
+        readUint32Vector<T>(vec);
 
         return vec;
     }

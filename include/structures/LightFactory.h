@@ -23,9 +23,10 @@
 class LightFactory final : public BuilderBase
 {
 public:
-    explicit LightFactory(House* newOwner);
-    explicit LightFactory(InputStream& stream);
-    void init();
+    static const ItemID_enum item_id = Structure_LightFactory;
+
+    LightFactory(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer);
+    LightFactory(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer);
     ~LightFactory() override;
 
 protected:
@@ -34,6 +35,9 @@ protected:
         StructureBase::update() before the check if this structure is still alive.
     */
     void updateStructureSpecificStuff() override;
+
+private:
+    void init();
 };
 
 #endif //LIGHTFACTORY_H

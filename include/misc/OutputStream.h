@@ -134,6 +134,18 @@ public:
     }
 
     /**
+        Writes out a complete vector of Uint32
+        \param  dataVector the vector to write
+    */
+    template<typename T>
+    void writeUint32Vector(const std::vector<T>& dataVector) {
+        writeUint32(static_cast<Uint32>(dataVector.size()));
+        for(const auto data : dataVector) {
+            writeUint32(static_cast<Uint32>(data));
+        }
+    }
+
+    /**
         Writes out a complete set of Uint32
         \param  dataSet   the set to write
     */

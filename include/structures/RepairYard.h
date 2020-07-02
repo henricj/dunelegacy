@@ -26,9 +26,10 @@ class Carryall;
 class RepairYard final : public StructureBase
 {
 public:
-    explicit RepairYard(House* newOwner);
-    explicit RepairYard(InputStream& stream);
-    void init();
+    static const ItemID_enum item_id = Structure_RepairYard;
+
+    RepairYard(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer);
+    RepairYard(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer);
     ~RepairYard() override;
 
     void save(OutputStream& stream) const override;
@@ -37,13 +38,13 @@ public:
 
     void deployRepairUnit(Carryall* pCarryall = nullptr);
 
-    inline void book() { bookings++; }
-    inline void unBook() { bookings--; }
-    inline void assignUnit(ObjectPointer newUnit) { repairUnit = newUnit; repairingAUnit = true; }
-    inline bool isFree() const { return !repairingAUnit; }
-    inline int getNumBookings() const { return bookings; }  //number of harvesters goings there
-    inline const UnitBase* getRepairUnit() const { return repairUnit.getUnitPointer(); }
-    inline UnitBase* getRepairUnit() { return repairUnit.getUnitPointer(); }
+    void book() { bookings++; }
+    void unBook() { bookings--; }
+    void assignUnit(ObjectPointer newUnit) { repairUnit = newUnit; repairingAUnit = true; }
+    bool isFree() const noexcept { return !repairingAUnit; }
+    int getNumBookings() const noexcept { return bookings; }  //number of harvesters goings there
+    const UnitBase* getRepairUnit() const { return repairUnit.getUnitPointer(); }
+    UnitBase* getRepairUnit() { return repairUnit.getUnitPointer(); }
 
 protected:
     /**
@@ -53,6 +54,8 @@ protected:
     void updateStructureSpecificStuff() override;
 
 private:
+    void            init();
+
     bool            repairingAUnit; ///< Currently repairing?
     ObjectPointer   repairUnit;     ///< The unit to repair
     Uint32          bookings;       ///< Number of bookings for this repair yard

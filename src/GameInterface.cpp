@@ -58,14 +58,14 @@ GameInterface::GameInterface() : Window(0,0,0,0), objectID(NONE_ID) {
 
     optionsButton.setTextures(  pGFXManager->getUIGraphic(UI_Options, pLocalHouse->getHouseID()),
                                 pGFXManager->getUIGraphic(UI_Options_Pressed, pLocalHouse->getHouseID()));
-    optionsButton.setOnClick(std::bind(&Game::onOptions, currentGame));
+    optionsButton.setOnClick([] { currentGame->onOptions(); });
     topBarHBox.addWidget(&optionsButton);
 
     topBarHBox.addWidget(Spacer::create());
 
     mentatButton.setTextures(   pGFXManager->getUIGraphic(UI_Mentat, pLocalHouse->getHouseID()),
                                 pGFXManager->getUIGraphic(UI_Mentat_Pressed, pLocalHouse->getHouseID()));
-    mentatButton.setOnClick(std::bind(&Game::onMentat, currentGame));
+    mentatButton.setOnClick([] { currentGame->onMentat(); });
     topBarHBox.addWidget(&mentatButton);
 
     topBarHBox.addWidget(Spacer::create());
@@ -73,8 +73,8 @@ GameInterface::GameInterface() : Window(0,0,0,0), objectID(NONE_ID) {
     // add radar
     windowWidget.addWidget(&radarView,Point(getRendererWidth()-sideBar.getSize().x+SIDEBAR_COLUMN_WIDTH, 0),radarView.getMinimumSize());
     //radarView.setOnRadarClick(std::bind(&Game::onRadarClick, currentGame, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
-    radarView.setOnRadarClick([game=currentGame](Coord worldPosition, bool bRightMouseButton, bool bDrag) {
-        return game->onRadarClick(worldPosition, bRightMouseButton, bDrag);
+    radarView.setOnRadarClick([](Coord worldPosition, bool bRightMouseButton, bool bDrag) {
+        return currentGame->onRadarClick(worldPosition, bRightMouseButton, bDrag);
     });
 
     // add chat manager

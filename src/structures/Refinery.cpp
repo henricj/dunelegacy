@@ -33,7 +33,7 @@
 /* how fast is spice extracted */
 #define MAXIMUMHARVESTEREXTRACTSPEED (0.625_fix)
 
-Refinery::Refinery(House* newOwner) : StructureBase(newOwner) {
+Refinery::Refinery(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer) : StructureBase(itemID, objectID, initializer) {
     Refinery::init();
 
     ObjectBase::setHealth(getMaxHealth());
@@ -47,8 +47,10 @@ Refinery::Refinery(House* newOwner) : StructureBase(newOwner) {
     lastAnimFrame = 3;
 }
 
-Refinery::Refinery(InputStream& stream) : StructureBase(stream) {
+Refinery::Refinery(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer) : StructureBase(itemID, objectID, initializer) {
     Refinery::init();
+
+    auto& stream = initializer.Stream;
 
     extractingSpice = stream.readBool();
     harvester.load(stream);
@@ -68,7 +70,7 @@ Refinery::Refinery(InputStream& stream) : StructureBase(stream) {
 }
 
 void Refinery::init() {
-    itemID = Structure_Refinery;
+    assert(itemID == Structure_Refinery);
     owner->incrementStructures(itemID);
 
     structureSize.x = 3;

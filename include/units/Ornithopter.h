@@ -23,9 +23,10 @@
 class Ornithopter final : public AirUnit
 {
 public:
-    explicit Ornithopter(House* newOwner);
-    explicit Ornithopter(InputStream& stream);
-    void init();
+    static const ItemID_enum item_id = Unit_Ornithopter;
+
+    Ornithopter(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer);
+    Ornithopter(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer);
     ~Ornithopter() override;
 
     void save(OutputStream& stream) const override;
@@ -45,6 +46,8 @@ protected:
     bool attack() override;
 
 private:
+    void   init();
+
     Uint32 timeLastShot;
 };
 

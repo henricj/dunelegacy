@@ -35,20 +35,20 @@ public:
 
     AIPlayer(House* associatedHouse, const std::string& playername, Difficulty difficulty);
     AIPlayer(InputStream& stream, House* associatedHouse);
-    void init();
     ~AIPlayer() override;
     void save(OutputStream& stream) const override;
 
     void update() override;
 
     void onObjectWasBuilt(const ObjectBase* pObject) override;
-    void onDecrementStructures(int itemID, const Coord& location) override;
+    void onDecrementStructures(ItemID_enum itemID, const Coord& location) override;
     void onDamage(const ObjectBase* pObject, int damage, Uint32 damagerID) override;
 
 private:
+    void init();
     void scrambleUnitsAndDefend(const ObjectBase* pIntruder);
 
-    Coord findPlaceLocation(Uint32 itemID);
+    Coord findPlaceLocation(ItemID_enum itemID);
 
     int getNumAdjacentStructureTiles(Coord pos, int structureSizeX, int structureSizeY);
 

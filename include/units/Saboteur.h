@@ -20,12 +20,12 @@
 
 #include <units/InfantryBase.h>
 
-class Saboteur final : public InfantryBase
-{
+class Saboteur final : public InfantryBase {
 public:
-    explicit Saboteur(House* newOwner);
-    explicit Saboteur(InputStream& stream);
-    void init();
+    static const ItemID_enum item_id = Unit_Saboteur;
+
+    Saboteur(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer);
+    Saboteur(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer);
     ~Saboteur() override;
 
     void checkPos() override;
@@ -40,6 +40,9 @@ public:
     bool canAttack(const ObjectBase* object) const override;
 
     void destroy() override;
+
+private:
+    void init();
 };
 
 #endif // SABOTEUR_H

@@ -28,8 +28,7 @@
 #include <SoundPlayer.h>
 
 
-Saboteur::Saboteur(House* newOwner) : InfantryBase(newOwner)
-{
+Saboteur::Saboteur(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer) : InfantryBase(itemID, objectID, initializer) {
     Saboteur::init();
 
     setHealth(getMaxHealth());
@@ -39,14 +38,13 @@ Saboteur::Saboteur(House* newOwner) : InfantryBase(newOwner)
     attackMode = GUARD;
 }
 
-Saboteur::Saboteur(InputStream& stream) : InfantryBase(stream)
-{
+Saboteur::Saboteur(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer) : InfantryBase(itemID, objectID, initializer) {
     Saboteur::init();
 }
 
 void Saboteur::init()
 {
-    itemID = Unit_Saboteur;
+    assert(itemID == Unit_Saboteur);
     owner->incrementUnits(itemID);
 
     graphicID = ObjPic_Saboteur;
@@ -71,8 +69,9 @@ void Saboteur::checkPos()
     std::array<bool, NUM_TEAMS> canBeSeen{};
     for(int x = location.x - 2; (x <= location.x + 2); x++) {
         for(int y = location.y - 2; (y <= location.y + 2); y++) {
-            if(currentGameMap->tileExists(x, y) && currentGameMap->getTile(x, y)->hasAnObject()) {
-                canBeSeen[currentGameMap->getTile(x, y)->getObject()->getOwner()->getTeamID()] = true;
+            auto* const tileOwner = currentGameMap->tryGetOwner(x, y);
+            if(tileOwner) {
+                canBeSeen[tileOwner->getTeamID()] = true;
             }
         }
     }
@@ -135,7 +134,7 @@ bool Saboteur::canAttack(const ObjectBase* object) const {
 void Saboteur::destroy()
 {
     Coord realPos(lround(realX), lround(realY));
-    const auto explosionID = currentGame->randomGen.getRandOf({Explosion_Medium1, Explosion_Medium2});
+    const auto explosionID = currentGame->randomGen.getRandOf(Explosion_Medium1, Explosion_Medium2);
     currentGame->addExplosion(explosionID, realPos, owner->getHouseID());
 
     if(isVisible(getOwner()->getTeamID())) {

@@ -20,12 +20,12 @@
 
 #include <structures/BuilderBase.h>
 
-class ConstructionYard final : public BuilderBase
-{
+class ConstructionYard final : public BuilderBase {
 public:
-    explicit ConstructionYard(House* newOwner);
-    explicit ConstructionYard(InputStream& stream);
-    void init();
+    static const ItemID_enum item_id = ItemID_enum::Structure_ConstructionYard;
+
+    ConstructionYard(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer);
+    ConstructionYard(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer);
     ~ConstructionYard() override;
 
     /**
@@ -35,7 +35,9 @@ public:
         \return true if placement was successful, false otherwise
     */
     bool doPlaceStructure(int x, int y);
-};
 
+private:
+    void init();
+};
 
 #endif // CONSTRUCTIONYARD_H

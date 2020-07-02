@@ -23,10 +23,10 @@
 
 class GroundUnit : public UnitBase
 {
-    void init();
 protected:
-    explicit GroundUnit(House* newOwner);
-    explicit GroundUnit(InputStream& stream);
+    GroundUnit(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer);
+    GroundUnit(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer);
+
 public:
     ~GroundUnit() override = 0;
 
@@ -57,7 +57,7 @@ public:
     void doRepair() noexcept override;
 
     void setAwaitingPickup(bool status) { awaitingPickup = status; }
-    bool isAwaitingPickup() const { return awaitingPickup; }
+    bool isAwaitingPickup() const noexcept { return awaitingPickup; }
     bool hasBookedCarrier() const;
     const UnitBase* getCarrier() const;
 
@@ -66,21 +66,7 @@ public:
         \param  terrainType the type to consider
         \return Returns a speed factor. Higher values mean slower.
     */
-    FixPoint getTerrainDifficulty(TERRAINTYPE terrainType) const override
-    {
-        switch(terrainType) {
-            case Terrain_Slab:          return 1.0_fix;
-            case Terrain_Sand:          return 1.375_fix;
-            case Terrain_Rock:          return 1.5625_fix;
-            case Terrain_Dunes:         return 1.375_fix;
-            case Terrain_Mountain:      return 1.0_fix;
-            case Terrain_Spice:         return 1.375_fix;
-            case Terrain_ThickSpice:    return 1.375_fix;
-            case Terrain_SpiceBloom:    return 1.375_fix;
-            case Terrain_SpecialBloom:  return 1.375_fix;
-            default:                    return 1.0_fix;
-        }
-    }
+    FixPoint getTerrainDifficulty(TERRAINTYPE terrainType) const override;
 
 protected:
     void move() override;
@@ -88,6 +74,8 @@ protected:
 
     bool    awaitingPickup;     ///< Is this unit waiting for pickup?
     Uint32  bookedCarrier;      ///< What is the carrier if waiting for pickup?
+private:
+    void init();
 };
 
 #endif // GROUNDUNIT_H

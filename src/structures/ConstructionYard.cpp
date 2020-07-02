@@ -23,18 +23,17 @@
 #include <House.h>
 #include <Game.h>
 
-ConstructionYard::ConstructionYard(House* newOwner) : BuilderBase(newOwner) {
+ConstructionYard::ConstructionYard(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer) : BuilderBase(itemID, objectID, initializer) {
     ConstructionYard::init();
 
     setHealth(getMaxHealth());
 }
 
-ConstructionYard::ConstructionYard(InputStream& stream) : BuilderBase(stream) {
+ConstructionYard::ConstructionYard(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer) : BuilderBase(itemID, objectID, initializer) {
     ConstructionYard::init();
 }
 
 void ConstructionYard::init() {
-    itemID = Structure_ConstructionYard;
     owner->incrementStructures(itemID);
 
     structureSize.x = 2;

@@ -245,17 +245,18 @@ public:
     } gameOptions;
 };
 
-enum class HOUSETYPE : Sint8
-{
+enum class HOUSETYPE : Sint8 {
     HOUSE_UNUSED    = -2,
     HOUSE_INVALID   = -1,
-    HOUSE_HARKONNEN =  0,
-    HOUSE_ATREIDES  =  1,
-    HOUSE_ORDOS     =  2,
-    HOUSE_FREMEN    =  3,
-    HOUSE_SARDAUKAR =  4,
-    HOUSE_MERCENARY =  5,
-    NUM_HOUSES
+    HOUSE_HARKONNEN = 0,
+    HOUSE_ATREIDES  = 1,
+    HOUSE_ORDOS     = 2,
+    HOUSE_FREMEN    = 3,
+    HOUSE_SARDAUKAR = 4,
+    HOUSE_MERCENARY = 5,
+    NUM_HOUSES,
+    HOUSE_FIRST = HOUSE_HARKONNEN,
+    HOUSE_LAST  = HOUSE_MERCENARY
 };
 
 template<typename F>

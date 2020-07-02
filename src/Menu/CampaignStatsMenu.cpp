@@ -437,7 +437,7 @@ void CampaignStatsMenu::calculateScore(int level)
     totalScore = level*45;
 
     float totalHumanCredits = 0.0f;
-    currentGame->forAllHouses([&](auto& house) {
+    currentGame->for_each_house([&](auto& house) {
         if(house.isAI() == true) {
             unitsDestroyedByAI += house.getNumDestroyedUnits();
             structuresDestroyedByAI += house.getNumDestroyedStructures();

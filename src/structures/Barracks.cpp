@@ -22,18 +22,17 @@
 #include <FileClasses/GFXManager.h>
 #include <House.h>
 
-Barracks::Barracks(House* newOwner) : BuilderBase(newOwner) {
+Barracks::Barracks(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer) : BuilderBase(itemID, objectID, initializer) {
     Barracks::init();
 
     setHealth(getMaxHealth());
 }
 
-Barracks::Barracks(InputStream& stream) : BuilderBase(stream) {
+Barracks::Barracks(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer) : BuilderBase(itemID, objectID, initializer) {
     Barracks::init();
 }
 
 void Barracks::init() {
-    itemID = Structure_Barracks;
     owner->incrementStructures(itemID);
 
     structureSize.x = 2;

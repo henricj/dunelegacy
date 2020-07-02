@@ -72,7 +72,7 @@ void drawCursor() {
     \param itemID   the id of the item to resolve (e.g. Unit_Quad)
     \return the surface corresponding. This surface should not be freed or modified. nullptr on error.
 */
-SDL_Texture* resolveItemPicture(int itemID, HOUSETYPE house) {
+SDL_Texture* resolveItemPicture(ItemID_enum itemID, HOUSETYPE house) {
     int newPicID = 0;
 
     // clang-format off
@@ -250,7 +250,7 @@ int getAnimByFilename(const std::string& filename) {
     \param ItemID   the id of the item (e.g. Structure_HeavyFactory)
     \return a Coord containg the size (e.g. (3,2) ). Returns (0,0) on error.
 */
-Coord getStructureSize(int itemID) {
+Coord getStructureSize(ItemID_enum itemID) {
 
     switch(itemID) {
         case Structure_Barracks:            return Coord(2,2); break;
@@ -282,7 +282,7 @@ Coord getStructureSize(int itemID) {
     \param name the name of the item (e.g. "rocket-turret" or "r-turret".
     \return the id of the item (e.g. Structure_RocketTurret)
 */
-Uint32  getItemIDByName(const std::string& name) {
+ItemID_enum  getItemIDByName(const std::string& name) {
     const std::string lowerName = strToLower(name);
 
     if(lowerName == "barracks")                                                 return Structure_Barracks;
@@ -377,7 +377,7 @@ Uint32  getItemIDByName(const std::string& name) {
     \param itemID the id of the item (e.g. Unit_Sandworm)
     \return the name of the item (e.g. "Sandworm").
 */
-std::string getItemNameByID(Uint32 itemID) {
+std::string getItemNameByID(ItemID_enum itemID) {
     // clang-format off
     switch(itemID) {
         case Structure_Barracks:            return "Barracks";          break;
@@ -435,7 +435,7 @@ std::string getItemNameByID(Uint32 itemID) {
     \param itemID   the id of the item to resolve (e.g. Unit_Quad)
     \return the string corresponding.
 */
-std::string resolveItemName(int itemID) {
+std::string resolveItemName(ItemID_enum itemID) {
     // clang-format off
     switch(itemID) {
         case Structure_Barracks:            return _("@DUNE.ENG|253#Barracks");            break;
@@ -795,19 +795,18 @@ FixPoint getDeviateWeakness(HOUSETYPE house) {
 void startReplay(const std::filesystem::path& filename) {
     SDL_Log("Initializing replay...");
     try {
-        currentGame = new Game();
+        currentGame = std::make_unique<Game>();
+
         currentGame->initReplay(filename);
 
         currentGame->runMainLoop();
 
-        delete currentGame;
-        currentGame = nullptr;
+        currentGame.reset();
 
         // Change music to menu music
         musicPlayer->changeMusic(MUSIC_MENU);
     } catch(...) {
-        delete currentGame;
-        currentGame = nullptr;
+        currentGame.reset();
         throw;
     }
 }
@@ -827,7 +826,7 @@ void startSinglePlayerGame(const GameInitSettings& init)
         try {
 
             SDL_Log("Initializing game...");
-            currentGame = new Game();
+            currentGame = std::make_unique<Game>();
             currentGame->initGame(currentGameInitInfo);
 
             // get init settings from game as it might have changed (through loading the game)
@@ -894,8 +893,7 @@ void startSinglePlayerGame(const GameInitSettings& init)
 
                     case GAME_RETURN_TO_MENU:
                     default: {
-                        delete currentGame;
-                        currentGame = nullptr;
+                        currentGame.reset();
 
                         // Change music to menu music
                         musicPlayer->changeMusic(MUSIC_MENU);
@@ -905,8 +903,7 @@ void startSinglePlayerGame(const GameInitSettings& init)
                 }
             }
         } catch(...) {
-            delete currentGame;
-            currentGame = nullptr;
+            currentGame.reset();
             throw;
         }
     }
@@ -916,13 +913,12 @@ void startSinglePlayerGame(const GameInitSettings& init)
     Starts a new multiplayer game.
     \param init contains all the information to start the game
 */
-void startMultiPlayerGame(const GameInitSettings& init)
-{
+void startMultiPlayerGame(const GameInitSettings& init) {
     auto currentGameInitInfo = init;
 
     SDL_Log("Initializing game...");
     try {
-        currentGame = new Game();
+        currentGame = std::make_unique<Game>();
         currentGame->initGame(currentGameInitInfo);
 
         // get init settings from game as it might have changed (through loading the game)
@@ -936,11 +932,9 @@ void startMultiPlayerGame(const GameInitSettings& init)
             stats.showMenu();
         }
 
-        delete currentGame;
-        currentGame = nullptr;
+        currentGame.reset();
     } catch(...) {
-        delete currentGame;
-        currentGame = nullptr;
+        currentGame.reset();
         throw;
     }
 }

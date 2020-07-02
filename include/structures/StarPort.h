@@ -23,17 +23,18 @@
 class StarPort final : public BuilderBase
 {
 public:
-    explicit StarPort(House* newOwner);
-    explicit StarPort(InputStream& stream);
-    void init();
+    static const ItemID_enum item_id = Structure_StarPort;
+
+    StarPort(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer);
+    StarPort(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer);
     ~StarPort() override;
 
     void save(OutputStream& stream) const override;
 
-    void handleProduceItemClick(Uint32 itemID, bool multipleMode = false) override;
+    void handleProduceItemClick(ItemID_enum itemID, bool multipleMode = false) override;
 
-    virtual void handlePlaceOrderClick();
-    virtual void handleCancelOrderClick();
+    void handlePlaceOrderClick();
+    void handleCancelOrderClick();
 
 
     /**
@@ -41,14 +42,14 @@ public:
         \param  itemID          the item to produce
         \param  multipleMode    false = 1 item, true = 5 items
     */
-    void doProduceItem(Uint32 itemID, bool multipleMode = false) override;
+    void doProduceItem(ItemID_enum itemID, bool multipleMode = false) override;
 
     /**
         Cancel ordering of the specified item.
         \param  itemID          the item to cancel
         \param  multipleMode    false = 1 item, true = 5 items
     */
-    void doCancelItem(Uint32 itemID, bool multipleMode = false) override;
+    void doCancelItem(ItemID_enum itemID, bool multipleMode = false) override;
 
     /**
         Send order and wait for delivery.
@@ -82,8 +83,8 @@ public:
     */
     void informFrigateDestroyed();
 
-    inline bool okToOrder() const { return (arrivalTimer < 0); }
-    inline int getArrivalTimer() const { return arrivalTimer; }
+    bool okToOrder() const { return (arrivalTimer < 0); }
+    int getArrivalTimer() const { return arrivalTimer; }
 
 protected:
     /**
@@ -93,7 +94,9 @@ protected:
     void updateStructureSpecificStuff() override;
 
 private:
-    Sint32  arrivalTimer;       ///< When will the frigate arrive?
+    void   init();
+
+    Sint32 arrivalTimer; ///< When will the frigate arrive?
     bool    deploying;          ///< Currently deploying units
 };
 

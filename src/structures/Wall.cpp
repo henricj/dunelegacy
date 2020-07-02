@@ -23,7 +23,7 @@
 #include <FileClasses/GFXManager.h>
 #include <House.h>
 
-Wall::Wall(House* newOwner) : StructureBase(newOwner) {
+Wall::Wall(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer) : StructureBase(itemID, objectID, initializer) {
     Wall::init();
 
     setHealth(getMaxHealth());
@@ -36,8 +36,10 @@ Wall::Wall(House* newOwner) : StructureBase(newOwner) {
     setWallTile(Wall_LeftRight);
 }
 
-Wall::Wall(InputStream& stream) : StructureBase(stream) {
+Wall::Wall(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer) : StructureBase(itemID, objectID, initializer) {
     Wall::init();
+
+    auto& stream = initializer.Stream;
 
     stream.readBools(&bWallDestroyedUp, &bWallDestroyedRight, &bWallDestroyedDown, &bWallDestroyedLeft);
 
@@ -45,7 +47,7 @@ Wall::Wall(InputStream& stream) : StructureBase(stream) {
 }
 
 void Wall::init() {
-    itemID = Structure_Wall;
+    assert(itemID == Structure_Wall);
     owner->incrementStructures(itemID);
 
     structureSize.x = 1;
@@ -69,9 +71,11 @@ void Wall::save(OutputStream& stream) const {
 }
 
 void Wall::destroy() {
+    auto& objectManager = currentGame->getObjectManager();
+
     // fix wall to the north
     if(currentGameMap->tileExists(location.x, location.y-1)) {
-        ObjectBase* obj = currentGameMap->getTile(location.x, location.y-1)->getGroundObject();
+        ObjectBase* obj = currentGameMap->getTile(location.x, location.y - 1)->getGroundObject(objectManager);
         if((obj != nullptr) && (obj->getItemID() == Structure_Wall)) {
             Wall* pWall = static_cast<Wall*>(obj);
             pWall->bWallDestroyedDown = true;
@@ -81,7 +85,7 @@ void Wall::destroy() {
 
     // fix wall to the south
     if(currentGameMap->tileExists(location.x, location.y+1)) {
-        ObjectBase* obj = currentGameMap->getTile(location.x, location.y+1)->getGroundObject();
+        ObjectBase* obj = currentGameMap->getTile(location.x, location.y + 1)->getGroundObject(objectManager);
         if((obj != nullptr) && (obj->getItemID() == Structure_Wall)) {
             Wall* pWall = static_cast<Wall*>(obj);
             pWall->bWallDestroyedUp = true;
@@ -91,7 +95,7 @@ void Wall::destroy() {
 
     // fix wall to the west
     if(currentGameMap->tileExists(location.x-1, location.y)) {
-        ObjectBase* obj = currentGameMap->getTile(location.x-1, location.y)->getGroundObject();
+        ObjectBase* obj = currentGameMap->getTile(location.x - 1, location.y)->getGroundObject(objectManager);
         if((obj != nullptr) && (obj->getItemID() == Structure_Wall)) {
             Wall* pWall = static_cast<Wall*>(obj);
             pWall->bWallDestroyedRight = true;
@@ -101,7 +105,7 @@ void Wall::destroy() {
 
     // fix wall to the east
     if(currentGameMap->tileExists(location.x+1, location.y)) {
-        ObjectBase* obj = currentGameMap->getTile(location.x+1, location.y)->getGroundObject();
+        ObjectBase* obj = currentGameMap->getTile(location.x + 1, location.y)->getGroundObject(objectManager);
         if((obj != nullptr) && (obj->getItemID() == Structure_Wall)) {
             Wall* pWall = static_cast<Wall*>(obj);
             pWall->bWallDestroyedLeft = true;
@@ -124,44 +128,36 @@ void Wall::setLocation(int xPos, int yPos) {
     // fix this wall
     fixWall();
 
+    const auto* const map = currentGameMap;
+
+    Wall* pWall = nullptr;
+
     // fix wall to the north
-    if(currentGameMap->tileExists(location.x, location.y-1)) {
-        ObjectBase* obj = currentGameMap->getTile(location.x, location.y-1)->getGroundObject();
-        if((obj != nullptr) && (obj->getItemID() == Structure_Wall)) {
-            Wall* pWall = static_cast<Wall*>(obj);
-            pWall->bWallDestroyedDown = false;
-            pWall->fixWall();
-        }
+    pWall = map->getGroundObject<Wall>(location.x, location.y - 1);
+    if(pWall) {
+        pWall->bWallDestroyedDown = false;
+        pWall->fixWall();
     }
 
     // fix wall to the south
-    if(currentGameMap->tileExists(location.x, location.y+1)) {
-        ObjectBase* obj = currentGameMap->getTile(location.x, location.y+1)->getGroundObject();
-        if((obj != nullptr) && (obj->getItemID() == Structure_Wall)) {
-            Wall* pWall = static_cast<Wall*>(obj);
-            pWall->bWallDestroyedUp = false;
-            pWall->fixWall();
-        }
+    pWall = map->getGroundObject<Wall>(location.x, location.y + 1);
+    if(pWall) {
+        pWall->bWallDestroyedUp = false;
+        pWall->fixWall();
     }
 
     // fix wall to the west
-    if(currentGameMap->tileExists(location.x-1, location.y)) {
-        ObjectBase* obj = currentGameMap->getTile(location.x-1, location.y)->getGroundObject();
-        if((obj != nullptr) && (obj->getItemID() == Structure_Wall)) {
-            Wall* pWall = static_cast<Wall*>(obj);
-            pWall->bWallDestroyedRight = false;
-            pWall->fixWall();
-        }
+    pWall = map->getGroundObject<Wall>(location.x - 1, location.y);
+    if(pWall) {
+        pWall->bWallDestroyedRight = false;
+        pWall->fixWall();
     }
 
     // fix wall to the east
-    if(currentGameMap->tileExists(location.x+1, location.y)) {
-        ObjectBase* obj = currentGameMap->getTile(location.x+1, location.y)->getGroundObject();
-        if((obj != nullptr) && (obj->getItemID() == Structure_Wall)) {
-            Wall* pWall = static_cast<Wall*>(obj);
-            pWall->bWallDestroyedLeft = false;
-            pWall->fixWall();
-        }
+    pWall = map->getGroundObject<Wall>(location.x + 1, location.y);
+    if(pWall) {
+        pWall->bWallDestroyedLeft = false;
+        pWall->fixWall();
     }
 }
 
@@ -175,18 +171,13 @@ void Wall::fixWall() {
 
     int maketile = Wall_LeftRight;
 
+    const auto* const map = currentGameMap;
+
     // Walls
-    bool up = (currentGameMap->tileExists(i, j-1) && (currentGameMap->getTile(i,j-1)->hasAGroundObject()
-                && (currentGameMap->getTile(i,j-1)->getGroundObject()->getItemID() == Structure_Wall))) || bWallDestroyedUp;
-
-    bool right = (currentGameMap->tileExists(i+1, j) && (currentGameMap->getTile(i+1,j)->hasAGroundObject()
-                && (currentGameMap->getTile(i+1,j)->getGroundObject()->getItemID() == Structure_Wall))) || bWallDestroyedRight;
-
-    bool down = (currentGameMap->tileExists(i, j+1) && (currentGameMap->getTile(i,j+1)->hasAGroundObject()
-                && (currentGameMap->getTile(i,j+1)->getGroundObject()->getItemID() == Structure_Wall))) || bWallDestroyedDown;
-
-    bool left = (currentGameMap->tileExists(i-1, j) && (currentGameMap->getTile(i-1,j)->hasAGroundObject()
-                && (currentGameMap->getTile(i-1,j)->getGroundObject()->getItemID() == Structure_Wall))) || bWallDestroyedLeft;
+    bool up    = map->hasAGroundObject<Wall>(i    , j - 1) || bWallDestroyedUp;
+    bool right = map->hasAGroundObject<Wall>(i + 1, j    ) || bWallDestroyedRight;
+    bool down  = map->hasAGroundObject<Wall>(i    , j + 1) || bWallDestroyedDown;
+    bool left  = map->hasAGroundObject<Wall>(i - 1, j    ) || bWallDestroyedLeft;
 
     // calculate destroyed tile index
     int destroyedTileIndex = 0;

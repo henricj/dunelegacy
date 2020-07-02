@@ -35,7 +35,7 @@
 
 #define SANDWORM_ATTACKFRAMETIME 10
 
-Sandworm::Sandworm(House* newOwner) : GroundUnit(newOwner) {
+Sandworm::Sandworm(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer) : GroundUnit(itemID, objectID, initializer) {
 
     Sandworm::init();
 
@@ -53,9 +53,11 @@ Sandworm::Sandworm(House* newOwner) : GroundUnit(newOwner) {
     shimmerOffsetIndex = -1;
 }
 
-Sandworm::Sandworm(InputStream& stream) : GroundUnit(stream) {
+Sandworm::Sandworm(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer) : GroundUnit(itemID, objectID, initializer) {
 
     Sandworm::init();
+
+    auto& stream = initializer.Stream;
 
     kills = stream.readSint32();
     attackFrameTimer = stream.readSint32();
@@ -69,7 +71,7 @@ Sandworm::Sandworm(InputStream& stream) : GroundUnit(stream) {
 }
 
 void Sandworm::init() {
-    itemID = Unit_Sandworm;
+    assert(itemID == Unit_Sandworm);
     owner->incrementUnits(itemID);
 
     numWeapons = 0;
@@ -186,11 +188,10 @@ void Sandworm::checkPos() {
         realX = location.x*TILESIZE + TILESIZE/2;
         realY = location.y*TILESIZE + TILESIZE/2;
 
-        if(currentGameMap->tileExists(location)) {
-            Tile* pTile = currentGameMap->getTile(location);
-            if(pTile->hasInfantry() && (pTile->getInfantry()->getOwner() == pLocalHouse)) {
-                soundPlayer->playVoice(SomethingUnderTheSand, pTile->getInfantry()->getOwner()->getHouseID());
-            }
+        const auto* const infantry = currentGameMap->tryGetInfantry(location.x, location.y);
+
+        if (infantry && infantry->getOwner() == pLocalHouse) {
+            soundPlayer->playVoice(SomethingUnderTheSand, infantry->getOwner()->getHouseID());
         }
     }
 }
@@ -398,7 +399,7 @@ bool Sandworm::canAttack(const ObjectBase* object) const {
 
 bool Sandworm::canPassTile(const Tile* pTile) const {
     return !pTile->isRock()
-        && (!pTile->hasAnUndergroundUnit() || (pTile->getUndergroundUnit() == this));
+        && (!pTile->hasAnUndergroundUnit() || (pTile->getUndergroundUnit(currentGame->getObjectManager()) == this));
 }
 
 const ObjectBase* Sandworm::findTarget() const {

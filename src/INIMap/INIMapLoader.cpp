@@ -29,11 +29,11 @@
 
 #include <algorithm>
 
+#include <gsl/gsl>
+
 INIMapLoader::INIMapLoader(Game* pGame, const std::filesystem::path& mapname, const std::string& mapdata)
  : INIMap(pGame->gameType, mapname, mapdata), pGame(pGame)
-{
-    load();
-}
+{ }
 
 INIMapLoader::~INIMapLoader() = default;
 
@@ -41,10 +41,15 @@ INIMapLoader::~INIMapLoader() = default;
 /**
     Loads a map from an INI-File.
 */
-void INIMapLoader::load() {
+std::unique_ptr<Map> INIMapLoader::load() {
     checkFeatures();
 
     loadMap();
+
+    // TODO: Facepalm.  globals...
+    currentGameMap = map.get();
+    gsl::final_action cleanup{[] { currentGameMap = nullptr; }};
+
     loadHouses();
     loadUnits();
     loadStructures();
@@ -52,6 +57,8 @@ void INIMapLoader::load() {
     loadAITeams();
     loadView();
     loadChoam();
+
+    return std::move(map);
 }
 
 /**
@@ -116,14 +123,14 @@ void INIMapLoader::loadMap() {
         logicalSizeX = 64;
         logicalSizeY = 64;
 
-        currentGameMap = new Map(sizeX, sizeY);
-
         int SeedNum = inifile->getIntValue("MAP","Seed",-1);
         Uint16 SeedMap[64*64];
         createMapWithSeed(SeedNum,SeedMap);
 
-        for (int j = 0; j < currentGameMap->getSizeY(); j++) {
-            for (int i = 0; i < currentGameMap->getSizeX(); i++) {
+        map = std::make_unique<Map>(sizeX, sizeY);
+
+        for(int j = 0; j < map->getSizeY(); j++) {
+            for (int i = 0; i < map->getSizeX(); i++) {
                 auto type = Terrain_Sand;
                 unsigned char seedmaptype = SeedMap[(j+logicalOffsetY)*64+i+logicalOffsetX] >> 4;
                 switch(seedmaptype) {
@@ -159,14 +166,13 @@ void INIMapLoader::loadMap() {
                         break;
                 }
 
-                currentGameMap->getTile(i,j)->setType(type);
+                map->getTile(i, j)->setType(pGame, map.get(), type);
             }
-
         }
 
-        currentGameMap->createSandRegions();
+        map->createSandRegions();
 
-        const auto BloomString = inifile->getStringValue("MAP","Bloom");
+        const auto BloomString = inifile->getStringValue("MAP", "Bloom");
         if(!BloomString.empty()) {
             std::vector<std::string> BloomPositions = splitStringToStringVector(BloomString);
 
@@ -174,18 +180,20 @@ void INIMapLoader::loadMap() {
                 // set bloom
                 int BloomPos = 0;
                 if(parseString(BloomPosition, BloomPos)) {
-                    int xpos = getXPos(BloomPos);
-                    int ypos = getYPos(BloomPos);
-                    if(currentGameMap->tileExists(xpos, ypos)) {
-                        currentGameMap->getTile(xpos,ypos)->setType(Terrain_SpiceBloom);
+                    int   xpos = getXPos(BloomPos);
+                    int   ypos = getYPos(BloomPos);
+                    auto* tile = map->tryGetTile(xpos, ypos);
+                    if(tile) {
+                        tile->setType(pGame, Terrain_SpiceBloom);
                     } else {
-                        logWarning(inifile->getKey("MAP", "Bloom")->getLineNumber(), "Spice bloom position '" + BloomPosition + "' outside map!");
+                        logWarning(inifile->getKey("MAP", "Bloom")->getLineNumber(),
+                                   "Spice bloom position '" + BloomPosition + "' outside map!");
                     }
                 } else {
-                    logWarning(inifile->getKey("MAP", "Bloom")->getLineNumber(), "Invalid spice bloom position: '" + BloomPosition + "'");
+                    logWarning(inifile->getKey("MAP", "Bloom")->getLineNumber(),
+                               "Invalid spice bloom position: '" + BloomPosition + "'");
                 }
             }
-
         }
 
         const auto SpecialString = inifile->getStringValue("MAP","Special");
@@ -198,9 +206,7 @@ void INIMapLoader::loadMap() {
                 if(parseString(SpecialPosition, SpecialPos)) {
                     int xpos = getXPos(SpecialPos);
                     int ypos = getYPos(SpecialPos);
-                    if(currentGameMap->tileExists(xpos, ypos)) {
-                        currentGameMap->getTile(xpos,ypos)->setType(Terrain_SpecialBloom);
-                    } else {
+                    if(!map->trySetTileType(xpos, ypos, Terrain_SpecialBloom)) {
                         logWarning(inifile->getKey("MAP", "Special")->getLineNumber(), "Special bloom position '" + SpecialPosition + "' outside map!");
                     }
                 } else {
@@ -221,7 +227,7 @@ void INIMapLoader::loadMap() {
                     int xpos = getXPos(FieldPos);
                     int ypos = getYPos(FieldPos);
 
-                    currentGameMap->createSpiceField(Coord(xpos, ypos), 5, true);
+                    map->createSpiceField(Coord(xpos, ypos), 5, true);
                 } else {
                     logWarning(inifile->getKey("MAP", "Field")->getLineNumber(), "Invalid spice field position: '" + FieldPosition + "'");
                 }
@@ -252,7 +258,7 @@ void INIMapLoader::loadMap() {
         logicalOffsetX = 0;
         logicalOffsetY = 0;
 
-        currentGameMap = new Map(sizeX, sizeY);
+        map = std::make_unique<Map>(sizeX, sizeY);
 
         for(int y=0;y<sizeY;y++) {
             std::string rowKey = fmt::sprintf("%.3d", y);
@@ -323,14 +329,15 @@ void INIMapLoader::loadMap() {
                     } break;
                 }
 
-                currentGameMap->getTile(x,y)->setType(type);
+                auto* const tile = map->tryGetTile(x, y);
+                if(tile) tile->setType(pGame, map.get(), type);
             }
         }
 
-        currentGameMap->createSandRegions();
+        map->createSandRegions();
     }
 
-    screenborder->adjustScreenBorderToMapsize(currentGameMap->getSizeX(), currentGameMap->getSizeY());
+    screenborder->adjustScreenBorderToMapsize(map->getSizeX(), map->getSizeY());
 }
 
 /**
@@ -423,17 +430,18 @@ void INIMapLoader::loadHouses()
         int startingCredits = inifile->getIntValue(houseName,"Credits",DEFAULT_STARTINGCREDITS);
 
         int maxUnits = 0;
-        if(currentGame->getGameInitSettings().getGameOptions().maximumNumberOfUnitsOverride >= 0) {
-            maxUnits = currentGame->getGameInitSettings().getGameOptions().maximumNumberOfUnitsOverride;
+        if(pGame->getGameInitSettings().getGameOptions().maximumNumberOfUnitsOverride >= 0) {
+            maxUnits = pGame->getGameInitSettings().getGameOptions().maximumNumberOfUnitsOverride;
         } else {
-            int defaultMaxUnit = std::max(25, 25*(currentGameMap->getSizeX()*currentGameMap->getSizeY())/(64*64));
+            int defaultMaxUnit = std::max(25, 25*(sizeX*sizeY)/(64*64));
             int maxUnit = inifile->getIntValue(houseName,"MaxUnit",defaultMaxUnit);
             maxUnits = inifile->getIntValue(houseName,"MaxUnits",maxUnit);
         }
 
         int quota = inifile->getIntValue(houseName,"Quota",0);
 
-        pGame->house[static_cast<int>(houseID)] = std::make_unique<House>(houseID, startingCredits, maxUnits, houseInfo.team, quota);
+        pGame->house[static_cast<int>(houseID)] = std::make_unique<House>(
+            pGame->getObjectManager(), houseID, startingCredits, maxUnits, houseInfo.team, quota);
         auto *const pNewHouse = pGame->getHouse(houseID);
 
         // add players
@@ -471,7 +479,7 @@ void INIMapLoader::loadChoam()
     }
 
     for(const INIFile::Key& key : inifile->getSection("CHOAM")) {
-        Uint32 unitID = getItemIDByName(key.getKeyName());
+        const auto unitID = getItemIDByName(key.getKeyName());
         if((unitID == ItemID_Invalid) || !isUnit(unitID)) {
             logWarning(key.getLineNumber(), "Invalid unit string: '" + key.getKeyName() + "'");
             continue;
@@ -488,7 +496,7 @@ void INIMapLoader::loadChoam()
             num = 0;
         }
 
-        pGame->forAllHouses([=](auto& house) { house.getChoam().addItem(unitID, num); });
+        pGame->for_each_house([=](auto& house) { house.getChoam().addItem(unitID, num); });
     }
 }
 
@@ -535,7 +543,7 @@ void INIMapLoader::loadUnits()
 
 
             int Num2Place = 1;
-            int itemID = getItemIDByName(UnitStr);
+            ItemID_enum itemID = getItemIDByName(UnitStr);
             if((itemID == ItemID_Invalid) || !isUnit(itemID)) {
                 logWarning(key.getLineNumber(), "Invalid unit string: '" + UnitStr + "'!");
                 continue;
@@ -603,7 +611,7 @@ void INIMapLoader::loadUnits()
             }
 
             for(int i = 0; i < Num2Place; i++) {
-                auto* newUnit = getOrCreateHouse(houseID)->placeUnit(itemID, getXPos(pos), getYPos(pos), true);
+                auto* newUnit = getOrCreateHouse(houseID)->placeUnit(static_cast<ItemID_enum>(itemID), getXPos(pos), getYPos(pos), true);
                 if(newUnit == nullptr) {
                     logWarning(key.getLineNumber(), "Invalid or occupied position for '" + UnitStr + "': '" + std::to_string(pos) + "'!");
                     continue;
@@ -697,7 +705,7 @@ void INIMapLoader::loadStructures()
             }
             FixPoint percentHealth = std::min(FixPoint(iHealth) / 256, FixPoint(1));
 
-            int itemID = getItemIDByName(BuildingStr);
+            ItemID_enum itemID = getItemIDByName(BuildingStr);
 
             if((itemID == ItemID_Invalid) || !isStructure(itemID)) {
                 logWarning(key.getLineNumber(), "Invalid building string: '" + BuildingStr + "'!");
@@ -705,7 +713,7 @@ void INIMapLoader::loadStructures()
             }
 
             if (itemID != 0 && pGame->objectData.data[itemID][static_cast<int>(houseID)].enabled) {
-                ObjectBase* newStructure = getOrCreateHouse(houseID)->placeStructure(NONE_ID, itemID, getXPos(pos), getYPos(pos), true);
+                ObjectBase* newStructure = getOrCreateHouse(houseID)->placeStructure(NONE_ID, static_cast<ItemID_enum>(itemID), getXPos(pos), getYPos(pos), true);
                 if(newStructure == nullptr) {
                     logWarning(key.getLineNumber(), "Invalid or occupied position for '" + BuildingStr + "': '" + PosStr + "'!");
                     continue;
@@ -912,12 +920,12 @@ House* INIMapLoader::getOrCreateHouse(HOUSETYPE houseID) {
     }
 
     int maxUnits = 0;
-    if(currentGame->getGameInitSettings().getGameOptions().maximumNumberOfUnitsOverride >= 0) {
-        maxUnits = currentGame->getGameInitSettings().getGameOptions().maximumNumberOfUnitsOverride;
+    if(pGame->getGameInitSettings().getGameOptions().maximumNumberOfUnitsOverride >= 0) {
+        maxUnits = pGame->getGameInitSettings().getGameOptions().maximumNumberOfUnitsOverride;
     } else {
-        maxUnits = std::max(25, 25*(currentGameMap->getSizeX()*currentGameMap->getSizeY())/(64*64));
+        maxUnits = std::max(25, 25*(map->getSizeX()*map->getSizeY())/(64*64));
     }
-    auto pNewHouse = std::make_unique<House>(houseID, 0, maxUnits, team, 0);
+    auto pNewHouse = std::make_unique<House>(pGame->getObjectManager(), houseID, 0, maxUnits, team, 0);
 
     const auto& houseInfoList = pGame->getGameInitSettings().getHouseInfoList();
 

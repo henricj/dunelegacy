@@ -27,7 +27,7 @@
 // forward declarations
 class ObjectBase;
 
-typedef std::unordered_map<Uint32, ObjectBase*> ObjectMap;
+typedef std::unordered_map<Uint32, std::unique_ptr<ObjectBase>> ObjectMap;
 
 /// This class holds all objects (structures and units) in the game.
 class ObjectManager final {
@@ -35,9 +35,7 @@ public:
     /**
         Default constructor
     */
-    ObjectManager() : nextFreeObjectID(1)
-    {
-    }
+    ObjectManager();
 
     ObjectManager(const ObjectManager &) = delete;
     ObjectManager(ObjectManager &&) = delete;
@@ -47,7 +45,7 @@ public:
     /**
         Default destructor
     */
-    ~ObjectManager() = default;
+    ~ObjectManager();
 
 
     /**
@@ -63,13 +61,6 @@ public:
     void load(InputStream& stream);
 
     /**
-        This method adds one object. The ObjectID is chosen automatically.
-        \param  pObject A pointer to the object.
-        \return ObjectID of the added object.
-    */
-    Uint32 addObject(ObjectBase* pObject);
-
-    /**
         This method searches for the object with ObjectID.
         \param  objectID        ID of the object to search for
         \return Pointer to this object (nullptr if not found)
@@ -77,11 +68,21 @@ public:
     [[nodiscard]] ObjectBase* getObject(Uint32 objectID) const {
         const auto iter = objectMap.find(objectID);
 
-        if(iter == objectMap.end()) {
-            return nullptr;
-        }
+        if(iter == objectMap.end()) return nullptr;
 
-        return iter->second;
+        return iter->second.get();
+    }
+
+    /**
+        This method searches for the object with ObjectID.
+        \param  objectID        ID of the object to search for
+        \return Pointer to this object (nullptr if not found)
+    */
+    template<typename ObjectType>
+    [[nodiscard]] ObjectType* getObject(Uint32 objectID) const {
+        static_assert(std::is_base_of<ObjectBase, ObjectType>::value, "ObjectType not derived from ObjectBase");
+
+        return dynamic_cast<ObjectType*>(getObject(objectID));
     }
 
     /**
@@ -90,7 +91,26 @@ public:
         \return false if there was no object with this ObjectID, true if it could be removed
     */
     bool removeObject(Uint32 objectID) {
-        return (objectMap.erase(objectID) != 0);
+        const auto iter = objectMap.find(objectID);
+
+        if(iter == objectMap.end()) return false;
+
+        pendingDelete.push(std::move(iter->second));
+
+        objectMap.erase(iter);
+
+        return true;
+    }
+
+    template<typename F>
+    void consume_pending_deletes(F&& f) {
+        while (!pendingDelete.empty()) {
+            auto object = std::move(pendingDelete.front());
+
+            pendingDelete.pop();
+
+            f(object);
+        }
     }
 
     template<typename Visitor>
@@ -100,9 +120,60 @@ public:
             visitor(pair.second);
         }
     }
+
+    template<typename ObjectType>
+    ObjectType* createObjectFromItemId(ItemID_enum itemID, const ObjectInitializer& initializer) {
+        static_assert(std::is_base_of<ObjectBase, ObjectType>::value, "ObjectType not derived from ObjectBase");
+
+        auto object = ObjectBase::createObject(itemID, nextFreeObjectID, initializer);
+
+        auto* const pObject = dynamic_cast<ObjectType*>(object.get());
+
+        if(!addObject(std::move(object))) return nullptr;
+
+        return pObject;
+    }
+
+    template<typename ObjectType>
+    ObjectType* loadObjectFromItemId(ItemID_enum itemID, const ObjectStreamInitializer& initializer) {
+        static_assert(std::is_base_of<ObjectBase, ObjectType>::value, "ObjectType not derived from ObjectBase");
+
+        auto object = ObjectBase::loadObject(itemID, nextFreeObjectID, initializer);
+
+        auto* const pObject = dynamic_cast<ObjectType*>(object.get());
+
+        if(!pObject) {
+            SDL_Log("ObjectManager::createObject(): type mismatch for itemID %d!", itemID);
+            return nullptr;
+        }
+
+        if(!addObject(std::move(object))) return nullptr;
+
+        return pObject;
+    }
+
+    template<typename ObjectType>
+    ObjectType* createObjectFromType(const ObjectInitializer& initializer) {
+        static_assert(std::is_constructible<ObjectType, ItemID_enum, Uint32, const ObjectInitializer &>::value,
+                      "ObjectType is not constructible");
+        static_assert(std::is_base_of<ObjectBase, ObjectType>::value, "ObjectType not derived from ObjectBase");
+
+        return createObjectFromItemId<ObjectType>(ObjectType::item_id, initializer);
+    }
+
 private:
-    Uint32 nextFreeObjectID;
+    /**
+        This method adds one object. The ObjectID is chosen automatically.
+        \param  pObject A pointer to the object.
+        \return ObjectID of the added object.
+    */
+    bool addObject(std::unique_ptr<ObjectBase> pObject);
+    static std::unique_ptr<ObjectBase> loadObject(InputStream& stream, Uint32 objectID);
+
+    Uint32                    nextFreeObjectID = 1;
     ObjectMap objectMap;
+    ObjectMap::const_iterator hint = objectMap.end();
+    std::queue<std::unique_ptr<ObjectBase>> pendingDelete;
 };
 
 #endif //OBJECTMANAGER_H

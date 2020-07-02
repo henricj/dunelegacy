@@ -33,7 +33,7 @@ public:
         num = 0;
     }
 
-    BuildItem(int itemID, int price) {
+    BuildItem(ItemID_enum itemID, int price) {
         this->itemID = itemID;
         this->price = price;
         num = 0;
@@ -50,12 +50,12 @@ public:
     }
 
     void load(InputStream& stream) {
-        itemID = stream.readUint32();
+        itemID = static_cast<ItemID_enum>(stream.readUint32());
         price = stream.readUint32();
         num = stream.readUint32();
     }
 
-    Uint32 itemID;
+    ItemID_enum itemID;
     Uint32 price;
     Uint32 num;
 };
@@ -63,11 +63,11 @@ public:
 class ProductionQueueItem final {
 public:
     ProductionQueueItem()
-        : itemID(0), price(0) {
+        : itemID(ItemID_enum::ItemID_Invalid), price(0) {
 
     }
 
-    ProductionQueueItem(Uint32 _ItemID, Uint32 _price)
+    ProductionQueueItem(ItemID_enum _ItemID, Uint32 _price)
         : itemID(_ItemID), price(_price) {
 
     }
@@ -82,11 +82,11 @@ public:
     }
 
     void load(InputStream& stream) {
-        itemID = stream.readUint32();
+        itemID = static_cast<ItemID_enum>(stream.readUint32());
         price = stream.readUint32();
     }
 
-    Uint32 itemID;
+    ItemID_enum itemID;
     Uint32 price;
 };
 
@@ -94,9 +94,8 @@ public:
 class BuilderBase : public StructureBase
 {
 public:
-    explicit BuilderBase(House* newOwner);
-    explicit BuilderBase(InputStream& stream);
-    void init();
+    BuilderBase(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer);
+    BuilderBase(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer);
     virtual ~BuilderBase() = 0;
 
     BuilderBase(const BuilderBase &) = delete;
@@ -142,8 +141,8 @@ public:
     bool update() override;
 
     virtual void handleUpgradeClick();
-    virtual void handleProduceItemClick(Uint32 itemID, bool multipleMode = false);
-    virtual void handleCancelItemClick(Uint32 itemID, bool multipleMode = false);
+    virtual void handleProduceItemClick(ItemID_enum itemID, bool multipleMode = false);
+    virtual void handleCancelItemClick(ItemID_enum itemID, bool multipleMode = false);
     virtual void handleSetOnHoldClick(bool OnHold);
 
 
@@ -159,14 +158,14 @@ public:
         \param  itemID          the item to produce
         \param  multipleMode    false = 1 item, true = 5 items
     */
-    virtual void doProduceItem(Uint32 itemID, bool multipleMode = false);
+    virtual void doProduceItem(ItemID_enum itemID, bool multipleMode = false);
 
     /**
         Cancel production of the specified item.
         \param  itemID          the item to cancel
         \param  multipleMode    false = 1 item, true = 5 items
     */
-    virtual void doCancelItem(Uint32 itemID, bool multipleMode = false);
+    virtual void doCancelItem(ItemID_enum itemID, bool multipleMode = false);
 
     /**
         Sets the currently produced item on hold or continues production.
@@ -195,14 +194,14 @@ public:
     void produce_item();
     FixPoint getUpgradeProgress() const noexcept { return upgradeProgress; }
 
-    Uint32 getCurrentProducedItem() const noexcept { return currentProducedItem; }
+    ItemID_enum getCurrentProducedItem() const noexcept { return currentProducedItem; }
     bool isOnHold() const noexcept { return bCurrentItemOnHold; }
     bool isWaitingToPlace() const;
-    bool isUnitLimitReached(Uint32 itemID) const;
+    bool isUnitLimitReached(ItemID_enum itemID) const;
     FixPoint getProductionProgress() const noexcept { return productionProgress; }
     const std::list<BuildItem>& getBuildList() const noexcept { return buildList; }
 
-    virtual bool isAvailableToBuild(Uint32 itemID) const {
+    virtual bool isAvailableToBuild(ItemID_enum itemID) const {
         return (getBuildItem(itemID) != nullptr);
     }
 
@@ -217,11 +216,11 @@ protected:
 
     void removeBuiltItemFromProductionQueue();
 
-    virtual void insertItem(std::list<BuildItem>& buildItemList, std::list<BuildItem>::iterator& iter, Uint32 itemID, int price=-1);
+    virtual void insertItem(std::list<BuildItem>& buildItemList, std::list<BuildItem>::iterator& iter, ItemID_enum itemID, int price=-1);
 
-    void removeItem(std::list<BuildItem>& buildItemList, std::list<BuildItem>::iterator& iter, Uint32 itemID);
+    void removeItem(std::list<BuildItem>& buildItemList, std::list<BuildItem>::iterator& iter, ItemID_enum itemID);
 
-    BuildItem* getBuildItem(Uint32 itemID) {
+    BuildItem* getBuildItem(ItemID_enum itemID) {
         for(auto& buildItem : buildList) {
             if(buildItem.itemID == itemID) {
                 return &buildItem;
@@ -230,7 +229,7 @@ protected:
         return nullptr;
     }
 
-    const BuildItem* getBuildItem(Uint32 itemID) const {
+    const BuildItem* getBuildItem(ItemID_enum itemID) const {
         for(const auto& buildItem : buildList) {
             if(buildItem.itemID == itemID) {
                 return &buildItem;
@@ -242,7 +241,7 @@ protected:
     void produceNextAvailableItem();
 
 protected:
-    static const int itemOrder[];  ///< the order in which items are in the build list
+    static const ItemID_enum itemOrder[]; ///< the order in which items are in the build list
 
     // structure state
     bool     upgrading{};              ///< Currently upgrading?
@@ -250,7 +249,7 @@ protected:
     Uint8    curUpgradeLev{};          ///< Current upgrade level
 
     bool     bCurrentItemOnHold{};     ///< Is the currently produced item on hold?
-    Uint32   currentProducedItem = ItemID_Invalid;    ///< The ItemID of the currently produced item
+    ItemID_enum   currentProducedItem = ItemID_Invalid;    ///< The ItemID of the currently produced item
     FixPoint productionProgress{};     ///< The current state of the production progress (measured in money spent)
     Uint32   deployTimer{};            ///< Timer for deploying a unit
 
@@ -258,6 +257,9 @@ protected:
 
     std::list<ProductionQueueItem>  currentProductionQueue;     ///< This list is the production queue (It contains the item IDs of the units/structures to produce)
     std::list<BuildItem>            buildList;                  ///< This list contains all the things that can be produced by this builder
+
+private:
+    void init();
 };
 
 #endif //BUILDERBASE_H

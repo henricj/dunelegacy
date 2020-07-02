@@ -23,8 +23,10 @@
 class WindTrap final : public StructureBase
 {
 public:
-    explicit WindTrap(House* newOwner);
-    explicit WindTrap(InputStream& stream);
+    static const ItemID_enum item_id = Structure_WindTrap;
+
+    WindTrap(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer);
+    WindTrap(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer);
     ~WindTrap() override;
 
     ObjectInterface* getInterfaceContainer() override;

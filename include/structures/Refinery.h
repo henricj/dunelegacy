@@ -18,19 +18,19 @@
 #ifndef REFINERY_H
 #define REFINERY_H
 
-#include <structures/StructureBase.h>
 #include <ObjectPointer.h>
+#include <structures/StructureBase.h>
 
 // forward declarations
 class Harvester;
 class Carryall;
 
-class Refinery final : public StructureBase
-{
+class Refinery final : public StructureBase {
 public:
-    explicit Refinery(House* newOwner);
-    explicit Refinery(InputStream& stream);
-    void init();
+    static const ItemID_enum item_id = Structure_Refinery;
+
+    Refinery(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer);
+    Refinery(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer);
     ~Refinery() override;
 
     void save(OutputStream& stream) const override;
@@ -42,20 +42,20 @@ public:
     void startAnimate();
     void stopAnimate();
 
-    inline void book() {
+    void book() {
         bookings++;
         startAnimate();
     }
-    inline void unBook() {
+
+    void unBook() {
         bookings--;
-        if(bookings == 0) {
-            stopAnimate();
-        }
+        if(bookings == 0) { stopAnimate(); }
     }
-    inline bool isFree() const { return !extractingSpice; }
-    inline int getNumBookings() const { return bookings; }  //number of units goings there
-    inline const Harvester* getHarvester() const  { return reinterpret_cast<Harvester*>(harvester.getObjPointer()); }
-    inline Harvester* getHarvester() { return reinterpret_cast<Harvester*>(harvester.getObjPointer()); }
+
+    bool isFree() const noexcept { return !extractingSpice; }
+    int  getNumBookings() const noexcept { return bookings; } // number of units goings there
+    const Harvester* getHarvester() const { return reinterpret_cast<Harvester*>(harvester.getObjPointer()); }
+    Harvester*       getHarvester() { return reinterpret_cast<Harvester*>(harvester.getObjPointer()); }
 
 protected:
     /**
@@ -65,12 +65,13 @@ protected:
     void updateStructureSpecificStuff() override;
 
 private:
+    void init();
 
-    bool            extractingSpice;    ///< Currently extracting spice?
-    ObjectPointer   harvester;          ///< The harverster currently in the refinery
-    Uint32          bookings;           ///< How many bookings?
+    bool          extractingSpice; ///< Currently extracting spice?
+    ObjectPointer harvester;       ///< The harvester currently in the refinery
+    Uint32        bookings;        ///< How many bookings?
 
-    bool    firstRun;       ///< On first deploy of a harvester we tell it to the user
+    bool firstRun; ///< On first deploy of a harvester we tell it to the user
 };
 
 #endif // REFINERY_H

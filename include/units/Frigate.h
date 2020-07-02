@@ -23,9 +23,10 @@
 class Frigate final : public AirUnit
 {
 public:
-    explicit Frigate(House* newOwner);
-    explicit Frigate(InputStream& stream);
-    void init();
+    static const ItemID_enum item_id = ItemID_enum::Unit_Frigate;
+
+    Frigate(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer);
+    Frigate(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer);
     ~Frigate() override;
 
     void save(OutputStream& stream) const override;
@@ -44,7 +45,9 @@ protected:
     void turn() override;
 
 private:
-    bool    droppedOffCargo;    ///< Is the cargo already dropped off?
+    void init();
+
+    bool droppedOffCargo; ///< Is the cargo already dropped off?
 };
 
 #endif // FRIGATE_H

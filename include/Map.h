@@ -40,7 +40,7 @@ public:
     Map& operator=(Map &&) = delete;
 
     void load(InputStream& stream);
-    void save(OutputStream& stream) const;
+    void save(OutputStream& stream, Uint32 gameCycleCount) const;
 
     void createSandRegions();
     void damage(Uint32 damagerID, House* damagerOwner, const Coord& realPos, Uint32 bulletID, FixPoint damage, int damageRadius, bool air);
@@ -406,11 +406,100 @@ public:
 
         return pathfinder_.getFoundPath(this, path);
     }
+
+    template<typename F>
+    void consume_removed_objects(F&& f) {
+        while (!removedObjects.empty()) {
+            const auto objectID = removedObjects.front();
+            removedObjects.pop();
+            f(objectID);
+        }
+    }
+
+    void removeSelection(Uint32 objectID) { removedObjects.push(objectID); }
+
+    bool trySetTileType(int x, int y, TERRAINTYPE type) {
+        const auto tile = tryGetTile(x, y);
+        if(!tile) return false;
+
+        tile->setType(currentGame.get(), type);
+
+        return true;
+    }
+
+    bool hasAStructure(int x, int y) const {
+        const auto tile = tryGetTile(x, y);
+        if(!tile) return false;
+
+        return tile->hasAStructure(currentGame->getObjectManager());
+    }
+
+    ObjectBase* getGroundObject(int x, int y) const {
+        const auto* const tile = tryGetTile(x, y);
+        if(!tile) return nullptr;
+
+        return tile->getGroundObject(currentGame->getObjectManager());
+    }
+
+    template<typename ObjectType>
+    ObjectType* getGroundObject(int x, int y) const {
+        static_assert(!std::is_abstract<ObjectType>::value, "ObjectType is abstract");
+        static_assert(std::is_base_of<ObjectBase, ObjectType>::value, "ObjectType not derived from ObjectBase");
+
+        auto* const object = getGroundObject(x, y);
+        if(!object) return nullptr;
+
+        if(object->getItemID() != ObjectType::item_id) return nullptr;
+
+        return static_cast<ObjectType*>(object);
+    }
+
+    template<typename ObjectType>
+    bool hasAGroundObject(int x, int y) const {
+        static_assert(!std::is_abstract<ObjectType>::value, "ObjectType is abstract");
+        static_assert(std::is_base_of<ObjectBase, ObjectType>::value, "ObjectType not derived from ObjectBase");
+
+        const auto* const tile = tryGetTile(x, y);
+        if(!tile) return false;
+
+        auto* const object = tile->getGroundObject(currentGame->getObjectManager());
+        if(!object) return false;
+
+        return object->getItemID() == ObjectType::item_id;
+    }
+
+    ObjectBase* tryGetObject(int x, int y) const {
+        const auto* const tile = tryGetTile(x, y);
+        if(!tile) return nullptr;
+
+        return tile->getObject(currentGame->getObjectManager());
+    }
+
+    House* tryGetOwner(int x, int y) const {
+        const auto* const object = tryGetObject(x, y);
+        if(!object) return nullptr;
+
+        return object->getOwner();
+    }
+
+    InfantryBase* tryGetInfantry(int x, int y) const {
+        const auto* const tile = tryGetTile(x, y);
+        if(!tile) return nullptr;
+
+        if(!tile->hasInfantry()) return nullptr;
+
+        return tile->getInfantry(currentGame->getObjectManager());
+    }
+
+
+
 private:
     const Sint32  sizeX;                    ///< number of tiles this map is wide (read only)
     const Sint32  sizeY;                    ///< number of tiles this map is high (read only)
     std::vector<Tile> tiles;                ///< the 2d-array containing all the tiles of the map
     ObjectBase* lastSinglySelectedObject;   ///< The last selected object. If selected again all units of the same type are selected
+
+    std::queue<Uint32> removedObjects;
 
     void init_tile_location();
 

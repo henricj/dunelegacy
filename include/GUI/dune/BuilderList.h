@@ -141,7 +141,7 @@ private:
     static int getNumButtons(int height) ;
     static Point getButtonPosition(int BtnNumber) ;
     int getButton(int x, int y) const;
-    int getItemIDFromIndex(int i) const;
+    ItemID_enum getItemIDFromIndex(int i) const;
 
     void onUp();
     void onDown();

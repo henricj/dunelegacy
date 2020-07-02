@@ -142,7 +142,7 @@ void CampaignAIPlayer::update() {
 void CampaignAIPlayer::onObjectWasBuilt(const ObjectBase* pObject) {
 }
 
-void CampaignAIPlayer::onDecrementStructures(int itemID, const Coord& location) {
+void CampaignAIPlayer::onDecrementStructures(ItemID_enum itemID, const Coord& location) {
     if(structureQueue.size() < 5) {
         structureQueue.emplace_back(itemID, location);
     }
@@ -189,7 +189,7 @@ void CampaignAIPlayer::updateStructures() {
                 } else {
                     const House* pBestHouse = nullptr;
 
-                    currentGame->forAllHouses([&](const auto& house) {
+                    currentGame->for_each_house([&](const auto& house) {
                         if(house.getTeamID() != getHouse()->getTeamID()) return;
 
                         if(!pBestHouse) {
@@ -229,7 +229,7 @@ void CampaignAIPlayer::updateStructures() {
             if(pBuilder->getItemID() == Structure_ConstructionYard) {
                 // rebuild the last five destroyed buildings
                 if(pBuilder->isWaitingToPlace()) {
-                    int itemID = pBuilder->getCurrentProducedItem();
+                    ItemID_enum itemID = pBuilder->getCurrentProducedItem();
                     for(auto iter = structureQueue.begin(); iter != structureQueue.end(); ++iter) {
                         if(iter->itemID == itemID) {
                             const auto location = iter->location;
@@ -270,10 +270,10 @@ void CampaignAIPlayer::updateStructures() {
                     continue;
                 }
 
-                Uint32 bestItemID = ItemID_Invalid;
+                auto bestItemID = ItemID_Invalid;
                 int bestItemPriority = 0;
                 for(Uint32 currentItemID = ItemID_FirstID; currentItemID < ItemID_LastID; currentItemID++) {
-                    if(!pBuilder->isAvailableToBuild(currentItemID)) {
+                    if(!pBuilder->isAvailableToBuild(static_cast<ItemID_enum>(currentItemID))) {
                         continue;
                     }
 
@@ -294,7 +294,7 @@ void CampaignAIPlayer::updateStructures() {
 
                     if((getRandomGen().rand() % 4 == 0) || (buildPriorityIter->second > bestItemPriority)) {
                         // build with 25% chance or if higher priority
-                        bestItemID = currentItemID;
+                        bestItemID = static_cast<ItemID_enum>(currentItemID);
                         bestItemPriority = buildPriorityIter->second;
                     }
                 }

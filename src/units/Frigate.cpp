@@ -28,8 +28,7 @@
 
 #include <structures/StarPort.h>
 
-Frigate::Frigate(House* newOwner) : AirUnit(newOwner)
-{
+Frigate::Frigate(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer) : AirUnit(itemID, objectID, initializer) {
     Frigate::init();
 
     ObjectBase::setHealth(getMaxHealth());
@@ -40,16 +39,17 @@ Frigate::Frigate(House* newOwner) : AirUnit(newOwner)
     droppedOffCargo = false;
 }
 
-Frigate::Frigate(InputStream& stream) : AirUnit(stream)
-{
+Frigate::Frigate(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer) : AirUnit(itemID, objectID, initializer) {
     Frigate::init();
+
+    auto& stream    = initializer.Stream;
 
     droppedOffCargo = stream.readBool();
 }
 
 void Frigate::init()
 {
-    itemID = Unit_Frigate;
+    assert(itemID == Unit_Frigate);
     owner->incrementUnits(itemID);
 
     canAttackStuff = false;

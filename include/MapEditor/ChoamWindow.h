@@ -62,7 +62,7 @@ private:
     void onCancel();
     void onOK();
 
-    void onUnitCheckbox(int itemID);
+    void onUnitCheckbox(ItemID_enum itemID);
 
 
     HBox    mainHBox;

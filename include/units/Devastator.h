@@ -24,9 +24,10 @@
 class Devastator final : public TrackedUnit
 {
 public:
-    explicit Devastator(House* newOwner);
-    explicit Devastator(InputStream& stream);
-    void init();
+    static const ItemID_enum item_id = ItemID_enum::Unit_Devastator;
+
+    Devastator(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer);
+    Devastator(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer);
     ~Devastator() override;
 
     void save(OutputStream& stream) const override;
@@ -48,6 +49,8 @@ public:
     void playAttackSound() override;
 
 private:
+    void init();
+
     // devastator state
     Sint32      devastateTimer;       ///< When will this devastator devastate
 

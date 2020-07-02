@@ -30,33 +30,64 @@
 
 #include <GUI/ObjectInterfaces/BuilderInterface.h>
 
-const int BuilderBase::itemOrder[] = {    Structure_Slab4, Structure_Slab1, Structure_IX, Structure_StarPort,
-                                           Structure_HighTechFactory, Structure_HeavyFactory, Structure_RocketTurret,
-                                           Structure_RepairYard, Structure_GunTurret, Structure_WOR,
-                                           Structure_Barracks, Structure_Wall, Structure_LightFactory,
-                                           Structure_Silo, Structure_Radar, Structure_Refinery, Structure_WindTrap,
-                                           Structure_Palace,
-                                           Unit_SonicTank, Unit_Devastator, Unit_Deviator, Unit_Special,
-                                           Unit_Launcher, Unit_SiegeTank, Unit_Tank, Unit_MCV, Unit_Harvester,
-                                           Unit_Ornithopter, Unit_Carryall, Unit_Quad, Unit_RaiderTrike,
-                                           Unit_Trike, Unit_Troopers, Unit_Trooper, Unit_Infantry, Unit_Soldier,
-                                           Unit_Frigate, Unit_Sandworm, Unit_Saboteur, ItemID_Invalid };
+const ItemID_enum BuilderBase::itemOrder[] = {Structure_Slab4,
+                                              Structure_Slab1,
+                                              Structure_IX,
+                                              Structure_StarPort,
+                                              Structure_HighTechFactory,
+                                              Structure_HeavyFactory,
+                                              Structure_RocketTurret,
+                                              Structure_RepairYard,
+                                              Structure_GunTurret,
+                                              Structure_WOR,
+                                              Structure_Barracks,
+                                              Structure_Wall,
+                                              Structure_LightFactory,
+                                              Structure_Silo,
+                                              Structure_Radar,
+                                              Structure_Refinery,
+                                              Structure_WindTrap,
+                                              Structure_Palace,
+                                              Unit_SonicTank,
+                                              Unit_Devastator,
+                                              Unit_Deviator,
+                                              Unit_Special,
+                                              Unit_Launcher,
+                                              Unit_SiegeTank,
+                                              Unit_Tank,
+                                              Unit_MCV,
+                                              Unit_Harvester,
+                                              Unit_Ornithopter,
+                                              Unit_Carryall,
+                                              Unit_Quad,
+                                              Unit_RaiderTrike,
+                                              Unit_Trike,
+                                              Unit_Troopers,
+                                              Unit_Trooper,
+                                              Unit_Infantry,
+                                              Unit_Soldier,
+                                              Unit_Frigate,
+                                              Unit_Sandworm,
+                                              Unit_Saboteur,
+                                              ItemID_Invalid};
 
-BuilderBase::BuilderBase(House* newOwner) : StructureBase(newOwner) {
+BuilderBase::BuilderBase(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer) : StructureBase(itemID, objectID, initializer) {
     BuilderBase::init();
 
     buildSpeedLimit = 1.0_fix;
 }
 
-BuilderBase::BuilderBase(InputStream& stream) : StructureBase(stream) {
+BuilderBase::BuilderBase(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer) : StructureBase(itemID, objectID, initializer) {
     BuilderBase::init();
 
-    upgrading = stream.readBool();
+    auto& stream = initializer.Stream;
+
+    upgrading       = stream.readBool();
     upgradeProgress = stream.readFixPoint();
     curUpgradeLev = stream.readUint8();
 
     bCurrentItemOnHold = stream.readBool();
-    currentProducedItem = stream.readUint32();
+    currentProducedItem = static_cast<ItemID_enum>(stream.readUint32());
     productionProgress = stream.readFixPoint();
     deployTimer = stream.readUint32();
 
@@ -113,7 +144,7 @@ ObjectInterface* BuilderBase::getInterfaceContainer() {
    
 }
 
-void BuilderBase::insertItem(std::list<BuildItem>& buildItemList, std::list<BuildItem>::iterator& iter, Uint32 itemID, int price) {
+void BuilderBase::insertItem(std::list<BuildItem>& buildItemList, std::list<BuildItem>::iterator& iter, ItemID_enum itemID, int price) {
     if(iter != buildItemList.end()) {
         if(iter->itemID == itemID) {
             if(price != -1) {
@@ -131,7 +162,7 @@ void BuilderBase::insertItem(std::list<BuildItem>& buildItemList, std::list<Buil
     buildItemList.insert(iter, BuildItem(itemID, price));
 }
 
-void BuilderBase::removeItem(std::list<BuildItem>& buildItemList, std::list<BuildItem>::iterator& iter, Uint32 itemID) {
+void BuilderBase::removeItem(std::list<BuildItem>& buildItemList, std::list<BuildItem>::iterator& iter, ItemID_enum itemID) {
     if(iter == buildItemList.end() || iter->itemID != itemID) return;
 
     const auto iter2 = iter;
@@ -178,7 +209,7 @@ bool BuilderBase::isWaitingToPlace() const {
    
 }
 
-bool BuilderBase::isUnitLimitReached(Uint32 itemID) const {
+bool BuilderBase::isUnitLimitReached(ItemID_enum itemID) const {
     if((currentProducedItem == ItemID_Invalid) || isStructure(currentProducedItem)) {
         return false;
     }
@@ -291,7 +322,7 @@ void BuilderBase::updateBuildList()
             // check if prerequisites are met
             auto bPrerequisitesMet = true;
             for(int itemID2Test = Structure_FirstID; itemID2Test <= Structure_LastID; itemID2Test++) {
-                if(objData.prerequisiteStructuresSet[itemID2Test] && (owner->getNumItems(itemID2Test) <= 0)) {
+                if(objData.prerequisiteStructuresSet[itemID2Test] && (owner->getNumItems(static_cast<ItemID_enum>(itemID2Test)) <= 0)) {
                     bPrerequisitesMet = false;
                     break;
                 }
@@ -344,7 +375,7 @@ int BuilderBase::getUpgradeCost() const {
 
 void BuilderBase::produce_item()
 {
-    int finishedItemID = currentProducedItem;
+    auto finishedItemID = currentProducedItem;
     removeBuiltItemFromProductionQueue();
 
     auto num2Place = 1;
@@ -359,7 +390,7 @@ void BuilderBase::produce_item()
         num2Place = 3;
     }
 
-    auto *game = currentGame;
+    auto* game = currentGame.get();
 
     for(auto i = 0; i < num2Place; i++) {
         auto *newUnit = getOwner()->createUnit(finishedItemID);
@@ -452,7 +483,7 @@ void BuilderBase::handleUpgradeClick() {
         Command(pLocalPlayer->getPlayerID(), CMDTYPE::CMD_BUILDER_UPGRADE, objectID));
 }
 
-void BuilderBase::handleProduceItemClick(Uint32 itemID, bool multipleMode) {
+void BuilderBase::handleProduceItemClick(ItemID_enum itemID, bool multipleMode) {
     for(const auto& buildItem : buildList) {
         if(buildItem.itemID == itemID) {
             if( currentGame->getGameInitSettings().getGameOptions().onlyOnePalace
@@ -468,7 +499,7 @@ void BuilderBase::handleProduceItemClick(Uint32 itemID, bool multipleMode) {
     currentGame->getCommandManager().addCommand(Command(pLocalPlayer->getPlayerID(), CMDTYPE::CMD_BUILDER_PRODUCEITEM, objectID, itemID, (Uint32) multipleMode));
 }
 
-void BuilderBase::handleCancelItemClick(Uint32 itemID, bool multipleMode) {
+void BuilderBase::handleCancelItemClick(ItemID_enum itemID, bool multipleMode) {
     currentGame->getCommandManager().addCommand(
         Command(pLocalPlayer->getPlayerID(), CMDTYPE::CMD_BUILDER_CANCELITEM, objectID, itemID, (Uint32)multipleMode));
 }
@@ -497,7 +528,7 @@ bool BuilderBase::doUpgrade() {
     }
 }
 
-void BuilderBase::doProduceItem(Uint32 itemID, bool multipleMode) {
+void BuilderBase::doProduceItem(ItemID_enum itemID, bool multipleMode) {
     for(BuildItem& buildItem : buildList) {
         if(buildItem.itemID == itemID) {
             for(int i = 0; i < (multipleMode ? 5 : 1); i++) {
@@ -524,7 +555,7 @@ void BuilderBase::doProduceItem(Uint32 itemID, bool multipleMode) {
     }
 }
 
-void BuilderBase::doCancelItem(Uint32 itemID, bool multipleMode) {
+void BuilderBase::doCancelItem(ItemID_enum itemID, bool multipleMode) {
     for(auto& buildItem : buildList) {
         if(buildItem.itemID == itemID) {
             for(auto i = 0; i < (multipleMode ? 5 : 1); i++) {

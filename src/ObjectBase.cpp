@@ -71,9 +71,10 @@
 
 #include <array>
 
-ObjectBase::ObjectBase(House* newOwner) : originalHouseID(newOwner->getHouseID()), owner(newOwner) {
-
-    objectID = NONE_ID;
+ObjectBase::ObjectBase(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer) : ObjectBase(itemID, objectID) {
+    originalHouseID = initializer.Owner->getHouseID();
+    owner           = initializer.Owner;
+    byScenario      = initializer.ByScenario;
 
     health = 0;
     badlyDamaged = false;
@@ -101,8 +102,9 @@ ObjectBase::ObjectBase(House* newOwner) : originalHouseID(newOwner->getHouseID()
     setVisible(VIS_ALL, false);
 }
 
-ObjectBase::ObjectBase(InputStream& stream) {
-    objectID = NONE_ID; // has to be set after loading
+ObjectBase::ObjectBase(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer)
+    : ObjectBase(itemID, objectID) {
+    auto& stream    = initializer.Stream;
     originalHouseID = static_cast<HOUSETYPE>(stream.readUint32());
     owner = currentGame->getHouse(static_cast<HOUSETYPE>(stream.readUint32()));
 
@@ -146,24 +148,22 @@ ObjectBase::ObjectBase(InputStream& stream) {
         visible[i] = b[i];
 }
 
-void ObjectBase::init() {
-    itemID = ItemID_Invalid;
-
+ObjectBase::ObjectBase(ItemID_enum itemID, Uint32 objectID) : itemID{itemID}, objectID{objectID}
+{
     aFlyingUnit = false;
     aGroundUnit = false;
-    aStructure = false;
-    aUnit = false;
-    infantry = false;
-    aBuilder = false;
+    aStructure  = false;
+    aUnit       = false;
+    infantry    = false;
+    aBuilder    = false;
 
     canAttackStuff = false;
 
-    radius = TILESIZE/2;
+    radius = TILESIZE / 2;
 
-    graphicID = -1;
+    graphicID  = -1;
     numImagesX = 0;
     numImagesY = 0;
-
 }
 
 ObjectBase::~ObjectBase() = default;
@@ -253,13 +253,6 @@ ObjectInterface* ObjectBase::getInterfaceContainer() {
     return DefaultObjectInterface::create(objectID);
 }
 
-void ObjectBase::removeFromSelectionLists() {
-    currentGame->getSelectedList().erase(getObjectID());
-    currentGame->selectionChanged();
-    currentGame->getSelectedByOtherPlayerList().erase(getObjectID());
-    selected = false;
-}
-
 void ObjectBase::setDestination(int newX, int newY) {
     if(currentGameMap->tileExists(newX, newY) || ((newX == INVALID_POS) && (newY == INVALID_POS))) {
         destination.x = newX;
@@ -284,12 +277,6 @@ void ObjectBase::setLocation(int xPos, int yPos) {
         realY = location.y*TILESIZE;
 
         assignToMap(location);
-    }
-}
-
-void ObjectBase::setObjectID(int newObjectID) {
-    if(newObjectID >= 0) {
-        objectID = newObjectID;
     }
 }
 
@@ -494,11 +481,11 @@ const ObjectBase* ObjectBase::findTarget() const {
             const auto targetDistance = blockDistance(location, coord);
             if(targetDistance <= checkRange) {
                 Tile* pTile = currentGameMap->getTile(coord);
-                if( pTile->isExploredByTeam(getOwner()->getTeamID())
-                    && !pTile->isFoggedByTeam(getOwner()->getTeamID())
+                if( pTile->isExploredByTeam(currentGame.get(), getOwner()->getTeamID())
+                    && !pTile->isFoggedByTeam(currentGame.get(), getOwner()->getTeamID())
                     && pTile->hasAnObject()) {
 
-                    auto *const pNewTarget = pTile->getObject();
+                    auto *const pNewTarget = pTile->getObject(currentGame->getObjectManager());
                     if(((pNewTarget->getItemID() != Structure_Wall && pNewTarget->getItemID() != Unit_Carryall) || pClosestTarget == nullptr) && canAttack(pNewTarget)) {
                         if(targetDistance < closestTargetDistance) {
                             pClosestTarget = pNewTarget;
@@ -533,140 +520,76 @@ int ObjectBase::getInfSpawnProp() const {
     return currentGame->objectData.data[itemID][static_cast<int>(originalHouseID)].infspawnprop;
 }
 
-ObjectBase* ObjectBase::createObject(int itemID, House* Owner, bool byScenario) {
+namespace
+{
+template<typename ObjectType, typename... Args>
+std::unique_ptr<ObjectBase> makeObject(Args&&... args) {
+    static_assert(std::is_constructible<ObjectType, ItemID_enum, Args...>::value, "ObjectType is not constructible");
+    static_assert(std::is_base_of<ObjectBase, ObjectType>::value, "ObjectType not derived from ObjectBase");
 
-    ObjectBase* newObject = nullptr;
-    switch(itemID) {
-        // clang-format off
-        case Structure_Barracks:            newObject = new Barracks(Owner); break;
-        case Structure_ConstructionYard:    newObject = new ConstructionYard(Owner); break;
-        case Structure_GunTurret:           newObject = new GunTurret(Owner); break;
-        case Structure_HeavyFactory:        newObject = new HeavyFactory(Owner); break;
-        case Structure_HighTechFactory:     newObject = new HighTechFactory(Owner); break;
-        case Structure_IX:                  newObject = new IX(Owner); break;
-        case Structure_LightFactory:        newObject = new LightFactory(Owner); break;
-        case Structure_Palace:              newObject = new Palace(Owner); break;
-        case Structure_Radar:               newObject = new Radar(Owner); break;
-        case Structure_Refinery:            newObject = new Refinery(Owner); break;
-        case Structure_RepairYard:          newObject = new RepairYard(Owner); break;
-        case Structure_RocketTurret:        newObject = new RocketTurret(Owner); break;
-        case Structure_Silo:                newObject = new Silo(Owner); break;
-        case Structure_StarPort:            newObject = new StarPort(Owner); break;
-        case Structure_Wall:                newObject = new Wall(Owner); break;
-        case Structure_WindTrap:            newObject = new WindTrap(Owner); break;
-        case Structure_WOR:                 newObject = new WOR(Owner); break;
-
-        case Unit_Carryall:                 newObject = new Carryall(Owner); break;
-        case Unit_Devastator:               newObject = new Devastator(Owner); break;
-        case Unit_Deviator:                 newObject = new Deviator(Owner); break;
-        case Unit_Frigate:                  newObject = new Frigate(Owner); break;
-        case Unit_Harvester:                newObject = new Harvester(Owner); break;
-        case Unit_Soldier:                  newObject = new Soldier(Owner); break;
-        case Unit_Launcher:                 newObject = new Launcher(Owner); break;
-        case Unit_MCV:                      newObject = new MCV(Owner); break;
-        case Unit_Ornithopter:              newObject = new Ornithopter(Owner); break;
-        case Unit_Quad:                     newObject = new Quad(Owner); break;
-        case Unit_Saboteur:                 newObject = new Saboteur(Owner); break;
-        case Unit_Sandworm:                 newObject = new Sandworm(Owner); break;
-        case Unit_SiegeTank:                newObject = new SiegeTank(Owner); break;
-        case Unit_SonicTank:                newObject = new SonicTank(Owner); break;
-        case Unit_Tank:                     newObject = new Tank(Owner); break;
-        case Unit_Trike:                    newObject = new Trike(Owner); break;
-        case Unit_RaiderTrike:              newObject = new RaiderTrike(Owner); break;
-        case Unit_Trooper:                  newObject = new Trooper(Owner); break;
-        case Unit_Special: {
-            switch(Owner->getHouseID()) {
-                case HOUSETYPE::HOUSE_HARKONNEN:       newObject = new Devastator(Owner); break;
-                case HOUSETYPE::HOUSE_ATREIDES:        newObject = new SonicTank(Owner); break;
-                case HOUSETYPE::HOUSE_ORDOS:           newObject = new Deviator(Owner); break;
-                case HOUSETYPE::HOUSE_FREMEN:
-                case HOUSETYPE::HOUSE_SARDAUKAR:
-                case HOUSETYPE::HOUSE_MERCENARY: {
-                    if(currentGame->randomGen.randBool()) {
-                         newObject = new SonicTank(Owner);
-                    } else {
-                        newObject = new Devastator(Owner);
-                    }
-                } break;
-                default:    /* should never be reached */  break;
-            }
-        } break;
-
-        default:                            newObject = nullptr;
-                                            SDL_Log("ObjectBase::createObject(): %d is no valid ItemID!",itemID);
-                                            break;
-                                            // clang-format on
-    }
-
-    if(newObject == nullptr) {
-        return nullptr;
-    }
-
-    newObject->byScenario = byScenario;
-
-    Uint32 objectID = currentGame->getObjectManager().addObject(newObject);
-    newObject->setObjectID(objectID);
-
-    return newObject;
+    return std::make_unique<ObjectType>(ObjectType::item_id, std::forward<Args>(args)...);
 }
 
-ObjectBase* ObjectBase::loadObject(InputStream& stream, int itemID, Uint32 objectID) {
-    ObjectBase* newObject = nullptr;
+template<typename... Args>
+auto objectFactory(ItemID_enum itemID, Args&&... args) {
+    // clang-format off
     switch(itemID) {
-        case Structure_Barracks:            newObject = new Barracks(stream); break;
-        case Structure_ConstructionYard:    newObject = new ConstructionYard(stream); break;
-        case Structure_GunTurret:           newObject = new GunTurret(stream); break;
-        case Structure_HeavyFactory:        newObject = new HeavyFactory(stream); break;
-        case Structure_HighTechFactory:     newObject = new HighTechFactory(stream); break;
-        case Structure_IX:                  newObject = new IX(stream); break;
-        case Structure_LightFactory:        newObject = new LightFactory(stream); break;
-        case Structure_Palace:              newObject = new Palace(stream); break;
-        case Structure_Radar:               newObject = new Radar(stream); break;
-        case Structure_Refinery:            newObject = new Refinery(stream); break;
-        case Structure_RepairYard:          newObject = new RepairYard(stream); break;
-        case Structure_RocketTurret:        newObject = new RocketTurret(stream); break;
-        case Structure_Silo:                newObject = new Silo(stream); break;
-        case Structure_StarPort:            newObject = new StarPort(stream); break;
-        case Structure_Wall:                newObject = new Wall(stream); break;
-        case Structure_WindTrap:            newObject = new WindTrap(stream); break;
-        case Structure_WOR:                 newObject = new WOR(stream); break;
+        case Barracks::item_id:            return makeObject<Barracks>(args...);
+        case ConstructionYard::item_id:    return makeObject<ConstructionYard>(args...);
+        case GunTurret::item_id:           return makeObject<GunTurret>(args...);
+        case HeavyFactory::item_id:        return makeObject<HeavyFactory>(args...);
+        case HighTechFactory::item_id:     return makeObject<HighTechFactory>(args...);
+        case IX::item_id:                  return makeObject<IX>(args...);
+        case LightFactory::item_id:        return makeObject<LightFactory>(args...);
+        case Palace::item_id:              return makeObject<Palace>(args...);
+        case Radar::item_id:               return makeObject<Radar>(args...);
+        case Refinery::item_id:            return makeObject<Refinery>(args...);
+        case RepairYard::item_id:          return makeObject<RepairYard>(args...);
+        case RocketTurret::item_id:        return makeObject<RocketTurret>(args...);
+        case Silo::item_id:                return makeObject<Silo>(args...);
+        case StarPort::item_id:            return makeObject<StarPort>(args...);
+        case Wall::item_id:                return makeObject<Wall>(args...);
+        case WindTrap::item_id:            return makeObject<WindTrap>(args...);
+        case WOR::item_id:                 return makeObject<WOR>(args...);
 
-        case Unit_Carryall:                 newObject = new Carryall(stream); break;
-        case Unit_Devastator:               newObject = new Devastator(stream); break;
-        case Unit_Deviator:                 newObject = new Deviator(stream); break;
-        case Unit_Frigate:                  newObject = new Frigate(stream); break;
-        case Unit_Harvester:                newObject = new Harvester(stream); break;
-        case Unit_Soldier:                  newObject = new Soldier(stream); break;
-        case Unit_Launcher:                 newObject = new Launcher(stream); break;
-        case Unit_MCV:                      newObject = new MCV(stream); break;
-        case Unit_Ornithopter:              newObject = new Ornithopter(stream); break;
-        case Unit_Quad:                     newObject = new Quad(stream); break;
-        case Unit_Saboteur:                 newObject = new Saboteur(stream); break;
-        case Unit_Sandworm:                 newObject = new Sandworm(stream); break;
-        case Unit_SiegeTank:                newObject = new SiegeTank(stream); break;
-        case Unit_SonicTank:                newObject = new SonicTank(stream); break;
-        case Unit_Tank:                     newObject = new Tank(stream); break;
-        case Unit_Trike:                    newObject = new Trike(stream); break;
-        case Unit_RaiderTrike:              newObject = new RaiderTrike(stream); break;
-        case Unit_Trooper:                  newObject = new Trooper(stream); break;
+        case Carryall::item_id:            return makeObject<Carryall>(args...);
+        case Devastator::item_id:          return makeObject<Devastator>(args...);
+        case Deviator::item_id:            return makeObject<Deviator>(args...);
+        case Frigate::item_id:             return makeObject<Frigate>(args...);
+        case Harvester::item_id:           return makeObject<Harvester>(args...);
+        case Soldier::item_id:             return makeObject<Soldier>(args...);
+        case Launcher::item_id:            return makeObject<Launcher>(args...);
+        case MCV::item_id:                 return makeObject<MCV>(args...);
+        case Ornithopter::item_id:         return makeObject<Ornithopter>(args...);
+        case Quad::item_id:                return makeObject<Quad>(args...);
+        case Saboteur::item_id:            return makeObject<Saboteur>(args...);
+        case Sandworm::item_id:            return makeObject<Sandworm>(args...);
+        case SiegeTank::item_id:           return makeObject<SiegeTank>(args...);
+        case SonicTank::item_id:           return makeObject<SonicTank>(args...);
+        case Tank::item_id:                return makeObject<Tank>(args...);
+        case Trike::item_id:               return makeObject<Trike>(args...);
+        case RaiderTrike::item_id:         return makeObject<RaiderTrike>(args...);
+        case Trooper::item_id:             return makeObject<Trooper>(args...);
 
-        default:                            newObject = nullptr;
-                                            SDL_Log("ObjectBase::loadObject(): %d is no valid ItemID!",itemID);
-                                            break;
+        default:                            SDL_Log("ObjectBase::makeObject(): %d is no valid ItemID!",itemID);
+                                            return std::unique_ptr<ObjectBase>{};
     }
+    // clang-format on
+}
 
-    if(newObject == nullptr) {
-        return nullptr;
-    }
+} // anonymous namespace
 
-    newObject->setObjectID(objectID);
+std::unique_ptr<ObjectBase> ObjectBase::createObject(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer) {
+    return objectFactory(itemID, objectID, initializer);
+}
 
-    return newObject;
+std::unique_ptr<ObjectBase> ObjectBase::loadObject(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer) {
+    return objectFactory(itemID, objectID, initializer);
 }
 
 bool ObjectBase::targetInWeaponRange() const {
-    Coord coord = (target.getObjPointer())->getClosestPoint(location);
-    FixPoint dist = blockDistance(location,coord);
+    const auto coord = target.getObjPointer()->getClosestPoint(location);
+    const auto dist  = blockDistance(location, coord);
 
-    return ( dist <= currentGame->objectData.data[itemID][static_cast<int>(originalHouseID)].weaponrange);
+    return dist <= currentGame->objectData.data[itemID][static_cast<int>(originalHouseID)].weaponrange;
 }

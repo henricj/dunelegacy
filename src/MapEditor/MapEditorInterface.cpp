@@ -778,8 +778,8 @@ void MapEditorInterface::deselectAll() {
     deselectObject();
 
     onTerrainButton(-1);
-    onStructButton(-1);
-    onUnitButton(-1);
+    onStructButton(ItemID_enum::ItemID_Invalid);
+    onUnitButton(ItemID_enum::ItemID_Invalid);
 }
 
 void MapEditorInterface::deselectObject() {
@@ -1054,7 +1054,7 @@ void MapEditorInterface::onSetTacticalPosition() {
     pMapEditor->setEditorMode(MapEditor::EditorMode(true));
 }
 
-void MapEditorInterface::onStructButton(int structType) {
+void MapEditorInterface::onStructButton(ItemID_enum structType) {
     editorModeStructs_Slab1.setToggleState( (structType == Structure_Slab1) );
     editorModeStructs_Wall.setToggleState( (structType == Structure_Wall) );
     editorModeStructs_GunTurret.setToggleState( (structType == Structure_GunTurret) );
@@ -1080,7 +1080,7 @@ void MapEditorInterface::onStructButton(int structType) {
     }
 }
 
-void MapEditorInterface::onUnitButton(int unitType) {
+void MapEditorInterface::onUnitButton(ItemID_enum unitType) {
     editorModeUnits_Soldier.setToggleState( (unitType == Unit_Soldier) );
     editorModeUnits_Trooper.setToggleState( (unitType == Unit_Trooper) );
     editorModeUnits_Harvester.setToggleState( (unitType == Unit_Harvester) );

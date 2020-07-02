@@ -24,18 +24,18 @@
 
 #include <GUI/ObjectInterfaces/RadarInterface.h>
 
-Radar::Radar(House* newOwner) : StructureBase(newOwner) {
+Radar::Radar(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer) : StructureBase(itemID, objectID, initializer) {
     Radar::init();
 
     setHealth(getMaxHealth());
 }
 
-Radar::Radar(InputStream& stream) : StructureBase(stream) {
+Radar::Radar(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer) : StructureBase(itemID, objectID, initializer) {
     Radar::init();
 }
 
 void Radar::init() {
-    itemID = Structure_Radar;
+    assert(itemID == Structure_Radar);
     owner->incrementStructures(itemID);
 
     structureSize.x = 2;

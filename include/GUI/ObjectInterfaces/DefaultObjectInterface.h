@@ -67,7 +67,7 @@ protected:
         topBoxHBox.addWidget(Spacer::create());
     };
 
-    ~DefaultObjectInterface() override { ; };
+    ~DefaultObjectInterface() override = default;
 
     /**
         This method updates the object interface.
@@ -81,7 +81,7 @@ protected:
     }
 
     int             objectID;
-    int             itemID;
+    ItemID_enum itemID;
 
     StaticContainer topBox;
     HBox            topBoxHBox;

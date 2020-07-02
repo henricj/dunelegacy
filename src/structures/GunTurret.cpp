@@ -23,18 +23,18 @@
 #include <FileClasses/SFXManager.h>
 #include <House.h>
 
-GunTurret::GunTurret(House* newOwner) : TurretBase(newOwner) {
+GunTurret::GunTurret(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer) : TurretBase(itemID, objectID, initializer) {
     GunTurret::init();
 
     setHealth(getMaxHealth());
 }
 
-GunTurret::GunTurret(InputStream& stream) : TurretBase(stream) {
+GunTurret::GunTurret(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer) : TurretBase(itemID, objectID, initializer) {
     GunTurret::init();
 }
 
 void GunTurret::init() {
-    itemID = Structure_GunTurret;
+    assert(itemID == Structure_GunTurret);
     owner->incrementStructures(itemID);
 
     attackSound = Sound_ExplosionSmall;

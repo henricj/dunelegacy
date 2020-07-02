@@ -105,7 +105,7 @@ void AIPlayer::update() {
 void AIPlayer::onObjectWasBuilt(const ObjectBase* pObject) {
 }
 
-void AIPlayer::onDecrementStructures(int itemID, const Coord& location) {
+void AIPlayer::onDecrementStructures(ItemID_enum itemID, const Coord& location) {
 }
 
 void AIPlayer::onDamage(const ObjectBase* pObject, int damage, Uint32 damagerID) {
@@ -151,7 +151,7 @@ void AIPlayer::scrambleUnitsAndDefend(const ObjectBase* pIntruder) {
     }
 }
 
-Coord AIPlayer::findPlaceLocation(Uint32 itemID) {
+Coord AIPlayer::findPlaceLocation(ItemID_enum itemID) {
     const auto structureSizeX = getStructureSize(itemID).x;
     const auto structureSizeY = getStructureSize(itemID).y;
 
@@ -313,22 +313,16 @@ int AIPlayer::getNumAdjacentStructureTiles(Coord pos, int structureSizeX, int st
 
     int numAdjacentStructureTiles = 0;
 
+    const auto* const map = currentGameMap;
+
     for(int y = pos.y; y < pos.y + structureSizeY; y++) {
-        if(getMap().tileExists(pos.x-1, y) && getMap().getTile(pos.x-1, y)->hasAStructure()) {
-            numAdjacentStructureTiles++;
-        }
-        if(getMap().tileExists(pos.x+structureSizeX, y) && getMap().getTile(pos.x+structureSizeX, y)->hasAStructure()) {
-            numAdjacentStructureTiles++;
-        }
+        if(map->hasAStructure(pos.x - 1, y)) { numAdjacentStructureTiles++; }
+        if(map->hasAStructure(pos.x + structureSizeX, y)) { numAdjacentStructureTiles++; }
     }
 
     for(int x = pos.x; x < pos.x + structureSizeX; x++) {
-        if(getMap().tileExists(x, pos.y-1) && getMap().getTile(x, pos.y-1)->hasAStructure()) {
-            numAdjacentStructureTiles++;
-        }
-        if(getMap().tileExists(x, pos.y+structureSizeY) && getMap().getTile(x, pos.y+structureSizeY)->hasAStructure()) {
-            numAdjacentStructureTiles++;
-        }
+        if(map->hasAStructure(x, pos.y - 1)) { numAdjacentStructureTiles++; }
+        if(map->hasAStructure(x, pos.y + structureSizeY)) { numAdjacentStructureTiles++; }
     }
 
     return numAdjacentStructureTiles;
@@ -469,7 +463,7 @@ void AIPlayer::build() {
                             bConstructionYardChecked = true;
                             if(getHouse()->getCredits() > 100) {
                                 if((pBuilder->getProductionQueueSize() < 1) && (pBuilder->getBuildListSize() > 0)) {
-                                    Uint32 itemID = NONE_ID;
+                                    auto itemID = ItemID_enum::ItemID_Invalid;
                                     if(getHouse()->getProducedPower() - getHouse()->getPowerRequirement() < 50 && pBuilder->isAvailableToBuild(Structure_WindTrap)) {
                                         itemID = Structure_WindTrap;
                                     } else if(getHouse()->getNumItems(Structure_Refinery) < 3 && pBuilder->isAvailableToBuild(Structure_Refinery)) {
@@ -711,7 +705,7 @@ bool AIPlayer::isAllowedToArm() const {
     std::array<int, NUM_TEAMS> teamScore{};
 
     int maxTeamScore = 0;
-    currentGame->forAllHouses([&](const auto& house) {
+    currentGame->for_each_house([&](const auto& house) {
         teamScore[house.getTeamID()] += house.getUnitBuiltValue();
 
         if(house.getTeamID() != getHouse()->getTeamID()) {

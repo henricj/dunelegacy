@@ -22,11 +22,11 @@
 
 class Launcher final : public TrackedUnit
 {
-
 public:
-    explicit Launcher(House* newOwner);
-    explicit Launcher(InputStream& stream);
-    void init();
+    static const ItemID_enum item_id = ItemID_enum::Unit_Launcher;
+
+    Launcher(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer);
+    Launcher(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer);
     ~Launcher() override;
 
     void blitToScreen() override;
@@ -36,6 +36,8 @@ public:
     void playAttackSound() override;
 
 private:
+    void init();
+
     // drawing information
     zoomable_texture turretGraphic{};    ///< The turret graphic
     int              gunGraphicID;       ///< The id of the turret graphic (needed if we want to reload the graphic)

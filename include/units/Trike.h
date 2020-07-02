@@ -20,12 +20,12 @@
 
 #include <units/GroundUnit.h>
 
-class Trike final : public GroundUnit
-{
-    void init();
+class Trike final : public GroundUnit {
 public:
-    explicit Trike(House* newOwner);
-    explicit Trike(InputStream& stream);
+    static const ItemID_enum item_id = Unit_Trike;
+
+    Trike(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer);
+    Trike(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer);
     ~Trike() override;
 
     void destroy() override;
@@ -33,6 +33,9 @@ public:
     bool hasBumpyMovementOnRock() const override { return true; }
 
     void playAttackSound() override;
+
+private:
+    void init();
 };
 
-#endif //TRIKE_H
+#endif // TRIKE_H

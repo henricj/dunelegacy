@@ -400,8 +400,8 @@ bool Bullet::update()
         } else if( explodesAtGroundObjects
                     && currentGameMap->tileExists(location)
                     && currentGameMap->getTile(location)->hasAGroundObject()
-                    && currentGameMap->getTile(location)->getGroundObject()->isAStructure()
-                    && ((bulletID != Bullet_ShellTurret) || (currentGameMap->getTile(location)->getGroundObject()->getOwner() != owner))) {
+                    && currentGameMap->getTile(location)->getGroundObject(currentGame->getObjectManager())->isAStructure()
+                    && ((bulletID != Bullet_ShellTurret) || (currentGameMap->getTile(location)->getGroundObject(currentGame->getObjectManager())->getOwner() != owner))) {
             destroy();
             return true;
         } else if(oldDistanceToDestination < newDistanceToDestination || newDistanceToDestination < 4)  {
@@ -448,7 +448,7 @@ void Bullet::destroy() const
 
                         currentGameMap->damage(shooterID, owner, position, bulletID, damage, damageRadius, airAttack);
 
-                        Uint32 explosionID = currentGame->randomGen.getRandOf({Explosion_Large1,Explosion_Large2});
+                        Uint32 explosionID = currentGame->randomGen.getRandOf(Explosion_Large1,Explosion_Large2);
                         currentGame->addExplosion(explosionID,position,houseID);
                         screenborder->shakeScreen(22);
                     }

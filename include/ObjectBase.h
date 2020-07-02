@@ -19,7 +19,6 @@
 #define OBJECTBASE_H
 
 #include <ObjectPointer.h>
-
 #include <Definitions.h>
 #include <DataTypes.h>
 #include <fixmath/FixPoint.h>
@@ -40,15 +39,45 @@ template<class WidgetData> class Container;
 
 #define VIS_ALL -1
 
+class ObjectInitializer final {
+public:
+    ObjectInitializer(House* owner, bool byScenario) : Owner{owner}, ByScenario{byScenario} { }
+
+    ObjectInitializer()                         = delete;
+    ObjectInitializer(const ObjectInitializer&) = delete;
+    ObjectInitializer(ObjectInitializer&&)      = delete;
+    ObjectInitializer& operator=(const ObjectInitializer&) = delete;
+    ObjectInitializer& operator=(ObjectInitializer&&) = delete;
+
+    House* const Owner;
+    const bool   ByScenario;
+};
+
+class ObjectStreamInitializer final {
+public:
+    ObjectStreamInitializer(InputStream& inputStream) : Stream{inputStream} { }
+
+    ObjectStreamInitializer()                               = delete;
+    ObjectStreamInitializer(const ObjectStreamInitializer&) = delete;
+    ObjectStreamInitializer(ObjectStreamInitializer&&)      = delete;
+    ObjectStreamInitializer& operator=(const ObjectStreamInitializer&) = delete;
+    ObjectStreamInitializer& operator=(ObjectStreamInitializer&&) = delete;
+
+    InputStream& Stream;
+};
+
 /*!
     Class from which all structure and unit classes are derived
 */
 class ObjectBase
 {
-public:
+    ObjectBase(ItemID_enum itemID, Uint32 objectID);
 
-    explicit ObjectBase(House* newOwner);
-    explicit ObjectBase(InputStream& stream);
+protected:
+    ObjectBase(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer);
+    ObjectBase(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer);
+
+public:
     virtual ~ObjectBase() = 0;
 
     ObjectBase(const ObjectBase &) = delete;
@@ -67,6 +96,8 @@ public:
     virtual void drawOtherPlayerSelectionBox() { ; };
 
     virtual void destroy() = 0;
+
+    virtual void cleanup(Game* game, HumanPlayer* humanPlayer, Map* map) = 0;
 
     virtual Coord getClosestCenterPoint(const Coord& objectLocation) const;
 
@@ -90,14 +121,10 @@ public:
     virtual void playSelectSound() = 0;
     virtual void playConfirmSound() = 0;
 
-    void removeFromSelectionLists();
-
     virtual void setDestination(int newX, int newY);
     virtual void setHealth(FixPoint newHealth);
 
     virtual void setLocation(int xPos, int yPos);
-
-    void setObjectID(int newObjectID);
 
     virtual void setTarget(const ObjectBase* newTarget);
     void setVisible(int teamID, bool status);
@@ -152,7 +179,7 @@ public:
     bool isSelectedByOtherPlayer() const noexcept { return selectedByOtherPlayer; }
     bool isBadlyDamaged() const noexcept { return badlyDamaged; };
     bool wasForced() const noexcept { return forced; }
-    int getItemID() const noexcept { return itemID; }
+    ItemID_enum getItemID() const noexcept { return itemID; }
     int getX() const noexcept { return location.x; }
     int getY() const noexcept { return location.y; }
 
@@ -180,14 +207,16 @@ public:
 
     void setOwner(House* no) noexcept { owner = no; }
 
-    static ObjectBase* createObject(int itemID, House* Owner, bool byScenario);
-    static ObjectBase* loadObject(InputStream& stream, int itemID, Uint32 objectID);
+    static std::unique_ptr<ObjectBase> createObject(ItemID_enum itemID, Uint32 objectID,
+                                                    const ObjectInitializer& initializer);
+    static std::unique_ptr<ObjectBase> loadObject(ItemID_enum itemID, Uint32 objectID,
+                                                  const ObjectStreamInitializer& initializer);
 
 protected:
     bool targetInWeaponRange() const;
 
     // constant for all objects of the same type
-    Uint32   itemID = ItemID_Invalid; ///< The ItemID of this object.
+    const ItemID_enum itemID = ItemID_Invalid; ///< The ItemID of this object.
     int      radius = TILESIZE/2;    ///< The radius of this object
 
     bool     aStructure{};           ///< Is this a structure?
@@ -201,7 +230,7 @@ protected:
     bool     canAttackStuff{};       ///< Can this unit/structure attack?
 
     // object state/properties
-    Uint32   objectID;               ///< The unique object ID of this object
+    const Uint32   objectID;               ///< The unique object ID of this object
     HOUSETYPE      originalHouseID;  ///< for takeover/deviation, we still want to keep track of what the original house was
     House    *owner;                 ///< The owner of this object
 

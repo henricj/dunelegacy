@@ -34,7 +34,7 @@
 
 #include <GUI/ObjectInterfaces/DefaultStructureInterface.h>
 
-StructureBase::StructureBase(House* newOwner) : ObjectBase(newOwner) {
+StructureBase::StructureBase(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer) : ObjectBase(itemID, objectID, initializer) {
     StructureBase::init();
 
     repairing = false;
@@ -42,10 +42,13 @@ StructureBase::StructureBase(House* newOwner) : ObjectBase(newOwner) {
     degradeTimer = MILLI2CYCLES(15*1000);
 }
 
-StructureBase::StructureBase(InputStream& stream): ObjectBase(stream) {
+StructureBase::StructureBase(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer)
+    : ObjectBase(itemID, objectID, initializer) {
     StructureBase::init();
 
-    repairing = stream.readBool();
+    auto& stream = initializer.Stream;
+
+    repairing        = stream.readBool();
     fogged = stream.readBool();
     lastVisibleFrame = stream.readUint32();
 
@@ -71,21 +74,14 @@ void StructureBase::init() {
     structureList.push_back(this);
 }
 
-StructureBase::~StructureBase() {
+StructureBase::~StructureBase() = default;
+
+void StructureBase::cleanup(Game* game, HumanPlayer* humanPlayer, Map* map) {
     try {
-        currentGameMap->removeObjectFromMap(getObjectID()); //no map point will reference now
-        currentGame->getObjectManager().removeObject(getObjectID());
+        map->removeObjectFromMap(getObjectID()); // no map point will reference now
         structureList.remove(this);
         owner->decrementStructures(itemID, location);
-
-        removeFromSelectionLists();
-
-        for(int i=0; i < NUMSELECTEDLISTS; i++) {
-            pLocalPlayer->getGroupList(i).erase(getObjectID());
-        }
-    } catch(std::exception& e) {
-        SDL_Log("StructureBase::~StructureBase(): %s", e.what());
-    }
+    } catch(std::exception& e) { SDL_Log("StructureBase::cleanup(): %s", e.what()); }
 }
 
 void StructureBase::save(OutputStream& stream) const {
@@ -118,7 +114,7 @@ void StructureBase::assignToMap(const Coord& pos) {
                     setHealth(getHealth() - FixPoint(getMaxHealth()) / (2 * structureSize.x*structureSize.y));
                 }
             }
-            t.setType(Terrain_Rock);
+            t.setType(currentGame.get(), Terrain_Rock);
             t.setOwner(getOwner()->getHouseID());
 
             setVisible(VIS_ALL, true);
@@ -467,7 +463,7 @@ void StructureBase::destroy() {
                 pTile->setDestroyedStructureTile(pDestroyedStructureTiles[DestroyedStructureTilesSizeY*j + i]);
 
                 Coord position((location.x+i)*TILESIZE + TILESIZE/2, (location.y+j)*TILESIZE + TILESIZE/2);
-                Uint32 explosionID = currentGame->randomGen.getRandOf({Explosion_Large1,Explosion_Large2});
+                Uint32 explosionID = currentGame->randomGen.getRandOf(Explosion_Large1,Explosion_Large2);
                 currentGame->addExplosion(explosionID, position, owner->getHouseID());
 
                 if(currentGame->randomGen.rand(1,100) <= getInfSpawnProp()) {
@@ -481,9 +477,6 @@ void StructureBase::destroy() {
 
     if(isVisible(pLocalHouse->getTeamID()))
         soundPlayer->playSoundAt(Sound_ExplosionStructure, location);
-
-
-    delete this;
 }
 
 Coord StructureBase::getClosestPoint(const Coord& objectLocation) const {

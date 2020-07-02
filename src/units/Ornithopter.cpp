@@ -27,7 +27,7 @@
 
 #define ORNITHOPTER_FRAMETIME 3
 
-Ornithopter::Ornithopter(House* newOwner) : AirUnit(newOwner) {
+Ornithopter::Ornithopter(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer) : AirUnit(itemID, objectID, initializer) {
 
     Ornithopter::init();
 
@@ -36,14 +36,16 @@ Ornithopter::Ornithopter(House* newOwner) : AirUnit(newOwner) {
     timeLastShot = 0;
 }
 
-Ornithopter::Ornithopter(InputStream& stream) : AirUnit(stream) {
+Ornithopter::Ornithopter(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer) : AirUnit(itemID, objectID, initializer) {
     Ornithopter::init();
+
+    auto& stream = initializer.Stream;
 
     timeLastShot = stream.readUint32();
 }
 
 void Ornithopter::init() {
-    itemID = Unit_Ornithopter;
+    assert(itemID == Unit_Ornithopter);
     owner->incrementUnits(itemID);
 
     graphicID = ObjPic_Ornithopter;

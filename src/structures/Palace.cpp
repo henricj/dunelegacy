@@ -37,7 +37,7 @@
 
 #define PALACE_DEATHHAND_WEAPONDAMAGE       100
 
-Palace::Palace(House* newOwner) : StructureBase(newOwner) {
+Palace::Palace(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer) : StructureBase(itemID, objectID, initializer) {
     Palace::init();
 
     setHealth(getMaxHealth());
@@ -47,16 +47,16 @@ Palace::Palace(House* newOwner) : StructureBase(newOwner) {
     //specialTimer = 1; // we want the special weapon to be immediately ready
 }
 
-Palace::Palace(InputStream& stream) : StructureBase(stream) {
+Palace::Palace(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer) : StructureBase(itemID, objectID, initializer) {
     Palace::init();
 
+    auto& stream = initializer.Stream;
+
     specialWeaponTimer = stream.readSint32();
-
-
 }
 
 void Palace::init() {
-    itemID = Structure_Palace;
+    assert(itemID == Structure_Palace);
     owner->incrementStructures(itemID);
 
     structureSize.x = 3;

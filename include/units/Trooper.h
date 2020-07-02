@@ -23,9 +23,10 @@
 class Trooper final : public InfantryBase
 {
 public:
-    explicit Trooper(House* newOwner);
-    explicit Trooper(InputStream& stream);
-    void init();
+    static const ItemID_enum item_id = Unit_Trooper;
+
+    Trooper(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer);
+    Trooper(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer);
     ~Trooper() override;
 
     bool canAttack(const ObjectBase* object) const override;
@@ -33,6 +34,9 @@ public:
     bool hasBumpyMovementOnRock() const override { return true; }
 
     void playAttackSound() override;
+
+private:
+    void init();
 };
 
 #endif //TROOPER_H

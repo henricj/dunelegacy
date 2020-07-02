@@ -32,16 +32,18 @@
 
 #include <structures/RepairYard.h>
 
-AirUnit::AirUnit(House* newOwner) : UnitBase(newOwner)
+AirUnit::AirUnit(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer) : UnitBase(itemID, objectID, initializer)
 {
     AirUnit::initAirUnit();
 
     currentMaxSpeed = 2;
 }
 
-AirUnit::AirUnit(InputStream& stream) : UnitBase(stream)
+AirUnit::AirUnit(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer) : UnitBase(itemID, objectID, initializer)
 {
     AirUnit::initAirUnit();
+
+    auto& stream    = initializer.Stream;
 
     currentMaxSpeed = stream.readFixPoint();
 }

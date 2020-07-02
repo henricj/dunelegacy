@@ -258,7 +258,7 @@ void Command::executeCommand() const {
             if(pBuilder == nullptr) {
                 return;
             }
-            pBuilder->doProduceItem(parameter[1],static_cast<bool>(parameter[2]));
+            pBuilder->doProduceItem(static_cast<ItemID_enum>(parameter[1]),static_cast<bool>(parameter[2]));
         } break;
 
         case CMDTYPE::CMD_BUILDER_CANCELITEM: {
@@ -269,7 +269,7 @@ void Command::executeCommand() const {
             if(pBuilder == nullptr) {
                 return;
             }
-            pBuilder->doCancelItem(parameter[1],static_cast<bool>(parameter[2]));
+            pBuilder->doCancelItem(static_cast<ItemID_enum>(parameter[1]),static_cast<bool>(parameter[2]));
         } break;
 
         case CMDTYPE::CMD_BUILDER_SETONHOLD: {

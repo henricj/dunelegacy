@@ -23,9 +23,10 @@
 class SonicTank final : public TrackedUnit
 {
 public:
-    explicit SonicTank(House* newOwner);
-    explicit SonicTank(InputStream& stream);
-    void init();
+    static const ItemID_enum item_id = Unit_SonicTank;
+
+    SonicTank(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer);
+    SonicTank(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer);
     ~SonicTank() override;
 
     void blitToScreen() override;
@@ -39,6 +40,8 @@ public:
     void playAttackSound() override;
 
 private:
+    void init();
+
     // drawing information
     zoomable_texture turretGraphic{};    ///< The turret graphic
     int              gunGraphicID;       ///< The id of the turret graphic (needed if we want to reload the graphic)

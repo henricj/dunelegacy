@@ -30,7 +30,7 @@
 
 #include <GUI/ObjectInterfaces/RepairYardInterface.h>
 
-RepairYard::RepairYard(House* newOwner) : StructureBase(newOwner) {
+RepairYard::RepairYard(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer) : StructureBase(itemID, objectID, initializer) {
     RepairYard::init();
 
     setHealth(getMaxHealth());
@@ -38,8 +38,10 @@ RepairYard::RepairYard(House* newOwner) : StructureBase(newOwner) {
     repairingAUnit = false;
 }
 
-RepairYard::RepairYard(InputStream& stream) : StructureBase(stream) {
+RepairYard::RepairYard(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer) : StructureBase(itemID, objectID, initializer) {
     RepairYard::init();
+
+    auto& stream = initializer.Stream;
 
     repairingAUnit = stream.readBool();
     repairUnit.load(stream);
@@ -47,7 +49,7 @@ RepairYard::RepairYard(InputStream& stream) : StructureBase(stream) {
 }
 
 void RepairYard::init() {
-    itemID = Structure_RepairYard;
+    assert(itemID == Structure_RepairYard);
     owner->incrementStructures(itemID);
 
     structureSize.x = 3;

@@ -26,18 +26,18 @@
 #include <Explosion.h>
 #include <SoundPlayer.h>
 
-Trike::Trike(House* newOwner) : GroundUnit(newOwner) {
+Trike::Trike(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer) : GroundUnit(itemID, objectID, initializer) {
     Trike::init();
 
     setHealth(getMaxHealth());
 }
 
-Trike::Trike(InputStream& stream) : GroundUnit(stream) {
+Trike::Trike(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer) : GroundUnit(itemID, objectID, initializer) {
     Trike::init();
 }
 
 void Trike::init() {
-    itemID = Unit_Trike;
+    assert(itemID == Unit_Trike);
     owner->incrementUnits(itemID);
 
     numWeapons = 2;

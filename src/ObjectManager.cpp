@@ -22,39 +22,64 @@
 #include <Game.h>
 #include <ObjectBase.h>
 
+ObjectManager::ObjectManager() { objectMap.reserve(100); }
+
+ObjectManager::~ObjectManager() = default;
+
 void ObjectManager::save(OutputStream& stream) const {
     stream.writeUint32(nextFreeObjectID);
 
     stream.writeUint32(objectMap.size());
     for(const auto& objectEntry : objectMap) {
         stream.writeUint32(objectEntry.second->getObjectID());
-        currentGame->saveObject(stream, objectEntry.second);
+        currentGame->saveObject(stream, objectEntry.second.get());
     }
 }
 
 void ObjectManager::load(InputStream& stream) {
+    objectMap.clear();
+
     nextFreeObjectID = stream.readUint32();
 
     const auto numObjects = stream.readUint32();
-    for (auto i = decltype(numObjects){0}; i < numObjects; i++) {
+
+    objectMap.reserve(numObjects);
+
+    for(auto i = decltype(numObjects){0}; i < numObjects; i++) {
         auto objectID = stream.readUint32();
 
-        auto *const pObject = currentGame->loadObject(stream,objectID);
+        auto pObject = loadObject(stream, objectID);
         if(objectID != pObject->getObjectID()) {
-            SDL_Log("ObjectManager::load(): The loaded object has a different ID than expected (%d!=%d)!",objectID,pObject->getObjectID());
+            SDL_Log("ObjectManager::load(): The loaded object has a different ID than expected (%d!=%d)!", objectID,
+                    pObject->getObjectID());
         }
 
-        objectMap[objectID] = pObject;
+        hint = objectMap.emplace_hint(hint, objectID, std::move(pObject));
     }
 }
 
-Uint32 ObjectManager::addObject(ObjectBase* pObject) {
-    const auto insertPosition = objectMap.insert( std::pair<Uint32,ObjectBase*>(nextFreeObjectID, pObject) );
 
-    if(!insertPosition.second) {
+bool ObjectManager::addObject(std::unique_ptr<ObjectBase> object) {
+    auto* const pObject = object.get();
+    hint                = objectMap.emplace_hint(hint, nextFreeObjectID, std::move(object));
+
+    if(hint->second.get() != pObject) {
         // there is already such an object in the list
-        return NONE_ID;
-    }         return nextFreeObjectID++;  // Caution: Old value is returned but value is incremented afterwards
+        SDL_Log("ObjectManager::addObject(): The object with this id already exists (%d)!",
+                hint->second->getObjectID());
+        return false;
+    }
 
-   
+    ++nextFreeObjectID;
+
+    return true;
+}
+
+std::unique_ptr<ObjectBase> ObjectManager::loadObject(InputStream& stream, Uint32 objectID) {
+    const auto itemID = static_cast<ItemID_enum>(stream.readUint32());
+
+    auto newObject = ObjectBase::loadObject(itemID, objectID, ObjectStreamInitializer{stream});
+    if(!newObject) { THROW(std::runtime_error, "Error while loading an object!"); }
+
+    return newObject;
 }

@@ -20,12 +20,12 @@
 
 #include <units/TankBase.h>
 
-class Tank final : public TankBase
-{
+class Tank final : public TankBase {
 public:
-    explicit Tank(House* newOwner);
-    explicit Tank(InputStream& stream);
-    void init();
+    static const ItemID_enum item_id = Unit_Tank;
+
+    Tank(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer);
+    Tank(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer);
     ~Tank() override;
 
     void blitToScreen() override;
@@ -33,6 +33,9 @@ public:
     void destroy() override;
 
     void playAttackSound() override;
+
+private:
+    void init();
 };
 
 #endif // TANK_H

@@ -48,9 +48,9 @@ public:
     void update() override;
 
     void onObjectWasBuilt(const ObjectBase* pObject) override;
-    void onDecrementStructures(int itemID, const Coord& location) override;
-    void onDecrementUnits(int itemID) override;
-    void onIncrementUnitKills(int itemID) override;
+    void onDecrementStructures(ItemID_enum itemID, const Coord& location) override;
+    void onDecrementUnits(ItemID_enum itemID) override;
+    void onIncrementUnitKills(ItemID_enum itemID) override;
     void onDamage(const ObjectBase* pObject, int damage, Uint32 damagerID) override;
 
 private:
@@ -73,7 +73,7 @@ private:
 
 
     Coord findMcvPlaceLocation(const MCV* pMCV);
-    Coord findPlaceLocation(Uint32 itemID);
+    Coord findPlaceLocation(ItemID_enum itemID);
     Coord findSquadCenter(HOUSETYPE houseID);
     Coord findBaseCentre(HOUSETYPE houseID);
     Coord findSquadRallyLocation();

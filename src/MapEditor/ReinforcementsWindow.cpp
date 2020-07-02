@@ -130,7 +130,7 @@ ReinforcementsWindow::ReinforcementsWindow(MapEditor* pMapEditor, HOUSETYPE curr
         if(itemID == Unit_Carryall || itemID == Unit_Ornithopter || itemID == Unit_Frigate) {
             continue;
         }
-        unitDropDownBox.addEntry(resolveItemName(itemID), itemID);
+        unitDropDownBox.addEntry(resolveItemName(static_cast<ItemID_enum>(itemID)), itemID);
     }
     unitDropDownBox.setSelectedItem(0);
     hBox2.addWidget(&unitDropDownBox);
@@ -264,7 +264,7 @@ void ReinforcementsWindow::onAdd() {
     int index = reinforcementsListBox.getSelectedIndex();
 
     ReinforcementInfo reinforcementInfo(static_cast<HOUSETYPE>(playerDropDownBox.getSelectedEntryIntData()),
-                                        unitDropDownBox.getSelectedEntryIntData(),
+                                        static_cast<ItemID_enum>(unitDropDownBox.getSelectedEntryIntData()),
                                         (DropLocation) dropLocationDropDownBox.getSelectedEntryIntData(),
                                         timeTextBox.getValue(),
                                         repeatCheckbox.isChecked());
@@ -323,7 +323,7 @@ void ReinforcementsWindow::onEntryChange(bool bInteractive) {
         if(index >= 0) {
             ReinforcementInfo& reinforcementInfo = reinforcements.at(index);
             reinforcementInfo.houseID = static_cast<HOUSETYPE>(playerDropDownBox.getSelectedEntryIntData());
-            reinforcementInfo.unitID = unitDropDownBox.getSelectedEntryIntData();
+            reinforcementInfo.unitID = static_cast<ItemID_enum>(unitDropDownBox.getSelectedEntryIntData());
             reinforcementInfo.dropLocation = (DropLocation) dropLocationDropDownBox.getSelectedEntryIntData();
             reinforcementInfo.droptime = timeTextBox.getValue();
             reinforcementInfo.bRepeat = repeatCheckbox.isChecked();

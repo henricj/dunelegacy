@@ -23,18 +23,18 @@
 #include <House.h>
 #include <SoundPlayer.h>
 
-Soldier::Soldier(House* newOwner) : InfantryBase(newOwner) {
+Soldier::Soldier(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer) : InfantryBase(itemID, objectID, initializer) {
     Soldier::init();
 
     setHealth(getMaxHealth());
 }
 
-Soldier::Soldier(InputStream& stream) : InfantryBase(stream) {
+Soldier::Soldier(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer) : InfantryBase(itemID, objectID, initializer) {
     Soldier::init();
 }
 
 void Soldier::init() {
-    itemID = Unit_Soldier;
+    assert(itemID == Unit_Soldier);
     owner->incrementUnits(itemID);
 
     numWeapons = 1;

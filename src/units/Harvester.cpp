@@ -48,8 +48,7 @@
 /* number spice output frames - 1 */
 #define LASTSANDFRAME 2
 
-Harvester::Harvester(House* newOwner) : TrackedUnit(newOwner)
-{
+Harvester::Harvester(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer) : TrackedUnit(itemID, objectID, initializer) {
     Harvester::init();
 
     setHealth(getMaxHealth());
@@ -62,9 +61,10 @@ Harvester::Harvester(House* newOwner) : TrackedUnit(newOwner)
     attackMode = GUARD;
 }
 
-Harvester::Harvester(InputStream& stream) : TrackedUnit(stream)
-{
+Harvester::Harvester(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer) : TrackedUnit(itemID, objectID, initializer) {
     Harvester::init();
+
+    auto& stream = initializer.Stream;
 
     harvestingMode = stream.readBool();
     returningToRefinery = stream.readBool();
@@ -74,7 +74,7 @@ Harvester::Harvester(InputStream& stream) : TrackedUnit(stream)
 
 void Harvester::init()
 {
-    itemID = Unit_Harvester;
+    assert(itemID == Unit_Harvester);
     owner->incrementUnits(itemID);
 
     canAttackStuff = false;
@@ -158,8 +158,7 @@ void Harvester::checkPos()
         if (returningToRefinery) {
             if (target && (target.getObjPointer() != nullptr) && (target.getObjPointer()->getItemID() == Structure_Refinery)) {
                 auto *pRefinery = static_cast<Refinery*>(target.getObjPointer());
-                Tile* pTile = currentGameMap->getTile(location);
-                ObjectBase *pObject = pTile->getGroundObject();
+                auto* pObject = currentGameMap->getGroundObject(location.x, location.y);
 
                 if( justStoppedMoving
                     && (pObject != nullptr)
@@ -295,7 +294,7 @@ void Harvester::destroy()
         setTarget(nullptr);
 
         Coord realPos(lround(realX), lround(realY));
-        Uint32 explosionID = currentGame->randomGen.getRandOf({Explosion_Medium1, Explosion_Medium2});
+        Uint32 explosionID = currentGame->randomGen.getRandOf(Explosion_Medium1, Explosion_Medium2);
         currentGame->addExplosion(explosionID, realPos, owner->getHouseID());
 
         if(isVisible(getOwner()->getTeamID())) {
@@ -396,10 +395,6 @@ void Harvester::setTarget(const ObjectBase* newTarget)
 
 void Harvester::setReturned()
 {
-    if(selected) {
-        removeFromSelectionLists();
-    }
-
     currentGameMap->removeObjectFromMap(getObjectID());
 
     static_cast<Refinery*>(target.getObjPointer())->assignHarvester(this);
@@ -428,7 +423,7 @@ void Harvester::move()
                     if(tile->hasSpice()) {
 
                         int beforeTileType = tile->getType();
-                        spice += tile->harvestSpice();
+                        spice += tile->harvestSpice(currentGame.get());
                         int afterTileType = tile->getType();
 
                         if(beforeTileType != afterTileType) {

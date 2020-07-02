@@ -46,8 +46,8 @@ struct StructureSmoke {
 class StructureBase : public ObjectBase
 {
 public:
-    explicit StructureBase(House* newOwner);
-    explicit StructureBase(InputStream& stream);
+    StructureBase(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer);
+    StructureBase(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer);
     virtual ~StructureBase() = 0;
 
     StructureBase(const StructureBase &) = delete;
@@ -63,8 +63,10 @@ public:
     ObjectInterface* getInterfaceContainer() override;
 
     void destroy() override;
-    void drawSelectionBox() override;
-    void drawOtherPlayerSelectionBox() override;
+    void cleanup(Game* game, HumanPlayer* humanPlayer, Map* map) override;
+
+    void         drawSelectionBox() override;
+    void         drawOtherPlayerSelectionBox() override;
     virtual void drawGatheringPointLine();
 
     Coord getCenterPoint() const override;
@@ -111,15 +113,15 @@ public:
         Can this structure be captured by infantry units?
         \return true, if this structure can be captured, false otherwise
     */
-    virtual bool canBeCaptured() const { return true; }
+    virtual bool canBeCaptured() const noexcept { return true; }
 
-    bool isRepairing() const { return repairing; }
+    bool isRepairing() const noexcept { return repairing; }
 
     Coord getClosestPoint(const Coord& objectLocation) const override;
 
-    inline short getStructureSizeX() const { return structureSize.x; }
-    inline short getStructureSizeY() const { return structureSize.y; }
-    inline const Coord& getStructureSize() const { return structureSize; }
+    short getStructureSizeX() const noexcept { return structureSize.x; }
+    short getStructureSizeY() const noexcept { return structureSize.y; }
+    const Coord& getStructureSize() const noexcept { return structureSize; }
 
     void addSmoke(const Coord& pos, Uint32 gameCycle) {
         const auto iter = std::upper_bound(std::begin(smoke), std::end(smoke), pos,
@@ -131,21 +133,9 @@ public:
         }
 
         smoke.emplace(iter, pos, gameCycle);
-
-#if 0
-        for(auto iter = smoke.begin(); iter != smoke.end(); ++iter) {
-            if(iter->realPos == pos) {
-                iter->startGameCycle = gameCycle;
-                return;
-            } else if(iter->realPos.y > pos.y) {
-                smoke.insert(iter, StructureSmoke(pos, gameCycle));
-            }
-        }
-
-        smoke.emplace_back(pos, gameCycle);
-#endif //0
     }
-    inline size_t getNumSmoke() const { return smoke.size(); }
+
+    size_t getNumSmoke() const noexcept { return smoke.size(); }
 
 protected:
     /**

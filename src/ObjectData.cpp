@@ -104,7 +104,7 @@ void ObjectData::loadFromINIFile(const std::string& filename)
     // set default values
     for(int i=0;i<Num_ItemID;i++) {
         for(int h=0;h<static_cast<int>(HOUSETYPE::NUM_HOUSES);h++) {
-            if(isStructure(i)) {
+            if(isStructure(static_cast<ItemID_enum>(i))) {
                 data[i][h] = structureDefaultData[h];
             } else {
                 data[i][h] = unitDefaultData[h];
@@ -119,7 +119,7 @@ void ObjectData::loadFromINIFile(const std::string& filename)
             continue;
         }
 
-        Uint32 itemID = getItemIDByName(sectionName);
+        auto itemID = getItemIDByName(sectionName);
 
         if(itemID == ItemID_Invalid) {
             SDL_Log("ObjectData::ObjectData(): '%s' is no valid unit/structure name!", sectionName.c_str());
@@ -248,7 +248,7 @@ int ObjectData::loadItemID(const INIFile& objectDataFile, const std::string& sec
 
     }
 
-    int itemID = getItemIDByName(strItem);
+    ItemID_enum itemID = getItemIDByName(strItem);
 
     if(itemID == ItemID_Invalid) {
         SDL_Log("Warning: Cannot read object data from section '%s', key '%s': '%s' is no valid structure/unit name!", section.c_str(), key.c_str(), strItem.c_str() );
@@ -277,7 +277,7 @@ std::bitset<Structure_LastID + 1> ObjectData::loadPrerequisiteStructuresSet(cons
     for(const std::string& strItem : strItemList) {
         std::string strItem2 = trim(strItem);
 
-        int itemID = getItemIDByName(strItem2);
+        ItemID_enum itemID = getItemIDByName(strItem2);
         if(itemID == ItemID_Invalid || !isStructure(itemID)) {
             SDL_Log("Warning: Cannot read object data from section '%s', key '%s': '%s' is no valid structure name!", section.c_str(), key.c_str(), strItem2.c_str() );
             return defaultValue;

@@ -20,22 +20,22 @@
 
 #include <structures/BuilderBase.h>
 
-class Barracks final : public BuilderBase
-{
+class Barracks final : public BuilderBase {
 public:
-    explicit Barracks(House* newOwner);
-    explicit Barracks(InputStream& stream);
-    void init();
+    static const ItemID_enum item_id = ItemID_enum::Structure_Barracks;
+
+    Barracks(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer);
+    Barracks(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer);
     ~Barracks() override;
 
     /**
         Can this structure be captured by infantry units?
         \return true, if this structure can be captured, false otherwise
     */
-    bool canBeCaptured() const override { return false; }
+    bool canBeCaptured() const noexcept override { return false; }
 
 private:
-
+    void init();
 };
 
-#endif //BARRACKS_H
+#endif // BARRACKS_H

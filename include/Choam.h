@@ -34,13 +34,13 @@ public:
     void save(OutputStream& stream) const;
     void load(InputStream& stream);
 
-    int getPrice(Uint32 itemID) const;
-    bool isCheap(Uint32 itemID) const;
-    int getNumAvailable(Uint32 itemID) const;
+    int getPrice(ItemID_enum itemID) const;
+    bool isCheap(ItemID_enum itemID) const;
+    int getNumAvailable(ItemID_enum itemID) const;
 
-    bool setNumAvailable(Uint32 itemID, int newValue);
+    bool setNumAvailable(ItemID_enum itemID, int newValue);
 
-    void addItem(Uint32 itemID, int num);
+    void addItem(ItemID_enum itemID, int num);
 
     void update();
 

@@ -28,18 +28,18 @@
 #include <SoundPlayer.h>
 
 
-Tank::Tank(House* newOwner) : TankBase(newOwner) {
+Tank::Tank(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer) : TankBase(itemID, objectID, initializer) {
     Tank::init();
 
     setHealth(getMaxHealth());
 }
 
-Tank::Tank(InputStream& stream) : TankBase(stream) {
+Tank::Tank(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer) : TankBase(itemID, objectID, initializer) {
     Tank::init();
 }
 
 void Tank::init() {
-    itemID = Unit_Tank;
+    assert(itemID == Unit_Tank);
     owner->incrementUnits(itemID);
 
     numWeapons = 1;
@@ -82,7 +82,7 @@ void Tank::blitToScreen() {
 void Tank::destroy() {
     if(currentGameMap->tileExists(location) && isVisible()) {
         Coord realPos(lround(realX), lround(realY));
-        Uint32 explosionID = currentGame->randomGen.getRandOf({Explosion_Medium1, Explosion_Medium2,Explosion_Flames});
+        Uint32 explosionID = currentGame->randomGen.getRandOf(Explosion_Medium1, Explosion_Medium2,Explosion_Flames);
         currentGame->addExplosion(explosionID, realPos, owner->getHouseID());
 
         if(isVisible(getOwner()->getTeamID()))

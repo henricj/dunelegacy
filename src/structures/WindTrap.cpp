@@ -24,18 +24,18 @@
 
 #include <GUI/ObjectInterfaces/WindTrapInterface.h>
 
-WindTrap::WindTrap(House* newOwner) : StructureBase(newOwner) {
+WindTrap::WindTrap(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer) : StructureBase(itemID, objectID, initializer) {
     WindTrap::init();
 
     setHealth(getMaxHealth());
 }
 
-WindTrap::WindTrap(InputStream& stream) : StructureBase(stream) {
+WindTrap::WindTrap(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer) : StructureBase(itemID, objectID, initializer) {
     WindTrap::init();
 }
 
 void WindTrap::init() {
-    itemID = Structure_WindTrap;
+    assert(itemID == Structure_WindTrap);
     owner->incrementStructures(itemID);
 
     structureSize.x = 2;
