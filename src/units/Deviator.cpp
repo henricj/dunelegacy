@@ -27,21 +27,19 @@
 #include <ScreenBorder.h>
 #include <SoundPlayer.h>
 
-Deviator::Deviator(House* newOwner) : TrackedUnit(newOwner)
-{
+Deviator::Deviator(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer) : TrackedUnit(itemID, objectID, initializer) {
     Deviator::init();
 
     ObjectBase::setHealth(getMaxHealth());
 }
 
-Deviator::Deviator(InputStream& stream) : TrackedUnit(stream)
-{
+Deviator::Deviator(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer) : TrackedUnit(itemID, objectID, initializer) {
     Deviator::init();
 }
 
 void Deviator::init()
 {
-    itemID = Unit_Deviator;
+    assert(itemID == Unit_Deviator);
     owner->incrementUnits(itemID);
 
     graphicID = ObjPic_Tank_Base;
@@ -96,7 +94,7 @@ void Deviator::blitToScreen()
 void Deviator::destroy() {
     if(currentGameMap->tileExists(location) && isVisible()) {
         Coord realPos(lround(realX), lround(realY));
-        Uint32 explosionID = currentGame->randomGen.getRandOf({Explosion_Medium1, Explosion_Medium2,Explosion_Flames});
+        Uint32 explosionID = currentGame->randomGen.getRandOf(Explosion_Medium1, Explosion_Medium2,Explosion_Flames);
         currentGame->addExplosion(explosionID, realPos, owner->getHouseID());
 
         if(isVisible(getOwner()->getTeamID()))

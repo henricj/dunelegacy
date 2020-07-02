@@ -35,7 +35,7 @@ void Choam::load(InputStream& stream) {
     }
 }
 
-int Choam::getPrice(Uint32 itemID) const {
+int Choam::getPrice(ItemID_enum itemID) const {
     for(const BuildItem& buildItem : availableItems) {
         if(buildItem.itemID == itemID) {
             return buildItem.price;
@@ -45,11 +45,11 @@ int Choam::getPrice(Uint32 itemID) const {
     return 0;
 }
 
-bool Choam::isCheap(Uint32 itemID) const {
+bool Choam::isCheap(ItemID_enum itemID) const {
     return (getPrice(itemID) < currentGame->objectData.data[itemID][static_cast<int>(house->getHouseID())].price * 1.3_fix); // A bit of logic to make starports better
 }
 
-int Choam::getNumAvailable(Uint32 itemID) const {
+int Choam::getNumAvailable(ItemID_enum itemID) const {
     for(const BuildItem& buildItem : availableItems) {
         if(buildItem.itemID == itemID) {
             return buildItem.num;
@@ -59,7 +59,7 @@ int Choam::getNumAvailable(Uint32 itemID) const {
     return INVALID;
 }
 
-bool Choam::setNumAvailable(Uint32 itemID, int newValue) {
+bool Choam::setNumAvailable(ItemID_enum itemID, int newValue) {
     for(BuildItem& buildItem : availableItems) {
         if(buildItem.itemID == itemID) {
             buildItem.num = newValue;
@@ -70,7 +70,7 @@ bool Choam::setNumAvailable(Uint32 itemID, int newValue) {
     return false;
 }
 
-void Choam::addItem(Uint32 itemID, int num) {
+void Choam::addItem(ItemID_enum itemID, int num) {
     BuildItem tmp;
     tmp.itemID = itemID;
     tmp.num = num;

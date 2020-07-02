@@ -23,18 +23,18 @@
 #include <House.h>
 #include <Game.h>
 
-LightFactory::LightFactory(House* newOwner) : BuilderBase(newOwner) {
+LightFactory::LightFactory(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer) : BuilderBase(itemID, objectID, initializer) {
     LightFactory::init();
 
     setHealth(getMaxHealth());
 }
 
-LightFactory::LightFactory(InputStream& stream) : BuilderBase(stream) {
+LightFactory::LightFactory(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer) : BuilderBase(itemID, objectID, initializer) {
     LightFactory::init();
 }
 
 void LightFactory::init() {
-    itemID = Structure_LightFactory;
+    assert(itemID == Structure_LightFactory);
     owner->incrementStructures(itemID);
 
     structureSize.x = 2;

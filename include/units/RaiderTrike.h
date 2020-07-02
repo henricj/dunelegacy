@@ -23,9 +23,10 @@
 class RaiderTrike final : public GroundUnit
 {
 public:
-    explicit RaiderTrike(House* newOwner);
-    explicit RaiderTrike(InputStream& stream);
-    void init();
+    static const ItemID_enum item_id = Unit_RaiderTrike;
+
+    RaiderTrike(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer);
+    RaiderTrike(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer);
     ~RaiderTrike() override;
 
     void destroy() override;
@@ -33,6 +34,9 @@ public:
     bool hasBumpyMovementOnRock() const override { return true; }
 
     void playAttackSound() override;
+
+private:
+    void init();
 };
 
 #endif //RAIDERTRIKE_H

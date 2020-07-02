@@ -26,18 +26,18 @@
 #include <Explosion.h>
 #include <SoundPlayer.h>
 
-Quad::Quad(House* newOwner) : GroundUnit(newOwner) {
+Quad::Quad(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer) : GroundUnit(itemID, objectID, initializer) {
     Quad::init();
 
     setHealth(getMaxHealth());
 }
 
-Quad::Quad(InputStream& stream) : GroundUnit(stream) {
+Quad::Quad(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer) : GroundUnit(itemID, objectID, initializer) {
     Quad::init();
 }
 
 void Quad::init() {
-    itemID = Unit_Quad;
+    assert(itemID == Unit_Quad);
     owner->incrementUnits(itemID);
 
     numWeapons = 2;

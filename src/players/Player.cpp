@@ -145,7 +145,7 @@ bool Player::doUpgrade(const BuilderBase* pBuilder) const {
    
 }
 
-void Player::doProduceItem(const BuilderBase* pBuilder, Uint32 itemID) const {
+void Player::doProduceItem(const BuilderBase* pBuilder, ItemID_enum itemID) const {
     if(pBuilder->getOwner() == getHouse() && pBuilder->isActive()) {
         const_cast<BuilderBase*>(pBuilder)->doProduceItem(itemID);
     } else {
@@ -153,7 +153,7 @@ void Player::doProduceItem(const BuilderBase* pBuilder, Uint32 itemID) const {
     }
 }
 
-void Player::doCancelItem(const BuilderBase* pBuilder, Uint32 itemID) const {
+void Player::doCancelItem(const BuilderBase* pBuilder, ItemID_enum itemID) const {
     if(pBuilder->getOwner() == getHouse() && pBuilder->isActive()) {
         const_cast<BuilderBase*>(pBuilder)->doCancelItem(itemID);
     } else {

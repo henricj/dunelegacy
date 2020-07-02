@@ -118,8 +118,9 @@ Game::~Game() {
 
     explosionList.clear();
 
-    delete currentGameMap;
     currentGameMap = nullptr;
+    map.reset();
+
     screenborder.reset();
 }
 
@@ -155,7 +156,10 @@ void Game::initGame(const GameInitSettings& newGameInitSettings) {
                 techLevel = ((gameInitSettings.getMission() + 1)/3) + 1 ;
             }
 
-            INIMapLoader(this, gameInitSettings.getFilename(), gameInitSettings.getFiledata());
+            INIMapLoader loader{this, gameInitSettings.getFilename(), gameInitSettings.getFiledata()};
+
+            map = loader.load();
+            currentGameMap = map.get();
 
             if(!bReplay && gameInitSettings.getGameType() != GameType::CustomGame && gameInitSettings.getGameType() != GameType::CustomMultiplayer) {
                 /* do briefing */
@@ -194,7 +198,7 @@ void Game::initReplay(const std::filesystem::path& filename) {
 void Game::processObjects()
 {
     // update all tiles
-    currentGameMap->for_all([](Tile& t) { t.update(); });
+    map->for_all([](Tile& t) { t.update(); });
 
     for(auto *pStructure : structureList) {
         pStructure->update();
@@ -207,6 +211,27 @@ void Game::processObjects()
     for(auto *pUnit : unitList) {
         pUnit->update();
     }
+
+    auto selection_changed = false;
+
+    map->consume_removed_objects([&](Uint32 objectID) {
+        auto* object = objectManager.getObject(objectID);
+
+        if(!object) return;
+
+        if(removeFromSelectionLists(object)) selection_changed = true;
+    });
+
+    objectManager.consume_pending_deletes([&](auto& object) {
+        object->cleanup(this, pLocalPlayer, map.get());
+
+        if(removeFromSelectionLists(object.get())) selection_changed = true;
+
+        removeFromQuickSelectionLists(object->getObjectID());
+    });
+
+    if(selection_changed)
+        selectionChanged();
 
     bulletList.erase(std::remove_if(std::begin(bulletList), std::end(bulletList),
         [](auto& b) { return b->update(); }), std::end(bulletList));
@@ -227,10 +252,8 @@ void Game::drawScreen()
     // extend the view a little bit to avoid graphical glitches
     TopLeftTile.x = std::max(0, TopLeftTile.x - 1);
     TopLeftTile.y = std::max(0, TopLeftTile.y - 1);
-    BottomRightTile.x = std::min(currentGameMap->getSizeX() - 1, BottomRightTile.x + 1);
-    BottomRightTile.y = std::min(currentGameMap->getSizeY() - 1, BottomRightTile.y + 1);
-
-    auto *const tiles = currentGameMap;
+    BottomRightTile.x = std::min(map->getSizeX() - 1, BottomRightTile.x + 1);
+    BottomRightTile.y = std::min(map->getSizeY() - 1, BottomRightTile.y + 1);
 
     const auto x1 = TopLeftTile.x;
     const auto y1 = TopLeftTile.y;
@@ -241,7 +264,7 @@ void Game::drawScreen()
 
     const auto zoomedTileSize = world2zoomedWorld(TILESIZE);
     SDL_Rect tile_rect = { screenborder->world2screenX(0), screenborder->world2screenY(0),
-        zoomedTileSize * currentGameMap->getSizeX(), zoomedTileSize * currentGameMap->getSizeY() };
+        zoomedTileSize * map->getSizeX(), zoomedTileSize * map->getSizeY() };
     SDL_Rect on_screen_rect;
     SDL_IntersectRect(&screenborder->getGameBoard(), &tile_rect, &on_screen_rect);
 
@@ -249,44 +272,44 @@ void Game::drawScreen()
 
     /* draw ground */
 
-    currentGameMap->for_each(x1, y1, x2, y2,
-        [](Tile& t) {
-            t.blitGround(screenborder->world2screenX(t.getLocation().x*TILESIZE),
+    map->for_each(x1, y1, x2, y2,
+        [&](Tile& t) {
+            t.blitGround(this, screenborder->world2screenX(t.getLocation().x*TILESIZE),
                 screenborder->world2screenY(t.getLocation().y*TILESIZE));
         });
 
     /* draw structures */
-    currentGameMap->for_each(x1, y1, x2, y2,
-        [](Tile& t) {
-            t.blitStructures(screenborder->world2screenX(t.getLocation().x*TILESIZE),
+    map->for_each(x1, y1, x2, y2,
+        [&](Tile& t) {
+            t.blitStructures(this, screenborder->world2screenX(t.getLocation().x*TILESIZE),
                 screenborder->world2screenY(t.getLocation().y*TILESIZE));
         });
 
     /* draw underground units */
-    currentGameMap->for_each(x1, y1, x2, y2,
-        [](Tile& t) {
-            t.blitUndergroundUnits(screenborder->world2screenX(t.getLocation().x*TILESIZE),
+    map->for_each(x1, y1, x2, y2,
+        [&](Tile& t) {
+            t.blitUndergroundUnits(this, screenborder->world2screenX(t.getLocation().x*TILESIZE),
                 screenborder->world2screenY(t.getLocation().y*TILESIZE));
         });
 
     /* draw dead objects */
-    currentGameMap->for_each(x1, y1, x2, y2,
-        [](Tile& t) {
-            t.blitDeadUnits(screenborder->world2screenX(t.getLocation().x*TILESIZE),
+    map->for_each(x1, y1, x2, y2,
+        [&](Tile& t) {
+            t.blitDeadUnits(this, screenborder->world2screenX(t.getLocation().x*TILESIZE),
                 screenborder->world2screenY(t.getLocation().y*TILESIZE));
         });
 
     /* draw infantry */
-    currentGameMap->for_each(x1, y1, x2, y2,
-        [](Tile& t) {
-            t.blitInfantry(screenborder->world2screenX(t.getLocation().x*TILESIZE),
+    map->for_each(x1, y1, x2, y2,
+        [&](Tile& t) {
+            t.blitInfantry(this, screenborder->world2screenX(t.getLocation().x*TILESIZE),
                 screenborder->world2screenY(t.getLocation().y*TILESIZE));
         });
 
     /* draw non-infantry ground units */
-    currentGameMap->for_each(x1, y1, x2, y2,
-        [](Tile& t) {
-            t.blitNonInfantryGroundUnits(screenborder->world2screenX(t.getLocation().x*TILESIZE),
+    map->for_each(x1, y1, x2, y2,
+        [&](Tile& t) {
+            t.blitNonInfantryGroundUnits(this, screenborder->world2screenX(t.getLocation().x*TILESIZE),
                 screenborder->world2screenY(t.getLocation().y*TILESIZE));
         });
 
@@ -302,9 +325,9 @@ void Game::drawScreen()
     }
 
     /* draw air units */
-    currentGameMap->for_each(x1, y1, x2, y2,
+    map->for_each(x1, y1, x2, y2,
         [&](Tile& t) {
-            t.blitAirUnits(screenborder->world2screenX(t.getLocation().x*TILESIZE),
+            t.blitAirUnits(this, screenborder->world2screenX(t.getLocation().x*TILESIZE),
                 screenborder->world2screenY(t.getLocation().y*TILESIZE));
         });
 
@@ -317,10 +340,10 @@ void Game::drawScreen()
     }
 
     /* draw selection rectangles */
-    currentGameMap->for_each(x1, y1, x2, y2,
-        [](Tile& t) {
-            if (debug || t.isExploredByTeam(pLocalHouse->getTeamID())) {
-                t.blitSelectionRects(screenborder->world2screenX(t.getLocation().x*TILESIZE),
+    map->for_each(x1, y1, x2, y2,
+        [&](Tile& t) {
+            if (debug || t.isExploredByTeam(this, pLocalHouse->getTeamID())) {
+                t.blitSelectionRects(this, screenborder->world2screenX(t.getLocation().x*TILESIZE),
                     screenborder->world2screenY(t.getLocation().y*TILESIZE));
             }
         });
@@ -334,8 +357,8 @@ void Game::drawScreen()
 
         const auto fogOfWar = gameInitSettings.getGameOptions().fogOfWar;
 
-        tiles->for_each(top_left.x - 1, top_left.y - 1, bottom_right.x + 1, bottom_right.y + 1,
-            [=](Tile& t) {
+        map->for_each(top_left.x - 1, top_left.y - 1, bottom_right.x + 1, bottom_right.y + 1,
+            [&](Tile& t) {
                 const auto x = t.getLocation().x;
                 const auto y = t.getLocation().y;
 
@@ -347,8 +370,8 @@ void Game::drawScreen()
                 SDL_Rect drawLocation = { border->world2screenX(x*TILESIZE), border->world2screenY(y*TILESIZE),
                                             zoomedTileSize, zoomedTileSize };
 
-                if (pTile->isExploredByTeam(team_id)) {
-                    const auto hideTile = t.getHideTile(team_id);
+                if (pTile->isExploredByTeam(this, team_id)) {
+                    const auto hideTile = t.getHideTile(this, team_id);
 
                     if (hideTile != 0) {
                         SDL_Rect source = { hideTile*zoomedTileSize, 0, zoomedTileSize, zoomedTileSize };
@@ -356,7 +379,7 @@ void Game::drawScreen()
                     }
 
                     if (fogOfWar) {
-                        const auto fogTile = pTile->isFoggedByTeam(team_id) ? Terrain_HiddenFull : pTile->getFogTile(team_id);
+                        const auto fogTile = pTile->isFoggedByTeam(this, team_id) ? Terrain_HiddenFull : pTile->getFogTile(this, team_id);
 
                         if (fogTile != 0) {
                             SDL_Rect source = { fogTile*zoomedTileSize, 0,
@@ -389,13 +412,13 @@ void Game::drawScreen()
             if(selectedList.size() == 1) {
                 auto *pBuilder = dynamic_cast<BuilderBase*>(objectManager.getObject(*selectedList.begin()));
                 if(pBuilder) {
-                    int placeItem = pBuilder->getCurrentProducedItem();
+                    const auto placeItem = pBuilder->getCurrentProducedItem();
                     Coord structuresize = getStructureSize(placeItem);
 
                     bool withinRange = false;
                     for (int i = xPos; i < (xPos + structuresize.x); i++) {
                         for (int j = yPos; j < (yPos + structuresize.y); j++) {
-                            if (currentGameMap->isWithinBuildRange(i, j, pBuilder->getOwner())) {
+                            if (map->isWithinBuildRange(i, j, pBuilder->getOwner())) {
                                 withinRange = true;         //find out if the structure is close enough to other buildings
                             }
                         }
@@ -427,9 +450,9 @@ void Game::drawScreen()
                         for(int j = yPos; j < (yPos + structuresize.y); j++) {
                             SDL_Texture* image = nullptr;
 
-                            if(!withinRange || !currentGameMap->tileExists(i,j) || !currentGameMap->getTile(i,j)->isRock()
-                                || currentGameMap->getTile(i,j)->isMountain() || currentGameMap->getTile(i,j)->hasAGroundObject()
-                                || (((placeItem == Structure_Slab1) || (placeItem == Structure_Slab4)) && currentGameMap->getTile(i,j)->isConcrete())) {
+                            if(!withinRange || !map->tileExists(i,j) || !map->getTile(i,j)->isRock()
+                                || map->getTile(i,j)->isMountain() || map->getTile(i,j)->hasAGroundObject()
+                                || (((placeItem == Structure_Slab1) || (placeItem == Structure_Slab4)) && map->getTile(i,j)->isConcrete())) {
                                 image = invalidPlace;
                             } else {
                                 image = validPlace;
@@ -743,8 +766,8 @@ void Game::doInput()
                         }
 
                         int rectFinishX = screenborder->screen2MapX(finalMouseX);
-                        if(rectFinishX > (currentGameMap->getSizeX()-1)) {
-                            rectFinishX = currentGameMap->getSizeX()-1;
+                        if(rectFinishX > (map->getSizeX()-1)) {
+                            rectFinishX = map->getSizeX()-1;
                         }
 
                         int rectFinishY = screenborder->screen2MapY(finalMouseY);
@@ -753,7 +776,7 @@ void Game::doInput()
                         int rectStartX = selectionRect.x/TILESIZE;
                         int rectStartY = selectionRect.y/TILESIZE;
 
-                        currentGameMap->selectObjects(  pLocalHouse,
+                        map->selectObjects(  pLocalHouse,
                                                         rectStartX, rectStartY, rectFinishX, rectFinishY,
                                                         screenborder->screen2worldX(finalMouseX),
                                                         screenborder->screen2worldY(finalMouseY),
@@ -936,11 +959,11 @@ void Game::drawCursor(const SDL_Rect& map_rect) const
                     }
 
                     if((xPos != INVALID_POS) && (yPos != INVALID_POS)) {
-                        auto *const pTile = currentGameMap->getTile(xPos, yPos);
+                        auto *const pTile = map->getTile(xPos, yPos);
 
-                        if(pTile->isExploredByTeam(pLocalHouse->getTeamID())) {
+                        if(pTile->isExploredByTeam(this, pLocalHouse->getTeamID())) {
 
-                            auto *const pStructure = dynamic_cast<StructureBase*>(pTile->getGroundObject());
+                            auto *const pStructure = dynamic_cast<StructureBase*>(pTile->getGroundObject(objectManager));
 
                             if((pStructure != nullptr) && (pStructure->canBeCaptured()) && (pStructure->getOwner()->getTeamID() != pLocalHouse->getTeamID())) {
                                 dest.y += ((getGameCycleCount() / 10) % 5);
@@ -998,8 +1021,8 @@ void Game::setupView() const
     }
 
     if(count == 0) {
-        i = currentGameMap->getSizeX()*TILESIZE/2-1;
-        j = currentGameMap->getSizeY()*TILESIZE/2-1;
+        i = map->getSizeX()*TILESIZE/2-1;
+        j = map->getSizeY()*TILESIZE/2-1;
     } else {
         i = i*TILESIZE/count;
         j = j*TILESIZE/count;
@@ -1451,7 +1474,8 @@ bool Game::loadSaveGame(InputStream& stream) {
     const short mapSizeY = stream.readUint32();
 
     //create the new map
-    currentGameMap = new Map(mapSizeX, mapSizeY);
+    map = std::make_unique<Map>(mapSizeX, mapSizeY);
+    currentGameMap = map.get();
 
     //read GameCycleCount
     gameCycleCount = stream.readUint32();
@@ -1468,7 +1492,7 @@ bool Game::loadSaveGame(InputStream& stream) {
     for(auto i=0; i<static_cast<int>(HOUSETYPE::NUM_HOUSES); i++) {
         if (stream.readBool()) {
             //house in game
-            house[i] = std::make_unique<House>(stream);
+            house[i] = std::make_unique<House>(objectManager, stream);
         }
     }
 
@@ -1523,7 +1547,7 @@ bool Game::loadSaveGame(InputStream& stream) {
     winFlags = stream.readUint32();
     loseFlags = stream.readUint32();
 
-    currentGameMap->load(stream);
+    map->load(stream);
 
     //load the structures and units
     objectManager.load(stream);
@@ -1531,7 +1555,7 @@ bool Game::loadSaveGame(InputStream& stream) {
     const auto numBullets = stream.readUint32();
     bulletList.reserve(numBullets);
     for (auto i = 0u; i < numBullets; i++) {
-        currentGameMap->add_bullet(stream);
+        map->add_bullet(stream);
     }
 
     const auto numExplosions = stream.readUint32();
@@ -1541,7 +1565,7 @@ bool Game::loadSaveGame(InputStream& stream) {
     }
 
     if(bMultiplayerLoad) {
-        screenborder->adjustScreenBorderToMapsize(currentGameMap->getSizeX(), currentGameMap->getSizeY());
+        screenborder->adjustScreenBorderToMapsize(map->getSizeX(), map->getSizeY());
 
         screenborder->setNewScreenCenter(pLocalHouse->getCenterOfMainBase()*TILESIZE);
 
@@ -1550,7 +1574,7 @@ bool Game::loadSaveGame(InputStream& stream) {
         selectedList = stream.readUint32Set();
 
         //load the screenborder info
-        screenborder->adjustScreenBorderToMapsize(currentGameMap->getSizeX(), currentGameMap->getSizeY());
+        screenborder->adjustScreenBorderToMapsize(map->getSizeX(), map->getSizeY());
         screenborder->load(stream);
     }
 
@@ -1591,8 +1615,8 @@ bool Game::saveGame(const std::filesystem::path& filename)
     }
 
     //write the map size
-    fs.writeUint32(currentGameMap->getSizeX());
-    fs.writeUint32(currentGameMap->getSizeY());
+    fs.writeUint32(map->getSizeX());
+    fs.writeUint32(map->getSizeY());
 
     // write GameCycleCount
     fs.writeUint32(gameCycleCount);
@@ -1624,7 +1648,7 @@ bool Game::saveGame(const std::filesystem::path& filename)
     fs.writeUint32(winFlags);
     fs.writeUint32(loseFlags);
 
-    currentGameMap->save(fs);
+    map->save(fs, getGameCycleCount());
 
     // save the structures and units
     objectManager.save(fs);
@@ -1661,7 +1685,7 @@ bool Game::saveGame(const std::filesystem::path& filename)
 }
 
 
-void Game::saveObject(OutputStream& stream, ObjectBase* obj) const
+void Game::saveObject(OutputStream& stream, ObjectBase* obj)
 {
     if(obj == nullptr)
         return;
@@ -1670,18 +1694,6 @@ void Game::saveObject(OutputStream& stream, ObjectBase* obj) const
     obj->save(stream);
 }
 
-
-ObjectBase* Game::loadObject(InputStream& stream, Uint32 objectID) const
-{
-    const auto itemID = stream.readUint32();
-
-    auto *const newObject = ObjectBase::loadObject(stream, itemID, objectID);
-    if(newObject == nullptr) {
-        THROW(std::runtime_error, "Error while loading an object!");
-    }
-
-    return newObject;
-}
 
 
 void Game::selectAll(const Dune::selected_set_type& aList) const
@@ -1875,6 +1887,31 @@ void Game::handleChatInput(SDL_KeyboardEvent& keyboardEvent) {
 }
 
 
+bool Game::removeFromSelectionLists(ObjectBase* pObject) {
+    if(!pObject->isSelected()) false;
+
+    const auto objectID = pObject->getObjectID();
+
+    auto changed = false;
+
+    if(0 != getSelectedList().erase(objectID)) changed = true;
+    if(0 != getSelectedByOtherPlayerList().erase(objectID)) changed = true;
+
+    assert(changed);
+
+    pObject->setSelected(false);
+
+    return true;
+}
+
+
+void Game::removeFromQuickSelectionLists(Uint32 objectID) {
+    for(int i = 0; i < NUMSELECTEDLISTS; i++) {
+        pLocalPlayer->getGroupList(i).erase(objectID);
+    }
+};
+
+
 void Game::handleKeyInput(SDL_KeyboardEvent& keyboardEvent) {
     switch(keyboardEvent.keysym.sym) {
 
@@ -1883,11 +1920,8 @@ void Game::handleKeyInput(SDL_KeyboardEvent& keyboardEvent) {
             if(SDL_GetModState() & KMOD_CTRL) {
                 for(Uint32 objectID : selectedList) {
                     ObjectBase* pObject = objectManager.getObject(objectID);
-                    pObject->setSelected(false);
-                    pObject->removeFromSelectionLists();
-                    for(int i=0; i < NUMSELECTEDLISTS; i++) {
-                        pLocalPlayer->getGroupList(i).erase(objectID);
-                    }
+                    removeFromSelectionLists(pObject);
+                    removeFromQuickSelectionLists(objectID);
                 }
                 selectedList.clear();
                 currentGame->selectionChanged();
@@ -2028,21 +2062,21 @@ void Game::handleKeyInput(SDL_KeyboardEvent& keyboardEvent) {
         case SDLK_F1: {
             const auto oldCenterCoord = screenborder->getCurrentCenter();
             currentZoomlevel = 0;
-            screenborder->adjustScreenBorderToMapsize(currentGameMap->getSizeX(), currentGameMap->getSizeY());
+            screenborder->adjustScreenBorderToMapsize(map->getSizeX(), map->getSizeY());
             screenborder->setNewScreenCenter(oldCenterCoord);
         } break;
 
         case SDLK_F2: {
             const auto oldCenterCoord = screenborder->getCurrentCenter();
             currentZoomlevel = 1;
-            screenborder->adjustScreenBorderToMapsize(currentGameMap->getSizeX(), currentGameMap->getSizeY());
+            screenborder->adjustScreenBorderToMapsize(map->getSizeX(), map->getSizeY());
             screenborder->setNewScreenCenter(oldCenterCoord);
         } break;
 
         case SDLK_F3: {
             const auto oldCenterCoord = screenborder->getCurrentCenter();
             currentZoomlevel = 2;
-            screenborder->adjustScreenBorderToMapsize(currentGameMap->getSizeX(), currentGameMap->getSizeY());
+            screenborder->adjustScreenBorderToMapsize(map->getSizeX(), map->getSizeY());
             screenborder->setNewScreenCenter(oldCenterCoord);
         } break;
 
@@ -2243,9 +2277,9 @@ bool Game::handlePlacementClick(int xPos, int yPos) {
     const auto structuresize = getStructureSize(placeItem);
 
     if(placeItem == Structure_Slab1) {
-        if((currentGameMap->isWithinBuildRange(xPos, yPos, pBuilder->getOwner()))
-            && (currentGameMap->okayToPlaceStructure(xPos, yPos, 1, 1, false, pBuilder->getOwner()))
-            && (!currentGameMap->getTile(xPos, yPos)->isConcrete())) {
+        if((map->isWithinBuildRange(xPos, yPos, pBuilder->getOwner()))
+            && (map->okayToPlaceStructure(xPos, yPos, 1, 1, false, pBuilder->getOwner()))
+            && (!map->getTile(xPos, yPos)->isConcrete())) {
             getCommandManager().addCommand(Command(pLocalPlayer->getPlayerID(), CMDTYPE::CMD_PLACE_STRUCTURE,pBuilder->getObjectID(), xPos, yPos));
             //the user has tried to place and has been successful
             soundPlayer->playSound(Sound_PlaceStructure);
@@ -2258,14 +2292,14 @@ bool Game::handlePlacementClick(int xPos, int yPos) {
             return false;
         }
     } else if(placeItem == Structure_Slab4) {
-        if( (currentGameMap->isWithinBuildRange(xPos, yPos, pBuilder->getOwner()) || currentGameMap->isWithinBuildRange(xPos+1, yPos, pBuilder->getOwner())
-                || currentGameMap->isWithinBuildRange(xPos+1, yPos+1, pBuilder->getOwner()) || currentGameMap->isWithinBuildRange(xPos, yPos+1, pBuilder->getOwner()))
-            && ((currentGameMap->okayToPlaceStructure(xPos, yPos, 1, 1, false, pBuilder->getOwner())
-                || currentGameMap->okayToPlaceStructure(xPos+1, yPos, 1, 1, false, pBuilder->getOwner())
-                || currentGameMap->okayToPlaceStructure(xPos+1, yPos+1, 1, 1, false, pBuilder->getOwner())
-                || currentGameMap->okayToPlaceStructure(xPos, yPos, 1, 1+1, false, pBuilder->getOwner())))
-            && ((!currentGameMap->getTile(xPos, yPos)->isConcrete()) || (!currentGameMap->getTile(xPos+1, yPos)->isConcrete())
-                || (!currentGameMap->getTile(xPos, yPos+1)->isConcrete()) || (!currentGameMap->getTile(xPos+1, yPos+1)->isConcrete())) ) {
+        if( (map->isWithinBuildRange(xPos, yPos, pBuilder->getOwner()) || map->isWithinBuildRange(xPos+1, yPos, pBuilder->getOwner())
+                || map->isWithinBuildRange(xPos+1, yPos+1, pBuilder->getOwner()) || map->isWithinBuildRange(xPos, yPos+1, pBuilder->getOwner()))
+            && ((map->okayToPlaceStructure(xPos, yPos, 1, 1, false, pBuilder->getOwner())
+                || map->okayToPlaceStructure(xPos+1, yPos, 1, 1, false, pBuilder->getOwner())
+                || map->okayToPlaceStructure(xPos+1, yPos+1, 1, 1, false, pBuilder->getOwner())
+                || map->okayToPlaceStructure(xPos, yPos, 1, 1+1, false, pBuilder->getOwner())))
+            && ((!map->getTile(xPos, yPos)->isConcrete()) || (!map->getTile(xPos+1, yPos)->isConcrete())
+                || (!map->getTile(xPos, yPos+1)->isConcrete()) || (!map->getTile(xPos+1, yPos+1)->isConcrete())) ) {
 
             getCommandManager().addCommand(Command(pLocalPlayer->getPlayerID(), CMDTYPE::CMD_PLACE_STRUCTURE,pBuilder->getObjectID(), xPos, yPos));
             //the user has tried to place and has been successful
@@ -2279,7 +2313,7 @@ bool Game::handlePlacementClick(int xPos, int yPos) {
             return false;
         }
     } else {
-        if(currentGameMap->okayToPlaceStructure(xPos, yPos, structuresize.x, structuresize.y, false, pBuilder->getOwner())) {
+        if(map->okayToPlaceStructure(xPos, yPos, structuresize.x, structuresize.y, false, pBuilder->getOwner())) {
             getCommandManager().addCommand(Command(pLocalPlayer->getPlayerID(), CMDTYPE::CMD_PLACE_STRUCTURE,pBuilder->getObjectID(), xPos, yPos));
             //the user has tried to place and has been successful
             soundPlayer->playSound(Sound_PlaceStructure);
@@ -2291,7 +2325,7 @@ bool Game::handlePlacementClick(int xPos, int yPos) {
             soundPlayer->playSound(Sound_InvalidAction);    //can't place noise
 
             // is this building area only blocked by units?
-            if(currentGameMap->okayToPlaceStructure(xPos, yPos, structuresize.x, structuresize.y, false, pBuilder->getOwner(), true)) {
+            if(map->okayToPlaceStructure(xPos, yPos, structuresize.x, structuresize.y, false, pBuilder->getOwner(), true)) {
                 // then we try to move all units outside the building area
 
                 // generate a independent temporal random number generator as we are in input handling code (and outside game logic code)
@@ -2299,19 +2333,19 @@ bool Game::handlePlacementClick(int xPos, int yPos) {
 
                 for(int y = yPos; y < yPos + structuresize.y; y++) {
                     for(int x = xPos; x < xPos + structuresize.x; x++) {
-                        auto *const pTile = currentGameMap->getTile(x,y);
+                        auto *const pTile = map->getTile(x,y);
                         if(pTile->hasANonInfantryGroundObject()) {
-                            auto *const pObject = pTile->getNonInfantryGroundObject();
+                            auto *const pObject = pTile->getNonInfantryGroundObject(objectManager);
                             if(pObject->isAUnit() && pObject->getOwner() == pBuilder->getOwner()) {
                                 auto* pUnit = static_cast<UnitBase*>(pObject);
-                                Coord newDestination = currentGameMap->findDeploySpot(pUnit, Coord(xPos, yPos), tempRandomGen, pUnit->getLocation(), structuresize);
+                                Coord newDestination = map->findDeploySpot(pUnit, Coord(xPos, yPos), tempRandomGen, pUnit->getLocation(), structuresize);
                                 pUnit->handleMoveClick(newDestination.x, newDestination.y);
                             }
                         } else if(pTile->hasInfantry()) {
                             for(auto objectID : pTile->getInfantryList()) {
                                 auto *pInfantry = dynamic_cast<InfantryBase*>(getObjectManager().getObject(objectID));
                                 if((pInfantry != nullptr) && (pInfantry->getOwner() == pBuilder->getOwner())) {
-                                    const auto newDestination = currentGameMap->findDeploySpot(pInfantry, Coord(xPos, yPos), tempRandomGen, pInfantry->getLocation(), structuresize);
+                                    const auto newDestination = map->findDeploySpot(pInfantry, Coord(xPos, yPos), tempRandomGen, pInfantry->getLocation(), structuresize);
                                     pInfantry->handleMoveClick(newDestination.x, newDestination.y);
                                 }
                             }
@@ -2406,13 +2440,13 @@ bool Game::handleSelectedObjectsRequestCarryallDropClick(int xPos, int yPos) {
 
 
 bool Game::handleSelectedObjectsCaptureClick(int xPos, int yPos) {
-    Tile* pTile = currentGameMap->getTile(xPos, yPos);
+    Tile* pTile = map->getTile(xPos, yPos);
 
     if(pTile == nullptr) {
         return false;
     }
 
-    auto* pStructure = dynamic_cast<StructureBase*>(pTile->getGroundObject());
+    auto* pStructure = dynamic_cast<StructureBase*>(pTile->getGroundObject(objectManager));
     if((pStructure != nullptr) && (pStructure->canBeCaptured()) && (pStructure->getOwner()->getTeamID() != pLocalHouse->getTeamID())) {
         InfantryBase* pResponder = nullptr;
 

@@ -239,7 +239,7 @@ void QuantBot::update() {
 
         // First count all the objects we have
         for (int i = ItemID_FirstID; i <= ItemID_LastID; i++) {
-            initialItemCount[i] = getHouse()->getNumItems(i);
+            initialItemCount[i] = getHouse()->getNumItems(static_cast<ItemID_enum>(i));
             logDebug("Initial: Item: %d  Count: %d", i, initialItemCount[i]);
         }
 
@@ -409,7 +409,7 @@ void QuantBot::update() {
     int militaryValue = 0;
     for(Uint32 i = Unit_FirstID; i <= Unit_LastID; i++){
         if(i != Unit_Carryall && i != Unit_Harvester){
-            militaryValue += getHouse()->getNumItems(i) * currentGame->objectData.data[i][static_cast<int>(getHouse()->getHouseID())].price;
+            militaryValue += getHouse()->getNumItems(static_cast<ItemID_enum>(i)) * currentGame->objectData.data[i][static_cast<int>(getHouse()->getHouseID())].price;
         }
     }
     //logDebug("Military Value %d  Initial Military Value %d", militaryValue, initialMilitaryValue);
@@ -446,12 +446,12 @@ void QuantBot::onObjectWasBuilt(const ObjectBase* pObject) {
 }
 
 
-void QuantBot::onDecrementStructures(int itemID, const Coord& location) {
+void QuantBot::onDecrementStructures(ItemID_enum itemID, const Coord& location) {
 }
 
 
 /// When we take losses we should hold off from attacking for longer...
-void QuantBot::onDecrementUnits(int itemID) {
+void QuantBot::onDecrementUnits(ItemID_enum itemID) {
     if(itemID != Unit_Trooper && itemID != Unit_Infantry) {
         attackTimer += MILLI2CYCLES(currentGame->objectData.data[itemID][static_cast<int>(getHouse()->getHouseID())].price * 30 / (static_cast<Uint8>(difficulty)+1) );
         //logDebug("loss ");
@@ -460,7 +460,7 @@ void QuantBot::onDecrementUnits(int itemID) {
 
 
 /// When we get kills we should re-attack sooner...
-void QuantBot::onIncrementUnitKills(int itemID) {
+void QuantBot::onIncrementUnitKills(ItemID_enum itemID) {
     if(itemID != Unit_Trooper && itemID != Unit_Infantry) {
         attackTimer -= MILLI2CYCLES(currentGame->objectData.data[itemID][static_cast<int>(getHouse()->getHouseID())].price * 15);
         //logDebug("kill ");
@@ -605,7 +605,7 @@ Coord QuantBot::findMcvPlaceLocation(const MCV* pMCV) {
     return bestLocation;
 }
 
-Coord QuantBot::findPlaceLocation(Uint32 itemID) {
+Coord QuantBot::findPlaceLocation(ItemID_enum itemID) {
     // Will over allocate space for small maps so its not clean
     // But should allow Richard to compile
     int buildLocationScore[128][128] = {{0}};
@@ -665,7 +665,7 @@ Coord QuantBot::findPlaceLocation(Uint32 itemID) {
                                                 buildLocationScore[placeLocationX][placeLocationY] -= 10;
                                             }
 
-                                            if(getMap().getTile(i,j)->hasAStructure()) {
+                                            if(getMap().hasAStructure(i, j)) {
                                                 // If one of our buildings is nearby favour the location
                                                 // if it is someone elses building don't favour it
                                                 if(getMap().getTile(i,j)->getOwner() == getHouse()->getHouseID()){
@@ -736,7 +736,7 @@ void QuantBot::build(int militaryValue) {
 
     int itemCount[Num_ItemID];
     for (int i = ItemID_FirstID; i <= ItemID_LastID; i++ ) {
-        itemCount[i] = getHouse()->getNumItems(i);
+        itemCount[i] = getHouse()->getNumItems(static_cast<ItemID_enum>(i));
     }
 
     int activeHeavyFactoryCount = 0;
@@ -944,7 +944,7 @@ void QuantBot::build(int militaryValue) {
                         auto enemyHouseID = HOUSETYPE::HOUSE_INVALID;
                         int enemyHouseBuildingCount = 0;
 
-                        currentGame->forAllHouses([&](const auto& house) {
+                        currentGame->for_each_house([&](const auto& house) {
                                 if(house.getTeamID() != getHouse()->getTeamID() && house.getNumStructures() > enemyHouseBuildingCount) {
                                     enemyHouseBuildingCount = house.getNumStructures();
                                     enemyHouseID = house.getHouseID();
@@ -976,7 +976,7 @@ void QuantBot::build(int militaryValue) {
                             if(pBuilder->getCurrentUpgradeLevel() < pBuilder->getMaxUpgradeLevel() && getHouse()->getCredits() > 1500){
                                 doUpgrade(pBuilder);
                             } else if(!getHouse()->isGroundUnitLimitReached()) {
-                                Uint32 itemID = NONE_ID;
+                                auto itemID = ItemID_enum::ItemID_Invalid;
 
                                 if(pBuilder->isAvailableToBuild(Unit_RaiderTrike)) {
                                     itemID = Unit_RaiderTrike;
@@ -1257,13 +1257,13 @@ void QuantBot::build(int militaryValue) {
 
                                 for(int i = Structure_FirstID; i <= Structure_LastID; i++){
                                     if(itemCount[i] < initialItemCount[i]
-                                       && pBuilder->isAvailableToBuild(i)
-                                       && findPlaceLocation(i).isValid()
+                                       && pBuilder->isAvailableToBuild(static_cast<ItemID_enum>(i))
+                                       && findPlaceLocation(static_cast<ItemID_enum>(i)).isValid()
                                        && !pBuilder->isUpgrading()
                                        && pBuilder->getProductionQueueSize() < 1) {
 
                                         logDebug("***CampAI Build itemID: %o structure count: %o, initial count: %o", i, itemCount[i], initialItemCount[i]);
-                                        doProduceItem(pBuilder, i);
+                                        doProduceItem(pBuilder, static_cast<ItemID_enum>(i));
                                         itemCount[i]++;
                                     }
                                 }
@@ -1313,7 +1313,7 @@ void QuantBot::build(int militaryValue) {
                             } else {
                                 // custom AI starts here:
 
-                                Uint32 itemID = NONE_ID;
+                                auto itemID = ItemID_enum::ItemID_Invalid;
 
                                 if(itemCount[Structure_WindTrap] == 0 && pBuilder->isAvailableToBuild(Structure_WindTrap)) {
                                     itemID = Structure_WindTrap;
@@ -1432,7 +1432,7 @@ void QuantBot::scrambleUnitsAndDefend(const ObjectBase* pIntruder, int numUnits)
     for(const UnitBase* pUnit : getUnitList()) {
         if(pUnit->isRespondable() && (pUnit->getOwner() == getHouse())) {
             if(!pUnit->hasATarget() && !pUnit->wasForced()) {
-                Uint32 itemID = pUnit->getItemID();
+                ItemID_enum itemID = pUnit->getItemID();
                 if((itemID != Unit_Harvester) && (pUnit->getItemID() != Unit_MCV) && (pUnit->getItemID() != Unit_Carryall)
                     && (pUnit->getItemID() != Unit_Frigate) && (pUnit->getItemID() != Unit_Saboteur) && (pUnit->getItemID() != Unit_Sandworm)) {
 

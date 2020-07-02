@@ -23,9 +23,10 @@
 class HeavyFactory final : public BuilderBase
 {
 public:
-    explicit HeavyFactory(House* newOwner);
-    explicit HeavyFactory(InputStream& stream);
-    void init();
+    static const ItemID_enum item_id = ItemID_enum::Structure_HeavyFactory;
+
+    HeavyFactory(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer);
+    HeavyFactory(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer);
     ~HeavyFactory() override;
 
     void doBuildRandom() override;
@@ -38,7 +39,7 @@ protected:
     void updateStructureSpecificStuff() override;
 
 private:
-
+    void init();
 };
 
 #endif //HEAVYFACTORY_H

@@ -78,7 +78,7 @@ void SoundPlayer::playSoundAt(Sound_enum soundID, const Coord& location) const
     if(!soundOn) return;
 
     if( !currentGameMap->tileExists(location)
-        || !currentGameMap->getTile(location)->isExploredByTeam(pLocalHouse->getTeamID()) ) {
+        || !currentGameMap->getTile(location)->isExploredByTeam(currentGame.get(), pLocalHouse->getTeamID()) ) {
         return;
     }
 

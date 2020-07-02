@@ -23,9 +23,10 @@
 class Palace final : public StructureBase
 {
 public:
-    explicit Palace(House* newOwner);
-    explicit Palace(InputStream& stream);
-    void init();
+    static const ItemID_enum item_id = Structure_Palace;
+
+    Palace(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer);
+    Palace(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer);
     ~Palace() override;
 
     void save(OutputStream& stream) const override;
@@ -53,15 +54,16 @@ public:
         Can this structure be captured by infantry units?
         \return true, if this structure can be captured, false otherwise
     */
-    bool canBeCaptured() const override { return false; }
+    bool canBeCaptured() const noexcept override { return false; }
 
     int getPercentComplete() const {
         return specialWeaponTimer*100/getMaxSpecialWeaponTimer();
     }
 
-    inline bool isSpecialWeaponReady() const { return (specialWeaponTimer == 0); }
-    inline int getSpecialWeaponTimer() const { return specialWeaponTimer; }
-    inline int getMaxSpecialWeaponTimer() const {
+    bool isSpecialWeaponReady() const { return (specialWeaponTimer == 0); }
+    int getSpecialWeaponTimer() const { return specialWeaponTimer; }
+
+    int getMaxSpecialWeaponTimer() const {
         if(originalHouseID == HOUSETYPE::HOUSE_HARKONNEN || originalHouseID == HOUSETYPE::HOUSE_SARDAUKAR) {
             // 10 min
             return MILLI2CYCLES(10*60*1000);
@@ -83,7 +85,9 @@ protected:
     void updateStructureSpecificStuff() override;
 
 private:
-    Sint32  specialWeaponTimer;       ///< When is the special weapon ready?
+    void   init();
+
+    Sint32 specialWeaponTimer; ///< When is the special weapon ready?
 };
 
 #endif // PALACE_H

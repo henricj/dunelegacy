@@ -27,7 +27,7 @@
 
 #include <players/HumanPlayer.h>
 
-TurretBase::TurretBase(House* newOwner) : StructureBase(newOwner)
+TurretBase::TurretBase(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer) : StructureBase(itemID, objectID, initializer)
 {
     TurretBase::init();
 
@@ -38,8 +38,10 @@ TurretBase::TurretBase(House* newOwner) : StructureBase(newOwner)
     weaponTimer = 0;
 }
 
-TurretBase::TurretBase(InputStream& stream) : StructureBase(stream) {
+TurretBase::TurretBase(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer) : StructureBase(itemID, objectID, initializer) {
     TurretBase::init();
+
+    auto& stream    = initializer.Stream;
 
     findTargetTimer = stream.readSint32();
     weaponTimer = stream.readSint32();
@@ -118,7 +120,7 @@ void TurretBase::updateStructureSpecificStuff() {
 
 void TurretBase::handleActionCommand(int xPos, int yPos) {
     if(currentGameMap->tileExists(xPos, yPos)) {
-        ObjectBase* tempTarget = currentGameMap->getTile(xPos, yPos)->getObject();
+        ObjectBase* tempTarget = currentGameMap->getTile(xPos, yPos)->getObject(currentGame->getObjectManager());
         currentGame->getCommandManager().addCommand(Command(pLocalPlayer->getPlayerID(), CMDTYPE::CMD_TURRET_ATTACKOBJECT,objectID,tempTarget->getObjectID()));
 
     }

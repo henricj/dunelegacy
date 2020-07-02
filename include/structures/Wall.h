@@ -38,9 +38,10 @@ public:
         Wall_Full           = 12
     } WALLTYPE;
 
-    explicit Wall(House* newOwner);
-    explicit Wall(InputStream& stream);
-    void init();
+    static const ItemID_enum item_id = Structure_Wall;
+
+    Wall(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer);
+    Wall(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer);
     ~Wall() override;
 
     void save(OutputStream& stream) const override;
@@ -51,13 +52,15 @@ public:
         Can this structure be captured by infantry units?
         \return true, if this structure can be captured, false otherwise
     */
-    bool canBeCaptured() const override { return false; }
+    bool canBeCaptured() const noexcept override { return false; }
 
     using ObjectBase::setLocation;
     void setLocation(int xPos, int yPos) override;
 
 private:
-    inline void setWallTile(int newTile) {
+    void        init();
+
+    void setWallTile(int newTile) {
         curAnimFrame = firstAnimFrame = lastAnimFrame = newTile;
     }
 

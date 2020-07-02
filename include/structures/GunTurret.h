@@ -20,13 +20,16 @@
 
 #include <structures/TurretBase.h>
 
-class GunTurret final : public TurretBase
-{
+class GunTurret final : public TurretBase {
 public:
-    explicit GunTurret(House* newOwner);
-    explicit GunTurret(InputStream& stream);
-    void init();
+    static const ItemID_enum item_id = ItemID_enum::Structure_GunTurret;
+
+    GunTurret(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer);
+    GunTurret(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer);
     ~GunTurret() override;
+
+private:
+    void init();
 };
 
 #endif // GUNTURRET_H

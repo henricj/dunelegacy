@@ -23,9 +23,11 @@
 
 class AirUnit : public UnitBase
 {
+protected:
+    AirUnit(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer);
+    AirUnit(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer);
+
 public:
-    explicit AirUnit(House* newOwner);
-    explicit AirUnit(InputStream& stream);
     ~AirUnit() override = 0;
 
     AirUnit(const AirUnit &) = delete;

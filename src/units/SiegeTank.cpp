@@ -27,18 +27,18 @@
 #include <ScreenBorder.h>
 #include <SoundPlayer.h>
 
-SiegeTank::SiegeTank(House* newOwner) : TankBase(newOwner) {
+SiegeTank::SiegeTank(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer) : TankBase(itemID, objectID, initializer) {
     SiegeTank::init();
 
     ObjectBase::setHealth(getMaxHealth());
 }
 
-SiegeTank::SiegeTank(InputStream& stream) : TankBase(stream) {
+SiegeTank::SiegeTank(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer) : TankBase(itemID, objectID, initializer) {
     SiegeTank::init();
 }
 
 void SiegeTank::init() {
-    itemID = Unit_SiegeTank;
+    assert(itemID == Unit_SiegeTank);
     owner->incrementUnits(itemID);
 
     numWeapons = 2;
@@ -92,7 +92,7 @@ void SiegeTank::blitToScreen() {
 void SiegeTank::destroy() {
     if(currentGameMap->tileExists(location) && isVisible()) {
         Coord realPos(lround(realX), lround(realY));
-        Uint32 explosionID = currentGame->randomGen.getRandOf({Explosion_Medium1, Explosion_Medium2});
+        Uint32 explosionID = currentGame->randomGen.getRandOf(Explosion_Medium1, Explosion_Medium2);
         currentGame->addExplosion(explosionID, realPos, owner->getHouseID());
 
         if(isVisible(getOwner()->getTeamID())) {

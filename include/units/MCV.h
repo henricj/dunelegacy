@@ -23,9 +23,10 @@
 class MCV final : public GroundUnit
 {
 public:
-    explicit MCV(House* newOwner);
-    explicit MCV(InputStream& stream);
-    void init();
+    static const ItemID_enum item_id = Unit_MCV;
+
+    MCV(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer);
+    MCV(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer);
     ~MCV() override;
 
     void handleDeployClick();
@@ -45,7 +46,9 @@ public:
     }
 
 private:
-    static bool canDeploy(int x, int y) ;
+    void        init();
+
+    static bool canDeploy(int x, int y);
 };
 
 #endif // MCV_H

@@ -204,7 +204,7 @@ void RadarView::updateRadarSurface(int scale, int offsetX, int offsetY) {
 
     map->for_all([&](Tile& t)
     {
-        auto color = t.getRadarColor(pLocalHouse, radar_on);
+        auto color = t.getRadarColor(currentGame.get(), pLocalHouse, radar_on);
         color = MapRGBA(radarSurface->format, color);
 
         Uint8* const RESTRICT out = static_cast<Uint8 *>(radarSurface->pixels)

@@ -382,7 +382,7 @@ private:
     Coord bottomRightCornerOnScreen;///< the position of the bottom right corner in screen coordinates
 
     int numShakingCycles{};         ///< the number of cycles the screen will shake
-    Nyq::NyqEngine<> generator_;
+    Dune::NyqEngine generator_;
 };
 
 #endif //SCREENBORDER

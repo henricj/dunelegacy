@@ -29,7 +29,7 @@
 #include <structures/RepairYard.h>
 #include <units/Carryall.h>
 
-GroundUnit::GroundUnit(House* newOwner) : UnitBase(newOwner) {
+GroundUnit::GroundUnit(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer) : UnitBase(itemID, objectID, initializer) {
 
     GroundUnit::init();
 
@@ -37,9 +37,11 @@ GroundUnit::GroundUnit(House* newOwner) : UnitBase(newOwner) {
     bookedCarrier = NONE_ID;
 }
 
-GroundUnit::GroundUnit(InputStream& stream) : UnitBase(stream) {
+GroundUnit::GroundUnit(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer) : UnitBase(itemID, objectID, initializer) {
 
     GroundUnit::init();
+
+    auto& stream   = initializer.Stream;
 
     awaitingPickup = stream.readBool();
     bookedCarrier = stream.readUint32();
@@ -68,7 +70,7 @@ void GroundUnit::assignToMap(const Coord& pos) {
 void GroundUnit::checkPos() {
     auto* pTile = currentGameMap->getTile(location);
     if(!moving && !justStoppedMoving && !isInfantry()) {
-        pTile->setTrack(drawnAngle);
+        pTile->setTrack(drawnAngle, currentGame->getGameCycleCount());
     }
 
     if(justStoppedMoving)
@@ -80,9 +82,9 @@ void GroundUnit::checkPos() {
         if(pTile->isSpiceBloom()) {
             setHealth(0);
             setVisible(VIS_ALL, false);
-            pTile->triggerSpiceBloom(getOwner());
+            pTile->triggerSpiceBloom(currentGame.get(), getOwner());
         } else if(pTile->isSpecialBloom()){
-            pTile->triggerSpecialBloom(getOwner());
+            pTile->triggerSpecialBloom(currentGame.get(), getOwner());
         }
     }
 
@@ -111,7 +113,7 @@ void GroundUnit::checkPos() {
 
             clearPath();
         } else {
-            ObjectBase *pObject = pTile->getGroundObject();
+            ObjectBase *pObject = pTile->getGroundObject(currentGame->getObjectManager());
 
             if( justStoppedMoving
                 && (pObject != nullptr)
@@ -211,15 +213,29 @@ void GroundUnit::bookCarrier(UnitBase* newCarrier) {
 }
 
 bool GroundUnit::hasBookedCarrier() const {
-    if(bookedCarrier == NONE_ID) {
-        return false;
-    }         return (currentGame->getObjectManager().getObject(bookedCarrier) != nullptr);
-
-   
+    if(bookedCarrier == NONE_ID) { return false; }
+    return (currentGame->getObjectManager().getObject(bookedCarrier) != nullptr);
 }
 
 const UnitBase* GroundUnit::getCarrier() const {
     return static_cast<UnitBase*>(currentGame->getObjectManager().getObject(bookedCarrier));
+}
+
+FixPoint GroundUnit::getTerrainDifficulty(TERRAINTYPE terrainType) const
+{
+    switch(terrainType)
+    {
+        case Terrain_Slab: return 1.0_fix;
+        case Terrain_Sand: return 1.375_fix;
+        case Terrain_Rock: return 1.5625_fix;
+        case Terrain_Dunes: return 1.375_fix;
+        case Terrain_Mountain: return 1.0_fix;
+        case Terrain_Spice: return 1.375_fix;
+        case Terrain_ThickSpice: return 1.375_fix;
+        case Terrain_SpiceBloom: return 1.375_fix;
+        case Terrain_SpecialBloom: return 1.375_fix;
+        default: return 1.0_fix;
+    }
 }
 
 void GroundUnit::move() {

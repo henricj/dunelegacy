@@ -30,21 +30,19 @@
 
 #include <players/HumanPlayer.h>
 
-MCV::MCV(House* newOwner) : GroundUnit(newOwner)
-{
+MCV::MCV(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer) : GroundUnit(itemID, objectID, initializer) {
     MCV::init();
 
     setHealth(getMaxHealth());
     attackMode = GUARD;
 }
 
-MCV::MCV(InputStream& stream) : GroundUnit(stream)
-{
+MCV::MCV(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer) : GroundUnit(itemID, objectID, initializer) {
     MCV::init();
 }
 
 void MCV::init() {
-    itemID = Unit_MCV;
+    assert(itemID == Unit_MCV);
     owner->incrementUnits(itemID);
 
     canAttackStuff = false;

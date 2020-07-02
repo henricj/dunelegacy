@@ -260,7 +260,7 @@ std::unique_ptr<MapEditorOperation> MapEditorChangePlayer::perform(MapEditor *pM
 
 std::unique_ptr<MapEditorOperation> MapEditorChangeChoam::perform(MapEditor *pMapEditor) {
 
-    std::map<int,int>& choam = pMapEditor->getChoam();
+    auto& choam = pMapEditor->getChoam();
 
     int oldAmount = choam.count(itemID) > 0 ? choam[itemID] : -1;
 

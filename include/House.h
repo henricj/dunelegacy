@@ -25,7 +25,7 @@
 #include <AITeamInfo.h>
 #include <data.h>
 #include <Choam.h>
-
+#include "ObjectManager.h"
 #include <players/Player.h>
 
 #include <memory>
@@ -36,17 +36,19 @@ class StructureBase;
 class ObjectBase;
 class HumanPlayer;
 
-class House
+class House final
 {
+    House(ObjectManager& objectManager);
 public:
-    House(HOUSETYPE newHouse, int newCredits, int maxUnits, Uint8 teamID = 0, int quota = 0);
-    explicit House(InputStream& stream);
+    House(ObjectManager& objectManager, HOUSETYPE newHouse, int newCredits, int maxUnits, Uint8 teamID = 0, int quota = 0);
+    House(ObjectManager& objectManager, InputStream& stream);
+    virtual ~House();
+
     House(const House &) = delete;
     House(House &&) = delete;
     House& operator=(const House &) = delete;
     House& operator=(House &&) = delete;
-    void init();
-    virtual ~House();
+
     virtual void save(OutputStream& stream) const;
 
     void addPlayer(std::unique_ptr<Player> newPlayer);
@@ -74,7 +76,7 @@ public:
 
     int getNumStructures() const noexcept { return numStructures; };
     int getNumUnits() const noexcept{ return numUnits; };
-    int getNumItems(int itemID) const { return (isStructure(itemID) || isUnit(itemID)) ? numItem[itemID] : 0; };
+    int getNumItems(ItemID_enum itemID) const { return (isStructure(itemID) || isUnit(itemID)) ? numItem[itemID] : 0; };
 
     int getCapacity() const noexcept{ return capacity; }
 
@@ -93,10 +95,10 @@ public:
     int getDestroyedValue() const noexcept { return destroyedValue; }
     int getNumDestroyedUnits() const noexcept { return numDestroyedUnits; }
     int getNumDestroyedStructures() const noexcept { return numDestroyedStructures; }
-    int getNumBuiltItems(int itemID) const noexcept { return numItemBuilt[itemID]; }
-    int getNumKilledItems(int itemID) const noexcept { return numItemKills[itemID]; }
-    int getNumLostItems(int itemID) const noexcept { return numItemLosses[itemID]; }
-    Sint32 getNumItemDamageInflicted(int itemID) const noexcept { return numItemDamageInflicted[itemID]; }
+    int getNumBuiltItems(ItemID_enum itemID) const noexcept { return numItemBuilt[itemID]; }
+    int getNumKilledItems(ItemID_enum itemID) const noexcept { return numItemKills[itemID]; }
+    int getNumLostItems(ItemID_enum itemID) const noexcept { return numItemLosses[itemID]; }
+    Sint32 getNumItemDamageInflicted(ItemID_enum itemID) const noexcept { return numItemDamageInflicted[itemID]; }
     FixPoint getHarvestedSpice() const noexcept { return harvestedSpice; }
     int getNumVisibleEnemyUnits() const noexcept { return numVisibleEnemyUnits; }
     int getNumVisibleFriendlyUnits() const noexcept { return numVisibleFriendlyUnits; }
@@ -160,10 +162,10 @@ public:
 
     void update();
 
-    void incrementUnits(int itemID);
-    void decrementUnits(int itemID);
-    void incrementStructures(int itemID);
-    void decrementStructures(int itemID, const Coord& location);
+    void incrementUnits(ItemID_enum itemID);
+    void decrementUnits(ItemID_enum itemID);
+    void incrementStructures(ItemID_enum itemID);
+    void decrementStructures(ItemID_enum itemID, const Coord& location);
 
     /**
         An object was hit by something or damaged somehow else.
@@ -174,17 +176,27 @@ public:
     void noteDamageLocation(ObjectBase* pObject, int damage, Uint32 damagerID);
 
     void informWasBuilt(ObjectBase* pObject);
-    void informHasKilled(Uint32 itemID);
-    void informHasDamaged(Uint32 itemID, Uint32 damage);
+    void informHasKilled(ItemID_enum itemID);
+    void informHasDamaged(ItemID_enum itemID, Uint32 damage);
 
     void lose(bool bSilent = false) const;
     void win();
 
     void freeHarvester(int xPos, int yPos);
     void freeHarvester(const Coord& coord) { freeHarvester(coord.x, coord.y); };
-    StructureBase* placeStructure(Uint32 builderID, int itemID, int xPos, int yPos, bool byScenario = false, bool bForcePlacing = false);
-    UnitBase* createUnit(int itemID, bool byScenario = false);
-    UnitBase* placeUnit(int itemID, int xPos, int yPos, bool byScenario = false);
+    StructureBase* placeStructure(Uint32 builderID, ItemID_enum itemID, int xPos, int yPos, bool byScenario = false, bool bForcePlacing = false);
+
+    template<typename UnitType>
+    UnitType* createUnit(bool byScenario = false) {
+        static_assert(std::is_base_of<UnitBase, UnitType>::value, "UnitType not derived from UnitBase");
+
+        return objectManager.createObjectFromType<UnitType>(ObjectInitializer{this, byScenario});
+    }
+
+    UnitBase* createUnit(ItemID_enum itemID, bool byScenario = false);
+    StructureBase* createStructure(ItemID_enum itemID, bool byScenario = false);
+
+    UnitBase* placeUnit(ItemID_enum itemID, int xPos, int yPos, bool byScenario = false);
 
     Coord getCenterOfMainBase() const;
 
@@ -250,6 +262,13 @@ protected:
     int numDestroyedUnits;
     int numDestroyedStructures;
     FixPoint harvestedSpice;
+
+    ObjectManager& objectManager;
+
+private:
+    void init();
+
+    void registerUnit(std::unique_ptr<UnitBase> unit);
 };
 
 #endif // HOUSE_H

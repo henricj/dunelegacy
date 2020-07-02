@@ -38,7 +38,7 @@
 
 
 
-StarPort::StarPort(House* newOwner) : BuilderBase(newOwner) {
+StarPort::StarPort(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer) : BuilderBase(itemID, objectID, initializer) {
     StarPort::init();
 
     ObjectBase::setHealth(getMaxHealth());
@@ -47,8 +47,10 @@ StarPort::StarPort(House* newOwner) : BuilderBase(newOwner) {
     deploying = false;
 }
 
-StarPort::StarPort(InputStream& stream) : BuilderBase(stream) {
+StarPort::StarPort(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer) : BuilderBase(itemID, objectID, initializer) {
     StarPort::init();
+
+    auto& stream = initializer.Stream;
 
     arrivalTimer = stream.readSint32();
     if(stream.readBool()) {
@@ -57,8 +59,9 @@ StarPort::StarPort(InputStream& stream) : BuilderBase(stream) {
         deploying = false;
     }
 }
+
 void StarPort::init() {
-    itemID = Structure_StarPort;
+    assert(itemID == Structure_StarPort);
     owner->incrementStructures(itemID);
 
     structureSize.x = 3;
@@ -82,7 +85,7 @@ void StarPort::save(OutputStream& stream) const {
 
 void StarPort::doBuildRandom() {
     if(!buildList.empty()) {
-        int item2Produce = ItemID_Invalid;
+        auto item2Produce = ItemID_Invalid;
 
         do {
             item2Produce = std::next(buildList.begin(), currentGame->randomGen.rand(0, static_cast<Sint32>(buildList.size())-1))->itemID;
@@ -92,7 +95,7 @@ void StarPort::doBuildRandom() {
     }
 }
 
-void StarPort::handleProduceItemClick(Uint32 itemID, bool multipleMode) {
+void StarPort::handleProduceItemClick(ItemID_enum itemID, bool multipleMode) {
     auto& choam = owner->getChoam();
     const auto numAvailable = choam.getNumAvailable(itemID);
 
@@ -124,7 +127,7 @@ void StarPort::handleCancelOrderClick() {
         Command(pLocalPlayer->getPlayerID(), CMDTYPE::CMD_STARPORT_CANCELORDER, objectID));
 }
 
-void StarPort::doProduceItem(Uint32 itemID, bool multipleMode) {
+void StarPort::doProduceItem(ItemID_enum itemID, bool multipleMode) {
     auto& choam = owner->getChoam();
 
     for(auto& buildItem : buildList) {
@@ -152,7 +155,7 @@ void StarPort::doProduceItem(Uint32 itemID, bool multipleMode) {
     }
 }
 
-void StarPort::doCancelItem(Uint32 itemID, bool multipleMode) {
+void StarPort::doCancelItem(ItemID_enum itemID, bool multipleMode) {
     auto& choam = owner->getChoam();
 
     for(auto& buildItem : buildList) {

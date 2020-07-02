@@ -194,11 +194,11 @@ public:
 class MapEditorStructurePlaceOperation : public MapEditorOperation {
 public:
 
-    MapEditorStructurePlaceOperation(int preferredID, Coord position, HOUSETYPE house, int itemID, int health)
+    MapEditorStructurePlaceOperation(int preferredID, Coord position, HOUSETYPE house, ItemID_enum itemID, int health)
      :  preferredID(preferredID), position(position), house(house), itemID(itemID), health(health) {
     }
 
-    MapEditorStructurePlaceOperation(Coord position, HOUSETYPE house, int itemID, int health)
+    MapEditorStructurePlaceOperation(Coord position, HOUSETYPE house, ItemID_enum itemID, int health)
      :  preferredID(INVALID), position(position), house(house), itemID(itemID), health(health) {
     }
 
@@ -209,7 +209,7 @@ public:
     int             preferredID;
     Coord           position;
     HOUSETYPE       house;
-    int             itemID;
+    ItemID_enum itemID;
     int             health;
 };
 
@@ -230,11 +230,11 @@ public:
 class MapEditorUnitPlaceOperation : public MapEditorOperation {
 public:
 
-    MapEditorUnitPlaceOperation(int preferredID, Coord position, HOUSETYPE house, int itemID, int health, ANGLETYPE angle, ATTACKMODE attackmode)
+    MapEditorUnitPlaceOperation(int preferredID, Coord position, HOUSETYPE house, ItemID_enum itemID, int health, ANGLETYPE angle, ATTACKMODE attackmode)
      :  preferredID(preferredID), position(position), house(house), itemID(itemID), health(health), angle(angle), attackmode(attackmode) {
     }
 
-    MapEditorUnitPlaceOperation(Coord position, HOUSETYPE house, int itemID, int health, ANGLETYPE angle, ATTACKMODE attackmode)
+    MapEditorUnitPlaceOperation(Coord position, HOUSETYPE house, ItemID_enum itemID, int health, ANGLETYPE angle, ATTACKMODE attackmode)
      :  preferredID(INVALID), position(position), house(house), itemID(itemID), health(health), angle(angle), attackmode(attackmode) {
     }
 
@@ -246,7 +246,7 @@ public:
     Coord           position;
     HOUSETYPE       house;
     ANGLETYPE       angle;
-    int             itemID;
+    ItemID_enum itemID;
     int             health;
     ATTACKMODE      attackmode;
 };
@@ -323,7 +323,7 @@ public:
 class MapEditorChangeChoam : public MapEditorOperation {
 public:
 
-    MapEditorChangeChoam(int itemID, int amount)
+    MapEditorChangeChoam(ItemID_enum itemID, int amount)
      : itemID(itemID), amount(amount) {
     }
 
@@ -331,7 +331,7 @@ public:
 
     std::unique_ptr<MapEditorOperation> perform(MapEditor *pMapEditor) override;
 
-    int itemID;
+    ItemID_enum itemID;
     int amount;
 };
 

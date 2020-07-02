@@ -44,29 +44,29 @@ public:
     void update() override;
 
     void onObjectWasBuilt(const ObjectBase* pObject) override;
-    void onDecrementStructures(int itemID, const Coord& location) override;
+    void onDecrementStructures(ItemID_enum itemID, const Coord& location) override;
     void onDamage(const ObjectBase* pObject, int damage, Uint32 damagerID) override;
 
 private:
     class StructureInfo {
     public:
-        StructureInfo(int itemID, const Coord& location)
+        StructureInfo(ItemID_enum itemID, const Coord& location)
          : itemID(itemID), location(location) {
         }
 
         StructureInfo(InputStream& stream) {
-            itemID = stream.readUint32();
+            itemID = static_cast<ItemID_enum>(stream.readUint32());
             location.x = stream.readSint32();
             location.y = stream.readSint32();
         }
 
         void save(OutputStream& stream) const {
-            stream.writeUint32(itemID);
+            stream.writeUint32(static_cast<Uint32>(itemID));
             stream.writeSint32(location.x);
             stream.writeSint32(location.y);
         }
 
-        int itemID;
+        ItemID_enum itemID;
         Coord location;
     };
 

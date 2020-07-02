@@ -52,18 +52,17 @@ std::unique_ptr<TextManager>         pTextManager;               ///< manager fo
 std::unique_ptr<NetworkManager>      pNetworkManager;            ///< manager for all network events (nullptr if not in multiplayer game)
 
 // game stuff
-Game* currentGame;                ///< the current running game
-std::unique_ptr<ScreenBorder> screenborder;               ///< the screen border for the current running game
-Map* currentGameMap;             ///< the map for the current running game
-House* pLocalHouse;                ///< the house of the human player that is playing the current running game on this computer
-HumanPlayer* pLocalPlayer;               ///< the player that is playing the current running game on this computer
+std::unique_ptr<Game>         currentGame;    ///< the current running game
+std::unique_ptr<ScreenBorder> screenborder;   ///< the screen border for the current running game
+Map*                          currentGameMap; ///< the map for the current running game
+House*       pLocalHouse;  ///< the house of the human player that is playing the current running game on this computer
+HumanPlayer* pLocalPlayer; ///< the player that is playing the current running game on this computer
 
-RobustList<UnitBase*>       unitList;            ///< the list of all units
-RobustList<StructureBase*>  structureList;       ///< the list of all structures
-std::vector<std::unique_ptr<Bullet>>         bulletList;          ///< the list of all bullets
-
+RobustList<UnitBase*>                unitList;      ///< the list of all units
+RobustList<StructureBase*>           structureList; ///< the list of all structures
+std::vector<std::unique_ptr<Bullet>> bulletList;    ///< the list of all bullets
 
 // misc
-SettingsClass    settings;                       ///< the settings read from the settings file
+SettingsClass settings; ///< the settings read from the settings file
 
-bool debug;                                      ///< is set for debugging purposes
+bool debug; ///< is set for debugging purposes

@@ -24,10 +24,10 @@
 
 class TurretBase : public StructureBase
 {
-public:
-    explicit TurretBase(House* newOwner);
-    explicit TurretBase(InputStream& stream);
     void init();
+public:
+    explicit TurretBase(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer);
+    explicit TurretBase(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer);
     ~TurretBase() override;
 
     TurretBase(const TurretBase &) = delete;

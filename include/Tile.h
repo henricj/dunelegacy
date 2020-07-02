@@ -230,7 +230,7 @@ public:
     Tile& operator=(Tile &&) = default;
 
     void load(InputStream& stream);
-    void save(OutputStream& stream) const;
+    void save(OutputStream& stream, Uint32 gameCycleCount) const;
 
     void assignAirUnit(Uint32 newObjectID);
     void assignDeadUnit(Uint8 type, HOUSETYPE house, const Coord& position) {
@@ -245,7 +245,7 @@ public:
     }
 
     void assignNonInfantryGroundObject(Uint32 newObjectID);
-    int assignInfantry(Uint32 newObjectID, Sint8 currentPosition = INVALID_POS);
+    int assignInfantry(ObjectManager& objectManager, Uint32 newObjectID, Sint8 currentPosition = INVALID_POS);
     void assignUndergroundUnit(Uint32 newObjectID);
 
     /**
@@ -253,56 +253,56 @@ public:
         \param xPos the x position of the left top corner of this tile on the screen
         \param yPos the y position of the left top corner of this tile on the screen
     */
-    void blitGround(int xPos, int yPos);
+    void blitGround(Game* game, int xPos, int yPos);
 
     /**
         This method draws the structures.
         \param xPos the x position of the left top corner of this tile on the screen
         \param yPos the y position of the left top corner of this tile on the screen
     */
-    void blitStructures(int xPos, int yPos) const;
+    void blitStructures(Game* game, int xPos, int yPos) const;
 
     /**
         This method draws the underground units of this tile.
         \param xPos the x position of the left top corner of this tile on the screen
         \param yPos the y position of the left top corner of this tile on the screen
     */
-    void blitUndergroundUnits(int xPos, int yPos) const;
+    void blitUndergroundUnits(Game* game, int xPos, int yPos) const;
 
     /**
         This method draws the dead units of this tile.
         \param xPos the x position of the left top corner of this tile on the screen
         \param yPos the y position of the left top corner of this tile on the screen
     */
-    void blitDeadUnits(int xPos, int yPos);
+    void blitDeadUnits(Game* game, int xPos, int yPos);
 
     /**
         This method draws the infantry units of this tile.
         \param xPos the x position of the left top corner of this tile on the screen
         \param yPos the y position of the left top corner of this tile on the screen
     */
-    void blitInfantry(int xPos, int yPos);
+    void blitInfantry(Game* game, int xPos, int yPos);
 
     /**
         This method draws the ground units of this tile.
         \param xPos the x position of the left top corner of this tile on the screen
         \param yPos the y position of the left top corner of this tile on the screen
     */
-    void blitNonInfantryGroundUnits(int xPos, int yPos);
+    void blitNonInfantryGroundUnits(Game* game, int xPos, int yPos);
 
     /**
         This method draws the air units of this tile.
         \param xPos the x position of the left top corner of this tile on the screen
         \param yPos the y position of the left top corner of this tile on the screen
     */
-    void blitAirUnits(int xPos, int yPos);
+    void blitAirUnits(Game* game, int xPos, int yPos);
 
     /**
         This method draws the infantry units of this tile.
         \param xPos the x position of the left top corner of this tile on the screen
         \param yPos the y position of the left top corner of this tile on the screen
     */
-    void blitSelectionRects(int xPos, int yPos) const;
+    void blitSelectionRects(Game* game, int xPos, int yPos) const;
 
 
     void update() {
@@ -314,20 +314,22 @@ public:
 
     void clearTerrain();
 
-    void setTrack(ANGLETYPE direction);
+    void setTrack(ANGLETYPE direction, Uint32 gameCycleCounter);
 
-    void selectAllPlayersUnits(HOUSETYPE houseID, ObjectBase** lastCheckedObject, ObjectBase** lastSelectedObject);
-    void selectAllPlayersUnitsOfType(HOUSETYPE houseID, int itemID, ObjectBase** lastCheckedObject, ObjectBase** lastSelectedObject);
+    void selectAllPlayersUnits(Game* game, HOUSETYPE houseID, ObjectBase** lastCheckedObject, ObjectBase** lastSelectedObject);
+    void selectAllPlayersUnitsOfType(Game* game, HOUSETYPE houseID, ItemID_enum itemID, ObjectBase** lastCheckedObject, ObjectBase** lastSelectedObject);
     void unassignAirUnit(Uint32 objectID);
     void unassignNonInfantryGroundObject(Uint32 objectID);
     void unassignObject(Uint32 objectID);
     void unassignInfantry(Uint32 objectID, int currentPosition);
     void unassignUndergroundUnit(Uint32 objectID);
-    void setType(TERRAINTYPE newType);
-    void squash() const;
-    int getInfantryTeam() const;
-    FixPoint harvestSpice();
+    void setType(Game* game, Map* map, TERRAINTYPE newType);
+    void squash(const ObjectManager& objectManager) const;
+    int getInfantryTeam(const ObjectManager& objectManager) const;
+    FixPoint harvestSpice(Game* game);
     void setSpice(FixPoint newSpice);
+
+    void setType(Game* game, TERRAINTYPE newType) { setType(game, game->getMap(), newType); }
 
     /**
         Returns the center point of this tile
@@ -341,24 +343,24 @@ public:
         returns a pointer to an air unit on this tile (if there's one)
         @return AirUnit* pointer to air unit
     */
-    AirUnit* getAirUnit() const;
+    AirUnit* getAirUnit(const ObjectManager& objectManager) const;
 
     /*!
         returns a pointer to a non infantry ground object on this tile (if there's one)
         @return ObjectBase*  pointer to non infantry ground object
     */
-    ObjectBase* getNonInfantryGroundObject() const;
+    ObjectBase* getNonInfantryGroundObject(const ObjectManager& objectManager) const;
     /*!
         returns a pointer to an underground object on this tile (if there's one)
         @return UnitBase*  pointer to underground object(sandworm?)
     */
-    UnitBase* getUndergroundUnit() const;
+    UnitBase* getUndergroundUnit(const ObjectManager& objectManager) const;
 
     /*!
         returns a pointer to an ground object on this tile (if there's one)
         @return ObjectBase*  pointer to ground object
     */
-    ObjectBase* getGroundObject() const;
+    ObjectBase* getGroundObject(const ObjectManager& objectManager) const;
 
     std::pair<bool, Dune::object_id_type> getGroundObjectID() const {
         if (hasANonInfantryGroundObject())
@@ -374,10 +376,10 @@ public:
         returns a pointer to infantry object on this tile (if there's one)
         @return InfantryBase*  pointer to infantry object
     */
-    InfantryBase* getInfantry() const;
-    ObjectBase* getObject() const;
-    ObjectBase* getObjectAt(int x, int y) const;
-    ObjectBase* getObjectWithID(Uint32 objectID) const;
+    InfantryBase* getInfantry(const ObjectManager& objectManager) const;
+    ObjectBase*   getObject(const ObjectManager& objectManager) const;
+    ObjectBase*   getObjectAt(const ObjectManager& objectManager, int x, int y) const;
+    ObjectBase*   getObjectWithID(const ObjectManager& objectManager, Uint32 objectID) const;
 
 
     const std::vector<Uint32>& getAirUnitList() const {
@@ -400,13 +402,13 @@ public:
         This method is called when the spice bloom on this till shall be triggered. If this tile has no spice bloom nothing happens.
         \param  pTrigger    the house that triggered the bloom
     */
-    void triggerSpiceBloom(House* pTrigger);
+    void triggerSpiceBloom(Game* game, House* pTrigger);
 
     /**
         This method is called when the spice bloom on this tile shall be triggered. If this tile has no spice bloom nothing happens.
         \param  pTrigger    the house that triggered the bloom
     */
-    void triggerSpecialBloom(House* pTrigger);
+    void triggerSpecialBloom(Game* game, House* pTrigger);
 
     /**
         Sets this tile as explored for this house.
@@ -426,7 +428,7 @@ public:
     bool hasAnAirUnit() const noexcept { return !assignedAirUnitList.empty(); }
     bool hasAnUndergroundUnit() const noexcept { return !assignedUndergroundUnitList.empty(); }
     bool hasANonInfantryGroundObject() const noexcept { return !assignedNonInfantryGroundObjectList.empty(); }
-    bool hasAStructure() const;
+    bool hasAStructure(const ObjectManager& objectManager) const;
     bool hasInfantry() const noexcept { return !assignedInfantryList.empty(); }
     bool hasAnObject() const noexcept { return (hasAGroundObject() || hasAnAirUnit() || hasAnUndergroundUnit()); }
 
@@ -434,10 +436,10 @@ public:
     bool infantryNotFull() const noexcept { return (assignedInfantryList.size() < NUM_INFANTRY_PER_TILE); }
     bool isConcrete() const noexcept { return (type == TERRAINTYPE::Terrain_Slab); }
     bool isExploredByHouse(HOUSETYPE houseID) const { return explored[static_cast<int>(houseID)]; }
-    bool isExploredByTeam(int teamID) const;
-
-    bool isFoggedByHouse(HOUSETYPE houseID) const noexcept;
-    bool isFoggedByTeam(int teamID) const noexcept;
+    bool isExploredByTeam(const Game* game, int teamID) const;
+            
+    bool isFoggedByHouse(bool fogOfWarEnabled, Uint32 gameCycleCount, HOUSETYPE houseID) const noexcept;
+    bool isFoggedByTeam(const Game* game, int teamID) const noexcept;
     bool isMountain() const noexcept { return (type == TERRAINTYPE::Terrain_Mountain); }
     bool isRock() const noexcept {
         return ((type == TERRAINTYPE::Terrain_Rock) || (type == TERRAINTYPE::Terrain_Slab) ||
@@ -462,15 +464,15 @@ public:
 
     const Coord& getLocation() const noexcept { return location; }
 
-    Uint32 getRadarColor(House* pHouse, bool radar);
+    Uint32 getRadarColor(const Game* game, House* pHouse, bool radar);
     TERRAINTILETYPE getTerrainTile() const {
         if (terrainTile == TERRAINTILETYPE::TerrainTile_Invalid)
             terrainTile = getTerrainTileImpl();
 
         return terrainTile;
     }
-    int getHideTile(int teamID) const;
-    int getFogTile(int teamID) const;
+    int getHideTile(const Game* game, int teamID) const;
+    int getFogTile(const Game* game, int teamID) const;
     int getDestroyedStructureTile() const noexcept { return  destroyedStructureTile; };
 
     bool isBlocked() const noexcept {
@@ -521,7 +523,7 @@ private:
     void update_impl();
 
     template<typename Pred>
-    void selectFilter(HOUSETYPE houseID, ObjectBase** lastCheckedObject, ObjectBase** lastSelectedObject, Pred&& predicate);
+    void selectFilter(Game* game, HOUSETYPE houseID, ObjectBase** lastCheckedObject, ObjectBase** lastSelectedObject, Pred&& predicate);
 
     template<typename Visitor>
     void forEachUnit(Visitor&& visitor) const;

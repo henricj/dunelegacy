@@ -31,8 +31,7 @@
 #include <structures/ConstructionYard.h>
 #include <units/Harvester.h>
 
-Carryall::Carryall(House* newOwner) : AirUnit(newOwner)
-{
+Carryall::Carryall(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer) : AirUnit(itemID, objectID, initializer) {
     Carryall::init();
 
     ObjectBase::setHealth(getMaxHealth());
@@ -44,9 +43,10 @@ Carryall::Carryall(House* newOwner) : AirUnit(newOwner)
     respondable = false;
 }
 
-Carryall::Carryall(InputStream& stream) : AirUnit(stream)
-{
+Carryall::Carryall(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer) : AirUnit(itemID, objectID, initializer) {
     Carryall::init();
+
+    auto& stream = initializer.Stream;
 
     pickedUpUnitList = stream.readUint32Vector();
     if(!pickedUpUnitList.empty()) {
@@ -58,7 +58,7 @@ Carryall::Carryall(InputStream& stream) : AirUnit(stream)
 
 void Carryall::init()
 {
-    itemID = Unit_Carryall;
+    assert(itemID == Unit_Carryall);
     owner->incrementUnits(itemID);
 
     canAttackStuff = false;
@@ -227,29 +227,26 @@ void Carryall::deployUnit(Uint32 unitID)
     post_deployUnits();
 }
 
-void Carryall::deployUnit(Tile* tile, UnitBase* pUnit)
-{
-    if (tile->hasANonInfantryGroundObject()) {
-        auto *const object = tile->getNonInfantryGroundObject();
-        if (object->getOwner() == getOwner()) {
-            if (object->getItemID() == Structure_RepairYard) {
-                auto *repair_yard = static_cast<RepairYard*>(object);
+void Carryall::deployUnit(Tile* tile, UnitBase* pUnit) {
+    if(tile->hasANonInfantryGroundObject()) {
+        auto* const object = tile->getNonInfantryGroundObject(currentGame->getObjectManager());
+        if(object->getOwner() == getOwner()) {
+            if(object->getItemID() == Structure_RepairYard) {
+                auto* repair_yard = static_cast<RepairYard*>(object);
 
-                if (repair_yard->isFree()) {
-                    pUnit->setTarget(object);   // unit books repair yard again
+                if(repair_yard->isFree()) {
+                    pUnit->setTarget(object); // unit books repair yard again
                     pUnit->setGettingRepaired();
 
                     return;
                 }
-                                    // unit is still going to repair yard but was unbooked from repair yard at pickup => book now
+                // unit is still going to repair yard but was unbooked from repair yard at pickup => book now
 
-                    repair_yard->book();
+                repair_yard->book();
 
-               
-            }
-            else if ((object->getItemID() == Structure_Refinery) && (pUnit->getItemID() == Unit_Harvester)) {
-                if (static_cast<Refinery*>(object)->isFree()) {
-                    auto *harvester = static_cast<Harvester*>(pUnit);
+            } else if((object->getItemID() == Structure_Refinery) && (pUnit->getItemID() == Unit_Harvester)) {
+                if(static_cast<Refinery*>(object)->isFree()) {
+                    auto* harvester = static_cast<Harvester*>(pUnit);
                     harvester->setTarget(object);
                     harvester->setReturned();
                     goingToRepairYard = false;
@@ -264,13 +261,11 @@ void Carryall::deployUnit(Tile* tile, UnitBase* pUnit)
     const auto deployPos = currentGameMap->findDeploySpot(pUnit, location, currentGame->randomGen);
     pUnit->setForced(false); // Stop units being forced if they are deployed
     pUnit->deploy(deployPos);
-    if (pUnit->getItemID() == Unit_Saboteur) {
+    if(pUnit->getItemID() == Unit_Saboteur) {
         pUnit->doSetAttackMode(HUNT);
-    }
-    else if (pUnit->getItemID() != Unit_Harvester) {
+    } else if(pUnit->getItemID() != Unit_Harvester) {
         pUnit->doSetAttackMode(AREAGUARD);
-    }
-    else {
+    } else {
         pUnit->doSetAttackMode(HARVEST);
     }
 }

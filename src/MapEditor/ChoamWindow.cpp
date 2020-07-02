@@ -69,7 +69,7 @@ ChoamWindow::ChoamWindow(MapEditor* pMapEditor, HOUSETYPE currentHouse) : Window
 
     centralVBox.addWidget(VSpacer::create(4));
 
-    std::map<int,int>& choam = pMapEditor->getChoam();
+    auto& choam = pMapEditor->getChoam();
 
     for(int i=0;i<7;i++) {
 
@@ -151,7 +151,7 @@ void ChoamWindow::onOK() {
 
     for(unsigned int i = 0; i < sizeof(choamUnits)/sizeof(choamUnits[0]); i++) {
         int rowNum = i/2;
-        int itemID = choamUnits[i];
+        ItemID_enum itemID = choamUnits[i];
 
         if(itemID != ItemID_Invalid) {
 
@@ -185,7 +185,7 @@ void ChoamWindow::onOK() {
     }
 }
 
-void ChoamWindow::onUnitCheckbox(int itemID) {
+void ChoamWindow::onUnitCheckbox(ItemID_enum itemID) {
     for(unsigned int i = 0; i < sizeof(choamUnits)/sizeof(choamUnits[0]); i++) {
         if(choamUnits[i] == itemID) {
             int rowNum = i/2;

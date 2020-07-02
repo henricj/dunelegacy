@@ -38,7 +38,7 @@ public:
         \param  bRepeat             true = repeat the dropping (every triggerCycleNumber game cycles), false = do not repeat
         \param  triggerCycleNumber  the game cycle this trigger shall be triggered (must be >0 if bRepeat == true)
     */
-    ReinforcementTrigger(HOUSETYPE houseID, Uint32 itemID, DropLocation location, bool bRepeat,
+    ReinforcementTrigger(HOUSETYPE houseID, ItemID_enum itemID, DropLocation location, bool bRepeat,
                          Uint32 triggerCycleNumber);
     ReinforcementTrigger(const ReinforcementTrigger &) = default;
     ReinforcementTrigger(ReinforcementTrigger &&) = default;
@@ -83,13 +83,13 @@ public:
         Get a vector of all the itemIDs of the to be dropped units (that will be dropped by one carryall)
         \return a vector of the itemIDs of the to be dropped units.
     */
-    [[nodiscard]] const std::vector<Uint32>& getDroppedUnits() const { return droppedUnits; }
+    [[nodiscard]] const std::vector<ItemID_enum>& getDroppedUnits() const { return droppedUnits; }
 
     /**
         Adds another unit to this delivery.
         \param  itemID  the itemID of the unit to add
     */
-    void addUnit(Uint32 itemID) { droppedUnits.push_back(itemID); }
+    void addUnit(ItemID_enum itemID) { droppedUnits.push_back(itemID); }
 
     /**
         Trigger this trigger. Shall only be called when getCycleNumber() is equal to the current game cycle
@@ -97,7 +97,7 @@ public:
     void trigger() override;
 
 private:
-    std::vector<Uint32> droppedUnits;   ///< a vector of the itemIDs of the to be dropped units
+    std::vector<ItemID_enum> droppedUnits;   ///< a vector of the itemIDs of the to be dropped units
     DropLocation        dropLocation;   ///< the kind of drop
     HOUSETYPE           houseID;        ///< the owner of the new unit
     Uint32              repeatCycle;    ///< the interval in game cycles between two drops. Will be equal to triggerCycleNumber at the beginning of the game. repeatCycle = 0 if there is no repeat

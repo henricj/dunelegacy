@@ -23,9 +23,10 @@
 class Radar final : public StructureBase
 {
 public:
-    explicit Radar(House* newOwner);
-    explicit Radar(InputStream& stream);
-    void init();
+    static const ItemID_enum item_id = Structure_Radar;
+
+    Radar(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer);
+    Radar(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer);
     ~Radar() override;
 
     ObjectInterface* getInterfaceContainer() override;
@@ -34,9 +35,12 @@ public:
         Can this structure be captured by infantry units?
         \return true, if this structure can be captured, false otherwise
     */
-    bool canBeCaptured() const override { return false; }
+    bool canBeCaptured() const noexcept override { return false; }
 
     void destroy() override;
+
+private:
+    void init();
 };
 
 #endif //RADAR_H

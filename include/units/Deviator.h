@@ -23,9 +23,10 @@
 class Deviator final : public TrackedUnit
 {
 public:
-    explicit Deviator(House* newOwner);
-    explicit Deviator(InputStream& stream);
-    void init();
+    static const ItemID_enum item_id = ItemID_enum::Unit_Deviator;
+
+    Deviator(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer);
+    Deviator(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer);
     ~Deviator() override;
 
     void blitToScreen() override;
@@ -35,6 +36,8 @@ public:
     void playAttackSound() override;
 
 private:
+    void init();
+
     // drawing information
     zoomable_texture turretGraphic{};   ///< The turret graphic
     int              gunGraphicID;      ///< The id of the turret graphic (needed if we want to reload the graphic)

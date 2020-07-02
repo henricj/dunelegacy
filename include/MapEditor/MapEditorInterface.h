@@ -105,8 +105,8 @@ private:
     void onTerrainButton(int terrainType);
     void onTerrainPenButton(int pensize);
     void onSetTacticalPosition();
-    void onStructButton(int structType);
-    void onUnitButton(int unitType);
+    void onStructButton(ItemID_enum structType);
+    void onUnitButton(ItemID_enum unitType);
 
     void onStructureHealthDropDown(bool bInteractive);
     void onUnitHealthDropDown(bool bInteractive);
