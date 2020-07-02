@@ -22,8 +22,102 @@
 
 #include <misc/SDL2pp.h>
 
+#include "misc/RngSupport.h"
+#include "misc/random_xoshiro256starstar.h"
+#include "misc/lemire_uniform_uint32_distribution.h"
+
 #include <initializer_list>
 
+class Random final {
+public:
+    /// Default constructor.
+    Random() = default;
+
+    /**
+        Constructor which inits the seed value to seed
+        \param  seed    the initial seed value
+    */
+    explicit Random(Uint32 seed) { setSeed(seed); }
+
+    /// Destructor
+    ~Random();
+
+    /**
+        Sets the seed value to newSeed
+        \param newSeed  the new seed value
+    */
+    inline void setSeed(Uint32 newSeed) { generator_.seed(newSeed); }
+
+    /**
+        Returns the current seed value.
+        \return the current seed value
+    */
+    inline Uint32 getSeed() const { return 0; }
+
+    /**
+        Returns the maximum integer returned by rand()
+        \return The maximum integer
+    */
+    inline Uint32 getMaxRandom() const { return decltype(generator_)::max(); }
+
+    /**
+        Calculates a random number with the "Linear congruential generator" (see numerical recipes for more details)
+        \return a random integer on interval [0; getMaxRandom()]
+    */
+    inline Uint32 rand() { return generator_(); }
+
+    /**
+        Calculates a random number with the "Linear congruential generator" (see numerical recipes for more details)
+        Don't call this method if max < min.
+        \param  min min is the smallest possible value that is returned
+        \param  max max is the greatest possible value that is returned
+        \return a random integer on interval [min; max]
+    */
+    inline Uint32 rand(Uint32 min, Uint32 max) {
+        return lemire_uniform_uint32_distribution{max - min}(generator_) + min;
+    }
+
+    /**
+        Calculates a random number with the "Linear congruential generator" (see numerical recipes for more details)
+        Don't call this method if max < min.
+        \param  min min is the smallest possible value that is returned
+        \param  max max is the greatest possible value that is returned
+        \return a random integer on interval [min; max]
+    */
+    inline Sint32 rand(Sint32 min, Sint32 max) {
+        const auto umax = static_cast<Uint32>(max - min);
+
+        return static_cast<Sint32>(lemire_uniform_uint32_distribution{umax}(generator_)) + min;
+    }
+
+    /**
+        Returns an FixPoint value on the interval [0;1]
+        \return a random FixPoint on [0;1]
+    */
+    inline FixPoint randFixPoint() { return FixPoint(rand()) / getMaxRandom(); }
+
+    /**
+        Returns an boolean value
+        \return true or false
+    */
+    inline bool randBool() { return (rand() & (1 << 31)) == 0; }
+
+    /**
+        This method returns randomly one of the given parameters.
+        \return one of the parameters, e.g. getRandOf({13,17,19}) returns 13, 17 or 19
+    */
+    template<typename T, typename ... Args>
+    T getRandOf(const T& first, const Args&... args) {
+        std::array<T, sizeof...(Args) + 1> a{args...};
+
+        return a[rand(0, a.size() - 1)];
+    }
+
+private:
+    ExtraGenerators::xoshiro256starstar32 generator_;
+};
+
+#if 0
 /// A class for generating random numbers (there are better algorithms but this one is quite fast)
 class Random final {
 public:
@@ -159,5 +253,6 @@ public:
 private:
     Uint32 seed;
 };
+#endif // 0
 
 #endif // RANDOM_H

@@ -1,68 +1,36 @@
 #ifndef RNGSUPPORT_H
 #define RNGSUPPORT_H
 
-#ifdef __cplusplus
-
 #include <vector>
 #include <random>
+#include "random_xoshiro256starstar.h"
+#include "lemire_uniform_uint32_distribution.h"
 
-#include "random_xorshift1024star.h"
-
-namespace Nyq
+namespace Dune
 {
-typedef ExtraGenerators::xorshift1024star nyq_generator;
-const int nyq_generator_state_size = sizeof(nyq_generator) / sizeof(unsigned);
 typedef std::seed_seq nyq_seed_seq;
+//typedef std::uniform_real_distribution<float> nyq_uniform_float_distribution;
+//typedef std::uniform_real_distribution<double> nyq_uniform_double_distribution;
+//typedef std::normal_distribution<float> nyq_normal_float_distribution;
+typedef std::uniform_int_distribution<int> nyq_uniform_int_distribution;
+typedef std::uniform_int_distribution<long> nyq_uniform_long_distribution;
 
 namespace RngSupport
 {
-std::vector<unsigned int> CreateSeedVector(std::vector<unsigned int>::size_type size);
-} // namespace Rng
+typedef ExtraGenerators::xoshiro256starstar nyq_generator;
 
-template <class RNG = nyq_generator>
-static RNG CreateGenerator(int size = 32)
-{
-    auto seed_data = RngSupport::CreateSeedVector(size);
+nyq_generator CreateGenerator();
+} // namespace RngSupport
 
-    nyq_seed_seq seq(seed_data.begin(), seed_data.end());
 
-    return RNG{seq};
-}
-
-template <class RNG = nyq_generator>
-static void ReseedGenerator(RNG& generator, int size = 32)
-{
-    auto seed_data = RngSupport::CreateSeedVector(size);
-
-    nyq_seed_seq seq(seed_data.begin(), seed_data.end());
-
-    generator.seed(seq);
-}
-
-template <class RNG = nyq_generator>
-class NyqEngine : public RNG
+class NyqEngine : public RngSupport::nyq_generator
 {
 public:
-   explicit NyqEngine(int size = 32) : RNG(CreateGenerator(size))
+   explicit NyqEngine() : RngSupport::nyq_generator(RngSupport::CreateGenerator())
    { }
 };
 
-} // namespace Nyq
+} // namespace Dune
 
-extern "C" {
-#endif // __cplusplus
-
-    void RandomFillUniformFloat(float* p, int count, float low, float high);
-    void RandomFillNormalFloat(float* p, int count, float mean, float sigma);
-    int RandomFillClampedNormalFloat(float* p, int count, float mean, float sigma, float low, float high);
-    float RandomUniformFloat(float low, float high);
-    double RandomUniformDouble(double low, double high);
-
-    int RandomUniformInt(int lowInclusive, int highInclusive);
-    long RandomUniformLong(long lowInclusive, long highInclusive);
-
-#ifdef __cplusplus
-} //   extern "C"
-#endif
 
 #endif // RNGSUPPORT_H
