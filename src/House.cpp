@@ -47,9 +47,31 @@
 #include <numeric>
 
 
-House::House(HOUSETYPE newHouse, int newCredits, int maxUnits, Uint8 teamID, int quota) : choam(this) {
-    House::init();
+House::House(ObjectManager& objectManager) : choam(this), objectManager(objectManager) {
+    ai = true;
 
+    numUnits      = 0;
+    numStructures = 0;
+    for(int i = 0; i < Num_ItemID; i++) {
+        numItem[i]                = 0;
+        numItemBuilt[i]           = 0;
+        numItemKills[i]           = 0;
+        numItemLosses[i]          = 0;
+        numItemDamageInflicted[i] = 0;
+    }
+
+    capacity         = 0;
+    powerRequirement = 0;
+
+    numVisibleEnemyUnits    = 0;
+    numVisibleFriendlyUnits = 0;
+}
+
+
+House::~House() = default;
+
+
+House::House(ObjectManager& objectManager, HOUSETYPE newHouse, int newCredits, int maxUnits, Uint8 teamID, int quota) : House(objectManager) {
     houseID = ((static_cast<int>(newHouse) >= 0) && (newHouse < HOUSETYPE::NUM_HOUSES)) ? newHouse :  static_cast<HOUSETYPE>(0);
     this->teamID = teamID;
 
@@ -79,11 +101,7 @@ House::House(HOUSETYPE newHouse, int newCredits, int maxUnits, Uint8 teamID, int
 }
 
 
-
-
-House::House(InputStream& stream) : choam(this) {
-    House::init();
-
+House::House(ObjectManager& objectManager, InputStream& stream) : House(objectManager) {
     houseID = static_cast<HOUSETYPE>(stream.readUint8());
     teamID = stream.readUint8();
 
@@ -128,35 +146,13 @@ House::House(InputStream& stream) : choam(this) {
     }
 }
 
-
-
-
-void House::init() {
-    ai = true;
-
-    numUnits = 0;
-    numStructures = 0;
-    for(int i=0;i<Num_ItemID;i++) {
-        numItem[i] = 0;
-        numItemBuilt[i] = 0;
-        numItemKills[i] = 0;
-        numItemLosses[i] = 0;
-        numItemDamageInflicted[i] = 0;
-    }
-
-    capacity = 0;
-    powerRequirement = 0;
-
-    numVisibleEnemyUnits = 0;
-    numVisibleFriendlyUnits = 0;
+UnitBase* House::createUnit(ItemID_enum itemID, bool byScenario) {
+    return objectManager.createObjectFromItemId<UnitBase>(itemID, ObjectInitializer{this, byScenario});
 }
 
-
-
-
-House::~House() = default;
-
-
+StructureBase* House::createStructure(ItemID_enum itemID, bool byScenario) {
+    return objectManager.createObjectFromItemId<StructureBase>(itemID, ObjectInitializer{this, byScenario});
+}
 
 
 void House::save(OutputStream& stream) const {
@@ -241,14 +237,14 @@ void House::addCredits(FixPoint newCredits, bool wasRefined) {
 
 
 void House::returnCredits(FixPoint newCredits) {
-    if(newCredits > 0) {
-        const auto leftCapacity = capacity - storedCredits;
-        if(newCredits <= leftCapacity) {
-            addCredits(newCredits, false);
-        } else {
-            addCredits(leftCapacity, false);
-            startingCredits += (newCredits - leftCapacity);
-        }
+    if(newCredits <= 0) return;
+
+    const auto leftCapacity = capacity - storedCredits;
+    if(newCredits <= leftCapacity) {
+        addCredits(newCredits, false);
+    } else {
+        addCredits(leftCapacity, false);
+        startingCredits += (newCredits - leftCapacity);
     }
 }
 
@@ -283,25 +279,29 @@ FixPoint House::takeCredits(FixPoint amount) {
 
 
 void House::printStat() const {
-    SDL_Log("House %s: (Number of Units: %d, Number of Structures: %d)",getHouseNameByNumber( (HOUSETYPE) getHouseID()).c_str(),numUnits,numStructures);
-    SDL_Log("Barracks: %d\t\tWORs: %d", numItem[Structure_Barracks],numItem[Structure_WOR]);
-    SDL_Log("Light Factories: %d\tHeavy Factories: %d",numItem[Structure_LightFactory],numItem[Structure_HeavyFactory]);
-    SDL_Log("IXs: %d\t\t\tPalaces: %d",numItem[Structure_IX],numItem[Structure_Palace]);
-    SDL_Log("Repair Yards: %d\t\tHigh-Tech Factories: %d",numItem[Structure_RepairYard],numItem[Structure_HighTechFactory]);
-    SDL_Log("Refineries: %d\t\tStarports: %d",numItem[Structure_Refinery],numItem[Structure_StarPort]);
-    SDL_Log("Walls: %d\t\tRocket Turrets: %d",numItem[Structure_Wall],numItem[Structure_RocketTurret]);
-    SDL_Log("Gun Turrets: %d\t\tConstruction Yards: %d",numItem[Structure_GunTurret],numItem[Structure_ConstructionYard]);
-    SDL_Log("Windtraps: %d\t\tRadars: %d",numItem[Structure_WindTrap],numItem[Structure_Radar]);
-    SDL_Log("Silos: %d",numItem[Structure_Silo]);
-    SDL_Log("Carryalls: %d\t\tFrigates: %d",numItem[Unit_Carryall],numItem[Unit_Frigate]);
-    SDL_Log("Devastators: %d\t\tDeviators: %d",numItem[Unit_Devastator],numItem[Unit_Deviator]);
-    SDL_Log("Soldiers: %d\t\tTrooper: %d",numItem[Unit_Soldier],numItem[Unit_Trooper]);
-    SDL_Log("Saboteur: %d\t\tSandworms: %d",numItem[Unit_Saboteur],numItem[Unit_Sandworm]);
-    SDL_Log("Quads: %d\t\tTrikes: %d",numItem[Unit_Quad],numItem[Unit_Trike]);
-    SDL_Log("Raiders: %d\t\tTanks: %d",numItem[Unit_RaiderTrike],numItem[Unit_Tank]);
-    SDL_Log("Siege Tanks : %d\t\tSonic Tanks: %d",numItem[Unit_SiegeTank],numItem[Unit_SonicTank]);
-    SDL_Log("Harvesters: %d\t\tMCVs: %d",numItem[Unit_Harvester],numItem[Unit_MCV]);
-    SDL_Log("Ornithopters: %d\t\tRocket Launchers: %d",numItem[Unit_Ornithopter],numItem[Unit_Launcher]);
+    SDL_Log("House %s: (Number of Units: %d, Number of Structures: %d)", getHouseNameByNumber(getHouseID()).c_str(),
+            numUnits, numStructures);
+    SDL_Log("Barracks: %d\t\tWORs: %d", numItem[Structure_Barracks], numItem[Structure_WOR]);
+    SDL_Log("Light Factories: %d\tHeavy Factories: %d", numItem[Structure_LightFactory],
+            numItem[Structure_HeavyFactory]);
+    SDL_Log("IXs: %d\t\t\tPalaces: %d", numItem[Structure_IX], numItem[Structure_Palace]);
+    SDL_Log("Repair Yards: %d\t\tHigh-Tech Factories: %d", numItem[Structure_RepairYard],
+            numItem[Structure_HighTechFactory]);
+    SDL_Log("Refineries: %d\t\tStarports: %d", numItem[Structure_Refinery], numItem[Structure_StarPort]);
+    SDL_Log("Walls: %d\t\tRocket Turrets: %d", numItem[Structure_Wall], numItem[Structure_RocketTurret]);
+    SDL_Log("Gun Turrets: %d\t\tConstruction Yards: %d", numItem[Structure_GunTurret],
+            numItem[Structure_ConstructionYard]);
+    SDL_Log("Windtraps: %d\t\tRadars: %d", numItem[Structure_WindTrap], numItem[Structure_Radar]);
+    SDL_Log("Silos: %d", numItem[Structure_Silo]);
+    SDL_Log("Carryalls: %d\t\tFrigates: %d", numItem[Unit_Carryall], numItem[Unit_Frigate]);
+    SDL_Log("Devastators: %d\t\tDeviators: %d", numItem[Unit_Devastator], numItem[Unit_Deviator]);
+    SDL_Log("Soldiers: %d\t\tTrooper: %d", numItem[Unit_Soldier], numItem[Unit_Trooper]);
+    SDL_Log("Saboteur: %d\t\tSandworms: %d", numItem[Unit_Saboteur], numItem[Unit_Sandworm]);
+    SDL_Log("Quads: %d\t\tTrikes: %d", numItem[Unit_Quad], numItem[Unit_Trike]);
+    SDL_Log("Raiders: %d\t\tTanks: %d", numItem[Unit_RaiderTrike], numItem[Unit_Tank]);
+    SDL_Log("Siege Tanks : %d\t\tSonic Tanks: %d", numItem[Unit_SiegeTank], numItem[Unit_SonicTank]);
+    SDL_Log("Harvesters: %d\t\tMCVs: %d", numItem[Unit_Harvester], numItem[Unit_MCV]);
+    SDL_Log("Ornithopters: %d\t\tRocket Launchers: %d", numItem[Unit_Ornithopter], numItem[Unit_Launcher]);
 }
 
 
@@ -357,7 +357,7 @@ void House::update() {
 
 
 
-void House::incrementUnits(int itemID) {
+void House::incrementUnits(ItemID_enum itemID) {
     numUnits++;
     numItem[itemID]++;
 
@@ -377,7 +377,7 @@ void House::incrementUnits(int itemID) {
 
 
 
-void House::decrementUnits(int itemID) {
+void House::decrementUnits(ItemID_enum itemID) {
     if (numUnits < 1)
         THROW(std::runtime_error, "Cannot decrement number of units %d (itemId %d)", numUnits, itemID);
 
@@ -413,7 +413,7 @@ void House::decrementUnits(int itemID) {
 
 
 
-void House::incrementStructures(int itemID) {
+void House::incrementStructures(ItemID_enum itemID) {
     numStructures++;
     numItem[itemID]++;
 
@@ -437,7 +437,7 @@ void House::incrementStructures(int itemID) {
 
 
 
-void House::decrementStructures(int itemID, const Coord& location) {
+void House::decrementStructures(ItemID_enum itemID, const Coord& location) {
     if (numStructures < 1)
         THROW(std::runtime_error, "Cannot decrement number of structures %d (itemId %d)", numStructures, itemID);
 
@@ -484,7 +484,7 @@ void House::noteDamageLocation(ObjectBase* pObject, int damage, Uint32 damagerID
     \param pObject   the object that was built
 */
 void House::informWasBuilt(ObjectBase* pObject) {
-    int itemID = pObject->getItemID();
+    ItemID_enum itemID = pObject->getItemID();
     if(pObject->isAStructure()) {
         structureBuiltValue += currentGame->objectData.data[itemID][static_cast<int>(houseID)].price;
         numBuiltStructures++;
@@ -506,7 +506,7 @@ void House::informWasBuilt(ObjectBase* pObject) {
     This method informs this house that one of its units has killed an enemy unit or structure
     \param itemID   the ID of the enemy unit or structure
 */
-void House::informHasKilled(Uint32 itemID) {
+void House::informHasKilled(ItemID_enum itemID) {
     destroyedValue += std::max(currentGame->objectData.data[itemID][static_cast<int>(houseID)].price/100, 1);
     if(isStructure(itemID)) {
         numDestroyedStructures++;
@@ -539,7 +539,7 @@ void House::informHasKilled(Uint32 itemID) {
  \param itemID   the ID of the enemy unit or structure
  */
 
-void House::informHasDamaged(Uint32 itemID, Uint32 damage) {
+void House::informHasDamaged(ItemID_enum itemID, Uint32 damage) {
     numItemDamageInflicted[itemID] += damage;
 }
 
@@ -621,14 +621,14 @@ void House::freeHarvester(int xPos, int yPos) {
 
     auto *const tile = currentGameMap->getTile(xPos, yPos);
 
-    if(!tile->hasAGroundObject() || tile->getGroundObject()->getItemID() != Structure_Refinery)
+    if(!tile->hasAGroundObject() || tile->getGroundObject(objectManager)->getItemID() != Structure_Refinery)
         return;
 
-    auto *const refinery = static_cast<Refinery*>(tile->getGroundObject());
+    auto *const refinery = static_cast<Refinery*>(tile->getGroundObject(objectManager));
     const Coord closestPos = currentGameMap->findClosestEdgePoint(refinery->getLocation() + Coord(2,0), Coord(1,1));
 
-    auto *carryall = static_cast<Carryall*>(createUnit(Unit_Carryall));
-    auto *harvester = static_cast<Harvester*>(createUnit(Unit_Harvester));
+    auto carryall = createUnit<Carryall>();
+    auto *harvester = createUnit<Harvester>();
     harvester->setAmountOfSpice(5);
     carryall->setOwned(false);
     carryall->giveCargo(harvester);
@@ -650,14 +650,12 @@ void House::freeHarvester(int xPos, int yPos) {
 }
 
 
-
-
-StructureBase* House::placeStructure(Uint32 builderID, int itemID, int xPos, int yPos, bool byScenario, bool bForcePlacing) {
+StructureBase* House::placeStructure(Uint32 builderID, ItemID_enum itemID, int xPos, int yPos, bool byScenario, bool bForcePlacing) {
     if(!currentGameMap->tileExists(xPos,yPos)) {
         return nullptr;
     }
 
-    auto *pBuilder = (builderID == NONE_ID) ? nullptr : dynamic_cast<BuilderBase*>(currentGame->getObjectManager().getObject(builderID));
+    auto* pBuilder = builderID == NONE_ID ? nullptr : objectManager.getObject<BuilderBase>(builderID);
 
     if(currentGame->getGameInitSettings().getGameOptions().onlyOnePalace && pBuilder != nullptr && itemID == Structure_Palace && getNumItems(Structure_Palace) > 0) {
         if(this == pLocalHouse && pBuilder->isSelected()) {
@@ -667,11 +665,11 @@ StructureBase* House::placeStructure(Uint32 builderID, int itemID, int xPos, int
     }
 
     switch (itemID) {
-        case (Structure_Slab1): {
+        case Structure_Slab1: {
             auto *const tile = currentGameMap->getTile(xPos, yPos);
 
             // Slabs are no normal buildings
-            tile->setType(Terrain_Slab);
+            tile->setType(currentGame.get(), Terrain_Slab);
             tile->setOwner(getHouseID());
             currentGameMap->viewMap(getHouseID(), xPos, yPos, currentGame->objectData.data[Structure_Slab1][static_cast<int>(houseID)].viewrange);
     //      currentGameMap->getTile(xPos, yPos)->clearTerrain();
@@ -690,16 +688,16 @@ StructureBase* House::placeStructure(Uint32 builderID, int itemID, int xPos, int
 
             return nullptr;
 
-        } break;
+        }
 
-        case (Structure_Slab4): {
+        case Structure_Slab4: {
             // Slabs are no normal buildings
             currentGameMap->for_each(xPos, yPos, xPos + 2, yPos + 2,
                 [=](Tile& t) {
                     if (t.hasAGroundObject() || !t.isRock() || t.isMountain())
                         return;
 
-                    t.setType(Terrain_Slab);
+                    t.setType(currentGame.get(), Terrain_Slab);
                     t.setOwner(houseID);
                     currentGameMap->viewMap(getHouseID(), t.getLocation().x, t.getLocation().y, currentGame->objectData.data[Structure_Slab4][static_cast<int>(houseID)].viewrange);
                     //pTile->clearTerrain();
@@ -719,13 +717,12 @@ StructureBase* House::placeStructure(Uint32 builderID, int itemID, int xPos, int
 
             return nullptr;
 
-        } break;
+        }
 
         default: {
-            auto *newObject = ObjectBase::createObject(itemID,this,byScenario);
-            auto *newStructure = dynamic_cast<StructureBase*>(newObject);
+            auto* newStructure = createStructure(itemID, byScenario);
+
             if(newStructure == nullptr) {
-                delete newObject;
                 THROW(std::runtime_error, "Cannot create structure with itemID %d!", itemID);
             }
 
@@ -734,7 +731,7 @@ StructureBase* House::placeStructure(Uint32 builderID, int itemID, int xPos, int
                 for(int i=0;i<newStructure->getStructureSizeX();i++) {
                     for(int j=0;j<newStructure->getStructureSizeY();j++) {
                         if((!currentGameMap->tileExists(xPos+i, yPos+j)) || (currentGameMap->getTile(xPos+i, yPos+j)->hasAGroundObject())) {
-                            delete newObject;
+                            objectManager.removeObject(newStructure->getObjectID());
                             return nullptr;
                         }
                     }
@@ -785,7 +782,7 @@ StructureBase* House::placeStructure(Uint32 builderID, int itemID, int xPos, int
 
                 // only if we were constructed by construction yard
                 // => inform house of the building
-                pBuilder->getOwner()->informWasBuilt(newObject);
+                pBuilder->getOwner()->informWasBuilt(newStructure);
             }
 
             if(newStructure->isABuilder()) {
@@ -794,34 +791,17 @@ StructureBase* House::placeStructure(Uint32 builderID, int itemID, int xPos, int
 
             return newStructure;
 
-        } break;
+        }
     }
-
-    return nullptr;
 }
 
 
 
 
-UnitBase* House::createUnit(int itemID, bool byScenario) {
-    ObjectBase* newObject = ObjectBase::createObject(itemID,this,byScenario);
-    auto* newUnit = dynamic_cast<UnitBase*>(newObject);
-
-    if(newUnit == nullptr) {
-        delete newObject;
-        THROW(std::runtime_error, "Cannot create unit with itemID %d!", itemID);
-    }
-
-    return newUnit;
-}
-
-
-
-
-UnitBase* House::placeUnit(int itemID, int xPos, int yPos, bool byScenario) {
+UnitBase* House::placeUnit(ItemID_enum itemID, int xPos, int yPos, bool byScenario) {
     UnitBase* newUnit = nullptr;
     if(currentGameMap->tileExists(xPos, yPos)) {
-        Tile* pTile = currentGameMap->getTile(xPos,yPos);
+        auto* pTile = currentGameMap->getTile(xPos,yPos);
 
         if(itemID == Unit_Saboteur || itemID == Unit_Soldier || itemID == Unit_Trooper) {
             if((pTile->hasANonInfantryGroundObject()) || (!pTile->infantryNotFull())) {

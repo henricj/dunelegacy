@@ -25,9 +25,10 @@
 class Carryall final : public AirUnit
 {
 public:
-    explicit Carryall(House* newOwner);
-    explicit Carryall(InputStream& stream);
-    void init();
+    static const ItemID_enum item_id = ItemID_enum::Unit_Carryall;
+
+    Carryall(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer);
+    Carryall(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer);
     ~Carryall() override;
 
     Carryall(const Carryall &) = delete;
@@ -68,6 +69,8 @@ public:
     bool isBooked() const noexcept { return (target || hasCargo()); }
 
 private:
+    void init();
+
     void releaseTarget() override;
     void engageTarget() override;
     void pickupTarget();

@@ -22,12 +22,12 @@
 
 class ReinforcementInfo {
 public:
-    ReinforcementInfo(HOUSETYPE houseID, int unitID, DropLocation dropLocation, int droptime, bool bRepeat)
+    ReinforcementInfo(HOUSETYPE houseID, ItemID_enum unitID, DropLocation dropLocation, int droptime, bool bRepeat)
      : houseID(houseID), unitID(unitID), dropLocation(dropLocation), droptime(droptime), bRepeat(bRepeat) {
     }
 
     HOUSETYPE    houseID;
-    int          unitID;
+    ItemID_enum  unitID;
     DropLocation dropLocation;
     int          droptime;
     bool         bRepeat;

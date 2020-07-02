@@ -22,18 +22,17 @@
 #include <FileClasses/GFXManager.h>
 #include <House.h>
 
-WOR::WOR(House* newOwner) : BuilderBase(newOwner) {
+WOR::WOR(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer) : BuilderBase(itemID, objectID, initializer) {
     WOR::init();
 
     setHealth(getMaxHealth());
 }
 
-WOR::WOR(InputStream& stream) : BuilderBase(stream) {
+WOR::WOR(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer) : BuilderBase(itemID, objectID, initializer) {
     WOR::init();
 }
 
 void WOR::init() {
-    itemID = Structure_WOR;
     owner->incrementStructures(itemID);
 
     structureSize.x = 2;

@@ -27,17 +27,17 @@
 #include <ScreenBorder.h>
 #include <SoundPlayer.h>
 
-Launcher::Launcher(House* newOwner) : TrackedUnit(newOwner) {
+Launcher::Launcher(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer) : TrackedUnit(itemID, objectID, initializer) {
     Launcher::init();
 
     setHealth(getMaxHealth());
 }
 
-Launcher::Launcher(InputStream& stream) : TrackedUnit(stream) {
+Launcher::Launcher(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer) : TrackedUnit(itemID, objectID, initializer) {
     Launcher::init();
 }
 void Launcher::init() {
-    itemID = Unit_Launcher;
+    assert(itemID == Unit_Launcher);
     owner->incrementUnits(itemID);
 
     graphicID = ObjPic_Tank_Base;
@@ -90,7 +90,7 @@ void Launcher::blitToScreen() {
 void Launcher::destroy() {
     if(currentGameMap->tileExists(location) && isVisible()) {
         Coord realPos(lround(realX), lround(realY));
-        Uint32 explosionID = currentGame->randomGen.getRandOf({Explosion_Medium1, Explosion_Medium2,Explosion_Flames});
+        Uint32 explosionID = currentGame->randomGen.getRandOf(Explosion_Medium1, Explosion_Medium2,Explosion_Flames);
         currentGame->addExplosion(explosionID, realPos, owner->getHouseID());
 
         if(isVisible(getOwner()->getTeamID()))

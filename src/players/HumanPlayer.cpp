@@ -85,7 +85,7 @@ void HumanPlayer::onDamage(const ObjectBase* pObject, int damage, Uint32 damager
     }
 }
 
-void HumanPlayer::onProduceItem(Uint32 itemID) {
+void HumanPlayer::onProduceItem(ItemID_enum itemID) {
     if(!settings.general.showTutorialHints || (currentGame->gameState != GameState::Running)) {
         return;
     }
@@ -172,7 +172,7 @@ void HumanPlayer::setGroupList(int groupListIndex, const Dune::selected_set_type
     }
 }
 
-void HumanPlayer::triggerStructureTutorialHint(Uint32 itemID) {
+void HumanPlayer::triggerStructureTutorialHint(ItemID_enum itemID) {
     if(alreadyShownTutorialHints & (1 << itemID)) {
         return;
     }

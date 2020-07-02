@@ -23,16 +23,20 @@
 class IX final : public StructureBase
 {
 public:
-    explicit IX(House* newOwner);
-    explicit IX(InputStream& stream);
-    void init();
+    static const ItemID_enum item_id = Structure_IX;
+
+    IX(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer);
+    IX(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer);
     ~IX() override;
 
     /**
         Can this structure be captured by infantry units?
         \return true, if this structure can be captured, false otherwise
     */
-    bool canBeCaptured() const override { return false; }
+    bool canBeCaptured() const noexcept override { return false; }
+
+private:
+    void init();
 };
 
 #endif //IX_H

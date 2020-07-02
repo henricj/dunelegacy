@@ -41,7 +41,7 @@
 #define SMOKEDELAY 30
 #define UNITIDLETIMER (GAMESPEED_DEFAULT *  315)  // about every 5s
 
-UnitBase::UnitBase(House* newOwner) : ObjectBase(newOwner) {
+UnitBase::UnitBase(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer) : ObjectBase(itemID, objectID, initializer) {
 
     UnitBase::init();
 
@@ -78,9 +78,11 @@ UnitBase::UnitBase(House* newOwner) : ObjectBase(newOwner) {
     deviationTimer = INVALID;
 }
 
-UnitBase::UnitBase(InputStream& stream) : ObjectBase(stream) {
+UnitBase::UnitBase(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer) : ObjectBase(itemID, objectID, initializer) {
 
     UnitBase::init();
+
+    auto& stream = initializer.Stream;
 
     stream.readBools(&goingToRepairYard, &pickedUp, &bFollow);
     guardPoint.x = stream.readSint32();
@@ -132,15 +134,10 @@ void UnitBase::init() {
     unitList.push_back(this);
 }
 
-UnitBase::~UnitBase() {
-    pathList.clear();
-    removeFromSelectionLists();
+UnitBase::~UnitBase() = default;
 
-    for(int i=0; i < NUMSELECTEDLISTS; i++) {
-        pLocalPlayer->getGroupList(i).erase(objectID);
-    }
+void UnitBase::cleanup(Game* game, HumanPlayer* humanPlayer, Map* map) {
 
-    currentGame->getObjectManager().removeObject(objectID);
 }
 
 void UnitBase::save(OutputStream& stream) const {
@@ -317,9 +314,9 @@ void UnitBase::deploy(const Coord& newLocation) {
             if(currentGameMap->getTile(location)->isSpiceBloom()) {
                 setHealth(0);
                 setVisible(VIS_ALL, false);
-                currentGameMap->getTile(location)->triggerSpiceBloom(getOwner());
+                currentGameMap->getTile(location)->triggerSpiceBloom(currentGame.get(), getOwner());
             } else if(currentGameMap->getTile(location)->isSpecialBloom()){
-                currentGameMap->getTile(location)->triggerSpecialBloom(getOwner());
+                currentGameMap->getTile(location)->triggerSpecialBloom(currentGame.get(), getOwner());
             }
         }
 
@@ -353,8 +350,6 @@ void UnitBase::destroy() {
             }
         }
     }
-
-    delete this;
 }
 
 void UnitBase::deviate(House* newOwner) {
@@ -362,7 +357,7 @@ void UnitBase::deviate(House* newOwner) {
     if(newOwner->getHouseID() == originalHouseID) {
         quitDeviation();
     } else {
-        removeFromSelectionLists();
+        currentGameMap->removeSelection(objectID);
         setTarget(nullptr);
         setGuardPoint(location);
         setDestination(location);
@@ -382,9 +377,6 @@ void UnitBase::deviate(House* newOwner) {
     } else{
         newOwner->informHasDamaged(Unit_Deviator, currentGame->objectData.data[getItemID()][static_cast<int>(newOwner->getHouseID())].price / 5);
     }
-
-
-
 }
 
 void UnitBase::drawSelectionBox() {
@@ -753,12 +745,12 @@ void UnitBase::idleAction() {
 void UnitBase::handleActionClick(int xPos, int yPos) {
     if(!respondable || !currentGameMap->tileExists(xPos, yPos)) return;
 
-    auto *const tile = currentGameMap->getTile(xPos,yPos);
-    auto *const game = currentGame;
+    auto* const game = currentGame.get();
 
-    if(tile->hasAnObject()) {
+    auto* const tempTarget = currentGameMap->tryGetObject(xPos, yPos);
+
+    if(tempTarget) {
         // attack unit/structure or move to structure
-        auto *const tempTarget = tile->getObject();
 
         const auto is_owner = tempTarget->getOwner()->getTeamID() == getOwner()->getTeamID();
         const auto cmd_type = is_owner ? CMDTYPE::CMD_UNIT_MOVE2OBJECT : CMDTYPE::CMD_UNIT_ATTACKOBJECT;
@@ -775,9 +767,9 @@ void UnitBase::handleActionClick(int xPos, int yPos) {
 void UnitBase::handleAttackClick(int xPos, int yPos) {
     if(respondable) {
         if(currentGameMap->tileExists(xPos, yPos)) {
-            if(currentGameMap->getTile(xPos,yPos)->hasAnObject()) {
+            auto* const tempTarget = currentGameMap->tryGetObject(xPos, yPos);
+            if(tempTarget) {
                 // attack unit/structure or move to structure
-                ObjectBase* tempTarget = currentGameMap->getTile(xPos,yPos)->getObject();
 
                 currentGame->getCommandManager().addCommand(Command(
                     pLocalPlayer->getPlayerID(), CMDTYPE::CMD_UNIT_ATTACKOBJECT, objectID, tempTarget->getObjectID()));
@@ -1082,10 +1074,6 @@ void UnitBase::setAngle(ANGLETYPE newAngle) {
 
 void UnitBase::setGettingRepaired() {
     if(target.getObjPointer() != nullptr && (target.getObjPointer()->getItemID() == Structure_RepairYard)) {
-        if(selected) {
-            removeFromSelectionLists();
-        }
-
         currentGameMap->removeObjectFromMap(getObjectID());
 
         static_cast<RepairYard*>(target.getObjPointer())->assignUnit(this);
@@ -1142,10 +1130,6 @@ void UnitBase::setLocation(int xPos, int yPos) {
 }
 
 void UnitBase::setPickedUp(UnitBase* newCarrier) {
-    if(selected) {
-        removeFromSelectionLists();
-    }
-
     currentGameMap->removeObjectFromMap(getObjectID());
 
     if(goingToRepairYard) {
@@ -1317,7 +1301,6 @@ void UnitBase::turnRight() {
 void UnitBase::quitDeviation() {
     if(wasDeviated()) {
         // revert back to real owner
-        removeFromSelectionLists();
         setTarget(nullptr);
         setGuardPoint(location);
         setDestination(location);
@@ -1366,13 +1349,13 @@ void UnitBase::updateVisibleUnits() {
     }
 
     auto* pTile = currentGameMap->getTile(location);
-    currentGame->forAllHouses([&](auto& house) {
+    currentGame->for_each_house([&](auto& house) {
         if(pTile->isExploredByHouse(house.getHouseID()) && (house.getTeamID() != getOwner()->getTeamID()) && (&house != getOwner())) {
             house.informDirectContactWithEnemy();
             getOwner()->informDirectContactWithEnemy();
         }
 
-        if(pTile->isExploredByTeam(house.getTeamID())) {
+        if(pTile->isExploredByTeam(currentGame.get(), house.getTeamID())) {
             if(house.getTeamID() == getOwner()->getTeamID()) {
                 house.informVisibleFriendlyUnit();
             } else {

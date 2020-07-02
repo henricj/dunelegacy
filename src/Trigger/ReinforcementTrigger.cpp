@@ -30,7 +30,7 @@
 #include <units/Carryall.h>
 
 
-ReinforcementTrigger::ReinforcementTrigger(HOUSETYPE houseID, Uint32 itemID, DropLocation location, bool bRepeat,
+ReinforcementTrigger::ReinforcementTrigger(HOUSETYPE houseID, ItemID_enum itemID, DropLocation location, bool bRepeat,
                                            Uint32 triggerCycleNumber)
  : Trigger(triggerCycleNumber), dropLocation(location), houseID(houseID), repeatCycle((bRepeat) ? triggerCycleNumber : 0) {
     droppedUnits.push_back(itemID);
@@ -38,7 +38,7 @@ ReinforcementTrigger::ReinforcementTrigger(HOUSETYPE houseID, Uint32 itemID, Dro
 
 ReinforcementTrigger::ReinforcementTrigger(InputStream& stream) : Trigger(stream)
 {
-    droppedUnits = stream.readUint32Vector();
+    droppedUnits = stream.readUint32Vector<ItemID_enum>();
     dropLocation = static_cast<DropLocation>(stream.readUint32());
     houseID = static_cast<HOUSETYPE>(stream.readSint32());
     repeatCycle = stream.readUint32();
@@ -99,7 +99,7 @@ void ReinforcementTrigger::trigger()
                 break;
             }
 
-            std::vector<Uint32> units2Drop = droppedUnits;
+            std::vector<ItemID_enum> units2Drop = droppedUnits;
 
             // try 30 times
             int r = 1;

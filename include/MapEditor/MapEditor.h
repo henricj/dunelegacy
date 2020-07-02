@@ -80,11 +80,11 @@ public:
          : mode(EditorMode_Terrain), terrainType(terrainType), pensize(pensize) {
         }
 
-        EditorMode(HOUSETYPE house, int itemID, int health)
+        EditorMode(HOUSETYPE house, ItemID_enum itemID, int health)
          : mode(EditorMode_Structure), house(house), itemID(itemID), health(health) {
         }
 
-        EditorMode(HOUSETYPE house, int itemID, int health, ANGLETYPE angle, ATTACKMODE attackmode)
+        EditorMode(HOUSETYPE house, ItemID_enum itemID, int health, ANGLETYPE angle, ATTACKMODE attackmode)
          : mode(EditorMode_Unit), house(house), itemID(itemID), health(health), angle(angle), attackmode(attackmode) {
         }
 
@@ -100,28 +100,29 @@ public:
         int             pensize = 0;
         HOUSETYPE       house = HOUSETYPE::HOUSE_HARKONNEN;
         ANGLETYPE       angle       = static_cast<ANGLETYPE>(0);
-        int             itemID      = 0;
+        ItemID_enum     itemID      = ItemID_enum::ItemID_Invalid;
         int             health = 0;
         ATTACKMODE      attackmode = ATTACKMODE_INVALID;
     };
 
     class Structure {
     public:
-        Structure(int id, HOUSETYPE house, int itemID, int health, Coord position)
+        Structure(int id, HOUSETYPE house, ItemID_enum itemID, int health, Coord position)
          : id(id), house(house), itemID(itemID), health(health), position(position) {
 
         }
 
         int             id;
         HOUSETYPE       house;
-        int             itemID;
+        ItemID_enum     itemID;
         int             health;
         Coord           position;
     };
 
     class Unit {
     public:
-        Unit(int id, HOUSETYPE house, int itemID, int health, Coord position, ANGLETYPE angle, ATTACKMODE attackmode)
+        Unit(int id, HOUSETYPE house, ItemID_enum itemID, int health, Coord position, ANGLETYPE angle,
+             ATTACKMODE attackmode)
          : id(id), house(house), itemID(itemID), health(health), position(position), angle(angle), attackmode(attackmode) {
 
         }
@@ -129,7 +130,7 @@ public:
         int             id;
         HOUSETYPE       house;
         ANGLETYPE       angle;
-        int             itemID;
+        ItemID_enum     itemID;
         int             health;
         Coord           position;
         ATTACKMODE      attackmode;
@@ -188,7 +189,7 @@ public:
     std::vector<Coord>& getSpiceFields() { return spiceFields; };
 
 
-    std::map<int,int>& getChoam() { return choam; };
+    std::map<ItemID_enum,int>& getChoam() { return choam; };
 
     std::vector<ReinforcementInfo>& getReinforcements() { return reinforcements; };
 
@@ -341,7 +342,7 @@ private:
     std::vector<Coord>              specialBlooms;  ///< only for classic maps
     std::vector<Coord>              spiceFields;    ///< only for classic maps
 
-    std::map<int,int>               choam;
+    std::map<ItemID_enum, int>      choam;
 
     std::vector<ReinforcementInfo>  reinforcements;
 

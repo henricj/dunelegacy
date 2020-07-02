@@ -20,19 +20,23 @@
 
 #include <structures/BuilderBase.h>
 
-class WOR : public BuilderBase
+class WOR final : public BuilderBase
 {
 public:
-    explicit WOR(House* newOwner);
-    explicit WOR(InputStream& stream);
-    void init();
+    static const ItemID_enum item_id = Structure_WOR;
+
+    WOR(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer);
+    WOR(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer);
     ~WOR() override;
 
     /**
         Can this structure be captured by infantry units?
         \return true, if this structure can be captured, false otherwise
     */
-    bool canBeCaptured() const override { return false; }
+    bool canBeCaptured() const noexcept override { return false; }
+
+private:
+    void init();
 };
 
 #endif //WOR_H

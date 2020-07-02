@@ -113,7 +113,7 @@ void SmartBot::onObjectWasBuilt(const ObjectBase* pObject) {
 }
 
 
-void SmartBot::onDecrementStructures(int itemID, const Coord& location) {
+void SmartBot::onDecrementStructures(ItemID_enum itemID, const Coord& location) {
 }
 
 
@@ -158,7 +158,7 @@ void SmartBot::scrambleUnitsAndDefend(const ObjectBase* pIntruder) {
         if(pUnit->isRespondable() && (pUnit->getOwner() == getHouse())) {
 
             if((pUnit->getAttackMode() != HUNT) && !pUnit->hasATarget()) {
-                Uint32 itemID = pUnit->getItemID();
+                ItemID_enum itemID = pUnit->getItemID();
                 if((itemID != Unit_Harvester) && (pUnit->getItemID() != Unit_MCV) && (pUnit->getItemID() != Unit_Carryall)
                     && (pUnit->getItemID() != Unit_Frigate) && (pUnit->getItemID() != Unit_Saboteur) && (pUnit->getItemID() != Unit_Sandworm)) {
 
@@ -183,7 +183,7 @@ void SmartBot::scrambleUnitsAndDefend(const ObjectBase* pIntruder) {
 }
 
 
-Coord SmartBot::findPlaceLocation(Uint32 itemID) {
+Coord SmartBot::findPlaceLocation(ItemID_enum itemID) {
     int structureSizeX = getStructureSize(itemID).x;
     int structureSizeY = getStructureSize(itemID).y;
 
@@ -350,20 +350,22 @@ Coord SmartBot::findPlaceLocation(Uint32 itemID) {
 int SmartBot::getNumAdjacentStructureTiles(Coord pos, int structureSizeX, int structureSizeY) {
     int numAdjacentStructureTiles = 0;
 
+    auto& map = getMap();
+
     for(int y = pos.y; y < pos.y + structureSizeY; y++) {
-        if(getMap().tileExists(pos.x-1, y) && getMap().getTile(pos.x-1, y)->hasAStructure()) {
+        if(map.hasAStructure(pos.x-1, y)) {
             numAdjacentStructureTiles++;
         }
-        if(getMap().tileExists(pos.x+structureSizeX, y) && getMap().getTile(pos.x+structureSizeX, y)->hasAStructure()) {
+        if(map.hasAStructure(pos.x+structureSizeX, y)) {
             numAdjacentStructureTiles++;
         }
     }
 
     for(int x = pos.x; x < pos.x + structureSizeX; x++) {
-        if(getMap().tileExists(x, pos.y-1) && getMap().getTile(x, pos.y-1)->hasAStructure()) {
+        if(map.hasAStructure(x, pos.y-1)) {
             numAdjacentStructureTiles++;
         }
-        if(getMap().tileExists(x, pos.y+structureSizeY) && getMap().getTile(x, pos.y+structureSizeY)->hasAStructure()) {
+        if(map.hasAStructure(x, pos.y+structureSizeY)) {
             numAdjacentStructureTiles++;
         }
     }
@@ -573,7 +575,7 @@ void SmartBot::build() {
                            && pBuilder->getProductionQueueSize() < 1
                            && pBuilder->getBuildListSize() > 0){
 
-                            Uint32 itemID = NONE_ID;
+                            auto itemID = ItemID_enum::ItemID_Invalid;
 
                             if(getHouse()->getNumItems(Structure_WindTrap) + buildQueue[Structure_WindTrap] < 1
                                && pBuilder->isAvailableToBuild(Structure_WindTrap)) {
@@ -672,7 +674,7 @@ void SmartBot::build() {
                                 itemID = Structure_RocketTurret;
                             }
 
-                            if(itemID != NONE_ID) {
+                            if(itemID != ItemID_enum::ItemID_Invalid) {
                                 Coord location = findPlaceLocation(itemID);
 
                                 if(location.isValid()) {
@@ -728,7 +730,7 @@ void SmartBot::build() {
 
                         if(pBuilder->isWaitingToPlace()) {
                             //find total region of possible placement and place in random ok position
-                            int itemID = pBuilder->getCurrentProducedItem();
+                            const auto itemID = pBuilder->getCurrentProducedItem();
                             Coord itemsize = getStructureSize(itemID);
 
                             //see if there is already a spot to put it stored

@@ -28,18 +28,18 @@
 #include <Game.h>
 #include <Map.h>
 
-RocketTurret::RocketTurret(House* newOwner) : TurretBase(newOwner) {
+RocketTurret::RocketTurret(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer) : TurretBase(itemID, objectID, initializer) {
     RocketTurret::init();
 
     ObjectBase::setHealth(getMaxHealth());
 }
 
-RocketTurret::RocketTurret(InputStream& stream) : TurretBase(stream) {
+RocketTurret::RocketTurret(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer) : TurretBase(itemID, objectID, initializer) {
     RocketTurret::init();
 }
 
 void RocketTurret::init() {
-    itemID = Structure_RocketTurret;
+    assert(itemID == Structure_RocketTurret);
     owner->incrementStructures(itemID);
 
     attackSound = Sound_Rocket;
@@ -74,8 +74,8 @@ void RocketTurret::attack() {
     auto *const pObject = target.getObjPointer();
     const auto targetCenterPoint = pObject->getClosestCenterPoint(location);
 
-    auto *game = currentGame;
-    auto *map = currentGameMap;
+    auto* const game = currentGame.get();
+    auto* const map = currentGameMap;
 
     if(distanceFrom(centerPoint, targetCenterPoint) < 3 * TILESIZE) {
         // we are just shooting a bullet as a gun turret would do

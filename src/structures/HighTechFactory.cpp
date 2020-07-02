@@ -23,18 +23,17 @@
 #include <House.h>
 #include <Game.h>
 
-HighTechFactory::HighTechFactory(House* newOwner) : BuilderBase(newOwner) {
+HighTechFactory::HighTechFactory(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer) : BuilderBase(itemID, objectID, initializer) {
     HighTechFactory::init();
 
     setHealth(getMaxHealth());
 }
 
-HighTechFactory::HighTechFactory(InputStream& stream) : BuilderBase(stream) {
+HighTechFactory::HighTechFactory(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer) : BuilderBase(itemID, objectID, initializer) {
     HighTechFactory::init();
 }
 
 void HighTechFactory::init() {
-    itemID = Structure_HighTechFactory;
     owner->incrementStructures(itemID);
 
     structureSize.x = 3;

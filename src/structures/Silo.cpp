@@ -24,18 +24,18 @@
 
 #include <GUI/ObjectInterfaces/RefineryAndSiloInterface.h>
 
-Silo::Silo(House* newOwner) : StructureBase(newOwner) {
+Silo::Silo(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer) : StructureBase(itemID, objectID, initializer) {
     Silo::init();
 
     setHealth(getMaxHealth());
 }
 
-Silo::Silo(InputStream& stream) : StructureBase(stream) {
+Silo::Silo(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer) : StructureBase(itemID, objectID, initializer) {
     Silo::init();
 }
 
 void Silo::init() {
-    itemID = Structure_Silo;
+    assert(itemID == Structure_Silo);
     owner->incrementStructures(itemID);
 
     structureSize.x = 2;

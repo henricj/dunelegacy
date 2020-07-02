@@ -23,10 +23,10 @@
 class Harvester final : public TrackedUnit
 {
 public:
+    static const ItemID_enum item_id = Unit_Harvester;
 
-    explicit Harvester(House* newOwner);
-    explicit Harvester(InputStream& stream);
-    void init();
+    Harvester(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer);
+    Harvester(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer);
     ~Harvester() override;
 
     void save(OutputStream& stream) const override;
@@ -64,6 +64,7 @@ public:
     bool isHarvesting() const;
 
 private:
+    void init();
 
     void setSpeeds() override;
 

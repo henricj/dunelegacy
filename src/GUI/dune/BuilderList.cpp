@@ -452,7 +452,7 @@ int BuilderList::getButton(int x, int y) const {
     return -1;
 }
 
-int BuilderList::getItemIDFromIndex(int i) const {
+ItemID_enum BuilderList::getItemIDFromIndex(int i) const {
 
     if (i >= 0) {
         auto *const pBuilder = dynamic_cast<BuilderBase*>(currentGame->getObjectManager().getObject(builderObjectID));

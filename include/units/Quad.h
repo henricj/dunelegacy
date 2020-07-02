@@ -23,9 +23,10 @@
 class Quad final : public GroundUnit
 {
 public:
-    explicit Quad(House* newOwner);
-    explicit Quad(InputStream& stream);
-    void init();
+    static const ItemID_enum item_id = Unit_Quad;
+
+    Quad(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer);
+    Quad(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer);
     ~Quad() override;
 
     void playAttackSound() override;
@@ -33,6 +34,9 @@ public:
     void destroy() override;
 
     bool hasBumpyMovementOnRock() const override { return true; }
+
+private:
+    void init();
 };
 
 #endif //QUAD_H

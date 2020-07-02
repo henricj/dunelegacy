@@ -25,9 +25,10 @@
 class Sandworm final : public GroundUnit
 {
 public:
-    explicit Sandworm(House* newOwner);
-    explicit Sandworm(InputStream& stream);
-    void init();
+    static const ItemID_enum item_id = Unit_Sandworm;
+
+    Sandworm(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer);
+    Sandworm(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer);
     ~Sandworm() override;
 
     void save(OutputStream& stream) const override;
@@ -84,6 +85,8 @@ protected:
     bool sleepOrDie();
 
 private:
+    void init();
+
     // sandworm state
     Sint32      kills;                      ///< How many units does this sandworm alreay killed?
     Sint32      attackFrameTimer;           ///< When to show the next attack frame

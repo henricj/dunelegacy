@@ -22,11 +22,12 @@
 
 class TankBase : public TrackedUnit
 {
+protected:
+    TankBase(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer);
+    TankBase(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer);
+
 public:
-    explicit TankBase(House* newOwner);
-    explicit TankBase(InputStream& stream);
-    void init();
-    ~TankBase() override;
+    ~TankBase() override = 0;
 
     TankBase(const TankBase &) = delete;
     TankBase(TankBase &&) = delete;
@@ -68,6 +69,9 @@ protected:
     // drawing information
     zoomable_texture turretGraphic{};   ///< The turret graphic
     int              gunGraphicID = -1; ///< The id of the turret graphic (needed if we want to reload the graphic)
+
+private:
+    void init();
 };
 
 #endif // TANKBASE_H

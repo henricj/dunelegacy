@@ -28,12 +28,12 @@
 #include <Map.h>
 #include <Game.h>
 
-TrackedUnit::TrackedUnit(House* newOwner) : GroundUnit(newOwner)
+TrackedUnit::TrackedUnit(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer) : GroundUnit(itemID, objectID, initializer)
 {
     TrackedUnit::init();
 }
 
-TrackedUnit::TrackedUnit(InputStream& stream) : GroundUnit(stream)
+TrackedUnit::TrackedUnit(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer) : GroundUnit(itemID, objectID, initializer)
 {
     TrackedUnit::init();
 }
@@ -55,7 +55,7 @@ void TrackedUnit::checkPos()
     GroundUnit::checkPos();
 
     if(active && justStoppedMoving)
-        currentGameMap->getTile(location.x, location.y)->squash();
+        currentGameMap->getTile(location.x, location.y)->squash(currentGame->getObjectManager());
 }
 
 bool TrackedUnit::canPassTile(const Tile* pTile) const {

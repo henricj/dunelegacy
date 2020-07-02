@@ -20,16 +20,18 @@
 
 #include <structures/StructureBase.h>
 
-class Silo final : public StructureBase
-{
+class Silo final : public StructureBase {
 public:
-    explicit Silo(House* newOwner);
-    explicit Silo(InputStream& stream);
-    void init();
+    static const ItemID_enum item_id = Structure_Silo;
+
+    Silo(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer);
+    Silo(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer);
     ~Silo() override;
 
     ObjectInterface* getInterfaceContainer() override;
 
+private:
+    void init();
 };
 
-#endif //SILO_H
+#endif // SILO_H

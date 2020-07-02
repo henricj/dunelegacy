@@ -20,12 +20,12 @@
 
 #include <structures/TurretBase.h>
 
-class RocketTurret final : public TurretBase
-{
+class RocketTurret final : public TurretBase {
 public:
-    explicit RocketTurret(House* newOwner);
-    explicit RocketTurret(InputStream& stream);
-    void init();
+    static const ItemID_enum item_id = Structure_RocketTurret;
+
+    RocketTurret(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer);
+    RocketTurret(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer);
     ~RocketTurret() override;
 
     bool canAttack(const ObjectBase* object) const override;
@@ -40,6 +40,7 @@ protected:
     void updateStructureSpecificStuff() override;
 
 private:
+    void init();
 };
 
-#endif //ROCKETTURRET_H
+#endif // ROCKETTURRET_H

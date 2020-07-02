@@ -38,6 +38,13 @@ Map::Map(int xSize, int ySize)
 
     tiles.resize(sizeX * sizeY);
 
+    if(currentGame->getGameInitSettings().getGameOptions().startWithExploredMap) {
+        this->for_all([](auto& tile) {
+            for(auto h = 0; h < NUM_TEAMS; ++h)
+                tile.setExplored(static_cast<HOUSETYPE>(h), true);
+        });
+    }
+
     init_tile_location();
     init_box_sets();
 }
@@ -60,12 +67,12 @@ void Map::load(InputStream& stream) {
     init_tile_location();
 }
 
-void Map::save(OutputStream& stream) const {
+void Map::save(OutputStream& stream, Uint32 gameCycleCount) const {
     stream.writeSint32(sizeX);
     stream.writeSint32(sizeY);
 
     for (const auto & tile : tiles)
-        tile.save(stream);
+        tile.save(stream, gameCycleCount);
 }
 
 void Map::init_tile_location() {
@@ -230,14 +237,14 @@ void Map::damage(Uint32 damagerID, House* damagerOwner, const Coord& realPos, Ui
 
             if(pTile
                 && ((bulletID == Bullet_Rocket) || (bulletID == Bullet_TurretRocket) || (bulletID == Bullet_SmallRocket) || (bulletID == Bullet_LargeRocket))
-                && (!pTile->hasAGroundObject() || !pTile->getGroundObject()->isAStructure()) )
+                && (!pTile->hasAGroundObject() || !pTile->getGroundObject(currentGame->getObjectManager())->isAStructure()) )
             {
                 const auto type = pTile->getType();
 
                 if(((type == TERRAINTYPE::Terrain_Rock) && (pTile->getTerrainTile() == Tile::TERRAINTILETYPE::TerrainTile_RockFull)) ||
                    (type == TERRAINTYPE::Terrain_Slab)) {
                     if(type == TERRAINTYPE::Terrain_Slab) {
-                        pTile->setType(TERRAINTYPE::Terrain_Rock);
+                        pTile->setType(currentGame.get(), TERRAINTYPE::Terrain_Rock);
                         pTile->setDestroyedStructureTile(Destroyed1x1Structure);
                         pTile->setOwner(static_cast<HOUSETYPE>(NONE_ID));
                     }
@@ -265,7 +272,7 @@ void Map::damage(Uint32 damagerID, House* damagerOwner, const Coord& realPos, Ui
         auto *const tile = tryGetTile(location.x, location.y);
 
         if (tile && tile->isSpiceBloom()) {
-            tile->triggerSpiceBloom(damagerOwner);
+            tile->triggerSpiceBloom(currentGame.get(), damagerOwner);
         }
     }
 }
@@ -290,7 +297,7 @@ bool Map::isAStructureGap(int x, int y, int buildingSizeX, int buildingSizeY) co
 
     // I need some more conditions to make it ignore units
     const auto predicate = [](const Tile * tile) {
-        return !tile || (tile->hasAStructure() && !tile->isConcrete());
+        return !tile || (tile->hasAStructure(currentGame->getObjectManager()) && !tile->isConcrete());
     };
 
     //Corners are ok as units can get through
@@ -504,6 +511,8 @@ void Map::removeObjectFromMap(Uint32 objectID) {
     // whole map.
     for (auto& tile : tiles)
         tile.unassignObject(objectID);
+
+    removedObjects.push(objectID);
 }
 
 void Map::selectObjects(const House* pHouse, int x1, int y1, int x2, int y2, int realX, int realY, bool objectARGMode) {
@@ -524,8 +533,8 @@ void Map::selectObjects(const House* pHouse, int x1, int y1, int x2, int y2, int
         if (!tile_center)
             return;
 
-        if(tile_center->isExploredByTeam(pHouse->getTeamID()) || debug) {
-            lastCheckedObject = tile_center->getObjectAt(realX, realY);
+        if(tile_center->isExploredByTeam(currentGame.get(), pHouse->getTeamID()) || debug) {
+            lastCheckedObject = tile_center->getObjectAt(currentGame->getObjectManager(), realX, realY);
         } else {
             lastCheckedObject = nullptr;
         }
@@ -537,7 +546,7 @@ void Map::selectObjects(const House* pHouse, int x1, int y1, int x2, int y2, int
                         auto *const tile = tryGetTile(i, j);
 
                         if (tile && tile->hasAnObject()) {
-                            tile->selectAllPlayersUnitsOfType(pHouse->getHouseID(), lastSinglySelectedObject->getItemID(), &lastCheckedObject, &lastSelectedObject);
+                            tile->selectAllPlayersUnitsOfType(currentGame.get(), pHouse->getHouseID(), lastSinglySelectedObject->getItemID(), &lastCheckedObject, &lastSelectedObject);
                         }
                     }
                 }
@@ -568,8 +577,8 @@ void Map::selectObjects(const House* pHouse, int x1, int y1, int x2, int y2, int
             for(auto j = std::min(y1, y2); j <= std::max(y1, y2); j++) {
                 auto *const tile = tryGetTile(i, j);
 
-                if (tile && tile->hasAnObject() && tile->isExploredByTeam(pHouse->getTeamID()) && !tile->isFoggedByTeam(pHouse->getTeamID())) {
-                    tile->selectAllPlayersUnits(pHouse->getHouseID(), &lastCheckedObject, &lastSelectedObject);
+                if (tile && tile->hasAnObject() && tile->isExploredByTeam(currentGame.get(), pHouse->getTeamID()) && !tile->isFoggedByTeam(currentGame.get(), pHouse->getTeamID())) {
+                    tile->selectAllPlayersUnits(currentGame.get(), pHouse->getHouseID(), &lastCheckedObject, &lastSelectedObject);
                 }
             }
         }
@@ -613,7 +622,7 @@ void Map::spiceRemoved(const Coord& coord) {
     //only check tile right, up, left and down of this one
     for_each_neighbor(coord.x, coord.y, [](Tile& t) {
         if (t.isThickSpice())
-            t.setType(Terrain_Spice);
+            t.setType(currentGame.get(), Terrain_Spice);
     });
 }
 
@@ -659,7 +668,7 @@ void Map::createSpiceField(Coord location, int radius, bool centerIsThickSpice) 
                 const auto terrain = centerIsThickSpice && (t.location == location)
                     ? Terrain_ThickSpice : Terrain_Spice;
 
-                t.setType(terrain);
+                t.setType(currentGame.get(), terrain);
             }
         });
 }

@@ -70,19 +70,19 @@ public:
         \param  itemID      the structure that was destroyed
         \param  location    the location the building was located
     */
-    virtual void onDecrementStructures(int itemID, const Coord& location) { }
+    virtual void onDecrementStructures(ItemID_enum itemID, const Coord& location) { }
 
     /**
         Notifies that a unit of type itemID was destroyed.
         \param  itemID      the unit that was destroyed
     */
-    virtual void onDecrementUnits(int itemID) { }
+    virtual void onDecrementUnits(ItemID_enum itemID) { }
 
     /**
         Notifies that an enemy unit of type itemID was destroyed.
         \param  itemID      the enemy unit that was destroyed
     */
-    virtual void onIncrementUnitKills(int itemID) { }
+    virtual void onIncrementUnitKills(ItemID_enum itemID) { }
     /**
         An object was hit by something or damaged somehow else.
         \param  pObject     the object that was damaged
@@ -156,14 +156,14 @@ protected:
         \param  pBuilder        the structure to build in
         \param  itemID          the item to produce
     */
-    void doProduceItem(const BuilderBase* pBuilder, Uint32 itemID) const;
+    void doProduceItem(const BuilderBase* pBuilder, ItemID_enum itemID) const;
 
     /**
         Cancel production of the specified item in pBuilder.
         \param  pBuilder        the structure to build in
         \param  itemID          the item to cancel
     */
-    void doCancelItem(const BuilderBase* pBuilder, Uint32 itemID) const;
+    void doCancelItem(const BuilderBase* pBuilder, ItemID_enum itemID) const;
 
     /**
         Sets the currently in pBuilder produced item on hold or continues production.

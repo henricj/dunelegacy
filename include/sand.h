@@ -31,15 +31,15 @@ extern SDL_Renderer* renderer;
 
 void drawCursor();
 
-std::string     resolveItemName(int itemID);
+std::string     resolveItemName(ItemID_enum itemID);
 
 int             getAnimByFilename(const std::string& filename);
 
-Coord           getStructureSize(int itemID);
+Coord           getStructureSize(ItemID_enum itemID);
 
-Uint32          getItemIDByName(const std::string& name);
-std::string     getItemNameByID(Uint32 itemID);
-SDL_Texture*    resolveItemPicture(int itemID, HOUSETYPE house = HOUSETYPE::HOUSE_HARKONNEN);
+ItemID_enum     getItemIDByName(const std::string& name);
+std::string     getItemNameByID(ItemID_enum itemID);
+SDL_Texture*    resolveItemPicture(ItemID_enum itemID, HOUSETYPE house = HOUSETYPE::HOUSE_HARKONNEN);
 
 HOUSETYPE       getHouseByName(const std::string& name);
 std::string     getHouseNameByNumber(HOUSETYPE house);

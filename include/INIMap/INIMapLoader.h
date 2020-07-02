@@ -39,8 +39,8 @@ public:
     INIMapLoader(Game* pGame, const std::filesystem::path& mapname, const std::string& mapdata = "");
     ~INIMapLoader();
 
+    std::unique_ptr<Map> load();
 private:
-    void load();
     void loadMap();
     void loadHouses();
     void loadChoam();
@@ -54,6 +54,8 @@ private:
     HOUSETYPE getHouseID(const std::string& name);
 
     Game* pGame;
+    std::unique_ptr<Map> map;
+
     std::map<std::string, HOUSETYPE> housename2house;
 };
 

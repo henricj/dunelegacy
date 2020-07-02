@@ -23,18 +23,18 @@
 #include <House.h>
 #include <Game.h>
 
-HeavyFactory::HeavyFactory(House* newOwner) : BuilderBase(newOwner) {
+HeavyFactory::HeavyFactory(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer) : BuilderBase(itemID, objectID, initializer) {
     HeavyFactory::init();
 
     ObjectBase::setHealth(getMaxHealth());
 }
 
-HeavyFactory::HeavyFactory(InputStream& stream) : BuilderBase(stream) {
+HeavyFactory::HeavyFactory(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer) : BuilderBase(itemID, objectID, initializer) {
     HeavyFactory::init();
 }
 
 void HeavyFactory::init() {
-    itemID = Structure_HeavyFactory;
+    assert(itemID == Structure_HeavyFactory);
     owner->incrementStructures(itemID);
 
     structureSize.x = 3;
@@ -57,7 +57,7 @@ void HeavyFactory::doBuildRandom() {
     }
 
     if(!buildList.empty()) {
-        int item2Produce = ItemID_Invalid;
+        auto item2Produce = ItemID_Invalid;
 
         do {
             item2Produce = std::next(buildList.begin(), currentGame->randomGen.rand(0, static_cast<Sint32>(buildList.size())-1))->itemID;

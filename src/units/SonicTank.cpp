@@ -28,18 +28,18 @@
 #include <SoundPlayer.h>
 
 
-SonicTank::SonicTank(House* newOwner) : TrackedUnit(newOwner) {
+SonicTank::SonicTank(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer) : TrackedUnit(itemID, objectID, initializer) {
     SonicTank::init();
 
     setHealth(getMaxHealth());
 }
 
-SonicTank::SonicTank(InputStream& stream) : TrackedUnit(stream) {
+SonicTank::SonicTank(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer) : TrackedUnit(itemID, objectID, initializer) {
     SonicTank::init();
 }
 
 void SonicTank::init() {
-    itemID = Unit_SonicTank;
+    assert(itemID == Unit_SonicTank);
     owner->incrementUnits(itemID);
 
     numWeapons = 1;

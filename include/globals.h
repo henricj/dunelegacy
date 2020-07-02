@@ -75,7 +75,7 @@ extern std::unique_ptr<TextManager>         pTextManager;               ///< man
 extern std::unique_ptr<NetworkManager>      pNetworkManager;            ///< manager for all network events (nullptr if not in multiplayer game)
 
 // game stuff
-extern Game*                currentGame;                ///< the current running game
+extern std::unique_ptr<Game>         currentGame;                ///< the current running game
 extern std::unique_ptr<ScreenBorder> screenborder;               ///< the screen border for the current running game
 extern Map*                 currentGameMap;             ///< the map for the current running game
 extern House*               pLocalHouse;                ///< the house of the human player that is playing the current running game on this computer

@@ -150,7 +150,7 @@ public:
         explosionList.emplace_back(std::make_unique<Explosion>(std::forward<Args>(args)...));
     }
 
-    int getHouseIndex(HOUSETYPE houseID) {
+    int getHouseIndex(HOUSETYPE houseID) const {
         const auto int_house = static_cast<int>(houseID);
 
         if(int_house < 0 || int_house >= house.size())
@@ -164,18 +164,30 @@ public:
         \param  houseID the id of the house to return
         \return the house with id houseID
     */
-    House* getHouse(HOUSETYPE houseID) {
+    House* getHouse(HOUSETYPE houseID) const {
         const auto int_house = getHouseIndex(houseID);
 
         return house[int_house].get();
     }
 
     template<typename F>
-    void forAllHouses(F&& f) const {
-        for (auto& h : house) {
-            if (h) f(*h.get());
+    void for_each_house(F&& f) const {
+        for(const auto& h : house) {
+            if(h) f(*h.get());
         }
     }
+
+    template<typename F>
+    House* house_find_if(F&& predicate) {
+        for(auto& h : house) {
+            if(h) {
+                if(predicate(*h.get())) return h.get();
+            }
+        }
+        return nullptr;
+    }
+
+    Map* getMap() { return map ? map.get() : currentGameMap; }
 
     /**
         The current game is finished and the local house has won
@@ -244,7 +256,7 @@ public:
         \param stream   the stream to write to
         \param obj      the object to be saved
     */
-    void saveObject(OutputStream& stream, ObjectBase* obj) const;
+    static void saveObject(OutputStream& stream, ObjectBase* obj);
 
     /**
         This method loads an object from the stream.
@@ -252,9 +264,10 @@ public:
         \param objectID the object id that this unit/structure should get
         \return the read unit/structure
     */
-    ObjectBase* loadObject(InputStream& stream, Uint32 objectID) const;
+    static std::unique_ptr<ObjectBase> loadObject(InputStream& stream, Uint32 objectID);
 
     ObjectManager& getObjectManager() noexcept { return objectManager; };
+    const ObjectManager& getObjectManager() const noexcept { return objectManager; };
     GameInterface& getGameInterface() const noexcept { return *pInterface; };
 
     const GameInitSettings& getGameInitSettings() const noexcept { return gameInitSettings; };
@@ -535,6 +548,9 @@ private:
     */
     int getGameSpeed() const;
 
+    bool removeFromSelectionLists(ObjectBase* pObject);
+    void removeFromQuickSelectionLists(Uint32 objectID);
+
 public:
     enum {
         CursorMode_Normal,
@@ -601,6 +617,8 @@ private:
     CommandManager      cmdManager;             ///< This is the manager for all the game commands (e.g. moving a unit)
 
     TriggerManager      triggerManager;         ///< This is the manager for all the triggers the scenario has (e.g. reinforcements)
+
+    std::unique_ptr<Map> map;
 
     bool    bQuitGame = false;                  ///< Should the game be quited after this game tick
     bool    bPause = false;                     ///< Is the game currently halted

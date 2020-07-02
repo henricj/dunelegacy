@@ -335,7 +335,7 @@ void INIMapEditorLoader::loadChoam()
     for(const INIFile::Key& key : inifile->getSection("CHOAM")) {
         std::string UnitStr = key.getKeyName();
 
-        Uint32 unitID = getItemIDByName(UnitStr);
+        auto unitID = getItemIDByName(UnitStr);
         if((unitID == ItemID_Invalid) || !isUnit(unitID)) {
             logWarning(key.getLineNumber(), "Invalid unit string: '" + UnitStr + "'");
             continue;
@@ -398,7 +398,7 @@ void INIMapEditorLoader::loadUnits()
             auto angle = normalizeAngle(static_cast<ANGLETYPE>(int_angle));
 
 
-            int itemID = getItemIDByName(UnitStr);
+            ItemID_enum itemID = getItemIDByName(UnitStr);
             if((itemID == ItemID_Invalid) || !isUnit(itemID)) {
                 logWarning(key.getLineNumber(), "Invalid unit string: '" + UnitStr + "'!");
                 continue;
@@ -473,7 +473,7 @@ void INIMapEditorLoader::loadStructures()
                 continue;
             }
 
-            int itemID = getItemIDByName(BuildingStr);
+            ItemID_enum itemID = getItemIDByName(BuildingStr);
 
             if((itemID == Structure_Slab1) || (itemID == Structure_Slab4) || (itemID == Structure_Wall)) {
                 pMapEditor->structures.emplace_back(genID, houseID, itemID, 256, Coord(getXPos(pos),getYPos(pos)));
@@ -512,7 +512,7 @@ void INIMapEditorLoader::loadStructures()
                 iHealth = 256;
             }
 
-            int itemID = getItemIDByName(BuildingStr);
+            ItemID_enum itemID = getItemIDByName(BuildingStr);
 
             if((itemID == ItemID_Invalid) || !isStructure(itemID)) {
                 logWarning(key.getLineNumber(), "Invalid building string: '" + BuildingStr + "'!");
@@ -559,7 +559,7 @@ void INIMapEditorLoader::loadReinforcements()
             continue;
         }
 
-        Uint32 unitID = getItemIDByName(strUnitName);
+        auto unitID = getItemIDByName(strUnitName);
         if((unitID == ItemID_Invalid) || !isUnit(unitID)) {
             logWarning(key.getLineNumber(), "Invalid unit string: '" + strUnitName + "'!");
             continue;

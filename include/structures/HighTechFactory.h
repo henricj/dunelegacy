@@ -20,13 +20,16 @@
 
 #include <structures/BuilderBase.h>
 
-class HighTechFactory final : public BuilderBase
-{
+class HighTechFactory final : public BuilderBase {
 public:
-    explicit HighTechFactory(House* newOwner);
-    explicit HighTechFactory(InputStream& stream);
-    void init();
+    static const ItemID_enum item_id = ItemID_enum::Structure_HighTechFactory;
+
+    HighTechFactory(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer);
+    HighTechFactory(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer);
     ~HighTechFactory() override;
+
+private:
+    void init();
 };
 
-#endif //HIGHTECHFACTORY_H
+#endif // HIGHTECHFACTORY_H

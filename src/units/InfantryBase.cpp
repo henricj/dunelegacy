@@ -36,7 +36,7 @@
 Coord tilePositionOffset[5] = { Coord(0,0), Coord(-TILESIZE/4,-TILESIZE/4), Coord(TILESIZE/4,-TILESIZE/4), Coord(-TILESIZE/4,TILESIZE/4), Coord(TILESIZE/4,TILESIZE/4)};
 
 
-InfantryBase::InfantryBase(House* newOwner) : GroundUnit(newOwner) {
+InfantryBase::InfantryBase(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer) : GroundUnit(itemID, objectID, initializer) {
 
     InfantryBase::init();
 
@@ -46,9 +46,11 @@ InfantryBase::InfantryBase(House* newOwner) : GroundUnit(newOwner) {
     oldTilePosition = INVALID_POS;
 }
 
-InfantryBase::InfantryBase(InputStream& stream) : GroundUnit(stream) {
+InfantryBase::InfantryBase(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer) : GroundUnit(itemID, objectID, initializer) {
 
     InfantryBase::init();
+
+    auto& stream = initializer.Stream;
 
     tilePosition = stream.readSint8();
     oldTilePosition = stream.readSint8();
@@ -71,17 +73,14 @@ void InfantryBase::save(OutputStream& stream) const {
 
 void InfantryBase::handleCaptureClick(int xPos, int yPos) {
     if(respondable && ((getItemID() == Unit_Soldier) || (getItemID() == Unit_Trooper))) {
-        if (currentGameMap->tileExists(xPos, yPos)) {
-            if (currentGameMap->getTile(xPos,yPos)->hasAnObject()) {
-                // capture structure
-                ObjectBase* tempTarget = currentGameMap->getTile(xPos,yPos)->getObject();
+        const auto* const tempTarget = currentGameMap->tryGetObject(xPos, yPos);
 
-                currentGame->getCommandManager().addCommand(Command(
-                    pLocalPlayer->getPlayerID(), CMDTYPE::CMD_INFANTRY_CAPTURE, objectID, tempTarget->getObjectID()));
-            }
-        }
+        if(!tempTarget) return;
+
+        // capture structure
+        currentGame->getCommandManager().addCommand(Command(
+            pLocalPlayer->getPlayerID(), CMDTYPE::CMD_INFANTRY_CAPTURE, objectID, tempTarget->getObjectID()));
     }
-
 }
 
 void InfantryBase::doCaptureStructure(Uint32 targetStructureID) {
@@ -103,7 +102,7 @@ void InfantryBase::doCaptureStructure(const StructureBase* pStructure) {
 void InfantryBase::assignToMap(const Coord& pos) {
     if(currentGameMap->tileExists(pos)) {
         oldTilePosition = tilePosition;
-        tilePosition = currentGameMap->getTile(pos)->assignInfantry(getObjectID());
+        tilePosition = currentGameMap->getTile(pos)->assignInfantry(currentGame->getObjectManager(), getObjectID());
         currentGameMap->viewMap(owner->getHouseID(), pos, getViewRange());
     }
 }
@@ -139,22 +138,17 @@ bool InfantryBase::canPassTile(const Tile* pTile) const {
             passable = true;
         } else {
             /* if this unit is infantry so can climb, and tile can take more infantry */
-            if(pTile->infantryNotFull()) {
-                passable = true;
-            }
+            if(pTile->infantryNotFull()) { passable = true; }
         }
     } else {
-        auto *const object = pTile->getGroundObject();
+        auto* const object = pTile->getGroundObject(currentGame->getObjectManager());
 
-        if((object != nullptr) && (object->getObjectID() == target.getObjectID())
-            && object->isAStructure()
-            && (object->getOwner()->getTeamID() != owner->getTeamID())
-            && object->isVisible(getOwner()->getTeamID())) {
+        if((object != nullptr) && (object->getObjectID() == target.getObjectID()) && object->isAStructure() &&
+           (object->getOwner()->getTeamID() != owner->getTeamID()) && object->isVisible(getOwner()->getTeamID())) {
             passable = true;
         } else {
-            passable = (!pTile->hasANonInfantryGroundObject()
-                        && (pTile->infantryNotFull()
-                        && (pTile->getInfantryTeam() == getOwner()->getTeamID())));
+            passable = (!pTile->hasANonInfantryGroundObject() &&
+                        (pTile->infantryNotFull() && (pTile->getInfantryTeam(currentGame->getObjectManager()) == getOwner()->getTeamID())));
         }
     }
 
@@ -175,9 +169,9 @@ void InfantryBase::checkPos() {
 
     if(currentGameMap->getTile(location)->isSpiceBloom()) {
         setHealth(0);
-        currentGameMap->getTile(location)->triggerSpiceBloom(getOwner());
+        currentGameMap->getTile(location)->triggerSpiceBloom(currentGame.get(), getOwner());
     } else if(currentGameMap->getTile(location)->isSpecialBloom()){
-        currentGameMap->getTile(location)->triggerSpecialBloom(getOwner());
+        currentGameMap->getTile(location)->triggerSpecialBloom(currentGame.get(), getOwner());
     }
 
     auto *const object = target.getObjPointer();
@@ -193,7 +187,7 @@ void InfantryBase::checkPos() {
             StructureBase* pCapturedStructure = target.getStructurePointer();
             if (pCapturedStructure->getHealthColor() == COLOR_RED) {
                 House* pOwner = pCapturedStructure->getOwner();
-                int targetID = pCapturedStructure->getItemID();
+                auto targetID = pCapturedStructure->getItemID();
                 int posX = pCapturedStructure->getX();
                 int posY = pCapturedStructure->getY();
                 const auto origHouse = pCapturedStructure->getOriginalHouseID();
@@ -222,7 +216,7 @@ void InfantryBase::checkPos() {
                     }
                 }
 
-                Uint32 containedUnitID = NONE_ID;
+                auto containedUnitID = ItemID_enum::ItemID_Invalid;
                 FixPoint containedUnitHealth = 0;
                 FixPoint containedHarvesterSpice = 0;
                 if (pContainedUnit != nullptr) {
@@ -262,7 +256,7 @@ void InfantryBase::checkPos() {
 
                 // destroy captured structure ...
                 pCapturedStructure->setHealth(0);
-                delete pCapturedStructure;
+                currentGame->getObjectManager().removeObject(pCapturedStructure->getObjectID());
 
                 // ... and create a new one
                 StructureBase* pNewStructure = owner->placeStructure(NONE_ID, targetID, posX, posY, false, true);
@@ -338,7 +332,7 @@ void InfantryBase::destroy() {
         auto *pTile = currentGameMap->getTile(location);
 
         if(pTile->hasANonInfantryGroundObject()) {
-            if(pTile->getNonInfantryGroundObject()->isAUnit()) {
+            if(pTile->getNonInfantryGroundObject(currentGame->getObjectManager())->isAUnit()) {
                 // squashed
                 pTile->assignDeadUnit( currentGame->randomGen.randBool() ? DeadUnit_Infantry_Squashed1 : DeadUnit_Infantry_Squashed2,
                                             owner->getHouseID(),
