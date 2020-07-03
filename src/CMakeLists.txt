@@ -545,7 +545,7 @@ set(LIBS
 
 if(WIN32)
 	list(APPEND LIBS shlwapi ws2_32)
-	list(APPEND SOURCES ../IDE/VC/DuneLegacy.exe.manifest ../resource.rc)
+	list(APPEND SOURCES ../IDE/VC/DuneLegacy.exe.manifest ../resource.rc fixmath/fixmath.natvis)
 endif()
 
 
