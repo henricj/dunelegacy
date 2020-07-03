@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<AutoVisualizer xmlns="http://schemas.microsoft.com/vstudio/debugger/natvis/2010">
+  <Type Name="FixPoint32">
+    <!-- For some reason, VS simply ignores the DisplayString -->
+    <!--<DisplayString>{{ value={(double)value / fix32_one} }}</DisplayString>-->
+    <Expand>
+      <Item Name="value">(double)value / fix32_one</Item>
+    </Expand>
+  </Type>
+</AutoVisualizer>
