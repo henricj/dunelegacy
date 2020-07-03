@@ -43,8 +43,8 @@ static const fix32_t fix32_one = 0x0000000100000000ULL;     /*!< fix32_t value o
  * These are inlined to allow compiler to optimize away constant numbers
  */
 static inline fix32_t fix32_from_int(int a)     { return a * fix32_one; }
-static inline float   fix32_to_float(fix32_t a) { return (float)a / fix32_one; }
-static inline double  fix32_to_dbl(fix32_t a)   { return (double)a / fix32_one; }
+static inline float   fix32_to_float(fix32_t a) { return a * (1.0f / fix32_one); }
+static inline double  fix32_to_dbl(fix32_t a)   { return a * (1.0  / fix32_one); }
 #ifdef __libfixmath_fix16_h__
 static inline fix32_t fix32_from_fix16(fix16_t a)     { if(a == fix16_overflow) { return fix32_overflow; } else { return ((fix32_t) a) << 16; } }
 static inline fix16_t fix16_from_fix32(fix32_t a)     { fix32_t tmp = a >> 16; if(tmp > fix16_maximum || tmp < fix16_minimum) { tmp = fix16_overflow; } return (fix16_t) tmp; }
