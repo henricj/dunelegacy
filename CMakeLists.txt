@@ -75,6 +75,10 @@ endif()
 add_subdirectory(external)
 add_subdirectory(src)
 
+enable_testing()
+
+add_subdirectory(tests)
+
 message(STATUS "          CMAKE_C_FLAGS: ${CMAKE_C_FLAGS}")
 message(STATUS "        CMAKE_CXX_FLAGS: ${CMAKE_CXX_FLAGS}")
 message(STATUS "   VCPKG_TARGET_TRIPLET: ${VCPKG_TARGET_TRIPLET}")

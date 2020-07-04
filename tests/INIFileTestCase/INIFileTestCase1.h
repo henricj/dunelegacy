@@ -1,41 +1,33 @@
 
 #include <FileClasses/INIFile.h>
 
-#include <cppunit/extensions/HelperMacros.h>
+#ifdef COLOR_DEFAULT
+#    undef COLOR_DEFAULT
+#endif
 
-class INIFileTestCase1: public CppUnit::TestFixture  {
+#ifdef COLOR_RED
+#    undef COLOR_RED
+#endif
 
-	CPPUNIT_TEST_SUITE(INIFileTestCase1);
+#ifdef COLOR_GREEN
+#    undef COLOR_GREEN
+#endif
 
-	CPPUNIT_TEST(testAnonymousSection);
-	CPPUNIT_TEST(testHasSectionAndhasKey);
-	CPPUNIT_TEST(testReadString);
-	CPPUNIT_TEST(testReadInt);
-	CPPUNIT_TEST(testReadBool);
-	CPPUNIT_TEST(testReadDouble);
-	CPPUNIT_TEST(testMixedCase);
-	CPPUNIT_TEST(testExtreme);
-	CPPUNIT_TEST(testIterateSections);
-	CPPUNIT_TEST(testIterateKeys);
+#ifdef COLOR_YELLOW
+#    undef COLOR_YELLOW
+#endif
 
-	CPPUNIT_TEST_SUITE_END();
+#include "gtest/gtest.h"
+
+class INIFileTestCase1 : public testing::Test {
 
 public:
-	void setUp();
-	void tearDown();
+    ~INIFileTestCase1();
 
-	void testAnonymousSection();
-	void testHasSectionAndhasKey();
-	void testReadString();
-	void testReadInt();
-	void testReadBool();
-	void testReadDouble();
-	void testMixedCase();
-	void testExtreme();
-	void testIterateSections();
-	void testIterateKeys();
+    void SetUp() override;
+    void TearDown() override;
 
-private:
-	INIFile* pINIFile;
+protected:
+    std::unique_ptr<INIFile> pINIFile;
+    //(TESTSRC "/INIFileTestCase/INIFileTestCase1.ini");
 };
-
