@@ -128,42 +128,6 @@ namespace ExtraGenerators
       }
    };
 
-   class xoshiro256starstar32 {
-   public:
-       typedef uint32_t result_type;
-
-       static constexpr result_type min() { return numeric_limits<result_type>::min(); }
-       static constexpr result_type max() { return numeric_limits<result_type>::max(); }
-
-       result_type operator()() {
-           if (have_pending_) { have_pending_ = false;
-               return pending_;
-           }
-
-           const auto result = generator_();
-
-           pending_ = result >> 32;
-           have_pending_ = true;
-
-           return static_cast<result_type>(result);
-       }
-       void seed(result_type seed)
-       {
-           generator_.seed(decltype(generator_)::result_type{seed});
-           have_pending_ = false;
-       }
-
-       template<class Seq>
-       void seed(Seq& seq) {
-           generator_.seed(seq);
-           have_pending_ = false;
-       }
-
-   private:
-       xoshiro256starstar generator_;
-       result_type        pending_;
-       bool               have_pending_;
-   };
-   }
+}
 
 #endif // RANDOM_XOSHIRO256STARSTAR_H

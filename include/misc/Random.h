@@ -24,6 +24,7 @@
 
 #include "misc/RngSupport.h"
 #include "misc/random_xoshiro256starstar.h"
+#include "misc/random_uint64_to_uint32.h"
 #include "misc/lemire_uniform_uint32_distribution.h"
 
 #include <initializer_list>
@@ -37,7 +38,7 @@ public:
         Constructor which inits the seed value to seed
         \param  seed    the initial seed value
     */
-    explicit Random(Uint32 seed) { setSeed(seed); }
+    explicit Random(Uint32 seed) : generator_{seed} { }
 
     /// Destructor
     ~Random();
@@ -46,7 +47,7 @@ public:
         Sets the seed value to newSeed
         \param newSeed  the new seed value
     */
-    inline void setSeed(Uint32 newSeed) { generator_.seed(newSeed); }
+    inline void setSeed(Uint32 newSeed) { generator_.seed(static_cast<decltype(generator_)::result_type>(newSeed)); }
 
     /**
         Returns the current seed value.
@@ -114,7 +115,7 @@ public:
     }
 
 private:
-    ExtraGenerators::xoshiro256starstar32 generator_;
+    ExtraGenerators::uint64_to_uint32<ExtraGenerators::xoshiro256starstar> generator_;
 };
 
 #if 0
