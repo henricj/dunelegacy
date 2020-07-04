@@ -250,9 +250,8 @@ void NetworkManager::update()
                     // Server
                     debugNetwork("NetworkManager: %s:%u connected.\n", Address2String(peer->address).c_str(), peer->address.port);
 
-                    auto* newPeerData = new PeerData(peer, PeerData::PeerState::WaitingForName);
+                    auto newPeerData = std::make_unique<PeerData>(peer, PeerData::PeerState::WaitingForName);
                     newPeerData->timeout = SDL_GetTicks() + AWAITING_CONNECTION_TIMEOUT;
-                    peer->data = newPeerData;
 
                     debugNetwork("Adding '%s' to awaiting connection list\n", newPeerData->name.c_str());
                     awaitingConnectionList.push_back(peer);
@@ -262,6 +261,7 @@ void NetworkManager::update()
                     packetStream.writeUint32(NETWORKPACKET_SENDNAME);
                     packetStream.writeString(playerName);
 
+                    peer->data = newPeerData.release();
                     sendPacketToPeer(peer, packetStream);
                 } else if(connectPeer != nullptr) {
                     // Client
@@ -319,7 +319,7 @@ void NetworkManager::update()
             } break;
 
             case ENET_EVENT_TYPE_DISCONNECT: {
-                auto* peerData = static_cast<PeerData*>(peer->data);
+                std::unique_ptr<PeerData> peerData{static_cast<PeerData*>(peer->data)};
 
                 int disconnectCause = event.data;
 
@@ -366,8 +366,8 @@ void NetworkManager::update()
                 }
 
                 // delete peer data
-                delete peerData;
                 peer->data = nullptr;
+                peerData.reset();
 
                 if(peer == connectPeer) {
                     connectPeer = nullptr;
