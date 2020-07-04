@@ -45,6 +45,7 @@
 
 */
 
+#include <array>
 #include <cassert>
 #include <cerrno>
 #include <cstring>
