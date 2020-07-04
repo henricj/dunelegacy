@@ -20,6 +20,7 @@
 
 #include <misc/SDL2pp.h>
 
+#include <array>
 #include <string>
 #include <list>
 #include <algorithm>

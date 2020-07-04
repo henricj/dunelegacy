@@ -2,7 +2,9 @@
 #define LEMIRE_UNIFORM_UINT32_DISTRIBUTION_H
 #pragma once
 
+#include <cstdint>
 #include <climits>
+#include <limits>
 
 // Generate uniform random numbers in the closed range [0U, upper_bound]
 // It requires a generator with uniform output range [0U, ~0U]

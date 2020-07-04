@@ -20,6 +20,7 @@
 
 #include "IndexedTextFile.h"
 #include "MentatTextFile.h"
+#include "DataTypes.h"
 
 #include <string>
 #include <vector>
