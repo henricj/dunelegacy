@@ -20,7 +20,6 @@ set(TOP_SOURCES
 	SoundPlayer.cpp
 	Tile.cpp
 	globals.cpp
-	main.cpp
 	mmath.cpp
 	sand.cpp)
 
@@ -509,6 +508,8 @@ set(HEADERS
 ../include/units/Trooper.h
 ../include/units/UnitBase.h)
 
+set(EXE_SOURCES main.cpp)
+
 set(SOURCES
 	${TOP_SOURCES}
 	${CUT_SCENES_SOURCES}
@@ -536,7 +537,7 @@ find_package(Microsoft.GSL CONFIG REQUIRED)
 #find_library(ICU_COMMON_LIBRARY lib/icuuc.lib REQUIRED)
 
 set(LIBS
-	SDL2::SDL2 SDL2::SDL2main
+	SDL2::SDL2
 	SDL2::SDL2_mixer
 	SDL2::SDL2_ttf
 	fmt::fmt
@@ -545,15 +546,21 @@ set(LIBS
 
 if(WIN32)
 	list(APPEND LIBS shlwapi ws2_32)
-	list(APPEND SOURCES ../IDE/VC/DuneLegacy.exe.manifest ../resource.rc fixmath/fixmath.natvis)
+	list(APPEND SOURCES fixmath/fixmath.natvis)
+	list(APPEND EXE_SOURCES ../IDE/VC/DuneLegacy.exe.manifest ../resource.rc)
 endif()
 
 
-add_executable(dunelegacy ${SOURCES})
-target_include_directories(dunelegacy PRIVATE ../include ../external/enet/include)
-target_link_libraries(dunelegacy PRIVATE ${LIBS})
+add_library(dune ${SOURCES})
+target_include_directories(dune PUBLIC ../include PRIVATE ../external/enet/include)
+target_link_libraries(dune PUBLIC ${LIBS})
 
-target_precompile_headers(dunelegacy PRIVATE ../IDE/VC/stdafx.h)
+target_precompile_headers(dune PRIVATE ../IDE/VC/stdafx.h)
+
+add_executable(dunelegacy ${EXE_SOURCES})
+target_link_libraries(dunelegacy PRIVATE dune SDL2::SDL2main)
+
+target_precompile_headers(dunelegacy REUSE_FROM dune)
 
 add_custom_command(
         TARGET dunelegacy POST_BUILD
