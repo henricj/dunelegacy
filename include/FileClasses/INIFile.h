@@ -99,8 +99,10 @@ public:
 
         template<typename T>
         [[nodiscard]] auto getValue(T defaultValue = T{}) const noexcept -> T {
-            const auto value = getStringView();
+            auto value = getStringView();
             if(value.empty()) return defaultValue;
+
+            if(value.front() == '+') value.remove_prefix(1);
 
             auto ret = defaultValue;
             std::from_chars(value.data(), value.data() + value.size(), ret);
