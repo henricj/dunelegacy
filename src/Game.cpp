@@ -98,20 +98,14 @@ Game::Game() {
 */
 Game::~Game() {
     if(pNetworkManager != nullptr) {
-        pNetworkManager->setOnReceiveChatMessage(std::function<void (const std::string&, const std::string&)>());
-        pNetworkManager->setOnReceiveCommandList(std::function<void (const std::string&, const CommandList&)>());
-        pNetworkManager->setOnReceiveSelectionList(std::function<void (const std::string&, const Dune::selected_set_type&, int)>());
-        pNetworkManager->setOnPeerDisconnected(std::function<void (const std::string&, bool, int)>());
+        pNetworkManager->setOnReceiveChatMessage([](const auto&, const auto&) {});
+        pNetworkManager->setOnReceiveCommandList([](const auto&, const auto&) {});
+        pNetworkManager->setOnReceiveSelectionList([](const auto&, const auto&, auto) {});
+        pNetworkManager->setOnPeerDisconnected([](const auto&, auto, auto) {});
     }
 
-    for(StructureBase* pStructure : structureList) {
-        delete pStructure;
-    }
     structureList.clear();
 
-    for(auto *pUnit : unitList) {
-        delete pUnit;
-    }
     unitList.clear();
 
     bulletList.clear();
