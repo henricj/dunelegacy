@@ -1,69 +1,66 @@
 #include "INIFileTestCase3.h"
 
-#include <cppunit/extensions/HelperMacros.h>
-
 #include <stdio.h>
 
-CPPUNIT_TEST_SUITE_REGISTRATION(INIFileTestCase3);
 
+TEST_F(INIFileTestCase3, removeKey) {
+	INIFile inifile("INIFileTestCase3.ini");
 
-void INIFileTestCase3::setUp() {
-}
-
-void INIFileTestCase3::tearDown() {
-}
-
-void INIFileTestCase3::testRemoveKey() {
-	INIFile inifile(TESTSRC "/INIFileTestCase/INIFileTestCase3.ini");
+    EXPECT_NE(inifile.begin(), inifile.end());
 
 	inifile.removeKey("Section2","Key1");
 	inifile.removeKey("Section2","Key3");
 	inifile.removeKey("Section2","Key5");
 	inifile.removeKey("","Key3");
 
+	EXPECT_TRUE(inifile.saveChangesTo("INIFileTestCase3.ini.out1"));
 
-	inifile.saveChangesTo("INIFileTestCase3.ini.out1");
-
-	CPPUNIT_ASSERT(fileCompare("INIFileTestCase3.ini.out1", TESTSRC "/INIFileTestCase/INIFileTestCase3.ini.ref1"));
+	EXPECT_TRUE(fileCompare("INIFileTestCase3.ini.out1", "INIFileTestCase3.ini.ref1"));
 }
 
-void INIFileTestCase3::testClearSection() {
-	INIFile inifile(TESTSRC "/INIFileTestCase/INIFileTestCase3.ini");
+TEST_F(INIFileTestCase3, clearSection) {
+    INIFile inifile("INIFileTestCase3.ini");
 
-	inifile.clearSection("Section3");
+    EXPECT_NE(inifile.begin(), inifile.end());
+
+    inifile.clearSection("Section3");
 	inifile.clearSection("");
 	inifile.clearSection("Section7");
 
-	inifile.saveChangesTo("INIFileTestCase3.ini.out2");
+	EXPECT_TRUE(inifile.saveChangesTo("INIFileTestCase3.ini.out2"));
 
-	CPPUNIT_ASSERT(fileCompare("INIFileTestCase3.ini.out2", TESTSRC "/INIFileTestCase/INIFileTestCase3.ini.ref2"));
+	EXPECT_TRUE(fileCompare("INIFileTestCase3.ini.out2", "INIFileTestCase3.ini.ref2"));
 }
 
-void INIFileTestCase3::testRemoveSection() {
-	INIFile inifile(TESTSRC "/INIFileTestCase/INIFileTestCase3.ini");
+TEST_F(INIFileTestCase3, removeSection) {
+	INIFile inifile("INIFileTestCase3.ini");
 
-	inifile.removeSection("Section3");
+    EXPECT_NE(inifile.begin(), inifile.end());
+
+    inifile.removeSection("Section3");
 	inifile.removeSection("");
 	inifile.removeSection("Section7");
 
-	inifile.saveChangesTo("INIFileTestCase3.ini.out3");
+	EXPECT_TRUE(inifile.saveChangesTo("INIFileTestCase3.ini.out3"));
 
-	CPPUNIT_ASSERT(fileCompare("INIFileTestCase3.ini.out3", TESTSRC "/INIFileTestCase/INIFileTestCase3.ini.ref3"));
+	EXPECT_TRUE(fileCompare("INIFileTestCase3.ini.out3", "INIFileTestCase3.ini.ref3"));
 }
 
-void INIFileTestCase3::testClearSectionAndAddKeys() {
-	INIFile inifile(TESTSRC "/INIFileTestCase/INIFileTestCase3.ini");
+TEST_F(INIFileTestCase3, clearSectionAndAddKeys) {
+	INIFile inifile("INIFileTestCase3.ini");
 
-	inifile.clearSection("Section3");
+    EXPECT_NE(inifile.begin(), inifile.end());
+
+    inifile.clearSection("Section3");
 	inifile.setStringValue("Section3", "Key1", "a");
 	inifile.setStringValue("Section3", "Key2", "b");
 	inifile.setStringValue("Section3", "Key3", "c");
 	inifile.setStringValue("Section3", "Key4", "d");
 	inifile.setStringValue("Section3", "Key5", "e");
 
-	inifile.saveChangesTo("INIFileTestCase3.ini.out4");
+	EXPECT_TRUE(inifile.saveChangesTo("INIFileTestCase3.ini.out4"));
 
-	CPPUNIT_ASSERT(fileCompare("INIFileTestCase3.ini.out4", TESTSRC "/INIFileTestCase/INIFileTestCase3.ini.ref4"));
+	EXPECT_TRUE(fileCompare("INIFileTestCase3.ini.out4", "INIFileTestCase3.ini.ref4"));
 }
 
 bool INIFileTestCase3::fileCompare(std::string filename1, std::string filename2) {
