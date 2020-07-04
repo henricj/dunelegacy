@@ -1,26 +1,20 @@
 
+#ifdef COLOR_DEFAULT
+#    undef COLOR_DEFAULT
+#endif
 
-#include <cppunit/extensions/HelperMacros.h>
+#ifdef COLOR_RED
+#    undef COLOR_RED
+#endif
 
-class FileSystemTestCase: public CppUnit::TestFixture  {
+#ifdef COLOR_GREEN
+#    undef COLOR_GREEN
+#endif
 
-	CPPUNIT_TEST_SUITE(FileSystemTestCase);
+#ifdef COLOR_YELLOW
+#    undef COLOR_YELLOW
+#endif
 
-	CPPUNIT_TEST(testBasename);
-	CPPUNIT_TEST(testBasenameExtension);
-	CPPUNIT_TEST(testDirname);
+#include "gtest/gtest.h"
 
-	CPPUNIT_TEST_SUITE_END();
-
-public:
-	void setUp();
-	void tearDown();
-
-	void testBasename();
-	void testBasenameExtension();
-	void testDirname();
-
-private:
-
-};
-
+class FileSystemTestCase : public testing::Test { };

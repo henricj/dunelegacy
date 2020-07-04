@@ -1,29 +1,28 @@
 
 #include <FileClasses/INIFile.h>
 
-#include <cppunit/extensions/HelperMacros.h>
+#ifdef COLOR_DEFAULT
+#    undef COLOR_DEFAULT
+#endif
 
-class INIFileTestCase2: public CppUnit::TestFixture  {
+#ifdef COLOR_RED
+#    undef COLOR_RED
+#endif
 
-	CPPUNIT_TEST_SUITE(INIFileTestCase2);
+#ifdef COLOR_GREEN
+#    undef COLOR_GREEN
+#endif
 
-	CPPUNIT_TEST(testModifyData);
-	CPPUNIT_TEST(testAddKey);
-	CPPUNIT_TEST(testAddSectionAndKeys);
+#ifdef COLOR_YELLOW
+#    undef COLOR_YELLOW
+#endif
 
-	CPPUNIT_TEST_SUITE_END();
+#include "gtest/gtest.h"
 
-public:
-	void setUp();
-	void tearDown();
-
-	void testModifyData();
-	void testAddKey();
-	void testAddSectionAndKeys();
-
-private:
+class INIFileTestCase2: public testing::Test  {
+protected:
 	bool fileCompare(std::string filename1, std::string filename2);
 
-	INIFile* pINIFile;
+	std::unique_ptr<INIFile> pINIFile;
 };
 
