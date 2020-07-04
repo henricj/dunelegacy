@@ -594,7 +594,10 @@ int main(int argc, char *argv[]) {
 
                 settings.general.language = "en";
                 myINIFile.setStringValue("General","Language",settings.general.language);
-                myINIFile.saveChangesTo(configfilepath);
+                if(!myINIFile.saveChangesTo(configfilepath)) {
+                    SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Unable to save configuration file %s",
+                                 configfilepath.u8string().c_str());
+                }
 
                 // reinit text manager
                 pTextManager = std::make_unique<TextManager>();
@@ -657,7 +660,10 @@ int main(int argc, char *argv[]) {
                 myINIFile.setIntValue("Video","Physical Height",settings.video.physicalHeight);
                 myINIFile.setIntValue("Video","Preferred Zoom Level",1);
 
-                myINIFile.saveChangesTo(getConfigFilepath());
+                if(!myINIFile.saveChangesTo(getConfigFilepath())) {
+                    SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Unable to save configuration file %s",
+                                 getConfigFilepath().u8string().c_str());
+                }
             }
 
             Scaler::setDefaultScaler(Scaler::getScalerByName(settings.video.scaler));
