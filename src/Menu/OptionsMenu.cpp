@@ -386,7 +386,10 @@ void OptionsMenu::saveConfiguration2File() {
     myINIFile.setIntValue("Network","ServerPort",settings.network.serverPort);
     myINIFile.setStringValue("Network","MetaServer",settings.network.metaServer);
 
-    myINIFile.saveChangesTo(getConfigFilepath());
+    if(!myINIFile.saveChangesTo(getConfigFilepath())) {
+        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Unable to save configuration file %s",
+                     getConfigFilepath().u8string().c_str());
+    }
 }
 
 void OptionsMenu::addResolution(const Coord& screenRes) {

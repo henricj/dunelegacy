@@ -1996,7 +1996,10 @@ void Game::handleKeyInput(SDL_KeyboardEvent& keyboardEvent) {
                 settings.gameOptions.gameSpeed = std::min(settings.gameOptions.gameSpeed+1,GAMESPEED_MAX);
                 INIFile myINIFile(getConfigFilepath());
                 myINIFile.setIntValue("Game Options","Game Speed", settings.gameOptions.gameSpeed);
-                myINIFile.saveChangesTo(getConfigFilepath());
+                if(!myINIFile.saveChangesTo(getConfigFilepath())) {
+                    SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Unable to save configuration file %s",
+                                 getConfigFilepath().u8string().c_str());
+                }
                 currentGame->addToNewsTicker(fmt::sprintf(_("Game speed") + ": %d", settings.gameOptions.gameSpeed));
             }
         } break;
@@ -2008,7 +2011,10 @@ void Game::handleKeyInput(SDL_KeyboardEvent& keyboardEvent) {
                 settings.gameOptions.gameSpeed = std::max(settings.gameOptions.gameSpeed-1,GAMESPEED_MIN);
                 INIFile myINIFile(getConfigFilepath());
                 myINIFile.setIntValue("Game Options","Game Speed", settings.gameOptions.gameSpeed);
-                myINIFile.saveChangesTo(getConfigFilepath());
+                if(!myINIFile.saveChangesTo(getConfigFilepath())) {
+                    SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Unable to save configuration file %s",
+                                 getConfigFilepath().u8string().c_str());
+                }
                 currentGame->addToNewsTicker(fmt::sprintf(_("Game speed") + ": %d", settings.gameOptions.gameSpeed));
             }
         } break;
