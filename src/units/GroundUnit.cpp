@@ -125,7 +125,7 @@ void GroundUnit::checkPos() {
                     setGettingRepaired();
                 } else {
                     // the repair yard is already in use by some other unit => move out
-                    Coord newDestination = currentGameMap->findDeploySpot(this, target.getObjPointer()->getLocation(), currentGame->randomGen, getLocation(), pRepairYard->getStructureSize());
+                    Coord newDestination = currentGameMap->findDeploySpot(this, target.getObjPointer()->getLocation(), getLocation(), pRepairYard->getStructureSize());
                     doMove2Pos(newDestination, true);
                 }
             }

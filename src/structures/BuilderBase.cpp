@@ -407,7 +407,7 @@ void BuilderBase::produce_item()
                 unitDestination = destination;
             }
 
-            const auto spot = currentGameMap->findDeploySpot(newUnit, location, game->randomGen, unitDestination, structureSize);
+            const auto spot = currentGameMap->findDeploySpot(newUnit, location, unitDestination, structureSize);
 
             newUnit->deploy(spot);
 

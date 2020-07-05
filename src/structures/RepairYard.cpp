@@ -99,7 +99,7 @@ void RepairYard::deployRepairUnit(Carryall* pCarryall) {
         pCarryall->setTarget(nullptr);
         pCarryall->setDestination(pRepairUnit->getGuardPoint());
     } else {
-        Coord deployPos = currentGameMap->findDeploySpot(pRepairUnit, location, currentGame->randomGen, destination, structureSize);
+        Coord deployPos = currentGameMap->findDeploySpot(pRepairUnit, location, destination, structureSize);
 
         pRepairUnit->setForced(false);
         pRepairUnit->doSetAttackMode((pRepairUnit->getItemID() == Unit_Harvester) ? HARVEST : GUARD);

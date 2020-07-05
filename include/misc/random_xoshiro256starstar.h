@@ -4,6 +4,7 @@
 
 #include <array>
 #include <random>
+#include <gsl/gsl>
 
 namespace ExtraGenerators
 {
@@ -25,7 +26,7 @@ namespace ExtraGenerators
    public:
       typedef uint64_t result_type;
 
-      explicit xoshiro256starstar(result_type x = 1)
+      explicit xoshiro256starstar(unsigned int x = 1)
       {
          seed(x);
       }
@@ -88,9 +89,26 @@ namespace ExtraGenerators
          return numeric_limits<result_type>::max();
       }
 
+      static constexpr size_t state_words = 4;
+      typedef uint64_t        state_type;
+
+      void set_state(gsl::span<const state_type, state_words> s) noexcept {
+          s0_ = s[0];
+          s1_ = s[1];
+          s2_ = s[2];
+          s3_ = s[3];
+      }
+
+      void get_state(gsl::span<state_type, state_words> s) const noexcept {
+          s[0] = s0_;
+          s[1] = s1_;
+          s[2] = s2_;
+          s[3] = s3_;
+      }
+
       static constexpr size_t seed_words = 4 * sizeof(s0_) / sizeof(unsigned int);
 
-      void seed(result_type s)
+      void seed(unsigned int s)
       {
          seed_seq seq{ s };
 

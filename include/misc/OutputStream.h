@@ -112,6 +112,17 @@ public:
     }
 
     /**
+        Writes out a complete vector of Uint8
+        \param  dataVector the vector to write
+    */
+    void writeUint8Vector(const std::vector<Uint8>& dataVector) {
+        writeUint32(static_cast<Uint8>(dataVector.size()));
+        for(const auto data : dataVector) {
+            writeUint8(data);
+        }
+    }
+
+    /**
         Writes out a complete list of Uint32
         \param  dataList    the list to write
     */

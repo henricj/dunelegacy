@@ -568,8 +568,10 @@ public:
     int         winFlags = 0;
     int         loseFlags = 0;
 
-    Random      randomGen;          ///< This is the random number generator for this game
-    ObjectData  objectData;         ///< This contains all the unit/structure data
+    RandomFactory randomFactory;
+    Random        randomGen;            ///< This is the random number generator for this game
+    Random        uiRandomGen;          ///< This random number generator is for use by the UI so that the game RNGs will not be disrupted.
+    ObjectData    objectData;           ///< This contains all the unit/structure data
 
     GameState   gameState = GameState::Start;
 

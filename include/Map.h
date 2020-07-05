@@ -54,13 +54,20 @@ public:
         viewMap(houseID, Coord(x, y), maxViewRange);
     }
 
-    bool findSpice(Coord& destination, const Coord& origin) const;
+    bool findSpice(Coord& destination, const Coord& origin);
     bool okayToPlaceStructure(int x, int y, int buildingSizeX, int buildingSizeY, bool tilesRequired, const House* pHouse, bool bIgnoreUnits = false) const;
     bool isAStructureGap(int x, int y, int buildingSizeX, int buildingSizeY) const; // Allows AI to check to see if a gap exists between the current structure
     bool isWithinBuildRange(int x, int y, const House* pHouse) const;
     static ANGLETYPE getPosAngle(const Coord& source, const Coord& pos);
     Coord findClosestEdgePoint(const Coord& origin, const Coord& buildingSize) const;
-    Coord findDeploySpot(UnitBase* pUnit, const Coord& origin, Random& randomGen, const Coord& gatherPoint = Coord::Invalid(), const Coord& buildingSize = Coord(0, 0)) const; //building size is num squares
+
+    Coord findDeploySpot(UnitBase* pUnit, const Coord& origin, Random& randomGen,
+                         const Coord& gatherPoint  = Coord::Invalid(),
+                         const Coord& buildingSize = Coord(0, 0)); const // building size is num squares
+    Coord findDeploySpot(UnitBase* pUnit, const Coord& origin, const Coord& gatherPoint = Coord::Invalid(),
+                         const Coord& buildingSize = Coord(0, 0)) {
+        return findDeploySpot(pUnit, origin, random_, gatherPoint, buildingSize);
+    }
 
     void createSpiceField(Coord location, int radius, bool centerIsThickSpice = false);
 
@@ -224,8 +231,8 @@ public:
 
     enum class SearchResult { NotDone, DoneAtDepth, Done };
 protected:
-    template<typename Offsets, typename Generator, typename Predicate>
-    SearchResult search_random_offsets(int x, int y, Offsets&& offsets, Generator&& generator, Predicate&& predicate) const {
+    template<typename Offsets, typename Predicate>
+    SearchResult search_random_offsets(int x, int y, Offsets&& offsets, Random& generator, Predicate&& predicate) const {
 
         const auto size = offsets.size();
         auto found = false;
@@ -256,8 +263,8 @@ protected:
         return found ? SearchResult::DoneAtDepth : SearchResult::NotDone;
     }
 
-    template<typename Generator, typename Predicate>
-    SearchResult search_box_edge(int x, int y, int depth, BoxOffsets* offsets, Generator&& generator, Predicate&& predicate) const {
+    template<typename Predicate>
+    SearchResult search_box_edge(int x, int y, int depth, BoxOffsets* offsets, Random& generator, Predicate&& predicate) const {
 
         if (0 == depth) {
             const auto tile = tryGetTile(x, y);
@@ -270,8 +277,8 @@ protected:
         return search_random_offsets(x, y, offsets->search_set(depth), generator, predicate);
     }
 
-    template<typename Generator, typename Predicate>
-    bool search_all_by_box_edge(int x, int y, BoxOffsets* offsets, Generator generator, Predicate&& predicate) const {
+    template<typename Predicate>
+    bool search_all_by_box_edge(int x, int y, BoxOffsets* offsets, Random& generator, Predicate&& predicate) const {
 
         for (auto depth = 0u; depth <= offsets->max_depth(); ++depth) {
             const auto ret = search_box_edge(x, y, depth, offsets, generator, predicate);
@@ -283,34 +290,34 @@ protected:
         return false;
     }
 
-    template<typename Generator, typename Predicate>
-    bool search_all_by_box_edge(int x, int y, Generator&& generator, Predicate&& predicate) const {
+    template<typename Predicate>
+    bool search_all_by_box_edge(int x, int y, Random& generator, Predicate&& predicate) const {
         return search_all_by_box_edge(x, y, offsets_.get(), generator, predicate);
     }
 
-    template<typename Generator, typename Predicate>
-    bool search_all_by_box_edge_2x2(int x, int y, Generator&& generator, Predicate&& predicate) const {
+    template<typename Predicate>
+    bool search_all_by_box_edge_2x2(int x, int y, Random& generator, Predicate&& predicate) const {
         return search_all_by_box_edge(x, y, offsets_2x2_.get(), generator, predicate);
     }
 
-    template<typename Generator, typename Predicate>
-    bool search_all_by_box_edge_2x3(int x, int y, Generator&& generator, Predicate&& predicate) const {
+    template<typename Predicate>
+    bool search_all_by_box_edge_2x3(int x, int y, Random& generator, Predicate&& predicate) const {
         return search_all_by_box_edge(x, y, offsets_2x3_.get(), generator, predicate);
     }
 
-    template<typename Generator, typename Predicate>
-    bool search_all_by_box_edge_3x2(int x, int y, Generator&& generator, Predicate&& predicate) const {
+    template<typename Predicate>
+    bool search_all_by_box_edge_3x2(int x, int y, Random& generator, Predicate&& predicate) const {
         return search_all_by_box_edge(x, y, offsets_3x2_.get(), generator, predicate);
     }
 
-    template<typename Generator, typename Predicate>
-    bool search_all_by_box_edge_3x3(int x, int y, Generator&& generator, Predicate&& predicate) const {
+    template<typename Predicate>
+    bool search_all_by_box_edge_3x3(int x, int y, Random& generator, Predicate&& predicate) const {
         return search_all_by_box_edge(x, y, offsets_3x3_.get(), generator, predicate);
     }
 
 public:
-    template<typename Generator, typename Predicate>
-    bool search_all_by_box_edge(int x, int y, const Coord& buildingSize, Generator&& generator, Predicate&& predicate) const {
+    template<typename Predicate>
+    bool search_all_by_box_edge(int x, int y, const Coord& buildingSize, Random& generator, Predicate&& predicate) const {
 
         if (buildingSize == Coord{ 2, 2 })
             return search_all_by_box_edge_2x2(x, y, generator, predicate);
@@ -509,6 +516,8 @@ private:
     }
 
     AStarSearch pathfinder_;
+
+    Random random_;
 
     std::unique_ptr<BoxOffsets> offsets_;
     std::unique_ptr<BoxOffsets> offsets_2x2_;

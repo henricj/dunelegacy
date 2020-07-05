@@ -69,7 +69,7 @@
 #include <sstream>
 #include <iomanip>
 
-Game::Game() {
+Game::Game() : randomGen{randomFactory.create("Game")}, uiRandomGen{randomFactory.create("UI")} {
     currentZoomlevel = settings.video.preferredZoomLevel;
 
     localPlayerName = settings.general.playerName;
@@ -142,7 +142,8 @@ void Game::initGame(const GameInitSettings& newGameInitSettings) {
         case GameType::CustomGame:
         case GameType::CustomMultiplayer: {
             gameType = gameInitSettings.getGameType();
-            randomGen.setSeed(gameInitSettings.getRandomSeed());
+            randomFactory.setSeed({gameInitSettings.getRandomSeed()});
+            //randomGen.setSeed(gameInitSettings.getRandomSeed());
 
             objectData.loadFromINIFile("ObjectData.ini");
 
@@ -1477,7 +1478,8 @@ bool Game::loadSaveGame(InputStream& stream) {
     // read some settings
     gameType = static_cast<GameType>(stream.readSint8());
     techLevel = stream.readUint8();
-    randomGen.setSeed(stream.readUint32());
+    randomFactory.setSeed(stream.readUint8Vector());
+    randomGen.setSeed(stream.readUint32Vector());
 
     // read in the unit/structure data
     objectData.load(stream);
@@ -1618,7 +1620,8 @@ bool Game::saveGame(const std::filesystem::path& filename)
     // write some settings
     fs.writeSint8(static_cast<Sint8>(gameType));
     fs.writeUint8(techLevel);
-    fs.writeUint32(randomGen.getSeed());
+    fs.writeUint8Vector(randomFactory.getSeed());
+    fs.writeUint32Vector(randomGen.getSeed());
 
     // write out the unit/structure data
     objectData.save(fs);
@@ -1882,7 +1885,7 @@ void Game::handleChatInput(SDL_KeyboardEvent& keyboardEvent) {
 
 
 bool Game::removeFromSelectionLists(ObjectBase* pObject) {
-    if(!pObject->isSelected()) false;
+    if(!pObject->isSelected() && !pObject->isSelectedByOtherPlayer()) return false;
 
     const auto objectID = pObject->getObjectID();
 
@@ -2329,7 +2332,6 @@ bool Game::handlePlacementClick(int xPos, int yPos) {
                 // then we try to move all units outside the building area
 
                 // generate a independent temporal random number generator as we are in input handling code (and outside game logic code)
-                Random tempRandomGen(std::random_device{}());
 
                 for(int y = yPos; y < yPos + structuresize.y; y++) {
                     for(int x = xPos; x < xPos + structuresize.x; x++) {
@@ -2338,14 +2340,14 @@ bool Game::handlePlacementClick(int xPos, int yPos) {
                             auto *const pObject = pTile->getNonInfantryGroundObject(objectManager);
                             if(pObject->isAUnit() && pObject->getOwner() == pBuilder->getOwner()) {
                                 auto* pUnit = static_cast<UnitBase*>(pObject);
-                                Coord newDestination = map->findDeploySpot(pUnit, Coord(xPos, yPos), tempRandomGen, pUnit->getLocation(), structuresize);
+                                Coord newDestination = map->findDeploySpot(pUnit, Coord(xPos, yPos), uiRandomGen, pUnit->getLocation(), structuresize);
                                 pUnit->handleMoveClick(newDestination.x, newDestination.y);
                             }
                         } else if(pTile->hasInfantry()) {
                             for(auto objectID : pTile->getInfantryList()) {
                                 auto *pInfantry = dynamic_cast<InfantryBase*>(getObjectManager().getObject(objectID));
                                 if((pInfantry != nullptr) && (pInfantry->getOwner() == pBuilder->getOwner())) {
-                                    const auto newDestination = map->findDeploySpot(pInfantry, Coord(xPos, yPos), tempRandomGen, pInfantry->getLocation(), structuresize);
+                                    const auto newDestination = map->findDeploySpot(pInfantry, Coord(xPos, yPos), uiRandomGen, pInfantry->getLocation(), structuresize);
                                     pInfantry->handleMoveClick(newDestination.x, newDestination.y);
                                 }
                             }
