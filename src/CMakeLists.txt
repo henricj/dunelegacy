@@ -542,6 +542,7 @@ set(LIBS
 	SDL2::SDL2_ttf
 	fmt::fmt
 	Microsoft.GSL::GSL
+	digestpp
 	enet)
 
 if(WIN32)
