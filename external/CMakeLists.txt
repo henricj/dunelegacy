@@ -1,1 +1,2 @@
 add_subdirectory(enet EXCLUDE_FROM_ALL)
+add_subdirectory(digestpp EXCLUDE_FROM_ALL)
