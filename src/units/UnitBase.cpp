@@ -1344,11 +1344,9 @@ void UnitBase::updateVisibleUnits() {
         return;
     }
 
-    if(!currentGameMap->tileExists(location)) {
-        return;
-    }
+    auto* pTile = currentGameMap->tryGetTile(location.x, location.y);
+    if(!pTile) return;
 
-    auto* pTile = currentGameMap->getTile(location);
     currentGame->for_each_house([&](auto& house) {
         if(pTile->isExploredByHouse(house.getHouseID()) && (house.getTeamID() != getOwner()->getTeamID()) && (&house != getOwner())) {
             house.informDirectContactWithEnemy();
