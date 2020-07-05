@@ -96,7 +96,9 @@ int Player::getTechLevel() const {
     return currentGame->techLevel;
 }
 
-const Map& Player::getMap() {
+Map& Player::getMap() { return *currentGameMap; }
+
+const Map& Player::getMap() const {
     return *currentGameMap;
 }
 
