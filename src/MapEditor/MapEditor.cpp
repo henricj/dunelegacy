@@ -690,7 +690,9 @@ void MapEditor::saveMap(const std::filesystem::path& filepath) {
         }
     }
 
-    loadedINIFile->saveChangesTo(filepath, getMapVersion() < 2);
+    if (!loadedINIFile->saveChangesTo(filepath, getMapVersion() < 2)) {
+        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Unable to save configuration file %s", filepath.u8string().c_str());
+    }
 
     lastSaveName = filepath;
     bChangedSinceLastSave = false;
