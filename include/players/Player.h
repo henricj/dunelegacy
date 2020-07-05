@@ -121,7 +121,9 @@ protected:
     Uint32 getGameCycleCount() const;
     int getTechLevel() const;
 
-    const Map& getMap();
+    Map&              getMap();
+    const Map&        getMap() const;
+
     const ObjectBase* getObject(Uint32 objectID);
 
     const RobustList<const StructureBase*>& getStructureList();
