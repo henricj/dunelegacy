@@ -50,7 +50,7 @@ Player::Player(InputStream& stream, House* associatedHouse) : pHouse(associatedH
 }
 
 Player::~Player() {
-    currentGame->unregisterPlayer(this);
+    if(currentGame) currentGame->unregisterPlayer(this);
 }
 
 void Player::save(OutputStream& stream) const {
