@@ -27,14 +27,15 @@
 
 ObjectBase* ObjectPointer::getObjPointer() const
 {
-    if(objectID == NONE_ID) {
+    if(objectID == NONE_ID || !currentGame) {
         return nullptr;
     }
 
-    ObjectBase* ObjPointer = currentGame->getObjectManager().getObject(objectID);
+    auto* ObjPointer = currentGame->getObjectManager().getObject(objectID);
     if(ObjPointer == nullptr) {
         objectID = NONE_ID;
     }
+
     return ObjPointer;
 }
 
