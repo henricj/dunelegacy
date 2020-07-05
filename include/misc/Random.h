@@ -95,7 +95,7 @@ public:
         Returns an FixPoint value on the interval [0;1]
         \return a random FixPoint on [0;1]
     */
-    inline FixPoint randFixPoint() { return FixPoint(rand()) / getMaxRandom(); }
+    FixPoint randFixPoint() { return FixPoint::FromRawValue(rand()); }
 
     /**
         Returns an boolean value
