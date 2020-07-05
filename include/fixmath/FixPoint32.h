@@ -34,7 +34,7 @@ class FixPoint32
 {
 public:
     FixPoint32() { value = 0; }
-    FixPoint32(const FixPoint32& inValue)        { value = inValue.value;             }
+    FixPoint32(const FixPoint32& inValue)        { value = inValue.value; }
     FixPoint32(const int inValue)                { value = fix32_from_int(inValue); }
     FixPoint32(const unsigned int inValue)       { value = fix32_from_int(static_cast<int>(inValue)); }
 
