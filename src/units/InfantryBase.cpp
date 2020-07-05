@@ -352,7 +352,7 @@ void InfantryBase::destroy() {
                                         Coord(lround(realX), lround(realY)));
 
             if(isVisible(getOwner()->getTeamID())) {
-                soundPlayer->playSoundAt(getRandomOf({Sound_Scream1,Sound_Scream2,Sound_Scream3,Sound_Scream4,Sound_Scream5,Sound_Trumpet}),location);
+                soundPlayer->playSoundAt(getRandomOf(Sound_Scream1,Sound_Scream2,Sound_Scream3,Sound_Scream4,Sound_Scream5,Sound_Trumpet),location);
             }
         }
     }
@@ -493,7 +493,7 @@ void InfantryBase::squash() {
 }
 
 void InfantryBase::playConfirmSound() {
-    soundPlayer->playVoice(getRandomOf({MovingOut,InfantryOut}), getOwner()->getHouseID());
+    soundPlayer->playVoice(getRandomOf(MovingOut,InfantryOut), getOwner()->getHouseID());
 }
 
 void InfantryBase::playSelectSound() {
