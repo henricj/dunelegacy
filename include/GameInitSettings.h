@@ -173,7 +173,7 @@ public:
     const std::filesystem::path& getFilename() const noexcept { return filename; };
     const std::string& getFiledata() const noexcept { return filedata; };
     const std::string& getServername() const noexcept { return servername; };
-    Uint32 getRandomSeed() const noexcept { return randomSeed; };
+    const std::vector<Uint8>& getRandomSeed() const noexcept { return randomSeed; };
 
     bool isMultiplePlayersPerHouse() const noexcept { return multiplePlayersPerHouse; };
     void setMultiplePlayersPerHouse(bool multiplePlayersPerHouse) noexcept { this->multiplePlayersPerHouse = multiplePlayersPerHouse; };
@@ -214,7 +214,7 @@ private:
     std::string     filedata;
     std::string     servername;
 
-    Uint32          randomSeed = 0;
+    std::vector<Uint8> randomSeed;
 
     bool            multiplePlayersPerHouse = false;
 

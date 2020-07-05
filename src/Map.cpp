@@ -34,7 +34,7 @@
 #include <set>
 
 Map::Map(int xSize, int ySize)
- : sizeX(xSize), sizeY(ySize), lastSinglySelectedObject(nullptr), pathfinder_(this) {
+    : sizeX(xSize), sizeY(ySize), lastSinglySelectedObject(nullptr), pathfinder_(this), random_{currentGame->randomFactory.create("Map")} {
 
     tiles.resize(sizeX * sizeY);
 
@@ -64,6 +64,8 @@ void Map::load(InputStream& stream) {
     for (auto& tile : tiles)
         tile.load(stream);
 
+    random_.setSeed(stream.readUint32Vector());
+
     init_tile_location();
 }
 
@@ -73,6 +75,8 @@ void Map::save(OutputStream& stream, Uint32 gameCycleCount) const {
 
     for (const auto & tile : tiles)
         tile.save(stream, gameCycleCount);
+
+    stream.writeUint32Vector(random_.getSeed());
 }
 
 void Map::init_tile_location() {
@@ -426,15 +430,15 @@ Coord Map::getMapPos(ANGLETYPE angle, const Coord& source) {
 }
 
 //building size is num squares
-Coord Map::findDeploySpot(UnitBase* pUnit, const Coord& origin, Random& randomGen, const Coord& gatherPoint, const Coord& buildingSize) const {
+Coord Map::findDeploySpot(UnitBase* pUnit, const Coord& origin, Random& random, const Coord& gatherPoint, const Coord& buildingSize) {
     if (pUnit->isAFlyingUnit()) {
-        return origin + Coord(randomGen.rand(0, buildingSize.x - 1), randomGen.rand(0, buildingSize.y - 1));
+        return origin + Coord(random.rand(0, buildingSize.x - 1), random.rand(0, buildingSize.y - 1));
     }
 
     auto closestDistance = FixPt_MAX;
     Coord       closestPoint;
 
-    const auto found = search_all_by_box_edge(origin.x, origin.y, buildingSize, randomGen,
+    const auto found = search_all_by_box_edge(origin.x, origin.y, buildingSize, random,
         [&](const Tile& t) {
             if (!pUnit->canPassTile(&t))
                 return SearchResult::NotDone;
@@ -596,9 +600,9 @@ void Map::selectObjects(const House* pHouse, int x1, int y1, int x2, int y2, int
 }
 
 
-bool Map::findSpice(Coord& destination, const Coord& origin) const {
+bool Map::findSpice(Coord& destination, const Coord& origin) {
 
-    return search_all_by_box_edge(origin.x, origin.y, currentGame->randomGen,
+    return search_all_by_box_edge(origin.x, origin.y, random_,
         [&](const Tile& t) {
             if (t.hasAGroundObject() || !t.hasSpice())
                 return SearchResult::NotDone;

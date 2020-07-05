@@ -21,6 +21,7 @@
 
 #include <misc/Random.h>
 
+#include <gsl/gsl>
 
 #define ROCKFILLER 2        //how many times random generator will try to remove sand "holes" for rock from the map
 #define SPICEFILLER 2       //for spice
@@ -29,10 +30,15 @@
 class MapGenerator {
 
 public:
+    MapGenerator(int sizeX, int sizeY, Random&& random, int rockfields = ROCKFIELDS, int spicefields = SPICEFIELDS, MirrorMode mirrorMode = MirrorModeNone)
+        : map(sizeX, sizeY), randGen{std::move(random)}, rockfields(rockfields),
+          spicefields(spicefields) {
 
-    MapGenerator(int sizeX, int sizeY, int randSeed, int rockfields = ROCKFIELDS, int spicefields = SPICEFIELDS, MirrorMode mirrorMode = MirrorModeNone)
-     : map(sizeX, sizeY), randGen(randSeed), rockfields(rockfields), spicefields(spicefields) {
-         mapMirror = MapMirror::createMapMirror(mirrorMode, sizeX, sizeY);
+        std::array<Uint32, Random::seed_words> seed;
+        randGen.getSeed(seed);
+        SDL_Log("Using random [%lx, %lx, %lx, %lx]", seed[0], seed[1], seed[2], seed[3]);
+
+        mapMirror = MapMirror::createMapMirror(mirrorMode, sizeX, sizeY);
     }
 
     MapData& getMap() {
@@ -357,7 +363,8 @@ private:
 private:
     MapData map;
 
-    Random randGen;
+    RandomFactory randomFactory;
+    Random        randGen;
 
     int rockfields;
     int spicefields;
@@ -375,7 +382,18 @@ private:
     \return the generated map
 */
 MapData generateRandomMap(int sizeX, int sizeY, int randSeed, int rockfields, int spicefields, MirrorMode mirrorMode) {
-    MapGenerator mapGenerator(sizeX, sizeY, randSeed, rockfields, spicefields, mirrorMode);
+
+    RandomFactory randomFactory;
+
+    // Using zero will leave the factory initialized from std::random_device
+    if (randSeed) {
+        const std::array<Uint8, 4> seed{randSeed & 0xff, (randSeed >> 8) & 0xff, (randSeed >> 16) & 0xff,
+                                  (randSeed >> 24) & 0xff};
+
+        randomFactory.setSeed(seed);
+    }
+
+    MapGenerator mapGenerator(sizeX, sizeY, randomFactory.create("Map generator"), rockfields, spicefields, mirrorMode);
 
     mapGenerator.generateMap();
 

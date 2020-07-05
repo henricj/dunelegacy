@@ -298,7 +298,7 @@ void StarPort::updateStructureSpecificStuff() {
                             unitDestination = destination;
                         }
 
-                        const auto spot = currentGameMap->findDeploySpot(newUnit, location, currentGame->randomGen, unitDestination, structureSize);
+                        const auto spot = currentGameMap->findDeploySpot(newUnit, location, unitDestination, structureSize);
                         newUnit->deploy(spot);
 
                         if(unitDestination.isValid()) {

@@ -169,7 +169,7 @@ void Harvester::checkPos()
                         setReturned();
                     } else {
                         // the repair yard is already in use by some other unit => move out
-                        Coord newDestination = currentGameMap->findDeploySpot(this, target.getObjPointer()->getLocation(), currentGame->randomGen, getLocation(), pRefinery->getStructureSize());
+                        Coord newDestination = currentGameMap->findDeploySpot(this, target.getObjPointer()->getLocation(), getLocation(), pRefinery->getStructureSize());
                         doMove2Pos(newDestination, true);
                         requestCarryall();
                     }
