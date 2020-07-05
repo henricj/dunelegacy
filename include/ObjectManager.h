@@ -22,6 +22,8 @@
 #include <misc/OutputStream.h>
 #include <misc/SDL2pp.h>
 
+#include "ObjectBase.h"
+
 #include <unordered_map>
 
 // forward declarations
