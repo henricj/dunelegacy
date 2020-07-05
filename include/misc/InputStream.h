@@ -119,6 +119,30 @@ public:
     }
 
     /**
+        Reads a vector of Uint8 written by writeUint8Vector().
+        \return the read vector
+    */
+    std::vector<Uint8> readUint8Vector() {
+        std::vector<Uint8> vec;
+        readUint8Vector(vec);
+
+        return vec;
+    }
+
+    /**
+        Reads a vector of Uint8 written by writeUint8Vector().
+        \param vec operate in place (reduce heap thrashing)
+    */
+    void readUint8Vector(std::vector<Uint8>& vec) {
+        vec.clear();
+        const auto size = readUint32();
+        vec.reserve(size);
+        for(unsigned int i = 0; i < size; i++) {
+            vec.push_back(readUint8());
+        }
+    }
+
+    /**
         Reads a list of Uint32 written by writeUint32List().
         \return the read list
     */

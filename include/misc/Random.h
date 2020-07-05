@@ -23,22 +23,33 @@
 #include <misc/SDL2pp.h>
 
 #include "misc/RngSupport.h"
-#include "misc/random_xoshiro256starstar.h"
-#include "misc/random_uint64_to_uint32.h"
 #include "misc/lemire_uniform_uint32_distribution.h"
+#include "misc/random_uint64_to_uint32.h"
+#include "misc/random_xoshiro256starstar.h"
 
-#include <initializer_list>
+#include <gsl/gsl>
+
+class RandomFactory;
 
 class Random final {
 public:
-    /// Default constructor.
-    Random() = default;
+    using generator_type = ExtraGenerators::uint64_to_uint32<ExtraGenerators::xoshiro256starstar>;
+    static constexpr size_t seed_words =
+        generator_type::state_words * sizeof(generator_type::state_type) / sizeof(Uint32);
+
+protected:
+    explicit Random(const generator_type& generator) : generator_{generator} { }
+    explicit Random(generator_type&& generator) : generator_{std::move(generator)} { }
+
+public:
+    explicit Random(const Random& random) = default;
+    Random& operator=(const Random& random) = default;
 
     /**
         Constructor which inits the seed value to seed
         \param  seed    the initial seed value
     */
-    explicit Random(Uint32 seed) : generator_{seed} { }
+    // explicit Random(Uint32 seed) : generator_{seed} { }
 
     /// Destructor
     ~Random();
@@ -47,25 +58,35 @@ public:
         Sets the seed value to newSeed
         \param newSeed  the new seed value
     */
-    inline void setSeed(Uint32 newSeed) { generator_.seed(static_cast<decltype(generator_)::result_type>(newSeed)); }
+    void setSeed(gsl::span<const Uint32, seed_words> newSeed);
+    void getSeed(gsl::span<Uint32, seed_words> seed) const;
 
     /**
         Returns the current seed value.
         \return the current seed value
     */
-    inline Uint32 getSeed() const { return 0; }
+    std::vector<Uint32> getSeed() const;
 
     /**
         Returns the maximum integer returned by rand()
         \return The maximum integer
     */
-    inline Uint32 getMaxRandom() const { return decltype(generator_)::max(); }
+    constexpr Uint32 getMaxRandom() { return decltype(generator_)::max(); }
 
     /**
         Calculates a random number with the "Linear congruential generator" (see numerical recipes for more details)
         \return a random integer on interval [0; getMaxRandom()]
     */
-    inline Uint32 rand() { return generator_(); }
+    Uint32 rand() { return generator_(); }
+
+    /**
+        Calculates a random number
+        Don't call this method if max < min.
+        \param  min min is the smallest possible value that is returned
+        \param  max max is the greatest possible value that is returned
+        \return a random integer on interval [min; max]
+    */
+    Uint32 rand(Uint32 min, Uint32 max) { return lemire_uniform_uint32_distribution{max - min + 1}(generator_) + min; }
 
     /**
         Calculates a random number with the "Linear congruential generator" (see numerical recipes for more details)
@@ -74,21 +95,10 @@ public:
         \param  max max is the greatest possible value that is returned
         \return a random integer on interval [min; max]
     */
-    inline Uint32 rand(Uint32 min, Uint32 max) {
-        return lemire_uniform_uint32_distribution{max - min}(generator_) + min;
-    }
-
-    /**
-        Calculates a random number with the "Linear congruential generator" (see numerical recipes for more details)
-        Don't call this method if max < min.
-        \param  min min is the smallest possible value that is returned
-        \param  max max is the greatest possible value that is returned
-        \return a random integer on interval [min; max]
-    */
-    inline Sint32 rand(Sint32 min, Sint32 max) {
+    Sint32 rand(Sint32 min, Sint32 max) {
         const auto umax = static_cast<Uint32>(max - min);
 
-        return static_cast<Sint32>(lemire_uniform_uint32_distribution{umax}(generator_)) + min;
+        return static_cast<Sint32>(lemire_uniform_uint32_distribution{umax + 1}(generator_)) + min;
     }
 
     /**
@@ -101,21 +111,50 @@ public:
         Returns an boolean value
         \return true or false
     */
-    inline bool randBool() { return (rand() & (1 << 31)) == 0; }
+    bool randBool() { return (rand() & (1 << 31)) == 0; }
 
     /**
         This method returns randomly one of the given parameters.
         \return one of the parameters, e.g. getRandOf({13,17,19}) returns 13, 17 or 19
     */
-    template<typename T, typename ... Args>
+    template<typename T, typename... Args>
     T getRandOf(const T& first, const Args&... args) {
-        std::array<T, sizeof...(Args) + 1> a{args...};
+        std::array<T, sizeof...(Args) + 1> a{first, args...};
 
         return a[rand(0, a.size() - 1)];
     }
 
 private:
-    ExtraGenerators::uint64_to_uint32<ExtraGenerators::xoshiro256starstar> generator_;
+    generator_type generator_;
+    static const FixPoint rand_scale_;
+
+    friend class RandomFactory;
+};
+
+class RandomFactory final {
+public:
+    static constexpr int seed_size = 64;
+
+    RandomFactory() {
+        const auto seed = createRandomSeed("Default");
+
+        setSeed(seed);
+    }
+
+    RandomFactory(gsl::span<Uint8> seed) { setSeed(seed); }
+
+    void               setSeed(gsl::span<const Uint8> seed);
+    std::vector<Uint8> getSeed() const;
+
+    Random create(const std::string_view& name) const;
+
+    static std::vector<Uint8> createRandomSeed(const std::string_view& name);
+
+private:
+    std::vector<Uint8> seed_;
+    std::array<unsigned char, seed_size> key_;
+
+    bool initialized_{};
 };
 
 #if 0
@@ -142,7 +181,7 @@ public:
         Sets the seed value to newSeed
         \param newSeed  the new seed value
     */
-    inline void setSeed(Uint32 newSeed) {
+    void setSeed(Uint32 newSeed) {
         seed = newSeed;
     }
 
@@ -150,7 +189,7 @@ public:
         Returns the current seed value.
         \return the current seed value
     */
-    inline Uint32 getSeed() const {
+    Uint32 getSeed() const {
         return seed;
     }
 
@@ -158,7 +197,7 @@ public:
         Returns the maximum integer returned by rand()
         \return The maximum integer
     */
-    inline Uint32 getMaxRandom() const {
+    Uint32 getMaxRandom() const {
         return 2147483646;
     }
 
@@ -166,7 +205,7 @@ public:
         Calculates a random number with the "Linear congruential generator" (see numerical recipes for more details)
         \return a random integer on interval [0; getMaxRandom()]
     */
-    inline Uint32 rand() {
+    Uint32 rand() {
         const Sint32 IA = 16807;
         const Sint32 IM = 2147483647;
         const Sint32 IQ = 127773;
@@ -193,7 +232,7 @@ public:
         \param  max max is the greatest possible value that is returned
         \return a random integer on interval [min; max]
     */
-    inline Uint32 rand(Uint32 min, Uint32 max) {
+    Uint32 rand(Uint32 min, Uint32 max) {
         return (rand() % (max - min + 1))+min;
     }
 
@@ -204,7 +243,7 @@ public:
         \param  max max is the greatest possible value that is returned
         \return a random integer on interval [min; max]
     */
-    inline Sint32 rand(Sint32 min, Sint32 max) {
+    Sint32 rand(Sint32 min, Sint32 max) {
         return (((Sint32) rand()) % (max - min + 1))+min;
     }
 
@@ -212,7 +251,7 @@ public:
         Returns an float value on the interval [0;1]
         \return a random float on [0;1]
     */
-    inline float randFloat() {
+    float randFloat() {
         return ((float) rand()) / ((float) getMaxRandom());
     }
 
@@ -220,7 +259,7 @@ public:
         Returns an double value on the interval [0;1]
         \return a random double on [0;1]
     */
-    inline double randDouble() {
+    double randDouble() {
         return ((double) rand()) / ((double) getMaxRandom());
     }
 
@@ -228,7 +267,7 @@ public:
         Returns an FixPoint value on the interval [0;1]
         \return a random FixPoint on [0;1]
     */
-    inline FixPoint randFixPoint() {
+    FixPoint randFixPoint() {
         return FixPoint(rand()) / getMaxRandom();
     }
 
@@ -238,7 +277,7 @@ public:
         Returns an boolean value
         \return true or false
     */
-    inline bool randBool() {
+    bool randBool() {
         return (rand() % 2 == 0);
     }
 
