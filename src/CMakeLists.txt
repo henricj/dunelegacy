@@ -292,21 +292,11 @@ set(HEADERS
 ../include/fixmath/fix16.h
 ../include/fixmath/fix16_trig_sin_lut.h
 ../include/fixmath/fix32.h
-../include/fixmath/fix32_support.h
 ../include/fixmath/fixmath.h
 ../include/fixmath/FixPoint.h
 ../include/fixmath/FixPoint16.h
 ../include/fixmath/FixPoint32.h
 ../include/fixmath/int64.h
-../include/fmt.hidden/color.h
-../include/fmt.hidden/core.h
-../include/fmt.hidden/format-inl.h
-../include/fmt.hidden/format.h
-../include/fmt.hidden/ostream.h
-../include/fmt.hidden/posix.h
-../include/fmt.hidden/printf.h
-../include/fmt.hidden/ranges.h
-../include/fmt.hidden/time.h
 ../include/Game.h
 ../include/GameInitSettings.h
 ../include/GameInterface.h
@@ -367,7 +357,6 @@ set(HEADERS
 ../include/INIMap/INIMapEditorLoader.h
 ../include/INIMap/INIMapLoader.h
 ../include/INIMap/INIMapPreviewCreator.h
-../include/main.h
 ../include/Map.h
 ../include/MapEditor/ChoamWindow.h
 ../include/MapEditor/LoadMapWindow.h
@@ -552,13 +541,13 @@ if(WIN32)
 endif()
 
 
-add_library(dune ${SOURCES})
+add_library(dune ${SOURCES} ${HEADERS})
 target_include_directories(dune PUBLIC ../include PRIVATE ../external/enet/include)
 target_link_libraries(dune PUBLIC ${LIBS})
 
 target_precompile_headers(dune PRIVATE ../IDE/VC/stdafx.h)
 
-add_executable(dunelegacy ${EXE_SOURCES})
+add_executable(dunelegacy ${EXE_SOURCES} ../include/main.h)
 target_link_libraries(dunelegacy PRIVATE dune SDL2::SDL2main)
 
 target_precompile_headers(dunelegacy REUSE_FROM dune)
