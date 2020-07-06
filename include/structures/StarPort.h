@@ -65,7 +65,7 @@ public:
     /**
         Start adding a random item to the order list.
     */
-    void doBuildRandom() override;
+    void doBuildRandom(const GameContext& context) override;
 
 
     void updateBuildList() override;
@@ -92,7 +92,7 @@ protected:
         Used for updating things that are specific to that particular structure. Is called from
         StructureBase::update() before the check if this structure is still alive.
     */
-    void updateStructureSpecificStuff() override;
+    void updateStructureSpecificStuff(const GameContext& context) override;
 
 private:
     void   init();

@@ -75,7 +75,7 @@ bool MCV::doDeploy() {
             setVisible(VIS_ALL, false);
 
             // destroy MCV but with base class method since we want no explosion
-            GroundUnit::destroy();
+            GroundUnit::destroy(GameContext{*currentGame.get(), *currentGameMap, currentGame->getObjectManager()});
 
             return true;
         }
@@ -95,7 +95,7 @@ bool MCV::canAttack(const ObjectBase* object) const {
             && object->isVisible(getOwner()->getTeamID()));
 }
 
-void MCV::destroy() {
+void MCV::destroy(const GameContext& context) {
     if(currentGameMap->tileExists(location) && isVisible()) {
         Coord realPos(lround(realX), lround(realY));
         currentGame->addExplosion(Explosion_SmallUnit, realPos, owner->getHouseID());
@@ -104,7 +104,7 @@ void MCV::destroy() {
             soundPlayer->playSoundAt(Sound_ExplosionSmall,location);
     }
 
-    GroundUnit::destroy();
+    GroundUnit::destroy(context);
 }
 
 bool MCV::canDeploy(int x, int y) {

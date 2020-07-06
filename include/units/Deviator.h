@@ -31,7 +31,7 @@ public:
     ~Deviator() override;
 
     void blitToScreen() override;
-    void destroy() override;
+    void destroy(const GameContext& context) override;
     bool canAttack(const ObjectBase* object) const override;
 
     void playAttackSound() override;

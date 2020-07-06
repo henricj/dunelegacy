@@ -34,22 +34,22 @@ public:
 
     void blitToScreen() override;
 
-    void checkPos() override;
-    void deploy(const Coord& newLocation) override;
-    void destroy() override;
+    void checkPos(const GameContext& context) override;
+    void deploy(const GameContext& context, const Coord& newLocation) override;
+    void destroy(const GameContext& context) override;
     void drawSelectionBox() override;
-    void handleDamage(int damage, Uint32 damagerID, House* damagerOwner) override;
+    void handleDamage(const GameContext& context, int damage, Uint32 damagerID, House* damagerOwner) override;
 
-    void handleReturnClick();
+    void handleReturnClick(const GameContext& context);
 
     /**
         Order this harvester to return to a refinery.
     */
     void doReturn();
 
-    void move() override;
+    void move(const GameContext& context) override;
     void setAmountOfSpice(FixPoint newSpice);
-    void setReturned();
+    void setReturned(const GameContext& context);
 
     using ObjectBase::setDestination;
     void setDestination(int newX, int newY) override;
@@ -67,7 +67,7 @@ public:
 private:
     void init();
 
-    void setSpeeds() override;
+    void setSpeeds(const GameContext& context) override;
 
     // harvester state
     bool     harvestingMode;         ///< currently harvesting

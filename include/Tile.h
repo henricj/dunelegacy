@@ -323,13 +323,11 @@ public:
     void unassignObject(Uint32 objectID);
     void unassignInfantry(Uint32 objectID, int currentPosition);
     void unassignUndergroundUnit(Uint32 objectID);
-    void setType(Game* game, Map* map, TERRAINTYPE newType);
-    void squash(const ObjectManager& objectManager) const;
+    void setType(const GameContext& context, TERRAINTYPE newType);
+    void squash(const GameContext& context) const;
     int getInfantryTeam(const ObjectManager& objectManager) const;
-    FixPoint harvestSpice(Game* game);
+    FixPoint harvestSpice(const GameContext& context);
     void setSpice(FixPoint newSpice);
-
-    void setType(Game* game, TERRAINTYPE newType) { setType(game, game->getMap(), newType); }
 
     /**
         Returns the center point of this tile
@@ -361,6 +359,11 @@ public:
         @return ObjectBase*  pointer to ground object
     */
     ObjectBase* getGroundObject(const ObjectManager& objectManager) const;
+
+    template<typename ObjectType>
+    ObjectType* getGroundObject(const ObjectManager& objectManager) const {
+        return dune_cast<ObjectType>(getGroundObject(objectManager));
+    }
 
     std::pair<bool, Dune::object_id_type> getGroundObjectID() const {
         if (hasANonInfantryGroundObject())
@@ -402,13 +405,13 @@ public:
         This method is called when the spice bloom on this till shall be triggered. If this tile has no spice bloom nothing happens.
         \param  pTrigger    the house that triggered the bloom
     */
-    void triggerSpiceBloom(Game* game, House* pTrigger);
+    void triggerSpiceBloom(const GameContext& context, House* pTrigger);
 
     /**
         This method is called when the spice bloom on this tile shall be triggered. If this tile has no spice bloom nothing happens.
         \param  pTrigger    the house that triggered the bloom
     */
-    void triggerSpecialBloom(Game* game, House* pTrigger);
+    void triggerSpecialBloom(const GameContext& context, House* pTrigger);
 
     /**
         Sets this tile as explored for this house.

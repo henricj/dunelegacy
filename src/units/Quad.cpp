@@ -56,7 +56,7 @@ void Quad::playAttackSound() {
     soundPlayer->playSoundAt(Sound_MachineGun,location);
 }
 
-void Quad::destroy() {
+void Quad::destroy(const GameContext& context) {
     if(currentGameMap->tileExists(location) && isVisible()) {
         Coord realPos(lround(realX), lround(realY));
         currentGame->addExplosion(Explosion_SmallUnit, realPos, owner->getHouseID());
@@ -65,5 +65,5 @@ void Quad::destroy() {
             soundPlayer->playSoundAt(Sound_ExplosionSmall,location);
     }
 
-    GroundUnit::destroy();
+    GroundUnit::destroy(context);
 }

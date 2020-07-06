@@ -119,17 +119,17 @@ void Devastator::doStartDevastate()
         devastateTimer = 200;
 }
 
-void Devastator::destroy()
+void Devastator::destroy(const GameContext& context)
 {
-    if(currentGameMap->tileExists(location) && isVisible()) {
+    if(context.map.tileExists(location) && isVisible()) {
         for(int i = 0; i < 3; i++) {
             for(int j = 0; j < 3; j++) {
                 Coord realPos(lround(realX) + (i - 1)*TILESIZE, lround(realY) + (j - 1)*TILESIZE);
 
-                currentGameMap->damage(objectID, owner, realPos, itemID, 150, 16, false);
+                context.map.damage(context, objectID, owner, realPos, itemID, 150, 16, false);
 
-                Uint32 explosionID = currentGame->randomGen.getRandOf(Explosion_Large1, Explosion_Large2);
-                currentGame->addExplosion(explosionID, realPos, owner->getHouseID());
+                Uint32 explosionID = context.game.randomGen.getRandOf(Explosion_Large1, Explosion_Large2);
+                context.game.addExplosion(explosionID, realPos, owner->getHouseID());
             }
         }
 
@@ -139,19 +139,18 @@ void Devastator::destroy()
         }
     }
 
-    TrackedUnit::destroy();
+    TrackedUnit::destroy(context);
 }
 
-bool Devastator::update()
-{
+bool Devastator::update(const GameContext& context) {
     if (active) {
         if ((devastateTimer > 0) && (--devastateTimer == 0)) {
-            destroy();
+            destroy(context);
             return false;
         }
     }
 
-    return UnitBase::update();
+    return UnitBase::update(context);
 }
 
 void Devastator::playAttackSound() {

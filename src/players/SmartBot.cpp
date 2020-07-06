@@ -38,8 +38,9 @@
 #define REFINERYLIMIT 10
 
 
-SmartBot::SmartBot(House* associatedHouse, const std::string& playername, Difficulty difficulty)
- : Player(associatedHouse, playername), difficulty(difficulty) {
+SmartBot::SmartBot(const GameContext& context, House* associatedHouse, const std::string& playername, Random&& random, Difficulty difficulty)
+    : Player(context, associatedHouse, playername, std::move(random)), difficulty(difficulty)
+{
     SmartBot::init();
 
     buildTimer = getRandomGen().rand(0,3) * 50;
@@ -47,7 +48,8 @@ SmartBot::SmartBot(House* associatedHouse, const std::string& playername, Diffic
 }
 
 
-SmartBot::SmartBot(InputStream& stream, House* associatedHouse) : Player(stream, associatedHouse) {
+SmartBot::SmartBot(const GameContext& context, InputStream& stream, House* associatedHouse, Random&& random)
+    : Player(context, stream, associatedHouse, std::move(random)) {
     SmartBot::init();
 
     difficulty = static_cast<Difficulty>(stream.readUint8());
@@ -96,7 +98,7 @@ void SmartBot::update() {
     checkAllUnits();
 
     if(buildTimer <= 0) {
-        build();
+        build(context_);
     } else {
         buildTimer -= AIUPDATEINTERVAL;
     }
@@ -134,9 +136,7 @@ void SmartBot::onDamage(const ObjectBase* pObject, int damage, Uint32 damagerID)
         if((pDamager != nullptr) && pDamager->isInfantry()) {
             doAttackObject(static_cast<const Harvester*>(pObject), pDamager, false);
         }
-    } else if(pObject->isAUnit() && pObject->canAttack(pDamager)) {
-        const auto* pUnit = static_cast<const UnitBase*>(pObject);
-
+    } else if(const auto* const pUnit = dune_cast<UnitBase>(pObject); pUnit && pObject->canAttack(pDamager)) {
         // if it is a rocket launcher and the distance is under 5 then run away!!
         if(pUnit->getItemID() == Unit_Launcher){
             doRepair(pUnit);
@@ -374,7 +374,7 @@ int SmartBot::getNumAdjacentStructureTiles(Coord pos, int structureSizeX, int st
 }
 
 
-void SmartBot::build() {
+void SmartBot::build(const GameContext& context) {
     // Lets count what we are building
     int buildQueue[ItemID_LastID] = {};
 
@@ -778,7 +778,7 @@ void SmartBot::attack() {
         return;
     }
 
-    for(const UnitBase *pUnit : getUnitList()) {
+    for(const auto *pUnit : getUnitList()) {
         if (pUnit->isRespondable()
             && (pUnit->getOwner() == getHouse())
             && pUnit->isActive()

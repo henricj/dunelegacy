@@ -136,12 +136,9 @@ void BuilderBase::save(OutputStream& stream) const {
     }
 }
 
-ObjectInterface* BuilderBase::getInterfaceContainer() {
-    if((pLocalHouse == owner) || (debug)) {
-        return BuilderInterface::create(objectID);
-    }         return DefaultObjectInterface::create(objectID);
-
-   
+std::unique_ptr<ObjectInterface> BuilderBase::getInterfaceContainer(const GameContext& context) {
+    if((pLocalHouse == owner) || (debug)) { return BuilderInterface::create(context, objectID); }
+    return DefaultObjectInterface::create(context, objectID);
 }
 
 void BuilderBase::insertItem(std::list<BuildItem>& buildItemList, std::list<BuildItem>::iterator& iter, ItemID_enum itemID, int price) {
@@ -272,10 +269,10 @@ void BuilderBase::updateProductionProgress() {
     }
 }
 
-void BuilderBase::doBuildRandom() {
+void BuilderBase::doBuildRandom(const GameContext& context) {
     if(buildList.empty()) return;
 
-    const auto item2Produce = std::next(buildList.begin(), currentGame->randomGen.rand(0, static_cast<Sint32>(buildList.size())-1))->itemID;
+    const auto item2Produce = std::next(buildList.begin(), context.game.randomGen.rand(0, static_cast<Sint32>(buildList.size())-1))->itemID;
     doProduceItem(item2Produce);
 }
 
@@ -368,12 +365,12 @@ void BuilderBase::unSetWaitingToPlace() {
     removeBuiltItemFromProductionQueue();
 }
 
-int BuilderBase::getUpgradeCost() const {
-    return currentGame->objectData.data[itemID][static_cast<int>(originalHouseID)].price / 2;
+int BuilderBase::getUpgradeCost(const GameContext& context) const {
+    return context.game.objectData.data[itemID][static_cast<int>(originalHouseID)].price / 2;
 }
 
 
-void BuilderBase::produce_item()
+void BuilderBase::produce_item(const GameContext& context)
 {
     auto finishedItemID = currentProducedItem;
     removeBuiltItemFromProductionQueue();
@@ -390,8 +387,6 @@ void BuilderBase::produce_item()
         num2Place = 3;
     }
 
-    auto* game = currentGame.get();
-
     for(auto i = 0; i < num2Place; i++) {
         auto *newUnit = getOwner()->createUnit(finishedItemID);
 
@@ -407,9 +402,9 @@ void BuilderBase::produce_item()
                 unitDestination = destination;
             }
 
-            const auto spot = currentGameMap->findDeploySpot(newUnit, location, unitDestination, structureSize);
+            const auto spot = context.map.findDeploySpot(newUnit, location, unitDestination, structureSize);
 
-            newUnit->deploy(spot);
+            newUnit->deploy(context, spot);
 
             if(unitDestination.isValid()) {
                 newUnit->setGuardPoint(unitDestination);
@@ -423,20 +418,20 @@ void BuilderBase::produce_item()
     }
 }
 
-bool BuilderBase::update() {
-    if(!StructureBase::update()) {
+bool BuilderBase::update(const GameContext& context) {
+    if(!StructureBase::update(context)) {
         return false;
     }
 
     if(isUnit(currentProducedItem) && (productionProgress >= getBuildItem(currentProducedItem)->price)) {
         deployTimer--;
         if(deployTimer == 0) {
-            produce_item();
+            produce_item(context);
         }
     }
 
     if(upgrading) {
-        const FixPoint totalUpgradePrice = getUpgradeCost();
+        const FixPoint totalUpgradePrice = getUpgradeCost(context);
 
         if(currentGame->getGameInitSettings().getGameOptions().instantBuild) {
             const FixPoint upgradePriceLeft = totalUpgradePrice - upgradeProgress;
@@ -510,10 +505,10 @@ void BuilderBase::handleSetOnHoldClick(bool OnHold) {
 }
 
 
-bool BuilderBase::doUpgrade() {
+bool BuilderBase::doUpgrade(const GameContext& context) {
     if(upgrading) {
         return false;
-    } if(isAllowedToUpgrade() && (owner->getCredits() >= getUpgradeCost())) {
+    } if(isAllowedToUpgrade() && (owner->getCredits() >= getUpgradeCost(context))) {
 
         upgrading = true;
 

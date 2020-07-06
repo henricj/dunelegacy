@@ -42,15 +42,15 @@ public:
     std::unique_ptr<Map> load();
 private:
     void loadMap();
-    void loadHouses();
+    void loadHouses(const GameContext& context);
     void loadChoam();
-    void loadUnits();
-    void loadStructures();
-    void loadReinforcements();
-    void loadAITeams();
-    void loadView();
+    void loadUnits(const GameContext& context);
+    void loadStructures(const GameContext& context);
+    void loadReinforcements(const GameContext& context);
+    void loadAITeams(const GameContext& context);
+    void loadView(const GameContext& context);
 
-    House*    getOrCreateHouse(HOUSETYPE house);
+    House*    getOrCreateHouse(const GameContext& context, HOUSETYPE house);
     HOUSETYPE getHouseID(const std::string& name);
 
     Game* pGame;

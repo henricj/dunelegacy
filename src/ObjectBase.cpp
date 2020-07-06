@@ -168,6 +168,10 @@ ObjectBase::ObjectBase(ItemID_enum itemID, Uint32 objectID) : itemID{itemID}, ob
 
 ObjectBase::~ObjectBase() = default;
 
+void ObjectBase::destroy(const GameContext& context) { context.objectManager.removeObject(getObjectID()); }
+
+void ObjectBase::cleanup(const GameContext& context, HumanPlayer* humanPlayer) { }
+
 void ObjectBase::save(OutputStream& stream) const {
     stream.writeUint32(static_cast<Uint32>(originalHouseID));
     stream.writeUint32(static_cast<Uint32>(owner->getHouseID()));
@@ -222,7 +226,7 @@ int ObjectBase::getMaxHealth() const {
     return currentGame->objectData.data[itemID][static_cast<int>(originalHouseID)].hitpoints;
 }
 
-void ObjectBase::handleDamage(int damage, Uint32 damagerID, House* damagerOwner) {
+void ObjectBase::handleDamage(const GameContext& context, int damage, Uint32 damagerID, House* damagerOwner) {
     if(damage >= 0) {
         FixPoint newHealth = getHealth();
 
@@ -249,8 +253,8 @@ void ObjectBase::handleDamage(int damage, Uint32 damagerID, House* damagerOwner)
 void ObjectBase::handleInterfaceEvent(SDL_Event* event) {
 }
 
-ObjectInterface* ObjectBase::getInterfaceContainer() {
-    return DefaultObjectInterface::create(objectID);
+std::unique_ptr<ObjectInterface> ObjectBase::getInterfaceContainer(const GameContext& context) {
+    return DefaultObjectInterface::create(context, objectID);
 }
 
 void ObjectBase::setDestination(int newX, int newY) {
@@ -267,16 +271,16 @@ void ObjectBase::setHealth(FixPoint newHealth) {
     }
 }
 
-void ObjectBase::setLocation(int xPos, int yPos) {
+void ObjectBase::setLocation(const GameContext& context, int xPos, int yPos) {
     if((xPos == INVALID_POS) && (yPos == INVALID_POS)) {
         location.invalidate();
-    } else if (currentGameMap->tileExists(xPos, yPos))  {
+    } else if (context.map.tileExists(xPos, yPos))  {
         location.x = xPos;
         location.y = yPos;
         realX = location.x*TILESIZE;
         realY = location.y*TILESIZE;
 
-        assignToMap(location);
+        assignToMap(context, location);
     }
 }
 
@@ -295,7 +299,17 @@ void ObjectBase::setVisible(int teamID, bool status) {
 
 void ObjectBase::setTarget(const ObjectBase* newTarget) {
     target.pointTo(const_cast<ObjectBase*>(newTarget));
-    targetFriendly = (target && (target.getObjPointer()->getOwner()->getTeamID() == owner->getTeamID()) && (getItemID() != Unit_Sandworm) && (target.getObjPointer()->getItemID() != Unit_Sandworm));
+
+    auto friendly = false;
+
+    if(target) {
+        if(auto* targetPtr = target.getObjPointer()) {
+            friendly = (targetPtr->getOwner()->getTeamID() == owner->getTeamID()) && (getItemID() != Unit_Sandworm) &&
+                       (targetPtr->getItemID() != Unit_Sandworm);
+        }
+    }
+
+    targetFriendly = friendly;
 }
 
 void ObjectBase::unassignFromMap(const Coord& location) const {
@@ -486,6 +500,8 @@ const ObjectBase* ObjectBase::findTarget() const {
                     && pTile->hasAnObject()) {
 
                     auto *const pNewTarget = pTile->getObject(currentGame->getObjectManager());
+                    if(!pNewTarget) continue;
+
                     if(((pNewTarget->getItemID() != Structure_Wall && pNewTarget->getItemID() != Unit_Carryall) || pClosestTarget == nullptr) && canAttack(pNewTarget)) {
                         if(targetDistance < closestTargetDistance) {
                             pClosestTarget = pNewTarget;
@@ -526,6 +542,8 @@ template<typename ObjectType, typename... Args>
 std::unique_ptr<ObjectBase> makeObject(Args&&... args) {
     static_assert(std::is_constructible<ObjectType, ItemID_enum, Args...>::value, "ObjectType is not constructible");
     static_assert(std::is_base_of<ObjectBase, ObjectType>::value, "ObjectType not derived from ObjectBase");
+    static_assert(std::is_base_of<ObjectBase, ObjectType::parent>::value, "ObjectType's parent is not derived from ObjectBase");
+    static_assert(std::is_base_of<ObjectType::parent, ObjectType>::value, "ObjectType's parent is not a base class");
 
     return std::make_unique<ObjectType>(ObjectType::item_id, std::forward<Args>(args)...);
 }

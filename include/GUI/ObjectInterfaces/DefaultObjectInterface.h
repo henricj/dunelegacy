@@ -37,15 +37,17 @@
 
 class DefaultObjectInterface : public ObjectInterface {
 public:
-    static DefaultObjectInterface* create(int objectID) {
-        auto* tmp = new DefaultObjectInterface(objectID);
+    static std::unique_ptr<DefaultObjectInterface> create(const GameContext& context, int objectID) {
+        auto tmp = std::unique_ptr<DefaultObjectInterface>{ new DefaultObjectInterface(context, objectID) };
         tmp->pAllocated = true;
         return tmp;
     }
 
+    ~DefaultObjectInterface() override = default;
+
 protected:
-    explicit DefaultObjectInterface(int objectID)  {
-        ObjectBase* pObject = currentGame->getObjectManager().getObject(objectID);
+    DefaultObjectInterface(const GameContext& context, int objectID) : context_{context} {
+        ObjectBase* pObject = context_.objectManager.getObject(objectID);
         if(pObject == nullptr) {
             THROW(std::invalid_argument, "Failed to resolve ObjectID %d!", objectID);
         }
@@ -67,8 +69,6 @@ protected:
         topBoxHBox.addWidget(Spacer::create());
     };
 
-    ~DefaultObjectInterface() override = default;
-
     /**
         This method updates the object interface.
         If the object doesn't exists anymore then update returns false.
@@ -76,7 +76,7 @@ protected:
     */
     bool update() override
     {
-        ObjectBase* pObject = currentGame->getObjectManager().getObject(objectID);
+        ObjectBase* pObject = context_.objectManager.getObject(objectID);
         return (pObject != nullptr);
     }
 
@@ -87,6 +87,8 @@ protected:
     HBox            topBoxHBox;
     HBox            mainHBox;
     PictureLabel    objPicture;
+
+    const GameContext context_;
 };
 
 #endif // DEFAULTOBJECTINTERFACE_H

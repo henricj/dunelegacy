@@ -23,12 +23,13 @@
 class Trike final : public GroundUnit {
 public:
     static const ItemID_enum item_id = Unit_Trike;
+    using parent                     = GroundUnit;
 
     Trike(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer);
     Trike(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer);
     ~Trike() override;
 
-    void destroy() override;
+    void destroy(const GameContext& context) override;
 
     bool hasBumpyMovementOnRock() const override { return true; }
 

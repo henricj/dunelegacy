@@ -28,7 +28,7 @@ protected:
 public:
     using parent = GroundUnit;
 
-    ~InfantryBase() override;
+    ~InfantryBase() override = 0;
 
     InfantryBase(const InfantryBase&) = delete;
     InfantryBase(InfantryBase&&)      = delete;
@@ -48,23 +48,23 @@ public:
         This method is called when an unit should capture a structure
         \param  targetStructureID   the ID of the structure to capture
     */
-    virtual void doCaptureStructure(Uint32 targetStructureID);
+    virtual void doCaptureStructure(const GameContext& context, Uint32 targetStructureID);
 
     /**
         This method is called when an unit should capture a structure
         \param  pStructure  the structure to capture
     */
-    virtual void doCaptureStructure(const StructureBase* pStructure);
+    virtual void doCaptureStructure(const GameContext& context, const StructureBase* pStructure);
 
-    void assignToMap(const Coord& pos) override;
+    void assignToMap(const GameContext& context, const Coord& pos) override;
     void blitToScreen() override;
-    void checkPos() override;
-    void destroy() override;
-    void move() override;
+    void checkPos(const GameContext& context) override;
+    void destroy(const GameContext& context) override;
+    void move(const GameContext& context) override;
 
-    void setLocation(int xPos, int yPos) override;
+    void setLocation(const GameContext& context, int xPos, int yPos) override;
 
-    void squash();
+    void squash(const GameContext& context);
 
     void playConfirmSound() override;
     void playSelectSound() override;
@@ -74,7 +74,7 @@ public:
     int getTilePosition() const { return tilePosition; }
 
 protected:
-    void setSpeeds() override;
+    void setSpeeds(const GameContext& context) override;
 
     // infantry state
     Sint8 tilePosition;    ///< The position in the current tile (0 to 4)

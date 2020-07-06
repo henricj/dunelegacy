@@ -77,9 +77,8 @@ void Frigate::save(OutputStream& stream) const
     stream.writeBool(droppedOffCargo);
 }
 
-void Frigate::checkPos()
-{
-    AirUnit::checkPos();
+void Frigate::checkPos(const GameContext& context) {
+    AirUnit::checkPos(context);
 
     if ((location == destination) && (distanceFrom(realX, realY, destination.x * TILESIZE + (TILESIZE/2), destination.y * TILESIZE + (TILESIZE/2)) < TILESIZE/8) ) {
         auto* pStarport = dynamic_cast<StarPort*>(target.getStructurePointer());
@@ -94,7 +93,7 @@ void Frigate::checkPos()
     }
 }
 
-bool Frigate::update() {
+bool Frigate::update(const GameContext& context) {
     const FixPoint& maxSpeed = currentGame->objectData.data[itemID][static_cast<int>(originalHouseID)].maxspeed;
 
     FixPoint dist = -1;
@@ -120,7 +119,7 @@ bool Frigate::update() {
         currentMaxSpeed = std::min(currentMaxSpeed + 0.2_fix, maxSpeed);
     }
 
-    if(!AirUnit::update()) {
+    if(!AirUnit::update(context)) {
         return false;
     }
 
@@ -137,20 +136,20 @@ bool Frigate::update() {
                 || (getRealY() < -TILESIZE) || (getRealY() > (currentGameMap->getSizeY()+1)*TILESIZE))) {
 
             setVisible(VIS_ALL, false);
-            destroy();
+            destroy(context);
             return false;
         }
     }
     return true;
 }
 
-void Frigate::deploy(const Coord& newLocation) {
-    AirUnit::deploy(newLocation);
+void Frigate::deploy(const GameContext& context, const Coord& newLocation) {
+    parent::deploy(context, newLocation);
 
     respondable = false;
 }
 
-void Frigate::turn() {
+void Frigate::turn(const GameContext& context) {
     if (active && droppedOffCargo
         && ((getRealX() < TILESIZE/2) || (getRealX() > currentGameMap->getSizeX()*TILESIZE - TILESIZE/2)
             || (getRealY() < TILESIZE/2) || (getRealY() > currentGameMap->getSizeY()*TILESIZE - TILESIZE/2))) {
@@ -158,5 +157,5 @@ void Frigate::turn() {
         return;
     }
 
-    AirUnit::turn();
+    parent::turn(context);
 }

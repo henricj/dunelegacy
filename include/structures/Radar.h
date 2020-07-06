@@ -30,7 +30,7 @@ public:
     Radar(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer);
     ~Radar() override;
 
-    ObjectInterface* getInterfaceContainer() override;
+    std::unique_ptr<ObjectInterface> getInterfaceContainer(const GameContext& context) override;
 
     /**
         Can this structure be captured by infantry units?
@@ -38,7 +38,7 @@ public:
     */
     bool canBeCaptured() const noexcept override { return false; }
 
-    void destroy() override;
+    void destroy(const GameContext& context) override;
 
 private:
     void init();

@@ -94,11 +94,12 @@ static const std::unordered_map<Uint32, int> targetPriorityMap = {
 };
 
 
-CampaignAIPlayer::CampaignAIPlayer(House* associatedHouse, const std::string& playername)
- : Player(associatedHouse, playername) {
+CampaignAIPlayer::CampaignAIPlayer(const GameContext& context, House* associatedHouse, const std::string& playername, Random&& random)
+ : Player(context, associatedHouse, playername, std::move(random)) {
 }
 
-CampaignAIPlayer::CampaignAIPlayer(InputStream& stream, House* associatedHouse) : Player(stream, associatedHouse) {
+CampaignAIPlayer::CampaignAIPlayer(const GameContext& context, InputStream& stream, House* associatedHouse, Random&& random)
+    : Player(context, stream, associatedHouse, std::move(random)) {
     CampaignAIPlayer::init();
 
     Uint32 numStructureInfo = stream.readUint32();

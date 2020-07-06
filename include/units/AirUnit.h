@@ -44,22 +44,22 @@ public:
     void playConfirmSound() override { }
     void playSelectSound() override { }
 
-    void destroy() override;
+    void destroy(const GameContext& context) override;
 
-    void assignToMap(const Coord& pos) override;
-    void checkPos() override;
+    void assignToMap(const GameContext& context, const Coord& pos) override;
+    void checkPos(const GameContext& context) override;
     bool canPassTile(const Tile* pTile) const override;
 
-    FixPoint getMaxSpeed() const override {
+    FixPoint getMaxSpeed(const GameContext& context) const override {
         return currentMaxSpeed;
     }
 
 protected:
     virtual FixPoint getDestinationAngle() const;
 
-    void navigate() override;
-    void move() override;
-    void turn() override;
+    void navigate(const GameContext& context) override;
+    void move(const GameContext& context) override;
+    void turn(const GameContext& context) override;
 
     FixPoint currentMaxSpeed;               ///< The current maximum allowed speed
 

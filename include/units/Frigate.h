@@ -32,18 +32,18 @@ public:
 
     void save(OutputStream& stream) const override;
 
-    void checkPos() override;
+    void checkPos(const GameContext& context) override;
 
     /**
         Updates this frigate.
         \return true if this object still exists, false if it was destroyed
     */
-    bool update() override;
+    bool update(const GameContext& context) override;
 
-    void deploy(const Coord& newLocation) override;
+    void deploy(const GameContext& context, const Coord& newLocation) override;
 
 protected:
-    void turn() override;
+    void turn(const GameContext& context) override;
 
 private:
     void init();

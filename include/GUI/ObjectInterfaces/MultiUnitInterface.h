@@ -39,14 +39,14 @@
 
 class MultiUnitInterface : public ObjectInterface {
 public:
-    static MultiUnitInterface* create() {
-        auto* tmp = new MultiUnitInterface();
+    static std::unique_ptr<MultiUnitInterface> create(const GameContext& context) {
+        auto tmp        = std::unique_ptr<MultiUnitInterface>{new MultiUnitInterface{context}};
         tmp->pAllocated = true;
         return tmp;
     }
 
 protected:
-    MultiUnitInterface()  {
+    MultiUnitInterface(const GameContext& context) : context_{context} {
         Uint32 color = SDL2RGB(palette[houseToPaletteIndex[static_cast<int>(pLocalHouse->getHouseID())]+3]);
 
         addWidget(&topBox,Point(0,0),Point(SIDEBARWIDTH - 25,80));
@@ -132,7 +132,7 @@ protected:
         guardButton.setTextColor(color);
         guardButton.setTooltipText(_("Unit will not move from location"));
         guardButton.setToggleButton(true);
-        guardButton.setOnClick([this] { onGuard(); });
+        guardButton.setOnClick([this] { onGuard(context_); });
         buttonVBox.addWidget(&guardButton, 26);
 
         buttonVBox.addWidget(VSpacer::create(6));
@@ -141,7 +141,7 @@ protected:
         areaGuardButton.setTextColor(color);
         areaGuardButton.setTooltipText(_("Unit will engage any unit within guard range"));
         areaGuardButton.setToggleButton(true);
-        areaGuardButton.setOnClick([this] { onAreaGuard(); });
+        areaGuardButton.setOnClick([this] { onAreaGuard(context_); });
         buttonVBox.addWidget(&areaGuardButton, 26);
 
         buttonVBox.addWidget(VSpacer::create(6));
@@ -150,7 +150,7 @@ protected:
         stopButton.setTextColor(color);
         stopButton.setTooltipText(_("Unit will not move, nor attack"));
         stopButton.setToggleButton(true);
-        stopButton.setOnClick([this] { onStop(); });
+        stopButton.setOnClick([this] { onStop(context_); });
         buttonVBox.addWidget(&stopButton, 26);
 
         buttonVBox.addWidget(VSpacer::create(6));
@@ -159,7 +159,7 @@ protected:
         ambushButton.setTextColor(color);
         ambushButton.setTooltipText(_("Unit will not move until enemy unit spotted"));
         ambushButton.setToggleButton(true);
-        ambushButton.setOnClick([this] { onAmbush(); });
+        ambushButton.setOnClick([this] { onAmbush(context_); });
         buttonVBox.addWidget(&ambushButton, 26);
 
         buttonVBox.addWidget(VSpacer::create(6));
@@ -168,7 +168,7 @@ protected:
         huntButton.setTextColor(color);
         huntButton.setTooltipText(_("Unit will immediately start to engage an enemy unit"));
         huntButton.setToggleButton(true);
-        huntButton.setOnClick([this] { onHunt(); });
+        huntButton.setOnClick([this] { onHunt(context_); });
         buttonVBox.addWidget(&huntButton, 26);
 
         buttonVBox.addWidget(VSpacer::create(6));
@@ -177,7 +177,7 @@ protected:
         retreatButton.setTextColor(color);
         retreatButton.setTooltipText(_("Unit will retreat back to base"));
         retreatButton.setToggleButton(true);
-        retreatButton.setOnClick([this] { onRetreat(); });
+        retreatButton.setOnClick([this] { onRetreat(context_); });
         buttonVBox.addWidget(&retreatButton, 26);
 
         buttonVBox.addWidget(VSpacer::create(6));
@@ -211,7 +211,7 @@ protected:
             ObjectBase* pObject = currentGame->getObjectManager().getObject(selectedUnitID);
             auto* pHarvester = dynamic_cast<Harvester*>(pObject);
             if(pHarvester != nullptr) {
-                pHarvester->handleReturnClick();
+                pHarvester->handleReturnClick(context_);
             }
         }
     }
@@ -246,39 +246,39 @@ protected:
         }
     }
 
-    void onGuard() {
-        setAttackMode(GUARD);
+    void onGuard(const GameContext& context) {
+        setAttackMode(context, GUARD);
     }
 
-    void onAreaGuard() {
-        setAttackMode(AREAGUARD);
+    void onAreaGuard(const GameContext& context) {
+        setAttackMode(context, AREAGUARD);
     }
 
-    void onStop() {
-        setAttackMode(STOP);
+    void onStop(const GameContext& context) {
+        setAttackMode(context, STOP);
     }
 
-    void onAmbush() {
-        setAttackMode(AMBUSH);
+    void onAmbush(const GameContext& context) {
+        setAttackMode(context, AMBUSH);
     }
 
-    void onHunt() {
-        setAttackMode(HUNT);
+    void onHunt(const GameContext& context) {
+        setAttackMode(context, HUNT);
     }
 
-    void onRetreat(){
-        setAttackMode(RETREAT);
+    void onRetreat(const GameContext& context) {
+        setAttackMode(context, RETREAT);
     }
 
-    void setAttackMode(ATTACKMODE newAttackMode) {
+    void setAttackMode(const GameContext& context, ATTACKMODE newAttackMode) {
+        auto& [game, map, objectManager] = context;
 
         UnitBase* pLastUnit = nullptr;
-        for(const Uint32 selectedUnitID : currentGame->getSelectedList()) {
-            ObjectBase* pObject = currentGame->getObjectManager().getObject(selectedUnitID);
-            auto* pUnit = dynamic_cast<UnitBase*>(pObject);
+        for(const auto selectedUnitID : game.getSelectedList()) {
+            auto* const pUnit = objectManager.getObject<UnitBase>(selectedUnitID);
             if(pUnit != nullptr) {
                 pLastUnit = pUnit;
-                pUnit->handleSetAttackModeClick(newAttackMode);
+                pUnit->handleSetAttackModeClick(context, newAttackMode);
             }
         }
 
@@ -410,6 +410,8 @@ protected:
     TextButton      ambushButton;
     TextButton      huntButton;
     TextButton      retreatButton;
+
+    const GameContext context_;
 };
 
 #endif //MULTIUNITINTERFACE_H

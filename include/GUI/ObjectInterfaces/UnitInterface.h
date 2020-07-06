@@ -37,14 +37,14 @@
 
 class UnitInterface : public DefaultObjectInterface {
 public:
-    static UnitInterface* create(int objectID) {
-        auto* tmp = new UnitInterface(objectID);
+    static std::unique_ptr<UnitInterface> create(const GameContext& context, int objectID) {
+        auto tmp        = std::unique_ptr<UnitInterface>{new UnitInterface{context, objectID}};
         tmp->pAllocated = true;
         return tmp;
     }
 
 protected:
-    explicit UnitInterface(int objectID) : DefaultObjectInterface(objectID) {
+    explicit UnitInterface(const GameContext& context, int objectID) : DefaultObjectInterface(context, objectID) {
         Uint32 color = SDL2RGB(palette[houseToPaletteIndex[static_cast<int>(pLocalHouse->getHouseID())] + 3]);
 
         mainHBox.addWidget(HSpacer::create(4));
@@ -209,7 +209,7 @@ protected:
         ObjectBase* pObject = currentGame->getObjectManager().getObject(objectID);
         auto* pHarvester = dynamic_cast<Harvester*>(pObject);
         if(pHarvester != nullptr) {
-            pHarvester->handleReturnClick();
+            pHarvester->handleReturnClick(context_);
         }
     }
 
@@ -254,11 +254,10 @@ protected:
     }
 
     void setAttackMode(ATTACKMODE newAttackMode) {
-        ObjectBase* pObject = currentGame->getObjectManager().getObject(objectID);
-        auto* pUnit = dynamic_cast<UnitBase*>(pObject);
+        auto* pUnit = context_.objectManager.getObject<UnitBase>(objectID);
 
         if(pUnit != nullptr) {
-            pUnit->handleSetAttackModeClick(newAttackMode);
+            pUnit->handleSetAttackModeClick(context_, newAttackMode);
             pUnit->playConfirmSound();
 
             update();

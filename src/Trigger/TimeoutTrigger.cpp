@@ -17,35 +17,29 @@
 
 #include <Trigger/TimeoutTrigger.h>
 
-#include <globals.h>
 #include <Game.h>
 #include <House.h>
 #include <SoundPlayer.h>
+#include <globals.h>
 
-TimeoutTrigger::TimeoutTrigger(Uint32 triggerCycleNumber) : Trigger(triggerCycleNumber)
-{
-}
+TimeoutTrigger::TimeoutTrigger(Uint32 triggerCycleNumber) : Trigger(triggerCycleNumber) { }
 
-TimeoutTrigger::TimeoutTrigger(InputStream& stream) : Trigger(stream)
-{
-}
+TimeoutTrigger::TimeoutTrigger(InputStream& stream) : Trigger(stream) { }
 
 TimeoutTrigger::~TimeoutTrigger() = default;
 
-void TimeoutTrigger::save(OutputStream& stream) const
-{
-    Trigger::save(stream);
-}
+void TimeoutTrigger::save(OutputStream& stream) const { Trigger::save(stream); }
 
-void TimeoutTrigger::trigger()
-{
-    if((currentGame->loseFlags & WINLOSEFLAGS_TIMEOUT) != 0) {
+void TimeoutTrigger::trigger(const GameContext& context) {
+    auto& game = context.game;
+
+    if((game.loseFlags & WINLOSEFLAGS_TIMEOUT) != 0) {
         // player has won
-        currentGame->setGameWon();
+        game.setGameWon();
         soundPlayer->playVoice(YourMissionIsComplete, pLocalHouse->getHouseID());
     } else {
         // ai has won
-        currentGame->setGameLost();
+        game.setGameLost();
         soundPlayer->playVoice(YouHaveFailedYourMission, pLocalHouse->getHouseID());
     }
 }

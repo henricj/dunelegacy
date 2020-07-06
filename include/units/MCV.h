@@ -40,14 +40,14 @@ public:
 
     bool canAttack(const ObjectBase* object) const override;
 
-    void destroy() override;
+    void destroy(const GameContext& context) override;
 
     bool canDeploy() const {
         return canDeploy(getLocation().x, getLocation().y);
     }
 
 private:
-    void        init();
+    void init();
 
     static bool canDeploy(int x, int y);
 };

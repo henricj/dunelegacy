@@ -31,7 +31,7 @@ public:
 
     void blitToScreen() override;
 
-    void destroy() override;
+    void destroy(const GameContext& context) override;
 
     void playAttackSound() override;
 

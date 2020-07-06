@@ -312,17 +312,14 @@ void Bullet::blitToScreen() const
 }
 
 
-bool Bullet::update()
-{
+bool Bullet::update(const GameContext& context) {
     if(bulletID == Bullet_Rocket || bulletID == Bullet_DRocket || bulletID == Bullet_TurretRocket) {
 
         ObjectBase* pTarget = target.getObjPointer();
-        if(pTarget && pTarget->isAFlyingUnit()) {
-            destination = pTarget->getCenterPoint();
-        }
+        if(pTarget && pTarget->isAFlyingUnit()) { destination = pTarget->getCenterPoint(); }
 
         const auto angleToDestinationRad = destinationAngleRad(Coord(lround(realX), lround(realY)), destination);
-        const auto angleToDestination = RadToDeg256(angleToDestinationRad);
+        const auto angleToDestination    = RadToDeg256(angleToDestinationRad);
 
         auto angleDifference = angleToDestination - angle;
         if(angleDifference > 128) {
@@ -350,73 +347,87 @@ bool Bullet::update()
         xSpeed = speed * FixPoint::cos(Deg256ToRad(angle));
         ySpeed = speed * -FixPoint::sin(Deg256ToRad(angle));
 
-        drawnAngle = lround(numFrames*angle/256) % numFrames;
+        drawnAngle = lround(numFrames * angle / 256) % numFrames;
     }
-
 
     const auto oldDistanceToDestination = distanceFrom(realX, realY, destination.x, destination.y);
 
-    realX += xSpeed;  //keep the bullet moving by its current speeds
+    realX += xSpeed; // keep the bullet moving by its current speeds
     realY += ySpeed;
-    location.x = floor(realX/TILESIZE);
-    location.y = floor(realY/TILESIZE);
+    location.x = floor(realX / TILESIZE);
+    location.y = floor(realY / TILESIZE);
 
-    if((location.x < -5) || (location.x >= currentGameMap->getSizeX() + 5) || (location.y < -5) || (location.y >= currentGameMap->getSizeY() + 5)) {
+    if((location.x < -5) || (location.x >= currentGameMap->getSizeX() + 5) || (location.y < -5) ||
+       (location.y >= currentGameMap->getSizeY() + 5)) {
         // it's off the map => delete it
         return true;
     }
-    else {
-        const auto newDistanceToDestination = distanceFrom(realX, realY, destination.x, destination.y);
 
-        if(detonationTimer > 0) {
-            detonationTimer--;
+    const auto newDistanceToDestination = distanceFrom(realX, realY, destination.x, destination.y);
+
+    if(detonationTimer > 0) { detonationTimer--; }
+
+    auto& map = context.map;
+
+    if(bulletID == Bullet_Sonic) {
+
+        if(detonationTimer == 0) {
+            destroy(context);
+            return true;
         }
 
-        if(bulletID == Bullet_Sonic) {
+        FixPoint weaponDamage =
+            context.game.objectData.data[Unit_SonicTank][static_cast<int>(owner->getHouseID())].weapondamage;
 
+        FixPoint startDamage = (weaponDamage / 4 + 1) / 4.5_fix;
+        FixPoint endDamage   = ((weaponDamage - 9) / 4 + 1) / 4.5_fix;
+
+        const auto damageDecrease = -(startDamage - endDamage) / (45 * 2 * speed);
+        const auto dist           = distanceFrom(source.x, source.y, realX, realY);
+
+        const auto currentDamage = dist * damageDecrease + startDamage;
+
+        auto realPos = Coord(lround(realX), lround(realY));
+        map.damage(context, shooterID, owner, realPos, bulletID, currentDamage / 2, damageRadius, false);
+
+        realX += xSpeed; // keep the bullet moving by its current speeds
+        realY += ySpeed;
+
+        realPos = Coord(lround(realX), lround(realY));
+        map.damage(context, shooterID, owner, realPos, bulletID, currentDamage / 2, damageRadius, false);
+
+        return false;
+    }
+
+    if(explodesAtGroundObjects) {
+        auto* tile = map.tryGetTile(location.x, location.y);
+
+        if(tile && tile->hasANonInfantryGroundObject()) {
+            auto* structure = tile->getNonInfantryGroundObject(context.objectManager);
+
+            if(structure && structure->isAStructure() &&
+               ((bulletID != Bullet_ShellTurret) || (structure->getOwner() != owner))) {
+                destroy(context);
+
+                return true;
+            }
+        }
+    }
+
+    if(oldDistanceToDestination < newDistanceToDestination || newDistanceToDestination < 4) {
+
+        if(bulletID == Bullet_Rocket || bulletID == Bullet_DRocket) {
             if(detonationTimer == 0) {
-                destroy();
+                destroy(context);
+
                 return true;
             }
+        } else {
+            realX = destination.x;
+            realY = destination.y;
+            destroy(context);
 
-            FixPoint weaponDamage = currentGame->objectData.data[Unit_SonicTank][static_cast<int>(owner->getHouseID())].weapondamage;
-
-            FixPoint startDamage = (weaponDamage / 4 + 1) / 4.5_fix;
-            FixPoint endDamage = ((weaponDamage-9) / 4 + 1) / 4.5_fix;
-
-            const auto damageDecrease = - (startDamage-endDamage)/(45 * 2 * speed);
-            const auto dist = distanceFrom(source.x, source.y, realX, realY);
-
-            const auto currentDamage = dist*damageDecrease + startDamage;
-
-            auto realPos = Coord(lround(realX), lround(realY));
-            currentGameMap->damage(shooterID, owner, realPos, bulletID, currentDamage/2, damageRadius, false);
-
-            realX += xSpeed;  //keep the bullet moving by its current speeds
-            realY += ySpeed;
-
-            realPos = Coord(lround(realX), lround(realY));
-            currentGameMap->damage(shooterID, owner, realPos, bulletID, currentDamage/2, damageRadius, false);
-        } else if( explodesAtGroundObjects
-                    && currentGameMap->tileExists(location)
-                    && currentGameMap->getTile(location)->hasAGroundObject()
-                    && currentGameMap->getTile(location)->getGroundObject(currentGame->getObjectManager())->isAStructure()
-                    && ((bulletID != Bullet_ShellTurret) || (currentGameMap->getTile(location)->getGroundObject(currentGame->getObjectManager())->getOwner() != owner))) {
-            destroy();
             return true;
-        } else if(oldDistanceToDestination < newDistanceToDestination || newDistanceToDestination < 4)  {
-
-            if(bulletID == Bullet_Rocket || bulletID == Bullet_DRocket) {
-                if(detonationTimer == 0) {
-                    destroy();
-                    return true;
-                }
-            } else {
-                realX = destination.x;
-                realY = destination.y;
-                destroy();
-                return true;
-            }
         }
     }
 
@@ -424,17 +435,18 @@ bool Bullet::update()
 }
 
 
-void Bullet::destroy() const
-{
+void Bullet::destroy(const GameContext& context) const {
     auto position = Coord(lround(realX), lround(realY));
+
+    auto& [game, map, objectManager] = context;
 
     const auto houseID = owner->getHouseID();
 
     switch(bulletID) {
         case Bullet_DRocket: {
-            currentGameMap->damage(shooterID, owner, position, bulletID, damage, damageRadius, airAttack);
+            map.damage(context, shooterID, owner, position, bulletID, damage, damageRadius, airAttack);
             soundPlayer->playSoundAt(Sound_ExplosionGas, position);
-            currentGame->addExplosion(Explosion_Gas, position, houseID);
+            game.addExplosion(Explosion_Gas, position, houseID);
         } break;
 
         case Bullet_LargeRocket: {
@@ -442,14 +454,14 @@ void Bullet::destroy() const
 
             for(auto i = 0; i < 5; i++) {
                 for(auto j = 0; j < 5; j++) {
-                    if (((i != 0) && (i != 4)) || ((j != 0) && (j != 4))) {
-                        position.x = lround(realX) + (i - 2)*TILESIZE;
-                        position.y = lround(realY) + (j - 2)*TILESIZE;
+                    if(((i != 0) && (i != 4)) || ((j != 0) && (j != 4))) {
+                        position.x = lround(realX) + (i - 2) * TILESIZE;
+                        position.y = lround(realY) + (j - 2) * TILESIZE;
 
-                        currentGameMap->damage(shooterID, owner, position, bulletID, damage, damageRadius, airAttack);
+                        map.damage(context, shooterID, owner, position, bulletID, damage, damageRadius, airAttack);
 
-                        Uint32 explosionID = currentGame->randomGen.getRandOf(Explosion_Large1,Explosion_Large2);
-                        currentGame->addExplosion(explosionID,position,houseID);
+                        Uint32 explosionID = game.randomGen.getRandOf(Explosion_Large1, Explosion_Large2);
+                        game.addExplosion(explosionID, position, houseID);
                         screenborder->shakeScreen(22);
                     }
                 }
@@ -459,28 +471,28 @@ void Bullet::destroy() const
         case Bullet_Rocket:
         case Bullet_TurretRocket:
         case Bullet_SmallRocket: {
-            currentGameMap->damage(shooterID, owner, position, bulletID, damage, damageRadius, airAttack);
-            currentGame->addExplosion(Explosion_Small,position,houseID);
+            map.damage(context, shooterID, owner, position, bulletID, damage, damageRadius, airAttack);
+            game.addExplosion(Explosion_Small, position, houseID);
         } break;
 
         case Bullet_ShellSmall: {
-            currentGameMap->damage(shooterID, owner, position, bulletID, damage, damageRadius, airAttack);
-            currentGame->addExplosion(Explosion_ShellSmall,position,houseID);
+            map.damage(context, shooterID, owner, position, bulletID, damage, damageRadius, airAttack);
+            game.addExplosion(Explosion_ShellSmall, position, houseID);
         } break;
 
         case Bullet_ShellMedium: {
-            currentGameMap->damage(shooterID, owner, position, bulletID, damage, damageRadius, airAttack);
-            currentGame->addExplosion(Explosion_ShellMedium,position,houseID);
+            map.damage(context, shooterID, owner, position, bulletID, damage, damageRadius, airAttack);
+            game.addExplosion(Explosion_ShellMedium, position, houseID);
         } break;
 
         case Bullet_ShellLarge: {
-            currentGameMap->damage(shooterID, owner, position, bulletID, damage, damageRadius, airAttack);
-            currentGame->addExplosion(Explosion_ShellLarge,position,houseID);
+            map.damage(context, shooterID, owner, position, bulletID, damage, damageRadius, airAttack);
+            game.addExplosion(Explosion_ShellLarge, position, houseID);
         } break;
 
         case Bullet_ShellTurret: {
-            currentGameMap->damage(shooterID, owner, position, bulletID, damage, damageRadius, airAttack);
-            currentGame->addExplosion(Explosion_ShellMedium,position,houseID);
+            map.damage(context, shooterID, owner, position, bulletID, damage, damageRadius, airAttack);
+            game.addExplosion(Explosion_ShellMedium, position, houseID);
         } break;
 
         case Bullet_Sonic:

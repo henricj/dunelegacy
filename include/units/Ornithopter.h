@@ -33,12 +33,12 @@ public:
 
     void save(OutputStream& stream) const override;
 
-    void checkPos() override;
+    void checkPos(const GameContext& context) override;
     bool canAttack(const ObjectBase* object) const override;
 
     bool canPassTile(const Tile* pTile) const override;
 
-    void destroy() override;
+    void destroy(const GameContext& context) override;
 
     void playAttackSound() override;
 

@@ -43,10 +43,11 @@ public:
     void save(OutputStream& stream, Uint32 gameCycleCount) const;
 
     void createSandRegions();
-    void damage(Uint32 damagerID, House* damagerOwner, const Coord& realPos, Uint32 bulletID, FixPoint damage, int damageRadius, bool air);
+    void damage(const GameContext& context, Uint32 damagerID, House* damagerOwner, const Coord& realPos, Uint32 bulletID,
+                FixPoint damage, int damageRadius, bool air);
     static Coord getMapPos(ANGLETYPE angle, const Coord& source);
     void removeObjectFromMap(Uint32 objectID);
-    void spiceRemoved(const Coord& coord);
+    void spiceRemoved(const GameContext& context, const Coord& coord);
     void selectObjects(const House* pHouse, int x1, int y1, int x2, int y2, int realX, int realY, bool objectARGMode);
 
     void viewMap(HOUSETYPE houseID, const Coord& location, const int maxViewRange);
@@ -69,7 +70,7 @@ public:
         return findDeploySpot(pUnit, origin, random_, gatherPoint, buildingSize);
     }
 
-    void createSpiceField(Coord location, int radius, bool centerIsThickSpice = false);
+    void createSpiceField(const GameContext& context, Coord location, int radius, bool centerIsThickSpice = false);
 
     Sint32 getSizeX() const noexcept {
         return sizeX;
@@ -409,6 +410,9 @@ public:
 
     bool find_path(UnitBase* pUnit, Coord start, Coord destination, std::vector<Coord>& path)
     {
+        if(!tileExists(start.x, start.y)) return false;
+        if(!tileExists(destination.x, destination.y)) return false;
+
         pathfinder_.Search(this, pUnit, start, destination);
 
         return pathfinder_.getFoundPath(this, path);
@@ -425,11 +429,11 @@ public:
 
     void removeSelection(Uint32 objectID) { removedObjects.push(objectID); }
 
-    bool trySetTileType(int x, int y, TERRAINTYPE type) {
+    bool trySetTileType(const GameContext& context, int x, int y, TERRAINTYPE type) {
         const auto tile = tryGetTile(x, y);
         if(!tile) return false;
 
-        tile->setType(currentGame.get(), type);
+        tile->setType(context, type);
 
         return true;
     }

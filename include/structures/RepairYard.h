@@ -33,11 +33,12 @@ public:
     RepairYard(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer);
     ~RepairYard() override;
 
+    void cleanup(const GameContext& context, HumanPlayer* humanPlayer) override;
     void save(OutputStream& stream) const override;
 
-    ObjectInterface* getInterfaceContainer() override;
+    std::unique_ptr<ObjectInterface> getInterfaceContainer(const GameContext& context) override;
 
-    void deployRepairUnit(Carryall* pCarryall = nullptr);
+    void deployRepairUnit(const GameContext& context, Carryall* pCarryall = nullptr);
 
     void book() { bookings++; }
     void unBook() { bookings--; }
@@ -52,7 +53,7 @@ protected:
         Used for updating things that are specific to that particular structure. Is called from
         StructureBase::update() before the check if this structure is still alive.
     */
-    void updateStructureSpecificStuff() override;
+    void updateStructureSpecificStuff(const GameContext& context) override;
 
 private:
     void            init();

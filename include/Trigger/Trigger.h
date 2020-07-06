@@ -67,7 +67,7 @@ public:
     /**
         Trigger this trigger. Shall only be called when getCycleNumber() is equal to the current game cycle
     */
-    virtual void trigger() = 0;
+    virtual void trigger(const GameContext& context) = 0;
 
 protected:
     Uint32 cycleNumber;     ///< the game cycle this trigger shall be triggered

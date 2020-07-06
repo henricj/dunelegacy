@@ -37,21 +37,21 @@ public:
     Carryall& operator=(const Carryall &) = delete;
     Carryall& operator=(Carryall &&) = delete;
 
-    void checkPos() override;
+    void checkPos(const GameContext& context) override;
 
     /**
         Updates this carryall.
         \return true if this object still exists, false if it was destroyed
     */
-    bool update() override;
+    bool update(const GameContext& context) override;
 
-    void deploy(const Coord& newLocation) override;
+    void deploy(const GameContext& context, const Coord& newLocation) override;
 
-    void destroy() override;
+    void destroy(const GameContext& context) override;
 
-    void deployUnit(Uint32 unitID);
+    void deployUnit(const GameContext& context, Uint32 unitID);
 
-    void giveCargo(UnitBase* newUnit);
+    void giveCargo(const GameContext& context, UnitBase* newUnit);
 
     void save(OutputStream& stream) const override;
 
@@ -73,10 +73,10 @@ private:
     void init();
 
     void releaseTarget() override;
-    void engageTarget() override;
-    void pickupTarget();
-    void targeting() override;
-    void turn() override;
+    void engageTarget(const GameContext& context) override;
+    void pickupTarget(const GameContext& context);
+    void targeting(const GameContext& context) override;
+    void turn(const GameContext& context) override;
 
     // unit state/properties
     std::vector<Uint32>   pickedUpUnitList;   ///< What units does this carryall carry?
@@ -88,9 +88,9 @@ private:
 
 
     template<typename F>
-    void removeUnits(F&& predicate) {
+    void removeUnits(const GameContext& context, F&& predicate) {
         auto& units = pickedUpUnitList;
-        const auto& objectManager = currentGame->getObjectManager();
+        const auto& objectManager = context.objectManager;
 
         units.erase(std::remove_if(units.begin(), units.end(),
             [&](Uint32 unit_id) {
@@ -101,22 +101,22 @@ private:
             units.end());
     }
 
-    void pre_deployUnits();
-    void deployUnit(Tile* tile, UnitBase* pUnit);
+    void pre_deployUnits(const GameContext& context);
+    void deployUnit(const GameContext& context, Tile* tile, UnitBase* pUnit);
     void post_deployUnits();
 
     template<typename F>
-    void deployUnits(F&& predicate) {
+    void deployUnits(const GameContext& context, F&& predicate) {
         pre_deployUnits();
 
         auto *const tile = currentGameMap->getTile(location);
 
-        removeUnits([=](UnitBase* unit)
+        removeUnits([&](UnitBase* unit)
                     {
                         if (!F(unit))
                             return false;
 
-                        deployUnit(tile, unit);
+                        deployUnit(context, tile, unit);
 
                         return true;
                     });

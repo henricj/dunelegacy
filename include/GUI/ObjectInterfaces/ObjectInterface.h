@@ -20,20 +20,18 @@
 
 #include <GUI/StaticContainer.h>
 
-
-
 class ObjectInterface : public StaticContainer {
 public:
-        ObjectInterface()  { ; };
+    ObjectInterface() = default;
 
-        ~ObjectInterface() override { ; };
+    ~ObjectInterface() override = default;
 
-        /**
-            This method updates the object interface.
-            If the object doesn't exists anymore then update returns false.
-            \return true = everything ok, false = the object container should be removed
-        */
-        virtual bool update() = 0;
+    /**
+        This method updates the object interface.
+        If the object doesn't exists anymore then update returns false.
+        \return true = everything ok, false = the object container should be removed
+    */
+    virtual bool update() = 0;
 };
 
-#endif //OBJECTINTERFACE_H
+#endif // OBJECTINTERFACE_H

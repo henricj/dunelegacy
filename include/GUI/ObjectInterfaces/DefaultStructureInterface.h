@@ -29,14 +29,14 @@
 
 class DefaultStructureInterface : public DefaultObjectInterface {
 public:
-    static DefaultStructureInterface* create(int objectID) {
-        auto* tmp = new DefaultStructureInterface(objectID);
+    static std::unique_ptr<DefaultStructureInterface> create(const GameContext& context, int objectID) {
+        auto tmp        = std::unique_ptr<DefaultStructureInterface>{new DefaultStructureInterface{context, objectID}};
         tmp->pAllocated = true;
         return tmp;
     }
 
 protected:
-    explicit DefaultStructureInterface(int objectID) : DefaultObjectInterface(objectID) {
+    DefaultStructureInterface(const GameContext& context, int objectID) : DefaultObjectInterface(context, objectID) {
         SDL_Texture* pUIRepair = pGFXManager->getUIGraphic(UI_Repair);
         SDL_Texture* pUIRepairPressed = pGFXManager->getUIGraphic(UI_Repair_Pressed);
 
@@ -50,8 +50,7 @@ protected:
     }
 
     void OnRepair() {
-        ObjectBase* pObject = currentGame->getObjectManager().getObject(objectID);
-        auto* pStructure = dynamic_cast<StructureBase*>(pObject);
+        auto* pStructure = context_.objectManager.getObject<StructureBase>(objectID);
         if(pStructure != nullptr) {
             pStructure->handleRepairClick();
         }
@@ -64,12 +63,8 @@ protected:
     */
     bool update() override
     {
-        ObjectBase* pObject = currentGame->getObjectManager().getObject(objectID);
-        if(pObject == nullptr) {
-            return false;
-        }
+        auto* pStructure = context_.objectManager.getObject<StructureBase>(objectID);
 
-        auto* pStructure = dynamic_cast<StructureBase*>(pObject);
         if(pStructure != nullptr) {
             if(pStructure->getHealth() >= pStructure->getMaxHealth()) {
                 repairButton.setVisible(false);

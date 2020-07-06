@@ -94,7 +94,7 @@ public:
     /**
         Trigger this trigger. Shall only be called when getCycleNumber() is equal to the current game cycle
     */
-    void trigger() override;
+    void trigger(const GameContext& context) override;
 
 private:
     std::vector<ItemID_enum> droppedUnits;   ///< a vector of the itemIDs of the to be dropped units

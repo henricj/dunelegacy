@@ -47,7 +47,7 @@ public:
 
     void save(OutputStream& stream) const override;
 
-    void destroy() override;
+    void destroy(const GameContext& context) override;
 
     /**
         Can this structure be captured by infantry units?
@@ -56,7 +56,7 @@ public:
     bool canBeCaptured() const noexcept override { return false; }
 
     using ObjectBase::setLocation;
-    void setLocation(int xPos, int yPos) override;
+    void setLocation(const GameContext& context, int xPos, int yPos) override;
 
 private:
     void        init();

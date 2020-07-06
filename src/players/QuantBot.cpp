@@ -120,8 +120,8 @@
 
 
 
-QuantBot::QuantBot(House* associatedHouse, const std::string& playername, Difficulty difficulty)
-: Player(associatedHouse, playername), difficulty(difficulty) {
+QuantBot::QuantBot(const GameContext& context, House* associatedHouse, const std::string& playername, Random&& random, Difficulty difficulty)
+    : Player(context, associatedHouse, playername, std::move(random)), difficulty(difficulty) {
 
     buildTimer = getRandomGen().rand(0,3) * 50;
 
@@ -161,7 +161,7 @@ QuantBot::QuantBot(House* associatedHouse, const std::string& playername, Diffic
 }
 
 
-QuantBot::QuantBot(InputStream& stream, House* associatedHouse) : Player(stream, associatedHouse) {
+QuantBot::QuantBot(const GameContext& context, InputStream& stream, House* associatedHouse, Random&& random) : Player(context, stream, associatedHouse, std::move(random)) {
     QuantBot::init();
 
     difficulty = static_cast<Difficulty>(stream.readUint8());

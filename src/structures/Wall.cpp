@@ -70,51 +70,42 @@ void Wall::save(OutputStream& stream) const {
     stream.writeSint32(curAnimFrame);
 }
 
-void Wall::destroy() {
-    auto& objectManager = currentGame->getObjectManager();
+void Wall::destroy(const GameContext& context) {
+    auto& [game, map, objectManager] = context;
 
     // fix wall to the north
-    if(currentGameMap->tileExists(location.x, location.y-1)) {
-        ObjectBase* obj = currentGameMap->getTile(location.x, location.y - 1)->getGroundObject(objectManager);
-        if((obj != nullptr) && (obj->getItemID() == Structure_Wall)) {
-            Wall* pWall = static_cast<Wall*>(obj);
+    if(auto* tile = map.tryGetTile(location.x, location.y - 1)) {
+        if(auto* pWall = dune_cast<Wall>(tile->getGroundObject(objectManager))) {
             pWall->bWallDestroyedDown = true;
             pWall->fixWall();
         }
     }
 
     // fix wall to the south
-    if(currentGameMap->tileExists(location.x, location.y+1)) {
-        ObjectBase* obj = currentGameMap->getTile(location.x, location.y + 1)->getGroundObject(objectManager);
-        if((obj != nullptr) && (obj->getItemID() == Structure_Wall)) {
-            Wall* pWall = static_cast<Wall*>(obj);
+    if(auto* tile = map.tryGetTile(location.x, location.y + 1)) {
+        if(auto* pWall = dune_cast<Wall>(tile->getGroundObject(objectManager))) {
             pWall->bWallDestroyedUp = true;
             pWall->fixWall();
         }
     }
 
     // fix wall to the west
-    if(currentGameMap->tileExists(location.x-1, location.y)) {
-        ObjectBase* obj = currentGameMap->getTile(location.x - 1, location.y)->getGroundObject(objectManager);
-        if((obj != nullptr) && (obj->getItemID() == Structure_Wall)) {
-            Wall* pWall = static_cast<Wall*>(obj);
+    if(auto* tile = map.tryGetTile(location.x - 1, location.y)) {
+        if(auto* pWall = dune_cast<Wall>(tile->getGroundObject(objectManager))) {
             pWall->bWallDestroyedRight = true;
             pWall->fixWall();
         }
     }
 
     // fix wall to the east
-    if(currentGameMap->tileExists(location.x+1, location.y)) {
-        ObjectBase* obj = currentGameMap->getTile(location.x + 1, location.y)->getGroundObject(objectManager);
-        if((obj != nullptr) && (obj->getItemID() == Structure_Wall)) {
-            Wall* pWall = static_cast<Wall*>(obj);
+    if(auto* tile = map.tryGetTile(location.x + 1, location.y)) {
+        if(auto* pWall = dune_cast<Wall>(tile->getGroundObject(objectManager))) {
             pWall->bWallDestroyedLeft = true;
             pWall->fixWall();
         }
     }
 
-
-    StructureBase::destroy();
+    parent::destroy(context);
 }
 
 /**
@@ -122,39 +113,39 @@ void Wall::destroy() {
     \param  xPos    the x position of this wall
     \param  yPos    the y position of this wall
 */
-void Wall::setLocation(int xPos, int yPos) {
-    StructureBase::setLocation(xPos, yPos);
+void Wall::setLocation(const GameContext& context, int xPos, int yPos) {
+    parent::setLocation(context, xPos, yPos);
 
     // fix this wall
     fixWall();
 
-    const auto* const map = currentGameMap;
+    const auto& map = context.map;
 
     Wall* pWall = nullptr;
 
     // fix wall to the north
-    pWall = map->getGroundObject<Wall>(location.x, location.y - 1);
+    pWall = map.getGroundObject<Wall>(location.x, location.y - 1);
     if(pWall) {
         pWall->bWallDestroyedDown = false;
         pWall->fixWall();
     }
 
     // fix wall to the south
-    pWall = map->getGroundObject<Wall>(location.x, location.y + 1);
+    pWall = map.getGroundObject<Wall>(location.x, location.y + 1);
     if(pWall) {
         pWall->bWallDestroyedUp = false;
         pWall->fixWall();
     }
 
     // fix wall to the west
-    pWall = map->getGroundObject<Wall>(location.x - 1, location.y);
+    pWall = map.getGroundObject<Wall>(location.x - 1, location.y);
     if(pWall) {
         pWall->bWallDestroyedRight = false;
         pWall->fixWall();
     }
 
     // fix wall to the east
-    pWall = map->getGroundObject<Wall>(location.x + 1, location.y);
+    pWall = map.getGroundObject<Wall>(location.x + 1, location.y);
     if(pWall) {
         pWall->bWallDestroyedLeft = false;
         pWall->fixWall();

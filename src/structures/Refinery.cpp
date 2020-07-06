@@ -82,13 +82,18 @@ void Refinery::init() {
     numImagesY = 1;
 }
 
-Refinery::~Refinery() {
+Refinery::~Refinery() = default;
+
+void Refinery::cleanup(const GameContext& context, HumanPlayer* humanPlayer) {
     if(extractingSpice && harvester) {
-        if(harvester.getUnitPointer() != nullptr)
-            harvester.getUnitPointer()->destroy();
+        auto* pHarvester = harvester.getUnitPointer();
+        if(pHarvester) pHarvester->destroy(context);
         harvester.pointTo(NONE_ID);
     }
+
+    parent::cleanup(context, humanPlayer);
 }
+
 
 void Refinery::save(OutputStream& stream) const {
     StructureBase::save(stream);
@@ -98,12 +103,9 @@ void Refinery::save(OutputStream& stream) const {
     stream.writeUint32(bookings);
 }
 
-ObjectInterface* Refinery::getInterfaceContainer() {
-    if((pLocalHouse == owner) || (debug)) {
-        return RefineryAndSiloInterface::create(objectID);
-    }         return DefaultObjectInterface::create(objectID);
-
-   
+std::unique_ptr<ObjectInterface> Refinery::getInterfaceContainer(const GameContext& context) {
+    if((pLocalHouse == owner) || (debug)) { return RefineryAndSiloInterface::create(context, objectID); }
+    return DefaultObjectInterface::create(context, objectID);
 }
 
 void Refinery::assignHarvester(Harvester* newHarvester) {
@@ -115,7 +117,7 @@ void Refinery::assignHarvester(Harvester* newHarvester) {
     curAnimFrame = 8;
 }
 
-void Refinery::deployHarvester(Carryall* pCarryall) {
+void Refinery::deployHarvester(const GameContext& context, Carryall* pCarryall) {
     unBook();
     drawnAngle = static_cast<ANGLETYPE>(0);
     extractingSpice = false;
@@ -130,12 +132,12 @@ void Refinery::deployHarvester(Carryall* pCarryall) {
 
     auto* pHarvester = static_cast<Harvester*>(harvester.getObjPointer());
     if((pCarryall != nullptr) && pHarvester->getGuardPoint().isValid()) {
-        pCarryall->giveCargo(pHarvester);
+        pCarryall->giveCargo(context, pHarvester);
         pCarryall->setTarget(nullptr);
         pCarryall->setDestination(pHarvester->getGuardPoint());
     } else {
         Coord deployPos = currentGameMap->findDeploySpot(pHarvester, location, destination, structureSize);
-        pHarvester->deploy(deployPos);
+        pHarvester->deploy(context, deployPos);
     }
 
     if(bookings == 0) {
@@ -161,7 +163,7 @@ void Refinery::stopAnimate() {
     curAnimFrame = 2;
 }
 
-void Refinery::updateStructureSpecificStuff() {
+void Refinery::updateStructureSpecificStuff(const GameContext& context) {
     if(extractingSpice) {
         auto* pHarvester = static_cast<Harvester*>(harvester.getObjPointer());
 
@@ -199,10 +201,10 @@ void Refinery::updateStructureSpecificStuff() {
                 pHarvester->setTarget(nullptr);
                 pHarvester->setDestination(pHarvester->getGuardPoint());
             } else {
-                deployHarvester();
+                deployHarvester(context);
             }
         } else if(!pHarvester->hasBookedCarrier()) {
-            deployHarvester();
+            deployHarvester(context);
         }
     }
 }

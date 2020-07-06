@@ -37,7 +37,7 @@ public:
 
     void save(OutputStream& stream) const override;
 
-    void checkPos() override;
+    void checkPos(const GameContext& context) override;
     bool canPassTile(const Tile* pTile) const override;
 
     /**
@@ -54,7 +54,7 @@ public:
 private:
     void init();
 
-    static const FixPoint terrain_difficulty[Terrain_SpecialBloom + 1]; // TODO:: get better constant...
+    static const std::array<FixPoint, Terrain_SpecialBloom + 1> terrain_difficulty; // TODO:: get better constant...
 };
 
 #endif // TRACKEDUNIT_H

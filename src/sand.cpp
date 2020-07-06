@@ -799,7 +799,8 @@ void startReplay(const std::filesystem::path& filename) {
 
         currentGame->initReplay(filename);
 
-        currentGame->runMainLoop();
+        GameContext context{*currentGame.get(), *currentGame->getMap(), currentGame->getObjectManager()};
+        currentGame->runMainLoop(context);
 
         currentGame.reset();
 
@@ -832,7 +833,8 @@ void startSinglePlayerGame(const GameInitSettings& init)
             // get init settings from game as it might have changed (through loading the game)
             currentGameInitInfo = currentGame->getGameInitSettings();
 
-            currentGame->runMainLoop();
+            GameContext context{*currentGame.get(), *currentGame->getMap(), currentGame->getObjectManager()};
+            currentGame->runMainLoop(context);
 
             bool bGetNext = true;
             while(bGetNext) {
@@ -924,7 +926,8 @@ void startMultiPlayerGame(const GameInitSettings& init) {
         // get init settings from game as it might have changed (through loading the game)
         currentGameInitInfo = currentGame->getGameInitSettings();
 
-        currentGame->runMainLoop();
+        GameContext context{*currentGame.get(), *currentGame->getMap(), currentGame->getObjectManager()};
+        currentGame->runMainLoop(context);
 
         if(currentGame->whatNext() == GAME_CUSTOM_GAME_STATS) {
             SDL_Log("Game statistics...");

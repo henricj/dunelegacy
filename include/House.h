@@ -38,10 +38,12 @@ class HumanPlayer;
 
 class House final
 {
-    House(ObjectManager& objectManager);
+    House(const GameContext& context);
+
 public:
-    House(ObjectManager& objectManager, HOUSETYPE newHouse, int newCredits, int maxUnits, Uint8 teamID = 0, int quota = 0);
-    House(ObjectManager& objectManager, InputStream& stream);
+    House(const GameContext& context, HOUSETYPE newHouse, int newCredits, int maxUnits, Uint8 teamID = 0,
+          int quota = 0);
+    House(const GameContext& context, InputStream& stream);
     virtual ~House();
 
     House(const House &) = delete;
@@ -184,13 +186,14 @@ public:
 
     void freeHarvester(int xPos, int yPos);
     void freeHarvester(const Coord& coord) { freeHarvester(coord.x, coord.y); };
-    StructureBase* placeStructure(Uint32 builderID, ItemID_enum itemID, int xPos, int yPos, bool byScenario = false, bool bForcePlacing = false);
+    StructureBase* placeStructure(Uint32 builderID, ItemID_enum itemID, int xPos, int yPos,
+                                  bool byScenario = false, bool bForcePlacing = false);
 
     template<typename UnitType>
     UnitType* createUnit(bool byScenario = false) {
         static_assert(std::is_base_of<UnitBase, UnitType>::value, "UnitType not derived from UnitBase");
 
-        return objectManager.createObjectFromType<UnitType>(ObjectInitializer{this, byScenario});
+        return context.objectManager.createObjectFromType<UnitType>(ObjectInitializer{this, byScenario});
     }
 
     UnitBase* createUnit(ItemID_enum itemID, bool byScenario = false);
@@ -263,7 +266,7 @@ protected:
     int numDestroyedStructures;
     FixPoint harvestedSpice;
 
-    ObjectManager& objectManager;
+    const GameContext context;
 
 private:
     void init();

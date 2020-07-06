@@ -77,7 +77,7 @@ void Choam::addItem(ItemID_enum itemID, int num) {
     availableItems.push_back(tmp);
 }
 
-void Choam::update() {
+void Choam::update(const GameContext& context) {
     if(availableItems.empty()) {
         return;
     }

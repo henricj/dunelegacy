@@ -67,7 +67,7 @@ void TurretBase::save(OutputStream& stream) const {
     stream.writeSint32(weaponTimer);
 }
 
-void TurretBase::updateStructureSpecificStuff() {
+void TurretBase::updateStructureSpecificStuff(const GameContext& context) {
     if(target && (target.getObjPointer() != nullptr)) {
         if(!canAttack(target.getObjPointer()) || !targetInWeaponRange()) {
             setTarget(nullptr);
@@ -82,18 +82,18 @@ void TurretBase::updateStructureSpecificStuff() {
 
                 if(angle > static_cast<int>(wantedAngle)) {
                     angleRight = angle - static_cast<int>(wantedAngle);
-                    angleLeft =                         FixPoint::abs(static_cast<int>(ANGLETYPE::NUM_ANGLES) - angle) + static_cast<int>(wantedAngle);
-                }
-                else if(angle < static_cast<int>(wantedAngle)) {
+                    angleLeft =
+                        FixPoint::abs(static_cast<int>(ANGLETYPE::NUM_ANGLES) - angle) + static_cast<int>(wantedAngle);
+                } else if(angle < static_cast<int>(wantedAngle)) {
                     angleRight =
                         FixPoint::abs(static_cast<int>(ANGLETYPE::NUM_ANGLES) - static_cast<int>(wantedAngle)) + angle;
                     angleLeft = static_cast<int>(wantedAngle) - angle;
                 }
 
                 if(angleLeft <= angleRight) {
-                    turnLeft();
+                    turnLeft(context);
                 } else {
-                    turnRight();
+                    turnRight(context);
                 }
             }
 
@@ -118,39 +118,39 @@ void TurretBase::updateStructureSpecificStuff() {
     }
 }
 
-void TurretBase::handleActionCommand(int xPos, int yPos) {
-    if(currentGameMap->tileExists(xPos, yPos)) {
-        ObjectBase* tempTarget = currentGameMap->getTile(xPos, yPos)->getObject(currentGame->getObjectManager());
-        currentGame->getCommandManager().addCommand(Command(pLocalPlayer->getPlayerID(), CMDTYPE::CMD_TURRET_ATTACKOBJECT,objectID,tempTarget->getObjectID()));
+void TurretBase::handleActionCommand(const GameContext& context, int xPos, int yPos) {
+    auto& [game, map, objectManager] = context;
 
+    if(auto* tile = map.tryGetTile(xPos, yPos)) {
+        ObjectBase* tempTarget = tile->getObject(objectManager);
+        game.getCommandManager().addCommand(Command(pLocalPlayer->getPlayerID(), CMDTYPE::CMD_TURRET_ATTACKOBJECT,
+                                                    objectID, tempTarget->getObjectID()));
     }
 }
 
-void TurretBase::doAttackObject(Uint32 targetObjectID) {
-    const ObjectBase* pObject = currentGame->getObjectManager().getObject(targetObjectID);
+void TurretBase::doAttackObject(const GameContext& context, Uint32 targetObjectID) {
+    const auto* pObject = context.objectManager.getObject(targetObjectID);
     doAttackObject(pObject);
 }
 
 void TurretBase::doAttackObject(const ObjectBase* pObject) {
-    if(pObject == nullptr) {
-        return;
-    }
+    if(pObject == nullptr) { return; }
 
-    setDestination(INVALID_POS,INVALID_POS);
+    setDestination(INVALID_POS, INVALID_POS);
     setTarget(pObject);
     setForced(true);
 }
 
-void TurretBase::turnLeft() {
-    angle += currentGame->objectData.data[itemID][static_cast<int>(originalHouseID)].turnspeed;
+void TurretBase::turnLeft(const GameContext& context) {
+    angle += context.game.objectData.data[itemID][static_cast<int>(originalHouseID)].turnspeed;
     if (angle >= 7.5_fix)    //must keep drawnangle between 0 and 7
         angle -= 8;
     drawnAngle = static_cast<ANGLETYPE>(lround(angle));
     curAnimFrame = firstAnimFrame = lastAnimFrame = ((10-static_cast<int>(drawnAngle)) % 8) + 2;
 }
 
-void TurretBase::turnRight() {
-    angle -= currentGame->objectData.data[itemID][static_cast<int>(originalHouseID)].turnspeed;
+void TurretBase::turnRight(const GameContext& context) {
+    angle -= context.game.objectData.data[itemID][static_cast<int>(originalHouseID)].turnspeed;
     if(angle < -0.5_fix) {
         //must keep angle between 0 and 7
         angle += 8;

@@ -76,12 +76,14 @@ void StructureBase::init() {
 
 StructureBase::~StructureBase() = default;
 
-void StructureBase::cleanup(Game* game, HumanPlayer* humanPlayer, Map* map) {
+void StructureBase::cleanup(const GameContext& context, HumanPlayer* humanPlayer) {
     try {
-        map->removeObjectFromMap(getObjectID()); // no map point will reference now
+        context.map.removeObjectFromMap(getObjectID()); // no map point will reference now
         structureList.remove(this);
         owner->decrementStructures(itemID, location);
     } catch(std::exception& e) { SDL_Log("StructureBase::cleanup(): %s", e.what()); }
+
+    parent::cleanup(context, humanPlayer);
 }
 
 void StructureBase::save(OutputStream& stream) const {
@@ -99,22 +101,25 @@ void StructureBase::save(OutputStream& stream) const {
     }
 }
 
-void StructureBase::assignToMap(const Coord& pos) {
+void StructureBase::assignToMap(const GameContext& context, const Coord& pos) {
     auto *map = currentGameMap;
 
     auto bFoundNonConcreteTile = false;
 
+    auto& game = context.game;
+
     map->for_each(pos.x, pos.y, pos.x + structureSize.x, pos.y + structureSize.y,
         [&](Tile& t) {
             t.assignNonInfantryGroundObject(getObjectID());
-            if (!t.isConcrete() && currentGame->getGameInitSettings().getGameOptions().concreteRequired && (currentGame->gameState != GameState::Start)) {
+
+            if (!t.isConcrete() && game.getGameInitSettings().getGameOptions().concreteRequired && (game.gameState != GameState::Start)) {
                 bFoundNonConcreteTile = true;
 
                 if ((itemID != Structure_Wall) && (itemID != Structure_ConstructionYard)) {
                     setHealth(getHealth() - FixPoint(getMaxHealth()) / (2 * structureSize.x*structureSize.y));
                 }
             }
-            t.setType(currentGame.get(), Terrain_Rock);
+            t.setType(context, Terrain_Rock);
             t.setOwner(getOwner()->getHouseID());
 
             setVisible(VIS_ALL, true);
@@ -124,7 +129,7 @@ void StructureBase::assignToMap(const Coord& pos) {
 
     map->viewMap(getOwner()->getHouseID(), pos, getViewRange());
 
-    if(!bFoundNonConcreteTile && !currentGame->getGameInitSettings().getGameOptions().structuresDegradeOnConcrete) {
+    if(!bFoundNonConcreteTile && !game.getGameInitSettings().getGameOptions().structuresDegradeOnConcrete) {
         degradeTimer = -1;
     }
 }
@@ -163,12 +168,9 @@ void StructureBase::blitToScreen() {
     }
 }
 
-ObjectInterface* StructureBase::getInterfaceContainer() {
-    if((pLocalHouse == owner) || (debug)) {
-        return DefaultStructureInterface::create(objectID);
-    }         return DefaultObjectInterface::create(objectID);
-
-   
+std::unique_ptr<ObjectInterface> StructureBase::getInterfaceContainer(const GameContext& context) {
+    if((pLocalHouse == owner) || (debug)) { return DefaultStructureInterface::create(context, objectID); }
+    return DefaultObjectInterface::create(context, objectID);
 }
 
 void StructureBase::drawSelectionBox() {
@@ -283,7 +285,7 @@ Coord StructureBase::getClosestCenterPoint(const Coord& objectLocation) const {
     return getClosestPoint(objectLocation) * TILESIZE + Coord(TILESIZE/2, TILESIZE/2);
 }
 
-void StructureBase::handleActionClick(int xPos, int yPos) {
+void StructureBase::handleActionClick(const GameContext& context, int xPos, int yPos) {
     if((xPos < location.x) || (xPos >= (location.x + structureSize.x)) || (yPos < location.y) ||
        (yPos >= (location.y + structureSize.y))) {
         currentGame->getCommandManager().addCommand(Command(pLocalPlayer->getPlayerID(),
@@ -308,7 +310,7 @@ void StructureBase::doSetDeployPosition(int xPos, int yPos) {
 }
 
 
-void StructureBase::doRepair() {
+void StructureBase::doRepair(const GameContext& context) {
     repairing = true;
 }
 
@@ -325,7 +327,7 @@ void StructureBase::setJustPlaced() {
     animationCounter = -STRUCTURE_ANIMATIONTIMER; // make first build animation double as long
 }
 
-bool StructureBase::update() {
+bool StructureBase::update(const GameContext& context) {
     if(((currentGame->getGameCycleCount() + getObjectID()) % 512) == 0) {
         currentGameMap->viewMap(owner->getHouseID(), location, getViewRange());
     }
@@ -355,10 +357,10 @@ bool StructureBase::update() {
         }
     }
 
-    updateStructureSpecificStuff();
+    updateStructureSpecificStuff(context);
 
     if(getHealth() <= 0) {
-        destroy();
+        destroy(context);
         return false;
     }
 
@@ -383,7 +385,7 @@ bool StructureBase::update() {
             repairing = false;
         }
     } else if(owner->isAI() && (getHealth() < getMaxHealth()/2)) {
-        doRepair();
+        doRepair(context);
     }
 
     // check smoke
@@ -409,7 +411,7 @@ bool StructureBase::update() {
     return true;
 }
 
-void StructureBase::destroy() {
+void StructureBase::destroy(const GameContext& context) {
     const int* pDestroyedStructureTiles = nullptr;
     int     DestroyedStructureTilesSizeY = 0;
     static const int DestroyedStructureTilesWall[] = { DestroyedStructure_Wall };
@@ -456,24 +458,28 @@ void StructureBase::destroy() {
         }
     }
 
+    auto& [game, map, objectManager] = context;
+
     if(itemID != Structure_Wall) {
         for(int j = 0; j < structureSize.y; j++) {
             for(int i = 0; i < structureSize.x; i++) {
-                auto *pTile = currentGameMap->getTile(location.x + i, location.y + j);
+                auto *pTile = map.getTile(location.x + i, location.y + j);
                 pTile->setDestroyedStructureTile(pDestroyedStructureTiles[DestroyedStructureTilesSizeY*j + i]);
 
                 Coord position((location.x+i)*TILESIZE + TILESIZE/2, (location.y+j)*TILESIZE + TILESIZE/2);
-                Uint32 explosionID = currentGame->randomGen.getRandOf(Explosion_Large1,Explosion_Large2);
-                currentGame->addExplosion(explosionID, position, owner->getHouseID());
+                Uint32 explosionID = game.randomGen.getRandOf(Explosion_Large1,Explosion_Large2);
+                game.addExplosion(explosionID, position, owner->getHouseID());
 
-                if(currentGame->randomGen.rand(1,100) <= getInfSpawnProp()) {
+                if(game.randomGen.rand(1,100) <= getInfSpawnProp()) {
                     auto *pNewUnit = owner->createUnit(Unit_Soldier);
                     pNewUnit->setHealth(pNewUnit->getMaxHealth()/2);
-                    pNewUnit->deploy(location + Coord(i,j));
+                    pNewUnit->deploy(context, location + Coord(i,j));
                 }
             }
         }
     }
+
+    objectManager.removeObject(getObjectID());
 
     if(isVisible(pLocalHouse->getTeamID()))
         soundPlayer->playSoundAt(Sound_ExplosionStructure, location);

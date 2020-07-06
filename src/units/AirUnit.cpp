@@ -62,7 +62,7 @@ void AirUnit::save(OutputStream& stream) const
     stream.writeFixPoint(currentMaxSpeed);
 }
 
-void AirUnit::destroy()
+void AirUnit::destroy(const GameContext& context)
 {
     if(isVisible()) {
         Coord position(lround(realX), lround(realY));
@@ -72,10 +72,10 @@ void AirUnit::destroy()
             soundPlayer->playSoundAt(Sound_ExplosionMedium,location);
     }
 
-    UnitBase::destroy();
+    UnitBase::destroy(context);
 }
 
-void AirUnit::assignToMap(const Coord& pos)
+void AirUnit::assignToMap(const GameContext& context, const Coord& pos)
 {
     if(currentGameMap->tileExists(pos)) {
         if(guardPoint.isInvalid()) {
@@ -88,8 +88,7 @@ void AirUnit::assignToMap(const Coord& pos)
     }
 }
 
-void AirUnit::checkPos()
-{
+void AirUnit::checkPos(const GameContext& context) {
     // do nothing
 }
 
@@ -139,14 +138,14 @@ void AirUnit::blitToScreen()
     }
 }
 
-void AirUnit::navigate() {
+void AirUnit::navigate(const GameContext& context) {
     moving = true;
     justStoppedMoving = false;
 }
 
-void AirUnit::move() {
+void AirUnit::move(const GameContext& context) {
     FixPoint angleRad = (angle * (FixPt_PI << 1)) / 8;
-    FixPoint speed = getMaxSpeed();
+    FixPoint speed = getMaxSpeed(context);
 
     realX += FixPoint::cos(angleRad)*speed;
     realY += -FixPoint::sin(angleRad)*speed;
@@ -155,18 +154,18 @@ void AirUnit::move() {
 
     if(newLocation != location) {
         unassignFromMap(location);
-        assignToMap(newLocation);
+        assignToMap(context, newLocation);
         location = newLocation;
     }
 
-    checkPos();
+    checkPos(context);
 }
 
 FixPoint AirUnit::getDestinationAngle() const {
     return destinationAngleRad(realX, realY, destination.x*TILESIZE + TILESIZE/2, destination.y*TILESIZE + TILESIZE/2)*8 / (FixPt_PI << 1);;
 }
 
-void AirUnit::turn() {
+void AirUnit::turn(const GameContext& context) {
     if(destination.isValid()) {
         FixPoint destinationAngle = getDestinationAngle();
 

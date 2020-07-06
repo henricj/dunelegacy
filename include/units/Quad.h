@@ -32,7 +32,7 @@ public:
 
     void playAttackSound() override;
 
-    void destroy() override;
+    void destroy(const GameContext& context) override;
 
     bool hasBumpyMovementOnRock() const override { return true; }
 

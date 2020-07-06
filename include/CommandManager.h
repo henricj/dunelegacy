@@ -120,7 +120,7 @@ public:
         Runs all commands scheduled for game cycle CycleNumber
         \param  CycleNumber the current game cycle
     */
-    void executeCommands(Uint32 CycleNumber) const;
+    void executeCommands(const GameContext& context, Uint32 CycleNumber) const;
 
 private:
     std::vector< std::vector<Command> > timeslot;   ///< a vector of vectors containing the scheduled commands. At index x is a list of all commands scheduled for game cycle x.

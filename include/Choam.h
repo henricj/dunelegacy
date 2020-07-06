@@ -42,7 +42,7 @@ public:
 
     void addItem(ItemID_enum itemID, int num);
 
-    void update();
+    void update(const GameContext& context);
 
 private:
     House*                  house;               ///< The house of this choam

@@ -33,8 +33,8 @@ public:
         Hard = 2
     };
 
-    AIPlayer(House* associatedHouse, const std::string& playername, Difficulty difficulty);
-    AIPlayer(InputStream& stream, House* associatedHouse);
+    AIPlayer(const GameContext& context, House* associatedHouse, const std::string& playername, Random&& random, Difficulty difficulty);
+    AIPlayer(const GameContext& context, InputStream& stream, House* associatedHouse, Random&& random);
     ~AIPlayer() override;
     void save(OutputStream& stream) const override;
 

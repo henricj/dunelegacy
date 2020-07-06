@@ -70,8 +70,8 @@ void Ornithopter::save(OutputStream& stream) const
     stream.writeUint32(timeLastShot);
 }
 
-void Ornithopter::checkPos() {
-    AirUnit::checkPos();
+void Ornithopter::checkPos(const GameContext& context) {
+    AirUnit::checkPos(context);
 
     if(!target) {
         if(destination.isValid()) {
@@ -95,14 +95,14 @@ bool Ornithopter::canAttack(const ObjectBase* object) const {
         && object->isVisible(getOwner()->getTeamID());
 }
 
-void Ornithopter::destroy() {
+void Ornithopter::destroy(const GameContext& context) {
     // place wreck
     if(currentGameMap->tileExists(location)) {
         auto *pTile = currentGameMap->getTile(location);
         pTile->assignDeadUnit(DeadUnit_Ornithopter, owner->getHouseID(), Coord(lround(realX), lround(realY)));
     }
 
-    AirUnit::destroy();
+    AirUnit::destroy(context);
 }
 
 void Ornithopter::playAttackSound() {

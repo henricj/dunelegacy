@@ -79,7 +79,7 @@ void Tank::blitToScreen() {
     }
 }
 
-void Tank::destroy() {
+void Tank::destroy(const GameContext& context) {
     if(currentGameMap->tileExists(location) && isVisible()) {
         Coord realPos(lround(realX), lround(realY));
         Uint32 explosionID = currentGame->randomGen.getRandOf(Explosion_Medium1, Explosion_Medium2,Explosion_Flames);
@@ -89,7 +89,7 @@ void Tank::destroy() {
             soundPlayer->playSoundAt(Sound_ExplosionMedium,location);
     }
 
-    TankBase::destroy();
+    TankBase::destroy(context);
 }
 
 void Tank::playAttackSound() {

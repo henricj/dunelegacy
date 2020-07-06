@@ -51,16 +51,13 @@ void WindTrap::init() {
 
 WindTrap::~WindTrap() = default;
 
-ObjectInterface* WindTrap::getInterfaceContainer() {
-    if((pLocalHouse == owner) || (debug)) {
-        return WindTrapInterface::create(objectID);
-    }         return DefaultObjectInterface::create(objectID);
-
-   
+std::unique_ptr<ObjectInterface> WindTrap::getInterfaceContainer(const GameContext& context) {
+    if((pLocalHouse == owner) || (debug)) { return WindTrapInterface::create(context, objectID); }
+    return DefaultObjectInterface::create(context, objectID);
 }
 
-bool WindTrap::update() {
-    bool bResult = StructureBase::update();
+bool WindTrap::update(const GameContext& context) {
+    bool bResult = StructureBase::update(context);
 
     if(bResult) {
         // we are still alive

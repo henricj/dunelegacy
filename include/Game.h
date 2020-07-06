@@ -64,7 +64,6 @@ class Explosion;
 #define GAME_DEBRIEFING_LOST    4
 #define GAME_CUSTOM_GAME_STATS  5
 
-
 class Game final
 {
 public:
@@ -116,7 +115,7 @@ public:
     /**
         This method proccesses all the user input.
     */
-    void doInput();
+    void doInput(const GameContext& context);
 
     /**
         Returns the current game cycle number.
@@ -207,7 +206,7 @@ public:
     /**
         This method sets up the view. The start position is the center point of all owned units/structures
     */
-    void setupView() const;
+    void setupView(const GameContext& context) const;
 
     /**
         This method loads a previously saved game.
@@ -233,7 +232,7 @@ public:
     /**
         This method starts the game. Will return when the game is finished or aborted.
     */
-    void runMainLoop();
+    void runMainLoop(const GameContext& context);
 
     inline void quitGame() { bQuitGame = true;};
 
@@ -454,7 +453,7 @@ public:
         \param  bDrag               true = the mouse was moved while being pressed, e.g. dragging
         \return true if dragging should start or continue
     */
-    bool onRadarClick(Coord worldPosition, bool bRightMouseButton, bool bDrag);
+    bool onRadarClick(const GameContext& context, Coord worldPosition, bool bRightMouseButton, bool bDrag);
 
     /**
         Take a screenshot and save it with a unique name
@@ -475,13 +474,13 @@ private:
         Handles the press of one key while chatting
         \param keyboardEvent the key pressed
     */
-    void handleChatInput(SDL_KeyboardEvent& keyboardEvent);
+    void handleChatInput(const GameContext& context, SDL_KeyboardEvent& keyboardEvent);
 
     /**
         Handles the press of one key
         \param  keyboardEvent the key pressed
     */
-    void handleKeyInput(SDL_KeyboardEvent& keyboardEvent);
+    void handleKeyInput(const GameContext& context, SDL_KeyboardEvent& keyboardEvent);
 
     /**
         Performs a building placement
@@ -489,7 +488,7 @@ private:
         \param  yPos    x-coordinate in map coordinates
         \return true if placement was successful
     */
-    bool handlePlacementClick(int xPos, int yPos);
+    bool handlePlacementClick(const GameContext& context, int xPos, int yPos);
 
     /**
         Performs a attack click for the currently selected units/structures.
@@ -497,7 +496,7 @@ private:
         \param  yPos    x-coordinate in map coordinates
         \return true if attack is possible
     */
-    bool handleSelectedObjectsAttackClick(int xPos, int yPos);
+    bool handleSelectedObjectsAttackClick(const GameContext& context, int xPos, int yPos);
 
     /**
         Performs a move click for the currently selected units/structures.
@@ -505,7 +504,7 @@ private:
         \param  yPos    x-coordinate in map coordinates
         \return true if move is possible
     */
-    bool handleSelectedObjectsMoveClick(int xPos, int yPos);
+    bool handleSelectedObjectsMoveClick(const GameContext& context, int xPos, int yPos);
 
     /**
         Performs a capture click for the currently selected units/structures.
@@ -513,7 +512,7 @@ private:
         \param  yPos    x-coordinate in map coordinates
         \return true if capture is possible
     */
-    bool handleSelectedObjectsCaptureClick(int xPos, int yPos);
+    bool handleSelectedObjectsCaptureClick(const GameContext& context, int xPos, int yPos);
 
 
     /**
@@ -522,7 +521,7 @@ private:
         \param  yPos    x-coordinate in map coordinates
         \return true if carryall drop is possible
     */
-    bool handleSelectedObjectsRequestCarryallDropClick(int xPos, int yPos);
+    bool handleSelectedObjectsRequestCarryallDropClick(const GameContext& context, int xPos, int yPos);
 
 
     /**
@@ -531,7 +530,7 @@ private:
         \param  yPos    x-coordinate in map coordinates
         \return true if action click is possible
     */
-    bool handleSelectedObjectsActionClick(int xPos, int yPos);
+    bool handleSelectedObjectsActionClick(const GameContext& context, int xPos, int yPos);
 
 
     /**

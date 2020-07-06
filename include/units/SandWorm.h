@@ -34,24 +34,24 @@ public:
 
     void save(OutputStream& stream) const override;
 
-    void deploy(const Coord& newLocation) override;
+    void deploy(const GameContext& context, const Coord& newLocation) override;
 
-    void assignToMap(const Coord& pos) override;
+    void assignToMap(const GameContext& context, const Coord& pos) override;
     bool attack() override;
     void blitToScreen() override;
-    void checkPos() override;
+    void checkPos(const GameContext& context) override;
 
-    void setLocation(int xPos, int yPos) override;
+    void setLocation(const GameContext& context, int xPos, int yPos) override;
 
     void setTarget(const ObjectBase* newTarget) override;
 
-    void handleDamage(int damage, Uint32 damagerID, House* damagerOwner) override;
+    void handleDamage(const GameContext& context, int damage, Uint32 damagerID, House* damagerOwner) override;
 
     /**
         Updates this sandworm.
         \return true if this object still exists, false if it was destroyed
     */
-    bool update() override;
+    bool update(const GameContext& context) override;
 
     bool canAttack(const ObjectBase* object) const override;
     bool canPassTile(const Tile* pTile) const override;
@@ -81,9 +81,9 @@ public:
 
 protected:
     const ObjectBase* findTarget() const override;
-    void engageTarget() override;
-    void sleep();
-    bool sleepOrDie();
+    void engageTarget(const GameContext& context) override;
+    void sleep(const GameContext& context);
+    bool sleepOrDie(const GameContext& context);
 
 private:
     void init();

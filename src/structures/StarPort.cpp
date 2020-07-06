@@ -83,12 +83,12 @@ void StarPort::save(OutputStream& stream) const {
     stream.writeBool(deploying);
 }
 
-void StarPort::doBuildRandom() {
+void StarPort::doBuildRandom(const GameContext& context) {
     if(!buildList.empty()) {
         auto item2Produce = ItemID_Invalid;
 
         do {
-            item2Produce = std::next(buildList.begin(), currentGame->randomGen.rand(0, static_cast<Sint32>(buildList.size())-1))->itemID;
+            item2Produce = std::next(buildList.begin(), context.game.randomGen.rand(0, static_cast<Sint32>(buildList.size())-1))->itemID;
         } while((item2Produce == Unit_Harvester) || (item2Produce == Unit_MCV) || (item2Produce == Unit_Carryall));
 
         doProduceItem(item2Produce);
@@ -233,15 +233,15 @@ void StarPort::updateBuildList() {
     }
 }
 
-void StarPort::updateStructureSpecificStuff() {
+void StarPort::updateStructureSpecificStuff(const GameContext& context) {
     updateBuildList();
 
     if (arrivalTimer > 0) {
         if (--arrivalTimer == 0) {
             //make a frigate with all the cargo
             auto *const frigate = static_cast<Frigate*>(owner->createUnit(Unit_Frigate));
-            const auto pos = currentGameMap->findClosestEdgePoint(getLocation() + Coord(1,1), Coord(1,1));
-            frigate->deploy(pos);
+            const auto pos = context.map.findClosestEdgePoint(getLocation() + Coord(1,1), Coord(1,1));
+            frigate->deploy(context, pos);
             frigate->setTarget(this);
             const auto closestPoint = getClosestPoint(frigate->getLocation());
             frigate->setDestination(closestPoint);
@@ -298,8 +298,8 @@ void StarPort::updateStructureSpecificStuff() {
                             unitDestination = destination;
                         }
 
-                        const auto spot = currentGameMap->findDeploySpot(newUnit, location, unitDestination, structureSize);
-                        newUnit->deploy(spot);
+                        const auto spot = context.map.findDeploySpot(newUnit, location, unitDestination, structureSize);
+                        newUnit->deploy(context, spot);
 
                         if(unitDestination.isValid()) {
                             newUnit->setGuardPoint(unitDestination);
