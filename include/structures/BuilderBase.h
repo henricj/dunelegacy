@@ -93,9 +93,11 @@ public:
 
 class BuilderBase : public StructureBase
 {
-public:
+protected:
     BuilderBase(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer);
     BuilderBase(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer);
+
+public:
     using parent = StructureBase;
 
     virtual ~BuilderBase() = 0;
@@ -107,7 +109,7 @@ public:
 
     void save(OutputStream& stream) const override;
 
-    ObjectInterface* getInterfaceContainer() override;
+    std::unique_ptr<ObjectInterface> getInterfaceContainer(const GameContext& context) override;
 
     void setOwner(House *no);
 
@@ -140,7 +142,7 @@ public:
         Updates this builder.
         \return true if this object still exists, false if it was destroyed
     */
-    bool update() override;
+    bool update(const GameContext& context) override;
 
     virtual void handleUpgradeClick();
     virtual void handleProduceItemClick(ItemID_enum itemID, bool multipleMode = false);
@@ -153,7 +155,7 @@ public:
         Start upgrading this builder if possible.
         \return true if upgrading was started, false if not possible or already upgrading
     */
-    virtual bool doUpgrade();
+    virtual bool doUpgrade(const GameContext& context);
 
     /**
         Start production of the specified item.
@@ -178,7 +180,7 @@ public:
     /**
         Start building a random item in this builder.
     */
-    virtual void doBuildRandom();
+    virtual void doBuildRandom(const GameContext& context);
 
     /**
         Limit the build speed of this builder to the given argument. The build speed can be limited by the AI
@@ -192,8 +194,8 @@ public:
     bool isUpgrading() const noexcept { return upgrading; }
     bool isAllowedToUpgrade() const { return (curUpgradeLev < getMaxUpgradeLevel()); }
     int getCurrentUpgradeLevel() const noexcept { return curUpgradeLev; }
-    int getUpgradeCost() const;
-    void produce_item();
+    int getUpgradeCost(const GameContext& context) const;
+    void produce_item(const GameContext& context);
     FixPoint getUpgradeProgress() const noexcept { return upgradeProgress; }
 
     ItemID_enum getCurrentProducedItem() const noexcept { return currentProducedItem; }

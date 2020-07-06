@@ -41,11 +41,13 @@
  #include <utility>
 
 
-Player::Player(House* associatedHouse, std::string playername) : pHouse(associatedHouse), playerID(0), playername(std::move(playername)) {
-}
+Player::Player(const GameContext& context, House* associatedHouse, std::string playername, Random&& random)
+    : pHouse(associatedHouse), playerID(0), playername(std::move(playername)), random_{std::move(random)},
+      context_{std::move(context)} { }
 
-Player::Player(InputStream& stream, House* associatedHouse) : pHouse(associatedHouse) {
-    playerID = stream.readUint8();
+Player::Player(const GameContext& context, InputStream& stream, House* associatedHouse, Random&& random)
+    : pHouse(associatedHouse), random_{std::move(random)}, context_{std::move(context)} {
+    playerID   = stream.readUint8();
     playername = stream.readString();
 }
 
@@ -53,9 +55,11 @@ Player::~Player() {
     if(currentGame) currentGame->unregisterPlayer(this);
 }
 
+
 void Player::save(OutputStream& stream) const {
     stream.writeUint8(playerID);
     stream.writeString(playername);
+    stream.writeUint32Vector(random_.getSeed());
 }
 
 void Player::logDebug(const char* fmt, ...) const {
@@ -80,9 +84,7 @@ void Player::logWarn(const char* fmt, ...) const {
     fprintf(stderr, "\n");
 }
 
-Random& Player::getRandomGen() const {
-    return currentGame->randomGen;
-}
+Random& Player::getRandomGen() { return random_; }
 
 const GameInitSettings& Player::getGameInitSettings() const {
     return currentGame->getGameInitSettings();
@@ -123,7 +125,7 @@ const House* Player::getHouse(HOUSETYPE houseID) {
 
 void Player::doRepair(const ObjectBase* pObject) const {
     if(pObject->getOwner() == getHouse() && pObject->isActive()) {
-        const_cast<ObjectBase*>(pObject)->doRepair();
+        const_cast<ObjectBase*>(pObject)->doRepair(context_);
     } else {
         logWarn("The player '%s' tries to repair a structure or unit he doesn't own or that is inactive!\n", playername.c_str());
     }
@@ -139,7 +141,7 @@ void Player::doSetDeployPosition(const StructureBase* pStructure, int x, int y) 
 
 bool Player::doUpgrade(const BuilderBase* pBuilder) const {
     if(pBuilder->getOwner() == getHouse() && pBuilder->isActive()) {
-        return const_cast<BuilderBase*>(pBuilder)->doUpgrade();
+        return const_cast<BuilderBase*>(pBuilder)->doUpgrade(context_);
     }         logWarn("The player '%s' tries to upgrade a structure he doesn't own or that is inactive!\n", playername.c_str());
 
         return false;
@@ -181,7 +183,7 @@ void Player::doSetBuildSpeedLimit(const BuilderBase* pBuilder, FixPoint buildSpe
 
 void Player::doBuildRandom(const BuilderBase* pBuilder) const {
     if(pBuilder->getOwner() == getHouse() && pBuilder->isActive()) {
-        const_cast<BuilderBase*>(pBuilder)->doBuildRandom();
+        const_cast<BuilderBase*>(pBuilder)->doBuildRandom(context_);
     } else {
         logWarn("The player '%s' tries to randomly build some item in a structure he doesn't own or that is inactive!\n", playername.c_str());
     }
@@ -207,7 +209,7 @@ bool Player::doPlaceStructure(const ConstructionYard* pConstYard, int x, int y) 
 
 void Player::doSpecialWeapon(const Palace* pPalace) const {
     if(pPalace->getOwner() == getHouse() && pPalace->isActive()) {
-        const_cast<Palace*>(pPalace)->doSpecialWeapon();
+        const_cast<Palace*>(pPalace)->doSpecialWeapon(context_);
     } else {
         logWarn("The player '%s' tries to activate a special weapon from a palace he doesn't own or that is inactive!\n", playername.c_str());
     }
@@ -215,7 +217,7 @@ void Player::doSpecialWeapon(const Palace* pPalace) const {
 
 void Player::doLaunchDeathhand(const Palace* pPalace, int x, int y) const {
     if(pPalace->getOwner() == getHouse() && pPalace->isActive()) {
-        const_cast<Palace*>(pPalace)->doLaunchDeathhand(x, y);
+        const_cast<Palace*>(pPalace)->doLaunchDeathhand(context_, x, y);
     } else {
         logWarn("The player '%s' tries to launch a deathhand from a palace he doesn't own or that is inactive!\n", playername.c_str());
     }
@@ -234,7 +236,7 @@ void Player::doAttackObject(const TurretBase* pTurret, const ObjectBase* pTarget
 
 void Player::doMove2Pos(const UnitBase* pUnit, int x, int y, bool bForced) const {
     if(pUnit->getOwner() == getHouse() && pUnit->isActive()) {
-        const_cast<UnitBase*>(pUnit)->doMove2Pos(x, y, bForced);
+        const_cast<UnitBase*>(pUnit)->doMove2Pos(context_, x, y, bForced);
     } else {
         logWarn("The player '%s' tries to move a unit he doesn't own or that is inactive!\n", playername.c_str());
         return;
@@ -243,7 +245,7 @@ void Player::doMove2Pos(const UnitBase* pUnit, int x, int y, bool bForced) const
 
 void Player::doMove2Object(const UnitBase* pUnit, const ObjectBase* pTargetObject) const {
     if(pUnit->getOwner() == getHouse() && pUnit->isActive()) {
-        const_cast<UnitBase*>(pUnit)->doMove2Object(pTargetObject);
+        const_cast<UnitBase*>(pUnit)->doMove2Object(context_, pTargetObject);
     } else {
         logWarn("The player '%s' tries to move a unit (to an object) he doesn't own or that is inactive!\n", playername.c_str());
         return;
@@ -252,16 +254,17 @@ void Player::doMove2Object(const UnitBase* pUnit, const ObjectBase* pTargetObjec
 
 void Player::doAttackPos(const UnitBase* pUnit, int x, int y, bool bForced) const {
     if(pUnit->getOwner() == getHouse() && pUnit->isActive()) {
-        const_cast<UnitBase*>(pUnit)->doAttackPos(x, y, bForced);
+        const_cast<UnitBase*>(pUnit)->doAttackPos(context_, x, y, bForced);
     } else {
         logWarn("The player '%s' tries to order a unit (to attack a position) he doesn't own or that is inactive!\n", playername.c_str());
         return;
     }
 }
 
-void Player::doAttackObject(const UnitBase* pUnit, const ObjectBase* pTargetObject, bool bForced) const {
+void Player::doAttackObject(const UnitBase* pUnit, const ObjectBase* pTargetObject,
+                            bool bForced) const {
     if(pUnit->getOwner() == getHouse() && pUnit->isActive()) {
-        const_cast<UnitBase*>(pUnit)->doAttackObject(pTargetObject, bForced);
+        const_cast<UnitBase*>(pUnit)->doAttackObject(context_, pTargetObject, bForced);
     } else {
         logWarn("The player '%s' tries to attack with a unit he doesn't own or that is inactive!\n", playername.c_str());
         return;
@@ -270,7 +273,7 @@ void Player::doAttackObject(const UnitBase* pUnit, const ObjectBase* pTargetObje
 
 void Player::doSetAttackMode(const UnitBase* pUnit, ATTACKMODE attackMode) const {
     if(pUnit->getOwner() == getHouse() && pUnit->isActive()) {
-        const_cast<UnitBase*>(pUnit)->doSetAttackMode(attackMode);
+        const_cast<UnitBase*>(pUnit)->doSetAttackMode(context_, attackMode);
     } else {
         logWarn("The player '%s' tries to change the attack mode of a unit he doesn't own or that is inactive!\n", playername.c_str());
         return;
@@ -297,7 +300,7 @@ void Player::doReturn(const Harvester* pHarvester) const {
 
 void Player::doCaptureStructure(const InfantryBase* pInfantry, const StructureBase* pTargetStructure) const {
     if(pInfantry->getOwner() == getHouse() && pInfantry->isActive()) {
-        const_cast<InfantryBase*>(pInfantry)->doCaptureStructure(pTargetStructure);
+        const_cast<InfantryBase*>(pInfantry)->doCaptureStructure(context_, pTargetStructure);
     } else {
         logWarn("The player '%s' tries to capture with a unit he doesn't own or that is inactive!\n", playername.c_str());
         return;
@@ -314,7 +317,7 @@ bool Player::doDeploy(const MCV* pMCV) const {
 
 bool Player::doRequestCarryallDrop(const GroundUnit* pGroundUnit) const {
     if(pGroundUnit->getOwner() == getHouse() && pGroundUnit->isActive()) {
-        return const_cast<GroundUnit*>(pGroundUnit)->requestCarryall();
+        return const_cast<GroundUnit*>(pGroundUnit)->requestCarryall(context_);
     }
     logWarn("The player '%s' tries request a carryall for a ground unit he doesn't own or that is inactive!\n",
             playername.c_str());

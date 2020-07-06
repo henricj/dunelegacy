@@ -48,8 +48,11 @@ class StructureBase : public ObjectBase
 public:
     using parent = ObjectBase;
 
+protected:
     StructureBase(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer);
     StructureBase(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer);
+
+public:
     virtual ~StructureBase() = 0;
 
     StructureBase(const StructureBase &) = delete;
@@ -59,13 +62,13 @@ public:
 
     void save(OutputStream& stream) const override;
 
-    void assignToMap(const Coord& pos) override;
+    void assignToMap(const GameContext& context, const Coord& pos) override;
     void blitToScreen() override;
 
-    ObjectInterface* getInterfaceContainer() override;
+    std::unique_ptr<ObjectInterface> getInterfaceContainer(const GameContext& context) override;
 
-    void destroy() override;
-    void cleanup(Game* game, HumanPlayer* humanPlayer, Map* map) override;
+    void destroy(const GameContext& context) override;
+    void cleanup(const GameContext& context, HumanPlayer* humanPlayer) override;
 
     void         drawSelectionBox() override;
     void         drawOtherPlayerSelectionBox() override;
@@ -85,7 +88,7 @@ public:
         \param  xPos    the x position on the map
         \param  yPos    the y position on the map
     */
-    void handleActionClick(int xPos, int yPos) override;
+    void handleActionClick(const GameContext& context, int xPos, int yPos) override;
 
     /**
         This method is called when the user clicks on the repair button for this building
@@ -103,13 +106,13 @@ public:
     /**
         Start repairing this structure.
     */
-    void doRepair() override;
+    void doRepair(const GameContext& context) override;
 
     /**
         Updates this object.
         \return true if this object still exists, false if it was destroyed
     */
-    bool update() override;
+    bool update(const GameContext& context) override;
 
     /**
         Can this structure be captured by infantry units?
@@ -144,7 +147,7 @@ protected:
         Used for updating things that are specific to that particular structure. Is called from
         StructureBase::update() before the check if this structure is still alive.
     */
-    virtual void updateStructureSpecificStuff() { }
+    virtual void updateStructureSpecificStuff(const GameContext& context) { }
 
 
     // constant for all structures of the same type

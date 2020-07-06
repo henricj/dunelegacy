@@ -32,14 +32,14 @@
 
 class RefineryAndSiloInterface : public DefaultStructureInterface {
 public:
-    static RefineryAndSiloInterface* create(int objectID) {
-        auto* tmp = new RefineryAndSiloInterface(objectID);
+    static std::unique_ptr<RefineryAndSiloInterface> create(const GameContext& context, int objectID) {
+        auto tmp        = std::unique_ptr<RefineryAndSiloInterface>{new RefineryAndSiloInterface{context, objectID}};
         tmp->pAllocated = true;
         return tmp;
     }
 
 protected:
-    explicit RefineryAndSiloInterface(int objectID) : DefaultStructureInterface(objectID) {
+    RefineryAndSiloInterface(const GameContext& context, int objectID) : DefaultStructureInterface(context, objectID) {
         Uint32 color = SDL2RGB(palette[houseToPaletteIndex[static_cast<int>(pLocalHouse->getHouseID())]+3]);
 
         mainHBox.addWidget(&textVBox);

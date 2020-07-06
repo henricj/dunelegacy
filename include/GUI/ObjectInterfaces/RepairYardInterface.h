@@ -28,14 +28,14 @@
 
 class RepairYardInterface : public DefaultStructureInterface {
 public:
-    static RepairYardInterface* create(int objectID) {
-        auto* tmp = new RepairYardInterface(objectID);
+    static std::unique_ptr<RepairYardInterface> create(const GameContext& context, int objectID) {
+        auto tmp        = std::unique_ptr<RepairYardInterface>{new RepairYardInterface{context, objectID}};
         tmp->pAllocated = true;
         return tmp;
     }
 
 protected:
-    explicit RepairYardInterface(int objectID) : DefaultStructureInterface(objectID) {
+    RepairYardInterface(const GameContext& context, int objectID) : DefaultStructureInterface(context, objectID) {
         mainHBox.addWidget(Spacer::create());
         mainHBox.addWidget(&repairUnitProgressBar);
         mainHBox.addWidget(Spacer::create());

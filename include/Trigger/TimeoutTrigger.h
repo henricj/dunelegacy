@@ -52,7 +52,7 @@ public:
     /**
         Trigger this trigger. Shall only be called when getCycleNumber() is equal to the current game cycle
     */
-    void trigger() override;
+    void trigger(const GameContext& context) override;
 };
 
 #endif // TIMEOUTTRIGGER_H

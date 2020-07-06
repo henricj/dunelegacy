@@ -75,7 +75,7 @@ ANGLETYPE TankBase::getCurrentAttackAngle() const {
     return drawnTurretAngle;
 }
 
-void TankBase::navigate() {
+void TankBase::navigate(const GameContext& context) {
     if(moving && !justStoppedMoving) {
         if(location == destination) {
             targetAngle = ANGLETYPE::INVALID_ANGLE;
@@ -84,21 +84,24 @@ void TankBase::navigate() {
             targetAngle = destinationDrawnAngle(location, destination);
         }
     }
-    TrackedUnit::navigate();
+
+    parent::navigate(context);
 }
 
-void TankBase::idleAction() {
+void TankBase::idleAction(const GameContext& context) {
     if(getAttackMode() == GUARD) {
+        auto& randomGen = context.game.randomGen;
+
         // do some random turning with 20% chance
-        switch(currentGame->randomGen.rand(0, 9)) {
+        switch(randomGen.rand(0, 9)) {
             case 0: {
                 // choose a random one of the eight possible angles
-                nextSpotAngle = static_cast<ANGLETYPE>(currentGame->randomGen.rand(0, 7));
+                nextSpotAngle = static_cast<ANGLETYPE>(randomGen.rand(0, 7));
             } break;
 
             case 1: {
                 // choose a random one of the eight possible angles
-                targetAngle = static_cast<ANGLETYPE>(currentGame->randomGen.rand(0, 7));
+                targetAngle = static_cast<ANGLETYPE>(randomGen.rand(0, 7));
             } break;
 
             default: {
@@ -108,9 +111,9 @@ void TankBase::idleAction() {
     }
 }
 
-void TankBase::engageTarget() {
+void TankBase::engageTarget(const GameContext& context) {
 
-    TrackedUnit::engageTarget();
+    parent::engageTarget(context);
 
 
     if(closeTarget && (closeTarget.getObjPointer() == nullptr)) {
@@ -162,7 +165,7 @@ void TankBase::engageTarget() {
     }
 }
 
-void TankBase::targeting() {
+void TankBase::targeting(const GameContext& context) {
     if(findTargetTimer == 0) {
         if(attackMode != STOP && !closeTarget && !moving && !justStoppedMoving) {
             // find a temporary target
@@ -170,10 +173,10 @@ void TankBase::targeting() {
         }
     }
 
-    TrackedUnit::targeting();
+    parent::targeting(context);
 }
 
-void TankBase::turn() {
+void TankBase::turn(const GameContext& context) {
     FixPoint angleLeft = 0;
     FixPoint angleRight = 0;
 
@@ -188,9 +191,9 @@ void TankBase::turn() {
             }
 
             if(angleLeft <= angleRight) {
-                turnLeft();
+                turnLeft(context);
             } else {
-                turnRight();
+                turnRight(context);
             }
         }
     }

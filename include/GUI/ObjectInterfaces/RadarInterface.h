@@ -32,14 +32,14 @@
 
 class RadarInterface : public DefaultStructureInterface {
 public:
-    static RadarInterface* create(int objectID) {
-        auto* tmp = new RadarInterface(objectID);
+    static std::unique_ptr<RadarInterface> create(const GameContext& context, int objectID) {
+        auto tmp        = std::unique_ptr<RadarInterface>{new RadarInterface{context, objectID}};
         tmp->pAllocated = true;
         return tmp;
     }
 
 protected:
-    explicit RadarInterface(int objectID) : DefaultStructureInterface(objectID) {
+    RadarInterface(const GameContext& context, int objectID) : DefaultStructureInterface(context, objectID) {
         Uint32 color = SDL2RGB(palette[houseToPaletteIndex[static_cast<int>(pLocalHouse->getHouseID())]+3]);
 
         mainHBox.addWidget(&textVBox);
@@ -60,12 +60,12 @@ protected:
     */
     bool update() override
     {
-        ObjectBase* pObject = currentGame->getObjectManager().getObject(objectID);
+        ObjectBase* pObject = context_.objectManager.getObject(objectID);
         if(pObject == nullptr) {
             return false;
         }
 
-        House* pOwner = pObject->getOwner();
+        auto* pOwner = pObject->getOwner();
 
         friendlyUnitsLabel.setText(" " + _("Friend") + ": " + std::to_string(pOwner->getNumVisibleFriendlyUnits()));
         enemyUnitsLabel.setText(" " + _("Enemy") + ": " + std::to_string(pOwner->getNumVisibleEnemyUnits()));

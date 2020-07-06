@@ -89,7 +89,7 @@ void SiegeTank::blitToScreen() {
     }
 }
 
-void SiegeTank::destroy() {
+void SiegeTank::destroy(const GameContext& context) {
     if(currentGameMap->tileExists(location) && isVisible()) {
         Coord realPos(lround(realX), lround(realY));
         Uint32 explosionID = currentGame->randomGen.getRandOf(Explosion_Medium1, Explosion_Medium2);
@@ -101,7 +101,7 @@ void SiegeTank::destroy() {
         }
     }
 
-    TankBase::destroy();
+    TankBase::destroy(context);
 }
 
 void SiegeTank::playAttackSound() {

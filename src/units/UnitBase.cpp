@@ -136,8 +136,19 @@ void UnitBase::init() {
 
 UnitBase::~UnitBase() = default;
 
-void UnitBase::cleanup(Game* game, HumanPlayer* humanPlayer, Map* map) {
+void UnitBase::cleanup(const GameContext& context, HumanPlayer* humanPlayer) {
+    try {
+        auto& [game, map, objectManager] = context;
 
+        map.removeObjectFromMap(getObjectID()); // no map point will reference now
+        objectManager.removeObject(objectID);
+
+        game.getHouse(originalHouseID)->decrementUnits(itemID);
+
+        unitList.remove(this);
+    } catch(std::exception& e) { SDL_Log("UnitBase::cleanup(): %s", e.what()); }
+
+    parent::cleanup(context, humanPlayer);
 }
 
 void UnitBase::save(OutputStream& stream) const {
@@ -275,22 +286,20 @@ void UnitBase::blitToScreen() {
     }
 }
 
-ObjectInterface* UnitBase::getInterfaceContainer() {
-    if((pLocalHouse == owner && isRespondable()) || (debug)) {
-        return UnitInterface::create(objectID);
-    }         return DefaultObjectInterface::create(objectID);
-
-   
+std::unique_ptr<ObjectInterface> UnitBase::getInterfaceContainer(const GameContext& context) {
+    if((pLocalHouse == owner && isRespondable()) || (debug)) { return UnitInterface::create(context, objectID); }
+    return DefaultObjectInterface::create(context, objectID);
 }
 
 ANGLETYPE UnitBase::getCurrentAttackAngle() const {
     return drawnAngle;
 }
 
-void UnitBase::deploy(const Coord& newLocation) {
+void UnitBase::deploy(const GameContext& context, const Coord& newLocation) {
+    auto& [game, map, objectManager] = context;
 
-    if(currentGameMap->tileExists(newLocation)) {
-        setLocation(newLocation);
+    if(map.tileExists(newLocation)) {
+        setLocation(context, newLocation);
 
         if (guardPoint.isInvalid())
             guardPoint = location;
@@ -304,19 +313,19 @@ void UnitBase::deploy(const Coord& newLocation) {
         // Deployment logic to hopefully stop units freezing
         if (getAttackMode() == CARRYALLREQUESTED || getAttackMode() == HUNT) {
             if(getItemID() == Unit_Harvester) {
-                doSetAttackMode(HARVEST);
+                doSetAttackMode(context, HARVEST);
             } else {
-                doSetAttackMode(GUARD);
+                doSetAttackMode(context, GUARD);
             }
         }
 
         if(isAGroundUnit() && (getItemID() != Unit_Sandworm)) {
-            if(currentGameMap->getTile(location)->isSpiceBloom()) {
+            if(map.getTile(location)->isSpiceBloom()) {
                 setHealth(0);
                 setVisible(VIS_ALL, false);
-                currentGameMap->getTile(location)->triggerSpiceBloom(currentGame.get(), getOwner());
-            } else if(currentGameMap->getTile(location)->isSpecialBloom()){
-                currentGameMap->getTile(location)->triggerSpecialBloom(currentGame.get(), getOwner());
+                map.getTile(location)->triggerSpiceBloom(context, getOwner());
+            } else if(map.getTile(location)->isSpecialBloom()){
+                map.getTile(location)->triggerSpecialBloom(context, getOwner());
             }
         }
 
@@ -326,21 +335,19 @@ void UnitBase::deploy(const Coord& newLocation) {
     }
 }
 
-void UnitBase::destroy() {
+void UnitBase::destroy(const GameContext& context) {
 
     setTarget(nullptr);
-    currentGameMap->removeObjectFromMap(getObjectID()); //no map point will reference now
-    currentGame->getObjectManager().removeObject(objectID);
 
-    currentGame->getHouse(originalHouseID)->decrementUnits(itemID);
+    auto& [game, map, objectManager] = context;
 
-    unitList.remove(this);
+    objectManager.removeObject(getObjectID());
 
     if(isVisible()) {
-        if(currentGame->randomGen.rand(1,100) <= getInfSpawnProp()) {
-            auto *pNewUnit = currentGame->getHouse(originalHouseID)->createUnit(Unit_Soldier);
+        if(game.randomGen.rand(1,100) <= getInfSpawnProp()) {
+            auto *pNewUnit = game.getHouse(originalHouseID)->createUnit(Unit_Soldier);
             pNewUnit->setHealth(pNewUnit->getMaxHealth()/2);
-            pNewUnit->deploy(location);
+            pNewUnit->deploy(context, location);
 
             if(owner->getHouseID() != originalHouseID) {
                 // deviation is inherited
@@ -352,17 +359,19 @@ void UnitBase::destroy() {
     }
 }
 
-void UnitBase::deviate(House* newOwner) {
+void UnitBase::deviate(const GameContext& context, House* newOwner) {
+
+    auto& [game, map, objectManager] = context;
 
     if(newOwner->getHouseID() == originalHouseID) {
-        quitDeviation();
+        quitDeviation(context);
     } else {
-        currentGameMap->removeSelection(objectID);
+        map.removeSelection(objectID);
         setTarget(nullptr);
         setGuardPoint(location);
         setDestination(location);
         clearPath();
-        doSetAttackMode(GUARD);
+        doSetAttackMode(context, GUARD);
         owner = newOwner;
 
         graphic = pGFXManager->getObjPic(graphicID,getOwner()->getHouseID());
@@ -373,9 +382,9 @@ void UnitBase::deviate(House* newOwner) {
     // should be... going in with a 25% of the units value unless its a devastator which we can destruct or an ornithoper
     // which is likely to get killed
     if(getItemID() == Unit_Devastator || getItemID() == Unit_Ornithopter){
-        newOwner->informHasDamaged(Unit_Deviator, currentGame->objectData.data[getItemID()][static_cast<int>(newOwner->getHouseID())].price);
+        newOwner->informHasDamaged(Unit_Deviator, game.objectData.data[getItemID()][static_cast<int>(newOwner->getHouseID())].price);
     } else{
-        newOwner->informHasDamaged(Unit_Deviator, currentGame->objectData.data[getItemID()][static_cast<int>(newOwner->getHouseID())].price / 5);
+        newOwner->informHasDamaged(Unit_Deviator, game.objectData.data[getItemID()][static_cast<int>(newOwner->getHouseID())].price / 5);
     }
 }
 
@@ -426,7 +435,7 @@ void UnitBase::releaseTarget() {
     setTarget(nullptr);
 }
 
-void UnitBase::engageTarget() {
+void UnitBase::engageTarget(const GameContext& context) {
 
     if(target && (target.getObjPointer() == nullptr)) {
         // the target does not exist anymore
@@ -479,13 +488,11 @@ void UnitBase::engageTarget() {
                 // we are not following this air unit
                 releaseTarget();
                 return;
-            }                 // follow the target
+            } // follow the target
 
-                setDestination(targetLocation);
+            setDestination(targetLocation);
 
-                return;
-
-           
+            return;
         }
 
         // we are in attack range
@@ -503,7 +510,7 @@ void UnitBase::engageTarget() {
             // we want to capture the target building
             setDestination(targetLocation);
             targetAngle = ANGLETYPE::INVALID_ANGLE;
-        } else if(isTracked() && target.getObjPointer()->isInfantry() && !targetFriendly && currentGameMap->tileExists(targetLocation) && !currentGameMap->getTile(targetLocation)->isMountain() && forced) {
+        } else if(isTracked() && target.getObjPointer()->isInfantry() && !targetFriendly && context.map.tileExists(targetLocation) && !context.map.getTile(targetLocation)->isMountain() && forced) {
             // we squash the infantry unit because we are forced to
             setDestination(targetLocation);
             targetAngle = ANGLETYPE::INVALID_ANGLE;
@@ -540,7 +547,7 @@ void UnitBase::engageTarget() {
     }
 }
 
-void UnitBase::move() {
+void UnitBase::move(const GameContext& context) {
 
     if(moving && !justStoppedMoving) {
         if((!isBadlyDamaged()) || isAFlyingUnit()) {
@@ -571,7 +578,7 @@ void UnitBase::move() {
                 location = nextSpot;
 
                 if(!isAFlyingUnit() && itemID != Unit_Sandworm) {
-                    currentGameMap->viewMap(owner->getHouseID(), location, getViewRange());
+                    context.map.viewMap(owner->getHouseID(), location, getViewRange());
                 }
             }
 
@@ -588,7 +595,7 @@ void UnitBase::move() {
                 if(forced && (location == destination) && !target) {
                     setForced(false);
                     if(getAttackMode() == CARRYALLREQUESTED) {
-                        doSetAttackMode(GUARD);
+                        doSetAttackMode(context, GUARD);
                     }
                 }
 
@@ -610,7 +617,7 @@ void UnitBase::move() {
         justStoppedMoving = false;
     }
 
-    checkPos();
+    checkPos(context);
 }
 
 void UnitBase::bumpyMovementOnRock(FixPoint fromDistanceX, FixPoint fromDistanceY, FixPoint toDistanceX, FixPoint toDistanceY) {
@@ -655,10 +662,12 @@ void UnitBase::bumpyMovementOnRock(FixPoint fromDistanceX, FixPoint fromDistance
     }
 }
 
-void UnitBase::navigate() {
+void UnitBase::navigate(const GameContext& context) {
+
+    auto& game = context.game;
 
     // navigation is only performed every 5th frame
-    if(!isAFlyingUnit() && (currentGame->getGameCycleCount() + getObjectID()*1337) % 5 != 0) return;
+    if(!isAFlyingUnit() && (game.getGameCycleCount() + getObjectID()*1337) % 5 != 0) return;
 
     if(moving || justStoppedMoving) return;
 
@@ -671,21 +680,23 @@ void UnitBase::navigate() {
                 if(!SearchPathWithAStar() && (++noCloserPointCount >= 3)
                     && (location != oldLocation))
                 {   //try searching for a path a number of times then give up
-                    if (target.getObjPointer() != nullptr && targetFriendly
-                        && (target.getObjPointer()->getItemID() != Structure_RepairYard)
-                        && ((target.getObjPointer()->getItemID() != Structure_Refinery)
+
+                    if(auto* const targetPtr = target.getObjPointer();
+                       targetPtr != nullptr && targetFriendly
+                        && (targetPtr->getItemID() != Structure_RepairYard)
+                        && ((targetPtr->getItemID() != Structure_Refinery)
                             || (getItemID() != Unit_Harvester))) {
                         setTarget(nullptr);
                     }
 
                     /// This method will transport units if they get stuck inside a base
-                            /// This often happens after an AI get nuked and has a hole in their base
+                    /// This often happens after an AI get nuked and has a hole in their base
                     if(getOwner()->hasCarryalls()
                         && this->isAGroundUnit()
-                        && (currentGame->getGameInitSettings().getGameOptions().manualCarryallDrops || getOwner()->isAI())
+                        && (game.getGameInitSettings().getGameOptions().manualCarryallDrops || getOwner()->isAI())
                         && blockDistance(location, destination) >= MIN_CARRYALL_LIFT_DISTANCE ) {
-                        static_cast<GroundUnit*>(this)->requestCarryall();
-                    } else if(  getOwner()->isAI()
+                        static_cast<GroundUnit*>(this)->requestCarryall(context);
+                    } else if(getOwner()->isAI()
                         && (getItemID() == Unit_Harvester)
                         && !static_cast<Harvester*>(this)->isReturning()
                         && blockDistance(location, destination) >= 2) {
@@ -718,36 +729,38 @@ void UnitBase::navigate() {
                     moving = true;
                     nextSpotFound = false;
 
-                    assignToMap(nextSpot);
+                    assignToMap(context, nextSpot);
                     angle = static_cast<int>(drawnAngle);
-                    setSpeeds();
+                    setSpeeds(context);
                 }
             }
         }
     } else if(!target && attackPos.isInvalid()) {
-        if(((currentGame->getGameCycleCount() + getObjectID()*1337) % MILLI2CYCLES(UNITIDLETIMER)) == 0) {
-            idleAction();
+        if(((game.getGameCycleCount() + getObjectID()*1337) % MILLI2CYCLES(UNITIDLETIMER)) == 0) {
+            idleAction(context);
         }
     }
 }
 
-void UnitBase::idleAction() {
+void UnitBase::idleAction(const GameContext& context) {
     //not moving and not wanting to go anywhere, do some random turning
     if(isAGroundUnit() && (getItemID() != Unit_Harvester) && (getAttackMode() == GUARD)) {
         // we might turn this cycle with 20% chance
-        if(currentGame->randomGen.rand(0, 4) == 0) {
+        if(context.game.randomGen.rand(0, 4) == 0) {
             // choose a random one of the eight possible angles
-            nextSpotAngle = static_cast<ANGLETYPE>(currentGame->randomGen.rand(0, 7));
+            nextSpotAngle = static_cast<ANGLETYPE>(context.game.randomGen.rand(0, 7));
         }
     }
 }
 
-void UnitBase::handleActionClick(int xPos, int yPos) {
-    if(!respondable || !currentGameMap->tileExists(xPos, yPos)) return;
+void UnitBase::handleActionClick(const GameContext& context, int xPos, int yPos) {
+    auto& map = context.map;
 
-    auto* const game = currentGame.get();
+    if(!respondable || !map.tileExists(xPos, yPos)) return;
 
-    auto* const tempTarget = currentGameMap->tryGetObject(xPos, yPos);
+    auto& game = context.game;
+
+    auto* const tempTarget = map.tryGetObject(xPos, yPos);
 
     if(tempTarget) {
         // attack unit/structure or move to structure
@@ -755,69 +768,73 @@ void UnitBase::handleActionClick(int xPos, int yPos) {
         const auto is_owner = tempTarget->getOwner()->getTeamID() == getOwner()->getTeamID();
         const auto cmd_type = is_owner ? CMDTYPE::CMD_UNIT_MOVE2OBJECT : CMDTYPE::CMD_UNIT_ATTACKOBJECT;
 
-        game->getCommandManager().addCommand(Command{ pLocalPlayer->getPlayerID(), cmd_type, objectID, tempTarget->getObjectID() });
+        game.getCommandManager().addCommand(Command{ pLocalPlayer->getPlayerID(), cmd_type, objectID, tempTarget->getObjectID() });
     } else {
         // move this unit
-        game->getCommandManager().addCommand(Command{pLocalPlayer->getPlayerID(), CMDTYPE::CMD_UNIT_MOVE2POS, objectID,
+        game.getCommandManager().addCommand(Command{pLocalPlayer->getPlayerID(), CMDTYPE::CMD_UNIT_MOVE2POS, objectID,
                                                      static_cast<Uint32>(xPos), static_cast<Uint32>(yPos),
                                                      static_cast<Uint32>(true)});
     }
 }
 
-void UnitBase::handleAttackClick(int xPos, int yPos) {
-    if(respondable) {
-        if(currentGameMap->tileExists(xPos, yPos)) {
-            auto* const tempTarget = currentGameMap->tryGetObject(xPos, yPos);
-            if(tempTarget) {
-                // attack unit/structure or move to structure
+void UnitBase::handleAttackClick(const GameContext& context, int xPos, int yPos) {
+    if(!respondable) return;
 
-                currentGame->getCommandManager().addCommand(Command(
-                    pLocalPlayer->getPlayerID(), CMDTYPE::CMD_UNIT_ATTACKOBJECT, objectID, tempTarget->getObjectID()));
-            } else {
-                // attack pos
-                currentGame->getCommandManager().addCommand(Command(pLocalPlayer->getPlayerID(),
-                                                                    CMDTYPE::CMD_UNIT_ATTACKPOS, objectID, (Uint32)xPos,
-                                                                    (Uint32)yPos, (Uint32) true));
-            }
-        }
-    }
+    auto& map = context.map;
 
-}
+    if(map.tileExists(xPos, yPos)) {
+        auto& game = context.game;
 
-void UnitBase::handleMoveClick(int xPos, int yPos) {
-    if(respondable) {
-        if(currentGameMap->tileExists(xPos, yPos)) {
-            // move to pos
-            currentGame->getCommandManager().addCommand(Command(pLocalPlayer->getPlayerID(), CMDTYPE::CMD_UNIT_MOVE2POS,
-                                                                objectID, (Uint32)xPos, (Uint32)yPos, (Uint32) true));
+        auto* const tempTarget = map.tryGetObject(xPos, yPos);
+        if(tempTarget) {
+            // attack unit/structure or move to structure
+
+            game.getCommandManager().addCommand(Command(
+                pLocalPlayer->getPlayerID(), CMDTYPE::CMD_UNIT_ATTACKOBJECT, objectID, tempTarget->getObjectID()));
+        } else {
+            // attack pos
+            game.getCommandManager().addCommand(Command(pLocalPlayer->getPlayerID(),
+                                                                CMDTYPE::CMD_UNIT_ATTACKPOS, objectID, (Uint32)xPos,
+                                                                (Uint32)yPos, (Uint32) true));
         }
     }
 }
 
-void UnitBase::handleSetAttackModeClick(ATTACKMODE newAttackMode) {
-    currentGame->getCommandManager().addCommand(Command(pLocalPlayer->getPlayerID(), CMDTYPE::CMD_UNIT_SETMODE,objectID,(Uint32) newAttackMode));
+void UnitBase::handleMoveClick(const GameContext& context, int xPos, int yPos) {
+    if(!respondable) return;
+
+    if(context.map.tileExists(xPos, yPos)) {
+        // move to pos
+        context.game.getCommandManager().addCommand(Command(pLocalPlayer->getPlayerID(), CMDTYPE::CMD_UNIT_MOVE2POS,
+                                                            objectID, (Uint32)xPos, (Uint32)yPos, (Uint32) true));
+    }
+}
+
+void UnitBase::handleSetAttackModeClick(const GameContext& context, ATTACKMODE newAttackMode) {
+    context.game.getCommandManager().addCommand(Command(pLocalPlayer->getPlayerID(), CMDTYPE::CMD_UNIT_SETMODE,objectID,(Uint32) newAttackMode));
 }
 
 /**
     User action
     Request a Carryall to drop at target location
 **/
-void UnitBase::handleRequestCarryallDropClick(int xPos, int yPos) {
-    if(respondable) {
-        if(currentGameMap->tileExists(xPos, yPos)) {
-            currentGame->getCommandManager().addCommand(Command(pLocalPlayer->getPlayerID(), CMDTYPE::CMD_UNIT_REQUESTCARRYALLDROP, objectID, (Uint32) xPos, (Uint32) yPos));
-        }
+void UnitBase::handleRequestCarryallDropClick(const GameContext& context, int xPos, int yPos) {
+    if(!respondable) return;
+
+    if(context.map.tileExists(xPos, yPos)) {
+        context.game.getCommandManager().addCommand(Command(
+            pLocalPlayer->getPlayerID(), CMDTYPE::CMD_UNIT_REQUESTCARRYALLDROP, objectID, (Uint32)xPos, (Uint32)yPos));
     }
 }
 
 
 
-void UnitBase::doMove2Pos(int xPos, int yPos, bool bForced) {
+void UnitBase::doMove2Pos(const GameContext& context, int xPos, int yPos, bool bForced) {
     if(attackMode == CAPTURE || attackMode == HUNT) {
-        doSetAttackMode(GUARD);
+        doSetAttackMode(context, GUARD);
     }
 
-    if(currentGameMap->tileExists(xPos, yPos)) {
+    if(context.map.tileExists(xPos, yPos)) {
         if((xPos != destination.x) || (yPos != destination.y)) {
             clearPath();
             findTargetTimer = 0;
@@ -835,17 +852,17 @@ void UnitBase::doMove2Pos(int xPos, int yPos, bool bForced) {
     }
 }
 
-void UnitBase::doMove2Pos(const Coord& coord, bool bForced) {
-    doMove2Pos(coord.x, coord.y, bForced);
+void UnitBase::doMove2Pos(const GameContext& context, const Coord& coord, bool bForced) {
+    doMove2Pos(context, coord.x, coord.y, bForced);
 }
 
-void UnitBase::doMove2Object(const ObjectBase* pTargetObject) {
+void UnitBase::doMove2Object(const GameContext& context, const ObjectBase* pTargetObject) {
     if(pTargetObject->getObjectID() == getObjectID()) {
         return;
     }
 
     if(attackMode == CAPTURE || attackMode == HUNT) {
-        doSetAttackMode(GUARD);
+        doSetAttackMode(context, GUARD);
     }
 
     setDestination(INVALID_POS,INVALID_POS);
@@ -858,23 +875,23 @@ void UnitBase::doMove2Object(const ObjectBase* pTargetObject) {
     findTargetTimer = 0;
 }
 
-void UnitBase::doMove2Object(Uint32 targetObjectID) {
-    ObjectBase* pObject = currentGame->getObjectManager().getObject(targetObjectID);
+void UnitBase::doMove2Object(const GameContext& context, Uint32 targetObjectID) {
+    ObjectBase* pObject = context.objectManager.getObject(targetObjectID);
 
     if(pObject == nullptr) {
         return;
     }
 
-    doMove2Object(pObject);
+    doMove2Object(context, pObject);
 }
 
-void UnitBase::doAttackPos(int xPos, int yPos, bool bForced) {
-    if(!currentGameMap->tileExists(xPos, yPos)) {
+void UnitBase::doAttackPos(const GameContext& context, int xPos, int yPos, bool bForced) {
+    if(!context.map.tileExists(xPos, yPos)) {
         return;
     }
 
     if(attackMode == CAPTURE) {
-        doSetAttackMode(GUARD);
+        doSetAttackMode(context, GUARD);
     }
 
     setDestination(xPos,yPos);
@@ -887,13 +904,13 @@ void UnitBase::doAttackPos(int xPos, int yPos, bool bForced) {
     findTargetTimer = 0;
 }
 
-void UnitBase::doAttackObject(const ObjectBase* pTargetObject, bool bForced) {
+void UnitBase::doAttackObject(const GameContext& context, const ObjectBase* pTargetObject, bool bForced) {
     if(pTargetObject->getObjectID() == getObjectID() || (!canAttack() && getItemID() != Unit_Harvester)) {
         return;
     }
 
     if(attackMode == CAPTURE) {
-        doSetAttackMode(GUARD);
+        doSetAttackMode(context, GUARD);
     }
 
     setDestination(INVALID_POS,INVALID_POS);
@@ -912,48 +929,48 @@ void UnitBase::doAttackObject(const ObjectBase* pTargetObject, bool bForced) {
     findTargetTimer = 0;
 }
 
-void UnitBase::doAttackObject(Uint32 TargetObjectID, bool bForced) {
-    ObjectBase* pObject = currentGame->getObjectManager().getObject(TargetObjectID);
+void UnitBase::doAttackObject(const GameContext& context, Uint32 TargetObjectID, bool bForced) {
+    ObjectBase* pObject = context.objectManager.getObject(TargetObjectID);
 
     if(pObject == nullptr) {
         return;
     }
 
-    doAttackObject(pObject, bForced);
+    doAttackObject(context, pObject, bForced);
 }
 
-void UnitBase::doSetAttackMode(ATTACKMODE newAttackMode) {
+void UnitBase::doSetAttackMode(const GameContext& context, ATTACKMODE newAttackMode) {
     if((newAttackMode >= 0) && (newAttackMode < ATTACKMODE_MAX)) {
         attackMode = newAttackMode;
     }
 
     if(attackMode == GUARD || attackMode == STOP) {
         if(moving && !justStoppedMoving) {
-            doMove2Pos(nextSpot, false);
+            doMove2Pos(context, nextSpot, false);
         } else {
-            doMove2Pos(location, false);
+            doMove2Pos(context, location, false);
         }
     }
 }
 
-void UnitBase::handleDamage(int damage, Uint32 damagerID, House* damagerOwner) {
+void UnitBase::handleDamage(const GameContext& context, int damage, Uint32 damagerID, House* damagerOwner) {
     // shorten deviation time
     if(deviationTimer > 0) {
         deviationTimer = std::max(0,deviationTimer - MILLI2CYCLES(damage*20*1000));
     }
 
-    ObjectBase::handleDamage(damage, damagerID, damagerOwner);
+    parent::handleDamage(context, damage, damagerID, damagerOwner);
 
-    ObjectBase* pDamager = currentGame->getObjectManager().getObject(damagerID);
+    auto* pDamager = context.objectManager.getObject(damagerID);
 
     if(pDamager != nullptr){
 
         if(attackMode == HUNT && !forced) {
-            ObjectBase* pDamager = currentGame->getObjectManager().getObject(damagerID);
+            auto* pDamager = context.objectManager.getObject(damagerID);
             if(canAttack(pDamager)) {
                 if(!target || target.getObjPointer() == nullptr || !isInWeaponRange(target.getObjPointer())) {
                     // no target or target not on weapon range => switch target
-                    doAttackObject(pDamager, false);
+                    doAttackObject(context, pDamager, false);
                 }
 
             }
@@ -1110,12 +1127,12 @@ void UnitBase::setGuardPoint(int newX, int newY) {
     }
 }
 
-void UnitBase::setLocation(int xPos, int yPos) {
+void UnitBase::setLocation(const GameContext& context, int xPos, int yPos) {
 
     if((xPos == INVALID_POS) && (yPos == INVALID_POS)) {
-        ObjectBase::setLocation(xPos, yPos);
+        parent::setLocation(context, xPos, yPos);
     } else if (currentGameMap->tileExists(xPos, yPos)) {
-        ObjectBase::setLocation(xPos, yPos);
+        parent::setLocation(context, xPos, yPos);
         realX += TILESIZE/2;
         realY += TILESIZE/2;
         bumpyOffsetX = 0;
@@ -1129,8 +1146,8 @@ void UnitBase::setLocation(int xPos, int yPos) {
     clearPath();
 }
 
-void UnitBase::setPickedUp(UnitBase* newCarrier) {
-    currentGameMap->removeObjectFromMap(getObjectID());
+void UnitBase::setPickedUp(const GameContext& context, UnitBase* newCarrier) {
+    context.map.removeObjectFromMap(getObjectID());
 
     if(goingToRepairYard) {
         static_cast<RepairYard*>(target.getObjPointer())->unBook();
@@ -1156,15 +1173,15 @@ void UnitBase::setPickedUp(UnitBase* newCarrier) {
     clearPath();
 }
 
-FixPoint UnitBase::getMaxSpeed() const {
-    return currentGame->objectData.data[itemID][static_cast<int>(originalHouseID)].maxspeed;
+FixPoint UnitBase::getMaxSpeed(const GameContext& context) const {
+    return context.game.objectData.data[itemID][static_cast<int>(originalHouseID)].maxspeed;
 }
 
-void UnitBase::setSpeeds() {
-    FixPoint speed = getMaxSpeed();
+void UnitBase::setSpeeds(const GameContext& context) {
+    FixPoint speed = getMaxSpeed(context);
 
     if(!isAFlyingUnit()) {
-        speed += speed*(1 - getTerrainDifficulty((TERRAINTYPE) currentGameMap->getTile(location)->getType()));
+        speed += speed*(1 - getTerrainDifficulty(context.map.getTile(location)->getType()));
         if(isBadlyDamaged()) {
             speed *= HEAVILYDAMAGEDSPEEDMULTIPLIER;
         }
@@ -1186,25 +1203,26 @@ void UnitBase::setSpeeds() {
 
 void UnitBase::setTarget(const ObjectBase* newTarget) {
     attackPos.invalidate();
-    bFollow = false;
+    bFollow     = false;
     targetAngle = ANGLETYPE::INVALID_ANGLE;
 
-    if(goingToRepairYard && target && (target.getObjPointer()->getItemID() == Structure_RepairYard)) {
-        static_cast<RepairYard*>(target.getObjPointer())->unBook();
+    if(goingToRepairYard) {
+        if(auto* repairYard = dune_cast<RepairYard>(target.getObjPointer())) repairYard->unBook();
+
         goingToRepairYard = false;
     }
 
-    ObjectBase::setTarget(newTarget);
+    parent::setTarget(newTarget);
 
-    if(target.getObjPointer() != nullptr
-        && (target.getObjPointer()->getOwner() == getOwner())
-        && (target.getObjPointer()->getItemID() == Structure_RepairYard)) {
-        static_cast<RepairYard*>(target.getObjPointer())->book();
+    auto* const currentTarget = dune_cast<RepairYard>(target.getObjPointer());
+
+    if(currentTarget != nullptr && (currentTarget->getOwner() == getOwner())) {
+        currentTarget->book();
         goingToRepairYard = true;
     }
 }
 
-void UnitBase::targeting() {
+void UnitBase::targeting(const GameContext& context) {
     if(findTargetTimer == 0) {
 
         if(attackMode != STOP && attackMode != CARRYALLREQUESTED) {
@@ -1212,11 +1230,11 @@ void UnitBase::targeting() {
             // lets add a bit of logic to make units recalibrate their nearest target if the target isn't in weapon range
             if(target && !attackPos && !forced &&(attackMode == GUARD || attackMode == AREAGUARD || attackMode == HUNT)){
                 if(!isInWeaponRange(target.getObjPointer())){
-                    const ObjectBase* pNewTarget = findTarget();
+                    const auto* pNewTarget = findTarget();
 
                     if(pNewTarget != nullptr) {
 
-                        doAttackObject(pNewTarget, false);
+                        doAttackObject(context, pNewTarget, false);
 
                         findTargetTimer = 500;
                     }
@@ -1232,29 +1250,28 @@ void UnitBase::targeting() {
                 if(pNewTarget != nullptr && isInGuardRange(pNewTarget)) {
                     // we have found a new target => attack it
                     if(attackMode == AMBUSH) {
-                        doSetAttackMode(HUNT);
+                        doSetAttackMode(context, HUNT);
                     }
-                    doAttackObject(pNewTarget, false);
+                    doAttackObject(context, pNewTarget, false);
 
                     if(getItemID() == Unit_Sandworm) {
-                        doSetAttackMode(HUNT);
+                        doSetAttackMode(context, HUNT);
                     }
                 } else if(attackMode == HUNT) {
                     setGuardPoint(location);
-                    doSetAttackMode(GUARD);
+                    doSetAttackMode(context, GUARD);
                 }
 
                 // reset target timer
                 findTargetTimer = MILLI2CYCLES(2*1000);
             }
         }
-
     }
 
-    engageTarget();
+    engageTarget(context);
 }
 
-void UnitBase::turn() {
+void UnitBase::turn(const GameContext& context) {
     if(!moving && !justStoppedMoving) {
         auto wantedAngle = ANGLETYPE::INVALID_ANGLE;
 
@@ -1278,51 +1295,51 @@ void UnitBase::turn() {
             }
 
             if(angleLeft <= angleRight) {
-                turnLeft();
+                turnLeft(context);
             } else {
-                turnRight();
+                turnRight(context);
             }
         }
     }
 }
 
-void UnitBase::turnLeft() {
-    angle += currentGame->objectData.data[itemID][static_cast<int>(originalHouseID)].turnspeed;
+void UnitBase::turnLeft(const GameContext& context) {
+    angle += context.game.objectData.data[itemID][static_cast<int>(originalHouseID)].turnspeed;
     if(angle >= 7.5_fix) { angle -= static_cast<int>(ANGLETYPE::NUM_ANGLES); }
     drawnAngle = normalizeAngle(static_cast<ANGLETYPE>(lround(angle)));
 }
 
-void UnitBase::turnRight() {
-    angle -= currentGame->objectData.data[itemID][static_cast<int>(originalHouseID)].turnspeed;
+void UnitBase::turnRight(const GameContext& context) {
+    angle -= context.game.objectData.data[itemID][static_cast<int>(originalHouseID)].turnspeed;
     if(angle <= -0.5_fix) { angle += static_cast<int>(ANGLETYPE::NUM_ANGLES); }
     drawnAngle = normalizeAngle(static_cast<ANGLETYPE>(lround(angle)));
 }
 
-void UnitBase::quitDeviation() {
+void UnitBase::quitDeviation(const GameContext& context) {
     if(wasDeviated()) {
         // revert back to real owner
         setTarget(nullptr);
         setGuardPoint(location);
         setDestination(location);
-        owner = currentGame->getHouse(originalHouseID);
+        owner = context.game.getHouse(originalHouseID);
         graphic = pGFXManager->getObjPic(graphicID,getOwner()->getHouseID());
         deviationTimer = INVALID;
     }
 }
 
-bool UnitBase::update() {
+bool UnitBase::update(const GameContext& context) {
     if(active) {
-        targeting();
-        navigate();
-        move();
+        targeting(context);
+        navigate(context);
+        move(context);
         if(active) {
-            turn();
-            updateVisibleUnits();
+            turn(context);
+            updateVisibleUnits(context);
         }
     }
 
     if(getHealth() <= 0) {
-        destroy();
+        destroy(context);
         return false;
     }
 
@@ -1332,28 +1349,30 @@ bool UnitBase::update() {
     if(secondaryWeaponTimer > 0) secondaryWeaponTimer--;
     if(deviationTimer != INVALID) {
         if(--deviationTimer <= 0) {
-            quitDeviation();
+            quitDeviation(context);
         }
     }
 
     return true;
 }
 
-void UnitBase::updateVisibleUnits() {
+void UnitBase::updateVisibleUnits(const GameContext& context) {
     if(isAFlyingUnit()) {
         return;
     }
 
-    auto* pTile = currentGameMap->tryGetTile(location.x, location.y);
+    auto* pTile = context.map.tryGetTile(location.x, location.y);
     if(!pTile) return;
 
-    currentGame->for_each_house([&](auto& house) {
+    auto& game = context.game;
+
+    game.for_each_house([&](auto& house) {
         if(pTile->isExploredByHouse(house.getHouseID()) && (house.getTeamID() != getOwner()->getTeamID()) && (&house != getOwner())) {
             house.informDirectContactWithEnemy();
             getOwner()->informDirectContactWithEnemy();
         }
 
-        if(pTile->isExploredByTeam(currentGame.get(), house.getTeamID())) {
+        if(pTile->isExploredByTeam(&context.game, house.getTeamID())) {
             if(house.getTeamID() == getOwner()->getTeamID()) {
                 house.informVisibleFriendlyUnit();
             } else {

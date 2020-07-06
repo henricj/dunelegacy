@@ -39,24 +39,24 @@ public:
 
     void save(OutputStream& stream) const override;
 
-    void assignToMap(const Coord& pos) override;
+    void assignToMap(const GameContext& context, const Coord& pos) override;
 
     void playConfirmSound() override;
     void playSelectSound() override;
 
     void bookCarrier(UnitBase* newCarrier);
-    void checkPos() override;
+    void checkPos(const GameContext& context) override;
 
-    void doRequestCarryallDrop(int x, int y);
-    bool requestCarryall();
-    void setPickedUp(UnitBase* newCarrier) override;
+    void doRequestCarryallDrop(const GameContext& context, int x, int y);
+    bool requestCarryall(const GameContext& context);
+    void setPickedUp(const GameContext& context, UnitBase* newCarrier) override;
 
     /**
         This method is called when the user clicks on the repair button for this unit
     */
     virtual void handleSendToRepairClick();
 
-    void doRepair() noexcept override;
+    void doRepair(const GameContext& context) noexcept override;
 
     void setAwaitingPickup(bool status) { awaitingPickup = status; }
     bool isAwaitingPickup() const noexcept { return awaitingPickup; }
@@ -71,8 +71,8 @@ public:
     FixPoint getTerrainDifficulty(TERRAINTYPE terrainType) const override;
 
 protected:
-    void move() override;
-    void navigate() override;
+    void move(const GameContext& context) override;
+    void navigate(const GameContext& context) override;
 
     bool    awaitingPickup;     ///< Is this unit waiting for pickup?
     Uint32  bookedCarrier;      ///< What is the carrier if waiting for pickup?

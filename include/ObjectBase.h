@@ -30,12 +30,25 @@
 #include <SDL2/SDL.h>
 
 // forward declarations
+class Game;
 class House;
 class InputStream;
 class OutputStream;
 class ObjectInterface;
+class ObjectManager;
+class Map;
 class Coord;
 template<class WidgetData> class Container;
+
+
+struct GameContext {
+    GameContext(Game& game, Map& map, ObjectManager& objectManager)
+        : game{game}, map{map}, objectManager{objectManager} { }
+
+    Game&          game;
+    Map&           map;
+    ObjectManager& objectManager;
+};
 
 #define VIS_ALL -1
 
@@ -78,6 +91,8 @@ protected:
     ObjectBase(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer);
 
 public:
+    using parent          = ObjectBase;
+
     virtual ~ObjectBase() = 0;
 
     ObjectBase(const ObjectBase &) = delete;
@@ -87,17 +102,17 @@ public:
 
     virtual void save(OutputStream& stream) const;
 
-    virtual ObjectInterface* getInterfaceContainer();
+    virtual std::unique_ptr<ObjectInterface> getInterfaceContainer(const GameContext& context);
 
-    virtual void assignToMap(const Coord& pos) = 0;
+    virtual void assignToMap(const GameContext& context, const Coord& pos) = 0;
     virtual void blitToScreen() = 0;
 
     virtual void drawSelectionBox() { ; };
     virtual void drawOtherPlayerSelectionBox() { ; };
 
-    virtual void destroy() = 0;
+    virtual void destroy(const GameContext& context);
 
-    virtual void cleanup(Game* game, HumanPlayer* humanPlayer, Map* map) = 0;
+    virtual void cleanup(const GameContext& context, HumanPlayer* humanPlayer) = 0;
 
     virtual Coord getClosestCenterPoint(const Coord& objectLocation) const;
 
@@ -105,16 +120,16 @@ public:
 
     virtual Coord getCenterPoint() const;
 
-    virtual void handleDamage(int damage, Uint32 damagerID, House* damagerOwner);
+    virtual void handleDamage(const GameContext& context, int damage, Uint32 damagerID, House* damagerOwner);
 
     /**
         This method is called when an object is ordered by a right click
         \param  xPos    the x position on the map
         \param  yPos    the y position on the map
     */
-    virtual void handleActionClick(int xPos, int yPos) = 0;
+    virtual void handleActionClick(const GameContext& context, int xPos, int yPos) = 0;
 
-    virtual void doRepair() = 0;
+    virtual void doRepair(const GameContext& context) = 0;
 
     virtual void handleInterfaceEvent(SDL_Event* event);
 
@@ -124,7 +139,7 @@ public:
     virtual void setDestination(int newX, int newY);
     virtual void setHealth(FixPoint newHealth);
 
-    virtual void setLocation(int xPos, int yPos);
+    virtual void setLocation(const GameContext& context, int xPos, int yPos);
 
     virtual void setTarget(const ObjectBase* newTarget);
     void setVisible(int teamID, bool status);
@@ -133,7 +148,7 @@ public:
         Updates this object.
         \return true if this object still exists, false if it was destroyed
     */
-    virtual bool update() = 0;
+    virtual bool update(const GameContext& context) = 0;
 
     void unassignFromMap(const Coord& location) const;
 
@@ -162,7 +177,7 @@ public:
     void setSelected(bool value) noexcept { selected = value; }
     void setSelectedByOtherPlayer(bool value) noexcept { selectedByOtherPlayer = value; }
     void setDestination(const Coord& location) { setDestination(location.x, location.y); }
-    void setLocation(const Coord& location) { setLocation(location.x, location.y); }
+    void setLocation(const GameContext& context, const Coord& location) { setLocation(context, location.x, location.y); }
     bool canAttack() const noexcept { return canAttackStuff; }
     bool hasATarget() const noexcept { return (target); }
     bool hasObjectID(Uint32 id) const noexcept { return (objectID == id); }
@@ -203,9 +218,16 @@ public:
 
     HOUSETYPE getOriginalHouseID() const noexcept { return originalHouseID; }
     virtual void setOriginalHouseID(HOUSETYPE i) { originalHouseID = i; }
-    House* getOwner() const noexcept { return owner; }
 
-    void setOwner(House* no) noexcept { owner = no; }
+    House* getOwner() const noexcept {
+        assert(owner);
+        return owner;
+    }
+
+    void setOwner(House* no) noexcept {
+        assert(no);
+        owner = no;
+    }
 
     static std::unique_ptr<ObjectBase> createObject(ItemID_enum itemID, Uint32 objectID,
                                                     const ObjectInitializer& initializer);
@@ -225,7 +247,7 @@ protected:
     bool     aUnit{};                ///< Is this a unit?
     bool     aFlyingUnit{};          ///< Is this a flying unit?
     bool     aGroundUnit{};          ///< Is this a ground unit?
-    bool     infantry{};             ///< Is this an infantry unit?
+    bool     infantry{true};         ///< Is this an infantry unit?
 
     bool     canAttackStuff{};       ///< Can this unit/structure attack?
 

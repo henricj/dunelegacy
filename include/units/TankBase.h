@@ -28,6 +28,7 @@ protected:
 
 public:
     using parent = TrackedUnit;
+
     ~TankBase() override = 0;
 
     TankBase(const TankBase &) = delete;
@@ -37,7 +38,7 @@ public:
 
     void save(OutputStream& stream) const override;
 
-    void navigate() override;
+    void navigate(const GameContext& context) override;
 
     ANGLETYPE getTurretAngle() const { return static_cast<ANGLETYPE>(lround(turretAngle)); }
 
@@ -46,15 +47,15 @@ public:
     ANGLETYPE getCurrentAttackAngle() const override;
 
 protected:
-    void engageTarget() override;
-    void targeting() override;
+    void engageTarget(const GameContext& context) override;
+    void targeting(const GameContext& context) override;
 
     /**
         When the unit is currently idling this method is called about every 5 seconds.
     */
-    void idleAction() override;
+    void idleAction(const GameContext& context) override;
 
-    void turn() override;
+    void turn(const GameContext& context) override;
     void turnTurretLeft();
     void turnTurretRight();
 

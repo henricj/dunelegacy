@@ -25,9 +25,12 @@
 class TurretBase : public StructureBase
 {
     void init();
-public:
+
+protected:
     explicit TurretBase(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer);
     explicit TurretBase(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer);
+
+public:
     using parent = StructureBase;
 
     ~TurretBase() override;
@@ -39,13 +42,13 @@ public:
 
     void save(OutputStream& stream) const override;
 
-    virtual void handleActionCommand(int xPos, int yPos);
+    virtual void handleActionCommand(const GameContext& context, int xPos, int yPos);
 
     /**
         Set targetObjectID as the attack target for this turret.
         \param  targetObjectID  the object to attack
     */
-    virtual void doAttackObject(Uint32 targetObjectID);
+    virtual void doAttackObject(const GameContext& context, Uint32 targetObjectID);
 
     /**
         Set pObject as the attack target for this turret.
@@ -53,8 +56,10 @@ public:
     */
     virtual void doAttackObject(const ObjectBase* pObject);
 
-    void turnLeft();
-    void turnRight();
+
+    void turnLeft(const GameContext& context);
+    void turnRight(const GameContext& context);
+
     virtual void attack();
 
     inline int getTurretAngle() const { return lround(angle); }
@@ -64,7 +69,7 @@ protected:
         Used for updating things that are specific to that particular structure. Is called from
         StructureBase::update() before the check if this structure is still alive.
     */
-    void updateStructureSpecificStuff() override;
+    void updateStructureSpecificStuff(const GameContext& context) override;
 
     // constant for all turrets of the same type
     int bulletType;             ///< The type of bullet used

@@ -46,16 +46,16 @@ public:
 
     void blitToScreen() override;
 
-    ObjectInterface* getInterfaceContainer() override;
+    std::unique_ptr<ObjectInterface> getInterfaceContainer(const GameContext& context) override;
 
-    virtual void checkPos() = 0;
-    virtual void deploy(const Coord& newLocation);
+    virtual void checkPos(const GameContext& context) = 0;
+    virtual void deploy(const GameContext& context, const Coord& newLocation);
 
-    void destroy() override;
-    void deviate(House* newOwner);
+    void destroy(const GameContext& context) override;
+    void deviate(const GameContext& context, House* newOwner);
 
     void drawSelectionBox() override;
-    void cleanup(Game* game, HumanPlayer* humanPlayer, Map* map) override;
+    void cleanup(const GameContext& context, HumanPlayer* humanPlayer) override;
 
     void drawOtherPlayerSelectionBox() override;
 
@@ -64,28 +64,28 @@ public:
         \param  xPos    the x position on the map
         \param  yPos    the y position on the map
     */
-    void handleActionClick(int xPos, int yPos) override;
+    void handleActionClick(const GameContext& context, int xPos, int yPos) override;
 
     /**
         This method is called when an unit is ordered to attack
         \param  xPos    the x position on the map
         \param  yPos    the y position on the map
     */
-    virtual void handleAttackClick(int xPos, int yPos);
+    virtual void handleAttackClick(const GameContext& context, int xPos, int yPos);
 
     /**
         This method is called when an unit is ordered to move
         \param  xPos    the x position on the map
         \param  yPos    the y position on the map
     */
-    virtual void handleMoveClick(int xPos, int yPos);
+    virtual void handleMoveClick(const GameContext& context, int xPos, int yPos);
 
 
     /**
         This method is called when an unit is ordered to be in a new attack mode
         \param  newAttackMode   the new attack mode the unit is put in.
     */
-    virtual void handleSetAttackModeClick(ATTACKMODE newAttackMode);
+    virtual void handleSetAttackModeClick(const GameContext& context, ATTACKMODE newAttackMode);
 
 
     /**
@@ -93,7 +93,7 @@ public:
         \param  xPos    the x position on the map
         \param  yPos    the y position on the map
     */
-    virtual void handleRequestCarryallDropClick(int xPos, int yPos);
+    virtual void handleRequestCarryallDropClick(const GameContext& context, int xPos, int yPos);
 
     /**
         This method is called when an unit should move to (xPos,yPos)
@@ -101,26 +101,26 @@ public:
         \param  yPos    the y position on the map
         \param  bForced true, if the unit should ignore everything else
     */
-    virtual void doMove2Pos(int xPos, int yPos, bool bForced);
+    virtual void doMove2Pos(const GameContext& context, int xPos, int yPos, bool bForced);
 
     /**
         This method is called when an unit should move to coord
         \param  coord   the position on the map
         \param  bForced true, if the unit should ignore everything else
     */
-    virtual void doMove2Pos(const Coord& coord, bool bForced);
+    virtual void doMove2Pos(const GameContext& context, const Coord& coord, bool bForced);
 
     /**
         This method is called when an unit should move to another unit/structure
         \param  TargetObjectID  the ID of the other unit/structure
     */
-    virtual void doMove2Object(Uint32 TargetObjectID);
+    virtual void doMove2Object(const GameContext& context, Uint32 TargetObjectID);
 
     /**
         This method is called when an unit should move to another unit/structure
         \param  pTargetObject   the other unit/structure
     */
-    virtual void doMove2Object(const ObjectBase* pTargetObject);
+    virtual void doMove2Object(const GameContext& context, const ObjectBase* pTargetObject);
 
     /**
         This method is called when an unit should attack a position
@@ -128,31 +128,31 @@ public:
         \param  yPos    the y position on the map
         \param  bForced true, if the unit should ignore everything else
     */
-    virtual void doAttackPos(int xPos, int yPos, bool bForced);
+    virtual void doAttackPos(const GameContext& context, int xPos, int yPos, bool bForced);
 
     /**
         This method is called when an unit should attack to another unit/structure
         \param  pTargetObject   the target unit/structure
         \param  bForced true, if the unit should ignore everything else
     */
-    virtual void doAttackObject(const ObjectBase* pTargetObject, bool bForced);
+    virtual void doAttackObject(const GameContext& context, const ObjectBase* pTargetObject, bool bForced);
 
     /**
         This method is called when an unit should attack to another unit/structure
         \param  TargetObjectID  the ID of the other unit/structure
         \param  bForced true, if the unit should ignore everything else
     */
-    virtual void doAttackObject(Uint32 TargetObjectID, bool bForced);
+    virtual void doAttackObject(const GameContext& context, Uint32 TargetObjectID, bool bForced);
 
     /**
         This method is called when an unit should change it's current attack mode
         \param  newAttackMode   the new attack mode
     */
-    void doSetAttackMode(ATTACKMODE newAttackMode);
+    void doSetAttackMode(const GameContext& context, ATTACKMODE newAttackMode);
 
-    void handleDamage(int damage, Uint32 damagerID, House* damagerOwner) override;
+    void handleDamage(const GameContext& context, int damage, Uint32 damagerID, House* damagerOwner) override;
 
-    void doRepair() noexcept override { }
+    void doRepair(const GameContext& context) noexcept override { }
 
     /**
         Is this object in a range we are guarding. If yes we shall react.
@@ -183,7 +183,7 @@ public:
     void setGuardPoint(int newX, int newY);
 
     using ObjectBase::setLocation;
-    void setLocation(int xPos, int yPos) override;
+    void setLocation(const GameContext& context, int xPos, int yPos) override;
 
     using ObjectBase::setDestination;
     void setDestination(int newX, int newY) override
@@ -194,13 +194,13 @@ public:
         }
     }
 
-    virtual void setPickedUp(UnitBase* newCarrier);
+    virtual void setPickedUp(const GameContext& context, UnitBase* newCarrier);
 
     /**
         Updates this unit.
         \return true if this unit still exists, false if it was destroyed
     */
-    bool update() override;
+    bool update(const GameContext& context) override;
 
     bool canPass(int xPos, int yPos) const {
         auto *const pTile = currentGameMap->tryGetTile(xPos, yPos);
@@ -221,7 +221,7 @@ public:
 
     virtual ANGLETYPE getCurrentAttackAngle() const;
 
-    virtual FixPoint getMaxSpeed() const;
+    virtual FixPoint getMaxSpeed(const GameContext& context) const;
 
     void clearPath() {
         pathList.clear();
@@ -249,32 +249,32 @@ public:
 
 protected:
 
-    void updateVisibleUnits();
+    void updateVisibleUnits(const GameContext& context);
 
     virtual bool attack();
 
     virtual void releaseTarget();
-    virtual void engageTarget();
-    virtual void move();
+    virtual void engageTarget(const GameContext& context);
+    virtual void move(const GameContext& context);
 
     virtual void bumpyMovementOnRock(FixPoint fromDistanceX, FixPoint fromDistanceY, FixPoint toDistanceX, FixPoint toDistanceY);
 
-    virtual void navigate();
+    virtual void navigate(const GameContext& context);
 
     /**
         When the unit is currently idling this method is called about every 5 seconds.
     */
-    virtual void idleAction();
+    virtual void idleAction(const GameContext& context);
 
-    virtual void setSpeeds();
+    virtual void setSpeeds(const GameContext& context);
 
-    virtual void targeting();
+    virtual void targeting(const GameContext& context);
 
-    virtual void turn();
-    void turnLeft();
-    void turnRight();
+    virtual void turn(const GameContext& context);
+    void         turnLeft(const GameContext& context);
+    void         turnRight(const GameContext& context);
 
-    void quitDeviation();
+    void quitDeviation(const GameContext& context);
 
     bool SearchPathWithAStar();
 

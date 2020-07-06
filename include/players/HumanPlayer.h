@@ -58,9 +58,8 @@ public:
         NotEnoughConrete = 20,
     };
 
-    HumanPlayer(House* associatedHouse, const std::string& playername);
-    HumanPlayer(InputStream& stream, House* associatedHouse);
-    void init();
+    HumanPlayer(const GameContext& context, House* associatedHouse, const std::string& playername, Random&& random);
+    HumanPlayer(const GameContext& context, InputStream& stream, House* associatedHouse, Random&& random);
     virtual ~HumanPlayer();
     void save(OutputStream& stream) const override;
 
@@ -130,6 +129,8 @@ private:
     bool hasConcreteAtPositionOfSize(const Coord& pos, const Coord& concreteSize) const;
 
     Uint32 lastAttackNotificationCycle;                     ///< When was the last time that the player was informed about an attack
+
+    void   init();
 };
 
 

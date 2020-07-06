@@ -124,7 +124,7 @@ public:
     /**
         Executes this command. This takes the appropriate actions to run this command.
     */
-    void executeCommand() const;
+    void executeCommand(const GameContext& context) const;
 
 private:
     Uint8   playerID;                   ///< the ID of the player that gave the command

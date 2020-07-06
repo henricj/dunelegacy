@@ -101,7 +101,7 @@ void Sandworm::save(OutputStream& stream) const {
     }
 }
 
-void Sandworm::assignToMap(const Coord& pos) {
+void Sandworm::assignToMap(const GameContext& context, const Coord& pos) {
     if(currentGameMap->tileExists(pos)) {
         currentGameMap->getTile(pos)->assignUndergroundUnit(getObjectID());
         // do not unhide map cause this would give Fremen players an advantage
@@ -122,8 +122,8 @@ bool Sandworm::attack() {
     return false;
 }
 
-void Sandworm::deploy(const Coord& newLocation) {
-    UnitBase::deploy(newLocation);
+void Sandworm::deploy(const GameContext& context, const Coord& newLocation) {
+    parent::deploy(context, newLocation);
 
     respondable = false;
 }
@@ -183,7 +183,7 @@ void Sandworm::blitToScreen() {
     }
 }
 
-void Sandworm::checkPos() {
+void Sandworm::checkPos(const GameContext& context) {
     if(justStoppedMoving) {
         realX = location.x*TILESIZE + TILESIZE/2;
         realY = location.y*TILESIZE + TILESIZE/2;
@@ -196,12 +196,12 @@ void Sandworm::checkPos() {
     }
 }
 
-void Sandworm::engageTarget() {
+void Sandworm::engageTarget(const GameContext& context) {
     if(isEating()) {
         return;
     }
 
-    UnitBase::engageTarget();
+    parent::engageTarget(context);
 
     if(target) {
         FixPoint maxDistance;
@@ -236,22 +236,22 @@ void Sandworm::engageTarget() {
     }
 }
 
-void Sandworm::setLocation(int xPos, int yPos) {
+void Sandworm::setLocation(const GameContext& context, int xPos, int yPos) {
     if(currentGameMap->tileExists(xPos, yPos) || ((xPos == INVALID_POS) && (yPos == INVALID_POS))) {
-        UnitBase::setLocation(xPos, yPos);
+        parent::setLocation(context, xPos, yPos);
     }
 }
 
 /**
     Put sandworm to sleep for a while
 */
-void Sandworm::sleep() {
-    sleepTimer = currentGame->randomGen.rand(MIN_SANDWORMSLEEPTIME, MAX_SANDWORMSLEEPTIME);
+void Sandworm::sleep(const GameContext& context) {
+    sleepTimer = context.game.randomGen.rand(MIN_SANDWORMSLEEPTIME, MAX_SANDWORMSLEEPTIME);
     setActive(false);
     setVisible(VIS_ALL, false);
     setForced(false);
-    currentGameMap->removeObjectFromMap(getObjectID()); //no map point will reference now
-    setLocation(INVALID_POS, INVALID_POS);
+    context.map.removeObjectFromMap(getObjectID()); //no map point will reference now
+    setLocation(context, INVALID_POS, INVALID_POS);
     setHealth(getMaxHealth());
     kills = 0;
     warningWormSignPlayedFlags = 0;
@@ -263,25 +263,24 @@ void Sandworm::sleep() {
     }
 }
 
-bool Sandworm::sleepOrDie() {
+bool Sandworm::sleepOrDie(const GameContext& context) {
 
     // Make sand worms always drop spice, even if they don't die
-    if(currentGame->getGameInitSettings().getGameOptions().killedSandwormsDropSpice) {
-            currentGameMap->createSpiceField(location, 4);
+    if(context.game.getGameInitSettings().getGameOptions().killedSandwormsDropSpice) {
+        context.map.createSpiceField(context, location, 4);
     }
 
-    if(currentGame->getGameInitSettings().getGameOptions().sandwormsRespawn) {
-        sleep();
+    if(context.game.getGameInitSettings().getGameOptions().sandwormsRespawn) {
+        sleep(context);
         return true;
-    }         destroy();
+    }
+    destroy(context);
 
-        return false;
-
-   
+    return false;
 }
 
 void Sandworm::setTarget(const ObjectBase* newTarget) {
-    GroundUnit::setTarget(newTarget);
+    parent::setTarget(newTarget);
 
     if( (newTarget != nullptr) && (newTarget->getOwner() == pLocalHouse)
         && ((warningWormSignPlayedFlags & (1 << static_cast<int>(pLocalHouse->getHouseID()))) == 0) ) {
@@ -290,24 +289,26 @@ void Sandworm::setTarget(const ObjectBase* newTarget) {
     }
 }
 
-void Sandworm::handleDamage(int damage, Uint32 damagerID, House* damagerOwner) {
+void Sandworm::handleDamage(const GameContext& context, int damage, Uint32 damagerID, House* damagerOwner) {
     if(damage > 0) {
         attackMode = HUNT;
     }
-    GroundUnit::handleDamage(damage, damagerID, damagerOwner);
+    parent::handleDamage(context, damage, damagerID, damagerOwner);
 }
 
-bool Sandworm::update() {
+bool Sandworm::update(const GameContext& context) {
+    auto& [game, map, objectManager] = context;
+
     if(getHealth() <= getMaxHealth()/2) {
-        if(!sleepOrDie()) {
+        if(!sleepOrDie(context)) {
             return false;
         }
     } else {
-        if(!GroundUnit::update()) {
+        if(!parent::update(context)) {
             return false;
         }
 
-        if(isActive() && (moving || justStoppedMoving) && !currentGame->isGamePaused() && !currentGame->isGameFinished()) {
+        if(isActive() && (moving || justStoppedMoving) && !game.isGamePaused() && !game.isGameFinished()) {
             Coord realLocation = getLocation()*TILESIZE + Coord(TILESIZE/2, TILESIZE/2);
             if(lastLocs[1] != realLocation) {
                 for(int i = (SANDWORM_SEGMENTS-1); i > 0 ; i--) {
@@ -317,7 +318,7 @@ bool Sandworm::update() {
             }
             lastLocs[0].x = lround(realX);
             lastLocs[0].y = lround(realY);
-            shimmerOffsetIndex = ((currentGame->getGameCycleCount() + getObjectID()) % 48)/6;
+            shimmerOffsetIndex = ((game.getGameCycleCount() + getObjectID()) % 48)/6;
         }
 
         if(attackFrameTimer > 0) {
@@ -329,7 +330,7 @@ bool Sandworm::update() {
                 if(drawnFrame >= 9) {
                     drawnFrame = INVALID;
                     if(kills >= 3) {
-                        if(!sleepOrDie()) {
+                        if(!sleepOrDie(context)) {
                             return false;
                         }
                     }
@@ -337,13 +338,20 @@ bool Sandworm::update() {
                     attackFrameTimer = SANDWORM_ATTACKFRAMETIME;
                     if(drawnFrame == 1) {
                         // the close mouth bit of graphic is currently shown => eat unit
-                        if(target && target.getObjPointer() != nullptr) {
-                            bool wasAlive = target.getObjPointer()->isVisible(getOwner()->getTeamID());  //see if unit was alive before attack
-                            Coord realPos = Coord(lround(realX), lround(realY));
-                            currentGameMap->damage(objectID, getOwner(), realPos, Bullet_Sandworm, 5000, NONE_ID, false);
+                        if(target) {
+                            auto* object = target.getObjPointer();
 
-                            if(wasAlive && target && (!target.getObjPointer()->isVisible(getOwner()->getTeamID()))) {
-                                kills++;
+                            if(object) {
+                                bool wasAlive =
+                                    object->isVisible(getOwner()->getTeamID()); // see if unit was alive before attack
+                                Coord realPos = Coord(lround(realX), lround(realY));
+                                map.damage(context, objectID, getOwner(), realPos, Bullet_Sandworm, 5000, NONE_ID,
+                                           false);
+                                // TODO: map.damage() might have invalidated "object"?  Do we need an object->isAlive() method?
+                                if(wasAlive && target &&
+                                   (!target.getObjPointer()->isVisible(getOwner()->getTeamID()))) {
+                                    kills++;
+                                }
                             }
                         }
                     }
@@ -358,18 +366,18 @@ bool Sandworm::update() {
                 // awaken the worm!
 
                 for(int tries = 0 ; tries < 1000 ; tries++) {
-                    int x = currentGame->randomGen.rand(0, currentGameMap->getSizeX() - 1);
-                    int y = currentGame->randomGen.rand(0, currentGameMap->getSizeY() - 1);
+                    int x = game.randomGen.rand(0, currentGameMap->getSizeX() - 1);
+                    int y = game.randomGen.rand(0, currentGameMap->getSizeY() - 1);
 
                     if(canPass(x, y)) {
-                        deploy(currentGameMap->getTile(x, y)->getLocation());
+                        deploy(context, map.getTile(x, y)->getLocation());
                         break;
                     }
                 }
 
                 if(!isActive()) {
                     // no room for sandworm on map => take another nap
-                    if(!sleepOrDie()) {
+                    if(!sleepOrDie(context)) {
                         return false;
                     }
                 }

@@ -31,9 +31,8 @@ public:
         Hard = 2
     };
 
-    SmartBot(House* associatedHouse, const std::string& playername, Difficulty difficulty);
-    SmartBot(InputStream& stream, House* associatedHouse);
-    void init();
+    SmartBot(const GameContext& context, House* associatedHouse, const std::string& playername, Random&&, Difficulty difficulty);
+    SmartBot(const GameContext& context, InputStream& stream, House* associatedHouse, Random&&);
     ~SmartBot() override;
     void save(OutputStream& stream) const override;
 
@@ -44,6 +43,8 @@ public:
     void onDamage(const ObjectBase* pObject, int damage, Uint32 damagerID) override;
 
 private:
+    void init();
+
     void scrambleUnitsAndDefend(const ObjectBase* pIntruder);
 
     Coord findPlaceLocation(ItemID_enum itemID);
@@ -51,7 +52,7 @@ private:
     int getNumAdjacentStructureTiles(Coord pos, int structureSizeX, int structureSizeY);
 
     void checkAllUnits();
-    void build();
+    void build(const GameContext& context);
     void attack();
 
     [[nodiscard]] bool isAllowedToArm() const;

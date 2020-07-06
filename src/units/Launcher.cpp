@@ -87,7 +87,7 @@ void Launcher::blitToScreen() {
     }
 }
 
-void Launcher::destroy() {
+void Launcher::destroy(const GameContext& context) {
     if(currentGameMap->tileExists(location) && isVisible()) {
         Coord realPos(lround(realX), lround(realY));
         Uint32 explosionID = currentGame->randomGen.getRandOf(Explosion_Medium1, Explosion_Medium2,Explosion_Flames);
@@ -97,7 +97,7 @@ void Launcher::destroy() {
             soundPlayer->playSoundAt(Sound_ExplosionMedium,location);
     }
 
-    TrackedUnit::destroy();
+    TrackedUnit::destroy(context);
 }
 
 bool Launcher::canAttack(const ObjectBase* object) const {

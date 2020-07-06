@@ -583,19 +583,21 @@ void Tile::unassignObject(Uint32 objectID) {
 }
 
 
-void Tile::setType(Game* game, Map* map, TERRAINTYPE newType) {
+void Tile::setType(const GameContext& context, TERRAINTYPE newType) {
+    auto& [game, map, objectManager] = context;
+
     type = newType;
     destroyedStructureTile = DestroyedStructure_None;
 
     terrainTile = TERRAINTILETYPE::TerrainTile_Invalid;
-    map->for_each_neighbor(location.x, location.y,
+    map.for_each_neighbor(location.x, location.y,
                                       [](Tile& t) { t.terrainTile = TERRAINTILETYPE::TerrainTile_Invalid; });
 
     if (type == Terrain_Spice) {
-        spice = game->randomGen.rand(RANDOMSPICEMIN, RANDOMSPICEMAX);
+        spice = game.randomGen.rand(RANDOMSPICEMIN, RANDOMSPICEMAX);
     }
     else if (type == Terrain_ThickSpice) {
-        spice = game->randomGen.rand(RANDOMTHICKSPICEMIN, RANDOMTHICKSPICEMAX);
+        spice = game.randomGen.rand(RANDOMTHICKSPICEMIN, RANDOMTHICKSPICEMAX);
     }
     else if (type == Terrain_Dunes) {
     }
@@ -612,10 +614,10 @@ void Tile::setType(Game* game, Map* map, TERRAINTYPE newType) {
 
                 for (const auto object_id : units)
                 {
-                    auto *const current = game->getObjectManager().getObject(object_id);
+                    auto *const current = game.getObjectManager().getObject(object_id);
 
                     unassignUndergroundUnit(current->getObjectID());
-                    current->destroy();
+                    current->destroy(context);
                 }
             }
 
@@ -626,7 +628,7 @@ void Tile::setType(Game* game, Map* map, TERRAINTYPE newType) {
 
                     for (const auto object_id : units)
                     {
-                        auto *const object = game->getObjectManager().getObject(object_id);
+                        auto *const object = game.getObjectManager().getObject(object_id);
 
                         if (object)
                             pending_destroy.push_back(object);
@@ -643,37 +645,41 @@ void Tile::setType(Game* game, Map* map, TERRAINTYPE newType) {
                 }
             }
 
-            std::for_each(std::begin(pending_destroy), std::end(pending_destroy), [](ObjectBase* obj) { obj->destroy(); });
+            std::for_each(std::begin(pending_destroy), std::end(pending_destroy),
+                          [&](ObjectBase* obj) { obj->destroy(context); });
         }
     }
 
-    map->for_each(location.x, location.y, location.x + 4, location.y + 4, [](Tile &t) { t.clearTerrain(); });
+    map.for_each(location.x, location.y, location.x + 4, location.y + 4, [](Tile &t) { t.clearTerrain(); });
 }
 
 
-void Tile::squash(const ObjectManager& objectManager) const {
+void Tile::squash(const GameContext& context) const {
     if (!hasInfantry()) return;
 
     for (const auto object_id : assignedInfantryList) {
-        auto *current = static_cast<InfantryBase*>(objectManager.getObject(object_id));
+        auto *current = static_cast<InfantryBase*>(context.objectManager.getObject(object_id));
 
         if(current == nullptr)
             continue;
 
-        current->squash();
+        current->squash(context);
     }
 }
 
 
 int Tile::getInfantryTeam(const ObjectManager& objectManager) const {
     int team = INVALID;
-    if (hasInfantry())
-        team = getInfantry(objectManager)->getOwner()->getTeamID();
+    if(hasInfantry()) {
+        if(auto* infantry = getInfantry(objectManager)) {
+            if(auto* owner = infantry->getOwner()) team = owner->getTeamID();
+        }
+    }
     return team;
 }
 
 
-FixPoint Tile::harvestSpice(Game* game) {
+FixPoint Tile::harvestSpice(const GameContext& context) {
     const auto oldSpice = spice;
 
     if ((spice - HARVESTSPEED) >= 0) {
@@ -684,11 +690,11 @@ FixPoint Tile::harvestSpice(Game* game) {
     }
 
     if (oldSpice >= RANDOMTHICKSPICEMIN && spice < RANDOMTHICKSPICEMIN) {
-        setType(game, Terrain_Spice);
+        setType(context, Terrain_Spice);
     }
 
     if (oldSpice > 0 && spice == 0) {
-        setType(game, Terrain_Sand);
+        setType(context, Terrain_Sand);
     }
 
     return (oldSpice - spice);
@@ -710,28 +716,33 @@ void Tile::setSpice(FixPoint newSpice) {
 
 
 AirUnit* Tile::getAirUnit(const ObjectManager& objectManager) const {
-    return dynamic_cast<AirUnit*>(objectManager.getObject(assignedAirUnitList.front()));
+    return assignedAirUnitList.empty() ? nullptr
+                                       : dune_cast<AirUnit>(objectManager.getObject(assignedAirUnitList.front()));
 }
 
 ObjectBase* Tile::getGroundObject(const ObjectManager& objectManager) const {
     if(hasANonInfantryGroundObject()) return getNonInfantryGroundObject(objectManager);
-    if(hasInfantry()) {
-        return getInfantry(objectManager);
-    } else {
-        return nullptr;
-    }
+    if(hasInfantry()) return getInfantry(objectManager);
+
+    return nullptr;
 }
 
 InfantryBase* Tile::getInfantry(const ObjectManager& objectManager) const {
-    return dynamic_cast<InfantryBase*>(objectManager.getObject(assignedInfantryList.front()));
+    return assignedInfantryList.empty()
+               ? nullptr
+               : dune_cast<InfantryBase>(objectManager.getObject(assignedInfantryList.front()));
 }
 
 ObjectBase* Tile::getNonInfantryGroundObject(const ObjectManager& objectManager) const {
-    return objectManager.getObject(assignedNonInfantryGroundObjectList.front());
+    return assignedNonInfantryGroundObjectList.empty()
+               ? nullptr
+               : objectManager.getObject(assignedNonInfantryGroundObjectList.front());
 }
 
 UnitBase* Tile::getUndergroundUnit(const ObjectManager& objectManager) const {
-    return dynamic_cast<UnitBase*>(objectManager.getObject(assignedUndergroundUnitList.front()));
+    return assignedUndergroundUnitList.empty()
+               ? nullptr
+               : dune_cast<UnitBase>(objectManager.getObject(assignedUndergroundUnitList.front()));
 }
 
 
@@ -824,7 +835,7 @@ ObjectBase* Tile::getObjectWithID(const ObjectManager& objectManager, Uint32 obj
     return nullptr;
 }
 
-void Tile::triggerSpiceBloom(Game* game, House* pTrigger) {
+void Tile::triggerSpiceBloom(const GameContext& context, House* pTrigger) {
     if (!isSpiceBloom()) return;
 
     //a spice bloom
@@ -834,8 +845,8 @@ void Tile::triggerSpiceBloom(Game* game, House* pTrigger) {
         soundPlayer->playVoice(BloomLocated, pLocalHouse->getHouseID());
     }
 
-    setType(game, Terrain_Spice); // Set this tile to spice first
-    currentGameMap->createSpiceField(location, 5);
+    setType(context, Terrain_Spice); // Set this tile to spice first
+    context.map.createSpiceField(context, location, 5);
 
     const auto realLocation = location * TILESIZE + Coord(TILESIZE / 2, TILESIZE / 2);
 
@@ -848,26 +859,28 @@ void Tile::triggerSpiceBloom(Game* game, House* pTrigger) {
         damage.push_back(newDamage);
     }
 
-    game->addExplosion(Explosion_SpiceBloom, realLocation, pTrigger->getHouseID());
+    context.game.addExplosion(Explosion_SpiceBloom, realLocation, pTrigger->getHouseID());
 }
 
-void Tile::triggerSpecialBloom(Game* game, House* pTrigger) {
+void Tile::triggerSpecialBloom(const GameContext& context, House* pTrigger) {
     if (!isSpecialBloom()) return;
 
-    setType(game, Terrain_Sand);
+    setType(context, Terrain_Sand);
 
-    switch (game->randomGen.rand(0, 3)) {
+    auto& [game, map, objectManager] = context;
+
+    switch (game.randomGen.rand(0, 3)) {
         case 0: {
             // the player gets an randomly chosen amount of credits between 150 and 400
-            pTrigger->addCredits(game->randomGen.rand(150, 400), false);
+            pTrigger->addCredits(game.randomGen.rand(150, 400), false);
         } break;
 
         case 1: {
             // The house gets a Trike for free. It spawns beside the special bloom.
             auto *pNewUnit = pTrigger->createUnit<Trike>();
             if (pNewUnit != nullptr) {
-                const auto spot = currentGameMap->findDeploySpot(pNewUnit, location);
-                pNewUnit->deploy(spot);
+                const auto spot = map.findDeploySpot(pNewUnit, location);
+                pNewUnit->deploy(context, spot);
             }
         } break;
 
@@ -875,15 +888,15 @@ void Tile::triggerSpecialBloom(Game* game, House* pTrigger) {
             // One of the AI players on the map (one that has at least one unit) gets a Trike for free. It spawns beside
             // the special bloom.
             int numCandidates = 0;
-            game->for_each_house([&](const auto& house) {
+            game.for_each_house([&](const auto& house) {
                 if(house.getTeamID() != pTrigger->getTeamID() && house.getNumUnits() > 0) numCandidates++;
             });
 
             if(numCandidates == 0) break;
 
-            int candidate = game->randomGen.rand(0, numCandidates - 1);
+            int candidate = game.randomGen.rand(0, numCandidates - 1);
 
-            auto* pEnemyHouse = game->house_find_if([&](auto& house) {
+            auto* pEnemyHouse = game.house_find_if([&](auto& house) {
                 if(house.getTeamID() != pTrigger->getTeamID() && house.getNumUnits() > 0) {
                     if(candidate-- == 0) return true;
                     candidate--;
@@ -896,8 +909,8 @@ void Tile::triggerSpecialBloom(Game* game, House* pTrigger) {
             auto* const pNewUnit = pEnemyHouse->createUnit<Trike>();
             if(pNewUnit != nullptr)
             {
-                const auto spot = currentGameMap->findDeploySpot(pNewUnit, location);
-                pNewUnit->deploy(spot);
+                const auto spot = map.findDeploySpot(pNewUnit, location);
+                pNewUnit->deploy(context, spot);
             }
         } break;
 
@@ -905,7 +918,7 @@ void Tile::triggerSpecialBloom(Game* game, House* pTrigger) {
         default: {
             // One of the AI players on the map (one that has at least one unit) gets an Infantry unit (3 Soldiers) for free. The spawn beside the special bloom.
             auto numCandidates = 0;
-            game->for_each_house([&](auto& house) {
+            game.for_each_house([&](auto& house) {
                 if(house.getTeamID() != pTrigger->getTeamID() && house.getNumUnits() > 0) { numCandidates++; }
             });
 
@@ -913,11 +926,11 @@ void Tile::triggerSpecialBloom(Game* game, House* pTrigger) {
                 break;
             }
 
-            int candidate = game->randomGen.rand(0, numCandidates - 1);
+            int candidate = game.randomGen.rand(0, numCandidates - 1);
 
             House* pEnemyHouse = nullptr;
             for(int i = 0; i < static_cast<int>(HOUSETYPE::NUM_HOUSES); i++) {
-                auto *const pHouse = game->getHouse(static_cast<HOUSETYPE>(i));
+                auto *const pHouse = game.getHouse(static_cast<HOUSETYPE>(i));
                 if (pHouse != nullptr && pHouse->getTeamID() != pTrigger->getTeamID() && pHouse->getNumUnits() > 0) {
                     if (candidate == 0) {
                         pEnemyHouse = pHouse;
@@ -931,8 +944,8 @@ void Tile::triggerSpecialBloom(Game* game, House* pTrigger) {
                 for (int i = 0; i < 3; i++) {
                     auto *const pNewUnit = pEnemyHouse->createUnit<Soldier>();
                     if (pNewUnit != nullptr) {
-                        const auto spot = currentGameMap->findDeploySpot(pNewUnit, location);
-                        pNewUnit->deploy(spot);
+                        const auto spot = map.findDeploySpot(pNewUnit, location);
+                        pNewUnit->deploy(context, spot);
                     }
                 }
             }

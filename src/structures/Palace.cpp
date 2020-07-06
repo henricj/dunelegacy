@@ -79,26 +79,26 @@ void Palace::save(OutputStream& stream) const {
     stream.writeSint32(specialWeaponTimer);
 }
 
-ObjectInterface* Palace::getInterfaceContainer() {
-    if((pLocalHouse == owner) || (debug)) {
-        return PalaceInterface::create(objectID);
-    }         return DefaultObjectInterface::create(objectID);
-
-   
+std::unique_ptr<ObjectInterface> Palace::getInterfaceContainer(const GameContext& context) {
+    if((pLocalHouse == owner) || (debug)) { return PalaceInterface::create(context, objectID); }
+    return DefaultObjectInterface::create(context, objectID);
 }
 
-void Palace::handleSpecialClick() {
-    currentGame->getCommandManager().addCommand(Command(pLocalPlayer->getPlayerID(), CMDTYPE::CMD_PALACE_SPECIALWEAPON,objectID));
+void Palace::handleSpecialClick(const GameContext& context) {
+    context.game.getCommandManager().addCommand(Command(pLocalPlayer->getPlayerID(), CMDTYPE::CMD_PALACE_SPECIALWEAPON,objectID));
 }
 
-void Palace::handleDeathhandClick(int xPos, int yPos) {
-    if (currentGameMap->tileExists(xPos, yPos)) {
-        currentGame->getCommandManager().addCommand(
+void Palace::handleDeathhandClick(const GameContext& context, int xPos, int yPos) {
+    auto& game = context.game;
+    auto& map  = context.map;
+
+    if (map.tileExists(xPos, yPos)) {
+        game.getCommandManager().addCommand(
             Command(pLocalPlayer->getPlayerID(), CMDTYPE::CMD_PALACE_DEATHHAND, objectID, (Uint32)xPos, (Uint32)yPos));
     }
 }
 
-void Palace::doSpecialWeapon() {
+void Palace::doSpecialWeapon(const GameContext& context) {
     if(!isSpecialWeaponReady()) {
         return;
     }
@@ -112,14 +112,14 @@ void Palace::doSpecialWeapon() {
 
         case HOUSETYPE::HOUSE_ATREIDES:
         case HOUSETYPE::HOUSE_FREMEN: {
-            if(callFremen()) {
+            if(callFremen(context)) {
                 specialWeaponTimer = getMaxSpecialWeaponTimer();
             }
         } break;
 
         case HOUSETYPE::HOUSE_ORDOS:
         case HOUSETYPE::HOUSE_MERCENARY: {
-            if(spawnSaboteur()) {
+            if(spawnSaboteur(context)) {
                 specialWeaponTimer = getMaxSpecialWeaponTimer();
             }
         } break;
@@ -130,7 +130,7 @@ void Palace::doSpecialWeapon() {
     }
 }
 
-void Palace::doLaunchDeathhand(int x, int y) {
+void Palace::doLaunchDeathhand(const GameContext& context, int x, int y) {
     if(!isSpecialWeaponReady()) {
         return;
     }
@@ -140,8 +140,8 @@ void Palace::doLaunchDeathhand(int x, int y) {
         return;
     }
 
-    const auto randAngle = 2 * FixPt_PI * currentGame->randomGen.randFixPoint();
-    const auto radius = currentGame->randomGen.rand(0,10*TILESIZE);
+    const auto randAngle = 2 * FixPt_PI * context.game.randomGen.randFixPoint();
+    const auto radius = context.game.randomGen.rand(0,10*TILESIZE);
     const auto deathOffX = lround(FixPoint::sin(randAngle) * radius);
     const auto deathOffY = lround(FixPoint::cos(randAngle) * radius);
 
@@ -149,11 +149,11 @@ void Palace::doLaunchDeathhand(int x, int y) {
     const Coord dest( x * TILESIZE + TILESIZE/2 + deathOffX,
                 y * TILESIZE + TILESIZE/2 + deathOffY);
 
-    currentGameMap->add_bullet(objectID, &centerPoint, &dest, Bullet_LargeRocket, PALACE_DEATHHAND_WEAPONDAMAGE, false, nullptr);
+    context.map.add_bullet(objectID, &centerPoint, &dest, Bullet_LargeRocket, PALACE_DEATHHAND_WEAPONDAMAGE, false, nullptr);
     soundPlayer->playSoundAt(Sound_Rocket, getLocation());
 
     if(getOwner() != pLocalHouse) {
-        currentGame->addToNewsTicker(_("@DUNE.ENG|81#Missile is approaching"));
+        context.game.addToNewsTicker(_("@DUNE.ENG|81#Missile is approaching"));
         soundPlayer->playVoice(MissileApproaching, pLocalHouse->getHouseID());
     }
 
@@ -161,14 +161,14 @@ void Palace::doLaunchDeathhand(int x, int y) {
 
 }
 
-void Palace::updateStructureSpecificStuff() {
+void Palace::updateStructureSpecificStuff(const GameContext& context) {
     if(specialWeaponTimer > 0) {
         --specialWeaponTimer;
         if(specialWeaponTimer <= 0) {
             specialWeaponTimer = 0;
 
             if(getOwner() == pLocalHouse) {
-                currentGame->addToNewsTicker(_("Palace is ready"));
+                context.game.addToNewsTicker(_("Palace is ready"));
             } else if(getOwner()->isAI()) {
 
                 if((originalHouseID == HOUSETYPE::HOUSE_HARKONNEN) || (originalHouseID == HOUSETYPE::HOUSE_SARDAUKAR)) {
@@ -183,59 +183,61 @@ void Palace::updateStructureSpecificStuff() {
                     }*/
                 } else {
                     // other houses
-                    doSpecialWeapon();
+                    doSpecialWeapon(context);
                 }
             }
         }
     }
 }
 
-bool Palace::callFremen() {
+bool Palace::callFremen(const GameContext& context) {
     int count = 0;
-    int x = 0;
-    int y = 0;
+    int x     = 0;
+    int y     = 0;
+
+    auto& map       = context.map;
+    auto& randomGen = context.game.randomGen;
+
     do {
-        x = currentGame->randomGen.rand(1, currentGameMap->getSizeX()-2);
-        y = currentGame->randomGen.rand(1, currentGameMap->getSizeY()-2);
-    } while((currentGameMap->getTile(x-1, y-1)->hasAGroundObject()
-            || currentGameMap->getTile(x, y-1)->hasAGroundObject()
-            || currentGameMap->getTile(x+1, y-1)->hasAGroundObject()
-            || currentGameMap->getTile(x-1, y)->hasAGroundObject()
-            || currentGameMap->getTile(x, y)->hasAGroundObject()
-            || currentGameMap->getTile(x+1, y)->hasAGroundObject()
-            || currentGameMap->getTile(x-1, y+1)->hasAGroundObject()
-            || currentGameMap->getTile(x, y+1)->hasAGroundObject()
-            || currentGameMap->getTile(x+1, y+1)->hasAGroundObject())
-            && (count++ <= 1000));
+        x = randomGen.rand(1, map.getSizeX() - 2);
+        y = randomGen.rand(1, map.getSizeY() - 2);
+    } while((map.getTile(x - 1, y - 1)->hasAGroundObject() ||
+             map.getTile(x, y - 1)->hasAGroundObject() ||
+             map.getTile(x + 1, y - 1)->hasAGroundObject() ||
+             map.getTile(x - 1, y)->hasAGroundObject() ||
+             map.getTile(x, y)->hasAGroundObject() ||
+             map.getTile(x + 1, y)->hasAGroundObject() ||
+             map.getTile(x - 1, y + 1)->hasAGroundObject() ||
+             map.getTile(x, y + 1)->hasAGroundObject() ||
+             map.getTile(x + 1, y + 1)->hasAGroundObject()) &&
+            (count++ <= 1000));
 
     if(count < 1000) {
 
         for(int numFremen = 0; numFremen < 15; numFremen++) {
-            if(currentGame->randomGen.rand(0, 5) == 0) {
-                continue;
-            }
+            if(randomGen.rand(0, 5) == 0) { continue; }
 
-            auto *pFremen = static_cast<Trooper*>(getOwner()->createUnit(Unit_Trooper));
+            auto* pFremen = getOwner()->createUnit<Trooper>();
 
             int i = 0;
             int j = 0;
             do {
-                i = currentGame->randomGen.rand(-1, 1);
-                j = currentGame->randomGen.rand(-1, 1);
-            } while (!currentGameMap->getTile(x + i, y + j)->infantryNotFull());
+                i = randomGen.rand(-1, 1);
+                j = randomGen.rand(-1, 1);
+            } while(!map.getTile(x + i, y + j)->infantryNotFull());
 
-            pFremen->deploy(Coord(x + i,y + j));
+            pFremen->deploy(context, Coord(x + i, y + j));
 
-            pFremen->doSetAttackMode(HUNT);
+            pFremen->doSetAttackMode(context, HUNT);
             pFremen->setRespondable(false);
 
-            const StructureBase* closestStructure = pFremen->findClosestTargetStructure();
+            const auto* const closestStructure = pFremen->findClosestTargetStructure();
             if(closestStructure) {
-                Coord closestPoint = closestStructure->getClosestPoint(pFremen->getLocation());
+                const auto closestPoint = closestStructure->getClosestPoint(pFremen->getLocation());
                 pFremen->setGuardPoint(closestPoint);
                 pFremen->setDestination(closestPoint);
             } else {
-                const UnitBase* closestUnit = pFremen->findClosestTargetUnit();
+                const auto* const closestUnit = pFremen->findClosestTargetUnit();
                 if(closestUnit) {
                     pFremen->setGuardPoint(closestUnit->getLocation());
                     pFremen->setDestination(closestUnit->getLocation());
@@ -244,28 +246,22 @@ bool Palace::callFremen() {
         }
 
         return true;
-    }         if(getOwner() == pLocalHouse) {
+    }
 
-            currentGame->addToNewsTicker(_("Unable to spawn Fremen"));
+    if(getOwner() == pLocalHouse) { context.game.addToNewsTicker(_("Unable to spawn Fremen")); }
 
-        }
-
-
-
-        return false;
-
-   
+    return false;
 }
 
-bool Palace::spawnSaboteur() {
-    auto *saboteur = static_cast<Saboteur*>(getOwner()->createUnit(Unit_Saboteur));
-    const auto spot = currentGameMap->findDeploySpot(saboteur, getLocation(), getDestination(), getStructureSize());
+bool Palace::spawnSaboteur(const GameContext& context) {
+    auto *saboteur = getOwner()->createUnit<Saboteur>();
+    const auto spot = context.map.findDeploySpot(saboteur, getLocation(), getDestination(), getStructureSize());
 
-    saboteur->deploy(spot);
+    saboteur->deploy(context, spot);
 
     if(getOwner()->isAI()) {
-        saboteur->doSetAttackMode(HUNT);
-        currentGame->addToNewsTicker(_("@DUNE.ENG|79#Saboteur is approaching"));
+        saboteur->doSetAttackMode(context, HUNT);
+        context.game.addToNewsTicker(_("@DUNE.ENG|79#Saboteur is approaching"));
         soundPlayer->playVoice(SaboteurApproaching, pLocalHouse->getHouseID());
     }
 

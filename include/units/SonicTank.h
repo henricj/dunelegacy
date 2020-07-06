@@ -32,9 +32,9 @@ public:
 
     void blitToScreen() override;
 
-    void destroy() override;
+    void destroy(const GameContext& context) override;
 
-    void handleDamage(int damage, Uint32 damagerID, House* damagerOwner) override;
+    void handleDamage(const GameContext& context, int damage, Uint32 damagerID, House* damagerOwner) override;
 
     bool canAttack(const ObjectBase* object) const override;
 

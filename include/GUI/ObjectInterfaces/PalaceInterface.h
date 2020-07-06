@@ -29,14 +29,14 @@
 
 class PalaceInterface : public DefaultStructureInterface {
 public:
-    static PalaceInterface* create(int objectID) {
-        auto *const tmp = new PalaceInterface(objectID);
+    static std::unique_ptr<PalaceInterface> create(const GameContext& context, int objectID) {
+        auto tmp        = std::unique_ptr<PalaceInterface>{new PalaceInterface{context, objectID}};
         tmp->pAllocated = true;
         return tmp;
     }
 
 protected:
-    explicit PalaceInterface(int objectID) : DefaultStructureInterface(objectID) {
+    PalaceInterface(const GameContext& context, int objectID) : DefaultStructureInterface(context, objectID) {
         mainHBox.addWidget(&weaponBox);
 
         auto *const pTexture = pGFXManager->getSmallDetailPic(Picture_DeathHand);
@@ -55,7 +55,7 @@ protected:
         weaponSelectButton.setTextures(convertSurfaceToTexture(pReady.get()));
         weaponSelectButton.setVisible(false);
 
-        weaponSelectButton.setOnClick(std::bind(&PalaceInterface::onSpecial, this));
+        weaponSelectButton.setOnClick([&] { onSpecial(context_); });
     }
 
     /**
@@ -105,18 +105,14 @@ protected:
     }
 
 private:
-    void onSpecial() {
-        ObjectBase* pObject = currentGame->getObjectManager().getObject(objectID);
-        if(pObject == nullptr) {
-            return;
-        }
+    void onSpecial(const GameContext& context) {
+        auto* pPalace = context.objectManager.getObject<Palace>(objectID);
 
-        auto* pPalace = dynamic_cast<Palace*>(pObject);
         if(pPalace != nullptr) {
             if((pPalace->getOriginalHouseID() == HOUSETYPE::HOUSE_HARKONNEN) || (pPalace->getOriginalHouseID() == HOUSETYPE::HOUSE_SARDAUKAR)) {
                 currentGame->currentCursorMode = Game::CursorMode_Attack;
             } else {
-                pPalace->handleSpecialClick();
+                pPalace->handleSpecialClick(context);
             }
         }
     };

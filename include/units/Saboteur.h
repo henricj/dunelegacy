@@ -29,18 +29,18 @@ public:
     Saboteur(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer);
     ~Saboteur() override;
 
-    void checkPos() override;
+    void checkPos(const GameContext& context) override;
 
     /**
         Updates this saboteur.
         \return true if this object still exists, false if it was destroyed
     */
-    bool update() override;
+    bool update(const GameContext& context) override;
 
-    void deploy(const Coord& newLocation) override;
+    void deploy(const GameContext& context, const Coord& newLocation) override;
     bool canAttack(const ObjectBase* object) const override;
 
-    void destroy() override;
+    void destroy(const GameContext& context) override;
 
 private:
     void init();

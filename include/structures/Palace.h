@@ -32,23 +32,23 @@ public:
 
     void save(OutputStream& stream) const override;
 
-    ObjectInterface* getInterfaceContainer() override;
+    std::unique_ptr<ObjectInterface> getInterfaceContainer(const GameContext& context) override;
 
-    void handleSpecialClick();
+    void handleSpecialClick(const GameContext& context);
 
-    void handleDeathhandClick(int xPos, int yPos);
+    void handleDeathhandClick(const GameContext& context, int xPos, int yPos);
 
     /**
         Activate the special palace weapon Fremen or Saboteur. For the Deathhand see doLaunchDeathhand.
     */
-    void doSpecialWeapon();
+    void doSpecialWeapon(const GameContext& context);
 
     /**
         Launch the deathhand missile an target position x,y.
         \param  x   x coordinate (in tile coordinates)
         \param  y   y coordinate (in tile coordinates)
     */
-    void doLaunchDeathhand(int x, int y);
+    void doLaunchDeathhand(const GameContext& context, int x, int y);
 
 
     /**
@@ -76,14 +76,14 @@ public:
     }
 
 protected:
-    bool callFremen();
-    bool spawnSaboteur();
+    bool callFremen(const GameContext& context);
+    bool spawnSaboteur(const GameContext& context);
 
     /**
         Used for updating things that are specific to that particular structure. Is called from
         StructureBase::update() before the check if this structure is still alive.
     */
-    void updateStructureSpecificStuff() override;
+    void updateStructureSpecificStuff(const GameContext& context) override;
 
 private:
     void   init();

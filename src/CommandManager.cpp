@@ -154,13 +154,13 @@ void CommandManager::addCommand(Command&& cmd, Uint32 CycleNumber) {
         });
 }
 
-void CommandManager::executeCommands(Uint32 CycleNumber) const {
+void CommandManager::executeCommands(const GameContext& context, Uint32 CycleNumber) const {
     if(CycleNumber >= timeslot.size()) {
         return;
     }
 
     for(const Command& command : timeslot[CycleNumber]) {
-        command.executeCommand();
+        command.executeCommand(context);
     }
 }
 

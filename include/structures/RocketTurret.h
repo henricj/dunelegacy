@@ -38,7 +38,7 @@ protected:
         Used for updating things that are specific to that particular structure. Is called from
         StructureBase::update() before the check if this structure is still alive.
     */
-    void updateStructureSpecificStuff() override;
+    void updateStructureSpecificStuff(const GameContext& context) override;
 
 private:
     void init();

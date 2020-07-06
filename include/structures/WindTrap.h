@@ -30,13 +30,13 @@ public:
     WindTrap(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer);
     ~WindTrap() override;
 
-    ObjectInterface* getInterfaceContainer() override;
+    std::unique_ptr<ObjectInterface> getInterfaceContainer(const GameContext& context) override;
 
     /**
         Updates this object.
         \return true if this object still exists, false if it was destroyed
     */
-    bool update() override;
+    bool update(const GameContext& context) override;
 
     void setHealth(FixPoint newHealth) override;
 
