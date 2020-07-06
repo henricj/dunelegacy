@@ -24,6 +24,7 @@ class Palace final : public StructureBase
 {
 public:
     static const ItemID_enum item_id = Structure_Palace;
+    using parent = StructureBase;
 
     Palace(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer);
     Palace(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer);

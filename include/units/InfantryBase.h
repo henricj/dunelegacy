@@ -26,6 +26,8 @@ protected:
     InfantryBase(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer);
 
 public:
+    using parent = GroundUnit;
+
     ~InfantryBase() override;
 
     InfantryBase(const InfantryBase&) = delete;

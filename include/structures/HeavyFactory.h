@@ -24,6 +24,7 @@ class HeavyFactory final : public BuilderBase
 {
 public:
     static const ItemID_enum item_id = ItemID_enum::Structure_HeavyFactory;
+    using parent = BuilderBase;
 
     HeavyFactory(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer);
     HeavyFactory(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer);

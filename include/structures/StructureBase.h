@@ -46,6 +46,8 @@ struct StructureSmoke {
 class StructureBase : public ObjectBase
 {
 public:
+    using parent = ObjectBase;
+
     StructureBase(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer);
     StructureBase(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer);
     virtual ~StructureBase() = 0;

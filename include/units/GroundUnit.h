@@ -28,6 +28,8 @@ protected:
     GroundUnit(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer);
 
 public:
+    using parent = UnitBase;
+
     ~GroundUnit() override = 0;
 
     GroundUnit(const GroundUnit &) = delete;

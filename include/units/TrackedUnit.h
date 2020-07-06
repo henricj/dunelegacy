@@ -26,6 +26,8 @@ protected:
     TrackedUnit(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer);
 
 public:
+    using parent = GroundUnit;
+
     ~TrackedUnit() override = 0;
 
     TrackedUnit(const TrackedUnit&) = delete;

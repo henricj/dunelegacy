@@ -27,6 +27,7 @@ protected:
     TankBase(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer);
 
 public:
+    using parent = TrackedUnit;
     ~TankBase() override = 0;
 
     TankBase(const TankBase &) = delete;

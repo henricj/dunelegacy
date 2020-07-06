@@ -24,6 +24,7 @@ class LightFactory final : public BuilderBase
 {
 public:
     static const ItemID_enum item_id = Structure_LightFactory;
+    using parent = BuilderBase;
 
     LightFactory(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer);
     LightFactory(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer);

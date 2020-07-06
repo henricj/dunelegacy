@@ -24,6 +24,7 @@ class StarPort final : public BuilderBase
 {
 public:
     static const ItemID_enum item_id = Structure_StarPort;
+    using parent = BuilderBase;
 
     StarPort(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer);
     StarPort(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer);

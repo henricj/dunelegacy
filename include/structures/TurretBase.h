@@ -28,6 +28,8 @@ class TurretBase : public StructureBase
 public:
     explicit TurretBase(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer);
     explicit TurretBase(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer);
+    using parent = StructureBase;
+
     ~TurretBase() override;
 
     TurretBase(const TurretBase &) = delete;
