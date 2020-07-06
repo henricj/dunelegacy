@@ -37,7 +37,7 @@ class ObjectInterface;
 class GameInterface : public Window {
 public:
     /// default constructor
-    GameInterface();
+    GameInterface(const GameContext& context);
 
     /// destructor
     virtual ~GameInterface();
@@ -97,8 +97,8 @@ private:
     // runs before windowWidget's dtor.
     StaticContainer     windowWidget;           ///< The main widget of this interface
 
-    std::unique_ptr<ObjectInterface>    pObjectContainer;       ///< The container holding information about the currently selected unit/structure
-    Uint32              objectID;               ///< The id of the currently selected object
+    std::unique_ptr<ObjectInterface> pObjectContainer;       ///< The container holding information about the currently selected unit/structure
+    Uint32 objectID{NONE_ID};                                ///< The id of the currently selected object
 
     HBox                topBarHBox;             ///< The container for the top bar containing newsticker, options button and mentat button
     NewsTicker          newsticker;             ///< The newsticker showing news on the game (e.g. new starport prices, harvester fill level, etc.)
@@ -113,5 +113,7 @@ private:
     ChatManager         chatManager;            ///< Manages chat manages shown overlayed with the main map
 
     std::vector<SDL_Point> render_points_;
+
+    const GameContext context_;
 };
 #endif // GAMEINTERFACE_H

@@ -29,7 +29,7 @@ public:
     Silo(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer);
     ~Silo() override;
 
-    ObjectInterface* getInterfaceContainer() override;
+    std::unique_ptr<ObjectInterface> getInterfaceContainer(const GameContext& context) override;
 
 private:
     void init();

@@ -51,11 +51,8 @@ void Silo::init() {
 
 Silo::~Silo() = default;
 
-ObjectInterface* Silo::getInterfaceContainer() {
-    if((pLocalHouse == owner) || (debug)) {
-        return RefineryAndSiloInterface::create(objectID);
-    }         return DefaultObjectInterface::create(objectID);
-
-   
+std::unique_ptr<ObjectInterface> Silo::getInterfaceContainer(const GameContext& context) {
+    if((pLocalHouse == owner) || (debug)) { return RefineryAndSiloInterface::create(context, objectID); }
+    return DefaultObjectInterface::create(context, objectID);
 }
 

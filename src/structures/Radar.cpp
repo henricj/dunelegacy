@@ -51,14 +51,11 @@ void Radar::init() {
 
 Radar::~Radar() = default;
 
-ObjectInterface* Radar::getInterfaceContainer() {
-    if((pLocalHouse == owner) || (debug)) {
-        return RadarInterface::create(objectID);
-    }         return DefaultObjectInterface::create(objectID);
-
-   
+std::unique_ptr<ObjectInterface> Radar::getInterfaceContainer(const GameContext& context) {
+    if((pLocalHouse == owner) || (debug)) { return RadarInterface::create(context, objectID); }
+    return DefaultObjectInterface::create(context, objectID);
 }
 
-void Radar::destroy() {
-    StructureBase::destroy();
+void Radar::destroy(const GameContext& context) {
+    StructureBase::destroy(context);
 }

@@ -52,7 +52,7 @@ void Trike::init() {
 
 Trike::~Trike() = default;
 
-void Trike::destroy() {
+void Trike::destroy(const GameContext& context) {
     if(currentGameMap->tileExists(location) && isVisible()) {
         Coord realPos(lround(realX), lround(realY));
         currentGame->addExplosion(Explosion_SmallUnit, realPos, owner->getHouseID());
@@ -61,7 +61,7 @@ void Trike::destroy() {
             soundPlayer->playSoundAt(Sound_ExplosionSmall,location);
     }
 
-    GroundUnit::destroy();
+    GroundUnit::destroy(context);
 }
 
 void Trike::playAttackSound() {

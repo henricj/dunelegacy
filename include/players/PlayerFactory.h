@@ -29,9 +29,10 @@ class PlayerFactory {
 public:
     class PlayerData {
     public:
-        PlayerData( std::string  playerclass, std::string  name,
-                    std::function<std::unique_ptr<Player> (House*, const std::string&)>  pCreate,
-                    std::function<std::unique_ptr<Player> (InputStream&, House*)>  pLoad)
+        using create_functor = std::function<std::unique_ptr<Player>(const GameContext&, House*, const std::string&, Random&&)>;
+        using load_functor = std::function<std::unique_ptr<Player>(const GameContext&, InputStream&, House*, Random&&)>;
+
+        PlayerData(std::string&& playerclass, std::string&& name, create_functor&& pCreate, load_functor&& pLoad)
          : playerclass(std::move(playerclass)), name(std::move(name)), pCreate(std::move(pCreate)), pLoad(std::move(pLoad)) {
         }
 
@@ -43,23 +44,29 @@ public:
             return name;
         }
 
-        std::unique_ptr<Player> create(House* associatedHouse, const std::string& playername) const {
-            auto pPlayer = pCreate(associatedHouse, playername);
+        std::unique_ptr<Player> create(const GameContext& context, House* associatedHouse, const std::string& playername) const {
+            auto pPlayer = pCreate(context, associatedHouse, playername, create_random(context, associatedHouse, playername));
             pPlayer->setPlayerclass(playerclass);
             return pPlayer;
         }
 
-        std::unique_ptr<Player> load(InputStream& stream, House* associatedHouse) const {
-            auto pPlayer = pLoad(stream, associatedHouse);
+        std::unique_ptr<Player> load(const GameContext& context, InputStream& stream, House* associatedHouse) const {
+            auto pPlayer = pLoad(context, stream, associatedHouse, create_random(context, associatedHouse,  "Default"));
             pPlayer->setPlayerclass(playerclass);
             return pPlayer;
         }
 
     private:
-        std::string playerclass;
-        std::string name;
-        std::function<std::unique_ptr<Player>(House*, const std::string&)> pCreate;
-        std::function<std::unique_ptr<Player>(InputStream&, House*)> pLoad;
+        const std::string playerclass;
+        const std::string name;
+        const create_functor pCreate;
+        const load_functor pLoad;
+
+        Random create_random(const GameContext& context, House* house, std::string_view playername) const {
+            auto random_name = fmt::format("player {} {} {} {}", name, house->getHouseID(), playerclass, playername);
+
+            return context.game.randomFactory.create(random_name);
+        }
     };
 
     static const std::vector<PlayerData>& getList() {
@@ -112,6 +119,20 @@ public:
 private:
 
     static void registerAllPlayers();
+
+    template<typename PlayerType, typename... Args>
+    static void add(std::string&& playerclass, std::string&& name, Args&&... args) {
+        static_assert(std::is_base_of<Player, PlayerType>::value, "The PlayerType must be derived from Player");
+
+        playerDataList.emplace_back(
+            std::move(playerclass), std::move(name),
+            [=](const GameContext& context, House* house, const std::string& playername, Random&& random) {
+                return std::make_unique<PlayerType>(context, house, playername, std::move(random), args...);
+            },
+            [](const GameContext& context, InputStream& inputStream, House* house, Random&& random) {
+                return std::make_unique<PlayerType>(context, inputStream, house, std::move(random));
+            });
+    }
 
     static std::vector<PlayerData> playerDataList;
 };

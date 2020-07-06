@@ -69,7 +69,7 @@
 #include <sstream>
 #include <iomanip>
 
-Game::Game() : randomGen{randomFactory.create("Game")}, uiRandomGen{randomFactory.create("UI")} {
+Game::Game() : randomGen{randomFactory.create("Game")}, uiRandomGen{RandomFactory{}.create("UI")} {
     currentZoomlevel = settings.video.preferredZoomLevel;
 
     localPlayerName = settings.general.playerName;
@@ -195,8 +195,10 @@ void Game::processObjects()
     // update all tiles
     map->for_all([](Tile& t) { t.update(); });
 
+    const GameContext context{*this, *currentGameMap, objectManager};
+
     for(auto *pStructure : structureList) {
-        pStructure->update();
+        pStructure->update(context);
     }
 
     if ((currentCursorMode == CursorMode_Placing) && selectedList.empty()) {
@@ -204,7 +206,7 @@ void Game::processObjects()
     }
 
     for(auto *pUnit : unitList) {
-        pUnit->update();
+        pUnit->update(context);
     }
 
     auto selection_changed = false;
@@ -218,7 +220,7 @@ void Game::processObjects()
     });
 
     objectManager.consume_pending_deletes([&](auto& object) {
-        object->cleanup(this, pLocalPlayer, map.get());
+        object->cleanup(context, pLocalPlayer);
 
         if(removeFromSelectionLists(object.get())) selection_changed = true;
 
@@ -229,7 +231,7 @@ void Game::processObjects()
         selectionChanged();
 
     bulletList.erase(std::remove_if(std::begin(bulletList), std::end(bulletList),
-        [](auto& b) { return b->update(); }), std::end(bulletList));
+        [&](auto& b) { return b->update(context); }), std::end(bulletList));
 
     explosionList.erase(std::remove_if(std::begin(explosionList), std::end(explosionList),
         [](auto& e) { return e->update(); }), std::end(explosionList));
@@ -558,8 +560,8 @@ void Game::drawScreen()
 }
 
 
-void Game::doInput()
-{
+void Game::doInput(const GameContext& context) {
+
     SDL_Event event;
     while(SDL_PollEvent(&event)) {
         // check for a key press
@@ -600,9 +602,9 @@ void Game::doInput()
 
                 case SDL_KEYDOWN: {
                     if(chatMode) {
-                        handleChatInput(event.key);
+                        handleChatInput(context, event.key);
                     } else {
-                        handleKeyInput(event.key);
+                        handleKeyInput(context, event.key);
                     }
                 } break;
 
@@ -645,14 +647,14 @@ void Game::doInput()
 
                                 case CursorMode_Placing: {
                                     if(screenborder->isScreenCoordInsideMap(mouse->x, mouse->y)) {
-                                        handlePlacementClick(screenborder->screen2MapX(mouse->x), screenborder->screen2MapY(mouse->y));
+                                        handlePlacementClick(context, screenborder->screen2MapX(mouse->x), screenborder->screen2MapY(mouse->y));
                                     }
                                 } break;
 
                                 case CursorMode_Attack: {
 
                                     if(screenborder->isScreenCoordInsideMap(mouse->x, mouse->y)) {
-                                        handleSelectedObjectsAttackClick(screenborder->screen2MapX(mouse->x), screenborder->screen2MapY(mouse->y));
+                                        handleSelectedObjectsAttackClick(context, screenborder->screen2MapX(mouse->x), screenborder->screen2MapY(mouse->y));
                                     }
 
                                 } break;
@@ -660,7 +662,7 @@ void Game::doInput()
                                 case CursorMode_Move: {
 
                                     if(screenborder->isScreenCoordInsideMap(mouse->x, mouse->y)) {
-                                        handleSelectedObjectsMoveClick(screenborder->screen2MapX(mouse->x), screenborder->screen2MapY(mouse->y));
+                                        handleSelectedObjectsMoveClick(context, screenborder->screen2MapX(mouse->x), screenborder->screen2MapY(mouse->y));
                                     }
 
                                 } break;
@@ -668,7 +670,7 @@ void Game::doInput()
                                 case CursorMode_CarryallDrop: {
 
                                     if(screenborder->isScreenCoordInsideMap(mouse->x, mouse->y)) {
-                                        handleSelectedObjectsRequestCarryallDropClick(screenborder->screen2MapX(mouse->x), screenborder->screen2MapY(mouse->y));
+                                        handleSelectedObjectsRequestCarryallDropClick(context, screenborder->screen2MapX(mouse->x), screenborder->screen2MapY(mouse->y));
                                     }
 
                                 } break;
@@ -676,7 +678,7 @@ void Game::doInput()
                                 case CursorMode_Capture: {
 
                                     if(screenborder->isScreenCoordInsideMap(mouse->x, mouse->y)) {
-                                        handleSelectedObjectsCaptureClick(screenborder->screen2MapX(mouse->x), screenborder->screen2MapY(mouse->y));
+                                        handleSelectedObjectsCaptureClick(context, screenborder->screen2MapX(mouse->x), screenborder->screen2MapY(mouse->y));
                                     }
 
                                 } break;
@@ -713,7 +715,7 @@ void Game::doInput()
                                 //if user has a controlable unit selected
 
                                 if(screenborder->isScreenCoordInsideMap(mouse->x, mouse->y)) {
-                                    if(handleSelectedObjectsActionClick(screenborder->screen2MapX(mouse->x), screenborder->screen2MapY(mouse->y))) {
+                                    if(handleSelectedObjectsActionClick(context, screenborder->screen2MapX(mouse->x), screenborder->screen2MapY(mouse->y))) {
                                         indicatorFrame = 0;
                                         indicatorPosition.x = screenborder->screen2worldX(mouse->x);
                                         indicatorPosition.y = screenborder->screen2worldY(mouse->y);
@@ -990,7 +992,7 @@ void Game::drawCursor(const SDL_Rect& map_rect) const
     SDL_RenderCopy(renderer, pCursor, nullptr, &dest);
 }
 
-void Game::setupView() const
+void Game::setupView(const GameContext& context) const
 {
     int i = 0;
     int j = 0;
@@ -1016,8 +1018,8 @@ void Game::setupView() const
     }
 
     if(count == 0) {
-        i = map->getSizeX()*TILESIZE/2-1;
-        j = map->getSizeY()*TILESIZE/2-1;
+        i = context.map.getSizeX()*TILESIZE/2-1;
+        j = context.map.getSizeY()*TILESIZE/2-1;
     } else {
         i = i*TILESIZE/count;
         j = j*TILESIZE/count;
@@ -1027,12 +1029,12 @@ void Game::setupView() const
 }
 
 
-void Game::runMainLoop() {
+void Game::runMainLoop(const GameContext& context) {
     SDL_Log("Starting game...");
 
     // add interface
     if(pInterface == nullptr) {
-        pInterface = std::make_unique<GameInterface>();
+        pInterface = std::make_unique<GameInterface>(context);
         if(gameState == GameState::Loading) {
             // when loading a save game we set radar directly
             pInterface->getRadarView().setRadarMode(pLocalHouse->hasRadarOn());
@@ -1196,7 +1198,7 @@ void Game::runMainLoop() {
                 }
             }
 
-            doInput();
+            doInput(context);
             pInterface->updateObjectInterface();
 
             if(pNetworkManager != nullptr) {
@@ -1219,7 +1221,7 @@ void Game::runMainLoop() {
 
             if(!bWaitForNetwork && !bPause) {
                 pInterface->getRadarView().update();
-                cmdManager.executeCommands(gameCycleCount);
+                cmdManager.executeCommands(context, gameCycleCount);
 
 //              SDL_Log("cycle %d : %d", gameCycleCount, currentGame->randomGen.getSeed());
 
@@ -1234,7 +1236,7 @@ void Game::runMainLoop() {
 
                 screenborder->update();
 
-                triggerManager.trigger(gameCycleCount);
+                triggerManager.trigger(context, gameCycleCount);
 
                 processObjects();
 
@@ -1472,6 +1474,8 @@ bool Game::loadSaveGame(InputStream& stream) {
     map = std::make_unique<Map>(mapSizeX, mapSizeY);
     currentGameMap = map.get();
 
+    const GameContext context{*this, *map.get(), this->getObjectManager()};
+
     //read GameCycleCount
     gameCycleCount = stream.readUint32();
 
@@ -1488,7 +1492,7 @@ bool Game::loadSaveGame(InputStream& stream) {
     for(auto i=0; i<static_cast<int>(HOUSETYPE::NUM_HOUSES); i++) {
         if (stream.readBool()) {
             //house in game
-            house[i] = std::make_unique<House>(objectManager, stream);
+            house[i] = std::make_unique<House>(context, stream);
         }
     }
 
@@ -1768,10 +1772,10 @@ void Game::setGameLost() {
 }
 
 
-bool Game::onRadarClick(Coord worldPosition, bool bRightMouseButton, bool bDrag) {
+bool Game::onRadarClick(const GameContext& context, Coord worldPosition, bool bRightMouseButton, bool bDrag) {
     if(bRightMouseButton) {
 
-        if(handleSelectedObjectsActionClick(worldPosition.x / TILESIZE, worldPosition.y / TILESIZE)) {
+        if(handleSelectedObjectsActionClick(context, worldPosition.x / TILESIZE, worldPosition.y / TILESIZE)) {
             indicatorFrame = 0;
             indicatorPosition = worldPosition;
         }
@@ -1786,22 +1790,22 @@ bool Game::onRadarClick(Coord worldPosition, bool bRightMouseButton, bool bDrag)
 
             switch(currentCursorMode) {
                 case CursorMode_Attack: {
-                    handleSelectedObjectsAttackClick(worldPosition.x / TILESIZE, worldPosition.y / TILESIZE);
+                    handleSelectedObjectsAttackClick(context, worldPosition.x / TILESIZE, worldPosition.y / TILESIZE);
                     return false;
                 } break;
 
                 case CursorMode_Move: {
-                    handleSelectedObjectsMoveClick(worldPosition.x / TILESIZE, worldPosition.y / TILESIZE);
+                    handleSelectedObjectsMoveClick(context, worldPosition.x / TILESIZE, worldPosition.y / TILESIZE);
                     return false;
                 } break;
 
                 case CursorMode_Capture: {
-                    handleSelectedObjectsCaptureClick(worldPosition.x / TILESIZE, worldPosition.y / TILESIZE);
+                    handleSelectedObjectsCaptureClick(context, worldPosition.x / TILESIZE, worldPosition.y / TILESIZE);
                     return false;
                 } break;
 
                 case CursorMode_CarryallDrop: {
-                    handleSelectedObjectsRequestCarryallDropClick(worldPosition.x / TILESIZE, worldPosition.y / TILESIZE);
+                    handleSelectedObjectsRequestCarryallDropClick(context, worldPosition.x / TILESIZE, worldPosition.y / TILESIZE);
                     return false;
                 } break;
 
@@ -1821,7 +1825,7 @@ bool Game::isOnRadarView(int mouseX, int mouseY) const {
 }
 
 
-void Game::handleChatInput(SDL_KeyboardEvent& keyboardEvent) {
+void Game::handleChatInput(const GameContext& context, SDL_KeyboardEvent& keyboardEvent) {
     if(keyboardEvent.keysym.sym == SDLK_ESCAPE) {
         chatMode = false;
     } else if(keyboardEvent.keysym.sym == SDLK_RETURN) {
@@ -1909,7 +1913,7 @@ void Game::removeFromQuickSelectionLists(Uint32 objectID) {
 };
 
 
-void Game::handleKeyInput(SDL_KeyboardEvent& keyboardEvent) {
+void Game::handleKeyInput(const GameContext& context, SDL_KeyboardEvent& keyboardEvent) {
     switch(keyboardEvent.keysym.sym) {
 
         case SDLK_0: {
@@ -2182,7 +2186,7 @@ void Game::handleKeyInput(SDL_KeyboardEvent& keyboardEvent) {
             for(Uint32 objectID : selectedList) {
                 ObjectBase* pObject = objectManager.getObject(objectID);
                 if(pObject->getItemID() == Unit_Harvester) {
-                    static_cast<Harvester*>(pObject)->handleReturnClick();
+                    static_cast<Harvester*>(pObject)->handleReturnClick(context);
                 }
             }
         } break;
@@ -2257,7 +2261,7 @@ void Game::handleKeyInput(SDL_KeyboardEvent& keyboardEvent) {
 }
 
 
-bool Game::handlePlacementClick(int xPos, int yPos) {
+bool Game::handlePlacementClick(const GameContext& context, int xPos, int yPos) {
     BuilderBase* pBuilder = nullptr;
 
     if(selectedList.size() == 1) {
@@ -2341,14 +2345,14 @@ bool Game::handlePlacementClick(int xPos, int yPos) {
                             if(pObject->isAUnit() && pObject->getOwner() == pBuilder->getOwner()) {
                                 auto* pUnit = static_cast<UnitBase*>(pObject);
                                 Coord newDestination = map->findDeploySpot(pUnit, Coord(xPos, yPos), uiRandomGen, pUnit->getLocation(), structuresize);
-                                pUnit->handleMoveClick(newDestination.x, newDestination.y);
+                                pUnit->handleMoveClick(context, newDestination.x, newDestination.y);
                             }
                         } else if(pTile->hasInfantry()) {
                             for(auto objectID : pTile->getInfantryList()) {
                                 auto *pInfantry = dynamic_cast<InfantryBase*>(getObjectManager().getObject(objectID));
                                 if((pInfantry != nullptr) && (pInfantry->getOwner() == pBuilder->getOwner())) {
                                     const auto newDestination = map->findDeploySpot(pInfantry, Coord(xPos, yPos), uiRandomGen, pInfantry->getLocation(), structuresize);
-                                    pInfantry->handleMoveClick(newDestination.x, newDestination.y);
+                                    pInfantry->handleMoveClick(context, newDestination.x, newDestination.y);
                                 }
                             }
                         }
@@ -2362,18 +2366,18 @@ bool Game::handlePlacementClick(int xPos, int yPos) {
 }
 
 
-bool Game::handleSelectedObjectsAttackClick(int xPos, int yPos) {
+bool Game::handleSelectedObjectsAttackClick(const GameContext& context, int xPos, int yPos) {
     UnitBase* pResponder = nullptr;
     for(Uint32 objectID : selectedList) {
         ObjectBase* pObject = objectManager.getObject(objectID);
         House* pOwner = pObject->getOwner();
         if(pObject->isAUnit() && (pOwner == pLocalHouse) && pObject->isRespondable()) {
             pResponder = static_cast<UnitBase*>(pObject);
-            pResponder->handleAttackClick(xPos,yPos);
+            pResponder->handleAttackClick(context, xPos,yPos);
         } else if((pObject->getItemID() == Structure_Palace) && ((pOwner->getHouseID() == HOUSETYPE::HOUSE_HARKONNEN) || (pOwner->getHouseID() == HOUSETYPE::HOUSE_SARDAUKAR))) {
             auto* pPalace = static_cast<Palace*>(pObject);
             if(pPalace->isSpecialWeaponReady()) {
-                pPalace->handleDeathhandClick(xPos, yPos);
+                pPalace->handleDeathhandClick(context, xPos, yPos);
             }
         }
     }
@@ -2387,14 +2391,14 @@ bool Game::handleSelectedObjectsAttackClick(int xPos, int yPos) {
     }
 }
 
-bool Game::handleSelectedObjectsMoveClick(int xPos, int yPos) {
+bool Game::handleSelectedObjectsMoveClick(const GameContext& context, int xPos, int yPos) {
     UnitBase* pResponder = nullptr;
 
     for(Uint32 objectID : selectedList) {
         ObjectBase* pObject = objectManager.getObject(objectID);
         if (pObject->isAUnit() && (pObject->getOwner() == pLocalHouse) && pObject->isRespondable()) {
             pResponder = static_cast<UnitBase*>(pObject);
-            pResponder->handleMoveClick(xPos,yPos);
+            pResponder->handleMoveClick(context, xPos, yPos);
         }
     }
 
@@ -2410,7 +2414,7 @@ bool Game::handleSelectedObjectsMoveClick(int xPos, int yPos) {
 /**
     New method for transporting units quickly using carryalls
 **/
-bool Game::handleSelectedObjectsRequestCarryallDropClick(int xPos, int yPos) {
+bool Game::handleSelectedObjectsRequestCarryallDropClick(const GameContext& context, int xPos, int yPos) {
 
     UnitBase* pResponder = nullptr;
 
@@ -2426,7 +2430,7 @@ bool Game::handleSelectedObjectsRequestCarryallDropClick(int xPos, int yPos) {
         ObjectBase* pObject = objectManager.getObject(objectID);
         if (pObject->isAGroundUnit() && (pObject->getOwner() == pLocalHouse) && pObject->isRespondable()) {
             pResponder = static_cast<UnitBase*>(pObject);
-            pResponder->handleRequestCarryallDropClick(xPos,yPos);
+            pResponder->handleRequestCarryallDropClick(context, xPos,yPos);
         }
     }
 
@@ -2441,7 +2445,7 @@ bool Game::handleSelectedObjectsRequestCarryallDropClick(int xPos, int yPos) {
 
 
 
-bool Game::handleSelectedObjectsCaptureClick(int xPos, int yPos) {
+bool Game::handleSelectedObjectsCaptureClick(const GameContext& context, int xPos, int yPos) {
     Tile* pTile = map->getTile(xPos, yPos);
 
     if(pTile == nullptr) {
@@ -2473,13 +2477,13 @@ bool Game::handleSelectedObjectsCaptureClick(int xPos, int yPos) {
 }
 
 
-bool Game::handleSelectedObjectsActionClick(int xPos, int yPos) {
+bool Game::handleSelectedObjectsActionClick(const GameContext& context, int xPos, int yPos) {
     //let unit handle right click on map or target
     ObjectBase  *pResponder = nullptr;
     for(Uint32 objectID : selectedList) {
         ObjectBase* pObject = objectManager.getObject(objectID);
         if(pObject->getOwner() == pLocalHouse && pObject->isRespondable()) {
-            pObject->handleActionClick(xPos, yPos);
+            pObject->handleActionClick(context, xPos, yPos);
 
             //if this object obey the command
             if((pResponder == nullptr) && pObject->isRespondable())

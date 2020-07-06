@@ -90,7 +90,7 @@ void SonicTank::blitToScreen() {
     }
 }
 
-void SonicTank::destroy() {
+void SonicTank::destroy(const GameContext& context) {
     if(currentGameMap->tileExists(location) && isVisible()) {
         Coord realPos(lround(realX), lround(realY));
         currentGame->addExplosion(Explosion_SmallUnit, realPos, owner->getHouseID());
@@ -99,14 +99,14 @@ void SonicTank::destroy() {
             soundPlayer->playSoundAt(Sound_ExplosionSmall,location);
     }
 
-    TrackedUnit::destroy();
+    parent::destroy(context);
 }
 
-void SonicTank::handleDamage(int damage, Uint32 damagerID, House* damagerOwner) {
+void SonicTank::handleDamage(const GameContext& context, int damage, Uint32 damagerID, House* damagerOwner) {
     ObjectBase* damager = currentGame->getObjectManager().getObject(damagerID);
 
     if (!damager || (damager->getItemID() != Unit_SonicTank))
-        TrackedUnit::handleDamage(damage, damagerID, damagerOwner);
+        parent::handleDamage(context, damage, damagerID, damagerOwner);
 }
 
 bool SonicTank::canAttack(const ObjectBase *object) const {

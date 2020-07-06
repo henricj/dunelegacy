@@ -34,12 +34,13 @@ public:
     Refinery(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer);
     ~Refinery() override;
 
+    void cleanup(const GameContext& context, HumanPlayer* humanPlayer) override;
     void save(OutputStream& stream) const override;
 
-    ObjectInterface* getInterfaceContainer() override;
+    std::unique_ptr<ObjectInterface> getInterfaceContainer(const GameContext& context) override;
 
     void assignHarvester(Harvester* newHarvester);
-    void deployHarvester(Carryall* pCarryall = nullptr);
+    void deployHarvester(const GameContext& context, Carryall* pCarryall = nullptr);
     void startAnimate();
     void stopAnimate();
 
@@ -63,7 +64,7 @@ protected:
         Used for updating things that are specific to that particular structure. Is called from
         StructureBase::update() before the check if this structure is still alive.
     */
-    void updateStructureSpecificStuff() override;
+    void updateStructureSpecificStuff(const GameContext& context) override;
 
 private:
     void init();

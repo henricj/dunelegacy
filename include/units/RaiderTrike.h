@@ -30,7 +30,7 @@ public:
     RaiderTrike(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer);
     ~RaiderTrike() override;
 
-    void destroy() override;
+    void destroy(const GameContext& context) override;
 
     bool hasBumpyMovementOnRock() const override { return true; }
 

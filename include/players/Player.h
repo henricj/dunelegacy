@@ -44,10 +44,11 @@ class InfantryBase;
 class MCV;
 
 class Player {
-public:
+protected:
+    Player(const GameContext& context, House* associatedHouse, std::string playername, Random&& random);
+    Player(const GameContext& context, InputStream& stream, House* associatedHouse, Random&& random);
 
-    Player(House* associatedHouse, std::string playername);
-    Player(InputStream& stream, House* associatedHouse);
+public:
     virtual ~Player() = 0;
 
     Player(const Player &) = delete;
@@ -116,7 +117,7 @@ protected:
         */
     void logWarn(PRINTF_FORMAT_STRING const char* fmt, ...) const PRINTF_VARARG_FUNC(2);
 
-    Random& getRandomGen() const;
+    Random& getRandomGen();
     const GameInitSettings& getGameInitSettings() const;
     Uint32 getGameCycleCount() const;
     int getTechLevel() const;
@@ -256,7 +257,8 @@ protected:
         \param  pTargetObject   the object to attack
         \param  bForced         true, if the unit should ignore everything else
     */
-    void doAttackObject(const UnitBase* pUnit, const ObjectBase* pTargetObject, bool bForced) const;
+    void doAttackObject(const UnitBase* pUnit, const ObjectBase* pTargetObject,
+                        bool bForced) const;
 
     /**
         Change the attack mode of pUnit to attackMode.
@@ -299,7 +301,6 @@ protected:
 
     bool doRequestCarryallDrop(const GroundUnit* pGroundUnit) const;
 
-
 private:
     friend class House;
 
@@ -307,6 +308,11 @@ private:
     Uint8 playerID;
     std::string playername;
     std::string playerclass;
+
+    Random random_;
+
+protected:
+    const GameContext context_;
 };
 
 #endif // PLAYER_H

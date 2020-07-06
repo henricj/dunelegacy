@@ -63,12 +63,18 @@ void RepairYard::init() {
     lastAnimFrame = 3;
 }
 
-RepairYard::~RepairYard() {
+RepairYard::~RepairYard() = default;
+
+void RepairYard::cleanup(const GameContext& context, HumanPlayer* humanPlayer) {
     if(repairingAUnit) {
         unBook();
-        repairUnit.getUnitPointer()->destroy();
+        auto* const unit = repairUnit.getUnitPointer();
+        if(unit) unit->destroy(context);
     }
+
+    parent::cleanup(context, humanPlayer);
 }
+
 
 void RepairYard::save(OutputStream& stream) const {
     StructureBase::save(stream);
@@ -79,15 +85,12 @@ void RepairYard::save(OutputStream& stream) const {
 }
 
 
-ObjectInterface* RepairYard::getInterfaceContainer() {
-    if((pLocalHouse == owner) || (debug)) {
-        return RepairYardInterface::create(objectID);
-    }         return DefaultObjectInterface::create(objectID);
-
-   
+std::unique_ptr<ObjectInterface> RepairYard::getInterfaceContainer(const GameContext& context) {
+    if((pLocalHouse == owner) || (debug)) { return RepairYardInterface::create(context, objectID); }
+    return DefaultObjectInterface::create(context, objectID);
 }
 
-void RepairYard::deployRepairUnit(Carryall* pCarryall) {
+void RepairYard::deployRepairUnit(const GameContext& context, Carryall* pCarryall) {
     unBook();
     repairingAUnit = false;
     firstAnimFrame = 2;
@@ -95,15 +98,15 @@ void RepairYard::deployRepairUnit(Carryall* pCarryall) {
 
     UnitBase* pRepairUnit = repairUnit.getUnitPointer();
     if(pCarryall != nullptr) {
-        pCarryall->giveCargo(pRepairUnit);
+        pCarryall->giveCargo(context, pRepairUnit);
         pCarryall->setTarget(nullptr);
         pCarryall->setDestination(pRepairUnit->getGuardPoint());
     } else {
-        Coord deployPos = currentGameMap->findDeploySpot(pRepairUnit, location, destination, structureSize);
+        Coord deployPos = context.map.findDeploySpot(pRepairUnit, location, destination, structureSize);
 
         pRepairUnit->setForced(false);
-        pRepairUnit->doSetAttackMode((pRepairUnit->getItemID() == Unit_Harvester) ? HARVEST : GUARD);
-        pRepairUnit->deploy(deployPos);
+        pRepairUnit->doSetAttackMode(context, (pRepairUnit->getItemID() == Unit_Harvester) ? HARVEST : GUARD);
+        pRepairUnit->deploy(context, deployPos);
         pRepairUnit->setTarget(nullptr);
         pRepairUnit->setDestination(pRepairUnit->getLocation());
     }
@@ -115,7 +118,7 @@ void RepairYard::deployRepairUnit(Carryall* pCarryall) {
     }
 }
 
-void RepairYard::updateStructureSpecificStuff() {
+void RepairYard::updateStructureSpecificStuff(const GameContext& context) {
     if(repairingAUnit) {
         if(curAnimFrame < 6) {
             firstAnimFrame = 6;
@@ -164,12 +167,12 @@ void RepairYard::updateStructureSpecificStuff() {
                 pRepairUnit->setTarget(nullptr);
                 pRepairUnit->setDestination(pRepairUnit->getGuardPoint());
             } else {
-                deployRepairUnit();
+                deployRepairUnit(context);
             }
         } else if(!pRepairUnit->hasBookedCarrier()) {
-            deployRepairUnit();
+            deployRepairUnit(context);
         } else {
-            deployRepairUnit();
+            deployRepairUnit(context);
         }
     }
 }

@@ -49,8 +49,8 @@ public:
 
     void blitToScreen() const;
 
-    bool update();
-    void destroy() const;
+    bool update(const GameContext& context);
+    void destroy(const GameContext& context) const;
 
     int getBulletID() const noexcept { return bulletID; }
     FixPoint getRealX() const noexcept { return realX; }

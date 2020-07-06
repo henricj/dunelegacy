@@ -123,45 +123,33 @@ void Map::createSandRegions() {
     }
 }
 
-void Map::damage(Uint32 damagerID, House* damagerOwner, const Coord& realPos, Uint32 bulletID, FixPoint damage, int damageRadius, bool air) {
+void Map::damage(const GameContext& context, Uint32 damagerID, House* damagerOwner, const Coord& realPos, Uint32 bulletID,
+                 FixPoint damage, int damageRadius, bool air) {
     const auto location = Coord(realPos.x/TILESIZE, realPos.y/TILESIZE);
 
-    std::unordered_set<Dune::object_id_type>    affectedAirUnits;
-    std::unordered_set<Dune::object_id_type>    affectedGroundAndUndergroundUnits;
+    std::vector<Dune::object_id_type> affectedAirUnits;
+    std::vector<Dune::object_id_type> affectedGroundAndUndergroundUnits;
 
-    for_each(location.x - 2, location.y - 2, location.x + 2, location.y + 2,
-        [&](Tile& t) {
-            affectedAirUnits.insert(std::begin(t.getAirUnitList()), std::end(t.getAirUnitList()));
-            affectedGroundAndUndergroundUnits.insert(std::begin(t.getInfantryList()), std::end(t.getInfantryList()));
-            affectedGroundAndUndergroundUnits.insert(std::begin(t.getUndergroundUnitList()), std::end(t.getUndergroundUnitList()));
-            affectedGroundAndUndergroundUnits.insert(std::begin(t.getNonInfantryGroundObjectList()), std::end(t.getNonInfantryGroundObjectList()));
-        });
+    for_each(location.x - 2, location.y - 2, location.x + 2, location.y + 2, [&](Tile& t) {
+        std::copy(std::begin(t.getAirUnitList()), std::end(t.getAirUnitList()), std::back_inserter(affectedAirUnits));
+        std::copy(std::begin(t.getInfantryList()), std::end(t.getInfantryList()),
+                  std::back_inserter(affectedGroundAndUndergroundUnits));
+        std::copy(std::begin(t.getUndergroundUnitList()), std::end(t.getUndergroundUnitList()),
+                  std::back_inserter(affectedGroundAndUndergroundUnits));
+        std::copy(std::begin(t.getNonInfantryGroundObjectList()), std::end(t.getNonInfantryGroundObjectList()),
+                  std::back_inserter(affectedGroundAndUndergroundUnits));
+    });
 
-#if  0
-    for(auto i = location.x-2; i <= location.x+2; i++) {
-        for(auto j = location.y-2; j <= location.y+2; j++) {
-            const auto pTile = tryGetTile(i,j);
-
-            if (!pTile)
-                continue;
-
-            affectedAirUnits.insert(pTile->getAirUnitList().begin(), pTile->getAirUnitList().end());
-            affectedGroundAndUndergroundUnits.insert(pTile->getInfantryList().begin(), pTile->getInfantryList().end());
-            affectedGroundAndUndergroundUnits.insert(pTile->getUndergroundUnitList().begin(), pTile->getUndergroundUnitList().end());
-            affectedGroundAndUndergroundUnits.insert(pTile->getNonInfantryGroundObjectList().begin(), pTile->getNonInfantryGroundObjectList().end());
-        }
-    }
-#endif // 0
     if(bulletID == Bullet_Sandworm) {
         for(auto objectID : affectedGroundAndUndergroundUnits) {
-            auto *pObject = currentGame->getObjectManager().getObject(objectID);
+            auto *pObject = context.objectManager.getObject(objectID);
             if(pObject
                 && (pObject->getItemID() != Unit_Sandworm)
                 && (pObject->isAGroundUnit() || pObject->isInfantry())
                 && (pObject->getLocation() == location))
             {
                 pObject->setVisible(VIS_ALL, false);
-                pObject->handleDamage(lround(damage), damagerID, damagerOwner);
+                pObject->handleDamage(context, lround(damage), damagerID, damagerOwner);
             }
         }
     } else {
@@ -169,7 +157,7 @@ void Map::damage(Uint32 damagerID, House* damagerOwner, const Coord& realPos, Ui
             // air damage
             if((bulletID == Bullet_DRocket) || (bulletID == Bullet_Rocket) || (bulletID == Bullet_TurretRocket)|| (bulletID == Bullet_SmallRocket)) {
                 for(auto objectID : affectedAirUnits) {
-                    auto *pAirUnit = dynamic_cast<AirUnit*>(currentGame->getObjectManager().getObject(objectID));
+                    auto *pAirUnit = dynamic_cast<AirUnit*>(context.objectManager.getObject(objectID));
                     if(pAirUnit == nullptr)
                         continue;
 
@@ -182,20 +170,20 @@ void Map::damage(Uint32 damagerID, House* damagerOwner, const Coord& realPos, Ui
                     if(bulletID == Bullet_DRocket) {
                         if((pAirUnit->getItemID() != Unit_Carryall) && (pAirUnit->getItemID() != Unit_Sandworm) && (pAirUnit->getItemID() != Unit_Frigate)) {
                             // try to deviate
-                            if(currentGame->randomGen.randFixPoint() < getDeviateWeakness(static_cast<HOUSETYPE>(pAirUnit->getOriginalHouseID()))) {
-                                pAirUnit->deviate(damagerOwner);
+                            if(random_.randFixPoint() < getDeviateWeakness(static_cast<HOUSETYPE>(pAirUnit->getOriginalHouseID()))) {
+                                pAirUnit->deviate(context, damagerOwner);
                             }
                         }
                     } else {
                         const auto scaledDamage = lround(damage) >> (distance/4 + 1);
-                        pAirUnit->handleDamage(scaledDamage, damagerID, damagerOwner);
+                        pAirUnit->handleDamage(context, scaledDamage, damagerID, damagerOwner);
                     }
                 }
             }
         } else {
             // non air damage
             for(auto objectID : affectedGroundAndUndergroundUnits) {
-                auto *const pObject = currentGame->getObjectManager().getObject(objectID);
+                auto *const pObject = context.objectManager.getObject(objectID);
 
                 if(pObject && pObject->isAStructure()) {
                     auto *pStructure = static_cast<StructureBase*>(pObject);
@@ -204,7 +192,7 @@ void Map::damage(Uint32 damagerID, House* damagerOwner, const Coord& realPos, Ui
                     const auto bottomRightCorner = topLeftCorner + pStructure->getStructureSize()*TILESIZE;
 
                     if(realPos.x >= topLeftCorner.x && realPos.y >= topLeftCorner.y && realPos.x < bottomRightCorner.x && realPos.y < bottomRightCorner.y) {
-                        pStructure->handleDamage(lround(damage), damagerID, damagerOwner);
+                        pStructure->handleDamage(context, lround(damage), damagerID, damagerOwner);
 
                         if( (bulletID == Bullet_LargeRocket || bulletID == Bullet_Rocket || bulletID == Bullet_TurretRocket || bulletID == Bullet_SmallRocket)
                             && (pStructure->getHealth() < pStructure->getMaxHealth()/2)) {
@@ -223,15 +211,15 @@ void Map::damage(Uint32 damagerID, House* damagerOwner, const Coord& realPos, Ui
                         if(bulletID == Bullet_DRocket) {
                             if((pUnit->getItemID() != Unit_Carryall) && (pUnit->getItemID() != Unit_Sandworm) && (pUnit->getItemID() != Unit_Frigate)) {
                                 // try to deviate
-                                if(currentGame->randomGen.randFixPoint() < getDeviateWeakness(static_cast<HOUSETYPE>(pUnit->getOriginalHouseID()))) {
-                                    pUnit->deviate(damagerOwner);
+                                if(random_.randFixPoint() < getDeviateWeakness(static_cast<HOUSETYPE>(pUnit->getOriginalHouseID()))) {
+                                    pUnit->deviate(context, damagerOwner);
                                 }
                             }
                         } else if(bulletID == Bullet_Sonic) {
-                            pUnit->handleDamage(lround(damage), damagerID, damagerOwner);
+                            pUnit->handleDamage(context, lround(damage), damagerID, damagerOwner);
                         } else {
                             const auto scaledDamage = lround(damage) >> (distance/16 + 1);
-                            pUnit->handleDamage(scaledDamage, damagerID, damagerOwner);
+                            pUnit->handleDamage(context, scaledDamage, damagerID, damagerOwner);
                         }
                     }
                 }
@@ -248,7 +236,7 @@ void Map::damage(Uint32 damagerID, House* damagerOwner, const Coord& realPos, Ui
                 if(((type == TERRAINTYPE::Terrain_Rock) && (pTile->getTerrainTile() == Tile::TERRAINTILETYPE::TerrainTile_RockFull)) ||
                    (type == TERRAINTYPE::Terrain_Slab)) {
                     if(type == TERRAINTYPE::Terrain_Slab) {
-                        pTile->setType(currentGame.get(), TERRAINTYPE::Terrain_Rock);
+                        pTile->setType(context, TERRAINTYPE::Terrain_Rock);
                         pTile->setDestroyedStructureTile(Destroyed1x1Structure);
                         pTile->setOwner(static_cast<HOUSETYPE>(NONE_ID));
                     }
@@ -276,7 +264,7 @@ void Map::damage(Uint32 damagerID, House* damagerOwner, const Coord& realPos, Ui
         auto *const tile = tryGetTile(location.x, location.y);
 
         if (tile && tile->isSpiceBloom()) {
-            tile->triggerSpiceBloom(currentGame.get(), damagerOwner);
+            tile->triggerSpiceBloom(context, damagerOwner);
         }
     }
 }
@@ -616,7 +604,7 @@ bool Map::findSpice(Coord& destination, const Coord& origin) {
     This method fixes surounding thick spice tiles after spice gone to make things look smooth.
     \param coord    the coordinate where spice was removed from
 */
-void Map::spiceRemoved(const Coord& coord) {
+void Map::spiceRemoved(const GameContext& context, const Coord& coord) {
 
     auto *const pCenterTile = tryGetTile(coord.x , coord.y);
 
@@ -624,9 +612,9 @@ void Map::spiceRemoved(const Coord& coord) {
 
     //thickspice tiles can't handle non-(thick)spice tiles next to them, if this happens after changes, make it non thick
     //only check tile right, up, left and down of this one
-    for_each_neighbor(coord.x, coord.y, [](Tile& t) {
+    for_each_neighbor(coord.x, coord.y, [&](Tile& t) {
         if (t.isThickSpice())
-            t.setType(currentGame.get(), Terrain_Spice);
+            t.setType(context, Terrain_Spice);
     });
 }
 
@@ -663,7 +651,7 @@ void Map::viewMap(HOUSETYPE houseID, const Coord& location, const int maxViewRan
     \param  radius              the radius in tiles (0 = only one tile is filled)
     \param  centerIsThickSpice  if set the center is filled with thick spice
 */
-void Map::createSpiceField(Coord location, int radius, bool centerIsThickSpice) {
+void Map::createSpiceField(const GameContext& context, Coord location, int radius, bool centerIsThickSpice) {
 
     for_each_filter(location.x - radius, location.y - radius, location.x + radius, location.y + radius,
         [&](int x, int y) { return distanceFrom(location, { x, y }) <= radius; },
@@ -672,7 +660,7 @@ void Map::createSpiceField(Coord location, int radius, bool centerIsThickSpice) 
                 const auto terrain = centerIsThickSpice && (t.location == location)
                     ? Terrain_ThickSpice : Terrain_Spice;
 
-                t.setType(currentGame.get(), terrain);
+                t.setType(context, terrain);
             }
         });
 }

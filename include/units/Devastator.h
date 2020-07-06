@@ -39,13 +39,13 @@ public:
 
     void doStartDevastate();
 
-    void destroy() override;
+    void destroy(const GameContext& context) override;
 
     /**
         Updates this devastator.
         \return true if this object still exists, false if it was destroyed
     */
-    bool update() override;
+    bool update(const GameContext& context) override;
 
     void playAttackSound() override;
 

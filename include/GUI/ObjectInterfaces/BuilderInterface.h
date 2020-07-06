@@ -35,14 +35,14 @@
 
 class BuilderInterface final : public DefaultStructureInterface {
 public:
-    static BuilderInterface* create(int objectID) {
-        auto* tmp = new BuilderInterface(objectID);
+    static std::unique_ptr<BuilderInterface> create(const GameContext& context, int objectID) {
+        auto tmp        = std::unique_ptr<BuilderInterface>{new BuilderInterface{context, objectID}};
         tmp->pAllocated = true;
         return tmp;
     }
 
 protected:
-    explicit BuilderInterface(int objectID) : DefaultStructureInterface(objectID) {
+    explicit BuilderInterface(const GameContext& context, int objectID) : DefaultStructureInterface(context, objectID) {
         const auto color = SDL2RGB(palette[houseToPaletteIndex[static_cast<int>(pLocalHouse->getHouseID())]+3]);
 
         upgradeButton.setText(_("Upgrade"));
@@ -118,7 +118,7 @@ protected:
             upgradeButton.setEnabled(!pBuilder->isUpgrading());
 
             if(pBuilder->isUpgrading()) {
-                upgradeProgressBar.setProgress( ((pBuilder->getUpgradeProgress() * 100)/pBuilder->getUpgradeCost()).toDouble() );
+                upgradeProgressBar.setProgress( ((pBuilder->getUpgradeProgress() * 100)/pBuilder->getUpgradeCost(context_)).toDouble() );
             }
 
             if(pBuilder->getHealth() >= pBuilder->getMaxHealth()) {

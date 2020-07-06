@@ -32,14 +32,14 @@
 
 class WindTrapInterface : public DefaultStructureInterface {
 public:
-    static WindTrapInterface* create(int objectID) {
-        auto* tmp = new WindTrapInterface(objectID);
+    static std::unique_ptr<WindTrapInterface> create(const GameContext& context, int objectID) {
+        auto tmp        = std::unique_ptr<WindTrapInterface>{new WindTrapInterface{context, objectID}};
         tmp->pAllocated = true;
         return tmp;
     }
 
 protected:
-    explicit WindTrapInterface(int objectID) : DefaultStructureInterface(objectID) {
+    WindTrapInterface(const GameContext& context, int objectID) : DefaultStructureInterface(context, objectID) {
         Uint32 color = SDL2RGB(palette[houseToPaletteIndex[static_cast<int>(pLocalHouse->getHouseID())]+3]);
 
         mainHBox.addWidget(&textVBox);

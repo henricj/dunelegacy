@@ -52,7 +52,7 @@ void RaiderTrike::init() {
 
 RaiderTrike::~RaiderTrike() = default;
 
-void RaiderTrike::destroy() {
+void RaiderTrike::destroy(const GameContext& context) {
     if(currentGameMap->tileExists(location) && isVisible()) {
         Coord realPos(lround(realX), lround(realY));
         currentGame->addExplosion(Explosion_SmallUnit, realPos, owner->getHouseID());
@@ -61,7 +61,7 @@ void RaiderTrike::destroy() {
             soundPlayer->playSoundAt(Sound_ExplosionSmall,location);
     }
 
-    GroundUnit::destroy();
+    GroundUnit::destroy(context);
 }
 
 void RaiderTrike::playAttackSound() {

@@ -30,7 +30,7 @@
 #include <misc/draw_util.h>
 #include <misc/SDL2pp.h>
 
-GameInterface::GameInterface() : Window(0,0,0,0), objectID(NONE_ID) {
+GameInterface::GameInterface(const GameContext& context) : Window{0, 0, 0, 0}, context_{context} {
     Window::setTransparentBackground(true);
 
     Window::setCurrentPosition(0,0,getRendererWidth(),getRendererHeight());
@@ -73,8 +73,8 @@ GameInterface::GameInterface() : Window(0,0,0,0), objectID(NONE_ID) {
     // add radar
     windowWidget.addWidget(&radarView,Point(getRendererWidth()-sideBar.getSize().x+SIDEBAR_COLUMN_WIDTH, 0),radarView.getMinimumSize());
     //radarView.setOnRadarClick(std::bind(&Game::onRadarClick, currentGame, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
-    radarView.setOnRadarClick([](Coord worldPosition, bool bRightMouseButton, bool bDrag) {
-        return currentGame->onRadarClick(worldPosition, bRightMouseButton, bDrag);
+    radarView.setOnRadarClick([&](Coord worldPosition, bool bRightMouseButton, bool bDrag) {
+        return context_.game.onRadarClick(context_, worldPosition, bRightMouseButton, bDrag);
     });
 
     // add chat manager
@@ -180,7 +180,7 @@ void GameInterface::updateObjectInterface() {
         if(newObjectID != objectID) {
             removeOldContainer();
 
-            pObjectContainer = std::unique_ptr<ObjectInterface>{ pObject->getInterfaceContainer() };
+            pObjectContainer = pObject->getInterfaceContainer(context_);
 
             if(pObjectContainer != nullptr) {
                 objectID = newObjectID;
@@ -188,7 +188,6 @@ void GameInterface::updateObjectInterface() {
                 windowWidget.addWidget(pObjectContainer.get(),
                                         Point(getRendererWidth() - sideBar.getSize().x + 24, 146),
                                         Point(sideBar.getSize().x - 25,getRendererHeight() - 148));
-
             }
 
         } else {
@@ -205,7 +204,7 @@ void GameInterface::updateObjectInterface() {
                 removeOldContainer();
             }
 
-            pObjectContainer = std::unique_ptr<ObjectInterface>{ MultiUnitInterface::create() };
+            pObjectContainer = MultiUnitInterface::create(context_);
 
             windowWidget.addWidget(pObjectContainer.get(),
                                     Point(getRendererWidth() - sideBar.getSize().x + 24, 146),

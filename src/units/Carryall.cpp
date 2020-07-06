@@ -82,7 +82,7 @@ void Carryall::save(OutputStream& stream) const
     stream.writeBools(owned, aDropOfferer, droppedOffCargo);
 }
 
-bool Carryall::update() {
+bool Carryall::update(const GameContext& context) {
     const auto& maxSpeed = currentGame->objectData.data[itemID][static_cast<int>(originalHouseID)].maxspeed;
 
     FixPoint dist = -1;
@@ -108,7 +108,7 @@ bool Carryall::update() {
         currentMaxSpeed = std::min(currentMaxSpeed + 0.2_fix, maxSpeed);
     }
 
-    if(!AirUnit::update()) {
+    if(!AirUnit::update(context)) {
         return false;
     }
 
@@ -119,24 +119,25 @@ bool Carryall::update() {
             && ((getRealX() < -TILESIZE) || (getRealX() > (currentGameMap->getSizeX()+1)*TILESIZE)
                 || (getRealY() < -TILESIZE) || (getRealY() > (currentGameMap->getSizeY()+1)*TILESIZE))) {
             setVisible(VIS_ALL, false);
-            destroy();
+            destroy(context);
             return false;
         }
     }
     return true;
 }
 
-void Carryall::deploy(const Coord& newLocation) {
-    AirUnit::deploy(newLocation);
+void Carryall::deploy(const GameContext& context, const Coord& newLocation) {
+    parent::deploy(context, newLocation);
 
     respondable = false;
 }
 
-void Carryall::checkPos()
-{
-    AirUnit::checkPos();
+void Carryall::checkPos(const GameContext& context) {
+    parent::checkPos(context);
 
     if (!active) return;
+
+    auto& [game, map, objectManager] = context;
 
     if (hasCargo()) {
         if((location == destination) && (currentMaxSpeed <= 0.5_fix) ) {
@@ -144,22 +145,22 @@ void Carryall::checkPos()
             auto droppedUnits = 0;
             do {
                 const auto unitID = pickedUpUnitList.front();
-                auto *const pUnit = static_cast<UnitBase*>(currentGame->getObjectManager().getObject(unitID));
+                auto* const pUnit  = objectManager.getObject<UnitBase>(unitID);
 
                 if(pUnit == nullptr) {
                     return;
                 }
 
-                if((pUnit != nullptr) && (!pUnit->isInfantry()) && (droppedUnits > 0)) {
+                if((!pUnit->isInfantry()) && (droppedUnits > 0)) {
                     // we already dropped infantry and this is no infantry
                     // => do not drop this here
                     break;
                 }
 
-                deployUnit(unitID);
+                deployUnit(context, unitID);
                 droppedUnits++;
 
-                if((pUnit != nullptr) && (!pUnit->isInfantry())) {
+                if(!pUnit->isInfantry()) {
                     // we dropped a non infantry unit
                     // => do not drop another unit
                     break;
@@ -196,16 +197,15 @@ void Carryall::checkPos()
     }
 }
 
-void Carryall::pre_deployUnits()
+void Carryall::pre_deployUnits(const GameContext& context)
 {
     soundPlayer->playSoundAt(Sound_Drop, location);
 
     currentMaxSpeed = 0;
-    setSpeeds();
+    setSpeeds(context);
 }
 
-void Carryall::deployUnit(Uint32 unitID)
-{
+void Carryall::deployUnit(const GameContext& context, Uint32 unitID) {
     const auto iter = std::find(pickedUpUnitList.cbegin(), pickedUpUnitList.cend(), unitID);
 
     if (pickedUpUnitList.cend() == iter)
@@ -213,21 +213,23 @@ void Carryall::deployUnit(Uint32 unitID)
 
     pickedUpUnitList.erase(iter);
 
-    auto *const pUnit = static_cast<UnitBase*>(currentGame->getObjectManager().getObject(unitID));
+    auto *const pUnit = context.objectManager.getObject<UnitBase>(unitID);
 
     if(pUnit == nullptr)
         return;
 
-    pre_deployUnits();
+    pre_deployUnits(context);
 
-    auto *const tile = currentGameMap->getTile(location);
+    auto* const tile = context.map.tryGetTile(location.x, location.y);
 
-    deployUnit(tile, pUnit);
+    if(tile) deployUnit(context, tile, pUnit);
+    else
+        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Carryall deploy failed for location %d, %d", location.x, location.y);
 
     post_deployUnits();
 }
 
-void Carryall::deployUnit(Tile* tile, UnitBase* pUnit) {
+void Carryall::deployUnit(const GameContext& context, Tile* tile, UnitBase* pUnit) {
     if(tile->hasANonInfantryGroundObject()) {
         auto* const object = tile->getNonInfantryGroundObject(currentGame->getObjectManager());
         if(object->getOwner() == getOwner()) {
@@ -248,7 +250,7 @@ void Carryall::deployUnit(Tile* tile, UnitBase* pUnit) {
                 if(static_cast<Refinery*>(object)->isFree()) {
                     auto* harvester = static_cast<Harvester*>(pUnit);
                     harvester->setTarget(object);
-                    harvester->setReturned();
+                    harvester->setReturned(context);
                     goingToRepairYard = false;
 
                     return;
@@ -260,13 +262,13 @@ void Carryall::deployUnit(Tile* tile, UnitBase* pUnit) {
     pUnit->setAngle(drawnAngle);
     const auto deployPos = currentGameMap->findDeploySpot(pUnit, location);
     pUnit->setForced(false); // Stop units being forced if they are deployed
-    pUnit->deploy(deployPos);
+    pUnit->deploy(context, deployPos);
     if(pUnit->getItemID() == Unit_Saboteur) {
-        pUnit->doSetAttackMode(HUNT);
+        pUnit->doSetAttackMode(context, HUNT);
     } else if(pUnit->getItemID() != Unit_Harvester) {
-        pUnit->doSetAttackMode(AREAGUARD);
+        pUnit->doSetAttackMode(context, AREAGUARD);
     } else {
-        pUnit->doSetAttackMode(HARVEST);
+        pUnit->doSetAttackMode(context, HARVEST);
     }
 }
 
@@ -283,13 +285,13 @@ void Carryall::post_deployUnits() {
     clearPath();
 }
 
-void Carryall::destroy()
+void Carryall::destroy(const GameContext& context)
 {
     // destroy cargo
     for(const auto pickedUpUnitID : pickedUpUnitList) {
         auto *pPickedUpUnit = static_cast<UnitBase*>(currentGame->getObjectManager().getObject(pickedUpUnitID));
         if(pPickedUpUnit != nullptr) {
-            pPickedUpUnit->destroy();
+            pPickedUpUnit->destroy(context);
         }
     }
     pickedUpUnitList.clear();
@@ -300,7 +302,7 @@ void Carryall::destroy()
         pTile->assignDeadUnit(DeadUnit_Carrall, owner->getHouseID(), Coord(lround(realX), lround(realY)));
     }
 
-    AirUnit::destroy();
+    AirUnit::destroy(context);
 }
 
 void Carryall::releaseTarget() {
@@ -311,8 +313,7 @@ void Carryall::releaseTarget() {
     }
 }
 
-void Carryall::engageTarget()
-{
+void Carryall::engageTarget(const GameContext& context) {
     if(target && (target.getObjPointer() == nullptr)) {
         // the target does not exist anymore
         releaseTarget();
@@ -353,39 +354,37 @@ void Carryall::engageTarget()
         if(hasCargo()) {
             if(target.getObjPointer()->isAStructure()) {
                 while(!pickedUpUnitList.empty()) {
-                    deployUnit(pickedUpUnitList.back());
+                    deployUnit(context, pickedUpUnitList.back());
                 }
 
                 setTarget(nullptr);
                 setDestination(guardPoint);
             }
         } else {
-            pickupTarget();
+            pickupTarget(context);
         }
     } else {
         setDestination(targetLocation);
     }
 }
 
-void Carryall::giveCargo(UnitBase* newUnit)
-{
+void Carryall::giveCargo(const GameContext& context, UnitBase* newUnit) {
     if(newUnit == nullptr) {
         return;
     }
 
     pickedUpUnitList.push_back(newUnit->getObjectID());
 
-    newUnit->setPickedUp(this);
+    newUnit->setPickedUp(context, this);
 
     drawnFrame = 1;
 
     droppedOffCargo = false;
 }
 
-void Carryall::pickupTarget()
-{
+void Carryall::pickupTarget(const GameContext& context) {
     currentMaxSpeed = 0;
-    setSpeeds();
+    setSpeeds(context);
 
     ObjectBase* pTarget = target.getObjPointer();
 
@@ -403,13 +402,13 @@ void Carryall::pickupTarget()
             || pGroundUnitTarget->isBadlyDamaged()) {
 
             if(pGroundUnitTarget->isBadlyDamaged() || (!pGroundUnitTarget->hasATarget() && pGroundUnitTarget->getItemID() != Unit_Harvester))   {
-                pGroundUnitTarget->doRepair();
+                pGroundUnitTarget->doRepair(context);
             }
 
             auto *newTarget = pGroundUnitTarget->hasATarget() ? pGroundUnitTarget->getTarget() : nullptr;
 
             pickedUpUnitList.push_back(target.getObjectID());
-            pGroundUnitTarget->setPickedUp(this);
+            pGroundUnitTarget->setPickedUp(context, this);
 
             drawnFrame = 1;
 
@@ -430,7 +429,7 @@ void Carryall::pickupTarget()
         } else {
             pGroundUnitTarget->setAwaitingPickup(false);
             if(pGroundUnitTarget->getAttackMode() == CARRYALLREQUESTED) {
-                pGroundUnitTarget->doSetAttackMode(STOP);
+                pGroundUnitTarget->doSetAttackMode(context, STOP);
             }
             releaseTarget();
         }
@@ -439,10 +438,10 @@ void Carryall::pickupTarget()
         ObjectBase* pObject = target.getObjPointer();
         if(pObject->getItemID() == Structure_Refinery) {
             // get harvester
-            static_cast<Refinery*>(pObject)->deployHarvester(this);
+            static_cast<Refinery*>(pObject)->deployHarvester(context, this);
         } else if(pObject->getItemID() == Structure_RepairYard) {
             // get repaired unit
-            static_cast<RepairYard*>(pObject)->deployRepairUnit(this);
+            static_cast<RepairYard*>(pObject)->deployRepairUnit(context, this);
         }
     }
 }
@@ -472,13 +471,13 @@ void Carryall::setTarget(const ObjectBase* newTarget) {
     }
 }
 
-void Carryall::targeting() {
+void Carryall::targeting(const GameContext& context) {
     if(target) {
-        engageTarget();
+        engageTarget(context);
     }
 }
 
-void Carryall::turn() {
+void Carryall::turn(const GameContext& context) {
     if (active && aDropOfferer && droppedOffCargo && (!hasCargo())
         && ((getRealX() < TILESIZE/2) || (getRealX() > currentGameMap->getSizeX()*TILESIZE - TILESIZE/2)
             || (getRealY() < TILESIZE/2) || (getRealY() > currentGameMap->getSizeY()*TILESIZE - TILESIZE/2))) {
@@ -486,5 +485,5 @@ void Carryall::turn() {
         return;
     }
 
-    AirUnit::turn();
+    parent::turn(context);
 }

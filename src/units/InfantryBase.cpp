@@ -32,9 +32,12 @@
 #include <structures/RepairYard.h>
 #include <units/Harvester.h>
 
+namespace {
 // the position on the tile
-Coord tilePositionOffset[5] = { Coord(0,0), Coord(-TILESIZE/4,-TILESIZE/4), Coord(TILESIZE/4,-TILESIZE/4), Coord(-TILESIZE/4,TILESIZE/4), Coord(TILESIZE/4,TILESIZE/4)};
-
+const Coord tilePositionOffset[5] = {Coord(0, 0), Coord(-TILESIZE / 4, -TILESIZE / 4),
+                                     Coord(TILESIZE / 4, -TILESIZE / 4), Coord(-TILESIZE / 4, TILESIZE / 4),
+                                     Coord(TILESIZE / 4, TILESIZE / 4)};
+} // namespace
 
 InfantryBase::InfantryBase(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer) : GroundUnit(itemID, objectID, initializer) {
 
@@ -57,7 +60,6 @@ InfantryBase::InfantryBase(ItemID_enum itemID, Uint32 objectID, const ObjectStre
 }
 
 void InfantryBase::init() {
-    infantry = true;
 }
 
 InfantryBase::~InfantryBase() = default;
@@ -83,23 +85,23 @@ void InfantryBase::handleCaptureClick(int xPos, int yPos) {
     }
 }
 
-void InfantryBase::doCaptureStructure(Uint32 targetStructureID) {
-    const StructureBase* pStructure = dynamic_cast<StructureBase*>(currentGame->getObjectManager().getObject(targetStructureID));
-    doCaptureStructure(pStructure);
+void InfantryBase::doCaptureStructure(const GameContext& context, Uint32 targetStructureID) {
+    const auto* pStructure = currentGame->getObjectManager().getObject<StructureBase>(targetStructureID);
+    doCaptureStructure(context, pStructure);
 }
 
-void InfantryBase::doCaptureStructure(const StructureBase* pStructure) {
+void InfantryBase::doCaptureStructure(const GameContext& context, const StructureBase* pStructure) {
 
     if((pStructure == nullptr) || (!pStructure->canBeCaptured()) || (pStructure->getOwner()->getTeamID() == getOwner()->getTeamID())) {
         // does not exist anymore, cannot be captured or is a friendly building
         return;
     }
 
-    doAttackObject(pStructure, true);
-    doSetAttackMode(CAPTURE);
+    doAttackObject(context, pStructure, true);
+    doSetAttackMode(context, CAPTURE);
 }
 
-void InfantryBase::assignToMap(const Coord& pos) {
+void InfantryBase::assignToMap(const GameContext& context, const Coord& pos) {
     if(currentGameMap->tileExists(pos)) {
         oldTilePosition = tilePosition;
         tilePosition = currentGameMap->getTile(pos)->assignInfantry(currentGame->getObjectManager(), getObjectID());
@@ -155,7 +157,7 @@ bool InfantryBase::canPassTile(const Tile* pTile) const {
     return passable;
 }
 
-void InfantryBase::checkPos() {
+void InfantryBase::checkPos(const GameContext& context) {
     if(moving && !justStoppedMoving) {
         if(++walkFrame > 39) {
             walkFrame = 0;
@@ -165,13 +167,17 @@ void InfantryBase::checkPos() {
     if(!justStoppedMoving)
         return;
 
+    auto& [game, map, objectManager] = context;
+
     walkFrame = 0;
 
-    if(currentGameMap->getTile(location)->isSpiceBloom()) {
-        setHealth(0);
-        currentGameMap->getTile(location)->triggerSpiceBloom(currentGame.get(), getOwner());
-    } else if(currentGameMap->getTile(location)->isSpecialBloom()){
-        currentGameMap->getTile(location)->triggerSpecialBloom(currentGame.get(), getOwner());
+    if(auto* tile = map.tryGetTile(location.x, location.y)) {
+        if(tile->isSpiceBloom()) {
+            setHealth(0);
+            tile->triggerSpiceBloom(context, getOwner());
+        } else if(tile->isSpecialBloom()) {
+            tile->triggerSpecialBloom(context, getOwner());
+        }
     }
 
     auto *const object = target.getObjPointer();
@@ -200,10 +206,10 @@ void InfantryBase::checkPos() {
                 UnitBase* pContainedUnit = nullptr;
 
                 if (pCapturedStructure->getItemID() == Structure_Silo) {
-                    capturedSpice = currentGame->objectData.data[Structure_Silo][static_cast<int>(originalHouseID)].capacity * (pOwner->getStoredCredits() / pOwner->getCapacity());
+                    capturedSpice = game.objectData.data[Structure_Silo][static_cast<int>(originalHouseID)].capacity * (pOwner->getStoredCredits() / pOwner->getCapacity());
                 }
                 else if (pCapturedStructure->getItemID() == Structure_Refinery) {
-                    capturedSpice = currentGame->objectData.data[Structure_Silo][static_cast<int>(originalHouseID)].capacity * (pOwner->getStoredCredits() / pOwner->getCapacity());
+                    capturedSpice = game.objectData.data[Structure_Silo][static_cast<int>(originalHouseID)].capacity * (pOwner->getStoredCredits() / pOwner->getCapacity());
                     auto* pRefinery = static_cast<Refinery*>(pCapturedStructure);
                     if (!pRefinery->isFree()) {
                         pContainedUnit = pRefinery->getHarvester();
@@ -232,67 +238,69 @@ void InfantryBase::checkPos() {
 
                 // remove all other infantry units capturing this building
                 const auto capturedStructureLocation = pCapturedStructure->getLocation();
-                for (auto i = capturedStructureLocation.x; i < capturedStructureLocation.x + pCapturedStructure->getStructureSizeX(); i++) {
-                    for (auto j = capturedStructureLocation.y; j < capturedStructureLocation.y + pCapturedStructure->getStructureSizeY(); j++) {
 
-                        // make a copy of infantry list to avoid problems of modifying the list during iteration (!)
-                        auto infantry_copy = currentGameMap->getTile(i, j)->getInfantryList();
-                        std::vector<ObjectBase *> killObjects;
-                        for (const auto infantryID : infantry_copy) {
-                            if (infantryID != getObjectID()) {
-                                auto *const pObject = currentGame->getObjectManager().getObject(infantryID);
-                                if (pObject->getLocation() == Coord(i, j)) {
-                                    killObjects.push_back(pObject);
-                                }
-                            }
-                        }
+                { // Scope
+                    std::vector<ObjectBase*> killObjects;
 
-                        for (auto *pObject : killObjects) {
-                            pObject->destroy();
-                        }
-                    }
+                    map.for_each(capturedStructureLocation.x,
+                                 capturedStructureLocation.x + pCapturedStructure->getStructureSizeX(),
+                                 capturedStructureLocation.y,
+                                 capturedStructureLocation.y + pCapturedStructure->getStructureSizeY(), [&](auto& tile) {
+                                     // make a copy of infantry list to avoid problems of modifying the list during
+                                     // iteration (!)
+
+                                     for(auto infantryID : tile.getInfantryList()) {
+                                         if(infantryID == getObjectID()) continue;
+
+                                         auto* const pObject = context.objectManager.getObject(infantryID);
+                                         if(pObject->getLocation() == tile.getLocation()) {
+                                             killObjects.push_back(pObject);
+                                         }
+                                     }
+                                 });
+
+                    for(auto* pObject : killObjects)
+                        pObject->destroy(context);
                 }
 
-
-                // destroy captured structure ...
+                // destroy captured structure ... (TODO: without calling destroy()?)
                 pCapturedStructure->setHealth(0);
-                currentGame->getObjectManager().removeObject(pCapturedStructure->getObjectID());
+                objectManager.removeObject(pCapturedStructure->getObjectID());
 
                 // ... and create a new one
-                StructureBase* pNewStructure = owner->placeStructure(NONE_ID, targetID, posX, posY, false, true);
+                auto* pNewStructure = owner->placeStructure(NONE_ID, targetID, posX, posY, false, true);
 
                 pNewStructure->setOriginalHouseID(origHouse);
                 pNewStructure->setHealth(oldHealth);
                 if (isSelected) {
                     pNewStructure->setSelected(true);
-                    currentGame->getSelectedList().insert(pNewStructure->getObjectID());
-                    currentGame->selectionChanged();
+                    game.getSelectedList().insert(pNewStructure->getObjectID());
+                    game.selectionChanged();
                 }
 
                 if (isSelectedByOtherPlayer) {
                     pNewStructure->setSelectedByOtherPlayer(true);
-                    currentGame->getSelectedByOtherPlayerList().insert(pNewStructure->getObjectID());
+                    game.getSelectedByOtherPlayerList().insert(pNewStructure->getObjectID());
                 }
 
                 if (containedUnitID != NONE_ID) {
-                    UnitBase * pNewUnit = owner->createUnit(containedUnitID);
+                    auto* pNewUnit = owner->createUnit(containedUnitID);
 
                     pNewUnit->setRespondable(false);
                     pNewUnit->setActive(false);
                     pNewUnit->setVisible(VIS_ALL, false);
                     pNewUnit->setHealth(containedUnitHealth);
 
-                    if (pNewUnit->getItemID() == Unit_Harvester) {
-                        static_cast<Harvester*>(pNewUnit)->setAmountOfSpice(containedHarvesterSpice);
+                    auto* harvester = dune_cast<Harvester>(pNewUnit);
+
+                    if(harvester) {
+                        harvester->setAmountOfSpice(containedHarvesterSpice);
                     }
 
-                    if (pNewStructure->getItemID() == Structure_Refinery) {
-                        auto *pRefinery = static_cast<Refinery*>(pNewStructure);
+                    if(auto* pRefinery = dune_cast<Refinery>(pNewStructure)) {
                         pRefinery->book();
-                        pRefinery->assignHarvester(static_cast<Harvester*>(pNewUnit));
-                    }
-                    else if (pNewStructure->getItemID() == Structure_RepairYard) {
-                        auto *pRepairYard = static_cast<RepairYard*>(pNewStructure);
+                        if(harvester) pRefinery->assignHarvester(harvester);
+                    } else if(auto* pRepairYard = dune_cast<RepairYard>(pNewUnit)) {
                         pRepairYard->book();
                         pRepairYard->assignUnit(pNewUnit);
                     }
@@ -306,7 +314,7 @@ void InfantryBase::checkPos() {
             }
             else {
                 int damage = lround(std::min(pCapturedStructure->getHealth() / 2, getHealth() * 2));
-                pCapturedStructure->handleDamage(damage, NONE_ID, getOwner());
+                pCapturedStructure->handleDamage(context, damage, NONE_ID, getOwner());
             }
             // destroy unit indirectly
             setTarget(nullptr);
@@ -327,14 +335,16 @@ void InfantryBase::checkPos() {
     }
 }
 
-void InfantryBase::destroy() {
-    if(currentGameMap->tileExists(location) && isVisible()) {
-        auto *pTile = currentGameMap->getTile(location);
+void InfantryBase::destroy(const GameContext& context) {
+    auto& [game, map, objectManager] = context;
+
+    auto* pTile = currentGameMap->tryGetTile(location.x, location.y);
+    if(pTile && isVisible()) {
 
         if(pTile->hasANonInfantryGroundObject()) {
-            if(pTile->getNonInfantryGroundObject(currentGame->getObjectManager())->isAUnit()) {
+            if(pTile->getNonInfantryGroundObject(objectManager)->isAUnit()) {
                 // squashed
-                pTile->assignDeadUnit( currentGame->randomGen.randBool() ? DeadUnit_Infantry_Squashed1 : DeadUnit_Infantry_Squashed2,
+                pTile->assignDeadUnit( game.randomGen.randBool() ? DeadUnit_Infantry_Squashed1 : DeadUnit_Infantry_Squashed2,
                                             owner->getHouseID(),
                                             Coord(lround(realX), lround(realY)) );
 
@@ -357,10 +367,10 @@ void InfantryBase::destroy() {
         }
     }
 
-    GroundUnit::destroy();
+    GroundUnit::destroy(context);
 }
 
-void InfantryBase::move() {
+void InfantryBase::move(const GameContext& context) {
     if(!moving && !justStoppedMoving && (((currentGame->getGameCycleCount() + getObjectID()) % 512) == 0)) {
         currentGameMap->viewMap(owner->getHouseID(), location, getViewRange());
     }
@@ -431,14 +441,14 @@ void InfantryBase::move() {
         justStoppedMoving = false;
     }
 
-    checkPos();
+    checkPos(context);
 }
 
 
-void InfantryBase::setLocation(int xPos, int yPos) {
+void InfantryBase::setLocation(const GameContext& context, int xPos, int yPos) {
     if(currentGameMap->tileExists(xPos, yPos) || ((xPos == INVALID_POS) && (yPos == INVALID_POS))) {
         oldTilePosition = tilePosition = INVALID_POS;
-        GroundUnit::setLocation(xPos, yPos);
+        parent::setLocation(context, xPos, yPos);
 
         if(tilePosition != INVALID_POS) {
             realX += tilePositionOffset[tilePosition].x;
@@ -447,12 +457,12 @@ void InfantryBase::setLocation(int xPos, int yPos) {
     }
 }
 
-void InfantryBase::setSpeeds() {
+void InfantryBase::setSpeeds(const GameContext& context) {
     if(oldTilePosition == INVALID_POS) {
-        SDL_Log("Warning: InfantryBase::setSpeeds(): Infantry tile position == INVALID_POS.");
+        SDL_Log("Warning: InfantryBase::setSpeeds(context): Infantry tile position == INVALID_POS.");
     } else if(tilePosition == oldTilePosition) {
         // havent changed infantry position
-        GroundUnit::setSpeeds();
+        parent::setSpeeds(context);
     } else {
 
         int sx = tilePositionOffset[oldTilePosition].x;
@@ -487,8 +497,8 @@ void InfantryBase::setSpeeds() {
     }
 }
 
-void InfantryBase::squash() {
-    destroy();
+void InfantryBase::squash(const GameContext& context) {
+    destroy(context);
     return;
 }
 

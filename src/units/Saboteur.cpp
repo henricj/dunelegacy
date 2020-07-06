@@ -59,9 +59,8 @@ void Saboteur::init()
 Saboteur::~Saboteur() = default;
 
 
-void Saboteur::checkPos()
-{
-    InfantryBase::checkPos();
+void Saboteur::checkPos(const GameContext& context) {
+    InfantryBase::checkPos(context);
 
     if(!active)
         return;
@@ -80,7 +79,7 @@ void Saboteur::checkPos()
     //setVisible(pLocalHouse->getTeamID(), true);
 }
 
-bool Saboteur::update() {
+bool Saboteur::update(const GameContext& context) {
     if(active) {
         if(!moving) {
             //check to see if close enough to blow up target
@@ -97,27 +96,27 @@ bool Saboteur::update() {
                         }
 
                         ObjectBase* pObject = target.getObjPointer();
-                        destroy();
+                        destroy(context);
                         pObject->setHealth(0);
-                        pObject->destroy();
+                        pObject->destroy(context);
                         return false;
                     }
 
                     auto *pObject = target.getObjPointer();
-                    destroy();
+                    destroy(context);
                     pObject->setHealth(0);
-                    pObject->destroy();
+                    pObject->destroy(context);
                     return false;
                 }
             }
         }
     }
 
-    return InfantryBase::update();
+    return InfantryBase::update(context);
 }
 
-void Saboteur::deploy(const Coord& newLocation) {
-    UnitBase::deploy(newLocation);
+void Saboteur::deploy(const GameContext& context, const Coord& newLocation) {
+    parent::deploy(context, newLocation);
 
     setVisible(VIS_ALL, false);
     setVisible(getOwner()->getTeamID(), true);
@@ -131,15 +130,15 @@ bool Saboteur::canAttack(const ObjectBase* object) const {
         && object->isVisible(getOwner()->getTeamID()));
 }
 
-void Saboteur::destroy()
+void Saboteur::destroy(const GameContext& context)
 {
     Coord realPos(lround(realX), lround(realY));
-    const auto explosionID = currentGame->randomGen.getRandOf(Explosion_Medium1, Explosion_Medium2);
-    currentGame->addExplosion(explosionID, realPos, owner->getHouseID());
+    const auto explosionID = context.game.randomGen.getRandOf(Explosion_Medium1, Explosion_Medium2);
+    context.game.addExplosion(explosionID, realPos, owner->getHouseID());
 
     if(isVisible(getOwner()->getTeamID())) {
         soundPlayer->playSoundAt(Sound_ExplosionLarge,location);
     }
 
-    InfantryBase::destroy();
+    InfantryBase::destroy(context);
 }
