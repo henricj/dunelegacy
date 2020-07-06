@@ -85,4 +85,19 @@ private:
     void init();
 };
 
+
+template<>
+inline InfantryBase* dune_cast(ObjectBase* base) {
+    if(base && base->isInfantry()) return static_cast<InfantryBase*>(base);
+
+    return nullptr;
+}
+
+template<>
+inline const InfantryBase* dune_cast(const ObjectBase* base) {
+    if(base && base->isInfantry()) return static_cast<const InfantryBase*>(base);
+
+    return nullptr;
+}
+
 #endif // INFANTRYBASE_H

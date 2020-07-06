@@ -73,4 +73,15 @@ protected:
     Sint32  weaponTimer;        ///< Time until we can shot again
 };
 
+
+template<>
+inline TurretBase* dune_cast(ObjectBase* base) {
+    return dynamic_cast<TurretBase*>(base);
+}
+
+template<>
+inline const TurretBase* dune_cast(const ObjectBase* base) {
+    return dynamic_cast<const TurretBase*>(base);
+}
+
 #endif //TURRETBASE_H
