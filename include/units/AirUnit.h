@@ -67,4 +67,18 @@ private:
     void initAirUnit();
 };
 
+template<>
+inline AirUnit* dune_cast(ObjectBase* base) {
+    if(base && base->isAFlyingUnit()) return static_cast<AirUnit*>(base);
+
+    return nullptr;
+}
+
+template<>
+inline const AirUnit* dune_cast(const ObjectBase* base) {
+    if(base && base->isAFlyingUnit()) return static_cast<const AirUnit*>(base);
+
+    return nullptr;
+}
+
 #endif // AIRUNIT_H

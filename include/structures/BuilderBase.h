@@ -262,4 +262,19 @@ private:
     void init();
 };
 
+
+template<>
+inline BuilderBase* dune_cast(ObjectBase* base) {
+    if(base && base->isABuilder()) return static_cast<BuilderBase*>(base);
+
+    return nullptr;
+}
+
+template<>
+inline const BuilderBase* dune_cast(const ObjectBase* base) {
+    if(base && base->isABuilder()) return static_cast<const BuilderBase*>(base);
+
+    return nullptr;
+}
+
 #endif //BUILDERBASE_H

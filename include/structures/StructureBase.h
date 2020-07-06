@@ -169,4 +169,19 @@ private:
     void init();
 };
 
+
+template<>
+inline StructureBase* dune_cast(ObjectBase* base) {
+    if(base && base->isAStructure()) return static_cast<StructureBase*>(base);
+
+    return nullptr;
+}
+
+template<>
+inline const StructureBase* dune_cast(const ObjectBase* base) {
+    if(base && base->isAStructure()) return static_cast<const StructureBase*>(base);
+
+    return nullptr;
+}
+
 #endif //STRUCTUREBASE_H
