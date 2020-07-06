@@ -269,6 +269,24 @@ private:
     void init();
 };
 
+template<typename ObjectType>
+inline ObjectType* dune_cast(ObjectBase* base) {
+    static_assert(std::is_base_of<ObjectBase, ObjectType>::value, "UnitType not derived from UnitBase");
+    static_assert(!std::is_abstract<ObjectType>::value, "ObjectType is abstract");
 
+    if(base && ObjectType::item_id == base->getItemID()) return static_cast<ObjectType*>(base);
+
+    return nullptr;
+}
+
+template<typename ObjectType>
+inline const ObjectType* dune_cast(const ObjectBase* base) {
+    static_assert(std::is_base_of<ObjectBase, ObjectType>::value, "UnitType not derived from UnitBase");
+    static_assert(!std::is_abstract<ObjectType>::value, "ObjectType is abstract");
+
+    if(base && ObjectType::item_id == base->getItemID()) return static_cast<const ObjectType*>(base);
+
+    return nullptr;
+}
 
 #endif // OBJECTBASE_H

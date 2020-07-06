@@ -78,4 +78,19 @@ private:
     void init();
 };
 
+template<>
+inline GroundUnit* dune_cast(ObjectBase* base) {
+    if(base && base->isAGroundUnit()) return static_cast<GroundUnit*>(base);
+
+    return nullptr;
+}
+
+template<>
+inline const GroundUnit* dune_cast(const ObjectBase* base) {
+    if(base && base->isAGroundUnit()) return static_cast<const GroundUnit*>(base);
+
+    return nullptr;
+}
+
+
 #endif // GROUNDUNIT_H

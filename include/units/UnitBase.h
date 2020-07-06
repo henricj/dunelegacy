@@ -327,4 +327,19 @@ private:
     void init();
 };
 
-#endif //UNITBASE_H
+template<>
+inline UnitBase* dune_cast(ObjectBase* base) {
+    if(base && base->isAUnit()) return static_cast<UnitBase*>(base);
+
+    return nullptr;
+}
+
+template<>
+inline const UnitBase* dune_cast(const ObjectBase* base) {
+    if(base && base->isAUnit()) return static_cast<const UnitBase*>(base);
+
+    return nullptr;
+}
+
+
+#endif // UNITBASE_H
