@@ -24,6 +24,7 @@ class Radar final : public StructureBase
 {
 public:
     static const ItemID_enum item_id = Structure_Radar;
+    using parent                     = StructureBase;
 
     Radar(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer);
     Radar(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer);

@@ -23,6 +23,7 @@
 class Barracks final : public BuilderBase {
 public:
     static const ItemID_enum item_id = ItemID_enum::Structure_Barracks;
+    using parent = BuilderBase;
 
     Barracks(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer);
     Barracks(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer);

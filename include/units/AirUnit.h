@@ -28,6 +28,8 @@ protected:
     AirUnit(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer);
 
 public:
+    using parent = UnitBase;
+
     ~AirUnit() override = 0;
 
     AirUnit(const AirUnit &) = delete;

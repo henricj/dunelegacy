@@ -23,6 +23,7 @@
 class GunTurret final : public TurretBase {
 public:
     static const ItemID_enum item_id = ItemID_enum::Structure_GunTurret;
+    using parent = TurretBase;
 
     GunTurret(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer);
     GunTurret(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer);
