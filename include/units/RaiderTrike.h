@@ -24,6 +24,7 @@ class RaiderTrike final : public GroundUnit
 {
 public:
     static const ItemID_enum item_id = Unit_RaiderTrike;
+    using parent                     = GroundUnit;
 
     RaiderTrike(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer);
     RaiderTrike(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer);

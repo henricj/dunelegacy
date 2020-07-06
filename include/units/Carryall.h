@@ -26,6 +26,7 @@ class Carryall final : public AirUnit
 {
 public:
     static const ItemID_enum item_id = ItemID_enum::Unit_Carryall;
+    using parent = AirUnit;
 
     Carryall(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer);
     Carryall(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer);

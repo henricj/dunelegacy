@@ -24,6 +24,7 @@ class Harvester final : public TrackedUnit
 {
 public:
     static const ItemID_enum item_id = Unit_Harvester;
+    using parent = TrackedUnit;
 
     Harvester(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer);
     Harvester(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer);

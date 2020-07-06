@@ -26,6 +26,7 @@ class Sandworm final : public GroundUnit
 {
 public:
     static const ItemID_enum item_id = Unit_Sandworm;
+    using parent = GroundUnit;
 
     Sandworm(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer);
     Sandworm(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer);

@@ -96,6 +96,8 @@ class BuilderBase : public StructureBase
 public:
     BuilderBase(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer);
     BuilderBase(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer);
+    using parent = StructureBase;
+
     virtual ~BuilderBase() = 0;
 
     BuilderBase(const BuilderBase &) = delete;

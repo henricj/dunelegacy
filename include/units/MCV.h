@@ -24,6 +24,7 @@ class MCV final : public GroundUnit
 {
 public:
     static const ItemID_enum item_id = Unit_MCV;
+    using parent                     = GroundUnit;
 
     MCV(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer);
     MCV(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer);

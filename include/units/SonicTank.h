@@ -24,6 +24,7 @@ class SonicTank final : public TrackedUnit
 {
 public:
     static const ItemID_enum item_id = Unit_SonicTank;
+    using parent                     = TrackedUnit;
 
     SonicTank(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer);
     SonicTank(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer);
