@@ -638,6 +638,8 @@ void MapEditor::saveMap(const std::filesystem::path& filepath) {
 
     loadedINIFile->clearSection("UNITS");
     for(const Unit& unit : units) {
+        if(unit.itemID < ItemID_enum::ItemID_FirstID || unit.itemID > ItemID_enum::ItemID_LastID) continue;
+
         std::string unitKey = fmt::sprintf("ID%.3d", unit.id);
 
         int position = (logicalOffsetY+unit.position.y) * logicalSizeX + (logicalOffsetX+unit.position.x);
