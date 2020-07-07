@@ -235,7 +235,7 @@ Coord SmartBot::findPlaceLocation(ItemID_enum itemID) {
         count++;
 
         if(getMap().okayToPlaceStructure(pos.x, pos.y, structureSizeX, structureSizeY, false, (itemID == Structure_ConstructionYard) ? nullptr : getHouse())
-            && getMap().isAStructureGap(pos.x, pos.y, structureSizeX, structureSizeY)) { // Code to make a path between buildings
+            && getMap().isAStructureGap(context_, pos.x, pos.y, structureSizeX, structureSizeY)) { // Code to make a path between buildings
             FixPoint rating;
 
             switch(itemID) {
@@ -738,7 +738,7 @@ void SmartBot::build(const GameContext& context) {
                                 Coord location = placeLocations.front();
                                 const auto* pConstYard = static_cast<const ConstructionYard*>(pBuilder);
                                 if(getMap().okayToPlaceStructure(location.x, location.y, itemsize.x, itemsize.y, false, pConstYard->getOwner())
-                                   && getMap().isAStructureGap(location.x, location.y, itemsize.x, itemsize.y)) {
+                                   && getMap().isAStructureGap(context_, location.x, location.y, itemsize.x, itemsize.y)) {
                                     doPlaceStructure(pConstYard, location.x, location.y);
                                     placeLocations.pop_front();
                                 } else if(itemID == Structure_Slab1) {

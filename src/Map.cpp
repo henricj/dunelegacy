@@ -197,7 +197,7 @@ void Map::damage(const GameContext& context, Uint32 damagerID, House* damagerOwn
                         if( (bulletID == Bullet_LargeRocket || bulletID == Bullet_Rocket || bulletID == Bullet_TurretRocket || bulletID == Bullet_SmallRocket)
                             && (pStructure->getHealth() < pStructure->getMaxHealth()/2)) {
                             if(pStructure->getNumSmoke() < 5) {
-                                pStructure->addSmoke(realPos, currentGame->getGameCycleCount());
+                                pStructure->addSmoke(realPos, context.game.getGameCycleCount());
                             }
                         }
                     }
@@ -227,34 +227,37 @@ void Map::damage(const GameContext& context, Uint32 damagerID, House* damagerOwn
 
             auto *const pTile = tryGetTile(location.x, location.y);
 
-            if(pTile
-                && ((bulletID == Bullet_Rocket) || (bulletID == Bullet_TurretRocket) || (bulletID == Bullet_SmallRocket) || (bulletID == Bullet_LargeRocket))
-                && (!pTile->hasAGroundObject() || !pTile->getGroundObject(currentGame->getObjectManager())->isAStructure()) )
-            {
-                const auto type = pTile->getType();
+            if(pTile && ((bulletID == Bullet_Rocket) || (bulletID == Bullet_TurretRocket) ||
+                         (bulletID == Bullet_SmallRocket) || (bulletID == Bullet_LargeRocket))) {
+                if(auto* object = pTile->getGroundObject(context.objectManager); !object || !object->isAStructure()) {
+                    const auto type = pTile->getType();
 
-                if(((type == TERRAINTYPE::Terrain_Rock) && (pTile->getTerrainTile() == Tile::TERRAINTILETYPE::TerrainTile_RockFull)) ||
-                   (type == TERRAINTYPE::Terrain_Slab)) {
-                    if(type == TERRAINTYPE::Terrain_Slab) {
-                        pTile->setType(context, TERRAINTYPE::Terrain_Rock);
-                        pTile->setDestroyedStructureTile(Destroyed1x1Structure);
-                        pTile->setOwner(static_cast<HOUSETYPE>(NONE_ID));
+                    if(((type == TERRAINTYPE::Terrain_Rock) &&
+                        (pTile->getTerrainTile() == Tile::TERRAINTILETYPE::TerrainTile_RockFull)) ||
+                       (type == TERRAINTYPE::Terrain_Slab)) {
+                        if(type == TERRAINTYPE::Terrain_Slab) {
+                            pTile->setType(context, TERRAINTYPE::Terrain_Rock);
+                            pTile->setDestroyedStructureTile(Destroyed1x1Structure);
+                            pTile->setOwner(static_cast<HOUSETYPE>(NONE_ID));
+                        }
+
+                        const auto damage = (bulletID == BulletID_enum::Bullet_SmallRocket)
+                                                ? Tile::ROCKDAMAGETYPE::RockDamage1
+                                                : Tile::ROCKDAMAGETYPE::RockDamage2;
+
+                        pTile->addDamage(Tile::TerrainDamage_enum::Terrain_RockDamage, static_cast<int>(damage),
+                                         realPos);
+
+                    } else if((type == TERRAINTYPE::Terrain_Sand) || (type == TERRAINTYPE::Terrain_Spice)) {
+                        const auto damage_tile =
+                            bulletID == BulletID_enum::Bullet_SmallRocket
+                                ? random_.rand(static_cast<int>(Tile::SANDDAMAGETYPE::SandDamage1),
+                                                              static_cast<int>(Tile::SANDDAMAGETYPE::SandDamage2))
+                                : random_.rand(static_cast<int>(Tile::SANDDAMAGETYPE::SandDamage3),
+                                                              static_cast<int>(Tile::SANDDAMAGETYPE::SandDamage4));
+
+                        pTile->addDamage(Tile::TerrainDamage_enum::Terrain_SandDamage, damage_tile, realPos);
                     }
-
-                    const auto damage = (bulletID == BulletID_enum::Bullet_SmallRocket)
-                                            ? Tile::ROCKDAMAGETYPE::RockDamage1
-                                            : Tile::ROCKDAMAGETYPE::RockDamage2;
-
-                    pTile->addDamage(Tile::TerrainDamage_enum::Terrain_RockDamage, static_cast<int>(damage), realPos);
-
-                } else if((type == TERRAINTYPE::Terrain_Sand) || (type == TERRAINTYPE::Terrain_Spice)) {
-                    const auto damage_tile = bulletID == BulletID_enum::Bullet_SmallRocket
-                                                 ? currentGame->randomGen.rand(static_cast<int>(Tile::SANDDAMAGETYPE::SandDamage1),
-                                                                               static_cast<int>(Tile::SANDDAMAGETYPE::SandDamage2))
-                                                 : currentGame->randomGen.rand(static_cast<int>(Tile::SANDDAMAGETYPE::SandDamage3),
-                                                                               static_cast<int>(Tile::SANDDAMAGETYPE::SandDamage4));
-
-                    pTile->addDamage(Tile::TerrainDamage_enum::Terrain_SandDamage, damage_tile, realPos);
                 }
             }
         }
@@ -275,7 +278,7 @@ void Map::damage(const GameContext& context, Uint32 damagerID, House* damagerOwn
     traffic lanes for our troops
 **/
 
-bool Map::isAStructureGap(int x, int y, int buildingSizeX, int buildingSizeY) const {
+bool Map::isAStructureGap(const GameContext& context, int x, int y, int buildingSizeX, int buildingSizeY) const {
 
     // Spacing rules don't apply for rocket turrets
     if(buildingSizeX == 1){
@@ -288,8 +291,8 @@ bool Map::isAStructureGap(int x, int y, int buildingSizeX, int buildingSizeY) co
     const auto yMax = y + buildingSizeY + 1;
 
     // I need some more conditions to make it ignore units
-    const auto predicate = [](const Tile * tile) {
-        return !tile || (tile->hasAStructure(currentGame->getObjectManager()) && !tile->isConcrete());
+    const auto predicate = [&](const Tile * tile) {
+        return !tile || (tile->hasAStructure(context.objectManager) && !tile->isConcrete());
     };
 
     //Corners are ok as units can get through
