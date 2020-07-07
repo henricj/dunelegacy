@@ -152,9 +152,7 @@ GameOptionsWindow::GameOptionsWindow(SettingsClass::GameOptionsClass& initialGam
     setCurrentPosition(xpos,ypos,getSize().x,getSize().y);
 }
 
-GameOptionsWindow::~GameOptionsWindow() {
-    ;
-}
+GameOptionsWindow::~GameOptionsWindow() = default;
 
 void GameOptionsWindow::onOK() {
     gameOptions.gameSpeed = currentGameSpeed;
