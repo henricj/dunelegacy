@@ -57,7 +57,7 @@ public:
 
     bool findSpice(Coord& destination, const Coord& origin);
     bool okayToPlaceStructure(int x, int y, int buildingSizeX, int buildingSizeY, bool tilesRequired, const House* pHouse, bool bIgnoreUnits = false) const;
-    bool isAStructureGap(int x, int y, int buildingSizeX, int buildingSizeY) const; // Allows AI to check to see if a gap exists between the current structure
+    bool isAStructureGap(const GameContext& context, int x, int y, int buildingSizeX, int buildingSizeY) const; // Allows AI to check to see if a gap exists between the current structure
     bool isWithinBuildRange(int x, int y, const House* pHouse) const;
     static ANGLETYPE getPosAngle(const Coord& source, const Coord& pos);
     Coord findClosestEdgePoint(const Coord& origin, const Coord& buildingSize) const;
