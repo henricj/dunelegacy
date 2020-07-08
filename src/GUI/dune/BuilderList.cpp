@@ -364,6 +364,7 @@ void BuilderList::resize(Uint32 width, Uint32 height) {
 
     StaticContainer::resize(width,height);
 
+    if(!currentGame) return;
 
     // move list to show currently produced item
     auto* pBuilder = dynamic_cast<BuilderBase*>(currentGame->getObjectManager().getObject(builderObjectID));
