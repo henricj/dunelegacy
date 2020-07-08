@@ -68,15 +68,7 @@ namespace
             return nullptr;
         }
 
-        SDL_SetPaletteColors(returnPic->format->palette, src->format->palette->colors, 0, src->format->palette->ncolors);
-        Uint32 ckey = 0;
-        const auto has_ckey = !SDL_GetColorKey(src, &ckey);
-        if (has_ckey) {
-            SDL_SetColorKey(returnPic.get(), SDL_TRUE, ckey);
-        }
-        if (allow_rle, src->flags & SDL_RLEACCEL) {
-            SDL_SetSurfaceRLE(returnPic.get(), SDL_TRUE);
-        }
+        copySurfaceAttributes(returnPic.get(), src);
 
         sdl2::surface_lock return_lock{ returnPic.get() };
         sdl2::surface_lock src_lock{ src };
@@ -104,15 +96,7 @@ sdl2::surface_ptr Scaler::doubleSurfaceNN(SDL_Surface* src) {
         return nullptr;
     }
 
-    SDL_SetPaletteColors(returnPic->format->palette, src->format->palette->colors, 0, src->format->palette->ncolors);
-    Uint32 ckey = 0;
-    bool has_ckey = !SDL_GetColorKey(src, &ckey);
-    if (has_ckey) {
-        SDL_SetColorKey(returnPic.get(), SDL_TRUE, ckey);
-    }
-    if (src->flags & SDL_RLEACCEL) {
-        SDL_SetSurfaceRLE(returnPic.get(), SDL_TRUE);
-    }
+    copySurfaceAttributes(returnPic.get(), src);
 
     sdl2::surface_lock return_lock{ returnPic.get() };
     sdl2::surface_lock src_lock{ src };
@@ -160,15 +144,7 @@ sdl2::surface_ptr Scaler::tripleSurfaceNN(SDL_Surface* src) {
         return nullptr;
     }
 
-    SDL_SetPaletteColors(returnPic->format->palette, src->format->palette->colors, 0, src->format->palette->ncolors);
-    Uint32 ckey = 0;
-    bool has_ckey = !SDL_GetColorKey(src, &ckey);
-    if (has_ckey) {
-        SDL_SetColorKey(returnPic.get(), SDL_TRUE, ckey);
-    }
-    if (src->flags & SDL_RLEACCEL) {
-        SDL_SetSurfaceRLE(returnPic.get(), SDL_TRUE);
-    }
+    copySurfaceAttributes(returnPic.get(), src);
 
     sdl2::surface_lock return_lock{ returnPic.get() };
     sdl2::surface_lock src_lock{ src };
@@ -239,15 +215,7 @@ sdl2::surface_ptr Scaler::doubleTiledSurfaceScale2x(SDL_Surface* src, int tilesX
         return nullptr;
     }
 
-    SDL_SetPaletteColors(returnPic->format->palette, src->format->palette->colors, 0, src->format->palette->ncolors);
-    Uint32 ckey = 0;
-    bool has_ckey = !SDL_GetColorKey(src, &ckey);
-    if (has_ckey) {
-        SDL_SetColorKey(returnPic.get(), SDL_TRUE, ckey);
-    }
-    if (src->flags & SDL_RLEACCEL) {
-        SDL_SetSurfaceRLE(returnPic.get(), SDL_TRUE);
-    }
+    copySurfaceAttributes(returnPic.get(), src);
 
     auto* srcPixels = (Uint8*) src->pixels;
     auto* destPixels = (Uint8*) returnPic->pixels;
@@ -351,15 +319,7 @@ sdl2::surface_ptr Scaler::tripleTiledSurfaceScale3x(SDL_Surface* src, int tilesX
         return nullptr;
     }
 
-    SDL_SetPaletteColors(returnPic->format->palette, src->format->palette->colors, 0, src->format->palette->ncolors);
-    Uint32 ckey = 0;
-    bool has_ckey = !SDL_GetColorKey(src, &ckey);
-    if (has_ckey) {
-        SDL_SetColorKey(returnPic.get(), SDL_TRUE, ckey);
-    }
-    if (src->flags & SDL_RLEACCEL) {
-        SDL_SetSurfaceRLE(returnPic.get(), SDL_TRUE);
-    }
+    copySurfaceAttributes(returnPic.get(), src);
 
     auto* srcPixels = (Uint8*) src->pixels;
     auto* destPixels = (Uint8*) returnPic->pixels;
