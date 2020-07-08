@@ -97,6 +97,8 @@ inline sdl2::texture_ptr convertSurfaceToTexture(sdl2::surface_ptr inSurface) {
     return convertSurfaceToTexture(inSurface.get());
 }
 
+void copySurfaceAttributes(SDL_Surface* target, SDL_Surface* source);
+
 sdl2::surface_ptr   scaleSurface(SDL_Surface *surf, double ratio);
 
 sdl2::surface_ptr   getSubPicture(SDL_Surface* Pic, int left, int top, int width, int height);
