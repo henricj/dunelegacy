@@ -273,38 +273,57 @@ sdl2::texture_ptr convertSurfaceToTexture(SDL_Surface* inSurface) {
 
     sdl2::texture_ptr pTexture{ SDL_CreateTextureFromSurface(renderer, inSurface) };
 
-    if( pTexture == nullptr) {
+    if(pTexture == nullptr) {
         THROW(std::invalid_argument, std::string("convertSurfaceToTexture(): SDL_CreateTextureFromSurface() failed: ") + std::string(SDL_GetError()));
+    }
+
+    if(SDL_HasColorKey(inSurface)) {
+        if(SDL_SetTextureBlendMode(pTexture.get(), SDL_BlendMode::SDL_BLENDMODE_BLEND)) {
+            THROW(std::invalid_argument,
+                  std::string("convertSurfaceToTexture(): SDL_CreateTextureFromSurface() failed: ") +
+                      std::string(SDL_GetError()));
+        }
     }
 
     return pTexture;
 }
 
-sdl2::surface_ptr scaleSurface(SDL_Surface *surf, double ratio) {
+void copySurfaceAttributes(SDL_Surface* target, SDL_Surface* source) {
+    SDL_SetPaletteColors(target->format->palette, source->format->palette->colors, 0, source->format->palette->ncolors);
 
-    sdl2::surface_ptr scaled{ SDL_CreateRGBSurface(0, static_cast<int>(surf->w * ratio),static_cast<int>(surf->h * ratio),8,0,0,0,0) };
-    if(scaled == nullptr) {
-        return nullptr;
-    }
-    SDL_SetPaletteColors(scaled->format->palette, surf->format->palette->colors, 0, surf->format->palette->ncolors);
-    Uint32 ckey = 0;
-    const auto has_ckey = !SDL_GetColorKey(surf, &ckey);
-    if (has_ckey) {
-        SDL_SetColorKey(scaled.get(), SDL_TRUE, ckey);
-    }
-    if (surf->flags & SDL_RLEACCEL) {
-        SDL_SetSurfaceRLE(scaled.get(), SDL_TRUE);
+    const auto has_ckey = SDL_HasColorKey(source);
+    if(has_ckey) {
+        Uint32 ckey = 0;
+        if(SDL_GetColorKey(source, &ckey)) {
+            THROW(std::runtime_error, "copySurfaceAttributes(): SDL_GetColorKey() failed: " + std::string(SDL_GetError()));
+        }
+
+        if (SDL_SetColorKey(target, SDL_TRUE, ckey)) {
+            THROW(std::runtime_error, "copySurfaceAttributes(): SDL_SetColorKey() failed: " + std::string(SDL_GetError()));
+        }
     }
 
-    sdl2::surface_lock lock_scaled{ scaled.get() };
-    sdl2::surface_lock lock_surf{ surf };
+    if(source->flags & SDL_RLEACCEL) SDL_SetSurfaceRLE(target, SDL_TRUE);
+}
+
+
+sdl2::surface_ptr scaleSurface(SDL_Surface* surf, double ratio) {
+
+    sdl2::surface_ptr scaled{
+        SDL_CreateRGBSurface(0, static_cast<int>(surf->w * ratio), static_cast<int>(surf->h * ratio), 8, 0, 0, 0, 0)};
+    if(scaled == nullptr) { return nullptr; }
+
+    copySurfaceAttributes(scaled.get(), surf);
+
+    sdl2::surface_lock lock_scaled{scaled.get()};
+    sdl2::surface_lock lock_surf{surf};
 
     int X2 = static_cast<int>(surf->w * ratio);
     int Y2 = static_cast<int>(surf->h * ratio);
 
-    for(int x = 0;x < X2;++x)
-        for(int y = 0;y < Y2;++y)
-            putPixel(scaled.get(),x,y,getPixel(surf,static_cast<int>(x / ratio), static_cast<int>(y / ratio)));
+    for(int x = 0; x < X2; ++x)
+        for(int y = 0; y < Y2; ++y)
+            putPixel(scaled.get(), x, y, getPixel(surf, static_cast<int>(x / ratio), static_cast<int>(y / ratio)));
 
     return scaled;
 }
@@ -323,15 +342,8 @@ sdl2::surface_ptr getSubPicture(SDL_Surface* pic, int left, int top, int width, 
         if(returnPic == nullptr) {
             THROW(std::runtime_error, "getSubPicture(): Cannot create new Picture!");
         }
-        SDL_SetPaletteColors(returnPic->format->palette, pic->format->palette->colors, 0, pic->format->palette->ncolors);
-        Uint32 ckey = 0;
-        const auto has_ckey = !SDL_GetColorKey(pic, &ckey);
-        if (has_ckey) {
-            SDL_SetColorKey(returnPic.get(), SDL_TRUE, ckey);
-        }
-        if (pic->flags & SDL_RLEACCEL) {
-            SDL_SetSurfaceRLE(returnPic.get(), SDL_TRUE);
-        }
+
+        copySurfaceAttributes(returnPic.get(), pic);
     } else {
         returnPic = sdl2::surface_ptr{ SDL_CreateRGBSurface(0, width, height, 32, RMASK, GMASK, BMASK, AMASK) };
         if(returnPic == nullptr) {
@@ -387,15 +399,7 @@ sdl2::surface_ptr rotateSurfaceLeft(SDL_Surface* inputPic) {
         THROW(std::runtime_error, "rotateSurface(): Cannot create new Picture!");
     }
 
-    SDL_SetPaletteColors(returnPic->format->palette, inputPic->format->palette->colors, 0, inputPic->format->palette->ncolors);
-    Uint32 ckey = 0;
-    const auto has_ckey = !SDL_GetColorKey(inputPic, &ckey);
-    if (has_ckey) {
-        SDL_SetColorKey(returnPic.get(), SDL_TRUE, ckey);
-    }
-    if (inputPic->flags & SDL_RLEACCEL) {
-        SDL_SetSurfaceRLE(returnPic.get(), SDL_TRUE);
-    }
+    copySurfaceAttributes(returnPic.get(), inputPic);
 
     sdl2::surface_lock lock_pic{ returnPic.get() };
     sdl2::surface_lock lock_input{ inputPic };
@@ -423,15 +427,7 @@ sdl2::surface_ptr rotateSurfaceRight(SDL_Surface* inputPic) {
         THROW(std::runtime_error, "rotateSurface(): Cannot create new Picture!");
     }
 
-    SDL_SetPaletteColors(returnPic->format->palette, inputPic->format->palette->colors, 0, inputPic->format->palette->ncolors);
-    Uint32 ckey = 0;
-    const auto has_ckey = !SDL_GetColorKey(inputPic, &ckey);
-    if (has_ckey) {
-        SDL_SetColorKey(returnPic.get(), SDL_TRUE, ckey);
-    }
-    if (inputPic->flags & SDL_RLEACCEL) {
-        SDL_SetSurfaceRLE(returnPic.get(), SDL_TRUE);
-    }
+    copySurfaceAttributes(returnPic.get(), inputPic);
 
     sdl2::surface_lock lock_pic{ returnPic.get() };
     sdl2::surface_lock lock_input{ inputPic };
@@ -461,15 +457,8 @@ sdl2::surface_ptr flipHSurface(SDL_Surface* inputPic) {
         if (returnPic == nullptr) {
             THROW(std::runtime_error, "flipHSurface(): Cannot create new Picture!");
         }
-        SDL_SetPaletteColors(returnPic->format->palette, inputPic->format->palette->colors, 0, inputPic->format->palette->ncolors);
-        Uint32 ckey = 0;
-        const auto has_ckey = !SDL_GetColorKey(inputPic, &ckey);
-        if (has_ckey) {
-            SDL_SetColorKey(returnPic.get(), SDL_TRUE, ckey);
-        }
-        if (inputPic->flags & SDL_RLEACCEL) {
-            SDL_SetSurfaceRLE(returnPic.get(), SDL_TRUE);
-        }
+
+        copySurfaceAttributes(returnPic.get(), inputPic);
     }
     else {
         returnPic = sdl2::surface_ptr{ SDL_CreateRGBSurface(0, inputPic->w, inputPic->h, 32, RMASK, GMASK, BMASK, AMASK) };
@@ -505,15 +494,8 @@ sdl2::surface_ptr flipVSurface(SDL_Surface* inputPic) {
         if (returnPic == nullptr) {
             THROW(std::runtime_error, "flipVSurface(): Cannot create new Picture!");
         }
-        SDL_SetPaletteColors(returnPic->format->palette, inputPic->format->palette->colors, 0, inputPic->format->palette->ncolors);
-        Uint32 ckey = 0;
-        const auto has_ckey = !SDL_GetColorKey(inputPic, &ckey);
-        if (has_ckey) {
-            SDL_SetColorKey(returnPic.get(), SDL_TRUE, ckey);
-        }
-        if (inputPic->flags & SDL_RLEACCEL) {
-            SDL_SetSurfaceRLE(returnPic.get(), SDL_TRUE);
-        }
+
+        copySurfaceAttributes(returnPic.get(), inputPic);
     }
     else {
         returnPic = sdl2::surface_ptr{ SDL_CreateRGBSurface(0, inputPic->w, inputPic->h, 32, RMASK, GMASK, BMASK, AMASK) };
