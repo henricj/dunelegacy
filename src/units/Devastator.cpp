@@ -69,7 +69,7 @@ Devastator::~Devastator() = default;
 
 void Devastator::save(OutputStream& stream) const
 {
-    TrackedUnit::save(stream);
+    parent::save(stream);
     stream.writeSint32(devastateTimer);
 }
 
@@ -139,7 +139,7 @@ void Devastator::destroy(const GameContext& context)
         }
     }
 
-    TrackedUnit::destroy(context);
+    parent::destroy(context);
 }
 
 bool Devastator::update(const GameContext& context) {
