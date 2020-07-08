@@ -101,7 +101,7 @@ void Deviator::destroy(const GameContext& context) {
             soundPlayer->playSoundAt(Sound_ExplosionMedium,location);
     }
 
-    TrackedUnit::destroy(context);
+    parent::destroy(context);
 }
 
 bool Deviator::canAttack(const ObjectBase* object) const

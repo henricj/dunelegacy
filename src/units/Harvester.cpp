@@ -90,7 +90,7 @@ Harvester::~Harvester() = default;
 
 void Harvester::save(OutputStream& stream) const
 {
-    TrackedUnit::save(stream);
+    parent::save(stream);
     stream.writeBool(harvestingMode);
     stream.writeBool(returningToRefinery);
     stream.writeFixPoint(spice);
@@ -312,7 +312,7 @@ void Harvester::destroy(const GameContext& context)
         }
     }
 
-    TrackedUnit::destroy(context);
+    parent::destroy(context);
 }
 
 void Harvester::drawSelectionBox()
@@ -376,7 +376,7 @@ void Harvester::setAmountOfSpice(FixPoint newSpice)
 
 void Harvester::setDestination(int newX, int newY)
 {
-    TrackedUnit::setDestination(newX, newY);
+    parent::setDestination(newX, newY);
 
     harvestingMode =  (attackMode != STOP) && (currentGameMap->tileExists(newX, newY) && currentGameMap->getTile(newX,newY)->hasSpice());
 }
@@ -390,7 +390,7 @@ void Harvester::setTarget(const ObjectBase* newTarget)
         returningToRefinery = false;
     }
 
-    TrackedUnit::setTarget(newTarget);
+    parent::setTarget(newTarget);
 
     if(target && (target.getObjPointer() != nullptr)
         && (target.getObjPointer()->getOwner() == getOwner())

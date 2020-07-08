@@ -56,7 +56,7 @@ void TankBase::init() {
 TankBase::~TankBase() = default;
 
 void TankBase::save(OutputStream& stream) const {
-    TrackedUnit::save(stream);
+    parent::save(stream);
 
     stream.writeFixPoint(turretAngle);
     stream.writeSint8(static_cast<Sint8>(drawnTurretAngle));
