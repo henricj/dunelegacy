@@ -130,7 +130,7 @@ std::vector<std::filesystem::path> FileManager::getMissingFiles() {
     return MissingFiles;
 }
 
-sdl2::RWops_ptr FileManager::openFile(const std::filesystem::path& filename) {
+sdl2::RWops_ptr FileManager::openFile(const std::filesystem::path& filename) const {
     sdl2::RWops_ptr ret;
 
     // try loading external file
