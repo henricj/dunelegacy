@@ -2,6 +2,8 @@
 #include <misc/sdl_support.h>
 #include "misc/SDL2pp.h"
 
+#include "FileClasses/SaveTextureAsBmp.h"
+
 namespace
 {
     class RestoreRenderTarget final
