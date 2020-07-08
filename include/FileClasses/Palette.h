@@ -26,22 +26,22 @@
 class Palette
 {
     public:
-        Palette() : pSDLPalette(nullptr) {
+        Palette() {
 
         }
 
-        explicit Palette(int numPaletteEntries) : pSDLPalette(nullptr) {
+        explicit Palette(int numPaletteEntries) {
             pSDLPalette = sdl2::palette_ptr{ SDL_AllocPalette(numPaletteEntries) };
             if (!pSDLPalette) {
                 throw;
             }
         }
 
-        explicit Palette(const SDL_Palette* pSDLPalette) : pSDLPalette(nullptr) {
+        explicit Palette(const SDL_Palette* pSDLPalette) {
             setSDLPalette(pSDLPalette);
         }
 
-        Palette(const Palette& palette) : pSDLPalette(nullptr) {
+        Palette(const Palette& palette) {
             *this = palette;
         }
 
@@ -97,8 +97,7 @@ class Palette
         }
 
         void applyToSurface(SDL_Surface* pSurface, int firstColor = 0, int endColor = -1) const {
-            Uint32 colorKey = 0;
-            const auto hasColorKey = (SDL_GetColorKey(pSurface, &colorKey) == 0);
+            const auto hasColorKey = SDL_HasColorKey(pSurface);
 
             if(pSDLPalette == nullptr) {
                 THROW(std::runtime_error, "Palette::applyToSurface(): Palette not initialized yet!");
@@ -116,7 +115,14 @@ class Palette
             SDL_SetPaletteColors(pSurface->format->palette, pSDLPalette->colors + firstColor, firstColor, nColors);
 
             if(hasColorKey) {
-                SDL_SetColorKey(pSurface, SDL_TRUE, colorKey);
+                Uint32 colorKey = 0;
+                if(SDL_GetColorKey(pSurface, &colorKey)) {
+                    THROW(std::runtime_error, "Palette::applyToSurface(): Unable to get color key!");
+                }
+
+                if (SDL_SetColorKey(pSurface, SDL_TRUE, colorKey)) {
+                    THROW(std::runtime_error, "Palette::applyToSurface(): Unable to set color key!");
+                }
             }
         }
 
