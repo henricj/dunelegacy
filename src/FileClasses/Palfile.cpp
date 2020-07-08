@@ -37,28 +37,38 @@ Palette LoadPalette_RW(SDL_RWops* rwop)
         THROW(std::runtime_error, "Palfile::Palfile(): Filesize must be multiple of 3!");
     }
 
-    Palette palette(filesize / 3);
+    auto buf = std::make_unique<unsigned char[]>(filesize);
 
-    unsigned char buf = 0;
-
-    for (int i=0; i < palette.getNumColors(); i++)
-    {
-        if(SDL_RWread(rwop,&buf,1,1) != 1) {
-            THROW(std::runtime_error, "Palfile::Palfile(): SDL_RWread failed!");
-        }
-        palette[i].r = (char) (((double) buf)*255.0/63.0);
-
-        if(SDL_RWread(rwop,&buf,1,1) != 1) {
-            THROW(std::runtime_error, "Palfile::Palfile(): SDL_RWread failed!");
-        }
-        palette[i].g = (char) (((double) buf)*255.0/63.0);
-
-        if(SDL_RWread(rwop,&buf,1,1) != 1) {
-            THROW(std::runtime_error, "Palfile::Palfile(): SDL_RWread failed!");
-        }
-        palette[i].b = (char) (((double) buf)*255.0/63.0);
-        palette[i].a = 0xFF;
+    if(SDL_RWread(rwop, &buf[0], filesize, 1) != 1) {
+        THROW(std::runtime_error, "Palfile::Palfile(): SDL_RWread failed!");
     }
 
-    return palette;
+    const auto numColors = filesize / 3;
+
+    auto colors = std::make_unique<SDL_Color[]>(numColors);
+
+    const auto * RESTRICT p = &buf[0];
+
+    if(numColors > 0) {
+        // The first color is always transparent... (?)
+        //colors[0].r = 0;
+        //colors[0].g = 0;
+        //colors[0].b = 0;
+        //colors[0].a = 0;
+
+        for(int i = 0; i < numColors; i++) {
+            auto& RESTRICT color = colors[i];
+
+            color.r              = static_cast<Uint8>(*p++ * (255.0 / 63.0));
+            color.g              = static_cast<Uint8>(*p++ * (255.0 / 63.0));
+            color.b              = static_cast<Uint8>(*p++ * (255.0 / 63.0));
+            color.a              = 0xFF;
+        }
+    }
+
+    sdl2::palette_ptr sdl_palette{SDL_AllocPalette(numColors)};
+
+    SDL_SetPaletteColors(sdl_palette.get(), &colors[0], 0, numColors);
+
+    return Palette{sdl_palette.get()};
 }
