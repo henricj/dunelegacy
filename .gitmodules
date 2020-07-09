@@ -6,4 +6,4 @@
 	url = https://github.com/lsalzman/enet.git
 [submodule "external/digestpp/digestpp"]
 	path = external/digestpp/digestpp
-	url = https://github.com/kerukuro/digestpp.git
+	url = https://github.com/henricj/digestpp.git
