@@ -73,20 +73,20 @@ void InfantryBase::save(OutputStream& stream) const {
     stream.writeSint8(oldTilePosition);
 }
 
-void InfantryBase::handleCaptureClick(int xPos, int yPos) {
+void InfantryBase::handleCaptureClick(const GameContext& context, int xPos, int yPos) {
     if(respondable && ((getItemID() == Unit_Soldier) || (getItemID() == Unit_Trooper))) {
-        const auto* const tempTarget = currentGameMap->tryGetObject(xPos, yPos);
+        const auto* const tempTarget = context.map.tryGetObject(xPos, yPos);
 
         if(!tempTarget) return;
 
         // capture structure
-        currentGame->getCommandManager().addCommand(Command(
+        context.game.getCommandManager().addCommand(Command(
             pLocalPlayer->getPlayerID(), CMDTYPE::CMD_INFANTRY_CAPTURE, objectID, tempTarget->getObjectID()));
     }
 }
 
 void InfantryBase::doCaptureStructure(const GameContext& context, Uint32 targetStructureID) {
-    const auto* pStructure = currentGame->getObjectManager().getObject<StructureBase>(targetStructureID);
+    const auto* pStructure = context.objectManager.getObject<StructureBase>(targetStructureID);
     doCaptureStructure(context, pStructure);
 }
 
@@ -102,10 +102,12 @@ void InfantryBase::doCaptureStructure(const GameContext& context, const Structur
 }
 
 void InfantryBase::assignToMap(const GameContext& context, const Coord& pos) {
-    if(currentGameMap->tileExists(pos)) {
+    auto& [game, map, objectManager] = context;
+
+    if(auto* tile = map.tryGetTile(pos.x, pos.y)) {
         oldTilePosition = tilePosition;
-        tilePosition = currentGameMap->getTile(pos)->assignInfantry(currentGame->getObjectManager(), getObjectID());
-        currentGameMap->viewMap(owner->getHouseID(), pos, getViewRange());
+        tilePosition = tile->assignInfantry(objectManager, getObjectID());
+        map.viewMap(owner->getHouseID(), pos, getViewRange());
     }
 }
 
@@ -338,41 +340,39 @@ void InfantryBase::checkPos(const GameContext& context) {
 void InfantryBase::destroy(const GameContext& context) {
     auto& [game, map, objectManager] = context;
 
-    auto* pTile = currentGameMap->tryGetTile(location.x, location.y);
+    auto* pTile = map.tryGetTile(location.x, location.y);
     if(pTile && isVisible()) {
 
         if(pTile->hasANonInfantryGroundObject()) {
-            if(pTile->getNonInfantryGroundObject(objectManager)->isAUnit()) {
+            if(auto* object = pTile->getNonInfantryGroundObject(objectManager); object && object->isAUnit()) {
                 // squashed
-                pTile->assignDeadUnit( game.randomGen.randBool() ? DeadUnit_Infantry_Squashed1 : DeadUnit_Infantry_Squashed2,
-                                            owner->getHouseID(),
-                                            Coord(lround(realX), lround(realY)) );
+                pTile->assignDeadUnit(game.randomGen.randBool() ? DeadUnit_Infantry_Squashed1
+                                                                : DeadUnit_Infantry_Squashed2,
+                                      owner->getHouseID(), Coord(lround(realX), lround(realY)));
 
-                if(isVisible(getOwner()->getTeamID())) {
-                    soundPlayer->playSoundAt(Sound_Squashed,location);
-                }
+                if(isVisible(getOwner()->getTeamID())) { soundPlayer->playSoundAt(Sound_Squashed, location); }
             } else {
                 // this unit has captured a building
             }
 
         } else if(getItemID() != Unit_Saboteur) {
             // "normal" dead
-            pTile->assignDeadUnit(DeadUnit_Infantry,
-                                        owner->getHouseID(),
-                                        Coord(lround(realX), lround(realY)));
+            pTile->assignDeadUnit(DeadUnit_Infantry, owner->getHouseID(), Coord(lround(realX), lround(realY)));
 
             if(isVisible(getOwner()->getTeamID())) {
-                soundPlayer->playSoundAt(getRandomOf(Sound_Scream1,Sound_Scream2,Sound_Scream3,Sound_Scream4,Sound_Scream5,Sound_Trumpet),location);
+                soundPlayer->playSoundAt(getRandomOf(Sound_Scream1, Sound_Scream2, Sound_Scream3, Sound_Scream4,
+                                                     Sound_Scream5, Sound_Trumpet),
+                                         location);
             }
         }
     }
 
-    GroundUnit::destroy(context);
+    parent::destroy(context);
 }
 
 void InfantryBase::move(const GameContext& context) {
-    if(!moving && !justStoppedMoving && (((currentGame->getGameCycleCount() + getObjectID()) % 512) == 0)) {
-        currentGameMap->viewMap(owner->getHouseID(), location, getViewRange());
+    if(!moving && !justStoppedMoving && (((context.game.getGameCycleCount() + getObjectID()) % 512) == 0)) {
+        context.map.viewMap(owner->getHouseID(), location, getViewRange());
     }
 
     if(moving && !justStoppedMoving) {
@@ -404,7 +404,7 @@ void InfantryBase::move(const GameContext& context) {
                 oldLocation = location;
                 location = nextSpot;
 
-                currentGameMap->viewMap(owner->getHouseID(), location, getViewRange());
+                context.map.viewMap(owner->getHouseID(), location, getViewRange());
             }
 
         } else {
@@ -446,7 +446,7 @@ void InfantryBase::move(const GameContext& context) {
 
 
 void InfantryBase::setLocation(const GameContext& context, int xPos, int yPos) {
-    if(currentGameMap->tileExists(xPos, yPos) || ((xPos == INVALID_POS) && (yPos == INVALID_POS))) {
+    if(context.map.tileExists(xPos, yPos) || ((xPos == INVALID_POS) && (yPos == INVALID_POS))) {
         oldTilePosition = tilePosition = INVALID_POS;
         parent::setLocation(context, xPos, yPos);
 
@@ -491,7 +491,7 @@ void InfantryBase::setSpeeds(const GameContext& context) {
         dx -= sx;
         dy -= sy;
 
-        FixPoint scale = currentGame->objectData.data[itemID][static_cast<int>(originalHouseID)].maxspeed/FixPoint::sqrt((dx*dx + dy*dy));
+        FixPoint scale = context.game.objectData.data[itemID][static_cast<int>(originalHouseID)].maxspeed/FixPoint::sqrt((dx*dx + dy*dy));
         xSpeed = dx*scale;
         ySpeed = dy*scale;
     }
