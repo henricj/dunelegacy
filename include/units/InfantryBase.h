@@ -42,7 +42,7 @@ public:
         \param  xPos    the x position on the map
         \param  yPos    the y position on the map
     */
-    virtual void handleCaptureClick(int xPos, int yPos);
+    virtual void handleCaptureClick(const GameContext& context, int xPos, int yPos);
 
     /**
         This method is called when an unit should capture a structure

@@ -2460,7 +2460,7 @@ bool Game::handleSelectedObjectsCaptureClick(const GameContext& context, int xPo
             ObjectBase* pObject = objectManager.getObject(objectID);
             if (pObject->isInfantry() && (pObject->getOwner() == pLocalHouse) && pObject->isRespondable()) {
                 pResponder = static_cast<InfantryBase*>(pObject);
-                pResponder->handleCaptureClick(xPos,yPos);
+                pResponder->handleCaptureClick(context, xPos, yPos);
             }
         }
 
