@@ -179,6 +179,7 @@ public:
         int         preferredZoomLevel;
         std::string scaler;
         bool        rotateUnitGraphics;
+        std::string renderer;
     } video;
 
     class AudioClass {

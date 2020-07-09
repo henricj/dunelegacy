@@ -173,6 +173,9 @@ void setVideoMode(int displayIndex)
                               SDL_WINDOWPOS_CENTERED_DISPLAY(displayIndex), SDL_WINDOWPOS_CENTERED_DISPLAY(displayIndex),
                               settings.video.physicalWidth, settings.video.physicalHeight,
                               videoFlags);
+    if(settings.video.renderer != "default") SDL_SetHint(SDL_HINT_RENDER_DRIVER, settings.video.renderer.c_str());
+    SDL_SetHint(SDL_HINT_RENDER_BATCHING, "1");
+
     renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_TARGETTEXTURE);
     { // Scope
         SDL_RendererInfo info;
@@ -552,7 +555,8 @@ int main(int argc, char *argv[]) {
             settings.video.frameLimit = myINIFile.getBoolValue("Video","FrameLimit",true);
             settings.video.preferredZoomLevel = myINIFile.getIntValue("Video","Preferred Zoom Level", 0);
             settings.video.scaler = myINIFile.getStringValue("Video","Scaler","ScaleHD");
-            settings.video.rotateUnitGraphics = myINIFile.getBoolValue("Video","RotateUnitGraphics",false);
+            settings.video.rotateUnitGraphics  = myINIFile.getBoolValue("Video", "RotateUnitGraphics", false);
+            settings.video.renderer = myINIFile.getStringValue("Video", "Renderer", "default");
             settings.audio.musicType = myINIFile.getStringValue("Audio","Music Type","adl");
             settings.audio.playMusic = myINIFile.getBoolValue("Audio","Play Music", true);
             settings.audio.musicVolume = myINIFile.getIntValue("Audio","Music Volume", 64);
