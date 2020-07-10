@@ -1483,7 +1483,9 @@ bool Game::loadSaveGame(InputStream& stream) {
     gameType = static_cast<GameType>(stream.readSint8());
     techLevel = stream.readUint8();
     randomFactory.setSeed(stream.readUint8Vector());
-    randomGen.setSeed(stream.readUint32Vector());
+    auto seed = stream.readUint32Vector();
+    if(seed.size() != decltype(randomGen)::seed_words) THROW(std::runtime_error, "Random seed size mismatch!");
+    randomGen.setSeed(seed);
 
     // read in the unit/structure data
     objectData.load(stream);
