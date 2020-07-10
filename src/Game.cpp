@@ -1157,7 +1157,7 @@ void Game::runMainLoop(const GameContext& context) {
         }
 
 
-        while( (frameTime > getGameSpeed()) || (!finished && (gameCycleCount < skipToGameCycle)) )  {
+        while( frameTime <= getGameSpeed() || !finished && !bPause && gameCycleCount < skipToGameCycle )  {
 
             bool bWaitForNetwork = false;
 
