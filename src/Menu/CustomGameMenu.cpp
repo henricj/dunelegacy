@@ -256,7 +256,9 @@ void CustomGameMenu::onMapTypeChange(int buttonID)
     mapList.clearAllEntries();
 
     for(const auto& file : getFileNamesList(currentMapDirectory, "ini", true, FileListOrder_Name_CaseInsensitive_Asc)) {
-        mapList.addEntry(file.stem().u8string());
+        auto name = file.u8string();
+        if(name.size() > 4) name = name.substr(0, name.size() - 4);
+        mapList.addEntry(name);
     }
 
     if(mapList.getNumEntries() > 0) {
