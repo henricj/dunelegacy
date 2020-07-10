@@ -617,7 +617,8 @@ void INIMapLoader::loadUnits(const GameContext& context) {
             for(int i = 0; i < Num2Place; i++) {
                 auto* newUnit = getOrCreateHouse(context, houseID)->placeUnit(static_cast<ItemID_enum>(itemID), getXPos(pos), getYPos(pos), true);
                 if(newUnit == nullptr) {
-                    logWarning(key.getLineNumber(), "Invalid or occupied position for '" + UnitStr + "': '" + std::to_string(pos) + "'!");
+                    logWarning(key.getLineNumber(), fmt::format("Invalid or occupied position for '{}': '{}' ({}x{})!",
+                                                                UnitStr, PosStr, getXPos(pos), getYPos(pos)));
                     continue;
                 } else {
                     newUnit->setHealth((newUnit->getMaxHealth() * percentHealth));
@@ -674,7 +675,7 @@ void INIMapLoader::loadStructures(const GameContext& context) {
                 getOrCreateHouse(context, houseID)->placeStructure(NONE_ID, Structure_Slab1, getXPos(pos), getYPos(pos), true);
             } else if(BuildingStr == "Wall" && pGame->objectData.data[Structure_Wall][static_cast<int>(houseID)].enabled) {
                 if(getOrCreateHouse(context, houseID)->placeStructure(NONE_ID, Structure_Wall, getXPos(pos), getYPos(pos), true) == nullptr) {
-                    logWarning(key.getLineNumber(), "Invalid or occupied position for '" + BuildingStr + "': '" + PosStr + "'!");
+                    logWarning(key.getLineNumber(), fmt::format("Invalid or occupied position for '{}': '{}'!", BuildingStr, PosStr));
                     continue;
                 }
             } else if((BuildingStr != "Concrete") && (BuildingStr != "Wall")) {
@@ -688,7 +689,7 @@ void INIMapLoader::loadStructures(const GameContext& context) {
 
             int pos = 0;
             if(!parseString(PosStr, pos) || (pos < 0)) {
-                logWarning(key.getLineNumber(), "Invalid position string for '" + BuildingStr + "': '" + PosStr + "'!");
+                logWarning(key.getLineNumber(), fmt::format("Invalid position string for '{}': '{}'!", BuildingStr, PosStr));
                 continue;
             }
 
@@ -718,7 +719,7 @@ void INIMapLoader::loadStructures(const GameContext& context) {
             if (itemID != 0 && pGame->objectData.data[itemID][static_cast<int>(houseID)].enabled) {
                 ObjectBase* newStructure = getOrCreateHouse(context, houseID)->placeStructure(NONE_ID, static_cast<ItemID_enum>(itemID), getXPos(pos), getYPos(pos), true);
                 if(newStructure == nullptr) {
-                    logWarning(key.getLineNumber(), "Invalid or occupied position for '" + BuildingStr + "': '" + PosStr + "'!");
+                    logWarning(key.getLineNumber(), fmt::format("Invalid or occupied position for '{}': '{}'!", BuildingStr, PosStr));
                     continue;
                 } else {
                     newStructure->setHealth(newStructure->getMaxHealth() * percentHealth);
