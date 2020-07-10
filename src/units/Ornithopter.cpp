@@ -122,11 +122,9 @@ FixPoint Ornithopter::getDestinationAngle() const {
    
 }
 
-bool Ornithopter::attack() {
-    bool bAttacked = AirUnit::attack();
+bool Ornithopter::attack(const GameContext& context) {
+    auto bAttacked = parent::attack(context);
 
-    if(bAttacked) {
-        timeLastShot = currentGame->getGameCycleCount();
-    }
+    if(bAttacked) { timeLastShot = context.game.getGameCycleCount(); }
     return bAttacked;
 }
