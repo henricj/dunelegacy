@@ -42,17 +42,20 @@
 
 
 Player::Player(const GameContext& context, House* associatedHouse, std::string playername, Random&& random)
-    : pHouse(associatedHouse), playerID(0), playername(std::move(playername)), random_{std::move(random)},
-      context_{std::move(context)} { }
+    : pHouse(associatedHouse), playerID(0), playername(std::move(playername)), random_{random},
+      context_{context} { }
 
 Player::Player(const GameContext& context, InputStream& stream, House* associatedHouse, Random&& random)
-    : pHouse(associatedHouse), random_{std::move(random)}, context_{std::move(context)} {
+    : pHouse(associatedHouse), random_{random}, context_{context} {
     playerID   = stream.readUint8();
     playername = stream.readString();
+    auto seed  = stream.readUint32Vector();
+    if(seed.size() != decltype(random_)::seed_words) THROW(std::runtime_error, "Random seed size mismatch!");
+    random_.setSeed(seed);
 }
 
 Player::~Player() {
-    if(currentGame) currentGame->unregisterPlayer(this);
+    context_.game.unregisterPlayer(this);
 }
 
 
@@ -75,7 +78,7 @@ void Player::logDebug(const char* fmt, ...) const {
 }
 
 void Player::logWarn(const char* fmt, ...) const {
-    std::string house = getHouseNameByNumber((HOUSETYPE) pHouse->getHouseID());
+    const auto house = getHouseNameByNumber(static_cast<HOUSETYPE>(pHouse->getHouseID()));
     fprintf(stderr, "%s (%s):   ", playername.c_str(), house.c_str());
     va_list arg;
     va_start(arg, fmt);
@@ -87,26 +90,18 @@ void Player::logWarn(const char* fmt, ...) const {
 Random& Player::getRandomGen() { return random_; }
 
 const GameInitSettings& Player::getGameInitSettings() const {
-    return currentGame->getGameInitSettings();
+    return context_.game.getGameInitSettings();
 }
 
-Uint32 Player::getGameCycleCount() const {
-    return currentGame->getGameCycleCount();
-}
+Uint32 Player::getGameCycleCount() const { return context_.game.getGameCycleCount(); }
 
-int Player::getTechLevel() const {
-    return currentGame->techLevel;
-}
+int Player::getTechLevel() const { return context_.game.techLevel; }
 
-Map& Player::getMap() { return *currentGameMap; }
+Map& Player::getMap() { return context_.map; }
 
-const Map& Player::getMap() const {
-    return *currentGameMap;
-}
+const Map& Player::getMap() const { return context_.map; }
 
-const ObjectBase* Player::getObject(Uint32 objectID) {
-    return currentGame->getObjectManager().getObject(objectID);
-}
+const ObjectBase* Player::getObject(Uint32 objectID) const { return context_.objectManager.getObject(objectID); }
 
 const RobustList<const StructureBase*>& Player::getStructureList() {
     return reinterpret_cast<const RobustList<const StructureBase*>&>(structureList);
@@ -120,7 +115,7 @@ const House* Player::getHouse(HOUSETYPE houseID) {
     if(static_cast<int>(houseID) < 0 || houseID >= HOUSETYPE::NUM_HOUSES) {
         return nullptr;
     }
-    return currentGame->getHouse(houseID);
+    return context_.game.getHouse(houseID);
 }
 
 void Player::doRepair(const ObjectBase* pObject) const {

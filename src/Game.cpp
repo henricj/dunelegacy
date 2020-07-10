@@ -1474,7 +1474,7 @@ bool Game::loadSaveGame(InputStream& stream) {
     map = std::make_unique<Map>(mapSizeX, mapSizeY);
     currentGameMap = map.get();
 
-    const GameContext context{*this, *map.get(), this->getObjectManager()};
+    const GameContext context{*this, *map, this->getObjectManager()};
 
     //read GameCycleCount
     gameCycleCount = stream.readUint32();

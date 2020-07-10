@@ -102,8 +102,8 @@ void Sandworm::save(OutputStream& stream) const {
 }
 
 void Sandworm::assignToMap(const GameContext& context, const Coord& pos) {
-    if(currentGameMap->tileExists(pos)) {
-        currentGameMap->getTile(pos)->assignUndergroundUnit(getObjectID());
+    if(auto* tile = context.map.tryGetTile(pos.x, pos.y)) {
+        tile->assignUndergroundUnit(getObjectID());
         // do not unhide map cause this would give Fremen players an advantage
         // currentGameMap->viewMap(owner->getHouseID(), location, getViewRange());
     }
