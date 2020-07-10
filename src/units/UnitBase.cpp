@@ -138,10 +138,9 @@ UnitBase::~UnitBase() = default;
 
 void UnitBase::cleanup(const GameContext& context, HumanPlayer* humanPlayer) {
     try {
-        auto& [game, map, objectManager] = context;
+        const auto& [game, map, objectManager] = context;
 
         map.removeObjectFromMap(getObjectID()); // no map point will reference now
-        objectManager.removeObject(objectID);
 
         game.getHouse(originalHouseID)->decrementUnits(itemID);
 
@@ -189,83 +188,84 @@ void UnitBase::save(OutputStream& stream) const {
     stream.writeSint32(deviationTimer);
 }
 
-bool UnitBase::attack() {
+bool UnitBase::attack(const GameContext& context) {
 
-    if(numWeapons) {
-        if((primaryWeaponTimer == 0) || ((numWeapons == 2) && (secondaryWeaponTimer == 0) && (!isBadlyDamaged()))) {
+    if(!numWeapons) return false;
 
-            Coord targetCenterPoint;
-            Coord centerPoint = getCenterPoint();
-            bool bAirBullet = 0;
+    if(primaryWeaponTimer != 0 && (numWeapons != 2 || secondaryWeaponTimer != 0 || isBadlyDamaged())) return false;
 
-            ObjectBase* pObject = target.getObjPointer();
-            if(pObject != nullptr) {
-                targetCenterPoint = pObject->getClosestCenterPoint(location);
-                bAirBullet = pObject->isAFlyingUnit();
-            } else {
-                targetCenterPoint = currentGameMap->getTile(attackPos)->getCenterPoint();
-                bAirBullet = false;
-            }
+    Coord targetCenterPoint;
+    Coord centerPoint = getCenterPoint();
+    bool  bAirBullet  = false;
 
-            int currentBulletType = bulletType;
-            Sint32 currentWeaponDamage = currentGame->objectData.data[itemID][static_cast<int>(originalHouseID)].weapondamage;
+    auto* pObject = target.getObjPointer();
+    if(pObject != nullptr) {
+        targetCenterPoint = pObject->getClosestCenterPoint(location);
+        bAirBullet        = pObject->isAFlyingUnit();
+    } else {
+        targetCenterPoint = context.map.getTile(attackPos)->getCenterPoint();
+        bAirBullet        = false;
+    }
 
-            if(getItemID() == Unit_Trooper && !bAirBullet) {
-                // Troopers change weapon type depending on distance
+    int    currentBulletType   = bulletType;
+    Sint32 currentWeaponDamage = context.game.objectData.data[itemID][static_cast<int>(originalHouseID)].weapondamage;
 
-                FixPoint distance = distanceFrom(centerPoint, targetCenterPoint);
-                if(distance <= 2*TILESIZE) {
-                    currentBulletType = Bullet_ShellSmall;
-                    currentWeaponDamage -= currentWeaponDamage/4;
-                }
-            } 
+    if(getItemID() == Unit_Trooper && !bAirBullet) {
+        // Troopers change weapon type depending on distance
 
-            if(primaryWeaponTimer == 0) {
-                bulletList.emplace_back(std::make_unique<Bullet>(objectID, &centerPoint, &targetCenterPoint, currentBulletType, currentWeaponDamage, bAirBullet, pObject));
-                if(pObject != nullptr) {
-                    currentGameMap->viewMap(pObject->getOwner()->getHouseID(), location, 2);
-                }
-                playAttackSound();
-                primaryWeaponTimer = getWeaponReloadTime();
+        const FixPoint distance = distanceFrom(centerPoint, targetCenterPoint);
+        if(distance <= 2*TILESIZE) {
+            currentBulletType = Bullet_ShellSmall;
+            currentWeaponDamage -= currentWeaponDamage/4;
+        }
+    } else if(getItemID() == Unit_Launcher && bAirBullet){
+        // Launchers change weapon type when targeting flying units
+        currentBulletType = Bullet_TurretRocket;
+    }
 
-                secondaryWeaponTimer = 15;
+    if(primaryWeaponTimer == 0) {
+        bulletList.push_back(std::make_unique<Bullet>(objectID, &centerPoint, &targetCenterPoint, currentBulletType, currentWeaponDamage, bAirBullet, pObject));
+        if(pObject != nullptr) {
+            context.map.viewMap(pObject->getOwner()->getHouseID(), location, 2);
+        }
+        playAttackSound();
+        primaryWeaponTimer = getWeaponReloadTime();
 
-                if(attackPos && getItemID() != Unit_SonicTank && currentGameMap->getTile(attackPos)->isSpiceBloom()) {
-                    setDestination(location);
-                    forced = false;
-                    attackPos.invalidate();
-                }
+        secondaryWeaponTimer = 15;
 
-                // shorten deviation time
-                if(deviationTimer > 0) {
-                    deviationTimer = std::max(0,deviationTimer - MILLI2CYCLES(20*1000));
-                }
-            }
+        if(attackPos && getItemID() != Unit_SonicTank && context.map.getTile(attackPos)->isSpiceBloom()) {
+            setDestination(location);
+            forced = false;
+            attackPos.invalidate();
+        }
 
-            if((numWeapons == 2) && (secondaryWeaponTimer == 0) && (!isBadlyDamaged())) {
-                bulletList.emplace_back(std::make_unique<Bullet>(objectID, &centerPoint, &targetCenterPoint, currentBulletType, currentWeaponDamage, bAirBullet, pObject));
-                if(pObject != nullptr) {
-                    currentGameMap->viewMap(pObject->getOwner()->getHouseID(), location, 2);
-                }
-                playAttackSound();
-                secondaryWeaponTimer = -1;
-
-                if(attackPos && getItemID() != Unit_SonicTank && currentGameMap->getTile(attackPos)->isSpiceBloom()) {
-                    setDestination(location);
-                    forced = false;
-                    attackPos.invalidate();
-                }
-
-                // shorten deviation time
-                if(deviationTimer > 0) {
-                    deviationTimer = std::max(0,deviationTimer - MILLI2CYCLES(20*1000));
-                }
-            }
-
-            return true;
+        // shorten deviation time
+        if(deviationTimer > 0) {
+            deviationTimer = std::max(0,deviationTimer - MILLI2CYCLES(20*1000));
         }
     }
-    return false;
+
+    if((numWeapons == 2) && (secondaryWeaponTimer == 0) && (!isBadlyDamaged())) {
+        bulletList.push_back(std::make_unique<Bullet>(objectID, &centerPoint, &targetCenterPoint, currentBulletType, currentWeaponDamage, bAirBullet, pObject));
+        if(pObject != nullptr) {
+            context.map.viewMap(pObject->getOwner()->getHouseID(), location, 2);
+        }
+        playAttackSound();
+        secondaryWeaponTimer = -1;
+
+        if(attackPos && getItemID() != Unit_SonicTank && context.map.getTile(attackPos)->isSpiceBloom()) {
+            setDestination(location);
+            forced = false;
+            attackPos.invalidate();
+        }
+
+        // shorten deviation time
+        if(deviationTimer > 0) {
+            deviationTimer = std::max(0,deviationTimer - MILLI2CYCLES(20*1000));
+        }
+    }
+
+    return true;
 }
 
 void UnitBase::blitToScreen() {
@@ -293,7 +293,7 @@ ANGLETYPE UnitBase::getCurrentAttackAngle() const {
 }
 
 void UnitBase::deploy(const GameContext& context, const Coord& newLocation) {
-    auto& [game, map, objectManager] = context;
+    const auto& [game, map, objectManager] = context;
 
     if(map.tileExists(newLocation)) {
         setLocation(context, newLocation);
@@ -336,7 +336,7 @@ void UnitBase::destroy(const GameContext& context) {
 
     setTarget(nullptr);
 
-    auto& [game, map, objectManager] = context;
+    const auto& [game, map, objectManager] = context;
 
     objectManager.removeObject(getObjectID());
 
@@ -357,8 +357,7 @@ void UnitBase::destroy(const GameContext& context) {
 }
 
 void UnitBase::deviate(const GameContext& context, House* newOwner) {
-
-    auto& [game, map, objectManager] = context;
+    const auto& [game, map, objectManager] = context;
 
     if(newOwner->getHouseID() == originalHouseID) {
         quitDeviation(context);
@@ -518,7 +517,7 @@ void UnitBase::engageTarget(const GameContext& context) {
         }
 
         if(getCurrentAttackAngle() == newTargetAngle) {
-            attack();
+            attack(context);
         }
 
     } else if(attackPos) {
@@ -536,7 +535,7 @@ void UnitBase::engageTarget(const GameContext& context) {
             }
 
             if(getCurrentAttackAngle() == newTargetAngle) {
-                attack();
+                attack(context);
             }
         } else {
             targetAngle = ANGLETYPE::INVALID_ANGLE;

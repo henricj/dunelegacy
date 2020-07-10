@@ -159,7 +159,7 @@ void TankBase::engageTarget(const GameContext& context) {
         if(drawnTurretAngle == targetAngle) {
             ObjectPointer temp = target;
             target = closeTarget;
-            attack();
+            attack(context);
             target = temp;
         }
     }

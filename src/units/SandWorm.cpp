@@ -109,7 +109,7 @@ void Sandworm::assignToMap(const GameContext& context, const Coord& pos) {
     }
 }
 
-bool Sandworm::attack() {
+bool Sandworm::attack(const GameContext& context) {
     if(primaryWeaponTimer == 0) {
         if(target) {
             soundPlayer->playSoundAt(Sound_WormAttack, location);

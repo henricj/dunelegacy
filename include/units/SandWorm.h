@@ -37,7 +37,7 @@ public:
     void deploy(const GameContext& context, const Coord& newLocation) override;
 
     void assignToMap(const GameContext& context, const Coord& pos) override;
-    bool attack() override;
+    bool attack(const GameContext& context) override;
     void blitToScreen() override;
     void checkPos(const GameContext& context) override;
 

@@ -45,7 +45,7 @@ public:
 protected:
     FixPoint getDestinationAngle() const override;
 
-    bool attack() override;
+    bool attack(const GameContext& context) override;
 
 private:
     void   init();

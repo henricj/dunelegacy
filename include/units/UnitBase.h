@@ -251,7 +251,7 @@ protected:
 
     void updateVisibleUnits(const GameContext& context);
 
-    virtual bool attack();
+    virtual bool attack(const GameContext& context);
 
     virtual void releaseTarget();
     virtual void engageTarget(const GameContext& context);
