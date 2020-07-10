@@ -42,6 +42,8 @@ if(MSVC)
     set(DUNELEGACY_MSVC_DEBUG_FLAGS " /Zi /Ob0 /Od /RTC1 /JMC")
     set(DUNELEGACY_MSVC_RELEASE_FLAGS " /Zi /O2 /Ob3 /fp:fast /DNDEBUG")
 
+    set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:DebugDLL>")
+
     foreach( config ${build_list} )
         string( TOUPPER "${config}" config )
 
