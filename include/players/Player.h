@@ -125,7 +125,7 @@ protected:
     Map&              getMap();
     const Map&        getMap() const;
 
-    const ObjectBase* getObject(Uint32 objectID);
+    const ObjectBase* getObject(Uint32 objectID) const;
 
     const RobustList<const StructureBase*>& getStructureList();
     const RobustList<const UnitBase*>& getUnitList() const;
