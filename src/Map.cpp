@@ -64,7 +64,9 @@ void Map::load(InputStream& stream) {
     for (auto& tile : tiles)
         tile.load(stream);
 
-    random_.setSeed(stream.readUint32Vector());
+    auto seed = stream.readUint32Vector();
+    if(seed.size() != decltype(random_)::seed_words) THROW(std::runtime_error, "Random seed size mismatch!");
+    random_.setSeed(seed);
 
     init_tile_location();
 }
