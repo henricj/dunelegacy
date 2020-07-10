@@ -1115,8 +1115,6 @@ void Game::runMainLoop(const GameContext& context) {
 
         drawScreen();
 
-        SDL_RenderPresent(renderer);
-
         SDL_SetRenderTarget(renderer, nullptr);
         SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_NONE);
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
