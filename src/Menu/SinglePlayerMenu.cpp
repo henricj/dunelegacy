@@ -155,7 +155,7 @@ void SinglePlayerMenu::onCancel() {
 
 void SinglePlayerMenu::onChildWindowClose(Window* pChildWindow) {
     std::filesystem::path filename;
-    std::string extension = "";
+    std::string extension;
     auto* pLoadSaveWindow = dynamic_cast<LoadSaveWindow*>(pChildWindow);
     if(pLoadSaveWindow != nullptr) {
         filename = pLoadSaveWindow->getFilename();
