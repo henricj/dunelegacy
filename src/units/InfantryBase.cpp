@@ -59,8 +59,7 @@ InfantryBase::InfantryBase(ItemID_enum itemID, Uint32 objectID, const ObjectStre
     oldTilePosition = stream.readSint8();
 }
 
-void InfantryBase::init() {
-}
+void InfantryBase::init() { infantry = true; }
 
 InfantryBase::~InfantryBase() = default;
 
@@ -461,7 +460,7 @@ void InfantryBase::setSpeeds(const GameContext& context) {
     if(oldTilePosition == INVALID_POS) {
         SDL_Log("Warning: InfantryBase::setSpeeds(context): Infantry tile position == INVALID_POS.");
     } else if(tilePosition == oldTilePosition) {
-        // havent changed infantry position
+        // haven't changed infantry position
         parent::setSpeeds(context);
     } else {
 
