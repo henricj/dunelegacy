@@ -976,8 +976,7 @@ void QuantBot::build(int militaryValue) {
 
             // End of unit ratio optimisation algorithm
 
-            if(pStructure->isABuilder()) {
-                const auto* pBuilder = static_cast<const BuilderBase*>(pStructure);
+            if(const auto* const pBuilder = dune_cast<BuilderBase>(pStructure)) {
                 switch (pStructure->getItemID()) {
 
                     case Structure_LightFactory: {
