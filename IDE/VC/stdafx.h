@@ -91,8 +91,18 @@
 #    include <utility>
 #    include <vector>
 
+#    include <cinttypes>
+#    include <cstdio>
+#    include <cstdlib>
+#    include <cstring>
+
 #    include <gsl/gsl>
 
+#else // __cplusplus
+#    include <inttypes.h>
+#    include <stdio.h>
+#    include <stdlib.h>
+#    include <string.h>
 #endif // __cplusplus
 
 #include <SDL2/SDL.h>
@@ -101,7 +111,6 @@
 #include <SDL2/SDL_rwops.h>
 
 #include <fcntl.h>
-#include <inttypes.h>
 #include <sys/stat.h>
 #include <sys/types.h>
 
@@ -111,8 +120,5 @@
 #    include <winsock2.h>
 #endif // _WIN32
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 
 #endif // STDAFX_H
