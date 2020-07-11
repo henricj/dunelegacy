@@ -22,7 +22,7 @@
 
 class HighTechFactory final : public BuilderBase {
 public:
-    static const ItemID_enum item_id = ItemID_enum::Structure_HighTechFactory;
+    inline static constexpr ItemID_enum item_id = ItemID_enum::Structure_HighTechFactory;
     using parent = BuilderBase;
 
     HighTechFactory(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer);

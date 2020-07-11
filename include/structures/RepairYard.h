@@ -26,7 +26,7 @@ class Carryall;
 class RepairYard final : public StructureBase
 {
 public:
-    static const ItemID_enum item_id = Structure_RepairYard;
+    inline static constexpr ItemID_enum item_id = Structure_RepairYard;
     using parent = StructureBase;
 
     RepairYard(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer);

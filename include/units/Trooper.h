@@ -23,8 +23,8 @@
 class Trooper final : public InfantryBase
 {
 public:
-    static const ItemID_enum item_id = Unit_Trooper;
-    using parent                     = InfantryBase;
+    inline static constexpr ItemID_enum item_id = Unit_Trooper;
+    using parent = InfantryBase;
 
     Trooper(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer);
     Trooper(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer);

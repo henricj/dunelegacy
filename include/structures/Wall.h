@@ -38,7 +38,7 @@ public:
         Wall_Full           = 12
     } WALLTYPE;
 
-    static const ItemID_enum item_id = Structure_Wall;
+    inline static constexpr ItemID_enum item_id = Structure_Wall;
     using parent = StructureBase;
 
     Wall(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer);
