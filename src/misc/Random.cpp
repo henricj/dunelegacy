@@ -211,9 +211,14 @@ std::vector<Uint8> RandomFactory::getSeed() const {
 
 std::vector<Uint8> RandomFactory::createRandomSeed(const std::string_view& name) {
     std::random_device rd;
-    if(rd.entropy() < 0.001) throw std::runtime_error{"The random device doesn't produce any entropy"};
 
-    const auto rd_efficiency = rd.entropy() / (8 * sizeof(decltype(rd())));
+    auto entropy_estimate = rd.entropy();
+
+    if(entropy_estimate < 1) entropy_estimate = 1;
+    else if(entropy_estimate > 30)
+        entropy_estimate = 30;
+
+    const auto rd_efficiency = entropy_estimate / (8 * sizeof(decltype(rd())));
     const auto size = static_cast<int>(std::ceil(seed_size / rd_efficiency)) + 1;
 
     std::vector<Uint32> buffer;
