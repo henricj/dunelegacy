@@ -573,8 +573,8 @@ GFXManager::GFXManager() {
     uiGraphic[UI_MentatNo_Pressed][harkIdx] = Scaler::defaultDoubleSurface(mentat->getPicture(3).get());
     uiGraphic[UI_MentatExit][harkIdx] = Scaler::defaultDoubleSurface(mentat->getPicture(4).get());
     uiGraphic[UI_MentatExit_Pressed][harkIdx] = Scaler::defaultDoubleSurface(mentat->getPicture(5).get());
-    uiGraphic[UI_MentatProcced][harkIdx] = Scaler::defaultDoubleSurface(mentat->getPicture(6).get());
-    uiGraphic[UI_MentatProcced_Pressed][harkIdx] = Scaler::defaultDoubleSurface(mentat->getPicture(7).get());
+    uiGraphic[UI_MentatProceed][harkIdx] = Scaler::defaultDoubleSurface(mentat->getPicture(6).get());
+    uiGraphic[UI_MentatProceed_Pressed][harkIdx] = Scaler::defaultDoubleSurface(mentat->getPicture(7).get());
     uiGraphic[UI_MentatRepeat][harkIdx] = Scaler::defaultDoubleSurface(mentat->getPicture(8).get());
     uiGraphic[UI_MentatRepeat_Pressed][harkIdx] = Scaler::defaultDoubleSurface(mentat->getPicture(9).get());
 
