@@ -26,7 +26,7 @@
 
 class House;
 
-class Choam {
+class Choam final {
 public:
     explicit Choam(House* pHouse);
     ~Choam();
