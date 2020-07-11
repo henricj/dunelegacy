@@ -768,8 +768,8 @@ void UnitBase::handleActionClick(const GameContext& context, int xPos, int yPos)
     } else {
         // move this unit
         game.getCommandManager().addCommand(Command{pLocalPlayer->getPlayerID(), CMDTYPE::CMD_UNIT_MOVE2POS, objectID,
-                                                     static_cast<Uint32>(xPos), static_cast<Uint32>(yPos),
-                                                     static_cast<Uint32>(true)});
+                                                    static_cast<Uint32>(xPos), static_cast<Uint32>(yPos),
+                                                    static_cast<Uint32>(true)});
     }
 }
 
@@ -789,9 +789,9 @@ void UnitBase::handleAttackClick(const GameContext& context, int xPos, int yPos)
                 pLocalPlayer->getPlayerID(), CMDTYPE::CMD_UNIT_ATTACKOBJECT, objectID, tempTarget->getObjectID()));
         } else {
             // attack pos
-            game.getCommandManager().addCommand(Command(pLocalPlayer->getPlayerID(),
-                                                                CMDTYPE::CMD_UNIT_ATTACKPOS, objectID, (Uint32)xPos,
-                                                                (Uint32)yPos, (Uint32) true));
+            game.getCommandManager().addCommand(Command(pLocalPlayer->getPlayerID(), CMDTYPE::CMD_UNIT_ATTACKPOS,
+                                                        objectID, static_cast<Uint32>(xPos), static_cast<Uint32>(yPos),
+                                                        static_cast<Uint32>(true)));
         }
     }
 }
@@ -802,7 +802,8 @@ void UnitBase::handleMoveClick(const GameContext& context, int xPos, int yPos) {
     if(context.map.tileExists(xPos, yPos)) {
         // move to pos
         context.game.getCommandManager().addCommand(Command(pLocalPlayer->getPlayerID(), CMDTYPE::CMD_UNIT_MOVE2POS,
-                                                            objectID, (Uint32)xPos, (Uint32)yPos, (Uint32) true));
+                                                            objectID, static_cast<Uint32>(xPos),
+                                                            static_cast<Uint32>(yPos), static_cast<Uint32>(true)));
     }
 }
 
