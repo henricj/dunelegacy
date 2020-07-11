@@ -36,7 +36,7 @@ public:
 
         std::array<Uint32, Random::seed_words> seed;
         randGen.getSeed(seed);
-        SDL_Log("Using random [%lx, %lx, %lx, %lx]", seed[0], seed[1], seed[2], seed[3]);
+        SDL_Log("Using random [%x, %x, %x, %x]", seed[0], seed[1], seed[2], seed[3]);
 
         mapMirror = MapMirror::createMapMirror(mirrorMode, sizeX, sizeY);
     }
