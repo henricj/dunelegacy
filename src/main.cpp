@@ -816,6 +816,7 @@ int main(int argc, char *argv[]) {
         }
     } catch(const std::exception& e) {
         std::string message = std::string("An unhandled exception of type \'") + demangleSymbol(typeid(e).name()) + std::string("\' was thrown:\n\n") + e.what() + std::string("\n\nDune Legacy will now be terminated!");
+        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Dune Legacy: Unrecoverable error: %s", message.c_str());
         SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Dune Legacy: Unrecoverable error", message.c_str(), nullptr);
 
         return EXIT_FAILURE;
