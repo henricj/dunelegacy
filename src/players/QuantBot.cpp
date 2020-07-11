@@ -665,7 +665,7 @@ Coord QuantBot::findPlaceLocation(ItemID_enum itemID) {
                                                 buildLocationScore[placeLocationX][placeLocationY] -= 10;
                                             }
 
-                                            if(getMap().hasAStructure(i, j)) {
+                                            if(getMap().hasAStructure(context_, i, j)) {
                                                 // If one of our buildings is nearby favour the location
                                                 // if it is someone elses building don't favour it
                                                 if(getMap().getTile(i,j)->getOwner() == getHouse()->getHouseID()){

@@ -756,7 +756,7 @@ void UnitBase::handleActionClick(const GameContext& context, int xPos, int yPos)
 
     auto& game = context.game;
 
-    auto* const tempTarget = map.tryGetObject(xPos, yPos);
+    auto* const tempTarget = map.tryGetObject(context, xPos, yPos);
 
     if(tempTarget) {
         // attack unit/structure or move to structure
@@ -781,7 +781,7 @@ void UnitBase::handleAttackClick(const GameContext& context, int xPos, int yPos)
     if(map.tileExists(xPos, yPos)) {
         auto& game = context.game;
 
-        auto* const tempTarget = map.tryGetObject(xPos, yPos);
+        auto* const tempTarget = map.tryGetObject(context, xPos, yPos);
         if(tempTarget) {
             // attack unit/structure or move to structure
 

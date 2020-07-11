@@ -188,7 +188,7 @@ void Sandworm::checkPos(const GameContext& context) {
         realX = location.x*TILESIZE + TILESIZE/2;
         realY = location.y*TILESIZE + TILESIZE/2;
 
-        const auto* const infantry = currentGameMap->tryGetInfantry(location.x, location.y);
+        const auto* const infantry = context.map.tryGetInfantry(context, location.x, location.y);
 
         if (infantry && infantry->getOwner() == pLocalHouse) {
             soundPlayer->playVoice(SomethingUnderTheSand, infantry->getOwner()->getHouseID());

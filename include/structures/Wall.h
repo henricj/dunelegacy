@@ -65,7 +65,7 @@ private:
         curAnimFrame = firstAnimFrame = lastAnimFrame = newTile;
     }
 
-    void fixWall();
+    void fixWall(const GameContext& context);
 
     bool bWallDestroyedUp;
     bool bWallDestroyedRight;

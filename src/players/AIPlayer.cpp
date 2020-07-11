@@ -317,13 +317,13 @@ int AIPlayer::getNumAdjacentStructureTiles(Coord pos, int structureSizeX, int st
     const auto* const map = currentGameMap;
 
     for(int y = pos.y; y < pos.y + structureSizeY; y++) {
-        if(map->hasAStructure(pos.x - 1, y)) { numAdjacentStructureTiles++; }
-        if(map->hasAStructure(pos.x + structureSizeX, y)) { numAdjacentStructureTiles++; }
+        if(map->hasAStructure(context_, pos.x - 1, y)) { numAdjacentStructureTiles++; }
+        if(map->hasAStructure(context_, pos.x + structureSizeX, y)) { numAdjacentStructureTiles++; }
     }
 
     for(int x = pos.x; x < pos.x + structureSizeX; x++) {
-        if(map->hasAStructure(x, pos.y - 1)) { numAdjacentStructureTiles++; }
-        if(map->hasAStructure(x, pos.y + structureSizeY)) { numAdjacentStructureTiles++; }
+        if(map->hasAStructure(context_, x, pos.y - 1)) { numAdjacentStructureTiles++; }
+        if(map->hasAStructure(context_, x, pos.y + structureSizeY)) { numAdjacentStructureTiles++; }
     }
 
     return numAdjacentStructureTiles;
