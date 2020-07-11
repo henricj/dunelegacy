@@ -158,7 +158,7 @@ protected:
     template<typename F>
     void location_for_each(int x1, int y1, int x2, int y2, F&& f) const {
         static_assert(std::is_invocable<F, int, int>::value,
-                      "The function must of the form void F(int, int)");
+                      "The function must be of the form void F(int, int)");
 
         if(x1 < 0) x1 = 0;
         else if(x2 > sizeX)
@@ -168,8 +168,8 @@ protected:
         else if(y2 > sizeY)
             y2 = sizeY;
 
-        assert(x1 >= 0 && x2 < sizeX);
-        assert(y1 >= 0 && y2 < sizeY);
+        assert(x1 >= 0 && x2 <= sizeX);
+        assert(y1 >= 0 && y2 <= sizeY);
 
         for(auto x = x1; x < x2; ++x) {
             for(auto y = y1; y < y2; ++y) {
@@ -177,6 +177,32 @@ protected:
             }
         }
     }
+
+    template<typename Predicate>
+    bool location_find(int x1, int y1, int x2, int y2, Predicate&& predicate) const {
+        static_assert(std::is_invocable_r<bool, Predicate, int, int>::value,
+                      "The Predicate must be of the form bool Predicate(int, int)");
+
+        if(x1 < 0) x1 = 0;
+        else if(x2 > sizeX)
+            x2 = sizeX;
+
+        if(y1 < 0) y1 = 0;
+        else if(y2 > sizeY)
+            y2 = sizeY;
+
+        assert(x1 >= 0 && x2 <= sizeX);
+        assert(y1 >= 0 && y2 <= sizeY);
+
+        for(auto x = x1; x < x2; ++x) {
+            for(auto y = y1; y < y2; ++y) {
+                if(predicate(x, y)) return true;
+            }
+        }
+
+        return false;
+    }
+
     template<typename F>
     void coord_for_each(int x1, int y1, int x2, int y2, F&& f) const {
         location_for_each(x1, y1, x2, y2, [&](int x, int y) { f(Coord(x, y)); });
@@ -188,6 +214,10 @@ protected:
     template<typename F>
     void index_for_each(int x1, int y1, int x2, int y2, F&& f) const {
         location_for_each(x1, y1, x2, y2, [&](int x, int y) {f(tile_index(x, y)); });
+    }
+    template<typename Predicate>
+    bool index_find(int x1, int y1, int x2, int y2, Predicate&& predicate) const {
+        return location_find(x1, y1, x2, y2, [&](int x, int y) { return predicate(tile_index(x, y)); });
     }
     template<typename Filter, typename F>
     void index_for_each_filter(int x1, int y1, int x2, int y2, Filter&& filter, F&& f) const {
@@ -214,6 +244,19 @@ public:
     template<typename F>
     void for_each(int x1, int y1, int x2, int y2, F&& f) {
         index_for_each(x1, y1, x2, y2, [&](int index) { f(tiles[index]); });
+    }
+
+    template<typename Predicate>
+    bool find(int x1, int y1, int x2, int y2, Predicate&& predicate) const {
+        static_assert(std::is_invocable_r<bool, Predicate, Tile&>::value,
+                      "The Predicate must of the form bool Predicate(const Tile&)");
+        return index_find(x1, y1, x2, y2, [&](int index) { return predicate(tiles[index]); });
+    }
+
+    template<typename Predicate>
+    bool find(int x1, int y1, int x2, int y2, Predicate&& predicate) {
+        static_assert(std::is_invocable_r<bool, Predicate, Tile&>::value, "The Predicate must of the form bool Predicate(Tile&)");
+        return index_find(x1, y1, x2, y2, [&](int index) { return predicate(tiles[index]); });
     }
 
     template<typename Filter, typename F>

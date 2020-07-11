@@ -66,14 +66,11 @@ void Saboteur::checkPos(const GameContext& context) {
         return;
 
     std::array<bool, NUM_TEAMS> canBeSeen{};
-    for(int x = location.x - 2; (x <= location.x + 2); x++) {
-        for(int y = location.y - 2; (y <= location.y + 2); y++) {
-            auto* const tileOwner = currentGameMap->tryGetOwner(x, y);
-            if(tileOwner) {
-                canBeSeen[tileOwner->getTeamID()] = true;
-            }
+    context.map.for_each(location.x - 2, location.x + 3, location.y - 2, location.y + 3, [&](const auto& tile) {
+        if(const auto* const object = tile.getObject(context.objectManager)) {
+            if(const auto* const owner = object->getOwner()) canBeSeen[owner->getTeamID()] = true;
         }
-    }
+    });
 
     setVisible(getOwner()->getTeamID(), true);    //owner team can always see it
     //setVisible(pLocalHouse->getTeamID(), true);

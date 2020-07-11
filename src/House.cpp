@@ -707,30 +707,33 @@ StructureBase* House::placeStructure(Uint32 builderID, ItemID_enum itemID, int x
 
         default: {
             auto* newStructure = createStructure(itemID, byScenario);
-
             if(newStructure == nullptr) {
                 THROW(std::runtime_error, "Cannot create structure with itemID %d!", itemID);
             }
 
+            gsl::finally([&] {
+                if(!newStructure) return;
+
+                context.objectManager.removeObject(newStructure->getObjectID());
+                newStructure = nullptr;
+            });
+
+            // Make sure the whole building fits on the map.
+            if(!map.tileExists(xPos + newStructure->getStructureSizeX() - 1,
+                               yPos + newStructure->getStructureSizeY() - 1))
+                return nullptr;
+
             if(!bForcePlacing) {
                 // check if there is already something on this tile
-                for(int i=0;i<newStructure->getStructureSizeX();i++) {
-                    for(int j=0;j<newStructure->getStructureSizeY();j++) {
-                        if((!map.tileExists(xPos+i, yPos+j)) || (map.getTile(xPos+i, yPos+j)->hasAGroundObject())) {
-                            objectManager.removeObject(newStructure->getObjectID());
-                            return nullptr;
-                        }
-                    }
+
+                if(map.find(xPos, yPos, xPos + newStructure->getStructureSizeX(), newStructure->getStructureSizeY(),
+                            [](Tile& tile) { return tile.hasAGroundObject(); })) {
+                    return nullptr;
                 }
             }
 
-            for(int i=0;i<newStructure->getStructureSizeX();i++) {
-                for(int j=0;j<newStructure->getStructureSizeY();j++) {
-                    if(map.tileExists(xPos+i, yPos+j)) {
-                        map.getTile(xPos+i, yPos+j)->clearTerrain();
-                    }
-                }
-            }
+            map.for_each(xPos, yPos, xPos + newStructure->getStructureSizeX(), yPos + newStructure->getStructureSizeY(),
+                         [](auto& tile) { tile.clearTerrain(); });
 
             newStructure->setLocation(context, xPos, yPos);
 
