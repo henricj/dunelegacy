@@ -986,7 +986,7 @@ void QuantBot::build(int militaryValue) {
                                     itemID = Unit_Trike;
                                 }
 
-                                if(itemID != NONE_ID){
+                                if(itemID != ItemID_enum::ItemID_Invalid) {
                                     doProduceItem(pBuilder, itemID);
                                     itemCount[itemID]++;
                                 }
@@ -1399,7 +1399,8 @@ void QuantBot::build(int militaryValue) {
                                 }
 
                                 // TODO: Build concrete if we have bad building spots
-                                if(pBuilder->isAvailableToBuild(itemID) && findPlaceLocation(itemID).isValid() && itemID != NONE_ID) {
+                                if(pBuilder->isAvailableToBuild(itemID) && findPlaceLocation(itemID).isValid() &&
+                                   itemID != ItemID_enum::ItemID_Invalid) {
                                     doProduceItem(pBuilder, itemID);
                                     itemCount[itemID]++;
                                 }/*else if(pBuilder->isAvailableToBuild(Structure_Slab1) && findPlaceLocation(Structure_Slab1).isValid()){
