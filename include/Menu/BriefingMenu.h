@@ -40,10 +40,10 @@ private:
     std::string text;
 
     void onRepeat();
-    void onProcced();
+    void onProceed();
     int mission;
     int type;
-    PictureButton   proccedButton;
+    PictureButton   proceedButton;
     PictureButton   repeatButton;
     AnimationLabel  animation;
 };

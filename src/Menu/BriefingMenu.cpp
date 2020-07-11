@@ -31,13 +31,13 @@ BriefingMenu::BriefingMenu(HOUSETYPE newHouse,int mission,int type) : MentatMenu
 
     Animation* anim = nullptr;
 
-    SDL_Texture* pMentatProcceed = pGFXManager->getUIGraphic(UI_MentatProcced);
-    SDL_Texture* pMentatProcceedPressed = pGFXManager->getUIGraphic(UI_MentatProcced_Pressed);
-    proccedButton.setTextures(pMentatProcceed, pMentatProcceedPressed);
-    proccedButton.setEnabled(false);
-    proccedButton.setVisible(false);
-    proccedButton.setOnClick(std::bind(&BriefingMenu::onProcced, this));
-    windowWidget.addWidget(&proccedButton, Point(350,340), getTextureSize(pMentatProcceed));
+    SDL_Texture* pMentatProceed = pGFXManager->getUIGraphic(UI_MentatProceed);
+    SDL_Texture* pMentatProceedPressed = pGFXManager->getUIGraphic(UI_MentatProceed_Pressed);
+    proceedButton.setTextures(pMentatProceed, pMentatProceedPressed);
+    proceedButton.setEnabled(false);
+    proceedButton.setVisible(false);
+    proceedButton.setOnClick([&] { onProceed(); });
+    windowWidget.addWidget(&proceedButton, Point(350,340), getTextureSize(pMentatProceed));
 
     SDL_Texture* pMentatRepeat = pGFXManager->getUIGraphic(UI_MentatRepeat);
     SDL_Texture* pMentatRepeatPressed = pGFXManager->getUIGraphic(UI_MentatRepeat_Pressed);
@@ -77,8 +77,8 @@ BriefingMenu::BriefingMenu(HOUSETYPE newHouse,int mission,int type) : MentatMenu
 BriefingMenu::~BriefingMenu() = default;
 
 void BriefingMenu::onMentatTextFinished() {
-    proccedButton.setEnabled(true);
-    proccedButton.setVisible(true);
+    proceedButton.setEnabled(true);
+    proceedButton.setVisible(true);
     repeatButton.setEnabled(true);
     repeatButton.setVisible(true);
 }
@@ -153,12 +153,12 @@ int BriefingMenu::showMenu()
 void BriefingMenu::onRepeat() {
     setText(text);
 
-    proccedButton.setEnabled(false);
-    proccedButton.setVisible(false);
+    proceedButton.setEnabled(false);
+    proceedButton.setVisible(false);
     repeatButton.setEnabled(false);
     repeatButton.setVisible(false);
 }
 
-void BriefingMenu::onProcced() {
+void BriefingMenu::onProceed() {
     quit();
 }
