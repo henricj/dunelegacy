@@ -517,7 +517,7 @@ void AIPlayer::build() {
                                         itemID = Structure_RocketTurret;
                                     }
 
-                                    if(itemID != NONE_ID) {
+                                    if(itemID != ItemID_enum::ItemID_Invalid) {
                                         Coord location = findPlaceLocation(itemID);
 
                                         if(location.isValid()) {

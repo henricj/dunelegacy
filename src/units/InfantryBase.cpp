@@ -284,7 +284,7 @@ void InfantryBase::checkPos(const GameContext& context) {
                     game.getSelectedByOtherPlayerList().insert(pNewStructure->getObjectID());
                 }
 
-                if (containedUnitID != NONE_ID) {
+                if(containedUnitID != ItemID_enum::ItemID_Invalid) {
                     auto* pNewUnit = owner->createUnit(containedUnitID);
 
                     pNewUnit->setRespondable(false);
