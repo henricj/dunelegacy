@@ -57,10 +57,10 @@ public:
 
     bool findSpice(Coord& destination, const Coord& origin);
     bool okayToPlaceStructure(int x, int y, int buildingSizeX, int buildingSizeY, bool tilesRequired, const House* pHouse, bool bIgnoreUnits = false) const;
-    bool isAStructureGap(const GameContext& context, int x, int y, int buildingSizeX, int buildingSizeY) const; // Allows AI to check to see if a gap exists between the current structure
+    [[nodiscard]] bool isAStructureGap(const GameContext& context, int x, int y, int buildingSizeX, int buildingSizeY) const; // Allows AI to check to see if a gap exists between the current structure
     bool isWithinBuildRange(int x, int y, const House* pHouse) const;
     static ANGLETYPE getPosAngle(const Coord& source, const Coord& pos);
-    Coord findClosestEdgePoint(const Coord& origin, const Coord& buildingSize) const;
+    [[nodiscard]] Coord findClosestEdgePoint(const Coord& origin, const Coord& buildingSize) const;
 
     Coord findDeploySpot(UnitBase* pUnit, const Coord& origin, Random& randomGen,
                          const Coord& gatherPoint  = Coord::Invalid(),
@@ -72,28 +72,28 @@ public:
 
     void createSpiceField(const GameContext& context, Coord location, int radius, bool centerIsThickSpice = false);
 
-    Sint32 getSizeX() const noexcept {
+    [[nodiscard]] Sint32 getSizeX() const noexcept {
         return sizeX;
     }
 
-    Sint32 getSizeY() const noexcept {
+    [[nodiscard]] Sint32 getSizeY() const noexcept {
         return sizeY;
     }
 
-    int getKey(const Tile& tile) const noexcept { return tile_index(tile.getLocation().x, tile.getLocation().y); }
+    [[nodiscard]] int getKey(const Tile& tile) const noexcept { return tile_index(tile.getLocation().x, tile.getLocation().y); }
 
-    int getKey(int xPos, int yPos) const {
+    [[nodiscard]] int getKey(int xPos, int yPos) const {
         if (!tileExists(xPos, yPos))
             THROW(std::out_of_range, "Tile (%d, %d) does not exist!", xPos, yPos);
 
         return tile_index(xPos, yPos);
     }
 
-    bool tileExists(int xPos, int yPos) const noexcept {
+    [[nodiscard]] bool tileExists(int xPos, int yPos) const noexcept {
         return ((xPos >= 0) && (xPos < sizeX) && (yPos >= 0) && (yPos < sizeY));
     }
 
-    bool tileExists(const Coord& pos) const noexcept {
+    [[nodiscard]] bool tileExists(const Coord& pos) const noexcept {
         return tileExists(pos.x, pos.y);
     }
 
@@ -104,14 +104,14 @@ public:
         return &tiles[tile_index(xPos, yPos)];
     }
 
-    const Tile* tryGetTile(int xPos, int yPos) const noexcept {
+    [[nodiscard]] const Tile* tryGetTile(int xPos, int yPos) const noexcept {
         if (!tileExists(xPos, yPos))
             return nullptr;
 
         return &tiles[tile_index(xPos, yPos)];
     }
 
-    const Tile* getTile(int xPos, int yPos) const {
+    [[nodiscard]] const Tile* getTile(int xPos, int yPos) const {
         const auto tile = tryGetTile(xPos, yPos);
 
         if (!tile)
@@ -129,7 +129,7 @@ public:
         return tile;
     }
 
-    const Tile* getTile(const Coord& location) const {
+    [[nodiscard]] const Tile* getTile(const Coord& location) const {
         return getTile(location.x, location.y);
     }
 
@@ -206,7 +206,7 @@ protected:
             return box_sets_[depth - 1];
         }
 
-        size_t max_depth() const noexcept { return box_sets_.size(); }
+        [[nodiscard]] size_t max_depth() const noexcept { return box_sets_.size(); }
     };
 public:
 
@@ -438,14 +438,14 @@ public:
         return true;
     }
 
-    bool hasAStructure(int x, int y) const {
+    [[nodiscard]] bool hasAStructure(int x, int y) const {
         const auto tile = tryGetTile(x, y);
         if(!tile) return false;
 
         return tile->hasAStructure(currentGame->getObjectManager());
     }
 
-    ObjectBase* getGroundObject(int x, int y) const {
+    [[nodiscard]] ObjectBase* getGroundObject(int x, int y) const {
         const auto* const tile = tryGetTile(x, y);
         if(!tile) return nullptr;
 
@@ -466,7 +466,7 @@ public:
     }
 
     template<typename ObjectType>
-    bool hasAGroundObject(int x, int y) const {
+    [[nodiscard]] bool hasAGroundObject(int x, int y) const {
         static_assert(!std::is_abstract<ObjectType>::value, "ObjectType is abstract");
         static_assert(std::is_base_of<ObjectBase, ObjectType>::value, "ObjectType not derived from ObjectBase");
 
@@ -479,21 +479,21 @@ public:
         return object->getItemID() == ObjectType::item_id;
     }
 
-    ObjectBase* tryGetObject(int x, int y) const {
+    [[nodiscard]] ObjectBase* tryGetObject(int x, int y) const {
         const auto* const tile = tryGetTile(x, y);
         if(!tile) return nullptr;
 
         return tile->getObject(currentGame->getObjectManager());
     }
 
-    House* tryGetOwner(int x, int y) const {
+    [[nodiscard]] House* tryGetOwner(int x, int y) const {
         const auto* const object = tryGetObject(x, y);
         if(!object) return nullptr;
 
         return object->getOwner();
     }
 
-    InfantryBase* tryGetInfantry(int x, int y) const {
+    [[nodiscard]] InfantryBase* tryGetInfantry(int x, int y) const {
         const auto* const tile = tryGetTile(x, y);
         if(!tile) return nullptr;
 
@@ -514,7 +514,7 @@ private:
 
     void init_tile_location();
 
-    int tile_index(int xPos, int yPos) const noexcept
+    [[nodiscard]] int tile_index(int xPos, int yPos) const noexcept
     {
         return xPos * sizeY + yPos;
     }

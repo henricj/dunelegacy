@@ -57,7 +57,7 @@ public:
         Get the stream used for recording new commands (see setStream).
         \return the set stream or nullptr if none is set
     */
-    OutputStream* getStream() const { return pStream.get(); }
+    [[nodiscard]] OutputStream* getStream() const { return pStream.get(); }
 
     /**
         If bReadOnly == true it is impossible to add new commands to this command manager. This is useful for replays.
@@ -69,7 +69,7 @@ public:
         Get the current read-only status.
         \return true = addCommand() is a NO-OP, false = addCommand() has normal behaviour
     */
-    bool getReadOnly() const noexcept { return bReadOnly; }
+    [[nodiscard]] bool getReadOnly() const noexcept { return bReadOnly; }
 
     /**
         Save all commands to stream. The read-only status is not saved.
@@ -84,7 +84,7 @@ public:
     void load(InputStream& stream);
 
 
-    Uint32 getNetworkCycleBuffer() const noexcept { return networkCycleBuffer; }
+    [[nodiscard]] Uint32 getNetworkCycleBuffer() const noexcept { return networkCycleBuffer; }
 
 
     void setNetworkCycleBuffer(Uint32 newNetworkCycleBuffer) noexcept { networkCycleBuffer = newNetworkCycleBuffer; };

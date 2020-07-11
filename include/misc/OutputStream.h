@@ -178,7 +178,7 @@ public:
         explicit eof(const std::string& str) noexcept : str(str) { };
         virtual ~eof() noexcept = default;
 
-        const char* what() const noexcept override { return str.c_str(); }
+        [[nodiscard]] const char* what() const noexcept override { return str.c_str(); }
 
     private:
         std::string str;
@@ -189,7 +189,7 @@ public:
         explicit error(const std::string& str) noexcept : str(str) { };
         virtual ~error() noexcept = default;
 
-        const char* what() const noexcept override { return str.c_str(); };
+        [[nodiscard]] const char* what() const noexcept override { return str.c_str(); };
 
     private:
         std::string str;

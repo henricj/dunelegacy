@@ -55,13 +55,13 @@ public:
         Get the map size in x direction
         \return map width
     */
-    virtual int getMapSizeX() const = 0;
+    [[nodiscard]] virtual int getMapSizeX() const = 0;
 
     /**
         Get the map size in y direction
         \return map height
     */
-    virtual int getMapSizeY() const = 0;
+    [[nodiscard]] virtual int getMapSizeY() const = 0;
 
 
     /**
@@ -77,7 +77,7 @@ public:
         \param mouseY the y-coordinate to check (relative to the top left corner of the radar)
         \return true, if inside the radar view; false otherwise
     */
-    bool isOnRadar(int mouseX, int mouseY) const {
+    [[nodiscard]] bool isOnRadar(int mouseX, int mouseY) const {
         int scale = 1;
         int offsetX = 0;
         int offsetY = 0;
@@ -99,7 +99,7 @@ public:
         \param mouseY  the position on the radar screen (relative to the top left corner of the radar)
         \return the world coordinates
     */
-    Coord getWorldCoords(int mouseX, int mouseY) const {
+    [[nodiscard]] Coord getWorldCoords(int mouseX, int mouseY) const {
         Coord positionOnRadar(mouseX - RADARVIEW_BORDERTHICKNESS, mouseY - RADARVIEW_BORDERTHICKNESS);
 
         int scale = 1;
@@ -149,7 +149,7 @@ public:
         in a direction this method returns the size in that direction.
         \return the minimum size of this widget
     */
-    Point getMinimumSize() const override { return Point(RADARWIDTH + (2 * RADARVIEW_BORDERTHICKNESS),RADARHEIGHT + (2 * RADARVIEW_BORDERTHICKNESS)); };
+    [[nodiscard]] Point getMinimumSize() const override { return Point(RADARWIDTH + (2 * RADARVIEW_BORDERTHICKNESS),RADARHEIGHT + (2 * RADARVIEW_BORDERTHICKNESS)); };
 
 
     /**

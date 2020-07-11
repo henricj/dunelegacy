@@ -45,11 +45,11 @@ public:
         }
     }
 
-    const char* getData() const {
+    [[nodiscard]] const char* getData() const {
         return pBuffer;
     }
 
-    size_t getDataLength() const {
+    [[nodiscard]] size_t getDataLength() const {
         return (bReadOnly == true) ? bufferSize : currentPos;
     }
 

@@ -116,8 +116,8 @@ protected:
     }
 
 
-    inline int getXPos(int pos) const { return (pos % logicalSizeX) - logicalOffsetX; };
-    inline int getYPos(int pos) const { return (pos / logicalSizeX) - logicalOffsetY; };
+    [[nodiscard]] inline int getXPos(int pos) const { return (pos % logicalSizeX) - logicalOffsetX; };
+    [[nodiscard]] inline int getYPos(int pos) const { return (pos / logicalSizeX) - logicalOffsetY; };
 
     std::string mapname;
     inifile_ptr inifile;

@@ -46,7 +46,7 @@ public:
         Get the current count of this digits counter
         \return the number that this digits counter currently shows
     */
-    inline unsigned int getCount() const { return count; }
+    [[nodiscard]] inline unsigned int getCount() const { return count; }
 
     /**
         Set the count of this digits counter
