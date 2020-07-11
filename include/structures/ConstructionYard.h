@@ -22,7 +22,7 @@
 
 class ConstructionYard final : public BuilderBase {
 public:
-    static const ItemID_enum item_id = ItemID_enum::Structure_ConstructionYard;
+    inline static constexpr ItemID_enum item_id = ItemID_enum::Structure_ConstructionYard;
     using parent = BuilderBase;
 
     ConstructionYard(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer);

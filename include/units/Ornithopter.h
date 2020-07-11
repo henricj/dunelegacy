@@ -23,8 +23,8 @@
 class Ornithopter final : public AirUnit
 {
 public:
-    static const ItemID_enum item_id = Unit_Ornithopter;
-    using parent                     = AirUnit;
+    inline static constexpr ItemID_enum item_id = Unit_Ornithopter;
+    using parent = AirUnit;
 
 
     Ornithopter(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer);

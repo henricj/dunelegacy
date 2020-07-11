@@ -22,8 +22,8 @@
 
 class Trike final : public GroundUnit {
 public:
-    static const ItemID_enum item_id = Unit_Trike;
-    using parent                     = GroundUnit;
+    inline static constexpr ItemID_enum item_id = Unit_Trike;
+    using parent = GroundUnit;
 
     Trike(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer);
     Trike(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer);

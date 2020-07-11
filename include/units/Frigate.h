@@ -23,7 +23,7 @@
 class Frigate final : public AirUnit
 {
 public:
-    static const ItemID_enum item_id = ItemID_enum::Unit_Frigate;
+    inline static constexpr ItemID_enum item_id = ItemID_enum::Unit_Frigate;
     using parent = AirUnit;
 
     Frigate(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer);

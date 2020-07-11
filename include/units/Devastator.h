@@ -24,7 +24,7 @@
 class Devastator final : public TrackedUnit
 {
 public:
-    static const ItemID_enum item_id = ItemID_enum::Unit_Devastator;
+    inline static constexpr ItemID_enum item_id = ItemID_enum::Unit_Devastator;
     using parent                     = TrackedUnit;
 
     Devastator(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer);

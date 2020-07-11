@@ -23,8 +23,8 @@
 class Soldier final : public InfantryBase
 {
 public:
-    static const ItemID_enum item_id = Unit_Soldier;
-    using parent                     = InfantryBase;
+    inline static constexpr ItemID_enum item_id = Unit_Soldier;
+    using parent = InfantryBase;
 
     Soldier(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer);
     Soldier(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer);

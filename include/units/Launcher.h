@@ -23,8 +23,8 @@
 class Launcher final : public TrackedUnit
 {
 public:
-    static const ItemID_enum item_id = ItemID_enum::Unit_Launcher;
-    using parent                     = TrackedUnit;
+    inline static constexpr ItemID_enum item_id = ItemID_enum::Unit_Launcher;
+    using parent = TrackedUnit;
 
     Launcher(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer);
     Launcher(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer);

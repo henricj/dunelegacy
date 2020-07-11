@@ -23,8 +23,8 @@
 class WOR final : public BuilderBase
 {
 public:
-    static const ItemID_enum item_id = Structure_WOR;
-    using parent                     = BuilderBase;
+    inline static constexpr ItemID_enum item_id = Structure_WOR;
+    using parent = BuilderBase;
 
     WOR(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer);
     WOR(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer);
