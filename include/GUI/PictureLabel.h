@@ -61,7 +61,7 @@ public:
         be resized to a size smaller than this.
         \return the minimum size of this picture label
     */
-    Point getMinimumSize() const override
+    [[nodiscard]] Point getMinimumSize() const override
     {
         if(pTexture) {
             return getTextureSize(pTexture.get());

@@ -55,63 +55,63 @@ public:
 
     void addPlayer(std::unique_ptr<Player> newPlayer);
 
-    HOUSETYPE getHouseID() const noexcept { return houseID; }
-    int getTeamID() const noexcept { return teamID; }
+    [[nodiscard]] HOUSETYPE getHouseID() const noexcept { return houseID; }
+    [[nodiscard]] int getTeamID() const noexcept { return teamID; }
 
-    bool isAI() const noexcept { return ai; }
-    bool isAlive() const noexcept { return (teamID == 0) || !(((numStructures - numItem[Structure_Wall]) <= 0) && (((numUnits - numItem[Unit_Carryall] - numItem[Unit_Harvester] - numItem[Unit_Frigate] - numItem[Unit_Sandworm]) <= 0))); }
+    [[nodiscard]] bool isAI() const noexcept { return ai; }
+    [[nodiscard]] bool isAlive() const noexcept { return (teamID == 0) || !(((numStructures - numItem[Structure_Wall]) <= 0) && (((numUnits - numItem[Unit_Carryall] - numItem[Unit_Harvester] - numItem[Unit_Frigate] - numItem[Unit_Sandworm]) <= 0))); }
 
-    bool hasCarryalls() const noexcept { return (numItem[Unit_Carryall] > 0); }
-    bool hasBarracks() const noexcept { return (numItem[Structure_Barracks] > 0); }
-    bool hasIX() const noexcept { return (numItem[Structure_IX] > 0); }
-    bool hasLightFactory() const noexcept { return (numItem[Structure_LightFactory] > 0); }
-    bool hasHeavyFactory() const noexcept { return (numItem[Structure_HeavyFactory] > 0); }
-    bool hasRefinery() const noexcept { return (numItem[Structure_Refinery] > 0); }
-    bool hasRepairYard() const noexcept { return (numItem[Structure_RepairYard] > 0); }
-    bool hasStarPort() const noexcept { return (numItem[Structure_StarPort] > 0); }
-    bool hasWindTrap() const noexcept { return (numItem[Structure_WindTrap] > 0); }
-    bool hasSandworm() const noexcept { return (numItem[Unit_Sandworm] > 0); }
-    bool hasRadar() const noexcept { return (numItem[Structure_Radar] > 0); }
+    [[nodiscard]] bool hasCarryalls() const noexcept { return (numItem[Unit_Carryall] > 0); }
+    [[nodiscard]] bool hasBarracks() const noexcept { return (numItem[Structure_Barracks] > 0); }
+    [[nodiscard]] bool hasIX() const noexcept { return (numItem[Structure_IX] > 0); }
+    [[nodiscard]] bool hasLightFactory() const noexcept { return (numItem[Structure_LightFactory] > 0); }
+    [[nodiscard]] bool hasHeavyFactory() const noexcept { return (numItem[Structure_HeavyFactory] > 0); }
+    [[nodiscard]] bool hasRefinery() const noexcept { return (numItem[Structure_Refinery] > 0); }
+    [[nodiscard]] bool hasRepairYard() const noexcept { return (numItem[Structure_RepairYard] > 0); }
+    [[nodiscard]] bool hasStarPort() const noexcept { return (numItem[Structure_StarPort] > 0); }
+    [[nodiscard]] bool hasWindTrap() const noexcept { return (numItem[Structure_WindTrap] > 0); }
+    [[nodiscard]] bool hasSandworm() const noexcept { return (numItem[Unit_Sandworm] > 0); }
+    [[nodiscard]] bool hasRadar() const noexcept { return (numItem[Structure_Radar] > 0); }
 
-    bool hasRadarOn() const noexcept { return (hasRadar() && hasPower()); }
-    bool hasPower() const noexcept { return (producedPower >= powerRequirement); }
+    [[nodiscard]] bool hasRadarOn() const noexcept { return (hasRadar() && hasPower()); }
+    [[nodiscard]] bool hasPower() const noexcept { return (producedPower >= powerRequirement); }
 
-    int getNumStructures() const noexcept { return numStructures; };
-    int getNumUnits() const noexcept{ return numUnits; };
-    int getNumItems(ItemID_enum itemID) const { return (isStructure(itemID) || isUnit(itemID)) ? numItem[itemID] : 0; };
+    [[nodiscard]] int getNumStructures() const noexcept { return numStructures; };
+    [[nodiscard]] int getNumUnits() const noexcept{ return numUnits; };
+    [[nodiscard]] int getNumItems(ItemID_enum itemID) const { return (isStructure(itemID) || isUnit(itemID)) ? numItem[itemID] : 0; };
 
-    int getCapacity() const noexcept{ return capacity; }
+    [[nodiscard]] int getCapacity() const noexcept{ return capacity; }
 
-    int getProducedPower() const noexcept { return producedPower; }
+    [[nodiscard]] int getProducedPower() const noexcept { return producedPower; }
     void setProducedPower(int newPower);
-    int getPowerRequirement() const noexcept { return powerRequirement; }
+    [[nodiscard]] int getPowerRequirement() const noexcept { return powerRequirement; }
 
-    int getBuiltValue() const noexcept { return unitBuiltValue + structureBuiltValue; }
-    int getUnitBuiltValue() const noexcept { return unitBuiltValue; }
-    int getMilitaryValue() const noexcept { return militaryValue; }
-    int getKillValue() const noexcept { return killValue; }
-    int getLossValue() const noexcept { return lossValue; }
-    int getStructureBuiltValue() const noexcept { return structureBuiltValue; }
-    int getNumBuiltUnits() const noexcept { return numBuiltUnits; }
-    int getNumBuiltStructures() const noexcept { return numBuiltStructures; }
-    int getDestroyedValue() const noexcept { return destroyedValue; }
-    int getNumDestroyedUnits() const noexcept { return numDestroyedUnits; }
-    int getNumDestroyedStructures() const noexcept { return numDestroyedStructures; }
-    int getNumBuiltItems(ItemID_enum itemID) const noexcept { return numItemBuilt[itemID]; }
-    int getNumKilledItems(ItemID_enum itemID) const noexcept { return numItemKills[itemID]; }
-    int getNumLostItems(ItemID_enum itemID) const noexcept { return numItemLosses[itemID]; }
-    Sint32 getNumItemDamageInflicted(ItemID_enum itemID) const noexcept { return numItemDamageInflicted[itemID]; }
-    FixPoint getHarvestedSpice() const noexcept { return harvestedSpice; }
-    int getNumVisibleEnemyUnits() const noexcept { return numVisibleEnemyUnits; }
-    int getNumVisibleFriendlyUnits() const noexcept { return numVisibleFriendlyUnits; }
+    [[nodiscard]] int getBuiltValue() const noexcept { return unitBuiltValue + structureBuiltValue; }
+    [[nodiscard]] int getUnitBuiltValue() const noexcept { return unitBuiltValue; }
+    [[nodiscard]] int getMilitaryValue() const noexcept { return militaryValue; }
+    [[nodiscard]] int getKillValue() const noexcept { return killValue; }
+    [[nodiscard]] int getLossValue() const noexcept { return lossValue; }
+    [[nodiscard]] int getStructureBuiltValue() const noexcept { return structureBuiltValue; }
+    [[nodiscard]] int getNumBuiltUnits() const noexcept { return numBuiltUnits; }
+    [[nodiscard]] int getNumBuiltStructures() const noexcept { return numBuiltStructures; }
+    [[nodiscard]] int getDestroyedValue() const noexcept { return destroyedValue; }
+    [[nodiscard]] int getNumDestroyedUnits() const noexcept { return numDestroyedUnits; }
+    [[nodiscard]] int getNumDestroyedStructures() const noexcept { return numDestroyedStructures; }
+    [[nodiscard]] int getNumBuiltItems(ItemID_enum itemID) const noexcept { return numItemBuilt[itemID]; }
+    [[nodiscard]] int getNumKilledItems(ItemID_enum itemID) const noexcept { return numItemKills[itemID]; }
+    [[nodiscard]] int getNumLostItems(ItemID_enum itemID) const noexcept { return numItemLosses[itemID]; }
+    [[nodiscard]] Sint32 getNumItemDamageInflicted(ItemID_enum itemID) const noexcept { return numItemDamageInflicted[itemID]; }
+    [[nodiscard]] FixPoint getHarvestedSpice() const noexcept { return harvestedSpice; }
+    [[nodiscard]] int getNumVisibleEnemyUnits() const noexcept { return numVisibleEnemyUnits; }
+    [[nodiscard]] int getNumVisibleFriendlyUnits() const noexcept { return numVisibleFriendlyUnits; }
 
-    int getQuota() const noexcept { return quota; };
-    int getMaxUnits() const noexcept { return maxUnits; };
+    [[nodiscard]] int getQuota() const noexcept { return quota; };
+    [[nodiscard]] int getMaxUnits() const noexcept { return maxUnits; };
 
     void informContactWithEnemy() { bHadContactWithEnemy = true; };
-    bool hadContactWithEnemy() const { return bHadContactWithEnemy; };
+    [[nodiscard]] bool hadContactWithEnemy() const { return bHadContactWithEnemy; };
     void informDirectContactWithEnemy() { bHadDirectContactWithEnemy = true; };
-    bool hadDirectContactWithEnemy() const { return bHadDirectContactWithEnemy; };
+    [[nodiscard]] bool hadDirectContactWithEnemy() const { return bHadDirectContactWithEnemy; };
 
     void informVisibleEnemyUnit() {
         numVisibleEnemyUnits++;
@@ -125,7 +125,7 @@ public:
         This function checks if the limit for ground units is already reached. Infantry units are only counted as 1/3.
         \return true, if the limit is already reached, false if building further ground units is allowed
     */
-    bool isGroundUnitLimitReached() const {
+    [[nodiscard]] bool isGroundUnitLimitReached() const {
         int numGroundUnit = numUnits - numItem[Unit_Soldier] - numItem[Unit_Trooper] - numItem[Unit_Carryall] - numItem[Unit_Ornithopter];
         return (numGroundUnit + (numItem[Unit_Soldier]+2)/3 + (numItem[Unit_Trooper]+2)/3  >= maxUnits);
     };
@@ -134,7 +134,7 @@ public:
         This function checks if the limit for infantry units is already reached. Infantry units are only counted as 1/3.
         \return true, if the limit is already reached, false if building further infantry units is allowed
     */
-    bool isInfantryUnitLimitReached() const {
+    [[nodiscard]] bool isInfantryUnitLimitReached() const {
         const auto numGroundUnit = numUnits - numItem[Unit_Soldier] - numItem[Unit_Trooper] - numItem[Unit_Carryall] - numItem[Unit_Ornithopter];
         return (numGroundUnit + numItem[Unit_Soldier]/3 + numItem[Unit_Trooper]/3  >= maxUnits);
     };
@@ -143,17 +143,17 @@ public:
         This function checks if the limit for air units is already reached.
         \return true, if the limit is already reached, false if building further air units is allowed
     */
-    bool isAirUnitLimitReached() const {
+    [[nodiscard]] bool isAirUnitLimitReached() const {
         return (numItem[Unit_Carryall] + numItem[Unit_Ornithopter] >= 11*std::max(maxUnits,25)/25);
     }
 
     Choam& getChoam() { return choam; };
-    const Choam& getChoam() const { return choam; };
+    [[nodiscard]] const Choam& getChoam() const { return choam; };
 
 
-    FixPoint getStartingCredits() const { return startingCredits; }
-    FixPoint getStoredCredits() const { return storedCredits; }
-    int getCredits() const { return lround(storedCredits+startingCredits); }
+    [[nodiscard]] FixPoint getStartingCredits() const { return startingCredits; }
+    [[nodiscard]] FixPoint getStoredCredits() const { return storedCredits; }
+    [[nodiscard]] int getCredits() const { return lround(storedCredits+startingCredits); }
     void addCredits(FixPoint newCredits, bool wasRefined = false);
     void returnCredits(FixPoint newCredits);
     FixPoint takeCredits(FixPoint amount);
@@ -201,16 +201,16 @@ public:
 
     UnitBase* placeUnit(ItemID_enum itemID, int xPos, int yPos, bool byScenario = false);
 
-    Coord getCenterOfMainBase() const;
+    [[nodiscard]] Coord getCenterOfMainBase() const;
 
-    Coord getStrongestUnitPosition() const;
+    [[nodiscard]] Coord getStrongestUnitPosition() const;
 
-    const std::vector<AITeamInfo> getAITeams() const { return aiteams; };
+    [[nodiscard]] const std::vector<AITeamInfo> getAITeams() const { return aiteams; };
     void addAITeam(AITeamBehavior aiTeamBehavior, AITeamType aiTeamType, int minUnits, int maxUnits) {
         aiteams.emplace_back(houseID, aiTeamBehavior, aiTeamType, minUnits, maxUnits);
     }
 
-    const std::list<std::unique_ptr<Player> >& getPlayerList() const { return players; };
+    [[nodiscard]] const std::list<std::unique_ptr<Player> >& getPlayerList() const { return players; };
 
 protected:
     void decrementHarvesters();

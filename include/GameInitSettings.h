@@ -165,24 +165,24 @@ public:
 
     void save(OutputStream& stream) const;
 
-    GameType getGameType() const noexcept { return gameType; };
-    HOUSETYPE getHouseID() const noexcept { return houseID; };
-    int getMission() const noexcept { return mission; };
-    Uint32 getAlreadyPlayedRegions() const noexcept { return alreadyPlayedRegions; };
-    Uint32 getAlreadyShownTutorialHints() const noexcept { return alreadyShownTutorialHints; };
-    const std::filesystem::path& getFilename() const noexcept { return filename; };
-    const std::string& getFiledata() const noexcept { return filedata; };
-    const std::string& getServername() const noexcept { return servername; };
-    const std::vector<Uint8>& getRandomSeed() const noexcept { return randomSeed; };
+    [[nodiscard]] GameType getGameType() const noexcept { return gameType; };
+    [[nodiscard]] HOUSETYPE getHouseID() const noexcept { return houseID; };
+    [[nodiscard]] int getMission() const noexcept { return mission; };
+    [[nodiscard]] Uint32 getAlreadyPlayedRegions() const noexcept { return alreadyPlayedRegions; };
+    [[nodiscard]] Uint32 getAlreadyShownTutorialHints() const noexcept { return alreadyShownTutorialHints; };
+    [[nodiscard]] const std::filesystem::path& getFilename() const noexcept { return filename; };
+    [[nodiscard]] const std::string& getFiledata() const noexcept { return filedata; };
+    [[nodiscard]] const std::string& getServername() const noexcept { return servername; };
+    [[nodiscard]] const std::vector<Uint8>& getRandomSeed() const noexcept { return randomSeed; };
 
-    bool isMultiplePlayersPerHouse() const noexcept { return multiplePlayersPerHouse; };
+    [[nodiscard]] bool isMultiplePlayersPerHouse() const noexcept { return multiplePlayersPerHouse; };
     void setMultiplePlayersPerHouse(bool multiplePlayersPerHouse) noexcept { this->multiplePlayersPerHouse = multiplePlayersPerHouse; };
-    const SettingsClass::GameOptionsClass& getGameOptions() const noexcept { return gameOptions; };
+    [[nodiscard]] const SettingsClass::GameOptionsClass& getGameOptions() const noexcept { return gameOptions; };
     void setGameSpeed(int gameSpeed) noexcept { gameOptions.gameSpeed = gameSpeed; };
 
     void addHouseInfo(const HouseInfo& newHouseInfo) { houseInfoList.push_back(newHouseInfo); };
     void clearHouseInfo() { houseInfoList.clear(); };
-    const HouseInfoList& getHouseInfoList() const noexcept { return houseInfoList; };
+    [[nodiscard]] const HouseInfoList& getHouseInfoList() const noexcept { return houseInfoList; };
 
     void setHouseID(HOUSETYPE houseID) noexcept { this->houseID = houseID; };
 

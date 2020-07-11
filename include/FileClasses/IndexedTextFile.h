@@ -46,7 +46,7 @@ public:
     \param  n       the number of the string to return
     \return the nth text in the file.
     */
-    const std::string& getString(unsigned int n) const {
+    [[nodiscard]] const std::string& getString(unsigned int n) const {
         if(n >= indexedStrings.size()) {
             THROW(std::invalid_argument, "IndexedTextFile:getString(): Invalid index!");
         }
@@ -59,7 +59,7 @@ public:
     /**
     \return the number of strings in this file
     */
-    unsigned int getNumStrings() const noexcept {
+    [[nodiscard]] unsigned int getNumStrings() const noexcept {
         return  indexedStrings.size();
     }
 

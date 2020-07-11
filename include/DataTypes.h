@@ -102,11 +102,11 @@ public:
         y = INVALID_POS;
     }
 
-    constexpr bool isValid() const noexcept {
+    [[nodiscard]] constexpr bool isValid() const noexcept {
         return ((x != INVALID_POS) && (y != INVALID_POS));
     }
 
-    constexpr bool isInvalid() const noexcept {
+    [[nodiscard]] constexpr bool isInvalid() const noexcept {
         return ((x == INVALID_POS) || (y == INVALID_POS));
     }
 

@@ -34,9 +34,9 @@ public:
     void save(OutputStream& stream) const;
     void load(InputStream& stream);
 
-    int getPrice(ItemID_enum itemID) const;
-    bool isCheap(ItemID_enum itemID) const;
-    int getNumAvailable(ItemID_enum itemID) const;
+    [[nodiscard]] int getPrice(ItemID_enum itemID) const;
+    [[nodiscard]] bool isCheap(ItemID_enum itemID) const;
+    [[nodiscard]] int getNumAvailable(ItemID_enum itemID) const;
 
     bool setNumAvailable(ItemID_enum itemID, int newValue);
 
