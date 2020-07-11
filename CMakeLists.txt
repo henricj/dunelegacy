@@ -74,6 +74,47 @@ if(MSVC)
     string( APPEND CMAKE_CXX_FLAGS ${DUNELEGACY_MSVC_FLAGS} )
 endif()
 
+
+include(CheckCXXSourceCompiles)
+
+check_cxx_source_compiles(
+    "#include <charconv>
+    char buffer[64];
+    int main(int argc, char* argv[]) {
+        auto [ptr, ec] = std::to_chars(&buffer[0], &buffer[sizeof(buffer)], 1.0f);
+        return 0;
+    }"
+    HAVE_FLOAT_TO_CHARS)
+
+check_cxx_source_compiles(
+    "#include <charconv>
+    char buffer[64];
+    int main(int argc, char* argv[]) {
+        auto [ptr, ec] = std::to_chars(&buffer[0], &buffer[sizeof(buffer)], 1.0);
+        return 0;
+    }"
+    HAVE_DOUBLE_TO_CHARS)
+
+check_cxx_source_compiles(
+    "#include <charconv>
+    const char number[] = \"1.0\";
+    int main(int argc, char* argv[]) {
+        float value;
+        auto [ptr, ec] = std::from_chars(&number[0], &number[sizeof(number) - 1], value);
+        return 0;
+    }"
+    HAVE_FLOAT_FROM_CHARS)
+
+check_cxx_source_compiles(
+    "#include <charconv>
+    const char number[] = \"1.0\";
+    int main(int argc, char* argv[]) {
+        double value;
+        auto [ptr, ec] = std::from_chars(&number[0], &number[sizeof(number) - 1], value);
+        return 0;
+    }"
+    HAVE_DOUBLE_FROM_CHARS)
+
 add_subdirectory(external)
 add_subdirectory(src)
 
