@@ -542,8 +542,8 @@ template<typename ObjectType, typename... Args>
 std::unique_ptr<ObjectBase> makeObject(Args&&... args) {
     static_assert(std::is_constructible<ObjectType, ItemID_enum, Args...>::value, "ObjectType is not constructible");
     static_assert(std::is_base_of<ObjectBase, ObjectType>::value, "ObjectType not derived from ObjectBase");
-    static_assert(std::is_base_of<ObjectBase, ObjectType::parent>::value, "ObjectType's parent is not derived from ObjectBase");
-    static_assert(std::is_base_of<ObjectType::parent, ObjectType>::value, "ObjectType's parent is not a base class");
+    static_assert(std::is_base_of<ObjectBase, typename ObjectType::parent>::value, "ObjectType's parent is not derived from ObjectBase");
+    static_assert(std::is_base_of<typename ObjectType::parent, ObjectType>::value, "ObjectType's parent is not a base class");
 
     return std::make_unique<ObjectType>(ObjectType::item_id, std::forward<Args>(args)...);
 }
