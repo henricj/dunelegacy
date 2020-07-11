@@ -23,8 +23,8 @@
 class Quad final : public GroundUnit
 {
 public:
-    static const ItemID_enum item_id = Unit_Quad;
-    using parent                     = GroundUnit;
+    inline static constexpr ItemID_enum item_id = Unit_Quad;
+    using parent = GroundUnit;
 
     Quad(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer);
     Quad(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer);

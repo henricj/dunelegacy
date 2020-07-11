@@ -23,7 +23,7 @@
 class IX final : public StructureBase
 {
 public:
-    static const ItemID_enum item_id = Structure_IX;
+    inline static constexpr ItemID_enum item_id = Structure_IX;
     using parent = StructureBase;
 
     IX(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer);

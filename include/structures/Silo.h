@@ -22,8 +22,8 @@
 
 class Silo final : public StructureBase {
 public:
-    static const ItemID_enum item_id = Structure_Silo;
-    using parent                     = StructureBase;
+    inline static constexpr ItemID_enum item_id = Structure_Silo;
+    using parent = StructureBase;
 
     Silo(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer);
     Silo(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer);
