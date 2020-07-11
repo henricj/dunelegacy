@@ -71,8 +71,15 @@ void safe_tolower_inplace(std::u32string& s32) {
     std::transform(s32.begin(), s32.end(), s32.begin(), [](char32_t c) { return safe_tolower(c); });
 }
 
+// Work around standard brain damage
+// http://www.open-std.org/jtc1/sc22/wg21/docs/lwg-closed.html#721
+template<class I, class E, class S>
+struct codecvt : std::codecvt<I, E, S> {
+    ~codecvt() = default;
+};
+
 std::string safe_tolower(std::string_view s) {
-    std::wstring_convert<std::codecvt<char32_t, char, mbstate_t>, char32_t> conv;
+    std::wstring_convert<codecvt<char32_t, char, mbstate_t>, char32_t> conv;
 
     auto s32 = conv.from_bytes(s.data(), s.data() + s.size());
 
