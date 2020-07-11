@@ -107,6 +107,42 @@ public:
             return ret;
         }
 
+#ifdef NEED_FLOAT_TO_CHARS
+        [[nodiscard]] auto getValue(float defaultValue) const noexcept -> float {
+            auto view = getStringView();
+            if(view.empty()) return defaultValue;
+
+            if(view.front() == '+') view.remove_prefix(1);
+
+            const std::string str{view};
+
+            char* end;
+            auto  result = std::strtof(str.c_str(), &end);
+
+            if(HUGE_VALF == result || end == str.c_str()) return defaultValue;
+
+            return result;
+        }
+#endif
+
+#ifdef NEED_DOUBLE_TO_CHARS
+        [[nodiscard]] auto getValue(double defaultValue) const noexcept -> double {
+            auto view = getStringView();
+            if(view.empty()) return defaultValue;
+
+            if(view.front() == '+') view.remove_prefix(1);
+
+            const std::string str{view};
+
+            char* end;
+            auto  result = std::strtod(str.c_str(), &end);
+
+            if(HUGE_VAL == result || end == str.c_str()) return defaultValue;
+
+            return result;
+        }
+#endif
+
         [[nodiscard]] int    getIntValue(int defaultValue = 0) const noexcept { return getValue(defaultValue); }
         [[nodiscard]] float  getFloatValue(float defaultValue = 0.0f) const noexcept { return getValue(defaultValue); }
         [[nodiscard]] double getDoubleValue(double defaultValue = 0.0) const noexcept { return getValue(defaultValue); }
@@ -122,6 +158,22 @@ public:
 
             setStringValue(std::string_view{&buffer[0], static_cast<size_t>(ptr - &buffer[0])});
         }
+
+#ifdef NEED_FLOAT_TO_CHARS
+        void setValue(float newValue) {
+            const auto str = std::to_string(newValue);
+
+            setStringValue(str);
+        }
+#endif
+
+#ifdef NEED_DOUBLE_TO_CHARS
+        void setValue(double newValue) {
+            const auto str = std::to_string(newValue);
+
+            setStringValue(str);
+        }
+#endif
 
         void setIntValue(int newValue) { setValue(newValue); }
         void setDoubleValue(double newValue) { setValue(newValue); }
