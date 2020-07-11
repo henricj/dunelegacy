@@ -104,25 +104,6 @@ private:
     void pre_deployUnits(const GameContext& context);
     void deployUnit(const GameContext& context, Tile* tile, UnitBase* pUnit);
     void post_deployUnits();
-
-    template<typename F>
-    void deployUnits(const GameContext& context, F&& predicate) {
-        pre_deployUnits();
-
-        auto *const tile = currentGameMap->getTile(location);
-
-        removeUnits([&](UnitBase* unit)
-                    {
-                        if (!F(unit))
-                            return false;
-
-                        deployUnit(context, tile, unit);
-
-                        return true;
-                    });
-
-        post_deployUnits();
-    }
 };
 
 #endif // CARRYALL_H
