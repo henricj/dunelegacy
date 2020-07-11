@@ -77,7 +77,7 @@ void Wall::destroy(const GameContext& context) {
     if(auto* tile = map.tryGetTile(location.x, location.y - 1)) {
         if(auto* pWall = dune_cast<Wall>(tile->getGroundObject(objectManager))) {
             pWall->bWallDestroyedDown = true;
-            pWall->fixWall();
+            pWall->fixWall(context);
         }
     }
 
@@ -85,7 +85,7 @@ void Wall::destroy(const GameContext& context) {
     if(auto* tile = map.tryGetTile(location.x, location.y + 1)) {
         if(auto* pWall = dune_cast<Wall>(tile->getGroundObject(objectManager))) {
             pWall->bWallDestroyedUp = true;
-            pWall->fixWall();
+            pWall->fixWall(context);
         }
     }
 
@@ -93,7 +93,7 @@ void Wall::destroy(const GameContext& context) {
     if(auto* tile = map.tryGetTile(location.x - 1, location.y)) {
         if(auto* pWall = dune_cast<Wall>(tile->getGroundObject(objectManager))) {
             pWall->bWallDestroyedRight = true;
-            pWall->fixWall();
+            pWall->fixWall(context);
         }
     }
 
@@ -101,7 +101,7 @@ void Wall::destroy(const GameContext& context) {
     if(auto* tile = map.tryGetTile(location.x + 1, location.y)) {
         if(auto* pWall = dune_cast<Wall>(tile->getGroundObject(objectManager))) {
             pWall->bWallDestroyedLeft = true;
-            pWall->fixWall();
+            pWall->fixWall(context);
         }
     }
 
@@ -109,7 +109,7 @@ void Wall::destroy(const GameContext& context) {
 }
 
 /**
-    Sets the place for this wall and fixes the wall and their surounding walls.
+    Sets the place for this wall and fixes the wall and their surrounding walls.
     \param  xPos    the x position of this wall
     \param  yPos    the y position of this wall
 */
@@ -117,65 +117,67 @@ void Wall::setLocation(const GameContext& context, int xPos, int yPos) {
     parent::setLocation(context, xPos, yPos);
 
     // fix this wall
-    fixWall();
+    fixWall(context);
 
     const auto& map = context.map;
 
     Wall* pWall = nullptr;
 
     // fix wall to the north
-    pWall = map.getGroundObject<Wall>(location.x, location.y - 1);
+    pWall = map.getGroundObject<Wall>(context, location.x, location.y - 1);
     if(pWall) {
         pWall->bWallDestroyedDown = false;
-        pWall->fixWall();
+        pWall->fixWall(context);
     }
 
     // fix wall to the south
-    pWall = map.getGroundObject<Wall>(location.x, location.y + 1);
+    pWall = map.getGroundObject<Wall>(context, location.x, location.y + 1);
     if(pWall) {
         pWall->bWallDestroyedUp = false;
-        pWall->fixWall();
+        pWall->fixWall(context);
     }
 
     // fix wall to the west
-    pWall = map.getGroundObject<Wall>(location.x - 1, location.y);
+    pWall = map.getGroundObject<Wall>(context, location.x - 1, location.y);
     if(pWall) {
         pWall->bWallDestroyedRight = false;
-        pWall->fixWall();
+        pWall->fixWall(context);
     }
 
     // fix wall to the east
-    pWall = map.getGroundObject<Wall>(location.x + 1, location.y);
+    pWall = map.getGroundObject<Wall>(context, location.x + 1, location.y);
     if(pWall) {
         pWall->bWallDestroyedLeft = false;
-        pWall->fixWall();
+        pWall->fixWall(context);
     }
 }
 
 /**
     Fixes this wall. The choosen wall tile is based on the 4 surounding tiles and previously destroyed walls.
 */
-void Wall::fixWall() {
+void Wall::fixWall(const GameContext& context) {
 
     int i = location.x;
     int j = location.y;
 
     int maketile = Wall_LeftRight;
 
-    const auto* const map = currentGameMap;
+    const auto& map = context.map;
 
+    // clang-format off
     // Walls
-    bool up    = map->hasAGroundObject<Wall>(i    , j - 1) || bWallDestroyedUp;
-    bool right = map->hasAGroundObject<Wall>(i + 1, j    ) || bWallDestroyedRight;
-    bool down  = map->hasAGroundObject<Wall>(i    , j + 1) || bWallDestroyedDown;
-    bool left  = map->hasAGroundObject<Wall>(i - 1, j    ) || bWallDestroyedLeft;
+    bool up    = map.hasAGroundObject<Wall>(context, i    , j - 1) || bWallDestroyedUp;
+    bool right = map.hasAGroundObject<Wall>(context, i + 1, j    ) || bWallDestroyedRight;
+    bool down  = map.hasAGroundObject<Wall>(context, i    , j + 1) || bWallDestroyedDown;
+    bool left  = map.hasAGroundObject<Wall>(context, i - 1, j    ) || bWallDestroyedLeft;
+    // clang-format on
 
     // calculate destroyed tile index
     int destroyedTileIndex = 0;
-    if(left)    destroyedTileIndex = (destroyedTileIndex << 1) | ((int) bWallDestroyedLeft);
-    if(down)    destroyedTileIndex = (destroyedTileIndex << 1) | ((int) bWallDestroyedDown);
-    if(right)   destroyedTileIndex = (destroyedTileIndex << 1) | ((int) bWallDestroyedRight);
-    if(up)      destroyedTileIndex = (destroyedTileIndex << 1) | ((int) bWallDestroyedUp);
+    if(left)    destroyedTileIndex = (destroyedTileIndex << 1) | static_cast<int>(bWallDestroyedLeft);
+    if(down)    destroyedTileIndex = (destroyedTileIndex << 1) | static_cast<int>(bWallDestroyedDown);
+    if(right)   destroyedTileIndex = (destroyedTileIndex << 1) | static_cast<int>(bWallDestroyedRight);
+    if(up)      destroyedTileIndex = (destroyedTileIndex << 1) | static_cast<int>(bWallDestroyedUp);
 
     // Now perform the test
     if ((left) && (right) && (up) && (down)) {

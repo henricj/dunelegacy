@@ -74,7 +74,7 @@ void InfantryBase::save(OutputStream& stream) const {
 
 void InfantryBase::handleCaptureClick(const GameContext& context, int xPos, int yPos) {
     if(respondable && ((getItemID() == Unit_Soldier) || (getItemID() == Unit_Trooper))) {
-        const auto* const tempTarget = context.map.tryGetObject(xPos, yPos);
+        const auto* const tempTarget = context.map.tryGetObject(context, xPos, yPos);
 
         if(!tempTarget) return;
 

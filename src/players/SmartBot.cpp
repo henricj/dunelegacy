@@ -353,19 +353,19 @@ int SmartBot::getNumAdjacentStructureTiles(Coord pos, int structureSizeX, int st
     auto& map = getMap();
 
     for(int y = pos.y; y < pos.y + structureSizeY; y++) {
-        if(map.hasAStructure(pos.x-1, y)) {
+        if(map.hasAStructure(context_, pos.x-1, y)) {
             numAdjacentStructureTiles++;
         }
-        if(map.hasAStructure(pos.x+structureSizeX, y)) {
+        if(map.hasAStructure(context_, pos.x+structureSizeX, y)) {
             numAdjacentStructureTiles++;
         }
     }
 
     for(int x = pos.x; x < pos.x + structureSizeX; x++) {
-        if(map.hasAStructure(x, pos.y-1)) {
+        if(map.hasAStructure(context_, x, pos.y-1)) {
             numAdjacentStructureTiles++;
         }
-        if(map.hasAStructure(x, pos.y+structureSizeY)) {
+        if(map.hasAStructure(context_, x, pos.y+structureSizeY)) {
             numAdjacentStructureTiles++;
         }
     }
@@ -378,150 +378,146 @@ void SmartBot::build(const GameContext& context) {
     // Lets count what we are building
     int buildQueue[ItemID_LastID] = {};
 
-    for(const StructureBase* pStructure : getStructureList()) {
-        if(pStructure->getOwner() == getHouse() && pStructure->isABuilder()) {
-            const auto* pBuilder = static_cast<const BuilderBase*>(pStructure);
-            if(pBuilder->getBuildListSize() > 0){
-                buildQueue[pBuilder->getCurrentProducedItem()]++;
-            }
+    for(const auto* pStructure : getStructureList()) {
+        if(pStructure->getOwner() != getHouse()) continue;
+
+        if(const auto* pBuilder = dune_cast<BuilderBase>(pStructure)) {
+            if(pBuilder->getBuildListSize() > 0) { ++buildQueue[pBuilder->getCurrentProducedItem()]; }
         }
     }
 
-    for(const StructureBase* pStructure : getStructureList()) {
-        if(pStructure->getOwner() == getHouse()) {
+    for(const auto* pStructure : getStructureList()) {
+        if(pStructure->getOwner() != getHouse()) continue;
 
-            if((!pStructure->isRepairing())
-               && (pStructure->getHealth() < pStructure->getMaxHealth()))
-            {
-                doRepair(pStructure);
-            }
+        if(!pStructure->isRepairing() && pStructure->getHealth() < pStructure->getMaxHealth()) { doRepair(pStructure); }
 
-            if(pStructure->isABuilder()) {
-                const auto* pBuilder = static_cast<const BuilderBase*>(pStructure);
+        const auto* pBuilder = dune_cast<BuilderBase>(pStructure);
+        if(!pStructure) continue;
 
-                switch (pBuilder->getItemID()) {
+        switch (pBuilder->getItemID()) {
 
-                    case Structure_HeavyFactory: {
+            case Structure_HeavyFactory: {
 
-                        // only if the factory isn't busy
-                        if((!pBuilder->isUpgrading()) && (pBuilder->getProductionQueueSize() < 1)){
+                // only if the factory isn't busy
+                if((!pBuilder->isUpgrading()) && (pBuilder->getProductionQueueSize() < 1)){
 
-                            // we need a construction yard. Build an MCV if we don't have a starport
-                            // or if we are really rich
-                            if(getHouse()->getNumItems(Structure_ConstructionYard) < 1
-                                && getHouse()->getNumItems(Unit_MCV) < 1
-                                && getHouse()->getNumItems(Structure_StarPort) < 1
-                                && pBuilder->isAvailableToBuild(Unit_MCV)){
+                    // we need a construction yard. Build an MCV if we don't have a starport
+                    // or if we are really rich
+                    if(getHouse()->getNumItems(Structure_ConstructionYard) < 1
+                       && getHouse()->getNumItems(Unit_MCV) < 1
+                       && getHouse()->getNumItems(Structure_StarPort) < 1
+                       && pBuilder->isAvailableToBuild(Unit_MCV)){
 
-                               doProduceItem(pBuilder, Unit_MCV);
+                        doProduceItem(pBuilder, Unit_MCV);
+                    }
+
+                    // If we are really rich, like in all against Atriedes
+                    if((getHouse()->getNumItems(Structure_ConstructionYard) + getHouse()->getNumItems(Unit_MCV))*25000 < getHouse()->getCredits()
+                       && pBuilder->isAvailableToBuild(Unit_MCV)){
+
+                        doProduceItem(pBuilder, Unit_MCV);
+                    }
+
+                    // In case we get given lots of money, it will eventually run out so we need to be prepared
+                    if((getHouse()->getNumItems(Unit_Harvester) < (getHouse()->getNumItems(Unit_SiegeTank)
+                                                                   + getHouse()->getNumItems(Unit_Launcher)
+                                                                   + getHouse()->getNumItems(Unit_Tank)
+                                                                   + getHouse()->getNumItems(Unit_Ornithopter))/2.5_fix)
+                       && (getHouse()->getNumItems(Unit_Harvester) < harvesterLimit )) {
+                        doProduceItem(pBuilder, Unit_Harvester);
+                    }
+
+
+                    if(focusMilitary()
+                       && (pBuilder->getHealth() >= pBuilder->getMaxHealth())
+                       && (!pBuilder->isUpgrading())
+                       && (pBuilder->getCurrentUpgradeLevel() < pBuilder->getMaxUpgradeLevel()))
+                    {
+                        doUpgrade(pBuilder);
+                        continue;
+                    }
+
+                    if((pBuilder->getProductionQueueSize() < 1)
+                            && (pBuilder->getBuildListSize() > 0)) {
+
+                        if(getHouse()->getNumItems(Unit_Harvester) < harvesterLimit
+                           && focusEconomy()) {
+                            doProduceItem(pBuilder, Unit_Harvester);
+                        } else if(focusMilitary()) {
+
+
+                            if(pBuilder->isAvailableToBuild(Unit_Launcher)
+                               &&((getHouse()->getNumItems(Unit_Tank) / 1.5_fix)
+                                  + getHouse()->getNumItems(Unit_SiegeTank)
+                                  + getHouse()->getNumItems(Unit_Devastator)
+                                  > getHouse()->getNumItems(Unit_Launcher) * 2)){
+
+                                doProduceItem(pBuilder, Unit_Launcher);
+
+
                             }
+                            else if(pBuilder->isAvailableToBuild(Unit_SiegeTank)) {
+                                doProduceItem(pBuilder, Unit_SiegeTank);
 
-                            // If we are really rich, like in all against atriedes
-                            if((getHouse()->getNumItems(Structure_ConstructionYard) + getHouse()->getNumItems(Unit_MCV))*25000 < getHouse()->getCredits()
-                                && pBuilder->isAvailableToBuild(Unit_MCV)){
-
-                               doProduceItem(pBuilder, Unit_MCV);
-                            }
-
-                            // In case we get given lots of money, it will eventually run out so we need to be prepared
-                            if((getHouse()->getNumItems(Unit_Harvester) < (getHouse()->getNumItems(Unit_SiegeTank)
-                                                                          + getHouse()->getNumItems(Unit_Launcher)
-                                                                          + getHouse()->getNumItems(Unit_Tank)
-                                                                          + getHouse()->getNumItems(Unit_Ornithopter))/2.5_fix)
-                                    && (getHouse()->getNumItems(Unit_Harvester) < harvesterLimit )) {
-                                    doProduceItem(pBuilder, Unit_Harvester);
-                            }
-
-
-                            if(focusMilitary()
-                               && (pBuilder->getHealth() >= pBuilder->getMaxHealth())
-                               && (!pBuilder->isUpgrading())
-                               && (pBuilder->getCurrentUpgradeLevel() < pBuilder->getMaxUpgradeLevel()))
-                            {
-                                doUpgrade(pBuilder);
-                                continue;
-                            }
-
-                            else if((pBuilder->getProductionQueueSize() < 1)
-                                    && (pBuilder->getBuildListSize() > 0)) {
-
-                                if(getHouse()->getNumItems(Unit_Harvester) < harvesterLimit
-                                   && focusEconomy()) {
-                                    doProduceItem(pBuilder, Unit_Harvester);
-                                } else if(focusMilitary()) {
-
-
-                                    if(pBuilder->isAvailableToBuild(Unit_Launcher)
-                                      &&((getHouse()->getNumItems(Unit_Tank) / 1.5_fix)
-                                         + getHouse()->getNumItems(Unit_SiegeTank)
-                                         + getHouse()->getNumItems(Unit_Devastator)
-                                         > getHouse()->getNumItems(Unit_Launcher) * 2)){
-
-                                        doProduceItem(pBuilder, Unit_Launcher);
-
-
-                                    }
-                                    else if(pBuilder->isAvailableToBuild(Unit_SiegeTank)) {
-                                        doProduceItem(pBuilder, Unit_SiegeTank);
-
-                                    } else if(pBuilder->isAvailableToBuild(Unit_Tank)) {
-                                        doProduceItem(pBuilder, Unit_Tank);
-                                    }
-                                }
+                            } else if(pBuilder->isAvailableToBuild(Unit_Tank)) {
+                                doProduceItem(pBuilder, Unit_Tank);
                             }
                         }
-                    } break;
+                    }
+                }
+            } break;
 
-                    case Structure_HighTechFactory: {
-                        if(focusMilitary() && pBuilder->getProductionQueueSize() < 1) {
+            case Structure_HighTechFactory: {
+                if(focusMilitary() && pBuilder->getProductionQueueSize() < 1) {
 
-                            if(getHouse()->getNumItems(Unit_Carryall) < 1
-                               || getHouse()->getNumItems(Unit_Carryall) <
-                                  (getHouse()->getNumItems(Structure_Refinery)
-                                   + getHouse()->getNumItems(Structure_RepairYard))) {
-                                doProduceItem(pBuilder, Unit_Carryall);
-                            }
-                        }
+                    if(getHouse()->getNumItems(Unit_Carryall) < 1
+                       || getHouse()->getNumItems(Unit_Carryall) <
+                       (getHouse()->getNumItems(Structure_Refinery)
+                        + getHouse()->getNumItems(Structure_RepairYard))) {
+                        doProduceItem(pBuilder, Unit_Carryall);
+                    }
+                }
 
 
-                    } break;
+            } break;
 
-                   case Structure_StarPort: {
-                        const auto* pStarPort = static_cast<const StarPort*>(pBuilder);
-                        if(pStarPort->okToOrder())  {
-                            const Choam& choam = getHouse()->getChoam();
+            case Structure_StarPort: {
+                const auto* pStarPort = dune_cast<StarPort>(pBuilder);
+                if(!pStarPort || !pStarPort->okToOrder()) continue;
 
-                            // What's our spending money
-                            int money = getHouse()->getCredits();
+                const Choam& choam = getHouse()->getChoam();
 
-                            // We need a construction yard!!
-                            if(pStarPort->isAvailableToBuild(Unit_MCV)
-                               && choam.getNumAvailable(Unit_MCV) > 0
-                               && getHouse()->getNumItems(Structure_ConstructionYard) < 1
-                               && getHouse()->getNumItems(Unit_MCV)
-                               + buildQueue[Unit_MCV] < 1) {
+                // What's our spending money
+                int money = getHouse()->getCredits();
 
-                                doProduceItem(pBuilder, Unit_MCV);
-                                money = money - choam.getPrice(Unit_MCV);
-                            }
+                // We need a construction yard!!
+                if(pStarPort->isAvailableToBuild(Unit_MCV)
+                   && choam.getNumAvailable(Unit_MCV) > 0
+                   && getHouse()->getNumItems(Structure_ConstructionYard) < 1
+                   && getHouse()->getNumItems(Unit_MCV)
+                   + buildQueue[Unit_MCV] < 1) {
 
-                            while (money > choam.getPrice(Unit_Harvester)
-                                   && choam.getNumAvailable(Unit_Harvester) > 0
-                                   && getHouse()->getNumItems(Unit_Harvester) + buildQueue[Unit_Harvester] < harvesterLimit) {
-                                doProduceItem(pBuilder, Unit_Harvester);
-                                buildQueue[Unit_Harvester]++;
-                                money = money - choam.getPrice(Unit_Harvester);
-                            }
+                    doProduceItem(pBuilder, Unit_MCV);
+                    money = money - choam.getPrice(Unit_MCV);
+                }
 
-                            while (money > choam.getPrice(Unit_Carryall) && choam.getNumAvailable(Unit_Carryall) > 0
-                                   && (getHouse()->getNumItems(Unit_Carryall) + buildQueue[Unit_Carryall] < 2)) {
-                                doProduceItem(pBuilder, Unit_Carryall);
-                                buildQueue[Unit_Carryall]++;
-                                money = money - choam.getPrice(Unit_Carryall);
-                            }
+                while (money > choam.getPrice(Unit_Harvester)
+                       && choam.getNumAvailable(Unit_Harvester) > 0
+                       && getHouse()->getNumItems(Unit_Harvester) + buildQueue[Unit_Harvester] < harvesterLimit) {
+                    doProduceItem(pBuilder, Unit_Harvester);
+                    buildQueue[Unit_Harvester]++;
+                    money = money - choam.getPrice(Unit_Harvester);
+                }
 
-                            if(focusMilitary()) {
-                                /*
+                while (money > choam.getPrice(Unit_Carryall) && choam.getNumAvailable(Unit_Carryall) > 0
+                       && (getHouse()->getNumItems(Unit_Carryall) + buildQueue[Unit_Carryall] < 2)) {
+                    doProduceItem(pBuilder, Unit_Carryall);
+                    buildQueue[Unit_Carryall]++;
+                    money = money - choam.getPrice(Unit_Carryall);
+                }
+
+                if(focusMilitary()) {
+                    /*
                                 while (money > choam.getPrice(Unit_Ornithopter) && choam.getNumAvailable(Unit_Ornithopter) > 0)
                                 {
                                     doProduceItem(pBuilder, Unit_Ornithopter);
@@ -529,117 +525,115 @@ void SmartBot::build(const GameContext& context) {
                                 }
                                 */
 
-                                while (money > choam.getPrice(Unit_SiegeTank) && choam.getNumAvailable(Unit_SiegeTank) > 0 && choam.isCheap(Unit_SiegeTank)) {
-                                    doProduceItem(pBuilder, Unit_SiegeTank);
-                                    money = money - choam.getPrice(Unit_SiegeTank);
-                                }
+                    while (money > choam.getPrice(Unit_SiegeTank) && choam.getNumAvailable(Unit_SiegeTank) > 0 && choam.isCheap(Unit_SiegeTank)) {
+                        doProduceItem(pBuilder, Unit_SiegeTank);
+                        money = money - choam.getPrice(Unit_SiegeTank);
+                    }
 
-                                while (money > choam.getPrice(Unit_Launcher) && choam.getNumAvailable(Unit_Launcher) > 0 && choam.isCheap(Unit_Launcher)) {
-                                    doProduceItem(pBuilder, Unit_Launcher);
-                                    money = money - choam.getPrice(Unit_Launcher);
-                                }
+                    while (money > choam.getPrice(Unit_Launcher) && choam.getNumAvailable(Unit_Launcher) > 0 && choam.isCheap(Unit_Launcher)) {
+                        doProduceItem(pBuilder, Unit_Launcher);
+                        money = money - choam.getPrice(Unit_Launcher);
+                    }
 
-                                while (money > choam.getPrice(Unit_Tank) && choam.getNumAvailable(Unit_Tank) > 0 && choam.isCheap(Unit_Tank)) {
-                                    doProduceItem(pBuilder, Unit_Tank);
-                                    money = money - choam.getPrice(Unit_Tank);
-                                }
+                    while (money > choam.getPrice(Unit_Tank) && choam.getNumAvailable(Unit_Tank) > 0 && choam.isCheap(Unit_Tank)) {
+                        doProduceItem(pBuilder, Unit_Tank);
+                        money = money - choam.getPrice(Unit_Tank);
+                    }
 
-                                while (money > choam.getPrice(Unit_Quad) && choam.getNumAvailable(Unit_Quad) > 0 && choam.isCheap(Unit_Quad)) {
-                                    doProduceItem(pBuilder, Unit_Quad);
-                                    money = money - choam.getPrice(Unit_Quad);
-                                }
+                    while (money > choam.getPrice(Unit_Quad) && choam.getNumAvailable(Unit_Quad) > 0 && choam.isCheap(Unit_Quad)) {
+                        doProduceItem(pBuilder, Unit_Quad);
+                        money = money - choam.getPrice(Unit_Quad);
+                    }
 
-                                while (money > choam.getPrice(Unit_Trike) && choam.getNumAvailable(Unit_Trike) > 0 && choam.isCheap(Unit_Trike)) {
-                                    doProduceItem(pBuilder, Unit_Trike);
-                                    money = money - choam.getPrice(Unit_Trike);
-                                }
-                            }
+                    while (money > choam.getPrice(Unit_Trike) && choam.getNumAvailable(Unit_Trike) > 0 && choam.isCheap(Unit_Trike)) {
+                        doProduceItem(pBuilder, Unit_Trike);
+                        money = money - choam.getPrice(Unit_Trike);
+                    }
+                }
 
-                            if(pStarPort->isAvailableToBuild(Unit_MCV) && choam.getNumAvailable(Unit_MCV) > 0 && focusBase()) {
-                                doProduceItem(pBuilder, Unit_MCV);
-                            }
+                if(pStarPort->isAvailableToBuild(Unit_MCV) && choam.getNumAvailable(Unit_MCV) > 0 && focusBase()) {
+                    doProduceItem(pBuilder, Unit_MCV);
+                }
 
-                            doPlaceOrder(pStarPort);
-                        }
+                doPlaceOrder(pStarPort);
+            } break;
 
-                    } break;
+            case Structure_ConstructionYard: {
+                // For maps where concrete is required you want to be able to place 4 squares
+                if(getGameInitSettings().getGameOptions().concreteRequired) {
+                    doUpgrade(pBuilder);
+                }
 
-                    case Structure_ConstructionYard: {
-                        // For maps where concrete is required you want to be able to place 4 squares
-                        if(getGameInitSettings().getGameOptions().concreteRequired) {
-                            doUpgrade(pBuilder);
-                        }
+                if(!pBuilder->isUpgrading()
+                   && getHouse()->getCredits() > 0
+                   && pBuilder->getProductionQueueSize() < 1
+                   && pBuilder->getBuildListSize() > 0) {
 
-                        if(!pBuilder->isUpgrading()
-                           && getHouse()->getCredits() > 0
-                           && pBuilder->getProductionQueueSize() < 1
-                           && pBuilder->getBuildListSize() > 0){
+                    auto itemID = ItemID_enum::ItemID_Invalid;
 
-                            auto itemID = ItemID_enum::ItemID_Invalid;
-
-                            if(getHouse()->getNumItems(Structure_WindTrap) + buildQueue[Structure_WindTrap] < 1
-                               && pBuilder->isAvailableToBuild(Structure_WindTrap)) {
-                                // We need one wind trap
-                                itemID = Structure_WindTrap;
-                                buildQueue[Structure_WindTrap]++;
-                            } else if(getHouse()->getNumItems(Structure_Refinery) + buildQueue[Structure_Refinery]  < 1
-                                     && pBuilder->isAvailableToBuild(Structure_Refinery)) {
-                                // We need one refinery
-                                itemID = Structure_Refinery;
-                                buildQueue[Structure_Refinery]++;
-                            } else if(pBuilder->isAvailableToBuild(Structure_Refinery)
-                                    && ((focusEconomy()
-                                     || (getHouse()->getNumItems(Structure_Refinery) +  buildQueue[Structure_Refinery])  * 3 < getHouse()->getNumItems(Unit_Harvester)
-                                     || getHouse()->getNumItems(Structure_Refinery) +  buildQueue[Structure_Refinery] <
-                                        getHouse()->getNumItems(Structure_HeavyFactory) + buildQueue[Structure_HeavyFactory]
-                                        + getHouse()->getNumItems(Structure_HighTechFactory) + buildQueue[Structure_HighTechFactory])
-                                      && (getHouse()->getNumItems(Structure_Refinery) +  buildQueue[Structure_Refinery] < REFINERYLIMIT
+                    if(getHouse()->getNumItems(Structure_WindTrap) + buildQueue[Structure_WindTrap] < 1
+                       && pBuilder->isAvailableToBuild(Structure_WindTrap)) {
+                        // We need one wind trap
+                        itemID = Structure_WindTrap;
+                        buildQueue[Structure_WindTrap]++;
+                    } else if(getHouse()->getNumItems(Structure_Refinery) + buildQueue[Structure_Refinery]  < 1
+                              && pBuilder->isAvailableToBuild(Structure_Refinery)) {
+                        // We need one refinery
+                        itemID = Structure_Refinery;
+                        buildQueue[Structure_Refinery]++;
+                    } else if(pBuilder->isAvailableToBuild(Structure_Refinery)
+                              && ((focusEconomy()
+                                   || (getHouse()->getNumItems(Structure_Refinery) +  buildQueue[Structure_Refinery])  * 3 < getHouse()->getNumItems(Unit_Harvester)
+                                   || getHouse()->getNumItems(Structure_Refinery) +  buildQueue[Structure_Refinery] <
+                                   getHouse()->getNumItems(Structure_HeavyFactory) + buildQueue[Structure_HeavyFactory]
+                                   + getHouse()->getNumItems(Structure_HighTechFactory) + buildQueue[Structure_HighTechFactory])
+                                  && (getHouse()->getNumItems(Structure_Refinery) +  buildQueue[Structure_Refinery] < REFINERYLIMIT
                                       && getHouse()->getNumItems(Unit_Harvester) < harvesterLimit
-                                         ))){
-                                // The most important element of success in dune is having a strong economy
-                                // Due to the exponential growth available, focussing heavily on refinerys
-                                // at the beginning of the game will give you a strong advantage in the mid game
-                                // provided you are not suprised by your enemy early.
-                                // => Build if we haven't exceeded the refinery limit
-                                itemID = Structure_Refinery;
-                                buildQueue[Structure_Refinery]++;
-                            } else if(getHouse()->getNumItems(Structure_StarPort) + buildQueue[Structure_StarPort] < 1
-                                    && pBuilder->isAvailableToBuild(Structure_StarPort)) {
-                                // We need one starport, light factory, radar and heavy factory, high tech factory
-                                // TODO: build in some logic to ensure you don't build the same unit in multiple construction yards...
-                                itemID = Structure_StarPort;
-                                buildQueue[Structure_StarPort]++;
-                            } else if((getHouse()->getNumItems(Structure_LightFactory) + buildQueue[Structure_LightFactory] < 1)
-                                    && pBuilder->isAvailableToBuild(Structure_LightFactory)) {
-                                itemID = Structure_LightFactory;
-                                buildQueue[Structure_LightFactory]++;
-                            } else if(getHouse()->getNumItems(Structure_Radar) + buildQueue[Structure_Radar] < 1
-                                    && pBuilder->isAvailableToBuild(Structure_Radar)) {
-                                itemID = Structure_Radar;
-                                buildQueue[Structure_Radar]++;
-                            } else if(getHouse()->getNumItems(Structure_HeavyFactory) + buildQueue[Structure_HeavyFactory]  < 1
-                                     && pBuilder->isAvailableToBuild(Structure_HeavyFactory)) {
-                                itemID = Structure_HeavyFactory;
-                                buildQueue[Structure_HeavyFactory] ++;
-                            } else if(getHouse()->getNumItems(Structure_RepairYard) + buildQueue[Structure_RepairYard]  < 1
-                                     && pBuilder->isAvailableToBuild(Structure_RepairYard)) {
-                                itemID = Structure_RepairYard;
-                                buildQueue[Structure_RepairYard]++;
-                            } else if(getHouse()->getNumItems(Structure_HighTechFactory) + buildQueue[Structure_HighTechFactory]  < 1
-                                     && pBuilder->isAvailableToBuild(Structure_HighTechFactory)) {
-                                itemID = Structure_HighTechFactory;
-                                buildQueue[Structure_HighTechFactory]++;
-                            } else if(getHouse()->getNumItems(Structure_IX) + buildQueue[Structure_IX] < 1
-                                     && pBuilder->isAvailableToBuild(Structure_IX)) {
-                                itemID = Structure_IX;
-                                buildQueue[Structure_IX]++;
-                            } else if( !(pBuilder->isAvailableToBuild(Structure_HeavyFactory)) //There are no heavy factories availables
-                                    && pBuilder->isAvailableToBuild(Structure_LightFactory)
-                                    && focusFactory()) {
-                                itemID = Structure_LightFactory;
-                                buildQueue[Structure_LightFactory]++;
-                            } else if(focusFactory()) {
-                                /*
+                                  ))){
+                        // The most important element of success in dune is having a strong economy
+                        // Due to the exponential growth available, focusing heavily on refineries
+                        // at the beginning of the game will give you a strong advantage in the mid game
+                        // provided you are not surprised by your enemy early.
+                        // => Build if we haven't exceeded the refinery limit
+                        itemID = Structure_Refinery;
+                        buildQueue[Structure_Refinery]++;
+                    } else if(getHouse()->getNumItems(Structure_StarPort) + buildQueue[Structure_StarPort] < 1
+                              && pBuilder->isAvailableToBuild(Structure_StarPort)) {
+                        // We need one starport, light factory, radar and heavy factory, high tech factory
+                        // TODO: build in some logic to ensure you don't build the same unit in multiple construction yards...
+                        itemID = Structure_StarPort;
+                        buildQueue[Structure_StarPort]++;
+                    } else if((getHouse()->getNumItems(Structure_LightFactory) + buildQueue[Structure_LightFactory] < 1)
+                              && pBuilder->isAvailableToBuild(Structure_LightFactory)) {
+                        itemID = Structure_LightFactory;
+                        buildQueue[Structure_LightFactory]++;
+                    } else if(getHouse()->getNumItems(Structure_Radar) + buildQueue[Structure_Radar] < 1
+                              && pBuilder->isAvailableToBuild(Structure_Radar)) {
+                        itemID = Structure_Radar;
+                        buildQueue[Structure_Radar]++;
+                    } else if(getHouse()->getNumItems(Structure_HeavyFactory) + buildQueue[Structure_HeavyFactory]  < 1
+                              && pBuilder->isAvailableToBuild(Structure_HeavyFactory)) {
+                        itemID = Structure_HeavyFactory;
+                        buildQueue[Structure_HeavyFactory] ++;
+                    } else if(getHouse()->getNumItems(Structure_RepairYard) + buildQueue[Structure_RepairYard]  < 1
+                              && pBuilder->isAvailableToBuild(Structure_RepairYard)) {
+                        itemID = Structure_RepairYard;
+                        buildQueue[Structure_RepairYard]++;
+                    } else if(getHouse()->getNumItems(Structure_HighTechFactory) + buildQueue[Structure_HighTechFactory]  < 1
+                              && pBuilder->isAvailableToBuild(Structure_HighTechFactory)) {
+                        itemID = Structure_HighTechFactory;
+                        buildQueue[Structure_HighTechFactory]++;
+                    } else if(getHouse()->getNumItems(Structure_IX) + buildQueue[Structure_IX] < 1
+                              && pBuilder->isAvailableToBuild(Structure_IX)) {
+                        itemID = Structure_IX;
+                        buildQueue[Structure_IX]++;
+                    } else if( !(pBuilder->isAvailableToBuild(Structure_HeavyFactory)) //There are no heavy factories availables
+                               && pBuilder->isAvailableToBuild(Structure_LightFactory)
+                               && focusFactory()) {
+                        itemID = Structure_LightFactory;
+                        buildQueue[Structure_LightFactory]++;
+                    } else if(focusFactory()) {
+                        /*
                                     If we have lots of money, lets increase war production. Here are some different strategies
                                     It makes sense for only one strategy to be used per game due to the lack of a 'combined arms'
                                     attack algorithm. Because all units are simply set to 'Hunt', if they have different speeds
@@ -650,122 +644,119 @@ void SmartBot::build(const GameContext& context) {
                                     but we want to make sure we still have plenty of repair yards as they win games
                                 */
 
-                                if(pBuilder->isAvailableToBuild(Structure_RepairYard)
-                                   && getHouse()->getNumItems(Structure_RepairYard) + buildQueue[Structure_RepairYard]
-                                    < (getHouse()->getNumItems(Unit_Tank)
-                                       + getHouse()->getNumItems(Unit_SiegeTank)
-                                       + getHouse()->getNumItems(Unit_Launcher) )/ 7){
-                                    itemID = Structure_RepairYard;
-                                    buildQueue[Structure_RepairYard]++;
+                        if(pBuilder->isAvailableToBuild(Structure_RepairYard)
+                           && getHouse()->getNumItems(Structure_RepairYard) + buildQueue[Structure_RepairYard]
+                           < (getHouse()->getNumItems(Unit_Tank)
+                              + getHouse()->getNumItems(Unit_SiegeTank)
+                              + getHouse()->getNumItems(Unit_Launcher) )/ 7){
+                            itemID = Structure_RepairYard;
+                            buildQueue[Structure_RepairYard]++;
+                        } else {
+                            itemID = Structure_HeavyFactory;
+                            buildQueue[Structure_HeavyFactory]++;
+                        }
+                    } else if( pBuilder->getCurrentUpgradeLevel()  < 2
+                               && pBuilder->getHealth() >= pBuilder->getMaxHealth()
+                               && !pBuilder->isUpgrading()
+                               && pBuilder->getCurrentUpgradeLevel() < pBuilder->getMaxUpgradeLevel()
+                               && pBuilder->getBuildListSize() < 1) {
+                        // Only upgrade to level 1 and only if concrete slabs are required
+                        doUpgrade(pBuilder);
+                    } else if (pBuilder->isAvailableToBuild(Structure_RocketTurret)
+                               && focusMilitary()
+                               && difficulty == Difficulty::Defense) {
+                        itemID = Structure_RocketTurret;
+                    }
+
+                    if(itemID != ItemID_enum::ItemID_Invalid) {
+                        Coord location = findPlaceLocation(itemID);
+
+                        if(location.isValid()) {
+                            Coord placeLocation = location;
+                            if(getGameInitSettings().getGameOptions().concreteRequired) {
+                                int incI   = 0;
+                                int incJ   = 0;
+                                int startI = 0;
+                                int startJ = 0;
+
+                                if(getMap().isWithinBuildRange(location.x, location.y, getHouse())) {
+                                    startI = location.x; startJ = location.y; incI = 1; incJ = 1;
+                                } else if(getMap().isWithinBuildRange(location.x + getStructureSize(itemID).x - 1, location.y, getHouse())) {
+                                    startI = location.x + getStructureSize(itemID).x - 1; startJ = location.y; incI = -1; incJ = 1;
+                                } else if(getMap().isWithinBuildRange(location.x, location.y + getStructureSize(itemID).y - 1, getHouse())) {
+                                    startI = location.x; startJ = location.y + getStructureSize(itemID).y - 1; incI = 1; incJ = -1;
                                 } else {
-                                    itemID = Structure_HeavyFactory;
-                                    buildQueue[Structure_HeavyFactory]++;
+                                    startI = location.x + getStructureSize(itemID).x - 1; startJ = location.y + getStructureSize(itemID).y - 1; incI = -1; incJ = -1;
                                 }
-                            } else if( pBuilder->getCurrentUpgradeLevel()  < 2
-                                        && pBuilder->getHealth() >= pBuilder->getMaxHealth()
-                                        && !pBuilder->isUpgrading()
-                                        && pBuilder->getCurrentUpgradeLevel() < pBuilder->getMaxUpgradeLevel()
-                                        && pBuilder->getBuildListSize() < 1) {
-                                // Only upgrade to level 1 and only if concrete slabs are required
-                                doUpgrade(pBuilder);
-                            } else if (pBuilder->isAvailableToBuild(Structure_RocketTurret)
-                                         && focusMilitary()
-                                         && difficulty == Difficulty::Defense) {
-                                itemID = Structure_RocketTurret;
-                            }
 
-                            if(itemID != ItemID_enum::ItemID_Invalid) {
-                                Coord location = findPlaceLocation(itemID);
+                                for(int i = startI; abs(i - startI) < getStructureSize(itemID).x; i += incI) {
+                                    for(int j = startJ; abs(j - startJ) < getStructureSize(itemID).y; j += incJ) {
+                                        const Tile * pTile = getMap().getTile(i, j);
 
-                                if(location.isValid()) {
-                                    Coord placeLocation = location;
-                                    if(getGameInitSettings().getGameOptions().concreteRequired) {
-                                        int incI = 0;
-                                        int incJ = 0;
-                                        int startI = 0;
-                                        int startJ = 0;
-
-                                        if(getMap().isWithinBuildRange(location.x, location.y, getHouse())) {
-                                            startI = location.x; startJ = location.y; incI = 1; incJ = 1;
-                                        } else if(getMap().isWithinBuildRange(location.x + getStructureSize(itemID).x - 1, location.y, getHouse())) {
-                                            startI = location.x + getStructureSize(itemID).x - 1; startJ = location.y; incI = -1; incJ = 1;
-                                        } else if(getMap().isWithinBuildRange(location.x, location.y + getStructureSize(itemID).y - 1, getHouse())) {
-                                            startI = location.x; startJ = location.y + getStructureSize(itemID).y - 1; incI = 1; incJ = -1;
-                                        } else {
-                                            startI = location.x + getStructureSize(itemID).x - 1; startJ = location.y + getStructureSize(itemID).y - 1; incI = -1; incJ = -1;
-                                        }
-
-                                        for(int i = startI; abs(i - startI) < getStructureSize(itemID).x; i += incI) {
-                                            for(int j = startJ; abs(j - startJ) < getStructureSize(itemID).y; j += incJ) {
-                                                const Tile *pTile = getMap().getTile(i, j);
-
-                                                if((getStructureSize(itemID).x > 1) && (getStructureSize(itemID).y > 1)
-                                                    && pBuilder->isAvailableToBuild(Structure_Slab4)
-                                                    && (abs(i - location.x) < 2) && (abs(j - location.y) < 2)) {
-                                                    if( (i == location.x) && (j == location.y) && pTile->getType() != Terrain_Slab) {
-                                                        placeLocations.emplace_back(i,j);
-                                                        doProduceItem(pBuilder, Structure_Slab4);
-                                                    }
-                                                } else if(pTile->getType() != Terrain_Slab) {
-                                                    placeLocations.emplace_back(i,j);
-                                                    doProduceItem(pBuilder, Structure_Slab1);
-                                                }
+                                        if((getStructureSize(itemID).x > 1) && (getStructureSize(itemID).y > 1)
+                                           && pBuilder->isAvailableToBuild(Structure_Slab4)
+                                           && (abs(i - location.x) < 2) && (abs(j - location.y) < 2)) {
+                                            if( (i == location.x) && (j == location.y) && pTile->getType() != Terrain_Slab) {
+                                                placeLocations.emplace_back(i,j);
+                                                doProduceItem(pBuilder, Structure_Slab4);
                                             }
+                                        } else if(pTile->getType() != Terrain_Slab) {
+                                            placeLocations.emplace_back(i,j);
+                                            doProduceItem(pBuilder, Structure_Slab1);
                                         }
                                     }
-
-                                    placeLocations.push_back(placeLocation);
-                                    doProduceItem(pBuilder, itemID);
-                                } else {
-                                    // we havn't found a placing location => build some random slabs
-                                    location = findPlaceLocation(Structure_Slab1);
-                                    if(location.isValid() && getMap().isWithinBuildRange(location.x, location.y, getHouse())) {
-                                        placeLocations.push_back(location);
-                                        doProduceItem(pBuilder, Structure_Slab1);
-                                    }
                                 }
                             }
 
-                        }
-
-                        if(pBuilder->isWaitingToPlace()) {
-                            //find total region of possible placement and place in random ok position
-                            const auto itemID = pBuilder->getCurrentProducedItem();
-                            Coord itemsize = getStructureSize(itemID);
-
-                            //see if there is already a spot to put it stored
-                            if(!placeLocations.empty()) {
-                                Coord location = placeLocations.front();
-                                const auto* pConstYard = static_cast<const ConstructionYard*>(pBuilder);
-                                if(getMap().okayToPlaceStructure(location.x, location.y, itemsize.x, itemsize.y, false, pConstYard->getOwner())
-                                   && getMap().isAStructureGap(context_, location.x, location.y, itemsize.x, itemsize.y)) {
-                                    doPlaceStructure(pConstYard, location.x, location.y);
-                                    placeLocations.pop_front();
-                                } else if(itemID == Structure_Slab1) {
-                                    //forget about concrete
-                                    doCancelItem(pConstYard, Structure_Slab1);
-                                    placeLocations.pop_front();
-                                } else if(itemID == Structure_Slab4) {
-                                    //forget about concrete
-                                    doCancelItem(pConstYard, Structure_Slab4);
-                                    placeLocations.pop_front();
-                                } else {
-                                    //cancel item
-                                    doCancelItem(pConstYard, itemID);
-                                    placeLocations.pop_front();
-                                }
+                            placeLocations.push_back(placeLocation);
+                            doProduceItem(pBuilder, itemID);
+                        } else {
+                            // we havn't found a placing location => build some random slabs
+                            location = findPlaceLocation(Structure_Slab1);
+                            if(location.isValid() && getMap().isWithinBuildRange(location.x, location.y, getHouse())) {
+                                placeLocations.push_back(location);
+                                doProduceItem(pBuilder, Structure_Slab1);
                             }
                         }
+                    }
 
-                    } break;
+                }
 
-                    default: {
-                        break;
+                if(pBuilder->isWaitingToPlace()) {
+                    //find total region of possible placement and place in random ok position
+                    const auto itemID   = pBuilder->getCurrentProducedItem();
+                    Coord      itemsize = getStructureSize(itemID);
+
+                    //see if there is already a spot to put it stored
+                    if(!placeLocations.empty()) {
+                        Coord       location   = placeLocations.front();
+                        const auto* pConstYard = static_cast<const ConstructionYard*>(pBuilder);
+                        if(getMap().okayToPlaceStructure(location.x, location.y, itemsize.x, itemsize.y, false, pConstYard->getOwner())
+                           && getMap().isAStructureGap(context_, location.x, location.y, itemsize.x, itemsize.y)) {
+                            doPlaceStructure(pConstYard, location.x, location.y);
+                            placeLocations.pop_front();
+                        } else if(itemID == Structure_Slab1) {
+                            //forget about concrete
+                            doCancelItem(pConstYard, Structure_Slab1);
+                            placeLocations.pop_front();
+                        } else if(itemID == Structure_Slab4) {
+                            //forget about concrete
+                            doCancelItem(pConstYard, Structure_Slab4);
+                            placeLocations.pop_front();
+                        } else {
+                            //cancel item
+                            doCancelItem(pConstYard, itemID);
+                            placeLocations.pop_front();
+                        }
                     }
                 }
+
+            } break;
+
+            default: {
+                break;
             }
         }
-
     }
 
     buildTimer = getRandomGen().rand(0,3)*50;

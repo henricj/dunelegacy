@@ -434,26 +434,26 @@ public:
         return true;
     }
 
-    [[nodiscard]] bool hasAStructure(int x, int y) const {
-        const auto tile = tryGetTile(x, y);
+    [[nodiscard]] bool hasAStructure(const GameContext& context, int x, int y) const {
+        const auto* const tile = tryGetTile(x, y);
         if(!tile) return false;
 
-        return tile->hasAStructure(currentGame->getObjectManager());
+        return tile->hasAStructure(context.objectManager);
     }
 
-    [[nodiscard]] ObjectBase* getGroundObject(int x, int y) const {
+    [[nodiscard]] ObjectBase* getGroundObject(const GameContext& context, int x, int y) const {
         const auto* const tile = tryGetTile(x, y);
         if(!tile) return nullptr;
 
-        return tile->getGroundObject(currentGame->getObjectManager());
+        return tile->getGroundObject(context.objectManager);
     }
 
     template<typename ObjectType>
-    ObjectType* getGroundObject(int x, int y) const {
+    ObjectType* getGroundObject(const GameContext& context, int x, int y) const {
         static_assert(!std::is_abstract<ObjectType>::value, "ObjectType is abstract");
         static_assert(std::is_base_of<ObjectBase, ObjectType>::value, "ObjectType not derived from ObjectBase");
 
-        auto* const object = getGroundObject(x, y);
+        auto* const object = getGroundObject(context, x, y);
         if(!object) return nullptr;
 
         if(object->getItemID() != ObjectType::item_id) return nullptr;
@@ -462,40 +462,40 @@ public:
     }
 
     template<typename ObjectType>
-    [[nodiscard]] bool hasAGroundObject(int x, int y) const {
+    [[nodiscard]] bool hasAGroundObject(const GameContext& context, int x, int y) const {
         static_assert(!std::is_abstract<ObjectType>::value, "ObjectType is abstract");
         static_assert(std::is_base_of<ObjectBase, ObjectType>::value, "ObjectType not derived from ObjectBase");
 
         const auto* const tile = tryGetTile(x, y);
         if(!tile) return false;
 
-        auto* const object = tile->getGroundObject(currentGame->getObjectManager());
+        auto* const object = tile->getGroundObject(context.objectManager);
         if(!object) return false;
 
         return object->getItemID() == ObjectType::item_id;
     }
 
-    [[nodiscard]] ObjectBase* tryGetObject(int x, int y) const {
+    [[nodiscard]] ObjectBase* tryGetObject(const GameContext& context, int x, int y) const {
         const auto* const tile = tryGetTile(x, y);
         if(!tile) return nullptr;
 
-        return tile->getObject(currentGame->getObjectManager());
+        return tile->getObject(context.objectManager);
     }
 
-    [[nodiscard]] House* tryGetOwner(int x, int y) const {
-        const auto* const object = tryGetObject(x, y);
+    [[nodiscard]] House* tryGetOwner(const GameContext& context, int x, int y) const {
+        const auto* const object = tryGetObject(context, x, y);
         if(!object) return nullptr;
 
         return object->getOwner();
     }
 
-    [[nodiscard]] InfantryBase* tryGetInfantry(int x, int y) const {
+    [[nodiscard]] InfantryBase* tryGetInfantry(const GameContext& context, int x, int y) const {
         const auto* const tile = tryGetTile(x, y);
         if(!tile) return nullptr;
 
         if(!tile->hasInfantry()) return nullptr;
 
-        return tile->getInfantry(currentGame->getObjectManager());
+        return tile->getInfantry(context.objectManager);
     }
 
 
